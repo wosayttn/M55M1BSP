@@ -17,7 +17,8 @@
 #include "NuMicro.h"
 
 //------------------------------------------------------------------------------
-//#define PLL_CLOCK           100000000
+//#define PLL_CLOCK               (100000000)
+#define USE_HXT_SRC             (1)
 
 //------------------------------------------------------------------------------
 // Internal funcfion definition
@@ -74,7 +75,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
 #if (USE_HXT_SRC == 1)
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC, CLK_ACLKDIV_ACLKDIV(1));
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC48M, CLK_ACLKDIV_ACLKDIV(1));
 #else
     /* Switch SCLK clock source to HIRC before PLL setting */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC, CLK_ACLKDIV_ACLKDIV(1));
@@ -100,44 +101,12 @@ void SYS_Init(void)
     CLK_PCLKDIV_PCLK4DIV(1);
     //CLK_PCLKDIV_PCLK5DIV(1);
 #endif //0
+
     /* Update System Core Clock */
     SystemCoreClockUpdate();
 
-    /* enable PLL */
-    //CLK->PLLCTL &= ~CLK_PLLCTL_PD_Msk;
-    //CLK->PLLCTL &= ~CLK_PLLCTL_OE_Msk;
-    //while ((CLK->STATUS & CLK_STATUS_PLLSTB_Msk) == 0);
-    //CLK_EnablePLL(CLK_PLLCTL_PLLSRC_HXT, 192000000, CLK_PLL0_SELECT);
-
-    //CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HXT, 0);
-
-    //CLK_EnableModuleClock(UART0_MODULE);
-    //CLK_EnableModuleClock(QSPI0_MODULE);
-    //CLK_EnableModuleClock(QSPI1_MODULE);
-    //CLK_EnableModuleClock(SPI0_MODULE);
-    //CLK_EnableModuleClock(SPI1_MODULE);
-    //CLK_EnableModuleClock(SPI2_MODULE);
-    //CLK_EnableModuleClock(SPI3_MODULE);
-    CLK_EnableModuleClock(USCI0_MODULE);
-    //CLK_EnableModuleClock(CLKO_MODULE);
-    CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_SYSCLK, 0, CLK_CLKOCTL_DIV1EN_DIV_FREQSEL);
-
-    CLK_EnableModuleClock(TMR0_MODULE); //Timer Module
-    CLK_EnableModuleClock(TMR1_MODULE); //Timer Module
-    CLK_EnableModuleClock(TTMR0_MODULE); //Tick Timer Module
-    CLK_EnableModuleClock(TTMR1_MODULE); //Tick Timer Module
-
-    CLK_EnableModuleClock(SRAM0_MODULE);
-    CLK_EnableModuleClock(SRAM1_MODULE);
-    CLK_EnableModuleClock(SRAM2_MODULE);
-    //CLK_EnableModuleClock(PDMA0_MODULE);
-    //CLK_EnableModuleClock(PDMA1_MODULE);
-
-    CLK_EnableModuleClock(LPTMR0_MODULE);
-    CLK_EnableModuleClock(LPTMR1_MODULE);
-    CLK_EnableModuleClock(LPPDMA0_MODULE);
-    CLK_EnableModuleClock(LPGPIO0_MODULE);
-    CLK_EnableModuleClock(LPSRAM0_MODULE);
+    CLK_EnableModuleClock(QSPI0_MODULE);
+    CLK_EnableModuleClock(QSPI1_MODULE);
 
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
@@ -149,14 +118,6 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOH_MODULE);
     CLK_EnableModuleClock(GPIOI_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
-
-    //#if(FPGA_EMULATION==1) /* For real chip verification stage */
-    //    CLK->PLLCTL = 0x00088418; /* PLL clock source is HIRC 12 MHz. PLL output frequency is ? MHz. */
-    //    while((CLK->STATUS & CLK_STATUS_PLLSTB_Msk)==0);
-    //    PllClock = 12*1000*1000; /* In LAG048 FPGA emulation, the PLL frequency is determined by OSC3. */
-    //    SystemCoreClock = 12*1000*1000;
-    //    CyclesPerUs = SystemCoreClock / 1000000;
-    //#endif
 }
 
 void DebugPort_Init(void)

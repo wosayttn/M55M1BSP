@@ -445,9 +445,9 @@
               <FilePath>..\qspi_cunit.c</FilePath>
             </File>
             <File>
-              <FileName>CUnitTestM4.lib</FileName>
+              <FileName>CUnitTestM55.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\common\CUnitTestM4.lib</FilePath>
+              <FilePath>..\..\common\CUnitTestM55.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -761,7 +761,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>3</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -892,9 +892,9 @@
               <FilePath>..\qspi_cunit.c</FilePath>
             </File>
             <File>
-              <FileName>CUnitTestM4.lib</FileName>
+              <FileName>CUnitTestM55.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\common\CUnitTestM4.lib</FilePath>
+              <FilePath>..\..\common\CUnitTestM55.lib</FilePath>
             </File>
           </Files>
         </Group>

@@ -1,0 +1,2053 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html><head>
+<title>Static Call Graph - [.\Objects\QSPI_Cunit.axf]</title></head>
+<body><HR>
+<H1>Static Call Graph for image .\Objects\QSPI_Cunit.axf</H1><HR>
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6180002: Last Updated: Tue May 16 17:20:06 2023
+<BR><P>
+<H3>Maximum Stack Usage =        448 bytes + Unknown(Untraceable Function Pointers)</H3><H3>
+Call chain for Maximum Stack Depth:</H3>
+console_all_tests_complete_message_handler &rArr; CU_print_run_results &rArr; CU_get_run_results_string &rArr; CU_number_width &rArr; __2snprintf
+<P>
+<H3>
+Function Pointers
+</H3><UL>
+ <LI><a href="#[79]">ACMP01_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[7a]">ACMP23_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[9d]">API_QSPI_Close</a> from qspi_cunit.o(.text.API_QSPI_Close) referenced from qspi_cunit.o(.data.QSPI_ApiTests)
+ <LI><a href="#[9f]">API_QSPI_EnableInt_DisableInt</a> from qspi_cunit.o(.text.API_QSPI_EnableInt_DisableInt) referenced from qspi_cunit.o(.data.QSPI_ApiTests)
+ <LI><a href="#[9c]">API_QSPI_Open</a> from qspi_cunit.o(.text.API_QSPI_Open) referenced from qspi_cunit.o(.data.QSPI_ApiTests)
+ <LI><a href="#[9e]">API_QSPI_SetBusClock_GetBusClock</a> from qspi_cunit.o(.text.API_QSPI_SetBusClock_GetBusClock) referenced from qspi_cunit.o(.data.QSPI_ApiTests)
+ <LI><a href="#[8e]">AWF_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[b]">BODOUT_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[31]">BPWM0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[32]">BPWM1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[29]">BRAKE0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[2d]">BRAKE1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[4]">BusFault_Handler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[75]">CANFD00_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[76]">CANFD01_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[77]">CANFD10_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[78]">CANFD11_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[73]">CCAP_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[f]">CKFAIL_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[7b]">CRC_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[74]">CRYPTO_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[85]">DAC01_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[69]">DMIC0VAD_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[68]">DMIC0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[8]">DebugMon_Handler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[7c]">EADC00_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[7d]">EADC01_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[7e]">EADC02_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[7f]">EADC03_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[80]">EADC10_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[81]">EADC11_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[82]">EADC12_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[83]">EADC13_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[8a]">ECAP0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[8b]">ECAP1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[8c]">ECAP2_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[8d]">ECAP3_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[19]">EINT0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[1a]">EINT1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[1b]">EINT2_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[1c]">EINT3_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[1d]">EINT4_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[1e]">EINT5_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[5b]">EINT6_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[5c]">EINT7_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[47]">EMAC0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[2a]">EPWM0P0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[2b]">EPWM0P1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[2c]">EPWM0P2_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[2e]">EPWM1P0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[2f]">EPWM1P1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[30]">EPWM1P2_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[86]">EQEI0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[87]">EQEI1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[88]">EQEI2_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[89]">EQEI3_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[90]">ETI_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[91]">GDMACH0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[92]">GDMACH1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[1f]">GPA_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[20]">GPB_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[21]">GPC_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[22]">GPD_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[23]">GPE_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[24]">GPF_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[25]">GPG_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[26]">GPH_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[27]">GPI_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[28]">GPJ_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[46]">HSOTG_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[45]">HSUSBD_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[44]">HSUSBH_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[2]">HardFault_Handler</a> from startup_tc8263.o(.text.HardFault_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[5e]">I2C0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[5f]">I2C1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[60]">I2C2_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[61]">I2C3_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[6a]">I2S0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[6b]">I2S1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[6d]">I3C0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[c]">IRC_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[10]">ISP_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[70]">KPI_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[37]">KS_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[84]">LPADC0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[62]">LPI2C0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[35]">LPPDMA_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[4e]">LPSPI0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[3c]">LPTMR0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[3d]">LPTMR1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[5d]">LPUART0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[a0]">MACRO_QSPI_IS_BUSY</a> from qspi_cunit.o(.text.MACRO_QSPI_IS_BUSY) referenced from qspi_cunit.o(.data.QSPI_MacroTests)
+ <LI><a href="#[3]">MemManage_Handler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[1]">NMI_Handler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[18]">NPU_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[6e]">OTFC0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[6f]">OTFC1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[33]">PDMA0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[34]">PDMA1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[d]">PMC_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[67]">PSIO_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[9]">PendSV_Handler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[48]">QSPI0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[49]">QSPI1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[a2]">QSPI_Tests_Clean</a> from qspi_cunit.o(.text.QSPI_Tests_Clean) referenced 2 times from qspi_cunit.o(.data.suites)
+ <LI><a href="#[a1]">QSPI_Tests_Init</a> from qspi_cunit.o(.text.QSPI_Tests_Init) referenced 2 times from qspi_cunit.o(.data.suites)
+ <LI><a href="#[12]">RTCTAMPER_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[11]">RTC_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[0]">Reset_Handler</a> from startup_tc8263.o(.text.Reset_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[64]">SC0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[65]">SC1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[66]">SC2_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[36]">SCU_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[71]">SDH0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[72]">SDH1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[4a]">SPI0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[4b]">SPI1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[4c]">SPI2_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[4d]">SPI3_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[4f]">SPIM0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[50]">SPIM1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[e]">SRAMPERR_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[7]">SVC_Handler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[6]">SecureFault_Handler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[a]">SysTick_Handler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[9b]">SystemInit</a> from system_tc8263.o(.text.SystemInit) referenced from system_tc8263.o(.init_array)
+ <LI><a href="#[15]">TAMPER_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[38]">TIMER0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[39]">TIMER1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[3a]">TIMER2_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[3b]">TIMER3_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[6c]">TRNG_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[3e]">TTMR0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[3f]">TTMR1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[51]">UART0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[52]">UART1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[53]">UART2_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[54]">UART3_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[55]">UART4_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[56]">UART5_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[57]">UART6_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[58]">UART7_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[59]">UART8_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[5a]">UART9_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[42]">USBD_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[40]">USBH0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[41]">USBH1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[43]">USBOTG_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[63]">USCI0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[8f]">UTCPD_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[5]">UsageFault_Handler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[13]">WDT0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[16]">WDT1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[14]">WWDT0_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[17]">WWDT1_IRQHandler</a> from startup_tc8263.o(.text.Default_Handler) referenced from startup_tc8263.o(RESET)
+ <LI><a href="#[9a]">_snputc</a> from printfa.o(i._snputc) referenced from printfa.o(i.__0snprintf)
+ <LI><a href="#[96]">console_all_tests_complete_message_handler</a> from console.o(.text.console_all_tests_complete_message_handler) referenced 2 times from console.o(.text.CU_console_run_tests)
+ <LI><a href="#[98]">console_suite_cleanup_failure_message_handler</a> from console.o(.text.console_suite_cleanup_failure_message_handler) referenced 2 times from console.o(.text.CU_console_run_tests)
+ <LI><a href="#[97]">console_suite_init_failure_message_handler</a> from console.o(.text.console_suite_init_failure_message_handler) referenced 2 times from console.o(.text.CU_console_run_tests)
+ <LI><a href="#[95]">console_test_complete_message_handler</a> from console.o(.text.console_test_complete_message_handler) referenced 2 times from console.o(.text.CU_console_run_tests)
+ <LI><a href="#[94]">console_test_start_message_handler</a> from console.o(.text.console_test_start_message_handler) referenced 2 times from console.o(.text.CU_console_run_tests)
+ <LI><a href="#[99]">fputc</a> from retarget.o(.text.fputc) referenced from printfa.o(i.__0fprintf)
+ <LI><a href="#[99]">fputc</a> from retarget.o(.text.fputc) referenced from printfa.o(i.__0printf)
+ <LI><a href="#[93]">main</a> from main.o(.text.main) referenced from entry9a.o(.ARM.Collect$$$$0000000B)
+</UL>
+<P>
+<H3>
+Global Symbols
+</H3>
+<P><STRONG><a name="[a3]"></a>__main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry.o(.ARM.Collect$$$$00000000))
+<BR><BR>[Called By]<UL><LI><a href="#[0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Reset_Handler
+</UL>
+
+<P><STRONG><a name="[135]"></a>_main_stk</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry4.o(.ARM.Collect$$$$00000003))
+
+<P><STRONG><a name="[a5]"></a>_main_scatterload</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry5.o(.ARM.Collect$$$$00000004))
+<BR><BR>[Calls]<UL><LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
+</UL>
+
+<P><STRONG><a name="[bc]"></a>__main_after_scatterload</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry5.o(.ARM.Collect$$$$00000004))
+<BR><BR>[Called By]<UL><LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
+</UL>
+
+<P><STRONG><a name="[136]"></a>_main_clock</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry7b.o(.ARM.Collect$$$$00000008))
+
+<P><STRONG><a name="[a7]"></a>_main_cpp_init$empty</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry8a.o(.ARM.Collect$$$$00000009))
+<BR><BR>[Stack]<UL><LI>Max Depth = 16 + Unknown Stack Size
+<LI>Call Chain = _main_cpp_init$empty &rArr; __cpp_initialize__aeabi_
+</UL>
+<BR>[Calls]<UL><LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__cpp_initialize__aeabi_
+</UL>
+
+<P><STRONG><a name="[137]"></a>_main_cpp_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry8b.o(.ARM.Collect$$$$0000000A))
+
+<P><STRONG><a name="[138]"></a>_main_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry9a.o(.ARM.Collect$$$$0000000B))
+
+<P><STRONG><a name="[139]"></a>__rt_final_cpp</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry10a.o(.ARM.Collect$$$$0000000D))
+
+<P><STRONG><a name="[13a]"></a>__rt_final_exit</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry11a.o(.ARM.Collect$$$$0000000F))
+
+<P><STRONG><a name="[b1]"></a>__rt_ctype_table</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, ctype_o.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strtol
+</UL>
+
+<P><STRONG><a name="[e6]"></a>toupper</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, toupper.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_compare_strings
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[125]"></a>tolower</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, tolower.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
+</UL>
+
+<P><STRONG><a name="[a9]"></a>__aeabi_memset</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
+<BR><BR>[Called By]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_memset$wrapper
+<LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
+</UL>
+
+<P><STRONG><a name="[13b]"></a>__aeabi_memset4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
+
+<P><STRONG><a name="[13c]"></a>__aeabi_memset8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
+
+<P><STRONG><a name="[a8]"></a>__aeabi_memclr</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
+</UL>
+
+<P><STRONG><a name="[e5]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_clear_previous_results
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
+<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_suite
+<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
+</UL>
+
+<P><STRONG><a name="[13d]"></a>__aeabi_memclr8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
+
+<P><STRONG><a name="[aa]"></a>_memset$wrapper</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, memseta.o(.text), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
+</UL>
+
+<P><STRONG><a name="[da]"></a>strlen</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, strlen.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_number_width
+</UL>
+
+<P><STRONG><a name="[db]"></a>strcpy</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, strcpy.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+</UL>
+
+<P><STRONG><a name="[ab]"></a>atol</STRONG> (Thumb, 26 bytes, Stack size 16 bytes, atol.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = atol &rArr; strtol &rArr; _strtoul
+</UL>
+<BR>[Calls]<UL><LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strtol
+<LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_errno_addr
+</UL>
+<BR>[Called By]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+</UL>
+
+<P><STRONG><a name="[a4]"></a>__cpp_initialize__aeabi_</STRONG> (Thumb, 24 bytes, Stack size 16 bytes, cpp_init.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = __cpp_initialize__aeabi_
+</UL>
+<BR>[Called By]<UL><LI><a href="#[a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_main_cpp_init$empty
+</UL>
+
+<P><STRONG><a name="[129]"></a>setjmp</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, setjmp.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = setjmp
+</UL>
+<BR>[Called By]<UL><LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_test
+</UL>
+
+<P><STRONG><a name="[e1]"></a>longjmp</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, setjmp.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
+</UL>
+
+<P><STRONG><a name="[13e]"></a>__aeabi_uidiv</STRONG> (Thumb, 0 bytes, Stack size 12 bytes, uidiv.o(.text), UNUSED)
+
+<P><STRONG><a name="[134]"></a>__aeabi_uidivmod</STRONG> (Thumb, 44 bytes, Stack size 12 bytes, uidiv.o(.text), UNUSED)
+<BR><BR>[Called By]<UL><LI><a href="#[12d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+</UL>
+
+<P><STRONG><a name="[ae]"></a>__aeabi_uldivmod</STRONG> (Thumb, 98 bytes, Stack size 40 bytes, uldiv.o(.text), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
+<LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+</UL>
+<BR>[Called By]<UL><LI><a href="#[12d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+<LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+</UL>
+
+<P><STRONG><a name="[ad]"></a>strtol</STRONG> (Thumb, 112 bytes, Stack size 32 bytes, strtol.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = strtol &rArr; _strtoul
+</UL>
+<BR>[Calls]<UL><LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_ctype_table
+<LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_strtoul
+<LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_errno_addr
+</UL>
+<BR>[Called By]<UL><LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atol
+</UL>
+
+<P><STRONG><a name="[13f]"></a>__I$use$fp</STRONG> (Thumb, 0 bytes, Stack size 48 bytes, iusefp.o(.text), UNUSED)
+
+<P><STRONG><a name="[b3]"></a>__aeabi_dadd</STRONG> (Thumb, 322 bytes, Stack size 48 bytes, dadd.o(.text), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_lasr
+<LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+<LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
+<LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
+</UL>
+<BR>[Called By]<UL><LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+<LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_drsub
+<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dsub
+</UL>
+
+<P><STRONG><a name="[b7]"></a>__aeabi_dsub</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, dadd.o(.text), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
+</UL>
+
+<P><STRONG><a name="[b8]"></a>__aeabi_drsub</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, dadd.o(.text), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
+</UL>
+
+<P><STRONG><a name="[b9]"></a>__aeabi_dmul</STRONG> (Thumb, 228 bytes, Stack size 48 bytes, dmul.o(.text), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
+</UL>
+<BR>[Called By]<UL><LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+</UL>
+
+<P><STRONG><a name="[ba]"></a>__aeabi_ddiv</STRONG> (Thumb, 222 bytes, Stack size 32 bytes, ddiv.o(.text), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
+</UL>
+<BR>[Called By]<UL><LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+</UL>
+
+<P><STRONG><a name="[bb]"></a>__aeabi_d2ulz</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, dfixul.o(.text), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
+<LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+</UL>
+<BR>[Called By]<UL><LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+</UL>
+
+<P><STRONG><a name="[131]"></a>__aeabi_cdrcmple</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, cdrcmple.o(.text), UNUSED)
+<BR><BR>[Called By]<UL><LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+</UL>
+
+<P><STRONG><a name="[a6]"></a>__scatterload</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, init.o(.text))
+<BR><BR>[Calls]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main_after_scatterload
+</UL>
+<BR>[Called By]<UL><LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_main_scatterload
+</UL>
+
+<P><STRONG><a name="[140]"></a>__scatterload_rt2</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, init.o(.text), UNUSED)
+
+<P><STRONG><a name="[b0]"></a>__aeabi_llsl</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, llshl.o(.text), UNUSED)
+<BR><BR>[Called By]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
+<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2ulz
+<LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
+<LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
+</UL>
+
+<P><STRONG><a name="[141]"></a>_ll_shift_l</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llshl.o(.text), UNUSED)
+
+<P><STRONG><a name="[af]"></a>__aeabi_llsr</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, llushr.o(.text), UNUSED)
+<BR><BR>[Called By]<UL><LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2ulz
+<LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
+<LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
+</UL>
+
+<P><STRONG><a name="[142]"></a>_ll_ushift_r</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llushr.o(.text), UNUSED)
+
+<P><STRONG><a name="[b4]"></a>__aeabi_lasr</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, llsshr.o(.text), UNUSED)
+<BR><BR>[Called By]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
+</UL>
+
+<P><STRONG><a name="[143]"></a>_ll_sshift_r</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llsshr.o(.text), UNUSED)
+
+<P><STRONG><a name="[b2]"></a>_strtoul</STRONG> (Thumb, 158 bytes, Stack size 40 bytes, _strtoul.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = _strtoul
+</UL>
+<BR>[Calls]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_chval
+<LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_errno_addr
+</UL>
+<BR>[Called By]<UL><LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strtol
+</UL>
+
+<P><STRONG><a name="[b6]"></a>_double_round</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, depilogue.o(.text), UNUSED)
+<BR><BR>[Called By]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
+<LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
+<LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
+</UL>
+
+<P><STRONG><a name="[b5]"></a>_double_epilogue</STRONG> (Thumb, 156 bytes, Stack size 32 bytes, depilogue.o(.text), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
+<LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+<LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
+</UL>
+<BR>[Called By]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
+<LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
+</UL>
+
+<P><STRONG><a name="[bd]"></a>_chval</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, _chval.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_strtoul
+</UL>
+
+<P><STRONG><a name="[9d]"></a>API_QSPI_Close</STRONG> (Thumb, 118 bytes, Stack size 24 bytes, qspi_cunit.o(.text.API_QSPI_Close))
+<BR><BR>[Stack]<UL><LI>Max Depth = 124<LI>Call Chain = API_QSPI_Close &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
+<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ResetQSPI
+<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_Close
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> qspi_cunit.o(.data.QSPI_ApiTests)
+</UL>
+<P><STRONG><a name="[9f]"></a>API_QSPI_EnableInt_DisableInt</STRONG> (Thumb, 1200 bytes, Stack size 80 bytes, qspi_cunit.o(.text.API_QSPI_EnableInt_DisableInt))
+<BR><BR>[Stack]<UL><LI>Max Depth = 180<LI>Call Chain = API_QSPI_EnableInt_DisableInt &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
+<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ResetQSPI
+<LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_DisableInt
+<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_EnableInt
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> qspi_cunit.o(.data.QSPI_ApiTests)
+</UL>
+<P><STRONG><a name="[9c]"></a>API_QSPI_Open</STRONG> (Thumb, 2098 bytes, Stack size 120 bytes, qspi_cunit.o(.text.API_QSPI_Open))
+<BR><BR>[Stack]<UL><LI>Max Depth = 284<LI>Call Chain = API_QSPI_Open &rArr; QSPI_Open &rArr; CheckQSPI1ClockSource &rArr; CLK_GetPCLK2Freq &rArr; CLK_GetHCLK0Freq &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
+<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ResetQSPI
+<LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_Open
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printf
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> qspi_cunit.o(.data.QSPI_ApiTests)
+</UL>
+<P><STRONG><a name="[9e]"></a>API_QSPI_SetBusClock_GetBusClock</STRONG> (Thumb, 388 bytes, Stack size 56 bytes, qspi_cunit.o(.text.API_QSPI_SetBusClock_GetBusClock))
+<BR><BR>[Stack]<UL><LI>Max Depth = 212<LI>Call Chain = API_QSPI_SetBusClock_GetBusClock &rArr; QSPI_SetBusClock &rArr; CheckQSPI1ClockSource &rArr; CLK_GetPCLK2Freq &rArr; CLK_GetHCLK0Freq &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
+<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ResetQSPI
+<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_GetBusClock
+<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_SetBusClock
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> qspi_cunit.o(.data.QSPI_ApiTests)
+</UL>
+<P><STRONG><a name="[c7]"></a>AddTests</STRONG> (Thumb, 116 bytes, Stack size 8 bytes, main.o(.text.AddTests))
+<BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = AddTests &rArr; CU_register_suites &rArr; CU_register_nsuites &rArr; CU_add_suite_with_setup_and_teardown &rArr; CU_compare_strings &rArr; __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_error_msg
+<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_suites
+<LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_is_test_running
+<LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fprintf
+</UL>
+<BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[10d]"></a>CLK_EnableModuleClock</STRONG> (Thumb, 150 bytes, Stack size 24 bytes, clk.o(.text.CLK_EnableModuleClock))
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = CLK_EnableModuleClock
+</UL>
+<BR>[Called By]<UL><LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DebugPort_Init
+<LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
+</UL>
+
+<P><STRONG><a name="[11d]"></a>CLK_EnableXtalRC</STRONG> (Thumb, 24 bytes, Stack size 4 bytes, clk.o(.text.CLK_EnableXtalRC))
+<BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = CLK_EnableXtalRC
+</UL>
+<BR>[Called By]<UL><LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
+</UL>
+
+<P><STRONG><a name="[10a]"></a>CLK_GetAPLL0ClockFreq</STRONG> (Thumb, 202 bytes, Stack size 28 bytes, clk.o(.text.CLK_GetAPLL0ClockFreq))
+<BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Called By]<UL><LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CheckQSPI1ClockSource
+<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CheckQSPI0ClockSource
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClockUpdate
+</UL>
+
+<P><STRONG><a name="[cf]"></a>CLK_GetHCLK0Freq</STRONG> (Thumb, 44 bytes, Stack size 24 bytes, clk.o(.text.CLK_GetHCLK0Freq))
+<BR><BR>[Stack]<UL><LI>Max Depth = 92<LI>Call Chain = CLK_GetHCLK0Freq &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClockUpdate
+</UL>
+<BR>[Called By]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK2Freq
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK1Freq
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK0Freq
+</UL>
+
+<P><STRONG><a name="[120]"></a>CLK_GetMIRCFreq</STRONG> (Thumb, 146 bytes, Stack size 8 bytes, clk.o(.text.CLK_GetMIRCFreq))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = CLK_GetMIRCFreq
+</UL>
+<BR>[Called By]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClockUpdate
+</UL>
+
+<P><STRONG><a name="[d1]"></a>CLK_GetPCLK0Freq</STRONG> (Thumb, 40 bytes, Stack size 16 bytes, clk.o(.text.CLK_GetPCLK0Freq))
+<BR><BR>[Stack]<UL><LI>Max Depth = 108<LI>Call Chain = CLK_GetPCLK0Freq &rArr; CLK_GetHCLK0Freq &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetHCLK0Freq
+</UL>
+<BR>[Called By]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CheckQSPI0ClockSource
+<LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SelectPCLKxSourceOfQSPI
+</UL>
+
+<P><STRONG><a name="[d2]"></a>CLK_GetPCLK1Freq</STRONG> (Thumb, 42 bytes, Stack size 16 bytes, clk.o(.text.CLK_GetPCLK1Freq))
+<BR><BR>[Stack]<UL><LI>Max Depth = 108<LI>Call Chain = CLK_GetPCLK1Freq &rArr; CLK_GetHCLK0Freq &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetHCLK0Freq
+</UL>
+<BR>[Called By]<UL><LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SelectPCLKxSourceOfQSPI
+</UL>
+
+<P><STRONG><a name="[d3]"></a>CLK_GetPCLK2Freq</STRONG> (Thumb, 44 bytes, Stack size 16 bytes, clk.o(.text.CLK_GetPCLK2Freq))
+<BR><BR>[Stack]<UL><LI>Max Depth = 108<LI>Call Chain = CLK_GetPCLK2Freq &rArr; CLK_GetHCLK0Freq &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetHCLK0Freq
+</UL>
+<BR>[Called By]<UL><LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CheckQSPI1ClockSource
+</UL>
+
+<P><STRONG><a name="[d4]"></a>CLK_GetSCLKFreq</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, clk.o(.text.CLK_GetSCLKFreq))
+<BR><BR>[Stack]<UL><LI>Max Depth = 76<LI>Call Chain = CLK_GetSCLKFreq &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClockUpdate
+</UL>
+<BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_SetBusClock
+<LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_Open
+</UL>
+
+<P><STRONG><a name="[10e]"></a>CLK_SetModuleClock</STRONG> (Thumb, 250 bytes, Stack size 32 bytes, clk.o(.text.CLK_SetModuleClock))
+<BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = CLK_SetModuleClock
+</UL>
+<BR>[Called By]<UL><LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DebugPort_Init
+</UL>
+
+<P><STRONG><a name="[d5]"></a>CLK_SetSCLK</STRONG> (Thumb, 486 bytes, Stack size 24 bytes, clk.o(.text.CLK_SetSCLK))
+<BR><BR>[Stack]<UL><LI>Max Depth = 108<LI>Call Chain = CLK_SetSCLK &rArr; SystemCoreClockUpdate &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_WaitClockReady
+<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemCoreClockUpdate
+</UL>
+<BR>[Called By]<UL><LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
+</UL>
+
+<P><STRONG><a name="[d6]"></a>CLK_WaitClockReady</STRONG> (Thumb, 68 bytes, Stack size 12 bytes, clk.o(.text.CLK_WaitClockReady))
+<BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = CLK_WaitClockReady
+</UL>
+<BR>[Called By]<UL><LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_SetSCLK
+</UL>
+
+<P><STRONG><a name="[d8]"></a>CU_add_suite_with_setup_and_teardown</STRONG> (Thumb, 350 bytes, Stack size 40 bytes, testdb.o(.text.CU_add_suite_with_setup_and_teardown))
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = CU_add_suite_with_setup_and_teardown &rArr; CU_compare_strings &rArr; __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_compare_strings
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_is_test_running
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+</UL>
+<BR>[Called By]<UL><LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_nsuites
+</UL>
+
+<P><STRONG><a name="[df]"></a>CU_add_test</STRONG> (Thumb, 330 bytes, Stack size 24 bytes, testdb.o(.text.CU_add_test))
+<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = CU_add_test &rArr; CU_compare_strings &rArr; __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_compare_strings
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_is_test_running
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+</UL>
+<BR>[Called By]<UL><LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_nsuites
+</UL>
+
+<P><STRONG><a name="[bf]"></a>CU_assertImplementation</STRONG> (Thumb, 140 bytes, Stack size 40 bytes, testrun.o(.text.CU_assertImplementation))
+<BR><BR>[Stack]<UL><LI>Max Depth = 100<LI>Call Chain = CU_assertImplementation &rArr; add_failure &rArr; malloc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;longjmp
+</UL>
+<BR>[Called By]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_QSPI_EnableInt_DisableInt
+<LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_QSPI_SetBusClock_GetBusClock
+<LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_QSPI_Close
+<LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_QSPI_Open
+<LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MACRO_QSPI_IS_BUSY
+</UL>
+
+<P><STRONG><a name="[e2]"></a>CU_cleanup_registry</STRONG> (Thumb, 56 bytes, Stack size 8 bytes, testdb.o(.text.CU_cleanup_registry))
+<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = CU_cleanup_registry &rArr; CU_destroy_existing_registry &rArr; __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_clear_previous_results
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_destroy_existing_registry
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_is_test_running
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+</UL>
+<BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[e4]"></a>CU_clear_previous_results</STRONG> (Thumb, 86 bytes, Stack size 16 bytes, testrun.o(.text.CU_clear_previous_results))
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = CU_clear_previous_results &rArr; free
+</UL>
+<BR>[Calls]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+</UL>
+<BR>[Called By]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
+</UL>
+
+<P><STRONG><a name="[dc]"></a>CU_compare_strings</STRONG> (Thumb, 108 bytes, Stack size 24 bytes, util.o(.text.CU_compare_strings))
+<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = CU_compare_strings &rArr; __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toupper
+</UL>
+<BR>[Called By]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_test_by_name
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+</UL>
+
+<P><STRONG><a name="[e7]"></a>CU_console_run_tests</STRONG> (Thumb, 1024 bytes, Stack size 48 bytes, console.o(.text.CU_console_run_tests))
+<BR><BR>[Stack]<UL><LI>Max Depth = 404<LI>Call Chain = CU_console_run_tests &rArr; CU_run_all_tests &rArr; run_single_suite &rArr; run_single_test &rArr; add_failure &rArr; malloc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
+<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_suite
+<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_test_active
+<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
+<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_suite_active
+<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_suite_cleanup_failure_handler
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_suite_init_failure_handler
+<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_all_test_complete_handler
+<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_test_complete_handler
+<LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_test_start_handler
+<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
+<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_failures
+<LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toupper
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getc
+</UL>
+<BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[e3]"></a>CU_destroy_existing_registry</STRONG> (Thumb, 136 bytes, Stack size 32 bytes, testdb.o(.text.CU_destroy_existing_registry))
+<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = CU_destroy_existing_registry &rArr; __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+</UL>
+<BR>[Called By]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
+</UL>
+
+<P><STRONG><a name="[105]"></a>CU_get_error</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, cuerror.o(.text.CU_get_error))
+<BR><BR>[Called By]<UL><LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_nsuites
+</UL>
+
+<P><STRONG><a name="[107]"></a>CU_get_error_action</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, cuerror.o(.text.CU_get_error_action))
+<BR><BR>[Called By]<UL><LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
+</UL>
+
+<P><STRONG><a name="[cc]"></a>CU_get_error_msg</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, cuerror.o(.text.CU_get_error_msg))
+<BR><BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AddTests
+</UL>
+
+<P><STRONG><a name="[124]"></a>CU_get_fail_on_inactive</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_get_fail_on_inactive))
+<BR><BR>[Called By]<UL><LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
+</UL>
+
+<P><STRONG><a name="[12b]"></a>CU_get_failure_list</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_get_failure_list))
+<BR><BR>[Called By]<UL><LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_failures
+</UL>
+
+<P><STRONG><a name="[c8]"></a>CU_get_registry</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testdb.o(.text.CU_get_registry))
+<BR><BR>[Called By]<UL><LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AddTests
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
+</UL>
+
+<P><STRONG><a name="[fa]"></a>CU_get_run_results_string</STRONG> (Thumb, 2240 bytes, Stack size 336 bytes, testrun.o(.text.CU_get_run_results_string))
+<BR><BR>[Stack]<UL><LI>Max Depth = 424<LI>Call Chain = CU_get_run_results_string &rArr; CU_number_width &rArr; __2snprintf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_number_width
+<LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
+<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2snprintf
+</UL>
+<BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
+</UL>
+
+<P><STRONG><a name="[fd]"></a>CU_get_suite_by_index</STRONG> (Thumb, 118 bytes, Stack size 8 bytes, testdb.o(.text.CU_get_suite_by_index))
+<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = CU_get_suite_by_index &rArr; __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+</UL>
+<BR>[Called By]<UL><LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+</UL>
+
+<P><STRONG><a name="[fe]"></a>CU_get_test_by_index</STRONG> (Thumb, 106 bytes, Stack size 8 bytes, testdb.o(.text.CU_get_test_by_index))
+<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = CU_get_test_by_index &rArr; __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+</UL>
+<BR>[Called By]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+</UL>
+
+<P><STRONG><a name="[ff]"></a>CU_get_test_by_name</STRONG> (Thumb, 88 bytes, Stack size 16 bytes, testdb.o(.text.CU_get_test_by_name))
+<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = CU_get_test_by_name &rArr; CU_compare_strings &rArr; __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_compare_strings
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+</UL>
+<BR>[Called By]<UL><LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
+</UL>
+
+<P><STRONG><a name="[100]"></a>CU_initialize_registry</STRONG> (Thumb, 136 bytes, Stack size 16 bytes, testdb.o(.text.CU_initialize_registry))
+<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = CU_initialize_registry &rArr; CU_destroy_existing_registry &rArr; __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_clear_previous_results
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_destroy_existing_registry
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_is_test_running
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
+</UL>
+<BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[ca]"></a>CU_is_test_running</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_is_test_running))
+<BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AddTests
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
+</UL>
+
+<P><STRONG><a name="[fb]"></a>CU_number_width</STRONG> (Thumb, 36 bytes, Stack size 48 bytes, util.o(.text.CU_number_width))
+<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = CU_number_width &rArr; __2snprintf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2snprintf
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+</UL>
+<BR>[Called By]<UL><LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
+</UL>
+
+<P><STRONG><a name="[101]"></a>CU_print_run_results</STRONG> (Thumb, 64 bytes, Stack size 16 bytes, testrun.o(.text.CU_print_run_results))
+<BR><BR>[Stack]<UL><LI>Max Depth = 440<LI>Call Chain = CU_print_run_results &rArr; CU_get_run_results_string &rArr; CU_number_width &rArr; __2snprintf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
+<LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputs
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
+</UL>
+<BR>[Called By]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_all_tests_complete_message_handler
+</UL>
+
+<P><STRONG><a name="[104]"></a>CU_register_nsuites</STRONG> (Thumb, 118 bytes, Stack size 48 bytes, testdb.o(.text.CU_register_nsuites))
+<BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = CU_register_nsuites &rArr; CU_add_suite_with_setup_and_teardown &rArr; CU_compare_strings &rArr; __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_error
+</UL>
+<BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_suites
+</UL>
+
+<P><STRONG><a name="[cb]"></a>CU_register_suites</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, testdb.o(.text.CU_register_suites))
+<BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = CU_register_suites &rArr; CU_register_nsuites &rArr; CU_add_suite_with_setup_and_teardown &rArr; CU_compare_strings &rArr; __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_nsuites
+</UL>
+<BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AddTests
+</UL>
+
+<P><STRONG><a name="[f4]"></a>CU_run_all_tests</STRONG> (Thumb, 264 bytes, Stack size 40 bytes, testrun.o(.text.CU_run_all_tests))
+<BR><BR>[Stack]<UL><LI>Max Depth = 356<LI>Call Chain = CU_run_all_tests &rArr; run_single_suite &rArr; run_single_test &rArr; add_failure &rArr; malloc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_error_action
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
+</UL>
+<BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[f8]"></a>CU_run_suite</STRONG> (Thumb, 216 bytes, Stack size 32 bytes, testrun.o(.text.CU_run_suite))
+<BR><BR>[Stack]<UL><LI>Max Depth = 348<LI>Call Chain = CU_run_suite &rArr; run_single_suite &rArr; run_single_test &rArr; add_failure &rArr; malloc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
+</UL>
+<BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[f9]"></a>CU_run_test</STRONG> (Thumb, 536 bytes, Stack size 48 bytes, testrun.o(.text.CU_run_test))
+<BR><BR>[Stack]<UL><LI>Max Depth = 316<LI>Call Chain = CU_run_test &rArr; run_single_test &rArr; add_failure &rArr; malloc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_test_by_name
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_test
+</UL>
+<BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[eb]"></a>CU_set_all_test_complete_handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_all_test_complete_handler))
+<BR><BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[de]"></a>CU_set_error</STRONG> (Thumb, 80 bytes, Stack size 8 bytes, cuerror.o(.text.CU_set_error))
+<BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = CU_set_error &rArr; __2fprintf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+</UL>
+<BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
+<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_suite
+<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_test_active
+<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
+<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_suite_active
+<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
+</UL>
+
+<P><STRONG><a name="[126]"></a>CU_set_fail_on_inactive</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_fail_on_inactive))
+<BR><BR>[Called By]<UL><LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
+</UL>
+
+<P><STRONG><a name="[f0]"></a>CU_set_suite_active</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, testdb.o(.text.CU_set_suite_active))
+<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = CU_set_suite_active &rArr; CU_set_error &rArr; __2fprintf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+</UL>
+<BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[ed]"></a>CU_set_suite_cleanup_failure_handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_suite_cleanup_failure_handler))
+<BR><BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[ec]"></a>CU_set_suite_init_failure_handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_suite_init_failure_handler))
+<BR><BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[f5]"></a>CU_set_test_active</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, testdb.o(.text.CU_set_test_active))
+<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = CU_set_test_active &rArr; CU_set_error &rArr; __2fprintf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+</UL>
+<BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[ea]"></a>CU_set_test_complete_handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_test_complete_handler))
+<BR><BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[e9]"></a>CU_set_test_start_handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_test_start_handler))
+<BR><BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[10c]"></a>DebugPort_Init</STRONG> (Thumb, 100 bytes, Stack size 16 bytes, main.o(.text.DebugPort_Init))
+<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = DebugPort_Init &rArr; CLK_SetModuleClock
+</UL>
+<BR>[Calls]<UL><LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_EnableModuleClock
+<LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_SetModuleClock
+</UL>
+<BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[79]"></a>ACMP01_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[7a]"></a>ACMP23_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[8e]"></a>AWF_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[b]"></a>BODOUT_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[31]"></a>BPWM0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[32]"></a>BPWM1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[29]"></a>BRAKE0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[2d]"></a>BRAKE1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[4]"></a>BusFault_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[75]"></a>CANFD00_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[76]"></a>CANFD01_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[77]"></a>CANFD10_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[78]"></a>CANFD11_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[73]"></a>CCAP_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[f]"></a>CKFAIL_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[7b]"></a>CRC_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[74]"></a>CRYPTO_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[85]"></a>DAC01_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[69]"></a>DMIC0VAD_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[68]"></a>DMIC0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[8]"></a>DebugMon_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[144]"></a>Default_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler), UNUSED)
+
+<P><STRONG><a name="[7c]"></a>EADC00_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[7d]"></a>EADC01_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[7e]"></a>EADC02_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[7f]"></a>EADC03_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[80]"></a>EADC10_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[81]"></a>EADC11_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[82]"></a>EADC12_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[83]"></a>EADC13_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[8a]"></a>ECAP0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[8b]"></a>ECAP1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[8c]"></a>ECAP2_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[8d]"></a>ECAP3_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[19]"></a>EINT0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[1a]"></a>EINT1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[1b]"></a>EINT2_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[1c]"></a>EINT3_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[1d]"></a>EINT4_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[1e]"></a>EINT5_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[5b]"></a>EINT6_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[5c]"></a>EINT7_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[47]"></a>EMAC0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[2a]"></a>EPWM0P0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[2b]"></a>EPWM0P1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[2c]"></a>EPWM0P2_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[2e]"></a>EPWM1P0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[2f]"></a>EPWM1P1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[30]"></a>EPWM1P2_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[86]"></a>EQEI0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[87]"></a>EQEI1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[88]"></a>EQEI2_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[89]"></a>EQEI3_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[90]"></a>ETI_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[91]"></a>GDMACH0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[92]"></a>GDMACH1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[1f]"></a>GPA_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[20]"></a>GPB_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[21]"></a>GPC_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[22]"></a>GPD_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[23]"></a>GPE_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[24]"></a>GPF_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[25]"></a>GPG_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[26]"></a>GPH_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[27]"></a>GPI_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[28]"></a>GPJ_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[46]"></a>HSOTG_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[45]"></a>HSUSBD_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[44]"></a>HSUSBH_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[5e]"></a>I2C0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[5f]"></a>I2C1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[60]"></a>I2C2_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[61]"></a>I2C3_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[6a]"></a>I2S0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[6b]"></a>I2S1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[6d]"></a>I3C0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[c]"></a>IRC_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[10]"></a>ISP_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[70]"></a>KPI_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[37]"></a>KS_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[84]"></a>LPADC0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[62]"></a>LPI2C0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[35]"></a>LPPDMA_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[4e]"></a>LPSPI0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[3c]"></a>LPTMR0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[3d]"></a>LPTMR1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[5d]"></a>LPUART0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[3]"></a>MemManage_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[1]"></a>NMI_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[18]"></a>NPU_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[6e]"></a>OTFC0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[6f]"></a>OTFC1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[33]"></a>PDMA0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[34]"></a>PDMA1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[d]"></a>PMC_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[67]"></a>PSIO_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[9]"></a>PendSV_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[48]"></a>QSPI0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[49]"></a>QSPI1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[12]"></a>RTCTAMPER_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[11]"></a>RTC_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[64]"></a>SC0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[65]"></a>SC1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[66]"></a>SC2_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[36]"></a>SCU_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[71]"></a>SDH0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[72]"></a>SDH1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[4a]"></a>SPI0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[4b]"></a>SPI1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[4c]"></a>SPI2_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[4d]"></a>SPI3_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[4f]"></a>SPIM0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[50]"></a>SPIM1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[e]"></a>SRAMPERR_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[7]"></a>SVC_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[6]"></a>SecureFault_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[a]"></a>SysTick_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[15]"></a>TAMPER_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[38]"></a>TIMER0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[39]"></a>TIMER1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[3a]"></a>TIMER2_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[3b]"></a>TIMER3_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[6c]"></a>TRNG_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[3e]"></a>TTMR0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[3f]"></a>TTMR1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[51]"></a>UART0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[52]"></a>UART1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[53]"></a>UART2_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[54]"></a>UART3_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[55]"></a>UART4_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[56]"></a>UART5_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[57]"></a>UART6_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[58]"></a>UART7_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[59]"></a>UART8_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[5a]"></a>UART9_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[42]"></a>USBD_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[40]"></a>USBH0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[41]"></a>USBH1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[43]"></a>USBOTG_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[63]"></a>USCI0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[8f]"></a>UTCPD_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[5]"></a>UsageFault_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[13]"></a>WDT0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[16]"></a>WDT1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[14]"></a>WWDT0_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[17]"></a>WWDT1_IRQHandler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, startup_tc8263.o(.text.Default_Handler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[114]"></a>GetTestSPIName</STRONG> (Thumb, 58 bytes, Stack size 12 bytes, qspi_cunit.o(.text.GetTestSPIName))
+<BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = GetTestSPIName
+</UL>
+<BR>[Called By]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_CLK_Sel
+</UL>
+
+<P><STRONG><a name="[2]"></a>HardFault_Handler</STRONG> (Thumb, 138 bytes, Stack size 32 bytes, startup_tc8263.o(.text.HardFault_Handler))
+<BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = HardFault_Handler &rArr; ProcessHardFault &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ProcessHardFault
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printf
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[a0]"></a>MACRO_QSPI_IS_BUSY</STRONG> (Thumb, 124 bytes, Stack size 24 bytes, qspi_cunit.o(.text.MACRO_QSPI_IS_BUSY))
+<BR><BR>[Stack]<UL><LI>Max Depth = 124<LI>Call Chain = MACRO_QSPI_IS_BUSY &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
+<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ResetQSPI
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> qspi_cunit.o(.data.QSPI_MacroTests)
+</UL>
+<P><STRONG><a name="[10f]"></a>ProcessHardFault</STRONG> (Thumb, 654 bytes, Stack size 56 bytes, retarget.o(.text.ProcessHardFault))
+<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = ProcessHardFault &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printf
+</UL>
+<BR>[Called By]<UL><LI><a href="#[2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HardFault_Handler
+</UL>
+
+<P><STRONG><a name="[112]"></a>QSPI0_SetClkSrc</STRONG> (Thumb, 196 bytes, Stack size 8 bytes, qspi_cunit.o(.text.QSPI0_SetClkSrc))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = QSPI0_SetClkSrc
+</UL>
+<BR>[Called By]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_CLK_Sel
+</UL>
+
+<P><STRONG><a name="[113]"></a>QSPI1_SetClkSrc</STRONG> (Thumb, 208 bytes, Stack size 8 bytes, qspi_cunit.o(.text.QSPI1_SetClkSrc))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = QSPI1_SetClkSrc
+</UL>
+<BR>[Called By]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_CLK_Sel
+</UL>
+
+<P><STRONG><a name="[110]"></a>QSPI_CLK_Sel</STRONG> (Thumb, 114 bytes, Stack size 32 bytes, qspi_cunit.o(.text.QSPI_CLK_Sel))
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = QSPI_CLK_Sel &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_ClkEnable
+<LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI0_SetClkSrc
+<LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI1_SetClkSrc
+<LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetTestSPIName
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printf
+</UL>
+<BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_Tests_Init
+</UL>
+
+<P><STRONG><a name="[118]"></a>QSPI_ClkDisable</STRONG> (Thumb, 60 bytes, Stack size 8 bytes, qspi_cunit.o(.text.QSPI_ClkDisable))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = QSPI_ClkDisable
+</UL>
+<BR>[Called By]<UL><LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_Tests_Clean
+</UL>
+
+<P><STRONG><a name="[111]"></a>QSPI_ClkEnable</STRONG> (Thumb, 60 bytes, Stack size 8 bytes, qspi_cunit.o(.text.QSPI_ClkEnable))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = QSPI_ClkEnable
+</UL>
+<BR>[Called By]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_CLK_Sel
+</UL>
+
+<P><STRONG><a name="[be]"></a>QSPI_Close</STRONG> (Thumb, 104 bytes, Stack size 16 bytes, qspi.o(.text.QSPI_Close))
+<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = QSPI_Close &rArr; SYS_UnlockReg
+</UL>
+<BR>[Calls]<UL><LI><a href="#[116]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_LockReg
+<LI><a href="#[115]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_UnlockReg
+</UL>
+<BR>[Called By]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_QSPI_Close
+</UL>
+
+<P><STRONG><a name="[c2]"></a>QSPI_DisableInt</STRONG> (Thumb, 270 bytes, Stack size 8 bytes, qspi.o(.text.QSPI_DisableInt))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = QSPI_DisableInt
+</UL>
+<BR>[Called By]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_QSPI_EnableInt_DisableInt
+</UL>
+
+<P><STRONG><a name="[c1]"></a>QSPI_EnableInt</STRONG> (Thumb, 270 bytes, Stack size 8 bytes, qspi.o(.text.QSPI_EnableInt))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = QSPI_EnableInt
+</UL>
+<BR>[Called By]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_QSPI_EnableInt_DisableInt
+</UL>
+
+<P><STRONG><a name="[c6]"></a>QSPI_GetBusClock</STRONG> (Thumb, 80 bytes, Stack size 24 bytes, qspi.o(.text.QSPI_GetBusClock))
+<BR><BR>[Stack]<UL><LI>Max Depth = 148<LI>Call Chain = QSPI_GetBusClock &rArr; CheckQSPI1ClockSource &rArr; CLK_GetPCLK2Freq &rArr; CLK_GetHCLK0Freq &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CheckQSPI1ClockSource
+<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CheckQSPI0ClockSource
+</UL>
+<BR>[Called By]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_QSPI_SetBusClock_GetBusClock
+</UL>
+
+<P><STRONG><a name="[c3]"></a>QSPI_Open</STRONG> (Thumb, 374 bytes, Stack size 40 bytes, qspi.o(.text.QSPI_Open))
+<BR><BR>[Stack]<UL><LI>Max Depth = 164<LI>Call Chain = QSPI_Open &rArr; CheckQSPI1ClockSource &rArr; CLK_GetPCLK2Freq &rArr; CLK_GetHCLK0Freq &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CheckQSPI1ClockSource
+<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CheckQSPI0ClockSource
+<LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SelectPCLKxSourceOfQSPI
+<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetSCLKFreq
+</UL>
+<BR>[Called By]<UL><LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_QSPI_Open
+</UL>
+
+<P><STRONG><a name="[c5]"></a>QSPI_SetBusClock</STRONG> (Thumb, 266 bytes, Stack size 32 bytes, qspi.o(.text.QSPI_SetBusClock))
+<BR><BR>[Stack]<UL><LI>Max Depth = 156<LI>Call Chain = QSPI_SetBusClock &rArr; CheckQSPI1ClockSource &rArr; CLK_GetPCLK2Freq &rArr; CLK_GetHCLK0Freq &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CheckQSPI1ClockSource
+<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CheckQSPI0ClockSource
+<LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SelectPCLKxSourceOfQSPI
+<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetSCLKFreq
+</UL>
+<BR>[Called By]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_QSPI_SetBusClock_GetBusClock
+</UL>
+
+<P><STRONG><a name="[a2]"></a>QSPI_Tests_Clean</STRONG> (Thumb, 24 bytes, Stack size 16 bytes, qspi_cunit.o(.text.QSPI_Tests_Clean))
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = QSPI_Tests_Clean &rArr; QSPI_ClkDisable
+</UL>
+<BR>[Calls]<UL><LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_ClkDisable
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> qspi_cunit.o(.data.suites)
+</UL>
+<P><STRONG><a name="[a1]"></a>QSPI_Tests_Init</STRONG> (Thumb, 30 bytes, Stack size 16 bytes, qspi_cunit.o(.text.QSPI_Tests_Init))
+<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = QSPI_Tests_Init &rArr; QSPI_CLK_Sel &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_CLK_Sel
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> qspi_cunit.o(.data.suites)
+</UL>
+<P><STRONG><a name="[c0]"></a>ResetQSPI</STRONG> (Thumb, 104 bytes, Stack size 16 bytes, qspi_cunit.o(.text.ResetQSPI))
+<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = ResetQSPI &rArr; SYS_UnlockReg
+</UL>
+<BR>[Calls]<UL><LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_LockReg
+<LI><a href="#[119]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_UnlockReg
+</UL>
+<BR>[Called By]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_QSPI_EnableInt_DisableInt
+<LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_QSPI_SetBusClock_GetBusClock
+<LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_QSPI_Close
+<LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_QSPI_Open
+<LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MACRO_QSPI_IS_BUSY
+</UL>
+
+<P><STRONG><a name="[0]"></a>Reset_Handler</STRONG> (Thumb, 220 bytes, Stack size 24 bytes, startup_tc8263.o(.text.Reset_Handler))
+<BR><BR>[Stack]<UL><LI>Max Depth = 24 + Unknown Stack Size
+<LI>Call Chain = Reset_Handler
+</UL>
+<BR>[Calls]<UL><LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> startup_tc8263.o(RESET)
+</UL>
+<P><STRONG><a name="[11b]"></a>SYS_Init</STRONG> (Thumb, 318 bytes, Stack size 48 bytes, main.o(.text.SYS_Init))
+<BR><BR>[Stack]<UL><LI>Max Depth = 156<LI>Call Chain = SYS_Init &rArr; CLK_SetSCLK &rArr; SystemCoreClockUpdate &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_UnlockReg
+<LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_EnableModuleClock
+<LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_EnableXtalRC
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_SetSCLK
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_WaitClockReady
+<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemCoreClockUpdate
+</UL>
+<BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[d0]"></a>SystemClockUpdate</STRONG> (Thumb, 132 bytes, Stack size 40 bytes, clk.o(.text.SystemClockUpdate))
+<BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetAPLL0ClockFreq
+<LI><a href="#[120]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetMIRCFreq
+</UL>
+<BR>[Called By]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetSCLKFreq
+<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetHCLK0Freq
+<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemCoreClockUpdate
+</UL>
+
+<P><STRONG><a name="[d7]"></a>SystemCoreClockUpdate</STRONG> (Thumb, 86 bytes, Stack size 16 bytes, system_tc8263.o(.text.SystemCoreClockUpdate))
+<BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = SystemCoreClockUpdate &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClockUpdate
+</UL>
+<BR>[Called By]<UL><LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_SetSCLK
+</UL>
+
+<P><STRONG><a name="[9b]"></a>SystemInit</STRONG> (Thumb, 84 bytes, Stack size 0 bytes, system_tc8263.o(.text.SystemInit))
+<BR>[Address Reference Count : 1]<UL><LI> system_tc8263.o(.init_array)
+</UL>
+<P><STRONG><a name="[c9]"></a>__aeabi_assert</STRONG> (Thumb, 30 bytes, Stack size 16 bytes, main.o(.text.__aeabi_assert))
+<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[121]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abort
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printf
+</UL>
+<BR>[Called By]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_test_by_name
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_compare_strings
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_destroy_existing_registry
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_test_by_index
+<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_suite_by_index
+<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
+<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
+<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_suite_cleanup_failure_message_handler
+<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_suite_init_failure_message_handler
+<LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_test_start_message_handler
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
+<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AddTests
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
+<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_test
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
+</UL>
+
+<P><STRONG><a name="[121]"></a>abort</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, retarget.o(.text.abort))
+<BR><BR>[Called By]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+</UL>
+
+<P><STRONG><a name="[ce]"></a>exit</STRONG> (Thumb, 18 bytes, Stack size 4 bytes, main.o(.text.exit))
+<BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = exit
+</UL>
+<BR>[Called By]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AddTests
+<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[127]"></a>fgetc</STRONG> (Thumb, 44 bytes, Stack size 24 bytes, retarget.o(.text.fgetc))
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = fgetc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[128]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetChar
+</UL>
+<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getc
+<LI><a href="#[12a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fgets
+</UL>
+
+<P><STRONG><a name="[99]"></a>fputc</STRONG> (Thumb, 20 bytes, Stack size 16 bytes, retarget.o(.text.fputc))
+<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = fputc &rArr; SendChar &rArr; SendChar_ToUART
+</UL>
+<BR>[Calls]<UL><LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendChar
+</UL>
+<BR>[Called By]<UL><LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
+<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_failures
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<LI><a href="#[123]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;putchar
+<LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
+<LI><a href="#[122]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;puts
+<LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputs
+</UL>
+<BR>[Address Reference Count : 2]<UL><LI> printfa.o(i.__0fprintf)
+<LI> printfa.o(i.__0printf)
+</UL>
+<P><STRONG><a name="[93]"></a>main</STRONG> (Thumb, 84 bytes, Stack size 16 bytes, main.o(.text.main))
+<BR><BR>[Stack]<UL><LI>Max Depth = 420<LI>Call Chain = main &rArr; CU_console_run_tests &rArr; CU_run_all_tests &rArr; run_single_suite &rArr; run_single_test &rArr; add_failure &rArr; malloc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AddTests
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
+<LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DebugPort_Init
+<LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fprintf
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
+</UL>
+<P><STRONG><a name="[12c]"></a>__0fprintf</STRONG> (Thumb, 22 bytes, Stack size 24 bytes, printfa.o(i.__0fprintf), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[12d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+</UL>
+
+<P><STRONG><a name="[145]"></a>__1fprintf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0fprintf), UNUSED)
+
+<P><STRONG><a name="[e8]"></a>__2fprintf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0fprintf))
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = __2fprintf
+</UL>
+<BR>[Called By]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
+<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_failures
+<LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_suite_cleanup_failure_message_handler
+<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_suite_init_failure_message_handler
+<LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_test_start_message_handler
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[146]"></a>__c89fprintf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0fprintf), UNUSED)
+
+<P><STRONG><a name="[cd]"></a>fprintf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0fprintf))
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = fprintf
+</UL>
+<BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AddTests
+<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[12e]"></a>__0printf</STRONG> (Thumb, 22 bytes, Stack size 24 bytes, printfa.o(i.__0printf), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[12d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+</UL>
+
+<P><STRONG><a name="[147]"></a>__1printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0printf), UNUSED)
+
+<P><STRONG><a name="[148]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0printf), UNUSED)
+
+<P><STRONG><a name="[149]"></a>__c89printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0printf), UNUSED)
+
+<P><STRONG><a name="[c4]"></a>printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0printf))
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = printf
+</UL>
+<BR>[Called By]<UL><LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_QSPI_Open
+<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_CLK_Sel
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ProcessHardFault
+<LI><a href="#[2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HardFault_Handler
+</UL>
+
+<P><STRONG><a name="[12f]"></a>__0snprintf</STRONG> (Thumb, 48 bytes, Stack size 40 bytes, printfa.o(i.__0snprintf), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[12d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+</UL>
+
+<P><STRONG><a name="[14a]"></a>__1snprintf</STRONG> (Thumb, 0 bytes, Stack size 40 bytes, printfa.o(i.__0snprintf), UNUSED)
+
+<P><STRONG><a name="[fc]"></a>__2snprintf</STRONG> (Thumb, 0 bytes, Stack size 40 bytes, printfa.o(i.__0snprintf))
+<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = __2snprintf
+</UL>
+<BR>[Called By]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_number_width
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
+</UL>
+
+<P><STRONG><a name="[14b]"></a>__c89snprintf</STRONG> (Thumb, 0 bytes, Stack size 40 bytes, printfa.o(i.__0snprintf), UNUSED)
+
+<P><STRONG><a name="[14c]"></a>snprintf</STRONG> (Thumb, 0 bytes, Stack size 40 bytes, printfa.o(i.__0snprintf), UNUSED)
+
+<P><STRONG><a name="[ac]"></a>__aeabi_errno_addr</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, errno.o(i.__aeabi_errno_addr))
+<BR><BR>[Called By]<UL><LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atol
+<LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_strtoul
+<LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strtol
+</UL>
+
+<P><STRONG><a name="[14d]"></a>__rt_errno_addr</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, errno.o(i.__aeabi_errno_addr), UNUSED)
+
+<P><STRONG><a name="[dd]"></a>free</STRONG> (Thumb, 76 bytes, Stack size 8 bytes, malloc2.o(i.__free$2region))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = free
+</UL>
+<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_clear_previous_results
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_destroy_existing_registry
+<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
+<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_suite
+<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
+</UL>
+
+<P><STRONG><a name="[d9]"></a>malloc</STRONG> (Thumb, 92 bytes, Stack size 20 bytes, malloc2.o(i.__malloc$2region))
+<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = malloc
+</UL>
+<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
+</UL>
+
+<P><STRONG><a name="[14e]"></a>__scatterload_copy</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_copy), UNUSED)
+
+<P><STRONG><a name="[14f]"></a>__scatterload_null</STRONG> (Thumb, 2 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_null), UNUSED)
+
+<P><STRONG><a name="[150]"></a>__scatterload_zeroinit</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_zeroinit), UNUSED)
+
+<P><STRONG><a name="[12a]"></a>fgets</STRONG> (Thumb, 62 bytes, Stack size 24 bytes, fgets.o(i.fgets))
+<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = fgets &rArr; fgetc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[127]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fgetc
+</UL>
+<BR>[Called By]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+</UL>
+
+<P><STRONG><a name="[102]"></a>fputs</STRONG> (Thumb, 24 bytes, Stack size 16 bytes, fputs.o(i.fputs))
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = fputs &rArr; fputc &rArr; SendChar &rArr; SendChar_ToUART
+</UL>
+<BR>[Calls]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
+</UL>
+<BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
+</UL>
+
+<P><STRONG><a name="[103]"></a>fwrite</STRONG> (Thumb, 36 bytes, Stack size 24 bytes, fwrite.o(i.fwrite))
+<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = fwrite &rArr; fputc &rArr; SendChar &rArr; SendChar_ToUART
+</UL>
+<BR>[Calls]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
+</UL>
+<BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
+<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
+<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_failures
+</UL>
+
+<P><STRONG><a name="[ee]"></a>getc</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, getc.o(i.getc))
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = getc &rArr; fgetc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[127]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fgetc
+</UL>
+<BR>[Called By]<UL><LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[123]"></a>putchar</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, putchar.o(i.putchar))
+<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = putchar &rArr; fputc &rArr; SendChar &rArr; SendChar_ToUART
+</UL>
+<BR>[Calls]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
+</UL>
+<BR>[Called By]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_all_tests_complete_message_handler
+</UL>
+
+<P><STRONG><a name="[122]"></a>puts</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, puts.o(i.puts))
+<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = puts &rArr; fputc &rArr; SendChar &rArr; SendChar_ToUART
+</UL>
+<BR>[Calls]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
+</UL>
+<BR>[Called By]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_all_tests_complete_message_handler
+</UL>
+<P>
+<H3>
+Local Symbols
+</H3>
+<P><STRONG><a name="[11e]"></a>SendChar</STRONG> (Thumb, 16 bytes, Stack size 16 bytes, retarget.o(.text.SendChar))
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = SendChar &rArr; SendChar_ToUART
+</UL>
+<BR>[Calls]<UL><LI><a href="#[11f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendChar_ToUART
+</UL>
+<BR>[Called By]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
+</UL>
+
+<P><STRONG><a name="[11f]"></a>SendChar_ToUART</STRONG> (Thumb, 98 bytes, Stack size 8 bytes, retarget.o(.text.SendChar_ToUART))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = SendChar_ToUART
+</UL>
+<BR>[Called By]<UL><LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendChar
+</UL>
+
+<P><STRONG><a name="[128]"></a>GetChar</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, retarget.o(.text.GetChar))
+<BR><BR>[Called By]<UL><LI><a href="#[127]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fgetc
+</UL>
+
+<P><STRONG><a name="[117]"></a>SelectPCLKxSourceOfQSPI</STRONG> (Thumb, 102 bytes, Stack size 16 bytes, qspi.o(.text.SelectPCLKxSourceOfQSPI))
+<BR><BR>[Stack]<UL><LI>Max Depth = 124<LI>Call Chain = SelectPCLKxSourceOfQSPI &rArr; CLK_GetPCLK1Freq &rArr; CLK_GetHCLK0Freq &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK1Freq
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK0Freq
+</UL>
+<BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_SetBusClock
+<LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_Open
+</UL>
+
+<P><STRONG><a name="[109]"></a>CheckQSPI0ClockSource</STRONG> (Thumb, 102 bytes, Stack size 16 bytes, qspi.o(.text.CheckQSPI0ClockSource))
+<BR><BR>[Stack]<UL><LI>Max Depth = 124<LI>Call Chain = CheckQSPI0ClockSource &rArr; CLK_GetPCLK0Freq &rArr; CLK_GetHCLK0Freq &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetAPLL0ClockFreq
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK0Freq
+</UL>
+<BR>[Called By]<UL><LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_GetBusClock
+<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_SetBusClock
+<LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_Open
+</UL>
+
+<P><STRONG><a name="[10b]"></a>CheckQSPI1ClockSource</STRONG> (Thumb, 122 bytes, Stack size 16 bytes, qspi.o(.text.CheckQSPI1ClockSource))
+<BR><BR>[Stack]<UL><LI>Max Depth = 124<LI>Call Chain = CheckQSPI1ClockSource &rArr; CLK_GetPCLK2Freq &rArr; CLK_GetHCLK0Freq &rArr; SystemClockUpdate &rArr; CLK_GetAPLL0ClockFreq
+</UL>
+<BR>[Calls]<UL><LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetAPLL0ClockFreq
+<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK2Freq
+</UL>
+<BR>[Called By]<UL><LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_GetBusClock
+<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_SetBusClock
+<LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_Open
+</UL>
+
+<P><STRONG><a name="[115]"></a>SYS_UnlockReg</STRONG> (Thumb, 70 bytes, Stack size 4 bytes, qspi.o(.text.SYS_UnlockReg))
+<BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = SYS_UnlockReg
+</UL>
+<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_Close
+</UL>
+
+<P><STRONG><a name="[116]"></a>SYS_LockReg</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, qspi.o(.text.SYS_LockReg))
+<BR><BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_Close
+</UL>
+
+<P><STRONG><a name="[11c]"></a>SYS_UnlockReg</STRONG> (Thumb, 70 bytes, Stack size 4 bytes, main.o(.text.SYS_UnlockReg))
+<BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = SYS_UnlockReg
+</UL>
+<BR>[Called By]<UL><LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
+</UL>
+
+<P><STRONG><a name="[119]"></a>SYS_UnlockReg</STRONG> (Thumb, 70 bytes, Stack size 4 bytes, qspi_cunit.o(.text.SYS_UnlockReg))
+<BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = SYS_UnlockReg
+</UL>
+<BR>[Called By]<UL><LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ResetQSPI
+</UL>
+
+<P><STRONG><a name="[11a]"></a>SYS_LockReg</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, qspi_cunit.o(.text.SYS_LockReg))
+<BR><BR>[Called By]<UL><LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ResetQSPI
+</UL>
+
+<P><STRONG><a name="[94]"></a>console_test_start_message_handler</STRONG> (Thumb, 188 bytes, Stack size 24 bytes, console.o(.text.console_test_start_message_handler))
+<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = console_test_start_message_handler &rArr; __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> console.o(.text.CU_console_run_tests)
+</UL>
+<P><STRONG><a name="[95]"></a>console_test_complete_message_handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, console.o(.text.console_test_complete_message_handler))
+<BR>[Address Reference Count : 1]<UL><LI> console.o(.text.CU_console_run_tests)
+</UL>
+<P><STRONG><a name="[96]"></a>console_all_tests_complete_message_handler</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, console.o(.text.console_all_tests_complete_message_handler))
+<BR><BR>[Stack]<UL><LI>Max Depth = 448<LI>Call Chain = console_all_tests_complete_message_handler &rArr; CU_print_run_results &rArr; CU_get_run_results_string &rArr; CU_number_width &rArr; __2snprintf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
+<LI><a href="#[123]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;putchar
+<LI><a href="#[122]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;puts
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> console.o(.text.CU_console_run_tests)
+</UL>
+<P><STRONG><a name="[97]"></a>console_suite_init_failure_message_handler</STRONG> (Thumb, 68 bytes, Stack size 0 bytes, console.o(.text.console_suite_init_failure_message_handler))
+<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = console_suite_init_failure_message_handler &rArr; __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> console.o(.text.CU_console_run_tests)
+</UL>
+<P><STRONG><a name="[98]"></a>console_suite_cleanup_failure_message_handler</STRONG> (Thumb, 68 bytes, Stack size 0 bytes, console.o(.text.console_suite_cleanup_failure_message_handler))
+<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = console_suite_cleanup_failure_message_handler &rArr; __aeabi_assert &rArr; printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> console.o(.text.CU_console_run_tests)
+</UL>
+<P><STRONG><a name="[ef]"></a>show_failures</STRONG> (Thumb, 248 bytes, Stack size 48 bytes, console.o(.text.show_failures))
+<BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = show_failures &rArr; fwrite &rArr; fputc &rArr; SendChar &rArr; SendChar_ToUART
+</UL>
+<BR>[Calls]<UL><LI><a href="#[12b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_failure_list
+<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
+</UL>
+<BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[f1]"></a>select_suite</STRONG> (Thumb, 128 bytes, Stack size 120 bytes, console.o(.text.select_suite))
+<BR><BR>[Stack]<UL><LI>Max Depth = 304<LI>Call Chain = select_suite &rArr; list_suites &rArr; CU_number_width &rArr; __2snprintf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_suite_by_index
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
+<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
+<LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atol
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<LI><a href="#[12a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fgets
+</UL>
+<BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[f2]"></a>list_suites</STRONG> (Thumb, 656 bytes, Stack size 96 bytes, console.o(.text.list_suites))
+<BR><BR>[Stack]<UL><LI>Max Depth = 184<LI>Call Chain = list_suites &rArr; CU_number_width &rArr; __2snprintf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_number_width
+<LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
+</UL>
+<BR>[Called By]<UL><LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[f3]"></a>console_set_options_run</STRONG> (Thumb, 156 bytes, Stack size 40 bytes, console.o(.text.console_set_options_run))
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = console_set_options_run &rArr; fwrite &rArr; fputc &rArr; SendChar &rArr; SendChar_ToUART
+</UL>
+<BR>[Calls]<UL><LI><a href="#[126]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_fail_on_inactive
+<LI><a href="#[124]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_fail_on_inactive
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<LI><a href="#[125]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tolower
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getc
+<LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
+</UL>
+<BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[f6]"></a>select_test</STRONG> (Thumb, 188 bytes, Stack size 120 bytes, console.o(.text.select_test))
+<BR><BR>[Stack]<UL><LI>Max Depth = 272<LI>Call Chain = select_test &rArr; list_tests &rArr; CU_number_width &rArr; __2snprintf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_test_by_index
+<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
+<LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atol
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<LI><a href="#[12a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fgets
+</UL>
+<BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[f7]"></a>list_tests</STRONG> (Thumb, 496 bytes, Stack size 64 bytes, console.o(.text.list_tests))
+<BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = list_tests &rArr; CU_number_width &rArr; __2snprintf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_number_width
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
+</UL>
+<BR>[Called By]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[e0]"></a>add_failure</STRONG> (Thumb, 212 bytes, Stack size 40 bytes, testrun.o(.text.add_failure))
+<BR><BR>[Stack]<UL><LI>Max Depth = 60<LI>Call Chain = add_failure &rArr; malloc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+</UL>
+<BR>[Called By]<UL><LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
+<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_test
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
+</UL>
+
+<P><STRONG><a name="[106]"></a>run_single_suite</STRONG> (Thumb, 548 bytes, Stack size 48 bytes, testrun.o(.text.run_single_suite))
+<BR><BR>[Stack]<UL><LI>Max Depth = 316<LI>Call Chain = run_single_suite &rArr; run_single_test &rArr; add_failure &rArr; malloc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_error_action
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_test
+</UL>
+<BR>[Called By]<UL><LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_suite
+<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
+</UL>
+
+<P><STRONG><a name="[108]"></a>run_single_test</STRONG> (Thumb, 348 bytes, Stack size 208 bytes, testrun.o(.text.run_single_test))
+<BR><BR>[Stack]<UL><LI>Max Depth = 268<LI>Call Chain = run_single_test &rArr; add_failure &rArr; malloc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[129]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setjmp
+</UL>
+<BR>[Called By]<UL><LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
+</UL>
+
+<P><STRONG><a name="[130]"></a>_fp_digits</STRONG> (Thumb, 366 bytes, Stack size 64 bytes, printfa.o(i._fp_digits), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
+<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
+<LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
+<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2ulz
+<LI><a href="#[131]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdrcmple
+<LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
+</UL>
+<BR>[Called By]<UL><LI><a href="#[12d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+</UL>
+
+<P><STRONG><a name="[12d]"></a>_printf_core</STRONG> (Thumb, 1744 bytes, Stack size 136 bytes, printfa.o(i._printf_core), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[132]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding
+<LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_post_padding
+<LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+<LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
+<LI><a href="#[134]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
+</UL>
+<BR>[Called By]<UL><LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0snprintf
+<LI><a href="#[12e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0printf
+<LI><a href="#[12c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0fprintf
+</UL>
+
+<P><STRONG><a name="[133]"></a>_printf_post_padding</STRONG> (Thumb, 36 bytes, Stack size 24 bytes, printfa.o(i._printf_post_padding), UNUSED)
+<BR><BR>[Called By]<UL><LI><a href="#[12d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+</UL>
+
+<P><STRONG><a name="[132]"></a>_printf_pre_padding</STRONG> (Thumb, 46 bytes, Stack size 24 bytes, printfa.o(i._printf_pre_padding), UNUSED)
+<BR><BR>[Called By]<UL><LI><a href="#[12d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+</UL>
+
+<P><STRONG><a name="[9a]"></a>_snputc</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, printfa.o(i._snputc))
+<BR>[Address Reference Count : 1]<UL><LI> printfa.o(i.__0snprintf)
+</UL><P>
+<H3>
+Undefined Global Symbols
+</H3><HR></body></html>
