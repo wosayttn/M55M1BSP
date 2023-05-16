@@ -7,12 +7,8 @@
 #include "Console.h"
 #include "template_cunit.h"
 
-#define PLL_CLOCK       192000000
-#define DEBUG_PORT UART0
-
-#ifndef __aeabi_assert //workaround for compiler V6.6 with CUnit lib
-    #undef assert
-    #define assert(con) do{ if (!con) printf("Something wrong in Line:%d of File:%s!\r\n", __LINE__, __FILE__); }while(0);
+#ifndef DEBUG_PORT
+    #define DEBUG_PORT UART0
 #endif
 
 void SYS_Init(void)
@@ -35,14 +31,15 @@ void SYS_Init(void)
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
 
-    /* Set HCLK0 divide 1 */
-    CLK_SET_HCLK0DIV(1);
-
-    /* Set HCLK1 divide 1 */
-    CLK_SET_HCLK1DIV(1);
-
-    /* Set HCLK2 divide 1 */
-    CLK_SET_HCLK2DIV(1);
+    /* Set HCLK2 divide 2 */
+    CLK_SET_HCLK2DIV(2);
+    
+    /* Set PCLKx divide 2 */
+    CLK_SET_PCLK0DIV(2);
+    CLK_SET_PCLK1DIV(2);
+    CLK_SET_PCLK2DIV(2);
+    CLK_SET_PCLK3DIV(2);
+    CLK_SET_PCLK4DIV(2);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -63,18 +60,6 @@ void SYS_Init(void)
 
     /* Lock protected registers */
     SYS_LockReg();
-}
-
-void UART0_Init(void)
-{
-#ifdef __PLDM_EMU__
-    /* Configure UART Baudrate - The setting is only for Palladium physical UART output */
-    DEBUG_PORT->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400));
-    DEBUG_PORT->LINE = (UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1);
-#else
-    /* Init UART to 115200-8n1 for print message */
-    UART_Open(DEBUG_PORT, 115200);
-#endif
 }
 
 void exit(int32_t code)
@@ -101,9 +86,8 @@ int main(int argc, char *argv[])
 {
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-
-    /* Init UART0 for printf */
-    UART0_Init();
+    /* Init DEBUG_PORT to 115200-8N1 for printf */
+    UART_Open(DEBUG_PORT, 115200);
     
     printf("\n\n");
     printf("+--------------------------------------+\n");

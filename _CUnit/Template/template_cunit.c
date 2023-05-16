@@ -17,6 +17,7 @@ int Template_Test_Clean(void)
 
 void Const1_Test(void)
 {
+    //CU_FAIL("[Const1_Test] Failed !\n");
     CU_PASS();
 }
 
@@ -27,6 +28,7 @@ void Const2_Test(void)
 
 void Macro1_Test(void)
 {
+    //CU_FAIL("[Macro1_Test] Failed !\n");
     CU_PASS();
 }
 
@@ -37,6 +39,7 @@ void Macro2_Test(void)
 
 void Func1_Test(void)
 {
+    //CU_FAIL("[Func1_Test] Failed !\n");
     CU_PASS();
 }
 
@@ -48,7 +51,7 @@ void Func2_Test(void)
 CU_SuiteInfo TemplateSuites[] = {
     { "Template Const Test", Template_Test_Init, Template_Test_Clean, NULL, NULL, Template_ConstTest },
     { "Template Macro Test", Template_Test_Init, Template_Test_Clean, NULL, NULL, Template_MacroTest },
-    { "Template Func  Test", Template_Test_Init, Template_Test_Clean, NULL, NULL, Template_ConstTest },
+    { "Template Func  Test", Template_Test_Init, Template_Test_Clean, NULL, NULL, Template_FuncTest },
     CU_SUITE_INFO_NULL
 };
 
