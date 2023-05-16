@@ -1,0 +1,127 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: £gVision V5.37.0.0
+Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Test Test Test Flex license: MDK Professional 5.37 (Flex) (mdk_pro) Operation stops: 31 Jul 2023
+ 
+Tool Versions:
+Toolchain:       MDK Professional 5.37 (Flex)  Version: 5.37.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARMCLANG\Bin
+C Compiler:      ArmClang.exe V6.18
+Assembler:       Armasm.exe V6.18
+Linker/Locator:  ArmLink.exe V6.18
+Library Manager: ArmAr.exe V6.18
+Hex Converter:   FromElf.exe V6.18
+CPU DLL:         
+Dialog DLL:      
+Target DLL:      CMSIS_AGDI_V8M.DLL V1.7.17.0
+Dialog DLL:      TCM.DLL V1.56.1.0
+ 
+<h2>Project:</h2>
+C:\Users\ccwang20\Desktop\Workspaces\Git\TC8263_M55M1\bsp\_CUnit\spim\KEIL\spim_cunit.uvprojx
+Project File Date:  05/15/2023
+
+<h2>Output:</h2>
+*** Using Compiler 'V6.18', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
+Rebuild target 'SPIM_CUnit_PLDM_ICE'
+compiling system_TC8263.c...
+compiling sys.c...
+compiling startup_TC8263.c...
+compiling retarget.c...
+compiling uart.c...
+compiling main.c...
+compiling clk.c...
+../spim_cunit.c(211): error: use of undeclared identifier 'CMD_DMA_NORMAL_READ'
+    CU_ASSERT(CMD_DMA_NORMAL_READ == (0x03));
+              ^
+../spim_cunit.c(212): error: use of undeclared identifier 'CMD_DMA_FAST_READ'
+    CU_ASSERT(CMD_DMA_FAST_READ == (0x0B));
+              ^
+../spim_cunit.c(213): error: use of undeclared identifier 'CMD_DMA_NORMAL_DUAL_READ'
+    CU_ASSERT(CMD_DMA_NORMAL_DUAL_READ == (0x3B));
+              ^
+../spim_cunit.c(214): error: use of undeclared identifier 'CMD_DMA_FAST_READ_DUAL_OUTPUT'
+    CU_ASSERT(CMD_DMA_FAST_READ_DUAL_OUTPUT == (0x3B));
+              ^
+../spim_cunit.c(215): error: use of undeclared identifier 'CMD_DMA_FAST_READ_QUAD_OUTPUT'
+    CU_ASSERT(CMD_DMA_FAST_READ_QUAD_OUTPUT == (0x6B));
+              ^
+../spim_cunit.c(216): error: use of undeclared identifier 'CMD_DMA_FAST_DUAL_READ'
+    CU_ASSERT(CMD_DMA_FAST_DUAL_READ == (0xBBUL));
+              ^
+../spim_cunit.c(217): error: use of undeclared identifier 'CMD_DMA_NORMAL_QUAD_READ'
+    CU_ASSERT(CMD_DMA_NORMAL_QUAD_READ == (0xE7UL));
+              ^
+../spim_cunit.c(218): error: use of undeclared identifier 'CMD_DMA_FAST_QUAD_READ'
+    CU_ASSERT(CMD_DMA_FAST_QUAD_READ == (0xEBUL));
+              ^
+../spim_cunit.c(239): error: use of undeclared identifier 'SPIM_CTL0_RBO_MODE3'
+    CU_ASSERT(SPIM_CTL0_RBO_MODE3 == (3UL << SPIM_CTL0_RBO_NORM_Pos));
+              ^
+../spim_cunit.c(311): error: use of undeclared identifier 'SPIM'
+    SPIM->KEY1 = SPIM_KEY_1;
+    ^
+../spim_cunit.c(311): error: use of undeclared identifier 'SPIM_KEY_1'
+    SPIM->KEY1 = SPIM_KEY_1;
+                 ^
+../spim_cunit.c(312): error: use of undeclared identifier 'SPIM'
+    SPIM->KEY2 = SPIM_KEY_2;
+    ^
+../spim_cunit.c(312): error: use of undeclared identifier 'SPIM_KEY_2'
+    SPIM->KEY2 = SPIM_KEY_2;
+                 ^
+../spim_cunit.c(317): warning: implicit declaration of function '_SPIM_ENABLE_CIPHER' is invalid in C99 [-Wimplicit-function-declaration]
+    _SPIM_ENABLE_CIPHER();
+    ^
+../spim_cunit.c(318): error: use of undeclared identifier 'SPIM'
+    CU_ASSERT_FALSE(SPIM->CTL0 & SPIM_CTL0_CIPHOFF_Msk);
+                    ^
+../spim_cunit.c(323): warning: implicit declaration of function '_SPIM_DISABLE_CIPHER' is invalid in C99 [-Wimplicit-function-declaration]
+    _SPIM_DISABLE_CIPHER();
+    ^
+../spim_cunit.c(324): error: use of undeclared identifier 'SPIM'
+    CU_ASSERT_TRUE(SPIM->CTL0 & SPIM_CTL0_CIPHOFF_Msk);
+                   ^
+../spim_cunit.c(329): error: use of undeclared identifier 'SPIM'
+    SPIM->CTL0 = 0;
+    ^
+../spim_cunit.c(330): warning: implicit declaration of function '_SPIM_ENABLE_BALEN' is invalid in C99 [-Wimplicit-function-declaration]
+    _SPIM_ENABLE_BALEN();
+    ^
+../spim_cunit.c(331): error: use of undeclared identifier 'SPIM'
+    CU_ASSERT_TRUE(SPIM->CTL0 & SPIM_CTL0_BALEN_Msk);
+                   ^
+../spim_cunit.c(332): warning: implicit declaration of function '_SPIM_DISABLE_BALEN' is invalid in C99 [-Wimplicit-function-declaration]
+    _SPIM_DISABLE_BALEN();
+    ^
+../spim_cunit.c(333): error: use of undeclared identifier 'SPIM'
+    CU_ASSERT_FALSE(SPIM->CTL0 & SPIM_CTL0_BALEN_Msk);
+                    ^
+../spim_cunit.c(335): error: use of undeclared identifier 'SPIM'
+    CU_ASSERT_TRUE(SPIM->CTL0 & SPIM_CTL0_BALEN_Msk);
+                   ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+4 warnings and 20 errors generated.
+compiling spim_cunit.c...
+compiling spim.c...
+".\Objects\SPIM_CUnit.axf" - 19 Error(s), 4 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.9.0.pack
+                ARM.CMSIS.5.9.0
+                CMSIS (Common Microcontroller Software Interface Standard)
+
+<h2>Collection of Component include folders:</h2>
+  C:/Users/PHTSENG/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/Device/ARM/ARMCM55/Include
+
+<h2>Collection of Component Files used:</h2>
+Target not created.
+Build Time Elapsed:  00:00:02
+</pre>
+</body>
+</html>
