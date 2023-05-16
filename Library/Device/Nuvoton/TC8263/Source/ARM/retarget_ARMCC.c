@@ -243,6 +243,10 @@ int fgetc(FILE *f) {
 #if (STDIN_ECHO != 0)
 	SendChar(ch);
 #endif
+    
+    if (ch == '\r')
+        return '\n';
+    
 	return (int)ch;
 }
 
