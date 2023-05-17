@@ -1,3 +1,11 @@
+/******************************************************************************
+* @file    template_cunit.c
+* @version V1.00
+* @brief   CUnit test template
+*
+* SPDX-License-Identifier: Apache-2.0
+* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -72,3 +80,5 @@ CU_TestInfo  Template_FuncTest[] = {
     { "Func2", Func2_Test },
     CU_TEST_INFO_NULL
 };
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

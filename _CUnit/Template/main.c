@@ -1,4 +1,11 @@
-
+/******************************************************************************
+* @file    main.c
+* @version V1.00
+* @brief   Template
+*
+* SPDX-License-Identifier: Apache-2.0
+* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -91,7 +98,7 @@ int main(int argc, char *argv[])
     
     printf("\n\n");
     printf("+--------------------------------------+\n");
-    printf("|       M55M1 Template CUnit Test      |\n");
+    printf("|       M55M1 CUnit Test Template      |\n");
     printf("+--------------------------------------+\n");
 
     if (CU_initialize_registry())
@@ -108,3 +115,5 @@ int main(int argc, char *argv[])
 
     while (1) ;
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
