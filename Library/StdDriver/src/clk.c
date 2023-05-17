@@ -1563,7 +1563,7 @@ uint32_t CLK_WaitClockReady(uint32_t u32ClkMask)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock>>1; /* 500ms time-out */
     uint32_t u32Ret = 1U;
-    printf("wait ready clock select = 0x%08x\n",u32ClkMask);
+
     while((CLK->STATUS & u32ClkMask) != u32ClkMask)
     {
         if(--u32TimeOutCnt == 0)
@@ -1596,7 +1596,7 @@ uint32_t CLK_WaitClockDisable(uint32_t u32ClkMask)
     uint32_t u32TimeOutCnt = SystemCoreClock>>1;
 
     uint32_t u32Ret = 1U;
-    printf("wait disable clock select = 0x%08x\n",u32ClkMask);
+
     while (CLK->STATUS & u32ClkMask)
     {
         if (--u32TimeOutCnt == 0)
