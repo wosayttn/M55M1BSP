@@ -25,7 +25,7 @@ extern "C" {
 #define __PC()                                                         \
   __extension__({                                                              \
     register unsigned int current_pc;                                          \
-    __asm__ __volatile__("mov %0, pc" : "=r"(current_pc) : : );                \
+    __asm volatile("mov %0, pc" : "=r"(current_pc) : : );                \
     current_pc;                                                                \
   })
 
