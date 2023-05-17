@@ -34,11 +34,15 @@ extern "C"
 #define FREQ_12MHZ         12000000UL   /*!< 12 MHz \hideinitializer */
 #define FREQ_24MHZ         24000000UL   /*!< 24 MHz \hideinitializer */
 #define FREQ_25MHZ         25000000UL   /*!< 25 MHz \hideinitializer */
+#define FREQ_40MHZ         40000000UL   /*!< 40 MHz \hideinitializer */
 #define FREQ_50MHZ         50000000UL   /*!< 50 MHz \hideinitializer */
 #define FREQ_75MHZ         75000000UL   /*!< 75 MHz \hideinitializer */
+#define FREQ_80MHZ         80000000UL   /*!< 80 MHz \hideinitializer */
 #define FREQ_100MHZ        100000000UL  /*!< 100 MHz \hideinitializer */
+#define FREQ_120MHZ        120000000UL  /*!< 120 MHz \hideinitializer */
 #define FREQ_125MHZ        125000000UL  /*!< 125 MHz \hideinitializer */
 #define FREQ_150MHZ        150000000UL  /*!< 150 MHz \hideinitializer */
+#define FREQ_160MHZ        160000000UL  /*!< 160 MHz \hideinitializer */
 #define FREQ_175MHZ        175000000UL  /*!< 175 MHz \hideinitializer */
 #define FREQ_180MHZ        180000000UL  /*!< 180 MHz \hideinitializer */
 #define FREQ_192MHZ        192000000UL  /*!< 192 MHz \hideinitializer */
@@ -408,7 +412,7 @@ extern "C"
 #define CLK_CANFDDIV_CANFD0DIV(x)           (((x) - 1UL) << CLK_CANFDDIV_CANFD0DIV_Pos)     /*!< CANFDDIV Setting for CANFD0 clock divider. It could be 1~256 \hideinitializer */
 #define CLK_CANFDDIV_CANFD1DIV(x)           (((x) - 1UL) << CLK_CANFDDIV_CANFD1DIV_Pos)     /*!< CANFDDIV Setting for CANFD1 clock divider. It could be 1~256 \hideinitializer */
 
-#define CLK_DIMCDIV_DMIC00DIV(x)            (((x) - 1UL) << CLK_DMICDIV_DMIC0DIV_Pos)       /*!< DMICDIV Setting for DMIC0 clock divider. It could be 1~256 \hideinitializer */
+#define CLK_DMICDIV_DMIC0DIV(x)            (((x) - 1UL) << CLK_DMICDIV_DMIC0DIV_Pos)        /*!< DMICDIV Setting for DMIC0 clock divider. It could be 1~256 \hideinitializer */
 
 #define CLK_EADCDIV_EADC0DIV(x)             (((x) - 1UL) << CLK_EADCDIV_EADC0DIV_Pos)       /*!< CANFDDIV Setting for EADC0 clock divider. It could be 1~256 \hideinitializer */
 #define CLK_EADCDIV_EADC1DIV(x)             (((x) - 1UL) << CLK_EADCDIV_EADC1DIV_Pos)       /*!< CANFDDIV Setting for EADC1 clock divider. It could be 1~256 \hideinitializer */
@@ -718,11 +722,11 @@ extern "C"
                          MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< I2C3 Module */
 
 #define I2S0_MODULE     (MODULE_CLKCTL_ENC(22ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_I2SCTL_I2S0CKEN_Pos)|\
-                         MODULE_CLKSEL_ENC( 9ULL)|MODULE_CLKSEL_Msk_ENC( 0x3ULL)|MODULE_CLKSEL_Pos_ENC((uint64_t)CLK_I2SSEL_I2S0SEL_Pos)|\
+                         MODULE_CLKSEL_ENC( 9ULL)|MODULE_CLKSEL_Msk_ENC( 0x7ULL)|MODULE_CLKSEL_Pos_ENC((uint64_t)CLK_I2SSEL_I2S0SEL_Pos)|\
                          MODULE_CLKDIV_ENC( 7ULL)|MODULE_CLKDIV_Msk_ENC(0xFFULL)|MODULE_CLKDIV_Pos_ENC((uint64_t)CLK_I2SDIV_I2S0DIV_Pos))          /*!< I2S0 Module */
 
 #define I2S1_MODULE     (MODULE_CLKCTL_ENC(22ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_I2SCTL_I2S1CKEN_Pos)|\
-                         MODULE_CLKSEL_ENC( 9ULL)|MODULE_CLKSEL_Msk_ENC( 0x3ULL)|MODULE_CLKSEL_Pos_ENC((uint64_t)CLK_I2SSEL_I2S1SEL_Pos)|\
+                         MODULE_CLKSEL_ENC( 9ULL)|MODULE_CLKSEL_Msk_ENC( 0x7ULL)|MODULE_CLKSEL_Pos_ENC((uint64_t)CLK_I2SSEL_I2S1SEL_Pos)|\
                          MODULE_CLKDIV_ENC( 7ULL)|MODULE_CLKDIV_Msk_ENC(0xFFULL)|MODULE_CLKDIV_Pos_ENC((uint64_t)CLK_I2SDIV_I2S1DIV_Pos))          /*!< I2S1 Module */
 
 #define I3C0_MODULE     (MODULE_CLKCTL_ENC(23ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_I3CCTL_I3C0CKEN_Pos)|\
@@ -780,34 +784,6 @@ extern "C"
 #define NPU0_MODULE     (MODULE_CLKCTL_ENC(35ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_NPUCTL_NPU0CKEN_Pos)|\
                          MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
                          MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< NPU0 Module */
-
-#define MPC0_MODULE     (MODULE_CLKCTL_ENC(36ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_MPCCTL_MPC0CKEN_Pos)|\
-                         MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
-                         MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< MPC0 Module */
-
-#define MPC1_MODULE     (MODULE_CLKCTL_ENC(36ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_MPCCTL_MPC1CKEN_Pos)|\
-                         MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
-                         MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< MPC1 Module */
-                         
-#define MPC2_MODULE     (MODULE_CLKCTL_ENC(36ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_MPCCTL_MPC2CKEN_Pos)|\
-                         MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
-                         MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< MPC2 Module */                         
-                         
-#define MPC3_MODULE     (MODULE_CLKCTL_ENC(36ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_MPCCTL_MPC3CKEN_Pos)|\
-                         MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
-                         MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< MPC3 Module */                         
-                         
-#define MPC4_MODULE     (MODULE_CLKCTL_ENC(36ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_MPCCTL_MPC4CKEN_Pos)|\
-                         MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
-                         MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< MPC4 Module */
-
-#define MPC5_MODULE     (MODULE_CLKCTL_ENC(36ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_MPCCTL_MPC5CKEN_Pos)|\
-                         MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
-                         MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< MPC5 Module */
-
-#define MPC6_MODULE     (MODULE_CLKCTL_ENC(36ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_MPCCTL_MPC6CKEN_Pos)|\
-                         MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
-                         MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< MPC6 Module */
                          
 #define OTFC0_MODULE    (MODULE_CLKCTL_ENC(37ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_OTFCCTL_OTFC0CKEN_Pos)|\
                          MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
@@ -1199,6 +1175,7 @@ uint32_t CLK_WaitModuleClockReady(uint64_t u64ModuleIdx);
 uint32_t CLK_EnableAPLL(uint32_t u32APLLClkSrc, uint32_t u32APLLFreq, uint32_t u32APLLSelect);
 void CLK_DisableAPLL(uint32_t u32APLLSelect);
 uint32_t CLK_WaitClockReady(uint32_t u32ClkMask);
+uint32_t CLK_WaitClockDisable(uint32_t u32ClkMask);
 void CLK_EnableSysTick(uint32_t u32ClkSrc, uint32_t u32Count);
 void CLK_DisableSysTick(void);
 uint32_t CLK_GetAPLL0ClockFreq(void);

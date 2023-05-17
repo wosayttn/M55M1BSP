@@ -470,7 +470,7 @@ void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
     CLK->SRCCTL |= CLK_SRCCTL_HIRCEN_Msk;
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK->SCLKSEL = (CLK->SCLKSEL & (~CLK_SCLKSEL_SCLKSEL_Msk)) | CLK_SCLKSEL_SCLKSEL_HIRC;
-#ifdef PMC_READY
+
     /* Switch to power level 0 for safe */
     PMC->PLCTL = (PMC->PLCTL & (~PMC_PLCTL_PLSEL_Msk)) | PMC_PLCTL_PLSEL_PL0;
     u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
@@ -478,7 +478,7 @@ void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
     {
         if(u32TimeOutCount-- == 0) break;
     }
-#endif
+
     /* Set Flash Access Cycle to 8 for safe */
     FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (8);
     
@@ -491,50 +491,39 @@ void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
     /* Update System Core Clock */
     SystemCoreClockUpdate();
 
-#ifdef PMC_READY
     /* Set power level according to new HCLK */
     if(SystemCoreClock <= FREQ_180MHZ)
     {
         PMC->PLCTL = (PMC->PLCTL & (~PMC_PLCTL_PLSEL_Msk)) | PMC_PLCTL_PLSEL_PL1;
     }
-    
     u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
-    
     while(PMC->PLSTS & PMC_PLSTS_PLCBUSY_Msk)
     {
         if(u32TimeOutCount-- == 0) break;
     }
-#endif
-    /* Switch flash access cycle to suitable value base on HCLK */
-    if (SystemCoreClock >= FREQ_175MHZ)     //FIXME_MJ waiting for FMC DTS
-    {
-        FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (8);
-    }
-    else if (SystemCoreClock >= FREQ_150MHZ)
-    {
-        FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (7);
-    }
-    else if (SystemCoreClock >= FREQ_125MHZ)
+
+    /* Switch flash access cycle to suitable value base on SCLK */
+    if (SystemCoreClock > FREQ_200MHZ)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (6);
     }
-    else if (SystemCoreClock >= FREQ_100MHZ)
+    else if (SystemCoreClock > FREQ_160MHZ)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (5);
     }
-     else if (SystemCoreClock >= FREQ_75MHZ)
+    else if (SystemCoreClock > FREQ_120MHZ)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (4);
     }
-    else if (SystemCoreClock >= FREQ_50MHZ)
+    else if (SystemCoreClock > FREQ_80MHZ)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (3);
     }
-    else if (SystemCoreClock >= FREQ_25MHZ)
+     else if (SystemCoreClock > FREQ_40MHZ)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (2);
     }
-    else /* SystemCoreClock < FREQ_25MHZ */
+    else /* SystemCoreClock <= FREQ_40MHZ */
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (1);
     }
@@ -556,9 +545,6 @@ void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
   *
   * |Module index        |Clock source                              |Divider                         |
   * | :----------------- | :--------------------------------------- | :----------------------------- |
-  * |\ref ACMP01_MODULE  | x                                        | x                              |
-  * |\ref ACMP23_MODULE  | x                                        | x                              |
-  * |\ref AWF0_MODULE    | x                                        | x                              |
   * |\ref BPWM0_MODULE   |\ref CLK_BPWMSEL_BPWM0SEL_PCLK0           | x                              |
   * |\ref BPWM0_MODULE   |\ref CLK_BPWMSEL_BPWM0SEL_HCLK0           | x                              |
   * |\ref BPWM1_MODULE   |\ref CLK_BPWMSEL_BPWM1SEL_PCLK2           | x                              |
@@ -569,7 +555,7 @@ void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
   * |\ref CANFD0_MODULE  |\ref CLK_CANFDSEL_CANFD0SEL_HIRC          |\ref CLK_CANFDDIV_CANFD0DIV(x)  |
   * |\ref CANFD0_MODULE  |\ref CLK_CANFDSEL_CANFD0SEL_HIRC48M_DIV4  |\ref CLK_CANFDDIV_CANFD0DIV(x)  |
   * |\ref CANFD1_MODULE  |\ref CLK_CANFDSEL_CANFD1SEL_HXT           |\ref CLK_CANFDDIV_CANFD1DIV(x)  |
-  * |\ref CANFD1_MODULE  |\ref CLK_CANFDSEL_CANFD1SEL_APLL_DIV2     |\ref CLK_CANFDDIV_CANFD1DIV(x)  |
+  * |\ref CANFD1_MODULE  |\ref CLK_CANFDSEL_CANFD1SEL_APLL0_DIV2    |\ref CLK_CANFDDIV_CANFD1DIV(x)  |
   * |\ref CANFD1_MODULE  |\ref CLK_CANFDSEL_CANFD1SEL_HCLK0         |\ref CLK_CANFDDIV_CANFD1DIV(x)  |
   * |\ref CANFD1_MODULE  |\ref CLK_CANFDSEL_CANFD1SEL_HIRC          |\ref CLK_CANFDDIV_CANFD1DIV(x)  |
   * |\ref CANFD1_MODULE  |\ref CLK_CANFDSEL_CANFD1SEL_HIRC48M_DIV4  |\ref CLK_CANFDDIV_CANFD1DIV(x)  |
@@ -578,56 +564,24 @@ void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
   * |\ref CCAP0_MODULE   |\ref CLK_CCAPSEL_CCAP0SEL_HIRC            | x                              |
   * |\ref CCAP0_MODULE   |\ref CLK_CCAPSEL_CCAP0SEL_APLL0_DIV2      | x                              |
   * |\ref CCAP0_MODULE   |\ref CLK_CCAPSEL_CCAP0SEL_HXT             | x                              |  
-  * |\ref CRC0_MODULE    | x                                        | x                              |
-  * |\ref CRYPTO0_MODULE | x                                        | x                              |
-  * |\ref DAC01_MODULE   | x                                        | x                              |
-  * |\ref DMIC0_MODULE   |\ref CLK_DMICSEL_DMIC0SEL_HXT             |\ref CLK_DIMCDIV_DMIC00DIV(x)   |
-  * |\ref DMIC0_MODULE   |\ref CLK_DMICSEL_DMIC0SEL_APLL1_DIV2      |\ref CLK_DIMCDIV_DMIC00DIV(x)   |
-  * |\ref DMIC0_MODULE   |\ref CLK_DMICSEL_DMIC0SEL_MIRC            |\ref CLK_DIMCDIV_DMIC00DIV(x)   |
-  * |\ref DMIC0_MODULE   |\ref CLK_DMICSEL_DMIC0SEL_HIRC            |\ref CLK_DIMCDIV_DMIC00DIV(x)   |
-  * |\ref DMIC0_MODULE   |\ref CLK_DMICSEL_DMIC0SEL_HIRC48M         |\ref CLK_DIMCDIV_DMIC00DIV(x)   |
-  * |\ref DMIC0_MODULE   |\ref CLK_DMICSEL_DMIC0SEL_PCLK4           |\ref CLK_DIMCDIV_DMIC00DIV(x)   |
+  * |\ref DMIC0_MODULE   |\ref CLK_DMICSEL_DMIC0SEL_HXT             |\ref CLK_DMICDIV_DMIC0DIV(x)    |
+  * |\ref DMIC0_MODULE   |\ref CLK_DMICSEL_DMIC0SEL_APLL1_DIV2      |\ref CLK_DMICDIV_DMIC0DIV(x)    |
+  * |\ref DMIC0_MODULE   |\ref CLK_DMICSEL_DMIC0SEL_MIRC            |\ref CLK_DMICDIV_DMIC0DIV(x)    |
+  * |\ref DMIC0_MODULE   |\ref CLK_DMICSEL_DMIC0SEL_HIRC            |\ref CLK_DMICDIV_DMIC0DIV(x)    |
+  * |\ref DMIC0_MODULE   |\ref CLK_DMICSEL_DMIC0SEL_HIRC48M         |\ref CLK_DMICDIV_DMIC0DIV(x)    |
+  * |\ref DMIC0_MODULE   |\ref CLK_DMICSEL_DMIC0SEL_PCLK4           |\ref CLK_DMICDIV_DMIC0DIV(x)    |
   * |\ref EADC0_MODULE   |\ref CLK_EADCSEL_EADC0SEL_APLL1_DIV2      |\ref CLK_EADCDIV_EADC0DIV(x)    |
   * |\ref EADC0_MODULE   |\ref CLK_EADCSEL_EADC0SEL_APLL0_DIV2      |\ref CLK_EADCDIV_EADC0DIV(x)    |
   * |\ref EADC0_MODULE   |\ref CLK_EADCSEL_EADC0SEL_PCLK0           |\ref CLK_EADCDIV_EADC0DIV(x)    |
   * |\ref EADC1_MODULE   |\ref CLK_EADCSEL_EADC1SEL_APLL1_DIV2      |\ref CLK_EADCDIV_EADC1DIV(x)    |
   * |\ref EADC1_MODULE   |\ref CLK_EADCSEL_EADC1SEL_APLL0_DIV2      |\ref CLK_EADCDIV_EADC1DIV(x)    |
   * |\ref EADC1_MODULE   |\ref CLK_EADCSEL_EADC1SEL_PCLK2           |\ref CLK_EADCDIV_EADC1DIV(x)    |
-  * |\ref EBI0_MODULE    | x                                        | x                              |
-  * |\ref ECAP0_MODULE   | x                                        | x                              |
-  * |\ref ECAP1_MODULE   | x                                        | x                              |
-  * |\ref ECAP2_MODULE   | x                                        | x                              |
-  * |\ref ECAP3_MODULE   | x                                        | x                              |
-  * |\ref EMAC0_MODULE   | x                                        | x                              |
   * |\ref EPWM0_MODULE   |\ref CLK_EPWMSEL_EPWM0SEL_PCLK0           | x                              |
   * |\ref EPWM0_MODULE   |\ref CLK_EPWMSEL_EPWM0SEL_HCLK0           | x                              |  
   * |\ref EPWM1_MODULE   |\ref CLK_EPWMSEL_EPWM1SEL_PCLK2           | x                              |
   * |\ref EPWM1_MODULE   |\ref CLK_EPWMSEL_EPWM1SEL_HCLK0           | x                              | 
-  * |\ref EQEI0_MODULE   | x                                        | x                              |
-  * |\ref EQEI1_MODULE   | x                                        | x                              |
-  * |\ref EQEI2_MODULE   | x                                        | x                              |
-  * |\ref EQEI3_MODULE   | x                                        | x                              |
   * |\ref FMC0_MODULE    |\ref CLK_FMCSEL_FMC0SEL_HIRC              | x                              |
-  * |\ref FMC0_MODULE    |\ref CLK_FMCSEL_FMC0SEL_HIRC48M_DIV4      | x                              | 
-  * |\ref ISP0_MODULE    | x                                        | x                              |
-  * |\ref GDMA0_MODULE   | x                                        | x                              |
-  * |\ref GPIOA_MODULE   | x                                        | x                              |
-  * |\ref GPIOB_MODULE   | x                                        | x                              |
-  * |\ref GPIOC_MODULE   | x                                        | x                              |
-  * |\ref GPIOD_MODULE   | x                                        | x                              |
-  * |\ref GPIOE_MODULE   | x                                        | x                              |
-  * |\ref GPIOF_MODULE   | x                                        | x                              |
-  * |\ref GPIOG_MODULE   | x                                        | x                              |
-  * |\ref GPIOH_MODULE   | x                                        | x                              |
-  * |\ref GPIOI_MODULE   | x                                        | x                              |
-  * |\ref GPIOJ_MODULE   | x                                        | x                              |
-  * |\ref HSOTG0_MODULE  | x                                        | x                              |
-  * |\ref HSUSBD0_MODULE | x                                        | x                              |
-  * |\ref HSUSBH0_MODULE | x                                        | x                              |
-  * |\ref I2C0_MODULE    | x                                        | x                              |
-  * |\ref I2C1_MODULE    | x                                        | x                              |
-  * |\ref I2C2_MODULE    | x                                        | x                              |
-  * |\ref I2C3_MODULE    | x                                        | x                              |
+  * |\ref FMC0_MODULE    |\ref CLK_FMCSEL_FMC0SEL_HIRC48M_DIV4      | x                              |
   * |\ref I2S0_MODULE    |\ref CLK_I2SSEL_I2S0SEL_HXT               |\ref CLK_I2SDIV_I2S0DIV(x)      |
   * |\ref I2S0_MODULE    |\ref CLK_I2SSEL_I2S0SEL_APLL1_DIV2        |\ref CLK_I2SDIV_I2S0DIV(x)      |
   * |\ref I2S0_MODULE    |\ref CLK_I2SSEL_I2S0SEL_APLL0_DIV2        |\ref CLK_I2SDIV_I2S0DIV(x)      |
@@ -640,24 +594,17 @@ void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
   * |\ref I2S1_MODULE    |\ref CLK_I2SSEL_I2S1SEL_PCLK3             |\ref CLK_I2SDIV_I2S1DIV(x)      |
   * |\ref I2S1_MODULE    |\ref CLK_I2SSEL_I2S1SEL_HIRC              |\ref CLK_I2SDIV_I2S1DIV(x)      |
   * |\ref I2S1_MODULE    |\ref CLK_I2SSEL_I2S1SEL_HIRC48M           |\ref CLK_I2SDIV_I2S1DIV(x)      |
-  * |\ref I3C0_MODULE    | x                                        | x                              |
-  * |\ref KDF0_MODULE    | x                                        | x                              |
   * |\ref KPI0_MODULE    |\ref CLK_KPISEL_KPI0SEL_HIRC48M_DIV4      |\ref CLK_KPIDIV_KPI0DIV(x)      |
   * |\ref KPI0_MODULE    |\ref CLK_KPISEL_KPI0SEL_HIRC              |\ref CLK_KPIDIV_KPI0DIV(x)      |
   * |\ref KPI0_MODULE    |\ref CLK_KPISEL_KPI0SEL_LIRC              |\ref CLK_KPIDIV_KPI0DIV(x)      |
   * |\ref KPI0_MODULE    |\ref CLK_KPISEL_KPI0SEL_HXT               |\ref CLK_KPIDIV_KPI0DIV(x)      |
-  * |\ref KS0_MODULE     | x                                        | x                              |
   * |\ref LPADC0_MODULE  |\ref CLK_LPADCSEL_LPADC0SEL_PCLK4         |\ref CLK_LPADCDIV_LPADC0DIV(x)  |
   * |\ref LPADC0_MODULE  |\ref CLK_LPADCSEL_LPADC0SEL_LXT           |\ref CLK_LPADCDIV_LPADC0DIV(x)  |
   * |\ref LPADC0_MODULE  |\ref CLK_LPADCSEL_LPADC0SEL_MIRC          |\ref CLK_LPADCDIV_LPADC0DIV(x)  |
   * |\ref LPADC0_MODULE  |\ref CLK_LPADCSEL_LPADC0SEL_HIRC          |\ref CLK_LPADCDIV_LPADC0DIV(x)  |
-  * |\ref LPPDMA0_MODULE | x                                        | x                              |
-  * |\ref LPGPIO0_MODULE | x                                        | x                              |
-  * |\ref LPI2C0_MODULE  | x                                        | x                              |
   * |\ref LPSPI0_MODULE  |\ref CLK_LPSPISEL_LPSPI0SEL_PCLK4         | x                              |
   * |\ref LPSPI0_MODULE  |\ref CLK_LPSPISEL_LPSPI0SEL_MIRC          | x                              |
   * |\ref LPSPI0_MODULE  |\ref CLK_LPSPISEL_LPSPI0SEL_HIRC          | x                              |
-  * |\ref LPSRAM0_MODULE | x                                        | x                              |
   * |\ref LPTMR0_MODULE  |\ref CLK_LPTMRSEL_LPTMR0SEL_PCLK4         | x                              |
   * |\ref LPTMR0_MODULE  |\ref CLK_LPTMRSEL_LPTMR0SEL_LXT           | x                              |
   * |\ref LPTMR0_MODULE  |\ref CLK_LPTMRSEL_LPTMR0SEL_LIRC          | x                              |
@@ -674,19 +621,6 @@ void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
   * |\ref LPUART0_MODULE |\ref CLK_LPUARTSEL_LPUART0SEL_LXT         |\ref CLK_LPUARTDIV_LPUART0DIV(x)|
   * |\ref LPUART0_MODULE |\ref CLK_LPUARTSEL_LPUART0SEL_MIRC        |\ref CLK_LPUARTDIV_LPUART0DIV(x)|
   * |\ref LPUART0_MODULE |\ref CLK_LPUARTSEL_LPUART0SEL_HIRC        |\ref CLK_LPUARTDIV_LPUART0DIV(x)|
-  * |\ref NPU0_MODULE    | x                                        | x                              |
-  * |\ref MPC0_MODULE    | x                                        | x                              |
-  * |\ref MPC1_MODULE    | x                                        | x                              |
-  * |\ref MPC2_MODULE    | x                                        | x                              |
-  * |\ref MPC3_MODULE    | x                                        | x                              |
-  * |\ref MPC4_MODULE    | x                                        | x                              |
-  * |\ref MPC5_MODULE    | x                                        | x                              |
-  * |\ref MPC6_MODULE    | x                                        | x                              |
-  * |\ref OTFC0_MODULE   | x                                        | x                              |
-  * |\ref OTFC1_MODULE   | x                                        | x                              |
-  * |\ref OTG0_MODULE    | x                                        | x                              |
-  * |\ref PDMA0_MODULE   | x                                        | x                              |
-  * |\ref PDMA1_MODULE   | x                                        | x                              |
   * |\ref PSIO0_MODULE   |\ref CLK_PSIOSEL_PSIO0SEL_LXT             |\ref CLK_PSIODIV_PSIO0DIV(x)    |
   * |\ref PSIO0_MODULE   |\ref CLK_PSIOSEL_PSIO0SEL_HXT             |\ref CLK_PSIODIV_PSIO0DIV(x)    |
   * |\ref PSIO0_MODULE   |\ref CLK_PSIOSEL_PSIO0SEL_LIRC            |\ref CLK_PSIODIV_PSIO0DIV(x)    |
@@ -704,7 +638,6 @@ void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
   * |\ref QSPI1_MODULE   |\ref CLK_QSPISEL_QSPI1SEL_PCLK2           | x                              |
   * |\ref QSPI1_MODULE   |\ref CLK_QSPISEL_QSPI1SEL_HIRC            | x                              |
   * |\ref QSPI1_MODULE   |\ref CLK_QSPISEL_QSPI1SEL_HIRC48M_DIV4    | x                              |
-  * |\ref RTC0_MODULE    | x                                        | x                              |
   * |\ref SC0_MODULE     |\ref CLK_SCSEL_SC0SEL_HXT                 |\ref CLK_SCDIV_SC0DIV(x)        |
   * |\ref SC0_MODULE     |\ref CLK_SCSEL_SC0SEL_APLL0_DIV2          |\ref CLK_SCDIV_SC0DIV(x)        |
   * |\ref SC0_MODULE     |\ref CLK_SCSEL_SC0SEL_PCLK1               |\ref CLK_SCDIV_SC0DIV(x)        |
@@ -720,7 +653,6 @@ void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
   * |\ref SC2_MODULE     |\ref CLK_SCSEL_SC2SEL_PCLK1               |\ref CLK_SCDIV_SC2DIV(x)        |
   * |\ref SC2_MODULE     |\ref CLK_SCSEL_SC2SEL_HIRC                |\ref CLK_SCDIV_SC2DIV(x)        |
   * |\ref SC2_MODULE     |\ref CLK_SCSEL_SC2SEL_HIRC48M_DIV4        |\ref CLK_SCDIV_SC2DIV(x)        |
-  * |\ref SCU0_MODULE    | x                                        | x                              |
   * |\ref SDH0_MODULE    |\ref CLK_SDHSEL_SDH0SEL_HXT               |\ref CLK_SDHDIV_SDH0DIV(x)      |
   * |\ref SDH0_MODULE    |\ref CLK_SDHSEL_SDH0SEL_APLL1_DIV2        |\ref CLK_SDHDIV_SDH0DIV(x)      |
   * |\ref SDH0_MODULE    |\ref CLK_SDHSEL_SDH0SEL_HCLK0             |\ref CLK_SDHDIV_SDH0DIV(x)      |
@@ -731,7 +663,6 @@ void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
   * |\ref SDH1_MODULE    |\ref CLK_SDHSEL_SDH1SEL_HCLK0             |\ref CLK_SDHDIV_SDH1DIV(x)      |
   * |\ref SDH1_MODULE    |\ref CLK_SDHSEL_SDH1SEL_HIRC              |\ref CLK_SDHDIV_SDH1DIV(x)      |
   * |\ref SDH1_MODULE    |\ref CLK_SDHSEL_SDH1SEL_HIRC48M_DIV4      |\ref CLK_SDHDIV_SDH1DIV(x)      |
-  * |\ref SENTH0_MODULE  | x                                        | x                              |
   * |\ref SPI0_MODULE    |\ref CLK_SPISEL_SPI0SEL_HXT               | x                              |
   * |\ref SPI0_MODULE    |\ref CLK_SPISEL_SPI0SEL_APLL1_DIV2        | x                              |
   * |\ref SPI0_MODULE    |\ref CLK_SPISEL_SPI0SEL_APLL0_DIV2        | x                              |
@@ -743,33 +674,19 @@ void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
   * |\ref SPI1_MODULE    |\ref CLK_SPISEL_SPI1SEL_APLL0_DIV2        | x                              |
   * |\ref SPI1_MODULE    |\ref CLK_SPISEL_SPI1SEL_PCLK2             | x                              |
   * |\ref SPI1_MODULE    |\ref CLK_SPISEL_SPI1SEL_HIRC              | x                              |
-  * |\ref SPI1_MODULE    |\ref CLK_SPISEL_SPI1SEL_HIRC48M_DIV4      | x                              |
+  * |\ref SPI1_MODULE    |\ref CLK_SPISEL_SPI1SEL_HIRC48M           | x                              |
   * |\ref SPI2_MODULE    |\ref CLK_SPISEL_SPI2SEL_HXT               | x                              |
   * |\ref SPI2_MODULE    |\ref CLK_SPISEL_SPI2SEL_APLL1_DIV2        | x                              |
   * |\ref SPI2_MODULE    |\ref CLK_SPISEL_SPI2SEL_APLL0_DIV2        | x                              |
   * |\ref SPI2_MODULE    |\ref CLK_SPISEL_SPI2SEL_PCLK0             | x                              |
   * |\ref SPI2_MODULE    |\ref CLK_SPISEL_SPI2SEL_HIRC              | x                              |
-  * |\ref SPI2_MODULE    |\ref CLK_SPISEL_SPI2SEL_HIRC48M_DIV4      | x                              |
+  * |\ref SPI2_MODULE    |\ref CLK_SPISEL_SPI2SEL_HIRC48M           | x                              |
   * |\ref SPI3_MODULE    |\ref CLK_SPISEL_SPI3SEL_HXT               | x                              |
   * |\ref SPI3_MODULE    |\ref CLK_SPISEL_SPI3SEL_APLL1_DIV2        | x                              |
   * |\ref SPI3_MODULE    |\ref CLK_SPISEL_SPI3SEL_APLL0_DIV2        | x                              |
   * |\ref SPI3_MODULE    |\ref CLK_SPISEL_SPI3SEL_PCLK2             | x                              |
   * |\ref SPI3_MODULE    |\ref CLK_SPISEL_SPI3SEL_HIRC              | x                              |
   * |\ref SPI3_MODULE    |\ref CLK_SPISEL_SPI3SEL_HIRC48M           | x                              |
-  * |\ref SPIM0_MODULE   | x                                        | x                              |
-  * |\ref SPIM1_MODULE   | x                                        | x                              |
-  * |\ref SRAM0_MODULE   | x                                        | x                              |
-  * |\ref SRAM1_MODULE   | x                                        | x                              |
-  * |\ref SRAM2_MODULE   | x                                        | x                              |
-  * |\ref SWDH0_MODULE   | x                                        | x                              |
-  * |\ref SWODEC0_MODULE | x                                        | x                              |
-  * |\ref ST0_MODULE     |\ref CLK_STSEL_ST0SEL_HXT                 |\ref CLK_STDIV_ST0DIV(x)        |
-  * |\ref ST0_MODULE     |\ref CLK_STSEL_ST0SEL_LXT                 |\ref CLK_STDIV_ST0DIV(x)        |
-  * |\ref ST0_MODULE     |\ref CLK_STSEL_ST0SEL_HXT_DIV2            |\ref CLK_STDIV_ST0DIV(x)        |
-  * |\ref ST0_MODULE     |\ref CLK_STSEL_ST0SEL_ACLK_DIV2           |\ref CLK_STDIV_ST0DIV(x)        |
-  * |\ref ST0_MODULE     |\ref CLK_STSEL_ST0SEL_HIRC_DIV2           |\ref CLK_STDIV_ST0DIV(x)        |
-  * |\ref ST0_MODULE     |\ref CLK_STSEL_ACLK                       |\ref CLK_STDIV_ST0DIV(x)        |
-  * |\ref TAMPER0_MODULE | x                                        | x                              |
   * |\ref TMR0_MODULE    |\ref CLK_TMRSEL_TMR0SEL_HXT               | x                              |
   * |\ref TMR0_MODULE    |\ref CLK_TMRSEL_TMR0SEL_LXT               | x                              |
   * |\ref TMR0_MODULE    |\ref CLK_TMRSEL_TMR0SEL_PCLK1             | x                              |
@@ -798,7 +715,6 @@ void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
   * |\ref TMR3_MODULE    |\ref CLK_TMRSEL_TMR3SEL_LIRC              | x                              |
   * |\ref TMR3_MODULE    |\ref CLK_TMRSEL_TMR3SEL_HIRC              | x                              |
   * |\ref TMR3_MODULE    |\ref CLK_TMRSEL_TMR3SEL_HIRC48M_DIV4      | x                              |
-  * |\ref TRNG0_MODULE   | x                                        | x                              |
   * |\ref TTMR0_MODULE   |\ref CLK_TTMRSEL_TTMR0SEL_PCLK4           | x                              |
   * |\ref TTMR0_MODULE   |\ref CLK_TTMRSEL_TTMR0SEL_LXT             | x                              |
   * |\ref TTMR0_MODULE   |\ref CLK_TTMRSEL_TTMR0SEL_LIRC            | x                              |
@@ -860,11 +776,9 @@ void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
   * |\ref UART9_MODULE   |\ref CLK_UARTSEL1_UART9SEL_APLL0_DIV2     |\ref CLK_UARTDIV1_UART9DIV(x)   |
   * |\ref UART9_MODULE   |\ref CLK_UARTSEL1_UART9SEL_HIRC48M        |\ref CLK_UARTDIV1_UART9DIV(x)   |
   * |\ref USBD0_MODULE   |\ref CLK_USBSEL_USBSEL_HIRC48M            |\ref CLK_USBDIV_USBDIV(x)       |
-  * |\ref USBD0_MODULE   |\ref CLK_USBSEL_USBSEL_APLL1              |\ref CLK_USBDIV_USBDIV(x)       |
+  * |\ref USBD0_MODULE   |\ref CLK_USBSEL_USBSEL_APLL1_DIV2         |\ref CLK_USBDIV_USBDIV(x)       |
   * |\ref USBH0_MODULE   |\ref CLK_USBSEL_USBSEL_HIRC48M            |\ref CLK_USBDIV_USBDIV(x)       |
-  * |\ref USBH0_MODULE   |\ref CLK_USBSEL_USBSEL_APLL1              |\ref CLK_USBDIV_USBDIV(x)       |
-  * |\ref USCI0_MODULE   | x                                        | x                              |
-  * |\ref UTCPD0_MODULE  | x                                        | x                              |
+  * |\ref USBH0_MODULE   |\ref CLK_USBSEL_USBSEL_APLL1_DIV2         |\ref CLK_USBDIV_USBDIV(x)       |
   * |\ref WDT0_MODULE    |\ref CLK_WDTSEL_WDT0SEL_LXT               | x                              |
   * |\ref WDT0_MODULE    |\ref CLK_WDTSEL_WDT0SEL_HCLK2_DIV2048     | x                              |
   * |\ref WDT0_MODULE    |\ref CLK_WDTSEL_WDT0SEL_LIRC              | x                              |
@@ -1036,13 +950,6 @@ void CLK_DisableXtalRC(uint32_t u32ClkMask)
   *             - \ref LPTMR1_MODULE
   *             - \ref LPUART0_MODULE
   *             - \ref NPU0_MODULE
-  *             - \ref MPC0_MODULE
-  *             - \ref MPC1_MODULE
-  *             - \ref MPC2_MODULE
-  *             - \ref MPC3_MODULE
-  *             - \ref MPC4_MODULE
-  *             - \ref MPC5_MODULE
-  *             - \ref MPC6_MODULE
   *             - \ref OTFC0_MODULE
   *             - \ref OTFC1_MODULE
   *             - \ref OTG0_MODULE
@@ -1194,13 +1101,6 @@ uint32_t CLK_EnableModuleClock(uint64_t u64ModuleIdx)
   *             - \ref LPTMR1_MODULE
   *             - \ref LPUART0_MODULE
   *             - \ref NPU0_MODULE
-  *             - \ref MPC0_MODULE
-  *             - \ref MPC1_MODULE
-  *             - \ref MPC2_MODULE
-  *             - \ref MPC3_MODULE
-  *             - \ref MPC4_MODULE
-  *             - \ref MPC5_MODULE
-  *             - \ref MPC6_MODULE
   *             - \ref OTFC0_MODULE
   *             - \ref OTFC1_MODULE
   *             - \ref OTG0_MODULE
@@ -1332,13 +1232,6 @@ void CLK_DisableModuleClock(uint64_t u64ModuleIdx)
   *             - \ref LPTMR1_MODULE
   *             - \ref LPUART0_MODULE
   *             - \ref NPU0_MODULE
-  *             - \ref MPC0_MODULE
-  *             - \ref MPC1_MODULE
-  *             - \ref MPC2_MODULE
-  *             - \ref MPC3_MODULE
-  *             - \ref MPC4_MODULE
-  *             - \ref MPC5_MODULE
-  *             - \ref MPC6_MODULE
   *             - \ref OTFC0_MODULE
   *             - \ref OTFC1_MODULE
   *             - \ref OTG0_MODULE
@@ -1670,7 +1563,7 @@ uint32_t CLK_WaitClockReady(uint32_t u32ClkMask)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock>>1; /* 500ms time-out */
     uint32_t u32Ret = 1U;
-
+    printf("wait ready clock select = 0x%08x\n",u32ClkMask);
     while((CLK->STATUS & u32ClkMask) != u32ClkMask)
     {
         if(--u32TimeOutCnt == 0)
@@ -1681,6 +1574,39 @@ uint32_t CLK_WaitClockReady(uint32_t u32ClkMask)
     }
 
     return u32Ret;
+}
+
+/**
+  * @brief      This function check selected clock source status
+  * @param[in]  u32ClkMask is selected clock source. Including :
+  *             - \ref CLK_STATUS_LIRCSTB_Msk
+  *             - \ref CLK_STATUS_LXTSTB_Msk
+  *             - \ref CLK_STATUS_MIRCSTB_Msk
+  *             - \ref CLK_STATUS_HIRCSTB_Msk
+  *             - \ref CLK_STATUS_HXTSTB_Msk
+  *             - \ref CLK_STATUS_HIRC48MSTB_Msk
+  *             - \ref CLK_STATUS_APLL0STB_Msk
+  *             - \ref CLK_STATUS_APLL1STB_Msk  
+  * @retval     0  clock is timeout
+  * @retval     1  clock is disable
+  * @details    To wait for clock disable by specified clock source stable flag or timeout (>500ms)
+  */
+uint32_t CLK_WaitClockDisable(uint32_t u32ClkMask)
+{
+    uint32_t u32TimeOutCnt = SystemCoreClock>>1;
+
+    uint32_t u32Ret = 1U;
+    printf("wait disable clock select = 0x%08x\n",u32ClkMask);
+    while (CLK->STATUS & u32ClkMask)
+    {
+        if (--u32TimeOutCnt == 0)
+        {
+            u32Ret = 0U;
+            break;
+        }
+    }
+
+    return 1UL;
 }
 
 /**
