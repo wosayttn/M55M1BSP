@@ -50,56 +50,57 @@ void ACMP_Open(ACMP_T *acmp, uint32_t u32ChNum, uint32_t u32NegSrc, uint32_t u32
 
     g_ACMP_i32ErrCode = 0;
 
-//    /* Do calibration for ACMP to decrease the effect of electrical random noise. */
-//    if (((acmp->CALSR & ACMP_CALSR_DONE0_Msk) == 0) || ((acmp->CALSR & ACMP_CALSR_DONE1_Msk) == 0))
-//    {
+#if(0)
+    /* Do calibration for ACMP to decrease the effect of electrical random noise. */
+    if (((acmp->CALSR & ACMP_CALSR_DONE0_Msk) == 0) || ((acmp->CALSR & ACMP_CALSR_DONE1_Msk) == 0))
+    {
 
-//        /* Must reset ACMP before ACMP calibration */
-//        SYS->ACMPRST |= SYS_ACMPRST_ACMP01RST_Msk;
-//        SYS->ACMPRST &= (~SYS_ACMPRST_ACMP01RST_Msk);  
+        /* Must reset ACMP before ACMP calibration */
+        SYS->ACMPRST |= SYS_ACMPRST_ACMP01RST_Msk;
+        SYS->ACMPRST &= (~SYS_ACMPRST_ACMP01RST_Msk);  
 
-//        SYS->ACMPRST |= SYS_ACMPRST_ACMP23RST_Msk;
-//        SYS->ACMPRST &= (~SYS_ACMPRST_ACMP23RST_Msk);
-//        /* Calibration ACMP0/ACMP2*/
-//        acmp->CTL[0] |= ACMP_CTL_ACMPEN_Msk;
+        SYS->ACMPRST |= SYS_ACMPRST_ACMP23RST_Msk;
+        SYS->ACMPRST &= (~SYS_ACMPRST_ACMP23RST_Msk);
+        /* Calibration ACMP0/ACMP2*/
+        acmp->CTL[0] |= ACMP_CTL_ACMPEN_Msk;
 
-//        /* MUST enable CRV and set NEGSEL to CRV for ACMP calibration. */
-//        acmp->VREF = (ACMP_VREF_CRV0EN_Msk | ACMP_VREF_CRV0SSEL_Msk);
-//        acmp->CTL[0] = (acmp->CTL[0] & ~(ACMP_CTL_NEGSEL_Msk)) | 
-//                       (ACMP_CTL_NEGSEL_CRV);
+        /* MUST enable CRV and set NEGSEL to CRV for ACMP calibration. */
+        acmp->VREF = (ACMP_VREF_CRV0EN_Msk | ACMP_VREF_CRV0SSEL_Msk);
+        acmp->CTL[0] = (acmp->CTL[0] & ~(ACMP_CTL_NEGSEL_Msk)) | 
+                       (ACMP_CTL_NEGSEL_CRV);
 
-//        acmp->CALCTL |= ACMP_CALCTL_CALTRG0_Msk;            /* Start to calibration */
-//        u32Delay = SystemCoreClock;
-//        while ((acmp->CALSR & ACMP_CALSR_DONE0_Msk) == 0)   /* Wait calibration finish */
-//        {
-//            if (--u32Delay == 0)
-//            {
-//                g_ACMP_i32ErrCode = ACMP_TIMEOUT_ERR;
-//                break;
-//            }
-//        }
+        acmp->CALCTL |= ACMP_CALCTL_CALTRG0_Msk;            /* Start to calibration */
+        u32Delay = SystemCoreClock;
+        while ((acmp->CALSR & ACMP_CALSR_DONE0_Msk) == 0)   /* Wait calibration finish */
+        {
+            if (--u32Delay == 0)
+            {
+                g_ACMP_i32ErrCode = ACMP_TIMEOUT_ERR;
+                break;
+            }
+        }
 
-//        /* Calibration ACMP1/ACMP3 */
-//        acmp->CTL[1] |= ACMP_CTL_ACMPEN_Msk;
+        /* Calibration ACMP1/ACMP3 */
+        acmp->CTL[1] |= ACMP_CTL_ACMPEN_Msk;
 
-//        /* MUST enable CRV and set NEGSEL to CRV for ACMP calibration. */
-//        acmp->VREF = (ACMP_VREF_CRV0EN_Msk | ACMP_VREF_CRV0SSEL_Msk);
-//        acmp->CTL[1] = (acmp->CTL[1] & ~(ACMP_CTL_NEGSEL_Msk)) | 
-//                       (ACMP_CTL_NEGSEL_CRV);
+        /* MUST enable CRV and set NEGSEL to CRV for ACMP calibration. */
+        acmp->VREF = (ACMP_VREF_CRV0EN_Msk | ACMP_VREF_CRV0SSEL_Msk);
+        acmp->CTL[1] = (acmp->CTL[1] & ~(ACMP_CTL_NEGSEL_Msk)) | 
+                       (ACMP_CTL_NEGSEL_CRV);
 
-//        acmp->CALCTL |= ACMP_CALCTL_CALTRG1_Msk;            /* Start to calibration */
-//        u32Delay = SystemCoreClock;
-//        while ((acmp->CALSR & ACMP_CALSR_DONE1_Msk) == 0)  /* Wait calibration finish */
-//        {
-//            if (--u32Delay == 0)
-//            {
-//                g_ACMP_i32ErrCode = ACMP_TIMEOUT_ERR;
-//                break;
-//            }
-//        }
+        acmp->CALCTL |= ACMP_CALCTL_CALTRG1_Msk;            /* Start to calibration */
+        u32Delay = SystemCoreClock;
+        while ((acmp->CALSR & ACMP_CALSR_DONE1_Msk) == 0)  /* Wait calibration finish */
+        {
+            if (--u32Delay == 0)
+            {
+                g_ACMP_i32ErrCode = ACMP_TIMEOUT_ERR;
+                break;
+            }
+        }
 
-//    }
-
+    }
+#endif
     acmp->CTL[u32ChNum] = (acmp->CTL[u32ChNum] & (~(ACMP_CTL_NEGSEL_Msk | ACMP_CTL_HYSSEL_Msk))) | (u32NegSrc | u32HysSel | ACMP_CTL_ACMPEN_Msk);
 }
 

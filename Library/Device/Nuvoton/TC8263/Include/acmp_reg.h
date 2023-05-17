@@ -14,11 +14,16 @@
 #pragma anon_unions
 #endif
 
+/******************************************************************************/
+/*                Device Specific Peripheral registers structures             */
+/******************************************************************************/
+
 /**
    @addtogroup REGISTER Control Register
    @{
 */
 
+/*---------------------- Analog Comparator Controller -------------------------*/
 /**
     @addtogroup ACMP Analog Comparator Controller (ACMP)
     Memory Mapped Structure for ACMP Controller
@@ -29,44 +34,44 @@ typedef struct
 {
 /**
  * @var ACMP_T::CTL0
- * Offset: 0x00  Analog Comparator 0 Control Register
+ * Offset: 0x00  Analog Comparator Control Register 0
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[0]     |ACMPEN    |Comparator Enable Bit
- * |        |          |0 = Comparator 0 Disabled.
- * |        |          |1 = Comparator 0 Enabled.
- * |[1]     |ACMPIE    |Comparator Interrupt Enable Bit
- * |        |          |0 = Comparator 0 interrupt Disabled.
- * |        |          |1 = Comparator 0 interrupt Enabled
- * |        |          |If WKEN (ACMP_CTL0[16]) is set to 1, the wake-up interrupt function will be enabled as well.
- * |[3]     |ACMPOINV  |Comparator Output Inverse
- * |        |          |0 = Comparator 0 output inverse Disabled.
- * |        |          |1 = Comparator 0 output inverse Enabled.
- * |[6:4]   |NEGSEL    |Comparator Negative Input Selection
- * |        |          |000 = ACMP0_N pin.
- * |        |          |001 = Internal comparator reference voltage (CRV0).
+ * |[0]     |ACMPEN    |ACMP Enable Bit
+ * |        |          |0 = ACMP 0 or ACMP2 Disabled.
+ * |        |          |1 = ACMP 0 or ACMP2 Enabled.
+ * |[1]     |ACMPIE    |ACMP Interrupt Enable Bit
+ * |        |          |0 = ACMP0 or ACMP2 interrupt Disabled.
+ * |        |          |1 = ACMP0 or ACMP2 interrupt Enabled.
+ * |        |          |Note:If WKEN (ACMP_CTL0[16]) is set to 1, the wake-up interrupt function will be enabled as well.
+ * |[3]     |ACMPOINV  |ACMP Output Inverse
+ * |        |          |0 = ACMP0 or ACMP2 output inverse Disabled.
+ * |        |          |1 = ACMP0 or ACMP2 output inverse Enabled.
+ * |[6:4]   |NEGSEL    |ACMP Negative Input Selection
+ * |        |          |000 = ACMP0_N or ACMP2_N pin.
+ * |        |          |001 = Internal comparator reference voltage (CRV0/2).
  * |        |          |010 = Band-gap voltage.
  * |        |          |011 = DAC0 output.
  * |        |          |100 = DAC1 output.
  * |        |          |Note: NEGSEL must select 0x1 in calibration mode.
- * |[10:8]  |POSSEL    |Comparator Positive Input Selection
- * |        |          |00 = Input from ACMP0_P0.
- * |        |          |01 = Input from ACMP0_P1.
- * |        |          |10 = Input from ACMP0_P2.
- * |        |          |11 = Input from ACMP0_P3.
- * |[12]    |OUTSEL    |Comparator Output Select
- * |        |          |0 = Comparator 0 output to ACMP0_O pin is unfiltered comparator output.
- * |        |          |1 = Comparator 0 output to ACMP0_O pin is from filter output.
- * |[15:13] |FILTSEL   |Comparator Output Filter Count Selection
+ * |[10:8]  |POSSEL    |ACMP Positive Input Selection
+ * |        |          |000 = ACMP0_P0 or ACMP2_P0 pin.
+ * |        |          |001 = ACMP0_P1 or ACMP2_P1 pin.
+ * |        |          |010 = ACMP0_P2 or ACMP2_P2 pin.
+ * |        |          |011 = ACMP0_P3 or ACMP2_P3 pin.
+ * |[12]    |OUTSEL    |ACMP Output Selection
+ * |        |          |0 = ACMP0 or ACMP2 output to ACMP0_O or ACMP2_O pin is unfiltered ACMP output.
+ * |        |          |1 = ACMP0 or ACMP2 output to ACMP0_O or ACMP2_O pin is from filter output.
+ * |[15:13] |FILTSEL   |ACMP Output Filter Count Selection
  * |        |          |000 = Filter function is Disabled.
- * |        |          |001 = ACMP0 output is sampled 1 consecutive PCLK.
- * |        |          |010 = ACMP0 output is sampled 2 consecutive PCLKs.
- * |        |          |011 = ACMP0 output is sampled 4 consecutive PCLKs.
- * |        |          |100 = ACMP0 output is sampled 8 consecutive PCLKs.
- * |        |          |101 = ACMP0 output is sampled 16 consecutive PCLKs.
- * |        |          |110 = ACMP0 output is sampled 32 consecutive PCLKs.
- * |        |          |111 = ACMP0 output is sampled 64 consecutive PCLKs.
+ * |        |          |001 = ACMP0 or ACMP2 output is sampled 1 consecutive PCLK.
+ * |        |          |010 = ACMP0 or ACMP2 output is sampled 2 consecutive PCLKs.
+ * |        |          |011 = ACMP0 or ACMP2 output is sampled 4 consecutive PCLKs.
+ * |        |          |100 = ACMP0 or ACMP2 output is sampled 8 consecutive PCLKs.
+ * |        |          |101 = ACMP0 or ACMP2 output is sampled 16 consecutive PCLKs.
+ * |        |          |110 = ACMP0 or ACMP2 output is sampled 32 consecutive PCLKs.
+ * |        |          |111 = ACMP0 or ACMP2 output is sampled 64 consecutive PCLKs.
  * |[16]    |WKEN      |Power-down Wake-up Enable Bit
  * |        |          |0 = Wake-up function Disabled.
  * |        |          |1 = Wake-up function Enabled.
@@ -76,70 +81,71 @@ typedef struct
  * |[18]    |WCMPSEL   |Window Compare Mode Selection
  * |        |          |0 = Window Compare Mode Disabled.
  * |        |          |1 = Window Compare Mode is Selected.
- * |[21:20] |FCLKDIV   |Comparator Output Filter Clock Divider
- * |        |          |00 = cComparator output filter clock = PCLK
- * |        |          |01 = cComparator output filter clock = PCLK/2
- * |        |          |10 = cComparator output filter clock = PCLK/4
- * |        |          |11 = Reserved
+ * |[21:20] |FCLKDIV   |ACMP Output Filter Clock Divider
+ * |        |          |00 = ACMP0 or ACMP2 output filter clock = PCLK.
+ * |        |          |01 = ACMP0 or ACMP2 output filter clock = PCLK/2.
+ * |        |          |10 = ACMP0 or ACMP2 output filter clock = PCLK/4.
+ * |        |          |11 = Reserved.
  * |        |          |Note: Use FCLKDIV under the condition of FILTSEL = 3'h7, then set FCLKDIV to get the effect of filtering 128,256 consecutive PCLKs.
  * |[26:24] |HYSSEL    |Hysteresis Mode Selection
  * |        |          |000 = Hysteresis is 0mV.
  * |        |          |001 = Hysteresis is 10mV.
  * |        |          |010 = Hysteresis is 20mV.
  * |        |          |011 = Hysteresis is 30mV.
- * |        |          |100 = Hysteresis is 40mV
- * |        |          |101 = Hysteresis is 50mV
- * |        |          |Others = rReserved
- * |[29:28] |MODESEL   |Comparator Power Mode Selection
- * |        |          |00 = low power mode comparator AVDD current 1uA
- * |        |          |01 = low power mode comparator AVDD current 2uA
- * |        |          |10 = active mode comparator AVDD current 35uA
- * |        |          |11 = active mode comparator AVDD current 70uA
+ * |        |          |100 = Hysteresis is 40mV.
+ * |        |          |Others = Reserved.
+ * |[29:28] |MODESEL   |ACMP Operating Mode Selection
+ * |        |          |The register affects analog characteristics as operating current, input offset voltage, setup time, propagation delay, etc.
+ * |        |          |00 = ACMP0 or ACMP2 operating mode0.
+ * |        |          |01 = ACMP0 or ACMP2 operating mode1.
+ * |        |          |10 = ACMP0 or ACMP2 operating mode2.
+ * |        |          |11 = ACMP0 or ACMP2 operating mode3.
+ * |        |          |Note: Please refer to Analog comparator (ACMP) of Analog characteristics in the Datasheet.
  * |[31:30] |INTPOL    |Interrupt Condition Polarity Selection
- * |        |          |ACMPIF0 will be set to 1 when comparator output edge condition is detected.
+ * |        |          |ACMPIF0 will be set to 1 when ACMP output edge condition is detected.
  * |        |          |00 = Rising edge or falling edge.
  * |        |          |01 = Rising edge.
  * |        |          |10 = Falling edge.
  * |        |          |11 = Reserved.
  * @var ACMP_T::CTL1
- * Offset: 0x04  Analog Comparator 1 Control Register
+ * Offset: 0x04  Analog Comparator Control Register 1
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[0]     |ACMPEN    |Comparator Enable Bit
- * |        |          |0 = Comparator 1 Disabled.
- * |        |          |1 = Comparator 1 Enabled.
- * |[1]     |ACMPIE    |Comparator Interrupt Enable Bit
- * |        |          |0 = Comparator 1 interrupt Disabled.
- * |        |          |1 = Comparator 1 interrupt Enabled
- * |        |          |If WKEN (ACMP_CTL0[16]) is set to 1, the wake-up interrupt function will be enabled as well.
- * |[3]     |ACMPOINV  |Comparator Output Inverse
- * |        |          |0 = Comparator 1 output inverse Disabled.
- * |        |          |1 = Comparator 1 output inverse Enabled.
- * |[6:4]   |NEGSEL    |Comparator Negative Input Selection
- * |        |          |000 = ACMP1_N pin.
- * |        |          |001 = Internal comparator reference voltage (CRV1).
+ * |[0]     |ACMPEN    |ACMP Enable Bit
+ * |        |          |0 = ACMP1 or ACMP3 Disabled.
+ * |        |          |1 = ACMP1 or ACMP3 Enabled.
+ * |[1]     |ACMPIE    |ACMP Interrupt Enable Bit
+ * |        |          |0 = ACMP1 or ACMP3 interrupt Disabled.
+ * |        |          |1 = ACMP1 or ACMP3 interrupt Enabled.
+ * |        |          |Note:If WKEN (ACMP_CTL1[16]) is set to 1, the wake-up interrupt function will be enabled as well.
+ * |[3]     |ACMPOINV  |ACMP Output Inverse
+ * |        |          |0 = ACMP1 or ACMP3 output inverse Disabled.
+ * |        |          |1 = ACMP1 or ACMP3 output inverse Enabled.
+ * |[6:4]   |NEGSEL    |ACMP Negative Input Selection
+ * |        |          |000 = ACMP1_N or ACMP3_N pin.
+ * |        |          |001 = Internal comparator reference voltage (CRV1/3).
  * |        |          |010 = Band-gap voltage.
  * |        |          |011 = DAC0 output.
  * |        |          |100 = DAC1 output.
  * |        |          |Note: NEGSEL must select 0x1 in calibration mode.
- * |[10:8]  |POSSEL    |Comparator Positive Input Selection
- * |        |          |00 = Input from ACMP1_P0.
- * |        |          |01 = Input from ACMP1_P1.
- * |        |          |10 = Input from ACMP1_P2.
- * |        |          |11 = Input from ACMP1_P3.
- * |[12]    |OUTSEL    |Comparator Output Select
- * |        |          |0 = Comparator 1 output to ACMP1_O pin is unfiltered comparator output.
- * |        |          |1 = Comparator 1 output to ACMP1_O pin is from filter output.
- * |[15:13] |FILTSEL   |Comparator Output Filter Count Selection
+ * |[10:8]  |POSSEL    |ACMP Positive Input Selection
+ * |        |          |000 = ACMP1_P0 or ACMP3_P0 pin.
+ * |        |          |001 = ACMP1_P1 or ACMP3_P1 pin.
+ * |        |          |010 = ACMP1_P2 or ACMP3_P2 pin.
+ * |        |          |011 = ACMP1_P3 or ACMP3_P3 pin.
+ * |[12]    |OUTSEL    |ACMP Output Selection
+ * |        |          |0 = ACMP1 or ACMP3 output to ACMP1_O or ACMP3_O pin is unfiltered ACMP output.
+ * |        |          |1 = ACMP1 or ACMP3 output to ACMP1_O or ACMP3_O pin is from filter output.
+ * |[15:13] |FILTSEL   |ACMP Output Filter Count Selection
  * |        |          |000 = Filter function is Disabled.
- * |        |          |001 = ACMP1 output is sampled 1 consecutive PCLK.
- * |        |          |010 = ACMP1 output is sampled 2 consecutive PCLKs.
- * |        |          |011 = ACMP1 output is sampled 4 consecutive PCLKs.
- * |        |          |100 = ACMP1 output is sampled 8 consecutive PCLKs.
- * |        |          |101 = ACMP1 output is sampled 16 consecutive PCLKs.
- * |        |          |110 = ACMP1 output is sampled 32 consecutive PCLKs.
- * |        |          |111 = ACMP1 output is sampled 64 consecutive PCLKs.
+ * |        |          |001 = ACMP1 or ACMP3 output is sampled 1 consecutive PCLK.
+ * |        |          |010 = ACMP1 or ACMP3 output is sampled 2 consecutive PCLKs.
+ * |        |          |011 = ACMP1 or ACMP3 output is sampled 4 consecutive PCLKs.
+ * |        |          |100 = ACMP1 or ACMP3 output is sampled 8 consecutive PCLKs.
+ * |        |          |101 = ACMP1 or ACMP3 output is sampled 16 consecutive PCLKs.
+ * |        |          |110 = ACMP1 or ACMP3 output is sampled 32 consecutive PCLKs.
+ * |        |          |111 = ACMP1 or ACMP3 output is sampled 64 consecutive PCLKs.
  * |[16]    |WKEN      |Power-down Wake-up Enable Bit
  * |        |          |0 = Wake-up function Disabled.
  * |        |          |1 = Wake-up function Enabled.
@@ -149,270 +155,160 @@ typedef struct
  * |[18]    |WCMPSEL   |Window Compare Mode Selection
  * |        |          |0 = Window Compare Mode Disabled.
  * |        |          |1 = Window Compare Mode is Selected.
- * |[21:20] |FCLKDIV   |Comparator Output Filter Clock Divider
- * |        |          |00 = Comparator output filter clock = PCLK
- * |        |          |01 = Comparator output filter clock = PCLK/2
- * |        |          |10 = Comparator output filter clock = PCLK/4
- * |        |          |11 = Reserved
+ * |[21:20] |FCLKDIV   |ACMP Output Filter Clock Divider
+ * |        |          |00 = ACMP1 or ACMP3 output filter clock = PCLK.
+ * |        |          |01 = ACMP1 or ACMP3 output filter clock = PCLK/2.
+ * |        |          |10 = ACMP1 or ACMP3 output filter clock = PCLK/4.
+ * |        |          |11 = Reserved.
  * |        |          |Note: Use FCLKDIV under the condition of FILTSEL = 3'h7, then set FCLKDIV to get the effect of filtering 128,256 consecutive PCLKs.
  * |[26:24] |HYSSEL    |Hysteresis Mode Selection
  * |        |          |000 = Hysteresis is 0mV.
  * |        |          |001 = Hysteresis is 10mV.
  * |        |          |010 = Hysteresis is 20mV.
  * |        |          |011 = Hysteresis is 30mV.
- * |        |          |100 = Hysteresis is 40mV
- * |        |          |101 = Hysteresis is 50mV
- * |        |          |Others = rReserved
- * |[29:28] |MODESEL   |Comparator Power Mode Selection
- * |        |          |00 = low power mode comparator AVDD current 1uA
- * |        |          |01 = low power mode comparator AVDD current 2uA
- * |        |          |10 = active mode comparator AVDD current 35uA
- * |        |          |11 = active mode comparator AVDD current 70uA
+ * |        |          |100 = Hysteresis is 40mV.
+ * |        |          |Others = Reserved.
+ * |[29:28] |MODESEL   |ACMP Operating Mode Selection
+ * |        |          |The register affects analog characteristics as operating current, input offset voltage, setup time, propagation delay, etc.
+ * |        |          |00 = ACMP1 or ACMP3 operating mode0.
+ * |        |          |01 = ACMP1 or ACMP3 operating mode1.
+ * |        |          |10 = ACMP1 or ACMP3 operating mode2.
+ * |        |          |11 = ACMP1 or ACMP3 operating mode3.
+ * |        |          |Note: Please refer to Analog comparator (ACMP) of Analog characteristics in the Datasheet.
  * |[31:30] |INTPOL    |Interrupt Condition Polarity Selection
- * |        |          |ACMPIF1 will be set to 1 when comparator output edge condition is detected.
+ * |        |          |ACMPIF1 will be set to 1 when ACMP output edge condition is detected.
  * |        |          |00 = Rising edge or falling edge.
  * |        |          |01 = Rising edge.
  * |        |          |10 = Falling edge.
  * |        |          |11 = Reserved.
  * @var ACMP_T::STATUS
- * Offset: 0x08  Analog Comparator 01 Status Register
+ * Offset: 0x08  Analog Comparator Status Register
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[0]     |ACMPIF0   |Comparator 0 Interrupt Flag
- * |        |          |This bit is set by hardware when the edge condition defined by INTPOL (ACMP_CTL0[31:30]) is detected on comparator 0 output
+ * |[0]     |ACMPIF0   |ACMP Interrupt Flag 0
+ * |        |          |This bit is set by hardware when the edge condition defined by INTPOL (ACMP_CTL0[31:30]) is detected on ACMP0 or ACMP2 output
  * |        |          |This will generate an interrupt if ACMPIE (ACMP_CTL0[1]) is set to 1.
- * |        |          |Note: Write 1 to clear this bit to 0.
- * |[1]     |ACMPIF1   |Comparator 1 Interrupt Flag
- * |        |          |This bit is set by hardware when the edge condition defined by INTPOL (ACMP_CTL1[31:30]) is detected on comparator 1 output
+ * |        |          |Note: Write 1 to clear this bit to 0. 
+ * |[1]     |ACMPIF1   |ACMP Interrupt Flag 1
+ * |        |          |This bit is set by hardware when the edge condition defined by INTPOL (ACMP_CTL1[31:30]) is detected on ACMP1 or ACMP3 output
  * |        |          |This will cause an interrupt if ACMPIE (ACMP_CTL1[1]) is set to 1.
  * |        |          |Note: Write 1 to clear this bit to 0.
- * |[4]     |ACMPO0    |Comparator 0 Output
+ * |[4]     |ACMPO0    |ACMP Output 0
  * |        |          |Synchronized to the PCLK to allow reading by software
- * |        |          |Cleared when the comparator 0 is disabled, i.e
+ * |        |          |Cleared when the ACMP0 or ACMP2 is disabled, i.e
  * |        |          |ACMPEN (ACMP_CTL0[0]) is cleared to 0.
- * |[5]     |ACMPO1    |Comparator 1 Output
+ * |[5]     |ACMPO1    |ACMP Output 1
  * |        |          |Synchronized to the PCLK to allow reading by software
- * |        |          |Cleared when the comparator 1 is disabled, i.e
+ * |        |          |Cleared when the ACMP1 or ACMP3 is disabled, i.e
  * |        |          |ACMPEN (ACMP_CTL1[0]) is cleared to 0.
- * |[8]     |WKIF0     |Comparator 0 Power-down Wake-up Interrupt Flag
- * |        |          |This bit will be set to 1 when ACMP0 wake-up interrupt event occurs.
+ * |[8]     |WKIF0     |ACMP Power-down Wake-up Interrupt Flag 0
+ * |        |          |This bit will be set to 1 when ACMP0 or ACMP2 wake-up interrupt event occurs.
  * |        |          |0 = No power-down wake-up occurred.
  * |        |          |1 = Power-down wake-up occurred.
  * |        |          |Note: Write 1 to clear this bit to 0.
- * |[9]     |WKIF1     |Comparator 1 Power-down Wake-up Interrupt Flag
- * |        |          |This bit will be set to 1 when ACMP1 wake-up interrupt event occurs.
+ * |[9]     |WKIF1     |ACMP Power-down Wake-up Interrupt Flag 1
+ * |        |          |This bit will be set to 1 when ACMP1 or ACMP3 wake-up interrupt event occurs.
  * |        |          |0 = No power-down wake-up occurred.
  * |        |          |1 = Power-down wake-up occurred.
  * |        |          |Note: Write 1 to clear this bit to 0.
- * |[12]    |ACMPS0    |Comparator 0 Status
+ * |[12]    |ACMPS0    |ACMP Status 0
  * |        |          |Synchronized to the PCLK to allow reading by software
- * |        |          |Cleared when the comparator 0 is disabled, i.e
+ * |        |          |Cleared when the ACMP 0 or ACMP2 is disabled, i.e
  * |        |          |ACMPEN (ACMP_CTL0[0]) is cleared to 0.
- * |[13]    |ACMPS1    |Comparator 1 Status
+ * |[13]    |ACMPS1    |ACMP Status 1
  * |        |          |Synchronized to the PCLK to allow reading by software
- * |        |          |Cleared when the comparator 1 is disabled, i.e
+ * |        |          |Cleared when the ACMP1 or ACMP3 is disabled, i.e
  * |        |          |ACMPEN (ACMP_CTL1[0]) is cleared to 0.
- * |[16]    |ACMPWO    |Comparator Window Output
+ * |[16]    |ACMPWO    |ACMP Window Output
  * |        |          |This bit shows the output status of window compare mode
  * |        |          |0 = The positive input voltage is outside the window.
  * |        |          |1 = The positive input voltage is in the window.
  * @var ACMP_T::VREF
- * Offset: 0x0C  Analog Comparator 01 Reference Voltage Control Register
+ * Offset: 0x0C  Analog Comparator Reference Voltage Control Register
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[5:0]   |CRV0SEL   |Comparator0Comparator 0 Reference Voltage Setting
- * |        |          |CRV0 = CRV0 source voltage * (ACMP_VREF[5:0] )/ 63.
+ * |[5:0]   |CRV0SEL   |ACMP Reference Voltage Setting 0
+ * |        |          |Set CRV output voltage for ACMP0 or ACMP2 negtive input.
+ * |        |          |CRV0/2 = CRV0/2 source voltage * (CRV0SEL)/ 63.
  * |[6]     |CRV0SSEL  |CRV0 Source Voltage Selection
  * |        |          |0 = AVDD is selected as CRV0 source voltage.
- * |        |          |1 = The reference voltage defined by SYS_VREFCTL register is selected as CRV0 source voltage.
+ * |        |          |1 = The reference voltage defined by VREFCTL (SYS_VREFCTL[4:0]) register is selected as CRV0/2 source voltage.
  * |[8]     |CRV0EN    |CRV0 Enable Bit
- * |        |          |0 = CRV0 is Disabled.
- * |        |          |1 = CRV0 is Enabled.
- * |[21:16] |CRV1SEL   |Comparator1Comparator 1 Reference Voltage Setting
- * |        |          |CRV1 = CRV1 source voltage * (ACMP_VREF[21:16] )/ 63.
+ * |        |          |0 = CRV0/2 Disabled.
+ * |        |          |1 = CRV0/2 Enabled.
+ * |[21:16] |CRV1SEL   |ACMP Reference Voltage Setting 1
+ * |        |          |Set CRV output voltage for ACMP1 or ACMP3 negtive input.
+ * |        |          |CRV1/3 = CRV1/3 source voltage * (CRV1SEL)/ 63.
  * |[22]    |CRV1SSEL  |CRV1 Source Voltage Selection
- * |        |          |0 = AVDD is selected as CRV1 source voltage.
- * |        |          |1 = The reference voltage defined by SYS_VREFCTL register is selected as CRV1 source voltage.
+ * |        |          |0 = AVDD is selected as CRV1/3 source voltage.
+ * |        |          |1 = The reference voltage defined by VREFCTL (SYS_VREFCTL[4:0]) register is selected as CRV1/3 source voltage.
  * |[24]    |CRV1EN    |CRV1 Enable Bit
- * |        |          |0 = CRV1 is Disabled.
- * |        |          |1 = CRV1 is Enabled.
+ * |        |          |0 = CRV1/3 Disabled.
+ * |        |          |1 = CRV1/3 Enabled.
  * @var ACMP_T::CALCTL
- * Offset: 0x10  Analog Comparator 01 Calibration Control Register
+ * Offset: 0x10  Analog Comparator Calibration Control Register
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[0]     |CALTRG0   |Comparator0Comparator 0 Calibration Trigger Bit
+ * |[0]     |CALTRG0   |ACMP Calibration Trigger 0
+ * |        |          |Set ACMP0 or ACMP2 calibration trigger.
  * |        |          |0 = Calibration is stopped.
  * |        |          |1 = Calibration is triggered.
  * |        |          |Note 1: Before this bit is enabled, ACMPEN(ACMP_CTL0[0]) should be set and the internal high speed RC oscillator (HIRC) should be enabled in advance.
  * |        |          |Note 2: Hardware will auto clear this bit when the next calibration is triggered by software.
- * |        |          |Note 3: If user must trigger calibration twice or more times, the second trigger haves to wait at least 300us after the previous calibration is done.
- * |[1]     |CALTRG1   |Comparator1Comparator 1 Calibration Trigger Bit
+ * |        |          |Note 3: If user must trigger calibration twice or more times, the second trigger has to wait at least 300us after the previous calibration is done.
+ * |[1]     |CALTRG1   |ACMP Calibration Trigger 1
+ * |        |          |Set ACMP1 or ACMP3 calibration trigger.
  * |        |          |0 = Calibration is stopped.
  * |        |          |1 = Calibration is triggered.
  * |        |          |Note 1: Before this bit is enabled, ACMPEN(ACMP_CTL1[0]) should be set and the internal high speed RC oscillator (HIRC) should be enabled in advance.
  * |        |          |Note 2: Hardware will auto clear this bit when the next calibration is triggered by software.
- * |        |          |Note 3: If user must trigger calibration twice or more times, the second trigger haves to wait at least 300us after the previous calibration is done.
- * |[5:4]   |CALCLK0   |Comparator0Comparator 0 Calibration Clock Rate Selection
+ * |        |          |Note 3: If user must trigger calibration twice or more times, the second trigger has to wait at least 300us after the previous calibration is done.
+ * |[5:4]   |CALCLK0   |Comparator0 Calibration Clock Rate Selection 0
+ * |        |          |Set ACMP0 or ACMP2 calibration clock rate.
  * |        |          |00 = 1.5 kHz.
  * |        |          |01 = 6 kHz.
- * |        |          |10 = 24kHz.
+ * |        |          |10 = 24 kHz.
  * |        |          |11 = 95 kHz.
- * |[7:6]   |CALCLK1   |Comparator1Comparator 1 Calibration Clock Rate Selection
+ * |[7:6]   |CALCLK1   |ACMP Calibration Clock Rate Selection 1
+ * |        |          |Set ACMP1 or ACMP3 calibration clock rate.
  * |        |          |00 = 1.5 kHz.
  * |        |          |01 = 6 kHz.
- * |        |          |10 = 24kHz.
+ * |        |          |10 = 24 kHz.
  * |        |          |11 = 95 kHz.
- * |[8]     |OFFSETSEL |Comparator Trim Code Selection
+ * |[8]     |OFFSETSEL |ACMP Trim Code Selection
  * |        |          |0 = calibration trim code will not minus 1 when calibrated done.
  * |        |          |1 = calibration trim code will not minus 1 when calibrated done.
  * |[17:16] |CALRVS    |Calibration Reference Voltage Selection
- * |        |          |00 = option0 (N-pair calibration: 5V - 80mV, P-pair calibration: 80mV)
- * |        |          |01 = option1
- * |        |          |10 = option2 (N-pair calibration: 5V - 160mV, P-pair calibration: 160mV)
- * |        |          |11 = Reserved
- * |        |          |Note: CRV0 and CRV1 must be the same setting in calibration
+ * |        |          |00 = option0 (N-pair calibration: 5V - 80mV, P-pair calibration: 80mV).
+ * |        |          |01 = option1.
+ * |        |          |10 = option2 (N-pair calibration: 5V - 160mV, P-pair calibration: 160mV).
+ * |        |          |11 = Reserved.
+ * |        |          |Note: CRV0/2 and CRV1/3 must be the same setting in calibration
  * |        |          |Note: The details refer to Analog ACMP SPEC
- * @var ACMP_T::CALSTS
- * Offset: 0x14  Analog Comparator 01 Calibration Status Register
+ * @var ACMP_T::CALSR
+ * Offset: 0x14  Analog Comparator Calibration Status Register
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[0]     |DONE0     |Comparator 0 Calibration Done Status
+ * |[0]     |DONE0     |ACMP Calibration Done Status 0
+ * |        |          |This bit will be set when ACMP0 or ACMP2 calibration is done.
  * |        |          |0 = Calibrating.
  * |        |          |1 = Calibration done.
- * |        |          |NOTE: this bit is write 1 clear
- * |[4]     |DONE1     |Comparator 1 Calibration Done Status
+ * |        |          |Note: this bit is write 1 clear
+ * |[4]     |DONE1     |ACMP Calibration Done Status 1
+ * |        |          |This bit will be set when ACMP1 or ACMP3 calibration is done.
  * |        |          |0 = Calibrating.
  * |        |          |1 = Calibration done.
- * |        |          |NOTE: this bit is write 1 clear
- * @var ACMP_T::COFF
- * Offset: 0xFF0  Analog Comparator 01 Calibration Offset Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[3:0]   |NCODE0    |Comparator0Comparator 0 Offset of NMOS
- * |        |          |ACMP0 offset canceling trim code of NMOS
- * |        |          |Note: 1. Once ACMP0 is enabled, reading these bits will gets initial value from ROMMAP46[19:16]
- * |        |          |2. write MODESEL ACMP_CTL0[29:28] will decide NCODE0 load from which ROMMAP
- * |        |          | MODESEL = 2'b00, NCODE0 load from ROMMAP46[3:0]
- * |        |          | MODESEL = 2'b01, NCODE0 load from ROMMAP46[19:16]
- * |        |          | MODESEL = 2'b10, NCODE0 load from ROMMAP47[3:0]
- * |        |          | MODESEL = 2'b11, NCODE0 load from ROMMAP47[19:16]
- * |[7]     |NSEL0     |Comparator0Comparator 0 Offset of NMOS
- * |        |          |0 = trim NMOS negative offset
- * |        |          |1 = trim NMOS positive offset
- * |        |          |Note: 1. Once ACMP0 is enabled, reading this bit default will get initial value from ROMMAP46[20]
- * |        |          | 2. write MODESEL ACMP_CTL0[29:28] will decide NSEL0 load from which ROMMAP
- * |        |          | MODESEL = 2'b00, NSEL0 load from ROMMAP46[4]
- * |        |          | MODESEL = 2'b01, NSEL0 load from ROMMAP46[20]
- * |        |          | MODESEL = 2'b10, NSEL0 load from ROMMAP47[4]
- * |        |          | MODESEL = 2'b11, NSEL0 load from ROMMAP47[20]
- * |        |          |2
- * |        |          |If ACMP0 is enabled and CALTRG0 (ACMP_CALCTL01[0]]) is set, after calibration done DONE0(ACMP_CALSRTS01[0]) will get NSEL0 value
- * |[11:8]  |PCODE0    |Comparator0Comparator 0 Offset of PMOS
- * |        |          |ACMP0 offset canceling trim code of PMOS
- * |        |          |Note: 1. Once ACMP0 is enabled, reading these bits default will get initial value from ROMMAP46[27:24]
- * |        |          |2. write MODESEL ACMP_CTL0[29:28] will decide PCODE0 load from which ROMMAP
- * |        |          | MODESEL =2'b00, PCODE0 load from ROMMAP46[11:8]
- * |        |          | MODESEL =2'b01, PCODE0 load from ROMMAP46[27:24]
- * |        |          | MODESEL =2'b10, PCODE0 load from ROMMAP47[11:8]
- * |        |          | MODESEL =2'b11, PCODE0 load from ROMMAP47[27:24]
- * |[15]    |PSEL0     |Comparator0Comparator 0 Offset of PMOS
- * |        |          |0 = trim PMOS negative offset
- * |        |          |1 = trim PMOS positive offset
- * |        |          |Note: 1. Once ACMP0 is enabled, reading this bit default will get initial value from ROMMAP46[28].
- * |        |          |2. write MODESEL ACMP_CTL0[29:28] will decide PSEL0 load from which ROMMAP
- * |        |          | MODESEL = 2'b00, PSEL0 load from ROMMAP46[12]
- * |        |          | MODESEL = 2'b01, PSEL0 load from ROMMAP48[28]
- * |        |          | MODESEL = 2'b10, PSEL0 load from ROMMAP47[12]
- * |        |          | MODESEL = 2'b11, PSEL0 load from ROMMAP47[28]
- * |        |          |3
- * |        |          |If ACMP0 is enabled and CALTRG0 (ACMP_CALCTL01[0]]) is set, after calibration done DONE0(ACMP_CALSACMP_CALSTS01R[0]) will get PSEL0 value
- * |[19:16] |NCODE1    |Comparator 1 Offset of NMOS
- * |        |          |ACMP1 offset canceling trim code of PMOS
- * |        |          |Note: 1. Once ACMP1 is enabled, reading these bits default will get initial value from ROMMAP48[19:16]
- * |        |          |2. write MODESEL ACMP_CTL1[29:28] will decide NCODE1 load from which ROMMAP
- * |        |          | MODESEL =  2'b00, NCODE1load from ROMMAP48[3:0]
- * |        |          | MODESEL =  2'b01, NCODE1 load from ROMMAP48[19:16]
- * |        |          | MODESEL =  2'b10, NCODE1 load from ROMMAP49[3:0]
- * |        |          | MODESEL =  2'b11, NCODE1 load from ROMMAP49[19:16]
- * |[23]    |NSEL1     |Comparator 1 Offset of NMOS
- * |        |          |0 = trim NMOS negative offset
- * |        |          |1 = trim NMOS positive offset
- * |        |          |Note: 1. Once ACMP1 is enabled, reading this bit default will get initial value from ROMMAP48[20]
- * |        |          | 2. write MODESEL ACMP_CTL1[29:28] will decide NSEL1 load from which ROMMAP
- * |        |          | MODESEL =  2'b00, NSEL1 load from ROMMAP48[4]
- * |        |          | MODESEL =  2'b01, NSEL1 load from ROMMAP48[20]
- * |        |          | MODESEL =  2'b10, NSEL1 load from ROMMAP49[4]
- * |        |          | MODESEL =  2'b11, NSEL1 load from ROMMAP49[20]
- * |        |          |3
- * |        |          |If ACMP1 is enabled and CALTRG1 (ACMP_CALCTL01[1]]) is set, after calibration done DONE1(ACMP_CALSRTS01[4]) will get NSEL1 value
- * |[27:24] |PCODE1    |Comparator 1 Offset of PMOS
- * |        |          |ACMP1 offset canceling trim code of PMOS
- * |        |          |Note: 1. Once ACMP1 is enabled, reading these bits default will get initial value from ROMMAP48[27:24]
- * |        |          |2. write MODESEL ACMP_CTL1[29:28] will decide PCODE1 load from which ROMMAP
- * |        |          | MODESEL = 2'b00, PCODE1 load from ROMMAP48[11:8]
- * |        |          | MODESEL = 2'b01, PCODE1 load from ROMMAP48[27:24]
- * |        |          | MODESEL = 2'b10, PCODE1 load from ROMMAP49[11:8]
- * |        |          | MODESEL = 2'b11, PCODE1 load from ROMMAP49[27:24]
- * |[31]    |PSEL1     |Comparator 1 Offset of PMOS
- * |        |          |0 = trim PMOS negative offset
- * |        |          |1 = trim PMOS positive offset
- * |        |          |Note: 1. Once ACMP1 is enabled, reading this bit default will get initial value from ROMMAP48[28]
- * |        |          | 2. write MODESEL ACMP_CTL1[29:28] will decide PSEL1 load from which ROMMAP
- * |        |          | MODESEL =  2'b00, PSEL1 load from ROMMAP48[12]
- * |        |          | MODESEL =  2'b01, PSEL1 load from ROMMAP48[28]
- * |        |          | MODESEL =  2'b10, PSEL1 load from ROMMAP49[12]
- * |        |          | MODESEL =  2'b11, PSEL1 load from ROMMAP49[28]
- * |        |          |3.If ACMP1 is enabled and CALTRG1 (ACMP_CALCTL01[1]]) is set, after calibration done DONE1(ACMP_CALSRTS01[4]) will get PSEL1 value
- * @var ACMP_T::TEST
- * Offset: 0xFF8  Analog Comparator 01 Test Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |CRV0TEST  |CRV0 Test Mode Enable Bit (Write Protect)
- * |        |          |0 = No effect.
- * |        |          |1 = CRV voltage output to ACMP0_N pin for voltage measure.
- * |        |          |This bit is designed for Nuvoton Lab use only.
- * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
- * |        |          |Note: NEGSEL (ACMP_CTL0[6:4]) or NEGSEL (ACMP_CTL1[6:4]) must select to 2'b01 in CRV test mode
- * |[1]     |CRV1TEST  |CRV1 Test Mode Enable Bit (Write Protect)
- * |        |          |0 = No effect.
- * |        |          |1 = CRV voltage output to ACMP0_N pin for voltage measure.
- * |        |          |This bit is designed for Nuvoton Lab use only.
- * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
- * |        |          |Note: NEGSEL (ACMP_CTL0[6:4]) or NEGSEL (ACMP_CTL1[6:4]) must select to 2'b01 in CRV test mode
- * |[4]     |OUTSEL    |Comparator CRV Output Source Selection
- * |        |          |0 = CRV output from resistor string
- * |        |          |1 = CRV output from bandgap voltage
- * |[8]     |HYSBYPASS |Hysteresis Adjust Function Selection
- * |        |          |0 = Enable adjust function
- * |        |          |1 = Bypass adjust function
- * @var ACMP_T::VERSION
- * Offset: 0xFFC  Analog Comparator RTL Design Version Number
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |MINOR     |Comp RTL Design MINOR Version Number
- * |        |          |Minor version number is dependent on module ECO version control.
- * |[23:16] |SUB       |Comp RTL Design SUB Version Number
- * |        |          |Major version number is correlated to Product Line.
- * |[31:24] |MAJOR     |Comp RTL Design MAJOR Version Number
- * |        |          |Major version number is correlated to Product Line.
+ * |        |          |Note: this bit is write 1 clear
  */
     __IO uint32_t CTL[2];           /*!< [0x00-004] Analog Comparator 0/1/2/3 Control Register          */
     __IO uint32_t STATUS;           /*!< [0x08] Analog Comparator Status Register                       */
     __IO uint32_t VREF;             /*!< [0x0C] Analog Comparator Reference Voltage Control Register    */
     __IO uint32_t CALCTL;           /*!< [0x10] Analog Comparator Calibration Control Register          */
     __IO uint32_t CALSR;            /*!< [0x14] Analog Comparator Calibration Status Register           */
-    __I  uint32_t RESERVE0[1014];
-    __IO uint32_t COFF;             /*!< [0xFF0] Analog Comparator Calibration Offset Register          */
-     __I  uint32_t RESERVE1[1];
-    __IO uint32_t TEST;             /*!< [0xFF8] Analog Comparator Test Control Register                */
-    __I  uint32_t VERSION;          /*!< [0xFFC] Analog Comparator RTL Design Version Number            */
 } ACMP_T;
 
 /**
@@ -533,67 +429,6 @@ typedef struct
 
 #define ACMP_COFF_NCODE0_Pos            (0)                                         /*!< ACMP_T::COFF: NCODE0 Position              */
 #define ACMP_COFF_NCODE0_Msk            (0xfUL << ACMP_COFF_NCODE0_Pos)             /*!< ACMP_T::COFF: NCODE0 Mask                  */
-
-#define ACMP_COFF_NSEL0_Pos             (7)                                         /*!< ACMP_T::COFF: NSEL0 Position               */
-#define ACMP_COFF_NSEL0_Msk             (0x1UL << ACMP_COFF_NSEL0_Pos)              /*!< ACMP_T::COFF: NSEL0 Mask                   */
-
-#define ACMP_COFF_PCODE0_Pos            (8)                                         /*!< ACMP_T::COFF: PCODE0 Position              */
-#define ACMP_COFF_PCODE0_Msk            (0xfUL << ACMP_COFF_PCODE0_Pos)             /*!< ACMP_T::COFF: PCODE0 Mask                  */
-
-#define ACMP_COFF_PSEL0_Pos             (15)                                        /*!< ACMP_T::COFF: PSEL0 Position               */
-#define ACMP_COFF_PSEL0_Msk             (0x1UL << ACMP_COFF_PSEL0_Pos)              /*!< ACMP_T::COFF: PSEL0 Mask                   */
-
-#define ACMP_COFF_NCODE1_Pos            (16)                                        /*!< ACMP_T::COFF: NCODE1 Position              */
-#define ACMP_COFF_NCODE1_Msk            (0xfUL << ACMP_COFF_NCODE1_Pos)             /*!< ACMP_T::COFF: NCODE1 Mask                  */
-
-#define ACMP_COFF_NSEL1_Pos             (23)                                        /*!< ACMP_T::COFF: NSEL1 Position               */
-#define ACMP_COFF_NSEL1_Msk             (0x1UL << ACMP_COFF_NSEL1_Pos)              /*!< ACMP_T::COFF: NSEL1 Mask                   */
-
-#define ACMP_COFF_PCODE1_Pos            (24)                                        /*!< ACMP_T::COFF: PCODE1 Position              */
-#define ACMP_COFF_PCODE1_Msk            (0xfUL << ACMP_COFF_PCODE1_Pos)             /*!< ACMP_T::COFF: PCODE1 Mask                  */
-
-#define ACMP_COFF_PSEL1_Pos             (31)                                        /*!< ACMP_T::COFF: PSEL1 Position               */
-#define ACMP_COFF_PSEL1_Msk             (0x1UL << ACMP_COFF_PSEL1_Pos)              /*!< ACMP_T::COFF: PSEL1 Mask                   */
-
-#define ACMP_TEST_CRV0TEST_Pos          (0)                                         /*!< ACMP_T::TEST: CRV0TEST Position            */
-#define ACMP_TEST_CRV0TEST_Msk          (0x1UL << ACMP_TEST_CRV0TEST_Pos)           /*!< ACMP_T::TEST: CRV0TEST Mask                */
-
-#define ACMP_TEST_CRV1TEST_Pos          (1)                                         /*!< ACMP_T::TEST: CRV1TEST Position            */
-#define ACMP_TEST_CRV1TEST_Msk          (0x1UL << ACMP_TEST_CRV1TEST_Pos)           /*!< ACMP_T::TEST: CRV1TEST Mask                */
-
-#define ACMP_TEST_OUTSEL0_Pos           (4)                                         /*!< ACMP_T::TEST: OUTSEL0 Position             */
-#define ACMP_TEST_OUTSEL0_Msk           (0x1UL << ACMP_TEST_OUTSEL0_Pos)            /*!< ACMP_T::TEST: OUTSEL0 Mask                 */
-
-#define ACMP_TEST_OUTSEL1_Pos           (5)                                         /*!< ACMP_T::TEST: OUTSEL1 Position             */
-#define ACMP_TEST_OUTSEL1_Msk           (0x1UL << ACMP_TEST_OUTSEL1_Pos)            /*!< ACMP_T::TEST: OUTSEL1 Mask                 */
-
-#define ACMP_TEST_OTEN0_Pos             (6)                                         /*!< ACMP_T::TEST: OTEN0 Position               */
-#define ACMP_TEST_OTEN0_Msk             (0x1UL << ACMP_TEST_OTEN0_Pos)              /*!< ACMP_T::TEST: OTEN0 Mask                   */
-
-#define ACMP_TEST_OTEN1_Pos             (7)                                         /*!< ACMP_T::TEST: OTEN1 Position               */
-#define ACMP_TEST_OTEN1_Msk             (0x1UL << ACMP_TEST_OTEN1_Pos)              /*!< ACMP_T::TEST: OTEN1 Mask                   */
-
-#define ACMP_TEST_HYSBYP0_Pos           (8)                                         /*!< ACMP_T::TEST: HYSBYP0 Position             */
-#define ACMP_TEST_HYSBYP0_Msk           (0x1UL << ACMP_TEST_HYSBYP0_Pos)            /*!< ACMP_T::TEST: HYSBYP0 Mask                 */
-
-#define ACMP_TEST_HYSBYP1_Pos           (9)                                         /*!< ACMP_T::TEST: HYSBYP1 Position             */
-#define ACMP_TEST_HYSBYP1_Msk           (0x1UL << ACMP_TEST_HYSBYP1_Pos)            /*!< ACMP_T::TEST: HYSBYP1 Mask                 */
-
-#define ACMP_TEST_CCL0DIS_Pos           (12)                                        /*!< ACMP_T::TEST: CCL0DIS Position             */
-#define ACMP_TEST_CCL0DIS_Msk           (0x1UL << ACMP_TEST_CCL0DIS_Pos)            /*!< ACMP_T::TEST: CCL0DIS Mask                 */
-
-#define ACMP_TEST_CCL1DIS_Pos           (13)                                        /*!< ACMP_T::TEST: CCL1DIS Position             */
-#define ACMP_TEST_CCL1DIS_Msk           (0x1UL << ACMP_TEST_CCL1DIS_Pos)            /*!< ACMP_T::TEST: CCL1DIS Mask                 */
-
-#define ACMP_VERSION_MINOR_Pos          (0)                                         /*!< ACMP_T::VERSION: MINOR Position            */
-#define ACMP_VERSION_MINOR_Msk          (0xffffUL << ACMP_VERSION_MINOR_Pos)        /*!< ACMP_T::VERSION: MINOR Mask                */
-
-#define ACMP_VERSION_SUB_Pos            (16)                                        /*!< ACMP_T::VERSION: SUB Position              */
-#define ACMP_VERSION_SUB_Msk            (0xffUL << ACMP_VERSION_SUB_Pos)            /*!< ACMP_T::VERSION: SUB Mask                  */
-
-#define ACMP_VERSION_MAJOR_Pos          (24)                                        /*!< ACMP_T::VERSION: MAJOR Position            */
-#define ACMP_VERSION_MAJOR_Msk          (0xffUL << ACMP_VERSION_MAJOR_Pos)          /*!< ACMP_T::VERSION: MAJOR Mask                */
-
 
 
 /** @} ACMP_CONST */

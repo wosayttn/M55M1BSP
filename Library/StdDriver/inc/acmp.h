@@ -132,13 +132,13 @@ extern int32_t g_ACMP_i32ErrCode;
 #define ACMP_SET_NEG_SRC(acmp, u32ChNum, u32Src) ((acmp)->CTL[(u32ChNum)] = ((acmp)->CTL[(u32ChNum)] & ~ACMP_CTL_NEGSEL_Msk) | (u32Src))
 
 /**
-  * @brief This macro is used to enable hysteresis function and set hysteresis to 30mV
+  * @brief This macro is used to enable hysteresis function and set hysteresis to 40mV
   * @param[in] acmp The pointer of the specified ACMP module
   * @param[in] u32ChNum The ACMP number
   * @return None
   * \hideinitializer
   */
-#define ACMP_ENABLE_HYSTERESIS(acmp, u32ChNum) ((acmp)->CTL[(u32ChNum)] |= ACMP_CTL_HYSTERESIS_30MV)
+#define ACMP_ENABLE_HYSTERESIS(acmp, u32ChNum) ((acmp)->CTL[(u32ChNum)] |= ACMP_CTL_HYSTERESIS_40MV)
 
 /**
   * @brief This macro is used to disable hysteresis function
