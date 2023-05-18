@@ -18,6 +18,13 @@
     #define DEBUG_PORT UART0
 #endif
 
+#ifndef DEBUG_PORT_Init
+void DEBUG_PORT_Init(UART_T* psUART, uint32_t u32Baudrate)
+{
+    UART_Open(psUART, u32Baudrate);
+}
+#endif
+
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -52,7 +59,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART clock */
+    /* Enable UART module clock */
     CLK_EnableModuleClock(UART0_MODULE);
     SYS_ResetModule(SYS_UART0RST);
 
@@ -62,6 +69,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
+    /* Set GPB12 as UART0 RXD and GPB13 as UART0 TXD */
     SET_UART0_RXD_PB12();
     SET_UART0_TXD_PB13();
 
@@ -94,7 +102,7 @@ int main(int argc, char *argv[])
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
     /* Init DEBUG_PORT to 115200-8N1 for printf */
-    UART_Open(DEBUG_PORT, 115200);
+    DEBUG_PORT_Init(DEBUG_PORT, 115200);
     
     printf("\n\n");
     printf("+--------------------------------------+\n");

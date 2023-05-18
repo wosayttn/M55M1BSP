@@ -1,14 +1,14 @@
 /**************************************************************************//**
- * @file     kdf.c
+ * @file     scu.c
  * @version  V1.00
- * @brief    Key Derivation Function driver source file
+ * @brief    Security Configuration Unit driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 
 #include "NuMicro.h"
-#include "mpc_sie_drv.h"
+#include "scu/mpc.h"
 
 /** @addtogroup Standard_Driver Standard Driver
     @{

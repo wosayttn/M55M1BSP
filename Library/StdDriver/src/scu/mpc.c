@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "mpc_sie_drv.h"
 
 #include <stdbool.h>
 #include <stddef.h>
-
 #include "cmsis_compiler.h"
+#include "scu/mpc.h"
 
 #define MPC_SIE_BLK_CFG_OFFSET 5U
 
