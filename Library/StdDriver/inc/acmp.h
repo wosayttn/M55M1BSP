@@ -56,11 +56,8 @@ extern "C"
 #define ACMP_CTL_NEGSEL_DAC0         (3UL << ACMP_CTL_NEGSEL_Pos)  /*!< ACMP_CTL setting for selecting DAC0 output voltage as the source of ACMP V-. \hideinitializer */
 #define ACMP_CTL_NEGSEL_DAC1         (4UL << ACMP_CTL_NEGSEL_Pos)  /*!< ACMP_CTL setting for selecting DAC1 output voltage as the source of ACMP V-. \hideinitializer */
 
-#define ACMP_CTL_HYSTERESIS_50MV     (5UL << ACMP_CTL_HYSSEL_Pos)  /*!< ACMP_CTL setting for enabling the hysteresis function at 50mV. \hideinitializer */
 #define ACMP_CTL_HYSTERESIS_40MV     (4UL << ACMP_CTL_HYSSEL_Pos)  /*!< ACMP_CTL setting for enabling the hysteresis function at 40mV. \hideinitializer */
-#define ACMP_CTL_HYSTERESIS_30MV     (3UL << ACMP_CTL_HYSSEL_Pos)  /*!< ACMP_CTL setting for enabling the hysteresis function at 30mV. \hideinitializer */
 #define ACMP_CTL_HYSTERESIS_20MV     (2UL << ACMP_CTL_HYSSEL_Pos)  /*!< ACMP_CTL setting for enabling the hysteresis function at 20mV. \hideinitializer */
-#define ACMP_CTL_HYSTERESIS_10MV     (1UL << ACMP_CTL_HYSSEL_Pos)  /*!< ACMP_CTL setting for enabling the hysteresis function at 10mV. \hideinitializer */
 #define ACMP_CTL_HYSTERESIS_DISABLE  (0UL << ACMP_CTL_HYSSEL_Pos)  /*!< ACMP_CTL setting for disabling the hysteresis function. \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/

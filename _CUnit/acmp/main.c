@@ -6,6 +6,7 @@
 #include "CUnit.h"
 #include "Console.h"
 #include "acmp_cunit.h"
+#include "../pldm_emu.h"
 
 #ifndef DEBUG_PORT
     #define DEBUG_PORT UART0
@@ -61,11 +62,23 @@ void SYS_Init(void)
 
     /* Enable ACMP module clock */
     CLK_EnableModuleClock(ACMP01_MODULE);
+    /* Enable ACMP module clock */
+    CLK_EnableModuleClock(ACMP23_MODULE);
     /* Enable GPA module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
     /* Enable GPB module clock */
     CLK_EnableModuleClock(GPIOB_MODULE);
-    /* Update System Core Clock */
+    /* Enable GPA module clock */
+    CLK_EnableModuleClock(GPIOD_MODULE);
+    /* Enable GPB module clock */
+    CLK_EnableModuleClock(GPIOE_MODULE);
+		    /* Enable GPA module clock */
+    CLK_EnableModuleClock(GPIOG_MODULE);
+    /* Enable GPB module clock */
+    CLK_EnableModuleClock(GPIOH_MODULE);
+
+
+   /* Update System Core Clock */
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -89,12 +102,13 @@ void AddTests(void)
 {
     assert((NULL != CU_get_registry()));
     assert(!CU_is_test_running());
-
+ 
     if (CUE_SUCCESS != CU_register_suites(ACMP_Suites))
     {
         fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
         exit(EXIT_FAILURE);
     }
+
 }
 
 int main(int argc, char *argv[])
@@ -102,8 +116,9 @@ int main(int argc, char *argv[])
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
     /* Init DEBUG_PORT to 115200-8N1 for printf */
-    UART_Open(DEBUG_PORT, 115200);
-    
+//    UART_Open(DEBUG_PORT, 115200);
+    DEBUG_PORT_Init(DEBUG_PORT, 115200);
+	
     printf("\n\n");
     printf("+--------------------------------------+\n");
     printf("|       M55M1 Template CUnit Test      |\n");
