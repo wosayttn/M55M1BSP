@@ -429,6 +429,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Library\StdDriver\src\acmp.c</FilePath>
             </File>
+            <File>
+              <FileName>gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\gpio.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -870,6 +875,11 @@
               <FileName>acmp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Library\StdDriver\src\acmp.c</FilePath>
+            </File>
+            <File>
+              <FileName>gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\gpio.c</FilePath>
             </File>
           </Files>
         </Group>

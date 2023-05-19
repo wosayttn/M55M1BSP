@@ -468,7 +468,6 @@ int32_t PMC_Check_BusyFlag(uint32_t PMCBusyFlagAddr)
 
     while(*(volatile uint32_t *)PMCBusyFlagAddr & BIT31)
     {
-        printf("Addr[0x%08x]=0x%08x\n",PMCBusyFlagAddr,*(volatile uint32_t *)PMCBusyFlagAddr);
         if(i32TimeOutCnt-- <= 0) return PMC_ERR_TIMEOUT;
     }
 

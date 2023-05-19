@@ -43,7 +43,7 @@ void SystemCoreClockUpdate(void)
     uint32_t u32Freq;
     uint32_t u32AclkDiv;
 
-    u32Freq = SystemClockUpdate();
+    u32Freq = CLK_SystemClockUpdate();
     
     u32AclkDiv = (CLK->ACLKDIV & CLK_ACLKDIV_ACLKDIV_Msk) + 1UL;
 

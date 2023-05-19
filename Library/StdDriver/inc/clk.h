@@ -1182,7 +1182,7 @@ uint32_t CLK_GetAPLL0ClockFreq(void);
 uint32_t CLK_GetAPLL1ClockFreq(void);
 uint32_t CLK_GetModuleClockSource(uint64_t u64ModuleIdx);
 uint32_t CLK_GetModuleClockDivider(uint64_t u64ModuleIdx);
-uint32_t SystemClockUpdate(void);
+uint32_t CLK_SystemClockUpdate(void);
 
 /** @} end of group CLK_EXPORTED_FUNCTIONS */
 

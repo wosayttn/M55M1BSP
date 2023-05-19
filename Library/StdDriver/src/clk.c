@@ -302,7 +302,7 @@ uint32_t CLK_GetPCLK5Freq(void)
   */
 uint32_t CLK_GetSCLKFreq(void)
 {
-    SystemClockUpdate();
+    CLK_SystemClockUpdate();
     
     return SystemCoreClock;
 }
@@ -331,7 +331,7 @@ uint32_t CLK_GetHCLK0Freq(void)
     uint32_t u32SclkFreq, u32Hclk0;
     uint32_t u32Hclk0Div;
 
-    u32SclkFreq = SystemClockUpdate();
+    u32SclkFreq = CLK_SystemClockUpdate();
     
     u32Hclk0Div = ((CLK->HCLKDIV & CLK_HCLKDIV_HCLK0DIV_Msk) >> CLK_HCLKDIV_HCLK0DIV_Pos) + 1UL;
 
@@ -352,7 +352,7 @@ uint32_t CLK_GetHCLK1Freq(void)
     uint32_t u32SclkFreq, u32Hclk1;
     uint32_t u32Hclk1Div;
 
-    u32SclkFreq = SystemClockUpdate();
+    u32SclkFreq = CLK_SystemClockUpdate();
     
     u32Hclk1Div = ((CLK->HCLKDIV & CLK_HCLKDIV_HCLK1DIV_Msk) >> CLK_HCLKDIV_HCLK1DIV_Pos) + 1UL;
 
@@ -373,7 +373,7 @@ uint32_t CLK_GetHCLK2Freq(void)
     uint32_t u32SclkFreq, u32Hclk2;
     uint32_t u32Hclk2Div;
 
-    u32SclkFreq = SystemClockUpdate();
+    u32SclkFreq = CLK_SystemClockUpdate();
     
     u32Hclk2Div = ((CLK->HCLKDIV & CLK_HCLKDIV_HCLK2DIV_Msk) >> CLK_HCLKDIV_HCLK2DIV_Pos) + 1UL;
 
@@ -1785,7 +1785,7 @@ uint32_t CLK_GetAPLL1ClockFreq(void)
   * @return     System clock frequency
   * @details    This function get system clock frequency. The frequency unit is Hz.
   */
-uint32_t SystemClockUpdate(void)
+uint32_t CLK_SystemClockUpdate(void)
 {
     uint32_t SystemClock, u32ClkSrc;
     uint32_t gau32ClkSrcTbl[] = {__HIRC, 0UL, __HIRC48M, __HXT, 0UL,};
