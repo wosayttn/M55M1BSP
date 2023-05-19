@@ -27,6 +27,9 @@ extern "C"
   @{
 */
 
+/*---------------------------------------------------------------------------------------------------------*/
+/*  Frequency constant definitions.                                                                        */
+/*---------------------------------------------------------------------------------------------------------*/
 #define FREQ_1MHZ          1000000UL    /*!< 1 MHz \hideinitializer */
 #define FREQ_2MHZ          2000000UL    /*!< 2 MHz \hideinitializer */
 #define FREQ_4MHZ          4000000UL    /*!< 4 MHz \hideinitializer */
@@ -35,9 +38,11 @@ extern "C"
 #define FREQ_24MHZ         24000000UL   /*!< 24 MHz \hideinitializer */
 #define FREQ_25MHZ         25000000UL   /*!< 25 MHz \hideinitializer */
 #define FREQ_40MHZ         40000000UL   /*!< 40 MHz \hideinitializer */
+#define FREQ_45MHZ         45000000UL   /*!< 45 MHz \hideinitializer */
 #define FREQ_50MHZ         50000000UL   /*!< 50 MHz \hideinitializer */
 #define FREQ_75MHZ         75000000UL   /*!< 75 MHz \hideinitializer */
 #define FREQ_80MHZ         80000000UL   /*!< 80 MHz \hideinitializer */
+#define FREQ_90MHZ         90000000UL   /*!< 90 MHz \hideinitializer */
 #define FREQ_100MHZ        100000000UL  /*!< 100 MHz \hideinitializer */
 #define FREQ_120MHZ        120000000UL  /*!< 120 MHz \hideinitializer */
 #define FREQ_125MHZ        125000000UL  /*!< 125 MHz \hideinitializer */
