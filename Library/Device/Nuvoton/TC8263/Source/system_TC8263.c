@@ -58,11 +58,81 @@ uint32_t GetSystemCoreClock(void)
     return SystemCoreClock;
 }
 
+#ifndef NVT_DBG_UART_OFF
+/**
+ * Set debug UART multi-function pins
+ *
+ * @param  none
+ * @return none
+ *
+ * @brief  Set debug UART multi-function pins
+ */
+__WEAK void SetDebugUartMFP(void)
+{
+#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
+
+    /* Set GPB12 as UART0 RXD and GPB13 as UART0 TXD */
+    SET_UART0_RXD_PB12();
+    SET_UART0_TXD_PB13();
+
+#endif /* !defined(DEBUG_ENABLE_SEMIHOST) || !defined(OS_USE_SEMIHOSTING) */
+}
+
+/**
+ * Set debug UART clock
+ *
+ * @param    None
+ * @return   None
+ *
+ * @brief  Set debug UART clock source and enable module clock.
+ */
+__WEAK void SetDebugUartCLK(void)
+{
+#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
+
+    /* Select UART clock source from HIRC */
+    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+
+    /* Enable UART clock */
+    CLK_EnableModuleClock(UART0_MODULE);
+
+#endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
+}
+
+/**
+ * @brief    Init UART
+ *
+ * @param    None
+ * @return   None
+ *
+ * @details  Initialize debug UART to 115200-8n1
+ */
+__WEAK void InitDebugUart(void)
+{
+#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
+
+    /* Reset UART module */
+    SYS_ResetModule(SYS_UART0RST);
+    /* Init UART to 115200-8n1 for print message */
+    UART_Open(DEBUG_PORT, 115200);
+
+#endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
+}
+#endif /* NVT_DBG_UART_OFF */
+
 /*----------------------------------------------------------------------------
   System initialization function
  *----------------------------------------------------------------------------*/
 __attribute__ ((constructor)) void SystemInit(void)
 {
+#ifndef NVT_ICACHE_OFF
+    SCB_EnableICache();
+#endif
+    
+#ifndef NVT_DCACHE_OFF
+    SCB_EnableDCache();
+#endif
+
 #if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
     SCB->VTOR = (uint32_t)(&__VECTOR_TABLE[0]);
 #endif
@@ -101,7 +171,6 @@ __attribute__ ((constructor)) void SystemInit(void)
     FMC_NSCBA_Setup();
 #endif
 }
-
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
 /**

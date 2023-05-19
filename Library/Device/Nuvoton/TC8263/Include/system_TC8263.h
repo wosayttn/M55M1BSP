@@ -104,6 +104,40 @@ extern void SystemCoreClockUpdate (void);
  **/
 extern uint32_t GetSystemCoreClock(void);
 
+#ifndef NVT_DBG_UART_OFF
+/**
+ * Set debug UART multi-function pins
+ *
+ * @param  none
+ * @return none
+ *
+ * @brief  Set debug UART multi-function pins
+ */
+extern void SetDebugUartMFP(void);
+
+/**
+ * Set debug UART clock
+ *
+ * @param    None
+ * @return   None
+ *
+ * @brief  Set debug UART clock source and enable module clock.
+ */
+extern void SetDebugUartCLK(void);
+
+
+/**
+ * @brief    Init UART
+ *
+ * @param    None
+ * @return   None
+ *
+ * @details  Initialize debug UART to 115200-8n1
+ */
+extern void InitDebugUart(void);
+
+#endif /* NVT_DBG_UART_OFF */
+
 #ifdef __cplusplus
 }
 #endif

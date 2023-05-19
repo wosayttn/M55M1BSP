@@ -1337,7 +1337,7 @@ typedef enum IRQn
 #endif
 
 /* SCU_D2PNS0 */
-#if defined (SCU_INIT_D2PNS0_VAL) && (SCU_INIT_D2PNS0_VAL & SCU_D2PNS0_LPDMA_Msk)
+#if defined (SCU_INIT_D2PNS0_VAL) && (SCU_INIT_D2PNS0_VAL & SCU_D2PNS0_LPPDMA_Msk)
     #define LPPDMA       LPPDMA_NS
 #else
     #define LPPDMA       LPPDMA_S

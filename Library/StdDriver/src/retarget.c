@@ -75,16 +75,6 @@ int32_t SH_DoCommand(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
 #ifndef NONBLOCK_PRINTF
 static void SendChar_ToUART(int ch)
 {
-    uint32_t u32TubeAddr = 0x5000F000;
-    
-#if defined (__TUBE_PRINTF__)
-    if(ch == '\n')
-    {
-        M32(u32TubeAddr) = '\r';
-    }
-    
-    M32(u32TubeAddr) = (uint8_t)ch;
-#else
     if((char)ch == '\n')
     {
         while(DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk) {}
@@ -93,7 +83,6 @@ static void SendChar_ToUART(int ch)
 
     while(DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk) {}
     DEBUG_PORT->DAT = (uint32_t)ch;
-#endif
 }
 
 #else
