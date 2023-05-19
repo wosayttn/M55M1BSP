@@ -33,13 +33,14 @@ int32_t KS_Open(void)
     uint32_t u32TimeOutCount;
 
     /* Key store initial */
-    if((KS->STS & KS_STS_INITDONE_Msk) == 0)
+    if ((KS->STS & KS_STS_INITDONE_Msk) == 0)
     {
         /* Waiting for busy */
         u32TimeOutCount = KS_TIMEOUT;
-        while(KS->STS & KS_STS_BUSY_Msk)
+
+        while (KS->STS & KS_STS_BUSY_Msk)
         {
-            if(--u32TimeOutCount == 0)
+            if (--u32TimeOutCount == 0)
             {
                 return KS_ERR_TIMEOUT;
             }
@@ -50,9 +51,10 @@ int32_t KS_Open(void)
 
         /* Waiting for initilization */
         u32TimeOutCount = KS_TIMEOUT;
-        while((KS->STS & KS_STS_INITDONE_Msk) == 0)
+
+        while ((KS->STS & KS_STS_INITDONE_Msk) == 0)
         {
-            if(--u32TimeOutCount == 0)
+            if (--u32TimeOutCount == 0)
             {
                 return KS_ERR_TIMEOUT;
             }
@@ -61,9 +63,10 @@ int32_t KS_Open(void)
 
     /* Waiting busy to make sure KS is ready. */
     u32TimeOutCount = KS_TIMEOUT;
-    while(KS->STS & KS_STS_BUSY_Msk)
+
+    while (KS->STS & KS_STS_BUSY_Msk)
     {
-        if(--u32TimeOutCount == 0)
+        if (--u32TimeOutCount == 0)
         {
             return KS_ERR_TIMEOUT;
         }
@@ -95,7 +98,7 @@ int32_t KS_Read(KS_MEM_Type eMemType, int32_t i32KeyIdx, uint32_t au32Key[], uin
     uint32_t u32TimeOutCount;
 
     /* Just return when key store is in busy */
-    if(KS->STS & KS_STS_BUSY_Msk)
+    if (KS->STS & KS_STS_BUSY_Msk)
         return KS_ERR_BUSY;
 
     /* Specify the key address */
@@ -106,6 +109,7 @@ int32_t KS_Read(KS_MEM_Type eMemType, int32_t i32KeyIdx, uint32_t au32Key[], uin
     offset = 0;
     u32Cont = 0;
     i32Cnt = (int32_t)u32WordCnt;
+
     do
     {
         /* Clear Status */
@@ -115,17 +119,20 @@ int32_t KS_Read(KS_MEM_Type eMemType, int32_t i32KeyIdx, uint32_t au32Key[], uin
         KS->CTL = u32Cont | KS_OP_READ | KS_CTL_START_Msk | (KS->CTL & (KS_CTL_SILENT_Msk | KS_CTL_SCMB_Msk));
         /* Waiting for key store processing */
         u32TimeOutCount = KS_TIMEOUT;
-        while(KS->STS & KS_STS_BUSY_Msk)
+
+        while (KS->STS & KS_STS_BUSY_Msk)
         {
-            if(--u32TimeOutCount == 0)
+            if (--u32TimeOutCount == 0)
                 return KS_ERR_TIMEOUT;
         }
 
         /* Read the key to key buffer */
         cnt = i32Cnt;
-        if(cnt > 8)
+
+        if (cnt > 8)
             cnt = 8;
-        for(i = 0; i < cnt; i++)
+
+        for (i = 0; i < cnt; i++)
         {
             au32Key[offset + i] = KS->KEY[i];
         }
@@ -133,11 +140,10 @@ int32_t KS_Read(KS_MEM_Type eMemType, int32_t i32KeyIdx, uint32_t au32Key[], uin
         u32Cont = KS_CTL_CONT_Msk;
         i32Cnt -= 8;
         offset += 8;
-    }
-    while(i32Cnt > 0);
+    } while (i32Cnt > 0);
 
     /* Check error flag */
-    if(KS->STS & KS_STS_EIF_Msk)
+    if (KS->STS & KS_STS_EIF_Msk)
         return KS_ERR_FAIL;
 
 
@@ -224,7 +230,7 @@ int32_t KS_Write(KS_MEM_Type eMemType, uint32_t u32Meta, uint32_t au32Key[])
     uint32_t u32TimeOutCount;
 
     /* Just return when key store is in busy */
-    if(KS->STS & KS_STS_BUSY_Msk)
+    if (KS->STS & KS_STS_BUSY_Msk)
     {
         //printf("KS->STS: 0x%08X\n", KS->STS);
         return KS_ERR_BUSY;
@@ -237,24 +243,27 @@ int32_t KS_Write(KS_MEM_Type eMemType, uint32_t u32Meta, uint32_t au32Key[])
     i32Cnt = (int32_t)KS_GetKeyWordCnt(u32Meta);
 
     /* Invalid key length */
-    if(i32Cnt == 0)
+    if (i32Cnt == 0)
         return KS_ERR_PARAMETER;
 
     /* OTP only support maximum 256 bits */
-    if((eMemType == KS_OTP) && (i32Cnt > 8))
+    if ((eMemType == KS_OTP) && (i32Cnt > 8))
         return KS_ERR_PARAMETER;
 
     /* Clear error flag */
     KS->STS = KS_STS_EIF_Msk;
     offset = 0;
     u32Cont = 0;
+
     do
     {
         /* Prepare the key to write */
         cnt = i32Cnt;
-        if(cnt > 8)
+
+        if (cnt > 8)
             cnt = 8;
-        for(i = 0; i < cnt; i++)
+
+        for (i = 0; i < cnt; i++)
         {
             KS->KEY[i] = au32Key[offset + i];
         }
@@ -271,17 +280,17 @@ int32_t KS_Write(KS_MEM_Type eMemType, uint32_t u32Meta, uint32_t au32Key[])
 
         /* Waiting for key store processing */
         u32TimeOutCount = KS_TIMEOUT;
-        while(KS->STS & KS_STS_BUSY_Msk)
+
+        while (KS->STS & KS_STS_BUSY_Msk)
         {
-            if(--u32TimeOutCount == 0)
+            if (--u32TimeOutCount == 0)
                 return KS_ERR_TIMEOUT;
         }
 
-    }
-    while(i32Cnt > 0);
+    } while (i32Cnt > 0);
 
     /* Check error flag */
-    if(KS->STS & KS_STS_EIF_Msk)
+    if (KS->STS & KS_STS_EIF_Msk)
     {
         return KS_ERR_FAIL;
     }
@@ -301,7 +310,7 @@ int32_t KS_EraseKey(int32_t i32KeyIdx)
     uint32_t u32TimeOutCount = KS_TIMEOUT;
 
     /* Just return when key store is in busy */
-    if(KS->STS & KS_STS_BUSY_Msk)
+    if (KS->STS & KS_STS_BUSY_Msk)
         return KS_ERR_BUSY;
 
     /* Specify the key address */
@@ -314,14 +323,14 @@ int32_t KS_EraseKey(int32_t i32KeyIdx)
     KS->CTL = KS_OP_ERASE | KS_CTL_START_Msk  | (KS->CTL & (KS_CTL_SILENT_Msk | KS_CTL_SCMB_Msk));
 
     /* Waiting for processing */
-    while(KS->STS & KS_STS_BUSY_Msk)
+    while (KS->STS & KS_STS_BUSY_Msk)
     {
-        if(--u32TimeOutCount == 0)
+        if (--u32TimeOutCount == 0)
             return KS_ERR_TIMEOUT;
     }
 
     /* Check error flag */
-    if(KS->STS & KS_STS_EIF_Msk)
+    if (KS->STS & KS_STS_EIF_Msk)
         return KS_ERR_FAIL;
 
     return KS_OK;
@@ -340,7 +349,7 @@ int32_t KS_EraseOTPKey(int32_t i32KeyIdx)
     uint32_t u32TimeOutCount = KS_TIMEOUT; /* 1 second time-out */
 
     /* Just return when key store is in busy */
-    if(KS->STS & KS_STS_BUSY_Msk)
+    if (KS->STS & KS_STS_BUSY_Msk)
         return KS_ERR_BUSY;
 
     /* Specify the key address */
@@ -353,14 +362,14 @@ int32_t KS_EraseOTPKey(int32_t i32KeyIdx)
     KS->CTL = KS_OP_ERASE | KS_CTL_START_Msk;
 
     /* Waiting for processing */
-    while(KS->STS & KS_STS_BUSY_Msk)
+    while (KS->STS & KS_STS_BUSY_Msk)
     {
-        if(--u32TimeOutCount == 0)
+        if (--u32TimeOutCount == 0)
             return KS_ERR_TIMEOUT;
     }
 
     /* Check error flag */
-    if(KS->STS & KS_STS_EIF_Msk)
+    if (KS->STS & KS_STS_EIF_Msk)
         return KS_ERR_FAIL;
 
     return KS_OK;
@@ -379,7 +388,7 @@ int32_t KS_LockOTPKey(int32_t i32KeyIdx)
     uint32_t u32TimeOutCount = KS_TIMEOUT;
 
     /* Just return when key store is in busy */
-    if(KS->STS & KS_STS_BUSY_Msk)
+    if (KS->STS & KS_STS_BUSY_Msk)
         return KS_ERR_BUSY;
 
     /* Specify the key address */
@@ -392,14 +401,14 @@ int32_t KS_LockOTPKey(int32_t i32KeyIdx)
     KS->CTL = KS_OP_LOCK | KS_CTL_START_Msk;
 
     /* Waiting for processing */
-    while(KS->STS & KS_STS_BUSY_Msk)
+    while (KS->STS & KS_STS_BUSY_Msk)
     {
-        if(--u32TimeOutCount == 0)
+        if (--u32TimeOutCount == 0)
             return KS_ERR_TIMEOUT;
     }
 
     /* Check error flag */
-    if(KS->STS & KS_STS_EIF_Msk)
+    if (KS->STS & KS_STS_EIF_Msk)
         return KS_ERR_FAIL;
 
     return KS_OK;
@@ -419,9 +428,9 @@ int32_t KS_LockOTPKey(int32_t i32KeyIdx)
 int32_t KS_EraseAll(KS_MEM_Type eMemType)
 {
     uint32_t u32TimeOutCount = KS_TIMEOUT;
-    
+
     /* Just return when key store is in busy */
-    if(KS->STS & KS_STS_BUSY_Msk)
+    if (KS->STS & KS_STS_BUSY_Msk)
         return KS_ERR_BUSY;
 
     /* Specify the key address */
@@ -434,14 +443,14 @@ int32_t KS_EraseAll(KS_MEM_Type eMemType)
     KS->CTL = KS_OP_ERASE_ALL | KS_CTL_START_Msk  | (KS->CTL & (KS_CTL_SILENT_Msk | KS_CTL_SCMB_Msk));
 
     /* Waiting for processing */
-    while(KS->STS & KS_STS_BUSY_Msk)
+    while (KS->STS & KS_STS_BUSY_Msk)
     {
-        if(--u32TimeOutCount == 0)
+        if (--u32TimeOutCount == 0)
             return KS_ERR_TIMEOUT;
     }
 
     /* Check error flag */
-    if(KS->STS & KS_STS_EIF_Msk)
+    if (KS->STS & KS_STS_EIF_Msk)
         return KS_ERR_FAIL;
 
     return KS_OK;
@@ -464,7 +473,7 @@ int32_t KS_RevokeKey(KS_MEM_Type eMemType, int32_t i32KeyIdx)
     uint32_t u32TimeOutCount = KS_TIMEOUT;
 
     /* Just return when key store is in busy */
-    if(KS->STS & KS_STS_BUSY_Msk)
+    if (KS->STS & KS_STS_BUSY_Msk)
         return KS_ERR_BUSY;
 
     /* Specify the key address */
@@ -477,14 +486,14 @@ int32_t KS_RevokeKey(KS_MEM_Type eMemType, int32_t i32KeyIdx)
     KS->CTL = KS_OP_REVOKE | KS_CTL_START_Msk | (KS->CTL & (KS_CTL_SILENT_Msk | KS_CTL_SCMB_Msk));
 
     /* Waiting for processing */
-    while(KS->STS & KS_STS_BUSY_Msk)
+    while (KS->STS & KS_STS_BUSY_Msk)
     {
-        if(--u32TimeOutCount == 0)
+        if (--u32TimeOutCount == 0)
             return KS_ERR_TIMEOUT;
     }
 
     /* Check error flag */
-    if(KS->STS & KS_STS_EIF_Msk)
+    if (KS->STS & KS_STS_EIF_Msk)
         return KS_ERR_FAIL;
 
     return KS_OK;
@@ -501,9 +510,9 @@ int32_t KS_RevokeKey(KS_MEM_Type eMemType, int32_t i32KeyIdx)
   */
 uint32_t KS_GetRemainSize(KS_MEM_Type eMemType)
 {
-    if(eMemType == KS_SRAM)
+    if (eMemType == KS_SRAM)
         return (KS->REMAIN & KS_REMAIN_RRMNG_Msk) >> KS_REMAIN_RRMNG_Pos;
-    else if(eMemType == KS_FLASH)
+    else if (eMemType == KS_FLASH)
         return (KS->REMAIN & KS_REMAIN_FRMNG_Msk) >> KS_REMAIN_FRMNG_Pos;
     else
         return KS_ERR_PARAMETER;
@@ -520,9 +529,9 @@ uint32_t KS_GetRemainSize(KS_MEM_Type eMemType)
   */
 uint32_t KS_GetRemainKeyCount(KS_MEM_Type eMemType)
 {
-    if(eMemType == KS_SRAM)
+    if (eMemType == KS_SRAM)
         return (KS->REMKCNT & KS_REMKCNT_RRMKCNT_Msk) >> KS_REMKCNT_RRMKCNT_Pos;
-    else if(eMemType == KS_FLASH)
+    else if (eMemType == KS_FLASH)
         return (KS->REMKCNT & KS_REMKCNT_FRMKCNT_Msk) >> KS_REMKCNT_FRMKCNT_Pos;
     else
         return KS_ERR_PARAMETER;
@@ -568,7 +577,7 @@ int32_t KS_WriteOTP(int32_t i32KeyIdx, uint32_t u32Meta, uint32_t au32Key[])
     uint32_t u32TimeOutCount;
 
     /* Just return when key store is in busy */
-    if(KS->STS & KS_STS_BUSY_Msk)
+    if (KS->STS & KS_STS_BUSY_Msk)
         return KS_ERR_BUSY;
 
     /* Specify the key address */
@@ -578,7 +587,7 @@ int32_t KS_WriteOTP(int32_t i32KeyIdx, uint32_t u32Meta, uint32_t au32Key[])
     sidx = (u32Meta & KS_METADATA_SIZE_Msk) >> KS_METADATA_SIZE_Pos;
 
     /* OTP only support maximum 256 bits */
-    if(sidx >= 7)
+    if (sidx >= 7)
         return KS_ERR_PARAMETER;
 
     i32Cnt = au8CntTbl[sidx];
@@ -587,13 +596,16 @@ int32_t KS_WriteOTP(int32_t i32KeyIdx, uint32_t u32Meta, uint32_t au32Key[])
     KS->STS = KS_STS_EIF_Msk;
     offset = 0;
     u32Cont = 0;
+
     do
     {
         /* Prepare the key to write */
         cnt = i32Cnt;
-        if(cnt > 8)
+
+        if (cnt > 8)
             cnt = 8;
-        for(i = 0; i < cnt; i++)
+
+        for (i = 0; i < cnt; i++)
         {
             KS->KEY[i] = au32Key[offset + i];
         }
@@ -610,17 +622,17 @@ int32_t KS_WriteOTP(int32_t i32KeyIdx, uint32_t u32Meta, uint32_t au32Key[])
 
         /* Waiting for key store processing */
         u32TimeOutCount = KS_TIMEOUT;
-        while(KS->STS & KS_STS_BUSY_Msk)
+
+        while (KS->STS & KS_STS_BUSY_Msk)
         {
-            if(--u32TimeOutCount == 0)
+            if (--u32TimeOutCount == 0)
                 return KS_ERR_TIMEOUT;
         }
 
-    }
-    while(i32Cnt > 0);
+    } while (i32Cnt > 0);
 
     /* Check error flag */
-    if(KS->STS & KS_STS_EIF_Msk)
+    if (KS->STS & KS_STS_EIF_Msk)
     {
         return KS_ERR_FAIL;
     }
@@ -643,26 +655,26 @@ int32_t KS_ToggleSRAM(void)
     uint32_t u32TimeOutCount = KS_TIMEOUT;
 
     /* Just return when key store is in busy */
-    if(KS->STS & KS_STS_BUSY_Msk)
+    if (KS->STS & KS_STS_BUSY_Msk)
         return KS_ERR_BUSY;
 
     /* Specify the key address */
     KS->METADATA = ((uint32_t)KS_SRAM << KS_METADATA_DST_Pos);
 
-     /* Clear Status */
+    /* Clear Status */
     KS->STS = KS_STS_EIF_Msk | KS_STS_IF_Msk;
     /* Trigger to do anti-remanence procedure */
     KS->CTL = KS_OP_REMAN | KS_CTL_START_Msk | (KS->CTL & (KS_CTL_SILENT_Msk | KS_CTL_SCMB_Msk));
 
     /* Waiting for key store processing */
-    while(KS->STS & KS_STS_BUSY_Msk)
+    while (KS->STS & KS_STS_BUSY_Msk)
     {
-        if(--u32TimeOutCount == 0)
+        if (--u32TimeOutCount == 0)
             return KS_ERR_TIMEOUT;
     }
 
     /* Check error flag */
-    if(KS->STS & KS_STS_EIF_Msk)
+    if (KS->STS & KS_STS_EIF_Msk)
         return KS_ERR_FAIL;
 
     return ((KS->STS & KS_STS_RAMINV_Msk) > 0);

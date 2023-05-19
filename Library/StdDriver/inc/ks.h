@@ -46,11 +46,11 @@ typedef enum KSMEM
 
 #define KS_OP_READ          (0 << KS_CTL_OPMODE_Pos)
 #define KS_OP_WRITE         (1 << KS_CTL_OPMODE_Pos)
-#define KS_OP_ERASE         (2 << KS_CTL_OPMODE_Pos)
-#define KS_OP_ERASE_ALL     (3 << KS_CTL_OPMODE_Pos)
-#define KS_OP_REVOKE        (4 << KS_CTL_OPMODE_Pos)
-#define KS_OP_REMAN         (5 << KS_CTL_OPMODE_Pos)
-#define KS_OP_LOCK          (7 << KS_CTL_OPMODE_Pos)
+#define KS_OP_ERASE         (2 << KS_CTL_OPMODE_Pos)    /*!< Only for SRAM and OTP      */
+#define KS_OP_ERASE_ALL     (3 << KS_CTL_OPMODE_Pos)    /*!< Only for SRAM and Flash    */
+#define KS_OP_REVOKE        (4 << KS_CTL_OPMODE_Pos)    
+#define KS_OP_REMAN         (5 << KS_CTL_OPMODE_Pos)    /*!< Only for SRAM              */
+#define KS_OP_LOCK          (7 << KS_CTL_OPMODE_Pos)    /*!< Only for OTP               */
 
 #define KS_OWNER_AES        (0ul)
 #define KS_OWNER_HMAC       (1ul)
@@ -110,9 +110,22 @@ typedef enum KSMEM
   * @brief      Enable scramble function
   * @details    This function is used to enable scramle function of Key Store.
   */
-
-#define KS_SCRAMBLING()     (KS->CTL |= KS_CTL_SCMB_Msk)
-
+#define KS_SCRAMBLING()             (KS->CTL |= KS_CTL_SCMB_Msk)
+/**
+  * @brief      Get OTP key status
+  * @details    This function is used to get OTP key status.
+  */
+#define KS_OTPKEY_STS(i32KeyIdx)    ((KS->OTPSTS & (1 << i32KeyIdx)) > 0)
+/**
+  * @brief      Enable KS interrupt
+  * @details    This function is used to enable KS interrupt.
+  */
+#define KS_ENABLE_INT()             (KS->CTL |= KS_CTL_IEN_Msk)
+/**
+  * @brief      Disable KS interrupt
+  * @details    This function is used to disable KS interrupt.
+  */
+#define KS_DISABLE_INT()            (KS->CTL &= ~KS_CTL_IEN_Msk)
 
 
 
@@ -124,19 +137,19 @@ extern int32_t g_KS_i32ErrCode;
     @{
 */
 
-int32_t KS_Open(void);
-int32_t KS_Read(KS_MEM_Type type, int32_t i32KeyIdx, uint32_t au32Key[], uint32_t u32WordCnt);
-int32_t KS_Write(KS_MEM_Type eType, uint32_t u32Meta, uint32_t au32Key[]);
-int32_t KS_WriteOTP(int32_t i32KeyIdx, uint32_t u32Meta, uint32_t au32Key[]);
-int32_t KS_EraseKey(int32_t i32KeyIdx);
-int32_t KS_EraseOTPKey(int32_t i32KeyIdx);
-int32_t KS_LockOTPKey(int32_t i32KeyIdx);
-int32_t KS_EraseAll(KS_MEM_Type eType);
-int32_t KS_RevokeKey(KS_MEM_Type eType, int32_t i32KeyIdx);
-uint32_t KS_GetRemainSize(KS_MEM_Type eType);
-int32_t KS_ToggleSRAM(void);
+int32_t  KS_Open(void);
+int32_t  KS_Read(KS_MEM_Type eMemType, int32_t i32KeyIdx, uint32_t au32Key[], uint32_t u32WordCnt);
+int32_t  KS_Write(KS_MEM_Type eMemType, uint32_t u32Meta, uint32_t au32Key[]);
+int32_t  KS_WriteOTP(int32_t i32KeyIdx, uint32_t u32Meta, uint32_t au32Key[]);
+int32_t  KS_EraseKey(int32_t i32KeyIdx);
+int32_t  KS_EraseOTPKey(int32_t i32KeyIdx);
+int32_t  KS_LockOTPKey(int32_t i32KeyIdx);
+int32_t  KS_EraseAll(KS_MEM_Type eMemType);
+int32_t  KS_RevokeKey(KS_MEM_Type eMemType, int32_t i32KeyIdx);
+uint32_t KS_GetRemainSize(KS_MEM_Type eMemType);
+int32_t  KS_ToggleSRAM(void);
 uint32_t KS_GetKeyWordCnt(uint32_t u32Meta);
-uint32_t KS_GetRemainKeyCount(KS_MEM_Type mem);
+uint32_t KS_GetRemainKeyCount(KS_MEM_Type eMemType);
 
 /** @} end of group KS_EXPORTED_FUNCTIONS */
 /** @} end of group KS_Driver */
