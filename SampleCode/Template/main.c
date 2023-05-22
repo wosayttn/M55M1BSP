@@ -61,13 +61,11 @@ static void SYS_Init(void)
     SystemCoreClockUpdate();
 
     /* Enable UART0 module clock */
-    /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set GPB12 as UART0 RXD and GPB13 as UART0 TXD */
     SetDebugUartMFP();
     
     /* Lock protected registers */
