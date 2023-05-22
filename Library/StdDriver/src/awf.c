@@ -75,7 +75,7 @@ void AWF_DisableTWK(uint32_t u32TWKMask)
 
 /**
   * @brief      Set Accumlation Count
-  * @param[in]  u32Count is AccumlationCount. It could be 2~7.
+  * @param[in]  u32Count is AccumlationCount. It could be 2~8.
   * @return     None
   * @details    This API is used to set accumlation count.
   */
@@ -117,6 +117,18 @@ void AWF_SetWBINITValue(uint32_t u32Value)
     AWF->WBINIT = (AWF->WBINIT & ~AWF_WBINIT_WBINIT_Msk) | (u32Value << AWF_WBINIT_WBINIT_Pos);
 }
 
+
+/**
+  * @brief      Set AWF DAT Value
+  * @param[in]  u32Value is WBINIT Value. It could be 0~65535.
+  * @return     None
+  * @details    This API is used to set AWF data holding register value.
+  */
+void AWF_SetDAT(uint32_t u32Value)
+{
+    AWF->DAT = u32Value;
+}
+
 /**
   * @brief      Get Accumlation Value
   * @param[in]  None
@@ -128,6 +140,7 @@ uint32_t AWF_GetAccumlationValue(void)
 {
     return (AWF->ACUVAL) & AWF_ACUVAL_ACUVAL_Msk;
 }
+
 
 /** @} end of group AWF_EXPORTED_FUNCTIONS */
 /** @} end of group AWF_Driver */
