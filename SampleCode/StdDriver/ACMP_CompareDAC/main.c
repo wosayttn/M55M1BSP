@@ -79,9 +79,6 @@ void ACMP01_IRQHandler(void)
 void SYS_Init(void)
 {
 
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -118,8 +115,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART peripheral clock */
-    CLK_EnableModuleClock(UART0_MODULE);
+   
     /* Enable ACMP01 peripheral clock */
     CLK_EnableModuleClock(ACMP01_MODULE);
     /* Enable GPB peripheral clock */
@@ -130,6 +126,8 @@ void SYS_Init(void)
     /* Enable DAC01 module clock */
     CLK_EnableModuleClock(DAC01_MODULE);
 
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
 
     /* Set PB.4 and PC.0 to input mode */
     PB->MODE &= ~(GPIO_MODE_MODE4_Msk);
@@ -139,15 +137,12 @@ void SYS_Init(void)
     SET_ACMP1_P1_PB4();
     SET_ACMP1_O_PC0();
 
-     /* Set PB multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    /* Set PB multi-function pins for Debug UART RXD and TXD */
+    SetDebugUartMFP();
 
     /* Disable digital input path of analog pin ACMP1_P1 to prevent leakage */
     GPIO_DISABLE_DIGITAL_PATH(PB, (1ul << 4));
 
-    /* Lock protected registers */
-    SYS_LockReg();
 }
 
 /*
@@ -171,8 +166,8 @@ int32_t main(void)
 #endif
 
 #if !(defined(DEBUG_ENABLE_SEMIHOST))
-    /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
-    UART_Open(UART0, 115200);
+    /* Init Debug UART for printf */
+      InitDebugUart();
 #endif
 
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);

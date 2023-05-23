@@ -3,8 +3,8 @@
  * @version  V1.00
  * @brief    SPI driver source file
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include "NuMicro.h"
@@ -237,11 +237,7 @@ static uint32_t CheckSPI0ClockSource(void)
   * @note   If u32BusClock >= SPI peripheral clock source, DIVIDER will be set to 0.
   * @note   In slave mode, the SPI peripheral clock rate will be equal to APB clock rate.
   */
-uint32_t SPI_Open(SPI_T *spi,
-                  uint32_t u32MasterSlave,
-                  uint32_t u32SPIMode,
-                  uint32_t u32DataWidth,
-                  uint32_t u32BusClock)
+uint32_t SPI_Open(SPI_T *spi, uint32_t u32MasterSlave, uint32_t u32SPIMode, uint32_t u32DataWidth, uint32_t u32BusClock)
 {
     uint32_t u32ClkSrc = 0U, u32Div, u32HCLKFreq, u32RetValue = 0U;
 
@@ -268,22 +264,6 @@ uint32_t SPI_Open(SPI_T *spi,
         {
             /* Select PCLK as the clock source of SPI */
             SelectPCLKxOfSPI(spi);
-            //if (spi == SPI0)
-            //{
-            //    CLK->CLKSEL2 = (CLK->CLKSEL2 & (~CLK_CLKSEL2_SPI0SEL_Msk)) | CLK_CLKSEL2_SPI0SEL_PCLK1;
-            //}
-            //else if (spi == SPI1)
-            //{
-            //    CLK->CLKSEL2 = (CLK->CLKSEL2 & (~CLK_CLKSEL2_SPI1SEL_Msk)) | CLK_CLKSEL2_SPI1SEL_PCLK0;
-            //}
-            //else if (spi == SPI2)
-            //{
-            //    CLK->CLKSEL2 = (CLK->CLKSEL2 & (~CLK_CLKSEL3_SPI2SEL_Msk)) | CLK_CLKSEL3_SPI2SEL_PCLK1;
-            //}
-            //else if (spi == SPI3)
-            //{
-            //    CLK->CLKSEL2 = (CLK->CLKSEL2 & (~CLK_CLKSEL3_SPI3SEL_Msk)) | CLK_CLKSEL3_SPI3SEL_PCLK0;
-            //}
         }
 
         /* Check clock source of SPI */
@@ -357,30 +337,6 @@ uint32_t SPI_Open(SPI_T *spi,
 
         /* Select PCLK as the clock source of SPI */
         u32RetValue = SelectPCLKxOfSPI(spi);
-        //if (spi == SPI0)
-        //{
-        //    CLK->CLKSEL2 = (CLK->CLKSEL2 & (~CLK_CLKSEL2_SPI0SEL_Msk)) | CLK_CLKSEL2_SPI0SEL_PCLK1;
-        //    /* Return slave peripheral clock rate */
-        //    u32RetValue = CLK_GetPCLK1Freq();
-        //}
-        //else if (spi == SPI1)
-        //{
-        //    CLK->CLKSEL2 = (CLK->CLKSEL2 & (~CLK_CLKSEL2_SPI1SEL_Msk)) | CLK_CLKSEL2_SPI1SEL_PCLK0;
-        //    /* Return slave peripheral clock rate */
-        //    u32RetValue = CLK_GetPCLK0Freq();
-        //}
-        //else if (spi == SPI2)
-        //{
-        //    CLK->CLKSEL3 = (CLK->CLKSEL3 & (~CLK_CLKSEL3_SPI2SEL_Msk)) | CLK_CLKSEL3_SPI2SEL_PCLK1;
-        //    /* Return slave peripheral clock rate */
-        //    u32RetValue = CLK_GetPCLK1Freq();
-        //}
-        //else
-        //{
-        //    CLK->CLKSEL3 = (CLK->CLKSEL3 & (~CLK_CLKSEL3_SPI3SEL_Msk)) | CLK_CLKSEL3_SPI3SEL_PCLK0;
-        //    /* Return slave peripheral clock rate */
-        //    u32RetValue = CLK_GetPCLK0Freq();
-        //}
     }
 
     return u32RetValue;
@@ -487,14 +443,6 @@ uint32_t SPI_SetBusClock(SPI_T *spi, uint32_t u32BusClock)
     {
         /* Select PCLK as the clock source of SPI */
         SelectPCLKxOfSPI(spi);
-        //if (spi == SPI0)
-        //    CLK->CLKSEL2 = (CLK->CLKSEL2 & (~CLK_CLKSEL2_SPI0SEL_Msk)) | CLK_CLKSEL2_SPI0SEL_PCLK1;
-        //else if (spi == SPI1)
-        //    CLK->CLKSEL2 = (CLK->CLKSEL2 & (~CLK_CLKSEL2_SPI1SEL_Msk)) | CLK_CLKSEL2_SPI1SEL_PCLK0;
-        //else if (spi == SPI2)
-        //    CLK->CLKSEL3 = (CLK->CLKSEL3 & (~CLK_CLKSEL3_SPI2SEL_Msk)) | CLK_CLKSEL3_SPI2SEL_PCLK1;
-        //else
-        //    CLK->CLKSEL3 = (CLK->CLKSEL3 & (~CLK_CLKSEL3_SPI3SEL_Msk)) | CLK_CLKSEL3_SPI3SEL_PCLK0;
     }
 
     /* Check clock source of SPI */
@@ -1028,6 +976,32 @@ uint32_t SPI_GetStatus(SPI_T *spi, uint32_t u32Mask)
     return u32Flag;
 }
 
+/**
+  * @brief  Get SPI status2.
+  * @param[in]  spi The pointer of the specified SPI module.
+  * @param[in]  u32Mask The combination of all related sources.
+  *                     Each bit corresponds to a source.
+  *                     This parameter decides which flags will be read. It is combination of:
+  *                       - \ref SPI_SLVBENUM_MASK
+  *
+  * @return Flags of selected sources.
+  * @details Get SPI related status specified by u32Mask parameter.
+  */
+uint32_t SPI_GetStatus2(SPI_T *spi, uint32_t u32Mask)
+{
+    uint32_t u32TmpStatus;
+    uint32_t u32Number = 0UL;
+
+    u32TmpStatus = spi->STATUS2;
+
+    /* Check effective bit number of uncompleted RX data status */
+    if (u32Mask & SPI_SLVBENUM_MASK)
+    {
+        u32Number = (u32TmpStatus & SPI_STATUS2_SLVBENUM_Msk) >> SPI_STATUS2_SLVBENUM_Pos;
+    }
+
+    return u32Number;
+}
 
 /**
   * @brief  This function is used to get I2S source clock frequency.
@@ -1235,6 +1209,12 @@ void SPII2S_EnableInt(SPI_T *i2s, uint32_t u32Mask)
     if ((u32Mask & SPII2S_LEFT_ZC_INT_MASK) == SPII2S_LEFT_ZC_INT_MASK)
     {
         i2s->I2SCTL |= SPI_I2SCTL_LZCIEN_Msk;
+    }
+
+    /* Disable slave mode bit clock loss interrupt flag */
+    if ((u32Mask & SPII2S_SLV_CLKERR_INT_MASK) == SPII2S_SLV_CLKERR_INT_MASK)
+    {
+        i2s->I2SCTL &= ~SPI_I2SCTL_SLVERRIEN_Msk;
     }
 }
 

@@ -3,8 +3,8 @@
  * @version  V1.00
  * @brief    QSPI driver source file
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include "NuMicro.h"
@@ -51,11 +51,11 @@ static uint32_t CheckQSPI1ClockSource(void)
             break;
 
         case CLK_QSPISEL_QSPI1SEL_APLL0_DIV2:
-            u32ClkSrc = (CLK_GetAPLL0ClockFreq() / 2); /* Clock source is PLL */
+            u32ClkSrc = (CLK_GetAPLL0ClockFreq() >> 1); /* Clock source is PLL */
             break;
 
         case CLK_QSPISEL_QSPI1SEL_PCLK2:
-            u32ClkSrc = (CLK_GetPCLK2Freq() / 2); /* Clock source is PCLK0 */
+            u32ClkSrc = CLK_GetPCLK2Freq();            /* Clock source is PCLK0 */
             break;
 
         case CLK_QSPISEL_QSPI1SEL_HIRC:
@@ -81,7 +81,7 @@ static uint32_t CheckQSPI0ClockSource(void)
             break;
 
         case CLK_QSPISEL_QSPI0SEL_APLL0_DIV2:
-            u32ClkSrc = (CLK_GetAPLL0ClockFreq() / 2); /* Clock source is PLL */
+            u32ClkSrc = (CLK_GetAPLL0ClockFreq() >> 1); /* Clock source is PLL */
             break;
 
         case CLK_QSPISEL_QSPI0SEL_PCLK0:
@@ -119,11 +119,7 @@ static uint32_t CheckQSPI0ClockSource(void)
   * @note   If u32BusClock >= QSPI peripheral clock source, DIVIDER will be set to 0.
   * @note   In slave mode, the QSPI peripheral clock rate will be equal to APB clock rate.
   */
-uint32_t QSPI_Open(QSPI_T *qspi,
-                   uint32_t u32MasterSlave,
-                   uint32_t u32QSPIMode,
-                   uint32_t u32DataWidth,
-                   uint32_t u32BusClock)
+uint32_t QSPI_Open(QSPI_T *qspi, uint32_t u32MasterSlave, uint32_t u32QSPIMode, uint32_t u32DataWidth, uint32_t u32BusClock)
 {
     uint32_t u32ClkSrc = 0U, u32Div, u32HCLKFreq, u32RetValue = 0U;
 
@@ -240,6 +236,9 @@ uint32_t QSPI_Open(QSPI_T *qspi,
   */
 void QSPI_Close(QSPI_T *qspi)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     /* Reset QSPI */
     if (qspi == QSPI0)
     {
@@ -251,6 +250,9 @@ void QSPI_Close(QSPI_T *qspi)
         SYS->QSPIRST |= SYS_QSPIRST_QSPI1RST_Msk;
         SYS->QSPIRST &= ~SYS_QSPIRST_QSPI1RST_Msk;
     }
+
+    /* Lock protected registers */
+    SYS_LockReg();
 }
 
 /**
@@ -433,6 +435,7 @@ uint32_t QSPI_GetBusClock(QSPI_T *qspi)
   *                       - \ref QSPI_SSINACT_INT_MASK
   *                       - \ref QSPI_SLVUR_INT_MASK
   *                       - \ref QSPI_SLVBE_INT_MASK
+  *                       - \ref QSPI_SLVTO_INT_MASK
   *                       - \ref QSPI_TXUF_INT_MASK
   *                       - \ref QSPI_FIFO_TXTH_INT_MASK
   *                       - \ref QSPI_FIFO_RXTH_INT_MASK
@@ -471,6 +474,12 @@ void QSPI_EnableInt(QSPI_T *qspi, uint32_t u32Mask)
     if ((u32Mask & QSPI_SLVBE_INT_MASK) == QSPI_SLVBE_INT_MASK)
     {
         qspi->SSCTL |= QSPI_SSCTL_SLVBEIEN_Msk;
+    }
+
+    /* Enable slave mode time-out interrupt flag */
+    if ((u32Mask & QSPI_SLVTO_INT_MASK) == QSPI_SLVTO_INT_MASK)
+    {
+        qspi->SSCTL |= QSPI_SSCTL_SLVTOIEN_Msk;
     }
 
     /* Enable slave TX underflow interrupt flag */
@@ -515,6 +524,7 @@ void QSPI_EnableInt(QSPI_T *qspi, uint32_t u32Mask)
   *                       - \ref QSPI_SSINACT_INT_MASK
   *                       - \ref QSPI_SLVUR_INT_MASK
   *                       - \ref QSPI_SLVBE_INT_MASK
+  *                       - \ref QSPI_SLVTO_INT_MASK
   *                       - \ref QSPI_TXUF_INT_MASK
   *                       - \ref QSPI_FIFO_TXTH_INT_MASK
   *                       - \ref QSPI_FIFO_RXTH_INT_MASK
@@ -553,6 +563,12 @@ void QSPI_DisableInt(QSPI_T *qspi, uint32_t u32Mask)
     if ((u32Mask & QSPI_SLVBE_INT_MASK) == QSPI_SLVBE_INT_MASK)
     {
         qspi->SSCTL &= ~QSPI_SSCTL_SLVBEIEN_Msk;
+    }
+
+    /* Disable slave mode time-out interrupt flag */
+    if ((u32Mask & QSPI_SLVTO_INT_MASK) == QSPI_SLVTO_INT_MASK)
+    {
+        qspi->SSCTL &= ~QSPI_SSCTL_SLVTOIEN_Msk;
     }
 
     /* Disable slave TX underflow interrupt flag */

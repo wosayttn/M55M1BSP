@@ -3,8 +3,8 @@
  * @version  V1.00
  * @brief    SPI driver header file
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #ifndef __SPI_H__
@@ -61,6 +61,22 @@ extern "C"
 #define SPI_SPIEN_STS_MASK               (0x40U)                           /*!< SPIEN status mask \hideinitializer */
 #define SPI_SSLINE_STS_MASK              (0x80U)                           /*!< SPIx_SS line status mask \hideinitializer */
 
+/* SPI Status2 Mask */
+#define SPI_SLVBENUM_MASK                (0x01UL)                          /*!< Effective bit number of uncompleted RX data status mask */
+
+//------------------------------------------------------------------------------
+// I2S define
+//------------------------------------------------------------------------------
+/* I2S TX FIFO Threshold */
+#define SPII2S_FIFO_TX_LEVEL_WORD_0    (0UL)                            /*!< TX threshold is 0 word \hideinitializer */
+#define SPII2S_FIFO_TX_LEVEL_WORD_1    (1UL << SPI_FIFOCTL_TXTH_Pos)    /*!< TX threshold is 1 word \hideinitializer */
+#define SPII2S_FIFO_TX_LEVEL_WORD_2    (2UL << SPI_FIFOCTL_TXTH_Pos)    /*!< TX threshold is 2 words \hideinitializer */
+#define SPII2S_FIFO_TX_LEVEL_WORD_3    (3UL << SPI_FIFOCTL_TXTH_Pos)    /*!< TX threshold is 3 words \hideinitializer */
+/* I2S RX FIFO Threshold */
+#define SPII2S_FIFO_RX_LEVEL_WORD_1    (0UL)                            /*!< RX threshold is 1 word \hideinitializer */
+#define SPII2S_FIFO_RX_LEVEL_WORD_2    (1UL << SPI_FIFOCTL_RXTH_Pos)    /*!< RX threshold is 2 words \hideinitializer */
+#define SPII2S_FIFO_RX_LEVEL_WORD_3    (2UL << SPI_FIFOCTL_RXTH_Pos)    /*!< RX threshold is 3 words \hideinitializer */
+#define SPII2S_FIFO_RX_LEVEL_WORD_4    (3UL << SPI_FIFOCTL_RXTH_Pos)    /*!< RX threshold is 4 words \hideinitializer */
 
 /* I2S Data Width */
 #define SPII2S_DATABIT_8           (0U << SPI_I2SCTL_WDWIDTH_Pos)      /*!< I2S data width is 8-bit \hideinitializer */
@@ -73,10 +89,10 @@ extern "C"
 #define SPII2S_STEREO              (0U)                               /*!< Stereo channel \hideinitializer */
 
 /* I2S Data Format */
-#define SPII2S_FORMAT_I2S          (0U<<SPI_I2SCTL_FORMAT_Pos)         /*!< I2S data format \hideinitializer */
-#define SPII2S_FORMAT_MSB          (1U<<SPI_I2SCTL_FORMAT_Pos)         /*!< MSB justified data format \hideinitializer */
-#define SPII2S_FORMAT_PCMA         (2U<<SPI_I2SCTL_FORMAT_Pos)         /*!< PCM mode A data format \hideinitializer */
-#define SPII2S_FORMAT_PCMB         (3U<<SPI_I2SCTL_FORMAT_Pos)         /*!< PCM mode B data format \hideinitializer */
+#define SPII2S_FORMAT_I2S          (0U << SPI_I2SCTL_FORMAT_Pos)         /*!< I2S data format \hideinitializer */
+#define SPII2S_FORMAT_MSB          (1U << SPI_I2SCTL_FORMAT_Pos)         /*!< MSB justified data format \hideinitializer */
+#define SPII2S_FORMAT_PCMA         (2U << SPI_I2SCTL_FORMAT_Pos)         /*!< PCM mode A data format \hideinitializer */
+#define SPII2S_FORMAT_PCMB         (3U << SPI_I2SCTL_FORMAT_Pos)         /*!< PCM mode B data format \hideinitializer */
 
 /* I2S Operation mode */
 #define SPII2S_MODE_SLAVE          SPI_I2SCTL_SLAVE_Msk               /*!< As slave mode \hideinitializer */
@@ -91,13 +107,14 @@ extern "C"
 #define SPII2S_LEFT                (1U)                               /*!< Select left channel \hideinitializer */
 
 /* I2S Interrupt Mask */
-#define SPII2S_FIFO_TXTH_INT_MASK           (0x01U)                          /*!< TX FIFO threshold interrupt mask \hideinitializer */
-#define SPII2S_FIFO_RXTH_INT_MASK           (0x02U)                          /*!< RX FIFO threshold interrupt mask \hideinitializer */
-#define SPII2S_FIFO_RXOV_INT_MASK           (0x04U)                          /*!< RX FIFO overrun interrupt mask \hideinitializer */
-#define SPII2S_FIFO_RXTO_INT_MASK           (0x08U)                          /*!< RX FIFO time-out interrupt mask \hideinitializer */
-#define SPII2S_TXUF_INT_MASK                (0x10U)                          /*!< TX FIFO underflow interrupt mask \hideinitializer */
-#define SPII2S_RIGHT_ZC_INT_MASK            (0x20U)                          /*!< Right channel zero cross interrupt mask \hideinitializer */
-#define SPII2S_LEFT_ZC_INT_MASK             (0x40U)                          /*!< Left channel zero cross interrupt mask \hideinitializer */
+#define SPII2S_FIFO_TXTH_INT_MASK           (0x01UL)                          /*!< TX FIFO threshold interrupt mask \hideinitializer */
+#define SPII2S_FIFO_RXTH_INT_MASK           (0x02UL)                          /*!< RX FIFO threshold interrupt mask \hideinitializer */
+#define SPII2S_FIFO_RXOV_INT_MASK           (0x04UL)                          /*!< RX FIFO overrun interrupt mask \hideinitializer */
+#define SPII2S_FIFO_RXTO_INT_MASK           (0x08UL)                          /*!< RX FIFO time-out interrupt mask \hideinitializer */
+#define SPII2S_TXUF_INT_MASK                (0x10UL)                          /*!< TX FIFO underflow interrupt mask \hideinitializer */
+#define SPII2S_RIGHT_ZC_INT_MASK            (0x20UL)                          /*!< Right channel zero cross interrupt mask \hideinitializer */
+#define SPII2S_LEFT_ZC_INT_MASK             (0x40UL)                          /*!< Left channel zero cross interrupt mask \hideinitializer */
+#define SPII2S_SLV_CLKERR_INT_MASK          (0x80UL)                          /*!< Slave mode bit clock loss interrupt mask \hideinitializer */
 
 /** @} end of group SPI_EXPORTED_CONSTANTS */
 
@@ -544,8 +561,7 @@ __STATIC_INLINE void SPII2S_SET_MONO_RX_CHANNEL(SPI_T *i2s, uint32_t u32Ch)
 #define SPII2S_GET_RX_FIFO_LEVEL(i2s) ( ((i2s)->I2SSTS & SPI_I2SSTS_RXCNT_Msk) >> SPI_I2SSTS_RXCNT_Pos )
 
 
-
-/* Function prototype declaration */
+/* SPI Function prototype declaration */
 uint32_t SPI_Open(SPI_T *spi, uint32_t u32MasterSlave, uint32_t u32SPIMode, uint32_t u32DataWidth, uint32_t u32BusClock);
 void SPI_Close(SPI_T *spi);
 void SPI_ClearRxFIFO(SPI_T *spi);
@@ -560,7 +576,9 @@ void SPI_DisableInt(SPI_T *spi, uint32_t u32Mask);
 uint32_t SPI_GetIntFlag(SPI_T *spi, uint32_t u32Mask);
 void SPI_ClearIntFlag(SPI_T *spi, uint32_t u32Mask);
 uint32_t SPI_GetStatus(SPI_T *spi, uint32_t u32Mask);
+uint32_t SPI_GetStatus2(SPI_T *spi, uint32_t u32Mask);
 
+/* I2S Function prototype declaration */
 uint32_t SPII2S_Open(SPI_T *i2s, uint32_t u32MasterSlave, uint32_t u32SampleRate, uint32_t u32WordWidth, uint32_t u32Channels, uint32_t u32DataFormat);
 void SPII2S_Close(SPI_T *i2s);
 void SPII2S_EnableInt(SPI_T *i2s, uint32_t u32Mask);

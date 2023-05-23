@@ -3,8 +3,8 @@
  * @version  V1.00
  * @brief    USCI_SPI driver source file
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include "NuMicro.h"
@@ -401,7 +401,7 @@ void USPI_DisableInt(USPI_T *uspi, uint32_t u32Mask)
   *           - \ref USPI_SLVTO_INT_MASK
   *           - \ref USPI_SLVBE_INT_MASK
   *           - \ref USPI_TXUDR_INT_MASK
-  *           - \ref USPI_RXOV_INT_MASK
+  *           - \ref USPI_RXOV_INT_MASK 
   *           - \ref USPI_TXST_INT_MASK
   *           - \ref USPI_TXEND_INT_MASK
   *           - \ref USPI_RXST_INT_MASK

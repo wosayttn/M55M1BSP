@@ -3,8 +3,8 @@
  * @version  V1.00
  * @brief    USCI_SPI driver header file
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #ifndef __USCI_SPI_H__
@@ -27,58 +27,59 @@ extern "C"
   @{
 */
 
-#define USPI_MODE_0        (0x0 << USPI_PROTCTL_SCLKMODE_Pos)          /*!< SCLK idle low; data transmit with falling edge and receive with rising edge \hideinitializer */
-#define USPI_MODE_1        (0x1 << USPI_PROTCTL_SCLKMODE_Pos)          /*!< SCLK idle low; data transmit with rising edge and receive with falling edge \hideinitializer */
-#define USPI_MODE_2        (0x2 << USPI_PROTCTL_SCLKMODE_Pos)          /*!< SCLK idle high; data transmit with rising edge and receive with falling edge \hideinitializer */
-#define USPI_MODE_3        (0x3 << USPI_PROTCTL_SCLKMODE_Pos)          /*!< SCLK idle high; data transmit with falling edge and receive with rising edge \hideinitializer */
+#define USPI_MODE_0                   (0x0 << USPI_PROTCTL_SCLKMODE_Pos)  /*!< SCLK idle low; data transmit with falling edge and receive with rising edge \hideinitializer */
+#define USPI_MODE_1                   (0x1 << USPI_PROTCTL_SCLKMODE_Pos)  /*!< SCLK idle low; data transmit with rising edge and receive with falling edge \hideinitializer */
+#define USPI_MODE_2                   (0x2 << USPI_PROTCTL_SCLKMODE_Pos)  /*!< SCLK idle high; data transmit with rising edge and receive with falling edge \hideinitializer */
+#define USPI_MODE_3                   (0x3 << USPI_PROTCTL_SCLKMODE_Pos)  /*!< SCLK idle high; data transmit with falling edge and receive with rising edge \hideinitializer */
 
-#define USPI_SLAVE         (USPI_PROTCTL_SLAVE_Msk)                    /*!< Set as slave \hideinitializer */
-#define USPI_MASTER        (0x0ul)                                     /*!< Set as master \hideinitializer */
+#define USPI_SLAVE                    (USPI_PROTCTL_SLAVE_Msk)            /*!< Set as slave \hideinitializer */
+#define USPI_MASTER                   (0x0ul)                             /*!< Set as master \hideinitializer */
 
-#define USPI_SS                (USPI_PROTCTL_SS_Msk)                   /*!< Set SS \hideinitializer */
-#define USPI_SS_ACTIVE_HIGH    (0x0ul)                                 /*!< SS active high \hideinitializer */
-#define USPI_SS_ACTIVE_LOW     (USPI_LINECTL_CTLOINV_Msk)              /*!< SS active low \hideinitializer */
+#define USPI_SS                       (USPI_PROTCTL_SS_Msk)               /*!< Set SS \hideinitializer */
+#define USPI_SS_ACTIVE_HIGH           (0x0ul)                             /*!< SS active high \hideinitializer */
+#define USPI_SS_ACTIVE_LOW            (USPI_LINECTL_CTLOINV_Msk)          /*!< SS active low \hideinitializer */
 
 /* USCI_SPI Interrupt Mask */
-#define USPI_SSINACT_INT_MASK        (0x001ul)                         /*!< Slave Slave Inactive interrupt mask \hideinitializer */
-#define USPI_SSACT_INT_MASK          (0x002ul)                         /*!< Slave Slave Active interrupt mask \hideinitializer */
-#define USPI_SLVTO_INT_MASK          (0x004ul)                         /*!< Slave Mode Time-out interrupt mask \hideinitializer */
-#define USPI_SLVBE_INT_MASK          (0x008ul)                         /*!< Slave Mode Bit Count Error interrupt mask \hideinitializer */
-#define USPI_TXUDR_INT_MASK          (0x010ul)                         /*!< Slave Transmit Under Run interrupt mask \hideinitializer */
-#define USPI_RXOV_INT_MASK           (0x020ul)                         /*!< Receive Buffer Overrun interrupt mask \hideinitializer */
-#define USPI_TXST_INT_MASK           (0x040ul)                         /*!< Transmit Start interrupt mask \hideinitializer */
-#define USPI_TXEND_INT_MASK          (0x080ul)                         /*!< Transmit End interrupt mask \hideinitializer */
-#define USPI_RXST_INT_MASK           (0x100ul)                         /*!< Receive Start interrupt mask \hideinitializer */
-#define USPI_RXEND_INT_MASK          (0x200ul)                         /*!< Receive End interrupt mask \hideinitializer */
+#define USPI_SSINACT_INT_MASK         (0x001ul)                           /*!< Slave Slave Inactive interrupt mask \hideinitializer */
+#define USPI_SSACT_INT_MASK           (0x002ul)                           /*!< Slave Slave Active interrupt mask \hideinitializer */
+#define USPI_SLVTO_INT_MASK           (0x004ul)                           /*!< Slave Mode Time-out interrupt mask \hideinitializer */
+#define USPI_SLVBE_INT_MASK           (0x008ul)                           /*!< Slave Mode Bit Count Error interrupt mask \hideinitializer */
+#define USPI_TXUDR_INT_MASK           (0x010ul)                           /*!< Slave Transmit Under Run interrupt mask \hideinitializer */
+#define USPI_RXOV_INT_MASK            (0x020ul)                           /*!< Receive Buffer Overrun interrupt mask \hideinitializer */
+#define USPI_TXST_INT_MASK            (0x040ul)                           /*!< Transmit Start interrupt mask \hideinitializer */
+#define USPI_TXEND_INT_MASK           (0x080ul)                           /*!< Transmit End interrupt mask \hideinitializer */
+#define USPI_RXST_INT_MASK            (0x100ul)                           /*!< Receive Start interrupt mask \hideinitializer */
+#define USPI_RXEND_INT_MASK           (0x200ul)                           /*!< Receive End interrupt mask \hideinitializer */
 
 /* USCI_SPI Status Mask */
-#define USPI_BUSY_MASK               (0x01ul)                          /*!< Busy status mask \hideinitializer */
-#define USPI_RX_EMPTY_MASK           (0x02ul)                          /*!< RX empty status mask \hideinitializer */
-#define USPI_RX_FULL_MASK            (0x04ul)                          /*!< RX full status mask \hideinitializer */
-#define USPI_TX_EMPTY_MASK           (0x08ul)                          /*!< TX empty status mask \hideinitializer */
-#define USPI_TX_FULL_MASK            (0x10ul)                          /*!< TX full status mask \hideinitializer */
-#define USPI_SSLINE_STS_MASK         (0x20ul)                          /*!< USCI_SPI_SS line status mask \hideinitializer */
-
-/** @} end of group USCI_SPI_EXPORTED_CONSTANTS */
-
-
-/** @addtogroup USCI_SPI_EXPORTED_FUNCTIONS USCI_SPI Exported Functions
-  @{
-*/
+#define USPI_BUSY_MASK                (0x01ul)                            /*!< Busy status mask \hideinitializer */
+#define USPI_RX_EMPTY_MASK            (0x02ul)                            /*!< RX empty status mask \hideinitializer */
+#define USPI_RX_FULL_MASK             (0x04ul)                            /*!< RX full status mask \hideinitializer */
+#define USPI_TX_EMPTY_MASK            (0x08ul)                            /*!< TX empty status mask \hideinitializer */
+#define USPI_TX_FULL_MASK             (0x10ul)                            /*!< TX full status mask \hideinitializer */
+#define USPI_SSLINE_STS_MASK          (0x20ul)                            /*!< USCI_SPI_SS line status mask \hideinitializer */
 
 /**
   * @brief  Disable slave 3-wire mode.
   * @param[in]  uspi The pointer of the specified USCI_SPI module.
   * \hideinitializer
   */
-#define USPI_DISABLE_3WIRE_MODE(uspi) ( (uspi)->PROTCTL &= ~USPI_PROTCTL_SLV3WIRE_Msk )
+#define USPI_DISABLE_3WIRE_MODE(uspi)              \
+  do                                               \
+  {                                                \
+    uspi->PROTCTL &= ~(USPI_PROTCTL_SLV3WIRE_Msk); \
+  } while (0)
 
 /**
   * @brief  Enable slave 3-wire mode.
   * @param[in]  uspi The pointer of the specified USCI_SPI module.
   * \hideinitializer
   */
-#define USPI_ENABLE_3WIRE_MODE(uspi) ( (uspi)->PROTCTL |= USPI_PROTCTL_SLV3WIRE_Msk )
+#define USPI_ENABLE_3WIRE_MODE(uspi)            \
+  do                                            \
+  {                                             \
+    uspi->PROTCTL |= USPI_PROTCTL_SLV3WIRE_Msk; \
+  } while (0)
 
 /**
   * @brief  Get the Rx buffer empty flag.
@@ -88,7 +89,7 @@ extern "C"
   * @retval 1: Rx buffer is empty
   * \hideinitializer
   */
-#define USPI_GET_RX_EMPTY_FLAG(uspi) ( ((uspi)->BUFSTS & USPI_BUFSTS_RXEMPTY_Msk) == USPI_BUFSTS_RXEMPTY_Msk ? 1:0 )
+#define USPI_GET_RX_EMPTY_FLAG(uspi)  ((uspi->BUFSTS & USPI_BUFSTS_RXEMPTY_Msk) >> USPI_BUFSTS_RXEMPTY_Pos)
 
 /**
   * @brief  Get the Tx buffer empty flag.
@@ -98,7 +99,7 @@ extern "C"
   * @retval 1: Tx buffer is empty
   * \hideinitializer
   */
-#define USPI_GET_TX_EMPTY_FLAG(uspi) ( ((uspi)->BUFSTS & USPI_BUFSTS_TXEMPTY_Msk) == USPI_BUFSTS_TXEMPTY_Msk ? 1:0 )
+#define USPI_GET_TX_EMPTY_FLAG(uspi)  ((uspi->BUFSTS & USPI_BUFSTS_TXEMPTY_Msk) >> USPI_BUFSTS_TXEMPTY_Pos)
 
 /**
   * @brief  Get the Tx buffer full flag.
@@ -108,7 +109,7 @@ extern "C"
   * @retval 1: Tx buffer is full
   * \hideinitializer
   */
-#define USPI_GET_TX_FULL_FLAG(uspi) ( ((uspi)->BUFSTS & USPI_BUFSTS_TXFULL_Msk) == USPI_BUFSTS_TXFULL_Msk ? 1:0 )
+#define USPI_GET_TX_FULL_FLAG(uspi) ((uspi->BUFSTS & USPI_BUFSTS_TXFULL_Msk) >> USPI_BUFSTS_TXFULL_Pos)
 
 /**
   * @brief  Get the datum read from RX register.
@@ -116,7 +117,7 @@ extern "C"
   * @return data in Rx register
   * \hideinitializer
   */
-#define USPI_READ_RX(uspi) ((uspi)->RXDAT)
+#define USPI_READ_RX(uspi) (uspi->RXDAT)
 
 /**
   * @brief  Write datum to TX register.
@@ -124,7 +125,11 @@ extern "C"
   * @param[in]  u32TxData The datum which user attempt to transfer through USCI_SPI bus.
   * \hideinitializer
   */
-#define USPI_WRITE_TX(uspi, u32TxData) ( (uspi)->TXDAT = (u32TxData) )
+#define USPI_WRITE_TX(uspi, u32TxData) \
+  do                                   \
+  {                                    \
+    uspi->TXDAT = (u32TxData);         \
+  } while (0)
 
 /**
   * @brief      Set USCI_SPI_SS pin to high state.
@@ -133,11 +138,13 @@ extern "C"
   * @details    Disable automatic slave selection function and set USCI_SPI_SS pin to high state. Only available in Master mode.
   * \hideinitializer
   */
-#define USPI_SET_SS_HIGH(uspi) \
-    do{ \
-        (uspi)->LINECTL &= ~(USPI_LINECTL_CTLOINV_Msk); \
-        (uspi)->PROTCTL = ((uspi)->PROTCTL & ~(USPI_PROTCTL_AUTOSS_Msk | USPI_PROTCTL_SS_Msk)); \
-    }while(0)
+#define USPI_SET_SS_HIGH(uspi)                    \
+  do                                              \
+  {                                               \
+    uspi->LINECTL &= ~(USPI_LINECTL_CTLOINV_Msk); \
+    uspi->PROTCTL &= ~(USPI_PROTCTL_AUTOSS_Msk);  \
+    uspi->PROTCTL |= USPI_PROTCTL_SS_Msk;         \
+  } while (0)
 
 /**
   * @brief      Set USCI_SPI_SS pin to low state.
@@ -146,11 +153,13 @@ extern "C"
   * @details    Disable automatic slave selection function and set USCI_SPI_SS pin to low state. Only available in Master mode.
   * \hideinitializer
   */
-#define USPI_SET_SS_LOW(uspi) \
-    do{ \
-        (uspi)->LINECTL |= (USPI_LINECTL_CTLOINV_Msk); \
-        (uspi)->PROTCTL = (((uspi)->PROTCTL & ~USPI_PROTCTL_AUTOSS_Msk) | USPI_PROTCTL_SS_Msk); \
-    }while(0)
+#define USPI_SET_SS_LOW(uspi)                    \
+  do                                             \
+  {                                              \
+    uspi->LINECTL |= (USPI_LINECTL_CTLOINV_Msk); \
+    uspi->PROTCTL &= ~(USPI_PROTCTL_AUTOSS_Msk); \
+    uspi->PROTCTL &= ~USPI_PROTCTL_SS_Msk;       \
+  } while (0)
 
 /**
   * @brief  Set the length of suspend interval.
@@ -158,21 +167,34 @@ extern "C"
   * @param[in]  u32SuspCycle Decide the length of suspend interval.
   * \hideinitializer
   */
-#define USPI_SET_SUSPEND_CYCLE(uspi, u32SuspCycle) ( (uspi)->PROTCTL = ((uspi)->PROTCTL & ~USPI_PROTCTL_SUSPITV_Msk) | ((u32SuspCycle) << USPI_PROTCTL_SUSPITV_Pos) )
+#define USPI_SET_SUSPEND_CYCLE(uspi, u32SuspCycle)                 \
+  do                                                               \
+  {                                                                \
+    uspi->PROTCTL &= ~(USPI_PROTCTL_SUSPITV_Msk);                  \
+    uspi->PROTCTL |= ((u32SuspCycle) << USPI_PROTCTL_SUSPITV_Pos); \
+  } while (0)
 
 /**
   * @brief  Set the USCI_SPI transfer sequence with LSB first.
   * @param[in]  uspi The pointer of the specified USCI_SPI module.
   * \hideinitializer
   */
-#define USPI_SET_LSB_FIRST(uspi) ( (uspi)->LINECTL |= USPI_LINECTL_LSB_Msk )
+#define USPI_SET_LSB_FIRST(uspi)           \
+  do                                       \
+  {                                        \
+    uspi->LINECTL |= USPI_LINECTL_LSB_Msk; \
+  } while (0)
 
 /**
   * @brief  Set the USCI_SPI transfer sequence with MSB first.
   * @param[in]  uspi The pointer of the specified USCI_SPI module.
   * \hideinitializer
   */
-#define USPI_SET_MSB_FIRST(uspi) ( (uspi)->LINECTL &= ~USPI_LINECTL_LSB_Msk )
+#define USPI_SET_MSB_FIRST(uspi)            \
+  do                                        \
+  {                                         \
+    uspi->LINECTL &= ~USPI_LINECTL_LSB_Msk; \
+  } while (0)
 
 /**
   * @brief  Set the data width of a USCI_SPI transaction.
@@ -180,14 +202,19 @@ extern "C"
   * @param[in]  u32Width The data width
   * \hideinitializer
   */
-#define USPI_SET_DATA_WIDTH(uspi,u32Width) \
-    do{ \
-      if((u32Width) == 16ul){ \
-        (uspi)->LINECTL = ((uspi)->LINECTL & ~USPI_LINECTL_DWIDTH_Msk) | (0 << USPI_LINECTL_DWIDTH_Pos); \
-      }else { \
-        (uspi)->LINECTL = ((uspi)->LINECTL & ~USPI_LINECTL_DWIDTH_Msk) | ((u32Width) << USPI_LINECTL_DWIDTH_Pos); \
-      } \
-    }while(0)
+#define USPI_SET_DATA_WIDTH(uspi, u32Width)                     \
+  do                                                            \
+  {                                                             \
+    uspi->LINECTL &= ~(USPI_LINECTL_DWIDTH_Msk);                \
+    if ((u32Width) == 16ul)                                     \
+    {                                                           \
+      uspi->LINECTL |= (0 << USPI_LINECTL_DWIDTH_Pos);          \
+    }                                                           \
+    else                                                        \
+    {                                                           \
+      uspi->LINECTL |= ((u32Width) << USPI_LINECTL_DWIDTH_Pos); \
+    }                                                           \
+  } while (0)
 
 /**
   * @brief  Get the USCI_SPI busy state.
@@ -197,7 +224,7 @@ extern "C"
   * @retval 1: USCI_SPI module is busy
   * \hideinitializer
   */
-#define USPI_IS_BUSY(uspi) ( ((uspi)->PROTSTS & USPI_PROTSTS_BUSY_Msk) == USPI_PROTSTS_BUSY_Msk ? 1:0 )
+#define USPI_IS_BUSY(uspi)  ((uspi->PROTSTS & USPI_PROTSTS_BUSY_Msk) >> USPI_PROTSTS_BUSY_Pos)
 
 /**
   * @brief Get the USCI_SPI wakeup flag.
@@ -207,14 +234,18 @@ extern "C"
   * @retval 1 Flag is set.
   * \hideinitializer
   */
-#define USPI_GET_WAKEUP_FLAG(uspi) ( ((uspi)->WKSTS & USPI_WKSTS_WKF_Msk) == USPI_WKSTS_WKF_Msk ? 1:0)
+#define USPI_GET_WAKEUP_FLAG(uspi) ((uspi->WKSTS & USPI_WKSTS_WKF_Msk) >> USPI_WKSTS_WKF_Pos)
 
 /**
   * @brief Clear the USCI_SPI wakeup flag.
   * @param[in] uspi The pointer of the specified USCI_SPI module.
   * \hideinitializer
   */
-#define USPI_CLR_WAKEUP_FLAG(uspi)  ( (uspi)->WKSTS |= USPI_WKSTS_WKF_Msk)
+#define USPI_CLR_WAKEUP_FLAG(uspi)     \
+  do                                   \
+  {                                    \
+    uspi->WKSTS |= USPI_WKSTS_WKF_Msk; \
+  } while (0)
 
 /**
   * @brief Get protocol interrupt flag/status.
@@ -222,7 +253,7 @@ extern "C"
   * @return The interrupt flag/status of protocol status register.
   * \hideinitializer
   */
-#define USPI_GET_PROT_STATUS(uspi)    ( (uspi)->PROTSTS)
+#define USPI_GET_PROT_STATUS(uspi)  (uspi->PROTSTS)
 
 /**
   * @brief Clear specified protocol interrupt flag.
@@ -238,7 +269,11 @@ extern "C"
   *                                  - \ref USPI_PROTSTS_TXSTIF_Msk
   * \hideinitializer
   */
-#define USPI_CLR_PROT_INT_FLAG(uspi,u32IntTypeFlag)    ( (uspi)->PROTSTS = (u32IntTypeFlag))
+#define USPI_CLR_PROT_INT_FLAG(uspi, u32IntTypeFlag) \
+  do                                                 \
+  {                                                  \
+    uspi->PROTSTS |= u32IntTypeFlag;                 \
+  } while (0)
 
 /**
   * @brief Get buffer interrupt flag/status.
@@ -246,7 +281,7 @@ extern "C"
   * @return The interrupt flag/status of buffer status register.
   * \hideinitializer
   */
-#define USPI_GET_BUF_STATUS(uspi)    ( (uspi)->BUFSTS)
+#define USPI_GET_BUF_STATUS(uspi) (uspi->BUFSTS)
 
 /**
   * @brief Clear specified buffer interrupt flag.
@@ -256,7 +291,11 @@ extern "C"
   *                                  - \ref USPI_BUFSTS_RXOVIF_Msk
   * \hideinitializer
   */
-#define USPI_CLR_BUF_INT_FLAG(uspi,u32IntTypeFlag)    ( (uspi)->BUFSTS = (u32IntTypeFlag))
+#define USPI_CLR_BUF_INT_FLAG(uspi, u32IntTypeFlag) \
+  do                                                \
+  {                                                 \
+    uspi->BUFSTS |= u32IntTypeFlag;                 \
+  } while (0)
 
 /**
   * @brief Enable specified protocol interrupt.
@@ -268,7 +307,11 @@ extern "C"
   *                                  - \ref USPI_PROTIEN_SSINAIEN_Msk
   * \hideinitializer
   */
-#define USPI_ENABLE_PROT_INT(uspi, u32IntSel)    ((uspi)->PROTIEN |= (u32IntSel))
+#define USPI_ENABLE_PROT_INT(uspi, u32IntSel) \
+  do                                          \
+  {                                           \
+    uspi->PROTIEN |= u32IntSel;               \
+  } while (0)
 
 /**
   * @brief Disable specified protocol interrupt.
@@ -280,7 +323,11 @@ extern "C"
   *                                  - \ref USPI_PROTIEN_SSINAIEN_Msk
   * \hideinitializer
   */
-#define USPI_DISABLE_PROT_INT(uspi, u32IntSel)    ((uspi)->PROTIEN &= ~ (u32IntSel))
+#define USPI_DISABLE_PROT_INT(uspi, u32IntSel) \
+  do                                           \
+  {                                            \
+    uspi->PROTIEN &= ~(u32IntSel);             \
+  } while (0)
 
 /**
   * @brief Enable specified buffer interrupt.
@@ -290,7 +337,11 @@ extern "C"
   *                                  - \ref USPI_BUFCTL_TXUDRIEN_Msk
   * \hideinitializer
   */
-#define USPI_ENABLE_BUF_INT(uspi, u32IntSel)    ((uspi)->BUFCTL |= (u32IntSel))
+#define USPI_ENABLE_BUF_INT(uspi, u32IntSel) \
+  do                                         \
+  {                                          \
+    uspi->BUFCTL |= (u32IntSel);             \
+  } while (0)
 
 /**
   * @brief Disable specified buffer interrupt.
@@ -300,7 +351,11 @@ extern "C"
   *                                  - \ref USPI_BUFCTL_TXUDRIEN_Msk
   * \hideinitializer
   */
-#define USPI_DISABLE_BUF_INT(uspi, u32IntSel)    ((uspi)->BUFCTL &= ~ (u32IntSel))
+#define USPI_DISABLE_BUF_INT(uspi, u32IntSel) \
+  do                                          \
+  {                                           \
+    uspi->BUFCTL &= ~(u32IntSel);             \
+  } while (0)
 
 /**
   * @brief Enable specified transfer interrupt.
@@ -312,7 +367,11 @@ extern "C"
   *                                  - \ref USPI_INTEN_TXSTIEN_Msk
   * \hideinitializer
   */
-#define USPI_ENABLE_TRANS_INT(uspi, u32IntSel)    ((uspi)->INTEN |= (u32IntSel))
+#define USPI_ENABLE_TRANS_INT(uspi, u32IntSel) \
+  do                                           \
+  {                                            \
+    uspi->INTEN |= (u32IntSel);                \
+  } while (0)
 
 /**
   * @brief Disable specified transfer interrupt.
@@ -324,8 +383,11 @@ extern "C"
   *                                  - \ref USPI_INTEN_TXSTIEN_Msk
   * \hideinitializer
   */
-#define USPI_DISABLE_TRANS_INT(uspi, u32IntSel)    ((uspi)->INTEN &= ~ (u32IntSel))
-
+#define USPI_DISABLE_TRANS_INT(uspi, u32IntSel) \
+  do                                            \
+  {                                             \
+    uspi->INTEN &= ~(u32IntSel);                \
+  } while (0)
 
 /**
   * @brief      Trigger RX PDMA function.
@@ -334,7 +396,11 @@ extern "C"
   * @details    Set RXPDMAEN bit of USPI_PDMACTL register to enable RX PDMA transfer function.
   * \hideinitializer
   */
-#define USPI_TRIGGER_RX_PDMA(uspi)   ((uspi)->PDMACTL |= USPI_PDMACTL_RXPDMAEN_Msk|USPI_PDMACTL_PDMAEN_Msk)
+#define USPI_TRIGGER_RX_PDMA(uspi)                                          \
+  do                                                                        \
+  {                                                                         \
+    uspi->PDMACTL |= (USPI_PDMACTL_RXPDMAEN_Msk | USPI_PDMACTL_PDMAEN_Msk); \
+  } while (0)
 
 /**
   * @brief      Trigger TX PDMA function.
@@ -343,7 +409,11 @@ extern "C"
   * @details    Set TXPDMAEN bit of USPI_PDMACTL register to enable TX PDMA transfer function.
   * \hideinitializer
   */
-#define USPI_TRIGGER_TX_PDMA(uspi)   ((uspi)->PDMACTL |= USPI_PDMACTL_TXPDMAEN_Msk|USPI_PDMACTL_PDMAEN_Msk)
+#define USPI_TRIGGER_TX_PDMA(uspi)                                          \
+  do                                                                        \
+  {                                                                         \
+    uspi->PDMACTL |= (USPI_PDMACTL_TXPDMAEN_Msk | USPI_PDMACTL_PDMAEN_Msk); \
+  } while (0)
 
 /**
   * @brief      Trigger TX and RX PDMA function.
@@ -352,7 +422,13 @@ extern "C"
   * @details    Set TXPDMAEN bit and RXPDMAEN bit of USPI_PDMACTL register to enable TX and RX PDMA transfer function.
   * \hideinitializer
   */
-#define USPI_TRIGGER_TX_RX_PDMA(uspi)   ((uspi)->PDMACTL |= USPI_PDMACTL_TXPDMAEN_Msk|USPI_PDMACTL_RXPDMAEN_Msk|USPI_PDMACTL_PDMAEN_Msk)
+#define USPI_TRIGGER_TX_RX_PDMA(uspi)             \
+  do                                              \
+  {                                               \
+    uspi->PDMACTL |= (USPI_PDMACTL_TXPDMAEN_Msk | \
+                      USPI_PDMACTL_RXPDMAEN_Msk | \
+                      USPI_PDMACTL_PDMAEN_Msk);   \
+  } while (0)
 
 /**
   * @brief      Disable RX PDMA transfer.
@@ -361,7 +437,11 @@ extern "C"
   * @details    Clear RXPDMAEN bit of USPI_PDMACTL register to disable RX PDMA transfer function.
   * \hideinitializer
   */
-#define USPI_DISABLE_RX_PDMA(uspi) ( (uspi)->PDMACTL &= ~USPI_PDMACTL_RXPDMAEN_Msk )
+#define USPI_DISABLE_RX_PDMA(uspi)                 \
+  do                                               \
+  {                                                \
+    uspi->PDMACTL &= ~(USPI_PDMACTL_RXPDMAEN_Msk); \
+  } while (0)
 
 /**
   * @brief      Disable TX PDMA transfer.
@@ -370,7 +450,11 @@ extern "C"
   * @details    Clear TXPDMAEN bit of USPI_PDMACTL register to disable TX PDMA transfer function.
   * \hideinitializer
   */
-#define USPI_DISABLE_TX_PDMA(uspi) ( (uspi)->PDMACTL &= ~USPI_PDMACTL_TXPDMAEN_Msk )
+#define USPI_DISABLE_TX_PDMA(uspi)                 \
+  do                                               \
+  {                                                \
+    uspi->PDMACTL &= ~(USPI_PDMACTL_TXPDMAEN_Msk); \
+  } while (0)
 
 /**
   * @brief      Disable TX and RX PDMA transfer.
@@ -379,8 +463,18 @@ extern "C"
   * @details    Clear TXPDMAEN bit and RXPDMAEN bit of USPI_PDMACTL register to disable TX and RX PDMA transfer function.
   * \hideinitializer
   */
-#define USPI_DISABLE_TX_RX_PDMA(uspi) ( (uspi)->PDMACTL &= ~(USPI_PDMACTL_TXPDMAEN_Msk | USPI_PDMACTL_RXPDMAEN_Msk))
+#define USPI_DISABLE_TX_RX_PDMA(uspi)                                          \
+  do                                                                           \
+  {                                                                            \
+    uspi->PDMACTL &= ~(USPI_PDMACTL_TXPDMAEN_Msk | USPI_PDMACTL_RXPDMAEN_Msk); \
+  } while (0)
 
+/** @} end of group USCI_SPI_EXPORTED_CONSTANTS */
+
+
+/** @addtogroup USCI_SPI_EXPORTED_FUNCTIONS USCI_SPI Exported Functions
+  @{
+*/
 uint32_t USPI_Open(USPI_T *uspi, uint32_t u32MasterSlave, uint32_t u32SPIMode,  uint32_t u32DataWidth, uint32_t u32BusClock);
 void USPI_Close(USPI_T *uspi);
 void USPI_ClearRxBuf(USPI_T *uspi);
