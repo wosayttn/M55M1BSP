@@ -253,7 +253,7 @@ void CCAP_SetPacketScaling(uint32_t u32VNumerator, uint32_t u32VDenominator, uin
 void CCAP_SetPacketStride(uint32_t u32Stride);
 void CCAP_EnableMono(uint32_t u32Interface);
 void CCAP_DisableMono(void);
-void CCAP_EnableLumaYOne(uint32_t u32th);
+void CCAP_EnableLumaYOne(uint32_t u32Threshold);
 void CCAP_DisableLumaYOne(void);
 
 /** @} end of group CCAP_EXPORTED_FUNCTIONS */

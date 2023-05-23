@@ -33,34 +33,34 @@ typedef enum _E_KDF_MODE
     eKDF_MODE_KBKDF,        /*!< KBKDF (NIST SP 800-108)    */
 } E_KDF_MODE;
 
-#define KDF_START               0
-#define KDF_NEXT                1
-#define KDF_KS_OWNER_AES        (0x0 << KDF_KSCTL_OWNER_Pos)
-#define KDF_KS_OWNER_HMAC       (0x1 << KDF_KSCTL_OWNER_Pos)
-#define KDF_KS_OWNER_ECC        (0x4 << KDF_KSCTL_OWNER_Pos)
-#define KDF_KS_OWNER_CPU        (0x5 << KDF_KSCTL_OWNER_Pos)
-#define KDF_KS_OWNER_CHACHA     (0x6 << KDF_KSCTL_OWNER_Pos)
-#define KDF_KS_DST_SRAM         (0x0 << KDF_KSCTL_WSDST_Pos)
-#define KDF_KS_DST_FLASH        (0x1 << KDF_KSCTL_WSDST_Pos)
-#define KDF_KEYOUT_TO_REG       (0x0 << KDF_KSCTL_WDST_Pos)
-#define KDF_KEYOUT_TO_KS        (0x1 << KDF_KSCTL_WDST_Pos)
-#define KDF_KS_NON_PRIV         (0x0 << KDF_KSCTL_PRIV_Pos)
-#define KDF_KS_PRIV             (0x1 << KDF_KSCTL_PRIV_Pos)
-#define KDF_KS_NON_SECURE       (0x0 << KDF_KSCTL_TRUST_Pos)
-#define KDF_KS_SECURE           (0x1 << KDF_KSCTL_TRUST_Pos)
-#define KDF_KS_128_BIT          (0x0)
-#define KDF_KS_163_BIT          (0x1)
-#define KDF_KS_192_BIT          (0x2)
-#define KDF_KS_224_BIT          (0x3)
-#define KDF_KS_233_BIT          (0x4)
-#define KDF_KS_255_BIT          (0x5)
-#define KDF_KS_256_BIT          (0x6)
-#define KDF_KS_283_BIT          (0x7)
-#define KDF_KS_384_BIT          (0x8)
-#define KDF_KS_409_BIT          (0x9)
-#define KDF_KS_512_BIT          (0xA)
-#define KDF_KS_521_BIT          (0xB)
-#define KDF_KS_571_BIT          (0xC)
+#define KDF_START               0UL
+#define KDF_NEXT                1UL
+#define KDF_KS_OWNER_AES        (0x0UL << KDF_KSCTL_OWNER_Pos)
+#define KDF_KS_OWNER_HMAC       (0x1UL << KDF_KSCTL_OWNER_Pos)
+#define KDF_KS_OWNER_ECC        (0x4UL << KDF_KSCTL_OWNER_Pos)
+#define KDF_KS_OWNER_CPU        (0x5UL << KDF_KSCTL_OWNER_Pos)
+#define KDF_KS_OWNER_CHACHA     (0x6UL << KDF_KSCTL_OWNER_Pos)
+#define KDF_KS_DST_SRAM         (0x0UL << KDF_KSCTL_WSDST_Pos)
+#define KDF_KS_DST_FLASH        (0x1UL << KDF_KSCTL_WSDST_Pos)
+#define KDF_KEYOUT_TO_REG       (0x0UL << KDF_KSCTL_WDST_Pos)
+#define KDF_KEYOUT_TO_KS        (0x1UL << KDF_KSCTL_WDST_Pos)
+#define KDF_KS_NON_PRIV         (0x0UL << KDF_KSCTL_PRIV_Pos)
+#define KDF_KS_PRIV             (0x1UL << KDF_KSCTL_PRIV_Pos)
+#define KDF_KS_NON_SECURE       (0x0UL << KDF_KSCTL_TRUST_Pos)
+#define KDF_KS_SECURE           (0x1UL << KDF_KSCTL_TRUST_Pos)
+#define KDF_KEY_SIZE_128        (0x0UL)
+#define KDF_KEY_SIZE_163        (0x1UL)
+#define KDF_KEY_SIZE_192        (0x2UL)
+#define KDF_KEY_SIZE_224        (0x3UL)
+#define KDF_KEY_SIZE_233        (0x4UL)
+#define KDF_KEY_SIZE_255        (0x5UL)
+#define KDF_KEY_SIZE_256        (0x6UL)
+#define KDF_KEY_SIZE_283        (0x7UL)
+#define KDF_KEY_SIZE_384        (0x8UL)
+#define KDF_KEY_SIZE_409        (0x9UL)
+#define KDF_KEY_SIZE_512        (0xAUL)
+#define KDF_KEY_SIZE_521        (0xBUL)
+#define KDF_KEY_SIZE_571        (0xCUL)
 
 #define KDF_TIMEOUT             SystemCoreClock                     /*!< 1 second time-out \hideinitializer         */
 #define KDF_OK                  ( 0L)
@@ -79,27 +79,23 @@ typedef enum _E_KDF_MODE
 #define KDF_IS_HMAC_BUSY()          ((KDF->STS & KDF_STS_HAMCBUSY_Msk) >> KDF_STS_HAMCBUSY_Pos)
 #define KDF_IS_ERROR()              ( KDF->STS & (KDF_STS_KSERR_Msk | KDF_STS_NEXTERR_Msk))
 
-#define KDF_KEYIN_FROM_REG          (0 << KDF_CTL_KEYINSEL_Pos)
-#define KDF_KEYIN_FROM_NVM          (1 << KDF_CTL_KEYINSEL_Pos)
-#define KDF_SALT_FROM_REG           (0 << KDF_CTL_SALTSEL_Pos)
-#define KDF_SALT_FROM_RANDOM        (1 << KDF_CTL_SALTSEL_Pos)
-#define KDF_LABEL_FROM_REG          (0 << KDF_CTL_LBSEL_Pos)
-#define KDF_LABEL_FROM_RANDOM       (1 << KDF_CTL_LBSEL_Pos)
-#define KDF_CTXT_FROM_REG           (0 << KDF_CTL_CTXTSEL_Pos)
-#define KDF_CTXT_FROM_RANDOM        (1 << KDF_CTL_CTXTSEL_Pos)
-#define KDF_MODE_HKDF               (0 << KDF_CTL_MODE_Pos)
-#define KDF_MODE_KBKDF              (1 << KDF_CTL_MODE_Pos)
+#define KDF_KEYIN_FROM_REG          (0UL << KDF_CTL_KEYINSEL_Pos)
+#define KDF_KEYIN_FROM_NVM          (1UL << KDF_CTL_KEYINSEL_Pos)
+#define KDF_SALT_FROM_REG           (0UL << KDF_CTL_SALTSEL_Pos)
+#define KDF_SALT_FROM_RANDOM        (1UL << KDF_CTL_SALTSEL_Pos)
+#define KDF_LABEL_FROM_REG          (0UL << KDF_CTL_LBSEL_Pos)
+#define KDF_LABEL_FROM_RANDOM       (1UL << KDF_CTL_LBSEL_Pos)
+#define KDF_CTXT_FROM_REG           (0UL << KDF_CTL_CTXTSEL_Pos)
+#define KDF_CTXT_FROM_RANDOM        (1UL << KDF_CTL_CTXTSEL_Pos)
+#define KDF_MODE_HKDF               (0UL << KDF_CTL_MODE_Pos)
+#define KDF_MODE_KBKDF              (1UL << KDF_CTL_MODE_Pos)
 
 #define KDF_CTL_START()                 (KDF->CTL |=  KDF_CTL_START_Msk)
 #define KDF_CTL_NEXT()                  (KDF->CTL |=  KDF_CTL_NEXT_Msk)
 #define KDF_CTL_STOP()                  (KDF->CTL |=  KDF_CTL_FINSIH_Msk)
 
-#define KDF_SET_KEY_LENGTH(u32KeyLen)               (KDF->KLEN = u32KeyLen & 0xFF00)
-#define KDF_WRITE_KEYINx(u32WordIdx, u32Key)        (KDF->KEYIN[u32WordIdx] = u32Key)
-#define KDF_READ_KEYOUTx(u32WordIdx)                (KDF->KEYOUT[u32WordIdx])
-#define KDF_WRITE_SALTx(u32WordIdx, u32Salt)        (KDF->SALT[u32WordIdx] = u32Salt)
-#define KDF_WRITE_LABELx(u32WordIdx, u32Label)      (KDF->SALT[u32WordIdx] = u32Label)
-#define KDF_WRITE_CONTEXTx(u32WordIdx, u32Context)  (KDF->SALT[u32WordIdx] = u32Context)
+#define KDF_SET_KEY_LENGTH(u32KeyLen)   (KDF->KLEN = (u32KeyLen) & 0xFF00)
+#define KDF_SET_KS_KEYSIZE(u32KeySize)  (KDF->KSSIZE = (u32KeySize) & KDF_KSSIZE_SIZE_Msk)
 
 /** @} end of group KDF_EXPORTED_CONSTANTS */
 
@@ -109,9 +105,14 @@ typedef enum _E_KDF_MODE
     @{
 */
 
+void KDF_SetInputKey(uint8_t pu8InputKey[], uint32_t u32ByteCnt);
+void KDF_SetSalt(uint8_t pu8Salt[], uint32_t u32ByteCnt);
+void KDF_SetLabel(uint8_t pu8Label[], uint32_t u32ByteCnt);
+void KDF_SetCtxt(uint8_t pu8Ctxt[], uint32_t u32ByteCnt);
 int32_t KDF_GetKeySizeSel(uint32_t u32KeyBitSize);
 int32_t KDF_DeriveKeyToReg(E_KDF_MODE eMode, uint32_t u32KeyBitSize, uint32_t u32SrcSelect, uint32_t bNext);
 int32_t KDF_FinishDeriveKeyToReg(void);
+int32_t KDF_DeriveKey(E_KDF_MODE eMode, uint32_t u32KeyParam, uint32_t u32KeyBitSize, uint8_t *pu8Keyout);
 int32_t KDF_DeriveKeyToKS(KS_MEM_Type eMemType, E_KDF_MODE eMode, uint32_t u32KeyBitSize, uint32_t u32SrcSelect, uint32_t u32KeyOwner, uint32_t u32SecurePriv);
 
 /** @} end of group KDF_EXPORTED_FUNCTIONS */
