@@ -68,6 +68,11 @@ void SYS_Init(void)
     /* Unlock protected registers */
     SYS_UnlockReg();
 
+#ifdef __PLDM_EMU__
+    /* r5464, Trim Filter Behavior */
+    SYS->HIRC48MCFCTL = 0x00009999;
+#endif
+
     /* Enable HXT Clock Source */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
@@ -193,7 +198,6 @@ void exit(int32_t code)
 
 int main(int argc, char *argv[])
 {
-
     /* Unlock protected registers for ISP function */
     SYS_UnlockReg();
 

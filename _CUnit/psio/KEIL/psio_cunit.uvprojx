@@ -440,9 +440,9 @@
               <FilePath>..\psio_cunit.c</FilePath>
             </File>
             <File>
-              <FileName>CUnitTestM4.lib</FileName>
+              <FileName>CUnitTestM55.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\common\CUnitTestM4.lib</FilePath>
+              <FilePath>..\..\common\CUnitTestM55.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -882,9 +882,9 @@
               <FilePath>..\psio_cunit.c</FilePath>
             </File>
             <File>
-              <FileName>CUnitTestM4.lib</FileName>
+              <FileName>CUnitTestM55.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\common\CUnitTestM4.lib</FilePath>
+              <FilePath>..\..\common\CUnitTestM55.lib</FilePath>
             </File>
           </Files>
         </Group>
