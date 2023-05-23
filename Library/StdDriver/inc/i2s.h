@@ -39,12 +39,12 @@ extern "C"
 #define I2S_DISABLE_MONO            I2S_STEREO
 
 /* I2S Data Format */
-#define I2S_FORMAT_I2S              (0U << I2S_CTL0_FORMAT_Pos      /*!< I2S data format  \hideinitializer */
-#define I2S_FORMAT_I2S_MSB          (1U << I2S_CTL0_FORMAT_Pos      /*!< I2S MSB data format  \hideinitializer */
-#define I2S_FORMAT_I2S_LSB          (2U << I2S_CTL0_FORMAT_Pos      /*!< I2S LSB data format  \hideinitializer */
-#define I2S_FORMAT_PCM              (4U << I2S_CTL0_FORMAT_Pos      /*!< PCM data format  \hideinitializer */
-#define I2S_FORMAT_PCM_MSB          (5U << I2S_CTL0_FORMAT_Pos      /*!< PCM MSB data format  \hideinitializer */
-#define I2S_FORMAT_PCM_LSB          (6U << I2S_CTL0_FORMAT_Pos      /*!< PCM LSB data format  \hideinitializer */
+#define I2S_FORMAT_I2S              (0U << I2S_CTL0_FORMAT_Pos)      /*!< I2S data format  \hideinitializer */
+#define I2S_FORMAT_I2S_MSB          (1U << I2S_CTL0_FORMAT_Pos)      /*!< I2S MSB data format  \hideinitializer */
+#define I2S_FORMAT_I2S_LSB          (2U << I2S_CTL0_FORMAT_Pos)      /*!< I2S LSB data format  \hideinitializer */
+#define I2S_FORMAT_PCM              (4U << I2S_CTL0_FORMAT_Pos)      /*!< PCM data format  \hideinitializer */
+#define I2S_FORMAT_PCM_MSB          (5U << I2S_CTL0_FORMAT_Pos)      /*!< PCM MSB data format  \hideinitializer */
+#define I2S_FORMAT_PCM_LSB          (6U << I2S_CTL0_FORMAT_Pos)      /*!< PCM LSB data format  \hideinitializer */
 
 /* I2S Data Format */
 #define I2S_ORDER_AT_MSB            (0U)                            /*!< Channel data is at MSB  \hideinitializer */

@@ -385,9 +385,9 @@
           <GroupName>CMSIS</GroupName>
           <Files>
             <File>
-              <FileName>startup_TC8263.c</FileName>
+              <FileName>startup_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Library\Device\Nuvoton\TC8263\Source\startup_TC8263.c</FilePath>
+              <FilePath>..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</FilePath>
             </File>
             <File>
               <FileName>system_TC8263.c</FileName>
@@ -832,9 +832,9 @@
           <GroupName>CMSIS</GroupName>
           <Files>
             <File>
-              <FileName>startup_TC8263.c</FileName>
+              <FileName>startup_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Library\Device\Nuvoton\TC8263\Source\startup_TC8263.c</FilePath>
+              <FilePath>..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</FilePath>
             </File>
             <File>
               <FileName>system_TC8263.c</FileName>

@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>DEBUG_PORT=UART0 __PLDM_EMU__</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\Library\CMSIS\Core\Include;..\..\..\Library\Device\Nuvoton\TC8263\Include;..\..\..\Library\StdDriver\inc;..\..\common\inc;..\PinConfig;..\..\spi</IncludePath>
+              <IncludePath>..\..\..\Library\CMSIS\Core\Include;..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\Library\StdDriver\inc;..\..\common\inc;..\PinConfig;..\..\spi</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -371,7 +371,7 @@
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>.\TC8263.scatter</ScatterFile>
+            <ScatterFile>.\M55M1.scatter</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -385,14 +385,14 @@
           <GroupName>CMSIS</GroupName>
           <Files>
             <File>
-              <FileName>startup_TC8263.c</FileName>
+              <FileName>startup_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Library\Device\Nuvoton\TC8263\Source\startup_TC8263.c</FilePath>
+              <FilePath>..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</FilePath>
             </File>
             <File>
-              <FileName>system_TC8263.c</FileName>
+              <FileName>system_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Library\Device\Nuvoton\TC8263\Source\system_TC8263.c</FilePath>
+              <FilePath>..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -792,7 +792,7 @@
               <MiscControls></MiscControls>
               <Define>DEBUG_PORT=UART0 __PLDM_EMU__</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\Library\CMSIS\Core\Include;..\..\..\Library\Device\Nuvoton\TC8263\Include;..\..\..\Library\StdDriver\inc;..\..\spi;..\..\common\inc;..\PinConfig</IncludePath>
+              <IncludePath>..\..\..\Library\CMSIS\Core\Include;..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\Library\StdDriver\inc;..\..\spi;..\..\common\inc;..\PinConfig</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -823,7 +823,7 @@
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>.\TC8263-SRAM.scatter</ScatterFile>
+            <ScatterFile>.\M55M1-SRAM.scatter</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -837,14 +837,14 @@
           <GroupName>CMSIS</GroupName>
           <Files>
             <File>
-              <FileName>startup_TC8263.c</FileName>
+              <FileName>startup_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Library\Device\Nuvoton\TC8263\Source\startup_TC8263.c</FilePath>
+              <FilePath>..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</FilePath>
             </File>
             <File>
-              <FileName>system_TC8263.c</FileName>
+              <FileName>system_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Library\Device\Nuvoton\TC8263\Source\system_TC8263.c</FilePath>
+              <FilePath>..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</FilePath>
             </File>
           </Files>
         </Group>

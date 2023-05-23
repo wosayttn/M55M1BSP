@@ -3,8 +3,8 @@
  * @version V1.00
  * @brief   SPIM driver header file
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #ifndef __SPIM_H__
@@ -76,6 +76,8 @@ typedef struct
 //#define SPIM_CCM_ADDR                   (0x20020000UL)      /*!< CCM mode memory map base address    \hideinitializer */
 //#define SPIM_CCM_SIZE                   (0x8000UL)          /*!< CCM mode memory size                \hideinitializer */
 
+#define SPIM_MAX_DLL_LATENCY            (0x05)            
+
 /*----------------------------------------------------------------------------*/
 /* SPIM_CTL0 constant definitions                                             */
 /*----------------------------------------------------------------------------*/
@@ -94,56 +96,56 @@ typedef struct
 #define SPIM_CTL0_RBO_MODE0             (0UL << SPIM_CTL0_RBO_NORM_Pos) /*!< SPIM_CTL0: Read Byte Order Mode (Data format Byte0, Byte1, Byte2, Byte3) \hideinitializer */
 #define SPIM_CTL0_RBO_MODE1             (1UL << SPIM_CTL0_RBO_NORM_Pos) /*!< SPIM_CTL0: Read Byte Order Mode (Data format Byte3, Byte2, Byte1, Byte0) \hideinitializer */
 #define SPIM_CTL0_RBO_MODE2             (2UL << SPIM_CTL0_RBO_NORM_Pos) /*!< SPIM_CTL0: Read Byte Order Mode (Data format Byte1, Byte0, Byte3, Byte2) \hideinitializer */
-#define SPIM_CTL0_RBO_Mode3             (3UL << SPIM_CTL0_RBO_NORM_Pos) /*!< SPIM_CTL0: Read Byte Order Mode (Data format Byte2, Byte3, Byte0, Byte1) \hideinitializer */
+#define SPIM_CTL0_RBO_MODE3             (3UL << SPIM_CTL0_RBO_NORM_Pos) /*!< SPIM_CTL0: Read Byte Order Mode (Data format Byte2, Byte3, Byte0, Byte1) \hideinitializer */
 
-#define CMD_NORMAL_PAGE_PROGRAM             (0x02UL)    /*!< SPIM_CTL0: Page Program (Page Write Mode Use) \hideinitializer */
-#define CMD_NORMAL_PAGE_PROGRAM_4B          (0x12UL)    /*!< SPIM_CTL0: Page Program 4 Byte Address (Page Write Mode Use) \hideinitializer */
-#define CMD_QUAD_PAGE_PROGRAM_WINBOND       (0x32UL)    /*!< SPIM_CTL0: Quad Page program (for Winbond) (Page Write Mode Use) \hideinitializer */
-#define CMD_QUAD_PAGE_PROGRAM_WINBOND_4B    (0x34UL)    /*!< SPIM_CTL0: Quad Page program 4 Byte Address (for Winbond) (Page Write Mode Use) \hideinitializer */
-#define CMD_QUAD_PAGE_PROGRAM_MXIC          (0x38UL)    /*!< SPIM_CTL0: Quad Page program (for MXIC) (Page Write Mode Use) \hideinitializer */
-#define CMD_QUAD_PAGE_PROGRAM_EON           (0x40UL)    /*!< SPIM_CTL0: Quad Page Program (for EON) (Page Write Mode Use) \hideinitializer */
-
-#define CMD_OCTAL_PAGE_PROG_MICRON          (0x82UL)    /*!< SPIM_CTL0: Quad Page Program (for EON) (Page Write Mode Use) \hideinitializer */
-#define CMD_OCTAL_PAGE_PROG_MICRON_4B       (0x84UL)    /*!< SPIM_CTL0: Quad Page Program (for EON) (Page Write Mode Use) \hideinitializer */
-#define CMD_OCTAL_EX_PAGE_PROG_MICRON       (0xC2UL)    /*!< SPIM_CTL0: Quad Page Program (for EON) (Page Write Mode Use) \hideinitializer */
-#define CMD_OCTAL_EX_PAGE_PROG_MICRON_4B    (0x8EUL)    /*!< SPIM_CTL0: Quad Page Program (for EON) (Page Write Mode Use) \hideinitializer */
-
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // I/O Read Command
-//-----------------------------------------------------------------------------
-#define CMD_NORMAL_READ             (0x03UL)    /*!< SPIM_CTL0: Read Data (Page Read Mode Use) \hideinitializer */
-#define CMD_NORMAL_READ_4B          (0x13UL)    /*!< SPIM_CTL0: Read Data 4 Byte Address( Page Read Mode Use) \hideinitializer */
-#define CMD_FAST_READ               (0x0BUL)    /*!< SPIM_CTL0: Fast Read (Page Read Mode Use) \hideinitializer */
-#define CMD_FAST_READ_4B            (0x0CUL)    /*!< SPIM_CTL0: Fast Read 4 Byte Address (Page Read Mode Use) \hideinitializer */
+//------------------------------------------------------------------------------
+#define CMD_NORMAL_PAGE_PROGRAM             (0x02UL)    /*!< SPIM_CMDCODE: Page Program (Page Write Mode Use) \hideinitializer */
+#define CMD_NORMAL_PAGE_PROGRAM_4B          (0x12UL)    /*!< SPIM_CMDCODE: Page Program 4 Byte Address (Page Write Mode Use) \hideinitializer */
+#define CMD_QUAD_PAGE_PROGRAM_WINBOND       (0x32UL)    /*!< SPIM_CMDCODE: Quad Page program (for Winbond) (Page Write Mode Use) \hideinitializer */
+#define CMD_QUAD_PAGE_PROGRAM_WINBOND_4B    (0x34UL)    /*!< SPIM_CMDCODE: Quad Page program 4 Byte Address (for Winbond) (Page Write Mode Use) \hideinitializer */
+#define CMD_QUAD_PAGE_PROGRAM_MXIC          (0x38UL)    /*!< SPIM_CMDCODE: Quad Page program (for MXIC) (Page Write Mode Use) \hideinitializer */
+#define CMD_QUAD_PAGE_PROGRAM_EON           (0x40UL)    /*!< SPIM_CMDCODE: Quad Page Program (for EON) (Page Write Mode Use) \hideinitializer */
 
-//-----------------------------------------------------------------------------
+#define CMD_OCTAL_PAGE_PROG_MICRON          (0x82UL)    /*!< SPIM_CMDCODE: Quad Page Program (for EON) (Page Write Mode Use) \hideinitializer */
+#define CMD_OCTAL_PAGE_PROG_MICRON_4B       (0x84UL)    /*!< SPIM_CMDCODE: Quad Page Program (for EON) (Page Write Mode Use) \hideinitializer */
+#define CMD_OCTAL_EX_PAGE_PROG_MICRON       (0xC2UL)    /*!< SPIM_CMDCODE: Quad Page Program (for EON) (Page Write Mode Use) \hideinitializer */
+#define CMD_OCTAL_EX_PAGE_PROG_MICRON_4B    (0x8EUL)    /*!< SPIM_CMDCODE: Quad Page Program (for EON) (Page Write Mode Use) \hideinitializer */
+
+#define CMD_NORMAL_READ                     (0x03UL)    /*!< SPIM_CMDCODE: Read Data (Page Read Mode Use) \hideinitializer */
+#define CMD_NORMAL_READ_4B                  (0x13UL)    /*!< SPIM_CMDCODE: Read Data 4 Byte Address( Page Read Mode Use) \hideinitializer */
+#define CMD_FAST_READ                       (0x0BUL)    /*!< SPIM_CMDCODE: Fast Read (Page Read Mode Use) \hideinitializer */
+#define CMD_FAST_READ_4B                    (0x0CUL)    /*!< SPIM_CMDCODE: Fast Read 4 Byte Address (Page Read Mode Use) \hideinitializer */
+
+//------------------------------------------------------------------------------
 // Dual Read Command
-//-----------------------------------------------------------------------------
-#define CMD_DUAL_FAST_READ          (0x3BUL)    /*!< SPIM_CTL0: Fast Read Dual Output (Page Read Mode Use) \hideinitializer */
-#define CMD_DUAL_FAST_READ_4B       (0x3CUL)    /*!< SPIM_CTL0: Fast Read Dual Output 4 Byte Address (Page Read Mode Use) \hideinitializer */
-#define CMD_DUAL_FAST_IO_READ       (0xBBUL)    /*!< SPIM_CTL0: Fast Read Dual Output (Page Read Mode Use) \hideinitializer */
-#define CMD_DUAL_FAST_IO_READ_4B    (0xBCUL)    /*!< SPIM_CTL0: Fast Read Dual Output 4 Byte Address (Page Read Mode Use) \hideinitializer */
-#define CMD_DUAL_FAST_DTR_READ      (0xBDUL)    /*!< SPIM_CTL0: Fast Read Dual Output 4 Byte Address (Page Read Mode Use) \hideinitializer */
+//------------------------------------------------------------------------------
+#define CMD_DUAL_FAST_READ          (0x3BUL)    /*!< SPIM_CMDCODE: Fast Read Dual Output (Page Read Mode Use) \hideinitializer */
+#define CMD_DUAL_FAST_READ_4B       (0x3CUL)    /*!< SPIM_CMDCODE: Fast Read Dual Output 4 Byte Address (Page Read Mode Use) \hideinitializer */
+#define CMD_DUAL_FAST_IO_READ       (0xBBUL)    /*!< SPIM_CMDCODE: Fast Read Dual Output (Page Read Mode Use) \hideinitializer */
+#define CMD_DUAL_FAST_IO_READ_4B    (0xBCUL)    /*!< SPIM_CMDCODE: Fast Read Dual Output 4 Byte Address (Page Read Mode Use) \hideinitializer */
+#define CMD_DUAL_FAST_DTR_READ      (0xBDUL)    /*!< SPIM_CMDCODE: Fast Read Dual Output 4 Byte Address (Page Read Mode Use) \hideinitializer */
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Quad Read Command
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #define CMD_QUAD_FAST_READ          (0x6BUL)    /*!< SPIM_CTL0: Fast Read Dual Output (Page Read Mode Use) \hideinitializer */
 #define CMD_QUAD_FAST_READ_4B       (0x6CUL)    /*!< SPIM_CTL0: Fast Read Dual Output 4 Byte Address (Page Read Mode Use) \hideinitializer */
 #define CMD_QUAD_FAST_IO_READ       (0xEBUL)    /*!< SPIM_CTL0: Fast Read Quad I/O (Page Read Mode Use) \hideinitializer */
 #define CMD_QUAD_FAST_IO_READ_4B    (0xECUL)    /*!< SPIM_CTL0: Fast Read Quad I/O 4 Byte Address (Page Read Mode Use) \hideinitializer */
 #define CMD_QUAD_FAST_DTR_READ      (0xEDUL)    /*!< SPIM_CTL0: Fast Read Quad I/O 4 Byte Address (Page Read Mode Use) \hideinitializer */
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // DTR Read Command
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #define CMD_DTR_NORMAL_READ         (0x0DUL)    /*!< SPIM_CTL0: Fast Read Dual Output (Page Read Mode Use) \hideinitializer */
 #define CMD_DTR_DUAL_READ           (0xBDUL)    /*!< SPIM_CTL0: Fast Read Dual Output (Page Read Mode Use) \hideinitializer */
 #define CMD_DTR_QUAD_READ           (0xEDUL)    /*!< SPIM_CTL0: Fast Read Dual Output (Page Read Mode Use) \hideinitializer */
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Micron Octal Read Command
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #define CMD_OCTAL_FAST_READ         (0x8BUL)    /*!< SPIM_CTL0: Fast Read Dual Output (Page Read Mode Use) \hideinitializer */
 #define CMD_OCTAL_FAST_IO_READ      (0xCBUL)    /*!< SPIM_CTL0: Fast Read Dual Output (Page Read Mode Use) \hideinitializer */
 #define CMD_OCTAL_FAST_READ_4B      (0x7CUL)    /*!< SPIM_CTL0: Fast Read Dual Output (Page Read Mode Use) \hideinitializer */
@@ -151,10 +153,9 @@ typedef struct
 #define CMD_OCTAL_DDR_FAST_READ     (0x9DUL)    /*!< SPIM_CTL0: Fast Read Dual Output (Page Read Mode Use) \hideinitializer */
 #define CMD_OCTAL_DDR_FAST_IO_READ  (0xFDUL)    /*!< SPIM_CTL0: Fast Read Dual Output (Page Read Mode Use) \hideinitializer */
 
-
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Continue Read Mode Command
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #define CMD_CLEAR_MODE_DATA             (0x00)
 #define CMD_CONTINUE_READ_MODE          (0x20)
 
@@ -192,8 +193,7 @@ typedef enum
     MFGID_MXIC      = 0xC2U,
     MFGID_WINBOND   = 0xEFU,
     MFGID_MICRON    = 0x2CU,
-}
-E_MFGID;
+}E_MFGID;
 
 /* Flash opcodes. */
 #define OPCODE_WREN             (0x06U) /* Write enable */
@@ -345,7 +345,7 @@ E_MFGID;
 #define SPIM_SET_4BYTE_ADDR_EN(spim, x)                              \
     do                                                               \
     {                                                                \
-        spim->CTL0 &= (~SPIM_CTL0_B4ADDREN_Msk);                     \
+        spim->CTL0 &= ~(SPIM_CTL0_B4ADDREN_Msk);                     \
         spim->CTL0 |= (((x) ? 1UL : 0UL) << SPIM_CTL0_B4ADDREN_Pos); \
     } while (0)
 
@@ -353,7 +353,7 @@ E_MFGID;
  * @details    Get 4-byte address to be enabled/disabled
  * \hideinitializer
  */
-#define SPIM_GET_4BYTE_ADDR_EN(spim)        (spim->CTL0 & SPIM_CTL0_B4ADDREN_Msk)
+#define SPIM_GET_4BYTE_ADDR_EN(spim)    (spim->CTL0 & SPIM_CTL0_B4ADDREN_Msk)
 
 /**
  * @details    Enable SPIM interrupt
@@ -378,13 +378,13 @@ E_MFGID;
         spim->CTL0 |= (((x) ? 1UL : 0UL) << SPIM_CTL0_IEN_Pos); \
     } while (0)
 
-#define SPIM_GET_INT(spim)      ((spim->CTL0 & SPIM_CTL0_IEN_Msk) >> SPIM_CTL0_IEN_Pos)
+#define SPIM_GET_INT(spim)  ((spim->CTL0 & SPIM_CTL0_IEN_Msk) >> SPIM_CTL0_IEN_Pos)
 
 /**
  * @details    Is interrupt flag on.
  * \hideinitializer
  */
-#define SPIM_WAIT_IF_ON(spim)     while((spim->CTL0 & SPIM_CTL0_IF_Msk) >> SPIM_CTL0_IF_Pos)
+#define SPIM_WAIT_IF_ON(spim)   while((spim->CTL0 & SPIM_CTL0_IF_Msk) >> SPIM_CTL0_IF_Pos)
 
 /**
  * @details    Clear interrupt flag.
@@ -403,7 +403,7 @@ E_MFGID;
 #define SPIM_SET_DATA_WIDTH(spim, x)                      \
     do                                                    \
     {                                                     \
-        spim->CTL0 &= (~SPIM_CTL0_DWIDTH_Msk);            \
+        spim->CTL0 &= ~(SPIM_CTL0_DWIDTH_Msk);            \
         spim->CTL0 |= (((x)-1U) << SPIM_CTL0_DWIDTH_Pos); \
     } while (0)
 
@@ -411,32 +411,27 @@ E_MFGID;
  * @details    Get data transmit/receive bit length setting
  * \hideinitializer
  */
-#define SPIM_GET_DATA_WIDTH(spim)                                             \
-    do                                                                        \
-    {                                                                         \
-        (((spim->CTL0 & SPIM_CTL0_DWIDTH_Msk) >> SPIM_CTL0_DWIDTH_Pos) + 1U); \
-    } while (0)
+#define SPIM_GET_DATA_WIDTH(spim)   (((spim->CTL0 & SPIM_CTL0_DWIDTH_Msk) >> SPIM_CTL0_DWIDTH_Pos) + 1U)
 
 /**
- * @details    Set data transmit/receive burst number
+ * @details    Set data transmit/receive burst number, x = 0: one data TX/RX will be executed in one transfer
+ *                                                         2: two data TX/RX will be executed in one transfer
+ * *                                                       3: three data TX/RX will be executed in one transfer
+ * *                                                       4: four data TX/RX will be executed in one transfer
  * \hideinitializer
  */
-#define SPIM_SET_DATA_NUM(spim, x)                          \
-    do                                                      \
-    {                                                       \
-        spim->CTL0 &= (~SPIM_CTL0_BURSTNUM_Msk);            \
-        spim->CTL0 |= (((x)-1U) << SPIM_CTL0_BURSTNUM_Pos); \
+#define SPIM_SET_BURST_DATA(spim, x)                   \
+    do                                                 \
+    {                                                  \
+        spim->CTL0 &= ~(SPIM_CTL0_BURSTNUM_Msk);       \
+        spim->CTL0 |= ((x - 1UL) << SPIM_CTL0_BURSTNUM_Pos); \
     } while (0)
 
 /**
  * @details    Get data transmit/receive burst number
  * \hideinitializer
  */
-#define SPIM_GET_DATA_NUM(spim)                                                   \
-    do                                                                            \
-    {                                                                             \
-        (((spim->CTL0 & SPIM_CTL0_BURSTNUM_Msk) >> SPIM_CTL0_BURSTNUM_Pos) + 1U); \
-    } while (0)
+#define SPIM_GET_BURST_DATA(spim)    ((spim->CTL0 & SPIM_CTL0_BURSTNUM_Msk) >> SPIM_CTL0_BURSTNUM_Pos)
 
 /**
  * @details    Set suspend interval which ranges between 0 and 15.
@@ -445,7 +440,7 @@ E_MFGID;
 #define SPIM_SET_SUSP_INTVL(spim, x)                  \
     do                                                \
     {                                                 \
-        spim->CTL0 &= (~SPIM_CTL0_SUSPITV_Msk);       \
+        spim->CTL0 &= ~(SPIM_CTL0_SUSPITV_Msk);       \
         spim->CTL0 |= ((x) << SPIM_CTL0_SUSPITV_Pos); \
     } while (0)
 
@@ -459,98 +454,99 @@ E_MFGID;
  * @details    Enable Single Input mode.
  * \hideinitializer
  */
-#define SPIM_ENABLE_SING_INPUT_MODE(spim)                                 \
-    do                                                                    \
-    {                                                                     \
-        spim->CTL0 &= (~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk)); \
-        spim->CTL0 |= (SPIM_CTL0_BITMODE_SING | SPIM_CTL0_RW_IN(1));      \
+#define SPIM_ENABLE_SING_INPUT_MODE(spim)                               \
+    do                                                                  \
+    {                                                                   \
+        spim->CTL0 &= ~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk); \
+        spim->CTL0 |= (SPIM_CTL0_BITMODE_SING | SPIM_CTL0_RW_IN(1));    \
     } while (0)
 
 /**
  * @details    Enable Single Output mode.
  * \hideinitializer
  */
-#define SPIM_ENABLE_SING_OUTPUT_MODE(spim)                                \
-    do                                                                    \
-    {                                                                     \
-        spim->CTL0 &= (~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk)); \
-        spim->CTL0 |= (SPIM_CTL0_BITMODE_SING | SPIM_CTL0_RW_IN(0));      \
+#define SPIM_ENABLE_SING_OUTPUT_MODE(spim)                              \
+    do                                                                  \
+    {                                                                   \
+        spim->CTL0 &= ~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk); \
+        spim->CTL0 |= (SPIM_CTL0_BITMODE_SING | SPIM_CTL0_RW_IN(0));    \
     } while (0)
 
 /**
  * @details    Enable Dual Input mode.
  * \hideinitializer
  */
-#define SPIM_ENABLE_DUAL_INPUT_MODE(spim)                                 \
-    do                                                                    \
-    {                                                                     \
-        spim->CTL0 &= (~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk)); \
-        spim->CTL0 |= (SPIM_CTL0_BITMODE_DUAL | SPIM_CTL0_RW_IN(1U));     \
+#define SPIM_ENABLE_DUAL_INPUT_MODE(spim)                               \
+    do                                                                  \
+    {                                                                   \
+        spim->CTL0 &= ~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk); \
+        spim->CTL0 |= (SPIM_CTL0_BITMODE_DUAL | SPIM_CTL0_RW_IN(1U));   \
     } while (0)
 
 /**
  * @details    Enable Dual Output mode.
  * \hideinitializer
  */
-#define SPIM_ENABLE_DUAL_OUTPUT_MODE(spim)                                \
-    do                                                                    \
-    {                                                                     \
-        spim->CTL0 &= (~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk)); \
-        spim->CTL0 |= (SPIM_CTL0_BITMODE_DUAL | SPIM_CTL0_RW_IN(0U));     \
+#define SPIM_ENABLE_DUAL_OUTPUT_MODE(spim)                              \
+    do                                                                  \
+    {                                                                   \
+        spim->CTL0 &= ~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk); \
+        spim->CTL0 |= (SPIM_CTL0_BITMODE_DUAL | SPIM_CTL0_RW_IN(0U));   \
     } while (0)
 
 /**
  * @details    Enable Quad Input mode.
  * \hideinitializer
  */
-#define SPIM_ENABLE_QUAD_INPUT_MODE(spim)                                 \
-    do                                                                    \
-    {                                                                     \
-        spim->CTL0 &= (~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk)); \
-        spim->CTL0 |= (SPIM_CTL0_BITMODE_QUAD | SPIM_CTL0_RW_IN(1U));     \
+#define SPIM_ENABLE_QUAD_INPUT_MODE(spim)                               \
+    do                                                                  \
+    {                                                                   \
+        spim->CTL0 &= ~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk); \
+        spim->CTL0 |= (SPIM_CTL0_BITMODE_QUAD | SPIM_CTL0_RW_IN(1U));   \
     } while (0)
 
 /**
  * @details    Enable Quad Output mode.
  * \hideinitializer
  */
-#define SPIM_ENABLE_QUAD_OUTPUT_MODE(spim)                                \
-    do                                                                    \
-    {                                                                     \
-        spim->CTL0 &= (~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk)); \
-        spim->CTL0 |= (SPIM_CTL0_BITMODE_QUAD | SPIM_CTL0_RW_IN(0U));     \
+#define SPIM_ENABLE_QUAD_OUTPUT_MODE(spim)                              \
+    do                                                                  \
+    {                                                                   \
+        spim->CTL0 &= ~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk); \
+        spim->CTL0 |= (SPIM_CTL0_BITMODE_QUAD | SPIM_CTL0_RW_IN(0U));   \
     } while (0)
 
 /**
  * @details    Enable Octal Input mode.
  * \hideinitializer
  */
-#define SPIM_ENABLE_OCTAL_INPUT_MODE(spim)                                \
-    do                                                                    \
-    {                                                                     \
-        spim->CTL0 &= (~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk)); \
-        spim->CTL0 |= (SPIM_CTL0_BITMODE_OCTAL | SPIM_CTL0_RW_IN(1U));    \
+#define SPIM_ENABLE_OCTAL_INPUT_MODE(spim)                              \
+    do                                                                  \
+    {                                                                   \
+        spim->CTL0 &= ~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk); \
+        spim->CTL0 |= (SPIM_CTL0_BITMODE_OCTAL | SPIM_CTL0_RW_IN(1U));  \
     } while (0)
 
 /**
  * @details    Enable Octal Output mode.
  * \hideinitializer
  */
-#define SPIM_ENABLE_OCTAL_OUTPUT_MODE(spim)                               \
-    do                                                                    \
-    {                                                                     \
-        spim->CTL0 &= (~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk)); \
-        spim->CTL0 |= (SPIM_CTL0_BITMODE_OCTAL | SPIM_CTL0_RW_IN(0U));    \
+#define SPIM_ENABLE_OCTAL_OUTPUT_MODE(spim)                             \
+    do                                                                  \
+    {                                                                   \
+        spim->CTL0 &= ~(SPIM_CTL0_BITMODE_Msk | SPIM_CTL0_QDIODIR_Msk); \
+        spim->CTL0 |= (SPIM_CTL0_BITMODE_OCTAL | SPIM_CTL0_RW_IN(0U));  \
     } while (0)
 
 /**
  * @details    Set operation mode.
  * \hideinitializer
  */
-#define SPIM_SET_OPMODE(spim, x)                                   \
-    do                                                             \
-    {                                                              \
-        spim->CTL0 = (spim->CTL0 & (~SPIM_CTL0_OPMODE_Msk)) | (x); \
+#define SPIM_SET_OPMODE(spim, x)               \
+    do                                         \
+    {                                          \
+        spim->CTL0 &= ~(SPIM_CTL0_OPMODE_Msk); \
+        spim->CTL0 |= (x);                     \
     } while (0)
 
 /**
@@ -589,11 +585,14 @@ E_MFGID;
  * @details    Set Read Data Byte Order Mode.
  * \hideinitializer
  */
-#define SPIM_SET_RBO_MODE(spim, x)                                   \
-    do                                                               \
-    {                                                                \
-        spim->CTL0 = (spim->CTL0 & (~SPIM_CTL0_RBO_NORM_Msk)) | (x); \
+#define SPIM_SET_RBO_MODE(spim, x)                   \
+    do                                               \
+    {                                                \
+        spim->CTL0 &= (~SPIM_CTL0_RBO_NORM_Msk);     \
+        spim->CTL0 |= (x << SPIM_CTL0_RBO_NORM_Pos); \
     } while (0)
+
+#define SPIM_GET_RBO_MODE(spim)        ((spim->CTL0 & SPIM_CTL0_RBO_NORM_Msk) >> SPIM_CTL0_RBO_NORM_Pos)
 
 /**
  * @details    Set SPIM mode.
@@ -609,11 +608,7 @@ E_MFGID;
  * @details    Get SPIM mode.
  * \hideinitializer
  */
-#define SPIM_GET_SPIM_MODE(spim)                    \
-    do                                              \
-    {                                               \
-        (spim->CMDCODE & SPIM_CMDCODE_CMDCODE_Msk); \
-    } while (0)
+#define SPIM_GET_SPIM_MODE(spim)    ((spim->CMDCODE & SPIM_CMDCODE_CMDCODE_Msk) >> SPIM_CMDCODE_CMDCODE_Pos)
 
 /**
  * @details    Start operation.
@@ -662,11 +657,18 @@ E_MFGID;
  * @details    Is cache enabled.
  * \hideinitializer
  */
-//#define SPIM_IS_CACHE_EN(spim)                           \
-//    do                                                   \
-//    {                                                    \
-//        ((spim->CTL1 & SPIM_CTL1_CACHEOFF_Msk) ? 0 : 1); \
-//    } while (0)
+//#define SPIM_IS_CACHE_EN(spim)    ((spim->CTL1 & SPIM_CTL1_CACHEOFF_Msk) ? 0 : 1)
+
+/**
+ * @details    Invalidate cache.
+ * \hideinitializer
+ */
+#define SPIM_INVALID_CACHE(spim)               \
+    do                                         \
+    {                                          \
+        (spim->CTL1 |= SPIM_CTL1_CDINVAL_Msk); \
+    } while (0)
+
 #endif //SPIM_CACHE_EN
 
 /**
@@ -687,19 +689,6 @@ E_MFGID;
  */
 //#define SPIM_IS_CCM_EN(spim)           ((spim->CTL1 & SPIM_CTL1_CCMEN_Msk) >> SPIM_CTL1_CCMEN_Pos)
 
-#if (SPIM_CACHE_EN == 1)
-/**
- * @details    Invalidate cache.
- * \hideinitializer
- */
-#define SPIM_INVALID_CACHE(spim)               \
-    do                                         \
-    {                                          \
-        (spim->CTL1 |= SPIM_CTL1_CDINVAL_Msk); \
-    } while (0)
-
-#endif //SPIM_CACHE_EN
-
 /**
  * @details    Set SS(Select Active) to active level.
  * \hideinitializer
@@ -707,7 +696,7 @@ E_MFGID;
 #define SPIM_SET_SS_EN(spim, x)                                 \
     do                                                          \
     {                                                           \
-        spim->CTL1 &= (~SPIM_CTL1_SS_Msk);                      \
+        spim->CTL1 &= ~(SPIM_CTL1_SS_Msk);                      \
         spim->CTL1 |= ((!(x) ? 1UL : 0UL) << SPIM_CTL1_SS_Pos); \
     } while (0)
 
@@ -715,11 +704,7 @@ E_MFGID;
  * @details    Is SS(Select Active) in active level.
  * \hideinitializer
  */
-#define SPIM_GET_SS_EN(spim)                \
-    do                                      \
-    {                                       \
-        (!(spim->CTL1 & SPIM_CTL1_SS_Msk)); \
-    } while (0)
+#define SPIM_GET_SS_EN(spim)    (!(spim->CTL1 & SPIM_CTL1_SS_Msk))
 
 /**
  * @details    Set active level of slave select to be high/low.
@@ -728,7 +713,7 @@ E_MFGID;
 #define SPIM_SET_SS_ACTLVL(spim, x)                                    \
     do                                                                 \
     {                                                                  \
-        spim->CTL1 &= (~SPIM_CTL1_SSACTPOL_Msk);                       \
+        spim->CTL1 &= ~(SPIM_CTL1_SSACTPOL_Msk);                       \
         spim->CTL1 |= ((!!(x) ? 1UL : 0UL) << SPIM_CTL1_SSACTPOL_Pos); \
     } while (0)
 
@@ -739,7 +724,7 @@ E_MFGID;
 #define SPIM_SET_IDL_INTVL(spim, x)                    \
     do                                                 \
     {                                                  \
-        spim->CTL1 &= (~SPIM_CTL1_IDLETIME_Msk);       \
+        spim->CTL1 &= ~(SPIM_CTL1_IDLETIME_Msk);       \
         spim->CTL1 |= ((x) << SPIM_CTL1_IDLETIME_Pos); \
     } while (0)
 
@@ -747,11 +732,7 @@ E_MFGID;
  * @details    Get idle time interval setting
  * \hideinitializer
  */
-#define SPIM_GET_IDL_INTVL(spim)                                           \
-    do                                                                     \
-    {                                                                      \
-        ((spim->CTL1 & SPIM_CTL1_IDLETIME_Msk) >> SPIM_CTL1_IDLETIME_Pos); \
-    } while (0)
+#define SPIM_GET_IDL_INTVL(spim)    ((spim->CTL1 & SPIM_CTL1_IDLETIME_Msk) >> SPIM_CTL1_IDLETIME_Pos)
 
 /**
  * @details    Set SPIM clock divider
@@ -761,7 +742,7 @@ E_MFGID;
 #define SPIM_SET_CLOCK_DIVIDER(spim, x)               \
     do                                                \
     {                                                 \
-        spim->CTL1 &= (~SPIM_CTL1_DIVIDER_Msk);       \
+        spim->CTL1 &= ~(SPIM_CTL1_DIVIDER_Msk);       \
         spim->CTL1 |= ((x) << SPIM_CTL1_DIVIDER_Pos); \
     } while (0)
 
@@ -770,54 +751,6 @@ E_MFGID;
  * \hideinitializer
  */
 #define SPIM_GET_CLOCK_DIVIDER(spim)    ((spim->CTL1 & SPIM_CTL1_DIVIDER_Msk) >> SPIM_CTL1_DIVIDER_Pos)
-
-/**
- * @details    DLL Stable Counter Reset Enable
- * \hideinitializer
- */
-//#define SPIM_DLL_STCNT_RESET_EN(spim, x)              \
-//    do                                                \
-//    {                                                 \
-//        spim->DLL &= (~SPIM_DLL_STCNT_RST_Msk);       \
-//        spim->DLL |= ((x) << SPIM_DLL_STCNT_RST_Pos); \
-//    } while (0)
-
-/**
- * @details    DLL Lock Status Bit (Read Only)
- * \hideinitializer
- */
-//#define SPIM_DLL_LOCK_STS(spim)           while(spim->DLL & SPIM_DLL_LOCK_Msk)
-
-/**
- * @details    DLL Refresh Status Bit (Read Only)
- * \hideinitializer
- */
-//#define SPIM_DLL_REF_STS(spim)        while (spim->DLL & SPIM_DLL_REF_Msk)
-
-/**
- * @details    DLL Delay Step Number
- * @param[in]  u8Value   DLL Delay Step Number 0 ~ 0x2F.
- * \hideinitializer
- */
-//#define SPIM_DLL_DELAY_NUM(spim, x)              \
-//    do                                           \
-//    {                                            \
-//        spim->DLL &= (~SPIM_DLL_DNUM_Msk);       \
-//        spim->DLL |= ((x) << SPIM_DLL_DNUM_Pos); \
-//    } while (0)
-
-/**
- * @details    DLL Stable Counter Target Number
- * @param[in]  u8Value   DLL Stable Counter Target Number 0 ~ 0xFFFF.
- * \hideinitializer
- */
-//#define SPIM_DLL_STABLE_NUM(spim, x)               \
-//    do                                             \
-//    {                                              \
-//        spim->DLL &= (~SPIM_DLL_STDNUM_Msk);       \
-//        spim->DLL |= ((x) << SPIM_DLL_STDNUM_Pos); \
-//    } while (0)
-
 
 /**
  * @details    Set SPI flash deselect time interval of DMA write mode
@@ -852,11 +785,8 @@ E_MFGID;
  * @details    Get sampling clock delay selection for received data
  * \hideinitializer
  */
-#define SPIM_GET_RXCLKDLY_RDDLYSEL(spim)                                               \
-    do                                                                                 \
-    {                                                                                  \
-        ((spim->RXCLKDLY & SPIM_RXCLKDLY_RDDLYSEL_Msk) >> SPIM_RXCLKDLY_RDDLYSEL_Pos); \
-    } while (0)
+#define SPIM_GET_RXCLKDLY_RDDLYSEL(spim)    \
+    ((spim->RXCLKDLY & SPIM_RXCLKDLY_RDDLYSEL_Msk) >> SPIM_RXCLKDLY_RDDLYSEL_Pos)
 
 /**
  * @details    Set sampling clock edge selection for received data
@@ -884,22 +814,6 @@ E_MFGID;
 //    } while (0)
 
 /**
- * @details    DMM mode complete to stop TX/RX
- * \hideinitializer
- */
-#define SPIM_DMM_HYPDONE(spim)                  \
-    do                                           \
-    {                                            \
-        spim->DMMCTL |= SPIM_DMMCTL_HYPDONE_Msk;    \
-    } while (0)
-
-/**
- * @details    Wait DMM mode complete to stop TX/RX
- * \hideinitializer
- */
-#define SPIM_WAIT_HYPDONE(spim)       while((spim->DMMCTL & SPIM_DMMCTL_HYPDONE_Msk) >> SPIM_DMMCTL_HYPDONE_Pos)
-    
-/**
  * @details    Get mode bits data for continuous read mode
  * \hideinitializer
  */
@@ -925,7 +839,7 @@ E_MFGID;
 #define SPIM_DMM_SET_DEFAULT_ACTSCLK(spim)           \
     do                                               \
     {                                                \
-        (spim->DMMCTL &= ~SPIM_DMMCTL_UACTSCLK_Msk); \
+        (spim->DMMCTL &= ~(SPIM_DMMCTL_UACTSCLK_Msk)); \
     } while { 0 }
 
 /**
@@ -943,11 +857,8 @@ E_MFGID;
  * @details    Get current DMM mode SPI flash deselect time setting
  * \hideinitializer
  */
-#define SPIM_DMM_GET_DESELTIM(spim)                                              \
-    do                                                                           \
-    {                                                                            \
-        ((spim->DMMCTL & SPIM_DMMCTL_DESELTIM_Msk) >> SPIM_DMMCTL_DESELTIM_Pos); \
-    } while (0)
+#define SPIM_DMM_GET_DESELTIM(spim) \
+    ((spim->DMMCTL & SPIM_DMMCTL_DESELTIM_Msk) >> SPIM_DMMCTL_DESELTIM_Pos)
 
 /**
  * @details    Enable DMM mode burst wrap mode
@@ -963,10 +874,10 @@ E_MFGID;
  * @details    Disable DMM mode burst wrap mode
  * \hideinitializer
  */
-#define SPIM_DMM_DISABLE_BWEN(spim)              \
-    do                                           \
-    {                                            \
-        (spim->DMMCTL &= ~SPIM_DMMCTL_BWEN_Msk); \
+#define SPIM_DMM_DISABLE_BWEN(spim)                \
+    do                                             \
+    {                                              \
+        (spim->DMMCTL &= ~(SPIM_DMMCTL_BWEN_Msk)); \
     } while (0)
 
 /**
@@ -983,11 +894,28 @@ E_MFGID;
  * @details    Disable DMM mode continuous read mode
  * \hideinitializer
  */
-#define SPIM_DMM_DISABLE_CREN(spim)              \
+#define SPIM_DMM_DISABLE_CREN(spim)                \
+    do                                             \
+    {                                              \
+        (spim->DMMCTL &= ~(SPIM_DMMCTL_CREN_Msk)); \
+    } while (0)
+
+/**
+ * @details    DMM mode complete to stop TX/RX
+ * \hideinitializer
+ */
+#define SPIM_DMM_HYPDONE(spim)                   \
     do                                           \
     {                                            \
-        (spim->DMMCTL &= ~SPIM_DMMCTL_CREN_Msk); \
+        spim->DMMCTL |= SPIM_DMMCTL_HYPDONE_Msk; \
     } while (0)
+
+/**
+ * @details    Wait DMM mode complete to stop TX/RX
+ * \hideinitializer
+ */
+#define SPIM_WAIT_HYPDONE(spim)       \
+    while((spim->DMMCTL & SPIM_DMMCTL_HYPDONE_Msk) >> SPIM_DMMCTL_HYPDONE_Pos)
 
 /**
  * @details    Set dummy cycle number (Only for DMM mode and DMA mode)
@@ -1014,18 +942,18 @@ E_MFGID;
 #define SPIM_SET_DC_DMAR(spim, x)                              \
     do                                                         \
     {                                                          \
-        spim->CTL2 &= ~SPIM_CTL2_DC_DMAR_Msk;                  \
-        spim->CTL2 |= (((x)&0xFFUL) << SPIM_CTL2_DC_DMAR_Pos); \
+        spim->CTL2 &= ~(SPIM_CTL2_DC_DMAR_Msk);                \
+        spim->CTL2 |= (((x) & 0xFFUL) << SPIM_CTL2_DC_DMAR_Pos); \
     } while (0)
 
 /**
  * @details    Clear dummy cycle number (Only DMA Command Mode)
  * \hideinitializer
  */
-#define SPIM_CLEAR_DC_DMAR(spim)                \
-    do                                          \
-    {                                           \
-        (spim->CTL2 &= ~SPIM_CTL2_DC_DMAR_Msk); \
+#define SPIM_CLEAR_DC_DMAR(spim)                  \
+    do                                            \
+    {                                             \
+        (spim->CTL2 &= ~(SPIM_CTL2_DC_DMAR_Msk)); \
     } while (0)
 
 /**
@@ -1035,18 +963,18 @@ E_MFGID;
 #define SPIM_SET_DC_DMM(spim, x)                              \
     do                                                        \
     {                                                         \
-        spim->CTL2 &= ~SPIM_CTL2_DC_DMM_Msk;                  \
-        spim->CTL2 |= (((x)&0xFFUL) << SPIM_CTL2_DC_DMM_Pos); \
+        spim->CTL2 &= ~(SPIM_CTL2_DC_DMM_Msk);                \
+        spim->CTL2 |= (((x) & 0xFFUL) << SPIM_CTL2_DC_DMM_Pos); \
     } while (0)
 
 /**
  * @details    Clear dummy cycle number (Only DMA Command Mode)
  * \hideinitializer
  */
-#define SPIM_CLEAR_DC_DMM(spim)                \
-    do                                         \
-    {                                          \
-        (spim->CTL2 &= ~SPIM_CTL2_DC_DMM_Msk); \
+#define SPIM_CLEAR_DC_DMM(spim)                  \
+    do                                           \
+    {                                            \
+        (spim->CTL2 &= ~(SPIM_CTL2_DC_DMM_Msk)); \
     } while (0)
 
 /**
@@ -1066,7 +994,7 @@ E_MFGID;
 #define SPIM_CLEAR_MODE_DATA(spim)                 \
     do                                             \
     {                                              \
-        (spim->MODE &= (~SPIM_MODE_MODEDATA_Msk)); \
+        (spim->MODE &= ~(SPIM_MODE_MODEDATA_Msk)); \
     } while (0)
 
 /*----------------------------------------------------------------------------*/
@@ -1079,17 +1007,21 @@ E_MFGID;
 #define SPIM_CLEAR_PHDMAW(spim)          \
     do                                   \
     {                                    \
-        (spim->PHDMAW &= (~0xFFFFFFFF)); \
+        (spim->PHDMAW &= ~(0xFFFFFFFF)); \
     } while (0)
 
 /**
- * @details    Set Write Data Width for Command Phase
+ * @details    Set Write Data Width for Command Phase, x = 0: No command phase
+ *                                                         1: 8 bits
+ *                                                         2: 16 bits
+ *                                                         3: 24 bits
+ *                                                         4: 32 bits
  * \hideinitializer
  */
 #define SPIM_PHDMAW_CMD_WIDTH(spim, x)                 \
     do                                                 \
     {                                                  \
-        spim->PHDMAW &= (~SPIM_PHDMAW_DW_CMD_Msk);     \
+        spim->PHDMAW &= ~(SPIM_PHDMAW_DW_CMD_Msk);     \
         spim->PHDMAW |= (x << SPIM_PHDMAW_DW_CMD_Pos); \
     } while (0)
 
@@ -1110,28 +1042,35 @@ E_MFGID;
 #define SPIM_PHDMAW_CMD_DTR_DISABLE(spim)             \
     do                                                \
     {                                                 \
-        (spim->PHDMAW &= (~SPIM_PHDMAW_DTR_CMD_Msk)); \
+        (spim->PHDMAW &= ~(SPIM_PHDMAW_DTR_CMD_Msk)); \
     } while (0)
 
 /**
- * @details    Set Bit Mode for Command Phase
+ * @details    Set Bit Mode for Command Phase, x = 0: Standard Mode
+ *                                                 1: Dual Mode
+ *                                                 2: Quad Mode
+ *                                                 3: Octal Mode
  * \hideinitializer
  */
 #define SPIM_PHDMAW_CMD_BIT_MODE(spim, x)              \
     do                                                 \
     {                                                  \
-        spim->PHDMAW &= (~SPIM_PHDMAW_BM_CMD_Msk);     \
+        spim->PHDMAW &= ~(SPIM_PHDMAW_BM_CMD_Msk);     \
         spim->PHDMAW |= (x << SPIM_PHDMAW_BM_CMD_Pos); \
     } while (0)
 
 /**
- * @details    Set Data Width for Address Phase
+ * @details    Set Data Width for Address Phase, x = 0: No command phase
+ *                                                   1: 8 bits
+ *                                                   2: 16 bits
+ *                                                   3: 24 bits
+ *                                                   4: 32 bits
  * \hideinitializer
  */
 #define SPIM_PHDMAW_ADDR_WIDTH(spim, x)                 \
     do                                                  \
     {                                                   \
-        spim->PHDMAW &= (~SPIM_PHDMAW_DW_ADDR_Msk);     \
+        spim->PHDMAW &= ~(SPIM_PHDMAW_DW_ADDR_Msk);     \
         spim->PHDMAW |= (x << SPIM_PHDMAW_DW_ADDR_Pos); \
     } while (0)
 
@@ -1152,17 +1091,20 @@ E_MFGID;
 #define SPIM_PHDMAW_ADDR_DTR_DISABLE(spim)             \
     do                                                 \
     {                                                  \
-        (spim->PHDMAW &= (~SPIM_PHDMAW_DTR_ADDR_Msk)); \
+        (spim->PHDMAW &= ~(SPIM_PHDMAW_DTR_ADDR_Msk)); \
     } while (0)
 
 /**
- * @details    Set SPI Interface Bit Mode for Address Phase
+ * @details    Set SPI Interface Bit Mode for Address Phase, x = 0: Standard Mode
+ *                                                               1: Dual Mode
+ *                                                               2: Quad Mode
+ *                                                               3: Octal Mode
  * \hideinitializer
  */
 #define SPIM_PHDMAW_ADDR_BIT_MODE(spim, x)              \
     do                                                  \
     {                                                   \
-        spim->PHDMAW &= (~SPIM_PHDMAW_BM_ADDR_Msk);     \
+        spim->PHDMAW &= ~(SPIM_PHDMAW_BM_ADDR_Msk);     \
         spim->PHDMAW |= (x << SPIM_PHDMAW_BM_ADDR_Pos); \
     } while (0)
 
@@ -1183,28 +1125,36 @@ E_MFGID;
 #define SPIM_PHDMAW_DATA_DTR_DISABLE(spim)             \
     do                                                 \
     {                                                  \
-        (spim->PHDMAW &= (~SPIM_PHDMAW_DTR_DATA_Msk)); \
+        (spim->PHDMAW &= ~(SPIM_PHDMAW_DTR_DATA_Msk)); \
     } while (0)
 
 /**
- * @details    Set Program Data Byte Order of Program Data Phase for Octal SPI Flash
+ * @details    Set Program Data Byte Order of Program Data Phase for Octal SPI Flash,
+ *             x = 0: Byte order byte0, byte1, byte2, byte3, byte4, byte5, byte6, byte7.
+ *                 1: Byte order byte7, byte6, byte5, byte4, byte3, byte2, byte1, byte0.
+ *                 2: Byte order byte1, byte0, byte3, byte2, byte5, byte4, byte7, byte6.
+ *                 3: Byte order byte6, byte7, byte4, byte5, byte2, byte3, byte0, byte1.
  * \hideinitializer
  */
 #define SPIM_PHDMAW_PBO_DATA(spim, x)                    \
     do                                                   \
     {                                                    \
-        spim->PHDMAW &= (~SPIM_PHDMAW_PBO_DATA_Msk);     \
+        spim->PHDMAW &= ~(SPIM_PHDMAW_PBO_DATA_Msk);     \
         spim->PHDMAW |= (x << SPIM_PHDMAW_PBO_DATA_Pos); \
     } while (0)
 
 /**
- * @details    Set SPI Interface Bit Mode for Data Phase
+ * @details    Set SPI Interface Bit Mode for Data Phase, x = 0: No command phase
+ *                                                            1: 8 bits
+ *                                                            2: 16 bits
+ *                                                            3: 24 bits
+ *                                                            4: 32 bits
  * \hideinitializer
  */
 #define SPIM_PHDMAW_DATA_BIT_MODE(spim, x)              \
     do                                                  \
     {                                                   \
-        spim->PHDMAW &= (~SPIM_PHDMAW_BM_DATA_Msk);     \
+        spim->PHDMAW &= ~(SPIM_PHDMAW_BM_DATA_Msk);     \
         spim->PHDMAW |= (x << SPIM_PHDMAW_BM_DATA_Pos); \
     } while (0)
 
@@ -1214,17 +1164,21 @@ E_MFGID;
 #define SPIM_CLEAR_PHDMAR(spim)          \
     do                                   \
     {                                    \
-        (spim->PHDMAR &= (~0xFFFFFFFF)); \
+        (spim->PHDMAR &= ~(0xFFFFFFFF)); \
     } while (0)
 
 /**
- * @details    Set Read Data Width for Command Phase
+ * @details    Set Read Data Width for Command Phase, x = 0: No command phase
+ *                                                        1: 8 bits
+ *                                                        2: 16 bits
+ *                                                        3: 24 bits
+ *                                                        4: 32 bits
  * \hideinitializer
  */
 #define SPIM_PHDMAR_CMD_WIDTH(spim, x)                 \
     do                                                 \
     {                                                  \
-        spim->PHDMAR &= (~SPIM_PHDMAR_DW_CMD_Msk);     \
+        spim->PHDMAR &= ~(SPIM_PHDMAR_DW_CMD_Msk);     \
         spim->PHDMAR |= (x << SPIM_PHDMAR_DW_CMD_Pos); \
     } while (0)
 
@@ -1245,28 +1199,35 @@ E_MFGID;
 #define SPIM_PHDMAR_CMD_DTR_DISABLE(spim)             \
     do                                                \
     {                                                 \
-        (spim->PHDMAR &= (~SPIM_PHDMAR_DTR_CMD_Msk)); \
+        (spim->PHDMAR &= ~(SPIM_PHDMAR_DTR_CMD_Msk)); \
     } while (0)
 
 /**
- * @details    Set SPI Interface Bit Mode for Command Phase
+ * @details    Set SPI Interface Bit Mode for Command Phase, x = 0: Standard Mode
+ *                                                               1: Dual Mode
+ *                                                               2: Quad Mode
+ *                                                               3: Octal Mode
  * \hideinitializer
  */
 #define SPIM_PHDMAR_CMD_BIT_MODE(spim, x)              \
     do                                                 \
     {                                                  \
-        spim->PHDMAR &= (~SPIM_PHDMAR_BM_CMD_Msk);     \
+        spim->PHDMAR &= ~(SPIM_PHDMAR_BM_CMD_Msk);     \
         spim->PHDMAR |= (x << SPIM_PHDMAR_BM_CMD_Pos); \
     } while (0)
 
 /**
- * @details    Set Data Width for Address Phase
+ * @details    Set Data Width for Address Phase, x = 0: No command phase
+ *                                                   1: 8 bits
+ *                                                   2: 16 bits
+ *                                                   3: 24 bits
+ *                                                   4: 32 bits
  * \hideinitializer
  */
 #define SPIM_PHDMAR_ADDR_WIDTH(spim, x)                 \
     do                                                  \
     {                                                   \
-        spim->PHDMAR &= (~SPIM_PHDMAR_DW_ADDR_Msk);     \
+        spim->PHDMAR &= ~(SPIM_PHDMAR_DW_ADDR_Msk);     \
         spim->PHDMAR |= (x << SPIM_PHDMAR_DW_ADDR_Pos); \
     } while (0)
 
@@ -1287,28 +1248,35 @@ E_MFGID;
 #define SPIM_PHDMAR_ADDR_DTR_DISABLE(spim)             \
     do                                                 \
     {                                                  \
-        (spim->PHDMAR &= (~SPIM_PHDMAR_DTR_ADDR_Msk)); \
+        (spim->PHDMAR &= ~(SPIM_PHDMAR_DTR_ADDR_Msk)); \
     } while (0)
 
 /**
- * @details    Set SPI Interface Bit Mode for Address Phase
+ * @details    Set SPI Interface Bit Mode for Address Phase, x = 0: Standard Mode
+ *                                                               1: Dual Mode
+ *                                                               2: Quad Mode
+ *                                                               3: Octal Mode
  * \hideinitializer
  */
 #define SPIM_PHDMAR_ADDR_BIT_MODE(spim, x)              \
     do                                                  \
     {                                                   \
-        spim->PHDMAR &= (~SPIM_PHDMAR_BM_ADDR_Msk);     \
+        spim->PHDMAR &= ~(SPIM_PHDMAR_BM_ADDR_Msk);     \
         spim->PHDMAR |= (x << SPIM_PHDMAR_BM_ADDR_Pos); \
     } while (0)
 
 /**
- * @details    Set Data Width for Mode Phase
+ * @details    Set Data Width for Mode Phase, x = 0: No command phase
+ *                                                1: 8 bits
+ *                                                2: 16 bits
+ *                                                3: 24 bits
+ *                                                4: 32 bits
  * \hideinitializer
  */
-#define SPIM_PHDMAR_READ_MODE_WIDTH(spim, x)            \
+#define SPIM_PHDMAR_READ_DATA_WIDTH(spim, x)            \
     do                                                  \
     {                                                   \
-        spim->PHDMAR &= (~SPIM_PHDMAR_DW_MODE_Msk);     \
+        spim->PHDMAR &= ~(SPIM_PHDMAR_DW_MODE_Msk);     \
         spim->PHDMAR |= (x << SPIM_PHDMAR_DW_MODE_Pos); \
     } while (0)
 
@@ -1329,17 +1297,20 @@ E_MFGID;
 #define SPIM_PHDMAR_READ_DTR_DISABLE(spim)             \
     do                                                 \
     {                                                  \
-        (spim->PHDMAR &= (~SPIM_PHDMAR_DTR_MODE_Msk)); \
+        (spim->PHDMAR &= ~(SPIM_PHDMAR_DTR_MODE_Msk)); \
     } while (0)
 
 /**
- * @details    Set SPI Interface Bit Mode for Read Mode Phase
+ * @details    Set SPI Interface Bit Mode for Read Mode Phase, x = 0: Standard Mode
+ *                                                                 1: Dual Mode
+ *                                                                 2: Quad Mode
+ *                                                                 3: Octal Mode
  * \hideinitializer
  */
 #define SPIM_PHDMAR_READ_BIT_MODE(spim, x)              \
     do                                                  \
     {                                                   \
-        spim->PHDMAR &= (~SPIM_PHDMAR_BM_MODE_Msk);     \
+        spim->PHDMAR &= ~(SPIM_PHDMAR_BM_MODE_Msk);     \
         spim->PHDMAR |= (x << SPIM_PHDMAR_BM_MODE_Pos); \
     } while (0)
 
@@ -1360,7 +1331,7 @@ E_MFGID;
 #define SPIM_PHDMAR_DATA_DTR_DISABLE(spim)             \
     do                                                 \
     {                                                  \
-        (spim->PHDMAR &= (~SPIM_PHDMAR_DTR_DATA_Msk)); \
+        (spim->PHDMAR &= ~(SPIM_PHDMAR_DTR_DATA_Msk)); \
     } while (0)
 
 /**
@@ -1380,28 +1351,35 @@ E_MFGID;
 #define SPIM_PHDMAR_DATA_RDQS_DISABLE(spim)             \
     do                                                  \
     {                                                   \
-        (spim->PHDMAR &= (~SPIM_PHDMAR_RDQS_DATA_Msk)); \
+        (spim->PHDMAR &= ~(SPIM_PHDMAR_RDQS_DATA_Msk)); \
     } while (0)
 
 /**
  * @details    Set Received Data Byte Order of Received Data Phase for Octal SPI Flash
+ *             x = 0: Byte order byte0, byte1, byte2, byte3, byte4, byte5, byte6, byte7.
+ *                 1: Byte order byte7, byte6, byte5, byte4, byte3, byte2, byte1, byte0.
+ *                 2: Byte order byte1, byte0, byte3, byte2, byte5, byte4, byte7, byte6.
+ *                 3: Byte order byte6, byte7, byte4, byte5, byte2, byte3, byte0, byte1.
  * \hideinitializer
  */
 #define SPIM_PHDMAR_RBO_DATA(spim, x)                    \
     do                                                   \
     {                                                    \
-        spim->PHDMAR &= (~SPIM_PHDMAR_RBO_DATA_Msk);     \
+        spim->PHDMAR &= ~(SPIM_PHDMAR_RBO_DATA_Msk);     \
         spim->PHDMAR |= (x << SPIM_PHDMAR_RBO_DATA_Pos); \
     } while (0)
 
 /**
- * @details    Set SPI Interface Bit Mode for Data Phase
+ * @details    Set SPI Interface Bit Mode for Data Phase, x = 0: Standard Mode
+ *                                                            1: Dual Mode
+ *                                                            2: Quad Mode
+ *                                                            3: Octal Mode
  * \hideinitializer
  */
 #define SPIM_PHDMAR_DATA_BIT_MODE(spim, x)              \
     do                                                  \
     {                                                   \
-        spim->PHDMAR &= (~SPIM_PHDMAR_BM_DATA_Msk);     \
+        spim->PHDMAR &= ~(SPIM_PHDMAR_BM_DATA_Msk);     \
         spim->PHDMAR |= (x << SPIM_PHDMAR_BM_DATA_Pos); \
     } while (0)
 
@@ -1411,17 +1389,21 @@ E_MFGID;
 #define SPIM_CLEAR_PHDMM(spim)          \
     do                                  \
     {                                   \
-        (spim->PHDMM &= (~0xFFFFFFFF)); \
+        (spim->PHDMM &= ~(0xFFFFFFFF)); \
     } while (0)
 
 /**
- * @details    Set DMM Mode Data Width for Command Phase
+ * @details    Set DMM Mode Data Width for Command Phase, x = 0: No command phase
+ *                                                            1: 8 bits
+ *                                                            2: 16 bits
+ *                                                            3: 24 bits
+ *                                                            4: 32 bits
  * \hideinitializer
  */
 #define SPIM_PHDMM_CMD_WIDTH(spim, x)                \
     do                                               \
     {                                                \
-        spim->PHDMM &= (~SPIM_PHDMM_DW_CMD_Msk);     \
+        spim->PHDMM &= ~(SPIM_PHDMM_DW_CMD_Msk);     \
         spim->PHDMM |= (x << SPIM_PHDMM_DW_CMD_Pos); \
     } while (0)
 
@@ -1442,28 +1424,35 @@ E_MFGID;
 #define SPIM_PHDMM_CMD_DTR_DISABLE(spim)            \
     do                                              \
     {                                               \
-        (spim->PHDMM &= (~SPIM_PHDMM_DTR_CMD_Msk)); \
+        (spim->PHDMM &= ~(SPIM_PHDMM_DTR_CMD_Msk)); \
     } while (0)
 
 /**
- * @details    Set SPI Interface Bit Mode for Command Phase
+ * @details    Set SPI Interface Bit Mode for Command Phase, x = 0: Standard Mode
+ *                                                               1: Dual Mode
+ *                                                               2: Quad Mode
+ *                                                               3: Octal Mod
  * \hideinitializer
  */
 #define SPIM_PHDMM_CMD_BIT_MODE(spim, x)             \
     do                                               \
     {                                                \
-        spim->PHDMM &= (~SPIM_PHDMM_BM_CMD_Msk);     \
+        spim->PHDMM &= ~(SPIM_PHDMM_BM_CMD_Msk);     \
         spim->PHDMM |= (x << SPIM_PHDMM_BM_CMD_Pos); \
     } while (0)
 
 /**
- * @details    Set Data Width for Address Phase
+ * @details    Set Data Width for Address Phase, x = 0: No command phase
+ *                                                   1: 8 bits
+ *                                                   2: 16 bits
+ *                                                   3: 24 bits
+ *                                                   4: 32 bits
  * \hideinitializer
  */
 #define SPIM_PHDMM_ADDR_WIDTH(spim, x)                \
     do                                                \
     {                                                 \
-        spim->PHDMM &= (~SPIM_PHDMM_DW_ADDR_Msk);     \
+        spim->PHDMM &= ~(SPIM_PHDMM_DW_ADDR_Msk);     \
         spim->PHDMM |= (x << SPIM_PHDMM_DW_ADDR_Pos); \
     } while (0)
 
@@ -1484,28 +1473,35 @@ E_MFGID;
 #define SPIM_PHDMM_ADDR_DTR_DISABLE(spim)            \
     do                                               \
     {                                                \
-        (spim->PHDMM &= (~SPIM_PHDMM_DTR_ADDR_Msk)); \
+        (spim->PHDMM &= ~(SPIM_PHDMM_DTR_ADDR_Msk)); \
     } while (0)
 
 /**
- * @details    Set SPI Interface Bit Mode for Address Phase
+ * @details    Set SPI Interface Bit Mode for Address Phase, x = 0: Standard Mode
+ *                                                               1: Dual Mode
+ *                                                               2: Quad Mode
+ *                                                               3: Octal Mod
  * \hideinitializer
  */
 #define SPIM_PHDMM_ADDR_BIT_MODE(spim, x)             \
     do                                                \
     {                                                 \
-        spim->PHDMM &= (~SPIM_PHDMM_BM_ADDR_Msk);     \
+        spim->PHDMM &= ~(SPIM_PHDMM_BM_ADDR_Msk);     \
         spim->PHDMM |= (x << SPIM_PHDMM_BM_ADDR_Pos); \
     } while (0)
 
 /**
- * @details    Set Data Width for Mode Phase
+ * @details    Set Data Width for Mode Phase, x = 0: No command phase
+ *                                                1: 8 bits
+ *                                                2: 16 bits
+ *                                                3: 24 bits
+ *                                                4: 32 bits
  * \hideinitializer
  */
-#define SPIM_PHDMM_READ_MODE_WIDTH(spim, x)           \
+#define SPIM_PHDMM_READ_DATA_WIDTH(spim, x)           \
     do                                                \
     {                                                 \
-        spim->PHDMM &= (~SPIM_PHDMM_DW_MODE_Msk);     \
+        spim->PHDMM &= ~(SPIM_PHDMM_DW_MODE_Msk);     \
         spim->PHDMM |= (x << SPIM_PHDMM_DW_MODE_Pos); \
     } while (0)
 
@@ -1526,17 +1522,20 @@ E_MFGID;
 #define SPIM_PHDMM_READ_DTR_DISABLE(spim)            \
     do                                               \
     {                                                \
-        (spim->PHDMM &= (~SPIM_PHDMM_DTR_MODE_Msk)); \
+        (spim->PHDMM &= ~(SPIM_PHDMM_DTR_MODE_Msk)); \
     } while (0)
 
 /**
- * @details    Set SPI Interface Bit Mode for Mode Phase
+ * @details    Set SPI Interface Bit Mode for Mode Phase, x = 0: Standard Mode
+ *                                                            1: Dual Mode
+ *                                                            2: Quad Mode
+ *                                                            3: Octal Mod
  * \hideinitializer
  */
 #define SPIM_PHDMM_READ_BIT_MODE(spim, x)             \
     do                                                \
     {                                                 \
-        spim->PHDMM &= (~SPIM_PHDMM_BM_MODE_Msk);     \
+        spim->PHDMM &= ~(SPIM_PHDMM_BM_MODE_Msk);     \
         spim->PHDMM |= (x << SPIM_PHDMM_BM_MODE_Pos); \
     } while (0)
 
@@ -1557,7 +1556,7 @@ E_MFGID;
 #define SPIM_PHDMM_DATA_DTR_DISABLE(spim)            \
     do                                               \
     {                                                \
-        (spim->PHDMM &= (~SPIM_PHDMM_DTR_DATA_Msk)); \
+        (spim->PHDMM &= ~(SPIM_PHDMM_DTR_DATA_Msk)); \
     } while (0)
 
 /**
@@ -1577,28 +1576,36 @@ E_MFGID;
 #define SPIM_PHDMM_DATA_RDQS_DISABLE(spim)            \
     do                                                \
     {                                                 \
-        (spim->PHDMM &= (~SPIM_PHDMM_RDQS_DATA_Msk)); \
+        (spim->PHDMM &= ~(SPIM_PHDMM_RDQS_DATA_Msk)); \
     } while (0)
 
 /**
  * @details    Set Received Data Byte Order of Received Data Phase for Octal SPI Flash
+ *             x = 0: Byte order byte0, byte1, byte2, byte3, byte4, byte5, byte6, byte7.
+ *                 1: Byte order byte7, byte6, byte5, byte4, byte3, byte2, byte1, byte0.
+ *                 2: Byte order byte1, byte0, byte3, byte2, byte5, byte4, byte7, byte6.
+ *                 3: Byte order byte6, byte7, byte4, byte5, byte2, byte3, byte0, byte1.
  * \hideinitializer
  */
 #define SPIM_PHDMM_RBO_DATA(spim, x)                   \
     do                                                 \
     {                                                  \
-        spim->PHDMM &= (~SPIM_PHDMM_RBO_DATA_Msk);     \
+        spim->PHDMM &= ~(SPIM_PHDMM_RBO_DATA_Msk);     \
         spim->PHDMM |= (x << SPIM_PHDMM_RBO_DATA_Pos); \
     } while (0)
 
 /**
- * @details    Set SPI Interface Bit Mode for Data Phase
+ * @details    Set SPI Interface Bit Mode for Data Phase, x = 0: No command phase
+ *                                                            1: 8 bits
+ *                                                            2: 16 bits
+ *                                                            3: 24 bits
+ *                                                            4: 32 bits
  * \hideinitializer
  */
 #define SPIM_PHDMM_DATA_BIT_MODE(spim, x)             \
     do                                                \
     {                                                 \
-        spim->PHDMM &= (~SPIM_PHDMM_BM_DATA_Msk);     \
+        spim->PHDMM &= ~(SPIM_PHDMM_BM_DATA_Msk);     \
         spim->PHDMM |= (x << SPIM_PHDMM_BM_DATA_Pos); \
     } while (0)
 
@@ -1620,7 +1627,7 @@ E_MFGID;
  * @details    Set DLL0 Output Valid Counter Reset
  * \hideinitializer
  */
-#define SPIM_ENABLE_DLL0_OVRST(spim, x)                               \
+#define SPIM_ENABLE_DLL0_OVRST(spim, x)                              \
     do                                                               \
     {                                                                \
         spim->DLL0 &= ~(SPIM_DLL0_DLLOVRST_Msk);                     \
@@ -1661,7 +1668,7 @@ E_MFGID;
  * @details    Set DLL0 Delay Step Number 0 ~ 1F
  * \hideinitializer
  */
-#define SPIM_SET_DLL0_DELAY_NUM(spim, x)                \
+#define SPIM_SET_DLL0_DELAY_NUM(spim, x)               \
     do                                                 \
     {                                                  \
         spim->DLL0 &= ~(SPIM_DLL0_DLL_DNUM_Msk);       \
@@ -1680,6 +1687,13 @@ E_MFGID;
     } while (0)
 
 /**
+ * @details    Get Cycle Number of DLL1 Ouput Valid 0 ~ 0xFFFF, Default 0x07D0
+ * \hideinitializer
+ */
+#define SPIM_GET_DLL1_LOCKK_VALID(spim)   \
+    ((spim->DLL1 & SPIM_DLL1_DLLLKNUM_Msk) >> SPIM_DLL1_DLLLKNUM_Pos)
+
+/**
  * @details    Set Cycle Number between DLL Clock Divider Enable and DLL Lock Valid 0 ~ 0xFFFF, Default 0x07D0
  * \hideinitializer
  */
@@ -1689,18 +1703,19 @@ E_MFGID;
         spim->DLL1 &= ~(SPIM_DLL1_DLLLKNUM_Msk);       \
         spim->DLL1 |= ((x) << SPIM_DLL1_DLLLKNUM_Pos); \
     } while (0)
-    
+
 /**
- * @details    Get Cycle Number of DLL1 Ouput Valid 0 ~ 0xFFFF, Default 0x07D0
+ * @details    Get Cycle Number between DLL Clock Divider Enable and DLL Lock Valid 0 ~ 0xFFFF, Default 0x07D0
  * \hideinitializer
  */
-#define SPIM_GET_DLL1_OUT_VALID(spim)     (spim->DLL1 & SPIM_DLL1_DLLOVNUM_Msk)
+#define SPIM_GET_DLL1_LOCKK_VALID(spim)   \
+    ((spim->DLL1 & SPIM_DLL1_DLLLKNUM_Msk) >> SPIM_DLL1_DLLLKNUM_Pos)
 
 /**
  * @details    Set Cycle Number of DLL1 Lock Time 0 ~ 0xFFFF, Default 0x1388
  * \hideinitializer
  */
-#define SPIM_SET_DLL1_LOCK_TIME(spim, x)                \
+#define SPIM_SET_DLL1_LOCK_TIME(spim, x)               \
     do                                                 \
     {                                                  \
         spim->DLL1 &= ~(SPIM_DLL1_DLLLKNUM_Msk);       \
@@ -1728,7 +1743,7 @@ E_MFGID;
         spim->DLL2 &= ~(SPIM_DLL2_TRIMNUM_Msk);       \
         spim->DLL2 |= ((x) << SPIM_DLL2_TRIMNUM_Pos); \
     } while (0)
-    
+
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
@@ -1740,11 +1755,6 @@ E_MFGID;
 /** @addtogroup SPIM HYPER_EXPORTED_CONSTANTS HYPER Exported Constants
   @{
 */
-
-/*----------------------------------------------------------------------------*/
-/* HyperRAM memory mapping address                                            */
-/*----------------------------------------------------------------------------*/
-#define HYPERRAM_BASE                0x80000000
 
 /*----------------------------------------------------------------------------*/
 /* Hyper Chip Register Space constant definitions
@@ -1786,165 +1796,90 @@ Register Space Range:
 #define SPIM_HYPER_CMD_WRITE_HRAM_4_BYTE    (0x0000F)
 
 /*----------------------------------------------------------------------------*/
-/* SPIM_HYPER_CONFIG1: Chip Select Setup Time to Next CK Rising Edge constant definitions
+/* SPIM_HYPER_CONFIG1: Chip Select Setup Time to Next CK Rising Edge
     00 = 1.5 HCLK cycles.
     01 = 2.5 HCLK cycles.
     10 = 3.5 HCLK cycles.
     11 = 4.5 HCLK cycles.
 */
 /*----------------------------------------------------------------------------*/
-#define SPIM_HYPER_CONFIG1_CSST_1_5_HCLK    (0x0) //(0x0 << SPIM_HYPER_CONFIG1_CSST_Pos)
-#define SPIM_HYPER_CONFIG1_CSST_2_5_HCLK    (0x1) //(0x1 << SPIM_HYPER_CONFIG1_CSST_Pos)
-#define SPIM_HYPER_CONFIG1_CSST_3_5_HCLK    (0x2) //(0x2 << SPIM_HYPER_CONFIG1_CSST_Pos)
-#define SPIM_HYPER_CONFIG1_CSST_4_5_HCLK    (0x3) //(0x3 << SPIM_HYPER_CONFIG1_CSST_Pos)
+#define SPIM_HYPER_CONFIG1_CSST_1_5_HCLK    (0x0)
+#define SPIM_HYPER_CONFIG1_CSST_2_5_HCLK    (0x1)
+#define SPIM_HYPER_CONFIG1_CSST_3_5_HCLK    (0x2)
+#define SPIM_HYPER_CONFIG1_CSST_4_5_HCLK    (0x3)
 
 /*----------------------------------------------------------------------------*/
-/* SPIM_HYPER_CONFIG1: Initial Access Time constant definitions
-    0000 = 5 HCLK cycles.
-    0001 = 6 HCLK cycles.
-    0010 = 7 HCLK cycles.
-    1110 = 3 HCLK cycles.
-    1111 = 4 HCLK cycles.
-*/
-/*----------------------------------------------------------------------------*/
-#define SPIM_HYPER_CONFIG2_ACCT_5_CK    (0x0) //(0x0 << SPIM_HYPER_CONFIG2_ACCT_Pos)
-#define SPIM_HYPER_CONFIG2_ACCT_6_CK    (0x1) //(0x1 << SPIM_HYPER_CONFIG2_ACCT_Pos)
-#define SPIM_HYPER_CONFIG2_ACCT_7_CK    (0x2) //(0x2 << SPIM_HYPER_CONFIG2_ACCT_Pos)
-#define SPIM_HYPER_CONFIG2_ACCT_3_CK    (0xE) //(0xE << SPIM_HYPER_CONFIG2_ACCT_Pos)
-#define SPIM_HYPER_CONFIG2_ACCT_4_CK    (0xF) //(0xF << SPIM_HYPER_CONFIG2_ACCT_Pos)
-
-/*----------------------------------------------------------------------------*/
-/* SPIM_HYPER_CONFIG1: Chip Select Hold Time After CK Falling Edge constant definitions
+/* SPIM_HYPER_CONFIG1: Chip Select Hold Time After CK Falling Edge
     00 = 0.5 HCLK cycles.
     01 = 1.5 HCLK cycles.
     10 = 2.5 HCLK cycles.
     11 = 3.5 HCLK cycles.
 */
 /*----------------------------------------------------------------------------*/
-#define SPIM_HYPER_CONFIG1_CSH_0_5_HCLK (0x0) //(0x0 << SPIM_HYPER_CONFIG1_CSH_Pos)
-#define SPIM_HYPER_CONFIG1_CSH_1_5_HCLK (0x1) //(0x1 << SPIM_HYPER_CONFIG1_CSH_Pos)
-#define SPIM_HYPER_CONFIG1_CSH_2_5_HCLK (0x2) //(0x2 << SPIM_HYPER_CONFIG1_CSH_Pos)
-#define SPIM_HYPER_CONFIG1_CSH_3_5_HCLK (0x3) //(0x3 << SPIM_HYPER_CONFIG1_CSH_Pos)
+#define SPIM_HYPER_CONFIG1_CSH_0_5_HCLK    (0x0)
+#define SPIM_HYPER_CONFIG1_CSH_1_5_HCLK    (0x1)
+#define SPIM_HYPER_CONFIG1_CSH_2_5_HCLK    (0x2)
+#define SPIM_HYPER_CONFIG1_CSH_3_5_HCLK    (0x3)
 
 /*----------------------------------------------------------------------------*/
-/* SPIM_HYPER_CONFIG1: Burst Group Size constant definitions
-    00 = 128 Bytes.
-    01 = 64 Bytes.
-    10 = 16 Bytes.
-    11 = 32 Bytes.
+/* SPIM_HYPER_CONFIG1: Chip Select High between Transaction
+    10 = 0.5 HCLK cycles.
+    ...
+    1111 = 3.5 HCLK cycles.
 */
 /*----------------------------------------------------------------------------*/
-//#define SPIM_HYPER_CONFIG1_BGSIZE_128  (0x0 << SPIM_HYPER_CONFIG1_BGSIZE_Pos)
-//#define SPIM_HYPER_CONFIG1_BGSIZE_64   (0x1 << SPIM_HYPER_CONFIG1_BGSIZE_Pos)
-//#define SPIM_HYPER_CONFIG1_BGSIZE_16   (0x2 << SPIM_HYPER_CONFIG1_BGSIZE_Pos)
-//#define SPIM_HYPER_CONFIG1_BGSIZE_32   (0x3 << SPIM_HYPER_CONFIG1_BGSIZE_Pos)
-
-/*----------------------------------------------------------------------------*/
-/* SPIM_HYPER_CONFIG1: Endian Condition on the Hyper Bus Data Pipe constant definitions
-    0 = Little-Endian.
-    1 = Big-Endian.
-*/
-/*----------------------------------------------------------------------------*/
-//#define SPIM_HYPER_CONFIG_LITTLE_ENDIAN  (0x0 << SPIM_HYPER_CONFIG_ENDIAN_Pos)
-//#define SPIM_HYPER_CONFIG_BIG_ENDIAN     (0x1 << SPIM_HYPER_CONFIG_ENDIAN_Pos)
-
-/*----------------------------------------------------------------------------*/
-/* SPIM_HYPER_CONFIG1: Hyper Bus Clock Divider constant definitions
-    0 = Hyper Bus Clock rate is HCLK/2.
-    1 = Hyper Bus Clock rate is HCLK/4.
-*/
-/*----------------------------------------------------------------------------*/
-//#define SPIM_HYPER_CONFIG_CKDIV_HCLK_DIV2    (0x0 << SPIM_HYPER_CONFIG_CKDIV_Pos)
-//#define SPIM_HYPER_CONFIG_CKDIV_HCLK_DIV4    (0x1 << SPIM_HYPER_CONFIG_CKDIV_Pos)
-
-/*----------------------------------------------------------------------------*/
-/* SPIM HYPER Define Error Code                                               */
-/*----------------------------------------------------------------------------*/
-//extern int32_t g_SPIM_Hyper_i32ErrCode;
-//#define SPIM_HYPER_TIMEOUT         SystemCoreClock     /*!< SPIM hyper time-out counter (1 second time-out) */
-//#define SPIM_HYPER_OK              ( 0L)               /*!< SPIM hyper operation OK */
-//#define SPIM_HYPER_ERR_FAIL        (-1L)               /*!< SPIM hyper operation failed */
-//#define SPIM_HYPER_ERR_TIMEOUT     (-2L)               /*!< SPIM hyper operation abort due to timeout error */
+#define SPIM_HYPER_CONFIG1_CSHI_2_HCLK    (0x02)
+#define SPIM_HYPER_CONFIG1_CSHI_3_HCLK    (0x03)
+#define SPIM_HYPER_CONFIG1_CSHI_4_HCLK    (0x04)
+#define SPIM_HYPER_CONFIG1_CSHI_5_HCLK    (0x05)
+#define SPIM_HYPER_CONFIG1_CSHI_6_HCLK    (0x06)
+#define SPIM_HYPER_CONFIG1_CSHI_7_HCLK    (0x07)
+#define SPIM_HYPER_CONFIG1_CSHI_8_HCLK    (0x08)
+#define SPIM_HYPER_CONFIG1_CSHI_9_HCLK    (0x09)
+#define SPIM_HYPER_CONFIG1_CSHI_10_HCLK   (0x0A)
+#define SPIM_HYPER_CONFIG1_CSHI_11_HCLK   (0x0B)
+#define SPIM_HYPER_CONFIG1_CSHI_12_HCLK   (0x0C)
+#define SPIM_HYPER_CONFIG1_CSHI_13_HCLK   (0x0D)
+#define SPIM_HYPER_CONFIG1_CSHI_14_HCLK   (0x0E)
+#define SPIM_HYPER_CONFIG1_CSHI_15_HCLK   (0x0F)
 
 /*----------------------------------------------------------------------------*/
 /*  Define SPIM HYPER Macros and functions                                    */
 /*----------------------------------------------------------------------------*/
-
-/**
- * @details    Enable cipher balance
- * \hideinitializer
- */
-//#define SPIM_HYPER_ENABLE_BALEN(spim)        (spim->CTL0 |= SPIM_CTL0_BALEN_Msk)
-
-/**
- * @details    Disable cipher balance
- * \hideinitializer
- */
-//#define SPIM_HYPER_DISABLE_BALEN(spim)       (spim->CTL0 &= ~SPIM_CTL0_BALEN_Msk)
-
-/**
- * @details    Set 4-byte address to be enabled/disabled, 0: Disable, 1: Enable
- * \hideinitializer
- */
-//#define SPIM_HYPER_SET_4BYTE_ADDR_EN(spim, x)                           \
-//    do                                                                  \
-//    {                                                                   \
-//        spim->CTL0 &= (~SPIM_CTL0_B4ADDREN_Msk);                        \
-//        spim->CTL0 |= (((x) ? 1UL : 0UL) << SPIM_CTL0_B4ADDREN_Pos);    \
-//    } while (0)
-
 /**
   * @brief      Set Hyper Chip Select Setup Time to Next CK Rising Edge
-  * @param[in]  u8Value   Chip Select Setup Time to Next CK Rising Edge.
-  *                         - \ref SPIM_HYPER_CONFIG1_CSST_1_5_HCLK : 1.5 HCLK cycles
-  *                         - \ref SPIM_HYPER_CONFIG1_CSST_2_5_HCLK : 2.5 HCLK cycles
-  *                         - \ref SPIM_HYPER_CONFIG1_CSST_3_5_HCLK : 3.5 HCLK cycles
-  *                         - \ref SPIM_HYPER_CONFIG1_CSST_4_5_HCLK : 4.5 HCLK cycles
+  * @param[in]  x Chip Select Setup Time to Next CK Rising Edge.
+  *               - \ref SPIM_HYPER_CONFIG1_CSST_1_5_HCLK : 1.5 HCLK cycles
+  *               - \ref SPIM_HYPER_CONFIG1_CSST_2_5_HCLK : 2.5 HCLK cycles
+  *               - \ref SPIM_HYPER_CONFIG1_CSST_3_5_HCLK : 3.5 HCLK cycles
+  *               - \ref SPIM_HYPER_CONFIG1_CSST_4_5_HCLK : 4.5 HCLK cycles
   * @return     None
   * @details    This Macro Set Hyper Chip Select Setup Time to Next CK Rising Edge
   * \hideinitializer
   */
-#define SPIM_HYPER_CONFIG1_SET_CSST(spim, u8Value)             \
-    do                                                         \
-    {                                                          \
-        spim->HYPER_CONFIG1 &= (~SPIM_HYPER_CONFIG1_CSST_Msk); \
-        spim->HYPER_CONFIG1 |= (u8Value << SPIM_HYPER_CONFIG1_CSST_Pos);                        \
+#define SPIM_HYPER_CONFIG1_SET_CSST(spim, x)                       \
+    do                                                             \
+    {                                                              \
+        spim->HYPER_CONFIG1 &= ~(SPIM_HYPER_CONFIG1_CSST_Msk);     \
+        spim->HYPER_CONFIG1 |= (x << SPIM_HYPER_CONFIG1_CSST_Pos); \
     } while (0)
 
 /**
-  * @brief      Set Hyper Chip Burst Group Size
-  * @param[in]  u8Value   Burst Group Size.
-  *                         - \ref SPIM_HYPER_CONFIG1_BGSIZE_128 : 128 Bytes
-  *                         - \ref SPIM_HYPER_CONFIG1_BGSIZE_64  : 64  Bytes
-  *                         - \ref SPIM_HYPER_CONFIG1_BGSIZE_16  : 16  Bytes
-  *                         - \ref SPIM_HYPER_CONFIG1_BGSIZE_32  : 32  Bytes
-  * @return     None
-  * @details    This Macro Set Hyper Chip Burst Group Size
-  * \hideinitializer
-  */
-//#define SPIM_HYPER_CONFIG1_SET_BGSIZE(spim, u8Value)               \
-//    do                                                             \
-//    {                                                              \
-//        spim->HYPER_CONFIG1 &= (~(SPIM_HYPER_CONFIG1_BGSIZE_Msk)); \
-//        spim->HYPER_CONFIG1 |= u8Value;                            \
-//    } while (0)
-
-/**
   * @brief      Set Hyper Chip Select Hold Time After CK Falling Edge
-  * @param[in]  u8Value   Chip Select Hold Time After CK Falling Edge.
-  *                         - \ref SPIM_HYPER_CONFIG1_CSH_0_5_HCLK : 0.5 HCLK cycles
-  *                         - \ref SPIM_HYPER_CONFIG1_CSH_1_5_HCLK : 1.5 HCLK cycles
-  *                         - \ref SPIM_HYPER_CONFIG1_CSH_2_5_HCLK : 2.5 HCLK cycles
-  *                         - \ref SPIM_HYPER_CONFIG1_CSH_3_5_HCLK : 3.5 HCLK cycles
+  * @param[in]  x   Chip Select Hold Time After CK Falling Edge.
+  *                 - \ref SPIM_HYPER_CONFIG1_CSH_0_5_HCLK : 0.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CONFIG1_CSH_1_5_HCLK : 1.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CONFIG1_CSH_2_5_HCLK : 2.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CONFIG1_CSH_3_5_HCLK : 3.5 HCLK cycles
   * @return     None
   * @details    This Macro Set Hyper Chip Select Hold Time After CK Falling Edge
   * \hideinitializer
   */
-#define SPIM_HYPER_CONFIG1_SET_CSH(spim, u8Value)             \
-    do                                                        \
-    {                                                         \
-        spim->HYPER_CONFIG1 &= (~SPIM_HYPER_CONFIG1_CSH_Msk); \
-        spim->HYPER_CONFIG1 |= (u8Value << SPIM_HYPER_CONFIG1_CSH_Pos);                       \
+#define SPIM_HYPER_CONFIG1_SET_CSH(spim, x)                         \
+    do                                                              \
+    {                                                               \
+        spim->HYPER_CONFIG1 &= ~(SPIM_HYPER_CONFIG1_CSH_Msk);       \
+        spim->HYPER_CONFIG1 |= ((x) << SPIM_HYPER_CONFIG1_CSH_Pos); \
     } while (0)
 
 /**
@@ -1972,32 +1907,6 @@ Register Space Range:
     } while (0)
 
 /**
-  * @brief      Set Hyper Chip Endian Condition on the Hyper Bus Data Pipe
-  * @param[in]  u8Value   Endian Condition on the Hyper Bus Data Pipe.
-  *                         - \ref SPIM_HYPER_CONFIG_LITTLE_ENDIAN : Little-Endian
-  *                         - \ref SPIM_HYPER_CONFIG_BIG_ENDIAN    : Big-Endian
-  * @return     None
-  * @details    This Macro Set Hyper Chip Endian Condition on the Hyper Bus Data Pipe
-  * \hideinitializer
-  */
-//#define SPIM_HYPER_CONFIG_SET_ENDIAN(spim, u8Value)             \
-//    spim->HYPER_CONFIG1 &= (~(SPIM_HYPER_CONFIG_ENDIAN_Msk));   \
-//    spim->HYPER_CONFIG1 |= u8Value
-
-/**
-  * @brief      Set Hyper Chip Clock Divider
-  * @param[in]  u8Value   Hyper Bus Clock Divider.
-  *                         - \ref SPIM_HYPER_CONFIG_CKDIV_HCLK_DIV2 : HCLK/2
-  *                         - \ref SPIM_HYPER_CONFIG_CKDIV_HCLK_DIV4 : HCLK/4
-  * @return     None
-  * @details    This Macro Set Hyper Chip Clock Divider
-  * \hideinitializer
-  */
-//#define SPIM_HYPER_CONFIG_SET_CKDIV(spim, u8Value)  \
-//    spim->CTL1 &= (~(SPIM_CTL1_DIVIDER_Msk));       \
-//    spim->CTL1 |= u8Value
-
-/**
   * @brief      Set Hyper Chip Select Maximum Low Time
   * @param[in]  u32CsMaxLT      Set Hyper Chip Select Maximum Low Time as u32CsMaxLT HCLK cycles.
                                 u32CsMaxLT must be 1 ~ 2048
@@ -2008,23 +1917,16 @@ Register Space Range:
 #define SPIM_HYPER_CONFIG1_SET_CSMAXLT(spim, u32CsMaxLT)                             \
     do                                                                               \
     {                                                                                \
-        spim->HYPER_CONFIG1 &= (~SPIM_HYPER_CONFIG1_CSMAXLT_Msk);                    \
+        spim->HYPER_CONFIG1 &= ~(SPIM_HYPER_CONFIG1_CSMAXLT_Msk);                    \
         spim->HYPER_CONFIG1 |= ((u32CsMaxLT - 1) << SPIM_HYPER_CONFIG1_CSMAXLT_Pos); \
     } while (0)
 
 /**
-  * @brief      Set Hyper Device RESETN Low Time
-  * @param[in]  u8Value   Initial Device RESETN Low Time 0 ~ 255.
-  * @return     None
-  * @details    This Macro Set Hyper Device RESETN Low Time
+  * @brief      Get Hyper Chip Select Maximum Low Time
   * \hideinitializer
   */
-#define SPIM_HYPER_CONFIG2_SET_RSTNLT(spim, u8Value)                       \
-    do                                                                     \
-    {                                                                      \
-        spim->HYPER_CONFIG2 &= (~SPIM_HYPER_CONFIG2_RSTNLT_Msk);           \
-        spim->HYPER_CONFIG2 |= (u8Value << SPIM_HYPER_CONFIG2_RSTNLT_Pos); \
-    } while (0)
+#define SPIM_HYPER_CONFIG1_GET_CSMAXLT(spim)    \
+        (((spim->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSMAXLT_Msk) >> SPIM_HYPER_CONFIG1_CSMAXLT_Pos) + 1UL)
 
 /**
   * @brief      Set Hyper Chip Initial Read Access Time
@@ -2036,9 +1938,39 @@ Register Space Range:
 #define SPIM_HYPER_CONFIG2_SET_ACCTWR(spim, x)                       \
     do                                                               \
     {                                                                \
-        spim->HYPER_CONFIG2 &= (~SPIM_HYPER_CONFIG2_ACCTWR_Msk);     \
+        spim->HYPER_CONFIG2 &= ~(SPIM_HYPER_CONFIG2_ACCTWR_Msk);     \
         spim->HYPER_CONFIG2 |= (x << SPIM_HYPER_CONFIG2_ACCTWR_Pos); \
     } while (0)
+
+/**
+  * @brief      Get Hyper Chip Initial Read Access Time
+  * @details    This Macro Set Hyper Chip Initial Access Time
+  * \hideinitializer
+  */
+#define SPIM_HYPER_CONFIG2_GET_ACCTWR(spim) \
+            ((spim->HYPER_CONFIG2 & SPIM_HYPER_CONFIG2_ACCTWR_Msk) >> SPIM_HYPER_CONFIG2_ACCTWR_Pos)
+
+/**
+  * @brief      Set Hyper Device RESETN Low Time
+  * @param[in]  u8Value   Initial Device RESETN Low Time 0 ~ 255.
+  * @return     None
+  * @details    This Macro Set Hyper Device RESETN Low Time
+  * \hideinitializer
+  */
+#define SPIM_HYPER_CONFIG2_SET_RSTNLT(spim, u8Value)                       \
+    do                                                                     \
+    {                                                                      \
+        spim->HYPER_CONFIG2 &= ~(SPIM_HYPER_CONFIG2_RSTNLT_Msk);           \
+        spim->HYPER_CONFIG2 |= (u8Value << SPIM_HYPER_CONFIG2_RSTNLT_Pos); \
+    } while (0)
+
+/**
+  * @brief      Get Hyper Device RESETN Low Time
+  * @details    This Macro Set Hyper Device RESETN Low Time
+  * \hideinitializer
+  */
+#define SPIM_HYPER_CONFIG2_GET_RSTNLT(spim) \
+            ((spim->HYPER_CONFIG2 & SPIM_HYPER_CONFIG2_RSTNLT_Msk) >> SPIM_HYPER_CONFIG2_RSTNLT_Pos)
 
 /**
   * @brief      Set Hyper Chip Initial Read Access Time
@@ -2048,11 +1980,19 @@ Register Space Range:
   * \hideinitializer
   */
 #define SPIM_HYPER_CONFIG2_SET_ACCTRD(spim, x)                       \
-    do                                                                   \
-    {                                                                    \
-        spim->HYPER_CONFIG2 &= (~SPIM_HYPER_CONFIG2_ACCTRD_Msk);           \
+    do                                                               \
+    {                                                                \
+        spim->HYPER_CONFIG2 &= ~(SPIM_HYPER_CONFIG2_ACCTRD_Msk);     \
         spim->HYPER_CONFIG2 |= (x << SPIM_HYPER_CONFIG2_ACCTRD_Pos); \
     } while (0)
+
+/**
+  * @brief      Get Hyper Chip Initial Read Access Time
+  * @details    This Macro Set Hyper Chip Initial Access Time
+  * \hideinitializer
+  */
+#define SPIM_HYPER_CONFIG2_GET_ACCTRD(spim) \
+            ((spim->HYPER_CONFIG2 & SPIM_HYPER_CONFIG2_ACCTRD_Msk) >> SPIM_HYPER_CONFIG2_ACCTRD_Pos)
 
 /**
  * @brief      Enable Hyper Chip Operation Done Interrupt
@@ -2061,17 +2001,11 @@ Register Space Range:
  * @details    This macro enable Hyper Chip Operation Done Interrupt.
  * \hideinitializer
  */
-#define SPIM_HYPER_ENABLE_INT(spim)    (spim->HYPER_INTEN |= SPIM_HYPER_INTEN_OPINTEN_Msk)
-
-/**
- * @brief      Get Hyper Bus Operation Done Interrupt
- * @param[in]  None
- * @return     None
- * @details    This macro enable Hyper Chip Operation Done Interrupt.
- * \hideinitializer
- */
-#define SPIM_HYPER_GET_INT(spim)    (spim->HYPER_INTEN & SPIM_HYPER_INTEN_OPINTEN_Msk)
-
+#define SPIM_HYPER_ENABLE_INT(spim)                        \
+    do                                                     \
+    {                                                      \
+        spim->HYPER_INTEN |= SPIM_HYPER_INTEN_OPINTEN_Msk; \
+    } while (0)
 
 /**
  * @brief      Disable Hyper Chip Operation Done Interrupt
@@ -2080,7 +2014,20 @@ Register Space Range:
  * @details    This macro disable Hyper Chip Operation Done Interrupt.
  * \hideinitializer
  */
-#define SPIM_HYPER_DISABLE_INT(spim)    (spim->HYPER_INTEN &= ~SPIM_HYPER_INTEN_OPINTEN_Msk)
+#define SPIM_HYPER_DISABLE_INT(spim)                        \
+    do                                                      \
+    {                                                       \
+        spim->HYPER_INTEN &= ~SPIM_HYPER_INTEN_OPINTEN_Msk; \
+    } while (0)
+
+/**
+ * @brief      Get Hyper Bus Operation Done Interrupt
+ * @param[in]  None
+ * @return     None
+ * @details    This macro enable Hyper Chip Operation Done Interrupt.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_GET_INT(spim)    ((spim->HYPER_INTEN & SPIM_HYPER_INTEN_OPINTEN_Msk) >> SPIM_HYPER_INTEN_OPINTEN_Pos)
 
 /**
  * @brief      Get Hyper Chip Operation Done Interrupt
@@ -2129,11 +2076,11 @@ void SPIM_SetQuadEnable(SPIM_T *spim, int isEn, uint32_t u32NBit);
 
 void SPIM_WinbondUnlock(SPIM_T *spim, uint32_t u32NBit);
 
-void SPIM_DMAM_ClearPhaseConfig(uint32_t *pPhaseReg);
-void SPIM_DMAM_SetCmdPhase(uint32_t *pPhaseReg, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn);
-void SPIM_DMAM_SetAddrPhase(uint32_t *pPhaseReg, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn);
-void SPIM_DMAM_SetContReadPhase(uint32_t *pPhaseReg, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn);
-void SPIM_DMAM_SetDataPhase(uint32_t *pPhaseReg, uint32_t u32NBit, uint32_t u32ByteOrder, uint32_t u32RdDQS, uint32_t u32DTREn);
+void SPIM_DMAM_ClearPhaseConfig(SPIM_T *spim, uint32_t u32OPMode);
+void SPIM_DMAM_SetCmdPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn);
+void SPIM_DMAM_SetAddrPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn);
+void SPIM_DMAM_SetContReadPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn);
+void SPIM_DMAM_SetDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32ByteOrder, uint32_t u32RdDQS, uint32_t u32DTREn);
 
 void SPIM_IO_CMDPhase(SPIM_T *spim, uint32_t u32RdCMD, uint32_t u32CmdPhase, uint32_t u32DTRMode, uint32_t isSync);
 void SPIM_IO_AddrPhase(SPIM_T *spim, uint32_t u32Is4ByteAddr, uint32_t u32Addr, uint32_t u32AddrPhase, uint32_t u32DTRMode);
@@ -2152,17 +2099,17 @@ int SPIM_Hyper_GetErrCode(void);
 void SPIM_Hyper_SetErrCode(int i32SetValue);
 
 /* HyperRAM */
-void SPIM_Hyper_ResetHyperRAM(SPIM_T *spim);
-void SPIM_HyperRAM_ExitHSAndDPD(SPIM_T *spim);
-int32_t SPIM_HyperRAM_ReadReg(SPIM_T *spim, uint32_t u32Addr);
-int32_t SPIM_HyperRAM_WriteReg(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Value);
+int SPIM_Hyper_ResetHyperRAM(SPIM_T *spim);
+int SPIM_HyperRAM_ExitHSAndDPD(SPIM_T *spim);
+int SPIM_HyperRAM_ReadReg(SPIM_T *spim, uint32_t u32Addr);
+int SPIM_HyperRAM_WriteReg(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Value);
 
 uint16_t SPIM_Hyper_Read1Word(SPIM_T *spim, uint32_t u32Addr);
 uint32_t SPIM_Hyper_Read2Word(SPIM_T *spim, uint32_t u32Addr);
-void SPIM_Hyper_Write1Byte(SPIM_T *spim, uint32_t u32Addr, uint8_t u8Data);
-void SPIM_Hyper_Write2Byte(SPIM_T *spim, uint32_t u32Addr, uint16_t u16Data);
-void SPIM_Hyper_Write3Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data);
-void SPIM_Hyper_Write4Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data);
+int SPIM_Hyper_Write1Byte(SPIM_T *spim, uint32_t u32Addr, uint8_t u8Data);
+int SPIM_Hyper_Write2Byte(SPIM_T *spim, uint32_t u32Addr, uint16_t u16Data);
+int SPIM_Hyper_Write3Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data);
+int SPIM_Hyper_Write4Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data);
 
 int32_t SPIM_Hyper_DMAWrite(SPIM_T *spim, uint32_t u32Addr, void *pvWrBuf, uint32_t u32NTx);
 int32_t SPIM_Hyper_DMARead(SPIM_T *spim, uint32_t u32Addr, void *pvRdBuf, uint32_t u32NRx);
@@ -2171,7 +2118,7 @@ int32_t SPIM_Hyper_EnterDirectMapMode(SPIM_T *spim);
 void SPIM_Hyper_ExitDirectMapMode(SPIM_T *spim);
 int32_t SPIM_Hyper_WaitDMMDone(SPIM_T *spim);
 
-void SPIM_Hyper_Config(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR);
+void SPIM_Hyper_DefConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR);
 
 /*----------------------------------------------------------------------------*/
 /* SPIM DLL Define Function Prototypes                                      */
