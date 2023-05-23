@@ -44,6 +44,7 @@
 #include "CUnit.h"
 #include "Console.h"
 #include "usci_spi_cunit.h"
+#include "PinConfig.h"
 
 //------------------------------------------------------------------------------
 //#define PLL_CLOCK       100000000
@@ -138,6 +139,11 @@ void SYS_Init(void)
 
     /* Lock protected registers */
     SYS_LockReg();
+
+    USPI0_MOSI_PIN_INIT();
+    USPI0_MISO_PIN_INIT();
+    USPI0_CLK_PIN_INIT();
+    USPI0_CSS_PIN_INIT();
 }
 
 void DebugPort_Init(void)
@@ -186,7 +192,6 @@ void exit(int32_t code)
 
 int main(int argc, char *argv[])
 {
-
     /* Unlock protected registers for ISP function */
     SYS_UnlockReg();
 

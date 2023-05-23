@@ -18,6 +18,7 @@
 
 //------------------------------------------------------------------------------
 //#define PLL_CLOCK           192000000
+#define USE_HXT_SRC             (1)
 
 //------------------------------------------------------------------------------
 // Internal funcfion definition
@@ -55,13 +56,13 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
 #if (USE_HXT_SRC == 1)
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HXT, CLK_ACLKDIV_ACLKDIV(1));
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC48M, CLK_ACLKDIV_ACLKDIV(1));
 #else
     /* Switch SCLK clock source to HIRC before PLL setting */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC, CLK_ACLKDIV_ACLKDIV(1));
 
     /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_200MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, 48000000UL, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     /* Switch HCLK clock source to HXT */
@@ -79,26 +80,24 @@ void SYS_Init(void)
     CLK_PCLKDIV_PCLK2DIV(1);
     CLK_PCLKDIV_PCLK3DIV(1);
     CLK_PCLKDIV_PCLK4DIV(1);
-    //CLK_PCLKDIV_PCLK5DIV(1);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART clock */
-    //CLK_EnableModuleClock(UART0_MODULE);
-
-    /* Select UART clock source from HIRC */
-    //CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
-
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init I/O Multi-function                                                                                 */
-    /*---------------------------------------------------------------------------------------------------------*/
-    //SET_UART0_RXD_PB12();
-    //SET_UART0_TXD_PB13();
-
     /* Lock protected registers */
     SYS_LockReg();
+
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    CLK_EnableModuleClock(GPIOB_MODULE);
+    CLK_EnableModuleClock(GPIOC_MODULE);
+    CLK_EnableModuleClock(GPIOD_MODULE);
+    CLK_EnableModuleClock(GPIOE_MODULE);
+    CLK_EnableModuleClock(GPIOF_MODULE);
+    CLK_EnableModuleClock(GPIOG_MODULE);
+    CLK_EnableModuleClock(GPIOH_MODULE);
+    CLK_EnableModuleClock(GPIOI_MODULE);
+    CLK_EnableModuleClock(GPIOJ_MODULE);
 }
 
 void DebugPort_Init(void)
@@ -106,7 +105,7 @@ void DebugPort_Init(void)
     CLK_EnableModuleClock(UART0_MODULE);
 
     /* Select UART module clock source as HXT and UART module clock divider as 1 */
-    //CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
 
     /*------------------------------------------------------------------------*/
     /* Init UART                                                              */
