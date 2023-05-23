@@ -1478,7 +1478,7 @@ uint32_t CLK_EnableAPLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq, uint32_t u32
         /* Apply default PLL setting and return */
         if(u32PllSelect == CLK_APLL0_SELECT)
         {
-            CLK->APLL0CTL = u32StableSel | CLK_APLLCTL_180MHz_HIRC;
+            CLK->APLL0CTL = u32StableSel | CLK_APLLCTL_180MHz;
             
             /* Apply PLL0 Clock Source */
             CLK->APLL0SEL = (CLK->APLL0SEL & ~CLK_APLL0SEL_APLLSRC_Msk) | u32PllClkSrc << CLK_APLL0SEL_APLLSRC_Pos;
@@ -1488,7 +1488,7 @@ uint32_t CLK_EnableAPLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq, uint32_t u32
         }
         else
         {
-            CLK->APLL1CTL = u32StableSel | CLK_APLLCTL_180MHz_HIRC;
+            CLK->APLL1CTL = u32StableSel | CLK_APLLCTL_180MHz;
 
             /* Apply PLL1 Clock Source */
             CLK->APLL1SEL = (CLK->APLL1SEL & ~CLK_APLL1SEL_APLLSRC_Msk) | u32PllClkSrc << CLK_APLL1SEL_APLLSRC_Pos;

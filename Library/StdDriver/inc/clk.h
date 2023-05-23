@@ -40,12 +40,14 @@ extern "C"
 #define FREQ_40MHZ         40000000UL   /*!< 40 MHz \hideinitializer */
 #define FREQ_45MHZ         45000000UL   /*!< 45 MHz \hideinitializer */
 #define FREQ_50MHZ         50000000UL   /*!< 50 MHz \hideinitializer */
+#define FREQ_72MHZ         72000000UL   /*!< 72 MHz \hideinitializer */
 #define FREQ_75MHZ         75000000UL   /*!< 75 MHz \hideinitializer */
 #define FREQ_80MHZ         80000000UL   /*!< 80 MHz \hideinitializer */
 #define FREQ_90MHZ         90000000UL   /*!< 90 MHz \hideinitializer */
 #define FREQ_100MHZ        100000000UL  /*!< 100 MHz \hideinitializer */
 #define FREQ_120MHZ        120000000UL  /*!< 120 MHz \hideinitializer */
 #define FREQ_125MHZ        125000000UL  /*!< 125 MHz \hideinitializer */
+#define FREQ_144MHZ        144000000UL  /*!< 144 MHz \hideinitializer */
 #define FREQ_150MHZ        150000000UL  /*!< 150 MHz \hideinitializer */
 #define FREQ_160MHZ        160000000UL  /*!< 160 MHz \hideinitializer */
 #define FREQ_175MHZ        175000000UL  /*!< 175 MHz \hideinitializer */
@@ -53,6 +55,7 @@ extern "C"
 #define FREQ_192MHZ        192000000UL  /*!< 192 MHz \hideinitializer */
 #define FREQ_200MHZ        200000000UL  /*!< 200 MHz \hideinitializer */
 #define FREQ_240MHZ        240000000UL  /*!< 200 MHz \hideinitializer */
+#define FREQ_384MHZ        384000000UL  /*!< 384 MHz \hideinitializer */
 #define FREQ_500MHZ        500000000UL  /*!< 500 MHz \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -474,31 +477,14 @@ extern "C"
 #define CLK_APLLCTL_NO_2         0x4000UL        /*!< For output divider is 2 \hideinitializer */
 #define CLK_APLLCTL_NO_4         0xC000UL        /*!< For output divider is 4 \hideinitializer */
 
-#define CLK_APLLCTL_72MHz_HXT    (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 36UL) | CLK_APLLCTL_NO_4) /*!< Predefined APLLCTL setting for 72MHz APLL output with HXT(12MHz X'tal) \hideinitializer */
-#define CLK_APLLCTL_80MHz_HXT    (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 40UL) | CLK_APLLCTL_NO_4) /*!< Predefined APLLCTL setting for 80MHz APLL output with HXT(12MHz X'tal) \hideinitializer */
-#define CLK_APLLCTL_144MHz_HXT   (CLK_APLLCTL_NR(2UL) | CLK_APLLCTL_NF( 24UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 144MHz APLL output with HXT(12MHz X'tal) \hideinitializer */
-#define CLK_APLLCTL_160MHz_HXT   (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 40UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 160MHz APLL output with HXT(12MHz X'tal) \hideinitializer */
-#define CLK_APLLCTL_180MHz_HXT   (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 45UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 180MHz APLL output with HXT(12MHz X'tal) \hideinitializer */
-#define CLK_APLLCTL_192MHz_HXT   (CLK_APLLCTL_NR(2UL) | CLK_APLLCTL_NF( 32UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 192MHz APLL output with HXT(12MHz X'tal) \hideinitializer */
-#define CLK_APLLCTL_200MHz_HXT   (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 25UL) | CLK_APLLCTL_NO_1) /*!< Predefined APLLCTL setting for 200MHz APLL output with HXT(12MHz X'tal) \hideinitializer */
-
-#define CLK_APLLCTL_72MHz_HIRC   (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 36UL) | CLK_APLLCTL_NO_4) /*!< Predefined APLLCTL setting for 72MHz APLL output with HIRC(12MHz IRC) \hideinitializer */
-#define CLK_APLLCTL_80MHz_HIRC   (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 40UL) | CLK_APLLCTL_NO_4) /*!< Predefined APLLCTL setting for 80MHz APLL output with HIRC(12MHz IRC) \hideinitializer */
-#define CLK_APLLCTL_144MHz_HIRC  (CLK_APLLCTL_NR(2UL) | CLK_APLLCTL_NF( 24UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 144MHz APLL output with HIRC(12MHz IRC) \hideinitializer */
-#define CLK_APLLCTL_160MHz_HIRC  (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 40UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 160MHz APLL output with HIRC(12MHz IRC) \hideinitializer */
-#define CLK_APLLCTL_180MHz_HIRC  (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 45UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 180MHz APLL output with HIRC(12MHz IRC) \hideinitializer */
-#define CLK_APLLCTL_192MHz_HIRC  (CLK_APLLCTL_NR(2UL) | CLK_APLLCTL_NF( 32UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 192MHz APLL output with HIRC(12MHz IRC) \hideinitializer */
-#define CLK_APLLCTL_200MHz_HIRC  (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 25UL) | CLK_APLLCTL_NO_1) /*!< Predefined APLLCTL setting for 200MHz APLL output with HIRC(12MHz IRC) \hideinitializer */
-#define CLK_APLLCTL_384MHz_HIRC  (CLK_APLLCTL_NR(2UL) | CLK_APLLCTL_NF( 48UL) | CLK_APLLCTL_NO_1) /*!< Predefined APLLCTL setting for 384MHz APLL output with HIRC(12MHz IRC) \hideinitializer */
-
-#define CLK_APLLCTL_72MHz_HIRC48_DIV4   (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 36UL) | CLK_APLLCTL_NO_4) /*!< Predefined APLLCTL setting for 72MHz APLL output with HIRC48M/4(12MHz) \hideinitializer */
-#define CLK_APLLCTL_80MHz_HIRC48_DIV4   (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 40UL) | CLK_APLLCTL_NO_4) /*!< Predefined APLLCTL setting for 80MHz APLL output with HIRC48M/4(12MHz) \hideinitializer */
-#define CLK_APLLCTL_144MHz_HIRC48_DIV4  (CLK_APLLCTL_NR(2UL) | CLK_APLLCTL_NF( 24UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 144MHz APLL output with HIRC48M/4(12MHz) \hideinitializer */
-#define CLK_APLLCTL_160MHz_HIRC48_DIV4  (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 40UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 160MHz APLL output with HIRC48M/4(12MHz) \hideinitializer */
-#define CLK_APLLCTL_180MHz_HIRC48_DIV4  (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 45UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 180MHz APLL output with HIRC48M/4(12MHz) \hideinitializer */
-#define CLK_APLLCTL_192MHz_HIRC48_DIV4  (CLK_APLLCTL_NR(2UL) | CLK_APLLCTL_NF( 32UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 192MHz APLL output with HIRC48M/4(12MHz) \hideinitializer */
-#define CLK_APLLCTL_200MHz_HIRC48_DIV4  (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 25UL) | CLK_APLLCTL_NO_1) /*!< Predefined APLLCTL setting for 200MHz APLL output with HIRC48M/4(12MHz) \hideinitializer */
-#define CLK_APLLCTL_384MHz_HIRC48_DIV4  (CLK_APLLCTL_NR(2UL) | CLK_APLLCTL_NF( 48UL) | CLK_APLLCTL_NO_1) /*!< Predefined APLLCTL setting for 384MHz APLL output with HIRC48M/4(12MHz) \hideinitializer */
+#define CLK_APLLCTL_72MHz           (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 36UL) | CLK_APLLCTL_NO_4) /*!< Predefined APLLCTL setting for 72MHz APLL output with 12MHz \hideinitializer */
+#define CLK_APLLCTL_80MHz           (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 40UL) | CLK_APLLCTL_NO_4) /*!< Predefined APLLCTL setting for 80MHz APLL output with 12MHz \hideinitializer */
+#define CLK_APLLCTL_144MHz          (CLK_APLLCTL_NR(2UL) | CLK_APLLCTL_NF( 24UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 144MHz APLL output with 12MHz \hideinitializer */
+#define CLK_APLLCTL_160MHz          (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 40UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 160MHz APLL output with 12MHz \hideinitializer */
+#define CLK_APLLCTL_180MHz          (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 45UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 180MHz APLL output with 12MHz \hideinitializer */
+#define CLK_APLLCTL_192MHz          (CLK_APLLCTL_NR(2UL) | CLK_APLLCTL_NF( 32UL) | CLK_APLLCTL_NO_2) /*!< Predefined APLLCTL setting for 192MHz APLL output with 12MHz \hideinitializer */
+#define CLK_APLLCTL_200MHz          (CLK_APLLCTL_NR(3UL) | CLK_APLLCTL_NF( 25UL) | CLK_APLLCTL_NO_1) /*!< Predefined APLLCTL setting for 200MHz APLL output with 12MHz \hideinitializer */
+#define CLK_APLLCTL_384MHz          (CLK_APLLCTL_NR(2UL) | CLK_APLLCTL_NF( 32UL) | CLK_APLLCTL_NO_1) /*!< Predefined APLLCTL setting for 384MHz APLL output with 12MHz \hideinitializer */
 
 #define CLK_APLL0CTL_STBSEL_800     (0UL << CLK_APLL0CTL_STBSEL_Pos)    /*!< Select APLL0 stable time is 800 APLL0 source clock \hideinitializer */
 #define CLK_APLL0CTL_STBSEL_2400    (1UL << CLK_APLL0CTL_STBSEL_Pos)    /*!< Select APLL0 stable time is 2400 APLL0 source clock \hideinitializer */
