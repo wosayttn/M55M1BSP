@@ -22,92 +22,32 @@ Dialog DLL:      TCM.DLL V1.56.1.0
  
 <h2>Project:</h2>
 C:\Users\ccwang20\Desktop\Workspaces\Git\TC8263_M55M1\bsp\_CUnit\spim\KEIL\spim_cunit.uvprojx
-Project File Date:  05/15/2023
+Project File Date:  05/23/2023
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.18', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
 Rebuild target 'SPIM_CUnit_PLDM_ICE'
+compiling otfc.c...
 compiling system_TC8263.c...
 compiling sys.c...
-compiling startup_TC8263.c...
-compiling retarget.c...
-compiling uart.c...
+compiling gpio.c...
 compiling main.c...
+compiling uart.c...
+compiling ks.c...
+compiling retarget.c...
 compiling clk.c...
-../spim_cunit.c(211): error: use of undeclared identifier 'CMD_DMA_NORMAL_READ'
-    CU_ASSERT(CMD_DMA_NORMAL_READ == (0x03));
-              ^
-../spim_cunit.c(212): error: use of undeclared identifier 'CMD_DMA_FAST_READ'
-    CU_ASSERT(CMD_DMA_FAST_READ == (0x0B));
-              ^
-../spim_cunit.c(213): error: use of undeclared identifier 'CMD_DMA_NORMAL_DUAL_READ'
-    CU_ASSERT(CMD_DMA_NORMAL_DUAL_READ == (0x3B));
-              ^
-../spim_cunit.c(214): error: use of undeclared identifier 'CMD_DMA_FAST_READ_DUAL_OUTPUT'
-    CU_ASSERT(CMD_DMA_FAST_READ_DUAL_OUTPUT == (0x3B));
-              ^
-../spim_cunit.c(215): error: use of undeclared identifier 'CMD_DMA_FAST_READ_QUAD_OUTPUT'
-    CU_ASSERT(CMD_DMA_FAST_READ_QUAD_OUTPUT == (0x6B));
-              ^
-../spim_cunit.c(216): error: use of undeclared identifier 'CMD_DMA_FAST_DUAL_READ'
-    CU_ASSERT(CMD_DMA_FAST_DUAL_READ == (0xBBUL));
-              ^
-../spim_cunit.c(217): error: use of undeclared identifier 'CMD_DMA_NORMAL_QUAD_READ'
-    CU_ASSERT(CMD_DMA_NORMAL_QUAD_READ == (0xE7UL));
-              ^
-../spim_cunit.c(218): error: use of undeclared identifier 'CMD_DMA_FAST_QUAD_READ'
-    CU_ASSERT(CMD_DMA_FAST_QUAD_READ == (0xEBUL));
-              ^
-../spim_cunit.c(239): error: use of undeclared identifier 'SPIM_CTL0_RBO_MODE3'
-    CU_ASSERT(SPIM_CTL0_RBO_MODE3 == (3UL << SPIM_CTL0_RBO_NORM_Pos));
-              ^
-../spim_cunit.c(311): error: use of undeclared identifier 'SPIM'
-    SPIM->KEY1 = SPIM_KEY_1;
-    ^
-../spim_cunit.c(311): error: use of undeclared identifier 'SPIM_KEY_1'
-    SPIM->KEY1 = SPIM_KEY_1;
-                 ^
-../spim_cunit.c(312): error: use of undeclared identifier 'SPIM'
-    SPIM->KEY2 = SPIM_KEY_2;
-    ^
-../spim_cunit.c(312): error: use of undeclared identifier 'SPIM_KEY_2'
-    SPIM->KEY2 = SPIM_KEY_2;
-                 ^
-../spim_cunit.c(317): warning: implicit declaration of function '_SPIM_ENABLE_CIPHER' is invalid in C99 [-Wimplicit-function-declaration]
-    _SPIM_ENABLE_CIPHER();
-    ^
-../spim_cunit.c(318): error: use of undeclared identifier 'SPIM'
-    CU_ASSERT_FALSE(SPIM->CTL0 & SPIM_CTL0_CIPHOFF_Msk);
-                    ^
-../spim_cunit.c(323): warning: implicit declaration of function '_SPIM_DISABLE_CIPHER' is invalid in C99 [-Wimplicit-function-declaration]
-    _SPIM_DISABLE_CIPHER();
-    ^
-../spim_cunit.c(324): error: use of undeclared identifier 'SPIM'
-    CU_ASSERT_TRUE(SPIM->CTL0 & SPIM_CTL0_CIPHOFF_Msk);
-                   ^
-../spim_cunit.c(329): error: use of undeclared identifier 'SPIM'
-    SPIM->CTL0 = 0;
-    ^
-../spim_cunit.c(330): warning: implicit declaration of function '_SPIM_ENABLE_BALEN' is invalid in C99 [-Wimplicit-function-declaration]
-    _SPIM_ENABLE_BALEN();
-    ^
-../spim_cunit.c(331): error: use of undeclared identifier 'SPIM'
-    CU_ASSERT_TRUE(SPIM->CTL0 & SPIM_CTL0_BALEN_Msk);
-                   ^
-../spim_cunit.c(332): warning: implicit declaration of function '_SPIM_DISABLE_BALEN' is invalid in C99 [-Wimplicit-function-declaration]
-    _SPIM_DISABLE_BALEN();
-    ^
-../spim_cunit.c(333): error: use of undeclared identifier 'SPIM'
-    CU_ASSERT_FALSE(SPIM->CTL0 & SPIM_CTL0_BALEN_Msk);
-                    ^
-../spim_cunit.c(335): error: use of undeclared identifier 'SPIM'
-    CU_ASSERT_TRUE(SPIM->CTL0 & SPIM_CTL0_BALEN_Msk);
-                   ^
-fatal error: too many errors emitted, stopping now [-ferror-limit=]
-4 warnings and 20 errors generated.
-compiling spim_cunit.c...
+compiling startup_TC8263.c...
 compiling spim.c...
-".\Objects\SPIM_CUnit.axf" - 19 Error(s), 4 Warning(s).
+compiling spim_cunit.c...
+compiling common.c...
+compiling otfc_ks.c...
+compiling hyper_cunit.c...
+compiling otfc_cunit.c...
+linking...
+Program Size: Code=44624 RO-data=8644 RW-data=376 ZI-data=17624  
+After Build - User command #1: fromelf --bin ".\Objects\SPIM_CUnit.axf" --output ".\Objects\SPIM_CUnit.bin"
+After Build - User command #2: fromelf --text -c ".\Objects\SPIM_CUnit.axf" --output ".\Objects\SPIM_CUnit.txt"
+".\Objects\SPIM_CUnit.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -120,7 +60,6 @@ Package Vendor: ARM
   C:/Users/PHTSENG/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/Device/ARM/ARMCM55/Include
 
 <h2>Collection of Component Files used:</h2>
-Target not created.
 Build Time Elapsed:  00:00:02
 </pre>
 </body>

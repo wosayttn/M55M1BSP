@@ -400,14 +400,14 @@
           <GroupName>Library</GroupName>
           <Files>
             <File>
-              <FileName>retarget.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Library\StdDriver\src\retarget.c</FilePath>
-            </File>
-            <File>
               <FileName>clk.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Library\StdDriver\src\clk.c</FilePath>
+            </File>
+            <File>
+              <FileName>retarget.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\retarget.c</FilePath>
             </File>
             <File>
               <FileName>sys.c</FileName>
@@ -423,6 +423,21 @@
               <FileName>spim.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Library\StdDriver\src\spim.c</FilePath>
+            </File>
+            <File>
+              <FileName>gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>otfc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\otfc.c</FilePath>
+            </File>
+            <File>
+              <FileName>ks.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\ks.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -440,9 +455,29 @@
               <FilePath>..\spim_cunit.c</FilePath>
             </File>
             <File>
-              <FileName>CUnitTestM4.lib</FileName>
+              <FileName>CUnitTestM55.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\common\CUnitTestM4.lib</FilePath>
+              <FilePath>..\..\common\CUnitTestM55.lib</FilePath>
+            </File>
+            <File>
+              <FileName>common.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\common.c</FilePath>
+            </File>
+            <File>
+              <FileName>hyper_cunit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hyper_cunit.c</FilePath>
+            </File>
+            <File>
+              <FileName>otfc_cunit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\otfc_cunit.c</FilePath>
+            </File>
+            <File>
+              <FileName>otfc_ks.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\otfc_ks.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -648,12 +683,12 @@
             <Ro1Chk>0</Ro1Chk>
             <Ro2Chk>0</Ro2Chk>
             <Ro3Chk>0</Ro3Chk>
-            <Ir1Chk>1</Ir1Chk>
+            <Ir1Chk>0</Ir1Chk>
             <Ir2Chk>0</Ir2Chk>
             <Ra1Chk>0</Ra1Chk>
             <Ra2Chk>0</Ra2Chk>
             <Ra3Chk>0</Ra3Chk>
-            <Im1Chk>1</Im1Chk>
+            <Im1Chk>0</Im1Chk>
             <Im2Chk>0</Im2Chk>
             <OnChipMemories>
               <Ocm1>
@@ -756,7 +791,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>3</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -780,7 +815,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>DEBUG_PORT=UART0 __PLDM_EMU__</Define>
+              <Define>DEBUG_PORT=UART0, __PLDM_EMU__</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\Library\CMSIS\Core\Include;..\..\..\Library\Device\Nuvoton\TC8263\Include;..\..\..\Library\StdDriver\inc;..\..\common\inc;..\PinConfig;..\..\spim</IncludePath>
             </VariousControls>
@@ -808,7 +843,7 @@
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
             <noStLib>0</noStLib>
-            <RepFail>1</RepFail>
+            <RepFail>0</RepFail>
             <useFile>0</useFile>
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
@@ -842,14 +877,14 @@
           <GroupName>Library</GroupName>
           <Files>
             <File>
-              <FileName>retarget.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Library\StdDriver\src\retarget.c</FilePath>
-            </File>
-            <File>
               <FileName>clk.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Library\StdDriver\src\clk.c</FilePath>
+            </File>
+            <File>
+              <FileName>retarget.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\retarget.c</FilePath>
             </File>
             <File>
               <FileName>sys.c</FileName>
@@ -865,6 +900,21 @@
               <FileName>spim.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Library\StdDriver\src\spim.c</FilePath>
+            </File>
+            <File>
+              <FileName>gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>otfc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\otfc.c</FilePath>
+            </File>
+            <File>
+              <FileName>ks.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\ks.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -882,9 +932,29 @@
               <FilePath>..\spim_cunit.c</FilePath>
             </File>
             <File>
-              <FileName>CUnitTestM4.lib</FileName>
+              <FileName>CUnitTestM55.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\common\CUnitTestM4.lib</FilePath>
+              <FilePath>..\..\common\CUnitTestM55.lib</FilePath>
+            </File>
+            <File>
+              <FileName>common.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\common.c</FilePath>
+            </File>
+            <File>
+              <FileName>hyper_cunit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hyper_cunit.c</FilePath>
+            </File>
+            <File>
+              <FileName>otfc_cunit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\otfc_cunit.c</FilePath>
+            </File>
+            <File>
+              <FileName>otfc_ks.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\otfc_ks.c</FilePath>
             </File>
           </Files>
         </Group>

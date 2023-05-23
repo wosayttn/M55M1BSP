@@ -37,16 +37,40 @@
 #include "CUnit.h"
 #include "Console.h"
 #include "spim_cunit.h"
-#include "PinConfig.h"
+#include "hyper_cunit.h"
+#include "otfc_cunit.h"
+#include "common.h"
 
 //------------------------------------------------------------------------------
 //#define HIGH_SPEED_BOARD
+
+extern void *GetSPIMModule(uint32_t u32Idx);
+extern void SetSPIMTestModuleIdx(uint32_t u32SetValue);
 
 //------------------------------------------------------------------------------
 // Internal funcfion definition
 void AddTests(void);
 
 //------------------------------------------------------------------------------
+static uint32_t gu32SelTestSuite = 0;
+
+//------------------------------------------------------------------------------
+int SPIM_SelTestSuite(void)
+{
+    uint32_t u32Index = 0;
+    S_TestOption sSelTestSuite[] =
+    {
+        {"SPIM Mode"},
+        {"SPIM Hyper Mode"},
+        {"OTFC Mode"},
+    };
+
+    printf("\r\n\r\n");
+    gu32SelTestSuite = GetRequireOptions(sSelTestSuite, sizeof(sSelTestSuite) / sizeof(sSelTestSuite[0]));
+
+    return (int)u32Index;
+}
+
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -96,7 +120,6 @@ void SYS_Init(void)
     CLK_SET_HCLK2DIV(1);
 
     /* Set both PCLK0 and PCLK1 as HCLK/2 */
-    //CLK->PCLKDIV = CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2;
     CLK_PCLKDIV_PCLK0DIV(1);
     CLK_PCLKDIV_PCLK1DIV(1);
     CLK_PCLKDIV_PCLK2DIV(1);
@@ -106,9 +129,6 @@ void SYS_Init(void)
 
     /* Update System Core Clock */
     SystemCoreClockUpdate();
-
-    CLK_EnableModuleClock(SPIM0_MODULE);
-    CLK_EnableModuleClock(SPIM1_MODULE);
 
     /* Enable CRYPTO and TRNG and Key Store module clock */
     CLK_EnableModuleClock(CRYPTO0_MODULE);
@@ -120,12 +140,6 @@ void SYS_Init(void)
     CLK_EnableModuleClock(LPSRAM0_MODULE);
     CLK_EnableModuleClock(CANFD0_MODULE);
     CLK_EnableModuleClock(CANFD1_MODULE);
-
-    CLK_EnableModuleClock(TMR0_MODULE);
-    CLK_EnableModuleClock(TMR1_MODULE);
-
-    CLK_EnableModuleClock(ST0_MODULE);
-    CLK_EnableSysTick(CLK_STSEL_ACLK, 0xFFFFFF);
 
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
@@ -140,42 +154,14 @@ void SYS_Init(void)
 
     /* Lock protected registers */
     //SYS_LockReg();
-
-    SPIM0_RST_PIN_INIT();
-    SPIM0_CLK_PIN_INIT();
-    SPIM0_CLKN_PIN_INIT();
-    SPIM0_MOSI_PIN_INIT();
-    SPIM0_MISO_PIN_INIT();
-    SPIM0_D2_PIN_INIT();
-    SPIM0_D3_PIN_INIT();
-    SPIM0_D4_PIN_INIT();
-    SPIM0_D5_PIN_INIT();
-    SPIM0_D6_PIN_INIT();
-    SPIM0_D7_PIN_INIT();
-    SPIM0_SS_PIN_INIT();
-    SPIM0_RWDS_PIN_INIT();
-
-    SPIM1_RST_PIN_INIT();
-    SPIM1_CLK_PIN_INIT();
-    SPIM1_CLKN_PIN_INIT();
-    SPIM1_MOSI_PIN_INIT();
-    SPIM1_MISO_PIN_INIT();
-    SPIM1_D2_PIN_INIT();
-    SPIM1_D3_PIN_INIT();
-    SPIM1_D4_PIN_INIT();
-    SPIM1_D5_PIN_INIT();
-    SPIM1_D6_PIN_INIT();
-    SPIM1_D7_PIN_INIT();
-    SPIM1_SS_PIN_INIT();
-    SPIM1_RWDS_PIN_INIT();
 }
 
 void DebugPort_Init(void)
 {
     CLK_EnableModuleClock(UART0_MODULE);
 
-    /* Select UART module clock source as HXT and UART module clock divider as 1 */
-    //CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+    /* Select IP clock source */
+    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
 
     /*------------------------------------------------------------------------*/
     /* Init UART                                                              */
@@ -183,8 +169,13 @@ void DebugPort_Init(void)
     /* Set GPB multi-function pins for UART0 RXD and TXD */
     SYS->GPB_MFP3 &= ~(SYS_GPB_MFP3_PB12MFP_Msk | SYS_GPB_MFP3_PB13MFP_Msk);
     SYS->GPB_MFP3 |= (SYS_GPB_MFP3_PB12MFP_UART0_RXD | SYS_GPB_MFP3_PB13MFP_UART0_TXD);
+
+    //SYS->GPC_MFP2 = (SYS->GPC_MFP2 & ~SYS_GPC_MFP2_PC11MFP_Msk) | SYS_GPC_MFP2_PC11MFP_UART0_RXD;
+    //SYS->GPC_MFP3 = (SYS->GPC_MFP3 & ~SYS_GPC_MFP3_PC12MFP_Msk) | SYS_GPC_MFP3_PC12MFP_UART0_TXD;
+
     //SYS->GPD_MFP0 &= ~(SYS_GPD_MFP0_PD2MFP_Msk | SYS_GPD_MFP0_PD3MFP_Msk);
     //SYS->GPD_MFP0 |= (SYS_GPD_MFP0_PD2MFP_UART0_RXD | SYS_GPD_MFP0_PD3MFP_UART0_TXD);
+
     //SYS->GPH_MFP2 = (SYS->GPH_MFP2 & (~SYS_GPH_MFP2_PH10MFP_Msk)) | (SYS_GPH_MFP2_PH10MFP_UART0_TXD);
     //SYS->GPH_MFP2 = (SYS->GPH_MFP2 & (~SYS_GPH_MFP2_PH11MFP_Msk)) | (SYS_GPH_MFP2_PH11MFP_UART0_RXD);
 
@@ -217,10 +208,17 @@ void exit(int32_t code)
 int main()
 {
     uint8_t idBuf[3];
+    uint32_t u32SPIMPort = 0;
+    uint32_t u32SPIMDiv = 0;
+    SPIM_T *pSPIMModule = NULL;
 
-    /* Lock protected registers */
-    if (SYS->REGLCTL == 1) // In end of main function, program issued CPU reset and write-protection will be disabled.
-        SYS_LockReg();
+#ifdef __PLDM_EMU__
+    SCB_DisableICache();
+    SCB_DisableDCache();
+
+    //SCB_EnableICache();
+    //SCB_EnableDCache();
+#endif //__PLDM_EMU__
 
     /* Init System, IP clock and multi-function I/O */
     SYS_Init(); //In the end of SYS_Init() will issue SYS_LockReg() to lock protected register. If user want to write protected register, please issue SYS_UnlockReg() to unlock protected register.
@@ -228,30 +226,45 @@ int main()
     /* Init UART0 for printf */
     DebugPort_Init();
 
-    /* Enable FMC ISP function */
-    SYS_UnlockReg();
+    //SPIM0 PSC, PSC_n
+    SET_GPIO_PG8();
+    GPIO_SetMode(PG, BIT8, GPIO_MODE_OUTPUT);
+    GPIO_SetPullCtl(PG, BIT8, GPIO_PUSEL_DISABLE);
+    PG8 = 1;
 
-    //_SPIM_SET_CLOCK_DIVIDER(1);        /* Set SPIM clock as HCLK divided by 2 */
+    SET_GPIO_PG7();
+    GPIO_SetMode(PG, BIT7, GPIO_MODE_OUTPUT);
+    GPIO_SetPullCtl(PG, BIT7, GPIO_PUSEL_DISABLE);
+    PG7 = 0;
 
-    //#ifdef HIGH_SPEED_BOARD
-    //    _SPIM_SET_RXCLKDLY_RDDLYSEL(0);
-    //    _SPIM_SET_RXCLKDLY_RDEDGE();
-    //#else
-    //    _SPIM_SET_RXCLKDLY_RDDLYSEL(0);    /* Insert 0 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
-    //    _SPIM_SET_RXCLKDLY_RDEDGE();       /* Use SPI input clock rising edge to sample received data. */
-    //#endif
+    //SPIM1 PSC, PSC_n
+    SET_GPIO_PH11();
+    GPIO_SetMode(PH, BIT11, GPIO_MODE_OUTPUT);
+    GPIO_SetPullCtl(PH, BIT11, GPIO_PUSEL_DISABLE);
+    PH11 = 1;
 
-    //_SPIM_SET_DCNUM(8);                /* Set 8 dummy cycle. */
+    SET_GPIO_PH10();
+    GPIO_SetMode(PH, BIT10, GPIO_MODE_OUTPUT);
+    GPIO_SetPullCtl(PH, BIT11, GPIO_PUSEL_DISABLE);
+    PH10 = 0;
 
-    //if (SPIM_InitFlash(1) != 0)        /* Initialized SPI flash */
-    //{
-    //    printf("SPIM flash initialize failed!\n");
-    //
-    //    while (1);
-    //}
+    SPIM_NVIC_Disable(C_SPIM0);
+    SPIM_NVIC_Disable(C_SPIM1);
 
-    //SPIM_ReadJedecId(idBuf, sizeof(idBuf), 1);
-    //printf("SPIM get JEDEC ID=0x%02X, 0x%02X, 0x%02X\n", idBuf[0], idBuf[1], idBuf[2]);
+    u32SPIMPort = SPIMPortSelect(0);
+    SetSPIMTestModuleIdx(u32SPIMPort);
+    pSPIMModule = (SPIM_T *)GetSPIMModule(u32SPIMPort);
+
+    //SPIM Def. Enable Cipher, First Disable the test.
+    SPIM_DISABLE_CIPHER(pSPIMModule);
+
+    u32SPIMDiv = GetSPIMClkDivNum();
+
+    SPIM_SET_CLOCK_DIVIDER(pSPIMModule, u32SPIMDiv); /* Set SPIM clock as HCLK divided by 2 */
+    printf("SPIM Clock Divider = %ld\r\n", SPIM_GET_CLOCK_DIVIDER(pSPIMModule));
+    SPIM_SET_RXCLKDLY_RDDLYSEL(pSPIMModule, 0);      /* Insert 0 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
+
+    SPIM_SelTestSuite();
 
     if (CU_initialize_registry())
     {
@@ -273,9 +286,33 @@ void AddTests(void)
     CU_get_registry();
     CU_is_test_running();
 
-    if (CUE_SUCCESS != CU_register_suites(suites))
+    switch (gu32SelTestSuite)
     {
-        fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
-        exit(EXIT_FAILURE);
+        case 0:
+            if (CUE_SUCCESS != CU_register_suites(suites))
+            {
+                fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
+                exit(EXIT_FAILURE);
+            }
+
+            break;
+
+        case 1:
+            if (CUE_SUCCESS != CU_register_suites(spim_hyper_suites))
+            {
+                fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
+                exit(EXIT_FAILURE);
+            }
+
+            break;
+
+        case 2:
+            if (CUE_SUCCESS != CU_register_suites(otfc_suites))
+            {
+                fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
+                exit(EXIT_FAILURE);
+            }
+
+            break;
     }
 }

@@ -1,0 +1,22 @@
+--cpu=Cortex-M55 --fpu=FPv5_D16
+".\objects\startup_tc8263.o"
+".\objects\system_tc8263.o"
+".\objects\clk.o"
+".\objects\retarget.o"
+".\objects\sys.o"
+".\objects\uart.o"
+".\objects\spim.o"
+".\objects\gpio.o"
+".\objects\otfc.o"
+".\objects\ks.o"
+".\objects\main.o"
+".\objects\spim_cunit.o"
+"..\..\common\CUnitTestM55.lib"
+".\objects\common.o"
+".\objects\hyper_cunit.o"
+".\objects\otfc_cunit.o"
+".\objects\otfc_ks.o"
+--library_type=microlib --scatter ".\TC8263-SRAM.scatter"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\Listings\SPIM_CUnit.map" -o .\Objects\SPIM_CUnit.axf
