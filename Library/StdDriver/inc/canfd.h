@@ -200,8 +200,8 @@ typedef struct
     uint32_t  u32RxBuf;          /*!< Rx Buffer element size in words */
     uint32_t  u32TxBuf;          /*!< Tx Buffer element size in words */
     uint32_t  u32TxFifoQueue;    /*!< Tx FIFO/Queue element size in words(Be aware that the sum of Tx buff and Tx FIFO/Queue may be not greater than 32) */
-	  uint32_t  u32TxEventFifo;    /*!< Tx Event FIFO element size in words(Be aware that the sum of Tx buff and Tx FIFO/Queue may be not greater than 32)*/
-	  uint32_t  u32UserDef;        /*!< Element for user define */
+	uint32_t  u32TxEventFifo;    /*!< Tx Event FIFO element size in words(Be aware that the sum of Tx buff and Tx FIFO/Queue may be not greater than 32)*/
+	uint32_t  u32UserDef;        /*!< Element for user define */
 } CANFD_ELEM_SIZE_T;
 
 /* CAN FD Message frame structure */
@@ -286,11 +286,11 @@ typedef struct
     };
     uint8_t           u8MsgMarker;                     /*! Message marker (will be copied to TX Event FIFO element) */
     uint16_t          u16RxTimestamp;                  /*! Rx Timestamp(CCCR.UTSU = 0)) */
-		uint8_t           u8RxTimestampPointer;            /*! Rx Timestamp Pointer(CCCR.UTSU = 1))*/ 
-		uint8_t           bTimestampCaptured;              /*! Timestamp Captured                             */
-		uint8_t           u8FilterIndex;                   /*! Filter Index(Index of matching Rx acceptance filter element (in valid if ANMF = ‘1’)*/
-		uint8_t           bNonMatchingFrame;               /*! Accepted Non-matching Frame                              */
-		uint8_t           bFDFormat;                       /*! FD Format (1 = FD Format)                                */
+    uint8_t           u8RxTimestampPointer;            /*! Rx Timestamp Pointer(CCCR.UTSU = 1))*/ 
+	uint8_t           bTimestampCaptured;              /*! Timestamp Captured                             */
+	uint8_t           u8FilterIndex;                   /*! Filter Index(Index of matching Rx acceptance filter element (in valid if ANMF = ‘1’)*/
+	uint8_t           bNonMatchingFrame;               /*! Accepted Non-matching Frame                              */
+	uint8_t           bFDFormat;                       /*! FD Format (1 = FD Format)                                */
     uint8_t           bBitRateSwitch;                  /*! Bit Rate Switch (1 = with Bit Rate Switch)               */
     uint8_t           bErrStaInd;                      /*! Error State Indicator                                    */
     uint8_t           bEvntFifoCon;                    /*! Event FIFO Control (1 = Store TX Event FIFO element after transmission)*/         
@@ -371,10 +371,10 @@ typedef enum
 /* Extended ID Filter Element Type */
 typedef enum
 {
-    eCANFD_XID_FLTR_TYPE_RANGE      = 0x0,  /*!< Range filter from EFID1 to EFID2 (EFID2 ≥ EFID1). */
-    eCANFD_XID_FLTR_TYPE_DUAL       = 0x1,  /*!< Dual ID filter for EFID1 or EFID2. */
-    eCANFD_XID_FLTR_TYPE_CLASSIC    = 0x2,  /*!< Classic filter: EFID1=filter, EFID2=mask */
-    eCANFD_XID_FLTR_TYPE_RANGE_XIDAM_NOT_APP     = 0x3   /*!< XID range filter from EFID1 to EFID2(EFID2 > EFID1), XIDAM not applied */
+    eCANFD_XID_FLTR_TYPE_RANGE      = 0x0,            /*!< Range filter from EFID1 to EFID2 (EFID2 ≥ EFID1). */
+    eCANFD_XID_FLTR_TYPE_DUAL       = 0x1,            /*!< Dual ID filter for EFID1 or EFID2. */
+    eCANFD_XID_FLTR_TYPE_CLASSIC    = 0x2,            /*!< Classic filter: EFID1=filter, EFID2=mask */
+    eCANFD_XID_FLTR_TYPE_RANGE_XIDAM_NOT_APP  = 0x3   /*!< XID range filter from EFID1 to EFID2(EFID2 > EFID1), XIDAM not applied */
 }  E_CANFD_XID_FLTR_ELEM_TYPE;
 
 /* Filter Element Configuration - Can be used for SFEC(Standard Id filter configuration) and EFEC(Extended Id filter configuration) */
@@ -411,6 +411,7 @@ void CANFD_EnableInt(CANFD_T *canfd, uint32_t u32IntLine0, uint32_t u32IntLine1,
 void CANFD_DisableInt(CANFD_T *canfd, uint32_t u32IntLine0, uint32_t u32IntLine1, uint32_t u32TXBTIE, uint32_t u32TXBCIE);
 uint32_t CANFD_TransmitTxMsg(CANFD_T *canfd, uint32_t u32TxBufIdx, CANFD_FD_MSG_T *psTxMsg);
 uint32_t CANFD_TransmitDMsg(CANFD_T *canfd, uint32_t u32TxBufIdx, CANFD_FD_MSG_T *psTxMsg);
+void CANFD_CopyDataToTransmitBuffer(CANFD_T *psCanfd,uint32_t u32TxBufIdx,CANFD_FD_MSG_T *psTxMsg);
 void CANFD_SetGFC(CANFD_T *canfd, E_CANFD_ACC_NON_MATCH_FRM eNMStdFrm, E_CANFD_ACC_NON_MATCH_FRM eEMExtFrm, uint32_t u32RejRmtStdFrm, uint32_t u32RejRmtExtFrm);
 void CANFD_SetSIDFltr(CANFD_T *canfd, uint32_t u32FltrIdx, uint32_t u32Filter);
 void CANFD_SetXIDFltr(CANFD_T *canfd, uint32_t u32FltrIdx, uint32_t u32FilterLow, uint32_t u32FilterHigh);

@@ -54,13 +54,19 @@ void ACMP_Open(ACMP_T *acmp, uint32_t u32ChNum, uint32_t u32NegSrc, uint32_t u32
     /* Do calibration for ACMP to decrease the effect of electrical random noise. */
     if (((acmp->CALSR & ACMP_CALSR_DONE0_Msk) == 0) || ((acmp->CALSR & ACMP_CALSR_DONE1_Msk) == 0))
     {
-
-        /* Must reset ACMP before ACMP calibration */
-        SYS->ACMPRST |= SYS_ACMPRST_ACMP01RST_Msk;
-        SYS->ACMPRST &= (~SYS_ACMPRST_ACMP01RST_Msk);  
-
-        SYS->ACMPRST |= SYS_ACMPRST_ACMP23RST_Msk;
-        SYS->ACMPRST &= (~SYS_ACMPRST_ACMP23RST_Msk);
+        /* Unlock protected registers */
+        SYS_UnlockReg();
+        if(acmp == ACMP01)
+        {
+         /* Must reset ACMP before ACMP calibration */
+           SYS_ResetModule(SYS_ACMP01RST);
+        }
+        else
+        {  /* Must reset ACMP before ACMP calibration */
+           SYS_ResetModule(SYS_ACMP23RST);
+        }
+        /* Lock protected registers */
+        SYS_LockReg();
         /* Calibration ACMP0/ACMP2*/
         acmp->CTL[0] |= ACMP_CTL_ACMPEN_Msk;
 
@@ -84,7 +90,7 @@ void ACMP_Open(ACMP_T *acmp, uint32_t u32ChNum, uint32_t u32NegSrc, uint32_t u32
         acmp->CTL[1] |= ACMP_CTL_ACMPEN_Msk;
 
         /* MUST enable CRV and set NEGSEL to CRV for ACMP calibration. */
-        acmp->VREF = (ACMP_VREF_CRV0EN_Msk | ACMP_VREF_CRV0SSEL_Msk);
+        acmp->VREF = (ACMP_VREF_CRV1EN_Msk | ACMP_VREF_CRV1SSEL_Msk);
         acmp->CTL[1] = (acmp->CTL[1] & ~(ACMP_CTL_NEGSEL_Msk)) | 
                        (ACMP_CTL_NEGSEL_CRV);
 

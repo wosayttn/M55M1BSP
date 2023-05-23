@@ -141,8 +141,6 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and CyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
-    /* Enable UART peripheral clock */
-    CLK_EnableModuleClock(UART0_MODULE);
     /* Enable ACMP01 peripheral clock */
     CLK_EnableModuleClock(ACMP01_MODULE);
     /* Enable GPB peripheral clock */
@@ -150,10 +148,8 @@ void SYS_Init(void)
     /* Enable GPC peripheral clock */
     CLK_EnableModuleClock(GPIOC_MODULE);
 
-    /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and CyclesPerUs automatically. */
-    SystemCoreClockUpdate();
-
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
 
     /* Set PB.4 and PC.0 to input mode */
     PB->MODE &= ~(GPIO_MODE_MODE4_Msk);
@@ -164,9 +160,8 @@ void SYS_Init(void)
     SET_ACMP1_O_PC0();
 
 
-    /* Set PB multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    /* Set PB multi-function pins for Debug UART RXD and TXD */
+    SetDebugUartMFP();
 
     /* Disable digital input path of analog pin ACMP1_P1 to prevent leakage */
     GPIO_DISABLE_DIGITAL_PATH(PB, (1ul << 4));
@@ -194,8 +189,8 @@ int32_t main(void)
     initialise_monitor_handles();
 #endif
 
-    /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
-    UART_Open(UART0, 115200);
+    /* Init Debug UART for printf */
+    InitDebugUart();
 
     printf("\nThis sample code demonstrates ACMP1 function. Using ACMP1_P1 (PB4) as ACMP1\n");
     printf("positive input and using internal CRV as the negative input.\n");

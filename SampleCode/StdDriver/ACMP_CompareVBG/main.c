@@ -83,6 +83,9 @@ void SYS_Init(void)
     /* Enable GPC peripheral clock */
     CLK_EnableModuleClock(GPIOC_MODULE);
 
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
+    
     /* Set PB.4 and PC.0 to input mode */
     PB->MODE &= ~(GPIO_MODE_MODE4_Msk);
     PC->MODE &= ~(GPIO_MODE_MODE0_Msk);
@@ -90,9 +93,9 @@ void SYS_Init(void)
     /* Set PB4 multi-function pin for ACMP1 positive input pin and PC0 multi-function pin for ACMP1 output pin*/
     SET_ACMP1_P1_PB4();
     SET_ACMP1_O_PC0();
-    /* Set PB multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+
+    /* Set PB multi-function pins for Debug UART RXD and TXD */
+    SetDebugUartMFP();
 
 
     /* Disable digital input path of analog pin ACMP1_P1 to prevent leakage */
@@ -120,8 +123,8 @@ int32_t main(void)
     initialise_monitor_handles();
 #endif
 
-    /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
-    UART_Open(UART0, 115200);
+    /* Init Debug UART for printf */
+    InitDebugUart();
 
     printf("\nThis sample code demonstrates ACMP1 function. Using ACMP1_P1 (PB4) as ACMP1\n");
     printf("positive input and using internal band-gap voltage as the negative input.\n");
