@@ -58,16 +58,13 @@ void ResetI2SModule(uint32_t u32I2SModule)
     {
         case C_I2S0:
             SYS->I2SRST |= SYS_I2SRST_I2S0RST_Msk;
-            SYS->I2SRST &= (~SYS_I2SRST_I2S0RST_Msk);
+            SYS->I2SRST &= ~(SYS_I2SRST_I2S0RST_Msk);
             break;
-
-#if (I2S1_GROUP != 0)
 
         case C_I2S1:
             SYS->I2SRST |= SYS_I2SRST_I2S1RST_Msk;
-            SYS->I2SRST &= (~SYS_I2SRST_I2S1RST_Msk);
+            SYS->I2SRST &= ~(SYS_I2SRST_I2S1RST_Msk);
             break;
-#endif //I2S1_GROUP
     }
 
     /* Lock protected registers */
@@ -78,6 +75,7 @@ int I2S_Tests_Init(void)
 {
     return 0;
 }
+
 int I2S_Tests_Clean(void)
 {
     return 0;
@@ -143,6 +141,9 @@ void MACRO_I2S_ENABLE_DISABLE_TX_ZCD()
         I2S_DISABLE_TX_ZCD(pI2SModule, 8);
 
         CU_ASSERT_FALSE(pI2SModule->CTL1 & 0x00000080);
+
+        /* Reset I2S */
+        ResetI2SModule(u32I2SIdx);
     }
 }
 
@@ -162,6 +163,9 @@ void MACRO_I2S_ENABLE_DISABLE_TXDMA()
         I2S_DISABLE_TXDMA(pI2SModule);
 
         CU_ASSERT_FALSE(pI2SModule->CTL0 & 0x00100000);
+
+        /* Reset I2S */
+        ResetI2SModule(u32I2SIdx);
     }
 }
 
@@ -181,6 +185,9 @@ void MACRO_I2S_ENABLE_DISABLE_RXDMA()
         I2S_DISABLE_RXDMA(pI2SModule);
 
         CU_ASSERT_FALSE(pI2SModule->CTL0 & 0x00200000);
+
+        /* Reset I2S */
+        ResetI2SModule(u32I2SIdx);
     }
 }
 
@@ -200,6 +207,9 @@ void MACRO_I2S_ENABLE_DISABLE_TX()
         I2S_DISABLE_TX(pI2SModule);
 
         CU_ASSERT_FALSE(pI2SModule->CTL0 & 2);
+
+        /* Reset I2S */
+        ResetI2SModule(u32I2SIdx);
     }
 }
 
@@ -219,6 +229,9 @@ void MACRO_I2S_ENABLE_DISABLE_RX()
         I2S_DISABLE_RX(pI2SModule);
 
         CU_ASSERT_FALSE(pI2SModule->CTL0 & 4);
+
+        /* Reset I2S */
+        ResetI2SModule(u32I2SIdx);
     }
 }
 
@@ -238,6 +251,9 @@ void MACRO_I2S_ENABLE_DISABLE_TX_MUTE()
         I2S_DISABLE_TX_MUTE(pI2SModule);
 
         CU_ASSERT_FALSE(pI2SModule->CTL0 & 8);
+
+        /* Reset I2S */
+        ResetI2SModule(u32I2SIdx);
     }
 }
 
@@ -260,6 +276,9 @@ void MACRO_I2S_CLR_TX_FIFO()
         CU_ASSERT(I2S_GET_TX_FIFO_LEVEL(pI2SModule) == 0);
         /* CLR_TXFIFO bit should be cleared by hardware automatically */
         CU_ASSERT_FALSE(pI2SModule->CTL0 & 0x00040000);
+
+        /* Reset I2S */
+        ResetI2SModule(u32I2SIdx);
     }
 }
 
@@ -285,6 +304,9 @@ void MACRO_I2S_CLR_RX_FIFO()
         CU_ASSERT(I2S_GET_RX_FIFO_LEVEL(pI2SModule) == 0);
         /* CLR_RXFIFO bit should be cleared by hardware automatically */
         CU_ASSERT_FALSE(pI2SModule->CTL0 & 0x00080000);
+
+        /* Reset I2S */
+        ResetI2SModule(u32I2SIdx);
     }
 }
 
@@ -304,6 +326,9 @@ void MACRO_I2S_SET_MONO_RX_CHANNEL()
         I2S_SET_MONO_RX_CHANNEL(pI2SModule, I2S_MONO_RIGHT);
 
         CU_ASSERT_FALSE(pI2SModule->CTL0 & 0x00800000);
+
+        /* Reset I2S */
+        ResetI2SModule(u32I2SIdx);
     }
 }
 
@@ -328,6 +353,9 @@ void MACRO_I2S_WRITE_TX_FIFO()
 
         I2S_CLR_TX_FIFO(pI2SModule);
         CU_ASSERT(I2S_GET_TX_FIFO_LEVEL(pI2SModule) == 0);
+
+        /* Reset I2S */
+        ResetI2SModule(u32I2SIdx);
     }
 }
 
@@ -361,6 +389,9 @@ void MACRO_I2S_READ_RX_FIFO()
         I2S_READ_RX_FIFO(pI2SModule);
 
         CU_ASSERT(I2S_GET_RX_FIFO_LEVEL(pI2SModule) == 0);
+
+        /* Reset I2S */
+        ResetI2SModule(u32I2SIdx);
     }
 }
 

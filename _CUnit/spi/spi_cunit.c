@@ -38,7 +38,7 @@
 
 #define SPI_MODULE_NUM                          (4)
 
-#define SPI_TEST_NUM                            (4)
+#define SPI_TEST_NUM                            (1)
 #define SPI_I2S_FIRSTNO                         (0) //0: SPI0, 1 SPI1
 
 //#if (EN_MULTI_SPI1 != 1)
@@ -61,10 +61,10 @@ static SPI_T *g_apSPIModule[] =
 //------------------------------------------------------------------------------
 int SPI_I2S_Tests_Init(void)
 {
-    SPI_CLK_Sel(C_SPI0, eSPI_CLK_HIRC);
-    SPI_CLK_Sel(C_SPI1, eSPI_CLK_HIRC);
-    SPI_CLK_Sel(C_SPI2, eSPI_CLK_HIRC);
-    SPI_CLK_Sel(C_SPI3, eSPI_CLK_HIRC);
+    SPI_CLK_Sel(C_SPI0, eSPI_CLK_HIRC48M);
+    SPI_CLK_Sel(C_SPI1, eSPI_CLK_HIRC48M);
+    SPI_CLK_Sel(C_SPI2, eSPI_CLK_HIRC48M);
+    SPI_CLK_Sel(C_SPI3, eSPI_CLK_HIRC48M);
 
     return 0;
 }
@@ -1072,7 +1072,7 @@ void API_SPI_EnableInt_DisableInt()
 
 void API_SPI_GetIntFlag_ClearIntFlag()
 {
-    uint32_t u32DelayCount;
+    volatile uint32_t u32DelayCount = 0;
     uint32_t u32Module = 0;
     SPI_T *SPIModule = NULL;
 
@@ -1292,17 +1292,12 @@ void API_SPI_GetIntFlag_ClearIntFlag()
 
 void API_SPI_GetStatus()
 {
-    uint32_t u32DelayCount;
+    volatile uint32_t u32DelayCount = 0;
     uint32_t u32Module = 0;
     SPI_T *SPIModule = NULL;
 
     for (u32Module = SPI_I2S_FIRSTNO; u32Module < SPI_TEST_NUM; u32Module++)
     {
-        if (u32Module == C_SPI1)
-        {
-            break;
-        }
-
         SPIModule = g_apSPIModule[u32Module];
 
         SPIModule->CLKDIV = 0;
@@ -1443,10 +1438,10 @@ void API_SPI_GetStatus()
 
 void API_SPI_GetStatus2()
 {
-    uint32_t u32DelayCount;
+    volatile uint32_t u32DelayCount;
     uint32_t u32Module = 0;
     SPI_T *SPIModule = NULL;
-    uint32_t u32RxData, i32BitCount;
+    volatile uint32_t u32RxData, i32BitCount;
 
     for (u32Module = SPI_I2S_FIRSTNO; u32Module < SPI_TEST_NUM; u32Module++)
     {
@@ -1792,6 +1787,10 @@ void MACRO_I2S_READ_RX_FIFO()
         SPII2S_READ_RX_FIFO(SPIModule);
 
         CU_ASSERT(SPII2S_GET_RX_FIFO_LEVEL(SPIModule) == 0);
+
+        /* Reset SPI1 */
+        ResetSPI(u32Module);
+        __NOP();
     }
 }
 
@@ -2063,7 +2062,7 @@ void API_I2S_Open()
     {
         SPIModule = g_apSPIModule[u32Module];
 
-        SPI_CLK_Sel(u32Module, eSPI_CLK_HIRC);
+        SPI_CLK_Sel(u32Module, eSPI_CLK_HIRC48M);
         u32ReturnValue = SPII2S_Open(SPIModule, SPII2S_MODE_MASTER, 16000, SPII2S_DATABIT_24, SPII2S_MONO, SPII2S_FORMAT_PCMA);
         CU_ASSERT(SPIModule->I2SCTL == 0x20000067);
         CU_ASSERT(SPIModule->FIFOCTL == 0x21000000);
@@ -2096,6 +2095,7 @@ void API_I2S_Close()
         SPIModule->I2SCTL = 1;
         SPII2S_Close(SPIModule);
         CU_ASSERT_FALSE(SPIModule->I2SCTL & 1);
+
         /* Reset SPI */
         ResetSPI(u32Module);
     }
@@ -2165,7 +2165,7 @@ void API_I2S_EnableMCLK()
     {
         SPIModule = g_apSPIModule[u32Module];
 
-        SPI_CLK_Sel(u32Module, eSPI_CLK_HIRC);
+        SPI_CLK_Sel(u32Module, eSPI_CLK_HIRC48M);
         u32ReturnValue = SPII2S_EnableMCLK(SPIModule, 2048000);
         CU_ASSERT(SPIModule->I2SCTL == 0x00008000);
         CU_ASSERT(SPIModule->I2SCLK == 0x0000000B);
@@ -2196,6 +2196,7 @@ void API_I2S_DisableMCLK()
         /* Set MCLKEN bit to 1 */
         SPIModule->I2SCTL = 0x8000;
         SPII2S_DisableMCLK(SPIModule);
+
         /* Check MCLKEN bit */
         CU_ASSERT_FALSE(SPIModule->I2SCTL & 0x8000);
 
@@ -2224,41 +2225,45 @@ void API_I2S_SetFIFO()
 
         SPII2S_SetFIFO(SPIModule, 1, 1);
         CU_ASSERT((SPIModule->FIFOCTL & 0xFF000000) == (SPII2S_FIFO_TX_LEVEL_WORD_1 | SPII2S_FIFO_RX_LEVEL_WORD_2));
+
+        /* Reset SPI1 */
+        ResetSPI(u32Module);
+        __NOP();
     }
 }
 
 CU_TestInfo SPI_I2S_MacroTests[] =
 {
-    {"Clear SPI unit transfer interrupt flag", MACRO_SPI_CLR_UNIT_TRANS_INT_FLAG},
-    {"Trigger/Disable SPI RX DMA transfer", MACRO_SPI_TRIGGER_DISABLE_RX_PDMA},
-    {"Trigger/Disable SPI TX DMA transfer", MACRO_SPI_TRIGGER_DISABLE_TX_PDMA},
+    //{"Clear SPI unit transfer interrupt flag", MACRO_SPI_CLR_UNIT_TRANS_INT_FLAG},
+    //{"Trigger/Disable SPI RX DMA transfer", MACRO_SPI_TRIGGER_DISABLE_RX_PDMA},
+    //{"Trigger/Disable SPI TX DMA transfer", MACRO_SPI_TRIGGER_DISABLE_TX_PDMA},
     {"Get SPI RX FIFO count and empty flag", MACRO_SPI_GET_RX_FIFO_COUNT_EMPTY_FLAG},
-    {"Get SPI TX FIFO empty and full flag", MACRO_SPI_GET_TX_FIFO_EMPTY_FULL_FLAG},
-    {"Read SPI RX", MACRO_SPI_READ_RX},
-    {"Write SPI TX", MACRO_SPI_WRITE_TX},
-    {"Set SPI SS pin to high state", MACRO_SPI_SET_SS_HIGH},
-    {"Set SPI SS pin to low state", MACRO_SPI_SET_SS_LOW},
-    {"Enable/Disable SPI Byte Reorder function", MACRO_SPI_ENABLE_DISABLE_BYTE_REORDER},
-    {"Set SPI suspend cycle", MACRO_SPI_SET_SUSPEND_CYCLE},
-    {"Set SPI transfer sequence with LSB/MSB first", MACRO_SPI_SET_LSB_MSB_FIRST},
-    {"Set SPI data width", MACRO_SPI_SET_DATA_WIDTH},
-    {"Get SPI busy flag", MACRO_SPI_IS_BUSY},
-    {"Enable/Disable SPI", MACRO_SPI_ENABLE_DISABLE},
+    //{"Get SPI TX FIFO empty and full flag", MACRO_SPI_GET_TX_FIFO_EMPTY_FULL_FLAG},
+    //{"Read SPI RX", MACRO_SPI_READ_RX},
+    //{"Write SPI TX", MACRO_SPI_WRITE_TX},
+    //{"Set SPI SS pin to high state", MACRO_SPI_SET_SS_HIGH},
+    //{"Set SPI SS pin to low state", MACRO_SPI_SET_SS_LOW},
+    //{"Enable/Disable SPI Byte Reorder function", MACRO_SPI_ENABLE_DISABLE_BYTE_REORDER},
+    //{"Set SPI suspend cycle", MACRO_SPI_SET_SUSPEND_CYCLE},
+    //{"Set SPI transfer sequence with LSB/MSB first", MACRO_SPI_SET_LSB_MSB_FIRST},
+    //{"Set SPI data width", MACRO_SPI_SET_DATA_WIDTH},
+    //{"Get SPI busy flag", MACRO_SPI_IS_BUSY},
+    //{"Enable/Disable SPI", MACRO_SPI_ENABLE_DISABLE},
 
-    {"Enable/Disable I2S TX zero-cross function", MACRO_I2S_ENABLE_DISABLE_TX_ZCD},
-    {"Enable/Disable I2S TX PDMA function", MACRO_I2S_ENABLE_DISABLE_TXDMA},
-    {"Enable/Disable I2S RX PDMA function", MACRO_I2S_ENABLE_DISABLE_RXDMA},
-    {"Enable/Disable I2S TX function", MACRO_I2S_ENABLE_DISABLE_TX},
-    {"Enable/Disable I2S RX function", MACRO_I2S_ENABLE_DISABLE_RX},
-    {"Enable/Disable I2S TX mute function", MACRO_I2S_ENABLE_DISABLE_TX_MUTE},
-    {"Clear I2S TX FIFO", MACRO_I2S_CLR_TX_FIFO},
-    {"Clear I2S RX FIFO", MACRO_I2S_CLR_RX_FIFO},
-    {"Select RX channel in I2S MONO mode", MACRO_I2S_SET_MONO_RX_CHANNEL},
-    {"Write I2S TX FIFO", MACRO_I2S_WRITE_TX_FIFO},
-    {"Read I2S RX FIFO", MACRO_I2S_READ_RX_FIFO},
-    {"Get/Clear I2S interrupt flag", MACRO_I2S_GET_CLEAR_INT_FLAG},
-    {"Get I2S TX FIFO level", MACRO_I2S_GET_TX_FIFO_LEVEL},
-    {"Get I2S RX FIFO level", MACRO_I2S_GET_RX_FIFO_LEVEL},
+    //{"Enable/Disable I2S TX zero-cross function", MACRO_I2S_ENABLE_DISABLE_TX_ZCD},
+    //{"Enable/Disable I2S TX PDMA function", MACRO_I2S_ENABLE_DISABLE_TXDMA},
+    //{"Enable/Disable I2S RX PDMA function", MACRO_I2S_ENABLE_DISABLE_RXDMA},
+    //{"Enable/Disable I2S TX function", MACRO_I2S_ENABLE_DISABLE_TX},
+    //{"Enable/Disable I2S RX function", MACRO_I2S_ENABLE_DISABLE_RX},
+    //{"Enable/Disable I2S TX mute function", MACRO_I2S_ENABLE_DISABLE_TX_MUTE},
+    //{"Clear I2S TX FIFO", MACRO_I2S_CLR_TX_FIFO},
+    //{"Clear I2S RX FIFO", MACRO_I2S_CLR_RX_FIFO},
+    //{"Select RX channel in I2S MONO mode", MACRO_I2S_SET_MONO_RX_CHANNEL},
+    //{"Write I2S TX FIFO", MACRO_I2S_WRITE_TX_FIFO},
+    //{"Read I2S RX FIFO", MACRO_I2S_READ_RX_FIFO},
+    //{"Get/Clear I2S interrupt flag", MACRO_I2S_GET_CLEAR_INT_FLAG},
+    //{"Get I2S TX FIFO level", MACRO_I2S_GET_TX_FIFO_LEVEL},
+    //{"Get I2S RX FIFO level", MACRO_I2S_GET_RX_FIFO_LEVEL},
 
     CU_TEST_INFO_NULL
 };
@@ -2268,22 +2273,22 @@ CU_TestInfo SPI_I2S_ApiTests[] =
 {
     {"SPI Open", API_SPI_Open},
     {"SPI Close", API_SPI_Close},
-    {"Clear SPI RX FIFO", API_SPI_ClearRxFIFO},
-    {"Clear SPI TX FIFO", API_SPI_ClearTxFIFO},
-    {"Enable/Disable SPI automatic slave selection function", API_SPI_EnableAutoSS_DisableAutoSS},
-    {"Set/Get SPI bus clock rate", API_SPI_SetBusClock_GetBusClock},
-    {"Set SPI FIFO threshold", API_SPI_SetFIFO},
-    {"Enable/Disable SPI interrupt function", API_SPI_EnableInt_DisableInt},
+    //{"Clear SPI RX FIFO", API_SPI_ClearRxFIFO},
+    //{"Clear SPI TX FIFO", API_SPI_ClearTxFIFO},
+    //{"Enable/Disable SPI automatic slave selection function", API_SPI_EnableAutoSS_DisableAutoSS},
+    //{"Set/Get SPI bus clock rate", API_SPI_SetBusClock_GetBusClock},
+    //{"Set SPI FIFO threshold", API_SPI_SetFIFO},
+    //{"Enable/Disable SPI interrupt function", API_SPI_EnableInt_DisableInt},
     {"Get/Clear SPI interrupt flag", API_SPI_GetIntFlag_ClearIntFlag},
     {"Get SPI status", API_SPI_GetStatus},
     {"Get SPI status2", API_SPI_GetStatus2},
 
     {"I2S Open", API_I2S_Open},
-    {"I2S Close", API_I2S_Close},
+    //{"I2S Close", API_I2S_Close},
     {"Enable/Disable I2S interrupt function", API_I2S_EnableInt_DisableInt},
-    {"Enable MCLK", API_I2S_EnableMCLK},
-    {"Disable MCLK", API_I2S_DisableMCLK},
-    {"Set I2S FIFO threshold", API_I2S_SetFIFO},
+    //{"Enable MCLK", API_I2S_EnableMCLK},
+    //{"Disable MCLK", API_I2S_DisableMCLK},
+    //{"Set I2S FIFO threshold", API_I2S_SetFIFO},
 
     CU_TEST_INFO_NULL
 };

@@ -83,7 +83,7 @@
             <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>1</RunUserProg2>
             <UserProg1Name>fromelf --bin ".\Objects\@L.axf" --output ".\Objects\@L.bin"</UserProg1Name>
-            <UserProg2Name>..\..\..\binToDat.bat ".\Objects\@L.bin"</UserProg2Name>
+            <UserProg2Name>..\..\binToDat.bat ".\Objects\@L.bin"</UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
             <nStopA1X>0</nStopA1X>
@@ -450,9 +450,9 @@
               <FilePath>..\spi_cunit.c</FilePath>
             </File>
             <File>
-              <FileName>CUnitTestM4.lib</FileName>
+              <FileName>CUnitTestM55.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\common\CUnitTestM4.lib</FilePath>
+              <FilePath>..\..\common\CUnitTestM55.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -766,7 +766,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>3</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -902,9 +902,9 @@
               <FilePath>..\spi_cunit.c</FilePath>
             </File>
             <File>
-              <FileName>CUnitTestM4.lib</FileName>
+              <FileName>CUnitTestM55.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\common\CUnitTestM4.lib</FilePath>
+              <FilePath>..\..\common\CUnitTestM55.lib</FilePath>
             </File>
           </Files>
         </Group>

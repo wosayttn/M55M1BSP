@@ -31,6 +31,9 @@ char *GetTestSPIName(uint32_t u32Index)
 
 void ResetSPI(uint32_t u32SPIModule)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     switch (u32SPIModule)
     {
         case C_SPI0:
@@ -58,6 +61,9 @@ void ResetSPI(uint32_t u32SPIModule)
     }
 
     SYS->SPIRST = 0;
+
+    /* Lock protected registers */
+    SYS_LockReg();
 }
 
 void SPI3_SetClkSrc(uint32_t u32ClkSrc)
