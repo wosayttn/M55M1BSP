@@ -239,7 +239,7 @@ typedef struct
 /** @} end of group CRYPTO_EXPORTED_CONSTANTS */
 
 
-/** @addtogroup  TC8263_CRYPTO_EXPORTED_MACROS CRYPTO Exported Macros
+/** @addtogroup  M55M1_CRYPTO_EXPORTED_MACROS CRYPTO Exported Macros
   @{
 */
 
@@ -454,7 +454,7 @@ typedef struct
   * \hideinitializer
   */
 #define RSA_CLR_INT_FLAG(crypto)      ((crypto)->INTSTS = (CRYPTO_INTSTS_RSAIF_Msk|CRYPTO_INTSTS_RSAEIF_Msk))
-/** @} end of group TC8263_CRYPTO_EXPORTED_MACROS */
+/** @} end of group M55M1_CRYPTO_EXPORTED_MACROS */
 
 
 /** @addtogroup CRYPTO_EXPORTED_FUNCTIONS CRYPTO Exported Functions

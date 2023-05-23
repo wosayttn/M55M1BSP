@@ -336,7 +336,7 @@
                 <option>
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\npu</state>
-                    <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\TC8263\Include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc\npu</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Core\Include</state>
@@ -752,7 +752,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\TC8263\Source\IAR\TC8263.icf</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\IAR\M55M1.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -2116,10 +2116,10 @@
     <group>
         <name>CMSIS</name>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\TC8263\Source\startup_TC8263.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\TC8263\Source\system_TC8263.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</name>
         </file>
     </group>
     <group>

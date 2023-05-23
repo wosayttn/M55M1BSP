@@ -11,6 +11,6 @@
 #ifndef __NUMICRO_H__
 #define __NUMICRO_H__
 
-#include "TC8263.h"
+#include "M55M1.h"
 
 #endif  /* __NUMICRO_H__ */

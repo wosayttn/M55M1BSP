@@ -286,7 +286,7 @@ void SHA_Open(CRYPTO_T *crypto, uint32_t u32OpMode, uint32_t u32SwapType, uint32
     if (hmac_key_len != 0UL)
     {
         crypto->HMAC_KEYCNT = hmac_key_len;
-        crypto->HMAC_CTL |= (1<<11);  /* TC8263, migrate from M480LD HMACEN is CRYPTO_HMAC_CTL[11] */
+        crypto->HMAC_CTL |= (1<<11);  /* M55M1, migrate from M480LD HMACEN is CRYPTO_HMAC_CTL[11] */
     }
 }
 

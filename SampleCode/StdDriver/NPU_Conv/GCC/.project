@@ -26,14 +26,14 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>CMSIS/startup_TC8263.c</name>
+			<name>CMSIS/startup_M55M1.c</name>
 			<type>1</type>
-			<locationURI>$%7BPARENT-4-PROJECT_LOC%7D/Library/Device/Nuvoton/TC8263/Source/startup_TC8263.c</locationURI>
+			<locationURI>$%7BPARENT-4-PROJECT_LOC%7D/Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c</locationURI>
 		</link>
 		<link>
-			<name>CMSIS/system_TC8263.c</name>
+			<name>CMSIS/system_M55M1.c</name>
 			<type>1</type>
-			<locationURI>$%7BPARENT-4-PROJECT_LOC%7D/Library/Device/Nuvoton/TC8263/Source/system_TC8263.c</locationURI>
+			<locationURI>$%7BPARENT-4-PROJECT_LOC%7D/Library/Device/Nuvoton/M55M1/Source/system_M55M1.c</locationURI>
 		</link>
 		<link>
 			<name>Driver/clk.c</name>

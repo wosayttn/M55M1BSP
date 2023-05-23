@@ -18,8 +18,8 @@
  */
 
 /*
- * This is a simplified picture of the NuMicro TC8263 memory system.
- * Please refer to the NuMicro TC8263 Technical Reference Manual for
+ * This is a simplified picture of the NuMicro M55M1 memory system.
+ * Please refer to the NuMicro M55M1 Technical Reference Manual for
  * further information.
  *
  *
@@ -83,7 +83,7 @@
  * TRUSTZONE_NONSECURE which sets the memory start addresses and sizes.
  */
 #include "trustzone.h"
-#include "partition_TC8263.h"
+#include "partition_M55M1.h"
 #define USE_TRUSTZONE
 
 #else // TRUSTZONE_BUILD
@@ -117,7 +117,7 @@ APP_IMAGE FLASH_START FLASH_SIZE
         *.o (RESET, +First)
         * (InRoot$$Sections)
         ; Make sure reset_handler ends up in root segment
-        startup_TC8263.o
+        startup_M55M1.o
         .ANY (+RO)
     }
 

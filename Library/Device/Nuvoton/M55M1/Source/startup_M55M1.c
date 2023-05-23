@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     startup_TC8263.c
+ * @file     startup_M55M1.c
  * @version  V1.00
- * @brief    CMSIS Device Startup File for NuMicro TC8263
+ * @brief    CMSIS Device Startup File for NuMicro M55M1
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

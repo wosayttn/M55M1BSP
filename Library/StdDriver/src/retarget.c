@@ -331,13 +331,13 @@ void ProcessHardFault(uint32_t *excContext)
 }
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION)
-#include "../../Device/Nuvoton/TC8263/Source/GCC/retarget_GCC.c"
+#include "../../Device/Nuvoton/M55M1/Source/GCC/retarget_GCC.c"
 #endif
 
 #if defined (__ARMCC_VERSION)
-#include "../../Device/Nuvoton/TC8263/Source/ARM/retarget_ARMCC.c"
+#include "../../Device/Nuvoton/M55M1/Source/ARM/retarget_ARMCC.c"
 #endif
 
 #if defined (__ICCARM__)
-#include "../../Device/Nuvoton/TC8263/Source/IAR/retarget_ICC.c"
+#include "../../Device/Nuvoton/M55M1/Source/IAR/retarget_ICC.c"
 #endif

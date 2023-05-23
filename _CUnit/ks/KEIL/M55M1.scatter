@@ -8,8 +8,8 @@
 /* https://github.com/ARM-software/CMSIS_5/tree/develop/Device/ARM/ARMCM55/Source/ARM */
 
 /*
- * This is a simplified picture of the NuMicro TC8263 memory system.
- * Please refer to the NuMicro TC8263 Technical Reference Manual for
+ * This is a simplified picture of the NuMicro M55M1 memory system.
+ * Please refer to the NuMicro M55M1 Technical Reference Manual for
  * further information.
  *
  * +---------------+   +---------------+  +--------------------------+
@@ -64,7 +64,7 @@
  *        memory banks.
  */
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-#include "partition_TC8263.h"
+#include "partition_M55M1.h"
 #endif
 
 /*
@@ -95,7 +95,7 @@
 ;   <o1> Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
  *----------------------------------------------------------------------------*/
-#define STACK_SIZE      0x00000800
+#define STACK_SIZE      0x00001000
 #define HEAP_SIZE       0x00000800
 
 /*--------------------- CMSE Veneer Configuration ---------------------------
@@ -157,7 +157,7 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
         *.o (RESET, +First)
         *(InRoot$$Sections)
         ; Make sure reset_handler ends up in root segment
-        startup_TC8263.o
+        startup_M55M1.o
         .ANY (+RO)
     }
     

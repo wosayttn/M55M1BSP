@@ -1,18 +1,18 @@
 /**************************************************************************//**
- * @file     TC8263.h
+ * @file     M55M1.h
  * @version  V1.00
- * @brief    Peripheral Access Layer Header File for NuMicro TC8263
+ * @brief    Peripheral Access Layer Header File for NuMicro M55M1
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
 /**
-  \mainpage NuMicro TC8263/M55M1 Series CMSIS BSP Driver Reference
+  \mainpage NuMicro M55M1/M55M1 Series CMSIS BSP Driver Reference
   *
   * <b>Introduction</b>
   *
-  * This user manual describes the usage of TC8263/M55M1 Series MCU device driver
+  * This user manual describes the usage of M55M1/M55M1 Series MCU device driver
   *
   * <b>Disclaimer</b>
   *
@@ -48,8 +48,8 @@
   */
 
 
-#ifndef __TC8263_H__
-#define __TC8263_H__
+#ifndef __M55M1_H__
+#define __M55M1_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -308,8 +308,8 @@ typedef enum IRQn
 
 
 #include "core_cm55.h"                        /* Processor and core peripheral */
-#include "system_TC8263.h"                    /* System Header */
-#include "partition_TC8263.h"
+#include "system_M55M1.h"                    /* System Header */
+#include "partition_M55M1.h"
 
 
 /******************************************************************************/
@@ -1712,4 +1712,4 @@ typedef volatile uint64_t vu64;   ///< Define 64-bit unsigned volatile data type
 }
 #endif
 
-#endif  /* __TC8263_H__ */
+#endif  /* __M55M1_H__ */

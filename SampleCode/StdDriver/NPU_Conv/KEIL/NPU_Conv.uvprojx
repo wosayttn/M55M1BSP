@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>TC8263</TargetName>
+      <TargetName>M55M1</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>DEBUG_PORT=UART0</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\Device\Nuvoton\TC8263\Include;..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\StdDriver\src\npu;..\..\..\..\Library\StdDriver\inc\npu</IncludePath>
+              <IncludePath>..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\StdDriver\src\npu;..\..\..\..\Library\StdDriver\inc\npu</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -370,7 +370,7 @@
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>..\..\..\..\Library\Device\Nuvoton\TC8263\Source\ARM\TC8263.scatter</ScatterFile>
+            <ScatterFile>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\ARM\M55M1.scatter</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc>--predefine="-I../"</Misc>
@@ -399,14 +399,14 @@
           <GroupName>CMSIS</GroupName>
           <Files>
             <File>
-              <FileName>startup_TC8263.c</FileName>
+              <FileName>startup_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\Device\Nuvoton\TC8263\Source\startup_TC8263.c</FilePath>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</FilePath>
             </File>
             <File>
-              <FileName>system_TC8263.c</FileName>
+              <FileName>system_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\Device\Nuvoton\TC8263\Source\system_TC8263.c</FilePath>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</FilePath>
             </File>
           </Files>
         </Group>

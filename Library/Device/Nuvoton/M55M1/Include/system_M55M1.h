@@ -1,15 +1,15 @@
 /**************************************************************************//**
- * @file     system_TC8263.h
+ * @file     system_M55M1.h
  * @version  V1.00
- * @brief    CMSIS Device System Header File for NuMicro TC8263
+ * @brief    CMSIS Device System Header File for NuMicro M55M1
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 
-#ifndef __SYSTEM_TC8263_H__
-#define __SYSTEM_TC8263_H__
+#ifndef __SYSTEM_M55M1_H__
+#define __SYSTEM_M55M1_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -142,4 +142,4 @@ extern void InitDebugUart(void);
 }
 #endif
 
-#endif /* __SYSTEM_TC8263_H__ */
+#endif /* __SYSTEM_M55M1_H__ */

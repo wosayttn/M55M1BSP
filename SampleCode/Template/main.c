@@ -18,7 +18,7 @@
  *   users can define NVT_ICACHE_OFF/NVT_DCACHE_OFF in project setting to disable cache.
  * Debug UART
  *   Default is DEBUG_PORT=UART0 in project setting
- *   system_TC8263.c has three weak functions as below to configure debug UART port.
+ *   system_M55M1.c has three weak functions as below to configure debug UART port.
  *     SetDebugUartMFP, SetDebugUartCLK and InitDebugUart
  *   Users can re-implement these functions according to system design.
  */

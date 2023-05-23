@@ -1,16 +1,16 @@
 /**************************************************************************//**
- * @file     partition_TC8263.h
+ * @file     partition_M55M1.h
  * @version  V1.00
- * @brief    Initial Setup for Secure / Non-Secure Attribution Zones for TC8263
+ * @brief    Initial Setup for Secure / Non-Secure Attribution Zones for M55M1
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
-#ifndef PARTITION_TC8263_H
-#define PARTITION_TC8263_H
+#ifndef PARTITION_M55M1_H
+#define PARTITION_M55M1_H
 
-/* Copy template from Library\StdDriver\inc\partition_TC8263.h */
+/* Copy template from Library\StdDriver\inc\partition_M55M1.h */
 
 /*
 //-------- <<< Use Configuration Wizard in Context Menu >>> -----------------
@@ -859,4 +859,4 @@
                 ((SAU_INIT_NSC##n << SAU_RLAR_NSC_Pos)  & SAU_RLAR_NSC_Msk)   | 1U
 
 
-#endif  /* PARTITION_TC8263_H */
+#endif  /* PARTITION_M55M1_H */

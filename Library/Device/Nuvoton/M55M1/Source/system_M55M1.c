@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     system_TC8263.c
+ * @file     system_M55M1.c
  * @version  V1.00
- * @brief    CMSIS Device System Source File for NuMicro TC8263
+ * @brief    CMSIS Device System Source File for NuMicro M55M1
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -14,7 +14,7 @@
 #include "NuMicro.h"
 
 #if defined (__ARM_FEATURE_CMSE) &&  (__ARM_FEATURE_CMSE == 3U)
-    #include "partition_TC8263.h"
+    #include "partition_M55M1.h"
     #include "mpc_sie_drv.h"
 #endif
 
