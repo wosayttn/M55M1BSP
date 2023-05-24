@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\I2S_CUnit.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\I2S_CUnit.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6180002: Last Updated: Tue May 23 18:54:30 2023
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6180002: Last Updated: Wed May 24 11:47:20 2023
 <BR><P>
 <H3>Maximum Stack Usage =        448 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -11,7 +11,7 @@ console_all_tests_complete_message_handler &rArr; CU_print_run_results &rArr; CU
 <P>
 <H3>
 Mutually Recursive functions
-</H3> <LI><a href="#[11e]">abort</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[11e]">abort</a><BR>
+</H3> <LI><a href="#[122]">abort</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[122]">abort</a><BR>
  <LI><a href="#[90]">ACMP01_IRQHandler</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[90]">ACMP01_IRQHandler</a><BR>
 </UL>
 <P>
@@ -207,7 +207,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[17]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Reset_Handler
 </UL>
 
-<P><STRONG><a name="[131]"></a>_main_stk</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry4.o(.ARM.Collect$$$$00000003))
+<P><STRONG><a name="[135]"></a>_main_stk</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry4.o(.ARM.Collect$$$$00000003))
 
 <P><STRONG><a name="[b5]"></a>_main_scatterload</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry5.o(.ARM.Collect$$$$00000004))
 <BR><BR>[Calls]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
@@ -217,7 +217,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
 </UL>
 
-<P><STRONG><a name="[132]"></a>_main_clock</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry7b.o(.ARM.Collect$$$$00000008))
+<P><STRONG><a name="[136]"></a>_main_clock</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry7b.o(.ARM.Collect$$$$00000008))
 
 <P><STRONG><a name="[b7]"></a>_main_cpp_init$empty</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry8a.o(.ARM.Collect$$$$00000009))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16 + Unknown Stack Size
@@ -226,25 +226,25 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__cpp_initialize__aeabi_
 </UL>
 
-<P><STRONG><a name="[133]"></a>_main_cpp_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry8b.o(.ARM.Collect$$$$0000000A))
+<P><STRONG><a name="[137]"></a>_main_cpp_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry8b.o(.ARM.Collect$$$$0000000A))
 
-<P><STRONG><a name="[134]"></a>_main_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry9a.o(.ARM.Collect$$$$0000000B))
+<P><STRONG><a name="[138]"></a>_main_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry9a.o(.ARM.Collect$$$$0000000B))
 
-<P><STRONG><a name="[135]"></a>__rt_final_cpp</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry10a.o(.ARM.Collect$$$$0000000D))
+<P><STRONG><a name="[139]"></a>__rt_final_cpp</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry10a.o(.ARM.Collect$$$$0000000D))
 
-<P><STRONG><a name="[136]"></a>__rt_final_exit</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry11a.o(.ARM.Collect$$$$0000000F))
+<P><STRONG><a name="[13a]"></a>__rt_final_exit</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry11a.o(.ARM.Collect$$$$0000000F))
 
 <P><STRONG><a name="[c1]"></a>__rt_ctype_table</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, ctype_o.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strtol
 </UL>
 
-<P><STRONG><a name="[ec]"></a>toupper</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, toupper.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_compare_strings
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<P><STRONG><a name="[ed]"></a>toupper</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, toupper.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_compare_strings
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
-<P><STRONG><a name="[121]"></a>tolower</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, tolower.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
+<P><STRONG><a name="[125]"></a>tolower</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, tolower.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
 </UL>
 
 <P><STRONG><a name="[b9]"></a>__aeabi_memset</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
@@ -252,38 +252,38 @@ Global Symbols
 <LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
 
-<P><STRONG><a name="[137]"></a>__aeabi_memset4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
+<P><STRONG><a name="[13b]"></a>__aeabi_memset4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
 
-<P><STRONG><a name="[138]"></a>__aeabi_memset8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
+<P><STRONG><a name="[13c]"></a>__aeabi_memset8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
 
 <P><STRONG><a name="[b8]"></a>__aeabi_memclr</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
 
-<P><STRONG><a name="[eb]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_clear_previous_results
-<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
-<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_suite
-<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
+<P><STRONG><a name="[ec]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_clear_previous_results
+<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_suite
+<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
 </UL>
 
-<P><STRONG><a name="[139]"></a>__aeabi_memclr8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
+<P><STRONG><a name="[13d]"></a>__aeabi_memclr8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
 
 <P><STRONG><a name="[ba]"></a>_memset$wrapper</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, memseta.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
 
-<P><STRONG><a name="[df]"></a>strlen</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, strlen.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
-<LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_number_width
+<P><STRONG><a name="[e0]"></a>strlen</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, strlen.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_number_width
 </UL>
 
-<P><STRONG><a name="[e0]"></a>strcpy</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, strcpy.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<P><STRONG><a name="[e1]"></a>strcpy</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, strcpy.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
 </UL>
 
 <P><STRONG><a name="[bb]"></a>atol</STRONG> (Thumb, 26 bytes, Stack size 16 bytes, atol.o(.text))
@@ -292,8 +292,8 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strtol
 <LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_errno_addr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+<BR>[Called By]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
 </UL>
 
 <P><STRONG><a name="[b4]"></a>__cpp_initialize__aeabi_</STRONG> (Thumb, 24 bytes, Stack size 16 bytes, cpp_init.o(.text))
@@ -302,28 +302,28 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_main_cpp_init$empty
 </UL>
 
-<P><STRONG><a name="[125]"></a>setjmp</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, setjmp.o(.text))
+<P><STRONG><a name="[129]"></a>setjmp</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, setjmp.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = setjmp
 </UL>
-<BR>[Called By]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_test
+<BR>[Called By]<UL><LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_test
 </UL>
 
-<P><STRONG><a name="[e7]"></a>longjmp</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, setjmp.o(.text))
+<P><STRONG><a name="[e8]"></a>longjmp</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, setjmp.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
 
-<P><STRONG><a name="[13a]"></a>__aeabi_uidiv</STRONG> (Thumb, 0 bytes, Stack size 12 bytes, uidiv.o(.text), UNUSED)
+<P><STRONG><a name="[13e]"></a>__aeabi_uidiv</STRONG> (Thumb, 0 bytes, Stack size 12 bytes, uidiv.o(.text), UNUSED)
 
-<P><STRONG><a name="[12f]"></a>__aeabi_uidivmod</STRONG> (Thumb, 44 bytes, Stack size 12 bytes, uidiv.o(.text), UNUSED)
-<BR><BR>[Called By]<UL><LI><a href="#[128]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+<P><STRONG><a name="[133]"></a>__aeabi_uidivmod</STRONG> (Thumb, 44 bytes, Stack size 12 bytes, uidiv.o(.text), UNUSED)
+<BR><BR>[Called By]<UL><LI><a href="#[12c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
 </UL>
 
 <P><STRONG><a name="[be]"></a>__aeabi_uldivmod</STRONG> (Thumb, 98 bytes, Stack size 40 bytes, uldiv.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
 <LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
 </UL>
-<BR>[Called By]<UL><LI><a href="#[128]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
-<LI><a href="#[12b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+<BR>[Called By]<UL><LI><a href="#[12c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+<LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
 </UL>
 
 <P><STRONG><a name="[bd]"></a>strtol</STRONG> (Thumb, 112 bytes, Stack size 32 bytes, strtol.o(.text))
@@ -336,17 +336,17 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atol
 </UL>
 
-<P><STRONG><a name="[13b]"></a>__I$use$fp</STRONG> (Thumb, 0 bytes, Stack size 48 bytes, iusefp.o(.text), UNUSED)
+<P><STRONG><a name="[13f]"></a>__I$use$fp</STRONG> (Thumb, 0 bytes, Stack size 48 bytes, iusefp.o(.text), UNUSED)
 
 <P><STRONG><a name="[c3]"></a>__aeabi_dadd</STRONG> (Thumb, 322 bytes, Stack size 48 bytes, dadd.o(.text), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
-<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
-<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_lasr
+<BR><BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_lasr
 <LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
+<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_drsub
 <LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dsub
-<LI><a href="#[12b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+<LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
 </UL>
 
 <P><STRONG><a name="[c7]"></a>__aeabi_dsub</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, dadd.o(.text), UNUSED)
@@ -360,24 +360,24 @@ Global Symbols
 <P><STRONG><a name="[c9]"></a>__aeabi_dmul</STRONG> (Thumb, 228 bytes, Stack size 48 bytes, dmul.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
-<BR>[Called By]<UL><LI><a href="#[12b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+<BR>[Called By]<UL><LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
 </UL>
 
 <P><STRONG><a name="[ca]"></a>__aeabi_ddiv</STRONG> (Thumb, 222 bytes, Stack size 32 bytes, ddiv.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
 </UL>
-<BR>[Called By]<UL><LI><a href="#[12b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+<BR>[Called By]<UL><LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
 </UL>
 
 <P><STRONG><a name="[cb]"></a>__aeabi_d2ulz</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, dfixul.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
 <LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
 </UL>
-<BR>[Called By]<UL><LI><a href="#[12b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+<BR>[Called By]<UL><LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
 </UL>
 
-<P><STRONG><a name="[12c]"></a>__aeabi_cdrcmple</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, cdrcmple.o(.text), UNUSED)
-<BR><BR>[Called By]<UL><LI><a href="#[12b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+<P><STRONG><a name="[130]"></a>__aeabi_cdrcmple</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, cdrcmple.o(.text), UNUSED)
+<BR><BR>[Called By]<UL><LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
 </UL>
 
 <P><STRONG><a name="[b6]"></a>__scatterload</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, init.o(.text))
@@ -386,30 +386,30 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_main_scatterload
 </UL>
 
-<P><STRONG><a name="[13c]"></a>__scatterload_rt2</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, init.o(.text), UNUSED)
+<P><STRONG><a name="[140]"></a>__scatterload_rt2</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, init.o(.text), UNUSED)
 
 <P><STRONG><a name="[c0]"></a>__aeabi_llsl</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, llshl.o(.text), UNUSED)
-<BR><BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
+<BR><BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
 <LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
 <LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2ulz
+<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
 
-<P><STRONG><a name="[13d]"></a>_ll_shift_l</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llshl.o(.text), UNUSED)
+<P><STRONG><a name="[141]"></a>_ll_shift_l</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llshl.o(.text), UNUSED)
 
 <P><STRONG><a name="[bf]"></a>__aeabi_llsr</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, llushr.o(.text), UNUSED)
-<BR><BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
+<BR><BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
 <LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2ulz
+<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
 
-<P><STRONG><a name="[13e]"></a>_ll_ushift_r</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llushr.o(.text), UNUSED)
+<P><STRONG><a name="[142]"></a>_ll_ushift_r</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llushr.o(.text), UNUSED)
 
 <P><STRONG><a name="[c4]"></a>__aeabi_lasr</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, llsshr.o(.text), UNUSED)
 <BR><BR>[Called By]<UL><LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
 </UL>
 
-<P><STRONG><a name="[13f]"></a>_ll_sshift_r</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llsshr.o(.text), UNUSED)
+<P><STRONG><a name="[143]"></a>_ll_sshift_r</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llsshr.o(.text), UNUSED)
 
 <P><STRONG><a name="[c2]"></a>_strtoul</STRONG> (Thumb, 158 bytes, Stack size 40 bytes, _strtoul.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = _strtoul
@@ -421,15 +421,15 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[c6]"></a>_double_round</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, depilogue.o(.text), UNUSED)
-<BR><BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
-<LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
+<BR><BR>[Called By]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
 <LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
+<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
 
 <P><STRONG><a name="[c5]"></a>_double_epilogue</STRONG> (Thumb, 156 bytes, Stack size 32 bytes, depilogue.o(.text), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
-<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
+<BR><BR>[Calls]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
 <LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
 <LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
@@ -439,28 +439,28 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_strtoul
 </UL>
 
-<P><STRONG><a name="[140]"></a>__decompress</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __dczerorl2.o(.text), UNUSED)
+<P><STRONG><a name="[144]"></a>__decompress</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __dczerorl2.o(.text), UNUSED)
 
-<P><STRONG><a name="[141]"></a>__decompress1</STRONG> (Thumb, 86 bytes, Stack size unknown bytes, __dczerorl2.o(.text), UNUSED)
+<P><STRONG><a name="[145]"></a>__decompress1</STRONG> (Thumb, 86 bytes, Stack size unknown bytes, __dczerorl2.o(.text), UNUSED)
 
-<P><STRONG><a name="[1]"></a>API_I2S_Close</STRONG> (Thumb, 122 bytes, Stack size 40 bytes, i2s_cunit.o(.text.API_I2S_Close))
-<BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = API_I2S_Close &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[1]"></a>API_I2S_Close</STRONG> (Thumb, 80 bytes, Stack size 24 bytes, i2s_cunit.o(.text.API_I2S_Close))
+<BR><BR>[Stack]<UL><LI>Max Depth = 124<LI>Call Chain = API_I2S_Close &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 <LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_Close
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_ApiTests)
 </UL>
-<P><STRONG><a name="[4]"></a>API_I2S_DisableMCLK</STRONG> (Thumb, 130 bytes, Stack size 40 bytes, i2s_cunit.o(.text.API_I2S_DisableMCLK))
-<BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = API_I2S_DisableMCLK &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[4]"></a>API_I2S_DisableMCLK</STRONG> (Thumb, 84 bytes, Stack size 16 bytes, i2s_cunit.o(.text.API_I2S_DisableMCLK))
+<BR><BR>[Stack]<UL><LI>Max Depth = 116<LI>Call Chain = API_I2S_DisableMCLK &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 <LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_DisableMCLK
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_ApiTests)
 </UL>
-<P><STRONG><a name="[2]"></a>API_I2S_EnableInt_DisableInt</STRONG> (Thumb, 1336 bytes, Stack size 48 bytes, i2s_cunit.o(.text.API_I2S_EnableInt_DisableInt))
-<BR><BR>[Stack]<UL><LI>Max Depth = 148<LI>Call Chain = API_I2S_EnableInt_DisableInt &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[2]"></a>API_I2S_EnableInt_DisableInt</STRONG> (Thumb, 1280 bytes, Stack size 40 bytes, i2s_cunit.o(.text.API_I2S_EnableInt_DisableInt))
+<BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = API_I2S_EnableInt_DisableInt &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 <LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_DisableInt
@@ -468,146 +468,152 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_ApiTests)
 </UL>
-<P><STRONG><a name="[3]"></a>API_I2S_EnableMCLK</STRONG> (Thumb, 2152 bytes, Stack size 56 bytes, i2s_cunit.o(.text.API_I2S_EnableMCLK))
-<BR><BR>[Stack]<UL><LI>Max Depth = 156<LI>Call Chain = API_I2S_EnableMCLK &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[3]"></a>API_I2S_EnableMCLK</STRONG> (Thumb, 2620 bytes, Stack size 48 bytes, i2s_cunit.o(.text.API_I2S_EnableMCLK))
+<BR><BR>[Stack]<UL><LI>Max Depth = 148<LI>Call Chain = API_I2S_EnableMCLK &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 <LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_EnableMCLK
+<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_ApiTests)
 </UL>
-<P><STRONG><a name="[0]"></a>API_I2S_Open</STRONG> (Thumb, 1908 bytes, Stack size 56 bytes, i2s_cunit.o(.text.API_I2S_Open))
-<BR><BR>[Stack]<UL><LI>Max Depth = 156<LI>Call Chain = API_I2S_Open &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[0]"></a>API_I2S_Open</STRONG> (Thumb, 1808 bytes, Stack size 48 bytes, i2s_cunit.o(.text.API_I2S_Open))
+<BR><BR>[Stack]<UL><LI>Max Depth = 148<LI>Call Chain = API_I2S_Open &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
-<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_Open
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_Open
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_ApiTests)
 </UL>
-<P><STRONG><a name="[14]"></a>API_I2S_SetFIFO</STRONG> (Thumb, 496 bytes, Stack size 48 bytes, i2s_cunit.o(.text.API_I2S_SetFIFO))
-<BR><BR>[Stack]<UL><LI>Max Depth = 148<LI>Call Chain = API_I2S_SetFIFO &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[14]"></a>API_I2S_SetFIFO</STRONG> (Thumb, 468 bytes, Stack size 32 bytes, i2s_cunit.o(.text.API_I2S_SetFIFO))
+<BR><BR>[Stack]<UL><LI>Max Depth = 132<LI>Call Chain = API_I2S_SetFIFO &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
-<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_SetFIFO
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_SetFIFO
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_MacroTests)
 </UL>
-<P><STRONG><a name="[5]"></a>API_I2S_SetTDM</STRONG> (Thumb, 412 bytes, Stack size 48 bytes, i2s_cunit.o(.text.API_I2S_SetTDM))
-<BR><BR>[Stack]<UL><LI>Max Depth = 148<LI>Call Chain = API_I2S_SetTDM &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[5]"></a>API_I2S_SetTDM</STRONG> (Thumb, 232 bytes, Stack size 32 bytes, i2s_cunit.o(.text.API_I2S_SetTDM))
+<BR><BR>[Stack]<UL><LI>Max Depth = 132<LI>Call Chain = API_I2S_SetTDM &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_ConfigureTDM
+<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_ConfigureTDM
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_ApiTests)
 </UL>
-<P><STRONG><a name="[11b]"></a>CLK_EnableAPLL</STRONG> (Thumb, 1074 bytes, Stack size 48 bytes, clk.o(.text.CLK_EnableAPLL))
+<P><STRONG><a name="[11d]"></a>CLK_EnableAPLL</STRONG> (Thumb, 1074 bytes, Stack size 48 bytes, clk.o(.text.CLK_EnableAPLL))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = CLK_EnableAPLL
 </UL>
-<BR>[Called By]<UL><LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
+<BR>[Called By]<UL><LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
 </UL>
 
-<P><STRONG><a name="[11c]"></a>CLK_EnableModuleClock</STRONG> (Thumb, 172 bytes, Stack size 16 bytes, clk.o(.text.CLK_EnableModuleClock))
+<P><STRONG><a name="[11e]"></a>CLK_EnableModuleClock</STRONG> (Thumb, 172 bytes, Stack size 16 bytes, clk.o(.text.CLK_EnableModuleClock))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = CLK_EnableModuleClock
 </UL>
-<BR>[Called By]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
+<BR>[Called By]<UL><LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
+<LI><a href="#[11f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetDebugUartCLK
 </UL>
 
-<P><STRONG><a name="[119]"></a>CLK_EnableXtalRC</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, clk.o(.text.CLK_EnableXtalRC))
-<BR><BR>[Called By]<UL><LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
+<P><STRONG><a name="[11b]"></a>CLK_EnableXtalRC</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, clk.o(.text.CLK_EnableXtalRC))
+<BR><BR>[Called By]<UL><LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
 </UL>
 
-<P><STRONG><a name="[116]"></a>CLK_GetAPLL0ClockFreq</STRONG> (Thumb, 86 bytes, Stack size 0 bytes, clk.o(.text.CLK_GetAPLL0ClockFreq))
+<P><STRONG><a name="[117]"></a>CLK_GetAPLL0ClockFreq</STRONG> (Thumb, 86 bytes, Stack size 0 bytes, clk.o(.text.CLK_GetAPLL0ClockFreq))
 <BR><BR>[Called By]<UL><LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_GetSourceClockFreq
 </UL>
 
-<P><STRONG><a name="[115]"></a>CLK_GetAPLL1ClockFreq</STRONG> (Thumb, 86 bytes, Stack size 0 bytes, clk.o(.text.CLK_GetAPLL1ClockFreq))
+<P><STRONG><a name="[116]"></a>CLK_GetAPLL1ClockFreq</STRONG> (Thumb, 86 bytes, Stack size 0 bytes, clk.o(.text.CLK_GetAPLL1ClockFreq))
 <BR><BR>[Called By]<UL><LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_GetSourceClockFreq
 </UL>
 
-<P><STRONG><a name="[d8]"></a>CLK_GetHCLK0Freq</STRONG> (Thumb, 172 bytes, Stack size 8 bytes, clk.o(.text.CLK_GetHCLK0Freq))
+<P><STRONG><a name="[d9]"></a>CLK_GetHCLK0Freq</STRONG> (Thumb, 172 bytes, Stack size 8 bytes, clk.o(.text.CLK_GetHCLK0Freq))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = CLK_GetHCLK0Freq
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK3Freq
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK1Freq
+<BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK3Freq
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK1Freq
 </UL>
 
-<P><STRONG><a name="[d7]"></a>CLK_GetPCLK1Freq</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, clk.o(.text.CLK_GetPCLK1Freq))
+<P><STRONG><a name="[115]"></a>CLK_GetModuleClockSource</STRONG> (Thumb, 120 bytes, Stack size 0 bytes, clk.o(.text.CLK_GetModuleClockSource))
+<BR><BR>[Called By]<UL><LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_GetSourceClockFreq
+</UL>
+
+<P><STRONG><a name="[d8]"></a>CLK_GetPCLK1Freq</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, clk.o(.text.CLK_GetPCLK1Freq))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = CLK_GetPCLK1Freq &rArr; CLK_GetHCLK0Freq
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetHCLK0Freq
+<BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetHCLK0Freq
 </UL>
 <BR>[Called By]<UL><LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_GetSourceClockFreq
 </UL>
 
-<P><STRONG><a name="[d9]"></a>CLK_GetPCLK3Freq</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, clk.o(.text.CLK_GetPCLK3Freq))
+<P><STRONG><a name="[da]"></a>CLK_GetPCLK3Freq</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, clk.o(.text.CLK_GetPCLK3Freq))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = CLK_GetPCLK3Freq &rArr; CLK_GetHCLK0Freq
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetHCLK0Freq
+<BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetHCLK0Freq
 </UL>
 <BR>[Called By]<UL><LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_GetSourceClockFreq
 </UL>
 
-<P><STRONG><a name="[123]"></a>CLK_SetModuleClock</STRONG> (Thumb, 184 bytes, Stack size 16 bytes, clk.o(.text.CLK_SetModuleClock))
+<P><STRONG><a name="[120]"></a>CLK_SetModuleClock</STRONG> (Thumb, 184 bytes, Stack size 16 bytes, clk.o(.text.CLK_SetModuleClock))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = CLK_SetModuleClock
 </UL>
 <BR>[Called By]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<LI><a href="#[11f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetDebugUartCLK
 </UL>
 
-<P><STRONG><a name="[da]"></a>CLK_SetSCLK</STRONG> (Thumb, 446 bytes, Stack size 24 bytes, clk.o(.text.CLK_SetSCLK))
+<P><STRONG><a name="[db]"></a>CLK_SetSCLK</STRONG> (Thumb, 446 bytes, Stack size 24 bytes, clk.o(.text.CLK_SetSCLK))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = CLK_SetSCLK &rArr; SystemCoreClockUpdate &rArr; CLK_SystemClockUpdate
 </UL>
-<BR>[Calls]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemCoreClockUpdate
+<BR>[Calls]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemCoreClockUpdate
 </UL>
-<BR>[Called By]<UL><LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
+<BR>[Called By]<UL><LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
 </UL>
 
-<P><STRONG><a name="[11d]"></a>CLK_SystemClockUpdate</STRONG> (Thumb, 162 bytes, Stack size 8 bytes, clk.o(.text.CLK_SystemClockUpdate))
+<P><STRONG><a name="[121]"></a>CLK_SystemClockUpdate</STRONG> (Thumb, 162 bytes, Stack size 8 bytes, clk.o(.text.CLK_SystemClockUpdate))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = CLK_SystemClockUpdate
 </UL>
-<BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemCoreClockUpdate
+<BR>[Called By]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemCoreClockUpdate
 </UL>
 
-<P><STRONG><a name="[11a]"></a>CLK_WaitClockReady</STRONG> (Thumb, 102 bytes, Stack size 0 bytes, clk.o(.text.CLK_WaitClockReady))
-<BR><BR>[Called By]<UL><LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
+<P><STRONG><a name="[11c]"></a>CLK_WaitClockReady</STRONG> (Thumb, 102 bytes, Stack size 0 bytes, clk.o(.text.CLK_WaitClockReady))
+<BR><BR>[Called By]<UL><LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
 </UL>
 
-<P><STRONG><a name="[dc]"></a>CU_add_suite_with_setup_and_teardown</STRONG> (Thumb, 350 bytes, Stack size 40 bytes, testdb.o(.text.CU_add_suite_with_setup_and_teardown))
+<P><STRONG><a name="[dd]"></a>CU_add_suite_with_setup_and_teardown</STRONG> (Thumb, 350 bytes, Stack size 40 bytes, testdb.o(.text.CU_add_suite_with_setup_and_teardown))
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = CU_add_suite_with_setup_and_teardown &rArr; CU_compare_strings &rArr; __aeabi_assert &rArr; fwrite
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_compare_strings
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_is_test_running
-<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
-<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
-<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+<BR>[Calls]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_compare_strings
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_is_test_running
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
+<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Called By]<UL><LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_nsuites
+<BR>[Called By]<UL><LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_nsuites
 </UL>
 
-<P><STRONG><a name="[e5]"></a>CU_add_test</STRONG> (Thumb, 330 bytes, Stack size 24 bytes, testdb.o(.text.CU_add_test))
+<P><STRONG><a name="[e6]"></a>CU_add_test</STRONG> (Thumb, 330 bytes, Stack size 24 bytes, testdb.o(.text.CU_add_test))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = CU_add_test &rArr; CU_compare_strings &rArr; __aeabi_assert &rArr; fwrite
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_compare_strings
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_is_test_running
-<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
-<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
-<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+<BR>[Calls]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_compare_strings
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_is_test_running
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
+<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Called By]<UL><LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_nsuites
+<BR>[Called By]<UL><LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_nsuites
 </UL>
 
 <P><STRONG><a name="[cf]"></a>CU_assertImplementation</STRONG> (Thumb, 140 bytes, Stack size 40 bytes, testrun.o(.text.CU_assertImplementation))
 <BR><BR>[Stack]<UL><LI>Max Depth = 100<LI>Call Chain = CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;longjmp
-<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<BR>[Calls]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;longjmp
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_I2S_SetTDM
 <LI><a href="#[14]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_I2S_SetFIFO
@@ -632,299 +638,299 @@ Global Symbols
 <LI><a href="#[6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MACRO_I2S_ENABLE_DISABLE_TX_ZCD
 </UL>
 
-<P><STRONG><a name="[e8]"></a>CU_cleanup_registry</STRONG> (Thumb, 56 bytes, Stack size 8 bytes, testdb.o(.text.CU_cleanup_registry))
+<P><STRONG><a name="[e9]"></a>CU_cleanup_registry</STRONG> (Thumb, 56 bytes, Stack size 8 bytes, testdb.o(.text.CU_cleanup_registry))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = CU_cleanup_registry &rArr; CU_destroy_existing_registry &rArr; __aeabi_assert &rArr; fwrite
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_clear_previous_results
-<LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_destroy_existing_registry
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_is_test_running
-<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<BR>[Calls]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_clear_previous_results
+<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_destroy_existing_registry
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_is_test_running
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
 </UL>
 <BR>[Called By]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[ea]"></a>CU_clear_previous_results</STRONG> (Thumb, 86 bytes, Stack size 16 bytes, testrun.o(.text.CU_clear_previous_results))
+<P><STRONG><a name="[eb]"></a>CU_clear_previous_results</STRONG> (Thumb, 86 bytes, Stack size 16 bytes, testrun.o(.text.CU_clear_previous_results))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = CU_clear_previous_results &rArr; free
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<BR>[Calls]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
-<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
+<BR>[Called By]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
+<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
 </UL>
 
-<P><STRONG><a name="[e1]"></a>CU_compare_strings</STRONG> (Thumb, 108 bytes, Stack size 24 bytes, util.o(.text.CU_compare_strings))
+<P><STRONG><a name="[e2]"></a>CU_compare_strings</STRONG> (Thumb, 108 bytes, Stack size 24 bytes, util.o(.text.CU_compare_strings))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = CU_compare_strings &rArr; __aeabi_assert &rArr; fwrite
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
-<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toupper
+<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toupper
 </UL>
-<BR>[Called By]<UL><LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_test_by_name
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<BR>[Called By]<UL><LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_test_by_name
+<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
 </UL>
 
-<P><STRONG><a name="[ed]"></a>CU_console_run_tests</STRONG> (Thumb, 1024 bytes, Stack size 48 bytes, console.o(.text.CU_console_run_tests))
+<P><STRONG><a name="[ee]"></a>CU_console_run_tests</STRONG> (Thumb, 1024 bytes, Stack size 48 bytes, console.o(.text.CU_console_run_tests))
 <BR><BR>[Stack]<UL><LI>Max Depth = 404<LI>Call Chain = CU_console_run_tests &rArr; CU_run_all_tests &rArr; run_single_suite &rArr; run_single_test &rArr; add_failure &rArr; malloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
-<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
-<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_suite
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_test_active
-<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
-<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_suite_active
-<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_suite_cleanup_failure_handler
-<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_suite_init_failure_handler
-<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_all_test_complete_handler
-<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_test_complete_handler
-<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_test_start_handler
-<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
-<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
-<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
-<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
-<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
-<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_failures
+<BR>[Calls]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_suite
+<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_test_active
+<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
+<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_suite_active
+<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_suite_cleanup_failure_handler
+<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_suite_init_failure_handler
+<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_all_test_complete_handler
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_test_complete_handler
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_test_start_handler
+<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
+<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_failures
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
-<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toupper
-<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getc
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toupper
+<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getc
 </UL>
 <BR>[Called By]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[e9]"></a>CU_destroy_existing_registry</STRONG> (Thumb, 136 bytes, Stack size 32 bytes, testdb.o(.text.CU_destroy_existing_registry))
+<P><STRONG><a name="[ea]"></a>CU_destroy_existing_registry</STRONG> (Thumb, 136 bytes, Stack size 32 bytes, testdb.o(.text.CU_destroy_existing_registry))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = CU_destroy_existing_registry &rArr; __aeabi_assert &rArr; fwrite
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
-<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
-</UL>
-
-<P><STRONG><a name="[10c]"></a>CU_get_error</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, cuerror.o(.text.CU_get_error))
-<BR><BR>[Called By]<UL><LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_nsuites
+<BR>[Called By]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
+<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
 </UL>
 
-<P><STRONG><a name="[10f]"></a>CU_get_error_action</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, cuerror.o(.text.CU_get_error_action))
-<BR><BR>[Called By]<UL><LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
-<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
+<P><STRONG><a name="[10d]"></a>CU_get_error</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, cuerror.o(.text.CU_get_error))
+<BR><BR>[Called By]<UL><LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_nsuites
 </UL>
 
-<P><STRONG><a name="[124]"></a>CU_get_error_msg</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, cuerror.o(.text.CU_get_error_msg))
+<P><STRONG><a name="[110]"></a>CU_get_error_action</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, cuerror.o(.text.CU_get_error_action))
+<BR><BR>[Called By]<UL><LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
+<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
+</UL>
+
+<P><STRONG><a name="[128]"></a>CU_get_error_msg</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, cuerror.o(.text.CU_get_error_msg))
 <BR><BR>[Called By]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[120]"></a>CU_get_fail_on_inactive</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_get_fail_on_inactive))
-<BR><BR>[Called By]<UL><LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
+<P><STRONG><a name="[124]"></a>CU_get_fail_on_inactive</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_get_fail_on_inactive))
+<BR><BR>[Called By]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
 </UL>
 
-<P><STRONG><a name="[126]"></a>CU_get_failure_list</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_get_failure_list))
-<BR><BR>[Called By]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_failures
+<P><STRONG><a name="[12a]"></a>CU_get_failure_list</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_get_failure_list))
+<BR><BR>[Called By]<UL><LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_failures
 </UL>
 
-<P><STRONG><a name="[ef]"></a>CU_get_registry</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testdb.o(.text.CU_get_registry))
-<BR><BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
-<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
-<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<P><STRONG><a name="[f0]"></a>CU_get_registry</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testdb.o(.text.CU_get_registry))
+<BR><BR>[Called By]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
+<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
-<P><STRONG><a name="[101]"></a>CU_get_run_results_string</STRONG> (Thumb, 2240 bytes, Stack size 336 bytes, testrun.o(.text.CU_get_run_results_string))
+<P><STRONG><a name="[102]"></a>CU_get_run_results_string</STRONG> (Thumb, 2240 bytes, Stack size 336 bytes, testrun.o(.text.CU_get_run_results_string))
 <BR><BR>[Stack]<UL><LI>Max Depth = 424<LI>Call Chain = CU_get_run_results_string &rArr; CU_number_width &rArr; __2snprintf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_number_width
-<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
-<LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2snprintf
+<BR>[Calls]<UL><LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_number_width
+<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
+<LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2snprintf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
+<BR>[Called By]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
 </UL>
 
-<P><STRONG><a name="[104]"></a>CU_get_suite_by_index</STRONG> (Thumb, 118 bytes, Stack size 8 bytes, testdb.o(.text.CU_get_suite_by_index))
+<P><STRONG><a name="[105]"></a>CU_get_suite_by_index</STRONG> (Thumb, 118 bytes, Stack size 8 bytes, testdb.o(.text.CU_get_suite_by_index))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = CU_get_suite_by_index &rArr; __aeabi_assert &rArr; fwrite
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+<BR>[Called By]<UL><LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
 </UL>
 
-<P><STRONG><a name="[105]"></a>CU_get_test_by_index</STRONG> (Thumb, 106 bytes, Stack size 8 bytes, testdb.o(.text.CU_get_test_by_index))
+<P><STRONG><a name="[106]"></a>CU_get_test_by_index</STRONG> (Thumb, 106 bytes, Stack size 8 bytes, testdb.o(.text.CU_get_test_by_index))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = CU_get_test_by_index &rArr; __aeabi_assert &rArr; fwrite
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
 </UL>
-<BR>[Called By]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+<BR>[Called By]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
 </UL>
 
-<P><STRONG><a name="[106]"></a>CU_get_test_by_name</STRONG> (Thumb, 88 bytes, Stack size 16 bytes, testdb.o(.text.CU_get_test_by_name))
+<P><STRONG><a name="[107]"></a>CU_get_test_by_name</STRONG> (Thumb, 88 bytes, Stack size 16 bytes, testdb.o(.text.CU_get_test_by_name))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = CU_get_test_by_name &rArr; CU_compare_strings &rArr; __aeabi_assert &rArr; fwrite
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_compare_strings
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<BR>[Calls]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_compare_strings
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
 </UL>
-<BR>[Called By]<UL><LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
+<BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
 </UL>
 
-<P><STRONG><a name="[107]"></a>CU_initialize_registry</STRONG> (Thumb, 136 bytes, Stack size 16 bytes, testdb.o(.text.CU_initialize_registry))
+<P><STRONG><a name="[108]"></a>CU_initialize_registry</STRONG> (Thumb, 136 bytes, Stack size 16 bytes, testdb.o(.text.CU_initialize_registry))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = CU_initialize_registry &rArr; CU_destroy_existing_registry &rArr; __aeabi_assert &rArr; fwrite
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_clear_previous_results
-<LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_destroy_existing_registry
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_is_test_running
-<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
+<BR>[Calls]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_clear_previous_results
+<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_destroy_existing_registry
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_is_test_running
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
 </UL>
 <BR>[Called By]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[dd]"></a>CU_is_test_running</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_is_test_running))
-<BR><BR>[Called By]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
-<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
-<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
+<P><STRONG><a name="[de]"></a>CU_is_test_running</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_is_test_running))
+<BR><BR>[Called By]<UL><LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
+<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
 </UL>
 
-<P><STRONG><a name="[102]"></a>CU_number_width</STRONG> (Thumb, 36 bytes, Stack size 48 bytes, util.o(.text.CU_number_width))
+<P><STRONG><a name="[103]"></a>CU_number_width</STRONG> (Thumb, 36 bytes, Stack size 48 bytes, util.o(.text.CU_number_width))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = CU_number_width &rArr; __2snprintf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2snprintf
-<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+<BR>[Calls]<UL><LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2snprintf
+<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
-<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
-<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<BR>[Called By]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
+<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
 </UL>
 
-<P><STRONG><a name="[108]"></a>CU_print_run_results</STRONG> (Thumb, 64 bytes, Stack size 16 bytes, testrun.o(.text.CU_print_run_results))
+<P><STRONG><a name="[109]"></a>CU_print_run_results</STRONG> (Thumb, 64 bytes, Stack size 16 bytes, testrun.o(.text.CU_print_run_results))
 <BR><BR>[Stack]<UL><LI>Max Depth = 440<LI>Call Chain = CU_print_run_results &rArr; CU_get_run_results_string &rArr; CU_number_width &rArr; __2snprintf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
-<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
-<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputs
+<BR>[Calls]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
+<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputs
 </UL>
 <BR>[Called By]<UL><LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_all_tests_complete_message_handler
 </UL>
 
-<P><STRONG><a name="[10b]"></a>CU_register_nsuites</STRONG> (Thumb, 118 bytes, Stack size 48 bytes, testdb.o(.text.CU_register_nsuites))
+<P><STRONG><a name="[10c]"></a>CU_register_nsuites</STRONG> (Thumb, 118 bytes, Stack size 48 bytes, testdb.o(.text.CU_register_nsuites))
 <BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = CU_register_nsuites &rArr; CU_add_suite_with_setup_and_teardown &rArr; CU_compare_strings &rArr; __aeabi_assert &rArr; fwrite
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
-<LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_error
+<BR>[Calls]<UL><LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_error
 </UL>
-<BR>[Called By]<UL><LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_suites
+<BR>[Called By]<UL><LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_suites
 </UL>
 
-<P><STRONG><a name="[10d]"></a>CU_register_suites</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, testdb.o(.text.CU_register_suites))
+<P><STRONG><a name="[10e]"></a>CU_register_suites</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, testdb.o(.text.CU_register_suites))
 <BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = CU_register_suites &rArr; CU_register_nsuites &rArr; CU_add_suite_with_setup_and_teardown &rArr; CU_compare_strings &rArr; __aeabi_assert &rArr; fwrite
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_nsuites
+<BR>[Calls]<UL><LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_nsuites
 </UL>
 <BR>[Called By]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[fb]"></a>CU_run_all_tests</STRONG> (Thumb, 264 bytes, Stack size 40 bytes, testrun.o(.text.CU_run_all_tests))
+<P><STRONG><a name="[fc]"></a>CU_run_all_tests</STRONG> (Thumb, 264 bytes, Stack size 40 bytes, testrun.o(.text.CU_run_all_tests))
 <BR><BR>[Stack]<UL><LI>Max Depth = 356<LI>Call Chain = CU_run_all_tests &rArr; run_single_suite &rArr; run_single_test &rArr; add_failure &rArr; malloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
-<LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_error_action
-<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
-<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<BR>[Calls]<UL><LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
+<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_error_action
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
-<P><STRONG><a name="[ff]"></a>CU_run_suite</STRONG> (Thumb, 216 bytes, Stack size 32 bytes, testrun.o(.text.CU_run_suite))
+<P><STRONG><a name="[100]"></a>CU_run_suite</STRONG> (Thumb, 216 bytes, Stack size 32 bytes, testrun.o(.text.CU_run_suite))
 <BR><BR>[Stack]<UL><LI>Max Depth = 348<LI>Call Chain = CU_run_suite &rArr; run_single_suite &rArr; run_single_test &rArr; add_failure &rArr; malloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
-<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<BR>[Calls]<UL><LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
-<P><STRONG><a name="[100]"></a>CU_run_test</STRONG> (Thumb, 536 bytes, Stack size 48 bytes, testrun.o(.text.CU_run_test))
+<P><STRONG><a name="[101]"></a>CU_run_test</STRONG> (Thumb, 536 bytes, Stack size 48 bytes, testrun.o(.text.CU_run_test))
 <BR><BR>[Stack]<UL><LI>Max Depth = 316<LI>Call Chain = CU_run_test &rArr; run_single_test &rArr; add_failure &rArr; malloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_test
-<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
-<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_test_by_name
-<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<BR>[Calls]<UL><LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_test
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_test_by_name
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
-</UL>
-
-<P><STRONG><a name="[f2]"></a>CU_set_all_test_complete_handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_all_test_complete_handler))
-<BR><BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
-<P><STRONG><a name="[e4]"></a>CU_set_error</STRONG> (Thumb, 80 bytes, Stack size 8 bytes, cuerror.o(.text.CU_set_error))
+<P><STRONG><a name="[f3]"></a>CU_set_all_test_complete_handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_all_test_complete_handler))
+<BR><BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[e5]"></a>CU_set_error</STRONG> (Thumb, 80 bytes, Stack size 8 bytes, cuerror.o(.text.CU_set_error))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = CU_set_error &rArr; __2fprintf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<BR>[Calls]<UL><LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
-<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
-<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_suite
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_test_active
-<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
-<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_suite_active
-<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
-<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
-</UL>
-
-<P><STRONG><a name="[122]"></a>CU_set_fail_on_inactive</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_fail_on_inactive))
-<BR><BR>[Called By]<UL><LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
+<BR>[Called By]<UL><LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_suite
+<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_test_active
+<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
+<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_suite_active
+<LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
 </UL>
 
-<P><STRONG><a name="[f7]"></a>CU_set_suite_active</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, testdb.o(.text.CU_set_suite_active))
+<P><STRONG><a name="[126]"></a>CU_set_fail_on_inactive</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_fail_on_inactive))
+<BR><BR>[Called By]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
+</UL>
+
+<P><STRONG><a name="[f8]"></a>CU_set_suite_active</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, testdb.o(.text.CU_set_suite_active))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = CU_set_suite_active &rArr; CU_set_error &rArr; __2fprintf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<BR>[Calls]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
-</UL>
-
-<P><STRONG><a name="[f4]"></a>CU_set_suite_cleanup_failure_handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_suite_cleanup_failure_handler))
-<BR><BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
-<P><STRONG><a name="[f3]"></a>CU_set_suite_init_failure_handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_suite_init_failure_handler))
-<BR><BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<P><STRONG><a name="[f5]"></a>CU_set_suite_cleanup_failure_handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_suite_cleanup_failure_handler))
+<BR><BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
-<P><STRONG><a name="[fc]"></a>CU_set_test_active</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, testdb.o(.text.CU_set_test_active))
+<P><STRONG><a name="[f4]"></a>CU_set_suite_init_failure_handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_suite_init_failure_handler))
+<BR><BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[fd]"></a>CU_set_test_active</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, testdb.o(.text.CU_set_test_active))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = CU_set_test_active &rArr; CU_set_error &rArr; __2fprintf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<BR>[Calls]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
-</UL>
-
-<P><STRONG><a name="[f1]"></a>CU_set_test_complete_handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_test_complete_handler))
-<BR><BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
-<P><STRONG><a name="[f0]"></a>CU_set_test_start_handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_test_start_handler))
-<BR><BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<P><STRONG><a name="[f2]"></a>CU_set_test_complete_handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_test_complete_handler))
+<BR><BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+</UL>
+
+<P><STRONG><a name="[f1]"></a>CU_set_test_start_handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, testrun.o(.text.CU_set_test_start_handler))
+<BR><BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
 <P><STRONG><a name="[90]"></a>ACMP01_IRQHandler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, startup_m55m1.o(.text.Default_Handler))
@@ -994,7 +1000,7 @@ Global Symbols
 <P><STRONG><a name="[1f]"></a>DebugMon_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, startup_m55m1.o(.text.Default_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_m55m1.o(RESET)
 </UL>
-<P><STRONG><a name="[142]"></a>Default_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, startup_m55m1.o(.text.Default_Handler), UNUSED)
+<P><STRONG><a name="[146]"></a>Default_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, startup_m55m1.o(.text.Default_Handler), UNUSED)
 
 <P><STRONG><a name="[93]"></a>EADC00_IRQHandler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, startup_m55m1.o(.text.Default_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_m55m1.o(RESET)
@@ -1372,7 +1378,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = HardFault_Handler &rArr; ProcessHardFault &rArr; __2printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ProcessHardFault
-<LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_m55m1.o(RESET)
 </UL>
@@ -1380,7 +1386,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_I2S_Close
 </UL>
 
-<P><STRONG><a name="[d6]"></a>I2S_ConfigureTDM</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, i2s.o(.text.I2S_ConfigureTDM))
+<P><STRONG><a name="[d7]"></a>I2S_ConfigureTDM</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, i2s.o(.text.I2S_ConfigureTDM))
 <BR><BR>[Called By]<UL><LI><a href="#[5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_I2S_SetTDM
 </UL>
 
@@ -1404,27 +1410,30 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_I2S_EnableMCLK
 </UL>
 
-<P><STRONG><a name="[114]"></a>I2S_GetSourceClockFreq</STRONG> (Thumb, 160 bytes, Stack size 8 bytes, i2s.o(.text.I2S_GetSourceClockFreq))
+<P><STRONG><a name="[114]"></a>I2S_GetSourceClockFreq</STRONG> (Thumb, 176 bytes, Stack size 8 bytes, i2s.o(.text.I2S_GetSourceClockFreq))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = I2S_GetSourceClockFreq &rArr; CLK_GetPCLK3Freq &rArr; CLK_GetHCLK0Freq
 </UL>
-<BR>[Calls]<UL><LI><a href="#[115]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetAPLL1ClockFreq
-<LI><a href="#[116]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetAPLL0ClockFreq
-<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK3Freq
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK1Freq
+<BR>[Calls]<UL><LI><a href="#[115]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetModuleClockSource
+<LI><a href="#[116]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetAPLL1ClockFreq
+<LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetAPLL0ClockFreq
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK3Freq
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK1Freq
+<LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;puts
 </UL>
 <BR>[Called By]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_EnableMCLK
-<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_Open
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_Open
 </UL>
 
-<P><STRONG><a name="[d4]"></a>I2S_Open</STRONG> (Thumb, 188 bytes, Stack size 24 bytes, i2s.o(.text.I2S_Open))
-<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = I2S_Open &rArr; I2S_GetSourceClockFreq &rArr; CLK_GetPCLK3Freq &rArr; CLK_GetHCLK0Freq
+<P><STRONG><a name="[d5]"></a>I2S_Open</STRONG> (Thumb, 264 bytes, Stack size 40 bytes, i2s.o(.text.I2S_Open))
+<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = I2S_Open &rArr; I2S_GetSourceClockFreq &rArr; CLK_GetPCLK3Freq &rArr; CLK_GetHCLK0Freq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_GetSourceClockFreq
+<LI><a href="#[119]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_ResetModule
 </UL>
 <BR>[Called By]<UL><LI><a href="#[0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_I2S_Open
 </UL>
 
-<P><STRONG><a name="[d5]"></a>I2S_SetFIFO</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, i2s.o(.text.I2S_SetFIFO))
+<P><STRONG><a name="[d6]"></a>I2S_SetFIFO</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, i2s.o(.text.I2S_SetFIFO))
 <BR><BR>[Called By]<UL><LI><a href="#[14]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_I2S_SetFIFO
 </UL>
 
@@ -1434,99 +1443,99 @@ Global Symbols
 <P><STRONG><a name="[15]"></a>I2S_Tests_Init</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, i2s_cunit.o(.text.I2S_Tests_Init))
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.suites)
 </UL>
-<P><STRONG><a name="[d]"></a>MACRO_I2S_CLR_RX_FIFO</STRONG> (Thumb, 480 bytes, Stack size 40 bytes, i2s_cunit.o(.text.MACRO_I2S_CLR_RX_FIFO))
-<BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = MACRO_I2S_CLR_RX_FIFO &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[d]"></a>MACRO_I2S_CLR_RX_FIFO</STRONG> (Thumb, 304 bytes, Stack size 32 bytes, i2s_cunit.o(.text.MACRO_I2S_CLR_RX_FIFO))
+<BR><BR>[Stack]<UL><LI>Max Depth = 132<LI>Call Chain = MACRO_I2S_CLR_RX_FIFO &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_MacroTests)
 </UL>
-<P><STRONG><a name="[c]"></a>MACRO_I2S_CLR_TX_FIFO</STRONG> (Thumb, 442 bytes, Stack size 40 bytes, i2s_cunit.o(.text.MACRO_I2S_CLR_TX_FIFO))
+<P><STRONG><a name="[c]"></a>MACRO_I2S_CLR_TX_FIFO</STRONG> (Thumb, 280 bytes, Stack size 40 bytes, i2s_cunit.o(.text.MACRO_I2S_CLR_TX_FIFO))
 <BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = MACRO_I2S_CLR_TX_FIFO &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_MacroTests)
 </UL>
-<P><STRONG><a name="[a]"></a>MACRO_I2S_ENABLE_DISABLE_RX</STRONG> (Thumb, 414 bytes, Stack size 40 bytes, i2s_cunit.o(.text.MACRO_I2S_ENABLE_DISABLE_RX))
-<BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = MACRO_I2S_ENABLE_DISABLE_RX &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[a]"></a>MACRO_I2S_ENABLE_DISABLE_RX</STRONG> (Thumb, 264 bytes, Stack size 32 bytes, i2s_cunit.o(.text.MACRO_I2S_ENABLE_DISABLE_RX))
+<BR><BR>[Stack]<UL><LI>Max Depth = 132<LI>Call Chain = MACRO_I2S_ENABLE_DISABLE_RX &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_MacroTests)
 </UL>
-<P><STRONG><a name="[8]"></a>MACRO_I2S_ENABLE_DISABLE_RXDMA</STRONG> (Thumb, 414 bytes, Stack size 40 bytes, i2s_cunit.o(.text.MACRO_I2S_ENABLE_DISABLE_RXDMA))
-<BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = MACRO_I2S_ENABLE_DISABLE_RXDMA &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[8]"></a>MACRO_I2S_ENABLE_DISABLE_RXDMA</STRONG> (Thumb, 264 bytes, Stack size 32 bytes, i2s_cunit.o(.text.MACRO_I2S_ENABLE_DISABLE_RXDMA))
+<BR><BR>[Stack]<UL><LI>Max Depth = 132<LI>Call Chain = MACRO_I2S_ENABLE_DISABLE_RXDMA &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_MacroTests)
 </UL>
-<P><STRONG><a name="[9]"></a>MACRO_I2S_ENABLE_DISABLE_TX</STRONG> (Thumb, 414 bytes, Stack size 40 bytes, i2s_cunit.o(.text.MACRO_I2S_ENABLE_DISABLE_TX))
-<BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = MACRO_I2S_ENABLE_DISABLE_TX &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[9]"></a>MACRO_I2S_ENABLE_DISABLE_TX</STRONG> (Thumb, 264 bytes, Stack size 32 bytes, i2s_cunit.o(.text.MACRO_I2S_ENABLE_DISABLE_TX))
+<BR><BR>[Stack]<UL><LI>Max Depth = 132<LI>Call Chain = MACRO_I2S_ENABLE_DISABLE_TX &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_MacroTests)
 </UL>
-<P><STRONG><a name="[7]"></a>MACRO_I2S_ENABLE_DISABLE_TXDMA</STRONG> (Thumb, 414 bytes, Stack size 40 bytes, i2s_cunit.o(.text.MACRO_I2S_ENABLE_DISABLE_TXDMA))
-<BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = MACRO_I2S_ENABLE_DISABLE_TXDMA &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[7]"></a>MACRO_I2S_ENABLE_DISABLE_TXDMA</STRONG> (Thumb, 264 bytes, Stack size 32 bytes, i2s_cunit.o(.text.MACRO_I2S_ENABLE_DISABLE_TXDMA))
+<BR><BR>[Stack]<UL><LI>Max Depth = 132<LI>Call Chain = MACRO_I2S_ENABLE_DISABLE_TXDMA &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_MacroTests)
 </UL>
-<P><STRONG><a name="[b]"></a>MACRO_I2S_ENABLE_DISABLE_TX_MUTE</STRONG> (Thumb, 414 bytes, Stack size 40 bytes, i2s_cunit.o(.text.MACRO_I2S_ENABLE_DISABLE_TX_MUTE))
-<BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = MACRO_I2S_ENABLE_DISABLE_TX_MUTE &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[b]"></a>MACRO_I2S_ENABLE_DISABLE_TX_MUTE</STRONG> (Thumb, 264 bytes, Stack size 32 bytes, i2s_cunit.o(.text.MACRO_I2S_ENABLE_DISABLE_TX_MUTE))
+<BR><BR>[Stack]<UL><LI>Max Depth = 132<LI>Call Chain = MACRO_I2S_ENABLE_DISABLE_TX_MUTE &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_MacroTests)
 </UL>
-<P><STRONG><a name="[6]"></a>MACRO_I2S_ENABLE_DISABLE_TX_ZCD</STRONG> (Thumb, 560 bytes, Stack size 48 bytes, i2s_cunit.o(.text.MACRO_I2S_ENABLE_DISABLE_TX_ZCD))
-<BR><BR>[Stack]<UL><LI>Max Depth = 148<LI>Call Chain = MACRO_I2S_ENABLE_DISABLE_TX_ZCD &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[6]"></a>MACRO_I2S_ENABLE_DISABLE_TX_ZCD</STRONG> (Thumb, 480 bytes, Stack size 40 bytes, i2s_cunit.o(.text.MACRO_I2S_ENABLE_DISABLE_TX_ZCD))
+<BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = MACRO_I2S_ENABLE_DISABLE_TX_ZCD &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_MacroTests)
 </UL>
-<P><STRONG><a name="[11]"></a>MACRO_I2S_GET_CLEAR_INT_FLAG</STRONG> (Thumb, 4900 bytes, Stack size 48 bytes, i2s_cunit.o(.text.MACRO_I2S_GET_CLEAR_INT_FLAG))
+<P><STRONG><a name="[11]"></a>MACRO_I2S_GET_CLEAR_INT_FLAG</STRONG> (Thumb, 4388 bytes, Stack size 48 bytes, i2s_cunit.o(.text.MACRO_I2S_GET_CLEAR_INT_FLAG))
 <BR><BR>[Stack]<UL><LI>Max Depth = 148<LI>Call Chain = MACRO_I2S_GET_CLEAR_INT_FLAG &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_MacroTests)
 </UL>
-<P><STRONG><a name="[13]"></a>MACRO_I2S_GET_RX_FIFO_LEVEL</STRONG> (Thumb, 1184 bytes, Stack size 48 bytes, i2s_cunit.o(.text.MACRO_I2S_GET_RX_FIFO_LEVEL))
-<BR><BR>[Stack]<UL><LI>Max Depth = 148<LI>Call Chain = MACRO_I2S_GET_RX_FIFO_LEVEL &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[13]"></a>MACRO_I2S_GET_RX_FIFO_LEVEL</STRONG> (Thumb, 1000 bytes, Stack size 32 bytes, i2s_cunit.o(.text.MACRO_I2S_GET_RX_FIFO_LEVEL))
+<BR><BR>[Stack]<UL><LI>Max Depth = 132<LI>Call Chain = MACRO_I2S_GET_RX_FIFO_LEVEL &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_MacroTests)
 </UL>
-<P><STRONG><a name="[12]"></a>MACRO_I2S_GET_TX_FIFO_LEVEL</STRONG> (Thumb, 584 bytes, Stack size 48 bytes, i2s_cunit.o(.text.MACRO_I2S_GET_TX_FIFO_LEVEL))
-<BR><BR>[Stack]<UL><LI>Max Depth = 148<LI>Call Chain = MACRO_I2S_GET_TX_FIFO_LEVEL &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[12]"></a>MACRO_I2S_GET_TX_FIFO_LEVEL</STRONG> (Thumb, 520 bytes, Stack size 32 bytes, i2s_cunit.o(.text.MACRO_I2S_GET_TX_FIFO_LEVEL))
+<BR><BR>[Stack]<UL><LI>Max Depth = 132<LI>Call Chain = MACRO_I2S_GET_TX_FIFO_LEVEL &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_MacroTests)
 </UL>
-<P><STRONG><a name="[10]"></a>MACRO_I2S_READ_RX_FIFO</STRONG> (Thumb, 620 bytes, Stack size 40 bytes, i2s_cunit.o(.text.MACRO_I2S_READ_RX_FIFO))
-<BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = MACRO_I2S_READ_RX_FIFO &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[10]"></a>MACRO_I2S_READ_RX_FIFO</STRONG> (Thumb, 380 bytes, Stack size 32 bytes, i2s_cunit.o(.text.MACRO_I2S_READ_RX_FIFO))
+<BR><BR>[Stack]<UL><LI>Max Depth = 132<LI>Call Chain = MACRO_I2S_READ_RX_FIFO &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_MacroTests)
 </UL>
-<P><STRONG><a name="[e]"></a>MACRO_I2S_SET_MONO_RX_CHANNEL</STRONG> (Thumb, 422 bytes, Stack size 40 bytes, i2s_cunit.o(.text.MACRO_I2S_SET_MONO_RX_CHANNEL))
-<BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = MACRO_I2S_SET_MONO_RX_CHANNEL &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[e]"></a>MACRO_I2S_SET_MONO_RX_CHANNEL</STRONG> (Thumb, 268 bytes, Stack size 32 bytes, i2s_cunit.o(.text.MACRO_I2S_SET_MONO_RX_CHANNEL))
+<BR><BR>[Stack]<UL><LI>Max Depth = 132<LI>Call Chain = MACRO_I2S_SET_MONO_RX_CHANNEL &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_MacroTests)
 </UL>
-<P><STRONG><a name="[f]"></a>MACRO_I2S_WRITE_TX_FIFO</STRONG> (Thumb, 526 bytes, Stack size 40 bytes, i2s_cunit.o(.text.MACRO_I2S_WRITE_TX_FIFO))
-<BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = MACRO_I2S_WRITE_TX_FIFO &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[f]"></a>MACRO_I2S_WRITE_TX_FIFO</STRONG> (Thumb, 330 bytes, Stack size 32 bytes, i2s_cunit.o(.text.MACRO_I2S_WRITE_TX_FIFO))
+<BR><BR>[Stack]<UL><LI>Max Depth = 132<LI>Call Chain = MACRO_I2S_WRITE_TX_FIFO &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
@@ -1535,8 +1544,8 @@ Global Symbols
 <P><STRONG><a name="[113]"></a>ProcessHardFault</STRONG> (Thumb, 248 bytes, Stack size 8 bytes, retarget.o(.text.ProcessHardFault))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = ProcessHardFault &rArr; __2printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
-<LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;puts
+<BR>[Calls]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;puts
 </UL>
 <BR>[Called By]<UL><LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HardFault_Handler
 </UL>
@@ -1546,167 +1555,186 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_m55m1.o(RESET)
 </UL>
-<P><STRONG><a name="[118]"></a>SYS_Init</STRONG> (Thumb, 358 bytes, Stack size 16 bytes, main.o(.text.SYS_Init))
+<P><STRONG><a name="[11a]"></a>SYS_Init</STRONG> (Thumb, 342 bytes, Stack size 16 bytes, main.o(.text.SYS_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = SYS_Init &rArr; CLK_EnableAPLL
 </UL>
-<BR>[Calls]<UL><LI><a href="#[119]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_EnableXtalRC
-<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_SetSCLK
-<LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_EnableAPLL
-<LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_WaitClockReady
-<LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_EnableModuleClock
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemCoreClockUpdate
+<BR>[Calls]<UL><LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_EnableXtalRC
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_SetSCLK
+<LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_EnableAPLL
+<LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_WaitClockReady
+<LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_EnableModuleClock
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemCoreClockUpdate
 </UL>
 <BR>[Called By]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[db]"></a>SystemCoreClockUpdate</STRONG> (Thumb, 70 bytes, Stack size 8 bytes, system_m55m1.o(.text.SystemCoreClockUpdate))
+<P><STRONG><a name="[119]"></a>SYS_ResetModule</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, sys.o(.text.SYS_ResetModule))
+<BR><BR>[Called By]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_Open
+</UL>
+
+<P><STRONG><a name="[11f]"></a>SetDebugUartCLK</STRONG> (Thumb, 42 bytes, Stack size 16 bytes, system_m55m1.o(.text.SetDebugUartCLK))
+<BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = SetDebugUartCLK &rArr; CLK_EnableModuleClock
+</UL>
+<BR>[Calls]<UL><LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_EnableModuleClock
+<LI><a href="#[120]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_SetModuleClock
+</UL>
+<BR>[Called By]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[127]"></a>SetDebugUartMFP</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, system_m55m1.o(.text.SetDebugUartMFP))
+<BR><BR>[Called By]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[dc]"></a>SystemCoreClockUpdate</STRONG> (Thumb, 70 bytes, Stack size 8 bytes, system_m55m1.o(.text.SystemCoreClockUpdate))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = SystemCoreClockUpdate &rArr; CLK_SystemClockUpdate
 </UL>
-<BR>[Calls]<UL><LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_SystemClockUpdate
+<BR>[Calls]<UL><LI><a href="#[121]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_SystemClockUpdate
 </UL>
-<BR>[Called By]<UL><LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
-<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_SetSCLK
+<BR>[Called By]<UL><LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_SetSCLK
 </UL>
 
 <P><STRONG><a name="[b2]"></a>SystemInit</STRONG> (Thumb, 70 bytes, Stack size 0 bytes, system_m55m1.o(.text.SystemInit))
 <BR>[Address Reference Count : 1]<UL><LI> system_m55m1.o(.init_array)
 </UL>
-<P><STRONG><a name="[e3]"></a>__aeabi_assert</STRONG> (Thumb, 296 bytes, Stack size 16 bytes, retarget.o(.text.__aeabi_assert))
+<P><STRONG><a name="[e4]"></a>__aeabi_assert</STRONG> (Thumb, 296 bytes, Stack size 16 bytes, retarget.o(.text.__aeabi_assert))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = __aeabi_assert &rArr; fwrite
 </UL>
-<BR>[Calls]<UL><LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abort
-<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
-<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputs
+<BR>[Calls]<UL><LI><a href="#[122]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abort
+<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
+<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputs
 </UL>
-<BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
-<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_test
-<LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
-<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_test_by_name
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
-<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_compare_strings
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
-<LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_destroy_existing_registry
-<LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_test_by_index
-<LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_suite_by_index
-<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
-<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
-<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
-<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<BR>[Called By]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
+<LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_test
+<LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
+<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_test_by_name
+<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_compare_strings
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_destroy_existing_registry
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_test_by_index
+<LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_suite_by_index
+<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
+<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
 <LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_suite_cleanup_failure_message_handler
 <LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_suite_init_failure_message_handler
 <LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_test_start_message_handler
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
-<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
-<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
+<LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
 </UL>
 
-<P><STRONG><a name="[11e]"></a>abort</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, retarget.o(.text.abort))
-<BR><BR>[Calls]<UL><LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abort
+<P><STRONG><a name="[122]"></a>abort</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, retarget.o(.text.abort))
+<BR><BR>[Calls]<UL><LI><a href="#[122]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abort
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
-<LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abort
-</UL>
-
-<P><STRONG><a name="[111]"></a>exit</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, main.o(.text.exit))
-<BR><BR>[Called By]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<BR>[Called By]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[122]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abort
 </UL>
 
-<P><STRONG><a name="[130]"></a>fgetc</STRONG> (Thumb, 42 bytes, Stack size 0 bytes, retarget.o(.text.fgetc))
-<BR><BR>[Called By]<UL><LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getc
+<P><STRONG><a name="[112]"></a>exit</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, main.o(.text.exit))
+<BR><BR>[Called By]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+</UL>
+
+<P><STRONG><a name="[134]"></a>fgetc</STRONG> (Thumb, 42 bytes, Stack size 0 bytes, retarget.o(.text.fgetc))
+<BR><BR>[Called By]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getc
 </UL>
 
 <P><STRONG><a name="[b0]"></a>fputc</STRONG> (Thumb, 78 bytes, Stack size 0 bytes, retarget.o(.text.fputc))
-<BR><BR>[Called By]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
-<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
-<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
-<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_failures
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
-<LI><a href="#[11f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;putchar
-<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
-<LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;puts
-<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputs
+<BR><BR>[Called By]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_failures
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<LI><a href="#[123]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;putchar
+<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
+<LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;puts
+<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputs
 </UL>
 <BR>[Address Reference Count : 2]<UL><LI> printfa.o(i.__0fprintf)
 <LI> printfa.o(i.__0printf)
 </UL>
-<P><STRONG><a name="[aa]"></a>main</STRONG> (Thumb, 284 bytes, Stack size 16 bytes, main.o(.text.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 420<LI>Call Chain = main &rArr; CU_console_run_tests &rArr; CU_run_all_tests &rArr; run_single_suite &rArr; run_single_test &rArr; add_failure &rArr; malloc
+<P><STRONG><a name="[aa]"></a>main</STRONG> (Thumb, 164 bytes, Stack size 8 bytes, main.o(.text.main))
+<BR><BR>[Stack]<UL><LI>Max Depth = 412<LI>Call Chain = main &rArr; CU_console_run_tests &rArr; CU_run_all_tests &rArr; run_single_suite &rArr; run_single_test &rArr; add_failure &rArr; malloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
-<LI><a href="#[124]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_error_msg
-<LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_suites
-<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
-<LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
-<LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_EnableModuleClock
-<LI><a href="#[123]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_SetModuleClock
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
-<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
+<BR>[Calls]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_cleanup_registry
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<LI><a href="#[128]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_error_msg
+<LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_register_suites
+<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
+<LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Init
+<LI><a href="#[120]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_SetModuleClock
+<LI><a href="#[11f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetDebugUartCLK
+<LI><a href="#[127]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetDebugUartMFP
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
 </UL>
-<P><STRONG><a name="[127]"></a>__0fprintf</STRONG> (Thumb, 22 bytes, Stack size 24 bytes, printfa.o(i.__0fprintf), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[128]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+<P><STRONG><a name="[12b]"></a>__0fprintf</STRONG> (Thumb, 22 bytes, Stack size 24 bytes, printfa.o(i.__0fprintf), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[12c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
 </UL>
 
-<P><STRONG><a name="[143]"></a>__1fprintf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0fprintf), UNUSED)
+<P><STRONG><a name="[147]"></a>__1fprintf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0fprintf), UNUSED)
 
-<P><STRONG><a name="[ee]"></a>__2fprintf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0fprintf))
+<P><STRONG><a name="[ef]"></a>__2fprintf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0fprintf))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = __2fprintf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
-<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
-<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
-<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
-<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
-<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_failures
+<BR>[Called By]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_error
+<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_failures
 <LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_suite_cleanup_failure_message_handler
 <LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_suite_init_failure_message_handler
 <LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_test_start_message_handler
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[144]"></a>__c89fprintf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0fprintf), UNUSED)
+<P><STRONG><a name="[148]"></a>__c89fprintf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0fprintf), UNUSED)
 
-<P><STRONG><a name="[145]"></a>fprintf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0fprintf), UNUSED)
+<P><STRONG><a name="[149]"></a>fprintf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0fprintf), UNUSED)
 
-<P><STRONG><a name="[129]"></a>__0printf</STRONG> (Thumb, 22 bytes, Stack size 24 bytes, printfa.o(i.__0printf), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[128]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+<P><STRONG><a name="[12d]"></a>__0printf</STRONG> (Thumb, 22 bytes, Stack size 24 bytes, printfa.o(i.__0printf), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[12c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
 </UL>
 
-<P><STRONG><a name="[146]"></a>__1printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0printf), UNUSED)
+<P><STRONG><a name="[14a]"></a>__1printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0printf), UNUSED)
 
-<P><STRONG><a name="[112]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0printf))
+<P><STRONG><a name="[d4]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0printf))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = __2printf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ProcessHardFault
+<BR>[Called By]<UL><LI><a href="#[3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;API_I2S_EnableMCLK
+<LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ProcessHardFault
 <LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HardFault_Handler
 </UL>
 
-<P><STRONG><a name="[147]"></a>__c89printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0printf), UNUSED)
+<P><STRONG><a name="[14b]"></a>__c89printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0printf), UNUSED)
 
-<P><STRONG><a name="[148]"></a>printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0printf), UNUSED)
+<P><STRONG><a name="[14c]"></a>printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printfa.o(i.__0printf), UNUSED)
 
-<P><STRONG><a name="[12a]"></a>__0snprintf</STRONG> (Thumb, 48 bytes, Stack size 40 bytes, printfa.o(i.__0snprintf), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[128]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+<P><STRONG><a name="[12e]"></a>__0snprintf</STRONG> (Thumb, 48 bytes, Stack size 40 bytes, printfa.o(i.__0snprintf), UNUSED)
+<BR><BR>[Calls]<UL><LI><a href="#[12c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
 </UL>
 
-<P><STRONG><a name="[149]"></a>__1snprintf</STRONG> (Thumb, 0 bytes, Stack size 40 bytes, printfa.o(i.__0snprintf), UNUSED)
+<P><STRONG><a name="[14d]"></a>__1snprintf</STRONG> (Thumb, 0 bytes, Stack size 40 bytes, printfa.o(i.__0snprintf), UNUSED)
 
-<P><STRONG><a name="[103]"></a>__2snprintf</STRONG> (Thumb, 0 bytes, Stack size 40 bytes, printfa.o(i.__0snprintf))
+<P><STRONG><a name="[104]"></a>__2snprintf</STRONG> (Thumb, 0 bytes, Stack size 40 bytes, printfa.o(i.__0snprintf))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = __2snprintf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
-<LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_number_width
+<BR>[Called By]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
+<LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_number_width
 </UL>
 
-<P><STRONG><a name="[14a]"></a>__c89snprintf</STRONG> (Thumb, 0 bytes, Stack size 40 bytes, printfa.o(i.__0snprintf), UNUSED)
+<P><STRONG><a name="[14e]"></a>__c89snprintf</STRONG> (Thumb, 0 bytes, Stack size 40 bytes, printfa.o(i.__0snprintf), UNUSED)
 
-<P><STRONG><a name="[14b]"></a>snprintf</STRONG> (Thumb, 0 bytes, Stack size 40 bytes, printfa.o(i.__0snprintf), UNUSED)
+<P><STRONG><a name="[14f]"></a>snprintf</STRONG> (Thumb, 0 bytes, Stack size 40 bytes, printfa.o(i.__0snprintf), UNUSED)
 
 <P><STRONG><a name="[bc]"></a>__aeabi_errno_addr</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, errno.o(i.__aeabi_errno_addr))
 <BR><BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strtol
@@ -1714,82 +1742,83 @@ Global Symbols
 <LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_strtoul
 </UL>
 
-<P><STRONG><a name="[14c]"></a>__rt_errno_addr</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, errno.o(i.__aeabi_errno_addr), UNUSED)
+<P><STRONG><a name="[150]"></a>__rt_errno_addr</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, errno.o(i.__aeabi_errno_addr), UNUSED)
 
-<P><STRONG><a name="[e2]"></a>free</STRONG> (Thumb, 76 bytes, Stack size 8 bytes, malloc2.o(i.__free$2region))
+<P><STRONG><a name="[e3]"></a>free</STRONG> (Thumb, 76 bytes, Stack size 8 bytes, malloc2.o(i.__free$2region))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = free
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
-<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_clear_previous_results
-<LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_destroy_existing_registry
-<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
-<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
-<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_suite
-<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
+<BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_clear_previous_results
+<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_destroy_existing_registry
+<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
+<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_suite
+<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
 </UL>
 
-<P><STRONG><a name="[de]"></a>malloc</STRONG> (Thumb, 92 bytes, Stack size 20 bytes, malloc2.o(i.__malloc$2region))
+<P><STRONG><a name="[df]"></a>malloc</STRONG> (Thumb, 92 bytes, Stack size 20 bytes, malloc2.o(i.__malloc$2region))
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = malloc
 </UL>
-<BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
-<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
-<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
+<BR>[Called By]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_run_results_string
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_test
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_add_suite_with_setup_and_teardown
+<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_initialize_registry
 </UL>
 
-<P><STRONG><a name="[14d]"></a>__scatterload_copy</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_copy), UNUSED)
+<P><STRONG><a name="[151]"></a>__scatterload_copy</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_copy), UNUSED)
 
-<P><STRONG><a name="[14e]"></a>__scatterload_null</STRONG> (Thumb, 2 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_null), UNUSED)
+<P><STRONG><a name="[152]"></a>__scatterload_null</STRONG> (Thumb, 2 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_null), UNUSED)
 
-<P><STRONG><a name="[14f]"></a>__scatterload_zeroinit</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_zeroinit), UNUSED)
+<P><STRONG><a name="[153]"></a>__scatterload_zeroinit</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_zeroinit), UNUSED)
 
-<P><STRONG><a name="[109]"></a>fputs</STRONG> (Thumb, 24 bytes, Stack size 16 bytes, fputs.o(i.fputs))
+<P><STRONG><a name="[10a]"></a>fputs</STRONG> (Thumb, 24 bytes, Stack size 16 bytes, fputs.o(i.fputs))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = fputs
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
 </UL>
-<BR>[Called By]<UL><LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<BR>[Called By]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
 </UL>
 
-<P><STRONG><a name="[10a]"></a>fwrite</STRONG> (Thumb, 36 bytes, Stack size 24 bytes, fwrite.o(i.fwrite))
+<P><STRONG><a name="[10b]"></a>fwrite</STRONG> (Thumb, 36 bytes, Stack size 24 bytes, fwrite.o(i.fwrite))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = fwrite
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
 </UL>
-<BR>[Called By]<UL><LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
-<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
-<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
-<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
-<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_failures
+<BR>[Called By]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
+<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
+<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_failures
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
 </UL>
 
-<P><STRONG><a name="[f5]"></a>getc</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, getc.o(i.getc))
-<BR><BR>[Calls]<UL><LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fgetc
+<P><STRONG><a name="[f6]"></a>getc</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, getc.o(i.getc))
+<BR><BR>[Calls]<UL><LI><a href="#[134]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fgetc
 </UL>
-<BR>[Called By]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
-<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<BR>[Called By]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_set_options_run
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
-<P><STRONG><a name="[11f]"></a>putchar</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, putchar.o(i.putchar))
+<P><STRONG><a name="[123]"></a>putchar</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, putchar.o(i.putchar))
 <BR><BR>[Calls]<UL><LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
 </UL>
 <BR>[Called By]<UL><LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_all_tests_complete_message_handler
 </UL>
 
-<P><STRONG><a name="[117]"></a>puts</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, puts.o(i.puts))
+<P><STRONG><a name="[118]"></a>puts</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, puts.o(i.puts))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = puts
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
 </UL>
 <BR>[Called By]<UL><LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;console_all_tests_complete_message_handler
+<LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2S_GetSourceClockFreq
 <LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ProcessHardFault
 </UL>
 <P>
@@ -1799,8 +1828,8 @@ Local Symbols
 <P><STRONG><a name="[ab]"></a>console_test_start_message_handler</STRONG> (Thumb, 188 bytes, Stack size 24 bytes, console.o(.text.console_test_start_message_handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = console_test_start_message_handler &rArr; __aeabi_assert &rArr; fwrite
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> console.o(.text.CU_console_run_tests)
 </UL>
@@ -1810,173 +1839,173 @@ Local Symbols
 <P><STRONG><a name="[ad]"></a>console_all_tests_complete_message_handler</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, console.o(.text.console_all_tests_complete_message_handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 448<LI>Call Chain = console_all_tests_complete_message_handler &rArr; CU_print_run_results &rArr; CU_get_run_results_string &rArr; CU_number_width &rArr; __2snprintf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
-<LI><a href="#[11f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;putchar
-<LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;puts
+<BR>[Calls]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_print_run_results
+<LI><a href="#[123]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;putchar
+<LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;puts
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> console.o(.text.CU_console_run_tests)
 </UL>
 <P><STRONG><a name="[ae]"></a>console_suite_init_failure_message_handler</STRONG> (Thumb, 68 bytes, Stack size 0 bytes, console.o(.text.console_suite_init_failure_message_handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = console_suite_init_failure_message_handler &rArr; __aeabi_assert &rArr; fwrite
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> console.o(.text.CU_console_run_tests)
 </UL>
 <P><STRONG><a name="[af]"></a>console_suite_cleanup_failure_message_handler</STRONG> (Thumb, 68 bytes, Stack size 0 bytes, console.o(.text.console_suite_cleanup_failure_message_handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = console_suite_cleanup_failure_message_handler &rArr; __aeabi_assert &rArr; fwrite
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> console.o(.text.CU_console_run_tests)
 </UL>
-<P><STRONG><a name="[f6]"></a>show_failures</STRONG> (Thumb, 248 bytes, Stack size 48 bytes, console.o(.text.show_failures))
+<P><STRONG><a name="[f7]"></a>show_failures</STRONG> (Thumb, 248 bytes, Stack size 48 bytes, console.o(.text.show_failures))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = show_failures &rArr; __2fprintf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[126]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_failure_list
+<BR>[Calls]<UL><LI><a href="#[12a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_failure_list
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
-<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
-<P><STRONG><a name="[f8]"></a>select_suite</STRONG> (Thumb, 160 bytes, Stack size 128 bytes, console.o(.text.select_suite))
+<P><STRONG><a name="[f9]"></a>select_suite</STRONG> (Thumb, 160 bytes, Stack size 128 bytes, console.o(.text.select_suite))
 <BR><BR>[Stack]<UL><LI>Max Depth = 312<LI>Call Chain = select_suite &rArr; list_suites &rArr; CU_number_width &rArr; __2snprintf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_suite_by_index
-<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
-<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
+<BR>[Calls]<UL><LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_suite_by_index
+<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_suites
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
 <LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atol
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
-<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getc
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getc
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
-<P><STRONG><a name="[f9]"></a>list_suites</STRONG> (Thumb, 656 bytes, Stack size 96 bytes, console.o(.text.list_suites))
+<P><STRONG><a name="[fa]"></a>list_suites</STRONG> (Thumb, 656 bytes, Stack size 96 bytes, console.o(.text.list_suites))
 <BR><BR>[Stack]<UL><LI>Max Depth = 184<LI>Call Chain = list_suites &rArr; CU_number_width &rArr; __2snprintf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_number_width
-<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
+<BR>[Calls]<UL><LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_number_width
+<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_registry
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
-<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<BR>[Called By]<UL><LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_suite
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
-<P><STRONG><a name="[fa]"></a>console_set_options_run</STRONG> (Thumb, 156 bytes, Stack size 40 bytes, console.o(.text.console_set_options_run))
+<P><STRONG><a name="[fb]"></a>console_set_options_run</STRONG> (Thumb, 156 bytes, Stack size 40 bytes, console.o(.text.console_set_options_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = console_set_options_run &rArr; __2fprintf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[122]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_fail_on_inactive
-<LI><a href="#[120]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_fail_on_inactive
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
-<LI><a href="#[121]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tolower
-<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getc
-<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
+<BR>[Calls]<UL><LI><a href="#[126]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_set_fail_on_inactive
+<LI><a href="#[124]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_fail_on_inactive
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<LI><a href="#[125]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tolower
+<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getc
+<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
-<P><STRONG><a name="[fd]"></a>select_test</STRONG> (Thumb, 224 bytes, Stack size 128 bytes, console.o(.text.select_test))
+<P><STRONG><a name="[fe]"></a>select_test</STRONG> (Thumb, 224 bytes, Stack size 128 bytes, console.o(.text.select_test))
 <BR><BR>[Stack]<UL><LI>Max Depth = 280<LI>Call Chain = select_test &rArr; list_tests &rArr; CU_number_width &rArr; __2snprintf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_test_by_index
-<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
+<BR>[Calls]<UL><LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_test_by_index
+<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_tests
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
 <LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atol
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
-<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getc
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getc
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
-<P><STRONG><a name="[fe]"></a>list_tests</STRONG> (Thumb, 496 bytes, Stack size 64 bytes, console.o(.text.list_tests))
+<P><STRONG><a name="[ff]"></a>list_tests</STRONG> (Thumb, 496 bytes, Stack size 64 bytes, console.o(.text.list_tests))
 <BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = list_tests &rArr; CU_number_width &rArr; __2snprintf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_number_width
+<BR>[Calls]<UL><LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_number_width
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
-<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2fprintf
+<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fwrite
 </UL>
-<BR>[Called By]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
+<BR>[Called By]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;select_test
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_console_run_tests
 </UL>
 
-<P><STRONG><a name="[e6]"></a>add_failure</STRONG> (Thumb, 212 bytes, Stack size 40 bytes, testrun.o(.text.add_failure))
+<P><STRONG><a name="[e7]"></a>add_failure</STRONG> (Thumb, 212 bytes, Stack size 40 bytes, testrun.o(.text.add_failure))
 <BR><BR>[Stack]<UL><LI>Max Depth = 60<LI>Call Chain = add_failure &rArr; malloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
-<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
-<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+<BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
+<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Called By]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_test
-<LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
-<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
+<BR>[Called By]<UL><LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_test
+<LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
+<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
 </UL>
 
-<P><STRONG><a name="[10e]"></a>run_single_suite</STRONG> (Thumb, 548 bytes, Stack size 48 bytes, testrun.o(.text.run_single_suite))
+<P><STRONG><a name="[10f]"></a>run_single_suite</STRONG> (Thumb, 548 bytes, Stack size 48 bytes, testrun.o(.text.run_single_suite))
 <BR><BR>[Stack]<UL><LI>Max Depth = 316<LI>Call Chain = run_single_suite &rArr; run_single_test &rArr; add_failure &rArr; malloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_test
-<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
-<LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_error_action
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<BR>[Calls]<UL><LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_test
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_get_error_action
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_suite
-<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
+<BR>[Called By]<UL><LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_suite
+<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_all_tests
 </UL>
 
-<P><STRONG><a name="[110]"></a>run_single_test</STRONG> (Thumb, 348 bytes, Stack size 208 bytes, testrun.o(.text.run_single_test))
+<P><STRONG><a name="[111]"></a>run_single_test</STRONG> (Thumb, 348 bytes, Stack size 208 bytes, testrun.o(.text.run_single_test))
 <BR><BR>[Stack]<UL><LI>Max Depth = 268<LI>Call Chain = run_single_test &rArr; add_failure &rArr; malloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[125]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setjmp
-<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
+<BR>[Calls]<UL><LI><a href="#[129]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setjmp
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;add_failure
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_assert
 </UL>
-<BR>[Called By]<UL><LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
-<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
+<BR>[Called By]<UL><LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_single_suite
+<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_run_test
 </UL>
 
-<P><STRONG><a name="[12b]"></a>_fp_digits</STRONG> (Thumb, 366 bytes, Stack size 64 bytes, printfa.o(i._fp_digits), UNUSED)
+<P><STRONG><a name="[12f]"></a>_fp_digits</STRONG> (Thumb, 366 bytes, Stack size 64 bytes, printfa.o(i._fp_digits), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
 <LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
 <LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
 <LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2ulz
-<LI><a href="#[12c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdrcmple
+<LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdrcmple
 </UL>
-<BR>[Called By]<UL><LI><a href="#[128]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+<BR>[Called By]<UL><LI><a href="#[12c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
 </UL>
 
-<P><STRONG><a name="[128]"></a>_printf_core</STRONG> (Thumb, 1744 bytes, Stack size 136 bytes, printfa.o(i._printf_core), UNUSED)
+<P><STRONG><a name="[12c]"></a>_printf_core</STRONG> (Thumb, 1744 bytes, Stack size 136 bytes, printfa.o(i._printf_core), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
-<LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
-<LI><a href="#[12d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding
-<LI><a href="#[12e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_post_padding
-<LI><a href="#[12b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+<LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
+<LI><a href="#[131]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding
+<LI><a href="#[132]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_post_padding
+<LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
 </UL>
-<BR>[Called By]<UL><LI><a href="#[12a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0snprintf
-<LI><a href="#[129]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0printf
-<LI><a href="#[127]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0fprintf
-</UL>
-
-<P><STRONG><a name="[12e]"></a>_printf_post_padding</STRONG> (Thumb, 36 bytes, Stack size 24 bytes, printfa.o(i._printf_post_padding), UNUSED)
-<BR><BR>[Called By]<UL><LI><a href="#[128]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+<BR>[Called By]<UL><LI><a href="#[12e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0snprintf
+<LI><a href="#[12d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0printf
+<LI><a href="#[12b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0fprintf
 </UL>
 
-<P><STRONG><a name="[12d]"></a>_printf_pre_padding</STRONG> (Thumb, 46 bytes, Stack size 24 bytes, printfa.o(i._printf_pre_padding), UNUSED)
-<BR><BR>[Called By]<UL><LI><a href="#[128]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+<P><STRONG><a name="[132]"></a>_printf_post_padding</STRONG> (Thumb, 36 bytes, Stack size 24 bytes, printfa.o(i._printf_post_padding), UNUSED)
+<BR><BR>[Called By]<UL><LI><a href="#[12c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
+</UL>
+
+<P><STRONG><a name="[131]"></a>_printf_pre_padding</STRONG> (Thumb, 46 bytes, Stack size 24 bytes, printfa.o(i._printf_pre_padding), UNUSED)
+<BR><BR>[Called By]<UL><LI><a href="#[12c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
 </UL>
 
 <P><STRONG><a name="[b1]"></a>_snputc</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, printfa.o(i._snputc))

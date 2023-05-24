@@ -22,8 +22,6 @@
   @{
 */
 
-//static uint32_t I2S_GetSourceClockFreq(I2S_T *i2s);
-
 /**
   * @brief  This function is used to get I2S source clock frequency.
   * @param[in]  i2s is the base address of I2S module.
@@ -36,7 +34,8 @@ uint32_t I2S_GetSourceClockFreq(I2S_T *i2s)
     if (i2s == I2S0)
     {
         /* get I2S selection clock source */
-        u32ClkSrcSel = CLK->I2SSEL & CLK_I2SSEL_I2S0SEL_Msk;
+        //u32ClkSrcSel = (CLK->I2SSEL & CLK_I2SSEL_I2S0SEL_Msk);
+        u32ClkSrcSel = CLK_GetModuleClockSource(I2S0_MODULE);
 
         switch (u32ClkSrcSel)
         {
@@ -61,6 +60,7 @@ uint32_t I2S_GetSourceClockFreq(I2S_T *i2s)
                 break;
 
             case CLK_I2SSEL_I2S0SEL_HIRC48M:
+                printf("I2S Src __HIRC48M\r\n");
                 u32Freq = __HIRC48M;
                 break;
 
@@ -140,19 +140,10 @@ uint32_t I2S_Open(I2S_T *i2s, uint32_t u32MasterSlave, uint32_t u32SampleRate, u
     uint16_t u16Divider;
     uint32_t u32BitRate, u32SrcClk;
 
-    if (i2s == I2S0)
-    {
-        SYS->I2SRST |= SYS_I2SRST_I2S0RST_Msk;
-        SYS->I2SRST &= ~SYS_I2SRST_I2S0RST_Msk;
-    }
-    else if (i2s == I2S1)
-    {
-        SYS->I2SRST |= SYS_I2SRST_I2S1RST_Msk;
-        SYS->I2SRST &= ~SYS_I2SRST_I2S1RST_Msk;
-    }
+    I2S_Reset(i2s);
 
-    i2s->CTL0 = u32MasterSlave | u32WordWidth | u32MonoData | u32DataFormat;
-    i2s->CTL1 = I2S_FIFO_TX_LEVEL_WORD_8 | I2S_FIFO_RX_LEVEL_WORD_8;
+    i2s->CTL0 = (u32MasterSlave | u32WordWidth | u32MonoData | u32DataFormat);
+    i2s->CTL1 = (I2S_FIFO_TX_LEVEL_WORD_8 | I2S_FIFO_RX_LEVEL_WORD_8);
 
     u32SrcClk = I2S_GetSourceClockFreq(i2s);
 
@@ -293,6 +284,24 @@ void I2S_ConfigureTDM(I2S_T *i2s, uint32_t u32ChannelWidth, uint32_t u32ChannelN
                 (u32ChannelWidth << I2S_CTL0_CHWIDTH_Pos) |
                 (u32ChannelNum << I2S_CTL0_TDMCHNUM_Pos) |
                 (u32SyncWidth << I2S_CTL0_PCMSYNC_Pos);
+}
+
+void I2S_Reset(I2S_T *i2s)
+{
+    /* Unlock protected registers for ISP function */
+    SYS_UnlockReg();
+
+    if (i2s == I2S0)
+    {
+        SYS_ResetModule(SYS_I2S0RST);
+    }
+    else if (i2s == I2S1)
+    {
+        SYS_ResetModule(SYS_I2S1RST);
+    }
+
+    /* Lock protected registers */
+    SYS_LockReg();
 }
 
 /** @} end of group I2S_EXPORTED_FUNCTIONS */

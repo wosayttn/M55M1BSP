@@ -41,6 +41,7 @@
 //------------------------------------------------------------------------------
 //#define PLLCON_SETTING      CLK_PLLCON_50MHz_HXT
 //#define PLL_CLOCK           50000000
+#define USE_HXT_SRC             (0)
 
 //------------------------------------------------------------------------------
 // Internal funcfion definition
@@ -55,50 +56,30 @@ void SYS_Init(void)
     /* Unlock protected registers */
     SYS_UnlockReg();
 
-    /* Enable HXT Clock Source */
-    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
-    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-
-    /* Enable MIRC Clock Source */
-    CLK_EnableXtalRC(CLK_SRCCTL_MIRCEN_Msk);
-    CLK_WaitClockReady(CLK_STATUS_MIRCSTB_Msk);
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
+
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Enable HIRC48M Clock Source */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
-    CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
-
-#if (USE_HXT_SRC == 1)
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HXT, CLK_ACLKDIV_ACLKDIV(1));
-#else
-    /* Switch SCLK clock source to HIRC before PLL setting */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
-
-    /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_200MHZ, CLK_APLL0_SELECT);
+    /* Enable PLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_192MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
-    /* Switch HCLK clock source to HXT */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
-#endif //USE_HXT_SRC
 
-    CLK_SET_HCLK0DIV(1);
-    CLK_SET_HCLK1DIV(1);
+    /* Set HCLK2 divide 1 */
     CLK_SET_HCLK2DIV(1);
 
-    /* Set both PCLK0 and PCLK1 as HCLK/2 */
-    //CLK->PCLKDIV = CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2;
-    CLK_PCLKDIV_PCLK0DIV(1);
-    CLK_PCLKDIV_PCLK1DIV(1);
-    CLK_PCLKDIV_PCLK2DIV(1);
-    CLK_PCLKDIV_PCLK3DIV(1);
-    CLK_PCLKDIV_PCLK4DIV(1);
+    /* Set PCLKx divide 1 */
+    CLK_SET_PCLK0DIV(1);
+    CLK_SET_PCLK1DIV(1);
+    CLK_SET_PCLK2DIV(1);
+    CLK_SET_PCLK3DIV(1);
+    CLK_SET_PCLK4DIV(1);
 
     /* Update System Core Clock */
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
     /* Enable IP clock */
@@ -119,6 +100,26 @@ void SYS_Init(void)
 
 void DebugUART_Init(void)
 {
+    /* Enable UART0 module clock */
+    SetDebugUartCLK();
+
+    /* Select UART clock source from HIRC */
+    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init I/O Multi-function                                                                                 */
+    /*---------------------------------------------------------------------------------------------------------*/
+    SetDebugUartMFP();
+
+#if (USE_HXT_SRC == 1)
+    DEBUG_PORT->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 9600); // The setting is for Palladium
+#else
+    DEBUG_PORT->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400); // The setting is for Palladium
+#endif //USE_HXT_SRC
+
+    /* Lock protected registers */
+    //SYS_LockReg();
+#if 0
     CLK_EnableModuleClock(UART0_MODULE);
 
     /* Select IP clock source */
@@ -151,6 +152,7 @@ void DebugUART_Init(void)
     UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(12000000, 115200);
 #endif //#ifndef __PLDM_EMU__
     UART0->LINE = UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1;
+#endif //0
 }
 
 
@@ -164,10 +166,6 @@ void exit(int32_t code)
 
 int main(int argc, char *argv[])
 {
-
-    /* Unlock protected registers for ISP function */
-    SYS_UnlockReg();
-
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
 

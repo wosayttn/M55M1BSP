@@ -112,13 +112,6 @@ extern "C"
 #define I2S_RIGHT                   (0U)                             /*!< Select right channel  \hideinitializer */
 #define I2S_LEFT                    (1U)                             /*!< Select left channel  \hideinitializer */
 
-/** @} end of group I2S_EXPORTED_CONSTANTS */
-
-
-/** @addtogroup I2S_EXPORTED_FUNCTIONS I2S Exported Functions
-  @{
-*/
-
 /**
   * @brief  Enable zero cross detect function.
   * @param[in] i2s is the base address of I2S module.
@@ -152,84 +145,132 @@ __STATIC_INLINE void I2S_DISABLE_TX_ZCD(I2S_T *i2s, uint32_t u32ChMask)
   * @param[in] i2s is the base address of I2S module.
   * \hideinitializer
   */
-#define I2S_ENABLE_TXDMA(i2s) ((i2s)->CTL0 |= I2S_CTL0_TXPDMAEN_Msk)
+#define I2S_ENABLE_TXDMA(i2s)           \
+  do                                    \
+  {                                     \
+    i2s->CTL0 |= I2S_CTL0_TXPDMAEN_Msk; \
+  } while (0)
 
 /**
   * @brief  Disable I2S Tx DMA function. I2S requests DMA to transfer data to Tx FIFO.
   * @param[in] i2s is the base address of I2S module.
   * \hideinitializer
   */
-#define I2S_DISABLE_TXDMA(i2s)  ((i2s)->CTL0 &= ~I2S_CTL0_TXPDMAEN_Msk)
+#define I2S_DISABLE_TXDMA(i2s)             \
+  do                                       \
+  {                                        \
+    i2s->CTL0 &= ~(I2S_CTL0_TXPDMAEN_Msk); \
+  } while (0)
 
 /**
   * @brief  Enable I2S Rx DMA function. I2S requests DMA to transfer data from Rx FIFO.
   * @param[in] i2s is the base address of I2S module.
   * \hideinitializer
   */
-#define I2S_ENABLE_RXDMA(i2s) ((i2s)->CTL0 |= I2S_CTL0_RXPDMAEN_Msk)
+#define I2S_ENABLE_RXDMA(i2s)           \
+  do                                    \
+  {                                     \
+    i2s->CTL0 |= I2S_CTL0_RXPDMAEN_Msk; \
+  } while (0)
 
 /**
   * @brief  Disable I2S Rx DMA function. I2S requests DMA to transfer data from Rx FIFO.
   * @param[in] i2s is the base address of I2S module.
   * \hideinitializer
   */
-#define I2S_DISABLE_RXDMA(i2s)  ((i2s)->CTL0 &= ~I2S_CTL0_RXPDMAEN_Msk)
+#define I2S_DISABLE_RXDMA(i2s)             \
+  do                                       \
+  {                                        \
+    i2s->CTL0 &= ~(I2S_CTL0_RXPDMAEN_Msk); \
+  } while (0)
 
 /**
   * @brief  Enable I2S Tx function .
   * @param[in] i2s is the base address of I2S module.
   * \hideinitializer
   */
-#define I2S_ENABLE_TX(i2s)  ((i2s)->CTL0 |= I2S_CTL0_TXEN_Msk)
+#define I2S_ENABLE_TX(i2s)          \
+  do                                \
+  {                                 \
+    i2s->CTL0 |= I2S_CTL0_TXEN_Msk; \
+  } while (0)
 
 /**
   * @brief  Disable I2S Tx function .
   * @param[in] i2s is the base address of I2S module.
   * \hideinitializer
   */
-#define I2S_DISABLE_TX(i2s) ((i2s)->CTL0 &= ~I2S_CTL0_TXEN_Msk)
+#define I2S_DISABLE_TX(i2s)            \
+  do                                   \
+  {                                    \
+    i2s->CTL0 &= ~(I2S_CTL0_TXEN_Msk); \
+  } while (0)
 
 /**
   * @brief  Enable I2S Rx function .
   * @param[in] i2s is the base address of I2S module.
   * \hideinitializer
   */
-#define I2S_ENABLE_RX(i2s)  ((i2s)->CTL0 |= I2S_CTL0_RXEN_Msk)
+#define I2S_ENABLE_RX(i2s)          \
+  do                                \
+  {                                 \
+    i2s->CTL0 |= I2S_CTL0_RXEN_Msk; \
+  } while (0)
 
 /**
   * @brief  Disable I2S Rx function .
   * @param[in] i2s is the base address of I2S module.
   * \hideinitializer
   */
-#define I2S_DISABLE_RX(i2s) ((i2s)->CTL0 &= ~I2S_CTL0_RXEN_Msk)
+#define I2S_DISABLE_RX(i2s)            \
+  do                                   \
+  {                                    \
+    i2s->CTL0 &= ~(I2S_CTL0_RXEN_Msk); \
+  } while (0)
 
 /**
   * @brief  Enable Tx Mute function .
   * @param[in] i2s is the base address of I2S module.
   * \hideinitializer
   */
-#define I2S_ENABLE_TX_MUTE(i2s) ((i2s)->CTL0 |= I2S_CTL0_MUTE_Msk)
+#define I2S_ENABLE_TX_MUTE(i2s)     \
+  do                                \
+  {                                 \
+    i2s->CTL0 |= I2S_CTL0_MUTE_Msk; \
+  } while (0)
 
 /**
   * @brief  Disable Tx Mute function .
   * @param[in] i2s is the base address of I2S module.
   * \hideinitializer
   */
-#define I2S_DISABLE_TX_MUTE(i2s)  ((i2s)->CTL0 &= ~I2S_CTL0_MUTE_Msk)
+#define I2S_DISABLE_TX_MUTE(i2s)       \
+  do                                   \
+  {                                    \
+    i2s->CTL0 &= ~(I2S_CTL0_MUTE_Msk); \
+  } while (0)
 
 /**
   * @brief  Clear Tx FIFO. Internal pointer is reset to FIFO start point.
   * @param[in] i2s is the base address of I2S module.
   * \hideinitializer
   */
-#define I2S_CLR_TX_FIFO(i2s)  ((i2s)->CTL0 |= I2S_CTL0_TXFBCLR_Msk)
+#define I2S_CLR_TX_FIFO(i2s)           \
+  do                                   \
+  {                                    \
+    i2s->CTL0 |= I2S_CTL0_TXFBCLR_Msk; \
+  } while (0)
 
 /**
   * @brief  Clear Rx FIFO. Internal pointer is reset to FIFO start point.
   * @param[in] i2s is the base address of I2S module.
   * \hideinitializer
   */
-#define I2S_CLR_RX_FIFO(i2s)  ((i2s)->CTL0 |= I2S_CTL0_RXFBCLR_Msk)
+#define I2S_CLR_RX_FIFO(i2s)           \
+  do                                   \
+  {                                    \
+    i2s->CTL0 |= I2S_CTL0_RXFBCLR_Msk; \
+  } while (0)
 
 /**
   * @brief  This function sets the recording source channel when mono mode is used.
@@ -252,7 +293,11 @@ __STATIC_INLINE void I2S_SET_MONO_RX_CHANNEL(I2S_T *i2s, uint32_t u32Ch)
   * @param[in] u32Data: The data written to FIFO.
   * \hideinitializer
   */
-#define I2S_WRITE_TX_FIFO(i2s, u32Data) ((i2s)->TXFIFO = (u32Data))
+#define I2S_WRITE_TX_FIFO(i2s, u32Data) \
+  do                                    \
+  {                                     \
+    i2s->TXFIFO = (u32Data);            \
+  } while (0)
 
 /**
   * @brief  Read Rx FIFO.
@@ -260,7 +305,7 @@ __STATIC_INLINE void I2S_SET_MONO_RX_CHANNEL(I2S_T *i2s, uint32_t u32Ch)
   * @return Data in Rx FIFO.
   * \hideinitializer
   */
-#define I2S_READ_RX_FIFO(i2s) ((i2s)->RXFIFO)
+#define I2S_READ_RX_FIFO(i2s) (i2s->RXFIFO)
 
 /**
   * @brief  This function gets the interrupt flag according to the mask parameter.
@@ -269,7 +314,7 @@ __STATIC_INLINE void I2S_SET_MONO_RX_CHANNEL(I2S_T *i2s, uint32_t u32Ch)
   * @return The masked bit value of interrupt flag.
   * \hideinitializer
   */
-#define I2S_GET_INT_FLAG(i2s, u32Mask)  ((i2s)->STATUS0 & (u32Mask))
+#define I2S_GET_INT_FLAG(i2s, u32Mask)  (i2s->STATUS0 & (u32Mask))
 
 /**
   * @brief  This function clears the interrupt flag according to the mask parameter.
@@ -277,7 +322,11 @@ __STATIC_INLINE void I2S_SET_MONO_RX_CHANNEL(I2S_T *i2s, uint32_t u32Ch)
   * @param[in] u32Mask is the mask for the all interrupt flags.
   * \hideinitializer
   */
-#define I2S_CLR_INT_FLAG(i2s, u32Mask)  ((i2s)->STATUS0 |= (u32Mask))
+#define I2S_CLR_INT_FLAG(i2s, u32Mask) \
+  do                                   \
+  {                                    \
+    i2s->STATUS0 |= (u32Mask);         \
+  } while (0)
 
 /**
   * @brief  This function gets the zero crossing interrupt flag according to the mask parameter.
@@ -286,7 +335,7 @@ __STATIC_INLINE void I2S_SET_MONO_RX_CHANNEL(I2S_T *i2s, uint32_t u32Ch)
   * @return The masked bit value of interrupt flag.
   * \hideinitializer
   */
-#define I2S_GET_ZC_INT_FLAG(i2s, u32Mask) ((i2s)->STATUS1 & (u32Mask))
+#define I2S_GET_ZC_INT_FLAG(i2s, u32Mask) (i2s->STATUS1 & (u32Mask))
 
 /**
   * @brief  This function clears the zero crossing interrupt flag according to the mask parameter.
@@ -294,7 +343,11 @@ __STATIC_INLINE void I2S_SET_MONO_RX_CHANNEL(I2S_T *i2s, uint32_t u32Ch)
   * @param[in] u32Mask is the mask for the all interrupt flags.
   * \hideinitializer
   */
-#define I2S_CLR_ZC_INT_FLAG(i2s, u32Mask) ((i2s)->STATUS1 |= (u32Mask))
+#define I2S_CLR_ZC_INT_FLAG(i2s, u32Mask) \
+  do                                      \
+  {                                       \
+    i2s->STATUS1 |= (u32Mask);            \
+  } while (0)
 
 /**
   * @brief  Get transmit FIFO level
@@ -302,7 +355,7 @@ __STATIC_INLINE void I2S_SET_MONO_RX_CHANNEL(I2S_T *i2s, uint32_t u32Ch)
   * @return FIFO level
   * \hideinitializer
   */
-#define I2S_GET_TX_FIFO_LEVEL(i2s)  ((((i2s)->STATUS1 & I2S_STATUS1_TXCNT_Msk) >> I2S_STATUS1_TXCNT_Pos) & 0xF)
+#define I2S_GET_TX_FIFO_LEVEL(i2s)  (((i2s->STATUS1 & I2S_STATUS1_TXCNT_Msk) >> I2S_STATUS1_TXCNT_Pos) & 0xF)
 
 /**
   * @brief  Get receive FIFO level
@@ -310,8 +363,14 @@ __STATIC_INLINE void I2S_SET_MONO_RX_CHANNEL(I2S_T *i2s, uint32_t u32Ch)
   * @return FIFO level
   * \hideinitializer
   */
-#define I2S_GET_RX_FIFO_LEVEL(i2s)  ((((i2s)->STATUS1 & I2S_STATUS1_RXCNT_Msk) >> I2S_STATUS1_RXCNT_Pos) & 0xF)
+#define I2S_GET_RX_FIFO_LEVEL(i2s)  (((i2s->STATUS1 & I2S_STATUS1_RXCNT_Msk) >> I2S_STATUS1_RXCNT_Pos) & 0xF)
 
+/** @} end of group I2S_EXPORTED_CONSTANTS */
+
+
+/** @addtogroup I2S_EXPORTED_FUNCTIONS I2S Exported Functions
+  @{
+*/
 uint32_t I2S_GetSourceClockFreq(I2S_T *i2s);
 uint32_t I2S_Open(I2S_T *i2s, uint32_t u32MasterSlave, uint32_t u32SampleRate, uint32_t u32WordWidth, uint32_t u32MonoData, uint32_t u32DataFormat);
 void I2S_Close(I2S_T *i2s);
@@ -321,6 +380,8 @@ uint32_t I2S_EnableMCLK(I2S_T *i2s, uint32_t u32BusClock);
 void I2S_DisableMCLK(I2S_T *i2s);
 void I2S_SetFIFO(I2S_T *i2s, uint32_t u32TxThreshold, uint32_t u32RxThreshold);
 void I2S_ConfigureTDM(I2S_T *i2s, uint32_t u32ChannelWidth, uint32_t u32ChannelNum, uint32_t u32SyncWidth);
+
+void I2S_Reset(I2S_T *i2s);
 
 /** @} end of group I2S_EXPORTED_FUNCTIONS */
 /** @} end of group I2S_Driver */
