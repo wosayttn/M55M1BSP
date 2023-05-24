@@ -127,9 +127,6 @@ typedef struct
      * |[10]    |VGNIEN    |Voltage Glitch Negative Detection Event Interrupt Enable Bit
      * |        |          |0 = LDO_CAP negative glitch event interrupt Disabled.
      * |        |          |1 = LDO_CAP negative glitch event interrupt Enabled.
-     * |[11]    |ACTSIEN   |Active Shield Event Interrupt Enable Bit
-     * |        |          |0 = Active shield event interrupt Disabled.
-     * |        |          |1 = Active shield event interrupt Enabled.
      * |[16]    |RTCLVRIEN |RTC Low Voltage Detection Event Interrupt Enable Bit
      * |        |          |0 = VBAT low voltage detection event interrupt Disabled.
      * |        |          |1 = VBAT low voltage detection event interrupt Enabled.
@@ -139,6 +136,13 @@ typedef struct
      * |[18]    |RTCLKIEN  |RTC Clock Monitor Detection Event Interrupt Enable Bit
      * |        |          |0 = RTC clock monitor event interrupt Disabled.
      * |        |          |1 = RTC clock monitor event interrupt Enabled.
+     * |[20]    |VLOSSIEN  |VBAT Power Loss Event Interrupt Enable Bit
+     * |        |          |0 = VBAT power loss event interrupt Disabled.
+     * |        |          |1 = VBAT power loss event interrupt Enabled.
+     * |[21]    |WDTIEN    |Watchdog Event Interrupt Enable Bit
+     * |        |          |0 = Watchdog event interrupt Disabled.
+     * |        |          |1 = Watchdog event interrupt Enabled.
+     * |        |          |Note: If there is WDT event, it can be used to enable to tamper trigger function when the enable bit is set to 1.     
      * |[22]    |BODIEN    |BOD Event Interrupt Enable Bit
      * |        |          |0 = Brown-out event interrupt Disabled.
      * |        |          |1 = Brown-out event interrupt Enabled.
@@ -193,18 +197,6 @@ typedef struct
      * |        |          |0 = LDO_CAP negative glitch is not detected.
      * |        |          |1 = LDO_CAP negative glitch is detected.
      * |        |          |Note: It can be written 1 to clear only (No clear by TCORERST)
-     * |[11]    |ACTSEIF   |Active Shield Event Detection Interrupt Flag
-     * |        |          |0 = Active shield event interrupt flag is not detected.
-     * |        |          |1 = Active shield event interrupt flag is detected including the voltage of voltage regulator and GND attack.
-     * |        |          |Note: Write 1 to clear this bit after all of ACTSTxIF bits have been cleaned.
-     * |[13]    |ACTST5IF  |Active Shield Tamper 5 Event Interrupt Flag
-     * |        |          |0 = No Active shield Tamper 5 event interrupt flag is generated.
-     * |        |          |1 = Active shield Tamper 5 event interrupt flag is generated.
-     * |        |          |Note: Write 1 to clear this bit.
-     * |[15]    |ACTST25IF |Active Shield Tamper 5 Event Interrupt Flag
-     * |        |          |0 = No Active shield Tamper 5 event interrupt flag is generated.
-     * |        |          |1 = 2th Active shield Tamper 5 event interrupt flag is generated.
-     * |        |          |Note: Write 1 to clear this bit.
      * |[16]    |RTCLVRIF  |RTC Low Voltage Detection Event Interrupt Flag
      * |        |          |0 = VBAT low voltage detection event interrupt flag is not detected.
      * |        |          |1 = VBAT low voltage detection event interrupt flag is detected.
@@ -214,35 +206,18 @@ typedef struct
      * |[18]    |RCLKTRIGIF|RTC Clock Monitor Detection Event Interrupt Flag
      * |        |          |0 = There is no RTC clock monitor detection event interrupt flag.
      * |        |          |1 = There is RTC clock monitor detection event interrupt flag.
+     * |[20]    |VBATLOSSIF|VBAT LOSS Detection Event Interrupt Flag
+     * |        |          |0 = VBAT Power loss detection event interrupt flag is not detected.
+     * |        |          |1 = VBAT Power loss detection event interrupt flag is detected.
+     * |        |          |Note: Write 1 to clear this bit.
+     * |[21]    |SECWDTIF  |Security Watchdog Event Interrupt Flag
+     * |        |          |0 = No security WDT event interrupt flag is detected.
+     * |        |          |1 = Security WDT event interrupt flag is detected.
+     * |        |          |Note: Write 1 to clear this bit.     
      * |[22]    |BODIF     |BOD Event Interrupt Flag
      * |        |          |0 = Brown-out event interrupt flag is no detected.
      * |        |          |1 = Brown-out interrupt flag is detected.
      * |        |          |Note: It is used to detect the LDO_CAP. Write 1 to clear this bit.
-     * |[25]    |ACTST1IF  |Active Shield Tamper 1 Event Interrupt Flag
-     * |        |          |0 = No Active shield Tamper 1 event interrupt flag is generated.
-     * |        |          |1 = Active shield Tamper 1 event interrupt flag is generated.
-     * |        |          |Note: Write 1 to clear this bit.
-     * |[27]    |ACTST3IF  |Active Shield Tamper 3 Event Interrupt Flag
-     * |        |          |0 = No Active shield Tamper 3 event interrupt flag is generated.
-     * |        |          |1 = Active shield Tamper 3 event interrupt flag is generated.
-     * |        |          |Note: Write 1 to clear this bit.
-     * |[29]    |ACTST21IF |2th Active Shield Tamper 1 Event Interrupt Flag
-     * |        |          |0 = No Active shield Tamper 1 event interrupt flag is generated.
-     * |        |          |1 = 2th Active shield Tamper 1 event interrupt flag is generated.
-     * |        |          |Note: Write 1 to clear this bit.
-     * |[31]    |ACTST23IF |2th Active Shield Tamper 3 Event Interrupt Flag
-     * |        |          |0 = No Active shield Tamper 3 event interrupt flag is generated.
-     * |        |          |1 = 2th Active shield Tamper 3 event interrupt flag is generated.
-     * |        |          |Note: Write 1 to clear this bit.
-     * @var TAMPER_T::LIRCTL
-     * Offset: 0x14  Tamper LIRC Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[8:0]   |TLRCTRIM  |Tamper TLIRC32K Trim Value
-     * |        |          |TLIRC32K trim value setting
-     * |[10:9]  |TRIMMOS   |Tamper TLIRC32K Trim MOS Value
-     * |        |          |TLIRC32K trim MOS value setting
      * @var TAMPER_T::TIOCTL
      * Offset: 0x18  Tamper I/O Function Control Register
      * ---------------------------------------------------------------------------------------------------
@@ -361,136 +336,6 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[31:0]  |SEED      |Seed value.
-     * @var TAMPER_T::SEED2
-     * Offset: 0x20  Tamper 2nd Seed Value Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |SEED2     |Seed value. These seed value are used for 2nd active shield I/O.
-     * @var TAMPER_T::ACTSTIOCTL1
-     * Offset: 0x24  Tamper Active Shield Tamper I/O Function Control Register 1
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |ADYN1ISS  |Active Shied Dynamic Pair 1 Input Source Select
-     * |        |          |This bit determines Tamper 3 input is from Tamper 2 or Tamper 0 in dynamic mode.
-     * |        |          |0 = Tamper input is from Tamper 2.
-     * |        |          |1 = Tamper input is from Tamper 0.
-     * |        |          |Note: This bit is effective only when ADYNPR1EN (TAMPER_ACTSTIOCTL1[23]) and ADYNPR0EN (TAMPER_ACTSTIOCTL1[15]) are set.
-     * |[3]     |ADYNSRC   |Active Shied Dynamic Reference Pattern
-     * |        |          |This field determines the new reference pattern when current pattern run out in dynamic pair mode.
-     * |        |          |0 = The new reference pattern is generated by random number generator when the reference pattern run out.
-     * |        |          |1 = The new reference pattern is repeated from SEED (TAMPER_SEED[31:0]) when the reference pattern run out.
-     * |        |          |Note: After this bit is modified, the SEEDRLD (TAMPER_TIOCTL[4]) should be set.
-     * |[7:5]   |ADYNRATE  |Active Shied Dynamic Change Rate
-     * |        |          |Use the bits to choose the dynamic tamper output change rate.
-     * |        |          |000 = 210 * TLIRC32K.
-     * |        |          |001 = 211 * TLIRC32K.
-     * |        |          |010 = 212 * TLIRC32K.
-     * |        |          |011 = 213 * TLIRC32K.
-     * |        |          |100 = 214 * TLIRC32K.
-     * |        |          |101 = 215 * TLIRC32K.
-     * |        |          |110 = 216 * TLIRC32K.
-     * |        |          |111 = 217 * TLIRC32K.
-     * |        |          |Note: After this field is modified, setting SEEDRLD (TAMPER_TIOCTL[4]) can reload the change rate immediately.
-     * |[8]     |ATAMP0EN  |Active Shied Tamper0 Detect Enable Bit
-     * |        |          |0 = Tamper 0 detect Disabled.
-     * |        |          |1 = Tamper 0 detect Enabled.
-     * |        |          |Note: The reference is TLIRC 32K-clock. Tamper detector need sync 2 ~ 3 TLIRC 32K-clock.
-     * |[12]    |ATAMP1EN  |Active Shied Tamper 1 Detect Enable Bit
-     * |        |          |0 = Tamper 1 detect Disabled.
-     * |        |          |1 = Tamper 1 detect Enabled.
-     * |        |          |Note: The reference is TLIRC 32K-clock. Tamper detector needs sync 2 ~ 3 TLIRC 32K-clock.
-     * |[15]    |ADYNPR0EN |Active Shied Dynamic Pair 0 Enable Bit
-     * |        |          |0 = Static detect (Not supported).
-     * |        |          |1 = Dynamic detect.
-     * |[16]    |ATAMP2EN  |Active Shied Tamper 2 Detect Enable Bit
-     * |        |          |0 = Tamper 2 detect Disabled.
-     * |        |          |1 = Tamper 2 detect Enabled.
-     * |        |          |Note: The reference is TLIRC 32K-clock. Tamper detector needs sync 2 ~ 3 TLIRC 32K-clock.
-     * |[20]    |ATAMP3EN  |Active Shied Tamper 3 Detect Enable Bit
-     * |        |          |0 = Tamper 3 detect Disabled.
-     * |        |          |1 = Tamper 3 detect Enabled.
-     * |        |          |Note: The reference is TLIRC 32K-clock. Tamper detector needs sync 2 ~ 3 TLIRC 32K-clock.
-     * |[23]    |ADYNPR1EN |Active Shied Dynamic Pair 1 Enable Bit
-     * |        |          |0 = Static detect (Not supported).
-     * |        |          |1 = Dynamic detect.
-     * |[24]    |ATAMP4EN  |Active Tamper4 Detect Enable Bit
-     * |        |          |0 = Tamper 4 detect Disabled.
-     * |        |          |1 = Tamper 4 detect Enabled.
-     * |        |          |Note: The reference is TLIRC 32K-clock. Tamper detector need sync 2 ~ 3 TLIRC 32K-clock.
-     * |[28]    |ATAMP5EN  |Active Tamper 5 Detect Enable Bit
-     * |        |          |0 = Tamper 5 detect Disabled.
-     * |        |          |1 = Tamper 5 detect Enabled.
-     * |        |          |Note: The reference is TLIRC 32K-clock. Tamper detector need sync 2 ~ 3 TLIRC 32K-clock.
-     * |[31]    |ADYNPR2EN |Active Shied Dynamic Pair 2 Enable Bit
-     * |        |          |0 = Static detect (Not supported).
-     * |        |          |1 = Dynamic detect.
-     * @var TAMPER_T::ACTSTIOCTL2
-     * Offset: 0x28  Tamper Active Shield Tamper I/O Function Control Register 2
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |ADYN1ISS2 |Active Shied Dynamic Pair 1 Input Source Select 2
-     * |        |          |This bit determines if Tamper 3 input is from Tamper 2 or Tamper 0 in dynamic mode.
-     * |        |          |0 = Tamper input is from Tamper 2.
-     * |        |          |1 = Tamper input is from Tamper 0.
-     * |        |          |Note: This bit is effective only when ADYNPR1EN2 (TAMPER_ACTSTIOCTL2[23]) and ADYNPR0EN2 (TAMPER_ACTSTIOCTL2[15]) are set.
-     * |[3]     |ADYNSRC2  |Active Shied Dynamic Reference Pattern 2
-     * |        |          |This field determines the new reference pattern when current pattern run out in dynamic pair mode.
-     * |        |          |0 = The new reference pattern is generated by random number generator when the reference pattern run out.
-     * |        |          |1 = The new reference pattern is repeated from SEED2 (TAMPER_SEED2[31:0]) when the reference pattern run out.
-     * |        |          |Note: After this bit is modified, the SEEDRLD2 (TAMPER_ACTSTIOCTL2[4]) should be set.
-     * |[4]     |SEEDRLD2  |Reload New Seed for PRNG Engine 2
-     * |        |          |Setting this bit, the tamper configuration will be reloaded.
-     * |        |          |0 = Generating key based on the current seed.
-     * |        |          |1 = Reload new seed.
-     * |        |          |Note 1: Before this bit is set, the tamper configuration should be set to complete and this bit will be auto clear to 0 after reload new seed completed.
-     * |        |          |Note 2: The reference is TLIRC 32K-clock. Tamper detector needs sync 2 ~ 3 TLIRC 32K-clock.
-     * |[7:5]   |ADYNRATE2 |Active Shied Dynamic Change Rate 2
-     * |        |          |Use the bits to choose the dynamic tamper output change rate.
-     * |        |          |000 = 210 * TLIRC32K.
-     * |        |          |001 = 211 * TLIRC32K.
-     * |        |          |010 = 212 * TLIRC32K.
-     * |        |          |011 = 213 * TLIRC32K.
-     * |        |          |100 = 214 * TLIRC32K.
-     * |        |          |101 = 215 * TLIRC32K.
-     * |        |          |110 = 216 * TLIRC32K.
-     * |        |          |111 = 217 * TLIRC32K.
-     * |        |          |Note: After this field is modified, setting SEEDRLD2 (TAMPER_ACTSTIOCTL2[4]) can reload change rate immediately.
-     * |[8]     |ATAMP0EN2 |Active Shied Tamper0 Detect Enable Bit 2
-     * |        |          |0 = Tamper 0 detect Disabled.
-     * |        |          |1 = Tamper 0 detect Enabled.
-     * |        |          |Note: The reference is TLIRC 32K-clock. Tamper detector needs sync 2 ~ 3 TLIRC 32K-clock.
-     * |[12]    |ATAMP1EN2 |Active Shied Tamper 1 Detect Enable Bit 2
-     * |        |          |0 = Tamper 1 detect Disabled.
-     * |        |          |1 = Tamper 1 detect Enabled.
-     * |        |          |Note: The reference is TLIRC 32K-clock. Tamper detector needs sync 2 ~ 3 TLIRC 32K-clock.
-     * |[15]    |ADYNPR0EN2|Active Shied Dynamic Pair 0 Enable Bit 2
-     * |        |          |0 = Static detect (Not supported).
-     * |        |          |1 = Dynamic detect.
-     * |[16]    |ATAMP2EN2 |Active Shied Tamper 2 Detect Enable Bit 2
-     * |        |          |0 = Tamper 2 detect Disabled.
-     * |        |          |1 = Tamper 2 detect Enabled.
-     * |        |          |Note: The reference is TLIRC 32K-clock. Tamper detector needs sync 2 ~ 3 TLIRC 32K-clock.
-     * |[20]    |ATAMP3EN2 |Active Shied Tamper 3 Detect Enable Bit 2
-     * |        |          |0 = Tamper 3 detect Disabled.
-     * |        |          |1 = Tamper 3 detect Enabled.
-     * |        |          |Note: The reference is TLIRC 32K-clock. Tamper detector needs sync 2 ~ 3 TLIRC 32K-clock.
-     * |[23]    |ADYNPR1EN2|Active Shied Dynamic Pair 1 Enable Bit 2
-     * |        |          |0 = Static detect (Not supported).
-     * |        |          |1 = Dynamic detect.
-     * |[24]    |ATAMP4EN2 |Active Shied Tamper4 Detect Enable Bit 2
-     * |        |          |0 = Tamper 4 detect Disabled.
-     * |        |          |1 = Tamper 4 detect Enabled.
-     * |        |          |Note: The reference is TLIRC 32K-clock. Tamper detector need sync 2 ~ 3 TLIRC 32K-clock.
-     * |[28]    |ATAMP5EN2 |Active Tamper 5 Detect Enable Bit 2
-     * |        |          |0 = Tamper 5 detect Disabled.
-     * |        |          |1 = Tamper 5 detect Enabled.
-     * |        |          |Note: The reference is TLIRC 32K-clock. Tamper detector need sync 2 ~ 3 TLIRC 32K-clock.
-     * |[31]    |ADYNPR2EN2|Active Shied Dynamic Pair 2 Enable Bit 2
-     * |        |          |0 = Static detect (Not supported).
-     * |        |          |1 = Dynamic detect.
      * @var TAMPER_T::CDBR
      * Offset: 0x2C  Tamper Clock Frequency Detector Boundary Register
      * ---------------------------------------------------------------------------------------------------
@@ -545,15 +390,6 @@ typedef struct
      * |        |          |The value indicates the tolerance count for positive voltage glitch event.
      * |[15:8]  |VGECNTN   |Negative Voltage Glitch Error Tolerance
      * |        |          |The value indicates the tolerance count for negative voltage glitch event.
-     * @var TAMPER_T::LDOTRIM
-     * Offset: 0x38  Tamper LDO Trim Value Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[3:0]   |TLDOTRIM  |Voltage Regulator Output Voltage Trim
-     * |        |          |The value indicates the trim value of the voltage regulator output voltage.
-     * |[9:8]   |TLDOIQSEL |Voltage Regulator Qu Current Selection
-     * |        |          |Indicates the Qu current selection of voltage regulator.
      * @var TAMPER_T::LBSTRIM
      * Offset: 0x3C  Tamper LDO BIAS Trim Value Control Register
      * ---------------------------------------------------------------------------------------------------
@@ -563,14 +399,6 @@ typedef struct
      * |        |          |The value indicates the trim value of the under-shoot detection level
      * |[4]     |TOVDSEL   |Over-shoot Detect Level Trim Bits
      * |        |          |The value indicates the trim value of the over-shoot detection level
-     * |[9:8]   |BSCMPLV   |Under-shoot Detect Comparator Current Trim Bits
-     * |        |          |The value indicates the trim value of the under-shoot detection comparator current trim level
-     * |[11:10] |BSCMPOV   |Over-shoot Detect Comparator Current Trim Bits
-     * |        |          |The value indicates the trim value of the over-shoot detection comparator current trim level
-     * |[13:12] |HYSCMPLV  |Under-shoot Detect Comparator Hysteresis Trim Bits
-     * |        |          |The value indicates the trim value of the under-shoot detection comparator of hysteresis trim level
-     * |[15:14] |HYSCMPOV  |Over-shoot Detect Comparator Hysteresis Trim Bits
-     * |        |          |The value indicates the trim value of the over-shoot detection comparator of hysteresis trim level
      * @var TAMPER_T::VG2
      * Offset: 0x40  Tamper Voltage Glitch Control Register 2
      * ---------------------------------------------------------------------------------------------------
@@ -609,16 +437,16 @@ typedef struct
     __IO uint32_t TRIEN;                 /*!< [0x0008] Tamper Trigger Enable Register                                   */
     __IO uint32_t INTEN;                 /*!< [0x000c] Tamper Event Interrupt Enable Register                           */
     __IO uint32_t INTSTS;                /*!< [0x0010] Tamper Interrupt Status Register                                 */
-    __IO uint32_t LIRCTL;                /*!< [0x0014] Tamper LIRC Control Register                                     */
+    __IO uint32_t RESERVE0;              
     __IO uint32_t TIOCTL;                /*!< [0x0018] Tamper I/O Function Control Register                             */
     __IO uint32_t SEED;                  /*!< [0x001c] Tamper Seed Value Control Register                               */
-    __IO uint32_t SEED2;                 /*!< [0x0020] Tamper 2nd Seed Value Control Register                           */
-    __IO uint32_t ACTSTIOCTL1;           /*!< [0x0024] Tamper Active Shield Tamper I/O Function Control Register 1      */
-    __IO uint32_t ACTSTIOCTL2;           /*!< [0x0028] Tamper Active Shield Tamper I/O Function Control Register 2      */
+    __IO uint32_t RESERVE1;              
+    __IO uint32_t RESERVE2;              
+    __IO uint32_t RESERVE3;              
     __IO uint32_t CDBR;                  /*!< [0x002c] Tamper Clock Frequency Detector Boundary Register                */
     __IO uint32_t VG;                    /*!< [0x0030] Tamper Voltage Glitch Control Register                           */
     __IO uint32_t VGEV;                  /*!< [0x0034] Tamper Voltage Glitch Event Tolerance Control Register           */
-    __IO uint32_t LDOTRIM;               /*!< [0x0038] Tamper LDO Trim Value Control Register                           */
+    __IO uint32_t RESERVE4;              
     __IO uint32_t LBSTRIM;               /*!< [0x003c] Tamper LDO BIAS Trim Value Control Register                      */
     __IO uint32_t VG2;                   /*!< [0x0040] Tamper Voltage Glitch Control Register 2                         */
 
@@ -705,9 +533,6 @@ typedef struct
 #define TAMPER_INTEN_VGNIEN_Pos          (10)                                              /*!< TAMPER_T::INTEN: VGNIEN Position       */
 #define TAMPER_INTEN_VGNIEN_Msk          (0x1ul << TAMPER_INTEN_VGNIEN_Pos)                /*!< TAMPER_T::INTEN: VGNIEN Mask           */
 
-#define TAMPER_INTEN_ACTSIEN_Pos         (11)                                              /*!< TAMPER_T::INTEN: ACTSIEN Position      */
-#define TAMPER_INTEN_ACTSIEN_Msk         (0x1ul << TAMPER_INTEN_ACTSIEN_Pos)               /*!< TAMPER_T::INTEN: ACTSIEN Mask          */
-
 #define TAMPER_INTEN_RTCLVRIEN_Pos       (16)                                              /*!< TAMPER_T::INTEN: RTCLVRIEN Position    */
 #define TAMPER_INTEN_RTCLVRIEN_Msk       (0x1ul << TAMPER_INTEN_RTCLVRIEN_Pos)             /*!< TAMPER_T::INTEN: RTCLVRIEN Mask        */
 
@@ -759,15 +584,6 @@ typedef struct
 #define TAMPER_INTSTS_VGNEVIF_Pos        (10)                                              /*!< TAMPER_T::INTSTS: VGNEVIF Position     */
 #define TAMPER_INTSTS_VGNEVIF_Msk        (0x1ul << TAMPER_INTSTS_VGNEVIF_Pos)              /*!< TAMPER_T::INTSTS: VGNEVIF Mask         */
 
-#define TAMPER_INTSTS_ACTSEIF_Pos        (11)                                              /*!< TAMPER_T::INTSTS: ACTSEIF Position     */
-#define TAMPER_INTSTS_ACTSEIF_Msk        (0x1ul << TAMPER_INTSTS_ACTSEIF_Pos)              /*!< TAMPER_T::INTSTS: ACTSEIF Mask         */
-
-#define TAMPER_INTSTS_ACTST5IF_Pos       (13)                                              /*!< TAMPER_T::INTSTS: ACTST5IF Position    */
-#define TAMPER_INTSTS_ACTST5IF_Msk       (0x1ul << TAMPER_INTSTS_ACTST5IF_Pos)             /*!< TAMPER_T::INTSTS: ACTST5IF Mask        */
-
-#define TAMPER_INTSTS_ACTST25IF_Pos      (15)                                              /*!< TAMPER_T::INTSTS: ACTST25IF Position   */
-#define TAMPER_INTSTS_ACTST25IF_Msk      (0x1ul << TAMPER_INTSTS_ACTST25IF_Pos)            /*!< TAMPER_T::INTSTS: ACTST25IF Mask       */
-
 #define TAMPER_INTSTS_RTCLVRIF_Pos       (16)                                              /*!< TAMPER_T::INTSTS: RTCLVRIF Position    */
 #define TAMPER_INTSTS_RTCLVRIF_Msk       (0x1ul << TAMPER_INTSTS_RTCLVRIF_Pos)             /*!< TAMPER_T::INTSTS: RTCLVRIF Mask        */
 
@@ -785,24 +601,6 @@ typedef struct
 
 #define TAMPER_INTSTS_BODIF_Pos          (22)                                              /*!< TAMPER_T::INTSTS: BODIF Position       */
 #define TAMPER_INTSTS_BODIF_Msk          (0x1ul << TAMPER_INTSTS_BODIF_Pos)                /*!< TAMPER_T::INTSTS: BODIF Mask           */
-
-#define TAMPER_INTSTS_ACTST1IF_Pos       (25)                                              /*!< TAMPER_T::INTSTS: ACTST1IF Position    */
-#define TAMPER_INTSTS_ACTST1IF_Msk       (0x1ul << TAMPER_INTSTS_ACTST1IF_Pos)             /*!< TAMPER_T::INTSTS: ACTST1IF Mask        */
-
-#define TAMPER_INTSTS_ACTST3IF_Pos       (27)                                              /*!< TAMPER_T::INTSTS: ACTST3IF Position    */
-#define TAMPER_INTSTS_ACTST3IF_Msk       (0x1ul << TAMPER_INTSTS_ACTST3IF_Pos)             /*!< TAMPER_T::INTSTS: ACTST3IF Mask        */
-
-#define TAMPER_INTSTS_ACTST21IF_Pos      (29)                                              /*!< TAMPER_T::INTSTS: ACTST21IF Position   */
-#define TAMPER_INTSTS_ACTST21IF_Msk      (0x1ul << TAMPER_INTSTS_ACTST21IF_Pos)            /*!< TAMPER_T::INTSTS: ACTST21IF Mask       */
-
-#define TAMPER_INTSTS_ACTST23IF_Pos      (31)                                              /*!< TAMPER_T::INTSTS: ACTST23IF Position   */
-#define TAMPER_INTSTS_ACTST23IF_Msk      (0x1ul << TAMPER_INTSTS_ACTST23IF_Pos)            /*!< TAMPER_T::INTSTS: ACTST23IF Mask       */
-
-#define TAMPER_LIRCTL_TLRCTRIM_Pos       (0)                                               /*!< TAMPER_T::LIRCTL: TLRCTRIM Position    */
-#define TAMPER_LIRCTL_TLRCTRIM_Msk       (0x1fful << TAMPER_LIRCTL_TLRCTRIM_Pos)           /*!< TAMPER_T::LIRCTL: TLRCTRIM Mask        */
-
-#define TAMPER_LIRCTL_TRIMMOS_Pos        (9)                                               /*!< TAMPER_T::LIRCTL: TRIMMOS Position     */
-#define TAMPER_LIRCTL_TRIMMOS_Msk        (0x3ul << TAMPER_LIRCTL_TRIMMOS_Pos)              /*!< TAMPER_T::LIRCTL: TRIMMOS Mask         */
 
 #define TAMPER_TIOCTL_DYN1ISS_Pos        (0)                                               /*!< TAMPER_T::TIOCTL: DYN1ISS Position     */
 #define TAMPER_TIOCTL_DYN1ISS_Msk        (0x1ul << TAMPER_TIOCTL_DYN1ISS_Pos)              /*!< TAMPER_T::TIOCTL: DYN1ISS Mask         */
@@ -885,84 +683,6 @@ typedef struct
 #define TAMPER_SEED_SEED_Pos             (0)                                               /*!< TAMPER_T::SEED: SEED Position          */
 #define TAMPER_SEED_SEED_Msk             (0xfffffffful << TAMPER_SEED_SEED_Pos)            /*!< TAMPER_T::SEED: SEED Mask              */
 
-#define TAMPER_SEED2_SEED2_Pos           (0)                                               /*!< TAMPER_T::SEED2: SEED2 Position        */
-#define TAMPER_SEED2_SEED2_Msk           (0xfffffffful << TAMPER_SEED2_SEED2_Pos)          /*!< TAMPER_T::SEED2: SEED2 Mask            */
-
-#define TAMPER_ACTSTIOCTL1_ADYN1ISS_Pos  (0)                                               /*!< TAMPER_T::ACTSTIOCTL1: ADYN1ISS Position*/
-#define TAMPER_ACTSTIOCTL1_ADYN1ISS_Msk  (0x1ul << TAMPER_ACTSTIOCTL1_ADYN1ISS_Pos)        /*!< TAMPER_T::ACTSTIOCTL1: ADYN1ISS Mask   */
-
-#define TAMPER_ACTSTIOCTL1_ADYNSRC_Pos   (3)                                               /*!< TAMPER_T::ACTSTIOCTL1: ADYNSRC Position*/
-#define TAMPER_ACTSTIOCTL1_ADYNSRC_Msk   (0x1ul << TAMPER_ACTSTIOCTL1_ADYNSRC_Pos)         /*!< TAMPER_T::ACTSTIOCTL1: ADYNSRC Mask    */
-
-#define TAMPER_ACTSTIOCTL1_ADYNRATE_Pos  (5)                                               /*!< TAMPER_T::ACTSTIOCTL1: ADYNRATE Position*/
-#define TAMPER_ACTSTIOCTL1_ADYNRATE_Msk  (0x7ul << TAMPER_ACTSTIOCTL1_ADYNRATE_Pos)        /*!< TAMPER_T::ACTSTIOCTL1: ADYNRATE Mask   */
-
-#define TAMPER_ACTSTIOCTL1_ATAMP0EN_Pos  (8)                                               /*!< TAMPER_T::ACTSTIOCTL1: ATAMP0EN Position*/
-#define TAMPER_ACTSTIOCTL1_ATAMP0EN_Msk  (0x1ul << TAMPER_ACTSTIOCTL1_ATAMP0EN_Pos)        /*!< TAMPER_T::ACTSTIOCTL1: ATAMP0EN Mask   */
-
-#define TAMPER_ACTSTIOCTL1_ATAMP1EN_Pos  (12)                                              /*!< TAMPER_T::ACTSTIOCTL1: ATAMP1EN Position*/
-#define TAMPER_ACTSTIOCTL1_ATAMP1EN_Msk  (0x1ul << TAMPER_ACTSTIOCTL1_ATAMP1EN_Pos)        /*!< TAMPER_T::ACTSTIOCTL1: ATAMP1EN Mask   */
-
-#define TAMPER_ACTSTIOCTL1_ADYNPR0EN_Pos (15)                                              /*!< TAMPER_T::ACTSTIOCTL1: ADYNPR0EN Position*/
-#define TAMPER_ACTSTIOCTL1_ADYNPR0EN_Msk (0x1ul << TAMPER_ACTSTIOCTL1_ADYNPR0EN_Pos)       /*!< TAMPER_T::ACTSTIOCTL1: ADYNPR0EN Mask  */
-
-#define TAMPER_ACTSTIOCTL1_ATAMP2EN_Pos  (16)                                              /*!< TAMPER_T::ACTSTIOCTL1: ATAMP2EN Position*/
-#define TAMPER_ACTSTIOCTL1_ATAMP2EN_Msk  (0x1ul << TAMPER_ACTSTIOCTL1_ATAMP2EN_Pos)        /*!< TAMPER_T::ACTSTIOCTL1: ATAMP2EN Mask   */
-
-#define TAMPER_ACTSTIOCTL1_ATAMP3EN_Pos  (20)                                              /*!< TAMPER_T::ACTSTIOCTL1: ATAMP3EN Position*/
-#define TAMPER_ACTSTIOCTL1_ATAMP3EN_Msk  (0x1ul << TAMPER_ACTSTIOCTL1_ATAMP3EN_Pos)        /*!< TAMPER_T::ACTSTIOCTL1: ATAMP3EN Mask   */
-
-#define TAMPER_ACTSTIOCTL1_ADYNPR1EN_Pos (23)                                              /*!< TAMPER_T::ACTSTIOCTL1: ADYNPR1EN Position*/
-#define TAMPER_ACTSTIOCTL1_ADYNPR1EN_Msk (0x1ul << TAMPER_ACTSTIOCTL1_ADYNPR1EN_Pos)       /*!< TAMPER_T::ACTSTIOCTL1: ADYNPR1EN Mask  */
-
-#define TAMPER_ACTSTIOCTL1_ATAMP4EN_Pos  (24)                                              /*!< TAMPER_T::ACTSTIOCTL1: ATAMP4EN Position*/
-#define TAMPER_ACTSTIOCTL1_ATAMP4EN_Msk  (0x1ul << TAMPER_ACTSTIOCTL1_ATAMP4EN_Pos)        /*!< TAMPER_T::ACTSTIOCTL1: ATAMP4EN Mask   */
-
-#define TAMPER_ACTSTIOCTL1_ATAMP5EN_Pos  (28)                                              /*!< TAMPER_T::ACTSTIOCTL1: ATAMP5EN Position*/
-#define TAMPER_ACTSTIOCTL1_ATAMP5EN_Msk  (0x1ul << TAMPER_ACTSTIOCTL1_ATAMP5EN_Pos)        /*!< TAMPER_T::ACTSTIOCTL1: ATAMP5EN Mask   */
-
-#define TAMPER_ACTSTIOCTL1_ADYNPR2EN_Pos (31)                                              /*!< TAMPER_T::ACTSTIOCTL1: ADYNPR2EN Position*/
-#define TAMPER_ACTSTIOCTL1_ADYNPR2EN_Msk (0x1ul << TAMPER_ACTSTIOCTL1_ADYNPR2EN_Pos)       /*!< TAMPER_T::ACTSTIOCTL1: ADYNPR2EN Mask  */
-
-#define TAMPER_ACTSTIOCTL2_ADYN1ISS2_Pos (0)                                               /*!< TAMPER_T::ACTSTIOCTL2: ADYN1ISS2 Position*/
-#define TAMPER_ACTSTIOCTL2_ADYN1ISS2_Msk (0x1ul << TAMPER_ACTSTIOCTL2_ADYN1ISS2_Pos)       /*!< TAMPER_T::ACTSTIOCTL2: ADYN1ISS2 Mask  */
-
-#define TAMPER_ACTSTIOCTL2_ADYNSRC2_Pos  (3)                                               /*!< TAMPER_T::ACTSTIOCTL2: ADYNSRC2 Position*/
-#define TAMPER_ACTSTIOCTL2_ADYNSRC2_Msk  (0x1ul << TAMPER_ACTSTIOCTL2_ADYNSRC2_Pos)        /*!< TAMPER_T::ACTSTIOCTL2: ADYNSRC2 Mask   */
-
-#define TAMPER_ACTSTIOCTL2_SEEDRLD2_Pos  (4)                                               /*!< TAMPER_T::ACTSTIOCTL2: SEEDRLD2 Position*/
-#define TAMPER_ACTSTIOCTL2_SEEDRLD2_Msk  (0x1ul << TAMPER_ACTSTIOCTL2_SEEDRLD2_Pos)        /*!< TAMPER_T::ACTSTIOCTL2: SEEDRLD2 Mask   */
-
-#define TAMPER_ACTSTIOCTL2_ADYNRATE2_Pos (5)                                               /*!< TAMPER_T::ACTSTIOCTL2: ADYNRATE2 Position*/
-#define TAMPER_ACTSTIOCTL2_ADYNRATE2_Msk (0x7ul << TAMPER_ACTSTIOCTL2_ADYNRATE2_Pos)       /*!< TAMPER_T::ACTSTIOCTL2: ADYNRATE2 Mask  */
-
-#define TAMPER_ACTSTIOCTL2_ATAMP0EN2_Pos (8)                                               /*!< TAMPER_T::ACTSTIOCTL2: ATAMP0EN2 Position*/
-#define TAMPER_ACTSTIOCTL2_ATAMP0EN2_Msk (0x1ul << TAMPER_ACTSTIOCTL2_ATAMP0EN2_Pos)       /*!< TAMPER_T::ACTSTIOCTL2: ATAMP0EN2 Mask  */
-
-#define TAMPER_ACTSTIOCTL2_ATAMP1EN2_Pos (12)                                              /*!< TAMPER_T::ACTSTIOCTL2: ATAMP1EN2 Position*/
-#define TAMPER_ACTSTIOCTL2_ATAMP1EN2_Msk (0x1ul << TAMPER_ACTSTIOCTL2_ATAMP1EN2_Pos)       /*!< TAMPER_T::ACTSTIOCTL2: ATAMP1EN2 Mask  */
-
-#define TAMPER_ACTSTIOCTL2_ADYNPR0EN2_Pos (15)                                             /*!< TAMPER_T::ACTSTIOCTL2: ADYNPR0EN2 Position*/
-#define TAMPER_ACTSTIOCTL2_ADYNPR0EN2_Msk (0x1ul << TAMPER_ACTSTIOCTL2_ADYNPR0EN2_Pos)     /*!< TAMPER_T::ACTSTIOCTL2: ADYNPR0EN2 Mask */
-
-#define TAMPER_ACTSTIOCTL2_ATAMP2EN2_Pos (16)                                              /*!< TAMPER_T::ACTSTIOCTL2: ATAMP2EN2 Position*/
-#define TAMPER_ACTSTIOCTL2_ATAMP2EN2_Msk (0x1ul << TAMPER_ACTSTIOCTL2_ATAMP2EN2_Pos)       /*!< TAMPER_T::ACTSTIOCTL2: ATAMP2EN2 Mask  */
-
-#define TAMPER_ACTSTIOCTL2_ATAMP3EN2_Pos (20)                                              /*!< TAMPER_T::ACTSTIOCTL2: ATAMP3EN2 Position*/
-#define TAMPER_ACTSTIOCTL2_ATAMP3EN2_Msk (0x1ul << TAMPER_ACTSTIOCTL2_ATAMP3EN2_Pos)       /*!< TAMPER_T::ACTSTIOCTL2: ATAMP3EN2 Mask  */
-
-#define TAMPER_ACTSTIOCTL2_ADYNPR1EN2_Pos (23)                                             /*!< TAMPER_T::ACTSTIOCTL2: ADYNPR1EN2 Position*/
-#define TAMPER_ACTSTIOCTL2_ADYNPR1EN2_Msk (0x1ul << TAMPER_ACTSTIOCTL2_ADYNPR1EN2_Pos)     /*!< TAMPER_T::ACTSTIOCTL2: ADYNPR1EN2 Mask */
-
-#define TAMPER_ACTSTIOCTL2_ATAMP4EN2_Pos (24)                                              /*!< TAMPER_T::ACTSTIOCTL2: ATAMP4EN2 Position*/
-#define TAMPER_ACTSTIOCTL2_ATAMP4EN2_Msk (0x1ul << TAMPER_ACTSTIOCTL2_ATAMP4EN2_Pos)       /*!< TAMPER_T::ACTSTIOCTL2: ATAMP4EN2 Mask  */
-
-#define TAMPER_ACTSTIOCTL2_ATAMP5EN2_Pos (28)                                              /*!< TAMPER_T::ACTSTIOCTL2: ATAMP5EN2 Position*/
-#define TAMPER_ACTSTIOCTL2_ATAMP5EN2_Msk (0x1ul << TAMPER_ACTSTIOCTL2_ATAMP5EN2_Pos)       /*!< TAMPER_T::ACTSTIOCTL2: ATAMP5EN2 Mask  */
-
-#define TAMPER_ACTSTIOCTL2_ADYNPR2EN2_Pos (31)                                             /*!< TAMPER_T::ACTSTIOCTL2: ADYNPR2EN2 Position*/
-#define TAMPER_ACTSTIOCTL2_ADYNPR2EN2_Msk (0x1ul << TAMPER_ACTSTIOCTL2_ADYNPR2EN2_Pos)     /*!< TAMPER_T::ACTSTIOCTL2: ADYNPR2EN2 Mask */
-
 #define TAMPER_CDBR_STOPBD_Pos           (0)                                               /*!< TAMPER_T::CDBR: STOPBD Position        */
 #define TAMPER_CDBR_STOPBD_Msk           (0xfful << TAMPER_CDBR_STOPBD_Pos)                /*!< TAMPER_T::CDBR: STOPBD Mask            */
 
@@ -999,29 +719,11 @@ typedef struct
 #define TAMPER_VGEV_VGECNTN_Pos          (8)                                               /*!< TAMPER_T::VGEV: VGECNTN Position       */
 #define TAMPER_VGEV_VGECNTN_Msk          (0xfful << TAMPER_VGEV_VGECNTN_Pos)               /*!< TAMPER_T::VGEV: VGECNTN Mask           */
 
-#define TAMPER_LDOTRIM_TLDOTRIM_Pos      (0)                                               /*!< TAMPER_T::LDOTRIM: TLDOTRIM Position   */
-#define TAMPER_LDOTRIM_TLDOTRIM_Msk      (0xful << TAMPER_LDOTRIM_TLDOTRIM_Pos)            /*!< TAMPER_T::LDOTRIM: TLDOTRIM Mask       */
-
-#define TAMPER_LDOTRIM_TLDOIQSEL_Pos     (8)                                               /*!< TAMPER_T::LDOTRIM: TLDOIQSEL Position  */
-#define TAMPER_LDOTRIM_TLDOIQSEL_Msk     (0x3ul << TAMPER_LDOTRIM_TLDOIQSEL_Pos)           /*!< TAMPER_T::LDOTRIM: TLDOIQSEL Mask      */
-
 #define TAMPER_LBSTRIM_TLVDSEL_Pos       (0)                                               /*!< TAMPER_T::LBSTRIM: TLVDSEL Position    */
 #define TAMPER_LBSTRIM_TLVDSEL_Msk       (0x7ul << TAMPER_LBSTRIM_TLVDSEL_Pos)             /*!< TAMPER_T::LBSTRIM: TLVDSEL Mask        */
 
 #define TAMPER_LBSTRIM_TOVDSEL_Pos       (4)                                               /*!< TAMPER_T::LBSTRIM: TOVDSEL Position    */
 #define TAMPER_LBSTRIM_TOVDSEL_Msk       (0x1ul << TAMPER_LBSTRIM_TOVDSEL_Pos)             /*!< TAMPER_T::LBSTRIM: TOVDSEL Mask        */
-
-#define TAMPER_LBSTRIM_BSCMPLV_Pos       (8)                                               /*!< TAMPER_T::LBSTRIM: BSCMPLV Position    */
-#define TAMPER_LBSTRIM_BSCMPLV_Msk       (0x3ul << TAMPER_LBSTRIM_BSCMPLV_Pos)             /*!< TAMPER_T::LBSTRIM: BSCMPLV Mask        */
-
-#define TAMPER_LBSTRIM_BSCMPOV_Pos       (10)                                              /*!< TAMPER_T::LBSTRIM: BSCMPOV Position    */
-#define TAMPER_LBSTRIM_BSCMPOV_Msk       (0x3ul << TAMPER_LBSTRIM_BSCMPOV_Pos)             /*!< TAMPER_T::LBSTRIM: BSCMPOV Mask        */
-
-#define TAMPER_LBSTRIM_HYSCMPLV_Pos      (12)                                              /*!< TAMPER_T::LBSTRIM: HYSCMPLV Position   */
-#define TAMPER_LBSTRIM_HYSCMPLV_Msk      (0x3ul << TAMPER_LBSTRIM_HYSCMPLV_Pos)            /*!< TAMPER_T::LBSTRIM: HYSCMPLV Mask       */
-
-#define TAMPER_LBSTRIM_HYSCMPOV_Pos      (14)                                              /*!< TAMPER_T::LBSTRIM: HYSCMPOV Position   */
-#define TAMPER_LBSTRIM_HYSCMPOV_Msk      (0x3ul << TAMPER_LBSTRIM_HYSCMPOV_Pos)            /*!< TAMPER_T::LBSTRIM: HYSCMPOV Mask       */
 
 #define TAMPER_VG2_PCLKSEL2_Pos          (0)                                               /*!< TAMPER_T::VG2: PCLKSEL2 Position       */
 #define TAMPER_VG2_PCLKSEL2_Msk          (0xful << TAMPER_VG2_PCLKSEL2_Pos)                /*!< TAMPER_T::VG2: PCLKSEL2 Mask           */

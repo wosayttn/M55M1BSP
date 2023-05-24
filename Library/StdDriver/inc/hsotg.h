@@ -35,15 +35,6 @@ extern "C"
 #define HSOTG_VBUS_ST_VALID_HIGH       (0UL) /*!< USB VBUS power switch valid status is high. \hideinitializer */
 #define HSOTG_VBUS_ST_VALID_LOW        (1UL) /*!< USB VBUS power switch valid status is low. \hideinitializer */
 
-#define HSOTG_PHYCTL_FSEL_9_6M         (0UL << HSOTG_PHYCTL_FSEL_Pos)    /*!< Setting OTG PHY reference clock frequency as 9.6 MHz. \hideinitializer */
-#define HSOTG_PHYCTL_FSEL_10_0M        (1UL << HSOTG_PHYCTL_FSEL_Pos)    /*!< Setting OTG PHY reference clock frequency as 10 MHz. \hideinitializer */
-#define HSOTG_PHYCTL_FSEL_12_0M        (2UL << HSOTG_PHYCTL_FSEL_Pos)    /*!< Setting OTG PHY reference clock frequency as 12 MHz. \hideinitializer */
-#define HSOTG_PHYCTL_FSEL_19_2M        (3UL << HSOTG_PHYCTL_FSEL_Pos)    /*!< Setting OTG PHY reference clock frequency as 19.2 MHz. \hideinitializer */
-#define HSOTG_PHYCTL_FSEL_20_0M        (4UL << HSOTG_PHYCTL_FSEL_Pos)    /*!< Setting OTG PHY reference clock frequency as 20 MHz. \hideinitializer */
-#define HSOTG_PHYCTL_FSEL_24_0M        (5UL << HSOTG_PHYCTL_FSEL_Pos)    /*!< Setting OTG PHY reference clock frequency as 24 MHz. \hideinitializer */
-#define HSOTG_PHYCTL_FSEL_50_0M        (7UL << HSOTG_PHYCTL_FSEL_Pos)    /*!< Setting OTG PHY reference clock frequency as 50 MHz. \hideinitializer */
-
-
 /** @} end of group HSOTG_EXPORTED_CONSTANTS */
 
 
@@ -255,22 +246,6 @@ extern "C"
   * \hideinitializer
   */
 #define HSOTG_GET_STATUS(u32Mask) (HSOTG->STATUS & (u32Mask))
-
-/**
-  * @brief      Set OTG PHY reference clock frequency
-  * @param[in]  u32RefClock The reference clock selection. Valid values are listed below.
-  *             - \ref HSOTG_PHYCTL_FSEL_9_6M
-  *             - \ref HSOTG_PHYCTL_FSEL_10_0M
-  *             - \ref HSOTG_PHYCTL_FSEL_12_0M
-  *             - \ref HSOTG_PHYCTL_FSEL_19_2M
-  *             - \ref HSOTG_PHYCTL_FSEL_20_0M
-  *             - \ref HSOTG_PHYCTL_FSEL_24_0M
-  *             - \ref HSOTG_PHYCTL_FSEL_50_0M
-  * @return     None
-  * @details    This macro set OTG PHY reference clock frequency.
-  * \hideinitializer
-  */
-#define HSOTG_SET_PHY_REF_CLK(u32RefClock)     (HSOTG->PHYCTL = (HSOTG->PHYCTL & ~HSOTG_PHYCTL_FSEL_Msk) | (u32RefClock))
 
 /** @} end of group HSOTG_EXPORTED_FUNCTIONS */
 /** @} end of group HSOTG_Driver */

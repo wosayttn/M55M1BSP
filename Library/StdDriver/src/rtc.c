@@ -835,13 +835,13 @@ void RTC_StaticTamperEnable(uint32_t u32TamperSelect, uint32_t u32DetecLevel, ui
     u32Reg = RTC->TAMPCTL;
 
     u32TmpReg = ( RTC_TAMPCTL_TAMP0EN_Msk | (u32DetecLevel << RTC_TAMPCTL_TAMP0LV_Pos) |
-                  (u32DebounceEn << RTC_TAMPCTL_TAMP0DBEN_Pos) );
+                  (u32DebounceEn << RTC_TAMPCTL_TAMP0DEN_Pos) );
 
     for(i = 0ul; i < MAX_TAMPER_PIN_NUM; i++)
     {
         if(u32TamperSelect & (0x1ul << i))
         {
-            u32Reg &= ~((RTC_TAMPCTL_TAMP0EN_Msk|RTC_TAMPCTL_TAMP0LV_Msk|RTC_TAMPCTL_TAMP0DBEN_Msk) << (i*4ul));
+            u32Reg &= ~((RTC_TAMPCTL_TAMP0EN_Msk|RTC_TAMPCTL_TAMP0LV_Msk|RTC_TAMPCTL_TAMP0DEN_Msk) << (i*4ul));
             u32Reg |= (u32TmpReg << (i*4ul));
         }
     }
@@ -923,8 +923,8 @@ void RTC_DynamicTamperEnable(uint32_t u32PairSel, uint32_t u32DebounceEn, uint32
     u32Reg &= ~(RTC_TAMPCTL_TAMP0EN_Msk | RTC_TAMPCTL_TAMP1EN_Msk | RTC_TAMPCTL_TAMP2EN_Msk |
                 RTC_TAMPCTL_TAMP3EN_Msk | RTC_TAMPCTL_TAMP4EN_Msk | RTC_TAMPCTL_TAMP5EN_Msk);
 
-    u32Tamper2Debounce = u32Reg & RTC_TAMPCTL_TAMP2DBEN_Msk;
-    u32Tamper4Debounce = u32Reg & RTC_TAMPCTL_TAMP4DBEN_Msk;
+    u32Tamper2Debounce = u32Reg & RTC_TAMPCTL_TAMP2DEN_Msk;
+    u32Tamper4Debounce = u32Reg & RTC_TAMPCTL_TAMP4DEN_Msk;
 
     u32Reg &= ~(RTC_TAMPCTL_TAMP0EN_Msk | RTC_TAMPCTL_TAMP1EN_Msk | RTC_TAMPCTL_TAMP2EN_Msk |
                 RTC_TAMPCTL_TAMP3EN_Msk | RTC_TAMPCTL_TAMP4EN_Msk | RTC_TAMPCTL_TAMP5EN_Msk);
@@ -934,7 +934,7 @@ void RTC_DynamicTamperEnable(uint32_t u32PairSel, uint32_t u32DebounceEn, uint32
     if(u32DebounceEn)
     {
         u32TmpReg = (RTC_TAMPCTL_TAMP0EN_Msk | RTC_TAMPCTL_TAMP1EN_Msk |
-                     RTC_TAMPCTL_TAMP0DBEN_Msk | RTC_TAMPCTL_TAMP1DBEN_Msk | RTC_TAMPCTL_DYNPR0EN_Msk);
+                     RTC_TAMPCTL_TAMP0DEN_Msk | RTC_TAMPCTL_TAMP1DEN_Msk | RTC_TAMPCTL_DYNPR0EN_Msk);
     }
     else
     {
@@ -945,7 +945,7 @@ void RTC_DynamicTamperEnable(uint32_t u32PairSel, uint32_t u32DebounceEn, uint32
     {
         if(u32PairSel & (0x1ul << i))
         {
-            u32Reg &= ~((RTC_TAMPCTL_TAMP0DBEN_Msk | RTC_TAMPCTL_TAMP1DBEN_Msk) << (i*8ul));
+            u32Reg &= ~((RTC_TAMPCTL_TAMP0DEN_Msk | RTC_TAMPCTL_TAMP1DEN_Msk) << (i*8ul));
             u32Reg |= (u32TmpReg << (i*8ul));
         }
     }
