@@ -3,7 +3,7 @@
 
 //#include "sd_common.h"
 
-#define SDH0_PIN_GROUP                  (1)
+#define SDH0_PIN_GROUP                  (0)
 #define SDH1_PIN_GROUP                  (0)
 
 //------------------------------------------------------------------------------

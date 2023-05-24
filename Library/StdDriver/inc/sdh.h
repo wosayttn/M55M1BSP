@@ -3,8 +3,8 @@
  * @version  V1.00
  * @brief    SDH driver header file
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include <stdio.h>
@@ -30,51 +30,51 @@ extern "C"
   @{
 */
 
-#define SDH_ERR_ID       0xFFFF0100ul /*!< SDH error ID  \hideinitializer */
+#define SDH_ERR_ID            (0xFFFF0100ul) /*!< SDH error ID  \hideinitializer */
 
-#define SDH_TIMEOUT      (SDH_ERR_ID|0x01ul) /*!< Timeout  \hideinitializer */
-#define SDH_NO_MEMORY    (SDH_ERR_ID|0x02ul) /*!< OOM  \hideinitializer */
+#define SDH_TIMEOUT           (SDH_ERR_ID|0x01ul)  /*!< Timeout  \hideinitializer */
+#define SDH_NO_MEMORY         (SDH_ERR_ID|0x02ul)  /*!< OOM  \hideinitializer */
 
 /*-- function return value */
-#define    Successful  0ul   /*!< Success  \hideinitializer */
-#define    Fail        1ul   /*!< Failed  \hideinitializer */
+#define Successful            (0ul) /*!< Success  \hideinitializer */
+#define Fail                  (1ul) /*!< Failed  \hideinitializer */
 
 /*--- define type of SD card or MMC */
-#define SDH_TYPE_UNKNOWN     0ul /*!< Unknown card type  \hideinitializer */
-#define SDH_TYPE_SD_HIGH     1ul /*!< SDHC card  \hideinitializer */
-#define SDH_TYPE_SD_LOW      2ul /*!< SD card  \hideinitializer */
-#define SDH_TYPE_MMC         3ul /*!< MMC card  \hideinitializer */
-#define SDH_TYPE_EMMC        4ul /*!< eMMC card  \hideinitializer */
+#define SDH_TYPE_UNKNOWN      (0ul) /*!< Unknown card type  \hideinitializer */
+#define SDH_TYPE_SD_HIGH      (1ul) /*!< SDHC card  \hideinitializer */
+#define SDH_TYPE_SD_LOW       (2ul) /*!< SD card  \hideinitializer */
+#define SDH_TYPE_MMC          (3ul) /*!< MMC card  \hideinitializer */
+#define SDH_TYPE_EMMC         (4ul) /*!< eMMC card  \hideinitializer */
 
 /* SD error */
-#define SDH_NO_SD_CARD       (SDH_ERR_ID|0x10ul) /*!< Card removed  \hideinitializer */
-#define SDH_ERR_DEVICE       (SDH_ERR_ID|0x11ul) /*!< Device error  \hideinitializer */
-#define SDH_INIT_TIMEOUT     (SDH_ERR_ID|0x12ul) /*!< Card init timeout  \hideinitializer */
-#define SDH_SELECT_ERROR     (SDH_ERR_ID|0x13ul) /*!< Card select error  \hideinitializer */
-#define SDH_WRITE_PROTECT    (SDH_ERR_ID|0x14ul) /*!< Card write protect  \hideinitializer */
-#define SDH_INIT_ERROR       (SDH_ERR_ID|0x15ul) /*!< Card init error  \hideinitializer */
-#define SDH_CRC7_ERROR       (SDH_ERR_ID|0x16ul) /*!< CRC 7 error  \hideinitializer */
-#define SDH_CRC16_ERROR      (SDH_ERR_ID|0x17ul) /*!< CRC 16 error  \hideinitializer */
-#define SDH_CRC_ERROR        (SDH_ERR_ID|0x18ul) /*!< CRC error  \hideinitializer */
-#define SDH_CMD8_ERROR       (SDH_ERR_ID|0x19ul) /*!< Command 8 error  \hideinitializer */
+#define SDH_NO_SD_CARD        (SDH_ERR_ID|0x10ul) /*!< Card removed  \hideinitializer */
+#define SDH_ERR_DEVICE        (SDH_ERR_ID|0x11ul) /*!< Device error  \hideinitializer */
+#define SDH_INIT_TIMEOUT      (SDH_ERR_ID|0x12ul) /*!< Card init timeout  \hideinitializer */
+#define SDH_SELECT_ERROR      (SDH_ERR_ID|0x13ul) /*!< Card select error  \hideinitializer */
+#define SDH_WRITE_PROTECT     (SDH_ERR_ID|0x14ul) /*!< Card write protect  \hideinitializer */
+#define SDH_INIT_ERROR        (SDH_ERR_ID|0x15ul) /*!< Card init error  \hideinitializer */
+#define SDH_CRC7_ERROR        (SDH_ERR_ID|0x16ul) /*!< CRC 7 error  \hideinitializer */
+#define SDH_CRC16_ERROR       (SDH_ERR_ID|0x17ul) /*!< CRC 16 error  \hideinitializer */
+#define SDH_CRC_ERROR         (SDH_ERR_ID|0x18ul) /*!< CRC error  \hideinitializer */
+#define SDH_CMD8_ERROR        (SDH_ERR_ID|0x19ul) /*!< Command 8 error  \hideinitializer */
 
-#define MMC_FREQ        20000ul   /*!< output 20MHz to MMC  \hideinitializer */
-#define SD_FREQ         25000ul   /*!< output 25MHz to SD  \hideinitializer */
-#define SDHC_FREQ       50000ul   /*!< output 50MHz to SDH \hideinitializer */
+#define MMC_FREQ              (20000ul)     /*!< output 20MHz to MMC  \hideinitializer */
+#define SD_FREQ               (25000ul)     /*!< output 25MHz to SD  \hideinitializer */
+#define SDHC_FREQ             (50000ul)     /*!< output 50MHz to SDH \hideinitializer */
 
-#define SD_PORT0        (1 << 0)  /*!< Card select SD0 \hideinitializer */
-#define SD_PORT1        (1 << 2)  /*!< Card select SD1 \hideinitializer */
-#define CardDetect_From_GPIO  (1ul << 8)   /*!< Card detection pin is GPIO \hideinitializer */
-#define CardDetect_From_DAT3  (1ul << 9)   /*!< Card detection pin is DAT3 \hideinitializer */
+#define SD_PORT0              (1UL << 0)    /*!< Card select SD0 \hideinitializer */
+#define SD_PORT1              (1UL << 2)    /*!< Card select SD1 \hideinitializer */
+#define CardDetect_From_GPIO  (1ul << 8)    /*!< Card detection pin is GPIO \hideinitializer */
+#define CardDetect_From_DAT3  (1ul << 9)    /*!< Card detection pin is DAT3 \hideinitializer */
 
 /* SDH Define Error Code */
-#define SDH_TIMEOUT_CNT     0xFFFF//SystemCoreClock     /*!< SDH time-out counter (1 second time-out) \hideinitializer */
-#define SDH_OK              ( 0L)               /*!< SDH operation OK \hideinitializer */
-#define SDH_ERR_FAIL        (-1L)               /*!< SDH operation failed \hideinitializer */
-#define SDH_ERR_TIMEOUT     (-2L)               /*!< SDH operation abort due to timeout error \hideinitializer */
+#define SDH_TIMEOUT_CNT       SystemCoreClock     /*!< SDH time-out counter (1 second time-out) \hideinitializer */
+#define SDH_OK                ( 0L)               /*!< SDH operation OK \hideinitializer */
+#define SDH_ERR_FAIL          (-1L)               /*!< SDH operation failed \hideinitializer */
+#define SDH_ERR_TIMEOUT       (-2L)               /*!< SDH operation abort due to timeout error \hideinitializer */
 
 /* SDH Define Block Size */
-#define SDH_BLOCK_SIZE      512ul
+#define SDH_BLOCK_SIZE        (512ul)
 
 /** @} end of group SDH_EXPORTED_CONSTANTS */
 
@@ -111,61 +111,83 @@ extern int32_t g_SDH_i32ErrCode;
  *
  *  @param[in]    sdh    Select SDH0 or SDH1.
  *  @param[in]    u32IntMask    Interrupt type mask:
- *                           \ref SDH_INTEN_BLKDIEN_Msk / \ref SDH_INTEN_CRCIEN_Msk / \ref SDH_INTEN_CDIEN_Msk /
- *                           \ref SDH_INTEN_CDSRC_Msk \ref SDH_INTEN_RTOIEN_Msk / \ref SDH_INTEN_DITOIEN_Msk /
- *                           \ref SDH_INTEN_WKIEN_Msk
+ *                            - \ref SDH_INTEN_BLKDIEN_Msk
+ *                            - \ref SDH_INTEN_CRCIEN_Msk
+ *                            - \ref SDH_INTEN_CDIEN_Msk
+ *                            - \ref SDH_INTEN_CDSRC_Msk
+ *                            - \ref SDH_INTEN_RTOIEN_Msk
+ *                            - \ref SDH_INTEN_DITOIEN_Msk
+ *                            - \ref SDH_INTEN_WKIEN_Msk
  *
  *  @return   None.
  * \hideinitializer
  */
-#define SDH_ENABLE_INT(sdh, u32IntMask)    ((sdh)->INTEN |= (u32IntMask))
+#define SDH_ENABLE_INT(sdh, u32IntMask) \
+  do                                    \
+  {                                     \
+    sdh->INTEN |= (u32IntMask);         \
+  } while (0)
 
 /**
  *  @brief    Disable specified interrupt.
  *
  *  @param[in]    sdh    Select SDH0 or SDH1.
  *  @param[in]    u32IntMask    Interrupt type mask:
- *                           \ref SDH_INTEN_BLKDIEN_Msk / \ref SDH_INTEN_CRCIEN_Msk / \ref SDH_INTEN_CDIEN_Msk /
- *                           \ref SDH_INTEN_RTOIEN_Msk / \ref SDH_INTEN_DITOIEN_Msk / \ref SDH_INTEN_WKIEN_Msk / \ref SDH_INTEN_CDSRC_Msk /
+ *                            - \ref SDH_INTEN_BLKDIEN_Msk
+ *                            - \ref SDH_INTEN_CRCIEN_Msk
+ *                            - \ref SDH_INTEN_CDIEN_Msk
+ *                            - \ref SDH_INTEN_RTOIEN_Msk
+ *                            - \ref SDH_INTEN_DITOIEN_Msk
+ *                            - \ref SDH_INTEN_WKIEN_Msk
+ *                            - \ref SDH_INTEN_CDSRC_Msk
  *
  *  @return   None.
  * \hideinitializer
  */
-#define SDH_DISABLE_INT(sdh, u32IntMask)    ((sdh)->INTEN &= ~(u32IntMask))
+#define SDH_DISABLE_INT(sdh, u32IntMask) \
+  do                                     \
+  {                                      \
+    sdh->INTEN &= ~(u32IntMask);         \
+  } while (0)
 
 /**
  *  @brief    Get specified interrupt flag/status.
  *
- *  @param[in]    sdh    Select SDH0 or SDH1.
- *  @param[in]    u32IntMask    Interrupt type mask:
- *                           \ref SDH_INTSTS_BLKDIF_Msk / \ref SDH_INTSTS_CRCIF_Msk / \ref SDH_INTSTS_CRC7_Msk /
- *                           \ref SDH_INTSTS_CRC16_Msk / \ref SDH_INTSTS_CRCSTS_Msk / \ref SDH_INTSTS_DAT0STS_Msk /
- *                           \ref SDH_INTSTS_CDIF_Msk \ref SDH_INTSTS_RTOIF_Msk /
- *                           \ref SDH_INTSTS_DITOIF_Msk / \ref SDH_INTSTS_CDSTS_Msk /
- *                           \ref SDH_INTSTS_DAT1STS_Msk
- *
+ *  @param[in]    sdh Select SDH0 or SDH1.
+ *  @param[in]    u32IntMask  Interrupt type mask:
+ *                          - \ref SDH_INTSTS_BLKDIF_Msk
+ *                          - \ref SDH_INTSTS_CRCIF_Msk
+ *                          - \ref SDH_INTSTS_CRC7_Msk
+ *                          - \ref SDH_INTSTS_CRC16_Msk
+ *                          - \ref SDH_INTSTS_CRCSTS_Msk
+ *                          - \ref SDH_INTSTS_DAT0STS_Msk
+ *                          - \ref SDH_INTSTS_CDIF_Msk
+ *                          - \ref SDH_INTSTS_RTOIF_Msk
+ *                          - \ref SDH_INTSTS_DITOIF_Msk
+ *                          - \ref SDH_INTSTS_CDSTS_Msk
+ *                          - \ref SDH_INTSTS_DAT1STS_Msk
  *
  *  @return  0 = The specified interrupt is not happened.
- *            1 = The specified interrupt is happened.
+ *           1 = The specified interrupt is happened.
  * \hideinitializer
  */
-#define SDH_GET_INT_FLAG(sdh, u32IntMask) (((sdh)->INTSTS & (u32IntMask))?1:0)
-
+#define SDH_GET_INT_FLAG(sdh, u32IntMask) ((sdh->INTSTS & (u32IntMask)) ? 1 : 0)
 
 /**
  *  @brief    Clear specified interrupt flag/status.
  *
- *  @param[in]    sdh    Select SDH0 or SDH1.
- *  @param[in]    u32IntMask    Interrupt type mask:
- *                           \ref SDH_INTSTS_BLKDIF_Msk / \ref SDH_INTSTS_CRCIF_Msk / \ref SDH_INTSTS_CDIF_Msk /
- *                           \ref SDH_INTSTS_RTOIF_Msk / \ref SDH_INTSTS_DITOIF_Msk
- *
+ *  @param[in]    sdh Select SDH0 or SDH1.
+ *  @param[in]    u32IntMask  Interrupt type mask:
+ *                          - \ref SDH_INTSTS_BLKDIF_Msk
+ *                          - \ref SDH_INTSTS_CRCIF_Msk
+ *                          - \ref SDH_INTSTS_CDIF_Msk
+ *                          - \ref SDH_INTSTS_RTOIF_Msk
+ *                          - \ref SDH_INTSTS_DITOIF_Msk
  *
  *  @return   None.
  * \hideinitializer
  */
-#define SDH_CLR_INT_FLAG(sdh, u32IntMask) ((sdh)->INTSTS = (u32IntMask))
-
+#define SDH_CLR_INT_FLAG(sdh, u32IntMask) (sdh->INTSTS = (u32IntMask))
 
 /**
  *  @brief    Check SD Card inserted or removed.
@@ -191,7 +213,9 @@ extern int32_t g_SDH_i32ErrCode;
 //------------------------------------------------------------------------------
 void *GetSDH0SDHCBuffer(void);
 void *GetSDH1SDHCBuffer(void);
+void *GetSDHInfoMsg(SDH_T *sdh);
 
+void SDH_INT_EN(SDH_T *sdh);
 void SDH_Open(SDH_T *sdh, uint32_t u32CardDetSrc);
 void SDH_Close(SDH_T *sdh);
 uint32_t SDH_Probe(SDH_T *sdh);

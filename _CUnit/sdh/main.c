@@ -53,64 +53,37 @@ void AddTests(void);
 //------------------------------------------------------------------------------
 void SYS_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/
+    /*------------------------------------------------------------------------*/
+    /* Init System Clock                                                      */
+    /*------------------------------------------------------------------------*/
     /* Unlock protected registers */
     SYS_UnlockReg();
 
-    /* Enable HXT Clock Source */
-    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
-    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-
-    /* Enable MIRC Clock Source */
-    CLK_EnableXtalRC(CLK_SRCCTL_MIRCEN_Msk);
-    CLK_WaitClockReady(CLK_STATUS_MIRCSTB_Msk);
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
+
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Enable HIRC48M Clock Source */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
-    CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
-
-#if (USE_HXT_SRC == 1)
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HXT, CLK_ACLKDIV_ACLKDIV(1));
-#else
-    /* Switch SCLK clock source to HIRC before PLL setting */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC, CLK_ACLKDIV_ACLKDIV(1));
-
-    /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_200MHZ, CLK_APLL0_SELECT);
+    /* Enable PLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
-    /* Switch HCLK clock source to HXT */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
-#endif //USE_HXT_SRC
 
-    CLK_SET_HCLK0DIV(1);
-    CLK_SET_HCLK1DIV(1);
+    /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(1);
 
-    /* Set both PCLK0 and PCLK1 as HCLK/2 */
-    //CLK->PCLKDIV = CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2;
-    CLK_PCLKDIV_PCLK0DIV(1);
-    CLK_PCLKDIV_PCLK1DIV(1);
-    CLK_PCLKDIV_PCLK2DIV(1);
-    CLK_PCLKDIV_PCLK3DIV(1);
-    CLK_PCLKDIV_PCLK4DIV(1);
-    //CLK_PCLKDIV_PCLK5DIV(1);
+    /* Set PCLKx divide 2 */
+    CLK_SET_PCLK0DIV(1);
+    CLK_SET_PCLK1DIV(1);
+    CLK_SET_PCLK2DIV(1);
+    CLK_SET_PCLK3DIV(1);
+    CLK_SET_PCLK4DIV(1);
 
     /* Update System Core Clock */
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-
-    CLK_EnableModuleClock(SDH0_MODULE);
-    CLK_SetModuleClock(SDH0_MODULE, CLK_SDHSEL_SDH0SEL_APLL1_DIV2, CLK_SDHDIV_SDH0DIV(10));
-
-    CLK_EnableModuleClock(SDH1_MODULE);
-    CLK_SetModuleClock(SDH1_MODULE, CLK_SDHSEL_SDH1SEL_APLL1_DIV2, CLK_SDHDIV_SDH1DIV(10));
 
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
@@ -122,56 +95,20 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOH_MODULE);
     CLK_EnableModuleClock(GPIOI_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
-
-    SDH0_CD_PIN_INIT();
-    SDH0_CLK_PIN_INIT();
-    SDH0_CMD_PIN_INIT();
-    SDH0_DAT0_PIN_INIT();
-    SDH0_DAT1_PIN_INIT();
-    SDH0_DAT2_PIN_INIT();
-    SDH0_DAT3_PIN_INIT();
-#if defined __PLDM_EMU_EMMC__
-    SET_GPIO_PD13();
-    GPIO_SetMode(PD, BIT13, GPIO_MODE_INPUT);
-    PD13 = 0;
-#endif //__PLDM_EMU_EMMC__
-
-    SDH1_CD_PIN_INIT();
-    SDH1_CLK_PIN_INIT();
-    SDH1_CMD_PIN_INIT();
-    SDH1_DAT0_PIN_INIT();
-    SDH1_DAT1_PIN_INIT();
-    SDH1_DAT2_PIN_INIT();
-    SDH1_DAT3_PIN_INIT();
-#if defined __PLDM_EMU_EMMC__
-    SET_GPIO_PA6();
-    GPIO_SetMode(PA, BIT6, GPIO_MODE_INPUT);
-    PA6 = 1;
-#endif //__PLDM_EMU_EMMC__
-
 }
 
 void DebugPort_Init()
 {
-    CLK_EnableModuleClock(UART0_MODULE);
+    /* Enable UART0 module clock */
+    SetDebugUartCLK();
 
-    /* Select IP clock source */
-    //CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+    /* Select UART clock source from HIRC */
+    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
 
-    /*------------------------------------------------------------------------*/
-    /* Init UART                                                              */
-    /*------------------------------------------------------------------------*/
-    /* Set GPB multi-function pins for UART0 RXD and TXD */
-    SYS->GPB_MFP3 &= ~(SYS_GPB_MFP3_PB12MFP_Msk | SYS_GPB_MFP3_PB13MFP_Msk);
-    SYS->GPB_MFP3 |= (SYS_GPB_MFP3_PB12MFP_UART0_RXD | SYS_GPB_MFP3_PB13MFP_UART0_TXD);
-    //SYS->GPD_MFP0 &= ~(SYS_GPD_MFP0_PD2MFP_Msk | SYS_GPD_MFP0_PD3MFP_Msk);
-    //SYS->GPD_MFP0 |= (SYS_GPD_MFP0_PD2MFP_UART0_RXD | SYS_GPD_MFP0_PD3MFP_UART0_TXD);
-    //SYS->GPH_MFP2 = (SYS->GPH_MFP2 & (~SYS_GPH_MFP2_PH10MFP_Msk)) | (SYS_GPH_MFP2_PH10MFP_UART0_TXD);
-    //SYS->GPH_MFP2 = (SYS->GPH_MFP2 & (~SYS_GPH_MFP2_PH11MFP_Msk)) | (SYS_GPH_MFP2_PH11MFP_UART0_RXD);
-
-    /* Reset IP */
-    //SYS->UARTRST |=  SYS_UARTRST_UART0RST_Msk;
-    //SYS->UARTRST &= ~SYS_UARTRST_UART0RST_Msk;
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init I/O Multi-function                                                                                 */
+    /*---------------------------------------------------------------------------------------------------------*/
+    SetDebugUartMFP();
 
 #ifdef __PLDM_EMU__
     DEBUG_PORT->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400); // The setting is for Palladium
@@ -181,7 +118,6 @@ void DebugPort_Init()
     DEBUG_PORT->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(12000000, 115200);
 #endif //#ifndef __PLDM_EMU__
     DEBUG_PORT->LINE = UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1;
-
 }
 
 void exit(int32_t code)
@@ -194,12 +130,15 @@ void exit(int32_t code)
 
 int main(int argc, char *argv[])
 {
-
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
+
     DebugPort_Init();
 
     NVIC_EnableIRQ(SDH0_IRQn);
+    NVIC_EnableIRQ(SDH1_IRQn);
+
+    SDH_ModuleSelect();
 
     if (CU_initialize_registry())
     {
