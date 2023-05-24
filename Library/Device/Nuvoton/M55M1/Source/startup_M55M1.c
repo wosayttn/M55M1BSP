@@ -405,16 +405,28 @@ extern const VECTOR_TABLE_Type __VECTOR_TABLE[];
  *----------------------------------------------------------------------------*/
 __NO_RETURN void Reset_Handler(void)
 {
+    __set_PSP((uint32_t)(&__INITIAL_SP));
+
+    __set_MSPLIM((uint32_t)(&__STACK_LIMIT));
+    __set_PSPLIM((uint32_t)(&__STACK_LIMIT));
+
+#if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
+    __TZ_set_STACKSEAL_S((uint32_t *)(&__STACK_SEAL));
+#endif
+
+#ifndef NVT_ICACHE_OFF
+    SCB_InvalidateICache();
+    SCB_EnableICache();
+#endif
+
+#ifndef NVT_DCACHE_OFF
+    SCB_InvalidateDCache();
+    SCB_EnableDCache();
+#endif
+
     if ((__PC() & NS_OFFSET) == 0)
     {
-        do
-        {
-            SYS->REGLCTL = 0x59UL;
-            SYS->REGLCTL = 0x16UL;
-            SYS->REGLCTL = 0x88UL;
-        }
-        while(SYS->REGLCTL == 0UL);
-        
+        SYS_UnlockReg();
         // Switch SRAM0 to normal power mode
         if (PMC->SYSRB0PC != 0)
         {
@@ -432,17 +444,10 @@ __NO_RETURN void Reset_Handler(void)
         }
 
         // Enable SRAM0 and SRAM1 clock
-        CLK->SRAMCTL |= (CLK_SRAMCTL_SRAM0CKEN_Msk | CLK_SRAMCTL_SRAM1CKEN_Msk);
+        CLK_EnableModuleClock(SRAM0_MODULE);
+        CLK_EnableModuleClock(SRAM1_MODULE);
+        SYS_LockReg();
     }
-    
-    __set_PSP((uint32_t)(&__INITIAL_SP));
-
-    __set_MSPLIM((uint32_t)(&__STACK_LIMIT));
-    __set_PSPLIM((uint32_t)(&__STACK_LIMIT));
-    
-#if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-    __TZ_set_STACKSEAL_S((uint32_t *)(&__STACK_SEAL));
-#endif
 
     __PROGRAM_START();                        /* Enter PreMain (C library entry point) */
 }

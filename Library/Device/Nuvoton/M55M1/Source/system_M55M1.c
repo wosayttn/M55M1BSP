@@ -125,14 +125,6 @@ __WEAK void InitDebugUart(void)
  *----------------------------------------------------------------------------*/
 __attribute__ ((constructor)) void SystemInit(void)
 {
-#ifndef NVT_ICACHE_OFF
-    //SCB_EnableICache();
-#endif
-    
-#ifndef NVT_DCACHE_OFF
-    //SCB_EnableDCache();
-#endif
-
 #if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
     SCB->VTOR = (uint32_t)(&__VECTOR_TABLE[0]);
 #endif
