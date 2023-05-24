@@ -17,6 +17,7 @@
 int AWF_Test_Init(void)
 {
     CLK_EnableModuleClock(AWF0_MODULE);
+    SYS_ResetModule(SYS_AWF0RST);
     return 0;
 }
 int AWF_Test_Clean(void)
@@ -124,15 +125,21 @@ void TestFunc_AWF_SetWBINITValue(void)
 
 void TestFunc_AWF_TestMacro(void)
 {
-    printf("\n");
+
+    AWF_SetWBINITValue(0);
+    AWF_SetHTHValue(0);
+    AWF_SetLTHValue(0);
+    AWF_SetAccumlationCount(8);
+    
     AWF_CLEAR_HTH_INT_FLAG();
     AWF_CLEAR_LTH_INT_FLAG();
     CU_ASSERT(AWF_GET_HTH_INT_FLAG() == 0UL);
     CU_ASSERT(AWF_GET_LTH_INT_FLAG() == 0UL);
     
-    AWF_SetDAT(50);
     AWF_SetHTHValue(0);
     AWF_SetLTHValue(100);
+    AWF_SetDAT(50);
+
     CU_ASSERT(AWF_GET_HTH_INT_FLAG() == 1UL);
     CU_ASSERT(AWF_GET_LTH_INT_FLAG() == 1UL);
     
