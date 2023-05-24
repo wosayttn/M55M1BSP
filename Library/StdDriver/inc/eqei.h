@@ -173,7 +173,7 @@ extern "C"
   * @details    This macro disable specified EQEI interrupt.
   * \hideinitializer
   */
-#define EQEI_DISABLE_INT(eeqei, u32IntSel)     ((eqei)->CTL &= ~(u32IntSel))
+#define EQEI_DISABLE_INT(eeqei, u32IntSel)     ((eeqei)->CTL &= ~(u32IntSel))
 
 /**
   * @brief      Enable EQEI interrupt
