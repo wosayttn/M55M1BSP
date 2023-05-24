@@ -33,12 +33,18 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[0]     |INIT_ACTIVE|RTC Active Status (Read Only)
+     * |[0]     |ACTIVE    |RTC Active Status (Read Only)
+     * |        |          |0 = RTC is at reset state.
+     * |        |          |1 = RTC is at normal active state.RTC Active Status (Read Only)
      * |        |          |0 = RTC is at reset state.
      * |        |          |1 = RTC is at normal active state.
      * |[31:1]  |INIT      |RTC Initiation (Write Only)
      * |        |          |When RTC block is powered on, RTC is at reset state
-     * |        |          |User has to write a number (0xa5eb1357) to INIT to make RTC leaving reset state
+     * |        |          |User has to write a number (0x a5eb1357) to INIT to make RTC leave reset state
+     * |        |          |Once the INIT is written as 0xa5eb1357, the RTC will be in un-reset state permanently.
+     * |        |          |The INIT is a write-only field and read value will be always 0.RTC Initiation
+     * |        |          |When RTC block is powered on, RTC is at reset state
+     * |        |          |User has to write a number (0x a5eb1357) to INIT to make RTC leave reset state
      * |        |          |Once the INIT is written as 0xa5eb1357, the RTC will be in un-reset state permanently.
      * |        |          |The INIT is a write-only field and read value will be always 0.
      * @var RTC_T::FREQADJ
@@ -46,14 +52,10 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[21:0]  |FREQADJ   |Frequency Compensation Register (M480)
-     * |        |          |User must to get actual LXT frequency for RTC application.
-     * |        |          |FCR = 0x200000 * (32768 / LXT frequency).
-     * |        |          |Note: This formula is suitable only when RTC clock source is from LXT, RTCSEL (CLK_CLKSEL3[8]) is 0.
-     * |[5:0]   |FRACTION  |Fraction Part (M480LD)
+     * |[5:0]   |FRACTION  |Fraction Part
      * |        |          |Formula: FRACTION = (fraction part of detected value) X 64.
      * |        |          |Note: Digit in FCR must be expressed as hexadecimal number.
-     * |[12:8]  |INTEGER   |Integer Part (M480LD)
+     * |[12:8]  |INTEGER   |Integer Part
      * |        |          |00000 = Integer part of detected value is 32752.
      * |        |          |00001 = Integer part of detected value is 32753.
      * |        |          |00010 = Integer part of detected value is 32754.
@@ -86,10 +88,10 @@ typedef struct
      * |        |          |11101 = Integer part of detected value is 32781.
      * |        |          |11110 = Integer part of detected value is 32782.
      * |        |          |11111 = Integer part of detected value is 32783.
-     * |[31]    |FCR_BUSY  |Frequency Compensation Register Write Operation Busy (Read Only) (M480LD)
+     * |[31]    |FCRBUSY   |Frequency Compensation Register Write Operation Busy (Read Only)
      * |        |          |0 = The new register write operation is acceptable.
      * |        |          |1 = The last write operation is in progress and new register write operation prohibited.
-     * |        |          |Note: This bit is only used when DYN_COMP_EN(RTC_CLKFMT[16]) enabled.
+     * |        |          |Note: This bit is only used when DCOMPEN DYN_COMP_EN(RTC_CLKFMT[16]) enabled.
      * @var RTC_T::TIME
      * Offset: 0x0C  RTC Time Loading Register
      * ---------------------------------------------------------------------------------------------------
@@ -123,6 +125,9 @@ typedef struct
      * |        |          |Indicates that RTC_TIME and RTC_TALM are in 24-hour time scale or 12-hour time scale
      * |        |          |0 = 12-hour time scale with AM and PM indication selected.
      * |        |          |1 = 24-hour time scale selected.
+     * |[16]    |DCOMPEN   |Dynamic Compensation Enable Bit
+     * |        |          |0 = Dynamic Compensation Disabled.
+     * |        |          |1 = Dynamic Compensation Enabled.
      * @var RTC_T::WEEKDAY
      * Offset: 0x18  RTC Day of the Week Register
      * ---------------------------------------------------------------------------------------------------
@@ -166,7 +171,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[0]     |LEAPYEAR  |Leap Year Indication Register (Read Only)
+     * |[0]     |LEAPYEAR  |Leap Year Indication (Read Only)
      * |        |          |0 = This year is not a leap year.
      * |        |          |1 = This year is leap year.
      * @var RTC_T::INTEN
@@ -206,6 +211,12 @@ typedef struct
      * |        |          |Set TAMP5IEN to 1 can also enable chip wake-up function when tamper 5 interrupt event is generated.
      * |        |          |0 = Tamper 5 or Pair 2 interrupt Disabled.
      * |        |          |1 = Tamper 5 or Pair 2 interrupt Enabled.
+     * |[24]    |CLKFIEN   |LXT Clock Frequency Monitor Fail Interrupt Enable Bit
+     * |        |          |0 = LXT Frequency Fail interrupt Disabled.
+     * |        |          |1 = LXT Frequency Fail interrupt Enabled.
+     * |[25]    |CLKSTIEN  |LXT Clock Frequency Monitor Stop Interrupt Enable Bit
+     * |        |          |0 = LXT Frequency Stop interrupt Disabled.
+     * |        |          |1 = LXT Frequency Stop interrupt Enabled.
      * @var RTC_T::INTSTS
      * Offset: 0x2C  RTC Interrupt Status Register
      * ---------------------------------------------------------------------------------------------------
@@ -216,61 +227,61 @@ typedef struct
      * |        |          |1 = Alarm condition is matched.
      * |        |          |Note: Write 1 to clear this bit.
      * |[1]     |TICKIF    |RTC Time Tick Interrupt Flag
-     * |        |          |0 = Tick condition does not occur.
-     * |        |          |1 = Tick condition occur.
+     * |        |          |0 = Tick condition did not occur.
+     * |        |          |1 = Tick condition occurred.
      * |        |          |Note: Write 1 to clear this bit.
      * |[8]     |TAMP0IF   |Tamper 0 Interrupt Flag
-     * |        |          |This bit is set when TAMP0_PIN detected level non-equal TAMP0LV (RTC_TAMPCTL[9]).
+     * |        |          |This bit is set when TAMPER0 detected level non-equal TAMP0LV (RTC_TAMPCTL[9]).
      * |        |          |0 = No Tamper 0 interrupt flag is generated.
      * |        |          |1 = Tamper 0 interrupt flag is generated.
-     * |        |          |Note1: Write 1 to clear this bit.
-     * |        |          |Note2: Clear all TAPMxIF will clear RTC_TAMPTIME and RTC_TAMPCAL automatically.
+     * |        |          |Note 1: Write 1 to clear this bit.
+     * |        |          |Note 2: This interrupt flag will generate again when Tamper setting condition is not restoration.
+     * |        |          |Note 3: Need to clear all TAMPxIF, after that, new RTC_TAMPTIME and RTC_TAMPCAL values can loaded while a tamper event occurred.
      * |[9]     |TAMP1IF   |Tamper 1 or Pair 0 Interrupt Flag
-     * |        |          |This bit is set when TAMP1_PIN detected level non-equal TAMP1LV (RTC_TAMPCTL[13])
-     * |        |          |or TAMP0_PIN and TAMP1_PIN disconnected during DYNPR0EN (RTC_TAMPCTL[15]) is activated.
+     * |        |          |This bit is set when TAMPER1 detected level non-equal TAMP1LV (RTC_TAMPCTL[13]) or TAMPER0 and TAMPER1 disconnected during DYNPR0EN (RTC_TAMPCTL[15]) is activated.
      * |        |          |0 = No Tamper 1 or Pair 0 interrupt flag is generated.
      * |        |          |1 = Tamper 1 or Pair 0 interrupt flag is generated.
-     * |        |          |Note1: Write 1 to clear this bit.
-     * |        |          |Note2: Clear all TAPMxIF will clear RTC_TAMPTIME and RTC_TAMPCAL automatically.
+     * |        |          |Note 1: Write 1 to clear this bit.
+     * |        |          |Note 2: This interrupt flag will generate again when Tamper setting condition is not restoration.
+     * |        |          |Note 3: Need to clear all TAMPxIF, after that, new RTC_TAMPTIME and RTC_TAMPCAL values can loaded while a tamper event occurred.
      * |[10]    |TAMP2IF   |Tamper 2 Interrupt Flag
-     * |        |          |This bit is set when TAMP2_PIN detected level non-equal TAMP2LV (RTC_TAMPCTL[17]).
+     * |        |          |This bit is set when TAMPER2 detected level non-equal TAMP2LV (RTC_TAMPCTL[17]).
      * |        |          |0 = No Tamper 2 interrupt flag is generated.
      * |        |          |1 = Tamper 2 interrupt flag is generated.
-     * |        |          |Note1: Write 1 to clear this bit.
-     * |        |          |Note2: Clear all TAPMxIF will clear RTC_TAMPTIME and RTC_TAMPCAL automatically.
+     * |        |          |Note 1: Write 1 to clear this bit.
+     * |        |          |Note 2: This interrupt flag will generate again when Tamper setting condition is not restoration.
+     * |        |          |Note 3: Need to clear all TAMPxIF, after that, new RTC_TAMPTIME and RTC_TAMPCAL values can loaded while a tamper event occurred.
      * |[11]    |TAMP3IF   |Tamper 3 or Pair 1 Interrupt Flag
-     * |        |          |This bit is set when TAMP3_PIN detected level non-equal TAMP3LV (RTC_TAMPCTL[21])
-     * |        |          |or TAMP2_PIN and TAMP3_PIN disconnected during DYNPR1EN (RTC_TAMPCTL[23]) is activated
-     * |        |          |or TAMP0_PIN and TAMP3_PIN disconnected during DYNPR1EN (RTC_TAMPCTL[23]) and DYN1ISS (RTC_TAMPCTL[0]) are activated.
+     * |        |          |This bit is set when TAMPER3 detected level non-equal TAMP3LV (RTC_TAMPCTL[21]) or TAMPER2 and TAMPER3 disconnected during DYNPR1EN (RTC_TAMPCTL[23]) is activated or TAMPER0 and TAMPER3 disconnected during DYNPR1EN (RTC_TAMPCTL[23]) and DYN1ISS (RTC_TAMPCTL[0]) are activated.
      * |        |          |0 = No Tamper 3 or Pair 1 interrupt flag is generated.
      * |        |          |1 = Tamper 3 or Pair 1 interrupt flag is generated.
-     * |        |          |Note1: Write 1 to clear this bit.
-     * |        |          |Note2: Clear all TAPMxIF will clear RTC_TAMPTIME and RTC_TAMPCAL automatically.
+     * |        |          |Note 1: Write 1 to clear this bit.
+     * |        |          |Note 2: This interrupt flag will generate again when Tamper setting condition is not restoration.
+     * |        |          |Note 3: Need to clear all TAMPxIF, after that, new RTC_TAMPTIME and RTC_TAMPCAL values can loaded while a tamper event occurred.
      * |[12]    |TAMP4IF   |Tamper 4 Interrupt Flag
-     * |        |          |This bit is set when TAMP4_PIN detected level non-equal TAMP4LV (RTC_TAMPCTL[25]).
+     * |        |          |This bit is set when TAMPER4 detected level non-equal TAMP4LV (RTC_TAMPCTL[25]).
      * |        |          |0 = No Tamper 4 interrupt flag is generated.
      * |        |          |1 = Tamper 4 interrupt flag is generated.
-     * |        |          |Note1: Write 1 to clear this bit.
-     * |        |          |Note2: Clear all TAPMxIF will clear RTC_TAMPTIME and RTC_TAMPCAL automatically.
+     * |        |          |Note 1: Write 1 to clear this bit.
+     * |        |          |Note 2: This interrupt flag will generate again when Tamper setting condition is not restoration.
+     * |        |          |Note 3: Need to clear all TAMPxIF, after that, new RTC_TAMPTIME and RTC_TAMPCAL values can loaded while a tamper event occurred.
      * |[13]    |TAMP5IF   |Tamper 5 or Pair 2 Interrupt Flag
-     * |        |          |This bit is set when TAMP5_PIN detected level non-equal TAMP5LV (RTC_TAMPCTL[29])
-     * |        |          |or TAMP4_PIN and TAMP5_PIN disconnected during DYNPR2EN (RTC_TAMPCTL[31]) is activated
-     * |        |          |or TAMP0_PIN and TAMP5_PIN disconnected during DYNPR2EN (RTC_TAMPCTL[31]) and DYN2ISS (RTC_TAMPCTL[1]) are activated.
+     * |        |          |This bit is set when TAMPER5 detected level non-equal TAMP5LV (RTC_TAMPCTL[29]) or TAMPER4 and TAMPER5 disconnected during DYNPR2EN (RTC_TAMPCTL[31]) is activated or TAMPER0 and TAMPER5 disconnected during DYNPR2EN (RTC_TAMPCTL[31]) and DYN2ISS (RTC_TAMPCTL[1]) are activated.
      * |        |          |0 = No Tamper 5 or Pair 2 interrupt flag is generated.
      * |        |          |1 = Tamper 5 or Pair 2 interrupt flag is generated.
-     * |        |          |Note1: Write 1 to clear this bit.
-     * |        |          |Note2: Clear all TAPMxIF will clear RTC_TAMPTIME and RTC_TAMPCAL automatically.
-     * |        |          |Note3: Need to clear all TAMPxIF, after that, new RTC_TAMPTIME and RTC_TAMPCAL values are loaded while a tamper event occurred.
+     * |        |          |Note 1: Write 1 to clear this bit.
+     * |        |          |Note 2: This interrupt flag will generate again when Tamper setting condition is not restoration.
+     * |        |          |Note 3: Need to clear all TAMPxIF, after that, new RTC_TAMPTIME and RTC_TAMPCAL values can loaded while a tamper event occurred.
      * |[24]    |CLKFIF    |LXT Clock Frequency Monitor Fail Interrupt Flag
      * |        |          |0 = LXT frequency is normal.
      * |        |          |1 = LXT frequency is abnormal.
-     * |        |          |Note1: Write 1 to clear the bit to 0.
-     * |        |          |Note2: LXT detector will automatic disable when Fail/Stop Flag rise, resume after Fail/Stop Flag clear.
+     * |        |          |Note 1: Write 1 to clear the bit to 0.
+     * |        |          |Note 2: LXT detector will automatically disable when CLKSTIF/CLKFIF flag rise, resume after Fail/Stop Flag clear.
      * |[25]    |CLKSTIF   |LXT Clock Frequency Monitor Stop Interrupt Flag
      * |        |          |0 = LXT frequency is normal.
      * |        |          |1 = LXT frequency is almost stop.
-     * |        |          |Note1: Write 1 to clear the bit to 0.
-     * |        |          |Note2: LXT detector will automatic disable when Fail/Stop Flag rise, resume after Fail/Stop Flag clear.
+     * |        |          |Note 1: Write 1 to clear the bit to 0.
+     * |        |          |Note 2: LXT detector will automatically disable when CLKSTIF/CLKFIF flag rise, resume after Fail/Stop Flag clear.
      * @var RTC_T::TICK
      * Offset: 0x30  RTC Time Tick Register
      * ---------------------------------------------------------------------------------------------------
@@ -315,15 +326,18 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[2]     |SPRRWEN   |Spare Register Enable Bit
-     * |        |          |0 = Spare register is Disabled.
-     * |        |          |1 = Spare register is Enabled.
-     * |        |          |Note: When spare register is disabled, RTC_SPR0 ~ RTC_SPR19 cannot be accessed.
+     * |        |          |0 = Spare register Disabled.
+     * |        |          |1 = Spare register Enabled.
+     * |        |          |Note: When spare register is disabled, RTC_SPR0 ~ RTC_SPR1919 cannot be accessed.
      * |[5]     |SPRCSTS   |SPR Clear Flag
-     * |        |          |This bit indicates if the RTC_SPR0 ~RTC_SPR19 content is cleared when specify tamper event is detected.
+     * |        |          |This bit indicates if the RTC_SPR0 ~ RTC_SPR19 content is cleared when specify tamper event is detected.
      * |        |          |0 = Spare register content is not cleared.
      * |        |          |1 = Spare register content is cleared.
-     * |        |          |Writes 1 to clear this bit.
-     * |        |          |Note: This bit keep 1 when RTC_INTSTS[13:8] not equal zero.
+     * |        |          |Note 1: Write 1 to clear this bit.
+     * |        |          |Note 2: This bit keeps 1 when RTC_INTSTS[10:8] is not equal to 0.
+     * |[16]    |LXTFCLR   |LXT Clock Fail/Stop to Clear Spare Enable Bit
+     * |        |          |0 = LXT Fail/Stop to clear Spare register content Disabled.
+     * |        |          |1 = LXT Fail/Stop to clear Spare register content Enabled.
      * @var RTC_T::SPR[20]
      * Offset: 0x40 ~ 0x8C  RTC Spare Register 0 ~ 19
      * ---------------------------------------------------------------------------------------------------
@@ -335,7 +349,7 @@ typedef struct
      * |        |          |Before storing back-up information in to RTC_SPRx register,
      * |        |          |user should check REWNF (RTC_RWEN[16]) is enabled.
      * @var RTC_T::LXTCTL
-     * Offset: 0x100  RTC 32.768 kHz Oscillator Control Register
+     * Offset: 0x100  RTC 32.768 KHz Oscillator Control Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
@@ -345,11 +359,11 @@ typedef struct
      * |        |          |0000 = L0 mode.
      * |        |          |0001 = L1 mode.
      * |        |          |0010 = L2 mode.
-     * |        |          |0011 = L3 mode.
+     * |        |          |0011 = L3 mode. (Default)
      * |        |          |0100 = L4 mode.
      * |        |          |0101 = L5 mode.
      * |        |          |0110 = L6 mode.
-     * |        |          |0111 = L7 mode.
+     * |        |          |0111 = L7 mode
      * |        |          |1000 = L8 mode.
      * |        |          |1001 = L9 mode.
      * |        |          |1010 = L10 mode.
@@ -361,7 +375,7 @@ typedef struct
      * |[7]     |RTCCKSEL  |RTC Clock Source Selection
      * |        |          |0 = Clock source from external low speed crystal oscillator (LXT) or internal low speed RC 32K oscillator (LIRC32K) depended on C32KSEL value.
      * |        |          |1 = Clock source from internal low speed RC oscillator (LIRC).
-     * |[8]     |IOCTLSEL  |IO Pin Backup Control Selection
+     * |[8]     |IOCTLSEL  |I/O Pin Backup Control Selection
      * |        |          |When low speed 32 kHz oscillator is disabled or TAMPxEN is disabled,
      * |        |          |PF.4 pin (X32KO pin), PF.5 pin (X32KI pin) or PF.6~11 pin (TAMPERx pin) can be used as GPIO function.
      * |        |          |User can program IOCTLSEL to decide PF.4~11 I/O function is controlled by system power domain GPIO module or VBAT power domain RTC_GPIOCTL0/1 control register.
@@ -617,23 +631,24 @@ typedef struct
      * |        |          |This bit determine Tamper 3 input is from Tamper 2 or Tamper 0 in dynamic mode.
      * |        |          |0 = Tamper input is from Tamper 2.
      * |        |          |1 = Tamper input is from Tamper 0.
-     * |        |          |Note: This bit has effect only when DYNPR1EN (RTC_TAMPCTL[16]) and DYNPR0EN (RTC_TAMPCTL[15]) are set
+     * |        |          |Note: This bit is effective only when DYNPR1EN (RTC_TAMPCTL[16]) and DYNPR0EN (RTC_TAMPCTL[15]) are set.
      * |[1]     |DYN2ISS   |Dynamic Pair 2 Input Source Select
      * |        |          |This bit determine Tamper 5 input is from Tamper 4 or Tamper 0 in dynamic mode.
      * |        |          |0 = Tamper input is from Tamper 4.
      * |        |          |1 = Tamper input is from Tamper 0.
-     * |        |          |Note: This bit has effect only when DYNPR2EN (RTC_TAMPCTL[24]) and DYNPR0EN (RTC_TAMPCTL[15]) are set
-     * |[3:2]   |DYNSRC    |Dynamic Reference Pattern
+     * |        |          |Note: This bit has effect only when DYNPR2EN (RTC_TAMPCTL[24]) and DYNPR0EN (RTC_TAMPCTL[15]) are set.
+     * |[3]     |DYNSRC    |Dynamic Reference Pattern
      * |        |          |This fields determine the new reference pattern when current pattern run out in dynamic pair mode.
-     * |        |          |00 or 10 = The new reference pattern is generated by random number generator when the reference pattern run out.
-     * |        |          |01 = The new reference pattern is repeated previous random value when the reference pattern run out.
-     * |        |          |11 = The new reference pattern is repeated from SEED (RTC_TAMPSEED[31:0]) when the reference pattern run out.
-     * |        |          |Note: After revise this bit, the SEEDRLD (RTC_TAMPCTL[4]) should be set.
+     * |        |          |0 = The new reference pattern is generated by random number generator when the reference pattern run out.
+     * |        |          |1 = The new reference pattern is repeated from SEED (RTC_TAMPSEED[31:0]) when the reference pattern run out.
+     * |        |          |Note: After this bit is modified, the SEEDRLD (RTC_TAMPCTL[4]) should be set.
      * |[4]     |SEEDRLD   |Reload New Seed for PRNG Engine
-     * |        |          |Setting this bit, the tamper configuration will be reload.
+     * |        |          |Setting this bit, the tamper configuration will be reloaded.
      * |        |          |0 = Generating key based on the current seed.
      * |        |          |1 = Reload new seed.
-     * |        |          |Note: Before set this bit, the tamper configuration should be set to complete.
+     * |        |          |Note 1: Before this bit is set, the tamper configuration should be set to complete and this bit will be auto clear to 0 after reload new seed completed.
+     * |        |          |Note 2: The detection reference clock is RTC counter clock
+     * |        |          |Tamper detector needs to sync 2 ~ 3 RTC counter clock.
      * |[7:5]   |DYNRATE   |Dynamic Change Rate
      * |        |          |This item is choice the dynamic tamper output change rate.
      * |        |          |000 = 2^10 * RTC_CLK.
@@ -648,75 +663,81 @@ typedef struct
      * |[8]     |TAMP0EN   |Tamper0 Detect Enable Bit
      * |        |          |0 = Tamper 0 detect Disabled.
      * |        |          |1 = Tamper 0 detect Enabled.
-     * |        |          |Note1: The reference is RTC-clock . Tamper detector need sync 2 ~ 3 RTC-clock.
+     * |        |          |Note: The detection reference clock is RTC counter clock
+     * |        |          |Tamper detector needs to sync 2 ~ 3 RTC counter clock.
      * |[9]     |TAMP0LV   |Tamper 0 Level
-     * |        |          |This bit depend on level attribute of tamper pin for static tamper detection.
+     * |        |          |This bit depends on level attribute of tamper pin for static tamper detection.
      * |        |          |0 = Detect voltage level is low.
      * |        |          |1 = Detect voltage level is high.
-     * |[10]    |TAMP0DBEN |Tamper 0 De-bounce Enable Bit
+     * |[10]    |TAMP0DEN  |Tamper 0 De-bounce Enable Bit
      * |        |          |0 = Tamper 0 de-bounce Disabled.
-     * |        |          |1 = Tamper 0 de-bounce Enabled.
+     * |        |          |1 = Tamper 0 de-bounce Enabled, tamper detection pin will sync 1 RTC counter clock.
      * |[12]    |TAMP1EN   |Tamper 1 Detect Enable Bit
      * |        |          |0 = Tamper 1 detect Disabled.
      * |        |          |1 = Tamper 1 detect Enabled.
-     * |        |          |Note1: The reference is RTC-clock . Tamper detector need sync 2 ~ 3 RTC-clock.
+     * |        |          |Note: The detection reference clock is RTC counter clock
+     * |        |          |Tamper detector needs to sync 2 ~ 3 RTC counter clock.
      * |[13]    |TAMP1LV   |Tamper 1 Level
-     * |        |          |This bit depend on level attribute of tamper pin for static tamper detection.
+     * |        |          |This bit depends on level attribute of tamper pin for static tamper detection.
      * |        |          |0 = Detect voltage level is low.
      * |        |          |1 = Detect voltage level is high.
-     * |[14]    |TAMP1DBEN |Tamper 1 De-bounce Enable Bit
+     * |[14]    |TAMP1DEN  |Tamper 1 De-bounce Enable Bit
      * |        |          |0 = Tamper 1 de-bounce Disabled.
-     * |        |          |1 = Tamper 1 de-bounce Enabled.
+     * |        |          |1 = Tamper 1 de-bounce Enabled, tamper detection pin will sync 1 RTC counter clock.
      * |[15]    |DYNPR0EN  |Dynamic Pair 0 Enable Bit
      * |        |          |0 = Static detect.
      * |        |          |1 = Dynamic detect.
      * |[16]    |TAMP2EN   |Tamper 2 Detect Enable Bit
      * |        |          |0 = Tamper 2 detect Disabled.
      * |        |          |1 = Tamper 2 detect Enabled.
-     * |        |          |Note1: The reference is RTC-clock . Tamper detector need sync 2 ~ 3 RTC-clock.
+     * |        |          |Note: The detection reference clock is RTC counter clock
+     * |        |          |Tamper detector need to sync 2 ~ 3 RTC counter clock.
      * |[17]    |TAMP2LV   |Tamper 2 Level
-     * |        |          |This bit depend on level attribute of tamper pin for static tamper detection.
+     * |        |          |This bit depends on level attribute of tamper pin for static tamper detection.
      * |        |          |0 = Detect voltage level is low.
      * |        |          |1 = Detect voltage level is high.
-     * |[18]    |TAMP2DBEN |Tamper 2 De-bounce Enable Bit
+     * |[18]    |TAMP2DEN  |Tamper 2 De-bounce Enable Bit
      * |        |          |0 = Tamper 2 de-bounce Disabled.
-     * |        |          |1 = Tamper 2 de-bounce Enabled.
+     * |        |          |1 = Tamper 2 de-bounce Enabled, tamper detection pin will sync 1 RTC counter clock.
      * |[20]    |TAMP3EN   |Tamper 3 Detect Enable Bit
      * |        |          |0 = Tamper 3 detect Disabled.
      * |        |          |1 = Tamper 3 detect Enabled.
-     * |        |          |Note1: The reference is RTC-clock . Tamper detector need sync 2 ~ 3 RTC-clock.
+     * |        |          |Note: The detection reference clock is RTC counter clock
+     * |        |          |Tamper detector need to sync 2 ~ 3 RTC counter clock.
      * |[21]    |TAMP3LV   |Tamper 3 Level
-     * |        |          |This bit depend on level attribute of tamper pin for static tamper detection.
+     * |        |          |This bit depends on level attribute of tamper pin for static tamper detection.
      * |        |          |0 = Detect voltage level is low.
      * |        |          |1 = Detect voltage level is high.
-     * |[22]    |TAMP3DBEN |Tamper 3 De-bounce Enable Bit
+     * |[22]    |TAMP3DEN  |Tamper 3 De-bounce Enable Bit
      * |        |          |0 = Tamper 3 de-bounce Disabled.
-     * |        |          |1 = Tamper 3 de-bounce Enabled.
+     * |        |          |1 = Tamper 3 de-bounce Enabled, tamper detection pin will sync 1 RTC counter clock.
      * |[23]    |DYNPR1EN  |Dynamic Pair 1 Enable Bit
      * |        |          |0 = Static detect.
      * |        |          |1 = Dynamic detect.
      * |[24]    |TAMP4EN   |Tamper4 Detect Enable Bit
      * |        |          |0 = Tamper 4 detect Disabled.
      * |        |          |1 = Tamper 4 detect Enabled.
-     * |        |          |Note1: The reference is RTC-clock . Tamper detector need sync 2 ~ 3 RTC-clock.
+     * |        |          |Note: The detection reference clock is RTC counter clock
+     * |        |          |Tamper detector need to sync 2 ~ 3 RTC counter clock.
      * |[25]    |TAMP4LV   |Tamper 4 Level
      * |        |          |This bit depends on level attribute of tamper pin for static tamper detection.
      * |        |          |0 = Detect voltage level is low.
      * |        |          |1 = Detect voltage level is high.
-     * |[26]    |TAMP4DBEN |Tamper 4 De-bounce Enable Bit
+     * |[26]    |TAMP4DEN  |Tamper 4 De-bounce Enable Bit
      * |        |          |0 = Tamper 4 de-bounce Disabled.
-     * |        |          |1 = Tamper 4 de-bounce Enabled.
+     * |        |          |1 = Tamper 4 de-bounce Enabled, tamper detection pin will sync 1 RTC counter clock.
      * |[28]    |TAMP5EN   |Tamper 5 Detect Enable Bit
      * |        |          |0 = Tamper 5 detect Disabled.
      * |        |          |1 = Tamper 5 detect Enabled.
-     * |        |          |Note1: The reference is RTC-clock . Tamper detector need sync 2 ~ 3 RTC-clock.
+     * |        |          |Note: The detection reference clock is RTC counter clock
+     * |        |          |Tamper detector need to sync 2 ~ 3 RTC counter clock.
      * |[29]    |TAMP5LV   |Tamper 5 Level
-     * |        |          |This bit depend on level attribute of tamper pin for static tamper detection.
+     * |        |          |This bit depends on level attribute of tamper pin for static tamper detection.
      * |        |          |0 = Detect voltage level is low.
      * |        |          |1 = Detect voltage level is high.
-     * |[30]    |TAMP5DBEN |Tamper 5 De-bounce Enable Bit
+     * |[30]    |TAMP5DEN  |Tamper 5 De-bounce Enable Bit
      * |        |          |0 = Tamper 5 de-bounce Disabled.
-     * |        |          |1 = Tamper 5 de-bounce Enabled.
+     * |        |          |1 = Tamper 5 de-bounce Enabled, tamper detection pin will sync 1 RTC counter clock.
      * |[31]    |DYNPR2EN  |Dynamic Pair 2 Enable Bit
      * |        |          |0 = Static detect.
      * |        |          |1 = Dynamic detect.
@@ -725,7 +746,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[31:0]  |SEED      |Seed Value
+     * |[31:0]  |SEED      |Seed Value 
      * @var RTC_T::TAMPTIME
      * Offset: 0x130  RTC Tamper Time Register
      * ---------------------------------------------------------------------------------------------------
@@ -750,42 +771,40 @@ typedef struct
      * |[19:16] |YEAR      |1-Year Calendar Digit of TAMPER Calendar (0~9)
      * |[23:20] |TENYEAR   |10-Year Calendar Digit of TAMPER Calendar (0~9)
      * @var RTC_T::CLKDCTL
-     * Offset: 0x140  RTC Clock Fail Detector Control Register
+     * Offset: 0x140  Clock Fail Detector Control Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[0]     |LXTFDEN   |LXT Clock Fail/Stop Detector Enable Bit
      * |        |          |0 = LXT clock Fail/Stop detector Disabled.
      * |        |          |1 = LXT clock Fail/Stop detector Enabled.
-     * |        |          |Note: LXT detector will automatic disable when Fail/Stop Flag rise, resume after Fail/Stop Flag clear.
+     * |        |          |Note: LXT detector will automatically be disabled when CLKSTIF/CLKFIF flag rises, and resumes after Fail/Stop Flag is cleared.
      * |[1]     |LXTFSW    |LXT Clock Fail Detector Switch LIRC32K Enable Bit
      * |        |          |0 = LXT clock Fail switch LIRC32K Disabled.
-     * |        |          |1 = LXT clock Fail detector rise, RTC clock source switch from LIRC32K.
-     * |        |          |If LXT clock fail detector flag CLKFIF (RTC_INTSTS[24]) is generated, RTC clock source will switch to LIRC32K automatically.
+     * |        |          |1 = LXT clock Fail detector rises, and RTC clock source switch from LIRC32K.
      * |[2]     |LXTSTSW   |LXT Clock Stop Detector Switch LIRC32K Enable Bit
      * |        |          |0 = LXT clock Stop switch LIRC32K Disabled.
      * |        |          |1 = LXT clock Stop detector rise, RTC clock source switch from LIRC32K.
-     * |        |          |If LXT clock stop detector flag CLKSTIF (RTC_INTSTS[25]) is generated, RTC clock source will switch to LIRC32K automatically
      * |[16]    |SWLIRCF   |LXT Clock Detector Fail/Stop Switch LIRC32K Flag (Read Only)
      * |        |          |0 = Indicate RTC clock source from LXT.
      * |        |          |1 = Indicate RTC clock source from LIRC32K.
      * |[17]    |LXTSLOWF  |LXT Slower Than LIRC32K Flag (Read Only)
      * |        |          |0 = LXT frequency faster than LIRC32K.
      * |        |          |1 = LXT frequency is slowly.
-     * |        |          |Note: LXTSLOWF is vaild during CLKSTIF (RTC_INTSTS[25]) or CLKFIF (RTC_INTSTS[24]) rising.
+     * |        |          |Note: LXTSLOWF is valid during CLKSTIF (RTC_INTSTS[25]) or CLKFIF (RTC_INTSTS[24]) rising.
      * @var RTC_T::CDBR
-     * Offset: 0x144  RTC Clock Frequency Detector Boundary Register
+     * Offset: 0x144  Clock Frequency Detector Boundary Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[7:0]   |STOPBD    |LXT Clock Stop Frequency Detector Stop Boundary
-     * |        |          |These bits define the stop value of frequency monitor window.
+     * |        |          |The bits define the stop value of frequency monitor window.
      * |        |          |When LXT frequency monitor counter lower than STOPBD, the LXT frequency detect Stop interrupt flag will set to 1.
      * |        |          |Note: The boundary is defined as the maximum value of LXT among 256 LIRC32K clock time.
      * |[23:16] |FAILBD    |LXT Clock Frequency Detector Fail Boundary
-     * |        |          |These bits define the fail value of frequency monitor window.
+     * |        |          |The bits define the fail value of frequency monitor window.
      * |        |          |When LXT frequency monitor counter lower than FAILBD, the LXT frequency detect fail interrupt flag will set to 1.
-     * |        |          |Note: The boundary is defined as the maximum value of LXT among 256 LIRC32K clock time.
+     * |        |          |Note: The boundary is defined as the minimum value of LXT among 256 LIRC32K clock time.
      */
     __IO uint32_t INIT;                  /*!< [0x0000] RTC Initiation Register                                          */
     __IO uint32_t RESERVE0;            
@@ -806,29 +825,21 @@ typedef struct
     __IO uint32_t SPR[20];               /*!< [0x0040] ~ [0x008C] RTC Spare Register 0 ~ 19                             */
     /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE1[28];
-    /// @endcond //HIDDEN_SYMBOLS
-    __IO uint32_t LXTCTL;                /*!< [0x0100] RTC 32.768 kHz Oscillator Control Register                       */
+    __IO uint32_t LXTCTL;                /*!< [0x0100] RTC 32.768 KHz Oscillator Control Register                       */
     __IO uint32_t GPIOCTL0;              /*!< [0x0104] RTC GPIO Control 0 Register                                      */
     __IO uint32_t GPIOCTL1;              /*!< [0x0108] RTC GPIO Control 1 Register                                      */
-    /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE2[1];
-    /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t DSTCTL;                /*!< [0x0110] RTC Daylight Saving Time Control Register                        */
-    /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE3[3];
-    /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t TAMPCTL;               /*!< [0x0120] RTC Tamper Pin Control Register                                  */
-    /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE4[1];
-    __IO uint32_t TAMPSEED;              /*!< [0x0128] RTC  Tamper Dynamic Sedd Register                                */
-    /// @endcond //HIDDEN_SYMBOLS
+    __IO uint32_t TAMPSEED;              /*!< [0x0128] RTC Tamper Dynamic Seed Register                                 */
     __I  uint32_t RESERVE5[1];
-    /// @endcond //HIDDEN_SYMBOLS
     __I  uint32_t TAMPTIME;              /*!< [0x0130] RTC Tamper Time Register                                         */
     __I  uint32_t TAMPCAL;               /*!< [0x0134] RTC Tamper Calendar Register                                     */
-    __I  uint32_t RESERVE6[2];       /* 0x138 ~ 0x13c */
-    __IO uint32_t CLKDCTL;               /*!< [0x0140] RTC Clock Fail Detector Control Register                         */
-    __IO uint32_t CDBR;                  /*!< [0x0144] RTC Clock Frequency Detector Boundary Register                   */
+    __I  uint32_t RESERVE6[2];
+    __IO uint32_t CLKDCTL;               /*!< [0x0140] Clock Fail Detector Control Register                             */
+    __IO uint32_t CDBR;                  /*!< [0x0144] Clock Frequency Detector Boundary Register                       */
     __I  uint32_t RESERVE7[42];
     __IO uint32_t TEST;
     __I  uint32_t RESERVE8[3];    
@@ -842,20 +853,11 @@ typedef struct
     Constant Definitions for RTC Controller
 @{ */
 
-#define RTC_INIT_ACTIVE_Pos              (0)                                               /*!< RTC_T::INIT: INIT_ACTIVE Position      */
-#define RTC_INIT_ACTIVE_Msk              (0x1ul << RTC_INIT_ACTIVE_Pos)               /*!< RTC_T::INIT: INIT_ACTIVE Mask          */
+#define RTC_INIT_ACTIVE_Pos              (0)                                               /*!< RTC_T::INIT: ACTIVE Position           */
+#define RTC_INIT_ACTIVE_Msk              (0x1ul << RTC_INIT_ACTIVE_Pos)                    /*!< RTC_T::INIT: ACTIVE Mask               */
 
 #define RTC_INIT_INIT_Pos                (1)                                               /*!< RTC_T::INIT: INIT Position             */
 #define RTC_INIT_INIT_Msk                (0x7ffffffful << RTC_INIT_INIT_Pos)               /*!< RTC_T::INIT: INIT Mask                 */
-
-#define RTC_RWEN_RWENF_Pos               (16)                                              /*!< RTC_T::RWEN: RWENF Position            */
-#define RTC_RWEN_RWENF_Msk               (0x1ul << RTC_RWEN_RWENF_Pos)                     /*!< RTC_T::RWEN: RWENF Mask                */
-
-#define RTC_RWEN_RTCBUSY_Pos             (24)                                              /*!< RTC_T::RWEN: RTCBUSY Position          */
-#define RTC_RWEN_RTCBUSY_Msk             (0x1ul << RTC_RWEN_RTCBUSY_Pos)                   /*!< RTC_T::RWEN: RTCBUSY Mask              */
-
-#define RTC_FREQADJ_FREQADJ_Pos          (0)                                               /*!< RTC_T::FREQADJ: FREQADJ Position       */
-#define RTC_FREQADJ_FREQADJ_Msk          (0x3ffffful << RTC_FREQADJ_FREQADJ_Pos)           /*!< RTC_T::FREQADJ: FREQADJ Mask           */
 
 #define RTC_FREQADJ_FRACTION_Pos         (0)                                               /*!< RTC_T::FREQADJ: FRACTION Position      */
 #define RTC_FREQADJ_FRACTION_Msk         (0x3ful << RTC_FREQADJ_FRACTION_Pos)              /*!< RTC_T::FREQADJ: FRACTION Mask          */
@@ -1128,7 +1130,7 @@ typedef struct
 #define RTC_LXTCTL_LIRC32KEN_Msk         (0x1ul << RTC_LXTCTL_LIRC32KEN_Pos)               /*!< RTC_T::LXTCTL: LIRC32KEN Mask          */
 
 #define RTC_LXTCTL_GAIN_Pos              (1)                                               /*!< RTC_T::LXTCTL: GAIN Position           */
-#define RTC_LXTCTL_GAIN_Msk              (0x7ul << RTC_LXTCTL_GAIN_Pos)                    /*!< RTC_T::LXTCTL: GAIN Mask               */
+#define RTC_LXTCTL_GAIN_Msk              (0xful << RTC_LXTCTL_GAIN_Pos)                    /*!< RTC_T::LXTCTL: GAIN Mask               */
 
 #define RTC_LXTCTL_BYPASS_Pos            (5)                                               /*!< RTC_T::LXTCTL: BYPASS Position         */
 #define RTC_LXTCTL_BYPASS_Msk            (0x1ul << RTC_LXTCTL_BYPASS_Pos)                  /*!< RTC_T::LXTCTL: BYPASS Mask             */
@@ -1268,8 +1270,8 @@ typedef struct
 #define RTC_TAMPCTL_TAMP0LV_Pos          (9)                                               /*!< RTC_T::TAMPCTL: TAMP0LV Position       */
 #define RTC_TAMPCTL_TAMP0LV_Msk          (0x1ul << RTC_TAMPCTL_TAMP0LV_Pos)                /*!< RTC_T::TAMPCTL: TAMP0LV Mask           */
 
-#define RTC_TAMPCTL_TAMP0DBEN_Pos        (10)                                              /*!< RTC_T::TAMPCTL: TAMP0DBEN Position     */
-#define RTC_TAMPCTL_TAMP0DBEN_Msk        (0x1ul << RTC_TAMPCTL_TAMP0DBEN_Pos)              /*!< RTC_T::TAMPCTL: TAMP0DBEN Mask         */
+#define RTC_TAMPCTL_TAMP0DEN_Pos         (10)                                              /*!< RTC_T::TAMPCTL: TAMP0DEN Position      */
+#define RTC_TAMPCTL_TAMP0DEN_Msk         (0x1ul << RTC_TAMPCTL_TAMP0DEN_Pos)               /*!< RTC_T::TAMPCTL: TAMP0DEN Mask          */
 
 #define RTC_TAMPCTL_TAMP1EN_Pos          (12)                                              /*!< RTC_T::TAMPCTL: TAMP1EN Position       */
 #define RTC_TAMPCTL_TAMP1EN_Msk          (0x1ul << RTC_TAMPCTL_TAMP1EN_Pos)                /*!< RTC_T::TAMPCTL: TAMP1EN Mask           */
@@ -1277,8 +1279,8 @@ typedef struct
 #define RTC_TAMPCTL_TAMP1LV_Pos          (13)                                              /*!< RTC_T::TAMPCTL: TAMP1LV Position       */
 #define RTC_TAMPCTL_TAMP1LV_Msk          (0x1ul << RTC_TAMPCTL_TAMP1LV_Pos)                /*!< RTC_T::TAMPCTL: TAMP1LV Mask           */
 
-#define RTC_TAMPCTL_TAMP1DBEN_Pos        (14)                                              /*!< RTC_T::TAMPCTL: TAMP1DBEN Position     */
-#define RTC_TAMPCTL_TAMP1DBEN_Msk        (0x1ul << RTC_TAMPCTL_TAMP1DBEN_Pos)              /*!< RTC_T::TAMPCTL: TAMP1DBEN Mask         */
+#define RTC_TAMPCTL_TAMP1DEN_Pos         (14)                                              /*!< RTC_T::TAMPCTL: TAMP1DEN Position      */
+#define RTC_TAMPCTL_TAMP1DEN_Msk         (0x1ul << RTC_TAMPCTL_TAMP1DEN_Pos)               /*!< RTC_T::TAMPCTL: TAMP1DEN Mask          */
 
 #define RTC_TAMPCTL_DYNPR0EN_Pos         (15)                                              /*!< RTC_T::TAMPCTL: DYNPR0EN Position      */
 #define RTC_TAMPCTL_DYNPR0EN_Msk         (0x1ul << RTC_TAMPCTL_DYNPR0EN_Pos)               /*!< RTC_T::TAMPCTL: DYNPR0EN Mask          */
@@ -1289,8 +1291,8 @@ typedef struct
 #define RTC_TAMPCTL_TAMP2LV_Pos          (17)                                              /*!< RTC_T::TAMPCTL: TAMP2LV Position       */
 #define RTC_TAMPCTL_TAMP2LV_Msk          (0x1ul << RTC_TAMPCTL_TAMP2LV_Pos)                /*!< RTC_T::TAMPCTL: TAMP2LV Mask           */
 
-#define RTC_TAMPCTL_TAMP2DBEN_Pos        (18)                                              /*!< RTC_T::TAMPCTL: TAMP2DBEN Position     */
-#define RTC_TAMPCTL_TAMP2DBEN_Msk        (0x1ul << RTC_TAMPCTL_TAMP2DBEN_Pos)              /*!< RTC_T::TAMPCTL: TAMP2DBEN Mask         */
+#define RTC_TAMPCTL_TAMP2DEN_Pos         (18)                                              /*!< RTC_T::TAMPCTL: TAMP2DEN Position      */
+#define RTC_TAMPCTL_TAMP2DEN_Msk         (0x1ul << RTC_TAMPCTL_TAMP2DEN_Pos)               /*!< RTC_T::TAMPCTL: TAMP2DEN Mask          */
 
 #define RTC_TAMPCTL_TAMP3EN_Pos          (20)                                              /*!< RTC_T::TAMPCTL: TAMP3EN Position       */
 #define RTC_TAMPCTL_TAMP3EN_Msk          (0x1ul << RTC_TAMPCTL_TAMP3EN_Pos)                /*!< RTC_T::TAMPCTL: TAMP3EN Mask           */
@@ -1298,8 +1300,8 @@ typedef struct
 #define RTC_TAMPCTL_TAMP3LV_Pos          (21)                                              /*!< RTC_T::TAMPCTL: TAMP3LV Position       */
 #define RTC_TAMPCTL_TAMP3LV_Msk          (0x1ul << RTC_TAMPCTL_TAMP3LV_Pos)                /*!< RTC_T::TAMPCTL: TAMP3LV Mask           */
 
-#define RTC_TAMPCTL_TAMP3DBEN_Pos        (22)                                              /*!< RTC_T::TAMPCTL: TAMP3DBEN Position     */
-#define RTC_TAMPCTL_TAMP3DBEN_Msk        (0x1ul << RTC_TAMPCTL_TAMP3DBEN_Pos)              /*!< RTC_T::TAMPCTL: TAMP3DBEN Mask         */
+#define RTC_TAMPCTL_TAMP3DEN_Pos         (22)                                              /*!< RTC_T::TAMPCTL: TAMP3DEN Position      */
+#define RTC_TAMPCTL_TAMP3DEN_Msk         (0x1ul << RTC_TAMPCTL_TAMP3DEN_Pos)               /*!< RTC_T::TAMPCTL: TAMP3DEN Mask          */
 
 #define RTC_TAMPCTL_DYNPR1EN_Pos         (23)                                              /*!< RTC_T::TAMPCTL: DYNPR1EN Position      */
 #define RTC_TAMPCTL_DYNPR1EN_Msk         (0x1ul << RTC_TAMPCTL_DYNPR1EN_Pos)               /*!< RTC_T::TAMPCTL: DYNPR1EN Mask          */
@@ -1310,8 +1312,8 @@ typedef struct
 #define RTC_TAMPCTL_TAMP4LV_Pos          (25)                                              /*!< RTC_T::TAMPCTL: TAMP4LV Position       */
 #define RTC_TAMPCTL_TAMP4LV_Msk          (0x1ul << RTC_TAMPCTL_TAMP4LV_Pos)                /*!< RTC_T::TAMPCTL: TAMP4LV Mask           */
 
-#define RTC_TAMPCTL_TAMP4DBEN_Pos        (26)                                              /*!< RTC_T::TAMPCTL: TAMP4DBEN Position     */
-#define RTC_TAMPCTL_TAMP4DBEN_Msk        (0x1ul << RTC_TAMPCTL_TAMP4DBEN_Pos)              /*!< RTC_T::TAMPCTL: TAMP4DBEN Mask         */
+#define RTC_TAMPCTL_TAMP4DEN_Pos         (26)                                              /*!< RTC_T::TAMPCTL: TAMP4DEN Position      */
+#define RTC_TAMPCTL_TAMP4DEN_Msk         (0x1ul << RTC_TAMPCTL_TAMP4DEN_Pos)               /*!< RTC_T::TAMPCTL: TAMP4DEN Mask          */
 
 #define RTC_TAMPCTL_TAMP5EN_Pos          (28)                                              /*!< RTC_T::TAMPCTL: TAMP5EN Position       */
 #define RTC_TAMPCTL_TAMP5EN_Msk          (0x1ul << RTC_TAMPCTL_TAMP5EN_Pos)                /*!< RTC_T::TAMPCTL: TAMP5EN Mask           */
@@ -1319,8 +1321,8 @@ typedef struct
 #define RTC_TAMPCTL_TAMP5LV_Pos          (29)                                              /*!< RTC_T::TAMPCTL: TAMP5LV Position       */
 #define RTC_TAMPCTL_TAMP5LV_Msk          (0x1ul << RTC_TAMPCTL_TAMP5LV_Pos)                /*!< RTC_T::TAMPCTL: TAMP5LV Mask           */
 
-#define RTC_TAMPCTL_TAMP5DBEN_Pos        (30)                                              /*!< RTC_T::TAMPCTL: TAMP5DBEN Position     */
-#define RTC_TAMPCTL_TAMP5DBEN_Msk        (0x1ul << RTC_TAMPCTL_TAMP5DBEN_Pos)              /*!< RTC_T::TAMPCTL: TAMP5DBEN Mask         */
+#define RTC_TAMPCTL_TAMP5DEN_Pos         (30)                                              /*!< RTC_T::TAMPCTL: TAMP5DEN Position      */
+#define RTC_TAMPCTL_TAMP5DEN_Msk         (0x1ul << RTC_TAMPCTL_TAMP5DEN_Pos)               /*!< RTC_T::TAMPCTL: TAMP5DEN Mask          */
 
 #define RTC_TAMPCTL_DYNPR2EN_Pos         (31)                                              /*!< RTC_T::TAMPCTL: DYNPR2EN Position      */
 #define RTC_TAMPCTL_DYNPR2EN_Msk         (0x1ul << RTC_TAMPCTL_DYNPR2EN_Pos)               /*!< RTC_T::TAMPCTL: DYNPR2EN Mask          */

@@ -696,18 +696,7 @@ typedef struct
     __IO uint32_t TMRCTL1;               /*!< [0x002c] SC Internal Timer1 Control Register                              */
     __IO uint32_t TMRCTL2;               /*!< [0x0030] SC Internal Timer2 Control Register                              */
     __IO uint32_t UARTCTL;               /*!< [0x0034] SC UART Mode Control Register                                    */
-    /** @cond HIDDEN_SYMBOLS */
-#if defined(__FPGA_EMU__) // don't release....
-    // NOT released in TRM
-    __I  uint32_t TMRDAT0;               /*!< [0x0038] SC Timer0 Current Data Register                                  */
-    __I  uint32_t TMRDAT12;              /*!< [0x003c] SC Timer1/2 Current Data Register                                */
-    __IO uint32_t PETCTL;                /*!< [0x0040] Not released in TRM      */
-    __IO uint32_t BGTEXT;                /*!< [0x0044] Not released in TRM      */
-    __IO uint32_t EGTADJ;                /*!< [0x0048] Not released in TRM      */
-#else
     __I  uint32_t RESERVE0[5];
-#endif 
-    /** @endcond */
     __IO uint32_t ACTCTL;                /*!< [0x004c] SC Activation Control Register                                   */
 
 } SC_T;
@@ -1017,34 +1006,6 @@ typedef struct
 
 #define SC_ACTCTL_T1EXT_Pos              (0)                                               /*!< SC_T::ACTCTL: T1EXT Position           */
 #define SC_ACTCTL_T1EXT_Msk              (0x1ful << SC_ACTCTL_T1EXT_Pos)                   /*!< SC_T::ACTCTL: T1EXT Mask               */
-
-#if defined(__FPGA_EMU__) ///-----> don't release
-#define SC_PINCTL_CSTOPLV_Pos            (5)                                               /*!< SC_T::PINCTL: CSTOPLV Position         */
-#define SC_PINCTL_CSTOPLV_Msk            (0x1ul << SC_PINCTL_CSTOPLV_Pos)                  /*!< SC_T::PINCTL: CSTOPLV Mask             */
-
-/* Not released in TRM */
-#define SC_TMRDAT0_CNT0_Pos             (0)                                               /*!< SC_T::TMRDAT0: CNT0 Position           */
-#define SC_TMRDAT0_CNT0_Msk             (0xfffffful << SC_TMRDAT0_CNT0_Pos)               /*!< SC_T::TMRDAT0: CNT0 Mask               */
-#define SC_TMRDAT12_CNT1_Pos            (0)                                               /*!< SC_T::TMRDAT12: CNT1 Position          */
-#define SC_TMRDAT12_CNT1_Msk            (0xfful << SC_TMRDAT12_CNT1_Pos)                  /*!< SC_T::TMRDAT12: CNT1 Mask              */
-#define SC_TMRDAT12_CNT2_Pos            (8)                                               /*!< SC_T::TMRDAT12: CNT2 Position          */
-#define SC_TMRDAT12_CNT2_Msk            (0xfful << SC_TMRDAT12_CNT2_Pos)                  /*!< SC_T::TMRDAT12: CNT2 Mask              */
-#define SC_PETCTL_PETCEN_Pos            (24)
-#define SC_PETCTL_PETCEN_Msk            (0x1ul << SC_PETCTL_PETCEN_Pos)
-#define SC_PETCTL_PEBL_Pos              (8)
-#define SC_PETCTL_PEBL_Msk              (0xFFul << SC_PETCTL_PEBL_Pos)
-#define SC_PETCTL_PEBST_Pos             (0)
-#define SC_PETCTL_PEBST_Msk             (0xFFul << SC_PETCTL_PEBST_Pos)
-#define SC_BGTEXT_BGTEXTEN_Pos          (24)
-#define SC_BGTEXT_BGTEXTEN_Msk          (0x1ul << SC_BGTEXT_BGTEXTEN_Pos)
-#define SC_BGTEXT_BGTEXT_Pos            (0)
-#define SC_BGTEXT_BGTEXT_Msk            (0x1FFul << SC_BGTEXT_BGTEXT_Pos)
-#define SC_EGTADJ_EGTAEN_Pos            (24)
-#define SC_EGTADJ_EGTAEN_Msk            (0x1ul << SC_EGTADJ_EGTAEN_Pos)
-#define SC_EGTADJ_EGTA_Pos              (0)
-#define SC_EGTADJ_EGTA_Msk              (0xFFul << SC_EGTADJ_EGTA_Pos)
-#endif
-
 
 /** @} SC_CONST */
 /** @} end of SC register group */

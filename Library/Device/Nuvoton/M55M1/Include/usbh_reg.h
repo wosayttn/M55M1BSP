@@ -72,10 +72,10 @@ typedef struct
      * |        |          |This field sets the Host Controller state
      * |        |          |The Controller may force a state change from USBSUSPEND to USBRESUME after detecting resume signaling from a downstream port
      * |        |          |States are:
-     * |        |          |00 = USBSUSPEND.
-     * |        |          |01 = USBOPERATIONAL.
-     * |        |          |10 = USBRESUME.
-     * |        |          |11 = USBRESET.
+     * |        |          |00 = USBRESET.
+     * |        |          |01 = USBRESUME.
+     * |        |          |10 = USBOPERATIONAL.
+     * |        |          |11 = USBSUSPEND.
      * @var USBH_T::HcCommandStatus
      * Offset: 0x08  Host Controller Command Status Register
      * ---------------------------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ typedef struct
      * |        |          |This bit may be set by either software or the Host Controller and cleared by the Host Controller each time it begins processing the head of the Bulk list.
      * |        |          |0 = No active TD found or Host Controller begins to process the head of the Bulk list.
      * |        |          |1 = An active TD added or found on the Bulk list.
-     * |[17:16] |SOC       |Schedule Overrun Count
+     * |[17:16] |SOC       |Schedule Overrun Count (Read Only)
      * |        |          |These bits are incremented on each scheduling overrun error
      * |        |          |It is initialized to 00b and wraps around at 11b
      * |        |          |This will be incremented when a scheduling overrun is detected even if SO (HcInterruptStatus[0]) has already been set.
@@ -110,28 +110,34 @@ typedef struct
      * |        |          |Set when the List Processor determines a Schedule Overrun has occurred.
      * |        |          |0 = Schedule Overrun didn't occur.
      * |        |          |1 = Schedule Overrun has occurred.
+     * |        |          |Note: This bit is cleared by writing 1 to it.
      * |[1]     |WDH       |Write Back Done Head
      * |        |          |Set after the Host Controller has written HcDoneHead to HccaDoneHead
      * |        |          |Further updates of the HccaDoneHead will not occur until this bit has been cleared.
-     * |        |          |0 =.Host Controller didn't update HccaDoneHead.
-     * |        |          |1 =.Host Controller has written HcDoneHead to HccaDoneHead.
+     * |        |          |0 = Host Controller didn't update HccaDoneHead.
+     * |        |          |1 = Host Controller has written HcDoneHead to HccaDoneHead.
+     * |        |          |Note: This bit is cleared by writing 1 to it.
      * |[2]     |SF        |Start of Frame
      * |        |          |Set when the Frame Management functional block signals a 'Start of Frame' event
      * |        |          |Host Control generates a SOF token at the same time.
-     * |        |          |0 =.Not the start of a frame.
-     * |        |          |1 =.Indicate the start of a frame and Host Controller generates a SOF token.
+     * |        |          |0 = Not the start of a frame.
+     * |        |          |1 = Indicate the start of a frame and Host Controller generates a SOF token.
+     * |        |          |Note: This bit is cleared by writing 1 to it.
      * |[3]     |RD        |Resume Detected
      * |        |          |Set when Host Controller detects resume signaling on a downstream port.
      * |        |          |0 = No resume signaling detected on a downstream port.
      * |        |          |1 = Resume signaling detected on a downstream port.
+     * |        |          |Note: This bit is cleared by writing 1 to it.
      * |[5]     |FNO       |Frame Number Overflow
      * |        |          |This bit is set when bit 15 of Frame Number changes from 1 to 0 or from 0 to 1.
      * |        |          |0 = The bit 15 of Frame Number didn't change.
      * |        |          |1 = The bit 15 of Frame Number changes from 1 to 0 or from 0 to 1.
+     * |        |          |Note: This bit is cleared by writing 1 to it.
      * |[6]     |RHSC      |Root Hub Status Change
      * |        |          |This bit is set when the content of HcRhStatus or the content of HcRhPortStatus register has changed.
      * |        |          |0 = The content of HcRhStatus and the content of HcRhPortStatus register didn't change.
      * |        |          |1 = The content of HcRhStatus or the content of HcRhPortStatus register has changed.
+     * |        |          |Note: This bit is cleared by writing hu20191f to HcRhPortStatus6[20:16].
      * @var USBH_T::HcInterruptEnable
      * Offset: 0x10  Host Controller Interrupt Enable Register
      * ---------------------------------------------------------------------------------------------------
@@ -140,54 +146,55 @@ typedef struct
      * |[0]     |SO        |Scheduling Overrun Enable Bit
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
-     * |        |          |1 = Interrupt generation due to SO (HcInterruptStatus[0]) Enabled.
+     * |        |          |1 = Enable Interrupt generation due to SO (HcInterruptStatus[0]).
      * |        |          |Read Operation:
      * |        |          |0 = Interrupt generation due to SO (HcInterruptStatus[0]) Disabled.
      * |        |          |1 = Interrupt generation due to SO (HcInterruptStatus[0]) Enabled.
      * |[1]     |WDH       |Write Back Done Head Enable Bit
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
-     * |        |          |1 = Interrupt generation due to WDH (HcInterruptStatus[1]) Enabled.
+     * |        |          |1 = Enable Interrupt generation due to WDH (HcInterruptStatus[1]).
      * |        |          |Read Operation:
      * |        |          |0 = Interrupt generation due to WDH (HcInterruptStatus[1]) Disabled.
      * |        |          |1 = Interrupt generation due to WDH (HcInterruptStatus[1]) Enabled.
      * |[2]     |SF        |Start of Frame Enable Bit
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
-     * |        |          |1 = Interrupt generation due to SF (HcInterruptStatus[2]) Enabled.
+     * |        |          |1 = Enable Interrupt generation due to SF (HcInterruptStatus[2]).
      * |        |          |Read Operation:
      * |        |          |0 = Interrupt generation due to SF (HcInterruptStatus[2]) Disabled.
      * |        |          |1 = Interrupt generation due to SF (HcInterruptStatus[2]) Enabled.
      * |[3]     |RD        |Resume Detected Enable Bit
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
-     * |        |          |1 = Interrupt generation due to RD (HcInterruptStatus[3]) Enabled.
+     * |        |          |1 = Enable Interrupt generation due to RD (HcInterruptStatus[3]).
      * |        |          |Read Operation:
      * |        |          |0 = Interrupt generation due to RD (HcInterruptStatus[3]) Disabled.
      * |        |          |1 = Interrupt generation due to RD (HcInterruptStatus[3]) Enabled.
      * |[5]     |FNO       |Frame Number Overflow Enable Bit
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
-     * |        |          |1 = Interrupt generation due to FNO (HcInterruptStatus[5]) Enabled.
+     * |        |          |1 = EnableInterrupt generation due to FNO (HcInterruptStatus[5]).
      * |        |          |Read Operation:
      * |        |          |0 = Interrupt generation due to FNO (HcInterruptStatus[5]) Disabled.
      * |        |          |1 = Interrupt generation due to FNO (HcInterruptStatus[5]) Enabled.
      * |[6]     |RHSC      |Root Hub Status Change Enable Bit
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
-     * |        |          |1 = Interrupt generation due to RHSC (HcInterruptStatus[6]) Enabled.
+     * |        |          |1 = Enable Interrupt generation due to RHSC (HcInterruptStatus[6]).
      * |        |          |Read Operation:
      * |        |          |0 = Interrupt generation due to RHSC (HcInterruptStatus[6]) Disabled.
      * |        |          |1 = Interrupt generation due to RHSC (HcInterruptStatus[6]) Enabled.
      * |[31]    |MIE       |Master Interrupt Enable Bit
      * |        |          |This bit is a global interrupt enable
-     * |        |          |A write of '1' allows interrupts to be enabled via the specific enable bits listed above.
+     * |        |          |A write of '1' allows interrupts to be enabled via the specific enable bits listed above
+     * |        |          |Interrupt generation due to RHSC (HcInterruptStatus[6]), FNO (HcInterruptStatus[5]), RD (HcInterruptStatus[3]), SF (HcInterruptStatus[2]), WDH (HcInterruptStatus[1]) or SO (HcInterruptStatus[0]) are enabled only if the corresponding bit in HcInterruptEnable is 1 and MIE is 1.
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
-     * |        |          |1 = Interrupt generation due to RHSC (HcInterruptStatus[6]), FNO (HcInterruptStatus[5]), RD (HcInterruptStatus[3]), SF (HcInterruptStatus[2]), WDH (HcInterruptStatus[1]) or SO (HcInterruptStatus[0]) Enabled if the corresponding bit in HcInterruptEnable is high.
+     * |        |          |1 = Enable global interrupt.
      * |        |          |Read Operation:
-     * |        |          |0 = Interrupt generation due to RHSC (HcInterruptStatus[6]), FNO (HcInterruptStatus[5]), RD (HcInterruptStatus[3]), SF (HcInterruptStatus[2]), WDH (HcInterruptStatus[1]) or SO (HcInterruptStatus[0]) Disabled even if the corresponding bit in HcInterruptEnable is high.
-     * |        |          |1 = Interrupt generation due to RHSC (HcInterruptStatus[6]), FNO (HcInterruptStatus[5]), RD (HcInterruptStatus[3]), SF (HcInterruptStatus[2]), WDH (HcInterruptStatus[1]) or SO (HcInterruptStatus[0]) Enabled if the corresponding bit in HcInterruptEnable is high.
+     * |        |          |0 = Global interrupt disabled.
+     * |        |          |1 = Global interrupt enabled.
      * @var USBH_T::HcInterruptDisable
      * Offset: 0x14  Host Controller Interrupt Disable Register
      * ---------------------------------------------------------------------------------------------------
@@ -196,42 +203,42 @@ typedef struct
      * |[0]     |SO        |Scheduling Overrun Disable Bit
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
-     * |        |          |1 = Interrupt generation due to SO (HcInterruptStatus[0]) Disabled.
+     * |        |          |1 = Disable Interrupt generation due to SO (HcInterruptStatus[0]).
      * |        |          |Read Operation:
      * |        |          |0 = Interrupt generation due to SO (HcInterruptStatus[0]) Disabled.
      * |        |          |1 = Interrupt generation due to SO (HcInterruptStatus[0]) Enabled.
      * |[1]     |WDH       |Write Back Done Head Disable Bit
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
-     * |        |          |1 = Interrupt generation due to WDH (HcInterruptStatus[1]) Disabled.
+     * |        |          |1 = Disable Interrupt generation due to WDH (HcInterruptStatus[1]).
      * |        |          |Read Operation:
      * |        |          |0 = Interrupt generation due to WDH (HcInterruptStatus[1]) Disabled.
      * |        |          |1 = Interrupt generation due to WDH (HcInterruptStatus[1]) Enabled.
      * |[2]     |SF        |Start of Frame Disable Bit
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
-     * |        |          |1 = Interrupt generation due to SF (HcInterruptStatus[2]) Disabled.
+     * |        |          |1 = Disable Interrupt generation due to SF (HcInterruptStatus[2]).
      * |        |          |Read Operation:
      * |        |          |0 = Interrupt generation due to SF (HcInterruptStatus[2]) Disabled.
      * |        |          |1 = Interrupt generation due to SF (HcInterruptStatus[2]) Enabled.
      * |[3]     |RD        |Resume Detected Disable Bit
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
-     * |        |          |1 = Interrupt generation due to RD (HcInterruptStatus[3]) Disabled.
+     * |        |          |1 = Disable Interrupt generation due to RD (HcInterruptStatus[3]).
      * |        |          |Read Operation:
      * |        |          |0 = Interrupt generation due to RD (HcInterruptStatus[3]) Disabled.
      * |        |          |1 = Interrupt generation due to RD (HcInterruptStatus[3]) Enabled.
      * |[5]     |FNO       |Frame Number Overflow Disable Bit
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
-     * |        |          |1 = Interrupt generation due to FNO (HcInterruptStatus[5]) Disabled.
+     * |        |          |1 = Disable Interrupt generation due to FNO (HcInterruptStatus[5]).
      * |        |          |Read Operation:
      * |        |          |0 = Interrupt generation due to FNO (HcInterruptStatus[5]) Disabled.
      * |        |          |1 = Interrupt generation due to FNO (HcInterruptStatus[5]) Enabled.
      * |[6]     |RHSC      |Root Hub Status Change Disable Bit
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
-     * |        |          |1 = Interrupt generation due to RHSC (HcInterruptStatus[6]) Disabled.
+     * |        |          |1 = Disable Interrupt generation due to RHSC (HcInterruptStatus[6]).
      * |        |          |Read Operation:
      * |        |          |0 = Interrupt generation due to RHSC (HcInterruptStatus[6]) Disabled.
      * |        |          |1 = Interrupt generation due to RHSC (HcInterruptStatus[6]) Enabled.
@@ -239,10 +246,10 @@ typedef struct
      * |        |          |Global interrupt disable. Writing '1' to disable all interrupts.
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
-     * |        |          |1 = Interrupt generation due to RHSC (HcInterruptStatus[6]), FNO (HcInterruptStatus[5]), RD (HcInterruptStatus[3]), SF (HcInterruptStatus[2]), WDH (HcInterruptStatus[1]) or SO (HcInterruptStatus[0]) Disabled if the corresponding bit in HcInterruptEnable is high.
+     * |        |          |1 = Disable global interrupt.
      * |        |          |Read Operation:
-     * |        |          |0 = Interrupt generation due to RHSC (HcInterruptStatus[6]), FNO (HcInterruptStatus[5]), RD (HcInterruptStatus[3]), SF (HcInterruptStatus[2]), WDH (HcInterruptStatus[1]) or SO (HcInterruptStatus[0]) Disabled even if the corresponding bit in HcInterruptEnable is high.
-     * |        |          |1 = Interrupt generation due to RHSC (HcInterruptStatus[6]), FNO (HcInterruptStatus[5]), RD (HcInterruptStatus[3]), SF (HcInterruptStatus[2]), WDH (HcInterruptStatus[1]) or SO (HcInterruptStatus[0]) Enabled if the corresponding bit in HcInterruptEnable is high.
+     * |        |          |0 = Global interrupt disabled.
+     * |        |          |1 = Global interrupt enabled.
      * @var USBH_T::HcHCCA
      * Offset: 0x18  Host Controller Communication Area Register
      * ---------------------------------------------------------------------------------------------------
@@ -300,7 +307,7 @@ typedef struct
      * |[13:0]  |FI        |Frame Interval
      * |        |          |This field specifies the length of a frame as (bit times - 1)
      * |        |          |For 12,000 bit times in a frame, a value of 11,999 is stored here.
-     * |[30:16] |FSMPS     |FS Largest Data Packet
+     * |[29:16] |FSMPS     |FS Largest Data Packet
      * |        |          |This field specifies a value that is loaded into the Largest Data Packet Counter at the beginning of each frame.
      * |[31]    |FIT       |Frame Interval Toggle
      * |        |          |This bit is toggled by Host Controller Driver when it loads a new value into FI (HcFmInterval[13:0]).
@@ -350,17 +357,17 @@ typedef struct
      * |        |          |USB host control supports two downstream ports and only one port is available in this series of chip.
      * |[8]     |PSM       |Power Switching Mode
      * |        |          |This bit is used to specify how the power switching of the Root Hub ports is controlled.
-     * |        |          |0 = Global Switching.
-     * |        |          |1 = Individual Switching.
-     * |[11]    |OCPM      |over Current Protection Mode
-     * |        |          |This bit describes how the over current status for the Root Hub ports reported
+     * |        |          |0 = Global switching.
+     * |        |          |1 = Individual switching.
+     * |[11]    |OCPM      |Overcurrent Protection Mode
+     * |        |          |This bit describes how the overcurrent status for the Root Hub ports reported
      * |        |          |This bit is only valid when NOCP (HcRhDescriptorA[12]) is cleared.
-     * |        |          |0 = Global Over current.
-     * |        |          |1 = Individual Over current.
-     * |[12]    |NOCP      |No over Current Protection
-     * |        |          |This bit describes how the over current status for the Root Hub ports reported.
-     * |        |          |0 = Over current status is reported.
-     * |        |          |1 = Over current status is not reported.
+     * |        |          |0 = Global overcurrent.
+     * |        |          |1 = Individual overcurrent.
+     * |[12]    |NOCP      |No overcurrent Protection
+     * |        |          |This bit describes how the overcurrent status for the Root Hub ports reported.
+     * |        |          |0 = Overcurrent status is reported.
+     * |        |          |1 = Overcurrent status is not reported.
      * @var USBH_T::HcRhDescriptorB
      * Offset: 0x4C  Host Controller Root Hub Descriptor B Register
      * ---------------------------------------------------------------------------------------------------
@@ -369,8 +376,8 @@ typedef struct
      * |[31:16] |PPCM      |Port Power Control Mask
      * |        |          |Global power switching
      * |        |          |This field is only valid if PowerSwitchingMode is set (individual port switching)
-     * |        |          |When set, the port only responds to individual port power switching commands (Set/ClearPortPower)
-     * |        |          |When cleared, the port only responds to global power switching commands (Set/ClearGlobalPower).
+     * |        |          |When set, the port only responds to individual port power switching commands (Set/Clear Port Power)
+     * |        |          |When cleared, the port only responds to global power switching commands (Set/Clear Global Power).
      * |        |          |0 = Port power controlled by global power switching.
      * |        |          |1 = Port power controlled by port power switching.
      * |        |          |Note: PPCM[15:2] and PPCM[0] are reserved.
@@ -385,11 +392,11 @@ typedef struct
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
      * |        |          |1 = Clear global power.
-     * |[1]     |OCI       |over Current Indicator
-     * |        |          |This bit reflects the state of the over current status pin
-     * |        |          |This field is only valid if NOCP (HcRhDesA[12]) and OCPM (HcRhDesA[11]) are cleared.
-     * |        |          |0 = No over current condition.
-     * |        |          |1 = Over current condition.
+     * |[1]     |OCI       |Overcurrent Indicator (Read Only)
+     * |        |          |This bit reflects the state of the overcurrent status pin
+     * |        |          |This field is only valid if NOCP (HcRhDescriptorA[12]) and OCPM (HcRhDescriptorA[11]) are cleared.
+     * |        |          |0 = No overcurrent condition.
+     * |        |          |1 = Overcurrent condition.
      * |[15]    |DRWE      |Device Remote Wakeup Enable Bit
      * |        |          |This bit controls if port's Connect Status Change as a remote wake-up event.
      * |        |          |Write Operation:
@@ -404,7 +411,7 @@ typedef struct
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
      * |        |          |1 = Set global power.
-     * |[17]    |OCIC      |over Current Indicator Change
+     * |[17]    |OCIC      |Overcurrent Indicator Change
      * |        |          |This bit is set by hardware when a change has occurred in OCI (HcRhStatus[1]).
      * |        |          |Write 1 to clear this bit to zero.
      * |        |          |0 = OCI (HcRhStatus[1]) didn't change.
@@ -415,26 +422,26 @@ typedef struct
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
      * |        |          |1 = Clear DRWE (HcRhStatus[15]).
-     * @var USBH_T::HcRhPortStatus[2]
+     * @var USBH_T::HcRhPortStatus
      * Offset: 0x54  Host Controller Root Hub Port Status
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[0]     |CCS       |CurrentConnectStatus (Read) or ClearPortEnable Bit (Write)
+     * |[0]     |CCS       |Current Connect Status or Clear Port Enable
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
      * |        |          |1 = Clear port enable.
      * |        |          |Read Operation:
      * |        |          |0 = No device connected.
      * |        |          |1 = Device connected.
-     * |[1]     |PES       |Port Enable Status
+     * |[1]     |PES       |Port Enable Status or Set Port Enable
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
      * |        |          |1 = Set port enable.
      * |        |          |Read Operation:
      * |        |          |0 = Port Disabled.
      * |        |          |1 = Port Enabled.
-     * |[2]     |PSS       |Port Suspend Status
+     * |[2]     |PSS       |Port Suspend Status or Set Port Suspend
      * |        |          |This bit indicates the port is suspended
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
@@ -442,17 +449,17 @@ typedef struct
      * |        |          |Read Operation:
      * |        |          |0 = Port is not suspended.
      * |        |          |1 = Port is selectively suspended.
-     * |[3]     |POCI      |Port over Current Indicator (Read) or Clear Port Suspend (Write)
-     * |        |          |This bit reflects the state of the over current status pin dedicated to this port
+     * |[3]     |POCI      |Port overcurrent Indicator or Clear Port Suspend
+     * |        |          |This bit reflects the state of the overcurrent status pin dedicated to this port
      * |        |          |This field is only valid if NOCP (HcRhDescriptorA[12]) is cleared and OCPM (HcRhDescriptorA[11]) is set.
      * |        |          |This bit is also used to initiate the selective result sequence for the port.
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
      * |        |          |1 = Clear port suspend.
      * |        |          |Read Operation:
-     * |        |          |0 = No over current condition.
-     * |        |          |1 = Over current condition.
-     * |[4]     |PRS       |Port Reset Status
+     * |        |          |0 = No overcurrent condition.
+     * |        |          |1 = Overcurrent condition.
+     * |[4]     |PRS       |Port Reset Status or Set Port Reset
      * |        |          |This bit reflects the reset state of the port.
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
@@ -460,7 +467,7 @@ typedef struct
      * |        |          |Read Operation
      * |        |          |0 = Port reset signal is not active.
      * |        |          |1 = Port reset signal is active.
-     * |[8]     |PPS       |Port Power Status
+     * |[8]     |PPS       |Port Power Status or Set Port Power
      * |        |          |This bit reflects the power state of the port regardless of the power switching mode.
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
@@ -468,23 +475,23 @@ typedef struct
      * |        |          |Read Operation:
      * |        |          |0 = Port power is Disabled.
      * |        |          |1 = Port power is Enabled.
-     * |[9]     |LSDA      |Low Speed Device Attached (Read) or Clear Port Power (Write)
-     * |        |          |This bit defines the speed (and bud idle) of the attached device
-     * |        |          |It is only valid when CCS (HcRhPortStatus1[0]) is set.
+     * |[9]     |LSDA      |Low Speed Device Attached or Clear Port Power
+     * |        |          |This bit defines the speed (and bus idle) of the attached device
+     * |        |          |It is only valid when CCS (HcRhPortStatus[0]) is set.
      * |        |          |This bit is also used to clear port power.
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
-     * |        |          |1 = Clear PPS (HcRhPortStatus1[8]).
+     * |        |          |1 = Clear PPS (HcRhPortStatus[8]).
      * |        |          |Read Operation:
      * |        |          |0 = Full Speed device.
      * |        |          |1 = Low-speed device.
      * |[16]    |CSC       |Connect Status Change
-     * |        |          |This bit indicates connect or disconnect event has been detected (CCS (HcRhPortStatus1[0]) changed).
+     * |        |          |This bit indicates connect or disconnect event has been detected (CCS (HcRhPortStatus[0]) changed).
      * |        |          |Write 1 to clear this bit to zero.
-     * |        |          |0 = No connect/disconnect event (CCS (HcRhPortStatus1[0]) didn't change).
-     * |        |          |1 = Hardware detection of connect/disconnect event (CCS (HcRhPortStatus1[0]) changed).
+     * |        |          |0 = No connect/disconnect event (CCS (HcRhPortStatus[0]) didn't change).
+     * |        |          |1 = Hardware detection of connect/disconnect event (CCS (HcRhPortStatus[0]) changed).
      * |[17]    |PESC      |Port Enable Status Change
-     * |        |          |This bit indicates that the port has been disabled (PES (HcRhPortStatus1[1]) cleared) due to a hardware event.
+     * |        |          |This bit indicates that the port has been disabled (PES (HcRhPortStatus[1]) cleared) due to a hardware event.
      * |        |          |Write 1 to clear this bit to zero.
      * |        |          |0 = PES (HcRhPortStatus1[1]) didn't change.
      * |        |          |1 = PES (HcRhPortStatus1[1]) changed.
@@ -493,11 +500,11 @@ typedef struct
      * |        |          |Write 1 to clear this bit to zero.
      * |        |          |0 = Port resume is not completed.
      * |        |          |1 = Port resume completed.
-     * |[19]    |OCIC      |Port over Current Indicator Change
-     * |        |          |This bit is set when POCI (HcRhPortStatus1[3]) changes.
+     * |[19]    |OCIC      |Port overcurrent Indicator Change
+     * |        |          |This bit is set when POCI (HcRhPortStatus[3]) changes.
      * |        |          |Write 1 to clear this bit to zero.
-     * |        |          |0 = POCI (HcRhPortStatus1[3]) didn't change.
-     * |        |          |1 = POCI (HcRhPortStatus1[3]) changes.
+     * |        |          |0 = POCI (HcRhPortStatus[3]) didn't change.
+     * |        |          |1 = POCI (HcRhPortStatus[3]) changes.
      * |[20]    |PRSC      |Port Reset Status Change
      * |        |          |This bit indicates that the port reset signal has completed.
      * |        |          |Write 1 to clear this bit to zero.
@@ -521,10 +528,15 @@ typedef struct
      * |        |          |This bit indicates there is an ERROR response received in AHB bus.
      * |        |          |0 = No ERROR response received.
      * |        |          |1 = ERROR response received.
-     * |[3]     |OCAL      |over Current Active Low
-     * |        |          |This bit controls the polarity of over current flag from external power IC.
-     * |        |          |0 = Over current flag is high active.
-     * |        |          |1 = Over current flag is low active.
+     * |        |          |Note: This bit is cleared by writing 1 to it.
+     * |[3]     |OCAL      |Overcurrent Active Low
+     * |        |          |This bit controls the polarity of overcurrent flag from external power IC.
+     * |        |          |0 = Overcurrent flag is high active.
+     * |        |          |1 = Overcurrent flag is low active.
+     * |[4]     |PPCAL     |Port Power Control Active Low
+     * |        |          |This bit controls the polarity of port power control to external power IC.
+     * |        |          |0 = Port power control is high active.
+     * |        |          |1 = Port power control is low active.
      * |[16]    |DPRT1     |Disable Port 1
      * |        |          |This bit controls if the connection between USB host controller and transceiver of port 1 is disabled
      * |        |          |If the connection is disabled, the USB host controller will not recognize any event of USB bus.
@@ -553,10 +565,8 @@ typedef struct
     __IO uint32_t HcRhDescriptorA;       /*!< [0x0048] Host Controller Root Hub Descriptor A Register                   */
     __IO uint32_t HcRhDescriptorB;       /*!< [0x004c] Host Controller Root Hub Descriptor B Register                   */
     __IO uint32_t HcRhStatus;            /*!< [0x0050] Host Controller Root Hub Status Register                         */
-    __IO uint32_t HcRhPortStatus[6];     /*!< [0x0054] Host Controller Root Hub Port Status [1]                         */
-    /// @cond HIDDEN_SYMBOLS
+    __IO uint32_t HcRhPortStatus[6];     /*!< [0x0054] Host Controller Root Hub Port Status                             */
     __I  uint32_t RESERVE0[101];
-    /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t HcPhyControl;          /*!< [0x0200] Host Controller PHY Control Register                             */
     __IO uint32_t HcMiscControl;         /*!< [0x0204] Host Controller Miscellaneous Control Register                   */
 
@@ -691,7 +701,7 @@ typedef struct
 #define USBH_HcFmInterval_FI_Msk         (0x3ffful << USBH_HcFmInterval_FI_Pos)            /*!< USBH_T::HcFmInterval: FI Mask          */
 
 #define USBH_HcFmInterval_FSMPS_Pos      (16)                                              /*!< USBH_T::HcFmInterval: FSMPS Position   */
-#define USBH_HcFmInterval_FSMPS_Msk      (0x7ffful << USBH_HcFmInterval_FSMPS_Pos)         /*!< USBH_T::HcFmInterval: FSMPS Mask       */
+#define USBH_HcFmInterval_FSMPS_Msk      (0x3ffful << USBH_HcFmInterval_FSMPS_Pos)         /*!< USBH_T::HcFmInterval: FSMPS Mask       */
 
 #define USBH_HcFmInterval_FIT_Pos        (31)                                              /*!< USBH_T::HcFmInterval: FIT Position     */
 #define USBH_HcFmInterval_FIT_Msk        (0x1ul << USBH_HcFmInterval_FIT_Pos)              /*!< USBH_T::HcFmInterval: FIT Mask         */
@@ -744,41 +754,41 @@ typedef struct
 #define USBH_HcRhStatus_CRWE_Pos         (31)                                              /*!< USBH_T::HcRhStatus: CRWE Position      */
 #define USBH_HcRhStatus_CRWE_Msk         (0x1ul << USBH_HcRhStatus_CRWE_Pos)               /*!< USBH_T::HcRhStatus: CRWE Mask          */
 
-#define USBH_HcRhPortStatus_CCS_Pos      (0)                                               /*!< USBH_T::HcRhPortStatus1: CCS Position  */
-#define USBH_HcRhPortStatus_CCS_Msk      (0x1ul << USBH_HcRhPortStatus_CCS_Pos)            /*!< USBH_T::HcRhPortStatus1: CCS Mask      */
+#define USBH_HcRhPortStatus_CCS_Pos      (0)                                               /*!< USBH_T::HcRhPortStatus: CCS Position   */
+#define USBH_HcRhPortStatus_CCS_Msk      (0x1ul << USBH_HcRhPortStatus_CCS_Pos)            /*!< USBH_T::HcRhPortStatus: CCS Mask       */
 
-#define USBH_HcRhPortStatus_PES_Pos      (1)                                               /*!< USBH_T::HcRhPortStatus1: PES Position  */
-#define USBH_HcRhPortStatus_PES_Msk      (0x1ul << USBH_HcRhPortStatus_PES_Pos)            /*!< USBH_T::HcRhPortStatus1: PES Mask      */
+#define USBH_HcRhPortStatus_PES_Pos      (1)                                               /*!< USBH_T::HcRhPortStatus: PES Position   */
+#define USBH_HcRhPortStatus_PES_Msk      (0x1ul << USBH_HcRhPortStatus_PES_Pos)            /*!< USBH_T::HcRhPortStatus: PES Mask       */
 
-#define USBH_HcRhPortStatus_PSS_Pos      (2)                                               /*!< USBH_T::HcRhPortStatus1: PSS Position  */
-#define USBH_HcRhPortStatus_PSS_Msk      (0x1ul << USBH_HcRhPortStatus_PSS_Pos)            /*!< USBH_T::HcRhPortStatus1: PSS Mask      */
+#define USBH_HcRhPortStatus_PSS_Pos      (2)                                               /*!< USBH_T::HcRhPortStatus: PSS Position   */
+#define USBH_HcRhPortStatus_PSS_Msk      (0x1ul << USBH_HcRhPortStatus_PSS_Pos)            /*!< USBH_T::HcRhPortStatus: PSS Mask       */
 
-#define USBH_HcRhPortStatus_POCI_Pos     (3)                                               /*!< USBH_T::HcRhPortStatus1: POCI Position */
-#define USBH_HcRhPortStatus_POCI_Msk     (0x1ul << USBH_HcRhPortStatus_POCI_Pos)           /*!< USBH_T::HcRhPortStatus1: POCI Mask     */
+#define USBH_HcRhPortStatus_POCI_Pos     (3)                                               /*!< USBH_T::HcRhPortStatus: POCI Position  */
+#define USBH_HcRhPortStatus_POCI_Msk     (0x1ul << USBH_HcRhPortStatus_POCI_Pos)           /*!< USBH_T::HcRhPortStatus: POCI Mask      */
 
-#define USBH_HcRhPortStatus_PRS_Pos      (4)                                               /*!< USBH_T::HcRhPortStatus1: PRS Position  */
-#define USBH_HcRhPortStatus_PRS_Msk      (0x1ul << USBH_HcRhPortStatus_PRS_Pos)            /*!< USBH_T::HcRhPortStatus1: PRS Mask      */
+#define USBH_HcRhPortStatus_PRS_Pos      (4)                                               /*!< USBH_T::HcRhPortStatus: PRS Position   */
+#define USBH_HcRhPortStatus_PRS_Msk      (0x1ul << USBH_HcRhPortStatus_PRS_Pos)            /*!< USBH_T::HcRhPortStatus: PRS Mask       */
 
-#define USBH_HcRhPortStatus_PPS_Pos      (8)                                               /*!< USBH_T::HcRhPortStatus1: PPS Position  */
-#define USBH_HcRhPortStatus_PPS_Msk      (0x1ul << USBH_HcRhPortStatus_PPS_Pos)            /*!< USBH_T::HcRhPortStatus1: PPS Mask      */
+#define USBH_HcRhPortStatus_PPS_Pos      (8)                                               /*!< USBH_T::HcRhPortStatus: PPS Position   */
+#define USBH_HcRhPortStatus_PPS_Msk      (0x1ul << USBH_HcRhPortStatus_PPS_Pos)            /*!< USBH_T::HcRhPortStatus: PPS Mask       */
 
-#define USBH_HcRhPortStatus_LSDA_Pos     (9)                                               /*!< USBH_T::HcRhPortStatus1: LSDA Position */
-#define USBH_HcRhPortStatus_LSDA_Msk     (0x1ul << USBH_HcRhPortStatus_LSDA_Pos)           /*!< USBH_T::HcRhPortStatus1: LSDA Mask     */
+#define USBH_HcRhPortStatus_LSDA_Pos     (9)                                               /*!< USBH_T::HcRhPortStatus: LSDA Position  */
+#define USBH_HcRhPortStatus_LSDA_Msk     (0x1ul << USBH_HcRhPortStatus_LSDA_Pos)           /*!< USBH_T::HcRhPortStatus: LSDA Mask      */
 
-#define USBH_HcRhPortStatus_CSC_Pos      (16)                                              /*!< USBH_T::HcRhPortStatus1: CSC Position  */
-#define USBH_HcRhPortStatus_CSC_Msk      (0x1ul << USBH_HcRhPortStatus_CSC_Pos)            /*!< USBH_T::HcRhPortStatus1: CSC Mask      */
+#define USBH_HcRhPortStatus_CSC_Pos      (16)                                              /*!< USBH_T::HcRhPortStatus: CSC Position   */
+#define USBH_HcRhPortStatus_CSC_Msk      (0x1ul << USBH_HcRhPortStatus_CSC_Pos)            /*!< USBH_T::HcRhPortStatus: CSC Mask       */
 
-#define USBH_HcRhPortStatus_PESC_Pos     (17)                                              /*!< USBH_T::HcRhPortStatus1: PESC Position */
-#define USBH_HcRhPortStatus_PESC_Msk     (0x1ul << USBH_HcRhPortStatus_PESC_Pos)           /*!< USBH_T::HcRhPortStatus1: PESC Mask     */
+#define USBH_HcRhPortStatus_PESC_Pos     (17)                                              /*!< USBH_T::HcRhPortStatus: PESC Position  */
+#define USBH_HcRhPortStatus_PESC_Msk     (0x1ul << USBH_HcRhPortStatus_PESC_Pos)           /*!< USBH_T::HcRhPortStatus: PESC Mask      */
 
-#define USBH_HcRhPortStatus_PSSC_Pos     (18)                                              /*!< USBH_T::HcRhPortStatus1: PSSC Position */
-#define USBH_HcRhPortStatus_PSSC_Msk     (0x1ul << USBH_HcRhPortStatus_PSSC_Pos)           /*!< USBH_T::HcRhPortStatus1: PSSC Mask     */
+#define USBH_HcRhPortStatus_PSSC_Pos     (18)                                              /*!< USBH_T::HcRhPortStatus: PSSC Position  */
+#define USBH_HcRhPortStatus_PSSC_Msk     (0x1ul << USBH_HcRhPortStatus_PSSC_Pos)           /*!< USBH_T::HcRhPortStatus: PSSC Mask      */
 
-#define USBH_HcRhPortStatus_OCIC_Pos     (19)                                              /*!< USBH_T::HcRhPortStatus1: OCIC Position */
-#define USBH_HcRhPortStatus_OCIC_Msk     (0x1ul << USBH_HcRhPortStatus_OCIC_Pos)           /*!< USBH_T::HcRhPortStatus1: OCIC Mask     */
+#define USBH_HcRhPortStatus_OCIC_Pos     (19)                                              /*!< USBH_T::HcRhPortStatus: OCIC Position  */
+#define USBH_HcRhPortStatus_OCIC_Msk     (0x1ul << USBH_HcRhPortStatus_OCIC_Pos)           /*!< USBH_T::HcRhPortStatus: OCIC Mask      */
 
-#define USBH_HcRhPortStatus_PRSC_Pos     (20)                                              /*!< USBH_T::HcRhPortStatus1: PRSC Position */
-#define USBH_HcRhPortStatus_PRSC_Msk     (0x1ul << USBH_HcRhPortStatus_PRSC_Pos)           /*!< USBH_T::HcRhPortStatus1: PRSC Mask     */
+#define USBH_HcRhPortStatus_PRSC_Pos     (20)                                              /*!< USBH_T::HcRhPortStatus: PRSC Position  */
+#define USBH_HcRhPortStatus_PRSC_Msk     (0x1ul << USBH_HcRhPortStatus_PRSC_Pos)           /*!< USBH_T::HcRhPortStatus: PRSC Mask      */
 
 #define USBH_HcPhyControl_STBYEN_Pos     (27)                                              /*!< USBH_T::HcPhyControl: STBYEN Position  */
 #define USBH_HcPhyControl_STBYEN_Msk     (0x1ul << USBH_HcPhyControl_STBYEN_Pos)           /*!< USBH_T::HcPhyControl: STBYEN Mask      */
@@ -788,6 +798,9 @@ typedef struct
 
 #define USBH_HcMiscControl_OCAL_Pos      (3)                                               /*!< USBH_T::HcMiscControl: OCAL Position   */
 #define USBH_HcMiscControl_OCAL_Msk      (0x1ul << USBH_HcMiscControl_OCAL_Pos)            /*!< USBH_T::HcMiscControl: OCAL Mask       */
+
+#define USBH_HcMiscControl_PPCAL_Pos     (4)                                               /*!< USBH_T::HcMiscControl: PPCAL Position  */
+#define USBH_HcMiscControl_PPCAL_Msk     (0x1ul << USBH_HcMiscControl_PPCAL_Pos)           /*!< USBH_T::HcMiscControl: PPCAL Mask      */
 
 #define USBH_HcMiscControl_DPRT1_Pos     (16)                                              /*!< USBH_T::HcMiscControl: DPRT1 Position  */
 #define USBH_HcMiscControl_DPRT1_Msk     (0x1ul << USBH_HcMiscControl_DPRT1_Pos)           /*!< USBH_T::HcMiscControl: DPRT1 Mask      */

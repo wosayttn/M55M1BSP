@@ -33,34 +33,34 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[31:0]  |CNT       |Quadrature Encoder Interface Counter
+     * |[31:0]  |CNT       |Enhanced Quadrature Encoder Interface Counter
      * |        |          |A 32-bit up/down counter
-     * |        |          |When an effective phase pulse is detected, this counter is increased by one if the bit DIRF (EQEI_STATUS[8]) is one or decreased by one if the bit DIRF(EQEI_STATUS[8]) is zero
+     * |        |          |When an effective phase pulse is detected, this counter is increased by one if the bit DIRF (EQEI_STATUS[8]) is one or decreased by one if the bit DIRF(EQEI_STATUS[8]) is 0
      * |        |          |This register performs an integrator which count value is proportional to the encoder position
      * |        |          |The pulse counter may be initialized to a predetermined value by one of three events occurs:
      * |        |          |1. Software is written if EQEIEN (EQEI_CTL[29]) = 0.
-     * |        |          |2. Compare-match event if EQEIEN(EQEI_CTL[29])=1 and EQEI is in compare-counting mode.
+     * |        |          |2. CNT(EQEI_CNT[31:0]) overflows or underflows to initialize CNT.Compare-match event if EQEIEN(EQEI_CTL[29])=1 and EQEI is in compare-counting mode.
      * |        |          |3. Index signal change if EQEIEN(EQEI_CTL[29])=1 and IDXRLDEN (EQEI_CTL[27])=1.
      * @var EQEI_T::CNTHOLD
      * Offset: 0x04  EQEI Counter Hold Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[31:0]  |CNTHOLD   |Quadrature Encoder Interface Counter Hold
-     * |        |          |When bit HOLDCNT (EQEI_CTL[24]) goes from low to high, the CNT(EQEI_CNT[31:0]) is copied into CNTHOLD (EQEI_CNTHOLD[31:0]) register.
+     * |[31:0]  |CNTHOLD   |Enhanced Quadrature Encoder Interface Counter Hold
+     * |        |          |When the bit HOLDCNT (EQEI_CTL[24]) goes from low to high, the CNT(EQEI_CNT[31:0]) is copied into CNTHOLD (EQEI_CNTHOLD[31:0]) register.
      * @var EQEI_T::CNTLATCH
      * Offset: 0x08  EQEI Counter Index Latch Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[31:0]  |CNTLATCH  |Quadrature Encoder Interface Counter Index Latch
+     * |[31:0]  |CNTLATCH  |Enhanced Quadrature Encoder Interface Counter Index Latch
      * |        |          |When the IDXF (EQEI_STATUS[0]) bit is set, the CNT(EQEI_CNT[31:0]) is copied into CNTLATCH (EQEI_CNTLATCH[31:0]) register.
      * @var EQEI_T::CNTCMP
      * Offset: 0x0C  EQEI Counter Compare Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[31:0]  |CNTCMP    |Quadrature Encoder Interface Counter Compare
+     * |[31:0]  |CNTCMP    |Enhanced Quadrature Encoder Interface Counter Compare
      * |        |          |If the EQEI controller is in the compare-counting mode CMPEN (EQEI_CTL[28]) =1, when the value of CNT(EQEI_CNT[31:0]) matches CNTCMP(EQEI_CNTCMP[31:0]), CMPF will be set
      * |        |          |This register is software writable.
      * @var EQEI_T::CNTMAX
@@ -68,7 +68,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[31:0]  |CNTMAX    |Quadrature Encoder Interface Preset Maximum Count
+     * |[31:0]  |CNTMAX    |Enhanced Quadrature Encoder Interface Preset Maximum Count
      * |        |          |This register value determined by user stores the maximum value which may be the number of the EQEI counter for the EQEI controller compare-counting mode
      * @var EQEI_T::CTL
      * Offset: 0x18  EQEI Controller Control Register
@@ -76,13 +76,15 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[2:0]   |NFCLKSEL  |Noise Filter Clock Pre-divide Selection
-     * |        |          |To determine the sampling frequency of the Noise Filter clock .
+     * |        |          |To determine the sampling frequency of the Noise Filter clock.
      * |        |          |000 = EQEI_CLK.
      * |        |          |001 = EQEI_CLK/2.
      * |        |          |010 = EQEI_CLK/4.
      * |        |          |011 = EQEI_CLK/16.
      * |        |          |100 = EQEI_CLK/32.
      * |        |          |101 = EQEI_CLK/64.
+     * |        |          |110 = reserved.
+     * |        |          |111 = reserved.
      * |[3]     |NFDIS     |EQEI Controller Input Noise Filter Disable Bit
      * |        |          |0 = The noise filter of EQEI controller Enabled.
      * |        |          |1 = The noise filter of EQEI controller Disabled.
@@ -95,11 +97,11 @@ typedef struct
      * |[6]     |IDXEN     |IDX Input to EQEI Controller Enable Bit
      * |        |          |0 = IDX input to EQEI Controller Disabled.
      * |        |          |1 = IDX input to EQEI Controller Enabled.
-     * |[7]	    |IDXRSTEN  |IDX Reset EQEI Position Counter Enable Bit
+     * |[7]     |IDXRSTEN  |IDX Reset EQEI Position Counter Enable Bit
      * |        |          |0 = Reset EQEI position counter in every time IDX signal.
      * |        |          |1 = Reset EQEI position counter in first time IDX signal.
      * |        |          |Note: IDXRLDEN(EQEI_CTL[27]) should be set 1.
-     * |[10:8]  |MODE      |QEI Counting Mode Selection
+     * |[10:8]  |MODE      |EQEI Counting Mode Selection
      * |        |          |There are seven quadrature encoder pulse counter operation modes.
      * |        |          |000 = X4 Free-counting Mode.
      * |        |          |001 = X2 Free-counting Mode.
@@ -109,20 +111,20 @@ typedef struct
      * |        |          |101 = Phase Counting Mode Type 2. (PCMT2).
      * |        |          |110 = Directional Counting Mode.
      * |        |          |111 = Reserved.
-     * |        |          |Note: User needs to set DIRSRC(EQEI_CTL2[5:4]) when MODE(EQEI_CTL[10:8]) selects to directional counting mode.
+     * |        |          |Note: User needs to set DIRSRC(EQEI_CTL2[5:4]) when MODE(EQEI_CTL[10:8]) selects to directional counting mode
      * |[12]    |CHAINV    |Inverse QEA Input Polarity
      * |        |          |0 = Not inverse QEA input polarity.
-     * |        |          |1 = QEA input polarity is inversed to EQEI controller.
+     * |        |          |1 = QEA input polarity is inversed to EQEI controller. 
      * |[13]    |CHBINV    |Inverse QEB Input Polarity
      * |        |          |0 = Not inverse QEB input polarity.
      * |        |          |1 = QEB input polarity is inversed to EQEI controller.
      * |[14]    |IDXINV    |Inverse IDX Input Polarity
      * |        |          |0 = Not inverse IDX input polarity.
-     * |        |          |1 = IDX input polarity is inversed to EQEI controller.
-     * |[15]	|IDXRSTEV  |IDX Signal Resets Enable Bit in First IDX Reset Event (Write Only)
-     * |        |          |0 = The next IDX level high signal reset function is disabled.
-     * |        |          |1 = The next IDX level high signal reset function is enabled.
-     * |        |          |Note: This bit only effective when IDXRSTEN (EQEI_CTL[7])=1 and IDXRLDEN (EQEI_CTL[27])=1.
+     * |        |          |1 = IDX input polarity is inversed to EQEI controller. 
+     * |[15]    |IDXRSTEV  |IDX Signal Resets Enable Bit in First IDX Reset Event (Write Only)
+     * |        |          |0 = The next IDX level high signal reset function Disabled.
+     * |        |          |1 = The next IDX level high signal reset function Eenabled.
+     * |        |          |Note: This bit is only effective when IDXRSTEN (EQEI_CTL[7])=1 and IDXRLDEN (EQEI_CTL[27]) = 1.
      * |[16]    |OVUNIEN   |OVUNF Trigger EQEI Interrupt Enable Bit
      * |        |          |0 = OVUNF can trigger EQEI controller interrupt Disabled.
      * |        |          |1 = OVUNF can trigger EQEI controller interrupt Enabled.
@@ -137,16 +139,16 @@ typedef struct
      * |        |          |1 = The IDXF can trigger EQEI interrupt Enabled.
      * |[20]    |HOLDTMR0  |Hold EQEI_CNT by Timer 0
      * |        |          |0 = TIF (TIMER0_INTSTS[0]) has no effect on HOLDCNT.
-     * |        |          |1 = A rising edge of bit TIF(TIMER0_INTSTS[0]) in timer 0 sets HOLDCNT to 1.
+     * |        |          |1 = A rising edge of bit TIF(TIMER0_INTSTS[0]) in timer 0 sets HOLDCNT to 1. 
      * |[21]    |HOLDTMR1  |Hold EQEI_CNT by Timer 1
      * |        |          |0 = TIF(TIMER1_INTSTS[0]) has no effect on HOLDCNT.
-     * |        |          |1 = A rising edge of bit TIF (TIMER1_INTSTS[0]) in timer 1 sets HOLDCNT to 1.
+     * |        |          |1 = A rising edge of bit TIF (TIMER1_INTSTS[0]) in timer 1 sets HOLDCNT to 1. 
      * |[22]    |HOLDTMR2  |Hold EQEI_CNT by Timer 2
      * |        |          |0 = TIF(TIMER2_INTSTS[0]) has no effect on HOLDCNT.
-     * |        |          |1 = A rising edge of bit TIF(TIMER2_INTSTS[0]) in timer 2 sets HOLDCNT to 1.
+     * |        |          |1 = A rising edge of bit TIF(TIMER2_INTSTS[0]) in timer 2 sets HOLDCNT to 1. 
      * |[23]    |HOLDTMR3  |Hold EQEI_CNT by Timer 3
      * |        |          |0 = TIF (TIMER3_INTSTS[0]) has no effect on HOLDCNT.
-     * |        |          |1 = A rising edge of bit TIF(TIMER3_INTSTS[0]) in timer 3 sets HOLDCNT to 1.
+     * |        |          |1 = A rising edge of bit TIF(TIMER3_INTSTS[0]) in timer 3 sets HOLDCNT to 1. 
      * |[24]    |HOLDCNT   |Hold EQEI_CNT Control
      * |        |          |When this bit is set from low to high, the CNT(EQEI_CNT[31:0]) is copied into CNTHOLD(EQEI_CNTHOLD[31:0])
      * |        |          |This bit may be set by writing 1 to it or Timer0~Timer3 interrupt flag TIF (TIMERx_INTSTS[0]).
@@ -158,7 +160,7 @@ typedef struct
      * |        |          |0 = The index signal latch EQEI counter function Disabled.
      * |        |          |1 = The index signal latch EQEI counter function Enabled.
      * |[27]    |IDXRLDEN  |Index Trigger EQEI_CNT Reload Enable Bit
-     * |        |          |When this bit is high and a rising edge comes on signal CHX, the CNT(EQEI_CNT[31:0]) will be reset to zero if the counter is in up-counting type (DIRF(EQEI_STATUS[8]) = 1); while the CNT(EQEI_CNT[31:0]) will be reloaded with CNTMAX (EQEI_CNTMAX[31:0]) content if the counter is in down-counting type (DIRF(EQEI_STATUS[8]) = 0).
+     * |        |          |When this bit is high and a rising edge comes on signal CHX, the CNT(EQEI_CNT[31:0]) will be reset to 0 if the counter is in up-counting type (DIRF(EQEI_STATUS[8]) = 1); while the CNT(EQEI_CNT[31:0]) will be reloaded with CNTMAX (EQEI_CNTMAX[31:0]) content if the counter is in down-counting type (DIRF(EQEI_STATUS[8]) = 0).
      * |        |          |0 = Reload function Disabled.
      * |        |          |1 = EQEI_CNT re-initialized by Index signal Enabled.
      * |[28]    |CMPEN     |The Compare Function Enable Bit
@@ -173,32 +175,32 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[0]   	|SWAPEN	   |Swap Function Enable Bit
+     * |[0]     |SWAPEN    |Swap Function Enable Bit
      * |        |          |0 = EQEI swap function Disabled.
      * |        |          |1 = EQEI swap function Enabled.
-     * |[2:1]	|CRS	   |Clock Rate Setting without Quadrature Mode
+     * |[2:1]   |CRS       |Clock Rate Setting without Quadrature Mode
      * |        |          |00 = EQEI counter only counts the falling edge.
      * |        |          |01 = EQEI counter only counts the rising edge.
      * |        |          |10 = EQEI counter counts the rising and falling edge.
      * |        |          |11 = reserved.
-     * |[5:4] 	|DIRSRC	   |Direction Signal Source Select
+     * |[5:4]   |DIRSRC    |Direction Signal Source Select
      * |        |          |00 = Direction signal is determined from EQEI system calculation.
      * |        |          |01 = reserved.
      * |        |          |10 = Direction signal is tied 1 only for direction up count mode.
      * |        |          |11 = Direction signal is tied 0 only for down count mode.
-     * |[8]	    |UTEN	   |Unit Timer Function Enable Bit
-     * |        |          |0 = EQEI unit timer function is disable.
-     * |        |          |1 = EQEI unit timer function is enable.
-     * |[9]	    |UTHOLDEN  |Unit Timer Counter Hold Enable Bit
+     * |[8]     |UTEN      |Unit Timer Function Enable Bit
+     * |        |          |0 = EQEI unit timer function Disabled.
+     * |        |          |1 = EQEI unit timer function Enabled.
+     * |[9]     |UTHOLDEN  |Unit Timer Counter Hold Enable Bit
      * |        |          |0 = No operation.
      * |        |          |1 = EQEI_CNT content is captured and stored in CNTHOLD(EQEI_CNTHOLD[31:0]) when UTCNT matches UTCMP(EQEI_UTCMP[31:0]).
-     * |[10]	|UTEVTRST  |Enable Bit to Reset EQEI Position Counter by Unit Timer Event
-     * |        |          |0 = Disable to reset EQEI position counter feature when unit timer counter event occurs.
-     * |        |          |1 = Enable to reset EQEI position counter feature when unit timer counter event occurs.
-     * |[11]	|IDXRSTUTS |IDX Resets Unit Timer Select Bit
+     * |[10]    |UTEVTRST  |Enable Bit to Reset EQEI Position Counter by Unit Timer Event
+     * |        |          |0 = Reset EQEI position counter feature when unit timer counter event occurs Disabled.
+     * |        |          |1 = Reset EQEI position counter feature when unit timer counter event occurs Enabled.
+     * |[11]    |IDXRSTUTS |IDX Resets Unit Timer Select Bit
      * |        |          |0 = Unit timer will not be reset when IDX reset event happens.
      * |        |          |1 = Resets unit timer or not will follow EQEI_CNT when IDX reset event happens.
-     * |[16]	|PHEIEN	   |PHEF Trigger EQEI Interrupt Enable Bit
+     * |[16]    |PHEIEN    |PHEF Trigger EQEI Interrupt Enable Bit
      * |        |          |0 = PHEF can trigger EQEI controller interrupt Disabled.
      * |        |          |1 = PHEF can trigger EQEI controller interrupt Enabled.
      * |[17]    |UTIEIEN   |UTIEF Trigger EQEI Interrupt Enable Bit
@@ -209,7 +211,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[31:0]	|UTCNT	   |Unit Timer Counter
+     * |[31:0]  |UTCNT     |Unit Timer Counter
      * |        |          |A 32-bit unit timer counter which may be reset to an initial value when any of the following events occur:
      * |        |          |1. Software is written if UTEN (EQEI_CTL2[8]) = 0.
      * |        |          |2. UT_EN (EQEI_CTL2[8]) =1, and the unit timer counter value matches UTCMP(EQEI_UTCMP[31:0]).
@@ -237,13 +239,13 @@ typedef struct
      * |        |          |1 = EQEI counter counts to the same as CNTCMP(EQEI_CNTCMP[31:0]).
      * |        |          |Note: This bit is only cleared by writing 1 to it.
      * |[2]     |OVUNF     |EQEI Counter Overflow or Underflow Flag
-     * |        |          |Flag is set by hardware while CNT(EQEI_CNT[31:0]) overflows from 0xFFFF_FFFF to zero in free-counting mode or from the CNTMAX (EQEI_CNTMAX[31:0]) to zero in compare-counting mode
-     * |        |          |Similarly, the flag is set while EQEI counter underflows from zero to 0xFFFF_FFFF or CNTMAX (EQEI_CNTMAX[31:0]).
+     * |        |          |Flag is set by hardware while CNT(EQEI_CNT[31:0]) overflows from 0xFFFF_FFFF to 0 in free-counting mode or from the CNTMAX (EQEI_CNTMAX[31:0]) to 0 in compare-counting mode
+     * |        |          |Similarly, the flag is set while EQEI counter underflows from 0 to 0xFFFF_FFFF or CNTMAX (EQEI_CNTMAX[31:0]).
      * |        |          |0 = No overflow or underflow occurs in EQEI counter.
      * |        |          |1 = EQEI counter occurs counting overflow or underflow.
      * |        |          |Note: This bit is only cleared by writing 1 to it.
      * |[3]     |DIRCHGF   |Direction Change Flag
-     * |        |          |Flag is set by hardware while EQEI counter counting direction is changed.
+     * |        |          |Flag is set by hardware while EQEI counter counting direction is changed
      * |        |          |Software can clear this bit by writing 1 to it.
      * |        |          |0 = No change in EQEI counter counting direction.
      * |        |          |1 = EQEI counter counting direction is changed.
@@ -252,15 +254,15 @@ typedef struct
      * |        |          |0 = EQEI Counter is in down-counting.
      * |        |          |1 = EQEI Counter is in up-counting.
      * |        |          |Note: This bit is set/reset by hardware according to the phase detection between CHA and CHB.
-     * |[9]	    |FIDXEF	   |First IDX Signal Reset Event Flag (Read Only)
+     * |[9]     |FIDXEF    |First IDX Signal Reset Event Flag (Read Only)
      * |        |          |0 = The first IDX reset event has not happened yet.
      * |        |          |1 = The first IDX reset event has happened.
      * |        |          |Note: This bit only effective when IDXRSTEN (EQEI_CTL[7])=1 and IDXRLDEN (EQEI_CTL[27])=1.
-     * |[16]	|PHEF	   |EQEI Phase Error Flag
+     * |[16]    |PHEF      |EQEI Phase Error Flag
      * |        |          |0 = No Phase error occurs in EQEI CHA and CHB.
      * |        |          |1 = Phase error occurs in EQEI CHA and CHB.
      * |        |          |Note: This bit is only cleared by writing 1 to it.
-     * |[17]	|UTIEF	   |EQEI Unit Timer Event Flag
+     * |[17]    |UTIEF     |EQEI Unit Timer Event Flag
      * |        |          |0 = No timer event occurs in EQEI unit timer counter.
      * |        |          |1 = Unit timer event occurs in EQEI unit timer counter.
      * |        |          |Note: This bit is only cleared by writing 1 to it.
@@ -269,17 +271,13 @@ typedef struct
     __IO uint32_t CNTHOLD;               /*!< [0x0004] EQEI Counter Hold Register                                        */
     __IO uint32_t CNTLATCH;              /*!< [0x0008] EQEI Counter Index Latch Register                                 */
     __IO uint32_t CNTCMP;                /*!< [0x000c] EQEI Counter Compare Register                                     */
-    /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE0[1];
-    /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t CNTMAX;                /*!< [0x0014] EQEI Pre-set Maximum Count Register                               */
     __IO uint32_t CTL;                   /*!< [0x0018] EQEI Controller Control Register                                  */
     __IO uint32_t CTL2;                  /*!< [0x001C] EQEI Controller Control Register2                                 */
     __IO uint32_t UTCNT;                 /*!< [0x0020] EQEI Unit Timer Counter Register                                  */
     __IO uint32_t UTCMP;                 /*!< [0x0024] EQEI Unit Timer Compare Register                                  */
-    /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE1[1];
-    /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t STATUS;                /*!< [0x002c] EQEI Controller Status Register                                   */
     __I  uint32_t RESERVE2[1011];
     __IO uint32_t VERSION;               /*!< [0x00FFC] EQEI RTL Design Version Number                                   */
@@ -374,41 +372,41 @@ typedef struct
 #define EQEI_CTL_CMPEN_Pos                (28)                                              /*!< EQEI_T::CTL: CMPEN Position             */
 #define EQEI_CTL_CMPEN_Msk                (0x1ul << EQEI_CTL_CMPEN_Pos)                     /*!< EQEI_T::CTL: CMPEN Mask                 */
 
-#define EQEI_CTL_EQEIEN_Pos                (29)                                             /*!< EQEI_T::CTL: EQEIEN Position             */
-#define EQEI_CTL_EQEIEN_Msk                (0x1ul << EQEI_CTL_EQEIEN_Pos)                   /*!< EQEI_T::CTL: EQEIEN Mask                 */
+#define EQEI_CTL_EQEIEN_Pos               (29)                                              /*!< EQEI_T::CTL: EQEIEN Position            */
+#define EQEI_CTL_EQEIEN_Msk               (0x1ul << EQEI_CTL_EQEIEN_Pos)                    /*!< EQEI_T::CTL: EQEIEN Mask                */
 
-#define EQEI_CTL2_SWAPEN_Pos              (0)                                               /*!< EQEI_T::CTL2: SWAPEN Position            */
-#define EQEI_CTL2_SWAPEN_Msk              (0x1ul << EQEI_CTL2_SWAPEN_Pos)                   /*!< EQEI_T::CTL2: SWAPEN Mask                */
+#define EQEI_CTL2_SWAPEN_Pos              (0)                                               /*!< EQEI_T::CTL2: SWAPEN Position           */
+#define EQEI_CTL2_SWAPEN_Msk              (0x1ul << EQEI_CTL2_SWAPEN_Pos)                   /*!< EQEI_T::CTL2: SWAPEN Mask               */
 
-#define EQEI_CTL2_CRS_Pos                 (1)                                               /*!< EQEI_T::CTL2: CRS Position               */
-#define EQEI_CTL2_CRS_Msk                 (0x3ul << EQEI_CTL2_CRS_Pos)                      /*!< EQEI_T::CTL2: CRS Mask                   */
+#define EQEI_CTL2_CRS_Pos                 (1)                                               /*!< EQEI_T::CTL2: CRS Position              */
+#define EQEI_CTL2_CRS_Msk                 (0x3ul << EQEI_CTL2_CRS_Pos)                      /*!< EQEI_T::CTL2: CRS Mask                  */
 
-#define EQEI_CTL2_DIRSRC_Pos              (4)                                               /*!< EQEI_T::CTL2: DIRSRC Position            */
-#define EQEI_CTL2_DIRSRC_Msk              (0x3ul << EQEI_CTL2_DIRSRC_Pos)                   /*!< EQEI_T::CTL2: DIRSRC Mask                */
+#define EQEI_CTL2_DIRSRC_Pos              (4)                                               /*!< EQEI_T::CTL2: DIRSRC Position           */
+#define EQEI_CTL2_DIRSRC_Msk              (0x3ul << EQEI_CTL2_DIRSRC_Pos)                   /*!< EQEI_T::CTL2: DIRSRC Mask               */
 
-#define EQEI_CTL2_UTEN_Pos                (8)                                               /*!< EQEI_T::CTL2: UTEN Position              */
-#define EQEI_CTL2_UTEN_Msk                (0x1ul << EQEI_CTL2_UTEN_Pos)                     /*!< EQEI_T::CTL2: UTEN Mask                  */
+#define EQEI_CTL2_UTEN_Pos                (8)                                               /*!< EQEI_T::CTL2: UTEN Position             */
+#define EQEI_CTL2_UTEN_Msk                (0x1ul << EQEI_CTL2_UTEN_Pos)                     /*!< EQEI_T::CTL2: UTEN Mask                 */
 
-#define EQEI_CTL2_UTHOLDEN_Pos            (9)                                               /*!< EQEI_T::CTL2: UTHOLDEN Position          */
-#define EQEI_CTL2_UTHOLDEN_Msk            (0x1ul << EQEI_CTL2_UTHOLDEN_Pos)                 /*!< EQEI_T::CTL2: UTHOLDEN Mask              */
+#define EQEI_CTL2_UTHOLDEN_Pos            (9)                                               /*!< EQEI_T::CTL2: UTHOLDEN Position         */
+#define EQEI_CTL2_UTHOLDEN_Msk            (0x1ul << EQEI_CTL2_UTHOLDEN_Pos)                 /*!< EQEI_T::CTL2: UTHOLDEN Mask             */
 
-#define EQEI_CTL2_UTEVTRST_Pos            (10)                                              /*!< EQEI_T::CTL2: UTEVTRST Position          */
-#define EQEI_CTL2_UTEVTRST_Msk            (0x1ul << EQEI_CTL2_UTEVTRST_Pos)                 /*!< EQEI_T::CTL2: UTEVTRST Mask              */
+#define EQEI_CTL2_UTEVTRST_Pos            (10)                                              /*!< EQEI_T::CTL2: UTEVTRST Position         */
+#define EQEI_CTL2_UTEVTRST_Msk            (0x1ul << EQEI_CTL2_UTEVTRST_Pos)                 /*!< EQEI_T::CTL2: UTEVTRST Mask             */
 
-#define EQEI_CTL2_IDXRSTUTS_Pos           (11)                                              /*!< EQEI_T::CTL2: IDXRSTUTS Position         */
-#define EQEI_CTL2_IDXRSTUTS_Msk           (0x1ul << EQEI_CTL2_IDXRSTUTS_Pos)                /*!< EQEI_T::CTL2: IDXRSTUTS Mask             */
+#define EQEI_CTL2_IDXRSTUTS_Pos           (11)                                              /*!< EQEI_T::CTL2: IDXRSTUTS Position        */
+#define EQEI_CTL2_IDXRSTUTS_Msk           (0x1ul << EQEI_CTL2_IDXRSTUTS_Pos)                /*!< EQEI_T::CTL2: IDXRSTUTS Mask            */
 
-#define EQEI_CTL2_PHEIEN_Pos              (16)                                              /*!< EQEI_T::CTL2: PHEIEN Position            */
-#define EQEI_CTL2_PHEIEN_Msk              (0x1ul << EQEI_CTL2_PHEIEN_Pos)                   /*!< EQEI_T::CTL2: PHEIEN Mask                */
+#define EQEI_CTL2_PHEIEN_Pos              (16)                                              /*!< EQEI_T::CTL2: PHEIEN Position           */
+#define EQEI_CTL2_PHEIEN_Msk              (0x1ul << EQEI_CTL2_PHEIEN_Pos)                   /*!< EQEI_T::CTL2: PHEIEN Mask               */
 
-#define EQEI_CTL2_UTIEIEN_Pos             (17)                                              /*!< EQEI_T::CTL2: UTIEIEN Position           */
-#define EQEI_CTL2_UTIEIEN_Msk             (0x1ul << EQEI_CTL2_UTIEIEN_Pos)                  /*!< EQEI_T::CTL2: UTIEIEN Mask               */
+#define EQEI_CTL2_UTIEIEN_Pos             (17)                                              /*!< EQEI_T::CTL2: UTIEIEN Position          */
+#define EQEI_CTL2_UTIEIEN_Msk             (0x1ul << EQEI_CTL2_UTIEIEN_Pos)                  /*!< EQEI_T::CTL2: UTIEIEN Mask              */
 
-#define EQEI_UTCNT_UTCNT_Pos              (0)                                               /*!< EQEI_T::UTCNT: UTCNT Position            */
-#define EQEI_UTCNT_UTCNT_Msk              (0xfffffffful << EQEI_UTCNT_UTCNT_Pos)            /*!< EQEI_T::UTCNT: UTCNT Mask                */
+#define EQEI_UTCNT_UTCNT_Pos              (0)                                               /*!< EQEI_T::UTCNT: UTCNT Position           */
+#define EQEI_UTCNT_UTCNT_Msk              (0xfffffffful << EQEI_UTCNT_UTCNT_Pos)            /*!< EQEI_T::UTCNT: UTCNT Mask               */
 
-#define EQEI_UTCMP_UTCMP_Pos              (0)                                               /*!< EQEI_T::UTCMP: UTCMP Position            */
-#define EQEI_UTCMP_UTCMP_Msk              (0xfffffffful << EQEI_UTCMP_UTCMP_Pos)            /*!< EQEI_T::UTCMP: UTCMP Mask                */
+#define EQEI_UTCMP_UTCMP_Pos              (0)                                               /*!< EQEI_T::UTCMP: UTCMP Position           */
+#define EQEI_UTCMP_UTCMP_Msk              (0xfffffffful << EQEI_UTCMP_UTCMP_Pos)            /*!< EQEI_T::UTCMP: UTCMP Mask               */
 
 #define EQEI_STATUS_IDXF_Pos              (0)                                               /*!< EQEI_T::STATUS: IDXF Position           */
 #define EQEI_STATUS_IDXF_Msk              (0x1ul << EQEI_STATUS_IDXF_Pos)                   /*!< EQEI_T::STATUS: IDXF Mask               */
@@ -425,14 +423,14 @@ typedef struct
 #define EQEI_STATUS_DIRF_Pos              (8)                                               /*!< EQEI_T::STATUS: DIRF Position           */
 #define EQEI_STATUS_DIRF_Msk              (0x1ul << EQEI_STATUS_DIRF_Pos)                   /*!< EQEI_T::STATUS: DIRF Mask               */
 
-#define EQEI_STATUS_FIDXEF_Pos            (9)                                               /*!< EQEI_T::STATUS: FIDXEF Position          */
-#define EQEI_STATUS_FIDXEF_Msk            (0x1ul << EQEI_STATUS_FIDXEF_Pos)                 /*!< EQEI_T::STATUS: FIDXEF Mask              */
+#define EQEI_STATUS_FIDXEF_Pos            (9)                                               /*!< EQEI_T::STATUS: FIDXEF Position         */
+#define EQEI_STATUS_FIDXEF_Msk            (0x1ul << EQEI_STATUS_FIDXEF_Pos)                 /*!< EQEI_T::STATUS: FIDXEF Mask             */
 
-#define EQEI_STATUS_PHEF_Pos              (16)                                              /*!< EQEI_T::STATUS: PHEF Position            */
-#define EQEI_STATUS_PHEF_Msk              (0x1ul << EQEI_STATUS_PHEF_Pos)                   /*!< EQEI_T::STATUS: PHEF Mask                */
+#define EQEI_STATUS_PHEF_Pos              (16)                                              /*!< EQEI_T::STATUS: PHEF Position           */
+#define EQEI_STATUS_PHEF_Msk              (0x1ul << EQEI_STATUS_PHEF_Pos)                   /*!< EQEI_T::STATUS: PHEF Mask               */
 
-#define EQEI_STATUS_UTIEF_Pos             (17)                                              /*!< EQEI_T::STATUS: UTIEF Position           */
-#define EQEI_STATUS_UTIEF_Msk             (0x1ul << EQEI_STATUS_UTIEF_Pos)                  /*!< EQEI_T::STATUS: UTIEF Mask               */
+#define EQEI_STATUS_UTIEF_Pos             (17)                                              /*!< EQEI_T::STATUS: UTIEF Position          */
+#define EQEI_STATUS_UTIEF_Msk             (0x1ul << EQEI_STATUS_UTIEF_Pos)                  /*!< EQEI_T::STATUS: UTIEF Mask              */
 
 /** @} EQEI_CONST */
 /** @} end of EQEI register group */
