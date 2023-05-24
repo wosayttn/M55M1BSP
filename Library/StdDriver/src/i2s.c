@@ -60,7 +60,6 @@ uint32_t I2S_GetSourceClockFreq(I2S_T *i2s)
                 break;
 
             case CLK_I2SSEL_I2S0SEL_HIRC48M:
-                printf("I2S Src __HIRC48M\r\n");
                 u32Freq = __HIRC48M;
                 break;
 

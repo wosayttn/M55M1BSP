@@ -63,7 +63,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
     /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_192MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
@@ -83,9 +83,6 @@ void SYS_Init(void)
     SystemCoreClockUpdate();
 
     /* Enable IP clock */
-    CLK_EnableModuleClock(I2S0_MODULE);
-    CLK_EnableModuleClock(I2S1_MODULE);
-
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
     CLK_EnableModuleClock(GPIOC_MODULE);
@@ -116,43 +113,7 @@ void DebugUART_Init(void)
 #else
     DEBUG_PORT->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400); // The setting is for Palladium
 #endif //USE_HXT_SRC
-
-    /* Lock protected registers */
-    //SYS_LockReg();
-#if 0
-    CLK_EnableModuleClock(UART0_MODULE);
-
-    /* Select IP clock source */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HXT, CLK_UARTDIV0_UART0DIV(1));
-
-    /*------------------------------------------------------------------------*/
-    /* Init UART                                                              */
-    /*------------------------------------------------------------------------*/
-    /* Set GPB multi-function pins for UART0 RXD and TXD */
-    SYS->GPB_MFP3 &= ~(SYS_GPB_MFP3_PB12MFP_Msk | SYS_GPB_MFP3_PB13MFP_Msk);
-    SYS->GPB_MFP3 |= (SYS_GPB_MFP3_PB12MFP_UART0_RXD | SYS_GPB_MFP3_PB13MFP_UART0_TXD);
-    //SYS->GPD_MFP0 &= ~(SYS_GPD_MFP0_PD2MFP_Msk | SYS_GPD_MFP0_PD3MFP_Msk);
-    //SYS->GPD_MFP0 |= (SYS_GPD_MFP0_PD2MFP_UART0_RXD | SYS_GPD_MFP0_PD3MFP_UART0_TXD);
-    //SYS->GPH_MFP2 = (SYS->GPH_MFP2 & (~SYS_GPH_MFP2_PH10MFP_Msk)) | (SYS_GPH_MFP2_PH10MFP_UART0_TXD);
-    //SYS->GPH_MFP2 = (SYS->GPH_MFP2 & (~SYS_GPH_MFP2_PH11MFP_Msk)) | (SYS_GPH_MFP2_PH11MFP_UART0_RXD);
-
-    /* Reset IP */
-    //SYS->UARTRST |=  SYS_UARTRST_UART0RST_Msk;
-    //SYS->UARTRST &= ~SYS_UARTRST_UART0RST_Msk;
-
-#ifdef __PLDM_EMU__
-#if (USE_HXT_SRC == 1)
-    DEBUG_PORT->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 9600); // The setting is for Palladium
-#else
-    DEBUG_PORT->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400); // The setting is for Palladium
-#endif //USE_HXT_SRC
-#else
-    /* Configure UART0 and set UART0 Baudrate */
-    //UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(PLL_CLOCK, 115200);
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(12000000, 115200);
-#endif //#ifndef __PLDM_EMU__
     UART0->LINE = UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1;
-#endif //0
 }
 
 
@@ -170,6 +131,8 @@ int main(int argc, char *argv[])
     SYS_Init();
 
     DebugUART_Init();
+
+    I2S_ModuleSelect();
 
     if (CU_initialize_registry())
     {

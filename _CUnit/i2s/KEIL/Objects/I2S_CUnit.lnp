@@ -9,6 +9,7 @@
 ".\objects\main.o"
 ".\objects\i2s_cunit.o"
 "..\..\common\CUnitTestM55.lib"
+".\objects\common.o"
 --library_type=microlib --strict --scatter ".\M55M1-SRAM.scatter"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

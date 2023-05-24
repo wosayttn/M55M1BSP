@@ -23,6 +23,7 @@
 #include "CUnit.h"
 #include "Console.h"
 #include "i2s_cunit.h"
+#include "common.h"
 
 //------------------------------------------------------------------------------
 extern unsigned int STATE0;
@@ -89,6 +90,40 @@ int I2S_Tests_Init(void)
 int I2S_Tests_Clean(void)
 {
     return 0;
+}
+
+void I2S_ModuleInit(uint32_t u32I2SModule)
+{
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    switch (u32I2SModule)
+    {
+        case C_I2S0:
+            CLK_EnableModuleClock(I2S0_MODULE);
+            break;
+
+        case C_I2S1:
+            CLK_EnableModuleClock(I2S1_MODULE);
+            break;
+    }
+}
+
+int I2S_ModuleSelect(void)
+{
+    uint32_t u32Index = 0;
+    S_TestOption sTestPort[] =
+    {
+        {"I2S0"},
+        {"I2S1"},
+    };
+
+    u32Index = GetRequireOptions(sTestPort, sizeof(sTestPort) / sizeof(sTestPort[0]));
+
+    SetI2SModuleIdx(u32Index);
+    I2S_ModuleInit(u32Index);
+
+    return (int)u32Index;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -1065,7 +1100,7 @@ void API_I2S_EnableMCLK()
     }
     else if (GetI2SModuleIdx() == C_I2S1)
     {
-        CLK->I2SSEL = (CLK->I2SSEL & ~CLK_I2SSEL_I2S1SEL_Msk) | CLK_I2SSEL_I2S0SEL_APLL1_DIV2;
+        CLK->I2SSEL = (CLK->I2SSEL & ~CLK_I2SSEL_I2S1SEL_Msk) | CLK_I2SSEL_I2S1SEL_APLL1_DIV2;
     }
 
     u32ReturnValue = I2S_EnableMCLK(pI2SModule, 12000000);
@@ -1087,7 +1122,7 @@ void API_I2S_EnableMCLK()
     }
     else if (GetI2SModuleIdx() == C_I2S1)
     {
-        CLK->I2SSEL = (CLK->I2SSEL & ~CLK_I2SSEL_I2S1SEL_Msk) | CLK_I2SSEL_I2S0SEL_APLL0_DIV2;
+        CLK->I2SSEL = (CLK->I2SSEL & ~CLK_I2SSEL_I2S1SEL_Msk) | CLK_I2SSEL_I2S1SEL_APLL0_DIV2;
     }
 
     u32ReturnValue = I2S_EnableMCLK(pI2SModule, 12000000);
@@ -1109,7 +1144,7 @@ void API_I2S_EnableMCLK()
     }
     else if (GetI2SModuleIdx() == C_I2S1)
     {
-        CLK->I2SSEL = (CLK->I2SSEL & ~CLK_I2SSEL_I2S1SEL_Msk) | CLK_I2SSEL_I2S0SEL_PCLK1;
+        CLK->I2SSEL = (CLK->I2SSEL & ~CLK_I2SSEL_I2S1SEL_Msk) | CLK_I2SSEL_I2S1SEL_PCLK3;
     }
 
     u32ReturnValue = I2S_EnableMCLK(pI2SModule, 12000000);
@@ -1131,7 +1166,7 @@ void API_I2S_EnableMCLK()
     }
     else if (GetI2SModuleIdx() == C_I2S1)
     {
-        CLK->I2SSEL = (CLK->I2SSEL & ~CLK_I2SSEL_I2S1SEL_Msk) | CLK_I2SSEL_I2S0SEL_HIRC48M;
+        CLK->I2SSEL = (CLK->I2SSEL & ~CLK_I2SSEL_I2S1SEL_Msk) | CLK_I2SSEL_I2S1SEL_HIRC48M;
     }
 
     u32ReturnValue = I2S_EnableMCLK(pI2SModule, 12000000);
