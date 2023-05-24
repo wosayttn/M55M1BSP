@@ -52,12 +52,8 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-    SYS_ResetModule(SYS_UART0RST);
-
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+    /* Set the Debug UART port clock */
+    SetDebugUartCLK();
 
 
     /* Enable ACMP module clock */
@@ -72,7 +68,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOD_MODULE);
     /* Enable GPB module clock */
     CLK_EnableModuleClock(GPIOE_MODULE);
-		    /* Enable GPA module clock */
+     /* Enable GPA module clock */
     CLK_EnableModuleClock(GPIOG_MODULE);
     /* Enable GPB module clock */
     CLK_EnableModuleClock(GPIOH_MODULE);
@@ -83,9 +79,9 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    SetDebugUartMFP();
 
+//    InitDebugUart();
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -118,7 +114,7 @@ int main(int argc, char *argv[])
     /* Init DEBUG_PORT to 115200-8N1 for printf */
 //    UART_Open(DEBUG_PORT, 115200);
     DEBUG_PORT_Init(DEBUG_PORT, 115200);
-	
+
     printf("\n\n");
     printf("+--------------------------------------+\n");
     printf("|       M55M1 Template CUnit Test      |\n");

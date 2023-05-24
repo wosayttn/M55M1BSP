@@ -47,7 +47,7 @@ int ACMP_Tests_Clean(void)
 void ACMP_IP_Reset(ACMP_T *psAcmp)
 {
     /* Unlock protected registers */
-    SYS_UnlockReg();	
+    SYS_UnlockReg();
 if(psAcmp == ACMP01)
 {
     /* Reset ACMP */
