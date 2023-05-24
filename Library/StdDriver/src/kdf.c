@@ -22,226 +22,224 @@
     @{
 */
 
+int32_t  g_KDF_i32ErrCode = eKDF_ERRCODE_SUCCESS;   /*!< KDF global error code */
+
 /**
-  * @brief      Get key size selection
-  * @return     Others   Successful
-  *             < 0      Fail
+  * @brief      Get key bit size
+  * @param[in]  u32KeySizeSel       Output key size selection. It could be:
+  *                                 \ref KDF_KEY_SIZE_128
+  *                                 \ref KDF_KEY_SIZE_163
+  *                                 \ref KDF_KEY_SIZE_192
+  *                                 \ref KDF_KEY_SIZE_224
+  *                                 \ref KDF_KEY_SIZE_233
+  *                                 \ref KDF_KEY_SIZE_255
+  *                                 \ref KDF_KEY_SIZE_256
+  *                                 \ref KDF_KEY_SIZE_283
+  *                                 \ref KDF_KEY_SIZE_384
+  *                                 \ref KDF_KEY_SIZE_409
+  *                                 \ref KDF_KEY_SIZE_512
+  *                                 \ref KDF_KEY_SIZE_521
+  *                                 \ref KDF_KEY_SIZE_571
+  * @return     eKDF_ERRCODE_INVALID_PARAM  Invalid key size selection
+  *             key bit size
   * @details    This function is used to get key size selection.
   */
-int32_t KDF_GetKeySizeSel(uint32_t u32KeyBitSize)
+int32_t KDF_GetKeyBitSize(uint32_t u32KeySizeSel)
 {
     int32_t  i;
     uint32_t au32KeyLenTbl[] = { 128, 163, 192, 224, 233, 255, 256, 283, 384, 409, 512, 521, 571 };
     
-    for(i = 0; i < sizeof(au32KeyLenTbl) / sizeof(au32KeyLenTbl[0]); i++)
-        if(u32KeyBitSize == au32KeyLenTbl[i])
-            return i;
+    if (u32KeySizeSel > (sizeof(au32KeyLenTbl) / sizeof(au32KeyLenTbl[0])))
+        return eKDF_ERRCODE_INVALID_PARAM;
     
-    return -1;
+    return au32KeyLenTbl[u32KeySizeSel];
 }
 
 /**
- * @brief        Derive key
- *
- * @param[in]    eMode            The pointer of the specified UART module.
- *                                - \ref eKDF_MODE_HKDF : HKDF  (RFC 5869)
- *                                - \ref eKDF_MODE_KBKDF: KBKDF (NIST SP 800-108)
- * @param[in]    u32KeyBitSize    Total output key bit length
- * @param[in]    u32SrcSelect
- * @param[in]    bNext
- *
- * @return       None
- *
- * @details      Derive key output to register
- */
-int32_t KDF_DeriveKeyToReg(E_KDF_MODE eMode, uint32_t u32KeyBitSize, uint32_t u32SrcSelect, uint32_t bNext)
+  * @brief      Set key input
+  * @param[in]  pu8KeyInput     Byte buffer contain key input
+  * @param[in]  u32ByteCnt      Specify byte count of pu8InputKey and its value must <= 32
+  * @details    This function is used to set key input.
+  */
+void KDF_SetKeyInput(uint8_t pu8KeyInput[], uint32_t u32ByteCnt)
 {
-    uint32_t u32TimeOutCount;
-    
-    if (bNext)
-    {
-        if ((KDF->STS & KDF_STS_BUSY_Msk) == 0)
-            return KDF_ERR_PARAMETER;
-        
-        KDF->CTL |= KDF_CTL_NEXT_Msk;
-    }
+    if (u32ByteCnt > (4 * 8))
+        memcpy((void *)KDF->KEYIN, (void *)pu8KeyInput, (32 * 8));
     else
-    {
-        KDF->CTL   = eMode | u32SrcSelect;
-        KDF->KLEN  = u32KeyBitSize;
-        KDF->KSCTL = KDF->KSCTL & ~KDF_KSCTL_WDST_Msk;
-        KDF->CTL   = KDF->CTL | KDF_CTL_START_Msk;
-    }
-    
-    /* Waiting for busy */
-    u32TimeOutCount = KDF_TIMEOUT;
-    while(KDF->STS & KDF_STS_HMACBUSY_Msk)
-    {
-        if(--u32TimeOutCount == 0)
-        {
-            return KDF_ERR_TIMEOUT;
-        }
-    }
-    
-    if(KDF->STS & (KDF_STS_NEXTERR_Msk | KDF_STS_KSERR_Msk))
-        return KDF_ERR_FAIL;
-    
-    return 0;
+        memcpy((void *)KDF->KEYIN, (void *)pu8KeyInput, u32ByteCnt);
 }
 
-int32_t KDF_FinishDeriveKeyToReg(void)
-{
-    uint32_t u32TimeOutCount;
-    
-    if (KDF->STS == 0)
-        return 0;
-    
-    KDF->CTL |= KDF_CTL_FINISH_Msk;
-    /* Waiting for busy */
-    u32TimeOutCount = KDF_TIMEOUT;
-    while(KDF->STS & (KDF_STS_BUSY_Msk | KDF_STS_HMACBUSY_Msk))
-    {
-        if(--u32TimeOutCount == 0)
-        {
-            return KDF_ERR_TIMEOUT;
-        }
-    }
-    
-    return 0;
-}
-
-void KDF_SetInputKey(uint8_t pu8InputKey[], uint32_t u32ByteCnt)
-{
-    if (u32ByteCnt > (32 * 8))
-        memcpy((void *)KDF->KEYIN, (void *)pu8InputKey, (32 * 8));
-    else
-        memcpy((void *)KDF->KEYIN, (void *)pu8InputKey, u32ByteCnt);
-}
-
+/**
+  * @brief      Set key salt
+  * @param[in]  pu8Salt         Byte buffer contain key salt
+  * @param[in]  u32ByteCnt      Specify byte count of pu8Salt and its value must <= 32
+  * @details    This function is used to set key salt.
+  */
 void KDF_SetSalt(uint8_t pu8Salt[], uint32_t u32ByteCnt)
 {
-    if (u32ByteCnt > (32 * 8))
+    if (u32ByteCnt > (4 * 8))
         memcpy((void *)KDF->SALT, (void *)pu8Salt, (32 * 8));
     else
         memcpy((void *)KDF->SALT, (void *)pu8Salt, u32ByteCnt);
 }
 
+/**
+  * @brief      Set key label
+  * @param[in]  pu8Label        Byte buffer contain key label
+  * @param[in]  u32ByteCnt      Specify byte count of pu8Label and its value must <= 12
+  * @details    This function is used to set key label.
+  */
 void KDF_SetLabel(uint8_t pu8Label[], uint32_t u32ByteCnt)
 {
-    if (u32ByteCnt > (32 * 3))
+    if (u32ByteCnt > (4 * 3))
         memcpy((void *)KDF->LABEL, (void *)pu8Label, (32 * 3));
     else
         memcpy((void *)KDF->LABEL, (void *)pu8Label, u32ByteCnt);
 }
 
+/**
+  * @brief      Set key context
+  * @param[in]  pu8Ctxt         Byte buffer contain key context
+  * @param[in]  u32ByteCnt      Specify byte count of pu8Ctxt and its value must <= 16
+  * @details    This function is used to set key context.
+  */
 void KDF_SetCtxt(uint8_t pu8Ctxt[], uint32_t u32ByteCnt)
 {
-    if (u32ByteCnt > (32 * 4))
+    if (u32ByteCnt > (4 * 4))
         memcpy((void *)KDF->CTXT, (void *)pu8Ctxt, (32 * 4));
     else
         memcpy((void *)KDF->CTXT, (void *)pu8Ctxt, u32ByteCnt);
 }
 
 /**
- * @brief        Derive key
- *
- * @param[in]    eMode          The pointer of the specified UART module.
- *                              - \ref eKDF_MODE_HKDF : HKDF  (RFC 5869)
- *                              - \ref eKDF_MODE_KBKDF: KBKDF (NIST SP 800-108)
- * @param[in]    u32KeyParam    To specify keyin, salt, label and context selection.
- *                              - KDF_KEYIN_FROM_REG or KDF_KEYIN_FROM_NVM
- *                              - KDF_SALT_FROM_REG or KDF_SALT_FROM_RANDOM
- *                              - KDF_LABEL_FROM_REG or KDF_LABEL_FROM_RANDOM
- *                              - KDF_CTXT_FROM_REG or KDF_CTXT_FROM_RANDOM
- *                              If KDF_xxx_FROM_REG is set, users can use these functions - 
- *                                KDF_SetInputKey, KDF_SetSalt, KDF_SetLabel and KDF_SetCtxt
- *                              to write key parameters before deriving key
- * @param[in]    u32KeyBitSize  To specify output key bit length
- * @param[out]   pu8KeyOut
- *
- * @return       0: Success
- *               Others: Fail
- * @details      Derive key with specified key parameters and key length
- */
-int32_t KDF_DeriveKey(E_KDF_MODE eMode, uint32_t u32KeyParam, uint32_t u32KeyBitSize, uint8_t *pu8KeyOut)
+  * @brief        Derive key
+  *
+  * @param[in]    eMode                 The pointer of the specified UART module.
+  *                                     - \ref eKDF_MODE_HKDF : HKDF  (RFC 5869)
+  *                                     - \ref eKDF_MODE_KBKDF: KBKDF (NIST SP 800-108)
+  * @param[in]    u32DeriveKeyParam     To specify keyin, salt, label and context selection.
+  *                                     If KDF_xxx_FROM_REG is set, users can use these functions -
+  *                                         KDF_SetKeyInput, KDF_SetSalt, KDF_SetLabel and KDF_SetCtxt
+  *                                     to write key parameters before deriving key
+  *                                     It could be the combine of
+  *                                     \ref KDF_KEYIN_FROM_REG / \ref KDF_KEYIN_FROM_NVM
+  *                                     \ref KDF_SALT_FROM_REG  / \ref KDF_SALT_FROM_RANDOM
+  *                                     \ref KDF_LABEL_FROM_REG / \ref KDF_LABEL_FROM_RANDOM
+  *                                     \ref KDF_CTXT_FROM_REG  / \ref KDF_CTXT_FROM_RANDOM
+  * @param[in]    u32KeyBitSize         To specify output key bit length and its maximum value must <= 65280
+  * @param[out]   pu8KeyOut             Buffer to store derived key output and buffer size must >= u32KeyBitSize
+  *
+  * @return       eKDF_ERRCODE_SUCCESS: Success
+  *               Others: Fail
+  * @details      Derive key with specified key parameters and key length
+  */
+int32_t KDF_DeriveKey(E_KDF_MODE eMode, uint32_t u32DeriveKeyParam, uint32_t u32KeyBitSize, uint8_t *pu8KeyOut)
 {
     int32_t  i, j;
-    uint32_t u32Idx;
+    uint32_t u32Idx = 0;
     int32_t  i32LeftKeyBitSize = u32KeyBitSize;
     uint32_t u32TimeOutCount, u32ByteCnt, u32WordCnt;
     
-    KDF->CTL   = eMode | u32KeyParam;
+    KDF->CTL   = eMode | u32DeriveKeyParam;
     KDF->KLEN  = u32KeyBitSize;
-    KDF->KSCTL = KDF->KSCTL & ~KDF_KSCTL_WDST_Msk;
-    KDF->CTL   = KDF->CTL | KDF_CTL_START_Msk;
+    KDF->KSCTL = KDF_KEYOUT_TO_REG;
 
-    do
+    while (i32LeftKeyBitSize > 0)
     {
-        /* Waiting for busy */
+        if (i32LeftKeyBitSize == u32KeyBitSize)
+            KDF->CTL |= KDF_CTL_START_Msk;  /* Trigger to start key derive operation */
+        else
+            KDF->CTL |= KDF_CTL_NEXT_Msk;   /* Trigger to derive next partial key output */
+
+        /* Wait until KDF HMAC engine become idle */
         u32TimeOutCount = KDF_TIMEOUT;
         
         while(KDF->STS & KDF_STS_HMACBUSY_Msk)
         {
             if(--u32TimeOutCount == 0)
             {
-                return KDF_ERR_TIMEOUT;
+                return eKDF_ERRCODE_TIMEOUT;
             }
         }
         
+        /* Check status */
         if(KDF->STS & (KDF_STS_NEXTERR_Msk | KDF_STS_KSERR_Msk))
-            return KDF_ERR_FAIL;
+            return eKDF_ERRCODE_FAIL;
         
+        /* Store output key to pu8KeyOut */
         u32ByteCnt = (i32LeftKeyBitSize / 8) + ((i32LeftKeyBitSize % 8) > 0);
-        u32WordCnt = (u32ByteCnt / 4) + ((u32ByteCnt % 4) > 0);
         
+        /* Maximum byte count of derived key is 32 bytes per derivation */
         if (u32ByteCnt > 32)
-            u32Idx = (u32ByteCnt - 32);
-        else
-            u32Idx = 0;
+            u32ByteCnt = 32;
         
-        u32ByteCnt = u32ByteCnt > 32 ? 32 : u32ByteCnt;
-        u32WordCnt = u32WordCnt > 8 ? 8 : u32WordCnt;
-        
-        for (i = 0; i < 4; i++)
-        {
-            if ((u32ByteCnt % 4) && (i == (u32ByteCnt % 4)))
-                break;
-            
-            pu8KeyOut[u32Idx + i] = (KDF->KEYOUT[u32WordCnt - 1 - (i / 4)] >> ((3 - (i % 4)) * 8)) & 0xFF;
-        }
+        for (i = 0; i < u32ByteCnt; i++)
+            pu8KeyOut[u32Idx + i] = (KDF->KEYOUT[(i / 4)] >> (i % 4) * 8) & 0xFF;
         
         u32Idx += i;
-        
-        for (j = 0; j < u32ByteCnt - i; j++)
-        {
-            pu8KeyOut[u32Idx + j] = (KDF->KEYOUT[u32WordCnt - 2 - (j / 4)] >> ((3 - (j % 4)) * 8)) & 0xFF;
-        }
-        
         i32LeftKeyBitSize -= (u32ByteCnt * 8);
-        KDF->CTL |= KDF_CTL_NEXT_Msk;
-    } while (i32LeftKeyBitSize > 0);
+    }
     
+    /* Stop KDF derive opeation */
     KDF->CTL |= KDF_CTL_FINISH_Msk;
-    /* Waiting for busy */
+    /* Wait until KDF become idle */
     u32TimeOutCount = KDF_TIMEOUT;
     while(KDF->STS & (KDF_STS_BUSY_Msk | KDF_STS_HMACBUSY_Msk))
     {
         if(--u32TimeOutCount == 0)
         {
-            return KDF_ERR_TIMEOUT;
+            return eKDF_ERRCODE_TIMEOUT;
         }
     }
     
-    return 0;
+    return eKDF_ERRCODE_SUCCESS;
 }
 
-int32_t KDF_DeriveKeyToKS(KS_MEM_Type eMemType, E_KDF_MODE eMode, uint32_t u32KeyBitSize, uint32_t u32SrcSelect, uint32_t u32KeyOwner, uint32_t u32SecurePriv)
+/**
+  * @brief        Derive key to Key Store
+  *
+  * @param[in]    eMemType           The memory type. It could be:
+  *                                  \ref KS_SRAM
+  *                                  \ref KS_FLASH
+  * @param[in]    eMode              The operation mode. It could be:
+  *                                  \ref eKDF_MODE_HKDF : HKDF  (RFC 5869)
+  *                                  \ref eKDF_MODE_KBKDF: KBKDF (NIST SP 800-108)
+  * @param[in]    u32DeriveKeyParam  To specify keyin, salt, label and context selection.
+  *                                  If KDF_xxx_FROM_REG is set, users can use these functions -
+  *                                    KDF_SetKeyInput, KDF_SetSalt, KDF_SetLabel and KDF_SetCtxt
+  *                                  to write key parameters before deriving key
+  *                                  \ref KDF_KEYIN_FROM_REG / \ref KDF_KEYIN_FROM_NVM
+  *                                  \ref KDF_SALT_FROM_REG  / \ref KDF_SALT_FROM_RANDOM
+  *                                  \ref KDF_LABEL_FROM_REG / \ref KDF_LABEL_FROM_RANDOM
+  *                                  \ref KDF_CTXT_FROM_REG  / \ref KDF_CTXT_FROM_RANDOM
+  * @param[in]    u32KeySizeSel      Output key size selection. It could be:
+  *                                  \ref KDF_KEY_SIZE_128
+  *                                  \ref KDF_KEY_SIZE_163
+  *                                  \ref KDF_KEY_SIZE_192
+  *                                  \ref KDF_KEY_SIZE_224
+  *                                  \ref KDF_KEY_SIZE_233
+  *                                  \ref KDF_KEY_SIZE_255
+  *                                  \ref KDF_KEY_SIZE_256
+  *                                  \ref KDF_KEY_SIZE_283
+  *                                  \ref KDF_KEY_SIZE_384
+  *                                  \ref KDF_KEY_SIZE_409
+  *                                  \ref KDF_KEY_SIZE_512
+  *                                  \ref KDF_KEY_SIZE_521
+  *                                  \ref KDF_KEY_SIZE_571
+  * @param[in]    u32KeyMeta         The metadata of the key. It could be the combine of
+  *                                  \ref KDF_KS_OWNER_AES / \ref KDF_KS_OWNER_HMAC / \ref KDF_KS_OWNER_ECC / \ref KDF_KS_OWNER_CPU / \ref KDF_KS_OWNER_CHACHA
+  *                                  \ref KDF_KS_NON_PRIV   / \ref KDF_KS_PRIV
+  *                                  \ref KDF_KS_NON_SECURE / \ref KDF_KS_SECURE
+  * @return       Index of the key. Failed when index < 0.
+  * @details      Derive key to Key Store with specified key parameters and key length
+  */
+int32_t KDF_DeriveKeyToKS(KS_MEM_Type eMemType, E_KDF_MODE eMode, uint32_t u32DeriveKeyParam, uint32_t u32KeySizeSel, uint32_t u32KeyMeta)
 {
     uint32_t u32TimeOutCount;
     
-    KDF->CTL    = eMode | u32SrcSelect;
-    KDF->KSCTL  = (u32KeyOwner | (eMemType << KDF_KSCTL_WSDST_Pos) | KDF_KEYOUT_TO_KS | u32SecurePriv);
-    KDF->KSSIZE = KDF_GetKeySizeSel(u32KeyBitSize);
+    KDF->CTL    = eMode | u32DeriveKeyParam;
+    KDF->KSCTL  = (eMemType << KDF_KSCTL_WSDST_Pos) | KDF_KEYOUT_TO_KS | u32KeyMeta;
+    KDF->KSSIZE = u32KeySizeSel;
     KDF->CTL    = KDF->CTL | KDF_CTL_START_Msk;
     
     /* Waiting for busy */
@@ -251,12 +249,12 @@ int32_t KDF_DeriveKeyToKS(KS_MEM_Type eMemType, E_KDF_MODE eMode, uint32_t u32Ke
     {
         if(--u32TimeOutCount == 0)
         {
-            return KDF_ERR_TIMEOUT;
+            return eKDF_ERRCODE_TIMEOUT;
         }
     }
     
     if(KDF->STS & (KDF_STS_NEXTERR_Msk | KDF_STS_KSERR_Msk))
-        return KDF_ERR_FAIL;
+        return eKDF_ERRCODE_FAIL;
     
     return (KDF->KSSTS & KDF_KSSTS_NUM_Msk);
 }

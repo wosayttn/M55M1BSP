@@ -104,8 +104,6 @@ int32_t KS_Read(KS_MEM_Type eMemType, int32_t i32KeyIdx, uint32_t au32Key[], uin
     /* Specify the key address */
     KS->METADATA = ((uint32_t)eMemType << KS_METADATA_DST_Pos) | KS_TOMETAKEY(i32KeyIdx);
 
-    /* Clear error flag */
-    KS->STS = KS_STS_EIF_Msk;
     offset = 0;
     u32Cont = 0;
     i32Cnt = (int32_t)u32WordCnt;
@@ -250,8 +248,6 @@ int32_t KS_Write(KS_MEM_Type eMemType, uint32_t u32Meta, uint32_t au32Key[])
     if ((eMemType == KS_OTP) && (i32Cnt > 8))
         return KS_ERR_PARAMETER;
 
-    /* Clear error flag */
-    KS->STS = KS_STS_EIF_Msk;
     offset = 0;
     u32Cont = 0;
 
@@ -570,7 +566,7 @@ uint32_t KS_GetRemainKeyCount(KS_MEM_Type eMemType)
   */
 int32_t KS_WriteOTP(int32_t i32KeyIdx, uint32_t u32Meta, uint32_t au32Key[])
 {
-    const uint16_t au8CntTbl[7] = {4, 6, 6, 7, 8, 8, 8};
+    const uint16_t au8CntTbl[7] = { 4, 6, 6, 7, 8, 8, 8 };
     int32_t i32Cnt;
     uint32_t u32Cont;
     int32_t offset, i, cnt, sidx;
@@ -587,49 +583,35 @@ int32_t KS_WriteOTP(int32_t i32KeyIdx, uint32_t u32Meta, uint32_t au32Key[])
     sidx = (u32Meta & KS_METADATA_SIZE_Msk) >> KS_METADATA_SIZE_Pos;
 
     /* OTP only support maximum 256 bits */
-    if (sidx >= 7)
+    if (sidx > (KS_META_256 >> KS_METADATA_SIZE_Pos))
         return KS_ERR_PARAMETER;
 
     i32Cnt = au8CntTbl[sidx];
-
-    /* Clear error flag */
-    KS->STS = KS_STS_EIF_Msk;
     offset = 0;
     u32Cont = 0;
 
-    do
+    /* Prepare the key to write */
+    cnt = i32Cnt;
+
+    for (i = 0; i < cnt; i++)
     {
-        /* Prepare the key to write */
-        cnt = i32Cnt;
+        KS->KEY[i] = au32Key[offset + i];
+    }
 
-        if (cnt > 8)
-            cnt = 8;
+    /* Clear Status */
+    KS->STS = KS_STS_EIF_Msk | KS_STS_IF_Msk;
 
-        for (i = 0; i < cnt; i++)
-        {
-            KS->KEY[i] = au32Key[offset + i];
-        }
+    /* Write the key */
+    KS->CTL = KS_OP_WRITE | KS_CTL_START_Msk | (KS->CTL & (KS_CTL_SILENT_Msk | KS_CTL_SCMB_Msk));
 
-        /* Clear Status */
-        KS->STS = KS_STS_EIF_Msk | KS_STS_IF_Msk;
+    /* Waiting for key store processing */
+    u32TimeOutCount = KS_TIMEOUT;
 
-        /* Write the key */
-        KS->CTL = u32Cont | KS_OP_WRITE | KS_CTL_START_Msk | (KS->CTL & (KS_CTL_SILENT_Msk | KS_CTL_SCMB_Msk));
-
-        u32Cont = KS_CTL_CONT_Msk;
-        i32Cnt -= 8;
-        offset += 8;
-
-        /* Waiting for key store processing */
-        u32TimeOutCount = KS_TIMEOUT;
-
-        while (KS->STS & KS_STS_BUSY_Msk)
-        {
-            if (--u32TimeOutCount == 0)
-                return KS_ERR_TIMEOUT;
-        }
-
-    } while (i32Cnt > 0);
+    while (KS->STS & KS_STS_BUSY_Msk)
+    {
+        if (--u32TimeOutCount == 0)
+            return KS_ERR_TIMEOUT;
+    }
 
     /* Check error flag */
     if (KS->STS & KS_STS_EIF_Msk)
@@ -639,7 +621,6 @@ int32_t KS_WriteOTP(int32_t i32KeyIdx, uint32_t u32Meta, uint32_t au32Key[])
 
     return i32KeyIdx;
 }
-
 
 /**
   * @brief      Trigger to inverse the data in KS_SRAM.

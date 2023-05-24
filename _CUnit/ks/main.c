@@ -59,17 +59,17 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
+    /* Enable module clock */
+    CLK_EnableModuleClock(KS0_MODULE);
+    SYS_ResetModule(SYS_KS0RST);
 
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+    /* Set UART clock */
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    SetDebugUartMFP();
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -99,8 +99,8 @@ int main(int argc, char *argv[])
 {
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-    /* Init DEBUG_PORT to 115200-8N1 for printf */
-    DEBUG_PORT_Init(DEBUG_PORT, 115200);
+    /* Init Debug UART for print message */
+    InitDebugUart();
     
     printf("\n\n");
     printf("+--------------------------------------+\n");

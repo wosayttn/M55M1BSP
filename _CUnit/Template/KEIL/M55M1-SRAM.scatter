@@ -119,7 +119,7 @@
 /*----------------------------------------------------------------------------
   User Stack & Heap boundary definition
  *----------------------------------------------------------------------------*/
-#define __STACK_TOP    (SRAM2_START + SRAM2_SIZE - __STACKSEAL_SIZE)  /* starts at end of RAM - 8 byte stack seal */
+#define __STACK_TOP    (SRAM2_START + SRAM2_SIZE - __STACKSEAL_SIZE)    /* starts at end of RAM - 8 byte stack seal */
 #define __HEAP_BASE    (AlignExpr(+0, 8))                               /* starts after RW_RAM section, 8 byte aligned */
 
 /* ----------------------------------------------------------------------------
