@@ -1156,11 +1156,13 @@ extern "C"
 /**
  * @brief       Clear GPIO Pin Interrupt Flag
  *
- * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG or PH.
+ * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
- *                          It could be BIT0 ~ BIT15 for PA, PB, PC, PD, PF and PH GPIO port.
- *                          It could be BIT0 ~ BIT13 for PE GPIO port.
- *                          It could be BIT0 ~ BIT11 for PG GPIO port.
+ *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT11 for PF GPIO port.
+ *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
  * @details     Clear the interrupt status of specified GPIO pin.
  * \hideinitializer
@@ -1170,11 +1172,13 @@ extern "C"
 /**
  * @brief       Disable Pin De-bounce Function
  *
- * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG or PH.
+ * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
- *                          It could be BIT0 ~ BIT15 for PA, PB, PC, PD, PF and PH GPIO port.
- *                          It could be BIT0 ~ BIT13 for PE GPIO port.
- *                          It could be BIT0 ~ BIT11 for PG GPIO port.
+ *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT11 for PF GPIO port.
+ *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
  * @details     Disable the interrupt de-bounce function of specified GPIO pin.
  * \hideinitializer
@@ -1184,11 +1188,13 @@ extern "C"
 /**
  * @brief       Enable Pin De-bounce Function
  *
- * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG or PH.
+ * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
- *                          It could be BIT0 ~ BIT15 for PA, PB, PC, PD, PF and PH GPIO port.
- *                          It could be BIT0 ~ BIT13 for PE GPIO port.
- *                          It could be BIT0 ~ BIT11 for PG GPIO port.
+ *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT11 for PF GPIO port.
+ *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
  * @details     Enable the interrupt de-bounce function of specified GPIO pin.
  * \hideinitializer
@@ -1198,11 +1204,13 @@ extern "C"
 /**
  * @brief       Disable I/O Digital Input Path
  *
- * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG or PH.
+ * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
- *                          It could be BIT0 ~ BIT15 for PA, PB, PC, PD, PF and PH GPIO port.
- *                          It could be BIT0 ~ BIT13 for PE GPIO port.
- *                          It could be BIT0 ~ BIT11 for PG GPIO port.
+ *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT11 for PF GPIO port.
+ *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
  * @details     Disable I/O digital input path of specified GPIO pin.
  * \hideinitializer
@@ -1212,11 +1220,13 @@ extern "C"
 /**
  * @brief       Enable I/O Digital Input Path
  *
- * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG or PH.
+ * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
- *                          It could be BIT0 ~ BIT15 for PA, PB, PC, PD, PF and PH GPIO port.
- *                          It could be BIT0 ~ BIT13 for PE GPIO port.
- *                          It could be BIT0 ~ BIT11 for PG GPIO port.
+ *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT11 for PF GPIO port.
+ *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
  * @details     Enable I/O digital input path of specified GPIO pin.
  * \hideinitializer
@@ -1226,11 +1236,13 @@ extern "C"
 /**
  * @brief       Disable I/O DOUT mask
  *
- * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG or PH.
+ * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
- *                          It could be BIT0 ~ BIT15 for PA, PB, PC, PD, PF and PH GPIO port.
- *                          It could be BIT0 ~ BIT13 for PE GPIO port.
- *                          It could be BIT0 ~ BIT11 for PG GPIO port.
+ *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT11 for PF GPIO port.
+ *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
  * @details     Disable I/O DOUT mask of specified GPIO pin.
  * \hideinitializer
@@ -1240,11 +1252,13 @@ extern "C"
 /**
  * @brief       Enable I/O DOUT mask
  *
- * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG or PH.
+ * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
- *                          It could be BIT0 ~ BIT15 for PA, PB, PC, PD, PF and PH GPIO port.
- *                          It could be BIT0 ~ BIT13 for PE GPIO port.
- *                          It could be BIT0 ~ BIT11 for PG GPIO port.
+ *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT11 for PF GPIO port.
+ *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
  * @details     Enable I/O DOUT mask of specified GPIO pin.
  * \hideinitializer
@@ -1254,11 +1268,13 @@ extern "C"
 /**
  * @brief       Get GPIO Pin Interrupt Flag
  *
- * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG or PH.
+ * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
- *                          It could be BIT0 ~ BIT15 for PA, PB, PC, PD, PF and PH GPIO port.
- *                          It could be BIT0 ~ BIT13 for PE GPIO port.
- *                          It could be BIT0 ~ BIT11 for PG GPIO port.
+ *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT11 for PF GPIO port.
+ *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
  * @retval      0           No interrupt at specified GPIO pin
  * @retval      1           The specified GPIO pin generate an interrupt
@@ -1271,7 +1287,7 @@ extern "C"
 /**
  * @brief       Set De-bounce Sampling Cycle Time
  *
- * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG or PH.
+ * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32ClkSrc   The de-bounce counter clock source. It could be GPIO_DBCTL_DBCLKSRC_HCLK or GPIO_DBCTL_DBCLKSRC_LIRC.
  * @param[in]   u32ClkSel   The de-bounce sampling cycle selection. It could be
  *                            - \ref GPIO_DBCTL_DBCLKSEL_1
@@ -1302,7 +1318,7 @@ extern "C"
 /**
  * @brief       Get GPIO Port IN Data
  *
-* @param[in]    port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG or PH.
+ * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  *
  * @return      The specified port data
  *
@@ -1314,7 +1330,7 @@ extern "C"
 /**
  * @brief       Set GPIO Port OUT Data
  *
- * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG or PH.
+ * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32Data     GPIO port data.
  *
  * @details     Set the Data into specified GPIO port.
