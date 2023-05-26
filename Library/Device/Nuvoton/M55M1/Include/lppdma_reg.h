@@ -77,9 +77,6 @@ typedef struct
      * |        |          |10 = One word (32-bit) is transferred for every operation.
      * |        |          |11 = Reserved.
      * |        |          |Note: The LPPDMA transfer source address (LPPDMA_DSCTn_SA) and LPPDMA transfer destination address (LPPDMA_DSCTn_DA) should be alignment under the TXWIDTH selection
-     * |[15]    |STRIDEEN  |Stride Mode Enable Bit
-     * |        |          |0 = Stride transfer mode Disabled.
-     * |        |          |1 = Stride transfer mode Enabled.
      * |[31:16] |TXCNT     |Transfer Count
      * |        |          |The TXCNT represents the required number of LPPDMA transfer, the real transfer count is (TXCNT + 1); The maximum transfer count is 65536, every transfer may be byte, half-word or word that is dependent on TXWIDTH field.
      * |        |          |Note: When LPPDMA finishes each transfer data, this field will be decreased immediately.
@@ -135,7 +132,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[3:0]     |CHENn     |LPPDMA Channel Enable Bits
+     * |[3:0]   |CHENn     |LPPDMA Channel Enable Bits
      * |        |          |Set this bit to 1 to enable LPPDMAn operation. Channel cannot be active if it is not set as enabled.
      * |        |          |0 = LPPDMA channel [n] Disabled.
      * |        |          |1 = LPPDMA channel [n] Enabled.
@@ -145,7 +142,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[3:0]     |PAUSEn    |LPPDMA Channel n Transfer Pause Control (Write Only)
+     * |[3:0]   |PAUSEn    |LPPDMA Channel n Transfer Pause Control (Write Only)
      * |        |          |User can set PAUSEn bit field to pause the LPPDMA transfer
      * |        |          |When user sets PAUSEn bit, the LPPDMA controller will pause the on-going transfer, then clear the channel enable bit CHENn(LPPDMA_CHCTL [n], n=0,1..3) and clear request active flag(LPPDMA_TRGSTS[n:0], n=0,1..3)
      * |        |          |If the paused channel is re-enabled again, the remaining transfers will be processed.
@@ -156,7 +153,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[3:0]     |SWREQn    |LPPDMA Software Request (Write Only)
+     * |[3:0]   |SWREQn    |LPPDMA Software Request (Write Only)
      * |        |          |Set this bit to 1 to generate a software request to LPPDMA [n].
      * |        |          |0 = No effect.
      * |        |          |1 = Generate a software request.
@@ -168,7 +165,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[3:0]     |REQSTSn   |LPPDMA Channel Request Status (Read Only)
+     * |[3:0]   |REQSTSn   |LPPDMA Channel Request Status (Read Only)
      * |        |          |This flag indicates whether channel[n] have a request or not, no matter request from software or peripheral
      * |        |          |When LPPDMA controller finishes channel transfer, this bit will be cleared automatically.
      * |        |          |0 = LPPDMA Channel n has no request.
@@ -179,7 +176,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[3:0]     |FPRISETn  |LPPDMA Fixed Priority Setting
+     * |[3:0]   |FPRISETn  |LPPDMA Fixed Priority Setting
      * |        |          |Set this bit to 1 to enable fixed priority level.
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
@@ -193,7 +190,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[3:0]     |FPRICLRn  |LPPDMA Fixed Priority Clear Bits (Write Only)
+     * |[3:0]   |FPRICLRn  |LPPDMA Fixed Priority Clear Bits (Write Only)
      * |        |          |Set this bit to 1 to clear fixed priority level.
      * |        |          |0 = No effect.
      * |        |          |1 = Clear LPPDMA channel [n] fixed priority setting.
@@ -203,7 +200,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[3:0]     |INTENn    |LPPDMA Interrupt Enable Bits
+     * |[3:0]   |INTENn    |LPPDMA Interrupt Enable Bits
      * |        |          |This field is used to enable LPPDMA channel[n] interrupt.
      * |        |          |0 = LPPDMA channel n interrupt Disabled.
      * |        |          |1 = LPPDMA channel n interrupt Enabled.
@@ -224,12 +221,15 @@ typedef struct
      * |[2]     |ALIGNF    |Transfer Alignment Interrupt Flag (Read Only)
      * |        |          |0 = LPPDMA channel source address and destination address both follow transfer width setting.
      * |        |          |1 = LPPDMA channel source address or destination address is not follow transfer width setting.
+     * |[3]     |WKF       |Wake Up Flag
+     * |        |          |0 = LPPDMA no wake up event.
+     * |        |          |1 = LPPDMA wake up event happened.
      * @var LPPDMA_T::ABTSTS
      * Offset: 0x420  LPPDMA Channel Read/Write Target Abort Flag Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[3:0]     |ABTIFn    |LPPDMA Read/Write Target Abort Interrupt Status Flag
+     * |[3:0]   |ABTIFn    |LPPDMA Read/Write Target Abort Interrupt Status Flag
      * |        |          |This bit indicates which LPPDMA controller has target abort error.
      * |        |          |0 = No AHB bus ERROR response received when channel n transfer.
      * |        |          |1 = AHB bus ERROR response received when channel n transfer.
@@ -240,7 +240,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[3:0]     |TDIFn     |Transfer Done Flag
+     * |[3:0]   |TDIFn     |Transfer Done Flag
      * |        |          |This bit indicates whether LPPDMA controller channel transfer has been finished or not.
      * |        |          |0 = LPPDMA channel transfer has not finished.
      * |        |          |1 = LPPDMA channel has finished transmission.
@@ -250,7 +250,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[3:0]     |ALIGNn    |Transfer Alignment Flag
+     * |[3:0]   |ALIGNn    |Transfer Alignment Flag
      * |        |          |This bit indicates whether source and destination address both follow transfer width setting.
      * |        |          |0 = LPPDMA channel source address and destination address both follow transfer width setting.
      * |        |          |1 = LPPDMA channel source address or destination address is not follow transfer width setting.
@@ -260,7 +260,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[3:0]     |TXACTFn   |Transfer on Active Flag (Read Only)
+     * |[3:0]   |TXACTFn   |Transfer on Active Flag (Read Only)
      * |        |          |This bit indicates which LPPDMA channel is in active.
      * |        |          |0 = LPPDMA channel is finished.
      * |        |          |1 = LPPDMA channel is active.
@@ -269,7 +269,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[3:0]     |CHnRST    |Channel n Reset
+     * |[3:0]   |CHnRST    |Channel n Reset
      * |        |          |0 = Corresponding channel n is not reset.
      * |        |          |1 = Corresponding channel n is reset.
      * @var LPPDMA_T::REQSEL0_3
@@ -294,8 +294,6 @@ typedef struct
      * |        |          |11 = Channel connects to LPADC0_RX.
      * |        |          |12 = Reserved.
      * |        |          |13 = Channel connects to DMIC0_RX.
-     * |        |          |14 = Channel connects to LPGPIO.
-     * |        |          |15 = Channel connects to AWF.
      * |        |          |Others = Reserved.
      * |        |          |Note 1: A peripheral cannot be assigned to two channels at the same time.
      * |        |          |Note 2: This field is useless when transfer between memory and memory.
@@ -363,9 +361,6 @@ typedef struct
 #define LPPDMA_DSCT_CTL_TXWIDTH_Pos     (12)                                               /*!< LPDSCT_T::CTL: TXWIDTH Position  */
 #define LPPDMA_DSCT_CTL_TXWIDTH_Msk     (0x3ul << LPPDMA_DSCT_CTL_TXWIDTH_Pos)             /*!< LPDSCT_T::CTL: TXWIDTH Mask      */
 
-#define LPPDMA_DSCT_CTL_STRIDEEN_Pos    (15)                                               /*!< LPDSCT_T::CTL: STRIDEEN Position */
-#define LPPDMA_DSCT_CTL_STRIDEEN_Msk    (0x1ul << LPPDMA_DSCT_CTL_STRIDEEN_Pos)            /*!< LPDSCT_T::CTL: STRIDEEN Mask     */
-
 #define LPPDMA_DSCT_CTL_TXCNT_Pos       (16)                                               /*!< LPDSCT_T::CTL: TXCNT Position    */
 #define LPPDMA_DSCT_CTL_TXCNT_Msk       (0xfffful << LPPDMA_DSCT_CTL_TXCNT_Pos)            /*!< LPDSCT_T::CTL: TXCNT Mask        */
 
@@ -414,8 +409,8 @@ typedef struct
 #define LPPDMA_INTSTS_ALIGNF_Pos         (2)                                               /*!< LPPDMA_T::INTSTS: ALIGNF Position      */
 #define LPPDMA_INTSTS_ALIGNF_Msk         (0x1ul << LPPDMA_INTSTS_ALIGNF_Pos)               /*!< LPPDMA_T::INTSTS: ALIGNF Mask          */
 
-#define LPPDMA_INTSTS_WKF_Pos            (3)                                               /*!< LPPDMA_T::INTSTS: ALIGNF Position      */
-#define LPPDMA_INTSTS_WKF_Msk            (0x1ul << LPPDMA_INTSTS_WKF_Pos)
+#define LPPDMA_INTSTS_WKF_Pos            (3)                                               /*!< LPPDMA_T::INTSTS: WKF Position         */
+#define LPPDMA_INTSTS_WKF_Msk            (0x1ul << LPPDMA_INTSTS_WKF_Pos)                  /*!< LPPDMA_T::INTSTS: WKF Mask             */
 
 #define LPPDMA_ABTSTS_ABTIF0_Pos         (0)                                               /*!< LPPDMA_T::ABTSTS: ABTIF0 Position      */
 #define LPPDMA_ABTSTS_ABTIF0_Msk         (0x1ul << LPPDMA_ABTSTS_ABTIF0_Pos)               /*!< LPPDMA_T::ABTSTS: ABTIF0 Mask          */

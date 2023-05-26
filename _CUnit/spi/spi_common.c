@@ -29,6 +29,52 @@ char *GetTestSPIName(uint32_t u32Index)
     return NULL;
 }
 
+void SPI_DISABLE_SELFTEST(uint32_t u32SpiModule)
+{
+    switch (u32SpiModule)
+    {
+        case C_SPI0:
+            outp32(SPI0_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
+            break;
+
+        case C_SPI1:
+            outp32(SPI1_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
+            break;
+
+        case C_SPI2:
+            outp32(SPI2_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
+            break;
+
+        case C_SPI3:
+            outp32(SPI3_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
+            break;
+    }
+}
+
+void SPI_ENABLE_SELFTEST(uint32_t u32SpiModule)
+{
+    switch (u32SpiModule)
+    {
+        case C_SPI0:
+            outp32(SPI0_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
+            break;
+
+        case C_SPI1:
+            outp32(SPI1_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
+            break;
+
+        case C_SPI2:
+            outp32(SPI2_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
+            break;
+
+        case C_SPI3:
+            //printf("SPI3_Base Addr = 0x%08X\r\n", (uint32_t)SPI3_BASE);
+            outp32(SPI3_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
+            //printf("SPI3_Base Internal Reg = 0x%08X\r\n", inpw((uint32_t)SPI3_BASE + INTERNAL_REG_BASE));
+            break;
+    }
+}
+
 void ResetSPI(uint32_t u32SPIModule)
 {
     /* Unlock protected registers */
@@ -41,13 +87,10 @@ void ResetSPI(uint32_t u32SPIModule)
             SYS->SPIRST &= ~(1 << (SYS_SPIRST_SPI0RST_Pos));
             break;
 
-#if (EN_MULTI_SPI1 == 1)
-
         case C_SPI1:
             SYS->SPIRST |= (1 << (SYS_SPIRST_SPI1RST_Pos));
             SYS->SPIRST &= ~(1 << (SYS_SPIRST_SPI1RST_Pos));
             break;
-#endif //EN_MULTI_SPI1
 
         case C_SPI2:
             SYS->SPIRST |= (1 << (SYS_SPIRST_SPI2RST_Pos));
@@ -68,6 +111,9 @@ void ResetSPI(uint32_t u32SPIModule)
 
 void SPI3_SetClkSrc(uint32_t u32ClkSrc)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     CLK->SPISEL &= (~CLK_SPISEL_SPI3SEL_Msk);
 
     switch (u32ClkSrc)
@@ -106,6 +152,9 @@ void SPI3_SetClkSrc(uint32_t u32ClkSrc)
 
 void SPI2_SetClkSrc(uint32_t u32ClkSrc)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     CLK->SPISEL &= (~CLK_SPISEL_SPI2SEL_Msk);
 
     switch (u32ClkSrc)
@@ -144,6 +193,9 @@ void SPI2_SetClkSrc(uint32_t u32ClkSrc)
 
 void SPI1_SetClkSrc(uint32_t u32ClkSrc)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     CLK->SPISEL &= (~CLK_SPISEL_SPI1SEL_Msk);
 
     switch (u32ClkSrc)
@@ -182,6 +234,9 @@ void SPI1_SetClkSrc(uint32_t u32ClkSrc)
 
 void SPI0_SetClkSrc(uint32_t u32ClkSrc)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     CLK->SPISEL &= (~CLK_SPISEL_SPI0SEL_Msk);
 
     switch (u32ClkSrc)
@@ -265,6 +320,9 @@ void SPI_ClkEnable(uint32_t u32SPIModule)
 
 void SPI_CLK_Sel(uint32_t u32SPIModule, uint32_t u32ClkSrc)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     SPI_ClkEnable(u32SPIModule);
 
     switch (u32SPIModule)
