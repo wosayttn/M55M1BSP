@@ -376,9 +376,9 @@ extern "C"
 
 
 /**
- *    @brief        Enable specified UART Deglitch function
+ *    @brief        Enable specified LPUART Deglitch function
  *
- *    @param[in]    uart        The pointer of the specified UART module
+ *    @param[in]    lpuart        The pointer of the specified LPUART module
  *
  *    @return       None
  *
@@ -386,18 +386,34 @@ extern "C"
  */
 #define LPUART_DEGLITCH_ENABLE(lpuart)    ((lpuart)->FUNCSEL |= LPUART_FUNCSEL_DGE_Msk)
 /**
- *    @brief        Disable specified UART Deglitch function
+ *    @brief        Disable specified LPUART Deglitch function
  *
- *    @param[in]    uart        The pointer of the specified UART module
+ *    @param[in]    lpuart        The pointer of the specified LPUART module
  *
  *    @return       None
  *
  *    \hideinitializer
  */
 #define LPUART_DEGLITCH_DISABLE(lpuart)    ((lpuart)->FUNCSEL &= ~LPUART_FUNCSEL_DGE_Msk)
-
+/**
+ *    @brief        Enable specific LPUART swap TX pin and RX pin
+ *
+ *    @param[in]    lpuart        The pointer of the specified LPUART module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
 #define LPUART_TXRX_SWAP_ENABLE(lpuart)    ((lpuart)->FUNCSEL |= LPUART_FUNCSEL_TXRXSWP_Msk)
-
+/**
+ *    @brief        Disable specific UART swap TX pin and RX pin
+ *
+ *    @param[in]    lpuart        The pointer of the specified LPUART module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
 #define LPUART_TXRX_SWAP_DISABLE(lpuart)   ((lpuart)->FUNCSEL &= ~LPUART_FUNCSEL_TXRXSWP_Msk)
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -462,7 +478,17 @@ __STATIC_INLINE void LPUART_SET_RTS(LPUART_T* lpuart)
  *    @details      This macro get RS-485 address byte detection flag.
  */
 #define LPUART_RS485_GET_ADDR_FLAG(lpuart)    (((lpuart)->FIFOSTS  & LPUART_FIFOSTS_ADDRDETF_Msk) >> LPUART_FIFOSTS_ADDRDETF_Pos)
-
+/**
+ *    @brief        Set specified RS485 transceiver deactivate delay value
+ *
+ *    @param[in]    lpuart        The pointer of the specified LPUART module
+ *    @param[in]    u32RSDly    Deactivate delay value
+ *
+ *    @return       None
+ *
+ *    @details       This macro set RS485 transceiver deactivate delay value.
+ */
+#define LPUART_RS485RTSDLY_SET(lpuart, u32RSDly)    ((lpuart)->RS485DD = ((lpuart)->RS485DD &(~LPUART_RS485DD_RTSDDLY_Msk))|u32RSDly)
 
 /**
  *    @brief        Enable specified LPUART PDMA function
@@ -493,6 +519,84 @@ __STATIC_INLINE void LPUART_SET_RTS(LPUART_T* lpuart)
  */
 #define LPUART_PDMA_DISABLE(lpuart, u32FuncSel)    ((lpuart)->INTEN &= ~(u32FuncSel))
 
+/**
+ *    @brief        Enable specified LPUART Automatic Operation function
+ *
+ *    @param[in]    lpuart        The pointer of the specified LPUART module
+ *
+ *    @return       None
+ *
+ *    @details      This macro enable specified LPUART Automatic Operation function.
+ */
+#define LPUART_AUTO_OP_ENABLE(lpuart)    ((lpuart)->AUTOCTL |= LPUART_AUTOCTL_AOEN_Msk)
+
+/**
+ *    @brief        Disable specified LPUART Automatic Operation function
+ *
+ *    @param[in]    lpuart        The pointer of the specified LPUART module
+ *
+ *    @return       None
+ *
+ *    @details      This macro disable specified LPUART Automatic Operation function.
+ */
+#define LPUART_AUTO_OP_DISABLE(lpuart)    ((lpuart)->AUTOCTL &= ~LPUART_AUTOCTL_AOEN_Msk)
+
+/**
+ *    @brief        Enable specified LPUART Automatic Operation Clock Always-on function
+ *
+ *    @param[in]    lpuart        The pointer of the specified LPUART module
+ *
+ *    @return       None
+ *
+ *    @details      This macro enable specified LPUART Automatic Operation Clock Always-on function.
+ */
+#define LPUART_AOUT_OP_CLOCK_ALWAYS_ON_ENABLE(lpuart)    ((lpuart)->AUTOCTL |= LPUART_AUTOCTL_CKAWOEN_Msk)
+
+/**
+ *    @brief        Disable specified LPUART Automatic Operation Clock Always-on function
+ *
+ *    @param[in]    lpuart        The pointer of the specified LPUART module
+ *
+ *    @return       None
+ *
+ *    @details      This macro disable specified LPUART Automatic Operation Clock Always-on function.
+ */
+#define LPUART_AOUT_OP_CLOCK_ALWAYS_ON_DISABLE(lpuart)    ((lpuart)->AUTOCTL &= ~LPUART_AUTOCTL_CKAWOEN_Msk)
+
+/**
+ *    @brief        Enable specified LPUART Automatic Operation Software Trigger function
+ *
+ *    @param[in]    lpuart        The pointer of the specified LPUART module
+ *
+ *    @return       None
+ *
+ *    @details      This macro enable specified LPUART Automatic Operation Software Trigger function.
+ */
+#define LPUART_AUTO_OP_SW_TRIGGER_ENABLE(lpuart)    ((lpuart)->AUTOCTL |= LPUART_AUTOCTL_SWTRIG_Msk)
+
+/**
+ *    @brief        Bus Idle Time-out Wake-up Status register value
+ *
+ *    @param[in]    lpuart    The pointer of the specified LPUART module
+ *
+ *    @retval       0 There is no Bus Idle Time-out Wake-up.
+ *    @retval       1 Chip wake-up from power-down state by Bus Idle Time-out Wake-up
+ *
+ *    @details      This macro get Bus Idle Time-out Wake-up Status register value.
+ *    \hideinitializer
+ */
+#define LPUART_BUS_IDLE_TIMEOUT_WAKEUP(lpuart) (((lpuart)->AUTOSTS & LPUART_AUTOSTS_AOTOWKF_Msk )>> LPUART_AUTOSTS_AOTOWKF_Pos)
+/**
+ *    @brief        Clear Bus Idle Time-out Wake-up Flag
+ *
+ *    @param[in]    lpuart    The pointer of the specified LPUART module
+ *
+ *    @return       None
+ *
+ *    @details      This macro clear Bus Idle time-out wake-up flag.
+ */
+#define LPUART_CLEAR_BUS_IDLE_TIMEOUT_WAKEUP_FLAG(lpuart)    ((lpuart)->AUTOSTS = LPUART_AUTOSTS_AOTOWKF_Msk)
+
 void LPUART_ClearIntFlag(LPUART_T* lpuart, uint32_t u32InterruptFlag);
 void LPUART_Close(LPUART_T* lpuart);
 void LPUART_DisableFlowCtrl(LPUART_T* lpuart);
@@ -503,11 +607,9 @@ void LPUART_Open(LPUART_T* lpuart, uint32_t u32baudrate);
 uint32_t LPUART_Read(LPUART_T* lpuart, uint8_t pu8RxBuf[], uint32_t u32ReadBytes);
 void LPUART_SetLineConfig(LPUART_T* lpuart, uint32_t u32baudrate, uint32_t u32data_width, uint32_t u32parity, uint32_t  u32stop_bits);
 void LPUART_SetTimeoutCnt(LPUART_T* lpuart, uint32_t u32TOC);
-void LPUART_SelectIrDAMode(LPUART_T* lpuart, uint32_t u32Buadrate, uint32_t u32Direction);
 void LPUART_SelectRS485Mode(LPUART_T* lpuart, uint32_t u32Mode, uint32_t u32Addr);
-void LPUART_SelectLINMode(LPUART_T* lpuart, uint32_t u32Mode, uint32_t u32BreakLength);
 uint32_t LPUART_Write(LPUART_T* lpuart, uint8_t pu8TxBuf[], uint32_t u32WriteBytes);
-void LPUART_SelectSingleWireMode(LPUART_T *lpuart);
+void LPUART_SelectAutoOperationMode(LPUART_T* lpuart, uint32_t u32TrigSel, uint32_t u32ClockAoEn);
 
 /** @} end of group LPUART_EXPORTED_FUNCTIONS */
 /** @} end of group LPUART_Driver */

@@ -183,7 +183,7 @@ void LPUART_EnableInt(LPUART_T*  lpuart, uint32_t u32InterruptFlag)
  */
 void LPUART_Open(LPUART_T* lpuart, uint32_t u32baudrate)
 {
-    uint32_t u32UartClkSrcSel=0ul, u32UartClkDivNum=0ul;
+    uint32_t u32LpUartClkSrcSel=0ul, u32LpUartClkDivNum=0ul;
     uint32_t u32ClkTbl[4] = {0,__LXT, __MIRC, __HIRC};
     uint32_t u32Baud_Div = 0ul;
 
@@ -191,9 +191,9 @@ void LPUART_Open(LPUART_T* lpuart, uint32_t u32baudrate)
     if(lpuart==(LPUART_T*)LPUART0)
     {
         /* Get LPUART clock source selection */
-        u32UartClkSrcSel = ((CLK->LPUARTSEL & CLK_LPUARTSEL_LPUART0SEL_Msk)) >> CLK_LPUARTSEL_LPUART0SEL_Pos;
+        u32LpUartClkSrcSel = ((CLK->LPUARTSEL & CLK_LPUARTSEL_LPUART0SEL_Msk)) >> CLK_LPUARTSEL_LPUART0SEL_Pos;
         /* Get LPUART clock divider number */
-        u32UartClkDivNum = (CLK->LPUARTDIV & CLK_LPUARTDIV_LPUART0DIV_Msk) >> CLK_LPUARTDIV_LPUART0DIV_Pos;
+        u32LpUartClkDivNum = (CLK->LPUARTDIV & CLK_LPUARTDIV_LPUART0DIV_Msk) >> CLK_LPUARTDIV_LPUART0DIV_Pos;
 
     }
 
@@ -208,7 +208,7 @@ void LPUART_Open(LPUART_T* lpuart, uint32_t u32baudrate)
     lpuart->FIFO &= ~(LPUART_FIFO_RFITL_Msk | LPUART_FIFO_RTSTRGLV_Msk);
 
     /* Get PLL clock frequency if LPUART clock source selection is PCLK2 */
-    if(u32UartClkSrcSel == 0ul)
+    if(u32LpUartClkSrcSel == 0ul)
     {
          u32ClkTbl[0] =CLK_GetPCLK4Freq();
     }
@@ -216,11 +216,11 @@ void LPUART_Open(LPUART_T* lpuart, uint32_t u32baudrate)
     /* Set LPUART baud rate */
     if(u32baudrate != 0ul)
     {
-        u32Baud_Div = LPUART_BAUD_MODE2_DIVIDER((u32ClkTbl[u32UartClkSrcSel]) / (u32UartClkDivNum + 1ul), u32baudrate);
+        u32Baud_Div = LPUART_BAUD_MODE2_DIVIDER((u32ClkTbl[u32LpUartClkSrcSel]) / (u32LpUartClkDivNum + 1ul), u32baudrate);
 
         if(u32Baud_Div > 0xFFFFul)
         {
-            lpuart->BAUD = (LPUART_BAUD_MODE0 | LPUART_BAUD_MODE0_DIVIDER((u32ClkTbl[u32UartClkSrcSel]) / (u32UartClkDivNum + 1ul), u32baudrate));
+            lpuart->BAUD = (LPUART_BAUD_MODE0 | LPUART_BAUD_MODE0_DIVIDER((u32ClkTbl[u32LpUartClkSrcSel]) / (u32LpUartClkDivNum + 1ul), u32baudrate));
         }
         else
         {
@@ -398,7 +398,7 @@ void LPUART_SelectRS485Mode(LPUART_T* lpuart, uint32_t u32Mode, uint32_t u32Addr
 /**
  *    @brief        Write LPUART data
  *
- *    @param[in]    lpuart            The pointer of the specified LPUART module.
+ *    @param[in]    lpuart          The pointer of the specified LPUART module.
  *    @param[in]    pu8TxBuf        The buffer to send the data to LPUART transmission FIFO.
  *    @param[out]   u32WriteBytes   The byte number of data.
  *
@@ -439,6 +439,44 @@ uint32_t LPUART_Write(LPUART_T* lpuart, uint8_t pu8TxBuf[], uint32_t u32WriteByt
 
     return u32Count;
 }
+/**
+ *    @brief        Select and configure  Automatic Operation function
+ *
+ *    @param[in]    lpuart      The pointer of the specified LPUART module.
+ *    @param[in]    u32TrigSel  The LPUART Automatic Operation Trigger Source.
+ *                                - \ref LPUART_AUTOCTL_TRIGSEL_LPTMR0
+ *                                - \ref LPUART_AUTOCTL_TRIGSEL_LPTMR1
+ *                                - \ref LPUART_AUTOCTL_TRIGSEL_TTMR0
+ *                                - \ref LPUART_AUTOCTL_TRIGSEL_TTMR1
+ *                                - \ref LPUART_AUTOCTL_TRIGSEL_WKIOA0
+ *                                - \ref LPUART_AUTOCTL_TRIGSEL_WKIOB0
+ *                                - \ref LPUART_AUTOCTL_TRIGSEL_WKIOC0
+ *                                - \ref LPUART_AUTOCTL_TRIGSEL_WKIOD0
+ *    @param[in]    u32ClockAoEn  The Automatic Operation Clock Always-on Enable.
+ *
+ *    @return       None
+ *
+ *    @details      The function is used to set Automatic Operation relative setting.
+ */
+void LPUART_SelectAutoOperationMode(LPUART_T* lpuart, uint32_t u32TrigSel, uint32_t u32ClockAoEn)
+{
+    /* Set Automatic Operation Enable */
+    lpuart->AUTOCTL |= LPUART_AUTOCTL_AOEN_Msk;
+    
+    /*Set Automatic Operation Clock Always-on*/
+    if(u32ClockAoEn == 1)
+       lpuart->AUTOCTL |= LPUART_AUTOCTL_CKAWOEN_Msk;
+    else
+       lpuart->AUTOCTL &= ~LPUART_AUTOCTL_CKAWOEN_Msk;
+    
+    // Set Auto Operation mode Trigger source 
+    lpuart->AUTOCTL &= ~LPUART_AUTOCTL_TRIGSEL_Msk;
+    lpuart->AUTOCTL |=  u32TrigSel;
+    /*Automatic Operation Trigger Enable*/
+    lpuart->AUTOCTL |= LPUART_AUTOCTL_TRIGEN_Msk;
+
+}
+
 
 /** @} end of group LPUART_EXPORTED_FUNCTIONS */
 /** @} end of group LPUART_Driver */
