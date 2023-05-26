@@ -237,7 +237,7 @@ extern "C"
  * @details     This macro set the selected channel scatter-gather descriptor address.
  * \hideinitializer
  */
-#define LPPDMA_SET_SCATTER_DESC(lppdma,u32Ch, u32Addr) ((uint32_t)(lppdma->LPDSCT[(u32Ch)].NEXT = (u32Addr) - (lppdma->SCATBA)))
+#define LPPDMA_SET_SCATTER_DESC(lppdma,u32Ch, u32Addr) ((uint32_t)(lppdma->LPDSCT[(u32Ch)].NEXT = u32Addr))
 
 /**
  * @brief       Stop the channel

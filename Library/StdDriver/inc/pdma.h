@@ -326,7 +326,7 @@ extern "C"
  * @details     This macro set the selected channel scatter-gather descriptor address.
  * \hideinitializer
  */
-#define PDMA_SET_SCATTER_DESC(pdma,u32Ch, u32Addr) ((uint32_t)(pdma->DSCT[(u32Ch)].NEXT = (u32Addr) - (pdma->SCATBA)))
+#define PDMA_SET_SCATTER_DESC(pdma,u32Ch, u32Addr) ((uint32_t)(pdma->DSCT[(u32Ch)].NEXT = u32Addr))
 
 /**
  * @brief       Stop the channel

@@ -79,42 +79,6 @@ void PDMA_SetTransferCnt(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32Width, uint32
 }
 
 /**
- * @brief       Set PDMA Stride Mode
-  *
- * @param[in]   pdma            The pointer of the specified PDMA module
- * @param[in]   u32Ch           The selected channel
- * @param[in]   u32DestLen      Destination stride count
- * @param[in]   u32SrcLen       Source stride count
- * @param[in]   u32TransCount   Transfer count
- *
- * @details     This function set the selected stride mode.
- */
-void PDMA_SetStride(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32DestLen, uint32_t u32SrcLen, uint32_t u32TransCount)
-{
-    pdma->DSCT[u32Ch].CTL |= PDMA_DSCT_CTL_STRIDEEN_Msk;
-    pdma->STRIDE[u32Ch].ASOCR =((u32DestLen-1)<<16) | (u32SrcLen-1);
-    pdma->STRIDE[u32Ch].STCR = u32TransCount-1;
-}
-
-/**
- * @brief       Set PDMA Repeat
-  *
- * @param[in]   pdma                The pointer of the specified PDMA module
- * @param[in]   u32Ch               The selected channel
- * @param[in]   u32DestInterval     Destination address interval count
- * @param[in]   u32SrcInterval      Source address interval count
- * @param[in]   u32RepeatCount      Repeat count
- *
- * @details     This function set the selected repeat.
- */
-void PDMA_SetRepeat(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32DestInterval, uint32_t u32SrcInterval, uint32_t u32RepeatCount)
-{
-    pdma->DSCT[u32Ch].CTL |= PDMA_DSCT_CTL_STRIDEEN_Msk;
-    pdma->REPEAT[u32Ch].AICTL =((u32DestInterval)<<16) | (u32SrcInterval);
-    pdma->REPEAT[u32Ch].RCNT = u32RepeatCount;
-}
-
-/**
  * @brief       Set PDMA Transfer Address
   *
  * @param[in]   pdma            The pointer of the specified PDMA module
