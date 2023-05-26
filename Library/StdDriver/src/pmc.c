@@ -277,7 +277,7 @@ void PMC_Idle(void)
   *             - \ref PMC_PLCTL_PLSEL_PL1  : Supports system clock up to 200MHz.
   *             - \ref PMC_PLCTL_PLSEL_PL2  : Supports system clock up to 100MHz.
   *             - \ref PMC_PLCTL_PLSEL_PL3  : Supports system clock up to 12MHz.
-  *             Power level settings are ignored in PMC_NPD2/PMC_NPD4/PMC_SPD1/PMC_DPD.
+  *             Power level settings are ignored in PMC_NPD2/PMC_NPD4/PMC_SPD1/PMC_DPD0/PMC_DPD1.
   * @retval     PMC_OK          PMC operation OK.
   * @retval     PMC_ERR_TIMEOUT PMC operation abort due to timeout error.
   * @details    This function is used to set power-down mode.
@@ -335,7 +335,7 @@ int32_t PMC_SetPowerDownMode(uint32_t u32PowerDownMode, uint32_t u32PowerLevel)
 }
 
 /**
- * @brief       Set Wake-up pin trigger type at Deep Power down mode
+ * @brief       Set Wake-up pin trigger type at Power down mode
  * @param[in]   u32TriggerType Wake-up pin trigger type
  *              - \ref PMC_WKPIN0_RISING
  *              - \ref PMC_WKPIN0_FALLING
@@ -464,7 +464,7 @@ void PMC_EnableTGPin(uint32_t u32Port, uint32_t u32Pin, uint32_t u32TriggerType,
  */
 int32_t PMC_Check_BusyFlag(uint32_t PMCBusyFlagAddr)
 {
-    int32_t i32TimeOutCnt;
+    int32_t i32TimeOutCnt = SystemCoreClock>>1; /* 500ms time-out */
 
     while(*(volatile uint32_t *)PMCBusyFlagAddr & BIT31)
     {

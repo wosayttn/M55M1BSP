@@ -60,26 +60,6 @@ enum {
 #define PMC_VRSTS_CURMVR_DCDC   (0x1UL<<PMC_VRSTS_CURMVR_Pos)   /*!< Main voltage regulator type is DCDC */
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  SIODBSEL constant definitions.                                                                      */
-/*---------------------------------------------------------------------------------------------------------*/
-#define PMC_SIODBCTL_SIODBSEL_1          (0x0UL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 1 clocks \hideinitializer */
-#define PMC_SIODBCTL_SIODBSEL_2          (0x1UL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 2 clocks \hideinitializer */
-#define PMC_SIODBCTL_SIODBSEL_4          (0x2UL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 4 clocks \hideinitializer */
-#define PMC_SIODBCTL_SIODBSEL_8          (0x3UL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 8 clocks \hideinitializer */
-#define PMC_SIODBCTL_SIODBSEL_16         (0x4UL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 16 clocks \hideinitializer */
-#define PMC_SIODBCTL_SIODBSEL_32         (0x5UL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 32 clocks \hideinitializer */
-#define PMC_SIODBCTL_SIODBSEL_64         (0x6UL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 64 clocks \hideinitializer */
-#define PMC_SIODBCTL_SIODBSEL_128        (0x7UL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 128 clocks \hideinitializer */
-#define PMC_SIODBCTL_SIODBSEL_256        (0x8UL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 256 clocks \hideinitializer */
-#define PMC_SIODBCTL_SIODBSEL_2x256      (0x9UL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 2x256 clocks \hideinitializer */
-#define PMC_SIODBCTL_SIODBSEL_4x256      (0xaUL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 4x256 clocks \hideinitializer */
-#define PMC_SIODBCTL_SIODBSEL_8x256      (0xbUL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 8x256 clocks \hideinitializer */
-#define PMC_SIODBCTL_SIODBSEL_16x256     (0xcUL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 16x256 clocks \hideinitializer */
-#define PMC_SIODBCTL_SIODBSEL_32x256     (0xdUL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 32x256 clocks \hideinitializer */
-#define PMC_SIODBCTL_SIODBSEL_64x256     (0xeUL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 64x256 clocks \hideinitializer */
-#define PMC_SIODBCTL_SIODBSEL_128x256    (0xfUL << PMC_SIODBCTL_SIODBSEL_Pos)     /*!< Select Standby Power-down Pin De-bounce Sampling Cycle is 128x256 clocks \hideinitializer */
-
-/*---------------------------------------------------------------------------------------------------------*/
 /*  SYSRB constant definitions. (Write-Protection Register)                                             */
 /*---------------------------------------------------------------------------------------------------------*/
 #define PMC_SYSRB0PC_SRAM_NORMAL            0x00000000UL   /*!< Select SRAM power mode to normal mode */
@@ -114,14 +94,13 @@ enum {
 /*---------------------------------------------------------------------------------------------------------*/
 /*  TG Pin Rising/Falling Edge Wake-up Enable constant definitions.                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-#define PMC_TGPIN_WAKEUP_ENABLE     (0x1UL << 0)     /*!< Enable TG Pin Wake-up \hideinitializer */
-#define PMC_TGPIN_WAKEUP_DISABLE    (0x0UL << 0)     /*!< Enable TG Pin Wake-up \hideinitializer */
-#define PMC_TGPIN_RISING            (0x1UL << 1)     /*!< TG Pin trigger on rising edge \hideinitializer */
-#define PMC_TGPIN_FALLING           (0x1UL << 2)     /*!< TG Pin trigger on falling edge \hideinitializer */
-#define PMC_TGPIN_BOTH              (0x3UL << 1)     /*!< TG Pin trigger on both edge \hideinitializer */
-#define PMC_TGPIN_DEBOUNCEEN        (0x1UL << 8)     /*!< Enable TG Pin De-bounce function \hideinitializer */
-#define PMC_TGPIN_DEBOUNCEDIS       (0x0UL << 8)     /*!< Disable TG Pin De-bounce function \hideinitializer */
-#define PMC_TGCTL_TGPSEL_Pos        (4UL)            /*!< TG Pin select \hideinitializer */
+#define PMC_TGPIN_WAKEUP_ENABLE     (0x1UL << PMC_GPATGCTL_TGPWKEN_Pos)     /*!< Enable TG Pin Wake-up \hideinitializer */
+#define PMC_TGPIN_WAKEUP_DISABLE    (0x0UL << PMC_GPATGCTL_TGPWKEN_Pos)     /*!< Enable TG Pin Wake-up \hideinitializer */
+#define PMC_TGPIN_RISING            (0x1UL << PMC_GPATGCTL_TGPREN_Pos)      /*!< TG Pin trigger on rising edge \hideinitializer */
+#define PMC_TGPIN_FALLING           (0x1UL << PMC_GPATGCTL_TGPFEN_Pos)      /*!< TG Pin trigger on falling edge \hideinitializer */
+#define PMC_TGPIN_BOTH              (0x3UL << PMC_GPATGCTL_TGPREN_Pos)      /*!< TG Pin trigger on both edge \hideinitializer */
+#define PMC_TGPIN_DEBOUNCEEN        (0x1UL << PMC_GPATGCTL_TGPDBEN_Pos)     /*!< Enable TG Pin De-bounce function \hideinitializer */
+#define PMC_TGPIN_DEBOUNCEDIS       (0x0UL << PMC_GPATGCTL_TGPDBEN_Pos)     /*!< Disable TG Pin De-bounce function \hideinitializer */
 #define PMC_TGPIN_PA                (0UL)            /*!< TG Pin port A select \hideinitializer */
 #define PMC_TGPIN_PB                (1UL)            /*!< TG Pin port B select \hideinitializer */
 #define PMC_TGPIN_PC                (2UL)            /*!< TG Pin port C select \hideinitializer */
@@ -164,32 +143,26 @@ enum {
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Pin Rising/Falling Edge Wake-up Enable constant definitions.                                           */
 /*---------------------------------------------------------------------------------------------------------*/
-#define PMC_WKPIN0_DISABLE    (0x0UL << PMC_PINWKCTL_WKPINEN0_Pos)    /*!< Disable Wake-up pin0 (GPC.0) at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN0_RISING     (0x1UL << PMC_PINWKCTL_WKPINEN0_Pos)    /*!< Enable Wake-up pin0 (GPC.0) rising edge at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN0_FALLING    (0x2UL << PMC_PINWKCTL_WKPINEN0_Pos)    /*!< Enable Wake-up pin0 (GPC.0) falling edge at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN0_BOTHEDGE   (0x3UL << PMC_PINWKCTL_WKPINEN0_Pos)    /*!< Enable Wake-up pin0 (GPC.0) both edge at Deep Power-down mode \hideinitializer */
 
-#define PMC_WKPIN1_DISABLE    (0x0UL << PMC_PINWKCTL_WKPINEN1_Pos)    /*!< Disable Wake-up pin1 (GPB.0) at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN1_RISING     (0x1UL << PMC_PINWKCTL_WKPINEN1_Pos)    /*!< Enable Wake-up pin1 (GPB.0) rising edge at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN1_FALLING    (0x2UL << PMC_PINWKCTL_WKPINEN1_Pos)    /*!< Enable Wake-up pin1 (GPB.0) falling edge at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN1_BOTHEDGE   (0x3UL << PMC_PINWKCTL_WKPINEN1_Pos)    /*!< Enable Wake-up pin1 (GPB.0) both edge at Deep Power-down mode \hideinitializer */
 
-#define PMC_WKPIN2_DISABLE    (0x0UL << PMC_PINWKCTL_WKPINEN2_Pos)    /*!< Disable Wake-up pin2 (GPB.2) at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN2_RISING     (0x1UL << PMC_PINWKCTL_WKPINEN2_Pos)    /*!< Enable Wake-up pin2 (GPB.2) rising edge at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN2_FALLING    (0x2UL << PMC_PINWKCTL_WKPINEN2_Pos)    /*!< Enable Wake-up pin2 (GPB.2) falling edge at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN2_BOTHEDGE   (0x3UL << PMC_PINWKCTL_WKPINEN2_Pos)    /*!< Enable Wake-up pin2 (GPB.2) both edge at Deep Power-down mode \hideinitializer */
 
-#define PMC_WKPIN3_DISABLE    (0x0UL << PMC_PINWKCTL_WKPINEN3_Pos)    /*!< Disable Wake-up pin3 (GPB.12) at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN3_RISING     (0x1UL << PMC_PINWKCTL_WKPINEN3_Pos)    /*!< Enable Wake-up pin3 (GPB.12) rising edge at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN3_FALLING    (0x2UL << PMC_PINWKCTL_WKPINEN3_Pos)    /*!< Enable Wake-up pin3 (GPB.12) falling edge at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN3_BOTHEDGE   (0x3UL << PMC_PINWKCTL_WKPINEN3_Pos)    /*!< Enable Wake-up pin3 (GPB.12) both edge at Deep Power-down mode \hideinitializer */
 
-#define PMC_WKPIN4_DISABLE    (0x0UL << PMC_PINWKCTL_WKPINEN4_Pos)    /*!< Disable Wake-up pin4 (GPF.6) at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN4_RISING     (0x1UL << PMC_PINWKCTL_WKPINEN4_Pos)    /*!< Enable Wake-up pin4 (GPF.6) rising edge at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN4_FALLING    (0x2UL << PMC_PINWKCTL_WKPINEN4_Pos)    /*!< Enable Wake-up pin4 (GPF.6) falling edge at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN4_BOTHEDGE   (0x3UL << PMC_PINWKCTL_WKPINEN4_Pos)    /*!< Enable Wake-up pin4 (GPF.6) both edge at Deep Power-down mode \hideinitializer */
 
-#define PMC_WKPIN5_DISABLE    (0x0UL << PMC_PINWKCTL_WKPINEN5_Pos)    /*!< Disable Wake-up pin4 (GPA.12) at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN5_RISING     (0x1UL << PMC_PINWKCTL_WKPINEN5_Pos)    /*!< Enable Wake-up pin4 (GPA.12) rising edge at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN5_FALLING    (0x2UL << PMC_PINWKCTL_WKPINEN5_Pos)    /*!< Enable Wake-up pin4 (GPA.12) falling edge at Deep Power-down mode \hideinitializer */
 #define PMC_WKPIN5_BOTHEDGE   (0x3UL << PMC_PINWKCTL_WKPINEN5_Pos)    /*!< Enable Wake-up pin4 (GPA.12) both edge at Deep Power-down mode \hideinitializer */
@@ -214,32 +187,7 @@ enum {
  *                             - \ref PMC_STMRWKCTL_STMRIS_4194304
  * @details     This function set standby Wake-up Timer Time-out Interval.
  */
-#define PMC_SET_STMRWK_INTERVAL(u32Interval)   (PMC->STMRWKCTL |= (u32Interval))
-
-/**
- * @brief       Set De-bounce Sampling Cycle Time
- * @param[in]   u32CycleSel   The de-bounce sampling cycle selection. It could be
- *                             - \ref PMC_SIODBCTL_SIODBSEL_1
- *                             - \ref PMC_SIODBCTL_SIODBSEL_2
- *                             - \ref PMC_SIODBCTL_SIODBSEL_4
- *                             - \ref PMC_SIODBCTL_SIODBSEL_8
- *                             - \ref PMC_SIODBCTL_SIODBSEL_16
- *                             - \ref PMC_SIODBCTL_SIODBSEL_32
- *                             - \ref PMC_SIODBCTL_SIODBSEL_64
- *                             - \ref PMC_SIODBCTL_SIODBSEL_128
- *                             - \ref PMC_SIODBCTL_SIODBSEL_256
- *                             - \ref PMC_SIODBCTL_SIODBSEL_2x256
- *                             - \ref PMC_SIODBCTL_SIODBSEL_4x256
- *                             - \ref PMC_SIODBCTL_SIODBSEL_8x256
- *                             - \ref PMC_SIODBCTL_SIODBSEL_16x256
- *                             - \ref PMC_SIODBCTL_SIODBSEL_32x256
- *                             - \ref PMC_SIODBCTL_SIODBSEL_64x256
- *                             - \ref PMC_SIODBCTL_SIODBSEL_128x256
- * @details     This function set De-bounce Sampling Cycle Time for Standby Power-down pin wake-up.
-                De-bounce counter clock source is the 10 kHz internal low speed RC oscillator (LIRC).
- * \hideinitializer
- */
-#define PMC_SET_SPDDEBOUNCETIME(u32CycleSel)    (PMC->SIODBCTL = (u32CycleSel))
+#define PMC_SET_STMRWK_INTERVAL(u32Interval)   (PMC->STMRWKCTL = ((PMC->STMRWKCTL & ~PMC_STMRWKCTL_STMRIS_Msk) | u32Interval))
 
 /**
   * @brief      Disable Wake-up Timer
@@ -289,6 +237,30 @@ enum {
   */
 #define PMC_DISABLE_WKPIN5()   (PMC->PINWKCTL &= ~PMC_PINWKCTL_WKPINEN5_Msk)
 
+/**
+  * @brief      Disable GPA Trigger Pin
+  * @details    This macro disables GPA trigger and wake-up function
+  */
+#define PMC_DISABLE_TGPIN_A()   (PMC->GPATGCTL &= ~(PMC_GPATGCTL_TGPFEN_Msk | PMC_GPATGCTL_TGPREN_Msk))
+
+/**
+  * @brief      Disable GPB Trigger Pin
+  * @details    This macro disables GPB trigger and wake-up function
+  */
+#define PMC_DISABLE_TGPIN_B()   (PMC->GPBTGCTL &= ~(PMC_GPBTGCTL_TGPFEN_Msk | PMC_GPBTGCTL_TGPREN_Msk))
+
+/**
+  * @brief      Disable GPC Trigger Pin
+  * @details    This macro disables GPC trigger and wake-up function
+  */
+#define PMC_DISABLE_TGPIN_C()   (PMC->GPCTGCTL &= ~(PMC_GPCTGCTL_TGPFEN_Msk | PMC_GPCTGCTL_TGPREN_Msk))
+
+/**
+  * @brief      Disable GPD Trigger Pin
+  * @details    This macro disables GPD trigger and wake-up function
+  */
+#define PMC_DISABLE_TGPIN_D()   (PMC->GPDTGCTL &= ~(PMC_GPDTGCTL_TGPFEN_Msk | PMC_GPDTGCTL_TGPREN_Msk))
+
 int32_t PMC_SetPowerLevel(uint32_t u32PowerLevel);
 int32_t PMC_SetPowerRegulator(uint32_t u32PowerRegulator);
 int32_t PMC_SetSRAMPowerMode(uint32_t u32SRAMSel, uint32_t u32PowerMode);
@@ -299,6 +271,7 @@ void PMC_EnableWKPIN(uint32_t u32TriggerType);
 uint32_t PMC_GetPMUWKSrc(void);
 void PMC_EnableTGPin(uint32_t u32Port, uint32_t u32Pin, uint32_t u32TriggerType, uint32_t u32DebounceEn , uint32_t u32WakeupEn);
 int32_t PMC_Check_BusyFlag(uint32_t PMCBusyFlagAddr);
+
 /** @} end of group PMC_EXPORTED_FUNCTIONS */
 /** @} end of group PMC_Driver */
 /** @} end of group Standard_Driver */
