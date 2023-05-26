@@ -3,8 +3,8 @@
  * @version  V1.00
  * @brief    LPSPI driver source file
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include "NuMicro.h"
@@ -34,9 +34,9 @@ static uint32_t SelectPCLKxOfLPSPI(LPSPI_T *lpspi)
     /* Select PCLK as the clock source of SPI */
     if (lpspi == LPSPI0)
     {
-        CLK->LPSPISEL = (CLK->LPSPISEL & (~CLK_LPSPISEL_LPSPI0SEL_Msk)) | CLK_LPSPISEL_LPSPI0SEL_PCLK2;
+        CLK->LPSPISEL = (CLK->LPSPISEL & (~CLK_LPSPISEL_LPSPI0SEL_Msk)) | CLK_LPSPISEL_LPSPI0SEL_PCLK4;
         /* Return slave peripheral clock rate */
-        u32RetValue = CLK_GetPCLK2Freq();
+        u32RetValue = CLK_GetPCLK4Freq();
     }
 
     return u32RetValue;
@@ -53,8 +53,8 @@ static uint32_t CheckLPSPI0ClockSource(void)
 
     switch (CLK->LPSPISEL & CLK_LPSPISEL_LPSPI0SEL_Msk)
     {
-        case CLK_LPSPISEL_LPSPI0SEL_PCLK2:
-            u32ClkSrc = CLK_GetPCLK2Freq(); /* Clock source is PCLK0 */
+        case CLK_LPSPISEL_LPSPI0SEL_PCLK4:
+            u32ClkSrc = CLK_GetPCLK4Freq(); /* Clock source is PCLK0 */
             break;
 
         case CLK_LPSPISEL_LPSPI0SEL_MIRC:
@@ -88,11 +88,7 @@ static uint32_t CheckLPSPI0ClockSource(void)
   * @note   If u32BusClock >= LPSPI peripheral clock source, DIVIDER will be set to 0.
   * @note   In slave mode, the LPSPI peripheral clock rate will be equal to APB clock rate.
   */
-uint32_t LPSPI_Open(LPSPI_T *lpspi,
-                    uint32_t u32MasterSlave,
-                    uint32_t u32LPSPIMode,
-                    uint32_t u32DataWidth,
-                    uint32_t u32BusClock)
+uint32_t LPSPI_Open(LPSPI_T *lpspi, uint32_t u32MasterSlave, uint32_t u32LPSPIMode, uint32_t u32DataWidth, uint32_t u32BusClock)
 {
     uint32_t u32ClkSrc = 0U, u32Div, u32HCLKFreq, u32RetValue = 0U;
 
@@ -189,12 +185,18 @@ uint32_t LPSPI_Open(LPSPI_T *lpspi,
   */
 void LPSPI_Close(LPSPI_T *lpspi)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     if (lpspi == LPSPI0)
     {
         /* Reset SPI */
         SYS->LPSPIRST |= SYS_LPSPIRST_LPSPI0RST_Msk;
         SYS->LPSPIRST &= ~SYS_LPSPIRST_LPSPI0RST_Msk;
     }
+
+    /* Lock protected registers */
+    SYS_LockReg();
 }
 
 /**
