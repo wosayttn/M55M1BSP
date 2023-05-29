@@ -376,8 +376,6 @@ void PDMA_SetTimeOut(PDMA_T * pdma, uint32_t u32Ch, uint32_t u32OnOff, uint32_t 
 void PDMA_Trigger(PDMA_T * pdma,uint32_t u32Ch);
 void PDMA_EnableInt(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32Mask);
 void PDMA_DisableInt(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32Mask);
-void PDMA_SetStride(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32DestLen, uint32_t u32SrcLen, uint32_t u32TransCount);
-void PDMA_SetRepeat(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32DestInterval, uint32_t u32SrcInterval, uint32_t u32RepeatCount);
 
 /** @} end of group PDMA_EXPORTED_FUNCTIONS */
 /** @} end of group PDMA_Driver */

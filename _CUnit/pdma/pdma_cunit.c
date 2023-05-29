@@ -24,7 +24,6 @@
 
 #define PDMA_MAX_TIMEOUT_CH PDMA_CH_MAX
 
-uint32_t TenBitsPatternTable[4] = {0x3FF, 0x25A, 0x1A5, 0x000}; /* 10 bits test pattern */
 uint32_t SixteenBitsPatternTable[4] = {0xFFFF, 0x5A5A, 0xA5A5, 0x0000}; /* 16 bits test pattern */
 uint32_t ThirtyTwoBitsPatternTable[4] = {0xFFFFFFFF, 0x5A5A5A5A, 0xA5A5A5A5, 0x00000000}; /* 32 bits test pattern */
 
@@ -455,6 +454,8 @@ void Func_PDMA_GET_INT_STATUS()
 test_main:
 
     for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++) {
+        /* Reset PDMA */
+        PDMA_Reset();
         PDMA_Open(pdma, 1 << u32TestCh);
         //abort interrupt flag test
         PDMA_SetTransferCnt(pdma, u32TestCh, PDMA_WIDTH_32, PDMA_TEST_LENGTH);
@@ -474,39 +475,70 @@ test_main:
 
         CU_ASSERT_EQUAL(PDMA_GET_INT_STATUS(pdma) & PDMA_INTSTS_ABTIF_Msk, 0);
 
-        /* Reset PDMA */
-        PDMA_Reset();
+        {
+            /* Reset PDMA */
+            PDMA_Reset();
+            PDMA_Open(pdma, 1 << u32TestCh);
+            //transfer done interrupt flag test
+            PDMA_SetTransferCnt(pdma, u32TestCh, PDMA_WIDTH_32, PDMA_TEST_LENGTH);
+            PDMA_SetTransferMode(pdma, u32TestCh, PDMA_MEM, FALSE, NULL);
+            PDMA_SetTransferAddr(pdma, u32TestCh, (uint32_t)SrcArray, PDMA_SAR_INC, (uint32_t)DestArray, PDMA_DAR_INC);
+            PDMA_EnableInt(pdma, u32TestCh, PDMA_INT_TRANS_DONE);
+            PDMA_Trigger(pdma, u32TestCh);
 
-        PDMA_Open(pdma, 1 << u32TestCh);
+            while (PDMA_IS_CH_BUSY(pdma, u32TestCh) == 1) {};
 
-        //transfer done interrupt flag test
-        PDMA_SetTransferCnt(pdma, u32TestCh, PDMA_WIDTH_32, PDMA_TEST_LENGTH);
+            CU_ASSERT_EQUAL(PDMA_GET_TD_STS(pdma), 1 << u32TestCh);
 
-        PDMA_SetTransferMode(pdma, u32TestCh, PDMA_MEM, FALSE, NULL);
+            CU_ASSERT_EQUAL(PDMA_GET_INT_STATUS(pdma) & PDMA_INTSTS_TDIF_Msk, 1 << 1);
 
-        PDMA_SetTransferAddr(pdma, u32TestCh, (uint32_t)SrcArray, PDMA_SAR_INC, (uint32_t)DestArray, PDMA_DAR_INC);
+            PDMA_CLR_TD_FLAG(pdma, 1 << u32TestCh);
 
-        PDMA_EnableInt(pdma, u32TestCh, PDMA_INT_TRANS_DONE);
+            CU_ASSERT_EQUAL(PDMA_GET_TD_STS(pdma), 0);
 
-        PDMA_Trigger(pdma, u32TestCh);
+            CU_ASSERT_EQUAL(PDMA_GET_INT_STATUS(pdma) & PDMA_INTSTS_TDIF_Msk, 0);
 
-        while (PDMA_IS_CH_BUSY(pdma, u32TestCh) == 1) {};
+            PDMA_DisableInt(pdma, u32TestCh, PDMA_INT_TRANS_DONE);
 
-        CU_ASSERT_EQUAL(PDMA_GET_TD_STS(pdma), 1 << u32TestCh);
+            PDMA_Close(pdma);
 
-        CU_ASSERT_EQUAL(PDMA_GET_INT_STATUS(pdma) & PDMA_INTSTS_TDIF_Msk, 1 << 1);
+            CU_ASSERT_EQUAL(pdma->CHCTL, 0);
+        }
 
-        PDMA_CLR_TD_FLAG(pdma, 1 << u32TestCh);
+        {
+            /* Reset PDMA */
+            PDMA_Reset();
+            PDMA_Open(pdma, 1 << u32TestCh);
+            //transfer Alignment interrupt flag test
+            PDMA_SetTransferCnt(pdma, u32TestCh, PDMA_WIDTH_32, PDMA_TEST_LENGTH);
+            PDMA_SetTransferMode(pdma, u32TestCh, PDMA_MEM, FALSE, NULL);
+            PDMA_SetTransferAddr(pdma, u32TestCh, (uint32_t)SrcArray, PDMA_SAR_INC, ((uint32_t)DestArray) + 1, PDMA_DAR_INC);
+            PDMA_EnableInt(pdma, u32TestCh, PDMA_INT_TRANS_DONE);
+            PDMA_Trigger(pdma, u32TestCh);
 
-        CU_ASSERT_EQUAL(PDMA_GET_TD_STS(pdma), 0);
+            while (PDMA_IS_CH_BUSY(pdma, u32TestCh) == 1) {};
 
-        CU_ASSERT_EQUAL(PDMA_GET_INT_STATUS(pdma) & PDMA_INTSTS_TDIF_Msk, 0);
+            CU_ASSERT_EQUAL(PDMA_GET_INT_STATUS(pdma) & (PDMA_INTSTS_TDIF_Msk | PDMA_INTSTS_ALIGNF_Msk)
+                            , (PDMA_INTSTS_TDIF_Msk | PDMA_INTSTS_ALIGNF_Msk));
 
-        PDMA_DisableInt(pdma, u32TestCh, PDMA_INT_TRANS_DONE);
+            CU_ASSERT_EQUAL(PDMA_GET_TD_STS(pdma), 1 << u32TestCh);
 
-        PDMA_Close(pdma);
+            CU_ASSERT_EQUAL(PDMA_GET_ALIGN_STS(pdma), 1 << u32TestCh);
 
-        CU_ASSERT_EQUAL(pdma->CHCTL, 0);
+            PDMA_CLR_TD_FLAG(pdma, 1 << u32TestCh);
+
+            PDMA_CLR_ALIGN_FLAG(pdma, 1 << u32TestCh);
+
+            CU_ASSERT_EQUAL(PDMA_GET_TD_STS(pdma), 0);
+
+            CU_ASSERT_EQUAL(PDMA_GET_INT_STATUS(pdma) & PDMA_INTSTS_TDIF_Msk, 0);
+
+            PDMA_DisableInt(pdma, u32TestCh, PDMA_INT_TRANS_DONE);
+
+            PDMA_Close(pdma);
+
+            CU_ASSERT_EQUAL(pdma->CHCTL, 0);
+        }
     }
 
     if (pdma == PDMA0) {
@@ -517,6 +549,7 @@ test_main:
 
 void Func_PDMA_CLR_TMOUT_FLAG()
 {
+    // !!! Must connect UART1_RXD_PA2 to UART1_TXD_PA3 !!!
     PDMA_T *pdma = PDMA0;
     uint32_t u32TestCh = 0;
     SYS_UnlockReg();
@@ -527,7 +560,6 @@ void Func_PDMA_CLR_TMOUT_FLAG()
     SYS_LockReg();
     SET_UART1_RXD_PA2();
     SET_UART1_TXD_PA3();
-    // Must connect PA2 to PA3
 test_main:
 
     for (u32TestCh = 0; u32TestCh < PDMA_MAX_TIMEOUT_CH; u32TestCh++) {
@@ -592,6 +624,33 @@ test_main:
             CU_ASSERT_EQUAL(pdma->DSCT[u32TestCh].SA, u32TransferAddressPatternData);
             PDMA_SET_DST_ADDR(pdma, u32TestCh, u32TransferAddressPatternData);
             CU_ASSERT_EQUAL(pdma->DSCT[u32TestCh].DA, u32TransferAddressPatternData);
+        }
+    }
+
+    PDMA_Close(pdma);
+    CU_ASSERT_EQUAL(pdma->CHCTL, 0);
+
+    if (pdma == PDMA0) {
+        pdma = PDMA1;
+        goto test_main;
+    }
+}
+
+void Func_PDMA_SET_SCATTER_DESC()
+{
+    PDMA_T *pdma = PDMA0;
+    uint32_t u32TestCh = 0;
+    uint32_t u32TransferAddressPatternIdx = 0, u32TransferAddressPatternCount = 0, u32TransferAddressPatternData = 0;
+    u32TransferAddressPatternCount = sizeof(ThirtyTwoBitsPatternTable) / sizeof(uint32_t);
+test_main:
+    PDMA_Open(pdma, pow(2, PDMA_CH_MAX) - 1);
+    CU_ASSERT_EQUAL(pdma->CHCTL, pow(2, PDMA_CH_MAX) - 1);
+
+    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++) {
+        for (u32TransferAddressPatternIdx = 0; u32TransferAddressPatternIdx < (u32TransferAddressPatternCount - 1); u32TransferAddressPatternIdx++) {
+            u32TransferAddressPatternData = (ThirtyTwoBitsPatternTable[u32TransferAddressPatternIdx] & ~(0x3));
+            PDMA_SET_SCATTER_DESC(pdma, u32TestCh, u32TransferAddressPatternData);
+            CU_ASSERT_EQUAL(pdma->DSCT[u32TestCh].NEXT, ThirtyTwoBitsPatternTable[u32TransferAddressPatternIdx] & ~(0x3));
         }
     }
 
@@ -670,11 +729,15 @@ void Func_PDMA_CONSTANT()
 
 CU_TestInfo PDMA_MACRO[] = {
     {
-        "Test PDMA_GET_INT_STATUS/PDMA_GET_ABORT_STS/PDMA_CLR_ABORT_FLAG/PDMA_IS_CH_BUSY\n\t\t /PDMA_GET_TD_STS/PDMA_CLR_TD_FLAG/PDMA_CLR_ABORT_FLAG/PDMA_GET_EMPTY_STS/PDMA_CLR_EMPTY_FLAG\n\t\t /Func_PDMA_Trigger:", \
+        "Test PDMA_GET_INT_STATUS/PDMA_GET_ABORT_STS/PDMA_CLR_ABORT_FLAG/PDMA_IS_CH_BUSY\n"
+        "\t\t/PDMA_GET_TD_STS/PDMA_CLR_TD_FLAG/\n"
+        "\t\t/PDMA_GET_ALIGN_STS/PDMA_CLR_ALIGN_FLAG/",
         Func_PDMA_GET_INT_STATUS
     },
     {"Test PDMA_GET_INT_STATUS/PDMA_CLR_TMOUT_FLAG:", Func_PDMA_CLR_TMOUT_FLAG},
     {"Test PDMA_SET_SRC_ADDR/PDMA_SET_DST_ADDR:", Func_PDMA_SET_SRC_ADDR},
+    {"Test PDMA_SET_SCATTER_DESC:", Func_PDMA_SET_SCATTER_DESC},
+    {"Test PDMA_SET_TRANS_CNT:", Func_PDMA_SET_TRANS_CNT},
     {"Test PDMA_STOP:", Func_PDMA_STOP},
 
     CU_TEST_INFO_NULL
