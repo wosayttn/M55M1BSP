@@ -48,23 +48,6 @@ uint32_t u32UnderRunFlag = 0;
 
 
 
-
-
-/**
-  * @brief Enable DAC group mode
-  * @param[in] dac Base address of DAC module.
-  * @return None
-  * \hideinitializer
-  */
-#define DAC_ENABLE_GROUP_MODE(dac) (DAC0->CTL |= DAC_CTL_GRPEN_Msk)
-
-/**
-  * @brief Disable DAC group mode
-  * @param[in] dac Base address of DAC module.
-  * @return None
-  * \hideinitializer
-  */
-#define DAC_DISABLE_GROUP_MODE(dac) (DAC0->CTL &= ~DAC_CTL_GRPEN_Msk)
 /*---------------------------------------------------------------------------------------------------------*/
 /* Test function                                                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -725,84 +708,7 @@ void Test_MACRO_DAC_RW_Data(void)
 
 void Test_MACRO_DAC_SW_PDMA(void)
 {
-#if 0
-    uint32_t u32ExitCnt;
 
-    /* Reset DAC module */
-    SYS_ResetModule(DAC_RST);
-    /* Enable PDMA clock source */
-    CLK_EnableModuleClock(PDMA_MODULE);
-    /* Reset PDMA module */
-    SYS_ResetModule(PDMA_RST);
-    /* Open PDMA Channel 0 */
-    PDMA_Open(0x1);
-    /* Set transfer data width, and tranfer count */
-    PDMA_SetTransferCnt(0, PDMA_WIDTH_16, array_size);
-    /* transfer width is one word(32 bit) */
-    PDMA_SetTransferAddr(0, (uint32_t)&sine[index], PDMA_SAR_INC, (uint32_t)&DAC0->DAT, PDMA_DAR_FIX);
-    /* Select channel 0 request source from DAC */
-    PDMA_SetTransferMode(0, PDMA_DAC0_TX, FALSE, 0);
-    /* Set transfer type and burst size */
-    PDMA_SetBurstType(0, PDMA_REQ_SINGLE, PDMA_BURST_128);
-    /* Set the software trigger,enable DAC even trigger mode and enable D/A converter */
-    DAC_Open(DAC0, 0, DAC_SOFTWARE_TRIGGER);
-    /* The DAC conversion settling time is 8us */
-    DAC_SetDelayTime(DAC0, 6);
-    /* Clear the DAC conversion complete finish flag for safe */
-    DAC_CLR_INT_FLAG(DAC0, 0);
-    /* Enable the PDMA Mode */
-    DAC_ENABLE_PDMA(DAC0);
-    /* Enable the DAC interrupt.  */
-    CU_ASSERT((DAC0->CTL & DAC_CTL_DMAURIEN_Msk) == 0);
-    DAC_ENABLE_DMAUDR_INT(DAC0);
-    CU_ASSERT((DAC0->CTL & DAC_CTL_DMAURIEN_Msk) == DAC_CTL_DMAURIEN_Msk);
-    DAC_ENABLE_INT(DAC0, 0);
-    NVIC_EnableIRQ(DAC_IRQn);
-
-    CLK_SysTickDelay(1000);
-    u32ExitCnt = 0;
-    u32UnderRunFlag = 0;
-    /* Enable Software trigger to start D/A conversion */
-    DAC_START_CONV(DAC0);
-
-    while (1)
-    {
-        if (PDMA_GET_TD_STS() == 0x1)
-        {
-            u32ExitCnt++;
-            /* Re-Set transfer count and basic operation mode */
-            PDMA_SetTransferCnt(0, PDMA_WIDTH_16, array_size);
-            PDMA_SetTransferMode(0, PDMA_DAC0_TX, FALSE, 0);
-
-            /* Clear PDMA channel 0 transfer done flag */
-            PDMA_CLR_TD_FLAG(0x1);
-        }
-        else
-        {
-            DAC_START_CONV(DAC0);
-        }
-
-        if ((u32ExitCnt > 100) | (u32UnderRunFlag == 0x55555555))
-        {
-            break;
-        }
-    }
-
-    CU_ASSERT((DAC0->CTL & DAC_CTL_DMAURIEN_Msk) == DAC_CTL_DMAURIEN_Msk);
-    DAC_DISABLE_DMAUDR_INT(DAC0);
-    CU_ASSERT((DAC0->CTL & DAC_CTL_DMAURIEN_Msk) == 0);
-    /* Disable External Interrupt */
-    NVIC_DisableIRQ(DAC_IRQn);
-
-    /* Reset PDMA module */
-    SYS_ResetModule(PDMA_RST);
-
-    /* Reset DAC module */
-    SYS_ResetModule(DAC_RST);
-
-    /* Disable PDMA IP clock */
-    CLK_DisableModuleClock(PDMA_MODULE);
-#else
     uint32_t u32ExitCnt;
     uint32_t u32DACModule ;
 
@@ -813,7 +719,7 @@ void Test_MACRO_DAC_SW_PDMA(void)
         /* Enable PDMA clock source */
         CLK_EnableModuleClock(PDMA0_MODULE);
         /* Reset PDMA module */
-         ResetPDMA(PDMA0);
+        ResetPDMA(PDMA0);
         /* Open PDMA Channel 0 */
         PDMA_Open(PDMA0, 0x1);
         /* Set transfer data width, and tranfer count */
@@ -827,7 +733,7 @@ void Test_MACRO_DAC_SW_PDMA(void)
             PDMA_SetTransferMode(PDMA0, 0, PDMA_DAC0_TX, FALSE, 0);
         else
             /* Select channel 0 request source from DAC */
-            PDMA_SetTransferMode(PDMA1, 0, PDMA_DAC1_TX, FALSE, 0);
+            PDMA_SetTransferMode(PDMA0, 0, PDMA_DAC1_TX, FALSE, 0);
 
 
         /* Set transfer type and burst size */
@@ -883,7 +789,7 @@ void Test_MACRO_DAC_SW_PDMA(void)
         NVIC_DisableIRQ(DAC01_IRQn);
 
         /* Reset PDMA module */
-        SYS_ResetModule(SYS_PDMA0RST);
+        ResetPDMA(PDMA0);
 
         /* Reset DAC module */
         ResetDAC(u32DACModule) ;
@@ -892,7 +798,7 @@ void Test_MACRO_DAC_SW_PDMA(void)
         CLK_DisableModuleClock(PDMA0_MODULE);
     }
 
-#endif
+
 }
 
 void Test_MACRO_DAC_GROUP_MODE(void)
@@ -902,10 +808,39 @@ void Test_MACRO_DAC_GROUP_MODE(void)
     CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == DAC_CTL_GRPEN_Msk);
     DAC_DISABLE_GROUP_MODE(DAC0);
     CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == 0);
-    DAC_ENABLE_GROUP_MODE(DAC1);
+    DAC_ENABLE_GROUP_MODE(DAC0);
+    DAC_GROUP_WRITE_DATA(0xAAAA,0x5555);
+	  CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == DAC_CTL_GRPEN_Msk);
+  	CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk ) == 0x55550000);
+	  CU_ASSERT((DAC0->GRPDAT &DAC_GPRDAT_DAC0DAT_Msk) == 0xAAAA);
+    DAC_GROUP_WRITE_DATA(0x0,0x0);
+	  CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk ) == 0x0);
+	  CU_ASSERT((DAC0->GRPDAT &DAC_GPRDAT_DAC0DAT_Msk) == 0x0);
+	  DAC_DISABLE_GROUP_MODE(DAC0);
+    CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == 0);	  
+	  DAC_GROUP_WRITE_DATA(0x5555,0xAAAA);
+	  CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk ) == 0x0);
+	  CU_ASSERT((DAC0->GRPDAT &DAC_GPRDAT_DAC0DAT_Msk) == 0x0);  
+	
+	  DAC_ENABLE_GROUP_MODE(DAC1);
     CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == DAC_CTL_GRPEN_Msk);
     DAC_DISABLE_GROUP_MODE(DAC1);
     CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == 0);
+		DAC_ENABLE_GROUP_MODE(DAC1);
+    DAC_GROUP_WRITE_DATA(0x5555,0xAAAA);
+	  CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == DAC_CTL_GRPEN_Msk);
+  	CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk ) == 0xAAAA0000);
+	  CU_ASSERT((DAC0->GRPDAT &DAC_GPRDAT_DAC0DAT_Msk) == 0x5555);
+    DAC_GROUP_WRITE_DATA(0x0,0x0);
+	  CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk ) == 0x0);
+	  CU_ASSERT((DAC0->GRPDAT &DAC_GPRDAT_DAC0DAT_Msk) == 0x0);
+	  DAC_DISABLE_GROUP_MODE(DAC1);
+    CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == 0);	  
+	  DAC_GROUP_WRITE_DATA(0x5555,0xAAAA);
+	  CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk ) == 0x0);
+	  CU_ASSERT((DAC0->GRPDAT &DAC_GPRDAT_DAC0DAT_Msk) == 0x0);  
+		
+		
 
 }
 
@@ -929,7 +864,7 @@ CU_TestInfo DAC_MACRO_Tests[] =
     {" 2: MACRO DAC_BPASS_BUF", Test_MACRO_DAC_BYPASS_BUF},
     {" 3: MACRO DAC_INT", Test_MACRO_DAC_DMA_INT},
     {" 4: MACRO DAC_Read/Write", Test_MACRO_DAC_RW_Data},
-    {" 5: MACRO DAC0_SW_PDMA", Test_MACRO_DAC_SW_PDMA},
+    {" 5: MACRO DAC_SW_PDMA", Test_MACRO_DAC_SW_PDMA},
     {" 6: MACRO Group Mode", Test_MACRO_DAC_GROUP_MODE},
 
     CU_TEST_INFO_NULL
