@@ -40,27 +40,63 @@ extern "C"
 #define QSPI_SS_ACTIVE_LOW  (0x0UL)                                         /*!< SS active low \hideinitializer */
 
 /* QSPI Interrupt Mask */
-#define QSPI_UNIT_INT_MASK              (0x001UL)                           /*!< Unit transfer interrupt mask \hideinitializer */
-#define QSPI_SSACT_INT_MASK             (0x002UL)                           /*!< Slave selection signal active interrupt mask \hideinitializer */
-#define QSPI_SSINACT_INT_MASK           (0x004UL)                           /*!< Slave selection signal inactive interrupt mask \hideinitializer */
-#define QSPI_SLVUR_INT_MASK             (0x008UL)                           /*!< Slave under run interrupt mask \hideinitializer */
-#define QSPI_SLVBE_INT_MASK             (0x010UL)                           /*!< Slave bit count error interrupt mask \hideinitializer */
-#define QSPI_SLVTO_INT_MASK             (0x020UL)                           /*!< Slave Mode Time-out interrupt mask \hideinitializer */
-#define QSPI_TXUF_INT_MASK              (0x040UL)                           /*!< Slave TX underflow interrupt mask \hideinitializer */
-#define QSPI_FIFO_TXTH_INT_MASK         (0x080UL)                           /*!< FIFO TX threshold interrupt mask \hideinitializer */
-#define QSPI_FIFO_RXTH_INT_MASK         (0x100UL)                           /*!< FIFO RX threshold interrupt mask \hideinitializer */
-#define QSPI_FIFO_RXOV_INT_MASK         (0x200UL)                           /*!< FIFO RX overrun interrupt mask \hideinitializer */
-#define QSPI_FIFO_RXTO_INT_MASK         (0x400UL)                           /*!< FIFO RX time-out interrupt mask \hideinitializer */
+#define QSPI_UNIT_INT_Pos               (0)
+#define QSPI_UNIT_INT_MASK              (1UL << QSPI_UNIT_INT_Pos)          /*!< Unit transfer interrupt mask \hideinitializer */
+
+#define QSPI_SSACT_INT_Pos              (1)
+#define QSPI_SSACT_INT_MASK             (1UL << QSPI_SSACT_INT_Pos)         /*!< Slave selection signal active interrupt mask \hideinitializer */
+
+#define QSPI_SSINACT_INT_Pos            (2)
+#define QSPI_SSINACT_INT_MASK           (1UL << QSPI_SSINACT_INT_Pos)       /*!< Slave selection signal inactive interrupt mask \hideinitializer */
+
+#define QSPI_SLVUR_INT_Pos              (3)
+#define QSPI_SLVUR_INT_MASK             (1UL << QSPI_SLVUR_INT_Pos)         /*!< Slave under run interrupt mask \hideinitializer */
+
+#define QSPI_SLVBE_INT_Pos              (4)
+#define QSPI_SLVBE_INT_MASK             (1UL << QSPI_SLVBE_INT_Pos)         /*!< Slave bit count error interrupt mask \hideinitializer */
+
+#define QSPI_SLVTO_INT_Pos              (5)
+#define QSPI_SLVTO_INT_MASK             (1UL << QSPI_SLVTO_INT_Pos)         /*!< Slave Mode Time-out interrupt mask \hideinitializer */
+
+#define QSPI_TXUF_INT_Pos               (6)
+#define QSPI_TXUF_INT_MASK              (1UL << QSPI_TXUF_INT_Pos)          /*!< Slave TX underflow interrupt mask \hideinitializer */
+
+#define QSPI_FIFO_TXTH_INT_Pos          (7)
+#define QSPI_FIFO_TXTH_INT_MASK         (1UL << QSPI_FIFO_TXTH_INT_Pos)     /*!< FIFO TX threshold interrupt mask \hideinitializer */
+
+#define QSPI_FIFO_RXTH_INT_Pos          (8)
+#define QSPI_FIFO_RXTH_INT_MASK         (1UL << QSPI_FIFO_RXTH_INT_Pos)     /*!< FIFO RX threshold interrupt mask \hideinitializer */
+
+#define QSPI_FIFO_RXOV_INT_Pos          (9)
+#define QSPI_FIFO_RXOV_INT_MASK         (1UL << QSPI_FIFO_RXOV_INT_Pos)     /*!< FIFO RX overrun interrupt mask \hideinitializer */
+
+#define QSPI_FIFO_RXTO_INT_Pos          (10)
+#define QSPI_FIFO_RXTO_INT_MASK         (1UL << QSPI_FIFO_RXTO_INT_Pos)     /*!< FIFO RX time-out interrupt mask \hideinitializer */
 
 /* QSPI Status Mask */
-#define QSPI_BUSY_MASK                  (0x01UL)                            /*!< Busy status mask \hideinitializer */
-#define QSPI_RX_EMPTY_MASK              (0x02UL)                            /*!< RX empty status mask \hideinitializer */
-#define QSPI_RX_FULL_MASK               (0x04UL)                            /*!< RX full status mask \hideinitializer */
-#define QSPI_TX_EMPTY_MASK              (0x08UL)                            /*!< TX empty status mask \hideinitializer */
-#define QSPI_TX_FULL_MASK               (0x10UL)                            /*!< TX full status mask \hideinitializer */
-#define QSPI_TXRX_RESET_MASK            (0x20UL)                            /*!< TX or RX reset status mask \hideinitializer */
-#define QSPI_QSPIEN_STS_MASK            (0x40UL)                            /*!< QSPIEN status mask \hideinitializer */
-#define QSPI_SSLINE_STS_MASK            (0x80UL)                            /*!< QSPIx_SS line status mask \hideinitializer */
+#define QSPI_BUSY_Pos                   (0)
+#define QSPI_BUSY_MASK                  (1UL << QSPI_BUSY_Pos)              /*!< Busy status mask \hideinitializer */
+
+#define QSPI_RX_EMPTY_Pos               (1)
+#define QSPI_RX_EMPTY_MASK              (1UL << QSPI_RX_EMPTY_Pos)          /*!< RX empty status mask \hideinitializer */
+
+#define QSPI_RX_FULL_Pos                (2)
+#define QSPI_RX_FULL_MASK               (1UL << QSPI_RX_FULL_Pos)           /*!< RX full status mask \hideinitializer */
+
+#define QSPI_TX_EMPTY_Pos               (3)
+#define QSPI_TX_EMPTY_MASK              (1UL << QSPI_TX_EMPTY_Pos)          /*!< TX empty status mask \hideinitializer */
+
+#define QSPI_TX_FULL_Pos                (4)
+#define QSPI_TX_FULL_MASK               (1UL << QSPI_TX_FULL_Pos)           /*!< TX full status mask \hideinitializer */
+
+#define QSPI_TXRX_RESET_Pos             (5)
+#define QSPI_TXRX_RESET_MASK            (1UL << QSPI_TXRX_RESET_Pos)        /*!< TX or RX reset status mask \hideinitializer */
+
+#define QSPI_QSPIEN_STS_Pos             (6)
+#define QSPI_QSPIEN_STS_MASK            (1UL << QSPI_QSPIEN_STS_Pos)        /*!< QSPIEN status mask \hideinitializer */
+
+#define QSPI_SSLINE_STS_Pos             (7)
+#define QSPI_SSLINE_STS_MASK            (1UL << QSPI_SSLINE_STS_Pos)        /*!< QSPIx_SS line status mask \hideinitializer */
 
 /** @} end of group QSPI_EXPORTED_CONSTANTS */
 
@@ -76,7 +112,11 @@ extern "C"
   * @details    Write 1 to UNITIF bit of QSPI_STATUS register to clear the unit transfer interrupt flag.
   * \hideinitializer
   */
-#define QSPI_CLR_UNIT_TRANS_INT_FLAG(qspi)   ((qspi)->STATUS = QSPI_STATUS_UNITIF_Msk)
+#define QSPI_CLR_UNIT_TRANS_INT_FLAG(qspi)  \
+  do                                        \
+  {                                         \
+    qspi->STATUS |= QSPI_STATUS_UNITIF_Msk; \
+  } while (0)
 
 /**
   * @brief      Trigger RX PDMA function.
@@ -85,7 +125,11 @@ extern "C"
   * @details    Set RXPDMAEN bit of QSPI_PDMACTL register to enable RX PDMA transfer function.
   * \hideinitializer
   */
-#define QSPI_TRIGGER_RX_PDMA(qspi)   ((qspi)->PDMACTL |= QSPI_PDMACTL_RXPDMAEN_Msk)
+#define QSPI_TRIGGER_RX_PDMA(qspi)              \
+  do                                            \
+  {                                             \
+    qspi->PDMACTL |= QSPI_PDMACTL_RXPDMAEN_Msk; \
+  } while (0)
 
 /**
   * @brief      Trigger TX PDMA function.
@@ -94,7 +138,11 @@ extern "C"
   * @details    Set TXPDMAEN bit of QSPI_PDMACTL register to enable TX PDMA transfer function.
   * \hideinitializer
   */
-#define QSPI_TRIGGER_TX_PDMA(qspi)   ((qspi)->PDMACTL |= QSPI_PDMACTL_TXPDMAEN_Msk)
+#define QSPI_TRIGGER_TX_PDMA(qspi)              \
+  do                                            \
+  {                                             \
+    qspi->PDMACTL |= QSPI_PDMACTL_TXPDMAEN_Msk; \
+  } while (0)
 
 /**
   * @brief      Trigger TX and RX PDMA function.
@@ -103,7 +151,12 @@ extern "C"
   * @details    Set TXPDMAEN bit and RXPDMAEN bit of QSPI_PDMACTL register to enable TX and RX PDMA transfer function.
   * \hideinitializer
   */
-#define QSPI_TRIGGER_TX_RX_PDMA(qspi)   ((qspi)->PDMACTL |= (QSPI_PDMACTL_TXPDMAEN_Msk | QSPI_PDMACTL_RXPDMAEN_Msk))
+#define QSPI_TRIGGER_TX_RX_PDMA(qspi)             \
+  do                                              \
+  {                                               \
+    qspi->PDMACTL |= (QSPI_PDMACTL_TXPDMAEN_Msk | \
+                      QSPI_PDMACTL_RXPDMAEN_Msk); \
+  } while (0)
 
 /**
   * @brief      Disable RX PDMA transfer.
@@ -112,7 +165,11 @@ extern "C"
   * @details    Clear RXPDMAEN bit of QSPI_PDMACTL register to disable RX PDMA transfer function.
   * \hideinitializer
   */
-#define QSPI_DISABLE_RX_PDMA(qspi) ( (qspi)->PDMACTL &= ~QSPI_PDMACTL_RXPDMAEN_Msk )
+#define QSPI_DISABLE_RX_PDMA(qspi)                 \
+  do                                               \
+  {                                                \
+    qspi->PDMACTL &= ~(QSPI_PDMACTL_RXPDMAEN_Msk); \
+  } while (0)
 
 /**
   * @brief      Disable TX PDMA transfer.
@@ -121,7 +178,11 @@ extern "C"
   * @details    Clear TXPDMAEN bit of QSPI_PDMACTL register to disable TX PDMA transfer function.
   * \hideinitializer
   */
-#define QSPI_DISABLE_TX_PDMA(qspi) ( (qspi)->PDMACTL &= ~QSPI_PDMACTL_TXPDMAEN_Msk )
+#define QSPI_DISABLE_TX_PDMA(qspi)                 \
+  do                                               \
+  {                                                \
+    qspi->PDMACTL &= ~(QSPI_PDMACTL_TXPDMAEN_Msk); \
+  } while (0)
 
 /**
   * @brief      Disable TX and RX PDMA transfer.
@@ -130,7 +191,12 @@ extern "C"
   * @details    Clear TXPDMAEN bit and RXPDMAEN bit of QSPI_PDMACTL register to disable TX and RX PDMA transfer function.
   * \hideinitializer
   */
-#define QSPI_DISABLE_TX_RX_PDMA(qspi) ( (qspi)->PDMACTL &= ~(QSPI_PDMACTL_TXPDMAEN_Msk | QSPI_PDMACTL_RXPDMAEN_Msk) )
+#define QSPI_DISABLE_TX_RX_PDMA(qspi)              \
+  do                                               \
+  {                                                \
+    qspi->PDMACTL &= ~(QSPI_PDMACTL_TXPDMAEN_Msk | \
+                       QSPI_PDMACTL_RXPDMAEN_Msk); \
+  } while (0)
 
 /**
   * @brief      Get the count of available data in RX FIFO.
@@ -139,7 +205,7 @@ extern "C"
   * @details    Read RXCNT (QSPI_STATUS[27:24]) to get the count of available data in RX FIFO.
   * \hideinitializer
   */
-#define QSPI_GET_RX_FIFO_COUNT(qspi)   (((qspi)->STATUS & QSPI_STATUS_RXCNT_Msk) >> QSPI_STATUS_RXCNT_Pos)
+#define QSPI_GET_RX_FIFO_COUNT(qspi)  ((qspi->STATUS & QSPI_STATUS_RXCNT_Msk) >> QSPI_STATUS_RXCNT_Pos)
 
 /**
   * @brief      Get the RX FIFO empty flag.
@@ -149,7 +215,7 @@ extern "C"
   * @details    Read RXEMPTY bit of QSPI_STATUS register to get the RX FIFO empty flag.
   * \hideinitializer
   */
-#define QSPI_GET_RX_FIFO_EMPTY_FLAG(qspi)   (((qspi)->STATUS & QSPI_STATUS_RXEMPTY_Msk)>>QSPI_STATUS_RXEMPTY_Pos)
+#define QSPI_GET_RX_FIFO_EMPTY_FLAG(qspi) ((qspi->STATUS & QSPI_STATUS_RXEMPTY_Msk) >> QSPI_STATUS_RXEMPTY_Pos)
 
 /**
   * @brief      Get the TX FIFO empty flag.
@@ -159,7 +225,7 @@ extern "C"
   * @details    Read TXEMPTY bit of QSPI_STATUS register to get the TX FIFO empty flag.
   * \hideinitializer
   */
-#define QSPI_GET_TX_FIFO_EMPTY_FLAG(qspi)   (((qspi)->STATUS & QSPI_STATUS_TXEMPTY_Msk)>>QSPI_STATUS_TXEMPTY_Pos)
+#define QSPI_GET_TX_FIFO_EMPTY_FLAG(qspi) ((qspi->STATUS & QSPI_STATUS_TXEMPTY_Msk) >> QSPI_STATUS_TXEMPTY_Pos)
 
 /**
   * @brief      Get the TX FIFO full flag.
@@ -169,7 +235,7 @@ extern "C"
   * @details    Read TXFULL bit of QSPI_STATUS register to get the TX FIFO full flag.
   * \hideinitializer
   */
-#define QSPI_GET_TX_FIFO_FULL_FLAG(qspi)   (((qspi)->STATUS & QSPI_STATUS_TXFULL_Msk)>>QSPI_STATUS_TXFULL_Pos)
+#define QSPI_GET_TX_FIFO_FULL_FLAG(qspi)  ((qspi->STATUS & QSPI_STATUS_TXFULL_Msk) >> QSPI_STATUS_TXFULL_Pos)
 
 /**
   * @brief      Get the datum read from RX register.
@@ -178,7 +244,7 @@ extern "C"
   * @details    Read QSPI_RX register to get the received datum.
   * \hideinitializer
   */
-#define QSPI_READ_RX(qspi)   ((qspi)->RX)
+#define QSPI_READ_RX(qspi)  (qspi->RX)
 
 /**
   * @brief      Write datum to TX register.
@@ -188,7 +254,11 @@ extern "C"
   * @details    Write u32TxData to QSPI_TX register.
   * \hideinitializer
   */
-#define QSPI_WRITE_TX(qspi, u32TxData)   ((qspi)->TX = (u32TxData))
+#define QSPI_WRITE_TX(qspi, u32TxData) \
+  do                                   \
+  {                                    \
+    qspi->TX = u32TxData;              \
+  } while (0)
 
 /**
   * @brief      Set QSPIx_SS pin to high state.
@@ -197,7 +267,12 @@ extern "C"
   * @details    Disable automatic slave selection function and set QSPIx_SS pin to high state.
   * \hideinitializer
   */
-#define QSPI_SET_SS_HIGH(qspi)   ((qspi)->SSCTL = ((qspi)->SSCTL & (~QSPI_SSCTL_AUTOSS_Msk)) | (QSPI_SSCTL_SSACTPOL_Msk | QSPI_SSCTL_SS_Msk))
+#define QSPI_SET_SS_HIGH(qspi)                                    \
+  do                                                              \
+  {                                                               \
+    qspi->SSCTL &= ~(QSPI_SSCTL_AUTOSS_Msk);                      \
+    qspi->SSCTL |= (QSPI_SSCTL_SSACTPOL_Msk | QSPI_SSCTL_SS_Msk); \
+  } while (0)
 
 /**
   * @brief      Set QSPIx_SS pin to low state.
@@ -206,7 +281,12 @@ extern "C"
   * @details    Disable automatic slave selection function and set QSPIx_SS pin to low state.
   * \hideinitializer
   */
-#define QSPI_SET_SS_LOW(qspi)   ((qspi)->SSCTL = ((qspi)->SSCTL & (~(QSPI_SSCTL_AUTOSS_Msk | QSPI_SSCTL_SSACTPOL_Msk))) | QSPI_SSCTL_SS_Msk)
+#define QSPI_SET_SS_LOW(qspi)                                          \
+  do                                                                   \
+  {                                                                    \
+    qspi->SSCTL &= ~(QSPI_SSCTL_AUTOSS_Msk | QSPI_SSCTL_SSACTPOL_Msk); \
+    qspi->SSCTL |= QSPI_SSCTL_SS_Msk;                                  \
+  } while (0)
 
 /**
   * @brief      Enable Byte Reorder function.
@@ -215,7 +295,11 @@ extern "C"
   * @details    Enable Byte Reorder function. The suspend interval depends on the setting of SUSPITV (QSPI_CTL[7:4]).
   * \hideinitializer
   */
-#define QSPI_ENABLE_BYTE_REORDER(qspi)   ((qspi)->CTL |=  QSPI_CTL_REORDER_Msk)
+#define QSPI_ENABLE_BYTE_REORDER(qspi) \
+  do                                   \
+  {                                    \
+    qspi->CTL |= QSPI_CTL_REORDER_Msk; \
+  } while (0)
 
 /**
   * @brief      Disable Byte Reorder function.
@@ -224,7 +308,11 @@ extern "C"
   * @details    Clear REORDER bit field of QSPI_CTL register to disable Byte Reorder function.
   * \hideinitializer
   */
-#define QSPI_DISABLE_BYTE_REORDER(qspi)   ((qspi)->CTL &= ~QSPI_CTL_REORDER_Msk)
+#define QSPI_DISABLE_BYTE_REORDER(qspi)   \
+  do                                      \
+  {                                       \
+    qspi->CTL &= ~(QSPI_CTL_REORDER_Msk); \
+  } while (0)
 
 /**
   * @brief      Set the length of suspend interval.
@@ -235,7 +323,12 @@ extern "C"
   *             The length of suspend interval is ((u32SuspCycle + 0.5) * the length of one QSPI bus clock cycle).
   * \hideinitializer
   */
-#define QSPI_SET_SUSPEND_CYCLE(qspi, u32SuspCycle)   ((qspi)->CTL = ((qspi)->CTL & ~QSPI_CTL_SUSPITV_Msk) | ((u32SuspCycle) << QSPI_CTL_SUSPITV_Pos))
+#define QSPI_SET_SUSPEND_CYCLE(qspi, u32SuspCycle)         \
+  do                                                       \
+  {                                                        \
+    qspi->CTL &= ~(QSPI_CTL_SUSPITV_Msk);                  \
+    qspi->CTL |= ((u32SuspCycle) << QSPI_CTL_SUSPITV_Pos); \
+  } while (0)
 
 /**
   * @brief      Set the QSPI transfer sequence with LSB first.
@@ -244,7 +337,11 @@ extern "C"
   * @details    Set LSB bit of QSPI_CTL register to set the QSPI transfer sequence with LSB first.
   * \hideinitializer
   */
-#define QSPI_SET_LSB_FIRST(qspi)   ((qspi)->CTL |= QSPI_CTL_LSB_Msk)
+#define QSPI_SET_LSB_FIRST(qspi)   \
+  do                               \
+  {                                \
+    qspi->CTL |= QSPI_CTL_LSB_Msk; \
+  } while (0)
 
 /**
   * @brief      Set the QSPI transfer sequence with MSB first.
@@ -253,7 +350,11 @@ extern "C"
   * @details    Clear LSB bit of QSPI_CTL register to set the QSPI transfer sequence with MSB first.
   * \hideinitializer
   */
-#define QSPI_SET_MSB_FIRST(qspi)   ((qspi)->CTL &= ~QSPI_CTL_LSB_Msk)
+#define QSPI_SET_MSB_FIRST(qspi)      \
+  do                                  \
+  {                                   \
+    qspi->CTL &= ~(QSPI_CTL_LSB_Msk); \
+  } while (0)
 
 /**
   * @brief      Set the data width of a QSPI transaction.
@@ -263,7 +364,12 @@ extern "C"
   * @details    The data width can be 8 ~ 32 bits.
   * \hideinitializer
   */
-#define QSPI_SET_DATA_WIDTH(qspi, u32Width)   ((qspi)->CTL = ((qspi)->CTL & ~QSPI_CTL_DWIDTH_Msk) | (((u32Width)&0x1F) << QSPI_CTL_DWIDTH_Pos))
+#define QSPI_SET_DATA_WIDTH(qspi, u32Width)                  \
+  do                                                         \
+  {                                                          \
+    qspi->CTL &= ~(QSPI_CTL_DWIDTH_Msk);                     \
+    qspi->CTL |= (((u32Width)&0x1F) << QSPI_CTL_DWIDTH_Pos); \
+  } while (0)
 
 /**
   * @brief      Get the QSPI busy state.
@@ -273,7 +379,7 @@ extern "C"
   * @details    This macro will return the busy state of QSPI controller.
   * \hideinitializer
   */
-#define QSPI_IS_BUSY(qspi)   ( ((qspi)->STATUS & QSPI_STATUS_BUSY_Msk)>>QSPI_STATUS_BUSY_Pos )
+#define QSPI_IS_BUSY(qspi)   ((qspi->STATUS & QSPI_STATUS_BUSY_Msk) >> QSPI_STATUS_BUSY_Pos)
 
 /**
   * @brief      Enable QSPI controller.
@@ -282,7 +388,11 @@ extern "C"
   * @details    Set QSPIEN (QSPI_CTL[0]) to enable QSPI controller.
   * \hideinitializer
   */
-#define QSPI_ENABLE(qspi)   ((qspi)->CTL |= QSPI_CTL_QSPIEN_Msk)
+#define QSPI_ENABLE(qspi)             \
+  do                                  \
+  {                                   \
+    qspi->CTL |= QSPI_CTL_QSPIEN_Msk; \
+  } while (0)
 
 /**
   * @brief      Disable QSPI controller.
@@ -291,7 +401,11 @@ extern "C"
   * @details    Clear QSPIEN (QSPI_CTL[0]) to disable QSPI controller.
   * \hideinitializer
   */
-#define QSPI_DISABLE(qspi)   ((qspi)->CTL &= ~QSPI_CTL_QSPIEN_Msk)
+#define QSPI_DISABLE(qspi)               \
+  do                                     \
+  {                                      \
+    qspi->CTL &= ~(QSPI_CTL_QSPIEN_Msk); \
+  } while (0)
 
 /**
   * @brief      Disable 2-bit Transfer mode.
@@ -299,7 +413,11 @@ extern "C"
   * @return     None.
   * @details    Clear TWOBIT bit of QSPI_CTL register to disable 2-bit Transfer mode.
   */
-#define QSPI_DISABLE_2BIT_MODE(qspi)   ( (qspi)->CTL &= ~QSPI_CTL_TWOBIT_Msk )
+#define QSPI_DISABLE_2BIT_MODE(qspi)     \
+  do                                     \
+  {                                      \
+    qspi->CTL &= ~(QSPI_CTL_TWOBIT_Msk); \
+  } while (0)
 
 /**
   * @brief      Enable 2-bit Transfer mode.
@@ -307,7 +425,11 @@ extern "C"
   * @return     None.
   * @details    Set TWOBIT bit of QSPI_CTL register to enable 2-bit Transfer mode.
   */
-#define QSPI_ENABLE_2BIT_MODE(qspi)   ( (qspi)->CTL |= QSPI_CTL_TWOBIT_Msk )
+#define QSPI_ENABLE_2BIT_MODE(qspi)   \
+  do                                  \
+  {                                   \
+    qspi->CTL |= QSPI_CTL_TWOBIT_Msk; \
+  } while (0)
 
 /**
   * @brief      Disable Slave 3-wire mode.
@@ -315,7 +437,11 @@ extern "C"
   * @return     None.
   * @details    Clear SLV3WIRE bit of QSPI_SSCTL register to disable Slave 3-wire mode.
   */
-#define QSPI_DISABLE_3WIRE_MODE(qspi)   ( (qspi)->SSCTL &= ~QSPI_SSCTL_SLV3WIRE_Msk )
+#define QSPI_DISABLE_3WIRE_MODE(qspi)          \
+  do                                           \
+  {                                            \
+    qspi->SSCTL &= ~(QSPI_SSCTL_SLV3WIRE_Msk); \
+  } while (0)
 
 /**
   * @brief      Enable Slave 3-wire mode.
@@ -323,49 +449,80 @@ extern "C"
   * @return     None.
   * @details    Set SLV3WIRE bit of QSPI_SSCTL register to enable Slave 3-wire mode.
   */
-#define QSPI_ENABLE_3WIRE_MODE(qspi)   ( (qspi)->SSCTL |= QSPI_SSCTL_SLV3WIRE_Msk )
+#define QSPI_ENABLE_3WIRE_MODE(qspi)        \
+  do                                        \
+  {                                         \
+    qspi->SSCTL |= QSPI_SSCTL_SLV3WIRE_Msk; \
+  } while (0)
 
 /**
   * @brief  Disable QSPI Dual IO function.
   * @param[in]  qspi is the base address of QSPI module.
   * \hideinitializer
   */
-#define QSPI_DISABLE_DUAL_MODE(qspi) ( (qspi)->CTL &= ~QSPI_CTL_DUALIOEN_Msk )
+#define QSPI_DISABLE_DUAL_MODE(qspi)       \
+  do                                       \
+  {                                        \
+    qspi->CTL &= ~(QSPI_CTL_DUALIOEN_Msk); \
+  } while (0)
 
 /**
   * @brief  Enable Dual IO function and set QSPI Dual IO direction to input.
   * @param[in]  qspi is the base address of QSPI module.
   * \hideinitializer
   */
-#define QSPI_ENABLE_DUAL_INPUT_MODE(qspi) ( (qspi)->CTL = ((qspi)->CTL & ~QSPI_CTL_DATDIR_Msk) | QSPI_CTL_DUALIOEN_Msk )
+#define QSPI_ENABLE_DUAL_INPUT_MODE(qspi) \
+  do                                      \
+  {                                       \
+    qspi->CTL &= ~(QSPI_CTL_DATDIR_Msk);  \
+    qspi->CTL |= QSPI_CTL_DUALIOEN_Msk;   \
+  } while (0)
 
 /**
   * @brief  Enable Dual IO function and set QSPI Dual IO direction to output.
   * @param[in]  qspi is the base address of QSPI module.
   * \hideinitializer
   */
-#define QSPI_ENABLE_DUAL_OUTPUT_MODE(qspi) ( (qspi)->CTL |= QSPI_CTL_DATDIR_Msk | QSPI_CTL_DUALIOEN_Msk )
+#define QSPI_ENABLE_DUAL_OUTPUT_MODE(qspi)                      \
+  do                                                            \
+  {                                                             \
+    qspi->CTL |= (QSPI_CTL_DATDIR_Msk | QSPI_CTL_DUALIOEN_Msk); \
+  } while (0)
 
 /**
   * @brief  Disable QSPI Dual IO function.
   * @param[in]  qspi is the base address of QSPI module.
   * \hideinitializer
   */
-#define QSPI_DISABLE_QUAD_MODE(qspi) ( (qspi)->CTL &= ~QSPI_CTL_QUADIOEN_Msk )
+#define QSPI_DISABLE_QUAD_MODE(qspi)       \
+  do                                       \
+  {                                        \
+    qspi->CTL &= ~(QSPI_CTL_QUADIOEN_Msk); \
+  } while (0)
 
 /**
   * @brief  Set QSPI Quad IO direction to input.
   * @param[in]  qspi is the base address of QSPI module.
   * \hideinitializer
   */
-#define QSPI_ENABLE_QUAD_INPUT_MODE(qspi) ( (qspi)->CTL = ((qspi)->CTL & ~QSPI_CTL_DATDIR_Msk) | QSPI_CTL_QUADIOEN_Msk )
+#define QSPI_ENABLE_QUAD_INPUT_MODE(qspi) \
+  do                                      \
+  {                                       \
+    qspi->CTL &= ~(QSPI_CTL_DATDIR_Msk);  \
+    qspi->CTL |= QSPI_CTL_QUADIOEN_Msk;   \
+  } while (0)
 
 /**
   * @brief  Set QSPI Quad IO direction to output.
   * @param[in]  qspi is the base address of QSPI module.
   * \hideinitializer
   */
-#define QSPI_ENABLE_QUAD_OUTPUT_MODE(qspi) ( (qspi)->CTL |= QSPI_CTL_DATDIR_Msk | QSPI_CTL_QUADIOEN_Msk )
+#define QSPI_ENABLE_QUAD_OUTPUT_MODE(qspi) \
+  do                                       \
+  {                                        \
+    qspi->CTL |= (QSPI_CTL_DATDIR_Msk |    \
+                  QSPI_CTL_QUADIOEN_Msk);  \
+  } while (0)
 
 /* Function prototype declaration */
 uint32_t QSPI_Open(QSPI_T *qspi, uint32_t u32MasterSlave, uint32_t u32QSPIMode, uint32_t u32DataWidth, uint32_t u32BusClock);
