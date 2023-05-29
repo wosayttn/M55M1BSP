@@ -26,6 +26,9 @@ static uint32_t SelectPCLKxSourceOfQSPI(QSPI_T *qspi)
 {
     uint32_t u32RetValue = 0;
 
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     if (qspi == QSPI0)
     {
         CLK->QSPISEL = (CLK->QSPISEL & (~CLK_QSPISEL_QSPI0SEL_Msk)) | CLK_QSPISEL_QSPI0SEL_PCLK0;
@@ -36,6 +39,9 @@ static uint32_t SelectPCLKxSourceOfQSPI(QSPI_T *qspi)
         CLK->QSPISEL = (CLK->QSPISEL & (~CLK_QSPISEL_QSPI1SEL_Msk)) | CLK_QSPISEL_QSPI1SEL_PCLK2;
         u32RetValue = CLK_GetPCLK1Freq();
     }
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     return u32RetValue;
 }

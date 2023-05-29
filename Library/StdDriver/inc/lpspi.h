@@ -40,26 +40,71 @@ extern "C"
 #define LPSPI_SS_ACTIVE_LOW     (0x0U)                                        /*!< SS active low \hideinitializer */
 
 /* LPSPI Interrupt Mask */
-#define LPSPI_UNIT_INT_MASK                (0x001U)                          /*!< Unit transfer interrupt mask \hideinitializer */
-#define LPSPI_SSACT_INT_MASK               (0x002U)                          /*!< Slave selection signal active interrupt mask \hideinitializer */
-#define LPSPI_SSINACT_INT_MASK             (0x004U)                          /*!< Slave selection signal inactive interrupt mask \hideinitializer */
-#define LPSPI_SLVUR_INT_MASK               (0x008U)                          /*!< Slave under run interrupt mask \hideinitializer */
-#define LPSPI_SLVBE_INT_MASK               (0x010U)                          /*!< Slave bit count error interrupt mask \hideinitializer */
-#define LPSPI_TXUF_INT_MASK                (0x040U)                          /*!< Slave TX underflow interrupt mask \hideinitializer */
-#define LPSPI_FIFO_TXTH_INT_MASK           (0x080U)                          /*!< FIFO TX threshold interrupt mask \hideinitializer */
-#define LPSPI_FIFO_RXTH_INT_MASK           (0x100U)                          /*!< FIFO RX threshold interrupt mask \hideinitializer */
-#define LPSPI_FIFO_RXOV_INT_MASK           (0x200U)                          /*!< FIFO RX overrun interrupt mask \hideinitializer */
-#define LPSPI_FIFO_RXTO_INT_MASK           (0x400U)                          /*!< FIFO RX time-out interrupt mask \hideinitializer */
+#define LPSPI_UNIT_INT_Pos                  (0)
+#define LPSPI_UNIT_INT_MASK                 (0x1ul << LPSPI_UNIT_INT_Pos)     /*!< Unit transfer interrupt mask \hideinitializer */
+
+#define LPSPI_SSACT_INT_Pos                 (1)
+#define LPSPI_SSACT_INT_MASK                (0x1ul << LPSPI_SSACT_INT_Pos)    /*!< Slave selection signal active interrupt mask \hideinitializer */
+
+#define LPSPI_SSINACT_INT_Pos               (2)
+#define LPSPI_SSINACT_INT_MASK              (0x1ul << LPSPI_SSINACT_INT_Pos)  /*!< Slave selection signal inactive interrupt mask \hideinitializer */
+
+#define LPSPI_SLVUR_INT_Pos                 (3)
+#define LPSPI_SLVUR_INT_MASK                (0x1ul << LPSPI_SLVUR_INT_Pos)    /*!< Slave under run interrupt mask \hideinitializer */
+
+#define LPSPI_SLVBE_INT_Pos                 (4)
+#define LPSPI_SLVBE_INT_MASK                (0x1ul << LPSPI_SLVBE_INT_Pos)    /*!< Slave bit count error interrupt mask \hideinitializer */
+
+#define LPSPI_TXUF_INT_Pos                  (5)
+#define LPSPI_TXUF_INT_MASK                 (0x1ul << LPSPI_TXUF_INT_Pos)     /*!< Slave TX underflow interrupt mask \hideinitializer */
+
+#define LPSPI_FIFO_TXTH_INT_Pos             (6)
+#define LPSPI_FIFO_TXTH_INT_MASK            (0x1ul << LPSPI_FIFO_TXTH_INT_Pos)  /*!< FIFO TX threshold interrupt mask \hideinitializer */
+
+#define LPSPI_FIFO_RXTH_INT_Pos             (7)
+
+#define LPSPI_FIFO_RXTH_INT_MASK            (0x1ul << LPSPI_FIFO_RXTH_INT_Pos)  /*!< FIFO RX threshold interrupt mask \hideinitializer */
+
+#define LPSPI_FIFO_RXOV_INT_Pos             (8)
+#define LPSPI_FIFO_RXOV_INT_MASK            (0x1ul << LPSPI_FIFO_RXOV_INT_Pos)  /*!< FIFO RX overrun interrupt mask \hideinitializer */
+
+#define LPSPI_FIFO_RXTO_INT_Pos             (9)
+#define LPSPI_FIFO_RXTO_INT_MASK            (0x1ul << LPSPI_FIFO_RXTO_INT_Pos)  /*!< FIFO RX time-out interrupt mask \hideinitializer */
 
 /* LPSPI Status Mask */
-#define LPSPI_BUSY_MASK                    (0x01U)                           /*!< Busy status mask \hideinitializer */
-#define LPSPI_RX_EMPTY_MASK                (0x02U)                           /*!< RX empty status mask \hideinitializer */
-#define LPSPI_RX_FULL_MASK                 (0x04U)                           /*!< RX full status mask \hideinitializer */
-#define LPSPI_TX_EMPTY_MASK                (0x08U)                           /*!< TX empty status mask \hideinitializer */
-#define LPSPI_TX_FULL_MASK                 (0x10U)                           /*!< TX full status mask \hideinitializer */
-#define LPSPI_TXRX_RESET_MASK              (0x20U)                           /*!< TX or RX reset status mask \hideinitializer */
-#define LPSPI_SPIEN_STS_MASK               (0x40U)                           /*!< SPIEN status mask \hideinitializer */
-#define LPSPI_SSLINE_STS_MASK              (0x80U)                           /*!< SPIx_SS line status mask \hideinitializer */
+#define LPSPI_BUSY_Pos                      (0)
+#define LPSPI_BUSY_MASK                     (0x1ul << LPSPI_BUSY_Pos)         /*!< Busy status mask \hideinitializer */
+
+#define LPSPI_RX_EMPTY_Pos                  (1)
+#define LPSPI_RX_EMPTY_MASK                 (0x1ul << LPSPI_RX_EMPTY_Pos)     /*!< RX empty status mask \hideinitializer */
+
+#define LPSPI_RX_FULL_Pos                   (2)
+#define LPSPI_RX_FULL_MASK                  (0x1ul << LPSPI_RX_FULL_Pos)      /*!< RX full status mask \hideinitializer */
+
+#define LPSPI_TX_EMPTY_Pos                  (3)
+#define LPSPI_TX_EMPTY_MASK                 (0x1ul << LPSPI_TX_EMPTY_Pos)     /*!< TX empty status mask \hideinitializer */
+
+#define LPSPI_TX_FULL_Pos                   (4)
+#define LPSPI_TX_FULL_MASK                  (0x1ul << LPSPI_TX_FULL_Pos)      /*!< TX full status mask \hideinitializer */
+
+#define LPSPI_TXRX_RESET_Pos                (9)
+#define LPSPI_TXRX_RESET_MASK               (0x1ul << LPSPI_TXRX_RESET_Pos)   /*!< TX or RX reset status mask \hideinitializer */
+
+#define LPSPI_SPIEN_STS_Pos                 (10)
+#define LPSPI_SPIEN_STS_MASK                (0x1ul << LPSPI_SPIEN_STS_Pos)    /*!< SPIEN status mask \hideinitializer */
+
+#define LPSPI_SSLINE_STS_Pos                (9)
+#define LPSPI_SSLINE_STS_MASK               (0x1ul << LPSPI_SSLINE_STS_Pos)   /*!< SPIx_SS line status mask \hideinitializer */
+
+/* LPSPI Auto Trigger Source */
+#define LPSPI_TRIGGER_LPTMER0               (0x00UL)
+#define LPSPI_TRIGGER_LPTMER1               (0x01UL)
+#define LPSPI_TRIGGER_TTMR0                 (0x02UL)
+#define LPSPI_TRIGGER_TTMR1                 (0x03UL)
+#define LPSPI_TRIGGER_GPIO0                 (0x04UL)
+#define LPSPI_TRIGGER_GPIO1                 (0x05UL)
+#define LPSPI_TRIGGER_GPIO2                 (0x06UL)
+#define LPSPI_TRIGGER_GPIO3                 (0x07UL)
 
 /*@}*/ /* end of group LPSPI_EXPORTED_CONSTANTS */
 
@@ -364,11 +409,207 @@ extern "C"
   * @details    Clear SPIEN (LPSPI_CTL[0]) to disable LPSPI controller.
   * \hideinitializer
   */
-#define LPSPI_DISABLE(lpspi)             \
-  do                                     \
-  {                                      \
-    lpspi->CTL &= ~(PSPI_CTL_SPIEN_Msk); \
+#define LPSPI_DISABLE(lpspi)              \
+  do                                      \
+  {                                       \
+    lpspi->CTL &= ~(LPSPI_CTL_SPIEN_Msk); \
   } while (0)
+
+/**
+  * @brief      Set Automatic Operation Trigger Source Select.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @param[in]  x Enable/Disable Auto Operation
+  *               - \ref LPSPI_TRIGGER_LPTMER0
+  *               - \ref LPSPI_TRIGGER_LPTMER1
+  *               - \ref LPSPI_TRIGGER_TTMR0
+  *               - \ref LPSPI_TRIGGER_TTMR1
+  *               - \ref LPSPI_TRIGGER_GPIO0
+  *               - \ref LPSPI_TRIGGER_GPIO1
+  *               - \ref LPSPI_TRIGGER_GPIO2
+  *               - \ref LPSPI_TRIGGER_GPIO3
+  * @return     None.
+  * \hideinitializer
+  */
+#define LPSPI_SET_TRIGSRC(lpspi, x)                     \
+  do                                                    \
+  {                                                     \
+    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_TRIGSEL_Msk);     \
+    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_TRIGSEL_Pos); \
+  } while (0)
+
+/**
+* @brief      Get Automatic Operation Trigger Source Select.
+* @param[in]  lpspi The pointer of the specified LPSPI module.
+* @return     None.
+* \hideinitializer
+*/
+#define LPSPI_GET_TRIGSRC(lpspi)  ((lpspi->AUTOCTL & LPSPI_AUTOCTL_TRIGSEL_Msk) >> LPSPI_AUTOCTL_TRIGSEL_Pos)
+
+/**
+  * @brief      Automatic Operation Trigger Enable.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @param[in]  x Enable/Disable Auto Operation
+  *               - \ref 0 : Disable
+  *               - \ref 1 : Enable
+  * @return     None.
+  * \hideinitializer
+  */
+#define LPSPI_AUTO_TRIGEN(lpspi, x)                    \
+  do                                                   \
+  {                                                    \
+    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_TRIGEN_Msk);     \
+    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_TRIGEN_Pos); \
+  } while (0)
+
+/**
+  * @brief      TCNT Count Match Interrupt Enable
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @param[in]  x Enable/Disable TCNT Count Match Interrupt
+  *               - \ref 0 : Disable
+  *               - \ref 1 : Enable
+  * @return     None.
+  * \hideinitializer
+  */
+#define LPSPI_AUTO_TCNTINT(lpspi, x)                   \
+  do                                                   \
+  {                                                    \
+    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_CNTIEN_Msk);     \
+    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_CNTIEN_Pos); \
+  } while (0)
+
+/**
+  * @brief      Full RX Data Acception Enable Bit.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @param[in]  x Enable/Disable Full RX Data
+  *               - \ref 0 : Disable
+  *               - \ref 1 : Enable
+  * @return     None.
+  * \hideinitializer
+  */
+#define LPSPI_AUTO_FULLRX(lpspi, x)                      \
+  do                                                     \
+  {                                                      \
+    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_FULLRXEN_Msk);     \
+    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_FULLRXEN_Pos); \
+  } while (0)
+
+/**
+  * @brief      Slave Select Wake Up Enable Bit.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @param[in]  x Enable/Disable Slave Select Wake Up
+  *               - \ref 0 : Disable
+  *               - \ref 1 : Enable
+  * @return     None.
+  * \hideinitializer
+  */
+#define LPSPI_AUTO_SSWKEN(lpspi, x)                    \
+  do                                                   \
+  {                                                    \
+    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_SSWKEN_Msk);     \
+    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_SSWKEN_Pos); \
+  } while (0)
+
+/**
+  * @brief      Automatic Operation Mode Enable Bit.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @param[in]  x Enable/Disable Automatic Operation Mode
+  *               - \ref 0 : Disable
+  *               - \ref 1 : Enable
+  * @return     None.
+  * \hideinitializer
+  */
+#define LPSPI_AUTO_EN(lpspi, x)                        \
+  do                                                   \
+  {                                                    \
+    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_AUTOEN_Msk);     \
+    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_AUTOEN_Pos); \
+  } while (0)
+
+/**
+  * @brief      Software Trigger.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @param[in]  x Enable/Disable Software Trigger.
+  *               - \ref 0 : Disable
+  *               - \ref 1 : Enable
+  * @return     None.
+  * \hideinitializer
+  */
+#define LPSPI_AUTO_SWTRIG(lpspi, x)                   \
+  do                                                  \
+  {                                                   \
+    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_SWTRG_Msk);     \
+    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_SWTRG_Pos); \
+  } while (0)
+
+/**
+  * @brief      TCNT Count Match Wake Up Enable Bit.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @param[in]  x Enable/Disable TCNT Count Match Wake Up.
+  *               - \ref 0 : Disable
+  *               - \ref 1 : Enable
+  * @return     None.
+  * \hideinitializer
+  */
+#define LPSPI_AUTO_TCNTWKEN(lpspi, x)                   \
+  do                                                    \
+  {                                                     \
+    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_CNTWKEN_Msk);     \
+    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_CNTWKEN_Pos); \
+  } while (0)
+
+/**
+  * @brief      Set Auomatic Operation RX Transfer Count.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @param[in]  x Auomatic Operation RX Transfer Count 1 ~ 255.
+  * @return     None.
+  * \hideinitializer
+  */
+#define LPSPI_SET_AUTO_TCNT(lpspi, x)                \
+  do                                                 \
+  {                                                  \
+    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_TCNT_Msk);     \
+    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_TCNT_Pos); \
+  } while (0)
+
+/**
+* @brief      Get Auomatic Operation RX Transfer Count.
+* @param[in]  lpspi The pointer of the specified LPSPI module.
+* @return     None.
+* \hideinitializer
+*/
+#define LPSPI_GET_AUTO_TCNT(lpspi) ((lpspi->AUTOCTL & LPSPI_AUTOCTL_TCNT_Msk) >> LPSPI_AUTOCTL_TCNT_Pos)
+
+/**
+  * @brief      TCNT Count Match Interrupt Flag.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * \hideinitializer
+  */
+#define LPSPI_GET_AUTOSTS_CNTIF(lpspi) ((lpspi->AUTOCTL & LPSPI_AUTOSTS_CNTIF_Msk) >> LPSPI_AUTOSTS_CNTIF_Pos)
+
+/**
+  * @brief      Slave Select Wake Up Flag.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * \hideinitializer
+  */
+#define LPSPI_GET_AUTOSTS_SSWKF(lpspi) ((lpspi->AUTOCTL & LPSPI_AUTOSTS_SSWKF_Msk) >> LPSPI_AUTOSTS_SSWKF_Pos)
+
+/**
+  * @brief      Automatic Operation Busy Flag.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * \hideinitializer
+  */
+#define LPSPI_GET_AUTOSTS_BUSY(lpspi) ((lpspi->AUTOCTL & LPSPI_AUTOSTS_AOBUSY_Msk) >> LPSPI_AUTOSTS_AOBUSY_Pos)
+
+/**
+  * @brief      TCNT Count Match Wake Up Flag.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * \hideinitializer
+  */
+#define LPSPI_GET_AUTOSTS_CNTWKF(lpspi) ((lpspi->AUTOCTL & LPSPI_AUTOSTS_CNTWKF_Msk) >> LPSPI_AUTOSTS_CNTWKF_Pos)
 
 /* Function prototype declaration */
 uint32_t LPSPI_Open(LPSPI_T *lpspi, uint32_t u32MasterSlave, uint32_t u32SPIMode, uint32_t u32DataWidth, uint32_t u32BusClock);

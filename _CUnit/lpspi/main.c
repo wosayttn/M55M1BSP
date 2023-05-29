@@ -13,11 +13,11 @@
 
 #include "CUnit.h"
 #include "Console.h"
-#include "qspi_cunit.h"
+#include "spi_cunit.h"
 #include "NuMicro.h"
 
 //------------------------------------------------------------------------------
-//#define PLL_CLOCK               (100000000)
+//#define PLL_CLOCK           192000000
 #define USE_HXT_SRC             (1)
 
 //------------------------------------------------------------------------------
@@ -25,19 +25,11 @@
 void AddTests(void);
 
 //------------------------------------------------------------------------------
-#ifndef __aeabi_assert
-void __aeabi_assert(char const *msg, char const *file, int line)
-{
-    printf("%s:%d %s -- assertion failed\n", file, line, msg);
-    abort();
-}
-#endif
-
 void SYS_Init(void)
 {
-    /*------------------------------------------------------------------------*/
-    /* Init System Clock                                                      */
-    /*------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init System Clock                                                                                       */
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -60,18 +52,8 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
     /* Enable HIRC48M Clock Source */
-    SYS->ALTCTL1 |= SYS_ALTCTL1_RC48MFSTB_Msk;
     CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
-
-    /* Enable Internal RC 32KHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_LIRCEN_Msk);
-    CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
-
-    /* Enable External low Speed RC 32768Hz clock */
-    SYS->ALTCTL1 |= SYS_ALTCTL1_LXTFSTB_Msk;
-    CLK_EnableXtalRC(CLK_SRCCTL_LXTEN_Msk);
-    CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
 #if (USE_HXT_SRC == 1)
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC48M, CLK_ACLKDIV_ACLKDIV(1));
@@ -80,7 +62,7 @@ void SYS_Init(void)
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC, CLK_ACLKDIV_ACLKDIV(1));
 
     /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_200MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, 48000000UL, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     /* Switch HCLK clock source to HXT */
@@ -100,7 +82,11 @@ void SYS_Init(void)
     CLK_PCLKDIV_PCLK4DIV(1);
 
     /* Update System Core Clock */
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
@@ -118,7 +104,7 @@ void DebugPort_Init(void)
 {
     CLK_EnableModuleClock(UART0_MODULE);
 
-    /* Select IP clock source */
+    /* Select UART module clock source as HXT and UART module clock divider as 1 */
     CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
 
     /*------------------------------------------------------------------------*/
@@ -127,13 +113,8 @@ void DebugPort_Init(void)
     /* Set GPB multi-function pins for UART0 RXD and TXD */
     SYS->GPB_MFP3 &= ~(SYS_GPB_MFP3_PB12MFP_Msk | SYS_GPB_MFP3_PB13MFP_Msk);
     SYS->GPB_MFP3 |= (SYS_GPB_MFP3_PB12MFP_UART0_RXD | SYS_GPB_MFP3_PB13MFP_UART0_TXD);
-
-    //SYS->GPC_MFP2 = (SYS->GPC_MFP2 & ~SYS_GPC_MFP2_PC11MFP_Msk) | SYS_GPC_MFP2_PC11MFP_UART0_RXD;
-    //SYS->GPC_MFP3 = (SYS->GPC_MFP3 & ~SYS_GPC_MFP3_PC12MFP_Msk) | SYS_GPC_MFP3_PC12MFP_UART0_TXD;
-
     //SYS->GPD_MFP0 &= ~(SYS_GPD_MFP0_PD2MFP_Msk | SYS_GPD_MFP0_PD3MFP_Msk);
     //SYS->GPD_MFP0 |= (SYS_GPD_MFP0_PD2MFP_UART0_RXD | SYS_GPD_MFP0_PD3MFP_UART0_TXD);
-
     //SYS->GPH_MFP2 = (SYS->GPH_MFP2 & (~SYS_GPH_MFP2_PH10MFP_Msk)) | (SYS_GPH_MFP2_PH10MFP_UART0_TXD);
     //SYS->GPH_MFP2 = (SYS->GPH_MFP2 & (~SYS_GPH_MFP2_PH11MFP_Msk)) | (SYS_GPH_MFP2_PH11MFP_UART0_RXD);
 
@@ -185,6 +166,8 @@ int main()
 
     DebugPort_Init();
 
+    /* Connect UART to PC, and open a terminal tool to receive following message */
+
     /* Got no where to go, just loop forever */
     if (CU_initialize_registry())
     {
@@ -203,8 +186,8 @@ int main()
 
 void AddTests(void)
 {
-    assert(NULL != CU_get_registry());
-    assert(!CU_is_test_running());
+    //    assert(NULL != CU_get_registry());
+    //    assert(!CU_is_test_running());
 
     if (CUE_SUCCESS != CU_register_suites(suites))
     {

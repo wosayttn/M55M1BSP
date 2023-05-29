@@ -1,11 +1,7 @@
 #ifndef _TC8263_PIN_CONFIG_H_
 #define _TC8263_PIN_CONFIG_H_
 
-#define QSPI0_PIN_OUT_GROUP                     (0)
-#define SPI0_PIN_OUT_GROUP                      (1)
-#define SPI1_PIN_OUT_GROUP                      (5)
-#define SPI2_PIN_OUT_GROUP                      (0)
-#define SPI3_PIN_OUT_GROUP                      (3)
+#include "SPI_CommonFunc.h"
 
 //------------------------------------------------------------------------------
 // QSPI PIN Configure
@@ -20,7 +16,7 @@
 #define QSPI0_MOSI1_TO_GPIO_INIT              QSPI0_MOSI1_TO_GPIO_PIN
 #define QSPI0_MISO1_TO_GPIO_INIT              QSPI0_MISO1_TO_GPIO_PIN
 
-#define QSPI0_MFOS_PIN_INIT                   QSPI0_MFOS_PIN
+#define QSPI0_MFOS_PIN_INIT                   SPI0_MFOS_PIN
 
 #if (QSPI0_PIN_OUT_GROUP == 0)
 #define QSPI0_MOSI_PIN  SYS->GPA_MFP0 = (SYS->GPA_MFP0 & (~SYS_GPA_MFP0_PA0MFP_Msk)) | SYS_GPA_MFP0_PA0MFP_QSPI0_MOSI0
@@ -31,21 +27,15 @@
 #define QSPI0_MISO1_PIN SYS->GPA_MFP1 = (SYS->GPA_MFP1 & (~SYS_GPA_MFP1_PA5MFP_Msk)) | SYS_GPA_MFP1_PA5MFP_QSPI0_MISO1
 #define QSPI0_MFOS_PIN  (SYS->GPA_MFOS |= BIT0 | BIT1)
 
-#define QSPI0_MOSI1_TO_GPIO_PIN                   \
-    do                                            \
-    {                                             \
-        SET_GPIO_PA4();                           \
-        GPIO_SetMode(PA, BIT4, GPIO_MODE_OUTPUT); \
-        PA4 = 1;                                  \
-    } while (0)
+#define QSPI0_MOSI1_TO_GPIO_PIN  \
+    PA->MODE = (PA->MODE & ~(0x3ul << (4 << 1))) | (1 << (4 << 1));\
+    SYS->GPA_MFP1 &= ~(SYS_GPA_MFP1_PA4MFP_Msk) | SYS_GPA_MFP1_PA4MFP_GPIO; \
+    PA4 = 1
 
-#define QSPI0_MISO1_TO_GPIO_PIN                   \
-    do                                            \
-    {                                             \
-        SET_GPIO_PA5();                           \
-        GPIO_SetMode(PA, BIT5, GPIO_MODE_OUTPUT); \
-        PA5 = 1;                                  \
-    } while (0)
+#define QSPI0_MISO1_TO_GPIO_PIN \
+    PA->MODE = (PA->MODE & ~(0x3ul << (5 << 1))) | (1 << (5 << 1));\
+    SYS->GPA_MFP1 &= ~(SYS_GPA_MFP1_PA5MFP_Msk) | SYS_GPA_MFP1_PA5MFP_GPIO; \
+    PA5 = 1
 
 #elif (QSPI0_PIN_OUT_GROUP == 1)
 #define QSPI0_MOSI_PIN  SYS->GPJ_MFP0 = (SYS->GPJ_MFP0 & (~SYS_GPJ_MFP0_PJ1MFP_Msk)) | SYS_GPJ_MFP0_PJ1MFP_QSPI0_MOSI0
@@ -133,99 +123,26 @@
 #define QSPI0_MISO1_PIN SYS->GPC_MFP1 = (SYS->GPC_MFP1 & (~SYS_GPC_MFP1_PC5MFP_Msk)) | SYS_GPC_MFP1_PC5MFP_QSPI0_MISO1
 #define QSPI0_MFOS_PIN  (SYS->GPC_MFOS |= BIT0 | BIT1)
 
-#define QSPI0_MOSI1_TO_GPIO_PIN                                                 \
-    do                                                                          \
-    {                                                                           \
-        PC->MODE = (PC->MODE & ~(0x3ul << (4 << 1))) | (1 << (4 << 1));         \
-        SYS->GPC_MFP1 &= ~(SYS_GPC_MFP1_PC4MFP_Msk) | SYS_GPC_MFP1_PC4MFP_GPIO; \
-        PC4 = 1;                                                                \
-    } while (0)
+#define QSPI0_MOSI1_TO_GPIO_PIN  \
+    PC->MODE = (PC->MODE & ~(0x3ul << (4 << 1))) | (1 << (4 << 1));\
+    SYS->GPC_MFP1 &= ~(SYS_GPC_MFP1_PC4MFP_Msk) | SYS_GPC_MFP1_PC4MFP_GPIO; \
+    PC4 = 1
 
-#define QSPI0_MISO1_TO_GPIO_PIN                                                 \
-    do                                                                          \
-    {                                                                           \
-        PC->MODE = (PC->MODE & ~(0x3ul << (5 << 1))) | (1 << (5 << 1));         \
-        SYS->GPC_MFP1 &= ~(SYS_GPC_MFP1_PC5MFP_Msk) | SYS_GPC_MFP1_PC5MFP_GPIO; \
-        PC5 = 1;                                                                \
-    } while (0)
-
+#define QSPI0_MISO1_TO_GPIO_PIN \
+    PC->MODE = (PC->MODE & ~(0x3ul << (5 << 1))) | (1 << (5 << 1));\
+    SYS->GPC_MFP1 &= ~(SYS_GPC_MFP1_PC5MFP_Msk) | SYS_GPC_MFP1_PC5MFP_GPIO; \
+    PC5 = 1
 #endif //QSPI0_PIN_OUT_GROUP
-
-#define QSPI1_MOSI_PIN_INIT                   QSPI1_MOSI_PIN
-#define QSPI1_MISO_PIN_INIT                   QSPI1_MISO_PIN
-#define QSPI1_CLK_PIN_INIT                    QSPI1_CLK_PIN
-#define QSPI1_CSS_PIN_INIT                    QSPI1_CSS_PIN
-#define QSPI1_MOSI1_PIN_INIT                  QSPI1_MOSI1_PIN
-#define QSPI1_MISO1_PIN_INIT                  QSPI1_MISO1_PIN
-
-#define QSPI1_MOSI1_TO_GPIO_INIT              QSPI1_MOSI1_TO_GPIO_PIN
-#define QSPI1_MISO1_TO_GPIO_INIT              QSPI1_MISO1_TO_GPIO_PIN
-
-#define QSPI1_MFOS_PIN_INIT                   QSPI1_MFOS_PIN
-
-#if (QSPI1_PIN_OUT_GROUP == 0)
-#define QSPI1_MOSI_PIN  SYS->GPA_MFP3 = (SYS->GPA_MFP3 & (~SYS_GPA_MFP3_PA13MFP_Msk)) | SYS_GPA_MFP3_PA13MFP_QSPI1_MOSI0
-#define QSPI1_MISO_PIN  SYS->GPA_MFP3 = (SYS->GPA_MFP3 & (~SYS_GPA_MFP3_PA12MFP_Msk)) | SYS_GPA_MFP3_PA12MFP_QSPI1_MISO0
-#define QSPI1_CLK_PIN   SYS->GPC_MFP1 = (SYS->GPC_MFP1 & (~SYS_GPC_MFP1_PC4MFP_Msk)) | SYS_GPC_MFP1_PC4MFP_QSPI1_CLK
-#define QSPI1_CSS_PIN   SYS->GPC_MFP1 = (SYS->GPC_MFP1 & (~SYS_GPC_MFP1_PC5MFP_Msk)) | SYS_GPC_MFP1_PC5MFP_QSPI1_SS
-#define QSPI1_MOSI1_PIN SYS->GPA_MFP1 = (SYS->GPA_MFP1 & (~SYS_GPA_MFP1_PA6MFP_Msk)) | SYS_GPA_MFP1_PA6MFP_QSPI1_MOSI1
-#define QSPI1_MISO1_PIN SYS->GPA_MFP1 = (SYS->GPA_MFP1 & (~SYS_GPA_MFP1_PA7MFP_Msk)) | SYS_GPA_MFP1_PA7MFP_QSPI1_MISO1
-#define QSPI1_MFOS_PIN  (SYS->GPA_MFOS |= BIT12 | BIT13)
-
-#define QSPI1_MOSI1_TO_GPIO_PIN                                                 \
-    do                                                                          \
-    {                                                                           \
-        PA->MODE = (PA->MODE & ~(0x3ul << (4 << 1))) | (1 << (4 << 1));         \
-        SYS->GPA_MFP1 &= ~(SYS_GPA_MFP1_PA4MFP_Msk) | SYS_GPA_MFP1_PA4MFP_GPIO; \
-        PA4 = 1;                                                                \
-    } while (0)
-
-#define QSPI1_MISO1_TO_GPIO_PIN                                                 \
-    do                                                                          \
-    {                                                                           \
-        PA->MODE = (PA->MODE & ~(0x3ul << (5 << 1))) | (1 << (5 << 1));         \
-        SYS->GPA_MFP1 &= ~(SYS_GPA_MFP1_PA5MFP_Msk) | SYS_GPA_MFP1_PA5MFP_GPIO; \
-        PA5 = 1;                                                                \
-    } while (0)
-
-#elif (QSPI1_PIN_OUT_GROUP == 1)
-#define QSPI1_MOSI_PIN  SYS->GPG_MFP3 = (SYS->GPG_MFP3 & (~SYS_GPG_MFP3_PG14MFP_Msk)) | SYS_GPG_MFP3_PG14MFP_QSPI1_MOSI0
-#define QSPI1_MISO_PIN  SYS->GPG_MFP3 = (SYS->GPG_MFP3 & (~SYS_GPG_MFP3_PG13MFP_Msk)) | SYS_GPG_MFP3_PG13MFP_QSPI1_MISO0
-#define QSPI1_CLK_PIN   SYS->GPG_MFP3 = (SYS->GPG_MFP3 & (~SYS_GPG_MFP3_PG12MFP_Msk)) | SYS_GPG_MFP3_PG12MFP_QSPI1_CLK
-#define QSPI1_CSS_PIN   SYS->GPG_MFP2 = (SYS->GPG_MFP2 & (~SYS_GPG_MFP2_PG11MFP_Msk)) | SYS_GPG_MFP2_PG11MFP_QSPI1_SS
-#define QSPI1_MOSI1_PIN SYS->GPG_MFP2 = (SYS->GPG_MFP2 & (~SYS_GPG_MFP2_PG10MFP_Msk)) | SYS_GPG_MFP2_PG10MFP_QSPI1_MOSI1
-#define QSPI1_MISO1_PIN SYS->GPG_MFP2 = (SYS->GPG_MFP2 & (~SYS_GPG_MFP2_PG9MFP_Msk)) | SYS_GPG_MFP2_PG9MFP_QSPI1_MISO1
-#define QSPI1_MFOS_PIN  (SYS->GPG_MFOS |= BIT13 | BIT14)
-
-#elif (QSPI1_PIN_OUT_GROUP == 2)
-#define QSPI1_MOSI_PIN  SYS->GPJ_MFP1 = (SYS->GPJ_MFP1 & (~SYS_GPJ_MFP1_PJ5MFP_Msk)) | SYS_GPJ_MFP1_PJ5MFP_QSPI1_MOSI0
-#define QSPI1_MISO_PIN  SYS->GPJ_MFP1 = (SYS->GPJ_MFP1 & (~SYS_GPJ_MFP1_PJ4MFP_Msk)) | SYS_GPJ_MFP1_PJ4MFP_QSPI1_MISO0
-#define QSPI1_CLK_PIN   SYS->GPJ_MFP0 = (SYS->GPJ_MFP0 & (~SYS_GPJ_MFP0_PJ3MFP_Msk)) | SYS_GPJ_MFP0_PJ3MFP_QSPI1_CLK
-#define QSPI1_CSS_PIN   SYS->GPJ_MFP0 = (SYS->GPJ_MFP0 & (~SYS_GPJ_MFP0_PJ2MFP_Msk)) | SYS_GPJ_MFP0_PJ2MFP_QSPI1_SS
-#define QSPI1_MOSI1_PIN SYS->GPH_MFP3 = (SYS->GPH_MFP3 & (~SYS_GPH_MFP3_PH13MFP_Msk)) | SYS_GPH_MFP3_PH13MFP_QSPI1_MOSI1
-#define QSPI1_MISO1_PIN SYS->GPH_MFP3 = (SYS->GPH_MFP3 & (~SYS_GPH_MFP3_PH12MFP_Msk)) | SYS_GPH_MFP3_PH12MFP_QSPI1_MISO1
-#define QSPI1_MFOS_PIN  (SYS->GPJ_MFOS |= BIT4 | BIT5)
-
-#elif (QSPI1_PIN_OUT_GROUP == 3)
-#define QSPI1_MOSI_PIN  SYS->GPD_MFP1 = (SYS->GPD_MFP1 & (~SYS_GPD_MFP1_PD6MFP_Msk)) | SYS_GPD_MFP1_PD6MFP_QSPI1_MOSI0
-#define QSPI1_MISO_PIN  SYS->GPD_MFP1 = (SYS->GPD_MFP1 & (~SYS_GPD_MFP1_PD7MFP_Msk)) | SYS_GPD_MFP1_PD7MFP_QSPI1_MISO0
-#define QSPI1_CLK_PIN   SYS->GPH_MFP3 = (SYS->GPH_MFP3 & (~SYS_GPH_MFP3_PH15MFP_Msk)) | SYS_GPH_MFP3_PH15MFP_QSPI1_CLK
-#define QSPI1_CSS_PIN   SYS->GPH_MFP3 = (SYS->GPH_MFP3 & (~SYS_GPH_MFP3_PH14MFP_Msk)) | SYS_GPH_MFP3_PH14MFP_QSPI1_SS
-#define QSPI1_MOSI1_PIN SYS->GPH_MFP3 = (SYS->GPA_MFP3 & (~SYS_GPA_MFP3_PA13MFP_Msk)) | SYS_GPA_MFP3_PA13MFP_QSPI1_MOSI1
-#define QSPI1_MISO1_PIN SYS->GPA_MFP3 = (SYS->GPA_MFP3 & (~SYS_GPA_MFP3_PA12MFP_Msk)) | SYS_GPA_MFP3_PA12MFP_QSPI1_MISO1
-#define QSPI1_MFOS_PIN  (SYS->GPD_MFOS |= BIT6 | BIT7)
-
-#endif //QSPI1_PIN_OUT_GROUP
 
 //------------------------------------------------------------------------------
 // SPI0 PIN Configure
 //------------------------------------------------------------------------------
-#define SPI0_MOSI_PIN_INIT                SPI0_MOSI_PIN
-#define SPI0_MISO_PIN_INIT                SPI0_MISO_PIN
-#define SPI0_CLK_PIN_INIT                 SPI0_CLK_PIN
-#define SPI0_CSS_PIN_INIT                 SPI0_CSS_PIN
-#define SPI0_MCLK_PIN_INIT                SPI0_MCLK_PIN
-#define SPI0_MFOS_PIN_INIT                SPI0_MFOS_PIN
+#define SPI0_MOSI_PIN_INIT                   SPI0_MOSI_PIN
+#define SPI0_MISO_PIN_INIT                   SPI0_MISO_PIN
+#define SPI0_CLK_PIN_INIT                    SPI0_CLK_PIN
+#define SPI0_CSS_PIN_INIT                    SPI0_CSS_PIN
+#define SPI0_MCLK_PIN_INIT                   SPI0_MCLK_PIN
+#define SPI0_MFOS_PIN_INIT                   SPI0_MFOS_PIN
 
 #if (SPI0_PIN_OUT_GROUP == 0)
     #define SPI0_MOSI_PIN  SYS->GPF_MFP1 = (SYS->GPF_MFP1 & (~SYS_GPF_MFP1_PF6MFP_Msk)) | SYS_GPF_MFP1_PF6MFP_SPI0_MOSI
@@ -313,13 +230,13 @@
     #define SPI1_MCLK_PIN  SYS->GPC_MFP1 = (SYS->GPC_MFP1 & (~SYS_GPC_MFP1_PC4MFP_Msk)) | SYS_GPC_MFP1_PC4MFP_SPI1_I2SMCLK
     #define SPI1_MFOS_PIN  (SYS->GPC_MFOS |= BIT2 | BIT3)
 
-#elif (SPI1_PIN_OUT_GROUP == 5)
-    #define SPI1_MOSI_PIN  SYS->GPB_MFP1 = (SYS->GPB_MFP1 & (~SYS_GPB_MFP1_PB4MFP_Msk)) | SYS_GPB_MFP1_PB4MFP_SPI1_MOSI
-    #define SPI1_MISO_PIN  SYS->GPB_MFP1 = (SYS->GPB_MFP1 & (~SYS_GPB_MFP1_PB5MFP_Msk)) | SYS_GPB_MFP1_PB5MFP_SPI1_MISO
-    #define SPI1_CLK_PIN   SYS->GPA_MFP1 = (SYS->GPA_MFP1 & (~SYS_GPA_MFP1_PA7MFP_Msk)) | SYS_GPA_MFP1_PA7MFP_SPI1_CLK
-    #define SPI1_CSS_PIN   SYS->GPA_MFP1 = (SYS->GPA_MFP1 & (~SYS_GPA_MFP1_PA6MFP_Msk)) | SYS_GPA_MFP1_PA6MFP_SPI1_SS
-    #define SPI1_MCLK_PIN  SYS->GPD_MFP3 = (SYS->GPD_MFP3 & (~SYS_GPD_MFP3_PD13MFP_Msk)) | SYS_GPD_MFP3_PD13MFP_SPI1_I2SMCLK
-    #define SPI1_MFOS_PIN  (SYS->GPD_MFOS |= BIT6 | BIT7)
+    //#elif (SPI1_PIN_OUT_GROUP == 5)
+    //    #define SPI1_MOSI_PIN  SYS->GPD_MFP1 = (SYS->GPD_MFP1 & (~SYS_GPD_MFP1_PD6MFP_Msk)) | SYS_GPD_MFP1_PD6MFP_SPI1_MOSI
+    //    #define SPI1_MISO_PIN  SYS->GPD_MFP1 = (SYS->GPD_MFP1 & (~SYS_GPD_MFP1_PD7MFP_Msk)) | SYS_GPD_MFP1_PD7MFP_SPI1_MISO
+    //    #define SPI1_CLK_PIN   SYS->GPD_MFP1 = (SYS->GPD_MFP1 & (~SYS_GPD_MFP1_PD5MFP_Msk)) | SYS_GPD_MFP1_PD5MFP_SPI1_CLK
+    //    #define SPI1_CSS_PIN   SYS->GPD_MFP1 = (SYS->GPD_MFP1 & (~SYS_GPD_MFP1_PD4MFP_Msk)) | SYS_GPD_MFP1_PD4MFP_SPI1_SS
+    //    #define SPI1_MCLK_PIN  SYS->GPD_MFP3 = (SYS->GPD_MFP3 & (~SYS_GPD_MFP3_PD13MFP_Msk)) | SYS_GPD_MFP3_PD13MFP_SPI1_I2SMCLK
+    //    #define SPI1_MFOS_PIN  (SYS->GPD_MFOS |= BIT6 | BIT7)
 
 #elif (SPI1_PIN_OUT_GROUP == 6)
     #define SPI1_MOSI_PIN  SYS->GPE_MFP0 = (SYS->GPE_MFP0 & (~SYS_GPE_MFP0_PE0MFP_Msk)) | SYS_GPE_MFP0_PE0MFP_SPI1_MOSI
@@ -355,11 +272,8 @@
 #define SPI2_CLK_PIN   SYS->GPG_MFP0 = (SYS->GPG_MFP0 & (~SYS_GPG_MFP0_PG3MFP_Msk)) | SYS_GPG_MFP0_PG3MFP_SPI2_CLK
 #define SPI2_CSS_PIN   SYS->GPG_MFP0 = (SYS->GPG_MFP0 & (~SYS_GPG_MFP0_PG2MFP_Msk)) | SYS_GPG_MFP0_PG2MFP_SPI2_SS
 #define SPI2_MCLK_PIN  SYS->GPG_MFP0 = (SYS->GPG_MFP0 & (~SYS_GPG_MFP0_PG1MFP_Msk)) | SYS_GPG_MFP0_PG1MFP_SPI2_I2SMCLK
-#define SPI2_MFOS_PIN  \
-    do{\
-        SYS->GPF_MFOS |= BIT11;\
-        SYS->GPG_MFOS |= BIT4;\
-    }while (0)
+#define SPI2_MFOS_PIN  (SYS->GPF_MFOS |= BIT11); \
+    (SYS->GPG_MFOS |= BIT4)
 
 #elif (SPI2_PIN_OUT_GROUP == 2)
 #define SPI2_MOSI_PIN  SYS->GPE_MFP2 = (SYS->GPE_MFP2 & (~SYS_GPE_MFP2_PE10MFP_Msk)) | SYS_GPE_MFP2_PE10MFP_SPI2_MOSI
@@ -419,8 +333,7 @@
     #define SPI3_MISO_PIN  SYS->GPB_MFP2 = (SYS->GPB_MFP2 & (~SYS_GPB_MFP2_PB9MFP_Msk)) | SYS_GPB_MFP2_PB9MFP_SPI3_MISO
     #define SPI3_CLK_PIN   SYS->GPB_MFP2 = (SYS->GPB_MFP2 & (~SYS_GPB_MFP2_PB11MFP_Msk)) | SYS_GPB_MFP2_PB11MFP_SPI3_CLK
     #define SPI3_CSS_PIN   SYS->GPB_MFP2 = (SYS->GPB_MFP2 & (~SYS_GPB_MFP2_PB10MFP_Msk)) | SYS_GPB_MFP2_PB10MFP_SPI3_SS
-    //#define SPI3_MCLK_PIN  SYS->GPF_MFP1 = (SYS->GPF_MFP1 & (~SYS_GPF_MFP1_PF6MFP_Msk)) | SYS_GPF_MFP1_PF6MFP_SPI3_I2SMCLK
-    #define SPI3_MCLK_PIN  SYS->GPH_MFP1 = (SYS->GPH_MFP1 & (~SYS_GPH_MFP1_PH4MFP_Msk)) | SYS_GPH_MFP1_PH4MFP_SPI3_I2SMCLK
+    #define SPI3_MCLK_PIN  SYS->GPF_MFP1 = (SYS->GPF_MFP1 & (~SYS_GPF_MFP1_PF6MFP_Msk)) | SYS_GPF_MFP1_PF6MFP_SPI3_I2SMCLK
     #define SPI3_MFOS_PIN  (SYS->GPB_MFOS |= BIT8 | BIT9)
 
 #endif //SPI3_PIN_OUT_GROUP

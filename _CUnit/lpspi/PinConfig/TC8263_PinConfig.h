@@ -1,11 +1,11 @@
 #ifndef _TC8263_PIN_CONFIG_H_
 #define _TC8263_PIN_CONFIG_H_
 
-#define QSPI0_PIN_OUT_GROUP                     (0)
 #define SPI0_PIN_OUT_GROUP                      (1)
 #define SPI1_PIN_OUT_GROUP                      (5)
 #define SPI2_PIN_OUT_GROUP                      (0)
 #define SPI3_PIN_OUT_GROUP                      (3)
+#define LPSPI0_PIN_OUT_GROUP                    (1)
 
 //------------------------------------------------------------------------------
 // QSPI PIN Configure
@@ -20,7 +20,7 @@
 #define QSPI0_MOSI1_TO_GPIO_INIT              QSPI0_MOSI1_TO_GPIO_PIN
 #define QSPI0_MISO1_TO_GPIO_INIT              QSPI0_MISO1_TO_GPIO_PIN
 
-#define QSPI0_MFOS_PIN_INIT                   QSPI0_MFOS_PIN
+#define QSPI0_MFOS_PIN_INIT                   SPI0_MFOS_PIN
 
 #if (QSPI0_PIN_OUT_GROUP == 0)
 #define QSPI0_MOSI_PIN  SYS->GPA_MFP0 = (SYS->GPA_MFP0 & (~SYS_GPA_MFP0_PA0MFP_Msk)) | SYS_GPA_MFP0_PA0MFP_QSPI0_MOSI0
