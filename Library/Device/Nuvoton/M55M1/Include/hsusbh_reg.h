@@ -429,12 +429,8 @@ typedef struct
     __IO uint32_t UCALAR;                /*!< [0x0028] USB Current Asynchronous List Address Register                   */
     __I  uint32_t RESERVE2[9];
     __IO uint32_t UCFGR;                 /*!< [0x0050] USB Configure Flag Register                                      */
-    __IO uint32_t UPSCR;                 /*!< [0x0054] USB Port Status and Control Register                             */
+    __IO uint32_t UPSCR[1];              /*!< [0x0054] USB Port Status and Control Register                             */
 } HSUSBH_T;
-
-
-#define EHCI0  ((HSUSBH_T *)HSUSBH_BASE)
-//#define EHCI1  ((HSUSBH_T *)HSUSBH1_BASE)
 
 
 /**
