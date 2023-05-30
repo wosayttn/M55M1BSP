@@ -37,9 +37,6 @@ void SYS_Init(void)
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
     
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
@@ -51,19 +48,19 @@ void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
+	
 
-    /* Enable UART clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-    SYS_ResetModule(SYS_UART0RST);
+    /* Set the Debug UART port clock */
+    SetDebugUartCLK();
 
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
-
-
+		 /* Select CAN FD0 clock source is HCLK */
+    CLK_SetModuleClock(CANFD0_MODULE, CLK_CANFDSEL_CANFD0SEL_HCLK0, CLK_CANFDDIV_CANFD0DIV(1));
     /* Enable ACMP module clock */
-    CLK_EnableModuleClock(ACMP01_MODULE);
+    CLK_EnableModuleClock(CANFD0_MODULE);
+				 /* Select CAN FD0 clock source is HCLK */
+    CLK_SetModuleClock(CANFD1_MODULE, CLK_CANFDSEL_CANFD1SEL_HCLK0, CLK_CANFDDIV_CANFD1DIV(1));
     /* Enable ACMP module clock */
-    CLK_EnableModuleClock(ACMP23_MODULE);
+    CLK_EnableModuleClock(CANFD1_MODULE);
     /* Enable GPA module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
     /* Enable GPB module clock */
@@ -83,8 +80,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    SetDebugUartMFP();
 
     /* Lock protected registers */
     SYS_LockReg();

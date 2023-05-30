@@ -22,7 +22,7 @@
   </DaveTm>
 
   <Target>
-    <TargetName>ACMP</TargetName>
+    <TargetName>CANFD</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>
@@ -170,7 +170,7 @@
   </Target>
 
   <Target>
-    <TargetName>ACMP_SRAM</TargetName>
+    <TargetName>CANFD_SRAM</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>
@@ -251,7 +251,7 @@
         <bEvRecOn>1</bEvRecOn>
         <bSchkAxf>0</bSchkAxf>
         <bTchkAxf>0</bTchkAxf>
-        <nTsel>15</nTsel>
+        <nTsel>14</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
         <sDlgDll></sDlgDll>
