@@ -20,26 +20,6 @@ char *GetTestSPIName(uint32_t u32Index)
     return NULL;
 }
 
-void LPSPI_DISABLE_SELFTEST(uint32_t u32SpiModule)
-{
-    switch (u32SpiModule)
-    {
-        case C_LPSPI0:
-            outp32(LPSPI0_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
-            break;
-    }
-}
-
-void LPSPI_ENABLE_SELFTEST(uint32_t u32SpiModule)
-{
-    switch (u32SpiModule)
-    {
-        case C_LPSPI0:
-            outp32(LPSPI0_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
-            break;
-    }
-}
-
 void LPSPI_ModuleReset(uint32_t u32SPIModule)
 {
     /* Unlock protected registers */
@@ -61,6 +41,9 @@ void LPSPI_ModuleReset(uint32_t u32SPIModule)
 
 void LPSPI0_SetClkSrc(uint32_t u32ClkSrc)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     CLK->LPSPISEL &= (~CLK_LPSPISEL_LPSPI0SEL_Msk);
 
     switch (u32ClkSrc)
@@ -86,6 +69,9 @@ void LPSPI0_SetClkSrc(uint32_t u32ClkSrc)
 
 void LPSPI_ClkDisable(uint32_t u32SPIModule)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     switch (u32SPIModule)
     {
         case C_LPSPI0:

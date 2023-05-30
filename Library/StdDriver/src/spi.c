@@ -154,7 +154,6 @@ static uint32_t CheckSPI1ClockSource(void)
 {
     uint32_t u32ClkSrc = 0;
 
-
     switch (CLK->SPISEL & CLK_SPISEL_SPI1SEL_Msk)
     {
         case CLK_SPISEL_SPI1SEL_HXT:
@@ -261,10 +260,13 @@ uint32_t SPI_Open(SPI_T *spi, uint32_t u32MasterSlave, uint32_t u32SPIMode, uint
     if (u32MasterSlave == SPI_MASTER)
     {
         /* Default setting: slave selection signal is active low; disable automatic slave selection function. */
-        spi->SSCTL = SPI_SS_ACTIVE_LOW;
+        spi->SSCTL |= SPI_SS_ACTIVE_LOW;
 
         /* Default setting: MSB first, disable unit transfer interrupt, SP_CYCLE = 0. */
-        spi->CTL = u32MasterSlave | (u32DataWidth << SPI_CTL_DWIDTH_Pos) | (u32SPIMode) | SPI_CTL_SPIEN_Msk;
+        spi->CTL |= (u32MasterSlave |
+                     (u32DataWidth << SPI_CTL_DWIDTH_Pos) |
+                     (u32SPIMode) |
+                     SPI_CTL_SPIEN_Msk);
 
         if (u32BusClock >= u32HCLKFreq)
         {
@@ -324,7 +326,8 @@ uint32_t SPI_Open(SPI_T *spi, uint32_t u32MasterSlave, uint32_t u32SPIMode, uint
             }
             else
             {
-                spi->CLKDIV = (spi->CLKDIV & (~SPI_CLKDIV_DIVIDER_Msk)) | (u32Div << SPI_CLKDIV_DIVIDER_Pos);
+                spi->CLKDIV = (spi->CLKDIV & (~SPI_CLKDIV_DIVIDER_Msk)) |
+                              (u32Div << SPI_CLKDIV_DIVIDER_Pos);
                 /* Return master peripheral clock rate */
                 u32RetValue = (u32ClkSrc / (u32Div + 1U));
             }
@@ -333,10 +336,13 @@ uint32_t SPI_Open(SPI_T *spi, uint32_t u32MasterSlave, uint32_t u32SPIMode, uint
     else     /* For slave mode, force the SPI peripheral clock rate to equal APB clock rate. */
     {
         /* Default setting: slave selection signal is low level active. */
-        spi->SSCTL = SPI_SS_ACTIVE_LOW;
+        spi->SSCTL |= SPI_SS_ACTIVE_LOW;
 
         /* Default setting: MSB first, disable unit transfer interrupt, SP_CYCLE = 0. */
-        spi->CTL = u32MasterSlave | (u32DataWidth << SPI_CTL_DWIDTH_Pos) | (u32SPIMode) | SPI_CTL_SPIEN_Msk;
+        spi->CTL |= (u32MasterSlave |
+                     (u32DataWidth << SPI_CTL_DWIDTH_Pos) |
+                     (u32SPIMode) |
+                     SPI_CTL_SPIEN_Msk);
 
         /* Set DIVIDER = 0 */
         spi->CLKDIV = 0U;
@@ -544,7 +550,7 @@ uint32_t SPI_GetBusClock(SPI_T *spi)
     uint32_t u32ClkSrc;
 
     /* Get DIVIDER setting */
-    u32Div = (spi->CLKDIV & SPI_CLKDIV_DIVIDER_Msk) >> SPI_CLKDIV_DIVIDER_Pos;
+    u32Div = ((spi->CLKDIV & SPI_CLKDIV_DIVIDER_Msk) >> SPI_CLKDIV_DIVIDER_Pos);
 
     /* Check clock source of SPI */
     if (spi == SPI0)
@@ -754,9 +760,9 @@ void SPI_DisableInt(SPI_T *spi, uint32_t u32Mask)
   */
 uint32_t SPI_GetIntFlag(SPI_T *spi, uint32_t u32Mask)
 {
-    uint32_t u32IntFlag = 0U, u32TmpVal;
+    uint32_t u32IntFlag = 0U, u32TmpVal = 0;
 
-    u32TmpVal = spi->STATUS & SPI_STATUS_UNITIF_Msk;
+    u32TmpVal = (spi->STATUS & SPI_STATUS_UNITIF_Msk);
 
     /* Check unit transfer interrupt flag */
     if ((u32Mask & SPI_UNIT_INT_MASK) && (u32TmpVal))
@@ -764,7 +770,7 @@ uint32_t SPI_GetIntFlag(SPI_T *spi, uint32_t u32Mask)
         u32IntFlag |= SPI_UNIT_INT_MASK;
     }
 
-    u32TmpVal = spi->STATUS & SPI_STATUS_SSACTIF_Msk;
+    u32TmpVal = (spi->STATUS & SPI_STATUS_SSACTIF_Msk);
 
     /* Check slave selection signal active interrupt flag */
     if ((u32Mask & SPI_SSACT_INT_MASK) && (u32TmpVal))
@@ -772,7 +778,7 @@ uint32_t SPI_GetIntFlag(SPI_T *spi, uint32_t u32Mask)
         u32IntFlag |= SPI_SSACT_INT_MASK;
     }
 
-    u32TmpVal = spi->STATUS & SPI_STATUS_SSINAIF_Msk;
+    u32TmpVal = (spi->STATUS & SPI_STATUS_SSINAIF_Msk);
 
     /* Check slave selection signal inactive interrupt flag */
     if ((u32Mask & SPI_SSINACT_INT_MASK) && (u32TmpVal))
@@ -780,7 +786,7 @@ uint32_t SPI_GetIntFlag(SPI_T *spi, uint32_t u32Mask)
         u32IntFlag |= SPI_SSINACT_INT_MASK;
     }
 
-    u32TmpVal = spi->STATUS & SPI_STATUS_SLVURIF_Msk;
+    u32TmpVal = (spi->STATUS & SPI_STATUS_SLVURIF_Msk);
 
     /* Check slave TX under run interrupt flag */
     if ((u32Mask & SPI_SLVUR_INT_MASK) && (u32TmpVal))
@@ -788,7 +794,7 @@ uint32_t SPI_GetIntFlag(SPI_T *spi, uint32_t u32Mask)
         u32IntFlag |= SPI_SLVUR_INT_MASK;
     }
 
-    u32TmpVal = spi->STATUS & SPI_STATUS_SLVBEIF_Msk;
+    u32TmpVal = (spi->STATUS & SPI_STATUS_SLVBEIF_Msk);
 
     /* Check slave bit count error interrupt flag */
     if ((u32Mask & SPI_SLVBE_INT_MASK) && (u32TmpVal))
@@ -796,7 +802,7 @@ uint32_t SPI_GetIntFlag(SPI_T *spi, uint32_t u32Mask)
         u32IntFlag |= SPI_SLVBE_INT_MASK;
     }
 
-    u32TmpVal = spi->STATUS & SPI_STATUS_TXUFIF_Msk;
+    u32TmpVal = (spi->STATUS & SPI_STATUS_TXUFIF_Msk);
 
     /* Check slave TX underflow interrupt flag */
     if ((u32Mask & SPI_TXUF_INT_MASK) && (u32TmpVal))
@@ -804,7 +810,7 @@ uint32_t SPI_GetIntFlag(SPI_T *spi, uint32_t u32Mask)
         u32IntFlag |= SPI_TXUF_INT_MASK;
     }
 
-    u32TmpVal = spi->STATUS & SPI_STATUS_TXTHIF_Msk;
+    u32TmpVal = (spi->STATUS & SPI_STATUS_TXTHIF_Msk);
 
     /* Check TX threshold interrupt flag */
     if ((u32Mask & SPI_FIFO_TXTH_INT_MASK) && (u32TmpVal))
@@ -812,7 +818,7 @@ uint32_t SPI_GetIntFlag(SPI_T *spi, uint32_t u32Mask)
         u32IntFlag |= SPI_FIFO_TXTH_INT_MASK;
     }
 
-    u32TmpVal = spi->STATUS & SPI_STATUS_RXTHIF_Msk;
+    u32TmpVal = (spi->STATUS & SPI_STATUS_RXTHIF_Msk);
 
     /* Check RX threshold interrupt flag */
     if ((u32Mask & SPI_FIFO_RXTH_INT_MASK) && (u32TmpVal))
@@ -820,7 +826,7 @@ uint32_t SPI_GetIntFlag(SPI_T *spi, uint32_t u32Mask)
         u32IntFlag |= SPI_FIFO_RXTH_INT_MASK;
     }
 
-    u32TmpVal = spi->STATUS & SPI_STATUS_RXOVIF_Msk;
+    u32TmpVal = (spi->STATUS & SPI_STATUS_RXOVIF_Msk);
 
     /* Check RX overrun interrupt flag */
     if ((u32Mask & SPI_FIFO_RXOV_INT_MASK) && (u32TmpVal))
@@ -828,7 +834,7 @@ uint32_t SPI_GetIntFlag(SPI_T *spi, uint32_t u32Mask)
         u32IntFlag |= SPI_FIFO_RXOV_INT_MASK;
     }
 
-    u32TmpVal = spi->STATUS & SPI_STATUS_RXTOIF_Msk;
+    u32TmpVal = (spi->STATUS & SPI_STATUS_RXTOIF_Msk);
 
     /* Check RX time-out interrupt flag */
     if ((u32Mask & SPI_FIFO_RXTO_INT_MASK) && (u32TmpVal))
@@ -860,27 +866,27 @@ void SPI_ClearIntFlag(SPI_T *spi, uint32_t u32Mask)
 {
     if (u32Mask & SPI_UNIT_INT_MASK)
     {
-        spi->STATUS |= SPI_STATUS_UNITIF_Msk; /* Clear unit transfer interrupt flag */
+        spi->STATUS = SPI_STATUS_UNITIF_Msk; /* Clear unit transfer interrupt flag */
     }
 
     if (u32Mask & SPI_SSACT_INT_MASK)
     {
-        spi->STATUS |= SPI_STATUS_SSACTIF_Msk; /* Clear slave selection signal active interrupt flag */
+        spi->STATUS = SPI_STATUS_SSACTIF_Msk; /* Clear slave selection signal active interrupt flag */
     }
 
     if (u32Mask & SPI_SSINACT_INT_MASK)
     {
-        spi->STATUS |= SPI_STATUS_SSINAIF_Msk; /* Clear slave selection signal inactive interrupt flag */
+        spi->STATUS = SPI_STATUS_SSINAIF_Msk; /* Clear slave selection signal inactive interrupt flag */
     }
 
     if (u32Mask & SPI_SLVUR_INT_MASK)
     {
-        spi->STATUS |= SPI_STATUS_SLVURIF_Msk; /* Clear slave TX under run interrupt flag */
+        spi->STATUS = SPI_STATUS_SLVURIF_Msk; /* Clear slave TX under run interrupt flag */
     }
 
     if (u32Mask & SPI_SLVBE_INT_MASK)
     {
-        spi->STATUS |= SPI_STATUS_SLVBEIF_Msk; /* Clear slave bit count error interrupt flag */
+        spi->STATUS = SPI_STATUS_SLVBEIF_Msk; /* Clear slave bit count error interrupt flag */
     }
 
     if (u32Mask & SPI_TXUF_INT_MASK)
@@ -890,12 +896,12 @@ void SPI_ClearIntFlag(SPI_T *spi, uint32_t u32Mask)
 
     if (u32Mask & SPI_FIFO_RXOV_INT_MASK)
     {
-        spi->STATUS |= SPI_STATUS_RXOVIF_Msk; /* Clear RX overrun interrupt flag */
+        spi->STATUS = SPI_STATUS_RXOVIF_Msk; /* Clear RX overrun interrupt flag */
     }
 
     if (u32Mask & SPI_FIFO_RXTO_INT_MASK)
     {
-        spi->STATUS |= SPI_STATUS_RXTOIF_Msk; /* Clear RX time-out interrupt flag */
+        spi->STATUS = SPI_STATUS_RXTOIF_Msk; /* Clear RX time-out interrupt flag */
     }
 }
 
@@ -921,7 +927,7 @@ uint32_t SPI_GetStatus(SPI_T *spi, uint32_t u32Mask)
 {
     uint32_t u32Flag = 0U, u32TmpValue;
 
-    u32TmpValue = ((spi->STATUS & SPI_STATUS_BUSY_Msk) >> SPI_STATUS_BUSY_Pos);
+    u32TmpValue = (spi->STATUS & SPI_STATUS_BUSY_Msk);
 
     /* Check busy status */
     if ((u32Mask & SPI_BUSY_MASK) && (u32TmpValue))
@@ -929,7 +935,7 @@ uint32_t SPI_GetStatus(SPI_T *spi, uint32_t u32Mask)
         u32Flag |= SPI_BUSY_MASK;
     }
 
-    u32TmpValue = ((spi->STATUS & SPI_STATUS_RXEMPTY_Msk) >> SPI_STATUS_RXEMPTY_Pos);
+    u32TmpValue = (spi->STATUS & SPI_STATUS_RXEMPTY_Msk);
 
     /* Check RX empty flag */
     if ((u32Mask & SPI_RX_EMPTY_MASK) && (u32TmpValue))
@@ -937,7 +943,7 @@ uint32_t SPI_GetStatus(SPI_T *spi, uint32_t u32Mask)
         u32Flag |= SPI_RX_EMPTY_MASK;
     }
 
-    u32TmpValue = ((spi->STATUS & SPI_STATUS_RXFULL_Msk) >> SPI_STATUS_RXFULL_Pos);
+    u32TmpValue = (spi->STATUS & SPI_STATUS_RXFULL_Msk);
 
     /* Check RX full flag */
     if ((u32Mask & SPI_RX_FULL_MASK) && (u32TmpValue))
@@ -945,7 +951,7 @@ uint32_t SPI_GetStatus(SPI_T *spi, uint32_t u32Mask)
         u32Flag |= SPI_RX_FULL_MASK;
     }
 
-    u32TmpValue = ((spi->STATUS & SPI_STATUS_TXEMPTY_Msk) >> SPI_STATUS_TXEMPTY_Pos);
+    u32TmpValue = (spi->STATUS & SPI_STATUS_TXEMPTY_Msk);
 
     /* Check TX empty flag */
     if ((u32Mask & SPI_TX_EMPTY_MASK) && (u32TmpValue))
@@ -953,7 +959,7 @@ uint32_t SPI_GetStatus(SPI_T *spi, uint32_t u32Mask)
         u32Flag |= SPI_TX_EMPTY_MASK;
     }
 
-    u32TmpValue = ((spi->STATUS & SPI_STATUS_TXFULL_Msk) >> SPI_STATUS_TXFULL_Pos);
+    u32TmpValue = (spi->STATUS & SPI_STATUS_TXFULL_Msk);
 
     /* Check TX full flag */
     if ((u32Mask & SPI_TX_FULL_MASK) && (u32TmpValue))
@@ -961,7 +967,7 @@ uint32_t SPI_GetStatus(SPI_T *spi, uint32_t u32Mask)
         u32Flag |= SPI_TX_FULL_MASK;
     }
 
-    u32TmpValue = ((spi->STATUS & SPI_STATUS_TXRXRST_Msk) >> SPI_STATUS_TXRXRST_Pos);
+    u32TmpValue = (spi->STATUS & SPI_STATUS_TXRXRST_Msk);
 
     /* Check TX/RX reset flag */
     if ((u32Mask & SPI_TXRX_RESET_MASK) && (u32TmpValue))
@@ -969,7 +975,7 @@ uint32_t SPI_GetStatus(SPI_T *spi, uint32_t u32Mask)
         u32Flag |= SPI_TXRX_RESET_MASK;
     }
 
-    u32TmpValue = ((spi->STATUS & SPI_STATUS_SPIENSTS_Msk) >> SPI_STATUS_SPIENSTS_Pos);
+    u32TmpValue = (spi->STATUS & SPI_STATUS_SPIENSTS_Msk);
 
     /* Check SPIEN flag */
     if ((u32Mask & SPI_SPIEN_STS_MASK) && (u32TmpValue))
@@ -977,7 +983,7 @@ uint32_t SPI_GetStatus(SPI_T *spi, uint32_t u32Mask)
         u32Flag |= SPI_SPIEN_STS_MASK;
     }
 
-    u32TmpValue = ((spi->STATUS & SPI_STATUS_SSLINE_Msk) >> SPI_STATUS_SSLINE_Pos);
+    u32TmpValue = (spi->STATUS & SPI_STATUS_SSLINE_Msk);
 
     /* Check SPIx_SS line status */
     if ((u32Mask & SPI_SSLINE_STS_MASK) && (u32TmpValue))

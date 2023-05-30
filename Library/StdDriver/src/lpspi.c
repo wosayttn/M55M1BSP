@@ -462,61 +462,61 @@ void LPSPI_DisableInt(LPSPI_T *lpspi, uint32_t u32Mask)
     /* Disable unit transfer interrupt flag */
     if ((u32Mask & LPSPI_UNIT_INT_MASK) == LPSPI_UNIT_INT_MASK)
     {
-        lpspi->CTL &= ~LPSPI_CTL_UNITIEN_Msk;
+        lpspi->CTL &= ~(LPSPI_CTL_UNITIEN_Msk);
     }
 
     /* Disable slave selection signal active interrupt flag */
     if ((u32Mask & LPSPI_SSACT_INT_MASK) == LPSPI_SSACT_INT_MASK)
     {
-        lpspi->SSCTL &= ~LPSPI_SSCTL_SSACTIEN_Msk;
+        lpspi->SSCTL &= ~(LPSPI_SSCTL_SSACTIEN_Msk);
     }
 
     /* Disable slave selection signal inactive interrupt flag */
     if ((u32Mask & LPSPI_SSINACT_INT_MASK) == LPSPI_SSINACT_INT_MASK)
     {
-        lpspi->SSCTL &= ~LPSPI_SSCTL_SSINAIEN_Msk;
+        lpspi->SSCTL &= ~(LPSPI_SSCTL_SSINAIEN_Msk);
     }
 
     /* Disable slave TX under run interrupt flag */
     if ((u32Mask & LPSPI_SLVUR_INT_MASK) == LPSPI_SLVUR_INT_MASK)
     {
-        lpspi->SSCTL &= ~LPSPI_SSCTL_SLVURIEN_Msk;
+        lpspi->SSCTL &= ~(LPSPI_SSCTL_SLVURIEN_Msk);
     }
 
     /* Disable slave bit count error interrupt flag */
     if ((u32Mask & LPSPI_SLVBE_INT_MASK) == LPSPI_SLVBE_INT_MASK)
     {
-        lpspi->SSCTL &= ~LPSPI_SSCTL_SLVBEIEN_Msk;
+        lpspi->SSCTL &= ~(LPSPI_SSCTL_SLVBEIEN_Msk);
     }
 
     /* Disable slave TX underflow interrupt flag */
     if ((u32Mask & LPSPI_TXUF_INT_MASK) == LPSPI_TXUF_INT_MASK)
     {
-        lpspi->FIFOCTL &= ~LPSPI_FIFOCTL_TXUFIEN_Msk;
+        lpspi->FIFOCTL &= ~(LPSPI_FIFOCTL_TXUFIEN_Msk);
     }
 
     /* Disable TX threshold interrupt flag */
     if ((u32Mask & LPSPI_FIFO_TXTH_INT_MASK) == LPSPI_FIFO_TXTH_INT_MASK)
     {
-        lpspi->FIFOCTL &= ~LPSPI_FIFOCTL_TXTHIEN_Msk;
+        lpspi->FIFOCTL &= ~(LPSPI_FIFOCTL_TXTHIEN_Msk);
     }
 
     /* Disable RX threshold interrupt flag */
     if ((u32Mask & LPSPI_FIFO_RXTH_INT_MASK) == LPSPI_FIFO_RXTH_INT_MASK)
     {
-        lpspi->FIFOCTL &= ~LPSPI_FIFOCTL_RXTHIEN_Msk;
+        lpspi->FIFOCTL &= ~(LPSPI_FIFOCTL_RXTHIEN_Msk);
     }
 
     /* Disable RX overrun interrupt flag */
     if ((u32Mask & LPSPI_FIFO_RXOV_INT_MASK) == LPSPI_FIFO_RXOV_INT_MASK)
     {
-        lpspi->FIFOCTL &= ~LPSPI_FIFOCTL_RXOVIEN_Msk;
+        lpspi->FIFOCTL &= ~(LPSPI_FIFOCTL_RXOVIEN_Msk);
     }
 
     /* Disable RX time-out interrupt flag */
     if ((u32Mask & LPSPI_FIFO_RXTO_INT_MASK) == LPSPI_FIFO_RXTO_INT_MASK)
     {
-        lpspi->FIFOCTL &= ~LPSPI_FIFOCTL_RXTOIEN_Msk;
+        lpspi->FIFOCTL &= ~(LPSPI_FIFOCTL_RXTOIEN_Msk);
     }
 }
 
@@ -544,84 +544,82 @@ uint32_t LPSPI_GetIntFlag(LPSPI_T *lpspi, uint32_t u32Mask)
 {
     uint32_t u32IntFlag = 0U, u32TmpVal = 0;
 
-    u32TmpVal = lpspi->STATUS;
-    printf("Int Flag = %x\r\n", u32TmpVal);
-    //u32TmpVal = lpspi->STATUS & LPSPI_STATUS_UNITIF_Msk;
+    u32TmpVal = lpspi->STATUS & LPSPI_STATUS_UNITIF_Msk;
 
     /* Check unit transfer interrupt flag */
-    if ((u32Mask & LPSPI_UNIT_INT_MASK) && (u32TmpVal & LPSPI_STATUS_UNITIF_Msk))
+    if ((u32Mask & LPSPI_UNIT_INT_MASK) && (u32TmpVal))
     {
         u32IntFlag |= LPSPI_UNIT_INT_MASK;
     }
 
-    //u32TmpVal = lpspi->STATUS & LPSPI_STATUS_SSACTIF_Msk;
+    u32TmpVal = lpspi->STATUS & LPSPI_STATUS_SSACTIF_Msk;
 
     /* Check slave selection signal active interrupt flag */
-    if ((u32Mask & LPSPI_SSACT_INT_MASK) && (u32TmpVal & LPSPI_STATUS_SSACTIF_Msk))
+    if ((u32Mask & LPSPI_SSACT_INT_MASK) && (u32TmpVal))
     {
         u32IntFlag |= LPSPI_SSACT_INT_MASK;
     }
 
-    //u32TmpVal = lpspi->STATUS & LPSPI_STATUS_SSINAIF_Msk;
+    u32TmpVal = lpspi->STATUS & LPSPI_STATUS_SSINAIF_Msk;
 
     /* Check slave selection signal inactive interrupt flag */
-    if ((u32Mask & LPSPI_SSINACT_INT_MASK) && (u32TmpVal & LPSPI_STATUS_SSINAIF_Msk))
+    if ((u32Mask & LPSPI_SSINACT_INT_MASK) && (u32TmpVal))
     {
         u32IntFlag |= LPSPI_SSINACT_INT_MASK;
     }
 
-    //u32TmpVal = lpspi->STATUS & LPSPI_STATUS_SLVURIF_Msk;
+    u32TmpVal = lpspi->STATUS & LPSPI_STATUS_SLVURIF_Msk;
 
     /* Check slave TX under run interrupt flag */
-    if ((u32Mask & LPSPI_SLVUR_INT_MASK) && (u32TmpVal & LPSPI_STATUS_SLVURIF_Msk))
+    if ((u32Mask & LPSPI_SLVUR_INT_MASK) && (u32TmpVal))
     {
         u32IntFlag |= LPSPI_SLVUR_INT_MASK;
     }
 
-    //u32TmpVal = lpspi->STATUS & LPSPI_STATUS_SLVBEIF_Msk;
+    u32TmpVal = lpspi->STATUS & LPSPI_STATUS_SLVBEIF_Msk;
 
     /* Check slave bit count error interrupt flag */
-    if ((u32Mask & LPSPI_SLVBE_INT_MASK) && (u32TmpVal & LPSPI_STATUS_SLVBEIF_Msk))
+    if ((u32Mask & LPSPI_SLVBE_INT_MASK) && (u32TmpVal))
     {
         u32IntFlag |= LPSPI_SLVBE_INT_MASK;
     }
 
-    //u32TmpVal = lpspi->STATUS & LPSPI_STATUS_TXUFIF_Msk;
+    u32TmpVal = lpspi->STATUS & LPSPI_STATUS_TXUFIF_Msk;
 
     /* Check slave TX underflow interrupt flag */
-    if ((u32Mask & LPSPI_TXUF_INT_MASK) && (u32TmpVal & LPSPI_STATUS_TXUFIF_Msk))
+    if ((u32Mask & LPSPI_TXUF_INT_MASK) && (u32TmpVal))
     {
         u32IntFlag |= LPSPI_TXUF_INT_MASK;
     }
 
-    //u32TmpVal = lpspi->STATUS & LPSPI_STATUS_TXTHIF_Msk;
+    u32TmpVal = lpspi->STATUS & LPSPI_STATUS_TXTHIF_Msk;
 
     /* Check TX threshold interrupt flag */
-    if ((u32Mask & LPSPI_FIFO_TXTH_INT_MASK) && (u32TmpVal & LPSPI_STATUS_TXTHIF_Msk))
+    if ((u32Mask & LPSPI_FIFO_TXTH_INT_MASK) && (u32TmpVal))
     {
         u32IntFlag |= LPSPI_FIFO_TXTH_INT_MASK;
     }
 
-    //u32TmpVal = lpspi->STATUS & LPSPI_STATUS_RXTHIF_Msk;
+    u32TmpVal = lpspi->STATUS & LPSPI_STATUS_RXTHIF_Msk;
 
     /* Check RX threshold interrupt flag */
-    if ((u32Mask & LPSPI_FIFO_RXTH_INT_MASK) && (u32TmpVal & LPSPI_STATUS_RXTHIF_Msk))
+    if ((u32Mask & LPSPI_FIFO_RXTH_INT_MASK) && (u32TmpVal))
     {
         u32IntFlag |= LPSPI_FIFO_RXTH_INT_MASK;
     }
 
-    //u32TmpVal = lpspi->STATUS & LPSPI_STATUS_RXOVIF_Msk;
+    u32TmpVal = lpspi->STATUS & LPSPI_STATUS_RXOVIF_Msk;
 
     /* Check RX overrun interrupt flag */
-    if ((u32Mask & LPSPI_FIFO_RXOV_INT_MASK) && (u32TmpVal & LPSPI_STATUS_RXOVIF_Msk))
+    if ((u32Mask & LPSPI_FIFO_RXOV_INT_MASK) && (u32TmpVal))
     {
         u32IntFlag |= LPSPI_FIFO_RXOV_INT_MASK;
     }
 
-    //u32TmpVal = lpspi->STATUS & LPSPI_STATUS_RXTOIF_Msk;
+    u32TmpVal = lpspi->STATUS & LPSPI_STATUS_RXTOIF_Msk;
 
     /* Check RX time-out interrupt flag */
-    if ((u32Mask & LPSPI_FIFO_RXTO_INT_MASK) && (u32TmpVal & LPSPI_STATUS_RXTOIF_Msk))
+    if ((u32Mask & LPSPI_FIFO_RXTO_INT_MASK) && (u32TmpVal))
     {
         u32IntFlag |= LPSPI_FIFO_RXTO_INT_MASK;
     }
@@ -650,42 +648,42 @@ void LPSPI_ClearIntFlag(LPSPI_T *lpspi, uint32_t u32Mask)
 {
     if (u32Mask & LPSPI_UNIT_INT_MASK)
     {
-        lpspi->STATUS |= LPSPI_STATUS_UNITIF_Msk; /* Clear unit transfer interrupt flag */
+        lpspi->STATUS = LPSPI_STATUS_UNITIF_Msk; /* Clear unit transfer interrupt flag */
     }
 
     if (u32Mask & LPSPI_SSACT_INT_MASK)
     {
-        lpspi->STATUS |= LPSPI_STATUS_SSACTIF_Msk; /* Clear slave selection signal active interrupt flag */
+        lpspi->STATUS = LPSPI_STATUS_SSACTIF_Msk; /* Clear slave selection signal active interrupt flag */
     }
 
     if (u32Mask & LPSPI_SSINACT_INT_MASK)
     {
-        lpspi->STATUS |= LPSPI_STATUS_SSINAIF_Msk; /* Clear slave selection signal inactive interrupt flag */
+        lpspi->STATUS = LPSPI_STATUS_SSINAIF_Msk; /* Clear slave selection signal inactive interrupt flag */
     }
 
     if (u32Mask & LPSPI_SLVUR_INT_MASK)
     {
-        lpspi->STATUS |= LPSPI_STATUS_SLVURIF_Msk; /* Clear slave TX under run interrupt flag */
+        lpspi->STATUS = LPSPI_STATUS_SLVURIF_Msk; /* Clear slave TX under run interrupt flag */
     }
 
     if (u32Mask & LPSPI_SLVBE_INT_MASK)
     {
-        lpspi->STATUS |= LPSPI_STATUS_SLVBEIF_Msk; /* Clear slave bit count error interrupt flag */
+        lpspi->STATUS = LPSPI_STATUS_SLVBEIF_Msk; /* Clear slave bit count error interrupt flag */
     }
 
     if (u32Mask & LPSPI_TXUF_INT_MASK)
     {
-        lpspi->STATUS |= LPSPI_STATUS_TXUFIF_Msk; /* Clear slave TX underflow interrupt flag */
+        lpspi->STATUS = LPSPI_STATUS_TXUFIF_Msk; /* Clear slave TX underflow interrupt flag */
     }
 
     if (u32Mask & LPSPI_FIFO_RXOV_INT_MASK)
     {
-        lpspi->STATUS |= LPSPI_STATUS_RXOVIF_Msk; /* Clear RX overrun interrupt flag */
+        lpspi->STATUS = LPSPI_STATUS_RXOVIF_Msk; /* Clear RX overrun interrupt flag */
     }
 
     if (u32Mask & LPSPI_FIFO_RXTO_INT_MASK)
     {
-        lpspi->STATUS |= LPSPI_STATUS_RXTOIF_Msk; /* Clear RX time-out interrupt flag */
+        lpspi->STATUS = LPSPI_STATUS_RXTOIF_Msk; /* Clear RX time-out interrupt flag */
     }
 }
 
@@ -711,68 +709,66 @@ uint32_t LPSPI_GetStatus(LPSPI_T *lpspi, uint32_t u32Mask)
 {
     uint32_t u32Flag = 0U, u32TmpValue;
 
-    u32TmpValue = lpspi->STATUS;
-    printf("Status = %x\r\n", u32TmpValue);
-    //u32TmpValue = lpspi->STATUS & LPSPI_STATUS_BUSY_Msk;
-
     /* Check busy status */
-    if ((u32Mask & LPSPI_BUSY_MASK) && (u32TmpValue & LPSPI_STATUS_BUSY_Msk))
+    u32TmpValue = (lpspi->STATUS & LPSPI_STATUS_BUSY_Msk);
+
+    if ((u32Mask & LPSPI_BUSY_MASK) && (u32TmpValue))
     {
         u32Flag |= LPSPI_BUSY_MASK;
     }
 
-    //u32TmpValue = lpspi->STATUS & LPSPI_STATUS_RXEMPTY_Msk;
-
     /* Check RX empty flag */
-    if ((u32Mask & LPSPI_RX_EMPTY_MASK) && (u32TmpValue & LPSPI_STATUS_RXEMPTY_Msk))
+    u32TmpValue = (lpspi->STATUS & LPSPI_STATUS_RXEMPTY_Msk);
+
+    if ((u32Mask & LPSPI_RX_EMPTY_MASK) && (u32TmpValue))
     {
         u32Flag |= LPSPI_RX_EMPTY_MASK;
     }
 
-    //u32TmpValue = lpspi->STATUS & LPSPI_STATUS_RXFULL_Msk;
-
     /* Check RX full flag */
-    if ((u32Mask & LPSPI_RX_FULL_MASK) && (u32TmpValue & LPSPI_STATUS_RXFULL_Msk))
+    u32TmpValue = (lpspi->STATUS & LPSPI_STATUS_RXFULL_Msk);
+
+    if ((u32Mask & LPSPI_RX_FULL_MASK) && (u32TmpValue))
     {
         u32Flag |= LPSPI_RX_FULL_MASK;
     }
 
-    //u32TmpValue = lpspi->STATUS & LPSPI_STATUS_TXEMPTY_Msk;
-
     /* Check TX empty flag */
-    if ((u32Mask & LPSPI_TX_EMPTY_MASK) && (u32TmpValue & LPSPI_STATUS_TXEMPTY_Msk))
+    u32TmpValue = (lpspi->STATUS & LPSPI_STATUS_TXEMPTY_Msk);
+
+    if ((u32Mask & LPSPI_TX_EMPTY_MASK) && (u32TmpValue))
     {
         u32Flag |= LPSPI_TX_EMPTY_MASK;
     }
 
-    //u32TmpValue = lpspi->STATUS & LPSPI_STATUS_TXFULL_Msk;
-
     /* Check TX full flag */
-    if ((u32Mask & LPSPI_TX_FULL_MASK) && (u32TmpValue & LPSPI_STATUS_TXFULL_Msk))
+    u32TmpValue = (lpspi->STATUS & LPSPI_STATUS_TXFULL_Msk);
+
+    if ((u32Mask & LPSPI_TX_FULL_MASK) && (u32TmpValue))
     {
         u32Flag |= LPSPI_TX_FULL_MASK;
     }
 
-    //u32TmpValue = lpspi->STATUS & LPSPI_STATUS_TXRXRST_Msk;
-
     /* Check TX/RX reset flag */
-    if ((u32Mask & LPSPI_TXRX_RESET_MASK) && (u32TmpValue & LPSPI_STATUS_TXRXRST_Msk))
+    u32TmpValue = (lpspi->STATUS & LPSPI_STATUS_TXRXRST_Msk);
+
+    if ((u32Mask & LPSPI_TXRX_RESET_MASK) && (u32TmpValue))
     {
         u32Flag |= LPSPI_TXRX_RESET_MASK;
     }
 
-    //u32TmpValue = lpspi->STATUS & LPSPI_STATUS_SPIENSTS_Msk;
-
     /* Check SPIEN flag */
-    if ((u32Mask & LPSPI_SPIEN_STS_MASK) && (u32TmpValue & LPSPI_STATUS_SPIENSTS_Msk))
+    u32TmpValue = (lpspi->STATUS & LPSPI_STATUS_SPIENSTS_Msk);
+
+    if ((u32Mask & LPSPI_SPIEN_STS_MASK) && (u32TmpValue))
     {
         u32Flag |= LPSPI_SPIEN_STS_MASK;
     }
 
-    //u32TmpValue = lpspi->STATUS & LPSPI_STATUS_SSLINE_Msk;
-
     /* Check SPIx_SS line status */
-    if ((u32Mask & LPSPI_SSLINE_STS_MASK) && (u32TmpValue & LPSPI_STATUS_SSLINE_Msk))
+    u32TmpValue = (lpspi->STATUS & LPSPI_STATUS_SSLINE_Msk);
+
+    if ((u32Mask & LPSPI_SSLINE_STS_MASK) && (u32TmpValue))
     {
         u32Flag |= LPSPI_SSLINE_STS_MASK;
     }

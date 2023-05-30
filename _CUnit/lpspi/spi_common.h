@@ -50,7 +50,4 @@ void LPSPI_ClkEnable(uint32_t u32SPIModule);
 
 void LPSPI_CLK_Sel(uint32_t u32SPIModule, uint32_t ClkSrc);
 
-void LPSPI_ENABLE_SELFTEST(uint32_t u32SpiModule);
-void LPSPI_DISABLE_SELFTEST(uint32_t u32SpiModule);
-
 #endif /* _SPI_COMMON_H_ */

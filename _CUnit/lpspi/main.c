@@ -74,7 +74,6 @@ void SYS_Init(void)
     CLK_SET_HCLK2DIV(1);
 
     /* Set both PCLK0 and PCLK1 as HCLK/2 */
-    //CLK->PCLKDIV = CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2;
     CLK_PCLKDIV_PCLK0DIV(1);
     CLK_PCLKDIV_PCLK1DIV(1);
     CLK_PCLKDIV_PCLK2DIV(1);
@@ -86,7 +85,7 @@ void SYS_Init(void)
     SystemCoreClockUpdate();
 
     /* Lock protected registers */
-    SYS_LockReg();
+    //SYS_LockReg();
 
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);

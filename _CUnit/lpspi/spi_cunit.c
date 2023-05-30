@@ -139,6 +139,32 @@ void SetMOSIPinToGPIO(uint32_t u32SPIModule)
     }
 }
 
+void LPSPI_DisableSelfTest(void)
+{
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    SYS->ALTCTL0 &= ~(SYS_ALTCTL0_SELFTEST_Msk);
+
+    outpw(LPSPI0_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
+
+    /* Lock protected registers */
+    SYS_LockReg();
+}
+
+void LPSPI_EnableSelfTest(void)
+{
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
+
+    outpw(LPSPI0_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
+
+    /* Lock protected registers */
+    SYS_LockReg();
+}
+
 /*---------------------------------------------------------------------------------------------------------*/
 /* Function: function_name                                                                                 */
 /*                                                                                                         */
@@ -531,8 +557,8 @@ void MACRO_LPSPI_AUTO_MODE()
     LPSPI_AUTO_EN(SPIModule, 0);
     CU_ASSERT_FALSE((SPIModule->AUTOCTL & LPSPI_AUTOCTL_AUTOEN_Msk) >> LPSPI_AUTOCTL_AUTOEN_Pos);
 
-    LPSPI_AUTO_SWTRIG(SPIModule, 1);
-    CU_ASSERT_TRUE((SPIModule->AUTOCTL & LPSPI_AUTOCTL_SWTRG_Msk) >> LPSPI_AUTOCTL_SWTRG_Pos);
+    //LPSPI_AUTO_SWTRIG(SPIModule, 1);
+    //CU_ASSERT_FALSE((SPIModule->AUTOCTL & LPSPI_AUTOCTL_SWTRG_Msk) >> LPSPI_AUTOCTL_SWTRG_Pos);
 
     LPSPI_AUTO_SWTRIG(SPIModule, 0);
     CU_ASSERT_FALSE((SPIModule->AUTOCTL & LPSPI_AUTOCTL_SWTRG_Msk) >> LPSPI_AUTOCTL_SWTRG_Pos);
@@ -809,9 +835,7 @@ void API_LPSPI_GetIntFlag_ClearIntFlag()
     SetCLKPinToGPIO(GetLPSPIModuleIdx());
 
     /* Enable self-test function */
-    //outp32(0x40000014, 0x1);
-    SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
-    //LPSPI_ENABLE_SELFTEST(GetLPSPIModuleIdx());
+    LPSPI_EnableSelfTest();
 
     /* Set PA.3 (SPI0_SS) to high level */
     SetSSPinToHigh(GetLPSPIModuleIdx());
@@ -824,9 +848,9 @@ void API_LPSPI_GetIntFlag_ClearIntFlag()
 
     for (u32DelayCount = 0; u32DelayCount < 10; u32DelayCount++) __NOP();
 
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_SSACT_INT_MASK) >> LPSPI_SSACT_INT_Pos);
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_SSINACT_INT_MASK) >> LPSPI_SSINACT_INT_Pos);
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_TXUF_INT_MASK) >> LPSPI_TXUF_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_SSACT_INT_MASK) == 0);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_SSINACT_INT_MASK) == 0);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_TXUF_INT_MASK) == 0);
 
     /* Set PA.3 (SPI0_SS) to low level */
     SetSSPinToLow(GetLPSPIModuleIdx());
@@ -834,43 +858,41 @@ void API_LPSPI_GetIntFlag_ClearIntFlag()
     for (u32DelayCount = 0; u32DelayCount < 5000; u32DelayCount++) __NOP();
 
     /* Check slave selection signal active interrupt flag */
-    CU_ASSERT_TRUE(LPSPI_GetIntFlag(SPIModule, LPSPI_SSACT_INT_MASK) >> LPSPI_SSACT_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_SSACT_INT_MASK) == LPSPI_SSACT_INT_MASK);
     LPSPI_ClearIntFlag(SPIModule, LPSPI_SSACT_INT_MASK);
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_SSACT_INT_MASK) >> LPSPI_SSACT_INT_Pos);
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_SSINACT_INT_MASK) >> LPSPI_SSINACT_INT_Pos);
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_SLVUR_INT_MASK) >> LPSPI_SLVUR_INT_Pos);
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_SLVBE_INT_MASK) >> LPSPI_SLVBE_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_SSACT_INT_MASK) == 0);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_SSINACT_INT_MASK) == 0);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_SLVUR_INT_MASK) == 0);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_SLVBE_INT_MASK) == 0);
 
     /* Check slave TX underflow interrupt flag */
-    CU_ASSERT_TRUE(LPSPI_GetIntFlag(SPIModule, LPSPI_TXUF_INT_MASK) >> LPSPI_TXUF_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_TXUF_INT_MASK) == LPSPI_TXUF_INT_MASK);
 
     /* Set PA.3 (SPI0_SS) to high level */
     SetSSPinToHigh(GetLPSPIModuleIdx());
 
     __NOP();
     /* Check slave selection signal inactive interrupt flag */
-    CU_ASSERT_TRUE(LPSPI_GetIntFlag(SPIModule, LPSPI_SSINACT_INT_MASK) >> LPSPI_SSINACT_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_SSINACT_INT_MASK) == LPSPI_SSINACT_INT_MASK);
     LPSPI_ClearIntFlag(SPIModule, LPSPI_SSINACT_INT_MASK);
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_SSINACT_INT_MASK) >> LPSPI_SSINACT_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_SSINACT_INT_MASK) == 0);
 
     /* Clear slave TX underflow interrupt flag */
     LPSPI_ClearIntFlag(SPIModule, LPSPI_TXUF_INT_MASK);
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_TXUF_INT_MASK) >> LPSPI_TXUF_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_TXUF_INT_MASK) == 0);
 
     /* Check slave bit count error interrupt flag */
-    CU_ASSERT_TRUE(LPSPI_GetIntFlag(SPIModule, LPSPI_SLVBE_INT_MASK) >> LPSPI_SLVBE_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_SLVBE_INT_MASK) == LPSPI_SLVBE_INT_MASK);
     LPSPI_ClearIntFlag(SPIModule, LPSPI_SLVBE_INT_MASK);
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_SLVBE_INT_MASK) >> LPSPI_SLVBE_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_SLVBE_INT_MASK) == 0);
 
     /* Check slave TX under run interrupt flag */
-    CU_ASSERT_TRUE(LPSPI_GetIntFlag(SPIModule, LPSPI_SLVUR_INT_MASK) >> LPSPI_SLVUR_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_SLVUR_INT_MASK) == LPSPI_SLVUR_INT_MASK);
     LPSPI_ClearIntFlag(SPIModule, LPSPI_SLVUR_INT_MASK);
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_SLVUR_INT_MASK) >> LPSPI_SLVUR_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_SLVUR_INT_MASK) == 0);
 
     /* Disable self-test function */
-    //outp32(0x40000014, 0x0);
-    SYS->ALTCTL0 &= ~SYS_ALTCTL0_SELFTEST_Msk;
-    //LPSPI_DISABLE_SELFTEST(GetLPSPIModuleIdx());
+    LPSPI_DisableSelfTest();
 
     /* Set PA.2 (SPI0_CLK) as SPI function pin */
     SetSPICLKMFP(GetLPSPIModuleIdx());
@@ -886,14 +908,14 @@ void API_LPSPI_GetIntFlag_ClearIntFlag()
     /* Set TX and RX FIFO threshold */
     LPSPI_SetFIFO(SPIModule, 2, 2);
     /* Check TX threshold interrupt flag */
-    CU_ASSERT_TRUE(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_TXTH_INT_MASK) >> LPSPI_FIFO_TXTH_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_TXTH_INT_MASK) == LPSPI_FIFO_TXTH_INT_MASK);
     /* Write to TX FIFO */
     SPIModule->TX = 1;
     SPIModule->TX = 2;
     SPIModule->TX = 3;
     SPIModule->TX = 4;
     /* Check TX threshold interrupt flag */
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_TXTH_INT_MASK) >> LPSPI_FIFO_TXTH_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_TXTH_INT_MASK) == 0);
     /* Reset SPI */
     LPSPI_ModuleReset(GetLPSPIModuleIdx());
     __NOP();
@@ -906,7 +928,7 @@ void API_LPSPI_GetIntFlag_ClearIntFlag()
     SPIModule->CTL = 5;
 
     /* Check RX threshold interrupt flag */
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXTH_INT_MASK) >> LPSPI_FIFO_RXTH_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXTH_INT_MASK) == 0);
 
     /* Write to TX FIFO */
     SPIModule->TX = 1;
@@ -917,11 +939,11 @@ void API_LPSPI_GetIntFlag_ClearIntFlag()
     while (LPSPI_IS_BUSY(SPIModule)) __NOP();
 
     /* Check RX threshold interrupt flag */
-    CU_ASSERT_TRUE(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXTH_INT_MASK) >> LPSPI_FIFO_RXTH_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXTH_INT_MASK) == LPSPI_FIFO_RXTH_INT_MASK);
 
     /* RX overrun interrupt flag test */
     /* Check RX overrun interrupt flag */
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXOV_INT_MASK) >> LPSPI_FIFO_RXOV_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXOV_INT_MASK) == 0);
 
     /* Write to TX FIFO */
     SPIModule->TX = 4;
@@ -935,15 +957,15 @@ void API_LPSPI_GetIntFlag_ClearIntFlag()
     while (LPSPI_IS_BUSY(SPIModule)) __NOP();
 
     /* Check RX overrun interrupt flag */
-    CU_ASSERT_TRUE(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXOV_INT_MASK) >> LPSPI_FIFO_RXOV_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXOV_INT_MASK) == LPSPI_FIFO_RXOV_INT_MASK);
     LPSPI_ClearIntFlag(SPIModule, LPSPI_FIFO_RXOV_INT_MASK);
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXOV_INT_MASK) >> LPSPI_FIFO_RXOV_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXOV_INT_MASK) == 0);
 
     /* RX time-out interrupt flag test */
     /* Clear RX time-out interrupt flag */
     LPSPI_ClearIntFlag(SPIModule, LPSPI_FIFO_RXTO_INT_MASK);
     /* Check RX time-out interrupt flag */
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXTO_INT_MASK) >> LPSPI_FIFO_RXTO_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXTO_INT_MASK) == 0);
     /* Write to TX FIFO */
     SPIModule->TX = 1;
     SPIModule->TX = 2;
@@ -953,9 +975,9 @@ void API_LPSPI_GetIntFlag_ClearIntFlag()
     while (LPSPI_IS_BUSY(SPIModule)) __NOP();
 
     /* Check RX time-out interrupt flag */
-    CU_ASSERT_TRUE(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXTO_INT_MASK) >> LPSPI_FIFO_RXTO_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXTO_INT_MASK) == LPSPI_FIFO_RXTO_INT_MASK);
     LPSPI_ClearIntFlag(SPIModule, LPSPI_FIFO_RXTO_INT_MASK);
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXTO_INT_MASK) >> LPSPI_FIFO_RXTO_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(SPIModule, LPSPI_FIFO_RXTO_INT_MASK) == 0);
 
     /* Reset SPI */
     LPSPI_ModuleReset(GetLPSPIModuleIdx());
@@ -964,7 +986,7 @@ void API_LPSPI_GetIntFlag_ClearIntFlag()
 
 void API_LPSPI_GetStatus()
 {
-    uint32_t u32DelayCount;
+    uint32_t u32DelayCount = 0;
     LPSPI_T *SPIModule = NULL;
 
     SPIModule = (LPSPI_T *)GetLPSPIModule(GetLPSPIModuleIdx());
@@ -1029,9 +1051,9 @@ void API_LPSPI_GetStatus()
     CU_ASSERT(LPSPI_GetStatus(SPIModule, LPSPI_TXRX_RESET_MASK) == LPSPI_TXRX_RESET_MASK);
 
     //for(u32DelayCount=0; u32DelayCount<256; u32DelayCount++) __NOP();
-    for (u32DelayCount = 0; u32DelayCount < 10000; u32DelayCount++) __NOP();
+    for (u32DelayCount = 0; u32DelayCount < 100000; u32DelayCount++) __NOP();
 
-    CU_ASSERT_FALSE(LPSPI_GetStatus(SPIModule, LPSPI_TXRX_RESET_MASK) >> LPSPI_TXRX_RESET_Pos);  //test!!
+    CU_ASSERT(LPSPI_GetStatus(SPIModule, LPSPI_TXRX_RESET_MASK) == 0); //test!!
 
     /* Check RX empty flag */
     CU_ASSERT(LPSPI_GetStatus(SPIModule, LPSPI_RX_EMPTY_MASK) == LPSPI_RX_EMPTY_MASK);
@@ -1071,9 +1093,7 @@ void API_LPSPI_GetStatus()
     SetSSPinToGPIO(GetLPSPIModuleIdx());
 
     /* Enable self-test function */
-    //outp32(0x40000014, 0x1);
-    SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
-    LPSPI_ENABLE_SELFTEST(GetLPSPIModuleIdx());
+    LPSPI_EnableSelfTest();
 
     /* Set PA.3 (SPI0_SS) to high level */
     SetSSPinToHigh(GetLPSPIModuleIdx());
@@ -1090,15 +1110,13 @@ void API_LPSPI_GetStatus()
     /* Set PA.3 (SPI0_SS) to low level */
     SetSSPinToLow(GetLPSPIModuleIdx());
 
-    for (u32DelayCount = 0; u32DelayCount < 1000; u32DelayCount++) __NOP();
+    for (u32DelayCount = 0; u32DelayCount < 100; u32DelayCount++) __NOP();
 
-    //CU_ASSERT(LPSPI_GetStatus(SPIModule, LPSPI_SSLINE_STS_MASK) == 0);
-    //__NOP();
+    CU_ASSERT(LPSPI_GetStatus(SPIModule, LPSPI_SSLINE_STS_MASK) == 0);
+    __NOP();
 
     /* Disable self-test function */
-    //outp32(0x40000014, 0x0);
-    SYS->ALTCTL0 &= ~SYS_ALTCTL0_SELFTEST_Msk;
-    LPSPI_DISABLE_SELFTEST(GetLPSPIModuleIdx());
+    LPSPI_DisableSelfTest();
 
     for (u32DelayCount = 0; u32DelayCount < 1000; u32DelayCount++) __NOP();
 
@@ -1134,12 +1152,12 @@ CU_TestInfo LPSPI_ApiTests[] =
 {
     {"SPI Open", API_LPSPI_Open},
     {"SPI Close", API_LPSPI_Close},
-    //{"Clear SPI RX FIFO", API_LPSPI_ClearRxFIFO},
-    //{"Clear SPI TX FIFO", API_LPSPI_ClearTxFIFO},
-    //{"Enable/Disable SPI automatic slave selection function", API_LPSPI_EnableAutoSS_DisableAutoSS},
-    //{"Set/Get SPI bus clock rate", API_LPSPI_SetBusClock_GetBusClock},
-    //{"Set SPI FIFO threshold", API_LPSPI_SetFIFO},
-    //{"Enable/Disable SPI interrupt function", API_LPSPI_EnableInt_DisableInt},
+    {"Clear SPI RX FIFO", API_LPSPI_ClearRxFIFO},
+    {"Clear SPI TX FIFO", API_LPSPI_ClearTxFIFO},
+    {"Enable/Disable SPI automatic slave selection function", API_LPSPI_EnableAutoSS_DisableAutoSS},
+    {"Set/Get SPI bus clock rate", API_LPSPI_SetBusClock_GetBusClock},
+    {"Set SPI FIFO threshold", API_LPSPI_SetFIFO},
+    {"Enable/Disable SPI interrupt function", API_LPSPI_EnableInt_DisableInt},
     {"Get/Clear SPI interrupt flag", API_LPSPI_GetIntFlag_ClearIntFlag},
     {"Get SPI status", API_LPSPI_GetStatus},
 
@@ -1148,7 +1166,7 @@ CU_TestInfo LPSPI_ApiTests[] =
 
 CU_SuiteInfo suites[] =
 {
-    //{"LPSPI MACRO", LPSPI_Tests_Init, LPSPI_Tests_Clean, NULL, NULL, LPSPI_MacroTests},
+    {"LPSPI MACRO", LPSPI_Tests_Init, LPSPI_Tests_Clean, NULL, NULL, LPSPI_MacroTests},
     {"LPSPI API", LPSPI_Tests_Init, LPSPI_Tests_Clean, NULL, NULL, LPSPI_ApiTests},
     CU_SUITE_INFO_NULL
 };

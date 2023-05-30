@@ -35,8 +35,8 @@
 /*----------------------------------------------------------------------------*/
 /* INTERNAL Constants Definitions                                             */
 /*----------------------------------------------------------------------------*/
-#define INTERNAL_REG_BASE           (0x48)
-#define SPI_INTERNAL_SELFTEST_Msk   (0x80)
+#define INTERNAL_REG_BASE                       (0x48)
+#define SPI_INTERNAL_SELFTEST_Msk               (0x80)
 
 //------------------------------------------------------------------------------
 typedef enum
@@ -58,6 +58,4 @@ void SPI_ClkEnable(uint32_t u32SPIModule);
 
 void SPI_CLK_Sel(uint32_t u32SPIModule, uint32_t ClkSrc);
 
-void SPI_ENABLE_SELFTEST(uint32_t u32SpiModule);
-void SPI_DISABLE_SELFTEST(uint32_t u32SpiModule);
 #endif /* _SPI_COMMON_H_ */

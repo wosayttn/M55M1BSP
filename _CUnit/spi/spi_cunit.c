@@ -16,10 +16,10 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#include "NuMicro.h"
 /*----------------------------------------------------------------------------*/
 /* Includes of local headers                                                  */
 /*----------------------------------------------------------------------------*/
-#include "NuMicro.h"
 #include "CUnit.h"
 #include "Console.h"
 #include "spi_cunit.h"
@@ -27,20 +27,13 @@
 #include "PinConfig.h"
 
 //------------------------------------------------------------------------------
-extern unsigned int STATE0;
-extern unsigned int STATE1;
-extern unsigned int ERR_STATE0;
-extern unsigned int ERR_STATE1;
+//extern unsigned int STATE0;
+//extern unsigned int STATE1;
+//extern unsigned int ERR_STATE0;
+//extern unsigned int ERR_STATE1;
 
-//#define SPI_MODULE_NUM   2
-//#define SPI_I2S_FIRSTNO  1
-
-#define C_SPI0                      (0)
-#define C_SPI1                      (1)
-#define C_SPI2                      (2)
-#define C_SPI3                      (3)
-
-static SPI_T *gapSPIModule[] =
+//------------------------------------------------------------------------------
+static SPI_T *g_apSPIModule[] =
 {
     SPI0,
     SPI1,
@@ -50,9 +43,7 @@ static SPI_T *gapSPIModule[] =
 
 static uint32_t gu32SPIModuleIdx = 0;
 
-/*----------------------------------------------------------------------------*/
-/* Test function                                                              */
-/*----------------------------------------------------------------------------*/
+//------------------------------------------------------------------------------
 void SetSPIModuleIdx(uint32_t u32SetValue)
 {
     gu32SPIModuleIdx = u32SetValue;
@@ -63,9 +54,9 @@ uint32_t GetSPIModuleIdx(void)
     return gu32SPIModuleIdx;
 }
 
-void *GetSPIModule(uint32_t u32ModuleIdx)
+void *GetSPIxModule(uint32_t u32SetValue)
 {
-    return gapSPIModule[u32ModuleIdx];
+    return g_apSPIModule[u32SetValue];
 }
 
 int SPI_I2S_Tests_Init(void)
@@ -82,154 +73,291 @@ int SPI_I2S_Tests_Clean(void)
     return 0;
 }
 
-/* Set SPI_SS as output mode */
-void SetSSPinToGPIO(uint32_t u32SPIModule)
+void SPI_DisableSelfTest(uint32_t u32SpiModule)
 {
-    switch (u32SPIModule)
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    SYS->ALTCTL0 &= ~(SYS_ALTCTL0_SELFTEST_Msk);
+
+    switch (u32SpiModule)
     {
         case C_SPI0:
+            outpw(SPI0_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
+            break;
+
+        case C_SPI1:
+            outpw(SPI1_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
+            break;
+
+        case C_SPI2:
+            outpw(SPI2_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
+            break;
+
+        case C_SPI3:
+            outpw(SPI3_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
+            break;
+    }
+
+    /* Lock protected registers */
+    SYS_LockReg();
+}
+
+void SPI_EnableSelfTest(uint32_t u32SpiModule)
+{
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
+
+    switch (u32SpiModule)
+    {
+        case C_SPI0:
+            outpw(SPI0_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
+            break;
+
+        case C_SPI1:
+            outpw(SPI1_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
+            break;
+
+        case C_SPI2:
+            outpw(SPI2_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
+            break;
+
+        case C_SPI3:
+            outpw(SPI3_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
+            break;
+    }
+
+
+    /* Lock protected registers */
+    SYS_LockReg();
+}
+
+void SPIxModuleInitPIN(uint32_t u32Module)
+{
+    SPI_EnableSelfTest(u32Module);
+
+    switch (u32Module)
+    {
+        case C_SPI0:
+            /* Slave selection signal active        /
+               inactive                             /
+               slave-under-run                      /
+               bit-count-error                      /
+               slave-underflow interrupt flag test */
+
+            /* Set SPI_SS as output mode */
             SET_GPIO_PA3();
             GPIO_SetMode(PA, BIT3, GPIO_MODE_OUTPUT);
-            break;
+            /* Set SPI_CLK as GPIO output pin */
+            SET_GPIO_PA2();
+            GPIO_SetMode(PA, BIT2, GPIO_MODE_OUTPUT);
+            /* Set SPI_CLK to low level */
+            PA2 = 0;
 
-        case C_SPI1:
-            SET_GPIO_PA6();
-            GPIO_SetMode(PA, BIT6, GPIO_MODE_OUTPUT);
-            break;
+            //SET_GPIO_PB7();
+            //GPIO_SetMode(PB, BIT7, GPIO_MODE_OUTPUT);
 
-        case C_SPI2:
-            SET_GPIO_PA11();
-            GPIO_SetMode(PA, BIT11, GPIO_MODE_OUTPUT);
-            break;
+            /* Set SPI_MOSI as GPIO output pin */
+            SET_GPIO_PA0();
+            GPIO_SetMode(PA, BIT0, GPIO_MODE_OUTPUT);
 
-        case C_SPI3:
-            SET_GPIO_PB10();
-            GPIO_SetMode(PB, BIT10, GPIO_MODE_OUTPUT);
-            break;
-    }
-}
-
-void SetSSPinToLow(uint32_t u32SPIModule)
-{
-    switch (u32SPIModule)
-    {
-        case C_SPI0:
-            PA3 = 0;
-            break;
-
-        case C_SPI1:
-            PA6 = 0;
-            break;
-
-        case C_SPI2:
-            PA11 = 0;
-            break;
-
-        case C_SPI3:
-            PB10 = 0;
-            break;
-    }
-}
-
-void SetSSPinToHigh(uint32_t u32SPIModule)
-{
-    switch (u32SPIModule)
-    {
-        case C_SPI0:
             PA3 = 1;
             break;
 
         case C_SPI1:
+            /* Slave selection signal active/inactive/slave-under-run/bit-count-error/slave-underflow interrupt flag test */
+            /* Set SPI_SS as output mode */
+            SET_GPIO_PA6();
+            GPIO_SetMode(PA, BIT6, GPIO_MODE_OUTPUT);
+            /* Set SPI_CLK as GPIO output pin */
+            SET_GPIO_PA7();
+            GPIO_SetMode(PA, BIT7, GPIO_MODE_OUTPUT);
+            /* Set SPI_CLK to low level */
+            PA7 = 0;
+
+            //SET_GPIO_PB7();
+            //GPIO_SetMode(PB, BIT7, GPIO_MODE_OUTPUT);
+
+            /* Set SPI_MOSI as GPIO output pin */
+            SET_GPIO_PB4();
+            GPIO_SetMode(PB, BIT4, GPIO_MODE_OUTPUT);
+
             PA6 = 1;
             break;
 
         case C_SPI2:
+            /* Slave selection signal active/inactive/slave-under-run/bit-count-error/slave-underflow interrupt flag test */
+            /* Set SPI_SS as output mode */
+            SET_GPIO_PA11();
+            GPIO_SetMode(PA, BIT11, GPIO_MODE_OUTPUT);
+            /* Set SPI_CLK as GPIO output pin */
+            SET_GPIO_PA10();
+            GPIO_SetMode(PA, BIT10, GPIO_MODE_OUTPUT);
+            /* Set SPI_CLK to low level */
+            PA10 = 0;
+
+            //SET_GPIO_PB7();
+            //GPIO_SetMode(PB, BIT7, GPIO_MODE_OUTPUT);
+
+            /* Set SPI_MOSI as GPIO output pin */
+            SET_GPIO_PA8();
+            GPIO_SetMode(PA, BIT8, GPIO_MODE_OUTPUT);
+
             PA11 = 1;
             break;
 
         case C_SPI3:
+            /* Slave selection signal active/inactive/slave-under-run/bit-count-error/slave-underflow interrupt flag test */
+            /* Set SPI_SS as output mode */
+            SET_GPIO_PB10();
+            GPIO_SetMode(PB, BIT10, GPIO_MODE_OUTPUT);
+            /* Set SPI_CLK as GPIO output pin */
+            SET_GPIO_PB11();
+            GPIO_SetMode(PB, BIT11, GPIO_MODE_OUTPUT);
+            /* Set SPI_CLK to low level */
+            PB11 = 0;
+
+            //SET_GPIO_PB7();
+            //GPIO_SetMode(PB, BIT7, GPIO_MODE_OUTPUT);
+
+            /* Set SPI_MOSI as GPIO output pin */
+            SET_GPIO_PB8();
+            GPIO_SetMode(PB, BIT8, GPIO_MODE_OUTPUT);
+
             PB10 = 1;
             break;
     }
 }
 
-/* Set SPI_CLK as GPIO output pin */
-void SetCLKPinToGPIO(uint32_t u32SPIModule)
+void SPIxMISOWriteData(uint32_t u32Module, uint32_t data)
 {
-    switch (u32SPIModule)
+    switch (u32Module)
     {
         case C_SPI0:
-            SET_GPIO_PA2();
-            GPIO_SetMode(PA, BIT3, GPIO_MODE_OUTPUT);
+            /* Set PA0 (SPI0_MOSI) to high level */
+            PA0 = data;
+            break;
+
+        case C_SPI1:
+            /* Set PB4 (SPI1_MOSI) to high level */
+            PB4 = data;
+            break;
+
+        case C_SPI2:
+            /* Set PA8 (SPI2_MOSI) to high level */
+            PA8 = data;
+            break;
+
+        case C_SPI3:
+            /* Set PB8 (SPI3_MOSI) to high level */
+            PB8 = data;
+            break;
+    }
+}
+
+void SPIxClkLow(uint32_t u32Module)
+{
+    switch (u32Module)
+    {
+        case C_SPI0:
+            /* Set PA2 (SPI0_CLK) to low level */
             PA2 = 0;
             break;
 
         case C_SPI1:
-            SET_GPIO_PA7();
-            GPIO_SetMode(PA, BIT7, GPIO_MODE_OUTPUT);
+            /* Set PA7 (SPI1_CLK) to low level */
             PA7 = 0;
             break;
 
         case C_SPI2:
-            SET_GPIO_PA10();
-            GPIO_SetMode(PA, BIT10, GPIO_MODE_OUTPUT);
+            /* Set PA10 (SPI2_CLK) to low level */
             PA10 = 0;
             break;
 
         case C_SPI3:
-            SET_GPIO_PB11();
-            GPIO_SetMode(PB, BIT11, GPIO_MODE_OUTPUT);
+            /* Set PB11 (SPI2_CLK) to low level */
             PB11 = 0;
             break;
     }
 }
 
-void SetSPICLKMFP(uint32_t u32SPIModule)
+void SPIxClkHigh(uint32_t u32Module)
 {
-    switch (u32SPIModule)
+    switch (u32Module)
     {
         case C_SPI0:
-            SPI0_CLK_PIN_INIT;
+            /* Set PA2 (SPI0_CLK) to high level */
+            PA2 = 1;
             break;
 
         case C_SPI1:
-            SPI1_CLK_PIN_INIT;
+            /* Set PA7 (SPI1_CLK) to high level */
+            PA7 = 1;
             break;
 
         case C_SPI2:
-            SPI2_CLK_PIN_INIT;
+            /* Set PA10 (SPI2_CLK) to high level */
+            PA10 = 1;
             break;
 
         case C_SPI3:
-            SPI3_CLK_PIN_INIT;
+            /* Set PB11 (SPI2_CLK) to high level */
+            PB11 = 1;
             break;
     }
 }
 
-/* Set SPI_MOSI as GPIO output pin */
-void SetMOSIPinToGPIO(uint32_t u32SPIModule)
+void SPIxCSSLow(uint32_t u32Module)
 {
-
-    switch (u32SPIModule)
+    switch (u32Module)
     {
         case C_SPI0:
-            SET_GPIO_PA0();
-            GPIO_SetMode(PA, BIT0, GPIO_MODE_OUTPUT);
+            /* Set PA3 (SPI0_SS) to low level */
+            PA3 = 0;
             break;
 
         case C_SPI1:
-            SET_GPIO_PB4();
-            GPIO_SetMode(PB, BIT4, GPIO_MODE_OUTPUT);
+            /* Set PA6 (SPI1_SS) to low level */
+            PA6 = 0;
             break;
 
         case C_SPI2:
-            SET_GPIO_PA8();
-            GPIO_SetMode(PA, BIT8, GPIO_MODE_OUTPUT);
+            /* Set PA11 (SPI2_SS) to low level */
+            PA11 = 0;
+            break;
+
+
+        case C_SPI3:
+            /* Set PB10 (SPI3_SS) to low level */
+            PB10 = 0;
+            break;
+    }
+}
+
+void SPIxCSSHigh(uint32_t u32Module)
+{
+    switch (u32Module)
+    {
+        case C_SPI0:
+            /* Set PA3 (SPI0_SS) to high level */
+            PA3 = 1;
+            break;
+
+        case C_SPI1:
+            /* Set PA6 (SPI1_SS) to high level */
+            PA6 = 1;
+            break;
+
+        case C_SPI2:
+            /* Set PA11 (SPI2_SS) to high level */
+            PA11 = 1;
             break;
 
         case C_SPI3:
-            SET_GPIO_PB8();
-            GPIO_SetMode(PB, BIT8, GPIO_MODE_OUTPUT);
+            /* Set PB10 (SPI3_SS) to high level */
+            PB10 = 1;
             break;
     }
 }
@@ -250,16 +378,19 @@ void MACRO_SPI_CLR_UNIT_TRANS_INT_FLAG()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPIModule->CLKDIV = 4;
     SPIModule->CTL = 5;
     SPIModule->TX = 1;
 
-    while ((SPIModule->STATUS & 0x00000002) == 0) __NOP();
+    while ((SPIModule->STATUS & SPI_STATUS_UNITIF_Msk) == 0)
+    {
+        __NOP();
+    }
 
     SPI_CLR_UNIT_TRANS_INT_FLAG(SPIModule);
-    CU_ASSERT((SPIModule->STATUS & 0x00000002) == 0);
+    CU_ASSERT((SPIModule->STATUS & SPI_STATUS_UNITIF_Msk) == 0);
 
     /* Reset SPI */
     ResetSPI(GetSPIModuleIdx());
@@ -269,15 +400,14 @@ void MACRO_SPI_TRIGGER_DISABLE_RX_PDMA()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
-    CU_ASSERT((SPIModule->PDMACTL & 0x00000002) == 0);
+    CU_ASSERT((SPIModule->PDMACTL & SPI_PDMACTL_RXPDMAEN_Msk) == 0);
     SPI_TRIGGER_RX_PDMA(SPIModule);
-
     /* Check RXPDMAEN bit */
-    CU_ASSERT((SPIModule->PDMACTL & 0x00000002) == 0x00000002);
+    CU_ASSERT((SPIModule->PDMACTL & SPI_PDMACTL_RXPDMAEN_Msk) == SPI_PDMACTL_RXPDMAEN_Msk);
     SPI_DISABLE_RX_PDMA(SPIModule);
-    CU_ASSERT((SPIModule->PDMACTL & 0x00000002) == 0);
+    CU_ASSERT((SPIModule->PDMACTL & SPI_PDMACTL_RXPDMAEN_Msk) == 0);
 
     /* Reset SPI */
     ResetSPI(GetSPIModuleIdx());
@@ -287,16 +417,15 @@ void MACRO_SPI_TRIGGER_DISABLE_TX_PDMA()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     /* Check TXPDMAEN bit */
-    CU_ASSERT((SPIModule->PDMACTL & 0x00000001) == 0);
+    CU_ASSERT((SPIModule->PDMACTL & SPI_PDMACTL_TXPDMAEN_Msk) == 0);
     SPI_TRIGGER_TX_PDMA(SPIModule);
     /* Check TXPDMAEN bit */
-    CU_ASSERT((SPIModule->PDMACTL & 0x00000001) == 0x00000001);
+    CU_ASSERT((SPIModule->PDMACTL & SPI_PDMACTL_TXPDMAEN_Msk) == SPI_PDMACTL_TXPDMAEN_Msk);
     SPI_DISABLE_TX_PDMA(SPIModule);
-    CU_ASSERT((SPIModule->PDMACTL & 0x00000001) == 0);
-
+    CU_ASSERT((SPIModule->PDMACTL & SPI_PDMACTL_TXPDMAEN_Msk) == 0);
     /* Reset SPI */
     ResetSPI(GetSPIModuleIdx());
 }
@@ -305,66 +434,93 @@ void MACRO_SPI_GET_RX_FIFO_COUNT_EMPTY_FLAG()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPIModule->CLKDIV = 0xFF;
     /* Master mode, SPI mode 0. */
     SPIModule->CTL = 0x00000005;
+
     /* Check RX_EMPTY flag */
     CU_ASSERT(SPI_GET_RX_FIFO_EMPTY_FLAG(SPIModule) == 1);
     SPIModule->TX = 1;
 
     /* Check unit transfer interrupt flag */
-    while ((SPIModule->STATUS & 0x00000002) == 0) __NOP();
+    while ((SPIModule->STATUS & SPI_STATUS_UNITIF_Msk) == 0)
+    {
+        __NOP();
+    }
 
     SPI_CLR_UNIT_TRANS_INT_FLAG(SPIModule);
     CU_ASSERT(SPI_GET_RX_FIFO_COUNT(SPIModule) == 1);
+
     /* Check RX_EMPTY flag */
     CU_ASSERT(SPI_GET_RX_FIFO_EMPTY_FLAG(SPIModule) == 0);
+
     SPIModule->TX = 2;
 
-    while ((SPIModule->STATUS & 0x00000002) == 0) __NOP();
+    while ((SPIModule->STATUS & SPI_STATUS_UNITIF_Msk) == 0)
+    {
+        __NOP();
+    }
 
     SPI_CLR_UNIT_TRANS_INT_FLAG(SPIModule);
     CU_ASSERT(SPI_GET_RX_FIFO_COUNT(SPIModule) == 2);
     SPIModule->TX = 3;
 
-    while ((SPIModule->STATUS & 0x00000002) == 0) __NOP();
+    while ((SPIModule->STATUS & SPI_STATUS_UNITIF_Msk) == 0)
+    {
+        __NOP();
+    }
 
     SPI_CLR_UNIT_TRANS_INT_FLAG(SPIModule);
     CU_ASSERT(SPI_GET_RX_FIFO_COUNT(SPIModule) == 3);
     SPIModule->TX = 4;
 
-    while ((SPIModule->STATUS & 0x00000002) == 0) __NOP();
+    while ((SPIModule->STATUS & SPI_STATUS_UNITIF_Msk) == 0)
+    {
+        __NOP();
+    }
 
     SPI_CLR_UNIT_TRANS_INT_FLAG(SPIModule);
     CU_ASSERT(SPI_GET_RX_FIFO_COUNT(SPIModule) == 4);
     SPIModule->TX = 5;
 
-    while ((SPIModule->STATUS & 0x00000002) == 0) __NOP();
+    while ((SPIModule->STATUS & SPI_STATUS_UNITIF_Msk) == 0)
+    {
+        __NOP();
+    }
 
     SPI_CLR_UNIT_TRANS_INT_FLAG(SPIModule);
     CU_ASSERT(SPI_GET_RX_FIFO_COUNT(SPIModule) == 4);
     SPIModule->TX = 6;
 
-    while ((SPIModule->STATUS & 0x00000002) == 0) __NOP();
+    while ((SPIModule->STATUS & SPI_STATUS_UNITIF_Msk) == 0)
+    {
+        __NOP();
+    }
 
     SPI_CLR_UNIT_TRANS_INT_FLAG(SPIModule);
     CU_ASSERT(SPI_GET_RX_FIFO_COUNT(SPIModule) == 4);
     SPIModule->TX = 7;
 
-    while ((SPIModule->STATUS & 0x00000002) == 0) __NOP();
+    while ((SPIModule->STATUS & SPI_STATUS_UNITIF_Msk) == 0)
+    {
+        __NOP();
+    }
 
     SPI_CLR_UNIT_TRANS_INT_FLAG(SPIModule);
     CU_ASSERT(SPI_GET_RX_FIFO_COUNT(SPIModule) == 4);
     SPIModule->TX = 8;
 
-    while ((SPIModule->STATUS & 0x00000002) == 0) __NOP();
+    while ((SPIModule->STATUS & SPI_STATUS_UNITIF_Msk) == 0)
+    {
+        __NOP();
+    }
 
     SPI_CLR_UNIT_TRANS_INT_FLAG(SPIModule);
     CU_ASSERT(SPI_GET_RX_FIFO_COUNT(SPIModule) == 4);
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -372,7 +528,7 @@ void MACRO_SPI_GET_TX_FIFO_EMPTY_FULL_FLAG()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPIModule->CLKDIV = 0xFF;
     /* Slave mode, SPI mode 0. */
@@ -396,7 +552,7 @@ void MACRO_SPI_GET_TX_FIFO_EMPTY_FULL_FLAG()
     /* Check TX_FULL flag */
     CU_ASSERT(SPI_GET_TX_FIFO_FULL_FLAG(SPIModule) == 1);
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -404,7 +560,7 @@ void MACRO_SPI_READ_RX()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPIModule->CLKDIV = 4;
     /* Master mode, SPI mode 0. */
@@ -415,7 +571,10 @@ void MACRO_SPI_READ_RX()
     SPIModule->TX = 3;
 
     /* Wait data transfer */
-    while ((SPIModule->STATUS & 0x00000001) != 0) __NOP();
+    while ((SPIModule->STATUS & SPI_STATUS_BUSY_Msk) != 0)
+    {
+        __NOP();
+    }
 
     CU_ASSERT(SPI_GET_RX_FIFO_COUNT(SPIModule) == 3);
     SPI_READ_RX(SPIModule);
@@ -425,7 +584,7 @@ void MACRO_SPI_READ_RX()
     SPI_READ_RX(SPIModule);
     CU_ASSERT(SPI_GET_RX_FIFO_COUNT(SPIModule) == 0);
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -433,18 +592,18 @@ void MACRO_SPI_WRITE_TX()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPIModule->CLKDIV = 0xFF;
     /* Slave mode, SPI mode 0. */
     SPIModule->CTL = 0x00040005;
-    CU_ASSERT((SPIModule->STATUS & 0xF0000000) == 0);
+    CU_ASSERT((SPIModule->STATUS & SPI_STATUS_TXCNT_Msk) == 0);
     SPI_WRITE_TX(SPIModule, 1);
-    CU_ASSERT((SPIModule->STATUS & 0xF0000000) == 0x10000000);
+    CU_ASSERT((SPIModule->STATUS & SPI_STATUS_TXCNT_Msk) == (0x1 << SPI_STATUS_TXCNT_Pos));
     SPI_WRITE_TX(SPIModule, 2);
-    CU_ASSERT((SPIModule->STATUS & 0xF0000000) == 0x20000000);
+    CU_ASSERT((SPIModule->STATUS & SPI_STATUS_TXCNT_Msk) == (0x2 << SPI_STATUS_TXCNT_Pos));
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -452,12 +611,12 @@ void MACRO_SPI_SET_SS_HIGH()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPI_SET_SS_HIGH(SPIModule);
     CU_ASSERT(SPIModule->SSCTL == 5);
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -465,12 +624,12 @@ void MACRO_SPI_SET_SS_LOW()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPI_SET_SS_LOW(SPIModule);
     CU_ASSERT(SPIModule->SSCTL == 1);
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -478,28 +637,31 @@ void MACRO_SPI_ENABLE_DISABLE_BYTE_REORDER()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPI_ENABLE_BYTE_REORDER(SPIModule);
-    CU_ASSERT_TRUE(SPIModule->CTL & 0x00080000);
+    CU_ASSERT_TRUE(SPIModule->CTL & SPI_CTL_REORDER_Msk);
     SPI_DISABLE_BYTE_REORDER(SPIModule);
-    CU_ASSERT_FALSE(SPIModule->CTL & 0x00080000);
+    CU_ASSERT_FALSE(SPIModule->CTL & SPI_CTL_REORDER_Msk);
+
+    /* Reset SPIModule */
+    ResetSPI(GetSPIModuleIdx());
 }
 
 void MACRO_SPI_SET_SUSPEND_CYCLE()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPI_SET_SUSPEND_CYCLE(SPIModule, 0);
-    CU_ASSERT((SPIModule->CTL & 0x000000F0) == 0);
+    CU_ASSERT((SPIModule->CTL & SPI_CTL_SUSPITV_Msk) == 0);
     SPI_SET_SUSPEND_CYCLE(SPIModule, 8);
-    CU_ASSERT((SPIModule->CTL & 0x000000F0) == 0x00000080);
+    CU_ASSERT((SPIModule->CTL & SPI_CTL_SUSPITV_Msk) == (0x8 << SPI_CTL_SUSPITV_Pos));
     SPI_SET_SUSPEND_CYCLE(SPIModule, 15);
-    CU_ASSERT((SPIModule->CTL & 0x000000F0) == 0x000000F0);
+    CU_ASSERT((SPIModule->CTL & SPI_CTL_SUSPITV_Msk) == (0xF << SPI_CTL_SUSPITV_Pos));
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -507,28 +669,31 @@ void MACRO_SPI_SET_LSB_MSB_FIRST()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPI_SET_LSB_FIRST(SPIModule);
-    CU_ASSERT_TRUE(SPIModule->CTL & 0x00002000);
+    CU_ASSERT_TRUE(SPIModule->CTL & SPI_CTL_LSB_Msk);
     SPI_SET_MSB_FIRST(SPIModule);
-    CU_ASSERT_FALSE(SPIModule->CTL & 0x00002000);
+    CU_ASSERT_FALSE(SPIModule->CTL & SPI_CTL_LSB_Msk);
+
+    /* Reset SPIModule */
+    ResetSPI(GetSPIModuleIdx());
 }
 
 void MACRO_SPI_SET_DATA_WIDTH()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPI_SET_DATA_WIDTH(SPIModule, 32);
     CU_ASSERT((SPIModule->CTL & 0x00001F00) == 0);
     SPI_SET_DATA_WIDTH(SPIModule, 8);
-    CU_ASSERT((SPIModule->CTL & 0x00001F00) == 0x00000800);
+    CU_ASSERT((SPIModule->CTL & SPI_CTL_DWIDTH_Msk) == (0x8 << SPI_CTL_DWIDTH_Pos));
     SPI_SET_DATA_WIDTH(SPIModule, 16);
-    CU_ASSERT((SPIModule->CTL & 0x00001F00) == 0x00001000);
+    CU_ASSERT((SPIModule->CTL & SPI_CTL_DWIDTH_Msk) == (0x10 << SPI_CTL_DWIDTH_Pos));
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -536,7 +701,7 @@ void MACRO_SPI_IS_BUSY()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPIModule->CLKDIV = 0xFF;
     SPIModule->CTL |= 1;
@@ -553,7 +718,7 @@ void MACRO_SPI_IS_BUSY()
 
     CU_ASSERT_FALSE(SPI_IS_BUSY(SPIModule));
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -561,15 +726,15 @@ void MACRO_SPI_ENABLE_DISABLE()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
-    CU_ASSERT_FALSE(SPIModule->CTL & 1);
+    CU_ASSERT_FALSE(SPIModule->CTL & SPI_CTL_SPIEN_Msk);
     SPI_ENABLE(SPIModule);
-    CU_ASSERT_TRUE(SPIModule->CTL & 1);
+    CU_ASSERT_TRUE(SPIModule->CTL & SPI_CTL_SPIEN_Msk);
     SPI_DISABLE(SPIModule);
-    CU_ASSERT_FALSE(SPIModule->CTL & 1);
+    CU_ASSERT_FALSE(SPIModule->CTL & SPI_CTL_SPIEN_Msk);
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -578,46 +743,46 @@ void API_SPI_Open()
     uint32_t u32ReturnValue;
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     u32ReturnValue = SPI_Open(SPIModule, SPI_MASTER, SPI_MODE_0, 8, 1000000);
-    CU_ASSERT(SPIModule->CTL == 0x00000805);
-    //printf("1 SPIModule->CLKDIV =  %x\r\n", SPIModule->CLKDIV);
+    //printf("1 SPIModule->CTL =  %x\r\n", SPIModule->CTL);
+    CU_ASSERT(SPIModule->CTL == 0x00000835);
     CU_ASSERT(SPIModule->CLKDIV == 0x0000002F);
     CU_ASSERT(SPIModule->SSCTL == 0);
     CU_ASSERT(u32ReturnValue == 1000000);
-    /* Reset SPI */
+
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 
-
     u32ReturnValue = SPI_Open(SPIModule, SPI_SLAVE, SPI_MODE_1, 16, 2000000);
-    CU_ASSERT(SPIModule->CTL == 0x00041003);
-    //printf("2 SPIModule->CLKDIV =  %x\r\n", SPIModule->CLKDIV);
+    //printf("2 SPIModule->CTL =  %x\r\n", SPIModule->CTL);
+    CU_ASSERT(SPIModule->CTL == 0x00041037);
     CU_ASSERT(SPIModule->CLKDIV == 0x00000000);
     CU_ASSERT(SPIModule->SSCTL == 0x0);
     CU_ASSERT(u32ReturnValue == 48000000);
 
-    /* Reset SPI */
+    /* Reset SPI1 */
     ResetSPI(GetSPIModuleIdx());
 
     u32ReturnValue = SPI_Open(SPIModule, SPI_MASTER, SPI_MODE_2, 24, 5000000);
-    CU_ASSERT(SPIModule->CTL == 0x0000180B);
-    //printf("3 SPIModule->CLKDIV =  %x\r\n", SPIModule->CLKDIV);
+    //printf("3 SPIModule->CTL =  %x\r\n", SPIModule->CTL);
+    CU_ASSERT(SPIModule->CTL == 0x0000183F);
     CU_ASSERT(SPIModule->CLKDIV == 0x00000009);
     CU_ASSERT(SPIModule->SSCTL == 0x0);
     CU_ASSERT(u32ReturnValue == 4800000);
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 
     u32ReturnValue = SPI_Open(SPIModule, SPI_MASTER, SPI_MODE_3, 32, 32000000);
-    CU_ASSERT(SPIModule->CTL == 0x0000000D);
-    //printf("4 SPIModule->CLKDIV =  %x\r\n", SPIModule->CLKDIV);
+    //printf("4 SPIModule->CTL =  %x\r\n", SPIModule->CTL);
+    CU_ASSERT(SPIModule->CTL == 0x0000003D);
     CU_ASSERT(SPIModule->CLKDIV == 0x00000001);
     CU_ASSERT(SPIModule->SSCTL == 0x0);
     CU_ASSERT(u32ReturnValue == 24000000);
 
-    /* Reset SPI */
+    /* Reset SPI1 */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -625,7 +790,7 @@ void API_SPI_Close()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPIModule->CTL = 0x0000FFF4;
     SPI_Close(SPIModule);
@@ -639,7 +804,7 @@ void API_SPI_ClearRxFIFO()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPIModule->CLKDIV = 4;
     /* Master mode, SPI mode 0. */
@@ -650,13 +815,16 @@ void API_SPI_ClearRxFIFO()
     SPIModule->TX = 3;
 
     /* Wait data transfer */
-    while ((SPIModule->STATUS & 1) != 0) __NOP();
+    while ((SPIModule->STATUS & SPI_STATUS_BUSY_Msk) != 0)
+    {
+        __NOP();
+    }
 
     CU_ASSERT(SPI_GET_RX_FIFO_COUNT(SPIModule) == 3);
     SPI_ClearRxFIFO(SPIModule);
     CU_ASSERT(SPIModule->STATUS == 0x00059112);
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -664,7 +832,7 @@ void API_SPI_ClearTxFIFO()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPIModule->CLKDIV = 0xFF;
     /* Slave mode, SPI mode 0. */
@@ -673,11 +841,11 @@ void API_SPI_ClearTxFIFO()
     SPIModule->TX = 1;
     SPIModule->TX = 2;
     SPIModule->TX = 3;
-    CU_ASSERT((SPIModule->STATUS & 0xF00F0000) == 0x30000000);   //CU_ASSERT((SPIModule->STATUS & 0xF0000000)== 0x30000000);
+    CU_ASSERT((SPIModule->STATUS & 0xF00F0000) == 0x30000000);   //CU_ASSERT((SPI0->STATUS & 0xF0000000)== 0x30000000);
     SPI_ClearTxFIFO(SPIModule);
-    CU_ASSERT((SPIModule->STATUS & 0xF00F0000) == 0x00050000); //CU_ASSERT((SPIModule->STATUS & 0xF0000000)== 0);
+    CU_ASSERT((SPIModule->STATUS & 0xF00F0000) == 0x00050000); //CU_ASSERT((SPI0->STATUS & 0xF0000000)== 0);
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -685,7 +853,7 @@ void API_SPI_EnableAutoSS_DisableAutoSS()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPI_EnableAutoSS(SPIModule, SPI_SS, SPI_SS_ACTIVE_HIGH);
     CU_ASSERT(SPIModule->SSCTL == 0xD);
@@ -696,7 +864,7 @@ void API_SPI_EnableAutoSS_DisableAutoSS()
     SPI_DisableAutoSS(SPIModule);
     CU_ASSERT((SPIModule->SSCTL & (SPI_SSCTL_AUTOSS_Msk | SPI_SSCTL_SS_Msk)) == 0x0);
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -705,9 +873,9 @@ void API_SPI_SetBusClock_GetBusClock()
     volatile uint32_t u32ReturnValue;
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
-    u32ReturnValue = SPI_SetBusClock(SPIModule, 200 * 1000);
+    u32ReturnValue = SPI_SetBusClock(SPIModule, 200000);
     CU_ASSERT(SPIModule->CLKDIV == 0x00000EF);
     CU_ASSERT(u32ReturnValue == 200000);
     u32ReturnValue = SPI_GetBusClock(SPIModule);
@@ -721,14 +889,13 @@ void API_SPI_SetFIFO()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPI_SetFIFO(SPIModule, 1, 2);
     CU_ASSERT((SPIModule->FIFOCTL & 0xFF000000) == 0x12000000);
     SPI_SetFIFO(SPIModule, 0, 3);
     CU_ASSERT((SPIModule->FIFOCTL & 0xFF000000) == 0x03000000);
-
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -736,7 +903,7 @@ void API_SPI_EnableInt_DisableInt()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPI_EnableInt(SPIModule, SPI_UNIT_INT_MASK);
     CU_ASSERT_TRUE(SPIModule->CTL & 0x00020000);
@@ -788,16 +955,16 @@ void API_SPI_EnableInt_DisableInt()
     SPI_DisableInt(SPIModule, SPI_FIFO_RXTO_INT_MASK);
     CU_ASSERT_FALSE(SPIModule->FIFOCTL & 0x00000010);
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
 void API_SPI_GetIntFlag_ClearIntFlag()
 {
-    uint32_t u32DelayCount;
+    volatile uint32_t u32DelayCount = 0;
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     /* Unit transfer interrupt flag test */
     SPIModule->CLKDIV = 4;
@@ -805,68 +972,62 @@ void API_SPI_GetIntFlag_ClearIntFlag()
     SPIModule->CTL = 5;
     SPIModule->TX = 0;
 
-    while ((SPIModule->STATUS & 0x0000002) == 0) __NOP();
+    while ((SPIModule->STATUS & 0x0000002) == 0)
+    {
+        __NOP();
+    }
 
     /* Check unit transfer interrupt flag */
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_UNIT_INT_MASK) == SPI_UNIT_INT_MASK);
     SPI_ClearIntFlag(SPIModule, SPI_UNIT_INT_MASK);
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_UNIT_INT_MASK) == 0);
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
     __NOP();
 
-    /* Slave selection signal active/inactive/slave-under-run/bit-count-error/slave-underflow interrupt flag test */
-    /* Set PA.3 (SPI0_SS) as output mode */
-    SetSSPinToGPIO(GetSPIModuleIdx());
+    SPIxModuleInitPIN(GetSPIModuleIdx());
 
-    /* Set PA.2 (SPI0_CLK) as GPIO output pin */
-    SetCLKPinToGPIO(GetSPIModuleIdx());
-
-    /* Enable self-test function */
-    //outp32(0x40000014, 0x1);
-    SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
-    SPI_ENABLE_SELFTEST(GetSPIModuleIdx());
-
-    /* Set PA.3 (SPI0_SS) to high level */
-    SetSSPinToHigh(GetSPIModuleIdx());
-
-    SPIModule->CLKDIV = 0x1FF;
+    SPIModule->CLKDIV = 0;
     /* Slave selection signal is low-active. */
-    SPIModule->SSCTL |= 0;
+    SPIModule->SSCTL = 0;
     /* Slave mode, SPI mode 0. */
     SPIModule->CTL = 0x00040005;
 
-    for (u32DelayCount = 0; u32DelayCount < 10; u32DelayCount++) __NOP();
+    for (u32DelayCount = 0; u32DelayCount < 10; u32DelayCount++)
+    {
+        __NOP();
+    }
 
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SSACT_INT_MASK) == 0);
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SSINACT_INT_MASK) == 0);
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_TXUF_INT_MASK) == 0);
 
-    /* Set PA.3 (SPI0_SS) to low level */
-    //PA3 = 0;
-    SetSSPinToLow(GetSPIModuleIdx());
+    /* Set (SPIx_SS) to low level */
+    SPIxCSSLow(GetSPIModuleIdx());
 
-    for (u32DelayCount = 0; u32DelayCount < 5000; u32DelayCount++) __NOP();
+    for (u32DelayCount = 0; u32DelayCount < 5000; u32DelayCount++)
+    {
+        __NOP();
+    }
 
     /* Check slave selection signal active interrupt flag */
-    //CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SSACT_INT_MASK) == SPI_SSACT_INT_MASK);
-    //SPI_ClearIntFlag(SPIModule, SPI_SSACT_INT_MASK);
+    CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SSACT_INT_MASK) == SPI_SSACT_INT_MASK);
+    SPI_ClearIntFlag(SPIModule, SPI_SSACT_INT_MASK);
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SSACT_INT_MASK) == 0);
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SSINACT_INT_MASK) == 0);
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SLVUR_INT_MASK) == 0);
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SLVBE_INT_MASK) == 0);
 
     /* Check slave TX underflow interrupt flag */
-    //CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_TXUF_INT_MASK) == SPI_TXUF_INT_MASK);
+    CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_TXUF_INT_MASK) == SPI_TXUF_INT_MASK);
 
-    /* Set PA.3 (SPI0_SS) to high level */
-    //PA3 = 1;
-    SetSSPinToHigh(GetSPIModuleIdx());
+    /* Set (SPIx_SS) to high level */
+    SPIxCSSHigh(GetSPIModuleIdx());
 
     __NOP();
     /* Check slave selection signal inactive interrupt flag */
-    //CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SSINACT_INT_MASK) == SPI_SSINACT_INT_MASK);
-    //SPI_ClearIntFlag(SPIModule, SPI_SSINACT_INT_MASK);
+    CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SSINACT_INT_MASK) == SPI_SSINACT_INT_MASK);
+    SPI_ClearIntFlag(SPIModule, SPI_SSINACT_INT_MASK);
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SSINACT_INT_MASK) == 0);
 
     /* Clear slave TX underflow interrupt flag */
@@ -874,25 +1035,44 @@ void API_SPI_GetIntFlag_ClearIntFlag()
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_TXUF_INT_MASK) == 0);
 
     /* Check slave bit count error interrupt flag */
-    //CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SLVBE_INT_MASK) == SPI_SLVBE_INT_MASK);
-    //SPI_ClearIntFlag(SPIModule, SPI_SLVBE_INT_MASK);
+    CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SLVBE_INT_MASK) == SPI_SLVBE_INT_MASK);
+    SPI_ClearIntFlag(SPIModule, SPI_SLVBE_INT_MASK);
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SLVBE_INT_MASK) == 0);
 
     /* Check slave TX under run interrupt flag */
-    //CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SLVUR_INT_MASK) == SPI_SLVUR_INT_MASK);
-    //SPI_ClearIntFlag(SPIModule, SPI_SLVUR_INT_MASK);
+    CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SLVUR_INT_MASK) == SPI_SLVUR_INT_MASK);
+    SPI_ClearIntFlag(SPIModule, SPI_SLVUR_INT_MASK);
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_SLVUR_INT_MASK) == 0);
 
     /* Disable self-test function */
-    //outp32(0x40000014, 0x0);
-    SYS->ALTCTL0 &= ~SYS_ALTCTL0_SELFTEST_Msk;
-    SPI_DISABLE_SELFTEST(GetSPIModuleIdx());
+    SPI_DisableSelfTest(GetSPIModuleIdx());
 
-    /* Set PA.2 (SPI0_CLK) as SPI function pin */
-    //SYS->GPA_MFPL = (SYS->GPA_MFPL & ~SYS_GPA_MFPL_PA2MFP_Msk) | SYS_GPA_MFPL_PA2MFP_SPI0_CLK;
-    SetSPICLKMFP(GetSPIModuleIdx());
+    if (GetSPIModuleIdx() == C_SPI0)
+    {
+        /* Set PA2 (SPI0_CLK) as SPI function pin */
+        //SYS->GPA_MFPL = (SYS->GPA_MFPL & ~SYS_GPA_MFPL_PA2MFP_Msk) | SYS_GPA_MFPL_PA2MFP_SPI0_CLK;
+        SPI0_CLK_PIN_INIT;
+    }
+    else if (GetSPIModuleIdx() == C_SPI1)
+    {
+        /* Set PA7 (SPI0_CLK) as SPI function pin */
+        //SYS->GPA_MFPL = (SYS->GPA_MFPL & ~SYS_GPA_MFPL_PA7MFP_Msk) | SYS_GPA_MFPL_PA7MFP_SPI1_CLK;
+        SPI1_CLK_PIN_INIT;
+    }
+    else if (GetSPIModuleIdx() == C_SPI2)
+    {
+        /* Set PA7 (SPI0_CLK) as SPI function pin */
+        //SYS->GPA_MFPL = (SYS->GPA_MFPL & ~SYS_GPA_MFPL_PA7MFP_Msk) | SYS_GPA_MFPL_PA7MFP_SPI1_CLK;
+        SPI2_CLK_PIN_INIT;
+    }
+    else if (GetSPIModuleIdx() == C_SPI3)
+    {
+        /* Set PA7 (SPI0_CLK) as SPI function pin */
+        //SYS->GPA_MFPL = (SYS->GPA_MFPL & ~SYS_GPA_MFPL_PA7MFP_Msk) | SYS_GPA_MFPL_PA7MFP_SPI1_CLK;
+        SPI3_CLK_PIN_INIT;
+    }
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
     __NOP();
 
@@ -912,7 +1092,7 @@ void API_SPI_GetIntFlag_ClearIntFlag()
     SPIModule->TX = 4;
     /* Check TX threshold interrupt flag */
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_FIFO_TXTH_INT_MASK) == 0);
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
     __NOP();
 
@@ -930,7 +1110,10 @@ void API_SPI_GetIntFlag_ClearIntFlag()
     SPIModule->TX = 3;
 
     /* Wait data transfer */
-    while (SPIModule->STATUS & SPI_STATUS_BUSY_Msk) __NOP();
+    while (SPIModule->STATUS & SPI_STATUS_BUSY_Msk)
+    {
+        __NOP();
+    }
 
     /* Check RX threshold interrupt flag */
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_FIFO_RXTH_INT_MASK) == SPI_FIFO_RXTH_INT_MASK);
@@ -947,7 +1130,10 @@ void API_SPI_GetIntFlag_ClearIntFlag()
     SPIModule->TX = 9;
 
     /* Wait data transfer */
-    while (SPIModule->STATUS & SPI_STATUS_BUSY_Msk) __NOP();
+    while (SPIModule->STATUS & SPI_STATUS_BUSY_Msk)
+    {
+        __NOP();
+    }
 
     /* Check RX overrun interrupt flag */
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_FIFO_RXOV_INT_MASK) == SPI_FIFO_RXOV_INT_MASK);
@@ -965,33 +1151,40 @@ void API_SPI_GetIntFlag_ClearIntFlag()
     SPIModule->TX = 3;
 
     /* Wait data transfer */
-    while (SPIModule->STATUS & SPI_STATUS_BUSY_Msk) __NOP();
+    while (SPIModule->STATUS & SPI_STATUS_BUSY_Msk)
+    {
+        __NOP();
+    }
 
     /* Check RX time-out interrupt flag */
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_FIFO_RXTO_INT_MASK) == SPI_FIFO_RXTO_INT_MASK);
     SPI_ClearIntFlag(SPIModule, SPI_FIFO_RXTO_INT_MASK);
     CU_ASSERT(SPI_GetIntFlag(SPIModule, SPI_FIFO_RXTO_INT_MASK) == 0);
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
     __NOP();
+
+    CLK_SysTickDelay(128);
 }
 
 
 void API_SPI_GetStatus()
 {
-    uint32_t u32DelayCount;
+    volatile uint32_t u32DelayCount = 0;
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPIModule->CLKDIV = 0;
     /* Check SPIEN flag */
     CU_ASSERT(SPI_GetStatus(SPIModule, SPI_SPIEN_STS_MASK) == 0);
     /* Slave mode, SPI mode 0. */
     SPIModule->CTL = 0x00040005;
+
     /* Check busy flag */
     CU_ASSERT(SPI_GetStatus(SPIModule, SPI_BUSY_MASK) == 0);
+
     /* Check SPIEN flag */
     CU_ASSERT(SPI_GetStatus(SPIModule, SPI_SPIEN_STS_MASK) == SPI_SPIEN_STS_MASK);
 
@@ -1020,7 +1213,7 @@ void API_SPI_GetStatus()
     SPIModule->TX = 9;
     /* Check TX full flag */
     CU_ASSERT(SPI_GetStatus(SPIModule, SPI_TX_FULL_MASK) == SPI_TX_FULL_MASK);
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
     __NOP();
 
@@ -1035,7 +1228,10 @@ void API_SPI_GetStatus()
     CU_ASSERT(SPI_GetStatus(SPIModule, SPI_TXRX_RESET_MASK) == SPI_TXRX_RESET_MASK);
 
     //for(u32DelayCount=0; u32DelayCount<256; u32DelayCount++) __NOP();
-    for (u32DelayCount = 0; u32DelayCount < 10000; u32DelayCount++) __NOP();
+    for (u32DelayCount = 0; u32DelayCount < 10000; u32DelayCount++)
+    {
+        __NOP();
+    }
 
     CU_ASSERT(SPI_GetStatus(SPIModule, SPI_TXRX_RESET_MASK) == 0);  //test!!
 
@@ -1045,7 +1241,10 @@ void API_SPI_GetStatus()
     SPIModule->TX = 1;
 
     /* Wait data transfer */
-    while (SPIModule->STATUS & SPI_STATUS_BUSY_Msk) __NOP();
+    while (SPIModule->STATUS & SPI_STATUS_BUSY_Msk)
+    {
+        __NOP();
+    }
 
     /* Check RX empty flag */
     CU_ASSERT(SPI_GetStatus(SPIModule, SPI_RX_EMPTY_MASK) == 0);
@@ -1063,26 +1262,22 @@ void API_SPI_GetStatus()
     SPIModule->TX = 8;
 
     /* Wait data transfer */
-    while (SPIModule->STATUS & SPI_STATUS_BUSY_Msk) __NOP();
+    while (SPIModule->STATUS & SPI_STATUS_BUSY_Msk)
+    {
+        __NOP();
+    }
 
     /* Check RX full flag */
     CU_ASSERT(SPI_GetStatus(SPIModule, SPI_RX_FULL_MASK) == SPI_RX_FULL_MASK);
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
     __NOP();
 
 
-    /* Check SPIx_SS line status */
-    /* Set PA.3 (SPI0_SS) as GPIO output mode */
-    SetSSPinToGPIO(GetSPIModuleIdx());
+    SPIxModuleInitPIN(GetSPIModuleIdx());
 
-    /* Enable self-test function */
-    //outp32(0x40000014, 0x1);
-    SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
-    SPI_ENABLE_SELFTEST(GetSPIModuleIdx());
-
-    /* Set PA.3 (SPI0_SS) to high level */
-    SetSSPinToHigh(GetSPIModuleIdx());
+    /* Set (SPIx_SS) to high level */
+    SPIxCSSHigh(GetSPIModuleIdx());
 
     SPIModule->CLKDIV = 0;
     /* Slave selection signal is low-active. */
@@ -1090,28 +1285,112 @@ void API_SPI_GetStatus()
     /* Slave mode, SPI mode 0. */
     SPIModule->CTL = 0x00040005;
 
-    for (u32DelayCount = 0; u32DelayCount < 10; u32DelayCount++) __NOP();
+    for (u32DelayCount = 0; u32DelayCount < 10; u32DelayCount++)
+    {
+        __NOP();
+    }
 
     CU_ASSERT(SPI_GetStatus(SPIModule, SPI_SSLINE_STS_MASK) == SPI_SSLINE_STS_MASK);
-    /* Set PA.3 (SPI0_SS) to low level */
-    SetSSPinToLow(GetSPIModuleIdx());
 
-    for (u32DelayCount = 0; u32DelayCount < 1000; u32DelayCount++) __NOP();
+    /* Set (SPIx_SS) to low level */
+    SPIxCSSLow(GetSPIModuleIdx());
 
-    //CU_ASSERT(SPI_GetStatus(SPIModule, SPI_SSLINE_STS_MASK) == 0);
-    //__NOP();
+    for (u32DelayCount = 0; u32DelayCount < 1000; u32DelayCount++)
+    {
+        __NOP();
+    }
+
+    CU_ASSERT(SPI_GetStatus(SPIModule, SPI_SSLINE_STS_MASK) == 0);
+    __NOP();
 
     /* Disable self-test function */
-    //outp32(0x40000014, 0x0);
-    SYS->ALTCTL0 &= ~SYS_ALTCTL0_SELFTEST_Msk;
-    SPI_DISABLE_SELFTEST(GetSPIModuleIdx());
+    SPI_DisableSelfTest(GetSPIModuleIdx());
 
-    for (u32DelayCount = 0; u32DelayCount < 1000; u32DelayCount++) __NOP();
-
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
     __NOP();
 }
+
+void API_SPI_GetStatus2()
+{
+    volatile uint32_t u32DelayCount;
+    volatile uint32_t u32RxData, i32BitCount;
+    SPI_T *SPIModule = NULL;
+
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
+
+    SPIxModuleInitPIN(GetSPIModuleIdx());
+
+    u32RxData = 0x12345678;
+
+    /* Set (SPIx_SS) to high level */
+    SPIxCSSHigh(GetSPIModuleIdx());
+
+    /* Set (SPIx_CLK) to high level */
+    SPIxClkHigh(GetSPIModuleIdx());
+
+    SPIModule->CLKDIV = 0;
+    /* Slave selection signal is low-active. */
+    SPIModule->SSCTL = 0;
+    /* Slave mode, SPI mode 0. */
+    SPIModule->CTL = 0x00040005;
+    /* Enable RX FIFO write data enable when slave mode bit count error. */
+    SPIModule->FIFOCTL = 0x00000400;
+
+    for (u32DelayCount = 0; u32DelayCount < 10; u32DelayCount++)
+    {
+        __NOP();
+    }
+
+    /* Set SPI_SS pin to active state */
+    SPIxCSSLow(GetSPIModuleIdx());
+
+    for (i32BitCount = 0; i32BitCount <= 15; i32BitCount++)
+    {
+        SPIxClkLow(GetSPIModuleIdx()); /* TX clock edge */
+
+        //PA0 = u32RxData >> i32BitCount; /* Set SPI_MOSI pin state */
+        SPIxMISOWriteData(GetSPIModuleIdx(), (u32RxData >> i32BitCount)); /* Set SPI_MOSI pin state */
+
+        SPIxClkHigh(GetSPIModuleIdx()); /* RX clock edge */
+
+        __NOP();
+        __NOP();
+        __NOP();
+    }
+
+    /* Set SPI_SS pin to inactive state */
+    SPIxCSSHigh(GetSPIModuleIdx());
+
+    /* Check SLVBENUM number */
+    CU_ASSERT(SPI_GetStatus2(SPIModule, SPI_SLVBENUM_MASK) == 16);
+
+    /* Disable self-test function */
+    SPI_DisableSelfTest(GetSPIModuleIdx());
+
+    /* Reset SPIModule */
+    ResetSPI(GetSPIModuleIdx());
+    __NOP();
+}
+
+//void API_SPI_GetStatus2()
+//{
+//    SPI0->CLKDIV = 0;
+//    /* Slave selection signal is low-active. */
+//    SPI0->SSCTL = 0;
+//    /* Slave mode, SPI mode 0. */
+//    SPI0->CTL = 0x00040005;
+//    /* Enable RX FIFO write data enable when slave mode bit count error. */
+//    SPI0->FIFOCTL = 0x00000400;
+
+//    /* Check SLVBENUM number */
+//    CU_ASSERT(SPI_GetStatus2(SPI0, SPI_SLVBENUM_MASK) == 0);
+
+//    /* Reset SPI0 */
+//    SYS->IPRST1 |= SYS_IPRST1_SPI0RST_Msk;
+//    SYS->IPRST1 &= ~SYS_IPRST1_SPI0RST_Msk;
+//    __NOP();
+//}
 
 /* -------------- I2S test -------------- */
 
@@ -1119,7 +1398,7 @@ void MACRO_I2S_ENABLE_DISABLE_TX_ZCD()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPII2S_ENABLE_TX_ZCD(SPIModule, SPII2S_RIGHT);
     /* Check RZCIEN bit */
@@ -1142,7 +1421,7 @@ void MACRO_I2S_ENABLE_DISABLE_TXDMA()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPII2S_ENABLE_TXDMA(SPIModule);
     /* Check TXPDMAEN bit */
@@ -1158,7 +1437,7 @@ void MACRO_I2S_ENABLE_DISABLE_RXDMA()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPII2S_ENABLE_RXDMA(SPIModule);
     /* Check RXPDMAEN bit */
@@ -1175,7 +1454,7 @@ void MACRO_I2S_ENABLE_DISABLE_TX()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPII2S_ENABLE_TX(SPIModule);
     /* Check TX enable bit */
@@ -1192,7 +1471,7 @@ void MACRO_I2S_ENABLE_DISABLE_RX()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPII2S_ENABLE_RX(SPIModule);
     /* Check RX enable bit */
@@ -1209,7 +1488,7 @@ void MACRO_I2S_ENABLE_DISABLE_TX_MUTE()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPII2S_ENABLE_TX_MUTE(SPIModule);
     /* Check TX mute enable bit */
@@ -1226,7 +1505,7 @@ void MACRO_I2S_CLR_TX_FIFO()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     /* Write 3 data to TX FIFO */
     SPII2S_WRITE_TX_FIFO(SPIModule, 1);
@@ -1238,13 +1517,16 @@ void MACRO_I2S_CLR_TX_FIFO()
     CU_ASSERT(SPII2S_GET_TX_FIFO_LEVEL(SPIModule) == 0);
     /* CLR_TXFIFO bit should be cleared by hardware automatically */
     CU_ASSERT_FALSE(SPIModule->FIFOCTL & 0x00000200);
+
+    /* Reset SPI */
+    ResetSPI(GetSPIModuleIdx());
 }
 
 void MACRO_I2S_CLR_RX_FIFO()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     /* Enable I2S RX function */
     SPIModule->I2SCTL = 5;
@@ -1265,14 +1547,14 @@ void MACRO_I2S_SET_MONO_RX_CHANNEL()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPII2S_SET_MONO_RX_CHANNEL(SPIModule, SPII2S_MONO_LEFT);
     /* Check RXLCH bit */
-    CU_ASSERT_TRUE(SPIModule ->I2SCTL & 0x00800000);
+    CU_ASSERT_TRUE(SPIModule->I2SCTL & 0x00800000);
     SPII2S_SET_MONO_RX_CHANNEL(SPIModule, SPII2S_MONO_RIGHT);
     /* Check RXLCH bit */
-    CU_ASSERT_FALSE(SPIModule ->I2SCTL & 0x00800000);
+    CU_ASSERT_FALSE(SPIModule->I2SCTL & 0x00800000);
 
     /* Reset SPI */
     ResetSPI(GetSPIModuleIdx());
@@ -1282,7 +1564,7 @@ void MACRO_I2S_WRITE_TX_FIFO()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     /* Set I2S bit clock divider */
     SPIModule->I2SCLK = 0x1FF00;
@@ -1302,16 +1584,15 @@ void MACRO_I2S_WRITE_TX_FIFO()
     SPII2S_CLR_TX_FIFO(SPIModule);
     CU_ASSERT(SPII2S_GET_TX_FIFO_LEVEL(SPIModule) == 0);
 
-    /* Reset SPI */
+    /* Reset SPI1 */
     ResetSPI(GetSPIModuleIdx());
-    __NOP();
 }
 
 void MACRO_I2S_READ_RX_FIFO()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     /* Set I2S bit clock divider */
     SPIModule->I2SCLK = 0x8000;
@@ -1334,6 +1615,9 @@ void MACRO_I2S_READ_RX_FIFO()
     SPII2S_READ_RX_FIFO(SPIModule);
 
     CU_ASSERT(SPII2S_GET_RX_FIFO_LEVEL(SPIModule) == 0);
+
+    /* Reset SPI1 */
+    ResetSPI(GetSPIModuleIdx());
 }
 
 void MACRO_I2S_GET_CLEAR_INT_FLAG()
@@ -1341,7 +1625,7 @@ void MACRO_I2S_GET_CLEAR_INT_FLAG()
     uint32_t u32DelayCount;
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     /* Left channel zero-cross flag test */
     /* Set I2S bit clock divider */
@@ -1358,7 +1642,7 @@ void MACRO_I2S_GET_CLEAR_INT_FLAG()
     SPII2S_CLR_INT_FLAG(SPIModule, SPI_I2SSTS_LZCIF_Msk);
 
     CU_ASSERT(SPII2S_GET_INT_FLAG(SPIModule, SPI_I2SSTS_LZCIF_Msk) == 0);
-    /* Reset SPI */
+    /* Reset SPI1 */
     ResetSPI(GetSPIModuleIdx());
     __NOP();
 
@@ -1377,7 +1661,7 @@ void MACRO_I2S_GET_CLEAR_INT_FLAG()
     SPII2S_CLR_INT_FLAG(SPIModule, SPI_I2SSTS_RZCIF_Msk);
 
     CU_ASSERT(SPII2S_GET_INT_FLAG(SPIModule, SPI_I2SSTS_RZCIF_Msk) == 0);
-    /* Reset SPI */
+    /* Reset SPI1 */
     ResetSPI(GetSPIModuleIdx());
     __NOP();
 
@@ -1397,7 +1681,7 @@ void MACRO_I2S_GET_CLEAR_INT_FLAG()
     SPII2S_WRITE_TX_FIFO(SPIModule, 4);
 
     CU_ASSERT(SPII2S_GET_INT_FLAG(SPIModule, SPI_I2SSTS_TXTHIF_Msk) == 0);
-    /* Reset SPI */
+    /* Reset SPI1 */
     ResetSPI(GetSPIModuleIdx());
     __NOP();
 
@@ -1416,7 +1700,7 @@ void MACRO_I2S_GET_CLEAR_INT_FLAG()
     SPII2S_CLR_INT_FLAG(SPIModule, SPI_I2SSTS_TXUFIF_Msk);
 
     CU_ASSERT(SPII2S_GET_INT_FLAG(SPIModule, SPI_I2SSTS_TXUFIF_Msk) == 0);
-    /* Reset SPI */
+    /* Reset SPI1 */
     ResetSPI(GetSPIModuleIdx());
     __NOP();
 
@@ -1427,9 +1711,12 @@ void MACRO_I2S_GET_CLEAR_INT_FLAG()
     SPIModule->FIFOCTL = 0x02000000;
     SPIModule->I2SCTL = 0x00000005;
 
-    while (SPII2S_GET_RX_FIFO_LEVEL(SPIModule) <= 2) __NOP();
+    while (SPII2S_GET_RX_FIFO_LEVEL(SPIModule) <= 2)
+    {
+        __NOP();
+    }
 
-    //SPIModule->I2SCTL = 0;
+    //SPI1->I2SCTL = 0;
 
     CU_ASSERT(SPII2S_GET_INT_FLAG(SPIModule, SPI_I2SSTS_RXTHIF_Msk) == 0x00000400);
 
@@ -1437,7 +1724,7 @@ void MACRO_I2S_GET_CLEAR_INT_FLAG()
     SPII2S_READ_RX_FIFO(SPIModule);
 
     CU_ASSERT(SPII2S_GET_INT_FLAG(SPIModule, SPI_I2SSTS_RXTHIF_Msk) == 0);
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
     __NOP();
 
@@ -1464,7 +1751,8 @@ void MACRO_I2S_GET_CLEAR_INT_FLAG()
     SPII2S_CLR_INT_FLAG(SPIModule, SPI_I2SSTS_RXOVIF_Msk);
 
     CU_ASSERT(SPII2S_GET_INT_FLAG(SPIModule, SPI_I2SSTS_RXOVIF_Msk) == 0);
-    /* Reset SPI */
+
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
     __NOP();
 
@@ -1479,9 +1767,15 @@ void MACRO_I2S_GET_CLEAR_INT_FLAG()
     SPII2S_WRITE_TX_FIFO(SPIModule, 3);
     SPII2S_WRITE_TX_FIFO(SPIModule, 4);
 
-    while (SPII2S_GET_TX_FIFO_LEVEL(SPIModule) != 0) __NOP();
+    while (SPII2S_GET_TX_FIFO_LEVEL(SPIModule) != 0)
+    {
+        __NOP();
+    }
 
-    for (u32DelayCount = 0; u32DelayCount < 1000; u32DelayCount++) __NOP();
+    for (u32DelayCount = 0; u32DelayCount < 1000; u32DelayCount++)
+    {
+        __NOP();
+    }
 
     CU_ASSERT(SPII2S_GET_INT_FLAG(SPIModule, SPI_I2SSTS_RXTOIF_Msk) == 0x00001000);
 
@@ -1489,7 +1783,7 @@ void MACRO_I2S_GET_CLEAR_INT_FLAG()
 
     CU_ASSERT(SPII2S_GET_INT_FLAG(SPIModule, SPI_I2SSTS_RXTOIF_Msk) == 0);
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
     __NOP();
 }
@@ -1498,7 +1792,7 @@ void MACRO_I2S_GET_TX_FIFO_LEVEL()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     /* Set I2S bit clock divider */
     SPIModule->I2SCLK = 0x1FF00;
@@ -1522,7 +1816,7 @@ void MACRO_I2S_GET_TX_FIFO_LEVEL()
 
     CU_ASSERT(SPII2S_GET_TX_FIFO_LEVEL(SPIModule) == 4);
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -1530,33 +1824,45 @@ void MACRO_I2S_GET_RX_FIFO_LEVEL()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     /* Set I2S bit clock divider */
     SPIModule->I2SCLK = 0x1FF00;
     /* Enable I2S RX function and I2S controller */
     SPIModule->I2SCTL = 5;
 
-    while ((SPIModule->I2SSTS & 0x0F000000) != 0x01000000) __NOP();
+    while ((SPIModule->I2SSTS & 0x0F000000) != 0x01000000)
+    {
+        __NOP();
+    }
 
     CU_ASSERT(SPII2S_GET_RX_FIFO_LEVEL(SPIModule) == 1);
 
-    while ((SPIModule->I2SSTS & 0x0F000000) != 0x02000000) __NOP();
+    while ((SPIModule->I2SSTS & 0x0F000000) != 0x02000000)
+    {
+        __NOP();
+    }
 
     CU_ASSERT(SPII2S_GET_RX_FIFO_LEVEL(SPIModule) == 2);
 
-    while ((SPIModule->I2SSTS & 0x0F000000) != 0x03000000) __NOP();
+    while ((SPIModule->I2SSTS & 0x0F000000) != 0x03000000)
+    {
+        __NOP();
+    }
 
     CU_ASSERT(SPII2S_GET_RX_FIFO_LEVEL(SPIModule) == 3);
 
-    while ((SPIModule->I2SSTS & 0x0F000000) != 0x04000000) __NOP();
+    while ((SPIModule->I2SSTS & 0x0F000000) != 0x04000000)
+    {
+        __NOP();
+    }
 
     CU_ASSERT(SPII2S_GET_RX_FIFO_LEVEL(SPIModule) == 4);
 
     /* Disable I2S RX function */
     SPIModule->I2SCTL = 0;
 
-    /* Reset SPI */
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -1565,9 +1871,9 @@ void API_I2S_Open()
     uint32_t u32ReturnValue;
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());;
 
-    SPI_CLK_Sel(GetSPIModuleIdx(), eSPI_CLK_HIRC48M) ;
+    SPI_CLK_Sel(GetSPIModuleIdx(), eSPI_CLK_HIRC48M);
     u32ReturnValue = SPII2S_Open(SPIModule, SPII2S_MODE_MASTER, 16000, SPII2S_DATABIT_24, SPII2S_MONO, SPII2S_FORMAT_PCMA);
     CU_ASSERT(SPIModule->I2SCTL == 0x20000067);
     CU_ASSERT(SPIModule->FIFOCTL == 0x21000000);
@@ -1591,11 +1897,11 @@ void API_I2S_Close()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
-
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
     SPIModule->I2SCTL = 1;
     SPII2S_Close(SPIModule);
     CU_ASSERT_FALSE(SPIModule->I2SCTL & 1);
+
     /* Reset SPI */
     ResetSPI(GetSPIModuleIdx());
 }
@@ -1604,7 +1910,7 @@ void API_I2S_EnableInt_DisableInt()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPII2S_EnableInt(SPIModule, SPII2S_FIFO_TXTH_INT_MASK);
     CU_ASSERT((SPIModule->FIFOCTL & 0x8) == 0x8);
@@ -1641,7 +1947,12 @@ void API_I2S_EnableInt_DisableInt()
     SPII2S_DisableInt(SPIModule, SPII2S_LEFT_ZC_INT_MASK);
     CU_ASSERT(SPIModule->I2SCTL == 0);
 
-    /* Reset SPI */
+    SPII2S_EnableInt(SPIModule, SPII2S_SLV_CLKERR_INT_MASK);
+    CU_ASSERT(SPIModule->I2SCTL == 0x80000000);
+    SPII2S_DisableInt(SPIModule, SPII2S_SLV_CLKERR_INT_MASK);
+    CU_ASSERT(SPIModule->I2SCTL == 0);
+
+    /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 }
 
@@ -1650,20 +1961,20 @@ void API_I2S_EnableMCLK()
     uint32_t u32ReturnValue;
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
-    SPI_CLK_Sel(GetSPIModuleIdx(), eSPI_CLK_HIRC48M) ;
+    SPI_CLK_Sel(GetSPIModuleIdx(), eSPI_CLK_HIRC48M);
     u32ReturnValue = SPII2S_EnableMCLK(SPIModule, 2048000);
-    CU_ASSERT(SPIModule ->I2SCTL == 0x00008000);
-    CU_ASSERT(SPIModule ->I2SCLK == 0x0000000B);
+    CU_ASSERT(SPIModule->I2SCTL == 0x00008000);
+    CU_ASSERT(SPIModule->I2SCLK == 0x0000000B);
     CU_ASSERT(u32ReturnValue == 2181818);
 
     /* Reset SPI */
     ResetSPI(GetSPIModuleIdx());
 
     u32ReturnValue = SPII2S_EnableMCLK(SPIModule, 48000000);
-    CU_ASSERT(SPIModule ->I2SCTL == 0x00008000);
-    CU_ASSERT(SPIModule ->I2SCLK == 0x00000000);
+    CU_ASSERT(SPIModule->I2SCTL == 0x00008000);
+    CU_ASSERT(SPIModule->I2SCLK == 0x00000000);
     CU_ASSERT(u32ReturnValue == 48000000);
 
     /* Reset SPI */
@@ -1674,13 +1985,14 @@ void API_I2S_DisableMCLK()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     /* Set MCLKEN bit to 1 */
     SPIModule->I2SCTL = 0x8000;
     SPII2S_DisableMCLK(SPIModule);
+
     /* Check MCLKEN bit */
-    CU_ASSERT_FALSE(SPIModule ->I2SCTL & 0x8000);
+    CU_ASSERT_FALSE(SPIModule->I2SCTL & 0x8000);
 
     /* Reset SPI */
     ResetSPI(GetSPIModuleIdx());
@@ -1690,7 +2002,7 @@ void API_I2S_SetFIFO()
 {
     SPI_T *SPIModule = NULL;
 
-    SPIModule = (SPI_T *)GetSPIModule(GetSPIModuleIdx());
+    SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     SPII2S_SetFIFO(SPIModule, 0, 3);
     CU_ASSERT((SPIModule->FIFOCTL & 0xFF000000) == (SPII2S_FIFO_TX_LEVEL_WORD_0 | SPII2S_FIFO_RX_LEVEL_WORD_4));
@@ -1703,10 +2015,19 @@ void API_I2S_SetFIFO()
 
     SPII2S_SetFIFO(SPIModule, 1, 1);
     CU_ASSERT((SPIModule->FIFOCTL & 0xFF000000) == (SPII2S_FIFO_TX_LEVEL_WORD_1 | SPII2S_FIFO_RX_LEVEL_WORD_2));
+
+    /* Reset SPI1 */
+    ResetSPI(GetSPIModuleIdx());
+    __NOP();
 }
 
 CU_TestInfo SPI_I2S_MacroTests[] =
 {
+    /*
+        Note:
+        1. Palladimu use prload test
+        2. MISO/MOSI connect.
+    */
     {"Clear SPI unit transfer interrupt flag", MACRO_SPI_CLR_UNIT_TRANS_INT_FLAG},
     {"Trigger/Disable SPI RX DMA transfer", MACRO_SPI_TRIGGER_DISABLE_RX_PDMA},
     {"Trigger/Disable SPI TX DMA transfer", MACRO_SPI_TRIGGER_DISABLE_TX_PDMA},
@@ -1741,6 +2062,7 @@ CU_TestInfo SPI_I2S_MacroTests[] =
     CU_TEST_INFO_NULL
 };
 
+
 CU_TestInfo SPI_I2S_ApiTests[] =
 {
     {"SPI Open", API_SPI_Open},
@@ -1753,6 +2075,7 @@ CU_TestInfo SPI_I2S_ApiTests[] =
     {"Enable/Disable SPI interrupt function", API_SPI_EnableInt_DisableInt},
     {"Get/Clear SPI interrupt flag", API_SPI_GetIntFlag_ClearIntFlag},
     {"Get SPI status", API_SPI_GetStatus},
+    //{"Get SPI status2", API_SPI_GetStatus2}, //no test
 
     {"I2S Open", API_I2S_Open},
     {"I2S Close", API_I2S_Close},

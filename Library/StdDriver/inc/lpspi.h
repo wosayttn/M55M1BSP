@@ -27,17 +27,17 @@ extern "C"
   @{
 */
 
-#define LPSPI_MODE_0        (LPSPI_CTL_TXNEG_Msk)                             /*!< CLKPOL=0; RXNEG=0; TXNEG=1 \hideinitializer */
-#define LPSPI_MODE_1        (LPSPI_CTL_RXNEG_Msk)                             /*!< CLKPOL=0; RXNEG=1; TXNEG=0 \hideinitializer */
-#define LPSPI_MODE_2        (LPSPI_CTL_CLKPOL_Msk | LPSPI_CTL_RXNEG_Msk)      /*!< CLKPOL=1; RXNEG=1; TXNEG=0 \hideinitializer */
-#define LPSPI_MODE_3        (LPSPI_CTL_CLKPOL_Msk | LPSPI_CTL_TXNEG_Msk)      /*!< CLKPOL=1; RXNEG=0; TXNEG=1 \hideinitializer */
+#define LPSPI_MODE_0                        (LPSPI_CTL_TXNEG_Msk)                             /*!< CLKPOL=0; RXNEG=0; TXNEG=1 \hideinitializer */
+#define LPSPI_MODE_1                        (LPSPI_CTL_RXNEG_Msk)                             /*!< CLKPOL=0; RXNEG=1; TXNEG=0 \hideinitializer */
+#define LPSPI_MODE_2                        (LPSPI_CTL_CLKPOL_Msk | LPSPI_CTL_RXNEG_Msk)      /*!< CLKPOL=1; RXNEG=1; TXNEG=0 \hideinitializer */
+#define LPSPI_MODE_3                        (LPSPI_CTL_CLKPOL_Msk | LPSPI_CTL_TXNEG_Msk)      /*!< CLKPOL=1; RXNEG=0; TXNEG=1 \hideinitializer */
 
-#define LPSPI_SLAVE         (LPSPI_CTL_SLAVE_Msk)                          	  /*!< Set as slave \hideinitializer */
-#define LPSPI_MASTER        (0x0U)                                            /*!< Set as master \hideinitializer */
+#define LPSPI_SLAVE                         (LPSPI_CTL_SLAVE_Msk)             /*!< Set as slave \hideinitializer */
+#define LPSPI_MASTER                        (0x0U)                                            /*!< Set as master \hideinitializer */
 
-#define LPSPI_SS                (LPSPI_SSCTL_SS_Msk)                          /*!< Set SS \hideinitializer */
-#define LPSPI_SS_ACTIVE_HIGH    (LPSPI_SSCTL_SSACTPOL_Msk)                    /*!< SS active high \hideinitializer */
-#define LPSPI_SS_ACTIVE_LOW     (0x0U)                                        /*!< SS active low \hideinitializer */
+#define LPSPI_SS                            (LPSPI_SSCTL_SS_Msk)              /*!< Set SS \hideinitializer */
+#define LPSPI_SS_ACTIVE_HIGH                (LPSPI_SSCTL_SSACTPOL_Msk)        /*!< SS active high \hideinitializer */
+#define LPSPI_SS_ACTIVE_LOW                 (0x0U)                            /*!< SS active low \hideinitializer */
 
 /* LPSPI Interrupt Mask */
 #define LPSPI_UNIT_INT_Pos                  (0)
@@ -62,7 +62,6 @@ extern "C"
 #define LPSPI_FIFO_TXTH_INT_MASK            (0x1ul << LPSPI_FIFO_TXTH_INT_Pos)  /*!< FIFO TX threshold interrupt mask \hideinitializer */
 
 #define LPSPI_FIFO_RXTH_INT_Pos             (7)
-
 #define LPSPI_FIFO_RXTH_INT_MASK            (0x1ul << LPSPI_FIFO_RXTH_INT_Pos)  /*!< FIFO RX threshold interrupt mask \hideinitializer */
 
 #define LPSPI_FIFO_RXOV_INT_Pos             (8)
@@ -87,13 +86,13 @@ extern "C"
 #define LPSPI_TX_FULL_Pos                   (4)
 #define LPSPI_TX_FULL_MASK                  (0x1ul << LPSPI_TX_FULL_Pos)      /*!< TX full status mask \hideinitializer */
 
-#define LPSPI_TXRX_RESET_Pos                (9)
+#define LPSPI_TXRX_RESET_Pos                (5)
 #define LPSPI_TXRX_RESET_MASK               (0x1ul << LPSPI_TXRX_RESET_Pos)   /*!< TX or RX reset status mask \hideinitializer */
 
-#define LPSPI_SPIEN_STS_Pos                 (10)
+#define LPSPI_SPIEN_STS_Pos                 (6)
 #define LPSPI_SPIEN_STS_MASK                (0x1ul << LPSPI_SPIEN_STS_Pos)    /*!< SPIEN status mask \hideinitializer */
 
-#define LPSPI_SSLINE_STS_Pos                (9)
+#define LPSPI_SSLINE_STS_Pos                (7)
 #define LPSPI_SSLINE_STS_MASK               (0x1ul << LPSPI_SSLINE_STS_Pos)   /*!< SPIx_SS line status mask \hideinitializer */
 
 /* LPSPI Auto Trigger Source */
