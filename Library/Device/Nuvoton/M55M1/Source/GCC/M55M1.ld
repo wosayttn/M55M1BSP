@@ -49,8 +49,8 @@
  * | ITCM                  | 0x0000_0000 | 0x0002_0000 | S  | Secure alias for NS ITCM                            |
  * | FLASH                 | 0x1010_0000 | 0x0020_0000 | NS | 0x1010_0000; 2 MiB                                  |
  * | FLASH                 | 0x0010_0000 | 0x0020_0000 | S  | Secure alias for NS BRAM                            |
- * | SRAM01                | 0x1430_0000 | 0x0010_0000 | NS | 2 banks of 512 kiB; 3cc latency)                    |
- * | SRAM01                | 0x0430_0000 | 0x0010_0000 | S  | Secure alias for NS internal SRAM                   |
+ * | SRAM01                | 0x3010_0000 | 0x0010_0000 | NS | 2 banks of 512 kiB; 3cc latency)                    |
+ * | SRAM01                | 0x2010_0000 | 0x0010_0000 | S  | Secure alias for NS internal SRAM                   |
  * | DTCM                  | 0x3000_0000 | 0x0002_0000 | NS | 0x3000_0000; 128 kiB.                               |
  * | DTCM                  | 0x2000_0000 | 0x0002_0000 | S  | Secure alias for NS DTCM                            |
  * +-----------------------+-------------+-------------+----+-----------------------------------------------------+
@@ -70,7 +70,7 @@ MEMORY
 {
   ITCM   (rx)  : ORIGIN = 0x00000000, LENGTH = 0x00020000
   FLASH  (rx)  : ORIGIN = 0x00100000, LENGTH = 0x00200000
-  SRAM01 (rwx) : ORIGIN = 0x04300000, LENGTH = 0x00100000
+  SRAM01 (rwx) : ORIGIN = 0x20100000, LENGTH = 0x00100000
   DTCM   (rwx) : ORIGIN = 0x20000000, LENGTH = 0x00020000
 }
 
