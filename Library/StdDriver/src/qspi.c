@@ -632,7 +632,7 @@ uint32_t QSPI_GetIntFlag(QSPI_T *qspi, uint32_t u32Mask)
 {
     uint32_t u32IntFlag = 0U, u32TmpVal;
 
-    u32TmpVal = qspi->STATUS & QSPI_STATUS_UNITIF_Msk;
+    u32TmpVal = (qspi->STATUS & QSPI_STATUS_UNITIF_Msk);
 
     /* Check unit transfer interrupt flag */
     if ((u32Mask & QSPI_UNIT_INT_MASK) && (u32TmpVal))
@@ -640,7 +640,7 @@ uint32_t QSPI_GetIntFlag(QSPI_T *qspi, uint32_t u32Mask)
         u32IntFlag |= QSPI_UNIT_INT_MASK;
     }
 
-    u32TmpVal = qspi->STATUS & QSPI_STATUS_SSACTIF_Msk;
+    u32TmpVal = (qspi->STATUS & QSPI_STATUS_SSACTIF_Msk);
 
     /* Check slave selection signal active interrupt flag */
     if ((u32Mask & QSPI_SSACT_INT_MASK) && (u32TmpVal))
@@ -648,7 +648,7 @@ uint32_t QSPI_GetIntFlag(QSPI_T *qspi, uint32_t u32Mask)
         u32IntFlag |= QSPI_SSACT_INT_MASK;
     }
 
-    u32TmpVal = qspi->STATUS & QSPI_STATUS_SSINAIF_Msk;
+    u32TmpVal = (qspi->STATUS & QSPI_STATUS_SSINAIF_Msk);
 
     /* Check slave selection signal inactive interrupt flag */
     if ((u32Mask & QSPI_SSINACT_INT_MASK) && (u32TmpVal))
@@ -656,7 +656,7 @@ uint32_t QSPI_GetIntFlag(QSPI_T *qspi, uint32_t u32Mask)
         u32IntFlag |= QSPI_SSINACT_INT_MASK;
     }
 
-    u32TmpVal = qspi->STATUS & QSPI_STATUS_SLVURIF_Msk;
+    u32TmpVal = (qspi->STATUS & QSPI_STATUS_SLVURIF_Msk);
 
     /* Check slave TX under run interrupt flag */
     if ((u32Mask & QSPI_SLVUR_INT_MASK) && (u32TmpVal))
@@ -664,7 +664,7 @@ uint32_t QSPI_GetIntFlag(QSPI_T *qspi, uint32_t u32Mask)
         u32IntFlag |= QSPI_SLVUR_INT_MASK;
     }
 
-    u32TmpVal = qspi->STATUS & QSPI_STATUS_SLVBEIF_Msk;
+    u32TmpVal = (qspi->STATUS & QSPI_STATUS_SLVBEIF_Msk);
 
     /* Check slave bit count error interrupt flag */
     if ((u32Mask & QSPI_SLVBE_INT_MASK) && (u32TmpVal))
@@ -672,7 +672,7 @@ uint32_t QSPI_GetIntFlag(QSPI_T *qspi, uint32_t u32Mask)
         u32IntFlag |= QSPI_SLVBE_INT_MASK;
     }
 
-    u32TmpVal = qspi->STATUS & QSPI_STATUS_TXUFIF_Msk;
+    u32TmpVal = (qspi->STATUS & QSPI_STATUS_TXUFIF_Msk);
 
     /* Check slave TX underflow interrupt flag */
     if ((u32Mask & QSPI_TXUF_INT_MASK) && (u32TmpVal))
@@ -680,7 +680,7 @@ uint32_t QSPI_GetIntFlag(QSPI_T *qspi, uint32_t u32Mask)
         u32IntFlag |= QSPI_TXUF_INT_MASK;
     }
 
-    u32TmpVal = qspi->STATUS & QSPI_STATUS_TXTHIF_Msk;
+    u32TmpVal = (qspi->STATUS & QSPI_STATUS_TXTHIF_Msk);
 
     /* Check TX threshold interrupt flag */
     if ((u32Mask & QSPI_FIFO_TXTH_INT_MASK) && (u32TmpVal))
@@ -688,7 +688,7 @@ uint32_t QSPI_GetIntFlag(QSPI_T *qspi, uint32_t u32Mask)
         u32IntFlag |= QSPI_FIFO_TXTH_INT_MASK;
     }
 
-    u32TmpVal = qspi->STATUS & QSPI_STATUS_RXTHIF_Msk;
+    u32TmpVal = (qspi->STATUS & QSPI_STATUS_RXTHIF_Msk);
 
     /* Check RX threshold interrupt flag */
     if ((u32Mask & QSPI_FIFO_RXTH_INT_MASK) && (u32TmpVal))
@@ -696,7 +696,7 @@ uint32_t QSPI_GetIntFlag(QSPI_T *qspi, uint32_t u32Mask)
         u32IntFlag |= QSPI_FIFO_RXTH_INT_MASK;
     }
 
-    u32TmpVal = qspi->STATUS & QSPI_STATUS_RXOVIF_Msk;
+    u32TmpVal = (qspi->STATUS & QSPI_STATUS_RXOVIF_Msk);
 
     /* Check RX overrun interrupt flag */
     if ((u32Mask & QSPI_FIFO_RXOV_INT_MASK) && (u32TmpVal))
@@ -704,7 +704,7 @@ uint32_t QSPI_GetIntFlag(QSPI_T *qspi, uint32_t u32Mask)
         u32IntFlag |= QSPI_FIFO_RXOV_INT_MASK;
     }
 
-    u32TmpVal = qspi->STATUS & QSPI_STATUS_RXTOIF_Msk;
+    u32TmpVal = (qspi->STATUS & QSPI_STATUS_RXTOIF_Msk);
 
     /* Check RX time-out interrupt flag */
     if ((u32Mask & QSPI_FIFO_RXTO_INT_MASK) && (u32TmpVal))
@@ -797,7 +797,7 @@ uint32_t QSPI_GetStatus(QSPI_T *qspi, uint32_t u32Mask)
 {
     uint32_t u32Flag = 0U, u32TmpValue;
 
-    u32TmpValue = qspi->STATUS & QSPI_STATUS_BUSY_Msk;
+    u32TmpValue = (qspi->STATUS & QSPI_STATUS_BUSY_Msk);
 
     /* Check busy status */
     if ((u32Mask & QSPI_BUSY_MASK) && (u32TmpValue))
@@ -805,7 +805,7 @@ uint32_t QSPI_GetStatus(QSPI_T *qspi, uint32_t u32Mask)
         u32Flag |= QSPI_BUSY_MASK;
     }
 
-    u32TmpValue = qspi->STATUS & QSPI_STATUS_RXEMPTY_Msk;
+    u32TmpValue = (qspi->STATUS & QSPI_STATUS_RXEMPTY_Msk);
 
     /* Check RX empty flag */
     if ((u32Mask & QSPI_RX_EMPTY_MASK) && (u32TmpValue))
@@ -813,7 +813,7 @@ uint32_t QSPI_GetStatus(QSPI_T *qspi, uint32_t u32Mask)
         u32Flag |= QSPI_RX_EMPTY_MASK;
     }
 
-    u32TmpValue = qspi->STATUS & QSPI_STATUS_RXFULL_Msk;
+    u32TmpValue = (qspi->STATUS & QSPI_STATUS_RXFULL_Msk);
 
     /* Check RX full flag */
     if ((u32Mask & QSPI_RX_FULL_MASK) && (u32TmpValue))
@@ -821,7 +821,7 @@ uint32_t QSPI_GetStatus(QSPI_T *qspi, uint32_t u32Mask)
         u32Flag |= QSPI_RX_FULL_MASK;
     }
 
-    u32TmpValue = qspi->STATUS & QSPI_STATUS_TXEMPTY_Msk;
+    u32TmpValue = (qspi->STATUS & QSPI_STATUS_TXEMPTY_Msk);
 
     /* Check TX empty flag */
     if ((u32Mask & QSPI_TX_EMPTY_MASK) && (u32TmpValue))
@@ -829,7 +829,7 @@ uint32_t QSPI_GetStatus(QSPI_T *qspi, uint32_t u32Mask)
         u32Flag |= QSPI_TX_EMPTY_MASK;
     }
 
-    u32TmpValue = qspi->STATUS & QSPI_STATUS_TXFULL_Msk;
+    u32TmpValue = (qspi->STATUS & QSPI_STATUS_TXFULL_Msk);
 
     /* Check TX full flag */
     if ((u32Mask & QSPI_TX_FULL_MASK) && (u32TmpValue))
@@ -837,7 +837,7 @@ uint32_t QSPI_GetStatus(QSPI_T *qspi, uint32_t u32Mask)
         u32Flag |= QSPI_TX_FULL_MASK;
     }
 
-    u32TmpValue = qspi->STATUS & QSPI_STATUS_TXRXRST_Msk;
+    u32TmpValue = (qspi->STATUS & QSPI_STATUS_TXRXRST_Msk);
 
     /* Check TX/RX reset flag */
     if ((u32Mask & QSPI_TXRX_RESET_MASK) && (u32TmpValue))
@@ -845,7 +845,7 @@ uint32_t QSPI_GetStatus(QSPI_T *qspi, uint32_t u32Mask)
         u32Flag |= QSPI_TXRX_RESET_MASK;
     }
 
-    u32TmpValue = qspi->STATUS & QSPI_STATUS_QSPIENSTS_Msk;
+    u32TmpValue = (qspi->STATUS & QSPI_STATUS_QSPIENSTS_Msk);
 
     /* Check QSPIEN flag */
     if ((u32Mask & QSPI_QSPIEN_STS_MASK) && (u32TmpValue))
@@ -853,7 +853,7 @@ uint32_t QSPI_GetStatus(QSPI_T *qspi, uint32_t u32Mask)
         u32Flag |= QSPI_QSPIEN_STS_MASK;
     }
 
-    u32TmpValue = qspi->STATUS & QSPI_STATUS_SSLINE_Msk;
+    u32TmpValue = (qspi->STATUS & QSPI_STATUS_SSLINE_Msk);
 
     /* Check QSPIx_SS line status */
     if ((u32Mask & QSPI_SSLINE_STS_MASK) && (u32TmpValue))

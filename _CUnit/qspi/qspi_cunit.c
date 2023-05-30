@@ -264,7 +264,7 @@ void QSPI_CLK_Sel(uint32_t u32Module, uint32_t u32ClkSrc)
 
 int QSPI_Tests_Init(void)
 {
-    QSPI_CLK_Sel(GetQSPIModuleIdx(), eSPI_CLK_HIRC48M);
+    QSPI_CLK_Sel(GetQSPIModuleIdx(), eSPI_CLK_PCLK);
 
     return 0;
 }
@@ -274,6 +274,46 @@ int QSPI_Tests_Clean(void)
     QSPI_ClkDisable(GetQSPIModuleIdx());
 
     return 0;
+}
+
+void QSPI_DisableSelfTest(uint32_t u32QSPIModuleIdx)
+{
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    if (u32QSPIModuleIdx == C_QSPI0)
+    {
+        outp32(QSPI0_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
+    }
+    else if (u32QSPIModuleIdx == C_QSPI1)
+    {
+        outp32(QSPI1_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
+    }
+
+    SYS->ALTCTL0 &= ~SYS_ALTCTL0_SELFTEST_Msk;
+
+    /* Lock protected registers */
+    SYS_LockReg();
+}
+
+void QSPI_EnableSelfTest(uint32_t u32QSPIModuleIdx)
+{
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    if (u32QSPIModuleIdx == C_QSPI0)
+    {
+        outp32(QSPI0_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
+    }
+    else if (u32QSPIModuleIdx == C_QSPI1)
+    {
+        outp32(QSPI1_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
+    }
+
+    SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
+
+    /* Lock protected registers */
+    SYS_LockReg();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -765,8 +805,11 @@ void API_QSPI_Open()
     QSPIModule = (QSPI_T *)GetQSPIModule(GetQSPIModuleIdx());
 
     u32ReturnValue = QSPI_Open(QSPIModule, QSPI_MASTER, QSPI_MODE_0, 8, 1000000);
-    CU_ASSERT(QSPIModule->CTL == ((0x8 << QSPI_CTL_DWIDTH_Pos) | QSPI_CTL_TXNEG_Msk | QSPI_CTL_QSPIEN_Msk)); //0x00000805
-    CU_ASSERT(QSPIModule->CLKDIV == 0x000000B);
+    CU_ASSERT(QSPIModule->CTL == ((0x8 << QSPI_CTL_DWIDTH_Pos) |
+                                  QSPI_CTL_TXNEG_Msk |
+                                  QSPI_CTL_QSPIEN_Msk)); //0x00000805
+    //printf("QSPIModule->CLKDIV = %x\r\n", QSPIModule->CLKDIV);
+    CU_ASSERT(QSPIModule->CLKDIV == 0x0000002F);
     CU_ASSERT(QSPIModule->SSCTL == 0);
     CU_ASSERT(u32ReturnValue == 1000000);
     /* Reset QSPI0 */
@@ -1076,9 +1119,7 @@ void API_QSPI_GetIntFlag_ClearIntFlag()
         PA2 = 0;
 
         /* Enable self-test function */
-        //outp32(0x40000014, 1);
-        outp32(QSPI0_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
-        //SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
+        QSPI_EnableSelfTest(GetQSPIModuleIdx());
 
         /* Set PA.3 (QSPI0_SS) to high level */
         PA3 = 1;
@@ -1097,9 +1138,8 @@ void API_QSPI_GetIntFlag_ClearIntFlag()
         PC4 = 0;
 
         /* Enable self-test function */
-        //outp32(0x40000014, 1);
-        outp32(QSPI1_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
-        //SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
+        /* Enable self-test function */
+        QSPI_EnableSelfTest(GetQSPIModuleIdx());
 
         /* Set PC.5 (QSPI1_SS) to high level */
         PC5 = 1;
@@ -1133,7 +1173,6 @@ void API_QSPI_GetIntFlag_ClearIntFlag()
 
     /* Check slave selection signal active interrupt flag */
     CU_ASSERT(QSPI_GetIntFlag(QSPIModule, QSPI_SSACT_INT_MASK) == QSPI_SSACT_INT_MASK);
-    //printf("\r\nInt flag = %x\r\n", QSPI_GetIntFlag(QSPIModule, QSPI_TXUF_INT_MASK));
     QSPI_ClearIntFlag(QSPIModule, QSPI_SSACT_INT_MASK);
     CU_ASSERT(QSPI_GetIntFlag(QSPIModule, QSPI_SSACT_INT_MASK) == 0);
     CU_ASSERT(QSPI_GetIntFlag(QSPIModule, QSPI_SSINACT_INT_MASK) == 0);
@@ -1188,20 +1227,15 @@ void API_QSPI_GetIntFlag_ClearIntFlag()
     CU_ASSERT(QSPI_GetIntFlag(QSPIModule, QSPI_SLVUR_INT_MASK) == 0);
 
     /* Disable self-test function */
-    //outp32(0x40000014, 0);
+    QSPI_DisableSelfTest(GetQSPIModuleIdx());
+
     if (GetQSPIModuleIdx() == C_QSPI0)
     {
-        outp32(QSPI0_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
-        //SYS->ALTCTL0 &= ~SYS_ALTCTL0_SELFTEST_Msk;
-
         /* Set QSPI0_CLK as SPI function pin */
         QSPI0_CLK_PIN_INIT;
     }
     else if (GetQSPIModuleIdx() == C_QSPI1)
     {
-        outp32(QSPI1_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
-        //SYS->ALTCTL0 &= ~SYS_ALTCTL0_SELFTEST_Msk;
-
         /* Set QSPI1_CLK as SPI function pin */
         QSPI1_CLK_PIN_INIT;
     }
@@ -1390,8 +1424,7 @@ void API_QSPI_GetStatus()
         GPIO_SetMode(PA, BIT3, GPIO_MODE_OUTPUT);
 
         /* Enable self-test function */
-        //outp32(0x40000014, 1);
-        outp32(QSPI0_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
+        QSPI_EnableSelfTest(GetQSPIModuleIdx());
 
         /* Set PA.3 (QSPI0_SS) to high level */
         PA3 = 1;
@@ -1403,7 +1436,7 @@ void API_QSPI_GetStatus()
         GPIO_SetMode(PC, BIT5, GPIO_MODE_OUTPUT);
 
         /* Enable self-test function */
-        outp32(QSPI1_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
+        QSPI_EnableSelfTest(GetQSPIModuleIdx());
 
         PC5 = 1;
     }
@@ -1435,14 +1468,7 @@ void API_QSPI_GetStatus()
     __NOP();
 
     /* Disable self-test function */
-    if (GetQSPIModuleIdx() == C_QSPI0)
-    {
-        outp32(QSPI0_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
-    }
-    else if (GetQSPIModuleIdx() == C_QSPI1)
-    {
-        outp32(QSPI1_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
-    }
+    QSPI_DisableSelfTest(GetQSPIModuleIdx());
 
     /* Reset QSPI0 */
     ResetQSPI(GetQSPIModuleIdx());
@@ -1480,23 +1506,23 @@ CU_TestInfo QSPI_MacroTests[] =
 
 CU_TestInfo QSPI_ApiTests[] =
 {
-    //{"SPI Open", API_QSPI_Open},
-    //{"SPI Close", API_QSPI_Close},
-    //{"Clear SPI RX FIFO", API_QSPI_ClearRxFIFO},
-    //{"Clear SPI TX FIFO", API_QSPI_ClearTxFIFO},
-    //{"Enable/Disable SPI automatic slave selection function", API_QSPI_EnableAutoSS_DisableAutoSS},
-    //{"Set/Get SPI bus clock rate", API_QSPI_SetBusClock_GetBusClock},
-    //{"Set SPI FIFO threshold", API_QSPI_SetFIFO},
-    //{"Enable/Disable SPI interrupt function", API_QSPI_EnableInt_DisableInt},
+    {"SPI Open", API_QSPI_Open},
+    {"SPI Close", API_QSPI_Close},
+    {"Clear SPI RX FIFO", API_QSPI_ClearRxFIFO},
+    {"Clear SPI TX FIFO", API_QSPI_ClearTxFIFO},
+    {"Enable/Disable SPI automatic slave selection function", API_QSPI_EnableAutoSS_DisableAutoSS},
+    {"Set/Get SPI bus clock rate", API_QSPI_SetBusClock_GetBusClock},
+    {"Set SPI FIFO threshold", API_QSPI_SetFIFO},
+    {"Enable/Disable SPI interrupt function", API_QSPI_EnableInt_DisableInt},
     {"Get/Clear SPI interrupt flag", API_QSPI_GetIntFlag_ClearIntFlag},
-    //{"Get SPI status", API_QSPI_GetStatus},
+    {"Get SPI status", API_QSPI_GetStatus},
 
     CU_TEST_INFO_NULL
 };
 
 CU_SuiteInfo suites[] =
 {
-    //{"QSPI MACRO", QSPI_Tests_Init, QSPI_Tests_Clean, NULL, NULL, QSPI_MacroTests},
+    {"QSPI MACRO", QSPI_Tests_Init, QSPI_Tests_Clean, NULL, NULL, QSPI_MacroTests},
     {"QSPI API", QSPI_Tests_Init, QSPI_Tests_Clean, NULL, NULL, QSPI_ApiTests},
     CU_SUITE_INFO_NULL
 };
