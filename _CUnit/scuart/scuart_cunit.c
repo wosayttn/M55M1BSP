@@ -248,7 +248,7 @@ void MACRO_CONSTANT_Test(void)
         SCUART_WRITE(pSC[port], 0xB5);
         CU_ASSERT_EQUAL(SCUART_IS_TX_FULL(pSC[port]), 1);
         SCUART_WAIT_TX_EMPTY(pSC[port]) {};
-        printf("port%d, [INIT 0x%08x]\n", port,pSC[port]->INTSTS);
+        //printf("port%d, [INIT 0x%08x]\n", port,pSC[port]->INTSTS);
         CU_ASSERT_EQUAL(SCUART_GET_INT_FLAG(pSC[port], SC_INTSTS_TERRIF_Msk), 1);
         
         CU_ASSERT_EQUAL(SCUART_GET_ERR_FLAG(pSC[port]), 0);
@@ -262,7 +262,7 @@ void MACRO_CONSTANT_Test(void)
 
         CLK_SysTickDelay(10000);
             
-        printf("port%d, [INIT 0x%08x]\n", port,pSC[port]->INTSTS);    
+        //printf("port%d, [INIT 0x%08x]\n", port,pSC[port]->INTSTS);    
         CU_ASSERT_EQUAL(SCUART_GET_INT_FLAG(pSC[port], SC_INTSTS_TBEIF_Msk), 1);   
 
         i = 0;

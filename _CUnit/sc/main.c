@@ -69,7 +69,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
     
     /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_200MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
@@ -94,10 +94,7 @@ void SYS_Init(void)
     CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, 0);
     CLK_SetModuleClock(SC0_MODULE, CLK_SCSEL_SC0SEL_HIRC, CLK_SCDIV_SC0DIV(12));
     CLK_SetModuleClock(SC1_MODULE, CLK_SCSEL_SC1SEL_HIRC, CLK_SCDIV_SC1DIV(12));
-    CLK_SetModuleClock(SC2_MODULE, CLK_SCSEL_SC2SEL_HIRC, CLK_SCDIV_SC2DIV(12));
-    //CLK_SetModuleClock(SC0_MODULE, CLK_SCSEL_SC0SEL_PCLK1, CLK_SCDIV_SC0DIV(12));
-    //CLK_SetModuleClock(SC1_MODULE, CLK_SCSEL_SC1SEL_PCLK3, CLK_SCDIV_SC1DIV(12));
-    //CLK_SetModuleClock(SC2_MODULE, CLK_SCSEL_SC2SEL_PCLK1, CLK_SCDIV_SC2DIV(12));    
+    CLK_SetModuleClock(SC2_MODULE, CLK_SCSEL_SC2SEL_HIRC, CLK_SCDIV_SC2DIV(12));   
     
     SystemCoreClockUpdate();
 
@@ -123,14 +120,6 @@ int32_t main(void)
     /* Init DEBUG_PORT to 115200-8N1 for printf */
     DEBUG_PORT_Init(DEBUG_PORT, 115200);
     
-    
-    //printf("PCLK1 :%d,DIV %d\r\n",CLK_GetPCLK1Freq(),(uint32_t)((CLK_GetPCLK1Freq()/12)/1000));
-    //printf("PCLK3 :%d,DIV %d\r\n",CLK_GetPCLK3Freq(),(uint32_t)((CLK_GetPCLK3Freq()/12)/1000));
-    //
-    //printf("sc0%d\n",SC_GetInterfaceClock(SC0));
-    //printf("sc1%d\n",SC_GetInterfaceClock(SC1));
-    //printf("sc2%d\n",SC_GetInterfaceClock(SC2));
-
     if (CU_initialize_registry())
     {
         fprintf(stderr, " Initialization of Test Registry failed. ");
