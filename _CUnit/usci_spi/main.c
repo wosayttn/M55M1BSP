@@ -48,6 +48,7 @@
 
 //------------------------------------------------------------------------------
 //#define PLL_CLOCK       100000000
+#define USE_HXT_SRC         (1)
 
 //------------------------------------------------------------------------------
 // Internal funcfion definition
@@ -94,7 +95,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
 #if (USE_HXT_SRC == 1)
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HXT, CLK_ACLKDIV_ACLKDIV(1));
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC48M, CLK_ACLKDIV_ACLKDIV(1));
 #else
     /* Switch SCLK clock source to HIRC before PLL setting */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC, CLK_ACLKDIV_ACLKDIV(1));
@@ -112,13 +113,11 @@ void SYS_Init(void)
     CLK_SET_HCLK2DIV(1);
 
     /* Set both PCLK0 and PCLK1 as HCLK/2 */
-    //CLK->PCLKDIV = CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2;
     CLK_PCLKDIV_PCLK0DIV(1);
     CLK_PCLKDIV_PCLK1DIV(1);
     CLK_PCLKDIV_PCLK2DIV(1);
     CLK_PCLKDIV_PCLK3DIV(1);
     CLK_PCLKDIV_PCLK4DIV(1);
-    //CLK_PCLKDIV_PCLK5DIV(1);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -138,7 +137,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOJ_MODULE);
 
     /* Lock protected registers */
-    SYS_LockReg();
+    //SYS_LockReg();
 
     USPI0_MOSI_PIN_INIT();
     USPI0_MISO_PIN_INIT();

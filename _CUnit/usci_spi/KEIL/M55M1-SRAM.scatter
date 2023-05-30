@@ -8,8 +8,8 @@
 /* https://github.com/ARM-software/CMSIS_5/tree/develop/Device/ARM/ARMCM55/Source/ARM */
 
 /*
- * This is a simplified picture of the NuMicro TC8263 memory system.
- * Please refer to the NuMicro TC8263 Technical Reference Manual for
+ * This is a simplified picture of the NuMicro M55M1 memory system.
+ * Please refer to the NuMicro M55M1 Technical Reference Manual for
  * further information.
  *
  * +---------------+   +---------------+  +--------------------------+
@@ -64,7 +64,7 @@
  *        memory banks.
  */
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-#include "partition_TC8263.h"
+#include "partition_M55M1.h"
 #endif
 
 /*
@@ -114,14 +114,12 @@
 #define DTCM_START      0x20000000
 #define DTCM_SIZE       0x00020000
 #define SRAM2_START     0x20200000
-#define SRAM2_SIZE      (0x80000 - ITCM_SIZE - DTCM_SIZE)
-#define SRAM3_START     0x20300000
-#define SRAM3_SIZE      0x2000
+#define SRAM2_SIZE      0x00050000
 
 /*----------------------------------------------------------------------------
   User Stack & Heap boundary definition
  *----------------------------------------------------------------------------*/
-#define __STACK_TOP    (SRAM01_START + SRAM01_SIZE - __STACKSEAL_SIZE)  /* starts at end of RAM - 8 byte stack seal */
+#define __STACK_TOP    (SRAM2_START + SRAM2_SIZE - __STACKSEAL_SIZE)    /* starts at end of RAM - 8 byte stack seal */
 #define __HEAP_BASE    (AlignExpr(+0, 8))                               /* starts after RW_RAM section, 8 byte aligned */
 
 /* ----------------------------------------------------------------------------
@@ -147,8 +145,8 @@
 #define __RO_BASE           ( FLASH_START )
 #define __RO_SIZE           ( FLASH_SIZE - TZ_NSC_SIZE )
 
-#define __RW_BASE           ( SRAM01_START )
-#define __RW_SIZE           ( SRAM01_SIZE - STACK_SIZE - HEAP_SIZE )
+#define __RW_BASE           ( SRAM2_START )
+#define __RW_SIZE           ( SRAM2_SIZE - STACK_SIZE - HEAP_SIZE )
 
 
 /*----------------------------------------------------------------------------
@@ -159,7 +157,7 @@ LR_ROM __RW_BASE __RW_SIZE  {                       ; load region size_region
         *.o (RESET, +First)
         *(InRoot$$Sections)
         ; Make sure reset_handler ends up in root segment
-        startup_TC8263.o
+        startup_M55M1.o
         .ANY (+RO)
 		.ANY (+RW +ZI)
     }

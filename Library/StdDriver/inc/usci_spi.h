@@ -156,9 +156,9 @@ extern "C"
 #define USPI_SET_SS_LOW(uspi)                    \
   do                                             \
   {                                              \
-    uspi->LINECTL |= (USPI_LINECTL_CTLOINV_Msk); \
-    uspi->PROTCTL &= ~(USPI_PROTCTL_AUTOSS_Msk); \
-    uspi->PROTCTL &= ~USPI_PROTCTL_SS_Msk;       \
+    uspi->LINECTL |= USPI_LINECTL_CTLOINV_Msk;   \
+    uspi->PROTCTL &= ~(USPI_PROTCTL_AUTOSS_Msk | \
+                       USPI_PROTCTL_SS_Msk);     \
   } while (0)
 
 /**
@@ -190,10 +190,10 @@ extern "C"
   * @param[in]  uspi The pointer of the specified USCI_SPI module.
   * \hideinitializer
   */
-#define USPI_SET_MSB_FIRST(uspi)            \
-  do                                        \
-  {                                         \
-    uspi->LINECTL &= ~USPI_LINECTL_LSB_Msk; \
+#define USPI_SET_MSB_FIRST(uspi)              \
+  do                                          \
+  {                                           \
+    uspi->LINECTL &= ~(USPI_LINECTL_LSB_Msk); \
   } while (0)
 
 /**
@@ -206,11 +206,7 @@ extern "C"
   do                                                            \
   {                                                             \
     uspi->LINECTL &= ~(USPI_LINECTL_DWIDTH_Msk);                \
-    if ((u32Width) == 16ul)                                     \
-    {                                                           \
-      uspi->LINECTL |= (0 << USPI_LINECTL_DWIDTH_Pos);          \
-    }                                                           \
-    else                                                        \
+    if (u32Width != 16ul)                                       \
     {                                                           \
       uspi->LINECTL |= ((u32Width) << USPI_LINECTL_DWIDTH_Pos); \
     }                                                           \
@@ -272,7 +268,7 @@ extern "C"
 #define USPI_CLR_PROT_INT_FLAG(uspi, u32IntTypeFlag) \
   do                                                 \
   {                                                  \
-    uspi->PROTSTS |= u32IntTypeFlag;                 \
+    uspi->PROTSTS = u32IntTypeFlag;                  \
   } while (0)
 
 /**
