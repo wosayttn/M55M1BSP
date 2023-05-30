@@ -31,7 +31,6 @@
 
 #include "inference_process.hpp"
 
-//#include "cmsis_compiler.h"
 #include "M55M1.h"
 
 #include <inttypes.h>

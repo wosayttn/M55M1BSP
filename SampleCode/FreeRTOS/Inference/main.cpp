@@ -33,6 +33,7 @@
 #include "ethosu_driver.h"
 
 #include "inference_process.hpp"
+#include "arm_profiler.hpp"
 
 // Model data (Defined & changable by modifiying compile definition in CMakeLists.txt)
 #include "input.h"
@@ -229,7 +230,7 @@ void inferenceSenderTask(void *pvParameters) {
         printf("Sending inference job: job=%p, name=%s\n", job, job->name.c_str());
         xQueueSend(inferenceProcessQueue, &job, portMAX_DELAY);
     }
-
+	
     // Listen for completion status
     do {
         xInferenceJob *pSendJob;
@@ -470,5 +471,6 @@ void vApplicationTickHook( void )
 	vQueueSetAccessQueueSetFromISR() is part of the "standard demo tasks"
 	functionality. */
 
+	Profiler_Tick_Hook();
 }
 /*-----------------------------------------------------------*/

@@ -82,8 +82,8 @@
           <AfterMake>
             <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>1</RunUserProg2>
-            <UserProg1Name>fromelf --bin --output=mps3_image\ "$L@L.axf"</UserProg1Name>
-            <UserProg2Name>fromelf --text -c "$L@L.axf" --output=outfile.lst</UserProg2Name>
+            <UserProg1Name>fromelf --bin --output=release\ "$L@L.axf"</UserProg1Name>
+            <UserProg2Name>..\..\..\binToDat.bat ".\Objects\@L.axf"</UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
             <nStopA1X>0</nStopA1X>
@@ -373,7 +373,7 @@
             <ScatterFile>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\ARM\M55M1.scatter</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
-            <Misc></Misc>
+            <Misc>--predefine="-DHEAP_SIZE=0x20000" --predefine="-DSTACK_SIZE=0x40000"</Misc>
             <LinkerInputFile></LinkerInputFile>
             <DisabledWarnings></DisabledWarnings>
           </LDads>
@@ -461,7 +461,7 @@
             <File>
               <FileName>cmsis_nn.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>C:\NuMicro Projects\M55M1_PRJ\bsp\Library\CMSIS\Lib\KEIL\cmsis_nn.lib</FilePath>
+              <FilePath>..\..\..\..\Library\CMSIS\Lib\KEIL\cmsis_nn.lib</FilePath>
             </File>
             <File>
               <FileName>FreeRTOS.lib</FileName>

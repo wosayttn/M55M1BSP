@@ -23,6 +23,8 @@
 #include "tensorflow/lite/micro/micro_profiler.h"
 #include <memory>
 
+void Profiler_Tick_Hook(void);
+
 // TODO: Merge this profiler with EthosUprofiler.
 namespace tflite {
 class ArmProfiler : public MicroProfiler {

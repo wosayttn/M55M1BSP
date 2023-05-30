@@ -26,6 +26,31 @@
 #include <inttypes.h>
 #include <stdio.h>
 
+#include "NuMicro.h"
+
+
+static uint64_t cpu_cycle_count = 0;
+
+void Profiler_Tick_Hook(void)
+{
+    /* Increment the cycle counter based on load value. */
+    cpu_cycle_count += SysTick->LOAD + 1;
+}
+
+/**
+ * Gets the current SysTick derived counter value
+ */
+static uint64_t Get_SysTick_Cycle_Count(void)
+{
+    uint32_t systick_val;
+
+    NVIC_DisableIRQ(SysTick_IRQn);
+    systick_val = SysTick->VAL & SysTick_VAL_CURRENT_Msk;
+    NVIC_EnableIRQ(SysTick_IRQn);
+
+    return cpu_cycle_count + (SysTick->LOAD - systick_val);
+}
+
 namespace tflite {
 
 ArmProfiler::ArmProfiler(size_t max_events) : max_events_(max_events), num_events_(0) {
@@ -41,7 +66,7 @@ uint32_t ArmProfiler::BeginEvent(const char *tag) {
     }
 
     tags_[num_events_]        = tag;
-    start_ticks_[num_events_] = GetCurrentTimeTicks();
+    start_ticks_[num_events_] = Get_SysTick_Cycle_Count();
     end_ticks_[num_events_]   = start_ticks_[num_events_] - 1;
 
     return num_events_++;
@@ -49,7 +74,7 @@ uint32_t ArmProfiler::BeginEvent(const char *tag) {
 
 void ArmProfiler::EndEvent(uint32_t event_handle) {
     TFLITE_DCHECK(event_handle < max_events_);
-    end_ticks_[event_handle] = GetCurrentTimeTicks();
+    end_ticks_[event_handle] = Get_SysTick_Cycle_Count();
     tflite::GetMicroErrorReporter()->Report(
         "%s : cycle_cnt : %u cycles", tags_[event_handle], end_ticks_[event_handle] - start_ticks_[event_handle]);
 }
