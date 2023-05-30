@@ -15,6 +15,7 @@
 #include "Console.h"
 #include "spi_cunit.h"
 #include "NuMicro.h"
+#include "common.h"
 
 //------------------------------------------------------------------------------
 //#define PLL_CLOCK           192000000
@@ -25,11 +26,30 @@
 void AddTests(void);
 
 //------------------------------------------------------------------------------
+int SPI_SelectModuleTest(void)
+{
+    uint32_t u32Index = 0;
+    S_TestOption sSelTestSuite[] =
+    {
+        {"SPI0 Module"},
+        {"SPI1 Module"},
+        {"SPI2 Module"},
+        {"SPI3 Module"},
+    };
+
+    printf("\r\n\r\n");
+    u32Index = GetRequireOptions(sSelTestSuite, sizeof(sSelTestSuite) / sizeof(sSelTestSuite[0]));
+
+    SetSPIModuleIdx(u32Index);
+
+    return (int)u32Index;
+}
+
 void SYS_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/
+    /*------------------------------------------------------------------------*/
+    /* Init System Clock                                                      */
+    /*------------------------------------------------------------------------*/
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -85,9 +105,6 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Lock protected registers */
-    SYS_LockReg();
-
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
     CLK_EnableModuleClock(GPIOC_MODULE);
@@ -98,6 +115,9 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOH_MODULE);
     CLK_EnableModuleClock(GPIOI_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
+
+    /* Lock protected registers */
+    //SYS_LockReg();
 }
 
 void DebugPort_Init(void)
@@ -164,9 +184,10 @@ int main()
 {
     SYS_Init();
 
+    /* Connect UART to PC, and open a terminal tool to receive following message */
     DebugPort_Init();
 
-    /* Connect UART to PC, and open a terminal tool to receive following message */
+    SPI_SelectModuleTest();
 
     /* Got no where to go, just loop forever */
     if (CU_initialize_registry())
