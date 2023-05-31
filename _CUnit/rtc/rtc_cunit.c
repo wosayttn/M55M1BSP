@@ -22,15 +22,9 @@
 #include "Console.h"
 #include "rtc_cunit.h"
 
-
-/*---------------------------------------------------------------------------------------------------------*/
-/* Includes of local headers                                                                               */
-/*---------------------------------------------------------------------------------------------------------*/
-#include "CUnit.h"
-#include "Console.h"
-
 //#define D_msg   printf
 #define D_msg(...)
+//#define _PZ1_EMU_
 
 
 extern unsigned int STATE0; 
@@ -82,7 +76,10 @@ void Timer0_Init(uint32_t u32ClkSrc)
         //CLK->CLKSEL1 = (CLK->CLKSEL1&~CLK_CLKSEL1_TMR0SEL_Msk) | CLK_CLKSEL1_TMR0SEL_HXT;
         CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_HIRC, 0);
     }
-
+    /* Enable Clock Timer 0 module plck */
+    CLK_EnableModuleClock(TMR0_MODULE);
+    
+    TIMER0->CNT = 0;
     TIMER0->CMP = 0xFFFFFF;
     if(u32ClkSrc == CLK_TMRSEL_TMR0SEL_LIRC) {
         /* Enable LIRC */
@@ -413,7 +410,7 @@ void CONSTANT_RTC(void)
             RTC_StaticTamperDisable(u32TamperSel);
         }
                     
-        CU_ASSERT_EQUAL(MAX_TAMPER_PIN_NUM, 3);             
+        CU_ASSERT_EQUAL(MAX_PAIR_NUM, 3);             
         {
             uint32_t u32PairSel = (RTC_PAIR0_SELECT|RTC_PAIR1_SELECT|RTC_PAIR2_SELECT);
 			uint32_t u32Pair1Source = 0;
@@ -651,11 +648,18 @@ void MACRO_RTC(void)
             }                    
         }
         u32Value = Timer0_GetCounter();
-        D_msg("CNT: %d\n", u32Value);
+        printf("CNT: %d\n", u32Value);
+#ifdef _PZ1_EMU_ // in pz1 LXT is 3.276Mhz   
+        if((u32Value > (78+5)) || (u32Value < (78-5))) {
+            CU_FAIL("TICK Period FAIL");
+            return ;
+        }  
+#else //for real chip  32.768Khz  
         if((u32Value > (7812+50)) || (u32Value < (7812-50))) {
             CU_FAIL("TICK Period FAIL");
             return ;
-        }
+        }      
+#endif        
         RTC_WaitAccessEnable();
         pRTC->TICK = RTC_TICK_1_SEC << RTC_TICK_TICK_Pos;  
        
@@ -696,11 +700,18 @@ void MACRO_RTC(void)
         }
         u32Value = Timer0_GetCounter();
         CU_ASSERT_EQUAL(RTC_GET_ALARM_INT_FLAG(pRTC), 0); 
-        D_msg("CNT: %d\n", u32Value);
+        printf("CNT: %d\n", u32Value);
+#ifdef _PZ1_EMU_ // in pz1 LXT is 3.276Mhz
+        if((u32Value > (10000+20)) || (u32Value < (10000-20))) {
+            CU_FAIL("ALARM Period FAIL");
+            return ;
+        }        
+#else        
         if((u32Value > (1000000+200)) || (u32Value < (1000000-200))) {
             CU_FAIL("ALARM Period FAIL");
             return ;
         }
+#endif        
         RTC_WaitAccessEnable();
         CU_ASSERT_EQUAL(pRTC->CALM, 0x00140301);
         CU_ASSERT_EQUAL(pRTC->TALM, 0x00020103);
@@ -950,15 +961,15 @@ void API_RTC_DataTime_Func(void)
     
     /* Check RTC_32KCalibration() */
         RTC_WaitAccessEnable();   
-        RTC_32KCalibration(3277365);
+        RTC_32KCalibration(327736500);
+        RTC_WaitAccessEnable();
+        CU_ASSERT_EQUAL(pRTC->FREQADJ, 0x152a);
         RTC_WaitAccessEnable();   
-        CU_ASSERT_EQUAL(pRTC->FREQADJ, 0x1529);
-        RTC_WaitAccessEnable();   
-        RTC_32KCalibration(3276325);
-        RTC_WaitAccessEnable();   
+        RTC_32KCalibration(327632500);
+        RTC_WaitAccessEnable();
         CU_ASSERT_EQUAL(pRTC->FREQADJ, 0x0B10);
         RTC_WaitAccessEnable();   
-        RTC_32KCalibration(3276800);
+        RTC_32KCalibration(327680000);
         RTC_WaitAccessEnable();   
         CU_ASSERT_EQUAL(pRTC->FREQADJ, 0x1000);
         RTC_WaitAccessEnable();   

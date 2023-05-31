@@ -444,6 +444,11 @@
               <FileType>4</FileType>
               <FilePath>..\..\common\CUnitTestM55.lib</FilePath>
             </File>
+            <File>
+              <FileName>common.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\common.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
@@ -885,6 +890,11 @@
               <FileName>CUnitTestM55.lib</FileName>
               <FileType>4</FileType>
               <FilePath>..\..\common\CUnitTestM55.lib</FilePath>
+            </File>
+            <File>
+              <FileName>common.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\common.c</FilePath>
             </File>
           </Files>
         </Group>

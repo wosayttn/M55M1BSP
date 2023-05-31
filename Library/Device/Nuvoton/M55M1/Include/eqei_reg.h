@@ -279,8 +279,6 @@ typedef struct
     __IO uint32_t UTCMP;                 /*!< [0x0024] EQEI Unit Timer Compare Register                                  */
     __I  uint32_t RESERVE1[1];
     __IO uint32_t STATUS;                /*!< [0x002c] EQEI Controller Status Register                                   */
-    __I  uint32_t RESERVE2[1011];
-    __IO uint32_t VERSION;               /*!< [0x00FFC] EQEI RTL Design Version Number                                   */
 } EQEI_T;
 
 /**

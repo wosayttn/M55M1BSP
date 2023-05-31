@@ -326,7 +326,7 @@ extern "C"
  * @details     This macro set the selected channel scatter-gather descriptor address.
  * \hideinitializer
  */
-#define PDMA_SET_SCATTER_DESC(pdma,u32Ch, u32Addr) ((uint32_t)(pdma->DSCT[(u32Ch)].NEXT = (u32Addr) - (pdma->SCATBA)))
+#define PDMA_SET_SCATTER_DESC(pdma,u32Ch, u32Addr) ((uint32_t)(pdma->DSCT[(u32Ch)].NEXT = u32Addr))
 
 /**
  * @brief       Stop the channel
@@ -376,8 +376,6 @@ void PDMA_SetTimeOut(PDMA_T * pdma, uint32_t u32Ch, uint32_t u32OnOff, uint32_t 
 void PDMA_Trigger(PDMA_T * pdma,uint32_t u32Ch);
 void PDMA_EnableInt(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32Mask);
 void PDMA_DisableInt(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32Mask);
-void PDMA_SetStride(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32DestLen, uint32_t u32SrcLen, uint32_t u32TransCount);
-void PDMA_SetRepeat(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32DestInterval, uint32_t u32SrcInterval, uint32_t u32RepeatCount);
 
 /** @} end of group PDMA_EXPORTED_FUNCTIONS */
 /** @} end of group PDMA_Driver */

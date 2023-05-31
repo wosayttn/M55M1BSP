@@ -309,8 +309,11 @@ typedef enum IRQn
 
 #include "core_cm55.h"                        /* Processor and core peripheral */
 #include "system_M55M1.h"                    /* System Header */
+#if __has_include("partition_M55M1.h")
 #include "partition_M55M1.h"
-
+#else
+#include "partition_M55M1_template.h"
+#endif
 
 /******************************************************************************/
 /*                        Peripheral Register Structures                      */
@@ -688,7 +691,8 @@ typedef enum IRQn
 #define UART7_S                   ((UART_T *)     UART7_BASE)
 #define UART8_S                   ((UART_T *)     UART8_BASE)
 #define UART9_S                   ((UART_T *)     UART9_BASE)
-#define USBH_S                    ((USBH_T *)     USBH_BASE)
+#define USBH0_S                   ((USBH_T *)     USBH0_BASE)
+#define USBH1_S                   ((USBH1_T *)    USBH1_BASE)
 #define USBD_S                    ((USBD_T *)     USBD_BASE)
 #define UI2C0_S                   ((UI2C_T *)     USCI0_BASE)
 #define USPI0_S                   ((USPI_T *)     USCI0_BASE)
@@ -807,7 +811,8 @@ typedef enum IRQn
 #define UART7_NS                  ((UART_T *)     (UART7_BASE     + NS_OFFSET))
 #define UART8_NS                  ((UART_T *)     (UART8_BASE     + NS_OFFSET))
 #define UART9_NS                  ((UART_T *)     (UART9_BASE     + NS_OFFSET))
-#define USBH_NS                   ((USBH_T *)     (USBH_BASE      + NS_OFFSET))
+#define USBH0_NS                  ((USBH_T *)     (USBH0_BASE     + NS_OFFSET))
+#define USBH1_NS                  ((USBH1_T *)    (USBH1_BASE     + NS_OFFSET))
 #define USBD_NS                   ((USBD_T *)     (USBD_BASE      + NS_OFFSET))
 #define UI2C0_NS                  ((UI2C_T *)     (USCI0_BASE     + NS_OFFSET))
 #define USPI0_NS                  ((USPI_T *)     (USCI0_BASE     + NS_OFFSET))

@@ -573,11 +573,6 @@ typedef struct
 } USBH_T;
 
 
-#define OHCI0  ((USBH_T *)USBH0_BASE)
-#define OHCI1  ((USBH_T *)USBH1_BASE)
-//#define OHCI2  ((USBH_T *)USBH2_BASE)
-
-
 /**
     @addtogroup USBH_CONST USBH Bit Field Definition
     Constant Definitions for USBH Controller

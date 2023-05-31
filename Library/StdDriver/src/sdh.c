@@ -3,8 +3,8 @@
  * @version  V1.00
  * @brief    SDH driver source file
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include <stdio.h>
@@ -23,8 +23,6 @@
 /** @addtogroup SDH_EXPORTED_FUNCTIONS SDH Exported Functions
   @{
 */
-
-#define SDH_BLOCK_SIZE   512ul
 
 /** @cond HIDDEN_SYMBOLS */
 
@@ -56,6 +54,20 @@ void *GetSDH0SDHCBuffer(void)
 void *GetSDH1SDHCBuffer(void)
 {
     return &_SDH1_ucSDHCBuffer[0];
+}
+
+void *GetSDHInfoMsg(SDH_T *sdh)
+{
+    if (sdh == SDH0)
+    {
+        return &SD0;
+    }
+    else if (sdh == SDH1)
+    {
+        return &SD1;
+    }
+
+    return NULL;
 }
 
 void SDH_CheckRB(SDH_T *sdh)
@@ -1079,12 +1091,36 @@ void SDH_Get_SD_info(SDH_T *sdh)
 
 /** @endcond HIDDEN_SYMBOLS */
 
+/**
+ *  @brief  This function use to enable interrupt.
+ *
+ *  @param[in]  sdh Select SDH0 or SDH1.
+ *
+ *  @return None
+ */
+void SDH_INT_EN(SDH_T *sdh)
+{
+    if (sdh == SDH0)
+    {
+        NVIC_EnableIRQ(SDH0_IRQn);
+        memset(&SD0, 0, sizeof(SDH_INFO_T));
+        SD0.dmabuf = _SDH0_ucSDHCBuffer;
+    }
+    else if (sdh == SDH1)
+    {
+        NVIC_EnableIRQ(SDH1_IRQn);
+        memset(&SD1, 0, sizeof(SDH_INFO_T));
+        SD1.dmabuf = _SDH1_ucSDHCBuffer;
+    }
+}
 
 /**
  *  @brief  This function use to reset SD function and select card detection source and pin.
  *
- *  @param[in]  sdh    Select SDH0 or SDH1.
- *  @param[in]  u32CardDetSrc   Select card detection pin from GPIO or DAT3 pin. ( \ref CardDetect_From_GPIO / \ref CardDetect_From_DAT3)
+ *  @param[in]  sdh Select SDH0 or SDH1.
+ *  @param[in]  u32CardDetSrc Select card detection pin from GPIO or DAT3 pin.
+ *                          - \ref CardDetect_From_GPIO
+ *                          - \ref CardDetect_From_DAT3
  *
  *  @return None
  */
@@ -1120,6 +1156,8 @@ void SDH_Open(SDH_T *sdh, uint32_t u32CardDetSrc)
         }
     }
 
+#if 0
+
     if (sdh == SDH0)
     {
         NVIC_EnableIRQ(SDH0_IRQn);
@@ -1135,6 +1173,8 @@ void SDH_Open(SDH_T *sdh, uint32_t u32CardDetSrc)
     else
     {
     }
+
+#endif //0
 
     sdh->GCTL = SDH_GCTL_SDEN_Msk;
 
@@ -1297,7 +1337,9 @@ uint32_t SDH_Read(SDH_T *sdh, uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32_
 
         if (bIsSendCmd == FALSE)
         {
-            sdh->CTL = reg | (18ul << 8) | (SDH_CTL_COEN_Msk | SDH_CTL_RIEN_Msk | SDH_CTL_DIEN_Msk);
+            sdh->CTL = reg | (18ul << 8) | (SDH_CTL_COEN_Msk |
+                                            SDH_CTL_RIEN_Msk |
+                                            SDH_CTL_DIEN_Msk);
             bIsSendCmd = TRUE;
         }
         else
@@ -1348,7 +1390,9 @@ uint32_t SDH_Read(SDH_T *sdh, uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32_
 
         if (bIsSendCmd == FALSE)
         {
-            sdh->CTL = reg | (18ul << 8) | (SDH_CTL_COEN_Msk | SDH_CTL_RIEN_Msk | SDH_CTL_DIEN_Msk);
+            sdh->CTL = reg | (18ul << 8) | (SDH_CTL_COEN_Msk |
+                                            SDH_CTL_RIEN_Msk |
+                                            SDH_CTL_DIEN_Msk);
             bIsSendCmd = TRUE;
         }
         else
@@ -1415,10 +1459,10 @@ uint32_t SDH_Read(SDH_T *sdh, uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32_
  *  @param[in]    u32StartSec   The start write sector address.
  *  @param[in]    u32SecCount   The the write sector number of data.
  *
- *  @return   \ref SDH_SELECT_ERROR : u32SecCount is zero. \n
- *            \ref SDH_NO_SD_CARD : SD card be removed. \n
- *            \ref SDH_CRC_ERROR : CRC error happen. \n
- *            \ref SDH_CRC7_ERROR : CRC7 error happen. \n
+ *  @return   \ref SDH_SELECT_ERROR : u32SecCount is zero.
+ *            \ref SDH_NO_SD_CARD : SD card be removed.
+ *            \ref SDH_CRC_ERROR : CRC error happen.
+ *            \ref SDH_CRC7_ERROR : CRC7 error happen.
  *            \ref Successful : Write data to SD card success.
  */
 uint32_t SDH_Write(SDH_T *sdh, uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32_t u32SecCount)
@@ -1476,7 +1520,9 @@ uint32_t SDH_Write(SDH_T *sdh, uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32
 
         if (!bIsSendCmd)
         {
-            sdh->CTL = reg | (25ul << 8) | (SDH_CTL_COEN_Msk | SDH_CTL_RIEN_Msk | SDH_CTL_DOEN_Msk);
+            sdh->CTL = reg | (25ul << 8) | (SDH_CTL_COEN_Msk |
+                                            SDH_CTL_RIEN_Msk |
+                                            SDH_CTL_DOEN_Msk);
             bIsSendCmd = TRUE;
         }
         else
@@ -1516,7 +1562,9 @@ uint32_t SDH_Write(SDH_T *sdh, uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32
 
         if (!bIsSendCmd)
         {
-            sdh->CTL = reg | (25ul << 8) | (SDH_CTL_COEN_Msk | SDH_CTL_RIEN_Msk | SDH_CTL_DOEN_Msk);
+            sdh->CTL = reg | (25ul << 8) | (SDH_CTL_COEN_Msk |
+                                            SDH_CTL_RIEN_Msk |
+                                            SDH_CTL_DOEN_Msk);
             bIsSendCmd = TRUE;
         }
         else

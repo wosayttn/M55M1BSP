@@ -48,7 +48,6 @@ void SYS_Init(void)
 
     /* Enable HXT Clock Source */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
-#if 1
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Enable MIRC Clock Source */
@@ -99,14 +98,9 @@ void SYS_Init(void)
     CLK_PCLKDIV_PCLK2DIV(1);
     CLK_PCLKDIV_PCLK3DIV(1);
     CLK_PCLKDIV_PCLK4DIV(1);
-    //CLK_PCLKDIV_PCLK5DIV(1);
-#endif //0
 
     /* Update System Core Clock */
     SystemCoreClockUpdate();
-
-    CLK_EnableModuleClock(QSPI0_MODULE);
-    CLK_EnableModuleClock(QSPI1_MODULE);
 
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);

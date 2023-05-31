@@ -41,13 +41,10 @@ void ResetSPI(uint32_t u32SPIModule)
             SYS->SPIRST &= ~(1 << (SYS_SPIRST_SPI0RST_Pos));
             break;
 
-#if (EN_MULTI_SPI1 == 1)
-
         case C_SPI1:
             SYS->SPIRST |= (1 << (SYS_SPIRST_SPI1RST_Pos));
             SYS->SPIRST &= ~(1 << (SYS_SPIRST_SPI1RST_Pos));
             break;
-#endif //EN_MULTI_SPI1
 
         case C_SPI2:
             SYS->SPIRST |= (1 << (SYS_SPIRST_SPI2RST_Pos));
@@ -60,7 +57,7 @@ void ResetSPI(uint32_t u32SPIModule)
             break;
     }
 
-    SYS->SPIRST = 0;
+    //SYS->SPIRST = 0;
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -68,6 +65,9 @@ void ResetSPI(uint32_t u32SPIModule)
 
 void SPI3_SetClkSrc(uint32_t u32ClkSrc)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     CLK->SPISEL &= (~CLK_SPISEL_SPI3SEL_Msk);
 
     switch (u32ClkSrc)
@@ -106,6 +106,9 @@ void SPI3_SetClkSrc(uint32_t u32ClkSrc)
 
 void SPI2_SetClkSrc(uint32_t u32ClkSrc)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     CLK->SPISEL &= (~CLK_SPISEL_SPI2SEL_Msk);
 
     switch (u32ClkSrc)
@@ -144,6 +147,9 @@ void SPI2_SetClkSrc(uint32_t u32ClkSrc)
 
 void SPI1_SetClkSrc(uint32_t u32ClkSrc)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     CLK->SPISEL &= (~CLK_SPISEL_SPI1SEL_Msk);
 
     switch (u32ClkSrc)
@@ -182,6 +188,9 @@ void SPI1_SetClkSrc(uint32_t u32ClkSrc)
 
 void SPI0_SetClkSrc(uint32_t u32ClkSrc)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     CLK->SPISEL &= (~CLK_SPISEL_SPI0SEL_Msk);
 
     switch (u32ClkSrc)
@@ -220,6 +229,9 @@ void SPI0_SetClkSrc(uint32_t u32ClkSrc)
 
 void SPI_ClkDisable(uint32_t u32SPIModule)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     switch (u32SPIModule)
     {
         case C_SPI0:
@@ -242,6 +254,9 @@ void SPI_ClkDisable(uint32_t u32SPIModule)
 
 void SPI_ClkEnable(uint32_t u32SPIModule)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     switch (u32SPIModule)
     {
         case C_SPI0:

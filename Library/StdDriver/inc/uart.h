@@ -314,6 +314,7 @@ extern "C"
  *    @param[in]    u32eIntSel  Interrupt type select
  *                              - \ref UART_INTEN_TXENDIEN_Msk   : Transmitter empty interrupt
  *                              - \ref UART_INTEN_ABRIEN_Msk     : Auto baud rate interrupt
+ *                              - \ref UART_INTEN_SWBEIEN_Msk    : Single-wire Bit Error Detection Interrupt
  *                              - \ref UART_INTEN_LINIEN_Msk     : Lin bus interrupt
  *                              - \ref UART_INTEN_WKIEN_Msk      : Wake-up interrupt
  *                              - \ref UART_INTEN_BUFERRIEN_Msk  : Buffer Error interrupt
@@ -337,6 +338,7 @@ extern "C"
  *    @param[in]    u32eIntSel  Interrupt type select
  *                              - \ref UART_INTEN_TXENDIEN_Msk   : Transmitter Empty Interrupt
  *                              - \ref UART_INTEN_ABRIEN_Msk     : Auto-baud Rate Interrupt
+ *                              - \ref UART_INTEN_SWBEIEN_Msk    : Single-wire Bit Error Detection Interrupt
  *                              - \ref UART_INTEN_LINIEN_Msk     : Lin Bus interrupt
  *                              - \ref UART_INTEN_WKIEN_Msk      : Wake-up interrupt
  *                              - \ref UART_INTEN_BUFERRIEN_Msk  : Buffer Error interrupt
@@ -368,7 +370,7 @@ extern "C"
  *                                  - \ref UART_INTSTS_HWTOIF_Msk    : PDMA Mode Time-out Interrupt Flag
  *                                  - \ref UART_INTSTS_HWMODIF_Msk   : PDMA Mode MODEM Status Interrupt Flag
  *                                  - \ref UART_INTSTS_HWRLSIF_Msk   : PDMA Mode Receive Line Status Flag
- *                                  - \ref UART_INTSTS_SWBEIF_Msk   : Single-wire Bit Error Detect Interrupt Flag
+ *                                  - \ref UART_INTSTS_SWBEIF_Msk    : Single-wire Bit Error Detect Interrupt Flag
  *                                  - \ref UART_INTSTS_TXENDINT_Msk  : Transmitter Empty Interrupt Indicator
  *                                  - \ref UART_INTSTS_LININT_Msk    : LIN Bus Interrupt Indicator
  *                                  - \ref UART_INTSTS_WKINT_Msk     : Wake-up Interrupt Indicator
@@ -488,18 +490,15 @@ __STATIC_INLINE void UART_SET_RTS(UART_T* uart)
  */
 #define UART_PDMA_DISABLE(uart, u32FuncSel)    ((uart)->INTEN &= ~(u32FuncSel))
 
-
 /**
- *    @brief        Disable specified UART PDMA function
+ *    @brief        Set specified RS485 transceiver deactivate delay value
  *
  *    @param[in]    uart        The pointer of the specified UART module
- *    @param[in]    u32FuncSel  Combination of following functions
- *                             - \ref UART_INTEN_TXPDMAEN_Msk
- *                             - \ref UART_INTEN_RXPDMAEN_Msk
+ *    @param[in]    u32RSDly    Deactivate delay value
  *
  *    @return       None
  *
- *    @details      This macro disable specified UART PDMA function.
+ *    @details       This macro set RS485 transceiver deactivate delay value.
  */
 #define UART_RS485RTSDLY_SET(uart, u32RSDly)    ((uart)->RS485DD = ((uart)->RS485DD &(~UART_RS485DD_RTSDDLY_Msk))|u32RSDly)
 
@@ -523,9 +522,25 @@ __STATIC_INLINE void UART_SET_RTS(UART_T* uart)
  *    \hideinitializer
  */
 #define UART_DEGLITCH_DISABLE(uart)    ((uart)->FUNCSEL &= ~UART_FUNCSEL_DGE_Msk)
-
+/**
+ *    @brief        Enable specific UART swap TX pin and RX pin
+ *
+ *    @param[in]    uart        The pointer of the specified UART module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
 #define UART_TXRX_SWAP_ENABLE(uart)    ((uart)->FUNCSEL |= UART_FUNCSEL_TXRXSWP_Msk)
-
+/**
+ *    @brief        Disable specific UART swap TX pin and RX pin
+ *
+ *    @param[in]    uart        The pointer of the specified UART module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
 #define UART_TXRX_SWAP_DISABLE(uart)   ((uart)->FUNCSEL &= ~UART_FUNCSEL_TXRXSWP_Msk)
 
 void UART_ClearIntFlag(UART_T* uart, uint32_t u32InterruptFlag);

@@ -9,6 +9,9 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <errno.h>
 #include "NuMicro.h"
 
 /*
@@ -159,6 +162,44 @@ char *RETARGET(_command_string)(char *cmd, int len) {
     (void)len;
 
     return cmd;
+}
+
+int RETARGET(_isatty)(int fd) {
+    if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
+        return 1;
+    errno = EBADF;
+    return 0;
+}
+
+int RETARGET(_lseek)(int fd, int ptr, int dir)
+{
+    (void)fd;
+    (void)ptr;
+    (void)dir;
+
+    errno = EBADF;
+    return -1;
+}
+
+int RETARGET(_fstat)(int fd, struct stat *st)
+{
+    if (fd >= STDIN_FILENO && fd <= STDERR_FILENO){
+        st->st_mode = S_IFCHR;
+        return 0;
+    }
+
+    errno = EBADF;
+    return 0;
+}
+
+int RETARGET(_kill)(int, int)
+{
+    return(-1);
+}
+
+int RETARGET(_getpid)()
+{
+    return(1);
 }
 
 void RETARGET(_exit)(int return_code) {

@@ -21,11 +21,13 @@
 *   None
 ****************************************************************************/
 
-#ifndef _TEST_FUN_H_
-#define _TEST_FUN_H_
+#ifndef _SDH_CUNIT_H_
+#define _SDH_CUNIT_H_
+
+int SDH_ModuleSelect(void);
 
 extern CU_SuiteInfo suites[];
 extern CU_TestInfo SDH_CONSTANT_MACRO[];
 extern CU_TestInfo SDH_API[];
 
-#endif
+#endif /* _SDH_CUNIT_H_ */

@@ -24,6 +24,8 @@
 #ifndef _TEST_FUN_H_
 #define _TEST_FUN_H_
 
+int I2S_ModuleSelect(void);
+
 extern CU_SuiteInfo suites[];
 extern CU_TestInfo I2S_MacroTests[];
 extern CU_TestInfo I2S_ApiTests[];

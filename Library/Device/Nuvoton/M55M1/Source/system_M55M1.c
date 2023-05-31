@@ -15,7 +15,7 @@
 
 #if defined (__ARM_FEATURE_CMSE) &&  (__ARM_FEATURE_CMSE == 3U)
     #include "partition_M55M1.h"
-    #include "mpc_sie_drv.h"
+    #include "mpc.h"
 #endif
 
 /*----------------------------------------------------------------------------

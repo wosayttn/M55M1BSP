@@ -8,8 +8,8 @@ define symbol __ICFEDIT_region_ITCM_start__   = 0x00000000;
 define symbol __ICFEDIT_region_ITCM_end__     = 0x0001FFFF;
 define symbol __ICFEDIT_region_FLASH_start__  = 0x00100000;
 define symbol __ICFEDIT_region_FLASH_end__    = 0x002FFFFF;
-define symbol __ICFEDIT_region_SRAM01_start__ = 0x04300000;
-define symbol __ICFEDIT_region_SRAM01_end__   = 0x043FFFFF;
+define symbol __ICFEDIT_region_SRAM01_start__ = 0x20100000;
+define symbol __ICFEDIT_region_SRAM01_end__   = 0x201FFFFF;
 define symbol __ICFEDIT_region_DTCM_start__   = 0x20000000;
 define symbol __ICFEDIT_region_DTCM_end__     = 0x2001FFFF;
 

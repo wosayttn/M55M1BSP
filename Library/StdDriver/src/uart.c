@@ -278,10 +278,9 @@ void UART_Open(UART_T* uart, uint32_t u32baudrate)
     /* Set UART Rx and RTS trigger level */
     uart->FIFO &= ~(UART_FIFO_RFITL_Msk | UART_FIFO_RTSTRGLV_Msk);
 
-    /* Get PLL clock frequency if UART clock source selection is PLL */
+    /* Get APLL0 clock frequency if UART clock source selection is APLL0 */
     if(u32UartClkSrcSel == 3ul)
     {
-        //FIXME waiting for DTS UART clock source
         u32ClkTbl[u32UartClkSrcSel] = CLK_GetAPLL0ClockFreq()/2;
     }
 
@@ -749,6 +748,28 @@ void UART_SelectSingleWireMode(UART_T *uart)
     uart->FUNCSEL = ((uart->FUNCSEL & (~UART_FUNCSEL_FUNCSEL_Msk)) | UART_FUNCSEL_SINGLE_WIRE);
 
 }
+/**
+ *    @brief        Set Baud Rate Fractional Divider function
+ *
+ *    @param[in]    uart    The pointer of the specified UART module.
+ *    @param[in]    u32BRFD Baud Rate Fractional Divider value.
+ *
+ *    @return       None
+ *
+ *    @details      This function use to set Baud Rate fractional divider value.
+ */
+void UART_SetBaudRateFrationalDivider(UART_T* uart, uint32_t u32BRFD)
+{
+
+    /* Set time-out counter enable */
+    uart->BAUD |= (UART_BAUD_BRFDEN_Msk | UART_BAUD_MODE2);
+    /* Enanb Baud Rate fractional divider fuction */
+    /* This bit has effect only at baud rate mode 2 */
+    uart->BAUD = (uart->BAUD & ~UART_BAUD_BRFD_Msk) | (u32BRFD);
+
+}
+
+
 /** @} end of group UART_EXPORTED_FUNCTIONS */
 /** @} end of group UART_Driver */
 /** @} end of group Standard_Driver */

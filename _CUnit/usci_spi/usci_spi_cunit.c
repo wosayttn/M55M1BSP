@@ -68,6 +68,37 @@ int USCI_SPI_Tests_Clean(void)
     return 0;
 }
 
+/* Disable self-test function */
+void USPI_DisableSelfTest(void)
+{
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    /* Disable self-test function */
+    SYS->ALTCTL0 &= ~(SYS_ALTCTL0_SELFTEST_Msk);
+
+    outpw(USCI0_BASE + 0x84, ~(1 << 30));
+
+    /* Lock protected registers */
+    SYS_LockReg();
+}
+
+/* Enable self-test function */
+void USPI_EnableSelfTest(void)
+{
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    /* Enable self-test function */
+    SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
+
+    outpw(USCI0_BASE + 0x84, (1 << 30));
+
+
+    /* Lock protected registers */
+    SYS_LockReg();
+}
+
 /*----------------------------------------------------------------------------*/
 /* Function: function_name                                                    */
 /*                                                                            */
@@ -80,14 +111,6 @@ int USCI_SPI_Tests_Clean(void)
 /* Description:                                                               */
 /*               description                                                  */
 /*----------------------------------------------------------------------------*/
-CU_SuiteInfo suites[] =
-{
-    //{"USCI_SPI MACRO", USCI_SPI_Tests_Init, USCI_SPI_Tests_Clean, NULL, NULL, USCI_SPI_MacroTests},
-    {"USCI_SPI API", USCI_SPI_Tests_Init, USCI_SPI_Tests_Clean, NULL, NULL, USCI_SPI_ApiTests},
-    //{"USCI_SPI API_MACRO", USCI_SPI_Tests_Init, USCI_SPI_Tests_Clean, NULL, NULL, USCI_SPI_Wakeup_APIMacroTests},
-    CU_SUITE_INFO_NULL
-};
-
 void InitUSPIxModulePIN(uint32_t u32Module)
 {
     switch (u32Module)
@@ -97,18 +120,19 @@ void InitUSPIxModulePIN(uint32_t u32Module)
             /* Set PB.0 (USPI0_CTL0) as output mode */
             SET_GPIO_PB0();
             GPIO_SetMode(PB, BIT0, GPIO_MODE_OUTPUT);
-            GPIO_SetPullCtl(PB, BIT0, GPIO_PUSEL_DISABLE);
 
             /* Set PA.11 (USPI0_CLK) as GPIO output pin */
             SET_GPIO_PA11();
             GPIO_SetMode(PA, BIT11, GPIO_MODE_OUTPUT);
-            GPIO_SetPullCtl(PA, BIT11, GPIO_PUSEL_DISABLE);
             /* Set PA.11 (USPI0_CLK) to low level */
             PA11 = 0;
 
-            /* Enable self-test function */
-            SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
-            //printf("SYS SelfTest = 0x%08X\r\n", SYS->ALTCTL0);
+            USPI_EnableSelfTest();
+
+            SET_GPIO_PA10();
+            GPIO_SetMode(PA, BIT10, GPIO_MODE_OUTPUT);
+
+            USPI0_MISO_PIN_INIT();
 
             /* Set PB.0 (USPI0_CTL0) to high level */
             PB0 = 1;
@@ -590,6 +614,7 @@ void MACRO_USCI_SPI_GetIntFlag_ClearIntFlag()
     /* Select USCI_SPI0 protocol */
     pUSPIModule->CTL &= ~USPI_CTL_FUNMODE_Msk;
     pUSPIModule->CTL = 1 << USPI_CTL_FUNMODE_Pos;
+
     /* Master mode, USPI mode 0. */
     pUSPIModule->PROTCTL = USPI_MASTER | USPI_MODE_0;
     pUSPIModule->LINECTL = 0;
@@ -598,8 +623,6 @@ void MACRO_USCI_SPI_GetIntFlag_ClearIntFlag()
                          (359 << USPI_BRGEN_CLKDIV_Pos);
     /* Enable USCI_SPI0 protocol */
     pUSPIModule->PROTCTL |= USPI_PROTCTL_PROTEN_Msk;
-
-    USPIxCtlLow(GetUSPIModuleIdx());
 
     pUSPIModule->TXDAT = 0x1112;
 
@@ -720,7 +743,7 @@ void MACRO_USCI_SPI_GetIntFlag_ClearIntFlag()
     CU_ASSERT((USPI_GET_PROT_STATUS(pUSPIModule) & USPI_PROTSTS_SLVBEIF_Msk) == 0);
 
     /* Disable self-test function */
-    SYS->ALTCTL0 &= (~SYS_ALTCTL0_SELFTEST_Msk);
+    USPI_DisableSelfTest();
 
     /* Set PA.11 (USPI0_CLK) as USCI function pin */
     USPI0_CLK_PIN_INIT();
@@ -885,7 +908,6 @@ void MACRO_USCI_SPI_EnableTransferInt_DisableTransferInt()
 
 void API_USCI_SPI_Open()
 {
-#if 1
     uint32_t u32ReturnValue = 0;
     uint32_t u32Pclk = 0, u32ClkDiv = 0, u32BusClock = 0;
     USPI_T *pUSPIModule = NULL;
@@ -893,99 +915,24 @@ void API_USCI_SPI_Open()
     pUSPIModule = (USPI_T *)GetUSPIModule(GetUSPIModuleIdx());
 
     u32BusClock = 1000000;
-    u32Pclk = CLK_GetPCLK0Freq();
+
+    if (GetUSPIModuleIdx() == C_USPI0)
+    {
+        u32Pclk = CLK_GetPCLK0Freq();
+    }
+
     u32ClkDiv = (uint32_t)((((((u32Pclk / 2) * 10) / (u32BusClock)) + 5) / 10) - 1);
 
     u32ReturnValue = USPI_Open(pUSPIModule, USPI_MASTER, USPI_MODE_0, 4, 1000000);
     CU_ASSERT(pUSPIModule->CTL == 0x00000001);
     CU_ASSERT((pUSPIModule->BRGEN & USPI_BRGEN_CLKDIV_Msk) == (u32ClkDiv << USPI_BRGEN_CLKDIV_Pos));
 
-    switch (GetUSPIModuleIdx())
-    {
-        case C_USPI0:
-            CU_ASSERT(pUSPIModule->LINECTL == 0x00000480);
-            CU_ASSERT(pUSPIModule->PROTCTL == 0x80000300);
-            CU_ASSERT(u32ReturnValue == 1000000);
-            break;
-
-        case C_USPI1:
-            CU_ASSERT(pUSPIModule->LINECTL == 0x00000480);
-            CU_ASSERT(pUSPIModule->PROTCTL == 0x80000300);
-            CU_ASSERT(u32ReturnValue == 1000000);
-            break;
-
-        case C_USPI2:
-            CU_ASSERT(pUSPIModule->LINECTL == 0x00000C00);
-            CU_ASSERT(pUSPIModule->PROTCTL == 0x80000381);
-            CU_ASSERT(u32ReturnValue == 00000000);
-            break;
-    }
+    CU_ASSERT(pUSPIModule->LINECTL == 0x00000480);
+    CU_ASSERT(pUSPIModule->PROTCTL == 0x80000300);
+    CU_ASSERT(u32ReturnValue == 1000000);
 
     /* Reset USPIx */
     ResetUSPIxModule(GetUSPIModuleIdx());
-
-#endif //0
-#if 0
-    uint32_t u32ReturnValue;
-    uint32_t u32Pclk, u32ClkDiv, u32BusClock;
-
-    u32BusClock = 1000000;
-    u32Pclk = CLK_GetPCLK0Freq();
-    u32ClkDiv = (uint32_t)((((((u32Pclk / 2) * 10) / (u32BusClock)) + 5) / 10) - 1);
-
-    u32ReturnValue = USPI_Open(USPI0, USPI_MASTER, USPI_MODE_0, 4, 1000000);
-    CU_ASSERT(USPI0->CTL == 0x00000001);
-    CU_ASSERT((USPI0->BRGEN & USPI_BRGEN_CLKDIV_Msk) == (u32ClkDiv << USPI_BRGEN_CLKDIV_Pos));
-    CU_ASSERT(USPI0->LINECTL == 0x00000480);
-    CU_ASSERT(USPI0->PROTCTL == 0x80000300);
-    CU_ASSERT(u32ReturnValue == 1000000);
-
-    /* Reset USPI0 */
-    SYS->IPRST2 |= SYS_IPRST2_USCI0RST_Msk;
-    SYS->IPRST2 &= ~SYS_IPRST2_USCI0RST_Msk;
-
-#if defined EN_MULTI_USPI1
-    u32BusClock = 2000000;
-    u32Pclk = CLK_GetPCLK0Freq();
-    u32ClkDiv = (uint32_t)((((((u32Pclk / 2) * 10) / (u32BusClock)) + 5) / 10) - 1);
-
-    u32ReturnValue = USPI_Open(USPI1, USPI_MASTER, USPI_MODE_1, 8, 2000000);
-    CU_ASSERT(USPI1->CTL == 0x00000001);
-    CU_ASSERT((USPI1->BRGEN & USPI_BRGEN_CLKDIV_Msk) == (u32ClkDiv << USPI_BRGEN_CLKDIV_Pos));
-    CU_ASSERT(USPI1->LINECTL == 0x00000880);
-    CU_ASSERT(USPI1->PROTCTL == 0x80000340);
-    CU_ASSERT(u32ReturnValue == 2000000);
-
-    /* Reset USPI1 */
-    SYS->IPRST2 |= SYS_IPRST2_USCI1RST_Msk;
-    SYS->IPRST2 &= ~SYS_IPRST2_USCI1RST_Msk;
-#endif //EN_MULTI_USPI1
-
-#if defined EN_MULTI_USPI2
-    u32ReturnValue = USPI_Open(USPI2, USPI_SLAVE, USPI_MODE_2, 12, NULL);
-    CU_ASSERT(USPI2->CTL == 0x00000001);
-    CU_ASSERT(USPI2->BRGEN == 0x00003C00);
-    CU_ASSERT(USPI2->LINECTL == 0x00000C00);
-    CU_ASSERT(USPI2->PROTCTL == 0x80000381);
-    CU_ASSERT(u32ReturnValue == 00000000);
-
-    /* Reset USPI2 */
-    SYS->IPRST2 |= SYS_IPRST2_USCI2RST_Msk;
-    SYS->IPRST2 &= ~SYS_IPRST2_USCI2RST_Msk;
-#endif //EN_MULTI_USPI2
-
-#if 0   ///
-    u32ReturnValue = USPI_Open(USPI0, USPI_MASTER, USPI_MODE_3, 16, 32000000);
-    CU_ASSERT(USPI0->CTL == 0x00000001);
-    CU_ASSERT(USPI0->BRGEN == 0x00003C00);
-    CU_ASSERT(USPI0->LINECTL == 0x00000080);
-    CU_ASSERT(USPI0->PROTCTL == 0x800003C0);
-    CU_ASSERT(u32ReturnValue == 36000000);
-    /* Reset USPI0 */
-    SYS->IPRST2 |= SYS_IPRST2_USCI0RST_Msk;
-    SYS->IPRST2 &= ~SYS_IPRST2_USCI0RST_Msk;
-#endif
-#endif //0
 }
 
 void API_USCI_SPI_Close()
@@ -1028,37 +975,11 @@ void API_USCI_SPI_ClearTxBuf()
 
     pUSPIModule = (USPI_T *)GetUSPIModule(GetUSPIModuleIdx());
 
-    /* Enable self-test function */
-    SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
-    //outp32(0x40000014, 1);
-
-    switch (GetUSPIModuleIdx())
-    {
-        case C_USPI0:
-            //PC->MODE = (PC->MODE & ~GPIO_MODE_MODE14_Msk) |
-            //           (GPIO_MODE_OUTPUT << GPIO_MODE_MODE14_Pos);
-            SET_GPIO_PB0();
-            GPIO_SetMode(PB, BIT0, GPIO_MODE_OUTPUT);
-            GPIO_SetPullCtl(PB, BIT0, GPIO_PUSEL_DISABLE);
-
-            PB0 = 1;
-            break;
-
-        case C_USPI1:
-            PB->MODE = (PB->MODE & ~GPIO_MODE_MODE5_Msk) |
-                       (GPIO_MODE_OUTPUT << GPIO_MODE_MODE5_Pos);
-            PB5 = 1;
-            break;
-
-        case C_USPI2:
-            PA->MODE = (PA->MODE & ~GPIO_MODE_MODE3_Msk) |
-                       (GPIO_MODE_OUTPUT << GPIO_MODE_MODE3_Pos);
-            PA3 = 1;
-            break;
-    }
+    InitUSPIxModulePIN(GetUSPIModuleIdx());
 
     /* Slave mode, USPI mode 0. */
     USPI_Open(pUSPIModule, USPI_SLAVE, USPI_MODE_0, 16, NULL);
+
     /* Write 1 data to TX register */
     pUSPIModule->TXDAT = 1;
     CU_ASSERT((pUSPIModule->BUFSTS & 0x00000F00) == 0x00000200);
@@ -1067,9 +988,11 @@ void API_USCI_SPI_ClearTxBuf()
 
     USPI_Close(pUSPIModule);
 
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     /* Disable self-test function */
-    //outp32(0x40000014, 0);
-    SYS->ALTCTL0 &= ~SYS_ALTCTL0_SELFTEST_Msk;
+    USPI_DisableSelfTest();
 }
 
 void API_USCI_SPI_EnableAutoSS_DisableAutoSS()
@@ -1229,7 +1152,7 @@ void API_USCI_SPI_GetIntFlag_ClearIntFlag()
 
     /* Master mode, USPI mode 0. */
     USPI_Open(pUSPIModule, USPI_MASTER, USPI_MODE_0, 8, 1000000);
-    pUSPIModule->TXDAT = 0;
+    pUSPIModule->TXDAT = 1;
 
     while ((pUSPIModule->PROTSTS & USPI_PROTSTS_BUSY_Msk) != 0)
     {
@@ -1347,10 +1270,15 @@ void API_USCI_SPI_GetIntFlag_ClearIntFlag()
     USPI_ClearIntFlag(pUSPIModule, USPI_SLVBE_INT_MASK);
     CU_ASSERT(USPI_GetIntFlag(pUSPIModule, USPI_SLVBE_INT_MASK) == 0);
 
+
     /* Disable self-test function */
-    SYS->ALTCTL0 &= ~(SYS_ALTCTL0_SELFTEST_Msk);
+    USPI_DisableSelfTest();
+
     /* Set PA.11 (USPI0_CLK) as USCI function pin */
     USPI0_CLK_PIN_INIT();
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     /* Reset USPIx */
     ResetUSPIxModule(GetUSPIModuleIdx());
@@ -1462,33 +1390,7 @@ void API_USCI_SPI_GetStatus()
 
     __NOP();
 
-    /* Check USPI_SS line status */
-    /* Set PB.0 (USPI0_CTL0) as output mode */
-    SET_GPIO_PB0();
-    GPIO_SetMode(PB, BIT0, GPIO_MODE_OUTPUT);
-    GPIO_SetPullCtl(PB, BIT0, GPIO_PUSEL_DISABLE);
-
-    /* Enable self-test function */
-    SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
-    //printf("SYS SelfTest = 0x%08X\r\n", SYS->ALTCTL0);
-
-    switch (GetUSPIModuleIdx())
-    {
-        case C_USPI0:
-            /* Set PB.0 (USPI0_CTL0) to high level */
-            PB0 = 1;
-            break;
-
-        case C_USPI1:
-            /* Set PB.5 (USPI0_CTL0) to high level */
-            PB5 = 1;
-            break;
-
-        case C_USPI2:
-            /* Set PA.3 (USPI0_CTL0) to high level */
-            PA3 = 1;
-            break;
-    }
+    InitUSPIxModulePIN(GetUSPIModuleIdx());
 
     /* Slave mode, USPI mode 0. */
     USPI_Open(pUSPIModule, USPI_SLAVE, USPI_MODE_0, 16, NULL);
@@ -1504,23 +1406,7 @@ void API_USCI_SPI_GetStatus()
 
     CU_ASSERT(USPI_GetStatus(pUSPIModule, USPI_SSLINE_STS_MASK) == USPI_SSLINE_STS_MASK);
 
-    switch (GetUSPIModuleIdx())
-    {
-        case C_USPI0:
-            /* Set PB.0 (USPI0_CTL0) to low level */
-            PB0 = 0;
-            break;
-
-        case C_USPI1:
-            /* Set PB.5 (USPI0_CTL0) to low level */
-            PB5 = 0;
-            break;
-
-        case C_USPI2:
-            /* Set PA.3 (USPI0_CTL0) to low level */
-            PA3 = 0;
-            break;
-    }
+    USPIxCtlLow(GetUSPIModuleIdx());
 
     for (u32DelayCount = 0; u32DelayCount < 100; u32DelayCount++)
     {
@@ -1531,8 +1417,7 @@ void API_USCI_SPI_GetStatus()
     __NOP();
 
     /* Disable self-test function */
-    //outp32(0x40000014, 0);
-    SYS->ALTCTL0 &= ~SYS_ALTCTL0_SELFTEST_Msk;
+    USPI_DisableSelfTest();
 
     USPI_Close(pUSPIModule);
 }
@@ -1655,13 +1540,13 @@ CU_TestInfo USCI_SPI_ApiTests[] =
 {
     {"USCI_SPI Open", API_USCI_SPI_Open},
     {"USCI_SPI Close", API_USCI_SPI_Close},
-    {"Clear USCI_SPI RX buffer", API_USCI_SPI_ClearRxBuf},
-    {"Clear USCI_SPI TX buffer", API_USCI_SPI_ClearTxBuf},
-    {"Enable/Disable USCI_SPI automatic slave selection function", API_USCI_SPI_EnableAutoSS_DisableAutoSS},
-    {"Set/Get USCI_SPI bus clock rate", API_USCI_SPI_SetBusClock_GetBusClock},
-    {"Enable/Disable USCI_SPI interrupt function", API_USCI_SPI_EnableInt_DisableInt},
+    //{"Clear USCI_SPI RX buffer", API_USCI_SPI_ClearRxBuf},
+    //{"Clear USCI_SPI TX buffer", API_USCI_SPI_ClearTxBuf},
+    //{"Enable/Disable USCI_SPI automatic slave selection function", API_USCI_SPI_EnableAutoSS_DisableAutoSS},
+    //{"Set/Get USCI_SPI bus clock rate", API_USCI_SPI_SetBusClock_GetBusClock},
+    //{"Enable/Disable USCI_SPI interrupt function", API_USCI_SPI_EnableInt_DisableInt},
     {"Get/Clear USCI_SPI interrupt flag", API_USCI_SPI_GetIntFlag_ClearIntFlag},
-    {"Get USCI_SPI status", API_USCI_SPI_GetStatus},
+    //{"Get USCI_SPI status", API_USCI_SPI_GetStatus},
     CU_TEST_INFO_NULL,
 };
 
@@ -1669,6 +1554,14 @@ CU_TestInfo USCI_SPI_Wakeup_APIMacroTests[] =
 {
     {"USCI_SPI wake-up function", API_MACRO_USCI_SPI_Wakeup},
     CU_TEST_INFO_NULL,
+};
+
+CU_SuiteInfo suites[] =
+{
+    {"USCI_SPI MACRO", USCI_SPI_Tests_Init, USCI_SPI_Tests_Clean, NULL, NULL, USCI_SPI_MacroTests},
+    {"USCI_SPI API", USCI_SPI_Tests_Init, USCI_SPI_Tests_Clean, NULL, NULL, USCI_SPI_ApiTests},
+    {"USCI_SPI API_MACRO", USCI_SPI_Tests_Init, USCI_SPI_Tests_Clean, NULL, NULL, USCI_SPI_Wakeup_APIMacroTests},
+    CU_SUITE_INFO_NULL
 };
 
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

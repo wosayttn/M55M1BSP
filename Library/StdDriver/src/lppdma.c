@@ -120,7 +120,6 @@ void LPPDMA_SetTransferAddr(LPPDMA_T * lppdma,uint32_t u32Ch, uint32_t u32SrcAdd
  *                - \ref LPPDMA_TTMR0
  *                - \ref LPPDMA_TTMR1
  *                - \ref LPPDMA_LPADC0_RX
- *                - \ref LPPDMA_DMIC0_TX
  *                - \ref LPPDMA_DMIC0_RX
  * @param[in]   u32ScatterEn    Scatter-gather mode enable
  * @param[in]   u32DescAddr     Scatter-gather descriptor address

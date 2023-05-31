@@ -73,10 +73,6 @@ typedef struct
      * |[6]     |WKIEN     |Wake-up Interrupt Enable Bit
      * |        |          |0 = Wake-up Interrupt Disabled.
      * |        |          |1 = Wake-up Interrupt Enabled.
-     * |[8]     |LINIEN    |LIN Bus Interrupt Enable Bit
-     * |        |          |0 = LIN bus interrupt Disabled.
-     * |        |          |1 = LIN bus interrupt Enabled.
-     * |        |          |Note: This bit is used for LIN function mode.
      * |[11]    |TOCNTEN   |Receive Buffer Time-out Counter Enable Bit
      * |        |          |0 = Receive Buffer Time-out counter Disabled.
      * |        |          |1 = Receive Buffer Time-out counter Enabled.
@@ -191,13 +187,13 @@ typedef struct
      * |        |          |1 = Transmitted data signal inverted Enabled.
      * |        |          |Note1: Before setting this bit, TXRXDIS (LPUART_FUNCSEL[3]) should be set then waited for TXRXACT (LPUART_FIFOSTS[31]) is cleared
      * |        |          |When the configuration is done, cleared TXRXDIS (LPUART_FUNCSEL[3]) to activate LPUART controller.
-     * |        |          |Note2: This bit is valid when FUNCSEL (LPUART_FUNCSEL[1:0]) is select LPUART, LIN or RS485 function.
+     * |        |          |Note2: This bit is valid when FUNCSEL (LPUART_FUNCSEL[1:0]) is select LPUART or RS485 function.
      * |[9]     |RXDINV    |RX Data Inverted
      * |        |          |0 = Received data signal inverted Disabled.
      * |        |          |1 = Received data signal inverted Enabled.
      * |        |          |Note1: Before setting this bit, TXRXDIS (LPUART_FUNCSEL[3]) should be set then waited for TXRXACT (LPUART_FIFOSTS[31]) is cleared
      * |        |          |When the configuration is done, cleared TXRXDIS (LPUART_FUNCSEL[3]) to activate LPUART controller.
-     * |        |          |Note2: This bit is valid when FUNCSEL (LPUART_FUNCSEL[1:0]) is select LPUART, LIN or RS485 function.
+     * |        |          |Note2: This bit is valid when FUNCSEL (LPUART_FUNCSEL[1:0]) is select LPUART or RS485 function.
      * @var LPUART_T::MODEM
      * Offset: 0x10  LPUART Modem Control Register
      * ---------------------------------------------------------------------------------------------------
@@ -390,12 +386,6 @@ typedef struct
      * |        |          |0 = No LPUART wake-up interrupt flag is generated.
      * |        |          |1 = LPUART wake-up interrupt flag is generated.
      * |        |          |Note: This bit is cleared if all of TOUTWKF, RS485WKF, RFRTWKF, DATWKF and CTSWKF are cleared to 0 by writing 1 to the corresponding interrupt flag.
-     * |[7]     |LINIF     |LIN Bus Interrupt Flag
-     * |        |          |This bit is set when LIN slave header detect (SLVHDETF (LPUART_LINSTS[0] = 1)), LIN break detect (BRKDETF(LPUART_LINSTS[8]=1)), bit error detect (BITEF(LPUART_LINSTS[9]=1)), LIN slave ID parity error (SLVIDPEF(LPUART_LINSTS[2] = 1)) or LIN slave header error detect (SLVHEF (LPUART_LINSTS[1]))
-     * |        |          |If LINIEN (LPUART_INTEN [8]) is enabled the LIN interrupt will be generated.
-     * |        |          |0 = None of SLVHDETF, BRKDETF, BITEF, SLVIDPEF and SLVHEF is generated.
-     * |        |          |1 = At least one of SLVHDETF, BRKDETF, BITEF, SLVIDPEF and SLVHEF is generated.
-     * |        |          |Note: This bit is cleared when SLVHDETF(LPUART_LINSTS[0]), BRKDETF(LPUART_LINSTS[8]), BITEF(LPUART_LINSTS[9]), SLVIDPEF (LPUART_LINSTS[2]) and SLVHEF(LPUART_LINSTS[1]) all are cleared and software writing '1' to LINIF(LPUART_INTSTS[7]).
      * |[8]     |RDAINT    |Receive Data Available Interrupt Indicator (Read Only)
      * |        |          |This bit is set if RDAIEN (LPUART_INTEN[0]) and RDAIF (LPUART_INTSTS[0]) are both set to 1.
      * |        |          |0 = No RDA interrupt is generated.
@@ -424,10 +414,6 @@ typedef struct
      * |        |          |This bit is set if WKIEN (LPUART_INTEN[6]) and WKIF (LPUART_INTSTS[6]) are both set to 1.
      * |        |          |0 = No LPUART wake-up interrupt is generated.
      * |        |          |1 = LPUART wake-up interrupt is generated.
-     * |[15]    |LININT    |LIN Bus Interrupt Indicator (Read Only)
-     * |        |          |This bit is set if LINIEN (LPUART_INTEN[8]) and LINIF(LPUART_INTSTS[7]) are both set to 1.
-     * |        |          |0 = No LIN Bus interrupt is generated.
-     * |        |          |1 = The LIN Bus interrupt is generated.
      * |[18]    |HWRLSIF   |PDMA Mode Receive Line Status Flag (Read Only)
      * |        |          |This bit is set when the RX receive data have parity error, frame error or break error (at least one of 3 bits, BIF (LPUART_FIFOSTS[6]), FEF (LPUART_FIFOSTS[5]) and PEF (LPUART_FIFOSTS[4]) is set)
      * |        |          |If RLSIEN (LPUART_INTEN [2]) is enabled, the RLS interrupt will be generated.
@@ -499,6 +485,13 @@ typedef struct
      * |[15:8]  |DLY       |TX Delay Time Value
      * |        |          |This field is used to programming the transfer delay time between the last stop bit and next start bit
      * |        |          |The unit is bit time.
+     * |[31]    |BITOMEN   |Bus Idle Time-out Mode Enable Bit
+     * |        |          |If BITOMEN (LPUART_TOUT[31]) is enabled, the reset conditions of the time-out counter and RXTOIF (LPUART_INTSTS[4]) will be changed to detect the bus idle.
+     * |        |          |When BITOMEN (LPUART_TOUT[31]) is disabled, the time-out counter and RXTOIF (LPUART_INTSTS[4]) maintain reset value whenever the RX FIFO is empty.
+     * |        |          |In addition, a new incoming data word will also clear RXTOIF (LPUART_INTSTS[4]).
+     * |        |          |On the other hand, when BITOMEN (LPUART_TOUT[31]) is enabled, the RX FIFO empty state will not reset the time-out counter and RXTOIF (LPUART_INTSTS[4]),and the new incoming data word event will not clear RXTOIF (LPUART_INTSTS[4]).
+     * |        |          |0 = Bus idle time-out mode Disabled.
+     * |        |          |1 = Bus idle time-out mode Enabled.
      * @var LPUART_T::BAUD
      * Offset: 0x24  LPUART Baud Rate Divider Register
      * ---------------------------------------------------------------------------------------------------
@@ -507,56 +500,25 @@ typedef struct
      * |[15:0]  |BRD       |Baud Rate Divider
      * |        |          |The field indicates the baud rate divider
      * |        |          |This filed is used in baud rate calculation
-     * |        |          |The detail description is shown in Table 7.15-4.
+     * |        |          |The detail description is shown in Table 1.1-4.
      * |[27:24] |EDIVM1    |Extra Divider for BAUD Rate Mode 1
      * |        |          |This field is used for baud rate calculation in mode 1 and has no effect for baud rate calculation in mode 0 and mode 2
-     * |        |          |The detail description is shown in Table 7.15-4
+     * |        |          |The detail description is shown in Table 1.1-4
      * |[28]    |BAUDM0    |BAUD Rate Mode Selection Bit 0
      * |        |          |This bit is baud rate mode selection bit 0
      * |        |          |LPUART provides three baud rate calculation modes
      * |        |          |This bit combines with BAUDM1 (LPUART_BAUD[29]) to select baud rate calculation mode
-     * |        |          |The detail description is shown in Table 7.15-4.
+     * |        |          |The detail description is shown in Table 1.1-4.
      * |[29]    |BAUDM1    |BAUD Rate Mode Selection Bit 1
      * |        |          |This bit is baud rate mode selection bit 1
      * |        |          |LPUART provides three baud rate calculation modes
      * |        |          |This bit combines with BAUDM0 (LPUART_BAUD[28]) to select baud rate calculation mode
-     * |        |          |The detail description is shown in Table 7.15-4.
-     * |        |          |Note: In IrDA mode must be operated in mode 0.
-     * @var LPUART_T::IRDA
-     * Offset: 0x28  LPUART IrDA Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[1]     |TXEN      |IrDA Receiver/Transmitter Selection Enable Bit
-     * |        |          |0 = IrDA Transmitter Disabled and Receiver Enabled. (Default)
-     * |        |          |1 = IrDA Transmitter Enabled and Receiver Disabled.
-     * |[5]     |TXINV     |IrDA Inverse Transmitting Output Signal
-     * |        |          |0 = None inverse transmitting signal. (Default).
-     * |        |          |1 = Inverse transmitting output signal.
-     * |        |          |Note1: Before setting this bit, TXRXDIS (LPUART_FUNCSEL[3]) should be set then waited for TXRXACT (LPUART_FIFOSTS[31]) is cleared
-     * |        |          |When the configuration is done, cleared TXRXDIS (LPUART_FUNCSEL[3]) to activate LPUART controller.
-     * |        |          |Note2: This bit is valid when FUNCSEL (LPUART_FUNCSEL[1:0]) is select IrDA function.
-     * |[6]     |RXINV     |IrDA Inverse Receive Input Signal
-     * |        |          |0 = None inverse receiving input signal.
-     * |        |          |1 = Inverse receiving input signal. (Default)
-     * |        |          |Note1: Before setting this bit, TXRXDIS (LPUART_FUNCSEL[3]) should be set then waited for TXRXACT (LPUART_FIFOSTS[31]) is cleared
-     * |        |          |When the configuration is done, cleared TXRXDIS (LPUART_FUNCSEL[3]) to activate LPUART controller.
-     * |        |          |Note2: This bit is valid when FUNCSEL (LPUART_FUNCSEL[1:0]) is select IrDA function.
+     * |        |          |The detail description is shown in Table 1.1-4.
      * @var LPUART_T::ALTCTL
      * Offset: 0x2C  LPUART Alternate Control/Status Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[3:0]   |BRKFL     |LPUART LIN Break Field Length
-     * |        |          |This field indicates a 4-bit LIN TX break field count.
-     * |        |          |Note1: This break field length is BRKFL + 1.
-     * |        |          |Note2: According to LIN spec, the reset value is 0xC (break field length = 13).
-     * |[6]     |LINRXEN   |LIN RX Enable Bit
-     * |        |          |0 = LIN RX mode Disabled.
-     * |        |          |1 = LIN RX mode Enabled.
-     * |[7]     |LINTXEN   |LIN TX Break Mode Enable Bit
-     * |        |          |0 = LIN TX Break mode Disabled.
-     * |        |          |1 = LIN TX Break mode Enabled.
      * |        |          |Note: When TX break field transfer operation finished, this bit will be cleared automatically.
      * |[8]     |RS485NMM  |RS-485 Normal Multi-drop Operation Mode (NMM)
      * |        |          |0 = RS-485 Normal Multi-drop Operation mode (NMM) Disabled.
@@ -600,9 +562,8 @@ typedef struct
      * | :----: | :----:   | :---- |
      * |[1:0]   |FUNCSEL   |Function Select
      * |        |          |00 = LPUART function.
-     * |        |          |01 = LIN function.
-     * |        |          |10 = IrDA function.
      * |        |          |11 = RS-485 function.
+     * |        |          |Others = Reserved.
      * |[3]     |TXRXDIS   |TX and RX Disable Bit
      * |        |          |Setting this bit can disable TX and RX.
      * |        |          |0 = TX and RX Enabled.
@@ -610,135 +571,17 @@ typedef struct
      * |        |          |Note: The TX and RX will not disable immediately when this bit is set
      * |        |          |The TX and RX complete current task before disable TX and RX
      * |        |          |When TX and RX disable, the TXRXACT (LPUART_FIFOSTS[31]) is cleared.
-     * @var LPUART_T::LINCTL
-     * Offset: 0x34  LPUART LIN Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |SLVEN     |LIN Slave Mode Enable Bit
-     * |        |          |0 = LIN slave mode Disabled.
-     * |        |          |1 = LIN slave mode Enabled.
-     * |[1]     |SLVHDEN   |LIN Slave Header Detection Enable Bit
-     * |        |          |0 = LIN slave header detection Disabled.
-     * |        |          |1 = LIN slave header detection Enabled.
-     * |        |          |Note1: This bit only valid when in LIN slave mode (SLVEN (LPUART_LINCTL[0]) = 1).
-     * |        |          |Note2: In LIN function mode, when detect header field (break + sync + frame ID), SLVHDETF (LPUART_LINSTS [0]) flag will be asserted
-     * |        |          |If the LINIEN (LPUART_INTEN[8]) = 1, an interrupt will be generated.
-     * |[2]     |SLVAREN   |LIN Slave Automatic Resynchronization Mode Enable Bit
-     * |        |          |0 = LIN automatic resynchronization Disabled.
-     * |        |          |1 = LIN automatic resynchronization Enabled.
-     * |        |          |Note1: This bit only valid when in LIN slave mode (SLVEN (LPUART_LINCTL[0]) = 1).
-     * |        |          |Note2: When operation in Automatic Resynchronization mode, the baud rate setting must be mode2 (BAUDM1 (LPUART_BAUD [29]) and BAUDM0 (LPUART_BAUD [28]) must be 1).
-     * |        |          |Note3: The control and interactions of this field are explained in 7.15.5.9 (Slave mode with automatic resynchronization).
-     * |[3]     |SLVDUEN   |LIN Slave Divider Update Method Enable Bit
-     * |        |          |0 = LPUART_BAUD updated is written by software (if no automatic resynchronization update occurs at the same time).
-     * |        |          |1 = LPUART_BAUD is updated at the next received character
-     * |        |          |User must set the bit before checksum reception.
-     * |        |          |Note1: This bit only valid when in LIN slave mode (SLVEN (LPUART_LINCTL[0]) = 1).
-     * |        |          |Note2: This bit used for LIN Slave Automatic Resynchronization mode
-     * |        |          |(for Non-Automatic Resynchronization mode, this bit should be kept cleared)
-     * |        |          |Note3: The control and interactions of this field are explained in 7.15.5.9 (Slave mode with automatic resynchronization).
-     * |[4]     |MUTE      |LIN Mute Mode Enable Bit
-     * |        |          |0 = LIN mute mode Disabled.
-     * |        |          |1 = LIN mute mode Enabled.
-     * |        |          |Note: The exit from mute mode condition and each control and interactions of this field are explained in 7.15.5.9 (LIN slave mode).
-     * |[8]     |SENDH     |LIN TX Send Header Enable Bit
-     * |        |          |The LIN TX header can be break field or 'break and sync field' or 'break, sync and frame ID field', it is depend on setting HSEL (LPUART_LINCTL[23:22]).
-     * |        |          |0 = Send LIN TX header Disabled.
-     * |        |          |1 = Send LIN TX header Enabled.
-     * |        |          |Note1: This bit is shadow bit of LINTXEN (LPUART_ALTCTL [7]); user can read/write it by setting LINTXEN (LPUART_ALTCTL [7]) or SENDH (LPUART_LINCTL [8]).
-     * |        |          |Note2: When transmitter header field (it may be 'break' or 'break + sync' or 'break + sync + frame ID' selected by HSEL (LPUART_LINCTL[23:22]) field) transfer operation finished, this bit will be cleared automatically.
-     * |[9]     |IDPEN     |LIN ID Parity Enable Bit
-     * |        |          |0 = LIN frame ID parity Disabled.
-     * |        |          |1 = LIN frame ID parity Enabled.
-     * |        |          |Note1: This bit can be used for LIN master to sending header field (SENDH (LPUART_LINCTL[8])) = 1 and HSEL (LPUART_LINCTL[23:22]) = 10 or be used for enable LIN slave received frame ID parity checked.
-     * |        |          |Note2: This bit is only used when the operation header transmitter is in HSEL (LPUART_LINCTL[23:22]) = 10
-     * |[10]    |BRKDETEN  |LIN Break Detection Enable Bit
-     * |        |          |When detect consecutive dominant greater than 11 bits, and are followed by a delimiter character, the BRKDETF (LPUART_LINSTS[8]) flag is set at the end of break field
-     * |        |          |If the LINIEN (LPUART_INTEN [8])=1, an interrupt will be generated.
-     * |        |          |0 = LIN break detection Disabled .
-     * |        |          |1 = LIN break detection Enabled.
-     * |[11]    |LINRXOFF  |LIN Receiver Disable Bit
-     * |        |          |If the receiver is enabled (LINRXOFF (LPUART_LINCTL[11] ) = 0), all received byte data will be accepted and stored in the RX FIFO, and if the receiver is disabled (LINRXOFF (LPUART_LINCTL[11] = 1), all received byte data will be ignore.
-     * |        |          |0 = LIN receiver Enabled.
-     * |        |          |1 = LIN receiver Disabled.
-     * |        |          |Note: This bit is only valid when operating in LIN function mode (FUNCSEL (LPUART_FUNCSEL[1:0]) = 01).
-     * |[12]    |BITERREN  |Bit Error Detect Enable Bit
-     * |        |          |0 = Bit error detection function Disabled.
-     * |        |          |1 = Bit error detection function Enabled.
-     * |        |          |Note: In LIN function mode, when occur bit error, the BITEF (LPUART_LINSTS[9]) flag will be asserted
-     * |        |          |If the LINIEN (LPUART_INTEN[8]) = 1, an interrupt will be generated.
-     * |[19:16] |BRKFL     |LIN Break Field Length
-     * |        |          |This field indicates a 4-bit LIN TX break field count.
-     * |        |          |Note1: These registers are shadow registers of BRKFL (LPUART_ALTCTL[3:0]), User can read/write it by setting BRKFL (LPUART_ALTCTL[3:0]) or BRKFL (LPUART_LINCTL[19:16]).
-     * |        |          |Note2: This break field length is BRKFL + 1.
-     * |        |          |Note3: According to LIN spec, the reset value is 12 (break field length = 13).
-     * |[21:20] |BSL       |LIN Break/Sync Delimiter Length
-     * |        |          |00 = The LIN break/sync delimiter length is 1-bit time.
-     * |        |          |01 = The LIN break/sync delimiter length is 2-bit time.
-     * |        |          |10 = The LIN break/sync delimiter length is 3-bit time.
-     * |        |          |11 = The LIN break/sync delimiter length is 4-bit time.
-     * |        |          |Note: This bit used for LIN master to sending header field.
-     * |[23:22] |HSEL      |LIN Header Select
-     * |        |          |00 = The LIN header includes 'break field'.
-     * |        |          |01 = The LIN header includes 'break field' and 'sync field'.
-     * |        |          |10 = The LIN header includes 'break field', 'sync field' and 'frame ID field'.
-     * |        |          |11 = Reserved.
-     * |        |          |Note: This bit is used to master mode for LIN to send header field (SENDH (LPUART_LINCTL [8]) = 1) or used to slave to indicates exit from mute mode condition (MUTE (LPUART_LINCTL[4] = 1).
-     * |[31:24] |PID       |LIN PID Bits
-     * |        |          |This field contains the LIN frame ID value when in LIN function mode, the frame ID parity can be generated by software or hardware depends on IDPEN (LPUART_LINCTL[9]) = 1.
-     * |        |          |If the parity generated by hardware, user fill ID0~ID5 (PID [29:24] ), hardware will calculate P0 (PID[30]) and P1 (PID[31]), otherwise user must filled frame ID and parity in this field.
-     * |        |          |Note1: User can fill any 8-bit value to this field and the bit 24 indicates ID0 (LSB first).
-     * |        |          |Note2: This field can be used for LIN master mode or slave mode.
-     * @var LPUART_T::LINSTS
-     * Offset: 0x38  LPUART LIN Status Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |SLVHDETF  |LIN Slave Header Detection Flag
-     * |        |          |This bit is set by hardware when a LIN header is detected in LIN slave mode and be cleared by writing 1 to it.
-     * |        |          |0 = LIN header not detected.
-     * |        |          |1 = LIN header detected (break + sync + frame ID).
-     * |        |          |Note1: This bit can be cleared by writing 1 to it.
-     * |        |          |Note2: This bit is only valid when in LIN slave mode (SLVEN (LPUART_LINCTL [0]) = 1) and enable LIN slave header detection function (SLVHDEN (LPUART_LINCTL [1])).
-     * |        |          |Note3: When enable ID parity check IDPEN (LPUART_LINCTL [9]), if hardware detect complete header ('break + sync + frame ID'), the SLVHDETF will be set whether the frame ID correct or not.
-     * |[1]     |SLVHEF    |LIN Slave Header Error Flag
-     * |        |          |This bit is set by hardware when a LIN header error is detected in LIN slave mode and be cleared by writing 1 to it
-     * |        |          |The header errors include 'break delimiter is too short (less than 0.5 bit time)', 'frame error in sync field or Identifier field',
-     * |        |          |'sync field data is not 0x55 in Non-Automatic Resynchronization mode', 'sync field deviation error with Automatic Resynchronization mode',
-     * |        |          |'sync field measure time-out with Automatic Resynchronization mode' and 'LIN header reception time-out'.
-     * |        |          |0 = LIN header error not detected.
-     * |        |          |1 = LIN header error detected.
-     * |        |          |Note1: This bit can be cleared by writing 1 to it.
-     * |        |          |Note2: This bit is only valid when LPUART is operated in LIN slave mode (SLVEN (LPUART_LINCTL [0]) = 1) and
-     * |        |          |enables LIN slave header detection function (SLVHDEN (LPUART_LINCTL [1])).
-     * |[2]     |SLVIDPEF  |LIN Slave ID Parity Error Flag
-     * |        |          |This bit is set by hardware when receipted frame ID parity is not correct.
-     * |        |          |0 = No active.
-     * |        |          |1 = Receipted frame ID parity is not correct.
-     * |        |          |Note1: This bit can be cleared by writing 1 to it.
-     * |        |          |Note2: This bit is only valid when in LIN slave mode (SLVEN (LPUART_LINCTL [0])= 1) and enable LIN frame ID parity check function IDPEN (LPUART_LINCTL [9]).
-     * |[3]     |SLVSYNCF  |LIN Slave Sync Field
-     * |        |          |This bit indicates that the LIN sync field is being analyzed in Automatic Resynchronization mode
-     * |        |          |When the receiver header have some error been detect, user must reset the internal circuit to re-search new frame header by writing 1 to this bit.
-     * |        |          |0 = The current character is not at LIN sync state.
-     * |        |          |1 = The current character is at LIN sync state.
-     * |        |          |Note1: This bit is only valid when in LIN Slave mode (SLVEN(LPUART_LINCTL[0]) = 1).
-     * |        |          |Note2: This bit can be cleared by writing 1 to it.
-     * |        |          |Note3: When writing 1 to it, hardware will reload the initial baud rate and re-search a new frame header.
-     * |[8]     |BRKDETF   |LIN Break Detection Flag
-     * |        |          |This bit is set by hardware when a break is detected and be cleared by writing 1 to it through software.
-     * |        |          |0 = LIN break not detected.
-     * |        |          |1 = LIN break detected.
-     * |        |          |Note1: This bit can be cleared by writing 1 to it.
-     * |        |          |Note2: This bit is only valid when LIN break detection function is enabled (BRKDETEN (LPUART_LINCTL[10]) =1).
-     * |[9]     |BITEF     |Bit Error Detect Status Flag
-     * |        |          |At TX transfer state, hardware will monitor the bus state, if the input pin (LPUART_RXD) state not equals to the output pin (LPUART_TXD) state, BITEF (LPUART_LINSTS[9]) will be set.
-     * |        |          |When occur bit error, if the LINIEN (LPUART_INTEN[8]) = 1, an interrupt will be generated.
-     * |        |          |0 = Bit error not detected.
-     * |        |          |1 = Bit error detected.
-     * |        |          |Note1: This bit can be cleared by writing 1 to it.
-     * |        |          |Note2: This bit is only valid when enable bit error detection function (BITERREN (LPUART_LINCTL [12]) = 1).
+     * |[6]     |DGE       |Deglitch Enable Bit
+     * |        |          |Setting this bit can disable TX and RX.
+     * |        |          |0 = Deglitch Disabled.
+     * |        |          |1 = Deglitch Enabled.
+     * |        |          |Note 1: When this bit is set to logic 1, any pulse width less than about 150 ns will be considered a glitch and will be removed in the serial data input (RX). 
+     * |        |          |This bit acts only on RX line and has no effect on the transmitter logic.
+     * |        |          |Note 2: It is recommended to set this bit only when operating at baud rate under 2.5 Mbps.
+     * |[7]     |TXRXSWP   |TX and RX Swap Enable Bit
+     * |        |          |Setting this bit Swaps TX pin and RX pin.
+     * |        |          |0 = TX and RX Swap Disabled.
+     * |        |          |1 = TX and RX Swap Enabled.
      * @var LPUART_T::BRCOMP
      * Offset: 0x3C  LPUART Baud Rate Compensation Register
      * ---------------------------------------------------------------------------------------------------
@@ -826,6 +669,64 @@ typedef struct
      * |[15:0]  |STCOMP    |Start Bit Compensation Value
      * |        |          |These bits field indicate how many clock cycle selected by LPUART_CLK do the LPUART controller can get the 1st bit (start bit) when the device is wake-up from power-down mode.
      * |        |          |Note: It is valid only when WKDATEN (LPUART_WKCTL[1]) is set.
+     * @var LPUART_T::RS485DD
+     * Offset: 0x4C  LPUART RS485 Transceiver Deactivate Delay Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |RTSDDLY   |RS485 Transceiver Deactivate Delay Value
+     * |        |          |These bits field indicate how many clock cycles selected by LPUART_CLK do the LPUART controller delay the RS485 transceiver state trancing when the state trancing of RS485 transceiver is from TX to RX state.
+     * |        |          |These bits field have no effect when the state trancing of RS485 transceiver is from RX to TX state.
+     * |        |          |Note: It is valid only when RS485AUD (LPUART_ALTCTL[10]) is set.
+     * @var LPUART_T::AUTOCTL
+     * Offset: 0x58  LPUART Automatic Operation Control Register 
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[3:0]   |TRIGSEL   |Automatic Operation Trigger Source Select
+     * |        |          |0000 = Low Power Auto-operation Trigger Source from LPTMR0.
+     * |        |          |0001 = Low Power Auto-operation Trigger Source from LPTMR1.
+     * |        |          |0010 = Low Power Auto-operation Trigger Source from TTMR0.
+     * |        |          |0011 = Low Power Auto-operation Trigger Source from TTMR1.
+     * |        |          |0100 = Low Power Auto-operation Trigger Source from WKIOA0.
+     * |        |          |0101 = Low Power Auto-operation Trigger Source from WKIOB0.
+     * |        |          |0110 = Low Power Auto-operation Trigger Source from WKIOC0.
+     * |        |          |0111 = Low Power Auto-operation Trigger Source from WKIOD0.
+     * |        |          |1000~1111 = Reserved.
+     * |[4]     |TRIGEN    |Automatic Operation Trigger Enable Bit
+     * |        |          |When TRIGEN (LPUART_AUTOCTL[4]) is set to '1',the automatic TX operation of LPUART will be triggered by an event sent from the trigger source selected by TRIGSEL[3:0].
+     * |        |          |0 = LPUART Automatic Operation Trigger disabled.
+     * |        |          |1 = LPUART Automatic Operation Trigger enabled.
+     * |[5]     |CKAWOEN   |Automatic Operation Clock Always-on Enable Bit
+     * |        |          |0 = Automatic Operation Clock Always-on Disabled.
+     * |        |          |1 = Automatic Operation Clock Always-on Enabled.
+     * |[8]     |WKAOTOEN  |Bus Idle Time-out Wake-up Enable Bit
+     * |        |          |0 = Bus Idle Time-out Wake-up system function Disabled.
+     * |        |          |1 = Bus Idle Time-out Wake-up system function Enabled.
+     * |        |          |Note 1: When the system is in Power-down mode, Bus Idle Time-out Wake-up will wake-up system from Power-down mode if WKAOTOEN (LPUART_AUTOCTL[8]) is set to '1'.
+     * |        |          |Note 2: When WKAOTOEN (LPUART_AUTOCTL[8]) is reset to '0',Bus Idle Time-out Wake-up event will not wake up the system. Moreover, 
+     * |        |          |Bus Idle Time-out Wake-up event will gate the UART clock off if WKAOTOEN (LPUART_AUTOCTL[8]) and AOCKAWOEN (LPUART_AUTOCTL[4]) are both reset to '0'.
+     * |[9]     |SWTRIG    |Software Trigger (Write Only)
+     * |        |          |After AOEN(LPUART_AUTOCTL[31]) is set to 1, software can manually trigger the automatic TX operation by 
+     * |        |          |writing 1 to this bit.
+     * |[31]    |AOEN      |Automatic Operation Enable Bit
+     * |        |          |0 = Automatic Operation Disabled.
+     * |        |          |1 = Automatic Operation Enabled.
+     * @var LPUART_T::AUTOSTS
+     * Offset: 0x5C  LPUART Automatic Operation Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |AOTOWKF   |Bus Idle Time-out Wake-up Flag
+     * |        |          |This bit is set if chip wake-up from power-down state by Bus Idle Time-out Wake-up.
+     * |        |          |0 = There is no Bus Idle Time-out Wake-up event.
+     * |        |          |1 = Chip wake-up from power-down state by Bus Idle Time-out Wake-up.
+     * |        |          |Note 1: When RXPDMAEN (LPUART_INTEN[15]) or TXPDMAEN (LPUART_INTEN[14]) is enabled, this bit is the shadow bit of HWTOIF (LPUART_INTSTS[20]);
+     * |        |          |user can read/clear it by reading/resetting HWTOIF (LPUART_INTSTS[20]) or AOTOWKF (LPUART_AUTOSTS[0]).
+     * |        |          |Note 2: When RXPDMAEN (LPUART_INTEN[15]) and TXPDMAEN (LPUART_INTEN[14]) are both disabled, this bit is the shadow bit of RXTOIF (LPUART_INTSTS[4]);
+     * |        |          |user can read/clear it by reading/resetting RXTOIF (LPUART_INTSTS[4]) or AOTOWKF (LPUART_AUTOSTS[0]).
+     * |        |          |Note 3: If WKAOTOEN (LPUART_AUTOCTL[8]) is enabled, the Bus Idle Time-out Wake-up event will set this bit.
+     * |        |          |Note 4: This bit can be cleared by writing '1' to it.
      */
     __IO uint32_t DAT;                   /*!< [0x0000] LPUART Receive/Transmit Buffer Register                            */
     __IO uint32_t INTEN;                 /*!< [0x0004] LPUART Interrupt Enable Register                                   */
@@ -837,12 +738,9 @@ typedef struct
     __IO uint32_t INTSTS;                /*!< [0x001c] LPUART Interrupt Status Register                                   */
     __IO uint32_t TOUT;                  /*!< [0x0020] LPUART Time-out Register                                           */
     __IO uint32_t BAUD;                  /*!< [0x0024] LPUART Baud Rate Divider Register                                  */
-//    __IO uint32_t IRDA;                  /*!< [0x0028] LPUART IrDA Control Register                                       */
     __IO uint32_t RESERVE0[1];
     __IO uint32_t ALTCTL;                /*!< [0x002c] LPUART Alternate Control/Status Register                           */
     __IO uint32_t FUNCSEL;               /*!< [0x0030] LPUART Function Select Register                                    */
-//    __IO uint32_t LINCTL;              /*!< [0x0034] LPUART LIN Control Register                                        */
-//    __IO uint32_t LINSTS;                /*!< [0x0038] LPUART LIN Status Register                                         */
     __IO uint32_t RESERVE1[2]; 
     __IO uint32_t BRCOMP;                /*!< [0x003c] LPUART Baud Rate Compensation Register                             */
     __IO uint32_t WKCTL;                 /*!< [0x0040] LPUART Wake-up Control Register                                    */
@@ -850,8 +748,8 @@ typedef struct
     __IO uint32_t DWKCOMP;               /*!< [0x0048] LPUART Incoming Data Wake-up Compensation Register                 */
     __IO uint32_t RS485DD;               /*!< [0x004C] LPUART RS485 Transceiver Deactivate Delay Register                 */
     __IO uint32_t RESERVE2[2];              
-    __IO uint32_t AUTOCTL;               /*!< [0x0058] LPUART Automatic Operation Control Register                               */
-    __IO uint32_t AUTOSTS;               /*!< [0x005C] LPUART Automatic Operation Status Register                               */    
+    __IO uint32_t AUTOCTL;               /*!< [0x0058] LPUART Automatic Operation Control Register                        */
+    __IO uint32_t AUTOSTS;               /*!< [0x005C] LPUART Automatic Operation Status Register                         */
     __I  uint32_t RESERVE3[999];
     __I  uint32_t VERSION;               /*!< [0x0ffc] LPUART Module Version Register                                     */
 
@@ -863,349 +761,337 @@ typedef struct
 @{ */
 
 #define LPUART_DAT_DAT_Pos                 (0)                                               /*!< LPUART_T::DAT: DAT Position              */
-#define LPUART_DAT_DAT_Msk                 (0xfful << LPUART_DAT_DAT_Pos)                      /*!< LPUART_T::DAT: DAT Mask                  */
+#define LPUART_DAT_DAT_Msk                 (0xfful << LPUART_DAT_DAT_Pos)                    /*!< LPUART_T::DAT: DAT Mask                  */
 
 #define LPUART_DAT_PARITY_Pos              (8)                                               /*!< LPUART_T::DAT: PARITY Position           */
-#define LPUART_DAT_PARITY_Msk              (0x1ul << LPUART_DAT_PARITY_Pos)                    /*!< LPUART_T::DAT: PARITY Mask               */
+#define LPUART_DAT_PARITY_Msk              (0x1ul << LPUART_DAT_PARITY_Pos)                  /*!< LPUART_T::DAT: PARITY Mask               */
 
 #define LPUART_INTEN_RDAIEN_Pos            (0)                                               /*!< LPUART_T::INTEN: RDAIEN Position         */
-#define LPUART_INTEN_RDAIEN_Msk            (0x1ul << LPUART_INTEN_RDAIEN_Pos)                  /*!< LPUART_T::INTEN: RDAIEN Mask             */
+#define LPUART_INTEN_RDAIEN_Msk            (0x1ul << LPUART_INTEN_RDAIEN_Pos)                /*!< LPUART_T::INTEN: RDAIEN Mask             */
 
 #define LPUART_INTEN_THREIEN_Pos           (1)                                               /*!< LPUART_T::INTEN: THREIEN Position        */
-#define LPUART_INTEN_THREIEN_Msk           (0x1ul << LPUART_INTEN_THREIEN_Pos)                 /*!< LPUART_T::INTEN: THREIEN Mask            */
+#define LPUART_INTEN_THREIEN_Msk           (0x1ul << LPUART_INTEN_THREIEN_Pos)               /*!< LPUART_T::INTEN: THREIEN Mask            */
 
 #define LPUART_INTEN_RLSIEN_Pos            (2)                                               /*!< LPUART_T::INTEN: RLSIEN Position         */
-#define LPUART_INTEN_RLSIEN_Msk            (0x1ul << LPUART_INTEN_RLSIEN_Pos)                  /*!< LPUART_T::INTEN: RLSIEN Mask             */
+#define LPUART_INTEN_RLSIEN_Msk            (0x1ul << LPUART_INTEN_RLSIEN_Pos)                /*!< LPUART_T::INTEN: RLSIEN Mask             */
 
 #define LPUART_INTEN_MODEMIEN_Pos          (3)                                               /*!< LPUART_T::INTEN: MODEMIEN Position       */
-#define LPUART_INTEN_MODEMIEN_Msk          (0x1ul << LPUART_INTEN_MODEMIEN_Pos)                /*!< LPUART_T::INTEN: MODEMIEN Mask           */
+#define LPUART_INTEN_MODEMIEN_Msk          (0x1ul << LPUART_INTEN_MODEMIEN_Pos)              /*!< LPUART_T::INTEN: MODEMIEN Mask           */
 
 #define LPUART_INTEN_RXTOIEN_Pos           (4)                                               /*!< LPUART_T::INTEN: RXTOIEN Position        */
-#define LPUART_INTEN_RXTOIEN_Msk           (0x1ul << LPUART_INTEN_RXTOIEN_Pos)                 /*!< LPUART_T::INTEN: RXTOIEN Mask            */
+#define LPUART_INTEN_RXTOIEN_Msk           (0x1ul << LPUART_INTEN_RXTOIEN_Pos)               /*!< LPUART_T::INTEN: RXTOIEN Mask            */
 
 #define LPUART_INTEN_BUFERRIEN_Pos         (5)                                               /*!< LPUART_T::INTEN: BUFERRIEN Position      */
-#define LPUART_INTEN_BUFERRIEN_Msk         (0x1ul << LPUART_INTEN_BUFERRIEN_Pos)               /*!< LPUART_T::INTEN: BUFERRIEN Mask          */
+#define LPUART_INTEN_BUFERRIEN_Msk         (0x1ul << LPUART_INTEN_BUFERRIEN_Pos)             /*!< LPUART_T::INTEN: BUFERRIEN Mask          */
 
 #define LPUART_INTEN_WKIEN_Pos             (6)                                               /*!< LPUART_T::INTEN: WKIEN Position          */
-#define LPUART_INTEN_WKIEN_Msk             (0x1ul << LPUART_INTEN_WKIEN_Pos)                   /*!< LPUART_T::INTEN: WKIEN Mask              */
-
-#define LPUART_INTEN_LINIEN_Pos            (8)                                               /*!< LPUART_T::INTEN: LINIEN Position         */
-#define LPUART_INTEN_LINIEN_Msk            (0x1ul << LPUART_INTEN_LINIEN_Pos)                  /*!< LPUART_T::INTEN: LINIEN Mask             */
+#define LPUART_INTEN_WKIEN_Msk             (0x1ul << LPUART_INTEN_WKIEN_Pos)                 /*!< LPUART_T::INTEN: WKIEN Mask              */
 
 #define LPUART_INTEN_TOCNTEN_Pos           (11)                                              /*!< LPUART_T::INTEN: TOCNTEN Position        */
-#define LPUART_INTEN_TOCNTEN_Msk           (0x1ul << LPUART_INTEN_TOCNTEN_Pos)                 /*!< LPUART_T::INTEN: TOCNTEN Mask            */
+#define LPUART_INTEN_TOCNTEN_Msk           (0x1ul << LPUART_INTEN_TOCNTEN_Pos)               /*!< LPUART_T::INTEN: TOCNTEN Mask            */
 
 #define LPUART_INTEN_ATORTSEN_Pos          (12)                                              /*!< LPUART_T::INTEN: ATORTSEN Position       */
-#define LPUART_INTEN_ATORTSEN_Msk          (0x1ul << LPUART_INTEN_ATORTSEN_Pos)                /*!< LPUART_T::INTEN: ATORTSEN Mask           */
+#define LPUART_INTEN_ATORTSEN_Msk          (0x1ul << LPUART_INTEN_ATORTSEN_Pos)              /*!< LPUART_T::INTEN: ATORTSEN Mask           */
 
 #define LPUART_INTEN_ATOCTSEN_Pos          (13)                                              /*!< LPUART_T::INTEN: ATOCTSEN Position       */
-#define LPUART_INTEN_ATOCTSEN_Msk          (0x1ul << LPUART_INTEN_ATOCTSEN_Pos)                /*!< LPUART_T::INTEN: ATOCTSEN Mask           */
+#define LPUART_INTEN_ATOCTSEN_Msk          (0x1ul << LPUART_INTEN_ATOCTSEN_Pos)              /*!< LPUART_T::INTEN: ATOCTSEN Mask           */
 
 #define LPUART_INTEN_TXPDMAEN_Pos          (14)                                              /*!< LPUART_T::INTEN: TXPDMAEN Position       */
-#define LPUART_INTEN_TXPDMAEN_Msk          (0x1ul << LPUART_INTEN_TXPDMAEN_Pos)                /*!< LPUART_T::INTEN: TXPDMAEN Mask           */
+#define LPUART_INTEN_TXPDMAEN_Msk          (0x1ul << LPUART_INTEN_TXPDMAEN_Pos)              /*!< LPUART_T::INTEN: TXPDMAEN Mask           */
 
 #define LPUART_INTEN_RXPDMAEN_Pos          (15)                                              /*!< LPUART_T::INTEN: RXPDMAEN Position       */
-#define LPUART_INTEN_RXPDMAEN_Msk          (0x1ul << LPUART_INTEN_RXPDMAEN_Pos)                /*!< LPUART_T::INTEN: RXPDMAEN Mask           */
-
-#define LPUART_INTEN_SWBEIEN_Pos           (16)                                              /*!< LPUART_T::INTEN: SWBEIEN Position        */
-#define LPUART_INTEN_SWBEIEN_Msk           (0x1ul << LPUART_INTEN_SWBEIEN_Pos)                 /*!< LPUART_T::INTEN: SWBEIEN Mask            */
+#define LPUART_INTEN_RXPDMAEN_Msk          (0x1ul << LPUART_INTEN_RXPDMAEN_Pos)              /*!< LPUART_T::INTEN: RXPDMAEN Mask           */
 
 #define LPUART_INTEN_ABRIEN_Pos            (18)                                              /*!< LPUART_T::INTEN: ABRIEN Position         */
-#define LPUART_INTEN_ABRIEN_Msk            (0x1ul << LPUART_INTEN_ABRIEN_Pos)                  /*!< LPUART_T::INTEN: ABRIEN Mask             */
+#define LPUART_INTEN_ABRIEN_Msk            (0x1ul << LPUART_INTEN_ABRIEN_Pos)                /*!< LPUART_T::INTEN: ABRIEN Mask             */
 
 #define LPUART_INTEN_TXENDIEN_Pos          (22)                                              /*!< LPUART_T::INTEN: TXENDIEN Position       */
-#define LPUART_INTEN_TXENDIEN_Msk          (0x1ul << LPUART_INTEN_TXENDIEN_Pos)                /*!< LPUART_T::INTEN: TXENDIEN Mask           */
+#define LPUART_INTEN_TXENDIEN_Msk          (0x1ul << LPUART_INTEN_TXENDIEN_Pos)              /*!< LPUART_T::INTEN: TXENDIEN Mask           */
 
 #define LPUART_FIFO_RXRST_Pos              (1)                                               /*!< LPUART_T::FIFO: RXRST Position           */
-#define LPUART_FIFO_RXRST_Msk              (0x1ul << LPUART_FIFO_RXRST_Pos)                    /*!< LPUART_T::FIFO: RXRST Mask               */
+#define LPUART_FIFO_RXRST_Msk              (0x1ul << LPUART_FIFO_RXRST_Pos)                  /*!< LPUART_T::FIFO: RXRST Mask               */
 
 #define LPUART_FIFO_TXRST_Pos              (2)                                               /*!< LPUART_T::FIFO: TXRST Position           */
-#define LPUART_FIFO_TXRST_Msk              (0x1ul << LPUART_FIFO_TXRST_Pos)                    /*!< LPUART_T::FIFO: TXRST Mask               */
+#define LPUART_FIFO_TXRST_Msk              (0x1ul << LPUART_FIFO_TXRST_Pos)                  /*!< LPUART_T::FIFO: TXRST Mask               */
 
 #define LPUART_FIFO_RFITL_Pos              (4)                                               /*!< LPUART_T::FIFO: RFITL Position           */
-#define LPUART_FIFO_RFITL_Msk              (0xful << LPUART_FIFO_RFITL_Pos)                    /*!< LPUART_T::FIFO: RFITL Mask               */
+#define LPUART_FIFO_RFITL_Msk              (0xful << LPUART_FIFO_RFITL_Pos)                  /*!< LPUART_T::FIFO: RFITL Mask               */
 
 #define LPUART_FIFO_RXOFF_Pos              (8)                                               /*!< LPUART_T::FIFO: RXOFF Position           */
-#define LPUART_FIFO_RXOFF_Msk              (0x1ul << LPUART_FIFO_RXOFF_Pos)                    /*!< LPUART_T::FIFO: RXOFF Mask               */
+#define LPUART_FIFO_RXOFF_Msk              (0x1ul << LPUART_FIFO_RXOFF_Pos)                  /*!< LPUART_T::FIFO: RXOFF Mask               */
 
 #define LPUART_FIFO_RTSTRGLV_Pos           (16)                                              /*!< LPUART_T::FIFO: RTSTRGLV Position        */
-#define LPUART_FIFO_RTSTRGLV_Msk           (0xful << LPUART_FIFO_RTSTRGLV_Pos)                 /*!< LPUART_T::FIFO: RTSTRGLV Mask            */
+#define LPUART_FIFO_RTSTRGLV_Msk           (0xful << LPUART_FIFO_RTSTRGLV_Pos)               /*!< LPUART_T::FIFO: RTSTRGLV Mask            */
 
 #define LPUART_LINE_WLS_Pos                (0)                                               /*!< LPUART_T::LINE: WLS Position             */
-#define LPUART_LINE_WLS_Msk                (0x3ul << LPUART_LINE_WLS_Pos)                      /*!< LPUART_T::LINE: WLS Mask                 */
+#define LPUART_LINE_WLS_Msk                (0x3ul << LPUART_LINE_WLS_Pos)                    /*!< LPUART_T::LINE: WLS Mask                 */
 
 #define LPUART_LINE_NSB_Pos                (2)                                               /*!< LPUART_T::LINE: NSB Position             */
-#define LPUART_LINE_NSB_Msk                (0x1ul << LPUART_LINE_NSB_Pos)                      /*!< LPUART_T::LINE: NSB Mask                 */
+#define LPUART_LINE_NSB_Msk                (0x1ul << LPUART_LINE_NSB_Pos)                    /*!< LPUART_T::LINE: NSB Mask                 */
 
 #define LPUART_LINE_PBE_Pos                (3)                                               /*!< LPUART_T::LINE: PBE Position             */
-#define LPUART_LINE_PBE_Msk                (0x1ul << LPUART_LINE_PBE_Pos)                      /*!< LPUART_T::LINE: PBE Mask                 */
+#define LPUART_LINE_PBE_Msk                (0x1ul << LPUART_LINE_PBE_Pos)                    /*!< LPUART_T::LINE: PBE Mask                 */
 
 #define LPUART_LINE_EPE_Pos                (4)                                               /*!< LPUART_T::LINE: EPE Position             */
-#define LPUART_LINE_EPE_Msk                (0x1ul << LPUART_LINE_EPE_Pos)                      /*!< LPUART_T::LINE: EPE Mask                 */
+#define LPUART_LINE_EPE_Msk                (0x1ul << LPUART_LINE_EPE_Pos)                    /*!< LPUART_T::LINE: EPE Mask                 */
 
 #define LPUART_LINE_SPE_Pos                (5)                                               /*!< LPUART_T::LINE: SPE Position             */
-#define LPUART_LINE_SPE_Msk                (0x1ul << LPUART_LINE_SPE_Pos)                      /*!< LPUART_T::LINE: SPE Mask                 */
+#define LPUART_LINE_SPE_Msk                (0x1ul << LPUART_LINE_SPE_Pos)                    /*!< LPUART_T::LINE: SPE Mask                 */
 
 #define LPUART_LINE_BCB_Pos                (6)                                               /*!< LPUART_T::LINE: BCB Position             */
-#define LPUART_LINE_BCB_Msk                (0x1ul << LPUART_LINE_BCB_Pos)                      /*!< LPUART_T::LINE: BCB Mask                 */
+#define LPUART_LINE_BCB_Msk                (0x1ul << LPUART_LINE_BCB_Pos)                    /*!< LPUART_T::LINE: BCB Mask                 */
 
 #define LPUART_LINE_PSS_Pos                (7)                                               /*!< LPUART_T::LINE: PSS Position             */
-#define LPUART_LINE_PSS_Msk                (0x1ul << LPUART_LINE_PSS_Pos)                      /*!< LPUART_T::LINE: PSS Mask                 */
+#define LPUART_LINE_PSS_Msk                (0x1ul << LPUART_LINE_PSS_Pos)                    /*!< LPUART_T::LINE: PSS Mask                 */
 
 #define LPUART_LINE_TXDINV_Pos             (8)                                               /*!< LPUART_T::LINE: TXDINV Position          */
-#define LPUART_LINE_TXDINV_Msk             (0x1ul << LPUART_LINE_TXDINV_Pos)                   /*!< LPUART_T::LINE: TXDINV Mask              */
+#define LPUART_LINE_TXDINV_Msk             (0x1ul << LPUART_LINE_TXDINV_Pos)                 /*!< LPUART_T::LINE: TXDINV Mask              */
 
 #define LPUART_LINE_RXDINV_Pos             (9)                                               /*!< LPUART_T::LINE: RXDINV Position          */
-#define LPUART_LINE_RXDINV_Msk             (0x1ul << LPUART_LINE_RXDINV_Pos)                   /*!< LPUART_T::LINE: RXDINV Mask              */
+#define LPUART_LINE_RXDINV_Msk             (0x1ul << LPUART_LINE_RXDINV_Pos)                 /*!< LPUART_T::LINE: RXDINV Mask              */
 
 #define LPUART_MODEM_RTS_Pos               (1)                                               /*!< LPUART_T::MODEM: RTS Position            */
-#define LPUART_MODEM_RTS_Msk               (0x1ul << LPUART_MODEM_RTS_Pos)                     /*!< LPUART_T::MODEM: RTS Mask                */
+#define LPUART_MODEM_RTS_Msk               (0x1ul << LPUART_MODEM_RTS_Pos)                   /*!< LPUART_T::MODEM: RTS Mask                */
 
 #define LPUART_MODEM_LOOKBACK_Pos          (4)                                               /*!< LPUART_T::MODEM: LOOKBACK Position       */
-#define LPUART_MODEM_LOOKBACK_Msk          (0x1ul << LPUART_MODEM_LOOKBACK_Pos)                /*!< LPUART_T::MODEM: LOOKBACK Mask           */
+#define LPUART_MODEM_LOOKBACK_Msk          (0x1ul << LPUART_MODEM_LOOKBACK_Pos)              /*!< LPUART_T::MODEM: LOOKBACK Mask           */
 
 #define LPUART_MODEM_RTSACTLV_Pos          (9)                                               /*!< LPUART_T::MODEM: RTSACTLV Position       */
-#define LPUART_MODEM_RTSACTLV_Msk          (0x1ul << LPUART_MODEM_RTSACTLV_Pos)                /*!< LPUART_T::MODEM: RTSACTLV Mask           */
+#define LPUART_MODEM_RTSACTLV_Msk          (0x1ul << LPUART_MODEM_RTSACTLV_Pos)              /*!< LPUART_T::MODEM: RTSACTLV Mask           */
 
 #define LPUART_MODEM_RTSSTS_Pos            (13)                                              /*!< LPUART_T::MODEM: RTSSTS Position         */
-#define LPUART_MODEM_RTSSTS_Msk            (0x1ul << LPUART_MODEM_RTSSTS_Pos)                  /*!< LPUART_T::MODEM: RTSSTS Mask             */
+#define LPUART_MODEM_RTSSTS_Msk            (0x1ul << LPUART_MODEM_RTSSTS_Pos)                /*!< LPUART_T::MODEM: RTSSTS Mask             */
 
 #define LPUART_MODEMSTS_CTSDETF_Pos        (0)                                               /*!< LPUART_T::MODEMSTS: CTSDETF Position     */
-#define LPUART_MODEMSTS_CTSDETF_Msk        (0x1ul << LPUART_MODEMSTS_CTSDETF_Pos)              /*!< LPUART_T::MODEMSTS: CTSDETF Mask         */
+#define LPUART_MODEMSTS_CTSDETF_Msk        (0x1ul << LPUART_MODEMSTS_CTSDETF_Pos)            /*!< LPUART_T::MODEMSTS: CTSDETF Mask         */
 
 #define LPUART_MODEMSTS_CTSSTS_Pos         (4)                                               /*!< LPUART_T::MODEMSTS: CTSSTS Position      */
-#define LPUART_MODEMSTS_CTSSTS_Msk         (0x1ul << LPUART_MODEMSTS_CTSSTS_Pos)               /*!< LPUART_T::MODEMSTS: CTSSTS Mask          */
+#define LPUART_MODEMSTS_CTSSTS_Msk         (0x1ul << LPUART_MODEMSTS_CTSSTS_Pos)             /*!< LPUART_T::MODEMSTS: CTSSTS Mask          */
 
 #define LPUART_MODEMSTS_CTSACTLV_Pos       (8)                                               /*!< LPUART_T::MODEMSTS: CTSACTLV Position    */
-#define LPUART_MODEMSTS_CTSACTLV_Msk       (0x1ul << LPUART_MODEMSTS_CTSACTLV_Pos)             /*!< LPUART_T::MODEMSTS: CTSACTLV Mask        */
+#define LPUART_MODEMSTS_CTSACTLV_Msk       (0x1ul << LPUART_MODEMSTS_CTSACTLV_Pos)           /*!< LPUART_T::MODEMSTS: CTSACTLV Mask        */
 
 #define LPUART_FIFOSTS_RXOVIF_Pos          (0)                                               /*!< LPUART_T::FIFOSTS: RXOVIF Position       */
-#define LPUART_FIFOSTS_RXOVIF_Msk          (0x1ul << LPUART_FIFOSTS_RXOVIF_Pos)                /*!< LPUART_T::FIFOSTS: RXOVIF Mask           */
+#define LPUART_FIFOSTS_RXOVIF_Msk          (0x1ul << LPUART_FIFOSTS_RXOVIF_Pos)              /*!< LPUART_T::FIFOSTS: RXOVIF Mask           */
 
 #define LPUART_FIFOSTS_ABRDIF_Pos          (1)                                               /*!< LPUART_T::FIFOSTS: ABRDIF Position       */
-#define LPUART_FIFOSTS_ABRDIF_Msk          (0x1ul << LPUART_FIFOSTS_ABRDIF_Pos)                /*!< LPUART_T::FIFOSTS: ABRDIF Mask           */
+#define LPUART_FIFOSTS_ABRDIF_Msk          (0x1ul << LPUART_FIFOSTS_ABRDIF_Pos)              /*!< LPUART_T::FIFOSTS: ABRDIF Mask           */
 
 #define LPUART_FIFOSTS_ABRDTOIF_Pos        (2)                                               /*!< LPUART_T::FIFOSTS: ABRDTOIF Position     */
-#define LPUART_FIFOSTS_ABRDTOIF_Msk        (0x1ul << LPUART_FIFOSTS_ABRDTOIF_Pos)              /*!< LPUART_T::FIFOSTS: ABRDTOIF Mask         */
+#define LPUART_FIFOSTS_ABRDTOIF_Msk        (0x1ul << LPUART_FIFOSTS_ABRDTOIF_Pos)            /*!< LPUART_T::FIFOSTS: ABRDTOIF Mask         */
 
 #define LPUART_FIFOSTS_ADDRDETF_Pos        (3)                                               /*!< LPUART_T::FIFOSTS: ADDRDETF Position     */
-#define LPUART_FIFOSTS_ADDRDETF_Msk        (0x1ul << LPUART_FIFOSTS_ADDRDETF_Pos)              /*!< LPUART_T::FIFOSTS: ADDRDETF Mask         */
+#define LPUART_FIFOSTS_ADDRDETF_Msk        (0x1ul << LPUART_FIFOSTS_ADDRDETF_Pos)            /*!< LPUART_T::FIFOSTS: ADDRDETF Mask         */
 
 #define LPUART_FIFOSTS_PEF_Pos             (4)                                               /*!< LPUART_T::FIFOSTS: PEF Position          */
-#define LPUART_FIFOSTS_PEF_Msk             (0x1ul << LPUART_FIFOSTS_PEF_Pos)                   /*!< LPUART_T::FIFOSTS: PEF Mask              */
+#define LPUART_FIFOSTS_PEF_Msk             (0x1ul << LPUART_FIFOSTS_PEF_Pos)                 /*!< LPUART_T::FIFOSTS: PEF Mask              */
 
 #define LPUART_FIFOSTS_FEF_Pos             (5)                                               /*!< LPUART_T::FIFOSTS: FEF Position          */
-#define LPUART_FIFOSTS_FEF_Msk             (0x1ul << LPUART_FIFOSTS_FEF_Pos)                   /*!< LPUART_T::FIFOSTS: FEF Mask              */
+#define LPUART_FIFOSTS_FEF_Msk             (0x1ul << LPUART_FIFOSTS_FEF_Pos)                 /*!< LPUART_T::FIFOSTS: FEF Mask              */
 
 #define LPUART_FIFOSTS_BIF_Pos             (6)                                               /*!< LPUART_T::FIFOSTS: BIF Position          */
-#define LPUART_FIFOSTS_BIF_Msk             (0x1ul << LPUART_FIFOSTS_BIF_Pos)                   /*!< LPUART_T::FIFOSTS: BIF Mask              */
+#define LPUART_FIFOSTS_BIF_Msk             (0x1ul << LPUART_FIFOSTS_BIF_Pos)                 /*!< LPUART_T::FIFOSTS: BIF Mask              */
 
 #define LPUART_FIFOSTS_RXPTR_Pos           (8)                                               /*!< LPUART_T::FIFOSTS: RXPTR Position        */
-#define LPUART_FIFOSTS_RXPTR_Msk           (0x3ful << LPUART_FIFOSTS_RXPTR_Pos)                /*!< LPUART_T::FIFOSTS: RXPTR Mask            */
+#define LPUART_FIFOSTS_RXPTR_Msk           (0x3ful << LPUART_FIFOSTS_RXPTR_Pos)              /*!< LPUART_T::FIFOSTS: RXPTR Mask            */
 
 #define LPUART_FIFOSTS_RXEMPTY_Pos         (14)                                              /*!< LPUART_T::FIFOSTS: RXEMPTY Position      */
-#define LPUART_FIFOSTS_RXEMPTY_Msk         (0x1ul << LPUART_FIFOSTS_RXEMPTY_Pos)               /*!< LPUART_T::FIFOSTS: RXEMPTY Mask          */
+#define LPUART_FIFOSTS_RXEMPTY_Msk         (0x1ul << LPUART_FIFOSTS_RXEMPTY_Pos)             /*!< LPUART_T::FIFOSTS: RXEMPTY Mask          */
 
 #define LPUART_FIFOSTS_RXFULL_Pos          (15)                                              /*!< LPUART_T::FIFOSTS: RXFULL Position       */
-#define LPUART_FIFOSTS_RXFULL_Msk          (0x1ul << LPUART_FIFOSTS_RXFULL_Pos)                /*!< LPUART_T::FIFOSTS: RXFULL Mask           */
+#define LPUART_FIFOSTS_RXFULL_Msk          (0x1ul << LPUART_FIFOSTS_RXFULL_Pos)              /*!< LPUART_T::FIFOSTS: RXFULL Mask           */
 
 #define LPUART_FIFOSTS_TXPTR_Pos           (16)                                              /*!< LPUART_T::FIFOSTS: TXPTR Position        */
-#define LPUART_FIFOSTS_TXPTR_Msk           (0x3ful << LPUART_FIFOSTS_TXPTR_Pos)                /*!< LPUART_T::FIFOSTS: TXPTR Mask            */
+#define LPUART_FIFOSTS_TXPTR_Msk           (0x3ful << LPUART_FIFOSTS_TXPTR_Pos)              /*!< LPUART_T::FIFOSTS: TXPTR Mask            */
 
 #define LPUART_FIFOSTS_TXEMPTY_Pos         (22)                                              /*!< LPUART_T::FIFOSTS: TXEMPTY Position      */
-#define LPUART_FIFOSTS_TXEMPTY_Msk         (0x1ul << LPUART_FIFOSTS_TXEMPTY_Pos)               /*!< LPUART_T::FIFOSTS: TXEMPTY Mask          */
+#define LPUART_FIFOSTS_TXEMPTY_Msk         (0x1ul << LPUART_FIFOSTS_TXEMPTY_Pos)             /*!< LPUART_T::FIFOSTS: TXEMPTY Mask          */
 
 #define LPUART_FIFOSTS_TXFULL_Pos          (23)                                              /*!< LPUART_T::FIFOSTS: TXFULL Position       */
-#define LPUART_FIFOSTS_TXFULL_Msk          (0x1ul << LPUART_FIFOSTS_TXFULL_Pos)                /*!< LPUART_T::FIFOSTS: TXFULL Mask           */
+#define LPUART_FIFOSTS_TXFULL_Msk          (0x1ul << LPUART_FIFOSTS_TXFULL_Pos)              /*!< LPUART_T::FIFOSTS: TXFULL Mask           */
 
 #define LPUART_FIFOSTS_TXOVIF_Pos          (24)                                              /*!< LPUART_T::FIFOSTS: TXOVIF Position       */
-#define LPUART_FIFOSTS_TXOVIF_Msk          (0x1ul << LPUART_FIFOSTS_TXOVIF_Pos)                /*!< LPUART_T::FIFOSTS: TXOVIF Mask           */
+#define LPUART_FIFOSTS_TXOVIF_Msk          (0x1ul << LPUART_FIFOSTS_TXOVIF_Pos)              /*!< LPUART_T::FIFOSTS: TXOVIF Mask           */
 
 #define LPUART_FIFOSTS_TXEMPTYF_Pos        (28)                                              /*!< LPUART_T::FIFOSTS: TXEMPTYF Position     */
-#define LPUART_FIFOSTS_TXEMPTYF_Msk        (0x1ul << LPUART_FIFOSTS_TXEMPTYF_Pos)              /*!< LPUART_T::FIFOSTS: TXEMPTYF Mask         */
+#define LPUART_FIFOSTS_TXEMPTYF_Msk        (0x1ul << LPUART_FIFOSTS_TXEMPTYF_Pos)            /*!< LPUART_T::FIFOSTS: TXEMPTYF Mask         */
 
 #define LPUART_FIFOSTS_RXIDLE_Pos          (29)                                              /*!< LPUART_T::FIFOSTS: RXIDLE Position       */
-#define LPUART_FIFOSTS_RXIDLE_Msk          (0x1ul << LPUART_FIFOSTS_RXIDLE_Pos)                /*!< LPUART_T::FIFOSTS: RXIDLE Mask           */
+#define LPUART_FIFOSTS_RXIDLE_Msk          (0x1ul << LPUART_FIFOSTS_RXIDLE_Pos)              /*!< LPUART_T::FIFOSTS: RXIDLE Mask           */
 
 #define LPUART_FIFOSTS_TXRXACT_Pos         (31)                                              /*!< LPUART_T::FIFOSTS: TXRXACT Position      */
-#define LPUART_FIFOSTS_TXRXACT_Msk         (0x1ul << LPUART_FIFOSTS_TXRXACT_Pos)               /*!< LPUART_T::FIFOSTS: TXRXACT Mask          */
+#define LPUART_FIFOSTS_TXRXACT_Msk         (0x1ul << LPUART_FIFOSTS_TXRXACT_Pos)             /*!< LPUART_T::FIFOSTS: TXRXACT Mask          */
 
 #define LPUART_INTSTS_RDAIF_Pos            (0)                                               /*!< LPUART_T::INTSTS: RDAIF Position         */
-#define LPUART_INTSTS_RDAIF_Msk            (0x1ul << LPUART_INTSTS_RDAIF_Pos)                  /*!< LPUART_T::INTSTS: RDAIF Mask             */
+#define LPUART_INTSTS_RDAIF_Msk            (0x1ul << LPUART_INTSTS_RDAIF_Pos)                /*!< LPUART_T::INTSTS: RDAIF Mask             */
 
 #define LPUART_INTSTS_THREIF_Pos           (1)                                               /*!< LPUART_T::INTSTS: THREIF Position        */
-#define LPUART_INTSTS_THREIF_Msk           (0x1ul << LPUART_INTSTS_THREIF_Pos)                 /*!< LPUART_T::INTSTS: THREIF Mask            */
+#define LPUART_INTSTS_THREIF_Msk           (0x1ul << LPUART_INTSTS_THREIF_Pos)               /*!< LPUART_T::INTSTS: THREIF Mask            */
 
 #define LPUART_INTSTS_RLSIF_Pos            (2)                                               /*!< LPUART_T::INTSTS: RLSIF Position         */
-#define LPUART_INTSTS_RLSIF_Msk            (0x1ul << LPUART_INTSTS_RLSIF_Pos)                  /*!< LPUART_T::INTSTS: RLSIF Mask             */
+#define LPUART_INTSTS_RLSIF_Msk            (0x1ul << LPUART_INTSTS_RLSIF_Pos)                /*!< LPUART_T::INTSTS: RLSIF Mask             */
 
 #define LPUART_INTSTS_MODEMIF_Pos          (3)                                               /*!< LPUART_T::INTSTS: MODEMIF Position       */
-#define LPUART_INTSTS_MODEMIF_Msk          (0x1ul << LPUART_INTSTS_MODEMIF_Pos)                /*!< LPUART_T::INTSTS: MODEMIF Mask           */
+#define LPUART_INTSTS_MODEMIF_Msk          (0x1ul << LPUART_INTSTS_MODEMIF_Pos)              /*!< LPUART_T::INTSTS: MODEMIF Mask           */
 
 #define LPUART_INTSTS_RXTOIF_Pos           (4)                                               /*!< LPUART_T::INTSTS: RXTOIF Position        */
-#define LPUART_INTSTS_RXTOIF_Msk           (0x1ul << LPUART_INTSTS_RXTOIF_Pos)                 /*!< LPUART_T::INTSTS: RXTOIF Mask            */
+#define LPUART_INTSTS_RXTOIF_Msk           (0x1ul << LPUART_INTSTS_RXTOIF_Pos)               /*!< LPUART_T::INTSTS: RXTOIF Mask            */
 
 #define LPUART_INTSTS_BUFERRIF_Pos         (5)                                               /*!< LPUART_T::INTSTS: BUFERRIF Position      */
-#define LPUART_INTSTS_BUFERRIF_Msk         (0x1ul << LPUART_INTSTS_BUFERRIF_Pos)               /*!< LPUART_T::INTSTS: BUFERRIF Mask          */
+#define LPUART_INTSTS_BUFERRIF_Msk         (0x1ul << LPUART_INTSTS_BUFERRIF_Pos)             /*!< LPUART_T::INTSTS: BUFERRIF Mask          */
 
 #define LPUART_INTSTS_WKIF_Pos             (6)                                               /*!< LPUART_T::INTSTS: WKIF Position          */
-#define LPUART_INTSTS_WKIF_Msk             (0x1ul << LPUART_INTSTS_WKIF_Pos)                   /*!< LPUART_T::INTSTS: WKIF Mask              */
-
+#define LPUART_INTSTS_WKIF_Msk             (0x1ul << LPUART_INTSTS_WKIF_Pos)                 /*!< LPUART_T::INTSTS: WKIF Mask              */
 
 #define LPUART_INTSTS_RDAINT_Pos           (8)                                               /*!< LPUART_T::INTSTS: RDAINT Position        */
-#define LPUART_INTSTS_RDAINT_Msk           (0x1ul << LPUART_INTSTS_RDAINT_Pos)                 /*!< LPUART_T::INTSTS: RDAINT Mask            */
+#define LPUART_INTSTS_RDAINT_Msk           (0x1ul << LPUART_INTSTS_RDAINT_Pos)               /*!< LPUART_T::INTSTS: RDAINT Mask            */
 
 #define LPUART_INTSTS_THREINT_Pos          (9)                                               /*!< LPUART_T::INTSTS: THREINT Position       */
-#define LPUART_INTSTS_THREINT_Msk          (0x1ul << LPUART_INTSTS_THREINT_Pos)                /*!< LPUART_T::INTSTS: THREINT Mask           */
+#define LPUART_INTSTS_THREINT_Msk          (0x1ul << LPUART_INTSTS_THREINT_Pos)              /*!< LPUART_T::INTSTS: THREINT Mask           */
 
 #define LPUART_INTSTS_RLSINT_Pos           (10)                                              /*!< LPUART_T::INTSTS: RLSINT Position        */
-#define LPUART_INTSTS_RLSINT_Msk           (0x1ul << LPUART_INTSTS_RLSINT_Pos)                 /*!< LPUART_T::INTSTS: RLSINT Mask            */
+#define LPUART_INTSTS_RLSINT_Msk           (0x1ul << LPUART_INTSTS_RLSINT_Pos)               /*!< LPUART_T::INTSTS: RLSINT Mask            */
 
 #define LPUART_INTSTS_MODEMINT_Pos         (11)                                              /*!< LPUART_T::INTSTS: MODEMINT Position      */
-#define LPUART_INTSTS_MODEMINT_Msk         (0x1ul << LPUART_INTSTS_MODEMINT_Pos)               /*!< LPUART_T::INTSTS: MODEMINT Mask          */
+#define LPUART_INTSTS_MODEMINT_Msk         (0x1ul << LPUART_INTSTS_MODEMINT_Pos)             /*!< LPUART_T::INTSTS: MODEMINT Mask          */
 
 #define LPUART_INTSTS_RXTOINT_Pos          (12)                                              /*!< LPUART_T::INTSTS: RXTOINT Position       */
-#define LPUART_INTSTS_RXTOINT_Msk          (0x1ul << LPUART_INTSTS_RXTOINT_Pos)                /*!< LPUART_T::INTSTS: RXTOINT Mask           */
+#define LPUART_INTSTS_RXTOINT_Msk          (0x1ul << LPUART_INTSTS_RXTOINT_Pos)              /*!< LPUART_T::INTSTS: RXTOINT Mask           */
 
 #define LPUART_INTSTS_BUFERRINT_Pos        (13)                                              /*!< LPUART_T::INTSTS: BUFERRINT Position     */
-#define LPUART_INTSTS_BUFERRINT_Msk        (0x1ul << LPUART_INTSTS_BUFERRINT_Pos)              /*!< LPUART_T::INTSTS: BUFERRINT Mask         */
+#define LPUART_INTSTS_BUFERRINT_Msk        (0x1ul << LPUART_INTSTS_BUFERRINT_Pos)            /*!< LPUART_T::INTSTS: BUFERRINT Mask         */
 
 #define LPUART_INTSTS_WKINT_Pos            (14)                                              /*!< LPUART_T::INTSTS: WKINT Position         */
-#define LPUART_INTSTS_WKINT_Msk            (0x1ul << LPUART_INTSTS_WKINT_Pos)                  /*!< LPUART_T::INTSTS: WKINT Mask             */
-
+#define LPUART_INTSTS_WKINT_Msk            (0x1ul << LPUART_INTSTS_WKINT_Pos)                /*!< LPUART_T::INTSTS: WKINT Mask             */
 
 #define LPUART_INTSTS_HWRLSIF_Pos          (18)                                              /*!< LPUART_T::INTSTS: HWRLSIF Position       */
-#define LPUART_INTSTS_HWRLSIF_Msk          (0x1ul << LPUART_INTSTS_HWRLSIF_Pos)                /*!< LPUART_T::INTSTS: HWRLSIF Mask           */
+#define LPUART_INTSTS_HWRLSIF_Msk          (0x1ul << LPUART_INTSTS_HWRLSIF_Pos)              /*!< LPUART_T::INTSTS: HWRLSIF Mask           */
 
 #define LPUART_INTSTS_HWMODIF_Pos          (19)                                              /*!< LPUART_T::INTSTS: HWMODIF Position       */
-#define LPUART_INTSTS_HWMODIF_Msk          (0x1ul << LPUART_INTSTS_HWMODIF_Pos)                /*!< LPUART_T::INTSTS: HWMODIF Mask           */
+#define LPUART_INTSTS_HWMODIF_Msk          (0x1ul << LPUART_INTSTS_HWMODIF_Pos)              /*!< LPUART_T::INTSTS: HWMODIF Mask           */
 
 #define LPUART_INTSTS_HWTOIF_Pos           (20)                                              /*!< LPUART_T::INTSTS: HWTOIF Position        */
-#define LPUART_INTSTS_HWTOIF_Msk           (0x1ul << LPUART_INTSTS_HWTOIF_Pos)                 /*!< LPUART_T::INTSTS: HWTOIF Mask            */
+#define LPUART_INTSTS_HWTOIF_Msk           (0x1ul << LPUART_INTSTS_HWTOIF_Pos)               /*!< LPUART_T::INTSTS: HWTOIF Mask            */
 
 #define LPUART_INTSTS_HWBUFEIF_Pos         (21)                                              /*!< LPUART_T::INTSTS: HWBUFEIF Position      */
-#define LPUART_INTSTS_HWBUFEIF_Msk         (0x1ul << LPUART_INTSTS_HWBUFEIF_Pos)               /*!< LPUART_T::INTSTS: HWBUFEIF Mask          */
+#define LPUART_INTSTS_HWBUFEIF_Msk         (0x1ul << LPUART_INTSTS_HWBUFEIF_Pos)             /*!< LPUART_T::INTSTS: HWBUFEIF Mask          */
 
 #define LPUART_INTSTS_TXENDIF_Pos          (22)                                              /*!< LPUART_T::INTSTS: TXENDIF Position       */
-#define LPUART_INTSTS_TXENDIF_Msk          (0x1ul << LPUART_INTSTS_TXENDIF_Pos)                /*!< LPUART_T::INTSTS: TXENDIF Mask           */
-
+#define LPUART_INTSTS_TXENDIF_Msk          (0x1ul << LPUART_INTSTS_TXENDIF_Pos)              /*!< LPUART_T::INTSTS: TXENDIF Mask           */
 
 #define LPUART_INTSTS_HWRLSINT_Pos         (26)                                              /*!< LPUART_T::INTSTS: HWRLSINT Position      */
-#define LPUART_INTSTS_HWRLSINT_Msk         (0x1ul << LPUART_INTSTS_HWRLSINT_Pos)               /*!< LPUART_T::INTSTS: HWRLSINT Mask          */
+#define LPUART_INTSTS_HWRLSINT_Msk         (0x1ul << LPUART_INTSTS_HWRLSINT_Pos)             /*!< LPUART_T::INTSTS: HWRLSINT Mask          */
 
 #define LPUART_INTSTS_HWMODINT_Pos         (27)                                              /*!< LPUART_T::INTSTS: HWMODINT Position      */
-#define LPUART_INTSTS_HWMODINT_Msk         (0x1ul << LPUART_INTSTS_HWMODINT_Pos)               /*!< LPUART_T::INTSTS: HWMODINT Mask          */
+#define LPUART_INTSTS_HWMODINT_Msk         (0x1ul << LPUART_INTSTS_HWMODINT_Pos)             /*!< LPUART_T::INTSTS: HWMODINT Mask          */
 
 #define LPUART_INTSTS_HWTOINT_Pos          (28)                                              /*!< LPUART_T::INTSTS: HWTOINT Position       */
-#define LPUART_INTSTS_HWTOINT_Msk          (0x1ul << LPUART_INTSTS_HWTOINT_Pos)                /*!< LPUART_T::INTSTS: HWTOINT Mask           */
+#define LPUART_INTSTS_HWTOINT_Msk          (0x1ul << LPUART_INTSTS_HWTOINT_Pos)              /*!< LPUART_T::INTSTS: HWTOINT Mask           */
 
 #define LPUART_INTSTS_HWBUFEINT_Pos        (29)                                              /*!< LPUART_T::INTSTS: HWBUFEINT Position     */
-#define LPUART_INTSTS_HWBUFEINT_Msk        (0x1ul << LPUART_INTSTS_HWBUFEINT_Pos)              /*!< LPUART_T::INTSTS: HWBUFEINT Mask         */
+#define LPUART_INTSTS_HWBUFEINT_Msk        (0x1ul << LPUART_INTSTS_HWBUFEINT_Pos)            /*!< LPUART_T::INTSTS: HWBUFEINT Mask         */
 
 #define LPUART_INTSTS_TXENDINT_Pos         (30)                                              /*!< LPUART_T::INTSTS: TXENDINT Position      */
-#define LPUART_INTSTS_TXENDINT_Msk         (0x1ul << LPUART_INTSTS_TXENDINT_Pos)               /*!< LPUART_T::INTSTS: TXENDINT Mask          */
+#define LPUART_INTSTS_TXENDINT_Msk         (0x1ul << LPUART_INTSTS_TXENDINT_Pos)             /*!< LPUART_T::INTSTS: TXENDINT Mask          */
 
 #define LPUART_INTSTS_ABRINT_Pos           (31)                                              /*!< LPUART_T::INTSTS: ABRINT Position        */
-#define LPUART_INTSTS_ABRINT_Msk           (0x1ul << LPUART_INTSTS_ABRINT_Pos)                 /*!< LPUART_T::INTSTS: ABRINT Mask            */
+#define LPUART_INTSTS_ABRINT_Msk           (0x1ul << LPUART_INTSTS_ABRINT_Pos)               /*!< LPUART_T::INTSTS: ABRINT Mask            */
 
 #define LPUART_TOUT_TOIC_Pos               (0)                                               /*!< LPUART_T::TOUT: TOIC Position            */
-#define LPUART_TOUT_TOIC_Msk               (0xfful << LPUART_TOUT_TOIC_Pos)                    /*!< LPUART_T::TOUT: TOIC Mask                */
+#define LPUART_TOUT_TOIC_Msk               (0xfful << LPUART_TOUT_TOIC_Pos)                  /*!< LPUART_T::TOUT: TOIC Mask                */
 
 #define LPUART_TOUT_DLY_Pos                (8)                                               /*!< LPUART_T::TOUT: DLY Position             */
-#define LPUART_TOUT_DLY_Msk                (0xfful << LPUART_TOUT_DLY_Pos)                     /*!< LPUART_T::TOUT: DLY Mask                 */
+#define LPUART_TOUT_DLY_Msk                (0xfful << LPUART_TOUT_DLY_Pos)                   /*!< LPUART_T::TOUT: DLY Mask                 */
 
 #define LPUART_TOUT_BITOMEN_Pos            (31)                                              /*!< LPUART_T::TOUT: BITOMEN Position       */
 #define LPUART_TOUT_BITOMEN_Msk            (0x1ul << LPUART_TOUT_BITOMEN_Pos)                /*!< LPUART_T::TOUT: BITOMEN Mask           */
 
-
 #define LPUART_BAUD_BRD_Pos                (0)                                               /*!< LPUART_T::BAUD: BRD Position             */
-#define LPUART_BAUD_BRD_Msk                (0xfffful << LPUART_BAUD_BRD_Pos)                   /*!< LPUART_T::BAUD: BRD Mask                 */
+#define LPUART_BAUD_BRD_Msk                (0xfffful << LPUART_BAUD_BRD_Pos)                 /*!< LPUART_T::BAUD: BRD Mask                 */
 
 #define LPUART_BAUD_EDIVM1_Pos             (24)                                              /*!< LPUART_T::BAUD: EDIVM1 Position          */
-#define LPUART_BAUD_EDIVM1_Msk             (0xful << LPUART_BAUD_EDIVM1_Pos)                   /*!< LPUART_T::BAUD: EDIVM1 Mask              */
+#define LPUART_BAUD_EDIVM1_Msk             (0xful << LPUART_BAUD_EDIVM1_Pos)                 /*!< LPUART_T::BAUD: EDIVM1 Mask              */
 
 #define LPUART_BAUD_BAUDM0_Pos             (28)                                              /*!< LPUART_T::BAUD: BAUDM0 Position          */
-#define LPUART_BAUD_BAUDM0_Msk             (0x1ul << LPUART_BAUD_BAUDM0_Pos)                   /*!< LPUART_T::BAUD: BAUDM0 Mask              */
+#define LPUART_BAUD_BAUDM0_Msk             (0x1ul << LPUART_BAUD_BAUDM0_Pos)                 /*!< LPUART_T::BAUD: BAUDM0 Mask              */
 
 #define LPUART_BAUD_BAUDM1_Pos             (29)                                              /*!< LPUART_T::BAUD: BAUDM1 Position          */
-#define LPUART_BAUD_BAUDM1_Msk             (0x1ul << LPUART_BAUD_BAUDM1_Pos)                   /*!< LPUART_T::BAUD: BAUDM1 Mask              */
-
+#define LPUART_BAUD_BAUDM1_Msk             (0x1ul << LPUART_BAUD_BAUDM1_Pos)                 /*!< LPUART_T::BAUD: BAUDM1 Mask              */
 
 #define LPUART_ALTCTL_RS485NMM_Pos         (8)                                               /*!< LPUART_T::ALTCTL: RS485NMM Position      */
-#define LPUART_ALTCTL_RS485NMM_Msk         (0x1ul << LPUART_ALTCTL_RS485NMM_Pos)               /*!< LPUART_T::ALTCTL: RS485NMM Mask          */
+#define LPUART_ALTCTL_RS485NMM_Msk         (0x1ul << LPUART_ALTCTL_RS485NMM_Pos)             /*!< LPUART_T::ALTCTL: RS485NMM Mask          */
 
 #define LPUART_ALTCTL_RS485AAD_Pos         (9)                                               /*!< LPUART_T::ALTCTL: RS485AAD Position      */
-#define LPUART_ALTCTL_RS485AAD_Msk         (0x1ul << LPUART_ALTCTL_RS485AAD_Pos)               /*!< LPUART_T::ALTCTL: RS485AAD Mask          */
+#define LPUART_ALTCTL_RS485AAD_Msk         (0x1ul << LPUART_ALTCTL_RS485AAD_Pos)             /*!< LPUART_T::ALTCTL: RS485AAD Mask          */
 
 #define LPUART_ALTCTL_RS485AUD_Pos         (10)                                              /*!< LPUART_T::ALTCTL: RS485AUD Position      */
-#define LPUART_ALTCTL_RS485AUD_Msk         (0x1ul << LPUART_ALTCTL_RS485AUD_Pos)               /*!< LPUART_T::ALTCTL: RS485AUD Mask          */
+#define LPUART_ALTCTL_RS485AUD_Msk         (0x1ul << LPUART_ALTCTL_RS485AUD_Pos)             /*!< LPUART_T::ALTCTL: RS485AUD Mask          */
 
 #define LPUART_ALTCTL_ADDRDEN_Pos          (15)                                              /*!< LPUART_T::ALTCTL: ADDRDEN Position       */
-#define LPUART_ALTCTL_ADDRDEN_Msk          (0x1ul << LPUART_ALTCTL_ADDRDEN_Pos)                /*!< LPUART_T::ALTCTL: ADDRDEN Mask           */
+#define LPUART_ALTCTL_ADDRDEN_Msk          (0x1ul << LPUART_ALTCTL_ADDRDEN_Pos)              /*!< LPUART_T::ALTCTL: ADDRDEN Mask           */
 
 #define LPUART_ALTCTL_ABRIF_Pos            (17)                                              /*!< LPUART_T::ALTCTL: ABRIF Position         */
-#define LPUART_ALTCTL_ABRIF_Msk            (0x1ul << LPUART_ALTCTL_ABRIF_Pos)                  /*!< LPUART_T::ALTCTL: ABRIF Mask             */
+#define LPUART_ALTCTL_ABRIF_Msk            (0x1ul << LPUART_ALTCTL_ABRIF_Pos)                /*!< LPUART_T::ALTCTL: ABRIF Mask             */
 
 #define LPUART_ALTCTL_ABRDEN_Pos           (18)                                              /*!< LPUART_T::ALTCTL: ABRDEN Position        */
-#define LPUART_ALTCTL_ABRDEN_Msk           (0x1ul << LPUART_ALTCTL_ABRDEN_Pos)                 /*!< LPUART_T::ALTCTL: ABRDEN Mask            */
+#define LPUART_ALTCTL_ABRDEN_Msk           (0x1ul << LPUART_ALTCTL_ABRDEN_Pos)               /*!< LPUART_T::ALTCTL: ABRDEN Mask            */
 
 #define LPUART_ALTCTL_ABRDBITS_Pos         (19)                                              /*!< LPUART_T::ALTCTL: ABRDBITS Position      */
-#define LPUART_ALTCTL_ABRDBITS_Msk         (0x3ul << LPUART_ALTCTL_ABRDBITS_Pos)               /*!< LPUART_T::ALTCTL: ABRDBITS Mask          */
+#define LPUART_ALTCTL_ABRDBITS_Msk         (0x3ul << LPUART_ALTCTL_ABRDBITS_Pos)             /*!< LPUART_T::ALTCTL: ABRDBITS Mask          */
 
 #define LPUART_ALTCTL_ADDRMV_Pos           (24)                                              /*!< LPUART_T::ALTCTL: ADDRMV Position        */
-#define LPUART_ALTCTL_ADDRMV_Msk           (0xfful << LPUART_ALTCTL_ADDRMV_Pos)                /*!< LPUART_T::ALTCTL: ADDRMV Mask            */
+#define LPUART_ALTCTL_ADDRMV_Msk           (0xfful << LPUART_ALTCTL_ADDRMV_Pos)              /*!< LPUART_T::ALTCTL: ADDRMV Mask            */
 
 #define LPUART_FUNCSEL_FUNCSEL_Pos         (0)                                               /*!< LPUART_T::FUNCSEL: FUNCSEL Position      */
-#define LPUART_FUNCSEL_FUNCSEL_Msk         (0x7ul << LPUART_FUNCSEL_FUNCSEL_Pos)               /*!< LPUART_T::FUNCSEL: FUNCSEL Mask          */
+#define LPUART_FUNCSEL_FUNCSEL_Msk         (0x7ul << LPUART_FUNCSEL_FUNCSEL_Pos)             /*!< LPUART_T::FUNCSEL: FUNCSEL Mask          */
 
 #define LPUART_FUNCSEL_TXRXDIS_Pos         (3)                                               /*!< LPUART_T::FUNCSEL: TXRXDIS Position      */
-#define LPUART_FUNCSEL_TXRXDIS_Msk         (0x1ul << LPUART_FUNCSEL_TXRXDIS_Pos)               /*!< LPUART_T::FUNCSEL: TXRXDIS Mask          */
+#define LPUART_FUNCSEL_TXRXDIS_Msk         (0x1ul << LPUART_FUNCSEL_TXRXDIS_Pos)             /*!< LPUART_T::FUNCSEL: TXRXDIS Mask          */
 
 #define LPUART_FUNCSEL_DGE_Pos             (6)                                               /*!< LPUART_T::FUNCSEL: DGE Position          */
-#define LPUART_FUNCSEL_DGE_Msk             (0x1ul << LPUART_FUNCSEL_DGE_Pos)                   /*!< LPUART_T::FUNCSEL: DGE Mask              */
+#define LPUART_FUNCSEL_DGE_Msk             (0x1ul << LPUART_FUNCSEL_DGE_Pos)                 /*!< LPUART_T::FUNCSEL: DGE Mask              */
 
 #define LPUART_FUNCSEL_TXRXSWP_Pos         (7)                                               /*!< LPUART_T::FUNCSEL: TXRXSWP Position      */
-#define LPUART_FUNCSEL_TXRXSWP_Msk         (0x1ul << LPUART_FUNCSEL_TXRXSWP_Pos)               /*!< LPUART_T::FUNCSEL: TXRXSWP Mask          */
-
+#define LPUART_FUNCSEL_TXRXSWP_Msk         (0x1ul << LPUART_FUNCSEL_TXRXSWP_Pos)             /*!< LPUART_T::FUNCSEL: TXRXSWP Mask          */
 
 #define LPUART_BRCOMP_BRCOMP_Pos           (0)                                               /*!< LPUART_T::BRCOMP: BRCOMP Position        */
-#define LPUART_BRCOMP_BRCOMP_Msk           (0x1fful << LPUART_BRCOMP_BRCOMP_Pos)               /*!< LPUART_T::BRCOMP: BRCOMP Mask            */
+#define LPUART_BRCOMP_BRCOMP_Msk           (0x1fful << LPUART_BRCOMP_BRCOMP_Pos)             /*!< LPUART_T::BRCOMP: BRCOMP Mask            */
 
 #define LPUART_BRCOMP_BRCOMPDEC_Pos        (31)                                              /*!< LPUART_T::BRCOMP: BRCOMPDEC Position     */
-#define LPUART_BRCOMP_BRCOMPDEC_Msk        (0x1ul << LPUART_BRCOMP_BRCOMPDEC_Pos)              /*!< LPUART_T::BRCOMP: BRCOMPDEC Mask         */
+#define LPUART_BRCOMP_BRCOMPDEC_Msk        (0x1ul << LPUART_BRCOMP_BRCOMPDEC_Pos)            /*!< LPUART_T::BRCOMP: BRCOMPDEC Mask         */
 
 #define LPUART_WKCTL_WKCTSEN_Pos           (0)                                               /*!< LPUART_T::WKCTL: WKCTSEN Position        */
-#define LPUART_WKCTL_WKCTSEN_Msk           (0x1ul << LPUART_WKCTL_WKCTSEN_Pos)                 /*!< LPUART_T::WKCTL: WKCTSEN Mask            */
+#define LPUART_WKCTL_WKCTSEN_Msk           (0x1ul << LPUART_WKCTL_WKCTSEN_Pos)               /*!< LPUART_T::WKCTL: WKCTSEN Mask            */
 
 #define LPUART_WKCTL_WKDATEN_Pos           (1)                                               /*!< LPUART_T::WKCTL: WKDATEN Position        */
-#define LPUART_WKCTL_WKDATEN_Msk           (0x1ul << LPUART_WKCTL_WKDATEN_Pos)                 /*!< LPUART_T::WKCTL: WKDATEN Mask            */
+#define LPUART_WKCTL_WKDATEN_Msk           (0x1ul << LPUART_WKCTL_WKDATEN_Pos)               /*!< LPUART_T::WKCTL: WKDATEN Mask            */
 
 #define LPUART_WKCTL_WKRFRTEN_Pos          (2)                                               /*!< LPUART_T::WKCTL: WKRFRTEN Position       */
-#define LPUART_WKCTL_WKRFRTEN_Msk          (0x1ul << LPUART_WKCTL_WKRFRTEN_Pos)                /*!< LPUART_T::WKCTL: WKRFRTEN Mask           */
+#define LPUART_WKCTL_WKRFRTEN_Msk          (0x1ul << LPUART_WKCTL_WKRFRTEN_Pos)              /*!< LPUART_T::WKCTL: WKRFRTEN Mask           */
 
 #define LPUART_WKCTL_WKRS485EN_Pos         (3)                                               /*!< LPUART_T::WKCTL: WKRS485EN Position      */
-#define LPUART_WKCTL_WKRS485EN_Msk         (0x1ul << LPUART_WKCTL_WKRS485EN_Pos)               /*!< LPUART_T::WKCTL: WKRS485EN Mask          */
+#define LPUART_WKCTL_WKRS485EN_Msk         (0x1ul << LPUART_WKCTL_WKRS485EN_Pos)             /*!< LPUART_T::WKCTL: WKRS485EN Mask          */
 
 #define LPUART_WKCTL_WKTOUTEN_Pos          (4)                                               /*!< LPUART_T::WKCTL: WKTOUTEN Position       */
-#define LPUART_WKCTL_WKTOUTEN_Msk          (0x1ul << LPUART_WKCTL_WKTOUTEN_Pos)                /*!< LPUART_T::WKCTL: WKTOUTEN Mask           */
+#define LPUART_WKCTL_WKTOUTEN_Msk          (0x1ul << LPUART_WKCTL_WKTOUTEN_Pos)              /*!< LPUART_T::WKCTL: WKTOUTEN Mask           */
 
 #define LPUART_WKSTS_CTSWKF_Pos            (0)                                               /*!< LPUART_T::WKSTS: CTSWKF Position         */
-#define LPUART_WKSTS_CTSWKF_Msk            (0x1ul << LPUART_WKSTS_CTSWKF_Pos)                  /*!< LPUART_T::WKSTS: CTSWKF Mask             */
+#define LPUART_WKSTS_CTSWKF_Msk            (0x1ul << LPUART_WKSTS_CTSWKF_Pos)                /*!< LPUART_T::WKSTS: CTSWKF Mask             */
 
 #define LPUART_WKSTS_DATWKF_Pos            (1)                                               /*!< LPUART_T::WKSTS: DATWKF Position         */
-#define LPUART_WKSTS_DATWKF_Msk            (0x1ul << LPUART_WKSTS_DATWKF_Pos)                  /*!< LPUART_T::WKSTS: DATWKF Mask             */
+#define LPUART_WKSTS_DATWKF_Msk            (0x1ul << LPUART_WKSTS_DATWKF_Pos)                /*!< LPUART_T::WKSTS: DATWKF Mask             */
 
 #define LPUART_WKSTS_RFRTWKF_Pos           (2)                                               /*!< LPUART_T::WKSTS: RFRTWKF Position        */
-#define LPUART_WKSTS_RFRTWKF_Msk           (0x1ul << LPUART_WKSTS_RFRTWKF_Pos)                 /*!< LPUART_T::WKSTS: RFRTWKF Mask            */
+#define LPUART_WKSTS_RFRTWKF_Msk           (0x1ul << LPUART_WKSTS_RFRTWKF_Pos)               /*!< LPUART_T::WKSTS: RFRTWKF Mask            */
 
 #define LPUART_WKSTS_RS485WKF_Pos          (3)                                               /*!< LPUART_T::WKSTS: RS485WKF Position       */
-#define LPUART_WKSTS_RS485WKF_Msk          (0x1ul << LPUART_WKSTS_RS485WKF_Pos)                /*!< LPUART_T::WKSTS: RS485WKF Mask           */
+#define LPUART_WKSTS_RS485WKF_Msk          (0x1ul << LPUART_WKSTS_RS485WKF_Pos)              /*!< LPUART_T::WKSTS: RS485WKF Mask           */
 
 #define LPUART_WKSTS_TOUTWKF_Pos           (4)                                               /*!< LPUART_T::WKSTS: TOUTWKF Position        */
-#define LPUART_WKSTS_TOUTWKF_Msk           (0x1ul << LPUART_WKSTS_TOUTWKF_Pos)                 /*!< LPUART_T::WKSTS: TOUTWKF Mask            */
+#define LPUART_WKSTS_TOUTWKF_Msk           (0x1ul << LPUART_WKSTS_TOUTWKF_Pos)               /*!< LPUART_T::WKSTS: TOUTWKF Mask            */
 
 #define LPUART_DWKCOMP_STCOMP_Pos          (0)                                               /*!< LPUART_T::DWKCOMP: STCOMP Position       */
-#define LPUART_DWKCOMP_STCOMP_Msk          (0xfffful << LPUART_DWKCOMP_STCOMP_Pos)             /*!< LPUART_T::DWKCOMP: STCOMP Mask           */
+#define LPUART_DWKCOMP_STCOMP_Msk          (0xfffful << LPUART_DWKCOMP_STCOMP_Pos)           /*!< LPUART_T::DWKCOMP: STCOMP Mask           */
 
 #define LPUART_RS485DD_RTSDDLY_Pos         (0)                                               /*!< LPUART_T::RS485DD: RTSDDLY Position    */
 #define LPUART_RS485DD_RTSDDLY_Msk         (0xfffful << LPUART_RS485DD_RTSDDLY_Pos)          /*!< LPUART_T::RS485DD: RTSDDLY Mask        */
@@ -1214,19 +1100,19 @@ typedef struct
 #define LPUART_AUTOCTL_TRIGSEL_Msk         (0xful << LPUART_AUTOCTL_TRIGSEL_Pos)             /*!< LPUART_T::AUTOCTL: TRIGSEL Mask           */
 
 #define LPUART_AUTOCTL_TRIGEN_Pos          (4)                                               /*!< LPUART_T::AUTOCTL: TRIGSEL Position       */
-#define LPUART_AUTOCTL_TRIGEN_Msk          (0x1ul << LPUART_AUTOCTL_TRIGEN_Pos)             /*!< LPUART_T::AUTOCTL: TRIGSEL Mask           */
+#define LPUART_AUTOCTL_TRIGEN_Msk          (0x1ul << LPUART_AUTOCTL_TRIGEN_Pos)              /*!< LPUART_T::AUTOCTL: TRIGSEL Mask           */
 
 #define LPUART_AUTOCTL_CKAWOEN_Pos         (5)                                               /*!< LPUART_T::AUTOCTL: TRIGSEL Position       */
 #define LPUART_AUTOCTL_CKAWOEN_Msk         (0x1ul << LPUART_AUTOCTL_CKAWOEN_Pos)             /*!< LPUART_T::AUTOCTL: TRIGSEL Mask           */
 
 #define LPUART_AUTOCTL_WKAOTOEN_Pos        (8)                                               /*!< LPUART_T::AUTOCTL: TRIGSEL Position       */
-#define LPUART_AUTOCTL_WKAOTOEN_Msk        (0x1ul << LPUART_AUTOCTL_WKAOTOEN_Pos)             /*!< LPUART_T::AUTOCTL: TRIGSEL Mask           */
+#define LPUART_AUTOCTL_WKAOTOEN_Msk        (0x1ul << LPUART_AUTOCTL_WKAOTOEN_Pos)            /*!< LPUART_T::AUTOCTL: TRIGSEL Mask           */
 
 #define LPUART_AUTOCTL_SWTRIG_Pos          (9)                                               /*!< LPUART_T::AUTOCTL: SWTRIG Position     */
 #define LPUART_AUTOCTL_SWTRIG_Msk          (0x1ul << LPUART_AUTOCTL_SWTRIG_Pos)              /*!< LPUART_T::AUTOCTL: SWTRIG Mask         */
 
-#define LPUART_AUTOCTL_AOEN_Pos            (31)                                               /*!< LPUART_T::AUTOCTL: TRIGSEL Position       */
-#define LPUART_AUTOCTL_AOEN_Msk            (0x1ul << LPUART_AUTOCTL_AOEN_Pos)             /*!< LPUART_T::AUTOCTL: TRIGSEL Mask           */
+#define LPUART_AUTOCTL_AOEN_Pos            (31)                                              /*!< LPUART_T::AUTOCTL: TRIGSEL Position       */
+#define LPUART_AUTOCTL_AOEN_Msk            (0x1ul << LPUART_AUTOCTL_AOEN_Pos)                /*!< LPUART_T::AUTOCTL: TRIGSEL Mask           */
 
 #define LPUART_AUTOSTS_AOTOWKF_Pos         (0)                                               /*!< LPUART_T::AUTOCTL: TRIGSEL Position       */
 #define LPUART_AUTOSTS_AOTOWKF_Msk         (0x1ul << LPUART_AUTOSTS_AOTOWKF_Pos)             /*!< LPUART_T::AUTOCTL: TRIGSEL Mask           */

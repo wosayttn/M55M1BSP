@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>Template</TargetName>
+      <TargetName>ebi_cunit</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
@@ -449,7 +449,7 @@
       </Groups>
     </Target>
     <Target>
-      <TargetName>Template_SRAM</TargetName>
+      <TargetName>ebi_cunit_SRAM</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
@@ -782,7 +782,7 @@
               <MiscControls></MiscControls>
               <Define>DEBUG_PORT=UART0, STDIN_ECHO=1</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\Library\CMSIS\Core\Include;..\..\..\Library\Device\Nuvoton\TC8263\Include;..\..\..\Library\StdDriver\inc;..\..\common\inc</IncludePath>
+              <IncludePath>..\..\..\Library\CMSIS\Core\Include;..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\Library\StdDriver\inc;..\..\common\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

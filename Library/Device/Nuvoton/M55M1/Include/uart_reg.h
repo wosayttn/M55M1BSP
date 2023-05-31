@@ -102,6 +102,11 @@ typedef struct
      * |        |          |Note: If RLSIEN (UART_INTEN[2]) is enabled and HWRLSINT (UART_INTSTS[26]) is set to 1, the RLS (Receive Line Status) Interrupt is caused
      * |        |          |If RLS interrupt is caused by Break Error Flag BIF(UART_FIFOSTS[6]), Frame Error Flag FEF(UART_FIFO[5]) or Parity Error Flag PEF(UART_FIFOSTS[4]) , UART PDMA receive request operation is stop
      * |        |          |Clear Break Error Flag BIF or Frame Error Flag FEF or Parity Error Flag PEF by writing '1' to corresponding BIF, FEF and PEF to make UART PDMA receive request operation continue.
+     * |[16]    |SWBEIEN   |Single-wire Bit Error Detection Interrupt Enable Bit
+     * |        |          |Set this bit, the Single-wire Half Duplex Bit Error Detection Interrupt SWBEINT(UART_INTSTS[24]) is generated when Single-wire Bit Error Detection SWBEIF(UART_INTSTS[16]) is set.
+     * |        |          |0 = Single-wire Bit Error Detect Interrupt Disabled.
+     * |        |          |1 = Single-wire Bit Error Detect Interrupt Enabled.
+     * |        |          |Note: This bit is valid when FUNCSEL (UART_FUNCSEL[2:0]) is select UART Single-wire mode.
      * |[18]    |ABRIEN    |Auto-baud Rate Interrupt Enable Bit
      * |        |          |0 = Auto-baud rate interrupt Disabled.
      * |        |          |1 = Auto-baud rate interrupt Enabled.
@@ -428,6 +433,12 @@ typedef struct
      * |        |          |This bit is set if LINIEN (UART_INTEN[8]) and LINIF(UART_INTSTS[7]) are both set to 1.
      * |        |          |0 = No LIN Bus interrupt is generated.
      * |        |          |1 = The LIN Bus interrupt is generated.
+     * |[16]    |SWBEIF    |Single-wire Bit Error Detection Interrupt Flag
+     * |        |          |This bit is set when the single wire bus state not equals to UART controller TX state in Single-wire mode.
+     * |        |          |0 = No single-wire bit error detection interrupt flag is generated.
+     * |        |          |1 = Single-wire bit error detection interrupt flag is generated.
+     * |        |          |Note1: This bit is active when FUNCSEL (UART_FUNCSEL[2:0]) is select UART Single-wire mode.
+     * |        |          |Note2: This bit can be cleared by writing "1" to it.
      * |[18]    |HWRLSIF   |PDMA Mode Receive Line Status Flag (Read Only)
      * |        |          |This bit is set when the RX receive data have parity error, frame error or break error (at least one of 3 bits, BIF (UART_FIFOSTS[6]), FEF (UART_FIFOSTS[5]) and PEF (UART_FIFOSTS[4]) is set)
      * |        |          |If RLSIEN (UART_INTEN [2]) is enabled, the RLS interrupt will be generated.
@@ -461,6 +472,10 @@ typedef struct
      * |        |          |0 = No transmitter empty interrupt flag is generated.
      * |        |          |1 = Transmitter empty interrupt flag is generated.
      * |        |          |Note: This bit is cleared automatically when TX FIFO is not empty or the last byte transmission has not completed.
+     * |[24]    |SWBEINT   |Single-wire Bit Error Detect Interrupt Indicator (Read Only)
+     * |        |          |This bit is set if SWBEIEN (UART_INTEN[16]) and SWBEIF (UART_INTSTS[16]) are both set to 1.
+     * |        |          |0 = No Single-wire Bit Error Detection Interrupt generated.
+     * |        |          |1 = Single-wire Bit Error Detection Interrupt generated.
      * |[26]    |HWRLSINT  |PDMA Mode Receive Line Status Interrupt Indicator (Read Only)
      * |        |          |This bit is set if RLSIEN (UART_INTEN[2]) and HWRLSIF(UART_INTSTS[18]) are both set to 1.
      * |        |          |0 = No RLS interrupt is generated in PDMA mode.
@@ -499,6 +514,13 @@ typedef struct
      * |[15:8]  |DLY       |TX Delay Time Value
      * |        |          |This field is used to programming the transfer delay time between the last stop bit and next start bit
      * |        |          |The unit is bit time.
+     * |[31]    |BITOMEN   |Bus Idle Time-out Mode Enable Bit
+     * |        |          |If BITOMEN (UART_TOUT[31]) is enabled, the reset conditions of the time-out counter and RXTOIF (UART_INTSTS[4]) will be changed to detect the bus idle.
+     * |        |          |When BITOMEN (UART_TOUT[31]) is disabled, the time-out counter and RXTOIF (UART_INTSTS[4]) maintain reset value whenever the RX FIFO is empty.
+     * |        |          |In addition, a new incoming data word will also clear RXTOIF (UART_INTSTS[4]).
+     * |        |          |On the other hand, when BITOMEN (UART_TOUT[31]) is enabled, the RX FIFO empty state will not reset the time-out counter and RXTOIF (UART_INTSTS[4]),and the new incoming data word event will not clear RXTOIF (UART_INTSTS[4]).
+     * |        |          |0 = Bus idle time-out mode Disabled.
+     * |        |          |1 = Bus idle time-out mode Enabled.
      * @var UART_T::BAUD
      * Offset: 0x24  UART Baud Rate Divider Register
      * ---------------------------------------------------------------------------------------------------
@@ -508,6 +530,12 @@ typedef struct
      * |        |          |The field indicates the baud rate divider
      * |        |          |This filed is used in baud rate calculation
      * |        |          |The detail description is shown in Table 7.15-4.
+     * |[23:16] |BRFD      |Baud Rate Fractional Divider
+     * |        |          |This field is the fractional part of the baud rate divisor.
+     * |        |          |When BRFDEN (UART_BAUD[30]) is set, the Baud Rate Equation goes to UART_CLK / ((BRD+2) + (BRFD/256)).
+     * |        |          |For instance, if BRD = 0x8 and BRFD = 0x40, the baud rate would be UART_CLK / 10.25
+     * |        |          |In practical, this represent 1 bit = 10 clocks, and for every 4 bits, the bit length becomes 11 clocks.
+     * |        |          |As another example, if BRD = 0x8 and BRFD = 0x20, the baud rate would be UART_CLK / 10.125, which means 1 bit = 10 clocks, and for every 8 bits, the bit length becomes 11 clocks.
      * |[27:24] |EDIVM1    |Extra Divider for BAUD Rate Mode 1
      * |        |          |This field is used for baud rate calculation in mode 1 and has no effect for baud rate calculation in mode 0 and mode 2
      * |        |          |The detail description is shown in Table 7.15-4
@@ -522,6 +550,10 @@ typedef struct
      * |        |          |This bit combines with BAUDM0 (UART_BAUD[28]) to select baud rate calculation mode
      * |        |          |The detail description is shown in Table 7.15-4.
      * |        |          |Note: In IrDA mode must be operated in mode 0.
+     * |[30]    |BRFDEN    |Baud Rate Fractional Divider Enable Bit
+     * |        |          |0 = Baud Rate Fractional Divider Disabled.
+     * |        |          |1 = Baud Rate Fractional Divider Enabled.
+     * |        |          |Note: This bit has effect only at baud rate mode 2 (BAUDM1 (UART_BAUD[29]) and BAUDM0 (UART_BAUD[28]) must be 1).
      * @var UART_T::IRDA
      * Offset: 0x28  UART IrDA Control Register
      * ---------------------------------------------------------------------------------------------------
@@ -610,6 +642,16 @@ typedef struct
      * |        |          |Note: The TX and RX will not disable immediately when this bit is set
      * |        |          |The TX and RX complete current task before disable TX and RX
      * |        |          |When TX and RX disable, the TXRXACT (UART_FIFOSTS[31]) is cleared.
+     * |[6]     |DGE       |Deglitch Enable Bit
+     * |        |          |0 = Deglitch Disabled.
+     * |        |          |1 = Deglitch Enabled.
+     * |        |          |Note 1: When this bit is set to logic 1, any pulse width less than about 150 ns will be considered a glitch and will be removed in the serial data input (RX)
+     * |        |          |This bit acts only on RX line and has no effect on the transmitter logic.
+     * |        |          |Note 2: It is recommended to set this bit only when operating at baud rate under 2.5 Mbps.
+     * |[7]     |TXRXSWP   |TX and RX Swap Enable Bit
+     * |        |          |Setting this bit Swaps TX pin and RX pin.
+     * |        |          |0 = TX and RX Swap Disabled.
+     * |        |          |1 = TX and RX Swap Enabled.
      * @var UART_T::LINCTL
      * Offset: 0x34  UART LIN Control Register
      * ---------------------------------------------------------------------------------------------------
@@ -826,6 +868,15 @@ typedef struct
      * |[15:0]  |STCOMP    |Start Bit Compensation Value
      * |        |          |These bits field indicate how many clock cycle selected by UART_CLK do the UART controller can get the 1st bit (start bit) when the device is wake-up from power-down mode.
      * |        |          |Note: It is valid only when WKDATEN (UART_WKCTL[1]) is set.
+     * @var UART_T::RS485DD
+     * Offset: 0x4C  UART RS485 Transceiver Deactivate Delay Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |RTSDDLY   |RS485 Transceiver Deactivate Delay Value
+     * |        |          |These bits field indicate how many clock cycles selected by UART_CLK do the UART controller delay the RS485 transceiver state trancing when the state trancing of RS485 transceiver is from TX to RX state
+     * |        |          |These bits field have no effect when the state trancing of RS485 transceiver is from RX to TX state.
+     * |        |          |Note: It is valid only when RS485AUD (UART_ALTCTL[10]) is set.
      */
     __IO uint32_t DAT;                   /*!< [0x0000] UART Receive/Transmit Buffer Register                            */
     __IO uint32_t INTEN;                 /*!< [0x0004] UART Interrupt Enable Register                                   */
@@ -1121,9 +1172,11 @@ typedef struct
 #define UART_TOUT_BITOMEM_Pos            (31)                                              /*!< UART_T::TOUT: BITOMEN Position             */
 #define UART_TOUT_BITOMEN_Msk            (0x1ul << UART_TOUT_BITOMEM_Pos)                  /*!< UART_T::TOUT: BITOMEN Mask                 */
 
-
 #define UART_BAUD_BRD_Pos                (0)                                               /*!< UART_T::BAUD: BRD Position             */
 #define UART_BAUD_BRD_Msk                (0xfffful << UART_BAUD_BRD_Pos)                   /*!< UART_T::BAUD: BRD Mask                 */
+
+#define UART_BAUD_BRFD_Pos               (16)                                              /*!< UART_T::BAUD: BRFD Position            */
+#define UART_BAUD_BRFD_Msk               (0xfful << UART_BAUD_BRFD_Pos)                    /*!< UART_T::BAUD: BRFD Mask                */
 
 #define UART_BAUD_EDIVM1_Pos             (24)                                              /*!< UART_T::BAUD: EDIVM1 Position          */
 #define UART_BAUD_EDIVM1_Msk             (0xful << UART_BAUD_EDIVM1_Pos)                   /*!< UART_T::BAUD: EDIVM1 Mask              */
@@ -1133,6 +1186,9 @@ typedef struct
 
 #define UART_BAUD_BAUDM1_Pos             (29)                                              /*!< UART_T::BAUD: BAUDM1 Position          */
 #define UART_BAUD_BAUDM1_Msk             (0x1ul << UART_BAUD_BAUDM1_Pos)                   /*!< UART_T::BAUD: BAUDM1 Mask              */
+
+#define UART_BAUD_BRFDEN_Pos             (30)                                              /*!< UART_T::BAUD: BRFDEN Position          */
+#define UART_BAUD_BRFDEN_Msk             (0x1ul << UART_BAUD_BRFDEN_Pos)                   /*!< UART_T::BAUD: BRFDEN Mask              */
 
 #define UART_IRDA_TXEN_Pos               (1)                                               /*!< UART_T::IRDA: TXEN Position            */
 #define UART_IRDA_TXEN_Msk               (0x1ul << UART_IRDA_TXEN_Pos)                     /*!< UART_T::IRDA: TXEN Mask                */
@@ -1209,7 +1265,6 @@ typedef struct
 #define UART_LINCTL_MUTE_Pos             (4)                                               /*!< UART_T::LINCTL: MUTE Position          */
 #define UART_LINCTL_MUTE_Msk             (0x1ul << UART_LINCTL_MUTE_Pos)                   /*!< UART_T::LINCTL: MUTE Mask              */
 
-
 #define UART_LINCTL_SENDH_Pos            (8)                                               /*!< UART_T::LINCTL: SENDH Position         */
 #define UART_LINCTL_SENDH_Msk            (0x1ul << UART_LINCTL_SENDH_Pos)                  /*!< UART_T::LINCTL: SENDH Mask             */
 
@@ -1248,7 +1303,6 @@ typedef struct
 
 #define UART_LINSTS_SLVSYNCF_Pos         (3)                                               /*!< UART_T::LINSTS: SLVSYNCF Position      */
 #define UART_LINSTS_SLVSYNCF_Msk         (0x1ul << UART_LINSTS_SLVSYNCF_Pos)               /*!< UART_T::LINSTS: SLVSYNCF Mask          */
-
 
 #define UART_LINSTS_BRKDETF_Pos          (8)                                               /*!< UART_T::LINSTS: BRKDETF Position       */
 #define UART_LINSTS_BRKDETF_Msk          (0x1ul << UART_LINSTS_BRKDETF_Pos)                /*!< UART_T::LINSTS: BRKDETF Mask           */
