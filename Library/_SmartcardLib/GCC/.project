@@ -24,4 +24,36 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Source</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Source/sclib_api.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Source/sclib_api.c</locationURI>
+		</link>
+		<link>
+			<name>Source/sclib_int.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Source/sclib_int.h</locationURI>
+		</link>
+		<link>
+			<name>Source/sclib_t0protocol.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Source/sclib_t0protocol.c</locationURI>
+		</link>
+		<link>
+			<name>Source/sclib_t1protocol.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Source/sclib_t1protocol.c</locationURI>
+		</link>
+		<link>
+			<name>Source/sclib_util.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Source/sclib_util.c</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
