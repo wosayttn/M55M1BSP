@@ -146,24 +146,6 @@ extern "C"
 #define SYS_BODCTL_BODVL_2_8V           (6UL<<SYS_BODCTL_BODVL_Pos)       /*!< Setting Brown Out Detector Threshold Voltage as 2.8V */
 #define SYS_BODCTL_BODVL_3_0V           (7UL<<SYS_BODCTL_BODVL_Pos)       /*!< Setting Brown Out Detector Threshold Voltage as 3.0V */
 
-#define SYS_BODCTL_LVRDGSEL_0CLK       (0x0UL<<SYS_BODCTL_LVRDGSEL_Pos)        /*!LVR Output De-glitch Time Without de-glitch function. */
-#define SYS_BODCTL_LVRDGSEL_4CLK       (0x1UL<<SYS_BODCTL_LVRDGSEL_Pos)        /*!LVR Output De-glitch Time is selected 4MIRC clock*/
-#define SYS_BODCTL_LVRDGSEL_8CLK       (0x2UL<<SYS_BODCTL_LVRDGSEL_Pos)        /*!LVR Output De-glitch Time is selected 8MIRC clock*/
-#define SYS_BODCTL_LVRDGSEL_16CLK      (0x3UL<<SYS_BODCTL_LVRDGSEL_Pos)        /*!LVR Output De-glitch Time is selected 16MIRC clock*/
-#define SYS_BODCTL_LVRDGSEL_32CLK      (0x4UL<<SYS_BODCTL_LVRDGSEL_Pos)        /*!LVR Output De-glitch Time is selected 32MIRC clock*/
-#define SYS_BODCTL_LVRDGSEL_64CLK      (0x5UL<<SYS_BODCTL_LVRDGSEL_Pos)        /*!LVR Output De-glitch Time is selected 64MIRC clock*/
-#define SYS_BODCTL_LVRDGSEL_128CLK     (0x6UL<<SYS_BODCTL_LVRDGSEL_Pos)        /*!LVR Output De-glitch Time is selected 128MIRC clock*/
-#define SYS_BODCTL_LVRDGSEL_256CLK     (0x7UL<<SYS_BODCTL_LVRDGSEL_Pos)        /*!LVR Output De-glitch Time is selected 256MIRC clock*/
-
-#define SYS_BODCTL_BODDGSEL_0CLK       (0x0UL<<SYS_BODCTL_BODDGSEL_Pos)        /*!BOD Output De-glitch Time is sampled by LIRC clock. */
-#define SYS_BODCTL_BODDGSEL_4CLK       (0x1UL<<SYS_BODCTL_BODDGSEL_Pos)        /*!BOD Output De-glitch Time is selected 4HCLK clock*/
-#define SYS_BODCTL_BODDGSEL_8CLK       (0x2UL<<SYS_BODCTL_BODDGSEL_Pos)        /*!BOD Output De-glitch Time is selected 8HCLK clock*/
-#define SYS_BODCTL_BODDGSEL_16CLK      (0x3UL<<SYS_BODCTL_BODDGSEL_Pos)        /*!BOD Output De-glitch Time is selected 16HCLK clock*/
-#define SYS_BODCTL_BODDGSEL_32CLK      (0x4UL<<SYS_BODCTL_BODDGSEL_Pos)        /*!BOD Output De-glitch Time is selected 32HCLK clock*/
-#define SYS_BODCTL_BODDGSEL_64CLK      (0x5UL<<SYS_BODCTL_BODDGSEL_Pos)        /*!BOD Output De-glitch Time is selected 64HCLK clock*/
-#define SYS_BODCTL_BODDGSEL_128CLK     (0x6UL<<SYS_BODCTL_BODDGSEL_Pos)        /*!BOD Output De-glitch Time is selected 128HCLK clock*/
-#define SYS_BODCTL_BODDGSEL_256CLK     (0x7UL<<SYS_BODCTL_BODDGSEL_Pos)        /*!BOD Output De-glitch Time is selected 256HCLK clock*/
-
 /*---------------------------------------------------------------------------------------------------------*/
 /*  VREFCTL constant definitions. (Write-Protection Register)                                              */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -172,7 +154,7 @@ extern "C"
 #define SYS_VREFCTL_VREF_2_048V         (0x7UL<<SYS_VREFCTL_VREFCTL_Pos)    /*!< Vref = 2.048V */
 #define SYS_VREFCTL_VREF_2_5V           (0xBUL<<SYS_VREFCTL_VREFCTL_Pos)    /*!< Vref = 2.5V */
 #define SYS_VREFCTL_VREF_3_072V         (0xFUL<<SYS_VREFCTL_VREFCTL_Pos)    /*!< Vref = 3.072V */
-
+#define SYS_VREFCTL_VREF_AVDD           (0x10UL<<SYS_VREFCTL_VREFCTL_Pos)   /*!< Vref = AVDD */
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Multi-Function constant definitions.                                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -4131,15 +4113,19 @@ extern "C"
     }while(0)
 
 /**
-  * @brief      Set Brown-out detector function low power mode
+  * @brief      Set Brown-out detector function to low power mode
   * @param      None
   * @return     None
   * @details    This macro set Brown-out detector to low power mode.
   *             The register write-protection function should be disabled before using this macro.
   * \hideinitializer
   */
-#define SYS_SET_BOD_LPM()               (SYS->BODCTL |= SYS_BODCTL_BODLPM_Msk)
-
+#define SYS_SET_BOD_LPM() \
+   do{ \
+        while(SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk); \
+        SYS->BODCTL |= SYS_BODCTL_BODLPM_Msk; \
+    }while(0)
+   
 /**
   * @brief      Set Brown-out detector voltage level
   * @param[in]  u32Level is Brown-out voltage level. Including :   
@@ -4233,6 +4219,17 @@ extern "C"
 #define SYS_IS_WDT_RST()                (SYS->RSTSTS & SYS_RSTSTS_WDTRF_Msk)
 
 /**
+  * @brief      Get reset source is from CPU lockup reset
+  * @param      None
+  * @retval     0   Previous reset source is not from CPU lockup reset
+  * @retval     >=1 Previous reset source is from CPU lockup reset
+  * @details    This macro get previous reset source is from CPU lockup reset.
+  * \hideinitializer
+  */
+#define SYS_IS_CPULK_RST()                (SYS->RSTSTS & SYS_RSTSTS_CPULKRF_Msk)
+
+
+/**
   * @brief      Disable Low-Voltage-Reset function
   * @param      None
   * @return     None
@@ -4268,7 +4265,7 @@ extern "C"
   *             The register write-protection function should be disabled before using this macro.
   * \hideinitializer
   */
-#define SYS_DISABLE_POR()               (SYS->PORCTL = 0x5AA5)
+#define SYS_DISABLE_POR()               (SYS->PORCTL = 0x5AA55AA5)
 
 /**
   * @brief      Enable Power-on Reset function
@@ -4279,23 +4276,6 @@ extern "C"
   * \hideinitializer
   */
 #define SYS_ENABLE_POR()                (SYS->PORCTL = 0)
-
-/**
-  * @brief      Clear reset source flag
-  * @param[in]  u32RstSrc is reset source. Including :
-  *             - \ref SYS_RSTSTS_PORF_Msk
-  *             - \ref SYS_RSTSTS_PINRF_Msk
-  *             - \ref SYS_RSTSTS_WDTRF_Msk
-  *             - \ref SYS_RSTSTS_LVRRF_Msk
-  *             - \ref SYS_RSTSTS_BODRF_Msk
-  *             - \ref SYS_RSTSTS_SYSRF_Msk
-  *             - \ref SYS_RSTSTS_CPURF_Msk
-  *             - \ref SYS_RSTSTS_CPULKRF_Msk
-  * @return     None
-  * @details    This macro clear reset source flag.
-  * \hideinitializer
-  */
-#define SYS_CLEAR_RST_SOURCE(u32RstSrc) ((SYS->RSTSTS) = (u32RstSrc))
 
 /**
   * @brief      Wait SYS_BODCTL Write Busy Flag
@@ -4312,7 +4292,21 @@ extern "C"
         } \
     }while(0)
     
- 
+/**
+  * @brief      Wait SYS_VREFCTL Write Busy Flag
+  * @param      None
+  * @return     None
+  * @details    This macro waits SYS_VREFCTL write busy flag is cleared and skips when time-out.
+  */
+#define SYS_WAIT_VREFCTL_WRBUSY() \
+    do{ \
+        uint32_t u32TimeOutCnt = SYS_TIMEOUT; \
+        while(SYS->VREFCTL & SYS_VREFCTL_WRBUSY_Msk) \
+        { \
+            if(--u32TimeOutCnt == 0) break; \
+        } \
+    }while(0)
+
 /*---------------------------------------------------------------------------------------------------------*/
 /* static inline functions                                                                                 */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -4354,7 +4348,6 @@ __STATIC_INLINE void SYS_LockReg(void)
 {
     SYS->REGLCTL = 0UL;
 }
-
 
 void SYS_ClearResetSrc(uint32_t u32Src);
 uint32_t SYS_GetBODStatus(void);

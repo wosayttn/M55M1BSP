@@ -24,14 +24,14 @@
 /**
   * @brief      Clear reset source
   * @param[in]  u32Src is system reset source. Including :
-  *             - \ref SYS_RSTSTS_CPULKRF_Msk
-  *             - \ref SYS_RSTSTS_CPURF_Msk
-  *             - \ref SYS_RSTSTS_SYSRF_Msk
-  *             - \ref SYS_RSTSTS_BODRF_Msk
-  *             - \ref SYS_RSTSTS_LVRRF_Msk
-  *             - \ref SYS_RSTSTS_WDTRF_Msk
-  *             - \ref SYS_RSTSTS_PINRF_Msk
   *             - \ref SYS_RSTSTS_PORF_Msk
+  *             - \ref SYS_RSTSTS_PINRF_Msk
+  *             - \ref SYS_RSTSTS_WDTRF_Msk
+  *             - \ref SYS_RSTSTS_LVRRF_Msk
+  *             - \ref SYS_RSTSTS_BODRF_Msk
+  *             - \ref SYS_RSTSTS_SYSRF_Msk
+  *             - \ref SYS_RSTSTS_CPURF_Msk
+  *             - \ref SYS_RSTSTS_CPULKRF_Msk
   * @return     None
   * @details    This function clear the selected system reset source.
   */
@@ -284,6 +284,7 @@ int32_t SYS_DisableBOD(void)
   *             - \ref SYS_VREFCTL_VREF_2_048V
   *             - \ref SYS_VREFCTL_VREF_2_5V
   *             - \ref SYS_VREFCTL_VREF_3_072V
+  *             - \ref SYS_VREFCTL_VREF_AVDD
   * @return     None
   * @details    This function select reference voltage.
   *             The register write-protection function should be disabled before using this function.
