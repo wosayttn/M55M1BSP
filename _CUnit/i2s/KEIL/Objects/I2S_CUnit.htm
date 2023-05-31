@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\I2S_CUnit.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\I2S_CUnit.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6180002: Last Updated: Wed May 24 17:14:35 2023
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6180002: Last Updated: Wed May 31 10:02:46 2023
 <BR><P>
 <H3>Maximum Stack Usage =        448 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1384,8 +1384,8 @@ Global Symbols
 <P><STRONG><a name="[2e]"></a>WWDT1_IRQHandler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, startup_m55m1.o(.text.Default_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_m55m1.o(RESET)
 </UL>
-<P><STRONG><a name="[113]"></a>GetRequireOptions</STRONG> (Thumb, 180 bytes, Stack size 48 bytes, common.o(.text.GetRequireOptions))
-<BR><BR>[Stack]<UL><LI>Max Depth = 136<LI>Call Chain = GetRequireOptions &rArr; atoi &rArr; strtol &rArr; _strtoul
+<P><STRONG><a name="[113]"></a>GetRequireOptions</STRONG> (Thumb, 188 bytes, Stack size 56 bytes, common.o(.text.GetRequireOptions))
+<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = GetRequireOptions &rArr; atoi &rArr; strtol &rArr; _strtoul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atoi
 <LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
@@ -1446,7 +1446,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[11c]"></a>I2S_ModuleSelect</STRONG> (Thumb, 164 bytes, Stack size 24 bytes, i2s_cunit.o(.text.I2S_ModuleSelect))
-<BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = I2S_ModuleSelect &rArr; GetRequireOptions &rArr; atoi &rArr; strtol &rArr; _strtoul
+<BR><BR>[Stack]<UL><LI>Max Depth = 168<LI>Call Chain = I2S_ModuleSelect &rArr; GetRequireOptions &rArr; atoi &rArr; strtol &rArr; _strtoul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetRequireOptions
 <LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_EnableModuleClock

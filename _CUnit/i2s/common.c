@@ -10,7 +10,7 @@ uint32_t sysGetNum(void)
     uint8_t cInputTemp = 0x00, InputString[16] = {0};
     uint32_t nLoop = 0;
 
-    while (cInputTemp != 0x0D)
+    while ((cInputTemp != 0x0D) && (cInputTemp != 0x0A))
     {
         cInputTemp = getchar();
 
