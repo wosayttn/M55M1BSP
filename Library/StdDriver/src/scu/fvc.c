@@ -114,7 +114,7 @@ int32_t FVC_SetNVC(uint32_t u32NvcIdx, uint32_t u32Cnt)
     else
         return -1;
 
-    FVC->NVC[u32NvcIdx] = (FVC->NVC[u32NvcIdx] << 16) | (u32Cnt & 0x3ful);
+    FVC->NVC[u32NvcIdx] = (FVC->NVC[u32NvcIdx] << 16) | (u32Cnt & 0xFFul);
     timeout = 0x100000;
     while(FVC->STS & FVC_STS_BUSY_Msk)
     {

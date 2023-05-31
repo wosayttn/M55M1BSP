@@ -15,38 +15,6 @@
     @{
 */
 
-/*---------------------- Booting Flag -------------------------*/
-/**
-    @addtogroup BTF Booting Flag (BTF)
-    Memory Mapped Structure for BTF Controller
-    @{
-*/
-
-typedef struct
-{
-/**
- * @var BTF_T::BTF
- * Offset: 0x00  Booting Flag Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |BL2       |BL2 Flag
- * |        |          |Indicating the CPU is running at BL2
- */
-    __IO uint32_t BTF;                   /*!< [0x0000] Booting Flag Register                                            */
-} BTF_T;
-
-/**
-    @addtogroup BTF_CONST BTF Bit Field Definition
-    Constant Definitions for BTF Controller
-  @{
-*/
-
-#define BTF_BTF_BL2_Pos                  (0)                                               /*!< BTF_T::BTF: BL2 Position               */
-#define BTF_BTF_BL2_Msk                  (0x1ul << BTF_BTF_BL2_Pos)                        /*!< BTF_T::BTF: BL2 Mask                   */
-
-/** @} BTF_CONST */
-/** @} end of BTF register group */
 
 
 /*---------------------- Debug Protection Mechanism -------------------------*/
@@ -58,6 +26,7 @@ typedef struct
 
 typedef struct
 {
+
 /**
  * @var DPM_T::CTL
  * Offset: 0x00  Secure DPM Control Register
@@ -94,19 +63,10 @@ typedef struct
  * |        |          |This bit disables the ability of external debugger to set Secure DPM registers for debug authentication.
  * |        |          |0 = External debugger can set Secure DPM registers.
  * |        |          |1 = External debugger cannot set Secure DPM registers.
- * |        |          |This bit disables the writability of external debugger to Secure DPM Portal registers.
- * |        |          |The writability of DPM_MISCEXT is included.
- * |        |          |0 = External debugger can write Secure DPM registers.
- * |        |          |1 = External debugger cannot write Secure DPM registers.
- * |        |          |Note: The Secure DPM Portal registers include DPM_PCTL, DPM_PSTS, DPM_PSPW0~3.
  * |[13]    |DACCDIS   |Debug Access Disable Bit
  * |        |          |This bit disables the accessibility of external debugger to all DPM registers.
  * |        |          |0 = External debugger can read/write DPM registers.
  * |        |          |1 = External debugger cannot read/write DPM registers.
- * |        |          |Except DPM_MISCEXT, DPM_ID registers, read accessibility of all other registers is controlled by DPM_CTL.DACCDIS
- * |        |          |Note: The DPM registers include Secure DPM portal registers (DPM_PCTL, DPM_PSTS, DPM_PSPW0~3) and Non-secure DPM registers (DPM_PNSCTL, DPM_PNSSTS, DPM_PNSPW0~3) Note: Expect DPM_MISCEXT and DPM_IDEXT, but includes DPM_MISCEXT.SBS
- * |        |          |and DPM_MISCEXT
- * |        |          |XOMEXE.
  * |[31:24] |RWVCODE   |Write Verify Code and Read Verify Code
  * |        |          |Read operation:
  * |        |          |0xA5 = The read access for DPM_CTL is correct.
@@ -148,7 +108,6 @@ typedef struct
  * |        |          |This bit indicates how many times of secure password has been updated.
  * |        |          |The max value is 7. If PWUCNT reached the max value, Secure DPM password cannot be updated anymore.
  * |[16]    |DBGDIS    |Secure Debug Disable Flag (Read Only)
- * |        |          |This bit indicates the value of DPM_S_DBGDIS loaded from Flash.
  * |        |          |This bit indicates the current value of DBGDISS bit.
  * |        |          |{PWOK, LOCK, DBGDIS} bits define the current state of DPM.
  * |        |          |x00 = DEFAULT state.
@@ -157,7 +116,6 @@ typedef struct
  * |        |          |101 = OPEN state.
  * |        |          |Others = Unknown.
  * |[17]    |LOCK      |Secure Debug Lock Flag (Read Only)
- * |        |          |This bit indicates the value of DPM_S_LOCK loaded from Flash.
  * |        |          |This bit indicates the current value of LOCKS bit.
  * |[18]    |PWOK      |Secure Password OK Flag (Read Only)
  * |        |          |This bit indicates the Secure DPM password has been checked and is correct.
@@ -225,13 +183,8 @@ typedef struct
  * |        |          |Note 2: This bit will be cleared after the update process is finished.
  * |[12]    |DACCWDIS  |Debug Write Access Disable Bit
  * |        |          |This bit disables the ability of external debugger to set Non-secure DPM registers for debug authentication.
- * |        |          |This bit disables the writability of external debugger to all DPM_NS registers (DPM_NSCTL, DPM_NSSTS and DPM_NSPW0~3).
  * |        |          |0 = External debugger can set Non-secure DPM registers.
  * |        |          |1 = External debugger cannot set Non-secure DPM registers.
- * |        |          |Note: The DPM_NS registers include DPM_NSCTL, DPM_NSSTS, DPM_NSPW0~3, but not include those Non-secure DPM share registers
- * |        |          |To disable the accessibility to share registers, user should use SCUSIAEN bit in SCU_SIAEN register.
- * |        |          |This bit disables the writability of external debugger to Non-secure DPM Portal registers.
- * |        |          |Note: The Non-secure DPM Portal registers include DPM_PNSCTL, DPM_PNSSTS, DPM_PNSPW0~3.
  * |[31:24] |RWVCODE   |Write Verify Code and Read Verify Code
  * |        |          |Read operation:
  * |        |          |0xA5 = The read access for DPM_NSCTL is correct.
@@ -267,7 +220,6 @@ typedef struct
  * |        |          |This bit indicates how many times of non-secure password has been updated.
  * |        |          |The max value is 7. If PWUCNT reached the max value, Non-secure DPM password cannot be updated anymore.
  * |[16]    |DBGDIS    |Non-secure Debug Disable Flag (Read Only)
- * |        |          |This bit indicates the value of DPM_NS_DBGDIS loaded from Flash.
  * |        |          |This bit indicates the current value of DBGDISNS bit.
  * |        |          |{PWOK, LOCK, DBGDIS} bits define the current state of DPM.
  * |        |          |x00 = DEFAULT state.
@@ -276,7 +228,6 @@ typedef struct
  * |        |          |101 = OPEN state.
  * |        |          |Others = Unknown.
  * |[17]    |LOCK      |Non-secure Debug Lock Flag (Read Only)
- * |        |          |This bit indicates the value of DPM_NS_LOCK loaded from Flash.
  * |        |          |This bit indicates the current value of LOCKNS bit.
  * |[18]    |PWOK      |Non-secure Password OK Flag (Read Only)
  * |        |          |This bit indicates the Non-secure DPM password has been checked and is correct.
@@ -319,25 +270,11 @@ typedef struct
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[23:16] |SBS       |Secure Boot Status
- * |        |          |Register for secure code to set boot status.
- * |[31:24] |RWVCODE   |Write Verify Code and Read Verify Code
- * |        |          |When write,
- * |        |          |the WVCODE is 0x5A.
- * |        |          |When read,
- * |        |          |The RVCODE is 0xA5.
  * @var DPM_T::ID
  * Offset: 0xFC  DPM Identification Register
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[3:0]   |Checksum  |Checksum
- * |        |          |Checksum value of ID and Version
- * |        |          |The value is 0xF. (Sum of all nibbles)
- * |[7:4]   |Version   |DPM Version
- * |        |          |The value is 0x1
- * |[31:8]  |ID        |DPM ID
- * |        |          |The value is 0x44504D
  */
     __IO uint32_t CTL;                   /*!< [0x0000] Secure DPM Control Register                                      */
     __IO uint32_t STS;                   /*!< [0x0004] Secure DPM Status Register                                       */
@@ -477,23 +414,8 @@ typedef struct
 #define DPM_NSPW3_PW_Pos                 (0)                                               /*!< DPM_T::NSPW3: PW Position              */
 #define DPM_NSPW3_PW_Msk                 (0xfffffffful << DPM_NSPW3_PW_Pos)                /*!< DPM_T::NSPW3: PW Mask                  */
 
-#define DPM_MISC_SBS_Pos                 (16)                                              /*!< DPM_T::MISC: SBS Position              */
-#define DPM_MISC_SBS_Msk                 (0xfful << DPM_MISC_SBS_Pos)                      /*!< DPM_T::MISC: SBS Mask                  */
-
-#define DPM_MISC_RWVCODE_Pos             (24)                                              /*!< DPM_T::MISC: RWVCODE Position          */
-#define DPM_MISC_RWVCODE_Msk             (0xfful << DPM_MISC_RWVCODE_Pos)                  /*!< DPM_T::MISC: RWVCODE Mask              */
-
-#define DPM_ID_Checksum_Pos              (0)                                               /*!< DPM_T::ID: Checksum Position           */
-#define DPM_ID_Checksum_Msk              (0xful << DPM_ID_Checksum_Pos)                    /*!< DPM_T::ID: Checksum Mask               */
-
-#define DPM_ID_Version_Pos               (4)                                               /*!< DPM_T::ID: Version Position            */
-#define DPM_ID_Version_Msk               (0xful << DPM_ID_Version_Pos)                     /*!< DPM_T::ID: Version Mask                */
-
-#define DPM_ID_ID_Pos                    (8)                                               /*!< DPM_T::ID: ID Position                 */
-#define DPM_ID_ID_Msk                    (0xfffffful << DPM_ID_ID_Pos)                     /*!< DPM_T::ID: ID Mask                     */
-
-/** @} DPM_CONST */
-/** @} end of DPM register group */
+/**@}*/ /* DPM_CONST */
+/**@}*/ /* end of DPM register group */
 
 
 /*---------------------- Firmware Version Counter -------------------------*/
@@ -505,6 +427,7 @@ typedef struct
 
 typedef struct
 {
+
 /**
  * @var FVC_T::CTL
  * Offset: 0x00  FVC Control Register
@@ -530,7 +453,7 @@ typedef struct
  * |[1]     |RDY       |FVC Ready Bit
  * |        |          |Indicates the FVC is ready after the initial process.
  * @var FVC_T::NVC0
- * Offset: 0x10  Non-volatile Version Counter Control Register0 BL2 Firmware
+ * Offset: 0x10  Non-volatile Version Counter Control Register0
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -538,11 +461,10 @@ typedef struct
  * |        |          |Read: Indicates the current firmware version of NVC0.
  * |        |          |Write: Updates the firmware version of NVC0.
  * |        |          |The maximum value of this field is 63.
- * |        |          |Indicating number of 1 in Fuse OTP or number of 0 in Flash
  * |[31:16] |WVCODE    |Verification Code
  * |        |          |When written, this field must be the current firmware version number
  * @var FVC_T::NVC1
- * Offset: 0x14  Non-volatile Version Counter Control Register1 BL32 Firmware
+ * Offset: 0x14  Non-volatile Version Counter Control Register1
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -550,11 +472,10 @@ typedef struct
  * |        |          |Read: Indicates the current firmware version of NVC1.
  * |        |          |Write: Updates the firmware version of NVC1.
  * |        |          |The maximum value of this field is 63.
- * |        |          |Indicating number of 1 in Fuse OTP or number of 0 in Flash
  * |[31:16] |WVCODE    |Verification Code
  * |        |          |When written, this field must be the current firmware version number
  * @var FVC_T::NVC4
- * Offset: 0x20  Non-volatile Version Counter Control Register4 BL33 Firmware
+ * Offset: 0x20  Non-volatile Version Counter Control Register4
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -562,11 +483,10 @@ typedef struct
  * |        |          |Read: Indicates the current firmware version of NVC4.
  * |        |          |Write: Updates the firmware version of NVC4.
  * |        |          |The maximum value of this field is 255.
- * |        |          |Indicating number of 1 in Fuse OTP or number of 0 in Flash
  * |[31:16] |WVCODE    |Verification Code
  * |        |          |When written, this field must be the current firmware version number
  * @var FVC_T::NVC5
- * Offset: 0x24  Non-volatile Version Counter Control Register5 User-defined Firmware
+ * Offset: 0x24  Non-volatile Version Counter Control Register5
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -574,19 +494,22 @@ typedef struct
  * |        |          |Read: Indicates the current firmware version of NVC5.
  * |        |          |Write: Updates the firmware version of NVC5.
  * |        |          |The maximum value of this field is 255.
- * |        |          |Indicating number of 1 in Fuse OTP or number of 0 in Flash
  * |[31:16] |WVCODE    |Verification Code
  * |        |          |When written, this field must be the current firmware version number
  */
     __IO uint32_t CTL;                   /*!< [0x0000] FVC Control Register                                             */
     __I  uint32_t STS;                   /*!< [0x0004] FVC Status Register                                              */
     __I  uint32_t RESERVE0[2];
-    __IO uint32_t NVC0;                  /*!< [0x0010] Non-volatile Version Counter Control Register0 BL2 Firmware      */
-    __IO uint32_t NVC1;                  /*!< [0x0014] Non-volatile Version Counter Control Register1 BL32 Firmware     */
-    __I  uint32_t RESERVE1[2];
-    __IO uint32_t NVC4;                  /*!< [0x0020] Non-volatile Version Counter Control Register4 BL33 Firmware     */
-    __IO uint32_t NVC5;                  /*!< [0x0024] Non-volatile Version Counter Control Register5 User-defined Firmware */
-
+    union {
+        __IO uint32_t NVC[6];                   /*!< [0x0010-0x0024] Non-volatile Version Counter Control Register Firmware. NVC[2], NVC[3] is reserved    */
+        struct {
+            __IO uint32_t NVC0;                  /*!< [0x0010] Non-volatile Version Counter Control Register0                   */
+            __IO uint32_t NVC1;                  /*!< [0x0014] Non-volatile Version Counter Control Register1                   */
+            __I  uint32_t RESERVE1[2];
+            __IO uint32_t NVC4;                  /*!< [0x0020] Non-volatile Version Counter Control Register4                   */
+            __IO uint32_t NVC5;                  /*!< [0x0024] Non-volatile Version Counter Control Register5                   */
+        };
+    };
 } FVC_T;
 
 /**
@@ -634,8 +557,8 @@ typedef struct
 #define FVC_NVC5_WVCODE_Pos              (16)                                              /*!< FVC_T::NVC5: WVCODE Position           */
 #define FVC_NVC5_WVCODE_Msk              (0xfffful << FVC_NVC5_WVCODE_Pos)                 /*!< FVC_T::NVC5: WVCODE Mask               */
 
-/** @} FVC_CONST */
-/** @} end of FVC register group */
+/**@}*/ /* FVC_CONST */
+/**@}*/ /* end of FVC register group */
 
 
 /*---------------------- Product Life-cycle Manager -------------------------*/
@@ -647,6 +570,7 @@ typedef struct
 
 typedef struct
 {
+
 /**
  * @var PLM_T::CTL
  * Offset: 0x00  Product Life-cycle Control Register
@@ -700,8 +624,8 @@ typedef struct
 #define PLM_STS_DIRTY_Pos                (8)                                               /*!< PLM_T::STS: DIRTY Position             */
 #define PLM_STS_DIRTY_Msk                (0x1ul << PLM_STS_DIRTY_Pos)                      /*!< PLM_T::STS: DIRTY Mask                 */
 
-/** @} PLM_CONST */
-/** @} end of PLM register group */
+/**@}*/ /* PLM_CONST */
+/**@}*/ /* end of PLM register group */
 
 
 /*---------------------- Secure configuration Unit -------------------------*/
@@ -713,6 +637,8 @@ typedef struct
 
 typedef struct
 {
+
+
 /**
  * @var SCU_T::D0PNS0
  * Offset: 0x00  Domain 0 Peripheral Non-secure Attribution Set Register0 (0x4000_0000~0x4001_FFFF)
@@ -747,9 +673,6 @@ typedef struct
  * |[2]     |USBH0     |Set USBH0 to Non-secure State
  * |        |          |0 = USBH0 is a secure module (default).
  * |        |          |1 = USBH0 is a non-secure module.
- * |[3]     |USBH1     |Set USBH1 to Non-secure State
- * |        |          |0 = USBH1 is a secure module (default).
- * |        |          |1 = USBH1 is a non-secure module.
  * |[4]     |HSUSBH    |Set HSUSBH to Non-secure State
  * |        |          |0 = HSUSBH is a secure module (default).
  * |        |          |1 = HSUSBH is a non-secure module.
@@ -768,7 +691,7 @@ typedef struct
  * |[10]    |CRYPTO    |Set CRYPTO to Non-secure State
  * |        |          |0 = CRYPTO is a secure module (default).
  * |        |          |1 = CRYPTO is a non-secure module.
- * |[13]    |CRC       |Set CRC to Non-secure State
+ * |[11]    |CRC       |Set CRC to Non-secure State
  * |        |          |0 = CRC is a secure module (default).
  * |        |          |1 = CRC is a non-secure module.
  * @var SCU_T::D1PNS1
@@ -782,16 +705,16 @@ typedef struct
  * |[2]     |CANFD0    |Set CANFD0 to Non-secure State
  * |        |          |0 = CANFD0 is a secure module (default).
  * |        |          |1 = CANFD0 is a non-secure module.
- * |[3]     |CANFD1    |Set CANFD1 to Non-secure State
+ * |[4]     |CANFD1    |Set CANFD1 to Non-secure State
  * |        |          |0 = CANFD1 is a secure module (default).
  * |        |          |1 = CANFD1 is a non-secure module.
- * |[4]     |ETMC      |Set ETMC to Non-secure State
+ * |[6]     |ETMC      |Set ETMC to Non-secure State
  * |        |          |0 = ETMC is a secure module (default).
  * |        |          |1 = ETMC is a non-secure module.
- * |[5]     |SWDH      |Set SWDH to Non-secure State
+ * |[7]     |SWDH      |Set SWDH to Non-secure State
  * |        |          |0 = SWDH is a secure module (default).
  * |        |          |1 = SWDH is a non-secure module.
- * |[6]     |SWODEC    |Set SWODEC to Non-secure State
+ * |[8]     |SWODEC    |Set SWODEC to Non-secure State
  * |        |          |0 = SWODEC is a secure module (default).
  * |        |          |1 = SWODEC is a non-secure module.
  * |[16]    |EBI       |Set EBI to Non-secure State
@@ -877,9 +800,9 @@ typedef struct
  * |[25]    |HSOTG     |Set HSOTG to Non-secure State
  * |        |          |0 = HSOTG is a secure module (default).
  * |        |          |1 = HSOTG is a non-secure module.
- * |[26]    |I2S       |Set I2S to Non-secure State
- * |        |          |0 = I2S is a secure module (default).
- * |        |          |1 = I2S is a non-secure module.
+ * |[26]    |I2S0      |Set I2S0 to Non-secure State
+ * |        |          |0 = I2S0 is a secure module (default).
+ * |        |          |1 = I2S0 is a non-secure module.
  * |[27]    |ACMP01    |Set ACMP01 to Non-secure State
  * |        |          |0 = ACMP01 is a secure module (default).
  * |        |          |1 = ACMP01 is a non-secure module.
@@ -963,9 +886,9 @@ typedef struct
  * |[23]    |RTC       |Set RTC to Non-secure State
  * |        |          |0 = RTC is a secure module (default).
  * |        |          |1 = RTC is a non-secure module.
- * |[24]    |I2S       |Set I2S to Non-secure State
- * |        |          |0 = I2S is a secure module (default).
- * |        |          |1 = I2S is a non-secure module.
+ * |[24]    |I2S1      |Set I2S1 to Non-secure State
+ * |        |          |0 = I2S1 is a secure module (default).
+ * |        |          |1 = I2S1 is a non-secure module.
  * |[25]    |ACMP23    |Set ACMP23 to Non-secure State
  * |        |          |0 = ACMP23 is a secure module (default).
  * |        |          |1 = ACMP23 is a non-secure module.
@@ -980,9 +903,9 @@ typedef struct
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[0]     |LPDMA     |Set LPDMA to Non-secure State
- * |        |          |0 = LPDMA is a secure module (default).
- * |        |          |1 = LPDMA is a non-secure module.
+ * |[0]     |LPPDMA    |Set LPPDMA to Non-secure State
+ * |        |          |0 = LPPDMA is a secure module (default).
+ * |        |          |1 = LPPDMA is a non-secure module.
  * |[1]     |CCAP      |Set CCAP to Non-secure State
  * |        |          |0 = CCAP is a secure module (default).
  * |        |          |1 = CCAP is a non-secure module.
@@ -1015,12 +938,6 @@ typedef struct
  * |[6]     |LPUART0   |Set LPUART0 to Non-secure State
  * |        |          |0 = LPUART0 is a secure module (default).
  * |        |          |1 = LPUART0 is a non-secure module.
- * |[7]     |WDT0      |Set WDT0 to Non-secure State
- * |        |          |0 = WDT0 is a secure module (default).
- * |        |          |1 = WDT0 is a non-secure module.
- * |[8]     |WDT1      |Set WDT1 to Non-secure State
- * |        |          |0 = WDT1 is a secure module (default).
- * |        |          |1 = WDT1 is a non-secure module.
  * |[9]     |AWF       |Set AWF to Non-secure State
  * |        |          |0 = AWF is a secure module (default).
  * |        |          |1 = AWF is a non-secure module.
@@ -1165,30 +1082,30 @@ typedef struct
  * |[2]     |APB2IEN   |APB2 Security Violation Interrupt Enable Bit
  * |        |          |0 = Interrupt triggered from security violation of APB2 Disabled.
  * |        |          |1 = Interrupt triggered from security violation of APB2 Enabled.
- * |[4]     |D0PPC0IEN |D0PPC0 Security Violation Interrupt Enable Bit
+ * |[3]     |APB3IEN   |APB3 Security Violation Interrupt Enable Bit
+ * |        |          |0 = Interrupt triggered from security violation of APB3 Disabled.
+ * |        |          |1 = Interrupt triggered from security violation of APB3 Enabled.
+ * |[4]     |APB4IEN   |APB4 Security Violation Interrupt Enable Bit
+ * |        |          |0 = Interrupt triggered from security violation of APB4 Disabled.
+ * |        |          |1 = Interrupt triggered from security violation of APB4 Enabled.
+ * |[5]     |APB5IEN   |APB5 Security Violation Interrupt Enable Bit
+ * |        |          |0 = Interrupt triggered from security violation of APB5 Disabled.
+ * |        |          |1 = Interrupt triggered from security violation of APB5 Enabled.
+ * |[8]     |D0PPC0IEN |D0PPC0 Security Violation Interrupt Enable Bit
  * |        |          |0 = Interrupt triggered from security violation of D0PPC0 Disabled.
  * |        |          |1 = Interrupt triggered from security violation of D0PPC0 Enabled.
- * |[5]     |D1PPC0IEN |D1PPC0 Security Violation Interrupt Enable Bit
+ * |[9]     |D1PPC0IEN |D1PPC0 Security Violation Interrupt Enable Bit
  * |        |          |0 = Interrupt triggered from security violation of D1PPC0 Disabled.
  * |        |          |1 = Interrupt triggered from security violation of D1PPC0 Enabled.
- * |[6]     |D1PPC1IEN |D1PPC1 Security Violation Interrupt Enable Bit
+ * |[10]    |D1PPC1IEN |D1PPC1 Security Violation Interrupt Enable Bit
  * |        |          |0 = Interrupt triggered from security violation of D1PPC1 Disabled.
  * |        |          |1 = Interrupt triggered from security violation of D1PPC1 Enabled.
- * |[7]     |D2PPC0IEN |D2PPC0 Security Violation Interrupt Enable Bit
+ * |[11]    |D2PPC0IEN |D2PPC0 Security Violation Interrupt Enable Bit
  * |        |          |0 = Interrupt triggered from security violation of D2PPC0 Disabled.
  * |        |          |1 = Interrupt triggered from security violation of D2PPC0 Enabled.
- * |[12]    |FMCIEN    |FMC Security Violation Interrupt Enable Bit
- * |        |          |0 = Interrupt triggered from security violation of FMC Disabled.
- * |        |          |1 = Interrupt triggered from security violation of FMC Enabled.
- * |[13]    |FLASHIEN  |FLASH Security Violation Interrupt Enable Bit
- * |        |          |0 = Interrupt triggered from security violation of Flash data Disabled.
- * |        |          |1 = Interrupt triggered from security violation of Flash data Enabled.
- * |[14]    |SCUIEN    |SCU Security Violation Interrupt Enable Bit
- * |        |          |0 = Interrupt triggered from security violation of SCU Disabled.
- * |        |          |1 = Interrupt triggered from security violation of SCU Enabled.
- * |[15]    |SYSIEN    |SYS Security Violation Interrupt Enable Bit
- * |        |          |0 = Interrupt triggered from security violation of system manager Disabled.
- * |        |          |1 = Interrupt triggered from security violation of system manager Enabled.
+ * |[16]    |EBIIEN    |EBI Security Violation Interrupt Enable Bit
+ * |        |          |0 = Interrupt triggered from security violation of EBI Disabled.
+ * |        |          |1 = Interrupt triggered from security violation of EBI Enabled.
  * @var SCU_T::SVIEN1
  * Offset: 0x104  Security Violation Interrupt Enable Register u2013 Master peripherals (MSC)
  * ---------------------------------------------------------------------------------------------------
@@ -1198,7 +1115,6 @@ typedef struct
  * |[1]     |PDMA0IEN  |PDMA0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of PDMA Disabled. 1 = Interrupt triggered from security violation of PDMA Enabled.
  * |[2]     |PDMA1IEN  |PDMA1 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of PDMA1 Disabled. 1 = Interrupt triggered from security violation of PDMA1 Enabled.
  * |[3]     |USBH0IEN  |USBH0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of USBH0 Disabled. 1 = Interrupt triggered from security violation of USBH0 Enabled.
- * |[4]     |USBH1IEN  |USBH1 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of USBH1 Disabled. 1 = Interrupt triggered from security violation of USBH1 Enabled.
  * |[5]     |HSUSBHIEN |HSUSBH Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of HSUSBH Disabled. 1 = Interrupt triggered from security violation of HSUSBH Enabled.
  * |[6]     |HSUSBDIEN |HSUSBD Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of HSUSBD Disabled. 1 = Interrupt triggered from security violation of HSUSBD Enabled.
  * |[7]     |SDH0IEN   |SDH0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of SDH0 Disabled. 1 = Interrupt triggered from security violation of SDH0 Enabled.
@@ -1206,10 +1122,12 @@ typedef struct
  * |[9]     |EMACIEN   |EMAC Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of EMAC Disabled. 1 = Interrupt triggered from security violation of EMAC Enabled.
  * |[10]    |CRYPTOIEN |CRYPTO Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of CRYPTO Disabled. 1 = Interrupt triggered from security violation of CRYPTO Enabled.
  * |[11]    |CRCIEN    |CRC Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of CRC Disabled. 1 = Interrupt triggered from security violation of CRC Enabled.
- * |[12]    |LPDMAIEN  |LPDMA Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of LPDMA Disabled. 1 = Interrupt triggered from security violation of LPDMA Enabled.
+ * |[12]    |LPPDMAIEN |LPPDMA Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of LPPDMA Disabled. 1 = Interrupt triggered from security violation of LPPDMA Enabled.
  * |[13]    |CCAPIEN   |CCAP Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of CCAP Disabled. 1 = Interrupt triggered from security violation of CCAP Enabled.
- * |[14]    |NPU0IEN   |NPU0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of NPU0 Disabled. 1 = Interrupt triggered from security violation of NPU0 Enabled.
- * |[15]    |NPU1IEN   |NPU1 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of NPU1 Disabled. 1 = Interrupt triggered from security violation of NPU1 Enabled.
+ * |[14]    |NPUIF1IEN |NPU Interface 1 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of NPU Interface 1 Disabled. 1 = Interrupt triggered from security violation of NPU Interface 1 Enabled.
+ * |[15]    |NPUIF0IEN |NPU Interface 0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of NPU Interface 0 Disabled. 1 = Interrupt triggered from security violation of NPU Interface 0 Enabled.
+ * |[16]    |SPIM0IEN  |SPIM0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of SPIM0 Disabled. 1 = Interrupt triggered from security violation of SPIM0 Enabled.
+ * |[17]    |SPIM1IEN  |SPIM1 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of SPIM1 Disabled. 1 = Interrupt triggered from security violation of SPIM1 Enabled.
  * @var SCU_T::SVINTSTS0
  * Offset: 0x110  Security Violation Interrupt Status Register u2013 Slave peripherals
  * ---------------------------------------------------------------------------------------------------
@@ -1227,37 +1145,37 @@ typedef struct
  * |        |          |0 = No APB2 violation interrupt event.
  * |        |          |1 = There is at least a APB2 violation interrupt event.
  * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[4]     |D0PPC0IF  |D0PPC0 Security Violation Interrupt Status
+ * |[3]     |APB3IF    |APB3 Security Violation Interrupt Status
+ * |        |          |0 = No APB3 violation interrupt event.
+ * |        |          |1 = There is at least a APB3 violation interrupt event.
+ * |        |          |Note: Write 1 to clear the interrupt flag.
+ * |[4]     |APB4IF    |APB4 Security Violation Interrupt Status
+ * |        |          |0 = No APB4 violation interrupt event.
+ * |        |          |1 = There is at least a APB4 violation interrupt event.
+ * |        |          |Note: Write 1 to clear the interrupt flag.
+ * |[5]     |APB5IF    |APB5 Security Violation Interrupt Status
+ * |        |          |0 = No APB5 violation interrupt event.
+ * |        |          |1 = There is at least a APB5 violation interrupt event.
+ * |        |          |Note: Write 1 to clear the interrupt flag.
+ * |[8]     |D0PPC0IF  |D0PPC0 Security Violation Interrupt Status
  * |        |          |0 = No D0PPC0 violation interrupt event.
  * |        |          |1 = There is at least a D0PPC0 violation interrupt event.
  * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[5]     |D1PPC0IF  |D1PPC0 Security Violation Interrupt Status
+ * |[9]     |D1PPC0IF  |D1PPC0 Security Violation Interrupt Status
  * |        |          |0 = No D1PPC0 violation interrupt event.
  * |        |          |1 = There is at least a D1PPC0 violation interrupt event.
  * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[6]     |D1PPC1IF  |D1PPC1 Security Violation Interrupt Status
+ * |[10]    |D1PPC1IF  |D1PPC1 Security Violation Interrupt Status
  * |        |          |0 = No D1PPC1 violation interrupt event.
  * |        |          |1 = There is at least a D1PPC1 violation interrupt event.
  * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[7]     |D2PPC0IF  |D2PPC0 Security Violation Interrupt Status
+ * |[11]    |D2PPC0IF  |D2PPC0 Security Violation Interrupt Status
  * |        |          |0 = No D2PPC0 violation interrupt event.
  * |        |          |1 = There is at least a D2PPC0 violation interrupt event.
  * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[12]    |FMCIF     |FMC Security Violation Interrupt Status
- * |        |          |0 = No FMC violation interrupt event.
- * |        |          |1 = There is at least a FMC violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[13]    |FLASHIF   |FLASH Security Violation Interrupt Status
- * |        |          |0 = No FLASH violation interrupt event.
- * |        |          |1 = There is at least a FLASH violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[14]    |SCUIF     |SCU Security Violation Interrupt Status
- * |        |          |0 = No SCU violation interrupt event.
- * |        |          |1 = There is at least a SCU violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[15]    |SYSIF     |SYS Security Violation Interrupt Status
- * |        |          |0 = No SYS violation interrupt event.
- * |        |          |1 = There is at least a SYS violation interrupt event.
+ * |[16]    |EBIIF     |EBI Security Violation Interrupt Status
+ * |        |          |0 = No EBI violation interrupt event.
+ * |        |          |1 = There is at least a EBI violation interrupt event.
  * |        |          |Note: Write 1 to clear the interrupt flag.
  * @var SCU_T::SVINTSTS1
  * Offset: 0x114  Security Violation Interrupt Status Register - Master peripherals (MSC)
@@ -1279,10 +1197,6 @@ typedef struct
  * |[3]     |USBH0IF   |USBH0 Security Violation Interrupt Status
  * |        |          |0 = No USBH0 violation interrupt event.
  * |        |          |1 = There is at least a USBH0 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[4]     |USBH1IF   |USBH1 Security Violation Interrupt Status
- * |        |          |0 = No USBH1 violation interrupt event.
- * |        |          |1 = There is at least a USBH1 violation interrupt event.
  * |        |          |Note: Write 1 to clear the interrupt flag.
  * |[5]     |HSUSBHIF  |HSUSBH Security Violation Interrupt Status
  * |        |          |0 = No HSUSBH violation interrupt event.
@@ -1312,21 +1226,29 @@ typedef struct
  * |        |          |0 = No CRC violation interrupt event.
  * |        |          |1 = There is at least a CRC violation interrupt event.
  * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[12]    |LPDMAIF   |LPDMA Security Violation Interrupt Status
- * |        |          |0 = No LPDMA violation interrupt event.
- * |        |          |1 = There is at least a LPDMA violation interrupt event.
+ * |[12]    |LPPDMAIF  |LPPDMA Security Violation Interrupt Status
+ * |        |          |0 = No LPPDMA violation interrupt event.
+ * |        |          |1 = There is at least a LPPDMA violation interrupt event.
  * |        |          |Note: Write 1 to clear the interrupt flag.
  * |[13]    |CCAPIF    |CCAP Security Violation Interrupt Status
  * |        |          |0 = No CCAP violation interrupt event.
  * |        |          |1 = There is at least a CCAP violation interrupt event.
  * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[14]    |NPU0IF    |NPU0 Security Violation Interrupt Status
- * |        |          |0 = No NPU0 violation interrupt event.
- * |        |          |1 = There is at least a NPU0 violation interrupt event.
+ * |[14]    |NPUIF1    |NPU Interface 1 Security Violation Interrupt Status
+ * |        |          |0 = No NPU Interface 1 violation interrupt event.
+ * |        |          |1 = There is at least a NPU Interface 1 violation interrupt event.
  * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[15]    |NPU1IF    |NPU1 Security Violation Interrupt Status
- * |        |          |0 = No NPU1 violation interrupt event.
- * |        |          |1 = There is at least a NPU1 violation interrupt event.
+ * |[15]    |NPUIF0    |NPU Interface 0 Security Violation Interrupt Status
+ * |        |          |0 = No NPU Interface 0 violation interrupt event.
+ * |        |          |1 = There is at least a NPU Interface 0 violation interrupt event.
+ * |        |          |Note: Write 1 to clear the interrupt flag.
+ * |[16]    |SPIM0IF   |SPIM0 Security Violation Interrupt Status
+ * |        |          |0 = No SPIM0 violation interrupt event.
+ * |        |          |1 = There is at least a SPIM0 violation interrupt event.
+ * |        |          |Note: Write 1 to clear the interrupt flag.
+ * |[17]    |SPIM1IF   |SPIM1 Security Violation Interrupt Status
+ * |        |          |0 = No SPIM1 violation interrupt event.
+ * |        |          |1 = There is at least a SPIM1 violation interrupt event.
  * |        |          |Note: Write 1 to clear the interrupt flag.
  * @var SCU_T::SVINTSTS2
  * Offset: 0x118  Security Violation Interrupt Status Register u2013 Memory peripherals (MPC)
@@ -1336,31 +1258,24 @@ typedef struct
  * |[0]     |SRAM0IF   |SRAM0 Security Violation Interrupt Status
  * |        |          |0 = No SRAM0 violation interrupt event.
  * |        |          |1 = There is at least a SRAM0 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
  * |[1]     |SRAM1IF   |SRAM1 Security Violation Interrupt Status
  * |        |          |0 = No SRAM1 violation interrupt event.
  * |        |          |1 = There is at least a SRAM1 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
  * |[2]     |SRAM2IF   |SRAM2 Security Violation Interrupt Status
  * |        |          |0 = No SRAM2 violation interrupt event.
  * |        |          |1 = There is at least a SRAM2 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
  * |[3]     |SRAM3IF   |SRAM3 Security Violation Interrupt Status
  * |        |          |0 = No SRAM3 violation interrupt event.
  * |        |          |1 = There is at least a SRAM3 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
  * |[4]     |LPSRAMIF  |LPSRAM Security Violation Interrupt Status
  * |        |          |0 = No LPSRAM violation interrupt event.
  * |        |          |1 = There is at least a LPSRAM violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
  * |[5]     |SPIM0IF   |SPIM0 Security Violation Interrupt Status
  * |        |          |0 = No SPIM0 violation interrupt event.
  * |        |          |1 = There is at least a SPIM0 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
  * |[6]     |SPIM1IF   |SPIM1 Security Violation Interrupt Status
  * |        |          |0 = No SPIM1 violation interrupt event.
  * |        |          |1 = There is at least a SPIM1 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
  * @var SCU_T::APB0PVSRC
  * Offset: 0x120  APB0 Security Policy Violation Source
  * ---------------------------------------------------------------------------------------------------
@@ -1372,7 +1287,6 @@ typedef struct
  * |        |          |0x01 = PDMA0
  * |        |          |0x02 = PDMA1
  * |        |          |0x03 = USBH0
- * |        |          |0x04 = USBH1
  * |        |          |0x05 = HSUSBH
  * |        |          |0x06 = HSUSBD
  * |        |          |0x07 = SDH0
@@ -1382,7 +1296,7 @@ typedef struct
  * |        |          |0x0B = CRC
  * |        |          |0x0C = GDMA
  * |        |          |0x0D = NPU
- * |        |          |0x0E = LPDMA
+ * |        |          |0x0E = LPPDMA
  * |        |          |0x0F = CCAP
  * |        |          |0x10 = SPIM0
  * |        |          |0x11 = SPIM1
@@ -1398,7 +1312,6 @@ typedef struct
  * |        |          |0x01 = PDMA0
  * |        |          |0x02 = PDMA1
  * |        |          |0x03 = USBH0
- * |        |          |0x04 = USBH1
  * |        |          |0x05 = HSUSBH
  * |        |          |0x06 = HSUSBD
  * |        |          |0x07 = SDH0
@@ -1408,7 +1321,7 @@ typedef struct
  * |        |          |0x0B = CRC
  * |        |          |0x0C = GDMA
  * |        |          |0x0D = NPU
- * |        |          |0x0E = LPDMA
+ * |        |          |0x0E = LPPDMA
  * |        |          |0x0F = CCAP
  * |        |          |0x10 = SPIM0
  * |        |          |0x11 = SPIM1
@@ -1424,7 +1337,6 @@ typedef struct
  * |        |          |0x01 = PDMA0
  * |        |          |0x02 = PDMA1
  * |        |          |0x03 = USBH0
- * |        |          |0x04 = USBH1
  * |        |          |0x05 = HSUSBH
  * |        |          |0x06 = HSUSBD
  * |        |          |0x07 = SDH0
@@ -1434,13 +1346,88 @@ typedef struct
  * |        |          |0x0B = CRC
  * |        |          |0x0C = GDMA
  * |        |          |0x0D = NPU
- * |        |          |0x0E = LPDMA
+ * |        |          |0x0E = LPPDMA
+ * |        |          |0x0F = CCAP
+ * |        |          |0x10 = SPIM0
+ * |        |          |0x11 = SPIM1
+ * |        |          |Others are undefined.
+ * @var SCU_T::APB3PVSRC
+ * Offset: 0x12C  APB3 Security Policy Violation Source
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[4:0]   |MASTER    |Master Violating Security Policy
+ * |        |          |Indicate which master invokes the security violation.
+ * |        |          |0x00 = Core processor
+ * |        |          |0x01 = PDMA0
+ * |        |          |0x02 = PDMA1
+ * |        |          |0x03 = USBH0
+ * |        |          |0x05 = HSUSBH
+ * |        |          |0x06 = HSUSBD
+ * |        |          |0x07 = SDH0
+ * |        |          |0x08 = SDH1
+ * |        |          |0x09 = EMAC
+ * |        |          |0x0A = CRYPTO
+ * |        |          |0x0B = CRC
+ * |        |          |0x0C = GDMA
+ * |        |          |0x0D = NPU
+ * |        |          |0x0E = LPPDMA
+ * |        |          |0x0F = CCAP
+ * |        |          |0x10 = SPIM0
+ * |        |          |0x11 = SPIM1
+ * |        |          |Others are undefined.
+ * @var SCU_T::APB4PVSRC
+ * Offset: 0x130  APB4 Security Policy Violation Source
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[4:0]   |MASTER    |Master Violating Security Policy
+ * |        |          |Indicate which master invokes the security violation.
+ * |        |          |0x00 = Core processor
+ * |        |          |0x01 = PDMA0
+ * |        |          |0x02 = PDMA1
+ * |        |          |0x03 = USBH0
+ * |        |          |0x05 = HSUSBH
+ * |        |          |0x06 = HSUSBD
+ * |        |          |0x07 = SDH0
+ * |        |          |0x08 = SDH1
+ * |        |          |0x09 = EMAC
+ * |        |          |0x0A = CRYPTO
+ * |        |          |0x0B = CRC
+ * |        |          |0x0C = GDMA
+ * |        |          |0x0D = NPU
+ * |        |          |0x0E = LPPDMA
+ * |        |          |0x0F = CCAP
+ * |        |          |0x10 = SPIM0
+ * |        |          |0x11 = SPIM1
+ * |        |          |Others are undefined.
+ * @var SCU_T::APB5PVSRC
+ * Offset: 0x134  APB5 Security Policy Violation Source
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[4:0]   |MASTER    |Master Violating Security Policy
+ * |        |          |Indicate which master invokes the security violation.
+ * |        |          |0x00 = Core processor
+ * |        |          |0x01 = PDMA0
+ * |        |          |0x02 = PDMA1
+ * |        |          |0x03 = USBH0
+ * |        |          |0x05 = HSUSBH
+ * |        |          |0x06 = HSUSBD
+ * |        |          |0x07 = SDH0
+ * |        |          |0x08 = SDH1
+ * |        |          |0x09 = EMAC
+ * |        |          |0x0A = CRYPTO
+ * |        |          |0x0B = CRC
+ * |        |          |0x0C = GDMA
+ * |        |          |0x0D = NPU
+ * |        |          |0x0E = LPPDMA
  * |        |          |0x0F = CCAP
  * |        |          |0x10 = SPIM0
  * |        |          |0x11 = SPIM1
  * |        |          |Others are undefined.
  * @var SCU_T::D0PPC0PVSRC
- * Offset: 0x130  D0PPC0 Security Policy Violation Source
+ * Offset: 0x140  D0PPC0 Security Policy Violation Source
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -1450,7 +1437,6 @@ typedef struct
  * |        |          |0x01 = PDMA0
  * |        |          |0x02 = PDMA1
  * |        |          |0x03 = USBH0
- * |        |          |0x04 = USBH1
  * |        |          |0x05 = HSUSBH
  * |        |          |0x06 = HSUSBD
  * |        |          |0x07 = SDH0
@@ -1460,13 +1446,13 @@ typedef struct
  * |        |          |0x0B = CRC
  * |        |          |0x0C = GDMA
  * |        |          |0x0D = NPU
- * |        |          |0x0E = LPDMA
+ * |        |          |0x0E = LPPDMA
  * |        |          |0x0F = CCAP
  * |        |          |0x10 = SPIM0
  * |        |          |0x11 = SPIM1
  * |        |          |Others are undefined.
  * @var SCU_T::D1PPC0PVSRC
- * Offset: 0x134  D1PPC0 Security Policy Violation Source
+ * Offset: 0x144  D1PPC0 Security Policy Violation Source
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -1476,7 +1462,6 @@ typedef struct
  * |        |          |0x01 = PDMA0
  * |        |          |0x02 = PDMA1
  * |        |          |0x03 = USBH0
- * |        |          |0x04 = USBH1
  * |        |          |0x05 = HSUSBH
  * |        |          |0x06 = HSUSBD
  * |        |          |0x07 = SDH0
@@ -1486,13 +1471,13 @@ typedef struct
  * |        |          |0x0B = CRC
  * |        |          |0x0C = GDMA
  * |        |          |0x0D = NPU
- * |        |          |0x0E = LPDMA
+ * |        |          |0x0E = LPPDMA
  * |        |          |0x0F = CCAP
  * |        |          |0x10 = SPIM0
  * |        |          |0x11 = SPIM1
  * |        |          |Others are undefined.
  * @var SCU_T::D1PPC1PVSRC
- * Offset: 0x138  D1PPC1 Security Policy Violation Source
+ * Offset: 0x148  D1PPC1 Security Policy Violation Source
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -1502,7 +1487,6 @@ typedef struct
  * |        |          |0x01 = PDMA0
  * |        |          |0x02 = PDMA1
  * |        |          |0x03 = USBH0
- * |        |          |0x04 = USBH1
  * |        |          |0x05 = HSUSBH
  * |        |          |0x06 = HSUSBD
  * |        |          |0x07 = SDH0
@@ -1512,13 +1496,13 @@ typedef struct
  * |        |          |0x0B = CRC
  * |        |          |0x0C = GDMA
  * |        |          |0x0D = NPU
- * |        |          |0x0E = LPDMA
+ * |        |          |0x0E = LPPDMA
  * |        |          |0x0F = CCAP
  * |        |          |0x10 = SPIM0
  * |        |          |0x11 = SPIM1
  * |        |          |Others are undefined.
  * @var SCU_T::D2PPC0PVSRC
- * Offset: 0x13C  D2PPC0 Security Policy Violation Source
+ * Offset: 0x14C  D2PPC0 Security Policy Violation Source
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -1528,7 +1512,6 @@ typedef struct
  * |        |          |0x01 = PDMA0
  * |        |          |0x02 = PDMA1
  * |        |          |0x03 = USBH0
- * |        |          |0x04 = USBH1
  * |        |          |0x05 = HSUSBH
  * |        |          |0x06 = HSUSBD
  * |        |          |0x07 = SDH0
@@ -1538,111 +1521,7 @@ typedef struct
  * |        |          |0x0B = CRC
  * |        |          |0x0C = GDMA
  * |        |          |0x0D = NPU
- * |        |          |0x0E = LPDMA
- * |        |          |0x0F = CCAP
- * |        |          |0x10 = SPIM0
- * |        |          |0x11 = SPIM1
- * |        |          |Others are undefined.
- * @var SCU_T::FMCPVSRC
- * Offset: 0x150  FMC Security Policy Violation Source
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |MASTER    |Master Violating Security Policy
- * |        |          |Indicate which master invokes the security violation.
- * |        |          |0x00 = Core processor
- * |        |          |0x01 = PDMA0
- * |        |          |0x02 = PDMA1
- * |        |          |0x03 = USBH0
- * |        |          |0x04 = USBH1
- * |        |          |0x05 = HSUSBH
- * |        |          |0x06 = HSUSBD
- * |        |          |0x07 = SDH0
- * |        |          |0x08 = SDH1
- * |        |          |0x09 = EMAC
- * |        |          |0x0A = CRYPTO
- * |        |          |0x0B = CRC
- * |        |          |0x0C = GDMA
- * |        |          |0x0D = NPU
- * |        |          |0x0E = LPDMA
- * |        |          |0x0F = CCAP
- * |        |          |0x10 = SPIM0
- * |        |          |0x11 = SPIM1
- * |        |          |Others are undefined.
- * @var SCU_T::FLASHPVSRC
- * Offset: 0x154  FLASH Security Policy Violation Source
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |MASTER    |Master Violating Security Policy
- * |        |          |Indicate which master invokes the security violation.
- * |        |          |0x00 = Core processor
- * |        |          |0x01 = PDMA0
- * |        |          |0x02 = PDMA1
- * |        |          |0x03 = USBH0
- * |        |          |0x04 = USBH1
- * |        |          |0x05 = HSUSBH
- * |        |          |0x06 = HSUSBD
- * |        |          |0x07 = SDH0
- * |        |          |0x08 = SDH1
- * |        |          |0x09 = EMAC
- * |        |          |0x0A = CRYPTO
- * |        |          |0x0B = CRC
- * |        |          |0x0C = GDMA
- * |        |          |0x0D = NPU
- * |        |          |0x0E = LPDMA
- * |        |          |0x0F = CCAP
- * |        |          |0x10 = SPIM0
- * |        |          |0x11 = SPIM1
- * |        |          |Others are undefined.
- * @var SCU_T::SCUPVSRC
- * Offset: 0x158  SCU Security Policy Violation Source
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |MASTER    |Master Violating Security Policy
- * |        |          |Indicate which master invokes the security violation.
- * |        |          |0x00 = Core processor
- * |        |          |0x01 = PDMA0
- * |        |          |0x02 = PDMA1
- * |        |          |0x03 = USBH0
- * |        |          |0x04 = USBH1
- * |        |          |0x05 = HSUSBH
- * |        |          |0x06 = HSUSBD
- * |        |          |0x07 = SDH0
- * |        |          |0x08 = SDH1
- * |        |          |0x09 = EMAC
- * |        |          |0x0A = CRYPTO
- * |        |          |0x0B = CRC
- * |        |          |0x0C = GDMA
- * |        |          |0x0D = NPU
- * |        |          |0x0E = LPDMA
- * |        |          |0x0F = CCAP
- * |        |          |0x10 = SPIM0
- * |        |          |0x11 = SPIM1
- * |        |          |Others are undefined.
- * @var SCU_T::SYSPVSRC
- * Offset: 0x15C  SYS Security Policy Violation Source
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |MASTER    |Master Violating Security Policy
- * |        |          |Indicate which master invokes the security violation.
- * |        |          |0x00 = Core processor
- * |        |          |0x01 = PDMA0
- * |        |          |0x02 = PDMA1
- * |        |          |0x03 = USBH0
- * |        |          |0x04 = USBH1
- * |        |          |0x05 = HSUSBH
- * |        |          |0x06 = HSUSBD
- * |        |          |0x07 = SDH0
- * |        |          |0x08 = SDH1
- * |        |          |0x09 = EMAC
- * |        |          |0x0A = CRYPTO
- * |        |          |0x0B = CRC
- * |        |          |0x0C = GDMA
- * |        |          |0x0D = NPU
- * |        |          |0x0E = LPDMA
+ * |        |          |0x0E = LPPDMA
  * |        |          |0x0F = CCAP
  * |        |          |0x10 = SPIM0
  * |        |          |0x11 = SPIM1
@@ -1658,7 +1537,6 @@ typedef struct
  * |        |          |0x01 = PDMA0
  * |        |          |0x02 = PDMA1
  * |        |          |0x03 = USBH0
- * |        |          |0x04 = USBH1
  * |        |          |0x05 = HSUSBH
  * |        |          |0x06 = HSUSBD
  * |        |          |0x07 = SDH0
@@ -1668,7 +1546,7 @@ typedef struct
  * |        |          |0x0B = CRC
  * |        |          |0x0C = GDMA
  * |        |          |0x0D = NPU
- * |        |          |0x0E = LPDMA
+ * |        |          |0x0E = LPPDMA
  * |        |          |0x0F = CCAP
  * |        |          |0x10 = SPIM0
  * |        |          |0x11 = SPIM1
@@ -1694,57 +1572,50 @@ typedef struct
  * | :----: | :----:   | :---- |
  * |[31:0]  |VIOADDR   |Violation Address
  * |        |          |Indicate the target address of the access, which invokes the security violation.
+ * @var SCU_T::APB3PVA
+ * Offset: 0x1AC  APB3 Violation Address
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |VIOADDR   |Violation Address
+ * |        |          |Indicate the target address of the access, which invokes the security violation.
+ * @var SCU_T::APB4PVA
+ * Offset: 0x1B0  APB4 Violation Address
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |VIOADDR   |Violation Address
+ * |        |          |Indicate the target address of the access, which invokes the security violation.
+ * @var SCU_T::APB5PVA
+ * Offset: 0x1B4  APB5 Violation Address
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |VIOADDR   |Violation Address
+ * |        |          |Indicate the target address of the access, which invokes the security violation.
  * @var SCU_T::D0PPC0PVA
- * Offset: 0x1B0  D0PPC0 Violation Address
+ * Offset: 0x1C0  D0PPC0 Violation Address
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
  * |[31:0]  |VIOADDR   |Violation Address
  * |        |          |Indicate the target address of the access, which invokes the security violation.
  * @var SCU_T::D1PPC0PVA
- * Offset: 0x1B4  D1PPC0 Violation Address
+ * Offset: 0x1C4  D1PPC0 Violation Address
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
  * |[31:0]  |VIOADDR   |Violation Address
  * |        |          |Indicate the target address of the access, which invokes the security violation.
  * @var SCU_T::D1PPC1PVA
- * Offset: 0x1B8  D1PPC1 Violation Address
+ * Offset: 0x1C8  D1PPC1 Violation Address
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
  * |[31:0]  |VIOADDR   |Violation Address
  * |        |          |Indicate the target address of the access, which invokes the security violation.
  * @var SCU_T::D2PPC0PVA
- * Offset: 0x1BC  D2PPC0 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::FMCPVA
- * Offset: 0x1D0  FMC Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::FLASHPVA
- * Offset: 0x1D4  FLASH Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::SCUPVA
- * Offset: 0x1D8  SCU Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::SYSPVA
- * Offset: 0x1DC  SYS Violation Address
+ * Offset: 0x1CC  D2PPC0 Violation Address
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -1780,13 +1651,6 @@ typedef struct
  * |        |          |Indicate the target address of the access, which invokes the security violation.
  * @var SCU_T::USBH0MVA
  * Offset: 0x22C  USBH0 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::USBH1MVA
- * Offset: 0x230  USBH1 Violation Address
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -1841,8 +1705,8 @@ typedef struct
  * | :----: | :----:   | :---- |
  * |[31:0]  |VIOADDR   |Violation Address
  * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::LPDMAMVA
- * Offset: 0x250  LPDMA Violation Address
+ * @var SCU_T::LPPDMAMVA
+ * Offset: 0x250  LPPDMA Violation Address
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -1855,15 +1719,29 @@ typedef struct
  * | :----: | :----:   | :---- |
  * |[31:0]  |VIOADDR   |Violation Address
  * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::NPU0MVA
- * Offset: 0x258  NPU Interface 0 Violation Address
+ * @var SCU_T::NPUIF1MVA
+ * Offset: 0x258  NPU Interface 1 Violation Address
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
  * |[31:0]  |VIOADDR   |Violation Address
  * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::NPU1MVA
- * Offset: 0x25C  NPU Interface 1 Violation Address
+ * @var SCU_T::NPUIF0MVA
+ * Offset: 0x25C  NPU Interface 0 Violation Address
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |VIOADDR   |Violation Address
+ * |        |          |Indicate the target address of the access, which invokes the security violation.
+ * @var SCU_T::SPIM0MVA
+ * Offset: 0x260  SPIM 0 Master Violation Address
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |VIOADDR   |Violation Address
+ * |        |          |Indicate the target address of the access, which invokes the security violation.
+ * @var SCU_T::SPIM1MVA
+ * Offset: 0x264  SPIM 1 Master Violation Address
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -1877,19 +1755,46 @@ typedef struct
  * |[3]     |NPU       |Set NPU to Non-privileged State
  * |        |          |0 = NPU is a privileged module (default).
  * |        |          |1 = NPU is a non-privileged module.
+ * |[8]     |SRAM0MPC  |Set SRAM0MPC to Non-privileged State
+ * |        |          |0 = SRAM0MPC is a privileged module (default).
+ * |        |          |1 = SRAM0MPC is a non-privileged module.
+ * |[9]     |SRAM1MPC  |Set SRAM1MPC to Non-privileged State
+ * |        |          |0 = SRAM1MPC is a privileged module (default).
+ * |        |          |1 = SRAM1MPC is a non-privileged module.
+ * |[10]    |SRAM2MPC  |Set SRAM2MPC to Non-privileged State
+ * |        |          |0 = SRAM2MPC is a privileged module (default).
+ * |        |          |1 = SRAM2MPC is a non-privileged module.
+ * |[11]    |SRAM3MPC  |Set SRAM3MPC to Non-privileged State
+ * |        |          |0 = SRAM3MPC is a privileged module (default).
+ * |        |          |1 = SRAM3MPC is a non-privileged module.
+ * |[13]    |SPIM0MPC  |Set SPIM0MPC to Non-privileged State
+ * |        |          |0 = SPIM0MPC is a privileged module (default).
+ * |        |          |1 = SPIM0MPC is a non-privileged module.
+ * |[14]    |SPIM1MPC  |Set SPIM1MPC to Non-privileged State
+ * |        |          |0 = SPIM1MPC is a privileged module (default).
+ * |        |          |1 = SPIM1MPC is a non-privileged module.
  * @var SCU_T::D0PNP2
  * Offset: 0x2A8  Domain 0 Peripheral Privilege Attribution Set Register2 (0x4004_0000~0x4005_FFFF)
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
+ * |[0]     |OTFC0     |Set OTFC0 to Non-privileged State
+ * |        |          |0 = OTFC0 is a privileged module (default).
+ * |        |          |1 = OTFC0 is a non-privileged module.
+ * |[1]     |OTFC1     |Set OTFC1 to Non-privileged State
+ * |        |          |0 = OTFC1 is a privileged module (default).
+ * |        |          |1 = OTFC1 is a non-privileged module.
  * |[2]     |SPIM0     |Set SPIM0 to Non-privileged State
  * |        |          |0 = SPIM0 is a privileged module (default).
  * |        |          |1 = SPIM0 is a non-privileged module.
  * |[3]     |SPIM1     |Set SPIM1 to Non-privileged State
  * |        |          |0 = SPIM1 is a privileged module (default).
  * |        |          |1 = SPIM1 is a non-privileged module.
+ * |[4]     |FMC       |Set FMC to Non-privileged State
+ * |        |          |0 = FMC is a privileged module (default).
+ * |        |          |1 = FMC is a non-privileged module.
  * @var SCU_T::D1PNP0
- * Offset: 0x2C8  Domain 1 Peripheral Privilege Attribution Set Register0 (0x4020_0000~0x4021_FFFF)
+ * Offset: 0x2C0  Domain 1 Peripheral Privilege Attribution Set Register0 (0x4020_0000~0x4021_FFFF)
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -1902,9 +1807,6 @@ typedef struct
  * |[2]     |USBH0     |Set USBH0 to Non-privileged State
  * |        |          |0 = USBH0 is a privileged module (default).
  * |        |          |1 = USBH0 is a non-privileged module.
- * |[3]     |USBH1     |Set USBH1 to Non-privileged State
- * |        |          |0 = USBH1 is a privileged module (default).
- * |        |          |1 = USBH1 is a non-privileged module.
  * |[4]     |HSUSBH    |Set HSUSBH to Non-privileged State
  * |        |          |0 = HSUSBH is a privileged module (default).
  * |        |          |1 = HSUSBH is a non-privileged module.
@@ -1923,64 +1825,40 @@ typedef struct
  * |[10]    |CRYPTO    |Set CRYPTO to Non-privileged State
  * |        |          |0 = CRYPTO is a privileged module (default).
  * |        |          |1 = CRYPTO is a non-privileged module.
- * |[13]    |CRC       |Set CRC to Non-privileged State
+ * |[11]    |CRC       |Set CRC to Non-privileged State
  * |        |          |0 = CRC is a privileged module (default).
  * |        |          |1 = CRC is a non-privileged module.
  * @var SCU_T::D1PNP1
- * Offset: 0x2EC  Domain0 Peripheral Privilege Attribution Set Register1 (0x4022_0000~0x4023_FFFF)
+ * Offset: 0x2C4  Domain0 Peripheral Privilege Attribution Set Register1 (0x4022_0000~0x4023_FFFF)
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
+ * |[0]     |KS        |Set KS to Non-privileged State
+ * |        |          |0 = KS is a privileged module (default).
+ * |        |          |1 = KS is a non-privileged module.
  * |[1]     |KDF       |Set KDF to Non-privileged State
  * |        |          |0 = KDF is a privileged module (default).
  * |        |          |1 = KDF is a non-privileged module.
  * |[2]     |CANFD0    |Set CANFD0 to Non-privileged State
  * |        |          |0 = CANFD0 is a privileged module (default).
  * |        |          |1 = CANFD0 is a non-privileged module.
- * |[3]     |CANFD1    |Set CANFD1 to Non-privileged State
+ * |[4]     |CANFD1    |Set CANFD1 to Non-privileged State
  * |        |          |0 = CANFD1 is a privileged module (default).
  * |        |          |1 = CANFD1 is a non-privileged module.
- * |[4]     |ETMC      |Set ETMC to Non-privileged State
+ * |[6]     |ETMC      |Set ETMC to Non-privileged State
  * |        |          |0 = ETMC is a privileged module (default).
  * |        |          |1 = ETMC is a non-privileged module.
- * |[5]     |SWDH      |Set SWDH to Non-privileged State
+ * |[7]     |SWDH      |Set SWDH to Non-privileged State
  * |        |          |0 = SWDH is a privileged module (default).
  * |        |          |1 = SWDH is a non-privileged module.
- * |[6]     |SWODEC    |Set SWODEC to Non-privileged State
+ * |[8]     |SWODEC    |Set SWODEC to Non-privileged State
  * |        |          |0 = SWODEC is a privileged module (default).
  * |        |          |1 = SWODEC is a non-privileged module.
- * |[7]     |GPIO      |Set GPIO to Non-privileged State
- * |        |          |0 = GPIO is a privileged module (default).
- * |        |          |1 = GPIO is a non-privileged module.
  * |[16]    |EBI       |Set EBI to Non-privileged State
  * |        |          |0 = EBI is a privileged module (default).
  * |        |          |1 = EBI is a non-privileged module.
- * @var SCU_T::BBE
- * Offset: 0x300  Block Bus Error Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |BBEEN     |Block Bus-error Enable Bit
- * |        |          |0 = Disable Blocking Bus Error to the core processor.
- * |        |          |1 = Enable Blocking Bus Error to the core processor.
- * |        |          |This bit is double write-protected, WVERY and SYS_REGLCTL register.
- * |[31:8]  |WVERY     |Write Verify Code
- * |        |          |In order to write BBEEN bit, the code should be set as 0x59475A.
- * |        |          |When read access, the return value of this field is always 0.
- * @var SCU_T::IDAUANS
- * Offset: 0x304  IDAU All Non-secure Set Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |IDAUANSEN |IDAU All Non-secure Enable Bit
- * |        |          |0 = Disable IDAU sets all region Non-secure.
- * |        |          |1 = Enable IDAU sets all region Non-secure.
- * |        |          |This bit is double write-protected, WVERY and SYS_REGLCTL register.
- * |[31:8]  |WVERY     |Write Verify Code
- * |        |          |In order to write BBEEN bit, the code should be set as 0x59475A.
- * |        |          |When read access, the return value of this field is always 0.
  * @var SCU_T::D1PNP2
- * Offset: 0x314  Domain 1 Peripheral Privilege Attribution Set Register2 (0x4024_0000~0x4025_FFFF)
+ * Offset: 0x2C8  Domain 1 Peripheral Privilege Attribution Set Register2 (0x4024_0000~0x4025_FFFF)
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -2056,25 +1934,23 @@ typedef struct
  * |[23]    |DAC01     |Set DAC01 to Non-privileged State
  * |        |          |0 = DAC01 is a privileged module (default).
  * |        |          |1 = DAC01 is a non-privileged module.
+ * |[24]    |TAMPER    |Set TAMPER to Non-privileged State
+ * |        |          |0 = TAMPER is a privileged module (default).
+ * |        |          |1 = TAMPER is a non-privileged module.
  * |[25]    |HSOTG     |Set HSOTG to Non-privileged State
  * |        |          |0 = HSOTG is a privileged module (default).
  * |        |          |1 = HSOTG is a non-privileged module.
- * |[26]    |I2S       |Set I2S to Non-privileged State
- * |        |          |0 = I2S is a privileged module (default).
- * |        |          |1 = I2S is a non-privileged module.
+ * |[26]    |I2S0      |Set I2S0 to Non-privileged State
+ * |        |          |0 = I2S0 is a privileged module (default).
+ * |        |          |1 = I2S0 is a non-privileged module.
  * |[27]    |ACMP01    |Set ACMP01 to Non-privileged State
  * |        |          |0 = ACMP01 is a privileged module (default).
  * |        |          |1 = ACMP01 is a non-privileged module.
  * |[28]    |USBD      |Set USBD to Non-privileged State
  * |        |          |0 = USBD is a privileged module (default).
  * |        |          |1 = USBD is a non-privileged module.
- * @var SCU_T::D1PNP3
- * Offset: 0x340  Domain 1 Peripheral Privilege Attribution Set Register3 (0x4026_0000~0x4027_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
  * @var SCU_T::D1PNP4
- * Offset: 0x370  Domain 1 Peripheral Privilege Attribution Set Register4 (0x4028_0000~0x4029_FFFF)
+ * Offset: 0x2D0  Domain 1 Peripheral Privilege Attribution Set Register4 (0x4028_0000~0x4029_FFFF)
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -2150,9 +2026,9 @@ typedef struct
  * |[23]    |RTC       |Set RTC to Non-privileged State
  * |        |          |0 = RTC is a privileged module (default).
  * |        |          |1 = RTC is a non-privileged module.
- * |[24]    |I2S       |Set I2S to Non-privileged State
- * |        |          |0 = I2S is a privileged module (default).
- * |        |          |1 = I2S is a non-privileged module.
+ * |[24]    |I2S1      |Set I2S1 to Non-privileged State
+ * |        |          |0 = I2S1 is a privileged module (default).
+ * |        |          |1 = I2S1 is a non-privileged module.
  * |[25]    |ACMP23    |Set ACMP23 to Non-privileged State
  * |        |          |0 = ACMP23 is a privileged module (default).
  * |        |          |1 = ACMP23 is a non-privileged module.
@@ -2162,6 +2038,58 @@ typedef struct
  * |[27]    |UTCPD     |Set UTCPD to Non-privileged State
  * |        |          |0 = UTCPD is a privileged module (default).
  * |        |          |1 = UTCPD is a non-privileged module.
+ * @var SCU_T::D2PNP0
+ * Offset: 0x2E0  Domain 2 Peripheral Privilege Attribution Set Register0 (0x4040_0000~0x4041_FFFF)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |LPPDMA    |Set LPPDMA to Non-privileged State
+ * |        |          |0 = LPPDMA is a privileged module (default).
+ * |        |          |1 = LPPDMA is a non-privileged module.
+ * |[1]     |CCAP      |Set CCAP to Non-privileged State
+ * |        |          |0 = CCAP is a privileged module (default).
+ * |        |          |1 = CCAP is a non-privileged module.
+ * |[3]     |LPGPIO    |Set LPGPIO to Non-privileged State
+ * |        |          |0 = LPGPIO is a privileged module (default).
+ * |        |          |1 = LPGPIO is a non-privileged module.
+ * @var SCU_T::D2PNP2
+ * Offset: 0x2E8  Domain 2 Peripheral Privilege Attribution Set Register2 (0x4044_0000~0x4045_FFFF)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |LPTMR01   |Set LPTMR01 to Non-privileged State
+ * |        |          |0 = LPTMR01 is a privileged module (default).
+ * |        |          |1 = LPTMR01 is a non-privileged module.
+ * |[1]     |TTMR01    |Set TTMR01 to Non-privileged State
+ * |        |          |0 = TTMR01 is a privileged module (default).
+ * |        |          |1 = TTMR01 is a non-privileged module.
+ * |[2]     |LPADC0    |Set LPADC0 to Non-privileged State
+ * |        |          |0 = LPADC0 is a privileged module (default).
+ * |        |          |1 = LPADC0 is a non-privileged module.
+ * |[3]     |LPI2C0    |Set LPI2C0 to Non-privileged State
+ * |        |          |0 = LPI2C0 is a privileged module (default).
+ * |        |          |1 = LPI2C0 is a non-privileged module.
+ * |[4]     |LPSPI0    |Set LPSPI0 to Non-privileged State
+ * |        |          |0 = LPSPI0 is a privileged module (default).
+ * |        |          |1 = LPSPI0 is a non-privileged module.
+ * |[5]     |DMIC0     |Set DMIC0 to Non-privileged State
+ * |        |          |0 = DMIC0 is a privileged module (default).
+ * |        |          |1 = DMIC0 is a non-privileged module.
+ * |[6]     |LPUART0   |Set LPUART0 to Non-privileged State
+ * |        |          |0 = LPUART0 is a privileged module (default).
+ * |        |          |1 = LPUART0 is a non-privileged module.
+ * |[7]     |WDT0      |Set WDT0 to Non-privileged State
+ * |        |          |0 = WDT0 is a privileged module (default).
+ * |        |          |1 = WDT0 is a non-privileged module.
+ * |[8]     |WDT1      |Set WDT1 to Non-privileged State
+ * |        |          |0 = WDT1 is a privileged module (default).
+ * |        |          |1 = WDT1 is a non-privileged module.
+ * |[9]     |AWF       |Set AWF to Non-privileged State
+ * |        |          |0 = AWF is a privileged module (default).
+ * |        |          |1 = AWF is a non-privileged module.
+ * |[16]    |LPSRAMMPC |Set LPSRAMMPC to Non-privileged State
+ * |        |          |0 = LPSRAMMPC is a privileged module (default).
+ * |        |          |1 = LPSRAMMPC is a non-privileged module.
  * @var SCU_T::IONP
  * Offset: 0x3A0  I/O Non-privileged Attribution Set Register
  * ---------------------------------------------------------------------------------------------------
@@ -2197,11 +2125,6 @@ typedef struct
  * |[9]     |PJ        |Set GPIO Port J to Non-privileged State
  * |        |          |0 = GPIO port J is privileged (default).
  * |        |          |1 = GPIO port J is non-privileged.
- * @var SCU_T::D1PNP5
- * Offset: 0x3A4  Domain 1 Peripheral Privilege Attribution Set Register5 (0x402A_0000~0x402B_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
  * @var SCU_T::SINFAEN
  * Offset: 0x3C0  Shared Information Access Enable Register
  * ---------------------------------------------------------------------------------------------------
@@ -2213,16 +2136,18 @@ typedef struct
  * |[1]     |SYSSIAEN  |SYS Shared Information Access Enable Bit
  * |        |          |0 = Non-secure CPU access SYS Shared information Disabled.
  * |        |          |1 = Non-secure CPU access SYS Shared information Enabled.
- * |        |          |Note: Include clock information.
  * |[2]     |FMCSIAEN  |FMC Shared Information Access Enable Bit
  * |        |          |0 = Non-secure CPU access FMC Shared information Disabled.
  * |        |          |1 = Non-secure CPU access FMC Shared information Enabled.
+ * |[3]     |CLKSIAEN  |CLKCTL Shared Information Access Enable Bit
+ * |        |          |0 = Non-secure CPU access CLKCTL Shared information Disabled.
+ * |        |          |1 = Non-secure CPU access CLKCTL Shared information Enabled.
  * @var SCU_T::SCWP
  * Offset: 0x3C4  Security Configuration Write Protection Register
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[1]     |LOCK      |Enable Write Protection Lock Bit (Write One Onlyce)
+ * |[1]     |LOCK      |Enable Write Protection Lock Bit (Write Once)
  * |        |          |0 = Write protection lock Disabled.
  * |        |          |1 = Write protection Enabled and locked.
  * |        |          |Note: This bit cannot be cleared to 0 without a System-level reset after set to one.
@@ -2232,11 +2157,6 @@ typedef struct
  * |        |          |Write operation:
  * |        |          |0x475A = The write verify code, 0x475A, is needed to do a valid write to SCU_SCWP.
  * |        |          |Others = Invalid write verify code.
- * @var SCU_T::D1PNP6
- * Offset: 0x3DC  Domain 1 Peripheral Privilege Attribution Set Register6 (0x402C_0000~0x402D_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
  * @var SCU_T::NSMCTL
  * Offset: 0x400  Non-secure State Monitor Control Register
  * ---------------------------------------------------------------------------------------------------
@@ -2251,8 +2171,6 @@ typedef struct
  * |[9]     |AUTORLD   |Auto Reload Non-secure State Monitor Counter When CURRNS Changing to 1
  * |        |          |0 = Disable clearing non-secure state monitor counter automatically (default).
  * |        |          |1 = Enable clearing non-secure state monitor counter automatically when the core processor changes from secure state to non-secure state
- * |        |          |(i.e
- * |        |          |when CURRNS changed from 0 to 1).
  * |[10]    |TMRMOD    |Non-secure Monitor Mode Enable Bit
  * |        |          |0 = Monitor mode. The counter will count down when the core processor is in non-secure state. (default)
  * |        |          |1 = Free-counting mode
@@ -2294,105 +2212,214 @@ typedef struct
  * |        |          |0 = Counter does not count down to 0 since the last NSMIF has been cleared.
  * |        |          |1 = Counter counts down to 0.
  * |        |          |Note: This bit is cleared by writing 1.
- * @var SCU_T::D1PNP7
- * Offset: 0x418  Domain 1 Peripheral Privilege Attribution Set Register7 (0x402E_0000~0x402F_FFFF)
+ * @var SCU_T::SRAM0MPCLUT0
+ * Offset: 0x410  Security Attribute of memory blocks controlled by SRAM0MPC LUT0
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * @var SCU_T::D2PNP0
- * Offset: 0x458  Domain 2 Peripheral Privilege Attribution Set Register0 (0x4040_0000~0x4041_FFFF)
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SRAM1MPCLUT0
+ * Offset: 0x414  Security Attribute of memory blocks controlled by SRAM1MPC LUT0
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[0]     |LPDMA     |Set LPDMA to Non-privileged State
- * |        |          |0 = LPDMA is a privileged module (default).
- * |        |          |1 = LPDMA is a non-privileged module.
- * |[1]     |CCAP      |Set CCAP to Non-privileged State
- * |        |          |0 = CCAP is a privileged module (default).
- * |        |          |1 = CCAP is a non-privileged module.
- * |[3]     |LPGPIO    |Set LPGPIO to Non-privileged State
- * |        |          |0 = LPGPIO is a privileged module (default).
- * |        |          |1 = LPGPIO is a non-privileged module.
- * @var SCU_T::D2PNP1
- * Offset: 0x49C  Domain0 Peripheral Privilege Attribution Set Register1 (0x4042_0000~0x4043_FFFF)
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SRAM2MPCLUT0
+ * Offset: 0x418  Security Attribute of memory blocks controlled by SRAM2MPC LUT0
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * @var SCU_T::D2PNP2
- * Offset: 0x4E4  Domain 2 Peripheral Privilege Attribution Set Register2 (0x4044_0000~0x4045_FFFF)
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SRAM3MPCLUT0
+ * Offset: 0x420  Security Attribute of memory blocks controlled by SRAM3MPC LUT0
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[0]     |LPTMR01   |Set LPTMR01 to Non-privileged State
- * |        |          |0 = LPTMR01 is a privileged module (default).
- * |        |          |1 = LPTMR01 is a non-privileged module.
- * |[1]     |TTMR01    |Set TTMR01 to Non-privileged State
- * |        |          |0 = TTMR01 is a privileged module (default).
- * |        |          |1 = TTMR01 is a non-privileged module.
- * |[2]     |LPADC0    |Set LPADC0 to Non-privileged State
- * |        |          |0 = LPADC0 is a privileged module (default).
- * |        |          |1 = LPADC0 is a non-privileged module.
- * |[3]     |LPI2C0    |Set LPI2C0 to Non-privileged State
- * |        |          |0 = LPI2C0 is a privileged module (default).
- * |        |          |1 = LPI2C0 is a non-privileged module.
- * |[4]     |LPSPI0    |Set LPSPI0 to Non-privileged State
- * |        |          |0 = LPSPI0 is a privileged module (default).
- * |        |          |1 = LPSPI0 is a non-privileged module.
- * |[5]     |DMIC0     |Set DMIC0 to Non-privileged State
- * |        |          |0 = DMIC0 is a privileged module (default).
- * |        |          |1 = DMIC0 is a non-privileged module.
- * |[6]     |LPUART0   |Set LPUART0 to Non-privileged State
- * |        |          |0 = LPUART0 is a privileged module (default).
- * |        |          |1 = LPUART0 is a non-privileged module.
- * |[7]     |WDT0      |Set WDT0 to Non-privileged State
- * |        |          |0 = WDT0 is a privileged module (default).
- * |        |          |1 = WDT0 is a non-privileged module.
- * |[8]     |WDT1      |Set WDT1 to Non-privileged State
- * |        |          |0 = WDT1 is a privileged module (default).
- * |        |          |1 = WDT1 is a non-privileged module.
- * |[9]     |AWF       |Set AWF to Non-privileged State
- * |        |          |0 = AWF is a privileged module (default).
- * |        |          |1 = AWF is a non-privileged module.
- * @var SCU_T::D2PNP3
- * Offset: 0x530  Domain 2 Peripheral Privilege Attribution Set Register3 (0x4046_0000~0x4047_FFFF)
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::LPSRAMMPCLUT0
+ * Offset: 0x424  Security Attribute of memory blocks controlled by LPSRAMMPC LUT0
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * @var SCU_T::D2PNP4
- * Offset: 0x580  Domain 2 Peripheral Privilege Attribution Set Register4 (0x4048_0000~0x4049_FFFF)
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM0MPCLUT0
+ * Offset: 0x430  Security Attribute of memory blocks controlled by SPIM0MPC LUT0
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * @var SCU_T::D2PNP5
- * Offset: 0x5D4  Domain 2 Peripheral Privilege Attribution Set Register5 (0x404A_0000~0x404B_FFFF)
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM0MPCLUT1
+ * Offset: 0x434  Security Attribute of memory blocks controlled by SPIM0MPC LUT1
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * @var SCU_T::VERSION
- * Offset: 0xFFC  SCU RTL Design Version Register
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM0MPCLUT2
+ * Offset: 0x438  Security Attribute of memory blocks controlled by SPIM0MPC LUT2
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[15:0]  |MINOR     |SCU RTL Design Minor Version
- * |        |          |Minor version number is dependent on ECO version control.
- * |[23:16] |SUB       |SCU RTL Design Sub Version Number
- * |        |          |Sub version number is correlated to product line.
- * |[31:24] |MAJOR     |SCU RTL Design Major Version Number
- * |        |          |Major version number is correlated to product line.
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM0MPCLUT3
+ * Offset: 0x43C  Security Attribute of memory blocks controlled by SPIM0MPC LUT3
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM0MPCLUT4
+ * Offset: 0x440  Security Attribute of memory blocks controlled by SPIM0MPC LUT4
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM0MPCLUT5
+ * Offset: 0x444  Security Attribute of memory blocks controlled by SPIM0MPC LUT5
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM0MPCLUT6
+ * Offset: 0x448  Security Attribute of memory blocks controlled by SPIM0MPC LUT6
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM0MPCLUT7
+ * Offset: 0x44C  Security Attribute of memory blocks controlled by SPIM0MPC LUT7
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM1MPCLUT0
+ * Offset: 0x450  Security Attribute of memory blocks controlled by SPIM1MPC LUT0
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM1MPCLUT1
+ * Offset: 0x454  Security Attribute of memory blocks controlled by SPIM1MPC LUT1
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM1MPCLUT2
+ * Offset: 0x458  Security Attribute of memory blocks controlled by SPIM1MPC LUT2
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM1MPCLUT3
+ * Offset: 0x45C  Security Attribute of memory blocks controlled by SPIM1MPC LUT3
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM1MPCLUT4
+ * Offset: 0x460  Security Attribute of memory blocks controlled by SPIM1MPC LUT4
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM1MPCLUT5
+ * Offset: 0x464  Security Attribute of memory blocks controlled by SPIM1MPC LUT5
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM1MPCLUT6
+ * Offset: 0x468  Security Attribute of memory blocks controlled by SPIM1MPC LUT6
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+ * @var SCU_T::SPIM1MPCLUT7
+ * Offset: 0x46C  Security Attribute of memory blocks controlled by SPIM1MPC LUT7
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+ * |        |          |Each bit controls the Security state of a single block. When:
+ * |        |          |l Bit[n] = 0, the block is in the Secure state.
+ * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
  */
-    __IO uint32_t D0PNS0;                /*!< [0x0000] Domain 0 Peripheral Non-secure Attribution Set Register0 (0x4000_0000~0x4001_FFFF) */
-    __I  uint32_t RESERVE0[1];
-    __IO uint32_t D0PNS2;                /*!< [0x0008] Domain 0 Peripheral Non-secure Attribution Set Register2 (0x4004_0000~0x4005_FFFF) */
-    __I  uint32_t RESERVE1[5];
-    __IO uint32_t D1PNS0;                /*!< [0x0020] Domain 1 Peripheral Non-secure Attribution Set Register0 (0x4020_0000~0x4021_FFFF) */
-    __IO uint32_t D1PNS1;                /*!< [0x0024] Domain0 Peripheral Non-secure Attribution Set Register1 (0x4022_0000~0x4023_FFFF) */
-    __IO uint32_t D1PNS2;                /*!< [0x0028] Domain 1 Peripheral Non-secure Attribution Set Register2 (0x4024_0000~0x4025_FFFF) */
-    __I  uint32_t RESERVE2[1];
-    __IO uint32_t D1PNS4;                /*!< [0x0030] Domain 1 Peripheral Non-secure Attribution Set Register4 (0x4028_0000~0x4029_FFFF) */
-    __I  uint32_t RESERVE3[3];
-    __IO uint32_t D2PNS0;                /*!< [0x0040] Domain 2 Peripheral Non-secure Attribution Set Register0 (0x4040_0000~0x4041_FFFF) */
-    __I  uint32_t RESERVE4[1];
-    __IO uint32_t D2PNS2;                /*!< [0x0048] Domain 2 Peripheral Non-secure Attribution Set Register2 (0x4044_0000~0x4045_FFFF) */
+    union {
+        __IO uint32_t DxPNSy[19];                /*!< [0x0000-0x0048] Peripheral Non-secure Attribution Set Register                              */
+        struct {
+            __IO uint32_t D0PNS0;                /*!< [0x0000] Domain 0 Peripheral Non-secure Attribution Set Register0 (0x4000_0000~0x4001_FFFF) */
+            __I  uint32_t RESERVE0[1];
+            __IO uint32_t D0PNS2;                /*!< [0x0008] Domain 0 Peripheral Non-secure Attribution Set Register2 (0x4004_0000~0x4005_FFFF) */
+            __I  uint32_t RESERVE1[5];
+            __IO uint32_t D1PNS0;                /*!< [0x0020] Domain 1 Peripheral Non-secure Attribution Set Register0 (0x4020_0000~0x4021_FFFF) */
+            __IO uint32_t D1PNS1;                /*!< [0x0024] Domain0 Peripheral Non-secure Attribution Set Register1 (0x4022_0000~0x4023_FFFF) */
+            __IO uint32_t D1PNS2;                /*!< [0x0028] Domain 1 Peripheral Non-secure Attribution Set Register2 (0x4024_0000~0x4025_FFFF) */
+            __I  uint32_t RESERVE2[1];
+            __IO uint32_t D1PNS4;                /*!< [0x0030] Domain 1 Peripheral Non-secure Attribution Set Register4 (0x4028_0000~0x4029_FFFF) */
+            __I  uint32_t RESERVE3[3];
+            __IO uint32_t D2PNS0;                /*!< [0x0040] Domain 2 Peripheral Non-secure Attribution Set Register0 (0x4040_0000~0x4041_FFFF) */
+            __I  uint32_t RESERVE4[1];
+            __IO uint32_t D2PNS2;                /*!< [0x0048] Domain 2 Peripheral Non-secure Attribution Set Register2 (0x4044_0000~0x4045_FFFF) */
+        };
+    };
     __I  uint32_t RESERVE5[5];
     __I  uint32_t FNSADDR;               /*!< [0x0060] Flash Non-secure Boundary Address Register                       */
     __IO uint32_t EINTNS;                /*!< [0x0064] EINT Non-secure Attribution Set Register                         */
@@ -2406,102 +2433,105 @@ typedef struct
     __IO uint32_t SVINTSTS1;             /*!< [0x0114] Security Violation Interrupt Status Register - Master peripherals (MSC) */
     __I  uint32_t SVINTSTS2;             /*!< [0x0118] Security Violation Interrupt Status Register - Memory peripherals (MPC) */
     __I  uint32_t RESERVE9[1];
-#if 1
-    __I  uint32_t PVSRC[32];             /*!< [0x0120] Security Policy Violation Source                                 */
-#else
-    __I  uint32_t APB0PVSRC;             /*!< [0x0120] APB0 Security Policy Violation Source                            */
-    __I  uint32_t APB1PVSRC;             /*!< [0x0124] APB1 Security Policy Violation Source                            */
-    __I  uint32_t APB2PVSRC;             /*!< [0x0128] APB2 Security Policy Violation Source                            */
-    __I  uint32_t APB3PVSRC;             /*!< [0x012c] APB3 Security Policy Violation Source                            */
-    __I  uint32_t APB4PVSRC;             /*!< [0x0130] APB4 Security Policy Violation Source                            */
-    __I  uint32_t APB5PVSRC;             /*!< [0x0134] APB5 Security Policy Violation Source                            */
-    __I  uint32_t RESERVE10[2];
-    __I  uint32_t D0PPC0PVSRC;           /*!< [0x0140] D0PPC0 Security Policy Violation Source                          */
-    __I  uint32_t D1PPC0PVSRC;           /*!< [0x0144] D1PPC0 Security Policy Violation Source                          */
-    __I  uint32_t D1PPC1PVSRC;           /*!< [0x0148] D1PPC1 Security Policy Violation Source                          */
-    __I  uint32_t D2PPC0PVSRC;           /*!< [0x014c] D2PPC0 Security Policy Violation Source                          */
-    __I  uint32_t RESERVE11[4];
-    __I  uint32_t EBIPVSRC;              /*!< [0x0160] EBI Security Policy Violation Source                             */
+    union {
+        __I  uint32_t PVSRC[17];                 /*!< [0x0120-0x0160] Security Policy Violation Source                          */
+        struct {
+            __I  uint32_t APB0PVSRC;             /*!< [0x0120] APB0 Security Policy Violation Source                            */
+            __I  uint32_t APB1PVSRC;             /*!< [0x0124] APB1 Security Policy Violation Source                            */
+            __I  uint32_t APB2PVSRC;             /*!< [0x0128] APB2 Security Policy Violation Source                            */
+            __I  uint32_t APB3PVSRC;             /*!< [0x012c] APB3 Security Policy Violation Source                            */
+            __I  uint32_t APB4PVSRC;             /*!< [0x0130] APB4 Security Policy Violation Source                            */
+            __I  uint32_t APB5PVSRC;             /*!< [0x0134] APB5 Security Policy Violation Source                            */
+            __I  uint32_t RESERVE10[2];
+            __I  uint32_t D0PPC0PVSRC;           /*!< [0x0140] D0PPC0 Security Policy Violation Source                          */
+            __I  uint32_t D1PPC0PVSRC;           /*!< [0x0144] D1PPC0 Security Policy Violation Source                          */
+            __I  uint32_t D1PPC1PVSRC;           /*!< [0x0148] D1PPC1 Security Policy Violation Source                          */
+            __I  uint32_t D2PPC0PVSRC;           /*!< [0x014c] D2PPC0 Security Policy Violation Source                          */
+            __I  uint32_t RESERVE11[4];
+            __I  uint32_t EBIPVSRC;              /*!< [0x0160] EBI Security Policy Violation Source                             */
+        };
+    };
     __I  uint32_t RESERVE12[15];
-#endif
-
-#if 1
-    __I  uint32_t PVA[32];               /*!< [0x01a0] Violation Address                                               */
-#else
-    __I  uint32_t APB0PVA;               /*!< [0x01a0] APB0 Violation Address                                           */
-    __I  uint32_t APB1PVA;               /*!< [0x01a4] APB1 Violation Address                                           */
-    __I  uint32_t APB2PVA;               /*!< [0x01a8] APB2 Violation Address                                           */
-    __I  uint32_t APB3PVA;               /*!< [0x01ac] APB3 Violation Address                                           */
-    __I  uint32_t APB4PVA;               /*!< [0x01b0] APB4 Violation Address                                           */
-    __I  uint32_t APB5PVA;               /*!< [0x01b4] APB5 Violation Address                                           */
-    __I  uint32_t RESERVE13[2];
-    __I  uint32_t D0PPC0PVA;             /*!< [0x01c0] D0PPC0 Violation Address                                         */
-    __I  uint32_t D1PPC0PVA;             /*!< [0x01c4] D1PPC0 Violation Address                                         */
-    __I  uint32_t D1PPC1PVA;             /*!< [0x01c8] D1PPC1 Violation Address                                         */
-    __I  uint32_t D2PPC0PVA;             /*!< [0x01cc] D2PPC0 Violation Address                                         */
-    __I  uint32_t RESERVE14[4];
-    __I  uint32_t EBIPVA;                /*!< [0x01e0] EBI Violation Address                                            */
+    union {
+        __I  uint32_t PVA[17];                   /*!< [0x01a0-0x01e0] Violation Address                                         */
+        struct {
+            __I  uint32_t APB0PVA;               /*!< [0x01a0] APB0 Violation Address                                           */
+            __I  uint32_t APB1PVA;               /*!< [0x01a4] APB1 Violation Address                                           */
+            __I  uint32_t APB2PVA;               /*!< [0x01a8] APB2 Violation Address                                           */
+            __I  uint32_t APB3PVA;               /*!< [0x01ac] APB3 Violation Address                                           */
+            __I  uint32_t APB4PVA;               /*!< [0x01b0] APB4 Violation Address                                           */
+            __I  uint32_t APB5PVA;               /*!< [0x01b4] APB5 Violation Address                                           */
+            __I  uint32_t RESERVE13[2];
+            __I  uint32_t D0PPC0PVA;             /*!< [0x01c0] D0PPC0 Violation Address                                         */
+            __I  uint32_t D1PPC0PVA;             /*!< [0x01c4] D1PPC0 Violation Address                                         */
+            __I  uint32_t D1PPC1PVA;             /*!< [0x01c8] D1PPC1 Violation Address                                         */
+            __I  uint32_t D2PPC0PVA;             /*!< [0x01cc] D2PPC0 Violation Address                                         */
+            __I  uint32_t RESERVE14[4];
+            __I  uint32_t EBIPVA;                /*!< [0x01e0] EBI Violation Address                                            */
+        };
+    };
     __I  uint32_t RESERVE15[15];
-#endif
-
-#if 1
-    __I  uint32_t MVA[32];               /*!< [0x0220] GDMA Violation Address                                           */
-#else
-    __I  uint32_t GDMAMVA;               /*!< [0x0220] GDMA Violation Address                                           */
-    __I  uint32_t PDMA0MVA;              /*!< [0x0224] PDMA Violation Address                                           */
-    __I  uint32_t PDMA1MVA;              /*!< [0x0228] PDMA1 Violation Address                                          */
-    __I  uint32_t USBH0MVA;              /*!< [0x022c] USBH0 Violation Address                                          */
-    __I  uint32_t USBH1MVA;              /*!< [0x0230] USBH1 Violation Address                                          */
-    __I  uint32_t HSUSBHMVA;             /*!< [0x0234] HSUSBH Violation Address                                         */
-    __I  uint32_t HSUSBDMVA;             /*!< [0x0238] HSUSBD Violation Address                                         */
-    __I  uint32_t SDH0MVA;               /*!< [0x023c] SDH Violation Address                                            */
-    __I  uint32_t SDH1MVA;               /*!< [0x0240] SDH1 Violation Address                                           */
-    __I  uint32_t EMACMVA;               /*!< [0x0244] EMAC Violation Address                                           */
-    __I  uint32_t CRYPTOMVA;             /*!< [0x0248] CRYPTO Violation Address                                         */
-    __I  uint32_t CRCMVA;                /*!< [0x024c] CRC Violation Address                                            */
-    __I  uint32_t LPPDMAMVA;             /*!< [0x0250] LPPDMA Violation Address                                         */
-    __I  uint32_t CCAPMVA;               /*!< [0x0254] CCAP Violation Address                                           */
-    __I  uint32_t NPU0MVA;               /*!< [0x0258] NPU Interface 0 Violation Address                                */
-    __I  uint32_t NPU1MVA;               /*!< [0x025c] NPU Interface 1 Violation Address                                */
-    __I  uint32_t SPIM0MVA;              /*!< [0x0260] SPIM 0 Master Violation Address                                  */
-    __I  uint32_t SPIM1MVA;              /*!< [0x0264] SPIM 1 Master Violation Address                                  */
-    __I  uint32_t RESERVE16[14];
-#endif
-    __IO uint32_t D0PNP0;                /*!< [0x02a0] Domain 0 Peripheral Privilege Attribution Set Register0 (0x4000_0000~0x4001_FFFF) */
-    __I  uint32_t RESERVE17[1];
-    __IO uint32_t D0PNP2;                /*!< [0x02a8] Domain 0 Peripheral Privilege Attribution Set Register2 (0x4004_0000~0x4005_FFFF) */
-    __I  uint32_t RESERVE18[5];
-    __IO uint32_t D1PNP0;                /*!< [0x02c0] Domain 1 Peripheral Privilege Attribution Set Register0 (0x4020_0000~0x4021_FFFF) */
-    __IO uint32_t D1PNP1;                /*!< [0x02c4] Domain 1 Peripheral Privilege Attribution Set Register1 (0x4022_0000~0x4023_FFFF) */
-    __IO uint32_t D1PNP2;                /*!< [0x02c8] Domain 1 Peripheral Privilege Attribution Set Register2 (0x4024_0000~0x4025_FFFF) */
-    __I  uint32_t RESERVE19;
-    __IO uint32_t D1PNP4;                /*!< [0x02d0] Domain 1 Peripheral Privilege Attribution Set Register4 (0x4028_0000~0x4029_FFFF) */
-    __I  uint32_t RESERVE20[3];
-    __IO uint32_t D2PNP0;                /*!< [0x02e0] Domain 2 Peripheral Privilege Attribution Set Register0 (0x4040_0000~0x4041_FFFF) */
-    __I  uint32_t RESERVE21;
-    __IO uint32_t D2PNP2;                /*!< [0x02e8] Domain 2 Peripheral Privilege Attribution Set Register2 (0x4044_0000~0x4045_FFFF) */
-    __I  uint32_t RESERVE22[45];
+    union {
+        __I  uint32_t MVA[18];                   /*!< [0x0220-0x0264] Master Violation Address                                  */
+        struct {
+            __I  uint32_t GDMAMVA;               /*!< [0x0220] GDMA Violation Address                                           */
+            __I  uint32_t PDMA0MVA;              /*!< [0x0224] PDMA Violation Address                                           */
+            __I  uint32_t PDMA1MVA;              /*!< [0x0228] PDMA1 Violation Address                                          */
+            __I  uint32_t USBH0MVA;              /*!< [0x022c] USBH0 Violation Address                                          */
+            __I  uint32_t RESERVE16[1];
+            __I  uint32_t HSUSBHMVA;             /*!< [0x0234] HSUSBH Violation Address                                         */
+            __I  uint32_t HSUSBDMVA;             /*!< [0x0238] HSUSBD Violation Address                                         */
+            __I  uint32_t SDH0MVA;               /*!< [0x023c] SDH Violation Address                                            */
+            __I  uint32_t SDH1MVA;               /*!< [0x0240] SDH1 Violation Address                                           */
+            __I  uint32_t EMACMVA;               /*!< [0x0244] EMAC Violation Address                                           */
+            __I  uint32_t CRYPTOMVA;             /*!< [0x0248] CRYPTO Violation Address                                         */
+            __I  uint32_t CRCMVA;                /*!< [0x024c] CRC Violation Address                                            */
+            __I  uint32_t LPPDMAMVA;             /*!< [0x0250] LPPDMA Violation Address                                         */
+            __I  uint32_t CCAPMVA;               /*!< [0x0254] CCAP Violation Address                                           */
+            __I  uint32_t NPUIF1MVA;             /*!< [0x0258] NPU Interface 1 Violation Address                                */
+            __I  uint32_t NPUIF0MVA;             /*!< [0x025c] NPU Interface 0 Violation Address                                */
+            __I  uint32_t SPIM0MVA;              /*!< [0x0260] SPIM 0 Master Violation Address                                  */
+            __I  uint32_t SPIM1MVA;              /*!< [0x0264] SPIM 1 Master Violation Address                                  */
+        };
+    };
+    __I  uint32_t RESERVE17[14];
+    union {
+        __IO uint32_t DxPNPy[19];                /*!< [0x02a0-0x02e8] Peripheral Privilege Attribution Set Registers                             */
+        struct {
+            __IO uint32_t D0PNP0;                /*!< [0x02a0] Domain 0 Peripheral Privilege Attribution Set Register0 (0x4000_0000~0x4001_FFFF) */
+            __I  uint32_t RESERVE18[1];
+            __IO uint32_t D0PNP2;                /*!< [0x02a8] Domain 0 Peripheral Privilege Attribution Set Register2 (0x4004_0000~0x4005_FFFF) */
+            __I  uint32_t RESERVE19[5];
+            __IO uint32_t D1PNP0;                /*!< [0x02c0] Domain 1 Peripheral Privilege Attribution Set Register0 (0x4020_0000~0x4021_FFFF) */
+            __IO uint32_t D1PNP1;                /*!< [0x02c4] Domain0 Peripheral Privilege Attribution Set Register1 (0x4022_0000~0x4023_FFFF) */
+            __IO uint32_t D1PNP2;                /*!< [0x02c8] Domain 1 Peripheral Privilege Attribution Set Register2 (0x4024_0000~0x4025_FFFF) */
+            __I  uint32_t RESERVE20[1];
+            __IO uint32_t D1PNP4;                /*!< [0x02d0] Domain 1 Peripheral Privilege Attribution Set Register4 (0x4028_0000~0x4029_FFFF) */
+            __I  uint32_t RESERVE21[3];
+            __IO uint32_t D2PNP0;                /*!< [0x02e0] Domain 2 Peripheral Privilege Attribution Set Register0 (0x4040_0000~0x4041_FFFF) */
+            __I  uint32_t RESERVE22[1];
+            __IO uint32_t D2PNP2;                /*!< [0x02e8] Domain 2 Peripheral Privilege Attribution Set Register2 (0x4044_0000~0x4045_FFFF) */
+        };
+    };
+    __I  uint32_t RESERVE23[45];
     __IO uint32_t IONP;                  /*!< [0x03a0] I/O Non-privileged Attribution Set Register                      */
-    __I  uint32_t RESERVE23[7];
+    __I  uint32_t RESERVE24[7];
     __IO uint32_t SINFAEN;               /*!< [0x03c0] Shared Information Access Enable Register                        */
     __IO uint32_t SCWP;                  /*!< [0x03c4] Security Configuration Write Protection Register                 */
-    __I  uint32_t RESERVE24[13];
-    __IO uint32_t IDAUANS;
+    __I  uint32_t RESERVE25[14];
     __IO uint32_t NSMCTL;                /*!< [0x0400] Non-secure State Monitor Control Register                        */
     __IO uint32_t NSMLOAD;               /*!< [0x0404] Non-secure State Monitor Reload Value Register                   */
     __IO uint32_t NSMVAL;                /*!< [0x0408] Non-secure State Monitor Counter Value Register                  */
     __IO uint32_t NSMSTS;                /*!< [0x040c] Non-secure State Monitor Status Register                         */
-    __IO uint32_t SRAM0MPCLUT0;          /*!< [0x0410] Security Attribute of memory blocks controlled by MPC30 LUT0     */
-    __IO uint32_t SRAM1MPCLUT0;          /*!< [0x0414] Security Attribute of memory blocks controlled by MPC31 LUT0     */
-    __IO uint32_t SRAM2MPCLUT0;          /*!< [0x0418] Security Attribute of memory blocks controlled by MPC32 LUT0     */
-    __I  uint32_t RESERVE25;
-    __IO uint32_t SRAM3MPCLUT0;          /*!< [0x0420] Security Attribute of memory blocks controlled by MPC20 LUT0     */
-    __IO uint32_t LPSRAMMPCLUT0;         /*!< [0x0424] Security Attribute of memory blocks controlled by MPC21 LUT0     */
-    __I  uint32_t RESERVE26[2];
-    __IO uint32_t SPIM0MPCLUT[8];        /*!< [0x0430] Security Attribute of memory blocks controlled by MPC22 LUT0     */
-    __IO uint32_t SPIM1MPCLUT[8];        /*!< [0x0450] Security Attribute of memory blocks controlled by MPC23 LUT0     */
-    __I  uint32_t RESERVE35[739];
-    __I  uint32_t VERSION;               /*!< [0x0ffc] SCU RTL Design Version Register                                  */
+    __I  uint32_t SRAM0MPCLUT0;          /*!< [0x0410] Security Attribute of memory blocks controlled by SRAM0MPC LUT0  */
+    __I  uint32_t SRAM1MPCLUT0;          /*!< [0x0414] Security Attribute of memory blocks controlled by SRAM1MPC LUT0  */
+    __I  uint32_t SRAM2MPCLUT0;          /*!< [0x0418] Security Attribute of memory blocks controlled by SRAM2MPC LUT0  */
+    __I  uint32_t RESERVE26[1];
+    __I  uint32_t SRAM3MPCLUT0;          /*!< [0x0420] Security Attribute of memory blocks controlled by SRAM3MPC LUT0  */
+    __I  uint32_t LPSRAMMPCLUT0;         /*!< [0x0424] Security Attribute of memory blocks controlled by LPSRAMMPC LUT0 */
+    __I  uint32_t RESERVE27[2];
+    __I  uint32_t SPIM0MPCLUT[8];        /*!< [0x0430-0x044c] Security Attribute of memory blocks controlled by SPIM0MPC LUT0-7  */
+    __I  uint32_t SPIM1MPCLUT[8];        /*!< [0x0450-0x046c] Security Attribute of memory blocks controlled by SPIM1MPC LUT0-7  */
 } SCU_T;
 
 /**
@@ -2528,9 +2558,6 @@ typedef struct
 #define SCU_D1PNS0_USBH0_Pos             (2)                                               /*!< SCU_T::D1PNS0: USBH0 Position          */
 #define SCU_D1PNS0_USBH0_Msk             (0x1ul << SCU_D1PNS0_USBH0_Pos)                   /*!< SCU_T::D1PNS0: USBH0 Mask              */
 
-#define SCU_D1PNS0_USBH1_Pos             (3)                                               /*!< SCU_T::D1PNS0: USBH1 Position          */
-#define SCU_D1PNS0_USBH1_Msk             (0x1ul << SCU_D1PNS0_USBH1_Pos)                   /*!< SCU_T::D1PNS0: USBH1 Mask              */
-
 #define SCU_D1PNS0_HSUSBH_Pos            (4)                                               /*!< SCU_T::D1PNS0: HSUSBH Position         */
 #define SCU_D1PNS0_HSUSBH_Msk            (0x1ul << SCU_D1PNS0_HSUSBH_Pos)                  /*!< SCU_T::D1PNS0: HSUSBH Mask             */
 
@@ -2549,7 +2576,7 @@ typedef struct
 #define SCU_D1PNS0_CRYPTO_Pos            (10)                                              /*!< SCU_T::D1PNS0: CRYPTO Position         */
 #define SCU_D1PNS0_CRYPTO_Msk            (0x1ul << SCU_D1PNS0_CRYPTO_Pos)                  /*!< SCU_T::D1PNS0: CRYPTO Mask             */
 
-#define SCU_D1PNS0_CRC_Pos               (13)                                              /*!< SCU_T::D1PNS0: CRC Position            */
+#define SCU_D1PNS0_CRC_Pos               (11)                                              /*!< SCU_T::D1PNS0: CRC Position            */
 #define SCU_D1PNS0_CRC_Msk               (0x1ul << SCU_D1PNS0_CRC_Pos)                     /*!< SCU_T::D1PNS0: CRC Mask                */
 
 #define SCU_D1PNS1_KDF_Pos               (1)                                               /*!< SCU_T::D1PNS1: KDF Position            */
@@ -2742,7 +2769,7 @@ typedef struct
 #define SCU_D1PNS4_UTCPD_Msk             (0x1ul << SCU_D1PNS4_UTCPD_Pos)                   /*!< SCU_T::D1PNS4: UTCPD Mask              */
 
 #define SCU_D2PNS0_LPPDMA_Pos            (0)                                               /*!< SCU_T::D2PNS0: LPPDMA Position         */
-#define SCU_D2PNS0_LPPDMA_Msk            (0x1ul << SCU_D2PNS0_LPPDMA_Pos)                   /*!< SCU_T::D2PNS0: LPPDMA Mask             */
+#define SCU_D2PNS0_LPPDMA_Msk            (0x1ul << SCU_D2PNS0_LPPDMA_Pos)                  /*!< SCU_T::D2PNS0: LPPDMA Mask             */
 
 #define SCU_D2PNS0_CCAP_Pos              (1)                                               /*!< SCU_T::D2PNS0: CCAP Position           */
 #define SCU_D2PNS0_CCAP_Msk              (0x1ul << SCU_D2PNS0_CCAP_Pos)                    /*!< SCU_T::D2PNS0: CCAP Mask               */
@@ -2770,12 +2797,6 @@ typedef struct
 
 #define SCU_D2PNS2_LPUART0_Pos           (6)                                               /*!< SCU_T::D2PNS2: LPUART0 Position        */
 #define SCU_D2PNS2_LPUART0_Msk           (0x1ul << SCU_D2PNS2_LPUART0_Pos)                 /*!< SCU_T::D2PNS2: LPUART0 Mask            */
-
-#define SCU_D2PNS2_WDT0_Pos              (7)                                               /*!< SCU_T::D2PNS2: WDT0 Position           */
-#define SCU_D2PNS2_WDT0_Msk              (0x1ul << SCU_D2PNS2_WDT0_Pos)                    /*!< SCU_T::D2PNS2: WDT0 Mask               */
-
-#define SCU_D2PNS2_WDT1_Pos              (8)                                               /*!< SCU_T::D2PNS2: WDT1 Position           */
-#define SCU_D2PNS2_WDT1_Msk              (0x1ul << SCU_D2PNS2_WDT1_Pos)                    /*!< SCU_T::D2PNS2: WDT1 Mask               */
 
 #define SCU_D2PNS2_AWF_Pos               (9)                                               /*!< SCU_T::D2PNS2: AWF Position            */
 #define SCU_D2PNS2_AWF_Msk               (0x1ul << SCU_D2PNS2_AWF_Pos)                     /*!< SCU_T::D2PNS2: AWF Mask                */
@@ -2847,13 +2868,13 @@ typedef struct
 #define SCU_SVIEN0_APB2IEN_Msk           (0x1ul << SCU_SVIEN0_APB2IEN_Pos)                 /*!< SCU_T::SVIEN0: APB2IEN Mask            */
 
 #define SCU_SVIEN0_APB3IEN_Pos           (3)                                               /*!< SCU_T::SVIEN0: APB3IEN Position        */
-#define SCU_SVIEN0_APB3IEN_Msk           (0x1ul << SCU_SVIEN0_APB2IEN_Pos)                 /*!< SCU_T::SVIEN0: APB3IEN Mask            */
+#define SCU_SVIEN0_APB3IEN_Msk           (0x1ul << SCU_SVIEN0_APB3IEN_Pos)                 /*!< SCU_T::SVIEN0: APB3IEN Mask            */
 
 #define SCU_SVIEN0_APB4IEN_Pos           (4)                                               /*!< SCU_T::SVIEN0: APB4IEN Position        */
-#define SCU_SVIEN0_APB4IEN_Msk           (0x1ul << SCU_SVIEN0_APB2IEN_Pos)                 /*!< SCU_T::SVIEN0: APB4IEN Mask            */
+#define SCU_SVIEN0_APB4IEN_Msk           (0x1ul << SCU_SVIEN0_APB4IEN_Pos)                 /*!< SCU_T::SVIEN0: APB4IEN Mask            */
 
 #define SCU_SVIEN0_APB5IEN_Pos           (5)                                               /*!< SCU_T::SVIEN0: APB5IEN Position        */
-#define SCU_SVIEN0_APB5IEN_Msk           (0x1ul << SCU_SVIEN0_APB2IEN_Pos)                 /*!< SCU_T::SVIEN0: APB5IEN Mask            */
+#define SCU_SVIEN0_APB5IEN_Msk           (0x1ul << SCU_SVIEN0_APB5IEN_Pos)                 /*!< SCU_T::SVIEN0: APB5IEN Mask            */
 
 #define SCU_SVIEN0_D0PPC0IEN_Pos         (8)                                               /*!< SCU_T::SVIEN0: D0PPC0IEN Position      */
 #define SCU_SVIEN0_D0PPC0IEN_Msk         (0x1ul << SCU_SVIEN0_D0PPC0IEN_Pos)               /*!< SCU_T::SVIEN0: D0PPC0IEN Mask          */
@@ -2882,9 +2903,6 @@ typedef struct
 #define SCU_SVIEN1_USBH0IEN_Pos          (3)                                               /*!< SCU_T::SVIEN1: USBH0IEN Position       */
 #define SCU_SVIEN1_USBH0IEN_Msk          (0x1ul << SCU_SVIEN1_USBH0IEN_Pos)                /*!< SCU_T::SVIEN1: USBH0IEN Mask           */
 
-#define SCU_SVIEN1_USBH1IEN_Pos          (4)                                               /*!< SCU_T::SVIEN1: USBH1IEN Position       */
-#define SCU_SVIEN1_USBH1IEN_Msk          (0x1ul << SCU_SVIEN1_USBH1IEN_Pos)                /*!< SCU_T::SVIEN1: USBH1IEN Mask           */
-
 #define SCU_SVIEN1_HSUSBHIEN_Pos         (5)                                               /*!< SCU_T::SVIEN1: HSUSBHIEN Position      */
 #define SCU_SVIEN1_HSUSBHIEN_Msk         (0x1ul << SCU_SVIEN1_HSUSBHIEN_Pos)               /*!< SCU_T::SVIEN1: HSUSBHIEN Mask          */
 
@@ -2912,11 +2930,17 @@ typedef struct
 #define SCU_SVIEN1_CCAPIEN_Pos           (13)                                              /*!< SCU_T::SVIEN1: CCAPIEN Position        */
 #define SCU_SVIEN1_CCAPIEN_Msk           (0x1ul << SCU_SVIEN1_CCAPIEN_Pos)                 /*!< SCU_T::SVIEN1: CCAPIEN Mask            */
 
-#define SCU_SVIEN1_NPU0IEN_Pos           (14)                                              /*!< SCU_T::SVIEN1: NPU0IEN Position        */
-#define SCU_SVIEN1_NPU0IEN_Msk           (0x1ul << SCU_SVIEN1_NPU0IEN_Pos)                 /*!< SCU_T::SVIEN1: NPU0IEN Mask            */
+#define SCU_SVIEN1_NPUIF1IEN_Pos         (14)                                              /*!< SCU_T::SVIEN1: NPUIF1IEN Position      */
+#define SCU_SVIEN1_NPUIF1IEN_Msk         (0x1ul << SCU_SVIEN1_NPUIF1IEN_Pos)               /*!< SCU_T::SVIEN1: NPUIF1IEN Mask          */
 
-#define SCU_SVIEN1_NPU1IEN_Pos           (15)                                              /*!< SCU_T::SVIEN1: NPU1IEN Position        */
-#define SCU_SVIEN1_NPU1IEN_Msk           (0x1ul << SCU_SVIEN1_NPU1IEN_Pos)                 /*!< SCU_T::SVIEN1: NPU1IEN Mask            */
+#define SCU_SVIEN1_NPUIF0IEN_Pos         (15)                                              /*!< SCU_T::SVIEN1: NPUIF0IEN Position      */
+#define SCU_SVIEN1_NPUIF0IEN_Msk         (0x1ul << SCU_SVIEN1_NPUIF0IEN_Pos)               /*!< SCU_T::SVIEN1: NPUIF0IEN Mask          */
+
+#define SCU_SVIEN1_SPIM0IEN_Pos          (16)                                              /*!< SCU_T::SVIEN1: SPIM0IEN Position       */
+#define SCU_SVIEN1_SPIM0IEN_Msk          (0x1ul << SCU_SVIEN1_SPIM0IEN_Pos)                /*!< SCU_T::SVIEN1: SPIM0IEN Mask           */
+
+#define SCU_SVIEN1_SPIM1IEN_Pos          (17)                                              /*!< SCU_T::SVIEN1: SPIM1IEN Position       */
+#define SCU_SVIEN1_SPIM1IEN_Msk          (0x1ul << SCU_SVIEN1_SPIM1IEN_Pos)                /*!< SCU_T::SVIEN1: SPIM1IEN Mask           */
 
 #define SCU_SVINTSTS0_APB0IF_Pos         (0)                                               /*!< SCU_T::SVINTSTS0: APB0IF Position      */
 #define SCU_SVINTSTS0_APB0IF_Msk         (0x1ul << SCU_SVINTSTS0_APB0IF_Pos)               /*!< SCU_T::SVINTSTS0: APB0IF Mask          */
@@ -2928,13 +2952,13 @@ typedef struct
 #define SCU_SVINTSTS0_APB2IF_Msk         (0x1ul << SCU_SVINTSTS0_APB2IF_Pos)               /*!< SCU_T::SVINTSTS0: APB2IF Mask          */
 
 #define SCU_SVINTSTS0_APB3IF_Pos         (3)                                               /*!< SCU_T::SVINTSTS0: APB3IF Position      */
-#define SCU_SVINTSTS0_APB3IF_Msk         (0x1ul << SCU_SVINTSTS0_APB2IF_Pos)               /*!< SCU_T::SVINTSTS0: APB3IF Mask          */
+#define SCU_SVINTSTS0_APB3IF_Msk         (0x1ul << SCU_SVINTSTS0_APB3IF_Pos)               /*!< SCU_T::SVINTSTS0: APB3IF Mask          */
 
 #define SCU_SVINTSTS0_APB4IF_Pos         (4)                                               /*!< SCU_T::SVINTSTS0: APB4IF Position      */
-#define SCU_SVINTSTS0_APB4IF_Msk         (0x1ul << SCU_SVINTSTS0_APB2IF_Pos)               /*!< SCU_T::SVINTSTS0: APB4IF Mask          */
+#define SCU_SVINTSTS0_APB4IF_Msk         (0x1ul << SCU_SVINTSTS0_APB4IF_Pos)               /*!< SCU_T::SVINTSTS0: APB4IF Mask          */
 
 #define SCU_SVINTSTS0_APB5IF_Pos         (5)                                               /*!< SCU_T::SVINTSTS0: APB5IF Position      */
-#define SCU_SVINTSTS0_APB5IF_Msk         (0x1ul << SCU_SVINTSTS0_APB2IF_Pos)               /*!< SCU_T::SVINTSTS0: APB5IF Mask          */
+#define SCU_SVINTSTS0_APB5IF_Msk         (0x1ul << SCU_SVINTSTS0_APB5IF_Pos)               /*!< SCU_T::SVINTSTS0: APB5IF Mask          */
 
 #define SCU_SVINTSTS0_D0PPC0IF_Pos       (8)                                               /*!< SCU_T::SVINTSTS0: D0PPC0IF Position    */
 #define SCU_SVINTSTS0_D0PPC0IF_Msk       (0x1ul << SCU_SVINTSTS0_D0PPC0IF_Pos)             /*!< SCU_T::SVINTSTS0: D0PPC0IF Mask        */
@@ -2947,18 +2971,6 @@ typedef struct
 
 #define SCU_SVINTSTS0_D2PPC0IF_Pos       (11)                                              /*!< SCU_T::SVINTSTS0: D2PPC0IF Position    */
 #define SCU_SVINTSTS0_D2PPC0IF_Msk       (0x1ul << SCU_SVINTSTS0_D2PPC0IF_Pos)             /*!< SCU_T::SVINTSTS0: D2PPC0IF Mask        */
-
-#define SCU_SVINTSTS0_FMCIF_Pos          (12)                                              /*!< SCU_T::SVINTSTS0: FMCIF Position       */
-#define SCU_SVINTSTS0_FMCIF_Msk          (0x1ul << SCU_SVINTSTS0_FMCIF_Pos)                /*!< SCU_T::SVINTSTS0: FMCIF Mask           */
-
-#define SCU_SVINTSTS0_FLASHIF_Pos        (13)                                              /*!< SCU_T::SVINTSTS0: FLASHIF Position     */
-#define SCU_SVINTSTS0_FLASHIF_Msk        (0x1ul << SCU_SVINTSTS0_FLASHIF_Pos)              /*!< SCU_T::SVINTSTS0: FLASHIF Mask         */
-
-#define SCU_SVINTSTS0_SCUIF_Pos          (14)                                              /*!< SCU_T::SVINTSTS0: SCUIF Position       */
-#define SCU_SVINTSTS0_SCUIF_Msk          (0x1ul << SCU_SVINTSTS0_SCUIF_Pos)                /*!< SCU_T::SVINTSTS0: SCUIF Mask           */
-
-#define SCU_SVINTSTS0_SYSIF_Pos          (15)                                              /*!< SCU_T::SVINTSTS0: SYSIF Position       */
-#define SCU_SVINTSTS0_SYSIF_Msk          (0x1ul << SCU_SVINTSTS0_SYSIF_Pos)                /*!< SCU_T::SVINTSTS0: SYSIF Mask           */
 
 #define SCU_SVINTSTS0_EBIIF_Pos          (16)                                              /*!< SCU_T::SVINTSTS0: EBIIF Position       */
 #define SCU_SVINTSTS0_EBIIF_Msk          (0x1ul << SCU_SVINTSTS0_EBIIF_Pos)                /*!< SCU_T::SVINTSTS0: EBIIF Mask           */
@@ -2974,9 +2986,6 @@ typedef struct
 
 #define SCU_SVINTSTS1_USBH0IF_Pos        (3)                                               /*!< SCU_T::SVINTSTS1: USBH0IF Position     */
 #define SCU_SVINTSTS1_USBH0IF_Msk        (0x1ul << SCU_SVINTSTS1_USBH0IF_Pos)              /*!< SCU_T::SVINTSTS1: USBH0IF Mask         */
-
-#define SCU_SVINTSTS1_USBH1IF_Pos        (4)                                               /*!< SCU_T::SVINTSTS1: USBH1IF Position     */
-#define SCU_SVINTSTS1_USBH1IF_Msk        (0x1ul << SCU_SVINTSTS1_USBH1IF_Pos)              /*!< SCU_T::SVINTSTS1: USBH1IF Mask         */
 
 #define SCU_SVINTSTS1_HSUSBHIF_Pos       (5)                                               /*!< SCU_T::SVINTSTS1: HSUSBHIF Position    */
 #define SCU_SVINTSTS1_HSUSBHIF_Msk       (0x1ul << SCU_SVINTSTS1_HSUSBHIF_Pos)             /*!< SCU_T::SVINTSTS1: HSUSBHIF Mask        */
@@ -3005,11 +3014,17 @@ typedef struct
 #define SCU_SVINTSTS1_CCAPIF_Pos         (13)                                              /*!< SCU_T::SVINTSTS1: CCAPIF Position      */
 #define SCU_SVINTSTS1_CCAPIF_Msk         (0x1ul << SCU_SVINTSTS1_CCAPIF_Pos)               /*!< SCU_T::SVINTSTS1: CCAPIF Mask          */
 
-#define SCU_SVINTSTS1_NPU0IF_Pos         (14)                                              /*!< SCU_T::SVINTSTS1: NPU0IF Position      */
-#define SCU_SVINTSTS1_NPU0IF_Msk         (0x1ul << SCU_SVINTSTS1_NPU0IF_Pos)               /*!< SCU_T::SVINTSTS1: NPU0IF Mask          */
+#define SCU_SVINTSTS1_NPUIF1_Pos         (14)                                              /*!< SCU_T::SVINTSTS1: NPUIF1 Position      */
+#define SCU_SVINTSTS1_NPUIF1_Msk         (0x1ul << SCU_SVINTSTS1_NPUIF1_Pos)               /*!< SCU_T::SVINTSTS1: NPUIF1 Mask          */
 
-#define SCU_SVINTSTS1_NPU1IF_Pos         (15)                                              /*!< SCU_T::SVINTSTS1: NPU1IF Position      */
-#define SCU_SVINTSTS1_NPU1IF_Msk         (0x1ul << SCU_SVINTSTS1_NPU1IF_Pos)               /*!< SCU_T::SVINTSTS1: NPU1IF Mask          */
+#define SCU_SVINTSTS1_NPUIF0_Pos         (15)                                              /*!< SCU_T::SVINTSTS1: NPUIF0 Position      */
+#define SCU_SVINTSTS1_NPUIF0_Msk         (0x1ul << SCU_SVINTSTS1_NPUIF0_Pos)               /*!< SCU_T::SVINTSTS1: NPUIF0 Mask          */
+
+#define SCU_SVINTSTS1_SPIM0IF_Pos        (16)                                              /*!< SCU_T::SVINTSTS1: SPIM0IF Position     */
+#define SCU_SVINTSTS1_SPIM0IF_Msk        (0x1ul << SCU_SVINTSTS1_SPIM0IF_Pos)              /*!< SCU_T::SVINTSTS1: SPIM0IF Mask         */
+
+#define SCU_SVINTSTS1_SPIM1IF_Pos        (17)                                              /*!< SCU_T::SVINTSTS1: SPIM1IF Position     */
+#define SCU_SVINTSTS1_SPIM1IF_Msk        (0x1ul << SCU_SVINTSTS1_SPIM1IF_Pos)              /*!< SCU_T::SVINTSTS1: SPIM1IF Mask         */
 
 #define SCU_SVINTSTS2_SRAM0IF_Pos        (0)                                               /*!< SCU_T::SVINTSTS2: SRAM0IF Position     */
 #define SCU_SVINTSTS2_SRAM0IF_Msk        (0x1ul << SCU_SVINTSTS2_SRAM0IF_Pos)              /*!< SCU_T::SVINTSTS2: SRAM0IF Mask         */
@@ -3062,18 +3077,6 @@ typedef struct
 #define SCU_D2PPC0PVSRC_MASTER_Pos       (0)                                               /*!< SCU_T::D2PPC0PVSRC: MASTER Position    */
 #define SCU_D2PPC0PVSRC_MASTER_Msk       (0x1ful << SCU_D2PPC0PVSRC_MASTER_Pos)            /*!< SCU_T::D2PPC0PVSRC: MASTER Mask        */
 
-#define SCU_FMCPVSRC_MASTER_Pos          (0)                                               /*!< SCU_T::FMCPVSRC: MASTER Position       */
-#define SCU_FMCPVSRC_MASTER_Msk          (0x1ful << SCU_FMCPVSRC_MASTER_Pos)               /*!< SCU_T::FMCPVSRC: MASTER Mask           */
-
-#define SCU_FLASHPVSRC_MASTER_Pos        (0)                                               /*!< SCU_T::FLASHPVSRC: MASTER Position     */
-#define SCU_FLASHPVSRC_MASTER_Msk        (0x1ful << SCU_FLASHPVSRC_MASTER_Pos)             /*!< SCU_T::FLASHPVSRC: MASTER Mask         */
-
-#define SCU_SCUPVSRC_MASTER_Pos          (0)                                               /*!< SCU_T::SCUPVSRC: MASTER Position       */
-#define SCU_SCUPVSRC_MASTER_Msk          (0x1ful << SCU_SCUPVSRC_MASTER_Pos)               /*!< SCU_T::SCUPVSRC: MASTER Mask           */
-
-#define SCU_SYSPVSRC_MASTER_Pos          (0)                                               /*!< SCU_T::SYSPVSRC: MASTER Position       */
-#define SCU_SYSPVSRC_MASTER_Msk          (0x1ful << SCU_SYSPVSRC_MASTER_Pos)               /*!< SCU_T::SYSPVSRC: MASTER Mask           */
-
 #define SCU_EBIPVSRC_MASTER_Pos          (0)                                               /*!< SCU_T::EBIPVSRC: MASTER Position       */
 #define SCU_EBIPVSRC_MASTER_Msk          (0x1ful << SCU_EBIPVSRC_MASTER_Pos)               /*!< SCU_T::EBIPVSRC: MASTER Mask           */
 
@@ -3107,18 +3110,6 @@ typedef struct
 #define SCU_D2PPC0PVA_VIOADDR_Pos        (0)                                               /*!< SCU_T::D2PPC0PVA: VIOADDR Position     */
 #define SCU_D2PPC0PVA_VIOADDR_Msk        (0xfffffffful << SCU_D2PPC0PVA_VIOADDR_Pos)       /*!< SCU_T::D2PPC0PVA: VIOADDR Mask         */
 
-#define SCU_FMCPVA_VIOADDR_Pos           (0)                                               /*!< SCU_T::FMCPVA: VIOADDR Position        */
-#define SCU_FMCPVA_VIOADDR_Msk           (0xfffffffful << SCU_FMCPVA_VIOADDR_Pos)          /*!< SCU_T::FMCPVA: VIOADDR Mask            */
-
-#define SCU_FLASHPVA_VIOADDR_Pos         (0)                                               /*!< SCU_T::FLASHPVA: VIOADDR Position      */
-#define SCU_FLASHPVA_VIOADDR_Msk         (0xfffffffful << SCU_FLASHPVA_VIOADDR_Pos)        /*!< SCU_T::FLASHPVA: VIOADDR Mask          */
-
-#define SCU_SCUPVA_VIOADDR_Pos           (0)                                               /*!< SCU_T::SCUPVA: VIOADDR Position        */
-#define SCU_SCUPVA_VIOADDR_Msk           (0xfffffffful << SCU_SCUPVA_VIOADDR_Pos)          /*!< SCU_T::SCUPVA: VIOADDR Mask            */
-
-#define SCU_SYSPVA_VIOADDR_Pos           (0)                                               /*!< SCU_T::SYSPVA: VIOADDR Position        */
-#define SCU_SYSPVA_VIOADDR_Msk           (0xfffffffful << SCU_SYSPVA_VIOADDR_Pos)          /*!< SCU_T::SYSPVA: VIOADDR Mask            */
-
 #define SCU_EBIPVA_VIOADDR_Pos           (0)                                               /*!< SCU_T::EBIPVA: VIOADDR Position        */
 #define SCU_EBIPVA_VIOADDR_Msk           (0xfffffffful << SCU_EBIPVA_VIOADDR_Pos)          /*!< SCU_T::EBIPVA: VIOADDR Mask            */
 
@@ -3133,9 +3124,6 @@ typedef struct
 
 #define SCU_USBH0MVA_VIOADDR_Pos         (0)                                               /*!< SCU_T::USBH0MVA: VIOADDR Position      */
 #define SCU_USBH0MVA_VIOADDR_Msk         (0xfffffffful << SCU_USBH0MVA_VIOADDR_Pos)        /*!< SCU_T::USBH0MVA: VIOADDR Mask          */
-
-#define SCU_USBH1MVA_VIOADDR_Pos         (0)                                               /*!< SCU_T::USBH1MVA: VIOADDR Position      */
-#define SCU_USBH1MVA_VIOADDR_Msk         (0xfffffffful << SCU_USBH1MVA_VIOADDR_Pos)        /*!< SCU_T::USBH1MVA: VIOADDR Mask          */
 
 #define SCU_HSUSBHMVA_VIOADDR_Pos        (0)                                               /*!< SCU_T::HSUSBHMVA: VIOADDR Position     */
 #define SCU_HSUSBHMVA_VIOADDR_Msk        (0xfffffffful << SCU_HSUSBHMVA_VIOADDR_Pos)       /*!< SCU_T::HSUSBHMVA: VIOADDR Mask         */
@@ -3164,11 +3152,11 @@ typedef struct
 #define SCU_CCAPMVA_VIOADDR_Pos          (0)                                               /*!< SCU_T::CCAPMVA: VIOADDR Position       */
 #define SCU_CCAPMVA_VIOADDR_Msk          (0xfffffffful << SCU_CCAPMVA_VIOADDR_Pos)         /*!< SCU_T::CCAPMVA: VIOADDR Mask           */
 
-#define SCU_NPU0MVA_VIOADDR_Pos          (0)                                               /*!< SCU_T::NPU0MVA: VIOADDR Position       */
-#define SCU_NPU0MVA_VIOADDR_Msk          (0xfffffffful << SCU_NPU0MVA_VIOADDR_Pos)         /*!< SCU_T::NPU0MVA: VIOADDR Mask           */
+#define SCU_NPUIF1MVA_VIOADDR_Pos        (0)                                               /*!< SCU_T::NPUIF1MVA: VIOADDR Position     */
+#define SCU_NPUIF1MVA_VIOADDR_Msk        (0xfffffffful << SCU_NPUIF1MVA_VIOADDR_Pos)       /*!< SCU_T::NPUIF1MVA: VIOADDR Mask         */
 
-#define SCU_NPU1MVA_VIOADDR_Pos          (0)                                               /*!< SCU_T::NPU1MVA: VIOADDR Position       */
-#define SCU_NPU1MVA_VIOADDR_Msk          (0xfffffffful << SCU_NPU1MVA_VIOADDR_Pos)         /*!< SCU_T::NPU1MVA: VIOADDR Mask           */
+#define SCU_NPUIF0MVA_VIOADDR_Pos        (0)                                               /*!< SCU_T::NPUIF0MVA: VIOADDR Position     */
+#define SCU_NPUIF0MVA_VIOADDR_Msk        (0xfffffffful << SCU_NPUIF0MVA_VIOADDR_Pos)       /*!< SCU_T::NPUIF0MVA: VIOADDR Mask         */
 
 #define SCU_SPIM0MVA_VIOADDR_Pos         (0)                                               /*!< SCU_T::SPIM0MVA: VIOADDR Position      */
 #define SCU_SPIM0MVA_VIOADDR_Msk         (0xfffffffful << SCU_SPIM0MVA_VIOADDR_Pos)        /*!< SCU_T::SPIM0MVA: VIOADDR Mask          */
@@ -3176,20 +3164,8 @@ typedef struct
 #define SCU_SPIM1MVA_VIOADDR_Pos         (0)                                               /*!< SCU_T::SPIM1MVA: VIOADDR Position      */
 #define SCU_SPIM1MVA_VIOADDR_Msk         (0xfffffffful << SCU_SPIM1MVA_VIOADDR_Pos)        /*!< SCU_T::SPIM1MVA: VIOADDR Mask          */
 
-#define SCU_D0PNP0_SYS_Pos               (0)                                               /*!< SCU_T::D0PNP0: SYS Position            */
-#define SCU_D0PNP0_SYS_Msk               (0x1ul << SCU_D0PNP0_SYS_Pos)                     /*!< SCU_T::D0PNP0: SYS Mask                */
-
-#define SCU_D0PNP0_CLK_Pos               (1)                                               /*!< SCU_T::D0PNP0: CLK Position            */
-#define SCU_D0PNP0_CLK_Msk               (0x1ul << SCU_D0PNP0_CLK_Pos)                     /*!< SCU_T::D0PNP0: CLK Mask                */
-
-#define SCU_D0PNP0_PMC_Pos               (2)                                               /*!< SCU_T::D0PNP0: PMC Position            */
-#define SCU_D0PNP0_PMC_Msk               (0x1ul << SCU_D0PNP0_PMC_Pos)                     /*!< SCU_T::D0PNP0: PMC Mask                */
-
 #define SCU_D0PNP0_NPU_Pos               (3)                                               /*!< SCU_T::D0PNP0: NPU Position            */
 #define SCU_D0PNP0_NPU_Msk               (0x1ul << SCU_D0PNP0_NPU_Pos)                     /*!< SCU_T::D0PNP0: NPU Mask                */
-
-#define SCU_D0PNP0_GDMA_Pos              (4)                                               /*!< SCU_T::D0PNP0: GDMA Position           */
-#define SCU_D0PNP0_GDMA_Msk              (0x1ul << SCU_D0PNP0_GDMA_Pos)                    /*!< SCU_T::D0PNP0: GDMA Mask               */
 
 #define SCU_D0PNP0_SRAM0MPC_Pos          (8)                                               /*!< SCU_T::D0PNP0: SRAM0MPC Position       */
 #define SCU_D0PNP0_SRAM0MPC_Msk          (0x1ul << SCU_D0PNP0_SRAM0MPC_Pos)                /*!< SCU_T::D0PNP0: SRAM0MPC Mask           */
@@ -3202,9 +3178,6 @@ typedef struct
 
 #define SCU_D0PNP0_SRAM3MPC_Pos          (11)                                              /*!< SCU_T::D0PNP0: SRAM3MPC Position       */
 #define SCU_D0PNP0_SRAM3MPC_Msk          (0x1ul << SCU_D0PNP0_SRAM3MPC_Pos)                /*!< SCU_T::D0PNP0: SRAM3MPC Mask           */
-
-#define SCU_D0PNP0_LPSRAMMPC_Pos         (12)                                              /*!< SCU_T::D0PNP0: LPSRAMMPC Position      */
-#define SCU_D0PNP0_LPSRAMMPC_Msk         (0x1ul << SCU_D0PNP0_LPSRAMMPC_Pos)               /*!< SCU_T::D0PNP0: LPSRAMMPC Mask          */
 
 #define SCU_D0PNP0_SPIM0MPC_Pos          (13)                                              /*!< SCU_T::D0PNP0: SPIM0MPC Position       */
 #define SCU_D0PNP0_SPIM0MPC_Msk          (0x1ul << SCU_D0PNP0_SPIM0MPC_Pos)                /*!< SCU_T::D0PNP0: SPIM0MPC Mask           */
@@ -3235,9 +3208,6 @@ typedef struct
 
 #define SCU_D1PNP0_USBH0_Pos             (2)                                               /*!< SCU_T::D1PNP0: USBH0 Position          */
 #define SCU_D1PNP0_USBH0_Msk             (0x1ul << SCU_D1PNP0_USBH0_Pos)                   /*!< SCU_T::D1PNP0: USBH0 Mask              */
-
-#define SCU_D1PNP0_USBH1_Pos             (3)                                               /*!< SCU_T::D1PNP0: USBH1 Position          */
-#define SCU_D1PNP0_USBH1_Msk             (0x1ul << SCU_D1PNP0_USBH1_Pos)                   /*!< SCU_T::D1PNP0: USBH1 Mask              */
 
 #define SCU_D1PNP0_HSUSBH_Pos            (4)                                               /*!< SCU_T::D1PNP0: HSUSBH Position         */
 #define SCU_D1PNP0_HSUSBH_Msk            (0x1ul << SCU_D1PNP0_HSUSBH_Pos)                  /*!< SCU_T::D1PNP0: HSUSBH Mask             */
@@ -3494,6 +3464,9 @@ typedef struct
 #define SCU_D2PNP2_AWF_Pos               (9)                                               /*!< SCU_T::D2PNP2: AWF Position            */
 #define SCU_D2PNP2_AWF_Msk               (0x1ul << SCU_D2PNP2_AWF_Pos)                     /*!< SCU_T::D2PNP2: AWF Mask                */
 
+#define SCU_D2PNP2_LPSRAMMPC_Pos         (16)                                              /*!< SCU_T::D2PNP2: LPSRAMMPC Position      */
+#define SCU_D2PNP2_LPSRAMMPC_Msk         (0x1ul << SCU_D2PNP2_LPSRAMMPC_Pos)               /*!< SCU_T::D2PNP2: LPSRAMMPC Mask          */
+
 #define SCU_IONP_PA_Pos                  (0)                                               /*!< SCU_T::IONP: PA Position               */
 #define SCU_IONP_PA_Msk                  (0x1ul << SCU_IONP_PA_Pos)                        /*!< SCU_T::IONP: PA Mask                   */
 
@@ -3572,29 +3545,71 @@ typedef struct
 #define SCU_NSMSTS_NSMIF_Pos             (1)                                               /*!< SCU_T::NSMSTS: NSMIF Position          */
 #define SCU_NSMSTS_NSMIF_Msk             (0x1ul << SCU_NSMSTS_NSMIF_Pos)                   /*!< SCU_T::NSMSTS: NSMIF Mask              */
 
-#define SCU_BBE_BBEEN_Pos                (0)                                               /*!< SCU_T::BBE: BBEEN Position             */
-#define SCU_BBE_BBEEN_Msk                (0x1ul << SCU_BBE_BBEEN_Pos)                      /*!< SCU_T::BBE: BBEEN Mask                 */
+#define SCU_SRAM0MPCLUT0_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SRAM0MPCLUT0: BLK_LUT Position  */
+#define SCU_SRAM0MPCLUT0_BLK_LUT_Msk     (0xfffffffful << SCU_SRAM0MPCLUT0_BLK_LUT_Pos)    /*!< SCU_T::SRAM0MPCLUT0: BLK_LUT Mask      */
 
-#define SCU_BBE_WVERY_Pos                (8)                                               /*!< SCU_T::BBE: WVERY Position             */
-#define SCU_BBE_WVERY_Msk                (0xfffffful << SCU_BBE_WVERY_Pos)                 /*!< SCU_T::BBE: WVERY Mask                 */
+#define SCU_SRAM1MPCLUT0_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SRAM1MPCLUT0: BLK_LUT Position  */
+#define SCU_SRAM1MPCLUT0_BLK_LUT_Msk     (0xfffffffful << SCU_SRAM1MPCLUT0_BLK_LUT_Pos)    /*!< SCU_T::SRAM1MPCLUT0: BLK_LUT Mask      */
 
-#define SCU_IDAUANS_IDAUANSEN_Pos        (0)                                               /*!< SCU_T::IDAUANS: IDAUANSEN Position     */
-#define SCU_IDAUANS_IDAUANSEN_Msk        (0x1ul << SCU_IDAUANS_IDAUANSEN_Pos)              /*!< SCU_T::IDAUANS: IDAUANSEN Mask         */
+#define SCU_SRAM2MPCLUT0_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SRAM2MPCLUT0: BLK_LUT Position  */
+#define SCU_SRAM2MPCLUT0_BLK_LUT_Msk     (0xfffffffful << SCU_SRAM2MPCLUT0_BLK_LUT_Pos)    /*!< SCU_T::SRAM2MPCLUT0: BLK_LUT Mask      */
 
-#define SCU_IDAUANS_WVERY_Pos            (8)                                               /*!< SCU_T::IDAUANS: WVERY Position         */
-#define SCU_IDAUANS_WVERY_Msk            (0xfffffful << SCU_IDAUANS_WVERY_Pos)             /*!< SCU_T::IDAUANS: WVERY Mask             */
+#define SCU_SRAM3MPCLUT0_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SRAM3MPCLUT0: BLK_LUT Position  */
+#define SCU_SRAM3MPCLUT0_BLK_LUT_Msk     (0xfffffffful << SCU_SRAM3MPCLUT0_BLK_LUT_Pos)    /*!< SCU_T::SRAM3MPCLUT0: BLK_LUT Mask      */
 
-#define SCU_VERSION_MINOR_Pos            (0)                                               /*!< SCU_T::VERSION: MINOR Position         */
-#define SCU_VERSION_MINOR_Msk            (0xfffful << SCU_VERSION_MINOR_Pos)               /*!< SCU_T::VERSION: MINOR Mask             */
+#define SCU_LPSRAMMPCLUT0_BLK_LUT_Pos    (0)                                               /*!< SCU_T::LPSRAMMPCLUT0: BLK_LUT Position */
+#define SCU_LPSRAMMPCLUT0_BLK_LUT_Msk    (0xfffffffful << SCU_LPSRAMMPCLUT0_BLK_LUT_Pos)   /*!< SCU_T::LPSRAMMPCLUT0: BLK_LUT Mask     */
 
-#define SCU_VERSION_SUB_Pos              (16)                                              /*!< SCU_T::VERSION: SUB Position           */
-#define SCU_VERSION_SUB_Msk              (0xfful << SCU_VERSION_SUB_Pos)                   /*!< SCU_T::VERSION: SUB Mask               */
+#define SCU_SPIM0MPCLUT0_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM0MPCLUT0: BLK_LUT Position  */
+#define SCU_SPIM0MPCLUT0_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM0MPCLUT0_BLK_LUT_Pos)    /*!< SCU_T::SPIM0MPCLUT0: BLK_LUT Mask      */
 
-#define SCU_VERSION_MAJOR_Pos            (24)                                              /*!< SCU_T::VERSION: MAJOR Position         */
-#define SCU_VERSION_MAJOR_Msk            (0xfful << SCU_VERSION_MAJOR_Pos)                 /*!< SCU_T::VERSION: MAJOR Mask             */
+#define SCU_SPIM0MPCLUT1_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM0MPCLUT1: BLK_LUT Position  */
+#define SCU_SPIM0MPCLUT1_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM0MPCLUT1_BLK_LUT_Pos)    /*!< SCU_T::SPIM0MPCLUT1: BLK_LUT Mask      */
 
-/** @} SCU_CONST */
-/** @} end of SCU register group */
-/** @} end of REGISTER group */
+#define SCU_SPIM0MPCLUT2_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM0MPCLUT2: BLK_LUT Position  */
+#define SCU_SPIM0MPCLUT2_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM0MPCLUT2_BLK_LUT_Pos)    /*!< SCU_T::SPIM0MPCLUT2: BLK_LUT Mask      */
+
+#define SCU_SPIM0MPCLUT3_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM0MPCLUT3: BLK_LUT Position  */
+#define SCU_SPIM0MPCLUT3_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM0MPCLUT3_BLK_LUT_Pos)    /*!< SCU_T::SPIM0MPCLUT3: BLK_LUT Mask      */
+
+#define SCU_SPIM0MPCLUT4_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM0MPCLUT4: BLK_LUT Position  */
+#define SCU_SPIM0MPCLUT4_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM0MPCLUT4_BLK_LUT_Pos)    /*!< SCU_T::SPIM0MPCLUT4: BLK_LUT Mask      */
+
+#define SCU_SPIM0MPCLUT5_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM0MPCLUT5: BLK_LUT Position  */
+#define SCU_SPIM0MPCLUT5_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM0MPCLUT5_BLK_LUT_Pos)    /*!< SCU_T::SPIM0MPCLUT5: BLK_LUT Mask      */
+
+#define SCU_SPIM0MPCLUT6_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM0MPCLUT6: BLK_LUT Position  */
+#define SCU_SPIM0MPCLUT6_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM0MPCLUT6_BLK_LUT_Pos)    /*!< SCU_T::SPIM0MPCLUT6: BLK_LUT Mask      */
+
+#define SCU_SPIM0MPCLUT7_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM0MPCLUT7: BLK_LUT Position  */
+#define SCU_SPIM0MPCLUT7_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM0MPCLUT7_BLK_LUT_Pos)    /*!< SCU_T::SPIM0MPCLUT7: BLK_LUT Mask      */
+
+#define SCU_SPIM1MPCLUT0_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM1MPCLUT0: BLK_LUT Position  */
+#define SCU_SPIM1MPCLUT0_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM1MPCLUT0_BLK_LUT_Pos)    /*!< SCU_T::SPIM1MPCLUT0: BLK_LUT Mask      */
+
+#define SCU_SPIM1MPCLUT1_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM1MPCLUT1: BLK_LUT Position  */
+#define SCU_SPIM1MPCLUT1_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM1MPCLUT1_BLK_LUT_Pos)    /*!< SCU_T::SPIM1MPCLUT1: BLK_LUT Mask      */
+
+#define SCU_SPIM1MPCLUT2_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM1MPCLUT2: BLK_LUT Position  */
+#define SCU_SPIM1MPCLUT2_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM1MPCLUT2_BLK_LUT_Pos)    /*!< SCU_T::SPIM1MPCLUT2: BLK_LUT Mask      */
+
+#define SCU_SPIM1MPCLUT3_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM1MPCLUT3: BLK_LUT Position  */
+#define SCU_SPIM1MPCLUT3_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM1MPCLUT3_BLK_LUT_Pos)    /*!< SCU_T::SPIM1MPCLUT3: BLK_LUT Mask      */
+
+#define SCU_SPIM1MPCLUT4_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM1MPCLUT4: BLK_LUT Position  */
+#define SCU_SPIM1MPCLUT4_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM1MPCLUT4_BLK_LUT_Pos)    /*!< SCU_T::SPIM1MPCLUT4: BLK_LUT Mask      */
+
+#define SCU_SPIM1MPCLUT5_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM1MPCLUT5: BLK_LUT Position  */
+#define SCU_SPIM1MPCLUT5_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM1MPCLUT5_BLK_LUT_Pos)    /*!< SCU_T::SPIM1MPCLUT5: BLK_LUT Mask      */
+
+#define SCU_SPIM1MPCLUT6_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM1MPCLUT6: BLK_LUT Position  */
+#define SCU_SPIM1MPCLUT6_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM1MPCLUT6_BLK_LUT_Pos)    /*!< SCU_T::SPIM1MPCLUT6: BLK_LUT Mask      */
+
+#define SCU_SPIM1MPCLUT7_BLK_LUT_Pos     (0)                                               /*!< SCU_T::SPIM1MPCLUT7: BLK_LUT Position  */
+#define SCU_SPIM1MPCLUT7_BLK_LUT_Msk     (0xfffffffful << SCU_SPIM1MPCLUT7_BLK_LUT_Pos)    /*!< SCU_T::SPIM1MPCLUT7: BLK_LUT Mask      */
+
+/**@}*/ /* SCU_CONST */
+/**@}*/ /* end of SCU register group */
+/**@}*/ /* end of REGISTER group */
 
 #endif /* __SCU_REG_H__ */
