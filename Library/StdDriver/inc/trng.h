@@ -32,7 +32,7 @@ extern "C"
 /*  Macros                                                                                      */
 /*----------------------------------------------------------------------------------------------*/
 #define TRNG_CTL_KATSEL_INSTANTIATION_TESTING      0x0
-#define TRNG_CTL_KATSEL_RESEED_TESTING		         0x1
+#define TRNG_CTL_KATSEL_RESEED_TESTING		       0x1
 #define TRNG_CTL_KATSEL_GENERATION_TESTING         0x2
 
 #define TRNG_CTL_MODE_OUTPUT_ENTROPY               0x00
