@@ -99,7 +99,14 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set PD multi-function pins for UART0 RXD(PB.12) and TXD(PB.13) */
     SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13(); 
+    SET_UART0_TXD_PB13();
+
+    SET_TAMPER0_PF6();
+    SET_TAMPER1_PF7();
+    SET_TAMPER2_PF8();
+    SET_TAMPER3_PF9();
+    SET_TAMPER4_PF10();
+    SET_TAMPER5_PF11();
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */

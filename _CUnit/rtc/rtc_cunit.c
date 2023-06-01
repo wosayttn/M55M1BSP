@@ -399,14 +399,17 @@ void CONSTANT_RTC(void)
             CU_ASSERT_EQUAL((pRTC->TAMPCTL & RTC_TAMPCTL_TAMP4DEN_Msk), 0); 
 			RTC_WaitAccessEnable();
             CU_ASSERT_EQUAL((pRTC->TAMPCTL & RTC_TAMPCTL_TAMP5DEN_Msk), 0);
-			
+            
+            RTC_StaticTamperDisable(u32TamperSel);
             /* To check if RTC snooper pin interrupt occurred */
-            if(RTC_GET_TAMPER_INT_STATUS(pRTC) == 1) {
-                printf("\n        * Get TAMPER FLAGs: 0x%x", RTC_GET_TAMPER_INT_FLAG(pRTC)); 
-                /* Clear RTC snooper pin interrupt flag */                
-                RTC_CLEAR_TAMPER_INT_FLAG(pRTC, RTC_GET_TAMPER_INT_FLAG(pRTC));
-                CU_ASSERT_EQUAL(RTC_GET_TAMPER_INT_FLAG(pRTC), 0);
+            if(RTC_GET_TAMPER_INT_FLAG(pRTC)) {
+                D_msg("\n        * Get TAMPER FLAGs: 0x%x", RTC_GET_TAMPER_INT_STATUS(pRTC)); 
+                /* Clear RTC snooper pin interrupt flag */
+                
+                RTC_CLEAR_TAMPER_INT_FLAG(pRTC, RTC_GET_TAMPER_INT_STATUS(pRTC));
+                CU_ASSERT_EQUAL(RTC_GET_TAMPER_INT_STATUS(pRTC), 0);
             }
+            D_msg("\n        * Get TAMPER FLAGs: 0x%x", RTC_GET_TAMPER_INT_STATUS(pRTC));
             RTC_StaticTamperDisable(u32TamperSel);
         }
                     
@@ -457,13 +460,16 @@ void CONSTANT_RTC(void)
 			RTC_WaitAccessEnable();
             CU_ASSERT_EQUAL((pRTC->TAMPCTL & RTC_TAMPCTL_DYN2ISS_Msk), 0);
 			
+            RTC_DynamicTamperDisable(u32PairSel);
             /* To check if RTC snooper pin interrupt occurred */
-            if(RTC_GET_TAMPER_INT_STATUS(pRTC) == 1) {
-                printf("\n        * Get TAMPER FLAGs: 0x%x", RTC_GET_TAMPER_INT_FLAG(pRTC)); 
-                /* Clear RTC snooper pin interrupt flag */                
-                RTC_CLEAR_TAMPER_INT_FLAG(pRTC, RTC_GET_TAMPER_INT_FLAG(pRTC));
-                CU_ASSERT_EQUAL(RTC_GET_TAMPER_INT_FLAG(pRTC), 0);
+            if(RTC_GET_TAMPER_INT_FLAG(pRTC)) {
+                D_msg("\n        * Get TAMPER FLAGs: 0x%x", RTC_GET_TAMPER_INT_STATUS(pRTC)); 
+                /* Clear RTC snooper pin interrupt flag */
+                
+                RTC_CLEAR_TAMPER_INT_FLAG(pRTC, RTC_GET_TAMPER_INT_STATUS(pRTC));
+                CU_ASSERT_EQUAL(RTC_GET_TAMPER_INT_STATUS(pRTC), 0);
             }
+            D_msg("\n        * Get TAMPER FLAGs: 0x%x", RTC_GET_TAMPER_INT_STATUS(pRTC));
 			RTC_DynamicTamperDisable(u32PairSel);
 			
 			RTC_WaitAccessEnable();
@@ -648,7 +654,7 @@ void MACRO_RTC(void)
             }                    
         }
         u32Value = Timer0_GetCounter();
-        printf("CNT: %d\n", u32Value);
+        D_msg("CNT: %d\n", u32Value);
 #ifdef _PZ1_EMU_ // in pz1 LXT is 3.276Mhz   
         if((u32Value > (78+5)) || (u32Value < (78-5))) {
             CU_FAIL("TICK Period FAIL");
@@ -700,7 +706,7 @@ void MACRO_RTC(void)
         }
         u32Value = Timer0_GetCounter();
         CU_ASSERT_EQUAL(RTC_GET_ALARM_INT_FLAG(pRTC), 0); 
-        printf("CNT: %d\n", u32Value);
+        D_msg("CNT: %d\n", u32Value);
 #ifdef _PZ1_EMU_ // in pz1 LXT is 3.276Mhz
         if((u32Value > (10000+20)) || (u32Value < (10000-20))) {
             CU_FAIL("ALARM Period FAIL");
@@ -711,7 +717,8 @@ void MACRO_RTC(void)
             CU_FAIL("ALARM Period FAIL");
             return ;
         }
-#endif        
+#endif  
+        //printf("Check Data\r\n");
         RTC_WaitAccessEnable();
         CU_ASSERT_EQUAL(pRTC->CALM, 0x00140301);
         CU_ASSERT_EQUAL(pRTC->TALM, 0x00020103);
@@ -747,6 +754,7 @@ void MACRO_RTC(void)
                 RTC_WRITE_SPARE_REGISTER(pRTC, j, au32SPRDataPattern[i]);
                 RTC_WaitAccessEnable();
                 CU_ASSERT_EQUAL(RTC_READ_SPARE_REGISTER(pRTC, j), au32SPRDataPattern[i]);
+                D_msg("SPARE[%d]:0x%x\r\n",j,RTC_READ_SPARE_REGISTER(pRTC, j));
             }
         }
         RTC_WaitAccessEnable();
