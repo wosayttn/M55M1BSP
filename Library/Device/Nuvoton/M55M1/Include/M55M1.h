@@ -794,6 +794,7 @@ typedef enum IRQn
 #define SPI3_NS                   ((SPI_T *)      (SPI3_BASE      + NS_OFFSET))
 #define SPIM0_NS    			  ((SPIM_T *)     (SPIM0_BASE     + NS_OFFSET))
 #define SPIM1_NS    			  ((SPIM_T *)     (SPIM1_BASE     + NS_OFFSET))
+#define SYS_NS      			  ((SYS_T *)      (SYS_BASE       + NS_OFFSET))
 #define TIMER0_NS                 ((TIMER_T *)    (TIMER0_BASE    + NS_OFFSET))
 #define TIMER1_NS                 ((TIMER_T *)    (TIMER1_BASE    + NS_OFFSET))
 #define TIMER2_NS                 ((TIMER_T *)    (TIMER2_BASE    + NS_OFFSET))
@@ -1693,6 +1694,7 @@ typedef volatile uint64_t vu64;   ///< Define 64-bit unsigned volatile data type
 #include "scu/fvc.h"
 #include "scu/dpm.h"
 #include "scu/plm.h"
+#include "scu/mpc.h"
 #include "scuart.h"
 #include "sdh.h"
 #include "spi.h"

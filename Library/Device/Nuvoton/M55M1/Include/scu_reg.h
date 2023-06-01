@@ -57,8 +57,8 @@ typedef struct
  * |        |          |Note 1: This bit should be set with PWCMP equal to 0.
  * |        |          |Note 2: This bit will be cleared after the update process is finished.
  * |[8]     |INTEN     |DPM Interrupt Enable Bit
- * |        |          |0 = DPM interrupt function Enabled.
- * |        |          |1 = DPM interrupt function Disabled.
+ * |        |          |0 = Disable DPM interrupt function.
+ * |        |          |1 = Enable DPM interrupt function.
  * |[12]    |DACCWDIS  |Secure DPM Debug Write Access Disable Bit
  * |        |          |This bit disables the ability of external debugger to set Secure DPM registers for debug authentication.
  * |        |          |0 = External debugger can set Secure DPM registers.
@@ -279,7 +279,7 @@ typedef struct
     __IO uint32_t CTL;                   /*!< [0x0000] Secure DPM Control Register                                      */
     __IO uint32_t STS;                   /*!< [0x0004] Secure DPM Status Register                                       */
     __I  uint32_t RESERVE0[2];
-    __O  uint32_t SPW[4];                /*!< [0x0010-0x001c] Secure DPM Password 0-3                                   */    
+    __O  uint32_t SPW[4];                /*!< [0x0010-0x001c] Secure DPM Password 0-3                                   */
     __I  uint32_t RESERVE1[12];
     __IO uint32_t NSCTL;                 /*!< [0x0050] Non-secure DPM Control Register                                  */
     __IO uint32_t NSSTS;                 /*!< [0x0054] Non-secure DPM Status Register                                   */
@@ -2426,12 +2426,22 @@ typedef struct
     __I  uint32_t RESERVE6[2];
     __IO uint32_t IONS[10];              /*!< [0x0070-0x0094] I/O Non-secure Attribution Set Register0-9                */
     __I  uint32_t RESERVE7[26];
-    __IO uint32_t SVIEN0;                /*!< [0x0100] Security Violation Interrupt Enable Register - Slave peripherals */
-    __IO uint32_t SVIEN1;                /*!< [0x0104] Security Violation Interrupt Enable Register - Master peripherals (MSC) */
+    union {
+        __IO uint32_t SVIEN[2];
+        struct {
+            __IO uint32_t SVIEN0;                /*!< [0x0100] Security Violation Interrupt Enable Register - Slave peripherals */
+            __IO uint32_t SVIEN1;                /*!< [0x0104] Security Violation Interrupt Enable Register - Master peripherals (MSC) */
+        };
+    };
     __I  uint32_t RESERVE8[2];
-    __IO uint32_t SVINTSTS0;             /*!< [0x0110] Security Violation Interrupt Status Register - Slave peripherals */
-    __IO uint32_t SVINTSTS1;             /*!< [0x0114] Security Violation Interrupt Status Register - Master peripherals (MSC) */
-    __I  uint32_t SVINTSTS2;             /*!< [0x0118] Security Violation Interrupt Status Register - Memory peripherals (MPC) */
+    union {
+        __IO uint32_t SVINTSTS[3];
+        struct {
+            __IO uint32_t SVINTSTS0;             /*!< [0x0110] Security Violation Interrupt Status Register - Slave peripherals */
+            __IO uint32_t SVINTSTS1;             /*!< [0x0114] Security Violation Interrupt Status Register - Master peripherals (MSC) */
+            __I  uint32_t SVINTSTS2;             /*!< [0x0118] Security Violation Interrupt Status Register - Memory peripherals (MPC) */
+        };
+    };
     __I  uint32_t RESERVE9[1];
     union {
         __I  uint32_t PVSRC[17];                 /*!< [0x0120-0x0160] Security Policy Violation Source                          */
@@ -2453,7 +2463,7 @@ typedef struct
     };
     __I  uint32_t RESERVE12[15];
     union {
-        __I  uint32_t PVA[17];                   /*!< [0x01a0-0x01e0] Violation Address                                         */
+        __I  uint32_t PMVA[64];                   /*!< [0x01a0-0x01e0] Violation Address                                         */
         struct {
             __I  uint32_t APB0PVA;               /*!< [0x01a0] APB0 Violation Address                                           */
             __I  uint32_t APB1PVA;               /*!< [0x01a4] APB1 Violation Address                                           */
@@ -2468,12 +2478,7 @@ typedef struct
             __I  uint32_t D2PPC0PVA;             /*!< [0x01cc] D2PPC0 Violation Address                                         */
             __I  uint32_t RESERVE14[4];
             __I  uint32_t EBIPVA;                /*!< [0x01e0] EBI Violation Address                                            */
-        };
-    };
-    __I  uint32_t RESERVE15[15];
-    union {
-        __I  uint32_t MVA[18];                   /*!< [0x0220-0x0264] Master Violation Address                                  */
-        struct {
+            __I  uint32_t RESERVE15[15];
             __I  uint32_t GDMAMVA;               /*!< [0x0220] GDMA Violation Address                                           */
             __I  uint32_t PDMA0MVA;              /*!< [0x0224] PDMA Violation Address                                           */
             __I  uint32_t PDMA1MVA;              /*!< [0x0228] PDMA1 Violation Address                                          */
@@ -2492,9 +2497,9 @@ typedef struct
             __I  uint32_t NPUIF0MVA;             /*!< [0x025c] NPU Interface 0 Violation Address                                */
             __I  uint32_t SPIM0MVA;              /*!< [0x0260] SPIM 0 Master Violation Address                                  */
             __I  uint32_t SPIM1MVA;              /*!< [0x0264] SPIM 1 Master Violation Address                                  */
+            __I  uint32_t RESERVE17[14];
         };
     };
-    __I  uint32_t RESERVE17[14];
     union {
         __IO uint32_t DxPNPy[19];                /*!< [0x02a0-0x02e8] Peripheral Privilege Attribution Set Registers                             */
         struct {
