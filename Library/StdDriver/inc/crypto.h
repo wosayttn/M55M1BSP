@@ -238,15 +238,6 @@ typedef struct
 
 /** @} end of group CRYPTO_EXPORTED_CONSTANTS */
 
-
-/** @addtogroup  M55M1_CRYPTO_EXPORTED_MACROS CRYPTO Exported Macros
-  @{
-*/
-
-/*----------------------------------------------------------------------------------------------*/
-/*  Macros                                                                                      */
-/*----------------------------------------------------------------------------------------------*/
-
 /**
   * @brief This macro enables PRNG interrupt.
   * @param crpt     Specified cripto module
@@ -460,66 +451,54 @@ typedef struct
 /** @addtogroup CRYPTO_EXPORTED_FUNCTIONS CRYPTO Exported Functions
   @{
 */
-
-
-/*---------------------------------------------------------------------------------------------------------*/
-/*  Functions                                                                                      */
-/*---------------------------------------------------------------------------------------------------------*/
-
 void PRNG_Open(CRYPTO_T *crypto, uint32_t u32KeySize, uint32_t u32SeedReload, uint32_t u32Seed);
 void PRNG_Start(CRYPTO_T *crypto);
 void PRNG_Read(CRYPTO_T *crypto, uint32_t u32RandKey[]);
+
 void AES_Open(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t u32EncDec, uint32_t u32OpMode, uint32_t u32KeySize, uint32_t u32SwapType);
 void AES_Start(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t u32DMAMode);
 void AES_SetKey(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t au32Keys[], uint32_t u32KeySize);
 void AES_SetInitVect(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t au32IV[]);
 void AES_SetDMATransfer(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t u32SrcAddr, uint32_t u32DstAddr, uint32_t u32TransCnt);
+void AES_Start_KS(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t u32DMAMode, int ksel, int knum);
+
 void CHA_SetKeyandNonce(CRYPTO_T *crypto,  unsigned char *key, unsigned char *nonce, int counter);
 void CHA_SetDMATransfer(CRYPTO_T *crypto, uint8_t* u8pInputData,  uint8_t* u8pOutputData, int src_len);
 void CHA_Start(CRYPTO_T *crypto, int is_encrypt);
 void CHAPOLY_Complete(CRYPTO_T *crypto);
+void CHAPOLY_Start(CRYPTO_T *crypto);
 void POLY1305_SetKeyandClearNonce(CRYPTO_T *crypto,  unsigned char *key);
 void POLY1305_SetDMATransfer(CRYPTO_T *crypto, uint8_t* u8pInputData,  uint8_t* u8pOutputData, int src_len);
 void POLY1305_Start(CRYPTO_T *crypto);
-void CHAPOLY_Start(CRYPTO_T *crypto);
 
 void SHA_Open(CRYPTO_T *crypto, uint32_t u32OpMode, uint32_t u32SwapType, uint32_t hmac_key_len);
 void SHA_Start(CRYPTO_T *crypto, uint32_t u32DMAMode);
 void SHA_SetDMATransfer(CRYPTO_T *crypto, uint32_t u32SrcAddr, uint32_t u32TransCnt);
 void SHA_Read(CRYPTO_T *crypto, uint32_t u32Digest[]);
+
 void ECC_Enable_DFAP(void);
 void ECC_Complete(CRYPTO_T *crypto);
 int  ECC_IsPrivateKeyValid(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve,  char private_k[]);
-int32_t  ECC_GeneratePublicKey(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *private_k, char public_k1[], char public_k2[]);
-int32_t  ECC_Mutiply(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char x1[], char y1[], char *k, char x2[], char y2[]);
-int32_t  ECC_GenerateSecretZ(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *private_k, char public_k1[], char public_k2[], char secret_z[]);
-int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message, char *d, char *k, char *R, char *S);
-int32_t  ECC_VerifySignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message, char *public_k1, char *public_k2, char *R, char *S);
+int32_t ECC_GeneratePublicKey(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *private_k, char public_k1[], char public_k2[]);
+int32_t ECC_Mutiply(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char x1[], char y1[], char *k, char x2[], char y2[]);
+int32_t ECC_GenerateSecretZ(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *private_k, char public_k1[], char public_k2[], char secret_z[]);
+int32_t ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message, char *d, char *k, char *R, char *S);
+int32_t ECC_VerifySignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message, char *public_k1, char *public_k2, char *R, char *S);
+int32_t ECC_Write_N(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve);
+int32_t ECC_GeneratePublicKey_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k_ksnum, int is_ecdh, char public_k1[], char public_k2[]);
+int32_t ECC_Mutiply_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int x1_ksnum, char x1[], int y1_ksnum, char y1[], int k_ksnum, char *k, char x2[], char y2[]);
+int32_t ECC_GenerateSecretZ_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k_ksnum, char *private_k, char public_x[], char public_y[], int z_to_ks, int z_owner, char secret_z[]);
+int32_t ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message, int d_ksnum, int k_ksnum, char *R, char *S);
+int32_t ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message, int x_ksnum, int y_ksnum, char *R, char *S);
+int32_t ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message,  int d_ksnum, int k_ksnum, char *R, char *S);
+int32_t ECC_GetCurve(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, ECC_CURVE *curve);
+int32_t ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message, int x_ksnum, int y_ksnum, char *R, char *S);
 
-void AES_Start_KS(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t u32DMAMode, int ksel, int knum);
-int32_t  ECC_Write_N(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve);
-int32_t  ECC_GeneratePublicKey_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k_ksnum, int is_ecdh, char public_k1[], char public_k2[]);
-int32_t  ECC_Mutiply_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int x1_ksnum, char x1[], int y1_ksnum, char y1[], int k_ksnum, char *k, char x2[], char y2[]);
-int32_t  ECC_GenerateSecretZ_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k_ksnum, char *private_k, char public_x[], char public_y[], int z_to_ks, int z_owner, char secret_z[]);
-int32_t  ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message, int d_ksnum, int k_ksnum, char *R, char *S);
-int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message, int x_ksnum, int y_ksnum, char *R, char *S);
+int ecc_strcmp(char *s1, char *s2);
 
-int32_t  ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message,  int d_ksnum, int k_ksnum, char *R, char *S);
 void Hex2Reg(char input[], uint32_t volatile reg[]);
 void Reg2Hex(int32_t count, uint32_t volatile reg[], char output[]);
 void Hex2RegEx(char input[], uint32_t volatile reg[], int shift);
-int32_t ECC_GetCurve(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, ECC_CURVE *curve);
-int ecc_strcmp(char *s1, char *s2);
-
-
-
-int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message, int x_ksnum, int y_ksnum, char *R, char *S);
-
-
-
-
-
-
 /** @} end of group CRYPTO_EXPORTED_FUNCTIONS */
 /** @} end of group CRYPTO_Driver */
 /** @} end of group Standard_Driver */

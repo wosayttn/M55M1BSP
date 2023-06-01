@@ -6,23 +6,20 @@
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
-
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
 #include "crypto.h"
 #include "crypto_reg.h"
+
 /** @cond HIDDEN_SYMBOLS */
-
-//#define ENABLE_DEBUG    0
-
 #if ENABLE_DEBUG
 #define CRYPTO_DBGMSG   printf
 #else
 #define CRYPTO_DBGMSG(...)   do { } while (0)       /* disable debug */
 #endif
-
 /** @endcond HIDDEN_SYMBOLS */
+
 
 /** @addtogroup Standard_Driver Standard Driver
   @{
@@ -38,12 +35,9 @@
 */
 
 /** @cond HIDDEN_SYMBOLS */
-
 static uint32_t g_AES_CTL[4];
 static uint32_t g_TDES_CTL[4];
-
 static char  hex_char_tbl[] = "0123456789abcdef";
-
 static void dump_ecc_reg(char *str, uint32_t volatile regs[], int32_t count);
 static char get_Nth_nibble_char(uint32_t val32, uint32_t idx);
 void Hex2Reg(char input[], uint32_t volatile reg[]);
@@ -51,11 +45,9 @@ void Reg2Hex(int32_t count, uint32_t volatile reg[], char output[]);
 void Hex2RegEx(char input[], uint32_t volatile reg[], int shift);
 static char ch2hex(char ch);
 static int  get_nibble_value(char c);
-
 void  dump_buff_hex(uint8_t *pucBuff, int nBytes);
-
-
 /** @endcond HIDDEN_SYMBOLS */
+
 
 /**
   * @brief  Open PRNG function
@@ -111,7 +103,6 @@ void PRNG_Read(CRYPTO_T *crypto, uint32_t u32RandKey[])
 
     crypto->PRNG_CTL &= ~CRYPTO_PRNG_CTL_SEEDRLD_Msk;
 }
-
 
 /**
   * @brief  Open AES encrypt/decrypt function.
@@ -191,7 +182,7 @@ void AES_Start_KS(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t u32DMAMode, in
 
 /**
   * @brief  Set AES keys
-  * @param[in]  crypto        Reference to Crypto module.
+  * @param[in]  crypto      Reference to Crypto module.
   * @param[in]  u32Channel  AES channel. Must be 0~3.
   * @param[in]  au32Keys    An word array contains AES keys.
   * @param[in]  u32KeySize is AES key size, including:
@@ -218,8 +209,8 @@ void AES_SetKey(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t au32Keys[], uint
 /**
   * @brief  Set AES initial vectors
   * @param[in]  crypto        Reference to Crypto module.
-  * @param[in]  u32Channel  AES channel. Must be 0~3.
-  * @param[in]  au32IV      A four entry word array contains AES initial vectors.
+  * @param[in]  u32Channel    AES channel. Must be 0~3.
+  * @param[in]  au32IV        A four entry word array contains AES initial vectors.
   * @return None
   */
 void AES_SetInitVect(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t au32IV[])
@@ -238,7 +229,7 @@ void AES_SetInitVect(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t au32IV[])
 
 /**
   * @brief  Set AES DMA transfer configuration.
-  * @param[in]  crypto         Reference to Crypto module.
+  * @param[in]  crypto       Reference to Crypto module.
   * @param[in]  u32Channel   AES channel. Must be 0~3.
   * @param[in]  u32SrcAddr   AES DMA source address
   * @param[in]  u32DstAddr   AES DMA destination address
@@ -263,7 +254,7 @@ void AES_SetDMATransfer(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t u32SrcAd
 
 /**
   * @brief  Open SHA encrypt function.
-  * @param[in]  crypto        Reference to Crypto module.
+  * @param[in]  crypto      Reference to Crypto module.
   * @param[in]  u32OpMode   SHA operation mode, including:
   *         - \ref SHA_MODE_SHA1
   *         - \ref SHA_MODE_SHA224
@@ -293,7 +284,7 @@ void SHA_Open(CRYPTO_T *crypto, uint32_t u32OpMode, uint32_t u32SwapType, uint32
 /**
   * @brief  Start SHA encrypt
   * @param[in]  crypto        Reference to Crypto module.
-  * @param[in]  u32DMAMode  TDES DMA control, including:
+  * @param[in]  u32DMAMode    TDES DMA control, including:
   *         - \ref CRYPTO_DMA_ONE_SHOT   One shop SHA encrypt.
   *         - \ref CRYPTO_DMA_CONTINUE   Continuous SHA encrypt.
   *         - \ref CRYPTO_DMA_LAST       Last SHA encrypt of a series of SHA_Start.
@@ -307,7 +298,7 @@ void SHA_Start(CRYPTO_T *crypto, uint32_t u32DMAMode)
 
 /**
   * @brief  Set SHA DMA transfer
-  * @param[in]  crypto         Reference to Crypto module.
+  * @param[in]  crypto       Reference to Crypto module.
   * @param[in]  u32SrcAddr   SHA DMA source address
   * @param[in]  u32TransCnt  SHA DMA transfer byte count
   * @return None
@@ -320,7 +311,7 @@ void SHA_SetDMATransfer(CRYPTO_T *crypto, uint32_t u32SrcAddr, uint32_t u32Trans
 
 /**
   * @brief  Read the SHA digest.
-  * @param[in]  crypto        Reference to Crypto module.
+  * @param[in]  crypto      Reference to Crypto module.
   * @param[out]  u32Digest  The SHA encrypt output digest.
   * @return None
   */
@@ -362,12 +353,6 @@ void SHA_Read(CRYPTO_T *crypto, uint32_t u32Digest[])
 }
 
 /** @cond HIDDEN_SYMBOLS */
-
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*    ECC                                                                                        */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
 
 #define ECCOP_POINT_MUL     (0x0UL << CRYPTO_ECC_CTL_ECCOP_Pos)
 #define ECCOP_MODULE        (0x1UL << CRYPTO_ECC_CTL_ECCOP_Pos)
@@ -802,12 +787,9 @@ const ECC_CURVE _Curve[] =
 
 static ECC_CURVE  *pCurve;
 static ECC_CURVE  Curve_Copy;
-
 static ECC_CURVE * get_curve(E_ECC_CURVE ecc_curve);
 static void run_ecc_codec(CRYPTO_T *crypto, uint32_t mode, int enable_scap);
-
 static char  temp_hex_str[160];
-
 int32_t ecc_init_curve(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve);
 
 #if ENABLE_DEBUG
@@ -3056,15 +3038,6 @@ int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *m
     return ret;
 }
 
-
-/*@}*/ /* end of group CRYPTO_EXPORTED_FUNCTIONS */
-/*@}*/ /* end of group CRYPTO_Driver */
-/*@}*/ /* end of group Standard_Driver */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*    RSA                                                                                        */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
 /** @cond HIDDEN_SYMBOLS */
 static void *s_pRSABuf;
 static uint32_t s_u32RsaOpMode;
@@ -3080,7 +3053,20 @@ typedef enum
 } E_RSA_BUF_SEL;
 static int32_t CheckRsaBufferSize(uint32_t u32OpMode, uint32_t u32BufSize, uint32_t u32UseKS);
 /** @endcond HIDDEN_SYMBOLS */
-/* Check the allocated buffer size for RSA operation. */
+
+/**
+  * @brief  Check the allocated buffer size for RSA operation
+  * @param[in]  u32OpMode          Mode of RSA, including:
+  *          - \ref RSA_MODE_NORMAL
+  *          - \ref RSA_MODE_CRT
+  *          - \ref RSA_MODE_CRTBYPASS
+  *          - \ref RSA_MODE_SCAP
+  *          - \ref RSA_MODE_CRTBYPASS_SCAP
+  * @param[in]  u32BufSize         RSA buffer size
+  * @param[in]  u32UseKS           If RSA uses KeyStore(KS)
+  * @return  0    Success.
+  * @return  -1   The value of pointer of RSA buffer struct is null.
+  */
 static int32_t CheckRsaBufferSize(uint32_t u32OpMode, uint32_t u32BufSize, uint32_t u32UseKS)
 {
     /* RSA buffer size for MODE_NORMAL, MODE_CRT, MODE_CRTBYPASS, MODE_SCAP, MODE_CRT_SCAP, MODE_CRTBYPASS_SCAP */
@@ -3360,27 +3346,24 @@ int32_t RSA_SetDMATransfer_KS(CRYPTO_T *crpt, char *Src, char *n, uint32_t u32PN
 }
 
 
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*    CHAPOLY                                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
 volatile int  g_CHAPOLY_done = 0;
 /**
-  * @brief  ECC interrupt service routine. User application must invoke this function in
-  *         his CRYPTO_IRQHandler() to let Crypto driver know ECC processing was done.
-  * @param[in]  crypto        Reference to Crypto module.
+  * @brief  ECC interrupt service routine. User application 
+  *         must invoke this function in his CRYPTO_IRQHandler() 
+  *         to let Crypto driver know ECC processing was done.
+  * @param[in]  crypto         The pointer of CRYPTO module
   * @return   none
   */
 void CHAPOLY_Complete(CRYPTO_T *crypto)
 {
-    	if (CHAPOLY_GET_INT_FLAG(crypto))
+    if (CHAPOLY_GET_INT_FLAG(crypto))
 	{
-		g_CHAPOLY_done = 1;
-		if (crypto->INTSTS & CRYPTO_INTSTS_CHAPOLYEIF_Msk)
-			printf("CHAPOLY INTSTS error flag set!!\n");
-		printf("CHAPOLY INTSTS = 0x%08x !!\n", CRYPTO->CHAPOLY_STS);
+        g_CHAPOLY_done = 1;
+        if (crypto->INTSTS & CRYPTO_INTSTS_CHAPOLYEIF_Msk)
+        {
+            printf("CHAPOLY INTSTS error flag set!!\n");
+		}
+        printf("CHAPOLY INTSTS = 0x%08x !!\n", CRYPTO->CHAPOLY_STS);
 		CHAPOLY_CLR_INT_FLAG(crypto);
 	}
 }
@@ -3388,45 +3371,45 @@ void CHAPOLY_Complete(CRYPTO_T *crypto)
 
 /**
   * @brief  Start ChaCha Key anf Nonce
-  * @param[in]  crpt  The pointer of CRYPTO module
-  * @param[in]  key  The pointer of key array
-  * @param[in]  nonce  The pointer of nonce array
+  * @param[in]  crypto          The pointer of CRYPTO module
+  * @param[in]  key             The pointer of key array
+  * @param[in]  nonce           The pointer of nonce array
+  * @param[in]  counter         The block counter 
   * @return None
   */
 void CHA_SetKeyandNonce(CRYPTO_T *crypto,  unsigned char *key, unsigned char *nonce, int counter)
 {
-	  int   i;
-	  uint32_t  data32, ctrl = 0;
-	  for (i = 0; i < 8; i++) {
-			crypto->CHAPOLY_KEY[i] = *(uint32_t *)(&key[i * 4]);
-		
-		}
-		for (i = 0; i < 3; i++) {
-			crypto->CHAPOLY_NONCE[i] = *(uint32_t *)(&nonce[i * 4]);
+	int i;
+	uint32_t  data32, ctrl = 0;
+	for (i = 0; i < 8; i++) 
+    {
+        crypto->CHAPOLY_KEY[i] = *(uint32_t *)(&key[i * 4]);
+	
+	}
+	for (i = 0; i < 3; i++) 
+    {
+		crypto->CHAPOLY_NONCE[i] = *(uint32_t *)(&nonce[i * 4]);
 			
-		}
-		crypto->CHAPOLY_BLOCKCNT = counter;
-
+	}
+	crypto->CHAPOLY_BLOCKCNT = counter;
 }
 
 
 /**
   * @brief  Configure ChaCha DMA source, destination, and source length
-  * @param[in]  crpt                      The pointer of CRYPTO module
+  * @param[in]  crypto               The pointer of CRYPTO module
   * @param[in]  u8pInputData         The pointer of DMA source address
-  * @param[in]  u8pOutputData      The pointer of DMA destination address
-  * @param[in]  source                  The pointer of input data module
-  * @param[in]  src_len                 The length of input data
+  * @param[in]  u8pOutputData        The pointer of DMA destination address
+  * @param[in]  src_len              The length of input data
   * @return None
   */
-
 void CHA_SetDMATransfer(CRYPTO_T *crypto, uint8_t* u8pInputData,  uint8_t* u8pOutputData, int src_len)
 {
-		crypto->CHAPOLY_SADDR = (uint32_t)u8pInputData;
-	  crypto->CHAPOLY_DADDR = (uint32_t)u8pOutputData;
-	  crypto->CHAPOLY_CNT = src_len;
+	crypto->CHAPOLY_SADDR = (uint32_t)u8pInputData;
+	crypto->CHAPOLY_DADDR = (uint32_t)u8pOutputData;
+	crypto->CHAPOLY_CNT = src_len;
 	
-	  memset(&u8pInputData[src_len], 0, 4);  // for non-4-bytes-aligned do_swap_to
+	memset(&u8pInputData[src_len], 0, 4);  // for non-4-bytes-aligned do_swap_to
 
 //	  memset(&source[src_len], 0, 4);  // for non-4-bytes-aligned do_swap_to  
 //	  memcpy(u8pInputData, source, src_len);
@@ -3435,7 +3418,7 @@ void CHA_SetDMATransfer(CRYPTO_T *crypto, uint8_t* u8pInputData,  uint8_t* u8pOu
 
 /**
   * @brief  Start ChaCha encrypt/decrypt
-  * @param[in]  crpt                 The pointer of CRYPTO module
+  * @param[in]  crypto            The pointer of CRYPTO module
   * @param[in]  is_encrypt        The mode of ChaCha operation, only works for AEAD
   * @return None
   */
@@ -3466,30 +3449,48 @@ void CHA_Start(CRYPTO_T *crypto, int is_encrypt)
 #endif
 }
 
-
+/**
+  * @brief  Set Poly1305 encrypt/decrypt
+  * @param[in]  crypto    The pointer of CRYPTO module
+  * @param[in]  key       The pointer of the key
+  * @return None
+  */
 void POLY1305_SetKeyandClearNonce(CRYPTO_T *crypto,  unsigned char *key)
 {
-		  int  i;
-	    uint32_t  ctrl = 0;
+	int  i;
+	uint32_t  ctrl = 0;
 		
-    	memcpy((void*)(crypto->CHAPOLY_KEY), key, 32);
-	    for (i = 0; i < 8; i++) {
-		    crypto->CHAPOLY_KEY[i] = *(uint32_t *)(&key[i * 4]);
-		   
-	    }
-	    for (i = 0; i < 3; i++)
-		  crypto->CHAPOLY_NONCE[i] = 0;
+    memcpy((void*)(crypto->CHAPOLY_KEY), key, 32);
+	for (i = 0; i < 8; i++) 
+    {
+	    crypto->CHAPOLY_KEY[i] = *(uint32_t *)(&key[i * 4]);
+    }
+	for (i = 0; i < 3; i++)
+	    crypto->CHAPOLY_NONCE[i] = 0;
 }
 
-
+/**
+  * @brief  Set Poly1305 DMATransfer
+  * @param[in]  crypto          The pointer of CRYPTO module
+  * @param[in]  u8pInputData    The pointer of input data
+  * @param[in]  u8pOutputData   The pointer of output data
+  * @param[in]  src_len         The input data length
+  * @return None
+  */
 void POLY1305_SetDMATransfer(CRYPTO_T *crypto, uint8_t* u8pInputData,  uint8_t* u8pOutputData, int src_len)
 {
     crypto->CHAPOLY_BLOCKCNT = 0;
-	  crypto->CHAPOLY_SADDR = (uint32_t)u8pInputData;
-	  crypto->CHAPOLY_DADDR = (uint32_t)u8pOutputData;
-	  crypto->CHAPOLY_CNT = src_len;
+	crypto->CHAPOLY_SADDR = (uint32_t)u8pInputData;
+	crypto->CHAPOLY_DADDR = (uint32_t)u8pOutputData;
+	crypto->CHAPOLY_CNT = src_len;
 }
 
+/**
+  * @brief  Start Poly1305 
+  * @param[in]  crypto          The pointer of CRYPTO module
+  * @param[in]  u8pInputData    The pointer of input data
+  * @return None
+  */
 void POLY1305_Start(CRYPTO_T *crypto)
 {
     uint32_t  ctrl = 0;
@@ -3509,7 +3510,11 @@ void POLY1305_Start(CRYPTO_T *crypto)
 #endif
 }
 
-
+/**
+  * @brief  Start Chachapoly AEAD 
+  * @param[in]  crypto       The pointer of CRYPTO module
+  * @return None
+  */
 void CHAPOLY_Start(CRYPTO_T *crypto)
 {
     uint32_t  ctrl = 0;
@@ -3529,4 +3534,6 @@ void CHAPOLY_Start(CRYPTO_T *crypto)
 #endif
 }
 
-
+/*@}*/ /* end of group CRYPTO_EXPORTED_FUNCTIONS */
+/*@}*/ /* end of group CRYPTO_Driver */
+/*@}*/ /* end of group Standard_Driver */
