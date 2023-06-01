@@ -57,7 +57,7 @@ int SetupMPC(const uint32_t mpc_baseaddr,
     const struct mpc_sie_dev_cfg_t mpc_dev_cfg = {mpc_baseaddr};
 
     /* MPC device data */
-    struct mpc_sie_dev_data_t mpc_dev_data = {};
+    struct mpc_sie_dev_data_t mpc_dev_data;
 
     /* MPC device itself */
     struct mpc_sie_dev_t mpc_dev = {&mpc_dev_cfg, &mpc_dev_data};
