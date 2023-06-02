@@ -117,14 +117,14 @@ void vParTestInitialise( void )
     /* Set HCLK1 divide 1 */
     CLK_SET_HCLK1DIV(1);
     
-    /* Set HCLK2 divide 1 */
-    CLK_SET_HCLK2DIV(1);
+    /* Set HCLK2 divide 2 */
+    CLK_SET_HCLK2DIV(2);
 
-    CLK_PCLKDIV_PCLK0DIV(1);
-    CLK_PCLKDIV_PCLK1DIV(1);
-    CLK_PCLKDIV_PCLK2DIV(1);
-    CLK_PCLKDIV_PCLK3DIV(1);
-    CLK_PCLKDIV_PCLK4DIV(1);
+    CLK_PCLKDIV_PCLK0DIV(2);
+    CLK_PCLKDIV_PCLK1DIV(2);
+    CLK_PCLKDIV_PCLK2DIV(2);
+    CLK_PCLKDIV_PCLK3DIV(2);
+    CLK_PCLKDIV_PCLK4DIV(2);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */

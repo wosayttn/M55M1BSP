@@ -1,27 +1,44 @@
 /******************************************************************************
- * @file     main.c
- * @version  V1.00
- * @brief    NPU 2D convolution sample code
- *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- *****************************************************************************/
+* @file    npu_cunit.c
+* @version V1.00
+* @brief   NPU CUnit Test
+*
+* SPDX-License-Identifier: Apache-2.0
+* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
 #include "NuMicro.h"
-#include "sys.h"
+#include "CUnit.h"
+#include "Console.h"
+#include "npu_cunit.h"
 
 #include "ethosu_driver.h"
-#include "command_stream.hpp"
 
-using namespace std;
-using namespace EthosU::CommandStream;
+/****************************************************************************
+ * Define
+ ****************************************************************************/
+
+#define DRIVER_ACTION_MAGIC() 'C', 'O', 'P', '1',
+
+#define DRIVER_ACTION_COMMAND_STREAM(length) 0x02, (length >> 16) & 0xff, length & 0xff, (length >> 8) & 0xff,
+
+#define DRIVER_ACTION_NOP() 0x05, 0x00, 0x00, 0x00,
+
+#define NPU_OP_STOP(mask) (mask >> 8) && 0xff, mask & 0xff, 0x08, 0x00,
+
+#define ethosu_scratch          0
+#define ETHOSU_FAST_MEMORY_SIZE 0
+
+#define ETHOSU_BASEP_INDEXES 8
 
 /****************************************************************************
  * Data
  ****************************************************************************/
 // clang-format off
-__attribute__((section(".data.command_stream"), aligned(16))) const char commandStream[] = {
+__attribute__((section(".data.command_stream"), aligned(16))) const char g_NPU_commandStream[] =
+{
     DRIVER_ACTION_MAGIC()
     DRIVER_ACTION_NOP()
     DRIVER_ACTION_NOP()
@@ -92,20 +109,23 @@ __attribute__((section(".data.command_stream"), aligned(16))) const char command
     0x00, 0x00, 0xff, 0xff,                          // cmd0.NPU_OP_STOP                  65535   -
 }; // clang-format on
 
-__attribute__((section(".data.weight"), aligned(16))) const char weightsBiases0[] = {
+__attribute__((section(".data.weight"), aligned(16))) const char g_NPU_weightsBiases0[] =
+{
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x22, 0xa4, 0x7b, 0x26, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x22, 0xa4, 0x7b,
     0x26, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x00, 0x5c, 0xe6, 0x4d, 0xf9, 0xef, 0x6f, 0xcf,
     0x5e, 0x2e, 0xbe, 0x0d, 0xbd, 0x4c, 0xfc, 0x0b, 0xeb, 0xa9, 0x29, 0xd9, 0x27, 0xe7, 0xa4, 0xf4, 0x63, 0xf3, 0x92,
     0x42, 0x32, 0xa2, 0x81, 0x51, 0x01, 0xc1, 0x00, 0x00, 0xf0, 0xaf, 0xeb, 0xcd, 0xc3, 0xe1, 0x12, 0xb7, 0x44, 0xff,
     0x4f, 0xbb, 0x39, 0x01, 0x08, 0x9e, 0x96, 0x87, 0xff, 0xff, 0xff, 0x0f, 0x00, 0x00, 0x4c, 0x35, 0x30, 0x89, 0x1d,
-    0x00, 0xe0, 0xfc, 0xff, 0xbf, 0x1f, 0xfc, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+    0x00, 0xe0, 0xfc, 0xff, 0xbf, 0x1f, 0xfc, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
+};
 
-__attribute__((section(".bss.tensor_arena"), aligned(16))) char scratch[1280];
+__attribute__((section(".bss.tensor_arena"), aligned(16))) char g_NPU_scratch[1280];
 
-__attribute__((section(".bss.tensor_arena"), aligned(16))) char fastScratch[1280];
+__attribute__((section(".bss.tensor_arena"), aligned(16))) char g_NPU_fastScratch[1280];
 
-char input0[] = {
+char g_NPU_input0[] =
+{
     0xac, 0x0a, 0x7f, 0x8c, 0x2f, 0xaa, 0xc4, 0x97, 0x75, 0xa6, 0x16, 0xb7, 0xc0, 0xcc, 0x21, 0xd8, 0x43, 0xb3, 0x4e,
     0x9a, 0xfb, 0x52, 0xa2, 0xdb, 0xc3, 0x76, 0x7d, 0x8b, 0x67, 0x7d, 0xe5, 0xd8, 0x09, 0xa4, 0x74, 0x6c, 0xd3, 0xde,
     0xa1, 0x9f, 0x15, 0x51, 0x59, 0xa5, 0xf2, 0xd6, 0x66, 0x62, 0x24, 0xb7, 0x05, 0x70, 0x57, 0x3a, 0x2b, 0x4c, 0x46,
@@ -159,268 +179,138 @@ char input0[] = {
     0x25, 0xf7, 0x19, 0xc0, 0x49, 0xb1, 0xd0, 0xa5, 0xa5, 0x96, 0xbc, 0x43, 0xaa, 0xb9, 0x79, 0x07, 0xe0, 0xa8, 0x76,
     0xcb, 0x56, 0x80, 0x75, 0x34, 0x80, 0x88, 0xbd, 0xe5, 0xc1, 0xf4, 0x53, 0x36, 0x04, 0x3b, 0xa1, 0x8a, 0xdc, 0xa4,
     0x68, 0x27, 0x16, 0x65, 0xa0, 0xc3, 0x81, 0x6c, 0xe4, 0x3c, 0x6a, 0x9e, 0xfb, 0x95, 0x3c, 0x9b, 0xfb, 0xea, 0x90,
-    0x79, 0x79, 0xd8, 0xe9, 0x04, 0x46, 0x95, 0x5a, 0x78, 0xd5, 0x01, 0x34, 0x4d, 0x1f, 0xa9, 0x50, 0xb7};
+    0x79, 0x79, 0xd8, 0xe9, 0x04, 0x46, 0x95, 0x5a, 0x78, 0xd5, 0x01, 0x34, 0x4d, 0x1f, 0xa9, 0x50, 0xb7
+};
 
-const char expected0[] = {0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x65, 0xff, 0x00, 0xff,
-                    0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x70, 0xff, 0x50, 0xff, 0x00, 0xff, 0x00, 0xff,
-                    0x59, 0xff, 0x88, 0xff, 0x00, 0xff, 0x00, 0xff, 0x31, 0xff, 0x7c, 0xff, 0x00, 0xff, 0x00, 0xff,
-                    0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x2a, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,
-                    0x00, 0xff, 0xab, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x73, 0xff,
-                    0x00, 0xff, 0x9d, 0xff, 0x00, 0xff, 0x00, 0xff, 0xbe, 0xff, 0xa5, 0xff, 0x00, 0xff, 0x5f, 0xff,
-                    0x00, 0xff, 0xbd, 0xff, 0x00, 0xff, 0x3f, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,
-                    0x00, 0xff, 0x00, 0xff, 0x17, 0xff, 0x00, 0xff, 0x00, 0xff, 0x1f, 0xff, 0x00, 0xff, 0x00, 0xff};
-
-/****************************************************************************
- * Variables
- ****************************************************************************/
-
-#define ethosu_scratch          0
-#define ETHOSU_FAST_MEMORY_SIZE 0
+const char g_NPU_expected0[] =
+{
+    0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x65, 0xff, 0x00, 0xff,
+    0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x70, 0xff, 0x50, 0xff, 0x00, 0xff, 0x00, 0xff,
+    0x59, 0xff, 0x88, 0xff, 0x00, 0xff, 0x00, 0xff, 0x31, 0xff, 0x7c, 0xff, 0x00, 0xff, 0x00, 0xff,
+    0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x2a, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,
+    0x00, 0xff, 0xab, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x73, 0xff,
+    0x00, 0xff, 0x9d, 0xff, 0x00, 0xff, 0x00, 0xff, 0xbe, 0xff, 0xa5, 0xff, 0x00, 0xff, 0x5f, 0xff,
+    0x00, 0xff, 0xbd, 0xff, 0x00, 0xff, 0x3f, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,
+    0x00, 0xff, 0x00, 0xff, 0x17, 0xff, 0x00, 0xff, 0x00, 0xff, 0x1f, 0xff, 0x00, 0xff, 0x00, 0xff
+};
 
 struct ethosu_driver ethosu0_driver;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/*---------------------------------------------------------------------------------------------------------*/
+/* Test function                                                                                           */
+/*---------------------------------------------------------------------------------------------------------*/
+
+int suite_success_init(void)
+{
+    return 0;
+}
+int suite_success_clean(void)
+{
+    return 0;
+}
+
+CU_SuiteInfo NPU_Suites[] =
+{
+    {"Test IP: NPU", suite_success_init, suite_success_clean, NULL, NULL, NPU_TestCases},
+    CU_SUITE_INFO_NULL
+};
 
 void NPU_IRQHandler(void)
 {
-//    printf("NPU_IRQHandler \n");
-	ethosu_irq_handler(&ethosu0_driver);
+    ethosu_irq_handler(&ethosu0_driver);
 }
 
-#ifdef __cplusplus
-}
-#endif
-
-void SYS_Init(void)
+void TestFunc_NPU_Open_Close()
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/
-
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
+	uint32_t u32SecureEnable;
+	uint32_t u32PrivilegeEnable;
 	
-    /* Switch SCLK clock source to HIRC before PLL setting */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC, CLK_ACLKDIV_ACLKDIV(1));
-
-	/* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
-
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
-
-	/* Set HCLK0 divide 1 */
-    CLK_SET_HCLK0DIV(1);
-    
-    /* Set HCLK1 divide 1 */
-    CLK_SET_HCLK1DIV(1);
-    
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    CLK_PCLKDIV_PCLK0DIV(2);
-    CLK_PCLKDIV_PCLK1DIV(2);
-    CLK_PCLKDIV_PCLK2DIV(2);
-    CLK_PCLKDIV_PCLK3DIV(2);
-    CLK_PCLKDIV_PCLK4DIV(2);
-
-    /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
-    SystemCoreClockUpdate();
-
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
-    /* Enable GPIOA module clock */
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    CLK_EnableModuleClock(GPIOB_MODULE);
-    CLK_EnableModuleClock(GPIOC_MODULE);
-    CLK_EnableModuleClock(GPIOD_MODULE);
-    CLK_EnableModuleClock(GPIOE_MODULE);
-    CLK_EnableModuleClock(GPIOF_MODULE);
-    CLK_EnableModuleClock(GPIOG_MODULE);
-    CLK_EnableModuleClock(GPIOH_MODULE);
-    CLK_EnableModuleClock(GPIOI_MODULE);
-    CLK_EnableModuleClock(GPIOJ_MODULE);
-
-    /* Enable FMC0 module clock to keep FMC clock when CPU idle but NPU running*/
-	CLK_EnableModuleClock(FMC0_MODULE);
-
-    /* Enable NPU module clock */
-    CLK_EnableModuleClock(NPU0_MODULE);
-
-	/* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
-
-	/*---------------------------------------------------------------------------------------------------------*/
-    /* Init I/O Multi-function                                                                                 */
-    /*---------------------------------------------------------------------------------------------------------*/
-
-    /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
-
-}
-
-void UART0_Init(void)
-{
-    /* Init UART0 to 115200-8n1 for print message */
-    UART_Open(UART0, 115200);
-}
-
-
-static uint64_t cpu_cycle_count = 0;    /* 64-bit cpu cycle counter */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-void SysTick_Handler(void)
-{
-    /* Increment the cycle counter based on load value. */
-    cpu_cycle_count += SysTick->LOAD + 1;
-}
-
-#ifdef __cplusplus
-}
-#endif
-
-/**
- * Gets the current SysTick derived counter value
- */
-static uint64_t Get_SysTick_Cycle_Count(void)
-{
-    uint32_t systick_val;
-
-    NVIC_DisableIRQ(SysTick_IRQn);
-    systick_val = SysTick->VAL & SysTick_VAL_CURRENT_Msk;
-    NVIC_EnableIRQ(SysTick_IRQn);
-
-    return cpu_cycle_count + (SysTick->LOAD - systick_val);
-}
-
-
-/**
- * SysTick initialisation
- */
-static int Init_SysTick(void)
-{
-    const uint32_t ticks_10ms = SystemCoreClock/100 + 1;
-    int err = 0;
-
-    /* Reset CPU cycle count value. */
-    cpu_cycle_count = 0;
-
-    /* Changing configuration for sys tick => guard from being
-     * interrupted. */
-    NVIC_DisableIRQ(SysTick_IRQn);
-
-    /* SysTick init - this will enable interrupt too. */
-    err = SysTick_Config(ticks_10ms);
-
-    /* Enable interrupt again. */
-    NVIC_EnableIRQ(SysTick_IRQn);
-
-    /* Wait for SysTick to kick off */
-    while (!err && !SysTick->VAL) {
-        __NOP();
-    }
-
-    return err;
-}
-
-
-int main(void)
-{
-
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
-    SYS_Init(); /* Init System, IP clock and multi-function I/O */
-
-    /* Init UART to 115200-8n1 for print message */
-    UART0_Init();
-
-    printf("+-------------------------------------------+\n");
-    printf("|    NPU 2D convolution sample code         |\n");
-    printf("+-------------------------------------------+\n");
-
-	
-    SYS_LockReg();                   /* Unlock register lock protect */
-	Init_SysTick();
-
-	SCB_EnableDCache();
-	SCB_EnableICache();
-
-	memcpy(scratch, input0, sizeof(input0));
-	memcpy(fastScratch, input0, sizeof(input0));
-
-	if(memcmp(scratch, input0, sizeof(input0))!=0)
+	//Secure and Privilege enable/disable test
+	for(u32SecureEnable = 0; u32SecureEnable <= 1; u32SecureEnable ++)
 	{
-		printf("copy input data to scratch failed \n");
+		for(u32PrivilegeEnable = 0; u32PrivilegeEnable <= 1; u32PrivilegeEnable ++)
+		{
+			CU_ASSERT((ethosu_init(&ethosu0_driver,
+                    (void *)(NPU_BASE),
+                    ethosu_scratch,
+                    ETHOSU_FAST_MEMORY_SIZE,
+                    u32SecureEnable,
+                    u32PrivilegeEnable) == 0));
+			
+			ethosu_deinit(&ethosu0_driver);
+		}
 	}
-	
+
+    ethosu_release_driver(&ethosu0_driver);
+}
+
+void TestFunc_NPU_Invoke()
+{
+    int i32Ret;
+
+    // Copy IFM to scratch buffr
+    memcpy(g_NPU_scratch, g_NPU_input0, sizeof(g_NPU_input0));
+    memcpy(g_NPU_fastScratch, g_NPU_input0, sizeof(g_NPU_input0));
+
+    // Base pointer array
+    uint64_t au64BaseAddr[ETHOSU_BASEP_INDEXES];
+    size_t au32BaseAddrSize[ETHOSU_BASEP_INDEXES];
+
     // Initialize Ethos-U NPU driver
-    if (ethosu_init(&ethosu0_driver,
-                    reinterpret_cast<void *>(NPU_BASE),
+    ethosu_init(&ethosu0_driver,
+                    (void *)(NPU_BASE),
                     ethosu_scratch,
                     ETHOSU_FAST_MEMORY_SIZE,
                     1,
-                    1)) {
-        printf("Failed to initialize NPU.\n");
-        return -1;
-    }
-	
-	// Enable Ethos-U interrupt
-    NVIC_EnableIRQ(static_cast<IRQn_Type>(NPU_IRQn));
+                    1);
 
-    CommandStream cs(DataPointer(commandStream, sizeof(commandStream)),
-                     BasePointers({DataPointer(weightsBiases0, sizeof(weightsBiases0)),
-                                   DataPointer(scratch, sizeof(scratch)),
-                                   DataPointer(fastScratch, sizeof(fastScratch))}),
-                     PmuEvents({ETHOSU_PMU_CYCLE, ETHOSU_PMU_NPU_IDLE, ETHOSU_PMU_NPU_ACTIVE}));
+    // Enable Ethos-U interrupt
+    NVIC_EnableIRQ(NPU_IRQn);
 
-    const size_t repeat = 10;
+	ethosu_request_power(&ethosu0_driver);
 
-    // Input data located inside the scratch buffer
-    DataPointer inputPointer(scratch, sizeof(input0));
+	// Setup base address and size
+	memset(au64BaseAddr, 0, sizeof(au64BaseAddr));
+    memset(au32BaseAddrSize, 0, sizeof(au32BaseAddrSize));
 
-    // Output data located inside the scratch buffer
-    DataPointer outputPointer(scratch + 1024, sizeof(expected0));
+    au64BaseAddr[0] = (uint64_t)g_NPU_weightsBiases0;
+    au32BaseAddrSize[0] = sizeof(g_NPU_weightsBiases0);
+    au64BaseAddr[1] = (uint64_t)g_NPU_scratch;
+    au32BaseAddrSize[1] = sizeof(g_NPU_scratch);
+    au64BaseAddr[2] = (uint64_t)g_NPU_fastScratch;
+    au32BaseAddrSize[2] = sizeof(g_NPU_fastScratch);
 
-    // Expected output data
-    DataPointer expectedPointer(expected0, sizeof(expected0));
+	// Invoke test: valid command stream
+	i32Ret = ethosu_invoke_v3(&ethosu0_driver,
+                              (void *)g_NPU_commandStream,
+                              sizeof(g_NPU_commandStream),
+                              au64BaseAddr,
+                              au32BaseAddrSize,
+                              ETHOSU_BASEP_INDEXES,
+                              NULL);
+	CU_ASSERT((i32Ret == 0));
+	CU_ASSERT((memcmp(g_NPU_expected0, g_NPU_scratch + 1024, sizeof(g_NPU_expected0)) == 0));
+							  
+	// Invoke test: illegal command stream
+	i32Ret = ethosu_invoke_v3(&ethosu0_driver,
+                              (void *) 0,
+                              sizeof(g_NPU_commandStream),
+                              au64BaseAddr,
+                              au32BaseAddrSize,
+                              ETHOSU_BASEP_INDEXES,
+                              NULL);
+	CU_ASSERT((i32Ret != 0));
 
-    // Clear PMU
-    cs.getPmu().clear();
-	uint64_t u64SysTickCnt = Get_SysTick_Cycle_Count();
-
-	printf("Start inference \n");
-					 
-    // Run inference
-	int ret             = cs.run(repeat);
-    uint64_t cycleCount = cs.getPmu().getCycleCount();
-    uint64_t u64SysTickTotalCnt = Get_SysTick_Cycle_Count();
-
-	
-    // Print PMU counters
-    cs.getPmu().print();
-    printf("cycleCount=%llu, sysTickCount=%llu, cycleCountPerJob=%llu\n",
-			cycleCount,
-			(u64SysTickTotalCnt -  u64SysTickCnt),
-			cycleCount / repeat);
-
-    // Compare outut with expected data
-    if (outputPointer != expectedPointer) {
-        printf("Output mismatch\n");
-        return 1;
-    }
-
-    printf("Execute done and result successful\n");
-    return ret;
+	ethosu_deinit(&ethosu0_driver);
+    ethosu_release_power(&ethosu0_driver);
+    ethosu_release_driver(&ethosu0_driver);
 }
+
+CU_TestInfo NPU_TestCases[] =
+{
+    { "NPU Open_Close Function", TestFunc_NPU_Open_Close },
+    { "NPU Invoke",           TestFunc_NPU_Invoke },
+    CU_TEST_INFO_NULL
+};
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

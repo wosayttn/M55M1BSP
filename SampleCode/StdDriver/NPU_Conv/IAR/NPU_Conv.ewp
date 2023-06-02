@@ -214,7 +214,7 @@
                 <debug>1</debug>
                 <option>
                     <name>CCDefines</name>
-                    <state></state>
+                    <state>NVT_DCACHE_OFF</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
