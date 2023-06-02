@@ -31,12 +31,6 @@ extern "C"
 /* LPUART FIFO size constants definitions                                                                    */
 /*---------------------------------------------------------------------------------------------------------*/
 #define LPUART0_FIFO_SIZE 16UL /*!< LPUART0 supports separated receive/transmit 16/16 bytes entry FIFO */
-#define LPUART1_FIFO_SIZE 16UL /*!< LPUART1 supports separated receive/transmit 16/16 bytes entry FIFO */
-#define LPUART2_FIFO_SIZE 16UL /*!< LPUART2 supports separated receive/transmit 16/16 bytes entry FIFO */
-#define LPUART3_FIFO_SIZE 16UL /*!< LPUART3 supports separated receive/transmit 16/16 bytes entry FIFO */
-#define LPUART4_FIFO_SIZE 16UL /*!< LPUART4 supports separated receive/transmit 16/16 bytes entry FIFO */
-#define LPUART5_FIFO_SIZE 16UL /*!< LPUART5 supports separated receive/transmit 16/16 bytes entry FIFO */
-
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* LPUART_FIFO constants definitions                                                                         */
@@ -69,14 +63,15 @@ extern "C"
 #define LPUART_STOP_BIT_1_5   (0x1UL << LPUART_LINE_NSB_Pos) /*!< LPUART_LINE setting for 1.5 stop bit when 5-bit word length */
 #define LPUART_STOP_BIT_2     (0x1UL << LPUART_LINE_NSB_Pos) /*!< LPUART_LINE setting for two stop bit when 6, 7, 8-bit word length */
 
-#define LPUART_AUTOCTL_TRIGSEL_LPTMR0     (0UL<<LPUART_AUTOCTL_TRIGSEL_Pos)     /*!< Low Power Auto-operation Trigger Source from LPTMR0   \hideinitializer */
-#define LPUART_AUTOCTL_TRIGSEL_LPTMR1     (1UL<<LPUART_AUTOCTL_TRIGSEL_Pos)     /*!< Low Power Auto-operation Trigger Source from LPTMR1   \hideinitializer */
-#define LPUART_AUTOCTL_TRIGSEL_TTMR0      (2UL<<LPUART_AUTOCTL_TRIGSEL_Pos)     /*!< Low Power Auto-operation Trigger Source from TTMR0    \hideinitializer */
-#define LPUART_AUTOCTL_TRIGSEL_TTMR1      (3UL<<LPUART_AUTOCTL_TRIGSEL_Pos)     /*!< Low Power Auto-operation Trigger Source from TTMR1    \hideinitializer */
-#define LPUART_AUTOCTL_TRIGSEL_WKIOA0     (4UL<<LPUART_AUTOCTL_TRIGSEL_Pos)     /*!< Low Power Auto-operation Trigger Source from WKIOA0.  \hideinitializer */
-#define LPUART_AUTOCTL_TRIGSEL_WKIOB0     (5UL<<LPUART_AUTOCTL_TRIGSEL_Pos)     /*!< Low Power Auto-operation Trigger Source from WKIOB0.  \hideinitializer */
-#define LPUART_AUTOCTL_TRIGSEL_WKIOC0     (6UL<<LPUART_AUTOCTL_TRIGSEL_Pos)     /*!< Low Power Auto-operation Trigger Source from WKIOC0.  \hideinitializer */
-#define LPUART_AUTOCTL_TRIGSEL_WKIOD0     (7UL<<LPUART_AUTOCTL_TRIGSEL_Pos)     /*!< Low Power Auto-operation Trigger Source from WKIOD0.  \hideinitializer */
+#define LPUART_AUTOCTL_TRIGSEL_SOFTWARE   (0UL)                                                             /*!< Low Power Auto-operation Trigger Source from Software \hideinitializer */
+#define LPUART_AUTOCTL_TRIGSEL_LPTMR0     (0UL<<LPUART_AUTOCTL_TRIGSEL_Pos | LPUART_AUTOCTL_TRIGEN_Msk)     /*!< Low Power Auto-operation Trigger Source from LPTMR0   \hideinitializer */
+#define LPUART_AUTOCTL_TRIGSEL_LPTMR1     (1UL<<LPUART_AUTOCTL_TRIGSEL_Pos | LPUART_AUTOCTL_TRIGEN_Msk)     /*!< Low Power Auto-operation Trigger Source from LPTMR1   \hideinitializer */
+#define LPUART_AUTOCTL_TRIGSEL_TTMR0      (2UL<<LPUART_AUTOCTL_TRIGSEL_Pos | LPUART_AUTOCTL_TRIGEN_Msk)     /*!< Low Power Auto-operation Trigger Source from TTMR0    \hideinitializer */
+#define LPUART_AUTOCTL_TRIGSEL_TTMR1      (3UL<<LPUART_AUTOCTL_TRIGSEL_Pos | LPUART_AUTOCTL_TRIGEN_Msk)     /*!< Low Power Auto-operation Trigger Source from TTMR1    \hideinitializer */
+#define LPUART_AUTOCTL_TRIGSEL_WKIOA0     (4UL<<LPUART_AUTOCTL_TRIGSEL_Pos | LPUART_AUTOCTL_TRIGEN_Msk)     /*!< Low Power Auto-operation Trigger Source from WKIOA0.  \hideinitializer */
+#define LPUART_AUTOCTL_TRIGSEL_WKIOB0     (5UL<<LPUART_AUTOCTL_TRIGSEL_Pos | LPUART_AUTOCTL_TRIGEN_Msk)     /*!< Low Power Auto-operation Trigger Source from WKIOB0.  \hideinitializer */
+#define LPUART_AUTOCTL_TRIGSEL_WKIOC0     (6UL<<LPUART_AUTOCTL_TRIGSEL_Pos | LPUART_AUTOCTL_TRIGEN_Msk)     /*!< Low Power Auto-operation Trigger Source from WKIOC0.  \hideinitializer */
+#define LPUART_AUTOCTL_TRIGSEL_WKIOD0     (7UL<<LPUART_AUTOCTL_TRIGSEL_Pos | LPUART_AUTOCTL_TRIGEN_Msk)     /*!< Low Power Auto-operation Trigger Source from WKIOD0.  \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* LPUART RTS ACTIVE LEVEL constants definitions                                                             */
@@ -575,6 +570,28 @@ __STATIC_INLINE void LPUART_SET_RTS(LPUART_T* lpuart)
 #define LPUART_AUTO_OP_SW_TRIGGER_ENABLE(lpuart)    ((lpuart)->AUTOCTL |= LPUART_AUTOCTL_SWTRIG_Msk)
 
 /**
+ *    @brief        Enable specified LPUART Bus Idle Time-out Wake-Up function
+ *
+ *    @param[in]    uart        The pointer of the specified LPUART module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
+
+#define LPUART_BUS_IDLE_TIMEOUT_WAKEUP_ENABLE(lpuart)    ((lpuart)->AUTOCTL |= LPUART_AUTOCTL_WKAOTOEN_Msk)
+/**
+ *    @brief        Disable specified LPUART Bus Idle Time-out Wake-Up  function
+ *
+ *    @param[in]    uart        The pointer of the specified LPUART module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
+#define LPUART_BUS_IDLE_TIMEOUT_WAKEUP_DISABLE(lpuart)    ((lpuart)->AUTOCTL &= ~LPUART_AUTOCTL_WKAOTOEN_Msk)
+
+/**
  *    @brief        Bus Idle Time-out Wake-up Status register value
  *
  *    @param[in]    lpuart    The pointer of the specified LPUART module
@@ -585,7 +602,7 @@ __STATIC_INLINE void LPUART_SET_RTS(LPUART_T* lpuart)
  *    @details      This macro get Bus Idle Time-out Wake-up Status register value.
  *    \hideinitializer
  */
-#define LPUART_BUS_IDLE_TIMEOUT_WAKEUP(lpuart) (((lpuart)->AUTOSTS & LPUART_AUTOSTS_AOTOWKF_Msk )>> LPUART_AUTOSTS_AOTOWKF_Pos)
+#define LPUART_IS_BUS_IDLE_TIMEOUT_WAKEUP(lpuart) (((lpuart)->AUTOSTS & LPUART_AUTOSTS_AOTOWKF_Msk )>> LPUART_AUTOSTS_AOTOWKF_Pos)
 /**
  *    @brief        Clear Bus Idle Time-out Wake-up Flag
  *
@@ -596,6 +613,29 @@ __STATIC_INLINE void LPUART_SET_RTS(LPUART_T* lpuart)
  *    @details      This macro clear Bus Idle time-out wake-up flag.
  */
 #define LPUART_CLEAR_BUS_IDLE_TIMEOUT_WAKEUP_FLAG(lpuart)    ((lpuart)->AUTOSTS = LPUART_AUTOSTS_AOTOWKF_Msk)
+/**
+ *    @brief        Enable specified LPUART Bus Idle Time-out function
+ *
+ *    @param[in]    uart        The pointer of the specified LPUART module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
+#define LPUART_BUS_IDLE_TIMEOUT_ENABLE(lpuart)    ((lpuart)->TOUT |= LPUART_TOUT_BITOMEN_Msk)
+/**
+ *    @brief        Disable specified LPUART Bus Idle Time-out function
+ *
+ *    @param[in]    uart        The pointer of the specified LPUART module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
+#define LPUART_BUS_IDLE_TIMEOUT_DISABLE(lpuart)    ((lpuart)->TOUT &= ~LPUART_TOUT_BITOMEN_Msk)
+
+
+
 
 void LPUART_ClearIntFlag(LPUART_T* lpuart, uint32_t u32InterruptFlag);
 void LPUART_Close(LPUART_T* lpuart);
@@ -609,7 +649,7 @@ void LPUART_SetLineConfig(LPUART_T* lpuart, uint32_t u32baudrate, uint32_t u32da
 void LPUART_SetTimeoutCnt(LPUART_T* lpuart, uint32_t u32TOC);
 void LPUART_SelectRS485Mode(LPUART_T* lpuart, uint32_t u32Mode, uint32_t u32Addr);
 uint32_t LPUART_Write(LPUART_T* lpuart, uint8_t pu8TxBuf[], uint32_t u32WriteBytes);
-void LPUART_SelectAutoOperationMode(LPUART_T* lpuart, uint32_t u32TrigSel, uint32_t u32ClockAoEn);
+void LPUART_SelectAutoOperationMode(LPUART_T* lpuart, uint32_t u32TrigSel);
 
 /** @} end of group LPUART_EXPORTED_FUNCTIONS */
 /** @} end of group LPUART_Driver */

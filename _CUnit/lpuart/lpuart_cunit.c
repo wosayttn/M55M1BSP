@@ -119,7 +119,7 @@ const uint32_t au32LpUartINTEnSel[10] =
     LPUART_INTEN_WKIEN_Msk,        //6 : Wake-up interrupt
     LPUART_INTEN_TOCNTEN_Msk,      //7 : Time-out interrupt
     LPUART_INTEN_ABRIEN_Msk,       //8 : Auto baud-rate interrupt
-    LPUART_INTEN_TXENDIEN_Msk,     //9: Tx end interrupt
+    LPUART_INTEN_TXENDIEN_Msk,     //9 : Tx end interrupt
 };
 
 void TestFunc_LPUART_EnableInt()
@@ -128,7 +128,7 @@ void TestFunc_LPUART_EnableInt()
     uint8_t u8LpUartINTEnIdx; //bit
 
     /* test loop */
-//    for (u8LpLpUartChIdx = 0; u8LpLpUartChIdx < LPUART_CH_NUM_MAX; u8LpLpUartChIdx++)
+//    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpLpUartChIdx++)
     {
         //enable interrupt
         for (u8LpUartINTEnIdx = 0; u8LpUartINTEnIdx < 10; u8LpUartINTEnIdx++)
@@ -160,20 +160,23 @@ void TestFunc_LPUART_EnableInt()
 
     }
 
-    NVIC_DisableIRQ(LPUART0_IRQn);
+//    NVIC_DisableIRQ(LPUART0_IRQn);
 
 }
 
 void SetLPUARTClockSource(LPUART_T* lpuart, uint32_t u32Source, uint32_t u32Div)
 {
-    if (lpuart == LPUART0)
+    /* Unlock protected registers */
+    SYS_UnlockReg(); 
+	  if (lpuart == LPUART0)
     {
         /* Set UART clock source selection */
         CLK->LPUARTSEL = (CLK->LPUARTSEL & ~ CLK_LPUARTSEL_LPUART0SEL_Msk) | (u32Source << CLK_LPUARTSEL_LPUART0SEL_Pos);
         /* Set UART clock divider number */
         CLK->LPUARTDIV = (CLK->LPUARTDIV & ~ CLK_LPUARTDIV_LPUART0DIV_Msk) | (u32Div << CLK_LPUARTDIV_LPUART0DIV_Pos);
     }
- 
+    /* Lock protected registers */
+    SYS_LockReg();
 }
 
 
@@ -195,7 +198,7 @@ uint32_t GetLpUartBaudrate(LPUART_T* lpuart)
 
     if(u32LpUartClkSrcSel == 0ul)
     {
-         au32ClkTbl[0] =CLK_GetPCLK4Freq();
+         au32ClkTbl[0] = CLK_GetPCLK4Freq();
     }
 
 
@@ -240,8 +243,6 @@ const uint32_t au32LpUartClkSel[4] =
     0x1, //LPUARTSEL_LXT,
     0x2, //LPUARTSEL_MIRC,
     0x3, //UARTSEL_HIRC,
-//    0x4, //UARTSEL_PLCK0,
-//    0x5, //UARTSEL_LIRC
 };
 
 
@@ -255,7 +256,7 @@ void TestFunc_LPUART_Open()
     uint32_t u32ClkTbl[4] = {0,__LXT, __MIRC, __HIRC};
     uint32_t i;
 
-
+    u32ClkTbl[0] =CLK_GetPCLK4Freq();
     //wait UART send message finish before change clock
     LPUART_WAIT_TX_EMPTY(LPUART0) {};
 
@@ -287,8 +288,9 @@ void TestFunc_LPUART_Open()
 
                     SetLPUARTClockSource(LPUART0, au32LpUartClkSel[u8LpUartClkIdx], u8LpUartDivIdx);
 
-                    for (i = 0; i < 1000; i++) __NOP();
-
+//                    for (i = 0; i < 1000; i++) __NOP();
+                    for (i = 0; i < 100; i++) __NOP();
+										
                     //test function
                     LPUART_Open(LPUART0, au32LpUartBRSel[u8LpUartBRIdx]);
                     //check
@@ -297,17 +299,6 @@ void TestFunc_LPUART_Open()
                     CU_ASSERT((LPUART0->FIFO & (LPUART_FIFO_RFITL_Msk | LPUART_BAUD_EDIVM1_Msk)) == 0);
                     CU_ASSERT(GetLpUartBaudrate(LPUART0) > (((au32LpUartBRSel[u8LpUartBRIdx]) * 90) / 100) &&
                               GetLpUartBaudrate(LPUART0) < (((au32LpUartBRSel[u8LpUartBRIdx]) * 110) / 100));
-//                    UART_Open(LPUART0, au32LpUartBRSel[u8LpUartBRIdx]);
-//                    UART_SelectSingleWireMode(LPUART0);
-//                    //check
-//                    CU_ASSERT(LPUART0->FUNCSEL == UART_FUNCSEL_SINGLE_WIRE);
-//                    LPUART0->FUNCSEL &= ((~UART_FUNCSEL_FUNCSEL_Msk) | UART_FUNCSEL_UART) ;
-//                    CU_ASSERT(LPUART0->FUNCSEL == UART_FUNCSEL_UART);
-//                    CU_ASSERT(LPUART0->LINE == (UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1));
-//                    CU_ASSERT((LPUART0->FIFO & (UART_FIFO_RFITL_Msk | UART_BAUD_EDIVM1_Msk)) == 0);
-//                    CU_ASSERT(GetLpUartBaudrate(LPUART0) > (((au32LpUartBRSel[u8LpUartBRIdx]) * 90) / 100) &&
-//                              GetLpUartBaudrate(LPUART0) < (((au32LpUartBRSel[u8LpUartBRIdx]) * 110) / 100));
-
 
 
                 }
@@ -365,10 +356,10 @@ void TestFunc_LPUART_SetLine_Config()
 //    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
     {
         //select UART baud rate
-        for (u8LpUartBRIdx = 7; u8LpUartBRIdx < 8; u8LpUartBRIdx++)
+        for (u8LpUartBRIdx = 0; u8LpUartBRIdx < 11; u8LpUartBRIdx++)
         {
             //select UART clock source
-            for (u8LpUartClkIdx = 0; u8LpUartClkIdx < 6; u8LpUartClkIdx++)
+            for (u8LpUartClkIdx = 0; u8LpUartClkIdx < 4; u8LpUartClkIdx++)
             {
                 //skip reserved clock source case
                 if (u8LpUartClkIdx == 1 || u8LpUartClkIdx == 2 ) continue;
@@ -417,11 +408,11 @@ void TestFunc_LPUART_SetLine_Config()
 
 
     //restore UART setting for other test
-    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
-    {
+//    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
+//    {
         LPUART0->LINE = (LPUART_WORD_LEN_8 | LPUART_PARITY_NONE | LPUART_STOP_BIT_1);
-        LPUART0->BAUD = LPUART_BAUD_MODE2 | LPUART_BAUD_MODE2_DIVIDER(__HXT, 115200);
-    }
+        LPUART0->BAUD = LPUART_BAUD_MODE2 | LPUART_BAUD_MODE2_DIVIDER(__HIRC, 115200);
+//    }
 }
 
 void TestFunc_LPUART_SetTimeoutCnt()
@@ -430,14 +421,27 @@ void TestFunc_LPUART_SetTimeoutCnt()
     uint16_t u16UartToutCnt;    //time out counter
 
     /* Test loop */
-    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX ; u8LpUartChIdx++)
+//    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX ; u8LpUartChIdx++)
     {
         for (u16UartToutCnt = 0; u16UartToutCnt < 256; u16UartToutCnt++)
         {
             LPUART_SetTimeoutCnt(LPUART0, u16UartToutCnt);
             CU_ASSERT((LPUART0->INTEN & LPUART_INTEN_TOCNTEN_Msk) == LPUART_INTEN_TOCNTEN_Msk);
             CU_ASSERT((LPUART0->TOUT & LPUART_TOUT_TOIC_Msk) == (u16UartToutCnt << LPUART_TOUT_TOIC_Pos));
-        }
+        
+				
+						LPUART_BUS_IDLE_TIMEOUT_ENABLE(LPUART0);
+            LPUART_SetTimeoutCnt(LPUART0, u16UartToutCnt);
+					  CU_ASSERT((LPUART0->TOUT & LPUART_TOUT_BITOMEN_Msk) == 0x80000000);
+            CU_ASSERT((LPUART0->INTEN & LPUART_INTEN_TOCNTEN_Msk) == LPUART_INTEN_TOCNTEN_Msk);
+            CU_ASSERT((LPUART0->TOUT & LPUART_TOUT_TOIC_Msk) == (u16UartToutCnt << LPUART_TOUT_TOIC_Pos));
+					  LPUART_BUS_IDLE_TIMEOUT_DISABLE(LPUART0);
+					  CU_ASSERT((LPUART0->TOUT & LPUART_TOUT_BITOMEN_Msk) == 0x0);
+            CU_ASSERT((LPUART0->INTEN & LPUART_INTEN_TOCNTEN_Msk) == LPUART_INTEN_TOCNTEN_Msk);
+            CU_ASSERT((LPUART0->TOUT & LPUART_TOUT_TOIC_Msk) == (u16UartToutCnt << UART_TOUT_TOIC_Pos));
+				
+				
+				}
     }
 }
 
@@ -449,7 +453,7 @@ void TestFunc_LPUART_SelectRS485Mode()
     uint16_t u16RS485AddrIdx;     //RS485 address
 
     /* Test loop */
-    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
+ //   for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
     {
         for (u8RS485ModeIdx = 0; u8RS485ModeIdx < 8; u8RS485ModeIdx++)
         {
@@ -468,10 +472,10 @@ void TestFunc_LPUART_SelectRS485Mode()
     }
 
     //restore UART setting for other test
-    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
+//    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
     {
         LPUART0->LINE = (LPUART_WORD_LEN_8 | LPUART_PARITY_NONE | LPUART_STOP_BIT_1);
-        LPUART0->BAUD = LPUART_BAUD_MODE2 | LPUART_BAUD_MODE2_DIVIDER(__HXT, 115200);
+        LPUART0->BAUD = LPUART_BAUD_MODE2 | LPUART_BAUD_MODE2_DIVIDER(__HIRC, 115200);
         LPUART0->FUNCSEL = LPUART_FUNCSEL_LPUART;
         LPUART0->ALTCTL &= ~(LPUART_ALTCTL_RS485NMM_Msk | LPUART_ALTCTL_RS485AAD_Msk | LPUART_ALTCTL_RS485AUD_Msk);
     }
@@ -494,10 +498,10 @@ void TestFunc_LPUART_TestMacroBR()
 
     /* Test macro: UART_BAUD_MODE0_DIVIDER */
     //select UART channel
-    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
+//    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
     {
         //select UART baud rate
-        for (u8LpUartBRIdx = 3; u8LpUartBRIdx < 4; u8LpUartBRIdx++)
+        for (u8LpUartBRIdx = 0; u8LpUartBRIdx < 11; u8LpUartBRIdx++)
         {
             //select UART clock source
             for (u8LpUartClkIdx = 0; u8LpUartClkIdx < 4; u8LpUartClkIdx++)
@@ -522,8 +526,8 @@ void TestFunc_LPUART_TestMacroBR()
                     /* Test macro: UART_BAUD_MODE0_DIVIDER */
                     LPUART0->BAUD = LPUART_BAUD_MODE0 | LPUART_BAUD_MODE0_DIVIDER(((u32ClkTbl[u8LpUartClkIdx]) / (u8LpUartDivIdx + 1)), au32LpUartBRSel[u8LpUartBRIdx]);
 
-                    for (i = 0; i < 10000; i++) __NOP();
-
+//                    for (i = 0; i < 10000; i++) __NOP();
+                    for (i = 0; i < 100; i++) __NOP();
                     CU_ASSERT(GetLpUartBaudrate(LPUART0) > (((au32LpUartBRSel[u8LpUartBRIdx]) * 90) / 100) &&
                               GetLpUartBaudrate(LPUART0) < (((au32LpUartBRSel[u8LpUartBRIdx]) * 110) / 100));
 
@@ -534,16 +538,16 @@ void TestFunc_LPUART_TestMacroBR()
 
     /* Test macro: UART_BAUD_MODE2_DIVIDER */
     //select UART channel
-    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
+//    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
     {
         //select UART baud rate
-        for (u8LpUartBRIdx = 7; u8LpUartBRIdx < 8; u8LpUartBRIdx++)
+        for (u8LpUartBRIdx = 0; u8LpUartBRIdx < 11; u8LpUartBRIdx++)
         {
             //select UART clock source
-            for (u8LpUartClkIdx = 0; u8LpUartClkIdx < 6; u8LpUartClkIdx++)
+            for (u8LpUartClkIdx = 0; u8LpUartClkIdx < 4; u8LpUartClkIdx++)
             {
                 //skip reserved clock source case
-                if (u8LpUartClkIdx == 1 || u8LpUartClkIdx == 2 || u8LpUartClkIdx == 5) continue;
+                if (u8LpUartClkIdx == 1 || u8LpUartClkIdx == 2 ) continue;
 
                 //select UART clock divider
                 for (u8LpUartDivIdx = 0; u8LpUartDivIdx < 16; u8LpUartDivIdx++)
@@ -562,8 +566,8 @@ void TestFunc_LPUART_TestMacroBR()
                     //test function
                     LPUART0->BAUD = LPUART_BAUD_MODE2 | LPUART_BAUD_MODE2_DIVIDER(((u32ClkTbl[u8LpUartClkIdx]) / (u8LpUartDivIdx + 1)), au32LpUartBRSel[u8LpUartBRIdx]);
 
-                    for (i = 0; i < 10000; i++) __NOP();
-
+//                    for (i = 0; i < 10000; i++) __NOP();
+                    for (i = 0; i < 100; i++) __NOP();
                     CU_ASSERT(GetLpUartBaudrate(LPUART0) > (((au32LpUartBRSel[u8LpUartBRIdx]) * 90) / 100) &&
                               GetLpUartBaudrate(LPUART0) < (((au32LpUartBRSel[u8LpUartBRIdx]) * 110) / 100));
 
@@ -577,7 +581,7 @@ void TestFunc_LPUART_TestMacroBR()
     CLK->UARTDIV0 &= (~CLK_LPUARTDIV_LPUART0DIV_Msk);
 
     //restore UART setting for other test
-    for (u8LpUartChIdx = 1; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
+//    for (u8LpUartChIdx = 1; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
     {
         LPUART0->LINE = (LPUART_WORD_LEN_8 | LPUART_PARITY_NONE | LPUART_STOP_BIT_1);
         LPUART0->BAUD = LPUART_BAUD_MODE2 | LPUART_BAUD_MODE2_DIVIDER(__HIRC, 115200);
@@ -590,10 +594,10 @@ void TestFunc_LPUART_TestMacroFIFO()
     uint8_t i;  //number control
 
     //wait UART send message finish
-    LPUART_WAIT_TX_EMPTY(LPUART0) {};
+    UART_WAIT_TX_EMPTY(UART0) {};
 
     /* Set UART1 internal loopback mode */
-    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
+//    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
     {
         LPUART0->FIFO |= LPUART_FIFO_RXRST_Msk;
 
@@ -633,24 +637,11 @@ void TestFunc_LPUART_TestMacroFIFO()
         LPUART0->MODEMSTS |= LPUART_MODEMSTS_CTSACTLV_Msk;
         //enable CTS auto flow control
         LPUART0->INTEN |= LPUART_INTEN_ATOCTSEN_Msk;
-
-        if (u8LpUartChIdx != 4)
+        //send data to let Tx full
+        for (i = 0; i < 16; i++)
         {
-            //send data to let Tx full
-            for (i = 0; i < 16; i++)
-            {
-                LPUART_WRITE(LPUART0, (0x55 + i));
-            }
+          LPUART_WRITE(LPUART0, (0x55 + i));
         }
-        else
-        {
-            //send data to let Tx full
-            for (i = 0; i < 3; i++)
-            {
-                LPUART_WRITE(LPUART0, (0x55 + i));
-            }
-        }
-
         //check macro
         CU_ASSERT(LPUART_GET_TX_EMPTY(LPUART0) == 0);
         CU_ASSERT(LPUART_GET_RX_EMPTY(LPUART0) == LPUART_FIFOSTS_RXEMPTY_Msk);
@@ -674,25 +665,12 @@ void TestFunc_LPUART_TestMacroFIFO()
         CU_ASSERT(LPUART_IS_TX_FULL(LPUART0) == 0);
         CU_ASSERT(LPUART_IS_RX_FULL(LPUART0) == 1);
         CU_ASSERT(LPUART_GET_TX_FULL(LPUART0) == 0);
-        CU_ASSERT(LPUART_GET_RX_FULL(LPUART0) == LPUART_FIFOSTS_RXFULL_Msk);
-
-        if (u8LpUartChIdx != 4)
+        CU_ASSERT(LPUART_GET_RX_FULL(LPUART0) == LPUART_FIFOSTS_RXFULL_Msk); 
+        //read Rx empty
+        for (i = 0; i < 16; i++)
         {
-            //read Rx empty
-            for (i = 0; i < 16; i++)
-            {
-                LPUART_READ(LPUART0);
-            }
+          LPUART_READ(LPUART0);
         }
-        else
-        {
-            //read Rx empty
-            for (i = 0; i < 3; i++)
-            {
-                LPUART_READ(LPUART0);
-            }
-        }
-
         //check macro
         CU_ASSERT(LPUART_GET_TX_EMPTY(LPUART0) == LPUART_FIFOSTS_TXEMPTY_Msk);
         CU_ASSERT(LPUART_GET_RX_EMPTY(LPUART0) == LPUART_FIFOSTS_RXEMPTY_Msk);
@@ -705,7 +683,7 @@ void TestFunc_LPUART_TestMacroFIFO()
         CU_ASSERT(LPUART_GET_RX_FULL(LPUART0) == 0);
     }
 
-    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
+//    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
     {
         //disable CTS auto flow control after test
         LPUART0->INTEN &= ~LPUART_INTEN_ATOCTSEN_Msk;
@@ -719,10 +697,8 @@ void TestFunc_LPUART_TestMacroRTS()
     uint8_t u8LpUartChIdx;    //UART channel index
     uint32_t i;
 
-    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
+//    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
     {
-        //skip reserved clock source case
-//        if (u8LpUartChIdx == 4) continue;
 
         /* Test macro : LPUART_CLEAR_RTS
                         LPUART_SET_RTS */
@@ -732,7 +708,8 @@ void TestFunc_LPUART_TestMacroRTS()
 
         while (!(LPUART0->MODEM & LPUART_MODEM_RTSSTS_Msk)) {};
 
-        for (i = 0; i < 1000000; i++) {};
+//        for (i = 0; i < 1000000; i++) {};
+				for (i = 0; i < 100; i++) {};
 
         CU_ASSERT((LPUART0->MODEM & (LPUART_MODEM_RTSSTS_Msk | LPUART_MODEM_RTSACTLV_Msk | LPUART_MODEM_RTS_Msk)) == (LPUART_MODEM_RTSSTS_Msk | LPUART_MODEM_RTSACTLV_Msk | LPUART_MODEM_RTS_Msk));
 
@@ -742,42 +719,24 @@ void TestFunc_LPUART_TestMacroRTS()
 
         CU_ASSERT((LPUART0->MODEM & (LPUART_MODEM_RTSSTS_Msk | LPUART_MODEM_RTSACTLV_Msk | LPUART_MODEM_RTS_Msk)) == LPUART_MODEM_RTSACTLV_Msk);
 
+				LPUART_RS485RTSDLY_SET(LPUART0,0x5555);
+				CU_ASSERT((LPUART0->RS485DD & LPUART_RS485DD_RTSDDLY_Msk ) == 0x5555);	
+				LPUART_RS485RTSDLY_SET(LPUART0,0xaaaa);
+				CU_ASSERT((LPUART0->RS485DD & LPUART_RS485DD_RTSDDLY_Msk ) == 0xaaaa);
+			  LPUART_RS485RTSDLY_SET(LPUART0,0);
+				CU_ASSERT((LPUART0->RS485DD & LPUART_RS485DD_RTSDDLY_Msk ) == 0);	
+			  LPUART_DEGLITCH_ENABLE(LPUART0);
+				CU_ASSERT((LPUART0->FUNCSEL & LPUART_FUNCSEL_DGE_Msk ) == 0x40);
+		    LPUART_DEGLITCH_DISABLE(LPUART0);
+				CU_ASSERT((LPUART0->FUNCSEL & LPUART_FUNCSEL_DGE_Msk ) == 0x0);					
+			  LPUART_TXRX_SWAP_ENABLE(LPUART0);
+				CU_ASSERT((LPUART0->FUNCSEL & LPUART_FUNCSEL_TXRXSWP_Msk ) == 0x80);
+		    LPUART_TXRX_SWAP_DISABLE(LPUART0);
+				CU_ASSERT((LPUART0->FUNCSEL & LPUART_FUNCSEL_TXRXSWP_Msk ) == 0x0);			
+					
     }
 }
-//void TestFunc_LPUART_SelectLINMode()
-//{
-//    uint8_t u8LpUartChIdx;        //UART channel index
-//    uint8_t u8LinModeIdx;       //LIN mode
-//    uint16_t u16LinBreakLen;    //LIN Break Length
 
-//    /* Test loop */
-//    for (u8LpUartChIdx = 1; u8LpUartChIdx < 2; u8LpUartChIdx++)
-//    {
-//        for (u8LinModeIdx = 0; u8LinModeIdx < 2; u8LinModeIdx++)
-//        {
-//            for (u16LinBreakLen = 1; u16LinBreakLen < 16; u16LinBreakLen++)
-//            {
-//                LPUART_SelectLINMode(LPUART0, LPUART_ALTCTL_LINTXEN_Msk, u16LinBreakLen);
-//                LPUART0->DAT = 0x55;
-//                LPUART_WAIT_TX_EMPTY(LPUART0) {};
-//                CU_ASSERT(LPUART0->FUNCSEL == LPUART_FUNCSEL_LIN);
-//                CU_ASSERT((LPUART0->ALTCTL & LPUART_ALTCTL_BRKFL_Msk) == u16LinBreakLen);
-
-//                LPUART_SelectLINMode(LPUART0, LPUART_ALTCTL_LINRXEN_Msk, 0);
-//                CU_ASSERT(LPUART0->FUNCSEL == LPUART_FUNCSEL_LIN);
-//                CU_ASSERT((LPUART0->ALTCTL & LPUART_ALTCTL_LINRXEN_Msk) == LPUART_ALTCTL_LINRXEN_Msk);
-//            }
-//        }
-//    }
-
-//    //restore UART setting for other test
-//    for (u8LpUartChIdx = 1; u8LpUartChIdx < LIN_CH_NUM_MAX; u8LpUartChIdx++)
-//    {
-//        LPUART0->FUNCSEL = LPUART_FUNCSEL_UART;
-//        LPUART0->ALTCTL &= ~(LPUART_ALTCTL_LINTXEN_Msk | LPUART_ALTCTL_LINRXEN_Msk);
-//    }
-
-//}
 void TestFunc_LPUART_TestMacroINT()
 {
     uint8_t u8LpUartChIdx;    //UART channel index
@@ -785,7 +744,7 @@ void TestFunc_LPUART_TestMacroINT()
     uint32_t i;
 
     //wait UART send message finish
-    LPUART_WAIT_TX_EMPTY(UART0) {};
+    UART_WAIT_TX_EMPTY(UART0) {};
 
     for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
     {
@@ -899,8 +858,9 @@ void TestFunc_LPUART_TestMacroINT()
 
         LPUART0->MODEMSTS |= LPUART_MODEMSTS_CTSDETF_Msk;
 
-        for (i = 0; i < 10000; i++) __NOP();
-
+//        for (i = 0; i < 10000; i++) __NOP();
+        for (i = 0; i < 100; i++) __NOP();
+					
         LPUART0->MODEMSTS |= LPUART_MODEMSTS_CTSDETF_Msk;
 
         // check macro
@@ -931,7 +891,7 @@ void TestFunc_LPUART_TestMacroINT()
 
         //5 : Buffer error interrupt
         // check macro
-        if (u8LpUartChIdx != 4)
+//      if (u8LpUartChIdx != 4)
             CU_ASSERT(LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_BUFERRIF_Msk) == 0);
 
         // send data and wait Rx buffer error flag happen
@@ -994,7 +954,7 @@ void TestFunc_LPUART_TestMacroINT()
         LPUART0->ALTCTL = 0xC;
 
 
-        //disable UART internal loopback mode after test */
+        //disable LPUART internal loopback mode after test */
         LPUART0->MODEM &= ~0x10;
 
         LPUART0->FUNCSEL = LPUART_FUNCSEL_LPUART;
@@ -1030,26 +990,26 @@ void TestFunc_LPUART_TestConstant()
     uint32_t i;
 
     //wait UART send message finish
-    LPUART_WAIT_TX_EMPTY(UART0) {};
+    UART_WAIT_TX_EMPTY(UART0) {};
 
     // Only uart0/uart1 support LIN mode for TC8237
     // Only uart0 support LIN mode for M252
 
-    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
+ //   for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
     {
         //select Rx FIFO trigger level
         for (u16TestIdx = 0; u16TestIdx < 4; u16TestIdx++)
         {
             LPUART0->FIFO = ((LPUART0->FIFO & (~LPUART_FIFO_RFITL_Msk)) | au32UartRxTrgSel[u16TestIdx]);
 
-            if (u8LpUartChIdx != 4)
+//            if (u8LpUartChIdx != 4)
             {
                 CU_ASSERT((LPUART0->FIFO & LPUART_FIFO_RFITL_Msk) == au32UartRxTrgSel[u16TestIdx]);
             }
-            else
-            {
-                CU_ASSERT((LPUART0->FIFO & LPUART_FIFO_RFITL_Msk) == au32UartRxTrgSel[0]);
-            }
+//            else
+//            {
+//                CU_ASSERT((LPUART0->FIFO & LPUART_FIFO_RFITL_Msk) == au32UartRxTrgSel[0]);
+//            }
 
         }
 
@@ -1058,14 +1018,14 @@ void TestFunc_LPUART_TestConstant()
         {
             LPUART0->FIFO = ((LPUART0->FIFO & (~LPUART_FIFO_RTSTRGLV_Msk)) | au32UartRTSTrgSel[u16TestIdx]);
 
-            if (u8LpUartChIdx != 4)
+//            if (u8LpUartChIdx != 4)
             {
                 CU_ASSERT((LPUART0->FIFO & LPUART_FIFO_RTSTRGLV_Msk) == au32UartRTSTrgSel[u16TestIdx]);
             }
-            else
-            {
-                CU_ASSERT((LPUART0->FIFO & LPUART_FIFO_RTSTRGLV_Msk) == au32UartRTSTrgSel[0]);
-            }
+//            else
+//            {
+//                CU_ASSERT((LPUART0->FIFO & LPUART_FIFO_RTSTRGLV_Msk) == au32UartRTSTrgSel[0]);
+//            }
         }
 
         //select RTS active level
@@ -1089,7 +1049,7 @@ void TestFunc_LPUART_ReadWrite()
     uint8_t u8RxData[8] = {0};
 
     /* Test loop */
-    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
+//    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
     {
         LPUART0->MODEM |= 0x10; // set loop back mode
 
@@ -1100,9 +1060,9 @@ void TestFunc_LPUART_ReadWrite()
         /* Reset Tx/Rx FIFO */
         LPUART0->FIFO |= 0x6;
 
-        while (LPUART0->FIFO & 0x6);
+        while (LPUART0->FIFO & 0x6){};
 
-        if (u8LpUartChIdx != 4)
+//        if (u8LpUartChIdx != 4)
         {
             /* Write data */
             LPUART_Write(LPUART0, u8TxData, 8);
@@ -1114,21 +1074,93 @@ void TestFunc_LPUART_ReadWrite()
                 CU_ASSERT(u8TxData[i] == u8RxData[i]);
             }
         }
-        else
-        {
-            /* Write data */
-            LPUART_Write(LPUART0, u8TxData, 1);
-            /* Read data */
-            LPUART_Read(LPUART0, u8RxData, 1);
+//        else
+//        {
+//            /* Write data */
+//            LPUART_Write(LPUART0, u8TxData, 1);
+//            /* Read data */
+//            LPUART_Read(LPUART0, u8RxData, 1);
 
-            CU_ASSERT(u8TxData[0] == u8RxData[0]);
+//            CU_ASSERT(u8TxData[0] == u8RxData[0]);
 
-        }
+//        }
 
     }
 
 }
+void TestFunc_LPUART_SetAutoOp()
+{
+ 
+  	LPUART_AUTO_OP_ENABLE(LPUART0);
+		CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_AOEN_Msk ) == 0x80000000);	
+	  LPUART_AUTO_OP_DISABLE(LPUART0);
+	  CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_AOEN_Msk ) == 0x0);
+    LPUART_AOUT_OP_CLOCK_ALWAYS_ON_ENABLE(LPUART0);
+		CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_CKAWOEN_Msk ) == 0x20);	
+	  LPUART_AOUT_OP_CLOCK_ALWAYS_ON_DISABLE(LPUART0);
+	  CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_CKAWOEN_Msk ) == 0x0);		
 
+    LPUART_BUS_IDLE_TIMEOUT_WAKEUP_ENABLE(LPUART0);
+		CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_WKAOTOEN_Msk ) == 0x100);	
+	  LPUART_BUS_IDLE_TIMEOUT_WAKEUP_DISABLE(LPUART0);
+	  CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_WKAOTOEN_Msk ) == 0x0);	
+
+	  LPUART_SelectAutoOperationMode(LPUART0,LPUART_AUTOCTL_TRIGSEL_SOFTWARE);
+	  CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_AOEN_Msk ) == 0x80000000);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_CKAWOEN_Msk ) == 0x20);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGEN_Msk ) == 0x0);	
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGSEL_Msk ) == 0x0);	
+	  LPUART_AUTO_OP_SW_TRIGGER_ENABLE(LPUART0); 
+	  CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_SWTRIG_Msk ) == 0x0);
+	
+    LPUART_SelectAutoOperationMode(LPUART0,LPUART_AUTOCTL_TRIGSEL_LPTMR0);
+	  CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_AOEN_Msk ) == 0x80000000);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_CKAWOEN_Msk ) == 0x20);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGEN_Msk ) == 0x10);	
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGSEL_Msk ) == 0x0);	
+
+    LPUART_SelectAutoOperationMode(LPUART0,LPUART_AUTOCTL_TRIGSEL_LPTMR1);
+	  CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_AOEN_Msk ) == 0x80000000);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_CKAWOEN_Msk ) == 0x20);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGEN_Msk ) == 0x10);	
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGSEL_Msk ) == 0x1);	
+
+    LPUART_SelectAutoOperationMode(LPUART0,LPUART_AUTOCTL_TRIGSEL_TTMR0);
+	  CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_AOEN_Msk ) == 0x80000000);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_CKAWOEN_Msk ) == 0x20);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGEN_Msk ) == 0x10);	
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGSEL_Msk ) == 0x2);	
+		
+		    LPUART_SelectAutoOperationMode(LPUART0,LPUART_AUTOCTL_TRIGSEL_TTMR1);
+	  CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_AOEN_Msk ) == 0x80000000);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_CKAWOEN_Msk ) == 0x20);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGEN_Msk ) == 0x10);	
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGSEL_Msk ) == 0x3);
+
+    LPUART_SelectAutoOperationMode(LPUART0,LPUART_AUTOCTL_TRIGSEL_WKIOA0);
+	  CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_AOEN_Msk ) == 0x80000000);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_CKAWOEN_Msk ) == 0x20);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGEN_Msk ) == 0x10);	
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGSEL_Msk ) == 0x4);
+
+    LPUART_SelectAutoOperationMode(LPUART0,LPUART_AUTOCTL_TRIGSEL_WKIOB0);
+	  CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_AOEN_Msk ) == 0x80000000);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_CKAWOEN_Msk ) == 0x20);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGEN_Msk ) == 0x10);	
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGSEL_Msk ) == 0x5);
+
+    LPUART_SelectAutoOperationMode(LPUART0,LPUART_AUTOCTL_TRIGSEL_WKIOC0);
+	  CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_AOEN_Msk ) == 0x80000000);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_CKAWOEN_Msk ) == 0x20);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGEN_Msk ) == 0x10);	
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGSEL_Msk ) == 0x6);
+
+    LPUART_SelectAutoOperationMode(LPUART0,LPUART_AUTOCTL_TRIGSEL_WKIOD0);
+	  CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_AOEN_Msk ) == 0x80000000);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_CKAWOEN_Msk ) == 0x20);
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGEN_Msk ) == 0x10);	
+    CU_ASSERT((LPUART0->AUTOCTL & LPUART_AUTOCTL_TRIGSEL_Msk ) == 0x7);	
+}	
 
 CU_TestInfo LPUART_ApiTests[] =
 {
@@ -1138,7 +1170,8 @@ CU_TestInfo LPUART_ApiTests[] =
     {"LPUART_SetLine_Config Function.", TestFunc_LPUART_SetLine_Config},
     {"LPUART_SetTimeoutCnt Function.", TestFunc_LPUART_SetTimeoutCnt},
     {"LPUART_SelectRS485Mode Function.", TestFunc_LPUART_SelectRS485Mode},
-    {"Testing LPUART_ReadWrite Function.", TestFunc_LPUART_ReadWrite},
+    {"LPUART_SetAutoOp Function.", TestFunc_LPUART_SetAutoOp},
+    {"LPUART_ReadWrite Function.", TestFunc_LPUART_ReadWrite},
     CU_TEST_INFO_NULL
 };
 

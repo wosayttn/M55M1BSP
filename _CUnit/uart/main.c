@@ -32,6 +32,13 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
+
+    /* Enable External RC 12MHz clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
+
+    /* Waiting for External RC clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);	
+	
     /* Enable PLL0 200MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_200MHZ, CLK_APLL0_SELECT);
 
@@ -57,7 +64,7 @@ void SYS_Init(void)
     SYS_ResetModule(SYS_UART0RST);
 
     /* Enable UART module clock */
-//    CLK_EnableModuleClock(UART0_MODULE);
+ //   CLK_EnableModuleClock(UART0_MODULE);
     CLK_EnableModuleClock(UART1_MODULE);
     CLK_EnableModuleClock(UART2_MODULE);
     CLK_EnableModuleClock(UART3_MODULE);
@@ -88,7 +95,8 @@ void SYS_Init(void)
     CLK_SetModuleClock(UART8_MODULE, CLK_UARTSEL1_UART8SEL_HIRC, CLK_UARTDIV1_UART8DIV(1));
     /* Select UART module clock source as HXT and UART module clock divider as 1 */
     CLK_SetModuleClock(UART9_MODULE, CLK_UARTSEL1_UART9SEL_HIRC, CLK_UARTDIV1_UART9DIV(1));
-
+    
+		SYS_ResetModule(SYS_UART1RST);
     /* Enable GPA module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
     /* Enable GPB module clock */

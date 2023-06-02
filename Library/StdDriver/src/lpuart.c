@@ -440,10 +440,11 @@ uint32_t LPUART_Write(LPUART_T* lpuart, uint8_t pu8TxBuf[], uint32_t u32WriteByt
     return u32Count;
 }
 /**
- *    @brief        Select and configure  Automatic Operation function
+ *    @brief        Select and configure Automatic Operation function
  *
  *    @param[in]    lpuart      The pointer of the specified LPUART module.
  *    @param[in]    u32TrigSel  The LPUART Automatic Operation Trigger Source.
+ *                                - \ref LPUART_AUTOCTL_TRIGSEL_SOFTWARE
  *                                - \ref LPUART_AUTOCTL_TRIGSEL_LPTMR0
  *                                - \ref LPUART_AUTOCTL_TRIGSEL_LPTMR1
  *                                - \ref LPUART_AUTOCTL_TRIGSEL_TTMR0
@@ -452,28 +453,24 @@ uint32_t LPUART_Write(LPUART_T* lpuart, uint8_t pu8TxBuf[], uint32_t u32WriteByt
  *                                - \ref LPUART_AUTOCTL_TRIGSEL_WKIOB0
  *                                - \ref LPUART_AUTOCTL_TRIGSEL_WKIOC0
  *                                - \ref LPUART_AUTOCTL_TRIGSEL_WKIOD0
- *    @param[in]    u32ClockAoEn  The Automatic Operation Clock Always-on Enable.
  *
  *    @return       None
  *
  *    @details      The function is used to set Automatic Operation relative setting.
  */
-void LPUART_SelectAutoOperationMode(LPUART_T* lpuart, uint32_t u32TrigSel, uint32_t u32ClockAoEn)
+void LPUART_SelectAutoOperationMode(LPUART_T* lpuart, uint32_t u32TrigSel)
 {
     /* Set Automatic Operation Enable */
     lpuart->AUTOCTL |= LPUART_AUTOCTL_AOEN_Msk;
     
     /*Set Automatic Operation Clock Always-on*/
-    if(u32ClockAoEn == 1)
-       lpuart->AUTOCTL |= LPUART_AUTOCTL_CKAWOEN_Msk;
-    else
-       lpuart->AUTOCTL &= ~LPUART_AUTOCTL_CKAWOEN_Msk;
+    lpuart->AUTOCTL |= LPUART_AUTOCTL_CKAWOEN_Msk;
+
     
     // Set Auto Operation mode Trigger source 
-    lpuart->AUTOCTL &= ~LPUART_AUTOCTL_TRIGSEL_Msk;
+    lpuart->AUTOCTL &= ~(LPUART_AUTOCTL_TRIGSEL_Msk | LPUART_AUTOCTL_TRIGEN_Msk);
     lpuart->AUTOCTL |=  u32TrigSel;
-    /*Automatic Operation Trigger Enable*/
-    lpuart->AUTOCTL |= LPUART_AUTOCTL_TRIGEN_Msk;
+  
 
 }
 

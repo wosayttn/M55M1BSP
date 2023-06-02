@@ -46,7 +46,7 @@ void SYS_Init(void)
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK2DIV(2);
     CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    CLK_SET_PCLK4DIV(4);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -56,38 +56,13 @@ void SYS_Init(void)
     SetDebugUartCLK();
     SYS_ResetModule(SYS_UART0RST);
 
-    /* Enable UART module clock */
-//    CLK_EnableModuleClock(UART0_MODULE);
-    CLK_EnableModuleClock(LPUART0_MODULE);
-//    CLK_EnableModuleClock(UART2_MODULE);
-//    CLK_EnableModuleClock(UART3_MODULE);
-//    CLK_EnableModuleClock(UART4_MODULE);
-//    CLK_EnableModuleClock(UART5_MODULE);
-//    CLK_EnableModuleClock(UART6_MODULE);
-//    CLK_EnableModuleClock(UART7_MODULE);
-//    CLK_EnableModuleClock(UART8_MODULE);
-//    CLK_EnableModuleClock(UART9_MODULE);
+    /* Enable LPUART module clock */
 
+    CLK_EnableModuleClock(LPUART0_MODULE);
+		
     /* Select UART module clock source as HXT and UART module clock divider as 1 */
-//    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
-    /* Select UART module clock source as HXT and UART module clock divider as 1 */
-    CLK_SetModuleClock(LPUART0_MODULE, CLK_LPUARTSEL_LPUART0SEL_HIRC, CLK_LPUARTDIV_LPUART0DIV(1));
-//    /* Select UART module clock source as HXT and UART module clock divider as 1 */
-//    CLK_SetModuleClock(UART2_MODULE, CLK_UARTSEL0_UART2SEL_HIRC, CLK_UARTDIV0_UART2DIV(1));
-//    /* Select UART module clock source as HXT and UART module clock divider as 1 */
-//    CLK_SetModuleClock(UART3_MODULE, CLK_UARTSEL0_UART3SEL_HIRC, CLK_UARTDIV0_UART3DIV(1));
-//    /* Select UART module clock source as HXT and UART module clock divider as 1 */
-//    CLK_SetModuleClock(UART4_MODULE, CLK_UARTSEL0_UART4SEL_HIRC, CLK_UARTDIV0_UART4DIV(1));
-//    /* Select UART module clock source as HXT and UART module clock divider as 1 */
-//    CLK_SetModuleClock(UART5_MODULE, CLK_UARTSEL0_UART5SEL_HIRC, CLK_UARTDIV0_UART5DIV(1));
-//    /* Select UART module clock source as HXT and UART module clock divider as 1 */
-//    CLK_SetModuleClock(UART6_MODULE, CLK_UARTSEL0_UART6SEL_HIRC, CLK_UARTDIV0_UART6DIV(1));
-//    /* Select UART module clock source as HXT and UART module clock divider as 1 */
-//    CLK_SetModuleClock(UART7_MODULE, CLK_UARTSEL0_UART7SEL_HIRC, CLK_UARTDIV0_UART7DIV(1));
-//    /* Select UART module clock source as HXT and UART module clock divider as 1 */
-//    CLK_SetModuleClock(UART8_MODULE, CLK_UARTSEL1_UART8SEL_HIRC, CLK_UARTDIV1_UART8DIV(1));
-//    /* Select UART module clock source as HXT and UART module clock divider as 1 */
-//    CLK_SetModuleClock(UART9_MODULE, CLK_UARTSEL1_UART9SEL_HIRC, CLK_UARTDIV1_UART9DIV(1));
+     CLK_SetModuleClock(LPUART0_MODULE, CLK_LPUARTSEL_LPUART0SEL_HIRC, CLK_LPUARTDIV_LPUART0DIV(1));
+
 
     /* Enable GPA module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);

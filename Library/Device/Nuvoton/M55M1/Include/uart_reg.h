@@ -1350,7 +1350,7 @@ typedef struct
 #define UART_DWKCOMP_STCOMP_Msk          (0xfffful << UART_DWKCOMP_STCOMP_Pos)             /*!< UART_T::DWKCOMP: STCOMP Mask           */
 
 #define UART_RS485DD_RTSDDLY_Pos         (0)                                               /*!< UART_T::RS485DD: RTSDDLY Position      */
-#define UART_RS485DD_RTSDDLY_Msk         (0xfffful << UART_LINRTOUT_RTSDDLY_Pos)           /*!< UART_T::RS485DD: RTSDDLY Mask              */
+#define UART_RS485DD_RTSDDLY_Msk         (0xfffful << UART_RS485DD_RTSDDLY_Pos)           /*!< UART_T::RS485DD: RTSDDLY Mask              */
 
 
 

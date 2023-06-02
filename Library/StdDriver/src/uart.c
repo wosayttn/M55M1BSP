@@ -761,12 +761,27 @@ void UART_SelectSingleWireMode(UART_T *uart)
 void UART_SetBaudRateFrationalDivider(UART_T* uart, uint32_t u32BRFD)
 {
 
-    /* Set time-out counter enable */
-    uart->BAUD |= (UART_BAUD_BRFDEN_Msk | UART_BAUD_MODE2);
-    /* Enanb Baud Rate fractional divider fuction */
+    /* Enanble Baud Rate fractional divider fuction */
     /* This bit has effect only at baud rate mode 2 */
-    uart->BAUD = (uart->BAUD & ~UART_BAUD_BRFD_Msk) | (u32BRFD);
+  	uart->BAUD |= (UART_BAUD_BRFDEN_Msk | UART_BAUD_MODE2);
+    uart->BAUD = (uart->BAUD & ~UART_BAUD_BRFD_Msk) | ((u32BRFD)<< UART_BAUD_BRFD_Pos);
 
+}
+/**
+ *    @brief        Disable Baud Rate Fractional Divider function
+ *
+ *    @param[in]    uart    The pointer of the specified UART module.
+ *
+ *    @return       None
+ *
+ *    @details      This function use to disable Baud Rate fractional divider function.
+ */
+void UART_DisableBaudRateFrationalDivider(UART_T* uart)
+{
+	  /* Disanble Baud Rate fractional divider fuction */
+    /*Clear the Baud Rate fractional divider value   */
+	  uart->BAUD &= ~(UART_BAUD_BRFDEN_Msk | UART_BAUD_BRFD_Msk);
+   
 }
 
 

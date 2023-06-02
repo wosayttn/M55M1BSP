@@ -459,7 +459,26 @@ __STATIC_INLINE void UART_SET_RTS(UART_T* uart)
  *    @details      This macro get RS-485 address byte detection flag.
  */
 #define UART_RS485_GET_ADDR_FLAG(uart)    (((uart)->FIFOSTS  & UART_FIFOSTS_ADDRDETF_Msk) >> UART_FIFOSTS_ADDRDETF_Pos)
-
+/**
+ *    @brief        Enable specified UART Bus Idle Time-out function
+ *
+ *    @param[in]    uart        The pointer of the specified UART module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
+#define UART_BUS_IDLE_TIMEOUT_ENABLE(uart)    ((uart)->TOUT |= UART_TOUT_BITOMEN_Msk)
+/**
+ *    @brief        Disable specified UART Bus Idle Time-out function
+ *
+ *    @param[in]    uart        The pointer of the specified UART module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
+#define UART_BUS_IDLE_TIMEOUT_DISABLE(uart)    ((uart)->TOUT &= ~UART_TOUT_BITOMEN_Msk)
 
 /**
  *    @brief        Enable specified UART PDMA function
@@ -558,7 +577,8 @@ void UART_SelectRS485Mode(UART_T* uart, uint32_t u32Mode, uint32_t u32Addr);
 void UART_SelectLINMode(UART_T* uart, uint32_t u32Mode, uint32_t u32BreakLength);
 uint32_t UART_Write(UART_T* uart, uint8_t pu8TxBuf[], uint32_t u32WriteBytes);
 void UART_SelectSingleWireMode(UART_T *uart);
-
+void UART_SetBaudRateFrationalDivider(UART_T* uart, uint32_t u32BRFD);
+void UART_DisableBaudRateFrationalDivider(UART_T* uart);
 /** @} end of group UART_EXPORTED_FUNCTIONS */
 /** @} end of group UART_Driver */
 /** @} end of group Standard_Driver */
