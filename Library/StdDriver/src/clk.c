@@ -1501,14 +1501,22 @@ uint32_t CLK_EnableAPLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq, uint32_t u32
         u32PllClk = FREQ_180MHZ;
     }
 
-    /* Wait for PLL clock stable */
-    if(u32PllSelect == CLK_APLL0_SELECT)
-    {    
-        CLK_WaitClockReady(CLK_STATUS_APLL0STB_Msk);
+    /* TESTCHIP_ONLY */
+    if(u32PllClkSrc == CLK_APLLCTL_APLLSRC_HXT)
+    {
+        CLK_SysTickDelay(200);
     }
     else
     {
-        CLK_WaitClockReady(CLK_STATUS_APLL1STB_Msk);
+        /* Wait for PLL clock stable */
+        if(u32PllSelect == CLK_APLL0_SELECT)
+        {    
+            CLK_WaitClockReady(CLK_STATUS_APLL0STB_Msk);
+        }
+        else
+        {
+            CLK_WaitClockReady(CLK_STATUS_APLL1STB_Msk);
+        }
     }
 
     /* Return actual PLL output clock frequency */
