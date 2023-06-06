@@ -25,687 +25,679 @@
     @{
 */
 
-typedef struct {
-    /**
-     * @var CCAP_T::CTL
-     * Offset: 0x00  Camera Capture Interface Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |CCAPEN    |Camera Capture Interface Enable Bit
-     * |        |          |0 = Camera Capture Interface Disabled.
-     * |        |          |1 = Camera Capture Interface Enabled.
-     * |[6]     |PKTEN     |Packet Output Enable Bit
-     * |        |          |0 = Packet output Disabled.
-     * |        |          |1 = Packet output Enabled.
-     * |[7]     |MONO      |Monochrome CMOS Sensor Select
-     * |        |          |0 = Color CMOS Sensor.
-     * |        |          |1 = Monochrome CMOS Sensor. The U/V components are ignored when the MONO is enabled.
-     * |[16]    |SHUTTER   |Camera Capture Interface Automatically Disable the Capture Interface After a Frame Had Been Captured
-     * |        |          |0 = Shutter Disabled.
-     * |        |          |1 = Shutter Enabled.
-     * |[17]    |MY4_SWAP  |Monochrome CMOS Sensor 4-bit Data Nibble Swap
-     * |        |          |0 = The 4-bit data input sequence: 1st Pixel is for 1st Nibble (1st pixel @MSB).
-     * |        |          |1 = The 4-bit data input sequence: 1st Pixel is for 2nd Nibble (1st pixel @LSB).
-     * |[18]    |MY8_MY4   |Monochrome CMOS Sensor Data I/O Interface
-     * |        |          |0 = Monochrome CMOS sensor is by the 4-bit data I/O interface.
-     * |        |          |1 = Monochrome CMOS sensor is by the 8-bit data I/O interface.
-     * |[19]    |Luma_Y_One|Color/Monochrome CMOS Sensor Luminance 8-bit Y to 1-bit Y Conversion
-     * |        |          |0 = Color/Monochrome CMOS sensor Luma-Y-One bit Disabled.
-     * |        |          |1 = Color/Monochrome CMOS sensor Luma-Y-One bit Enabled.
-     * |        |          |Note: Color CMOS sensor U/V components are ignored when the Luma_Y_One is enabled.
-     * |[20]    |UPDATE    |Update Register at New Frame
-     * |        |          |0 = Update register at new frame Disabled.
-     * |        |          |1 = Update register at new frame Enabled (auto cleared to 0 when register updated).
-     * |[24]    |VPRST     |Capture Interface Reset
-     * |        |          |0 = Capture interface reset Disabled.
-     * |        |          |1 = Capture interface reset Enabled.
-     * @var CCAP_T::PAR
-     * Offset: 0x04  Camera Capture Interface Parameter Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |INFMT     |Sensor Input Data Format
-     * |        |          |If INFMTH (CCAP_PARM[0]) = 0,.
-     * |        |          |0 = YCbCr422.
-     * |        |          |1 = RGB565.
-     * |        |          |If INFMTH (CCAP_PARM[0]) = 1,.
-     * |        |          |0 = YCbCr422.
-     * |        |          |1 = RGB888.
-     * |[1]     |SENTYPE   |Sensor Input Type
-     * |        |          |0 = CCIR601.
-     * |        |          |1 = CCIR656, Vsync & Hsync embedded in the data signal.
-     * |[3:2]   |INDATORD  |Sensor Input Data Order
-     * |        |          |If INFMT (CCAP_PAR[0]) = 0 and INFMTH (CCAP_PARM[0]) = 0 (YCbCr),.
-     * |        |          |00 = Sensor input data (Byte 0 1 2 3) is Y0 U0 Y1 V0.
-     * |        |          |01 = Sensor input data (Byte 0 1 2 3) is Y0 V0 Y1 U0.
-     * |        |          |10 = Sensor input data (Byte 0 1 2 3) is U0 Y0 V0 Y1.
-     * |        |          |11 = Sensor input data (Byte 0 1 2 3) is V0 Y0 U0 Y1.
-     * |        |          |If INFMT (CCAP_PAR[0]) = 1 and INFMTH (CCAP_PARM[0])= 0 (RGB565),.
-     * |        |          |00 = Sensor input data (Byte 0) is {R[4:0],G[5:3]}.
-     * |        |          |Sensor input data (Byte 1) is {G[2:0],B[4:0]}.
-     * |        |          |01 = Sensor input data (Byte 0) is {B[4:0],G[5:3]}.
-     * |        |          |Sensor input data (Byte 1) is {G[2:0], R[4:0]}.
-     * |        |          |10 = Sensor input data (Byte 0) is {G[2:0],B[4:0]}.
-     * |        |          |Sensor input data (Byte 1) is {R[4:0], G[5:3]}.
-     * |        |          |11 = Sensor input data (Byte 0) is {G[2:0],R[4:0]}.
-     * |        |          |Sensor input data (Byte 1) is {B[4:0], G[5:3]}.
-     * |        |          |If INFMT (CCAP_PAR[0]) = 1 and INFMTH (CCAP_PARM[0]) = 1 (RGB888),.
-     * |        |          |If INDATORDH (CCAP_PARM[8]) = 0.
-     * |        |          |00 = Sensor input data (Byte 0, Byte 1, Byte 2) is R[7:0], G[7:0], B[7:0].
-     * |        |          |01 = Sensor input data (Byte 0, Byte 1, Byte 2) is R[7:0], B[7:0], G[7:0].
-     * |        |          |10 = Sensor input data (Byte 0, Byte 1, Byte 2) is G[7:0], R[7:0], B[7:0].
-     * |        |          |11 = Sensor input data (Byte 0, Byte 1, Byte 2) is G[7:0], B[7:0], R[7:0].
-     * |        |          |If INDATORDH (CCAP_PARM[8]) = 1.
-     * |        |          |00 = Sensor input data (Byte 0, Byte 1, Byte 2) is B[7:0], R[7:0], G[7:0].
-     * |        |          |01 = Sensor input data (Byte 0, Byte 1, Byte 2) is B[7:0], G[7:0], R[7:0].
-     * |        |          |10 = Reserved.
-     * |        |          |11 = Reserved.Sensor Input Data Order
-     * |        |          |If INFMT (CCAP_PAR[0]) = 0 (YCbCr)..
-     * |        |          |00 = Sensor input data (Byte 0 1 2 3) is Y0 U0 Y1 V0.
-     * |        |          |01 = Sensor input data (Byte 0 1 2 3) is Y0 V0 Y1 U0.
-     * |        |          |10 = Sensor input data (Byte 0 1 2 3) is U0 Y0 V0 Y1.
-     * |        |          |11 = Sensor input data (Byte 0 1 2 3) is V0 Y0 U0 Y1.
-     * |        |          |If INFMT (CCAP_PAR[0]) = 1 (RGB565)..
-     * |        |          |00 = Sensor input data (Byte 0) is {R[4:0],G[5:3]}.
-     * |        |          |Sensor input data (Byte 1) is {G[2:0],B[4:0]}.
-     * |        |          |01 = Sensor input data (Byte 0) is {B[4:0],G[5:3]}.
-     * |        |          |Sensor input data (Byte 1) is {G[2:0], R[4:0]}.
-     * |        |          |10 = Sensor input data (Byte 0) is {G[2:0],B[4:0]}.
-     * |        |          |Sensor input data (Byte 1) is {R[4:0], G[5:3]}.
-     * |        |          |11 = Sensor input data (Byte 0) is {G[2:0],R[4:0]}.
-     * |        |          |Sensor input data (Byte 1) is {B[4:0], G[5:3]}..
-     * |[5:4]   |OUTFMT    |Image Data Format Output to System Memory
-     * |        |          |If OUTFMTH (CCAP_PARM[16]) = 0,.
-     * |        |          |00 = YCbCr422.
-     * |        |          |01 = Only output Y. (Select this format when CCAP_CTL u201CLuma_Y_Oneu201D or u201CMONOu201D enabled).
-     * |        |          |10 = RGB555.
-     * |        |          |11 = RGB565.
-     * |        |          |If OUTFMTH (CCAP_PARM[16]) = 1,.
-     * |        |          |x0 = RGB888 with UINT8.
-     * |        |          |x1 = RGB888 with INT8.
-     * |[6]     |RANGE     |Scale Input YUV CCIR601 Color Range to Full Range
-     * |        |          |0 = Default.
-     * |        |          |1 = Scale to full range.
-     * |[8]     |PCLKP     |Sensor Pixel Clock Polarity
-     * |        |          |0 = Input video data and signals are latched by falling edge of Pixel Clock.
-     * |        |          |1 = Input video data and signals are latched by rising edge of Pixel Clock.
-     * |[9]     |HSP       |Sensor Hsync Polarity
-     * |        |          |0 = Sync Low.
-     * |        |          |1 = Sync High. 
-     * |[10]    |VSP       |Sensor Vsync Polarity
-     * |        |          |0 = Sync Low.
-     * |        |          |1 = Sync High. 
-     * |[18]    |FBB       |Field by Blank
-     * |        |          |Field by Blank (only in ccir-656 mode) means blanking pixel data(0x80108010) have to transfer to system memory or not.
-     * |        |          |0 = Field by blank Disabled. (blank pixel data will transfer to system memory).
-     * |        |          |1 = Field by blank Enabled. (only active data will transfer to system memory).
-     * @var CCAP_T::INT
-     * Offset: 0x08  Camera Capture Interface Interrupt Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |VINTF     |Video Frame End Interrupt
-     * |        |          |0 = Did not receive a frame completely.
-     * |        |          |1 = Received a frame completely.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[1]     |MEINTF    |Bus Master Transfer Error Interrupt
-     * |        |          |0 = Transfer Error did not occur.
-     * |        |          |1 = Transfer Error occurred.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[3]     |ADDRMINTF |Memory Address Match Interrupt
-     * |        |          |0 = Memory Address Match Interrupt did not occur.
-     * |        |          |1 = Memory Address Match Interrupt occurred.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[5:4]   |MDINTF    |Motion Detection Modes Interrupt
-     * |        |          |00 = Motion detection Mode 1 and Mode 2 interrupt did not occur.
-     * |        |          |01 = Only Motion detection Mode 1 interrupt occured.
-     * |        |          |10 = Only Motion detection Mode 2 interrupt occured.
-     * |        |          |11 = Both Motion detection Mode 1 and Mode 2 interrupt occured.
-     * |        |          |Note: These two bits are cleared by writing 1 to them.
-     * |        |          |Note: When Motion Detection Total SAD (Sum of Absolute Differences) Register (CCAP_MDTSAD) is larger than Motion Detection Total Threshold Register (CCAP_MDTTH), CCAP will trigger Motion detection Mode 1 interrupt.
-     * |        |          |Note: When Motion Detection Window Overflow Counter Register (CCAP_MDWOC) is larger than Motion Detection Window Overflow Counter Threshold Register (CCAP_MDWOCTH), CCAP will trigger Motion detection Mode 2 interrupt.
-     * |[16]    |VIEN      |Video Frame End Interrupt Enable Bit
-     * |        |          |0 = Video frame end interrupt Disabled.
-     * |        |          |1 = Video frame end interrupt Enabled.
-     * |[17]    |MEIEN     |Bus Master Transfer Error Interrupt Enable Bit
-     * |        |          |0 = Bus Master Transfer error interrupt Disabled.
-     * |        |          |1 = Bus Master Transfer error interrupt Enabled.
-     * |[19]    |ADDRMIEN  |Address Match Interrupt Enable Bit
-     * |        |          |0 = Address match interrupt Disabled.
-     * |        |          |1 = Address match interrupt Enabled.
-     * |[21:20] |MDIEN     |Motion Detection Modes Interrupt Enable Bit
-     * |        |          |00 = Motion detection engine Disabled.
-     * |        |          |01 = Only Motion detection Mode 1 interrupt Enabled.
-     * |        |          |10 = Only Motion detection Mode 2 interrupt Enabled.
-     * |        |          |11 = Both Motion detection Mode 1 and Mode 2 interrupt Enabled.
-     * @var CCAP_T::PARM
-     * Offset: 0x10  Camera Capture Interface Parameter Register (MSB)
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |INFMTH    |Sensor Input Data Format
-     * |        |          |Specify the higher 1-bit of of INFMT (CCAP_PAR[0]).
-     * |        |          |Please refer to the registeru201CCCAP_PARu201D to check the cooperation between these two registers.
-     * |[8]     |INDATORDH |Sensor Input Data Order
-     * |        |          |Specify the higher 1-bit of of INDATORD (CCAP_PAR[3:2]).
-     * |        |          |Please refer to the registeru201CCCAP_PARu201D to check the cooperation between these two registers.
-     * |[16]    |OUTFMTH   |Image Data Format Output to System Memory
-     * |        |          |Specify the higher 1-bit of of OUTFMT(CCAP_PAR[5:4]).
-     * |        |          |Please refer to the registeru201CCCAP_PARu201D to check the cooperation between these two registers.
-     * |[25:24] |RGB888OUTORD|Sensor RGB888 Output Data Order
-     * |        |          |If OUTFMTH (CCAP_PARM[16]) = 1,.
-     * |        |          |00 = Sensor output data is {R, G, B} loop for RGB888.
-     * |        |          |01 = Sensor output data is {B, G, R} loop for BGR888.
-     * |        |          |1x = Sensor output data is {0xFF, R, G, B} loop for ARGB8888.
-     * @var CCAP_T::CWSP
-     * Offset: 0x20  Cropping Window Starting Address Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[11:0]  |CWSADDRH  |Cropping Window Horizontal Starting Address
-     * |        |          |Specify the value of the cropping window horizontal start address.
-     * |[26:16] |CWSADDRV  |Cropping Window Vertical Starting Address
-     * |        |          |Specify the value of the cropping window vertical start address.
-     * @var CCAP_T::CWS
-     * Offset: 0x24  Cropping Window Size Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[11:0]  |CWW       |Cropping Window Width
-     * |        |          |Specify the size of the cropping window width.
-     * |[26:16] |CWH       |Cropping Window Height
-     * |        |          |Specify the size of the cropping window height.
-     * @var CCAP_T::PKTSL
-     * Offset: 0x28  Packet Scaling Vertical/Horizontal Factor Register (LSB)
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[7:0]   |PKTSHML   |Packet Scaling Horizontal Factor M
-     * |        |          |Specify the lower 8-bit of denominator part (M) of the horizontal scaling factor.
-     * |        |          |The lower 8-bit will be cascaded with higher 8-bit (PKDSHMH) to form a 16-bit denominator (M) of vertical factor.
-     * |        |          |The output image width will be equal to the image width * N/M.
-     * |        |          |Note: The value of N must be equal to or less than M.
-     * |[15:8]  |PKTSHNL   |Packet Scaling Horizontal Factor N
-     * |        |          |Specify the lower 8-bit of numerator part (N) of the horizontal scaling factor.
-     * |        |          |The lower 8-bit will be cascaded with higher 8-bit (PKDSHNH) to form a 16-bit numerator of horizontal factor.
-     * |[23:16] |PKTSVML   |Packet Scaling Vertical Factor M
-     * |        |          |Specify the lower 8-bit of denominator part (M) of the vertical scaling factor.
-     * |        |          |The lower 8-bit will be cascaded with higher 8-bit (PKDSVMH) to form a 16-bit denominator (M) of vertical factor.
-     * |        |          |The output image width will be equal to the image height * N/M.
-     * |        |          |Note: The value of N must be equal to or less than M.
-     * |[31:24] |PKTSVNL   |Packet Scaling Vertical Factor N
-     * |        |          |Specify the lower 8-bit of numerator part (N) of the vertical scaling factor.
-     * |        |          |The lower 8-bit will be cascaded with higher 8-bit (PKDSVNH) to form a 16-bit numerator of vertical factor.
-     * @var CCAP_T::FRCTL
-     * Offset: 0x30  Scaling Frame Rate Factor Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[5:0]   |FRM       |Scaling Frame Rate Factor M
-     * |        |          |Specify the denominator part (M) of the frame rate scaling factor.
-     * |        |          |The output image frame rate will be equal to input image frame rate * (N/M).
-     * |        |          |Note: The value of N must be equal to or less than M.
-     * |[13:8]  |FRN       |Scaling Frame Rate Factor N
-     * |        |          |Specify the numerator part (N) of the frame rate scaling factor.
-     * @var CCAP_T::STRIDE
-     * Offset: 0x34  Frame Output Pixel Stride Width Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[13:0]  |PKTSTRIDE |Packet Frame Output Pixel Stride Width
-     * |        |          |The output pixel stride size of the packet pipe.
-     * |        |          |It is a 32-pixel aligned stride width for the Luma-Y-One bit format or a 4-pixel aligned stride with for the Luma-Y-Eight bit format when color or monochrome CMOS sensors used
-     * |        |          |This means that every new captured line is by word alignment address when color or monochrome CMOS sensors used.
-     * @var CCAP_T::FIFOTH
-     * Offset: 0x3C  FIFO Threshold Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[28:24] |PKTFTH    |Packet FIFO Threshold
-     * |        |          |Specify the 5-bit value of the packet FIFO threshold.
-     * |[31]    |OVF       |FIFO Overflow Flag
-     * |        |          |Indicate the FIFO overflow flag.
-     * @var CCAP_T::CMPADDR
-     * Offset: 0x40  Compare Memory Base Address Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |CMPADDR   |Compare Memory Base Address
-     * |        |          |It is a word alignment address, that is, the address is aligned by ignoring the 2 LSB bits [1:0].
-     * @var CCAP_T::LUMA_Y1_THD
-     * Offset: 0x44  Luminance Y8 to Y1 Threshold Value Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[7:0]   |LUMA_Y1_THRESH|Luminance Y8 to Y1 Threshold Value
-     * |        |          |Specify the 8-bit threshold value for the luminance Y bit-8 to the luminance Y 1-bit conversion.
-     * @var CCAP_T::PKTSM
-     * Offset: 0x48  Packet Scaling Vertical/Horizontal Factor Register (MSB)
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[7:0]   |PKTSHMH   |Packet Scaling Horizontal Factor M
-     * |        |          |Specify the higher 8-bit of denominator part (M) of the horizontal scaling factor.
-     * |        |          |Please refer to the register u201CCCAP_PKTSLu201D for the detailed operation.
-     * |[15:8]  |PKTSHNH   |Packet Scaling Horizontal Factor N
-     * |        |          |Specify the higher 8-bit of numerator part (N) of the horizontal scaling factor.
-     * |        |          |Please refer to the register u201CCCAP_PKTSLu201D for the detailed operation.
-     * |[23:16] |PKTSVMH   |Packet Scaling Vertical Factor M
-     * |        |          |Specify the higher 8-bit of denominator part (M) of the vertical scaling factor.
-     * |        |          |Please refer to the register u201CCCAP_PKTSLu201D to check the cooperation between these two registers.
-     * |[31:24] |PKTSVNH   |Packet Scaling Vertical Factor N
-     * |        |          |Specify the higher 8-bit of numerator part (N) of the vertical scaling factor.
-     * |        |          |Please refer to the register u201CCCAP_PKTSLu201D to check the cooperation between these two registers
-     * @var CCAP_T::CURADDRP
-     * Offset: 0x50  Current Packet System Memory Address Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |CURADDR   |Current Packet Output Memory Address
-     * |        |          |Specify the 32-bit value of the current packet output memory address.
-     * @var CCAP_T::PKTBA0
-     * Offset: 0x60  System Memory Packet Base Address 0 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |BASEADDR  |System Memory Packet Base Address 0
-     * |        |          |It is a word alignment address, that is, the address is aligned by ignoring the 2 LSB bits [1:0].
-     * @var CCAP_T::MDCTL
-     * Offset: 0x100  Motion Detection Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |WEN0      |Motion Detection Window 0 Enable Bit
-     * |        |          |00 = Motion Detection Window 0 Disabled.
-     * |        |          |01 = Motion Detection Window 0 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0.
-     * |[1]     |WEN1      |Motion Detection Window 1 Enable Bit
-     * |        |          |00 = Motion Detection Window 1 Disabled.
-     * |        |          |01 = Motion Detection Window 1 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0.
-     * |[2]     |WEN2      |Motion Detection Window 2 Enable Bit
-     * |        |          |00 = Motion Detection Window 2 Disabled.
-     * |        |          |01 = Motion Detection Window 2 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0.
-     * |[3]     |WEN3      |Motion Detection Window 3 Enable Bit
-     * |        |          |00 = Motion Detection Window 3 Disabled.
-     * |        |          |01 = Motion Detection Window 3 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0.
-     * |[4]     |WEN4      |Motion Detection Window 4 Enable Bit
-     * |        |          |00 = Motion Detection Window 4 Disabled.
-     * |        |          |01 = Motion Detection Window 4 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0.
-     * |[5]     |WEN5      |Motion Detection Window 5 Enable Bit
-     * |        |          |00 = Motion Detection Window 5 Disabled.
-     * |        |          |01 = Motion Detection Window 5 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0.
-     * |[6]     |WEN6      |Motion Detection Window 6 Enable Bit
-     * |        |          |00 = Motion Detection Window 6 Disabled.
-     * |        |          |01 = Motion Detection Window 6 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0.
-     * |[7]     |WEN7      |Motion Detection Window 7 Enable Bit
-     * |        |          |00 = Motion Detection Window 7 Disabled.
-     * |        |          |01 = Motion Detection Window 7 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0.
-     * |[8]     |WEN8      |Motion Detection Window 8 Enable Bit
-     * |        |          |00 = Motion Detection Window 8 Disabled.
-     * |        |          |01 = Motion Detection Window 8 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0,.
-     * |[9]     |WEN9      |Motion Detection Window 9 Enable Bit
-     * |        |          |00 = Motion Detection Window 9 Disabled.
-     * |        |          |01 = Motion Detection Window 9 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0.
-     * |[10]    |WEN10     |Motion Detection Window 10 Enable Bit
-     * |        |          |00 = Motion Detection Window 10 Disabled.
-     * |        |          |01 = Motion Detection Window 10 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0.
-     * |[11]    |WEN11     |Motion Detection Window 11 Enable Bit
-     * |        |          |00 = Motion Detection Window 11 Disabled.
-     * |        |          |01 = Motion Detection Window 11 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0.
-     * |[12]    |WEN12     |Motion Detection Window 12 Enable Bit
-     * |        |          |00 = Motion Detection Window 12 Disabled.
-     * |        |          |01 = Motion Detection Window 12 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0.
-     * |[13]    |WEN13     |Motion Detection Window 13 Enable Bit
-     * |        |          |00 = Motion Detection Window 13 Disabled.
-     * |        |          |01 = Motion Detection Window 13 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0.
-     * |[14]    |WEN14     |Motion Detection Window 14 Enable Bit
-     * |        |          |00 = Motion Detection Window 14 Disabled.
-     * |        |          |01 = Motion Detection Window 14 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0.
-     * |[15]    |WEN15     |Motion Detection Window 15 Enable Bit
-     * |        |          |00 = Motion Detection Window 15 Disabled.
-     * |        |          |01 = Motion Detection Window 15 Enabled only when CCAP_INT[21:20] (MDIEN) is not equal to 0x0.
-     * @var CCAP_T::MDTRG_WK
-     * Offset: 0x104  Motion Detection Trigger and Wakeup Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[1:0]   |TRGSEL    |Trigger Source Selection
-     * |        |          |00 = LPTMR0.
-     * |        |          |01 = LPTMR1.
-     * |        |          |10 = TTMR0.
-     * |        |          |11 = TTMR1.
-     * |[16]    |WKEN      |Wake-up Function Enable Bit
-     * |        |          |If this bit is set to 1, while Motion Detection Modes interrupt MDINTF (CCAP_INT[5:4]) is 1 and MDIEN (CCAP_INT[21:20]) is enabled, the CCAP interrupt signal will generate a wake-up trigger event to CPU.
-     * |        |          |0 = Wake-up function Disabled if CCAP interrupt signal generated.
-     * |        |          |1 = Wake-up function Enabled if CCAP interrupt signal generated.
-     * |[24]    |WKF       |CCAP Wake-up Flag
-     * |        |          |This bit indicates the interrupt wake-up flag status of CCAP.
-     * |        |          |0 = CCAP does not cause CPU wake-up.
-     * |        |          |1 = CPU wake-up from Idle or Power-down mode if MDINTF (CCAP_INT[5:4]) are generated.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * @var CCAP_T::MDTTH
-     * Offset: 0x110  Motion Detection Total Threshold Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[20:0]  |MDTTH     |Motion Detection Total Threshold
-     * |        |          |Specify the 21-bit threshold value for checking if the total SAD of all windows (CCAP_MDTSAD) is overflow
-     * |        |          |Note: The maximum value of MDTSAD is 0x12AD40.
-     * @var CCAP_T::MDTSAD
-     * Offset: 0x114  Motion Detection Total SAD Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[20:0]  |MDTSAD    |Motion Detection Total SAD
-     * |        |          |The total SAD (Sum of Absolute Differences) of all windows (i.e., CCAP_MDTSAD = CCAP_MDWSAD0 + CCAP_MDWSAD1 + CCAP_MDWSAD2 + CCAP_MDWSAD3 + CCAP_MDWSAD4 + CCAP_MDWSAD5 + CCAP_MDWSAD6 + CCAP_MDWSAD7 + CCAP_MDWSAD8 + CCAP_MDWSAD9 + CCAP_MDWSAD10 + CCAP_MDWSAD11 + CCAP_MDWSAD12 + CCAP_MDWSAD13 + CCAP_MDWSAD14 + CCAP_MDWSAD15).
-     * |        |          |Note: The maximum value of MDTSAD is 0x12AD40.
-     * @var CCAP_T::MDWOCTH
-     * Offset: 0x120  Motion Detection Window Overflow Counter Threshold Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[3:0]   |MDWOCTH   |Motion Detection Window Overflow Counter threshold
-     * |        |          |Specify the 4-bit threshold value for checking if CCAP_MDWOC is overflow.
-     * @var CCAP_T::MDWOC
-     * Offset: 0x124  Motion Detection Window Overflow Counter Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[4:0]   |MDWOC     |Motion Detection Window Overflow Counter
-     * |        |          |The counter of windows that their CCAP_MDWSADx are larger than their CCAP_MDWTHx.
-     * @var CCAP_T::MDWTH0
-     * Offset: 0x140  Motion Detection Window Threshold 0 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWTH1
-     * Offset: 0x144  Motion Detection Window Threshold 1 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWTH2
-     * Offset: 0x148  Motion Detection Window Threshold 2 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWTH3
-     * Offset: 0x14C  Motion Detection Window Threshold 3 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWTH4
-     * Offset: 0x150  Motion Detection Window Threshold 4 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWTH5
-     * Offset: 0x154  Motion Detection Window Threshold 5 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWTH6
-     * Offset: 0x158  Motion Detection Window Threshold 6 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWTH7
-     * Offset: 0x15C  Motion Detection Window Threshold 7 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWTH8
-     * Offset: 0x160  Motion Detection Window Threshold 8 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWTH9
-     * Offset: 0x164  Motion Detection Window Threshold 9 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWTH10
-     * Offset: 0x168  Motion Detection Window Threshold 10 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWTH11
-     * Offset: 0x16C  Motion Detection Window Threshold 11 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWTH12
-     * Offset: 0x170  Motion Detection Window Threshold 12 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWTH13
-     * Offset: 0x174  Motion Detection Window Threshold 13 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWTH14
-     * Offset: 0x178  Motion Detection Window Threshold 14 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWTH15
-     * Offset: 0x17C  Motion Detection Window Threshold 15 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWTH     |Motion Detection Window Threshold
-     * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD0
-     * Offset: 0x180  Motion Detection Window SAD 0 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD1
-     * Offset: 0x184  Motion Detection Window SAD 1 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD2
-     * Offset: 0x188  Motion Detection Window SAD 2 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD3
-     * Offset: 0x18C  Motion Detection Window SAD 3 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD4
-     * Offset: 0x190  Motion Detection Window SAD 4 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD5
-     * Offset: 0x194  Motion Detection Window SAD 5 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD6
-     * Offset: 0x198  Motion Detection Window SAD 6 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD7
-     * Offset: 0x19C  Motion Detection Window SAD 7 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD8
-     * Offset: 0x1A0  Motion Detection Window SAD 8 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD9
-     * Offset: 0x1A4  Motion Detection Window SAD 9 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD10
-     * Offset: 0x1A8  Motion Detection Window SAD 10 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD11
-     * Offset: 0x1AC  Motion Detection Window SAD 11 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD12
-     * Offset: 0x1B0  Motion Detection Window SAD 12 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD13
-     * Offset: 0x1B4  Motion Detection Window SAD 13 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD14
-     * Offset: 0x1B8  Motion Detection Window SAD 14 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     * @var CCAP_T::MDWSAD15
-     * Offset: 0x1BC  Motion Detection Window SAD 15 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[16:0]  |MDWSAD    |Motion Detection Window SAD
-     * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
-     * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
-     */
+typedef struct
+{
+/**
+ * @var CCAP_T::CTL
+ * Offset: 0x00  Camera Capture Interface Control Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |CCAPEN    |Camera Capture Interface Enable Bit
+ * |        |          |0 = Camera Capture Interface Disabled.
+ * |        |          |1 = Camera Capture Interface Enabled.
+ * |[6]     |PKTEN     |Packet Output Enable Bit
+ * |        |          |0 = Packet output Disabled.
+ * |        |          |1 = Packet output Enabled.
+ * |[7]     |MONO      |Monochrome CMOS Sensor Select
+ * |        |          |0 = Color CMOS Sensor.
+ * |        |          |1 = Monochrome CMOS Sensor. The U/V components are ignored when the MONO is enabled.
+ * |[16]    |SHUTTER   |Camera Capture Interface Automatically Disable the Capture Interface After a Frame Had Been Captured
+ * |        |          |0 = Shutter Disabled.
+ * |        |          |1 = Shutter Enabled.
+ * |[17]    |MY4_SWAP  |Monochrome CMOS Sensor 4-bit Data Nibble Swap
+ * |        |          |0 = The 4-bit data input sequence: 1st Pixel is for 1st Nibble (1st pixel @MSB).
+ * |        |          |1 = The 4-bit data input sequence: 1st Pixel is for 2nd Nibble (1st pixel @LSB).
+ * |[18]    |MY8_MY4   |Monochrome CMOS Sensor Data I/O Interface
+ * |        |          |0 = Monochrome CMOS sensor is by the 4-bit data I/O interface.
+ * |        |          |1 = Monochrome CMOS sensor is by the 8-bit data I/O interface.
+ * |[19]    |Luma_Y_One|Color/Monochrome CMOS Sensor Luminance 8-bit Y to 1-bit Y Conversion
+ * |        |          |0 = Color/Monochrome CMOS sensor Luma-Y-One bit Disabled.
+ * |        |          |1 = Color/Monochrome CMOS sensor Luma-Y-One bit Enabled.
+ * |        |          |Note: Color CMOS sensor U/V components are ignored when the Luma_Y_One is enabled.
+ * |[20]    |UPDATE    |Update Register at New Frame
+ * |        |          |0 = Update register at new frame Disabled.
+ * |        |          |1 = Update register at new frame Enabled (auto cleared to 0 when register updated).
+ * |[24]    |VPRST     |Capture Interface Reset
+ * |        |          |0 = Capture interface reset Disabled.
+ * |        |          |1 = Capture interface reset Enabled.
+ * @var CCAP_T::PAR
+ * Offset: 0x04  Camera Capture Interface Parameter Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |INFMT     |Sensor Input Data Format
+ * |        |          |If INFMTH (CCAP_PARM[0]) = 0,.
+ * |        |          |0 = YCbCr422.
+ * |        |          |1 = RGB565.
+ * |        |          |If INFMTH (CCAP_PARM[0]) = 1,.
+ * |        |          |0 = YCbCr422.
+ * |        |          |1 = RGB888.
+ * |[1]     |SENTYPE   |Sensor Input Type
+ * |        |          |0 = CCIR601.
+ * |        |          |1 = CCIR656, Vsync & Hsync embedded in the data signal.
+ * |[3:2]   |INDATORD  |Sensor Input Data Order
+ * |        |          |If INFMT (CCAP_PAR[0]) = 0 and INFMTH (CCAP_PARM[0]) = 0 (YCbCr),.
+ * |        |          |00 = Sensor input data (Byte 0 1 2 3) is Y0 U0 Y1 V0.
+ * |        |          |01 = Sensor input data (Byte 0 1 2 3) is Y0 V0 Y1 U0.
+ * |        |          |10 = Sensor input data (Byte 0 1 2 3) is U0 Y0 V0 Y1.
+ * |        |          |11 = Sensor input data (Byte 0 1 2 3) is V0 Y0 U0 Y1.
+ * |        |          |If INFMT (CCAP_PAR[0]) = 1 and INFMTH (CCAP_PARM[0])= 0 (RGB565),.
+ * |        |          |00 = Sensor input data (Byte 0) is {R[4:0],G[5:3]}.
+ * |        |          |Sensor input data (Byte 1) is {G[2:0],B[4:0]}.
+ * |        |          |01 = Sensor input data (Byte 0) is {B[4:0],G[5:3]}.
+ * |        |          |Sensor input data (Byte 1) is {G[2:0], R[4:0]}.
+ * |        |          |10 = Sensor input data (Byte 0) is {G[2:0],B[4:0]}.
+ * |        |          |Sensor input data (Byte 1) is {R[4:0], G[5:3]}.
+ * |        |          |11 = Sensor input data (Byte 0) is {G[2:0],R[4:0]}.
+ * |        |          |Sensor input data (Byte 1) is {B[4:0], G[5:3]}.
+ * |        |          |If INFMT (CCAP_PAR[0]) = 1 and INFMTH (CCAP_PARM[0]) = 1 (RGB888),.
+ * |        |          |If INDATORDH (CCAP_PARM[8]) = 0.
+ * |        |          |00 = Sensor input data (Byte 0, Byte 1, Byte 2) is R[7:0], G[7:0], B[7:0].
+ * |        |          |01 = Sensor input data (Byte 0, Byte 1, Byte 2) is R[7:0], B[7:0], G[7:0].
+ * |        |          |10 = Sensor input data (Byte 0, Byte 1, Byte 2) is G[7:0], R[7:0], B[7:0].
+ * |        |          |11 = Sensor input data (Byte 0, Byte 1, Byte 2) is G[7:0], B[7:0], R[7:0].
+ * |        |          |If INDATORDH (CCAP_PARM[8]) = 1.
+ * |        |          |00 = Sensor input data (Byte 0, Byte 1, Byte 2) is B[7:0], R[7:0], G[7:0].
+ * |        |          |01 = Sensor input data (Byte 0, Byte 1, Byte 2) is B[7:0], G[7:0], R[7:0].
+ * |        |          |10 = Reserved.
+ * |        |          |11 = Reserved.
+ * |[5:4]   |OUTFMT    |Image Data Format Output to System Memory
+ * |        |          |If OUTFMTH (CCAP_PARM[16]) = 0,.
+ * |        |          |00 = YCbCr422.
+ * |        |          |01 = Only output Y. (Select this format when CCAP_CTL u201CLuma_Y_Oneu201D or u201CMONOu201D enabled).
+ * |        |          |10 = RGB555.
+ * |        |          |11 = RGB565.
+ * |        |          |If OUTFMTH (CCAP_PARM[16]) = 1,.
+ * |        |          |x0 = RGB888 or ARGB8888 with UINT8.
+ * |        |          |x1 = RGB888 or ARGB8888 with INT8.
+ * |[6]     |RANGE     |Scale Input YUV CCIR601 Color Range to Full Range
+ * |        |          |0 = Default.
+ * |        |          |1 = Scale to full range.
+ * |[8]     |PCLKP     |Sensor Pixel Clock Polarity
+ * |        |          |0 = Input video data and signals are latched by falling edge of Pixel Clock.
+ * |        |          |1 = Input video data and signals are latched by rising edge of Pixel Clock.
+ * |[9]     |HSP       |Sensor Hsync Polarity
+ * |        |          |0 = Sync Low.
+ * |        |          |1 = Sync High.
+ * |[10]    |VSP       |Sensor Vsync Polarity
+ * |        |          |0 = Sync Low.
+ * |        |          |1 = Sync High.
+ * |[18]    |FBB       |Field by Blank
+ * |        |          |Field by Blank (only in ccir-656 mode) means blanking pixel data(0x80108010) have to transfer to system memory or not.
+ * |        |          |0 = Field by blank Disabled. (blank pixel data will transfer to system memory).
+ * |        |          |1 = Field by blank Enabled. (only active data will transfer to system memory).
+ * @var CCAP_T::INTEN
+ * Offset: 0x08  Camera Capture Interface Interrupt Enable Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |VIEN      |Video Frame End Interrupt Enable Bit
+ * |        |          |0 = Video frame end interrupt Disabled.
+ * |        |          |1 = Video frame end interrupt Enabled.
+ * |[1]     |MEIEN     |Bus Master Transfer Error Interrupt Enable Bit
+ * |        |          |0 = Bus Master Transfer error interrupt Disabled.
+ * |        |          |1 = Bus Master Transfer error interrupt Enabled.
+ * |[3]     |ADDRMIEN  |Address Match Interrupt Enable Bit
+ * |        |          |0 = Address match interrupt Disabled.
+ * |        |          |1 = Address match interrupt Enabled.
+ * |[5:4]   |MDIEN     |Motion Detection Modes Interrupt Enable Bit
+ * |        |          |00 = Motion detection engine Disabled.
+ * |        |          |01 = Only Motion detection Mode 1 interrupt Enabled.
+ * |        |          |10 = Only Motion detection Mode 2 interrupt Enabled.
+ * |        |          |11 = Both Motion detection Mode 1 and Mode 2 interrupt Enabled.
+ * @var CCAP_T::INTSTS
+ * Offset: 0x0C  Camera Capture Interface Interrupt Status Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |VINTF     |Video Frame End Interrupt
+ * |        |          |0 = Did not receive a frame completely.
+ * |        |          |1 = Received a frame completely.
+ * |        |          |Note: This bit is cleared by writing 1 to it.
+ * |[1]     |MEINTF    |Bus Master Transfer Error Interrupt
+ * |        |          |0 = Transfer Error did not occur.
+ * |        |          |1 = Transfer Error occurred.
+ * |        |          |Note: This bit is cleared by writing 1 to it.
+ * |[3]     |ADDRMINTF |Memory Address Match Interrupt
+ * |        |          |0 = Memory Address Match Interrupt did not occur.
+ * |        |          |1 = Memory Address Match Interrupt occurred.
+ * |        |          |Note: This bit is cleared by writing 1 to it.
+ * |[5:4]   |MDINTF    |Motion Detection Modes Interrupt
+ * |        |          |00 = Motion detection Mode 1 and Mode 2 interrupt did not occur.
+ * |        |          |01 = Only Motion detection Mode 1 interrupt occured.
+ * |        |          |10 = Only Motion detection Mode 2 interrupt occured.
+ * |        |          |11 = Both Motion detection Mode 1 and Mode 2 interrupt occured.
+ * |        |          |Note: These two bits are cleared by writing 1 to them.
+ * |        |          |Note: When Motion Detection Total SAD (Sum of Absolute Differences) Register (CCAP_MDTSAD) is larger than Motion Detection Total Threshold Register (CCAP_MDTTH), CCAP will trigger Motion detection Mode 1 interrupt.
+ * |        |          |Note: When Motion Detection Window Overflow Counter Register (CCAP_MDWOC) is larger than Motion Detection Window Overflow Counter Threshold Register (CCAP_MDWOCTH), CCAP will trigger Motion detection Mode 2 interrupt.
+ * @var CCAP_T::PARM
+ * Offset: 0x10  Camera Capture Interface Parameter Register (MSB)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |INFMTH    |Sensor Input Data Format
+ * |        |          |Specify the higher 1-bit of of INFMT (CCAP_PAR[0]).
+ * |        |          |Please refer to the registeru201CCCAP_PARu201D to check the cooperation between these two registers.
+ * |[8]     |INDATORDH |Sensor Input Data Order
+ * |        |          |Specify the higher 1-bit of of INDATORD (CCAP_PAR[3:2]).
+ * |        |          |Please refer to the registeru201CCCAP_PARu201D to check the cooperation between these two registers.
+ * |[16]    |OUTFMTH   |Image Data Format Output to System Memory
+ * |        |          |Specify the higher 1-bit of of OUTFMT(CCAP_PAR[5:4]).
+ * |        |          |Please refer to the registeru201CCCAP_PARu201D to check the cooperation between these two registers.
+ * |[25:24] |RGB888OUTORD|Sensor RGB888 Output Data Order
+ * |        |          |If OUTFMTH (CCAP_PARM[16]) = 1,.
+ * |        |          |00 = Sensor output data (Byte 0 1 2) is B, G, R loop for RGB888.
+ * |        |          |01 = Sensor output data (Byte 0 1 2) is R, G, B loop for RGB888.
+ * |        |          |10 = Sensor output data (Byte 0 1 2 3) is B, G, R, 0xFF loop for ARGB8888.
+ * |        |          |11 = Sensor output data (Byte 0 1 2 3) is 0xFF, R, G, B loop for ARGB8888.
+ * @var CCAP_T::CWSP
+ * Offset: 0x20  Cropping Window Starting Address Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[11:0]  |CWSADDRH  |Cropping Window Horizontal Starting Address
+ * |        |          |Specify the value of the cropping window horizontal start address.
+ * |[26:16] |CWSADDRV  |Cropping Window Vertical Starting Address
+ * |        |          |Specify the value of the cropping window vertical start address.
+ * @var CCAP_T::CWS
+ * Offset: 0x24  Cropping Window Size Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[11:0]  |CWW       |Cropping Window Width
+ * |        |          |Specify the size of the cropping window width.
+ * |[26:16] |CWH       |Cropping Window Height
+ * |        |          |Specify the size of the cropping window height.
+ * @var CCAP_T::PKTSL
+ * Offset: 0x28  Packet Scaling Vertical/Horizontal Factor Register (LSB)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[7:0]   |PKTSHML   |Packet Scaling Horizontal Factor M
+ * |        |          |Specify the lower 8-bit of denominator part (M) of the horizontal scaling factor.
+ * |        |          |The lower 8-bit will be cascaded with higher 8-bit (PKDSHMH) to form a 16-bit denominator (M) of vertical factor.
+ * |        |          |The output image width will be equal to the image width * N/M.
+ * |        |          |Note: The value of N must be equal to or less than M.
+ * |[15:8]  |PKTSHNL   |Packet Scaling Horizontal Factor N
+ * |        |          |Specify the lower 8-bit of numerator part (N) of the horizontal scaling factor.
+ * |        |          |The lower 8-bit will be cascaded with higher 8-bit (PKDSHNH) to form a 16-bit numerator of horizontal factor.
+ * |[23:16] |PKTSVML   |Packet Scaling Vertical Factor M
+ * |        |          |Specify the lower 8-bit of denominator part (M) of the vertical scaling factor.
+ * |        |          |The lower 8-bit will be cascaded with higher 8-bit (PKDSVMH) to form a 16-bit denominator (M) of vertical factor.
+ * |        |          |The output image width will be equal to the image height * N/M.
+ * |        |          |Note: The value of N must be equal to or less than M.
+ * |[31:24] |PKTSVNL   |Packet Scaling Vertical Factor N
+ * |        |          |Specify the lower 8-bit of numerator part (N) of the vertical scaling factor.
+ * |        |          |The lower 8-bit will be cascaded with higher 8-bit (PKDSVNH) to form a 16-bit numerator of vertical factor.
+ * @var CCAP_T::FRCTL
+ * Offset: 0x30  Scaling Frame Rate Factor Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[5:0]   |FRM       |Scaling Frame Rate Factor M
+ * |        |          |Specify the denominator part (M) of the frame rate scaling factor.
+ * |        |          |The output image frame rate will be equal to input image frame rate * (N/M).
+ * |        |          |Note: The value of N must be equal to or less than M.
+ * |[13:8]  |FRN       |Scaling Frame Rate Factor N
+ * |        |          |Specify the numerator part (N) of the frame rate scaling factor.
+ * @var CCAP_T::STRIDE
+ * Offset: 0x34  Frame Output Pixel Stride Width Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[13:0]  |PKTSTRIDE |Packet Frame Output Pixel Stride Width
+ * |        |          |The output pixel stride size of the packet pipe.
+ * |        |          |It is a 32-pixel aligned stride width for the Luma-Y-One bit format or a 4-pixel aligned stride with for the Luma-Y-Eight bit format when color or monochrome CMOS sensors used
+ * |        |          |This means that every new captured line is by word alignment address when color or monochrome CMOS sensors used.
+ * @var CCAP_T::FIFOTH
+ * Offset: 0x3C  FIFO Threshold Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[28:24] |PKTFTH    |Packet FIFO Threshold
+ * |        |          |Specify the 5-bit value of the packet FIFO threshold.
+ * |[31]    |OVF       |FIFO Overflow Flag
+ * |        |          |Indicate the FIFO overflow flag.
+ * @var CCAP_T::CMPADDR
+ * Offset: 0x40  Compare Memory Base Address Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |CMPADDR   |Compare Memory Base Address
+ * |        |          |It is a word alignment address, that is, the address is aligned by ignoring the 2 LSB bits [1:0].
+ * @var CCAP_T::LUMA_Y1_THD
+ * Offset: 0x44  Luminance Y8 to Y1 Threshold Value Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[7:0]   |LUMA_Y1_THRESH|Luminance Y8 to Y1 Threshold Value
+ * |        |          |Specify the 8-bit threshold value for the luminance Y bit-8 to the luminance Y 1-bit conversion.
+ * @var CCAP_T::PKTSM
+ * Offset: 0x48  Packet Scaling Vertical/Horizontal Factor Register (MSB)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[7:0]   |PKTSHMH   |Packet Scaling Horizontal Factor M
+ * |        |          |Specify the higher 8-bit of denominator part (M) of the horizontal scaling factor.
+ * |        |          |Please refer to the register u201CCCAP_PKTSLu201D for the detailed operation.
+ * |[15:8]  |PKTSHNH   |Packet Scaling Horizontal Factor N
+ * |        |          |Specify the higher 8-bit of numerator part (N) of the horizontal scaling factor.
+ * |        |          |Please refer to the register u201CCCAP_PKTSLu201D for the detailed operation.
+ * |[23:16] |PKTSVMH   |Packet Scaling Vertical Factor M
+ * |        |          |Specify the higher 8-bit of denominator part (M) of the vertical scaling factor.
+ * |        |          |Please refer to the register u201CCCAP_PKTSLu201D to check the cooperation between these two registers.
+ * |[31:24] |PKTSVNH   |Packet Scaling Vertical Factor N
+ * |        |          |Specify the higher 8-bit of numerator part (N) of the vertical scaling factor.
+ * |        |          |Please refer to the register u201CCCAP_PKTSLu201D to check the cooperation between these two registers
+ * @var CCAP_T::CURADDRP
+ * Offset: 0x50  Current Packet System Memory Address Byte Counter Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |CURADDR   |Current Packet Output Memory Address Byte Counter
+ * |        |          |Specify the 32-bit value of the current packet output memory address counter
+ * |        |          |Thus, the current packet output memory address = CCAP_PKTBA0 + CCAP_CURADDRP.
+ * @var CCAP_T::PKTBA0
+ * Offset: 0x60  System Memory Packet Base Address 0 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |BASEADDR  |System Memory Packet Base Address 0
+ * |        |          |It is a word alignment address, that is, the address is aligned by ignoring the 2 LSB bits [1:0].
+ * @var CCAP_T::MDCTL
+ * Offset: 0x100  Motion Detection Control Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |WEN0      |Motion Detection Window 0 Enable Bit
+ * |        |          |00 = Motion Detection Window 0 Disabled.
+ * |        |          |01 = Motion Detection Window 0 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0.
+ * |[1]     |WEN1      |Motion Detection Window 1 Enable Bit
+ * |        |          |00 = Motion Detection Window 1 Disabled.
+ * |        |          |01 = Motion Detection Window 1 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0.
+ * |[2]     |WEN2      |Motion Detection Window 2 Enable Bit
+ * |        |          |00 = Motion Detection Window 2 Disabled.
+ * |        |          |01 = Motion Detection Window 2 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0.
+ * |[3]     |WEN3      |Motion Detection Window 3 Enable Bit
+ * |        |          |00 = Motion Detection Window 3 Disabled.
+ * |        |          |01 = Motion Detection Window 3 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0.
+ * |[4]     |WEN4      |Motion Detection Window 4 Enable Bit
+ * |        |          |00 = Motion Detection Window 4 Disabled.
+ * |        |          |01 = Motion Detection Window 4 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0.
+ * |[5]     |WEN5      |Motion Detection Window 5 Enable Bit
+ * |        |          |00 = Motion Detection Window 5 Disabled.
+ * |        |          |01 = Motion Detection Window 5 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0.
+ * |[6]     |WEN6      |Motion Detection Window 6 Enable Bit
+ * |        |          |00 = Motion Detection Window 6 Disabled.
+ * |        |          |01 = Motion Detection Window 6 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0.
+ * |[7]     |WEN7      |Motion Detection Window 7 Enable Bit
+ * |        |          |00 = Motion Detection Window 7 Disabled.
+ * |        |          |01 = Motion Detection Window 7 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0.
+ * |[8]     |WEN8      |Motion Detection Window 8 Enable Bit
+ * |        |          |00 = Motion Detection Window 8 Disabled.
+ * |        |          |01 = Motion Detection Window 8 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0,.
+ * |[9]     |WEN9      |Motion Detection Window 9 Enable Bit
+ * |        |          |00 = Motion Detection Window 9 Disabled.
+ * |        |          |01 = Motion Detection Window 9 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0.
+ * |[10]    |WEN10     |Motion Detection Window 10 Enable Bit
+ * |        |          |00 = Motion Detection Window 10 Disabled.
+ * |        |          |01 = Motion Detection Window 10 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0.
+ * |[11]    |WEN11     |Motion Detection Window 11 Enable Bit
+ * |        |          |00 = Motion Detection Window 11 Disabled.
+ * |        |          |01 = Motion Detection Window 11 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0.
+ * |[12]    |WEN12     |Motion Detection Window 12 Enable Bit
+ * |        |          |00 = Motion Detection Window 12 Disabled.
+ * |        |          |01 = Motion Detection Window 12 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0.
+ * |[13]    |WEN13     |Motion Detection Window 13 Enable Bit
+ * |        |          |00 = Motion Detection Window 13 Disabled.
+ * |        |          |01 = Motion Detection Window 13 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0.
+ * |[14]    |WEN14     |Motion Detection Window 14 Enable Bit
+ * |        |          |00 = Motion Detection Window 14 Disabled.
+ * |        |          |01 = Motion Detection Window 14 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0.
+ * |[15]    |WEN15     |Motion Detection Window 15 Enable Bit
+ * |        |          |00 = Motion Detection Window 15 Disabled.
+ * |        |          |01 = Motion Detection Window 15 Enabled only when CCAP_INTEN[5:4] (MDIEN) is not equal to 0x0.
+ * @var CCAP_T::MDTRG_WK
+ * Offset: 0x104  Motion Detection Trigger and Wakeup Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[1:0]   |TRGSEL    |Trigger Source Selection
+ * |        |          |00 = LPTMR0.
+ * |        |          |01 = LPTMR1.
+ * |        |          |10 = TTMR0.
+ * |        |          |11 = TTMR1.
+ * |[16]    |WKEN      |Wake-up Function Enable Bit
+ * |        |          |If this bit is set to 1, while Motion Detection Modes interrupt MDINTF (CCAP_INTSTS[5:4]) is 1 and MDIEN (CCAP_INTEN[5:4]) is enabled, the CCAP interrupt signal will generate a wake-up trigger event to CPU.
+ * |        |          |0 = Wake-up function Disabled if CCAP interrupt signal generated.
+ * |        |          |1 = Wake-up function Enabled if CCAP interrupt signal generated.
+ * |[24]    |WKF       |CCAP Wake-up Flag
+ * |        |          |This bit indicates the interrupt wake-up flag status of CCAP.
+ * |        |          |0 = CCAP does not cause CPU wake-up.
+ * |        |          |1 = CPU wake-up from Idle or Power-down mode if MDINTF (CCAP_INTSTS[5:4]) are generated.
+ * |        |          |Note: This bit is cleared by writing 1 to it.
+ * @var CCAP_T::MDTTH
+ * Offset: 0x110  Motion Detection Total Threshold Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[20:0]  |MDTTH     |Motion Detection Total Threshold
+ * |        |          |Specify the 21-bit threshold value for checking if the total SAD of all windows (CCAP_MDTSAD) is overflow
+ * |        |          |Note: The maximum value of MDTSAD is 0x12AD40.
+ * @var CCAP_T::MDTSAD
+ * Offset: 0x114  Motion Detection Total SAD Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[20:0]  |MDTSAD    |Motion Detection Total SAD
+ * |        |          |The total SAD (Sum of Absolute Differences) of all windows (i.e., CCAP_MDTSAD = CCAP_MDWSAD0 + CCAP_MDWSAD1 + CCAP_MDWSAD2 + CCAP_MDWSAD3 + CCAP_MDWSAD4 + CCAP_MDWSAD5 + CCAP_MDWSAD6 + CCAP_MDWSAD7 + CCAP_MDWSAD8 + CCAP_MDWSAD9 + CCAP_MDWSAD10 + CCAP_MDWSAD11 + CCAP_MDWSAD12 + CCAP_MDWSAD13 + CCAP_MDWSAD14 + CCAP_MDWSAD15).
+ * |        |          |Note: The maximum value of MDTSAD is 0x12AD40.
+ * @var CCAP_T::MDWOCTH
+ * Offset: 0x120  Motion Detection Window Overflow Counter Threshold Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[3:0]   |MDWOCTH   |Motion Detection Window Overflow Counter threshold
+ * |        |          |Specify the 4-bit threshold value for checking if CCAP_MDWOC is overflow.
+ * @var CCAP_T::MDWOC
+ * Offset: 0x124  Motion Detection Window Overflow Counter Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[4:0]   |MDWOC     |Motion Detection Window Overflow Counter
+ * |        |          |The counter of windows that their CCAP_MDWSADx are larger than their CCAP_MDWTHx.
+ * @var CCAP_T::MDWTH0
+ * Offset: 0x140  Motion Detection Window Threshold 0 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWTH1
+ * Offset: 0x144  Motion Detection Window Threshold 1 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWTH2
+ * Offset: 0x148  Motion Detection Window Threshold 2 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWTH3
+ * Offset: 0x14C  Motion Detection Window Threshold 3 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWTH4
+ * Offset: 0x150  Motion Detection Window Threshold 4 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWTH5
+ * Offset: 0x154  Motion Detection Window Threshold 5 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWTH6
+ * Offset: 0x158  Motion Detection Window Threshold 6 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWTH7
+ * Offset: 0x15C  Motion Detection Window Threshold 7 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWTH8
+ * Offset: 0x160  Motion Detection Window Threshold 8 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWTH9
+ * Offset: 0x164  Motion Detection Window Threshold 9 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWTH10
+ * Offset: 0x168  Motion Detection Window Threshold 10 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWTH11
+ * Offset: 0x16C  Motion Detection Window Threshold 11 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWTH12
+ * Offset: 0x170  Motion Detection Window Threshold 12 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWTH13
+ * Offset: 0x174  Motion Detection Window Threshold 13 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWTH14
+ * Offset: 0x178  Motion Detection Window Threshold 14 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWTH15
+ * Offset: 0x17C  Motion Detection Window Threshold 15 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWTH     |Motion Detection Window Threshold
+ * |        |          |Specify the 17-bit threshold value for checking if the SAD of window x (CCAP_MDWSADx) is overflow.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD0
+ * Offset: 0x180  Motion Detection Window SAD 0 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD1
+ * Offset: 0x184  Motion Detection Window SAD 1 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD2
+ * Offset: 0x188  Motion Detection Window SAD 2 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD3
+ * Offset: 0x18C  Motion Detection Window SAD 3 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD4
+ * Offset: 0x190  Motion Detection Window SAD 4 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD5
+ * Offset: 0x194  Motion Detection Window SAD 5 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD6
+ * Offset: 0x198  Motion Detection Window SAD 6 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD7
+ * Offset: 0x19C  Motion Detection Window SAD 7 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD8
+ * Offset: 0x1A0  Motion Detection Window SAD 8 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD9
+ * Offset: 0x1A4  Motion Detection Window SAD 9 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD10
+ * Offset: 0x1A8  Motion Detection Window SAD 10 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD11
+ * Offset: 0x1AC  Motion Detection Window SAD 11 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD12
+ * Offset: 0x1B0  Motion Detection Window SAD 12 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD13
+ * Offset: 0x1B4  Motion Detection Window SAD 13 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD14
+ * Offset: 0x1B8  Motion Detection Window SAD 14 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ * @var CCAP_T::MDWSAD15
+ * Offset: 0x1BC  Motion Detection Window SAD 15 Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[16:0]  |MDWSAD    |Motion Detection Window SAD
+ * |        |          |The 17-bit value for the SAD (Sum of Absolute Differences) of window x.
+ * |        |          |Note: The maximum value of MDWSAD is 0x12AD4.
+ */
     __IO uint32_t CTL;                   /*!< [0x0000] Camera Capture Interface Control Register                        */
     __IO uint32_t PAR;                   /*!< [0x0004] Camera Capture Interface Parameter Register                      */
-    __IO uint32_t INT;                   /*!< [0x0008] Camera Capture Interface Interrupt Enable Register               */
-    __IO uint32_t INTSTS;                /*!< [0x000C] Camera Capture Interface Interrupt Status Register               */
+    __IO uint32_t INTEN;                 /*!< [0x0008] Camera Capture Interface Interrupt Enable Register               */
+    __IO uint32_t INTSTS;                /*!< [0x000c] Camera Capture Interface Interrupt Status Register               */
     __IO uint32_t PARM;                  /*!< [0x0010] Camera Capture Interface Parameter Register (MSB)                */
-    __I  uint32_t RESERVE1[3];
+    __I  uint32_t RESERVE0[3];
     __IO uint32_t CWSP;                  /*!< [0x0020] Cropping Window Starting Address Register                        */
     __IO uint32_t CWS;                   /*!< [0x0024] Cropping Window Size Register                                    */
     __IO uint32_t PKTSL;                 /*!< [0x0028] Packet Scaling Vertical/Horizontal Factor Register (LSB)         */
-    __I  uint32_t RESERVE2[1];
+    __I  uint32_t RESERVE1[1];
     __IO uint32_t FRCTL;                 /*!< [0x0030] Scaling Frame Rate Factor Register                               */
     __IO uint32_t STRIDE;                /*!< [0x0034] Frame Output Pixel Stride Width Register                         */
-    __I  uint32_t RESERVE3[1];
+    __I  uint32_t RESERVE2[1];
     __IO uint32_t FIFOTH;                /*!< [0x003c] FIFO Threshold Register                                          */
     __IO uint32_t CMPADDR;               /*!< [0x0040] Compare Memory Base Address Register                             */
     __IO uint32_t LUMA_Y1_THD;           /*!< [0x0044] Luminance Y8 to Y1 Threshold Value Register                      */
     __IO uint32_t PKTSM;                 /*!< [0x0048] Packet Scaling Vertical/Horizontal Factor Register (MSB)         */
-    __I  uint32_t RESERVE4[1];
-    __I  uint32_t CURADDRP;              /*!< [0x0050] Current Packet System Memory Address Register                    */
-    __I  uint32_t RESERVE5[3];
+    __I  uint32_t RESERVE3[1];
+    __I  uint32_t CURADDRP;              /*!< [0x0050] Current Packet System Memory Address Byte Counter Register       */
+    __I  uint32_t RESERVE4[3];
     __IO uint32_t PKTBA0;                /*!< [0x0060] System Memory Packet Base Address 0 Register                     */
-    __I  uint32_t RESERVE6[39];
+    __I  uint32_t RESERVE5[39];
     __IO uint32_t MDCTL;                 /*!< [0x0100] Motion Detection Control Register                                */
     __IO uint32_t MDTRG_WK;              /*!< [0x0104] Motion Detection Trigger and Wakeup Register                     */
-    __I  uint32_t RESERVE7[2];
+    __I  uint32_t RESERVE6[2];
     __IO uint32_t MDTTH;                 /*!< [0x0110] Motion Detection Total Threshold Register                        */
     __I  uint32_t MDTSAD;                /*!< [0x0114] Motion Detection Total SAD Register                              */
-    __I  uint32_t RESERVE8[2];
+    __I  uint32_t RESERVE7[2];
     __IO uint32_t MDWOCTH;               /*!< [0x0120] Motion Detection Window Overflow Counter Threshold Register      */
     __I  uint32_t MDWOC;                 /*!< [0x0124] Motion Detection Window Overflow Counter Register                */
-    __I  uint32_t RESERVE9[6];
+    __I  uint32_t RESERVE8[6];
     __IO uint32_t MDWTH[16];             /*!< [0x0140] ~ [0x017c] Motion Detection Window Threshold 0 ~ 15 Register      */
     __I  uint32_t MDWSAD[16];            /*!< [0x0180] ~ [0x01bc] Motion Detection Window SAD 0 ~ 15 Register            */
-
 } CCAP_T;
-
 /**
     @addtogroup CCAP_CONST CCAP Bit Field Definition
     Constant Definitions for CCAP Controller
@@ -765,29 +757,29 @@ typedef struct {
 #define CCAP_PAR_FBB_Pos                 (18)                                              /*!< CCAP_T::PAR: FBB Position              */
 #define CCAP_PAR_FBB_Msk                 (0x1ul << CCAP_PAR_FBB_Pos)                       /*!< CCAP_T::PAR: FBB Mask                  */
 
-#define CCAP_INTSTS_VINTF_Pos            (0)                                               /*!< CCAP_T::INT: VINTF Position            */
-#define CCAP_INTSTS_VINTF_Msk            (0x1ul << CCAP_INTSTS_VINTF_Pos)                  /*!< CCAP_T::INT: VINTF Mask                */
+#define CCAP_INTEN_VIEN_Pos              (0)                                               /*!< CCAP_T::INTEN: VIEN Position           */
+#define CCAP_INTEN_VIEN_Msk              (0x1ul << CCAP_INTEN_VIEN_Pos)                    /*!< CCAP_T::INTEN: VIEN Mask               */
 
-#define CCAP_INTSTS_MEINTF_Pos           (1)                                               /*!< CCAP_T::INT: MEINTF Position           */
-#define CCAP_INTSTS_MEINTF_Msk           (0x1ul << CCAP_INTSTS_MEINTF_Pos)                 /*!< CCAP_T::INT: MEINTF Mask               */
+#define CCAP_INTEN_MEIEN_Pos             (1)                                               /*!< CCAP_T::INTEN: MEIEN Position          */
+#define CCAP_INTEN_MEIEN_Msk             (0x1ul << CCAP_INTEN_MEIEN_Pos)                   /*!< CCAP_T::INTEN: MEIEN Mask              */
 
-#define CCAP_INTSTS_ADDRMINTF_Pos        (3)                                               /*!< CCAP_T::INT: ADDRMINTF Position        */
-#define CCAP_INTSTS_ADDRMINTF_Msk        (0x1ul << CCAP_INTSTS_ADDRMINTF_Pos)              /*!< CCAP_T::INT: ADDRMINTF Mask            */
+#define CCAP_INTEN_ADDRMIEN_Pos          (3)                                               /*!< CCAP_T::INTEN: ADDRMIEN Position       */
+#define CCAP_INTEN_ADDRMIEN_Msk          (0x1ul << CCAP_INTEN_ADDRMIEN_Pos)                /*!< CCAP_T::INTEN: ADDRMIEN Mask           */
 
-#define CCAP_INTSTS_MDINTF_Pos           (4)                                               /*!< CCAP_T::INT: MDINTF Position           */
-#define CCAP_INTSTS_MDINTF_Msk           (0x3ul << CCAP_INTSTS_MDINTF_Pos)                 /*!< CCAP_T::INT: MDINTF Mask               */
+#define CCAP_INTEN_MDIEN_Pos             (4)                                               /*!< CCAP_T::INTEN: MDIEN Position          */
+#define CCAP_INTEN_MDIEN_Msk             (0x3ul << CCAP_INTEN_MDIEN_Pos)                   /*!< CCAP_T::INTEN: MDIEN Mask              */
 
-#define CCAP_INT_VIEN_Pos                (0)                                              /*!< CCAP_T::INT: VIEN Position             */
-#define CCAP_INT_VIEN_Msk                (0x1ul << CCAP_INT_VIEN_Pos)                      /*!< CCAP_T::INT: VIEN Mask                 */
+#define CCAP_INTSTS_VINTF_Pos            (0)                                               /*!< CCAP_T::INTSTS: VINTF Position         */
+#define CCAP_INTSTS_VINTF_Msk            (0x1ul << CCAP_INTSTS_VINTF_Pos)                  /*!< CCAP_T::INTSTS: VINTF Mask             */
 
-#define CCAP_INT_MEIEN_Pos               (1)                                              /*!< CCAP_T::INT: MEIEN Position            */
-#define CCAP_INT_MEIEN_Msk               (0x1ul << CCAP_INT_MEIEN_Pos)                     /*!< CCAP_T::INT: MEIEN Mask                */
+#define CCAP_INTSTS_MEINTF_Pos           (1)                                               /*!< CCAP_T::INTSTS: MEINTF Position        */
+#define CCAP_INTSTS_MEINTF_Msk           (0x1ul << CCAP_INTSTS_MEINTF_Pos)                 /*!< CCAP_T::INTSTS: MEINTF Mask            */
 
-#define CCAP_INT_ADDRMIEN_Pos            (3)                                              /*!< CCAP_T::INT: ADDRMIEN Position         */
-#define CCAP_INT_ADDRMIEN_Msk            (0x1ul << CCAP_INT_ADDRMIEN_Pos)                  /*!< CCAP_T::INT: ADDRMIEN Mask             */
+#define CCAP_INTSTS_ADDRMINTF_Pos        (3)                                               /*!< CCAP_T::INTSTS: ADDRMINTF Position     */
+#define CCAP_INTSTS_ADDRMINTF_Msk        (0x1ul << CCAP_INTSTS_ADDRMINTF_Pos)              /*!< CCAP_T::INTSTS: ADDRMINTF Mask         */
 
-#define CCAP_INT_MDIEN_Pos               (4)                                              /*!< CCAP_T::INT: MDIEN Position            */
-#define CCAP_INT_MDIEN_Msk               (0x3ul << CCAP_INT_MDIEN_Pos)                     /*!< CCAP_T::INT: MDIEN Mask                */
+#define CCAP_INTSTS_MDINTF_Pos           (4)                                               /*!< CCAP_T::INTSTS: MDINTF Position        */
+#define CCAP_INTSTS_MDINTF_Msk           (0x3ul << CCAP_INTSTS_MDINTF_Pos)                 /*!< CCAP_T::INTSTS: MDINTF Mask            */
 
 #define CCAP_PARM_INFMTH_Pos             (0)                                               /*!< CCAP_T::PARM: INFMTH Position          */
 #define CCAP_PARM_INFMTH_Msk             (0x1ul << CCAP_PARM_INFMTH_Pos)                   /*!< CCAP_T::PARM: INFMTH Mask              */

@@ -405,14 +405,48 @@ extern const VECTOR_TABLE_Type __VECTOR_TABLE[];
  *----------------------------------------------------------------------------*/
 __NO_RETURN void Reset_Handler(void)
 {
-    __set_PSP((uint32_t)(&__INITIAL_SP));
+    // Function call is not allowed here because stack is not ready.
+    if ((__PC() & NS_OFFSET) == 0)
+    {
+        /* Unlock protected registers */
+        do
+        {
+            SYS->REGLCTL = 0x59UL;
+            SYS->REGLCTL = 0x16UL;
+            SYS->REGLCTL = 0x88UL;
+        }
+        while(SYS->REGLCTL == 0UL);
 
+        // Switch SRAM0 to normal power mode
+        if (PMC->SYSRB0PC != 0)
+        {
+            PMC->SYSRB0PC = 0;
+            while (PMC->SYSRB0PC & PMC_SYSRB0PC_PCBUSY_Msk)
+                ;
+        }
+
+        // Enable SRAM0 clock
+        CLK->SRAMCTL |= CLK_SRAMCTL_SRAM0CKEN_Msk;
+
+        // Switch SRAM1 to normal power mode
+        if (PMC->SYSRB1PC != 0)
+        {
+            PMC->SYSRB1PC = 0;
+            while (PMC->SYSRB1PC & PMC_SYSRB1PC_PCBUSY_Msk)
+                ;
+        }
+
+        // Enable SRAM1 clock
+        CLK->SRAMCTL |= CLK_SRAMCTL_SRAM1CKEN_Msk;
+    }
+
+    __set_PSP((uint32_t)(&__INITIAL_SP));
     __set_MSPLIM((uint32_t)(&__STACK_LIMIT));
     __set_PSPLIM((uint32_t)(&__STACK_LIMIT));
 
-#if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-    __TZ_set_STACKSEAL_S((uint32_t *)(&__STACK_SEAL));
-#endif
+    #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
+        __TZ_set_STACKSEAL_S((uint32_t *)(&__STACK_SEAL));
+    #endif
 
 #ifndef NVT_ICACHE_OFF
     SCB_InvalidateICache();
@@ -424,34 +458,8 @@ __NO_RETURN void Reset_Handler(void)
     SCB_EnableDCache();
 #endif
 
-    if ((__PC() & NS_OFFSET) == 0)
-    {
-        SYS_UnlockReg();
-        // Switch SRAM0 to normal power mode
-        if (PMC->SYSRB0PC != 0)
-        {
-            PMC->SYSRB0PC = 0;
-            while (PMC->SYSRB0PC & PMC_SYSRB0PC_PCBUSY_Msk)
-                ;
-        }
-
-        // Switch SRAM1 to normal power mode
-        if (PMC->SYSRB1PC != 0)
-        {
-            PMC->SYSRB1PC = 0;
-            while (PMC->SYSRB1PC & PMC_SYSRB1PC_PCBUSY_Msk)
-                ;
-        }
-
-        // Enable SRAM0 and SRAM1 clock
-        CLK_EnableModuleClock(SRAM0_MODULE);
-        CLK_EnableModuleClock(SRAM1_MODULE);
-        SYS_LockReg();
-    }
-
-    __PROGRAM_START();                        /* Enter PreMain (C library entry point) */
+    __PROGRAM_START();      /* Enter PreMain (C library entry point) */
 }
-
 
 #if defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
     #pragma clang diagnostic push
