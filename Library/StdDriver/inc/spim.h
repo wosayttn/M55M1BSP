@@ -1712,6 +1712,12 @@ typedef enum
     ((spim->DLL1 & SPIM_DLL1_DLLLKNUM_Msk) >> SPIM_DLL1_DLLLKNUM_Pos)
 
 /**
+ * @details    Get Cycle Number of DLL1 Ouput Valid 0 ~ 0xFFFF, Default 0x07D0
+ * \hideinitializer
+ */
+#define SPIM_GET_DLL1_OUT_VALID(spim)     (spim->DLL1 & SPIM_DLL1_DLLOVNUM_Msk)
+
+/**
  * @details    Set Cycle Number of DLL1 Lock Time 0 ~ 0xFFFF, Default 0x1388
  * \hideinitializer
  */
@@ -2097,6 +2103,8 @@ void SPIM_MT35x_4Bytes_Enable(SPIM_T *spim, int isEn, uint32_t u32NBit, uint32_t
 /*----------------------------------------------------------------------------*/
 int SPIM_Hyper_GetErrCode(void);
 void SPIM_Hyper_SetErrCode(int i32SetValue);
+void SPIM_ForceDLLDelayTime(SPIM_T *spim, uint32_t u32OutValid, uint32_t u32LockTime, uint32_t u32ClkOnNum, uint32_t u32DelayNum);
+void SPIM_Hyper_Config(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR);
 
 /* HyperRAM */
 int SPIM_Hyper_ResetHyperRAM(SPIM_T *spim);
@@ -2111,12 +2119,12 @@ int SPIM_Hyper_Write2Byte(SPIM_T *spim, uint32_t u32Addr, uint16_t u16Data);
 int SPIM_Hyper_Write3Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data);
 int SPIM_Hyper_Write4Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data);
 
-int32_t SPIM_Hyper_DMAWrite(SPIM_T *spim, uint32_t u32Addr, void *pvWrBuf, uint32_t u32NTx);
-int32_t SPIM_Hyper_DMARead(SPIM_T *spim, uint32_t u32Addr, void *pvRdBuf, uint32_t u32NRx);
+int SPIM_Hyper_DMAWrite(SPIM_T *spim, uint32_t u32Addr, void *pvWrBuf, uint32_t u32NTx);
+int SPIM_Hyper_DMARead(SPIM_T *spim, uint32_t u32Addr, void *pvRdBuf, uint32_t u32NRx);
 
-int32_t SPIM_Hyper_EnterDirectMapMode(SPIM_T *spim);
+int SPIM_Hyper_EnterDirectMapMode(SPIM_T *spim);
 void SPIM_Hyper_ExitDirectMapMode(SPIM_T *spim);
-int32_t SPIM_Hyper_WaitDMMDone(SPIM_T *spim);
+int SPIM_Hyper_WaitDMMDone(SPIM_T *spim);
 
 void SPIM_Hyper_DefConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR);
 

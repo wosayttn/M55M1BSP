@@ -79,6 +79,62 @@ static void N_delay(int n)
 /**
   * @brief      SPIM Start Transfer And Wait Busy Status.
   * @param      spim
+  * @param      u32OutValid   Clock Cycle Number between DLL Lock and DLL Output Valid
+  * @param      u32LockTime   Clock Cycle Number between DLL Clock Divider Enable and DLL Lock
+  * @param      u32ClkOnNum   Clock Cycle Number between DLL OLDO Enable and DLL Clock Divider Enable
+  * @param      u32DelayNum   DLL Delay Step Number
+  * @return     None.
+  */
+void SPIM_ForceDLLDelayTime(SPIM_T *spim, uint32_t u32OutValid, uint32_t u32LockTime, uint32_t u32ClkOnNum, uint32_t u32DelayNum)
+{
+    //uint32_t u32DLLOutVaild = 0;
+    //uint32_t u32LockTime = 0;
+
+    // set DLLSTNUM defualt 0x1194 ~
+    // set DLLCTRST and wait DLL_LOCK
+    // set DLL_DNUM and wait DLL_REF
+    if (u32OutValid != 0)
+    {
+        SPIM_SET_DLL1_OUT_VALID(spim, u32OutValid);
+    }
+
+    //u32DLLOutVaild =
+    SPIM_GET_DLL1_OUT_VALID(spim);
+    //printf("DLL Out Valid = %d\r\n", u32DLLOutVaild);
+
+    if (u32LockTime != 0)
+    {
+        SPIM_SET_DLL1_LOCK_TIME(spim, u32LockTime);
+    }
+
+    if (u32ClkOnNum != 0)
+    {
+        SPIM_SET_DLL2_CLKON_NUM(spim, u32LockTime);
+    }
+
+    SPIM_ENABLE_DLL0_OLDO(spim, 1);
+
+    SPIM_ENABLE_DLL0_OVRST(spim, 1);
+
+    //while (SPIM_GET_DLL1_OUT_VALID(pSPIMx) != u32DLLOutVaild);
+
+    while (SPIM_WAIT_DLL0_OVRST(spim) == 1);
+
+    while (SPIM_WAIT_DLL0_CLKON(spim) != 1);
+
+    while (SPIM_WAIT_DLL0_LOCK(spim) != 1);
+
+    while (SPIM_WAIT_DLL0_READY(spim) != 1);
+
+    SPIM_SET_DLL0_DELAY_NUM(spim, u32DelayNum);
+
+    while (SPIM_WAIT_DLL0_REFRESH(spim) != 0);
+}
+
+
+/**
+  * @brief      SPIM Start Transfer And Wait Busy Status.
+  * @param      spim
   * @param      u32IsSync   Wait Busy Status
   * @return     None.
   */
@@ -2273,7 +2329,7 @@ int SPIM_HyperRAM_ReadReg(SPIM_T *spim, uint32_t u32Addr)
   * @return   -1  An illeagal register space
   * @return   -2  Wait Hyper Chip time-out
   */
-int32_t SPIM_HyperRAM_WriteReg(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Value)
+int SPIM_HyperRAM_WriteReg(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Value)
 {
     int32_t i32TimeOutCnt = SPIM_TIMEOUT;
 
@@ -2480,6 +2536,43 @@ void SPIM_Hyper_DefConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD
 
     /* Initial Write Access Time 7 Clock cycle*/
     SPIM_HYPER_CONFIG2_SET_ACCTWR(spim, u32AcctWR);
+}
+
+/**
+  * @brief      SPIM Config HyperBus Access Module Parameter
+  * @param      spim
+  * @param      u32CSMaxLT Chip Select Maximum Low Time
+  * @param      u32AcctRD Initial Read Access Time
+  * @param      u32AcctWR Initial Write Access Time
+  * @return     None.
+  * @note       This function sets g_SPIM_Hyper_i32ErrCode to SPIM_ERR_TIMEOUT if waiting Hyper Chip time-out.
+  */
+void SPIM_Hyper_Config(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR)
+{
+    /* Chip Select Setup Time 2.5 */
+    SPIM_HYPER_CONFIG1_SET_CSST(spim, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
+
+    /* Burst Group Size 32Bits */
+    //SPIM_HYPER_CONFIG1_SET_BGSIZE(spim, u32BSize);
+
+    /* Chip Select Hold Time 2.5 HCLK */
+    SPIM_HYPER_CONFIG1_SET_CSH(spim, SPIM_HYPER_CONFIG1_CSH_2_5_HCLK);
+
+    /* Chip Select High between Transaction as 1 HCLK cycles */
+    SPIM_HYPER_CONFIG1_SET_CSHI(spim, 2);
+
+    /* Chip Select Masximum low time 71 HCLK */
+    SPIM_HYPER_CONFIG1_SET_CSMAXLT(spim, u32CSMaxLow);
+
+    /* Initial Device RESETN Low Time 0 */
+    SPIM_HYPER_CONFIG2_SET_RSTNLT(spim, 0xFF);
+
+    /* Initial Access Time 7 Clock cycle*/
+    SPIM_HYPER_CONFIG2_SET_ACCTRD(spim, u32AcctRD);
+
+    SPIM_HYPER_CONFIG2_SET_ACCTWR(spim, u32AcctWR);
+
+    //spim->HYPER_CONFIG2 = (spim->HYPER_CONFIG2 & 0xFF00FFFF) | 0x00700000;
 }
 
 /**
