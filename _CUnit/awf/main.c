@@ -60,19 +60,13 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-    SYS_ResetModule(SYS_UART0RST);
-
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+    /* Enable UART0 module clock */
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set GPB12 as UART0 RXD and GPB13 as UART0 TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    SetDebugUartMFP();
 
     /* Lock protected registers */
     //SYS_LockReg();

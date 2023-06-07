@@ -13,7 +13,7 @@
 #include "CUnit.h"
 #include "Console.h"
 #include "pmc_cunit.h"
-#include "../pldm_emu.h"
+
 
 int pmc_Test_Init(void)
 {

@@ -63,9 +63,6 @@ void SYS_Init(void)
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -99,12 +96,12 @@ int main(int argc, char *argv[])
 {
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-    /* Init Debug UART for print message */
+    /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
     
     printf("\n\n");
     printf("+--------------------------------------+\n");
-    printf("|       M55M1 CUnit Test SYS           |\n");
+    printf("|       M55M1 SYS CUnit Test           |\n");
     printf("+--------------------------------------+\n");
     
     if (CU_initialize_registry())

@@ -13,6 +13,7 @@
 #include "CUnit.h"
 #include "Console.h"
 #include "pmc_cunit.h"
+#include "../pldm_emu.h"
 
 #ifndef DEBUG_PORT
     #define DEBUG_PORT UART0
@@ -47,7 +48,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -98,7 +99,7 @@ int main(int argc, char *argv[])
 {
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-    /* Init Debug UART for print message */
+    /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
     
     printf("\n\n");
