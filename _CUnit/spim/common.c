@@ -80,7 +80,7 @@ void dump_compare_error(uint32_t addr, uint8_t *buf_expect, uint8_t *buf_compare
 {
     int  i, err_cnt = 0;
 
-    for (i = 0; (i < count) && (err_cnt < 32); i++)
+    for (i = 0; (i < count) /*&& (err_cnt < 32)*/; i++)
     {
         if (buf_expect[i] != buf_compare[i])
         {

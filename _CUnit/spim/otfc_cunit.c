@@ -57,9 +57,9 @@ int OTFC_Tests_Init(void)
     SPIM_DISABLE_CIPHER(pSPIMModule);
     //CU_ASSERT_TRUE((pSPIMModule->CTL0 & SPIM_CTL0_CIPHOFF_Msk) >> SPIM_CTL0_CIPHOFF_Pos);
 
-    SPIM_Hyper_DefConfig(pSPIMModule, 780, 7, 7);
+    SPIM_Hyper_DefaultConfig(pSPIMModule, 780, 7, 7);
 
-    SPIM_Hyper_ResetHyperRAM(pSPIMModule);
+    SPIM_Hyper_Reset(pSPIMModule);
 
     for (u32Delay = 0; u32Delay < 0x400; u32Delay++) {}
 

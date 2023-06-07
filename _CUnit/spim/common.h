@@ -74,7 +74,7 @@ typedef struct
     uint32_t u32DataPhase;
     uint32_t u32TransMode;
     //uint32_t u32ContMode; //Support Continue Read Mode
-    uint32_t u32DTRMode;  //Support Double Data Rate Mode
+    uint32_t u32DTRMode;    //Support Double Data Rate Mode
 }  CMD_PHASE_T;
 
 typedef struct

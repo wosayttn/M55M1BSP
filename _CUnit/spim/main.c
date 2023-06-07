@@ -39,6 +39,7 @@
 #include "spim_cunit.h"
 #include "hyper_cunit.h"
 #include "otfc_cunit.h"
+#include "octal_cunit.h"
 #include "common.h"
 
 //------------------------------------------------------------------------------
@@ -61,6 +62,7 @@ int SPIM_SelTestSuite(void)
     S_TestOption sSelTestSuite[] =
     {
         {"SPIM Mode"},
+        {"SPIM Octal Mode"},
         {"SPIM Hyper Mode"},
         {"OTFC Mode"},
     };
@@ -117,15 +119,14 @@ void SYS_Init(void)
 
     CLK_SET_HCLK0DIV(1);
     CLK_SET_HCLK1DIV(1);
-    CLK_SET_HCLK2DIV(1);
+    CLK_SET_HCLK2DIV(2);
 
     /* Set both PCLK0 and PCLK1 as HCLK/2 */
-    CLK_PCLKDIV_PCLK0DIV(1);
-    CLK_PCLKDIV_PCLK1DIV(1);
-    CLK_PCLKDIV_PCLK2DIV(1);
-    CLK_PCLKDIV_PCLK3DIV(1);
-    CLK_PCLKDIV_PCLK4DIV(1);
-    //CLK_PCLKDIV_PCLK5DIV(1);
+    CLK_PCLKDIV_PCLK0DIV(2);
+    CLK_PCLKDIV_PCLK1DIV(2);
+    CLK_PCLKDIV_PCLK2DIV(2);
+    CLK_PCLKDIV_PCLK3DIV(2);
+    CLK_PCLKDIV_PCLK4DIV(2);
 
     /* Update System Core Clock */
     SystemCoreClockUpdate();
@@ -248,6 +249,11 @@ int main()
     GPIO_SetPullCtl(PH, BIT11, GPIO_PUSEL_DISABLE);
     PH10 = 0;
 
+    SET_GPIO_PB7();
+    GPIO_SetMode(PB, BIT7, GPIO_MODE_OUTPUT);
+    GPIO_SetPullCtl(PB, BIT7, GPIO_PUSEL_DISABLE);
+    PH10 = 0;
+
     SPIM_NVIC_Disable(C_SPIM0);
     SPIM_NVIC_Disable(C_SPIM1);
 
@@ -298,7 +304,7 @@ void AddTests(void)
             break;
 
         case 1:
-            if (CUE_SUCCESS != CU_register_suites(spim_hyper_suites))
+            if (CUE_SUCCESS != CU_register_suites(spim_octal_suites))
             {
                 fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
                 exit(EXIT_FAILURE);
@@ -307,6 +313,15 @@ void AddTests(void)
             break;
 
         case 2:
+            if (CUE_SUCCESS != CU_register_suites(spim_hyper_suites))
+            {
+                fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
+                exit(EXIT_FAILURE);
+            }
+
+            break;
+
+        case 3:
             if (CUE_SUCCESS != CU_register_suites(otfc_suites))
             {
                 fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
