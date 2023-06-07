@@ -76,276 +76,6 @@ static void N_delay(int n)
     }
 }
 
-/**
-  * @brief      SPIM Start Transfer And Wait Busy Status.
-  * @param      spim
-  * @param      u32OutValid   Clock Cycle Number between DLL Lock and DLL Output Valid
-  * @param      u32LockTime   Clock Cycle Number between DLL Clock Divider Enable and DLL Lock
-  * @param      u32ClkOnNum   Clock Cycle Number between DLL OLDO Enable and DLL Clock Divider Enable
-  * @param      u32DelayNum   DLL Delay Step Number
-  * @return     None.
-  */
-void SPIM_ForceDLLDelayTime(SPIM_T *spim, uint32_t u32OutValid, uint32_t u32LockTime, uint32_t u32ClkOnNum, uint32_t u32DelayNum)
-{
-    //uint32_t u32DLLOutVaild = 0;
-    //uint32_t u32LockTime = 0;
-
-    // set DLLSTNUM defualt 0x1194 ~
-    // set DLLCTRST and wait DLL_LOCK
-    // set DLL_DNUM and wait DLL_REF
-    if (u32OutValid != 0)
-    {
-        SPIM_SET_DLL1_OUT_VALID(spim, u32OutValid);
-    }
-
-    //u32DLLOutVaild =
-    SPIM_GET_DLL1_OUT_VALID(spim);
-    //printf("DLL Out Valid = %d\r\n", u32DLLOutVaild);
-
-    if (u32LockTime != 0)
-    {
-        SPIM_SET_DLL1_LOCK_TIME(spim, u32LockTime);
-    }
-
-    if (u32ClkOnNum != 0)
-    {
-        SPIM_SET_DLL2_CLKON_NUM(spim, u32LockTime);
-    }
-
-    SPIM_ENABLE_DLL0_OLDO(spim, 1);
-
-    SPIM_ENABLE_DLL0_OVRST(spim, 1);
-
-    //while (SPIM_GET_DLL1_OUT_VALID(pSPIMx) != u32DLLOutVaild);
-
-    while (SPIM_WAIT_DLL0_OVRST(spim) == 1);
-
-    while (SPIM_WAIT_DLL0_CLKON(spim) != 1);
-
-    while (SPIM_WAIT_DLL0_LOCK(spim) != 1);
-
-    while (SPIM_WAIT_DLL0_READY(spim) != 1);
-
-    SPIM_SET_DLL0_DELAY_NUM(spim, u32DelayNum);
-
-    while (SPIM_WAIT_DLL0_REFRESH(spim) != 0);
-}
-
-
-/**
-  * @brief      SPIM Start Transfer And Wait Busy Status.
-  * @param      spim
-  * @param      u32IsSync   Wait Busy Status
-  * @return     None.
-  */
-int SPIM_WaitSPIMENDone(SPIM_T *spim, uint32_t u32IsSync)
-{
-    uint32_t u32TimeOutCount = SPIM_TIMEOUT;
-
-    SPIM_SET_GO(spim);
-
-    if (u32IsSync)
-    {
-        if (SPIM_GET_INT(spim))
-        {
-            SPIM_WAIT_IF_ON(spim)
-            {
-                if (--u32TimeOutCount == 0) return SPIM_ERR_TIMEOUT;
-            }
-        }
-        else if (SPIM_HYPER_GET_INT(spim))
-        {
-            SPIM_HYPER_GET_INTSTS(spim)
-            {
-                if (--u32TimeOutCount == 0) return SPIM_ERR_TIMEOUT;
-            }
-        }
-        else
-        {
-            SPIM_WAIT_FREE(spim)
-            {
-                if (--u32TimeOutCount == 0) return SPIM_ERR_TIMEOUT;
-            }
-        }
-    }
-
-    return SPIM_OK;
-}
-
-/**
- * @brief Swich DMA/DMM Phase Setting Register
- * @param      spim
- * @param u32OPMode SPI Function Operation Mode
- *                  - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
- *                  - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
- *                  - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
- */
-static void *SPIM_SwitchPhaseRegister(SPIM_T *spim, uint32_t u32OPMode)
-{
-    switch (u32OPMode)
-    {
-        case SPIM_CTL0_OPMODE_PAGEWRITE:
-            return (uint32_t *)&spim->PHDMAW;
-            break;
-
-        case SPIM_CTL0_OPMODE_PAGEREAD:
-            return (uint32_t *)&spim->PHDMAR;
-            break;
-
-        case SPIM_CTL0_OPMODE_DIRECTMAP:
-            return (uint32_t *)&spim->PHDMM;
-            break;
-    }
-
-    return NULL;
-}
-
-/**
- * @brief Clear DMAW/DMAR/DMM Phase Config
- * @param      spim
- * @param u32OPMode SPI Function Operation Mode
- *                  - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
- *                  - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
- *                  - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
- */
-void SPIM_DMAM_ClearPhaseConfig(SPIM_T *spim, uint32_t u32OPMode)
-{
-    uint32_t *pu32PhaseReg = NULL;
-
-    pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
-
-    *pu32PhaseReg &= ~(0xFFFFFFFF);    /* clear phase setting. */
-}
-
-/**
- * @brief Set DMA/DMM Command Phase
- * @param spim
- * @param u32OPMode SPI Function Operation Mode
- *                  - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
- *                  - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
- *                  - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
- * @param u32NBit   Command Bit Mode
- *                  - \ref PHASE_NORMAL_MODE : Send Command Use Standard Mode
- *                  - \ref PHASE_DUAL_MODE   : Send Command Use Dual Mode
- *                  - \ref PHASE_QUAD_MODE   : Send Command Use Quad Mode
- *                  - \ref PHASE_OCTAL_MODE  : Send Command Use Octal Mode
- * @param u32Width  Command Width
- *                  - \ref PHASE_WIDTH_8    : Set Command Width 8bit
- *                  - \ref PHASE_WIDTH_16   : Set Command Width 16bit
- *                  - \ref PHASE_WIDTH_24   : Set Command Width 24bit
- *                  - \ref PHASE_WIDTH_32   : Set Command Width 32bit
- * @param u32DTREn  Set Enable/Disable DTR(Double Transfer Rate) Mode 0 or 1
- */
-void SPIM_DMAM_SetCmdPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn)
-{
-    uint32_t *pu32PhaseReg = NULL;
-
-    pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
-
-    *pu32PhaseReg &= ~(0xFF);  /* clear Command phase setting. */
-
-    *pu32PhaseReg |= (u32Width << SPIM_PHDMAW_DW_CMD_Pos);
-    *pu32PhaseReg |= (u32DTREn << SPIM_PHDMAR_DTR_CMD_Pos);
-    *pu32PhaseReg |= (u32NBit << SPIM_PHDMAW_BM_CMD_Pos);
-}
-
-/**
- * @brief Set DMA/DMM Address Phase
- * @param spim
- * @param u32OPMode SPI Function Operation Mode
- *                  - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
- *                  - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
- *                  - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
- * @param u32NBit   Command Bit Mode
- *                  - \ref PHASE_NORMAL_MODE : Send Command Use Standard Mode
- *                  - \ref PHASE_DUAL_MODE   : Send Command Use Dual Mode
- *                  - \ref PHASE_QUAD_MODE   : Send Command Use Quad Mode
- *                  - \ref PHASE_OCTAL_MODE  : Send Command Use Octal Mode
- * @param u32Width  Command Width
- *                  - \ref PHASE_WIDTH_8    : Set Command Width 8bit
- *                  - \ref PHASE_WIDTH_16   : Set Command Width 16bit
- *                  - \ref PHASE_WIDTH_24   : Set Command Width 24bit
- *                  - \ref PHASE_WIDTH_32   : Set Command Width 32bit
- * @param u32DTREn  Set Enable/Disable DTR(Double Transfer Rate) Mode 0 or 1
- */
-void SPIM_DMAM_SetAddrPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn)
-{
-    uint32_t *pu32PhaseReg = NULL;
-
-    pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
-
-    *pu32PhaseReg &= ~(0xFF << 8); /* clear Address phase setting. */
-
-    *pu32PhaseReg |= (u32Width << SPIM_PHDMAW_DW_ADDR_Pos);
-    *pu32PhaseReg |= (u32NBit << SPIM_PHDMAW_BM_ADDR_Pos);
-    *pu32PhaseReg |= (u32DTREn << SPIM_PHDMAR_DTR_ADDR_Pos);
-}
-
-/**
- * @brief Set DMA/DMM Continue Read Mode Phase
- * @param spim
- * @param u32OPMode SPI Function Operation Mode
- *                  - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
- *                  - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
- * @param u32NBit   Command Bit Mode
- *                  - \ref PHASE_NORMAL_MODE : Send Command Use Standard Mode
- *                  - \ref PHASE_DUAL_MODE   : Send Command Use Dual Mode
- *                  - \ref PHASE_QUAD_MODE   : Send Command Use Quad Mode
- *                  - \ref PHASE_OCTAL_MODE  : Send Command Use Octal Mode
- * @param u32Width  Command Width
- *                  - \ref PHASE_WIDTH_8    : Set Command Width 8bit
- *                  - \ref PHASE_WIDTH_16   : Set Command Width 16bit
- *                  - \ref PHASE_WIDTH_24   : Set Command Width 24bit
- *                  - \ref PHASE_WIDTH_32   : Set Command Width 32bit
- * @param u32DTREn  Set Enable/Disable DTR(Double Transfer Rate) Mode 0 or 1
- */
-void SPIM_DMAM_SetContReadPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn)
-{
-    uint32_t *pu32PhaseReg = NULL;
-
-    pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
-
-    *pu32PhaseReg &= ~(0xFF << 16);    /* clear Read Mode phase setting. */
-
-    *pu32PhaseReg |= (u32Width << SPIM_PHDMAR_DW_MODE_Pos);
-    *pu32PhaseReg |= (u32NBit << SPIM_PHDMAR_BM_MODE_Pos);
-    *pu32PhaseReg |= (u32DTREn << SPIM_PHDMAR_DTR_MODE_Pos);
-}
-
-/**
- * @brief Set DMA/DMM Data Phase
- * @param spim
- * @param u32OPMode SPI Function Operation Mode
- *                  - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
- *                  - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
- *                  - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
- * @param u32NBit   Command Bit Mode
- *                  - \ref PHASE_NORMAL_MODE : Send Command Use Standard Mode
- *                  - \ref PHASE_DUAL_MODE   : Send Command Use Dual Mode
- *                  - \ref PHASE_QUAD_MODE   : Send Command Use Quad Mode
- *                  - \ref PHASE_OCTAL_MODE  : Send Command Use Octal Mode
- * @param u32ByteOrder Set Received Data Byte Order of Received Data Phase for Octal SPI Flash
- *                  - \ref PHASE_ORDER_MODE0 : Reveice Data Format Ref. {byte0, byte1, byte2, byte3, byte4, byte5, byte6, byte7}
- *                  - \ref PHASE_ORDER_MODE1 : Reveice Data Format Ref. {byte7, byte6, byte5, byte4, byte3, byte2, byte1, byte0}
- *                  - \ref PHASE_ORDER_MODE2 : Reveice Data Format Ref. {byte1, byte0, byte3, byte2, byte5, byte4, byte7, byte6}
- *                  - \ref PHASE_ORDER_MODE3 : Reveice Data Format Ref. {byte6, byte7, byte4, byte5, byte2, byte3, byte0, byte1}
- * @param u32RdDQS Set Enable/Disable Read DQS Mode Enable Bit for Data Phase 0 or 1
- * @param u32DTREn Set Enable/Disable DTR(Double Transfer Rate) Mode 0 or 1
- */
-void SPIM_DMAM_SetDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32ByteOrder, uint32_t u32RdDQS, uint32_t u32DTREn)
-{
-    uint32_t *pu32PhaseReg = NULL;
-
-    pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
-
-    *pu32PhaseReg &= ~(0xFF << 24);     /* clear Data phase setting. */
-
-    *pu32PhaseReg |= (u32DTREn << SPIM_PHDMAR_DTR_DATA_Pos);
-    *pu32PhaseReg |= (u32RdDQS << SPIM_PHDMAR_RDQS_DATA_Pos);
-    *pu32PhaseReg |= (u32ByteOrder << SPIM_PHDMAW_PBO_DATA_Pos);
-    *pu32PhaseReg |= (u32NBit << SPIM_PHDMAW_BM_DATA_Pos);
-}
-
 static void SwitchNBitOutput(SPIM_T *spim, uint32_t u32NBit)
 {
     switch (u32NBit)
@@ -404,7 +134,7 @@ static void SwitchNBitInput(SPIM_T *spim, uint32_t u32NBit)
   * @retval     SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
   * @note       This function sets g_SPIM_i32ErrCode to SPIM_TIMEOUT_ERR if waiting SPIM time-out.
   */
-static int32_t spim_write(SPIM_T *spim, uint8_t pu8TxBuf[], uint32_t u32NTx)
+static int spim_write(SPIM_T *spim, uint8_t pu8TxBuf[], uint32_t u32NTx)
 {
     uint32_t buf_idx = 0UL;
 
@@ -450,7 +180,7 @@ static int32_t spim_write(SPIM_T *spim, uint8_t pu8TxBuf[], uint32_t u32NTx)
             SPIM_SET_DATA_WIDTH(spim, 32UL);
             SPIM_SET_BURST_DATA(spim, dataNum);
 
-            if (SPIM_WaitSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
+            if (SPIM_IsSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
             {
                 return SPIM_ERR_TIMEOUT;
             }
@@ -470,7 +200,7 @@ static int32_t spim_write(SPIM_T *spim, uint8_t pu8TxBuf[], uint32_t u32NTx)
             SPIM_SET_DATA_WIDTH(spim, (rnm * 8UL));
             SPIM_SET_BURST_DATA(spim, 1UL);
 
-            if (SPIM_WaitSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
+            if (SPIM_IsSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
             {
                 return SPIM_ERR_TIMEOUT;
             }
@@ -488,7 +218,7 @@ static int32_t spim_write(SPIM_T *spim, uint8_t pu8TxBuf[], uint32_t u32NTx)
   * @retval     SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
   * @note       This function sets g_SPIM_i32ErrCode to SPIM_TIMEOUT_ERR if waiting SPIM time-out.
   */
-static int32_t spim_read(SPIM_T *spim, uint8_t pu8RxBuf[], uint32_t u32NRx)
+static int spim_read(SPIM_T *spim, uint8_t pu8RxBuf[], uint32_t u32NRx)
 {
     uint32_t  buf_idx = 0UL;
 
@@ -519,7 +249,7 @@ static int32_t spim_read(SPIM_T *spim, uint8_t pu8RxBuf[], uint32_t u32NRx)
             SPIM_SET_DATA_WIDTH(spim, 32UL);
             SPIM_SET_BURST_DATA(spim, dataNum);
 
-            if (SPIM_WaitSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
+            if (SPIM_IsSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
             {
                 return SPIM_ERR_TIMEOUT;
             }
@@ -544,7 +274,7 @@ static int32_t spim_read(SPIM_T *spim, uint8_t pu8RxBuf[], uint32_t u32NRx)
             SPIM_SET_DATA_WIDTH(spim, (u32NRx * 8UL));
             SPIM_SET_BURST_DATA(spim, 1UL);
 
-            if (SPIM_WaitSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
+            if (SPIM_IsSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
             {
                 return SPIM_ERR_TIMEOUT;
             }
@@ -708,29 +438,54 @@ static void SPIM_ReadMT35XFlagRegister(SPIM_T *spim, uint8_t dataBuf[], uint32_t
     SPIM_SET_SS_EN(spim, 0);                          /* CS deactivated. */
 }
 
-void SPIM_MT35x_4Bytes_Enable(SPIM_T *spim, int isEn, uint32_t u32NBit, uint32_t u32DTRMode)
+
+/**
+  * @brief      SPIM Start Transfer And Wait Busy Status.
+  * @param      spim
+  * @param      u32IsSync   Wait Busy Status
+  * @return     None.
+  */
+int SPIM_IsSPIMENDone(SPIM_T *spim, uint32_t u32IsSync)
 {
-    uint8_t cmdBuf[2] = {0};
-    uint8_t u8CmdSize = 1;
+    uint32_t u32TimeOutCount = SPIM_TIMEOUT;
 
-    SPIM_SET_DTR_MODE(spim, u32DTRMode); /* DTR Activated. */
+    SPIM_SET_GO(spim);
 
-    cmdBuf[0] = isEn ? OPCODE_EN4B : OPCODE_EX4B;
-
-    if (u32DTRMode == 1)
+    if (u32IsSync)
     {
-        //cmdBuf[0] = isEn ? OPCODE_EN4B : OPCODE_EX4B;
-        cmdBuf[u8CmdSize++] = isEn ? OPCODE_EN4B : OPCODE_EX4B;
+        if (SPIM_GET_INT(spim))
+        {
+            while (SPIM_WAIT_IF_ON(spim))
+            {
+                if (--u32TimeOutCount == 0)
+                {
+                    return SPIM_ERR_TIMEOUT;
+                }
+            }
+        }
+        else if (SPIM_HYPER_GET_INT(spim))
+        {
+            while (SPIM_HYPER_GET_INTSTS(spim))
+            {
+                if (--u32TimeOutCount == 0)
+                {
+                    return SPIM_ERR_TIMEOUT;
+                }
+            }
+        }
+        else
+        {
+            while (SPIM_WAIT_FREE(spim))
+            {
+                if (--u32TimeOutCount == 0)
+                {
+                    return SPIM_ERR_TIMEOUT;
+                }
+            }
+        }
     }
 
-    SPIM_SET_SS_EN(spim, 1);                      /* CS activated.    */
-
-    SwitchNBitOutput(spim, u32NBit);
-    spim_write(spim, cmdBuf, u8CmdSize);
-
-    SPIM_SET_SS_EN(spim, 0);
-
-    SPIM_SET_DTR_MODE(spim, 0); /* DTR Deactivated. */
+    return SPIM_OK;
 }
 
 /**
@@ -1127,7 +882,6 @@ static void spim_enable_spansion_quad_mode(SPIM_T *spim, int isEn)
   */
 int SPIM_SetWrapAroundEnable(SPIM_T *spim, int isEn, uint32_t u32WaBit)
 {
-    //uint32_t u32TimeOutCount = 0;
     uint32_t u32CmdBuf[2] = {0x00000000, 0x11011101};
 
     SPIM_SetQuadEnable(spim, 1, 1);
@@ -1148,18 +902,10 @@ int SPIM_SetWrapAroundEnable(SPIM_T *spim, int isEn, uint32_t u32WaBit)
     SPIM_SET_DATA_WIDTH(spim, 32UL);
     SPIM_SET_BURST_DATA(spim, 2);
 
-    if (SPIM_WaitSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
+    if (SPIM_IsSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
     {
         return SPIM_ERR_TIMEOUT;
     }
-
-    //SPIM_SET_GO(spim);
-    //u32TimeOutCount = SPIM_TIMEOUT;
-    //SPIM_WAIT_FREE(spim)
-    //{
-    //    if (--u32TimeOutCount == 0)
-    //        return SPIM_ERR_TIMEOUT;
-    //}
 
     SPIM_SET_SS_EN(spim, 0);
 
@@ -1359,14 +1105,40 @@ int SPIM_Is4ByteModeEnable(SPIM_T *spim, uint32_t u32NBit)
 /** @endcond HIDDEN_SYMBOLS  */
 
 
+void SPIM_MT35x_4Bytes_Enable(SPIM_T *spim, int isEn, uint32_t u32NBit, uint32_t u32DTRMode)
+{
+    uint8_t cmdBuf[2] = {0};
+    uint8_t u8CmdSize = 1;
+
+    SPIM_SET_DTR_MODE(spim, u32DTRMode); /* DTR Activated. */
+
+    cmdBuf[0] = isEn ? OPCODE_EN4B : OPCODE_EX4B;
+
+    if (u32DTRMode == 1)
+    {
+        //cmdBuf[0] = isEn ? OPCODE_EN4B : OPCODE_EX4B;
+        cmdBuf[u8CmdSize++] = isEn ? OPCODE_EN4B : OPCODE_EX4B;
+    }
+
+    SPIM_SET_SS_EN(spim, 1);                      /* CS activated.    */
+
+    SwitchNBitOutput(spim, u32NBit);
+    spim_write(spim, cmdBuf, u8CmdSize);
+
+    SPIM_SET_SS_EN(spim, 0);
+
+    SPIM_SET_DTR_MODE(spim, 0); /* DTR Deactivated. */
+}
+
 /**
   * @brief      Enter/Exit 4-byte address mode.
   * @param      isEn        Enable/disable.
   * @param      u32NBit     N-bit transmit/receive.
+  * @param      u32DTRMode  Enable/Disable SPIM DTR Mode.
   * @return     0           success
   *             -1          failed
   */
-int SPIM_Enable_4Bytes_Mode(SPIM_T *spim, int isEn, uint32_t u32NBit)
+int SPIM_Enable_4Bytes_Mode(SPIM_T *spim, int isEn, uint32_t u32NBit, uint32_t u32DTRMode)
 {
     int  isSupt = 0L, ret = -1;
     uint8_t idBuf[3];
@@ -1410,6 +1182,8 @@ int SPIM_Enable_4Bytes_Mode(SPIM_T *spim, int isEn, uint32_t u32NBit)
     {
         cmdBuf[0] = isEn ? OPCODE_EN4B : OPCODE_EX4B;
 
+        SPIM_SET_DTR_MODE(spim, u32DTRMode); /* DTR Activated. */
+
         SPIM_SET_SS_EN(spim, 1);                      /* CS activated.    */
         SwitchNBitOutput(spim, u32NBit);
         spim_write(spim, cmdBuf, sizeof(cmdBuf));
@@ -1441,6 +1215,8 @@ int SPIM_Enable_4Bytes_Mode(SPIM_T *spim, int isEn, uint32_t u32NBit)
             if (i32TimeOutCount <= 0)
                 ret = -1;
         }
+
+        SPIM_SET_DTR_MODE(spim, 0); /* DTR Deactivated. */
     }
 
     return ret;
@@ -1448,8 +1224,8 @@ int SPIM_Enable_4Bytes_Mode(SPIM_T *spim, int isEn, uint32_t u32NBit)
 
 void SPIM_WinbondUnlock(SPIM_T *spim, uint32_t u32NBit)
 {
-    uint8_t   idBuf[3];
-    uint8_t   dataBuf[4];
+    uint8_t idBuf[3];
+    uint8_t dataBuf[4];
 
     SPIM_ReadJedecId(spim, idBuf, sizeof(idBuf), u32NBit);
 
@@ -1540,6 +1316,437 @@ void SPIM_EraseBlock(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint8_t u8
 }
 
 /** @cond HIDDEN_SYMBOLS */
+/**
+ * @brief Swich DMA/DMM Phase Setting Register
+ * @param      spim
+ * @param u32OPMode SPI Function Operation Mode
+ *                  - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
+ *                  - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
+ *                  - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
+ */
+static void *SPIM_SwitchPhaseRegister(SPIM_T *spim, uint32_t u32OPMode)
+{
+    switch (u32OPMode)
+    {
+        case SPIM_CTL0_OPMODE_PAGEWRITE:
+            return (uint32_t *)&spim->PHDMAW;
+            break;
+
+        case SPIM_CTL0_OPMODE_PAGEREAD:
+            return (uint32_t *)&spim->PHDMAR;
+            break;
+
+        case SPIM_CTL0_OPMODE_DIRECTMAP:
+            return (uint32_t *)&spim->PHDMM;
+            break;
+    }
+
+    return NULL;
+}
+
+/**
+ * @brief Clear DMAW/DMAR/DMM Phase Config
+ * @param      spim
+ * @param u32OPMode SPI Function Operation Mode
+ *                  - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
+ *                  - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
+ *                  - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
+ */
+void SPIM_DMAM_ClearPhaseConfig(SPIM_T *spim, uint32_t u32OPMode)
+{
+    uint32_t *pu32PhaseReg = NULL;
+
+    pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
+
+    *pu32PhaseReg &= ~(0xFFFFFFFF);    /* clear phase setting. */
+}
+
+/**
+ * @brief Set DMA/DMM Command Phase
+ * @param spim
+ * @param u32OPMode SPI Function Operation Mode
+ *                  - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
+ *                  - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
+ *                  - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
+ * @param u32NBit   Command Bit Mode
+ *                  - \ref PHASE_NORMAL_MODE : Send Command Use Standard Mode
+ *                  - \ref PHASE_DUAL_MODE   : Send Command Use Dual Mode
+ *                  - \ref PHASE_QUAD_MODE   : Send Command Use Quad Mode
+ *                  - \ref PHASE_OCTAL_MODE  : Send Command Use Octal Mode
+ * @param u32Width  Command Width
+ *                  - \ref PHASE_WIDTH_8    : Set Command Width 8bit
+ *                  - \ref PHASE_WIDTH_16   : Set Command Width 16bit
+ *                  - \ref PHASE_WIDTH_24   : Set Command Width 24bit
+ *                  - \ref PHASE_WIDTH_32   : Set Command Width 32bit
+ * @param u32DTREn  Set Enable/Disable DTR(Double Transfer Rate) Mode 0 or 1
+ */
+void SPIM_DMAM_SetCmdPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn)
+{
+    uint32_t *pu32PhaseReg = NULL;
+
+    pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
+
+    *pu32PhaseReg &= ~(0xFF);  /* clear Command phase setting. */
+
+    *pu32PhaseReg |= (u32Width << SPIM_PHDMAW_DW_CMD_Pos);
+    *pu32PhaseReg |= (u32DTREn << SPIM_PHDMAR_DTR_CMD_Pos);
+    *pu32PhaseReg |= (u32NBit << SPIM_PHDMAW_BM_CMD_Pos);
+}
+
+/**
+ * @brief Set DMA/DMM Address Phase
+ * @param spim
+ * @param u32OPMode SPI Function Operation Mode
+ *                  - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
+ *                  - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
+ *                  - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
+ * @param u32NBit   Command Bit Mode
+ *                  - \ref PHASE_NORMAL_MODE : Send Command Use Standard Mode
+ *                  - \ref PHASE_DUAL_MODE   : Send Command Use Dual Mode
+ *                  - \ref PHASE_QUAD_MODE   : Send Command Use Quad Mode
+ *                  - \ref PHASE_OCTAL_MODE  : Send Command Use Octal Mode
+ * @param u32Width  Command Width
+ *                  - \ref PHASE_WIDTH_8    : Set Command Width 8bit
+ *                  - \ref PHASE_WIDTH_16   : Set Command Width 16bit
+ *                  - \ref PHASE_WIDTH_24   : Set Command Width 24bit
+ *                  - \ref PHASE_WIDTH_32   : Set Command Width 32bit
+ * @param u32DTREn  Set Enable/Disable DTR(Double Transfer Rate) Mode 0 or 1
+ */
+void SPIM_DMAM_SetAddrPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn)
+{
+    uint32_t *pu32PhaseReg = NULL;
+
+    pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
+
+    *pu32PhaseReg &= ~(0xFF << 8); /* clear Address phase setting. */
+
+    *pu32PhaseReg |= (u32Width << SPIM_PHDMAW_DW_ADDR_Pos);
+    *pu32PhaseReg |= (u32NBit << SPIM_PHDMAW_BM_ADDR_Pos);
+    *pu32PhaseReg |= (u32DTREn << SPIM_PHDMAR_DTR_ADDR_Pos);
+}
+
+/**
+ * @brief Set DMA/DMM Continue Read Mode Phase
+ * @param spim
+ * @param u32OPMode SPI Function Operation Mode
+ *                  - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
+ *                  - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
+ * @param u32NBit   Command Bit Mode
+ *                  - \ref PHASE_NORMAL_MODE : Send Command Use Standard Mode
+ *                  - \ref PHASE_DUAL_MODE   : Send Command Use Dual Mode
+ *                  - \ref PHASE_QUAD_MODE   : Send Command Use Quad Mode
+ *                  - \ref PHASE_OCTAL_MODE  : Send Command Use Octal Mode
+ * @param u32Width  Command Width
+ *                  - \ref PHASE_WIDTH_8    : Set Command Width 8bit
+ *                  - \ref PHASE_WIDTH_16   : Set Command Width 16bit
+ *                  - \ref PHASE_WIDTH_24   : Set Command Width 24bit
+ *                  - \ref PHASE_WIDTH_32   : Set Command Width 32bit
+ * @param u32DTREn  Set Enable/Disable DTR(Double Transfer Rate) Mode 0 or 1
+ */
+void SPIM_DMAM_SetContReadPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn)
+{
+    uint32_t *pu32PhaseReg = NULL;
+
+    pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
+
+    *pu32PhaseReg &= ~(0xFF << 16);    /* clear Read Mode phase setting. */
+
+    *pu32PhaseReg |= (u32Width << SPIM_PHDMAR_DW_MODE_Pos);
+    *pu32PhaseReg |= (u32NBit << SPIM_PHDMAR_BM_MODE_Pos);
+    *pu32PhaseReg |= (u32DTREn << SPIM_PHDMAR_DTR_MODE_Pos);
+}
+
+/**
+ * @brief Set DMA/DMM Data Phase
+ * @param spim
+ * @param u32OPMode SPI Function Operation Mode
+ *                  - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
+ *                  - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
+ *                  - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
+ * @param u32NBit   Command Bit Mode
+ *                  - \ref PHASE_NORMAL_MODE : Send Command Use Standard Mode
+ *                  - \ref PHASE_DUAL_MODE   : Send Command Use Dual Mode
+ *                  - \ref PHASE_QUAD_MODE   : Send Command Use Quad Mode
+ *                  - \ref PHASE_OCTAL_MODE  : Send Command Use Octal Mode
+ * @param u32ByteOrder Set Received Data Byte Order of Received Data Phase for Octal SPI Flash
+ *                  - \ref PHASE_ORDER_MODE0 : Reveice Data Format Ref. {byte0, byte1, byte2, byte3, byte4, byte5, byte6, byte7}
+ *                  - \ref PHASE_ORDER_MODE1 : Reveice Data Format Ref. {byte7, byte6, byte5, byte4, byte3, byte2, byte1, byte0}
+ *                  - \ref PHASE_ORDER_MODE2 : Reveice Data Format Ref. {byte1, byte0, byte3, byte2, byte5, byte4, byte7, byte6}
+ *                  - \ref PHASE_ORDER_MODE3 : Reveice Data Format Ref. {byte6, byte7, byte4, byte5, byte2, byte3, byte0, byte1}
+ * @param u32RdDQS Set Enable/Disable Read DQS Mode Enable Bit for Data Phase 0 or 1
+ * @param u32DTREn Set Enable/Disable DTR(Double Transfer Rate) Mode 0 or 1
+ */
+void SPIM_DMAM_SetDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32ByteOrder, uint32_t u32RdDQS, uint32_t u32DTREn)
+{
+    uint32_t *pu32PhaseReg = NULL;
+
+    pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
+
+    *pu32PhaseReg &= ~(0xFF << 24);     /* clear Data phase setting. */
+
+    *pu32PhaseReg |= (u32DTREn << SPIM_PHDMAR_DTR_DATA_Pos);
+    *pu32PhaseReg |= (u32RdDQS << SPIM_PHDMAR_RDQS_DATA_Pos);
+    *pu32PhaseReg |= (u32ByteOrder << SPIM_PHDMAW_PBO_DATA_Pos);
+    *pu32PhaseReg |= (u32NBit << SPIM_PHDMAW_BM_DATA_Pos);
+}
+
+/**
+ * @brief Init DMA/DMM SPI Flash Read/Wirte Command Phase
+ * @param spim
+ * @param pPhaseTable   Check SPI Flash specifications for support command codes,
+ *                      and create command phase table.
+ * @param u32OPMode     SPI Function Operation Mode
+ *                      - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
+ *                      - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
+ *                      - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
+ */
+void SPIM_InitDMAMCommandPhase(SPIM_T *spim,
+                               FLASH_CMD_PHASE_T *pPhaseTable,
+                               uint32_t u32OPMode)
+{
+    uint32_t u32RDQSOn = 0;
+
+    SPIM_CLEAR_MODE_DATA(spim);
+    SPIM_DMM_DISABLE_CREN(spim);
+
+    /* Set Flash Command Phase */
+    SPIM_DMAM_SetCmdPhase(spim,
+                          u32OPMode,
+                          pPhaseTable->u32CMDPhase,
+                          pPhaseTable->u32CMDWidth,
+                          pPhaseTable->u32CMDDTR);
+
+    /* Set Flash Address Phase */
+    SPIM_DMAM_SetAddrPhase(spim,
+                           u32OPMode,
+                           pPhaseTable->u32AddrPhase,
+                           pPhaseTable->u32AddrWidth,
+                           pPhaseTable->u32AddrDTR);
+
+    /* Set DMA/DMM Continue Read Phase */
+    SPIM_DMAM_SetContReadPhase(spim,
+                               u32OPMode,
+                               pPhaseTable->u32RdModePhase,
+                               pPhaseTable->u32RdModeWidth,
+                               pPhaseTable->u32RdModeDTR);
+
+    if (pPhaseTable->u32RdModeOn == PHASE_READMODE_ON)
+    {
+        if (u32OPMode == SPIM_CTL0_OPMODE_DIRECTMAP)
+        {
+            SPIM_DMM_ENABLE_CREN(spim);
+        }
+
+        /* Enable Contiue Read Mode */
+        SPIM_SET_MODE_DATA(spim, CMD_CONTINUE_READ_MODE);
+    }
+
+    if (pPhaseTable->u32DataPhase == PHASE_OCTAL_MODE)
+    {
+        u32RDQSOn = 1;
+    }
+
+    /* Set Flash Data Phase */
+    SPIM_DMAM_SetDataPhase(spim,
+                           u32OPMode,
+                           pPhaseTable->u32DataPhase,
+                           pPhaseTable->u32ByteOrder,
+                           u32RDQSOn,
+                           pPhaseTable->u32DataDTR);
+
+    /* Set Dummy Cycle After Address. */
+    if (u32OPMode == SPIM_CTL0_OPMODE_PAGEREAD)
+    {
+        SPIM_SET_DC_DMAR(spim, pPhaseTable->u32DcNum);
+    }
+    else if (u32OPMode == SPIM_CTL0_OPMODE_DIRECTMAP)
+    {
+        SPIM_SET_DC_DMM(spim, pPhaseTable->u32DcNum);
+    }
+}
+
+int SPIM_FindAndInitDMAMCmdPhase(SPIM_T *spim,
+                                 FLASH_CMD_PHASE_T *pPhaseTable,
+                                 uint32_t u32TableSize,
+                                 uint32_t u32OPMode,
+                                 uint32_t u32CMDCode)
+{
+    uint32_t u32i = 1;
+    uint32_t u32found = 0;
+    uint32_t u32TableIdx = 0;
+    FLASH_CMD_PHASE_T *pTmpTable = NULL;
+
+    for (u32i = 0; u32i < u32TableSize; u32i++)
+    {
+        /*
+         * If element is found in array then raise found flag
+         * and terminate from loop.
+         */
+        if (pPhaseTable[u32i].u32CMDCode == u32CMDCode)
+        {
+            u32found = 1;
+            u32TableIdx = u32i;
+            break;
+        }
+    }
+
+    if (u32found == 0)
+    {
+        return SPIM_ERR_FAIL;
+    }
+
+    pTmpTable = (FLASH_CMD_PHASE_T *)&pPhaseTable[u32TableIdx];
+
+    SPIM_InitDMAMCommandPhase(spim, pTmpTable, u32OPMode);
+
+    return SPIM_OK;
+}
+
+uint32_t SPIM_GetIOPhaseSize(uint32_t u32Phase)
+{
+    switch (u32Phase)
+    {
+        case PHASE_DUAL_MODE:
+            return 2;
+
+        case PHASE_QUAD_MODE:
+            return 4;
+
+        case PHASE_OCTAL_MODE:
+            return 8;
+
+        default:
+        case PHASE_NORMAL_MODE:
+            return 1;
+    }
+
+    return 1;
+}
+
+void SPIM_IO_DataPhase(SPIM_T *spim, uint8_t u8TRxBuf[], uint32_t u32TRxSize,
+                       uint32_t u32DataPhase, uint32_t u32DTRMode, uint32_t isSync)
+{
+    //uint8_t u8CmdBuf[1] = {0};
+
+    SPIM_SET_DTR_MODE(spim, u32DTRMode); /* DTR Activated. */
+    //SPIM_SET_RDQS_MODE(spim, u32DTRMode);
+
+    if (isSync == 1)
+    {
+        SwitchNBitOutput(spim, SPIM_GetIOPhaseSize(u32DataPhase));
+        spim_write(spim, u8TRxBuf, u32TRxSize);                /* Write out data.  */
+    }
+    else
+    {
+        SwitchNBitInput(spim, SPIM_GetIOPhaseSize(u32DataPhase));
+        spim_read(spim, u8TRxBuf, u32TRxSize);   /* Read back data.  */
+    }
+
+    SPIM_SET_SS_EN(spim, 0);    /* CS Deactivated. */
+    SPIM_SET_DTR_MODE(spim, 0); /* DTR Deactivated. */
+    SPIM_SET_RDQS_MODE(spim, 0);
+
+    if (isSync)
+    {
+        SPIM_Wait_Write_Done(spim, u32DataPhase);
+    }
+}
+
+void SPIM_IO_DCPhase(SPIM_T *spim,
+                     uint32_t u32NDummy,
+                     uint32_t u32DcPhase,
+                     uint32_t u32DTRMode)
+{
+    uint8_t u8CmdBuf[32] =
+    {
+        0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA,
+        0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA,
+        0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA,
+        0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA
+    };
+
+    if (u32NDummy == 0)
+    {
+        return;
+    }
+
+    SPIM_SET_DTR_MODE(spim, u32DTRMode); /* DTR Activated. */
+
+    SwitchNBitInput(spim, SPIM_GetIOPhaseSize(u32DcPhase));
+
+    /* Same bit mode as above. */
+    spim_write(spim, u8CmdBuf, u32NDummy);  /* Write out dummy bytes. */
+
+    SPIM_SET_DTR_MODE(spim, 0); /* DTR Deactivated. */
+}
+
+void SPIM_IO_AddrPhase(SPIM_T *spim,
+                       uint32_t u32Is4ByteAddr,
+                       uint32_t u32Addr,
+                       uint32_t u32AddrPhase,
+                       uint32_t u32DTRMode)
+{
+    uint8_t u8CmdBuf[8] = {0};
+    uint8_t u8BufIdx = 0;
+
+    SPIM_SET_DTR_MODE(spim, u32DTRMode); /* DTR Activated. */
+
+    if (u32Is4ByteAddr)
+    {
+        u8CmdBuf[u8BufIdx++] = (uint8_t)(u32Addr >> 24);
+        u8CmdBuf[u8BufIdx++] = (uint8_t)(u32Addr >> 16);
+        u8CmdBuf[u8BufIdx++] = (uint8_t)(u32Addr >> 8);
+        u8CmdBuf[u8BufIdx++] = (uint8_t) u32Addr;
+
+    }
+    else
+    {
+        u8CmdBuf[u8BufIdx++] = (uint8_t)(u32Addr >> 16);
+        u8CmdBuf[u8BufIdx++] = (uint8_t)(u32Addr >> 8);
+        u8CmdBuf[u8BufIdx++] = (uint8_t) u32Addr;
+    }
+
+    if (((SPIM_GetIOPhaseSize(u32AddrPhase) == 2) ||
+            (SPIM_GetIOPhaseSize(u32AddrPhase) == 4)))
+    {
+        u8BufIdx++;
+    }
+
+    SwitchNBitOutput(spim, SPIM_GetIOPhaseSize(u32AddrPhase));
+    spim_write(spim, u8CmdBuf, u8BufIdx);  /* Write out u32Address. */
+
+    SPIM_SET_DTR_MODE(spim, 0); /* DTR Deactivated. */
+}
+
+void SPIM_IO_CMDPhase(SPIM_T *spim, uint32_t u32RdCMD, uint32_t u32CMDPhase,
+                      uint32_t u32DTRMode, uint32_t isSync)
+{
+    uint8_t u8CmdBuf[2] = {0};
+    uint8_t u8CmdSize = 1UL;
+
+    SPIM_SET_DTR_MODE(spim, u32DTRMode); /* DTR Activated. */
+
+    if (isSync == 1)
+    {
+        SPIM_Set_Write_Enable(spim, 1, SPIM_GetIOPhaseSize(u32CMDPhase));        /* Write Enable.    */
+    }
+
+    SPIM_SET_SS_EN(spim, 1);    /* CS activated. */
+
+    u8CmdBuf[0] = (u32RdCMD & 0xFF);
+
+    if (u32DTRMode == 1)
+    {
+        u8CmdBuf[1] = 0x00;
+        u8CmdSize = 2UL;
+    }
+
+    SwitchNBitOutput(spim, SPIM_GetIOPhaseSize(u32CMDPhase));
+    spim_write(spim, u8CmdBuf, u8CmdSize);    /* Write out command. */
+
+    //SPIM_SET_SS_EN(spim, 0);    /* CS Deactivated. */
+    SPIM_SET_DTR_MODE(spim, 0); /* DTR Deactivated. */
+}
 
 /**
   * @brief      Write data in the same page by I/O mode.
@@ -1618,57 +1825,28 @@ static void SPIM_WriteInPageDataByIo(SPIM_T *spim, uint32_t u32Addr,
   * @retval     SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
   * @note       This function sets g_SPIM_i32ErrCode to SPIM_TIMEOUT_ERR if waiting SPIM time-out.
   */
-static int32_t SPIM_WriteInPageDataByPageWrite(SPIM_T *spim, uint32_t u32Addr,
-                                               int is4ByteAddr, uint32_t u32NTx,
-                                               uint8_t pu8TxBuf[], uint32_t wrCmd,
-                                               int isSync)
+static int SPIM_WriteInPageDataByPageWrite(SPIM_T *spim, uint32_t u32Addr,
+                                           int is4ByteAddr, uint32_t u32NTx,
+                                           uint8_t pu8TxBuf[], uint32_t wrCmd,
+                                           int isSync)
 {
-    //uint32_t u32TimeOutCount;
+    SPIM_Set_Write_Enable(spim, 1, 1);                  /* Write Enable. */
 
-    //if ((wrCmd == CMD_QUAD_PAGE_PROGRAM_WINBOND) ||
-    //        (wrCmd == CMD_QUAD_PAGE_PROGRAM_MXIC))
-    //{
-    //    SPIM_SetQuadEnable(spim, 1, 1UL);              /* Set Quad Enable. */
-    //}
-    //else if (wrCmd == CMD_QUAD_PAGE_PROGRAM_EON)
-    //{
-    //    SPIM_SetQuadEnable(spim, 1, 1UL);              /* Set Quad Enable. */
-    //    spim_eon_set_qpi_mode(spim, 1);                /* Enter QPI mode.  */
-    //}
+    SPIM_SET_4BYTE_ADDR_EN(spim, is4ByteAddr);          /* Enable/disable 4-Byte Address. */
 
-    SPIM_Set_Write_Enable(spim, 1, 1);   /* Write Enable.    */
+    SPIM_SET_SPIM_MODE(spim, wrCmd);                    /* SPIM mode. */
+    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEWRITE);  /* Switch to Page Write mode. */
 
-    SPIM_SET_4BYTE_ADDR_EN(spim, is4ByteAddr);        /* Enable/disable 4-Byte Address.  */
+    spim->SRAMADDR = (uint32_t)pu8TxBuf;                /* SRAM u32Address. */
+    spim->DMACNT = u32NTx;                              /* Transfer length. */
+    spim->FADDR = u32Addr;                              /* Flash u32Address.*/
 
-    SPIM_SET_SPIM_MODE(spim, wrCmd);                  /* SPIM mode.       */
-    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEWRITE);/* Switch to Page Write mode.   */
-
-    spim->SRAMADDR = (uint32_t)pu8TxBuf;         /* SRAM u32Address. */
-    spim->DMACNT = u32NTx;                       /* Transfer length. */
-    spim->FADDR = u32Addr;                       /* Flash u32Address.*/
-
-    if (SPIM_WaitSPIMENDone(spim, isSync) == SPIM_ERR_TIMEOUT)
+    if (SPIM_IsSPIMENDone(spim, isSync) == SPIM_ERR_TIMEOUT)
     {
         return SPIM_ERR_TIMEOUT;
     }
 
-    //SPIM_SET_GO(spim);                           /* Go.              */
-    //if (isSync)
-    //{
-    //u32TimeOutCount = SPIM_TIMEOUT;
-
-    //SPIM_WAIT_FREE(spim)
-    //{
-    //    if (--u32TimeOutCount == 0) return SPIM_ERR_TIMEOUT;
-    //}
-    //}
-
-    //if (wrCmd == CMD_QUAD_PAGE_PROGRAM_EON)
-    //{
-    //    spim_eon_set_qpi_mode(spim, 0); /* Exit QPI mode.   */
-    //}
-
-    //SPIM_Wait_Write_Done(spim, 1);
+    SPIM_Wait_Write_Done(spim, 1);
 
     return SPIM_OK;
 }
@@ -1729,153 +1907,6 @@ void SPIM_IO_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
     }
 }
 
-uint32_t SPIM_GetIOPhaseSize(uint32_t u32Phase)
-{
-    switch (u32Phase)
-    {
-        case PHASE_DUAL_MODE:
-            return 2;
-
-        case PHASE_QUAD_MODE:
-            return 4;
-
-        case PHASE_OCTAL_MODE:
-            return 8;
-
-        default:
-        case PHASE_NORMAL_MODE:
-            return 1;
-    }
-
-    return 1;
-}
-
-void SPIM_IO_DataPhase(SPIM_T *spim, uint8_t u8TRxBuf[], uint32_t u32TRxSize,
-                       uint32_t u32DataPhase, uint32_t u32DTRMode, uint32_t isSync)
-{
-    //uint8_t u8CmdBuf[1] = {0};
-
-    SPIM_SET_DTR_MODE(spim, u32DTRMode); /* DTR Activated. */
-    //SPIM_SET_RDQS_MODE(spim, u32DTRMode);
-
-    if (isSync == 1)
-    {
-        SwitchNBitOutput(spim, SPIM_GetIOPhaseSize(u32DataPhase));
-        spim_write(spim, u8TRxBuf, u32TRxSize);                /* Write out data.  */
-    }
-    else
-    {
-        SwitchNBitInput(spim, SPIM_GetIOPhaseSize(u32DataPhase));
-        spim_read(spim, u8TRxBuf, u32TRxSize);   /* Read back data.  */
-    }
-
-    SPIM_SET_SS_EN(spim, 0);    /* CS Deactivated. */
-    SPIM_SET_DTR_MODE(spim, 0); /* DTR Deactivated. */
-    SPIM_SET_RDQS_MODE(spim, 0);
-
-    //if (isSync)
-    //{
-    //    SPIM_Wait_Write_Done(spim, u32DataPhase);
-    //}
-}
-
-void SPIM_IO_DCPhase(SPIM_T *spim,
-                     uint32_t u32NDummy,
-                     uint32_t u32DcPhase,
-                     uint32_t u32DTRMode)
-{
-    uint8_t u8CmdBuf[32] =
-    {
-        0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA,
-        0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA,
-        0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA,
-        0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA
-    };
-
-    if (u32NDummy == 0)
-    {
-        return;
-    }
-
-    SPIM_SET_DTR_MODE(spim, u32DTRMode); /* DTR Activated. */
-
-    SwitchNBitInput(spim, SPIM_GetIOPhaseSize(u32DcPhase));
-
-    /* Same bit mode as above. */
-    spim_write(spim, u8CmdBuf, u32NDummy);  /* Write out dummy bytes. */
-
-    SPIM_SET_DTR_MODE(spim, 0); /* DTR Deactivated. */
-}
-
-void SPIM_IO_AddrPhase(SPIM_T *spim,
-                       uint32_t u32Is4ByteAddr,
-                       uint32_t u32Addr,
-                       uint32_t u32AddrPhase,
-                       uint32_t u32DTRMode)
-{
-    uint8_t u8CmdBuf[8] = {0};
-    uint8_t u8BufIdx = 0;
-
-    SPIM_SET_DTR_MODE(spim, u32DTRMode); /* DTR Activated. */
-
-    if (u32Is4ByteAddr)
-    {
-        u8CmdBuf[u8BufIdx++] = (uint8_t)(u32Addr >> 24);
-        u8CmdBuf[u8BufIdx++] = (uint8_t)(u32Addr >> 16);
-        u8CmdBuf[u8BufIdx++] = (uint8_t)(u32Addr >> 8);
-        u8CmdBuf[u8BufIdx++] = (uint8_t) u32Addr;
-
-    }
-    else
-    {
-        u8CmdBuf[u8BufIdx++] = (uint8_t)(u32Addr >> 16);
-        u8CmdBuf[u8BufIdx++] = (uint8_t)(u32Addr >> 8);
-        u8CmdBuf[u8BufIdx++] = (uint8_t) u32Addr;
-    }
-
-    if (((SPIM_GetIOPhaseSize(u32AddrPhase) == 2) ||
-            (SPIM_GetIOPhaseSize(u32AddrPhase) == 4)) /*&&
-        (gu8MFGID == MFGID_WINBOND)*/)
-    {
-        u8BufIdx++;
-    }
-
-    SwitchNBitOutput(spim, SPIM_GetIOPhaseSize(u32AddrPhase));
-    spim_write(spim, u8CmdBuf, u8BufIdx);  /* Write out u32Address. */
-
-    SPIM_SET_DTR_MODE(spim, 0); /* DTR Deactivated. */
-}
-
-void SPIM_IO_CMDPhase(SPIM_T *spim, uint32_t u32RdCMD, uint32_t u32CMDPhase,
-                      uint32_t u32DTRMode, uint32_t isSync)
-{
-    uint8_t u8CmdBuf[2] = {0};
-    uint8_t u8CmdSize = 1UL;
-
-    SPIM_SET_DTR_MODE(spim, u32DTRMode); /* DTR Activated. */
-
-    if (isSync == 1)
-    {
-        SPIM_Set_Write_Enable(spim, 1, SPIM_GetIOPhaseSize(u32CMDPhase));        /* Write Enable.    */
-    }
-
-    SPIM_SET_SS_EN(spim, 1);    /* CS activated. */
-
-    u8CmdBuf[0] = (u32RdCMD & 0xFF);
-
-    if (u32DTRMode == 1)
-    {
-        u8CmdBuf[1] = 0x00;
-        u8CmdSize = 2UL;
-    }
-
-    SwitchNBitOutput(spim, SPIM_GetIOPhaseSize(u32CMDPhase));
-    spim_write(spim, u8CmdBuf, u8CmdSize);    /* Write out command. */
-
-    //SPIM_SET_SS_EN(spim, 0);    /* CS Deactivated. */
-    SPIM_SET_DTR_MODE(spim, 0); /* DTR Deactivated. */
-}
-
 /**
   * @brief      Read data from SPI Flash by sending commands manually (I/O mode).
   * @param      u32Addr     Start u32Address to read.
@@ -1897,7 +1928,7 @@ void SPIM_IO_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
     uint8_t cmdBuf[16] = {0};
     uint32_t buf_idx;
 
-    SPIM_SET_SS_EN(spim, 1);                      /* CS activated.    */
+    SPIM_SET_SS_EN(spim, 1);                      /* CS activated. */
 
     cmdBuf[0] = rdCmd;
     SwitchNBitOutput(spim, u32NBitCmd);
@@ -1934,14 +1965,9 @@ void SPIM_IO_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
     //spim_write(spim, cmdBuf, buf_idx);  /* Write out dummy bytes. */
 
     SwitchNBitInput(spim, u32NBitDat);
-    spim_read(spim, pu8RxBuf, u32NRx);  /* Read back data.  */
+    spim_read(spim, pu8RxBuf, u32NRx);  /* Read back data. */
 
-    SPIM_SET_SS_EN(spim, 0);    /* CS deactivated.  */
-
-    //if (u32NBitCmd == 4UL)
-    //{
-    //    SPIM_SET_DTR_MODE(spim, 0);
-    //}
+    SPIM_SET_SS_EN(spim, 0);    /* CS deactivated. */
 }
 
 /**
@@ -1958,6 +1984,13 @@ void SPIM_DMA_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
 {
     uint32_t   pageOffset, toWr;
     uint32_t   buf_idx = 0UL;
+
+    /* DTR mode and 16-bit set to dual commands */
+    if ((SPIM_GET_PHDMAW_CMD_WIDTH(spim) == PHASE_WIDTH_16) &&
+            (SPIM_GET_PHDMAW_CMD_DTR(spim) == 1))
+    {
+        wrCmd = ((wrCmd << 8) | wrCmd);
+    }
 
     pageOffset = u32Addr % 256UL;
 
@@ -2007,20 +2040,27 @@ void SPIM_DMA_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
   * @note       This function sets g_SPIM_i32ErrCode to SPIM_TIMEOUT_ERR,
   *             if waiting SPIM time-out.
   */
-int32_t SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
-                      uint32_t u32NRx, uint8_t pu8RxBuf[], uint32_t u32RdCmd, int isSync)
+int SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
+                  uint32_t u32NRx, uint8_t pu8RxBuf[], uint32_t u32RdCmd, int isSync)
 {
-    SPIM_SET_4BYTE_ADDR_EN(spim, is4ByteAddr);        /* Enable/disable 4-Byte Address. */
+    /* DTR mode and 16-bit set to dual commands */
+    if ((SPIM_GET_PHDMAR_CMD_WIDTH(spim) == PHASE_WIDTH_16) &&
+            (SPIM_GET_PHDMAR_CMD_DTR(spim) == 1))
+    {
+        u32RdCmd = ((u32RdCmd << 8) | u32RdCmd);
+    }
 
-    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEREAD); /* Switch to Page Read mode.      */
+    SPIM_SET_4BYTE_ADDR_EN(spim, is4ByteAddr);          /* Enable/disable 4-Byte Address. */
 
-    SPIM_SET_SPIM_MODE(spim, u32RdCmd);               /* SPIM mode.                     */
+    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEREAD);   /* Switch to Page Read mode. */
 
-    spim->SRAMADDR = (uint32_t) pu8RxBuf;        /* SRAM u32Address. */
-    spim->DMACNT = u32NRx;                       /* Transfer length. */
-    spim->FADDR = u32Addr;                       /* Flash u32Address.*/
+    SPIM_SET_SPIM_MODE(spim, u32RdCmd);             /* SPIM mode. */
 
-    if (SPIM_WaitSPIMENDone(spim, isSync) == SPIM_ERR_TIMEOUT)
+    spim->SRAMADDR = (uint32_t) pu8RxBuf;           /* SRAM u32Address. */
+    spim->DMACNT = u32NRx;                          /* Transfer length. */
+    spim->FADDR = u32Addr;                          /* Flash u32Address. */
+
+    if (SPIM_IsSPIMENDone(spim, isSync) == SPIM_ERR_TIMEOUT)
     {
         return SPIM_ERR_TIMEOUT;
     }
@@ -2038,6 +2078,13 @@ int32_t SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
 void SPIM_EnterDirectMapMode(SPIM_T *spim, int is4ByteAddr,
                              uint32_t u32RdCmd, uint32_t u32IdleIntvl)
 {
+    /* DTR mode and 16-bit set to dual commands */
+    if ((SPIM_GET_PHDMM_CMD_WIDTH(spim) == PHASE_WIDTH_16) &&
+            (SPIM_GET_PHDMM_CMD_DTR(spim) == 1))
+    {
+        u32RdCmd = ((u32RdCmd << 8) | u32RdCmd);
+    }
+
     SPIM_SET_4BYTE_ADDR_EN(spim, is4ByteAddr);           /* Enable/disable 4-byte u32Address. */
     SPIM_SET_SPIM_MODE(spim, u32RdCmd);                  /* SPIM mode. */
     SPIM_SET_IDL_INTVL(spim, u32IdleIntvl);              /* Idle interval. */
@@ -2064,7 +2111,7 @@ int SPIM_ExitDirectMapMode(SPIM_T *spim)
     SPIM_SET_DATA_WIDTH(spim, 32UL);
     SPIM_SET_BURST_DATA(spim, 1);
 
-    if (SPIM_WaitSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
+    if (SPIM_IsSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
     {
         return SPIM_ERR_TIMEOUT;
     }
@@ -2082,7 +2129,7 @@ int SPIM_ExitDirectMapMode(SPIM_T *spim)
     SPIM_SET_DATA_WIDTH(spim, 32UL);
     SPIM_SET_BURST_DATA(spim, 1);
 
-    if (SPIM_WaitSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
+    if (SPIM_IsSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
     {
         return SPIM_ERR_TIMEOUT;
     }
@@ -2090,35 +2137,6 @@ int SPIM_ExitDirectMapMode(SPIM_T *spim)
     SPIM_SET_SS_EN(spim, 0);
 
     SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_IO); /* Switch back to Normal mode.  */
-
-#if 0
-    uint8_t cmdBuf[3] = {0x0F, 0xFF, 0xFF};
-
-    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_IO); /* Switch back to Normal mode.  */
-
-    /* SPI Reset */
-    SPIM_SET_SS_EN(spim, 1);                          /* CS activated.    */
-
-    SPIM_ENABLE_SING_OUTPUT_MODE(spim);               /* 1-bit, Output.   */
-
-    spim_write(spim, cmdBuf, sizeof(cmdBuf));
-
-    SPIM_SET_SS_EN(spim, 0);
-
-    uint8_t cmdBuf[4] = {0xFF, 0xFF, 0xFF, 0xFF};
-
-    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_IO); /* Switch back to Normal mode.  */
-    SPIM_ENABLE_QUAD_OUTPUT_MODE(spim);         /* Switch back to Normal mode.  */
-    SPIM_SET_BURST_DATA(spim, 0);
-    SPIM_SET_DATA_WIDTH(spim, 32UL);
-
-    SPIM_SET_SS_EN(spim, 1);                          /* CS activated. */
-    SwitchNBitOutput(spim, 4);
-    spim_write(spim, cmdBuf, sizeof(cmdBuf));
-    SPIM_SET_SS_EN(spim, 0);
-
-    SPIM_DMM_DISABLE_BWEN(spim);
-#endif //0
 
     return 0;
 }
@@ -2226,11 +2244,11 @@ void SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32ClkOnNum, uint32_t u32TrimN
 //------------------------------------------------------------------------------
 // SPIM Hyper Define Function Prototypes
 //------------------------------------------------------------------------------
-int SPIM_Hyper_WaitCMDIDLE(SPIM_T *spim)
+int SPIM_Hyper_IsIdle(SPIM_T *spim)
 {
-    int32_t i32TimeOutCnt = SPIM_TIMEOUT;
+    volatile int32_t i32TimeOutCnt = SPIM_TIMEOUT;
 
-    while (spim->HYPER_CMD != SPIM_HYPER_CMD_HRAM_IDLE)
+    while (spim->HYPER_CMD != SPIM_HYPER_CMD_IDLE)
     {
         if (i32TimeOutCnt-- <= 0)
         {
@@ -2248,13 +2266,13 @@ int SPIM_Hyper_WaitCMDIDLE(SPIM_T *spim)
   *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
   * @note       if waiting Hyper Chip time-out.
   */
-int SPIM_Hyper_ResetHyperRAM(SPIM_T *spim)
+int SPIM_Hyper_Reset(SPIM_T *spim)
 {
     int32_t i32TimeOutCnt = SPIM_TIMEOUT;
 
-    spim->HYPER_CMD = SPIM_HYPER_CMD_RESET_HRAM;
+    spim->HYPER_CMD = SPIM_HYPER_CMD_RESET;
 
-    if (SPIM_Hyper_WaitCMDIDLE(spim) == SPIM_ERR_TIMEOUT)
+    if (SPIM_Hyper_IsIdle(spim) == SPIM_ERR_TIMEOUT)
     {
         return SPIM_ERR_TIMEOUT;
     }
@@ -2271,11 +2289,11 @@ int SPIM_Hyper_ResetHyperRAM(SPIM_T *spim)
   */
 int SPIM_HyperRAM_ExitHSAndDPD(SPIM_T *spim)
 {
-    int32_t i32TimeOutCnt = SPIM_TIMEOUT;
+    int i32TimeOutCnt = SPIM_TIMEOUT;
 
     spim->HYPER_CMD = SPIM_HYPER_CMD_EXIT_HS_PD;
 
-    if (SPIM_Hyper_WaitCMDIDLE(spim) == SPIM_ERR_TIMEOUT)
+    if (SPIM_Hyper_IsIdle(spim) == SPIM_ERR_TIMEOUT)
     {
         return SPIM_ERR_TIMEOUT;
     }
@@ -2299,10 +2317,10 @@ int SPIM_HyperRAM_ReadReg(SPIM_T *spim, uint32_t u32Addr)
 {
     int i32TimeOutCnt = SPIM_TIMEOUT;
 
-    if ((u32Addr != HYPER_CHIP_ID_REG0) &&
-            (u32Addr != HYPER_CHIP_ID_REG1) &&
-            (u32Addr != HYPER_CHIP_CONFIG_REG0) &&
-            (u32Addr != HYPER_CHIP_CONFIG_REG1))
+    if ((u32Addr != HYPER_RAM_ID_REG0) &&
+            (u32Addr != HYPER_RAM_ID_REG1) &&
+            (u32Addr != HYPER_RAM_CONFIG_REG0) &&
+            (u32Addr != HYPER_RAM_CONFIG_REG1))
     {
         return -1;
     }
@@ -2311,7 +2329,7 @@ int SPIM_HyperRAM_ReadReg(SPIM_T *spim, uint32_t u32Addr)
 
     spim->HYPER_CMD = SPIM_HYPER_CMD_READ_HRAM_REGISTER;
 
-    SPIM_Hyper_WaitCMDIDLE(spim);
+    SPIM_Hyper_IsIdle(spim);
 
     return (spim->HYPER_RDATA & 0xFFFF);
 }
@@ -2331,12 +2349,12 @@ int SPIM_HyperRAM_ReadReg(SPIM_T *spim, uint32_t u32Addr)
   */
 int SPIM_HyperRAM_WriteReg(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Value)
 {
-    int32_t i32TimeOutCnt = SPIM_TIMEOUT;
+    int i32TimeOutCnt = SPIM_TIMEOUT;
 
-    if ((u32Addr != HYPER_CHIP_ID_REG0) &&
-            (u32Addr != HYPER_CHIP_ID_REG1) &
-            (u32Addr != HYPER_CHIP_CONFIG_REG0) &&
-            (u32Addr != HYPER_CHIP_CONFIG_REG1))
+    if ((u32Addr != HYPER_RAM_ID_REG0) &&
+            (u32Addr != HYPER_RAM_ID_REG1) &
+            (u32Addr != HYPER_RAM_CONFIG_REG0) &&
+            (u32Addr != HYPER_RAM_CONFIG_REG1))
     {
         return -1;
     }
@@ -2348,7 +2366,7 @@ int SPIM_HyperRAM_WriteReg(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Value)
 
     spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_HRAM_REGISTER;
 
-    if (SPIM_Hyper_WaitCMDIDLE(spim) == SPIM_ERR_TIMEOUT)
+    if (SPIM_Hyper_IsIdle(spim) == SPIM_ERR_TIMEOUT)
     {
         return SPIM_ERR_TIMEOUT;
     }
@@ -2365,13 +2383,11 @@ int SPIM_HyperRAM_WriteReg(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Value)
   */
 uint16_t SPIM_Hyper_Read1Word(SPIM_T *spim, uint32_t u32Addr)
 {
-    int32_t i32TimeOutCnt = SPIM_TIMEOUT;
-
     spim->HYPER_ADR = u32Addr;
 
-    spim->HYPER_CMD = SPIM_HYPER_CMD_READ_HRAM_1_WORD;
+    spim->HYPER_CMD = SPIM_HYPER_CMD_READ_1_WORD;
 
-    SPIM_Hyper_WaitCMDIDLE(spim);
+    SPIM_Hyper_IsIdle(spim);
 
     return (spim->HYPER_RDATA & 0xFFFF);
 }
@@ -2384,13 +2400,11 @@ uint16_t SPIM_Hyper_Read1Word(SPIM_T *spim, uint32_t u32Addr)
   */
 uint32_t SPIM_Hyper_Read2Word(SPIM_T *spim, uint32_t u32Addr)
 {
-    int32_t i32TimeOutCnt = SPIM_TIMEOUT;
-
     spim->HYPER_ADR = u32Addr;
 
-    spim->HYPER_CMD = SPIM_HYPER_CMD_READ_HRAM_2_WORD;
+    spim->HYPER_CMD = SPIM_HYPER_CMD_READ_2_WORD;
 
-    SPIM_Hyper_WaitCMDIDLE(spim);
+    SPIM_Hyper_IsIdle(spim);
 
     return spim->HYPER_RDATA;
 }
@@ -2405,16 +2419,14 @@ uint32_t SPIM_Hyper_Read2Word(SPIM_T *spim, uint32_t u32Addr)
   */
 int SPIM_Hyper_Write1Byte(SPIM_T *spim, uint32_t u32Addr, uint8_t u8Data)
 {
-    int32_t i32TimeOutCnt = SPIM_TIMEOUT;
-
     spim->HYPER_WDATA &= ~0xFFFFFFFF;
 
     spim->HYPER_ADR = u32Addr;
     spim->HYPER_WDATA = u8Data;
 
-    spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_HRAM_1_BYTE;
+    spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_1_BYTE;
 
-    if (SPIM_Hyper_WaitCMDIDLE(spim) == SPIM_ERR_TIMEOUT)
+    if (SPIM_Hyper_IsIdle(spim) == SPIM_ERR_TIMEOUT)
     {
         return SPIM_ERR_TIMEOUT;
     }
@@ -2432,16 +2444,14 @@ int SPIM_Hyper_Write1Byte(SPIM_T *spim, uint32_t u32Addr, uint8_t u8Data)
   */
 int SPIM_Hyper_Write2Byte(SPIM_T *spim, uint32_t u32Addr, uint16_t u16Data)
 {
-    int32_t i32TimeOutCnt = SPIM_TIMEOUT;
-
     spim->HYPER_WDATA &= ~0xFFFFFFFF;
 
     spim->HYPER_ADR = u32Addr;
     spim->HYPER_WDATA = u16Data;
 
-    spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_HRAM_2_BYTE;
+    spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_2_BYTE;
 
-    if (SPIM_Hyper_WaitCMDIDLE(spim) == SPIM_ERR_TIMEOUT)
+    if (SPIM_Hyper_IsIdle(spim) == SPIM_ERR_TIMEOUT)
     {
         return SPIM_ERR_TIMEOUT;
     }
@@ -2459,16 +2469,14 @@ int SPIM_Hyper_Write2Byte(SPIM_T *spim, uint32_t u32Addr, uint16_t u16Data)
   */
 int SPIM_Hyper_Write3Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data)
 {
-    int32_t i32TimeOutCnt = SPIM_TIMEOUT;
-
     spim->HYPER_WDATA &= ~0xFFFFFFFF;
 
     spim->HYPER_ADR = u32Addr;
     spim->HYPER_WDATA = u32Data;
 
-    spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_HRAM_3_BYTE;
+    spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_3_BYTE;
 
-    if (SPIM_Hyper_WaitCMDIDLE(spim) == SPIM_ERR_TIMEOUT)
+    if (SPIM_Hyper_IsIdle(spim) == SPIM_ERR_TIMEOUT)
     {
         return SPIM_ERR_TIMEOUT;
     }
@@ -2486,16 +2494,14 @@ int SPIM_Hyper_Write3Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data)
   */
 int SPIM_Hyper_Write4Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data)
 {
-    int32_t i32TimeOutCnt = SPIM_TIMEOUT;
-
     spim->HYPER_WDATA &= ~0xFFFFFFFF;
 
     spim->HYPER_ADR = u32Addr;
     spim->HYPER_WDATA = u32Data;
 
-    spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_HRAM_4_BYTE;
+    spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_4_BYTE;
 
-    if (SPIM_Hyper_WaitCMDIDLE(spim) == SPIM_ERR_TIMEOUT)
+    if (SPIM_Hyper_IsIdle(spim) == SPIM_ERR_TIMEOUT)
     {
         return SPIM_ERR_TIMEOUT;
     }
@@ -2503,38 +2509,36 @@ int SPIM_Hyper_Write4Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data)
     return SPIM_OK;
 }
 
+// move to sample code
 /**
   * @brief      SPIM Default Config HyperBus Access Module Parameters.
   * @param      spim
-  * @param      u32CSMaxLT Chip Select Maximum Low Time
-  * @param      u32AcctRD Initial Read Access Time
-  * @param      u32AcctWR Initial Write Access Time
+  * @param      u32CSMaxLT Chip Select Maximum Low Time 0 ~ 0xFFFF, Default Set 0x02ED
+  * @param      u32AcctRD Initial Read Access Time 1 ~ 0x1F, Default Set 0x04
+  * @param      u32AcctWR Initial Write Access Time 1 ~ 0x1F, Default Set 0x04
   * @return     None.
   */
-void SPIM_Hyper_DefConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR)
+void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR)
 {
     /* Chip Select Setup Time 2.5 */
     SPIM_HYPER_CONFIG1_SET_CSST(spim, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
 
-    /* Burst Group Size 32Bits */
-    //SPIM_HYPER_CONFIG1_SET_BGSIZE(spim, u32BSize);
+    /* Chip Select Hold Time 3.5 HCLK */
+    SPIM_HYPER_CONFIG1_SET_CSH(spim, SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
 
-    /* Chip Select Hold Time 2.5 HCLK */
-    SPIM_HYPER_CONFIG1_SET_CSH(spim, SPIM_HYPER_CONFIG1_CSH_2_5_HCLK);
-
-    /* Chip Select High between Transaction as 1 HCLK cycles */
+    /* Chip Select High between Transaction as 2 HCLK cycles */
     SPIM_HYPER_CONFIG1_SET_CSHI(spim, 2);
 
-    /* Chip Select Masximum low time 71 HCLK */
+    /* Chip Select Masximum low time HCLK */
     SPIM_HYPER_CONFIG1_SET_CSMAXLT(spim, u32CSMaxLow);
 
-    /* Initial Device RESETN Low Time 0 */
+    /* Initial Device RESETN Low Time 255 */
     SPIM_HYPER_CONFIG2_SET_RSTNLT(spim, 0xFF);
 
-    /* Initial Read Access Time 7 Clock cycle*/
+    /* Initial Read Access Time Clock cycle*/
     SPIM_HYPER_CONFIG2_SET_ACCTRD(spim, u32AcctRD);
 
-    /* Initial Write Access Time 7 Clock cycle*/
+    /* Initial Write Access Time Clock cycle*/
     SPIM_HYPER_CONFIG2_SET_ACCTWR(spim, u32AcctWR);
 }
 
@@ -2590,7 +2594,7 @@ int SPIM_Hyper_DMAWrite(SPIM_T *spim, uint32_t u32Addr, void *pvWrBuf, uint32_t 
     spim->DMACNT = u32NTx;                       /* Transfer length.  */
     spim->FADDR = u32Addr;                       /* Flash u32Address. */
 
-    if (SPIM_WaitSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
+    if (SPIM_IsSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
     {
         return SPIM_ERR_TIMEOUT;
     }
@@ -2613,7 +2617,7 @@ int SPIM_Hyper_DMARead(SPIM_T *spim, uint32_t u32Addr, void *pvRdBuf, uint32_t u
     spim->DMACNT = u32NRx;                       /* Transfer length. */
     spim->FADDR = u32Addr;                       /* Flash u32Address. */
 
-    if (SPIM_WaitSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
+    if (SPIM_IsSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
     {
         return SPIM_ERR_TIMEOUT;
     }
@@ -2656,11 +2660,13 @@ int SPIM_Hyper_WaitDMMDone(SPIM_T *spim)
     uint32_t u32TimeOutCount = SPIM_TIMEOUT;
 
     SPIM_DMM_HYPDONE(spim);       /* HyperBus DMM Mode Done.  */
-    //spim->DMMCTL |= SPIM_DMMCTL_HYPDONE_Msk;
 
-    SPIM_WAIT_HYPDONE(spim)
+    while (SPIM_WAIT_HYPDONE(spim))
     {
-        if (--u32TimeOutCount == 0) return SPIM_ERR_TIMEOUT;
+        if (--u32TimeOutCount == 0)
+        {
+            return SPIM_ERR_TIMEOUT;
+        }
     }
 
     return SPIM_OK;
