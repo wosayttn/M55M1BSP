@@ -125,7 +125,7 @@ void TestFunc_AWF_SetWBINITValue(void)
 
 void TestFunc_AWF_TestMacro(void)
 {
-
+    /* Set AWF initial value */
     AWF_SetWBINITValue(0);
     AWF_SetHTHValue(0);
     AWF_SetLTHValue(0);

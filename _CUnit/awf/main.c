@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     
     printf("\n\n");
     printf("+--------------------------------------+\n");
-    printf("|       M55M1 CUnit AWF Test           |\n");
+    printf("|       M55M1 AWF CUnit Test           |\n");
     printf("+--------------------------------------+\n");
 
     if (CU_initialize_registry())
