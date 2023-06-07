@@ -27,19 +27,19 @@ int32_t  g_KDF_i32ErrCode = eKDF_ERRCODE_SUCCESS;   /*!< KDF global error code *
 /**
   * @brief      Get key bit size
   * @param[in]  u32KeySizeSel       Output key size selection. It could be:
-  *                                 \ref KDF_KEY_SIZE_128
-  *                                 \ref KDF_KEY_SIZE_163
-  *                                 \ref KDF_KEY_SIZE_192
-  *                                 \ref KDF_KEY_SIZE_224
-  *                                 \ref KDF_KEY_SIZE_233
-  *                                 \ref KDF_KEY_SIZE_255
-  *                                 \ref KDF_KEY_SIZE_256
-  *                                 \ref KDF_KEY_SIZE_283
-  *                                 \ref KDF_KEY_SIZE_384
-  *                                 \ref KDF_KEY_SIZE_409
-  *                                 \ref KDF_KEY_SIZE_512
-  *                                 \ref KDF_KEY_SIZE_521
-  *                                 \ref KDF_KEY_SIZE_571
+  *                                 \ref KDF_KS_KEY_SIZE_128
+  *                                 \ref KDF_KS_KEY_SIZE_163
+  *                                 \ref KDF_KS_KEY_SIZE_192
+  *                                 \ref KDF_KS_KEY_SIZE_224
+  *                                 \ref KDF_KS_KEY_SIZE_233
+  *                                 \ref KDF_KS_KEY_SIZE_255
+  *                                 \ref KDF_KS_KEY_SIZE_256
+  *                                 \ref KDF_KS_KEY_SIZE_283
+  *                                 \ref KDF_KS_KEY_SIZE_384
+  *                                 \ref KDF_KS_KEY_SIZE_409
+  *                                 \ref KDF_KS_KEY_SIZE_512
+  *                                 \ref KDF_KS_KEY_SIZE_521
+  *                                 \ref KDF_KS_KEY_SIZE_571
   * @return     eKDF_ERRCODE_INVALID_PARAM  Invalid key size selection
   *             key bit size
   * @details    This function is used to get key size selection.
@@ -47,12 +47,12 @@ int32_t  g_KDF_i32ErrCode = eKDF_ERRCODE_SUCCESS;   /*!< KDF global error code *
 int32_t KDF_GetKeyBitSize(uint32_t u32KeySizeSel)
 {
     int32_t  i;
-    uint32_t au32KeyLenTbl[] = { 128, 163, 192, 224, 233, 255, 256, 283, 384, 409, 512, 521, 571 };
+    uint32_t au32KeyBitLenTbl[] = { 128, 163, 192, 224, 233, 255, 256, 283, 384, 409, 512, 521, 571 };
     
-    if (u32KeySizeSel > (sizeof(au32KeyLenTbl) / sizeof(au32KeyLenTbl[0])))
+    if (u32KeySizeSel > (sizeof(au32KeyBitLenTbl) / sizeof(au32KeyBitLenTbl[0])))
         return eKDF_ERRCODE_INVALID_PARAM;
     
-    return au32KeyLenTbl[u32KeySizeSel];
+    return au32KeyBitLenTbl[u32KeySizeSel];
 }
 
 /**
@@ -61,12 +61,12 @@ int32_t KDF_GetKeyBitSize(uint32_t u32KeySizeSel)
   * @param[in]  u32ByteCnt      Specify byte count of pu8InputKey and its value must <= 32
   * @details    This function is used to set key input.
   */
-void KDF_SetKeyInput(uint8_t pu8KeyInput[], uint32_t u32ByteCnt)
+void KDF_SetKeyInput(const uint8_t pu8KeyInput[], uint32_t u32ByteCnt)
 {
-    if (u32ByteCnt > (4 * 8))
-        memcpy((void *)KDF->KEYIN, (void *)pu8KeyInput, (32 * 8));
-    else
-        memcpy((void *)KDF->KEYIN, (void *)pu8KeyInput, u32ByteCnt);
+    if (u32ByteCnt > sizeof(KDF->KEYIN))
+        u32ByteCnt = sizeof(KDF->KEYIN);
+
+    memcpy((void *)KDF->KEYIN, (void *)pu8KeyInput, u32ByteCnt);
 }
 
 /**
@@ -75,12 +75,12 @@ void KDF_SetKeyInput(uint8_t pu8KeyInput[], uint32_t u32ByteCnt)
   * @param[in]  u32ByteCnt      Specify byte count of pu8Salt and its value must <= 32
   * @details    This function is used to set key salt.
   */
-void KDF_SetSalt(uint8_t pu8Salt[], uint32_t u32ByteCnt)
+void KDF_SetSalt(const uint8_t pu8Salt[], uint32_t u32ByteCnt)
 {
-    if (u32ByteCnt > (4 * 8))
-        memcpy((void *)KDF->SALT, (void *)pu8Salt, (32 * 8));
-    else
-        memcpy((void *)KDF->SALT, (void *)pu8Salt, u32ByteCnt);
+    if (u32ByteCnt > sizeof(KDF->SALT))
+        u32ByteCnt = sizeof(KDF->SALT);
+
+    memcpy((void *)KDF->SALT, (void *)pu8Salt, u32ByteCnt);
 }
 
 /**
@@ -89,26 +89,26 @@ void KDF_SetSalt(uint8_t pu8Salt[], uint32_t u32ByteCnt)
   * @param[in]  u32ByteCnt      Specify byte count of pu8Label and its value must <= 12
   * @details    This function is used to set key label.
   */
-void KDF_SetLabel(uint8_t pu8Label[], uint32_t u32ByteCnt)
+void KDF_SetLabel(const uint8_t pu8Label[], uint32_t u32ByteCnt)
 {
-    if (u32ByteCnt > (4 * 3))
-        memcpy((void *)KDF->LABEL, (void *)pu8Label, (32 * 3));
-    else
-        memcpy((void *)KDF->LABEL, (void *)pu8Label, u32ByteCnt);
+    if (u32ByteCnt > sizeof(KDF->LABEL))
+        u32ByteCnt = sizeof(KDF->LABEL);
+
+    memcpy((void *)KDF->LABEL, (void *)pu8Label, u32ByteCnt);
 }
 
 /**
   * @brief      Set key context
-  * @param[in]  pu8Ctxt         Byte buffer contain key context
+  * @param[in]  pu8Context      Byte buffer contain key context
   * @param[in]  u32ByteCnt      Specify byte count of pu8Ctxt and its value must <= 16
   * @details    This function is used to set key context.
   */
-void KDF_SetCtxt(uint8_t pu8Ctxt[], uint32_t u32ByteCnt)
+void KDF_SetContext(const uint8_t pu8Context[], uint32_t u32ByteCnt)
 {
-    if (u32ByteCnt > (4 * 4))
-        memcpy((void *)KDF->CTXT, (void *)pu8Ctxt, (32 * 4));
-    else
-        memcpy((void *)KDF->CTXT, (void *)pu8Ctxt, u32ByteCnt);
+    if (u32ByteCnt > sizeof(KDF->CTXT))
+        u32ByteCnt = sizeof(KDF->CTXT);
+
+    memcpy((void *)KDF->CTXT, (void *)pu8Context, u32ByteCnt);
 }
 
 /**
@@ -122,21 +122,21 @@ void KDF_SetCtxt(uint8_t pu8Ctxt[], uint32_t u32ByteCnt)
   *                                         KDF_SetKeyInput, KDF_SetSalt, KDF_SetLabel and KDF_SetCtxt
   *                                     to write key parameters before deriving key
   *                                     It could be the combine of
-  *                                     \ref KDF_KEYIN_FROM_REG / \ref KDF_KEYIN_FROM_NVM
-  *                                     \ref KDF_SALT_FROM_REG  / \ref KDF_SALT_FROM_RANDOM
-  *                                     \ref KDF_LABEL_FROM_REG / \ref KDF_LABEL_FROM_RANDOM
-  *                                     \ref KDF_CTXT_FROM_REG  / \ref KDF_CTXT_FROM_RANDOM
+  *                                     \ref KDF_KEYIN_FROM_REG   / \ref KDF_KEYIN_FROM_NVM (KS OTP Key15)
+  *                                     \ref KDF_SALT_FROM_REG    / \ref KDF_SALT_FROM_RANDOM
+  *                                     \ref KDF_LABEL_FROM_REG   / \ref KDF_LABEL_FROM_RANDOM
+  *                                     \ref KDF_CONTEXT_FROM_REG / \ref KDF_CONTEXT_FROM_RANDOM
   * @param[in]    u32KeyBitSize         To specify output key bit length and its maximum value must <= 65280
-  * @param[out]   pu8KeyOut             Buffer to store derived key output and buffer size must >= u32KeyBitSize
+  * @param[out]   pu32KeyOut            Buffer to store output key and buffer size must >= u32KeyBitSize and word alignment
   *
   * @return       eKDF_ERRCODE_SUCCESS: Success
   *               Others: Fail
   * @details      Derive key with specified key parameters and key length
   */
-int32_t KDF_DeriveKey(E_KDF_MODE eMode, uint32_t u32DeriveKeyParam, uint32_t u32KeyBitSize, uint8_t *pu8KeyOut)
+int32_t KDF_DeriveKey(E_KDF_MODE eMode, uint32_t u32DeriveKeyParam, uint32_t u32KeyBitSize, uint32_t *pu32KeyOut)
 {
     int32_t  i, j;
-    uint32_t u32Idx = 0;
+    uint32_t u32Idx = 0, u32NotAlignByte;
     int32_t  i32LeftKeyBitSize = u32KeyBitSize;
     uint32_t u32TimeOutCount, u32ByteCnt, u32WordCnt;
     
@@ -166,16 +166,18 @@ int32_t KDF_DeriveKey(E_KDF_MODE eMode, uint32_t u32DeriveKeyParam, uint32_t u32
         if(KDF->STS & (KDF_STS_NEXTERR_Msk | KDF_STS_KSERR_Msk))
             return eKDF_ERRCODE_FAIL;
         
-        /* Store output key to pu8KeyOut */
+        /* Store output key to pu32KeyOut */
         u32ByteCnt = (i32LeftKeyBitSize / 8) + ((i32LeftKeyBitSize % 8) > 0);
         
         /* Maximum byte count of derived key is 32 bytes per derivation */
         if (u32ByteCnt > 32)
             u32ByteCnt = 32;
-        
-        for (i = 0; i < u32ByteCnt; i++)
-            pu8KeyOut[u32Idx + i] = (KDF->KEYOUT[(i / 4)] >> (i % 4) * 8) & 0xFF;
-        
+
+        for (i = 0; i < u32ByteCnt; i += 4)
+        {
+            pu32KeyOut[(u32Idx + i) / 4] = KDF->KEYOUT[i / 4];
+        }
+
         u32Idx += i;
         i32LeftKeyBitSize -= (u32ByteCnt * 8);
     }
@@ -208,24 +210,24 @@ int32_t KDF_DeriveKey(E_KDF_MODE eMode, uint32_t u32DeriveKeyParam, uint32_t u32
   *                                  If KDF_xxx_FROM_REG is set, users can use these functions -
   *                                    KDF_SetKeyInput, KDF_SetSalt, KDF_SetLabel and KDF_SetCtxt
   *                                  to write key parameters before deriving key
-  *                                  \ref KDF_KEYIN_FROM_REG / \ref KDF_KEYIN_FROM_NVM
-  *                                  \ref KDF_SALT_FROM_REG  / \ref KDF_SALT_FROM_RANDOM
-  *                                  \ref KDF_LABEL_FROM_REG / \ref KDF_LABEL_FROM_RANDOM
-  *                                  \ref KDF_CTXT_FROM_REG  / \ref KDF_CTXT_FROM_RANDOM
+  *                                  \ref KDF_KEYIN_FROM_REG   / \ref KDF_KEYIN_FROM_NVM (KS OTP Key15)
+  *                                  \ref KDF_SALT_FROM_REG    / \ref KDF_SALT_FROM_RANDOM
+  *                                  \ref KDF_LABEL_FROM_REG   / \ref KDF_LABEL_FROM_RANDOM
+  *                                  \ref KDF_CONTEXT_FROM_REG / \ref KDF_CONTEXT_FROM_RANDOM
   * @param[in]    u32KeySizeSel      Output key size selection. It could be:
-  *                                  \ref KDF_KEY_SIZE_128
-  *                                  \ref KDF_KEY_SIZE_163
-  *                                  \ref KDF_KEY_SIZE_192
-  *                                  \ref KDF_KEY_SIZE_224
-  *                                  \ref KDF_KEY_SIZE_233
-  *                                  \ref KDF_KEY_SIZE_255
-  *                                  \ref KDF_KEY_SIZE_256
-  *                                  \ref KDF_KEY_SIZE_283
-  *                                  \ref KDF_KEY_SIZE_384
-  *                                  \ref KDF_KEY_SIZE_409
-  *                                  \ref KDF_KEY_SIZE_512
-  *                                  \ref KDF_KEY_SIZE_521
-  *                                  \ref KDF_KEY_SIZE_571
+  *                                  \ref KDF_KS_KEY_SIZE_128
+  *                                  \ref KDF_KS_KEY_SIZE_163
+  *                                  \ref KDF_KS_KEY_SIZE_192
+  *                                  \ref KDF_KS_KEY_SIZE_224
+  *                                  \ref KDF_KS_KEY_SIZE_233
+  *                                  \ref KDF_KS_KEY_SIZE_255
+  *                                  \ref KDF_KS_KEY_SIZE_256
+  *                                  \ref KDF_KS_KEY_SIZE_283
+  *                                  \ref KDF_KS_KEY_SIZE_384
+  *                                  \ref KDF_KS_KEY_SIZE_409
+  *                                  \ref KDF_KS_KEY_SIZE_512
+  *                                  \ref KDF_KS_KEY_SIZE_521
+  *                                  \ref KDF_KS_KEY_SIZE_571
   * @param[in]    u32KeyMeta         The metadata of the key. It could be the combine of
   *                                  \ref KDF_KS_OWNER_AES / \ref KDF_KS_OWNER_HMAC / \ref KDF_KS_OWNER_ECC / \ref KDF_KS_OWNER_CPU / \ref KDF_KS_OWNER_CHACHA
   *                                  \ref KDF_KS_NON_PRIV   / \ref KDF_KS_PRIV
