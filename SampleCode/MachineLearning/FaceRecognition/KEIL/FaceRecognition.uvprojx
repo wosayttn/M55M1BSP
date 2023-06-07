@@ -626,12 +626,12 @@
             <File>
               <FileName>Model.cc</FileName>
               <FileType>8</FileType>
-              <FilePath>..\tflu\Model.cc</FilePath>
+              <FilePath>..\application\tflu\Model.cc</FilePath>
             </File>
             <File>
               <FileName>TensorFlowLiteMicro.cc</FileName>
               <FileType>8</FileType>
-              <FilePath>..\tflu\TensorFlowLiteMicro.cc</FilePath>
+              <FilePath>..\application\tflu\TensorFlowLiteMicro.cc</FilePath>
             </File>
           </Files>
         </Group>

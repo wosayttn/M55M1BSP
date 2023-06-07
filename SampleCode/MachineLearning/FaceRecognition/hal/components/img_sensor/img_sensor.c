@@ -47,18 +47,18 @@ void CCAP_IRQHandler(void)
 {
     uint32_t u32CCAP_Status = CCAP->INTSTS;
     
-    if ((CCAP->INT & CCAP_INT_VIEN_Msk) && (u32CCAP_Status & CCAP_INTSTS_VINTF_Msk))
+    if ((CCAP->INTEN & CCAP_INTEN_VIEN_Msk) && (u32CCAP_Status & CCAP_INTSTS_VINTF_Msk))
     {
         CCAP_InterruptHandler();
         CCAP->INTSTS |= CCAP_INTSTS_VINTF_Msk;        /* Clear Frame end interrupt */
     }
 
-    if ((CCAP->INT & CCAP_INT_ADDRMIEN_Msk) && (u32CCAP_Status & CCAP_INTSTS_ADDRMINTF_Msk))
+    if ((CCAP->INTEN & CCAP_INTEN_ADDRMIEN_Msk) && (u32CCAP_Status & CCAP_INTSTS_ADDRMINTF_Msk))
     {
         CCAP->INTSTS |= CCAP_INTSTS_ADDRMINTF_Msk; /* Clear Address match interrupt */
     }
 
-    if ((CCAP->INT & CCAP_INT_MEIEN_Msk) && (u32CCAP_Status & CCAP_INTSTS_MEINTF_Msk))
+    if ((CCAP->INTEN & CCAP_INTEN_MEIEN_Msk) && (u32CCAP_Status & CCAP_INTSTS_MEINTF_Msk))
     {
         CCAP->INTSTS |= CCAP_INTSTS_MEINTF_Msk;    /* Clear Memory error interrupt */
     }
