@@ -34,8 +34,8 @@ extern "C"
 #define DAC_CTL_LALIGN_RIGHT_ALIGN   (0UL<<DAC_CTL_LALIGN_Pos)   /*!< Right alignment. \hideinitializer */
 #define DAC_CTL_LALIGN_LEFT_ALIGN    (1UL<<DAC_CTL_LALIGN_Pos)   /*!< Left alignment \hideinitializer */
 
-#define DAC_WRITE_DAT_TRIGGER      (0UL)    /*!< Write DAC_DAT trigger \hideinitializer */
-#define DAC_SOFTWARE_TRIGGER       (0UL|DAC_CTL_TRGEN_Msk)    /*!< Software trigger \hideinitializer */
+#define DAC_WRITE_DAT_TRIGGER      (0UL)                                                                      /*!< Write DAC_DAT trigger \hideinitializer */
+#define DAC_SOFTWARE_TRIGGER       (0UL|DAC_CTL_TRGEN_Msk)                                                    /*!< Software trigger \hideinitializer */
 #define DAC_LOW_LEVEL_TRIGGER      ((0UL<<DAC_CTL_ETRGSEL_Pos)|(1UL<<DAC_CTL_TRGSEL_Pos)|DAC_CTL_TRGEN_Msk)   /*!< STDAC pin low level trigger \hideinitializer */
 #define DAC_HIGH_LEVEL_TRIGGER     ((1UL<<DAC_CTL_ETRGSEL_Pos)|(1UL<<DAC_CTL_TRGSEL_Pos)|DAC_CTL_TRGEN_Msk)   /*!< STDAC pin high level trigger \hideinitializer */
 #define DAC_FALLING_EDGE_TRIGGER   ((2UL<<DAC_CTL_ETRGSEL_Pos)|(1UL<<DAC_CTL_TRGSEL_Pos)|DAC_CTL_TRGEN_Msk)   /*!< STDAC pin falling edge trigger \hideinitializer */
@@ -248,7 +248,6 @@ extern "C"
   * \hideinitializer
   */
 #define DAC_DISABLE_GROUP_MODE(dac) (DAC0->CTL &= ~DAC_CTL_GRPEN_Msk)
-
 
 /**
   * @brief Write conversion data in Group mode..

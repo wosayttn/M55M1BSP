@@ -48,14 +48,12 @@ extern "C"
 #define LPADC_ADCR_TRGEN_ENABLE           (1UL<<LPADC_ADCR_TRGEN_Pos)    /*!< Enable triggering of A/D conversion by external STADC pin or PWM      \hideinitializer */
 
 #define LPADC_ADCR_TRGS_STADC             (0UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is started by external STADC pin   \hideinitializer */
-#define LPADC_ADCR_TRGS_TIMER             (1UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is started by Timer    \hideinitializer */
 #define LPADC_ADCR_TRGS_BPWM              (2UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is started by BPWM     \hideinitializer */
-#define LPADC_ADCR_TRGS_PWM               (3UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is started by PWM      \hideinitializer */
-#define LPADC_ADCR_TRGS_EPWM              (4UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is started by EPWM      \hideinitializer */
-#define LPADC_ADCR_TRGS_ACMP0             (8UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is started by ACMP0      \hideinitializer */
-#define LPADC_ADCR_TRGS_ACMP1             (9UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is started by ACMP1      \hideinitializer */
-#define LPADC_ADCR_TRGS_ACMP2             (10UL<<LPADC_ADCR_TRGS_Pos)    /*!< A/D conversion is started by ACMP2     \hideinitializer */
-#define LPADC_ADCR_TRGS_ACMP3             (11UL<<LPADC_ADCR_TRGS_Pos)    /*!< A/D conversion is started by ACMP3      \hideinitializer */
+#define LPADC_ADCR_TRGS_EPWM              (4UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is started by EPWM     \hideinitializer */
+#define LPADC_ADCR_TRGS_ACMP0             (8UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is started by ACMP0    \hideinitializer */
+#define LPADC_ADCR_TRGS_ACMP1             (9UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is started by ACMP1    \hideinitializer */
+#define LPADC_ADCR_TRGS_ACMP2             (10UL<<LPADC_ADCR_TRGS_Pos)    /*!< A/D conversion is started by ACMP2    \hideinitializer */
+#define LPADC_ADCR_TRGS_ACMP3             (11UL<<LPADC_ADCR_TRGS_Pos)    /*!< A/D conversion is started by ACMP3    \hideinitializer */
 
 
 #define LPADC_ADCR_TRGCOND_LOW_LEVEL      (0UL<<LPADC_ADCR_TRGCOND_Pos)  /*!< STADC Low level active    \hideinitializer */
@@ -140,7 +138,7 @@ extern int32_t g_LPADC_i32ErrCode;
 /**
   * @brief Get conversion data of specified channel.
   * @param[in] lpadc The pointer of the specified LPADC module.
-  * @param[in] u32ChNum LPADC Channel, valid value are from 0 to 15 and 29.
+  * @param[in] u32ChNum LPADC Channel, valid value are from 0 to 23 and 28,29,30,31.
   * @return  16-bit data.
   * @details Read RSLT bit field to get conversion data.
   * \hideinitializer
@@ -176,7 +174,7 @@ extern int32_t g_LPADC_i32ErrCode;
 #define LPADC_CLR_INT_FLAG(lpadc, u32Mask) ((lpadc)->ADSR0 = (u32Mask))
 
 /**
-  * @brief Get the busy state of ADC.
+  * @brief Get the busy state of LPADC.
   * @param[in] lpadc The pointer of the specified LPADC module.
   * @retval 0 LPADC is not busy.
   * @retval 1 LPADC is busy.
@@ -188,7 +186,7 @@ extern int32_t g_LPADC_i32ErrCode;
 /**
   * @brief Check if the LPADC conversion data is over written or not.
   * @param[in] lpadc The pointer of the specified LPADC module.
-  * @param[in] u32ChNum LPADC Channel, valid value are from 0 to 15 and 29.
+  * @param[in] u32ChNum LPADC Channel, valid value are from 0 to 23 and 28,29,30,31.
   * @retval 0 LPADC data is not overrun.
   * @retval 1 LPADC data is overrun.
   * @details ADSR2[31:0] (OVERRUN) is the mirror of ADDR0~31[16] OVERRUN bits.
@@ -199,7 +197,7 @@ extern int32_t g_LPADC_i32ErrCode;
 /**
   * @brief Check if the LPADC conversion data is valid or not.
   * @param[in] lpadc The pointer of the specified LPADC module.
-  * @param[in] u32ChNum LPADC Channel, valid value are from 0 to 15 and 29.
+  * @param[in] u32ChNum LPADC Channel, valid value are from 0 to 23 and 28,29,30,31.
   * @retval 0 LPADC data is not valid.
   * @retval 1 LPADC data is valid.
   * @details VALID (ADDR0~31[17]) is set to 1 when corresponding channel analog input conversion is completed and cleared by hardware after ADDR register is read.
@@ -228,7 +226,7 @@ extern int32_t g_LPADC_i32ErrCode;
 /**
   * @brief Configure the comparator 0 and enable it.
   * @param[in] lpadc The pointer of the specified LPADC module.
-  * @param[in] u32ChNum  Specifies the source channel, valid value are from 0 to 15 and 29.
+  * @param[in] u32ChNum  Specifies the source channel, valid value are from 0 to 23 and 28,29,30,31.
   * @param[in] u32Condition Specifies the compare condition. Valid values are:
   *                          - \ref LPADC_ADCMPR_CMPCOND_LESS_THAN            :The compare condition is "less than the compare value".
   *                          - \ref LPADC_ADCMPR_CMPCOND_GREATER_OR_EQUAL     :The compare condition is "greater than or equal to the compare value".
@@ -262,7 +260,7 @@ extern int32_t g_LPADC_i32ErrCode;
 /**
   * @brief Configure the comparator 1 and enable it.
   * @param[in] lpadc The pointer of the specified LPADC module.
-  * @param[in] u32ChNum  Specifies the source channel, valid value are from 0 to 15 and 29.
+  * @param[in] u32ChNum  Specifies the source channel, valid value are from 0 to 23 and 28,29,30,31.
   * @param[in] u32Condition Specifies the compare condition. Valid values are:
   *                          - \ref LPADC_ADCMPR_CMPCOND_LESS_THAN            :The compare condition is "less than the compare value".
   *                          - \ref LPADC_ADCMPR_CMPCOND_GREATER_OR_EQUAL     :The compare condition is "greater than or equal to the compare value".
@@ -316,7 +314,7 @@ extern int32_t g_LPADC_i32ErrCode;
 /**
   * @brief Set LPADC input channel.
   * @param[in] lpadc The pointer of the specified LPADC module.
-  * @param[in] u32Mask  Channel enable bit. Each bit corresponds to a input channel. Bit 0 is channel 0, bit 1 is channel 1..., bit 15 is channel 15.
+  * @param[in] u32Mask  Channel enable bit. Each bit corresponds to a input channel. Bit 0 is channel 0, bit 1 is channel 1..., bit 23 is channel 23.
   * @return None
   * @details Enabled channel will be converted while LPADC starts.
   * @note In single mode, LPADC can only convert 1 channel. If more than 1 channel are enabled, only the channel with smallest number will be converted.

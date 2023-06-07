@@ -27,548 +27,396 @@
 
 typedef struct
 {
-    /**
-     * @var EADC_T::DAT[19]
-     * Offset: 0x00  ADC Data Register 0~18 for Sample Module 0~18
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[15:0]  |RESULT    |ADC Conversion Result
-     * |        |          |This field contains 12 bits conversion result.
-     * |        |          |When DMOF (EADC_CTL[9]) is set to 0, 12-bit ADC conversion result with unsigned format will be filled in RESULT[11:0] and zero will be filled in RESULT[15:12].
-     * |        |          |When DMOF (EADC_CTL[9]) set to 1, 12-bit ADC conversion result with 2'complement format will be filled in RESULT[11:0] and signed bits to will be filled in RESULT[15:12].
-     * |[16]    |OV        |Overrun Flag
-     * |        |          |If converted data in RESULT[11:0] has not been read before new conversion result is loaded to this register, OV is set to 1.
-     * |        |          |0 = Data in RESULT[11:0] is recent conversion result.
-     * |        |          |1 = Data in RESULT[11:0] is overwrite.
-     * |        |          |Note: It is cleared by hardware after EADC_DAT register is read.
-     * |[17]    |VALID     |Valid Flag
-     * |        |          |This bit is set to 1 when corresponding sample module channel analog input conversion is completed and cleared by hardware after EADC_DAT register is read.
-     * |        |          |0 = Data in RESULT[11:0] bits is not valid.
-     * |        |          |1 = Data in RESULT[11:0] bits is valid.
-     * @var EADC_T::CURDAT
-     * Offset: 0x4C  ADC PDMA Current Transfer Data Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[17:0]  |CURDAT    |ADC PDMA Current Transfer Data Register
-     * |        |          |This register is a shadow register of EADC_DATn (n=0~18) for PDMA support.
-     * |        |          |This is a read only register.
-     * @var EADC_T::CTL
-     * Offset: 0x50  ADC Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |ADCEN     |ADC Converter Enable Bit
-     * |        |          |0 = Disabled EADC.
-     * |        |          |1 = Enabled EADC.
-     * |        |          |Note: Before starting ADC conversion function, this bit should be set to 1
-     * |        |          |Clear it to 0 to disable ADC converter analog circuit power consumption.
-     * |[1]     |ADCRST    |ADC Converter Control Circuits Reset
-     * |        |          |0 = No effect.
-     * |        |          |1 = Cause ADC control circuits reset to initial state, but not change the ADC registers value.
-     * |        |          |Note: ADCRST bit remains 1 during ADC reset, when ADC reset end, the ADCRST bit is automatically cleared to 0.
-     * |[2]     |ADCIEN0   |Specific Sample Module ADC ADINT0 Interrupt Enable Bit
-     * |        |          |The ADC converter generates a conversion end ADIF0 (EADC_STATUS2[0]) upon the end of specific sample module ADC conversion
-     * |        |          |If ADCIEN0 bit is set then conversion end interrupt request ADINT0 is generated.
-     * |        |          |0 = Specific sample module ADC ADINT0 interrupt function Disabled.
-     * |        |          |1 = Specific sample module ADC ADINT0 interrupt function Enabled.
-     * |[3]     |ADCIEN1   |Specific Sample Module ADC ADINT1 Interrupt Enable Bit
-     * |        |          |The ADC converter generates a conversion end ADIF1 (EADC_STATUS2[1]) upon the end of specific sample module ADC conversion
-     * |        |          |If ADCIEN1 bit is set then conversion end interrupt request ADINT1 is generated.
-     * |        |          |0 = Specific sample module ADC ADINT1 interrupt function Disabled.
-     * |        |          |1 = Specific sample module ADC ADINT1 interrupt function Enabled.
-     * |[4]     |ADCIEN2   |Specific Sample Module ADC ADINT2 Interrupt Enable Bit
-     * |        |          |The ADC converter generates a conversion end ADIF2 (EADC_STATUS2[2]) upon the end of specific sample module ADC conversion
-     * |        |          |If ADCIEN2 bit is set then conversion end interrupt request ADINT2 is generated.
-     * |        |          |0 = Specific sample module ADC ADINT2 interrupt function Disabled.
-     * |        |          |1 = Specific sample module ADC ADINT2 interrupt function Enabled.
-     * |[5]     |ADCIEN3   |Specific Sample Module ADC ADINT3 Interrupt Enable Bit
-     * |        |          |The ADC converter generates a conversion end ADIF3 (EADC_STATUS2[3]) upon the end of specific sample module ADC conversion
-     * |        |          |If ADCIEN3 bit is set then conversion end interrupt request ADINT3 is generated.
-     * |        |          |0 = Specific sample module ADC ADINT3 interrupt function Disabled.
-     * |        |          |1 = Specific sample module ADC ADINT3 interrupt function Enabled.
-     * |[7:6]   |RESSEL    |Resolution Selection
-     * |        |          |00 = 6-bit ADC result will be put at RESULT (EADC_DATn[5:0]).
-     * |        |          |01 = 8-bit ADC result will be put at RESULT (EADC_DATn[7:0]).
-     * |        |          |10 = 10-bit ADC result will be put at RESULT (EADC_DATn[9:0]).
-     * |        |          |11 = 12-bit ADC result will be put at RESULT (EADC_DATn[11:0]).
-     * |[8]     |DIFFEN    |Differential Analog Input Mode Enable Bit
-     * |        |          |0 = Single-end analog input mode.
-     * |        |          |1 = Differential analog input mode.
-     * |[9]     |DMOF      |ADC Differential Input Mode Output Format
-     * |        |          |0 = ADC conversion result will be filled in RESULT (EADC_DATn[15:0] , n= 0 ~18) with unsigned format.
-     * |        |          |1 = ADC conversion result will be filled in RESULT (EADC_DATn[15:0] , n= 0 ~18) with 2'complement format.
-     * |[11]    |PDMAEN    |PDMA Transfer Enable Bit
-     * |        |          |When ADC conversion is completed, the converted data is loaded into EADC_DATn (n: 0 ~ 18) register, user can enable this bit to generate a PDMA data transfer request.
-     * |        |          |0 = PDMA data transfer Disabled.
-     * |        |          |1 = PDMA data transfer Enabled.
-     * |        |          |Note: When set this bit field to 1, user must set ADCIENn (EADC_CTL[5:2], n=0~3) = 0 to disable interrupt.
-     * @var EADC_T::SWTRG
-     * Offset: 0x54  ADC Sample Module Software Start Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[18:0]  |SWTRG     |ADC Sample Module 0~18 Software Force to Start ADC Conversion
-     * |        |          |0 = No effect.
-     * |        |          |1 = Cause an ADC conversion when the priority is given to sample module.
-     * |        |          |Note: After write this register to start ADC conversion, the EADC_PENDSTS register will show which sample module will conversion
-     * |        |          |If user want to disable the conversion of the sample module, user can write EADC_PENDSTS register to clear it.
-     * @var EADC_T::PENDSTS
-     * Offset: 0x58  ADC Start of Conversion Pending Flag Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[18:0]  |STPF      |ADC Sample Module 0~18 Start of Conversion Pending Flag
-     * |        |          |Read:
-     * |        |          |0 = There is no pending conversion for sample module.
-     * |        |          |1 = Sample module ADC start of conversion is pending.
-     * |        |          |Write:
-     * |        |          |1 = clear pending flag & cancel the conversion for sample module.
-     * |        |          |Note: This bit remains 1 during pending state, when the respective ADC conversion is end, the STPFn (n=0~18) bit is automatically cleared to 0
-     * @var EADC_T::OVSTS
-     * Offset: 0x5C  ADC Sample Module Start of Conversion Overrun Flag Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[18:0]  |SPOVF     |ADC SAMPLE0~18 Overrun Flag
-     * |        |          |0 = No sample module event overrun.
-     * |        |          |1 = Indicates a new sample module event is generated while an old one event is pending.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * @var EADC_T::SCTL[19]
-     * Offset: 0x80  ADC Sample Module 0~18 Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[3:0]   |CHSEL     |ADC Sample Module Channel Selection
-     * |        |          |00H = EADC_CH0 (slow channel).
-     * |        |          |01H = EADC_CH1 (slow channel).
-     * |        |          |02H = EADC_CH2 (slow channel).
-     * |        |          |03H = EADC_CH3 (slow channel).
-     * |        |          |04H = EADC_CH4 (slow channel).
-     * |        |          |05H = EADC_CH5 (slow channel).
-     * |        |          |06H = EADC_CH6 (slow channel).
-     * |        |          |07H = EADC_CH7 (slow channel).
-     * |        |          |08H = EADC_CH8 (slow channel).
-     * |        |          |09H = EADC_CH9 (slow channel).
-     * |        |          |0AH = EADC_CH10 (fast channel).
-     * |        |          |0BH = EADC_CH11 (fast channel).
-     * |        |          |0CH = EADC_CH12 (fast channel).
-     * |        |          |0DH = EADC_CH13 (fast channel).
-     * |        |          |0EH = EADC_CH14 (fast channel).
-     * |        |          |0FH = EADC_CH15 (fast channel).
-     * |[4]     |EXTREN    |ADC External Trigger Rising Edge Enable Bit
-     * |        |          |0 = Rising edge Disabled when ADC selects EADC0_ST as trigger source.
-     * |        |          |1 = Rising edge Enabled when ADC selects EADC0_ST as trigger source.
-     * |[5]     |EXTFEN    |ADC External Trigger Falling Edge Enable Bit
-     * |        |          |0 = Falling edge Disabled when ADC selects EADC0_ST as trigger source.
-     * |        |          |1 = Falling edge Enabled when ADC selects EADC0_ST as trigger source.
-     * |[7:6]   |TRGDLYDIV |ADC Sample Module Start of Conversion Trigger Delay Clock Divider Selection
-     * |        |          |Trigger delay clock frequency:
-     * |        |          |00 = ADC_CLK/1.
-     * |        |          |01 = ADC_CLK/2.
-     * |        |          |10 = ADC_CLK/4.
-     * |        |          |11 = ADC_CLK/16.
-     * |[15:8]  |TRGDLYCNT |ADC Sample Module Start of Conversion Trigger Delay Time
-     * |        |          |Trigger delay time = TRGDLYCNT x ADC_CLK x n (n=1,2,4,16 from TRGDLYDIV setting).
-     * |[20:16] |TRGSEL    |ADC Sample Module Start of Conversion Trigger Source Selection
-     * |        |          |0H = Disable trigger.
-     * |        |          |1H = External trigger from EADC0_ST pin input.
-     * |        |          |2H = ADC ADINT0 interrupt EOC (End of conversion) pulse trigger.
-     * |        |          |3H = ADC ADINT1 interrupt EOC (End of conversion) pulse trigger.
-     * |        |          |4H = Timer0 overflow pulse trigger.
-     * |        |          |5H = Timer1 overflow pulse trigger.
-     * |        |          |6H = Timer2 overflow pulse trigger.
-     * |        |          |7H = Timer3 overflow pulse trigger.
-     * |        |          |8H = EPWM0TG0.
-     * |        |          |9H = EPWM0TG1.
-     * |        |          |AH = EPWM0TG2.
-     * |        |          |BH = EPWM0TG3.
-     * |        |          |CH = EPWM0TG4.
-     * |        |          |DH = EPWM0TG5.
-     * |        |          |EH = EPWM1TG0.
-     * |        |          |FH = EPWM1TG1.
-     * |        |          |10H = EPWM1TG2.
-     * |        |          |11H = EPWM1TG3.
-     * |        |          |12H = EPWM1TG4.
-     * |        |          |13H = EPWM1TG5.
-     * |        |          |14H = BPWM0TG.
-     * |        |          |15H = BPWM1TG.
-     * |        |          |other = Reserved.
-     * |[22]    |INTPOS    |Interrupt Flag Position Select
-     * |        |          |0 = Set ADIFn (EADC_STATUS2[n], n=0~3) at ADC end of conversion.
-     * |        |          |1 = Set ADIFn (EADC_STATUS2[n], n=0~3) at ADC start of conversion.
-     * |[23]    |DBMEN     |Double Buffer Mode Enable Bit
-     * |        |          |0 = Sample has one sample result register. (default).
-     * |        |          |1 = Sample has two sample result registers.
-     * |[31:24] |EXTSMPT   |ADC Sampling Time Extend
-     * |        |          |When ADC converting at high conversion rate, the sampling time of analog input voltage may not enough if input channel loading is heavy, user can extend ADC sampling time after trigger source is coming to get enough sampling time.
-     * |        |          |The range of start delay time is from 0~255 ADC clock.
-     * @var EADC_T::INTSRC[4]
-     * Offset: 0xD0  ADC interrupt 0~3 Source Enable Control Register.
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |SPLIE0    |Sample Module 0 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 0 interrupt Disabled.
-     * |        |          |1 = Sample Module 0 interrupt Enabled.
-     * |[1]     |SPLIE1    |Sample Module 1 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 1 interrupt Disabled.
-     * |        |          |1 = Sample Module 1 interrupt Enabled.
-     * |[2]     |SPLIE2    |Sample Module 2 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 2 interrupt Disabled.
-     * |        |          |1 = Sample Module 2 interrupt Enabled.
-     * |[3]     |SPLIE3    |Sample Module 3 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 3 interrupt Disabled.
-     * |        |          |1 = Sample Module 3 interrupt Enabled.
-     * |[4]     |SPLIE4    |Sample Module 4 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 4 interrupt Disabled.
-     * |        |          |1 = Sample Module 4 interrupt Enabled.
-     * |[5]     |SPLIE5    |Sample Module 5 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 5 interrupt Disabled.
-     * |        |          |1 = Sample Module 5 interrupt Enabled.
-     * |[6]     |SPLIE6    |Sample Module 6 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 6 interrupt Disabled.
-     * |        |          |1 = Sample Module 6 interrupt Enabled.
-     * |[7]     |SPLIE7    |Sample Module 7 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 7 interrupt Disabled.
-     * |        |          |1 = Sample Module 7 interrupt Enabled.
-     * |[8]     |SPLIE8    |Sample Module 8 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 8 interrupt Disabled.
-     * |        |          |1 = Sample Module 8 interrupt Enabled.
-     * |[9]     |SPLIE9    |Sample Module 9 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 9 interrupt Disabled.
-     * |        |          |1 = Sample Module 9 interrupt Enabled.
-     * |[10]    |SPLIE10   |Sample Module 10 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 10 interrupt Disabled.
-     * |        |          |1 = Sample Module 10 interrupt Enabled.
-     * |[11]    |SPLIE11   |Sample Module 11 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 11 interrupt Disabled.
-     * |        |          |1 = Sample Module 11 interrupt Enabled.
-     * |[12]    |SPLIE12   |Sample Module 12 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 12 interrupt Disabled.
-     * |        |          |1 = Sample Module 12 interrupt Enabled.
-     * |[13]    |SPLIE13   |Sample Module 13 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 13 interrupt Disabled.
-     * |        |          |1 = Sample Module 13 interrupt Enabled.
-     * |[14]    |SPLIE14   |Sample Module 14 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 14 interrupt Disabled.
-     * |        |          |1 = Sample Module 14 interrupt Enabled.
-     * |[15]    |SPLIE15   |Sample Module 15 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 15 interrupt Disabled.
-     * |        |          |1 = Sample Module 15 interrupt Enabled.
-     * |[16]    |SPLIE16   |Sample Module 16 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 16 interrupt Disabled.
-     * |        |          |1 = Sample Module 16 interrupt Enabled.
-     * |[17]    |SPLIE17   |Sample Module 17 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 17 interrupt Disabled.
-     * |        |          |1 = Sample Module 17 interrupt Enabled.
-     * |[18]    |SPLIE18   |Sample Module 18 Interrupt Enable Bit
-     * |        |          |0 = Sample Module 18 interrupt Disabled.
-     * |        |          |1 = Sample Module 18 interrupt Enabled.
-     * @var EADC_T::CMP[4]
-     * Offset: 0xE0  ADC Result Compare Register 0~3
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |ADCMPEN   |ADC Result Compare Enable Bit
-     * |        |          |0 = Compare Disabled.
-     * |        |          |1 = Compare Enabled.
-     * |        |          |Set this bit to 1 to enable compare CMPDAT (EADC_CMPn[27:16], n=0~3) with specified sample module conversion result when converted data is loaded into EADC_DAT register.
-     * |[1]     |ADCMPIE   |ADC Result Compare Interrupt Enable Bit
-     * |        |          |0 = Compare function interrupt Disabled.
-     * |        |          |1 = Compare function interrupt Enabled.
-     * |        |          |If the compare function is enabled and the compare condition matches the setting of CMPCOND (EADC_CMPn[2], n=0~3) and CMPMCNT (EADC_CMPn[11:8], n=0~3), ADCMPFn (EADC_STATUS2[7:4], n=0~3) will be asserted, in the meanwhile, if ADCMPIE is set to 1, a compare interrupt request is generated.
-     * |[2]     |CMPCOND   |Compare Condition
-     * |        |          |0= Set the compare condition as that when a 12-bit ADC conversion result is less than the 12-bit CMPDAT (EADC_CMPn [27:16]), the internal match counter will increase one.
-     * |        |          |1= Set the compare condition as that when a 12-bit ADC conversion result is greater or equal to the 12-bit CMPDAT (EADC_CMPn [27:16]), the internal match counter will increase one.
-     * |        |          |Note: When the internal counter reaches the value to (CMPMCNT (EADC_CMPn[11:8], n=0~3) +1), the CMPF bit will be set.
-     * |[7:3]   |CMPSPL    |Compare Sample Module Selection
-     * |        |          |00000 = Sample Module 0 conversion result EADC_DAT0 is selected to be compared.
-     * |        |          |00001 = Sample Module 1 conversion result EADC_DAT1 is selected to be compared.
-     * |        |          |00010 = Sample Module 2 conversion result EADC_DAT2 is selected to be compared.
-     * |        |          |00011 = Sample Module 3 conversion result EADC_DAT3 is selected to be compared.
-     * |        |          |00100 = Sample Module 4 conversion result EADC_DAT4 is selected to be compared.
-     * |        |          |00101 = Sample Module 5 conversion result EADC_DAT5 is selected to be compared.
-     * |        |          |00110 = Sample Module 6 conversion result EADC_DAT6 is selected to be compared.
-     * |        |          |00111 = Sample Module 7 conversion result EADC_DAT7 is selected to be compared.
-     * |        |          |01000 = Sample Module 8 conversion result EADC_DAT8 is selected to be compared.
-     * |        |          |01001 = Sample Module 9 conversion result EADC_DAT9 is selected to be compared.
-     * |        |          |01010 = Sample Module 10 conversion result EADC_DAT10 is selected to be compared.
-     * |        |          |01011 = Sample Module 11 conversion result EADC_DAT11 is selected to be compared.
-     * |        |          |01100 = Sample Module 12 conversion result EADC_DAT12 is selected to be compared.
-     * |        |          |01101 = Sample Module 13 conversion result EADC_DAT13 is selected to be compared.
-     * |        |          |01110 = Sample Module 14 conversion result EADC_DAT14 is selected to be compared.
-     * |        |          |01111 = Sample Module 15 conversion result EADC_DAT15 is selected to be compared.
-     * |        |          |10000 = Sample Module 16 conversion result EADC_DAT16 is selected to be compared.
-     * |        |          |10001 = Sample Module 17 conversion result EADC_DAT17 is selected to be compared.
-     * |        |          |10010 = Sample Module 18 conversion result EADC_DAT18 is selected to be compared.
-     * |[11:8]  |CMPMCNT   |Compare Match Count
-     * |        |          |When the specified ADC sample module analog conversion result matches the compare condition defined by CMPCOND (EADC_CMPn[2], n=0~3), the internal match counter will increase 1
-     * |        |          |If the compare result does not meet the compare condition, the internal compare match counter will reset to 0
-     * |        |          |When the internal counter reaches the value to (CMPMCNT +1), the ADCMPFn (EADC_STATUS2[7:4], n=0~3) will be set.
-     * |[15]    |CMPWEN    |Compare Window Mode Enable Bit
-     * |        |          |0 = ADCMPF0 (EADC_STATUS2[4]) will be set when EADC_CMP0 compared condition matched
-     * |        |          |ADCMPF2 (EADC_STATUS2[6]) will be set when EADC_CMP2 compared condition matched
-     * |        |          |1 = ADCMPF0 (EADC_STATUS2[4]) will be set when both EADC_CMP0 and EADC_CMP1 compared condition matched
-     * |        |          |ADCMPF2 (EADC_STATUS2[6]) will be set when both EADC_CMP2 and EADC_CMP3 compared condition matched.
-     * |        |          |Note: This bit is only present in EADC_CMP0 and EADC_CMP2 register.
-     * |[27:16] |CMPDAT    |Comparison Data
-     * |        |          |The 12 bits data is used to compare with conversion result of specified sample module
-     * |        |          |User can use it to monitor the external analog input pin voltage transition without imposing a load on software.
-     * @var EADC_T::STATUS0
-     * Offset: 0xF0  ADC Status Register 0
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[15:0]  |VALID     |EADC_DAT0~15 Data Valid Flag
-     * |        |          |It is a mirror of VALID bit in sample module ADC result data register EADC_DATn. (n=0~18).
-     * |[31:16] |OV        |EADC_DAT0~15 Overrun Flag
-     * |        |          |It is a mirror to OV bit in sample module ADC result data register EADC_DATn. (n=0~18).
-     * @var EADC_T::STATUS1
-     * Offset: 0xF4  ADC Status Register 1
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[2:0]   |VALID     |EADC_DAT16~18 Data Valid Flag
-     * |        |          |It is a mirror of VALID bit in sample module ADC result data register EADC_DATn. (n=0~18).
-     * |[18:16] |OV        |EADC_DAT16~18 Overrun Flag
-     * |        |          |It is a mirror to OV bit in sample module ADC result data register EADC_DATn. (n=0~18).
-     * @var EADC_T::STATUS2
-     * Offset: 0xF8  ADC Status Register 2
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |ADIF0     |ADC ADINT0 Interrupt Flag
-     * |        |          |0 = No ADINT0 interrupt pulse received.
-     * |        |          |1 = ADINT0 interrupt pulse has been received.
-     * |        |          |Note1: This bit is cleared by writing 1 to it.
-     * |        |          |Note2:This bit indicates whether an ADC conversion of specific sample module has been completed
-     * |[1]     |ADIF1     |ADC ADINT1 Interrupt Flag
-     * |        |          |0 = No ADINT1 interrupt pulse received.
-     * |        |          |1 = ADINT1 interrupt pulse has been received.
-     * |        |          |Note1: This bit is cleared by writing 1 to it.
-     * |        |          |Note2:This bit indicates whether an ADC conversion of specific sample module has been completed
-     * |[2]     |ADIF2     |ADC ADINT2 Interrupt Flag
-     * |        |          |0 = No ADINT2 interrupt pulse received.
-     * |        |          |1 = ADINT2 interrupt pulse has been received.
-     * |        |          |Note1: This bit is cleared by writing 1 to it.
-     * |        |          |Note2:This bit indicates whether an ADC conversion of specific sample module has been completed
-     * |[3]     |ADIF3     |ADC ADINT3 Interrupt Flag
-     * |        |          |0 = No ADINT3 interrupt pulse received.
-     * |        |          |1 = ADINT3 interrupt pulse has been received.
-     * |        |          |Note1: This bit is cleared by writing 1 to it.
-     * |        |          |Note2:This bit indicates whether an ADC conversion of specific sample module has been completed
-     * |[4]     |ADCMPF0   |ADC Compare 0 Flag
-     * |        |          |When the specific sample module ADC conversion result meets setting condition in EADC_CMP0 then this bit is set to 1.
-     * |        |          |0 = Conversion result in EADC_DAT does not meet EADC_CMP0 register setting.
-     * |        |          |1 = Conversion result in EADC_DAT meets EADC_CMP0 register setting.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[5]     |ADCMPF1   |ADC Compare 1 Flag
-     * |        |          |When the specific sample module ADC conversion result meets setting condition in EADC_CMP1 then this bit is set to 1.
-     * |        |          |0 = Conversion result in EADC_DAT does not meet EADC_CMP1 register setting.
-     * |        |          |1 = Conversion result in EADC_DAT meets EADC_CMP1 register setting.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[6]     |ADCMPF2   |ADC Compare 2 Flag
-     * |        |          |When the specific sample module ADC conversion result meets setting condition in EADC_CMP2 then this bit is set to 1.
-     * |        |          |0 = Conversion result in EADC_DAT does not meet EADC_CMP2 register setting.
-     * |        |          |1 = Conversion result in EADC_DAT meets EADC_CMP2 register setting.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[7]     |ADCMPF3   |ADC Compare 3 Flag
-     * |        |          |When the specific sample module ADC conversion result meets setting condition in EADC_CMP3 then this bit is set to 1.
-     * |        |          |0 = Conversion result in EADC_DAT does not meet EADC_CMP3 register setting.
-     * |        |          |1 = Conversion result in EADC_DAT meets EADC_CMP3 register setting.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[8]     |ADOVIF0   |ADC ADINT0 Interrupt Flag Overrun
-     * |        |          |0 = ADINT0 interrupt flag is not overwritten to 1.
-     * |        |          |1 = ADINT0 interrupt flag is overwritten to 1.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[9]     |ADOVIF1   |ADC ADINT1 Interrupt Flag Overrun
-     * |        |          |0 = ADINT1 interrupt flag is not overwritten to 1.
-     * |        |          |1 = ADINT1 interrupt flag is overwritten to 1.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[10]    |ADOVIF2   |ADC ADINT2 Interrupt Flag Overrun
-     * |        |          |0 = ADINT2 interrupt flag is not overwritten to 1.
-     * |        |          |1 = ADINT2 interrupt flag is s overwritten to 1.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[11]    |ADOVIF3   |ADC ADINT3 Interrupt Flag Overrun
-     * |        |          |0 = ADINT3 interrupt flag is not overwritten to 1.
-     * |        |          |1 = ADINT3 interrupt flag is overwritten to 1.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[12]    |ADCMPO0   |ADC Compare 0 Output Status (Read Only)
-     * |        |          |The 12 bits compare0 data CMPDAT0 (EADC_CMP0[27:16]) is used to compare with conversion result of specified sample module
-     * |        |          |User can use it to monitor the external analog input pin voltage status.
-     * |        |          |0 = Conversion result in EADC_DAT less than CMPDAT0 setting.
-     * |        |          |1 = Conversion result in EADC_DAT great than or equal CMPDAT0 setting.
-     * |[13]    |ADCMPO1   |ADC Compare 1 Output Status (Read Only)
-     * |        |          |The 12 bits compare1 data CMPDAT1 (EADC_CMP1[27:16]) is used to compare with conversion result of specified sample module
-     * |        |          |User can use it to monitor the external analog input pin voltage status.
-     * |        |          |0 = Conversion result in EADC_DAT less than CMPDAT1 setting.
-     * |        |          |1 = Conversion result in EADC_DAT great than or equal CMPDAT1 setting.
-     * |[14]    |ADCMPO2   |ADC Compare 2 Output Status (Read Only)
-     * |        |          |The 12 bits compare2 data CMPDAT2 (EADC_CMP2[27:16]) is used to compare with conversion result of specified sample module
-     * |        |          |User can use it to monitor the external analog input pin voltage status.
-     * |        |          |0 = Conversion result in EADC_DAT less than CMPDAT2 setting.
-     * |        |          |1 = Conversion result in EADC_DAT great than or equal CMPDAT2 setting.
-     * |[15]    |ADCMPO3   |ADC Compare 3 Output Status (Read Only)
-     * |        |          |The 12 bits compare3 data CMPDAT3 (EADC_CMP3[27:16]) is used to compare with conversion result of specified sample module
-     * |        |          |User can use it to monitor the external analog input pin voltage status.
-     * |        |          |0 = Conversion result in EADC_DAT less than CMPDAT3 setting.
-     * |        |          |1 = Conversion result in EADC_DAT great than or equal CMPDAT3 setting.
-     * |[20:16] |CHANNEL   |Current Conversion Channel (Read Only)
-     * |        |          |This filed reflects ADC current conversion channel when BUSY=1.
-     * |        |          |It is read only.
-     * |        |          |00H = EADC_CH0.
-     * |        |          |01H = EADC_CH1.
-     * |        |          |02H = EADC_CH2.
-     * |        |          |03H = EADC_CH3.
-     * |        |          |04H = EADC_CH4.
-     * |        |          |05H = EADC_CH5.
-     * |        |          |06H = EADC_CH6.
-     * |        |          |07H = EADC_CH7.
-     * |        |          |08H = EADC_CH8.
-     * |        |          |09H = EADC_CH9.
-     * |        |          |0AH = EADC_CH10.
-     * |        |          |0BH = EADC_CH11.
-     * |        |          |0CH = EADC_CH12.
-     * |        |          |0DH = EADC_CH13.
-     * |        |          |0EH = EADC_CH14.
-     * |        |          |0FH = EADC_CH15.
-     * |        |          |10H = VBG.
-     * |        |          |11H = VTEMP.
-     * |        |          |12H = VBAT/4.
-     * |[23]    |BUSY      |Busy/Idle (Read Only)
-     * |        |          |0 = EADC is in idle state.
-     * |        |          |1 = EADC is busy at conversion.
-     * |[24]    |ADOVIF    |All ADC Interrupt Flag Overrun Bits Check (Read Only)
-     * |        |          |n=0~3.
-     * |        |          |0 = None of ADINT interrupt flag ADOVIFn (EADC_STATUS2[11:8]) is overwritten to 1.
-     * |        |          |1 = Any one of ADINT interrupt flag ADOVIFn (EADC_STATUS2[11:8]) is overwritten to 1.
-     * |        |          |Note: This bit will keep 1 when any ADOVIFn Flag is equal to 1.
-     * |[25]    |STOVF     |for All ADC Sample Module Start of Conversion Overrun Flags Check (Read Only)
-     * |        |          |n=0~18.
-     * |        |          |0 = None of sample module event overrun flag SPOVFn (EADC_OVSTS[n]) is set to 1.
-     * |        |          |1 = Any one of sample module event overrun flag SPOVFn (EADC_OVSTS[n]) is set to 1.
-     * |        |          |Note: This bit will keep 1 when any SPOVFn Flag is equal to 1.
-     * |[26]    |AVALID    |for All Sample Module ADC Result Data Register EADC_DAT Data Valid Flag Check (Read Only)
-     * |        |          |n=0~18.
-     * |        |          |0 = None of sample module data register valid flag VALIDn (EADC_DATn[17]) is set to 1.
-     * |        |          |1 = Any one of sample module data register valid flag VALIDn (EADC_DATn[17]) is set to 1.
-     * |        |          |Note: This bit will keep 1 when any VALIDn Flag is equal to 1.
-     * |[27]    |AOV       |for All Sample Module ADC Result Data Register Overrun Flags Check (Read Only)
-     * |        |          |n=0~18.
-     * |        |          |0 = None of sample module data register overrun flag OVn (EADC_DATn[16]) is set to 1.
-     * |        |          |1 = Any one of sample module data register overrun flag OVn (EADC_DATn[16]) is set to 1.
-     * |        |          |Note: This bit will keep 1 when any OVn Flag is equal to 1.
-     * @var EADC_T::STATUS3
-     * Offset: 0xFC  ADC Status Register 3
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[4:0]   |CURSPL    |ADC Current Sample Module
-     * |        |          |This register show the current ADC is controlled by which sample module control logic modules.
-     * |        |          |If the ADC is Idle, this bit filed will set to 0x1F.
-     * |        |          |This is a read only register.
-     * @var EADC_T::DDAT[4]
-     * Offset: 0x100  ADC Double Data Register 0 for Sample Module 0
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[15:0]  |RESULT    |ADC Conversion Results
-     * |        |          |This field contains 12 bits conversion results.
-     * |        |          |When the DMOF (EADC_CTL[9]) is set to 0, 12-bit ADC conversion result with unsigned format will be filled in RESULT [11:0] and zero will be filled in RESULT [15:12].
-     * |        |          |When DMOF (EADC_CTL[9]) set to 1, 12-bit ADC conversion result with 2'complement format will be filled in RESULT [11:0] and signed bits to will be filled in RESULT [15:12].
-     * |[16]    |OV        |Overrun Flag
-     * |        |          |0 = Data in RESULT (EADC_DATn[15:0], n=0~3) is recent conversion result.
-     * |        |          |1 = Data in RESULT (EADC_DATn[15:0], n=0~3) is overwrite.
-     * |        |          |If converted data in RESULT[15:0] has not been read before new conversion result is loaded to this register, OV is set to 1
-     * |        |          |It is cleared by hardware after EADC_DDAT register is read.
-     * |[17]    |VALID     |Valid Flag
-     * |        |          |0 = Double data in RESULT (EADC_DDATn[15:0]) is not valid.
-     * |        |          |1 = Double data in RESULT (EADC_DDATn[15:0]) is valid.
-     * |        |          |This bit is set to 1 when corresponding sample module channel analog input conversion is completed and cleared by hardware after EADC_DDATn register is read
-     * |        |          |(n=0~3).
-     * @var EADC_T::PWRM
-     * Offset: 0x110  ADC Power Management Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |PWUPRDY   |ADC Power-up Sequence Completed and Ready for Conversion (Read Only)
-     * |        |          |0 = ADC is not ready for conversion may be in power down state or in the progress of start up.
-     * |        |          |1 = ADC is ready for conversion.
-     * |[1]     |PWUCALEN  |Power Up Calibration Function Enable Control
-     * |        |          |0 = Disable the function of calibration at power up.
-     * |        |          |1 = Enable the function of calibration at power up.
-     * |        |          |Note: This bit work together with CALSEL (EADC_CALCTL [3]), see the following
-     * |        |          |{PWUCALEN, CALSEL } Description:
-     * |        |          |PWUCALEN is 0 and CALSEL is 0: No need to calibrate.
-     * |        |          |PWUCALEN is 0 and CALSEL is 1: No need to calibrate.
-     * |        |          |PWUCALEN is 1 and CALSEL is 0: Load calibration word when power up.
-     * |        |          |PWUCALEN is 1 and CALSEL is 1: Calibrate when power up.
-     * |[3:2]   |PWDMOD    |ADC Power-down Mode
-     * |        |          |Set this bit fields to select ADC power down mode when system power-down.
-     * |        |          |00 = ADC Deep power down mode.
-     * |        |          |01 = ADC Power down.
-     * |        |          |10 = ADC Standby mode.
-     * |        |          |11 = ADC Deep power down mode.
-     * |        |          |Note: Different PWDMOD has different power down/up sequence, in order to avoid ADC powering up with wrong sequence; user must keep PWMOD consistent each time in power down and start up
-     * |[19:8]  |LDOSUT    |ADC Internal LDO Start-up Time
-     * |        |          |Set this bit fields to control LDO start-up time
-     * |        |          |The minimum required LDO start-up time is 20us
-     * |        |          |LDO start-up time = (1/ADC_CLK) x LDOSUT.
-     * @var EADC_T::CALCTL
-     * Offset: 0x114  ADC Calibration Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[1]     |CALSTART  |Calibration Functional Block Start
-     * |        |          |0 = Stops calibration functional block.
-     * |        |          |1 = Starts calibration functional block.
-     * |        |          |Note: This bit is set by SW and clear by HW after re-calibration finish
-     * |[2]     |CALDONE   |Calibration Functional Block Complete (Read Only)
-     * |        |          |0 = During a calibration.
-     * |        |          |1 = Calibration is completed.
-     * |[3]     |CALSEL    |Select Calibration Functional Block
-     * |        |          |0 = Load calibration word when calibration functional block is active.
-     * |        |          |1 = Execute calibration when calibration functional block is active.
-     * @var EADC_T::CALDWRD
-     * Offset: 0x118  ADC Calibration Load Word Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[6:0]   |CALWORD   |Calibration Word Bits
-     * |        |          |Write to this register with the previous calibration word before load calibration action.
-     * |        |          |Read this register after calibration done.
-     * |        |          |Note: The calibration block contains two parts CALIBRATION and LOAD CALIBRATION; if the calibration block configure as CALIBRATION; then this register represent the result of calibration when calibration is completed; if configure as LOAD CALIBRATION ; configure this register before loading calibration action, after loading calibration complete, the laoded calibration word will apply to the ADC; while in loading calibration function the loaded value will not be equal to the original CALWORD until calibration is done.
-     */
+   /**
+    * @var LPADC_T::ADDR[32]
+    * Offset: 0x00/0x04/0x08/0x0C/0x10/0x14/0x18/0x1C/0x20/0x24/0x28/0x2C/0x30/0x34/0x38/0x3C/0x40/0x44/0x48/0x4C/0x50/0x54/0x58/0x5C/0x60/0x64/0x68/0x6C/0x70/0x74/0x78/0x7C  ADC Data Register 0~31
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[15:0]  |RSLT      |A/D Conversion Result (Read Only)
+    * |        |          |This field contains conversion result of ADC.
+    * |[16]    |OVERRUN   |Overrun Flag (Read Only)
+    * |        |          |If converted data in RSLT bits has not been read before new conversion result is loaded to this register, OVERRUN bit is set to 1
+    * |        |          |It is cleared by hardware after ADDR register is read.
+    * |        |          |0 = Data in RSLT bits is not overwritten.
+    * |        |          |1 = Data in RSLT bits is overwritten.
+    * |[17]    |VALID     |Valid Flag (Read Only)
+    * |        |          |This bit will be set to 1 when the conversion of the corresponding channel is completed
+    * |        |          |This bit will be cleared to 0 by hardware after ADDR register is read.
+    * |        |          |0 = Data in RSLT bits is not valid.
+    * |        |          |1 = Data in RSLT bits is valid.
+    * @var LPADC_T::ADCR
+    * Offset: 0x80  ADC Control Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[0]     |ADEN      |A/D Converter Enable Bit
+    * |        |          |0 = A/D converter Disabled.
+    * |        |          |1 = A/D converter Enabled.
+    * |        |          |Note: Before starting A/D conversion function, this bit should be set to 1
+    * |        |          |Clear it to 0 to disable A/D converter analog circuit to save power consumption.
+    * |[1]     |ADIE      |A/D Interrupt Enable Bit
+    * |        |          |A/D conversion end interrupt request is generated if ADIE bit is set to 1.
+    * |        |          |0 = A/D interrupt function Disabled.
+    * |        |          |1 = A/D interrupt function Enabled.
+    * |[3:2]   |ADMD      |A/D Converter Operation Mode Control
+    * |        |          |00 = Single conversion.
+    * |        |          |01 = Burst conversion.
+    * |        |          |10 = Single-cycle Scan.
+    * |        |          |11 = Continuous Scan.
+    * |        |          |Note 1: When changing the operation mode, software should clear ADST bit first.
+    * |        |          |Note 2: In Burst mode, the A/D result data is always at ADC Data Register 0.
+    * |[7:6]   |TRGCOND   |External Trigger Condition
+    * |        |          |These two bits decide external pin LPADC0_ST trigger event is level or edge
+    * |        |          |The signal must be kept at stable state at least 8 PCLKs for level trigger and at least 4 PCLKs for edge trigger.
+    * |        |          |00 = Low level.
+    * |        |          |01 = High level.
+    * |        |          |10 = Falling edge.
+    * |        |          |11 = Rising edge.
+    * |[8]     |TRGEN     |External Trigger Enable Bit
+    * |        |          |Enable or disable triggering of A/D conversion by external LPADC0_ST pin, EPWM trigger, BPWM trigger and ACMP interrupt event 
+    * |        |          |If external trigger is enabled, the ADST bit can be set to 1 by the selected hardware trigger source.
+    * |        |          |0 = External trigger Disabled.
+    * |        |          |1 = External trigger Enabled.
+    * |        |          |Note: The ADC external trigger function is only supported in Single-cycle Scan mode.
+    * |[9]     |PTEN      |LPPDMA Transfer Enable Bit
+    * |        |          |When A/D conversion is completed, the converted data is loaded into ADDR0~23 and ADDR28~ADDR31
+    * |        |          |Software can enable this bit to generate a LPPDMA data transfer request.
+    * |        |          |0 = LPPDMA data transfer Disabled.
+    * |        |          |1 = LPPDMA data transfer in ADDR0~23 and ADDR28~ADDR31 Enabled.
+    * |        |          |Note: When PTEN=1, software must set ADIE=0 to disable interrupt.
+    * |[10]    |DIFFEN    |Differential Input Mode Control
+    * |        |          |Differential input voltage (Vdiff) = Vplus - Vminus.
+    * |        |          |The relation between Vplus and Vminus is Vplus + Vminus = Vref.
+    * |        |          |The Vplus of differential input paired channel x is from LPADC0_CHy pin; Vminus is from LPADC0_CHz pin, x=0,1..11, y=2*x, z=y+1.
+    * |        |          |0 = Single-end analog input mode.
+    * |        |          |1 = Differential analog input mode.
+    * |        |          |Note: In Differential Input mode, only the even number of the two corresponding channels needs to be enabled in ADCHER register
+    * |        |          |The conversion result will be placed to the corresponding data register of the enabled channel.
+    * |[11]    |ADST      |A/D Conversion Start or Calibration Start
+    * |        |          |ADST bit can be set to 1 from four sources: software, external pin  LPADC0_ST, BPWM trigger, EPWM trigger and ACMP interrupt event.
+    * |        |          |ADST bit will be cleared to 0 by hardware automatically at the ends of Single mode, Single-cycle Scan mode and Calibration mode
+    * |        |          |In Continuous Scan mode and Burst mode, A/D conversion is continuously performed until software writes 0 to this bit or chip is reset.
+    * |        |          |0 = Conversion stops and A/D converter enters idle state.
+    * |        |          |1 = Conversion starts or Calibration Start.
+    * |        |          |Note 1: When ADST becomes from 1 to 0, ADC macro will reset to initial state
+    * |        |          |After macro reset to initial state, user should wait at most 2 ADC clock and set this bit to start next conversion.
+    * |        |          |Note 2: Calibration Start only if CALEN (LPADC_ADCAL[0]) = 1.
+    * |[12]    |RESET     |ADC RESET (Write Protect)
+    * |        |          |If user writes this bit, the ADC analog macro will reset
+    * |        |          |Calibration data in macro will be deleted, but registers in ADC controller will keep.
+    * |        |          |Note: This bit is cleared by hardware.
+    * |[19:16] |TRGS      |Hardware Trigger Source
+    * |        |          |0000 = A/D conversion is started by external LPADC0_ST pin.
+    * |        |          |0010 = A/D conversion is started by BPWM trigger.
+    * |        |          |0100 = A/D conversion is started by EPWM trigger.
+    * |        |          |1000 = ACMP0_O edge event.
+    * |        |          |1001 = ACMP1_O edge event.
+    * |        |          |1010 = ACMP2_O edge event.
+	* |        |          |1011 = ACMP3_O edge event.
+    * |        |          |Others = Reserved.
+    * |        |          |Note: Software should clear TRGEN bit and ADST bit to 0 before changing TRGS bits.
+    * |        |          |Note: These trigger sources only abaliable when chip in run and idle mode
+    * |[29:28] |RESSEL    |Resolution Select Bits
+    * |        |          |00 = ADC resolution 12 bits.
+    * |        |          |01 = ADC resolution 10 bits.
+    * |        |          |10 = ADC resolution 8 bits.
+    * |        |          |11 = Reserved.
+    * |[31]    |DMOF      |Differential Input Mode Output Format
+    * |        |          |If user enables differential input mode, the conversion result can be expressed with binary straight format (unsigned format) or 2's complement format (signed format).
+    * |        |          |0 = A/D Conversion result will be filled in RSLT at ADDRx registers with unsigned format (straight binary format).
+    * |        |          |1 = A/D Conversion result will be filled in RSLT at ADDRx registers with 2's complement format.
+    * @var LPADC_T::ADCHER
+    * Offset: 0x84  ADC Channel Enable Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[31:0]  |CHEN      |Analog   Input Channel Enable Control
+    * |        |          |Set ADCHER[23:0]   bits to enable the corresponding analog external input channel 23 ~ 0
+    * |        |          |If DIFFEN bit is set to 1, only the even number channel needs to be enabled.Besides, setting the ADCHER[26:24] bits will enable internal OPA0/1/2 output voltage,
+    * |        |          |setting the ADCHER[28] bit will enable internal channel for AVDD divided by four, setting the ADCHER[29] bit will enable internal channel for band-gap voltage,
+ 	* |        |          |setting the ADCHER[30] bit will enable internal channel for temperature sensor output voltage, setting the ADCHER[31] bit will enable internal channel for VBAT divided by four  
+	* |        |          |Other bits are reserved.
+    * |        |          |0 = Channel   Disabled.
+    * |        |          |1 = Channel   Enabled.
+    * |        |          |Note: If the internal channel for AVDD divide by four (CHEN[28]), band-gap voltage (CHEN[29]), temperature sensor output voltage (CHEN[30]) or VBAT divided by four (CHEN[31]) is active, the maximum sampling rate will be 300k SPS.
+    * @var LPADC_T::ADCMPR[2]
+    * Offset: 0x88/0x8C  ADC Compare Register 0~1
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[0]     |CMPEN     |Compare Enable Bit
+    * |        |          |Set this bit to 1 to enable ADC controller to compare CMPD (ADCMPRx[27:16]) with specified channel conversion result when converted data is loaded into ADDR register.
+    * |        |          |0 = Compare function Disabled.
+    * |        |          |1 = Compare function Enabled.
+    * |[1]     |CMPIE     |Compare Interrupt Enable Bit
+    * |        |          |If the compare function is enabled and the compare condition matches the setting of CMPCOND and CMPMCNT, CMPFx bit will be asserted, in the meanwhile, if CMPIE bit is set to 1, a compare interrupt request is generated.
+    * |        |          |0 = Compare function interrupt Disabled.
+    * |        |          |1 = Compare function interrupt Enabled.
+    * |[2]     |CMPCOND   |Compare Condition
+    * |        |          |0 = Set the compare condition as that when a 12-bit A/D conversion result is less than the 12-bit CMPD bits, the internal match counter will increase one.
+    * |        |          |1 = Set the compare condition as that when a 12-bit A/D conversion result is greater than or equal to the 12-bit CMPD bits, the internal match counter will increase one.
+    * |        |          |Note: When the internal counter reaches to (CMPMCNT +1), the CMPFx bit will be set.
+    * |[7:3]   |CMPCH     |Compare Channel Selection
+    * |        |          |00000 = Channel 0 conversion result is selected to be compared.
+    * |        |          |00001 = Channel 1 conversion result is selected to be compared.
+    * |        |          |00010 = Channel 2 conversion result is selected to be compared.
+    * |        |          |00011 = Channel 3 conversion result is selected to be compared.
+    * |        |          |00100 = Channel 4 conversion result is selected to be compared.
+    * |        |          |00101 = Channel 5 conversion result is selected to be compared.
+    * |        |          |00110 = Channel 6 conversion result is selected to be compared.
+    * |        |          |00111 = Channel 7 conversion result is selected to be compared.
+    * |        |          |01000 = Channel 8 conversion result is selected to be compared.
+    * |        |          |01001 = Channel 9 conversion result is selected to be compared.
+    * |        |          |01010 = Channel 10 conversion result is selected to be compared.
+    * |        |          |01011 = Channel 11 conversion result is selected to be compared.
+    * |        |          |01100 = Channel 12 conversion result is selected to be compared.
+    * |        |          |01101 = Channel 13 conversion result is selected to be compared.
+    * |        |          |01110 = Channel 14 conversion result is selected to be compared.
+    * |        |          |01111 = Channel 15 conversion result is selected to be compared.
+    * |        |          |10000 = Channel 16 conversion result is selected to be compared.
+    * |        |          |10001 = Channel 17 conversion result is selected to be compared.
+    * |        |          |10010 = Channel 18 conversion result is selected to be compared.
+    * |        |          |10011 = Channel 19 conversion result is selected to be compared.
+    * |        |          |10100 = Channel 20 conversion result is selected to be compared.
+    * |        |          |10101 = Channel 21 conversion result is selected to be compared.
+    * |        |          |10110 = Channel 22 conversion result is selected to be compared.
+    * |        |          |10111 = Channel 23 conversion result is selected to be compared.
+    * |        |          |11100 = AVDD/4 channel conversion result is selected to be compared.
+    * |        |          |11101 = Band-gap voltage conversion result is selected to be compared.
+    * |        |          |11110 = Temperature sensor voltage conversion result is selected to be compared.
+    * |        |          |11111 = VBAT/4 channel conversion result is selected to be compared.
+    * |        |          |Others = Reserved.
+    * |[11:8]  |CMPMCNT   |Compare Match Count
+    * |        |          |When the specified A/D channel analog conversion result matches the compare condition defined by CMPCOND bit, the internal match counter will increase 1
+    * |        |          |When the internal counter reaches the value to (CMPMCNT +1), the CMPFx bit will be set.
+    * |[15]    |CMPWEN    |Compare Window Mode Enable Bit
+    * |        |          |0 = Compare Window Mode Disabled.
+    * |        |          |1 = Compare Window Mode Enabled.
+    * |        |          |Note: This bit is only presented in ADCMPR0 register.
+    * |[27:16] |CMPD      |Comparison Data
+    * |        |          |The 12-bit data is used to compare with conversion result of specified channel.
+    * |        |          |Note: CMPD bits should be filled in unsigned format (straight binary format).
+    * @var LPADC_T::ADSR0
+    * Offset: 0x90  ADC Status Register0
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[0]     |ADF       |A/D Conversion End Flag
+    * |        |          |A status flag that indicates the end of A/D conversion. Software can write 1 to clear this bit.
+    * |        |          |The ADF bit is set to 1 at the following three conditions:
+    * |        |          |1. When A/D conversion ends in Single mode.
+    * |        |          |2. When A/D conversion ends on all specified channels in Single-cycle Scan mode and Continuous Scan mode.
+    * |        |          |3. When more than or equal to 8 samples in FIFO in Burst mode.
+    * |[1]     |CMPF0     |Compare Flag 0
+    * |        |          |When the A/D conversion result of the selected channel meets setting condition in ADCMPR0 register then this bit is set to 1
+    * |        |          |This bit is cleared by writing 1 to it.
+    * |        |          |0 = Conversion result in ADDR does not meet ADCMPR0 setting.
+    * |        |          |1 = Conversion result in ADDR meets ADCMPR0 setting.
+    * |[2]     |CMPF1     |Compare Flag 1
+    * |        |          |When the A/D conversion result of the selected channel meets setting condition in ADCMPR1 register, this bit is set to 1; it is cleared by writing 1 to it
+    * |        |          |0 = Conversion result in ADDR does not meet ADCMPR1 setting.
+    * |        |          |1 = Conversion result in ADDR meets ADCMPR1 setting.
+    * |[7]     |BUSY      |BUSY/IDLE (Read Only)
+    * |        |          |This bit is a mirror of ADST bit in ADCR register.
+    * |        |          |0 = A/D converter is in idle state.
+    * |        |          |1 = A/D converter is busy at conversion.
+    * |[8]     |VALIDF    |Data Valid Flag (Read Only)
+    * |        |          |If any one of VALID (ADDRx[17]) is set, this flag will be set to 1.
+    * |        |          |Note: When ADC is in burst mode and any conversion result is valid, this flag will be set to 1.
+    * |[16]    |OVERRUNF  |Overrun Flag (Read Only)
+    * |        |          |If any one of OVERRUN (ADDRx[16]) is set, this flag will be set to 1.
+    * |        |          |Note: When ADC is in burst mode and the FIFO is overrun, this flag will be set to 1.
+    * |[24]    |ADPRDY    |ADC Power On Ready (Read Only)
+    * |        |          |After set ADEN (LPADC_ADCR[0]) to 1, the ADPRDY will set to 1 after ADC block power on ready.
+    * |        |          |If ALDOEN (LPADC_ALDOCTL[8]) = 0, the ready time is one PCLK4. If ALDOEN = 1, the ready time is 960 PCLK4.
+    * |        |          |Note: The LPADC can start concerting after ADPRDY is 1.
+    * |[31:27] |CHANNEL   |Current Conversion Channel (Read Only)
+    * |        |          |When BUSY=1, this filed reflects current conversion channel
+    * |        |          |When BUSY=0, it shows the number of the next converted channel.
+    * @var LPADC_T::ADSR1
+    * Offset: 0x94  ADC Status Register1
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[31:0]  |VALID     |Data Valid Flag (Read Only)
+    * |        |          |VALID[31, 30, 29, 28, 23:0] are the mirror of the VALID bits in ADDR31[17], ADDR30[17], ADDR29[17], ADDR28[17], ADDR23[17]~ ADDR0[17].
+    * |        |          |The other bits are reserved.
+    * |        |          |Note: When ADC is in burst mode and any conversion result is valid, VALID[31, 30, 29, 28, 23:0] will be set to 1.
+    * @var LPADC_T::ADSR2
+    * Offset: 0x98  ADC Status Register2
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[31:0]  |OVERRUN   |Overrun Flag (Read Only)
+    * |        |          |OVERRUN[31, 30, 29, 28, 23:0] are the mirror of the OVERRUN bit in ADDR31[16], ADDR30[16], ADDR29[16], ADDR28[16], ADDR23[16] ~ ADDR0[16].
+    * |        |          |The other bits are reserved.
+    * |        |          |Note: When ADC is in burst mode and the FIFO is overrun, OVERRUN[31, 30, 29, 28, 23:0] will be set to 1.
+    * @var LPADC_T::ESMPCTL
+    * Offset: 0xA0  ADC Extend Sample Time Control Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[13:0]  |EXTSMPT   |ADC Sampling Time Extend
+    * |        |          |When ADC converting at high conversion rate, the sampling time of analog input voltage may not enough if input channel loading is heavy, user can extend ADC sampling time after trigger source is coming to get enough sampling time.
+    * |        |          |The range of start delay time is from 0~16383 ADC clock.
+    * @var LPADC_T::CFDCTL
+    * Offset: 0xA4  ADC Channel Floating Detect Control Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[0]     |PRECHEN   |Precharge Enable Bit
+    * |        |          |0 = Channel precharge Disabled.
+    * |        |          |1 = Channel precharge Enabled.
+    * |        |          |Note: Analog input voltage is 1/2 VREF when PRECHEN and DISCHEN are all enable.
+    * |[1]     |DISCHEN   |Discharge Enable Bit
+    * |        |          |0 = Channel discharge Disabled.
+    * |        |          |1 = Channel discharge Enabled.
+    * |        |          |Note: Analog input voltage is 1/2 VREF when PRECHEN and DISCHEN are all enable.
+    * |[8]     |FDETCHEN  |Floating Detect Channel Enable Bit
+    * |        |          |0 = Floating Detect Channel Disabled.
+    * |        |          |1 = Floating Detect Channel Enabled.
+    * @var LPADC_T::ADPDMA
+    * Offset: 0x100  ADC LPPDMA Current Transfer Data Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[17:0]  |CURDAT    |ADC LPPDMA Current Transfer Data Register (Read Only)
+    * |        |          |When LPPDMA transferring, read this register can monitor current LPPDMA transfer data.
+    * |        |          |Current LPPDMA transfer data could be the content of ADDR0 ~ ADDR23, ADDR28, ADDR29, ADDR30 and ADDR31 registers.
+    * @var LPADC_T::ADCAL
+    * Offset: 0x180  ADC Calibration Mode Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[0]     |CALEN     |Calibration Function Enable Bit
+    * |        |          |0 = Calibration function Disabled.
+    * |        |          |1.= Calibration function Enabled.
+    * |        |          |Note: If chip is powered off, calibration function should be executed again.
+    * |[1]     |CALIE     |Calibration Interrupt Enable Bit
+    * |        |          |If calibration function is enabled and the calibration finish, CALIF bit will be asserted, in the meanwhile, if CALIE bit is set to 1, a calibration interrupt request is generated.
+    * |        |          |0 = Calibration function Interrupt Disabled.
+    * |        |          |1 = Calibration function Interrupt Enabled.
+    * @var LPADC_T::ADCALSTS
+    * Offset: 0x184  ADC Calibration Status Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[0]     |CALIF     |Calibration Finish Interrupt Flag
+    * |        |          |If calibration is finished, this flag will be set to 1. It is cleared by writing 1 to it.
+    * @var LPADC_T::AUTOCTL
+    * Offset: 0x800  ADC Auto Operation Control Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[3:0]   |TRIGSEL   |Automatic Operation Trigger Source Select
+    * |        |          |0000 = Auto-operation Trigger Source from LPTMR0.
+    * |        |          |0001 = Auto-operation Trigger Source from LPTMR1.
+    * |        |          |0010 = Auto-operation Trigger Source from TTMR0.
+    * |        |          |0011 = Auto-operation Trigger Source from TTMR1.
+    * |        |          |0100 = Auto-operation Trigger Source from WKIOA0.
+    * |        |          |0101 = Auto-operation Trigger Source from WKIOB0.
+    * |        |          |0110 = Auto-operation Trigger Source from WKIOC0.
+    * |        |          |0111 = Auto-operation Trigger Source from WKIOD0.
+    * |        |          |1000 = Auto-operation Trigger Source from ACMP0 analog output event.
+    * |        |          |1001 = Auto-operation Trigger Source from ACMP1 analog output event.
+    * |        |          |1010 = Auto-operation Trigger Source from ACMP2 analog output event.
+    * |        |          |1011 = Auto-operation Trigger Source from ACMP3 analog output event.
+    * |        |          |Others = Reserved.
+    * |        |          |Note: TRIGSEL cannot be changed under TRIGEN is 1.
+    * |[4]     |TRIGEN    |Automatic Operation Trigger Enable Bit
+    * |        |          |When automatic operation mode is enabled, the LPADC will start working if LPADC is triggered by a event sent from the trigger source selected by TRIGSEL[3:0] after this bit is set to 1.
+    * |        |          |0 = LPADC Automatic Operation Trigger disabled.
+    * |        |          |1 = LPADC Automatic Operation Trigger enabled.
+    * |[8]     |ADWKEN    |Automatic Operation Mode Conversion End Wake-up Enable Bit
+    * |        |          |0 = LPADC automatic operation conversion end wake-up Disabled.
+    * |        |          |1 = LPADC automatic operation conversion end wake-up Enabled.
+    * |[9]     |CMP0WKEN  |Automatic Operation Mode Comparator 0 Wake-up Enable Bit
+    * |        |          |0 = LPADC automatic operation comparator 0 wake-up Disabled.
+    * |        |          |1 = LPADC automatic operation comparator 0 wake-up Enabled.
+    * |[10]    |CMP1WKEN  |Automatic Operation Mode Comparator 1 Wake-up Enable Bit
+    * |        |          |0 = LPADC automatic operation comparator 1 wake-up Disabled.
+    * |        |          |1 = LPADC automatic operation comparator 1 wake-up Enabled.
+    * |[31]    |AUTOEN    |Automatic Operation Mode Enable Bit
+    * |        |          |0 = LPADC automatic operation Disabled.
+    * |        |          |1 = LPADC automatic operation Enabled.
+    * @var LPADC_T::AUTOSTRG
+    * Offset: 0x804  ADC Auto Operation Software Trigger Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[0]     |SWTRIG    |Automatic Operation Software Trigger Bit
+    * |        |          |Write 1 to this bit will trigger LPADC start automatic operation
+    * |        |          |Note: This bit will be auto cleared by hardware
+    * @var LPADC_T::AUTOSTS
+    * Offset: 0x810  ADC Auto Operation Status Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[0]     |ADWKF     |Automatic Operation Conversion End Wake-up Flag Bit
+    * |        |          |When automatic operation mode is enabled, and the conversion is finished, this flag will be set
+    * |        |          |If ADWKEN also set to 1, the chip will be wake-up.
+    * |        |          |Software can write one to clear this bit
+    * |[1]     |CMP0WKF   |Automatic Operation Compare 0 Wake-up Flag Bit
+    * |        |          |When automatic operation mode is enabled, and the conversion result monitor comparator 1 is match setting criteria, this flag will be set
+    * |        |          |If CMP1WKEN also set to 1, the chip will be wake-up.
+    * |        |          |Software can write one to clear this bit
+    * |[2]     |CMP1WKF   |Automatic Operation Compare 1 Wake-up Flag Bit
+    * |        |          |When automatic operation mode is enabled, and the conversion result monitor comparator 0 is match setting criteria, this flag will be set
+    * |        |          |If CMP0WKEN also set to 1, the chip will be wake-up.
+    * |        |          |Software can write one to clear this bit
+    * @var LPADC_T::ALDOCTL
+    * Offset: 0xFEC  ADC ALDO Control Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[8]     |ALDOEN    |ALDO Enable Bit
+    * |        |          |0 = ALDO Disable.
+    * |        |          |1 = ALDO Enable.
+    * |        |          |Note: After ADEN (LPADC_ADCR[0]) is enabled, the ALDOEN cannot be changed.
+    * |[18:16] |STBSEL    |ALDO Stable Count Select Bits
+    * |        |          |If IGENEN (ALDOCTL[23]) is 0, the ALDO stable count as below
+	* |        |          |010 = ALDO stable count is 816 PCLK4 (When PCLK is 24 MHz).
+    * |        |          |010 = ALDO stable count is 544 PCLK4 (When PCLK is 16 MHz).
+    * |        |          |010 = ALDO stable count is 408 PCLK4 (When PCLK is 12 MHz).
+    * |        |          |011 = ALDO stable count is 204 PCLK4 (When PCLK is 6 MHz).
+    * |        |          |100 = ALDO stable count is 136 PCLK4 (When PCLK is 4 MHz).
+    * |        |          |Others = Reserved.
+    * |        |          |If IGENEN (ALDOCTL[23]) is 1, the ALDO stable count as below
+	* |        |          |010 = ALDO stable count is 96 PCLK4 (When PCLK is 24 MHz).
+    * |        |          |010 = ALDO stable count is 64 PCLK4 (When PCLK is 16 MHz).
+    * |        |          |010 = ALDO stable count is 48 PCLK4 (When PCLK is 12 MHz).
+    * |        |          |011 = ALDO stable count is 24 PCLK4 (When PCLK is 6 MHz).
+    * |        |          |100 = ALDO stable count is 16 PCLK4 (When PCLK is 4 MHz).
+    * |        |          |Others = Reserved.
+    * |[23]    |IGENEN    |ALDO Enable under IGEN Enable Bit
+    * |        |          |0 = ALDO enable under IGEN Disabled.
+    * |        |          |1 = ALDO enable under IGEN Enabled.
+    * |        |          |When ALDO enable under IGEN enable, the ALDO stable time is shorter
+    */
     __I  uint32_t ADDR[32];         /*!< [0x00-0x7C] ADC Data Register 0 ~ 31                           */
     __IO uint32_t ADCR;             /*!< [0x80] ADC Control Register                                    */
     __IO uint32_t ADCHER;           /*!< [0x84] ADC Channel Enable Register                             */
-    __IO uint32_t ADCMPR[2];        /*!< [0x88-0x8C] ADC Compare Register 0/1                           */
+    __IO uint32_t ADCMPR[2];        /*!< [0x88-0x8C] ADC Compare Register 0~1                           */
     __IO uint32_t ADSR0;            /*!< [0x90] ADC Status Register0                                    */
     __I  uint32_t ADSR1;            /*!< [0x94] ADC Status Register1                                    */
     __I  uint32_t ADSR2;            /*!< [0x98] ADC Status Register2                                    */
-    __I  uint32_t RESERVE2[1];
+    __I  uint32_t RESERVE1[1];
     __IO uint32_t ESMPCTL;          /*!< [0xA0] ADC Extend Sample Time Control Register                 */
     __IO uint32_t CFDCTL;           /*!< [0xA4] ADC Channel Floating Detect Control Register            */
-    __I  uint32_t RESERVE3[21];
-    __IO uint32_t ADTEST;           /*!< [0xFC] ADC Test Register                                       */
+    __I  uint32_t RESERVE2[22];
     __I  uint32_t ADPDMA;           /*!< [0x100] ADC LPPDMA Current Transfer Data Register              */
-    __I  uint32_t RESERVE4[31];
+    __I  uint32_t RESERVE3[31];
     __IO uint32_t ADCAL;           /*!< [0x180] ADC Calibration Mode Register                          */
     __IO uint32_t ADCALSTS;        /*!< [0x184] ADC Calibration Status Register                        */
-    __IO uint32_t ADCALDB;         /*!< [0x188] ADC Calibration Debug Mode Register                    */
-    __I  uint32_t RESERVE5[413];
+    __I  uint32_t RESERVE4[414];
     __IO uint32_t AUTOCTL;          /*!< [0x800] ADC Auto Operation Control Register                    */
     __O  uint32_t AUTOSTRG;         /*!< [0x804] ADC Auto Operation Software Trigger Register           */
-    __I  uint32_t RESERVE6[2];
+    __I  uint32_t RESERVE5[2];
     __IO uint32_t AUTOSTS;          /*!< [0x810] ADC Auto Operation Status Register                     */
-    __I  uint32_t RESERVE7[502];
+    __I  uint32_t RESERVE6[502];
     __IO uint32_t ALDOCTL;          /*!< [0xFEC] ADC ALDO Control Register                              */
-    __IO uint32_t MTEST;            /*!< [0xFF0] ADC Macro Test Mode Control Register                   */
-    __IO uint32_t DEBUG;            /*!< [0xFF4] ADC Debug Mode Control Register                        */
-    __I  uint32_t RESERVE8[1];
-    __I  uint32_t VERSION;          /*!< [0xFFC] ADC RTL Design Version Number                          */
+
 } LPADC_T;
 
 /**
@@ -576,272 +424,462 @@ typedef struct
     Constant Definitions for LPADC Controller
 @{ */
 
+                                         
+#define LPADC_ADDR_RSLT_Pos              (0)                                        /*!< LPADC_T::ADDR: RSLT Position               */
+#define LPADC_ADDR_RSLT_Msk              (0xffffUL << LPADC_ADDR_RSLT_Pos)          /*!< LPADC_T::ADDR: RSLT Mask                   */
+                                                                                   
+#define LPADC_ADDR_OVERRUN_Pos           (16)                                       /*!< LPADC_T::ADDR: OVERRUN Position            */
+#define LPADC_ADDR_OVERRUN_Msk           (0x1UL << LPADC_ADDR_OVERRUN_Pos)          /*!< LPADC_T::ADDR: OVERRUN Mask                */
+                                                                                   
+#define LPADC_ADDR_VALID_Pos             (17)                                       /*!< LPADC_T::ADDR: VALID Position              */
+#define LPADC_ADDR_VALID_Msk             (0x1UL << LPADC_ADDR_VALID_Pos)            /*!< LPADC_T::ADDR: VALID Mask                  */
+                                         
+#define LPADC_ADDR0_RSLT_Pos             (0)                                        /*!< LPADC_T::ADDR0: RSLT Position          */
+#define LPADC_ADDR0_RSLT_Msk             (0xfffful << LPADC_ADDR0_RSLT_Pos)         /*!< LPADC_T::ADDR0: RSLT Mask              */
 
-#define LPADC_ADDR_RSLT_Pos             (0)                                         /*!< LPADC_T::ADDR: RSLT Position               */
-#define LPADC_ADDR_RSLT_Msk             (0xffffUL << LPADC_ADDR_RSLT_Pos)           /*!< LPADC_T::ADDR: RSLT Mask                   */
+#define LPADC_ADDR0_OVERRUN_Pos          (16)                                       /*!< LPADC_T::ADDR0: OVERRUN Position       */
+#define LPADC_ADDR0_OVERRUN_Msk          (0x1ul << LPADC_ADDR0_OVERRUN_Pos)         /*!< LPADC_T::ADDR0: OVERRUN Mask           */
 
-#define LPADC_ADDR_OVERRUN_Pos          (16)                                        /*!< LPADC_T::ADDR: OVERRUN Position            */
-#define LPADC_ADDR_OVERRUN_Msk          (0x1UL << LPADC_ADDR_OVERRUN_Pos)           /*!< LPADC_T::ADDR: OVERRUN Mask                */
+#define LPADC_ADDR0_VALID_Pos            (17)                                       /*!< LPADC_T::ADDR0: VALID Position         */
+#define LPADC_ADDR0_VALID_Msk            (0x1ul << LPADC_ADDR0_VALID_Pos)           /*!< LPADC_T::ADDR0: VALID Mask             */
 
-#define LPADC_ADDR_VALID_Pos            (17)                                        /*!< LPADC_T::ADDR: VALID Position              */
-#define LPADC_ADDR_VALID_Msk            (0x1UL << LPADC_ADDR_VALID_Pos)             /*!< LPADC_T::ADDR: VALID Mask                  */
+#define LPADC_ADDR1_RSLT_Pos             (0)                                        /*!< LPADC_T::ADDR1: RSLT Position          */
+#define LPADC_ADDR1_RSLT_Msk             (0xfffful << LPADC_ADDR1_RSLT_Pos)         /*!< LPADC_T::ADDR1: RSLT Mask              */
 
-#define LPADC_ADCR_ADEN_Pos             (0)                                         /*!< LPADC_T::ADCR: ADEN Position               */
-#define LPADC_ADCR_ADEN_Msk             (0x1UL << LPADC_ADCR_ADEN_Pos)              /*!< LPADC_T::ADCR: ADEN Mask                   */
+#define LPADC_ADDR1_OVERRUN_Pos          (16)                                       /*!< LPADC_T::ADDR1: OVERRUN Position       */
+#define LPADC_ADDR1_OVERRUN_Msk          (0x1ul << LPADC_ADDR1_OVERRUN_Pos)         /*!< LPADC_T::ADDR1: OVERRUN Mask           */
 
-#define LPADC_ADCR_ADIE_Pos             (1)                                         /*!< LPADC_T::ADCR: ADIE Position               */
-#define LPADC_ADCR_ADIE_Msk             (0x1UL << LPADC_ADCR_ADIE_Pos)              /*!< LPADC_T::ADCR: ADIE Mask                   */
+#define LPADC_ADDR1_VALID_Pos            (17)                                       /*!< LPADC_T::ADDR1: VALID Position         */
+#define LPADC_ADDR1_VALID_Msk            (0x1ul << LPADC_ADDR1_VALID_Pos)           /*!< LPADC_T::ADDR1: VALID Mask             */
 
-#define LPADC_ADCR_ADMD_Pos             (2)                                         /*!< LPADC_T::ADCR: ADMD Position               */
-#define LPADC_ADCR_ADMD_Msk             (0x3UL << LPADC_ADCR_ADMD_Pos)              /*!< LPADC_T::ADCR: ADMD Mask                   */
+#define LPADC_ADDR2_RSLT_Pos             (0)                                        /*!< LPADC_T::ADDR2: RSLT Position          */
+#define LPADC_ADDR2_RSLT_Msk             (0xfffful << LPADC_ADDR2_RSLT_Pos)         /*!< LPADC_T::ADDR2: RSLT Mask              */
 
+#define LPADC_ADDR2_OVERRUN_Pos          (16)                                       /*!< LPADC_T::ADDR2: OVERRUN Position       */
+#define LPADC_ADDR2_OVERRUN_Msk          (0x1ul << LPADC_ADDR2_OVERRUN_Pos)         /*!< LPADC_T::ADDR2: OVERRUN Mask           */
 
-#define LPADC_ADCR_TRGCOND_Pos          (6)                                         /*!< LPADC_T::ADCR: TRGCOND Position            */
-#define LPADC_ADCR_TRGCOND_Msk          (0x3UL << LPADC_ADCR_TRGCOND_Pos)           /*!< LPADC_T::ADCR: TRGCOND Mask                */
+#define LPADC_ADDR2_VALID_Pos            (17)                                       /*!< LPADC_T::ADDR2: VALID Position         */
+#define LPADC_ADDR2_VALID_Msk            (0x1ul << LPADC_ADDR2_VALID_Pos)           /*!< LPADC_T::ADDR2: VALID Mask             */
 
-#define LPADC_ADCR_TRGEN_Pos            (8)                                         /*!< LPADC_T::ADCR: TRGEN Position              */
-#define LPADC_ADCR_TRGEN_Msk            (0x1UL << LPADC_ADCR_TRGEN_Pos)             /*!< LPADC_T::ADCR: TRGEN Mask                  */
+#define LPADC_ADDR3_RSLT_Pos             (0)                                        /*!< LPADC_T::ADDR3: RSLT Position          */
+#define LPADC_ADDR3_RSLT_Msk             (0xfffful << LPADC_ADDR3_RSLT_Pos)         /*!< LPADC_T::ADDR3: RSLT Mask              */
 
-#define LPADC_ADCR_PTEN_Pos             (9)                                         /*!< LPADC_T::ADCR: PTEN Position               */
-#define LPADC_ADCR_PTEN_Msk             (0x1UL << LPADC_ADCR_PTEN_Pos)              /*!< LPADC_T::ADCR: PTEN Mask                   */
+#define LPADC_ADDR3_OVERRUN_Pos          (16)                                       /*!< LPADC_T::ADDR3: OVERRUN Position       */
+#define LPADC_ADDR3_OVERRUN_Msk          (0x1ul << LPADC_ADDR3_OVERRUN_Pos)         /*!< LPADC_T::ADDR3: OVERRUN Mask           */
 
-#define LPADC_ADCR_DIFFEN_Pos           (10)                                        /*!< LPADC_T::ADCR: DIFFEN Position             */
-#define LPADC_ADCR_DIFFEN_Msk           (0x1UL << LPADC_ADCR_DIFFEN_Pos)            /*!< LPADC_T::ADCR: DIFFEN Mask                 */
+#define LPADC_ADDR3_VALID_Pos            (17)                                       /*!< LPADC_T::ADDR3: VALID Position         */
+#define LPADC_ADDR3_VALID_Msk            (0x1ul << LPADC_ADDR3_VALID_Pos)           /*!< LPADC_T::ADDR3: VALID Mask             */
 
-#define LPADC_ADCR_ADST_Pos             (11)                                        /*!< LPADC_T::ADCR: ADST Position               */
-#define LPADC_ADCR_ADST_Msk             (0x1UL << LPADC_ADCR_ADST_Pos)              /*!< LPADC_T::ADCR: ADST Mask                   */
+#define LPADC_ADDR4_RSLT_Pos             (0)                                        /*!< LPADC_T::ADDR4: RSLT Position          */
+#define LPADC_ADDR4_RSLT_Msk             (0xfffful << LPADC_ADDR4_RSLT_Pos)         /*!< LPADC_T::ADDR4: RSLT Mask              */
 
-#define LPADC_ADCR_RESET_Pos            (12)                                        /*!< LPADC_T::ADCR: RESET Position              */
-#define LPADC_ADCR_RESET_Msk            (0x1UL << LPADC_ADCR_RESET_Pos)             /*!< LPADC_T::ADCR: RESET Mask                  */
+#define LPADC_ADDR4_OVERRUN_Pos          (16)                                       /*!< LPADC_T::ADDR4: OVERRUN Position       */
+#define LPADC_ADDR4_OVERRUN_Msk          (0x1ul << LPADC_ADDR4_OVERRUN_Pos)         /*!< LPADC_T::ADDR4: OVERRUN Mask           */
 
-#define LPADC_ADCR_PRELDCH_Pos          (15)                                        /*!< LPADC_T::ADCR: PRELDCH Position            */
-#define LPADC_ADCR_PRELDCH_Msk          (0x1UL << LPADC_ADCR_PRELDCH_Pos)           /*!< LPADC_T::ADCR: PRELDCH Mask                */
+#define LPADC_ADDR4_VALID_Pos            (17)                                       /*!< LPADC_T::ADDR4: VALID Position         */
+#define LPADC_ADDR4_VALID_Msk            (0x1ul << LPADC_ADDR4_VALID_Pos)           /*!< LPADC_T::ADDR4: VALID Mask             */
 
-#define LPADC_ADCR_TRGS_Pos             (16)                                         /*!< LPADC_T::ADCR: TRGS Position               */
-#define LPADC_ADCR_TRGS_Msk             (0xfUL << LPADC_ADCR_TRGS_Pos)              /*!< LPADC_T::ADCR: TRGS Mask                   */
+#define LPADC_ADDR5_RSLT_Pos             (0)                                        /*!< LPADC_T::ADDR5: RSLT Position          */
+#define LPADC_ADDR5_RSLT_Msk             (0xfffful << LPADC_ADDR5_RSLT_Pos)         /*!< LPADC_T::ADDR5: RSLT Mask              */
 
-///ChingI wait to check
-#define LPADC_ADCR_ACMPTES_Pos          (20)                          
-#define LPADC_ADCR_ACMPTES_Msk          (0x3UL << LPADC_ADCR_ACMPTES_Pos)
+#define LPADC_ADDR5_OVERRUN_Pos          (16)                                       /*!< LPADC_T::ADDR5: OVERRUN Position       */
+#define LPADC_ADDR5_OVERRUN_Msk          (0x1ul << LPADC_ADDR5_OVERRUN_Pos)         /*!< LPADC_T::ADDR5: OVERRUN Mask           */
 
-#define LPADC_ADCR_ULPEN_Pos            (24)                                        /*!< LPADC_T::ADCR: ULPEN Position              */
-#define LPADC_ADCR_ULPEN_Msk            (0x1UL << LPADC_ADCR_ULPEN_Pos)             /*!< LPADC_T::ADCR: ULPEN Mask                  */
+#define LPADC_ADDR5_VALID_Pos            (17)                                       /*!< LPADC_T::ADDR5: VALID Position         */
+#define LPADC_ADDR5_VALID_Msk            (0x1ul << LPADC_ADDR5_VALID_Pos)           /*!< LPADC_T::ADDR5: VALID Mask             */
 
-#define LPADC_ADCR_DECSET_Pos           (25)                                        /*!< LPADC_T::ADCR: DECSET Position             */
-#define LPADC_ADCR_DECSET_Msk           (0x1UL << LPADC_ADCR_DECSET_Pos)            /*!< LPADC_T::ADCR: DECSET Mask                 */
+#define LPADC_ADDR6_RSLT_Pos             (0)                                        /*!< LPADC_T::ADDR6: RSLT Position          */
+#define LPADC_ADDR6_RSLT_Msk             (0xfffful << LPADC_ADDR6_RSLT_Pos)         /*!< LPADC_T::ADDR6: RSLT Mask              */
 
-#define LPADC_ADCR_RESSEL_Pos           (28)                                        /*!< LPADC_T::ADCR: RESSEL Position             */
-#define LPADC_ADCR_RESSEL_Msk           (0x3UL << LPADC_ADCR_RESSEL_Pos)            /*!< LPADC_T::ADCR: RESSEL Mask                 */
+#define LPADC_ADDR6_OVERRUN_Pos          (16)                                       /*!< LPADC_T::ADDR6: OVERRUN Position       */
+#define LPADC_ADDR6_OVERRUN_Msk          (0x1ul << LPADC_ADDR6_OVERRUN_Pos)         /*!< LPADC_T::ADDR6: OVERRUN Mask           */
 
-#define LPADC_ADCR_DMOF_Pos             (31)                                        /*!< LPADC_T::ADCR: DMOF Position               */
-#define LPADC_ADCR_DMOF_Msk             (0x1UL << LPADC_ADCR_DMOF_Pos)              /*!< LPADC_T::ADCR: DMOF Mask                   */
+#define LPADC_ADDR6_VALID_Pos            (17)                                       /*!< LPADC_T::ADDR6: VALID Position         */
+#define LPADC_ADDR6_VALID_Msk            (0x1ul << LPADC_ADDR6_VALID_Pos)           /*!< LPADC_T::ADDR6: VALID Mask             */
 
-#define LPADC_ADCHER_CHEN_Pos           (0)                                         /*!< LPADC_T::ADCHER: CHEN Position             */
-#define LPADC_ADCHER_CHEN_Msk           (0xffffffffUL << LPADC_ADCHER_CHEN_Pos)     /*!< LPADC_T::ADCHER: CHEN Mask                 */
+#define LPADC_ADDR7_RSLT_Pos             (0)                                        /*!< LPADC_T::ADDR7: RSLT Position          */
+#define LPADC_ADDR7_RSLT_Msk             (0xfffful << LPADC_ADDR7_RSLT_Pos)         /*!< LPADC_T::ADDR7: RSLT Mask              */
 
-#define LPADC_ADCMPR_CMPEN_Pos          (0)                                         /*!< LPADC_T::ADCMPR: CMPEN Position            */
-#define LPADC_ADCMPR_CMPEN_Msk          (0x1UL << LPADC_ADCMPR_CMPEN_Pos)           /*!< LPADC_T::ADCMPR: CMPEN Mask                */
+#define LPADC_ADDR7_OVERRUN_Pos          (16)                                       /*!< LPADC_T::ADDR7: OVERRUN Position       */
+#define LPADC_ADDR7_OVERRUN_Msk          (0x1ul << LPADC_ADDR7_OVERRUN_Pos)         /*!< LPADC_T::ADDR7: OVERRUN Mask           */
 
-#define LPADC_ADCMPR_CMPIE_Pos          (1)                                         /*!< LPADC_T::ADCMPR: CMPIE Position            */
-#define LPADC_ADCMPR_CMPIE_Msk          (0x1UL << LPADC_ADCMPR_CMPIE_Pos)           /*!< LPADC_T::ADCMPR: CMPIE Mask                */
+#define LPADC_ADDR7_VALID_Pos            (17)                                       /*!< LPADC_T::ADDR7: VALID Position         */
+#define LPADC_ADDR7_VALID_Msk            (0x1ul << LPADC_ADDR7_VALID_Pos)           /*!< LPADC_T::ADDR7: VALID Mask             */
 
-#define LPADC_ADCMPR_CMPCOND_Pos        (2)                                         /*!< LPADC_T::ADCMPR: CMPCOND Position          */
-#define LPADC_ADCMPR_CMPCOND_Msk        (0x1UL << LPADC_ADCMPR_CMPCOND_Pos)         /*!< LPADC_T::ADCMPR: CMPCOND Mask              */
+#define LPADC_ADDR8_RSLT_Pos             (0)                                        /*!< LPADC_T::ADDR8: RSLT Position          */
+#define LPADC_ADDR8_RSLT_Msk             (0xfffful << LPADC_ADDR8_RSLT_Pos)         /*!< LPADC_T::ADDR8: RSLT Mask              */
 
-#define LPADC_ADCMPR_CMPCH_Pos          (3)                                         /*!< LPADC_T::ADCMPR: CMPCH Position            */
-#define LPADC_ADCMPR_CMPCH_Msk          (0x1fUL << LPADC_ADCMPR_CMPCH_Pos)          /*!< LPADC_T::ADCMPR: CMPCH Mask                */
+#define LPADC_ADDR8_OVERRUN_Pos          (16)                                       /*!< LPADC_T::ADDR8: OVERRUN Position       */
+#define LPADC_ADDR8_OVERRUN_Msk          (0x1ul << LPADC_ADDR8_OVERRUN_Pos)         /*!< LPADC_T::ADDR8: OVERRUN Mask           */
 
-#define LPADC_ADCMPR_CMPMATCNT_Pos      (8)                                         /*!< LPADC_T::ADCMPR: CMPMATCNT Position        */
-#define LPADC_ADCMPR_CMPMATCNT_Msk      (0xfUL << LPADC_ADCMPR_CMPMATCNT_Pos)       /*!< LPADC_T::ADCMPR: CMPMATCNT Mask            */
+#define LPADC_ADDR8_VALID_Pos            (17)                                       /*!< LPADC_T::ADDR8: VALID Position         */
+#define LPADC_ADDR8_VALID_Msk            (0x1ul << LPADC_ADDR8_VALID_Pos)           /*!< LPADC_T::ADDR8: VALID Mask             */
 
-#define LPADC_ADCMPR_CMPWEN_Pos         (15)                                        /*!< LPADC_T::ADCMPR: CMPWEN Position           */
-#define LPADC_ADCMPR_CMPWEN_Msk         (0x1UL << LPADC_ADCMPR_CMPWEN_Pos)          /*!< LPADC_T::ADCMPR: CMPWEN Mask               */
+#define LPADC_ADDR9_RSLT_Pos             (0)                                        /*!< LPADC_T::ADDR9: RSLT Position          */
+#define LPADC_ADDR9_RSLT_Msk             (0xfffful << LPADC_ADDR9_RSLT_Pos)         /*!< LPADC_T::ADDR9: RSLT Mask              */
 
-#define LPADC_ADCMPR_CMPD_Pos           (16)                                        /*!< LPADC_T::ADCMPR: CMPD Position             */
-#define LPADC_ADCMPR_CMPD_Msk           (0xfffUL << LPADC_ADCMPR_CMPD_Pos)          /*!< LPADC_T::ADCMPR: CMPD Mask                 */
+#define LPADC_ADDR9_OVERRUN_Pos          (16)                                       /*!< LPADC_T::ADDR9: OVERRUN Position       */
+#define LPADC_ADDR9_OVERRUN_Msk          (0x1ul << LPADC_ADDR9_OVERRUN_Pos)         /*!< LPADC_T::ADDR9: OVERRUN Mask           */
 
-#define LPADC_ADSR0_ADF_Pos             (0)                                         /*!< LPADC_T::ADSR0: ADF Position               */
-#define LPADC_ADSR0_ADF_Msk             (0x1UL << LPADC_ADSR0_ADF_Pos)              /*!< LPADC_T::ADSR0: ADF Mask                   */
+#define LPADC_ADDR9_VALID_Pos            (17)                                       /*!< LPADC_T::ADDR9: VALID Position         */
+#define LPADC_ADDR9_VALID_Msk            (0x1ul << LPADC_ADDR9_VALID_Pos)           /*!< LPADC_T::ADDR9: VALID Mask             */
 
-#define LPADC_ADSR0_CMPF0_Pos           (1)                                         /*!< LPADC_T::ADSR0: CMPF0 Position             */
-#define LPADC_ADSR0_CMPF0_Msk           (0x1UL << LPADC_ADSR0_CMPF0_Pos)            /*!< LPADC_T::ADSR0: CMPF0 Mask                 */
+#define LPADC_ADDR10_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR10: RSLT Position         */
+#define LPADC_ADDR10_RSLT_Msk            (0xfffful << LPADC_ADDR10_RSLT_Pos)        /*!< LPADC_T::ADDR10: RSLT Mask             */
 
-#define LPADC_ADSR0_CMPF1_Pos           (2)                                         /*!< LPADC_T::ADSR0: CMPF1 Position             */
-#define LPADC_ADSR0_CMPF1_Msk           (0x1UL << LPADC_ADSR0_CMPF1_Pos)            /*!< LPADC_T::ADSR0: CMPF1 Mask                 */
+#define LPADC_ADDR10_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR10: OVERRUN Position      */
+#define LPADC_ADDR10_OVERRUN_Msk         (0x1ul << LPADC_ADDR10_OVERRUN_Pos)        /*!< LPADC_T::ADDR10: OVERRUN Mask          */
 
-#define LPADC_ADSR0_BUSY_Pos            (7)                                         /*!< LPADC_T::ADSR0: BUSY Position              */
-#define LPADC_ADSR0_BUSY_Msk            (0x1UL << LPADC_ADSR0_BUSY_Pos)             /*!< LPADC_T::ADSR0: BUSY Mask                  */
+#define LPADC_ADDR10_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR10: VALID Position        */
+#define LPADC_ADDR10_VALID_Msk           (0x1ul << LPADC_ADDR10_VALID_Pos)          /*!< LPADC_T::ADDR10: VALID Mask            */
 
-#define LPADC_ADSR0_VALIDF_Pos          (8)                                         /*!< LPADC_T::ADSR0: VALIDF Position            */
-#define LPADC_ADSR0_VALIDF_Msk          (0x1UL << LPADC_ADSR0_VALIDF_Pos)           /*!< LPADC_T::ADSR0: VALIDF Mask                */
+#define LPADC_ADDR11_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR11: RSLT Position         */
+#define LPADC_ADDR11_RSLT_Msk            (0xfffful << LPADC_ADDR11_RSLT_Pos)        /*!< LPADC_T::ADDR11: RSLT Mask             */
 
-#define LPADC_ADSR0_OVERRUNF_Pos        (16)                                        /*!< LPADC_T::ADSR0: OVERRUNF Position          */
-#define LPADC_ADSR0_OVERRUNF_Msk        (0x1UL << LPADC_ADSR0_OVERRUNF_Pos)         /*!< LPADC_T::ADSR0: OVERRUNF Mask              */
+#define LPADC_ADDR11_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR11: OVERRUN Position      */
+#define LPADC_ADDR11_OVERRUN_Msk         (0x1ul << LPADC_ADDR11_OVERRUN_Pos)        /*!< LPADC_T::ADDR11: OVERRUN Mask          */
 
-#define LPADC_ADSR0_ADPRDY_Pos          (24)                                        /*!< LPADC_T::ADSR0: ADPRDY Position          */
-#define LPADC_ADSR0_ADPRDY_Msk          (0x1UL << LPADC_ADSR0_ADPRDY_Pos)           /*!< LPADC_T::ADSR0: ADPRDY Mask              */
+#define LPADC_ADDR11_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR11: VALID Position        */
+#define LPADC_ADDR11_VALID_Msk           (0x1ul << LPADC_ADDR11_VALID_Pos)          /*!< LPADC_T::ADDR11: VALID Mask            */
 
-#define LPADC_ADSR0_CHANNEL_Pos         (27)                                        /*!< LPADC_T::ADSR0: CHANNEL Position           */
-#define LPADC_ADSR0_CHANNEL_Msk         (0x1fUL << LPADC_ADSR0_CHANNEL_Pos)         /*!< LPADC_T::ADSR0: CHANNEL Mask               */
+#define LPADC_ADDR12_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR12: RSLT Position         */
+#define LPADC_ADDR12_RSLT_Msk            (0xfffful << LPADC_ADDR12_RSLT_Pos)        /*!< LPADC_T::ADDR12: RSLT Mask             */
 
-#define LPADC_ADSR1_VALID_Pos           (0)                                         /*!< LPADC_T::ADSR1: VALID Position             */
-#define LPADC_ADSR1_VALID_Msk           (0xffffffffUL << LPADC_ADSR1_VALID_Pos)     /*!< LPADC_T::ADSR1: VALID Mask                 */
+#define LPADC_ADDR12_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR12: OVERRUN Position      */
+#define LPADC_ADDR12_OVERRUN_Msk         (0x1ul << LPADC_ADDR12_OVERRUN_Pos)        /*!< LPADC_T::ADDR12: OVERRUN Mask          */
 
-#define LPADC_ADSR2_OVERRUN_Pos         (0)                                         /*!< LPADC_T::ADSR2: OVERRUN Position           */
-#define LPADC_ADSR2_OVERRUN_Msk         (0xffffffffUL << LPADC_ADSR2_OVERRUN_Pos)   /*!< LPADC_T::ADSR2: OVERRUN Mask               */
+#define LPADC_ADDR12_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR12: VALID Position        */
+#define LPADC_ADDR12_VALID_Msk           (0x1ul << LPADC_ADDR12_VALID_Pos)          /*!< LPADC_T::ADDR12: VALID Mask            */
 
-#define LPADC_ESMPCTL_EXTSMPT_Pos       (0)                                         /*!< LPADC_T::ESMPCTL: EXTSMPT Position         */
-#define LPADC_ESMPCTL_EXTSMPT_Msk       (0x3fffUL << LPADC_ESMPCTL_EXTSMPT_Pos)     /*!< LPADC_T::ESMPCTL: EXTSMPT Mask             */
+#define LPADC_ADDR13_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR13: RSLT Position         */
+#define LPADC_ADDR13_RSLT_Msk            (0xfffful << LPADC_ADDR13_RSLT_Pos)        /*!< LPADC_T::ADDR13: RSLT Mask             */
 
-#define LPADC_CFDCTL_PRECHEN_Pos        (0)                                         /*!< LPADC_T::CFDCTL: PRECHEN Position          */
-#define LPADC_CFDCTL_PRECHEN_Msk        (0x1UL << LPADC_CFDCTL_PRECHEN_Pos)         /*!< LPADC_T::CFDCTL: PRECHEN Mask              */
+#define LPADC_ADDR13_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR13: OVERRUN Position      */
+#define LPADC_ADDR13_OVERRUN_Msk         (0x1ul << LPADC_ADDR13_OVERRUN_Pos)        /*!< LPADC_T::ADDR13: OVERRUN Mask          */
 
-#define LPADC_CFDCTL_DISCHEN_Pos        (1)                                         /*!< LPADC_T::CFDCTL: DISCHEN Position          */
-#define LPADC_CFDCTL_DISCHEN_Msk        (0x1UL << LPADC_CFDCTL_DISCHEN_Pos)         /*!< LPADC_T::CFDCTL: DISCHEN Mask              */
+#define LPADC_ADDR13_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR13: VALID Position        */
+#define LPADC_ADDR13_VALID_Msk           (0x1ul << LPADC_ADDR13_VALID_Pos)          /*!< LPADC_T::ADDR13: VALID Mask            */
 
-#define LPADC_CFDCTL_FDETCHEN_Pos       (8)                                         /*!< LPADC_T::CFDCTL: FDETCHEN Position         */
-#define LPADC_CFDCTL_FDETCHEN_Msk       (0x1UL << LPADC_CFDCTL_FDETCHEN_Pos)        /*!< LPADC_T::CFDCTL: FDETCHEN Mask             */
+#define LPADC_ADDR14_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR14: RSLT Position         */
+#define LPADC_ADDR14_RSLT_Msk            (0xfffful << LPADC_ADDR14_RSLT_Pos)        /*!< LPADC_T::ADDR14: RSLT Mask             */
 
-#define LPADC_ADTEST_FIFOCNT_Pos        (0)                                         /*!< LPADC_T::ADTEST: FIFOCNT Position          */
-#define LPADC_ADTEST_FIFOCNT_Msk        (0xfUL << LPADC_ADTEST_FIFOCNT_Pos)         /*!< LPADC_T::ADTEST: FIFOCNT Mask              */
+#define LPADC_ADDR14_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR14: OVERRUN Position      */
+#define LPADC_ADDR14_OVERRUN_Msk         (0x1ul << LPADC_ADDR14_OVERRUN_Pos)        /*!< LPADC_T::ADDR14: OVERRUN Mask          */
 
-#define LPADC_ADTEST_CalUnLock_Pos      (28)                                        /*!< LPADC_T::ADTEST: CalUnLock Position        */
-#define LPADC_ADTEST_CalUnLock_Msk      (0x1UL << LPADC_ADTEST_CalUnLock_Pos)       /*!< LPADC_T::ADTEST: CalUnLock Mask            */
+#define LPADC_ADDR14_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR14: VALID Position        */
+#define LPADC_ADDR14_VALID_Msk           (0x1ul << LPADC_ADDR14_VALID_Pos)          /*!< LPADC_T::ADDR14: VALID Mask            */
 
-#define LPADC_ADPDMA_CURDAT_Pos         (0)                                         /*!< LPADC_T::ADPDMA: CURDAT Position           */
-#define LPADC_ADPDMA_CURDAT_Msk         (0x3ffffUL << LPADC_ADPDMA_CURDAT_Pos)      /*!< LPADC_T::ADPDMA: CURDAT Mask               */
+#define LPADC_ADDR15_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR15: RSLT Position         */
+#define LPADC_ADDR15_RSLT_Msk            (0xfffful << LPADC_ADDR15_RSLT_Pos)        /*!< LPADC_T::ADDR15: RSLT Mask             */
 
-#define LPADC_ADCAL_CALEN_Pos          (0)                                         /*!< LPADC_T::ADCAL: CALEN Position            */
-#define LPADC_ADCAL_CALEN_Msk          (0x1UL << LPADC_ADCAL_CALEN_Pos)           /*!< LPADC_T::ADCAL: CALEN Mask                */
+#define LPADC_ADDR15_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR15: OVERRUN Position      */
+#define LPADC_ADDR15_OVERRUN_Msk         (0x1ul << LPADC_ADDR15_OVERRUN_Pos)        /*!< LPADC_T::ADDR15: OVERRUN Mask          */
 
-#define LPADC_ADCAL_CALIE_Pos          (1)                                         /*!< LPADC_T::ADCAL: CALIE Position            */
-#define LPADC_ADCAL_CALIE_Msk          (0x1UL << LPADC_ADCAL_CALIE_Pos)           /*!< LPADC_T::ADCAL: CALIE Mask                */
+#define LPADC_ADDR15_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR15: VALID Position        */
+#define LPADC_ADDR15_VALID_Msk           (0x1ul << LPADC_ADDR15_VALID_Pos)          /*!< LPADC_T::ADDR15: VALID Mask            */
 
-#define LPADC_ADCAL_MODEVM_Pos         (2)                                         /*!< LPADC_T::ADCAL: MODEVM Position           */
-#define LPADC_ADCAL_MODEVM_Msk         (0x1UL << LPADC_ADCAL_MODEVM_Pos)          /*!< LPADC_T::ADCAL: MODEVM Mask               */
+#define LPADC_ADDR16_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR16: RSLT Position         */
+#define LPADC_ADDR16_RSLT_Msk            (0xfffful << LPADC_ADDR16_RSLT_Pos)        /*!< LPADC_T::ADDR16: RSLT Mask             */
 
-#define LPADC_ADCAL_CALSEL16T_Pos      (3)                                         /*!< LPADC_T::ADCAL: CALSEL16T Position        */
-#define LPADC_ADCAL_CALSEL16T_Msk      (0x1UL << LPADC_ADCAL_CALSEL16T_Pos)       /*!< LPADC_T::ADCAL: CALSEL16T Mask            */
+#define LPADC_ADDR16_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR16: OVERRUN Position      */
+#define LPADC_ADDR16_OVERRUN_Msk         (0x1ul << LPADC_ADDR16_OVERRUN_Pos)        /*!< LPADC_T::ADDR16: OVERRUN Mask          */
 
-#define LPADC_ADCAL_CALSEL_Pos         (4)                                         /*!< LPADC_T::ADCAL: CALSEL Position           */
-#define LPADC_ADCAL_CALSEL_Msk         (0x7UL << LPADC_ADCAL_CALSEL_Pos)          /*!< LPADC_T::ADCAL: CALSEL Mask               */
+#define LPADC_ADDR16_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR16: VALID Position        */
+#define LPADC_ADDR16_VALID_Msk           (0x1ul << LPADC_ADDR16_VALID_Pos)          /*!< LPADC_T::ADDR16: VALID Mask            */
 
-#define LPADC_ADCALSTS_CALIF_Pos       (0)                                         /*!< LPADC_T::ADCALSTS: CALIF Position         */
-#define LPADC_ADCALSTS_CALIF_Msk       (0x1UL << LPADC_ADCALSTS_CALIF_Pos)        /*!< LPADC_T::ADCALSTS: CALIF Mask             */
+#define LPADC_ADDR17_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR17: RSLT Position         */
+#define LPADC_ADDR17_RSLT_Msk            (0xfffful << LPADC_ADDR17_RSLT_Pos)        /*!< LPADC_T::ADDR17: RSLT Mask             */
 
-#define LPADC_ADCALDB_CALRD_Pos        (0)                                         /*!< LPADC_T::ADCALDB: CALRD Position          */
-#define LPADC_ADCALDB_CALRD_Msk        (0x1UL << LPADC_ADCALDB_CALRD_Pos)         /*!< LPADC_T::ADCALDB: CALRD Mask              */
+#define LPADC_ADDR17_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR17: OVERRUN Position      */
+#define LPADC_ADDR17_OVERRUN_Msk         (0x1ul << LPADC_ADDR17_OVERRUN_Pos)        /*!< LPADC_T::ADDR17: OVERRUN Mask          */
 
-#define LPADC_ADCALDB_CALWR_Pos        (1)                                         /*!< LPADC_T::ADCALDB: CALWR Position          */
-#define LPADC_ADCALDB_CALWR_Msk        (0x1UL << LPADC_ADCALDB_CALWR_Pos)         /*!< LPADC_T::ADCALDB: CALWR Mask              */
+#define LPADC_ADDR17_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR17: VALID Position        */
+#define LPADC_ADDR17_VALID_Msk           (0x1ul << LPADC_ADDR17_VALID_Pos)          /*!< LPADC_T::ADDR17: VALID Mask            */
 
-#define LPADC_ADCALDB_OUTSEL_Pos      (2)                                         /*!< LPADC_T::ADCALDB: OUTSEL Position        */
-#define LPADC_ADCALDB_OUTSEL_Msk      (0x1UL << LPADC_ADCALDB_OUTSEL_Pos)       /*!< LPADC_T::ADCALDB: OUTSEL Mask            */
+#define LPADC_ADDR18_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR18: RSLT Position         */
+#define LPADC_ADDR18_RSLT_Msk            (0xfffful << LPADC_ADDR18_RSLT_Pos)        /*!< LPADC_T::ADDR18: RSLT Mask             */
 
-#define LPADC_ADCALDB_CALADDR_Pos      (3)                                         /*!< LPADC_T::ADCALDB: CALADDR Position        */
-#define LPADC_ADCALDB_CALADDR_Msk      (0x1fUL << LPADC_ADCALDB_CALADDR_Pos)      /*!< LPADC_T::ADCALDB: CALADDR Mask            */
+#define LPADC_ADDR18_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR18: OVERRUN Position      */
+#define LPADC_ADDR18_OVERRUN_Msk         (0x1ul << LPADC_ADDR18_OVERRUN_Pos)        /*!< LPADC_T::ADDR18: OVERRUN Mask          */
 
-#define LPADC_ADCALDB_CALWDATA_Pos     (8)                                         /*!< LPADC_T::ADCALDB: CALWDATA Position       */
-#define LPADC_ADCALDB_CALWDATA_Msk     (0xffUL << LPADC_ADCALDB_CALWDATA_Pos)     /*!< LPADC_T::ADCALDB: CALWDATA Mask           */
+#define LPADC_ADDR18_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR18: VALID Position        */
+#define LPADC_ADDR18_VALID_Msk           (0x1ul << LPADC_ADDR18_VALID_Pos)          /*!< LPADC_T::ADDR18: VALID Mask            */
 
-#define LPADC_ADCALDB_CALRDATA_Pos     (16)                                        /*!< LPADC_T::ADCALDB: CALRDATA Position       */
-#define LPADC_ADCALDB_CALRDATA_Msk     (0xfffUL << LPADC_ADCALDB_CALRDATA_Pos)    /*!< LPADC_T::ADCALDB: CALRDATA Mask           */
+#define LPADC_ADDR19_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR19: RSLT Position         */
+#define LPADC_ADDR19_RSLT_Msk            (0xfffful << LPADC_ADDR19_RSLT_Pos)        /*!< LPADC_T::ADDR19: RSLT Mask             */
 
-#define LPADC_ADCALDB_DEBUGEN_Pos      (31)                                        /*!< LPADC_T::ADCALDB: DEBUGEN Position        */
-#define LPADC_ADCALDB_DEBUGEN_Msk      (0x1UL << LPADC_ADCALDB_DEBUGEN_Pos)       /*!< LPADC_T::ADCALDB: DEBUGEN Mask            */
+#define LPADC_ADDR19_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR19: OVERRUN Position      */
+#define LPADC_ADDR19_OVERRUN_Msk         (0x1ul << LPADC_ADDR19_OVERRUN_Pos)        /*!< LPADC_T::ADDR19: OVERRUN Mask          */
 
-#define LPADC_AUTOCTL_TRIGSEL_Pos       (0)                                         /*!< LPADC_T::AUTOCTL: TRIGSEL Position         */
-#define LPADC_AUTOCTL_TRIGSEL_Msk       (0x7UL << LPADC_AUTOCTL_TRIGSEL_Pos)        /*!< LPADC_T::AUTOCTL: TRIGSEL Mask             */
+#define LPADC_ADDR19_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR19: VALID Position        */
+#define LPADC_ADDR19_VALID_Msk           (0x1ul << LPADC_ADDR19_VALID_Pos)          /*!< LPADC_T::ADDR19: VALID Mask            */
 
-#define LPADC_AUTOCTL_TRIGEN_Pos        (4)                                         /*!< LPADC_T::AUTOCTL: TRIGEN Position          */
-#define LPADC_AUTOCTL_TRIGEN_Msk        (0x1UL << LPADC_AUTOCTL_TRIGEN_Pos)         /*!< LPADC_T::AUTOCTL: TRIGEN Mask              */
+#define LPADC_ADDR20_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR20: RSLT Position         */
+#define LPADC_ADDR20_RSLT_Msk            (0xfffful << LPADC_ADDR20_RSLT_Pos)        /*!< LPADC_T::ADDR20: RSLT Mask             */
 
-#define LPADC_AUTOCTL_WKEN_Pos          (8)                                         /*!< LPADC_T::AUTOCTL: WKEN Position            */
-#define LPADC_AUTOCTL_WKEN_Msk          (0x1UL << LPADC_AUTOCTL_WKEN_Pos)           /*!< LPADC_T::AUTOCTL: WKEN Mask                */
+#define LPADC_ADDR20_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR20: OVERRUN Position      */
+#define LPADC_ADDR20_OVERRUN_Msk         (0x1ul << LPADC_ADDR20_OVERRUN_Pos)        /*!< LPADC_T::ADDR20: OVERRUN Mask          */
 
-#define LPADC_AUTOCTL_CMP0WKEN_Pos      (9)                                         /*!< LPADC_T::AUTOCTL: CMP0WKEN Position            */
-#define LPADC_AUTOCTL_CMP0WKEN_Msk      (0x1UL << LPADC_AUTOCTL_CMP0WKEN_Pos)           /*!< LPADC_T::AUTOCTL: CMP0WKEN Mask                */
+#define LPADC_ADDR20_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR20: VALID Position        */
+#define LPADC_ADDR20_VALID_Msk           (0x1ul << LPADC_ADDR20_VALID_Pos)          /*!< LPADC_T::ADDR20: VALID Mask            */
 
-#define LPADC_AUTOCTL_CMP1WKEN_Pos      (10)                                        /*!< LPADC_T::AUTOCTL: CMP1WKEN Position            */
-#define LPADC_AUTOCTL_CMP1WKEN_Msk      (0x1UL << LPADC_AUTOCTL_CMP1WKEN_Pos)       /*!< LPADC_T::AUTOCTL: CMP1WKEN Mask                */
+#define LPADC_ADDR21_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR21: RSLT Position         */
+#define LPADC_ADDR21_RSLT_Msk            (0xfffful << LPADC_ADDR21_RSLT_Pos)        /*!< LPADC_T::ADDR21: RSLT Mask             */
 
-#define LPADC_AUTOCTL_AUTOEN_Pos        (31)                                        /*!< LPADC_T::AUTOCTL: AUTOEN Position          */
-#define LPADC_AUTOCTL_AUTOEN_Msk        (0x1UL << LPADC_AUTOCTL_AUTOEN_Pos)         /*!< LPADC_T::AUTOCTL: AUTOEN Mask              */
+#define LPADC_ADDR21_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR21: OVERRUN Position      */
+#define LPADC_ADDR21_OVERRUN_Msk         (0x1ul << LPADC_ADDR21_OVERRUN_Pos)        /*!< LPADC_T::ADDR21: OVERRUN Mask          */
 
-#define LPADC_AUTOSTRG_SWTRIG_Pos       (0)                                         /*!< LPADC_T::AUTOSTRG: SWTRIG Position         */
-#define LPADC_AUTOSTRG_SWTRIG_Msk       (0x1UL << LPADC_AUTOSTRG_SWTRIG_Pos)        /*!< LPADC_T::AUTOSTRG: SWTRIG Mask             */
+#define LPADC_ADDR21_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR21: VALID Position        */
+#define LPADC_ADDR21_VALID_Msk           (0x1ul << LPADC_ADDR21_VALID_Pos)          /*!< LPADC_T::ADDR21: VALID Mask            */
 
-#define LPADC_AUTOSTS_WKIF_Pos          (0)                                         /*!< LPADC_T::AUTOSTS: WKIF Position            */
-#define LPADC_AUTOSTS_WKIF_Msk          (0x1UL << LPADC_AUTOSTS_WKIF_Pos)           /*!< LPADC_T::AUTOSTS: WKIF Mask                */
+#define LPADC_ADDR22_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR22: RSLT Position         */
+#define LPADC_ADDR22_RSLT_Msk            (0xfffful << LPADC_ADDR22_RSLT_Pos)        /*!< LPADC_T::ADDR22: RSLT Mask             */
 
-#define LPADC_AUTOSTS_CMP0WKF_Pos       (1)                                      /*!< LPADC_T::AUTOSTS: CMP0WKF Position            */
-#define LPADC_AUTOSTS_CMP0WKF_Msk       (0x1UL << LPADC_AUTOSTS_CMP0WKF_Pos)     /*!< LPADC_T::AUTOSTS: CMP0WKF Mask                */
+#define LPADC_ADDR22_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR22: OVERRUN Position      */
+#define LPADC_ADDR22_OVERRUN_Msk         (0x1ul << LPADC_ADDR22_OVERRUN_Pos)        /*!< LPADC_T::ADDR22: OVERRUN Mask          */
 
-#define LPADC_AUTOSTS_CMP1WKF_Pos       (2)                                      /*!< LPADC_T::AUTOSTS: CMP1WKF Position            */
-#define LPADC_AUTOSTS_CMP1WKF_Msk       (0x1UL << LPADC_AUTOSTS_CMP1WKF_Pos)     /*!< LPADC_T::AUTOSTS: CMP1WKF Mask                */
+#define LPADC_ADDR22_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR22: VALID Position        */
+#define LPADC_ADDR22_VALID_Msk           (0x1ul << LPADC_ADDR22_VALID_Pos)          /*!< LPADC_T::ADDR22: VALID Mask            */
 
-#define LPADC_ALDOCTL_VTRIM_Pos         (0)                                         /*!< LPADC_T::ALDOCTL: VTRIM Position           */
-#define LPADC_ALDOCTL_VTRIM_Msk         (0x7UL << LPADC_ALDOCTL_VTRIM_Pos)          /*!< LPADC_T::ALDOCTL: VTRIM Mask               */
+#define LPADC_ADDR23_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR23: RSLT Position         */
+#define LPADC_ADDR23_RSLT_Msk            (0xfffful << LPADC_ADDR23_RSLT_Pos)        /*!< LPADC_T::ADDR23: RSLT Mask             */
 
-#define LPADC_ALDOCTL_ISEL_Pos          (4)                                         /*!< LPADC_T::ALDOCTL: ISEL Position            */
-#define LPADC_ALDOCTL_ISEL_Msk          (0x3UL << LPADC_ALDOCTL_ISEL_Pos)           /*!< LPADC_T::ALDOCTL: ISEL Mask                */
+#define LPADC_ADDR23_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR23: OVERRUN Position      */
+#define LPADC_ADDR23_OVERRUN_Msk         (0x1ul << LPADC_ADDR23_OVERRUN_Pos)        /*!< LPADC_T::ADDR23: OVERRUN Mask          */
 
-#define LPADC_ALDOCTL_TESTEN_Pos        (7)                                         /*!< LPADC_T::ALDOCTL: TESTEN Position          */
-#define LPADC_ALDOCTL_TESTEN_Msk        (0x1UL << LPADC_ALDOCTL_TESTEN_Pos)         /*!< LPADC_T::ALDOCTL: TESTEN Mask              */
+#define LPADC_ADDR23_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR23: VALID Position        */
+#define LPADC_ADDR23_VALID_Msk           (0x1ul << LPADC_ADDR23_VALID_Pos)          /*!< LPADC_T::ADDR23: VALID Mask            */
 
-#define LPADC_ALDOCTL_ALDOEN_Pos        (8)                                         /*!< LPADC_T::ALDOCTL: ALDOEN Position          */
-#define LPADC_ALDOCTL_ALDOEN_Msk        (0x1UL << LPADC_ALDOCTL_ALDOEN_Pos)         /*!< LPADC_T::ALDOCTL: ALDOEN Mask              */
+#define LPADC_ADDR28_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR28: RSLT Position         */
+#define LPADC_ADDR28_RSLT_Msk            (0xfffful << LPADC_ADDR28_RSLT_Pos)        /*!< LPADC_T::ADDR28: RSLT Mask             */
 
-#define LPADC_ALDOCTL_STBSEL_Pos        (16)                                        /*!< LPADC_T::ALDOCTL: STBSEL Position          */
-#define LPADC_ALDOCTL_STBSEL_Msk        (0xfUL << LPADC_ALDOCTL_STBSEL_Pos)         /*!< LPADC_T::ALDOCTL: STBSEL Mask              */
+#define LPADC_ADDR28_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR28: OVERRUN Position      */
+#define LPADC_ADDR28_OVERRUN_Msk         (0x1ul << LPADC_ADDR28_OVERRUN_Pos)        /*!< LPADC_T::ADDR28: OVERRUN Mask          */
 
-#define LPADC_ALDOCTL_IGENEN_Pos        (23)                                        /*!< LPADC_T::ALDOCTL: IGENEN Position          */
-#define LPADC_ALDOCTL_IGENEN_Msk        (0x1UL << LPADC_ALDOCTL_IGENEN_Pos)         /*!< LPADC_T::ALDOCTL: IGENEN Mask              */
+#define LPADC_ADDR28_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR28: VALID Position        */
+#define LPADC_ADDR28_VALID_Msk           (0x1ul << LPADC_ADDR28_VALID_Pos)          /*!< LPADC_T::ADDR28: VALID Mask            */
 
-#define LPADC_MTEST_PCHSEN_Pos          (0)                                         /*!< LPADC_T::MTEST: PCHSEN Position            */
-#define LPADC_MTEST_PCHSEN_Msk          (0x1UL << LPADC_MTEST_PCHSEN_Pos)           /*!< LPADC_T::MTEST: PCHSEN Mask                */
+#define LPADC_ADDR29_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR29: RSLT Position         */
+#define LPADC_ADDR29_RSLT_Msk            (0xfffful << LPADC_ADDR29_RSLT_Pos)        /*!< LPADC_T::ADDR29: RSLT Mask             */
 
-#define LPADC_MTEST_PCHSSEL_Pos         (4)                                         /*!< LPADC_T::MTEST: PCHSSEL Position           */
-#define LPADC_MTEST_PCHSSEL_Msk         (0x7UL << LPADC_MTEST_PCHSSEL_Pos)          /*!< LPADC_T::MTEST: PCHSSEL Mask               */
+#define LPADC_ADDR29_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR29: OVERRUN Position      */
+#define LPADC_ADDR29_OVERRUN_Msk         (0x1ul << LPADC_ADDR29_OVERRUN_Pos)        /*!< LPADC_T::ADDR29: OVERRUN Mask          */
 
-#define LPADC_MTEST_DECADD_Pos          (8)                                         /*!< LPADC_T::MTEST: DECADD Position            */
-#define LPADC_MTEST_DECADD_Msk          (0x1UL << LPADC_MTEST_DECADD_Pos)           /*!< LPADC_T::MTEST: DECADD Mask                */
+#define LPADC_ADDR29_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR29: VALID Position        */
+#define LPADC_ADDR29_VALID_Msk           (0x1ul << LPADC_ADDR29_VALID_Pos)          /*!< LPADC_T::ADDR29: VALID Mask            */
 
-#define LPADC_MTEST_OSR_Pos             (24)                                        /*!< LPADC_T::MTEST: OSR Position               */
-#define LPADC_MTEST_OSR_Msk             (0xffUL << LPADC_MTEST_OSR_Pos)             /*!< LPADC_T::MTEST: OSR Mask                   */
+#define LPADC_ADDR30_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR30: RSLT Position         */
+#define LPADC_ADDR30_RSLT_Msk            (0xfffful << LPADC_ADDR30_RSLT_Pos)        /*!< LPADC_T::ADDR30: RSLT Mask             */
 
-#define LPADC_DEBUG_ENFLO_Pos           (0)                                         /*!< LPADC_T::DEBUG: ENFLO Position             */
-#define LPADC_DEBUG_ENFLO_Msk           (0x1UL << LPADC_DEBUG_ENFLO_Pos)            /*!< LPADC_T::DEBUG: ENFLO Mask                 */
+#define LPADC_ADDR30_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR30: OVERRUN Position      */
+#define LPADC_ADDR30_OVERRUN_Msk         (0x1ul << LPADC_ADDR30_OVERRUN_Pos)        /*!< LPADC_T::ADDR30: OVERRUN Mask          */
 
-#define LPADC_DEBUG_ENBOOST_Pos         (1)                                         /*!< LPADC_T::DEBUG: ENBOOST Position           */
-#define LPADC_DEBUG_ENBOOST_Msk         (0x1UL << LPADC_DEBUG_ENBOOST_Pos)          /*!< LPADC_T::DEBUG: ENBOOST Mask               */
+#define LPADC_ADDR30_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR30: VALID Position        */
+#define LPADC_ADDR30_VALID_Msk           (0x1ul << LPADC_ADDR30_VALID_Pos)          /*!< LPADC_T::ADDR30: VALID Mask            */
 
-#define LPADC_DEBUG_SELAYNC_Pos         (4)                                         /*!< LPADC_T::DEBUG: SELAYNC Position           */
-#define LPADC_DEBUG_SELAYNC_Msk         (0x1UL << LPADC_DEBUG_SELAYNC_Pos)          /*!< LPADC_T::DEBUG: SELAYNC Mask               */
+#define LPADC_ADDR31_RSLT_Pos            (0)                                        /*!< LPADC_T::ADDR31: RSLT Position         */
+#define LPADC_ADDR31_RSLT_Msk            (0xfffful << LPADC_ADDR31_RSLT_Pos)        /*!< LPADC_T::ADDR31: RSLT Mask             */
 
-#define LPADC_DEBUG_SELASYF_Pos         (5)                                         /*!< LPADC_T::DEBUG: SELASYF Position           */
-#define LPADC_DEBUG_SELASYF_Msk         (0x1UL << LPADC_DEBUG_SELASYF_Pos)          /*!< LPADC_T::DEBUG: SELASYF Mask               */
+#define LPADC_ADDR31_OVERRUN_Pos         (16)                                       /*!< LPADC_T::ADDR31: OVERRUN Position      */
+#define LPADC_ADDR31_OVERRUN_Msk         (0x1ul << LPADC_ADDR31_OVERRUN_Pos)        /*!< LPADC_T::ADDR31: OVERRUN Mask          */
 
-#define LPADC_DEBUG_ASDELAYC_Pos        (8)                                         /*!< LPADC_T::DEBUG: ASDELAYC Position          */
-#define LPADC_DEBUG_ASDELAYC_Msk        (0x3UL << LPADC_DEBUG_ASDELAYC_Pos)         /*!< LPADC_T::DEBUG: ASDELAYC Mask              */
+#define LPADC_ADDR31_VALID_Pos           (17)                                       /*!< LPADC_T::ADDR31: VALID Position        */
+#define LPADC_ADDR31_VALID_Msk           (0x1ul << LPADC_ADDR31_VALID_Pos)          /*!< LPADC_T::ADDR31: VALID Mask            */
 
-#define LPADC_DEBUG_ASDELAYF_Pos        (10)                                        /*!< LPADC_T::DEBUG: ASDELAYF Position          */
-#define LPADC_DEBUG_ASDELAYF_Msk        (0x3UL << LPADC_DEBUG_ASDELAYF_Pos)         /*!< LPADC_T::DEBUG: ASDELAYF Mask              */
+#define LPADC_ADCR_ADEN_Pos              (0)                                        /*!< LPADC_T::ADCR: ADEN Position               */
+#define LPADC_ADCR_ADEN_Msk              (0x1UL << LPADC_ADCR_ADEN_Pos)             /*!< LPADC_T::ADCR: ADEN Mask                   */
+                                        
+#define LPADC_ADCR_ADIE_Pos              (1)                                        /*!< LPADC_T::ADCR: ADIE Position               */
+#define LPADC_ADCR_ADIE_Msk              (0x1UL << LPADC_ADCR_ADIE_Pos)             /*!< LPADC_T::ADCR: ADIE Mask                   */
+                                        
+#define LPADC_ADCR_ADMD_Pos              (2)                                        /*!< LPADC_T::ADCR: ADMD Position               */
+#define LPADC_ADCR_ADMD_Msk              (0x3UL << LPADC_ADCR_ADMD_Pos)             /*!< LPADC_T::ADCR: ADMD Mask                   */
+                                        
+#define LPADC_ADCR_TRGCOND_Pos           (6)                                        /*!< LPADC_T::ADCR: TRGCOND Position            */
+#define LPADC_ADCR_TRGCOND_Msk           (0x3UL << LPADC_ADCR_TRGCOND_Pos)          /*!< LPADC_T::ADCR: TRGCOND Mask                */
+                                        
+#define LPADC_ADCR_TRGEN_Pos             (8)                                        /*!< LPADC_T::ADCR: TRGEN Position              */
+#define LPADC_ADCR_TRGEN_Msk             (0x1UL << LPADC_ADCR_TRGEN_Pos)            /*!< LPADC_T::ADCR: TRGEN Mask                  */
+                                        
+#define LPADC_ADCR_PTEN_Pos              (9)                                        /*!< LPADC_T::ADCR: PTEN Position               */
+#define LPADC_ADCR_PTEN_Msk              (0x1UL << LPADC_ADCR_PTEN_Pos)             /*!< LPADC_T::ADCR: PTEN Mask                   */
+                                        
+#define LPADC_ADCR_DIFFEN_Pos            (10)                                       /*!< LPADC_T::ADCR: DIFFEN Position             */
+#define LPADC_ADCR_DIFFEN_Msk            (0x1UL << LPADC_ADCR_DIFFEN_Pos)           /*!< LPADC_T::ADCR: DIFFEN Mask                 */
+                                        
+#define LPADC_ADCR_ADST_Pos              (11)                                       /*!< LPADC_T::ADCR: ADST Position               */
+#define LPADC_ADCR_ADST_Msk              (0x1UL << LPADC_ADCR_ADST_Pos)             /*!< LPADC_T::ADCR: ADST Mask                   */
+                                        
+#define LPADC_ADCR_RESET_Pos             (12)                                       /*!< LPADC_T::ADCR: RESET Position              */
+#define LPADC_ADCR_RESET_Msk             (0x1UL << LPADC_ADCR_RESET_Pos)            /*!< LPADC_T::ADCR: RESET Mask                  */
+                                                                             
+#define LPADC_ADCR_TRGS_Pos              (16)                                       /*!< LPADC_T::ADCR: TRGS Position               */
+#define LPADC_ADCR_TRGS_Msk              (0xfUL << LPADC_ADCR_TRGS_Pos)             /*!< LPADC_T::ADCR: TRGS Mask                   */
 
-#define LPADC_DEBUG_TRIMSMPL_Pos        (16)                                        /*!< LPADC_T::DEBUG: TRIMSMPL Position          */
-#define LPADC_DEBUG_TRIMSMPL_Msk        (0xffUL << LPADC_DEBUG_TRIMSMPL_Pos)        /*!< LPADC_T::DEBUG: TRIMSMPL Mask              */
+#define LPADC_ADCR_RESSEL_Pos            (28)                                       /*!< LPADC_T::ADCR: RESSEL Position             */
+#define LPADC_ADCR_RESSEL_Msk            (0x3UL << LPADC_ADCR_RESSEL_Pos)           /*!< LPADC_T::ADCR: RESSEL Mask                 */
 
-#define LPADC_DEBUG_DEBUGEN_Pos         (31)                                        /*!< LPADC_T::DEBUG: DEBUGEN Position           */
-#define LPADC_DEBUG_DEBUGEN_Msk         (0x1UL << LPADC_DEBUG_DEBUGEN_Pos)          /*!< LPADC_T::DEBUG: DEBUGEN Mask               */
+#define LPADC_ADCR_DMOF_Pos              (31)                                       /*!< LPADC_T::ADCR: DMOF Position               */
+#define LPADC_ADCR_DMOF_Msk              (0x1UL << LPADC_ADCR_DMOF_Pos)             /*!< LPADC_T::ADCR: DMOF Mask                   */
 
-#define LPADC_VERSION_MINOR_Pos       (0)                                         /*!< LPADC_T::VERSION: MINOR Position         */
-#define LPADC_VERSION_MINOR_Msk       (0xffffUL << LPADC_VERSION_MINOR_Pos)     /*!< LPADC_T::VERSION: MINOR Mask             */
+#define LPADC_ADCHER_CHEN_Pos            (0)                                        /*!< LPADC_T::ADCHER: CHEN Position             */
+#define LPADC_ADCHER_CHEN_Msk            (0xffffffffUL << LPADC_ADCHER_CHEN_Pos)    /*!< LPADC_T::ADCHER: CHEN Mask                 */
 
-#define LPADC_VERSION_SUB_Pos         (16)                                        /*!< LPADC_T::VERSION: SUB Position           */
-#define LPADC_VERSION_SUB_Msk         (0xffUL << LPADC_VERSION_SUB_Pos)         /*!< LPADC_T::VERSION: SUB Mask               */
+#define LPADC_ADCMPR_CMPEN_Pos           (0)                                        /*!< LPADC_T::ADCMPR: CMPEN Position            */
+#define LPADC_ADCMPR_CMPEN_Msk           (0x1UL << LPADC_ADCMPR_CMPEN_Pos)          /*!< LPADC_T::ADCMPR: CMPEN Mask                */
+ 
+#define LPADC_ADCMPR_CMPIE_Pos           (1)                                        /*!< LPADC_T::ADCMPR: CMPIE Position            */
+#define LPADC_ADCMPR_CMPIE_Msk           (0x1UL << LPADC_ADCMPR_CMPIE_Pos)          /*!< LPADC_T::ADCMPR: CMPIE Mask                */
 
-#define LPADC_VRSION_MAJOR_Pos       (24)                                        /*!< LPADC_T::VERSION: MAJOR Position         */
-#define LPADC_VERSION_MAJOR_Msk       (0xffUL << LPADC_VRSION_MAJOR_Pos)       /*!< LPADC_T::VERSION: MAJOR Mask             */
+#define LPADC_ADCMPR_CMPCOND_Pos         (2)                                        /*!< LPADC_T::ADCMPR: CMPCOND Position          */
+#define LPADC_ADCMPR_CMPCOND_Msk         (0x1UL << LPADC_ADCMPR_CMPCOND_Pos)        /*!< LPADC_T::ADCMPR: CMPCOND Mask              */
+
+#define LPADC_ADCMPR_CMPCH_Pos           (3)                                        /*!< LPADC_T::ADCMPR: CMPCH Position            */
+#define LPADC_ADCMPR_CMPCH_Msk           (0x1fUL << LPADC_ADCMPR_CMPCH_Pos)         /*!< LPADC_T::ADCMPR: CMPCH Mask                */
+
+#define LPADC_ADCMPR_CMPMATCNT_Pos       (8)                                        /*!< LPADC_T::ADCMPR: CMPMATCNT Position        */
+#define LPADC_ADCMPR_CMPMATCNT_Msk       (0xfUL << LPADC_ADCMPR_CMPMATCNT_Pos)      /*!< LPADC_T::ADCMPR: CMPMATCNT Mask            */
+
+#define LPADC_ADCMPR_CMPWEN_Pos          (15)                                       /*!< LPADC_T::ADCMPR: CMPWEN Position           */
+#define LPADC_ADCMPR_CMPWEN_Msk          (0x1UL << LPADC_ADCMPR_CMPWEN_Pos)         /*!< LPADC_T::ADCMPR: CMPWEN Mask               */
+
+#define LPADC_ADCMPR_CMPD_Pos            (16)                                       /*!< LPADC_T::ADCMPR: CMPD Position             */
+#define LPADC_ADCMPR_CMPD_Msk            (0xfffUL << LPADC_ADCMPR_CMPD_Pos)         /*!< LPADC_T::ADCMPR: CMPD Mask                 */
+
+#define LPADC_ADCMPR0_CMPEN_Pos          (0)                                        /*!< LPADC_T::ADCMPR0: CMPEN Position       */
+#define LPADC_ADCMPR0_CMPEN_Msk          (0x1ul << LPADC_ADCMPR0_CMPEN_Pos)         /*!< LPADC_T::ADCMPR0: CMPEN Mask           */
+
+#define LPADC_ADCMPR0_CMPIE_Pos          (1)                                        /*!< LPADC_T::ADCMPR0: CMPIE Position       */
+#define LPADC_ADCMPR0_CMPIE_Msk          (0x1ul << LPADC_ADCMPR0_CMPIE_Pos)         /*!< LPADC_T::ADCMPR0: CMPIE Mask           */
+
+#define LPADC_ADCMPR0_CMPCOND_Pos        (2)                                        /*!< LPADC_T::ADCMPR0: CMPCOND Position     */
+#define LPADC_ADCMPR0_CMPCOND_Msk        (0x1ul << LPADC_ADCMPR0_CMPCOND_Pos)       /*!< LPADC_T::ADCMPR0: CMPCOND Mask         */
+
+#define LPADC_ADCMPR0_CMPCH_Pos          (3)                                        /*!< LPADC_T::ADCMPR0: CMPCH Position       */
+#define LPADC_ADCMPR0_CMPCH_Msk          (0x1ful << LPADC_ADCMPR0_CMPCH_Pos)        /*!< LPADC_T::ADCMPR0: CMPCH Mask           */
+
+#define LPADC_ADCMPR0_CMPMCNT_Pos        (8)                                        /*!< LPADC_T::ADCMPR0: CMPMCNT Position     */
+#define LPADC_ADCMPR0_CMPMCNT_Msk        (0xful << LPADC_ADCMPR0_CMPMCNT_Pos)       /*!< LPADC_T::ADCMPR0: CMPMCNT Mask         */
+
+#define LPADC_ADCMPR0_CMPWEN_Pos         (15)                                       /*!< LPADC_T::ADCMPR0: CMPWEN Position      */
+#define LPADC_ADCMPR0_CMPWEN_Msk         (0x1ul << LPADC_ADCMPR0_CMPWEN_Pos)        /*!< LPADC_T::ADCMPR0: CMPWEN Mask          */
+
+#define LPADC_ADCMPR0_CMPD_Pos           (16)                                       /*!< LPADC_T::ADCMPR0: CMPD Position        */
+#define LPADC_ADCMPR0_CMPD_Msk           (0xffful << LPADC_ADCMPR0_CMPD_Pos)        /*!< LPADC_T::ADCMPR0: CMPD Mask            */
+
+#define LPADC_ADCMPR1_CMPEN_Pos          (0)                                        /*!< LPADC_T::ADCMPR1: CMPEN Position       */
+#define LPADC_ADCMPR1_CMPEN_Msk          (0x1ul << LPADC_ADCMPR1_CMPEN_Pos)         /*!< LPADC_T::ADCMPR1: CMPEN Mask           */
+
+#define LPADC_ADCMPR1_CMPIE_Pos          (1)                                        /*!< LPADC_T::ADCMPR1: CMPIE Position       */
+#define LPADC_ADCMPR1_CMPIE_Msk          (0x1ul << LPADC_ADCMPR1_CMPIE_Pos)         /*!< LPADC_T::ADCMPR1: CMPIE Mask           */
+
+#define LPADC_ADCMPR1_CMPCOND_Pos        (2)                                        /*!< LPADC_T::ADCMPR1: CMPCOND Position     */
+#define LPADC_ADCMPR1_CMPCOND_Msk        (0x1ul << LPADC_ADCMPR1_CMPCOND_Pos)       /*!< LPADC_T::ADCMPR1: CMPCOND Mask         */
+
+#define LPADC_ADCMPR1_CMPCH_Pos          (3)                                        /*!< LPADC_T::ADCMPR1: CMPCH Position       */
+#define LPADC_ADCMPR1_CMPCH_Msk          (0x1ful << LPADC_ADCMPR1_CMPCH_Pos)        /*!< LPADC_T::ADCMPR1: CMPCH Mask           */
+
+#define LPADC_ADCMPR1_CMPMCNT_Pos        (8)                                        /*!< LPADC_T::ADCMPR1: CMPMCNT Position     */
+#define LPADC_ADCMPR1_CMPMCNT_Msk        (0xful << LPADC_ADCMPR1_CMPMCNT_Pos)       /*!< LPADC_T::ADCMPR1: CMPMCNT Mask         */
+
+#define LPADC_ADCMPR1_CMPWEN_Pos         (15)                                       /*!< LPADC_T::ADCMPR1: CMPWEN Position      */
+#define LPADC_ADCMPR1_CMPWEN_Msk         (0x1ul << LPADC_ADCMPR1_CMPWEN_Pos)        /*!< LPADC_T::ADCMPR1: CMPWEN Mask          */
+
+#define LPADC_ADCMPR1_CMPD_Pos           (16)                                       /*!< LPADC_T::ADCMPR1: CMPD Position        */
+#define LPADC_ADCMPR1_CMPD_Msk           (0xffful << LPADC_ADCMPR1_CMPD_Pos)        /*!< LPADC_T::ADCMPR1: CMPD Mask            */
+
+#define LPADC_ADSR0_ADF_Pos              (0)                                        /*!< LPADC_T::ADSR0: ADF Position           */
+#define LPADC_ADSR0_ADF_Msk              (0x1UL << LPADC_ADSR0_ADF_Pos)             /*!< LPADC_T::ADSR0: ADF Mask               */
+                                         
+#define LPADC_ADSR0_CMPF0_Pos            (1)                                        /*!< LPADC_T::ADSR0: CMPF0 Position         */
+#define LPADC_ADSR0_CMPF0_Msk            (0x1UL << LPADC_ADSR0_CMPF0_Pos)           /*!< LPADC_T::ADSR0: CMPF0 Mask             */
+                                         
+#define LPADC_ADSR0_CMPF1_Pos            (2)                                        /*!< LPADC_T::ADSR0: CMPF1 Position         */
+#define LPADC_ADSR0_CMPF1_Msk            (0x1UL << LPADC_ADSR0_CMPF1_Pos)           /*!< LPADC_T::ADSR0: CMPF1 Mask             */
+                                         
+#define LPADC_ADSR0_BUSY_Pos             (7)                                        /*!< LPADC_T::ADSR0: BUSY Position          */
+#define LPADC_ADSR0_BUSY_Msk             (0x1UL << LPADC_ADSR0_BUSY_Pos)            /*!< LPADC_T::ADSR0: BUSY Mask              */
+                                         
+#define LPADC_ADSR0_VALIDF_Pos           (8)                                        /*!< LPADC_T::ADSR0: VALIDF Position        */
+#define LPADC_ADSR0_VALIDF_Msk           (0x1UL << LPADC_ADSR0_VALIDF_Pos)          /*!< LPADC_T::ADSR0: VALIDF Mask            */
+                                         
+#define LPADC_ADSR0_OVERRUNF_Pos         (16)                                       /*!< LPADC_T::ADSR0: OVERRUNF Position      */
+#define LPADC_ADSR0_OVERRUNF_Msk         (0x1UL << LPADC_ADSR0_OVERRUNF_Pos)        /*!< LPADC_T::ADSR0: OVERRUNF Mask          */
+                                         
+#define LPADC_ADSR0_ADPRDY_Pos           (24)                                       /*!< LPADC_T::ADSR0: ADPRDY Position        */
+#define LPADC_ADSR0_ADPRDY_Msk           (0x1UL << LPADC_ADSR0_ADPRDY_Pos)          /*!< LPADC_T::ADSR0: ADPRDY Mask            */
+                                         
+#define LPADC_ADSR0_CHANNEL_Pos          (27)                                       /*!< LPADC_T::ADSR0: CHANNEL Position       */
+#define LPADC_ADSR0_CHANNEL_Msk          (0x1fUL << LPADC_ADSR0_CHANNEL_Pos)        /*!< LPADC_T::ADSR0: CHANNEL Mask           */
+                                         
+#define LPADC_ADSR1_VALID_Pos            (0)                                        /*!< LPADC_T::ADSR1: VALID Position         */
+#define LPADC_ADSR1_VALID_Msk            (0xffffffffUL << LPADC_ADSR1_VALID_Pos)    /*!< LPADC_T::ADSR1: VALID Mask             */
+
+#define LPADC_ADSR2_OVERRUN_Pos          (0)                                        /*!< LPADC_T::ADSR2: OVERRUN Position       */
+#define LPADC_ADSR2_OVERRUN_Msk          (0xffffffffUL << LPADC_ADSR2_OVERRUN_Pos)  /*!< LPADC_T::ADSR2: OVERRUN Mask           */
+
+#define LPADC_ESMPCTL_EXTSMPT_Pos        (0)                                        /*!< LPADC_T::ESMPCTL: EXTSMPT Position     */
+#define LPADC_ESMPCTL_EXTSMPT_Msk        (0x3fffUL << LPADC_ESMPCTL_EXTSMPT_Pos)    /*!< LPADC_T::ESMPCTL: EXTSMPT Mask         */
+
+#define LPADC_CFDCTL_PRECHEN_Pos         (0)                                        /*!< LPADC_T::CFDCTL: PRECHEN Position      */
+#define LPADC_CFDCTL_PRECHEN_Msk         (0x1UL << LPADC_CFDCTL_PRECHEN_Pos)        /*!< LPADC_T::CFDCTL: PRECHEN Mask          */
+
+#define LPADC_CFDCTL_DISCHEN_Pos         (1)                                        /*!< LPADC_T::CFDCTL: DISCHEN Position      */
+#define LPADC_CFDCTL_DISCHEN_Msk         (0x1UL << LPADC_CFDCTL_DISCHEN_Pos)        /*!< LPADC_T::CFDCTL: DISCHEN Mask          */
+
+#define LPADC_CFDCTL_FDETCHEN_Pos        (8)                                        /*!< LPADC_T::CFDCTL: FDETCHEN Position     */
+#define LPADC_CFDCTL_FDETCHEN_Msk        (0x1UL << LPADC_CFDCTL_FDETCHEN_Pos)       /*!< LPADC_T::CFDCTL: FDETCHEN Mask         */
+
+#define LPADC_ADPDMA_CURDAT_Pos          (0)                                        /*!< LPADC_T::ADPDMA: CURDAT Position       */
+#define LPADC_ADPDMA_CURDAT_Msk          (0x3ffffUL << LPADC_ADPDMA_CURDAT_Pos)     /*!< LPADC_T::ADPDMA: CURDAT Mask           */
+
+#define LPADC_ADCAL_CALEN_Pos            (0)                                        /*!< LPADC_T::ADCAL: CALEN Position         */
+#define LPADC_ADCAL_CALEN_Msk            (0x1UL << LPADC_ADCAL_CALEN_Pos)           /*!< LPADC_T::ADCAL: CALEN Mask             */
+
+#define LPADC_ADCAL_CALIE_Pos            (1)                                        /*!< LPADC_T::ADCAL: CALIE Position         */
+#define LPADC_ADCAL_CALIE_Msk            (0x1UL << LPADC_ADCAL_CALIE_Pos)           /*!< LPADC_T::ADCAL: CALIE Mask             */
+
+#define LPADC_ADCALSTS_CALIF_Pos         (0)                                        /*!< LPADC_T::ADCALSTS: CALIF Position      */
+#define LPADC_ADCALSTS_CALIF_Msk         (0x1UL << LPADC_ADCALSTS_CALIF_Pos)        /*!< LPADC_T::ADCALSTS: CALIF Mask          */
+
+#define LPADC_AUTOCTL_TRIGSEL_Pos        (0)                                        /*!< LPADC_T::AUTOCTL: TRIGSEL Position     */
+#define LPADC_AUTOCTL_TRIGSEL_Msk        (0xfUL << LPADC_AUTOCTL_TRIGSEL_Pos)       /*!< LPADC_T::AUTOCTL: TRIGSEL Mask         */
+
+#define LPADC_AUTOCTL_TRIGEN_Pos         (4)                                        /*!< LPADC_T::AUTOCTL: TRIGEN Position      */
+#define LPADC_AUTOCTL_TRIGEN_Msk         (0x1UL << LPADC_AUTOCTL_TRIGEN_Pos)        /*!< LPADC_T::AUTOCTL: TRIGEN Mask          */
+
+#define LPADC_AUTOCTL_ADWKEN_Pos         (8)                                        /*!< LPADC_T::AUTOCTL: ADWKEN Position      */
+#define LPADC_AUTOCTL_ADWKEN_Msk         (0x1UL << LPADC_AUTOCTL_ADWKEN_Pos)        /*!< LPADC_T::AUTOCTL: ADWKEN Mask          */
+
+#define LPADC_AUTOCTL_CMP0WKEN_Pos       (9)                                        /*!< LPADC_T::AUTOCTL: CMP0WKEN Position    */
+#define LPADC_AUTOCTL_CMP0WKEN_Msk       (0x1UL << LPADC_AUTOCTL_CMP0WKEN_Pos)      /*!< LPADC_T::AUTOCTL: CMP0WKEN Mask        */
+
+#define LPADC_AUTOCTL_CMP1WKEN_Pos       (10)                                       /*!< LPADC_T::AUTOCTL: CMP1WKEN Position    */
+#define LPADC_AUTOCTL_CMP1WKEN_Msk       (0x1UL << LPADC_AUTOCTL_CMP1WKEN_Pos)      /*!< LPADC_T::AUTOCTL: CMP1WKEN Mask        */
+
+#define LPADC_AUTOCTL_AUTOEN_Pos         (31)                                       /*!< LPADC_T::AUTOCTL: AUTOEN Position      */
+#define LPADC_AUTOCTL_AUTOEN_Msk         (0x1UL << LPADC_AUTOCTL_AUTOEN_Pos)        /*!< LPADC_T::AUTOCTL: AUTOEN Mask          */
+
+#define LPADC_AUTOSTRG_SWTRIG_Pos        (0)                                        /*!< LPADC_T::AUTOSTRG: SWTRIG Position     */
+#define LPADC_AUTOSTRG_SWTRIG_Msk        (0x1UL << LPADC_AUTOSTRG_SWTRIG_Pos)       /*!< LPADC_T::AUTOSTRG: SWTRIG Mask         */
+
+#define LPADC_AUTOSTS_ADWKIF_Pos         (0)                                        /*!< LPADC_T::AUTOSTS: ADWKIF Position      */
+#define LPADC_AUTOSTS_ADWKIF_Msk         (0x1UL << LPADC_AUTOSTS_WKIF_Pos)          /*!< LPADC_T::AUTOSTS: ADWKIF Mask          */
+
+#define LPADC_AUTOSTS_CMP0WKF_Pos        (1)                                        /*!< LPADC_T::AUTOSTS: CMP0WKF Position     */
+#define LPADC_AUTOSTS_CMP0WKF_Msk        (0x1UL << LPADC_AUTOSTS_CMP0WKF_Pos)       /*!< LPADC_T::AUTOSTS: CMP0WKF Mask         */
+
+#define LPADC_AUTOSTS_CMP1WKF_Pos        (2)                                        /*!< LPADC_T::AUTOSTS: CMP1WKF Position     */
+#define LPADC_AUTOSTS_CMP1WKF_Msk        (0x1UL << LPADC_AUTOSTS_CMP1WKF_Pos)       /*!< LPADC_T::AUTOSTS: CMP1WKF Mask         */
+
+#define LPADC_ALDOCTL_ALDOEN_Pos         (8)                                        /*!< LPADC_T::ALDOCTL: ALDOEN Position      */
+#define LPADC_ALDOCTL_ALDOEN_Msk         (0x1UL << LPADC_ALDOCTL_ALDOEN_Pos)        /*!< LPADC_T::ALDOCTL: ALDOEN Mask          */
+
+#define LPADC_ALDOCTL_STBSEL_Pos         (16)                                       /*!< LPADC_T::ALDOCTL: STBSEL Position      */
+#define LPADC_ALDOCTL_STBSEL_Msk         (0xfUL << LPADC_ALDOCTL_STBSEL_Pos)        /*!< LPADC_T::ALDOCTL: STBSEL Mask          */
+
+#define LPADC_ALDOCTL_IGENEN_Pos         (23)                                       /*!< LPADC_T::ALDOCTL: IGENEN Position      */
+#define LPADC_ALDOCTL_IGENEN_Msk         (0x1UL << LPADC_ALDOCTL_IGENEN_Pos)        /*!< LPADC_T::ALDOCTL: IGENEN Mask          */
 
 
 /** @} LPADC_CONST */

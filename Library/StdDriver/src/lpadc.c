@@ -109,8 +109,7 @@ void LPADC_Close(LPADC_T *lpadc)
   * @param[in] lpadc The pointer of the specified LPADC module
   * @param[in] u32Source Decides the hardware trigger source. Valid values are:
   *                       - \ref LPADC_ADCR_TRGS_STADC            :A/D conversion is started by external STADC pin.
-  *                       - \ref LPADC_ADCR_TRGS_TIMER            :A/D conversion is started by Timer.
-  *                       - \ref LPADC_ADCR_TRGS_PWM              :A/D conversion is started by PWM.
+  *                       - \ref LPADC_ADCR_TRGS_BPWM             :A/D conversion is started by BPWM.
   *                       - \ref LPADC_ADCR_TRGS_EPWM             :A/D conversion is started by EPWM.
   *                       - \ref LPADC_ADCR_TRGS_ACMP0            :A/D conversion is started by ACMP0.
   *                       - \ref LPADC_ADCR_TRGS_ACMP1            :A/D conversion is started by ACMP1.
@@ -220,6 +219,10 @@ void LPADC_SetExtendSampleTime(LPADC_T *lpadc, uint32_t u32ExtendSampleTime)
                      (u32ExtendSampleTime << LPADC_ESMPCTL_EXTSMPT_Pos);
 }
 
-/** @} end of group LPADC_EXPORTED_FUNCTIONS */
-/** @} end of group LPADC_Driver */
-/** @} end of group Standard_Driver */
+/*@}*/ /* end of group LPADC_EXPORTED_FUNCTIONS */
+
+/*@}*/ /* end of group LPADC_Driver */
+
+/*@}*/ /* end of group Standard_Driver */
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

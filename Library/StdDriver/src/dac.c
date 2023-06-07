@@ -24,7 +24,7 @@
 /**
   * @brief This function make DAC module be ready to convert.
   * @param[in] dac Base address of DAC module.
-  * @param[in] u32Ch Not used in M480 DAC.
+  * @param[in] u32Ch Not used in M55M1 DAC.
   * @param[in] u32TrgSrc Decides the trigger source. Valid values are:
   *                      - \ref DAC_WRITE_DAT_TRIGGER             :Write DAC_DAT trigger
   *                      - \ref DAC_SOFTWARE_TRIGGER              :Software trigger

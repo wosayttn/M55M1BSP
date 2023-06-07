@@ -65,12 +65,12 @@ extern "C"
 #define EADC_EPWM1TG3_TRIGGER               (0x11UL<<EADC_SCTL_TRGSEL_Pos)   /*!< EPWM1TG3 trigger \hideinitializer */
 #define EADC_EPWM1TG4_TRIGGER               (0x12UL<<EADC_SCTL_TRGSEL_Pos)   /*!< EPWM1TG4 trigger \hideinitializer */
 #define EADC_EPWM1TG5_TRIGGER               (0x13UL<<EADC_SCTL_TRGSEL_Pos)   /*!< EPWM1TG5 trigger \hideinitializer */
-#define EADC_BPWM0TG_TRIGGER                (0x14UL<<EADC_SCTL_TRGSEL_Pos)   /*!< BPWM0TG trigger \hideinitializer */
-#define EADC_BPWM1TG_TRIGGER                (0x15UL<<EADC_SCTL_TRGSEL_Pos)   /*!< BPWM1TG trigger \hideinitializer */
-#define EADC_ACMP0_INT_TRIGGER              (0x16UL<<EADC_SCTL_TRGSEL_Pos)   /*!< ACMP0 interrupt trigger \hideinitializer */
-#define EADC_ACMP1_INT_TRIGGER              (0x17UL<<EADC_SCTL_TRGSEL_Pos)   /*!< ACMP1 interrupt trigger \hideinitializer */
-#define EADC_ACMP2_INT_TRIGGER              (0x18UL<<EADC_SCTL_TRGSEL_Pos)   /*!< ACMP2 interrupt trigger \hideinitializer */
-#define EADC_ACMP3_INT_TRIGGER              (0x19UL<<EADC_SCTL_TRGSEL_Pos)   /*!< ACMP3 interrupt trigger \hideinitializer */
+#define EADC_BPWM0TG_TRIGGER                (0x20UL<<EADC_SCTL_TRGSEL_Pos)   /*!< BPWM0TG trigger \hideinitializer */
+#define EADC_BPWM1TG_TRIGGER                (0x21UL<<EADC_SCTL_TRGSEL_Pos)   /*!< BPWM1TG trigger \hideinitializer */
+#define EADC_ACMP0_INT_TRIGGER              (0x22UL<<EADC_SCTL_TRGSEL_Pos)   /*!< ACMP0 interrupt trigger \hideinitializer */
+#define EADC_ACMP1_INT_TRIGGER              (0x23UL<<EADC_SCTL_TRGSEL_Pos)   /*!< ACMP1 interrupt trigger \hideinitializer */
+#define EADC_ACMP2_INT_TRIGGER              (0x24UL<<EADC_SCTL_TRGSEL_Pos)   /*!< ACMP2 interrupt trigger \hideinitializer */
+#define EADC_ACMP3_INT_TRIGGER              (0x25UL<<EADC_SCTL_TRGSEL_Pos)   /*!< ACMP3 interrupt trigger \hideinitializer */
 
 
 #define EADC_SCTL_TRGDLYDIV_DIVIDER_1       (0UL<<EADC_SCTL_TRGDLYDIV_Pos)           /*!< Trigger delay clock frequency is ADC_CLK/1 \hideinitializer */
@@ -81,12 +81,12 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /* EADC_CMP Constant Definitions                                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
-#define EADC_CMP_CMPCOND_LESS_THAN          (0UL<<EADC_CMP_CMPCOND_Pos)   /*!< The compare condition is "less than" \hideinitializer */
-#define EADC_CMP_CMPCOND_GREATER_OR_EQUAL   (1UL<<EADC_CMP_CMPCOND_Pos)   /*!< The compare condition is "greater than or equal to" \hideinitializer */
-#define EADC_CMP_CMPWEN_ENABLE              (EADC_CMP_CMPWEN_Msk)         /*!< Compare window mode enable \hideinitializer */
-#define EADC_CMP_CMPWEN_DISABLE             (~EADC_CMP_CMPWEN_Msk)        /*!< Compare window mode disable \hideinitializer */
-#define EADC_CMP_ADCMPIE_ENABLE             (EADC_CMP_ADCMPIE_Msk)        /*!< A/D result compare interrupt enable \hideinitializer */
-#define EADC_CMP_ADCMPIE_DISABLE            (~EADC_CMP_ADCMPIE_Msk)       /*!< A/D result compare interrupt disable \hideinitializer */
+#define EADC_CMP_CMPCOND_LESS_THAN          (0UL<<EADC_CMP_CMPCOND_Pos)    /*!< The compare condition is "less than" \hideinitializer */
+#define EADC_CMP_CMPCOND_GREATER_OR_EQUAL   (1UL<<EADC_CMP_CMPCOND_Pos)    /*!< The compare condition is "greater than or equal to" \hideinitializer */
+#define EADC_CMP_CMPWEN_ENABLE              (0x1UL << EADC_CMP_CMPWEN_Pos) /*!< Compare window mode enable \hideinitializer */
+#define EADC_CMP_CMPWEN_DISABLE             (0x0UL << EADC_CMP_CMPWEN_Pos) /*!< Compare window mode disable \hideinitializer */
+#define EADC_CMP_ADCMPIE_ENABLE             (0x1UL << EADC_CMP_ADCMPIE_Pos)          /*!< A/D result compare interrupt enable \hideinitializer */
+#define EADC_CMP_ADCMPIE_DISABLE            (0x0UL << EADC_CMP_ADCMPIE_Pos)         /*!< A/D result compare interrupt disable \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* EADC_MnCTL1 Constant Definitions                                                                        */
@@ -101,13 +101,8 @@ extern "C"
 #define EADC_MCTL1_ACU_128                  (0x7UL<<EADC_MCTL1_ACU_Pos)   /*!< Accumulated 128 times \hideinitializer */
 #define EADC_MCTL1_ACU_256                  (0x8UL<<EADC_MCTL1_ACU_Pos)   /*!< Accumulated 256 times \hideinitializer */
 
-/*---------------------------------------------------------------------------------------------------------*/
-/* EADC_VREF Constant Definitions                                                                          */
-/*---------------------------------------------------------------------------------------------------------*/
-#define EADC_VREF_REFSEL_AVDD               (0UL<<EADC_VREF_REFSEL_Pos)   /*!< The positive reference voltage source is AVdd \hideinitializer */
-#define EADC_VREF_REFSEL_VREFP              (1UL<<EADC_VREF_REFSEL_Pos)   /*!< The positive reference voltage source is the VREF pin \hideinitializer */
 
-/** @} end of group EADC_EXPORTED_CONSTANTS */
+/*@}*/ /* end of group EADC_EXPORTED_CONSTANTS */
 
 /** @addtogroup EADC_EXPORTED_FUNCTIONS EADC Exported Functions
   @{
@@ -120,7 +115,7 @@ extern "C"
   * @brief A/D Converter Control Circuits Reset.
   * @param[in] eadc The pointer of the specified EADC module.
   * @return None
-  * @details ADCRST bit (EADC_CT[1]) remains 1 during EADC reset, when EADC reset end, the ADCRST bit is automatically cleared to 0.
+  * @details ADCRST bit remains 1 during EADC reset, when EADC reset end, the ADCRST bit is automatically cleared to 0.
   * \hideinitializer
   */
 #define EADC_CONV_RESET(eadc) ((eadc)->CTL |= EADC_CTL_ADCRST_Msk)
@@ -129,9 +124,9 @@ extern "C"
   * @brief Enable Sample Module PDMA transfer.
   * @param[in] eadc The pointer of the specified EADC module.
   * @param[in] u32ModuleMask the combination of sample module interrupt status bits. Each bit corresponds to a sample module interrupt status.
-  *                          This parameter decides which sample module interrupts will be disabled, valid range are between 1~0x3FFFFF.
+  *                          This parameter decides which sample module interrupts will be disabled, valid range are between 1~0xFFFFFFF.
   * @return None
-  * @details When A/D conversion is completed, the converted data is loaded into EADC_DATn (n: 0 ~ 27) register,
+  * @details When A/D conversion is completed, the converted data is loaded into EADC_DATn (n=0~27) register,
   *         user can enable this bit to generate a PDMA data transfer request.
   * \hideinitializer
   */
@@ -141,7 +136,7 @@ extern "C"
   * @brief Disable Sample Module PDMA transfer.
   * @param[in] eadc The pointer of the specified EADC module.
   * @param[in] u32ModuleMask the combination of sample module interrupt status bits. Each bit corresponds to a sample module interrupt status.
-  *                          This parameter decides which sample module interrupts will be disabled, valid range are between 1~0x3FFFFF.
+  *                          This parameter decides which sample module interrupts will be disabled, valid range are between 1~0xFFFFFFF.
   * @return None
   * @details This macro is used to disable sample module PDMA transfer.
   * \hideinitializer
@@ -154,7 +149,7 @@ extern "C"
   * @param[in] u32ModuleNum Decides the sample module number, valid value are from 0 to 3.
   * @return None
   * @details The EADC controller supports a double buffer mode in sample module 0~3.
-  *         If user enable DBMEN (EADC_MnCTL1[20], n=0~3), the double buffer mode will enable.
+  *         If user enable DBMEN, the double buffer mode will enable.
   * \hideinitializer
   */
 #define EADC_ENABLE_DOUBLE_BUFFER(eadc, u32ModuleNum) ((eadc)->MCTL1[(u32ModuleNum)] |= EADC_MCTL1_DBMEN_Msk)
@@ -172,29 +167,29 @@ extern "C"
 /**
   * @brief Set ADIFn at A/D end of conversion.
   * @param[in] eadc The pointer of the specified EADC module.
-  * @param[in] u32ModuleNum Decides the sample module number, valid value are from 0 to 18.
+  * @param[in] u32ModuleNum Decides the sample module number, valid value are from 0 to 27.
   * @return None
-  * @details The A/D converter generates ADIFn (EADC_STATUS2[3:0], n=0~3) at the start of conversion.
+  * @details The A/D converter generates ADIFn (n=0~3) at the start of conversion.
   * \hideinitializer
   */
-#define EADC_ENABLE_INT_POSITION(eadc, u32ModuleNum)     (((u32ModuleNum)<=18) ? ((eadc)->SCTL[(u32ModuleNum)] |= EADC_SCTL_INTPOS_Msk) : ((eadc)->SCTL19[(u32ModuleNum)-19] |= EADC_SCTL_INTPOS_Msk))
+#define EADC_ENABLE_INT_POSITION(eadc, u32ModuleNum)     (((u32ModuleNum) < 19) ? ((eadc)->SCTL[(u32ModuleNum)] |= EADC_SCTL_INTPOS_Msk) : ((eadc)->SCTL19[(u32ModuleNum)-19] |= EADC_SCTL_INTPOS_Msk))
 /**
   * @brief Set ADIFn at A/D start of conversion.
   * @param[in] eadc The pointer of the specified EADC module.
-  * @param[in] u32ModuleNum Decides the sample module number, valid value are from 0 to 18.
+  * @param[in] u32ModuleNum Decides the sample module number, valid value are from 0 to 27.
   * @return None
-  * @details The A/D converter generates ADIFn (EADC_STATUS2[3:0], n=0~3) at the end of conversion.
+  * @details The A/D converter generates ADIFn (n=0~3) at the end of conversion.
   * \hideinitializer
   */
-#define EADC_DISABLE_INT_POSITION(eadc, u32ModuleNum)   (((u32ModuleNum)<=18) ? ((eadc)->SCTL[(u32ModuleNum)] &= ~EADC_SCTL_INTPOS_Msk) : ((eadc)->SCTL19[(u32ModuleNum)-19] &= ~EADC_SCTL_INTPOS_Msk))
+#define EADC_DISABLE_INT_POSITION(eadc, u32ModuleNum)   (((u32ModuleNum)< 19) ? ((eadc)->SCTL[(u32ModuleNum)] &= ~EADC_SCTL_INTPOS_Msk) : ((eadc)->SCTL19[(u32ModuleNum)-19] &= ~EADC_SCTL_INTPOS_Msk))
 /**
   * @brief Enable the interrupt.
   * @param[in] eadc The pointer of the specified EADC module.
   * @param[in] u32Mask Decides the combination of interrupt status bits. Each bit corresponds to a interrupt status.
   *                    This parameter decides which interrupts will be enabled. Bit 0 is ADCIEN0, bit 1 is ADCIEN1..., bit 3 is ADCIEN3.
   * @return None
-  * @details The A/D converter generates a conversion end ADIFn (EADC_STATUS2[n]) upon the end of specific sample module A/D conversion.
-  *         If ADCIENn bit (EADC_CTL[n+2]) is set then conversion end interrupt request ADINTn is generated (n=0~3).
+  * @details The A/D converter generates a conversion end ADIFn (n=0~3) upon the end of specific sample module A/D conversion.
+  *         If ADCIENn (n=0~3) bit is set then conversion end interrupt request ADINTn is generated.
   * \hideinitializer
   */
 #define EADC_ENABLE_INT(eadc, u32Mask) ((eadc)->CTL |= ((u32Mask) << EADC_CTL_ADCIEN0_Pos))
@@ -227,7 +222,7 @@ extern "C"
   * @param[in] eadc The pointer of the specified EADC module.
   * @param[in] u32IntSel Decides which interrupt source will be used, valid value are from 0 to 3.
   * @param[in] u32ModuleMask the combination of sample module interrupt status bits. Each bit corresponds to a sample module interrupt status.
-  *                          This parameter decides which sample module interrupts will be disabled, valid range are between 1~0x3FFFFF.
+  *                          This parameter decides which sample module interrupts will be disabled, valid range are between 1~0xFFFFFFF.
   * @return None
   * @details There are 4 EADC interrupts ADINT0~3, and each of these interrupts has its own interrupt vector address.
   * \hideinitializer
@@ -251,7 +246,7 @@ extern "C"
   * @param[in] eadc The pointer of the specified EADC module.
   * @param[in] u32ModuleMask The combination of sample module. Each bit corresponds to a sample module.
   *                         This parameter decides which sample module will be conversion, valid range are between 1~0xFFFFFFF.
-  *                         Bit 0 is sample module 0, bit 1 is sample module 1..., bit 26 is sample module 26.
+  *                         Bit 0 is sample module 0, bit 1 is sample module 1..., bit 27 is sample module 27.
   * @return None
   * @details After write EADC_SWTRG register to start EADC conversion, the EADC_PENDSTS register will show which SAMPLE will conversion.
   * \hideinitializer
@@ -263,7 +258,7 @@ extern "C"
   * @param[in] eadc The pointer of the specified EADC module.
   * @param[in] u32ModuleMask The combination of sample module. Each bit corresponds to a sample module.
   *                         This parameter decides which sample module will stop the conversion, valid range are between 1~0xFFFFFFF.
-  *                         Bit 0 is sample module 0, bit 1 is sample module 1..., bit 21 is sample module 21.
+  *                         Bit 0 is sample module 0, bit 1 is sample module 1..., bit 27 is sample module 27.
   * @return None
   * @details If user want to disable the conversion of the sample module, user can write EADC_PENDSTS register to clear it.
   * \hideinitializer
@@ -274,8 +269,8 @@ extern "C"
   * @brief Get the conversion pending flag.
   * @param[in] eadc The pointer of the specified EADC module.
   * @return Return the conversion pending sample module.
-  * @details This STPFn(EADC_PENDSTS[26:0]) bit remains 1 during pending state, when the respective EADC conversion is end,
-  *         the STPFn (n=0~26) bit is automatically cleared to 0.
+  * @details This STPFn (n=0~27) bit remains 1 during pending state, when the respective EADC conversion is end,
+  *         the STPFn (n=0~27) bit is automatically cleared to 0.
   * \hideinitializer
   */
 #define EADC_GET_PENDING_CONV(eadc) ((eadc)->PENDSTS)
@@ -285,17 +280,17 @@ extern "C"
   * @param[in] eadc The pointer of the specified EADC module.
   * @param[in] u32ModuleNum Decides the sample module number, valid value are from 0 to 27.
   * @return Return the conversion data of the user-specified sample module.
-  * @details This macro is used to read RESULT bit (EADC_DATn[15:0], n=0~21) field to get conversion data.
+  * @details This macro is used to read RESULT bit field to get conversion data.
   * \hideinitializer
   */
-#define EADC_GET_CONV_DATA(eadc, u32ModuleNum)  (((u32ModuleNum)<=18) ? ((eadc)->DAT[(u32ModuleNum)] & EADC_DAT_RESULT_Msk) : ((eadc)->DAT19[(u32ModuleNum)-19] & EADC_DAT_RESULT_Msk))
+#define EADC_GET_CONV_DATA(eadc, u32ModuleNum)  (((u32ModuleNum) < 19) ? ((eadc)->DAT[(u32ModuleNum)] & EADC_DAT_RESULT_Msk) : ((eadc)->DAT19[(u32ModuleNum)-19] & EADC_DAT_RESULT_Msk))
 
 /**
   * @brief Get the data overrun flag of the user-specified sample module.
   * @param[in] eadc The pointer of the specified EADC module.
-  * @param[in] u32ModuleMask The combination of data overrun status bits. Each bit corresponds to a data overrun status, valid range are between 1~0x3FFFFF.
+  * @param[in] u32ModuleMask The combination of data overrun status bits. Each bit corresponds to a data overrun status, valid range are between 1~0xFFFFFFF.
   * @return Return the data overrun flag of the user-specified sample module.
-  * @details This macro is used to read OV bit (EADC_STATUS0[31:16], EADC_STATUS1[18:16]) field to get data overrun status.
+  * @details This macro is used to read OV bit field to get data overrun status.
   * \hideinitializer
   */
 #define EADC_GET_DATA_OVERRUN_FLAG(eadc, u32ModuleMask) ((((eadc)->STATUS0 >> EADC_STATUS0_OV_Pos) | ((eadc)->STATUS1 & EADC_STATUS1_OV_Msk)) & (u32ModuleMask))
@@ -303,9 +298,9 @@ extern "C"
 /**
   * @brief Get the data valid flag of the user-specified sample module.
   * @param[in] eadc The pointer of the specified EADC module.
-  * @param[in] u32ModuleMask The combination of data valid status bits. Each bit corresponds to a data valid status, valid range are between 1~0x3FFFFF.
+  * @param[in] u32ModuleMask The combination of data valid status bits. Each bit corresponds to a data valid status, valid range are between 1~0xFFFFFFF.
   * @return Return the data valid flag of the user-specified sample module.
-  * @details This macro is used to read VALID bit (EADC_STATUS0[15:0], EADC_STATUS1[2:0]) field to get data valid status.
+  * @details This macro is used to read VALID bit field to get data valid status.
   * \hideinitializer
   */
 #define EADC_GET_DATA_VALID_FLAG(eadc, u32ModuleMask) ((((eadc)->STATUS0 & EADC_STATUS0_VALID_Msk) | (((eadc)->STATUS1 & EADC_STATUS1_VALID_Msk) << 16)) & (u32ModuleMask))
@@ -335,7 +330,7 @@ extern "C"
 /**
   * @brief Get the user-specified sample module overrun flags.
   * @param[in] eadc The pointer of the specified EADC module.
-  * @param[in] u32ModuleMask The combination of sample module overrun status bits. Each bit corresponds to a sample module overrun status, valid range are between 1~0x3FFFFF.
+  * @param[in] u32ModuleMask The combination of sample module overrun status bits. Each bit corresponds to a sample module overrun status, valid range are between 1~0xFFFFFFF.
   * @return Return the user-specified sample module overrun flags.
   * @details This macro is used to get the user-specified sample module overrun flags.
   * \hideinitializer
@@ -358,7 +353,7 @@ extern "C"
   * @brief Clear the selected sample module overrun status bits.
   * @param[in] eadc The pointer of the specified EADC module.
   * @param[in] u32ModuleMask The combination of sample module overrun status bits. Each bit corresponds to a sample module overrun status.
-  *                      Bit 0 is SPOVF0, bit 1 is SPOVF1..., bit 21 is SPOVF21.
+  *                      Bit 0 is SPOVF0, bit 1 is SPOVF1..., bit 27 is SPOVF27.
   * @return None
   * @details This macro is used to clear the selected sample module overrun status bits.
   * \hideinitializer
@@ -370,7 +365,7 @@ extern "C"
   * @param[in] eadc The pointer of the specified EADC module.
   * @retval 0 None of sample module data register overrun flag is set to 1.
   * @retval 1 Any one of sample module data register overrun flag is set to 1.
-  * @details The AOV bit (EADC_STATUS2[27]) will keep 1 when any one of sample module data register overrun flag OVn (EADC_DATn[16]) is set to 1.
+  * @details The AOV bit will keep 1 when any one of sample module data register overrun flag OVn is set to 1.
   * \hideinitializer
   */
 #define EADC_IS_DATA_OV(eadc) (((eadc)->STATUS2 & EADC_STATUS2_AOV_Msk) >> EADC_STATUS2_AOV_Pos)
@@ -380,7 +375,7 @@ extern "C"
   * @param[in] eadc The pointer of the specified EADC module.
   * @retval 0 None of sample module data register valid flag is set to 1.
   * @retval 1 Any one of sample module data register valid flag is set to 1.
-  * @details The AVALID bit (EADC_STATUS2[26]) will keep 1 when any one of sample module data register valid flag VALIDn (EADC_DATn[17]) is set to 1.
+  * @details The AVALID bit will keep 1 when any one of sample module data register valid flag VALIDn (EADC_DATn[17]) is set to 1.
   * \hideinitializer
   */
 #define EADC_IS_DATA_VALID(eadc) (((eadc)->STATUS2 & EADC_STATUS2_AVALID_Msk) >> EADC_STATUS2_AVALID_Pos)
@@ -390,7 +385,7 @@ extern "C"
   * @param[in] eadc The pointer of the specified EADC module.
   * @retval 0 None of sample module event overrun flag is set to 1.
   * @retval 1 Any one of sample module event overrun flag is set to 1.
-  * @details The STOVF bit (EADC_STATUS2[25]) will keep 1 when any one of sample module event overrun flag SPOVFn (EADC_OVSTS[n]) is set to 1.
+  * @details The STOVF bit will keep 1 when any one of sample module event overrun flag SPOVFn (n=0~27) is set to 1.
   * \hideinitializer
   */
 #define EADC_IS_SAMPLE_MODULE_OV(eadc) (((eadc)->STATUS2 & EADC_STATUS2_STOVF_Msk) >> EADC_STATUS2_STOVF_Pos)
@@ -400,7 +395,7 @@ extern "C"
   * @param[in] eadc The pointer of the specified EADC module.
   * @retval 0 None of ADINT interrupt flag is overwritten to 1.
   * @retval 1 Any one of ADINT interrupt flag is overwritten to 1.
-  * @details The ADOVIF bit (EADC_STATUS2[24]) will keep 1 when any one of ADINT interrupt flag ADOVIFn (EADC_STATUS2[11:8]) is overwritten to 1.
+  * @details The ADOVIF bit will keep 1 when any one of ADINT interrupt flag ADOVIFn (n=0~3) is overwritten to 1.
   * \hideinitializer
   */
 #define EADC_IS_INT_FLAG_OV(eadc) (((eadc)->STATUS2 & EADC_STATUS2_ADOVIF_Msk) >> EADC_STATUS2_ADOVIF_Pos)
@@ -410,7 +405,7 @@ extern "C"
   * @param[in] eadc The pointer of the specified EADC module.
   * @retval 0 Idle state.
   * @retval 1 Busy state.
-  * @details This macro is used to read BUSY bit (EADC_STATUS2[23]) to get busy state.
+  * @details This macro is used to read BUSY bit to get busy state.
   * \hideinitializer
   */
 #define EADC_IS_BUSY(eadc) (((eadc)->STATUS2 & EADC_STATUS2_BUSY_Msk) >> EADC_STATUS2_BUSY_Pos)
@@ -418,7 +413,7 @@ extern "C"
 /**
   * @brief Configure the comparator 0 and enable it.
   * @param[in] eadc The pointer of the specified EADC module.
-  * @param[in] u32ModuleNum specifies the compare sample module, valid value are from 0 to 18.
+  * @param[in] u32ModuleNum specifies the compare sample module, valid value are from 0 to 27.
   * @param[in] u32Condition specifies the compare condition. Valid values are:
   *                        - \ref EADC_CMP_CMPCOND_LESS_THAN            :The compare condition is "less than the compare value"
   *                        - \ref EADC_CMP_CMPCOND_GREATER_OR_EQUAL     :The compare condition is "greater than or equal to the compare value
@@ -470,7 +465,7 @@ extern "C"
 /**
   * @brief Configure the comparator 2 and enable it.
   * @param[in] eadc The pointer of the specified EADC module.
-  * @param[in] u32ModuleNum specifies the compare sample module, valid value are from 0 to 18.
+  * @param[in] u32ModuleNum specifies the compare sample module, valid value are from 0 to 27.
   * @param[in] u32Condition specifies the compare condition. Valid values are:
   *                        - \ref EADC_CMP_CMPCOND_LESS_THAN            :The compare condition is "less than the compare value"
   *                        - \ref EADC_CMP_CMPCOND_GREATER_OR_EQUAL     :The compare condition is "greater than or equal to the compare value
@@ -496,7 +491,7 @@ extern "C"
 /**
   * @brief Configure the comparator 3 and enable it.
   * @param[in] eadc The pointer of the specified EADC module.
-  * @param[in] u32ModuleNum specifies the compare sample module, valid value are from 0 to 18.
+  * @param[in] u32ModuleNum specifies the compare sample module, valid value are from 0 to 27.
   * @param[in] u32Condition specifies the compare condition. Valid values are:
   *                        - \ref EADC_CMP_CMPCOND_LESS_THAN            :The compare condition is "less than the compare value"
   *                        - \ref EADC_CMP_CMPCOND_GREATER_OR_EQUAL     :The compare condition is "greater than or equal to the compare value
@@ -524,7 +519,8 @@ extern "C"
   * @param[in] eadc The pointer of the specified EADC module.
   * @param[in] u32CMP Specifies the compare register, valid value are 0 and 2.
   * @return None
-  * @details ADCMPF0 (EADC_STATUS2[4]) will be set when both EADC_CMP0 and EADC_CMP1 compared condition matched.
+  * @details ADCMPF0 will be set when both EADC_CMP0 and EADC_CMP1 compared condition matched.
+  *          ADCMPF2 will be set when both EADC_CMP2 and EADC_CMP3 compared condition matched.
   * \hideinitializer
   */
 #define EADC_ENABLE_CMP_WINDOW_MODE(eadc, u32CMP) ((eadc)->CMP[(u32CMP)] |= EADC_CMP_CMPWEN_Msk)
@@ -534,7 +530,8 @@ extern "C"
   * @param[in] eadc The pointer of the specified EADC module.
   * @param[in] u32CMP Specifies the compare register, valid value are 0 and 2.
   * @return None
-  * @details ADCMPF2 (EADC_STATUS2[6]) will be set when both EADC_CMP2 and EADC_CMP3 compared condition matched.
+  * @details ADCMPF0 will be set when EADC_CMP0 compared condition matched.
+  *          ADCMPF2 will be set when EADC_CMP2 compared condition matched.
   * \hideinitializer
   */
 #define EADC_DISABLE_CMP_WINDOW_MODE(eadc, u32CMP) ((eadc)->CMP[(u32CMP)] &= ~EADC_CMP_CMPWEN_Msk)
@@ -544,8 +541,8 @@ extern "C"
   * @param[in] eadc The pointer of the specified EADC module.
   * @param[in] u32CMP Specifies the compare register, valid value are from 0 to 3.
   * @return None
-  * @details If the compare function is enabled and the compare condition matches the setting of CMPCOND (EADC_CMPn[2], n=0~3)
-  *         and CMPMCNT (EADC_CMPn[11:8], n=0~3), ADCMPFn (EADC_STATUS2[7:4], n=0~3) will be asserted, in the meanwhile,
+  * @details If the compare function is enabled and the compare condition matches the setting of CMPCOND
+  *         and CMPMCNT, ADCMPFn (n=0~3) will be asserted, in the meanwhile,
   *         if ADCMPIE is set to 1, a compare interrupt request is generated.
   * \hideinitializer
   */
@@ -607,7 +604,7 @@ extern "C"
   */
   
   
-#define EADC_ENABLE_LEFT_ALIGN(eadc, u32ModuleNum)  (((u32ModuleNum)<=18) ? ((eadc)->MCTL1[(u32ModuleNum)] |= EADC_MCTL1_ALIGN_Msk) : ((eadc)->MCTL19[(u32ModuleNum)-19] |= EADC_MCTL1_ALIGN_Msk))
+#define EADC_ENABLE_LEFT_ALIGN(eadc, u32ModuleNum)  (((u32ModuleNum) < 19) ? ((eadc)->MCTL1[(u32ModuleNum)] |= EADC_MCTL1_ALIGN_Msk) : ((eadc)->M19CTL1[(u32ModuleNum)-19] |= EADC_MCTL1_ALIGN_Msk))
 
 /**
   * @brief Disable conversion result left alignment.
@@ -617,7 +614,7 @@ extern "C"
   * @details The 12-bit conversion result will be right aligned and stored in EADC_DATn[11:0] (n=0~23).
   * \hideinitializer
   */
-#define EADC_DISABLE_LEFT_ALIGN(eadc, u32ModuleNum) (((u32ModuleNum)<=18) ? ((eadc)->MCTL1[(u32ModuleNum)] &= (~EADC_MCTL1_ALIGN_Msk)) : ((eadc)->MCTL19[(u32ModuleNum)-19] &= (~EADC_MCTL1_ALIGN_Msk)))
+#define EADC_DISABLE_LEFT_ALIGN(eadc, u32ModuleNum) (((u32ModuleNum) < 19) ? ((eadc)->MCTL1[(u32ModuleNum)] &= (~EADC_MCTL1_ALIGN_Msk)) : ((eadc)->M19CTL1[(u32ModuleNum)-19] &= (~EADC_MCTL1_ALIGN_Msk)))
 
 /**
   * @brief Enable average mode.
@@ -625,10 +622,10 @@ extern "C"
   * @param[in] u32ModuleNum Decides the sample module number, valid value are from 0 to 23.
   * @return None
   * @details Conversion results in data register will be averaged.
-  * @note This average mode needs to work with accumulated mode that configured by ACU (EADC_MnCTL1[7:4], n=0~23) bit field.
+  * @note This average mode needs to work with accumulated mode that configured by ACU bit field.
   * \hideinitializer
   */
-#define EADC_ENABLE_AVG(eadc, u32ModuleNum)  (((u32ModuleNum)<=18) ? ((eadc)->MCTL1[(u32ModuleNum)] |= EADC_MCTL1_AVG_Msk) : ((eadc)->MCTL19[(u32ModuleNum)-19] |= EADC_MCTL1_AVG_Msk))
+#define EADC_ENABLE_AVG(eadc, u32ModuleNum)  (((u32ModuleNum) < 19) ? ((eadc)->MCTL1[(u32ModuleNum)] |= EADC_MCTL1_AVG_Msk) : ((eadc)->M19CTL1[(u32ModuleNum)-19] |= EADC_MCTL1_AVG_Msk))
 
 /**
   * @brief Disable average mode.
@@ -638,7 +635,7 @@ extern "C"
   * @details Conversion results in data register will not be averaged.
   * \hideinitializer
   */
-#define EADC_DISABLE_AVG(eadc, u32ModuleNum) (((u32ModuleNum)<=18) ? ((eadc)->MCTL1[(u32ModuleNum)] &= (~EADC_MCTL1_AVG_Msk)) : ((eadc)->MCTL19[(u32ModuleNum)-19] &= (~EADC_MCTL1_AVG_Msk)))
+#define EADC_DISABLE_AVG(eadc, u32ModuleNum) (((u32ModuleNum) < 19) ? ((eadc)->MCTL1[(u32ModuleNum)] &= (~EADC_MCTL1_AVG_Msk)) : ((eadc)->M19CTL1[(u32ModuleNum)-19] &= (~EADC_MCTL1_AVG_Msk)))
 
 /**
   * @brief Configure the Accumulation feature and enable it.
@@ -663,17 +660,19 @@ extern "C"
   */
 #define EADC_ENABLE_ACU(eadc,\
                         u32ModuleNum,\
-                        u16ACUNum) (((u32ModuleNum)<=18) ?  (((eadc)->MCTL1[(u32ModuleNum)])) = (((((eadc)->MCTL1[(u32ModuleNum)])) & (~EADC_MCTL1_ACU_Msk)) |(u16ACUNum))\
-                        : (((eadc)->MCTL1[(u32ModuleNum)-19])) = (((((eadc)->MCTL1[(u32ModuleNum)-19])) & (~EADC_MCTL1_ACU_Msk))|(u16ACUNum)))
+                        u16ACUNum)  (((u32ModuleNum)<19) ? \
+                                     (((eadc)->MCTL1[(u32ModuleNum)])      = ((((eadc)->MCTL1[(u32ModuleNum)])      & (~EADC_MCTL1_ACU_Msk)) | (u16ACUNum))) : \
+                                     (((eadc)->M19CTL1[(u32ModuleNum)-19]) = ((((eadc)->M19CTL1[(u32ModuleNum)-19]) & (~EADC_MCTL1_ACU_Msk)) | (u16ACUNum)))   \
+                                    )
 
 /**
   * @brief Disable the Accumulation feature.
   * @param[in] eadc The pointer of the specified EADC module.
-  * @param[in] u32ModuleNum Decides the sample module number, valid value are from 0 to 27.
+  * @param[in] u32ModuleNum Decides the sample module number, valid value are from 0 to 23.
   * @return None
   * \hideinitializer
   */
-#define EADC_DISABLE_ACU(eadc, u32ModuleNum)  (((u32ModuleNum)<=18) ? ((eadc)->MCTL1[(u32ModuleNum)] &= (~EADC_MCTL1_ACU_Msk)) : ((eadc)->MCTL19[(u32ModuleNum)-19] &= (~EADC_MCTL1_ACU_Msk)))
+#define EADC_DISABLE_ACU(eadc, u32ModuleNum)  (((u32ModuleNum) < 19) ? ((eadc)->MCTL1[(u32ModuleNum)] &= (~EADC_MCTL1_ACU_Msk)) : ((eadc)->M19CTL1[(u32ModuleNum)-19] &= (~EADC_MCTL1_ACU_Msk)))
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define EADC functions prototype                                                                         */
@@ -683,7 +682,6 @@ void EADC_Close(EADC_T *eadc);
 void EADC_ConfigSampleModule(EADC_T *eadc, uint32_t u32ModuleNum, uint32_t u32TriggerSrc, uint32_t u32Channel);
 void EADC_SetTriggerDelayTime(EADC_T *eadc, uint32_t u32ModuleNum, uint32_t u32TriggerDelayTime, uint32_t u32DelayClockDivider);
 void EADC_SetExtendSampleTime(EADC_T *eadc, uint32_t u32ModuleNum, uint32_t u32ExtendSampleTime);
-void EADC_SetVRef(EADC_T *eadc, uint32_t u32VRefCTL);
 
 /** @} end of group EADC_EXPORTED_FUNCTIONS */
 /** @} end of group EADC_Driver */

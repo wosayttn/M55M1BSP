@@ -57,9 +57,6 @@ typedef struct
      * |        |          |101 = Timer 3 trigger.
      * |        |          |110 = EPWM0 trigger.
      * |        |          |111 = EPWM1 trigger.
-     * |[8]     |BYPASS    |Bypass Buffer Mode
-     * |        |          |0 = Output voltage buffer Enabled.
-     * |        |          |1 = Output voltage buffer Disabled.
      * |[10]    |LALIGN    |DAC Data Left-aligned Enabled Control
      * |        |          |0 = Right alignment.
      * |        |          |1 = Left alignment.
@@ -75,6 +72,12 @@ typedef struct
      * |[16]    |GRPEN     |DAC Group Mode Enable Bit
      * |        |          |0 = DAC0 and DAC1 are not grouped.
      * |        |          |1 = DAC0 and DAC1 are grouped.
+     * |[17]    |GPIOEN    |GPIO Mode Enable Bit
+     * |        |          |0 = GPIO PIN can output DAC0_OUT voltage.
+     * |        |          |1 = GPIO PIN can be used as other MFP.
+	 * |[18]    |BYPASS    |Bypass Buffer Mode
+     * |        |          |0 = Output voltage buffer Enabled.
+     * |        |          |1 = Output voltage buffer Disabled.
      * @var DAC_T::SWTRG
      * Offset: 0x04  DAC Software Trigger Control Register
      * ---------------------------------------------------------------------------------------------------
@@ -130,6 +133,25 @@ typedef struct
      * |        |          |User software needs to write appropriate value to these bits to meet DAC conversion settling time base on PCLK (APB clock) speed.
      * |        |          |For example, DAC controller clock speed is 80MHz and DAC conversion settling time is 1 us, SETTLETvalue must be greater than 0x50.
      * |        |          |SELTTLET = DAC controller clock speed x settling time.
+     * @var DAC_T::GRPDAT
+     * Offset: 0x30  DAC Group Mode Data Holding Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |DAC0DAT   |DAC0 12-bit Holding Data
+     * |        |          |These bits are written by user software which specifies 12-bit conversion data for DAC output
+     * |        |          |The unused bits (DAC_GRPDAT[3:0] in left-alignment mode and DAC_GRPDAT[15:12] in right alignment mode) are ignored by DAC controller hardware.
+     * |        |          |12 bit left alignment: user has to load data into DAC_GRPDAT[15:4] bits.
+     * |        |          |12 bit right alignment: user has to load data into DAC_GRPDAT[11:0] bits.
+     * |        |          |Note: In group mode, the advantage of writing 12-bit conversion data in DAC_GRPDAT[15:0] is that can share one PDMA transfer mechanism.
+     * |        |          |Note: After set GRPEN(DAC0_CTL[16]), user can write 12-bit conversion data for DAC0 in DAC_GRPDAT[15:0]
+     * |[31:16] |DAC1DAT   |DAC1 12-bit Holding Data
+     * |        |          |In group mode, user can write these bits for DAC1 12-bit conversion data
+     * |        |          |The unused bits (DAC_GRPDAT[3:0] in left-alignment mode and DAC_GRPDAT[15:12] in right alignment mode) are ignored by DAC controller hardware.
+     * |        |          |12 bit left alignment: user has to load data into DAC_GRPDAT[15:4] bits.
+     * |        |          |12 bit right alignment: user has to load data into DAC_GRPDAT[11:0] bits.
+     * |        |          |Note: In group mode, the advantage of writing 12-bit conversion data in DAC_GRPDAT[31:16] is that can share one PDMA transfer mechanism.
+     * |        |          |Note: After set GRPEN(DAC0_CTL[16]), user can write 12-bit conversion data for DAC1 in DAC_GRPDAT[31:16]
      */
     __IO uint32_t CTL;                   /*!< [0x0000] DAC Control Register                                             */
     __IO uint32_t SWTRG;                 /*!< [0x0004] DAC Software Trigger Control Register                            */

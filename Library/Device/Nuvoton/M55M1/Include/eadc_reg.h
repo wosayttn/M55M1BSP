@@ -29,14 +29,14 @@ typedef struct
 {
     /**
      * @var EADC_T::DAT[19]
-     * Offset: 0x00  ADC Data Register 0~18 for Sample Module 0~18
+     * Offset: 0x00/0x04/0x08/0x0C/0x10/0x14/0x18/0x1C/0x20/0x24/0x28/0x2C/0x30/0x34/0x38/0x3C/0x40/0x44/0x48  EADC Data Register 0~18 for Sample Module 0~18
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[15:0]  |RESULT    |ADC Conversion Result
+     * |[15:0]  |RESULT    |EADC Conversion Result
      * |        |          |This field contains 12 bits conversion result.
-     * |        |          |When DMOF (EADC_CTL[9]) is set to 0, 12-bit ADC conversion result with unsigned format will be filled in RESULT[11:0] and zero will be filled in RESULT[15:12].
-     * |        |          |When DMOF (EADC_CTL[9]) set to 1, 12-bit ADC conversion result with 2'complement format will be filled in RESULT[11:0] and signed bits to will be filled in RESULT[15:12].
+     * |        |          |The 12-bit EADC conversion result with unsigned format will be filled in RESULT[11:0] and zero will be filled in RESULT[15:12].
+     * |        |          |Note: When operating in oversampling mode, RESULT[15:0] can represent oversampling results.
      * |[16]    |OV        |Overrun Flag
      * |        |          |If converted data in RESULT[11:0] has not been read before new conversion result is loaded to this register, OV is set to 1.
      * |        |          |0 = Data in RESULT[11:0] is recent conversion result.
@@ -47,135 +47,249 @@ typedef struct
      * |        |          |0 = Data in RESULT[11:0] bits is not valid.
      * |        |          |1 = Data in RESULT[11:0] bits is valid.
      * @var EADC_T::CURDAT
-     * Offset: 0x4C  ADC PDMA Current Transfer Data Register
+     * Offset: 0x4C  EADC PDMA Current Transfer Data Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[17:0]  |CURDAT    |ADC PDMA Current Transfer Data Register
-     * |        |          |This register is a shadow register of EADC_DATn (n=0~18) for PDMA support.
+     * |[17:0]  |CURDAT    |EADC PDMA Current Transfer Data Register
+     * |        |          |This register is a shadow register of EADC_DATn (n=0~27) for PDMA support.
      * |        |          |This is a read only register.
      * @var EADC_T::CTL
-     * Offset: 0x50  ADC Control Register
+     * Offset: 0x50  EADC Control Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[0]     |ADCEN     |ADC Converter Enable Bit
+     * |[0]     |ADCEN     |EADC Converter Enable Bit
      * |        |          |0 = Disabled EADC.
      * |        |          |1 = Enabled EADC.
-     * |        |          |Note: Before starting ADC conversion function, this bit should be set to 1
-     * |        |          |Clear it to 0 to disable ADC converter analog circuit power consumption.
-     * |[1]     |ADCRST    |ADC Converter Control Circuits Reset
+     * |        |          |Note: Before starting EADC conversion function, this bit should be set to 1
+     * |        |          |Clear it to 0 to disable EADC converter analog circuit power consumption.
+     * |[1]     |ADCRST    |EADC Converter Control Circuits Reset
      * |        |          |0 = No effect.
-     * |        |          |1 = Cause ADC control circuits reset to initial state, but not change the ADC registers value.
-     * |        |          |Note: ADCRST bit remains 1 during ADC reset, when ADC reset end, the ADCRST bit is automatically cleared to 0.
-     * |[2]     |ADCIEN0   |Specific Sample Module ADC ADINT0 Interrupt Enable Bit
-     * |        |          |The ADC converter generates a conversion end ADIF0 (EADC_STATUS2[0]) upon the end of specific sample module ADC conversion
+     * |        |          |1 = Cause EADC control circuits reset to initial state, but not change the EADC registers value.
+     * |        |          |Note: ADCRST bit remains 1 during EADC reset, when EADC reset end, the ADCRST bit is automatically cleared to 0.
+     * |[2]     |ADCIEN0   |Specific Sample Module EADC ADINT0 Interrupt Enable Bit
+     * |        |          |The EADC converter generates a conversion end ADIF0 (EADC_STATUS2[0]) upon the end of specific sample module EADC conversion
      * |        |          |If ADCIEN0 bit is set then conversion end interrupt request ADINT0 is generated.
-     * |        |          |0 = Specific sample module ADC ADINT0 interrupt function Disabled.
-     * |        |          |1 = Specific sample module ADC ADINT0 interrupt function Enabled.
-     * |[3]     |ADCIEN1   |Specific Sample Module ADC ADINT1 Interrupt Enable Bit
-     * |        |          |The ADC converter generates a conversion end ADIF1 (EADC_STATUS2[1]) upon the end of specific sample module ADC conversion
+     * |        |          |0 = Specific sample module EADC ADINT0 interrupt function Disabled.
+     * |        |          |1 = Specific sample module EADC ADINT0 interrupt function Enabled.
+     * |[3]     |ADCIEN1   |Specific Sample Module EADC ADINT1 Interrupt Enable Bit
+     * |        |          |The EADC converter generates a conversion end ADIF1 (EADC_STATUS2[1]) upon the end of specific sample module EADC conversion
      * |        |          |If ADCIEN1 bit is set then conversion end interrupt request ADINT1 is generated.
-     * |        |          |0 = Specific sample module ADC ADINT1 interrupt function Disabled.
-     * |        |          |1 = Specific sample module ADC ADINT1 interrupt function Enabled.
-     * |[4]     |ADCIEN2   |Specific Sample Module ADC ADINT2 Interrupt Enable Bit
-     * |        |          |The ADC converter generates a conversion end ADIF2 (EADC_STATUS2[2]) upon the end of specific sample module ADC conversion
+     * |        |          |0 = Specific sample module EADC ADINT1 interrupt function Disabled.
+     * |        |          |1 = Specific sample module EADC ADINT1 interrupt function Enabled.
+     * |[4]     |ADCIEN2   |Specific Sample Module EADC ADINT2 Interrupt Enable Bit
+     * |        |          |The EADC converter generates a conversion end ADIF2 (EADC_STATUS2[2]) upon the end of specific sample module EADC conversion
      * |        |          |If ADCIEN2 bit is set then conversion end interrupt request ADINT2 is generated.
-     * |        |          |0 = Specific sample module ADC ADINT2 interrupt function Disabled.
-     * |        |          |1 = Specific sample module ADC ADINT2 interrupt function Enabled.
-     * |[5]     |ADCIEN3   |Specific Sample Module ADC ADINT3 Interrupt Enable Bit
-     * |        |          |The ADC converter generates a conversion end ADIF3 (EADC_STATUS2[3]) upon the end of specific sample module ADC conversion
+     * |        |          |0 = Specific sample module EADC ADINT2 interrupt function Disabled.
+     * |        |          |1 = Specific sample module EADC ADINT2 interrupt function Enabled.
+     * |[5]     |ADCIEN3   |Specific Sample Module EADC ADINT3 Interrupt Enable Bit
+     * |        |          |The EADC converter generates a conversion end ADIF3 (EADC_STATUS2[3]) upon the end of specific sample module EADC conversion
      * |        |          |If ADCIEN3 bit is set then conversion end interrupt request ADINT3 is generated.
-     * |        |          |0 = Specific sample module ADC ADINT3 interrupt function Disabled.
-     * |        |          |1 = Specific sample module ADC ADINT3 interrupt function Enabled.
-     * |[7:6]   |RESSEL    |Resolution Selection
-     * |        |          |00 = 6-bit ADC result will be put at RESULT (EADC_DATn[5:0]).
-     * |        |          |01 = 8-bit ADC result will be put at RESULT (EADC_DATn[7:0]).
-     * |        |          |10 = 10-bit ADC result will be put at RESULT (EADC_DATn[9:0]).
-     * |        |          |11 = 12-bit ADC result will be put at RESULT (EADC_DATn[11:0]).
+     * |        |          |0 = Specific sample module EADC ADINT3 interrupt function Disabled.
+     * |        |          |1 = Specific sample module EADC ADINT3 interrupt function Enabled.
      * |[8]     |DIFFEN    |Differential Analog Input Mode Enable Bit
      * |        |          |0 = Single-end analog input mode.
      * |        |          |1 = Differential analog input mode.
-     * |[9]     |DMOF      |ADC Differential Input Mode Output Format
-     * |        |          |0 = ADC conversion result will be filled in RESULT (EADC_DATn[15:0] , n= 0 ~18) with unsigned format.
-     * |        |          |1 = ADC conversion result will be filled in RESULT (EADC_DATn[15:0] , n= 0 ~18) with 2'complement format.
-     * |[11]    |PDMAEN    |PDMA Transfer Enable Bit
-     * |        |          |When ADC conversion is completed, the converted data is loaded into EADC_DATn (n: 0 ~ 18) register, user can enable this bit to generate a PDMA data transfer request.
-     * |        |          |0 = PDMA data transfer Disabled.
-     * |        |          |1 = PDMA data transfer Enabled.
-     * |        |          |Note: When set this bit field to 1, user must set ADCIENn (EADC_CTL[5:2], n=0~3) = 0 to disable interrupt.
+     * |        |          |Note: In the differential mode, the input channel pair must be configured to EADC_CHx, EADC_CHx+1 , x=0,2,4,6,8,10,12,14.+
+     * |[9]     |DMOF      |EADC Differential Input Mode Output Format
+     * |        |          |0 = EADC conversion result will be filled in RESULT (EADC_DATn[15:0] , n= 0 ~27) with unsigned format.
+     * |        |          |1 = EADC conversion result will be filled in RESULT (EADC_DATn[15:0] , n= 0 ~27) with 2'complement format.
+     * |[19:16] |INTDELAY0 |ADC Start Of Conversion ADINT0 Delay Cycle Selection
+     * |        |          |Start of conversion interrupt ADINT0 will delay INTDELAY0 PCLK cycles to generate interrupt
+     * |        |          |The function support delay 1 PCLK to 15 PCLK cycles, user can select one of the options according to the relationship of PCLK and EADC_CLK which user selected.
+     * |        |          |4'h0 = No delay cycle.
+     * |        |          |4'h1 = Start of conversion interrupt ADINT0 delay 1 PCLK cycle.
+     * |        |          |4'h2 = Start of conversion interrupt ADINT0 delay 2 PCLK cycles.
+     * |        |          |4'h3 = Start of conversion interrupt ADINT0 delay 3 PCLK cycles.
+     * |        |          |4'h4 = Start of conversion interrupt ADINT0 delay 4 PCLK cycles.
+     * |        |          |4'h5 = Start of conversion interrupt ADINT0 delay 5 PCLK cycles.
+     * |        |          |4'h6 = Start of conversion interrupt ADINT0 delay 6 PCLK cycles.
+     * |        |          |4'h7 = Start of conversion interrupt ADINT0 delay 7 PCLK cycles.
+     * |        |          |4'h8 = Start of conversion interrupt ADINT0 delay 8 PCLK cycles.
+     * |        |          |4'h9 = Start of conversion interrupt ADINT0 delay 9 PCLK cycles.
+     * |        |          |4'ha = Start of conversion interrupt ADINT0 delay 10 PCLK cycles.
+     * |        |          |4'hb = Start of conversion interrupt ADINT0 delay 11 PCLK cycles.
+     * |        |          |4'hc = Start of conversion interrupt ADINT0 delay 12 PCLK cycles.
+     * |        |          |4'hd = Start of conversion interrupt ADINT0 delay 13 PCLK cycles.
+     * |        |          |4'he = Start of conversion interrupt ADINT0 delay 14 PCLK cycles.
+     * |        |          |4'hf = Start of conversion interrupt ADINT0 delay 15 PCLK cycles.
+     * |        |          |Note: This function is workable only when any one of INTPOS (EADC_SCTLx[5]), x=0~27 is set.
+     * |        |          |Note: It is noted that the delayed interrupt ADINT0 must occurs before the next ADINT0 generated when use the same sample module to control EADC conversion.
+     * |[23:20] |INTDELAY1 |ADC Start Of Conversion ADINT1 Delay Cycle Selection
+     * |        |          |Start of conversion interrupt ADINT1 will delay INTDELAY1 PCLK cycles to generate interrupt
+     * |        |          |The function support delay 1 PCLK to 15 PCLK cycles, user can select one of the options according to the relationship of PCLK and EADC_CLK which user selected.
+     * |        |          |4'h0 = No delay cycle.
+     * |        |          |4'h1 = Start of conversion interrupt ADINT1 delay 1 PCLK cycle.
+     * |        |          |4'h2 = Start of conversion interrupt ADINT1 delay 2 PCLK cycles.
+     * |        |          |4'h3 = Start of conversion interrupt ADINT1 delay 3 PCLK cycles.
+     * |        |          |4'h4 = Start of conversion interrupt ADINT1 delay 4 PCLK cycles.
+     * |        |          |4'h5 = Start of conversion interrupt ADINT1 delay 5 PCLK cycles.
+     * |        |          |4'h6 = Start of conversion interrupt ADINT1 delay 6 PCLK cycles.
+     * |        |          |4'h7 = Start of conversion interrupt ADINT1 delay 7 PCLK cycles.
+     * |        |          |4'h8 = Start of conversion interrupt ADINT1 delay 8 PCLK cycles.
+     * |        |          |4'h9 = Start of conversion interrupt ADINT1 delay 9 PCLK cycles.
+     * |        |          |4'ha = Start of conversion interrupt ADINT1 delay 10 PCLK cycles.
+     * |        |          |4'hb = Start of conversion interrupt ADINT1 delay 11 PCLK cycles.
+     * |        |          |4'hc = Start of conversion interrupt ADINT1 delay 12 PCLK cycles.
+     * |        |          |4'hd = Start of conversion interrupt ADINT1 delay 13 PCLK cycles.
+     * |        |          |4'he = Start of conversion interrupt ADINT1 delay 14 PCLK cycles.
+     * |        |          |4'hf = Start of conversion interrupt ADINT1 delay 15 PCLK cycles.
+     * |        |          |Note: This function is workable only when any one of INTPOS (EADC_SCTLx[5]), x=0~27 is set.
+     * |        |          |Note: It is noted that the delayed interrupt ADINT1 must occurs before the next ADINT1 generated when use the same sample module to control EADC conversion.
+     * |[27:24] |INTDELAY2 |ADC Start Of Conversion ADINT2 Delay Cycle Selection
+     * |        |          |Start of conversion interrupt ADINT2 will delay INTDELAY2 PCLK cycles to generate interrupt
+     * |        |          |The function support delay 1 PCLK to 15 PCLK cycles, user can select one of the options according to the relationship of PCLK and EADC_CLK which user which user selected.
+     * |        |          |4'h0 = No delay cycle.
+     * |        |          |4'h1 = Start of conversion interrupt ADINT2 delay 1 PCLK cycle.
+     * |        |          |4'h2 = Start of conversion interrupt ADINT2 delay 2 PCLK cycles.
+     * |        |          |4'h3 = Start of conversion interrupt ADINT2 delay 3 PCLK cycles.
+     * |        |          |4'h4 = Start of conversion interrupt ADINT2 delay 4 PCLK cycles.
+     * |        |          |4'h5 = Start of conversion interrupt ADINT2 delay 5 PCLK cycles.
+     * |        |          |4'h6 = Start of conversion interrupt ADINT2 delay 6 PCLK cycles.
+     * |        |          |4'h7 = Start of conversion interrupt ADINT2 delay 7 PCLK cycles.
+     * |        |          |4'h8 = Start of conversion interrupt ADINT2 delay 8 PCLK cycles.
+     * |        |          |4'h9 = Start of conversion interrupt ADINT2 delay 9 PCLK cycles.
+     * |        |          |4'ha = Start of conversion interrupt ADINT2 delay 10 PCLK cycles.
+     * |        |          |4'hb = Start of conversion interrupt ADINT2 delay 11 PCLK cycles.
+     * |        |          |4'hc = Start of conversion interrupt ADINT2 delay 12 PCLK cycles.
+     * |        |          |4'hd = Start of conversion interrupt ADINT2 delay 13 PCLK cycles.
+     * |        |          |4'he = Start of conversion interrupt ADINT2 delay 14 PCLK cycles.
+     * |        |          |4'hf = Start of conversion interrupt ADINT2 delay 15 PCLK cycles.
+     * |        |          |Note: This function is workable only when any one of INTPOS (EADC_SCTLx[5]), x=0~27 is set.
+     * |        |          |Note: It is noted that the delayed interrupt ADINT2 must occurs before the next ADINT2 generated when use the same sample module to control EADC conversion.
+     * |[31:28] |INTDELAY3 |ADC Start Of Conversion ADINT3 Delay Cycle Selection
+     * |        |          |Start of conversion interrupt ADINT3 will delay INTDELAY3 PCLK cycles to generate interrupt
+     * |        |          |The function support delay 1 PCLK to 15 PCLK cycles, user can select one of the options according to the relationship of PCLK and EADC_CLK which user selected.
+     * |        |          |4'h0 = No delay cycle.
+     * |        |          |4'h1 = Start of conversion interrupt ADINT3 delay 1 PCLK cycle.
+     * |        |          |4'h2 = Start of conversion interrupt ADINT3 delay 2 PCLK cycles.
+     * |        |          |4'h3 = Start of conversion interrupt ADINT3 delay 3 PCLK cycles.
+     * |        |          |4'h4 = Start of conversion interrupt ADINT3 delay 4 PCLK cycles.
+     * |        |          |4'h5 = Start of conversion interrupt ADINT3 delay 5 PCLK cycles.
+     * |        |          |4'h6 = Start of conversion interrupt ADINT3 delay 6 PCLK cycles.
+     * |        |          |4'h7 = Start of conversion interrupt ADINT3 delay 7 PCLK cycles.
+     * |        |          |4'h8 = Start of conversion interrupt ADINT3 delay 8 PCLK cycles.
+     * |        |          |4'h9 = Start of conversion interrupt ADINT3 delay 9 PCLK cycles.
+     * |        |          |4'ha = Start of conversion interrupt ADINT3 delay 10 PCLK cycles.
+     * |        |          |4'hb = Start of conversion interrupt ADINT3 delay 11 PCLK cycles.
+     * |        |          |4'hc = Start of conversion interrupt ADINT3 delay 12 PCLK cycles.
+     * |        |          |4'hd = Start of conversion interrupt ADINT3 delay 13 PCLK cycles.
+     * |        |          |4'he = Start of conversion interrupt ADINT3 delay 14 PCLK cycles.
+     * |        |          |4'hf = Start of conversion interrupt ADINT3 delay 15 PCLK cycles.
+     * |        |          |Note: This function is workable only when any one of INTPOS (EADC_SCTLx[5]), x=0~27 is set.
+     * |        |          |Note: It is noted that the delayed interrupt ADINT3 must occurs before the next ADINT3 generated when use the same sample module to control EADC conversion.
      * @var EADC_T::SWTRG
-     * Offset: 0x54  ADC Sample Module Software Start Register
+     * Offset: 0x54  EADC Sample Module Software Start Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[18:0]  |SWTRG     |ADC Sample Module 0~18 Software Force to Start ADC Conversion
+     * |[27:0]  |SWTRG     |EADC Sample Module 0~27 Software Force to Start EADC Conversion
      * |        |          |0 = No effect.
-     * |        |          |1 = Cause an ADC conversion when the priority is given to sample module.
-     * |        |          |Note: After write this register to start ADC conversion, the EADC_PENDSTS register will show which sample module will conversion
+     * |        |          |1 = Cause an EADC conversion when the priority is given to sample module.
+     * |        |          |Note: After write this register to start EADC conversion, the EADC_PENDSTS register will show which sample module will conversion
      * |        |          |If user want to disable the conversion of the sample module, user can write EADC_PENDSTS register to clear it.
      * @var EADC_T::PENDSTS
-     * Offset: 0x58  ADC Start of Conversion Pending Flag Register
+     * Offset: 0x58  EADC Start of Conversion Pending Flag Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[18:0]  |STPF      |ADC Sample Module 0~18 Start of Conversion Pending Flag
+     * |[27:0]  |STPF      |EADC Sample Module 0~27 Start of Conversion Pending Flag
      * |        |          |Read:
      * |        |          |0 = There is no pending conversion for sample module.
-     * |        |          |1 = Sample module ADC start of conversion is pending.
+     * |        |          |1 = Sample module EADC start of conversion is pending.
      * |        |          |Write:
      * |        |          |1 = clear pending flag & cancel the conversion for sample module.
-     * |        |          |Note: This bit remains 1 during pending state, when the respective ADC conversion is end, the STPFn (n=0~18) bit is automatically cleared to 0
+     * |        |          |Note: This bit remains 1 during pending state, when the respective EADC conversion is end, the STPFn (n=0~27) bit is automatically cleared to 0
      * @var EADC_T::OVSTS
-     * Offset: 0x5C  ADC Sample Module Start of Conversion Overrun Flag Register
+     * Offset: 0x5C  EADC Sample Module Start of Conversion Overrun Flag Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[18:0]  |SPOVF     |ADC SAMPLE0~18 Overrun Flag
+     * |[27:0]  |SPOVF     |EADC SAMPLE0~27 Overrun Flag
      * |        |          |0 = No sample module event overrun.
      * |        |          |1 = Indicates a new sample module event is generated while an old one event is pending.
      * |        |          |Note: This bit is cleared by writing 1 to it.
-     * @var EADC_T::SCTL[19]
-     * Offset: 0x80  ADC Sample Module 0~18 Control Register
+     * @var EADC_T::CTL1
+     * Offset: 0x60  EADC Control1 Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[3:0]   |CHSEL     |ADC Sample Module Channel Selection
-     * |        |          |00H = EADC_CH0 (slow channel).
-     * |        |          |01H = EADC_CH1 (slow channel).
-     * |        |          |02H = EADC_CH2 (slow channel).
-     * |        |          |03H = EADC_CH3 (slow channel).
-     * |        |          |04H = EADC_CH4 (slow channel).
-     * |        |          |05H = EADC_CH5 (slow channel).
-     * |        |          |06H = EADC_CH6 (slow channel).
-     * |        |          |07H = EADC_CH7 (slow channel).
-     * |        |          |08H = EADC_CH8 (slow channel).
-     * |        |          |09H = EADC_CH9 (slow channel).
-     * |        |          |0AH = EADC_CH10 (fast channel).
-     * |        |          |0BH = EADC_CH11 (fast channel).
-     * |        |          |0CH = EADC_CH12 (fast channel).
-     * |        |          |0DH = EADC_CH13 (fast channel).
-     * |        |          |0EH = EADC_CH14 (fast channel).
-     * |        |          |0FH = EADC_CH15 (fast channel).
-     * |[4]     |EXTREN    |ADC External Trigger Rising Edge Enable Bit
-     * |        |          |0 = Rising edge Disabled when ADC selects EADC0_ST as trigger source.
-     * |        |          |1 = Rising edge Enabled when ADC selects EADC0_ST as trigger source.
-     * |[5]     |EXTFEN    |ADC External Trigger Falling Edge Enable Bit
-     * |        |          |0 = Falling edge Disabled when ADC selects EADC0_ST as trigger source.
-     * |        |          |1 = Falling edge Enabled when ADC selects EADC0_ST as trigger source.
-     * |[7:6]   |TRGDLYDIV |ADC Sample Module Start of Conversion Trigger Delay Clock Divider Selection
+     * |[0]     |PRECHEN   |Precharge Enable
+     * |        |          |0 = Channel precharge Disabled.
+     * |        |          |1 = Channel precharge Enabled.
+     * |        |          |Note: Analog input voltage is 1/2 VREF when PRECHEN and DISCHEN are all enable.
+     * |[1]     |DISCHEN   |Discharge Enable
+     * |        |          |0 = Channel discharge Disabled.
+     * |        |          |1 = Channel discharge Enabled.
+     * |        |          |Note: Analog input voltage is 1/2 VREF when PRECHEN and DISCHEN are all enable.
+     * |[5:4]   |RESSEL    |Resolution Select Bits
+     * |        |          |00 = ADC resolution 12 bits.
+     * |        |          |01 = ADC resolution 10 bits.
+     * |        |          |10 = ADC resolution 8 bits.
+     * |        |          |11 = Reserved.
+     * |[8]     |FDETCHEN  |Floating Detect Channel Enable Bit
+     * |        |          |0 = Floating Detect Channel Disabled.
+     * |        |          |1 = Floating Detect Channel Enabled.
+     * |[20]    |CMP0TRG   |ADC Comparator 0 Trigger EPWM Brake Enable Bit
+     * |        |          |0 = Comparator 0 trigger EPWM brake is disabled.
+     * |        |          |1 = Comparator 0 trigger EPWM brake is enabled.
+     * |[21]    |CMP1TRG   |ADC Comparator 1 Trigger EPWM Brake Enable Bit
+     * |        |          |0 = Comparator 1 trigger EPWM brake is disabled.
+     * |        |          |1 = Comparator 1 trigger EPWM brake is enabled.
+     * |[22]    |CMP2TRG   |ADC Comparator 2 Trigger EPWM Brake Enable Bit
+     * |        |          |0 = Comparator 2 trigger EPWM brake is disabled.
+     * |        |          |1 = Comparator 2 trigger EPWM brake is enabled.
+     * |[23]    |CMP3TRG   |ADC Comparator 3 Trigger EPWM Brake Enable Bit
+     * |        |          |0 = Comparator 3 trigger EPWM brake is disabled.
+     * |        |          |1 = Comparator 3 trigger EPWM brake is enabled.     
+     * @var EADC_T::SCTL[19]
+     * Offset: 0x80/0x84/0x88/0x8C/0x90/0x94/0x98/0x9C/0xA0/0xA4/0xA8/0xAC/0xB0/0xB4/0xB8/0xBC/0xC0/0xC4/0xC8  EADC Sample Module 0~18 Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |CHSEL     |EADC Sample Module Channel Selection
+     * |        |          |00H = EADC_CH0.
+     * |        |          |01H = EADC_CH1.
+     * |        |          |02H = EADC_CH2.
+     * |        |          |03H = EADC_CH3.
+     * |        |          |04H = EADC_CH4.
+     * |        |          |05H = EADC_CH5.
+     * |        |          |06H = EADC_CH6.
+     * |        |          |07H = EADC_CH7.
+     * |        |          |08H = EADC_CH8.
+     * |        |          |09H = EADC_CH9.
+     * |        |          |0AH = EADC_CH10.
+     * |        |          |0BH = EADC_CH11.
+     * |        |          |0CH = EADC_CH12.
+     * |        |          |0DH = EADC_CH13.
+     * |        |          |0EH = EADC_CH14.
+     * |        |          |0FH = EADC_CH15.
+     * |        |          |10H = EADC_CH16.
+     * |        |          |11H = EADC_CH17.
+     * |        |          |12H = EADC_CH18.
+     * |        |          |13H = EADC_CH19.
+     * |        |          |14H = EADC_CH20.
+     * |        |          |15H = EADC_CH21.
+     * |        |          |16H = EADC_CH22.
+     * |        |          |17H = EADC_CH23.
+     * |        |          |Others = Reserved.
+     * |[5]     |INTPOS    |Interrupt Flag Position Select
+     * |        |          |0 = Set ADIFn (EADC_STATUS2[n], n=0~3) at EADC end of conversion.
+     * |        |          |1 = Set ADIFn (EADC_STATUS2[n], n=0~3) at EADC start of conversion.
+     * |[7:6]   |TRGDLYDIV |EADC Sample Module Start of Conversion Trigger Delay Clock Divider Selection
      * |        |          |Trigger delay clock frequency:
-     * |        |          |00 = ADC_CLK/1.
-     * |        |          |01 = ADC_CLK/2.
-     * |        |          |10 = ADC_CLK/4.
-     * |        |          |11 = ADC_CLK/16.
-     * |[15:8]  |TRGDLYCNT |ADC Sample Module Start of Conversion Trigger Delay Time
-     * |        |          |Trigger delay time = TRGDLYCNT x ADC_CLK x n (n=1,2,4,16 from TRGDLYDIV setting).
-     * |[20:16] |TRGSEL    |ADC Sample Module Start of Conversion Trigger Source Selection
+     * |        |          |00 = EADC_CLK/1.
+     * |        |          |01 = EADC_CLK/2.
+     * |        |          |10 = EADC_CLK/4.
+     * |        |          |11 = EADC_CLK/16.
+     * |[15:8]  |TRGDLYCNT |EADC Sample Module Start of Conversion Trigger Delay Time
+     * |        |          |Trigger delay time = TRGDLYCNT x EADC_CLK period x n (n=1,2,4,16 from TRGDLYDIV setting).
+     * |[21:16] |TRGSEL    |EADC Sample Module Start of Conversion Trigger Source Selection
      * |        |          |0H = Disable trigger.
      * |        |          |1H = External trigger from EADC0_ST pin input.
-     * |        |          |2H = ADC ADINT0 interrupt EOC (End of conversion) pulse trigger.
-     * |        |          |3H = ADC ADINT1 interrupt EOC (End of conversion) pulse trigger.
+     * |        |          |2H = EADC ADINT0 interrupt EOC pulse trigger.
+     * |        |          |3H = EADC ADINT1 interrupt EOC pulse trigger.
      * |        |          |4H = Timer0 overflow pulse trigger.
      * |        |          |5H = Timer1 overflow pulse trigger.
      * |        |          |6H = Timer2 overflow pulse trigger.
@@ -192,20 +306,24 @@ typedef struct
      * |        |          |11H = EPWM1TG3.
      * |        |          |12H = EPWM1TG4.
      * |        |          |13H = EPWM1TG5.
-     * |        |          |14H = BPWM0TG.
-     * |        |          |15H = BPWM1TG.
+     * |        |          |20H = BPWM0TG0.
+     * |        |          |21H = BPWM0TG1.
+     * |        |          |22H = ACMP0_INT.
+     * |        |          |23H = ACMP1_INT.
+     * |        |          |24H = ACMP2_INT.
+     * |        |          |25H = ACMP3_INT.
      * |        |          |other = Reserved.
-     * |[22]    |INTPOS    |Interrupt Flag Position Select
-     * |        |          |0 = Set ADIFn (EADC_STATUS2[n], n=0~3) at ADC end of conversion.
-     * |        |          |1 = Set ADIFn (EADC_STATUS2[n], n=0~3) at ADC start of conversion.
-     * |[23]    |DBMEN     |Double Buffer Mode Enable Bit
-     * |        |          |0 = Sample has one sample result register. (default).
-     * |        |          |1 = Sample has two sample result registers.
-     * |[31:24] |EXTSMPT   |ADC Sampling Time Extend
-     * |        |          |When ADC converting at high conversion rate, the sampling time of analog input voltage may not enough if input channel loading is heavy, user can extend ADC sampling time after trigger source is coming to get enough sampling time.
-     * |        |          |The range of start delay time is from 0~255 ADC clock.
+     * |[22]    |EXTREN    |EADC External Trigger Rising Edge Enable Bit
+     * |        |          |0 = Rising edge Disabled when EADC selects EADCx_ST(x=0,1) as trigger source.
+     * |        |          |1 = Rising edge Enabled when EADC selects EADCx_ST(x=0,1) as trigger source.
+     * |[23]    |EXTFEN    |EADC External Trigger Falling Edge Enable Bit
+     * |        |          |0 = Falling edge Disabled when EADC selects EADCx_ST(x=0,1) as trigger source.
+     * |        |          |1 = Falling edge Enabled when EADC selects EADCx_ST(x=0,1) as trigger source.
+     * |[31:24] |EXTSMPT   |EADC Sampling Time Extend
+     * |        |          |When EADC converting at high conversion rate, the sampling time of analog input voltage may not be enough if input channel loading is heavy, and software can extend EADC sampling time after trigger source is coming to get enough sampling time.
+     * |        |          |Extended Sampling Time = (EXTSMPT x EADC_CLK period x n)+2 [n=1,2,4,16 from EXTSTDIV setting].
      * @var EADC_T::INTSRC[4]
-     * Offset: 0xD0  ADC interrupt 0~3 Source Enable Control Register.
+     * Offset: 0xD0/0XD4/0xD8/0xDC  EADC interrupt 0~3 Source Enable Control Register.
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
@@ -266,22 +384,49 @@ typedef struct
      * |[18]    |SPLIE18   |Sample Module 18 Interrupt Enable Bit
      * |        |          |0 = Sample Module 18 interrupt Disabled.
      * |        |          |1 = Sample Module 18 interrupt Enabled.
+     * |[19]    |SPLIE19   |Sample Module 19 Interrupt Enable Bit
+     * |        |          |0 = Sample Module 19 interrupt Disabled.
+     * |        |          |1 = Sample Module 19 interrupt Enabled.
+     * |[20]    |SPLIE20   |Sample Module 20 Interrupt Enable Bit
+     * |        |          |0 = Sample Module 20 interrupt Disabled.
+     * |        |          |1 = Sample Module 20 interrupt Enabled.
+     * |[21]    |SPLIE21   |Sample Module 21 Interrupt Enable Bit
+     * |        |          |0 = Sample Module 21 interrupt Disabled.
+     * |        |          |1 = Sample Module 21 interrupt Enabled.
+     * |[22]    |SPLIE22   |Sample Module 22 Interrupt Enable Bit
+     * |        |          |0 = Sample Module 22 interrupt Disabled.
+     * |        |          |1 = Sample Module 22 interrupt Enabled.
+     * |[23]    |SPLIE23   |Sample Module 23 Interrupt Enable Bit
+     * |        |          |0 = Sample Module 23 interrupt Disabled.
+     * |        |          |1 = Sample Module 23 interrupt Enabled.
+     * |[24]    |SPLIE24   |Sample Module 24 Interrupt Enable Bit
+     * |        |          |0 = Sample Module 24 interrupt Disabled.
+     * |        |          |1 = Sample Module 24 interrupt Enabled.
+     * |[25]    |SPLIE25   |Sample Module 25 Interrupt Enable Bit
+     * |        |          |0 = Sample Module 25 interrupt Disabled.
+     * |        |          |1 = Sample Module 25 interrupt Enabled.
+     * |[26]    |SPLIE26   |Sample Module 26 Interrupt Enable Bit
+     * |        |          |0 = Sample Module 26 interrupt Disabled.
+     * |        |          |1 = Sample Module 26 interrupt Enabled.
+     * |[27]    |SPLIE27   |Sample Module 27 Interrupt Enable Bit
+     * |        |          |0 = Sample Module 27 interrupt Disabled.
+     * |        |          |1 = Sample Module 27 interrupt Enabled.     
      * @var EADC_T::CMP[4]
-     * Offset: 0xE0  ADC Result Compare Register 0~3
+     * Offset: 0xE0/0xE4/0xE8/0xEC  EADC Result Compare Register 0~3
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[0]     |ADCMPEN   |ADC Result Compare Enable Bit
+     * |[0]     |ADCMPEN   |EADC Result Compare Enable Bit
      * |        |          |0 = Compare Disabled.
      * |        |          |1 = Compare Enabled.
      * |        |          |Set this bit to 1 to enable compare CMPDAT (EADC_CMPn[27:16], n=0~3) with specified sample module conversion result when converted data is loaded into EADC_DAT register.
-     * |[1]     |ADCMPIE   |ADC Result Compare Interrupt Enable Bit
+     * |[1]     |ADCMPIE   |EADC Result Compare Interrupt Enable Bit
      * |        |          |0 = Compare function interrupt Disabled.
      * |        |          |1 = Compare function interrupt Enabled.
      * |        |          |If the compare function is enabled and the compare condition matches the setting of CMPCOND (EADC_CMPn[2], n=0~3) and CMPMCNT (EADC_CMPn[11:8], n=0~3), ADCMPFn (EADC_STATUS2[7:4], n=0~3) will be asserted, in the meanwhile, if ADCMPIE is set to 1, a compare interrupt request is generated.
      * |[2]     |CMPCOND   |Compare Condition
-     * |        |          |0= Set the compare condition as that when a 12-bit ADC conversion result is less than the 12-bit CMPDAT (EADC_CMPn [27:16]), the internal match counter will increase one.
-     * |        |          |1= Set the compare condition as that when a 12-bit ADC conversion result is greater or equal to the 12-bit CMPDAT (EADC_CMPn [27:16]), the internal match counter will increase one.
+     * |        |          |0= Set the compare condition as that when a 12-bit EADC conversion result is less than the 12-bit CMPDAT (EADC_CMPn [27:16]), the internal match counter will increase one.
+     * |        |          |1= Set the compare condition as that when a 12-bit EADC conversion result is greater or equal to the 12-bit CMPDAT (EADC_CMPn [27:16]), the internal match counter will increase one.
      * |        |          |Note: When the internal counter reaches the value to (CMPMCNT (EADC_CMPn[11:8], n=0~3) +1), the CMPF bit will be set.
      * |[7:3]   |CMPSPL    |Compare Sample Module Selection
      * |        |          |00000 = Sample Module 0 conversion result EADC_DAT0 is selected to be compared.
@@ -303,8 +448,17 @@ typedef struct
      * |        |          |10000 = Sample Module 16 conversion result EADC_DAT16 is selected to be compared.
      * |        |          |10001 = Sample Module 17 conversion result EADC_DAT17 is selected to be compared.
      * |        |          |10010 = Sample Module 18 conversion result EADC_DAT18 is selected to be compared.
+     * |        |          |10011 = Sample Module 19 conversion result EADC_DAT19 is selected to be compared.
+     * |        |          |10100 = Sample Module 20 conversion result EADC_DAT20 is selected to be compared.
+     * |        |          |10101 = Sample Module 21 conversion result EADC_DAT21 is selected to be compared.
+     * |        |          |10110 = Sample Module 22 conversion result EADC_DAT22 is selected to be compared.
+     * |        |          |10111 = Sample Module 23 conversion result EADC_DAT23 is selected to be compared.
+     * |        |          |11000 = Sample Module 24 conversion result EADC_DAT24 is selected to be compared.
+     * |        |          |11001 = Sample Module 25 conversion result EADC_DAT25 is selected to be compared.
+     * |        |          |11010 = Sample Module 26 conversion result EADC_DAT26 is selected to be compared.
+     * |        |          |11011 = Sample Module 27 conversion result EADC_DAT27 is selected to be compared.     
      * |[11:8]  |CMPMCNT   |Compare Match Count
-     * |        |          |When the specified ADC sample module analog conversion result matches the compare condition defined by CMPCOND (EADC_CMPn[2], n=0~3), the internal match counter will increase 1
+     * |        |          |When the specified EADC sample module analog conversion result matches the compare condition defined by CMPCOND (EADC_CMPn[2], n=0~3), the internal match counter will increase 1
      * |        |          |If the compare result does not meet the compare condition, the internal compare match counter will reset to 0
      * |        |          |When the internal counter reaches the value to (CMPMCNT +1), the ADCMPFn (EADC_STATUS2[7:4], n=0~3) will be set.
      * |[15]    |CMPWEN    |Compare Window Mode Enable Bit
@@ -317,106 +471,106 @@ typedef struct
      * |        |          |The 12 bits data is used to compare with conversion result of specified sample module
      * |        |          |User can use it to monitor the external analog input pin voltage transition without imposing a load on software.
      * @var EADC_T::STATUS0
-     * Offset: 0xF0  ADC Status Register 0
+     * Offset: 0xF0  EADC Status Register 0
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[15:0]  |VALID     |EADC_DAT0~15 Data Valid Flag
-     * |        |          |It is a mirror of VALID bit in sample module ADC result data register EADC_DATn. (n=0~18).
+     * |        |          |It is a mirror of VALID bit in sample module EADC result data register EADC_DATn. (n=0~15).
      * |[31:16] |OV        |EADC_DAT0~15 Overrun Flag
-     * |        |          |It is a mirror to OV bit in sample module ADC result data register EADC_DATn. (n=0~18).
+     * |        |          |It is a mirror to OV bit in sample module EADC result data register EADC_DATn. (n=0~15).
      * @var EADC_T::STATUS1
-     * Offset: 0xF4  ADC Status Register 1
+     * Offset: 0xF4  EADC Status Register 1
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[2:0]   |VALID     |EADC_DAT16~18 Data Valid Flag
-     * |        |          |It is a mirror of VALID bit in sample module ADC result data register EADC_DATn. (n=0~18).
-     * |[18:16] |OV        |EADC_DAT16~18 Overrun Flag
-     * |        |          |It is a mirror to OV bit in sample module ADC result data register EADC_DATn. (n=0~18).
+     * |[0:11]   |VALID     |EADC_DAT16~27 Data Valid Flag
+     * |        |          |It is a mirror of VALID bit in sample module EADC result data register EADC_DATn. (n=16~27).
+     * |[27:16] |OV        |EADC_DAT16~27 Overrun Flag
+     * |        |          |It is a mirror to OV bit in sample module EADC result data register EADC_DATn. (n=16~27).
      * @var EADC_T::STATUS2
-     * Offset: 0xF8  ADC Status Register 2
+     * Offset: 0xF8  EADC Status Register 2
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[0]     |ADIF0     |ADC ADINT0 Interrupt Flag
+     * |[0]     |ADIF0     |EADC ADINT0 Interrupt Flag
      * |        |          |0 = No ADINT0 interrupt pulse received.
      * |        |          |1 = ADINT0 interrupt pulse has been received.
      * |        |          |Note1: This bit is cleared by writing 1 to it.
-     * |        |          |Note2:This bit indicates whether an ADC conversion of specific sample module has been completed
-     * |[1]     |ADIF1     |ADC ADINT1 Interrupt Flag
+     * |        |          |Note2:This bit indicates whether an EADC conversion of specific sample module has been completed
+     * |[1]     |ADIF1     |EADC ADINT1 Interrupt Flag
      * |        |          |0 = No ADINT1 interrupt pulse received.
      * |        |          |1 = ADINT1 interrupt pulse has been received.
      * |        |          |Note1: This bit is cleared by writing 1 to it.
-     * |        |          |Note2:This bit indicates whether an ADC conversion of specific sample module has been completed
-     * |[2]     |ADIF2     |ADC ADINT2 Interrupt Flag
+     * |        |          |Note2:This bit indicates whether an EADC conversion of specific sample module has been completed
+     * |[2]     |ADIF2     |EADC ADINT2 Interrupt Flag
      * |        |          |0 = No ADINT2 interrupt pulse received.
      * |        |          |1 = ADINT2 interrupt pulse has been received.
      * |        |          |Note1: This bit is cleared by writing 1 to it.
-     * |        |          |Note2:This bit indicates whether an ADC conversion of specific sample module has been completed
-     * |[3]     |ADIF3     |ADC ADINT3 Interrupt Flag
+     * |        |          |Note2:This bit indicates whether an EADC conversion of specific sample module has been completed
+     * |[3]     |ADIF3     |EADC ADINT3 Interrupt Flag
      * |        |          |0 = No ADINT3 interrupt pulse received.
      * |        |          |1 = ADINT3 interrupt pulse has been received.
      * |        |          |Note1: This bit is cleared by writing 1 to it.
-     * |        |          |Note2:This bit indicates whether an ADC conversion of specific sample module has been completed
-     * |[4]     |ADCMPF0   |ADC Compare 0 Flag
-     * |        |          |When the specific sample module ADC conversion result meets setting condition in EADC_CMP0 then this bit is set to 1.
+     * |        |          |Note2:This bit indicates whether an EADC conversion of specific sample module has been completed
+     * |[4]     |ADCMPF0   |EADC Compare 0 Flag
+     * |        |          |When the specific sample module EADC conversion result meets setting condition in EADC_CMP0 then this bit is set to 1.
      * |        |          |0 = Conversion result in EADC_DAT does not meet EADC_CMP0 register setting.
      * |        |          |1 = Conversion result in EADC_DAT meets EADC_CMP0 register setting.
      * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[5]     |ADCMPF1   |ADC Compare 1 Flag
-     * |        |          |When the specific sample module ADC conversion result meets setting condition in EADC_CMP1 then this bit is set to 1.
+     * |[5]     |ADCMPF1   |EADC Compare 1 Flag
+     * |        |          |When the specific sample module EADC conversion result meets setting condition in EADC_CMP1 then this bit is set to 1.
      * |        |          |0 = Conversion result in EADC_DAT does not meet EADC_CMP1 register setting.
      * |        |          |1 = Conversion result in EADC_DAT meets EADC_CMP1 register setting.
      * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[6]     |ADCMPF2   |ADC Compare 2 Flag
-     * |        |          |When the specific sample module ADC conversion result meets setting condition in EADC_CMP2 then this bit is set to 1.
+     * |[6]     |ADCMPF2   |EADC Compare 2 Flag
+     * |        |          |When the specific sample module EADC conversion result meets setting condition in EADC_CMP2 then this bit is set to 1.
      * |        |          |0 = Conversion result in EADC_DAT does not meet EADC_CMP2 register setting.
      * |        |          |1 = Conversion result in EADC_DAT meets EADC_CMP2 register setting.
      * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[7]     |ADCMPF3   |ADC Compare 3 Flag
-     * |        |          |When the specific sample module ADC conversion result meets setting condition in EADC_CMP3 then this bit is set to 1.
+     * |[7]     |ADCMPF3   |EADC Compare 3 Flag
+     * |        |          |When the specific sample module EADC conversion result meets setting condition in EADC_CMP3 then this bit is set to 1.
      * |        |          |0 = Conversion result in EADC_DAT does not meet EADC_CMP3 register setting.
      * |        |          |1 = Conversion result in EADC_DAT meets EADC_CMP3 register setting.
      * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[8]     |ADOVIF0   |ADC ADINT0 Interrupt Flag Overrun
+     * |[8]     |ADOVIF0   |EADC ADINT0 Interrupt Flag Overrun
      * |        |          |0 = ADINT0 interrupt flag is not overwritten to 1.
      * |        |          |1 = ADINT0 interrupt flag is overwritten to 1.
      * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[9]     |ADOVIF1   |ADC ADINT1 Interrupt Flag Overrun
+     * |[9]     |ADOVIF1   |EADC ADINT1 Interrupt Flag Overrun
      * |        |          |0 = ADINT1 interrupt flag is not overwritten to 1.
      * |        |          |1 = ADINT1 interrupt flag is overwritten to 1.
      * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[10]    |ADOVIF2   |ADC ADINT2 Interrupt Flag Overrun
+     * |[10]    |ADOVIF2   |EADC ADINT2 Interrupt Flag Overrun
      * |        |          |0 = ADINT2 interrupt flag is not overwritten to 1.
      * |        |          |1 = ADINT2 interrupt flag is s overwritten to 1.
      * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[11]    |ADOVIF3   |ADC ADINT3 Interrupt Flag Overrun
+     * |[11]    |ADOVIF3   |EADC ADINT3 Interrupt Flag Overrun
      * |        |          |0 = ADINT3 interrupt flag is not overwritten to 1.
      * |        |          |1 = ADINT3 interrupt flag is overwritten to 1.
      * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[12]    |ADCMPO0   |ADC Compare 0 Output Status (Read Only)
+     * |[12]    |ADCMPO0   |EADC Compare 0 Output Status (Read Only)
      * |        |          |The 12 bits compare0 data CMPDAT0 (EADC_CMP0[27:16]) is used to compare with conversion result of specified sample module
      * |        |          |User can use it to monitor the external analog input pin voltage status.
      * |        |          |0 = Conversion result in EADC_DAT less than CMPDAT0 setting.
      * |        |          |1 = Conversion result in EADC_DAT great than or equal CMPDAT0 setting.
-     * |[13]    |ADCMPO1   |ADC Compare 1 Output Status (Read Only)
+     * |[13]    |ADCMPO1   |EADC Compare 1 Output Status (Read Only)
      * |        |          |The 12 bits compare1 data CMPDAT1 (EADC_CMP1[27:16]) is used to compare with conversion result of specified sample module
      * |        |          |User can use it to monitor the external analog input pin voltage status.
      * |        |          |0 = Conversion result in EADC_DAT less than CMPDAT1 setting.
      * |        |          |1 = Conversion result in EADC_DAT great than or equal CMPDAT1 setting.
-     * |[14]    |ADCMPO2   |ADC Compare 2 Output Status (Read Only)
+     * |[14]    |ADCMPO2   |EADC Compare 2 Output Status (Read Only)
      * |        |          |The 12 bits compare2 data CMPDAT2 (EADC_CMP2[27:16]) is used to compare with conversion result of specified sample module
      * |        |          |User can use it to monitor the external analog input pin voltage status.
      * |        |          |0 = Conversion result in EADC_DAT less than CMPDAT2 setting.
      * |        |          |1 = Conversion result in EADC_DAT great than or equal CMPDAT2 setting.
-     * |[15]    |ADCMPO3   |ADC Compare 3 Output Status (Read Only)
+     * |[15]    |ADCMPO3   |EADC Compare 3 Output Status (Read Only)
      * |        |          |The 12 bits compare3 data CMPDAT3 (EADC_CMP3[27:16]) is used to compare with conversion result of specified sample module
      * |        |          |User can use it to monitor the external analog input pin voltage status.
      * |        |          |0 = Conversion result in EADC_DAT less than CMPDAT3 setting.
      * |        |          |1 = Conversion result in EADC_DAT great than or equal CMPDAT3 setting.
      * |[20:16] |CHANNEL   |Current Conversion Channel (Read Only)
-     * |        |          |This filed reflects ADC current conversion channel when BUSY=1.
+     * |        |          |This filed reflects EADC current conversion channel when BUSY=1.
      * |        |          |It is read only.
      * |        |          |00H = EADC_CH0.
      * |        |          |01H = EADC_CH1.
@@ -434,50 +588,59 @@ typedef struct
      * |        |          |0DH = EADC_CH13.
      * |        |          |0EH = EADC_CH14.
      * |        |          |0FH = EADC_CH15.
-     * |        |          |10H = VBG.
-     * |        |          |11H = VTEMP.
-     * |        |          |12H = VBAT/4.
+     * |        |          |10H = EADC_CH16.
+     * |        |          |11H = EADC_CH17.
+     * |        |          |12H = EADC_CH18.
+     * |        |          |13H = EADC_CH19.
+     * |        |          |14H = EADC_CH20.
+     * |        |          |15H = EADC_CH21.
+     * |        |          |16H = EADC_CH22.
+     * |        |          |17H = EADC_CH23.
+     * |        |          |18H = VBG.
+     * |        |          |19H = VTEMP.
+     * |        |          |1AH = VBAT/4.
+     * |        |          |1BH = AVDD/4.
      * |[23]    |BUSY      |Busy/Idle (Read Only)
      * |        |          |0 = EADC is in idle state.
      * |        |          |1 = EADC is busy at conversion.
-     * |[24]    |ADOVIF    |All ADC Interrupt Flag Overrun Bits Check (Read Only)
+     * |        |          |Note: this flag will be high after 4*EADC_CLK cycles, when the trigger source is coming.
+     * |[24]    |ADOVIF    |All EADC Interrupt Flag Overrun Bits Check (Read Only)
      * |        |          |n=0~3.
      * |        |          |0 = None of ADINT interrupt flag ADOVIFn (EADC_STATUS2[11:8]) is overwritten to 1.
      * |        |          |1 = Any one of ADINT interrupt flag ADOVIFn (EADC_STATUS2[11:8]) is overwritten to 1.
      * |        |          |Note: This bit will keep 1 when any ADOVIFn Flag is equal to 1.
-     * |[25]    |STOVF     |for All ADC Sample Module Start of Conversion Overrun Flags Check (Read Only)
-     * |        |          |n=0~18.
+     * |[25]    |STOVF     |for All EADC Sample Module Start of Conversion Overrun Flags Check (Read Only)
+     * |        |          |n=0~27.
      * |        |          |0 = None of sample module event overrun flag SPOVFn (EADC_OVSTS[n]) is set to 1.
      * |        |          |1 = Any one of sample module event overrun flag SPOVFn (EADC_OVSTS[n]) is set to 1.
      * |        |          |Note: This bit will keep 1 when any SPOVFn Flag is equal to 1.
-     * |[26]    |AVALID    |for All Sample Module ADC Result Data Register EADC_DAT Data Valid Flag Check (Read Only)
-     * |        |          |n=0~18.
+     * |[26]    |AVALID    |for All Sample Module EADC Result Data Register EADC_DAT Data Valid Flag Check (Read Only)
+     * |        |          |n=0~27.
      * |        |          |0 = None of sample module data register valid flag VALIDn (EADC_DATn[17]) is set to 1.
      * |        |          |1 = Any one of sample module data register valid flag VALIDn (EADC_DATn[17]) is set to 1.
      * |        |          |Note: This bit will keep 1 when any VALIDn Flag is equal to 1.
-     * |[27]    |AOV       |for All Sample Module ADC Result Data Register Overrun Flags Check (Read Only)
-     * |        |          |n=0~18.
+     * |[27]    |AOV       |for All Sample Module EADC Result Data Register Overrun Flags Check (Read Only)
+     * |        |          |n=0~27.
      * |        |          |0 = None of sample module data register overrun flag OVn (EADC_DATn[16]) is set to 1.
      * |        |          |1 = Any one of sample module data register overrun flag OVn (EADC_DATn[16]) is set to 1.
      * |        |          |Note: This bit will keep 1 when any OVn Flag is equal to 1.
      * @var EADC_T::STATUS3
-     * Offset: 0xFC  ADC Status Register 3
+     * Offset: 0xFC  EADC Status Register 3
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[4:0]   |CURSPL    |ADC Current Sample Module
-     * |        |          |This register show the current ADC is controlled by which sample module control logic modules.
-     * |        |          |If the ADC is Idle, this bit filed will set to 0x1F.
+     * |[4:0]   |CURSPL    |EADC Current Sample Module
+     * |        |          |This register show the current EADC is controlled by which sample module control logic modules.
+     * |        |          |If the EADC is Idle, this bit filed will set to 0x1F.
      * |        |          |This is a read only register.
      * @var EADC_T::DDAT[4]
-     * Offset: 0x100  ADC Double Data Register 0 for Sample Module 0
+     * Offset: 0x100/0x104/0x108/0x10C  EADC Double Data Register 0~3 for Sample Module 0~3
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[15:0]  |RESULT    |ADC Conversion Results
+     * |[15:0]  |RESULT    |EADC Conversion Results
      * |        |          |This field contains 12 bits conversion results.
-     * |        |          |When the DMOF (EADC_CTL[9]) is set to 0, 12-bit ADC conversion result with unsigned format will be filled in RESULT [11:0] and zero will be filled in RESULT [15:12].
-     * |        |          |When DMOF (EADC_CTL[9]) set to 1, 12-bit ADC conversion result with 2'complement format will be filled in RESULT [11:0] and signed bits to will be filled in RESULT [15:12].
+     * |        |          |The 12-bit EADC conversion result with unsigned format will be filled in RESULT [11:0] and zero will be filled in RESULT [15:12].
      * |[16]    |OV        |Overrun Flag
      * |        |          |0 = Data in RESULT (EADC_DATn[15:0], n=0~3) is recent conversion result.
      * |        |          |1 = Data in RESULT (EADC_DATn[15:0], n=0~3) is overwrite.
@@ -488,96 +651,224 @@ typedef struct
      * |        |          |1 = Double data in RESULT (EADC_DDATn[15:0]) is valid.
      * |        |          |This bit is set to 1 when corresponding sample module channel analog input conversion is completed and cleared by hardware after EADC_DDATn register is read
      * |        |          |(n=0~3).
-     * @var EADC_T::PWRM
-     * Offset: 0x110  ADC Power Management Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |PWUPRDY   |ADC Power-up Sequence Completed and Ready for Conversion (Read Only)
-     * |        |          |0 = ADC is not ready for conversion may be in power down state or in the progress of start up.
-     * |        |          |1 = ADC is ready for conversion.
-     * |[1]     |PWUCALEN  |Power Up Calibration Function Enable Control
-     * |        |          |0 = Disable the function of calibration at power up.
-     * |        |          |1 = Enable the function of calibration at power up.
-     * |        |          |Note: This bit work together with CALSEL (EADC_CALCTL [3]), see the following
-     * |        |          |{PWUCALEN, CALSEL } Description:
-     * |        |          |PWUCALEN is 0 and CALSEL is 0: No need to calibrate.
-     * |        |          |PWUCALEN is 0 and CALSEL is 1: No need to calibrate.
-     * |        |          |PWUCALEN is 1 and CALSEL is 0: Load calibration word when power up.
-     * |        |          |PWUCALEN is 1 and CALSEL is 1: Calibrate when power up.
-     * |[3:2]   |PWDMOD    |ADC Power-down Mode
-     * |        |          |Set this bit fields to select ADC power down mode when system power-down.
-     * |        |          |00 = ADC Deep power down mode.
-     * |        |          |01 = ADC Power down.
-     * |        |          |10 = ADC Standby mode.
-     * |        |          |11 = ADC Deep power down mode.
-     * |        |          |Note: Different PWDMOD has different power down/up sequence, in order to avoid ADC powering up with wrong sequence; user must keep PWMOD consistent each time in power down and start up
-     * |[19:8]  |LDOSUT    |ADC Internal LDO Start-up Time
-     * |        |          |Set this bit fields to control LDO start-up time
-     * |        |          |The minimum required LDO start-up time is 20us
-     * |        |          |LDO start-up time = (1/ADC_CLK) x LDOSUT.
      * @var EADC_T::CALCTL
-     * Offset: 0x114  ADC Calibration Control Register
+     * Offset: 0x114  EADC Calibration Control Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[1]     |CALSTART  |Calibration Functional Block Start
-     * |        |          |0 = Stops calibration functional block.
-     * |        |          |1 = Starts calibration functional block.
-     * |        |          |Note: This bit is set by SW and clear by HW after re-calibration finish
-     * |[2]     |CALDONE   |Calibration Functional Block Complete (Read Only)
-     * |        |          |0 = During a calibration.
-     * |        |          |1 = Calibration is completed.
-     * |[3]     |CALSEL    |Select Calibration Functional Block
-     * |        |          |0 = Load calibration word when calibration functional block is active.
-     * |        |          |1 = Execute calibration when calibration functional block is active.
-     * @var EADC_T::CALDWRD
-     * Offset: 0x118  ADC Calibration Load Word Register
+     * |[0]     |CAL       |Calibration Enable Bit
+     * |        |          |0 = = Calibration Disabled.
+     * |        |          |1 = = Calibration Enabled.
+     * |        |          |Note: This bit is hardware auto cleared when calibration is done
+     * |[1]     |CALIE     |Calibration Interrupt Enable Bit
+     * |        |          |0 = Calibration interrupt Disabled.
+     * |        |          |1= Calibration interrupt Enabled.
+     * @var EADC_T::CALSR
+     * Offset: 0x118  EADC Calibration Status Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[6:0]   |CALWORD   |Calibration Word Bits
-     * |        |          |Write to this register with the previous calibration word before load calibration action.
-     * |        |          |Read this register after calibration done.
-     * |        |          |Note: The calibration block contains two parts CALIBRATION and LOAD CALIBRATION; if the calibration block configure as CALIBRATION; then this register represent the result of calibration when calibration is completed; if configure as LOAD CALIBRATION ; configure this register before loading calibration action, after loading calibration complete, the laoded calibration word will apply to the ADC; while in loading calibration function the loaded value will not be equal to the original CALWORD until calibration is done.
+     * |[16]    |CALIF     |Calibration Finish Interrupt Flag
+     * |        |          |If calibration is finished, this flag will be set to 1. It is cleared by writing 1 to it.
+     * @var EADC_T::PDMACTL
+     * Offset: 0x130  EADC PDMA Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[27:0]  |PDMATEN   |PDMA Transfer Enable Bit
+     * |        |          |When EADC conversion is completed, the converted data is loaded into EADC_DATn (n: 0 ~ 27) register, user can enable this bit to generate a PDMA data transfer request.
+     * |        |          |0 = PDMA data transfer Disabled.
+     * |        |          |1 = PDMA data transfer Enabled.
+     * |        |          |Note:When setting this bit field to 1, user must set ADCIENn (EADC_CTL[5:2], n=0~3) = 0 to disable interrupt.
+     * @var EADC_T::MCTL1[19]
+     * Offset: 0x140/0x144/0x148/0x14C/0x150/0x154/0x158/0x15C/0x160/0x164/0x168/0x16C/0x170/0x174/0x178/0x17C/0x180/0x184/0x188  EADC Sample Module 0~18 Control Register 1
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |ALIGN     |Alignment Selection
+     * |        |          |0 = The conversion result will be right aligned in data register.
+     * |        |          |1 = The conversion result will be left aligned in data register.
+     * |[1]     |AVG       |Average Mode Selection
+     * |        |          |0 = Conversion results will be stored in data register without averaging.
+     * |        |          |1 = Conversion results in data register will be averaged.
+     * |        |          |Note: This bit needs to work with ACU (EADC_MnCTL1[7:4], n=0~23).
+     * |[7:4]   |ACU       |Number of Accumulated Conversion Results Selection
+     * |        |          |0000 = 1 conversion result will be accumulated.
+     * |        |          |0001 = 2 conversion result will be accumulated.
+     * |        |          |0010 = 4 conversion result will be accumulated.
+     * |        |          |0011 = 8 conversion result will be accumulated.
+     * |        |          |0100 = 16 conversion result will be accumulated.
+     * |        |          |0101 = 32 conversion result will be accumulated.
+     * |        |          |0110 = 64 conversion result will be accumulated.
+     * |        |          |0111 = 128 conversion result will be accumulated.
+     * |        |          |1000 = 256 conversion result will be accumulated.
+     * |        |          |Others = Reserved.
+     * |[17:16] |EXTSTDIV  |EADC Extended Sampling Time Clock Divider Selection
+     * |        |          |Clock frequency for extending sampling time:
+     * |        |          |00 = EADC_CLK/1.
+     * |        |          |01 = EADC_CLK/2.
+     * |        |          |10 = EADC_CLK/4.
+     * |        |          |11 = EADC_CLK/16.
+     * |[20]    |DBMEN     |Double Buffer Mode Enable Bit
+     * |        |          |0 = Sample has one sample result register (default).
+     * |        |          |1 = Sample has two sample result registers.
+     * @var EADC_T::DAT19[12]
+     * Offset: 0x200/0x204/0x208/0x20C/0x210/0x214/0x218/0x21C/0x220/  EADC Data Register 19~27 for Sample Module 19~30
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |RESULT    |EADC Conversion Result
+     * |        |          |This field contains 12 bits conversion result
+     * |        |          |The 12-bit EADC conversion result with unsigned format will be filled in RESULT[11:0] and zero will be filled in RESULT[15:12].
+     * |        |          |Note: When operating in oversampling mode, RESULT[15:0] can represent oversampling results.
+     * |[16]    |OV        |Overrun Flag
+     * |        |          |If converted data in RESULT[11:0] has not been read before new conversion result is loaded to this register, OV is set to 1.
+     * |        |          |0 = Data in RESULT[11:0] is recent conversion result.
+     * |        |          |1 = Data in RESULT[11:0] is overwrite.
+     * |        |          |Note: It is cleared by hardware after EADC_DAT register is read.
+     * |[17]    |VALID     |Valid Flag
+     * |        |          |This bit is set to 1 when corresponding sample module channel analog input conversion is completed and cleared by hardware after EADC_DAT register is read.
+     * |        |          |0 = Data in RESULT[11:0] bits is not valid.
+     * |        |          |1 = Data in RESULT[11:0] bits is valid.
+     * @var EADC_T::SCTL19[12]
+     * Offset: 0x230/0x234/0x238/0x23C/0x240/0x244/0x248/0x24C/0x250/  EADC Sample Module 19~27 Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |CHSEL     |EADC Sample Module Channel Selection
+     * |        |          |00H = EADC_CH0.
+     * |        |          |01H = EADC_CH1.
+     * |        |          |02H = EADC_CH2.
+     * |        |          |03H = EADC_CH3.
+     * |        |          |04H = EADC_CH4.
+     * |        |          |05H = EADC_CH5.
+     * |        |          |06H = EADC_CH6.
+     * |        |          |07H = EADC_CH7.
+     * |        |          |08H = EADC_CH8.
+     * |        |          |09H = EADC_CH9.
+     * |        |          |0AH = EADC_CH10.
+     * |        |          |0BH = EADC_CH11.
+     * |        |          |0CH = EADC_CH12.
+     * |        |          |0DH = EADC_CH13.
+     * |        |          |0EH = EADC_CH14.
+     * |        |          |0FH = EADC_CH15.
+     * |        |          |10H = EADC_CH16.
+     * |        |          |11H = EADC_CH17.
+     * |        |          |12H = EADC_CH18.
+     * |        |          |13H = EADC_CH19.
+     * |        |          |14H = EADC_CH20.
+     * |        |          |15H = EADC_CH21.
+     * |        |          |16H = EADC_CH22.
+     * |        |          |17H = EADC_CH23.
+     * |        |          |Others = Reserved.
+     * |[5]     |INTPOS    |Interrupt Flag Position Select
+     * |        |          |0 = Set ADIFn (EADC_STATUS2[n], n=0~3) at EADC end of conversion.
+     * |        |          |1 = Set ADIFn (EADC_STATUS2[n], n=0~3) at EADC start of conversion.
+     * |[7:6]   |TRGDLYDIV |EADC Sample Module Start of Conversion Trigger Delay Clock Divider Selection
+     * |        |          |Trigger delay clock frequency:
+     * |        |          |00 = EADC_CLK/1.
+     * |        |          |01 = EADC_CLK/2.
+     * |        |          |10 = EADC_CLK/4.
+     * |        |          |11 = EADC_CLK/16.
+     * |[15:8]  |TRGDLYCNT |EADC Sample Module Start of Conversion Trigger Delay Time
+     * |        |          |Trigger delay time = TRGDLYCNT x EADC_CLK period x n (n=1,2,4,16 from TRGDLYDIV setting).
+     * |[21:16] |TRGSEL    |EADC Sample Module Start of Conversion Trigger Source Selection
+     * |        |          |0H = Disable trigger.
+     * |        |          |1H = External trigger from EADC0_ST pin input.
+     * |        |          |2H = EADC ADINT0 interrupt EOC pulse trigger.
+     * |        |          |3H = EADC ADINT1 interrupt EOC pulse trigger.
+     * |        |          |4H = Timer0 overflow pulse trigger.
+     * |        |          |5H = Timer1 overflow pulse trigger.
+     * |        |          |6H = Timer2 overflow pulse trigger.
+     * |        |          |7H = Timer3 overflow pulse trigger.
+     * |        |          |8H = EPWM0TG0.
+     * |        |          |9H = EPWM0TG1.
+     * |        |          |AH = EPWM0TG2.
+     * |        |          |BH = EPWM0TG3.
+     * |        |          |CH = EPWM0TG4.
+     * |        |          |DH = EPWM0TG5.
+     * |        |          |EH = EPWM1TG0.
+     * |        |          |FH = EPWM1TG1.
+     * |        |          |10H = EPWM1TG2.
+     * |        |          |11H = EPWM1TG3.
+     * |        |          |12H = EPWM1TG4.
+     * |        |          |13H = EPWM1TG5.
+     * |        |          |20H = BPWM0TG0.
+     * |        |          |21H = BPWM0TG1.
+     * |        |          |22H = ACMP0_INT.
+     * |        |          |23H = ACMP1_INT.
+     * |        |          |24H = ACMP2_INT.
+     * |        |          |25H = ACMP3_INT.
+     * |        |          |other = Reserved.
+     * |[22]    |EXTREN    |EADC External Trigger Rising Edge Enable Bit
+     * |        |          |0 = Rising edge Disabled when EADC selects EADC0_ST as trigger source.
+     * |        |          |1 = Rising edge Enabled when EADC selects EADC0_ST as trigger source.
+     * |[23]    |EXTFEN    |EADC External Trigger Falling Edge Enable Bit
+     * |        |          |0 = Falling edge Disabled when EADC selects EADC0_ST as trigger source.
+     * |        |          |1 = Falling edge Enabled when EADC selects EADC0_ST as trigger source.
+     * |[31:24] |EXTSMPT   |EADC Sampling Time Extend
+     * |        |          |When EADC converting at high conversion rate, the sampling time of analog input voltage may not be enough if input channel loading is heavy, and software can extend EADC sampling time after trigger source is coming to get enough sampling time.
+     * |        |          |Extended Sampling Time = (EXTSMPT x EADC_CLK period x n)+2 [n=1,2,4,16 from EXTSTDIV setting].
+     * @var EADC_T::M19CTL1[12]
+     * Offset: 0x260/0x264/0x268/0x26C/0x270/0x274/0x278/0x27C/0x280/  EADC Sample Module 19~27 Control Register 1
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |ALIGN     |Alignment Selection
+     * |        |          |0 = The conversion result will be right aligned in data register.
+     * |        |          |1 = The conversion result will be left aligned in data register.
+     * |[1]     |AVG       |Average Mode Selection
+     * |        |          |0 = Conversion results will be stored in data register without averaging.
+     * |        |          |1 = Conversion results in data register will be averaged.
+     * |        |          |Note: This bit needs to work with ACU (EADC_MnCTL1[7:4], n=0~23).
+     * |[7:4]   |ACU       |Number of Accumulated Conversion Results Selection
+     * |        |          |0000 = 1 conversion result will be accumulated.
+     * |        |          |0001 = 2 conversion result will be accumulated.
+     * |        |          |0010 = 4 conversion result will be accumulated.
+     * |        |          |0011 = 8 conversion result will be accumulated.
+     * |        |          |0100 = 16 conversion result will be accumulated.
+     * |        |          |0101 = 32 conversion result will be accumulated.
+     * |        |          |0110 = 64 conversion result will be accumulated.
+     * |        |          |0111 = 128 conversion result will be accumulated.
+     * |        |          |1000 = 256 conversion result will be accumulated.
+     * |        |          |Others = Reserved.
+     * |[17:16] |EXTSTDIV  |EADC Extended Sampling Time Clock Divider Selection
+     * |        |          |Clock frequency for extending sampling time:
+     * |        |          |00 = EADC_CLK/1.
+     * |        |          |01 = EADC_CLK/2.
+     * |        |          |10 = EADC_CLK/4.
+     * |        |          |11 = EADC_CLK/16.
      */
-    __I  uint32_t DAT[19];          /*!< [0x00-0x48] EADC Data Register 0~18 for Sample Module 0~18     */
-    __I  uint32_t CURDAT;           /*!< [0x4C] EADC PDMA Current Transfer Data Register                */
-    __IO uint32_t CTL;              /*!< [0x50] EADC Control Register                                   */
-    __O  uint32_t SWTRG;            /*!< [0x54] EADC Sample Module Software Start Register              */
-    __IO uint32_t PENDSTS;          /*!< [0x58] EADC Start of Conversion Pending Flag Register          */
+    __I  uint32_t DAT[19];          /*!< [0x00-0x48] EADC Data Register 0~18 for Sample Module 0~18          */
+    __I  uint32_t CURDAT;           /*!< [0x4C] EADC PDMA Current Transfer Data Register                     */
+    __IO uint32_t CTL;              /*!< [0x50] EADC Control Register                                        */
+    __O  uint32_t SWTRG;            /*!< [0x54] EADC Sample Module Software Start Register                   */
+    __IO uint32_t PENDSTS;          /*!< [0x58] EADC Start of Conversion Pending Flag Register               */
     __IO uint32_t OVSTS;            /*!< [0x5C] EADC Sample Module Start of Conversion Overrun Flag Register */
-    __IO uint32_t CTL1;             /*!< [0x60] EADC Control1 Register                                  */
-	__I  uint32_t RESERVE0[6];
-    __IO uint32_t SELFTCTL;         /*!< [0x7C] EADC Self Test Control Register                         */
-    __IO uint32_t SCTL[19];         /*!< [0x80-0xC8] EADC Sample Module 0~18 Control Register           */
-	__I  uint32_t RESERVE1[1];
-    __IO uint32_t INTSRC[4];        /*!< [0xD0-0xDC] EADC Interrupt 0~3 Source Enable Control Register. */
-    __IO uint32_t CMP[4];           /*!< [0xE0-0xEC] EADC Result Compare Register 0~3                   */
-    __I  uint32_t STATUS0;          /*!< [0xF0] EADC Status Register 0                                  */
-    __I  uint32_t STATUS1;          /*!< [0xF4] EADC Status Register 1                                  */
-    __IO uint32_t STATUS2;          /*!< [0xF8] EADC Status Register 2                                  */
-    __I  uint32_t STATUS3;          /*!< [0xFC] EADC Status Register 3                                  */
-    __I  uint32_t DDAT[4];          /*!< [0x100-0x10C] EADC Double Data Register 0~3 for Sample Module 0~3  */
-	__I  uint32_t RESERVE2[1];
+    __IO uint32_t CTL1;             /*!< [0x60] EADC Control1 Register                                       */
+    __I  uint32_t RESERVE0[7];                                                                                
+    __IO uint32_t SCTL[19];         /*!< [0x80-0xC8] EADC Sample Module 0~18 Control Register                */
+    __I  uint32_t RESERVE1[1];
+    __IO uint32_t INTSRC[4];        /*!< [0xD0-0xDC] EADC Interrupt 0~3 Source Enable Control Register.      */
+    __IO uint32_t CMP[4];           /*!< [0xE0-0xEC] EADC Result Compare Register 0~3                        */
+    __I  uint32_t STATUS0;          /*!< [0xF0] EADC Status Register 0                                       */
+    __I  uint32_t STATUS1;          /*!< [0xF4] EADC Status Register 1                                       */
+    __IO uint32_t STATUS2;          /*!< [0xF8] EADC Status Register 2                                       */
+    __I  uint32_t STATUS3;          /*!< [0xFC] EADC Status Register 3                                       */
+    __I  uint32_t DDAT[4];          /*!< [0x100-0x10C] EADC Double Data Register 0~3 for Sample Module 0~3   */
+    __I  uint32_t RESERVE2[1];
     __IO uint32_t CALCTL;           /*!< [0x114] EADC Calibration Control Register                      */
     __IO uint32_t CALSR;            /*!< [0x118] EADC Calibration Status Register                       */
-	__I  uint32_t RESERVE3[5];
+    __I  uint32_t RESERVE3[5];
     __IO uint32_t PDMACTL;          /*!< [0x130] EADC PDMA Control Register                             */
-	__I  uint32_t RESERVE4[3];
+    __I  uint32_t RESERVE4[3];
     __IO uint32_t MCTL1[19];        /*!< [0x140-0x188] EADC Sample Module 0~18 Control Register 1        */
-	__I  uint32_t RESERVE5[29];
+    __I  uint32_t RESERVE5[29];
     __I  uint32_t DAT19[9];         /*!< [0x200-0x220] EADC Data Register 19~27 for Sample Module 19~27 */
-	__I  uint32_t RESERVE6[3];
+    __I  uint32_t RESERVE6[3];
     __IO uint32_t SCTL19[9];        /*!< [0x230-0x250] EADC Sample Module 19~27 Control Register        */
-	__I  uint32_t RESERVE7[3];
-    __IO uint32_t MCTL19[9];        /*!< [0x260-0x280] EADC Sample Module 19~27 Control Register 1        */
-	__I  uint32_t RESERVE8[858];
-    __I  uint32_t ALDOCTL;          /*!< [0xFEC] EADC ALDO Control                                    */ 
-	__IO uint32_t TEST;             /*!< [0xFF0] EADC Test Mode Control Register                        */
-    __IO uint32_t DEBUG;            /*!< [0xFF4] EADC Debug Mode Control Register                       */
-    __IO uint32_t VREF;             /*!< [0xFF8] EADC Reference Voltage Control Register                */
-    __I  uint32_t VERSION;          /*!< [0xFFC] EADC RTL Design Version Number                         */
+    __I  uint32_t RESERVE7[3];
+    __IO uint32_t M19CTL1[9];       /*!< [0x260-0x280] EADC Sample Module 19~27 Control Register 1        */
 } EADC_T;
 
 /**
@@ -846,12 +1137,6 @@ typedef struct
 
 #define EADC_CTL1_CMP3TRG_Pos           (23)                                        /*!< EADC_T::CTL1: CMP3TRG Position             */
 #define EADC_CTL1_CMP3TRG_Msk           (0x1UL << EADC_CTL1_CMP3TRG_Pos)            /*!< EADC_T::CTL1: CMP3TRG Mask                 */
-
-#define EADC_CTL1_OSR_Pos               (24)                                        /*!< EADC_T::CTL1: OSR Position                 */
-#define EADC_CTL1_OSR_Msk               (0xffUL << EADC_CTL1_OSR_Pos)               /*!< EADC_T::CTL1: OSR Mask                     */
-
-#define EADC_SELFTCTL_SELFTEN_Pos       (0)                                         /*!< EADC_T::SELFTCTL: SELFTEN Position         */
-#define EADC_SELFTCTL_SELFTEN_Msk       (0x1UL << EADC_SELFTCTL_SELFTEN_Pos)        /*!< EADC_T::SELFTCTL: SELFTEN Mask             */
 
 #define EADC_SCTL_CHSEL_Pos             (0)                                         /*!< EADC_T::SCTL: CHSEL Position               */
 #define EADC_SCTL_CHSEL_Msk             (0x1fUL << EADC_SCTL_CHSEL_Pos)             /*!< EADC_T::SCTL: CHSEL Mask                   */
@@ -1328,10 +1613,10 @@ typedef struct
 #define EADC_SCTL18_EXTREN_Msk           (0x1UL << EADC_SCTL18_EXTREN_Pos)            /*!< EADC_T::SCTL18: EXTREN Mask                 */
 
 #define EADC_SCTL18_EXTFEN_Pos           (23)                                        /*!< EADC_T::SCTL18: EXTFEN Position             */
-#define EADC_SCTL18_EXTFEN_Msk           (0x1UL << EADC_SCTL18_EXTFEN_Pos)            /*!< EADC_T::SCTL18: EXTFEN Mask                 */
+#define EADC_SCTL18_EXTFEN_Msk           (0x1UL << EADC_SCTL18_EXTFEN_Pos)           /*!< EADC_T::SCTL18: EXTFEN Mask                 */
 
 #define EADC_SCTL18_EXTSMPT_Pos          (24)                                        /*!< EADC_T::SCTL18: EXTSMPT Position            */
-#define EADC_SCTL18_EXTSMPT_Msk          (0xffUL << EADC_SCTL18_EXTSMPT_Pos)          /*!< EADC_T::SCTL18: EXTSMPT Mask                */
+#define EADC_SCTL18_EXTSMPT_Msk          (0xffUL << EADC_SCTL18_EXTSMPT_Pos)         /*!< EADC_T::SCTL18: EXTSMPT Mask                */
 
 #define EADC_INTSRC_SPLIE0_Pos          (0)                                         /*!< EADC_T::INTSRC: SPLIE0 Position            */
 #define EADC_INTSRC_SPLIE0_Msk          (0x1UL << EADC_INTSRC_SPLIE0_Pos)           /*!< EADC_T::INTSRC: SPLIE0 Mask                */
@@ -1483,24 +1768,23 @@ typedef struct
 #define EADC_INTSRC0_SPLIE21_Pos        (21)                                        /*!< EADC_T::INTSRC0: SPLIE21 Position          */
 #define EADC_INTSRC0_SPLIE21_Msk        (0x1UL << EADC_INTSRC0_SPLIE21_Pos)         /*!< EADC_T::INTSRC0: SPLIE21 Mask              */
 
-#define EADC_INTSRC0_SPLIE22_Pos         (22)                                        /*!< EADC_T::INTSRC0: SPLIE22 Position           */
-#define EADC_INTSRC0_SPLIE22_Msk         (0x1UL << EADC_INTSRC0_SPLIE22_Pos)          /*!< EADC_T::INTSRC0: SPLIE22 Mask               */
-
-#define EADC_INTSRC0_SPLIE23_Pos         (23)                                        /*!< EADC_T::INTSRC0: SPLIE23 Position           */
-#define EADC_INTSRC0_SPLIE23_Msk         (0x1UL << EADC_INTSRC0_SPLIE23_Pos)          /*!< EADC_T::INTSRC0: SPLIE23 Mask               */
-
-#define EADC_INTSRC0_SPLIE24_Pos         (24)                                        /*!< EADC_T::INTSRC0: SPLIE24 Position           */
-#define EADC_INTSRC0_SPLIE24_Msk         (0x1UL << EADC_INTSRC0_SPLIE24_Pos)          /*!< EADC_T::INTSRC0: SPLIE24 Mask               */
-
-#define EADC_INTSRC0_SPLIE25_Pos         (25)                                        /*!< EADC_T::INTSRC0: SPLIE25 Position           */
-#define EADC_INTSRC0_SPLIE25_Msk         (0x1UL << EADC_INTSRC0_SPLIE25_Pos)          /*!< EADC_T::INTSRC0: SPLIE25 Mask               */
-
-#define EADC_INTSRC0_SPLIE26_Pos         (26)                                        /*!< EADC_T::INTSRC0: SPLIE26 Position           */
-#define EADC_INTSRC0_SPLIE26_Msk         (0x1UL << EADC_INTSRC0_SPLIE26_Pos)          /*!< EADC_T::INTSRC0: SPLIE26 Mask               */
-
-#define EADC_INTSRC0_SPLIE27_Pos         (27)                                        /*!< EADC_T::INTSRC0: SPLIE27 Position           */
-#define EADC_INTSRC0_SPLIE27_Msk         (0x1UL << EADC_INTSRC0_SPLIE27_Pos)          /*!< EADC_T::INTSRC0: SPLIE27 Mask               */
-
+#define EADC_INTSRC0_SPLIE22_Pos        (22)                                        /*!< EADC_T::INTSRC0: SPLIE22 Position           */
+#define EADC_INTSRC0_SPLIE22_Msk        (0x1UL << EADC_INTSRC0_SPLIE22_Pos)         /*!< EADC_T::INTSRC0: SPLIE22 Mask               */
+                                        
+#define EADC_INTSRC0_SPLIE23_Pos        (23)                                        /*!< EADC_T::INTSRC0: SPLIE23 Position           */
+#define EADC_INTSRC0_SPLIE23_Msk        (0x1UL << EADC_INTSRC0_SPLIE23_Pos)         /*!< EADC_T::INTSRC0: SPLIE23 Mask               */
+                                        
+#define EADC_INTSRC0_SPLIE24_Pos        (24)                                        /*!< EADC_T::INTSRC0: SPLIE24 Position           */
+#define EADC_INTSRC0_SPLIE24_Msk        (0x1UL << EADC_INTSRC0_SPLIE24_Pos)         /*!< EADC_T::INTSRC0: SPLIE24 Mask               */
+                                        
+#define EADC_INTSRC0_SPLIE25_Pos        (25)                                        /*!< EADC_T::INTSRC0: SPLIE25 Position           */
+#define EADC_INTSRC0_SPLIE25_Msk        (0x1UL << EADC_INTSRC0_SPLIE25_Pos)         /*!< EADC_T::INTSRC0: SPLIE25 Mask               */
+                                        
+#define EADC_INTSRC0_SPLIE26_Pos        (26)                                        /*!< EADC_T::INTSRC0: SPLIE26 Position           */
+#define EADC_INTSRC0_SPLIE26_Msk        (0x1UL << EADC_INTSRC0_SPLIE26_Pos)         /*!< EADC_T::INTSRC0: SPLIE26 Mask               */
+                                        
+#define EADC_INTSRC0_SPLIE27_Pos        (27)                                        /*!< EADC_T::INTSRC0: SPLIE27 Position           */
+#define EADC_INTSRC0_SPLIE27_Msk        (0x1UL << EADC_INTSRC0_SPLIE27_Pos)         /*!< EADC_T::INTSRC0: SPLIE27 Mask               */
 
 #define EADC_INTSRC1_SPLIE0_Pos         (0)                                         /*!< EADC_T::INTSRC1: SPLIE0 Position           */
 #define EADC_INTSRC1_SPLIE0_Msk         (0x1UL << EADC_INTSRC1_SPLIE0_Pos)          /*!< EADC_T::INTSRC1: SPLIE0 Mask               */
@@ -1568,23 +1852,23 @@ typedef struct
 #define EADC_INTSRC1_SPLIE21_Pos        (21)                                        /*!< EADC_T::INTSRC1: SPLIE21 Position          */
 #define EADC_INTSRC1_SPLIE21_Msk        (0x1UL << EADC_INTSRC1_SPLIE21_Pos)         /*!< EADC_T::INTSRC1: SPLIE21 Mask              */
 
-#define EADC_INTSRC1_SPLIE22_Pos         (22)                                        /*!< EADC_T::INTSRC1: SPLIE22 Position           */
-#define EADC_INTSRC1_SPLIE22_Msk         (0x1UL << EADC_INTSRC1_SPLIE22_Pos)          /*!< EADC_T::INTSRC1: SPLIE22 Mask               */
+#define EADC_INTSRC1_SPLIE22_Pos        (22)                                        /*!< EADC_T::INTSRC1: SPLIE22 Position           */
+#define EADC_INTSRC1_SPLIE22_Msk        (0x1UL << EADC_INTSRC1_SPLIE22_Pos)          /*!< EADC_T::INTSRC1: SPLIE22 Mask               */
 
-#define EADC_INTSRC1_SPLIE23_Pos         (23)                                        /*!< EADC_T::INTSRC1: SPLIE23 Position           */
-#define EADC_INTSRC1_SPLIE23_Msk         (0x1UL << EADC_INTSRC1_SPLIE23_Pos)          /*!< EADC_T::INTSRC1: SPLIE23 Mask               */
+#define EADC_INTSRC1_SPLIE23_Pos        (23)                                        /*!< EADC_T::INTSRC1: SPLIE23 Position           */
+#define EADC_INTSRC1_SPLIE23_Msk        (0x1UL << EADC_INTSRC1_SPLIE23_Pos)         /*!< EADC_T::INTSRC1: SPLIE23 Mask               */
 
-#define EADC_INTSRC1_SPLIE24_Pos         (24)                                        /*!< EADC_T::INTSRC1: SPLIE24 Position           */
-#define EADC_INTSRC1_SPLIE24_Msk         (0x1UL << EADC_INTSRC1_SPLIE24_Pos)          /*!< EADC_T::INTSRC1: SPLIE24 Mask               */
+#define EADC_INTSRC1_SPLIE24_Pos        (24)                                        /*!< EADC_T::INTSRC1: SPLIE24 Position           */
+#define EADC_INTSRC1_SPLIE24_Msk        (0x1UL << EADC_INTSRC1_SPLIE24_Pos)         /*!< EADC_T::INTSRC1: SPLIE24 Mask               */
 
-#define EADC_INTSRC1_SPLIE25_Pos         (25)                                        /*!< EADC_T::INTSRC1: SPLIE25 Position           */
-#define EADC_INTSRC1_SPLIE25_Msk         (0x1UL << EADC_INTSRC1_SPLIE25_Pos)          /*!< EADC_T::INTSRC1: SPLIE25 Mask               */
+#define EADC_INTSRC1_SPLIE25_Pos        (25)                                        /*!< EADC_T::INTSRC1: SPLIE25 Position           */
+#define EADC_INTSRC1_SPLIE25_Msk        (0x1UL << EADC_INTSRC1_SPLIE25_Pos)         /*!< EADC_T::INTSRC1: SPLIE25 Mask               */
 
-#define EADC_INTSRC1_SPLIE26_Pos         (26)                                        /*!< EADC_T::INTSRC1: SPLIE26 Position           */
-#define EADC_INTSRC1_SPLIE26_Msk         (0x1UL << EADC_INTSRC1_SPLIE26_Pos)          /*!< EADC_T::INTSRC1: SPLIE26 Mask               */
+#define EADC_INTSRC1_SPLIE26_Pos        (26)                                        /*!< EADC_T::INTSRC1: SPLIE26 Position           */
+#define EADC_INTSRC1_SPLIE26_Msk        (0x1UL << EADC_INTSRC1_SPLIE26_Pos)         /*!< EADC_T::INTSRC1: SPLIE26 Mask               */
 
-#define EADC_INTSRC1_SPLIE27_Pos         (27)                                        /*!< EADC_T::INTSRC1: SPLIE27 Position           */
-#define EADC_INTSRC1_SPLIE27_Msk         (0x1UL << EADC_INTSRC1_SPLIE27_Pos)          /*!< EADC_T::INTSRC1: SPLIE27 Mask               */
+#define EADC_INTSRC1_SPLIE27_Pos        (27)                                        /*!< EADC_T::INTSRC1: SPLIE27 Position           */
+#define EADC_INTSRC1_SPLIE27_Msk        (0x1UL << EADC_INTSRC1_SPLIE27_Pos)         /*!< EADC_T::INTSRC1: SPLIE27 Mask               */
 
 #define EADC_INTSRC2_SPLIE0_Pos         (0)                                         /*!< EADC_T::INTSRC2: SPLIE0 Position           */
 #define EADC_INTSRC2_SPLIE0_Msk         (0x1UL << EADC_INTSRC2_SPLIE0_Pos)          /*!< EADC_T::INTSRC2: SPLIE0 Mask               */
@@ -1652,23 +1936,23 @@ typedef struct
 #define EADC_INTSRC2_SPLIE21_Pos        (21)                                        /*!< EADC_T::INTSRC2: SPLIE21 Position          */
 #define EADC_INTSRC2_SPLIE21_Msk        (0x1UL << EADC_INTSRC2_SPLIE21_Pos)         /*!< EADC_T::INTSRC2: SPLIE21 Mask              */
 
-#define EADC_INTSRC2_SPLIE22_Pos         (22)                                        /*!< EADC_T::INTSRC2: SPLIE22 Position           */
-#define EADC_INTSRC2_SPLIE22_Msk         (0x1UL << EADC_INTSRC2_SPLIE22_Pos)          /*!< EADC_T::INTSRC2: SPLIE22 Mask               */
+#define EADC_INTSRC2_SPLIE22_Pos        (22)                                        /*!< EADC_T::INTSRC2: SPLIE22 Position           */
+#define EADC_INTSRC2_SPLIE22_Msk        (0x1UL << EADC_INTSRC2_SPLIE22_Pos)         /*!< EADC_T::INTSRC2: SPLIE22 Mask               */
 
-#define EADC_INTSRC2_SPLIE23_Pos         (23)                                        /*!< EADC_T::INTSRC2: SPLIE23 Position           */
-#define EADC_INTSRC2_SPLIE23_Msk         (0x1UL << EADC_INTSRC2_SPLIE23_Pos)          /*!< EADC_T::INTSRC2: SPLIE23 Mask               */
+#define EADC_INTSRC2_SPLIE23_Pos        (23)                                        /*!< EADC_T::INTSRC2: SPLIE23 Position           */
+#define EADC_INTSRC2_SPLIE23_Msk        (0x1UL << EADC_INTSRC2_SPLIE23_Pos)         /*!< EADC_T::INTSRC2: SPLIE23 Mask               */
 
-#define EADC_INTSRC2_SPLIE24_Pos         (24)                                        /*!< EADC_T::INTSRC2: SPLIE24 Position           */
-#define EADC_INTSRC2_SPLIE24_Msk         (0x1UL << EADC_INTSRC2_SPLIE24_Pos)          /*!< EADC_T::INTSRC2: SPLIE24 Mask               */
+#define EADC_INTSRC2_SPLIE24_Pos        (24)                                        /*!< EADC_T::INTSRC2: SPLIE24 Position           */
+#define EADC_INTSRC2_SPLIE24_Msk        (0x1UL << EADC_INTSRC2_SPLIE24_Pos)         /*!< EADC_T::INTSRC2: SPLIE24 Mask               */
 
-#define EADC_INTSRC2_SPLIE25_Pos         (25)                                        /*!< EADC_T::INTSRC2: SPLIE25 Position           */
-#define EADC_INTSRC2_SPLIE25_Msk         (0x1UL << EADC_INTSRC2_SPLIE25_Pos)          /*!< EADC_T::INTSRC2: SPLIE25 Mask               */
+#define EADC_INTSRC2_SPLIE25_Pos        (25)                                        /*!< EADC_T::INTSRC2: SPLIE25 Position           */
+#define EADC_INTSRC2_SPLIE25_Msk        (0x1UL << EADC_INTSRC2_SPLIE25_Pos)         /*!< EADC_T::INTSRC2: SPLIE25 Mask               */
 
-#define EADC_INTSRC2_SPLIE26_Pos         (26)                                        /*!< EADC_T::INTSRC2: SPLIE26 Position           */
-#define EADC_INTSRC2_SPLIE26_Msk         (0x1UL << EADC_INTSRC2_SPLIE26_Pos)          /*!< EADC_T::INTSRC2: SPLIE26 Mask               */
+#define EADC_INTSRC2_SPLIE26_Pos        (26)                                        /*!< EADC_T::INTSRC2: SPLIE26 Position           */
+#define EADC_INTSRC2_SPLIE26_Msk        (0x1UL << EADC_INTSRC2_SPLIE26_Pos)         /*!< EADC_T::INTSRC2: SPLIE26 Mask               */
 
-#define EADC_INTSRC2_SPLIE27_Pos         (27)                                        /*!< EADC_T::INTSRC2: SPLIE27 Position           */
-#define EADC_INTSRC2_SPLIE27_Msk         (0x1UL << EADC_INTSRC2_SPLIE27_Pos)          /*!< EADC_T::INTSRC2: SPLIE27 Mask               */
+#define EADC_INTSRC2_SPLIE27_Pos        (27)                                        /*!< EADC_T::INTSRC2: SPLIE27 Position           */
+#define EADC_INTSRC2_SPLIE27_Msk        (0x1UL << EADC_INTSRC2_SPLIE27_Pos)         /*!< EADC_T::INTSRC2: SPLIE27 Mask               */
 
 #define EADC_INTSRC3_SPLIE0_Pos         (0)                                         /*!< EADC_T::INTSRC3: SPLIE0 Position           */
 #define EADC_INTSRC3_SPLIE0_Msk         (0x1UL << EADC_INTSRC3_SPLIE0_Pos)          /*!< EADC_T::INTSRC3: SPLIE0 Mask               */
@@ -1736,23 +2020,23 @@ typedef struct
 #define EADC_INTSRC3_SPLIE21_Pos        (21)                                        /*!< EADC_T::INTSRC3: SPLIE21 Position          */
 #define EADC_INTSRC3_SPLIE21_Msk        (0x1UL << EADC_INTSRC3_SPLIE21_Pos)         /*!< EADC_T::INTSRC3: SPLIE21 Mask              */
 
-#define EADC_INTSRC3_SPLIE22_Pos         (22)                                        /*!< EADC_T::INTSRC3: SPLIE22 Position           */
-#define EADC_INTSRC3_SPLIE22_Msk         (0x1UL << EADC_INTSRC3_SPLIE22_Pos)          /*!< EADC_T::INTSRC3: SPLIE22 Mask               */
+#define EADC_INTSRC3_SPLIE22_Pos        (22)                                        /*!< EADC_T::INTSRC3: SPLIE22 Position           */
+#define EADC_INTSRC3_SPLIE22_Msk        (0x1UL << EADC_INTSRC3_SPLIE22_Pos)         /*!< EADC_T::INTSRC3: SPLIE22 Mask               */
 
-#define EADC_INTSRC3_SPLIE23_Pos         (23)                                        /*!< EADC_T::INTSRC3: SPLIE23 Position           */
-#define EADC_INTSRC3_SPLIE23_Msk         (0x1UL << EADC_INTSRC3_SPLIE23_Pos)          /*!< EADC_T::INTSRC3: SPLIE23 Mask               */
+#define EADC_INTSRC3_SPLIE23_Pos        (23)                                        /*!< EADC_T::INTSRC3: SPLIE23 Position           */
+#define EADC_INTSRC3_SPLIE23_Msk        (0x1UL << EADC_INTSRC3_SPLIE23_Pos)         /*!< EADC_T::INTSRC3: SPLIE23 Mask               */
 
-#define EADC_INTSRC3_SPLIE24_Pos         (24)                                        /*!< EADC_T::INTSRC3: SPLIE24 Position           */
-#define EADC_INTSRC3_SPLIE24_Msk         (0x1UL << EADC_INTSRC3_SPLIE24_Pos)          /*!< EADC_T::INTSRC3: SPLIE24 Mask               */
+#define EADC_INTSRC3_SPLIE24_Pos        (24)                                        /*!< EADC_T::INTSRC3: SPLIE24 Position           */
+#define EADC_INTSRC3_SPLIE24_Msk        (0x1UL << EADC_INTSRC3_SPLIE24_Pos)         /*!< EADC_T::INTSRC3: SPLIE24 Mask               */
 
-#define EADC_INTSRC3_SPLIE25_Pos         (25)                                        /*!< EADC_T::INTSRC3: SPLIE25 Position           */
-#define EADC_INTSRC3_SPLIE25_Msk         (0x1UL << EADC_INTSRC3_SPLIE25_Pos)          /*!< EADC_T::INTSRC3: SPLIE25 Mask               */
+#define EADC_INTSRC3_SPLIE25_Pos        (25)                                        /*!< EADC_T::INTSRC3: SPLIE25 Position           */
+#define EADC_INTSRC3_SPLIE25_Msk        (0x1UL << EADC_INTSRC3_SPLIE25_Pos)         /*!< EADC_T::INTSRC3: SPLIE25 Mask               */
 
-#define EADC_INTSRC3_SPLIE26_Pos         (26)                                        /*!< EADC_T::INTSRC3: SPLIE26 Position           */
-#define EADC_INTSRC3_SPLIE26_Msk         (0x1UL << EADC_INTSRC3_SPLIE26_Pos)          /*!< EADC_T::INTSRC3: SPLIE26 Mask               */
+#define EADC_INTSRC3_SPLIE26_Pos        (26)                                        /*!< EADC_T::INTSRC3: SPLIE26 Position           */
+#define EADC_INTSRC3_SPLIE26_Msk        (0x1UL << EADC_INTSRC3_SPLIE26_Pos)         /*!< EADC_T::INTSRC3: SPLIE26 Mask               */
 
-#define EADC_INTSRC3_SPLIE27_Pos         (27)                                        /*!< EADC_T::INTSRC3: SPLIE27 Position           */
-#define EADC_INTSRC3_SPLIE27_Msk         (0x1UL << EADC_INTSRC3_SPLIE27_Pos)          /*!< EADC_T::INTSRC3: SPLIE27 Mask               */
+#define EADC_INTSRC3_SPLIE27_Pos        (27)                                        /*!< EADC_T::INTSRC3: SPLIE27 Position           */
+#define EADC_INTSRC3_SPLIE27_Msk        (0x1UL << EADC_INTSRC3_SPLIE27_Pos)         /*!< EADC_T::INTSRC3: SPLIE27 Mask               */
 
 #define EADC_CMP_ADCMPEN_Pos            (0)                                         /*!< EADC_T::CMP: ADCMPEN Position              */
 #define EADC_CMP_ADCMPEN_Msk            (0x1UL << EADC_CMP_ADCMPEN_Pos)             /*!< EADC_T::CMP: ADCMPEN Mask                  */
@@ -1866,10 +2150,10 @@ typedef struct
 #define EADC_STATUS0_OV_Msk             (0xffffUL << EADC_STATUS0_OV_Pos)           /*!< EADC_T::STATUS0: OV Mask                   */
 
 #define EADC_STATUS1_VALID_Pos          (0)                                         /*!< EADC_T::STATUS1: VALID Position            */
-#define EADC_STATUS1_VALID_Msk          (0xfffUL << EADC_STATUS1_VALID_Pos)          /*!< EADC_T::STATUS1: VALID Mask                */
+#define EADC_STATUS1_VALID_Msk          (0xfffUL << EADC_STATUS1_VALID_Pos)         /*!< EADC_T::STATUS1: VALID Mask                */
 
 #define EADC_STATUS1_OV_Pos             (16)                                        /*!< EADC_T::STATUS1: OV Position               */
-#define EADC_STATUS1_OV_Msk             (0xfffUL << EADC_STATUS1_OV_Pos)             /*!< EADC_T::STATUS1: OV Mask                   */
+#define EADC_STATUS1_OV_Msk             (0xfffUL << EADC_STATUS1_OV_Pos)            /*!< EADC_T::STATUS1: OV Mask                   */
 
 #define EADC_STATUS2_ADIF0_Pos          (0)                                         /*!< EADC_T::STATUS2: ADIF0 Position            */
 #define EADC_STATUS2_ADIF0_Msk          (0x1UL << EADC_STATUS2_ADIF0_Pos)           /*!< EADC_T::STATUS2: ADIF0 Mask                */
@@ -1991,35 +2275,11 @@ typedef struct
 #define EADC_CALCTL_CALIE_Pos           (1)                                         /*!< EADC_T::CALCTL: CALIE Position             */
 #define EADC_CALCTL_CALIE_Msk           (0x1UL << EADC_CALCTL_CALIE_Pos)            /*!< EADC_T::CALCTL: CALIE Mask                 */
 
-#define EADC_CALCTL_CALWR_Pos           (2)                                         /*!< EADC_T::CALCTL: CALWR Position             */
-#define EADC_CALCTL_CALWR_Msk           (0x1UL << EADC_CALCTL_CALWR_Pos)            /*!< EADC_T::CALCTL: CALWR Mask                 */
-
-#define EADC_CALCTL_CALRD_Pos           (3)                                         /*!< EADC_T::CALCTL: CALRD Position             */
-#define EADC_CALCTL_CALRD_Msk           (0x1UL << EADC_CALCTL_CALRD_Pos)            /*!< EADC_T::CALCTL: CALRD Mask                 */
-
-#define EADC_CALCTL_OUTSEL_Pos          (4)                                         /*!< EADC_T::CALCTL: OUTSEL Position            */
-#define EADC_CALCTL_OUTSEL_Msk          (0x1UL << EADC_CALCTL_OUTSEL_Pos)           /*!< EADC_T::CALCTL: OUTSEL Mask                */
-
-#define EADC_CALCTL_CALSEL16T_Pos       (5)                                         /*!< EADC_T::CALCTL: CALSEL16T Position         */
-#define EADC_CALCTL_CALSEL16T_Msk       (0x1UL << EADC_CALCTL_CALSEL16T_Pos)        /*!< EADC_T::CALCTL: CALSEL16T Mask             */
-
-#define EADC_CALCTL_CALADDR_Pos         (8)                                         /*!< EADC_T::CALCTL: CALADDR Position           */
-#define EADC_CALCTL_CALADDR_Msk         (0x1fUL << EADC_CALCTL_CALADDR_Pos)         /*!< EADC_T::CALCTL: CALADDR Mask               */
-
-#define EADC_CALCTL_CALSEL_Pos          (16)                                        /*!< EADC_T::CALCTL: CALSEL Position            */
-#define EADC_CALCTL_CALSEL_Msk          (0xfUL << EADC_CALCTL_CALSEL_Pos)           /*!< EADC_T::CALCTL: CALSEL Mask                */
-
-#define EADC_CALCTL_CALWRDATA_Pos       (24)                                        /*!< EADC_T::CALCTL: CALWRDATA Position         */
-#define EADC_CALCTL_CALWRDATA_Msk       (0xffUL << EADC_CALCTL_CALWRDATA_Pos)       /*!< EADC_T::CALCTL: CALWRDATA Mask             */
-
-#define EADC_CALSR_CALRDATA_Pos         (0)                                         /*!< EADC_T::CALSR: CALRDATA Position           */
-#define EADC_CALSR_CALRDATA_Msk         (0xfffUL << EADC_CALSR_CALRDATA_Pos)        /*!< EADC_T::CALSR: CALRDATA Mask               */
-
 #define EADC_CALSR_CALIF_Pos            (16)                                        /*!< EADC_T::CALSR: CALIF Position              */
 #define EADC_CALSR_CALIF_Msk            (0x1UL << EADC_CALSR_CALIF_Pos)             /*!< EADC_T::CALSR: CALIF Mask                  */
 
 #define EADC_PDMACTL_PDMATEN_Pos        (0)                                         /*!< EADC_T::PDMACTL: PDMATEN Position          */
-#define EADC_PDMACTL_PDMATEN_Msk        (0xfffffffUL << EADC_PDMACTL_PDMATEN_Pos)    /*!< EADC_T::PDMACTL: PDMATEN Mask              */
+#define EADC_PDMACTL_PDMATEN_Msk        (0xfffffffUL << EADC_PDMACTL_PDMATEN_Pos)   /*!< EADC_T::PDMACTL: PDMATEN Mask              */
 
 #define EADC_MCTL1_ALIGN_Pos            (0)                                         /*!< EADC_T::MCTL1: ALIGN Position              */
 #define EADC_MCTL1_ALIGN_Msk            (0x1UL << EADC_MCTL1_ALIGN_Pos)             /*!< EADC_T::MCTL1: ALIGN Mask                  */
@@ -2045,11 +2305,11 @@ typedef struct
 #define EADC_M0CTL1_ACU_Pos             (4)                                         /*!< EADC_T::M0CTL1: ACU Position               */
 #define EADC_M0CTL1_ACU_Msk             (0xfUL << EADC_M0CTL1_ACU_Pos)              /*!< EADC_T::M0CTL1: ACU Mask                   */
 
-#define EADC_M0CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M0CTL1: EXTSTDIV Position                */
-#define EADC_M0CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M0CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M0CTL1: EXTSTDIV Mask                    */
+#define EADC_M0CTL1_EXTSTDIV_Pos        (16)                                        /*!< EADC_T::M0CTL1: EXTSTDIV Position                */
+#define EADC_M0CTL1_EXTSTDIV_Msk        (0x3UL << EADC_M0CTL1_EXTSTDIV_Pos)         /*!< EADC_T::M0CTL1: EXTSTDIV Mask                    */
 
-#define EADC_M0CTL1_DBMEN_Pos            (20)                                        /*!< EADC_T::M0CTL1: DBMEN Position                */
-#define EADC_M0CTL1_DBMEN_Msk            (0x1UL << EADC_M0CTL1_DBMEN_Pos)             /*!< EADC_T::M0CTL1: DBMEN Mask                    */
+#define EADC_M0CTL1_DBMEN_Pos           (20)                                        /*!< EADC_T::M0CTL1: DBMEN Position                */
+#define EADC_M0CTL1_DBMEN_Msk           (0x1UL << EADC_M0CTL1_DBMEN_Pos)            /*!< EADC_T::M0CTL1: DBMEN Mask                    */
 
 #define EADC_M1CTL1_ALIGN_Pos           (0)                                         /*!< EADC_T::M1CTL1: ALIGN Position             */
 #define EADC_M1CTL1_ALIGN_Msk           (0x1UL << EADC_M1CTL1_ALIGN_Pos)            /*!< EADC_T::M1CTL1: ALIGN Mask                 */
@@ -2060,11 +2320,11 @@ typedef struct
 #define EADC_M1CTL1_ACU_Pos             (4)                                         /*!< EADC_T::M1CTL1: ACU Position               */
 #define EADC_M1CTL1_ACU_Msk             (0xfUL << EADC_M1CTL1_ACU_Pos)              /*!< EADC_T::M1CTL1: ACU Mask                   */
 
-#define EADC_M1CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M1CTL1: EXTSTDIV Position                */
-#define EADC_M1CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M1CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M1CTL1: EXTSTDIV Mask                    */
+#define EADC_M1CTL1_EXTSTDIV_Pos        (16)                                        /*!< EADC_T::M1CTL1: EXTSTDIV Position                */
+#define EADC_M1CTL1_EXTSTDIV_Msk        (0x3UL << EADC_M1CTL1_EXTSTDIV_Pos)         /*!< EADC_T::M1CTL1: EXTSTDIV Mask                    */
 
-#define EADC_M1CTL1_DBMEN_Pos            (20)                                        /*!< EADC_T::M1CTL1: DBMEN Position                */
-#define EADC_M1CTL1_DBMEN_Msk            (0x1UL << EADC_M1CTL1_DBMEN_Pos)             /*!< EADC_T::M1CTL1: DBMEN Mask                    */
+#define EADC_M1CTL1_DBMEN_Pos           (20)                                        /*!< EADC_T::M1CTL1: DBMEN Position                */
+#define EADC_M1CTL1_DBMEN_Msk           (0x1UL << EADC_M1CTL1_DBMEN_Pos)            /*!< EADC_T::M1CTL1: DBMEN Mask                    */
 
 #define EADC_M2CTL1_ALIGN_Pos           (0)                                         /*!< EADC_T::M2CTL1: ALIGN Position             */
 #define EADC_M2CTL1_ALIGN_Msk           (0x1UL << EADC_M2CTL1_ALIGN_Pos)            /*!< EADC_T::M2CTL1: ALIGN Mask                 */
@@ -2075,11 +2335,11 @@ typedef struct
 #define EADC_M2CTL1_ACU_Pos             (4)                                         /*!< EADC_T::M2CTL1: ACU Position               */
 #define EADC_M2CTL1_ACU_Msk             (0xfUL << EADC_M2CTL1_ACU_Pos)              /*!< EADC_T::M2CTL1: ACU Mask                   */
 
-#define EADC_M2CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M2CTL1: EXTSTDIV Position                */
-#define EADC_M2CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M2CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M2CTL1: EXTSTDIV Mask                    */
+#define EADC_M2CTL1_EXTSTDIV_Pos        (16)                                        /*!< EADC_T::M2CTL1: EXTSTDIV Position                */
+#define EADC_M2CTL1_EXTSTDIV_Msk        (0x3UL << EADC_M2CTL1_EXTSTDIV_Pos)         /*!< EADC_T::M2CTL1: EXTSTDIV Mask                    */
 
-#define EADC_M2CTL1_DBMEN_Pos            (20)                                        /*!< EADC_T::M2CTL1: DBMEN Position                */
-#define EADC_M2CTL1_DBMEN_Msk            (0x1UL << EADC_M2CTL1_DBMEN_Pos)             /*!< EADC_T::M2CTL1: DBMEN Mask                    */
+#define EADC_M2CTL1_DBMEN_Pos           (20)                                        /*!< EADC_T::M2CTL1: DBMEN Position                */
+#define EADC_M2CTL1_DBMEN_Msk           (0x1UL << EADC_M2CTL1_DBMEN_Pos)            /*!< EADC_T::M2CTL1: DBMEN Mask                    */
 
 #define EADC_M3CTL1_ALIGN_Pos           (0)                                         /*!< EADC_T::M3CTL1: ALIGN Position             */
 #define EADC_M3CTL1_ALIGN_Msk           (0x1UL << EADC_M3CTL1_ALIGN_Pos)            /*!< EADC_T::M3CTL1: ALIGN Mask                 */
@@ -2090,11 +2350,11 @@ typedef struct
 #define EADC_M3CTL1_ACU_Pos             (4)                                         /*!< EADC_T::M3CTL1: ACU Position               */
 #define EADC_M3CTL1_ACU_Msk             (0xfUL << EADC_M3CTL1_ACU_Pos)              /*!< EADC_T::M3CTL1: ACU Mask                   */
 
-#define EADC_M3CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M3CTL1: EXTSTDIV Position                */
-#define EADC_M3CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M3CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M3CTL1: EXTSTDIV Mask                    */
+#define EADC_M3CTL1_EXTSTDIV_Pos        (16)                                        /*!< EADC_T::M3CTL1: EXTSTDIV Position                */
+#define EADC_M3CTL1_EXTSTDIV_Msk        (0x3UL << EADC_M3CTL1_EXTSTDIV_Pos)         /*!< EADC_T::M3CTL1: EXTSTDIV Mask                    */
 
-#define EADC_M3CTL1_DBMEN_Pos            (20)                                        /*!< EADC_T::M3CTL1: DBMEN Position                */
-#define EADC_M3CTL1_DBMEN_Msk            (0x1UL << EADC_M3CTL1_DBMEN_Pos)             /*!< EADC_T::M3CTL1: DBMEN Mask                    */
+#define EADC_M3CTL1_DBMEN_Pos           (20)                                        /*!< EADC_T::M3CTL1: DBMEN Position                */
+#define EADC_M3CTL1_DBMEN_Msk           (0x1UL << EADC_M3CTL1_DBMEN_Pos)            /*!< EADC_T::M3CTL1: DBMEN Mask                    */
 
 #define EADC_M4CTL1_ALIGN_Pos           (0)                                         /*!< EADC_T::M4CTL1: ALIGN Position             */
 #define EADC_M4CTL1_ALIGN_Msk           (0x1UL << EADC_M4CTL1_ALIGN_Pos)            /*!< EADC_T::M4CTL1: ALIGN Mask                 */
@@ -2105,9 +2365,8 @@ typedef struct
 #define EADC_M4CTL1_ACU_Pos             (4)                                         /*!< EADC_T::M4CTL1: ACU Position               */
 #define EADC_M4CTL1_ACU_Msk             (0xfUL << EADC_M4CTL1_ACU_Pos)              /*!< EADC_T::M4CTL1: ACU Mask                   */
 
-#define EADC_M4CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M4CTL1: EXTSTDIV Position                */
-#define EADC_M4CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M4CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M4CTL1: EXTSTDIV Mask                    */
-
+#define EADC_M4CTL1_EXTSTDIV_Pos        (16)                                        /*!< EADC_T::M4CTL1: EXTSTDIV Position                */
+#define EADC_M4CTL1_EXTSTDIV_Msk        (0x3UL << EADC_M4CTL1_EXTSTDIV_Pos)         /*!< EADC_T::M4CTL1: EXTSTDIV Mask                    */
 
 #define EADC_M5CTL1_ALIGN_Pos           (0)                                         /*!< EADC_T::M5CTL1: ALIGN Position             */
 #define EADC_M5CTL1_ALIGN_Msk           (0x1UL << EADC_M5CTL1_ALIGN_Pos)            /*!< EADC_T::M5CTL1: ALIGN Mask                 */
@@ -2118,8 +2377,8 @@ typedef struct
 #define EADC_M5CTL1_ACU_Pos             (4)                                         /*!< EADC_T::M5CTL1: ACU Position               */
 #define EADC_M5CTL1_ACU_Msk             (0xfUL << EADC_M5CTL1_ACU_Pos)              /*!< EADC_T::M5CTL1: ACU Mask                   */
 
-#define EADC_M5CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M5CTL1: EXTSTDIV Position                */
-#define EADC_M5CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M5CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M5CTL1: EXTSTDIV Mask                    */
+#define EADC_M5CTL1_EXTSTDIV_Pos        (16)                                        /*!< EADC_T::M5CTL1: EXTSTDIV Position                */
+#define EADC_M5CTL1_EXTSTDIV_Msk        (0x3UL << EADC_M5CTL1_EXTSTDIV_Pos)         /*!< EADC_T::M5CTL1: EXTSTDIV Mask                    */
 
 #define EADC_M6CTL1_ALIGN_Pos           (0)                                         /*!< EADC_T::M6CTL1: ALIGN Position             */
 #define EADC_M6CTL1_ALIGN_Msk           (0x1UL << EADC_M6CTL1_ALIGN_Pos)            /*!< EADC_T::M6CTL1: ALIGN Mask                 */
@@ -2133,7 +2392,6 @@ typedef struct
 #define EADC_M6CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M6CTL1: EXTSTDIV Position                */
 #define EADC_M6CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M6CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M6CTL1: EXTSTDIV Mask                    */
 
-
 #define EADC_M7CTL1_ALIGN_Pos           (0)                                         /*!< EADC_T::M7CTL1: ALIGN Position             */
 #define EADC_M7CTL1_ALIGN_Msk           (0x1UL << EADC_M7CTL1_ALIGN_Pos)            /*!< EADC_T::M7CTL1: ALIGN Mask                 */
 
@@ -2143,8 +2401,8 @@ typedef struct
 #define EADC_M7CTL1_ACU_Pos             (4)                                         /*!< EADC_T::M7CTL1: ACU Position               */
 #define EADC_M7CTL1_ACU_Msk             (0xfUL << EADC_M7CTL1_ACU_Pos)              /*!< EADC_T::M7CTL1: ACU Mask                   */
 
-#define EADC_M7CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M7CTL1: EXTSTDIV Position         */
-#define EADC_M7CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M7CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M7CTL1: EXTSTDIV Mask              */
+#define EADC_M7CTL1_EXTSTDIV_Pos        (16)                                        /*!< EADC_T::M7CTL1: EXTSTDIV Position         */
+#define EADC_M7CTL1_EXTSTDIV_Msk        (0x3UL << EADC_M7CTL1_EXTSTDIV_Pos)         /*!< EADC_T::M7CTL1: EXTSTDIV Mask              */
 
 #define EADC_M8CTL1_ALIGN_Pos           (0)                                         /*!< EADC_T::M8CTL1: ALIGN Position             */
 #define EADC_M8CTL1_ALIGN_Msk           (0x1UL << EADC_M8CTL1_ALIGN_Pos)            /*!< EADC_T::M8CTL1: ALIGN Mask                 */
@@ -2155,8 +2413,8 @@ typedef struct
 #define EADC_M8CTL1_ACU_Pos             (4)                                         /*!< EADC_T::M8CTL1: ACU Position               */
 #define EADC_M8CTL1_ACU_Msk             (0xfUL << EADC_M8CTL1_ACU_Pos)              /*!< EADC_T::M8CTL1: ACU Mask                   */
 
-#define EADC_M8CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M8CTL1: EXTSTDIV Position                */
-#define EADC_M8CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M8CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M8CTL1: EXTSTDIV Mask                    */
+#define EADC_M8CTL1_EXTSTDIV_Pos        (16)                                        /*!< EADC_T::M8CTL1: EXTSTDIV Position                */
+#define EADC_M8CTL1_EXTSTDIV_Msk        (0x3UL << EADC_M8CTL1_EXTSTDIV_Pos)         /*!< EADC_T::M8CTL1: EXTSTDIV Mask                    */
 
 #define EADC_M9CTL1_ALIGN_Pos           (0)                                         /*!< EADC_T::M9CTL1: ALIGN Position             */
 #define EADC_M9CTL1_ALIGN_Msk           (0x1UL << EADC_M9CTL1_ALIGN_Pos)            /*!< EADC_T::M9CTL1: ALIGN Mask                 */
@@ -2167,8 +2425,8 @@ typedef struct
 #define EADC_M9CTL1_ACU_Pos             (4)                                         /*!< EADC_T::M9CTL1: ACU Position               */
 #define EADC_M9CTL1_ACU_Msk             (0xfUL << EADC_M9CTL1_ACU_Pos)              /*!< EADC_T::M9CTL1: ACU Mask                   */
 
-#define EADC_M9CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M9CTL1: EXTSTDIV Position                */
-#define EADC_M9CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M9CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M9CTL1: EXTSTDIV Mask                    */
+#define EADC_M9CTL1_EXTSTDIV_Pos        (16)                                        /*!< EADC_T::M9CTL1: EXTSTDIV Position                */
+#define EADC_M9CTL1_EXTSTDIV_Msk        (0x3UL << EADC_M9CTL1_EXTSTDIV_Pos)         /*!< EADC_T::M9CTL1: EXTSTDIV Mask                    */
 
 #define EADC_M10CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M10CTL1: ALIGN Position            */
 #define EADC_M10CTL1_ALIGN_Msk          (0x1UL << EADC_M10CTL1_ALIGN_Pos)           /*!< EADC_T::M10CTL1: ALIGN Mask                */
@@ -2179,8 +2437,8 @@ typedef struct
 #define EADC_M10CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M10CTL1: ACU Position              */
 #define EADC_M10CTL1_ACU_Msk            (0xfUL << EADC_M10CTL1_ACU_Pos)             /*!< EADC_T::M10CTL1: ACU Mask                  */
 
-#define EADC_M10CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M10CTL1: EXTSTDIV Position                */
-#define EADC_M10CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M10CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M10CTL1: EXTSTDIV Mask                    */
+#define EADC_M10CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M10CTL1: EXTSTDIV Position                */
+#define EADC_M10CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M10CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M10CTL1: EXTSTDIV Mask                    */
 
 #define EADC_M11CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M11CTL1: ALIGN Position            */
 #define EADC_M11CTL1_ALIGN_Msk          (0x1UL << EADC_M11CTL1_ALIGN_Pos)           /*!< EADC_T::M11CTL1: ALIGN Mask                */
@@ -2191,9 +2449,8 @@ typedef struct
 #define EADC_M11CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M11CTL1: ACU Position              */
 #define EADC_M11CTL1_ACU_Msk            (0xfUL << EADC_M11CTL1_ACU_Pos)             /*!< EADC_T::M11CTL1: ACU Mask                  */
 
-#define EADC_M11CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M11CTL1: EXTSTDIV Position                */
-#define EADC_M11CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M11CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M11CTL1: EXTSTDIV Mask                    */
-
+#define EADC_M11CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M11CTL1: EXTSTDIV Position                */
+#define EADC_M11CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M11CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M11CTL1: EXTSTDIV Mask                    */
 
 #define EADC_M12CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M12CTL1: ALIGN Position            */
 #define EADC_M12CTL1_ALIGN_Msk          (0x1UL << EADC_M12CTL1_ALIGN_Pos)           /*!< EADC_T::M12CTL1: ALIGN Mask                */
@@ -2204,8 +2461,8 @@ typedef struct
 #define EADC_M12CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M12CTL1: ACU Position              */
 #define EADC_M12CTL1_ACU_Msk            (0xfUL << EADC_M12CTL1_ACU_Pos)             /*!< EADC_T::M12CTL1: ACU Mask                  */
 
-#define EADC_M12CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M12CTL1: EXTSTDIV Position                */
-#define EADC_M12CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M12CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M12CTL1: EXTSTDIV Mask                    */
+#define EADC_M12CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M12CTL1: EXTSTDIV Position                */
+#define EADC_M12CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M12CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M12CTL1: EXTSTDIV Mask                    */
 
 #define EADC_M13CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M13CTL1: ALIGN Position            */
 #define EADC_M13CTL1_ALIGN_Msk          (0x1UL << EADC_M13CTL1_ALIGN_Pos)           /*!< EADC_T::M13CTL1: ALIGN Mask                */
@@ -2216,8 +2473,8 @@ typedef struct
 #define EADC_M13CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M13CTL1: ACU Position              */
 #define EADC_M13CTL1_ACU_Msk            (0xfUL << EADC_M13CTL1_ACU_Pos)             /*!< EADC_T::M13CTL1: ACU Mask                  */
 
-#define EADC_M13CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M13CTL1: EXTSTDIV Position                */
-#define EADC_M13CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M13CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M13CTL1: EXTSTDIV Mask                    */
+#define EADC_M13CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M13CTL1: EXTSTDIV Position                */
+#define EADC_M13CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M13CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M13CTL1: EXTSTDIV Mask                    */
 
 #define EADC_M14CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M14CTL1: ALIGN Position            */
 #define EADC_M14CTL1_ALIGN_Msk          (0x1UL << EADC_M14CTL1_ALIGN_Pos)           /*!< EADC_T::M14CTL1: ALIGN Mask                */
@@ -2228,11 +2485,8 @@ typedef struct
 #define EADC_M14CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M14CTL1: ACU Position              */
 #define EADC_M14CTL1_ACU_Msk            (0xfUL << EADC_M14CTL1_ACU_Pos)             /*!< EADC_T::M14CTL1: ACU Mask                  */
 
-#define EADC_M14CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M14CTL1: EXTSTDIV Position                */
-#define EADC_M14CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M14CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M14CTL1: EXTSTDIV Mask                    */
-
-#define EADC_M14CTL1_DBMEN_Pos            (20)                                        /*!< EADC_T::M14CTL1: DBMEN Position                */
-#define EADC_M14CTL1_DBMEN_Msk            (0x1UL << EADC_M14CTL1_DBMEN_Pos)             /*!< EADC_T::M14CTL1: DBMEN Mask                    */
+#define EADC_M14CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M14CTL1: EXTSTDIV Position                */
+#define EADC_M14CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M14CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M14CTL1: EXTSTDIV Mask                    */
 
 #define EADC_M15CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M15CTL1: ALIGN Position            */
 #define EADC_M15CTL1_ALIGN_Msk          (0x1UL << EADC_M15CTL1_ALIGN_Pos)           /*!< EADC_T::M15CTL1: ALIGN Mask                */
@@ -2243,8 +2497,8 @@ typedef struct
 #define EADC_M15CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M15CTL1: ACU Position              */
 #define EADC_M15CTL1_ACU_Msk            (0xfUL << EADC_M15CTL1_ACU_Pos)             /*!< EADC_T::M15CTL1: ACU Mask                  */
 
-#define EADC_M15CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M15CTL1: EXTSTDIV Position                */
-#define EADC_M15CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M15CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M15CTL1: EXTSTDIV Mask                    */
+#define EADC_M15CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M15CTL1: EXTSTDIV Position                */
+#define EADC_M15CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M15CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M15CTL1: EXTSTDIV Mask                    */
 
 #define EADC_M16CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M16CTL1: ALIGN Position            */
 #define EADC_M16CTL1_ALIGN_Msk          (0x1UL << EADC_M16CTL1_ALIGN_Pos)           /*!< EADC_T::M16CTL1: ALIGN Mask                */
@@ -2255,8 +2509,8 @@ typedef struct
 #define EADC_M16CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M16CTL1: ACU Position              */
 #define EADC_M16CTL1_ACU_Msk            (0xfUL << EADC_M16CTL1_ACU_Pos)             /*!< EADC_T::M16CTL1: ACU Mask                  */
 
-#define EADC_M16CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M16CTL1: EXTSTDIV Position                */
-#define EADC_M16CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M16CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M16CTL1: EXTSTDIV Mask                    */
+#define EADC_M16CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M16CTL1: EXTSTDIV Position                */
+#define EADC_M16CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M16CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M16CTL1: EXTSTDIV Mask                    */
 
 #define EADC_M17CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M17CTL1: ALIGN Position            */
 #define EADC_M17CTL1_ALIGN_Msk          (0x1UL << EADC_M17CTL1_ALIGN_Pos)           /*!< EADC_T::M17CTL1: ALIGN Mask                */
@@ -2267,8 +2521,8 @@ typedef struct
 #define EADC_M17CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M17CTL1: ACU Position              */
 #define EADC_M17CTL1_ACU_Msk            (0xfUL << EADC_M17CTL1_ACU_Pos)             /*!< EADC_T::M17CTL1: ACU Mask                  */
 
-#define EADC_M17CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M17CTL1: EXTSTDIV Position                */
-#define EADC_M17CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M17CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M17CTL1: EXTSTDIV Mask                    */
+#define EADC_M17CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M17CTL1: EXTSTDIV Position                */
+#define EADC_M17CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M17CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M17CTL1: EXTSTDIV Mask                    */
 
 #define EADC_M18CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M18CTL1: ALIGN Position            */
 #define EADC_M18CTL1_ALIGN_Msk          (0x1UL << EADC_M18CTL1_ALIGN_Pos)           /*!< EADC_T::M18CTL1: ALIGN Mask                */
@@ -2279,8 +2533,8 @@ typedef struct
 #define EADC_M18CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M18CTL1: ACU Position              */
 #define EADC_M18CTL1_ACU_Msk            (0xfUL << EADC_M18CTL1_ACU_Pos)             /*!< EADC_T::M18CTL1: ACU Mask                  */
 
-#define EADC_M18CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M18CTL1: EXTSTDIV Position                */
-#define EADC_M18CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M18CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M18CTL1: EXTSTDIV Mask                    */
+#define EADC_M18CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M18CTL1: EXTSTDIV Position                */
+#define EADC_M18CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M18CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M18CTL1: EXTSTDIV Mask                    */
 
 #define EADC_DAT19_RESULT_Pos           (0)                                         /*!< EADC_T::DAT19: RESULT Position             */
 #define EADC_DAT19_RESULT_Msk           (0xffffUL << EADC_DAT19_RESULT_Pos)         /*!< EADC_T::DAT19: RESULT Mask                 */
@@ -2363,222 +2617,137 @@ typedef struct
 #define EADC_DAT27_VALID_Pos            (17)                                        /*!< EADC_T::DAT27: VALID Position              */
 #define EADC_DAT27_VALID_Msk            (0x1UL << EADC_DAT27_VALID_Pos)             /*!< EADC_T::DAT27: VALID Mask                  */
 
-#define EADC_SCTL19_CHSEL_Pos            (0)                                         /*!< EADC_T::SCTL19: CHSEL Position              */
-#define EADC_SCTL19_CHSEL_Msk            (0x1fUL << EADC_SCTL19_CHSEL_Pos)            /*!< EADC_T::SCTL19: CHSEL Mask                  */
+#define EADC_SCTL19_CHSEL_Pos           (0)                                         /*!< EADC_T::SCTL19: CHSEL Position              */
+#define EADC_SCTL19_CHSEL_Msk           (0x1fUL << EADC_SCTL19_CHSEL_Pos)            /*!< EADC_T::SCTL19: CHSEL Mask                  */
 
-#define EADC_SCTL19_INTPOS_Pos           (5)                                         /*!< EADC_T::SCTL19: INTPOS Position             */
-#define EADC_SCTL19_INTPOS_Msk           (0x1UL << EADC_SCTL19_INTPOS_Pos)            /*!< EADC_T::SCTL19: INTPOS Mask                 */
+#define EADC_SCTL19_INTPOS_Pos          (5)                                         /*!< EADC_T::SCTL19: INTPOS Position             */
+#define EADC_SCTL19_INTPOS_Msk          (0x1UL << EADC_SCTL19_INTPOS_Pos)            /*!< EADC_T::SCTL19: INTPOS Mask                 */
 
-#define EADC_SCTL19_TRGDLYDIV_Pos        (6)                                         /*!< EADC_T::SCTL19: TRGDLYDIV Position          */
-#define EADC_SCTL19_TRGDLYDIV_Msk        (0x3UL << EADC_SCTL19_TRGDLYDIV_Pos)         /*!< EADC_T::SCTL19: TRGDLYDIV Mask              */
+#define EADC_SCTL19_TRGDLYDIV_Pos       (6)                                         /*!< EADC_T::SCTL19: TRGDLYDIV Position          */
+#define EADC_SCTL19_TRGDLYDIV_Msk       (0x3UL << EADC_SCTL19_TRGDLYDIV_Pos)         /*!< EADC_T::SCTL19: TRGDLYDIV Mask              */
 
-#define EADC_SCTL19_TRGDLYCNT_Pos        (8)                                         /*!< EADC_T::SCTL19: TRGDLYCNT Position          */
-#define EADC_SCTL19_TRGDLYCNT_Msk        (0xffUL << EADC_SCTL19_TRGDLYCNT_Pos)        /*!< EADC_T::SCTL19: TRGDLYCNT Mask              */
+#define EADC_SCTL19_TRGDLYCNT_Pos       (8)                                         /*!< EADC_T::SCTL19: TRGDLYCNT Position          */
+#define EADC_SCTL19_TRGDLYCNT_Msk       (0xffUL << EADC_SCTL19_TRGDLYCNT_Pos)        /*!< EADC_T::SCTL19: TRGDLYCNT Mask              */
 
-#define EADC_SCTL19_TRGSEL_Pos           (16)                                        /*!< EADC_T::SCTL19: TRGSEL Position             */
-#define EADC_SCTL19_TRGSEL_Msk           (0x3fUL << EADC_SCTL19_TRGSEL_Pos)           /*!< EADC_T::SCTL19: TRGSEL Mask                 */
+#define EADC_SCTL19_TRGSEL_Pos          (16)                                        /*!< EADC_T::SCTL19: TRGSEL Position             */
+#define EADC_SCTL19_TRGSEL_Msk          (0x3fUL << EADC_SCTL19_TRGSEL_Pos)           /*!< EADC_T::SCTL19: TRGSEL Mask                 */
 
-#define EADC_SCTL19_EXTREN_Pos           (22)                                        /*!< EADC_T::SCTL19: EXTREN Position             */
-#define EADC_SCTL19_EXTREN_Msk           (0x1UL << EADC_SCTL19_EXTREN_Pos)            /*!< EADC_T::SCTL19: EXTREN Mask                 */
+#define EADC_SCTL19_EXTREN_Pos          (22)                                        /*!< EADC_T::SCTL19: EXTREN Position             */
+#define EADC_SCTL19_EXTREN_Msk          (0x1UL << EADC_SCTL19_EXTREN_Pos)            /*!< EADC_T::SCTL19: EXTREN Mask                 */
 
-#define EADC_SCTL19_EXTFEN_Pos           (23)                                        /*!< EADC_T::SCTL19: EXTFEN Position             */
-#define EADC_SCTL19_EXTFEN_Msk           (0x1UL << EADC_SCTL19_EXTFEN_Pos)            /*!< EADC_T::SCTL19: EXTFEN Mask                 */
+#define EADC_SCTL19_EXTFEN_Pos          (23)                                        /*!< EADC_T::SCTL19: EXTFEN Position             */
+#define EADC_SCTL19_EXTFEN_Msk          (0x1UL << EADC_SCTL19_EXTFEN_Pos)            /*!< EADC_T::SCTL19: EXTFEN Mask                 */
 
-#define EADC_SCTL19_EXTSMPT_Pos          (24)                                        /*!< EADC_T::SCTL19: EXTSMPT Position            */
-#define EADC_SCTL19_EXTSMPT_Msk          (0xffUL << EADC_SCTL19_EXTSMPT_Pos)          /*!< EADC_T::SCTL19: EXTSMPT Mask                */
+#define EADC_SCTL19_EXTSMPT_Pos         (24)                                        /*!< EADC_T::SCTL19: EXTSMPT Position            */
+#define EADC_SCTL19_EXTSMPT_Msk         (0xffUL << EADC_SCTL19_EXTSMPT_Pos)          /*!< EADC_T::SCTL19: EXTSMPT Mask                */
 
-#define EADC_SCTL20_CHSEL_Pos            (0)                                         /*!< EADC_T::SCTL20: CHSEL Position              */
-#define EADC_SCTL20_CHSEL_Msk            (0x1fUL << EADC_SCTL20_CHSEL_Pos)            /*!< EADC_T::SCTL20: CHSEL Mask                  */
+#define EADC_SCTL20_CHSEL_Pos           (0)                                         /*!< EADC_T::SCTL20: CHSEL Position              */
+#define EADC_SCTL20_CHSEL_Msk           (0x1fUL << EADC_SCTL20_CHSEL_Pos)            /*!< EADC_T::SCTL20: CHSEL Mask                  */
 
-#define EADC_SCTL20_INTPOS_Pos           (5)                                         /*!< EADC_T::SCTL20: INTPOS Position             */
-#define EADC_SCTL20_INTPOS_Msk           (0x1UL << EADC_SCTL20_INTPOS_Pos)            /*!< EADC_T::SCTL20: INTPOS Mask                 */
+#define EADC_SCTL20_INTPOS_Pos          (5)                                         /*!< EADC_T::SCTL20: INTPOS Position             */
+#define EADC_SCTL20_INTPOS_Msk          (0x1UL << EADC_SCTL20_INTPOS_Pos)            /*!< EADC_T::SCTL20: INTPOS Mask                 */
 
-#define EADC_SCTL20_TRGDLYDIV_Pos        (6)                                         /*!< EADC_T::SCTL20: TRGDLYDIV Position          */
-#define EADC_SCTL20_TRGDLYDIV_Msk        (0x3UL << EADC_SCTL20_TRGDLYDIV_Pos)         /*!< EADC_T::SCTL20: TRGDLYDIV Mask              */
+#define EADC_SCTL20_TRGDLYDIV_Pos       (6)                                         /*!< EADC_T::SCTL20: TRGDLYDIV Position          */
+#define EADC_SCTL20_TRGDLYDIV_Msk       (0x3UL << EADC_SCTL20_TRGDLYDIV_Pos)         /*!< EADC_T::SCTL20: TRGDLYDIV Mask              */
 
-#define EADC_SCTL20_TRGDLYCNT_Pos        (8)                                         /*!< EADC_T::SCTL20: TRGDLYCNT Position          */
-#define EADC_SCTL20_TRGDLYCNT_Msk        (0xffUL << EADC_SCTL20_TRGDLYCNT_Pos)        /*!< EADC_T::SCTL20: TRGDLYCNT Mask              */
+#define EADC_SCTL20_TRGDLYCNT_Pos       (8)                                         /*!< EADC_T::SCTL20: TRGDLYCNT Position          */
+#define EADC_SCTL20_TRGDLYCNT_Msk       (0xffUL << EADC_SCTL20_TRGDLYCNT_Pos)        /*!< EADC_T::SCTL20: TRGDLYCNT Mask              */
 
-#define EADC_SCTL20_TRGSEL_Pos           (16)                                        /*!< EADC_T::SCTL20: TRGSEL Position             */
-#define EADC_SCTL20_TRGSEL_Msk           (0x3fUL << EADC_SCTL20_TRGSEL_Pos)           /*!< EADC_T::SCTL20: TRGSEL Mask                 */
+#define EADC_SCTL20_TRGSEL_Pos          (16)                                        /*!< EADC_T::SCTL20: TRGSEL Position             */
+#define EADC_SCTL20_TRGSEL_Msk          (0x3fUL << EADC_SCTL20_TRGSEL_Pos)           /*!< EADC_T::SCTL20: TRGSEL Mask                 */
 
-#define EADC_SCTL20_EXTREN_Pos           (22)                                        /*!< EADC_T::SCTL20: EXTREN Position             */
-#define EADC_SCTL20_EXTREN_Msk           (0x1UL << EADC_SCTL20_EXTREN_Pos)            /*!< EADC_T::SCTL20: EXTREN Mask                 */
+#define EADC_SCTL20_EXTREN_Pos          (22)                                        /*!< EADC_T::SCTL20: EXTREN Position             */
+#define EADC_SCTL20_EXTREN_Msk          (0x1UL << EADC_SCTL20_EXTREN_Pos)            /*!< EADC_T::SCTL20: EXTREN Mask                 */
 
-#define EADC_SCTL20_EXTFEN_Pos           (23)                                        /*!< EADC_T::SCTL20: EXTFEN Position             */
-#define EADC_SCTL20_EXTFEN_Msk           (0x1UL << EADC_SCTL20_EXTFEN_Pos)            /*!< EADC_T::SCTL20: EXTFEN Mask                 */
+#define EADC_SCTL20_EXTFEN_Pos          (23)                                        /*!< EADC_T::SCTL20: EXTFEN Position             */
+#define EADC_SCTL20_EXTFEN_Msk          (0x1UL << EADC_SCTL20_EXTFEN_Pos)            /*!< EADC_T::SCTL20: EXTFEN Mask                 */
 
-#define EADC_SCTL20_EXTSMPT_Pos          (24)                                        /*!< EADC_T::SCTL20: EXTSMPT Position            */
-#define EADC_SCTL20_EXTSMPT_Msk          (0xffUL << EADC_SCTL20_EXTSMPT_Pos)          /*!< EADC_T::SCTL20: EXTSMPT Mask                */
+#define EADC_SCTL20_EXTSMPT_Pos         (24)                                        /*!< EADC_T::SCTL20: EXTSMPT Position            */
+#define EADC_SCTL20_EXTSMPT_Msk         (0xffUL << EADC_SCTL20_EXTSMPT_Pos)          /*!< EADC_T::SCTL20: EXTSMPT Mask                */
 
-#define EADC_SCTL21_CHSEL_Pos            (0)                                         /*!< EADC_T::SCTL21: CHSEL Position              */
-#define EADC_SCTL21_CHSEL_Msk            (0x1fUL << EADC_SCTL21_CHSEL_Pos)            /*!< EADC_T::SCTL21: CHSEL Mask                  */
+#define EADC_SCTL21_CHSEL_Pos           (0)                                         /*!< EADC_T::SCTL21: CHSEL Position              */
+#define EADC_SCTL21_CHSEL_Msk           (0x1fUL << EADC_SCTL21_CHSEL_Pos)            /*!< EADC_T::SCTL21: CHSEL Mask                  */
 
-#define EADC_SCTL21_INTPOS_Pos           (5)                                         /*!< EADC_T::SCTL21: INTPOS Position             */
-#define EADC_SCTL21_INTPOS_Msk           (0x1UL << EADC_SCTL21_INTPOS_Pos)            /*!< EADC_T::SCTL21: INTPOS Mask                 */
+#define EADC_SCTL21_INTPOS_Pos          (5)                                         /*!< EADC_T::SCTL21: INTPOS Position             */
+#define EADC_SCTL21_INTPOS_Msk          (0x1UL << EADC_SCTL21_INTPOS_Pos)            /*!< EADC_T::SCTL21: INTPOS Mask                 */
 
-#define EADC_SCTL21_TRGDLYDIV_Pos        (6)                                         /*!< EADC_T::SCTL21: TRGDLYDIV Position          */
-#define EADC_SCTL21_TRGDLYDIV_Msk        (0x3UL << EADC_SCTL21_TRGDLYDIV_Pos)         /*!< EADC_T::SCTL21: TRGDLYDIV Mask              */
+#define EADC_SCTL21_TRGDLYDIV_Pos       (6)                                         /*!< EADC_T::SCTL21: TRGDLYDIV Position          */
+#define EADC_SCTL21_TRGDLYDIV_Msk       (0x3UL << EADC_SCTL21_TRGDLYDIV_Pos)         /*!< EADC_T::SCTL21: TRGDLYDIV Mask              */
 
-#define EADC_SCTL21_TRGDLYCNT_Pos        (8)                                         /*!< EADC_T::SCTL21: TRGDLYCNT Position          */
-#define EADC_SCTL21_TRGDLYCNT_Msk        (0xffUL << EADC_SCTL21_TRGDLYCNT_Pos)        /*!< EADC_T::SCTL21: TRGDLYCNT Mask              */
+#define EADC_SCTL21_TRGDLYCNT_Pos       (8)                                         /*!< EADC_T::SCTL21: TRGDLYCNT Position          */
+#define EADC_SCTL21_TRGDLYCNT_Msk       (0xffUL << EADC_SCTL21_TRGDLYCNT_Pos)        /*!< EADC_T::SCTL21: TRGDLYCNT Mask              */
 
-#define EADC_SCTL21_TRGSEL_Pos           (16)                                        /*!< EADC_T::SCTL21: TRGSEL Position             */
-#define EADC_SCTL21_TRGSEL_Msk           (0x3fUL << EADC_SCTL21_TRGSEL_Pos)           /*!< EADC_T::SCTL21: TRGSEL Mask                 */
+#define EADC_SCTL21_TRGSEL_Pos          (16)                                        /*!< EADC_T::SCTL21: TRGSEL Position             */
+#define EADC_SCTL21_TRGSEL_Msk          (0x3fUL << EADC_SCTL21_TRGSEL_Pos)           /*!< EADC_T::SCTL21: TRGSEL Mask                 */
 
-#define EADC_SCTL21_EXTREN_Pos           (22)                                        /*!< EADC_T::SCTL21: EXTREN Position             */
-#define EADC_SCTL21_EXTREN_Msk           (0x1UL << EADC_SCTL21_EXTREN_Pos)            /*!< EADC_T::SCTL21: EXTREN Mask                 */
+#define EADC_SCTL21_EXTREN_Pos          (22)                                        /*!< EADC_T::SCTL21: EXTREN Position             */
+#define EADC_SCTL21_EXTREN_Msk          (0x1UL << EADC_SCTL21_EXTREN_Pos)            /*!< EADC_T::SCTL21: EXTREN Mask                 */
 
-#define EADC_SCTL21_EXTFEN_Pos           (23)                                        /*!< EADC_T::SCTL21: EXTFEN Position             */
-#define EADC_SCTL21_EXTFEN_Msk           (0x1UL << EADC_SCTL21_EXTFEN_Pos)            /*!< EADC_T::SCTL21: EXTFEN Mask                 */
+#define EADC_SCTL21_EXTFEN_Pos          (23)                                        /*!< EADC_T::SCTL21: EXTFEN Position             */
+#define EADC_SCTL21_EXTFEN_Msk          (0x1UL << EADC_SCTL21_EXTFEN_Pos)            /*!< EADC_T::SCTL21: EXTFEN Mask                 */
 
-#define EADC_SCTL21_EXTSMPT_Pos          (24)                                        /*!< EADC_T::SCTL21: EXTSMPT Position            */
-#define EADC_SCTL21_EXTSMPT_Msk          (0xffUL << EADC_SCTL21_EXTSMPT_Pos)          /*!< EADC_T::SCTL0: EXTSMPT Mask                */
+#define EADC_SCTL21_EXTSMPT_Pos         (24)                                        /*!< EADC_T::SCTL21: EXTSMPT Position            */
+#define EADC_SCTL21_EXTSMPT_Msk         (0xffUL << EADC_SCTL21_EXTSMPT_Pos)          /*!< EADC_T::SCTL0: EXTSMPT Mask                */
 
-#define EADC_SCTL22_CHSEL_Pos            (0)                                         /*!< EADC_T::SCTL22: CHSEL Position              */
-#define EADC_SCTL22_CHSEL_Msk            (0x1fUL << EADC_SCTL22_CHSEL_Pos)            /*!< EADC_T::SCTL22: CHSEL Mask                  */
+#define EADC_SCTL22_CHSEL_Pos           (0)                                         /*!< EADC_T::SCTL22: CHSEL Position              */
+#define EADC_SCTL22_CHSEL_Msk           (0x1fUL << EADC_SCTL22_CHSEL_Pos)            /*!< EADC_T::SCTL22: CHSEL Mask                  */
 
-#define EADC_SCTL22_INTPOS_Pos           (5)                                         /*!< EADC_T::SCTL22: INTPOS Position             */
-#define EADC_SCTL22_INTPOS_Msk           (0x1UL << EADC_SCTL22_INTPOS_Pos)            /*!< EADC_T::SCTL22: INTPOS Mask                 */
+#define EADC_SCTL22_INTPOS_Pos          (5)                                         /*!< EADC_T::SCTL22: INTPOS Position             */
+#define EADC_SCTL22_INTPOS_Msk          (0x1UL << EADC_SCTL22_INTPOS_Pos)            /*!< EADC_T::SCTL22: INTPOS Mask                 */
 
-#define EADC_SCTL22_TRGDLYDIV_Pos        (6)                                         /*!< EADC_T::SCTL22: TRGDLYDIV Position          */
-#define EADC_SCTL22_TRGDLYDIV_Msk        (0x3UL << EADC_SCTL22_TRGDLYDIV_Pos)         /*!< EADC_T::SCTL22: TRGDLYDIV Mask              */
+#define EADC_SCTL22_TRGDLYDIV_Pos       (6)                                         /*!< EADC_T::SCTL22: TRGDLYDIV Position          */
+#define EADC_SCTL22_TRGDLYDIV_Msk       (0x3UL << EADC_SCTL22_TRGDLYDIV_Pos)         /*!< EADC_T::SCTL22: TRGDLYDIV Mask              */
 
-#define EADC_SCTL22_TRGDLYCNT_Pos        (8)                                         /*!< EADC_T::SCTL22: TRGDLYCNT Position          */
-#define EADC_SCTL22_TRGDLYCNT_Msk        (0xffUL << EADC_SCTL22_TRGDLYCNT_Pos)        /*!< EADC_T::SCTL22: TRGDLYCNT Mask              */
+#define EADC_SCTL22_TRGDLYCNT_Pos       (8)                                         /*!< EADC_T::SCTL22: TRGDLYCNT Position          */
+#define EADC_SCTL22_TRGDLYCNT_Msk       (0xffUL << EADC_SCTL22_TRGDLYCNT_Pos)        /*!< EADC_T::SCTL22: TRGDLYCNT Mask              */
 
-#define EADC_SCTL22_TRGSEL_Pos           (16)                                        /*!< EADC_T::SCTL22: TRGSEL Position             */
-#define EADC_SCTL22_TRGSEL_Msk           (0x3fUL << EADC_SCTL22_TRGSEL_Pos)           /*!< EADC_T::SCTL22: TRGSEL Mask                 */
+#define EADC_SCTL22_TRGSEL_Pos          (16)                                        /*!< EADC_T::SCTL22: TRGSEL Position             */
+#define EADC_SCTL22_TRGSEL_Msk          (0x3fUL << EADC_SCTL22_TRGSEL_Pos)           /*!< EADC_T::SCTL22: TRGSEL Mask                 */
 
-#define EADC_SCTL22_EXTREN_Pos           (22)                                        /*!< EADC_T::SCTL22: EXTREN Position             */
-#define EADC_SCTL22_EXTREN_Msk           (0x1UL << EADC_SCTL22_EXTREN_Pos)            /*!< EADC_T::SCTL22: EXTREN Mask                 */
+#define EADC_SCTL22_EXTREN_Pos          (22)                                        /*!< EADC_T::SCTL22: EXTREN Position             */
+#define EADC_SCTL22_EXTREN_Msk          (0x1UL << EADC_SCTL22_EXTREN_Pos)            /*!< EADC_T::SCTL22: EXTREN Mask                 */
 
-#define EADC_SCTL22_EXTFEN_Pos           (23)                                        /*!< EADC_T::SCTL22: EXTFEN Position             */
-#define EADC_SCTL22_EXTFEN_Msk           (0x1UL << EADC_SCTL22_EXTFEN_Pos)            /*!< EADC_T::SCTL22: EXTFEN Mask                 */
+#define EADC_SCTL22_EXTFEN_Pos          (23)                                        /*!< EADC_T::SCTL22: EXTFEN Position             */
+#define EADC_SCTL22_EXTFEN_Msk          (0x1UL << EADC_SCTL22_EXTFEN_Pos)            /*!< EADC_T::SCTL22: EXTFEN Mask                 */
 
-#define EADC_SCTL22_EXTSMPT_Pos          (24)                                        /*!< EADC_T::SCTL22: EXTSMPT Position            */
-#define EADC_SCTL22_EXTSMPT_Msk          (0xffUL << EADC_SCTL22_EXTSMPT_Pos)          /*!< EADC_T::SCTL0: EXTSMPT Mask                */
+#define EADC_SCTL22_EXTSMPT_Pos         (24)                                        /*!< EADC_T::SCTL22: EXTSMPT Position            */
+#define EADC_SCTL22_EXTSMPT_Msk         (0xffUL << EADC_SCTL22_EXTSMPT_Pos)          /*!< EADC_T::SCTL0: EXTSMPT Mask                */
 
-#define EADC_SCTL23_CHSEL_Pos            (0)                                         /*!< EADC_T::SCTL23: CHSEL Position              */
-#define EADC_SCTL23_CHSEL_Msk            (0x1fUL << EADC_SCTL23_CHSEL_Pos)            /*!< EADC_T::SCTL23: CHSEL Mask                  */
+#define EADC_SCTL23_CHSEL_Pos           (0)                                         /*!< EADC_T::SCTL23: CHSEL Position              */
+#define EADC_SCTL23_CHSEL_Msk           (0x1fUL << EADC_SCTL23_CHSEL_Pos)            /*!< EADC_T::SCTL23: CHSEL Mask                  */
 
-#define EADC_SCTL23_INTPOS_Pos           (5)                                         /*!< EADC_T::SCTL23: INTPOS Position             */
-#define EADC_SCTL23_INTPOS_Msk           (0x1UL << EADC_SCTL23_INTPOS_Pos)            /*!< EADC_T::SCTL23: INTPOS Mask                 */
+#define EADC_SCTL23_INTPOS_Pos          (5)                                         /*!< EADC_T::SCTL23: INTPOS Position             */
+#define EADC_SCTL23_INTPOS_Msk          (0x1UL << EADC_SCTL23_INTPOS_Pos)            /*!< EADC_T::SCTL23: INTPOS Mask                 */
 
-#define EADC_SCTL23_TRGDLYDIV_Pos        (6)                                         /*!< EADC_T::SCTL23: TRGDLYDIV Position          */
-#define EADC_SCTL23_TRGDLYDIV_Msk        (0x3UL << EADC_SCTL23_TRGDLYDIV_Pos)         /*!< EADC_T::SCTL23: TRGDLYDIV Mask              */
+#define EADC_SCTL23_TRGDLYDIV_Pos       (6)                                         /*!< EADC_T::SCTL23: TRGDLYDIV Position          */
+#define EADC_SCTL23_TRGDLYDIV_Msk       (0x3UL << EADC_SCTL23_TRGDLYDIV_Pos)         /*!< EADC_T::SCTL23: TRGDLYDIV Mask              */
 
-#define EADC_SCTL23_TRGDLYCNT_Pos        (8)                                         /*!< EADC_T::SCTL23: TRGDLYCNT Position          */
-#define EADC_SCTL23_TRGDLYCNT_Msk        (0xffUL << EADC_SCTL23_TRGDLYCNT_Pos)        /*!< EADC_T::SCTL23: TRGDLYCNT Mask              */
+#define EADC_SCTL23_TRGDLYCNT_Pos       (8)                                         /*!< EADC_T::SCTL23: TRGDLYCNT Position          */
+#define EADC_SCTL23_TRGDLYCNT_Msk       (0xffUL << EADC_SCTL23_TRGDLYCNT_Pos)        /*!< EADC_T::SCTL23: TRGDLYCNT Mask              */
 
-#define EADC_SCTL23_TRGSEL_Pos           (16)                                        /*!< EADC_T::SCTL23: TRGSEL Position             */
-#define EADC_SCTL23_TRGSEL_Msk           (0x3fUL << EADC_SCTL23_TRGSEL_Pos)           /*!< EADC_T::SCTL23: TRGSEL Mask                 */
+#define EADC_SCTL23_TRGSEL_Pos          (16)                                        /*!< EADC_T::SCTL23: TRGSEL Position             */
+#define EADC_SCTL23_TRGSEL_Msk          (0x3fUL << EADC_SCTL23_TRGSEL_Pos)           /*!< EADC_T::SCTL23: TRGSEL Mask                 */
 
-#define EADC_SCTL23_EXTREN_Pos           (22)                                        /*!< EADC_T::SCTL23: EXTREN Position             */
-#define EADC_SCTL23_EXTREN_Msk           (0x1UL << EADC_SCTL23_EXTREN_Pos)            /*!< EADC_T::SCTL23: EXTREN Mask                 */
+#define EADC_SCTL23_EXTREN_Pos          (22)                                        /*!< EADC_T::SCTL23: EXTREN Position             */
+#define EADC_SCTL23_EXTREN_Msk          (0x1UL << EADC_SCTL23_EXTREN_Pos)            /*!< EADC_T::SCTL23: EXTREN Mask                 */
 
-#define EADC_SCTL23_EXTFEN_Pos           (23)                                        /*!< EADC_T::SCTL23: EXTFEN Position             */
-#define EADC_SCTL23_EXTFEN_Msk           (0x1UL << EADC_SCTL23_EXTFEN_Pos)            /*!< EADC_T::SCTL23: EXTFEN Mask                 */
+#define EADC_SCTL23_EXTFEN_Pos          (23)                                        /*!< EADC_T::SCTL23: EXTFEN Position             */
+#define EADC_SCTL23_EXTFEN_Msk          (0x1UL << EADC_SCTL23_EXTFEN_Pos)            /*!< EADC_T::SCTL23: EXTFEN Mask                 */
 
-#define EADC_SCTL23_EXTSMPT_Pos          (24)                                        /*!< EADC_T::SCTL23: EXTSMPT Position            */
-#define EADC_SCTL23_EXTSMPT_Msk          (0xffUL << EADC_SCTL23_EXTSMPT_Pos)          /*!< EADC_T::SCTL0: EXTSMPT Mask                */
+#define EADC_SCTL23_EXTSMPT_Pos         (24)                                        /*!< EADC_T::SCTL23: EXTSMPT Position            */
+#define EADC_SCTL23_EXTSMPT_Msk         (0xffUL << EADC_SCTL23_EXTSMPT_Pos)          /*!< EADC_T::SCTL0: EXTSMPT Mask                */
 
-#define EADC_SCTL24_CHSEL_Pos            (0)                                         /*!< EADC_T::SCTL24: CHSEL Position              */
-#define EADC_SCTL24_CHSEL_Msk            (0x1fUL << EADC_SCTL24_CHSEL_Pos)            /*!< EADC_T::SCTL24: CHSEL Mask                  */
+#define EADC_SCTL24_EXTSMPT_Pos         (24)                                        /*!< EADC_T::SCTL24: EXTSMPT Position            */
+#define EADC_SCTL24_EXTSMPT_Msk         (0xffUL << EADC_SCTL24_EXTSMPT_Pos)          /*!< EADC_T::SCTL0: EXTSMPT Mask                */
 
-#define EADC_SCTL24_INTPOS_Pos           (5)                                         /*!< EADC_T::SCTL24: INTPOS Position             */
-#define EADC_SCTL24_INTPOS_Msk           (0x1UL << EADC_SCTL24_INTPOS_Pos)            /*!< EADC_T::SCTL24: INTPOS Mask                 */
+#define EADC_SCTL25_EXTSMPT_Pos         (24)                                        /*!< EADC_T::SCTL25: EXTSMPT Position            */
+#define EADC_SCTL25_EXTSMPT_Msk         (0xffUL << EADC_SCTL25_EXTSMPT_Pos)          /*!< EADC_T::SCTL0: EXTSMPT Mask                */
 
-#define EADC_SCTL24_TRGDLYDIV_Pos        (6)                                         /*!< EADC_T::SCTL24: TRGDLYDIV Position          */
-#define EADC_SCTL24_TRGDLYDIV_Msk        (0x3UL << EADC_SCTL24_TRGDLYDIV_Pos)         /*!< EADC_T::SCTL24: TRGDLYDIV Mask              */
+#define EADC_SCTL26_EXTSMPT_Pos         (24)                                        /*!< EADC_T::SCTL26: EXTSMPT Position            */
+#define EADC_SCTL26_EXTSMPT_Msk         (0xffUL << EADC_SCTL26_EXTSMPT_Pos)          /*!< EADC_T::SCTL0: EXTSMPT Mask                */
 
-#define EADC_SCTL24_TRGDLYCNT_Pos        (8)                                         /*!< EADC_T::SCTL24: TRGDLYCNT Position          */
-#define EADC_SCTL24_TRGDLYCNT_Msk        (0xffUL << EADC_SCTL24_TRGDLYCNT_Pos)        /*!< EADC_T::SCTL24: TRGDLYCNT Mask              */
-
-#define EADC_SCTL24_TRGSEL_Pos           (16)                                        /*!< EADC_T::SCTL24: TRGSEL Position             */
-#define EADC_SCTL24_TRGSEL_Msk           (0x3fUL << EADC_SCTL24_TRGSEL_Pos)           /*!< EADC_T::SCTL24: TRGSEL Mask                 */
-
-#define EADC_SCTL24_EXTREN_Pos           (22)                                        /*!< EADC_T::SCTL24: EXTREN Position             */
-#define EADC_SCTL24_EXTREN_Msk           (0x1UL << EADC_SCTL24_EXTREN_Pos)            /*!< EADC_T::SCTL24: EXTREN Mask                 */
-
-#define EADC_SCTL24_EXTFEN_Pos           (23)                                        /*!< EADC_T::SCTL24: EXTFEN Position             */
-#define EADC_SCTL24_EXTFEN_Msk           (0x1UL << EADC_SCTL24_EXTFEN_Pos)            /*!< EADC_T::SCTL24: EXTFEN Mask                 */
-
-#define EADC_SCTL24_EXTSMPT_Pos          (24)                                        /*!< EADC_T::SCTL24: EXTSMPT Position            */
-#define EADC_SCTL24_EXTSMPT_Msk          (0xffUL << EADC_SCTL24_EXTSMPT_Pos)          /*!< EADC_T::SCTL0: EXTSMPT Mask                */
-
-#define EADC_SCTL25_CHSEL_Pos            (0)                                         /*!< EADC_T::SCTL25: CHSEL Position              */
-#define EADC_SCTL25_CHSEL_Msk            (0x1fUL << EADC_SCTL25_CHSEL_Pos)            /*!< EADC_T::SCTL25: CHSEL Mask                  */
-
-#define EADC_SCTL25_INTPOS_Pos           (5)                                         /*!< EADC_T::SCTL25: INTPOS Position             */
-#define EADC_SCTL25_INTPOS_Msk           (0x1UL << EADC_SCTL25_INTPOS_Pos)            /*!< EADC_T::SCTL25: INTPOS Mask                 */
-
-#define EADC_SCTL25_TRGDLYDIV_Pos        (6)                                         /*!< EADC_T::SCTL25: TRGDLYDIV Position          */
-#define EADC_SCTL25_TRGDLYDIV_Msk        (0x3UL << EADC_SCTL25_TRGDLYDIV_Pos)         /*!< EADC_T::SCTL25: TRGDLYDIV Mask              */
-
-#define EADC_SCTL25_TRGDLYCNT_Pos        (8)                                         /*!< EADC_T::SCTL25: TRGDLYCNT Position          */
-#define EADC_SCTL25_TRGDLYCNT_Msk        (0xffUL << EADC_SCTL25_TRGDLYCNT_Pos)        /*!< EADC_T::SCTL25: TRGDLYCNT Mask              */
-
-#define EADC_SCTL25_TRGSEL_Pos           (16)                                        /*!< EADC_T::SCTL25: TRGSEL Position             */
-#define EADC_SCTL25_TRGSEL_Msk           (0x3fUL << EADC_SCTL25_TRGSEL_Pos)           /*!< EADC_T::SCTL25: TRGSEL Mask                 */
-
-#define EADC_SCTL25_EXTREN_Pos           (22)                                        /*!< EADC_T::SCTL25: EXTREN Position             */
-#define EADC_SCTL25_EXTREN_Msk           (0x1UL << EADC_SCTL25_EXTREN_Pos)            /*!< EADC_T::SCTL25: EXTREN Mask                 */
-
-#define EADC_SCTL25_EXTFEN_Pos           (23)                                        /*!< EADC_T::SCTL25: EXTFEN Position             */
-#define EADC_SCTL25_EXTFEN_Msk           (0x1UL << EADC_SCTL25_EXTFEN_Pos)            /*!< EADC_T::SCTL25: EXTFEN Mask                 */
-
-#define EADC_SCTL25_EXTSMPT_Pos          (24)                                        /*!< EADC_T::SCTL25: EXTSMPT Position            */
-#define EADC_SCTL25_EXTSMPT_Msk          (0xffUL << EADC_SCTL25_EXTSMPT_Pos)          /*!< EADC_T::SCTL0: EXTSMPT Mask                */
-
-#define EADC_SCTL26_CHSEL_Pos            (0)                                         /*!< EADC_T::SCTL26: CHSEL Position              */
-#define EADC_SCTL26_CHSEL_Msk            (0x1fUL << EADC_SCTL26_CHSEL_Pos)            /*!< EADC_T::SCTL26: CHSEL Mask                  */
-
-#define EADC_SCTL26_INTPOS_Pos           (5)                                         /*!< EADC_T::SCTL26: INTPOS Position             */
-#define EADC_SCTL26_INTPOS_Msk           (0x1UL << EADC_SCTL26_INTPOS_Pos)            /*!< EADC_T::SCTL26: INTPOS Mask                 */
-
-#define EADC_SCTL26_TRGDLYDIV_Pos        (6)                                         /*!< EADC_T::SCTL26: TRGDLYDIV Position          */
-#define EADC_SCTL26_TRGDLYDIV_Msk        (0x3UL << EADC_SCTL26_TRGDLYDIV_Pos)         /*!< EADC_T::SCTL26: TRGDLYDIV Mask              */
-
-#define EADC_SCTL26_TRGDLYCNT_Pos        (8)                                         /*!< EADC_T::SCTL26: TRGDLYCNT Position          */
-#define EADC_SCTL26_TRGDLYCNT_Msk        (0xffUL << EADC_SCTL26_TRGDLYCNT_Pos)        /*!< EADC_T::SCTL26: TRGDLYCNT Mask              */
-
-#define EADC_SCTL26_TRGSEL_Pos           (16)                                        /*!< EADC_T::SCTL26: TRGSEL Position             */
-#define EADC_SCTL26_TRGSEL_Msk           (0x3fUL << EADC_SCTL26_TRGSEL_Pos)           /*!< EADC_T::SCTL26: TRGSEL Mask                 */
-
-#define EADC_SCTL26_EXTREN_Pos           (22)                                        /*!< EADC_T::SCTL26: EXTREN Position             */
-#define EADC_SCTL26_EXTREN_Msk           (0x1UL << EADC_SCTL26_EXTREN_Pos)            /*!< EADC_T::SCTL26: EXTREN Mask                 */
-
-#define EADC_SCTL26_EXTFEN_Pos           (23)                                        /*!< EADC_T::SCTL26: EXTFEN Position             */
-#define EADC_SCTL26_EXTFEN_Msk           (0x1UL << EADC_SCTL26_EXTFEN_Pos)            /*!< EADC_T::SCTL26: EXTFEN Mask                 */
-
-#define EADC_SCTL26_EXTSMPT_Pos          (24)                                        /*!< EADC_T::SCTL26: EXTSMPT Position            */
-#define EADC_SCTL26_EXTSMPT_Msk          (0xffUL << EADC_SCTL26_EXTSMPT_Pos)          /*!< EADC_T::SCTL0: EXTSMPT Mask                */
-
-#define EADC_SCTL27_CHSEL_Pos            (0)                                         /*!< EADC_T::SCTL27: CHSEL Position              */
-#define EADC_SCTL27_CHSEL_Msk            (0x1fUL << EADC_SCTL27_CHSEL_Pos)            /*!< EADC_T::SCTL27: CHSEL Mask                  */
-
-#define EADC_SCTL27_INTPOS_Pos           (5)                                         /*!< EADC_T::SCTL27: INTPOS Position             */
-#define EADC_SCTL27_INTPOS_Msk           (0x1UL << EADC_SCTL27_INTPOS_Pos)            /*!< EADC_T::SCTL27: INTPOS Mask                 */
-
-#define EADC_SCTL27_TRGDLYDIV_Pos        (6)                                         /*!< EADC_T::SCTL27: TRGDLYDIV Position          */
-#define EADC_SCTL27_TRGDLYDIV_Msk        (0x3UL << EADC_SCTL27_TRGDLYDIV_Pos)         /*!< EADC_T::SCTL27: TRGDLYDIV Mask              */
-
-#define EADC_SCTL27_TRGDLYCNT_Pos        (8)                                         /*!< EADC_T::SCTL27: TRGDLYCNT Position          */
-#define EADC_SCTL27_TRGDLYCNT_Msk        (0xffUL << EADC_SCTL27_TRGDLYCNT_Pos)        /*!< EADC_T::SCTL27: TRGDLYCNT Mask              */
-
-#define EADC_SCTL27_TRGSEL_Pos           (16)                                        /*!< EADC_T::SCTL27: TRGSEL Position             */
-#define EADC_SCTL27_TRGSEL_Msk           (0x3fUL << EADC_SCTL27_TRGSEL_Pos)           /*!< EADC_T::SCTL27: TRGSEL Mask                 */
-
-#define EADC_SCTL27_EXTREN_Pos           (22)                                        /*!< EADC_T::SCTL27: EXTREN Position             */
-#define EADC_SCTL27_EXTREN_Msk           (0x1UL << EADC_SCTL27_EXTREN_Pos)            /*!< EADC_T::SCTL27: EXTREN Mask                 */
-
-#define EADC_SCTL27_EXTFEN_Pos           (23)                                        /*!< EADC_T::SCTL27: EXTFEN Position             */
-#define EADC_SCTL27_EXTFEN_Msk           (0x1UL << EADC_SCTL27_EXTFEN_Pos)            /*!< EADC_T::SCTL27: EXTFEN Mask                 */
-
-#define EADC_SCTL27_EXTSMPT_Pos          (24)                                        /*!< EADC_T::SCTL27: EXTSMPT Position            */
-#define EADC_SCTL27_EXTSMPT_Msk          (0xffUL << EADC_SCTL27_EXTSMPT_Pos)          /*!< EADC_T::SCTL0: EXTSMPT Mask                */
-
+#define EADC_SCTL27_EXTSMPT_Pos         (24)                                        /*!< EADC_T::SCTL27: EXTSMPT Position            */
+#define EADC_SCTL27_EXTSMPT_Msk         (0xffUL << EADC_SCTL27_EXTSMPT_Pos)          /*!< EADC_T::SCTL0: EXTSMPT Mask                */
 
 #define EADC_M19CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M19CTL1: ALIGN Position            */
 #define EADC_M19CTL1_ALIGN_Msk          (0x1UL << EADC_M19CTL1_ALIGN_Pos)           /*!< EADC_T::M19CTL1: ALIGN Mask                */
@@ -2601,8 +2770,8 @@ typedef struct
 #define EADC_M20CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M20CTL1: ACU Position              */
 #define EADC_M20CTL1_ACU_Msk            (0xfUL << EADC_M20CTL1_ACU_Pos)             /*!< EADC_T::M20CTL1: ACU Mask                  */
 
-#define EADC_M20CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M20CTL1: EXTSTDIV Position                */
-#define EADC_M20CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M20CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M20CTL1: EXTSTDIV Mask                    */
+#define EADC_M20CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M20CTL1: EXTSTDIV Position                */
+#define EADC_M20CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M20CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M20CTL1: EXTSTDIV Mask                    */
 
 #define EADC_M21CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M21CTL1: ALIGN Position            */
 #define EADC_M21CTL1_ALIGN_Msk          (0x1UL << EADC_M21CTL1_ALIGN_Pos)           /*!< EADC_T::M21CTL1: ALIGN Mask                */
@@ -2613,9 +2782,8 @@ typedef struct
 #define EADC_M21CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M21CTL1: ACU Position              */
 #define EADC_M21CTL1_ACU_Msk            (0xfUL << EADC_M21CTL1_ACU_Pos)             /*!< EADC_T::M21CTL1: ACU Mask                  */
 
-#define EADC_M21CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M21CTL1: EXTSTDIV Position                */
-#define EADC_M21CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M21CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M21CTL1: EXTSTDIV Mask                    */
-
+#define EADC_M21CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M21CTL1: EXTSTDIV Position                */
+#define EADC_M21CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M21CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M21CTL1: EXTSTDIV Mask                    */
 
 #define EADC_M22CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M22CTL1: ALIGN Position            */
 #define EADC_M22CTL1_ALIGN_Msk          (0x1UL << EADC_M22CTL1_ALIGN_Pos)           /*!< EADC_T::M22CTL1: ALIGN Mask                */
@@ -2626,8 +2794,8 @@ typedef struct
 #define EADC_M22CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M22CTL1: ACU Position              */
 #define EADC_M22CTL1_ACU_Msk            (0xfUL << EADC_M22CTL1_ACU_Pos)             /*!< EADC_T::M22CTL1: ACU Mask                  */
 
-#define EADC_M22CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M22CTL1: EXTSTDIV Position                */
-#define EADC_M22CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M22CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M22CTL1: EXTSTDIV Mask                    */
+#define EADC_M22CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M22CTL1: EXTSTDIV Position                */
+#define EADC_M22CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M22CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M22CTL1: EXTSTDIV Mask                    */
 
 #define EADC_M23CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M23CTL1: ALIGN Position            */
 #define EADC_M23CTL1_ALIGN_Msk          (0x1UL << EADC_M23CTL1_ALIGN_Pos)           /*!< EADC_T::M23CTL1: ALIGN Mask                */
@@ -2638,110 +2806,21 @@ typedef struct
 #define EADC_M23CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M23CTL1: ACU Position              */
 #define EADC_M23CTL1_ACU_Msk            (0xfUL << EADC_M23CTL1_ACU_Pos)             /*!< EADC_T::M23CTL1: ACU Mask                  */
 
-#define EADC_M23CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M23CTL1: EXTSTDIV Position                */
-#define EADC_M23CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M23CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M23CTL1: EXTSTDIV Mask                    */
+#define EADC_M23CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M23CTL1: EXTSTDIV Position                */
+#define EADC_M23CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M23CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M23CTL1: EXTSTDIV Mask                    */
 
-#define EADC_M24CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M24CTL1: ALIGN Position            */
-#define EADC_M24CTL1_ALIGN_Msk          (0x1UL << EADC_M24CTL1_ALIGN_Pos)           /*!< EADC_T::M24CTL1: ALIGN Mask                */
+#define EADC_M24CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M24CTL1: EXTSTDIV Position                */
+#define EADC_M24CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M24CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M24CTL1: EXTSTDIV Mask                    */
 
-#define EADC_M24CTL1_AVG_Pos            (1)                                         /*!< EADC_T::M24CTL1: AVG Position              */
-#define EADC_M24CTL1_AVG_Msk            (0x1UL << EADC_M24CTL1_AVG_Pos)             /*!< EADC_T::M24CTL1: AVG Mask                  */
+#define EADC_M25CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M25CTL1: EXTSTDIV Position                */
+#define EADC_M25CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M25CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M25CTL1: EXTSTDIV Mask                    */
 
-#define EADC_M24CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M24CTL1: ACU Position              */
-#define EADC_M24CTL1_ACU_Msk            (0xfUL << EADC_M24CTL1_ACU_Pos)             /*!< EADC_T::M24CTL1: ACU Mask                  */
+#define EADC_M26CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M26CTL1: EXTSTDIV Position                */
+#define EADC_M26CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M26CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M26CTL1: EXTSTDIV Mask                    */
 
-#define EADC_M24CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M24CTL1: EXTSTDIV Position                */
-#define EADC_M24CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M24CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M24CTL1: EXTSTDIV Mask                    */
+#define EADC_M27CTL1_EXTSTDIV_Pos       (16)                                        /*!< EADC_T::M27CTL1: EXTSTDIV Position                */
+#define EADC_M27CTL1_EXTSTDIV_Msk       (0x3UL << EADC_M27CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M27CTL1: EXTSTDIV Mask                    */
 
-#define EADC_M25CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M25CTL1: ALIGN Position            */
-#define EADC_M25CTL1_ALIGN_Msk          (0x1UL << EADC_M25CTL1_ALIGN_Pos)           /*!< EADC_T::M25CTL1: ALIGN Mask                */
-
-#define EADC_M25CTL1_AVG_Pos            (1)                                         /*!< EADC_T::M25CTL1: AVG Position              */
-#define EADC_M25CTL1_AVG_Msk            (0x1UL << EADC_M25CTL1_AVG_Pos)             /*!< EADC_T::M25CTL1: AVG Mask                  */
-
-#define EADC_M25CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M25CTL1: ACU Position              */
-#define EADC_M25CTL1_ACU_Msk            (0xfUL << EADC_M25CTL1_ACU_Pos)             /*!< EADC_T::M25CTL1: ACU Mask                  */
-
-#define EADC_M25CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M25CTL1: EXTSTDIV Position                */
-#define EADC_M25CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M25CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M25CTL1: EXTSTDIV Mask                    */
-
-#define EADC_M26CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M26CTL1: ALIGN Position            */
-#define EADC_M26CTL1_ALIGN_Msk          (0x1UL << EADC_M26CTL1_ALIGN_Pos)           /*!< EADC_T::M26CTL1: ALIGN Mask                */
-
-#define EADC_M26CTL1_AVG_Pos            (1)                                         /*!< EADC_T::M26CTL1: AVG Position              */
-#define EADC_M26CTL1_AVG_Msk            (0x1UL << EADC_M26CTL1_AVG_Pos)             /*!< EADC_T::M26CTL1: AVG Mask                  */
-
-#define EADC_M26CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M26CTL1: ACU Position              */
-#define EADC_M26CTL1_ACU_Msk            (0xfUL << EADC_M26CTL1_ACU_Pos)             /*!< EADC_T::M26CTL1: ACU Mask                  */
-
-#define EADC_M26CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M26CTL1: EXTSTDIV Position                */
-#define EADC_M26CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M26CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M26CTL1: EXTSTDIV Mask                    */
-
-#define EADC_M27CTL1_ALIGN_Pos          (0)                                         /*!< EADC_T::M27CTL1: ALIGN Position            */
-#define EADC_M27CTL1_ALIGN_Msk          (0x1UL << EADC_M27CTL1_ALIGN_Pos)           /*!< EADC_T::M27CTL1: ALIGN Mask                */
-
-#define EADC_M27CTL1_AVG_Pos            (1)                                         /*!< EADC_T::M27CTL1: AVG Position              */
-#define EADC_M27CTL1_AVG_Msk            (0x1UL << EADC_M27CTL1_AVG_Pos)             /*!< EADC_T::M27CTL1: AVG Mask                  */
-
-#define EADC_M27CTL1_ACU_Pos            (4)                                         /*!< EADC_T::M27CTL1: ACU Position              */
-#define EADC_M27CTL1_ACU_Msk            (0xfUL << EADC_M27CTL1_ACU_Pos)             /*!< EADC_T::M27CTL1: ACU Mask                  */
-
-#define EADC_M27CTL1_EXTSTDIV_Pos         (16)                                        /*!< EADC_T::M27CTL1: EXTSTDIV Position                */
-#define EADC_M27CTL1_EXTSTDIV_Msk         (0x3UL << EADC_M27CTL1_EXTSTDIV_Pos)        /*!< EADC_T::M27CTL1: EXTSTDIV Mask                    */
-
-#define EADC_TEST_PCHSEN_Pos            (0)                                         /*!< EADC_T::TEST: PCHSEN Position              */
-#define EADC_TEST_PCHSEN_Msk            (0x1UL << EADC_TEST_PCHSEN_Pos)             /*!< EADC_T::TEST: PCHSEN Mask                  */
-
-#define EADC_TEST_PCHSSEL_Pos           (4)                                         /*!< EADC_T::TEST: PCHSSEL Position             */
-#define EADC_TEST_PCHSSEL_Msk           (0x7UL << EADC_TEST_PCHSSEL_Pos)            /*!< EADC_T::TEST: PCHSSEL Mask                 */
-
-#define EADC_TEST_DECADD_Pos           (8)                                         /*!< EADC_T::TEST: DECADD Position             */
-#define EADC_TEST_DECADD_Msk           (0x1UL << EADC_TEST_DECADD_Pos)            /*!< EADC_T::TEST: DECADD Mask                 */
-
-#define EADC_DEBUG_ENFLO_Pos            (0)                                         /*!< EADC_T::DEBUG: ENFLO Position              */
-#define EADC_DEBUG_ENFLO_Msk            (0x1UL << EADC_DEBUG_ENFLO_Pos)             /*!< EADC_T::DEBUG: ENFLO Mask                  */
-
-#define EADC_DEBUG_ENBOOST_Pos          (1)                                         /*!< EADC_T::DEBUG: ENBOOST Position            */
-#define EADC_DEBUG_ENBOOST_Msk          (0x1UL << EADC_DEBUG_ENBOOST_Pos)           /*!< EADC_T::DEBUG: ENBOOST Mask                */
-
-#define EADC_DEBUG_SELAYNC_Pos          (4)                                         /*!< EADC_T::DEBUG: SELAYNC Position            */
-#define EADC_DEBUG_SELAYNC_Msk          (0x1UL << EADC_DEBUG_SELAYNC_Pos)           /*!< EADC_T::DEBUG: SELAYNC Mask                */
-
-#define EADC_DEBUG_SELASYF_Pos          (5)                                         /*!< EADC_T::DEBUG: SELASYF Position            */
-#define EADC_DEBUG_SELASYF_Msk          (0x1UL << EADC_DEBUG_SELASYF_Pos)           /*!< EADC_T::DEBUG: SELASYF Mask                */
-
-#define EADC_DEBUG_ASDELAYC_Pos         (8)                                         /*!< EADC_T::DEBUG: ASDELAYC Position           */
-#define EADC_DEBUG_ASDELAYC_Msk         (0x3UL << EADC_DEBUG_ASDELAYC_Pos)          /*!< EADC_T::DEBUG: ASDELAYC Mask               */
-
-#define EADC_DEBUG_ASDELAYF_Pos         (10)                                        /*!< EADC_T::DEBUG: ASDELAYF Position           */
-#define EADC_DEBUG_ASDELAYF_Msk         (0x3UL << EADC_DEBUG_ASDELAYF_Pos)          /*!< EADC_T::DEBUG: ASDELAYF Mask               */
-
-#define EADC_DEBUG_TRIMSMPL_Pos         (16)                                        /*!< EADC_T::DEBUG: TRIMSMPL Position           */
-#define EADC_DEBUG_TRIMSMPL_Msk         (0xffUL << EADC_DEBUG_TRIMSMPL_Pos)         /*!< EADC_T::DEBUG: TRIMSMPL Mask               */
-
-#define EADC_DEBUG_DEBUGCNTEN_Pos       (24)                                        /*!< EADC_T::DEBUG: DEBUGCNTEN Position           */
-#define EADC_DEBUG_DEBUGCNTEN_Msk       (0x1UL << EADC_DEBUG_DEBUGCNTEN_Pos)         /*!< EADC_T::DEBUG: DEBUGCNTEN_ Mask               */
-
-#define EADC_DEBUG_DEBUGCNT_Pos         (25)                                        /*!< EADC_T::DEBUG: DEBUGCNT Position           */
-#define EADC_DEBUG_DEBUGCNT_Msk         (0x1fUL << EADC_DEBUG_DEBUGCNT_Pos)         /*!< EADC_T::DEBUG: DEBUGCNT_ Mask               */
-
-#define EADC_DEBUG_DEBUGEN_Pos          (31)                                        /*!< EADC_T::DEBUG: DEBUGEN Position            */
-#define EADC_DEBUG_DEBUGEN_Msk          (0x1UL << EADC_DEBUG_DEBUGEN_Pos)           /*!< EADC_T::DEBUG: DEBUGEN Mask                */
-
-#define EADC_VREF_VREFSW_Pos            (0)                                         /*!< EADC_T::VREF: VREFSW Position              */
-#define EADC_VREF_VREFSW_Msk            (0x1UL << EADC_VREF_VREFSW_Pos)             /*!< EADC_T::VREF: VREFSW Mask                  */
-
-#define EADC_VREF_REFSEL_Pos            (1)                                         /*!< EADC_T::VREF: REFSEL Position              */
-#define EADC_VREF_REFSEL_Msk            (0x1UL << EADC_VREF_REFSEL_Pos)             /*!< EADC_T::VREF: REFSEL Mask                  */
-
-#define EADC_VERSION_MINOR_Pos          (0)                                         /*!< EADC_T::VERSION: MINOR Position            */
-#define EADC_VERSION_MINOR_Msk          (0xffffUL << EADC_VERSION_MINOR_Pos)        /*!< EADC_T::VERSION: MINOR Mask                */
-
-#define EADC_VERSION_SUB_Pos            (16)                                        /*!< EADC_T::VERSION: SUB Position              */
-#define EADC_VERSION_SUB_Msk            (0xffUL << EADC_VERSION_SUB_Pos)            /*!< EADC_T::VERSION: SUB Mask                  */
-
-#define EADC_VERSION_MAJOR_Pos          (24)                                        /*!< EADC_T::VERSION: MAJOR Position            */
-#define EADC_VERSION_MAJOR_Msk          (0xffUL << EADC_VERSION_MAJOR_Pos)          /*!< EADC_T::VERSION: MAJOR Mask                */
 
 /** @} EADC_CONST */
 /** @} end of EADC register group */

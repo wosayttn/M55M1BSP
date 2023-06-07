@@ -40,7 +40,7 @@ void EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
     eadc->CTL &= (~EADC_CTL_DIFFEN_Msk);
 
     eadc->CTL |= (u32InputMode | EADC_CTL_ADCEN_Msk);
-    //while (!(eadc->PWRM & EADC_PWRM_PWUPRDY_Msk)) {}
+
 }
 
 /**
@@ -98,7 +98,7 @@ void EADC_ConfigSampleModule(EADC_T *eadc, \
                              uint32_t u32TriggerSrc, \
                              uint32_t u32Channel)
 {
-    if (u32ModuleNum <= 18)
+    if (u32ModuleNum < 19)
     {
         eadc->SCTL[u32ModuleNum] &= ~(EADC_SCTL_EXTFEN_Msk | EADC_SCTL_EXTREN_Msk | EADC_SCTL_TRGSEL_Msk | EADC_SCTL_CHSEL_Msk);
         eadc->SCTL[u32ModuleNum] |= (u32TriggerSrc | u32Channel);
@@ -114,7 +114,7 @@ void EADC_ConfigSampleModule(EADC_T *eadc, \
 /**
   * @brief Set trigger delay time.
   * @param[in] eadc The pointer of the specified EADC module.
-  * @param[in] u32ModuleNum Decides the sample module number, valid value are from 0 to 18.
+  * @param[in] u32ModuleNum Decides the sample module number, valid value are from 0 to 27.
   * @param[in] u32TriggerDelayTime Decides the trigger delay time, valid range are between 0~0xFF.
   * @param[in] u32DelayClockDivider Decides the trigger delay clock divider. Valid values are:
     *                                - \ref EADC_SCTL_TRGDLYDIV_DIVIDER_1    : Trigger delay clock frequency is ADC_CLK/1
@@ -130,7 +130,7 @@ void EADC_SetTriggerDelayTime(EADC_T *eadc, \
                               uint32_t u32TriggerDelayTime, \
                               uint32_t u32DelayClockDivider)
 {
-    if (u32ModuleNum <= 18)
+    if (u32ModuleNum < 19)
     {
         eadc->SCTL[u32ModuleNum] &= ~(EADC_SCTL_TRGDLYDIV_Msk | EADC_SCTL_TRGDLYCNT_Msk);
         eadc->SCTL[u32ModuleNum] |= ((u32TriggerDelayTime << EADC_SCTL_TRGDLYCNT_Pos) | u32DelayClockDivider);
@@ -153,7 +153,7 @@ void EADC_SetTriggerDelayTime(EADC_T *eadc, \
   */
 void EADC_SetExtendSampleTime(EADC_T *eadc, uint32_t u32ModuleNum, uint32_t u32ExtendSampleTime)
 {
-    if (u32ModuleNum <= 18)
+    if (u32ModuleNum < 19)
     {
         eadc->SCTL[u32ModuleNum] &= ~EADC_SCTL_EXTSMPT_Msk;
         eadc->SCTL[u32ModuleNum] |= (u32ExtendSampleTime << EADC_SCTL_EXTSMPT_Pos);
@@ -163,20 +163,6 @@ void EADC_SetExtendSampleTime(EADC_T *eadc, uint32_t u32ModuleNum, uint32_t u32E
         eadc->SCTL19[u32ModuleNum-19] &= ~EADC_SCTL_EXTSMPT_Msk;
         eadc->SCTL19[u32ModuleNum-19] |= (u32ExtendSampleTime << EADC_SCTL_EXTSMPT_Pos);
     }
-}
-
-/**
-  * @brief      Set EADC Reference Voltage
-  * @param[in]  eadc The pointer of the specified EADC module.
-  * @param[in]  u32VRefCTL is EADC reference voltage setting. Including :
-  *             - \ref EADC_VREF_REFSEL_AVDD    : The reference voltage source is AVdd
-  *             - \ref EADC_VREF_REFSEL_VREFP   : The reference voltage source is the VRef pin
-  * @return     None
-  * @details    This function select EADC reference voltage.
-  */
-void EADC_SetVRef(EADC_T *eadc, uint32_t u32VRefCTL)
-{
-    (eadc)->VREF = ((eadc)->VREF & (~EADC_VREF_REFSEL_Msk)) | (u32VRefCTL);
 }
 
 /** @} end of group EADC_EXPORTED_FUNCTIONS */
