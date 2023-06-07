@@ -9,12 +9,18 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
+/*******************************************************************************
+ * PRIVATE MACROS AND DEFINES
+ ******************************************************************************/
 #define TEST_NUMBER             1       /* page numbers */
 #define TEST_LENGTH             256     /* length */
 #define TEST_TIMEOUT            0xFFFF  /* timeout count */
 
 #define SPI_FLASH_PORT          QSPI0
 
+/*******************************************************************************
+ * GLOBAL VARIABLES
+ ******************************************************************************/
 static uint8_t g_au8SrcArray[TEST_LENGTH] = {0};
 static uint8_t g_au8DestArray[TEST_LENGTH] = {0};
 
@@ -451,7 +457,7 @@ void SYS_Init(void)
     CLK_SET_PCLK4DIV(2);
 
     /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
     /* Select UART clock source from HIRC */
@@ -466,16 +472,16 @@ void SYS_Init(void)
     /* Enable QSPI0 peripheral clock */
     CLK_EnableModuleClock(QSPI0_MODULE);
 
-    /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
-    SystemCoreClockUpdate();
-
     /* Set PB multi-function pins for UART0 RXD=PB.12 and TXD=PB.13 */
     SetDebugUartMFP();
 
     /* Setup QSPI0 multi-function pins */
-    SYS->GPA_MFP0 |= (SYS_GPA_MFP0_PA0MFP_QSPI0_MOSI0 | SYS_GPA_MFP0_PA1MFP_QSPI0_MISO0 | SYS_GPA_MFP0_PA2MFP_QSPI0_CLK | SYS_GPA_MFP0_PA3MFP_QSPI0_SS);
-    SYS->GPA_MFP1 |= (SYS_GPA_MFP1_PA4MFP_QSPI0_MOSI1 | SYS_GPA_MFP1_PA5MFP_QSPI0_MISO1);
+    SYS->GPA_MFP0 |= (SYS_GPA_MFP0_PA0MFP_QSPI0_MOSI0 |
+                      SYS_GPA_MFP0_PA1MFP_QSPI0_MISO0 |
+                      SYS_GPA_MFP0_PA2MFP_QSPI0_CLK |
+                      SYS_GPA_MFP0_PA3MFP_QSPI0_SS);
+    SYS->GPA_MFP1 |= (SYS_GPA_MFP1_PA4MFP_QSPI0_MOSI1 |
+                      SYS_GPA_MFP1_PA5MFP_QSPI0_MISO1);
 
     /* Enable QSPI0 clock pin (PA2) schmitt trigger */
     PA->SMTEN |= GPIO_SMTEN_SMTEN2_Msk;

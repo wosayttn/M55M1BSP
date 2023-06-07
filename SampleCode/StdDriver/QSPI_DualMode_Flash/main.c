@@ -21,7 +21,7 @@ static uint8_t g_au8DestArray[TEST_LENGTH] = {0};
 uint16_t SpiFlash_ReadMidDid(void)
 {
     uint8_t u8RxData[6], u8IDCnt = 0;
-    int i32Timeout = TEST_TIMEOUT;
+    volatile int i32Timeout = TEST_TIMEOUT;
 
     // /CS: active
     QSPI_SET_SS_LOW(SPI_FLASH_PORT);
@@ -353,7 +353,7 @@ void SYS_Init(void)
     CLK_SET_PCLK4DIV(2);
 
     /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
     /* Select UART clock source from HIRC */
@@ -364,12 +364,9 @@ void SYS_Init(void)
 
     /* Enable UART peripheral clock */
     CLK_EnableModuleClock(UART0_MODULE);
+
     /* Enable QSPI0 peripheral clock */
     CLK_EnableModuleClock(QSPI0_MODULE);
-
-    /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
-    SystemCoreClockUpdate();
 
     /* Set PB multi-function pins for UART0 RXD=PB.12 and TXD=PB.13 */
     SetDebugUartMFP();
@@ -379,12 +376,14 @@ void SYS_Init(void)
                       SYS_GPA_MFP0_PA1MFP_QSPI0_MISO0 |
                       SYS_GPA_MFP0_PA2MFP_QSPI0_CLK |
                       SYS_GPA_MFP0_PA3MFP_QSPI0_SS);
+    SYS->GPA_MFP1 |= (SYS_GPA_MFP1_PA4MFP_QSPI0_MOSI1 |
+                      SYS_GPA_MFP1_PA5MFP_QSPI0_MISO1);
 
     /* Enable QSPI0 clock pin (PA2) schmitt trigger */
     PA->SMTEN |= GPIO_SMTEN_SMTEN2_Msk;
 
     /* Enable QSPI0 I/O high slew rate */
-    GPIO_SetSlewCtl(PA, 0xF, GPIO_SLEWCTL_HIGH);
+    GPIO_SetSlewCtl(PA, 0x3F, GPIO_SLEWCTL_HIGH);
 
     /* Lock protected registers */
     SYS_LockReg();
