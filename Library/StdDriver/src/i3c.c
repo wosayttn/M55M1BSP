@@ -67,6 +67,9 @@ void I3C_Open(I3C_T *i3c,
         i3c->DEVADDR = ((u8StaticAddr << I3C_DEVADDR_SA_Pos) | I3C_DEVADDR_SAVALID_Msk)
                        | ((u8StaticAddr << I3C_DEVADDR_DA_Pos) | I3C_DEVADDR_DAVALID_Msk);
 
+        /* Enable all interrupt status */
+        i3c->INTSTSEN = 0xFFFFFFFF;
+
     }
     else
     {
@@ -302,18 +305,16 @@ int32_t I3C_SendIBIRequest(I3C_T *i3c, uint8_t u8MandatoryData, uint32_t u32Payl
     }
 
     /* Clear CmdQ and Tx buffer */
-//    if (I3C_ResetAndResume(i3c, (I3C_RESET_CMD_QUEUE | I3C_RESET_TX_BUF), FALSE) != 0)
-//    {
-//        return I3C_STS_INVALID_STATE;
-//    }
+    //    if (I3C_ResetAndResume(i3c, (I3C_RESET_CMD_QUEUE | I3C_RESET_TX_BUF), FALSE) != 0)
+    //    {
+    //        return I3C_STS_INVALID_STATE;
+    //    }
 
     /* Check if payload length > 4-bytes */
     if (u8PayloadLen > 4)
     {
         return I3C_STS_INVALID_INPUT;
     }
-    
-    PB2 = 1;
 
     /* Program IBI payload data, payload length and MDB */
     i3c->SIR = (u8PayloadLen << I3C_SIR_DATLEN_Pos) | (u8MandatoryData << I3C_SIR_MDB_Pos) | (0 << I3C_SIR_CTL_Pos);
@@ -463,41 +464,371 @@ int32_t I3C_RespErrorRecovery(I3C_T *i3c, uint32_t u32RespStatus)
     return I3C_STS_NO_ERR;
 }
 
+
 /**
-  * @brief      Write a byte to Slave
+  * @brief      Setup I2C / I3C Device Address Table
   *
   * @param[in]  *i3c            Point to I3C peripheral
-  * @param[in]  u32IsI3cDev     Type of device is I3C or not
-  * @param[in]  u8SlaveAddr     Access Slave address(7-bit)
-  * @param[in]  data            Write a byte data to Slave
+  * @param[in]  u8DevIndex      the offset of Device Address Table.
+  *                             It could be 0 ~ 6 for DEV1ADR to DEV7ADR.
+  * @param[in]  u8DevType       the slave device type. It could be 0 for I3C device and 1 for I2C device
+  * @param[in]  u8DAddr         7Bits Device Synamic Address
+  * @param[in]  u8SAddr         7Bits Device Static Address
   *
-  * @retval     0               Write data success
-  * @retval     1               Write data fail, or bus occurs error events
+  * @retval     I3C_STS_NO_ERR          No error
+  * @retval     I3C_STS_INVALID_INPUT   Invalid input parameter
   *
-  * @details    The function is used for I3C Master write a byte data to Slave.
-  *
-  * @note
+  * @details    The function is used for I3C Master to setup Device Address Table.
+  * @note       Device Address Table must be set before communication with Slave Devices.
   *
   */
-
-uint8_t I3C_WriteByte(I3C_T *i3c, uint32_t u32IsI3cDev, uint8_t u8SlaveAddr, uint8_t data)
+int32_t I3C_SetDeviceAddr(I3C_T *i3c, uint8_t u8DevIndex, uint8_t u8DevType, uint8_t u8DAddr, int8_t u8SAddr)
 {
-    uint8_t u8Xfering = 1u, u8Err = 0u, u8Ctrl = 0u;
-    uint32_t u32TimeOutCount = 0u;
 
-    if (u32IsI3cDev)
+    uint32_t i, count, u32Device = 0;
+
+    if ((u8DAddr & 0x80) || (u8SAddr & 0x80))
     {
+        return I3C_STS_INVALID_INPUT;
+    }
+
+    // I3C Device Dynamic Address with Odd Parity
+    for (i = 0, count = 0; i < 8; i++)
+    {
+        if ((u8DAddr >> i) & 0x1)
+        {
+            count ++;
+        }
+    }
+
+    if ((count % 2) == 0)
+    {
+        u32Device = ((u8DAddr | 0x80) << I3C_DEVADR_DADDR_Pos);
     }
     else
     {
-        i3c->DEV1ADR = (I3C_DEVADR_DEVICE_Msk | u8SlaveAddr);
-        i3c->TXRXDAT = data;
-        i3c->CMDQUE = (I3C_DATLEN(8) | I3C_CMD_ATTR_TRANSFER_ARG);
-        i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_ROC_Msk | I3C_CMD_ATTR_TRANSFER_CMD);
+        u32Device = (u8DAddr << I3C_DEVADR_DADDR_Pos);
     }
 
-    return (u8Err | u8Xfering);                                  /* return (Success)/(Fail) status */
+    // I2C Device Static Address
+    u32Device |= (u8SAddr << I3C_DEVADR_SADDR_Pos);
+
+    // Device Type
+    if (u8DevType != 0)
+    {
+        u32Device |= (1 << I3C_DEVADR_DEVICE_Pos);
+    }
+
+    switch (u8DevIndex)
+    {
+        case 0ul:
+            i3c->DEV1ADR = u32Device;
+            break;
+
+        case 1ul:
+            i3c->DEV2ADR = u32Device;
+            break;
+
+        case 2ul:
+            i3c->DEV3ADR = u32Device;
+            break;
+
+        case 3ul:
+            i3c->DEV4ADR = u32Device;
+            break;
+
+        case 4ul:
+            i3c->DEV5ADR = u32Device;
+            break;
+
+        case 5ul:
+            i3c->DEV6ADR = u32Device;
+            break;
+
+        case 6ul:
+            i3c->DEV7ADR = u32Device;
+            break;
+
+        default:
+            return I3C_STS_INVALID_INPUT;
+            break;
+    }
+
+    return I3C_STS_NO_ERR;
+
 }
+
+/**
+  * @brief      Write data to Slave
+  *
+  * @param[in]  *i3c            Point to I3C peripheral
+  * @param[in]  u8DevIndex      the offset of Device Address Table.
+  *                             It could be 0 ~ 6 for DEV1ADR to DEV7ADR.
+  * @param[in]  u32Speed        the speed in which the transfer should be driven. It could be
+  *                                 \ref I3C_SPEED_SDR0
+  *                                 \ref I3C_SPEED_SDR1
+  *                                 \ref I3C_SPEED_SDR2
+  *                                 \ref I3C_SPEED_SDR3
+  *                                 \ref I3C_SPEED_SDR4
+  *                                 \ref I3C_SPEED_HDRDDR
+  *                                 \ref I3C_SPEED_I2CFM
+  *                                 \ref I2C_SPEED_I2CFM
+  *                                 \ref I2C_SPEED_I2CFMPLUS
+  * @param[in]  u8TID           Specified Transmit Transaction ID in Command Queue.
+  * @param[in]  *pu32TxBuf      Pointer to array to write data to Slave
+  * @param[in]  u16WriteBytes   How many bytes need to write to Slave
+  *
+  * @retval     I3C_STS_NO_ERR          No error
+  * @retval     I3C_STS_INVALID_INPUT   Invalid input parameter
+  * @retval     I3C_STS_CMDQ_FULL       Command Queue is full
+  * @retval     I3C_STS_TX_FULL         TX FIFO is full
+  *
+  * @details    The function is used for I3C Master write data to Slave.
+  *
+  * @note       Device Address Table must be set before using this function.
+  *
+  */
+int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TID, uint32_t *pu32TxBuf, uint16_t u16WriteBytes)
+{
+    uint32_t i;
+    uint8_t u8Xfering = 1u, u8Err = 0u, u8Ctrl = 0u;
+    uint32_t u32TimeOutCount = 0u;
+    uint32_t response;
+
+    if ((u16WriteBytes == 0) || (pu32TxBuf == NULL))
+    {
+        return I3C_STS_INVALID_INPUT;
+    }
+
+    /* Check if CmdQ is full */
+    if (I3C_IS_CMDQ_FULL(i3c))
+    {
+        return I3C_STS_CMDQ_FULL;
+    }
+
+    if (u16WriteBytes <= 3)
+    {
+        i3c->CMDQUE = (((pu32TxBuf[0] & 0x00FFFFFF) << I3C_CMDQUE_DATBYTE0_Pos)
+                       | ((((1 << u16WriteBytes) - 1) & 0x07) << I3C_CMDQUE_BYTESTRB_Pos)
+                       | I3C_CMD_ATTR_SHORT_DATA_ARG);
+
+        i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_SDAP_Msk | I3C_CMDQUE_ROC_Msk
+                       | (u32Speed & I3C_CMDQUE_SPEED_Msk)
+                       | ((u8DevIndex & 0x1F) << I3C_CMDQUE_DEVINDX_Pos)
+                       | ((u8TID & 0x07) << I3C_CMDQUE_TID_Pos)
+                       | I3C_CMD_ATTR_TRANSFER_CMD);
+    }
+    else
+    {
+        i3c->CMDQUE = ((u16WriteBytes << I3C_CMDQUE_DATLEN_Pos) | I3C_CMD_ATTR_TRANSFER_ARG);
+
+        i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_ROC_Msk
+                       | (u32Speed & I3C_CMDQUE_SPEED_Msk)
+                       | ((u8DevIndex & 0x1F) << I3C_CMDQUE_DEVINDX_Pos)
+                       | ((u8TID & 0x07) << I3C_CMDQUE_TID_Pos)
+                       | I3C_CMD_ATTR_TRANSFER_CMD);
+
+
+        for (i = 0; i < ((u16WriteBytes + 3) / 4); i++)
+        {
+            u32TimeOutCount = SystemCoreClock;
+
+            /* Check if TX buffer is full */
+            while (I3C_IS_TX_FULL(i3c))
+            {
+
+                if (--u32TimeOutCount == 0)
+                {
+                    return I3C_STS_TX_FULL;
+                }
+
+
+            }
+
+            i3c->TXRXDAT = pu32TxBuf[i];
+
+        }
+
+    }
+
+    while ((I3C0->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
+
+    response = I3C0->RESPQUE;
+
+    if (response & I3C_RESPQUE_ERRSTS_Msk)
+    {
+        I3C0->DEVCTL |= I3C_DEVCTL_RESUME_Msk;
+        return I3C_STS_INVALID_STATE;
+    }
+
+    return I3C_STS_NO_ERR;
+
+}
+
+/**
+  * @brief      Read data from Slave
+  *
+  * @param[in]  *i3c            Point to I3C peripheral
+  * @param[in]  u8DevIndex      the offset of Device Address Table.
+  *                             It could be 0 ~ 6 for DEV1ADR to DEV7ADR.
+  * @param[in]  u32Speed        the speed in which the transfer should be driven. It could be
+  *                                 \ref I3C_SPEED_SDR0
+  *                                 \ref I3C_SPEED_SDR1
+  *                                 \ref I3C_SPEED_SDR2
+  *                                 \ref I3C_SPEED_SDR3
+  *                                 \ref I3C_SPEED_SDR4
+  *                                 \ref I3C_SPEED_HDRDDR
+  *                                 \ref I3C_SPEED_I2CFM
+  *                                 \ref I2C_SPEED_I2CFM
+  *                                 \ref I2C_SPEED_I2CFMPLUS
+  * @param[in]  u8TID           Specified Transmit Transaction ID in Command Queue.
+  * @param[in]  *pu32RxBuf      Pointer to array to read data from Slave
+  * @param[in]  u16ReadBytes    How many bytes need to read from Slave
+  *
+  * @retval     I3C_STS_NO_ERR          No error
+  * @retval     I3C_STS_INVALID_INPUT   Invalid input parameter
+  * @retval     I3C_STS_CMDQ_FULL       Command Queue is full
+  *
+  * @details    The function is used for I3C Master write data to Slave.
+  *
+  * @note       Device Address Table must be set before using this function.
+  * @note       if u16ReadBytes is not
+  *
+  */
+int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TID, uint32_t *pu32RxBuf, uint16_t u16ReadBytes)
+{
+    uint32_t i;
+    uint32_t u32TimeOutCount = 0u;
+    uint32_t response, readBytes = 0;
+
+    if ((u16ReadBytes == 0) || (pu32RxBuf == NULL))
+    {
+        return I3C_STS_INVALID_INPUT;
+    }
+
+    /* Check if CmdQ is full */
+    if (I3C_IS_CMDQ_FULL(i3c))
+    {
+        return I3C_STS_CMDQ_FULL;
+    }
+
+
+    i3c->CMDQUE = ((u16ReadBytes << I3C_CMDQUE_DATLEN_Pos) | I3C_CMD_ATTR_TRANSFER_ARG);
+
+    i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_RNW_Msk | I3C_CMDQUE_ROC_Msk
+                   | (u32Speed & I3C_CMDQUE_SPEED_Msk)
+                   | ((u8DevIndex & 0x1F) << I3C_CMDQUE_DEVINDX_Pos)
+                   | ((u8TID & 0x07) << I3C_CMDQUE_TID_Pos)
+                   | I3C_CMD_ATTR_TRANSFER_CMD);
+
+
+
+
+    while ((i3c->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
+
+
+    response = i3c->RESPQUE;
+    printf("Response = 0x%08X\n", response);
+
+    if ((response & I3C_RESPQUE_ERRSTS_Msk) != I3C_RESP_NO_ERR)
+    {
+        return I3C_STS_INVALID_STATE;
+    }
+
+
+    response = ((response  & I3C_RESPQUE_DATLEN_Msk) + 3) / 4;
+
+    if (response != 0)
+    {
+
+        for (i = 0; i < response; i++)
+        {
+            pu32RxBuf[i] = I3C0->TXRXDAT ;
+        }
+
+
+        for (i = 0; i < response; i++)
+        {
+            printf("Read Data = 0x%08X\n", pu32RxBuf[i]);
+        }
+
+        UART_WAIT_TX_EMPTY(UART0);
+    }
+
+
+
+    return I3C_STS_NO_ERR;
+
+}
+
+/**
+  * @brief      Broadcast RSTDAA command
+  *
+  * @param[in]  *i3c            Point to I3C peripheral
+  *
+  * @retval     I3C_STS_NO_ERR              No error
+  * @retval     I3C_STS_INVALID_STATE       Invalid state
+  * @details    The function is used for I3C Master.
+  *
+  */
+
+int32_t I3C_BroadcastRSTDAA(I3C_T *i3c)
+{
+    uint32_t response;
+
+    I3C0->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_ROC_Msk
+                    | I3C_CMDQUE_CP_Msk
+                    | ((I3C_CCC_RSTDAA(TRUE) <<  I3C_CMDQUE_CMD_Pos) & I3C_CMDQUE_CMD_Msk)
+                    | I3C_CMD_ATTR_TRANSFER_CMD);
+
+    while ((I3C0->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
+
+    response = I3C0->RESPQUE;
+
+    if (response & I3C_RESPQUE_ERRSTS_Msk)
+    {
+        I3C0->DEVCTL |= I3C_DEVCTL_RESUME_Msk;
+        return I3C_STS_INVALID_STATE;
+    }
+
+    return I3C_STS_NO_ERR;
+}
+
+/**
+  * @brief      Unicast SETDASA command
+  *
+  * @param[in]  *i3c            Point to I3C peripheral
+  *
+  * @retval     I3C_STS_NO_ERR              No error
+  * @retval     I3C_STS_INVALID_STATE       Invalid state
+  * @details    The function is used for I3C Master.
+  * @note       Device Address Table must be set before using this function.
+  *
+  */
+
+int32_t I3C_UnicastSETDASA(I3C_T *i3c, uint8_t u8DevIndex)
+{
+    uint32_t response;
+
+    i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_ROC_Msk
+                   | I3C_DEVCOUNT(1)
+                   | ((u8DevIndex & 0x1F) << I3C_CMDQUE_DEVINDX_Pos)
+                   | (I3C_CCC_SETDASA <<  I3C_CMDQUE_CMD_Pos)
+                   | I3C_CMD_ATTR_ADDR_ASSGN_CMD);
+
+    while ((I3C0->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
+
+    response = I3C0->RESPQUE;
+
+    if (response & I3C_RESPQUE_ERRSTS_Msk)
+    {
+        I3C0->DEVCTL |= I3C_DEVCTL_RESUME_Msk;
+        return I3C_STS_INVALID_STATE;
+    }
+
+    return I3C_STS_NO_ERR;
+}
+
 
 /** @} end of group I3C_EXPORTED_FUNCTIONS */
 /** @} end of group I3C_Driver */

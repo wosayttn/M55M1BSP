@@ -763,7 +763,7 @@ __STATIC_INLINE int32_t I3C_Enable(I3C_T *i3c)
     i3c->DEVCTL |= I3C_DEVCTL_ENABLE_Msk;
     u32Timeout = (SystemCoreClock / 1000);
 
-    while (((i3c->DEVCTL & I3C_DEVCTL_SYNC_Msk) == I3C_DEVCTL_SYNC_Msk) && (--u32Timeout)) {}
+    while (((i3c->DEVCTL & I3C_DEVCTL_ENABLE_Msk) != I3C_DEVCTL_ENABLE_Msk) && (--u32Timeout)) {}
 
     if (u32Timeout == 0)
     {
@@ -790,7 +790,7 @@ __STATIC_INLINE int32_t I3C_Disable(I3C_T *i3c)
     i3c->DEVCTL &= ~I3C_DEVCTL_ENABLE_Msk;
     u32Timeout = (SystemCoreClock / 1000);
 
-    while (((i3c->DEVCTL & I3C_DEVCTL_SYNC_Msk) == I3C_DEVCTL_SYNC_Msk) && (--u32Timeout)) {}
+    while (((i3c->DEVCTL & I3C_DEVCTL_ENABLE_Msk) == I3C_DEVCTL_ENABLE_Msk) && (--u32Timeout)) {}
 
     if (u32Timeout == 0)
     {
@@ -835,8 +835,12 @@ int32_t I3C_EnableHJRequest(I3C_T *i3c, uint32_t u32ModeSel);
 int32_t I3C_DisableHJRequest(I3C_T *i3c);
 int32_t I3C_RespErrorRecovery(I3C_T *i3c, uint32_t u32RespStatus);
 // I3C Master
-uint8_t I3C_WriteByte(I3C_T *i3c, uint32_t u32IsI3cDev, uint8_t u8SlaveAddr, uint8_t data);
-uint32_t I3C_WriteMultiBytes(I3C_T *i3c, uint32_t u32IsI3cDev, uint8_t u8SlaveAddr, uint8_t data[], uint32_t u32wLen);
+int32_t I3C_SetDeviceAddr(I3C_T *i3c, uint8_t u8DevIndex, uint8_t u8DevType, uint8_t u8DAddr, int8_t u8SAddr);
+int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TID, uint32_t *pu32TxBuf, uint16_t u16WriteBytes);
+int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TID, uint32_t *pu32RxBuf, uint16_t u16ReadBytes);
+int32_t I3C_BroadcastRSTDAA(I3C_T *i3c);
+int32_t I3C_UnicastSETDASA(I3C_T *i3c, uint8_t u8DevIndex);
+
 
 /** @} end of group I3C_EXPORTED_FUNCTIONS */
 /** @} end of group I3C_Driver */

@@ -116,9 +116,6 @@ typedef struct
 #define I3C_DEVCTL_IDLECNT_Pos          24U
 #define I3C_DEVCTL_IDLECNT_Msk          (0x3UL << I3C_DEVCTL_IDLECNT_Pos)
 
-#define I3C_DEVCTL_SYNC_Pos             26U
-#define I3C_DEVCTL_SYNC_Msk             (1UL << I3C_DEVCTL_SYNC_Pos)
-
 #define I3C_DEVCTL_ADAPTIVE_Pos         27U
 #define I3C_DEVCTL_ADAPTIVE_Msk         (1UL << I3C_DEVCTL_ADAPTIVE_Pos)
 
