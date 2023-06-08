@@ -440,6 +440,11 @@
               <FilePath>..\main.c</FilePath>
             </File>
             <File>
+              <FileName>hyperflash_code.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hyperflash_code.c</FilePath>
+            </File>
+            <File>
               <FileName>UserImageBase.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\UserImageBase.c</FilePath>
@@ -880,6 +885,11 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>hyperflash_code.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hyperflash_code.c</FilePath>
             </File>
             <File>
               <FileName>UserImageBase.c</FileName>
