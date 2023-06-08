@@ -102,6 +102,8 @@ static void SYS_Init(void)
     CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
 
 
+	/* Enable SRAM2 module clock */
+	CLK_EnableModuleClock(SRAM2_MODULE);
 	/* Enable SPIM module clock */
     CLK_EnableModuleClock(SPIM0_MODULE);
 	/* Enable SPIM module clock */

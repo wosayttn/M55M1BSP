@@ -36,7 +36,7 @@ define block HEAP      with alignment = 8, size = __ICFEDIT_size_heap__     { };
 
 initialize by copy { readwrite, section itcm };
 
-do not initialize  { section .noinit, section .sram.data, section .bss.NoInit.activation_buf_sram};
+do not initialize  { section .noinit, section .bss.sram.data, section .bss.NoInit.activation_buf_sram};
 
 place at address mem:__ICFEDIT_intvec_start__ { readonly section .intvec };
 
@@ -45,7 +45,7 @@ place in FLASH_region   { readonly }
 place in ITCM_region   { section itcm };
 place in DTCM_region   { readwrite,
                         block CSTACK, block HEAP };
-place in SRAM012_region   { section .sram.data, section .bss.NoInit.activation_buf_sram };
+place in SRAM012_region   { section .bss.sram.data, section .bss.NoInit.activation_buf_sram };
 /* place in HYPERRAM_region   { section .bss.NoInit.activation_buf_sram }; */
 place in HYPERFLASH_region   { section ifm, section nn_model };
 

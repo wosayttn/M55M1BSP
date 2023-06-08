@@ -48,8 +48,8 @@ using namespace std;
 static bool s_bImgLibInit = false;
 
 //Used by omv library
-__attribute__((section(".sram.data"), aligned(16))) static char fb_array[OMV_FB_SIZE + OMV_FB_ALLOC_SIZE];
-__attribute__((section(".sram.data"), aligned(16))) static char jpeg_array[OMV_JPEG_BUF_SIZE];
+__attribute__((section(".bss.sram.data"), aligned(16))) static char fb_array[OMV_FB_SIZE + OMV_FB_ALLOC_SIZE];
+__attribute__((section(".bss.sram.data"), aligned(16))) static char jpeg_array[OMV_JPEG_BUF_SIZE];
 
 char *_fb_base = NULL;
 char *_fb_end = NULL;
@@ -148,7 +148,7 @@ namespace app {
             /* Strings for presentation/logging. */
             std::string str_inf{"Running inference... "};
 
-            if (useCCAP == false) {
+			if (useCCAP == false) {
                 const uint8_t* imgSrc = get_img_array(ctx.Get<uint32_t>("imgIndex"));
                 if (nullptr == imgSrc) {
                     printf_err("Failed to get image index %" PRIu32 " (max: %u)\n", ctx.Get<uint32_t>("imgIndex"),
@@ -156,12 +156,10 @@ namespace app {
                     return false;
                 }
 
-				/* Display message on the LCD - inference running. */
-
                 /* Select the image to run inference with. */
                 info("Running inference on image %" PRIu32 " => %s\n", ctx.Get<uint32_t>("imgIndex"),
                     get_filename(ctx.Get<uint32_t>("imgIndex")));
-                        image_t srcImg;
+                image_t srcImg;
 				rectangle_t roi;
 
 				srcImg.w = IMAGE_WIDTH;

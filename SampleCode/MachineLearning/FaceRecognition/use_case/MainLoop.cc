@@ -16,6 +16,7 @@
 #include "NuMicro.h"
 
 #if defined USE_CCAP
+#include "glcd.h"
 #include "img_sensor.h"
 #endif
 
@@ -62,7 +63,7 @@ void main_loop(hal_platform& platform)
     }
 
 #if 1	
-	printf("Set tesnor arena to non-cacheable \n");
+	printf("Set tesnor arena to WTRA \n");
     // MPU setup
     const std::vector<ARM_MPU_Region_t> mpuConfig = {
         {
@@ -103,11 +104,13 @@ void main_loop(hal_platform& platform)
 #if defined USE_CCAP
     TfLiteIntArray* inputShape = model.GetInputShape(0);
 
-    const uint32_t model_nCols = inputShape->data[arm::app::MobileNetModel::ms_inputColsIdx];
-    const uint32_t model_nRows = inputShape->data[arm::app::MobileNetModel::ms_inputRowsIdx];
+    //const uint32_t model_nCols = inputShape->data[arm::app::MobileNetModel::ms_inputColsIdx];
+    //const uint32_t model_nRows = inputShape->data[arm::app::MobileNetModel::ms_inputRowsIdx];
+    const uint32_t model_nCols = GLCD_WIDTH;
+    const uint32_t model_nRows = GLCD_HEIGHT;
 
     img_sensor_init();
-    img_sensor_config(eIMG_FMT_RGB888_U8, model_nCols, model_nRows);
+    img_sensor_config(eIMG_FMT_RGB565, model_nCols, model_nRows);
 
     bool executionSuccessful = true;
     constexpr bool bUseMenu = false;

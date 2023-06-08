@@ -239,9 +239,16 @@ SECTIONS
   {
     . = ALIGN(16);
     *(.bss.NoInit.activation_buf_sram)
-    *(.sram.data)
+    *(.bss.sram.data)
   } > SRAM012 AT > SRAM012
 
+/*
+  .hyperram (NOLOAD):
+  {
+    . = ALIGN(16);
+    *(.bss.NoInit.activation_buf_sram)
+  } > HYPERRAM AT > HYPERRAM
+*/
   .bss :
   {
     __data_end__ = .;
@@ -276,13 +283,6 @@ SECTIONS
 
   /* Check if data + heap + stack exceeds DTCM limit */
   ASSERT(__StackLimit >= __HeapLimit, "region DTCM overflowed with stack")
-
-  .hyperram :
-  {
-    . = ALIGN(16);
-    *(.bss.NoInit.activation_buf_sram)
-    *(.sram.data)
-  } > HYPERRAM AT > HYPERRAM
 
   .hyperflash :
   {

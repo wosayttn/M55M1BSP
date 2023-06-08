@@ -186,7 +186,7 @@ APP_IMAGE FLASH_BANK0_START FLASH_BANK0_SIZE
 
     SRAM012 SRAM012_START UNINIT SRAM012_SIZE
     {
-        .ANY (.sram.data)
+        .ANY (.bss.sram.data)
         ; Place tensor arena in SRAM if we do not have a fast memory area
         .ANY1 (.bss.NoInit.activation_buf_sram)
     }
