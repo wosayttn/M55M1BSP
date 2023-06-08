@@ -11,7 +11,7 @@
 #include <string.h>
 #include "sclib_int.h"
 
-/** @addtogroup M55_Library M55 Library
+/** @addtogroup M55_Library
   @{
 */
 
