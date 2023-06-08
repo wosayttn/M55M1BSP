@@ -159,68 +159,68 @@ void CU_EADC_API_Function_Test(EADC_T *psEadc)
             EADC_ConfigSampleModule(psEadc, moduleNum, au32TriggeSource[u32TrgScr], moduleNum);
             if(u32TrgScr == 1)
             {
-              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_EXTFEN_Msk, EADC_SCTL_EXTFEN_Msk);
-              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_EXTREN_Msk, 0);
-              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_TRGSEL_Msk, 0x10000);
+              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_EXTFEN_Msk, EADC_SCTL_EXTFEN_Msk);
+              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_EXTREN_Msk, 0);
+              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_TRGSEL_Msk, 0x10000);
             }
             else if(u32TrgScr == 2)
             {
-              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_EXTFEN_Msk, 0);
-              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_EXTREN_Msk, EADC_SCTL_EXTREN_Msk);
-              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_TRGSEL_Msk, 0x10000);
+              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_EXTFEN_Msk, 0);
+              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_EXTREN_Msk, EADC_SCTL_EXTREN_Msk);
+              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_TRGSEL_Msk, 0x10000);
             }
             else if(u32TrgScr == 3)
             {
-              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_EXTFEN_Msk, EADC_SCTL_EXTFEN_Msk);
-              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_EXTREN_Msk, EADC_SCTL_EXTREN_Msk);
-              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_TRGSEL_Msk, 0x10000);
+              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_EXTFEN_Msk, EADC_SCTL_EXTFEN_Msk);
+              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_EXTREN_Msk, EADC_SCTL_EXTREN_Msk);
+              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_TRGSEL_Msk, 0x10000);
             }
             else
             {
-              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_EXTFEN_Msk, 0);
-              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_EXTREN_Msk, 0);
-              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_TRGSEL_Msk, au32TriggeSource[u32TrgScr]);
+              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_EXTFEN_Msk, 0);
+              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_EXTREN_Msk, 0);
+              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_TRGSEL_Msk, au32TriggeSource[u32TrgScr]);
             }
-              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_CHSEL_Msk, moduleNum); 
+              CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_CHSEL_Msk, moduleNum); 
            }
             
             EADC_SetTriggerDelayTime(psEadc, moduleNum, 0, EADC_SCTL_TRGDLYDIV_DIVIDER_1);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_TRGDLYCNT_Msk, 0 << EADC_SCTL_TRGDLYCNT_Pos);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_TRGDLYDIV_Msk, EADC_SCTL_TRGDLYDIV_DIVIDER_1);
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_TRGDLYCNT_Msk, 0 << EADC_SCTL_TRGDLYCNT_Pos);
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_TRGDLYDIV_Msk, EADC_SCTL_TRGDLYDIV_DIVIDER_1);
 
             EADC_SetTriggerDelayTime(psEadc, moduleNum, 0x55, EADC_SCTL_TRGDLYDIV_DIVIDER_2);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_TRGDLYCNT_Msk, 0x55 << EADC_SCTL_TRGDLYCNT_Pos);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_TRGDLYDIV_Msk, EADC_SCTL_TRGDLYDIV_DIVIDER_2);
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_TRGDLYCNT_Msk, 0x55 << EADC_SCTL_TRGDLYCNT_Pos);
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_TRGDLYDIV_Msk, EADC_SCTL_TRGDLYDIV_DIVIDER_2);
 
             EADC_SetTriggerDelayTime(psEadc, moduleNum, 0xAA, EADC_SCTL_TRGDLYDIV_DIVIDER_4);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_TRGDLYCNT_Msk, 0xAA << EADC_SCTL_TRGDLYCNT_Pos);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_TRGDLYDIV_Msk, EADC_SCTL_TRGDLYDIV_DIVIDER_4);
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_TRGDLYCNT_Msk, 0xAA << EADC_SCTL_TRGDLYCNT_Pos);
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_TRGDLYDIV_Msk, EADC_SCTL_TRGDLYDIV_DIVIDER_4);
 
             EADC_SetTriggerDelayTime(psEadc, moduleNum, 0xFF, EADC_SCTL_TRGDLYDIV_DIVIDER_16);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_TRGDLYCNT_Msk, 0xFF << EADC_SCTL_TRGDLYCNT_Pos);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL_TRGDLYDIV_Msk, EADC_SCTL_TRGDLYDIV_DIVIDER_16);
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_TRGDLYCNT_Msk, 0xFF << EADC_SCTL_TRGDLYCNT_Pos);
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_TRGDLYDIV_Msk, EADC_SCTL_TRGDLYDIV_DIVIDER_16);
             
             EADC_SetExtendSampleTime(psEadc, moduleNum, 0);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL0_EXTSMPT_Msk, (0 << EADC_SCTL0_EXTSMPT_Pos));
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL0_EXTSMPT_Msk, (0 << EADC_SCTL0_EXTSMPT_Pos));
             EADC_SetExtendSampleTime(psEadc, moduleNum, 0x55);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL0_EXTSMPT_Msk, (0x55 << EADC_SCTL0_EXTSMPT_Pos));
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL0_EXTSMPT_Msk, (0x55 << EADC_SCTL0_EXTSMPT_Pos));
             EADC_SetExtendSampleTime(psEadc, moduleNum, 0xAA);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL0_EXTSMPT_Msk, (0xAA << EADC_SCTL0_EXTSMPT_Pos));
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL0_EXTSMPT_Msk, (0xAA << EADC_SCTL0_EXTSMPT_Pos));
             EADC_SetExtendSampleTime(psEadc, moduleNum, 0xFF);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL0_EXTSMPT_Msk, (0xFF << EADC_SCTL0_EXTSMPT_Pos)); 
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL0_EXTSMPT_Msk, (0xFF << EADC_SCTL0_EXTSMPT_Pos)); 
         
         }
         else
         {
         
             EADC_SetExtendSampleTime(psEadc, moduleNum, 0);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL19_EXTSMPT_Msk, (0 << EADC_SCTL19_EXTSMPT_Pos));
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL19_EXTSMPT_Msk, (0 << EADC_SCTL19_EXTSMPT_Pos));
             EADC_SetExtendSampleTime(psEadc, moduleNum, 0x55);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL19_EXTSMPT_Msk, (0x55 << EADC_SCTL19_EXTSMPT_Pos));
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL19_EXTSMPT_Msk, (0x55 << EADC_SCTL19_EXTSMPT_Pos));
             EADC_SetExtendSampleTime(psEadc, moduleNum, 0xAA);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL19_EXTSMPT_Msk, (0xAA << EADC_SCTL19_EXTSMPT_Pos));
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL19_EXTSMPT_Msk, (0xAA << EADC_SCTL19_EXTSMPT_Pos));
             EADC_SetExtendSampleTime(psEadc, moduleNum, 0xFF);
-            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum] & EADC_SCTL19_EXTSMPT_Msk, (0xFF << EADC_SCTL19_EXTSMPT_Pos)); 
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL19_EXTSMPT_Msk, (0xFF << EADC_SCTL19_EXTSMPT_Pos)); 
         }
        
 

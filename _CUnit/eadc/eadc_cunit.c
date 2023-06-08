@@ -75,7 +75,7 @@ CU_TestInfo Suite_2_MACRO[] =
 {
     {"S2T1-EADC MACRO Basic EADC Conversion",   CU_S2T1_MACRO_EADC_BASIC},
     {"S2T2-EADC MACRO EADC Conversion Compare", CU_S2T2_MACRO_EADC_COMP},
-    //    {"S2T3-EADC MACRO Double Buffer Mode", CU_S2T3_MACRO_EADC_DOUBLE_BUFFER},  //not release
+    {"S2T3-EADC MACRO Double Buffer Mode", CU_S2T3_MACRO_EADC_DOUBLE_BUFFER},  //not release
     {"S2T4-EADC MACRO Others",                  CU_S2T4_MACRO_EADC_OTHER},
     CU_TEST_INFO_NULL
 };
