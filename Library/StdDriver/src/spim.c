@@ -44,7 +44,7 @@ static volatile uint8_t  g_Supported_List[] =
 };
 
 //------------------------------------------------------------------------------
-static void  N_delay(int n);
+static void N_delay(int n);
 static void SwitchNBitOutput(SPIM_T *spim, uint32_t u32NBit);
 static void SwitchNBitInput(SPIM_T *spim, uint32_t u32NBit);
 static int32_t spim_write(SPIM_T *spim, uint8_t pu8TxBuf[], uint32_t u32NTx);
@@ -1602,6 +1602,16 @@ int SPIM_FindAndInitDMAMCmdPhase(SPIM_T *spim,
     return SPIM_OK;
 }
 
+/**
+ * @brief Calculate I/O phase bit mode size.
+ *
+ * @param u32Phase
+ *          - \ref PHASE_NORMAL_MODE : 1 Bit Mode
+ *          - \ref PHASE_DUAL_MODE   : 2 Bit Mode
+ *          - \ref PHASE_QUAD_MODE   : 4 Bit Mode
+ *          - \ref PHASE_OCTAL_MODE  : 8 Bit Mode
+ * @return uint32_t
+ */
 uint32_t SPIM_GetIOPhaseSize(uint32_t u32Phase)
 {
     switch (u32Phase)
@@ -2069,6 +2079,27 @@ int SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
 }
 
 /**
+  * @brief      Get Direct Map Address.
+  * @param      spim
+  * @return     None.
+  */
+uint32_t SPIM_GetDirectMapAddress(SPIM_T *spim)
+{
+    if (spim == SPIM0)
+    {
+        return SPIM0_DMM_MAP_ADDR;
+    }
+    else if (spim == SPIM1)
+    {
+        return SPIM1_DMM_MAP_ADDR;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+/**
   * @brief      Enter Direct Map mode.
   * @param      is4ByteAddr     4-byte u32Address or not.
   * @param      u32RdCmd        Read command.
@@ -2509,39 +2540,6 @@ int SPIM_Hyper_Write4Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data)
     return SPIM_OK;
 }
 
-// move to sample code
-/**
-  * @brief      SPIM Default Config HyperBus Access Module Parameters.
-  * @param      spim
-  * @param      u32CSMaxLT Chip Select Maximum Low Time 0 ~ 0xFFFF, Default Set 0x02ED
-  * @param      u32AcctRD Initial Read Access Time 1 ~ 0x1F, Default Set 0x04
-  * @param      u32AcctWR Initial Write Access Time 1 ~ 0x1F, Default Set 0x04
-  * @return     None.
-  */
-void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR)
-{
-    /* Chip Select Setup Time 2.5 */
-    SPIM_HYPER_CONFIG1_SET_CSST(spim, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
-
-    /* Chip Select Hold Time 3.5 HCLK */
-    SPIM_HYPER_CONFIG1_SET_CSH(spim, SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
-
-    /* Chip Select High between Transaction as 2 HCLK cycles */
-    SPIM_HYPER_CONFIG1_SET_CSHI(spim, 2);
-
-    /* Chip Select Masximum low time HCLK */
-    SPIM_HYPER_CONFIG1_SET_CSMAXLT(spim, u32CSMaxLow);
-
-    /* Initial Device RESETN Low Time 255 */
-    SPIM_HYPER_CONFIG2_SET_RSTNLT(spim, 0xFF);
-
-    /* Initial Read Access Time Clock cycle*/
-    SPIM_HYPER_CONFIG2_SET_ACCTRD(spim, u32AcctRD);
-
-    /* Initial Write Access Time Clock cycle*/
-    SPIM_HYPER_CONFIG2_SET_ACCTWR(spim, u32AcctWR);
-}
-
 /**
   * @brief      SPIM Config HyperBus Access Module Parameter
   * @param      spim
@@ -2590,9 +2588,9 @@ int SPIM_Hyper_DMAWrite(SPIM_T *spim, uint32_t u32Addr, void *pvWrBuf, uint32_t 
 {
     SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEWRITE);  /* Switch to DMA Write mode.   */
 
-    spim->SRAMADDR = (uint32_t) pvWrBuf;         /* SRAM u32Address.  */
-    spim->DMACNT = u32NTx;                       /* Transfer length.  */
-    spim->FADDR = u32Addr;                       /* Flash u32Address. */
+    spim->SRAMADDR = (uint32_t) pvWrBuf;                /* SRAM u32Address.  */
+    spim->DMACNT = u32NTx;                              /* Transfer length.  */
+    spim->FADDR = u32Addr;                              /* Flash u32Address. */
 
     if (SPIM_IsSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
     {
@@ -2611,11 +2609,11 @@ int SPIM_Hyper_DMAWrite(SPIM_T *spim, uint32_t u32Addr, void *pvWrBuf, uint32_t 
   */
 int SPIM_Hyper_DMARead(SPIM_T *spim, uint32_t u32Addr, void *pvRdBuf, uint32_t u32NRx)
 {
-    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEREAD);  /* Switch to DMA Write mode.   */
+    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEREAD);   /* Switch to DMA Write mode.   */
 
-    spim->SRAMADDR = (uint32_t) pvRdBuf;         /* SRAM u32Address. */
-    spim->DMACNT = u32NRx;                       /* Transfer length. */
-    spim->FADDR = u32Addr;                       /* Flash u32Address. */
+    spim->SRAMADDR = (uint32_t) pvRdBuf;                /* SRAM u32Address. */
+    spim->DMACNT = u32NRx;                              /* Transfer length. */
+    spim->FADDR = u32Addr;                              /* Flash u32Address. */
 
     if (SPIM_IsSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
     {
@@ -2655,7 +2653,7 @@ void SPIM_Hyper_ExitDirectMapMode(SPIM_T *spim)
   * @return     None.
   * @note       This function sets SPIM_ERR_TIMEOUT if waiting Hyper Chip time-out.
   */
-int SPIM_Hyper_WaitDMMDone(SPIM_T *spim)
+int SPIM_Hyper_IsDMMDone(SPIM_T *spim)
 {
     uint32_t u32TimeOutCount = SPIM_TIMEOUT;
 
