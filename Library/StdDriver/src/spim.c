@@ -2085,18 +2085,18 @@ int SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
   */
 uint32_t SPIM_GetDirectMapAddress(SPIM_T *spim)
 {
+    uint32_t u32DMMAddr = 0;
+
     if (spim == SPIM0)
     {
-        return SPIM0_DMM_MAP_ADDR;
+        u32DMMAddr = SPIM0_DMM_MAP_ADDR;
     }
     else if (spim == SPIM1)
     {
-        return SPIM1_DMM_MAP_ADDR;
+        u32DMMAddr = SPIM1_DMM_MAP_ADDR;
     }
-    else
-    {
-        return 0;
-    }
+
+    return u32DMMAddr;
 }
 
 /**

@@ -7,6 +7,8 @@
  * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "NuMicro.h"
 #include "hyperflash_code.h"
@@ -137,6 +139,186 @@ void HyperFlash_DMAWrite(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvWrBuf, uint3
 void HyperFlash_DMARead(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvRdBuf, uint32_t u32NRx)
 {
     SPIM_Hyper_DMARead(pSPIMx, u32SAddr, pvRdBuf, u32NRx);
+}
+
+/**
+ * @brief Training DLL component delay stop number
+ *
+ * @param spim
+ */
+void SPIM_TrainingDLLDelayTime(SPIM_T *spim)
+{
+    uint8_t u8RdDelay = 0;
+    uint8_t u8Temp = 0;
+    uint8_t u8RdDelayIdx = 0;
+    uint8_t u8RdDelayRes[SPIM_MAX_DLL_LATENCY] = {0};
+    uint32_t u32i = 0;
+    uint32_t u32j = 0;
+    uint32_t u32SrcAddr = 0;
+    uint32_t u32TestSize = 32;
+    uint32_t u32SrcArray[32] = {0};
+    uint32_t u32DestArray[32] = {0};
+    uint32_t u32DMMAddr = SPIM_GetDirectMapAddress(spim);
+    int *pi32SrcAddr = (int *)(u32DMMAddr + u32SrcAddr);
+
+    /* Erase HyperFlash */
+    HyperFlash_EraseSector(spim, 0); //one sector = 256KB
+
+    HyperFlash_DMAWrite(spim, u32SrcAddr, u32SrcArray, u32TestSize);
+
+    /* Enter direct-mapped mode to run new applications */
+    SPIM_Hyper_EnterDirectMapMode(spim);
+
+    for (u8RdDelay = 0; u8RdDelay <= SPIM_MAX_DLL_LATENCY; u8RdDelay++)
+    {
+        /* Set DLL calibration to select the valid delay step number */
+        SPIM_CtrlDLLDelayTime(spim, 0, 0, 0, 0, u8RdDelay);
+
+        /* Read Data from HyperFlash */
+        //HyperFlash_DMARead(spim, u32SrcAddr, u32DestArray, u32TestSize);
+        memcpy(u32DestArray, pi32SrcAddr, u32TestSize);
+
+        /* Verify the data and save the number of successful delay steps */
+        if (memcmp(u32SrcArray, u32DestArray, u32TestSize))
+        {
+            printf("!!!\tData compare failed at block 0x%x\n", u32SrcAddr);
+        }
+        else
+        {
+            printf("RX Delay: %d = Pass\r\n", u8RdDelay);
+            u8RdDelayRes[u8RdDelayIdx++] = u8RdDelay;
+        }
+    }
+
+    /* Sort delay step number */
+    for (u32i = 0 ; u32i <= u8RdDelayIdx ; u32i = u32i + 1)
+    {
+        for (u32j = u32i + 1 ; u32j < u8RdDelayIdx ; u32j = u32j + 1)
+        {
+            if (u8RdDelayRes[u32i] > u8RdDelayRes[u32j])
+            {
+                u8Temp = u8RdDelayRes[u32i];
+                u8RdDelayRes[u32i] = u8RdDelayRes[u32j];
+                u8RdDelayRes[u32j] = u8Temp;
+            }
+        }
+    }
+
+    if (u8RdDelayIdx > 2)
+    {
+        u8RdDelayIdx = (u8RdDelayIdx / 2) - 1;
+    }
+    else
+    {
+        u8RdDelayIdx = 0;
+    }
+
+    /* Set the number of intermediate delay steps */
+    SPIM_CtrlDLLDelayTime(spim, 0, 0, 0, 0, u8RdDelayRes[u8RdDelayIdx]);
+}
+
+/**
+  * @brief      SPIM Default Config HyperBus Access Module Parameters.
+  * @param      spim
+  * @param      u32CSMaxLT Chip Select Maximum Low Time 0 ~ 0xFFFF, Default Set 0x02ED
+  * @param      u32AcctRD Initial Read Access Time 1 ~ 0x1F, Default Set 0x04
+  * @param      u32AcctWR Initial Write Access Time 1 ~ 0x1F, Default Set 0x04
+  * @return     None.
+  */
+void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR)
+{
+    /* Chip Select Setup Time 2.5 */
+    SPIM_HYPER_CONFIG1_SET_CSST(spim, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
+
+    /* Chip Select Hold Time 3.5 HCLK */
+    SPIM_HYPER_CONFIG1_SET_CSH(spim, SPIM_HYPER_CONFIG1_CSH_2_5_HCLK);
+
+    /* Chip Select High between Transaction as 2 HCLK cycles */
+    SPIM_HYPER_CONFIG1_SET_CSHI(spim, 2);
+
+    /* Chip Select Masximum low time HCLK */
+    SPIM_HYPER_CONFIG1_SET_CSMAXLT(spim, u32CSMaxLow);
+
+    /* Initial Device RESETN Low Time 255 */
+    SPIM_HYPER_CONFIG2_SET_RSTNLT(spim, 0xFF);
+
+    /* Initial Read Access Time Clock cycle*/
+    SPIM_HYPER_CONFIG2_SET_ACCTRD(spim, u32AcctRD);
+
+    /* Initial Write Access Time Clock cycle*/
+    SPIM_HYPER_CONFIG2_SET_ACCTWR(spim, u32AcctWR);
+}
+
+static uint32_t HyperFlash_GetLatencyNum(uint32_t u32Latency)
+{
+    if (u32Latency < 5)
+    {
+        u32Latency = 5;
+    }
+    else if (u32Latency > 16)
+    {
+        u32Latency = 16;
+    }
+
+    return (u32Latency - 5);
+}
+
+void HyperFlash_SetReadLatency(SPIM_T *spim, uint32_t u32Latency)
+{
+    uint32_t u32RegValue = 0;
+
+    SPIM_Hyper_DefaultConfig(spim, HFLH_MAX_CS_LOW, 16, HFLH_WR_ACCTIME);
+
+    SPIM_CtrlDLLDelayTime(spim, 0, 0, 0, 0, 1);
+
+    HyperFlash_WriteOPCMD(spim, CMD_COMMON_555, CMD_COMMON_AA);
+    HyperFlash_WriteOPCMD(spim, CMD_COMMON_2AA, CMD_COMMON_55);
+    HyperFlash_WriteOPCMD(spim, CMD_COMMON_555, READ_NVCR_REG);
+
+    /* Read non-volatile config register default value */
+    u32RegValue = SPIM_Hyper_Read1Word(spim, CMD_NOOP_CODE);
+    printf("NVCR Reg = %x\r\n", u32RegValue);
+
+    /* clear latency bits */
+    u32RegValue &= ~(0xF << 4);
+    /* Set new parameter */
+    u32RegValue |= (HyperFlash_GetLatencyNum(u32Latency) << 4);
+
+    HyperFlash_WriteOPCMD(spim, CMD_COMMON_555, CMD_COMMON_AA);
+    HyperFlash_WriteOPCMD(spim, CMD_COMMON_2AA, CMD_COMMON_55);
+    HyperFlash_WriteOPCMD(spim, CMD_COMMON_555, WRITE_NVCR_REG);
+    SPIM_Hyper_Write2Byte(spim, CMD_NOOP_CODE, u32RegValue);
+
+    SPIM_Hyper_DefaultConfig(spim, HFLH_MAX_CS_LOW, u32Latency, HFLH_WR_ACCTIME);
+
+    HyperFlash_WaitBusBusy(spim);
+
+    /* Check latency set as new parameter */
+    u32RegValue = HyperFlash_ReadData4CmdSets(spim, READ_NVCR_REG, CMD_NOOP_CODE);
+    printf("NVCR Verify NVCR Reg = %x\r\n", u32RegValue);
+}
+
+void HyperFlash_Init(SPIM_T *spim)
+{
+    /* Enable SPIM Hyper Bus Mode */
+    SPIM_SET_HYPER_MODE(spim, 1);
+
+    /* Set SPIM clock as HCLK divided by 1 or 2 */
+    SPIM_SET_CLOCK_DIVIDER(spim, 1);
+
+#if (SPIM_CACHE_EN == 1)
+    /* Enable SPIM Cache */
+    SPIM_DISABLE_CACHE(spim);
+#endif //SPIM_CACHE_EN
+
+    /* SPIM Def. Enable Cipher, First Disable the test. */
+    SPIM_DISABLE_CIPHER(spim);
+
+    SPIM_Hyper_Reset(spim);
+
+    HyperFlash_SetReadLatency(spim, 9);
+
+    SPIM_TrainingDLLDelayTime(spim);
 }
 
 /*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/
