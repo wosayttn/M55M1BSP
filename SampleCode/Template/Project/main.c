@@ -7,14 +7,14 @@
 * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 /*
- * This is a template project for M55M1 series MCU. 
+ * This is a template project for M55M1 series MCU.
  * Users can create their own application based on this project.
  *
  * This template uses internal RC as APLL0 clock source and UART0 to print messages.
  * Users may need to do extra system configuration according to their system design.
- * 
+ *
  * I/D-Cache
- *   I/D-Cache are enabled by default for better performance, 
+ *   I/D-Cache are enabled by default for better performance,
  *   users can define NVT_ICACHE_OFF/NVT_DCACHE_OFF in project setting to disable cache.
  * Debug UART
  *   Default is DEBUG_PORT=UART0 in project setting
@@ -30,7 +30,7 @@ static void SYS_Init(void)
 {
     /* Unlock protected registers */
     SYS_UnlockReg();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -48,7 +48,7 @@ static void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -67,7 +67,7 @@ static void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-    
+
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -78,14 +78,14 @@ int main(int argc, char *argv[])
     SYS_Init();
     /* Init Debug UART for print message */
     InitDebugUart();
-    
+
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     initialise_monitor_handles();
 #endif
-    
+
     printf("System core clock = %d\n", SystemCoreClock);
     printf("Hello World\n");
-    
+
     /* Got no where to go, just loop forever */
     while (1) ;
 }

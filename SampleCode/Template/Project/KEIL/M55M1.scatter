@@ -16,7 +16,7 @@
  * | Ethos-U55     |   | Cortex-M55    +--+ ITCM (64 KB)             |
  * |               |   |               |  +--------------------------+
  * |               |   |               |
- * |               |   |               |  +--------------------------+ 
+ * |               |   |               |  +--------------------------+
  * |  M1      M0   |   |               +--+ DTCM (128 KB)            |
  * +---+-------+---+   +-------+-------+  +--------------------------+
  *     |       |               |
@@ -28,7 +28,7 @@
  * | AMBA AHB     | | SRAM0 | | SRAM2 |
  * +---+----------+ | SRAM1 | +-------+
  *     |            +-------+
- * +---+---+ 
+ * +---+---+
  * | FLASH |
  * +-------+
  *
@@ -158,14 +158,14 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
         startup_M55M1.o
         .ANY (+RO)
     }
-    
+
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
     NSC_ROM TZ_NSC_START TZ_NSC_SIZE
     {
         .ANY (Veneer$$CMSE)
     }
 #endif
-	
+
 	; DTCM 128 KB shared with SRAM2
     ; Only accessible from the Cortex-M
 #if (DTCM_SIZE > (STACK_SIZE + HEAP_SIZE + __STACKSEAL_SIZE))
