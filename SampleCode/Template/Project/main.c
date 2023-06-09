@@ -72,7 +72,7 @@ static void SYS_Init(void)
     SYS_LockReg();
 }
 
-int main(int argc, char *argv[])
+int main(void)
 {
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
