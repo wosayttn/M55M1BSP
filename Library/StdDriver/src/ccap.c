@@ -64,14 +64,15 @@
  */
 void CCAP_Open(uint32_t u32SensorProp, uint32_t u32InFormat, uint32_t u32OutFormat)
 {
+    CCAP->MDCTL = 0;
     CCAP->PAR   = CCAP->PAR  & ~(CCAP_PAR_FBB_Msk | CCAP_PAR_VSP_Msk | CCAP_PAR_HSP_Msk | CCAP_PAR_PCLKP_Msk | CCAP_PAR_OUTFMT_Msk | CCAP_PAR_INDATORD_Msk | CCAP_PAR_SENTYPE_Msk | CCAP_PAR_INFMT_Msk);
     CCAP->PARM  = CCAP->PARM & ~(CCAP_PARM_RGB888OUTORD_Msk | CCAP_PARM_OUTFMTH_Msk | CCAP_PARM_INDATORDH_Msk | CCAP_PARM_INFMTH_Pos);
-    
+
     CCAP->PAR   = u32SensorProp & (CCAP_PAR_FBB_Msk | CCAP_PAR_VSP_Msk | CCAP_PAR_HSP_Msk | CCAP_PAR_PCLKP_Msk | CCAP_PAR_SENTYPE_Msk);
     CCAP->PAR   = CCAP->PAR | (u32InFormat & (CCAP_PAR_INDATORD_Msk | CCAP_PAR_INFMT_Msk));
     CCAP->PARM  = (((u32InFormat & BIT1) ? 1 : 0) << CCAP_PARM_INFMTH_Pos);
     CCAP->PARM  = CCAP->PARM | (((u32InFormat & BIT4) ? 1 : 0) << CCAP_PARM_INDATORDH_Pos);
-    
+
     CCAP->PAR   = CCAP->PAR | (u32OutFormat & (CCAP_PAR_OUTFMT_Msk));
     CCAP->PARM  = CCAP->PARM | (u32OutFormat & CCAP_PARM_OUTFMTH_Msk);
     CCAP->PARM  = CCAP->PARM | (u32OutFormat & CCAP_PARM_RGB888OUTORD_Msk);
@@ -132,9 +133,10 @@ void CCAP_Close(void)
  * @brief      Enable CCAP Interrupt
  *
  * @param[in]  u32IntMask  Interrupt settings. It could be
- *                         - \ref CCAP_INT_VIEN_Msk
- *                         - \ref CCAP_INT_MEIEN_Msk
- *                         - \ref CCAP_INT_ADDRMIEN_Msk
+ *                         - \ref CCAP_INTEN_VIEN_Msk
+ *                         - \ref CCAP_INTEN_MEIEN_Msk
+ *                         - \ref CCAP_INTEN_ADDRMIEN_Msk
+ *                         - \ref CCAP_INTEN_MDIEN_Msk
  *
  * @return     None
  *
@@ -143,7 +145,7 @@ void CCAP_Close(void)
  */
 void CCAP_EnableInt(uint32_t u32IntMask)
 {
-    CCAP->INT = (CCAP->INT & ~(CCAP_INT_VIEN_Msk | CCAP_INT_MEIEN_Msk | CCAP_INT_ADDRMIEN_Msk | CCAP_INT_MDIEN_Msk) )
+    CCAP->INTEN = (CCAP->INTEN & ~(CCAP_INTEN_VIEN_Msk | CCAP_INTEN_MEIEN_Msk | CCAP_INTEN_ADDRMIEN_Msk | CCAP_INTEN_MDIEN_Msk) )
                 | u32IntMask;
 }
 
@@ -151,9 +153,10 @@ void CCAP_EnableInt(uint32_t u32IntMask)
  * @brief      Disable CCAP Interrupt
  *
  * @param[in]  u32IntMask  Interrupt settings. It could be
- *                         - \ref CCAP_INT_VIEN_Msk
- *                         - \ref CCAP_INT_MEIEN_Msk
- *                         - \ref CCAP_INT_ADDRMIEN_Msk
+ *                         - \ref CCAP_INTEN_VIEN_Msk
+ *                         - \ref CCAP_INTEN_MEIEN_Msk
+ *                         - \ref CCAP_INTEN_ADDRMIEN_Msk
+ *                         - \ref CCAP_INTEN_MDIEN_Msk
  *
  * @return     None
  *
@@ -162,7 +165,7 @@ void CCAP_EnableInt(uint32_t u32IntMask)
  */
 void CCAP_DisableInt(uint32_t u32IntMask)
 {
-    CCAP->INT = (CCAP->INT & ~(u32IntMask));
+    CCAP->INTEN = (CCAP->INTEN & ~(u32IntMask));
 }
 
 /**
@@ -317,6 +320,123 @@ void CCAP_SetPacketScaling(uint32_t u32VNumerator, uint32_t u32VDenominator, uin
 void CCAP_SetPacketStride(uint32_t u32Stride )
 {
     CCAP->STRIDE = (CCAP->STRIDE & ~CCAP_STRIDE_PKTSTRIDE_Msk) | u32Stride;
+}
+
+
+/**
+ * @brief      Set Motion Detection Window
+ *
+ * @param[in]  u32Y:      Motion Detection Window Vertical Starting Address. It should be 0 ~ 239.
+ * @param[in]  u32X:      Motion Detection Window Horizontal Starting Address. It should be 0 ~ 319.
+ * @param[in]  u32Height: Motion Detection Window Height. It should be 0 ~ 240.
+ * @param[in]  u32Width:  Motion Detection Window Width. It should be 0 ~ 320.
+ *
+ * @return     None
+ *
+ * @details    This function is used to set cropping window starting address and size.
+ */
+int32_t CCAP_SetMDWindow(uint32_t u32Y, uint32_t u32X, uint32_t u32Height, uint32_t u32Width)
+{
+    int32_t  x, y;
+    uint32_t u32WinStartX, u32WinStartY, u32WinEndX, u32WinEndY;
+    uint32_t u32WinIdx;
+
+    if ((u32Y + u32Height) > 240 || (u32X + u32Width) > 320)
+        return CCAP_ERR_INVALID_MD_WINDOW;
+
+    if (u32Height == 0 || u32Width == 0)
+        return CCAP_ERR_INVALID_MD_WINDOW;
+
+    for (x = 0; x < 4; x++)
+    {
+        for (y = 0; y < 4; y++)
+        {
+            u32WinIdx    = x + y * 4;
+            u32WinStartX = x * CCAP_MD_CELL_WIDHT;
+            u32WinStartY = y * CCAP_MD_CELL_HEIGHT;
+            u32WinEndX   = u32WinStartX + CCAP_MD_CELL_WIDHT;
+            u32WinEndY   = u32WinStartY + CCAP_MD_CELL_HEIGHT;
+            //printf("(%d, %d) - (%d, %d)\n", u32WinStartX, u32WinStartY, u32WinEndX, u32WinEndY);
+
+            if ((u32X >= u32WinEndX) || (u32Y >= u32WinEndY))
+                continue;
+
+            if ((u32X >= u32WinStartX) && (u32X < u32WinEndX))
+            {
+                if ((u32Y >= u32WinStartY) && (u32Y < u32WinEndY))
+                {
+                    CCAP->MDCTL |= (1 << u32WinIdx);
+                    //printf("11 (%d, %d) - (%d, %d)\n", u32WinStartX, u32WinStartY, u32WinEndX, u32WinEndY);
+                    continue;
+                }
+            }
+
+            if ((u32X <= u32WinStartX) && (u32Y <= u32WinStartY))
+            {
+                if (((u32X + u32Width) > u32WinStartX) && ((u32Y + u32Height) > u32WinStartY))
+                {
+                    CCAP->MDCTL |= (1 << u32WinIdx);
+                    //printf("22 (%d, %d) - (%d, %d)\n", u32WinStartX, u32WinStartY, u32WinEndX, u32WinEndY);
+                }
+            }
+        }
+    }
+
+    return CCAP_OK;
+}
+
+/**
+ * @brief     Set CCAP Motion Detection Window Threshold for sensitivity level of single window
+ *
+ * @param[in] u32WinBitmask        Motion Detection Window Bitmask. It could be 0x0 ~ 0xFFFF.
+ * @param[in] u32WeightNumerator   Numerator of Motion Detection Window Weight.
+ * @param[in] u32WeightDenominator Denominator of Motion Detection Window Weight. It could not be zero.
+ *                                 Window weight = Numerator / Denominator.
+ *                                 Window weight is 1: Most sensitive
+ *                                 Window weight is 0: Less sensitive.
+ * @return    None
+ *
+ * @details   Set Camera Capture Interface motion detection total threshold
+ */
+int32_t CCAP_SetMDWinWeight(uint32_t u32WinBitmask, uint32_t u32WeightNumerator, uint32_t u32WeightDenominator)
+{
+    int32_t i;
+
+    if (u32WeightDenominator == 0)
+        return CCAP_ERR_INVALID_PARAM;
+
+    for (i = 0; i < CCAP_MD_WINDOW_CNT; i++)
+    {
+        if (u32WinBitmask & (1 << i))
+            CCAP_SET_MD_WIN_THRESHOLD(i, CCAP_MD_MAX_WINDOW_SAD - ((u32WeightNumerator /u32WeightDenominator) * CCAP_MD_MAX_WINDOW_SAD));
+    }
+
+    return CCAP_OK;
+}
+
+/**
+ * @brief     Set CCAP Motion Detection Window Threshold for sensitivity level of single window
+ *
+ * @param[in] u32WinBitmask        Motion Detection Window Bitmask. It could be 0x0 ~ 0xFFFF.
+ * @param[in] u32WeightNumerator   Numerator of Motion Detection Window Weight.
+ * @param[in] u32WeightDenominator Denominator of Motion Detection Window Weight. It could not be zero.
+ *                                 Window weight = Numerator / Denominator.
+ *                                 Window weight is 1: Most sensitive
+ *                                 Window weight is 0: Less sensitive.
+ * @return    None
+ *
+ * @details   Set Camera Capture Interface motion detection total threshold
+ */
+int32_t CCAP_SetMDTotalWeight(uint32_t u32WeightNumerator, uint32_t u32WeightDenominator)
+{
+    int32_t i;
+
+    if (u32WeightDenominator == 0)
+        return CCAP_ERR_INVALID_PARAM;
+
+    CCAP_SET_MD_TOTAL_THRESHOLD(CCAP_MD_MAX_TOTAL_SAD - ((u32WeightNumerator /u32WeightDenominator) * CCAP_MD_MAX_TOTAL_SAD));
+
+    return CCAP_OK;
 }
 
 /** @} end of group CCAP_EXPORTED_FUNCTIONS */

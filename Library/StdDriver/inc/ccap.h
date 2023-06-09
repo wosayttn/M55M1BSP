@@ -16,15 +16,15 @@ extern "C"
 #endif
 
 /** @addtogroup Standard_Driver Standard Driver
-  @{
+    @{
 */
 
 /** @addtogroup CCAP_Driver CCAP Driver
-  @{
+    @{
 */
 
 /** @addtogroup CCAP_EXPORTED_CONSTANTS CCAP Exported Constants
-  @{
+    @{
 */
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -96,29 +96,39 @@ extern "C"
 #define CCAP_MD_TRIG_TTMR1              (0x3ul << CCAP_MDTRG_WK_TRGSEL_Pos) /*!< CCAP Motion Detection trigger source for TTMR1             \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* INT constant definitions                                                                                */
+/* CCAP INT constant definitions                                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
-#define CCAP_INT_VIEN_ENABLE            CCAP_INT_VIEN_Msk                   /*!< VININT setting for Video Frame End Interrupt enable            \hideinitializer */
-#define CCAP_INT_MEIEN_ENABLE           CCAP_INT_MEIEN_Msk                  /*!< VININT setting for Bus Master Transfer Error Interrupt enable  \hideinitializer */
-#define CCAP_INT_ADDRMIEN_ENABLE        CCAP_INT_ADDRMIEN_Msk               /*!< VININT setting for Memory Address Match Interrupt enable       \hideinitializer */
-#define CCAP_INT_MDIEN_MODE1_ENABLE     (1ul << CCAP_INT_MDIEN_Pos)         /*!< VININT setting for Motion Detection Modes Interrupt enable     \hideinitializer */
-#define CCAP_INT_MDIEN_MODE2_ENABLE     (2ul << CCAP_INT_MDIEN_Pos)         /*!< VININT setting for Motion Detection Modes Interrupt enable     \hideinitializer */
+#define CCAP_INT_VIEN_ENABLE            CCAP_INTEN_VIEN_Msk                   /*!< CCAP INT setting for Video Frame End Interrupt enable            \hideinitializer */
+#define CCAP_INT_MEIEN_ENABLE           CCAP_INTEN_MEIEN_Msk                  /*!< CCAP INT setting for Bus Master Transfer Error Interrupt enable  \hideinitializer */
+#define CCAP_INT_ADDRMIEN_ENABLE        CCAP_INTEN_ADDRMIEN_Msk               /*!< CCAP INT setting for Memory Address Match Interrupt enable       \hideinitializer */
+#define CCAP_INT_MDIEN_MODE1_ENABLE     (1ul << CCAP_INTEN_MDIEN_Pos)         /*!< CCAP INT setting for Motion Detection Modes Interrupt enable     \hideinitializer */
+#define CCAP_INT_MDIEN_MODE2_ENABLE     (2ul << CCAP_INTEN_MDIEN_Pos)         /*!< CCAP INT setting for Motion Detection Modes Interrupt enable     \hideinitializer */
 
-#define CCAP_INTSTS_MDINTF_MODE1        (1ul << CCAP_INTSTS_MDINTF_Pos)     /*!< VININT status for Motion Detection Modes 1                     \hideinitializer */
-#define CCAP_INTSTS_MDINTF_MODE2        (2ul << CCAP_INTSTS_MDINTF_Pos)     /*!< VININT status for Motion Detection Modes 2                     \hideinitializer */
+#define CCAP_INTSTS_MDINTF_MODE1_Msk    (1ul << CCAP_INTSTS_MDINTF_Pos)       /*!< CCAP INT status for Motion Detection Modes 1                     \hideinitializer */
+#define CCAP_INTSTS_MDINTF_MODE2_Msk    (2ul << CCAP_INTSTS_MDINTF_Pos)       /*!< CCAP INT status for Motion Detection Modes 2                     \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* CCAP Define Error Code                                                                                  */
+/* CCAP Motion Detection definitions                                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
-#define CCAP_OK             ( 0L)   /*!< CCAP operation OK */
-#define CCAP_ERR_FAIL       (-1L)   /*!< CCAP operation failed */
-#define CCAP_ERR_TIMEOUT    (-2L)   /*!< CCAP operation abort due to timeout error */
+#define CCAP_MD_CELL_WIDHT              (80ul)
+#define CCAP_MD_CELL_HEIGHT             (60ul)
+#define CCAP_MD_WINDOW_CNT              (16ul)
+#define CCAP_MD_MAX_WINDOW_SAD          (0x12AD4ul)
+#define CCAP_MD_MAX_TOTAL_SAD           (CCAP_MD_MAX_WINDOW_SAD * CCAP_MD_WINDOW_CNT)
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* CCAP Error Code definitions                                                                             */
+/*---------------------------------------------------------------------------------------------------------*/
+#define CCAP_OK                         ( 0L)   /*!< CCAP operation OK                         */
+#define CCAP_ERR_FAIL                   (-1L)   /*!< CCAP operation failed                     */
+#define CCAP_ERR_TIMEOUT                (-2L)   /*!< CCAP operation abort due to timeout error */
+#define CCAP_ERR_INVALID_MD_WINDOW      (-3L)   /*!< CCAP invalid motion detection window      */
+#define CCAP_ERR_INVALID_PARAM          (-4L)   /*!< CCAP invalid parameter                    */
 
 /** @} end of group CCAP_EXPORTED_CONSTANTS */
 
 /** @addtogroup CCAP_EXPORTED_FUNCTIONS CCAP Exported Functions
-  @{
+    @{
 */
 
 /**
@@ -130,23 +140,22 @@ extern "C"
  * @retval    1   CCAP module is disabled(stopped)
  *
  * @details   Check Camera Capture Interface module Enable or Disable(stopped)
- *  \hideinitializer
  */
 #define CCAP_IS_STOPPED()  ((CCAP->CTL & CCAP_CTL_CCAPEN_Msk) ? 0 : 1)
 
 /**
- * @brief     Clear CCAP flag
+ * @brief     Clear CCAP interrupt flag
  *
- * @param[in] u32IntMask interrupt flags settings. It could be
- *                   - \ref CCAP_INTSTS_VINTF_Msk
- *                   - \ref CCAP_INTSTS_MEINTF_Msk
- *                   - \ref CCAP_INTSTS_ADDRMINTF_Msk
- *                   - \ref CCAP_INTSTS_MDINTF_Msk
+ * @param[in] u32IntMask    Interrupt flags settings. It could be
+ *                          - \ref CCAP_INTSTS_VINTF_Msk
+ *                          - \ref CCAP_INTSTS_MEINTF_Msk
+ *                          - \ref CCAP_INTSTS_ADDRMINTF_Msk
+ *                          - \ref CCAP_INTSTS_MDINTF_MODE1_Msk
+ *                          - \ref CCAP_INTSTS_MDINTF_MODE2_Msk
  *
  * @return    None
  *
  * @details   Clear Camera Capture Interface interrupt flag
- *  \hideinitializer
  */
 #define CCAP_CLR_INT_FLAG(u32IntMask) (CCAP->INTSTS |= (u32IntMask))
 
@@ -155,91 +164,115 @@ extern "C"
  *
  * @param     None
  *
- * @return    CCAP Interrupt Register
+ * @return    CCAP interrupt flag
  *
  * @details   Get Camera Capture Interface interrupt status.
- * \hideinitializer
  */
-#define CCAP_GET_INT_STS() (CCAP->INT)
+#define CCAP_GET_INT_STS() (CCAP->INTSTS)
 
 /**
  * @brief     Enable CCAP Motion Detection Window
  *
- * @param     Motion Detection Window Bitmask
+ * @param     u32WindowMsk          Motion Detection Window Bitmask
+ *                                  It could be 0x0 ~ 0xFFFF.
+ *                                  Bit n is 0 = Motion Detection Window n is disabled.
+ *                                  Bit n is 1 = Motion Detection Window n is enabled.
+ *                                  (0,  0)----(80,  0)----(160,  0)----(240,  0)---------
+ *                                    |           |            |            |            |
+ *                                    |     0     |      1     |      2     |      3     |
+ *                                    |           |            |            |            |
+ *                                  (0, 60)----(80, 60)----(160, 60)----(240, 60)---------
+ *                                    |           |            |            |            |
+ *                                    |     4     |      5     |      6     |      7     |
+ *                                    |           |            |            |            |
+ *                                  (0,120)----(80,120)----(160,120)----(240,120)---------
+ *                                    |           |            |            |            |
+ *                                    |     8     |      9     |     10     |     11     |
+ *                                    |           |            |            |            |
+ *                                  (0,180)----(80,180)----(160,180)----(240,180)---------
+ *                                    |           |            |            |            |
+ *                                    |    12     |     13     |     14     |     15     |
+ *                                    |           |            |            |            |
+ *                                    -----------------------------------------------(319,239)
  *
  * @return    None
  *
  * @details   Enable Camera Capture Interface motion detection window
- * \hideinitializer
  */
-#define CCAP_ENABLE_MD_WINDOW(u32WindowMsk) (CCAP->MDCTL |= u32WindowMsk)
+#define CCAP_ENABLE_MD_WINDOW(u32WindowMsk) (CCAP->MDCTL = (CCAP->MDCTL & ~0xFFFF) | (u32WindowMsk))
 
 /**
  * @brief     Disable CCAP Motion Detection Window
  *
- * @param     Motion Detection Window Bitmask
+ * @param     u32WindowMsk          Motion Detection Window Bitmask
+ *                                  It could be 0x0 ~ 0xFFFF.
  *
  * @return    None
  *
  * @details   Disable Camera Capture Interface motion detection window
- * \hideinitializer
  */
-#define CCAP_DISABLE_MD_WINDOW(u32WindowMsk) (CCAP->MDCTL &= ~u32WindowMsk)
+#define CCAP_DISABLE_MD_WINDOW(u32WindowMsk) (CCAP->MDCTL = (CCAP->MDCTL & ~(u32WindowMsk)))
 
 /**
  * @brief     Set CCAP Motion Detection Trigger Source
  *
- * @param     Motion Detection Trigger Source. It could be
- *            - \ref CCAP_MD_TRIG_LPTMR0
- *            - \ref CCAP_MD_TRIG_LPTMR1
- *            - \ref CCAP_MD_TRIG_TTMR0
- *            - \ref CCAP_MD_TRIG_TTMR1
- *
+ * @param[in] u32TrigSrc            Motion Detection Trigger Source. It could be
+ *                                  - \ref CCAP_MD_TRIG_LPTMR0
+ *                                  - \ref CCAP_MD_TRIG_LPTMR1
+ *                                  - \ref CCAP_MD_TRIG_TTMR0
+ *                                  - \ref CCAP_MD_TRIG_TTMR1
+ * @param[in] bWakeUp               CCAP interrupt signal will generate a wake-up trigger event to CPU
  * @return    None
  *
  * @details   Set Camera Capture Interface motion detection trigger source
- * \hideinitializer
- */
-#define CCAP_SET_MD_TRIG_SRC(u32TrigSrc, bWakeUpCPU) \
-    (CCAP->MDTRG_WK = (CCAP->MDTRG_WK & ~(CCAP_MDTRG_WK_WKEN_Msk | CCAP_MDTRG_WK_TRGSEL_Msk)) | (u32TrigSrc | (bWakeUpCPU << CCAP_MDTRG_WK_WKEN_Pos)))
-    
-/**
- * @brief     Set CCAP Motion Detection Total Threshold
  *
- * @param     Motion Detection Total Threshold (Maximum value is 0x12AD40)
+ */
+#define CCAP_SET_MD_TRIG_SRC(u32TrigSrc, bWakeUp) \
+    (CCAP->MDTRG_WK = (CCAP->MDTRG_WK & ~(CCAP_MDTRG_WK_WKEN_Msk | CCAP_MDTRG_WK_TRGSEL_Msk)) | ((u32TrigSrc) | ((bWakeUp) << CCAP_MDTRG_WK_WKEN_Pos)))
+
+/**
+ * @brief     Set CCAP Motion Detection Total Threshold sensitivity level of all windows
+ *
+ * @param[in] u32TotalThreshold     Motion Detection Total Threshold
+ *                                  It could be 0 (Most sensitive) ~ 0x12AD40 (Mode 1 interrupt is disabled).
  *
  * @return    None
  *
  * @details   Set Camera Capture Interface motion detection total threshold
- * \hideinitializer
+ *            When Motion Detection Total SAD (Sum of Absolute Differences) (CCAP_MDTSAD) is greater than
+ *            Motion Detection Total Threshold (CCAP_MDTTH),
+ *            CCAP will trigger Motion Detection Mode 1 interrupt.
+ *
  */
-#define CCAP_SET_MD_TOTAL_THRESH(u32TotalThreshold) (CCAP->MDTTH = u32TotalThreshold)
+#define CCAP_SET_MD_TOTAL_THRESHOLD(u32TotalThreshold) (CCAP->MDTTH = (u32TotalThreshold))
 
 /**
- * @brief     Set CCAP Motion Detection Window Overflow Count
+ * @brief     Set CCAP Motion Detection Window Overflow Count Threshold
  *
- * @param     Motion Detection Total Window Overflow Count (Maximum value is 0xF)
+ * @param[in] u32WinOverflowCnt     Motion Detection Total Window Overflow Count Threshold
+ *                                  It could be 0x0 (Most sensitive) ~ 0xF (Less sensitive).
  *
  * @return    None
  *
- * @details   Set Camera Capture Interface motion detection window overflow count
- * \hideinitializer
+ * @details   Set motion detection window overflow count threshold
+ *            When Motion Detection Window Overflow counter (CCAP_MDWOC) is greater than
+ *            Motion Detection Window Overflow Counter Threshold (CCAP_MDWOCTH),
+ *            CCAP will trigger Motion Detection Mode 2 interrupt.
  */
-#define CCAP_SET_MD_WIN_OVC_THRESH(u32WinOverflowCnt) (CCAP->MDWOCTH = u32WinOverflowCnt)
+#define CCAP_SET_MD_WIN_OVERFLOW_THRESHOLD(u32WinOverflowCnt) (CCAP->MDWOCTH = (u32WinOverflowCnt))
 
 /**
- * @brief     Set CCAP Motion Detection Window Threshold
+ * @brief     Set CCAP Motion Detection Window Threshold for sensitivity level of single window
  *
- * @param     Motion Detection Window Threshold (Maximum value is 0x12AD4)
- * @param[in]  u32WinIdx:    Motion Detection Window Index. It should be 0x0 ~ 0xF.
- * @param[in]  u32Threshold: Motion Detection Window Threshold (Maximum value is 0x12AD4).
+ * @param[in] u32WinIdx:           Motion Detection Window Index. It could be 0x0 ~ 0xF.
+ * @param[in] u32Threshold:        Motion Detection Window Threshold
+ *                                 It could be 0 (Most sensitive) ~ 0x12AD4 (This window is disabled).
  *
  * @return    None
  *
  * @details   Set Camera Capture Interface motion detection total threshold
- * \hideinitializer
  */
-#define CCAP_SET_MD_WIN_THRESH(u32WinIdx, u32Threshold) (CCAP->MDWTH[u32WinIdx] = u32Threshold)
+#define CCAP_SET_MD_WIN_THRESHOLD(u32WinIdx, u32Threshold) (CCAP->MDWTH[u32WinIdx] = (u32Threshold))
 
 void CCAP_Open(uint32_t u32SensorProp, uint32_t u32InFormat, uint32_t u32OutFormat);
 void CCAP_SetCroppingWindow(uint32_t u32VStart, uint32_t u32HStart, uint32_t u32Height, uint32_t u32Width);
@@ -255,6 +288,9 @@ void CCAP_EnableMono(uint32_t u32Interface);
 void CCAP_DisableMono(void);
 void CCAP_EnableLumaYOne(uint32_t u32Threshold);
 void CCAP_DisableLumaYOne(void);
+int32_t CCAP_SetMDWindow(uint32_t u32Y, uint32_t u32X, uint32_t u32Height, uint32_t u32Width);
+int32_t CCAP_SetMDWinWeight(uint32_t u32WinBitmask, uint32_t u32WeightNumerator, uint32_t u32WeightDenominator);
+int32_t CCAP_SetMDTotalWeight(uint32_t u32WeightNumerator, uint32_t u32WeightDenominator);
 
 /** @} end of group CCAP_EXPORTED_FUNCTIONS */
 /** @} end of group CCAP_Driver */

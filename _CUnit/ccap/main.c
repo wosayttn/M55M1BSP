@@ -13,7 +13,6 @@
 #include "CUnit.h"
 #include "Console.h"
 #include "ccap_cunit.h"
-#include "../pldm_emu.h"
 
 #ifndef DEBUG_PORT
     #define DEBUG_PORT UART0
