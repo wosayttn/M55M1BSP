@@ -36,13 +36,13 @@
 int32_t PMC_SetPowerLevel(uint32_t u32PowerLevel)
 {
     /* Wait for power level write busy flag is cleared */
-    if(PMC_Check_BusyFlag(PMC_PLCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+    if(PMC_Wait_BusyFlag(PMC_PLCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
 
     /* Set power voltage level */
     PMC->PLCTL = (PMC->PLCTL & (~PMC_PLCTL_PLSEL_Msk)) | (u32PowerLevel);
 
     /* Wait for power level change busy flag is cleared */
-    if(PMC_Check_BusyFlag(PMC_PLSTS_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+    if(PMC_Wait_BusyFlag(PMC_PLSTS_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
 
     return PMC_OK;
 }
@@ -71,12 +71,12 @@ int32_t PMC_SetPowerRegulator(uint32_t u32PowerRegulator)
     if((u32PowerRegulator == PMC_VRCTL_MVRS_DCDC) && (u32PowerRegStatus == PMC_VRSTS_CURMVR_LDO))
     {
         /* Set main voltage regulator type to DCDC if status is LDO */
-        if(PMC_Check_BusyFlag(PMC_VRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+        if(PMC_Wait_BusyFlag(PMC_VRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
 
         PMC->VRCTL |= PMC_VRCTL_MVRS_Msk;
 
         /* Wait main voltage regulator type change ready */
-        if(PMC_Check_BusyFlag(PMC_VRSTS_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+        if(PMC_Wait_BusyFlag(PMC_VRSTS_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
 
         if((PMC->VRSTS & PMC_VRSTS_CURMVR_Msk) != PMC_VRSTS_CURMVR_DCDC)
         {
@@ -85,13 +85,13 @@ int32_t PMC_SetPowerRegulator(uint32_t u32PowerRegulator)
     }
     else if(u32PowerRegulator == PMC_VRCTL_MVRS_LDO)
     {
-        if(PMC_Check_BusyFlag(PMC_VRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+        if(PMC_Wait_BusyFlag(PMC_VRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
 
         /* Set main voltage regulator type to LDO */
         PMC->VRCTL &= (~PMC_VRCTL_MVRS_Msk);
 
         /* Wait main voltage regulator type change ready */
-        if(PMC_Check_BusyFlag(PMC_VRSTS_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+        if(PMC_Wait_BusyFlag(PMC_VRSTS_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
 
         if((PMC->VRSTS & PMC_VRSTS_CURMVR_Msk) != PMC_VRSTS_CURMVR_LDO)
         {
@@ -181,23 +181,23 @@ int32_t PMC_SetSRAMPowerMode(uint32_t u32SRAMSel, uint32_t u32PowerMode)
     switch(u32SRAMSelNum)
     {
         case SRAMNum0:
-            if(PMC_Check_BusyFlag(PMC_SYSRB0PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if(PMC_Wait_BusyFlag(PMC_SYSRB0PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
             PMC->SYSRB0PC = (PMC->SYSRB0PC & (~u32SRAMSel)) | (u32PowerMode << u32SRAMSelPos);
             break;
         case SRAMNum1:
-            if(PMC_Check_BusyFlag(PMC_SYSRB1PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if(PMC_Wait_BusyFlag(PMC_SYSRB1PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
             PMC->SYSRB1PC = (PMC->SYSRB1PC & (~u32SRAMSel)) | (u32PowerMode << u32SRAMSelPos);
             break;
         case SRAMNum2:
-            if(PMC_Check_BusyFlag(PMC_SYSRB2PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if(PMC_Wait_BusyFlag(PMC_SYSRB2PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
             PMC->SYSRB2PC = (PMC->SYSRB2PC & (~u32SRAMSel)) | (u32PowerMode << u32SRAMSelPos);
             break;
         case SRAMNum3:
-            if(PMC_Check_BusyFlag(PMC_SYSRB3PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if(PMC_Wait_BusyFlag(PMC_SYSRB3PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
             PMC->SYSRB3PC = (PMC->SYSRB3PC & (~u32SRAMSel)) | (u32PowerMode << u32SRAMSelPos);
             break;
         case SRAMNum4:
-            if(PMC_Check_BusyFlag(PMC_LPSYSRPC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if(PMC_Wait_BusyFlag(PMC_LPSYSRPC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
             PMC->LPSYSRPC = (PMC->LPSYSRPC & (~u32SRAMSel)) | (u32PowerMode << u32SRAMSelPos);
             break;
         default:
@@ -285,7 +285,7 @@ void PMC_Idle(void)
   */
 int32_t PMC_SetPowerDownMode(uint32_t u32PowerDownMode, uint32_t u32PowerLevel)
 {
-    if(PMC_Check_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+    if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
     
     PMC->PWRCTL = (PMC->PWRCTL & ~(PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_D2PGEN_Msk | PMC_PWRCTL_D3PGEN_Msk
                    | PMC_PWRCTL_VDROPEN_Msk | PMC_PWRCTL_FWEN_Msk));
@@ -294,40 +294,40 @@ int32_t PMC_SetPowerDownMode(uint32_t u32PowerDownMode, uint32_t u32PowerLevel)
     {
         case PMC_NPD0:
             if(PMC_SetPowerLevel(u32PowerLevel) != 0) return PMC_ERR_TIMEOUT;          
-            if(PMC_Check_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
             PMC->PWRCTL |= PMC_PWRCTL_FWEN_Msk;
             break;
         case PMC_NPD1:
             if(PMC_SetPowerLevel(u32PowerLevel) != 0) return PMC_ERR_TIMEOUT;
             break;
         case PMC_NPD2:
-            if(PMC_Check_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
             PMC->PWRCTL |= PMC_PWRCTL_VDROPEN_Msk;
             break;
         case PMC_NPD3:
             if(PMC_SetPowerLevel(u32PowerLevel) != 0) return PMC_ERR_TIMEOUT;
-            if(PMC_Check_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
             PMC->PWRCTL |= (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk);
             break;
         case PMC_NPD4:
-            if(PMC_Check_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
             PMC->PWRCTL |= (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_VDROPEN_Msk);
             break;
         case PMC_SPD0:
             if(PMC_SetPowerLevel(u32PowerLevel) != 0) return PMC_ERR_TIMEOUT;
-            if(PMC_Check_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
             PMC->PWRCTL |= (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_D2PGEN_Msk);
             break;
         case PMC_SPD1:
-            if(PMC_Check_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;        
-            PMC->PWRCTL = (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_D2PGEN_Msk | PMC_PWRCTL_VDROPEN_Msk);
+            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;        
+            PMC->PWRCTL |= (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_D2PGEN_Msk | PMC_PWRCTL_VDROPEN_Msk);
             break;
         case PMC_DPD0:
-            if(PMC_Check_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
             PMC->PWRCTL |= (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_D2PGEN_Msk | PMC_PWRCTL_D3PGEN_Msk | PMC_PWRCTL_FWEN_Msk);
             break;
         case PMC_DPD1:
-            if(PMC_Check_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
             PMC->PWRCTL |= (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_D2PGEN_Msk | PMC_PWRCTL_D3PGEN_Msk);
             break;
     }
@@ -402,7 +402,7 @@ void PMC_EnableWKPIN(uint32_t u32TriggerType)
  * @return      Interrupt Status
  * @details     This function get power manager wake up source.
  */
-uint32_t PMC_GetPMUWKSrc(void)
+uint32_t PMC_GetPMCWKSrc(void)
 {
     return (PMC->INTSTS);
 }
@@ -462,7 +462,7 @@ void PMC_EnableTGPin(uint32_t u32Port, uint32_t u32Pin, uint32_t u32TriggerType,
  * @retval      PMC_ERR_TIMEOUT PMC operation abort due to timeout error.
  * @details     This function is check PMC busy flag.
  */
-int32_t PMC_Check_BusyFlag(uint32_t PMCBusyFlagAddr)
+int32_t PMC_Wait_BusyFlag(uint32_t PMCBusyFlagAddr)
 {
     int32_t i32TimeOutCnt = SystemCoreClock>>1; /* 500ms time-out */
 

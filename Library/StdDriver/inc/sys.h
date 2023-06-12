@@ -28,9 +28,13 @@ extern "C"
 */
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* SYS Define Error Code                                                                                   */
+/* SYS Timeout constant definitions.                                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
 #define SYS_TIMEOUT         SystemCoreClock     /*!< SYS time-out counter (1 second time-out) */
+
+/*---------------------------------------------------------------------------------------------------------*/
+/* SYS Define Error Code                                                                                   */
+/*---------------------------------------------------------------------------------------------------------*/
 #define SYS_OK              ( 0L)               /*!< SYS operation OK */
 #define SYS_ERR_FAIL        (-1L)               /*!< SYS operation failed */
 #define SYS_ERR_TIMEOUT     (-2L)               /*!< SYS operation abort due to timeout error */
@@ -4313,7 +4317,14 @@ extern "C"
 /* Declare these inline functions here to avoid MISRA C 2004 rule 8.1 error */
 __STATIC_INLINE void SYS_UnlockReg(void);
 __STATIC_INLINE void SYS_LockReg(void);
-
+__STATIC_INLINE void SYS_ClearResetSrc(uint32_t u32Src);
+__STATIC_INLINE uint32_t SYS_GetBODStatus(void);
+__STATIC_INLINE uint32_t SYS_GetResetSrc(void);
+__STATIC_INLINE uint32_t SYS_IsRegLocked(void);
+__STATIC_INLINE uint32_t SYS_ReadPDID(void);
+__STATIC_INLINE void SYS_ResetChip(void);
+__STATIC_INLINE void SYS_ResetCPU(void);
+__STATIC_INLINE void SYS_SetVRef(uint32_t u32VRefCTL);
 
 /**
   * @brief      Disable register write-protection function
@@ -4349,17 +4360,121 @@ __STATIC_INLINE void SYS_LockReg(void)
     SYS->REGLCTL = 0UL;
 }
 
-void SYS_ClearResetSrc(uint32_t u32Src);
-uint32_t SYS_GetBODStatus(void);
-uint32_t SYS_GetResetSrc(void);
-uint32_t SYS_IsRegLocked(void);
-uint32_t SYS_ReadPDID(void);
-void SYS_ResetChip(void);
-void SYS_ResetCPU(void);
+/**
+  * @brief      Clear reset source
+  * @param[in]  u32Src is system reset source. Including :
+  *             - \ref SYS_RSTSTS_PORF_Msk
+  *             - \ref SYS_RSTSTS_PINRF_Msk
+  *             - \ref SYS_RSTSTS_WDTRF_Msk
+  *             - \ref SYS_RSTSTS_LVRRF_Msk
+  *             - \ref SYS_RSTSTS_BODRF_Msk
+  *             - \ref SYS_RSTSTS_SYSRF_Msk
+  *             - \ref SYS_RSTSTS_CPURF_Msk
+  *             - \ref SYS_RSTSTS_CPULKRF_Msk
+  * @return     None
+  * @details    This function clear the selected system reset source.
+  */
+void SYS_ClearResetSrc(uint32_t u32Src)
+{
+    SYS->RSTSTS = u32Src;
+}
+
+/**
+  * @brief      Get Brown-out detector output status
+  * @param      None
+  * @retval     0 System voltage is higher than BODVL setting or BODEN is 0.
+  * @retval     1 System voltage is lower than BODVL setting.
+  * @details    This function get Brown-out detector output status.
+  */
+__STATIC_INLINE uint32_t SYS_GetBODStatus(void)
+{
+    return ((SYS->BODCTL & SYS_BODCTL_BODOUT_Msk) >> SYS_BODCTL_BODOUT_Pos);
+}
+
+/**
+  * @brief      Get reset status register value
+  * @param      None
+  * @return     Reset source
+  * @details    This function get the system reset status register value.
+  */
+__STATIC_INLINE uint32_t SYS_GetResetSrc(void)
+{
+    return (SYS->RSTSTS);
+}
+
+/**
+  * @brief      Check if register is locked nor not
+  * @param      None
+  * @retval     0 Write-protection function is disabled.
+  *             1 Write-protection function is enabled.
+  * @details    This function check register write-protection bit setting.
+  */
+__STATIC_INLINE uint32_t SYS_IsRegLocked(void)
+{
+    return SYS->REGLCTL & 1UL ? 0UL : 1UL;
+}
+
+/**
+  * @brief      Get product ID
+  * @param      None
+  * @return     Product ID
+  * @details    This function get product ID.
+  */
+__STATIC_INLINE uint32_t SYS_ReadPDID(void)
+{
+    return SYS->PDID;
+}
+
+/**
+  * @brief      Reset chip with chip reset
+  * @param      None
+  * @return     None
+  * @details    This function reset chip with chip reset.
+  *             The register write-protection function should be disabled before using this function.
+  */
+__STATIC_INLINE void SYS_ResetChip(void)
+{
+    SYS->RSTCTL |= SYS_RSTCTL_CHIPRST_Msk;
+}
+
+/**
+  * @brief      Reset chip with CPU reset
+  * @param      None
+  * @return     None
+  * @details    This function reset CPU with CPU reset.
+  *             The register write-protection function should be disabled before using this function.
+  */
+__STATIC_INLINE void SYS_ResetCPU(void)
+{
+    SYS->RSTCTL |= SYS_RSTCTL_CPURSTEN_Msk;
+
+    SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
+
+    __WFI();
+}
+
+/**
+  * @brief      Set Reference Voltage
+  * @param[in]  u32VRefCTL is reference voltage setting. Including :
+  *             - \ref SYS_VREFCTL_VREF_PIN
+  *             - \ref SYS_VREFCTL_VREF_1_6V
+  *             - \ref SYS_VREFCTL_VREF_2_048V
+  *             - \ref SYS_VREFCTL_VREF_2_5V
+  *             - \ref SYS_VREFCTL_VREF_3_072V
+  *             - \ref SYS_VREFCTL_VREF_AVDD
+  * @return     None
+  * @details    This function select reference voltage.
+  *             The register write-protection function should be disabled before using this function.
+  */
+__STATIC_INLINE void SYS_SetVRef(uint32_t u32VRefCTL)
+{
+    /* Set reference voltage */
+    SYS->VREFCTL = (SYS->VREFCTL & (~SYS_VREFCTL_VREFCTL_Msk)) | (u32VRefCTL);
+}
+
 void SYS_ResetModule(uint32_t u32ModuleIndex);
 int32_t SYS_EnableBOD(int32_t i32Mode, uint32_t u32BODLevel);
 int32_t SYS_DisableBOD(void);
-void SYS_SetVRef(uint32_t u32VRefCTL);
 
 /** @} end of group SYS_EXPORTED_FUNCTIONS */
 /** @} end of group SYS_Driver */

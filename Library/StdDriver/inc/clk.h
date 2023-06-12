@@ -405,8 +405,6 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /*  CLKDIV constant definitions.                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-#define CLK_ACLKDIV_ACLKDIV(x)              (((x) - 1UL) << CLK_ACLKDIV_ACLKDIV_Pos)        /*!< ACLKDIV Setting for ACLK clock divider. It could be 1~16 \hideinitializer */
-
 #define CLK_HCLKDIV_HCLK0DIV(x)             (((x) - 1UL) << CLK_HCLKDIV_HCLK0DIV_Pos)       /*!< HCLKDIV Setting for HCLK0 clock divider. It could be 1~16 \hideinitializer */
 #define CLK_HCLKDIV_HCLK1DIV(x)             (((x) - 1UL) << CLK_HCLKDIV_HCLK1DIV_Pos)       /*!< HCLKDIV Setting for HCLK1 clock divider. It could be 1~16 \hideinitializer */
 #define CLK_HCLKDIV_HCLK2DIV(x)             (((x) - 1UL) << CLK_HCLKDIV_HCLK2DIV_Pos)       /*!< HCLKDIV Setting for HCLK2 clock divider. It could be 1~16 \hideinitializer */
@@ -1154,8 +1152,8 @@ uint32_t CLK_GetPCLK2Freq(void);
 uint32_t CLK_GetPCLK3Freq(void);
 uint32_t CLK_GetPCLK4Freq(void);
 uint32_t CLK_GetPCLK5Freq(void);
-uint32_t CLK_SetCoreClock(uint32_t u32Hclk);
-void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv);
+uint32_t CLK_SetCoreClock(uint32_t u32Aclk);
+void CLK_SetSCLK(uint32_t u32ClkSrc);
 void CLK_SetModuleClock(uint64_t u64ModuleIdx, uint32_t u32ClkSrc, uint32_t u32ClkDiv);
 void CLK_SetSysTickClockSrc(uint32_t u32ClkSrc);
 void CLK_EnableXtalRC(uint32_t u32ClkMask);

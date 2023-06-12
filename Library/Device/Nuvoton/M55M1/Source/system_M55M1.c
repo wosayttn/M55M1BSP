@@ -40,14 +40,11 @@ void NSC_Init(uint32_t u32RegionIdx);
 void SystemCoreClockUpdate(void)
 {    
     uint32_t u32Freq;
-    uint32_t u32AclkDiv;
 
     u32Freq = CLK_SystemClockUpdate();
-    
-    u32AclkDiv = (CLK->ACLKDIV & CLK_ACLKDIV_ACLKDIV_Msk) + 1UL;
 
     /* Update System Core Clock */
-    SystemCoreClock = u32Freq / u32AclkDiv;
+    SystemCoreClock = u32Freq;
 
     CyclesPerUs = (SystemCoreClock + 500000UL) / 1000000UL;
 }
