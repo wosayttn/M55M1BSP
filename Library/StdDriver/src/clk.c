@@ -408,11 +408,10 @@ uint32_t CLK_SetCoreClock(uint32_t u32Aclk)
         u32Aclk = FREQ_50MHZ;
     }
 
-    /* Switch ACLK clock source to HIRC clock for safe */
+    /* Switch SCLK clock source to HIRC clock for safe */
     CLK->SRCCTL |= CLK_SRCCTL_HIRCEN_Msk;
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK->SCLKSEL = (CLK->SCLKSEL & (~CLK_SCLKSEL_SCLKSEL_Msk)) | CLK_SCLKSEL_SCLKSEL_HIRC;
-    CLK->ACLKDIV &= (~CLK_ACLKDIV_ACLKDIV_Msk);
 
     /* Configure PLL setting if HXT clock is stable */
     if(CLK->STATUS & CLK_STATUS_HXTSTB_Msk)
@@ -432,7 +431,7 @@ uint32_t CLK_SetCoreClock(uint32_t u32Aclk)
        select ACLK clock source divider as 1,
        adjust power level, flash access cycle and update system core clock
     */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0,CLK_ACLKDIV_ACLKDIV(1));
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
     
     /* Disable HIRC if HIRC is disabled before setting core clock */
     if(u32HIRCSTB == 0UL)
@@ -445,21 +444,19 @@ uint32_t CLK_SetCoreClock(uint32_t u32Aclk)
 }
 
 /**
-  * @brief      Set SCLK clock source and ACLK clock divider
+  * @brief      Set SCLK clock source
   * @param[in]  u32ClkSrc is SCLK clock source. Including :
   *             - \ref CLK_SCLKSEL_SCLKSEL_MIRC
   *             - \ref CLK_SCLKSEL_SCLKSEL_HIRC
   *             - \ref CLK_SCLKSEL_SCLKSEL_HIRC48M
   *             - \ref CLK_SCLKSEL_SCLKSEL_HXT
   *             - \ref CLK_SCLKSEL_SCLKSEL_APLL0
-  * @param[in]  u32AclkDiv is ACLK clock divider.   Including :
-  *             - \ref CLK_ACLKDIV_ACLKDIV(x)       It could be 1~16
   * @return     None
-  * @details    This function set SCLK clock source and ACLK clock divider. \n
+  * @details    This function set SCLK clock source. \n
   *             Power level and flash access cycle are also set according to ACLK operation frequency. \n
   *             The register write-protection function should be disabled before using this function.
   */
-void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
+void CLK_SetSCLK(uint32_t u32ClkSrc)
 {
     uint32_t u32HIRCSTB, u32TimeOutCount;
 
@@ -481,9 +478,6 @@ void CLK_SetSCLK(uint32_t u32ClkSrc, uint32_t u32AclkDiv)
 
     /* Set Flash Access Cycle to 8 for safe */
     FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (8);
-    
-    /* Apply new ACLK Divider */
-    CLK->ACLKDIV = (CLK->ACLKDIV & (~CLK_HCLKDIV_HCLK0DIV_Msk )) | u32AclkDiv;
     
     /* Switch SCLK to new SCLK source */
     CLK->SCLKSEL = (CLK->SCLKSEL & (~CLK_SCLKSEL_SCLKSEL_Msk)) | u32ClkSrc;

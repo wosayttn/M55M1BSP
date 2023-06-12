@@ -24,9 +24,13 @@ enum {
 };
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* PMC Define Error Code                                                                                   */
+/* PMC Timeout constant definitions.                                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
 #define PMC_TIMEOUT         SystemCoreClock     /*!< PMC time-out counter (1 second time-out) */
+
+/*---------------------------------------------------------------------------------------------------------*/
+/* PMC Define Error Code                                                                                   */
+/*---------------------------------------------------------------------------------------------------------*/
 #define PMC_OK              ( 0L)               /*!< PMC operation OK */
 #define PMC_ERR_FAIL        (-1L)               /*!< PMC operation failed */
 #define PMC_ERR_TIMEOUT     (-2L)               /*!< PMC operation abort due to timeout error */
@@ -168,9 +172,8 @@ enum {
 #define PMC_WKPIN5_BOTHEDGE   (0x3UL << PMC_PINWKCTL_WKPINEN5_Pos)    /*!< Enable Wake-up pin4 (GPA.12) both edge at Deep Power-down mode \hideinitializer */
 
 /**
- * @brief       Set Wake-up Timer Time-out Interval
- *
- * @param[in]   u32Interval   The de-bounce sampling cycle selection. It could be
+ * @brief       Set Standby Timer Wake-up Time-out Interval
+ * @param[in]   u32Interval   The Time-out Interval selection. It could be
  *                             - \ref PMC_STMRWKCTL_STMRIS_512
  *                             - \ref PMC_STMRWKCTL_STMRIS_1024
  *                             - \ref PMC_STMRWKCTL_STMRIS_2048
@@ -185,7 +188,7 @@ enum {
  *                             - \ref PMC_STMRWKCTL_STMRIS_1048576
  *                             - \ref PMC_STMRWKCTL_STMRIS_2097152
  *                             - \ref PMC_STMRWKCTL_STMRIS_4194304
- * @details     This function set standby Wake-up Timer Time-out Interval.
+ * @details     This function set standby Timer Wake-up Time-out Interval.
  */
 #define PMC_SET_STMRWK_INTERVAL(u32Interval)   (PMC->STMRWKCTL = ((PMC->STMRWKCTL & ~PMC_STMRWKCTL_STMRIS_Msk) | u32Interval))
 
@@ -241,25 +244,25 @@ enum {
   * @brief      Disable GPA Trigger Pin
   * @details    This macro disables GPA trigger and wake-up function
   */
-#define PMC_DISABLE_TGPIN_A()   (PMC->GPATGCTL &= ~(PMC_GPATGCTL_TGPFEN_Msk | PMC_GPATGCTL_TGPREN_Msk))
+#define PMC_DISABLE_TGPIN_GPA()   (PMC->GPATGCTL &= ~(PMC_GPATGCTL_TGPFEN_Msk | PMC_GPATGCTL_TGPREN_Msk))
 
 /**
   * @brief      Disable GPB Trigger Pin
   * @details    This macro disables GPB trigger and wake-up function
   */
-#define PMC_DISABLE_TGPIN_B()   (PMC->GPBTGCTL &= ~(PMC_GPBTGCTL_TGPFEN_Msk | PMC_GPBTGCTL_TGPREN_Msk))
+#define PMC_DISABLE_TGPIN_GPB()   (PMC->GPBTGCTL &= ~(PMC_GPBTGCTL_TGPFEN_Msk | PMC_GPBTGCTL_TGPREN_Msk))
 
 /**
   * @brief      Disable GPC Trigger Pin
   * @details    This macro disables GPC trigger and wake-up function
   */
-#define PMC_DISABLE_TGPIN_C()   (PMC->GPCTGCTL &= ~(PMC_GPCTGCTL_TGPFEN_Msk | PMC_GPCTGCTL_TGPREN_Msk))
+#define PMC_DISABLE_TGPIN_GPC()   (PMC->GPCTGCTL &= ~(PMC_GPCTGCTL_TGPFEN_Msk | PMC_GPCTGCTL_TGPREN_Msk))
 
 /**
   * @brief      Disable GPD Trigger Pin
   * @details    This macro disables GPD trigger and wake-up function
   */
-#define PMC_DISABLE_TGPIN_D()   (PMC->GPDTGCTL &= ~(PMC_GPDTGCTL_TGPFEN_Msk | PMC_GPDTGCTL_TGPREN_Msk))
+#define PMC_DISABLE_TGPIN_GPD()   (PMC->GPDTGCTL &= ~(PMC_GPDTGCTL_TGPFEN_Msk | PMC_GPDTGCTL_TGPREN_Msk))
 
 int32_t PMC_SetPowerLevel(uint32_t u32PowerLevel);
 int32_t PMC_SetPowerRegulator(uint32_t u32PowerRegulator);
@@ -268,9 +271,9 @@ void PMC_PowerDown(void);
 void PMC_Idle(void);
 int32_t PMC_SetPowerDownMode(uint32_t u32PDMode, uint32_t u32PowerLevel);
 void PMC_EnableWKPIN(uint32_t u32TriggerType);
-uint32_t PMC_GetPMUWKSrc(void);
+uint32_t PMC_GetPMCWKSrc(void);
 void PMC_EnableTGPin(uint32_t u32Port, uint32_t u32Pin, uint32_t u32TriggerType, uint32_t u32DebounceEn , uint32_t u32WakeupEn);
-int32_t PMC_Check_BusyFlag(uint32_t PMCBusyFlagAddr);
+int32_t PMC_Wait_BusyFlag(uint32_t PMCBusyFlagAddr);
 
 /** @} end of group PMC_EXPORTED_FUNCTIONS */
 /** @} end of group PMC_Driver */

@@ -21,98 +21,6 @@
     @{
 */
 
-/**
-  * @brief      Clear reset source
-  * @param[in]  u32Src is system reset source. Including :
-  *             - \ref SYS_RSTSTS_PORF_Msk
-  *             - \ref SYS_RSTSTS_PINRF_Msk
-  *             - \ref SYS_RSTSTS_WDTRF_Msk
-  *             - \ref SYS_RSTSTS_LVRRF_Msk
-  *             - \ref SYS_RSTSTS_BODRF_Msk
-  *             - \ref SYS_RSTSTS_SYSRF_Msk
-  *             - \ref SYS_RSTSTS_CPURF_Msk
-  *             - \ref SYS_RSTSTS_CPULKRF_Msk
-  * @return     None
-  * @details    This function clear the selected system reset source.
-  */
-void SYS_ClearResetSrc(uint32_t u32Src)
-{
-    SYS->RSTSTS = u32Src;
-}
-
-/**
-  * @brief      Get Brown-out detector output status
-  * @param      None
-  * @retval     0 System voltage is higher than BODVL setting or BODEN is 0.
-  * @retval     1 System voltage is lower than BODVL setting.
-  * @details    This function get Brown-out detector output status.
-  */
-uint32_t SYS_GetBODStatus(void)
-{
-    return ((SYS->BODCTL & SYS_BODCTL_BODOUT_Msk) >> SYS_BODCTL_BODOUT_Pos);
-}
-
-/**
-  * @brief      Get reset status register value
-  * @param      None
-  * @return     Reset source
-  * @details    This function get the system reset status register value.
-  */
-uint32_t SYS_GetResetSrc(void)
-{
-    return (SYS->RSTSTS);
-}
-
-/**
-  * @brief      Check if register is locked nor not
-  * @param      None
-  * @retval     0 Write-protection function is disabled.
-  *             1 Write-protection function is enabled.
-  * @details    This function check register write-protection bit setting.
-  */
-uint32_t SYS_IsRegLocked(void)
-{
-    return SYS->REGLCTL & 1UL ? 0UL : 1UL;
-}
-
-/**
-  * @brief      Get product ID
-  * @param      None
-  * @return     Product ID
-  * @details    This function get product ID.
-  */
-uint32_t  SYS_ReadPDID(void)
-{
-    return SYS->PDID;
-}
-
-/**
-  * @brief      Reset chip with chip reset
-  * @param      None
-  * @return     None
-  * @details    This function reset chip with chip reset.
-  *             The register write-protection function should be disabled before using this function.
-  */
-void SYS_ResetChip(void)
-{
-    SYS->RSTCTL |= SYS_RSTCTL_CHIPRST_Msk;
-}
-
-/**
-  * @brief      Reset chip with CPU reset
-  * @param      None
-  * @return     None
-  * @details    This function reset CPU with CPU reset.
-  *             The register write-protection function should be disabled before using this function.
-  */
-void SYS_ResetCPU(void)
-{
-    SYS->RSTCTL |= SYS_RSTCTL_CPURSTEN_Msk;
-
-    SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
-
-    __WFI();
-}
 
 /**
   * @brief      Reset selected module
@@ -274,25 +182,6 @@ int32_t SYS_DisableBOD(void)
     else return SYS_ERR_TIMEOUT;
 
     return SYS_OK;
-}
-
-/**
-  * @brief      Set Reference Voltage
-  * @param[in]  u32VRefCTL is reference voltage setting. Including :
-  *             - \ref SYS_VREFCTL_VREF_PIN
-  *             - \ref SYS_VREFCTL_VREF_1_6V
-  *             - \ref SYS_VREFCTL_VREF_2_048V
-  *             - \ref SYS_VREFCTL_VREF_2_5V
-  *             - \ref SYS_VREFCTL_VREF_3_072V
-  *             - \ref SYS_VREFCTL_VREF_AVDD
-  * @return     None
-  * @details    This function select reference voltage.
-  *             The register write-protection function should be disabled before using this function.
-  */
-void SYS_SetVRef(uint32_t u32VRefCTL)
-{
-    /* Set reference voltage */
-    SYS->VREFCTL = (SYS->VREFCTL & (~SYS_VREFCTL_VREFCTL_Msk)) | (u32VRefCTL);
 }
 
 /** @} end of group SYS_EXPORTED_FUNCTIONS */
