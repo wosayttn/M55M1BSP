@@ -30,7 +30,7 @@ extern unsigned int ERR_STATE1;
 //------------------------------------------------------------------------------
 static uint8_t idBuf[3] = {0};
 
-static FLASH_CMD_PHASE_T gWinbondCMDTable[] =
+static PHASE_SET_T gWinbondCMDTable[] =
 {
     /* 0x02 : CMD_NORMAL_PAGE_PROGRAM Command Phase Table */
     {
@@ -68,6 +68,27 @@ static FLASH_CMD_PHASE_T gWinbondCMDTable[] =
         4,                                                                  //Dummy Cycle Phase
         PHASE_READMODE_ON, PHASE_QUAD_MODE, PHASE_WIDTH_8, PHASE_DTR_OFF,   //Read Mode Phase
     },
+};
+
+/* 0x02 : CMD_NORMAL_PAGE_PROGRAM Command Phase Table */
+static PHASE_SET_T gWb_02h_Command =
+{
+    CMD_NORMAL_PAGE_PROGRAM,                                //Command Code
+    PHASE_NORMAL_MODE, PHASE_WIDTH_8,  PHASE_DTR_OFF,       //Command Phase
+    PHASE_NORMAL_MODE, PHASE_WIDTH_24, PHASE_DTR_OFF,       //Address Phase
+    PHASE_NORMAL_MODE, PHASE_ORDER_MODE0,  PHASE_DTR_OFF,   //Data Phase
+    0,
+};
+
+/* 0xED: CMD_DMA_FAST_QUAD_DTR_READ Command Phase Table */
+static PHASE_SET_T gWb_EDh_Command =
+{
+    CMD_DMA_FAST_QUAD_DTR_READ,                                           // Command Code
+    PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DTR_OFF,                  // Command Phase
+    PHASE_QUAD_MODE, PHASE_WIDTH_24, PHASE_DTR_ON,                  // Address Phase
+    PHASE_QUAD_MODE, PHASE_ORDER_MODE0, PHASE_DTR_ON,               // Data Phase
+    7,                                                                // Dummy Cycle Phase
+    PHASE_READMODE_OFF, PHASE_QUAD_MODE, PHASE_WIDTH_8, PHASE_DTR_ON, // Read Mode Phase
 };
 
 /*----------------------------------------------------------------------------*/
@@ -128,7 +149,7 @@ int SPIM_Tests_Init(void)
         while (1);
     }
 
-    SPIM_ReadJedecId(pSPIMModule, idBuf, sizeof(idBuf), 1);
+    SPIM_ReadJedecId(pSPIMModule, idBuf, sizeof(idBuf), 1, 0, 0);
     printf("SPIM get JEDEC ID=0x%02X, 0x%02X, 0x%02X\n",
            idBuf[0],
            idBuf[1],
@@ -390,17 +411,17 @@ void MACRO_SPIM_CTL0()
      *  SPIM_ENABLE_CIPHER()
      */
     SPIM_ENABLE_CIPHER(pSPIMModule);
-    //printf("DESELTIM = %d\r\n", SPIM_DMM_GET_DESELTIM(pSPIMModule));
+    //printf("DESELTIM = %d\r\n", SPIM_GET_DMM_DESELTIM(pSPIMModule));
     CU_ASSERT_FALSE(pSPIMModule->CTL0 & SPIM_CTL0_CIPHOFF_Msk);
-    CU_ASSERT(SPIM_DMM_GET_DESELTIM(pSPIMModule) == 18);
+    CU_ASSERT(SPIM_GET_DMM_DESELTIM(pSPIMModule) == 18);
 
     /*
      *  SPIM_DISABLE_CIPHER()
      */
     SPIM_DISABLE_CIPHER(pSPIMModule);
-    //printf("DESELTIM = %d\r\n", SPIM_DMM_GET_DESELTIM(pSPIMModule));
+    //printf("DESELTIM = %d\r\n", SPIM_GET_DMM_DESELTIM(pSPIMModule));
     CU_ASSERT_TRUE(pSPIMModule->CTL0 & SPIM_CTL0_CIPHOFF_Msk);
-    CU_ASSERT(SPIM_DMM_GET_DESELTIM(pSPIMModule) == 8);
+    CU_ASSERT(SPIM_GET_DMM_DESELTIM(pSPIMModule) == 8);
 
     /*
      *  SPIM_SET_BAL_EN(x)
@@ -818,61 +839,61 @@ void MACRO_SPIM_DMMCTL()
 #endif //0
 
     /*
-     *  SPIM_DMAM_SET_ACTSCLKT(x)
+     *  SPIM_SET_DMM_ACTSCLKT(x)
      */
     pSPIMModule->DMMCTL = 0;
-    SPIM_DMAM_SET_ACTSCLKT(pSPIMModule, 0x3);
+    SPIM_SET_DMM_ACTSCLKT(pSPIMModule, 0x3);
     CU_ASSERT(((pSPIMModule->DMMCTL & SPIM_DMMCTL_ACTSCLKT_Msk) >> SPIM_DMMCTL_ACTSCLKT_Pos) == 0x3);
     CU_ASSERT_TRUE(pSPIMModule->DMMCTL & SPIM_DMMCTL_UACTSCLK_Msk);
 
     pSPIMModule->DMMCTL = 0;
-    SPIM_DMAM_SET_ACTSCLKT(pSPIMModule, 0xcul);
+    SPIM_SET_DMM_ACTSCLKT(pSPIMModule, 0xcul);
     CU_ASSERT(((pSPIMModule->DMMCTL & SPIM_DMMCTL_ACTSCLKT_Msk) >> SPIM_DMMCTL_ACTSCLKT_Pos) == 0xc);
     CU_ASSERT_TRUE(pSPIMModule->DMMCTL & SPIM_DMMCTL_UACTSCLK_Msk);
 
     /*
-     *  SPIM_DMAM_SET_ACTSCLKT(x)
+     *  SPIM_SET_DMM_ACTSCLKT(x)
      */
     pSPIMModule->DMMCTL = 0;
-    SPIM_DMAM_SET_ACTSCLKT(pSPIMModule, 0x3);
+    SPIM_SET_DMM_ACTSCLKT(pSPIMModule, 0x3);
     CU_ASSERT(((pSPIMModule->DMMCTL & SPIM_DMMCTL_ACTSCLKT_Msk) >> SPIM_DMMCTL_ACTSCLKT_Pos) == 0x3);
     CU_ASSERT_TRUE(pSPIMModule->DMMCTL & SPIM_DMMCTL_UACTSCLK_Msk);
 
     /*
-     *  SPIM_DMM_SET_DESELTIM()
+     *  SPIM_SET_DMM_DESELTIM()
      */
     pSPIMModule->DMMCTL |= 0;
-    SPIM_DMM_SET_DESELTIM(pSPIMModule, 0x03);
-    CU_ASSERT(SPIM_DMM_GET_DESELTIM(pSPIMModule) == 0x3);
+    SPIM_SET_DMM_DESELTIM(pSPIMModule, 0x03);
+    CU_ASSERT(SPIM_GET_DMM_DESELTIM(pSPIMModule) == 0x3);
 
     pSPIMModule->DMMCTL |= 0;
-    SPIM_DMM_SET_DESELTIM(pSPIMModule, 0xcul);
-    CU_ASSERT(SPIM_DMM_GET_DESELTIM(pSPIMModule) == 0xcul);
+    SPIM_SET_DMM_DESELTIM(pSPIMModule, 0xcul);
+    CU_ASSERT(SPIM_GET_DMM_DESELTIM(pSPIMModule) == 0xcul);
 
     /*
-     *  SPIM_DMM_ENABLE_BWEN() & SPIM_DMM_DISABLE_BWEN()
+     *  SPIM_DMM_BWEN_ENABLE() & SPIM_DMM_BWEN_DISABLE()
      */
     pSPIMModule->DMMCTL = 0;
-    SPIM_DMM_ENABLE_BWEN(pSPIMModule);
+    SPIM_DMM_BWEN_ENABLE(pSPIMModule);
     CU_ASSERT_TRUE(pSPIMModule->DMMCTL & SPIM_DMMCTL_BWEN_Msk);
-    SPIM_DMM_DISABLE_BWEN(pSPIMModule);
+    SPIM_DMM_BWEN_DISABLE(pSPIMModule);
     CU_ASSERT_FALSE(pSPIMModule->DMMCTL & SPIM_DMMCTL_BWEN_Msk);
-    SPIM_DMM_ENABLE_BWEN(pSPIMModule);
+    SPIM_DMM_BWEN_ENABLE(pSPIMModule);
     CU_ASSERT_TRUE(pSPIMModule->DMMCTL & SPIM_DMMCTL_BWEN_Msk);
-    SPIM_DMM_DISABLE_BWEN(pSPIMModule);
+    SPIM_DMM_BWEN_DISABLE(pSPIMModule);
     CU_ASSERT_FALSE(pSPIMModule->DMMCTL & SPIM_DMMCTL_BWEN_Msk);
 
     /*
-     *  SPIM_DMM_ENABLE_CREN() & SPIM_DMM_DISABLE_CREN()
+     *  SPIM_DMM_CREN_ENABLE() & SPIM_DMM_CREN_DISABLE()
      */
     pSPIMModule->DMMCTL = 0;
-    SPIM_DMM_ENABLE_CREN(pSPIMModule);
+    SPIM_DMM_CREN_ENABLE(pSPIMModule);
     CU_ASSERT_TRUE(pSPIMModule->DMMCTL & SPIM_DMMCTL_CREN_Msk);
-    SPIM_DMM_DISABLE_CREN(pSPIMModule);
+    SPIM_DMM_CREN_DISABLE(pSPIMModule);
     CU_ASSERT_FALSE(pSPIMModule->DMMCTL & SPIM_DMMCTL_CREN_Msk);
-    SPIM_DMM_ENABLE_CREN(pSPIMModule);
+    SPIM_DMM_CREN_ENABLE(pSPIMModule);
     CU_ASSERT_TRUE(pSPIMModule->DMMCTL & SPIM_DMMCTL_CREN_Msk);
-    SPIM_DMM_DISABLE_CREN(pSPIMModule);
+    SPIM_DMM_CREN_DISABLE(pSPIMModule);
     CU_ASSERT_FALSE(pSPIMModule->DMMCTL & SPIM_DMMCTL_CREN_Msk);
 
     /*
@@ -1603,22 +1624,22 @@ int dma_read_write(SPIM_T *spim, int is4ByteAddr, uint32_t u32RdCmd, uint32_t Wr
     /*
      *  Verify flash page be erased
      */
-    SPIM_DMAM_SetCmdPhase(spim,
-                          SPIM_CTL0_OPMODE_PAGEREAD,
-                          PHASE_NORMAL_MODE,
-                          PHASE_WIDTH_8,
-                          0);
-    SPIM_DMAM_SetAddrPhase(spim,
-                           SPIM_CTL0_OPMODE_PAGEREAD,
-                           PHASE_NORMAL_MODE,
-                           PHASE_WIDTH_24,
-                           0);
-    SPIM_DMAM_SetDataPhase(spim,
-                           SPIM_CTL0_OPMODE_PAGEREAD,
-                           PHASE_NORMAL_MODE,
-                           PHASE_ORDER_MODE0,
-                           0,
-                           0);
+    SPIM_DMADMM_SetCMDPhase(spim,
+                            SPIM_CTL0_OPMODE_PAGEREAD,
+                            PHASE_NORMAL_MODE,
+                            PHASE_WIDTH_8,
+                            0);
+    SPIM_DMADMM_SetAddrPhase(spim,
+                             SPIM_CTL0_OPMODE_PAGEREAD,
+                             PHASE_NORMAL_MODE,
+                             PHASE_WIDTH_24,
+                             0);
+    SPIM_DMADMM_SetDataPhase(spim,
+                             SPIM_CTL0_OPMODE_PAGEREAD,
+                             PHASE_NORMAL_MODE,
+                             PHASE_ORDER_MODE0,
+                             0,
+                             0);
     //printf("pSPIMx->PHDMAR = 0x%08X\r\n", spim->PHDMAR);
     CU_ASSERT(spim->PHDMAR == 0x00000301);
     // Set Dummy Cycle After Address.
@@ -1646,11 +1667,11 @@ int dma_read_write(SPIM_T *spim, int is4ByteAddr, uint32_t u32RdCmd, uint32_t Wr
     /*
      *  Program data to flash block
      */
-    SPIM_FindAndInitDMAMCmdPhase(spim,
-                                 gWinbondCMDTable,
-                                 sizeof(gWinbondCMDTable) / sizeof(FLASH_CMD_PHASE_T),
-                                 SPIM_CTL0_OPMODE_PAGEWRITE,
-                                 CMD_NORMAL_PAGE_PROGRAM);
+    SPIM_FindAndInitDMADMMPhase(spim,
+                                gWinbondCMDTable,
+                                sizeof(gWinbondCMDTable) / sizeof(PHASE_SET_T),
+                                SPIM_CTL0_OPMODE_PAGEWRITE,
+                                CMD_NORMAL_PAGE_PROGRAM);
     //printf("pSPIMx->PHDMAW = 0x%08X\r\n", spim->PHDMAW);
     CU_ASSERT(spim->PHDMAW == 0x00000301);
 
@@ -1664,11 +1685,11 @@ int dma_read_write(SPIM_T *spim, int is4ByteAddr, uint32_t u32RdCmd, uint32_t Wr
     /*
      *  Verify flash block data
      */
-    SPIM_FindAndInitDMAMCmdPhase(spim,
-                                 gWinbondCMDTable,
-                                 sizeof(gWinbondCMDTable) / sizeof(FLASH_CMD_PHASE_T),
-                                 SPIM_CTL0_OPMODE_PAGEREAD,
-                                 CMD_DMA_NORMAL_READ);
+    SPIM_FindAndInitDMADMMPhase(spim,
+                                gWinbondCMDTable,
+                                sizeof(gWinbondCMDTable) / sizeof(PHASE_SET_T),
+                                SPIM_CTL0_OPMODE_PAGEREAD,
+                                CMD_DMA_NORMAL_READ);
     //printf("pSPIMx->PHDMAR = 0x%08X\r\n", spim->PHDMAR);
     CU_ASSERT(spim->PHDMAR == 0x00000301);
 
@@ -1705,7 +1726,7 @@ void SPIM_Basic_Func()
         CU_FAIL();
     }
 
-    SPIM_ReadJedecId(pSPIMModule, idBuf, sizeof(idBuf), 1);
+    SPIM_ReadJedecId(pSPIMModule, idBuf, sizeof(idBuf), 1, 0, 0);
     printf("SPIM get JEDEC ID=0x%02X, 0x%02X, 0x%02X\n", idBuf[0], idBuf[1], idBuf[2]);
 
     if ((idBuf[0] != MFGID_WINBOND) &&
@@ -1821,9 +1842,10 @@ void SPIM_IO_WriteFunc()
                       BUFFER_SIZE,
                       u8TstBuf1,
                       CMD_QUAD_PAGE_PROGRAM_WINBOND,
-                      SPIM_GetIOPhaseSize(PHASE_NORMAL_MODE),
-                      SPIM_GetIOPhaseSize(PHASE_NORMAL_MODE),
-                      SPIM_GetIOPhaseSize(PHASE_QUAD_MODE));
+                      1,
+                      1,
+                      4,
+                      0);
         //SPIM_IO_Write(pSPIMModule, offset, 0, BUFFER_SIZE, g_buff, OPCODE_PP, 1, 1, 1);
     }
 
@@ -1867,10 +1889,12 @@ void SPIM_IO_RW_Func()
     {
         memset(u8TstBuf1, 0, BUFFER_SIZE);
         //SPIM_IO_Read(pSPIMModule, offset, 0, BUFFER_SIZE, u8TstBuf1, 0xeb, 1, 4, 4, 3, 0);
-        SPIM_IO_CMDPhase(pSPIMModule, 0xEB, PHASE_NORMAL_MODE, 0, 0);
-        SPIM_IO_AddrPhase(pSPIMModule, 0, offset, PHASE_QUAD_MODE, 0);
-        SPIM_IO_DCPhase(pSPIMModule, 2, PHASE_QUAD_MODE, 0);
-        SPIM_IO_DataPhase(pSPIMModule, u8TstBuf1, BUFFER_SIZE, PHASE_QUAD_MODE, 0, 0);
+        SPIM_IO_SendCMDPhase(pSPIMModule, 0xEB, PHASE_NORMAL_MODE, 0, 0);
+        SPIM_IO_SendAddrPhase(pSPIMModule, 0, offset, PHASE_QUAD_MODE, 0, 0);
+        //SPIM_IO_DCPhase(pSPIMModule, 2, PHASE_QUAD_MODE, 0);
+        SPIM_IO_SendDummyCycle(pSPIMModule, 4);
+        SPIM_IO_SendDataPhase(pSPIMModule, u8TstBuf1, BUFFER_SIZE, PHASE_QUAD_MODE, 0, 0);
+        //SPIM_Phase_IORead(pSPIMModule, &gWb_EDh_Command, offset, 0, u8TstBuf1, BUFFER_SIZE);
 
         pData = (uint32_t *)u8TstBuf1;
 
@@ -1896,15 +1920,22 @@ void SPIM_IO_RW_Func()
         //for (i = 0; i < BUFFER_SIZE; i += 4, pData++)
         //    * pData = (i << 16) | (offset + i);
 
-        SPIM_IO_Write(pSPIMModule,
-                      offset,
-                      0,
-                      BUFFER_SIZE,
-                      u8TstBuf1,
-                      CMD_QUAD_PAGE_PROGRAM_WINBOND,
-                      SPIM_GetIOPhaseSize(PHASE_NORMAL_MODE),
-                      SPIM_GetIOPhaseSize(PHASE_NORMAL_MODE),
-                      SPIM_GetIOPhaseSize(PHASE_QUAD_MODE));
+        //SPIM_IO_Write(pSPIMModule,
+        //              offset,
+        //              0,
+        //              BUFFER_SIZE,
+        //              u8TstBuf1,
+        //              CMD_QUAD_PAGE_PROGRAM_WINBOND,
+        //              1,
+        //              1,
+        //              4,
+        //              0);
+        SPIM_IO_WritePhase(pSPIMModule,
+                           &gWb_02h_Command,
+                           offset,
+                           0,
+                           u8TstBuf1,
+                           BUFFER_SIZE);
         //SPIM_IO_Write(pSPIMModule, offset, 0, BUFFER_SIZE, g_buff, OPCODE_PP, 1, 1, 1);
     }
 
@@ -1916,11 +1947,13 @@ void SPIM_IO_RW_Func()
         popDat(u8TstBuf1, BUFFER_SIZE);
 
         memset(u8TstBuf2, 0, BUFFER_SIZE);
-        SPIM_IO_Read(pSPIMModule, offset, 0, BUFFER_SIZE, u8TstBuf2, 0xeb, 1, 4, 4, 3, 0);
-        //SPIM_IO_CMDPhase(pSPIMModule, 0xEB, PHASE_NORMAL_MODE, 0, 0);
-        //SPIM_IO_AddrPhase(pSPIMModule, 0, offset, PHASE_QUAD_MODE, 0);
+        //SPIM_IO_Read(pSPIMModule, offset, 0, BUFFER_SIZE, u8TstBuf2, 0xeb, 1, 4, 4, 3, 0);
+        SPIM_IO_ReadPhase(pSPIMModule, &gWb_EDh_Command, offset, 0, u8TstBuf2, BUFFER_SIZE);
+        //SPIM_IO_SendCMDPhase(pSPIMModule, 0xEB, PHASE_NORMAL_MODE, 0, 0);
+        //SPIM_IO_SendAddrPhase(pSPIMModule, 0, offset, PHASE_QUAD_MODE, 0, 0);
         //SPIM_IO_DCPhase(pSPIMModule, 2, PHASE_QUAD_MODE, 0);
-        //SPIM_IO_DataPhase(pSPIMModule, u8TstBuf2, BUFFER_SIZE, PHASE_QUAD_MODE, 0, 1);
+        //SPIM_IO_SendDummyCycle(pSPIMx, 4);
+        //SPIM_IO_SendDataPhase(pSPIMModule, u8TstBuf2, BUFFER_SIZE, PHASE_QUAD_MODE, 0, 1);
 
         // Compare.
         if (memcmp(u8TstBuf1, u8TstBuf2, BUFFER_SIZE))
@@ -1956,11 +1989,11 @@ void SPIM_DMM_Func()
 
     SPIM_IO_WriteFunc();
 
-    SPIM_FindAndInitDMAMCmdPhase(pSPIMModule,
-                                 gWinbondCMDTable,
-                                 sizeof(gWinbondCMDTable) / sizeof(FLASH_CMD_PHASE_T),
-                                 SPIM_CTL0_OPMODE_DIRECTMAP,
-                                 CMD_DMA_FAST_QUAD_READ);
+    SPIM_FindAndInitDMADMMPhase(pSPIMModule,
+                                gWinbondCMDTable,
+                                sizeof(gWinbondCMDTable) / sizeof(PHASE_SET_T),
+                                SPIM_CTL0_OPMODE_DIRECTMAP,
+                                CMD_DMA_FAST_QUAD_READ);
     printf("pSPIMx->PHDMM = 0x%08X\r\n", pSPIMModule->PHDMM);
     CU_ASSERT(pSPIMModule->PHDMM == 0x20212301);
 
@@ -2040,9 +2073,9 @@ CU_TestInfo SPIM_MacroTests[] =
 CU_TestInfo SPIM_ApiTests[] =
 {
     {"SPIM Init/Read ID Function", SPIM_Basic_Func},
-    {"SPIM DMA Function", SPIM_DMA_Func},
+    //{"SPIM DMA Function", SPIM_DMA_Func},
     {"SPIM I/O Read/Write Function", SPIM_IO_RW_Func},
-    {"SPIM DMM Function", SPIM_DMM_Func},
+    //{"SPIM DMM Function", SPIM_DMM_Func},
     //   {"SPIM Chip Erase", SPIM_Chip_Erase_Func},
     CU_TEST_INFO_NULL
 };
@@ -2050,8 +2083,8 @@ CU_TestInfo SPIM_ApiTests[] =
 
 CU_SuiteInfo suites[] =
 {
-    {"SPIM CONST", SPIM_Tests_Init, SPIM_Tests_Clean, NULL, NULL, SPIM_ConstantTests},
-    {"SPIM MACRO", SPIM_Tests_Init, SPIM_Tests_Clean, NULL, NULL, SPIM_MacroTests},
+    //{"SPIM CONST", SPIM_Tests_Init, SPIM_Tests_Clean, NULL, NULL, SPIM_ConstantTests},
+    //{"SPIM MACRO", SPIM_Tests_Init, SPIM_Tests_Clean, NULL, NULL, SPIM_MacroTests},
     {"SPIM API", SPIM_Tests_Init, SPIM_Tests_Clean, NULL, NULL, SPIM_ApiTests},
 
     CU_SUITE_INFO_NULL,

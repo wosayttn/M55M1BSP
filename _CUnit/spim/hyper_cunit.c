@@ -191,7 +191,7 @@ int SPIM_Tests_HyperInit(void)
 {
     SPIM_T *pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
-    SPIM_Hyper_Open(pSPIMModule, 1);
+    SPIM_InitHyper(pSPIMModule, 1);
     //CU_ASSERT_TRUE((pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk) >> SPIM_CTL0_HYPER_EN_Pos);
     //CU_ASSERT(SPIM_GET_CLOCK_DIVIDER(pSPIMModule) == 1);
 
@@ -201,20 +201,13 @@ int SPIM_Tests_HyperInit(void)
 
     SPIM_Hyper_DefaultConfig(pSPIMModule, 780, 7, 7);
 
-    SPIM_Hyper_Reset(pSPIMModule);
+    SPIM_ResetHyper(pSPIMModule);
 
     return 0;
 }
 
 int SPIM_Tests_HyperClean(void)
 {
-    SPIM_T *pSPIMModule = NULL;
-
-    pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
-
-    SPIM_Hyper_Close(pSPIMModule);
-    //CU_ASSERT_FALSE((pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk) >> SPIM_CTL0_HYPER_EN_Pos);
-
     return 0;
 }
 
@@ -226,8 +219,8 @@ void SPIM_Hyper_EraseHRAM(SPIM_T *pSPIMx, uint32_t u32StartAddr, uint32_t u32Era
 
     for (u32i = 0; u32i <= (u32EraseSize - u32RemainSize); u32i += 2)
     {
-        SPIM_Hyper_Write2Byte(pSPIMx, (u32StartAddr + u32i), 0x0000);
-        u16Data = SPIM_Hyper_Read1Word(pSPIMx, (u32StartAddr + u32i));
+        SPIM_Write2Byte(pSPIMx, (u32StartAddr + u32i), 0x0000);
+        u16Data = SPIM_Read1Word(pSPIMx, (u32StartAddr + u32i));
 
         if (u16Data != 0x0000)
         {
@@ -240,8 +233,8 @@ void SPIM_Hyper_EraseHRAM(SPIM_T *pSPIMx, uint32_t u32StartAddr, uint32_t u32Era
 
     if (u32RemainSize != 0)
     {
-        SPIM_Hyper_Write1Byte(pSPIMx, (u32StartAddr + (u32EraseSize - 1)), 0x00);
-        u16Data = SPIM_Hyper_Read1Word(pSPIMx, (u32StartAddr + u32EraseSize));
+        SPIM_Write1Byte(pSPIMx, (u32StartAddr + (u32EraseSize - 1)), 0x00);
+        u16Data = SPIM_Read1Word(pSPIMx, (u32StartAddr + u32EraseSize));
 
         if ((u16Data & 0xFF) != 0)
         {
@@ -281,7 +274,7 @@ void SPIM_HyperDMM_Func()
 
         popDat(u8TstBuf1, TEST_BUFF_SIZE);
 
-        SPIM_Hyper_EnterDirectMapMode(pSPIMx); // Hyper Mode Switch to Direct Map mode.
+        SPIM_EnterDirectMapMode_Hyper(pSPIMx); // Hyper Mode Switch to Direct Map mode.
 
         switch (u32NBit)
         {
@@ -307,7 +300,7 @@ void SPIM_HyperDMM_Func()
                 break;
         }
 
-        SPIM_Hyper_IsDMMDone(pSPIMx);
+        SPIM_IsDMMDone_Hyper(pSPIMx);
 
         memset(u8TstBuf2, 0x0, TEST_BUFF_SIZE);
 
@@ -335,7 +328,7 @@ void SPIM_HyperDMM_Func()
                 break;
         }
 
-        SPIM_Hyper_IsDMMDone(pSPIMx);
+        SPIM_IsDMMDone_Hyper(pSPIMx);
 
         if (memcmp(u8TstBuf1, u8TstBuf2, TEST_BUFF_SIZE))
         {
@@ -367,10 +360,10 @@ void SPIM_HyperDMA_Func()
         SPIM_Hyper_EraseHRAM(pSPIMx, offset, TEST_BUFF_SIZE);
         popDat(u8TstBuf1, TEST_BUFF_SIZE);
 
-        SPIM_Hyper_DMAWrite(pSPIMx, offset, u8TstBuf1, TEST_BUFF_SIZE);
+        SPIM_DMAWrite_Hyper(pSPIMx, offset, u8TstBuf1, TEST_BUFF_SIZE);
 
         memset(u8TstBuf2, 0x0, TEST_BUFF_SIZE);
-        SPIM_Hyper_DMARead(pSPIMx, offset, u8TstBuf2, TEST_BUFF_SIZE);
+        SPIM_DMARead_Hyper(pSPIMx, offset, u8TstBuf2, TEST_BUFF_SIZE);
 
         if (memcmp(u8TstBuf1, u8TstBuf2, TEST_BUFF_SIZE))
         {
@@ -409,7 +402,7 @@ void TrainingDllLatency()
 
     for (u32i = u32SrcAddr; u32i < u32TestSize; u32i++)
     {
-        SPIM_Hyper_Write1Byte(pSPIMx, u32i, u8TstBuf1[u32i]);
+        SPIM_Write1Byte(pSPIMx, u32i, u8TstBuf1[u32i]);
     }
 
     for (u8RdDelay = 0; u8RdDelay <= SPIM_MAX_DLL_LATENCY; u8RdDelay++)
@@ -417,7 +410,7 @@ void TrainingDllLatency()
         memset(u8TstBuf2, 0, u32TestSize);
         SPIM_CtrlDLLDelayTime(pSPIMx, 0, 0, 0, 0, u8RdDelay);
 
-        SPIM_Hyper_DMARead(pSPIMx, u32SrcAddr, u8TstBuf2, u32TestSize);
+        SPIM_DMARead_Hyper(pSPIMx, u32SrcAddr, u8TstBuf2, u32TestSize);
 
         if (memcmp(u8TstBuf1, u8TstBuf2, u32TestSize))
         {

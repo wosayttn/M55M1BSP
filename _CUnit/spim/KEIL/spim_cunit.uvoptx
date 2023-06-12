@@ -316,14 +316,14 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>u8TstBuf1</ItemText>
+          <ItemText>gWb_EBh_Command</ItemText>
         </Ww>
       </WatchWindow1>
       <MemoryWindow1>
         <Mm>
           <WinNumber>1</WinNumber>
           <SubType>5</SubType>
-          <ItemText>pTmpTable</ItemText>
+          <ItemText>0x20000580</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow1>
@@ -331,7 +331,7 @@
         <Mm>
           <WinNumber>2</WinNumber>
           <SubType>2</SubType>
-          <ItemText>u8TstBuf2</ItemText>
+          <ItemText>u8TstBuf1</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow2>
