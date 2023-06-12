@@ -189,15 +189,10 @@ static void do_hyper_dmm_r8bit(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvRdBuf,
 
 int SPIM_Tests_HyperInit(void)
 {
-    uint32_t u32Delay = 0;
-    SPIM_T *pSPIMModule = NULL;
+    SPIM_T *pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
-    pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
-
-    SPIM_SET_HYPER_MODE(pSPIMModule, 1);     //Enable HyperBus Mode
+    SPIM_Hyper_Open(pSPIMModule, 1);
     //CU_ASSERT_TRUE((pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk) >> SPIM_CTL0_HYPER_EN_Pos);
-
-    SPIM_SET_CLOCK_DIVIDER(pSPIMModule, 1); /* Set SPIM clock as HCLK divided by 2 */
     //CU_ASSERT(SPIM_GET_CLOCK_DIVIDER(pSPIMModule) == 1);
 
     //SPIM Def. Enable Cipher, First Disable the test.
@@ -208,8 +203,6 @@ int SPIM_Tests_HyperInit(void)
 
     SPIM_Hyper_Reset(pSPIMModule);
 
-    for (u32Delay = 0; u32Delay < 0x400; u32Delay++) {}
-
     return 0;
 }
 
@@ -219,7 +212,7 @@ int SPIM_Tests_HyperClean(void)
 
     pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
-    SPIM_SET_HYPER_MODE(pSPIMModule, 0);     //Enable HyperBus Mode
+    SPIM_Hyper_Close(pSPIMModule);
     //CU_ASSERT_FALSE((pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk) >> SPIM_CTL0_HYPER_EN_Pos);
 
     return 0;
@@ -314,7 +307,7 @@ void SPIM_HyperDMM_Func()
                 break;
         }
 
-        SPIM_Hyper_WaitDMMDone(pSPIMx);
+        SPIM_Hyper_IsDMMDone(pSPIMx);
 
         memset(u8TstBuf2, 0x0, TEST_BUFF_SIZE);
 
@@ -342,7 +335,7 @@ void SPIM_HyperDMM_Func()
                 break;
         }
 
-        SPIM_Hyper_WaitDMMDone(pSPIMx);
+        SPIM_Hyper_IsDMMDone(pSPIMx);
 
         if (memcmp(u8TstBuf1, u8TstBuf2, TEST_BUFF_SIZE))
         {

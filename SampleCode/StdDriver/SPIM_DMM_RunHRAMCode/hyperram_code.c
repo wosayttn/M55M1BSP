@@ -83,7 +83,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     uint32_t u32SrcAddr = 0;
     uint32_t u32TestSize = 32;
     uint32_t u32DMMAddr = SPIM_GetDirectMapAddress(spim);
-    int pi32SrcAddr = (int *)(u32DMMAddr + u32SrcAddr);
+    int *pi32SrcAddr = (int *)(u32DMMAddr + u32SrcAddr);
 
     /* Erase HyperRAM */
     HyperRAM_Erase(spim, u32SrcAddr, u32TestSize);
@@ -184,10 +184,7 @@ void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32Ac
 void HyperRAM_Init(SPIM_T *spim)
 {
     /* Enable SPIM Hyper Bus Mode */
-    SPIM_SET_HYPER_MODE(spim, 1);
-
-    /* Set SPIM clock as HCLK divided by 1 or 2 */
-    SPIM_SET_CLOCK_DIVIDER(spim, 1);
+    SPIM_Hyper_Open(spim, 1);
 
 #if (SPIM_CACHE_EN == 1)
     /* Enable SPIM Cache */

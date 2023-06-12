@@ -114,6 +114,7 @@ void popDat(uint8_t *buf, uint32_t bufSize);
 void dump_compare_error(uint32_t addr, uint8_t *buf_expect, uint8_t *buf_compare, int count);
 
 //SPIM API
+void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR);
 uint32_t GetSPIMClkDivNum(void);
 void SPIM_NVIC_Enable(uint32_t u32SPIMModule);
 void SPIM_NVIC_Disable(uint32_t u32SPIMModule);

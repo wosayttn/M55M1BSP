@@ -271,6 +271,38 @@ void RunTestFunction(S_TestMenu *pTestMenu, uint32_t u32MenuSize, uint32_t u32SP
 // SPIM API
 //------------------------------------------------------------------------------
 /**
+  * @brief      SPIM Default Config HyperBus Access Module Parameters.
+  * @param      spim
+  * @param      u32CSMaxLT Chip Select Maximum Low Time 0 ~ 0xFFFF, Default Set 0x02ED
+  * @param      u32AcctRD Initial Read Access Time 1 ~ 0x1F, Default Set 0x04
+  * @param      u32AcctWR Initial Write Access Time 1 ~ 0x1F, Default Set 0x04
+  * @return     None.
+  */
+void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR)
+{
+    /* Chip Select Setup Time 2.5 */
+    SPIM_HYPER_CONFIG1_SET_CSST(spim, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
+
+    /* Chip Select Hold Time 3.5 HCLK */
+    SPIM_HYPER_CONFIG1_SET_CSH(spim, SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
+
+    /* Chip Select High between Transaction as 2 HCLK cycles */
+    SPIM_HYPER_CONFIG1_SET_CSHI(spim, 2);
+
+    /* Chip Select Masximum low time HCLK */
+    SPIM_HYPER_CONFIG1_SET_CSMAXLT(spim, u32CSMaxLow);
+
+    /* Initial Device RESETN Low Time 255 */
+    SPIM_HYPER_CONFIG2_SET_RSTNLT(spim, 0xFF);
+
+    /* Initial Read Access Time Clock cycle*/
+    SPIM_HYPER_CONFIG2_SET_ACCTRD(spim, u32AcctRD);
+
+    /* Initial Write Access Time Clock cycle*/
+    SPIM_HYPER_CONFIG2_SET_ACCTWR(spim, u32AcctWR);
+}
+
+/**
   * @brief      Erase specified address range.
   * @param      u32Addr     Start u32Address to erase.
   * @param      is4ByteAddr 4-byte address or not.

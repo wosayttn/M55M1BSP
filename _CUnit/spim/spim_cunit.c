@@ -260,11 +260,11 @@ void SPIM_Const_SPIM_CMDCODE()
     //--------------------------------------------------------------------------
     // Micron Octal Read Command
     //--------------------------------------------------------------------------
-    CU_ASSERT(CMD_OCTAL_FAST_READ == (0x8BUL));
+    CU_ASSERT(CMD_OCTAL_FAST_READ_OUTPUT == (0x8BUL));
     CU_ASSERT(CMD_OCTAL_FAST_IO_READ == (0xCBUL));
-    CU_ASSERT(CMD_OCTAL_FAST_READ_4B == (0x7CUL));
+    CU_ASSERT(CMD_OCTAL_FAST_READ_OUTPUT_4B == (0x7CUL));
     CU_ASSERT(CMD_OCTAL_FAST_IO_READ_4B == (0xCCUL));
-    CU_ASSERT(CMD_OCTAL_DDR_FAST_READ == (0x9DUL));
+    CU_ASSERT(CMD_OCTAL_DDR_FAST_READ_OUTPUT == (0x9DUL));
     CU_ASSERT(CMD_OCTAL_DDR_FAST_IO_READ == (0xFDUL));
 }
 
@@ -414,11 +414,11 @@ void MACRO_SPIM_CTL0()
     CU_ASSERT_TRUE(pSPIMModule->CTL0 & SPIM_CTL0_BALEN_Msk);
 
     /*
-     *  SPIM_SET_HYPER_MODE(x)
+     *  SPIM_SET_OP_MODE(x)
      */
-    SPIM_SET_HYPER_MODE(pSPIMModule, 1);
+    SPIM_SET_OP_MODE(pSPIMModule, SPIM_OP_HYPER_MODE);
     CU_ASSERT_TRUE(pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk);
-    SPIM_SET_HYPER_MODE(pSPIMModule, 0);
+    SPIM_SET_OP_MODE(pSPIMModule, SPIM_OP_FLASH_MODE);
     CU_ASSERT_FALSE(pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk);
 
     /*

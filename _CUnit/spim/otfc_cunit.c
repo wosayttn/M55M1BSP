@@ -47,7 +47,7 @@ int OTFC_Tests_Init(void)
 
     pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
-    SPIM_SET_HYPER_MODE(pSPIMModule, 1);     //Enable HyperBus Mode
+    SPIM_SET_OP_MODE(pSPIMModule, SPIM_OP_HYPER_MODE);     //Enable HyperBus Mode
     //CU_ASSERT_TRUE((pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk) >> SPIM_CTL0_HYPER_EN_Pos);
 
     SPIM_SET_CLOCK_DIVIDER(pSPIMModule, 1); /* Set SPIM clock as HCLK divided by 2 */
@@ -72,7 +72,7 @@ int OTFC_Tests_Clean(void)
 
     pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
-    SPIM_SET_HYPER_MODE(pSPIMModule, 0);     //Enable HyperBus Mode
+    SPIM_SET_OP_MODE(pSPIMModule, SPIM_OP_FLASH_MODE);     //Restore SPI Flash Mode
     //CU_ASSERT_FALSE((pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk) >> SPIM_CTL0_HYPER_EN_Pos);
 
     return 0;

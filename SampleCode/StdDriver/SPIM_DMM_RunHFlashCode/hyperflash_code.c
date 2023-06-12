@@ -301,10 +301,7 @@ void HyperFlash_SetReadLatency(SPIM_T *spim, uint32_t u32Latency)
 void HyperFlash_Init(SPIM_T *spim)
 {
     /* Enable SPIM Hyper Bus Mode */
-    SPIM_SET_HYPER_MODE(spim, 1);
-
-    /* Set SPIM clock as HCLK divided by 1 or 2 */
-    SPIM_SET_CLOCK_DIVIDER(spim, 1);
+    SPIM_Hyper_Open(spim, 1);
 
 #if (SPIM_CACHE_EN == 1)
     /* Enable SPIM Cache */
