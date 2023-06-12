@@ -25,38 +25,27 @@ void HyperFlash_WriteOPCMD(SPIM_T *spim, uint32_t u32CMD, uint32_t u32Addr)
     SPIM_Hyper_Write2Byte(spim, (u32CMD * 2), u32Addr);
 }
 
-uint32_t HyperFlash_ReadData4Byte(SPIM_T *pSPIMx, uint32_t u32Addr)
-{
-    uint32_t u32RdData = 0;
-
-    u32RdData = SPIM_Hyper_Read2Word(pSPIMx, u32Addr);
-
-    return u32RdData;
-}
-
-uint16_t HyperFlash_ReadData2Byte(SPIM_T *pSPIMx, uint32_t u32Addr)
-{
-    uint16_t u16Data = 0;
-
-    u16Data = SPIM_Hyper_Read1Word(pSPIMx, u32Addr);
-
-    return (u16Data & 0xFFFF);
-}
-
-uint16_t HyperFlash_ReadData4CmdSets(SPIM_T *spim, uint32_t u32LastCMD, uint32_t u32RdAddr)
+void HyperFlash_WriteNVCRegister(SPIM_T *spim, uint32_t u32WrData)
 {
     HyperFlash_WriteOPCMD(spim, CMD_COMMON_555, CMD_COMMON_AA);
     HyperFlash_WriteOPCMD(spim, CMD_COMMON_2AA, CMD_COMMON_55);
-    HyperFlash_WriteOPCMD(spim, CMD_COMMON_555, u32LastCMD);
-
-    return HyperFlash_ReadData4Byte(spim, u32RdAddr);
+    HyperFlash_WriteOPCMD(spim, CMD_COMMON_555, WRITE_NVCR_REG);
+    SPIM_Hyper_Write2Byte(spim, CMD_NOOP_CODE, u32WrData);
 }
 
-uint16_t HyperFlash_ReadData1CmdSets2Byte(SPIM_T *spim, uint32_t u32LastCMD, uint32_t u32RdAddr)
+/**
+ * @brief Read HyperFlash Non-volatile config register
+ *
+ * @param spim
+ * @return uint16_t Register value
+ */
+uint16_t HyperFlash_ReadNVCRegister(SPIM_T *spim)
 {
-    HyperFlash_WriteOPCMD(spim, CMD_COMMON_555, u32LastCMD);
+    HyperFlash_WriteOPCMD(spim, CMD_COMMON_555, CMD_COMMON_AA);
+    HyperFlash_WriteOPCMD(spim, CMD_COMMON_2AA, CMD_COMMON_55);
+    HyperFlash_WriteOPCMD(spim, CMD_COMMON_555, READ_NVCR_REG);
 
-    return HyperFlash_ReadData2Byte(spim, u32RdAddr);
+    return SPIM_Hyper_Read2Word(spim, CMD_NOOP_CODE);
 }
 
 /**
@@ -64,9 +53,24 @@ uint16_t HyperFlash_ReadData1CmdSets2Byte(SPIM_T *spim, uint32_t u32LastCMD, uin
  *
  * @param spim
  */
-void HyperFlash_WaitBusBusy(SPIM_T *spim)
+int32_t HyperFlash_WaitBusBusy(SPIM_T *spim)
 {
-    while (HyperFlash_ReadData1CmdSets2Byte(spim, CMD_70, CMD_NOOP_CODE) != 0x80);
+    int32_t i32Timeout = SPIM_TIMEOUT;
+    uint32_t u32Status = 0;
+
+    while (u32Status != 0x80)
+    {
+        HyperFlash_WriteOPCMD(spim, CMD_COMMON_555, CMD_70);
+
+        u32Status = (SPIM_Hyper_Read1Word(spim, CMD_NOOP_CODE) & 0x80);
+
+        if (i32Timeout-- <= 0)
+        {
+            return SPIM_ERR_TIMEOUT;
+        }
+    }
+
+    return SPIM_OK;
 }
 
 void HyperFlash_EraseSector(SPIM_T *spim, uint32_t u32SAddr)
@@ -167,7 +171,7 @@ void SPIM_TrainingDLLDelayTime(SPIM_T *spim)
     HyperFlash_DMAWrite(spim, u32SrcAddr, u32SrcArray, u32TestSize);
 
     /* Enter direct-mapped mode to run new applications */
-    SPIM_Hyper_EnterDirectMapMode(spim);
+    //SPIM_Hyper_EnterDirectMapMode(spim);
 
     for (u8RdDelay = 0; u8RdDelay <= SPIM_MAX_DLL_LATENCY; u8RdDelay++)
     {
@@ -175,8 +179,8 @@ void SPIM_TrainingDLLDelayTime(SPIM_T *spim)
         SPIM_CtrlDLLDelayTime(spim, 0, 0, 0, 0, u8RdDelay);
 
         /* Read Data from HyperFlash */
-        //HyperFlash_DMARead(spim, u32SrcAddr, u32DestArray, u32TestSize);
-        memcpy(u32DestArray, pi32SrcAddr, u32TestSize);
+        HyperFlash_DMARead(spim, u32SrcAddr, u32DestArray, u32TestSize);
+        //memcpy(u32DestArray, pi32SrcAddr, u32TestSize);
 
         /* Verify the data and save the number of successful delay steps */
         if (memcmp(u32SrcArray, u32DestArray, u32TestSize))
@@ -231,7 +235,7 @@ void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32Ac
     SPIM_HYPER_CONFIG1_SET_CSST(spim, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
 
     /* Chip Select Hold Time 3.5 HCLK */
-    SPIM_HYPER_CONFIG1_SET_CSH(spim, SPIM_HYPER_CONFIG1_CSH_2_5_HCLK);
+    SPIM_HYPER_CONFIG1_SET_CSH(spim, SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
 
     /* Chip Select High between Transaction as 2 HCLK cycles */
     SPIM_HYPER_CONFIG1_SET_CSHI(spim, 2);
@@ -267,41 +271,37 @@ void HyperFlash_SetReadLatency(SPIM_T *spim, uint32_t u32Latency)
 {
     uint32_t u32RegValue = 0;
 
+    /* HyperFlash default read latency is 16 and write is always 1 */
     SPIM_Hyper_DefaultConfig(spim, HFLH_MAX_CS_LOW, 16, HFLH_WR_ACCTIME);
 
     SPIM_CtrlDLLDelayTime(spim, 0, 0, 0, 0, 1);
 
-    HyperFlash_WriteOPCMD(spim, CMD_COMMON_555, CMD_COMMON_AA);
-    HyperFlash_WriteOPCMD(spim, CMD_COMMON_2AA, CMD_COMMON_55);
-    HyperFlash_WriteOPCMD(spim, CMD_COMMON_555, READ_NVCR_REG);
-
     /* Read non-volatile config register default value */
-    u32RegValue = SPIM_Hyper_Read1Word(spim, CMD_NOOP_CODE);
-    printf("NVCR Reg = %x\r\n", u32RegValue);
+    u32RegValue = HyperFlash_ReadNVCRegister(spim);
+    printf("NVC Reg = %x\r\n", u32RegValue);
 
     /* clear latency bits */
     u32RegValue &= ~(0xF << 4);
-    /* Set new parameter */
+    /* Set new latency */
     u32RegValue |= (HyperFlash_GetLatencyNum(u32Latency) << 4);
 
-    HyperFlash_WriteOPCMD(spim, CMD_COMMON_555, CMD_COMMON_AA);
-    HyperFlash_WriteOPCMD(spim, CMD_COMMON_2AA, CMD_COMMON_55);
-    HyperFlash_WriteOPCMD(spim, CMD_COMMON_555, WRITE_NVCR_REG);
-    SPIM_Hyper_Write2Byte(spim, CMD_NOOP_CODE, u32RegValue);
+    /* Write to non-volatile config register */
+    HyperFlash_WriteNVCRegister(spim, u32RegValue);
 
+    /* SPIM set new latency value */
     SPIM_Hyper_DefaultConfig(spim, HFLH_MAX_CS_LOW, u32Latency, HFLH_WR_ACCTIME);
 
+    /* Check if the new setup was successful */
+    u32RegValue = HyperFlash_ReadNVCRegister(spim);
+    printf("Verify NVC Reg = %x\r\n", u32RegValue);
+    
     HyperFlash_WaitBusBusy(spim);
-
-    /* Check latency set as new parameter */
-    u32RegValue = HyperFlash_ReadData4CmdSets(spim, READ_NVCR_REG, CMD_NOOP_CODE);
-    printf("NVCR Verify NVCR Reg = %x\r\n", u32RegValue);
 }
 
 void HyperFlash_Init(SPIM_T *spim)
 {
     /* Enable SPIM Hyper Bus Mode */
-    SPIM_Hyper_Open(spim, 1);
+    SPIM_Hyper_Open(spim, 2);
 
 #if (SPIM_CACHE_EN == 1)
     /* Enable SPIM Cache */

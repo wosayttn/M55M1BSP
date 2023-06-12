@@ -80,7 +80,7 @@ uint16_t HyperFlash_ReadData1CmdSets2Byte(SPIM_T *spim, uint32_t u32LastCMD, uin
 uint16_t HyperFlash_ReadData4CmdSets(SPIM_T *spim, uint32_t u32LastCMD, uint32_t u32RdAddr);
 
 void HyperFlash_Init(SPIM_T *spim);
-void HyperFlash_WaitBusBusy(SPIM_T *spim);
+int32_t HyperFlash_WaitBusBusy(SPIM_T *spim);
 void HyperFlash_EraseSector(SPIM_T *spim, uint32_t u32SAddr);
 void HyperFlash_DMARead(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvRdBuf, uint32_t u32NRx);
 void HyperFlash_DMAWrite(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvWrBuf, uint32_t u32NTx);
