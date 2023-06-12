@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     rng.c
- * @version  V3.01
+ * @version  V1.0
  * @brief    Show how to get true random number.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 
 #include <stdio.h>
@@ -50,18 +50,38 @@ static void RNG_BasicConfig()
 {
     int32_t i;
     int32_t timeout = 0x1000000;
+    uint32_t retry_count;
+	
 
-    /* Enable TRNG & PRNG */
-    CLK->AHBCLK0 |= CLK_AHBCLK0_CRPTCKEN_Msk;
-    CLK->APBCLK1 |= CLK_APBCLK1_TRNGCKEN_Msk;
+    /* TRNG & PRNG clock enable and module reset*/
+    CLK_EnableModuleClock(CRYPTO0_MODULE);
+    SYS_ResetModule(SYS_CRYPTO0RST);
+    CLK_EnableModuleClock(TRNG0_MODULE);
+    SYS_ResetModule(SYS_TRNG0RST);
 
-    /* Use LIRC as TRNG engine clock */
-    CLK->PWRCTL |= CLK_PWRCTL_LIRCEN_Msk;
-    while((CLK->STATUS & CLK_STATUS_LIRCSTB_Msk) == 0)
+    /* Enable LDOEN  */
+    TRNG->CTL |= TRNG_CTL_LDOEN_Msk;	
+    
+    /* Wait LDORDY */
+    retry_count=0;
+	while((TRNG->STS & TRNG_STS_LDORDY_Msk) == 0)
     {
-        if(i++ > timeout) break; /* Wait LIRC time-out */
-    }
-    CLK->CLKSEL2 = (CLK->CLKSEL2 & (~CLK_CLKSEL2_TRNGSEL_Msk)) | CLK_CLKSEL2_TRNGSEL_LIRC;
+		retry_count++;
+	    if(retry_count>5) break;
+	};
+    
+    /* Set NRST, then enable TRNGEN*/
+    TRNG->CTL &= ~TRNG_CTL_NRST_Msk;
+	TRNG->CTL |= (TRNG_CTL_NRST_Msk);
+	TRNG->CTL |= (TRNG_CTL_TRNGEN_Msk);
+	
+    /* Wait DVIF */
+    retry_count=0;
+	while((TRNG->STS & TRNG_STS_DVIF_Msk) == 0)
+	{
+		retry_count++;
+	    if(retry_count>5) break;		
+	};
 
 }
 
@@ -83,8 +103,8 @@ int32_t RNG_Open()
     
     RNG_BasicConfig();
     
-    /* TRNG Activate */
-    TRNG->ACT |= TRNG_ACT_ACT_Msk;
+    /* TRNG Start */
+    TRNG->CTL |= TRNG_CTL_START_Msk;      
     /* Waiting for ready */
     i = 0;
     while((TRNG->CTL & TRNG_CTL_READY_Msk) == 0)
@@ -96,8 +116,6 @@ int32_t RNG_Open()
         }
     }
     
-    /* CLKPSC is default to 0. The performance maybe low but suitable for any cases */
-    TRNG->CTL = 0; 
     
     /* Waiting for PRNG busy */
     i = 0;
@@ -111,7 +129,7 @@ int32_t RNG_Open()
     }
 
     /* Reload seed from TRNG only at first time */
-    CRYPTO->PRNG_CTL = (PRNG_KEY_SIZE_256 << CRYPTO_PRNG_CTL_KEYSZ_Pos) | CRYPTO_PRNG_CTL_START_Msk | CRYPTO_PRNG_CTL_SEEDRLD_Msk | PRNG_CTL_SEEDSRC_TRNG;
+    CRYPTO->PRNG_CTL = (PRNG_KEY_SIZE_256 << CRYPTO_PRNG_CTL_KEYSZ_Pos) | CRYPTO_PRNG_CTL_START_Msk | CRYPTO_PRNG_CTL_SEEDRLD_Msk | ( 0 << CRYPTO_PRNG_CTL_SEEDSRC_Pos);
 
     i = 0;
     while(CRYPTO->PRNG_CTL & CRYPTO_PRNG_CTL_BUSY_Msk)
@@ -223,7 +241,7 @@ int32_t RNG_ECDSA(uint32_t u32KeySize)
     int32_t i;
 
     /* Reload seed only at first time */
-    CRYPTO->PRNG_CTL = (u32KeySize << CRYPTO_PRNG_CTL_KEYSZ_Pos) | CRYPTO_PRNG_CTL_START_Msk | PRNG_CTL_SEEDSRC_TRNG;
+    CRYPTO->PRNG_CTL = (u32KeySize << CRYPTO_PRNG_CTL_KEYSZ_Pos) | CRYPTO_PRNG_CTL_START_Msk | ( 0 << CRYPTO_PRNG_CTL_SEEDSRC_Pos);
 
     timeout = 0x10000;
     i = 0;
@@ -294,7 +312,7 @@ int32_t RNG_ECDH(uint32_t u32KeySize)
     int32_t i;
 
     /* Reload seed only at first time */
-    CRYPTO->PRNG_CTL = (u32KeySize << CRYPTO_PRNG_CTL_KEYSZ_Pos) | CRYPTO_PRNG_CTL_START_Msk | PRNG_CTL_SEEDSRC_TRNG;
+    CRYPTO->PRNG_CTL = (u32KeySize << CRYPTO_PRNG_CTL_KEYSZ_Pos) | CRYPTO_PRNG_CTL_START_Msk | ( 0 << CRYPTO_PRNG_CTL_SEEDSRC_Pos);
 
     timeout = 0x10000;
     i = 0;
