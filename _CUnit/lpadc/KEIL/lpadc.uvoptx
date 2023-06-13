@@ -251,7 +251,7 @@
         <bEvRecOn>1</bEvRecOn>
         <bSchkAxf>0</bSchkAxf>
         <bTchkAxf>0</bTchkAxf>
-        <nTsel>15</nTsel>
+        <nTsel>14</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
         <sDlgDll></sDlgDll>
@@ -303,7 +303,7 @@
         <Mm>
           <WinNumber>1</WinNumber>
           <SubType>5</SubType>
-          <ItemText>0x4025B000</ItemText>
+          <ItemText>0x40442080</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow1>

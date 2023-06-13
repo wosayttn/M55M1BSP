@@ -36,7 +36,7 @@ void SYS_Init(void)
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_200MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
@@ -46,7 +46,7 @@ void SYS_Init(void)
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK2DIV(2);
     CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    CLK_SET_PCLK4DIV(4);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
  
     printf("\n\n");
     printf("+--------------------------------------+\n");
-    printf("|       M55M1 UART CUnit Test          |\n");
+    printf("|       M55M1 UUART CUnit Test         |\n");
     printf("+--------------------------------------+\n");
 
     if (CU_initialize_registry())

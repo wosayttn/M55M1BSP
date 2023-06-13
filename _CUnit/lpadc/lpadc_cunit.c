@@ -68,8 +68,7 @@ CU_TestInfo Suite_2_MACRO[] =
 {
     {"S2T1-LPADC MACRO Basic EADC Conversion",   CU_S2T1_MACRO_LPADC_BASIC},
     {"S2T2-LPADC MACRO EADC Conversion Compare", CU_S2T2_MACRO_LPADC_COMP},
-//    {"S2T3-LPADC MACRO Double Buffer Mode", CU_S2T3_MACRO_EADC_DOUBLE_BUFFER},  //not release
-    {"S2T4-EADC MACRO Others",                  CU_S2T4_MACRO_LPADC_OTHER},
+    {"S2T4-LPADC MACRO Others",                  CU_S2T4_MACRO_LPADC_OTHER},
     CU_TEST_INFO_NULL
 };
 
@@ -86,8 +85,8 @@ CU_TestInfo Suite_3_API[] =
 /*---------------------------------------------------------------------------------------------------------*/
 CU_SuiteInfo LPADC_suites[] =
 {
-    {"S1-EADC CONSTANT test",   suite_success_init, suite_success_clean, NULL, NULL, Suite_1_CONSTANT},
-    {"S2-EADC MACRO test",      suite_success_init, suite_success_clean, NULL, NULL, Suite_2_MACRO},
-    {"S3-EADC API test",        suite_success_init, suite_success_clean, NULL, NULL, Suite_3_API},
+    {"S1-LPADC CONSTANT test",   suite_success_init, suite_success_clean, NULL, NULL, Suite_1_CONSTANT},
+    {"S2-LPADC MACRO test",      suite_success_init, suite_success_clean, NULL, NULL, Suite_2_MACRO},
+    {"S3-LPADC API test",        suite_success_init, suite_success_clean, NULL, NULL, Suite_3_API},
     CU_SUITE_INFO_NULL
 };
