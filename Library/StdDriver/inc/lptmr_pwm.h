@@ -34,7 +34,7 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /*  LPTPWM Output Channel Selection Definitions                                                               */
 /*---------------------------------------------------------------------------------------------------------*/
-#define LPTPWM_TOUT_PIN_FROM_TX                   (BIT0)       /*!< Indicate PWMx output to Tx pins \hideinitializer */
+#define LPTPWM_TOUT_PIN_FROM_TX                   (0UL<<LPTMR_PWMPOCTL_POSEL_Pos)       /*!< Indicate PWMx output to Tx pins \hideinitializer */
 #define LPTPWM_TOUT_PIN_FROM_TX_EXT               (BIT8)       /*!< Indicate PWMx output to Tx_ext pins \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -44,7 +44,7 @@ extern "C"
 #define LPTPWM_ONE_SHOT_MODE                      (1UL)       /*!< One-shot mode \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  LPTPWM Trigger ADC/DAC/PDMA Source Select Constant Definitions                                          */
+/*  LPTPWM Trigger LPIPs Source Select Constant Definitions                                          */
 /*---------------------------------------------------------------------------------------------------------*/
 #define LPTPWM_TRIGGER_AT_PERIOD_POINT            (0UL)       /*!< LPTmr PWM trigger EADC while counter period point event occurred \hideinitializer */
 #define LPTPWM_TRIGGER_AT_COMPARE_POINT           (1UL)       /*!< LPTmr PWM trigger EADC while counter compare point event occurred \hideinitializer */
@@ -369,35 +369,182 @@ extern "C"
   * \hideinitializer
   */
 #define LPTPWM_CLEAR_REACH_MAX_CNT_STATUS(lptmr)  ((lptmr)->PWMSTATUS = LPTMR_PWMSTATUS_CNTMAXF_Msk)
+
+/**
+  * @brief      Select Counter Mode
+  *
+  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  * @param[in]  mode        Counter Mode selection, valid values are:
+  *                         - \ref LPTPWM_AUTO_RELOAD_MODE
+  *                         - \ref LPTPWM_ONE_SHOT_MODE
+  * @return     None
+  *
+  * @details    This macro is used to select LPTPWM Counter Mode.
+  */
 #define LPTPWM_SET_CNT_MODE(lptmr, mode)      ((lptmr)->PWMCTL = ((lptmr)->PWMCTL&~LPTMR_PWMCTL_CNTMODE_Msk) | (mode<<LPTMR_PWMCTL_CNTMODE_Pos))
 
+/**
+  * @brief      Enable Interrupt Flag Accumulator
+  *
+  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  *
+  * @return     None
+  *
+  * @details    This macro is used to enable the Interrupt Flag Accumulator function.
+  * \hideinitializer
+  */
 #define LPTPWM_ENABLE_IFA(lptmr)              ((lptmr)->PWMIFA |= LPTMR_PWMIFA_IFAEN_Msk)
+
+/**
+  * @brief      Disable Interrupt Flag Accumulator
+  *
+  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  *
+  * @return     None
+  *
+  * @details    This macro is used to disable the Interrupt Flag Accumulator function.
+  * \hideinitializer
+  */
 #define LPTPWM_DISABLE_IFA(lptmr)             ((lptmr)->PWMIFA &= ~LPTMR_PWMIFA_IFAEN_Msk)
+
+/**
+  * @brief      Enable Interrupt Flag Accumulator stop counting
+  *
+  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  *
+  * @return     None
+  *
+  * @details    This macro is used to enable the Interrupt Flag Accumulator stop counting.
+  * \hideinitializer
+  */
 #define LPTPWM_ENABLE_IFA_STOPCNT(lptmr)      ((lptmr)->PWMIFA |= LPTMR_PWMIFA_STPMOD_Msk)
+
+/**
+  * @brief      Disable Interrupt Flag Accumulator stop counting
+  *
+  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  *
+  * @return     None
+  *
+  * @details    This macro is used to disable the Interrupt Flag Accumulator stop counting.
+  * \hideinitializer
+  */
 #define LPTPWM_DISABLE_IFA_STOPCNT(lptmr)     ((lptmr)->PWMIFA &= ~LPTMR_PWMIFA_STPMOD_Msk)
+
+/**
+  * @brief      Select PIF is Interrupt Flag Accumulator Source
+  *
+  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  * @return     None
+  *
+  * @details    This macro is used to select PIF is Interrupt Flag Accumulator Source.
+  */
 #define LPTPWM_IFASEL_PIF(lptmr)              ((lptmr)->PWMIFA = (((lptmr)->PWMIFA&~LPTMR_PWMIFA_IFASEL_Msk) | (1<<LPTMR_PWMIFA_IFASEL_Pos)))
+
+/**
+  * @brief      Select CMPUIF is Interrupt Flag Accumulator Source
+  *
+  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  * @return     None
+  *
+  * @details    This macro is used to select CMPUIF is Interrupt Flag Accumulator Source.
+  */
 #define LPTPWM_IFASEL_CMPUIF(lptmr)           ((lptmr)->PWMIFA = (((lptmr)->PWMIFA&~LPTMR_PWMIFA_IFASEL_Msk) | (2<<LPTMR_PWMIFA_IFASEL_Pos)))
+
+/**
+  * @brief      Set Interrupt Flag Accumulator Counter
+  *
+  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  *
+  * @param[in]  cnt         Counter of Interrupt Flag Accumulator. Valid values are between 0x0~0xFFFF.
+  *
+  * @return     None
+  *
+  * @details    This macro is used to set the Counter of Interrupt Flag Accumulator.
+  * \hideinitializer
+  */
 #define LPTPWM_SET_IFACNT(lptmr, cnt)         ((lptmr)->PWMIFA = (((lptmr)->PWMIFA&~LPTMR_PWMIFA_IFACNT_Msk) | ((cnt)<<LPTMR_PWMIFA_IFACNT_Pos)))
 
+/**
+  * @brief      Enable Interrupt Flag Accumulator trigger LPPDMA transfer
+  *
+  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  *
+  * @return     None
+  *
+  * @details    This macro is used to enable the Interrupt Flag Accumulator trigger LPPDMA transfer.
+  * \hideinitializer
+  */
 #define LPTPWM_ENABLE_IFA_TRGLPPDMA(lptmr)      ((lptmr)->PWMAPDMACTL |= LPTMR_PWMAPDMACTL_APDMAEN_Msk)
+
+/**
+  * @brief      Disable Interrupt Flag Accumulator trigger LPPDMA transfer
+  *
+  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  *
+  * @return     None
+  *
+  * @details    This macro is used to disable the Interrupt Flag Accumulator trigger LPPDMA transfer.
+  * \hideinitializer
+  */
 #define LPTPWM_DISABLE_IFA_TRGLPPDMA(lptmr)     ((lptmr)->PWMAPDMACTL &= ~LPTMR_PWMAPDMACTL_APDMAEN_Msk)
 
+/**
+  * @brief      Get Interrupt Flag Accumulator Interrupt Flag
+  *
+  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  *
+  * @retval     0   Interrupt Flag Accumulator interrupt did not occur
+  * @retval     1   Interrupt Flag Accumulator interrupt occurred
+  *
+  * @details    This macro indicates Interrupt Flag Accumulator occurred or not.
+  * \hideinitializer
+  */
 #define LPTPWM_GET_IFA_INT_FLAG(lptmr)        (((lptmr)->PWMAINTSTS&LPTMR_PWMAINTSTS_IFAIF_Msk)? 1:0)
-#define LPTPWM_CLR_IFA_INT_FLAG(lptmr)        ((lptmr)->PWMAINTSTS = LPTMR_PWMAINTSTS_IFAIF_Msk)
-#define LPTPWM_ENABLE_IFA_INT(lptmr)          ((lptmr)->PWMAINTEN |= LPTMR_PWMAINTEN_IFAIEN_Msk)
-#define LPTPWM_DISABLE_IFA_INT(lptmr)         ((lptmr)->PWMAINTEN &= ~LPTMR_PWMAINTEN_IFAIEN_Msk)
 
-uint32_t LPTPWM_ConfigOutputFreqAndDuty(LPTMR_T *lptmr, uint32_t u32Frequency, uint32_t u32DutyCycle);
-void LPTPWM_EnableCounter(LPTMR_T *lptmr);
-void LPTPWM_DisableCounter(LPTMR_T *lptmr);
-void LPTPWM_EnableTrigger(LPTMR_T *lptmr, uint32_t u32TargetMask, uint32_t u32Condition);
-void LPTPWM_DisableTrigger(LPTMR_T *lptmr, uint32_t u32TargetMask);
+/**
+  * @brief      Clear Interrupt Flag Accumulator Interrupt Flag
+  *
+  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  *
+  * @return     None
+  *
+  * @details    This macro clears Interrupt Flag Accumulator interrupt flag.
+  * \hideinitializer
+  */
+#define LPTPWM_CLR_IFA_INT_FLAG(lptmr)        ((lptmr)->PWMAINTSTS = LPTMR_PWMAINTSTS_IFAIF_Msk)
+
+/**
+  * @brief      Enable Interrupt Flag Accumulator Interrupt
+  *
+  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  *
+  * @return     None
+  *
+  * @details    This macro is used to enable the Interrupt Flag Accumulator interrupt function.
+  * \hideinitializer
+  */
+#define LPTPWM_ENABLE_IFA_INT(lptmr)          ((lptmr)->PWMAINTEN |= LPTMR_PWMAINTEN_IFAIEN_Msk)
+
+/**
+  * @brief      Disable Interrupt Flag Accumulator Interrupt
+  *
+  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  *
+  * @return     None
+  *
+  * @details    This macro is used to disable the Interrupt Flag Accumulator interrupt function.
+  * \hideinitializer
+  */
+#define LPTPWM_DISABLE_IFA_INT(lptmr)         ((lptmr)->PWMAINTEN &= ~LPTMR_PWMAINTEN_IFAIEN_Msk)
 
 /* Declare these inline functions here to avoid MISRA C 2004 rule 8.1 error */
 __STATIC_INLINE void LPTPWM_EnableWakeup(LPTMR_T *lptmr);
 __STATIC_INLINE void LPTPWM_DisableWakeup(LPTMR_T *lptmr);
 __STATIC_INLINE uint32_t LPTPWM_GetWakeupFlag(LPTMR_T *lptmr);
 __STATIC_INLINE void LPTPWM_ClearWakeupFlag(LPTMR_T *lptmr);
+__STATIC_INLINE void LPTPWM_EnablePDCLK(LPTMR_T *lptmr);
+__STATIC_INLINE void LPTPWM_DisablePDCLK(LPTMR_T *lptmr);
 
 /**
   * @brief      Enable LPTPWM Interrupt Wake-up Function
@@ -462,6 +609,40 @@ __STATIC_INLINE void LPTPWM_ClearWakeupFlag(LPTMR_T *lptmr)
 {
     lptmr->PWMSTATUS = LPTMR_PWMSTATUS_PWMINTWKF_Msk;
 }
+
+/**
+  * @brief      Enable Power-down Engine Clock
+  *
+  * @param[in]  lptmr       The pointer of the specified lptmr module. It could be LPTMR0, LPTMR1.
+  *
+  * @return     None
+  *
+  * @details    This function is used to enable the lptmr Power-down Engine Clock.
+  */
+__STATIC_INLINE void LPTPWM_EnablePDCLK(LPTMR_T *lptmr)
+{
+    lptmr->CTL |= LPTMR_CTL_PDCLKEN_Msk;
+}
+
+/**
+  * @brief      Disable Power-down Engine Clock
+  *
+  * @param[in]  lptmr       The pointer of the specified lptmr module. It could be LPTMR0, LPTMR1.
+  *
+  * @return     None
+  *
+  * @details    This function is used to disable the lptmr Power-down Engine Clock.
+  */
+__STATIC_INLINE void LPTPWM_DisablePDCLK(LPTMR_T *lptmr)
+{
+    lptmr->CTL &= ~LPTMR_CTL_PDCLKEN_Msk;
+}
+
+uint32_t LPTPWM_ConfigOutputFreqAndDuty(LPTMR_T *lptmr, uint32_t u32Frequency, uint32_t u32DutyCycle);
+void LPTPWM_EnableCounter(LPTMR_T *lptmr);
+void LPTPWM_DisableCounter(LPTMR_T *lptmr);
+void LPTPWM_EnableTrigger(LPTMR_T *lptmr, uint32_t u32TargetMask, uint32_t u32Condition);
+void LPTPWM_DisableTrigger(LPTMR_T *lptmr, uint32_t u32TargetMask);
 
 /** @} end of group LPTPWM_EXPORTED_FUNCTIONS */
 /** @} end of group LPTPWM_Driver */
