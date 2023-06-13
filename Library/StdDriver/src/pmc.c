@@ -61,7 +61,7 @@ int32_t PMC_SetPowerLevel(uint32_t u32PowerLevel)
   */
 int32_t PMC_SetPowerRegulator(uint32_t u32PowerRegulator)
 {
-    uint32_t u32Ret = PMC_OK;
+    int32_t i32Ret = PMC_OK;
     uint32_t u32PowerRegStatus;
 
     /* Get main voltage regulator type status */
@@ -80,7 +80,7 @@ int32_t PMC_SetPowerRegulator(uint32_t u32PowerRegulator)
 
         if((PMC->VRSTS & PMC_VRSTS_CURMVR_Msk) != PMC_VRSTS_CURMVR_DCDC)
         {
-            u32Ret = PMC_ERR_FAIL;    /* Main voltage regulator type change fail */
+            i32Ret = PMC_ERR_FAIL;    /* Main voltage regulator type change fail */
         }
     }
     else if(u32PowerRegulator == PMC_VRCTL_MVRS_LDO)
@@ -95,7 +95,7 @@ int32_t PMC_SetPowerRegulator(uint32_t u32PowerRegulator)
 
         if((PMC->VRSTS & PMC_VRSTS_CURMVR_Msk) != PMC_VRSTS_CURMVR_LDO)
         {
-            u32Ret = PMC_ERR_FAIL;    /* Main voltage regulator type change fail */
+            i32Ret = PMC_ERR_FAIL;    /* Main voltage regulator type change fail */
         }
     }
 
@@ -103,10 +103,10 @@ int32_t PMC_SetPowerRegulator(uint32_t u32PowerRegulator)
     if(PMC->VRSTS & PMC_VRSTS_MVRCERR_Msk)
     {
         PMC->VRSTS = PMC_VRSTS_MVRCERR_Msk;
-        u32Ret = PMC_ERR_FAIL;
+        i32Ret = PMC_ERR_FAIL;
     }
 
-    return u32Ret;
+    return i32Ret;
 }
 
 /**
@@ -202,7 +202,6 @@ int32_t PMC_SetSRAMPowerMode(uint32_t u32SRAMSel, uint32_t u32PowerMode)
             break;
         default:
             return PMC_ERR_FAIL;
-            break;
     }
     return PMC_OK;
 }

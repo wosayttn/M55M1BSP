@@ -572,7 +572,7 @@ __STATIC_INLINE void LPUART_SET_RTS(LPUART_T* lpuart)
 /**
  *    @brief        Enable specified LPUART Bus Idle Time-out Wake-Up function
  *
- *    @param[in]    uart        The pointer of the specified LPUART module
+ *    @param[in]    lpuart        The pointer of the specified LPUART module
  *
  *    @return       None
  *
@@ -583,7 +583,7 @@ __STATIC_INLINE void LPUART_SET_RTS(LPUART_T* lpuart)
 /**
  *    @brief        Disable specified LPUART Bus Idle Time-out Wake-Up  function
  *
- *    @param[in]    uart        The pointer of the specified LPUART module
+ *    @param[in]    lpuart        The pointer of the specified LPUART module
  *
  *    @return       None
  *
@@ -616,7 +616,7 @@ __STATIC_INLINE void LPUART_SET_RTS(LPUART_T* lpuart)
 /**
  *    @brief        Enable specified LPUART Bus Idle Time-out function
  *
- *    @param[in]    uart        The pointer of the specified LPUART module
+ *    @param[in]    lpuart        The pointer of the specified LPUART module
  *
  *    @return       None
  *
@@ -626,7 +626,7 @@ __STATIC_INLINE void LPUART_SET_RTS(LPUART_T* lpuart)
 /**
  *    @brief        Disable specified LPUART Bus Idle Time-out function
  *
- *    @param[in]    uart        The pointer of the specified LPUART module
+ *    @param[in]    lpuart        The pointer of the specified LPUART module
  *
  *    @return       None
  *

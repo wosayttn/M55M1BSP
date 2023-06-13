@@ -34,10 +34,10 @@ extern "C"
 #define TTMR_PERIODIC_MODE                (1UL << TTMR_CTL_OPMODE_Pos)      /*!< Timer working in periodic mode \hideinitializer */
 #define TTMR_CONTINUOUS_MODE              (3UL << TTMR_CTL_OPMODE_Pos)      /*!< Timer working in continuous counting mode \hideinitializer */
 
-#define TTMR_TRGSRC_TIMEOUT_EVENT         (0UL << TTMR_TRGCTL_TRGSSEL_Pos)  /*!< Select internal trigger source from ttmr time-out event \hideinitializer */
-
 #define TTMR_TRGEN                        (TTMR_TRGCTL_TRGEN_Msk)           /*!< Each ttmr event to trigger Low Power IP \hideinitializer */
 #define TTMR_TRG_TO_LPPDMA                (TTMR_TRGCTL_TRGLPPDMA_Msk)       /*!< Each ttmr event to trigger LPPDMA transfer \hideinitializer */
+
+#define TTMR_CMP_MAX_VALUE                (0xFFFFFFUL)                      /*!< Max ttmr compare value \hideinitializer */
 
 #define TTMR_OK                           ( 0L)    /*!< TTMR operation OK \hideinitializer */
 #define TTMR_ERR_FAIL                     (-1L)    /*!< TTMR operation failed \hideinitializer */
@@ -53,7 +53,7 @@ extern "C"
 /**
   * @brief      Set Timer Compared Value
   *
-  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1, TTMR2, TTMR3.
+  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   * @param[in]  u32Value    Timer compare value. Valid values are between 2 to 0xFFFFFF.
   *
   * @return     None
@@ -69,7 +69,7 @@ extern "C"
 /**
   * @brief      Set Timer Prescale Value
   *
-  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1, TTMR2, TTMR3.
+  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   * @param[in]  u32Value    Timer prescale value. Valid values are between 0 to 0xFF.
   *
   * @return     None
@@ -83,7 +83,7 @@ extern "C"
 /**
   * @brief      Check specify Timer Status
   *
-  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1, TTMR2, TTMR3.
+  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   *
   * @retval     0   Timer 24-bit up counter is inactive
   * @retval     1   Timer 24-bit up counter is active
@@ -97,7 +97,7 @@ extern "C"
 /**
   * @brief      Select Timer operating mode
   *
-  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1, TTMR2, TTMR3.
+  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   * @param[in]  u32OpMode   Operation mode. Possible options are
   *                         - \ref TTMR_ONESHOT_MODE
   *                         - \ref TTMR_PERIODIC_MODE
@@ -120,11 +120,13 @@ __STATIC_INLINE void TTMR_ClearIntFlag(TTMR_T *ttmr);
 __STATIC_INLINE uint32_t TTMR_GetWakeupFlag(TTMR_T *ttmr);
 __STATIC_INLINE void TTMR_ClearWakeupFlag(TTMR_T *ttmr);
 __STATIC_INLINE uint32_t TTMR_GetCounter(TTMR_T *ttmr);
+__STATIC_INLINE void TTMR_EnablePDCLK(TTMR_T *ttmr);
+__STATIC_INLINE void TTMR_DisablePDCLK(TTMR_T *ttmr);
 
 /**
   * @brief      Start Timer Counting
   *
-  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1, TTMR2, TTMR3.
+  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   *
   * @return     None
   *
@@ -138,7 +140,7 @@ __STATIC_INLINE void TTMR_Start(TTMR_T *ttmr)
 /**
   * @brief      Stop Timer Counting
   *
-  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1, TTMR2, TTMR3.
+  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   *
   * @return     None
   *
@@ -152,7 +154,7 @@ __STATIC_INLINE void TTMR_Stop(TTMR_T *ttmr)
 /**
   * @brief      Enable Timer Interrupt Wake-up Function
   *
-  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1, TTMR2, TTMR3.
+  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   *
   * @return     None
   *
@@ -168,7 +170,7 @@ __STATIC_INLINE void TTMR_EnableWakeup(TTMR_T *ttmr)
 /**
   * @brief      Disable Timer Wake-up Function
   *
-  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1, TTMR2, TTMR3.
+  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   *
   * @return     None
   *
@@ -183,7 +185,7 @@ __STATIC_INLINE void TTMR_DisableWakeup(TTMR_T *ttmr)
 /**
   * @brief      Enable Timer Time-out Interrupt
   *
-  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1, TTMR2, TTMR3.
+  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   *
   * @return     None
   *
@@ -197,7 +199,7 @@ __STATIC_INLINE void TTMR_EnableInt(TTMR_T *ttmr)
 /**
   * @brief      Disable Timer Time-out Interrupt
   *
-  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1, TTMR2, TTMR3.
+  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   *
   * @return     None
   *
@@ -212,7 +214,7 @@ __STATIC_INLINE void TTMR_DisableInt(TTMR_T *ttmr)
 /**
   * @brief      Get Timer Time-out Interrupt Flag
   *
-  * @param[in]  ttmr   The pointer of the specified Timer module. It could be TTMR0, TTMR1, TTMR2, TTMR3.
+  * @param[in]  ttmr   The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   *
   * @retval     0   Timer time-out interrupt did not occur
   * @retval     1   Timer time-out interrupt occurred
@@ -227,7 +229,7 @@ __STATIC_INLINE uint32_t TTMR_GetIntFlag(TTMR_T *ttmr)
 /**
   * @brief      Clear Timer Time-out Interrupt Flag
   *
-  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1, TTMR2, TTMR3.
+  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   *
   * @return     None
   *
@@ -242,7 +244,7 @@ __STATIC_INLINE void TTMR_ClearIntFlag(TTMR_T *ttmr)
 /**
   * @brief      Get Timer Wake-up Flag
   *
-  * @param[in]  ttmr   The pointer of the specified Timer module. It could be TTMR0, TTMR1, TTMR2, TTMR3.
+  * @param[in]  ttmr   The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   *
   * @retval     0   Timer does not cause CPU wake-up
   * @retval     1   Timer interrupt event cause CPU wake-up
@@ -257,7 +259,7 @@ __STATIC_INLINE uint32_t TTMR_GetWakeupFlag(TTMR_T *ttmr)
 /**
   * @brief      Clear Timer Wake-up Flag
   *
-  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1, TTMR2, TTMR3.
+  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   *
   * @return     None
   *
@@ -272,7 +274,7 @@ __STATIC_INLINE void TTMR_ClearWakeupFlag(TTMR_T *ttmr)
 /**
   * @brief      Get Counter value
   *
-  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1, TTMR2, TTMR3.
+  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   *
   * @return     24-bit Counter Value
   *
@@ -281,6 +283,34 @@ __STATIC_INLINE void TTMR_ClearWakeupFlag(TTMR_T *ttmr)
 __STATIC_INLINE uint32_t TTMR_GetCounter(TTMR_T *ttmr)
 {
     return ttmr->CNT;
+}
+
+/**
+  * @brief      Enable Timer Power-down Engine Clock
+  *
+  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
+  *
+  * @return     None
+  *
+  * @details    This function is used to enable the ttmr Power-down Engine Clock.
+  */
+__STATIC_INLINE void TTMR_EnablePDCLK(TTMR_T *ttmr)
+{
+    ttmr->CTL |= TTMR_CTL_PDCLKEN_Msk;
+}
+
+/**
+  * @brief      Disable Timer Power-down Engine Clock
+  *
+  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
+  *
+  * @return     None
+  *
+  * @details    This function is used to disable the ttmr Power-down Engine Clock.
+  */
+__STATIC_INLINE void TTMR_DisablePDCLK(TTMR_T *ttmr)
+{
+    ttmr->CTL &= ~TTMR_CTL_PDCLKEN_Msk;
 }
 
 uint32_t TTMR_Open(TTMR_T *ttmr, uint32_t u32Mode, uint32_t u32Freq);

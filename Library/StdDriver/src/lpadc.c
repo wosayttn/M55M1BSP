@@ -48,11 +48,21 @@ void LPADC_Open(LPADC_T *lpadc,
                 uint32_t u32ChMask)
 {
     uint32_t u32Delay = SystemCoreClock;    /* 1 second */
-
-    // select LPADC0 as ADC controller, not EADC0.
-//    SYS->IVSCTL |= SYS_IVSCTL_ADCCSEL_Msk;
+//    uint32_t u32Temp;
 
     g_LPADC_i32ErrCode = 0;
+    /*Enable the LPADC Power on*/
+    LPADC_POWER_ON(lpadc);
+    /*Wait the LPADC Power On Ready  */
+    while(!(lpadc->ADSR0 & LPADC_ADSR0_ADPRDY_Msk))
+    {
+      if (--u32Delay == 0)
+      {
+          g_LPADC_i32ErrCode = LPADC_TIMEOUT_ERR;
+          break;
+       }
+     }
+
 
 #if(0)
     /* Do calibration for LPADC to decrease the effect of electrical random noise. */
@@ -69,9 +79,9 @@ void LPADC_Open(LPADC_T *lpadc,
             }
         }
 
-        lpadc->ADCALSTS |= LPADC_ADCALSTS_CALIF_Msk;  /* Clear Calibration Finish Interrupt Flag */
-        lpadc->ADCAL |= LPADC_ADCAL_CALEN_Msk;        /* Enable Calibration function */
-        LPADC_START_CONV(lpadc);                        /* Start to calibration */
+        lpadc->ADCALSTS |= LPADC_ADCALSTS_CALIF_Msk;      /* Clear Calibration Finish Interrupt Flag */
+        lpadc->ADCAL |= LPADC_ADCAL_CALEN_Msk;            /* Enable Calibration function */
+        LPADC_START_CONV(lpadc);                          /* Start to calibration */
         u32Delay = SystemCoreClock;
         while((lpadc->ADCALSTS & LPADC_ADCALSTS_CALIF_Msk) != LPADC_ADCALSTS_CALIF_Msk)    /* Wait calibration finish */
         {
@@ -82,10 +92,10 @@ void LPADC_Open(LPADC_T *lpadc,
             }
         }
     }
+     /* Read channel 0 ADDR to clear Valid flag of channel 0 that set by calibration. */
+    u32Temp = LPADC0->ADDR[0];
 #endif
-    lpadc->ADCR = (lpadc->ADCR & (~(LPADC_ADCR_DIFFEN_Msk | LPADC_ADCR_ADMD_Msk))) | \
-                  (u32InputMode) | \
-                  (u32OpMode);
+    lpadc->ADCR = (lpadc->ADCR & (~(LPADC_ADCR_DIFFEN_Msk | LPADC_ADCR_ADMD_Msk))) | (u32InputMode) | (u32OpMode);
 
     lpadc->ADCHER = (lpadc->ADCHER & ~LPADC_ADCHER_CHEN_Msk) | (u32ChMask);
 
@@ -99,8 +109,15 @@ void LPADC_Open(LPADC_T *lpadc,
   */
 void LPADC_Close(LPADC_T *lpadc)
 {
-    SYS->LPADCRST |= (SYS_LPADCRST_LPADC0RST_Msk);
-    SYS->LPADCRST &= ~(SYS_LPADCRST_LPADC0RST_Msk);
+  
+    /*Enable the LPADC Power on*/
+    lpadc->ADCR &= ~LPADC_ADCR_ADEN_Msk;
+
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+    SYS_ResetModule(SYS_LPADC0RST);
+    /* Lock protected registers */
+    SYS_LockReg();
     return;
 }
 
@@ -108,43 +125,25 @@ void LPADC_Close(LPADC_T *lpadc)
   * @brief Configure the hardware trigger condition and enable hardware trigger
   * @param[in] lpadc The pointer of the specified LPADC module
   * @param[in] u32Source Decides the hardware trigger source. Valid values are:
-  *                       - \ref LPADC_ADCR_TRGS_STADC            :A/D conversion is started by external STADC pin.
-  *                       - \ref LPADC_ADCR_TRGS_BPWM             :A/D conversion is started by BPWM.
-  *                       - \ref LPADC_ADCR_TRGS_EPWM             :A/D conversion is started by EPWM.
-  *                       - \ref LPADC_ADCR_TRGS_ACMP0            :A/D conversion is started by ACMP0.
-  *                       - \ref LPADC_ADCR_TRGS_ACMP1            :A/D conversion is started by ACMP1.
-  *                       - \ref LPADC_ADCR_TRGS_ACMP2            :A/D conversion is started by ACMP2.
-  *                       - \ref LPADC_ADCR_TRGS_ACMP3            :A/D conversion is started by ACMP3.
-  * @param[in] u32Param While LPADC trigger by PWM or Timer, this parameter is unused.
-  *                     While LPADC trigger by external pin, this parameter is used to set trigger condition.
-  *                     Valid values are:
-  *                      - \ref LPADC_ADCR_TRGCOND_LOW_LEVEL     :STADC Low level active
-  *                      - \ref LPADC_ADCR_TRGCOND_HIGH_LEVEL    :STADC High level active
-  *                      - \ref LPADC_ADCR_TRGCOND_FALLING_EDGE  :STADC Falling edge active
-  *                      - \ref LPADC_ADCR_TRGCOND_RISING_EDGE   :STADC Rising edge active
+  *                       - \ref LPADC_LOW_LEVEL_TRIGGER      : A/D conversion is triggered by external STADC pin low level.
+  *                       - \ref LPADC_HIGH_LEVEL_TRIGGER     : A/D conversion is triggered by external STADC pin High level.
+  *                       - \ref LPADC_FALLING_EDGE_TRIGGER   : A/D conversion is triggered by external STADC pin falling edge.
+  *                       - \ref LPADC_RISING_EDGE_TRIGGER    : A/D conversion is triggered by external STADC pin rsing edge.
+  *                       - \ref LPADC_BPWM_TRIGGER           : A/D conversion is triggered by BPWM.
+  *                       - \ref LPADC_EPWM_TRIGGER           : A/D conversion is triggered by EPWM.
+  *                       - \ref LPADC_ACMP0_TRIGGER          : A/D conversion is triggered by ACMP0.
+  *                       - \ref LPADC_ACMP1_TRIGGER          : A/D conversion is triggered by ACMP1.
+  *                       - \ref LPADC_ACMP2_TRIGGER          : A/D conversion is triggered by ACMP2.
+  *                       - \ref LPADC_ACMP3_TRIGGER          : A/D conversion is triggered by ACMP3.
   * @return None
   * @note Software should disable TRGEN (ADCR[8]) and ADST (ADCR[11]) before change TRGS(ADCR[5:4]).
   */
-void LPADC_EnableHWTrigger(LPADC_T *lpadc,
-                           uint32_t u32Source,
-                           uint32_t u32Param)
+void LPADC_EnableHWTrigger(LPADC_T *lpadc,uint32_t u32Source)
 {
-    if(u32Source == LPADC_ADCR_TRGS_STADC)
-    {
-        lpadc->ADCR = (lpadc->ADCR & ~(LPADC_ADCR_TRGS_Msk | LPADC_ADCR_TRGCOND_Msk | LPADC_ADCR_TRGEN_Msk)) |
-                      ((u32Source) | (u32Param) | LPADC_ADCR_TRGEN_Msk);
-    }
-    else if(u32Source == LPADC_ADCR_TRGS_TIMER)
-    {
-        lpadc->ADCR = (lpadc->ADCR & ~(LPADC_ADCR_TRGS_Msk | LPADC_ADCR_TRGCOND_Msk | LPADC_ADCR_TRGEN_Msk)) |
-                      ((u32Source) | LPADC_ADCR_TRGEN_Msk);
-    }
-    else
-    {
-        lpadc->ADCR = (lpadc->ADCR & ~(LPADC_ADCR_TRGS_Msk | LPADC_ADCR_TRGCOND_Msk | LPADC_ADCR_TRGEN_Msk)) |
-                      ((u32Source) | LPADC_ADCR_TRGEN_Msk);
-    }
-    return;
+
+    lpadc->ADCR = (lpadc->ADCR & ~(LPADC_ADCR_TRGS_Msk | LPADC_ADCR_TRGCOND_Msk | LPADC_ADCR_TRGEN_Msk)) |
+                  ((u32Source) | LPADC_ADCR_TRGEN_Msk);
+
 }
 
 /**
@@ -155,7 +154,7 @@ void LPADC_EnableHWTrigger(LPADC_T *lpadc,
 void LPADC_DisableHWTrigger(LPADC_T *lpadc)
 {
     lpadc->ADCR &= ~(LPADC_ADCR_TRGS_Msk | LPADC_ADCR_TRGCOND_Msk | LPADC_ADCR_TRGEN_Msk);
-    return;
+
 }
 
 /**
@@ -217,6 +216,36 @@ void LPADC_SetExtendSampleTime(LPADC_T *lpadc, uint32_t u32ExtendSampleTime)
 {
     lpadc->ESMPCTL = (lpadc->ESMPCTL & ~LPADC_ESMPCTL_EXTSMPT_Msk) |
                      (u32ExtendSampleTime << LPADC_ESMPCTL_EXTSMPT_Pos);
+}
+
+/**
+  * @brief  Select and configure Automatic Operation function
+  * @param[in] lpadc The pointer of the specified LPADC module
+  * @param[in] u32TrigSel  The LPADC Automatic Operation Trigger Source:
+  *                       - \ref LPADC_AUTOCTL_TRIGSEL_SOFTWARE : Auto-operation Trigger Source from Software .
+  *                       - \ref LPADC_AUTOCTL_TRIGSEL_LPTMR0   : Auto-operation Trigger Source from LPTMR0.
+  *                       - \ref LPADC_AUTOCTL_TRIGSEL_LPTMR1   : Auto-operation Trigger Source from LPTMR1.
+  *                       - \ref LPADC_AUTOCTL_TRIGSEL_TTMR0    : Auto-operation Trigger Source from TTMR0.
+  *                       - \ref LPADC_AUTOCTL_TRIGSEL_TTMR1    : Auto-operation Trigger Source from TTMR1.
+  *                       - \ref LPADC_AUTOCTL_TRIGSEL_WKIOA0   : Auto-operation Trigger Source from WKIOA0.
+  *                       - \ref LPADC_AUTOCTL_TRIGSEL_WKIOB0   : Auto-operation Trigger Source from WKIOB0.
+  *                       - \ref LPADC_AUTOCTL_TRIGSEL_WKIOC0   : Auto-operation Trigger Source from WKIOC0.
+  *                       - \ref LPADC_AUTOCTL_TRIGSEL_WKIOD0   : Auto-operation Trigger Source from WKIOD0.
+  *                       - \ref LPADC_AUTOCTL_TRIGSEL_ACMP0    : Auto-operation Trigger Source from ACMP0.
+  *                       - \ref LPADC_AUTOCTL_TRIGSEL_ACMP1    : Auto-operation Trigger Source from ACMP1.
+  *                       - \ref LPADC_AUTOCTL_TRIGSEL_ACMP2    : Auto-operation Trigger Source from ACMP2.
+  *                       - \ref LPADC_AUTOCTL_TRIGSEL_ACMP3    : Auto-operation Trigger Source from ACMP3.
+  * @return  None
+  * @details The function is used to set Automatic Operation relative setting.
+  */
+void LPADC_SelectAutoOperationMode(LPADC_T *lpadc,uint32_t u32TrigSel)
+{
+    /* Automatic Operation Mode Enable */
+    lpadc->AUTOCTL |= LPADC_AUTOCTL_AUTOEN_Msk;
+  
+    lpadc->AUTOCTL &= ~(LPADC_AUTOCTL_TRIGSEL_Msk |LPADC_AUTOCTL_TRIGEN_Msk);
+  
+    lpadc->AUTOCTL |= u32TrigSel; 
 }
 
 /*@}*/ /* end of group LPADC_EXPORTED_FUNCTIONS */

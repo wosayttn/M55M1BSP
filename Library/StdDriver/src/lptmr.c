@@ -44,6 +44,8 @@ uint32_t LPTMR_Open(LPTMR_T *lptmr, uint32_t u32Mode, uint32_t u32Freq)
     uint32_t u32Clk = LPTMR_GetModuleClock(lptmr);
     uint32_t u32Cmpr = 0UL, u32Prescale = 0UL;
 
+    if(u32Freq == 0)
+			return 0 ;
     /* Fastest possible lptmr working freq is (u32Clk / 2). While cmpr = 2, prescaler = 0. */
     if(u32Freq > (u32Clk / 2UL))
     {

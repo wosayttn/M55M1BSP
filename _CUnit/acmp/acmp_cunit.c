@@ -48,16 +48,16 @@ void ACMP_IP_Reset(ACMP_T *psAcmp)
 {
     /* Unlock protected registers */
     SYS_UnlockReg();
-if(psAcmp == ACMP01)
-{
-    /* Reset ACMP */
-    SYS_ResetModule(SYS_ACMP01RST);
-}
-else
-{
-    /* Reset ACMP */
-    SYS_ResetModule(SYS_ACMP23RST);
-}
+   if(psAcmp == ACMP01)
+   {
+      /* Reset ACMP */
+      SYS_ResetModule(SYS_ACMP01RST);
+   }
+   else
+   {
+      /* Reset ACMP */
+      SYS_ResetModule(SYS_ACMP23RST);
+   }
     /* Lock protected registers */
     SYS_LockReg();
 }

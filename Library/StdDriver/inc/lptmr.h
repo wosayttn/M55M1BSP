@@ -37,6 +37,8 @@ extern "C"
 
 #define LPTMR_TOUT_PIN_FROM_TMX                 (0UL << LPTMR_CTL_TGLPINSEL_Pos)        /*!< LPTMR toggle-output pin is from TMx pin \hideinitializer */
 #define LPTMR_TOUT_PIN_FROM_TMX_EXT             (1UL << LPTMR_CTL_TGLPINSEL_Pos)        /*!< LPTMR toggle-output pin is from TMx_EXT pin \hideinitializer */
+#define LPTMR_TOUT_PIN_FROM_TX                  LPTMR_TOUT_PIN_FROM_TMX
+#define LPTMR_TOUT_PIN_FROM_TX_EXT              LPTMR_TOUT_PIN_FROM_TMX_EXT
 
 #define LPTMR_COUNTER_EVENT_FALLING             (0UL << LPTMR_EXTCTL_CNTPHASE_Pos)      /*!< Counter increase on falling edge detection \hideinitializer */
 #define LPTMR_COUNTER_EVENT_RISING              (1UL << LPTMR_EXTCTL_CNTPHASE_Pos)      /*!< Counter increase on rising edge detection \hideinitializer */
@@ -74,6 +76,8 @@ extern "C"
 
 #define LPTMR_TRGSRC_TIMEOUT_EVENT              (0UL << LPTMR_TRGCTL_TRGSSEL_Pos)       /*!< Select internal trigger source from lptmr time-out event \hideinitializer */
 #define LPTMR_TRGSRC_CAPTURE_EVENT              (1UL << LPTMR_TRGCTL_TRGSSEL_Pos)       /*!< Select internal trigger source from lptmr capture event \hideinitializer */
+#define LPTMR_TRGSEL_CAPTURE_EVENT              LPTMR_TRGSRC_TIMEOUT_EVENT
+#define LPTMR_TRGSEL_TIMEOUT_EVENT              LPTMR_TRGSRC_CAPTURE_EVENT
 
 #define LPTMR_TRGEN                             (LPTMR_TRGCTL_TRGEN_Msk)                /*!< Each lptmr event to trigger Low Power IP \hideinitializer */
 #define LPTMR_TRG_TO_LPPDMA                     (LPTMR_TRGCTL_TRGLPPDMA_Msk)            /*!< Each lptmr event to trigger PDMA transfer \hideinitializer */
@@ -189,11 +193,14 @@ __STATIC_INLINE void LPTMR_DisableCaptureInt(LPTMR_T *lptmr);
 __STATIC_INLINE uint32_t LPTMR_GetIntFlag(LPTMR_T *lptmr);
 __STATIC_INLINE void LPTMR_ClearIntFlag(LPTMR_T *lptmr);
 __STATIC_INLINE uint32_t LPTMR_GetCaptureIntFlag(LPTMR_T *lptmr);
+__STATIC_INLINE uint32_t LPTMR_GetCaptureIntFlagOV(LPTMR_T *lptmr);
 __STATIC_INLINE void LPTMR_ClearCaptureIntFlag(LPTMR_T *lptmr);
 __STATIC_INLINE uint32_t LPTMR_GetWakeupFlag(LPTMR_T *lptmr);
 __STATIC_INLINE void LPTMR_ClearWakeupFlag(LPTMR_T *lptmr);
 __STATIC_INLINE uint32_t LPTMR_GetCaptureData(LPTMR_T *lptmr);
 __STATIC_INLINE uint32_t LPTMR_GetCounter(LPTMR_T *lptmr);
+__STATIC_INLINE void LPTMR_EnablePDCLK(LPTMR_T *lptmr);
+__STATIC_INLINE void LPTMR_DisablePDCLK(LPTMR_T *lptmr);
 
 /**
   * @brief      Start LPTMR Counting
@@ -438,6 +445,21 @@ __STATIC_INLINE uint32_t LPTMR_GetCaptureIntFlag(LPTMR_T *lptmr)
 }
 
 /**
+  * @brief      Get LPTMR Capture Interrupt Flag Overrun
+  *
+  * @param[in]  lptmr   The pointer of the specified LPTMR module. It could be LPTMR0, LPTMR1.
+  *
+  * @retval     0   LPTMR capture interrupt did not Overrun
+  * @retval     1   LPTMR capture interrupt Overrun
+  *
+  * @details    This function indicates lptmr capture trigger interrupt Overrun or not.
+  */
+__STATIC_INLINE uint32_t LPTMR_GetCaptureIntFlagOV(LPTMR_T *lptmr)
+{
+    return ((lptmr->EINTSTS & LPTMR_EINTSTS_CAPIFOV_Msk) ? 1UL : 0UL);
+}
+
+/**
   * @brief      Clear LPTMR Capture Interrupt Flag
   *
   * @param[in]  lptmr       The pointer of the specified LPTMR module. It could be LPTMR0, LPTMR1.
@@ -506,6 +528,34 @@ __STATIC_INLINE uint32_t LPTMR_GetCaptureData(LPTMR_T *lptmr)
 __STATIC_INLINE uint32_t LPTMR_GetCounter(LPTMR_T *lptmr)
 {
     return lptmr->CNT;
+}
+
+/**
+  * @brief      Enable Power-down Engine Clock
+  *
+  * @param[in]  lptmr       The pointer of the specified lptmr module. It could be LPTMR0, LPTMR1.
+  *
+  * @return     None
+  *
+  * @details    This function is used to enable the lptmr Power-down Engine Clock.
+  */
+__STATIC_INLINE void LPTMR_EnablePDCLK(LPTMR_T *lptmr)
+{
+    lptmr->CTL |= LPTMR_CTL_PDCLKEN_Msk;
+}
+
+/**
+  * @brief      Disable Power-down Engine Clock
+  *
+  * @param[in]  lptmr       The pointer of the specified lptmr module. It could be LPTMR0, LPTMR1.
+  *
+  * @return     None
+  *
+  * @details    This function is used to disable the lptmr Power-down Engine Clock.
+  */
+__STATIC_INLINE void LPTMR_DisablePDCLK(LPTMR_T *lptmr)
+{
+    lptmr->CTL &= ~LPTMR_CTL_PDCLKEN_Msk;
 }
 
 uint32_t LPTMR_Open(LPTMR_T *lptmr, uint32_t u32Mode, uint32_t u32Freq);

@@ -44,22 +44,21 @@ extern "C"
 #define LPADC_ADCR_DMOF_UNSIGNED_OUTPUT   (0UL<<LPADC_ADCR_DMOF_Pos)     /*!< Select the straight binary format as the output format of the conversion result   \hideinitializer */
 #define LPADC_ADCR_DMOF_TWOS_COMPLEMENT   (1UL<<LPADC_ADCR_DMOF_Pos)     /*!< Select the 2's complement format as the output format of the conversion result    \hideinitializer */
 
-#define LPADC_ADCR_TRGEN_DISABLE          (0UL<<LPADC_ADCR_TRGEN_Pos)    /*!< Disable triggering of A/D conversion by external STADC pin or PWM     \hideinitializer */
-#define LPADC_ADCR_TRGEN_ENABLE           (1UL<<LPADC_ADCR_TRGEN_Pos)    /*!< Enable triggering of A/D conversion by external STADC pin or PWM      \hideinitializer */
-
-#define LPADC_ADCR_TRGS_STADC             (0UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is started by external STADC pin   \hideinitializer */
-#define LPADC_ADCR_TRGS_BPWM              (2UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is started by BPWM     \hideinitializer */
-#define LPADC_ADCR_TRGS_EPWM              (4UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is started by EPWM     \hideinitializer */
-#define LPADC_ADCR_TRGS_ACMP0             (8UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is started by ACMP0    \hideinitializer */
-#define LPADC_ADCR_TRGS_ACMP1             (9UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is started by ACMP1    \hideinitializer */
-#define LPADC_ADCR_TRGS_ACMP2             (10UL<<LPADC_ADCR_TRGS_Pos)    /*!< A/D conversion is started by ACMP2    \hideinitializer */
-#define LPADC_ADCR_TRGS_ACMP3             (11UL<<LPADC_ADCR_TRGS_Pos)    /*!< A/D conversion is started by ACMP3    \hideinitializer */
-
-
 #define LPADC_ADCR_TRGCOND_LOW_LEVEL      (0UL<<LPADC_ADCR_TRGCOND_Pos)  /*!< STADC Low level active    \hideinitializer */
 #define LPADC_ADCR_TRGCOND_HIGH_LEVEL     (1UL<<LPADC_ADCR_TRGCOND_Pos)  /*!< STADC High level active   \hideinitializer */
 #define LPADC_ADCR_TRGCOND_FALLING_EDGE   (2UL<<LPADC_ADCR_TRGCOND_Pos)  /*!< STADC Falling edge active \hideinitializer */
 #define LPADC_ADCR_TRGCOND_RISING_EDGE    (3UL<<LPADC_ADCR_TRGCOND_Pos)  /*!< STADC Rising edge active  \hideinitializer */
+
+#define LPADC_LOW_LEVEL_TRIGGER           ((0UL<<LPADC_ADCR_TRGS_Pos)|LPADC_ADCR_TRGCOND_LOW_LEVEL)     /*!< A/D conversion is triggered by external STADC pin low level  \hideinitializer */
+#define LPADC_HIGH_LEVEL_TRIGGER          ((0UL<<LPADC_ADCR_TRGS_Pos)|LPADC_ADCR_TRGCOND_HIGH_LEVEL)    /*!< A/D conversion is triggered by external STADC pin high level  \hideinitializer */
+#define LPADC_FALLING_EDGE_TRIGGER        ((0UL<<LPADC_ADCR_TRGS_Pos)|LPADC_ADCR_TRGCOND_FALLING_EDGE)  /*!< A/D conversion is triggered by external STADC pin falling edge \hideinitializer */
+#define LPADC_RISING_EDGE_TRIGGER         ((0UL<<LPADC_ADCR_TRGS_Pos)|LPADC_ADCR_TRGCOND_RISING_EDGE)   /*!< A/D conversion is triggered by external STADC pin rising edge  \hideinitializer */
+#define LPADC_BPWM_TRIGGER                (2UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is triggered by BPWM     \hideinitializer */
+#define LPADC_EPWM_TRIGGER                (4UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is triggered by EPWM     \hideinitializer */
+#define LPADC_ACMP0_TRIGGER               (8UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is triggered by ACMP0    \hideinitializer */
+#define LPADC_ACMP1_TRIGGER               (9UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is triggered by ACMP1    \hideinitializer */
+#define LPADC_ACMP2_TRIGGER               (10UL<<LPADC_ADCR_TRGS_Pos)    /*!< A/D conversion is triggered by ACMP2    \hideinitializer */
+#define LPADC_ACMP3_TRIGGER               (11UL<<LPADC_ADCR_TRGS_Pos)    /*!< A/D conversion is triggered by ACMP3    \hideinitializer */
 
 #define LPADC_ADCR_RESSEL_12BITS          (0UL<<LPADC_ADCR_RESSEL_Pos)   /*!< Resolution Select 12 Bits  \hideinitializer */
 #define LPADC_ADCR_RESSEL_10BITS          (1UL<<LPADC_ADCR_RESSEL_Pos)   /*!< Resolution Select 10 Bits  \hideinitializer */
@@ -107,18 +106,19 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /*  AUTOCTL Constant Definitions                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-#define LPADC_AUTOCTL_TRIGSEL_LPTMR0    (0UL<<LPADC_AUTOCTL_TRIGSEL_Pos)    /*!< LPADC Automatic Operation Trigger Source Select is LPTMR0  \hideinitializer */
-#define LPADC_AUTOCTL_TRIGSEL_LPTMR1    (1UL<<LPADC_AUTOCTL_TRIGSEL_Pos)    /*!< LPADC Automatic Operation Trigger Source Select is LPTMR1  \hideinitializer */
-#define LPADC_AUTOCTL_TRIGSEL_TTMR0     (2UL<<LPADC_AUTOCTL_TRIGSEL_Pos)    /*!< LPADC Automatic Operation Trigger Source Select is TTMR0  \hideinitializer */
-#define LPADC_AUTOCTL_TRIGSEL_TTMR1     (3UL<<LPADC_AUTOCTL_TRIGSEL_Pos)    /*!< LPADC Automatic Operation Trigger Source Select is TTMR1  \hideinitializer */
-#define LPADC_AUTOCTL_TRIGSEL_WKIOA0    (4UL<<LPADC_AUTOCTL_TRIGSEL_Pos)    /*!< LPADC Automatic Operation Trigger Source Select is WKIOA0  \hideinitializer */
-#define LPADC_AUTOCTL_TRIGSEL_WKIOB0    (5UL<<LPADC_AUTOCTL_TRIGSEL_Pos)    /*!< LPADC Automatic Operation Trigger Source Select is WKIOB0  \hideinitializer */
-#define LPADC_AUTOCTL_TRIGSEL_WKIOC0    (6UL<<LPADC_AUTOCTL_TRIGSEL_Pos)    /*!< LPADC Automatic Operation Trigger Source Select is WKIOC0  \hideinitializer */
-#define LPADC_AUTOCTL_TRIGSEL_WKIOD0    (7UL<<LPADC_AUTOCTL_TRIGSEL_Pos)    /*!< LPADC Automatic Operation Trigger Source Select is WKIOD0  \hideinitializer */
-#define LPADC_AUTOCTL_TRIGSEL_ACMP0     (8UL<<LPADC_AUTOCTL_TRIGSEL_Pos)    /*!< LPADC Automatic Operation Trigger Source Select is ACMP0  \hideinitializer */
-#define LPADC_AUTOCTL_TRIGSEL_ACMP1     (9UL<<LPADC_AUTOCTL_TRIGSEL_Pos)    /*!< LPADC Automatic Operation Trigger Source Select is ACMP1  \hideinitializer */
-#define LPADC_AUTOCTL_TRIGSEL_ACMP2     (10UL<<LPADC_AUTOCTL_TRIGSEL_Pos)    /*!< LPADC Automatic Operation Trigger Source Select is ACMP2  \hideinitializer */
-#define LPADC_AUTOCTL_TRIGSEL_ACMP3     (11UL<<LPADC_AUTOCTL_TRIGSEL_Pos)    /*!< LPADC Automatic Operation Trigger Source Select is ACMP3  \hideinitializer */
+#define LPADC_AUTOCTL_TRIGSEL_SOFTWARE  (0UL)                                                          /*!< LPADC Automatic Operation Trigger Source Select is Software  \hideinitializer */
+#define LPADC_AUTOCTL_TRIGSEL_LPTMR0    (0UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)    /*!< LPADC Automatic Operation Trigger Source Select is LPTMR0  \hideinitializer */
+#define LPADC_AUTOCTL_TRIGSEL_LPTMR1    (1UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)    /*!< LPADC Automatic Operation Trigger Source Select is LPTMR1  \hideinitializer */
+#define LPADC_AUTOCTL_TRIGSEL_TTMR0     (2UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)    /*!< LPADC Automatic Operation Trigger Source Select is TTMR0  \hideinitializer */
+#define LPADC_AUTOCTL_TRIGSEL_TTMR1     (3UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)    /*!< LPADC Automatic Operation Trigger Source Select is TTMR1  \hideinitializer */
+#define LPADC_AUTOCTL_TRIGSEL_WKIOA0    (4UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)    /*!< LPADC Automatic Operation Trigger Source Select is WKIOA0  \hideinitializer */
+#define LPADC_AUTOCTL_TRIGSEL_WKIOB0    (5UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)    /*!< LPADC Automatic Operation Trigger Source Select is WKIOB0  \hideinitializer */
+#define LPADC_AUTOCTL_TRIGSEL_WKIOC0    (6UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)    /*!< LPADC Automatic Operation Trigger Source Select is WKIOC0  \hideinitializer */
+#define LPADC_AUTOCTL_TRIGSEL_WKIOD0    (7UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)    /*!< LPADC Automatic Operation Trigger Source Select is WKIOD0  \hideinitializer */
+#define LPADC_AUTOCTL_TRIGSEL_ACMP0     (8UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)    /*!< LPADC Automatic Operation Trigger Source Select is ACMP0  \hideinitializer */
+#define LPADC_AUTOCTL_TRIGSEL_ACMP1     (9UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)    /*!< LPADC Automatic Operation Trigger Source Select is ACMP1  \hideinitializer */
+#define LPADC_AUTOCTL_TRIGSEL_ACMP2     (10UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)    /*!< LPADC Automatic Operation Trigger Source Select is ACMP2  \hideinitializer */
+#define LPADC_AUTOCTL_TRIGSEL_ACMP3     (11UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)   /*!< LPADC Automatic Operation Trigger Source Select is ACMP3  \hideinitializer */
 
 
 /*--------------------------------------------------------------------------------------------------*/
@@ -386,47 +386,182 @@ extern int32_t g_LPADC_i32ErrCode;
 #define LPADC_GET_LPPDMA_DATA(lpadc) ((lpadc)->ADPDMA & LPADC_ADPDMA_CURDAT_Msk)
 
 /**
-  * @brief Enable the interrupt(s) selected by u32Mask parameter.
-  * @param[in] lpadc The pointer of the specified LPADC module
-  * @param[in] u32Mask The combination of interrupt status bits listed below. Each bit
-  *                    corresponds to a interrupt status. This parameter decides which
-  *                    interrupts will be enabled.
-  *                     - \ref LPADC_ADF_INT    :LPADC convert complete interrupt
-  *                     - \ref LPADC_CMP0_INT   :LPADC comparator 0 interrupt
-  *                     - \ref LPADC_CMP1_INT   :LPADC comparator 1 interrupt
-  * @return None
-  * \hideinitializer
-  */
-#define LPADC_ENABLE_INT  LPADC_EnableInt
+ *    @brief        Enable specified LPADC Automatic Operation function
+ *
+ *    @param[in]    lpadc        The pointer of the specified LPADC module
+ *
+ *    @return       None
+ *
+ *    @details      This macro enable specified LPADC Automatic Operation function.
+ */
+#define LPADC_AUTO_OP_ENABLE(lpadc)    ((lpadc)->AUTOCTL |= LPADC_AUTOCTL_AUTOEN_Msk)
 
 /**
-  * @brief Disable the interrupt(s) selected by u32Mask parameter.
-  * @param[in] lpadc The pointer of the specified LPADC module
-  * @param[in] u32Mask The combination of interrupt status bits listed below. Each bit
-  *                    corresponds to a interrupt status. This parameter decides which
-  *                    interrupts will be disabled.
-  *                     - \ref LPADC_ADF_INT     :LPADC convert complete interrupt
-  *                     - \ref LPADC_CMP0_INT    :LPADC comparator 0 interrupt
-  *                     - \ref LPADC_CMP1_INT    :LPADC comparator 1 interrupt
-  * @return None
-  * \hideinitializer
-  */
-#define LPADC_DISABLE_INT LPADC_DisableInt
+ *    @brief        Disable specified LPADC Automatic Operation function
+ *
+ *    @param[in]    lpadc        The pointer of the specified LPADC module
+ *
+ *    @return       None
+ *
+ *    @details      This macro disable specified LPADC Automatic Operation function.
+ */
+#define LPADC_AUTO_OP_DISABLE(lpadc)    ((lpadc)->AUTOCTL &= ~LPADC_AUTOCTL_AUTOEN_Msk)
 
-void LPADC_Open(LPADC_T *lpadc,
-                uint32_t u32InputMode,
-                uint32_t u32OpMode,
-                uint32_t u32ChMask);
+/**
+ *    @brief        Enable specified LPADC Automatic Operation Software Trigger function
+ *
+ *    @param[in]    lpadc        The pointer of the specified LPADC module
+ *
+ *    @return       None
+ *
+ *    @details      This macro enable specified LPADC Automatic Operation Software Trigger function.
+ */
+#define LPADC_AUTO_OP_SW_TRIGGER_ENABLE(lpadc)    ((lpadc)->AUTOSTRG |= LPADC_AUTOSTRG_SWTRIG_Msk)
+
+/**
+ *    @brief        Enable specified LPADC Automatic Operation Mode Conversion End Wake-up function
+ *
+ *    @param[in]    lpadc        The pointer of the specified LPUART module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
+
+#define LPADC_CONVERSION_END_WAKEUP_ENABLE(lpadc)    ((lpadc)->AUTOCTL |= LPADC_AUTOCTL_ADWKEN_Msk)
+/**
+ *    @brief        Disable specified  LPADC Automatic Operation Mode Conversion End Wake-up  function
+ *
+ *    @param[in]    lpadc        The pointer of the specified LPUART module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
+#define LPUART_CONVERSION_END_WAKEUP_DISABLE(lpadc)    ((lpadc)->AUTOCTL &= ~LPADC_AUTOCTL_ADWKEN_Msk)
+
+/**
+ *    @brief        Enable specified LPADC Automatic Operation Mode Comparator 0 Wake-up function
+ *
+ *    @param[in]    lpadc        The pointer of the specified LPADC module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
+
+#define LPADC_COMPARATOR_0_MATCH_WAKEUP_ENABLE(lpadc)    ((lpadc)->AUTOCTL |= LPADC_AUTOCTL_CMP0WKEN_Msk)
+/**
+ *    @brief        Disable specified LPADC Automatic Operation Mode Comparator 0 Wake-up function
+ *
+ *    @param[in]    lpadc        The pointer of the specified LPADC module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
+#define  LPADC_COMPARATOR_0_MATCH_WAKEUP_DISABLE(lpadc)    ((lpadc)->AUTOCTL &= ~LPADC_AUTOCTL_CMP0WKEN_Msk)
+
+
+/**
+ *    @brief        Enable specified LPADC Automatic Operation Mode Comparator 1 Wake-up function
+ *
+ *    @param[in]    lpadc    The pointer of the specified LPADC module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
+
+#define  LPADC_COMPARATOR_1_MATCH_WAKEUP_ENABLE(lpadc)    ((lpadc)->AUTOCTL |= LPADC_AUTOCTL_CMP1WKEN_Msk)
+/**
+ *    @brief        Disable specified LPUART Automatic Operation Mode Comparator 1 Wake-up  function
+ *
+ *    @param[in]    lpadc   The pointer of the specified LPADC module
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
+#define  LPADC_COMPARATOR_1_MATCH_WAKEUP_DISABLE(lpadc)    ((lpadc)->AUTOCTL &= ~LPADC_AUTOCTL_CMP1WKEN_Msk)
+
+/**
+ *    @brief        Automatic Operation Conversion End Wake-up Status register value
+ *
+ *    @param[in]    lpadc    The pointer of the specified LPADC module
+ *
+ *    @retval       0 There is no wakeup for Conversion End.
+ *    @retval       1 Chip wake-up from power-down state by Conversion End Wake-up
+ *
+ *    @details      This macro get Conversion End Wake-up Status register value.
+ *    \hideinitializer
+ */
+#define LPADC_GET_CONVERSION_END_WAKEUP_FLAG(lpuart) (((lpadc)->AUTOSTS & LPADC_AUTOSTS_ADWKF_Msk )>> LPADC_AUTOSTS_ADWKF_Pos)
+/**
+ *    @brief        Clear Conversion End Wake-up Flag
+ *
+ *    @param[in]    lpadc    The pointer of the specified LPADC module
+ *
+ *    @return       None
+ *
+ *    @details      This macro clear Conversion End Wake-up flag.
+ */
+#define LPADC_CLEAR_CONVERSION_END_WAKEUP_FLAG(lpuart)    ((lpuart)->AUTOSTS = LPUART_AUTOSTS_AOTOWKF_Msk)
+
+/**
+ *    @brief        Automatic Operation  Compare 0 Wake-up Status register value
+ *
+ *    @param[in]    lpadc    The pointer of the specified LPADC module
+ *
+ *    @retval       0 There is no wakeup for Compare 0 matching.
+ *    @retval       1 Chip wake-up from power-down state by Compare 0 Wake-up
+ *
+ *    @details      This macro get Compare 0 Wake-up Status register value.
+ *    \hideinitializer
+ */
+#define LPADC_GET_Compare_0_WAKEUP_FLAG(lpuart) (((lpadc)->AUTOSTS & LPADC_AUTOSTS_CMP0WKF_Msk )>> LPADC_AUTOSTS_CMP0WKF_Pos)
+/**
+ *    @brief        Clear  Compare 0 Wake-up Flag
+ *
+ *    @param[in]    lpadc    The pointer of the specified LPADC module
+ *
+ *    @return       None
+ *
+ *    @details      This macro clear Compare 0 Wake-up flag.
+ */
+#define LPADC_CLEAR_Compare_0_WAKEUP_FLAG(lpuart)    ((lpuart)->AUTOSTS = LPADC_AUTOSTS_CMP0WKF_Msk)
+
+/**
+ *    @brief        Automatic Operation Compare 1 Wake-up Status register value
+ *
+ *    @param[in]    lpadc    The pointer of the specified LPADC module
+ *
+ *    @retval       0 There is no wakeup for Compare 1 matching.
+ *    @retval       1 Chip wake-up from power-down state by Compare 1 Wake-up
+ *
+ *    @details      This macro get Compare 1 Wake-up Status register value.
+ *    \hideinitializer
+ */
+#define LPADC_GET_Compare_1_WAKEUP_FLAG(lpuart) (((lpadc)->AUTOSTS & LPADC_AUTOSTS_CMP1WKF_Msk )>> LPADC_AUTOSTS_CMP1WKF_Pos)
+/**
+ *    @brief        Clear Compare 1 Wake-up Flag
+ *
+ *    @param[in]    lpadc    The pointer of the specified LPADC module
+ *
+ *    @return       None
+ *
+ *    @details      This macro clear Compare 1 Wake-up flag.
+ */
+#define LPADC_CLEAR_Compare_1_WAKEUP_FLAG(lpuart)    ((lpuart)->AUTOSTS = LPADC_AUTOSTS_CMP1WKF_Msk)
+
+void LPADC_Open(LPADC_T *lpadc,uint32_t u32InputMode,uint32_t u32OpMode,uint32_t u32ChMask);
 void LPADC_Close(LPADC_T *lpadc);
-void LPADC_EnableHWTrigger(LPADC_T *lpadc,
-                           uint32_t u32Source,
-                           uint32_t u32Param);
+void LPADC_EnableHWTrigger(LPADC_T *lpadc,uint32_t u32Source);
 void LPADC_DisableHWTrigger(LPADC_T *lpadc);
 void LPADC_EnableInt(LPADC_T *lpadc, uint32_t u32Mask);
 void LPADC_DisableInt(LPADC_T *lpadc, uint32_t u32Mask);
-void LPADC_SetExtendSampleTime(LPADC_T *lpadc,
-                               uint32_t u32ExtendSampleTime);
-
+void LPADC_SetExtendSampleTime(LPADC_T *lpadc,uint32_t u32ExtendSampleTime);
+void LPADC_SelectAutoOperationMode(LPADC_T *lpadc,uint32_t u32TrigSel);
 /** @} end of group LPADC_EXPORTED_FUNCTIONS */
 /** @} end of group LPADC_Driver */
 /** @} end of group Standard_Driver */
