@@ -1270,8 +1270,8 @@
                 <debug>0</debug>
                 <option>
                     <name>CCDefines</name>
-                    <state>NDEBUG</state>
-                    <state>__PMU_EMU__</state>
+                    <state>NDEBUG
+</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -1395,10 +1395,6 @@
                     <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Core\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc</state>
-                    <state>$PROJ_DIR$\..\..\..\..\Library\UsbHostLib\inc</state>
-                    <state>$PROJ_DIR$\..\..\..\..\Library\UsbHostLib\src_core</state>
-                    <state>$PROJ_DIR$\..\..\..\..\Library\UsbHostLib\src_msc</state>
-                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\FatFs\source</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>

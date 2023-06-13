@@ -1396,10 +1396,6 @@
                     <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Core\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc</state>
-                    <state>$PROJ_DIR$\..\..\..\..\Library\UsbHostLib\inc</state>
-                    <state>$PROJ_DIR$\..\..\..\..\Library\UsbHostLib\src_core</state>
-                    <state>$PROJ_DIR$\..\..\..\..\Library\UsbHostLib\src_msc</state>
-                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\FatFs\source</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
