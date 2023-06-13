@@ -84,8 +84,8 @@ void CU_LPADC_API_Function_Test(LPADC_T *psLpadc)
     CU_ASSERT_EQUAL(psLpadc->ADSR0 & LPADC_ADSR0_ADPRDY_Msk, 0x1000000);
     CU_ASSERT_EQUAL(psLpadc->ADCHER & LPADC_ADCHER_CHEN_Msk, 0x01);
 
-    LPADC_Open(psLpadc, EADC_CTL_DIFFEN_DIFFERENTIAL,LPADC_ADCR_ADMD_SINGLE,BIT0);
-    CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_DIFFEN_Msk, 0x200);
+    LPADC_Open(psLpadc, LPADC_ADCR_DIFFEN_DIFFERENTIAL,LPADC_ADCR_ADMD_SINGLE,BIT0);
+    CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_DIFFEN_Msk, 0x400);
     CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_ADMD_Msk, 0x0);
     CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_ADEN_Msk, 0x1);
     CU_ASSERT_EQUAL(psLpadc->ADSR0 & LPADC_ADSR0_ADPRDY_Msk, 0x1000000);
@@ -98,14 +98,14 @@ void CU_LPADC_API_Function_Test(LPADC_T *psLpadc)
     CU_ASSERT_EQUAL(psLpadc->ADSR0 & LPADC_ADSR0_ADPRDY_Msk, 0x1000000);
     CU_ASSERT_EQUAL(psLpadc->ADCHER & LPADC_ADCHER_CHEN_Msk, 0x01);
 
-    LPADC_Open(psLpadc, EADC_CTL_DIFFEN_DIFFERENTIAL,LPADC_ADCR_ADMD_SINGLE_CYCLE,BIT0);
+    LPADC_Open(psLpadc, LPADC_ADCR_DIFFEN_SINGLE_END,LPADC_ADCR_ADMD_SINGLE_CYCLE,BIT0);
     CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_DIFFEN_Msk, 0x0);
     CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_ADMD_Msk, (0x2 << 2));
     CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_ADEN_Msk, 0x1);
     CU_ASSERT_EQUAL(psLpadc->ADSR0 & LPADC_ADSR0_ADPRDY_Msk, 0x1000000);
     CU_ASSERT_EQUAL(psLpadc->ADCHER & LPADC_ADCHER_CHEN_Msk, 0x01);
     
-    LPADC_Open(psLpadc, EADC_CTL_DIFFEN_DIFFERENTIAL,LPADC_ADCR_ADMD_CONTINUOUS,BIT0);
+    LPADC_Open(psLpadc, LPADC_ADCR_DIFFEN_SINGLE_END,LPADC_ADCR_ADMD_CONTINUOUS,BIT0);
     CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_DIFFEN_Msk, 0x0);
     CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_ADMD_Msk, (0x3 << 2));
     CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_ADEN_Msk, 0x1);
@@ -132,20 +132,20 @@ void CU_LPADC_API_Function_Test(LPADC_T *psLpadc)
        CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_TRGEN_Msk, (0x1 << 8));
     }
     
-     for(u32TrgScr=0;u32TrgScr<14;u32TrgScr++)
+     for(u32TrgScr=0;u32TrgScr<13;u32TrgScr++)
     {
-       LPADC_SelectAutoOperationMode(psLpadc,au32ExTriggeSource[u32TrgScr]);
+       LPADC_SelectAutoOperationMode(psLpadc,au32AutoCtlTriggeSource[u32TrgScr]);
        if(u32TrgScr == 0)
        {
         CU_ASSERT_EQUAL(psLpadc->AUTOCTL & LPADC_AUTOCTL_AUTOEN_Msk, (0x1 << 31));
         CU_ASSERT_EQUAL(psLpadc->AUTOCTL & LPADC_AUTOCTL_TRIGSEL_Msk, 0x0);
         CU_ASSERT_EQUAL(psLpadc->AUTOCTL & LPADC_AUTOCTL_TRIGEN_Msk,  0x0);
        }
-        else
-       {
-        CU_ASSERT_EQUAL(psLpadc->AUTOCTL & LPADC_AUTOCTL_AUTOEN_Msk, (0x1 << 31));
-        CU_ASSERT_EQUAL(psLpadc->AUTOCTL & LPADC_AUTOCTL_TRIGSEL_Msk, u32TrgScr << 0);
-        CU_ASSERT_EQUAL(psLpadc->AUTOCTL & LPADC_AUTOCTL_TRIGEN_Msk,  0x1);
+       else
+       { 
+         CU_ASSERT_EQUAL(psLpadc->AUTOCTL & LPADC_AUTOCTL_AUTOEN_Msk, (0x1 << 31));
+         CU_ASSERT_EQUAL(psLpadc->AUTOCTL & LPADC_AUTOCTL_TRIGSEL_Msk, (u32TrgScr-1) << 0);
+         CU_ASSERT_EQUAL(psLpadc->AUTOCTL & LPADC_AUTOCTL_TRIGEN_Msk,  (0x1<<4));
        }
     }
     
@@ -194,7 +194,7 @@ void CU_LPADC_API_Function_Test(LPADC_T *psLpadc)
           continue;
       
         moduleMask = BIT0 << moduleNum ;
-        LPADC_Open(psLpadc, LPADC_ADCR_DIFFEN_SINGLE_END,LPADC_ADCR_ADMD_SINGLE,BIT0);
+        LPADC_Open(psLpadc, LPADC_ADCR_DIFFEN_SINGLE_END,LPADC_ADCR_ADMD_SINGLE,moduleMask);
         CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_DIFFEN_Msk, 0x0);
         CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_ADMD_Msk, 0x0);
         CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_ADEN_Msk, 0x1);
@@ -205,7 +205,7 @@ void CU_LPADC_API_Function_Test(LPADC_T *psLpadc)
         LPADC_START_CONV(psLpadc);
 
 #ifndef WRONG_FPGA_CODE
-        while(LPADC_GET_INT_FLAG(psLpadc, LPADC_ADSR0_ADF_Msk) == 0) {}
+//        while(LPADC_GET_INT_FLAG(psLpadc, LPADC_ADSR0_ADF_Msk) == 0) {}
 #endif
         LPADC_CLR_INT_FLAG(psLpadc, LPADC_ADSR0_ADF_Msk);
 

@@ -275,7 +275,7 @@ void TestFunc_UUART_Open()
             //select UART clock source
 //            CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | au32HclkClkSel[u8UartClkIdx];
                /* Switch SCLK clock source to PLL0 and divide 1 */
-              CLK_SetSCLK(au32HclkClkSel[u8UartClkIdx], CLK_ACLKDIV_ACLKDIV(1));
+              CLK_SetSCLK(au32HclkClkSel[u8UartClkIdx]);
 					    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
               SystemCoreClockUpdate();
             //select UART baud rate
@@ -296,7 +296,7 @@ void TestFunc_UUART_Open()
     }
 
     //select HCLK clock source
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
       /* Lock protected registers */
     SYS_LockReg();
 }
@@ -348,7 +348,7 @@ void TestFunc_UUART_SetLine_Config()
             {
                 //select UART clock source
 //                CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | au32HclkClkSel[u8UartClkIdx];
-                 CLK_SetSCLK(au32HclkClkSel[u8UartClkIdx], CLK_ACLKDIV_ACLKDIV(1));
+                 CLK_SetSCLK(au32HclkClkSel[u8UartClkIdx]);
                 //select UART word length
                 for (u8UartWordIdx = 0; u8UartWordIdx < (sizeof(au32UUartWordSel) / sizeof(uint32_t)); u8UartWordIdx++)
                 {
@@ -381,7 +381,7 @@ void TestFunc_UUART_SetLine_Config()
     } //u8UartChIdx
 
     //select HCLK clock source
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
         /* Lock protected registers */
     SYS_LockReg();
 }
