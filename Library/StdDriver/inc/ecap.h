@@ -284,7 +284,7 @@ extern "C"
   * @return None
   * @details This macro will enable the reload function.
   */
-#define ECAP_ENABLE_RELOAD(ecap) ((ecap)->CTL1 |= (ECAP_CTL1_CAP0RLDEN_Msk|ECAP_CTL1_CAP1RLDEN_Msk|ECAP_CTL1_CAP2RLDEN_Msk|ECAP_CTL1_OVRLDEN_Msk)
+#define ECAP_ENABLE_RELOAD(ecap) ((ecap)->CTL1 |= (ECAP_CTL1_CAP0RLDEN_Msk|ECAP_CTL1_CAP1RLDEN_Msk|ECAP_CTL1_CAP2RLDEN_Msk|ECAP_CTL1_OVRLDEN_Msk))
 
 /**
   * @brief This macro is used to disable reload function
@@ -293,6 +293,7 @@ extern "C"
   * @details This macro will disable the reload function.
   */
 #define ECAP_DISABLE_RELOAD(ecap) ((ecap)->CTL1 &= ~(ECAP_CTL1_CAP0RLDEN_Msk|ECAP_CTL1_CAP1RLDEN_Msk|ECAP_CTL1_CAP2RLDEN_Msk|ECAP_CTL1_OVRLDEN_Msk))
+#define ECAP_SEL_ALLRLDCLR_TRIG_SRC      ECAP_DISABLE_RELOAD
 
 /**
   * @brief This macro is used to enable compare function
@@ -320,6 +321,7 @@ extern "C"
   * \hideinitializer
   */
 #define ECAP_ENABLE_CNT(ecap) ((ecap)->CTL0 |= ECAP_CTL0_CAPEN_Msk)
+//#define ECAP_ENABLE_CAP       ECAP_ENABLE_CNT
 
 /**
   * @brief This macro is used to disable input capture function.
@@ -329,6 +331,7 @@ extern "C"
   * \hideinitializer
   */
 #define ECAP_DISABLE_CNT(ecap) ((ecap)->CTL0 &= ~ECAP_CTL0_CAPEN_Msk)
+//#define ECAP_DISABLE_CAP       ECAP_DISABLE_CNT
 
 /**
   * @brief This macro is used to select input channel edge detection
@@ -351,17 +354,16 @@ extern "C"
   * @brief This macro is used to select ECAP counter reload trigger source
   * @param[in] ecap      Specify ECAP port
   * @param[in] u32TrigSrc The input source
-  *                  - \ref ECAP_CTL1_CAP0RLDEN_Msk
-  *                  - \ref ECAP_CTL1_CAP1RLDEN_Msk
-  *                  - \ref ECAP_CTL1_CAP2RLDEN_Msk
-  *                  - \ref ECAP_CTL1_OVRLDEN_Msk
+  *                  - \ref ECAP_RELOAD_TRIG_SRC_CAPF0
+  *                  - \ref ECAP_RELOAD_TRIG_SRC_CAPF1
+  *                  - \ref ECAP_RELOAD_TRIG_SRC_CAPF2
+  *                  - \ref ECAP_RELOAD_TRIG_SRC_OVF
   * @return None
   * @details This macro will select capture counter reload trigger source.
   * \hideinitializer
   */
 #define ECAP_SEL_RELOAD_TRIG_SRC(ecap, u32TrigSrc) ((ecap)->CTL1 = ((ecap)->CTL1 & ~0xF00)|(u32TrigSrc))
 #define ECAP_SEL_OVRRLD_TRIG_SRC(ecap)   (ecap)->CTL1 =  (ecap)->CTL1 | ECAP_CTL1_OVRLDEN_Msk
-#define ECAP_SEL_ALLRLDCLR_TRIG_SRC      ECAP_DISABLE_RELOAD
 
 /**
   * @brief This macro is used to select capture timer clock divide.

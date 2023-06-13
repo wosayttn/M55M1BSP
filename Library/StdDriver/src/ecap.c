@@ -36,35 +36,35 @@ void ECAP_Open(ECAP_T* ecap, uint32_t u32FuncMask)
 {
     /* Clear Input capture mode*/
     ecap->CTL0 = ecap->CTL0 & ~(ECAP_CTL0_CMPEN_Msk);
-	ecap->CTL1 = ecap->CTL1 & ~(ECAP_CTL1_CAP0RLDEN_Msk | ECAP_CTL1_CAP1RLDEN_Msk | ECAP_CTL1_CAP2RLDEN_Msk);
+	  ecap->CTL1 = ecap->CTL1 & ~(ECAP_CTL1_CAP0RLDEN_Msk | ECAP_CTL1_CAP1RLDEN_Msk | ECAP_CTL1_CAP2RLDEN_Msk);
 
     /* Enable Input Capture and set mode */
     ecap->CTL0 |= ECAP_CTL0_CAPEN_Msk;
 
-	switch(u32FuncMask)
-	{
-    case ECAP_DISABLE_COMPARE_RELOAD:/*!< Input capture compare and reload function disable*/
-			ecap->CTL0 = ecap->CTL0 & ~(ECAP_CTL0_CMPEN_Msk);
-			ecap->CTL1 = ecap->CTL1 & ~(ECAP_CTL1_CAP0RLDEN_Msk | ECAP_CTL1_CAP1RLDEN_Msk | ECAP_CTL1_CAP2RLDEN_Msk);
-			break;
-			
- 		case ECAP_RELOAD_FUNCTION:/*!< Input capture reload function                    */
-			ecap->CTL0 = ecap->CTL0 & ~(ECAP_CTL0_CMPEN_Msk);
-			ecap->CTL1 = ecap->CTL1 | (ECAP_CTL1_CAP0RLDEN_Msk | ECAP_CTL1_CAP1RLDEN_Msk | ECAP_CTL1_CAP2RLDEN_Msk);
-			break;
+		switch(u32FuncMask)
+		{
+			case ECAP_DISABLE_COMPARE_RELOAD:/*!< Input capture compare and reload function disable*/
+				ecap->CTL0 = ecap->CTL0 & ~(ECAP_CTL0_CMPEN_Msk);
+				ecap->CTL1 = ecap->CTL1 & ~(ECAP_CTL1_CAP0RLDEN_Msk | ECAP_CTL1_CAP1RLDEN_Msk | ECAP_CTL1_CAP2RLDEN_Msk);
+				break;
+				
+			case ECAP_RELOAD_FUNCTION:/*!< Input capture reload function                    */
+				ecap->CTL0 = ecap->CTL0 & ~(ECAP_CTL0_CMPEN_Msk);
+				ecap->CTL1 = ecap->CTL1 | (ECAP_CTL1_CAP0RLDEN_Msk | ECAP_CTL1_CAP1RLDEN_Msk | ECAP_CTL1_CAP2RLDEN_Msk);
+				break;
 
-		case ECAP_COMPARE_FUNCTION:/*!< Input capture compare function                   */
-			ecap->CTL0 = ecap->CTL0 | (ECAP_CTL0_CMPEN_Msk);
-			ecap->CTL1 = ecap->CTL1 & ~(ECAP_CTL1_CAP0RLDEN_Msk | ECAP_CTL1_CAP1RLDEN_Msk | ECAP_CTL1_CAP2RLDEN_Msk);
-			break;
-    case ECAP_RELOAD_COMPARE_FUNCTION:/*!< Input capture reload & compare function          */
-			ecap->CTL0 = ecap->CTL0 | (ECAP_CTL0_CMPEN_Msk);
-			ecap->CTL1 = ecap->CTL1 | (ECAP_CTL1_CAP0RLDEN_Msk | ECAP_CTL1_CAP1RLDEN_Msk | ECAP_CTL1_CAP2RLDEN_Msk);
-			break;
+			case ECAP_COMPARE_FUNCTION:/*!< Input capture compare function                   */
+				ecap->CTL0 = ecap->CTL0 | (ECAP_CTL0_CMPEN_Msk);
+				ecap->CTL1 = ecap->CTL1 & ~(ECAP_CTL1_CAP0RLDEN_Msk | ECAP_CTL1_CAP1RLDEN_Msk | ECAP_CTL1_CAP2RLDEN_Msk);
+				break;
+			case ECAP_RELOAD_COMPARE_FUNCTION:/*!< Input capture reload & compare function          */
+				ecap->CTL0 = ecap->CTL0 | (ECAP_CTL0_CMPEN_Msk);
+				ecap->CTL1 = ecap->CTL1 | (ECAP_CTL1_CAP0RLDEN_Msk | ECAP_CTL1_CAP1RLDEN_Msk | ECAP_CTL1_CAP2RLDEN_Msk);
+				break;
 
-		default:
-		    break;
-	}
+			default:
+					break;
+		}
 }
 
 /**
@@ -97,14 +97,14 @@ void ECAP_EnableINT(ECAP_T* ecap, uint32_t u32Mask)
     ecap->CTL0 |= (u32Mask);
 
     /* Enable NVIC ECAP IRQ */
-    if(ecap == ECAP0)
-        NVIC_EnableIRQ(ECAP0_IRQn);
-    else if(ecap == ECAP1)
-        NVIC_EnableIRQ(ECAP1_IRQn);
-    else if(ecap == ECAP2)
-        NVIC_EnableIRQ(ECAP2_IRQn);
-    else 
-        NVIC_EnableIRQ(ECAP3_IRQn);
+//    if(ecap == ECAP0)
+//        NVIC_EnableIRQ(ECAP0_IRQn);
+//    else if(ecap == ECAP1)
+//        NVIC_EnableIRQ(ECAP1_IRQn);
+//    else if(ecap == ECAP2)
+//        NVIC_EnableIRQ(ECAP2_IRQn);
+//    else 
+//        NVIC_EnableIRQ(ECAP3_IRQn);
 }
 
 /**
@@ -125,14 +125,14 @@ void ECAP_DisableINT(ECAP_T* ecap, uint32_t u32Mask)
     ecap->CTL0 &= ~(u32Mask);
 
     /* Disable NVIC ECAP IRQ */
-    if(ecap == ECAP0)
-        NVIC_DisableIRQ(ECAP0_IRQn);
-    else if(ecap == ECAP1)
-        NVIC_DisableIRQ(ECAP1_IRQn);
-    else if(ecap == ECAP2)
-        NVIC_DisableIRQ(ECAP2_IRQn);
-    else 
-        NVIC_DisableIRQ(ECAP3_IRQn);
+//    if(ecap == ECAP0)
+//        NVIC_DisableIRQ(ECAP0_IRQn);
+//    else if(ecap == ECAP1)
+//        NVIC_DisableIRQ(ECAP1_IRQn);
+//    else if(ecap == ECAP2)
+//        NVIC_DisableIRQ(ECAP2_IRQn);
+//    else 
+//        NVIC_DisableIRQ(ECAP3_IRQn);
 }
 
 /** @} end of group ECAP_EXPORTED_FUNCTIONS */
