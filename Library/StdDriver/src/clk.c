@@ -1006,7 +1006,6 @@ uint32_t CLK_EnableModuleClock(uint64_t u64ModuleIdx)
 {
     uint32_t u32TmpVal = 0UL, u32TmpAddr = 0UL;
     uint32_t u32Ret = 1U;
-    uint32_t u32TimeOutCnt = SystemCoreClock>>1; /* 500ms time-out */
     
     /* Get enable bit from module index */
     u32TmpVal = (1UL << (uint32_t)MODULE_CLKEN_Pos(u64ModuleIdx));
@@ -1600,7 +1599,7 @@ uint32_t CLK_WaitClockDisable(uint32_t u32ClkMask)
         }
     }
 
-    return 1UL;
+    return u32Ret;
 }
 
 /**
