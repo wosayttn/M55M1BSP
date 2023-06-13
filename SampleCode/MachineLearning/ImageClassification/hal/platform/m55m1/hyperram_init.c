@@ -131,54 +131,6 @@ static void SPIM_HRAM_IO_Read(SPIM_T *pSPIMx, uint32_t u32Saddr, void *pvRdBuf, 
         outpb(&pu8RdBuf[u32NRx - 1], (u16RData & 0xFF));
     }
 }
-static void spim_forcedlldelaytime(SPIM_T *pSPIMx,
-                                   uint32_t u32OutValid,
-                                   uint32_t u32LockTime,
-                                   uint32_t u32ClkOnNum,
-                                   uint32_t u32DelayNum)
-{
-    uint32_t u32DLLOutVaild = 0;
-    //uint32_t u32LockTime = 0;
-
-    // set DLLSTNUM defualt 0x1194 ~
-    // set DLLCTRST and wait DLL_LOCK
-    // set DLL_DNUM and wait DLL_REF
-    if (u32OutValid != 0)
-    {
-        SPIM_SET_DLL1_OUT_VALID(pSPIMx, u32OutValid);
-    }
-
-    u32DLLOutVaild = SPIM_GET_DLL1_OUT_VALID(pSPIMx);
-    //printf("DLL Out Valid = %d\r\n", u32DLLOutVaild);
-
-    if (u32LockTime != 0)
-    {
-        SPIM_SET_DLL1_LOCK_TIME(pSPIMx, u32LockTime);
-    }
-
-    if (u32ClkOnNum != 0)
-    {
-        SPIM_SET_DLL2_CLKON_NUM(pSPIMx, u32LockTime);
-    }
-
-    SPIM_ENABLE_DLL0_OLDO(pSPIMx, 1);
-
-    SPIM_ENABLE_DLL0_OVRST(pSPIMx, 1);
-
-    //while (SPIM_GET_DLL1_OUT_VALID(pSPIMx) != u32DLLOutVaild);
-
-    while (SPIM_WAIT_DLL0_OVRST(pSPIMx) == 1);
-
-    while (SPIM_WAIT_DLL0_CLKON(pSPIMx) != 1);
-
-    while (SPIM_WAIT_DLL0_LOCK(pSPIMx) != 1);
-
-    while (SPIM_WAIT_DLL0_READY(pSPIMx) != 1);
-
-    SPIM_SET_DLL0_DELAY_NUM(pSPIMx, u32DelayNum);
-
-    while (SPIM_WAIT_DLL0_REFRESH(pSPIMx) != 0);
-}
 
 static int SPIM_HyperRAMDLLDelayTimeTraining(SPIM_T *pSPIMx)
 {
@@ -212,7 +164,7 @@ static int SPIM_HyperRAMDLLDelayTimeTraining(SPIM_T *pSPIMx)
 
     for (u8RdDelay = 0; u8RdDelay <= DLL_MAX_DELAY_NUM; u8RdDelay++)
     {
-        spim_forcedlldelaytime(pSPIMx, 0, 0, 0, u8RdDelay);
+        SPIM_CtrlDLLDelayTime(pSPIMx, 0, 0, 0, 0, u8RdDelay);
 
         SPIM_Hyper_DMARead(pSPIMx,
                            u32SrcAddr,
@@ -254,7 +206,7 @@ static int SPIM_HyperRAMDLLDelayTimeTraining(SPIM_T *pSPIMx)
 
     printf("\r\nDLL Delay Time Num = %d\r\n\r\n",
            u8RdDelayRes[u8RdDelayIdx]);
-    spim_forcedlldelaytime(pSPIMx, 0, 0, 0, u8RdDelayRes[u8RdDelayIdx]);
+    SPIM_CtrlDLLDelayTime(pSPIMx, 0, 0, 0, 0, u8RdDelayRes[u8RdDelayIdx]);
 
     return 0;
 }
@@ -375,7 +327,7 @@ void SPIM_HyperRAM_Init(SPIM_T *pSPIMx, uint32_t u32CacheOn)
 #if (SPIM_CACHE_EN == 1)
     SPIM_DISABLE_CACHE(pSPIMx);
 #endif
-	SPIM_Hyper_Config(pSPIMx, 780, 7, 7);
+	SPIM_Hyper_DefConfig(pSPIMx, 780, 7, 7);
 
 //    SPIM_HyperRAMDLLDelayTimeTraining(pSPIMx);
 
@@ -391,8 +343,8 @@ void SPIM_HyperRAM_Init(SPIM_T *pSPIMx, uint32_t u32CacheOn)
 #endif
 
     //SPIM_HyperRAMDLLDelayTimeTraining(pSPIMx);
-    spim_forcedlldelaytime(pSPIMx, 0, 0, 0, 2);	
-    //spim_forcedlldelaytime(pSPIMx, 0, 0, 0, 1);		//for fast clock 500MHz RD design
+    SPIM_CtrlDLLDelayTime(pSPIMx, 0, 0, 0, 0, 2);	
+    //SPIM_CtrlDLLDelayTime(pSPIMx, 0, 0, 0, 0, 1);		//for fast clock 500MHz RD design
 
     SPIM_Hyper_Write4Byte(pSPIMx, 0x1000, 0x12345678);
 
