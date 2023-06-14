@@ -59,7 +59,7 @@ int OTFC_Tests_Init(void)
 
     SPIM_Hyper_DefaultConfig(pSPIMModule, 780, 7, 7);
 
-    SPIM_Hyper_Reset(pSPIMModule);
+    SPIM_ResetHyper(pSPIMModule);
 
     for (u32Delay = 0; u32Delay < 0x400; u32Delay++) {}
 
@@ -273,10 +273,10 @@ void OTFC_KeyFormRegister_Func()
 
         SPIM_ENABLE_CIPHER(pSPIMx);
 
-        SPIM_Hyper_DMAWrite(pSPIMx, offset, u8TstBuf1, TEST_BUFF_SIZE);
+        SPIM_DMAWrite_Hyper(pSPIMx, offset, u8TstBuf1, TEST_BUFF_SIZE);
 
         memset(u8TstBuf2, 0x0, TEST_BUFF_SIZE);
-        SPIM_Hyper_DMARead(pSPIMx, offset, u8TstBuf2, TEST_BUFF_SIZE);
+        SPIM_DMARead_Hyper(pSPIMx, offset, u8TstBuf2, TEST_BUFF_SIZE);
 
         if (memcmp(u8TstBuf1, u8TstBuf2, TEST_BUFF_SIZE))
         {
@@ -357,10 +357,10 @@ void OTFC_KeyFormKSSRAM_Func()
 
         SPIM_ENABLE_CIPHER(pSPIMx);
 
-        SPIM_Hyper_DMAWrite(pSPIMx, offset, u8TstBuf1, TEST_BUFF_SIZE);
+        SPIM_DMAWrite_Hyper(pSPIMx, offset, u8TstBuf1, TEST_BUFF_SIZE);
 
         memset(u8TstBuf2, 0x0, TEST_BUFF_SIZE);
-        SPIM_Hyper_DMARead(pSPIMx, offset, u8TstBuf2, TEST_BUFF_SIZE);
+        SPIM_DMARead_Hyper(pSPIMx, offset, u8TstBuf2, TEST_BUFF_SIZE);
 
         if (memcmp(u8TstBuf1, u8TstBuf2, TEST_BUFF_SIZE))
         {
