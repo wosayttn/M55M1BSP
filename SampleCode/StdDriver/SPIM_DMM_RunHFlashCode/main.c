@@ -114,7 +114,7 @@ int HyperFlash_LoadCodeAndRun(SPIM_T *spim)
     }
 
     /* Enter direct-mapped mode to run new applications */
-    SPIM_Hyper_EnterDirectMapMode(spim);
+    SPIM_EnterDirectMapMode_Hyper(spim);
 
     func = (void *)(u32DMMAddr + 1);
     func();
@@ -137,7 +137,7 @@ void SYS_Init(void)
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);

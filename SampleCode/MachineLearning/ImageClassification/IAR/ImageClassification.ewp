@@ -3113,7 +3113,7 @@
             <name>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Lib\IAR\CMSIS_NN.a</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\omv\Lib\omv.a</name>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\openmv\omv\Lib\omv.a</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\ThirdParty\tflite_micro\Lib\tflu.a</name>
@@ -3840,10 +3840,10 @@
                         <state>$PROJ_DIR$\..\hal\platform\m55m1\include</state>
                         <state>$PROJ_DIR$\..\hal\components\cmsis_device\include</state>
                         <state>$PROJ_DIR$\..\hal\components\npu\include</state>
-                        <state>$PROJ_DIR$\..\..\..\..\ThirdParty\omv\imlib</state>
-                        <state>$PROJ_DIR$\..\..\..\..\ThirdParty\omv\common</state>
-                        <state>$PROJ_DIR$\..\..\..\..\ThirdParty\omv\alloc</state>
-                        <state>$PROJ_DIR$\..\..\..\..\ThirdParty\omv\Lib</state>
+                        <state>$PROJ_DIR$\..\..\..\..\ThirdParty\openmv\omv\imlib</state>
+                        <state>$PROJ_DIR$\..\..\..\..\ThirdParty\openmv\omv\common</state>
+                        <state>$PROJ_DIR$\..\..\..\..\ThirdParty\openmv\omv\alloc</state>
+                        <state>$PROJ_DIR$\..\..\..\..\ThirdParty\openmv\omv\Lib</state>
                         <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc\npu</state>
                         <state>$PROJ_DIR$\..\hal\components\img_sensor\include</state>
                         <state>$PROJ_DIR$\..\math\include</state>

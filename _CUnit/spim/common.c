@@ -271,6 +271,59 @@ void RunTestFunction(S_TestMenu *pTestMenu, uint32_t u32MenuSize, uint32_t u32SP
 // SPIM API
 //------------------------------------------------------------------------------
 /**
+ * @brief Search SPI Flash Command and init DMA/DMM SPI flash read/wirte command phase
+ *
+ * @param spim
+ * @param pPhaseTable   Check SPI Flash specifications for support command codes,
+ *                      and create command phase table.
+ * @param u32TableSize  Phase Talbe total size
+ * @param u32OPMode     SPI Function Operation Mode
+ *                      - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
+ *                      - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
+ *                      - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
+ * @param u32CMDCode
+ * @return     SPIM_OK          SPIM operation OK.
+ *             SPIM_ERR_FAIL    SPIM operation Fail.
+ */
+int32_t SPIM_FindAndInitDMADMMPhase(SPIM_T *spim,
+                                    PHASE_SET_T *pPhaseTable,
+                                    uint32_t u32TableSize,
+                                    uint32_t u32OPMode,
+                                    uint32_t u32CMDCode)
+{
+    uint32_t u32i = 1;
+    int32_t i32found = SPIM_ERR_FAIL;
+    uint32_t u32TableIdx = 0;
+    PHASE_SET_T *pTmpTable = NULL;
+
+    for (u32i = 0; u32i < u32TableSize; u32i++)
+    {
+        /*
+         * If element is found in array then raise found flag
+         * and terminate from loop.
+         */
+        if (pPhaseTable[u32i].u32CMDCode == u32CMDCode)
+        {
+            i32found = SPIM_OK;
+            u32TableIdx = u32i;
+            break;
+        }
+    }
+
+    if (i32found != SPIM_OK)
+    {
+        return SPIM_ERR_FAIL;
+    }
+
+    pTmpTable = (PHASE_SET_T *)&pPhaseTable[u32TableIdx];
+
+    SPIM_DMADMM_InitPhase(spim, pTmpTable, u32OPMode);
+
+    return SPIM_OK;
+}
+
+
+/**
   * @brief      SPIM Default Config HyperBus Access Module Parameters.
   * @param      spim
   * @param      u32CSMaxLT Chip Select Maximum Low Time 0 ~ 0xFFFF, Default Set 0x02ED
@@ -281,25 +334,25 @@ void RunTestFunction(S_TestMenu *pTestMenu, uint32_t u32MenuSize, uint32_t u32SP
 void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR)
 {
     /* Chip Select Setup Time 2.5 */
-    SPIM_HYPER_CONFIG1_SET_CSST(spim, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
+    SPIM_SET_HYPER_CONFIG1_CSST(spim, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
 
     /* Chip Select Hold Time 3.5 HCLK */
-    SPIM_HYPER_CONFIG1_SET_CSH(spim, SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
+    SPIM_SET_HYPER_CONFIG1_CSH(spim, SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
 
     /* Chip Select High between Transaction as 2 HCLK cycles */
-    SPIM_HYPER_CONFIG1_SET_CSHI(spim, 2);
+    SPIM_SET_HYPER_CONFIG1_CSHI(spim, 2);
 
     /* Chip Select Masximum low time HCLK */
-    SPIM_HYPER_CONFIG1_SET_CSMAXLT(spim, u32CSMaxLow);
+    SPIMS_SET_HYPER_CONFIG1_CSMAXLT(spim, u32CSMaxLow);
 
     /* Initial Device RESETN Low Time 255 */
-    SPIM_HYPER_CONFIG2_SET_RSTNLT(spim, 0xFF);
+    SPIM_SET_HYPER_CONFIG2_RSTNLT(spim, 0xFF);
 
     /* Initial Read Access Time Clock cycle*/
-    SPIM_HYPER_CONFIG2_SET_ACCTRD(spim, u32AcctRD);
+    SPIM_SET_HYPER_CONFIG2_ACCTRD(spim, u32AcctRD);
 
     /* Initial Write Access Time Clock cycle*/
-    SPIM_HYPER_CONFIG2_SET_ACCTWR(spim, u32AcctWR);
+    SPIM_SET_HYPER_CONFIG2_ACCTWR(spim, u32AcctWR);
 }
 
 /**

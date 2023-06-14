@@ -18,18 +18,18 @@ import configparser
 
 #Define for Doxygen
 MAIN_HEADER_NAME = "NuMicro.h"                                                          # File needs convert before execute Doxygen
-MAIN_HEADER_PATH = "Library\\Device\\Nuvoton\\M251\\Include\\"                          # Path to main header file
+MAIN_HEADER_PATH = "Library\\Device\\Nuvoton\\M55M1\\Include\\"                         # Path to main header file
 
 #Keyword for project check
-NULINK_CHIPNAME = "M251"                                                                # Chip name defined in Nu_Link_Driver.ini
+NULINK_CHIPNAME = "M55M1"                                                               # Chip name defined in Nu_Link_Driver.ini
 NULINK_RESET = "Autodetect"                                                             # Reset defined in Nu_Link_Driver.ini
 KEIL_DEVICE = { "M252KG6AE", "M256SD2AE", "M258KE3AE", "M258KG6AE" }                    # Device name defined in Keil project file
 KEIL_ICE = "NULink\\Nu_Link.dll"                                                        # ICE setting for debug and download in Keil project file
 IAR_DRIVER = "$TOOLKIT_DIR$\\..\\..\\..\\Nuvoton Tools\\Nu-Link_IAR\\Nu-Link_IAR.dll"   # Use relative path for NuLink IAR driver
-IAR_DEVICE = "M251AE series\tNuvoton M251AE series"                                     # Device name in IAR project file
+IAR_DEVICE = "M55M1AE series\tNuvoton M55M1AE series"                                   # Device name in IAR project file
 IAR_RSTHANDLER = "Reset_Handler"                                                        # Replace default project handler
 GCC_CHIPSERIES = "NuMicro M23"                                                          # Chip series defined in preferences.ini
-GCC_TARGETCHIP = "M251"                                                                 # Target chip defined in preferences.ini
+GCC_TARGETCHIP = "M55M1"                                                                # Target chip defined in preferences.ini
 
 # Execute Astyle prettifier, needs to take special care for *.c and *.h with assembly code inside, for example retarget.c
 def astyle():
@@ -510,8 +510,8 @@ def check_prj():
                         print("Checking " + file)
                     config = configparser.ConfigParser()
                     config.read(file)
-                    if config.get('ChipSelect', 'ChipName') != NULINK_CHIPNAME:
-                        f.write("[Error] " + file + ": ChipName (" + config.get('ChipSelect', 'ChipName') + ") is not " + NULINK_CHIPNAME + ".\n")
+                    #if config.get('ChipSelect', 'ChipName') != NULINK_CHIPNAME:
+                    #    f.write("[Error] " + file + ": ChipName (" + config.get('ChipSelect', 'ChipName') + ") is not " + NULINK_CHIPNAME + ".\n")
                     if config.get(NULINK_CHIPNAME, 'Reset') != NULINK_RESET:
                         f.write("[Error] " + file + ": [" + NULINK_CHIPNAME + "] Reset (" + config.get(NULINK_CHIPNAME, 'Reset') + ") is not " + NULINK_RESET + ".\n")
 

@@ -191,7 +191,7 @@ int SPIM_Tests_HyperInit(void)
 {
     SPIM_T *pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
-    SPIM_Hyper_Open(pSPIMModule, 1);
+    SPIM_InitHyper(pSPIMModule, 1);
     //CU_ASSERT_TRUE((pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk) >> SPIM_CTL0_HYPER_EN_Pos);
     //CU_ASSERT(SPIM_GET_CLOCK_DIVIDER(pSPIMModule) == 1);
 
@@ -201,20 +201,13 @@ int SPIM_Tests_HyperInit(void)
 
     SPIM_Hyper_DefaultConfig(pSPIMModule, 780, 7, 7);
 
-    SPIM_Hyper_Reset(pSPIMModule);
+    SPIM_ResetHyper(pSPIMModule);
 
     return 0;
 }
 
 int SPIM_Tests_HyperClean(void)
 {
-    SPIM_T *pSPIMModule = NULL;
-
-    pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
-
-    SPIM_Hyper_Close(pSPIMModule);
-    //CU_ASSERT_FALSE((pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk) >> SPIM_CTL0_HYPER_EN_Pos);
-
     return 0;
 }
 
@@ -226,8 +219,8 @@ void SPIM_Hyper_EraseHRAM(SPIM_T *pSPIMx, uint32_t u32StartAddr, uint32_t u32Era
 
     for (u32i = 0; u32i <= (u32EraseSize - u32RemainSize); u32i += 2)
     {
-        SPIM_Hyper_Write2Byte(pSPIMx, (u32StartAddr + u32i), 0x0000);
-        u16Data = SPIM_Hyper_Read1Word(pSPIMx, (u32StartAddr + u32i));
+        SPIM_Write2Byte(pSPIMx, (u32StartAddr + u32i), 0x0000);
+        u16Data = SPIM_Read1Word(pSPIMx, (u32StartAddr + u32i));
 
         if (u16Data != 0x0000)
         {
@@ -240,8 +233,8 @@ void SPIM_Hyper_EraseHRAM(SPIM_T *pSPIMx, uint32_t u32StartAddr, uint32_t u32Era
 
     if (u32RemainSize != 0)
     {
-        SPIM_Hyper_Write1Byte(pSPIMx, (u32StartAddr + (u32EraseSize - 1)), 0x00);
-        u16Data = SPIM_Hyper_Read1Word(pSPIMx, (u32StartAddr + u32EraseSize));
+        SPIM_Write1Byte(pSPIMx, (u32StartAddr + (u32EraseSize - 1)), 0x00);
+        u16Data = SPIM_Read1Word(pSPIMx, (u32StartAddr + u32EraseSize));
 
         if ((u16Data & 0xFF) != 0)
         {
@@ -281,7 +274,7 @@ void SPIM_HyperDMM_Func()
 
         popDat(u8TstBuf1, TEST_BUFF_SIZE);
 
-        SPIM_Hyper_EnterDirectMapMode(pSPIMx); // Hyper Mode Switch to Direct Map mode.
+        SPIM_EnterDirectMapMode_Hyper(pSPIMx); // Hyper Mode Switch to Direct Map mode.
 
         switch (u32NBit)
         {
@@ -307,7 +300,7 @@ void SPIM_HyperDMM_Func()
                 break;
         }
 
-        SPIM_Hyper_IsDMMDone(pSPIMx);
+        SPIM_IsDMMDone_Hyper(pSPIMx);
 
         memset(u8TstBuf2, 0x0, TEST_BUFF_SIZE);
 
@@ -335,7 +328,7 @@ void SPIM_HyperDMM_Func()
                 break;
         }
 
-        SPIM_Hyper_IsDMMDone(pSPIMx);
+        SPIM_IsDMMDone_Hyper(pSPIMx);
 
         if (memcmp(u8TstBuf1, u8TstBuf2, TEST_BUFF_SIZE))
         {
@@ -367,10 +360,10 @@ void SPIM_HyperDMA_Func()
         SPIM_Hyper_EraseHRAM(pSPIMx, offset, TEST_BUFF_SIZE);
         popDat(u8TstBuf1, TEST_BUFF_SIZE);
 
-        SPIM_Hyper_DMAWrite(pSPIMx, offset, u8TstBuf1, TEST_BUFF_SIZE);
+        SPIM_DMAWrite_Hyper(pSPIMx, offset, u8TstBuf1, TEST_BUFF_SIZE);
 
         memset(u8TstBuf2, 0x0, TEST_BUFF_SIZE);
-        SPIM_Hyper_DMARead(pSPIMx, offset, u8TstBuf2, TEST_BUFF_SIZE);
+        SPIM_DMARead_Hyper(pSPIMx, offset, u8TstBuf2, TEST_BUFF_SIZE);
 
         if (memcmp(u8TstBuf1, u8TstBuf2, TEST_BUFF_SIZE))
         {
@@ -409,7 +402,7 @@ void TrainingDllLatency()
 
     for (u32i = u32SrcAddr; u32i < u32TestSize; u32i++)
     {
-        SPIM_Hyper_Write1Byte(pSPIMx, u32i, u8TstBuf1[u32i]);
+        SPIM_Write1Byte(pSPIMx, u32i, u8TstBuf1[u32i]);
     }
 
     for (u8RdDelay = 0; u8RdDelay <= SPIM_MAX_DLL_LATENCY; u8RdDelay++)
@@ -417,7 +410,7 @@ void TrainingDllLatency()
         memset(u8TstBuf2, 0, u32TestSize);
         SPIM_CtrlDLLDelayTime(pSPIMx, 0, 0, 0, 0, u8RdDelay);
 
-        SPIM_Hyper_DMARead(pSPIMx, u32SrcAddr, u8TstBuf2, u32TestSize);
+        SPIM_DMARead_Hyper(pSPIMx, u32SrcAddr, u8TstBuf2, u32TestSize);
 
         if (memcmp(u8TstBuf1, u8TstBuf2, u32TestSize))
         {
@@ -529,62 +522,62 @@ void MACRO_SPIM_HYPER_CONFIG1()
     pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
     /*
-     *  SPIM_HYPER_CONFIG1_SET_CSST()
+     *  SPIM_SET_HYPER_CONFIG1_CSST()
      */
     pSPIMModule->HYPER_CONFIG1 = 0;
-    SPIM_HYPER_CONFIG1_SET_CSST(pSPIMModule, SPIM_HYPER_CONFIG1_CSST_1_5_HCLK);
+    SPIM_SET_HYPER_CONFIG1_CSST(pSPIMModule, SPIM_HYPER_CONFIG1_CSST_1_5_HCLK);
     CU_ASSERT(((pSPIMModule->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSST_Msk) >> SPIM_HYPER_CONFIG1_CSST_Pos) == SPIM_HYPER_CONFIG1_CSST_1_5_HCLK);
     pSPIMModule->HYPER_CONFIG1 = 0;
-    SPIM_HYPER_CONFIG1_SET_CSST(pSPIMModule, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
+    SPIM_SET_HYPER_CONFIG1_CSST(pSPIMModule, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
     CU_ASSERT(((pSPIMModule->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSST_Msk) >> SPIM_HYPER_CONFIG1_CSST_Pos) == SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
     pSPIMModule->HYPER_CONFIG1 = 0;
-    SPIM_HYPER_CONFIG1_SET_CSST(pSPIMModule, SPIM_HYPER_CONFIG1_CSST_3_5_HCLK);
+    SPIM_SET_HYPER_CONFIG1_CSST(pSPIMModule, SPIM_HYPER_CONFIG1_CSST_3_5_HCLK);
     CU_ASSERT(((pSPIMModule->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSST_Msk) >> SPIM_HYPER_CONFIG1_CSST_Pos) == SPIM_HYPER_CONFIG1_CSST_3_5_HCLK);
     pSPIMModule->HYPER_CONFIG1 = 0;
-    SPIM_HYPER_CONFIG1_SET_CSST(pSPIMModule, SPIM_HYPER_CONFIG1_CSST_4_5_HCLK);
+    SPIM_SET_HYPER_CONFIG1_CSST(pSPIMModule, SPIM_HYPER_CONFIG1_CSST_4_5_HCLK);
     CU_ASSERT(((pSPIMModule->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSST_Msk) >> SPIM_HYPER_CONFIG1_CSST_Pos) == SPIM_HYPER_CONFIG1_CSST_4_5_HCLK);
 
     /*
-     *  SPIM_HYPER_CONFIG1_SET_CSH()
+     *  SPIM_SET_HYPER_CONFIG1_CSH()
      */
     pSPIMModule->HYPER_CONFIG1 = 0;
-    SPIM_HYPER_CONFIG1_SET_CSH(pSPIMModule, SPIM_HYPER_CONFIG1_CSH_0_5_HCLK);
+    SPIM_SET_HYPER_CONFIG1_CSH(pSPIMModule, SPIM_HYPER_CONFIG1_CSH_0_5_HCLK);
     CU_ASSERT(((pSPIMModule->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSH_Msk) >> SPIM_HYPER_CONFIG1_CSH_Pos) == SPIM_HYPER_CONFIG1_CSH_0_5_HCLK);
     pSPIMModule->HYPER_CONFIG1 = 0;
-    SPIM_HYPER_CONFIG1_SET_CSH(pSPIMModule, SPIM_HYPER_CONFIG1_CSH_1_5_HCLK);
+    SPIM_SET_HYPER_CONFIG1_CSH(pSPIMModule, SPIM_HYPER_CONFIG1_CSH_1_5_HCLK);
     CU_ASSERT(((pSPIMModule->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSH_Msk) >> SPIM_HYPER_CONFIG1_CSH_Pos) == SPIM_HYPER_CONFIG1_CSH_1_5_HCLK);
     pSPIMModule->HYPER_CONFIG1 = 0;
-    SPIM_HYPER_CONFIG1_SET_CSH(pSPIMModule, SPIM_HYPER_CONFIG1_CSH_2_5_HCLK);
+    SPIM_SET_HYPER_CONFIG1_CSH(pSPIMModule, SPIM_HYPER_CONFIG1_CSH_2_5_HCLK);
     CU_ASSERT(((pSPIMModule->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSH_Msk) >> SPIM_HYPER_CONFIG1_CSH_Pos) == SPIM_HYPER_CONFIG1_CSH_2_5_HCLK);
     pSPIMModule->HYPER_CONFIG1 = 0;
-    SPIM_HYPER_CONFIG1_SET_CSH(pSPIMModule, SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
+    SPIM_SET_HYPER_CONFIG1_CSH(pSPIMModule, SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
     CU_ASSERT(((pSPIMModule->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSH_Msk) >> SPIM_HYPER_CONFIG1_CSH_Pos) == SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
 
     /*
-     *  SPIM_HYPER_CONFIG1_SET_CSHI()
+     *  SPIM_SET_HYPER_CONFIG1_CSHI()
      */
     pSPIMModule->HYPER_CONFIG1 = 0;
-    SPIM_HYPER_CONFIG1_SET_CSHI(pSPIMModule, 2);
+    SPIM_SET_HYPER_CONFIG1_CSHI(pSPIMModule, 2);
     CU_ASSERT(((pSPIMModule->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSHI_Msk) >> SPIM_HYPER_CONFIG1_CSHI_Pos) == 2);
     pSPIMModule->HYPER_CONFIG1 = 0;
-    SPIM_HYPER_CONFIG1_SET_CSHI(pSPIMModule, 7);
+    SPIM_SET_HYPER_CONFIG1_CSHI(pSPIMModule, 7);
     CU_ASSERT(((pSPIMModule->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSHI_Msk) >> SPIM_HYPER_CONFIG1_CSHI_Pos) == 7);
     pSPIMModule->HYPER_CONFIG1 = 0;
-    SPIM_HYPER_CONFIG1_SET_CSHI(pSPIMModule, 12);
+    SPIM_SET_HYPER_CONFIG1_CSHI(pSPIMModule, 12);
     CU_ASSERT(((pSPIMModule->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSHI_Msk) >> SPIM_HYPER_CONFIG1_CSHI_Pos) == 12);
     pSPIMModule->HYPER_CONFIG1 = 0;
-    SPIM_HYPER_CONFIG1_SET_CSHI(pSPIMModule, 15);
+    SPIM_SET_HYPER_CONFIG1_CSHI(pSPIMModule, 15);
     CU_ASSERT(((pSPIMModule->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSHI_Msk) >> SPIM_HYPER_CONFIG1_CSHI_Pos) == 15);
 
     /*
-     *  SPIM_HYPER_CONFIG1_SET_CSMAXLT()
+     *  SPIMS_SET_HYPER_CONFIG1_CSMAXLT()
      */
     pSPIMModule->HYPER_CONFIG1 = 0;
-    SPIM_HYPER_CONFIG1_SET_CSMAXLT(pSPIMModule, 0x55AA);
-    CU_ASSERT(SPIM_HYPER_CONFIG1_GET_CSMAXLT(pSPIMModule) == 0x55AA);
+    SPIMS_SET_HYPER_CONFIG1_CSMAXLT(pSPIMModule, 0x55AA);
+    CU_ASSERT(SPIM_GET_HYPER_CONFIG1_CSMAXLT(pSPIMModule) == 0x55AA);
     pSPIMModule->HYPER_CONFIG1 = 0;
-    SPIM_HYPER_CONFIG1_SET_CSMAXLT(pSPIMModule, 0xAA55);
-    CU_ASSERT(SPIM_HYPER_CONFIG1_GET_CSMAXLT(pSPIMModule) == 0xAA55);
+    SPIMS_SET_HYPER_CONFIG1_CSMAXLT(pSPIMModule, 0xAA55);
+    CU_ASSERT(SPIM_GET_HYPER_CONFIG1_CSMAXLT(pSPIMModule) == 0xAA55);
 
     CU_PASS();
 }
@@ -596,37 +589,37 @@ void MACRO_SPIM_HYPER_CONFIG2()
     pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
     /*
-     *  SPIM_HYPER_CONFIG2_SET_ACCTWR()
+     *  SPIM_SET_HYPER_CONFIG2_ACCTWR()
      */
     pSPIMModule->HYPER_CONFIG2 = 0;
-    SPIM_HYPER_CONFIG2_SET_ACCTWR(pSPIMModule, 0x1);
-    CU_ASSERT(SPIM_HYPER_CONFIG2_GET_ACCTWR(pSPIMModule) == 0x1);
+    SPIM_SET_HYPER_CONFIG2_ACCTWR(pSPIMModule, 0x1);
+    CU_ASSERT(SPIM_GET_HYPER_CONFIG2_ACCTWR(pSPIMModule) == 0x1);
     pSPIMModule->HYPER_CONFIG2 = 0;
-    SPIM_HYPER_CONFIG2_SET_ACCTWR(pSPIMModule, 0x1F);
-    CU_ASSERT(SPIM_HYPER_CONFIG2_GET_ACCTWR(pSPIMModule) == 0x1F);
+    SPIM_SET_HYPER_CONFIG2_ACCTWR(pSPIMModule, 0x1F);
+    CU_ASSERT(SPIM_GET_HYPER_CONFIG2_ACCTWR(pSPIMModule) == 0x1F);
 
     /*
-     *  SPIM_HYPER_CONFIG2_SET_RSTNLT()
+     *  SPIM_SET_HYPER_CONFIG2_RSTNLT()
      */
     pSPIMModule->HYPER_CONFIG2 = 0;
-    SPIM_HYPER_CONFIG2_SET_RSTNLT(pSPIMModule, 0x10);
-    CU_ASSERT(SPIM_HYPER_CONFIG2_GET_RSTNLT(pSPIMModule) == 0x10);
+    SPIM_SET_HYPER_CONFIG2_RSTNLT(pSPIMModule, 0x10);
+    CU_ASSERT(SPIM_GET_HYPER_CONFIG2_RSTNLT(pSPIMModule) == 0x10);
     pSPIMModule->HYPER_CONFIG2 = 0;
-    SPIM_HYPER_CONFIG2_SET_RSTNLT(pSPIMModule, 0xC0);
-    CU_ASSERT(SPIM_HYPER_CONFIG2_GET_RSTNLT(pSPIMModule) == 0xC0);
+    SPIM_SET_HYPER_CONFIG2_RSTNLT(pSPIMModule, 0xC0);
+    CU_ASSERT(SPIM_GET_HYPER_CONFIG2_RSTNLT(pSPIMModule) == 0xC0);
     pSPIMModule->HYPER_CONFIG2 = 0;
-    SPIM_HYPER_CONFIG2_SET_RSTNLT(pSPIMModule, 0xFF);
-    CU_ASSERT(SPIM_HYPER_CONFIG2_GET_RSTNLT(pSPIMModule) == 0xFF);
+    SPIM_SET_HYPER_CONFIG2_RSTNLT(pSPIMModule, 0xFF);
+    CU_ASSERT(SPIM_GET_HYPER_CONFIG2_RSTNLT(pSPIMModule) == 0xFF);
 
     /*
-     *  SPIM_HYPER_CONFIG2_SET_ACCTRD()
+     *  SPIM_SET_HYPER_CONFIG2_ACCTRD()
      */
     pSPIMModule->HYPER_CONFIG2 = 0;
-    SPIM_HYPER_CONFIG2_SET_ACCTRD(pSPIMModule, 0x1);
-    CU_ASSERT(SPIM_HYPER_CONFIG2_GET_ACCTRD(pSPIMModule) == 0x1);
+    SPIM_SET_HYPER_CONFIG2_ACCTRD(pSPIMModule, 0x1);
+    CU_ASSERT(SPIM_GET_HYPER_CONFIG2_ACCTRD(pSPIMModule) == 0x1);
     pSPIMModule->HYPER_CONFIG2 = 0;
-    SPIM_HYPER_CONFIG2_SET_ACCTRD(pSPIMModule, 0x1F);
-    CU_ASSERT(SPIM_HYPER_CONFIG2_GET_ACCTRD(pSPIMModule) == 0x1F);
+    SPIM_SET_HYPER_CONFIG2_ACCTRD(pSPIMModule, 0x1F);
+    CU_ASSERT(SPIM_GET_HYPER_CONFIG2_ACCTRD(pSPIMModule) == 0x1F);
 
     CU_PASS();
 }
@@ -638,15 +631,15 @@ void MACRO_SPIM_HYPER_INTEN()
     pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
     /*
-     *  SPIM_HYPER_ENABLE_INT()
+     *  SPIM_ENABLE_HYPER_INT()
      */
     pSPIMModule->HYPER_INTEN = 0;
-    SPIM_HYPER_ENABLE_INT(pSPIMModule);
-    CU_ASSERT_TRUE(SPIM_HYPER_GET_INT(pSPIMModule));
+    SPIM_ENABLE_HYPER_INT(pSPIMModule);
+    CU_ASSERT_TRUE(SPIM_GET_HYPER_INT(pSPIMModule));
 
     pSPIMModule->HYPER_INTEN = 0;
-    SPIM_HYPER_DISABLE_INT(pSPIMModule);
-    CU_ASSERT_FALSE(SPIM_HYPER_GET_INT(pSPIMModule));
+    SPIM_DISABLE_HYPER_INT(pSPIMModule);
+    CU_ASSERT_FALSE(SPIM_GET_HYPER_INT(pSPIMModule));
 }
 
 CU_TestInfo SPIM_HyperConstantTests[] =

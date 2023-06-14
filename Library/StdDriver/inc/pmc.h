@@ -15,7 +15,8 @@ extern "C"
 {
 #endif
 
-enum {
+enum
+{
     SRAMNum0 = 0,
     SRAMNum1,
     SRAMNum2,
@@ -272,7 +273,7 @@ void PMC_Idle(void);
 int32_t PMC_SetPowerDownMode(uint32_t u32PDMode, uint32_t u32PowerLevel);
 void PMC_EnableWKPIN(uint32_t u32TriggerType);
 uint32_t PMC_GetPMCWKSrc(void);
-void PMC_EnableTGPin(uint32_t u32Port, uint32_t u32Pin, uint32_t u32TriggerType, uint32_t u32DebounceEn , uint32_t u32WakeupEn);
+void PMC_EnableTGPin(uint32_t u32Port, uint32_t u32Pin, uint32_t u32TriggerType, uint32_t u32DebounceEn, uint32_t u32WakeupEn);
 int32_t PMC_Wait_BusyFlag(uint32_t PMCBusyFlagAddr);
 
 /** @} end of group PMC_EXPORTED_FUNCTIONS */

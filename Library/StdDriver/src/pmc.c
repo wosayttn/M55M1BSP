@@ -36,13 +36,13 @@
 int32_t PMC_SetPowerLevel(uint32_t u32PowerLevel)
 {
     /* Wait for power level write busy flag is cleared */
-    if(PMC_Wait_BusyFlag(PMC_PLCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+    if (PMC_Wait_BusyFlag(PMC_PLCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
 
     /* Set power voltage level */
     PMC->PLCTL = (PMC->PLCTL & (~PMC_PLCTL_PLSEL_Msk)) | (u32PowerLevel);
 
     /* Wait for power level change busy flag is cleared */
-    if(PMC_Wait_BusyFlag(PMC_PLSTS_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+    if (PMC_Wait_BusyFlag(PMC_PLSTS_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
 
     return PMC_OK;
 }
@@ -68,39 +68,39 @@ int32_t PMC_SetPowerRegulator(uint32_t u32PowerRegulator)
     u32PowerRegStatus = PMC->VRSTS & PMC_VRSTS_CURMVR_Msk;
 
     /* Set main voltage regulator type */
-    if((u32PowerRegulator == PMC_VRCTL_MVRS_DCDC) && (u32PowerRegStatus == PMC_VRSTS_CURMVR_LDO))
+    if ((u32PowerRegulator == PMC_VRCTL_MVRS_DCDC) && (u32PowerRegStatus == PMC_VRSTS_CURMVR_LDO))
     {
         /* Set main voltage regulator type to DCDC if status is LDO */
-        if(PMC_Wait_BusyFlag(PMC_VRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+        if (PMC_Wait_BusyFlag(PMC_VRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
 
         PMC->VRCTL |= PMC_VRCTL_MVRS_Msk;
 
         /* Wait main voltage regulator type change ready */
-        if(PMC_Wait_BusyFlag(PMC_VRSTS_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+        if (PMC_Wait_BusyFlag(PMC_VRSTS_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
 
-        if((PMC->VRSTS & PMC_VRSTS_CURMVR_Msk) != PMC_VRSTS_CURMVR_DCDC)
+        if ((PMC->VRSTS & PMC_VRSTS_CURMVR_Msk) != PMC_VRSTS_CURMVR_DCDC)
         {
             i32Ret = PMC_ERR_FAIL;    /* Main voltage regulator type change fail */
         }
     }
-    else if(u32PowerRegulator == PMC_VRCTL_MVRS_LDO)
+    else if (u32PowerRegulator == PMC_VRCTL_MVRS_LDO)
     {
-        if(PMC_Wait_BusyFlag(PMC_VRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+        if (PMC_Wait_BusyFlag(PMC_VRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
 
         /* Set main voltage regulator type to LDO */
         PMC->VRCTL &= (~PMC_VRCTL_MVRS_Msk);
 
         /* Wait main voltage regulator type change ready */
-        if(PMC_Wait_BusyFlag(PMC_VRSTS_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+        if (PMC_Wait_BusyFlag(PMC_VRSTS_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
 
-        if((PMC->VRSTS & PMC_VRSTS_CURMVR_Msk) != PMC_VRSTS_CURMVR_LDO)
+        if ((PMC->VRSTS & PMC_VRSTS_CURMVR_Msk) != PMC_VRSTS_CURMVR_LDO)
         {
             i32Ret = PMC_ERR_FAIL;    /* Main voltage regulator type change fail */
         }
     }
 
     /* Clear main voltage regulator type change error flag */
-    if(PMC->VRSTS & PMC_VRSTS_MVRCERR_Msk)
+    if (PMC->VRSTS & PMC_VRSTS_MVRCERR_Msk)
     {
         PMC->VRSTS = PMC_VRSTS_MVRCERR_Msk;
         i32Ret = PMC_ERR_FAIL;
@@ -163,9 +163,9 @@ int32_t PMC_SetSRAMPowerMode(uint32_t u32SRAMSel, uint32_t u32PowerMode)
     uint32_t u32SRAMSelNum;
 
     /* Get system SRAM power mode setting position */
-    while(u32SRAMSelPos < 30UL)
+    while (u32SRAMSelPos < 30UL)
     {
-        if(u32SRAMSel & (1 << u32SRAMSelPos))
+        if (u32SRAMSel & (1 << u32SRAMSelPos))
         {
             break;
         }
@@ -178,31 +178,42 @@ int32_t PMC_SetSRAMPowerMode(uint32_t u32SRAMSel, uint32_t u32PowerMode)
     /* Set system SRAM power mode setting */
     u32SRAMSelNum = u32PowerMode >> 28;
 
-    switch(u32SRAMSelNum)
+    switch (u32SRAMSelNum)
     {
         case SRAMNum0:
-            if(PMC_Wait_BusyFlag(PMC_SYSRB0PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if (PMC_Wait_BusyFlag(PMC_SYSRB0PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
             PMC->SYSRB0PC = (PMC->SYSRB0PC & (~u32SRAMSel)) | (u32PowerMode << u32SRAMSelPos);
             break;
+
         case SRAMNum1:
-            if(PMC_Wait_BusyFlag(PMC_SYSRB1PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if (PMC_Wait_BusyFlag(PMC_SYSRB1PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
             PMC->SYSRB1PC = (PMC->SYSRB1PC & (~u32SRAMSel)) | (u32PowerMode << u32SRAMSelPos);
             break;
+
         case SRAMNum2:
-            if(PMC_Wait_BusyFlag(PMC_SYSRB2PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if (PMC_Wait_BusyFlag(PMC_SYSRB2PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
             PMC->SYSRB2PC = (PMC->SYSRB2PC & (~u32SRAMSel)) | (u32PowerMode << u32SRAMSelPos);
             break;
+
         case SRAMNum3:
-            if(PMC_Wait_BusyFlag(PMC_SYSRB3PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if (PMC_Wait_BusyFlag(PMC_SYSRB3PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
             PMC->SYSRB3PC = (PMC->SYSRB3PC & (~u32SRAMSel)) | (u32PowerMode << u32SRAMSelPos);
             break;
+
         case SRAMNum4:
-            if(PMC_Wait_BusyFlag(PMC_LPSYSRPC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if (PMC_Wait_BusyFlag(PMC_LPSYSRPC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
             PMC->LPSYSRPC = (PMC->LPSYSRPC & (~u32SRAMSel)) | (u32PowerMode << u32SRAMSelPos);
             break;
+
         default:
             return PMC_ERR_FAIL;
     }
+
     return PMC_OK;
 }
 
@@ -236,7 +247,8 @@ void PMC_PowerDown(void)
     __WFI();
 
     /* Restore SysTick interrupt and HIRC auto trim setting */
-    if(u32SysTickTICKINT) SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
+    if (u32SysTickTICKINT) SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
+
     SYS->TCTL48M = u32TCTL48M;
     SYS->TCTL12M = u32TCTL12M;
     SYS->TCTLMIRC = u32TCTLMIRC;
@@ -284,52 +296,73 @@ void PMC_Idle(void)
   */
 int32_t PMC_SetPowerDownMode(uint32_t u32PowerDownMode, uint32_t u32PowerLevel)
 {
-    if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
-    
+    if (PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
     PMC->PWRCTL = (PMC->PWRCTL & ~(PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_D2PGEN_Msk | PMC_PWRCTL_D3PGEN_Msk
-                   | PMC_PWRCTL_VDROPEN_Msk | PMC_PWRCTL_FWEN_Msk));
-    
-    switch(u32PowerDownMode)
+                                   | PMC_PWRCTL_VDROPEN_Msk | PMC_PWRCTL_FWEN_Msk));
+
+    switch (u32PowerDownMode)
     {
         case PMC_NPD0:
-            if(PMC_SetPowerLevel(u32PowerLevel) != 0) return PMC_ERR_TIMEOUT;          
-            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if (PMC_SetPowerLevel(u32PowerLevel) != 0) return PMC_ERR_TIMEOUT;
+
+            if (PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
             PMC->PWRCTL |= PMC_PWRCTL_FWEN_Msk;
             break;
+
         case PMC_NPD1:
-            if(PMC_SetPowerLevel(u32PowerLevel) != 0) return PMC_ERR_TIMEOUT;
+            if (PMC_SetPowerLevel(u32PowerLevel) != 0) return PMC_ERR_TIMEOUT;
+
             break;
+
         case PMC_NPD2:
-            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if (PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
             PMC->PWRCTL |= PMC_PWRCTL_VDROPEN_Msk;
             break;
+
         case PMC_NPD3:
-            if(PMC_SetPowerLevel(u32PowerLevel) != 0) return PMC_ERR_TIMEOUT;
-            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if (PMC_SetPowerLevel(u32PowerLevel) != 0) return PMC_ERR_TIMEOUT;
+
+            if (PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
             PMC->PWRCTL |= (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk);
             break;
+
         case PMC_NPD4:
-            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if (PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
             PMC->PWRCTL |= (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_VDROPEN_Msk);
             break;
+
         case PMC_SPD0:
-            if(PMC_SetPowerLevel(u32PowerLevel) != 0) return PMC_ERR_TIMEOUT;
-            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if (PMC_SetPowerLevel(u32PowerLevel) != 0) return PMC_ERR_TIMEOUT;
+
+            if (PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
             PMC->PWRCTL |= (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_D2PGEN_Msk);
             break;
+
         case PMC_SPD1:
-            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;        
+            if (PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
             PMC->PWRCTL |= (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_D2PGEN_Msk | PMC_PWRCTL_VDROPEN_Msk);
             break;
+
         case PMC_DPD0:
-            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if (PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
             PMC->PWRCTL |= (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_D2PGEN_Msk | PMC_PWRCTL_D3PGEN_Msk | PMC_PWRCTL_FWEN_Msk);
             break;
+
         case PMC_DPD1:
-            if(PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+            if (PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
             PMC->PWRCTL |= (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_D2PGEN_Msk | PMC_PWRCTL_D3PGEN_Msk);
             break;
     }
+
     return PMC_OK;
 }
 
@@ -367,28 +400,28 @@ void PMC_EnableWKPIN(uint32_t u32TriggerType)
     u32Pin3 = ((u32TriggerType) & PMC_PINWKCTL_WKPINEN3_Msk);
     u32Pin4 = ((u32TriggerType) & PMC_PINWKCTL_WKPINEN4_Msk);
     u32Pin5 = ((u32TriggerType) & PMC_PINWKCTL_WKPINEN5_Msk);
-    
+
     /* Set wake-up pin configuration */
-    if(u32Pin1)
+    if (u32Pin1)
     {
         PMC->PINWKCTL = (PMC->PINWKCTL & ~(PMC_PINWKCTL_WKPINEN1_Msk)) | u32TriggerType;
     }
-    else if(u32Pin2)
+    else if (u32Pin2)
     {
         PMC->PINWKCTL = (PMC->PINWKCTL & ~(PMC_PINWKCTL_WKPINEN2_Msk)) | u32TriggerType;
     }
-    else if(u32Pin3)
+    else if (u32Pin3)
     {
         PMC->PINWKCTL = (PMC->PINWKCTL & ~(PMC_PINWKCTL_WKPINEN3_Msk)) | u32TriggerType;
     }
-    else if(u32Pin4)
+    else if (u32Pin4)
     {
         PMC->PINWKCTL = (PMC->PINWKCTL & ~(PMC_PINWKCTL_WKPINEN4_Msk)) | u32TriggerType;
     }
-    else if(u32Pin5)
+    else if (u32Pin5)
     {
         PMC->PINWKCTL = (PMC->PINWKCTL & ~(PMC_PINWKCTL_WKPINEN5_Msk)) | u32TriggerType;
-    }    
+    }
     else
     {
         PMC->PINWKCTL = (PMC->PINWKCTL & ~(PMC_PINWKCTL_WKPINEN0_Msk)) | u32TriggerType;
@@ -463,11 +496,11 @@ void PMC_EnableTGPin(uint32_t u32Port, uint32_t u32Pin, uint32_t u32TriggerType,
  */
 int32_t PMC_Wait_BusyFlag(uint32_t PMCBusyFlagAddr)
 {
-    int32_t i32TimeOutCnt = SystemCoreClock>>1; /* 500ms time-out */
+    int32_t i32TimeOutCnt = SystemCoreClock >> 1; /* 500ms time-out */
 
-    while(*(volatile uint32_t *)PMCBusyFlagAddr & BIT31)
+    while (*(volatile uint32_t *)PMCBusyFlagAddr & BIT31)
     {
-        if(i32TimeOutCnt-- <= 0) return PMC_ERR_TIMEOUT;
+        if (i32TimeOutCnt-- <= 0) return PMC_ERR_TIMEOUT;
     }
 
     return PMC_OK;

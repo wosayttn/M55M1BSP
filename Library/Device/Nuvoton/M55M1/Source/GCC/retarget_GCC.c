@@ -14,6 +14,7 @@
 #include <errno.h>
 #include "NuMicro.h"
 
+
 /*
  * This type is used by the _ I/O functions to denote an open
  * file.
@@ -34,123 +35,151 @@ extern FILEHANDLE _open(const char * /*name*/, int /*openmode*/);
 #define IO_OUTPUT(len) len
 
 
-
 /* Standard IO device name defines. */
 const char __stdin_name[] __attribute__((aligned(4)))  = "STDIN";
 const char __stdout_name[] __attribute__((aligned(4))) = "STDOUT";
 const char __stderr_name[] __attribute__((aligned(4))) = "STDERR";
 
-FILEHANDLE RETARGET(_open)(const char *name, int openmode) {
+FILEHANDLE RETARGET(_open)(const char *name, int openmode)
+{
     (void)openmode;
 
-    if (strcmp(name, __stdin_name) == 0) {
+    if (strcmp(name, __stdin_name) == 0)
+    {
         return (STDIN);
     }
 
-    if (strcmp(name, __stdout_name) == 0) {
+    if (strcmp(name, __stdout_name) == 0)
+    {
         return (STDOUT);
     }
 
-    if (strcmp(name, __stderr_name) == 0) {
+    if (strcmp(name, __stderr_name) == 0)
+    {
         return (STDERR);
     }
 
     return -1;
 }
 
-int RETARGET(_write)(FILEHANDLE fh, const unsigned char *buf, unsigned int len, int mode) {
+int RETARGET(_write)(FILEHANDLE fh, const unsigned char *buf, unsigned int len, int mode)
+{
     (void)mode;
 
-    switch (fh) {
-    case STDOUT:
-    case STDERR: {
-        unsigned int i;
+    switch (fh)
+    {
+        case STDOUT:
+        case STDERR:
+        {
+            unsigned int i;
 
-        for (i = 0; i < len; i++) {
-            SendChar(buf[i]);
+            for (i = 0; i < len; i++)
+            {
+                SendChar(buf[i]);
+            }
+
+            return IO_OUTPUT(len);
         }
 
-        return IO_OUTPUT(len);
-    }
-    default:
-        return EOF;
+        default:
+            return EOF;
     }
 }
 
-int RETARGET(_read)(FILEHANDLE fh, unsigned char *buf, unsigned int len, int mode) {
+int RETARGET(_read)(FILEHANDLE fh, unsigned char *buf, unsigned int len, int mode)
+{
     (void)mode;
 
     memset(buf, 0, len);
-    switch (fh) {
-    case STDIN: {
-        int c;
-        unsigned int i;
 
-        for (i = 0; i < len; i++) {
-            c = GetChar();
-            if (c == EOF) {
-                return EOF;
-            }
+    switch (fh)
+    {
+        case STDIN:
+        {
+            int c;
+            unsigned int i;
 
-            buf[i] = (unsigned char)c;
-#if (STDIN_ECHO != 0)
-            SendChar(c);
-#endif
-            if(c == '\n')
+            for (i = 0; i < len; i++)
             {
-            	i++;
-            	break;
+                c = GetChar();
+
+                if (c == EOF)
+                {
+                    return EOF;
+                }
+
+                buf[i] = (unsigned char)c;
+#if (STDIN_ECHO != 0)
+                SendChar(c);
+#endif
+
+                if (c == '\n')
+                {
+                    i++;
+                    break;
+                }
+
             }
 
+            return i;
         }
-        return i;
-    }
-    default:
-        return EOF;
+
+        default:
+            return EOF;
     }
 }
 
-int RETARGET(_istty)(FILEHANDLE fh) {
-    switch (fh) {
-    case STDIN:
-    case STDOUT:
-    case STDERR:
-        return 1;
-    default:
-        return 0;
+int RETARGET(_istty)(FILEHANDLE fh)
+{
+    switch (fh)
+    {
+        case STDIN:
+        case STDOUT:
+        case STDERR:
+            return 1;
+
+        default:
+            return 0;
     }
 }
 
-int RETARGET(_close)(FILEHANDLE fh) {
-    if (RETARGET(_istty(fh))) {
+int RETARGET(_close)(FILEHANDLE fh)
+{
+    if (RETARGET(_istty(fh)))
+    {
         return 0;
     }
 
     return -1;
 }
 
-int RETARGET(_seek)(FILEHANDLE fh, long pos) {
+int RETARGET(_seek)(FILEHANDLE fh, long pos)
+{
     (void)fh;
     (void)pos;
 
     return -1;
 }
 
-int RETARGET(_ensure)(FILEHANDLE fh) {
+int RETARGET(_ensure)(FILEHANDLE fh)
+{
     (void)fh;
 
     return -1;
 }
 
-long RETARGET(_flen)(FILEHANDLE fh) {
-    if (RETARGET(_istty)(fh)) {
+long RETARGET(_flen)(FILEHANDLE fh)
+{
+    if (RETARGET(_istty)(fh))
+    {
         return 0;
     }
 
     return -1;
 }
 
-int RETARGET(_tmpnam)(char *name, int sig, unsigned maxlen) {
+int RETARGET(_tmpnam)(char *name, int sig, unsigned maxlen)
+{
     (void)name;
     (void)sig;
     (void)maxlen;
@@ -158,15 +187,18 @@ int RETARGET(_tmpnam)(char *name, int sig, unsigned maxlen) {
     return 1;
 }
 
-char *RETARGET(_command_string)(char *cmd, int len) {
+char *RETARGET(_command_string)(char *cmd, int len)
+{
     (void)len;
 
     return cmd;
 }
 
-int RETARGET(_isatty)(int fd) {
+int RETARGET(_isatty)(int fd)
+{
     if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
         return 1;
+
     errno = EBADF;
     return 0;
 }
@@ -183,7 +215,8 @@ int RETARGET(_lseek)(int fd, int ptr, int dir)
 
 int RETARGET(_fstat)(int fd, struct stat *st)
 {
-    if (fd >= STDIN_FILENO && fd <= STDERR_FILENO){
+    if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
+    {
         st->st_mode = S_IFCHR;
         return 0;
     }
@@ -192,28 +225,29 @@ int RETARGET(_fstat)(int fd, struct stat *st)
     return 0;
 }
 
-int RETARGET(_kill)(int, int)
+int RETARGET(_kill)(int pid, int sig)
 {
-    return(-1);
+    return (-1);
 }
 
 int RETARGET(_getpid)()
 {
-    return(1);
+    return (1);
 }
 
-void RETARGET(_exit)(int return_code) {
+void RETARGET(_exit)(int return_code)
+{
     char exit_code_buffer[64] = {0};
     const char *p             = exit_code_buffer;
 
-    /* Print out the exit code on the uart so any reader know how we exit. */
+    // Print out the exit code on the uart so any reader know how we exit.
+
     /* By appending 0x04, ASCII for end-of-transmission the FVP model exits,
      * if the configuration parameter shutdown_on_eot on the uart is enabled.
      * For some versions of FVP, the shutdown_on_eot is broken, but the same
      * behaviour can be created by passing specifying a shutdown_tag= for the
      * uart when starting the model so that is added last as well.
      */
-
     snprintf(exit_code_buffer,
              sizeof(exit_code_buffer),
              "Application exit code: %d.\n" // Let the readers know how we exit
@@ -221,7 +255,8 @@ void RETARGET(_exit)(int return_code) {
              "EXITTHESIM\n",                // shutdown_tag
              return_code);
 
-    while (*p != '\0') {
+    while (*p != '\0')
+    {
         SendChar(*p++);
     }
 

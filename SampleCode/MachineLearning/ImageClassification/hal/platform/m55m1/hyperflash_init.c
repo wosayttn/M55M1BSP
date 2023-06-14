@@ -454,7 +454,7 @@ int SPIM_HyperFlashDLLDelayTimeTraining(SPIM_T *pSPIMx)
 
     for (u8RdDelay = 0; u8RdDelay <= DLL_MAX_DELAY_NUM; u8RdDelay++)
     {
-        SPIM_ForceDLLDelayTime(pSPIMx, 0, 0, 0, u8RdDelay);
+        SPIM_CtrlDLLDelayTime(pSPIMx, 0, 0, 0, 0, u8RdDelay);
 
         HyperFlash_DMARead(pSPIMx, 0, tstbuf2, u32TestSize);
 
@@ -495,7 +495,7 @@ int SPIM_HyperFlashDLLDelayTimeTraining(SPIM_T *pSPIMx)
 
     printf("\r\nDLL Delay Time Num = %d\r\n\r\n", u8RdDelayRes[u8RdDelayIdx]);
 
-    SPIM_ForceDLLDelayTime(pSPIMx, 0, 0, 0, u8RdDelayRes[u8RdDelayIdx]);
+    SPIM_CtrlDLLDelayTime(pSPIMx, 0, 0, 0, 0, u8RdDelayRes[u8RdDelayIdx]);
 
     return 0;
 }
@@ -536,7 +536,7 @@ void HyperFlash_ConfigNVCRReg(SPIM_T *pSPIMx, uint32_t u32Latency)
     HyperFlash_WriteOPCMD(pSPIMx, CMD_COMMON_555, WRITE_NVCR_REG);
     SPIM_Hyper_Write2Byte(pSPIMx, CMD_NOOP_CODE, u32NVCRData);
 
-    SPIM_Hyper_Config(pSPIMx, HFLH_MAX_CS_LOW, 9, HFLH_WR_ACCTIME);
+    SPIM_Hyper_DefConfig(pSPIMx, HFLH_MAX_CS_LOW, 9, HFLH_WR_ACCTIME);
 
     HyperFlash_WaitBusBusy(pSPIMx);
 	//HyperFlash_ResetModule(pSPIMx);
@@ -655,16 +655,16 @@ void SPIM_HyperFlash_Init(SPIM_T *pSPIMx, uint32_t u32CacheOn)
 
     HyperFlash_ResetModule(pSPIMx);
 
-    SPIM_Hyper_Config(pSPIMx, HFLH_MAX_CS_LOW, 16, HFLH_WR_ACCTIME);
-    SPIM_ForceDLLDelayTime(pSPIMx, 0, 0, 0, 2);
-//    SPIM_ForceDLLDelayTime(pSPIMx, 0, 0, 0, 1); //for fast clock 500M RD design
+    SPIM_Hyper_DefConfig(pSPIMx, HFLH_MAX_CS_LOW, 16, HFLH_WR_ACCTIME);
+    SPIM_CtrlDLLDelayTime(pSPIMx, 0, 0, 0, 0, 2);
+//    SPIM_CtrlDLLDelayTime(pSPIMx, 0, 0, 0, 0, 1); //for fast clock 500M RD design
 
     HyperFlash_ConfigNVCRReg(pSPIMx, 9);
 
-    SPIM_Hyper_Config(pSPIMx, HFLH_MAX_CS_LOW, 9, HFLH_WR_ACCTIME);
+    SPIM_Hyper_DefConfig(pSPIMx, HFLH_MAX_CS_LOW, 9, HFLH_WR_ACCTIME);
 
     //SPIM_HyperFlashDLLDelayTimeTraining(pSPIMx);
-    SPIM_ForceDLLDelayTime(pSPIMx, 0, 0, 0, 1);
+    SPIM_CtrlDLLDelayTime(pSPIMx, 0, 0, 0, 0, 1);
 
 #if (SPIM_CACHE_EN == 1)
     if (u32CacheOn)

@@ -122,5 +122,9 @@ void InitSPIMPort(uint32_t u32SPIMModule);
 void SPIMx_SysReset(uint32_t u32SPIMModule);
 int SPIMPortSelect(uint32_t u32SPIMPort);
 void SPIM_EraseAddrRange(SPIM_T *pSPIMx, uint32_t u32Addr, int is4ByteAddr, uint32_t len, uint32_t u32ErsCmd, uint32_t u32ErsBlkSize, uint32_t u32NBit);
-
+int32_t SPIM_FindAndInitDMADMMPhase(SPIM_T *spim,
+                                     PHASE_SET_T *pPhaseTable,
+                                     uint32_t u32TableSize,
+                                     uint32_t u32OPMode,
+                                     uint32_t u32CMDCode);
 #endif /* _COMMON_H_ */

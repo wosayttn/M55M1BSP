@@ -10,6 +10,7 @@
 #include <rt_misc.h>
 #include <rt_sys.h>
 
+
 /* Standard IO device handles. */
 #define STDIN  0x8001
 #define STDOUT 0x8002
@@ -24,124 +25,153 @@ const char __stdin_name[] __attribute__((aligned(4)))  = "STDIN";
 const char __stdout_name[] __attribute__((aligned(4))) = "STDOUT";
 const char __stderr_name[] __attribute__((aligned(4))) = "STDERR";
 
-FILEHANDLE RETARGET(_open)(const char *name, int openmode) {
+FILEHANDLE RETARGET(_open)(const char *name, int openmode)
+{
     (void)openmode;
 
-    if (strcmp(name, __stdin_name) == 0) {
+    if (strcmp(name, __stdin_name) == 0)
+    {
         return (STDIN);
     }
 
-    if (strcmp(name, __stdout_name) == 0) {
+    if (strcmp(name, __stdout_name) == 0)
+    {
         return (STDOUT);
     }
 
-    if (strcmp(name, __stderr_name) == 0) {
+    if (strcmp(name, __stderr_name) == 0)
+    {
         return (STDERR);
     }
 
     return -1;
 }
 
-int RETARGET(_write)(FILEHANDLE fh, const unsigned char *buf, unsigned int len, int mode) {
+int RETARGET(_write)(FILEHANDLE fh, const unsigned char *buf, unsigned int len, int mode)
+{
     (void)mode;
 
-    switch (fh) {
-    case STDOUT:
-    case STDERR: {
-        unsigned int i;
+    switch (fh)
+    {
+        case STDOUT:
+        case STDERR:
+        {
+            unsigned int i;
 
-        for (i = 0; i < len; i++) {
-            SendChar(buf[i]);
+            for (i = 0; i < len; i++)
+            {
+                SendChar(buf[i]);
+            }
+
+            return IO_OUTPUT(len);
         }
 
-        return IO_OUTPUT(len);
-    }
-    default:
-        return EOF;
+        default:
+            return EOF;
     }
 }
 
-int RETARGET(_read)(FILEHANDLE fh, unsigned char *buf, unsigned int len, int mode) {
+int RETARGET(_read)(FILEHANDLE fh, unsigned char *buf, unsigned int len, int mode)
+{
     (void)mode;
 
     memset(buf, 0, len);
-    switch (fh) {
-    case STDIN: {
-        int c;
-        unsigned int i;
 
-        for (i = 0; i < len; i++) {
-            c = GetChar();
-            if (c == EOF) {
-                return EOF;
-            }
+    switch (fh)
+    {
+        case STDIN:
+        {
+            int c;
+            unsigned int i;
 
-            buf[i] = (unsigned char)c;
-#if (STDIN_ECHO != 0)
-            SendChar(c);
-#endif
-			if(c == '\r')
-			{
-				buf[i] = '\n';
-            	i++;
-            	break;				
-			}
-
-            if(c == '\n')
+            for (i = 0; i < len; i++)
             {
-            	i++;
-            	break;
+                c = GetChar();
+
+                if (c == EOF)
+                {
+                    return EOF;
+                }
+
+                buf[i] = (unsigned char)c;
+#if (STDIN_ECHO != 0)
+                SendChar(c);
+#endif
+
+                if (c == '\r')
+                {
+                    buf[i] = '\n';
+                    i++;
+                    break;
+                }
+
+                if (c == '\n')
+                {
+                    i++;
+                    break;
+                }
+
             }
 
+            return (len - i);
         }
-        return (len - i);
-    }
-    default:
-        return EOF;
+
+        default:
+            return EOF;
     }
 }
 
-int RETARGET(_istty)(FILEHANDLE fh) {
-    switch (fh) {
-    case STDIN:
-    case STDOUT:
-    case STDERR:
-        return 1;
-    default:
-        return 0;
+int RETARGET(_istty)(FILEHANDLE fh)
+{
+    switch (fh)
+    {
+        case STDIN:
+        case STDOUT:
+        case STDERR:
+            return 1;
+
+        default:
+            return 0;
     }
 }
 
-int RETARGET(_close)(FILEHANDLE fh) {
-    if (RETARGET(_istty(fh))) {
+int RETARGET(_close)(FILEHANDLE fh)
+{
+    if (RETARGET(_istty(fh)))
+    {
         return 0;
     }
 
     return -1;
 }
 
-int RETARGET(_seek)(FILEHANDLE fh, long pos) {
+int RETARGET(_seek)(FILEHANDLE fh, long pos)
+{
     (void)fh;
     (void)pos;
 
     return -1;
 }
 
-int RETARGET(_ensure)(FILEHANDLE fh) {
+int RETARGET(_ensure)(FILEHANDLE fh)
+{
     (void)fh;
 
     return -1;
 }
 
-long RETARGET(_flen)(FILEHANDLE fh) {
-    if (RETARGET(_istty)(fh)) {
+long RETARGET(_flen)(FILEHANDLE fh)
+{
+    if (RETARGET(_istty)(fh))
+    {
         return 0;
     }
 
     return -1;
 }
 
-int RETARGET(_tmpnam)(char *name, int sig, unsigned maxlen) {
+int RETARGET(_tmpnam)(char *name, int sig, unsigned maxlen)
+{
     (void)name;
     (void)sig;
     (void)maxlen;
@@ -149,17 +179,20 @@ int RETARGET(_tmpnam)(char *name, int sig, unsigned maxlen) {
     return 1;
 }
 
-char *RETARGET(_command_string)(char *cmd, int len) {
+char *RETARGET(_command_string)(char *cmd, int len)
+{
     (void)len;
 
     return cmd;
 }
 
-void RETARGET(_exit)(int return_code) {
+void RETARGET(_exit)(int return_code)
+{
     char exit_code_buffer[64] = {0};
     const char *p             = exit_code_buffer;
 
-    /* Print out the exit code on the uart so any reader know how we exit. */
+    // Print out the exit code on the uart so any reader know how we exit.
+
     /* By appending 0x04, ASCII for end-of-transmission the FVP model exits,
      * if the configuration parameter shutdown_on_eot on the uart is enabled.
      * For some versions of FVP, the shutdown_on_eot is broken, but the same
@@ -174,7 +207,8 @@ void RETARGET(_exit)(int return_code) {
              "EXITTHESIM\n",                // shutdown_tag
              return_code);
 
-    while (*p != '\0') {
+    while (*p != '\0')
+    {
         SendChar(*p++);
     }
 
@@ -200,12 +234,13 @@ void _ttywrch(int ch)
 
 #ifdef __MICROLIB
 __attribute__((weak))
-void abort(void) {
-  for (;;);
+void abort(void)
+{
+    for (;;);
 }
 
 __attribute__((weak, noreturn))
-void __aeabi_assert(const char* expr, const char* file, int line)
+void __aeabi_assert(const char *expr, const char *file, int line)
 {
     char str[12], * p;
 
@@ -218,32 +253,36 @@ void __aeabi_assert(const char* expr, const char* file, int line)
     p = str + sizeof(str);
     *--p = '\0';
     *--p = '\n';
-    while(line > 0)
+
+    while (line > 0)
     {
         *--p = '0' + (line % 10);
         line /= 10;
     }
+
     fputs(p, stderr);
 
     abort();
-    
-    while(1){}
+
+    while (1) {}
 }
 
 __attribute__((weak))
-int fputc(int ch, FILE *f) {
-	SendChar(ch);
-	return ch;
+int fputc(int ch, FILE *f)
+{
+    SendChar(ch);
+    return ch;
 }
 
 __attribute__((weak))
-int fgetc(FILE *f) {
-	char ch = GetChar();
+int fgetc(FILE *f)
+{
+    char ch = GetChar();
 
 #if (STDIN_ECHO != 0)
-	SendChar(ch);
+    SendChar(ch);
 #endif
-	return (int)ch;
+    return (int)ch;
 }
 
 #endif

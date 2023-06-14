@@ -56,13 +56,13 @@ int SPIM_load_image_to_HyperRAM(SPIM_T *spim, uint32_t image_base, uint32_t imag
 
         printf("\tProgram ...");
 
-        SPIM_Hyper_DMAWrite(spim, u32Addr, pu8SrcBuf, BUFF_SIZE);
+        SPIM_DMAWrite_Hyper(spim, u32Addr, pu8SrcBuf, BUFF_SIZE);
 
         printf("\tVerify ...\r\n");
 
         memset(pu8CmpBuf, 0, BUFF_SIZE);
 
-        SPIM_Hyper_DMARead(spim, u32Addr, pu8CmpBuf, BUFF_SIZE);
+        SPIM_DMARead_Hyper(spim, u32Addr, pu8CmpBuf, BUFF_SIZE);
 
         if (memcmp(pu8SrcBuf, pu8CmpBuf, BUFF_SIZE))
         {
@@ -109,7 +109,7 @@ int HyperRAM_LoadCodeAndRun(SPIM_T *spim)
     }
 
     /* Enter direct-mapped mode to run new applications */
-    SPIM_Hyper_EnterDirectMapMode(spim);
+    SPIM_EnterDirectMapMode_Hyper(spim);
 
     func = (void *)(u32DMMAddr + 1);
     func();
@@ -132,7 +132,7 @@ void SYS_Init(void)
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
