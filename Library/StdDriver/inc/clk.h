@@ -521,7 +521,7 @@ extern "C"
 #define MODULE_CLKEN_Pos_ENC(x)     (((x) & 0x1fUL) << 10)   /*!< CLKEN offset on MODULE index \hideinitializer */
 #define MODULE_CLKSEL_Pos_ENC(x)    (((x) & 0x1fUL) <<  5)   /*!< CLKSEL position offset on MODULE index \hideinitializer */
 #define MODULE_CLKDIV_Pos_ENC(x)    (((x) & 0x1fUL) <<  0)   /*!< CLKDIV position offset on MODULE index \hideinitializer */
-                         
+
 #define ACMP01_MODULE   (MODULE_CLKCTL_ENC( 0ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_ACMPCTL_ACMP01CKEN_Pos)|\
                          MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
                          MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< ACMP01 Module */
@@ -529,19 +529,19 @@ extern "C"
 #define ACMP23_MODULE   (MODULE_CLKCTL_ENC( 0ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_ACMPCTL_ACMP23CKEN_Pos)|\
                          MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
                          MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< ACMP23 Module */
-                         
+
 #define AWF0_MODULE     (MODULE_CLKCTL_ENC( 1ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_AWFCTL_AWF0CKEN_Pos)|\
                          MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
-                         MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< AWF0 Module */                         
+                         MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< AWF0 Module */
 
 #define BPWM0_MODULE    (MODULE_CLKCTL_ENC( 2ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_BPWMCTL_BPWM0CKEN_Pos)|\
                          MODULE_CLKSEL_ENC( 1ULL)|MODULE_CLKSEL_Msk_ENC( 0x1ULL)|MODULE_CLKSEL_Pos_ENC((uint64_t)CLK_BPWMSEL_BPWM0SEL_Pos)|\
                          MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< BPWM0 Module */
-                         
+
 #define BPWM1_MODULE    (MODULE_CLKCTL_ENC( 2ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_BPWMCTL_BPWM1CKEN_Pos)|\
                          MODULE_CLKSEL_ENC( 1ULL)|MODULE_CLKSEL_Msk_ENC( 0x1ULL)|MODULE_CLKSEL_Pos_ENC((uint64_t)CLK_BPWMSEL_BPWM1SEL_Pos)|\
                          MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< BPWM1 Module */
-                         
+
 #define CANFD0_MODULE   (MODULE_CLKCTL_ENC( 3ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_CANFDCTL_CANFD0CKEN_Pos)|\
                          MODULE_CLKSEL_ENC( 2ULL)|MODULE_CLKSEL_Msk_ENC( 0x7ULL)|MODULE_CLKSEL_Pos_ENC((uint64_t)CLK_CANFDSEL_CANFD0SEL_Pos)|\
                          MODULE_CLKDIV_ENC( 4ULL)|MODULE_CLKDIV_Msk_ENC(0xFFULL)|MODULE_CLKDIV_Pos_ENC((uint64_t)CLK_CANFDDIV_CANFD0DIV_Pos))      /*!< CANFD0 Module */
@@ -549,7 +549,7 @@ extern "C"
 #define CANFD1_MODULE   (MODULE_CLKCTL_ENC( 3ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_CANFDCTL_CANFD1CKEN_Pos)|\
                          MODULE_CLKSEL_ENC( 2ULL)|MODULE_CLKSEL_Msk_ENC( 0x7ULL)|MODULE_CLKSEL_Pos_ENC((uint64_t)CLK_CANFDSEL_CANFD1SEL_Pos)|\
                          MODULE_CLKDIV_ENC( 4ULL)|MODULE_CLKDIV_Msk_ENC(0xFFULL)|MODULE_CLKDIV_Pos_ENC((uint64_t)CLK_CANFDDIV_CANFD1DIV_Pos))      /*!< CANFD1 Module */
-                         
+
 #define CCAP0_MODULE    (MODULE_CLKCTL_ENC( 4ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_CCAPCTL_CCAP0CKEN_Pos)|\
                          MODULE_CLKSEL_ENC( 3ULL)|MODULE_CLKSEL_Msk_ENC( 0x7ULL)|MODULE_CLKSEL_Pos_ENC((uint64_t)CLK_CCAPSEL_CCAP0SEL_Pos)|\
                          MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< CCAP0 Module */
@@ -649,7 +649,7 @@ extern "C"
 #define GPIOB_MODULE    (MODULE_CLKCTL_ENC(17ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_GPIOCTL_GPIOBCKEN_Pos)|\
                          MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
                          MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< GPIOB Module */
-                         
+
 #define GPIOC_MODULE    (MODULE_CLKCTL_ENC(17ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_GPIOCTL_GPIOCCKEN_Pos)|\
                          MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
                          MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< GPIOC Module */
@@ -773,7 +773,7 @@ extern "C"
 #define NPU0_MODULE     (MODULE_CLKCTL_ENC(35ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_NPUCTL_NPU0CKEN_Pos)|\
                          MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
                          MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< NPU0 Module */
-                         
+
 #define OTFC0_MODULE    (MODULE_CLKCTL_ENC(37ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_OTFCCTL_OTFC0CKEN_Pos)|\
                          MODULE_CLKSEL_ENC(   NA)|MODULE_CLKSEL_Msk_ENC(     NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
                          MODULE_CLKDIV_ENC(   NA)|MODULE_CLKDIV_Msk_ENC(     NA)|MODULE_CLKDIV_Pos_ENC(NA))                                        /*!< OTFC0 Module */
@@ -921,7 +921,7 @@ extern "C"
 #define UART1_MODULE    (MODULE_CLKCTL_ENC(56ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_UARTCTL_UART1CKEN_Pos)|\
                          MODULE_CLKSEL_ENC(24ULL)|MODULE_CLKSEL_Msk_ENC( 0x7ULL)|MODULE_CLKSEL_Pos_ENC((uint64_t)CLK_UARTSEL0_UART1SEL_Pos)|\
                          MODULE_CLKDIV_ENC(15ULL)|MODULE_CLKDIV_Msk_ENC( 0xFULL)|MODULE_CLKDIV_Pos_ENC((uint64_t)CLK_UARTDIV0_UART1DIV_Pos))       /*!< UART1 Module */
-                         
+
 #define UART2_MODULE    (MODULE_CLKCTL_ENC(56ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_UARTCTL_UART2CKEN_Pos)|\
                          MODULE_CLKSEL_ENC(24ULL)|MODULE_CLKSEL_Msk_ENC( 0x7ULL)|MODULE_CLKSEL_Pos_ENC((uint64_t)CLK_UARTSEL0_UART2SEL_Pos)|\
                          MODULE_CLKDIV_ENC(15ULL)|MODULE_CLKDIV_Msk_ENC( 0xFULL)|MODULE_CLKDIV_Pos_ENC((uint64_t)CLK_UARTDIV0_UART2DIV_Pos))       /*!< UART2 Module */
@@ -949,10 +949,10 @@ extern "C"
 #define UART8_MODULE    (MODULE_CLKCTL_ENC(56ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_UARTCTL_UART8CKEN_Pos)|\
                          MODULE_CLKSEL_ENC(25ULL)|MODULE_CLKSEL_Msk_ENC( 0x7ULL)|MODULE_CLKSEL_Pos_ENC((uint64_t)CLK_UARTSEL1_UART8SEL_Pos)|\
                          MODULE_CLKDIV_ENC(16ULL)|MODULE_CLKDIV_Msk_ENC( 0xFULL)|MODULE_CLKDIV_Pos_ENC((uint64_t)CLK_UARTDIV1_UART8DIV_Pos))       /*!< UART8 Module */
-                         
+
 #define UART9_MODULE    (MODULE_CLKCTL_ENC(56ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_UARTCTL_UART9CKEN_Pos)|\
                          MODULE_CLKSEL_ENC(25ULL)|MODULE_CLKSEL_Msk_ENC( 0x7ULL)|MODULE_CLKSEL_Pos_ENC((uint64_t)CLK_UARTSEL1_UART9SEL_Pos)|\
-                         MODULE_CLKDIV_ENC(16ULL)|MODULE_CLKDIV_Msk_ENC( 0xFULL)|MODULE_CLKDIV_Pos_ENC((uint64_t)CLK_UARTDIV1_UART9DIV_Pos))       /*!< UART9 Module */                         
+                         MODULE_CLKDIV_ENC(16ULL)|MODULE_CLKDIV_Msk_ENC( 0xFULL)|MODULE_CLKDIV_Pos_ENC((uint64_t)CLK_UARTDIV1_UART9DIV_Pos))       /*!< UART9 Module */
 
 #define USBD0_MODULE    (MODULE_CLKCTL_ENC(57ULL)|MODULE_CLKEN_Pos_ENC((uint64_t)CLK_USBDCTL_USBD0CKEN_Pos)|\
                          MODULE_CLKSEL_ENC(26ULL)|MODULE_CLKSEL_Msk_ENC( 0x1ULL)|MODULE_CLKSEL_Pos_ENC((uint64_t)CLK_USBSEL_USBSEL_Pos)|\
@@ -1003,7 +1003,7 @@ extern "C"
   * @brief      Set HCLK0 Divider
   * @param      u32Hclk0Div is HCLK0 clock divider.  It could be 1~16
   * @return     None
-  * @details    This macro set HCLK0 clock divider 
+  * @details    This macro set HCLK0 clock divider
   */
 #define CLK_SET_HCLK0DIV(u32Hclk0Div)        (CLK->HCLKDIV = (CLK->HCLKDIV & (~CLK_HCLKDIV_HCLK0DIV_Msk)) | CLK_HCLKDIV_HCLK0DIV(u32Hclk0Div))
 
@@ -1011,7 +1011,7 @@ extern "C"
   * @brief      Set HCLK1 Divider
   * @param      u32Hclk1Div is HCLK1 clock divider.  It could be 1~16
   * @return     None
-  * @details    This macro set HCLK1 clock divider 
+  * @details    This macro set HCLK1 clock divider
   */
 #define CLK_SET_HCLK1DIV(u32Hclk1Div)        (CLK->HCLKDIV = (CLK->HCLKDIV & (~CLK_HCLKDIV_HCLK1DIV_Msk)) | CLK_HCLKDIV_HCLK1DIV(u32Hclk1Div))
 
@@ -1019,7 +1019,7 @@ extern "C"
   * @brief      Set HCLK2 Divider
   * @param      u32Hclk2Div is HCLK2 clock divider.  It could be 1~16
   * @return     None
-  * @details    This macro set HCLK2 clock divider 
+  * @details    This macro set HCLK2 clock divider
   */
 #define CLK_SET_HCLK2DIV(u32Hclk2Div)        (CLK->HCLKDIV = (CLK->HCLKDIV & (~CLK_HCLKDIV_HCLK2DIV_Msk)) | CLK_HCLKDIV_HCLK2DIV(u32Hclk2Div))
 
@@ -1027,7 +1027,7 @@ extern "C"
   * @brief      Set PCLK0 Divider
   * @param      u32PCLK0Div is PCLK0 clock divider.  It could be 1~16
   * @return     None
-  * @details    This macro set PCLK0 clock divider 
+  * @details    This macro set PCLK0 clock divider
   */
 #define CLK_SET_PCLK0DIV(u32PCLK0Div)        (CLK->PCLKDIV = (CLK->PCLKDIV & (~CLK_PCLKDIV_PCLK0DIV_Msk)) | CLK_PCLKDIV_PCLK0DIV(u32PCLK0Div))
 
@@ -1035,7 +1035,7 @@ extern "C"
   * @brief      Set PCLK1 Divider
   * @param      u32PCLK1Div is PCLK1 clock divider.  It could be 1~16
   * @return     None
-  * @details    This macro set PCLK1 clock divider 
+  * @details    This macro set PCLK1 clock divider
   */
 #define CLK_SET_PCLK1DIV(u32PCLK1Div)        (CLK->PCLKDIV = (CLK->PCLKDIV & (~CLK_PCLKDIV_PCLK1DIV_Msk)) | CLK_PCLKDIV_PCLK1DIV(u32PCLK1Div))
 
@@ -1043,7 +1043,7 @@ extern "C"
   * @brief      Set PCLK2 Divider
   * @param      u32PCLK2Div is PCLK2 clock divider.  It could be 1~16
   * @return     None
-  * @details    This macro set PCLK2 clock divider 
+  * @details    This macro set PCLK2 clock divider
   */
 #define CLK_SET_PCLK2DIV(u32PCLK2Div)        (CLK->PCLKDIV = (CLK->PCLKDIV & (~CLK_PCLKDIV_PCLK2DIV_Msk)) | CLK_PCLKDIV_PCLK2DIV(u32PCLK2Div))
 
@@ -1051,7 +1051,7 @@ extern "C"
   * @brief      Set PCLK3 Divider
   * @param      u32PCLK3Div is PCLK3 clock divider.  It could be 1~16
   * @return     None
-  * @details    This macro set PCLK3 clock divider 
+  * @details    This macro set PCLK3 clock divider
   */
 #define CLK_SET_PCLK3DIV(u32PCLK3Div)        (CLK->PCLKDIV = (CLK->PCLKDIV & (~CLK_PCLKDIV_PCLK3DIV_Msk)) | CLK_PCLKDIV_PCLK3DIV(u32PCLK3Div))
 
@@ -1059,7 +1059,7 @@ extern "C"
   * @brief      Set PCLK4 Divider
   * @param      u32PCLK4Div is PCLK4 clock divider.  It could be 1~16
   * @return     None
-  * @details    This macro set PCLK4 clock divider 
+  * @details    This macro set PCLK4 clock divider
   */
 #define CLK_SET_PCLK4DIV(u32PCLK4Div)        (CLK->PCLKDIV = (CLK->PCLKDIV & (~CLK_PCLKDIV_PCLK4DIV_Msk)) | CLK_PCLKDIV_PCLK4DIV(u32PCLK4Div))
 
@@ -1086,7 +1086,7 @@ __STATIC_INLINE void CLK_SysTickDelay(uint32_t us)
     SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
 
     /* Waiting for down-count to zero */
-    while((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0UL)
+    while ((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0UL)
     {
     }
 
@@ -1111,7 +1111,7 @@ __STATIC_INLINE void CLK_SysTickLongDelay(uint32_t us)
 
     do
     {
-        if(us > u32Delay)
+        if (us > u32Delay)
         {
             us -= u32Delay;
         }
@@ -1126,11 +1126,11 @@ __STATIC_INLINE void CLK_SysTickLongDelay(uint32_t us)
         SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
 
         /* Waiting for down-count to zero */
-        while((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0UL);
+        while ((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0UL);
 
         /* Disable SysTick counter */
         SysTick->CTRL = 0UL;
-    }while(us > 0UL);
+    } while (us > 0UL);
 }
 
 

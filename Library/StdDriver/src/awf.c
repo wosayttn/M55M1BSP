@@ -134,7 +134,7 @@ void AWF_SetDAT(uint32_t u32Value)
   * @param[in]  None
   * @return     Accumlation value.
   * @details    This API is used to get Accumlation value.
-  *             Accumulated value will be accumulated from word0 to word[ACUCNT-1]. 
+  *             Accumulated value will be accumulated from word0 to word[ACUCNT-1].
   */
 uint32_t AWF_GetAccumlationValue(void)
 {

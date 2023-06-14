@@ -57,10 +57,10 @@ void EBI_Open(uint32_t u32Bank, uint32_t u32DataWidth, uint32_t u32TimingClass, 
 {
     uint32_t u32Index0 = (uint32_t)&EBI->CTL0 + ((uint32_t)u32Bank * 0x10UL);
     uint32_t u32Index1 = (uint32_t)&EBI->TCTL0 + ((uint32_t)u32Bank * 0x10UL);
-    volatile uint32_t *pu32EBICTL  = (uint32_t *)( u32Index0 );
-    volatile uint32_t *pu32EBITCTL = (uint32_t *)( u32Index1 );
+    volatile uint32_t *pu32EBICTL  = (uint32_t *)(u32Index0);
+    volatile uint32_t *pu32EBITCTL = (uint32_t *)(u32Index1);
 
-    if(u32DataWidth == EBI_BUSWIDTH_8BIT)
+    if (u32DataWidth == EBI_BUSWIDTH_8BIT)
     {
         *pu32EBICTL &= ~EBI_CTL_DW16_Msk;
     }
@@ -71,7 +71,7 @@ void EBI_Open(uint32_t u32Bank, uint32_t u32DataWidth, uint32_t u32TimingClass, 
 
     *pu32EBICTL |= u32BusMode;
 
-    switch(u32TimingClass)
+    switch (u32TimingClass)
     {
         case EBI_TIMING_FASTEST:
             *pu32EBICTL = (*pu32EBICTL & ~(EBI_CTL_MCLKDIV_Msk | EBI_CTL_TALE_Msk)) |
@@ -148,7 +148,7 @@ void EBI_Open(uint32_t u32Bank, uint32_t u32DataWidth, uint32_t u32TimingClass, 
 void EBI_Close(uint32_t u32Bank)
 {
     uint32_t u32Index = (uint32_t)&EBI->CTL0 + (u32Bank * 0x10UL);
-    volatile uint32_t *pu32EBICTL = (uint32_t *)( u32Index );
+    volatile uint32_t *pu32EBICTL = (uint32_t *)(u32Index);
 
     *pu32EBICTL &= ~EBI_CTL_EN_Msk;
 }
@@ -179,8 +179,8 @@ void EBI_SetBusTiming(uint32_t u32Bank, uint32_t u32TimingConfig, uint32_t u32Mc
 {
     uint32_t u32Index0 = (uint32_t)&EBI->CTL0 + (u32Bank * 0x10UL);
     uint32_t u32Index1 = (uint32_t)&EBI->TCTL0 + (u32Bank * 0x10UL);
-    volatile uint32_t *pu32EBICTL  = (uint32_t *)( u32Index0 );
-    volatile uint32_t *pu32EBITCTL = (uint32_t *)( u32Index1 );
+    volatile uint32_t *pu32EBICTL  = (uint32_t *)(u32Index0);
+    volatile uint32_t *pu32EBITCTL = (uint32_t *)(u32Index1);
 
     *pu32EBICTL = (*pu32EBICTL & ~EBI_CTL_MCLKDIV_Msk) | (u32MclkDiv << EBI_CTL_MCLKDIV_Pos);
     *pu32EBITCTL = u32TimingConfig;

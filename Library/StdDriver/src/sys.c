@@ -157,9 +157,9 @@ int32_t SYS_EnableBOD(int32_t i32Mode, uint32_t u32BODLevel)
     /* Select Brown-out Detector threshold voltage */
     SYS_WAIT_BODCTL_WRBUSY();
 
-    if( (SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk) == 0 )
+    if ((SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk) == 0)
         SYS->BODCTL = (SYS->BODCTL & ~(SYS_BODCTL_BODRSTEN_Msk | SYS_BODCTL_BODVL_Msk)) | \
-                  ((uint32_t)i32Mode) | (u32BODLevel) | (SYS_BODCTL_BODEN_Msk);
+                      ((uint32_t)i32Mode) | (u32BODLevel) | (SYS_BODCTL_BODEN_Msk);
     else return SYS_ERR_TIMEOUT;
 
     return SYS_OK;
@@ -177,7 +177,7 @@ int32_t SYS_DisableBOD(void)
 {
     SYS_WAIT_BODCTL_WRBUSY();
 
-    if( (SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk) == 0 )
+    if ((SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk) == 0)
         SYS->BODCTL &= ~SYS_BODCTL_BODEN_Msk;
     else return SYS_ERR_TIMEOUT;
 

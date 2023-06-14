@@ -4017,10 +4017,10 @@ extern "C"
   * @param      None
   * @return     None
   * @details    This macro clear Brown-out detector interrupt flag.
-  * \hideinitializer  
+  * \hideinitializer
   */
 #define SYS_CLEAR_BOD_INT_FLAG() \
-   do{ \
+    do{ \
         while(SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk); \
         SYS->BODCTL |= SYS_BODCTL_BODIF_Msk; \
     }while(0)
@@ -4034,7 +4034,7 @@ extern "C"
   * \hideinitializer
   */
 #define SYS_CLEAR_BOD_LPM() \
-   do{ \
+    do{ \
         while(SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk); \
         SYS->BODCTL &= ~SYS_BODCTL_BODLPM_Msk; \
     }while(0)
@@ -4048,7 +4048,7 @@ extern "C"
   * \hideinitializer
   */
 #define SYS_DISABLE_BOD() \
-   do{ \
+    do{ \
         while(SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk); \
         SYS->BODCTL &= ~SYS_BODCTL_BODEN_Msk; \
     }while(0)
@@ -4062,7 +4062,7 @@ extern "C"
   * \hideinitializer
   */
 #define SYS_ENABLE_BOD() \
-   do{ \
+    do{ \
         while(SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk); \
         SYS->BODCTL |= SYS_BODCTL_BODEN_Msk; \
     }while(0)
@@ -4097,7 +4097,7 @@ extern "C"
   * \hideinitializer
   */
 #define SYS_DISABLE_BOD_RST() \
-   do{ \
+    do{ \
         while(SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk); \
         SYS->BODCTL &= ~SYS_BODCTL_BODRSTEN_Msk; \
     }while(0)
@@ -4111,7 +4111,7 @@ extern "C"
   * \hideinitializer
   */
 #define SYS_ENABLE_BOD_RST() \
-   do{ \
+    do{ \
         while(SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk); \
         SYS->BODCTL |= SYS_BODCTL_BODRSTEN_Msk; \
     }while(0)
@@ -4125,14 +4125,14 @@ extern "C"
   * \hideinitializer
   */
 #define SYS_SET_BOD_LPM() \
-   do{ \
+    do{ \
         while(SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk); \
         SYS->BODCTL |= SYS_BODCTL_BODLPM_Msk; \
     }while(0)
-   
+
 /**
   * @brief      Set Brown-out detector voltage level
-  * @param[in]  u32Level is Brown-out voltage level. Including :   
+  * @param[in]  u32Level is Brown-out voltage level. Including :
   *             - \ref SYS_BODCTL_BODVL_1_6V
   *             - \ref SYS_BODCTL_BODVL_1_8V
   *             - \ref SYS_BODCTL_BODVL_2_0V
@@ -4147,7 +4147,7 @@ extern "C"
   * \hideinitializer
   */
 #define SYS_SET_BOD_LEVEL(u32Level) \
-   do{ \
+    do{ \
         while(SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk); \
         SYS->BODCTL = (SYS->BODCTL & ~SYS_BODCTL_BODVL_Msk) | (u32Level); \
     }while(0)
@@ -4242,7 +4242,7 @@ extern "C"
   * \hideinitializer
   */
 #define SYS_DISABLE_LVR() \
-   do{ \
+    do{ \
         while(SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk); \
         SYS->BODCTL &= ~SYS_BODCTL_LVREN_Msk; \
     }while(0)
@@ -4256,7 +4256,7 @@ extern "C"
   * \hideinitializer
   */
 #define SYS_ENABLE_LVR() \
-   do{ \
+    do{ \
         while(SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk); \
         SYS->BODCTL |= SYS_BODCTL_LVREN_Msk; \
     }while(0)
@@ -4295,7 +4295,7 @@ extern "C"
             if(--u32TimeOutCnt == 0) break; \
         } \
     }while(0)
-    
+
 /**
   * @brief      Wait SYS_VREFCTL Write Busy Flag
   * @param      None
@@ -4343,9 +4343,8 @@ __STATIC_INLINE void SYS_UnlockReg(void)
         SYS->REGLCTL = 0x16UL;
         SYS->REGLCTL = 0x88UL;
 
-        if(--u32TimeOutCount == 0) break;
-    }
-    while(SYS->REGLCTL == 0UL);
+        if (--u32TimeOutCount == 0) break;
+    } while (SYS->REGLCTL == 0UL);
 }
 
 /**
