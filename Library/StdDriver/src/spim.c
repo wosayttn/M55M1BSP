@@ -1790,7 +1790,7 @@ int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, PHASE_SET_T *pPhaseTable,
                          isSync);
 }
 
-int32_t SPIM_DirectMap_Phase(SPIM_T *spim, PHASE_SET_T *pPhaseTable, int is4ByteAddr, uint32_t u32IdleIntvl)
+void SPIM_DirectMap_Phase(SPIM_T *spim, PHASE_SET_T *pPhaseTable, int is4ByteAddr, uint32_t u32IdleIntvl)
 {
     SPIM_DMADMM_InitPhase(spim, pPhaseTable, SPIM_CTL0_OPMODE_DIRECTMAP);
 

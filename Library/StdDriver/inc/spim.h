@@ -2185,7 +2185,7 @@ int32_t SPIM_DMADMM_SetDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32N
 void SPIM_DMADMM_InitPhase(SPIM_T *spim, PHASE_SET_T *pPhaseTable, uint32_t u32OPMode);
 void SPIM_DMA_WritePhase(SPIM_T *spim, PHASE_SET_T *pPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint32_t u32WrSize, void *pvTxBuf);
 int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, PHASE_SET_T *pPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint32_t u32RdSize, void *pvRxBuf, int isSync);
-int32_t SPIM_DirectMap_Phase(SPIM_T *spim, PHASE_SET_T *pPhaseTable, int is4ByteAddr, uint32_t u32IdleIntvl);
+void SPIM_DirectMap_Phase(SPIM_T *spim, PHASE_SET_T *pPhaseTable, int is4ByteAddr, uint32_t u32IdleIntvl);
 
 /* Use Normal I/O mode send phase data */
 void SPIM_IO_SendCMDPhase(SPIM_T *spim, uint32_t u32RdCMD, uint32_t u32CmdPhase, uint32_t u32DTREn, uint32_t isSync);
