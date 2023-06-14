@@ -11,77 +11,79 @@
 #include <string.h>
 #include "NuMicro.h"
 
+
 #ifndef STDIN_ECHO
-#define STDIN_ECHO      0       /* STDIN: echo to STDOUT */
+    #define STDIN_ECHO      0       // STDIN: echo to STDOUT
 #endif
 
 #if defined(DEBUG_ENABLE_SEMIHOST)
-
 /* The static buffer is used to speed up the semihost */
 static char g_buf[16];
 static uint8_t g_buf_len = 0;
-static volatile int32_t g_ICE_Conneced = 1;
+static volatile int32_t g_ICE_Connected = 1;
 
 /**
- *
  * @brief      The function to process semihosted command
+ *
  * @param[in]  n32In_R0  : semihost register 0
  * @param[in]  n32In_R1  : semihost register 1
  * @param[out] pn32Out_R0: semihost register 0
+ *
  * @retval     0: No ICE debug
  * @retval     1: ICE debug
- *
  */
 int32_t SH_Return(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
 {
     (void)n32In_R1;
 
-    if(g_ICE_Conneced)
+    if (g_ICE_Connected)
     {
-        if(pn32Out_R0)
+        if (pn32Out_R0)
             *pn32Out_R0 = n32In_R0;
 
         return 1;
     }
+
     return 0;
 }
+
 /**
- *
  * @brief      The function to process semihosted command
+ *
  * @param[in]  n32In_R0  : semihost register 0
  * @param[in]  n32In_R1  : semihost register 1
  * @param[out] pn32Out_R0: semihost register 0
+ *
  * @retval     0: No ICE debug
  * @retval     1: ICE debug
- *
  */
-
 int32_t SH_DoCommand(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
 {
-	__asm volatile(" BKPT   0xAB              \n"); //Wait ICE or HardFault
-	return SH_Return(n32In_R0, n32In_R1, pn32Out_R0);
+    __asm volatile(" BKPT   0xAB              \n"); //Wait ICE or HardFault
+    return SH_Return(n32In_R0, n32In_R1, pn32Out_R0);
 }
 #endif
 
 /**
- * @brief    Routine to send a char
+ * @brief     Routine to send a char
  *
  * @param[in] ch  A character data writes to debug port
+ * @returns   Send value from UART debug port
  *
- * @returns  Send value from UART debug port
- *
- * @details  Send a target char to UART debug port .
+ * @details   Send a target char to UART debug port .
  */
 #ifndef NONBLOCK_PRINTF
 static void SendChar_ToUART(int ch)
 {
-    if((char)ch == '\n')
+    if ((char)ch == '\n')
     {
-        while(DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk) {}
+        while (DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk) {}
+
         DEBUG_PORT->DAT = '\r';
     }
 
-    while(DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk) {}
+    while (DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk) {}
+
     DEBUG_PORT->DAT = (uint32_t)ch;
 }
 
@@ -95,14 +97,16 @@ static void SendChar_ToUART(int ch)
     static int32_t i32Tail = 0;
     int32_t i32Tmp;
 
-    /* Only flush the data in buffer to UART when ch == 0 */
-    if(ch)
+    // Only flush the data in buffer to UART when ch == 0
+    if (ch)
     {
-        if(ch == '\n')
+        if (ch == '\n')
         {
             i32Tmp = i32Head + 1;
-            if(i32Tmp > BUF_SIZE) i32Tmp = 0;
-            if(i32Tmp != i32Tail)
+
+            if (i32Tmp > BUF_SIZE) i32Tmp = 0;
+
+            if (i32Tmp != i32Tail)
             {
                 u8Buf[i32Head] = '\r';
                 i32Head = i32Tmp;
@@ -111,17 +115,18 @@ static void SendChar_ToUART(int ch)
 
         // Push char
         i32Tmp = i32Head + 1;
-        if(i32Tmp > BUF_SIZE) i32Tmp = 0;
-        if(i32Tmp != i32Tail)
+
+        if (i32Tmp > BUF_SIZE) i32Tmp = 0;
+
+        if (i32Tmp != i32Tail)
         {
             u8Buf[i32Head] = ch;
             i32Head = i32Tmp;
         }
-
     }
     else
     {
-        if(i32Tail == i32Head)
+        if (i32Tail == i32Head)
             return;
     }
 
@@ -129,42 +134,41 @@ static void SendChar_ToUART(int ch)
     do
     {
         i32Tmp = i32Tail + 1;
-        if(i32Tmp > BUF_SIZE) i32Tmp = 0;
 
-        if((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk) == 0)
+        if (i32Tmp > BUF_SIZE) i32Tmp = 0;
+
+        if ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk) == 0)
         {
             DEBUG_PORT->DAT = u8Buf[i32Tail];
             i32Tail = i32Tmp;
         }
         else
             break; // FIFO full
-    }
-    while(i32Tail != i32Head);
+    } while (i32Tail != i32Head);
 }
 #endif
 
 /**
- * @brief    Routine to send a char
+ * @brief     Routine to send a char
  *
  * @param[in] ch A character data writes to debug port
+ * @returns   Send value from UART debug port or semihost
  *
- * @returns  Send value from UART debug port or semihost
- *
- * @details  Send a target char to UART debug port or semihost.
+ * @details   Send a target char to UART debug port or semihost.
  */
 static void SendChar(int ch)
 {
 #if defined(DEBUG_ENABLE_SEMIHOST)
-
     g_buf[g_buf_len++] = (char)ch;
     g_buf[g_buf_len] = '\0';
-    if(g_buf_len + 1 >= sizeof(g_buf) || ch == '\n' || ch == '\0')
+
+    if (g_buf_len + 1 >= sizeof(g_buf) || ch == '\n' || ch == '\0')
     {
-        /* Send the char */
-        if(g_ICE_Conneced)
+        // Send the char
+        if (g_ICE_Connected)
         {
 
-            if(SH_DoCommand(0x04, (int)g_buf, NULL) != 0)
+            if (SH_DoCommand(0x04, (int)g_buf, NULL) != 0)
             {
                 g_buf_len = 0;
 
@@ -176,17 +180,18 @@ static void SendChar(int ch)
 # if (DEBUG_ENABLE_SEMIHOST == 2) // Re-direct to UART Debug Port only when DEBUG_ENABLE_SEMIHOST=2
             int i;
 
-            for(i = 0; i < g_buf_len; i++)
+            for (i = 0; i < g_buf_len; i++)
                 SendChar_ToUART(g_buf[i]);
+
             g_buf_len = 0;
 # endif
         }
     }
+
 #else
     SendChar_ToUART(ch);
 #endif
 }
-
 
 /**
  * @brief    Routine to get a char
@@ -201,38 +206,40 @@ static char GetChar(void)
 {
 #ifdef DEBUG_ENABLE_SEMIHOST
     int nRet;
-    while(SH_DoCommand(0x101, 0, &nRet) != 0)
+
+    while (SH_DoCommand(0x101, 0, &nRet) != 0)
     {
-        if(nRet != 0)
+        if (nRet != 0)
         {
             SH_DoCommand(0x07, 0, &nRet);
             return (char)nRet;
         }
     }
 
-
 # if (DEBUG_ENABLE_SEMIHOST == 2) // Re-direct to UART Debug Port only when DEBUG_ENABLE_SEMIHOST=2
 
-    /* Use debug port when ICE is not connected at semihost mode */
-    while(!g_ICE_Conneced)
+    // Use debug port when ICE is not connected at semihost mode
+    while (!g_ICE_Connected)
     {
-        if((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0)
+        if ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0)
         {
             return (DEBUG_PORT->DAT);
         }
     }
-# endif
 
+# endif
     return (0);
+
 #else
 
-    while(1)
+    while (1)
     {
-        if((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0U)
+        if ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0U)
         {
             return ((char)DEBUG_PORT->DAT);
         }
     }
+
 #endif
 }
 
@@ -241,7 +248,7 @@ void ProcessHardFault(uint32_t *excContext)
     uint32_t inst, addr, taddr, tdata;
     uint32_t rm, rn, rt, imm5, imm8;
 
-    /* It is casued by hardfault. Just process the hard fault */
+    // It is caused by hardfault. Just process the hard fault.
 
     /*
         r0  = excContext[0]
@@ -254,8 +261,7 @@ void ProcessHardFault(uint32_t *excContext)
         psr = excContext[7]
     */
 
-
-    /* Get the instruction caused the hardfault */
+    // Get the instruction caused the hardfault
     addr = excContext[6];
     inst = M16(addr);
 
@@ -263,13 +269,13 @@ void ProcessHardFault(uint32_t *excContext)
 
     printf("Instruction code = %x\n", inst);
 
-    if(inst == 0xBEAB)
+    if (inst == 0xBEAB)
     {
         printf("Execute BKPT without ICE connected\n");
     }
-    else if((inst >> 12) == 5)
+    else if ((inst >> 12) == 5)
     {
-        /* 0101xx Load/store (register offset) on page C2-327 of armv8m ref */
+        // 0101xx Load/store (register offset) on page C2-327 of Armv8-M ref
         rm = (inst >> 6) & 0x7;
         rn = (inst >> 3) & 0x7;
         rt = inst & 0x7;
@@ -279,11 +285,10 @@ void ProcessHardFault(uint32_t *excContext)
         tdata = excContext[rt];
         printf("[0x%08x] 0x%04x %s 0x%x [0x%x]\n", addr, inst,
                (inst & BIT11) ? "LDR" : "STR", tdata, taddr);
-
     }
-    else if((inst >> 13) == 3)
+    else if ((inst >> 13) == 3)
     {
-        /* 011xxx    Load/store word/byte (immediate offset) on page C2-327 of armv8m ref */
+        // 011xxx    Load/store word/byte (immediate offset) on page C2-327 of Armv8-M ref
         imm5 = (inst >> 6) & 0x1f;
         rn = (inst >> 3) & 0x7;
         rt = inst & 0x7;
@@ -294,9 +299,9 @@ void ProcessHardFault(uint32_t *excContext)
         printf("[0x%08x] 0x%04x %s 0x%x [0x%x]\n", addr, inst,
                (inst & BIT11) ? "LDR" : "STR", tdata, taddr);
     }
-    else if((inst >> 12) == 8)
+    else if ((inst >> 12) == 8)
     {
-        /* 1000xx    Load/store halfword (immediate offset) on page C2-328 */
+        // 1000xx    Load/store halfword (immediate offset) on page C2-328
         imm5 = (inst >> 6) & 0x1f;
         rn = (inst >> 3) & 0x7;
         rt = inst & 0x7;
@@ -306,11 +311,10 @@ void ProcessHardFault(uint32_t *excContext)
         tdata = excContext[rt];
         printf("[0x%08x] 0x%04x %s 0x%x [0x%x]\n", addr, inst,
                (inst & BIT11) ? "LDR" : "STR", tdata, taddr);
-
     }
-    else if((inst >> 12) == 9)
+    else if ((inst >> 12) == 9)
     {
-        /* 1001xx    Load/store (SP-relative) on page C2-328 */
+        // 1001xx    Load/store (SP-relative) on page C2-328
         imm8 = inst & 0xff;
         rt = (inst >> 8) & 0x7;
 
@@ -325,19 +329,18 @@ void ProcessHardFault(uint32_t *excContext)
         printf("Unexpected instruction\n");
     }
 
-
-    /* Or *sp to remove compiler warning */
-    while(1U | *excContext) {}
+    // Or *sp to remove compiler warning
+    while (1U | *excContext) {}
 }
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION)
-#include "../../Device/Nuvoton/M55M1/Source/GCC/retarget_GCC.c"
+    #include "../../Device/Nuvoton/M55M1/Source/GCC/retarget_GCC.c"
 #endif
 
 #if defined (__ARMCC_VERSION)
-#include "../../Device/Nuvoton/M55M1/Source/ARM/retarget_ARMCC.c"
+    #include "../../Device/Nuvoton/M55M1/Source/ARM/retarget_ARMCC.c"
 #endif
 
 #if defined (__ICCARM__)
-#include "../../Device/Nuvoton/M55M1/Source/IAR/retarget_ICC.c"
+    #include "../../Device/Nuvoton/M55M1/Source/IAR/retarget_ICC.c"
 #endif
