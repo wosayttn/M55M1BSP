@@ -491,8 +491,9 @@ void HardFault_Handler(void)
     int irq;
     struct ExcContext *e;
     uint32_t sp;
+    uint32_t u32CFSR, u32BFAR;
 
-    __asm volatile("mrs %0, ipsr            \n" // Read IPSR (Exception number)
+    __ASM volatile("mrs %0, ipsr            \n" // Read IPSR (Exception number)
                    "sub %0, #16             \n" // Get it into IRQn_Type range
                    "tst lr, #4              \n" // Select the stack which was in use
                    "ite eq                  \n"
@@ -504,7 +505,10 @@ void HardFault_Handler(void)
 
     printf("Hard fault. irq=%d, pc=0x%08" PRIx32 ", lr=0x%08" PRIx32 ", xpsr=0x%08" PRIx32 ", sp=0x%08" PRIx32 "\n",
            irq, e->pc, e->lr, e->xPsr, sp);
-    printf("%11s cfsr=0x%08" PRIx32 " bfar=0x%08" PRIx32 " mmfar=0x%08" PRIx32 "\n", "", SCB->CFSR, SCB->BFAR, SCB->MMFAR);
+    /* Read volatile registers into temporary variables to fix IAR [Pa082] the order of volatile accesses is undefined */
+    u32CFSR = SCB->CFSR;
+    u32BFAR = SCB->BFAR;
+    printf("%11s cfsr=0x%08" PRIx32 " bfar=0x%08" PRIx32 " mmfar=0x%08" PRIx32 "\n", "", u32CFSR, u32BFAR, SCB->MMFAR);
 
     // Get the instruction caused the hardfault
     ProcessHardFault((uint32_t *)e);

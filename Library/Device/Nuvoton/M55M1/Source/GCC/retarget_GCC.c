@@ -225,7 +225,7 @@ int RETARGET(_fstat)(int fd, struct stat *st)
     return 0;
 }
 
-int RETARGET(_kill)(int, int)
+int RETARGET(_kill)(int pid, int sig)
 {
     return (-1);
 }

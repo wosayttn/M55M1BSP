@@ -1,11 +1,11 @@
-/******************************************************************************
-* @file    main.c
-* @version V1.00
-* @brief   Template for M55M1 series MCU
-*
-* SPDX-License-Identifier: Apache-2.0
-* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
-*****************************************************************************/
+/**************************************************************************//**
+ * @file    main.c
+ * @version V1.00
+ * @brief   Template for M55M1 series MCU
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 /*
  * This is a template project for M55M1 series MCU.
  * Users can create their own application based on this project.
@@ -44,7 +44,7 @@ static void SYS_Init(void)
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
@@ -76,7 +76,7 @@ int main(void)
 {
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-    /* Init Debug UART for print message */
+    /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
