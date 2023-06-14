@@ -43,7 +43,7 @@ typedef struct s_usbd_info
 
 extern const S_USBD_INFO_T gsInfo;
 
-/** @} end of group USBD_EXPORTED_STRUCT */
+/*@}*/ /* end of group USBD_EXPORTED_STRUCT */
 
 
 /** @addtogroup USBD_EXPORTED_CONSTANTS USBD Exported Constants
@@ -51,7 +51,7 @@ extern const S_USBD_INFO_T gsInfo;
 */
 
 #define USBD_BUF_BASE   (USBD_BASE+0x800ul)  /*!< USBD buffer base address \hideinitializer */
-#define USBD_MAX_EP     25ul /*!< Total EP number \hideinitializer */
+#define USBD_MAX_EP      25ul /*!< Total EP number \hideinitializer */
 
 #define EP0     0ul       /*!< Endpoint 0 \hideinitializer */
 #define EP1     1ul       /*!< Endpoint 1 \hideinitializer */
@@ -814,9 +814,11 @@ void USBD_SetVendorRequest(VENDOR_REQ pfnVendorReq);
 void USBD_SetConfigCallback(SET_CONFIG_CB pfnSetConfigCallback);
 void USBD_LockEpStall(uint32_t u32EpBitmap);
 
-/** @} end of group USBD_EXPORTED_FUNCTIONS */
-/** @} end of group USBD_Driver */
-/** @} end of group Standard_Driver */
+/*@}*/ /* end of group USBD_EXPORTED_FUNCTIONS */
+
+/*@}*/ /* end of group USBD_Driver */
+
+/*@}*/ /* end of group Standard_Driver */
 
 #ifdef __cplusplus
 }

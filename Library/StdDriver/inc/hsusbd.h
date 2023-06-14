@@ -28,7 +28,7 @@ extern "C"
 */
 
 /** @cond HIDDEN_SYMBOLS */
-#define HSUSBD_MAX_EP     12ul
+#define HSUSBD_MAX_EP     18ul
 
 #define Maximum(a,b)    (a)>(b) ? (a) : (b)
 #define Minimum(a,b)    (((a)<(b)) ? (a) : (b))
@@ -46,6 +46,12 @@ extern "C"
 #define EPJ     9ul       /*!< Endpoint J  \hideinitializer */
 #define EPK     10ul      /*!< Endpoint K  \hideinitializer */
 #define EPL     11ul      /*!< Endpoint L  \hideinitializer */
+#define EPM     12ul      /*!< Endpoint M  \hideinitializer */
+#define EPN     13ul      /*!< Endpoint N  \hideinitializer */
+#define EPO     14ul      /*!< Endpoint O  \hideinitializer */
+#define EPP     15ul      /*!< Endpoint P  \hideinitializer */
+#define EPQ     16ul      /*!< Endpoint Q  \hideinitializer */
+#define EPR     17ul      /*!< Endpoint R  \hideinitializer */
 
 /** @endcond HIDDEN_SYMBOLS */
 /********************* Bit definition of CEPCTL register **********************/
