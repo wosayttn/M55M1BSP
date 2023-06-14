@@ -317,7 +317,7 @@ typedef enum
     } while (0)
 
 /**
- * @details         Enable Hyper Device Mode.
+ * @details     Enable Hyper Device Mode.
  * @param   spim
  * @param   x       SPIM operation Mode Bit
  *                  - \ref SPIM_OP_FLASH_MODE : SPI Flash Mode
@@ -332,10 +332,10 @@ typedef enum
     } while (0)
 
 /**
- * @details    Set 4-byte address to be enabled/disabled,
- * @param   x
- *              - \ref 0 : Disable
- *              - \ref 1 : Enable
+ * @details     Set 4-byte address.
+ * @param   x   Enable/Disable 4 bytes address.
+ *              - \ref SPIM_OP_ENABLE  : Enable
+ *              - \ref SPIM_OP_DISABLE : Disable
  * \hideinitializer
  */
 #define SPIM_SET_4BYTE_ADDR_EN(spim, x)                              \
@@ -356,28 +356,13 @@ typedef enum
  * @details    Enable SPIM interrupt
  * \hideinitializer
  */
-//#define SPIM_ENABLE_INT(spim)       (spim->CTL0 |= SPIM_CTL0_IEN_Msk)
+#define SPIM_ENABLE_INT(spim)       (spim->CTL0 |= SPIM_CTL0_IEN_Msk)
 
 /**
  * @details    Disable SPIM interrupt
  * \hideinitializer
  */
-//#define SPIM_DISABLE_INT(spim)      (spim->CTL0 &= ~SPIM_CTL0_IEN_Msk)
-
-/**
- * @details    Set SPIM interrupt
- * @param   spim
- * @param   x   Interrupt Enable Bit
- *              - \ref 0 : Disable
- *              - \ref 1 : Enable
- * \hideinitializer
- */
-#define SPIM_SET_INT(spim, x)                                   \
-    do                                                          \
-    {                                                           \
-        spim->CTL0 &= ~(SPIM_CTL0_IEN_Msk);                     \
-        spim->CTL0 |= (((x) ? 1UL : 0UL) << SPIM_CTL0_IEN_Pos); \
-    } while (0)
+#define SPIM_DISABLE_INT(spim)      (spim->CTL0 &= ~SPIM_CTL0_IEN_Msk)
 
 /**
  * @details    Get SPIM interrupt to be enabled/disabled
@@ -390,7 +375,7 @@ typedef enum
  * @details    Is interrupt flag on.
  * \hideinitializer
  */
-#define SPIM_WAIT_IF_ON(spim)   \
+#define SPIM_IS_IF_ON(spim)   \
     ((spim->CTL0 & SPIM_CTL0_IF_Msk) >> SPIM_CTL0_IF_Pos)
 
 /**
@@ -580,7 +565,7 @@ typedef enum
  * \hideinitializer
  */
 #define SPIM_GET_OPMODE(spim)   \
-    (spim->CTL0 & SPIM_CTL0_OPMODE_Msk)
+    ((spim->CTL0 & SPIM_CTL0_OPMODE_Msk) >> SPIM_CTL0_OPMODE_Pos)
 
 /**
  * @details     Set DTR(Data Transfer Rate) mode.
@@ -657,7 +642,7 @@ typedef enum
     ((spim->CTL0 & SPIM_CTL0_RBO_NORM_Msk) >> SPIM_CTL0_RBO_NORM_Pos)
 
 /**
- * @details     Set SPIM mode.
+ * @details     Set SPI flash commmand code.
  * @param   x   reference SPI Flash Specification.
  * \hideinitializer
  */
@@ -668,7 +653,7 @@ typedef enum
     } while (0)
 
 /**
- * @details    Get SPIM mode.
+ * @details    Get SPI flash command code.
  * \hideinitializer
  */
 #define SPIM_GET_SPIM_MODE(spim)    \
@@ -870,7 +855,7 @@ typedef enum
  * @details    Enable DMM mode burst wrap mode
  * \hideinitializer
  */
-#define SPIM_DMM_BWEN_ENABLE(spim)              \
+#define SPIM_ENABLE_DMM_BWEN(spim)              \
     do                                          \
     {                                           \
         (spim->DMMCTL |= SPIM_DMMCTL_BWEN_Msk); \
@@ -880,7 +865,7 @@ typedef enum
  * @details    Disable DMM mode burst wrap mode
  * \hideinitializer
  */
-#define SPIM_DMM_BWEN_DISABLE(spim)                \
+#define SPIM_DISABLE_DMM_BWEN(spim)                \
     do                                             \
     {                                              \
         (spim->DMMCTL &= ~(SPIM_DMMCTL_BWEN_Msk)); \
@@ -890,7 +875,7 @@ typedef enum
  * @details    Enable DMM mode continuous read mode
  * \hideinitializer
  */
-#define SPIM_DMM_CREN_ENABLE(spim)              \
+#define SPIM_ENABLE_DMM_CREN(spim)              \
     do                                          \
     {                                           \
         (spim->DMMCTL |= SPIM_DMMCTL_CREN_Msk); \
@@ -900,7 +885,7 @@ typedef enum
  * @details    Disable DMM mode continuous read mode
  * \hideinitializer
  */
-#define SPIM_DMM_CREN_DISABLE(spim)                \
+#define SPIM_DISABLE_DMM_CREN(spim)                \
     do                                             \
     {                                              \
         (spim->DMMCTL &= ~(SPIM_DMMCTL_CREN_Msk)); \
@@ -910,7 +895,7 @@ typedef enum
  * @details    Stop DMM mode Transfer
  * \hideinitializer
  */
-#define SPIM_DMM_HYPDONE(spim)                   \
+#define SPIM_ENABLE_DMM_HYPDONE(spim)            \
     do                                           \
     {                                            \
         spim->DMMCTL |= SPIM_DMMCTL_HYPDONE_Msk; \
@@ -920,14 +905,14 @@ typedef enum
  * @details    Wait DMM mode complete to stop TX/RX
  * \hideinitializer
  */
-#define SPIM_WAIT_HYPDONE(spim) \
+#define SPIM_WAIT_DMM_HYPDONE(spim) \
     ((spim->DMMCTL & SPIM_DMMCTL_HYPDONE_Msk) >> SPIM_DMMCTL_HYPDONE_Pos)
 
 /**
  * @details    Set dummy cycle number (Only DMA Command Mode)
  * \hideinitializer
  */
-#define SPIM_SET_DC_DMAR(spim, x)                     \
+#define SPIM_SET_DMAR_DC(spim, x)                     \
     do                                                \
     {                                                 \
         spim->CTL2 &= ~(SPIM_CTL2_DC_DMAR_Msk);       \
@@ -938,7 +923,7 @@ typedef enum
  * @details    Clear dummy cycle number (Only DMA Command Mode)
  * \hideinitializer
  */
-#define SPIM_CLEAR_DC_DMAR(spim)                \
+#define SPIM_CLEAR_DMAR_DC(spim)                \
     do                                          \
     {                                           \
         spim->CTL2 &= ~(SPIM_CTL2_DC_DMAR_Msk); \
@@ -948,7 +933,7 @@ typedef enum
  * @details    Set dummy cycle number (Only DMM Command Mode)
  * \hideinitializer
  */
-#define SPIM_SET_DC_DMM(spim, x)                              \
+#define SPIM_SET_DMM_DC(spim, x)                              \
     do                                                        \
     {                                                         \
         spim->CTL2 &= ~(SPIM_CTL2_DC_DMM_Msk);                \
@@ -959,7 +944,7 @@ typedef enum
  * @details    Clear dummy cycle number (Only DMA Command Mode)
  * \hideinitializer
  */
-#define SPIM_CLEAR_DC_DMM(spim)                \
+#define SPIM_CLEAR_DMM_DC(spim)                \
     do                                         \
     {                                          \
         spim->CTL2 &= ~(SPIM_CTL2_DC_DMM_Msk); \
@@ -1007,7 +992,7 @@ typedef enum
  *          - \ref PHASE_WIDTH_32 : 32 bits
  * \hideinitializer
  */
-#define SPIM_PHDMAW_CMD_WIDTH(spim, x)                 \
+#define SPIM_SET_PHDMAW_CMD_WIDTH(spim, x)             \
     do                                                 \
     {                                                  \
         spim->PHDMAW &= ~(SPIM_PHDMAW_DW_CMD_Msk);     \
@@ -1025,7 +1010,7 @@ typedef enum
  * @details    Set DTR Mode Enable Bit for Command Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAW_CMD_DTR_ENABLE(spim)           \
+#define SPIM_ENABLE_PHDMAW_CMD_DTR(spim)           \
     do                                             \
     {                                              \
         (spim->PHDMAW |= SPIM_PHDMAW_DTR_CMD_Msk); \
@@ -1035,12 +1020,16 @@ typedef enum
  * @details    Set DTR Mode Disable Bit for Command Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAW_CMD_DTR_DISABLE(spim)             \
+#define SPIM_DISABLE_PHDMAW_CMD_DTR(spim)             \
     do                                                \
     {                                                 \
         (spim->PHDMAW &= ~(SPIM_PHDMAW_DTR_CMD_Msk)); \
     } while (0)
 
+/**
+ * @details    Get DTR Mode Disable Bit for Command Phase
+ * \hideinitializer
+ */
 #define SPIM_GET_PHDMAW_CMD_DTR(spim)   \
     ((spim->PHDMAW & SPIM_PHDMAW_DTR_CMD_Msk) >> SPIM_PHDMAW_DTR_CMD_Pos)
 
@@ -1053,7 +1042,7 @@ typedef enum
  *          - \ref PHASE_OCTAL_MODE : Octal Mode
  * \hideinitializer
  */
-#define SPIM_PHDMAW_CMD_BIT_MODE(spim, x)              \
+#define SPIM_SET_PHDMAW_CMD_BIT_MODE(spim, x)          \
     do                                                 \
     {                                                  \
         spim->PHDMAW &= ~(SPIM_PHDMAW_BM_CMD_Msk);     \
@@ -1069,7 +1058,7 @@ typedef enum
  *          - \ref PHASE_WIDTH_32 : 32 bits
  * \hideinitializer
  */
-#define SPIM_PHDMAW_ADDR_WIDTH(spim, x)                 \
+#define SPIM_SET_PHDMAW_ADDR_WIDTH(spim, x)             \
     do                                                  \
     {                                                   \
         spim->PHDMAW &= ~(SPIM_PHDMAW_DW_ADDR_Msk);     \
@@ -1080,7 +1069,7 @@ typedef enum
  * @details    Set Double Transfer Rate Mode Enable Bit for Address Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAW_ADDR_DTR_ENABLE(spim)             \
+#define SPIM_ENABLE_PHDMAW_ADDR_DTR(spim)             \
     do                                                \
     {                                                 \
         (spim->PHDMAW |= (SPIM_PHDMAW_DTR_ADDR_Msk)); \
@@ -1090,7 +1079,7 @@ typedef enum
  * @details    Set Double Transfer Rate Mode Disable Bit for Address Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAW_ADDR_DTR_DISABLE(spim)             \
+#define SPIM_DISABLE_PHDMAW_ADDR_DTR(spim)             \
     do                                                 \
     {                                                  \
         (spim->PHDMAW &= ~(SPIM_PHDMAW_DTR_ADDR_Msk)); \
@@ -1105,7 +1094,7 @@ typedef enum
  *          - \ref PHASE_OCTAL_MODE  : Octal Mode
  * \hideinitializer
  */
-#define SPIM_PHDMAW_ADDR_BIT_MODE(spim, x)              \
+#define SPIM_SET_PHDMAW_ADDR_BIT_MODE(spim, x)          \
     do                                                  \
     {                                                   \
         spim->PHDMAW &= ~(SPIM_PHDMAW_BM_ADDR_Msk);     \
@@ -1116,7 +1105,7 @@ typedef enum
  * @details    Set Double Transfer Rate Mode Enable Bit for Data Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAW_DATA_DTR_ENABLE(spim)             \
+#define SPIM_ENABLE_PHDMAW_DATA_DTR(spim)             \
     do                                                \
     {                                                 \
         (spim->PHDMAW |= (SPIM_PHDMAW_DTR_DATA_Msk)); \
@@ -1126,7 +1115,7 @@ typedef enum
  * @details    Set Double Transfer Rate Mode Disable Bit for Data Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAW_DATA_DTR_DISABLE(spim)             \
+#define SPIM_DISABLE_PHDMAW_DATA_DTR(spim)             \
     do                                                 \
     {                                                  \
         (spim->PHDMAW &= ~(SPIM_PHDMAW_DTR_DATA_Msk)); \
@@ -1141,7 +1130,7 @@ typedef enum
  *          - \ref PHASE_ORDER_MODE3 : Byte order byte6, byte7, byte4, byte5, byte2, byte3, byte0, byte1.
  * \hideinitializer
  */
-#define SPIM_PHDMAW_PBO_DATA(spim, x)                    \
+#define SPIM_SET_PHDMAW_PBO_DATA(spim, x)                \
     do                                                   \
     {                                                    \
         spim->PHDMAW &= ~(SPIM_PHDMAW_PBO_DATA_Msk);     \
@@ -1157,7 +1146,7 @@ typedef enum
  *          - \ref PHASE_WIDTH_32 : 32 bits
  * \hideinitializer
  */
-#define SPIM_PHDMAW_DATA_BIT_MODE(spim, x)              \
+#define SPIM_SET_PHDMAW_DATA_BIT_MODE(spim, x)          \
     do                                                  \
     {                                                   \
         spim->PHDMAW &= ~(SPIM_PHDMAW_BM_DATA_Msk);     \
@@ -1182,7 +1171,7 @@ typedef enum
  *          - \ref PHASE_WIDTH_32 : 32 bits
  * \hideinitializer
  */
-#define SPIM_PHDMAR_CMD_WIDTH(spim, x)                 \
+#define SPIM_SET_PHDMAR_CMD_WIDTH(spim, x)             \
     do                                                 \
     {                                                  \
         spim->PHDMAR &= ~(SPIM_PHDMAR_DW_CMD_Msk);     \
@@ -1197,20 +1186,20 @@ typedef enum
     ((spim->PHDMAR & SPIM_PHDMAR_DW_CMD_Msk) >> SPIM_PHDMAR_DW_CMD_Pos)
 
 /**
- * @details    Set Double Transfer Rate Mode Enable Bit for Command Phase
+ * @details    Enable Double Transfer Rate Mode for Command Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAR_CMD_DTR_ENABLE(spim)             \
+#define SPIM_ENABLE_PHDMAR_CMD_DTR(spim)             \
     do                                               \
     {                                                \
         (spim->PHDMAR |= (SPIM_PHDMAR_DTR_CMD_Msk)); \
     } while (0)
 
 /**
- * @details    Set Double Transfer Rate Mode Disable Bit for Command Phase
+ * @details    Disable Double Transfer Rate Mode Bit for Command Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAR_CMD_DTR_DISABLE(spim)             \
+#define SPIM_DISABLE_PHDMAR_CMD_DTR(spim)             \
     do                                                \
     {                                                 \
         (spim->PHDMAR &= ~(SPIM_PHDMAR_DTR_CMD_Msk)); \
@@ -1232,7 +1221,7 @@ typedef enum
  *          - \ref PHASE_OCTAL_MODE  : Octal Mode
  * \hideinitializer
  */
-#define SPIM_PHDMAR_CMD_BIT_MODE(spim, x)              \
+#define SPIM_SET_PHDMAR_CMD_BIT_MODE(spim, x)          \
     do                                                 \
     {                                                  \
         spim->PHDMAR &= ~(SPIM_PHDMAR_BM_CMD_Msk);     \
@@ -1255,7 +1244,7 @@ typedef enum
  *          - \ref PHASE_WIDTH_32 : 32 bits
  * \hideinitializer
  */
-#define SPIM_PHDMAR_ADDR_WIDTH(spim, x)                 \
+#define SPIM_SET_PHDMAR_ADDR_WIDTH(spim, x)             \
     do                                                  \
     {                                                   \
         spim->PHDMAR &= ~(SPIM_PHDMAR_DW_ADDR_Msk);     \
@@ -1263,20 +1252,20 @@ typedef enum
     } while (0)
 
 /**
- * @details    Set Double Transfer Rate Mode Enable Bit for Address Phase
+ * @details    Enable Double Transfer Rate Mode for Address Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAR_ADDR_DTR_ENABLE(spim)             \
+#define SPIM_ENABLE_PHDMAR_ADDR_DTR(spim)             \
     do                                                \
     {                                                 \
         (spim->PHDMAR |= (SPIM_PHDMAR_DTR_ADDR_Msk)); \
     } while (0)
 
 /**
- * @details    Set Double Transfer Rate Mode Disable Bit for Address Phase
+ * @details    Disable Double Transfer Rate Mode for Address Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAR_ADDR_DTR_DISABLE(spim)             \
+#define SPIM_DISABLE_PHDMAR_ADDR_DTR(spim)             \
     do                                                 \
     {                                                  \
         (spim->PHDMAR &= ~(SPIM_PHDMAR_DTR_ADDR_Msk)); \
@@ -1291,7 +1280,7 @@ typedef enum
  *          - \ref PHASE_OCTAL_MODE  : Octal Mode
  * \hideinitializer
  */
-#define SPIM_PHDMAR_ADDR_BIT_MODE(spim, x)              \
+#define SPIM_SET_PHDMAR_ADDR_BIT_MODE(spim, x)          \
     do                                                  \
     {                                                   \
         spim->PHDMAR &= ~(SPIM_PHDMAR_BM_ADDR_Msk);     \
@@ -1307,7 +1296,7 @@ typedef enum
  *          - \ref PHASE_WIDTH_32 : 32 bits
  * \hideinitializer
  */
-#define SPIM_PHDMAR_READ_DATA_WIDTH(spim, x)            \
+#define SPIM_SET_PHDMAR_READ_DATA_WIDTH(spim, x)        \
     do                                                  \
     {                                                   \
         spim->PHDMAR &= ~(SPIM_PHDMAR_DW_MODE_Msk);     \
@@ -1315,20 +1304,20 @@ typedef enum
     } while (0)
 
 /**
- * @details    Set Double Transfer Rate Mode Enable Bit for Read Mode Phase
+ * @details    Enable Double Transfer Rate Mode for Read Mode Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAR_READ_DTR_ENABLE(spim)             \
+#define SPIM_ENABLE_PHDMAR_READ_DTR(spim)             \
     do                                                \
     {                                                 \
         (spim->PHDMAR |= (SPIM_PHDMAR_DTR_MODE_Msk)); \
     } while (0)
 
 /**
- * @details    Set Double Transfer Rate Mode Disable Bit for Read Mode Phase
+ * @details    Disable Double Transfer Rate Mode for Read Mode Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAR_READ_DTR_DISABLE(spim)             \
+#define SPIM_DISABLE_PHDMAR_READ_DTR(spim)             \
     do                                                 \
     {                                                  \
         (spim->PHDMAR &= ~(SPIM_PHDMAR_DTR_MODE_Msk)); \
@@ -1343,7 +1332,7 @@ typedef enum
  *          - \ref PHASE_OCTAL_MODE  : Octal Mode
  * \hideinitializer
  */
-#define SPIM_PHDMAR_READ_BIT_MODE(spim, x)              \
+#define SPIM_SET_PHDMAR_READ_BIT_MODE(spim, x)          \
     do                                                  \
     {                                                   \
         spim->PHDMAR &= ~(SPIM_PHDMAR_BM_MODE_Msk);     \
@@ -1351,40 +1340,40 @@ typedef enum
     } while (0)
 
 /**
- * @details    Set Double Transfer Rate Mode Enable Bit for Data Phase
+ * @details    Enable Double Transfer Rate Mode for Data Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAR_DATA_DTR_ENABLE(spim)             \
+#define SPIM_ENABLE_PHDMAR_DATA_DTR(spim)             \
     do                                                \
     {                                                 \
         (spim->PHDMAR |= (SPIM_PHDMAR_DTR_DATA_Msk)); \
     } while (0)
 
 /**
- * @details    Set Double Transfer Rate Mode DIsable Bit for Data Phase
+ * @details    Disable Double Transfer Rate Mode for Data Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAR_DATA_DTR_DISABLE(spim)             \
+#define SPIM_DISABLE_PHDMAR_DATA_DTR(spim)             \
     do                                                 \
     {                                                  \
         (spim->PHDMAR &= ~(SPIM_PHDMAR_DTR_DATA_Msk)); \
     } while (0)
 
 /**
- * @details    Set Read DQS Mode Enable Bit for Data Phase
+ * @details    Enable Read DQS Mode for Data Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAR_DATA_RDQS_ENABLE(spim)             \
+#define SPIM_ENABLE_PHDMAR_DATA_RDQS(spim)             \
     do                                                 \
     {                                                  \
         (spim->PHDMAR |= (SPIM_PHDMAR_RDQS_DATA_Msk)); \
     } while (0)
 
 /**
- * @details    Set Read DQS Mode Disable Bit for Data Phase
+ * @details    Disable Read DQS Mode for Data Phase
  * \hideinitializer
  */
-#define SPIM_PHDMAR_DATA_RDQS_DISABLE(spim)             \
+#define SPIM_DISABLE_PHDMAR_DATA_RDQS(spim)             \
     do                                                  \
     {                                                   \
         (spim->PHDMAR &= ~(SPIM_PHDMAR_RDQS_DATA_Msk)); \
@@ -1399,7 +1388,7 @@ typedef enum
  *          - \ref PHASE_ORDER_MODE3 : Byte order byte6, byte7, byte4, byte5, byte2, byte3, byte0, byte1.
  * \hideinitializer
  */
-#define SPIM_PHDMAR_RBO_DATA(spim, x)                    \
+#define SPIM_SET_PHDMAR_RBO_DATA(spim, x)                \
     do                                                   \
     {                                                    \
         spim->PHDMAR &= ~(SPIM_PHDMAR_RBO_DATA_Msk);     \
@@ -1415,7 +1404,7 @@ typedef enum
  *          - \ref PHASE_OCTAL_MODE  : Octal Mode
  * \hideinitializer
  */
-#define SPIM_PHDMAR_DATA_BIT_MODE(spim, x)              \
+#define SPIM_SET_PHDMAR_DATA_BIT_MODE(spim, x)          \
     do                                                  \
     {                                                   \
         spim->PHDMAR &= ~(SPIM_PHDMAR_BM_DATA_Msk);     \
@@ -1440,7 +1429,7 @@ typedef enum
  *          - \ref PHASE_WIDTH_32 : 32 bits
  * \hideinitializer
  */
-#define SPIM_PHDMM_CMD_WIDTH(spim, x)                \
+#define SPIM_SET_PHDMM_CMD_WIDTH(spim, x)            \
     do                                               \
     {                                                \
         spim->PHDMM &= ~(SPIM_PHDMM_DW_CMD_Msk);     \
@@ -1455,20 +1444,20 @@ typedef enum
     ((spim->PHDMM & SPIM_PHDMM_DW_CMD_Msk) >> SPIM_PHDMM_DW_CMD_Pos)
 
 /**
- * @details    Set DMM Mode Double Transfer Rate Mode Enable Bit for Command Phase
+ * @details    Enable DMM Mode Double Transfer Rate Mode for Command Phase
  * \hideinitializer
  */
-#define SPIM_PHDMM_CMD_DTR_ENABLE(spim)            \
+#define SPIM_ENABLE_PHDMM_CMD_DTR(spim)            \
     do                                             \
     {                                              \
         (spim->PHDMM |= (SPIM_PHDMM_DTR_CMD_Msk)); \
     } while (0)
 
 /**
- * @details    Set DMM Mode Double Transfer Rate Mode Enable Bit for Command Phase
+ * @details    Disable DMM Mode Double Transfer Rate Mode for Command Phase
  * \hideinitializer
  */
-#define SPIM_PHDMM_CMD_DTR_DISABLE(spim)            \
+#define SPIM_DISABLE_PHDMM_CMD_DTR(spim)            \
     do                                              \
     {                                               \
         (spim->PHDMM &= ~(SPIM_PHDMM_DTR_CMD_Msk)); \
@@ -1490,7 +1479,7 @@ typedef enum
  *          - \ref PHASE_OCTAL_MODE  : Octal Mode
  * \hideinitializer
  */
-#define SPIM_PHDMM_CMD_BIT_MODE(spim, x)             \
+#define SPIM_SET_PHDMM_CMD_BIT_MODE(spim, x)         \
     do                                               \
     {                                                \
         spim->PHDMM &= ~(SPIM_PHDMM_BM_CMD_Msk);     \
@@ -1514,7 +1503,7 @@ typedef enum
  *          - \ref PHASE_WIDTH_32 : 32 bits
  * \hideinitializer
  */
-#define SPIM_PHDMM_ADDR_WIDTH(spim, x)                \
+#define SPIM_SET_PHDMM_ADDR_WIDTH(spim, x)            \
     do                                                \
     {                                                 \
         spim->PHDMM &= ~(SPIM_PHDMM_DW_ADDR_Msk);     \
@@ -1522,20 +1511,20 @@ typedef enum
     } while (0)
 
 /**
- * @details    Set Double Transfer Rate Mode Enable Bit for Address Phase
+ * @details    Enable Double Transfer Rate Mode for Address Phase
  * \hideinitializer
  */
-#define SPIM_PHDMM_ADDR_DTR_ENABLE(spim)            \
+#define SPIM_ENABLE_PHDMM_ADDR_DTR(spim)            \
     do                                              \
     {                                               \
         (spim->PHDMM |= (SPIM_PHDMM_DTR_ADDR_Msk)); \
     } while (0)
 
 /**
- * @details    Set Double Transfer Rate Mode Disable Bit for Address Phase
+ * @details    Disable Double Transfer Rate Mode for Address Phase
  * \hideinitializer
  */
-#define SPIM_PHDMM_ADDR_DTR_DISABLE(spim)            \
+#define SPIM_DISABLE_PHDMM_ADDR_DTR(spim)            \
     do                                               \
     {                                                \
         (spim->PHDMM &= ~(SPIM_PHDMM_DTR_ADDR_Msk)); \
@@ -1551,7 +1540,7 @@ typedef enum
  *          - \ref PHASE_OCTAL_MODE  : Octal Mod
  * \hideinitializer
  */
-#define SPIM_PHDMM_ADDR_BIT_MODE(spim, x)             \
+#define SPIM_SET_PHDMM_ADDR_BIT_MODE(spim, x)         \
     do                                                \
     {                                                 \
         spim->PHDMM &= ~(SPIM_PHDMM_BM_ADDR_Msk);     \
@@ -1567,7 +1556,7 @@ typedef enum
  *          - \ref PHASE_WIDTH_32 : 32 bits
  * \hideinitializer
  */
-#define SPIM_PHDMM_READ_DATA_WIDTH(spim, x)           \
+#define SPIM_SET_PHDMM_READ_DATA_WIDTH(spim, x)       \
     do                                                \
     {                                                 \
         spim->PHDMM &= ~(SPIM_PHDMM_DW_MODE_Msk);     \
@@ -1575,20 +1564,20 @@ typedef enum
     } while (0)
 
 /**
- * @details Set Double Transfer Rate Mode Enable Bit for Mode Phase
+ * @details Enable Double Transfer Rate Mode for Mode Phase
  * \hideinitializer
  */
-#define SPIM_PHDMM_READ_DTR_ENABLE(spim)            \
+#define SPIM_ENABLE_PHDMM_READ_DTR(spim)            \
     do                                              \
     {                                               \
         (spim->PHDMM |= (SPIM_PHDMM_DTR_MODE_Msk)); \
     } while (0)
 
 /**
- * @details Set Double Transfer Rate Mode Disable Bit for Mode Phase
+ * @details Disable Double Transfer Rate Mode for Mode Phase
  * \hideinitializer
  */
-#define SPIM_PHDMM_READ_DTR_DISABLE(spim)            \
+#define SPIM_DISABLE_PHDMM_READ_DTR(spim)            \
     do                                               \
     {                                                \
         (spim->PHDMM &= ~(SPIM_PHDMM_DTR_MODE_Msk)); \
@@ -1603,7 +1592,7 @@ typedef enum
  *          - \ref PHASE_OCTAL_MODE  : Octal Mod
  * \hideinitializer
  */
-#define SPIM_PHDMM_READ_BIT_MODE(spim, x)             \
+#define SPIM_SET_PHDMM_READ_BIT_MODE(spim, x)         \
     do                                                \
     {                                                 \
         spim->PHDMM &= ~(SPIM_PHDMM_BM_MODE_Msk);     \
@@ -1611,40 +1600,40 @@ typedef enum
     } while (0)
 
 /**
- * @details Set Double Transfer Rate Mode Enable Bit for Data Phase
+ * @details Enable Double Transfer Rate Mode for Data Phase
  * \hideinitializer
  */
-#define SPIM_PHDMM_DATA_DTR_ENABLE(spim)            \
+#define SPIM_ENABLE_PHDMM_DATA_DTR(spim)            \
     do                                              \
     {                                               \
         (spim->PHDMM |= (SPIM_PHDMM_DTR_DATA_Msk)); \
     } while (0)
 
 /**
- * @details Set Double Transfer Rate Mode Disable Bit for Data Phase
+ * @details Disable Double Transfer Rate Mode for Data Phase
  * \hideinitializer
  */
-#define SPIM_PHDMM_DATA_DTR_DISABLE(spim)            \
+#define SPIM_DISABLE_PHDMM_DATA_DTR(spim)            \
     do                                               \
     {                                                \
         (spim->PHDMM &= ~(SPIM_PHDMM_DTR_DATA_Msk)); \
     } while (0)
 
 /**
- * @details Set Read DQS Mode Enable Bit for Data Phase
+ * @details Enable Read DQS Mode for Data Phase
  * \hideinitializer
  */
-#define SPIM_PHDMM_DATA_RDQS_ENABLE(spim)            \
+#define SPIM_ENABLE_PHDMM_DATA_RDQS(spim)            \
     do                                               \
     {                                                \
         (spim->PHDMM |= (SPIM_PHDMM_RDQS_DATA_Msk)); \
     } while (0)
 
 /**
- * @details Set Read DQS Mode Disable Bit for Data Phase
+ * @details Disable Read DQS Mode for Data Phase
  * \hideinitializer
  */
-#define SPIM_PHDMM_DATA_RDQS_DISABLE(spim)            \
+#define SPIM_DISABLE_PHDMM_DATA_RDQS(spim)            \
     do                                                \
     {                                                 \
         (spim->PHDMM &= ~(SPIM_PHDMM_RDQS_DATA_Msk)); \
@@ -1659,7 +1648,7 @@ typedef enum
  *          - \ref PHASE_ORDER_MODE3 : Byte order byte6, byte7, byte4, byte5, byte2, byte3, byte0, byte1.
  * \hideinitializer
  */
-#define SPIM_PHDMM_RBO_DATA(spim, x)                   \
+#define SPIM_SET_PHDMM_RBO_DATA(spim, x)               \
     do                                                 \
     {                                                  \
         spim->PHDMM &= ~(SPIM_PHDMM_RBO_DATA_Msk);     \
@@ -1675,7 +1664,7 @@ typedef enum
  *          - \ref PHASE_WIDTH_32 : 32 bits
  * \hideinitializer
  */
-#define SPIM_PHDMM_DATA_BIT_MODE(spim, x)             \
+#define SPIM_SET_PHDMM_DATA_BIT_MODE(spim, x)         \
     do                                                \
     {                                                 \
         spim->PHDMM &= ~(SPIM_PHDMM_BM_DATA_Msk);     \
@@ -1944,7 +1933,7 @@ typedef struct
   * @details    This Macro Set Hyper Chip Select Setup Time to Next CK Rising Edge
   * \hideinitializer
   */
-#define SPIM_HYPER_CONFIG1_SET_CSST(spim, x)                       \
+#define SPIM_SET_HYPER_CONFIG1_CSST(spim, x)                       \
     do                                                             \
     {                                                              \
         spim->HYPER_CONFIG1 &= ~(SPIM_HYPER_CONFIG1_CSST_Msk);     \
@@ -1962,7 +1951,7 @@ typedef struct
   * @details    This Macro Set Hyper Chip Select Hold Time After CK Falling Edge
   * \hideinitializer
   */
-#define SPIM_HYPER_CONFIG1_SET_CSH(spim, x)                         \
+#define SPIM_SET_HYPER_CONFIG1_CSH(spim, x)                         \
     do                                                              \
     {                                                               \
         spim->HYPER_CONFIG1 &= ~(SPIM_HYPER_CONFIG1_CSH_Msk);       \
@@ -1977,7 +1966,7 @@ typedef struct
   * @details    This Macro Set Hyper Chip Select High between Transaction.
   * \hideinitializer
   */
-#define SPIM_HYPER_CONFIG1_SET_CSHI(spim, x)                              \
+#define SPIM_SET_HYPER_CONFIG1_CSHI(spim, x)                              \
     do                                                                    \
     {                                                                     \
         uint32_t u32Value = 0;                                            \
@@ -2001,7 +1990,7 @@ typedef struct
   * @details    This Macro Set Hyper Chip Select Maximum Low Time.
   * \hideinitializer
   */
-#define SPIM_HYPER_CONFIG1_SET_CSMAXLT(spim, u32CsMaxLT)                             \
+#define SPIMS_SET_HYPER_CONFIG1_CSMAXLT(spim, u32CsMaxLT)                            \
     do                                                                               \
     {                                                                                \
         spim->HYPER_CONFIG1 &= ~(SPIM_HYPER_CONFIG1_CSMAXLT_Msk);                    \
@@ -2012,7 +2001,7 @@ typedef struct
   * @brief  Get Hyper Chip Select Maximum Low Time
   * \hideinitializer
   */
-#define SPIM_HYPER_CONFIG1_GET_CSMAXLT(spim)    \
+#define SPIM_GET_HYPER_CONFIG1_CSMAXLT(spim)    \
     (((spim->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSMAXLT_Msk) >> SPIM_HYPER_CONFIG1_CSMAXLT_Pos) + 1UL)
 
 /**
@@ -2022,7 +2011,7 @@ typedef struct
   * @details    This Macro Set Hyper Chip Initial Access Time
   * \hideinitializer
   */
-#define SPIM_HYPER_CONFIG2_SET_ACCTWR(spim, x)                       \
+#define SPIM_SET_HYPER_CONFIG2_ACCTWR(spim, x)                       \
     do                                                               \
     {                                                                \
         spim->HYPER_CONFIG2 &= ~(SPIM_HYPER_CONFIG2_ACCTWR_Msk);     \
@@ -2034,7 +2023,7 @@ typedef struct
   * @details    This Macro Set Hyper Chip Initial Access Time
   * \hideinitializer
   */
-#define SPIM_HYPER_CONFIG2_GET_ACCTWR(spim) \
+#define SPIM_GET_HYPER_CONFIG2_ACCTWR(spim) \
     ((spim->HYPER_CONFIG2 & SPIM_HYPER_CONFIG2_ACCTWR_Msk) >> SPIM_HYPER_CONFIG2_ACCTWR_Pos)
 
 /**
@@ -2044,7 +2033,7 @@ typedef struct
   * @details    This Macro Set Hyper Device RESETN Low Time
   * \hideinitializer
   */
-#define SPIM_HYPER_CONFIG2_SET_RSTNLT(spim, u8Value)                       \
+#define SPIM_SET_HYPER_CONFIG2_RSTNLT(spim, u8Value)                       \
     do                                                                     \
     {                                                                      \
         spim->HYPER_CONFIG2 &= ~(SPIM_HYPER_CONFIG2_RSTNLT_Msk);           \
@@ -2056,7 +2045,7 @@ typedef struct
   * @details    This Macro Set Hyper Device RESETN Low Time
   * \hideinitializer
   */
-#define SPIM_HYPER_CONFIG2_GET_RSTNLT(spim) \
+#define SPIM_GET_HYPER_CONFIG2_RSTNLT(spim) \
     ((spim->HYPER_CONFIG2 & SPIM_HYPER_CONFIG2_RSTNLT_Msk) >> SPIM_HYPER_CONFIG2_RSTNLT_Pos)
 
 /**
@@ -2066,7 +2055,7 @@ typedef struct
   * @details    This Macro Set Hyper Chip Initial Access Time
   * \hideinitializer
   */
-#define SPIM_HYPER_CONFIG2_SET_ACCTRD(spim, x)                       \
+#define SPIM_SET_HYPER_CONFIG2_ACCTRD(spim, x)                       \
     do                                                               \
     {                                                                \
         spim->HYPER_CONFIG2 &= ~(SPIM_HYPER_CONFIG2_ACCTRD_Msk);     \
@@ -2078,7 +2067,7 @@ typedef struct
   * @details    This Macro Set Hyper Chip Initial Access Time
   * \hideinitializer
   */
-#define SPIM_HYPER_CONFIG2_GET_ACCTRD(spim) \
+#define SPIM_GET_HYPER_CONFIG2_ACCTRD(spim) \
     ((spim->HYPER_CONFIG2 & SPIM_HYPER_CONFIG2_ACCTRD_Msk) >> SPIM_HYPER_CONFIG2_ACCTRD_Pos)
 
 /**
@@ -2088,7 +2077,7 @@ typedef struct
  * @details    This macro enable Hyper Chip Operation Done Interrupt.
  * \hideinitializer
  */
-#define SPIM_HYPER_ENABLE_INT(spim)                        \
+#define SPIM_ENABLE_HYPER_INT(spim)                        \
     do                                                     \
     {                                                      \
         spim->HYPER_INTEN |= SPIM_HYPER_INTEN_OPINTEN_Msk; \
@@ -2101,7 +2090,7 @@ typedef struct
  * @details    This macro disable Hyper Chip Operation Done Interrupt.
  * \hideinitializer
  */
-#define SPIM_HYPER_DISABLE_INT(spim)                        \
+#define SPIM_DISABLE_HYPER_INT(spim)                        \
     do                                                      \
     {                                                       \
         spim->HYPER_INTEN &= ~SPIM_HYPER_INTEN_OPINTEN_Msk; \
@@ -2114,7 +2103,7 @@ typedef struct
  * @details    This macro enable Hyper Chip Operation Done Interrupt.
  * \hideinitializer
  */
-#define SPIM_HYPER_GET_INT(spim)    \
+#define SPIM_GET_HYPER_INT(spim)    \
     ((spim->HYPER_INTEN & SPIM_HYPER_INTEN_OPINTEN_Msk) >> SPIM_HYPER_INTEN_OPINTEN_Pos)
 
 /**
@@ -2125,7 +2114,7 @@ typedef struct
  * @details    This macro Get Hyper Chip Operation Done Interrupt.
  * \hideinitializer
  */
-#define SPIM_HYPER_GET_INTSTS(spim) \
+#define SPIM_GET_HYPER_INTSTS(spim) \
     ((spim->HYPER_INTEN & SPIM_HYPER_INTEN_OPINTEN_Msk) >> SPIM_HYPER_INTEN_OPINTEN_Pos)
 
 /** @} end of group SPIM_EXPORTED_CONSTANTS */
@@ -2175,27 +2164,28 @@ void SPIM_SetQuadEnable(SPIM_T *spim, int isEn, uint32_t u32NBit);
 void SPIM_WinbondUnlock(SPIM_T *spim, uint32_t u32NBit);
 
 /* PHDMAW/PHDMAR/PHDMM Register Setting */
-int32_t SPIM_DMADMM_ClearPhaseConfig(SPIM_T *spim, uint32_t u32OPMode);
+int32_t SPIM_DMADMM_ClearPhaseSetting(SPIM_T *spim, uint32_t u32OPMode);
 int32_t SPIM_DMADMM_SetCMDPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn);
 int32_t SPIM_DMADMM_SetAddrPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn);
 int32_t SPIM_DMADMM_SetContReadPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn);
 int32_t SPIM_DMADMM_SetDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32ByteOrder, uint32_t u32RdDQS, uint32_t u32DTREn);
 
 /* SPI flash command phase table init API */
-void SPIM_DMADMM_InitPhase(SPIM_T *spim, PHASE_SET_T *pPhaseTable, uint32_t u32OPMode);
-void SPIM_DMA_WritePhase(SPIM_T *spim, PHASE_SET_T *pPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint32_t u32WrSize, void *pvTxBuf);
-int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, PHASE_SET_T *pPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint32_t u32RdSize, void *pvRxBuf, int isSync);
-void SPIM_DirectMap_Phase(SPIM_T *spim, PHASE_SET_T *pPhaseTable, int is4ByteAddr, uint32_t u32IdleIntvl);
+void SPIM_DMADMM_InitPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32OPMode);
+void SPIM_DMA_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint32_t u32WrSize, void *pvTxBuf);
+int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint32_t u32RdSize, void *pvRxBuf, int isSync);
+void SPIM_DMM_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, int is4ByteAddr, uint32_t u32IdleIntvl);
 
 /* Use Normal I/O mode send phase data */
 void SPIM_IO_SendCMDPhase(SPIM_T *spim, uint32_t u32RdCMD, uint32_t u32CmdPhase, uint32_t u32DTREn, uint32_t isSync);
 void SPIM_IO_SendAddrPhase(SPIM_T *spim, uint32_t u32Is4ByteAddr, uint32_t u32Addr, uint32_t u32AddrPhase, uint32_t u32RdMode, uint32_t u32DTREn);
 int32_t SPIM_IO_SendDummyCycle(SPIM_T *spim, int u32NDummy);
-void SPIM_IO_DataPhase(SPIM_T *spim, uint8_t u8TRxBuf[], uint32_t u32TRxSize, uint32_t u32DataPhae, uint32_t u32DTREn, uint32_t isSync);
+void SPIM_IO_SendDataPhase(SPIM_T *spim, uint8_t u8TRxBuf[], uint32_t u32TRxSize, uint32_t u32DataPhae, uint32_t u32DTREn, uint32_t isSync);
 
 /* SPI flash command phase table use normal I/O mode R/W API */
-void SPIM_IO_WritePhase(SPIM_T *spim, PHASE_SET_T *pPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint8_t *pu8RxBuf, uint32_t u32WrSize);
-void SPIM_IO_ReadPhase(SPIM_T *spim, PHASE_SET_T *pPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint8_t pu8RxBuf[], uint32_t u32RdSize);
+void SPIM_IO_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint8_t *pu8RxBuf, uint32_t u32WrSize);
+void SPIM_IO_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint8_t pu8RxBuf[], uint32_t u32RdSize);
+
 /* Wait SPI flash write operation done */
 int32_t SPIM_WaitSPIMENDone(SPIM_T *spim, uint32_t u32IsSync);
 
