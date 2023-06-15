@@ -1,32 +1,11 @@
-/****************************************************************************
-*                                                                           *
-* Copyright (C) 2017 Nuvoton Technology Corp. All rights reserved.          *
-*                                                                           *
+/******************************************************************************
+* @file    main.c
+* @version V1.00
+* @brief   CUnit test main function
+*
+* SPDX-License-Identifier: Apache-2.0
+* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
-
-/****************************************************************************
-* FILENAME
-*   main.c
-*
-* VERSION
-*   1.0
-*
-* DESCRIPTION
-*   The main program of CUnit test
-*
-* DATA STRUCTURES
-*   None
-*
-* FUNCTIONS
-*   AddTests
-*   main
-*
-* HISTORY
-*
-*
-* REMARK
-*   None
-****************************************************************************/
 
 // Library header file
 #include <stdio.h>
@@ -36,14 +15,14 @@
 #include "Console.h"
 #include "NuMicro.h"
 #include "rtc_cunit.h"
-#include "../pldm_emu.h" 
+#include "../pldm_emu.h"
 
 #ifndef DEBUG_PORT
     #define DEBUG_PORT UART0
 #endif
 
 #ifndef DEBUG_PORT_Init
-void DEBUG_PORT_Init(UART_T* psUART, uint32_t u32Baudrate)
+void DEBUG_PORT_Init(UART_T *psUART, uint32_t u32Baudrate)
 {
     UART_Open(psUART, u32Baudrate);
 }
@@ -58,7 +37,7 @@ void SYS_Init(void)
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Enable clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);    
+    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
     CLK_EnableXtalRC(CLK_SRCCTL_LXTEN_Msk);
 
@@ -66,7 +45,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
-    
+
     /* Enable PLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
@@ -75,13 +54,13 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK2DIV(2);
     CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);    
+    CLK_SET_PCLK4DIV(2);
 
     /* Enable UART module clock */
     CLK_EnableModuleClock(UART0_MODULE);
@@ -91,7 +70,7 @@ void SYS_Init(void)
     /* Select UART module clock source as HXT and UART module clock divider as 1 */
     CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
     CLK_SetModuleClock(RTC0_MODULE, 0, 0);
-    
+
     SystemCoreClockUpdate();
 
     /*---------------------------------------------------------------------------------------------------------*/

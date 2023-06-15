@@ -39,7 +39,7 @@ typedef struct ed_t
     /* The following members are used by USB Host libary.   */
     uint8_t     bInterval;
     uint16_t    next_sf;          /* for isochronous transfer, recording the next SF      */
-    struct ed_t * next;           /* point to the next ED in remove list                  */
+    struct ed_t *next;            /* point to the next ED in remove list                  */
 } ED_T;
 
 #define ED_CTRL_FA_Pos            0         /* Info[6:0]   - Function address             */

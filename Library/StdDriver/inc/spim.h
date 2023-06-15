@@ -179,6 +179,9 @@ extern "C"
 #define SPIM_OP_FLASH_MODE                  (0x0)   /* SPIROM operates in SPI Flash mode.  */
 #define SPIM_OP_HYPER_MODE                  (0x1)   /* SPIROM operates in HYPER Device mode. */
 
+#define SPIM_IO_WRITE_PHASE                 (0x01)  /* SPIM IO write phase mode.  */
+#define SPIM_IO_READ_PHASE                  (0x00)  /* SPIM IO read phase mode.  */
+
 /** @cond HIDDEN_SYMBOLS */
 
 typedef enum
@@ -334,8 +337,8 @@ typedef enum
 /**
  * @details     Set 4-byte address.
  * @param   x   Enable/Disable 4 bytes address.
- *              - \ref SPIM_OP_ENABLE  : Enable
- *              - \ref SPIM_OP_DISABLE : Disable
+ *              - \ref SPIM_OP_ENABLE
+ *              - \ref SPIM_OP_DISABLE
  * \hideinitializer
  */
 #define SPIM_SET_4BYTE_ADDR_EN(spim, x)                              \
@@ -951,7 +954,10 @@ typedef enum
     } while (0)
 
 /**
- * @details    Set output data for mode phase
+ * @details     Set output data for mode phase
+ * @param x     SPI Flash Continue Read Mode
+ *              - \ref CMD_CLEAR_MODE_DATA     : Disable continue read.
+ *              - \ref CMD_CONTINUE_READ_MODE  : Enable continue read.
  * \hideinitializer
  */
 #define SPIM_SET_MODE_DATA(spim, x)                                    \
@@ -959,6 +965,13 @@ typedef enum
     {                                                                  \
         spim->MODE = ((spim->MODE & (~SPIM_MODE_MODEDATA_Msk)) | (x)); \
     } while (0)
+
+/**
+ * @brief Get Read Data Mode
+ *
+ */
+#define SPIM_GET_MODE_DATA(spim) \
+    ((spim->MODE & SPIM_MODE_MODEDATA_Msk) >> SPIM_MODE_MODEDATA_Pos)
 
 /**
  * @details    Clear output data for mode phase
@@ -1837,17 +1850,14 @@ typedef struct
     uint32_t u32DataDTR;        /*!< Data use DTR mode */
 
     uint32_t u32DcNum;          /*!< Dummy cycle count */
-    //uint32_t u32DcPhase;        /*!< Dummy cycle phase mode */
-    //uint32_t u32DcDTR;          /*!< Dummy cycle use DTR mode */
 
-    /* Continue read mode only support 0xBB, 0xEB, 0xE7, 0x0D, 0xBD, and 0xED */
-    uint32_t u32RdModeOn;       /*!< Enable Continue Read mode */
+    /* Continue read mode only support 0xBB, 0xEB, 0xE7, 0x0D, 0xBD, and 0xED
+       in Direct Map Mode */
+    uint32_t u32ContRdEn;       /*!< Enable Continue Read mode */
     uint32_t u32RdModePhase;    /*!< Read mode phase mode */
     uint32_t u32RdModeWidth;    /*!< Read mode phase mode */
     uint32_t u32RdModeDTR;      /*!< Read mode use DTR mode */
 
-    //uint32_t u32Is4ByteAddr;    /*!< 4 bytes address mode */
-    //uint32_t u32Sync;           /*!< Wait device ready */
 } PHASE_SET_T;  /*!< Structure holds SPIM IO phase info */
 
 
@@ -1858,7 +1868,6 @@ typedef struct
 #define HYPER_RAM_ID_REG1                  (0x00000002)    /* Hyper RAM Identification Register 1. */
 #define HYPER_RAM_CONFIG_REG0              (0x00001000)    /* Hyper RAM Configuration Register 0. */
 #define HYPER_RAM_CONFIG_REG1              (0x00001002)    /* Hyper RAM Configuration Register 1. */
-
 
 #define SPIM_HYPER_CMD_IDLE                 (0x00000000)    /* Hyper Bus interface is Idle. */
 #define SPIM_HYPER_CMD_RESET                (0x00000001)    /* Reset Hyper Bus Devices. */
@@ -2131,34 +2140,35 @@ int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32ClkOnNum, uint32_t u32Tr
 /*----------------------------------------------------------------------------*/
 int32_t SPIM_InitFlash(SPIM_T *spim, int clrWP);
 uint32_t SPIM_GetSClkFreq(SPIM_T *spim);
-void SPIM_ReadJedecId(SPIM_T *spim, uint8_t idBuf[], uint32_t u32NRx, uint32_t u32NBit, uint32_t u32DummyCycle, uint32_t u32DTREn);
+void SPIM_ReadJedecId(SPIM_T *spim, uint8_t *idBuf, uint32_t u32NRx, uint32_t u32NBit, uint32_t u32DummyCycle, uint32_t u32DTREn);
 int32_t SPIM_Enable_4Bytes_Mode(SPIM_T *spim, int isEn, uint32_t u32NBit, uint32_t u32DTREn);
 int32_t SPIM_Is4ByteModeEnable(SPIM_T *spim, uint32_t u32NBit);
 int32_t SPIM_SetWrapAroundEnable(SPIM_T *spim, int isEn, uint32_t u32WaBit);
 int32_t SPIM_Wait_Write_Done(SPIM_T *spim, uint32_t u32NBit);
 void SPIM_Set_Write_Enable(SPIM_T *spim, int isEn, uint32_t u32NBit);
 
-void SPIM_ReadConfigRegister(SPIM_T *spim, uint8_t u8RdCMD, uint32_t u32Addr, uint8_t dataBuf[], uint32_t u32NRx, uint32_t u32NBit);
+void SPIM_ReadConfigRegister(SPIM_T *spim, uint8_t u8RdCMD, uint32_t u32Addr, uint8_t *pu8DataBuf, uint32_t u32NRx, uint32_t u32NBit);
 void SPIM_WriteConfigRegister(SPIM_T *spim, uint8_t u8CMD, uint32_t u32Addr, uint8_t u8Data, uint32_t u32NBit);
 
 void SPIM_ChipErase(SPIM_T *spim, uint32_t u32NBit, int isSync);
 void SPIM_EraseBlock(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint8_t u8ErsCmd, uint32_t u32NBit, int isSync);
 
 void SPIM_IO_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32NTx,
-                   uint8_t pu8TxBuf[], uint8_t wrCmd, uint32_t u32NBitCmd,
+                   uint8_t *pu8TxBuf, uint8_t wrCmd, uint32_t u32NBitCmd,
                    uint32_t u32NBitAddr, uint32_t u32NBitDat, uint32_t u32DTREn);
 void SPIM_IO_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32RdSize,
-                  uint8_t pu8RxBuf[], uint8_t rdCmd, uint32_t u32NBitCmd,
+                  uint8_t *pu8RxBuf, uint8_t rdCmd, uint32_t u32NBitCmd,
                   uint32_t u32NBitAddr, uint32_t u32NBitDat, int u32NDummy,
                   uint32_t u32DTREn);
 
-void SPIM_DMA_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32NTx, uint8_t pu8TxBuf[], uint32_t wrCmd);
-int SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32NRx, uint8_t pu8RxBuf[], uint32_t u32RdCmd, int isSync);
+void SPIM_DMA_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32NTx, uint8_t *pu8TxBuf, uint32_t wrCmd);
+int SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32NRx, uint8_t *pu8RxBuf, uint32_t u32RdCmd, int isSync);
 
 uint32_t SPIM_GetDirectMapAddress(SPIM_T *spim);
 void SPIM_EnterDirectMapMode(SPIM_T *spim, int is4ByteAddr, uint32_t u32RdCmd, uint32_t u32IdleIntvl);
 int32_t SPIM_ExitDirectMapMode(SPIM_T *spim);
 
+void SPIM_ExitContReadMode(SPIM_T *spim);
 void SPIM_SetQuadEnable(SPIM_T *spim, int isEn, uint32_t u32NBit);
 
 void SPIM_WinbondUnlock(SPIM_T *spim, uint32_t u32NBit);
@@ -2167,24 +2177,24 @@ void SPIM_WinbondUnlock(SPIM_T *spim, uint32_t u32NBit);
 int32_t SPIM_DMADMM_ClearPhaseSetting(SPIM_T *spim, uint32_t u32OPMode);
 int32_t SPIM_DMADMM_SetCMDPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn);
 int32_t SPIM_DMADMM_SetAddrPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn);
-int32_t SPIM_DMADMM_SetContReadPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn);
+int32_t SPIM_DMADMM_SetContReadPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32ContEn, uint32_t u32DTREn);
 int32_t SPIM_DMADMM_SetDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32ByteOrder, uint32_t u32RdDQS, uint32_t u32DTREn);
 
 /* SPI flash command phase table init API */
 void SPIM_DMADMM_InitPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32OPMode);
-void SPIM_DMA_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint32_t u32WrSize, void *pvTxBuf);
-int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint32_t u32RdSize, void *pvRxBuf, int isSync);
+void SPIM_DMA_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, int is4ByteAddr, uint32_t u32Addr, uint32_t u32WrSize, uint8_t *pu8TxBuf);
+int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, int is4ByteAddr, uint32_t u32Addr, uint32_t u32RdSize, uint8_t *pu8RxBuf, int isSync);
 void SPIM_DMM_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, int is4ByteAddr, uint32_t u32IdleIntvl);
 
 /* Use Normal I/O mode send phase data */
-void SPIM_IO_SendCMDPhase(SPIM_T *spim, uint32_t u32RdCMD, uint32_t u32CmdPhase, uint32_t u32DTREn, uint32_t isSync);
-void SPIM_IO_SendAddrPhase(SPIM_T *spim, uint32_t u32Is4ByteAddr, uint32_t u32Addr, uint32_t u32AddrPhase, uint32_t u32RdMode, uint32_t u32DTREn);
+void SPIM_IO_SendCMDPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32OpCMD, uint32_t u32CMDPhase, uint32_t u32DTREn);
+void SPIM_IO_SendAddrPhase(SPIM_T *spim, uint32_t u32Is4ByteAddr, uint32_t u32Addr, uint32_t u32AddrPhase, uint32_t u32DTREn);
 int32_t SPIM_IO_SendDummyCycle(SPIM_T *spim, int u32NDummy);
-void SPIM_IO_SendDataPhase(SPIM_T *spim, uint8_t u8TRxBuf[], uint32_t u32TRxSize, uint32_t u32DataPhae, uint32_t u32DTREn, uint32_t isSync);
+void SPIM_IO_SendDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint8_t *pu8TRxBuf, uint32_t u32TRxSize, uint32_t u32DataPhae, uint32_t u32DTREn);
 
 /* SPI flash command phase table use normal I/O mode R/W API */
 void SPIM_IO_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint8_t *pu8RxBuf, uint32_t u32WrSize);
-void SPIM_IO_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint8_t pu8RxBuf[], uint32_t u32RdSize);
+void SPIM_IO_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint8_t *pu8RxBuf, uint32_t u32RdSize);
 
 /* Wait SPI flash write operation done */
 int32_t SPIM_WaitSPIMENDone(SPIM_T *spim, uint32_t u32IsSync);
@@ -2210,8 +2220,8 @@ int32_t SPIM_Write2Byte(SPIM_T *spim, uint32_t u32Addr, uint16_t u16Data);
 int32_t SPIM_Write3Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data);
 int32_t SPIM_Write4Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data);
 
-int32_t SPIM_DMAWrite_Hyper(SPIM_T *spim, uint32_t u32Addr, void *pvWrBuf, uint32_t u32NTx);
-int32_t SPIM_DMARead_Hyper(SPIM_T *spim, uint32_t u32Addr, void *pvRdBuf, uint32_t u32NRx);
+int32_t SPIM_DMAWrite_Hyper(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8WrBuf, uint32_t u32NTx);
+int32_t SPIM_DMARead_Hyper(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8RdBuf, uint32_t u32NRx);
 
 void SPIM_EnterDirectMapMode_Hyper(SPIM_T *spim);
 void SPIM_ExitDirectMapMode_Hyper(SPIM_T *spim);

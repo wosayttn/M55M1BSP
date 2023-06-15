@@ -15,9 +15,18 @@
 /*---------------------------------------------------------------------------------------------------------*/
 volatile uint32_t g_au32TMRINTCount[2] = {0};
 
+/**
+ * @brief       IRQ Handler for EQEI0 Interrupt
+ *
+ * @param       None
+ *
+ * @return      None
+ *
+ * @details     The EQEI0_IRQHandler is default IRQ of EQEI0, declared in startup_M55M1.c.
+ */
 void EQEI0_IRQHandler(void)
 {
-    if(EQEI_GET_INT_FLAG(EQEI0, EQEI_STATUS_UTIEF_Msk))     /* EQEI Unit Timer Event flag */
+    if (EQEI_GET_INT_FLAG(EQEI0, EQEI_STATUS_UTIEF_Msk))    /* EQEI Unit Timer Event flag */
     {
         EQEI_CLR_INT_FLAG(EQEI0, EQEI_STATUS_UTIEF_Msk);
         printf("Unit TImer0 INT!\n\n");
@@ -25,10 +34,18 @@ void EQEI0_IRQHandler(void)
     }
 
 }
-
+/**
+ * @brief       IRQ Handler for EQEI1 Interrupt
+ *
+ * @param       None
+ *
+ * @return      None
+ *
+ * @details     The EQEI1_IRQHandler is default IRQ of EQEI1, declared in startup_M55M1.c.
+ */
 void EQEI1_IRQHandler(void)
 {
-    if(EQEI_GET_INT_FLAG(EQEI1, EQEI_STATUS_UTIEF_Msk))     /* EQEI Unit Timer Event flag */
+    if (EQEI_GET_INT_FLAG(EQEI1, EQEI_STATUS_UTIEF_Msk))    /* EQEI Unit Timer Event flag */
     {
         EQEI_CLR_INT_FLAG(EQEI1, EQEI_STATUS_UTIEF_Msk);
         printf("Unit TImer1 INT!\n\n");
@@ -36,12 +53,11 @@ void EQEI1_IRQHandler(void)
     }
 
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init System Clock                                                                                       */
+/*---------------------------------------------------------------------------------------------------------*/
 void SYS_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/  
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -67,9 +83,9 @@ void SYS_Init(void)
     SystemCoreClockUpdate();
 
     /* Enable module clock */
-    CLK_EnableModuleClock(EQEI0_MODULE);    
+    CLK_EnableModuleClock(EQEI0_MODULE);
     CLK_EnableModuleClock(EQEI1_MODULE);
-    
+
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 
@@ -78,17 +94,21 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init UART                                                                                               */
+/*---------------------------------------------------------------------------------------------------------*/
 void UART0_Init()
 {
 
     /* Configure UART0 and set UART0 Baudrate */
     UART_Open(UART0, 115200);
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* MAIN function                                                                                           */
+/*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t u32InitCount, au32Counts[2];    
+    uint32_t u32InitCount, au32Counts[2];
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -99,10 +119,10 @@ int32_t main(void)
     /* Init UART0 for printf */
     UART0_Init();
 
-    printf("\n\nCPU @ %dHz\n", SystemCoreClock);
+    printf("\n\nCPU @ %uHz\n", SystemCoreClock);
 
     printf("+-----------------------------------------+\n");
-    printf("|     M55M1 EQEI Unit Timer Sample Code   |\n");
+    printf("|     EQEI Unit Timer Sample Code         |\n");
     printf("+-----------------------------------------+\n\n");
     printf("# Unit Timer0 Settings:\n");
     printf("    - Clock source is PCLK0       \n");
@@ -115,45 +135,47 @@ int32_t main(void)
 
     /* Set Unit Timer compare value */
     EQEI0->UTCMP = 36000000;
-    EQEI1->UTCMP = 36000000/2;    
+    EQEI1->UTCMP = 36000000 / 2;
 
     /* Enable EQEI interrupt */
     EQEI0->CTL2 |= (EQEI_CTL2_UTIEIEN_Msk | EQEI_STATUS_PHEF_Msk);
     EQEI1->CTL2 |= (EQEI_CTL2_UTIEIEN_Msk | EQEI_STATUS_PHEF_Msk);
     NVIC_EnableIRQ(EQEI0_IRQn);
     NVIC_EnableIRQ(EQEI1_IRQn);
-  
-    
+
+
     /* Clear Unit Timer0 ~ Timer1 interrupt counts to 0 */
     g_au32TMRINTCount[0] = g_au32TMRINTCount[1] = 0;
-    u32InitCount = g_au32TMRINTCount[0];    
+    u32InitCount = g_au32TMRINTCount[0];
 
     /* Start EQEI Unit TImer */
     EQEI0->CTL2 |= EQEI_CTL2_UTEN_Msk;
-    EQEI1->CTL2 |= EQEI_CTL2_UTEN_Msk;    
+    EQEI1->CTL2 |= EQEI_CTL2_UTEN_Msk;
 
     /* Check EQEI Unit Timer0 ~ Timer1 interrupt counts */
     printf("# EQEI Unit Timer interrupt counts :\n");
-    while(u32InitCount < 20)
+
+    while (u32InitCount < 20)
     {
-        if(g_au32TMRINTCount[0] != u32InitCount)
+        if (g_au32TMRINTCount[0] != u32InitCount)
         {
             au32Counts[0] = g_au32TMRINTCount[0];
             au32Counts[1] = g_au32TMRINTCount[1];
-            printf("    Unit Timer0:%3d    Unit Timer1:%3d\n", au32Counts[0], au32Counts[1]);
+            printf("    Unit Timer0:%3u    Unit Timer1:%3u\n", au32Counts[0], au32Counts[1]);
             u32InitCount = g_au32TMRINTCount[0];
 
-            if((au32Counts[1] > (au32Counts[0] * 2 + 1)) || (au32Counts[1] < (au32Counts[0] * 2 - 1)))
+            if ((au32Counts[1] > (au32Counts[0] * 2 + 1)) || (au32Counts[1] < (au32Counts[0] * 2 - 1)))
             {
                 printf("*** FAIL ***\n");
-                while(1);
+
+                while (1);
             }
         }
     }
-    
+
     printf("*** PASS ***\n");
 
-    while(1);    
+    while (1);
 
 }
 

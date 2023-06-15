@@ -13,26 +13,34 @@
 #define EQEI0A   PC3
 #define EQEI0B   PC4
 
+/**
+ * @brief       IRQ Handler for EQEI0 Interrupt
+ *
+ * @param       None
+ *
+ * @return      None
+ *
+ * @details     The EQEI0_IRQHandler is default IRQ of EQEI0, declared in startup_M55M1.c.
+ */
 void EQEI0_IRQHandler(void)
 {
-    if(EQEI_GET_INT_FLAG(EQEI0, EQEI_STATUS_CMPF_Msk))     /* Compare-match flag */
+    if (EQEI_GET_INT_FLAG(EQEI0, EQEI_STATUS_CMPF_Msk))    /* Compare-match flag */
     {
         printf("Compare-match INT!\n\n");
         EQEI_CLR_INT_FLAG(EQEI0, EQEI_STATUS_CMPF_Msk);
     }
 
-    if(EQEI_GET_INT_FLAG(EQEI0, EQEI_STATUS_OVUNF_Msk))    /* Counter Overflow or underflow flag */
+    if (EQEI_GET_INT_FLAG(EQEI0, EQEI_STATUS_OVUNF_Msk))   /* Counter Overflow or underflow flag */
     {
         printf("Overflow INT!\n\n");
         EQEI_CLR_INT_FLAG(EQEI0, EQEI_STATUS_OVUNF_Msk);
     }
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init System Clock                                                                                       */
+/*---------------------------------------------------------------------------------------------------------*/
 void SYS_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/  
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -62,7 +70,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOB_MODULE);
     CLK_EnableModuleClock(GPIOC_MODULE);
     CLK_EnableModuleClock(EQEI0_MODULE);
-    
+
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 
@@ -70,25 +78,29 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-    
+
     /* Set PC multi-function pins for GPIO*/
     SET_GPIO_PC3();
     SET_GPIO_PC4();
-    /* Set PA multi-function pins for EQEI0_A, EQEI0_B*/    
+    /* Set PA multi-function pins for EQEI0_A, EQEI0_B*/
     SET_EQEI0_A_PA4();
     SET_EQEI0_B_PA3();
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init UART                                                                                               */
+/*---------------------------------------------------------------------------------------------------------*/
 void UART0_Init()
-{    
+{
     /* Configure UART0 and set UART0 Baudrate */
     UART_Open(UART0, 115200);
 
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/*  MAIN function                                                                                          */
+/*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-	uint8_t u8op;
+    uint8_t u8op;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -99,10 +111,10 @@ int32_t main(void)
     /* Init UART0 for printf */
     UART0_Init();
 
-    printf("\n\nCPU @ %dHz\n", SystemCoreClock);
+    printf("\n\nCPU @ %uHz\n", SystemCoreClock);
 
     printf("+--------------------------------------+\n");
-    printf("|     M55M1 EQEI Driver Sample Code    |\n");
+    printf("|     EQEI Driver Sample Code          |\n");
     printf("+--------------------------------------+\n\n");
     printf("  >> Please connect PC.3 and PA.4 << \n");
     printf("  >> Please connect PC.4 and PA.3 << \n");
@@ -111,8 +123,8 @@ int32_t main(void)
     printf("     start test......\n\n");
     /* Configure PC.3 and PC.4 as output mode */
     GPIO_SetMode(PC, BIT3, GPIO_MODE_OUTPUT);
-    GPIO_SetMode(PC, BIT4, GPIO_MODE_OUTPUT);    
-    
+    GPIO_SetMode(PC, BIT4, GPIO_MODE_OUTPUT);
+
     EQEI0A = 0;
     EQEI0B = 0;
 
@@ -134,7 +146,7 @@ int32_t main(void)
     EQEI_Start(EQEI0);
 
     /* Wait compare-match and overflow interrupt happened */
-    while(1)
+    while (1)
     {
         EQEI0A = 1;
         CLK_SysTickDelay(16);

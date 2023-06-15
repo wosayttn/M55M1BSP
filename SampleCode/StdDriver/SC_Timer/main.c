@@ -4,7 +4,7 @@
  * @brief    Demonstrate how to use SC embedded timer.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -25,19 +25,18 @@ void SC0_IRQHandler(void)
 {
     static uint32_t u32Sec = 1;
 
-    if(SC0->INTSTS & SC_INTSTS_TMR0IF_Msk)
+    if (SC0->INTSTS & SC_INTSTS_TMR0IF_Msk)
     {
         /* Clear interrupt flag */
         SC0->INTSTS = SC_INTSTS_TMR0IF_Msk;
-        printf("%d sec\n", u32Sec++);
+        printf("%u sec\n", u32Sec++);
     }
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init System Clock                                                                                       */
+/*---------------------------------------------------------------------------------------------------------*/
 void SYS_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/    
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -49,7 +48,7 @@ void SYS_Init(void)
 
     /* Switch SCLK clock source to PLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-    
+
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
 
@@ -63,10 +62,10 @@ void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-    
+
     /* Enable SC0 module clock and clock source from HIRC divide 1 */
     CLK_SetModuleClock(SC0_MODULE, CLK_SCSEL_SC0SEL_HIRC, CLK_SCDIV_SC0DIV(1));
-   
+
     /* Enable module clock */
     CLK_EnableModuleClock(SC0_MODULE);
 
@@ -77,9 +76,11 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-        
-}
 
+}
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init UART                                                                                               */
+/*---------------------------------------------------------------------------------------------------------*/
 void UART_Init(void)
 {
 
@@ -104,7 +105,7 @@ int main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    printf("\n\nCPU @ %dHz\n", SystemCoreClock);
+    printf("\n\nCPU @ %uHz\n", SystemCoreClock);
 
     printf("\nThis sample code demo how to use SC embedded timer.\n");
 
@@ -121,7 +122,7 @@ int main(void)
     /* Each 1,000,000 ETU will generate TIMER0 timeout event */
     SC_StartTimer(SC0, 0, SC_TMR_MODE_4, 1000000);  // timer counter will be reloaded.
 
-    while(1) {}
+    while (1) {}
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

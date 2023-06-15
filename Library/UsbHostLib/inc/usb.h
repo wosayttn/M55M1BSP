@@ -278,19 +278,19 @@ typedef struct __attribute__((__packed__)) usb_endpoint_descriptor    /*!< Endpo
 /*----------------------------------------------------------------------------------*/
 typedef struct
 {
-    int   (*init) (void);
-    void  (*shutdown) (void);
-    void  (*suspend) (void);
-    void  (*resume) (void);
-    int   (*ctrl_xfer)(struct utr_t *utr);
-    int   (*bulk_xfer)(struct utr_t *utr);
-    int   (*int_xfer)(struct utr_t *utr);
-    int   (*iso_xfer)(struct utr_t *utr);
-    int   (*quit_xfer)(struct utr_t *utr, struct ep_info_t *ep);
+    int (*init)(void);
+    void (*shutdown)(void);
+    void (*suspend)(void);
+    void (*resume)(void);
+    int (*ctrl_xfer)(struct utr_t *utr);
+    int (*bulk_xfer)(struct utr_t *utr);
+    int (*int_xfer)(struct utr_t *utr);
+    int (*iso_xfer)(struct utr_t *utr);
+    int (*quit_xfer)(struct utr_t *utr, struct ep_info_t *ep);
 
     /* root hub support */
-    int   (*rthub_port_reset)(int port);
-    int   (*rthub_polling) (void);
+    int (*rthub_port_reset)(int port);
+    int (*rthub_polling)(void);
 } HC_DRV_T;
 
 /*----------------------------------------------------------------------------------*/
@@ -298,10 +298,10 @@ typedef struct
 /*----------------------------------------------------------------------------------*/
 typedef struct
 {
-    int   (*probe) (struct iface_t *iface);
-    void  (*disconnect) (struct iface_t *iface);
-    void  (*suspend) (struct iface_t *iface);
-    void  (*resume) (struct iface_t *iface);
+    int (*probe)(struct iface_t *iface);
+    void (*disconnect)(struct iface_t *iface);
+    void (*suspend)(struct iface_t *iface);
+    void (*resume)(struct iface_t *iface);
 } UDEV_DRV_T;
 
 /*----------------------------------------------------------------------------------*/
@@ -381,7 +381,7 @@ typedef struct utr_t
     uint8_t     bIsoNewSched;         /*!< New schedule isochronous transfer     \hideinitializer */
     uint16_t    iso_sf;               /*!< Isochronous start frame number        \hideinitializer */
     uint16_t    iso_xlen[IF_PER_UTR]; /*!< transfer length of isochronous frames \hideinitializer */
-    uint8_t *   iso_buff[IF_PER_UTR]; /*!< transfer buffer address of isochronous frames \hideinitializer */
+    uint8_t    *iso_buff[IF_PER_UTR]; /*!< transfer buffer address of isochronous frames \hideinitializer */
     int         iso_status[IF_PER_UTR]; /*!< transfer status of isochronous frames \hideinitializer */
     int         td_cnt;               /*!< number of transfer descriptors        \hideinitializer */
     int         status;               /*!< return status                         \hideinitializer */
@@ -394,16 +394,16 @@ typedef struct utr_t
 /*----------------------------------------------------------------------------------*/
 /*  Global variables                                                                */
 /*----------------------------------------------------------------------------------*/
-extern USBH_T      *_ohci0; 
+extern USBH_T      *_ohci0;
 extern USBH1_T     *_ohci1;
 #ifdef ENABLE_EHCI
-extern HSUSBH_T    *_ehci;
+    extern HSUSBH_T    *_ehci;
 #endif
 
 extern HC_DRV_T    ohci0_driver, ohci1_driver;
 extern HC_DRV_T    ehci_driver;
 
-extern UDEV_T * g_udev_list;
+extern UDEV_T *g_udev_list;
 
 /*----------------------------------------------------------------------------------*/
 /*  USB stack exported functions                                                    */
@@ -428,32 +428,32 @@ extern void usbh_dump_ep_info(EP_INFO_T *ep);
  */
 extern void usbh_memory_init(void);
 extern uint32_t  usbh_memory_used(void);
-extern void * usbh_alloc_mem(int size);
+extern void *usbh_alloc_mem(int size);
 extern void usbh_free_mem(void *p, int size);
 extern int  alloc_dev_address(void);
 extern void free_dev_address(int dev_addr);
-extern UDEV_T * alloc_device(void);
+extern UDEV_T *alloc_device(void);
 extern void free_device(UDEV_T *udev);
-extern UTR_T * alloc_utr(UDEV_T *udev);
+extern UTR_T *alloc_utr(UDEV_T *udev);
 extern void free_utr(UTR_T *utr);
-extern ED_T * alloc_ohci_ED(void);
+extern ED_T *alloc_ohci_ED(void);
 extern void free_ohci_ED(ED_T *ed);
-extern TD_T * alloc_ohci_TD(UTR_T *utr);
+extern TD_T *alloc_ohci_TD(UTR_T *utr);
 extern void free_ohci_TD(TD_T *td);
-extern QH_T * alloc_ehci_QH(void);
+extern QH_T *alloc_ehci_QH(void);
 extern void free_ehci_QH(QH_T *qh);
-extern qTD_T * alloc_ehci_qTD(UTR_T *utr);
+extern qTD_T *alloc_ehci_qTD(UTR_T *utr);
 extern void free_ehci_qTD(qTD_T *qtd);
-extern iTD_T * alloc_ehci_iTD(void);
+extern iTD_T *alloc_ehci_iTD(void);
 extern void free_ehci_iTD(iTD_T *itd);
-extern siTD_T * alloc_ehci_siTD(void);
+extern siTD_T *alloc_ehci_siTD(void);
 extern void free_ehci_siTD(siTD_T *sitd);
 
 extern void usbh_hub_init(void);
 extern int  connect_device(UDEV_T *);
 extern void disconnect_device(UDEV_T *);
 extern int  usbh_register_driver(UDEV_DRV_T *driver);
-extern EP_INFO_T * usbh_iface_find_ep(IFACE_T *iface, uint8_t ep_addr, uint8_t dir_type);
+extern EP_INFO_T *usbh_iface_find_ep(IFACE_T *iface, uint8_t ep_addr, uint8_t dir_type);
 extern int  usbh_reset_device(UDEV_T *);
 
 /*

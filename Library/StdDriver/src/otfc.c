@@ -20,20 +20,6 @@
 /** @addtogroup OTFC_EXPORTED_FUNCTIONS OTFC Exported Functions
   @{
 */
-/**
- * @brief Disable OTFC Protection Region 0 ~ 3 and Clear Region Setting.
- *
- * @param otfc is the base address of OTFC module.
- * @param u8RPx is the Protection Region of OTFC module.
- */
-void OTFC_PR_Disable(OTFC_T *otfc, uint32_t u32RPx)
-{
-    /* Disable Protection Region 0 ~ 3 */
-    OTFC_CTL_PR_OFF(otfc, u32RPx);
-
-    /* Reset Protection Region 0 ~ 3 */
-    OTFC_CTL_PR_RST(otfc, u32RPx);
-}
 
 /**
  * @brief   Enable OTFC Protection Region 0 ~ 3 and Use Key Source From Key store.
@@ -51,7 +37,7 @@ void OTFC_PR_Disable(OTFC_T *otfc, uint32_t u32RPx)
  * @param[in] u32Nonce1 is the Protection Region Nonce Word 1 Key
  * @param[in] u32Nonce2 is the Protection Region Nonce Word 2 Key
  */
-void OTFC_PR_KeyFromKeyStore(OTFC_T *otfc, uint32_t u32PR,
+void OTFC_SetKeyFromKeyStore(OTFC_T *otfc, uint32_t u32PR,
                              uint32_t u32SAddr, uint32_t u32EAddr,
                              uint32_t u32KeyNum, uint32_t u8KeySrc,
                              uint32_t u32Scramble,
@@ -88,11 +74,11 @@ void OTFC_PR_KeyFromKeyStore(OTFC_T *otfc, uint32_t u32PR,
                                 OTFC_PR_KSCTL_RSRC_Msk);
 
     /* Protection Region Enable */
-    OTFC_CTL_PR_ON(otfc, u32PR);
+    //OTFC_ENABLE_PR(otfc, u32PR);
 }
 
 /**
- * @brief   Enable OTFC Protrction Region 0 ~ 3 and Use Key Source From Register.
+ * @brief   Set OTFC Protrction Region 0 ~ 3 Key Source to Register.
  *
  * @param[in] otfc  is the base address of OTFC module.
  * @param[in] u8PRx is the Protection Region 0 ~ 3.
@@ -107,13 +93,13 @@ void OTFC_PR_KeyFromKeyStore(OTFC_T *otfc, uint32_t u32PR,
  * @param[in] u32Nonce1 is the Protection Region 0 ~ 3 Nonce Word 1 Key
  * @param[in] u32Nonce2 is the Protection Region 0 ~ 3 Nonce Word 2 Key
  */
-void OTFC_PR_KeyFromRegister(OTFC_T *otfc,
-                             uint32_t u32PR,
-                             uint32_t u32SAddr,
-                             uint32_t u32EAddr,
-                             uint32_t u32Key0, uint32_t u32Key1, uint32_t u32Key2, uint32_t u32Key3,
-                             uint32_t u32Scramble,
-                             uint32_t u32Nonce0, uint32_t u32Nonce1, uint32_t u32Nonce2)
+void OTFC_SetKeyToReg(OTFC_T *otfc,
+                      uint32_t u32PR,
+                      uint32_t u32SAddr,
+                      uint32_t u32EAddr,
+                      uint32_t u32Key0, uint32_t u32Key1, uint32_t u32Key2, uint32_t u32Key3,
+                      uint32_t u32Scramble,
+                      uint32_t u32Nonce0, uint32_t u32Nonce1, uint32_t u32Nonce2)
 {
     uint32_t u32Timeout = 0xFFFF;
 
@@ -143,5 +129,5 @@ void OTFC_PR_KeyFromRegister(OTFC_T *otfc,
     OTFC_PR_NONCE2(otfc, u32PR, u32Nonce2);
 
     /* Protection Region Enable */
-    OTFC_CTL_PR_ON(otfc, u32PR);
+    //OTFC_ENABLE_PR(otfc, u32PR);
 }

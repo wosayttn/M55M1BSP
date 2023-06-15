@@ -152,9 +152,9 @@ __STATIC_INLINE void TAMPER_IOSEL_TAMPER(uint32_t u32TamperSelect)
 {
     uint32_t i;
 
-    for(i = 0UL; i < (uint32_t)TAMPER_MAX_TAMPER_PIN_NUM; i++)
+    for (i = 0UL; i < (uint32_t)TAMPER_MAX_TAMPER_PIN_NUM; i++)
     {
-        if(u32TamperSelect & (0x1UL << i))
+        if (u32TamperSelect & (0x1UL << i))
         {
             TAMPER->FUNEN = (TAMPER->FUNEN & ~0xFFUL) | (0x94 + i * 0x10UL);
         }
@@ -180,9 +180,9 @@ __STATIC_INLINE void TAMPER_IOSEL_RTC(uint32_t u32TamperSelect)
 {
     uint32_t i;
 
-    for(i = 0UL; i < (uint32_t)TAMPER_MAX_TAMPER_PIN_NUM; i++)
+    for (i = 0UL; i < (uint32_t)TAMPER_MAX_TAMPER_PIN_NUM; i++)
     {
-        if(u32TamperSelect & (0x1UL << i))
+        if (u32TamperSelect & (0x1UL << i))
         {
             TAMPER->FUNEN = (TAMPER->FUNEN & ~0xFFUL) | (0x90 + i * 0x10UL);
         }
@@ -225,15 +225,15 @@ __STATIC_INLINE void TAMPER_VG_SAMPLE_SEL(uint32_t u32VGSampleRate)
 {
     TAMPER->FUNEN &= ~0xF000000UL;
 
-    if(u32VGSampleRate == TAMPER_VG_192M_SAMPLE)
+    if (u32VGSampleRate == TAMPER_VG_192M_SAMPLE)
     {
         TAMPER->FUNEN |= TAMPER_FUNEN_VGCHEN0_Msk | TAMPER_FUNEN_VGCHEN1_Msk | TAMPER_FUNEN_VGCHEN2_Msk | TAMPER_FUNEN_VGCHEN3_Msk;
     }
-    else if(u32VGSampleRate == TAMPER_VG_96M_SAMPLE)
+    else if (u32VGSampleRate == TAMPER_VG_96M_SAMPLE)
     {
         TAMPER->FUNEN |= TAMPER_FUNEN_VGCHEN0_Msk | TAMPER_FUNEN_VGCHEN1_Msk;
     }
-    else if(u32VGSampleRate == TAMPER_VG_48M_SAMPLE)
+    else if (u32VGSampleRate == TAMPER_VG_48M_SAMPLE)
     {
         TAMPER->FUNEN |= TAMPER_FUNEN_VGCHEN0_Msk;
     }
@@ -250,19 +250,19 @@ __STATIC_INLINE void TAMPER_VG_SAMPLE_SEL(uint32_t u32VGSampleRate)
   */
 __STATIC_INLINE void TAMPER_VG_TRIM_INIT()
 {
-    if(PMC->PLSTS & PMC_PLSTS_PLSTATUS_PL0)
+    if (PMC->PLSTS & PMC_PLSTS_PLSTATUS_PL0)
     {
         TAMPER->VG = (TAMPER->VG & ~0xFFFFUL) | 0x8CC8UL;
     }
-    else if(PMC->PLSTS & PMC_PLSTS_PLSTATUS_PL1)
+    else if (PMC->PLSTS & PMC_PLSTS_PLSTATUS_PL1)
     {
         TAMPER->VG = (TAMPER->VG & ~0xFFFF0000UL) | 0x7CC90000UL;
     }
-    else if(PMC->PLSTS & PMC_PLSTS_PLSTATUS_PL2)
+    else if (PMC->PLSTS & PMC_PLSTS_PLSTATUS_PL2)
     {
         TAMPER->VG2 = (TAMPER->VG2 & ~0xFFFFUL) | 0x5CCBUL;
     }
-    else if(PMC->PLSTS & PMC_PLSTS_PLSTATUS_PL3)
+    else if (PMC->PLSTS & PMC_PLSTS_PLSTATUS_PL3)
     {
         TAMPER->VG2 = (TAMPER->VG2 & ~0xFFFF0000UL) | 0x2CCD0000UL;
     }

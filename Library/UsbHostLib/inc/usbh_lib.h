@@ -140,7 +140,7 @@ extern int  usbh_pooling_hubs(void);
 extern void usbh_install_conn_callback(CONN_FUNC *conn_func, CONN_FUNC *disconn_func);
 extern void usbh_suspend(void);
 extern void usbh_resume(void);
-extern struct udev_t * usbh_find_device(char *hub_id, int port);
+extern struct udev_t *usbh_find_device(char *hub_id, int port);
 
 /**
  * @brief  A function return current tick count.
@@ -156,7 +156,7 @@ extern uint32_t get_ticks(void);   /* This function must be provided by user app
 /*                                                                  */
 /*------------------------------------------------------------------*/
 extern void     usbh_cdc_init(void);
-extern struct cdc_dev_t * usbh_cdc_get_device_list(void);
+extern struct cdc_dev_t *usbh_cdc_get_device_list(void);
 
 /// @cond HIDDEN_SYMBOLS
 
@@ -176,7 +176,7 @@ extern int32_t  usbh_cdc_send_data(struct cdc_dev_t *cdev, uint8_t *buff, int bu
 /*                                                                  */
 /*------------------------------------------------------------------*/
 extern void     usbh_hid_init(void);
-extern struct usbhid_dev * usbh_hid_get_device_list(void);
+extern struct usbhid_dev *usbh_hid_get_device_list(void);
 extern int32_t  usbh_hid_get_report_descriptor(struct usbhid_dev *hdev, uint8_t *desc_buf, int buf_max_len);
 extern int32_t  usbh_hid_get_report(struct usbhid_dev *hdev, int rtp_typ, int rtp_id, uint8_t *data, int len);
 extern int32_t  usbh_hid_set_report(struct usbhid_dev *hdev, int rtp_typ, int rtp_id, uint8_t *data, int len);
@@ -213,7 +213,7 @@ extern int  usbh_umas_reset_disk(int drv_no);
 /*------------------------------------------------------------------*/
 extern void usbh_uac_init(void);
 extern int usbh_uac_open(struct uac_dev_t *audev);
-extern struct uac_dev_t * usbh_uac_get_device_list(void);
+extern struct uac_dev_t *usbh_uac_get_device_list(void);
 extern int usbh_uac_get_channel_number(struct uac_dev_t *audev, uint8_t target);
 extern int usbh_uac_get_bit_resolution(struct uac_dev_t *audev, uint8_t target, uint8_t *byte_cnt);
 extern int usbh_uac_get_sampling_rate(struct uac_dev_t *audev, uint8_t target, uint32_t *srate_list, int max_cnt, uint8_t *type);

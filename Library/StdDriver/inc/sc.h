@@ -116,13 +116,13 @@ extern "C"
   */
 #define SC_SET_VCC_PIN(sc, u32State) \
     do {\
-            uint32_t u32TimeOutCount = SC_TIMEOUT;\
-            while(((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)\
-                if(--u32TimeOutCount == 0) break;\
-            if(u32State)\
-                (sc)->PINCTL |= SC_PINCTL_PWREN_Msk;\
-            else\
-                (sc)->PINCTL &= ~SC_PINCTL_PWREN_Msk;\
+        uint32_t u32TimeOutCount = SC_TIMEOUT;\
+        while(((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)\
+            if(--u32TimeOutCount == 0) break;\
+        if(u32State)\
+            (sc)->PINCTL |= SC_PINCTL_PWREN_Msk;\
+        else\
+            (sc)->PINCTL &= ~SC_PINCTL_PWREN_Msk;\
     }while(0)
 
 
@@ -138,13 +138,13 @@ extern "C"
   */
 #define SC_SET_CLK_PIN(sc, u32OnOff)\
     do {\
-            uint32_t u32TimeOutCount = SC_TIMEOUT;\
-            while(((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)\
-                if(--u32TimeOutCount == 0) break;\
-            if(u32OnOff)\
-                (sc)->PINCTL |= SC_PINCTL_CLKKEEP_Msk;\
-            else\
-                (sc)->PINCTL &= ~(SC_PINCTL_CLKKEEP_Msk);\
+        uint32_t u32TimeOutCount = SC_TIMEOUT;\
+        while(((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)\
+            if(--u32TimeOutCount == 0) break;\
+        if(u32OnOff)\
+            (sc)->PINCTL |= SC_PINCTL_CLKKEEP_Msk;\
+        else\
+            (sc)->PINCTL &= ~(SC_PINCTL_CLKKEEP_Msk);\
     }while(0)
 
 /**
@@ -159,13 +159,13 @@ extern "C"
   */
 #define SC_SET_IO_PIN(sc, u32State)\
     do {\
-            uint32_t u32TimeOutCount = SC_TIMEOUT;\
-            while(((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)\
-                if(--u32TimeOutCount == 0) break;\
-            if(u32State)\
-                (sc)->PINCTL |= SC_PINCTL_SCDATA_Msk;\
-            else\
-                (sc)->PINCTL &= ~SC_PINCTL_SCDATA_Msk;\
+        uint32_t u32TimeOutCount = SC_TIMEOUT;\
+        while(((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)\
+            if(--u32TimeOutCount == 0) break;\
+        if(u32State)\
+            (sc)->PINCTL |= SC_PINCTL_SCDATA_Msk;\
+        else\
+            (sc)->PINCTL &= ~SC_PINCTL_SCDATA_Msk;\
     }while(0)
 
 /**
@@ -180,13 +180,13 @@ extern "C"
   */
 #define SC_SET_RST_PIN(sc, u32State)\
     do {\
-            uint32_t u32TimeOutCount = SC_TIMEOUT;\
-            while(((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)\
-                if(--u32TimeOutCount == 0) break;\
-            if(u32State)\
-                (sc)->PINCTL |= SC_PINCTL_RSTEN_Msk;\
-            else\
-                (sc)->PINCTL &= ~SC_PINCTL_RSTEN_Msk;\
+        uint32_t u32TimeOutCount = SC_TIMEOUT;\
+        while(((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)\
+            if(--u32TimeOutCount == 0) break;\
+        if(u32State)\
+            (sc)->PINCTL |= SC_PINCTL_RSTEN_Msk;\
+        else\
+            (sc)->PINCTL &= ~SC_PINCTL_RSTEN_Msk;\
     }while(0)
 
 /**
@@ -248,21 +248,24 @@ __STATIC_INLINE void SC_SetTxRetry(SC_T *sc, uint32_t u32Count)
     uint32_t u32TimeOutCount = 0;
 
     u32TimeOutCount = SC_TIMEOUT;
-    while(((sc)->CTL & SC_CTL_SYNC_Msk) == SC_CTL_SYNC_Msk)
+
+    while (((sc)->CTL & SC_CTL_SYNC_Msk) == SC_CTL_SYNC_Msk)
     {
-        if(--u32TimeOutCount == 0) break;
+        if (--u32TimeOutCount == 0) break;
     }
 
     /* Retry count must set while enable bit disabled, so disable it first */
     (sc)->CTL &= ~(SC_CTL_TXRTY_Msk | SC_CTL_TXRTYEN_Msk);
 
-    if((u32Count) != 0UL)
+    if ((u32Count) != 0UL)
     {
         u32TimeOutCount = SC_TIMEOUT;
-        while(((sc)->CTL & SC_CTL_SYNC_Msk) == SC_CTL_SYNC_Msk)
+
+        while (((sc)->CTL & SC_CTL_SYNC_Msk) == SC_CTL_SYNC_Msk)
         {
-            if(--u32TimeOutCount == 0) break;
+            if (--u32TimeOutCount == 0) break;
         }
+
         (sc)->CTL |= (((u32Count) - 1UL) << SC_CTL_TXRTY_Pos) | SC_CTL_TXRTYEN_Msk;
     }
 }
@@ -281,21 +284,24 @@ __STATIC_INLINE void SC_SetRxRetry(SC_T *sc, uint32_t u32Count)
     uint32_t u32TimeOutCount = 0;
 
     u32TimeOutCount = SC_TIMEOUT;
-    while(((sc)->CTL & SC_CTL_SYNC_Msk) == SC_CTL_SYNC_Msk)
+
+    while (((sc)->CTL & SC_CTL_SYNC_Msk) == SC_CTL_SYNC_Msk)
     {
-        if(--u32TimeOutCount == 0) break;
+        if (--u32TimeOutCount == 0) break;
     }
 
     /* Retry count must set while enable bit disabled, so disable it first */
     (sc)->CTL &= ~(SC_CTL_RXRTY_Msk | SC_CTL_RXRTYEN_Msk);
 
-    if((u32Count) != 0UL)
+    if ((u32Count) != 0UL)
     {
         u32TimeOutCount = SC_TIMEOUT;
-        while(((sc)->CTL & SC_CTL_SYNC_Msk) == SC_CTL_SYNC_Msk)
+
+        while (((sc)->CTL & SC_CTL_SYNC_Msk) == SC_CTL_SYNC_Msk)
         {
-            if(--u32TimeOutCount == 0) break;
+            if (--u32TimeOutCount == 0) break;
         }
+
         (sc)->CTL |= (((u32Count) - 1UL) << SC_CTL_RXRTY_Pos) | SC_CTL_RXRTYEN_Msk;
     }
 }

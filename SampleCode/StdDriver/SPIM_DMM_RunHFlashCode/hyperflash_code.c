@@ -117,7 +117,7 @@ void HyperFlash_DMAWrite(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvWrBuf, uint3
     {
         toWr = HFLH_PAGE_SIZE - pageOffset;               /* Size of data remaining on the first page. */
 
-        HyperFlash_DMA_WriteByPage(pSPIMx, u32SAddr, &pvWrBuf[buf_idx], toWr);
+        HyperFlash_DMA_WriteByPage(pSPIMx, u32SAddr, (void *)&pvWrBuf[buf_idx], toWr);
 
         u32SAddr += toWr;                         /* Advance indicator. */
         u32NTx -= toWr;
