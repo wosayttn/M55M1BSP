@@ -144,7 +144,8 @@ static void SendChar_ToUART(int ch)
         }
         else
             break; // FIFO full
-    } while (i32Tail != i32Head);
+    }
+    while (i32Tail != i32Head);
 }
 #endif
 
@@ -329,8 +330,8 @@ void ProcessHardFault(uint32_t *excContext)
         printf("Unexpected instruction\n");
     }
 
-    // Or *sp to remove compiler warning
-    while (1U | *excContext) {}
+    // Halt here
+    while (1);
 }
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION)

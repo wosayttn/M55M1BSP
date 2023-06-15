@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     scu.h
  * @version  V1.00
- * @brief    SCU driver header file
+ * @brief    Security Configuration Unit driver header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -41,184 +41,182 @@ extern "C"
 #define SPIM1_MEM_SIZE      ((uint32_t) 0x02000000UL)
 /* EBI memory secure/non-secure is decided by SCU_D1PNS1 and did not support MPC config */
 
-#define SRAM0MPC_BLK   0x8000        // Block size: 32 KB
-#define SRAM1MPC_BLK   0x8000        // Block size: 32 KB
-#define SRAM2MPC_BLK   0x8000        // Block size: 32 KB
-#define SRAM3MPC_BLK   0x1000        // Block size: 4 KB
-#define LPSRAMMPC_BLK  0x1000        // Block size: 4 KB
-#define SPIM0MPC_BLK   0x20000       // Block size: 128 KB
-#define SPIM1MPC_BLK   0x20000       // Block size: 128 KB
+#define SRAM0MPC_BLK        (0x8000UL)        // Block size: 32 KB
+#define SRAM1MPC_BLK        (0x8000UL)        // Block size: 32 KB
+#define SRAM2MPC_BLK        (0x8000UL)        // Block size: 32 KB
+#define SRAM3MPC_BLK        (0x1000UL)        // Block size: 4 KB
+#define LPSRAMMPC_BLK       (0x1000UL)        // Block size: 4 KB
+#define SPIM0MPC_BLK        (0x20000UL)       // Block size: 128 KB
+#define SPIM1MPC_BLK        (0x20000UL)       // Block size: 128 KB
 
-#define MASTER_ID_CPU       0
-#define MASTER_ID_PDMA0     1
-#define MASTER_ID_PDMA1     2
-#define MASTER_ID_USBH0     3
-// Reserved
-#define MASTER_ID_HSUSBH    5
-#define MASTER_ID_HSUSBD    6
-#define MASTER_ID_SDH0      7
-#define MASTER_ID_SDH1      8
-#define MASTER_ID_EMAC      9
-#define MASTER_ID_CRYPTO    10
-#define MASTER_ID_CRC       11
-#define MASTER_ID_GDMA      12
-#define MASTER_ID_NPU       13
-#define MASTER_ID_LPPDMA    14
-#define MASTER_ID_CCAP      15
-#define MASTER_ID_SPIM0     16
-#define MASTER_ID_SPIM1     17
+typedef enum
+{
+    eSCU_MASTER_ID_CPU      = 0,
+    eSCU_MASTER_ID_PDMA0    = 1,
+    eSCU_MASTER_ID_PDMA1    = 2,
+    eSCU_MASTER_ID_USBH0    = 3,
+    eSCU_MASTER_ID_HSUSBH   = 5,
+    eSCU_MASTER_ID_HSUSBD   = 6,
+    eSCU_MASTER_ID_SDH0     = 7,
+    eSCU_MASTER_ID_SDH1     = 8,
+    eSCU_MASTER_ID_EMAC     = 9,
+    eSCU_MASTER_ID_CRYPTO   = 10,
+    eSCU_MASTER_ID_CRC      = 11,
+    eSCU_MASTER_ID_GDMA     = 12,
+    eSCU_MASTER_ID_NPU      = 13,
+    eSCU_MASTER_ID_LPPDMA   = 14,
+    eSCU_MASTER_ID_CCAP     = 15,
+    eSCU_MASTER_ID_SPIM0    = 16,
+    eSCU_MASTER_ID_SPIM1    = 17,
+} E_SCU_MASTER_ID;
 
-#define PVSRC_IDX_APB0      0
-#define PVSRC_IDX_APB1      1
-#define PVSRC_IDX_APB2      2
-#define PVSRC_IDX_APB3      3
-#define PVSRC_IDX_APB4      4
-#define PVSRC_IDX_APB5      5
-#define PVSRC_IDX_D0PPC0    8
-#define PVSRC_IDX_D1PPC0    9
-#define PVSRC_IDX_D1PPC1    10
-#define PVSRC_IDX_D2PPC0    11
-#define PVSRC_IDX_EBI       16
-
-#define PVA_IDX_APB0        0
-#define PVA_IDX_APB1        1
-#define PVA_IDX_APB2        2
-#define PVA_IDX_APB3        3
-#define PVA_IDX_APB4        4
-#define PVA_IDX_APB5        5
-#define PVA_IDX_D0PPC0      8
-#define PVA_IDX_D1PPC0      9
-#define PVA_IDX_D1PPC1      10
-#define PVA_IDX_D2PPC0      11
-#define PVA_IDX_EBI         16
-
-#define MVA_IDX_GDMA        0
-#define MVA_IDX_PDMA0       1
-#define MVA_IDX_PDMA1       2
-#define MVA_IDX_USBH1       3
-#define MVA_IDX_HSUSBH      4
-#define MVA_IDX_HSUSBD      5
-#define MVA_IDX_SDH0        6
-#define MVA_IDX_SDH1        7
-#define MVA_IDX_EMAC        8
-#define MVA_IDX_CRYPTO      9
-#define MVA_IDX_CRC         10
-#define MVA_IDX_LPPDMA      11
-#define MVA_IDX_CCAP        12
-#define MVA_IDX_NPU0        13
-#define MVA_IDX_NPU1        14
-#define MVA_IDX_SPIM0       15
-#define MVA_IDX_SPIM1       16
+typedef enum
+{
+    eSCU_INT_IDX_APB0       = 0,
+    eSCU_INT_IDX_APB1       = 1,
+    eSCU_INT_IDX_APB2       = 2,
+    eSCU_INT_IDX_APB3       = 3,
+    eSCU_INT_IDX_APB4       = 4,
+    eSCU_INT_IDX_APB5       = 5,
+    eSCU_INT_IDX_D0PPC0     = 8,
+    eSCU_INT_IDX_D1PPC0     = 9,
+    eSCU_INT_IDX_D1PPC1     = 10,
+    eSCU_INT_IDX_D2PPC0     = 11,
+    eSCU_INT_IDX_EBI        = 16,
+    eSCU_INT_IDX_GDMA       = 32 +  0,
+    eSCU_INT_IDX_PDMA0      = 32 +  1,
+    eSCU_INT_IDX_PDMA1      = 32 +  2,
+    eSCU_INT_IDX_USBH0      = 32 +  3,
+    eSCU_INT_IDX_HSUSBH     = 32 +  5,
+    eSCU_INT_IDX_HSUSBD     = 32 +  6,
+    eSCU_INT_IDX_SDH0       = 32 +  7,
+    eSCU_INT_IDX_SDH1       = 32 +  8,
+    eSCU_INT_IDX_EMAC       = 32 +  9,
+    eSCU_INT_IDX_CRYPTO     = 32 + 10,
+    eSCU_INT_IDX_CRC        = 32 + 11,
+    eSCU_INT_IDX_LPPDMA     = 32 + 12,
+    eSCU_INT_IDX_CCAP       = 32 + 13,
+    eSCU_INT_IDX_NPUIF1     = 32 + 14,
+    eSCU_INT_IDX_NPUIF0     = 32 + 15,
+    eSCU_INT_IDX_SPIM0      = 32 + 16,
+    eSCU_INT_IDX_SPIM1      = 32 + 17,
+    eSCU_INT_IDX_SRAM0_MPC  = 64 +  0,
+    eSCU_INT_IDX_SRAM1_MPC  = 64 +  1,
+    eSCU_INT_IDX_SRAM2_MPC  = 64 +  2,
+    eSCU_INT_IDX_SRAM3_MPC  = 64 +  3,
+    eSCU_INT_IDX_LPSRAM_MPC = 64 +  4,
+    eSCU_INT_IDX_SPIM0_MPC  = 64 +  5,
+    eSCU_INT_IDX_SPIM1_MPC  = 64 +  6,
+} E_SCU_INT_IDX;
 
 /**
  *  @details  Non-secure Attribution Definition.
  */
-typedef enum NSATTR
+typedef enum
 {
     /******  SCU_D0PNS0 **********************************************************************************/
-    NPU_Attr     =      3,
+    eSCU_PERI_IDX_NPU            = 3,
 
     /******  SCU_D0PNS2 **********************************************************************************/
-    SPIM0_Attr   = 64 + 2,
-    SPIM1_Attr   = 64 + 3,
+    eSCU_PERI_IDX_SPIM0          = 64 + 2,
+    eSCU_PERI_IDX_SPIM1          = 64 + 3,
 
     /******  SCU_D1PNS0 **********************************************************************************/
-    PDMA0_Attr   = 256 + 0,
-    PDMA1_Attr   = 256 + 1,
-    USBH0_Attr   = 256 + 2,
-    HSUSBH_Attr  = 256 + 4,
-    HSUSBD_Attr  = 256 + 5,
-    SDH0_Attr    = 256 + 6,
-    SDH1_Attr    = 256 + 7,
-    EMAC0_Attr   = 256 + 8,
-    CRYPTO_Attr  = 256 + 10,
-    CRC_Attr     = 256 + 11,
+    eSCU_PERI_IDX_PDMA0          = 256 +  0,
+    eSCU_PERI_IDX_PDMA1          = 256 +  1,
+    eSCU_PERI_IDX_USBH0          = 256 +  2,
+    eSCU_PERI_IDX_HSUSBH         = 256 +  4,
+    eSCU_PERI_IDX_HSUSBD         = 256 +  5,
+    eSCU_PERI_IDX_SDH0           = 256 +  6,
+    eSCU_PERI_IDX_SDH1           = 256 +  7,
+    eSCU_PERI_IDX_EMAC0          = 256 +  8,
+    eSCU_PERI_IDX_CRYPTO         = 256 + 10,
+    eSCU_PERI_IDX_CRC            = 256 + 11,
 
     /******  SCU_D1PNS1 **********************************************************************************/
-    KDF_Attr     = 288 + 1,
-    CANFD0_Attr  = 288 + 2,
-    CANFD1_Attr  = 288 + 4,
-    ETMC_Attr    = 288 + 6,
-    SWDH_Attr    = 288 + 7,
-    SWODEC_Attr  = 288 + 8,
-    EBI_Attr     = 288 + 16,
+    eSCU_PERI_IDX_KDF            = 288 +  1,
+    eSCU_PERI_IDX_CANFD0         = 288 +  2,
+    eSCU_PERI_IDX_CANFD1         = 288 +  4,
+    eSCU_PERI_IDX_ETMC           = 288 +  6,
+    eSCU_PERI_IDX_SWDH           = 288 +  7,
+    eSCU_PERI_IDX_SWODEC         = 288 +  8,
+    eSCU_PERI_IDX_EBI            = 288 + 16,
 
     /******  SCU_D1PNS2 **********************************************************************************/
-    WWDT0_Attr   = 320 + 0,
-    EADC0_Attr   = 320 + 1,
-    EPWM0_Attr   = 320 + 2,
-    BPWM0_Attr   = 320 + 3,
-    EQEI0_Attr   = 320 + 4,
-    EQEI2_Attr   = 320 + 5,
-    ECAP0_Attr   = 320 + 6,
-    ECAP2_Attr   = 320 + 7,
-    I2C0_Attr    = 320 + 8,
-    I2C2_Attr    = 320 + 9,
-    QSPI0_Attr   = 320 + 10,
-    SPI0_Attr    = 320 + 11,
-    SPI2_Attr    = 320 + 12,
-    UART0_Attr   = 320 + 13,
-    UART2_Attr   = 320 + 14,
-    UART4_Attr   = 320 + 15,
-    UART6_Attr   = 320 + 16,
-    UART8_Attr   = 320 + 17,
-    USCI0_Attr   = 320 + 18,
-    SC0_Attr     = 320 + 19,
-    SC2_Attr     = 320 + 20,
-    PSIO_Attr    = 320 + 21,
-    TMR01_Attr   = 320 + 22,
-    DAC01_Attr   = 320 + 23,
-    HSOTG_Attr   = 320 + 25,
-    I2S0_Attr    = 320 + 26,
-    ACMP01_Attr  = 320 + 27,
-    USBD_Attr    = 320 + 28,
+    eSCU_PERI_IDX_WWDT0          = 320 +  0,
+    eSCU_PERI_IDX_EADC0          = 320 +  1,
+    eSCU_PERI_IDX_EPWM0          = 320 +  2,
+    eSCU_PERI_IDX_BPWM0          = 320 +  3,
+    eSCU_PERI_IDX_EQEI0          = 320 +  4,
+    eSCU_PERI_IDX_EQEI2          = 320 +  5,
+    eSCU_PERI_IDX_ECAP0          = 320 +  6,
+    eSCU_PERI_IDX_ECAP2          = 320 +  7,
+    eSCU_PERI_IDX_I2C0           = 320 +  8,
+    eSCU_PERI_IDX_I2C2           = 320 +  9,
+    eSCU_PERI_IDX_QSPI0          = 320 + 10,
+    eSCU_PERI_IDX_SPI0           = 320 + 11,
+    eSCU_PERI_IDX_SPI2           = 320 + 12,
+    eSCU_PERI_IDX_UART0          = 320 + 13,
+    eSCU_PERI_IDX_UART2          = 320 + 14,
+    eSCU_PERI_IDX_UART4          = 320 + 15,
+    eSCU_PERI_IDX_UART6          = 320 + 16,
+    eSCU_PERI_IDX_UART8          = 320 + 17,
+    eSCU_PERI_IDX_USCI0          = 320 + 18,
+    eSCU_PERI_IDX_SC0            = 320 + 19,
+    eSCU_PERI_IDX_SC2            = 320 + 20,
+    eSCU_PERI_IDX_PSIO           = 320 + 21,
+    eSCU_PERI_IDX_TMR01          = 320 + 22,
+    eSCU_PERI_IDX_DAC01          = 320 + 23,
+    eSCU_PERI_IDX_HSOTG          = 320 + 25,
+    eSCU_PERI_IDX_I2S0           = 320 + 26,
+    eSCU_PERI_IDX_ACMP01         = 320 + 27,
+    eSCU_PERI_IDX_USBD           = 320 + 28,
 
     /******  SCU_D1PNS4 **********************************************************************************/
-    WWDT1_Attr   = 384 + 0,
-    EADC1_Attr   = 384 + 1,
-    EPWM1_Attr   = 384 + 2,
-    BPWM1_Attr   = 384 + 3,
-    EQEI1_Attr   = 384 + 4,
-    EQEI3_Attr   = 384 + 5,
-    ECAP1_Attr   = 384 + 6,
-    ECAP3_Attr   = 384 + 7,
-    I2C1_Attr    = 384 + 8,
-    I2C3_Attr    = 384 + 9,
-    QSPI1_Attr   = 384 + 10,
-    SPI1_Attr    = 384 + 11,
-    SPI3_Attr    = 384 + 12,
-    UART1_Attr   = 384 + 13,
-    UART3_Attr   = 384 + 14,
-    UART5_Attr   = 384 + 15,
-    UART7_Attr   = 384 + 16,
-    UART9_Attr   = 384 + 17,
-    SC1_Attr     = 384 + 18,
-    OTG_Attr     = 384 + 19,
-    KPI_Attr     = 384 + 20,
-    TMR23_Attr   = 384 + 21,
-    TRNG_Attr    = 384 + 22,
-    RTC_Attr     = 384 + 23,
-    I2S1_Attr    = 384 + 24,
-    ACMP23_Attr  = 384 + 25,
-    I3C_Attr     = 384 + 26,
-    UTCPD_Attr   = 384 + 27,
+    eSCU_PERI_IDX_WWDT1          = 384 +  0,
+    eSCU_PERI_IDX_EADC1          = 384 +  1,
+    eSCU_PERI_IDX_EPWM1          = 384 +  2,
+    eSCU_PERI_IDX_BPWM1          = 384 +  3,
+    eSCU_PERI_IDX_EQEI1          = 384 +  4,
+    eSCU_PERI_IDX_EQEI3          = 384 +  5,
+    eSCU_PERI_IDX_ECAP1          = 384 +  6,
+    eSCU_PERI_IDX_ECAP3          = 384 +  7,
+    eSCU_PERI_IDX_I2C1           = 384 +  8,
+    eSCU_PERI_IDX_I2C3           = 384 +  9,
+    eSCU_PERI_IDX_QSPI1          = 384 + 10,
+    eSCU_PERI_IDX_SPI1           = 384 + 11,
+    eSCU_PERI_IDX_SPI3           = 384 + 12,
+    eSCU_PERI_IDX_UART1          = 384 + 13,
+    eSCU_PERI_IDX_UART3          = 384 + 14,
+    eSCU_PERI_IDX_UART5          = 384 + 15,
+    eSCU_PERI_IDX_UART7          = 384 + 16,
+    eSCU_PERI_IDX_UART9          = 384 + 17,
+    eSCU_PERI_IDX_SC1            = 384 + 18,
+    eSCU_PERI_IDX_OTG            = 384 + 19,
+    eSCU_PERI_IDX_KPI            = 384 + 20,
+    eSCU_PERI_IDX_TMR23          = 384 + 21,
+    eSCU_PERI_IDX_TRNG           = 384 + 22,
+    eSCU_PERI_IDX_RTC            = 384 + 23,
+    eSCU_PERI_IDX_I2S1           = 384 + 24,
+    eSCU_PERI_IDX_ACMP23         = 384 + 25,
+    eSCU_PERI_IDX_I3C0           = 384 + 26,
+    eSCU_PERI_IDX_UTCPD          = 384 + 27,
 
     /******  SCU_D2PNS0 **********************************************************************************/
-    LPDMA_Attr   = 512 + 0,
-    CCAP_Attr    = 512 + 1,
-    LPGPIO_Attr  = 512 + 3,
+    eSCU_PERI_IDX_LPPDMA         = 512 + 0,
+    eSCU_PERI_IDX_CCAP           = 512 + 1,
+    eSCU_PERI_IDX_LPGPIO         = 512 + 3,
 
     /******  SCU_D2PNS2 **********************************************************************************/
-    LPTMR01_Attr  = 576 + 0,
-    TTMR01_Attr   = 576 + 1,
-    LPADC0_Attr   = 576 + 2,
-    LPI2C0_Attr   = 576 + 3,
-    LPSPI0_Attr   = 576 + 4,
-    DMIC0_Attr    = 576 + 5,
-    LPUART0_Attr  = 576 + 6,
-    AWF_Attr      = 576 + 9,
-} NSATTR_T;
-
+    eSCU_PERI_IDX_LPTMR01        = 576 + 0,
+    eSCU_PERI_IDX_TTMR01         = 576 + 1,
+    eSCU_PERI_IDX_LPADC0         = 576 + 2,
+    eSCU_PERI_IDX_LPI2C0         = 576 + 3,
+    eSCU_PERI_IDX_LPSPI0         = 576 + 4,
+    eSCU_PERI_IDX_DMIC0          = 576 + 5,
+    eSCU_PERI_IDX_LPUART0        = 576 + 6,
+    eSCU_PERI_IDX_AWF            = 576 + 9,
+} E_SCU_PERI_IDX;
 
 /** @} end of group SCU_EXPORTED_CONSTANTS */
 
@@ -228,22 +226,35 @@ typedef enum NSATTR
 */
 
 /**
-  * @brief      Set peripheral non-secure attribution
+  * @brief      Set peripheral to non-secure state
   *
-  * @param[in]  nsattr     The secure/non-secure attribution of specified module.
-                           The possible value could be refer to \ref NSATTR.
+  * @param[in]  ePeriIdx   The secure/non-secure attribution of specified module.
+                           The possible value could be refer to \ref E_SCU_PERI_IDX.
   *
   * @return     None
   *
   * @details    This macro is used to set a peripheral to be non-secure peripheral.
   *
   */
-#define SCU_SET_PNSSET(nsattr)   { SCU->PNSSET[(nsattr)/32] |= (1 << ((nsattr) & 0x1ful)); }
+#define SCU_SET_PERI_NS(ePeriIdx)     (SCU->DxPNSy[(ePeriIdx) / 32] |= (1 << ((ePeriIdx) & 0x1Ful)))
+
+/**
+  * @brief      Set peripheral to secure state
+  *
+  * @param[in]  ePeriIdx   The secure/non-secure attribution of specified module.
+                           The possible value could be refer to \ref E_SCU_PERI_IDX.
+  *
+  * @return     None
+  *
+  * @details    This macro is used to set a peripheral to be secure peripheral.
+  *
+  */
+#define SCU_SET_PERI_S(ePeriIdx)     (SCU->DxPNSy[(ePeriIdx) / 32] &= ~(1 << ((ePeriIdx) & 0x1Ful)))
 
 /**
  * @brief       Get peripheral secure/non-secure attribution
  *
- * @param[in]  nsattr     The secure/non-secure attribution of specified module.
+ * @param[in]   ePeriIdx   The secure/non-secure attribution of specified module.
                            The possible value could be refer to \ref NSATTR.
  *
  * @return      The secure/non-secure attribution of specified peripheral.
@@ -252,26 +263,26 @@ typedef enum NSATTR
  *
  * @details     This macro gets the peripheral secure/non-secure attribution.
  */
-#define SCU_GET_PNSSET(nsattr)   ((SCU->PNSSET[(nsattr)/32] >> ((nsattr) & 0x1ful)) & 1ul)
+#define SCU_IS_PERI_NS(ePeriIdx)      ((SCU->DxPNSy[(ePeriIdx) / 32] >> ((ePeriIdx) & 0x1Ful)) & 1ul)
 
 
 /**
  * @brief       Set secure/non-secure attribution of specified GPIO pin
  *
- * @param[in]   port        GPIO Port. It could be PA, PB, PC, PD, PE, PF, PG and PH.
- * @param[in]   bitmask     Bit mask of each bit. 0 is secure. 1 is non-secure.
+ * @param[in]   u32Port        GPIO Port. It could be PA, PB, PC, PD, PE, PF, PG and PH.
+ * @param[in]   u32Bitmask     Bit mask of each bit. 0 is secure. 1 is non-secure.
  *
  * @return      None
  *
  * @details     This macro sets GPIO pin secure/non-secure attribution.
  */
-#define SCU_SET_IONSSET(port, mask)   (SCU->IONSSET[((uint32_t)(port)-(GPIOA_BASE))/0x40] = (mask))
+#define SCU_SET_GPIO_NS(u32Port, u32Bitmask)    (SCU->IONS[((uint32_t)(u32Port) - (GPIOA_BASE)) / 0x40] = (u32Bitmask))
 
 
 /**
  * @brief       Get secure/non-secure attribution of specified GPIO port
  *
- * @param[in]   port        GPIO Port. It could be PA, PB, PC, PD, PE, PF, PG and PH.
+ * @param[in]   u32Port        GPIO Port. It could be PA, PB, PC, PD, PE, PF, PG and PH.
  *
  * @return      The secure/non-secure attribution of the port.
  * @retval      0 The relative bit of specified IO port is secure
@@ -279,65 +290,55 @@ typedef enum NSATTR
  *
  * @details     This macro gets IO secure/non-secure attribution of specified IO port.
  */
-#define SCU_GET_IONSSET(port)   (SCU->IONSSET[((uint32_t)(port) - (GPIOA_BASE))/0x40])
+#define SCU_GET_GPIO_NS(u32Port)                (SCU->IONS[((uint32_t)(u32Port) - (GPIOA_BASE)) / 0x40])
 
 
 /**
- * @brief       Enable sercure violation interrupts
+ * @brief       Enable slave secure violation interrupts
  *
- * @param[in]   mask    The mask of each secure violation interrupt source
- *              - \ref SCU_SVIOIEN_APB0IEN_Msk
- *              - \ref SCU_SVIOIEN_APB1IEN_Msk
- *              - \ref SCU_SVIOIEN_GPIOIEN_Msk
- *              - \ref SCU_SVIOIEN_EBIIEN_Msk
- *              - \ref SCU_SVIOIEN_USBHIEN_Msk
- *              - \ref SCU_SVIOIEN_CRCIEN_Msk
- *              - \ref SCU_SVIOIEN_SDH0IEN_Msk
- *              - \ref SCU_SVIOIEN_PDMA0IEN_Msk
- *              - \ref SCU_SVIOIEN_PDMA1IEN_Msk
- *              - \ref SCU_SVIOIEN_SRAM0IEN_Msk
- *              - \ref SCU_SVIOIEN_SRAM1IEN_Msk
- *              - \ref SCU_SVIOIEN_FMCIEN_Msk
- *              - \ref SCU_SVIOIEN_FLASHIEN_Msk
- *              - \ref SCU_SVIOIEN_SCUIEN_Msk
- *              - \ref SCU_SVIOIEN_SYSIEN_Msk
- *              - \ref SCU_SVIOIEN_CRPTIEN_Msk
+ * @param[in]   eIntIdx    The mask of each secure violation interrupt source
+ *              - \ref SCU_SVIEN0_APB0IEN_Msk
+ *              - \ref SCU_SVIEN0_APB1IEN_Msk
+ *              - \ref SCU_SVIEN0_APB2IEN_Msk
+ *              - \ref SCU_SVIEN0_APB3IEN_Msk
+ *              - \ref SCU_SVIEN0_APB4IEN_Msk
+ *              - \ref SCU_SVIEN0_APB5IEN_Msk
+ *              - \ref SCU_SVIEN0_D0PPC0IEN_Msk
+ *              - \ref SCU_SVIEN0_D1PPC0IEN_Msk
+ *              - \ref SCU_SVIEN0_D1PPC1IEN_Msk
+ *              - \ref SCU_SVIEN0_D2PPC0IEN_Msk
+ *              - \ref SCU_SVIEN0_EBIIEN_Msk
  *
  * @return      None
  *
- * @details     This macro is used to enable secure violation interrupt of SCU.
+ * @details     This macro is used to enable slave secure violation interrupt of SCU.
  *              The secure violation interrupt could be used to detect attack of secure elements.
  */
-#define SCU_ENABLE_INT(mask)    (SCU->SVIOIEN |= (mask))
+#define SCU_ENABLE_INT(eIntIdx)       (SCU->SVIEN[(eIntIdx) / 32] |= (1 << ((eIntIdx) & 0x1Ful)))
 
 
 /**
- * @brief       Disable sercure violation interrupts
+ * @brief       Disable slave secure violation interrupts
  *
- * @param[in]   mask    The mask of each secure violation interrupt source
- *              - \ref SCU_SVIOIEN_APB0IEN_Msk
- *              - \ref SCU_SVIOIEN_APB1IEN_Msk
- *              - \ref SCU_SVIOIEN_GPIOIEN_Msk
- *              - \ref SCU_SVIOIEN_EBIIEN_Msk
- *              - \ref SCU_SVIOIEN_USBHIEN_Msk
- *              - \ref SCU_SVIOIEN_CRCIEN_Msk
- *              - \ref SCU_SVIOIEN_SDH0IEN_Msk
- *              - \ref SCU_SVIOIEN_PDMA0IEN_Msk
- *              - \ref SCU_SVIOIEN_PDMA1IEN_Msk
- *              - \ref SCU_SVIOIEN_SRAM0IEN_Msk
- *              - \ref SCU_SVIOIEN_SRAM1IEN_Msk
- *              - \ref SCU_SVIOIEN_FMCIEN_Msk
- *              - \ref SCU_SVIOIEN_FLASHIEN_Msk
- *              - \ref SCU_SVIOIEN_SCUIEN_Msk
- *              - \ref SCU_SVIOIEN_SYSIEN_Msk
- *              - \ref SCU_SVIOIEN_CRPTIEN_Msk
+ * @param[in]   eIntIdx    The mask of each secure violation interrupt source
+ *              - \ref SCU_SVIEN0_APB0IEN_Msk
+ *              - \ref SCU_SVIEN0_APB1IEN_Msk
+ *              - \ref SCU_SVIEN0_APB2IEN_Msk
+ *              - \ref SCU_SVIEN0_APB3IEN_Msk
+ *              - \ref SCU_SVIEN0_APB4IEN_Msk
+ *              - \ref SCU_SVIEN0_APB5IEN_Msk
+ *              - \ref SCU_SVIEN0_D0PPC0IEN_Msk
+ *              - \ref SCU_SVIEN0_D1PPC0IEN_Msk
+ *              - \ref SCU_SVIEN0_D1PPC1IEN_Msk
+ *              - \ref SCU_SVIEN0_D2PPC0IEN_Msk
+ *              - \ref SCU_SVIEN0_EBIIEN_Msk
  *
  * @return      None
  *
- * @details     This macro is used to disable secure violation interrupt of SCU.
+ * @details     This macro is used to disable slave secure violation interrupt of SCU.
  *
  */
-#define SCU_DISABLE_INT(mask)    (SCU->SVIOIEN &= (~(mask)))
+#define SCU_DISABLE_INT(eIntIdx)      (SCU->SVIEN[(eIntIdx) / 32] &= ~(1 << ((eIntIdx) & 0x1Ful)))
 
 
 /**
@@ -345,12 +346,12 @@ typedef enum NSATTR
   *
   * @param    mask  The interrupt flag mask bit
   *
-  * @return   The value of SCU_SVINTSTS register
+  * @return   The value of SCU_SVINTSTS0 register
   *
-  * @details  Return interrupt flag of SCU_SVINTSTS register.
+  * @details  Return interrupt flag of SCU_SVINTSTS0 register.
   *
   */
-#define SCU_GET_INT_FLAG(mask)         (SCU->SVINTSTS&(mask))
+#define SCU_GET_INT_FLAG(eIntIdx)     ((SCU->SVINTSTS[(eIntIdx) / 32] >> ((eIntIdx) & 0x1Ful)) & 0x1ul)
 
 /**
   * @brief      Clear secure violation interrupt flag
@@ -358,31 +359,29 @@ typedef enum NSATTR
   * @param[in]  flag The combination of the specified interrupt flags.
   *             Each bit corresponds to a interrupt source.
   *             This parameter decides which interrupt flags will be cleared.
-  *             - \ref SCU_SVINTSTS_APB0IF_Msk
-  *             - \ref SCU_SVINTSTS_APB1IF_Msk
-  *             - \ref SCU_SVINTSTS_GPIOIF_Msk
-  *             - \ref SCU_SVINTSTS_EBIIF_Msk
-  *             - \ref SCU_SVINTSTS_USBHIF_Msk
-  *             - \ref SCU_SVINTSTS_CRCIF_Msk
-  *             - \ref SCU_SVINTSTS_SDH0IF_Msk
-  *             - \ref SCU_SVINTSTS_PDMA0IF_Msk
-  *             - \ref SCU_SVINTSTS_PDMA1IF_Msk
-  *             - \ref SCU_SVINTSTS_SRAM0IF_Msk
-  *             - \ref SCU_SVINTSTS_SRAM1IF_Msk
-  *             - \ref SCU_SVINTSTS_FMCIF_Msk
-  *             - \ref SCU_SVINTSTS_FLASHIF_Msk
-  *             - \ref SCU_SVINTSTS_SCUIF_Msk
-  *             - \ref SCU_SVINTSTS_SYSIF_Msk
-  *             - \ref SCU_SVINTSTS_CRPTIF_Msk
+  *             - \ref SCU_SVINTSTS0_APB0IF_Msk
+  *             - \ref SCU_SVINTSTS0_APB1IF_Msk
+  *             - \ref SCU_SVINTSTS0_GPIOIF_Msk
+  *             - \ref SCU_SVINTSTS0_EBIIF_Msk
+  *             - \ref SCU_SVINTSTS0_USBHIF_Msk
+  *             - \ref SCU_SVINTSTS0_CRCIF_Msk
+  *             - \ref SCU_SVINTSTS0_SDH0IF_Msk
+  *             - \ref SCU_SVINTSTS0_PDMA0IF_Msk
+  *             - \ref SCU_SVINTSTS0_PDMA1IF_Msk
+  *             - \ref SCU_SVINTSTS0_SRAM0IF_Msk
+  *             - \ref SCU_SVINTSTS0_SRAM1IF_Msk
+  *             - \ref SCU_SVINTSTS0_FMCIF_Msk
+  *             - \ref SCU_SVINTSTS0_FLASHIF_Msk
+  *             - \ref SCU_SVINTSTS0_SCUIF_Msk
+  *             - \ref SCU_SVINTSTS0_SYSIF_Msk
+  *             - \ref SCU_SVINTSTS0_CRPTIF_Msk
   *
   * @return     None
   *
   * @details    Clear SCU related interrupt flags specified by flag parameter.
   *
   */
-#define SCU_CLR_INT_FLAG(flag)     (SCU->SVINTSTS = (flag))
-
-
+#define SCU_CLR_INT_FLAG(eIntIdx)     (SCU->SVINTSTS[(eIntIdx) / 32] = (1 << ((eIntIdx) & 0x1Ful)))
 
 /**
   * @brief      Control the behavior of non-secure monitor when CPU is in idle state.
@@ -439,7 +438,7 @@ __STATIC_INLINE void SCU_NSMConfig(uint32_t u32Ticks, uint32_t u32Prescale)
 
     SCU->NSMLOAD = u32Ticks;
     SCU->NSMVAL  = 0ul;
-    SCU->NSMCTL  = SCU_NSMCTL_AUTORLD_Msk | SCU_NSMCTL_NSMIEN_Msk | (u32Prescale & 0xfful);
+    SCU->NSMCTL  = SCU_NSMCTL_AUTORLD_Msk | SCU_NSMCTL_NSMIEN_Msk | (u32Prescale & 0xFFul);
 }
 
 /**
@@ -460,15 +459,9 @@ __STATIC_INLINE void SCU_TimerConfig(uint32_t u32Ticks, uint32_t u32Prescale)
 
     SCU->NSMLOAD = u32Ticks;
     SCU->NSMVAL  = 0ul;
-    SCU->NSMCTL  = SCU_NSMCTL_AUTORLD_Msk | SCU_NSMCTL_NSMIEN_Msk | SCU_NSMCTL_TMRMOD_Msk | (u32Prescale & 0xfful);
+    SCU->NSMCTL  = SCU_NSMCTL_AUTORLD_Msk | SCU_NSMCTL_NSMIEN_Msk | SCU_NSMCTL_TMRMOD_Msk | (u32Prescale & 0xFFul);
 }
 
-int SetupMPC(const uint32_t mpc_baseaddr,
-             const uint32_t mem_baseaddr, const uint32_t mem_size,
-             const uint32_t baseaddr_s,  /* Secure base address */
-             const uint32_t len_s,       /* Length (in bytes) of secure region */
-             const uint32_t baseaddr_ns, /* Non-secure base address */
-             const uint32_t len_ns);      /* Length (in bytes) of non-secure region */
 /** @} end of group SCU_EXPORTED_FUNCTIONS */
 /** @} end of group SCU_Driver */
 /** @} end of group Standard_Driver */

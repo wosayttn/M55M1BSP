@@ -35,7 +35,8 @@ extern "C" {
 #endif
 
 /* ARM MPC memory mapped register access structure */
-struct mpc_sie_reg_map_t {
+struct mpc_sie_reg_map_t
+{
     volatile uint32_t ctrl;           /* (R/W) MPC Control */
     volatile uint32_t reserved[3];    /* Reserved */
     volatile uint32_t blk_max;        /* (R/ ) Maximum value of block based index */
@@ -68,7 +69,8 @@ struct mpc_sie_reg_map_t {
 };
 
 /* Error code returned by the driver functions */
-enum mpc_sie_error_t {
+enum mpc_sie_error_t
+{
     MPC_SIE_ERR_NONE,                          /*!< No error */
     MPC_SIE_INVALID_ARG,                       /*!< MPC invalid input arguments */
     MPC_SIE_NOT_INIT,                          /*!< MPC not initialized */
@@ -94,7 +96,8 @@ enum mpc_sie_error_t {
 };
 
 /* Security attribute used in various place of the API */
-enum mpc_sie_sec_attr_t {
+enum mpc_sie_sec_attr_t
+{
     MPC_SIE_SEC_ATTR_SECURE,    /*!< Secure attribute */
     MPC_SIE_SEC_ATTR_NONSECURE, /*!< Non-secure attribute */
     /*!< Used when getting the configuration of a memory range and some blocks
@@ -104,14 +107,16 @@ enum mpc_sie_sec_attr_t {
 };
 
 /* What can happen when trying to do an illegal memory access */
-enum mpc_sie_sec_resp_t {
+enum mpc_sie_sec_resp_t
+{
     MPC_SIE_RESP_RAZ_WI,              /*!< Read As Zero, Write Ignored */
     MPC_SIE_RESP_BUS_ERROR,           /*!< Bus error */
     MPC_SIE_RESP_WAIT_GATING_DISABLED /*!< Wait until gating is disabled */
 };
 
 /* Description of a memory range controlled by the MPC */
-struct mpc_sie_memory_range_t {
+struct mpc_sie_memory_range_t
+{
     const uint32_t base;                /*!< Base address (included in the range) */
     const uint32_t limit;               /*!< Limit address (included in the range) */
     const uint32_t range_offset;        /*!< Offset of current range area to the 0
@@ -132,12 +137,14 @@ struct mpc_sie_memory_range_t {
 };
 
 /* ARM MPC SIE device configuration structure */
-struct mpc_sie_dev_cfg_t {
+struct mpc_sie_dev_cfg_t
+{
     const uint32_t base; /*!< MPC base address */
 };
 
 /* ARM MPC SIE device data structure */
-struct mpc_sie_dev_data_t {
+struct mpc_sie_dev_data_t
+{
     /*!< Array of pointers to memory ranges controlled by the MPC */
     const struct mpc_sie_memory_range_t **range_list;
     uint8_t nbr_of_ranges; /*!< Number of memory ranges in the list */
@@ -148,7 +155,8 @@ struct mpc_sie_dev_data_t {
 };
 
 /* ARM MPC SIE device structure */
-struct mpc_sie_dev_t {
+struct mpc_sie_dev_t
+{
     const struct mpc_sie_dev_cfg_t *const cfg; /*!< MPC configuration */
     struct mpc_sie_dev_data_t *const data;     /*!< MPC data */
 };
@@ -207,9 +215,9 @@ enum mpc_sie_error_t mpc_sie_get_block_size(struct mpc_sie_dev_t *dev, uint32_t 
  * \note This function doesn't check if dev is NULL.
  */
 enum mpc_sie_error_t mpc_sie_config_region(struct mpc_sie_dev_t *dev,
-                                           const uint32_t base,
-                                           const uint32_t limit,
-                                           enum mpc_sie_sec_attr_t attr);
+        const uint32_t base,
+        const uint32_t limit,
+        enum mpc_sie_sec_attr_t attr);
 
 /**
  * \brief Gets a memory region configuration(base and limit included).
@@ -375,6 +383,13 @@ void mpc_sie_request_gating(struct mpc_sie_dev_t *dev);
  * \note This function doesn't check if dev is NULL.
  */
 void mpc_sie_release_gating(struct mpc_sie_dev_t *dev);
+
+int SetupMPC(const uint32_t mpc_baseaddr,
+             const uint32_t mem_baseaddr, const uint32_t mem_size,
+             const uint32_t baseaddr_s,  /* Secure base address */
+             const uint32_t len_s,       /* Length (in bytes) of secure region */
+             const uint32_t baseaddr_ns, /* Non-secure base address */
+             const uint32_t len_ns);      /* Length (in bytes) of non-secure region */
 
 #ifdef __cplusplus
 }

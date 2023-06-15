@@ -27,255 +27,255 @@
 typedef struct
 {
 
-/**
- * @var DPM_T::CTL
- * Offset: 0x00  Secure DPM Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |DBGDIS    |Set Secure DPM Debug Disable Bit
- * |        |          |When this bit is read as 0, it can be written to 1 to configure the Secure DPM DBGDIS bit (DBGDISS).
- * |        |          |When written:
- * |        |          |0 = No operation.
- * |        |          |1 = Trigger the process to set DBGDISS configuration bit.
- * |        |          |Note: This bit can be set to 1 but cannot be cleared to 0.
- * |[1]     |LOCK      |Set Secure DPM Debug Lock Bit
- * |        |          |When this bit is read as 0, it can be written to 1 to configure the Secure DPM LOCK bit (LOCKS).
- * |        |          |When written:
- * |        |          |0 = No operation.
- * |        |          |1 = Trigger the process to set LOCKS configuration bit.
- * |        |          |Note: This bit can be set to 1 but cannot be cleared to 0.
- * |[2]     |PWCMP     |Secure DPM Password Compare Bit
- * |        |          |Set to enter the process of compare Secure DPM password.
- * |        |          |0 = No operation.
- * |        |          |1 = Compare Secure DPM password.
- * |        |          |Note: This bit will be cleared after the comparison process is finished.
- * |[3]     |PWUPD     |Secure DPM Password Update Bit
- * |        |          |Set to enter the process of updating Secure DPM password.
- * |        |          |0 = No operation.
- * |        |          |1 = Update Secure DPM password.
- * |        |          |Note 1: This bit should be set with PWCMP equal to 0.
- * |        |          |Note 2: This bit will be cleared after the update process is finished.
- * |[8]     |INTEN     |DPM Interrupt Enable Bit
- * |        |          |0 = Disable DPM interrupt function.
- * |        |          |1 = Enable DPM interrupt function.
- * |[12]    |DACCWDIS  |Secure DPM Debug Write Access Disable Bit
- * |        |          |This bit disables the ability of external debugger to set Secure DPM registers for debug authentication.
- * |        |          |0 = External debugger can set Secure DPM registers.
- * |        |          |1 = External debugger cannot set Secure DPM registers.
- * |[13]    |DACCDIS   |Debug Access Disable Bit
- * |        |          |This bit disables the accessibility of external debugger to all DPM registers.
- * |        |          |0 = External debugger can read/write DPM registers.
- * |        |          |1 = External debugger cannot read/write DPM registers.
- * |[31:24] |RWVCODE   |Write Verify Code and Read Verify Code
- * |        |          |Read operation:
- * |        |          |0xA5 = The read access for DPM_CTL is correct.
- * |        |          |Others = The read access for DPM_CTL is incorrect.
- * |        |          |Write operation:
- * |        |          |0x5A = The write verify code, 0x5A, is needed to do a valid write to DPM_CTL.
- * |        |          |Others = Invalid write verify code.
- * @var DPM_T::STS
- * Offset: 0x04  Secure DPM Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |BUSY      |DPM Busy Flag (Read Only)
- * |        |          |This bit indicates the DPM is busy.
- * |        |          |0 = DPM is not busy and writing to any register is accepted.
- * |        |          |1 = DPM is busy and other bits in DPM_STS register are not valid and writing to any register is ignored.
- * |[1]     |INT       |DPM Interrupt Flag (Read Only)
- * |        |          |This bit indicates the interrupt is triggered.
- * |        |          |0 = Interrupt is not enabled or no password comparison flag is set.
- * |        |          |1 = Interrupt is enabled and PWCERR flag in either DPM_STS or DPM_NSSTS register is not cleared.
- * |        |          |Note: This bit is cleared automatically when PWCERR flag in both DPM_STS and DPM_NSSTS are 0.
- * |[4]     |PWCERR    |Secure DPM Password Compared Error Flag
- * |        |          |This bit indicates the result of Secure DPM password comparison.
- * |        |          |When read:
- * |        |          |0 = The result of Secure DPM password is correct.
- * |        |          |1 = The result of Secure DPM password is incorrect.
- * |        |          |Note: This flag is write-one-clear.
- * |[5]     |PWUOK     |Secure DPM Password Updated Flag
- * |        |          |This bit indicates Secure DPM password has been updated successfully.
- * |        |          |When read:
- * |        |          |0 = No successful updating process has happened.
- * |        |          |1 = There is at least one successful updating process since last clearing of this bit.
- * |        |          |Note: This flag is write-one-clear.
- * |[6]     |PWFMAX    |Secure DPM Password Fail Times Maximum Reached Flag (Read Only)
- * |        |          |This bit indicates if the fail times of comparing Secure DPM password reached max times.
- * |        |          |0 = Max time has not reached and Secure DPM password comparison can be triggered.
- * |        |          |1 = Max time reached and Secure DPM password comparison cannot be processed anymore.
- * |[10:8]  |PWUCNT    |Secure DPM Password Updated Times (Read Only)
- * |        |          |This bit indicates how many times of secure password has been updated.
- * |        |          |The max value is 7. If PWUCNT reached the max value, Secure DPM password cannot be updated anymore.
- * |[16]    |DBGDIS    |Secure Debug Disable Flag (Read Only)
- * |        |          |This bit indicates the current value of DBGDISS bit.
- * |        |          |{PWOK, LOCK, DBGDIS} bits define the current state of DPM.
- * |        |          |x00 = DEFAULT state.
- * |        |          |x1x = LOCKED state.
- * |        |          |001 = CLOSE state.
- * |        |          |101 = OPEN state.
- * |        |          |Others = Unknown.
- * |[17]    |LOCK      |Secure Debug Lock Flag (Read Only)
- * |        |          |This bit indicates the current value of LOCKS bit.
- * |[18]    |PWOK      |Secure Password OK Flag (Read Only)
- * |        |          |This bit indicates the Secure DPM password has been checked and is correct.
- * |        |          |0 = The Secure DPM password has not been checked pass, yet.
- * |        |          |1 = The Secure DPM password has been checked pass since last cold reset.
- * @var DPM_T::SPW0
- * Offset: 0x10  Secure DPM Password 0
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |PW        |Password
- * |        |          |Write password[31:0] to this register to update or compare Secure DPM password
- * |        |          |It is write-only and always read as 0xFFFFFFFF.
- * @var DPM_T::SPW1
- * Offset: 0x14  Secure DPM Password 1
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |PW        |Password
- * |        |          |Write password[63:32] to this register to update or compare Secure DPM password
- * |        |          |It is write-only and always read as 0xFFFFFFFF.
- * @var DPM_T::SPW2
- * Offset: 0x18  Secure DPM Password 2
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |PW        |Password
- * |        |          |Write password[95:64] to this register to update or compare Secure DPM password
- * |        |          |It is write-only and always read as 0xFFFFFFFF.
- * @var DPM_T::SPW3
- * Offset: 0x1C  Secure DPM Password 3
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |PW        |Password
- * |        |          |Write password[127:96] to this register to update or compare Secure DPM password
- * |        |          |It is write-only and always read as 0xFFFFFFFF.
- * @var DPM_T::NSCTL
- * Offset: 0x50  Non-secure DPM Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |DBGDIS    |Set Non-secure DPM Debug Disable Bit
- * |        |          |When this bit is read as 0, it can be written to 1 to configure the Non-secure DPM DBGDIS bit (DBGDISNS).
- * |        |          |When written:
- * |        |          |0 = No operation.
- * |        |          |1 = Trigger the process to set DBGDISNS configuration bit.
- * |        |          |Note: This bit can be set to 1 but cannot be cleared to 0.
- * |[1]     |LOCK      |Set Non-secure DPM Debug Lock Bit
- * |        |          |When this bit is read as 0, it can be written to 1 to configure the Non-secure DPM LOCK bit (LOCKNS).
- * |        |          |When written:
- * |        |          |0 = No operation.
- * |        |          |1 = Trigger the process to set LOCKNS configuration bit.
- * |        |          |Note: This bit can be set to 1 but cannot be cleared to 0.
- * |[2]     |PWCMP     |Non-secure DPM Password Compare Bit
- * |        |          |Set to enter the process of compare Non-secure DPM password.
- * |        |          |0 = No operation.
- * |        |          |1 = Compare Non-secure DPM password.
- * |        |          |Note: This bit will be cleared after the comparison process is finished.
- * |[3]     |PWUPD     |Non-secure DPM Password Update Bit
- * |        |          |Set to enter the process of updating Non-secure DPM password.
- * |        |          |0 = No operation.
- * |        |          |1 = Update Non-secure DPM password.
- * |        |          |Note 1: This bit should be set with PWCMP equal to 0.
- * |        |          |Note 2: This bit will be cleared after the update process is finished.
- * |[12]    |DACCWDIS  |Debug Write Access Disable Bit
- * |        |          |This bit disables the ability of external debugger to set Non-secure DPM registers for debug authentication.
- * |        |          |0 = External debugger can set Non-secure DPM registers.
- * |        |          |1 = External debugger cannot set Non-secure DPM registers.
- * |[31:24] |RWVCODE   |Write Verify Code and Read Verify Code
- * |        |          |Read operation:
- * |        |          |0xA5 = The read access for DPM_NSCTL is correct.
- * |        |          |Others = The read access for DPM_NSCTL is incorrect.
- * |        |          |Write operation:
- * |        |          |0x5A = The write verify code, 0x5A, is needed to do a valid write to DPM_NSCTL.
- * |        |          |Others = Invalid write verify code.
- * @var DPM_T::NSSTS
- * Offset: 0x54  Non-secure DPM Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |BUSY      |DPM Busy Flag (Read Only)
- * |        |          |This bit indicates the DPM is busy.
- * |        |          |0 = DPM is not busy and writing to any register is accepted.
- * |        |          |1 = DPM is busy and other bits in DPM_NSSTS register are not valid and writing to any register is ignored.
- * |[4]     |PWCERR    |Non-secure DPM Password Compared Error Flag
- * |        |          |This bit indicates the result of Non-secure DPM password comparison.
- * |        |          |0 = The result of Non-secure DPM password is correct.
- * |        |          |1 = The result of Non-secure DPM password is incorrect.
- * |        |          |Note: This flag is write-one-clear.
- * |[5]     |PWUOK     |Non-secure DPM Password Updated Flag
- * |        |          |This bit indicates Non-secure DPM password has been updated correctly.
- * |        |          |When read:
- * |        |          |0 = No successful updating process has happened.
- * |        |          |1 = There is at least one successful updating process since last clearing of this bit.
- * |        |          |Note: This flag is write-one-clear.
- * |[6]     |PWFMAX    |Non-secure DPM Password Fail Times Maximum Reached Flag (Read Only)
- * |        |          |This bit indicates if the fail times of comparing Non-secure DPM password reached max times.
- * |        |          |0 = Max time has not reached and Non-secure DPM password comparison can be triggered.
- * |        |          |1 = Max time reached and Non-secure DPM password comparison cannot be processed anymore.
- * |[10:8]  |PWUCNT    |Non-secure DPM Password Updated Times (Read Only)
- * |        |          |This bit indicates how many times of non-secure password has been updated.
- * |        |          |The max value is 7. If PWUCNT reached the max value, Non-secure DPM password cannot be updated anymore.
- * |[16]    |DBGDIS    |Non-secure Debug Disable Flag (Read Only)
- * |        |          |This bit indicates the current value of DBGDISNS bit.
- * |        |          |{PWOK, LOCK, DBGDIS} bits define the current state of DPM.
- * |        |          |x00 = DEFAULT state.
- * |        |          |x1x = LOCKED state.
- * |        |          |001 = CLOSE state.
- * |        |          |101 = OPEN state.
- * |        |          |Others = Unknown.
- * |[17]    |LOCK      |Non-secure Debug Lock Flag (Read Only)
- * |        |          |This bit indicates the current value of LOCKNS bit.
- * |[18]    |PWOK      |Non-secure Password OK Flag (Read Only)
- * |        |          |This bit indicates the Non-secure DPM password has been checked and is correct.
- * |        |          |0 = The Non-secure DPM password has not been checked pass, yet.
- * |        |          |1 = The Non-secure DPM password has been checked pass since last cold reset.
- * @var DPM_T::NSPW0
- * Offset: 0x60  Non-secure DPM Password 0
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |PW        |Password
- * |        |          |Write password[31:0] to this register to update or compare Non-secure DPM password
- * |        |          |It is write-only and always read as 0xFFFFFFFF.
- * @var DPM_T::NSPW1
- * Offset: 0x64  Non-secure DPM Password 1
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |PW        |Password
- * |        |          |Write password[63:32] to this register to update or compare Non-secure DPM password
- * |        |          |It is write-only and always read as 0xFFFFFFFF.
- * @var DPM_T::NSPW2
- * Offset: 0x68  Non-secure DPM Password 2
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |PW        |Password
- * |        |          |Write password[95:64] to this register to update or compare Non-secure DPM password
- * |        |          |It is write-only and always read as 0xFFFFFFFF.
- * @var DPM_T::NSPW3
- * Offset: 0x6C  Non-secure DPM Password 3
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |PW        |Password
- * |        |          |Write password[127:96] to this register to update or compare Non-secure DPM password
- * |        |          |It is write-only and always read as 0xFFFFFFFF.
- * @var DPM_T::MISC
- * Offset: 0xF0  DPM Miscellaneous Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * @var DPM_T::ID
- * Offset: 0xFC  DPM Identification Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- */
+    /**
+     * @var DPM_T::CTL
+     * Offset: 0x00  Secure DPM Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |DBGDIS    |Set Secure DPM Debug Disable Bit
+     * |        |          |When this bit is read as 0, it can be written to 1 to configure the Secure DPM DBGDIS bit (DBGDISS).
+     * |        |          |When written:
+     * |        |          |0 = No operation.
+     * |        |          |1 = Trigger the process to set DBGDISS configuration bit.
+     * |        |          |Note: This bit can be set to 1 but cannot be cleared to 0.
+     * |[1]     |LOCK      |Set Secure DPM Debug Lock Bit
+     * |        |          |When this bit is read as 0, it can be written to 1 to configure the Secure DPM LOCK bit (LOCKS).
+     * |        |          |When written:
+     * |        |          |0 = No operation.
+     * |        |          |1 = Trigger the process to set LOCKS configuration bit.
+     * |        |          |Note: This bit can be set to 1 but cannot be cleared to 0.
+     * |[2]     |PWCMP     |Secure DPM Password Compare Bit
+     * |        |          |Set to enter the process of compare Secure DPM password.
+     * |        |          |0 = No operation.
+     * |        |          |1 = Compare Secure DPM password.
+     * |        |          |Note: This bit will be cleared after the comparison process is finished.
+     * |[3]     |PWUPD     |Secure DPM Password Update Bit
+     * |        |          |Set to enter the process of updating Secure DPM password.
+     * |        |          |0 = No operation.
+     * |        |          |1 = Update Secure DPM password.
+     * |        |          |Note 1: This bit should be set with PWCMP equal to 0.
+     * |        |          |Note 2: This bit will be cleared after the update process is finished.
+     * |[8]     |INTEN     |DPM Interrupt Enable Bit
+     * |        |          |0 = Disable DPM interrupt function.
+     * |        |          |1 = Enable DPM interrupt function.
+     * |[12]    |DACCWDIS  |Secure DPM Debug Write Access Disable Bit
+     * |        |          |This bit disables the ability of external debugger to set Secure DPM registers for debug authentication.
+     * |        |          |0 = External debugger can set Secure DPM registers.
+     * |        |          |1 = External debugger cannot set Secure DPM registers.
+     * |[13]    |DACCDIS   |Debug Access Disable Bit
+     * |        |          |This bit disables the accessibility of external debugger to all DPM registers.
+     * |        |          |0 = External debugger can read/write DPM registers.
+     * |        |          |1 = External debugger cannot read/write DPM registers.
+     * |[31:24] |RWVCODE   |Write Verify Code and Read Verify Code
+     * |        |          |Read operation:
+     * |        |          |0xA5 = The read access for DPM_CTL is correct.
+     * |        |          |Others = The read access for DPM_CTL is incorrect.
+     * |        |          |Write operation:
+     * |        |          |0x5A = The write verify code, 0x5A, is needed to do a valid write to DPM_CTL.
+     * |        |          |Others = Invalid write verify code.
+     * @var DPM_T::STS
+     * Offset: 0x04  Secure DPM Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |BUSY      |DPM Busy Flag (Read Only)
+     * |        |          |This bit indicates the DPM is busy.
+     * |        |          |0 = DPM is not busy and writing to any register is accepted.
+     * |        |          |1 = DPM is busy and other bits in DPM_STS register are not valid and writing to any register is ignored.
+     * |[1]     |INT       |DPM Interrupt Flag (Read Only)
+     * |        |          |This bit indicates the interrupt is triggered.
+     * |        |          |0 = Interrupt is not enabled or no password comparison flag is set.
+     * |        |          |1 = Interrupt is enabled and PWCERR flag in either DPM_STS or DPM_NSSTS register is not cleared.
+     * |        |          |Note: This bit is cleared automatically when PWCERR flag in both DPM_STS and DPM_NSSTS are 0.
+     * |[4]     |PWCERR    |Secure DPM Password Compared Error Flag
+     * |        |          |This bit indicates the result of Secure DPM password comparison.
+     * |        |          |When read:
+     * |        |          |0 = The result of Secure DPM password is correct.
+     * |        |          |1 = The result of Secure DPM password is incorrect.
+     * |        |          |Note: This flag is write-one-clear.
+     * |[5]     |PWUOK     |Secure DPM Password Updated Flag
+     * |        |          |This bit indicates Secure DPM password has been updated successfully.
+     * |        |          |When read:
+     * |        |          |0 = No successful updating process has happened.
+     * |        |          |1 = There is at least one successful updating process since last clearing of this bit.
+     * |        |          |Note: This flag is write-one-clear.
+     * |[6]     |PWFMAX    |Secure DPM Password Fail Times Maximum Reached Flag (Read Only)
+     * |        |          |This bit indicates if the fail times of comparing Secure DPM password reached max times.
+     * |        |          |0 = Max time has not reached and Secure DPM password comparison can be triggered.
+     * |        |          |1 = Max time reached and Secure DPM password comparison cannot be processed anymore.
+     * |[10:8]  |PWUCNT    |Secure DPM Password Updated Times (Read Only)
+     * |        |          |This bit indicates how many times of secure password has been updated.
+     * |        |          |The max value is 7. If PWUCNT reached the max value, Secure DPM password cannot be updated anymore.
+     * |[16]    |DBGDIS    |Secure Debug Disable Flag (Read Only)
+     * |        |          |This bit indicates the current value of DBGDISS bit.
+     * |        |          |{PWOK, LOCK, DBGDIS} bits define the current state of DPM.
+     * |        |          |x00 = DEFAULT state.
+     * |        |          |x1x = LOCKED state.
+     * |        |          |001 = CLOSE state.
+     * |        |          |101 = OPEN state.
+     * |        |          |Others = Unknown.
+     * |[17]    |LOCK      |Secure Debug Lock Flag (Read Only)
+     * |        |          |This bit indicates the current value of LOCKS bit.
+     * |[18]    |PWOK      |Secure Password OK Flag (Read Only)
+     * |        |          |This bit indicates the Secure DPM password has been checked and is correct.
+     * |        |          |0 = The Secure DPM password has not been checked pass, yet.
+     * |        |          |1 = The Secure DPM password has been checked pass since last cold reset.
+     * @var DPM_T::SPW0
+     * Offset: 0x10  Secure DPM Password 0
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |PW        |Password
+     * |        |          |Write password[31:0] to this register to update or compare Secure DPM password
+     * |        |          |It is write-only and always read as 0xFFFFFFFF.
+     * @var DPM_T::SPW1
+     * Offset: 0x14  Secure DPM Password 1
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |PW        |Password
+     * |        |          |Write password[63:32] to this register to update or compare Secure DPM password
+     * |        |          |It is write-only and always read as 0xFFFFFFFF.
+     * @var DPM_T::SPW2
+     * Offset: 0x18  Secure DPM Password 2
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |PW        |Password
+     * |        |          |Write password[95:64] to this register to update or compare Secure DPM password
+     * |        |          |It is write-only and always read as 0xFFFFFFFF.
+     * @var DPM_T::SPW3
+     * Offset: 0x1C  Secure DPM Password 3
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |PW        |Password
+     * |        |          |Write password[127:96] to this register to update or compare Secure DPM password
+     * |        |          |It is write-only and always read as 0xFFFFFFFF.
+     * @var DPM_T::NSCTL
+     * Offset: 0x50  Non-secure DPM Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |DBGDIS    |Set Non-secure DPM Debug Disable Bit
+     * |        |          |When this bit is read as 0, it can be written to 1 to configure the Non-secure DPM DBGDIS bit (DBGDISNS).
+     * |        |          |When written:
+     * |        |          |0 = No operation.
+     * |        |          |1 = Trigger the process to set DBGDISNS configuration bit.
+     * |        |          |Note: This bit can be set to 1 but cannot be cleared to 0.
+     * |[1]     |LOCK      |Set Non-secure DPM Debug Lock Bit
+     * |        |          |When this bit is read as 0, it can be written to 1 to configure the Non-secure DPM LOCK bit (LOCKNS).
+     * |        |          |When written:
+     * |        |          |0 = No operation.
+     * |        |          |1 = Trigger the process to set LOCKNS configuration bit.
+     * |        |          |Note: This bit can be set to 1 but cannot be cleared to 0.
+     * |[2]     |PWCMP     |Non-secure DPM Password Compare Bit
+     * |        |          |Set to enter the process of compare Non-secure DPM password.
+     * |        |          |0 = No operation.
+     * |        |          |1 = Compare Non-secure DPM password.
+     * |        |          |Note: This bit will be cleared after the comparison process is finished.
+     * |[3]     |PWUPD     |Non-secure DPM Password Update Bit
+     * |        |          |Set to enter the process of updating Non-secure DPM password.
+     * |        |          |0 = No operation.
+     * |        |          |1 = Update Non-secure DPM password.
+     * |        |          |Note 1: This bit should be set with PWCMP equal to 0.
+     * |        |          |Note 2: This bit will be cleared after the update process is finished.
+     * |[12]    |DACCWDIS  |Debug Write Access Disable Bit
+     * |        |          |This bit disables the ability of external debugger to set Non-secure DPM registers for debug authentication.
+     * |        |          |0 = External debugger can set Non-secure DPM registers.
+     * |        |          |1 = External debugger cannot set Non-secure DPM registers.
+     * |[31:24] |RWVCODE   |Write Verify Code and Read Verify Code
+     * |        |          |Read operation:
+     * |        |          |0xA5 = The read access for DPM_NSCTL is correct.
+     * |        |          |Others = The read access for DPM_NSCTL is incorrect.
+     * |        |          |Write operation:
+     * |        |          |0x5A = The write verify code, 0x5A, is needed to do a valid write to DPM_NSCTL.
+     * |        |          |Others = Invalid write verify code.
+     * @var DPM_T::NSSTS
+     * Offset: 0x54  Non-secure DPM Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |BUSY      |DPM Busy Flag (Read Only)
+     * |        |          |This bit indicates the DPM is busy.
+     * |        |          |0 = DPM is not busy and writing to any register is accepted.
+     * |        |          |1 = DPM is busy and other bits in DPM_NSSTS register are not valid and writing to any register is ignored.
+     * |[4]     |PWCERR    |Non-secure DPM Password Compared Error Flag
+     * |        |          |This bit indicates the result of Non-secure DPM password comparison.
+     * |        |          |0 = The result of Non-secure DPM password is correct.
+     * |        |          |1 = The result of Non-secure DPM password is incorrect.
+     * |        |          |Note: This flag is write-one-clear.
+     * |[5]     |PWUOK     |Non-secure DPM Password Updated Flag
+     * |        |          |This bit indicates Non-secure DPM password has been updated correctly.
+     * |        |          |When read:
+     * |        |          |0 = No successful updating process has happened.
+     * |        |          |1 = There is at least one successful updating process since last clearing of this bit.
+     * |        |          |Note: This flag is write-one-clear.
+     * |[6]     |PWFMAX    |Non-secure DPM Password Fail Times Maximum Reached Flag (Read Only)
+     * |        |          |This bit indicates if the fail times of comparing Non-secure DPM password reached max times.
+     * |        |          |0 = Max time has not reached and Non-secure DPM password comparison can be triggered.
+     * |        |          |1 = Max time reached and Non-secure DPM password comparison cannot be processed anymore.
+     * |[10:8]  |PWUCNT    |Non-secure DPM Password Updated Times (Read Only)
+     * |        |          |This bit indicates how many times of non-secure password has been updated.
+     * |        |          |The max value is 7. If PWUCNT reached the max value, Non-secure DPM password cannot be updated anymore.
+     * |[16]    |DBGDIS    |Non-secure Debug Disable Flag (Read Only)
+     * |        |          |This bit indicates the current value of DBGDISNS bit.
+     * |        |          |{PWOK, LOCK, DBGDIS} bits define the current state of DPM.
+     * |        |          |x00 = DEFAULT state.
+     * |        |          |x1x = LOCKED state.
+     * |        |          |001 = CLOSE state.
+     * |        |          |101 = OPEN state.
+     * |        |          |Others = Unknown.
+     * |[17]    |LOCK      |Non-secure Debug Lock Flag (Read Only)
+     * |        |          |This bit indicates the current value of LOCKNS bit.
+     * |[18]    |PWOK      |Non-secure Password OK Flag (Read Only)
+     * |        |          |This bit indicates the Non-secure DPM password has been checked and is correct.
+     * |        |          |0 = The Non-secure DPM password has not been checked pass, yet.
+     * |        |          |1 = The Non-secure DPM password has been checked pass since last cold reset.
+     * @var DPM_T::NSPW0
+     * Offset: 0x60  Non-secure DPM Password 0
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |PW        |Password
+     * |        |          |Write password[31:0] to this register to update or compare Non-secure DPM password
+     * |        |          |It is write-only and always read as 0xFFFFFFFF.
+     * @var DPM_T::NSPW1
+     * Offset: 0x64  Non-secure DPM Password 1
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |PW        |Password
+     * |        |          |Write password[63:32] to this register to update or compare Non-secure DPM password
+     * |        |          |It is write-only and always read as 0xFFFFFFFF.
+     * @var DPM_T::NSPW2
+     * Offset: 0x68  Non-secure DPM Password 2
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |PW        |Password
+     * |        |          |Write password[95:64] to this register to update or compare Non-secure DPM password
+     * |        |          |It is write-only and always read as 0xFFFFFFFF.
+     * @var DPM_T::NSPW3
+     * Offset: 0x6C  Non-secure DPM Password 3
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |PW        |Password
+     * |        |          |Write password[127:96] to this register to update or compare Non-secure DPM password
+     * |        |          |It is write-only and always read as 0xFFFFFFFF.
+     * @var DPM_T::MISC
+     * Offset: 0xF0  DPM Miscellaneous Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * @var DPM_T::ID
+     * Offset: 0xFC  DPM Identification Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     */
     __IO uint32_t CTL;                   /*!< [0x0000] Secure DPM Control Register                                      */
     __IO uint32_t STS;                   /*!< [0x0004] Secure DPM Status Register                                       */
     __I  uint32_t RESERVE0[2];
@@ -428,81 +428,83 @@ typedef struct
 typedef struct
 {
 
-/**
- * @var FVC_T::CTL
- * Offset: 0x00  FVC Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |INIT      |FVC Init Bit
- * |        |          |Set to 1 to enable FVC
- * |        |          |This bit is writable when FVC is at Reset state.
- * |        |          |Note: After set to 1, this bit is cleared to 0 automatically when FVC is back to Reset state.
- * |[1]     |MONOEN    |Monotonic Enable Bit
- * |        |          |Set to 1 to enable the monotonic mechanism of FVC.
- * |        |          |Note: This bit can be set to1 but cannot be cleared to 0.
- * |[31:16] |WVCODE    |Verification Code
- * |        |          |When written, this field must be 0x7710
- * @var FVC_T::STS
- * Offset: 0x04  FVC Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |BUSY      |FVC Busy Bit
- * |        |          |Indicates the FVC is at busy state.
- * |[1]     |RDY       |FVC Ready Bit
- * |        |          |Indicates the FVC is ready after the initial process.
- * @var FVC_T::NVC0
- * Offset: 0x10  Non-volatile Version Counter Control Register0
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |FWVER     |Firmware Version
- * |        |          |Read: Indicates the current firmware version of NVC0.
- * |        |          |Write: Updates the firmware version of NVC0.
- * |        |          |The maximum value of this field is 63.
- * |[31:16] |WVCODE    |Verification Code
- * |        |          |When written, this field must be the current firmware version number
- * @var FVC_T::NVC1
- * Offset: 0x14  Non-volatile Version Counter Control Register1
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |FWVER     |Firmware Version
- * |        |          |Read: Indicates the current firmware version of NVC1.
- * |        |          |Write: Updates the firmware version of NVC1.
- * |        |          |The maximum value of this field is 63.
- * |[31:16] |WVCODE    |Verification Code
- * |        |          |When written, this field must be the current firmware version number
- * @var FVC_T::NVC4
- * Offset: 0x20  Non-volatile Version Counter Control Register4
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |FWVER     |Firmware Version
- * |        |          |Read: Indicates the current firmware version of NVC4.
- * |        |          |Write: Updates the firmware version of NVC4.
- * |        |          |The maximum value of this field is 255.
- * |[31:16] |WVCODE    |Verification Code
- * |        |          |When written, this field must be the current firmware version number
- * @var FVC_T::NVC5
- * Offset: 0x24  Non-volatile Version Counter Control Register5
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |FWVER     |Firmware Version
- * |        |          |Read: Indicates the current firmware version of NVC5.
- * |        |          |Write: Updates the firmware version of NVC5.
- * |        |          |The maximum value of this field is 255.
- * |[31:16] |WVCODE    |Verification Code
- * |        |          |When written, this field must be the current firmware version number
- */
+    /**
+     * @var FVC_T::CTL
+     * Offset: 0x00  FVC Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |INIT      |FVC Init Bit
+     * |        |          |Set to 1 to enable FVC
+     * |        |          |This bit is writable when FVC is at Reset state.
+     * |        |          |Note: After set to 1, this bit is cleared to 0 automatically when FVC is back to Reset state.
+     * |[1]     |MONOEN    |Monotonic Enable Bit
+     * |        |          |Set to 1 to enable the monotonic mechanism of FVC.
+     * |        |          |Note: This bit can be set to1 but cannot be cleared to 0.
+     * |[31:16] |WVCODE    |Verification Code
+     * |        |          |When written, this field must be 0x7710
+     * @var FVC_T::STS
+     * Offset: 0x04  FVC Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |BUSY      |FVC Busy Bit
+     * |        |          |Indicates the FVC is at busy state.
+     * |[1]     |RDY       |FVC Ready Bit
+     * |        |          |Indicates the FVC is ready after the initial process.
+     * @var FVC_T::NVC0
+     * Offset: 0x10  Non-volatile Version Counter Control Register0
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |FWVER     |Firmware Version
+     * |        |          |Read: Indicates the current firmware version of NVC0.
+     * |        |          |Write: Updates the firmware version of NVC0.
+     * |        |          |The maximum value of this field is 63.
+     * |[31:16] |WVCODE    |Verification Code
+     * |        |          |When written, this field must be the current firmware version number
+     * @var FVC_T::NVC1
+     * Offset: 0x14  Non-volatile Version Counter Control Register1
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |FWVER     |Firmware Version
+     * |        |          |Read: Indicates the current firmware version of NVC1.
+     * |        |          |Write: Updates the firmware version of NVC1.
+     * |        |          |The maximum value of this field is 63.
+     * |[31:16] |WVCODE    |Verification Code
+     * |        |          |When written, this field must be the current firmware version number
+     * @var FVC_T::NVC4
+     * Offset: 0x20  Non-volatile Version Counter Control Register4
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |FWVER     |Firmware Version
+     * |        |          |Read: Indicates the current firmware version of NVC4.
+     * |        |          |Write: Updates the firmware version of NVC4.
+     * |        |          |The maximum value of this field is 255.
+     * |[31:16] |WVCODE    |Verification Code
+     * |        |          |When written, this field must be the current firmware version number
+     * @var FVC_T::NVC5
+     * Offset: 0x24  Non-volatile Version Counter Control Register5
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |FWVER     |Firmware Version
+     * |        |          |Read: Indicates the current firmware version of NVC5.
+     * |        |          |Write: Updates the firmware version of NVC5.
+     * |        |          |The maximum value of this field is 255.
+     * |[31:16] |WVCODE    |Verification Code
+     * |        |          |When written, this field must be the current firmware version number
+     */
     __IO uint32_t CTL;                   /*!< [0x0000] FVC Control Register                                             */
     __I  uint32_t STS;                   /*!< [0x0004] FVC Status Register                                              */
     __I  uint32_t RESERVE0[2];
-    union {
+    union
+    {
         __IO uint32_t NVC[6];                   /*!< [0x0010-0x0024] Non-volatile Version Counter Control Register Firmware. NVC[2], NVC[3] is reserved    */
-        struct {
+        struct
+        {
             __IO uint32_t NVC0;                  /*!< [0x0010] Non-volatile Version Counter Control Register0                   */
             __IO uint32_t NVC1;                  /*!< [0x0014] Non-volatile Version Counter Control Register1                   */
             __I  uint32_t RESERVE1[2];
@@ -571,37 +573,37 @@ typedef struct
 typedef struct
 {
 
-/**
- * @var PLM_T::CTL
- * Offset: 0x00  Product Life-cycle Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[2:0]   |STAGE     |Life-cycle Stage Update Bits
- * |        |          |Bits to update PLM stage. All bits can be set to one but cannot be cleared to 0.
- * |        |          |001 = progress to OEM stage.
- * |        |          |011 = progress to Deployed stage.
- * |        |          |111 = progress to RMA stage.
- * |        |          |Other value will be ignored.
- * |[31:16] |WVCODE    |Write Verify Code
- * |        |          |The code is 0x475A for a valid write to this register.
- * @var PLM_T::STS
- * Offset: 0x04  Product Life-cycle Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[2:0]   |STAGE     |Life-cycle Stage (Read Only)
- * |        |          |Indicates the current stage of PLM.
- * |        |          |000 = Vendor Stage.
- * |        |          |001 = OEM Stage.
- * |        |          |011 = Deployed Stage.
- * |        |          |111 = RMA Stage.
- * |        |          |Others = ERROR Stage.
- * |[8]     |DIRTY     |DIRTY Bit (Read Only)
- * |        |          |Indicate the life-cycle stage has been progressed after last cold-reset
- * |        |          |Value of STAGE bits is not Current stage of PLM
- * |        |          |It needs a cold reset to make it work.
- */
+    /**
+     * @var PLM_T::CTL
+     * Offset: 0x00  Product Life-cycle Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[2:0]   |STAGE     |Life-cycle Stage Update Bits
+     * |        |          |Bits to update PLM stage. All bits can be set to one but cannot be cleared to 0.
+     * |        |          |001 = progress to OEM stage.
+     * |        |          |011 = progress to Deployed stage.
+     * |        |          |111 = progress to RMA stage.
+     * |        |          |Other value will be ignored.
+     * |[31:16] |WVCODE    |Write Verify Code
+     * |        |          |The code is 0x475A for a valid write to this register.
+     * @var PLM_T::STS
+     * Offset: 0x04  Product Life-cycle Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[2:0]   |STAGE     |Life-cycle Stage (Read Only)
+     * |        |          |Indicates the current stage of PLM.
+     * |        |          |000 = Vendor Stage.
+     * |        |          |001 = OEM Stage.
+     * |        |          |011 = Deployed Stage.
+     * |        |          |111 = RMA Stage.
+     * |        |          |Others = ERROR Stage.
+     * |[8]     |DIRTY     |DIRTY Bit (Read Only)
+     * |        |          |Indicate the life-cycle stage has been progressed after last cold-reset
+     * |        |          |Value of STAGE bits is not Current stage of PLM
+     * |        |          |It needs a cold reset to make it work.
+     */
     __IO uint32_t CTL;                   /*!< [0x0000] Product Life-cycle Control Register                              */
     __I  uint32_t STS;                   /*!< [0x0004] Product Life-cycle Status Register                               */
 } PLM_T;
@@ -639,1772 +641,1774 @@ typedef struct
 {
 
 
-/**
- * @var SCU_T::D0PNS0
- * Offset: 0x00  Domain 0 Peripheral Non-secure Attribution Set Register0 (0x4000_0000~0x4001_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[3]     |NPU       |Set NPU to Non-secure State
- * |        |          |0 = NPU is a secure module (default).
- * |        |          |1 = NPU is a non-secure module.
- * @var SCU_T::D0PNS2
- * Offset: 0x08  Domain 0 Peripheral Non-secure Attribution Set Register2 (0x4004_0000~0x4005_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[2]     |SPIM0     |Set SPIM0 to Non-secure State
- * |        |          |0 = SPIM0 is a secure module (default).
- * |        |          |1 = SPIM0 is a non-secure module.
- * |[3]     |SPIM1     |Set SPIM1 to Non-secure State
- * |        |          |0 = SPIM1 is a secure module (default).
- * |        |          |1 = SPIM1 is a non-secure module.
- * @var SCU_T::D1PNS0
- * Offset: 0x20  Domain 1 Peripheral Non-secure Attribution Set Register0 (0x4020_0000~0x4021_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |PDMA0     |Set PDMA0 to Non-secure State
- * |        |          |0 = PDMA0 is a secure module (default).
- * |        |          |1 = PDMA0 is a non-secure module.
- * |[1]     |PDMA1     |Set PDMA1 to Non-secure State
- * |        |          |0 = PDMA1 is a secure module (default).
- * |        |          |1 = PDMA1 is a non-secure module.
- * |[2]     |USBH0     |Set USBH0 to Non-secure State
- * |        |          |0 = USBH0 is a secure module (default).
- * |        |          |1 = USBH0 is a non-secure module.
- * |[4]     |HSUSBH    |Set HSUSBH to Non-secure State
- * |        |          |0 = HSUSBH is a secure module (default).
- * |        |          |1 = HSUSBH is a non-secure module.
- * |[5]     |HSUSBD    |Set HSUSBD to Non-secure State
- * |        |          |0 = HSUSBD is a secure module (default).
- * |        |          |1 = HSUSBD is a non-secure module.
- * |[6]     |SDH0      |Set SDH0 to Non-secure State
- * |        |          |0 = SDH0 is a secure module (default).
- * |        |          |1 = SDH0 is a non-secure module.
- * |[7]     |SDH1      |Set SDH1 to Non-secure State
- * |        |          |0 = SDH1 is a secure module (default).
- * |        |          |1 = SDH1 is a non-secure module.
- * |[8]     |EMAC0     |Set EMAC0 to Non-secure State
- * |        |          |0 = EMAC0 is a secure module (default).
- * |        |          |1 = EMAC0 is a non-secure module.
- * |[10]    |CRYPTO    |Set CRYPTO to Non-secure State
- * |        |          |0 = CRYPTO is a secure module (default).
- * |        |          |1 = CRYPTO is a non-secure module.
- * |[11]    |CRC       |Set CRC to Non-secure State
- * |        |          |0 = CRC is a secure module (default).
- * |        |          |1 = CRC is a non-secure module.
- * @var SCU_T::D1PNS1
- * Offset: 0x24  Domain0 Peripheral Non-secure Attribution Set Register1 (0x4022_0000~0x4023_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[1]     |KDF       |Set KDF to Non-secure State
- * |        |          |0 = KDF is a secure module (default).
- * |        |          |1 = KDF is a non-secure module.
- * |[2]     |CANFD0    |Set CANFD0 to Non-secure State
- * |        |          |0 = CANFD0 is a secure module (default).
- * |        |          |1 = CANFD0 is a non-secure module.
- * |[4]     |CANFD1    |Set CANFD1 to Non-secure State
- * |        |          |0 = CANFD1 is a secure module (default).
- * |        |          |1 = CANFD1 is a non-secure module.
- * |[6]     |ETMC      |Set ETMC to Non-secure State
- * |        |          |0 = ETMC is a secure module (default).
- * |        |          |1 = ETMC is a non-secure module.
- * |[7]     |SWDH      |Set SWDH to Non-secure State
- * |        |          |0 = SWDH is a secure module (default).
- * |        |          |1 = SWDH is a non-secure module.
- * |[8]     |SWODEC    |Set SWODEC to Non-secure State
- * |        |          |0 = SWODEC is a secure module (default).
- * |        |          |1 = SWODEC is a non-secure module.
- * |[16]    |EBI       |Set EBI to Non-secure State
- * |        |          |0 = EBI is a secure module (default).
- * |        |          |1 = EBI is a non-secure module.
- * @var SCU_T::D1PNS2
- * Offset: 0x28  Domain 1 Peripheral Non-secure Attribution Set Register2 (0x4024_0000~0x4025_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |WWDT0     |Set WWDT0 to Non-secure State
- * |        |          |0 = WWDT0 is a secure module (default).
- * |        |          |1 = WWDT0 is a non-secure module.
- * |[1]     |EADC0     |Set EADC0 to Non-secure State
- * |        |          |0 = EADC0 is a secure module (default).
- * |        |          |1 = EADC0 is a non-secure module.
- * |[2]     |EPWM0     |Set EPWM0 to Non-secure State
- * |        |          |0 = EPWM0 is a secure module (default).
- * |        |          |1 = EPWM0 is a non-secure module.
- * |[3]     |BPWM0     |Set BPWM0 to Non-secure State
- * |        |          |0 = BPWM0 is a secure module (default).
- * |        |          |1 = BPWM0 is a non-secure module.
- * |[4]     |EQEI0     |Set EQEI0 to Non-secure State
- * |        |          |0 = EQEI0 is a secure module (default).
- * |        |          |1 = EQEI0 is a non-secure module.
- * |[5]     |EQEI2     |Set EQEI2 to Non-secure State
- * |        |          |0 = EQEI2 is a secure module (default).
- * |        |          |1 = EQEI2 is a non-secure module.
- * |[6]     |ECAP0     |Set ECAP0 to Non-secure State
- * |        |          |0 = ECAP0 is a secure module (default).
- * |        |          |1 = ECAP0 is a non-secure module.
- * |[7]     |ECAP2     |Set ECAP2 to Non-secure State
- * |        |          |0 = ECAP2 is a secure module (default).
- * |        |          |1 = ECAP2 is a non-secure module.
- * |[8]     |I2C0      |Set I2C0 to Non-secure State
- * |        |          |0 = I2C0 is a secure module (default).
- * |        |          |1 = I2C0 is a non-secure module.
- * |[9]     |I2C2      |Set I2C2 to Non-secure State
- * |        |          |0 = I2C2 is a secure module (default).
- * |        |          |1 = I2C2 is a non-secure module.
- * |[10]    |QSPI0     |Set QSPI0 to Non-secure State
- * |        |          |0 = QSPI0 is a secure module (default).
- * |        |          |1 = QSPI0 is a non-secure module.
- * |[11]    |SPI0      |Set SPI0 to Non-secure State
- * |        |          |0 = SPI0 is a secure module (default).
- * |        |          |1 = SPI0 is a non-secure module.
- * |[12]    |SPI2      |Set SPI2 to Non-secure State
- * |        |          |0 = SPI2 is a secure module (default).
- * |        |          |1 = SPI2 is a non-secure module.
- * |[13]    |UART0     |Set UART0 to Non-secure State
- * |        |          |0 = UART0 is a secure module (default).
- * |        |          |1 = UART0 is a non-secure module.
- * |[14]    |UART2     |Set UART2 to Non-secure State
- * |        |          |0 = UART2 is a secure module (default).
- * |        |          |1 = UART2 is a non-secure module.
- * |[15]    |UART4     |Set UART4 to Non-secure State
- * |        |          |0 = UART4 is a secure module (default).
- * |        |          |1 = UART4 is a non-secure module.
- * |[16]    |UART6     |Set UART6 to Non-secure State
- * |        |          |0 = UART6 is a secure module (default).
- * |        |          |1 = UART6 is a non-secure module.
- * |[17]    |UART8     |Set UART8 to Non-secure State
- * |        |          |0 = UART8 is a secure module (default).
- * |        |          |1 = UART8 is a non-secure module.
- * |[18]    |USCI0     |Set USCI0 to Non-secure State
- * |        |          |0 = USCI0 is a secure module (default).
- * |        |          |1 = USCI0 is a non-secure module.
- * |[19]    |SC0       |Set SC0 to Non-secure State
- * |        |          |0 = SC0 is a secure module (default).
- * |        |          |1 = SC0 is a non-secure module.
- * |[20]    |SC2       |Set SC2 to Non-secure State
- * |        |          |0 = SC2 is a secure module (default).
- * |        |          |1 = SC2 is a non-secure module.
- * |[21]    |PSIO      |Set PSIO to Non-secure State
- * |        |          |0 = PSIO is a secure module (default).
- * |        |          |1 = PSIO is a non-secure module.
- * |[22]    |TMR01     |Set TMR01 to Non-secure State
- * |        |          |0 = TMR01 is a secure module (default).
- * |        |          |1 = TMR01 is a non-secure module.
- * |[23]    |DAC01     |Set DAC01 to Non-secure State
- * |        |          |0 = DAC01 is a secure module (default).
- * |        |          |1 = DAC01 is a non-secure module.
- * |[25]    |HSOTG     |Set HSOTG to Non-secure State
- * |        |          |0 = HSOTG is a secure module (default).
- * |        |          |1 = HSOTG is a non-secure module.
- * |[26]    |I2S0      |Set I2S0 to Non-secure State
- * |        |          |0 = I2S0 is a secure module (default).
- * |        |          |1 = I2S0 is a non-secure module.
- * |[27]    |ACMP01    |Set ACMP01 to Non-secure State
- * |        |          |0 = ACMP01 is a secure module (default).
- * |        |          |1 = ACMP01 is a non-secure module.
- * |[28]    |USBD      |Set USBD to Non-secure State
- * |        |          |0 = USBD is a secure module (default).
- * |        |          |1 = USBD is a non-secure module.
- * @var SCU_T::D1PNS4
- * Offset: 0x30  Domain 1 Peripheral Non-secure Attribution Set Register4 (0x4028_0000~0x4029_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |WWDT1     |Set WWDT1 to Non-secure State
- * |        |          |0 = WWDT1 is a secure module (default).
- * |        |          |1 = WWDT1 is a non-secure module.
- * |[1]     |EADC1     |Set EADC1 to Non-secure State
- * |        |          |0 = EADC1 is a secure module (default).
- * |        |          |1 = EADC1 is a non-secure module.
- * |[2]     |EPWM1     |Set EPWM1 to Non-secure State
- * |        |          |0 = EPWM1 is a secure module (default).
- * |        |          |1 = EPWM1 is a non-secure module.
- * |[3]     |BPWM1     |Set BPWM1 to Non-secure State
- * |        |          |0 = BPWM1 is a secure module (default).
- * |        |          |1 = BPWM1 is a non-secure module.
- * |[4]     |EQEI1     |Set EQEI1 to Non-secure State
- * |        |          |0 = EQEI1 is a secure module (default).
- * |        |          |1 = EQEI1 is a non-secure module.
- * |[5]     |EQEI3     |Set EQEI3 to Non-secure State
- * |        |          |0 = EQEI3 is a secure module (default).
- * |        |          |1 = EQEI3 is a non-secure module.
- * |[6]     |ECAP1     |Set ECAP1 to Non-secure State
- * |        |          |0 = ECAP1 is a secure module (default).
- * |        |          |1 = ECAP1 is a non-secure module.
- * |[7]     |ECAP3     |Set ECAP3 to Non-secure State
- * |        |          |0 = ECAP3 is a secure module (default).
- * |        |          |1 = ECAP3 is a non-secure module.
- * |[8]     |I2C1      |Set I2C1 to Non-secure State
- * |        |          |0 = I2C1 is a secure module (default).
- * |        |          |1 = I2C1 is a non-secure module.
- * |[9]     |I2C3      |Set I2C3 to Non-secure State
- * |        |          |0 = I2C3 is a secure module (default).
- * |        |          |1 = I2C3 is a non-secure module.
- * |[10]    |QSPI1     |Set QSPI1 to Non-secure State
- * |        |          |0 = QSPI1 is a secure module (default).
- * |        |          |1 = QSPI1 is a non-secure module.
- * |[11]    |SPI1      |Set SPI1 to Non-secure State
- * |        |          |0 = SPI1 is a secure module (default).
- * |        |          |1 = SPI1 is a non-secure module.
- * |[12]    |SPI3      |Set SPI3 to Non-secure State
- * |        |          |0 = SPI3 is a secure module (default).
- * |        |          |1 = SPI3 is a non-secure module.
- * |[13]    |UART1     |Set UART1 to Non-secure State
- * |        |          |0 = UART1 is a secure module (default).
- * |        |          |1 = UART1 is a non-secure module.
- * |[14]    |UART3     |Set UART3 to Non-secure State
- * |        |          |0 = UART3 is a secure module (default).
- * |        |          |1 = UART3 is a non-secure module.
- * |[15]    |UART5     |Set UART5 to Non-secure State
- * |        |          |0 = UART5 is a secure module (default).
- * |        |          |1 = UART5 is a non-secure module.
- * |[16]    |UART7     |Set UART7 to Non-secure State
- * |        |          |0 = UART7 is a secure module (default).
- * |        |          |1 = UART7 is a non-secure module.
- * |[17]    |UART9     |Set UART9 to Non-secure State
- * |        |          |0 = UART9 is a secure module (default).
- * |        |          |1 = UART9 is a non-secure module.
- * |[18]    |SC1       |Set SC1 to Non-secure State
- * |        |          |0 = SC1 is a secure module (default).
- * |        |          |1 = SC1 is a non-secure module.
- * |[19]    |OTG       |Set OTG to Non-secure State
- * |        |          |0 = OTG is a secure module (default).
- * |        |          |1 = OTG is a non-secure module.
- * |[20]    |KPI       |Set KPI to Non-secure State
- * |        |          |0 = KPI is a secure module (default).
- * |        |          |1 = KPI is a non-secure module.
- * |[21]    |TMR23     |Set TMR23 to Non-secure State
- * |        |          |0 = TMR23 is a secure module (default).
- * |        |          |1 = TMR23 is a non-secure module.
- * |[22]    |TRNG      |Set TRNG to Non-secure State
- * |        |          |0 = TRNG is a secure module (default).
- * |        |          |1 = TRNG is a non-secure module.
- * |[23]    |RTC       |Set RTC to Non-secure State
- * |        |          |0 = RTC is a secure module (default).
- * |        |          |1 = RTC is a non-secure module.
- * |[24]    |I2S1      |Set I2S1 to Non-secure State
- * |        |          |0 = I2S1 is a secure module (default).
- * |        |          |1 = I2S1 is a non-secure module.
- * |[25]    |ACMP23    |Set ACMP23 to Non-secure State
- * |        |          |0 = ACMP23 is a secure module (default).
- * |        |          |1 = ACMP23 is a non-secure module.
- * |[26]    |I3C0      |Set I3C0 to Non-secure State
- * |        |          |0 = I3C0 is a secure module (default).
- * |        |          |1 = I3C0 is a non-secure module.
- * |[27]    |UTCPD     |Set UTCPD to Non-secure State
- * |        |          |0 = UTCPD is a secure module (default).
- * |        |          |1 = UTCPD is a non-secure module.
- * @var SCU_T::D2PNS0
- * Offset: 0x40  Domain 2 Peripheral Non-secure Attribution Set Register0 (0x4040_0000~0x4041_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |LPPDMA    |Set LPPDMA to Non-secure State
- * |        |          |0 = LPPDMA is a secure module (default).
- * |        |          |1 = LPPDMA is a non-secure module.
- * |[1]     |CCAP      |Set CCAP to Non-secure State
- * |        |          |0 = CCAP is a secure module (default).
- * |        |          |1 = CCAP is a non-secure module.
- * |[3]     |LPGPIO    |Set LPGPIO to Non-secure State
- * |        |          |0 = LPGPIO is a secure module (default).
- * |        |          |1 = LPGPIO is a non-secure module.
- * @var SCU_T::D2PNS2
- * Offset: 0x48  Domain 2 Peripheral Non-secure Attribution Set Register2 (0x4044_0000~0x4045_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |LPTMR01   |Set LPTMR01 to Non-secure State
- * |        |          |0 = LPTMR01 is a secure module (default).
- * |        |          |1 = LPTMR01 is a non-secure module.
- * |[1]     |TTMR01    |Set TTMR01 to Non-secure State
- * |        |          |0 = TTMR01 is a secure module (default).
- * |        |          |1 = TTMR01 is a non-secure module.
- * |[2]     |LPADC0    |Set LPADC0 to Non-secure State
- * |        |          |0 = LPADC0 is a secure module (default).
- * |        |          |1 = LPADC0 is a non-secure module.
- * |[3]     |LPI2C0    |Set LPI2C0 to Non-secure State
- * |        |          |0 = LPI2C0 is a secure module (default).
- * |        |          |1 = LPI2C0 is a non-secure module.
- * |[4]     |LPSPI0    |Set LPSPI0 to Non-secure State
- * |        |          |0 = LPSPI0 is a secure module (default).
- * |        |          |1 = LPSPI0 is a non-secure module.
- * |[5]     |DMIC0     |Set DMIC0 to Non-secure State
- * |        |          |0 = DMIC0 is a secure module (default).
- * |        |          |1 = DMIC0 is a non-secure module.
- * |[6]     |LPUART0   |Set LPUART0 to Non-secure State
- * |        |          |0 = LPUART0 is a secure module (default).
- * |        |          |1 = LPUART0 is a non-secure module.
- * |[9]     |AWF       |Set AWF to Non-secure State
- * |        |          |0 = AWF is a secure module (default).
- * |        |          |1 = AWF is a non-secure module.
- * @var SCU_T::FNSADDR
- * Offset: 0x60  Flash Non-secure Boundary Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |FNSADDR   |Flash Non-secure Boundary Address
- * |        |          |Indicate the base address of Non-secure region set in user configuration
- * |        |          |Refer to FMC section for more details.
- * @var SCU_T::EINTNS
- * Offset: 0x64  EINT Non-secure Attribution Set Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |EINT0     |Set EINT0 to Non-secure State
- * |        |          |0 = EINT0 is a secure module (default).
- * |        |          |1 = EINT0 is a non-secure module.
- * |[1]     |EINT1     |Set EINT1 to Non-secure State
- * |        |          |0 = EINT1 is a secure module (default).
- * |        |          |1 = EINT1 is a non-secure module.
- * |[2]     |EINT2     |Set EINT2 to Non-secure State
- * |        |          |0 = EINT2 is a secure module (default).
- * |        |          |1 = EINT2 is a non-secure module.
- * |[3]     |EINT3     |Set EINT3 to Non-secure State
- * |        |          |0 = EINT3 is a secure module (default).
- * |        |          |1 = EINT3 is a non-secure module.
- * |[4]     |EINT4     |Set EINT4 to Non-secure State
- * |        |          |0 = EINT4 is a secure module (default).
- * |        |          |1 = EINT4 is a non-secure module.
- * |[5]     |EINT5     |Set EINT5 to Non-secure State
- * |        |          |0 = EINT5 is a secure module (default).
- * |        |          |1 = EINT5 is a non-secure module.
- * |[6]     |EINT6     |Set EINT6 to Non-secure State
- * |        |          |0 = EINT6 is a secure module (default).
- * |        |          |1 = EINT6 is a non-secure module.
- * |[7]     |EINT7     |Set EINT7 to Non-secure State
- * |        |          |0 = EINT7 is a secure module (default).
- * |        |          |1 = EINT7 is a non-secure module.
- * @var SCU_T::IONS0
- * Offset: 0x70  I/O Non-secure Attribution Set Register0
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |PA        |Set GPIO Port A to Non-secure State
- * |        |          |Write 1 to set PA to non-secure state. Each bit configures one pin in GPIO port A.
- * |        |          |0 = GPIO port A is secure (default).
- * |        |          |1 = GPIO port A is non-secure.
- * @var SCU_T::IONS1
- * Offset: 0x74  I/O Non-secure Attribution Set Register1
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |PB        |Set GPIO Port B to Non-secure State
- * |        |          |Write 1 to set PB to non-secure state. Each bit configures one pin in GPIO port B.
- * |        |          |0 = GPIO port B is secure (default).
- * |        |          |1 = GPIO port B is non-secure.
- * @var SCU_T::IONS2
- * Offset: 0x78  I/O Non-secure Attribution Set Register2
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |PC        |Set GPIO Port C to Non-secure State
- * |        |          |Write 1 to set PC to non-secure state. Each bit configures one pin in GPIO port C.
- * |        |          |0 = GPIO port C is secure (default).
- * |        |          |1 = GPIO port C is non-secure.
- * @var SCU_T::IONS3
- * Offset: 0x7C  I/O Non-secure Attribution Set Register3
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |PD        |Set GPIO Port D to Non-secure State
- * |        |          |Write 1 to set PD to non-secure state. Each bit configures one pin in GPIO port D.
- * |        |          |0 = GPIO port D is secure (default).
- * |        |          |1 = GPIO port D is non-secure.
- * @var SCU_T::IONS4
- * Offset: 0x80  I/O Non-secure Attribution Set Register4
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |PE        |Set GPIO Port E to Non-secure State
- * |        |          |Write 1 to set PE to non-secure state. Each bit configures one pin in GPIO port E.
- * |        |          |0 = GPIO port E is secure (default).
- * |        |          |1 = GPIO port E is non-secure.
- * @var SCU_T::IONS5
- * Offset: 0x84  I/O Non-secure Attribution Set Register5
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |PF        |Set GPIO Port F to Non-secure State
- * |        |          |Write 1 to set PF to non-secure state. Each bit configures one pin in GPIO port F.
- * |        |          |0 = GPIO port F is secure (default).
- * |        |          |1 = GPIO port F is non-secure.
- * @var SCU_T::IONS6
- * Offset: 0x88  I/O Non-secure Attribution Set Register6
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |PG        |Set GPIO Port G to Non-secure State
- * |        |          |Write 1 to set PG to non-secure state. Each bit configures one pin in GPIO port G.
- * |        |          |0 = GPIO port G is secure (default).
- * |        |          |1 = GPIO port G is non-secure.
- * @var SCU_T::IONS7
- * Offset: 0x8C  I/O Non-secure Attribution Set Register7
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |PH        |Set GPIO Port H to Non-secure State
- * |        |          |Write 1 to set PH to non-secure state. Each bit configures one pin in GPIO port H.
- * |        |          |0 = GPIO port H is secure (default).
- * |        |          |1 = GPIO port H is non-secure.
- * @var SCU_T::IONS8
- * Offset: 0x90  I/O Non-secure Attribution Set Register8
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |PI        |Set GPIO Port I to Non-secure State
- * |        |          |Write 1 to set PI to non-secure state. Each bit configures one pin in GPIO port I.
- * |        |          |0 = GPIO port I is secure (default).
- * |        |          |1 = GPIO port I is non-secure.
- * @var SCU_T::IONS9
- * Offset: 0x94  I/O Non-secure Attribution Set Register9
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |PJ        |Set GPIO Port J to Non-secure State
- * |        |          |Write 1 to set PJ to non-secure state. Each bit configures one pin in GPIO port J.
- * |        |          |0 = GPIO port J is secure (default).
- * |        |          |1 = GPIO port J is non-secure.
- * @var SCU_T::SVIEN0
- * Offset: 0x100  Security Violation Interrupt Enable Register u2013 Slave peripherals
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |APB0IEN   |APB0 Security Violation Interrupt Enable Bit
- * |        |          |0 = Interrupt triggered from security violation of APB0 Disabled.
- * |        |          |1 = Interrupt triggered from security violation of APB0 Enabled.
- * |[1]     |APB1IEN   |APB1 Security Violation Interrupt Enable Bit
- * |        |          |0 = Interrupt triggered from security violation of APB1 Disabled.
- * |        |          |1 = Interrupt triggered from security violation of APB1 Enabled.
- * |[2]     |APB2IEN   |APB2 Security Violation Interrupt Enable Bit
- * |        |          |0 = Interrupt triggered from security violation of APB2 Disabled.
- * |        |          |1 = Interrupt triggered from security violation of APB2 Enabled.
- * |[3]     |APB3IEN   |APB3 Security Violation Interrupt Enable Bit
- * |        |          |0 = Interrupt triggered from security violation of APB3 Disabled.
- * |        |          |1 = Interrupt triggered from security violation of APB3 Enabled.
- * |[4]     |APB4IEN   |APB4 Security Violation Interrupt Enable Bit
- * |        |          |0 = Interrupt triggered from security violation of APB4 Disabled.
- * |        |          |1 = Interrupt triggered from security violation of APB4 Enabled.
- * |[5]     |APB5IEN   |APB5 Security Violation Interrupt Enable Bit
- * |        |          |0 = Interrupt triggered from security violation of APB5 Disabled.
- * |        |          |1 = Interrupt triggered from security violation of APB5 Enabled.
- * |[8]     |D0PPC0IEN |D0PPC0 Security Violation Interrupt Enable Bit
- * |        |          |0 = Interrupt triggered from security violation of D0PPC0 Disabled.
- * |        |          |1 = Interrupt triggered from security violation of D0PPC0 Enabled.
- * |[9]     |D1PPC0IEN |D1PPC0 Security Violation Interrupt Enable Bit
- * |        |          |0 = Interrupt triggered from security violation of D1PPC0 Disabled.
- * |        |          |1 = Interrupt triggered from security violation of D1PPC0 Enabled.
- * |[10]    |D1PPC1IEN |D1PPC1 Security Violation Interrupt Enable Bit
- * |        |          |0 = Interrupt triggered from security violation of D1PPC1 Disabled.
- * |        |          |1 = Interrupt triggered from security violation of D1PPC1 Enabled.
- * |[11]    |D2PPC0IEN |D2PPC0 Security Violation Interrupt Enable Bit
- * |        |          |0 = Interrupt triggered from security violation of D2PPC0 Disabled.
- * |        |          |1 = Interrupt triggered from security violation of D2PPC0 Enabled.
- * |[16]    |EBIIEN    |EBI Security Violation Interrupt Enable Bit
- * |        |          |0 = Interrupt triggered from security violation of EBI Disabled.
- * |        |          |1 = Interrupt triggered from security violation of EBI Enabled.
- * @var SCU_T::SVIEN1
- * Offset: 0x104  Security Violation Interrupt Enable Register u2013 Master peripherals (MSC)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |GDMAIEN   |GDMA Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of GDMA Disabled. 1 = Interrupt triggered from security violation of GDMA Enabled.
- * |[1]     |PDMA0IEN  |PDMA0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of PDMA Disabled. 1 = Interrupt triggered from security violation of PDMA Enabled.
- * |[2]     |PDMA1IEN  |PDMA1 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of PDMA1 Disabled. 1 = Interrupt triggered from security violation of PDMA1 Enabled.
- * |[3]     |USBH0IEN  |USBH0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of USBH0 Disabled. 1 = Interrupt triggered from security violation of USBH0 Enabled.
- * |[5]     |HSUSBHIEN |HSUSBH Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of HSUSBH Disabled. 1 = Interrupt triggered from security violation of HSUSBH Enabled.
- * |[6]     |HSUSBDIEN |HSUSBD Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of HSUSBD Disabled. 1 = Interrupt triggered from security violation of HSUSBD Enabled.
- * |[7]     |SDH0IEN   |SDH0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of SDH0 Disabled. 1 = Interrupt triggered from security violation of SDH0 Enabled.
- * |[8]     |SDH1IEN   |SDH1 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of SDH1 Disabled. 1 = Interrupt triggered from security violation of SDH1 Enabled.
- * |[9]     |EMACIEN   |EMAC Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of EMAC Disabled. 1 = Interrupt triggered from security violation of EMAC Enabled.
- * |[10]    |CRYPTOIEN |CRYPTO Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of CRYPTO Disabled. 1 = Interrupt triggered from security violation of CRYPTO Enabled.
- * |[11]    |CRCIEN    |CRC Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of CRC Disabled. 1 = Interrupt triggered from security violation of CRC Enabled.
- * |[12]    |LPPDMAIEN |LPPDMA Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of LPPDMA Disabled. 1 = Interrupt triggered from security violation of LPPDMA Enabled.
- * |[13]    |CCAPIEN   |CCAP Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of CCAP Disabled. 1 = Interrupt triggered from security violation of CCAP Enabled.
- * |[14]    |NPUIF1IEN |NPU Interface 1 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of NPU Interface 1 Disabled. 1 = Interrupt triggered from security violation of NPU Interface 1 Enabled.
- * |[15]    |NPUIF0IEN |NPU Interface 0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of NPU Interface 0 Disabled. 1 = Interrupt triggered from security violation of NPU Interface 0 Enabled.
- * |[16]    |SPIM0IEN  |SPIM0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of SPIM0 Disabled. 1 = Interrupt triggered from security violation of SPIM0 Enabled.
- * |[17]    |SPIM1IEN  |SPIM1 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of SPIM1 Disabled. 1 = Interrupt triggered from security violation of SPIM1 Enabled.
- * @var SCU_T::SVINTSTS0
- * Offset: 0x110  Security Violation Interrupt Status Register u2013 Slave peripherals
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |APB0IF    |APB0 Security Violation Interrupt Status
- * |        |          |0 = No APB0 violation interrupt event.
- * |        |          |1 = There is at least a APB0 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[1]     |APB1IF    |APB1 Security Violation Interrupt Status
- * |        |          |0 = No APB1 violation interrupt event.
- * |        |          |1 = There is at least a APB1 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[2]     |APB2IF    |APB2 Security Violation Interrupt Status
- * |        |          |0 = No APB2 violation interrupt event.
- * |        |          |1 = There is at least a APB2 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[3]     |APB3IF    |APB3 Security Violation Interrupt Status
- * |        |          |0 = No APB3 violation interrupt event.
- * |        |          |1 = There is at least a APB3 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[4]     |APB4IF    |APB4 Security Violation Interrupt Status
- * |        |          |0 = No APB4 violation interrupt event.
- * |        |          |1 = There is at least a APB4 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[5]     |APB5IF    |APB5 Security Violation Interrupt Status
- * |        |          |0 = No APB5 violation interrupt event.
- * |        |          |1 = There is at least a APB5 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[8]     |D0PPC0IF  |D0PPC0 Security Violation Interrupt Status
- * |        |          |0 = No D0PPC0 violation interrupt event.
- * |        |          |1 = There is at least a D0PPC0 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[9]     |D1PPC0IF  |D1PPC0 Security Violation Interrupt Status
- * |        |          |0 = No D1PPC0 violation interrupt event.
- * |        |          |1 = There is at least a D1PPC0 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[10]    |D1PPC1IF  |D1PPC1 Security Violation Interrupt Status
- * |        |          |0 = No D1PPC1 violation interrupt event.
- * |        |          |1 = There is at least a D1PPC1 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[11]    |D2PPC0IF  |D2PPC0 Security Violation Interrupt Status
- * |        |          |0 = No D2PPC0 violation interrupt event.
- * |        |          |1 = There is at least a D2PPC0 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[16]    |EBIIF     |EBI Security Violation Interrupt Status
- * |        |          |0 = No EBI violation interrupt event.
- * |        |          |1 = There is at least a EBI violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * @var SCU_T::SVINTSTS1
- * Offset: 0x114  Security Violation Interrupt Status Register - Master peripherals (MSC)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |GDMAIF    |GDMA Security Violation Interrupt Status
- * |        |          |0 = No GDMA violation interrupt event.
- * |        |          |1 = There is at least a GDMA violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[1]     |PDMA0IF   |PDMA0 Security Violation Interrupt Status
- * |        |          |0 = No PDMA0 violation interrupt event.
- * |        |          |1 = There is at least a PDMA0 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[2]     |PDMA1IF   |PDMA1 Security Violation Interrupt Status
- * |        |          |0 = No PDMA1 violation interrupt event.
- * |        |          |1 = There is at least a PDMA1 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[3]     |USBH0IF   |USBH0 Security Violation Interrupt Status
- * |        |          |0 = No USBH0 violation interrupt event.
- * |        |          |1 = There is at least a USBH0 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[5]     |HSUSBHIF  |HSUSBH Security Violation Interrupt Status
- * |        |          |0 = No HSUSBH violation interrupt event.
- * |        |          |1 = There is at least a HSUSBH violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[6]     |HSUSBDIF  |HSUSBD Security Violation Interrupt Status
- * |        |          |0 = No HSUSBD violation interrupt event.
- * |        |          |1 = There is at least a HSUSBD violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[7]     |SDH0IF    |SDH0 Security Violation Interrupt Status
- * |        |          |0 = No SDH0 violation interrupt event.
- * |        |          |1 = There is at least a SDH0 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[8]     |SDH1IF    |SDH1 Security Violation Interrupt Status
- * |        |          |0 = No SDH1 violation interrupt event.
- * |        |          |1 = There is at least a SDH1 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[9]     |EMACIF    |EMAC Security Violation Interrupt Status
- * |        |          |0 = No EMAC violation interrupt event.
- * |        |          |1 = There is at least a EMAC violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[10]    |CRYPTOIF  |CRYPTO Security Violation Interrupt Status
- * |        |          |0 = No CRYPTO violation interrupt event.
- * |        |          |1 = There is at least a CRYPTO violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[11]    |CRCIF     |CRC Security Violation Interrupt Status
- * |        |          |0 = No CRC violation interrupt event.
- * |        |          |1 = There is at least a CRC violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[12]    |LPPDMAIF  |LPPDMA Security Violation Interrupt Status
- * |        |          |0 = No LPPDMA violation interrupt event.
- * |        |          |1 = There is at least a LPPDMA violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[13]    |CCAPIF    |CCAP Security Violation Interrupt Status
- * |        |          |0 = No CCAP violation interrupt event.
- * |        |          |1 = There is at least a CCAP violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[14]    |NPUIF1    |NPU Interface 1 Security Violation Interrupt Status
- * |        |          |0 = No NPU Interface 1 violation interrupt event.
- * |        |          |1 = There is at least a NPU Interface 1 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[15]    |NPUIF0    |NPU Interface 0 Security Violation Interrupt Status
- * |        |          |0 = No NPU Interface 0 violation interrupt event.
- * |        |          |1 = There is at least a NPU Interface 0 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[16]    |SPIM0IF   |SPIM0 Security Violation Interrupt Status
- * |        |          |0 = No SPIM0 violation interrupt event.
- * |        |          |1 = There is at least a SPIM0 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * |[17]    |SPIM1IF   |SPIM1 Security Violation Interrupt Status
- * |        |          |0 = No SPIM1 violation interrupt event.
- * |        |          |1 = There is at least a SPIM1 violation interrupt event.
- * |        |          |Note: Write 1 to clear the interrupt flag.
- * @var SCU_T::SVINTSTS2
- * Offset: 0x118  Security Violation Interrupt Status Register u2013 Memory peripherals (MPC)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |SRAM0IF   |SRAM0 Security Violation Interrupt Status
- * |        |          |0 = No SRAM0 violation interrupt event.
- * |        |          |1 = There is at least a SRAM0 violation interrupt event.
- * |[1]     |SRAM1IF   |SRAM1 Security Violation Interrupt Status
- * |        |          |0 = No SRAM1 violation interrupt event.
- * |        |          |1 = There is at least a SRAM1 violation interrupt event.
- * |[2]     |SRAM2IF   |SRAM2 Security Violation Interrupt Status
- * |        |          |0 = No SRAM2 violation interrupt event.
- * |        |          |1 = There is at least a SRAM2 violation interrupt event.
- * |[3]     |SRAM3IF   |SRAM3 Security Violation Interrupt Status
- * |        |          |0 = No SRAM3 violation interrupt event.
- * |        |          |1 = There is at least a SRAM3 violation interrupt event.
- * |[4]     |LPSRAMIF  |LPSRAM Security Violation Interrupt Status
- * |        |          |0 = No LPSRAM violation interrupt event.
- * |        |          |1 = There is at least a LPSRAM violation interrupt event.
- * |[5]     |SPIM0IF   |SPIM0 Security Violation Interrupt Status
- * |        |          |0 = No SPIM0 violation interrupt event.
- * |        |          |1 = There is at least a SPIM0 violation interrupt event.
- * |[6]     |SPIM1IF   |SPIM1 Security Violation Interrupt Status
- * |        |          |0 = No SPIM1 violation interrupt event.
- * |        |          |1 = There is at least a SPIM1 violation interrupt event.
- * @var SCU_T::APB0PVSRC
- * Offset: 0x120  APB0 Security Policy Violation Source
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |MASTER    |Master Violating Security Policy
- * |        |          |Indicate which master invokes the security violation.
- * |        |          |0x00 = Core processor
- * |        |          |0x01 = PDMA0
- * |        |          |0x02 = PDMA1
- * |        |          |0x03 = USBH0
- * |        |          |0x05 = HSUSBH
- * |        |          |0x06 = HSUSBD
- * |        |          |0x07 = SDH0
- * |        |          |0x08 = SDH1
- * |        |          |0x09 = EMAC
- * |        |          |0x0A = CRYPTO
- * |        |          |0x0B = CRC
- * |        |          |0x0C = GDMA
- * |        |          |0x0D = NPU
- * |        |          |0x0E = LPPDMA
- * |        |          |0x0F = CCAP
- * |        |          |0x10 = SPIM0
- * |        |          |0x11 = SPIM1
- * |        |          |Others are undefined.
- * @var SCU_T::APB1PVSRC
- * Offset: 0x124  APB1 Security Policy Violation Source
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |MASTER    |Master Violating Security Policy
- * |        |          |Indicate which master invokes the security violation.
- * |        |          |0x00 = Core processor
- * |        |          |0x01 = PDMA0
- * |        |          |0x02 = PDMA1
- * |        |          |0x03 = USBH0
- * |        |          |0x05 = HSUSBH
- * |        |          |0x06 = HSUSBD
- * |        |          |0x07 = SDH0
- * |        |          |0x08 = SDH1
- * |        |          |0x09 = EMAC
- * |        |          |0x0A = CRYPTO
- * |        |          |0x0B = CRC
- * |        |          |0x0C = GDMA
- * |        |          |0x0D = NPU
- * |        |          |0x0E = LPPDMA
- * |        |          |0x0F = CCAP
- * |        |          |0x10 = SPIM0
- * |        |          |0x11 = SPIM1
- * |        |          |Others are undefined.
- * @var SCU_T::APB2PVSRC
- * Offset: 0x128  APB2 Security Policy Violation Source
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |MASTER    |Master Violating Security Policy
- * |        |          |Indicate which master invokes the security violation.
- * |        |          |0x00 = Core processor
- * |        |          |0x01 = PDMA0
- * |        |          |0x02 = PDMA1
- * |        |          |0x03 = USBH0
- * |        |          |0x05 = HSUSBH
- * |        |          |0x06 = HSUSBD
- * |        |          |0x07 = SDH0
- * |        |          |0x08 = SDH1
- * |        |          |0x09 = EMAC
- * |        |          |0x0A = CRYPTO
- * |        |          |0x0B = CRC
- * |        |          |0x0C = GDMA
- * |        |          |0x0D = NPU
- * |        |          |0x0E = LPPDMA
- * |        |          |0x0F = CCAP
- * |        |          |0x10 = SPIM0
- * |        |          |0x11 = SPIM1
- * |        |          |Others are undefined.
- * @var SCU_T::APB3PVSRC
- * Offset: 0x12C  APB3 Security Policy Violation Source
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |MASTER    |Master Violating Security Policy
- * |        |          |Indicate which master invokes the security violation.
- * |        |          |0x00 = Core processor
- * |        |          |0x01 = PDMA0
- * |        |          |0x02 = PDMA1
- * |        |          |0x03 = USBH0
- * |        |          |0x05 = HSUSBH
- * |        |          |0x06 = HSUSBD
- * |        |          |0x07 = SDH0
- * |        |          |0x08 = SDH1
- * |        |          |0x09 = EMAC
- * |        |          |0x0A = CRYPTO
- * |        |          |0x0B = CRC
- * |        |          |0x0C = GDMA
- * |        |          |0x0D = NPU
- * |        |          |0x0E = LPPDMA
- * |        |          |0x0F = CCAP
- * |        |          |0x10 = SPIM0
- * |        |          |0x11 = SPIM1
- * |        |          |Others are undefined.
- * @var SCU_T::APB4PVSRC
- * Offset: 0x130  APB4 Security Policy Violation Source
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |MASTER    |Master Violating Security Policy
- * |        |          |Indicate which master invokes the security violation.
- * |        |          |0x00 = Core processor
- * |        |          |0x01 = PDMA0
- * |        |          |0x02 = PDMA1
- * |        |          |0x03 = USBH0
- * |        |          |0x05 = HSUSBH
- * |        |          |0x06 = HSUSBD
- * |        |          |0x07 = SDH0
- * |        |          |0x08 = SDH1
- * |        |          |0x09 = EMAC
- * |        |          |0x0A = CRYPTO
- * |        |          |0x0B = CRC
- * |        |          |0x0C = GDMA
- * |        |          |0x0D = NPU
- * |        |          |0x0E = LPPDMA
- * |        |          |0x0F = CCAP
- * |        |          |0x10 = SPIM0
- * |        |          |0x11 = SPIM1
- * |        |          |Others are undefined.
- * @var SCU_T::APB5PVSRC
- * Offset: 0x134  APB5 Security Policy Violation Source
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |MASTER    |Master Violating Security Policy
- * |        |          |Indicate which master invokes the security violation.
- * |        |          |0x00 = Core processor
- * |        |          |0x01 = PDMA0
- * |        |          |0x02 = PDMA1
- * |        |          |0x03 = USBH0
- * |        |          |0x05 = HSUSBH
- * |        |          |0x06 = HSUSBD
- * |        |          |0x07 = SDH0
- * |        |          |0x08 = SDH1
- * |        |          |0x09 = EMAC
- * |        |          |0x0A = CRYPTO
- * |        |          |0x0B = CRC
- * |        |          |0x0C = GDMA
- * |        |          |0x0D = NPU
- * |        |          |0x0E = LPPDMA
- * |        |          |0x0F = CCAP
- * |        |          |0x10 = SPIM0
- * |        |          |0x11 = SPIM1
- * |        |          |Others are undefined.
- * @var SCU_T::D0PPC0PVSRC
- * Offset: 0x140  D0PPC0 Security Policy Violation Source
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |MASTER    |Master Violating Security Policy
- * |        |          |Indicate which master invokes the security violation.
- * |        |          |0x00 = Core processor
- * |        |          |0x01 = PDMA0
- * |        |          |0x02 = PDMA1
- * |        |          |0x03 = USBH0
- * |        |          |0x05 = HSUSBH
- * |        |          |0x06 = HSUSBD
- * |        |          |0x07 = SDH0
- * |        |          |0x08 = SDH1
- * |        |          |0x09 = EMAC
- * |        |          |0x0A = CRYPTO
- * |        |          |0x0B = CRC
- * |        |          |0x0C = GDMA
- * |        |          |0x0D = NPU
- * |        |          |0x0E = LPPDMA
- * |        |          |0x0F = CCAP
- * |        |          |0x10 = SPIM0
- * |        |          |0x11 = SPIM1
- * |        |          |Others are undefined.
- * @var SCU_T::D1PPC0PVSRC
- * Offset: 0x144  D1PPC0 Security Policy Violation Source
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |MASTER    |Master Violating Security Policy
- * |        |          |Indicate which master invokes the security violation.
- * |        |          |0x00 = Core processor
- * |        |          |0x01 = PDMA0
- * |        |          |0x02 = PDMA1
- * |        |          |0x03 = USBH0
- * |        |          |0x05 = HSUSBH
- * |        |          |0x06 = HSUSBD
- * |        |          |0x07 = SDH0
- * |        |          |0x08 = SDH1
- * |        |          |0x09 = EMAC
- * |        |          |0x0A = CRYPTO
- * |        |          |0x0B = CRC
- * |        |          |0x0C = GDMA
- * |        |          |0x0D = NPU
- * |        |          |0x0E = LPPDMA
- * |        |          |0x0F = CCAP
- * |        |          |0x10 = SPIM0
- * |        |          |0x11 = SPIM1
- * |        |          |Others are undefined.
- * @var SCU_T::D1PPC1PVSRC
- * Offset: 0x148  D1PPC1 Security Policy Violation Source
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |MASTER    |Master Violating Security Policy
- * |        |          |Indicate which master invokes the security violation.
- * |        |          |0x00 = Core processor
- * |        |          |0x01 = PDMA0
- * |        |          |0x02 = PDMA1
- * |        |          |0x03 = USBH0
- * |        |          |0x05 = HSUSBH
- * |        |          |0x06 = HSUSBD
- * |        |          |0x07 = SDH0
- * |        |          |0x08 = SDH1
- * |        |          |0x09 = EMAC
- * |        |          |0x0A = CRYPTO
- * |        |          |0x0B = CRC
- * |        |          |0x0C = GDMA
- * |        |          |0x0D = NPU
- * |        |          |0x0E = LPPDMA
- * |        |          |0x0F = CCAP
- * |        |          |0x10 = SPIM0
- * |        |          |0x11 = SPIM1
- * |        |          |Others are undefined.
- * @var SCU_T::D2PPC0PVSRC
- * Offset: 0x14C  D2PPC0 Security Policy Violation Source
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |MASTER    |Master Violating Security Policy
- * |        |          |Indicate which master invokes the security violation.
- * |        |          |0x00 = Core processor
- * |        |          |0x01 = PDMA0
- * |        |          |0x02 = PDMA1
- * |        |          |0x03 = USBH0
- * |        |          |0x05 = HSUSBH
- * |        |          |0x06 = HSUSBD
- * |        |          |0x07 = SDH0
- * |        |          |0x08 = SDH1
- * |        |          |0x09 = EMAC
- * |        |          |0x0A = CRYPTO
- * |        |          |0x0B = CRC
- * |        |          |0x0C = GDMA
- * |        |          |0x0D = NPU
- * |        |          |0x0E = LPPDMA
- * |        |          |0x0F = CCAP
- * |        |          |0x10 = SPIM0
- * |        |          |0x11 = SPIM1
- * |        |          |Others are undefined.
- * @var SCU_T::EBIPVSRC
- * Offset: 0x160  EBI Security Policy Violation Source
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |MASTER    |Master Violating Security Policy
- * |        |          |Indicate which master invokes the security violation.
- * |        |          |0x00 = Core processor
- * |        |          |0x01 = PDMA0
- * |        |          |0x02 = PDMA1
- * |        |          |0x03 = USBH0
- * |        |          |0x05 = HSUSBH
- * |        |          |0x06 = HSUSBD
- * |        |          |0x07 = SDH0
- * |        |          |0x08 = SDH1
- * |        |          |0x09 = EMAC
- * |        |          |0x0A = CRYPTO
- * |        |          |0x0B = CRC
- * |        |          |0x0C = GDMA
- * |        |          |0x0D = NPU
- * |        |          |0x0E = LPPDMA
- * |        |          |0x0F = CCAP
- * |        |          |0x10 = SPIM0
- * |        |          |0x11 = SPIM1
- * |        |          |Others are undefined.
- * @var SCU_T::APB0PVA
- * Offset: 0x1A0  APB0 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::APB1PVA
- * Offset: 0x1A4  APB1 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::APB2PVA
- * Offset: 0x1A8  APB2 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::APB3PVA
- * Offset: 0x1AC  APB3 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::APB4PVA
- * Offset: 0x1B0  APB4 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::APB5PVA
- * Offset: 0x1B4  APB5 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::D0PPC0PVA
- * Offset: 0x1C0  D0PPC0 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::D1PPC0PVA
- * Offset: 0x1C4  D1PPC0 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::D1PPC1PVA
- * Offset: 0x1C8  D1PPC1 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::D2PPC0PVA
- * Offset: 0x1CC  D2PPC0 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::EBIPVA
- * Offset: 0x1E0  EBI Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::GDMAMVA
- * Offset: 0x220  GDMA Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::PDMA0MVA
- * Offset: 0x224  PDMA Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::PDMA1MVA
- * Offset: 0x228  PDMA1 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::USBH0MVA
- * Offset: 0x22C  USBH0 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::HSUSBHMVA
- * Offset: 0x234  HSUSBH Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::HSUSBDMVA
- * Offset: 0x238  HSUSBD Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::SDH0MVA
- * Offset: 0x23C  SDH Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::SDH1MVA
- * Offset: 0x240  SDH1 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::EMACMVA
- * Offset: 0x244  EMAC Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::CRYPTOMVA
- * Offset: 0x248  CRYPTO Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::CRCMVA
- * Offset: 0x24C  CRC Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::LPPDMAMVA
- * Offset: 0x250  LPPDMA Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::CCAPMVA
- * Offset: 0x254  CCAP Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::NPUIF1MVA
- * Offset: 0x258  NPU Interface 1 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::NPUIF0MVA
- * Offset: 0x25C  NPU Interface 0 Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::SPIM0MVA
- * Offset: 0x260  SPIM 0 Master Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::SPIM1MVA
- * Offset: 0x264  SPIM 1 Master Violation Address
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |VIOADDR   |Violation Address
- * |        |          |Indicate the target address of the access, which invokes the security violation.
- * @var SCU_T::D0PNP0
- * Offset: 0x2A0  Domain 0 Peripheral Privilege Attribution Set Register0 (0x4000_0000~0x4001_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[3]     |NPU       |Set NPU to Non-privileged State
- * |        |          |0 = NPU is a privileged module (default).
- * |        |          |1 = NPU is a non-privileged module.
- * |[8]     |SRAM0MPC  |Set SRAM0MPC to Non-privileged State
- * |        |          |0 = SRAM0MPC is a privileged module (default).
- * |        |          |1 = SRAM0MPC is a non-privileged module.
- * |[9]     |SRAM1MPC  |Set SRAM1MPC to Non-privileged State
- * |        |          |0 = SRAM1MPC is a privileged module (default).
- * |        |          |1 = SRAM1MPC is a non-privileged module.
- * |[10]    |SRAM2MPC  |Set SRAM2MPC to Non-privileged State
- * |        |          |0 = SRAM2MPC is a privileged module (default).
- * |        |          |1 = SRAM2MPC is a non-privileged module.
- * |[11]    |SRAM3MPC  |Set SRAM3MPC to Non-privileged State
- * |        |          |0 = SRAM3MPC is a privileged module (default).
- * |        |          |1 = SRAM3MPC is a non-privileged module.
- * |[13]    |SPIM0MPC  |Set SPIM0MPC to Non-privileged State
- * |        |          |0 = SPIM0MPC is a privileged module (default).
- * |        |          |1 = SPIM0MPC is a non-privileged module.
- * |[14]    |SPIM1MPC  |Set SPIM1MPC to Non-privileged State
- * |        |          |0 = SPIM1MPC is a privileged module (default).
- * |        |          |1 = SPIM1MPC is a non-privileged module.
- * @var SCU_T::D0PNP2
- * Offset: 0x2A8  Domain 0 Peripheral Privilege Attribution Set Register2 (0x4004_0000~0x4005_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |OTFC0     |Set OTFC0 to Non-privileged State
- * |        |          |0 = OTFC0 is a privileged module (default).
- * |        |          |1 = OTFC0 is a non-privileged module.
- * |[1]     |OTFC1     |Set OTFC1 to Non-privileged State
- * |        |          |0 = OTFC1 is a privileged module (default).
- * |        |          |1 = OTFC1 is a non-privileged module.
- * |[2]     |SPIM0     |Set SPIM0 to Non-privileged State
- * |        |          |0 = SPIM0 is a privileged module (default).
- * |        |          |1 = SPIM0 is a non-privileged module.
- * |[3]     |SPIM1     |Set SPIM1 to Non-privileged State
- * |        |          |0 = SPIM1 is a privileged module (default).
- * |        |          |1 = SPIM1 is a non-privileged module.
- * |[4]     |FMC       |Set FMC to Non-privileged State
- * |        |          |0 = FMC is a privileged module (default).
- * |        |          |1 = FMC is a non-privileged module.
- * @var SCU_T::D1PNP0
- * Offset: 0x2C0  Domain 1 Peripheral Privilege Attribution Set Register0 (0x4020_0000~0x4021_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |PDMA0     |Set PDMA0 to Non-privileged State
- * |        |          |0 = PDMA0 is a privileged module (default).
- * |        |          |1 = PDMA0 is a non-privileged module.
- * |[1]     |PDMA1     |Set PDMA1 to Non-privileged State
- * |        |          |0 = PDMA1 is a privileged module (default).
- * |        |          |1 = PDMA1 is a non-privileged module.
- * |[2]     |USBH0     |Set USBH0 to Non-privileged State
- * |        |          |0 = USBH0 is a privileged module (default).
- * |        |          |1 = USBH0 is a non-privileged module.
- * |[4]     |HSUSBH    |Set HSUSBH to Non-privileged State
- * |        |          |0 = HSUSBH is a privileged module (default).
- * |        |          |1 = HSUSBH is a non-privileged module.
- * |[5]     |HSUSBD    |Set HSUSBD to Non-privileged State
- * |        |          |0 = HSUSBD is a privileged module (default).
- * |        |          |1 = HSUSBD is a non-privileged module.
- * |[6]     |SDH0      |Set SDH0 to Non-privileged State
- * |        |          |0 = SDH0 is a privileged module (default).
- * |        |          |1 = SDH0 is a non-privileged module.
- * |[7]     |SDH1      |Set SDH1 to Non-privileged State
- * |        |          |0 = SDH1 is a privileged module (default).
- * |        |          |1 = SDH1 is a non-privileged module.
- * |[8]     |EMAC0     |Set EMAC0 to Non-privileged State
- * |        |          |0 = EMAC0 is a privileged module (default).
- * |        |          |1 = EMAC0 is a non-privileged module.
- * |[10]    |CRYPTO    |Set CRYPTO to Non-privileged State
- * |        |          |0 = CRYPTO is a privileged module (default).
- * |        |          |1 = CRYPTO is a non-privileged module.
- * |[11]    |CRC       |Set CRC to Non-privileged State
- * |        |          |0 = CRC is a privileged module (default).
- * |        |          |1 = CRC is a non-privileged module.
- * @var SCU_T::D1PNP1
- * Offset: 0x2C4  Domain0 Peripheral Privilege Attribution Set Register1 (0x4022_0000~0x4023_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |KS        |Set KS to Non-privileged State
- * |        |          |0 = KS is a privileged module (default).
- * |        |          |1 = KS is a non-privileged module.
- * |[1]     |KDF       |Set KDF to Non-privileged State
- * |        |          |0 = KDF is a privileged module (default).
- * |        |          |1 = KDF is a non-privileged module.
- * |[2]     |CANFD0    |Set CANFD0 to Non-privileged State
- * |        |          |0 = CANFD0 is a privileged module (default).
- * |        |          |1 = CANFD0 is a non-privileged module.
- * |[4]     |CANFD1    |Set CANFD1 to Non-privileged State
- * |        |          |0 = CANFD1 is a privileged module (default).
- * |        |          |1 = CANFD1 is a non-privileged module.
- * |[6]     |ETMC      |Set ETMC to Non-privileged State
- * |        |          |0 = ETMC is a privileged module (default).
- * |        |          |1 = ETMC is a non-privileged module.
- * |[7]     |SWDH      |Set SWDH to Non-privileged State
- * |        |          |0 = SWDH is a privileged module (default).
- * |        |          |1 = SWDH is a non-privileged module.
- * |[8]     |SWODEC    |Set SWODEC to Non-privileged State
- * |        |          |0 = SWODEC is a privileged module (default).
- * |        |          |1 = SWODEC is a non-privileged module.
- * |[16]    |EBI       |Set EBI to Non-privileged State
- * |        |          |0 = EBI is a privileged module (default).
- * |        |          |1 = EBI is a non-privileged module.
- * @var SCU_T::D1PNP2
- * Offset: 0x2C8  Domain 1 Peripheral Privilege Attribution Set Register2 (0x4024_0000~0x4025_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |WWDT0     |Set WWDT0 to Non-privileged State
- * |        |          |0 = WWDT0 is a privileged module (default).
- * |        |          |1 = WWDT0 is a non-privileged module.
- * |[1]     |EADC0     |Set EADC0 to Non-privileged State
- * |        |          |0 = EADC0 is a privileged module (default).
- * |        |          |1 = EADC0 is a non-privileged module.
- * |[2]     |EPWM0     |Set EPWM0 to Non-privileged State
- * |        |          |0 = EPWM0 is a privileged module (default).
- * |        |          |1 = EPWM0 is a non-privileged module.
- * |[3]     |BPWM0     |Set BPWM0 to Non-privileged State
- * |        |          |0 = BPWM0 is a privileged module (default).
- * |        |          |1 = BPWM0 is a non-privileged module.
- * |[4]     |EQEI0     |Set EQEI0 to Non-privileged State
- * |        |          |0 = EQEI0 is a privileged module (default).
- * |        |          |1 = EQEI0 is a non-privileged module.
- * |[5]     |EQEI2     |Set EQEI2 to Non-privileged State
- * |        |          |0 = EQEI2 is a privileged module (default).
- * |        |          |1 = EQEI2 is a non-privileged module.
- * |[6]     |ECAP0     |Set ECAP0 to Non-privileged State
- * |        |          |0 = ECAP0 is a privileged module (default).
- * |        |          |1 = ECAP0 is a non-privileged module.
- * |[7]     |ECAP2     |Set ECAP2 to Non-privileged State
- * |        |          |0 = ECAP2 is a privileged module (default).
- * |        |          |1 = ECAP2 is a non-privileged module.
- * |[8]     |I2C0      |Set I2C0 to Non-privileged State
- * |        |          |0 = I2C0 is a privileged module (default).
- * |        |          |1 = I2C0 is a non-privileged module.
- * |[9]     |I2C2      |Set I2C2 to Non-privileged State
- * |        |          |0 = I2C2 is a privileged module (default).
- * |        |          |1 = I2C2 is a non-privileged module.
- * |[10]    |QSPI0     |Set QSPI0 to Non-privileged State
- * |        |          |0 = QSPI0 is a privileged module (default).
- * |        |          |1 = QSPI0 is a non-privileged module.
- * |[11]    |SPI0      |Set SPI0 to Non-privileged State
- * |        |          |0 = SPI0 is a privileged module (default).
- * |        |          |1 = SPI0 is a non-privileged module.
- * |[12]    |SPI2      |Set SPI2 to Non-privileged State
- * |        |          |0 = SPI2 is a privileged module (default).
- * |        |          |1 = SPI2 is a non-privileged module.
- * |[13]    |UART0     |Set UART0 to Non-privileged State
- * |        |          |0 = UART0 is a privileged module (default).
- * |        |          |1 = UART0 is a non-privileged module.
- * |[14]    |UART2     |Set UART2 to Non-privileged State
- * |        |          |0 = UART2 is a privileged module (default).
- * |        |          |1 = UART2 is a non-privileged module.
- * |[15]    |UART4     |Set UART4 to Non-privileged State
- * |        |          |0 = UART4 is a privileged module (default).
- * |        |          |1 = UART4 is a non-privileged module.
- * |[16]    |UART6     |Set UART6 to Non-privileged State
- * |        |          |0 = UART6 is a privileged module (default).
- * |        |          |1 = UART6 is a non-privileged module.
- * |[17]    |UART8     |Set UART8 to Non-privileged State
- * |        |          |0 = UART8 is a privileged module (default).
- * |        |          |1 = UART8 is a non-privileged module.
- * |[18]    |USCI0     |Set USCI0 to Non-privileged State
- * |        |          |0 = USCI0 is a privileged module (default).
- * |        |          |1 = USCI0 is a non-privileged module.
- * |[19]    |SC0       |Set SC0 to Non-privileged State
- * |        |          |0 = SC0 is a privileged module (default).
- * |        |          |1 = SC0 is a non-privileged module.
- * |[20]    |SC2       |Set SC2 to Non-privileged State
- * |        |          |0 = SC2 is a privileged module (default).
- * |        |          |1 = SC2 is a non-privileged module.
- * |[21]    |PSIO      |Set PSIO to Non-privileged State
- * |        |          |0 = PSIO is a privileged module (default).
- * |        |          |1 = PSIO is a non-privileged module.
- * |[22]    |TMR01     |Set TMR01 to Non-privileged State
- * |        |          |0 = TMR01 is a privileged module (default).
- * |        |          |1 = TMR01 is a non-privileged module.
- * |[23]    |DAC01     |Set DAC01 to Non-privileged State
- * |        |          |0 = DAC01 is a privileged module (default).
- * |        |          |1 = DAC01 is a non-privileged module.
- * |[24]    |TAMPER    |Set TAMPER to Non-privileged State
- * |        |          |0 = TAMPER is a privileged module (default).
- * |        |          |1 = TAMPER is a non-privileged module.
- * |[25]    |HSOTG     |Set HSOTG to Non-privileged State
- * |        |          |0 = HSOTG is a privileged module (default).
- * |        |          |1 = HSOTG is a non-privileged module.
- * |[26]    |I2S0      |Set I2S0 to Non-privileged State
- * |        |          |0 = I2S0 is a privileged module (default).
- * |        |          |1 = I2S0 is a non-privileged module.
- * |[27]    |ACMP01    |Set ACMP01 to Non-privileged State
- * |        |          |0 = ACMP01 is a privileged module (default).
- * |        |          |1 = ACMP01 is a non-privileged module.
- * |[28]    |USBD      |Set USBD to Non-privileged State
- * |        |          |0 = USBD is a privileged module (default).
- * |        |          |1 = USBD is a non-privileged module.
- * @var SCU_T::D1PNP4
- * Offset: 0x2D0  Domain 1 Peripheral Privilege Attribution Set Register4 (0x4028_0000~0x4029_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |WWDT1     |Set WWDT1 to Non-privileged State
- * |        |          |0 = WWDT1 is a privileged module (default).
- * |        |          |1 = WWDT1 is a non-privileged module.
- * |[1]     |EADC1     |Set EADC1 to Non-privileged State
- * |        |          |0 = EADC1 is a privileged module (default).
- * |        |          |1 = EADC1 is a non-privileged module.
- * |[2]     |EPWM1     |Set EPWM1 to Non-privileged State
- * |        |          |0 = EPWM1 is a privileged module (default).
- * |        |          |1 = EPWM1 is a non-privileged module.
- * |[3]     |BPWM1     |Set BPWM1 to Non-privileged State
- * |        |          |0 = BPWM1 is a privileged module (default).
- * |        |          |1 = BPWM1 is a non-privileged module.
- * |[4]     |EQEI1     |Set EQEI1 to Non-privileged State
- * |        |          |0 = EQEI1 is a privileged module (default).
- * |        |          |1 = EQEI1 is a non-privileged module.
- * |[5]     |EQEI3     |Set EQEI3 to Non-privileged State
- * |        |          |0 = EQEI3 is a privileged module (default).
- * |        |          |1 = EQEI3 is a non-privileged module.
- * |[6]     |ECAP1     |Set ECAP1 to Non-privileged State
- * |        |          |0 = ECAP1 is a privileged module (default).
- * |        |          |1 = ECAP1 is a non-privileged module.
- * |[7]     |ECAP3     |Set ECAP3 to Non-privileged State
- * |        |          |0 = ECAP3 is a privileged module (default).
- * |        |          |1 = ECAP3 is a non-privileged module.
- * |[8]     |I2C1      |Set I2C1 to Non-privileged State
- * |        |          |0 = I2C1 is a privileged module (default).
- * |        |          |1 = I2C1 is a non-privileged module.
- * |[9]     |I2C3      |Set I2C3 to Non-privileged State
- * |        |          |0 = I2C3 is a privileged module (default).
- * |        |          |1 = I2C3 is a non-privileged module.
- * |[10]    |QSPI1     |Set QSPI1 to Non-privileged State
- * |        |          |0 = QSPI1 is a privileged module (default).
- * |        |          |1 = QSPI1 is a non-privileged module.
- * |[11]    |SPI1      |Set SPI1 to Non-privileged State
- * |        |          |0 = SPI1 is a privileged module (default).
- * |        |          |1 = SPI1 is a non-privileged module.
- * |[12]    |SPI3      |Set SPI3 to Non-privileged State
- * |        |          |0 = SPI3 is a privileged module (default).
- * |        |          |1 = SPI3 is a non-privileged module.
- * |[13]    |UART1     |Set UART1 to Non-privileged State
- * |        |          |0 = UART1 is a privileged module (default).
- * |        |          |1 = UART1 is a non-privileged module.
- * |[14]    |UART3     |Set UART3 to Non-privileged State
- * |        |          |0 = UART3 is a privileged module (default).
- * |        |          |1 = UART3 is a non-privileged module.
- * |[15]    |UART5     |Set UART5 to Non-privileged State
- * |        |          |0 = UART5 is a privileged module (default).
- * |        |          |1 = UART5 is a non-privileged module.
- * |[16]    |UART7     |Set UART7 to Non-privileged State
- * |        |          |0 = UART7 is a privileged module (default).
- * |        |          |1 = UART7 is a non-privileged module.
- * |[17]    |UART9     |Set UART9 to Non-privileged State
- * |        |          |0 = UART9 is a privileged module (default).
- * |        |          |1 = UART9 is a non-privileged module.
- * |[18]    |SC1       |Set SC1 to Non-privileged State
- * |        |          |0 = SC1 is a privileged module (default).
- * |        |          |1 = SC1 is a non-privileged module.
- * |[19]    |OTG       |Set OTG to Non-privileged State
- * |        |          |0 = OTG is a privileged module (default).
- * |        |          |1 = OTG is a non-privileged module.
- * |[20]    |KPI       |Set KPI to Non-privileged State
- * |        |          |0 = KPI is a privileged module (default).
- * |        |          |1 = KPI is a non-privileged module.
- * |[21]    |TMR23     |Set TMR23 to Non-privileged State
- * |        |          |0 = TMR23 is a privileged module (default).
- * |        |          |1 = TMR23 is a non-privileged module.
- * |[22]    |TRNG      |Set TRNG to Non-privileged State
- * |        |          |0 = TRNG is a privileged module (default).
- * |        |          |1 = TRNG is a non-privileged module.
- * |[23]    |RTC       |Set RTC to Non-privileged State
- * |        |          |0 = RTC is a privileged module (default).
- * |        |          |1 = RTC is a non-privileged module.
- * |[24]    |I2S1      |Set I2S1 to Non-privileged State
- * |        |          |0 = I2S1 is a privileged module (default).
- * |        |          |1 = I2S1 is a non-privileged module.
- * |[25]    |ACMP23    |Set ACMP23 to Non-privileged State
- * |        |          |0 = ACMP23 is a privileged module (default).
- * |        |          |1 = ACMP23 is a non-privileged module.
- * |[26]    |I3C0      |Set I3C0 to Non-privileged State
- * |        |          |0 = I3C0 is a privileged module (default).
- * |        |          |1 = I3C0 is a non-privileged module.
- * |[27]    |UTCPD     |Set UTCPD to Non-privileged State
- * |        |          |0 = UTCPD is a privileged module (default).
- * |        |          |1 = UTCPD is a non-privileged module.
- * @var SCU_T::D2PNP0
- * Offset: 0x2E0  Domain 2 Peripheral Privilege Attribution Set Register0 (0x4040_0000~0x4041_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |LPPDMA    |Set LPPDMA to Non-privileged State
- * |        |          |0 = LPPDMA is a privileged module (default).
- * |        |          |1 = LPPDMA is a non-privileged module.
- * |[1]     |CCAP      |Set CCAP to Non-privileged State
- * |        |          |0 = CCAP is a privileged module (default).
- * |        |          |1 = CCAP is a non-privileged module.
- * |[3]     |LPGPIO    |Set LPGPIO to Non-privileged State
- * |        |          |0 = LPGPIO is a privileged module (default).
- * |        |          |1 = LPGPIO is a non-privileged module.
- * @var SCU_T::D2PNP2
- * Offset: 0x2E8  Domain 2 Peripheral Privilege Attribution Set Register2 (0x4044_0000~0x4045_FFFF)
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |LPTMR01   |Set LPTMR01 to Non-privileged State
- * |        |          |0 = LPTMR01 is a privileged module (default).
- * |        |          |1 = LPTMR01 is a non-privileged module.
- * |[1]     |TTMR01    |Set TTMR01 to Non-privileged State
- * |        |          |0 = TTMR01 is a privileged module (default).
- * |        |          |1 = TTMR01 is a non-privileged module.
- * |[2]     |LPADC0    |Set LPADC0 to Non-privileged State
- * |        |          |0 = LPADC0 is a privileged module (default).
- * |        |          |1 = LPADC0 is a non-privileged module.
- * |[3]     |LPI2C0    |Set LPI2C0 to Non-privileged State
- * |        |          |0 = LPI2C0 is a privileged module (default).
- * |        |          |1 = LPI2C0 is a non-privileged module.
- * |[4]     |LPSPI0    |Set LPSPI0 to Non-privileged State
- * |        |          |0 = LPSPI0 is a privileged module (default).
- * |        |          |1 = LPSPI0 is a non-privileged module.
- * |[5]     |DMIC0     |Set DMIC0 to Non-privileged State
- * |        |          |0 = DMIC0 is a privileged module (default).
- * |        |          |1 = DMIC0 is a non-privileged module.
- * |[6]     |LPUART0   |Set LPUART0 to Non-privileged State
- * |        |          |0 = LPUART0 is a privileged module (default).
- * |        |          |1 = LPUART0 is a non-privileged module.
- * |[7]     |WDT0      |Set WDT0 to Non-privileged State
- * |        |          |0 = WDT0 is a privileged module (default).
- * |        |          |1 = WDT0 is a non-privileged module.
- * |[8]     |WDT1      |Set WDT1 to Non-privileged State
- * |        |          |0 = WDT1 is a privileged module (default).
- * |        |          |1 = WDT1 is a non-privileged module.
- * |[9]     |AWF       |Set AWF to Non-privileged State
- * |        |          |0 = AWF is a privileged module (default).
- * |        |          |1 = AWF is a non-privileged module.
- * |[16]    |LPSRAMMPC |Set LPSRAMMPC to Non-privileged State
- * |        |          |0 = LPSRAMMPC is a privileged module (default).
- * |        |          |1 = LPSRAMMPC is a non-privileged module.
- * @var SCU_T::IONP
- * Offset: 0x3A0  I/O Non-privileged Attribution Set Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |PA        |Set GPIO Port a to Non-privileged State
- * |        |          |0 = GPIO port A is privileged (default).
- * |        |          |1 = GPIO port A is non-privileged.
- * |[1]     |PB        |Set GPIO Port B to Non-privileged State
- * |        |          |0 = GPIO port B is privileged (default).
- * |        |          |1 = GPIO port B is non-privileged.
- * |[2]     |PC        |Set GPIO Port C to Non-privileged State
- * |        |          |0 = GPIO port C is privileged (default).
- * |        |          |1 = GPIO port C is non-privileged.
- * |[3]     |PD        |Set GPIO Port D to Non-privileged State
- * |        |          |0 = GPIO port D is privileged (default).
- * |        |          |1 = GPIO port D is non-privileged.
- * |[4]     |PE        |Set GPIO Port E to Non-privileged State
- * |        |          |0 = GPIO port E is privileged (default).
- * |        |          |1 = GPIO port E is non-privileged.
- * |[5]     |PF        |Set GPIO Port F to Non-privileged State
- * |        |          |0 = GPIO port F is privileged (default).
- * |        |          |1 = GPIO port F is non-privileged.
- * |[6]     |PG        |Set GPIO Port G to Non-privileged State
- * |        |          |0 = GPIO port G is privileged (default).
- * |        |          |1 = GPIO port G is non-privileged.
- * |[7]     |PH        |Set GPIO Port H to Non-privileged State
- * |        |          |0 = GPIO port H is privileged (default).
- * |        |          |1 = GPIO port H is non-privileged.
- * |[8]     |PI        |Set GPIO Port I to Non-privileged State
- * |        |          |0 = GPIO port I is privileged (default).
- * |        |          |1 = GPIO port I is non-privileged.
- * |[9]     |PJ        |Set GPIO Port J to Non-privileged State
- * |        |          |0 = GPIO port J is privileged (default).
- * |        |          |1 = GPIO port J is non-privileged.
- * @var SCU_T::SINFAEN
- * Offset: 0x3C0  Shared Information Access Enable Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |SCUSIAEN  |SCU Shared Information Access Enable Bit
- * |        |          |0 = Non-secure CPU access SCU Shared information Disabled.
- * |        |          |1 = Non-secure CPU access SCU Shared information Enabled.
- * |[1]     |SYSSIAEN  |SYS Shared Information Access Enable Bit
- * |        |          |0 = Non-secure CPU access SYS Shared information Disabled.
- * |        |          |1 = Non-secure CPU access SYS Shared information Enabled.
- * |[2]     |FMCSIAEN  |FMC Shared Information Access Enable Bit
- * |        |          |0 = Non-secure CPU access FMC Shared information Disabled.
- * |        |          |1 = Non-secure CPU access FMC Shared information Enabled.
- * |[3]     |CLKSIAEN  |CLKCTL Shared Information Access Enable Bit
- * |        |          |0 = Non-secure CPU access CLKCTL Shared information Disabled.
- * |        |          |1 = Non-secure CPU access CLKCTL Shared information Enabled.
- * @var SCU_T::SCWP
- * Offset: 0x3C4  Security Configuration Write Protection Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[1]     |LOCK      |Enable Write Protection Lock Bit (Write Once)
- * |        |          |0 = Write protection lock Disabled.
- * |        |          |1 = Write protection Enabled and locked.
- * |        |          |Note: This bit cannot be cleared to 0 without a System-level reset after set to one.
- * |[31:16] |WVCODE    |Write Verify Code
- * |        |          |Read operation:
- * |        |          |Reserved, all zeros.
- * |        |          |Write operation:
- * |        |          |0x475A = The write verify code, 0x475A, is needed to do a valid write to SCU_SCWP.
- * |        |          |Others = Invalid write verify code.
- * @var SCU_T::NSMCTL
- * Offset: 0x400  Non-secure State Monitor Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |PRESCALE  |Pre-scale Value of Non-secure State Monitor Counter
- * |        |          |0 = Counter Disabled.
- * |        |          |Others = Counter Enabled and the counter clock source = HCLK/PRESCALE.
- * |[8]     |NSMIEN    |Non-secure State Monitor Interrupt Enable Bit
- * |        |          |0 = Non-secure state monitor interrupt Disabled.
- * |        |          |1 = Non-secure state monitor interrupt Enabled.
- * |[9]     |AUTORLD   |Auto Reload Non-secure State Monitor Counter When CURRNS Changing to 1
- * |        |          |0 = Disable clearing non-secure state monitor counter automatically (default).
- * |        |          |1 = Enable clearing non-secure state monitor counter automatically when the core processor changes from secure state to non-secure state
- * |[10]    |TMRMOD    |Non-secure Monitor Mode Enable Bit
- * |        |          |0 = Monitor mode. The counter will count down when the core processor is in non-secure state. (default)
- * |        |          |1 = Free-counting mode
- * |        |          |The counter will keep counting no matter the core processor is in secure or non-secure state.
- * |[12]    |IDLEON    |Monitor Counter Keep Counting When the Chip Is in Idle Mode Enable Bit
- * |        |          |0 = The counter will be halted when the chip is in idle mode.
- * |        |          |1 = The counter will keep counting when the chip is in idle mode. (default)
- * |        |          |Note: In monitor mode, the counter is always halted when the core processor is in secure state.
- * |[13]    |DBGON     |Monitor Counter Keep Counting When the Chip Is in Debug Mode Enable Bit
- * |        |          |0 = The counter will be halted when the core processor is halted by ICE. (default)
- * |        |          |1 = The counter will keep counting when the core processor is halted by ICE.
- * @var SCU_T::NSMLOAD
- * Offset: 0x404  Non-secure State Monitor Reload Value Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[23:0]  |RELOAD    |Reload Value for Non-secure State Monitor Counter
- * |        |          |The RELOAD value will be reloaded to the counter whenever the counter counts down to 0.
- * @var SCU_T::NSMVAL
- * Offset: 0x408  Non-secure State Monitor Counter Value Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[23:0]  |VALUE     |Counter Value of Non-secure State Monitor Counter
- * |        |          |Current value of non-secure state monitor counter
- * |        |          |This is down counter and counts down only when CURRNS = 1
- * |        |          |When counting down to 0, VALUE will automatically be reloaded from NSMLOAD register.
- * |        |          |A write of any value clears the VALUE to 0 and also clears NSMIF.
- * @var SCU_T::NSMSTS
- * Offset: 0x40C  Non-secure State Monitor Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |CURRNS    |Current Core Processor Secure/Non-secure State (Read Only)
- * |        |          |0 = Core processor is in secure state.
- * |        |          |1 = Core processor is in non-secure state.
- * |        |          |Note: This bit can be used to monitor the current secure/non-secure state of the core processor, even if the non-secure state monitor counter is disabled.
- * |[1]     |NSMIF     |Non-secure State Monitor Interrupt Flag
- * |        |          |0 = Counter does not count down to 0 since the last NSMIF has been cleared.
- * |        |          |1 = Counter counts down to 0.
- * |        |          |Note: This bit is cleared by writing 1.
- * @var SCU_T::SRAM0MPCLUT0
- * Offset: 0x410  Security Attribute of memory blocks controlled by SRAM0MPC LUT0
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SRAM1MPCLUT0
- * Offset: 0x414  Security Attribute of memory blocks controlled by SRAM1MPC LUT0
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SRAM2MPCLUT0
- * Offset: 0x418  Security Attribute of memory blocks controlled by SRAM2MPC LUT0
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SRAM3MPCLUT0
- * Offset: 0x420  Security Attribute of memory blocks controlled by SRAM3MPC LUT0
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::LPSRAMMPCLUT0
- * Offset: 0x424  Security Attribute of memory blocks controlled by LPSRAMMPC LUT0
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM0MPCLUT0
- * Offset: 0x430  Security Attribute of memory blocks controlled by SPIM0MPC LUT0
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM0MPCLUT1
- * Offset: 0x434  Security Attribute of memory blocks controlled by SPIM0MPC LUT1
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM0MPCLUT2
- * Offset: 0x438  Security Attribute of memory blocks controlled by SPIM0MPC LUT2
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM0MPCLUT3
- * Offset: 0x43C  Security Attribute of memory blocks controlled by SPIM0MPC LUT3
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM0MPCLUT4
- * Offset: 0x440  Security Attribute of memory blocks controlled by SPIM0MPC LUT4
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM0MPCLUT5
- * Offset: 0x444  Security Attribute of memory blocks controlled by SPIM0MPC LUT5
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM0MPCLUT6
- * Offset: 0x448  Security Attribute of memory blocks controlled by SPIM0MPC LUT6
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM0MPCLUT7
- * Offset: 0x44C  Security Attribute of memory blocks controlled by SPIM0MPC LUT7
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM1MPCLUT0
- * Offset: 0x450  Security Attribute of memory blocks controlled by SPIM1MPC LUT0
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM1MPCLUT1
- * Offset: 0x454  Security Attribute of memory blocks controlled by SPIM1MPC LUT1
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM1MPCLUT2
- * Offset: 0x458  Security Attribute of memory blocks controlled by SPIM1MPC LUT2
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM1MPCLUT3
- * Offset: 0x45C  Security Attribute of memory blocks controlled by SPIM1MPC LUT3
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM1MPCLUT4
- * Offset: 0x460  Security Attribute of memory blocks controlled by SPIM1MPC LUT4
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM1MPCLUT5
- * Offset: 0x464  Security Attribute of memory blocks controlled by SPIM1MPC LUT5
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM1MPCLUT6
- * Offset: 0x468  Security Attribute of memory blocks controlled by SPIM1MPC LUT6
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- * @var SCU_T::SPIM1MPCLUT7
- * Offset: 0x46C  Security Attribute of memory blocks controlled by SPIM1MPC LUT7
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
- * |        |          |Each bit controls the Security state of a single block. When:
- * |        |          |l Bit[n] = 0, the block is in the Secure state.
- * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
- */
-    union {
+    /**
+     * @var SCU_T::D0PNS0
+     * Offset: 0x00  Domain 0 Peripheral Non-secure Attribution Set Register0 (0x4000_0000~0x4001_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[3]     |NPU       |Set NPU to Non-secure State
+     * |        |          |0 = NPU is a secure module (default).
+     * |        |          |1 = NPU is a non-secure module.
+     * @var SCU_T::D0PNS2
+     * Offset: 0x08  Domain 0 Peripheral Non-secure Attribution Set Register2 (0x4004_0000~0x4005_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[2]     |SPIM0     |Set SPIM0 to Non-secure State
+     * |        |          |0 = SPIM0 is a secure module (default).
+     * |        |          |1 = SPIM0 is a non-secure module.
+     * |[3]     |SPIM1     |Set SPIM1 to Non-secure State
+     * |        |          |0 = SPIM1 is a secure module (default).
+     * |        |          |1 = SPIM1 is a non-secure module.
+     * @var SCU_T::D1PNS0
+     * Offset: 0x20  Domain 1 Peripheral Non-secure Attribution Set Register0 (0x4020_0000~0x4021_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |PDMA0     |Set PDMA0 to Non-secure State
+     * |        |          |0 = PDMA0 is a secure module (default).
+     * |        |          |1 = PDMA0 is a non-secure module.
+     * |[1]     |PDMA1     |Set PDMA1 to Non-secure State
+     * |        |          |0 = PDMA1 is a secure module (default).
+     * |        |          |1 = PDMA1 is a non-secure module.
+     * |[2]     |USBH0     |Set USBH0 to Non-secure State
+     * |        |          |0 = USBH0 is a secure module (default).
+     * |        |          |1 = USBH0 is a non-secure module.
+     * |[4]     |HSUSBH    |Set HSUSBH to Non-secure State
+     * |        |          |0 = HSUSBH is a secure module (default).
+     * |        |          |1 = HSUSBH is a non-secure module.
+     * |[5]     |HSUSBD    |Set HSUSBD to Non-secure State
+     * |        |          |0 = HSUSBD is a secure module (default).
+     * |        |          |1 = HSUSBD is a non-secure module.
+     * |[6]     |SDH0      |Set SDH0 to Non-secure State
+     * |        |          |0 = SDH0 is a secure module (default).
+     * |        |          |1 = SDH0 is a non-secure module.
+     * |[7]     |SDH1      |Set SDH1 to Non-secure State
+     * |        |          |0 = SDH1 is a secure module (default).
+     * |        |          |1 = SDH1 is a non-secure module.
+     * |[8]     |EMAC0     |Set EMAC0 to Non-secure State
+     * |        |          |0 = EMAC0 is a secure module (default).
+     * |        |          |1 = EMAC0 is a non-secure module.
+     * |[10]    |CRYPTO    |Set CRYPTO to Non-secure State
+     * |        |          |0 = CRYPTO is a secure module (default).
+     * |        |          |1 = CRYPTO is a non-secure module.
+     * |[11]    |CRC       |Set CRC to Non-secure State
+     * |        |          |0 = CRC is a secure module (default).
+     * |        |          |1 = CRC is a non-secure module.
+     * @var SCU_T::D1PNS1
+     * Offset: 0x24  Domain0 Peripheral Non-secure Attribution Set Register1 (0x4022_0000~0x4023_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[1]     |KDF       |Set KDF to Non-secure State
+     * |        |          |0 = KDF is a secure module (default).
+     * |        |          |1 = KDF is a non-secure module.
+     * |[2]     |CANFD0    |Set CANFD0 to Non-secure State
+     * |        |          |0 = CANFD0 is a secure module (default).
+     * |        |          |1 = CANFD0 is a non-secure module.
+     * |[4]     |CANFD1    |Set CANFD1 to Non-secure State
+     * |        |          |0 = CANFD1 is a secure module (default).
+     * |        |          |1 = CANFD1 is a non-secure module.
+     * |[6]     |ETMC      |Set ETMC to Non-secure State
+     * |        |          |0 = ETMC is a secure module (default).
+     * |        |          |1 = ETMC is a non-secure module.
+     * |[7]     |SWDH      |Set SWDH to Non-secure State
+     * |        |          |0 = SWDH is a secure module (default).
+     * |        |          |1 = SWDH is a non-secure module.
+     * |[8]     |SWODEC    |Set SWODEC to Non-secure State
+     * |        |          |0 = SWODEC is a secure module (default).
+     * |        |          |1 = SWODEC is a non-secure module.
+     * |[16]    |EBI       |Set EBI to Non-secure State
+     * |        |          |0 = EBI is a secure module (default).
+     * |        |          |1 = EBI is a non-secure module.
+     * @var SCU_T::D1PNS2
+     * Offset: 0x28  Domain 1 Peripheral Non-secure Attribution Set Register2 (0x4024_0000~0x4025_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |WWDT0     |Set WWDT0 to Non-secure State
+     * |        |          |0 = WWDT0 is a secure module (default).
+     * |        |          |1 = WWDT0 is a non-secure module.
+     * |[1]     |EADC0     |Set EADC0 to Non-secure State
+     * |        |          |0 = EADC0 is a secure module (default).
+     * |        |          |1 = EADC0 is a non-secure module.
+     * |[2]     |EPWM0     |Set EPWM0 to Non-secure State
+     * |        |          |0 = EPWM0 is a secure module (default).
+     * |        |          |1 = EPWM0 is a non-secure module.
+     * |[3]     |BPWM0     |Set BPWM0 to Non-secure State
+     * |        |          |0 = BPWM0 is a secure module (default).
+     * |        |          |1 = BPWM0 is a non-secure module.
+     * |[4]     |EQEI0     |Set EQEI0 to Non-secure State
+     * |        |          |0 = EQEI0 is a secure module (default).
+     * |        |          |1 = EQEI0 is a non-secure module.
+     * |[5]     |EQEI2     |Set EQEI2 to Non-secure State
+     * |        |          |0 = EQEI2 is a secure module (default).
+     * |        |          |1 = EQEI2 is a non-secure module.
+     * |[6]     |ECAP0     |Set ECAP0 to Non-secure State
+     * |        |          |0 = ECAP0 is a secure module (default).
+     * |        |          |1 = ECAP0 is a non-secure module.
+     * |[7]     |ECAP2     |Set ECAP2 to Non-secure State
+     * |        |          |0 = ECAP2 is a secure module (default).
+     * |        |          |1 = ECAP2 is a non-secure module.
+     * |[8]     |I2C0      |Set I2C0 to Non-secure State
+     * |        |          |0 = I2C0 is a secure module (default).
+     * |        |          |1 = I2C0 is a non-secure module.
+     * |[9]     |I2C2      |Set I2C2 to Non-secure State
+     * |        |          |0 = I2C2 is a secure module (default).
+     * |        |          |1 = I2C2 is a non-secure module.
+     * |[10]    |QSPI0     |Set QSPI0 to Non-secure State
+     * |        |          |0 = QSPI0 is a secure module (default).
+     * |        |          |1 = QSPI0 is a non-secure module.
+     * |[11]    |SPI0      |Set SPI0 to Non-secure State
+     * |        |          |0 = SPI0 is a secure module (default).
+     * |        |          |1 = SPI0 is a non-secure module.
+     * |[12]    |SPI2      |Set SPI2 to Non-secure State
+     * |        |          |0 = SPI2 is a secure module (default).
+     * |        |          |1 = SPI2 is a non-secure module.
+     * |[13]    |UART0     |Set UART0 to Non-secure State
+     * |        |          |0 = UART0 is a secure module (default).
+     * |        |          |1 = UART0 is a non-secure module.
+     * |[14]    |UART2     |Set UART2 to Non-secure State
+     * |        |          |0 = UART2 is a secure module (default).
+     * |        |          |1 = UART2 is a non-secure module.
+     * |[15]    |UART4     |Set UART4 to Non-secure State
+     * |        |          |0 = UART4 is a secure module (default).
+     * |        |          |1 = UART4 is a non-secure module.
+     * |[16]    |UART6     |Set UART6 to Non-secure State
+     * |        |          |0 = UART6 is a secure module (default).
+     * |        |          |1 = UART6 is a non-secure module.
+     * |[17]    |UART8     |Set UART8 to Non-secure State
+     * |        |          |0 = UART8 is a secure module (default).
+     * |        |          |1 = UART8 is a non-secure module.
+     * |[18]    |USCI0     |Set USCI0 to Non-secure State
+     * |        |          |0 = USCI0 is a secure module (default).
+     * |        |          |1 = USCI0 is a non-secure module.
+     * |[19]    |SC0       |Set SC0 to Non-secure State
+     * |        |          |0 = SC0 is a secure module (default).
+     * |        |          |1 = SC0 is a non-secure module.
+     * |[20]    |SC2       |Set SC2 to Non-secure State
+     * |        |          |0 = SC2 is a secure module (default).
+     * |        |          |1 = SC2 is a non-secure module.
+     * |[21]    |PSIO      |Set PSIO to Non-secure State
+     * |        |          |0 = PSIO is a secure module (default).
+     * |        |          |1 = PSIO is a non-secure module.
+     * |[22]    |TMR01     |Set TMR01 to Non-secure State
+     * |        |          |0 = TMR01 is a secure module (default).
+     * |        |          |1 = TMR01 is a non-secure module.
+     * |[23]    |DAC01     |Set DAC01 to Non-secure State
+     * |        |          |0 = DAC01 is a secure module (default).
+     * |        |          |1 = DAC01 is a non-secure module.
+     * |[25]    |HSOTG     |Set HSOTG to Non-secure State
+     * |        |          |0 = HSOTG is a secure module (default).
+     * |        |          |1 = HSOTG is a non-secure module.
+     * |[26]    |I2S0      |Set I2S0 to Non-secure State
+     * |        |          |0 = I2S0 is a secure module (default).
+     * |        |          |1 = I2S0 is a non-secure module.
+     * |[27]    |ACMP01    |Set ACMP01 to Non-secure State
+     * |        |          |0 = ACMP01 is a secure module (default).
+     * |        |          |1 = ACMP01 is a non-secure module.
+     * |[28]    |USBD      |Set USBD to Non-secure State
+     * |        |          |0 = USBD is a secure module (default).
+     * |        |          |1 = USBD is a non-secure module.
+     * @var SCU_T::D1PNS4
+     * Offset: 0x30  Domain 1 Peripheral Non-secure Attribution Set Register4 (0x4028_0000~0x4029_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |WWDT1     |Set WWDT1 to Non-secure State
+     * |        |          |0 = WWDT1 is a secure module (default).
+     * |        |          |1 = WWDT1 is a non-secure module.
+     * |[1]     |EADC1     |Set EADC1 to Non-secure State
+     * |        |          |0 = EADC1 is a secure module (default).
+     * |        |          |1 = EADC1 is a non-secure module.
+     * |[2]     |EPWM1     |Set EPWM1 to Non-secure State
+     * |        |          |0 = EPWM1 is a secure module (default).
+     * |        |          |1 = EPWM1 is a non-secure module.
+     * |[3]     |BPWM1     |Set BPWM1 to Non-secure State
+     * |        |          |0 = BPWM1 is a secure module (default).
+     * |        |          |1 = BPWM1 is a non-secure module.
+     * |[4]     |EQEI1     |Set EQEI1 to Non-secure State
+     * |        |          |0 = EQEI1 is a secure module (default).
+     * |        |          |1 = EQEI1 is a non-secure module.
+     * |[5]     |EQEI3     |Set EQEI3 to Non-secure State
+     * |        |          |0 = EQEI3 is a secure module (default).
+     * |        |          |1 = EQEI3 is a non-secure module.
+     * |[6]     |ECAP1     |Set ECAP1 to Non-secure State
+     * |        |          |0 = ECAP1 is a secure module (default).
+     * |        |          |1 = ECAP1 is a non-secure module.
+     * |[7]     |ECAP3     |Set ECAP3 to Non-secure State
+     * |        |          |0 = ECAP3 is a secure module (default).
+     * |        |          |1 = ECAP3 is a non-secure module.
+     * |[8]     |I2C1      |Set I2C1 to Non-secure State
+     * |        |          |0 = I2C1 is a secure module (default).
+     * |        |          |1 = I2C1 is a non-secure module.
+     * |[9]     |I2C3      |Set I2C3 to Non-secure State
+     * |        |          |0 = I2C3 is a secure module (default).
+     * |        |          |1 = I2C3 is a non-secure module.
+     * |[10]    |QSPI1     |Set QSPI1 to Non-secure State
+     * |        |          |0 = QSPI1 is a secure module (default).
+     * |        |          |1 = QSPI1 is a non-secure module.
+     * |[11]    |SPI1      |Set SPI1 to Non-secure State
+     * |        |          |0 = SPI1 is a secure module (default).
+     * |        |          |1 = SPI1 is a non-secure module.
+     * |[12]    |SPI3      |Set SPI3 to Non-secure State
+     * |        |          |0 = SPI3 is a secure module (default).
+     * |        |          |1 = SPI3 is a non-secure module.
+     * |[13]    |UART1     |Set UART1 to Non-secure State
+     * |        |          |0 = UART1 is a secure module (default).
+     * |        |          |1 = UART1 is a non-secure module.
+     * |[14]    |UART3     |Set UART3 to Non-secure State
+     * |        |          |0 = UART3 is a secure module (default).
+     * |        |          |1 = UART3 is a non-secure module.
+     * |[15]    |UART5     |Set UART5 to Non-secure State
+     * |        |          |0 = UART5 is a secure module (default).
+     * |        |          |1 = UART5 is a non-secure module.
+     * |[16]    |UART7     |Set UART7 to Non-secure State
+     * |        |          |0 = UART7 is a secure module (default).
+     * |        |          |1 = UART7 is a non-secure module.
+     * |[17]    |UART9     |Set UART9 to Non-secure State
+     * |        |          |0 = UART9 is a secure module (default).
+     * |        |          |1 = UART9 is a non-secure module.
+     * |[18]    |SC1       |Set SC1 to Non-secure State
+     * |        |          |0 = SC1 is a secure module (default).
+     * |        |          |1 = SC1 is a non-secure module.
+     * |[19]    |OTG       |Set OTG to Non-secure State
+     * |        |          |0 = OTG is a secure module (default).
+     * |        |          |1 = OTG is a non-secure module.
+     * |[20]    |KPI       |Set KPI to Non-secure State
+     * |        |          |0 = KPI is a secure module (default).
+     * |        |          |1 = KPI is a non-secure module.
+     * |[21]    |TMR23     |Set TMR23 to Non-secure State
+     * |        |          |0 = TMR23 is a secure module (default).
+     * |        |          |1 = TMR23 is a non-secure module.
+     * |[22]    |TRNG      |Set TRNG to Non-secure State
+     * |        |          |0 = TRNG is a secure module (default).
+     * |        |          |1 = TRNG is a non-secure module.
+     * |[23]    |RTC       |Set RTC to Non-secure State
+     * |        |          |0 = RTC is a secure module (default).
+     * |        |          |1 = RTC is a non-secure module.
+     * |[24]    |I2S1      |Set I2S1 to Non-secure State
+     * |        |          |0 = I2S1 is a secure module (default).
+     * |        |          |1 = I2S1 is a non-secure module.
+     * |[25]    |ACMP23    |Set ACMP23 to Non-secure State
+     * |        |          |0 = ACMP23 is a secure module (default).
+     * |        |          |1 = ACMP23 is a non-secure module.
+     * |[26]    |I3C0      |Set I3C0 to Non-secure State
+     * |        |          |0 = I3C0 is a secure module (default).
+     * |        |          |1 = I3C0 is a non-secure module.
+     * |[27]    |UTCPD     |Set UTCPD to Non-secure State
+     * |        |          |0 = UTCPD is a secure module (default).
+     * |        |          |1 = UTCPD is a non-secure module.
+     * @var SCU_T::D2PNS0
+     * Offset: 0x40  Domain 2 Peripheral Non-secure Attribution Set Register0 (0x4040_0000~0x4041_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |LPPDMA    |Set LPPDMA to Non-secure State
+     * |        |          |0 = LPPDMA is a secure module (default).
+     * |        |          |1 = LPPDMA is a non-secure module.
+     * |[1]     |CCAP      |Set CCAP to Non-secure State
+     * |        |          |0 = CCAP is a secure module (default).
+     * |        |          |1 = CCAP is a non-secure module.
+     * |[3]     |LPGPIO    |Set LPGPIO to Non-secure State
+     * |        |          |0 = LPGPIO is a secure module (default).
+     * |        |          |1 = LPGPIO is a non-secure module.
+     * @var SCU_T::D2PNS2
+     * Offset: 0x48  Domain 2 Peripheral Non-secure Attribution Set Register2 (0x4044_0000~0x4045_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |LPTMR01   |Set LPTMR01 to Non-secure State
+     * |        |          |0 = LPTMR01 is a secure module (default).
+     * |        |          |1 = LPTMR01 is a non-secure module.
+     * |[1]     |TTMR01    |Set TTMR01 to Non-secure State
+     * |        |          |0 = TTMR01 is a secure module (default).
+     * |        |          |1 = TTMR01 is a non-secure module.
+     * |[2]     |LPADC0    |Set LPADC0 to Non-secure State
+     * |        |          |0 = LPADC0 is a secure module (default).
+     * |        |          |1 = LPADC0 is a non-secure module.
+     * |[3]     |LPI2C0    |Set LPI2C0 to Non-secure State
+     * |        |          |0 = LPI2C0 is a secure module (default).
+     * |        |          |1 = LPI2C0 is a non-secure module.
+     * |[4]     |LPSPI0    |Set LPSPI0 to Non-secure State
+     * |        |          |0 = LPSPI0 is a secure module (default).
+     * |        |          |1 = LPSPI0 is a non-secure module.
+     * |[5]     |DMIC0     |Set DMIC0 to Non-secure State
+     * |        |          |0 = DMIC0 is a secure module (default).
+     * |        |          |1 = DMIC0 is a non-secure module.
+     * |[6]     |LPUART0   |Set LPUART0 to Non-secure State
+     * |        |          |0 = LPUART0 is a secure module (default).
+     * |        |          |1 = LPUART0 is a non-secure module.
+     * |[9]     |AWF       |Set AWF to Non-secure State
+     * |        |          |0 = AWF is a secure module (default).
+     * |        |          |1 = AWF is a non-secure module.
+     * @var SCU_T::FNSADDR
+     * Offset: 0x60  Flash Non-secure Boundary Address Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |FNSADDR   |Flash Non-secure Boundary Address
+     * |        |          |Indicate the base address of Non-secure region set in user configuration
+     * |        |          |Refer to FMC section for more details.
+     * @var SCU_T::EINTNS
+     * Offset: 0x64  EINT Non-secure Attribution Set Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |EINT0     |Set EINT0 to Non-secure State
+     * |        |          |0 = EINT0 is a secure module (default).
+     * |        |          |1 = EINT0 is a non-secure module.
+     * |[1]     |EINT1     |Set EINT1 to Non-secure State
+     * |        |          |0 = EINT1 is a secure module (default).
+     * |        |          |1 = EINT1 is a non-secure module.
+     * |[2]     |EINT2     |Set EINT2 to Non-secure State
+     * |        |          |0 = EINT2 is a secure module (default).
+     * |        |          |1 = EINT2 is a non-secure module.
+     * |[3]     |EINT3     |Set EINT3 to Non-secure State
+     * |        |          |0 = EINT3 is a secure module (default).
+     * |        |          |1 = EINT3 is a non-secure module.
+     * |[4]     |EINT4     |Set EINT4 to Non-secure State
+     * |        |          |0 = EINT4 is a secure module (default).
+     * |        |          |1 = EINT4 is a non-secure module.
+     * |[5]     |EINT5     |Set EINT5 to Non-secure State
+     * |        |          |0 = EINT5 is a secure module (default).
+     * |        |          |1 = EINT5 is a non-secure module.
+     * |[6]     |EINT6     |Set EINT6 to Non-secure State
+     * |        |          |0 = EINT6 is a secure module (default).
+     * |        |          |1 = EINT6 is a non-secure module.
+     * |[7]     |EINT7     |Set EINT7 to Non-secure State
+     * |        |          |0 = EINT7 is a secure module (default).
+     * |        |          |1 = EINT7 is a non-secure module.
+     * @var SCU_T::IONS0
+     * Offset: 0x70  I/O Non-secure Attribution Set Register0
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |PA        |Set GPIO Port A to Non-secure State
+     * |        |          |Write 1 to set PA to non-secure state. Each bit configures one pin in GPIO port A.
+     * |        |          |0 = GPIO port A is secure (default).
+     * |        |          |1 = GPIO port A is non-secure.
+     * @var SCU_T::IONS1
+     * Offset: 0x74  I/O Non-secure Attribution Set Register1
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |PB        |Set GPIO Port B to Non-secure State
+     * |        |          |Write 1 to set PB to non-secure state. Each bit configures one pin in GPIO port B.
+     * |        |          |0 = GPIO port B is secure (default).
+     * |        |          |1 = GPIO port B is non-secure.
+     * @var SCU_T::IONS2
+     * Offset: 0x78  I/O Non-secure Attribution Set Register2
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |PC        |Set GPIO Port C to Non-secure State
+     * |        |          |Write 1 to set PC to non-secure state. Each bit configures one pin in GPIO port C.
+     * |        |          |0 = GPIO port C is secure (default).
+     * |        |          |1 = GPIO port C is non-secure.
+     * @var SCU_T::IONS3
+     * Offset: 0x7C  I/O Non-secure Attribution Set Register3
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |PD        |Set GPIO Port D to Non-secure State
+     * |        |          |Write 1 to set PD to non-secure state. Each bit configures one pin in GPIO port D.
+     * |        |          |0 = GPIO port D is secure (default).
+     * |        |          |1 = GPIO port D is non-secure.
+     * @var SCU_T::IONS4
+     * Offset: 0x80  I/O Non-secure Attribution Set Register4
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |PE        |Set GPIO Port E to Non-secure State
+     * |        |          |Write 1 to set PE to non-secure state. Each bit configures one pin in GPIO port E.
+     * |        |          |0 = GPIO port E is secure (default).
+     * |        |          |1 = GPIO port E is non-secure.
+     * @var SCU_T::IONS5
+     * Offset: 0x84  I/O Non-secure Attribution Set Register5
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |PF        |Set GPIO Port F to Non-secure State
+     * |        |          |Write 1 to set PF to non-secure state. Each bit configures one pin in GPIO port F.
+     * |        |          |0 = GPIO port F is secure (default).
+     * |        |          |1 = GPIO port F is non-secure.
+     * @var SCU_T::IONS6
+     * Offset: 0x88  I/O Non-secure Attribution Set Register6
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |PG        |Set GPIO Port G to Non-secure State
+     * |        |          |Write 1 to set PG to non-secure state. Each bit configures one pin in GPIO port G.
+     * |        |          |0 = GPIO port G is secure (default).
+     * |        |          |1 = GPIO port G is non-secure.
+     * @var SCU_T::IONS7
+     * Offset: 0x8C  I/O Non-secure Attribution Set Register7
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |PH        |Set GPIO Port H to Non-secure State
+     * |        |          |Write 1 to set PH to non-secure state. Each bit configures one pin in GPIO port H.
+     * |        |          |0 = GPIO port H is secure (default).
+     * |        |          |1 = GPIO port H is non-secure.
+     * @var SCU_T::IONS8
+     * Offset: 0x90  I/O Non-secure Attribution Set Register8
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |PI        |Set GPIO Port I to Non-secure State
+     * |        |          |Write 1 to set PI to non-secure state. Each bit configures one pin in GPIO port I.
+     * |        |          |0 = GPIO port I is secure (default).
+     * |        |          |1 = GPIO port I is non-secure.
+     * @var SCU_T::IONS9
+     * Offset: 0x94  I/O Non-secure Attribution Set Register9
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |PJ        |Set GPIO Port J to Non-secure State
+     * |        |          |Write 1 to set PJ to non-secure state. Each bit configures one pin in GPIO port J.
+     * |        |          |0 = GPIO port J is secure (default).
+     * |        |          |1 = GPIO port J is non-secure.
+     * @var SCU_T::SVIEN0
+     * Offset: 0x100  Security Violation Interrupt Enable Register u2013 Slave peripherals
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |APB0IEN   |APB0 Security Violation Interrupt Enable Bit
+     * |        |          |0 = Interrupt triggered from security violation of APB0 Disabled.
+     * |        |          |1 = Interrupt triggered from security violation of APB0 Enabled.
+     * |[1]     |APB1IEN   |APB1 Security Violation Interrupt Enable Bit
+     * |        |          |0 = Interrupt triggered from security violation of APB1 Disabled.
+     * |        |          |1 = Interrupt triggered from security violation of APB1 Enabled.
+     * |[2]     |APB2IEN   |APB2 Security Violation Interrupt Enable Bit
+     * |        |          |0 = Interrupt triggered from security violation of APB2 Disabled.
+     * |        |          |1 = Interrupt triggered from security violation of APB2 Enabled.
+     * |[3]     |APB3IEN   |APB3 Security Violation Interrupt Enable Bit
+     * |        |          |0 = Interrupt triggered from security violation of APB3 Disabled.
+     * |        |          |1 = Interrupt triggered from security violation of APB3 Enabled.
+     * |[4]     |APB4IEN   |APB4 Security Violation Interrupt Enable Bit
+     * |        |          |0 = Interrupt triggered from security violation of APB4 Disabled.
+     * |        |          |1 = Interrupt triggered from security violation of APB4 Enabled.
+     * |[5]     |APB5IEN   |APB5 Security Violation Interrupt Enable Bit
+     * |        |          |0 = Interrupt triggered from security violation of APB5 Disabled.
+     * |        |          |1 = Interrupt triggered from security violation of APB5 Enabled.
+     * |[8]     |D0PPC0IEN |D0PPC0 Security Violation Interrupt Enable Bit
+     * |        |          |0 = Interrupt triggered from security violation of D0PPC0 Disabled.
+     * |        |          |1 = Interrupt triggered from security violation of D0PPC0 Enabled.
+     * |[9]     |D1PPC0IEN |D1PPC0 Security Violation Interrupt Enable Bit
+     * |        |          |0 = Interrupt triggered from security violation of D1PPC0 Disabled.
+     * |        |          |1 = Interrupt triggered from security violation of D1PPC0 Enabled.
+     * |[10]    |D1PPC1IEN |D1PPC1 Security Violation Interrupt Enable Bit
+     * |        |          |0 = Interrupt triggered from security violation of D1PPC1 Disabled.
+     * |        |          |1 = Interrupt triggered from security violation of D1PPC1 Enabled.
+     * |[11]    |D2PPC0IEN |D2PPC0 Security Violation Interrupt Enable Bit
+     * |        |          |0 = Interrupt triggered from security violation of D2PPC0 Disabled.
+     * |        |          |1 = Interrupt triggered from security violation of D2PPC0 Enabled.
+     * |[16]    |EBIIEN    |EBI Security Violation Interrupt Enable Bit
+     * |        |          |0 = Interrupt triggered from security violation of EBI Disabled.
+     * |        |          |1 = Interrupt triggered from security violation of EBI Enabled.
+     * @var SCU_T::SVIEN1
+     * Offset: 0x104  Security Violation Interrupt Enable Register u2013 Master peripherals (MSC)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |GDMAIEN   |GDMA Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of GDMA Disabled. 1 = Interrupt triggered from security violation of GDMA Enabled.
+     * |[1]     |PDMA0IEN  |PDMA0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of PDMA Disabled. 1 = Interrupt triggered from security violation of PDMA Enabled.
+     * |[2]     |PDMA1IEN  |PDMA1 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of PDMA1 Disabled. 1 = Interrupt triggered from security violation of PDMA1 Enabled.
+     * |[3]     |USBH0IEN  |USBH0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of USBH0 Disabled. 1 = Interrupt triggered from security violation of USBH0 Enabled.
+     * |[5]     |HSUSBHIEN |HSUSBH Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of HSUSBH Disabled. 1 = Interrupt triggered from security violation of HSUSBH Enabled.
+     * |[6]     |HSUSBDIEN |HSUSBD Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of HSUSBD Disabled. 1 = Interrupt triggered from security violation of HSUSBD Enabled.
+     * |[7]     |SDH0IEN   |SDH0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of SDH0 Disabled. 1 = Interrupt triggered from security violation of SDH0 Enabled.
+     * |[8]     |SDH1IEN   |SDH1 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of SDH1 Disabled. 1 = Interrupt triggered from security violation of SDH1 Enabled.
+     * |[9]     |EMACIEN   |EMAC Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of EMAC Disabled. 1 = Interrupt triggered from security violation of EMAC Enabled.
+     * |[10]    |CRYPTOIEN |CRYPTO Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of CRYPTO Disabled. 1 = Interrupt triggered from security violation of CRYPTO Enabled.
+     * |[11]    |CRCIEN    |CRC Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of CRC Disabled. 1 = Interrupt triggered from security violation of CRC Enabled.
+     * |[12]    |LPPDMAIEN |LPPDMA Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of LPPDMA Disabled. 1 = Interrupt triggered from security violation of LPPDMA Enabled.
+     * |[13]    |CCAPIEN   |CCAP Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of CCAP Disabled. 1 = Interrupt triggered from security violation of CCAP Enabled.
+     * |[14]    |NPUIF1IEN |NPU Interface 1 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of NPU Interface 1 Disabled. 1 = Interrupt triggered from security violation of NPU Interface 1 Enabled.
+     * |[15]    |NPUIF0IEN |NPU Interface 0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of NPU Interface 0 Disabled. 1 = Interrupt triggered from security violation of NPU Interface 0 Enabled.
+     * |[16]    |SPIM0IEN  |SPIM0 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of SPIM0 Disabled. 1 = Interrupt triggered from security violation of SPIM0 Enabled.
+     * |[17]    |SPIM1IEN  |SPIM1 Security Violation Interrupt Enable Bit 0 = Interrupt triggered from security violation of SPIM1 Disabled. 1 = Interrupt triggered from security violation of SPIM1 Enabled.
+     * @var SCU_T::SVINTSTS0
+     * Offset: 0x110  Security Violation Interrupt Status Register u2013 Slave peripherals
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |APB0IF    |APB0 Security Violation Interrupt Status
+     * |        |          |0 = No APB0 violation interrupt event.
+     * |        |          |1 = There is at least a APB0 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[1]     |APB1IF    |APB1 Security Violation Interrupt Status
+     * |        |          |0 = No APB1 violation interrupt event.
+     * |        |          |1 = There is at least a APB1 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[2]     |APB2IF    |APB2 Security Violation Interrupt Status
+     * |        |          |0 = No APB2 violation interrupt event.
+     * |        |          |1 = There is at least a APB2 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[3]     |APB3IF    |APB3 Security Violation Interrupt Status
+     * |        |          |0 = No APB3 violation interrupt event.
+     * |        |          |1 = There is at least a APB3 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[4]     |APB4IF    |APB4 Security Violation Interrupt Status
+     * |        |          |0 = No APB4 violation interrupt event.
+     * |        |          |1 = There is at least a APB4 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[5]     |APB5IF    |APB5 Security Violation Interrupt Status
+     * |        |          |0 = No APB5 violation interrupt event.
+     * |        |          |1 = There is at least a APB5 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[8]     |D0PPC0IF  |D0PPC0 Security Violation Interrupt Status
+     * |        |          |0 = No D0PPC0 violation interrupt event.
+     * |        |          |1 = There is at least a D0PPC0 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[9]     |D1PPC0IF  |D1PPC0 Security Violation Interrupt Status
+     * |        |          |0 = No D1PPC0 violation interrupt event.
+     * |        |          |1 = There is at least a D1PPC0 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[10]    |D1PPC1IF  |D1PPC1 Security Violation Interrupt Status
+     * |        |          |0 = No D1PPC1 violation interrupt event.
+     * |        |          |1 = There is at least a D1PPC1 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[11]    |D2PPC0IF  |D2PPC0 Security Violation Interrupt Status
+     * |        |          |0 = No D2PPC0 violation interrupt event.
+     * |        |          |1 = There is at least a D2PPC0 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[16]    |EBIIF     |EBI Security Violation Interrupt Status
+     * |        |          |0 = No EBI violation interrupt event.
+     * |        |          |1 = There is at least a EBI violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * @var SCU_T::SVINTSTS1
+     * Offset: 0x114  Security Violation Interrupt Status Register - Master peripherals (MSC)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |GDMAIF    |GDMA Security Violation Interrupt Status
+     * |        |          |0 = No GDMA violation interrupt event.
+     * |        |          |1 = There is at least a GDMA violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[1]     |PDMA0IF   |PDMA0 Security Violation Interrupt Status
+     * |        |          |0 = No PDMA0 violation interrupt event.
+     * |        |          |1 = There is at least a PDMA0 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[2]     |PDMA1IF   |PDMA1 Security Violation Interrupt Status
+     * |        |          |0 = No PDMA1 violation interrupt event.
+     * |        |          |1 = There is at least a PDMA1 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[3]     |USBH0IF   |USBH0 Security Violation Interrupt Status
+     * |        |          |0 = No USBH0 violation interrupt event.
+     * |        |          |1 = There is at least a USBH0 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[5]     |HSUSBHIF  |HSUSBH Security Violation Interrupt Status
+     * |        |          |0 = No HSUSBH violation interrupt event.
+     * |        |          |1 = There is at least a HSUSBH violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[6]     |HSUSBDIF  |HSUSBD Security Violation Interrupt Status
+     * |        |          |0 = No HSUSBD violation interrupt event.
+     * |        |          |1 = There is at least a HSUSBD violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[7]     |SDH0IF    |SDH0 Security Violation Interrupt Status
+     * |        |          |0 = No SDH0 violation interrupt event.
+     * |        |          |1 = There is at least a SDH0 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[8]     |SDH1IF    |SDH1 Security Violation Interrupt Status
+     * |        |          |0 = No SDH1 violation interrupt event.
+     * |        |          |1 = There is at least a SDH1 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[9]     |EMACIF    |EMAC Security Violation Interrupt Status
+     * |        |          |0 = No EMAC violation interrupt event.
+     * |        |          |1 = There is at least a EMAC violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[10]    |CRYPTOIF  |CRYPTO Security Violation Interrupt Status
+     * |        |          |0 = No CRYPTO violation interrupt event.
+     * |        |          |1 = There is at least a CRYPTO violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[11]    |CRCIF     |CRC Security Violation Interrupt Status
+     * |        |          |0 = No CRC violation interrupt event.
+     * |        |          |1 = There is at least a CRC violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[12]    |LPPDMAIF  |LPPDMA Security Violation Interrupt Status
+     * |        |          |0 = No LPPDMA violation interrupt event.
+     * |        |          |1 = There is at least a LPPDMA violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[13]    |CCAPIF    |CCAP Security Violation Interrupt Status
+     * |        |          |0 = No CCAP violation interrupt event.
+     * |        |          |1 = There is at least a CCAP violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[14]    |NPUIF1    |NPU Interface 1 Security Violation Interrupt Status
+     * |        |          |0 = No NPU Interface 1 violation interrupt event.
+     * |        |          |1 = There is at least a NPU Interface 1 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[15]    |NPUIF0    |NPU Interface 0 Security Violation Interrupt Status
+     * |        |          |0 = No NPU Interface 0 violation interrupt event.
+     * |        |          |1 = There is at least a NPU Interface 0 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[16]    |SPIM0IF   |SPIM0 Security Violation Interrupt Status
+     * |        |          |0 = No SPIM0 violation interrupt event.
+     * |        |          |1 = There is at least a SPIM0 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * |[17]    |SPIM1IF   |SPIM1 Security Violation Interrupt Status
+     * |        |          |0 = No SPIM1 violation interrupt event.
+     * |        |          |1 = There is at least a SPIM1 violation interrupt event.
+     * |        |          |Note: Write 1 to clear the interrupt flag.
+     * @var SCU_T::SVINTSTS2
+     * Offset: 0x118  Security Violation Interrupt Status Register u2013 Memory peripherals (MPC)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |SRAM0IF   |SRAM0 Security Violation Interrupt Status
+     * |        |          |0 = No SRAM0 violation interrupt event.
+     * |        |          |1 = There is at least a SRAM0 violation interrupt event.
+     * |[1]     |SRAM1IF   |SRAM1 Security Violation Interrupt Status
+     * |        |          |0 = No SRAM1 violation interrupt event.
+     * |        |          |1 = There is at least a SRAM1 violation interrupt event.
+     * |[2]     |SRAM2IF   |SRAM2 Security Violation Interrupt Status
+     * |        |          |0 = No SRAM2 violation interrupt event.
+     * |        |          |1 = There is at least a SRAM2 violation interrupt event.
+     * |[3]     |SRAM3IF   |SRAM3 Security Violation Interrupt Status
+     * |        |          |0 = No SRAM3 violation interrupt event.
+     * |        |          |1 = There is at least a SRAM3 violation interrupt event.
+     * |[4]     |LPSRAMIF  |LPSRAM Security Violation Interrupt Status
+     * |        |          |0 = No LPSRAM violation interrupt event.
+     * |        |          |1 = There is at least a LPSRAM violation interrupt event.
+     * |[5]     |SPIM0IF   |SPIM0 Security Violation Interrupt Status
+     * |        |          |0 = No SPIM0 violation interrupt event.
+     * |        |          |1 = There is at least a SPIM0 violation interrupt event.
+     * |[6]     |SPIM1IF   |SPIM1 Security Violation Interrupt Status
+     * |        |          |0 = No SPIM1 violation interrupt event.
+     * |        |          |1 = There is at least a SPIM1 violation interrupt event.
+     * @var SCU_T::APB0PVSRC
+     * Offset: 0x120  APB0 Security Policy Violation Source
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |MASTER    |Master Violating Security Policy
+     * |        |          |Indicate which master invokes the security violation.
+     * |        |          |0x00 = Core processor
+     * |        |          |0x01 = PDMA0
+     * |        |          |0x02 = PDMA1
+     * |        |          |0x03 = USBH0
+     * |        |          |0x05 = HSUSBH
+     * |        |          |0x06 = HSUSBD
+     * |        |          |0x07 = SDH0
+     * |        |          |0x08 = SDH1
+     * |        |          |0x09 = EMAC
+     * |        |          |0x0A = CRYPTO
+     * |        |          |0x0B = CRC
+     * |        |          |0x0C = GDMA
+     * |        |          |0x0D = NPU
+     * |        |          |0x0E = LPPDMA
+     * |        |          |0x0F = CCAP
+     * |        |          |0x10 = SPIM0
+     * |        |          |0x11 = SPIM1
+     * |        |          |Others are undefined.
+     * @var SCU_T::APB1PVSRC
+     * Offset: 0x124  APB1 Security Policy Violation Source
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |MASTER    |Master Violating Security Policy
+     * |        |          |Indicate which master invokes the security violation.
+     * |        |          |0x00 = Core processor
+     * |        |          |0x01 = PDMA0
+     * |        |          |0x02 = PDMA1
+     * |        |          |0x03 = USBH0
+     * |        |          |0x05 = HSUSBH
+     * |        |          |0x06 = HSUSBD
+     * |        |          |0x07 = SDH0
+     * |        |          |0x08 = SDH1
+     * |        |          |0x09 = EMAC
+     * |        |          |0x0A = CRYPTO
+     * |        |          |0x0B = CRC
+     * |        |          |0x0C = GDMA
+     * |        |          |0x0D = NPU
+     * |        |          |0x0E = LPPDMA
+     * |        |          |0x0F = CCAP
+     * |        |          |0x10 = SPIM0
+     * |        |          |0x11 = SPIM1
+     * |        |          |Others are undefined.
+     * @var SCU_T::APB2PVSRC
+     * Offset: 0x128  APB2 Security Policy Violation Source
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |MASTER    |Master Violating Security Policy
+     * |        |          |Indicate which master invokes the security violation.
+     * |        |          |0x00 = Core processor
+     * |        |          |0x01 = PDMA0
+     * |        |          |0x02 = PDMA1
+     * |        |          |0x03 = USBH0
+     * |        |          |0x05 = HSUSBH
+     * |        |          |0x06 = HSUSBD
+     * |        |          |0x07 = SDH0
+     * |        |          |0x08 = SDH1
+     * |        |          |0x09 = EMAC
+     * |        |          |0x0A = CRYPTO
+     * |        |          |0x0B = CRC
+     * |        |          |0x0C = GDMA
+     * |        |          |0x0D = NPU
+     * |        |          |0x0E = LPPDMA
+     * |        |          |0x0F = CCAP
+     * |        |          |0x10 = SPIM0
+     * |        |          |0x11 = SPIM1
+     * |        |          |Others are undefined.
+     * @var SCU_T::APB3PVSRC
+     * Offset: 0x12C  APB3 Security Policy Violation Source
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |MASTER    |Master Violating Security Policy
+     * |        |          |Indicate which master invokes the security violation.
+     * |        |          |0x00 = Core processor
+     * |        |          |0x01 = PDMA0
+     * |        |          |0x02 = PDMA1
+     * |        |          |0x03 = USBH0
+     * |        |          |0x05 = HSUSBH
+     * |        |          |0x06 = HSUSBD
+     * |        |          |0x07 = SDH0
+     * |        |          |0x08 = SDH1
+     * |        |          |0x09 = EMAC
+     * |        |          |0x0A = CRYPTO
+     * |        |          |0x0B = CRC
+     * |        |          |0x0C = GDMA
+     * |        |          |0x0D = NPU
+     * |        |          |0x0E = LPPDMA
+     * |        |          |0x0F = CCAP
+     * |        |          |0x10 = SPIM0
+     * |        |          |0x11 = SPIM1
+     * |        |          |Others are undefined.
+     * @var SCU_T::APB4PVSRC
+     * Offset: 0x130  APB4 Security Policy Violation Source
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |MASTER    |Master Violating Security Policy
+     * |        |          |Indicate which master invokes the security violation.
+     * |        |          |0x00 = Core processor
+     * |        |          |0x01 = PDMA0
+     * |        |          |0x02 = PDMA1
+     * |        |          |0x03 = USBH0
+     * |        |          |0x05 = HSUSBH
+     * |        |          |0x06 = HSUSBD
+     * |        |          |0x07 = SDH0
+     * |        |          |0x08 = SDH1
+     * |        |          |0x09 = EMAC
+     * |        |          |0x0A = CRYPTO
+     * |        |          |0x0B = CRC
+     * |        |          |0x0C = GDMA
+     * |        |          |0x0D = NPU
+     * |        |          |0x0E = LPPDMA
+     * |        |          |0x0F = CCAP
+     * |        |          |0x10 = SPIM0
+     * |        |          |0x11 = SPIM1
+     * |        |          |Others are undefined.
+     * @var SCU_T::APB5PVSRC
+     * Offset: 0x134  APB5 Security Policy Violation Source
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |MASTER    |Master Violating Security Policy
+     * |        |          |Indicate which master invokes the security violation.
+     * |        |          |0x00 = Core processor
+     * |        |          |0x01 = PDMA0
+     * |        |          |0x02 = PDMA1
+     * |        |          |0x03 = USBH0
+     * |        |          |0x05 = HSUSBH
+     * |        |          |0x06 = HSUSBD
+     * |        |          |0x07 = SDH0
+     * |        |          |0x08 = SDH1
+     * |        |          |0x09 = EMAC
+     * |        |          |0x0A = CRYPTO
+     * |        |          |0x0B = CRC
+     * |        |          |0x0C = GDMA
+     * |        |          |0x0D = NPU
+     * |        |          |0x0E = LPPDMA
+     * |        |          |0x0F = CCAP
+     * |        |          |0x10 = SPIM0
+     * |        |          |0x11 = SPIM1
+     * |        |          |Others are undefined.
+     * @var SCU_T::D0PPC0PVSRC
+     * Offset: 0x140  D0PPC0 Security Policy Violation Source
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |MASTER    |Master Violating Security Policy
+     * |        |          |Indicate which master invokes the security violation.
+     * |        |          |0x00 = Core processor
+     * |        |          |0x01 = PDMA0
+     * |        |          |0x02 = PDMA1
+     * |        |          |0x03 = USBH0
+     * |        |          |0x05 = HSUSBH
+     * |        |          |0x06 = HSUSBD
+     * |        |          |0x07 = SDH0
+     * |        |          |0x08 = SDH1
+     * |        |          |0x09 = EMAC
+     * |        |          |0x0A = CRYPTO
+     * |        |          |0x0B = CRC
+     * |        |          |0x0C = GDMA
+     * |        |          |0x0D = NPU
+     * |        |          |0x0E = LPPDMA
+     * |        |          |0x0F = CCAP
+     * |        |          |0x10 = SPIM0
+     * |        |          |0x11 = SPIM1
+     * |        |          |Others are undefined.
+     * @var SCU_T::D1PPC0PVSRC
+     * Offset: 0x144  D1PPC0 Security Policy Violation Source
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |MASTER    |Master Violating Security Policy
+     * |        |          |Indicate which master invokes the security violation.
+     * |        |          |0x00 = Core processor
+     * |        |          |0x01 = PDMA0
+     * |        |          |0x02 = PDMA1
+     * |        |          |0x03 = USBH0
+     * |        |          |0x05 = HSUSBH
+     * |        |          |0x06 = HSUSBD
+     * |        |          |0x07 = SDH0
+     * |        |          |0x08 = SDH1
+     * |        |          |0x09 = EMAC
+     * |        |          |0x0A = CRYPTO
+     * |        |          |0x0B = CRC
+     * |        |          |0x0C = GDMA
+     * |        |          |0x0D = NPU
+     * |        |          |0x0E = LPPDMA
+     * |        |          |0x0F = CCAP
+     * |        |          |0x10 = SPIM0
+     * |        |          |0x11 = SPIM1
+     * |        |          |Others are undefined.
+     * @var SCU_T::D1PPC1PVSRC
+     * Offset: 0x148  D1PPC1 Security Policy Violation Source
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |MASTER    |Master Violating Security Policy
+     * |        |          |Indicate which master invokes the security violation.
+     * |        |          |0x00 = Core processor
+     * |        |          |0x01 = PDMA0
+     * |        |          |0x02 = PDMA1
+     * |        |          |0x03 = USBH0
+     * |        |          |0x05 = HSUSBH
+     * |        |          |0x06 = HSUSBD
+     * |        |          |0x07 = SDH0
+     * |        |          |0x08 = SDH1
+     * |        |          |0x09 = EMAC
+     * |        |          |0x0A = CRYPTO
+     * |        |          |0x0B = CRC
+     * |        |          |0x0C = GDMA
+     * |        |          |0x0D = NPU
+     * |        |          |0x0E = LPPDMA
+     * |        |          |0x0F = CCAP
+     * |        |          |0x10 = SPIM0
+     * |        |          |0x11 = SPIM1
+     * |        |          |Others are undefined.
+     * @var SCU_T::D2PPC0PVSRC
+     * Offset: 0x14C  D2PPC0 Security Policy Violation Source
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |MASTER    |Master Violating Security Policy
+     * |        |          |Indicate which master invokes the security violation.
+     * |        |          |0x00 = Core processor
+     * |        |          |0x01 = PDMA0
+     * |        |          |0x02 = PDMA1
+     * |        |          |0x03 = USBH0
+     * |        |          |0x05 = HSUSBH
+     * |        |          |0x06 = HSUSBD
+     * |        |          |0x07 = SDH0
+     * |        |          |0x08 = SDH1
+     * |        |          |0x09 = EMAC
+     * |        |          |0x0A = CRYPTO
+     * |        |          |0x0B = CRC
+     * |        |          |0x0C = GDMA
+     * |        |          |0x0D = NPU
+     * |        |          |0x0E = LPPDMA
+     * |        |          |0x0F = CCAP
+     * |        |          |0x10 = SPIM0
+     * |        |          |0x11 = SPIM1
+     * |        |          |Others are undefined.
+     * @var SCU_T::EBIPVSRC
+     * Offset: 0x160  EBI Security Policy Violation Source
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |MASTER    |Master Violating Security Policy
+     * |        |          |Indicate which master invokes the security violation.
+     * |        |          |0x00 = Core processor
+     * |        |          |0x01 = PDMA0
+     * |        |          |0x02 = PDMA1
+     * |        |          |0x03 = USBH0
+     * |        |          |0x05 = HSUSBH
+     * |        |          |0x06 = HSUSBD
+     * |        |          |0x07 = SDH0
+     * |        |          |0x08 = SDH1
+     * |        |          |0x09 = EMAC
+     * |        |          |0x0A = CRYPTO
+     * |        |          |0x0B = CRC
+     * |        |          |0x0C = GDMA
+     * |        |          |0x0D = NPU
+     * |        |          |0x0E = LPPDMA
+     * |        |          |0x0F = CCAP
+     * |        |          |0x10 = SPIM0
+     * |        |          |0x11 = SPIM1
+     * |        |          |Others are undefined.
+     * @var SCU_T::APB0PVA
+     * Offset: 0x1A0  APB0 Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::APB1PVA
+     * Offset: 0x1A4  APB1 Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::APB2PVA
+     * Offset: 0x1A8  APB2 Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::APB3PVA
+     * Offset: 0x1AC  APB3 Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::APB4PVA
+     * Offset: 0x1B0  APB4 Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::APB5PVA
+     * Offset: 0x1B4  APB5 Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::D0PPC0PVA
+     * Offset: 0x1C0  D0PPC0 Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::D1PPC0PVA
+     * Offset: 0x1C4  D1PPC0 Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::D1PPC1PVA
+     * Offset: 0x1C8  D1PPC1 Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::D2PPC0PVA
+     * Offset: 0x1CC  D2PPC0 Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::EBIPVA
+     * Offset: 0x1E0  EBI Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::GDMAMVA
+     * Offset: 0x220  GDMA Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::PDMA0MVA
+     * Offset: 0x224  PDMA Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::PDMA1MVA
+     * Offset: 0x228  PDMA1 Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::USBH0MVA
+     * Offset: 0x22C  USBH0 Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::HSUSBHMVA
+     * Offset: 0x234  HSUSBH Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::HSUSBDMVA
+     * Offset: 0x238  HSUSBD Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::SDH0MVA
+     * Offset: 0x23C  SDH Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::SDH1MVA
+     * Offset: 0x240  SDH1 Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::EMACMVA
+     * Offset: 0x244  EMAC Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::CRYPTOMVA
+     * Offset: 0x248  CRYPTO Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::CRCMVA
+     * Offset: 0x24C  CRC Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::LPPDMAMVA
+     * Offset: 0x250  LPPDMA Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::CCAPMVA
+     * Offset: 0x254  CCAP Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::NPUIF1MVA
+     * Offset: 0x258  NPU Interface 1 Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::NPUIF0MVA
+     * Offset: 0x25C  NPU Interface 0 Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::SPIM0MVA
+     * Offset: 0x260  SPIM 0 Master Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::SPIM1MVA
+     * Offset: 0x264  SPIM 1 Master Violation Address
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |VIOADDR   |Violation Address
+     * |        |          |Indicate the target address of the access, which invokes the security violation.
+     * @var SCU_T::D0PNP0
+     * Offset: 0x2A0  Domain 0 Peripheral Privilege Attribution Set Register0 (0x4000_0000~0x4001_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[3]     |NPU       |Set NPU to Non-privileged State
+     * |        |          |0 = NPU is a privileged module (default).
+     * |        |          |1 = NPU is a non-privileged module.
+     * |[8]     |SRAM0MPC  |Set SRAM0MPC to Non-privileged State
+     * |        |          |0 = SRAM0MPC is a privileged module (default).
+     * |        |          |1 = SRAM0MPC is a non-privileged module.
+     * |[9]     |SRAM1MPC  |Set SRAM1MPC to Non-privileged State
+     * |        |          |0 = SRAM1MPC is a privileged module (default).
+     * |        |          |1 = SRAM1MPC is a non-privileged module.
+     * |[10]    |SRAM2MPC  |Set SRAM2MPC to Non-privileged State
+     * |        |          |0 = SRAM2MPC is a privileged module (default).
+     * |        |          |1 = SRAM2MPC is a non-privileged module.
+     * |[11]    |SRAM3MPC  |Set SRAM3MPC to Non-privileged State
+     * |        |          |0 = SRAM3MPC is a privileged module (default).
+     * |        |          |1 = SRAM3MPC is a non-privileged module.
+     * |[13]    |SPIM0MPC  |Set SPIM0MPC to Non-privileged State
+     * |        |          |0 = SPIM0MPC is a privileged module (default).
+     * |        |          |1 = SPIM0MPC is a non-privileged module.
+     * |[14]    |SPIM1MPC  |Set SPIM1MPC to Non-privileged State
+     * |        |          |0 = SPIM1MPC is a privileged module (default).
+     * |        |          |1 = SPIM1MPC is a non-privileged module.
+     * @var SCU_T::D0PNP2
+     * Offset: 0x2A8  Domain 0 Peripheral Privilege Attribution Set Register2 (0x4004_0000~0x4005_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |OTFC0     |Set OTFC0 to Non-privileged State
+     * |        |          |0 = OTFC0 is a privileged module (default).
+     * |        |          |1 = OTFC0 is a non-privileged module.
+     * |[1]     |OTFC1     |Set OTFC1 to Non-privileged State
+     * |        |          |0 = OTFC1 is a privileged module (default).
+     * |        |          |1 = OTFC1 is a non-privileged module.
+     * |[2]     |SPIM0     |Set SPIM0 to Non-privileged State
+     * |        |          |0 = SPIM0 is a privileged module (default).
+     * |        |          |1 = SPIM0 is a non-privileged module.
+     * |[3]     |SPIM1     |Set SPIM1 to Non-privileged State
+     * |        |          |0 = SPIM1 is a privileged module (default).
+     * |        |          |1 = SPIM1 is a non-privileged module.
+     * |[4]     |FMC       |Set FMC to Non-privileged State
+     * |        |          |0 = FMC is a privileged module (default).
+     * |        |          |1 = FMC is a non-privileged module.
+     * @var SCU_T::D1PNP0
+     * Offset: 0x2C0  Domain 1 Peripheral Privilege Attribution Set Register0 (0x4020_0000~0x4021_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |PDMA0     |Set PDMA0 to Non-privileged State
+     * |        |          |0 = PDMA0 is a privileged module (default).
+     * |        |          |1 = PDMA0 is a non-privileged module.
+     * |[1]     |PDMA1     |Set PDMA1 to Non-privileged State
+     * |        |          |0 = PDMA1 is a privileged module (default).
+     * |        |          |1 = PDMA1 is a non-privileged module.
+     * |[2]     |USBH0     |Set USBH0 to Non-privileged State
+     * |        |          |0 = USBH0 is a privileged module (default).
+     * |        |          |1 = USBH0 is a non-privileged module.
+     * |[4]     |HSUSBH    |Set HSUSBH to Non-privileged State
+     * |        |          |0 = HSUSBH is a privileged module (default).
+     * |        |          |1 = HSUSBH is a non-privileged module.
+     * |[5]     |HSUSBD    |Set HSUSBD to Non-privileged State
+     * |        |          |0 = HSUSBD is a privileged module (default).
+     * |        |          |1 = HSUSBD is a non-privileged module.
+     * |[6]     |SDH0      |Set SDH0 to Non-privileged State
+     * |        |          |0 = SDH0 is a privileged module (default).
+     * |        |          |1 = SDH0 is a non-privileged module.
+     * |[7]     |SDH1      |Set SDH1 to Non-privileged State
+     * |        |          |0 = SDH1 is a privileged module (default).
+     * |        |          |1 = SDH1 is a non-privileged module.
+     * |[8]     |EMAC0     |Set EMAC0 to Non-privileged State
+     * |        |          |0 = EMAC0 is a privileged module (default).
+     * |        |          |1 = EMAC0 is a non-privileged module.
+     * |[10]    |CRYPTO    |Set CRYPTO to Non-privileged State
+     * |        |          |0 = CRYPTO is a privileged module (default).
+     * |        |          |1 = CRYPTO is a non-privileged module.
+     * |[11]    |CRC       |Set CRC to Non-privileged State
+     * |        |          |0 = CRC is a privileged module (default).
+     * |        |          |1 = CRC is a non-privileged module.
+     * @var SCU_T::D1PNP1
+     * Offset: 0x2C4  Domain0 Peripheral Privilege Attribution Set Register1 (0x4022_0000~0x4023_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |KS        |Set KS to Non-privileged State
+     * |        |          |0 = KS is a privileged module (default).
+     * |        |          |1 = KS is a non-privileged module.
+     * |[1]     |KDF       |Set KDF to Non-privileged State
+     * |        |          |0 = KDF is a privileged module (default).
+     * |        |          |1 = KDF is a non-privileged module.
+     * |[2]     |CANFD0    |Set CANFD0 to Non-privileged State
+     * |        |          |0 = CANFD0 is a privileged module (default).
+     * |        |          |1 = CANFD0 is a non-privileged module.
+     * |[4]     |CANFD1    |Set CANFD1 to Non-privileged State
+     * |        |          |0 = CANFD1 is a privileged module (default).
+     * |        |          |1 = CANFD1 is a non-privileged module.
+     * |[6]     |ETMC      |Set ETMC to Non-privileged State
+     * |        |          |0 = ETMC is a privileged module (default).
+     * |        |          |1 = ETMC is a non-privileged module.
+     * |[7]     |SWDH      |Set SWDH to Non-privileged State
+     * |        |          |0 = SWDH is a privileged module (default).
+     * |        |          |1 = SWDH is a non-privileged module.
+     * |[8]     |SWODEC    |Set SWODEC to Non-privileged State
+     * |        |          |0 = SWODEC is a privileged module (default).
+     * |        |          |1 = SWODEC is a non-privileged module.
+     * |[16]    |EBI       |Set EBI to Non-privileged State
+     * |        |          |0 = EBI is a privileged module (default).
+     * |        |          |1 = EBI is a non-privileged module.
+     * @var SCU_T::D1PNP2
+     * Offset: 0x2C8  Domain 1 Peripheral Privilege Attribution Set Register2 (0x4024_0000~0x4025_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |WWDT0     |Set WWDT0 to Non-privileged State
+     * |        |          |0 = WWDT0 is a privileged module (default).
+     * |        |          |1 = WWDT0 is a non-privileged module.
+     * |[1]     |EADC0     |Set EADC0 to Non-privileged State
+     * |        |          |0 = EADC0 is a privileged module (default).
+     * |        |          |1 = EADC0 is a non-privileged module.
+     * |[2]     |EPWM0     |Set EPWM0 to Non-privileged State
+     * |        |          |0 = EPWM0 is a privileged module (default).
+     * |        |          |1 = EPWM0 is a non-privileged module.
+     * |[3]     |BPWM0     |Set BPWM0 to Non-privileged State
+     * |        |          |0 = BPWM0 is a privileged module (default).
+     * |        |          |1 = BPWM0 is a non-privileged module.
+     * |[4]     |EQEI0     |Set EQEI0 to Non-privileged State
+     * |        |          |0 = EQEI0 is a privileged module (default).
+     * |        |          |1 = EQEI0 is a non-privileged module.
+     * |[5]     |EQEI2     |Set EQEI2 to Non-privileged State
+     * |        |          |0 = EQEI2 is a privileged module (default).
+     * |        |          |1 = EQEI2 is a non-privileged module.
+     * |[6]     |ECAP0     |Set ECAP0 to Non-privileged State
+     * |        |          |0 = ECAP0 is a privileged module (default).
+     * |        |          |1 = ECAP0 is a non-privileged module.
+     * |[7]     |ECAP2     |Set ECAP2 to Non-privileged State
+     * |        |          |0 = ECAP2 is a privileged module (default).
+     * |        |          |1 = ECAP2 is a non-privileged module.
+     * |[8]     |I2C0      |Set I2C0 to Non-privileged State
+     * |        |          |0 = I2C0 is a privileged module (default).
+     * |        |          |1 = I2C0 is a non-privileged module.
+     * |[9]     |I2C2      |Set I2C2 to Non-privileged State
+     * |        |          |0 = I2C2 is a privileged module (default).
+     * |        |          |1 = I2C2 is a non-privileged module.
+     * |[10]    |QSPI0     |Set QSPI0 to Non-privileged State
+     * |        |          |0 = QSPI0 is a privileged module (default).
+     * |        |          |1 = QSPI0 is a non-privileged module.
+     * |[11]    |SPI0      |Set SPI0 to Non-privileged State
+     * |        |          |0 = SPI0 is a privileged module (default).
+     * |        |          |1 = SPI0 is a non-privileged module.
+     * |[12]    |SPI2      |Set SPI2 to Non-privileged State
+     * |        |          |0 = SPI2 is a privileged module (default).
+     * |        |          |1 = SPI2 is a non-privileged module.
+     * |[13]    |UART0     |Set UART0 to Non-privileged State
+     * |        |          |0 = UART0 is a privileged module (default).
+     * |        |          |1 = UART0 is a non-privileged module.
+     * |[14]    |UART2     |Set UART2 to Non-privileged State
+     * |        |          |0 = UART2 is a privileged module (default).
+     * |        |          |1 = UART2 is a non-privileged module.
+     * |[15]    |UART4     |Set UART4 to Non-privileged State
+     * |        |          |0 = UART4 is a privileged module (default).
+     * |        |          |1 = UART4 is a non-privileged module.
+     * |[16]    |UART6     |Set UART6 to Non-privileged State
+     * |        |          |0 = UART6 is a privileged module (default).
+     * |        |          |1 = UART6 is a non-privileged module.
+     * |[17]    |UART8     |Set UART8 to Non-privileged State
+     * |        |          |0 = UART8 is a privileged module (default).
+     * |        |          |1 = UART8 is a non-privileged module.
+     * |[18]    |USCI0     |Set USCI0 to Non-privileged State
+     * |        |          |0 = USCI0 is a privileged module (default).
+     * |        |          |1 = USCI0 is a non-privileged module.
+     * |[19]    |SC0       |Set SC0 to Non-privileged State
+     * |        |          |0 = SC0 is a privileged module (default).
+     * |        |          |1 = SC0 is a non-privileged module.
+     * |[20]    |SC2       |Set SC2 to Non-privileged State
+     * |        |          |0 = SC2 is a privileged module (default).
+     * |        |          |1 = SC2 is a non-privileged module.
+     * |[21]    |PSIO      |Set PSIO to Non-privileged State
+     * |        |          |0 = PSIO is a privileged module (default).
+     * |        |          |1 = PSIO is a non-privileged module.
+     * |[22]    |TMR01     |Set TMR01 to Non-privileged State
+     * |        |          |0 = TMR01 is a privileged module (default).
+     * |        |          |1 = TMR01 is a non-privileged module.
+     * |[23]    |DAC01     |Set DAC01 to Non-privileged State
+     * |        |          |0 = DAC01 is a privileged module (default).
+     * |        |          |1 = DAC01 is a non-privileged module.
+     * |[24]    |TAMPER    |Set TAMPER to Non-privileged State
+     * |        |          |0 = TAMPER is a privileged module (default).
+     * |        |          |1 = TAMPER is a non-privileged module.
+     * |[25]    |HSOTG     |Set HSOTG to Non-privileged State
+     * |        |          |0 = HSOTG is a privileged module (default).
+     * |        |          |1 = HSOTG is a non-privileged module.
+     * |[26]    |I2S0      |Set I2S0 to Non-privileged State
+     * |        |          |0 = I2S0 is a privileged module (default).
+     * |        |          |1 = I2S0 is a non-privileged module.
+     * |[27]    |ACMP01    |Set ACMP01 to Non-privileged State
+     * |        |          |0 = ACMP01 is a privileged module (default).
+     * |        |          |1 = ACMP01 is a non-privileged module.
+     * |[28]    |USBD      |Set USBD to Non-privileged State
+     * |        |          |0 = USBD is a privileged module (default).
+     * |        |          |1 = USBD is a non-privileged module.
+     * @var SCU_T::D1PNP4
+     * Offset: 0x2D0  Domain 1 Peripheral Privilege Attribution Set Register4 (0x4028_0000~0x4029_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |WWDT1     |Set WWDT1 to Non-privileged State
+     * |        |          |0 = WWDT1 is a privileged module (default).
+     * |        |          |1 = WWDT1 is a non-privileged module.
+     * |[1]     |EADC1     |Set EADC1 to Non-privileged State
+     * |        |          |0 = EADC1 is a privileged module (default).
+     * |        |          |1 = EADC1 is a non-privileged module.
+     * |[2]     |EPWM1     |Set EPWM1 to Non-privileged State
+     * |        |          |0 = EPWM1 is a privileged module (default).
+     * |        |          |1 = EPWM1 is a non-privileged module.
+     * |[3]     |BPWM1     |Set BPWM1 to Non-privileged State
+     * |        |          |0 = BPWM1 is a privileged module (default).
+     * |        |          |1 = BPWM1 is a non-privileged module.
+     * |[4]     |EQEI1     |Set EQEI1 to Non-privileged State
+     * |        |          |0 = EQEI1 is a privileged module (default).
+     * |        |          |1 = EQEI1 is a non-privileged module.
+     * |[5]     |EQEI3     |Set EQEI3 to Non-privileged State
+     * |        |          |0 = EQEI3 is a privileged module (default).
+     * |        |          |1 = EQEI3 is a non-privileged module.
+     * |[6]     |ECAP1     |Set ECAP1 to Non-privileged State
+     * |        |          |0 = ECAP1 is a privileged module (default).
+     * |        |          |1 = ECAP1 is a non-privileged module.
+     * |[7]     |ECAP3     |Set ECAP3 to Non-privileged State
+     * |        |          |0 = ECAP3 is a privileged module (default).
+     * |        |          |1 = ECAP3 is a non-privileged module.
+     * |[8]     |I2C1      |Set I2C1 to Non-privileged State
+     * |        |          |0 = I2C1 is a privileged module (default).
+     * |        |          |1 = I2C1 is a non-privileged module.
+     * |[9]     |I2C3      |Set I2C3 to Non-privileged State
+     * |        |          |0 = I2C3 is a privileged module (default).
+     * |        |          |1 = I2C3 is a non-privileged module.
+     * |[10]    |QSPI1     |Set QSPI1 to Non-privileged State
+     * |        |          |0 = QSPI1 is a privileged module (default).
+     * |        |          |1 = QSPI1 is a non-privileged module.
+     * |[11]    |SPI1      |Set SPI1 to Non-privileged State
+     * |        |          |0 = SPI1 is a privileged module (default).
+     * |        |          |1 = SPI1 is a non-privileged module.
+     * |[12]    |SPI3      |Set SPI3 to Non-privileged State
+     * |        |          |0 = SPI3 is a privileged module (default).
+     * |        |          |1 = SPI3 is a non-privileged module.
+     * |[13]    |UART1     |Set UART1 to Non-privileged State
+     * |        |          |0 = UART1 is a privileged module (default).
+     * |        |          |1 = UART1 is a non-privileged module.
+     * |[14]    |UART3     |Set UART3 to Non-privileged State
+     * |        |          |0 = UART3 is a privileged module (default).
+     * |        |          |1 = UART3 is a non-privileged module.
+     * |[15]    |UART5     |Set UART5 to Non-privileged State
+     * |        |          |0 = UART5 is a privileged module (default).
+     * |        |          |1 = UART5 is a non-privileged module.
+     * |[16]    |UART7     |Set UART7 to Non-privileged State
+     * |        |          |0 = UART7 is a privileged module (default).
+     * |        |          |1 = UART7 is a non-privileged module.
+     * |[17]    |UART9     |Set UART9 to Non-privileged State
+     * |        |          |0 = UART9 is a privileged module (default).
+     * |        |          |1 = UART9 is a non-privileged module.
+     * |[18]    |SC1       |Set SC1 to Non-privileged State
+     * |        |          |0 = SC1 is a privileged module (default).
+     * |        |          |1 = SC1 is a non-privileged module.
+     * |[19]    |OTG       |Set OTG to Non-privileged State
+     * |        |          |0 = OTG is a privileged module (default).
+     * |        |          |1 = OTG is a non-privileged module.
+     * |[20]    |KPI       |Set KPI to Non-privileged State
+     * |        |          |0 = KPI is a privileged module (default).
+     * |        |          |1 = KPI is a non-privileged module.
+     * |[21]    |TMR23     |Set TMR23 to Non-privileged State
+     * |        |          |0 = TMR23 is a privileged module (default).
+     * |        |          |1 = TMR23 is a non-privileged module.
+     * |[22]    |TRNG      |Set TRNG to Non-privileged State
+     * |        |          |0 = TRNG is a privileged module (default).
+     * |        |          |1 = TRNG is a non-privileged module.
+     * |[23]    |RTC       |Set RTC to Non-privileged State
+     * |        |          |0 = RTC is a privileged module (default).
+     * |        |          |1 = RTC is a non-privileged module.
+     * |[24]    |I2S1      |Set I2S1 to Non-privileged State
+     * |        |          |0 = I2S1 is a privileged module (default).
+     * |        |          |1 = I2S1 is a non-privileged module.
+     * |[25]    |ACMP23    |Set ACMP23 to Non-privileged State
+     * |        |          |0 = ACMP23 is a privileged module (default).
+     * |        |          |1 = ACMP23 is a non-privileged module.
+     * |[26]    |I3C0      |Set I3C0 to Non-privileged State
+     * |        |          |0 = I3C0 is a privileged module (default).
+     * |        |          |1 = I3C0 is a non-privileged module.
+     * |[27]    |UTCPD     |Set UTCPD to Non-privileged State
+     * |        |          |0 = UTCPD is a privileged module (default).
+     * |        |          |1 = UTCPD is a non-privileged module.
+     * @var SCU_T::D2PNP0
+     * Offset: 0x2E0  Domain 2 Peripheral Privilege Attribution Set Register0 (0x4040_0000~0x4041_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |LPPDMA    |Set LPPDMA to Non-privileged State
+     * |        |          |0 = LPPDMA is a privileged module (default).
+     * |        |          |1 = LPPDMA is a non-privileged module.
+     * |[1]     |CCAP      |Set CCAP to Non-privileged State
+     * |        |          |0 = CCAP is a privileged module (default).
+     * |        |          |1 = CCAP is a non-privileged module.
+     * |[3]     |LPGPIO    |Set LPGPIO to Non-privileged State
+     * |        |          |0 = LPGPIO is a privileged module (default).
+     * |        |          |1 = LPGPIO is a non-privileged module.
+     * @var SCU_T::D2PNP2
+     * Offset: 0x2E8  Domain 2 Peripheral Privilege Attribution Set Register2 (0x4044_0000~0x4045_FFFF)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |LPTMR01   |Set LPTMR01 to Non-privileged State
+     * |        |          |0 = LPTMR01 is a privileged module (default).
+     * |        |          |1 = LPTMR01 is a non-privileged module.
+     * |[1]     |TTMR01    |Set TTMR01 to Non-privileged State
+     * |        |          |0 = TTMR01 is a privileged module (default).
+     * |        |          |1 = TTMR01 is a non-privileged module.
+     * |[2]     |LPADC0    |Set LPADC0 to Non-privileged State
+     * |        |          |0 = LPADC0 is a privileged module (default).
+     * |        |          |1 = LPADC0 is a non-privileged module.
+     * |[3]     |LPI2C0    |Set LPI2C0 to Non-privileged State
+     * |        |          |0 = LPI2C0 is a privileged module (default).
+     * |        |          |1 = LPI2C0 is a non-privileged module.
+     * |[4]     |LPSPI0    |Set LPSPI0 to Non-privileged State
+     * |        |          |0 = LPSPI0 is a privileged module (default).
+     * |        |          |1 = LPSPI0 is a non-privileged module.
+     * |[5]     |DMIC0     |Set DMIC0 to Non-privileged State
+     * |        |          |0 = DMIC0 is a privileged module (default).
+     * |        |          |1 = DMIC0 is a non-privileged module.
+     * |[6]     |LPUART0   |Set LPUART0 to Non-privileged State
+     * |        |          |0 = LPUART0 is a privileged module (default).
+     * |        |          |1 = LPUART0 is a non-privileged module.
+     * |[7]     |WDT0      |Set WDT0 to Non-privileged State
+     * |        |          |0 = WDT0 is a privileged module (default).
+     * |        |          |1 = WDT0 is a non-privileged module.
+     * |[8]     |WDT1      |Set WDT1 to Non-privileged State
+     * |        |          |0 = WDT1 is a privileged module (default).
+     * |        |          |1 = WDT1 is a non-privileged module.
+     * |[9]     |AWF       |Set AWF to Non-privileged State
+     * |        |          |0 = AWF is a privileged module (default).
+     * |        |          |1 = AWF is a non-privileged module.
+     * |[16]    |LPSRAMMPC |Set LPSRAMMPC to Non-privileged State
+     * |        |          |0 = LPSRAMMPC is a privileged module (default).
+     * |        |          |1 = LPSRAMMPC is a non-privileged module.
+     * @var SCU_T::IONP
+     * Offset: 0x3A0  I/O Non-privileged Attribution Set Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |PA        |Set GPIO Port a to Non-privileged State
+     * |        |          |0 = GPIO port A is privileged (default).
+     * |        |          |1 = GPIO port A is non-privileged.
+     * |[1]     |PB        |Set GPIO Port B to Non-privileged State
+     * |        |          |0 = GPIO port B is privileged (default).
+     * |        |          |1 = GPIO port B is non-privileged.
+     * |[2]     |PC        |Set GPIO Port C to Non-privileged State
+     * |        |          |0 = GPIO port C is privileged (default).
+     * |        |          |1 = GPIO port C is non-privileged.
+     * |[3]     |PD        |Set GPIO Port D to Non-privileged State
+     * |        |          |0 = GPIO port D is privileged (default).
+     * |        |          |1 = GPIO port D is non-privileged.
+     * |[4]     |PE        |Set GPIO Port E to Non-privileged State
+     * |        |          |0 = GPIO port E is privileged (default).
+     * |        |          |1 = GPIO port E is non-privileged.
+     * |[5]     |PF        |Set GPIO Port F to Non-privileged State
+     * |        |          |0 = GPIO port F is privileged (default).
+     * |        |          |1 = GPIO port F is non-privileged.
+     * |[6]     |PG        |Set GPIO Port G to Non-privileged State
+     * |        |          |0 = GPIO port G is privileged (default).
+     * |        |          |1 = GPIO port G is non-privileged.
+     * |[7]     |PH        |Set GPIO Port H to Non-privileged State
+     * |        |          |0 = GPIO port H is privileged (default).
+     * |        |          |1 = GPIO port H is non-privileged.
+     * |[8]     |PI        |Set GPIO Port I to Non-privileged State
+     * |        |          |0 = GPIO port I is privileged (default).
+     * |        |          |1 = GPIO port I is non-privileged.
+     * |[9]     |PJ        |Set GPIO Port J to Non-privileged State
+     * |        |          |0 = GPIO port J is privileged (default).
+     * |        |          |1 = GPIO port J is non-privileged.
+     * @var SCU_T::SINFAEN
+     * Offset: 0x3C0  Shared Information Access Enable Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |SCUSIAEN  |SCU Shared Information Access Enable Bit
+     * |        |          |0 = Non-secure CPU access SCU Shared information Disabled.
+     * |        |          |1 = Non-secure CPU access SCU Shared information Enabled.
+     * |[1]     |SYSSIAEN  |SYS Shared Information Access Enable Bit
+     * |        |          |0 = Non-secure CPU access SYS Shared information Disabled.
+     * |        |          |1 = Non-secure CPU access SYS Shared information Enabled.
+     * |[2]     |FMCSIAEN  |FMC Shared Information Access Enable Bit
+     * |        |          |0 = Non-secure CPU access FMC Shared information Disabled.
+     * |        |          |1 = Non-secure CPU access FMC Shared information Enabled.
+     * |[3]     |CLKSIAEN  |CLKCTL Shared Information Access Enable Bit
+     * |        |          |0 = Non-secure CPU access CLKCTL Shared information Disabled.
+     * |        |          |1 = Non-secure CPU access CLKCTL Shared information Enabled.
+     * @var SCU_T::SCWP
+     * Offset: 0x3C4  Security Configuration Write Protection Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[1]     |LOCK      |Enable Write Protection Lock Bit (Write Once)
+     * |        |          |0 = Write protection lock Disabled.
+     * |        |          |1 = Write protection Enabled and locked.
+     * |        |          |Note: This bit cannot be cleared to 0 without a System-level reset after set to one.
+     * |[31:16] |WVCODE    |Write Verify Code
+     * |        |          |Read operation:
+     * |        |          |Reserved, all zeros.
+     * |        |          |Write operation:
+     * |        |          |0x475A = The write verify code, 0x475A, is needed to do a valid write to SCU_SCWP.
+     * |        |          |Others = Invalid write verify code.
+     * @var SCU_T::NSMCTL
+     * Offset: 0x400  Non-secure State Monitor Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |PRESCALE  |Pre-scale Value of Non-secure State Monitor Counter
+     * |        |          |0 = Counter Disabled.
+     * |        |          |Others = Counter Enabled and the counter clock source = HCLK/PRESCALE.
+     * |[8]     |NSMIEN    |Non-secure State Monitor Interrupt Enable Bit
+     * |        |          |0 = Non-secure state monitor interrupt Disabled.
+     * |        |          |1 = Non-secure state monitor interrupt Enabled.
+     * |[9]     |AUTORLD   |Auto Reload Non-secure State Monitor Counter When CURRNS Changing to 1
+     * |        |          |0 = Disable clearing non-secure state monitor counter automatically (default).
+     * |        |          |1 = Enable clearing non-secure state monitor counter automatically when the core processor changes from secure state to non-secure state
+     * |[10]    |TMRMOD    |Non-secure Monitor Mode Enable Bit
+     * |        |          |0 = Monitor mode. The counter will count down when the core processor is in non-secure state. (default)
+     * |        |          |1 = Free-counting mode
+     * |        |          |The counter will keep counting no matter the core processor is in secure or non-secure state.
+     * |[12]    |IDLEON    |Monitor Counter Keep Counting When the Chip Is in Idle Mode Enable Bit
+     * |        |          |0 = The counter will be halted when the chip is in idle mode.
+     * |        |          |1 = The counter will keep counting when the chip is in idle mode. (default)
+     * |        |          |Note: In monitor mode, the counter is always halted when the core processor is in secure state.
+     * |[13]    |DBGON     |Monitor Counter Keep Counting When the Chip Is in Debug Mode Enable Bit
+     * |        |          |0 = The counter will be halted when the core processor is halted by ICE. (default)
+     * |        |          |1 = The counter will keep counting when the core processor is halted by ICE.
+     * @var SCU_T::NSMLOAD
+     * Offset: 0x404  Non-secure State Monitor Reload Value Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[23:0]  |RELOAD    |Reload Value for Non-secure State Monitor Counter
+     * |        |          |The RELOAD value will be reloaded to the counter whenever the counter counts down to 0.
+     * @var SCU_T::NSMVAL
+     * Offset: 0x408  Non-secure State Monitor Counter Value Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[23:0]  |VALUE     |Counter Value of Non-secure State Monitor Counter
+     * |        |          |Current value of non-secure state monitor counter
+     * |        |          |This is down counter and counts down only when CURRNS = 1
+     * |        |          |When counting down to 0, VALUE will automatically be reloaded from NSMLOAD register.
+     * |        |          |A write of any value clears the VALUE to 0 and also clears NSMIF.
+     * @var SCU_T::NSMSTS
+     * Offset: 0x40C  Non-secure State Monitor Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |CURRNS    |Current Core Processor Secure/Non-secure State (Read Only)
+     * |        |          |0 = Core processor is in secure state.
+     * |        |          |1 = Core processor is in non-secure state.
+     * |        |          |Note: This bit can be used to monitor the current secure/non-secure state of the core processor, even if the non-secure state monitor counter is disabled.
+     * |[1]     |NSMIF     |Non-secure State Monitor Interrupt Flag
+     * |        |          |0 = Counter does not count down to 0 since the last NSMIF has been cleared.
+     * |        |          |1 = Counter counts down to 0.
+     * |        |          |Note: This bit is cleared by writing 1.
+     * @var SCU_T::SRAM0MPCLUT0
+     * Offset: 0x410  Security Attribute of memory blocks controlled by SRAM0MPC LUT0
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SRAM1MPCLUT0
+     * Offset: 0x414  Security Attribute of memory blocks controlled by SRAM1MPC LUT0
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SRAM2MPCLUT0
+     * Offset: 0x418  Security Attribute of memory blocks controlled by SRAM2MPC LUT0
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SRAM3MPCLUT0
+     * Offset: 0x420  Security Attribute of memory blocks controlled by SRAM3MPC LUT0
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::LPSRAMMPCLUT0
+     * Offset: 0x424  Security Attribute of memory blocks controlled by LPSRAMMPC LUT0
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM0MPCLUT0
+     * Offset: 0x430  Security Attribute of memory blocks controlled by SPIM0MPC LUT0
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM0MPCLUT1
+     * Offset: 0x434  Security Attribute of memory blocks controlled by SPIM0MPC LUT1
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM0MPCLUT2
+     * Offset: 0x438  Security Attribute of memory blocks controlled by SPIM0MPC LUT2
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM0MPCLUT3
+     * Offset: 0x43C  Security Attribute of memory blocks controlled by SPIM0MPC LUT3
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM0MPCLUT4
+     * Offset: 0x440  Security Attribute of memory blocks controlled by SPIM0MPC LUT4
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM0MPCLUT5
+     * Offset: 0x444  Security Attribute of memory blocks controlled by SPIM0MPC LUT5
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM0MPCLUT6
+     * Offset: 0x448  Security Attribute of memory blocks controlled by SPIM0MPC LUT6
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM0MPCLUT7
+     * Offset: 0x44C  Security Attribute of memory blocks controlled by SPIM0MPC LUT7
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM1MPCLUT0
+     * Offset: 0x450  Security Attribute of memory blocks controlled by SPIM1MPC LUT0
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM1MPCLUT1
+     * Offset: 0x454  Security Attribute of memory blocks controlled by SPIM1MPC LUT1
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM1MPCLUT2
+     * Offset: 0x458  Security Attribute of memory blocks controlled by SPIM1MPC LUT2
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM1MPCLUT3
+     * Offset: 0x45C  Security Attribute of memory blocks controlled by SPIM1MPC LUT3
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM1MPCLUT4
+     * Offset: 0x460  Security Attribute of memory blocks controlled by SPIM1MPC LUT4
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM1MPCLUT5
+     * Offset: 0x464  Security Attribute of memory blocks controlled by SPIM1MPC LUT5
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM1MPCLUT6
+     * Offset: 0x468  Security Attribute of memory blocks controlled by SPIM1MPC LUT6
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     * @var SCU_T::SPIM1MPCLUT7
+     * Offset: 0x46C  Security Attribute of memory blocks controlled by SPIM1MPC LUT7
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
+     * |        |          |Each bit controls the Security state of a single block. When:
+     * |        |          |l Bit[n] = 0, the block is in the Secure state.
+     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
+     */
+    union
+    {
         __IO uint32_t DxPNSy[19];                /*!< [0x0000-0x0048] Peripheral Non-secure Attribution Set Register                              */
-        struct {
+        struct
+        {
             __IO uint32_t D0PNS0;                /*!< [0x0000] Domain 0 Peripheral Non-secure Attribution Set Register0 (0x4000_0000~0x4001_FFFF) */
             __I  uint32_t RESERVE0[1];
             __IO uint32_t D0PNS2;                /*!< [0x0008] Domain 0 Peripheral Non-secure Attribution Set Register2 (0x4004_0000~0x4005_FFFF) */
@@ -2426,26 +2430,32 @@ typedef struct
     __I  uint32_t RESERVE6[2];
     __IO uint32_t IONS[10];              /*!< [0x0070-0x0094] I/O Non-secure Attribution Set Register0-9                */
     __I  uint32_t RESERVE7[26];
-    union {
+    union
+    {
         __IO uint32_t SVIEN[2];
-        struct {
+        struct
+        {
             __IO uint32_t SVIEN0;                /*!< [0x0100] Security Violation Interrupt Enable Register - Slave peripherals */
             __IO uint32_t SVIEN1;                /*!< [0x0104] Security Violation Interrupt Enable Register - Master peripherals (MSC) */
         };
     };
     __I  uint32_t RESERVE8[2];
-    union {
+    union
+    {
         __IO uint32_t SVINTSTS[3];
-        struct {
+        struct
+        {
             __IO uint32_t SVINTSTS0;             /*!< [0x0110] Security Violation Interrupt Status Register - Slave peripherals */
             __IO uint32_t SVINTSTS1;             /*!< [0x0114] Security Violation Interrupt Status Register - Master peripherals (MSC) */
             __I  uint32_t SVINTSTS2;             /*!< [0x0118] Security Violation Interrupt Status Register - Memory peripherals (MPC) */
         };
     };
     __I  uint32_t RESERVE9[1];
-    union {
+    union
+    {
         __I  uint32_t PVSRC[17];                 /*!< [0x0120-0x0160] Security Policy Violation Source                          */
-        struct {
+        struct
+        {
             __I  uint32_t APB0PVSRC;             /*!< [0x0120] APB0 Security Policy Violation Source                            */
             __I  uint32_t APB1PVSRC;             /*!< [0x0124] APB1 Security Policy Violation Source                            */
             __I  uint32_t APB2PVSRC;             /*!< [0x0128] APB2 Security Policy Violation Source                            */
@@ -2462,9 +2472,11 @@ typedef struct
         };
     };
     __I  uint32_t RESERVE12[15];
-    union {
+    union
+    {
         __I  uint32_t PMVA[64];                   /*!< [0x01a0-0x01e0] Violation Address                                         */
-        struct {
+        struct
+        {
             __I  uint32_t APB0PVA;               /*!< [0x01a0] APB0 Violation Address                                           */
             __I  uint32_t APB1PVA;               /*!< [0x01a4] APB1 Violation Address                                           */
             __I  uint32_t APB2PVA;               /*!< [0x01a8] APB2 Violation Address                                           */
@@ -2500,9 +2512,11 @@ typedef struct
             __I  uint32_t RESERVE17[14];
         };
     };
-    union {
+    union
+    {
         __IO uint32_t DxPNPy[19];                /*!< [0x02a0-0x02e8] Peripheral Privilege Attribution Set Registers                             */
-        struct {
+        struct
+        {
             __IO uint32_t D0PNP0;                /*!< [0x02a0] Domain 0 Peripheral Privilege Attribution Set Register0 (0x4000_0000~0x4001_FFFF) */
             __I  uint32_t RESERVE18[1];
             __IO uint32_t D0PNP2;                /*!< [0x02a8] Domain 0 Peripheral Privilege Attribution Set Register2 (0x4004_0000~0x4005_FFFF) */

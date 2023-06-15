@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     fvc.h
- * @version  V3.00
- * @brief    Firmware Version Counter Driver Header
+ * @version  V1.00
+ * @brief    Firmware Version Counter driver header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -13,7 +13,6 @@
 extern "C"
 {
 #endif
-
 
 /** @addtogroup Standard_Driver Standard Driver
   @{
@@ -43,9 +42,7 @@ int32_t FVC_GetNVC(uint32_t u32NvcIdx);
 
 
 /** @} end of group FVC_EXPORTED_FUNCTIONS */
-
 /** @} end of group FVC_Driver */
-
 /** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
