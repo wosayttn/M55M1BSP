@@ -16,8 +16,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
-#include "cmsis_compiler.h"
-#include "scu/mpc.h"
+#include "NuMicro.h"
 
 #define MPC_SIE_BLK_CFG_OFFSET 5U
 
@@ -53,7 +52,8 @@
 #define MPC_SIE_INT_BIT (1UL)
 
 /* Error code returned by the internal driver functions */
-enum mpc_sie_intern_error_t {
+enum mpc_sie_intern_error_t
+{
     MPC_SIE_INTERN_ERR_NONE                      = MPC_SIE_ERR_NONE,
     MPC_SIE_INTERN_ERR_NOT_IN_RANGE              = MPC_SIE_ERR_NOT_IN_RANGE,
     MPC_SIE_INTERN_ERR_NOT_ALIGNED               = MPC_SIE_ERR_NOT_ALIGNED,
@@ -80,13 +80,16 @@ enum mpc_sie_intern_error_t {
  * \return True if the base is controller by the range list, false otherwise.
  */
 static uint32_t
-is_ctrl_by_range_list(struct mpc_sie_dev_t *dev, uint32_t addr, const struct mpc_sie_memory_range_t **addr_range) {
+is_ctrl_by_range_list(struct mpc_sie_dev_t *dev, uint32_t addr, const struct mpc_sie_memory_range_t **addr_range)
+{
     uint32_t i;
     const struct mpc_sie_memory_range_t *range;
 
-    for (i = 0; i < dev->data->nbr_of_ranges; i++) {
+    for (i = 0; i < dev->data->nbr_of_ranges; i++)
+    {
         range = dev->data->range_list[i];
-        if (addr >= range->base && addr <= range->limit) {
+        if (addr >= range->base && addr <= range->limit)
+        {
             *addr_range = range;
             return 1;
         }
@@ -115,13 +118,14 @@ is_ctrl_by_range_list(struct mpc_sie_dev_t *dev, uint32_t addr, const struct mpc
  * \return Returns error code as specified in \ref mpc_sie_intern_error_t
  */
 static enum mpc_sie_intern_error_t get_lut_masks(struct mpc_sie_dev_t *dev,
-                                                 const uint32_t base,
-                                                 const uint32_t limit,
-                                                 const struct mpc_sie_memory_range_t **range,
-                                                 uint32_t *first_word_idx,
-                                                 uint32_t *nr_words,
-                                                 uint32_t *first_word_mask,
-                                                 uint32_t *limit_word_mask) {
+        const uint32_t base,
+        const uint32_t limit,
+        const struct mpc_sie_memory_range_t **range,
+        uint32_t *first_word_idx,
+        uint32_t *nr_words,
+        uint32_t *first_word_mask,
+        uint32_t *limit_word_mask)
+{
     const struct mpc_sie_memory_range_t *base_range;
     uint32_t block_size;
     uint32_t base_block_idx;
@@ -139,12 +143,14 @@ static enum mpc_sie_intern_error_t get_lut_masks(struct mpc_sie_dev_t *dev,
      * Check that the addresses are within the controlled regions
      * of this MPC
      */
-    if (!is_ctrl_by_range_list(dev, base, &base_range) || !is_ctrl_by_range_list(dev, limit, &limit_range)) {
+    if (!is_ctrl_by_range_list(dev, base, &base_range) || !is_ctrl_by_range_list(dev, limit, &limit_range))
+    {
         return MPC_SIE_INTERN_ERR_NOT_IN_RANGE;
     }
 
     /* Base and limit should be part of the same range */
-    if (base_range != limit_range) {
+    if (base_range != limit_range)
+    {
         return MPC_SIE_INTERN_ERR_INVALID_RANGE;
     }
     *range = base_range;
@@ -152,7 +158,8 @@ static enum mpc_sie_intern_error_t get_lut_masks(struct mpc_sie_dev_t *dev,
     block_size = (1 << (p_mpc->blk_cfg + MPC_SIE_BLK_CFG_OFFSET));
 
     /* Base and limit+1 addresses must be aligned on the MPC block size */
-    if (base % block_size || (limit + 1) % block_size) {
+    if (base % block_size || (limit + 1) % block_size)
+    {
         return MPC_SIE_INTERN_ERR_NOT_ALIGNED;
     }
 
@@ -172,7 +179,8 @@ static enum mpc_sie_intern_error_t get_lut_masks(struct mpc_sie_dev_t *dev,
     base_block_idx = norm_base / block_size;
     base_word_idx  = base_block_idx / 32;
 
-    if (base_block_idx > limit_block_idx) {
+    if (base_block_idx > limit_block_idx)
+    {
         return MPC_SIE_INTERN_ERR_INVALID_RANGE;
     }
 
@@ -183,7 +191,8 @@ static enum mpc_sie_intern_error_t get_lut_masks(struct mpc_sie_dev_t *dev,
     /* Limit to the highest block that can be configured */
     blk_max = p_mpc->blk_max;
 
-    if ((limit_word_idx > blk_max) || (base_word_idx > blk_max)) {
+    if ((limit_word_idx > blk_max) || (base_word_idx > blk_max))
+    {
         return MPC_SIE_INTERN_ERR_BLK_IDX_TOO_HIGH;
     }
 
@@ -200,7 +209,8 @@ static enum mpc_sie_intern_error_t get_lut_masks(struct mpc_sie_dev_t *dev,
      * If limit_word_mask is 0, it means that the limit touched block index is
      * the limit in its word, so the limit word mask has all its bits selected
      */
-    if (*limit_word_mask == 0) {
+    if (*limit_word_mask == 0)
+    {
         *limit_word_mask = 0xFFFFFFFF;
     }
 
@@ -213,7 +223,8 @@ static enum mpc_sie_intern_error_t get_lut_masks(struct mpc_sie_dev_t *dev,
      * As the only bits that are the same in both masks are the 1 that we want
      * to select, just use XOR to extract them.
      */
-    if (base_word_idx == limit_word_idx) {
+    if (base_word_idx == limit_word_idx)
+    {
         mask             = ~(*first_word_mask ^ *limit_word_mask);
         *first_word_mask = mask;
         *limit_word_mask = mask;
@@ -223,14 +234,17 @@ static enum mpc_sie_intern_error_t get_lut_masks(struct mpc_sie_dev_t *dev,
 }
 
 enum mpc_sie_error_t
-mpc_sie_init(struct mpc_sie_dev_t *dev, const struct mpc_sie_memory_range_t **range_list, uint8_t nbr_of_ranges) {
-    if ((range_list == NULL) || (nbr_of_ranges == 0)) {
+mpc_sie_init(struct mpc_sie_dev_t *dev, const struct mpc_sie_memory_range_t **range_list, uint8_t nbr_of_ranges)
+{
+    if ((range_list == NULL) || (nbr_of_ranges == 0))
+    {
         return MPC_SIE_INVALID_ARG;
     }
 
     dev->data->sie_version = get_sie_version(dev);
 
-    if ((dev->data->sie_version != SIE200) && (dev->data->sie_version != SIE300)) {
+    if ((dev->data->sie_version != SIE200) && (dev->data->sie_version != SIE300))
+    {
         return MPC_SIE_UNSUPPORTED_HARDWARE_VERSION;
     }
 
@@ -241,14 +255,17 @@ mpc_sie_init(struct mpc_sie_dev_t *dev, const struct mpc_sie_memory_range_t **ra
     return MPC_SIE_ERR_NONE;
 }
 
-enum mpc_sie_error_t mpc_sie_get_block_size(struct mpc_sie_dev_t *dev, uint32_t *blk_size) {
+enum mpc_sie_error_t mpc_sie_get_block_size(struct mpc_sie_dev_t *dev, uint32_t *blk_size)
+{
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
 
-    if (dev->data->is_initialized != true) {
+    if (dev->data->is_initialized != true)
+    {
         return MPC_SIE_NOT_INIT;
     }
 
-    if (blk_size == 0) {
+    if (blk_size == 0)
+    {
         return MPC_SIE_INVALID_ARG;
     }
 
@@ -259,9 +276,10 @@ enum mpc_sie_error_t mpc_sie_get_block_size(struct mpc_sie_dev_t *dev, uint32_t 
 }
 
 enum mpc_sie_error_t mpc_sie_config_region(struct mpc_sie_dev_t *dev,
-                                           const uint32_t base,
-                                           const uint32_t limit,
-                                           enum mpc_sie_sec_attr_t attr) {
+        const uint32_t base,
+        const uint32_t limit,
+        enum mpc_sie_sec_attr_t attr)
+{
     enum mpc_sie_intern_error_t error;
     uint32_t first_word_idx;
     uint32_t first_word_mask;
@@ -273,7 +291,8 @@ enum mpc_sie_error_t mpc_sie_config_region(struct mpc_sie_dev_t *dev,
     uint32_t word_value;
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
 
-    if (dev->data->is_initialized != true) {
+    if (dev->data->is_initialized != true)
+    {
         return MPC_SIE_NOT_INIT;
     }
 
@@ -282,9 +301,11 @@ enum mpc_sie_error_t mpc_sie_config_region(struct mpc_sie_dev_t *dev,
 
     limit_word_idx = first_word_idx + nr_words - 1;
 
-    if (error != MPC_SIE_INTERN_ERR_NONE) {
+    if (error != MPC_SIE_INTERN_ERR_NONE)
+    {
         /* Map internal error code lower than 0 to a generic errpr */
-        if (error < 0) {
+        if (error < 0)
+        {
             return MPC_SIE_ERR_INVALID_RANGE;
         }
         return (enum mpc_sie_error_t)error;
@@ -294,7 +315,8 @@ enum mpc_sie_error_t mpc_sie_config_region(struct mpc_sie_dev_t *dev,
      * The memory range should allow accesses in with the wanted security
      * attribute if it requires special attribute for successful accesses
      */
-    if (range->attr != attr) {
+    if (range->attr != attr)
+    {
         return MPC_SIE_ERR_RANGE_SEC_ATTR_NON_COMPATIBLE;
     }
 
@@ -308,11 +330,15 @@ enum mpc_sie_error_t mpc_sie_config_region(struct mpc_sie_dev_t *dev,
     p_mpc->blk_idx = first_word_idx;
 
     /* If only one word needs to be touched in the LUT */
-    if (nr_words == 1) {
+    if (nr_words == 1)
+    {
         word_value = p_mpc->blk_lutn;
-        if (attr == MPC_SIE_SEC_ATTR_NONSECURE) {
+        if (attr == MPC_SIE_SEC_ATTR_NONSECURE)
+        {
             word_value |= first_word_mask;
-        } else {
+        }
+        else
+        {
             word_value &= ~first_word_mask;
         }
 
@@ -332,9 +358,12 @@ enum mpc_sie_error_t mpc_sie_config_region(struct mpc_sie_dev_t *dev,
 
     /* First word */
     word_value = p_mpc->blk_lutn;
-    if (attr == MPC_SIE_SEC_ATTR_NONSECURE) {
+    if (attr == MPC_SIE_SEC_ATTR_NONSECURE)
+    {
         word_value |= first_word_mask;
-    } else {
+    }
+    else
+    {
         word_value &= ~first_word_mask;
     }
     /*
@@ -346,11 +375,15 @@ enum mpc_sie_error_t mpc_sie_config_region(struct mpc_sie_dev_t *dev,
     p_mpc->blk_lutn = word_value;
 
     /* Fully configure the intermediate words if there are any */
-    for (i = first_word_idx + 1; i < limit_word_idx; i++) {
+    for (i = first_word_idx + 1; i < limit_word_idx; i++)
+    {
         p_mpc->blk_idx = i;
-        if (attr == MPC_SIE_SEC_ATTR_NONSECURE) {
+        if (attr == MPC_SIE_SEC_ATTR_NONSECURE)
+        {
             p_mpc->blk_lutn = 0xFFFFFFFF;
-        } else {
+        }
+        else
+        {
             p_mpc->blk_lutn = 0x00000000;
         }
     }
@@ -358,9 +391,12 @@ enum mpc_sie_error_t mpc_sie_config_region(struct mpc_sie_dev_t *dev,
     /* Partially configure the limit word */
     p_mpc->blk_idx = limit_word_idx;
     word_value     = p_mpc->blk_lutn;
-    if (attr == MPC_SIE_SEC_ATTR_NONSECURE) {
+    if (attr == MPC_SIE_SEC_ATTR_NONSECURE)
+    {
         word_value |= limit_word_mask;
-    } else {
+    }
+    else
+    {
         word_value &= ~limit_word_mask;
     }
     p_mpc->blk_idx  = limit_word_idx;
@@ -374,7 +410,8 @@ enum mpc_sie_error_t mpc_sie_config_region(struct mpc_sie_dev_t *dev,
 }
 
 enum mpc_sie_error_t
-mpc_sie_get_region_config(struct mpc_sie_dev_t *dev, uint32_t base, uint32_t limit, enum mpc_sie_sec_attr_t *attr) {
+mpc_sie_get_region_config(struct mpc_sie_dev_t *dev, uint32_t base, uint32_t limit, enum mpc_sie_sec_attr_t *attr)
+{
     enum mpc_sie_sec_attr_t attr_prev;
     uint32_t block_size;
     uint32_t block_size_mask;
@@ -389,11 +426,13 @@ mpc_sie_get_region_config(struct mpc_sie_dev_t *dev, uint32_t base, uint32_t lim
     const struct mpc_sie_memory_range_t *range;
     uint32_t word_value;
 
-    if (dev->data->is_initialized != true) {
+    if (dev->data->is_initialized != true)
+    {
         return MPC_SIE_NOT_INIT;
     }
 
-    if (attr == 0) {
+    if (attr == 0)
+    {
         return MPC_SIE_INVALID_ARG;
     }
 
@@ -424,9 +463,11 @@ mpc_sie_get_region_config(struct mpc_sie_dev_t *dev, uint32_t base, uint32_t lim
 
     limit_word_idx = first_word_idx + nr_words - 1;
 
-    if (error != MPC_SIE_INTERN_ERR_NONE) {
+    if (error != MPC_SIE_INTERN_ERR_NONE)
+    {
         /* Map internal error code lower than 0 to generic error */
-        if (error < 0) {
+        if (error < 0)
+        {
             return MPC_SIE_ERR_INVALID_RANGE;
         }
         return (enum mpc_sie_error_t)error;
@@ -436,18 +477,24 @@ mpc_sie_get_region_config(struct mpc_sie_dev_t *dev, uint32_t base, uint32_t lim
     p_mpc->blk_idx = first_word_idx;
 
     /* If only one word needs to be touched in the LUT */
-    if (nr_words == 1) {
+    if (nr_words == 1)
+    {
         word_value = p_mpc->blk_lutn;
         word_value &= first_word_mask;
-        if (word_value == 0) {
+        if (word_value == 0)
+        {
             *attr = MPC_SIE_SEC_ATTR_SECURE;
             /*
              * If there are differences between the mask and the word value,
              * it means that the security attributes of blocks are mixed
              */
-        } else if (word_value ^ first_word_mask) {
+        }
+        else if (word_value ^ first_word_mask)
+        {
             *attr = MPC_SIE_SEC_ATTR_MIXED;
-        } else {
+        }
+        else
+        {
             *attr = MPC_SIE_SEC_ATTR_NONSECURE;
         }
         return MPC_SIE_ERR_NONE;
@@ -455,16 +502,21 @@ mpc_sie_get_region_config(struct mpc_sie_dev_t *dev, uint32_t base, uint32_t lim
 
     /* Get the partial configuration of the first word */
     word_value = p_mpc->blk_lutn & first_word_mask;
-    if (word_value == 0x00000000) {
+    if (word_value == 0x00000000)
+    {
         *attr = MPC_SIE_SEC_ATTR_SECURE;
-    } else if (word_value ^ first_word_mask) {
+    }
+    else if (word_value ^ first_word_mask)
+    {
         *attr = MPC_SIE_SEC_ATTR_MIXED;
         /*
          * Bail out as the security attribute will be the same regardless
          * of the configuration of other blocks
          */
         return MPC_SIE_ERR_NONE;
-    } else {
+    }
+    else
+    {
         *attr = MPC_SIE_SEC_ATTR_NONSECURE;
     }
     /*
@@ -474,20 +526,27 @@ mpc_sie_get_region_config(struct mpc_sie_dev_t *dev, uint32_t base, uint32_t lim
     attr_prev = *attr;
 
     /* Get the configuration of the intermediate words if there are any */
-    for (i = first_word_idx + 1; i < limit_word_idx; i++) {
+    for (i = first_word_idx + 1; i < limit_word_idx; i++)
+    {
         p_mpc->blk_idx = i;
         word_value     = p_mpc->blk_lutn;
-        if (word_value == 0x00000000) {
+        if (word_value == 0x00000000)
+        {
             *attr = MPC_SIE_SEC_ATTR_SECURE;
-        } else if (word_value == 0xFFFFFFFF) {
+        }
+        else if (word_value == 0xFFFFFFFF)
+        {
             *attr = MPC_SIE_SEC_ATTR_NONSECURE;
-        } else {
+        }
+        else
+        {
             *attr = MPC_SIE_SEC_ATTR_MIXED;
             return MPC_SIE_ERR_NONE;
         }
 
         /* If the attribute is different than the one found before, bail out */
-        if (*attr != attr_prev) {
+        if (*attr != attr_prev)
+        {
             *attr = MPC_SIE_SEC_ATTR_MIXED;
             return MPC_SIE_ERR_NONE;
         }
@@ -497,16 +556,22 @@ mpc_sie_get_region_config(struct mpc_sie_dev_t *dev, uint32_t base, uint32_t lim
     /* Get the partial configuration of the limit word */
     p_mpc->blk_idx = limit_word_idx;
     word_value     = p_mpc->blk_lutn & limit_word_mask;
-    if (word_value == 0x00000000) {
+    if (word_value == 0x00000000)
+    {
         *attr = MPC_SIE_SEC_ATTR_SECURE;
-    } else if (word_value ^ first_word_mask) {
+    }
+    else if (word_value ^ first_word_mask)
+    {
         *attr = MPC_SIE_SEC_ATTR_MIXED;
         return MPC_SIE_ERR_NONE;
-    } else {
+    }
+    else
+    {
         *attr = MPC_SIE_SEC_ATTR_NONSECURE;
     }
 
-    if (*attr != attr_prev) {
+    if (*attr != attr_prev)
+    {
         *attr = MPC_SIE_SEC_ATTR_MIXED;
         return MPC_SIE_ERR_NONE;
     }
@@ -514,14 +579,17 @@ mpc_sie_get_region_config(struct mpc_sie_dev_t *dev, uint32_t base, uint32_t lim
     return MPC_SIE_ERR_NONE;
 }
 
-enum mpc_sie_error_t mpc_sie_get_ctrl(struct mpc_sie_dev_t *dev, uint32_t *ctrl_val) {
+enum mpc_sie_error_t mpc_sie_get_ctrl(struct mpc_sie_dev_t *dev, uint32_t *ctrl_val)
+{
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
 
-    if (dev->data->is_initialized != true) {
+    if (dev->data->is_initialized != true)
+    {
         return MPC_SIE_NOT_INIT;
     }
 
-    if (ctrl_val == 0) {
+    if (ctrl_val == 0)
+    {
         return MPC_SIE_INVALID_ARG;
     }
 
@@ -530,10 +598,12 @@ enum mpc_sie_error_t mpc_sie_get_ctrl(struct mpc_sie_dev_t *dev, uint32_t *ctrl_
     return MPC_SIE_ERR_NONE;
 }
 
-enum mpc_sie_error_t mpc_sie_set_ctrl(struct mpc_sie_dev_t *dev, uint32_t mpc_ctrl) {
+enum mpc_sie_error_t mpc_sie_set_ctrl(struct mpc_sie_dev_t *dev, uint32_t mpc_ctrl)
+{
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
 
-    if (dev->data->is_initialized != true) {
+    if (dev->data->is_initialized != true)
+    {
         return MPC_SIE_NOT_INIT;
     }
 
@@ -542,87 +612,122 @@ enum mpc_sie_error_t mpc_sie_set_ctrl(struct mpc_sie_dev_t *dev, uint32_t mpc_ct
     return MPC_SIE_ERR_NONE;
 }
 
-enum mpc_sie_error_t mpc_sie_get_sec_resp(struct mpc_sie_dev_t *dev, enum mpc_sie_sec_resp_t *sec_rep) {
+enum mpc_sie_error_t mpc_sie_get_sec_resp(struct mpc_sie_dev_t *dev, enum mpc_sie_sec_resp_t *sec_rep)
+{
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
     bool gating_present             = false;
 
-    if (dev->data->is_initialized != true) {
+    if (dev->data->is_initialized != true)
+    {
         return MPC_SIE_NOT_INIT;
     }
 
-    if (sec_rep == NULL) {
+    if (sec_rep == NULL)
+    {
         return MPC_SIE_INVALID_ARG;
     }
 
-    if (dev->data->sie_version == SIE200) {
-        if (p_mpc->ctrl & MPC_SIE200_CTRL_SEC_RESP) {
+    if (dev->data->sie_version == SIE200)
+    {
+        if (p_mpc->ctrl & MPC_SIE200_CTRL_SEC_RESP)
+        {
             *sec_rep = MPC_SIE_RESP_BUS_ERROR;
-        } else {
+        }
+        else
+        {
             *sec_rep = MPC_SIE_RESP_RAZ_WI;
         }
 
-    } else if (dev->data->sie_version == SIE300) {
+    }
+    else if (dev->data->sie_version == SIE300)
+    {
         mpc_sie_is_gating_present(dev, &gating_present);
-        if (!gating_present) {
+        if (!gating_present)
+        {
             return MPC_SIE_ERR_GATING_NOT_PRESENT;
         }
 
-        if (p_mpc->ctrl & MPC_SIE300_CTRL_SEC_RESP) {
+        if (p_mpc->ctrl & MPC_SIE300_CTRL_SEC_RESP)
+        {
             /* MPC returns a BUS ERROR response */
             *sec_rep = MPC_SIE_RESP_BUS_ERROR;
-        } else {
+        }
+        else
+        {
             /* MPC sets the ready signals LOW, which stalls any transactions */
             *sec_rep = MPC_SIE_RESP_WAIT_GATING_DISABLED;
         }
-    } else {
+    }
+    else
+    {
         return MPC_SIE_UNSUPPORTED_HARDWARE_VERSION;
     }
 
     return MPC_SIE_ERR_NONE;
 }
 
-enum mpc_sie_error_t mpc_sie_set_sec_resp(struct mpc_sie_dev_t *dev, enum mpc_sie_sec_resp_t sec_rep) {
+enum mpc_sie_error_t mpc_sie_set_sec_resp(struct mpc_sie_dev_t *dev, enum mpc_sie_sec_resp_t sec_rep)
+{
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
     bool gating_present             = false;
 
-    if (dev->data->is_initialized != true) {
+    if (dev->data->is_initialized != true)
+    {
         return MPC_SIE_NOT_INIT;
     }
 
-    if (dev->data->sie_version == SIE200) {
-        if (sec_rep == MPC_SIE_RESP_BUS_ERROR) {
+    if (dev->data->sie_version == SIE200)
+    {
+        if (sec_rep == MPC_SIE_RESP_BUS_ERROR)
+        {
             p_mpc->ctrl |= MPC_SIE200_CTRL_SEC_RESP;
-        } else if (sec_rep == MPC_SIE_RESP_RAZ_WI) {
+        }
+        else if (sec_rep == MPC_SIE_RESP_RAZ_WI)
+        {
             p_mpc->ctrl &= ~MPC_SIE200_CTRL_SEC_RESP;
-        } else {
+        }
+        else
+        {
             return MPC_SIE_INVALID_ARG;
         }
 
-    } else if (dev->data->sie_version == SIE300) {
+    }
+    else if (dev->data->sie_version == SIE300)
+    {
         mpc_sie_is_gating_present(dev, &gating_present);
-        if (!gating_present) {
+        if (!gating_present)
+        {
             return MPC_SIE_ERR_GATING_NOT_PRESENT;
         }
 
-        if (sec_rep == MPC_SIE_RESP_BUS_ERROR) {
+        if (sec_rep == MPC_SIE_RESP_BUS_ERROR)
+        {
             p_mpc->ctrl |= MPC_SIE300_CTRL_SEC_RESP;
-        } else if (sec_rep == MPC_SIE_RESP_WAIT_GATING_DISABLED) {
+        }
+        else if (sec_rep == MPC_SIE_RESP_WAIT_GATING_DISABLED)
+        {
             p_mpc->ctrl &= ~MPC_SIE300_CTRL_SEC_RESP;
-        } else {
+        }
+        else
+        {
             return MPC_SIE_INVALID_ARG;
         }
 
-    } else {
+    }
+    else
+    {
         return MPC_SIE_UNSUPPORTED_HARDWARE_VERSION;
     }
 
     return MPC_SIE_ERR_NONE;
 }
 
-enum mpc_sie_error_t mpc_sie_irq_enable(struct mpc_sie_dev_t *dev) {
+enum mpc_sie_error_t mpc_sie_irq_enable(struct mpc_sie_dev_t *dev)
+{
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
 
-    if (dev->data->is_initialized != true) {
+    if (dev->data->is_initialized != true)
+    {
         return MPC_SIE_NOT_INIT;
     }
 
@@ -631,28 +736,33 @@ enum mpc_sie_error_t mpc_sie_irq_enable(struct mpc_sie_dev_t *dev) {
     return MPC_SIE_ERR_NONE;
 }
 
-void mpc_sie_irq_disable(struct mpc_sie_dev_t *dev) {
+void mpc_sie_irq_disable(struct mpc_sie_dev_t *dev)
+{
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
 
     p_mpc->int_en &= ~MPC_SIE_INT_BIT;
 }
 
-void mpc_sie_clear_irq(struct mpc_sie_dev_t *dev) {
+void mpc_sie_clear_irq(struct mpc_sie_dev_t *dev)
+{
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
 
     p_mpc->int_clear = MPC_SIE_INT_BIT;
 }
 
-uint32_t mpc_sie_irq_state(struct mpc_sie_dev_t *dev) {
+uint32_t mpc_sie_irq_state(struct mpc_sie_dev_t *dev)
+{
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
 
     return (p_mpc->int_stat & MPC_SIE_INT_BIT);
 }
 
-enum mpc_sie_error_t mpc_sie_lock_down(struct mpc_sie_dev_t *dev) {
+enum mpc_sie_error_t mpc_sie_lock_down(struct mpc_sie_dev_t *dev)
+{
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
 
-    if (dev->data->is_initialized != true) {
+    if (dev->data->is_initialized != true)
+    {
         return MPC_SIE_NOT_INIT;
     }
 
@@ -661,14 +771,17 @@ enum mpc_sie_error_t mpc_sie_lock_down(struct mpc_sie_dev_t *dev) {
     return MPC_SIE_ERR_NONE;
 }
 
-enum mpc_sie_error_t mpc_sie_is_gating_present(struct mpc_sie_dev_t *dev, bool *gating_present) {
+enum mpc_sie_error_t mpc_sie_is_gating_present(struct mpc_sie_dev_t *dev, bool *gating_present)
+{
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
 
-    if (dev->data->is_initialized != true) {
+    if (dev->data->is_initialized != true)
+    {
         return MPC_SIE_NOT_INIT;
     }
 
-    if (dev->data->sie_version != SIE300) {
+    if (dev->data->sie_version != SIE300)
+    {
         return MPC_SIE_UNSUPPORTED_HARDWARE_VERSION;
     }
 
@@ -677,26 +790,230 @@ enum mpc_sie_error_t mpc_sie_is_gating_present(struct mpc_sie_dev_t *dev, bool *
     return MPC_SIE_ERR_NONE;
 }
 
-uint32_t get_sie_version(struct mpc_sie_dev_t *dev) {
+uint32_t get_sie_version(struct mpc_sie_dev_t *dev)
+{
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
 
     return p_mpc->pidr0 & MPC_PIDR0_SIE_VERSION_MASK;
 }
 
-bool mpc_sie_get_gate_ack(struct mpc_sie_dev_t *dev) {
+bool mpc_sie_get_gate_ack(struct mpc_sie_dev_t *dev)
+{
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
 
     return (bool)(p_mpc->ctrl & MPC_SIE300_CTRL_GATE_ACK);
 }
 
-void mpc_sie_request_gating(struct mpc_sie_dev_t *dev) {
+void mpc_sie_request_gating(struct mpc_sie_dev_t *dev)
+{
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
 
     p_mpc->ctrl |= MPC_SIE300_CTRL_GATE_REQ;
 }
 
-void mpc_sie_release_gating(struct mpc_sie_dev_t *dev) {
+void mpc_sie_release_gating(struct mpc_sie_dev_t *dev)
+{
     struct mpc_sie_reg_map_t *p_mpc = (struct mpc_sie_reg_map_t *)dev->cfg->base;
 
     p_mpc->ctrl &= ~MPC_SIE300_CTRL_GATE_REQ;
+}
+
+#define N_MEM_RANGES (2)
+int32_t MPC_InitCFG(
+    const uint32_t u32MPC_Base,
+    const uint32_t u32MemBase, const uint32_t u32MemSize,
+    const uint32_t u32SecureSize    /* Length (in bytes) of secure region */
+)
+{
+    enum mpc_sie_error_t ret = MPC_SIE_ERR_NONE;
+    /* Secure range */
+    const struct mpc_sie_memory_range_t mpc_range_s =
+    {
+        .base = u32MemBase,
+        .limit = u32MemBase + u32MemSize - 1,
+        .range_offset = 0,
+        .attr = MPC_SIE_SEC_ATTR_SECURE
+    };
+
+    /* Non-Secure range */
+    const struct mpc_sie_memory_range_t mpc_range_ns =
+    {
+        .base = u32MemBase + NS_OFFSET,
+        .limit = u32MemBase + NS_OFFSET + u32MemSize - 1,
+        .range_offset = 0,
+        .attr = MPC_SIE_SEC_ATTR_NONSECURE
+    };
+    /* Consolidated ranges */
+    const struct mpc_sie_memory_range_t *mpc_range_list[N_MEM_RANGES] = { &mpc_range_s, &mpc_range_ns };
+
+    /* MPC device configuration controller */
+    const struct mpc_sie_dev_cfg_t mpc_dev_cfg =
+    {
+        .base = u32MPC_Base
+    };
+
+    /* MPC device data */
+    struct mpc_sie_dev_data_t mpc_dev_data =
+    {
+        .range_list = 0,
+        .nbr_of_ranges = 0,
+        .is_initialized = false
+    };
+    /* MPC device itself */
+    struct mpc_sie_dev_t mpc_dev = { &mpc_dev_cfg, &mpc_dev_data };
+
+    /* Initialise this MPC device */
+    ret = mpc_sie_init(&mpc_dev, mpc_range_list, N_MEM_RANGES);
+    if (MPC_SIE_ERR_NONE != ret)
+    {
+        return ret;
+    }
+
+    /* Configure the non secure region */
+    if (u32SecureSize < u32MemSize)
+    {
+        ret = mpc_sie_config_region(&mpc_dev, (u32MemBase + NS_OFFSET + u32SecureSize), (u32MemBase + NS_OFFSET + u32MemSize - u32SecureSize - 1), MPC_SIE_SEC_ATTR_NONSECURE);
+        if (MPC_SIE_ERR_NONE != ret)
+        {
+            return ret;
+        }
+    }
+
+    /* Configure the secure region */
+    if (u32SecureSize > 0)
+    {
+        ret = mpc_sie_config_region(&mpc_dev, u32MemBase, u32MemBase + u32SecureSize - 1, MPC_SIE_SEC_ATTR_SECURE);
+        if (MPC_SIE_ERR_NONE != ret)
+        {
+            return ret;
+        }
+    }
+
+    if (get_sie_version(&mpc_dev) == SIE200)
+    {
+        ret = mpc_sie_set_sec_resp(&mpc_dev, MPC_SIE_RESP_BUS_ERROR);
+        if (MPC_SIE_ERR_NONE != ret)
+        {
+            //printf("Error configuring secure response\n");
+            return 1;
+        }
+
+        ret = mpc_sie_irq_enable(&mpc_dev);
+        if (MPC_SIE_ERR_NONE != ret)
+        {
+            //printf("Error enable interrupt\n");
+            return 1;
+        }
+    }
+
+    mpc_sie_clear_irq(&mpc_dev);
+
+    /* Lock down the configuration */
+    ret = mpc_sie_lock_down(&mpc_dev);
+    if (MPC_SIE_ERR_NONE != ret)
+    {
+        //printf("Error locking down MPC range 0x%08X-0x%08X\n", mem_baseaddr, mem_baseaddr + mem_size);
+        return 1;
+    }
+
+    return ret;
+}
+
+int SetupMPC(const uint32_t mpc_baseaddr,
+             const uint32_t mem_baseaddr, const uint32_t mem_size,
+             const uint32_t baseaddr_s,  /* Secure base address */
+             const uint32_t len_s,       /* Length (in bytes) of secure region */
+             const uint32_t baseaddr_ns, /* Non-secure base address */
+             const uint32_t len_ns)      /* Length (in bytes) of non-secure region */
+{
+    //printf("[%s] Enter\n", __func__);
+    /* Secure range */
+    const struct mpc_sie_memory_range_t mpc_range_s = {/* base */  mem_baseaddr,
+              /* limit */ mem_baseaddr + mem_size - 1,
+              /* range_offset */ 0,
+              /* attr */  MPC_SIE_SEC_ATTR_SECURE
+    };
+
+    /* Non secure range */
+    const struct mpc_sie_memory_range_t mpc_range_ns = {/* base */  mem_baseaddr + NS_OFFSET,
+              /* limit */ mem_baseaddr + NS_OFFSET + mem_size - 1,
+              /* range_offset */ 0,
+              /* attr */  MPC_SIE_SEC_ATTR_NONSECURE
+    };
+
+    /* Consolidated ranges */
+    const struct mpc_sie_memory_range_t *mpc_range_list[N_MEM_RANGES] = {&mpc_range_s, &mpc_range_ns};
+
+    /* MPC device configuration controller */
+    const struct mpc_sie_dev_cfg_t mpc_dev_cfg = {mpc_baseaddr};
+
+    /* MPC device data */
+    struct mpc_sie_dev_data_t mpc_dev_data = {};
+
+    /* MPC device itself */
+    struct mpc_sie_dev_t mpc_dev = {&mpc_dev_cfg, &mpc_dev_data};
+
+    enum mpc_sie_error_t ret = MPC_SIE_ERR_NONE;
+
+    //printf("Configuring MPC range 0x%08X-0x%08X\n", mem_baseaddr, mem_baseaddr + mem_size);
+    //printf("baseaddr_s: 0x%08X, len_s: 0x%08X, baseaddr_ns: 0x%08X, len_ns: 0x%08X\n", baseaddr_s, len_s, baseaddr_ns, len_ns);
+
+    /* Initialise this MPC device */
+    ret = mpc_sie_init(&mpc_dev, mpc_range_list, N_MEM_RANGES);
+    if (MPC_SIE_ERR_NONE != ret)
+    {
+        //printf("Error initialising MPC range 0x%08X-0x%08X\n", mem_baseaddr, mem_baseaddr + mem_size);
+        return 1;
+    }
+
+    /* Configure the non secure region */
+    if (len_ns > 0)
+    {
+        ret = mpc_sie_config_region(&mpc_dev, baseaddr_ns, baseaddr_ns + len_ns - 1, MPC_SIE_SEC_ATTR_NONSECURE);
+        if (MPC_SIE_ERR_NONE != ret)
+        {
+            //printf("Error configuring non-secure region 0x%08X-0x%08X (%d)\n", baseaddr_ns, baseaddr_ns + len_ns, ret);
+            return 1;
+        }
+    }
+
+    /* Configure the secure region */
+    if (len_s > 0)
+    {
+        ret = mpc_sie_config_region(&mpc_dev, baseaddr_s, baseaddr_s + len_s - 1, MPC_SIE_SEC_ATTR_SECURE);
+        if (MPC_SIE_ERR_NONE != ret)
+        {
+            //printf("Error configuring secure region 0x%08X-0x%08X\n", baseaddr_s, baseaddr_s + len_s);
+            return 1;
+        }
+    }
+
+    if (get_sie_version(&mpc_dev) == SIE200)
+    {
+        ret = mpc_sie_set_sec_resp(&mpc_dev, MPC_SIE_RESP_BUS_ERROR);
+        if (MPC_SIE_ERR_NONE != ret)
+        {
+            //printf("Error configuring secure response\n");
+            return 1;
+        }
+
+        ret = mpc_sie_irq_enable(&mpc_dev);
+        if (MPC_SIE_ERR_NONE != ret)
+        {
+            //printf("Error enable interrupt\n");
+            return 1;
+        }
+    }
+
+    mpc_sie_clear_irq(&mpc_dev);
+
+    /* Lock down the configuration */
+    ret = mpc_sie_lock_down(&mpc_dev);
+    if (MPC_SIE_ERR_NONE != ret)
+    {
+        //printf("Error locking down MPC range 0x%08X-0x%08X\n", mem_baseaddr, mem_baseaddr + mem_size);
+        return 1;
+    }
+
+    return 0;
 }

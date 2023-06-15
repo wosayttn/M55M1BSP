@@ -12,17 +12,10 @@
 #include "NuMicro.h"
 #include "CUnit.h"
 #include "Console.h"
-#include "ccap_cunit.h"
+#include "plm_cunit.h"
 
 #ifndef DEBUG_PORT
     #define DEBUG_PORT UART0
-#endif
-
-#ifndef DEBUG_PORT_Init
-void DEBUG_PORT_Init(UART_T *psUART, uint32_t u32Baudrate)
-{
-    UART_Open(psUART, u32Baudrate);
-}
 #endif
 
 void SYS_Init(void)
@@ -59,20 +52,13 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-    CLK_EnableModuleClock(CCAP0_MODULE);
-    SYS_ResetModule(SYS_UART0RST);
-    SYS_ResetModule(SYS_CCAP0RST);
-
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+    /* Enable UART0 module clock */
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    SetDebugUartMFP();
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -91,7 +77,7 @@ void AddTests(void)
     assert((NULL != CU_get_registry()));
     assert(!CU_is_test_running());
 
-    if (CUE_SUCCESS != CU_register_suites(CCAP_Suites))
+    if (CUE_SUCCESS != CU_register_suites(PLM_Suites))
     {
         fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
         exit(EXIT_FAILURE);
@@ -102,12 +88,12 @@ int main(int argc, char *argv[])
 {
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-    /* Init DEBUG_PORT to 115200-8N1 for printf */
-    DEBUG_PORT_Init(DEBUG_PORT, 115200);
+    /* Init Debug UART to 115200-8N1 for print message */
+    InitDebugUart();
 
     printf("\n\n");
     printf("+--------------------------------------+\n");
-    printf("|         M55M1 CCAP CUnit Test        |\n");
+    printf("|       M55M1 CUnit Test Template      |\n");
     printf("+--------------------------------------+\n");
 
     if (CU_initialize_registry())

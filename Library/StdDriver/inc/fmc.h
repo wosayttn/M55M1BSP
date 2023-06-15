@@ -30,48 +30,48 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define Base Address                                                                                     */
 /*---------------------------------------------------------------------------------------------------------*/
-#define FMC_APROM_BASE          0x00100000UL                        /*!< APROM base address                 \hideinitializer */
-#define FMC_BANK_SIZE           0x00100000UL                        /*!< APROM Bank Size                    \hideinitializer */
-#define FMC_APROM_BANK0_END     (FMC_APROM_BASE + FMC_BANK_SIZE)    /*!< APROM bank0 end address            \hideinitializer */
-#define FMC_APROM_BANK0_BASE    FMC_APROM_BASE                      /*!< APROM bank0 base address           \hideinitializer */
-#define FMC_APROM_BANK1_BASE    FMC_APROM_BANK0_END                 /*!< APROM bank1 base address           \hideinitializer */
-#define FMC_APROM_SIZE          (FMC_BANK_SIZE * 2)                 /*!< APROM Size                         \hideinitializer */
-#define FMC_APROM_END           (FMC_APROM_BASE + FMC_APROM_SIZE)   /*!< APROM end address                  \hideinitializer */
+#define FMC_APROM_BASE          0x00100000UL                            /*!< APROM base address                 \hideinitializer */
+#define FMC_APROM_BANK_SIZE     0x00100000UL                            /*!< APROM Bank Size                    \hideinitializer */
+#define FMC_APROM_BANK0_END     (FMC_APROM_BASE + FMC_APROM_BANK_SIZE)  /*!< APROM bank0 end address            \hideinitializer */
+#define FMC_APROM_BANK0_BASE    FMC_APROM_BASE                          /*!< APROM bank0 base address           \hideinitializer */
+#define FMC_APROM_BANK1_BASE    FMC_APROM_BANK0_END                     /*!< APROM bank1 base address           \hideinitializer */
+#define FMC_APROM_SIZE          (FMC_APROM_BANK_SIZE * 2)               /*!< APROM Size                         \hideinitializer */
+#define FMC_APROM_END           (FMC_APROM_BASE + FMC_APROM_SIZE)       /*!< APROM end address                  \hideinitializer */
 
-#define FMC_LDROM_BASE          0x0F100000UL                        /*!< LDROM base address                 \hideinitializer */
-#define FMC_LDROM_SIZE          0x2000UL                            /*!< LDROM Size (8 Kbytes)              \hideinitializer */
-#define FMC_LDROM_END           (FMC_LDROM_BASE + FMC_LDROM_SIZE)   /*!< LDROM end address                  \hideinitializer */
+#define FMC_LDROM_BASE          0x0F100000UL                            /*!< LDROM base address                 \hideinitializer */
+#define FMC_LDROM_SIZE          0x2000UL                                /*!< LDROM Size (8 Kbytes)              \hideinitializer */
+#define FMC_LDROM_END           (FMC_LDROM_BASE + FMC_LDROM_SIZE)       /*!< LDROM end address                  \hideinitializer */
 
-#define FMC_XOM_BASE            0x0F300040UL                        /*!< XOM  Base Address                  \hideinitializer */
-#define FMC_XOM_SIZE            0x0F300044UL                        /*!< XOM  Size                          \hideinitializer */
-#define FMC_XOM_CTRL            0x0F300048UL                        /*!< XOM  Control                       \hideinitializer */
-#define FMC_XOMR0_BASE          FMC_XOM_BASE                        /*!< XOMR 0 Base Address                \hideinitializer */
-#define FMC_XOMR1_BASE          (FMC_XOM_BASE + 0x10UL)             /*!< XOMR 1 Base Address                \hideinitializer */
-#define FMC_XOMR2_BASE          (FMC_XOM_BASE + 0x20UL)             /*!< XOMR 2 Base Address                \hideinitializer */
-#define FMC_XOMR3_BASE          (FMC_XOM_BASE + 0x30UL)             /*!< XOMR 3 Base Address                \hideinitializer */
+#define FMC_XOM_BASE            0x0F300040UL                            /*!< XOM  Base Address                  \hideinitializer */
+#define FMC_XOM_SIZE            0x0F300044UL                            /*!< XOM  Size                          \hideinitializer */
+#define FMC_XOM_CTRL            0x0F300048UL                            /*!< XOM  Control                       \hideinitializer */
+#define FMC_XOMR0_BASE          FMC_XOM_BASE                            /*!< XOMR 0 Base Address                \hideinitializer */
+#define FMC_XOMR1_BASE          (FMC_XOM_BASE + 0x10UL)                 /*!< XOMR 1 Base Address                \hideinitializer */
+#define FMC_XOMR2_BASE          (FMC_XOM_BASE + 0x20UL)                 /*!< XOMR 2 Base Address                \hideinitializer */
+#define FMC_XOMR3_BASE          (FMC_XOM_BASE + 0x30UL)                 /*!< XOMR 3 Base Address                \hideinitializer */
 
-#define FMC_CONFIG_BASE         0x0F300000UL                        /*!< User Configuration address         \hideinitializer */
-#define FMC_USER_CONFIG_0       FMC_CONFIG_BASE                     /*!< User Config 0 address              \hideinitializer */
-#define FMC_USER_CONFIG_1       (FMC_CONFIG_BASE + 0x4UL)           /*!< User Config 1 address              \hideinitializer */
-#define FMC_USER_CONFIG_2       (FMC_CONFIG_BASE + 0x8UL)           /*!< User Config 2 address              \hideinitializer */
-#define FMC_USER_CONFIG_3       (FMC_CONFIG_BASE + 0xCUL)           /*!< User Config 3 address              \hideinitializer */
-#define FMC_USER_CONFIG_4       (FMC_CONFIG_BASE + 0x10UL)          /*!< User Config 4 address              \hideinitializer */
-#define FMC_USER_CONFIG_5       (FMC_CONFIG_BASE + 0x14UL)          /*!< User Config 5 address              \hideinitializer */
-#define FMC_USER_CONFIG_6       (FMC_CONFIG_BASE + 0x18UL)          /*!< User Config 6 address              \hideinitializer */
-#define FMC_USER_CONFIG_8       (FMC_CONFIG_BASE + 0x20UL)          /*!< User Config 6 address              \hideinitializer */
-#define FMC_USER_CONFIG_9       (FMC_CONFIG_BASE + 0x24UL)          /*!< User Config 6 address              \hideinitializer */
-#define FMC_USER_CONFIG_10      (FMC_CONFIG_BASE + 0x28UL)          /*!< User Config 6 address              \hideinitializer */
-#define FMC_SCRLOCK_BASE        (FMC_CONFIG_BASE + 0x2CUL)          /*!< Secure Region Lock base address    \hideinitializer */
-#define FMC_NSCBA_BASE          (FMC_CONFIG_BASE + 0x30UL)          /*!< Non-Secure base address            \hideinitializer */
-#define FMC_ARLOCK_BASE         (FMC_CONFIG_BASE + 0x34UL)          /*!< All Region Lock base address       \hideinitializer */
+#define FMC_CONFIG_BASE         0x0F300000UL                            /*!< User Configuration address         \hideinitializer */
+#define FMC_USER_CONFIG_0       FMC_CONFIG_BASE                         /*!< User Config 0 address              \hideinitializer */
+#define FMC_USER_CONFIG_1       (FMC_CONFIG_BASE + 0x4UL)               /*!< User Config 1 address              \hideinitializer */
+#define FMC_USER_CONFIG_2       (FMC_CONFIG_BASE + 0x8UL)               /*!< User Config 2 address              \hideinitializer */
+#define FMC_USER_CONFIG_3       (FMC_CONFIG_BASE + 0xCUL)               /*!< User Config 3 address              \hideinitializer */
+#define FMC_USER_CONFIG_4       (FMC_CONFIG_BASE + 0x10UL)              /*!< User Config 4 address              \hideinitializer */
+#define FMC_USER_CONFIG_5       (FMC_CONFIG_BASE + 0x14UL)              /*!< User Config 5 address              \hideinitializer */
+#define FMC_USER_CONFIG_6       (FMC_CONFIG_BASE + 0x18UL)              /*!< User Config 6 address              \hideinitializer */
+#define FMC_USER_CONFIG_8       (FMC_CONFIG_BASE + 0x20UL)              /*!< User Config 6 address              \hideinitializer */
+#define FMC_USER_CONFIG_9       (FMC_CONFIG_BASE + 0x24UL)              /*!< User Config 6 address              \hideinitializer */
+#define FMC_USER_CONFIG_10      (FMC_CONFIG_BASE + 0x28UL)              /*!< User Config 6 address              \hideinitializer */
+#define FMC_SCRLOCK_BASE        (FMC_CONFIG_BASE + 0x2CUL)              /*!< Secure Region Lock base address    \hideinitializer */
+#define FMC_NSCBA_BASE          (FMC_CONFIG_BASE + 0x30UL)              /*!< Non-Secure base address            \hideinitializer */
+#define FMC_ARLOCK_BASE         (FMC_CONFIG_BASE + 0x34UL)              /*!< All Region Lock base address       \hideinitializer */
 
-#define FMC_OTP_BASE            0x0F310000UL                        /*!< OTP flash base address             \hideinitializer */
-//#define FMC_REMAPCFG_BASE       0x0F320000UL                        /*!< User Configuration address         \hideinitializer */
-#define FMC_FLASH_PAGE_SIZE     0x2000UL                            /*!< Flash Page Size (8K bytes)         \hideinitializer */
-#define FMC_PAGE_ADDR_MASK      0xFFFFE000UL                        /*!< Flash page address mask            \hideinitializer */
-#define FMC_MULTI_WORD_PROG_LEN 512                                 /*!< The maximum length of a multi-word program.  */
-#define FMC_APPROT_BLOCK_SIZE   0x8000UL                            /*!< APROM APPROT size (32K bytes)      \hideinitializer */
-#define FMC_OTP_ENTRY_CNT       256UL                               /*!< OTP entry number                   \hideinitializer */
+#define FMC_OTP_BASE            0x0F310000UL                            /*!< OTP flash base address             \hideinitializer */
+#define FMC_FLASH_PAGE_SIZE     0x2000UL                                /*!< Flash Page Size (8K bytes)         \hideinitializer */
+#define FMC_VECMAP_SIZE         0x400UL                                 /*!< VECMAP Size (1024 bytes)           \hideinitializer */
+#define FMC_PAGE_ADDR_MASK      0xFFFFE000UL                            /*!< Flash page address mask            \hideinitializer */
+#define FMC_MULTI_WORD_PROG_LEN 512UL                                   /*!< Length of multi-word program.      \hideinitializer */
+#define FMC_APPROT_BLOCK_SIZE   0x8000UL                                /*!< APROM APPROT size (32K bytes)      \hideinitializer */
+#define FMC_OTP_ENTRY_CNT       256UL                                   /*!< OTP entry number                   \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  XOM region number constant definitions                                                                 */
@@ -100,13 +100,14 @@ extern "C"
 #define FMC_ISPCMD_PROGRAM      0x21UL          /*!< ISP Command: Write flash word        \hideinitializer */
 #define FMC_ISPCMD_PAGE_ERASE   0x22UL          /*!< ISP Command: Page Erase Flash        \hideinitializer */
 #define FMC_ISPCMD_BANK_ERASE   0x23UL          /*!< ISP Command: Erase Flash bank 0 or 1 \hideinitializer */
-#define FMC_ISPCMD_CFG_ERASE   	0x24UL          /*!< ISP Command: Erase config word       \hideinitializer */
-#define FMC_ISPCMD_BLOCK_ERASE  0x25UL          /*!< ISP Command: Erase 4 pages alignment of APROM in bank 0 or 1  \hideinitializer */
+#define FMC_ISPCMD_CFG_ERASE    0x24UL          /*!< ISP Command: Erase config word       \hideinitializer */
 #define FMC_ISPCMD_MASS_ERASE   0x26UL          /*!< ISP Command: Mass erase              \hideinitializer */
 #define FMC_ISPCMD_PROGRAM_MUL  0x27UL          /*!< ISP Command: Multuple word program   \hideinitializer */
-#define FMC_ISPCMD_RUN_ALL1     0x28UL          /*!< ISP Command: Run all-one verification \hideinitializer */
+// TESTCHIP_ONLY not support
+//#define FMC_ISPCMD_RUN_ALL1     0x28UL          /*!< ISP Command: Run all-one verification \hideinitializer */
 #define FMC_ISPCMD_BANK_REMAP   0x2CUL          /*!< ISP Command: Bank Remap              \hideinitializer */
-#define FMC_ISPCMD_RUN_CKS      0x2DUL          /*!< ISP Command: Run checksum calculation \hideinitializer */
+// TESTCHIP_ONLY not support
+//#define FMC_ISPCMD_RUN_CKS      0x2DUL          /*!< ISP Command: Run checksum calculation \hideinitializer */
 #define FMC_ISPCMD_VECMAP       0x2EUL          /*!< ISP Command: Vector Page Remap       \hideinitializer */
 #define FMC_ISPCMD_READ_64      0x40UL          /*!< ISP Command: Read double flash word  \hideinitializer */
 #define FMC_ISPCMD_PROGRAM_64   0x61UL          /*!< ISP Command: Write double flash word \hideinitializer */
@@ -137,20 +138,20 @@ extern "C"
 /*  Macros                                                                                                 */
 /*---------------------------------------------------------------------------------------------------------*/
 
-#define FMC_SET_APROM_BOOT()        (FMC->ISPCTL &= ~FMC_ISPCTL_BS_Msk)                       /*!< Select booting from APROM  \hideinitializer */
-#define FMC_SET_LDROM_BOOT()        (FMC->ISPCTL |= FMC_ISPCTL_BS_Msk)                        /*!< Select booting from LDROM  \hideinitializer */
-#define FMC_ENABLE_AP_UPDATE()      (FMC->ISPCTL |=  FMC_ISPCTL_APUEN_Msk)                    /*!< Enable APROM update        \hideinitializer */
-#define FMC_DISABLE_AP_UPDATE()     (FMC->ISPCTL &= ~FMC_ISPCTL_APUEN_Msk)                    /*!< Disable APROM update       \hideinitializer */
-#define FMC_ENABLE_CFG_UPDATE()     (FMC->ISPCTL |=  FMC_ISPCTL_CFGUEN_Msk)                   /*!< Enable User Config update  \hideinitializer */
-#define FMC_DISABLE_CFG_UPDATE()    (FMC->ISPCTL &= ~FMC_ISPCTL_CFGUEN_Msk)                   /*!< Disable User Config update \hideinitializer */
-#define FMC_ENABLE_LD_UPDATE()      (FMC->ISPCTL |=  FMC_ISPCTL_LDUEN_Msk)                    /*!< Enable LDROM update        \hideinitializer */
-#define FMC_DISABLE_LD_UPDATE()     (FMC->ISPCTL &= ~FMC_ISPCTL_LDUEN_Msk)                    /*!< Disable LDROM update       \hideinitializer */
-#define FMC_DISABLE_ISP()           (FMC->ISPCTL &= ~FMC_ISPCTL_ISPEN_Msk)                    /*!< Disable ISP function       \hideinitializer */
-#define FMC_ENABLE_ISP()            (FMC->ISPCTL |=  FMC_ISPCTL_ISPEN_Msk)                    /*!< Enable ISP function        \hideinitializer */
-#define FMC_GET_FAIL_FLAG()         ((FMC->ISPCTL & FMC_ISPCTL_ISPFF_Msk) ? 1UL : 0UL)        /*!< Get ISP fail flag          \hideinitializer */
-#define FMC_CLR_FAIL_FLAG()         (FMC->ISPCTL |= FMC_ISPCTL_ISPFF_Msk)                     /*!< Clear ISP fail flag        \hideinitializer */
-#define FMC_ENABLE_APPROT(u8Block)  (FMC->APPROT |= (1ul << u8Block))                         /*!< Enable APPROT Block        \hideinitializer */
-#define FMC_DISABLE_APPROT(u8Block) (FMC->APPROT &= ~(1ul << u8Block))                        /*!< Disable APPROT Block       \hideinitializer */
+#define FMC_SET_APROM_BOOT()         (FMC->ISPCTL &= ~FMC_ISPCTL_BS_Msk)                       /*!< Select booting from APROM  \hideinitializer */
+#define FMC_SET_LDROM_BOOT()         (FMC->ISPCTL |= FMC_ISPCTL_BS_Msk)                        /*!< Select booting from LDROM  \hideinitializer */
+#define FMC_ENABLE_AP_UPDATE()       (FMC->ISPCTL |=  FMC_ISPCTL_APUEN_Msk)                    /*!< Enable APROM update        \hideinitializer */
+#define FMC_DISABLE_AP_UPDATE()      (FMC->ISPCTL &= ~FMC_ISPCTL_APUEN_Msk)                    /*!< Disable APROM update       \hideinitializer */
+#define FMC_ENABLE_CFG_UPDATE()      (FMC->ISPCTL |=  FMC_ISPCTL_CFGUEN_Msk)                   /*!< Enable User Config update  \hideinitializer */
+#define FMC_DISABLE_CFG_UPDATE()     (FMC->ISPCTL &= ~FMC_ISPCTL_CFGUEN_Msk)                   /*!< Disable User Config update \hideinitializer */
+#define FMC_ENABLE_LD_UPDATE()       (FMC->ISPCTL |=  FMC_ISPCTL_LDUEN_Msk)                    /*!< Enable LDROM update        \hideinitializer */
+#define FMC_DISABLE_LD_UPDATE()      (FMC->ISPCTL &= ~FMC_ISPCTL_LDUEN_Msk)                    /*!< Disable LDROM update       \hideinitializer */
+#define FMC_DISABLE_ISP()            (FMC->ISPCTL &= ~FMC_ISPCTL_ISPEN_Msk)                    /*!< Disable ISP function       \hideinitializer */
+#define FMC_ENABLE_ISP()             (FMC->ISPCTL |=  FMC_ISPCTL_ISPEN_Msk)                    /*!< Enable ISP function        \hideinitializer */
+#define FMC_GET_FAIL_FLAG()          ((FMC->ISPCTL & FMC_ISPCTL_ISPFF_Msk) ? 1UL : 0UL)        /*!< Get ISP fail flag          \hideinitializer */
+#define FMC_CLR_FAIL_FLAG()          (FMC->ISPCTL |= FMC_ISPCTL_ISPFF_Msk)                     /*!< Clear ISP fail flag        \hideinitializer */
+#define FMC_ENABLE_APWPROT(u8Block)  (FMC->APPROT |= (1ul << u8Block))                         /*!< Enable APPROT Block        \hideinitializer */
+#define FMC_DISABLE_APWPROT(u8Block) (FMC->APPROT &= ~(1ul << u8Block))                        /*!< Disable APPROT Block       \hideinitializer */
 /** @} end of group FMC_EXPORTED_MACROS */
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -339,7 +340,6 @@ __STATIC_INLINE int32_t FMC_SetVectorPageAddr(uint32_t u32PageAddr)
     return 0;
 }
 
-
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Functions                                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -348,7 +348,7 @@ extern void     FMC_Close(void);
 extern int32_t  FMC_ConfigXOM(uint32_t xom_num, uint32_t xom_base, uint8_t xom_page);
 extern int32_t  FMC_Erase(uint32_t u32PageAddr);
 extern int32_t  FMC_EraseConfig(uint32_t u32ConfigAddr);
-extern int32_t  FMC_EraseBank(uint32_t u32BankAddr);
+extern int32_t  FMC_Erase_Bank(uint32_t u32BankAddr);
 extern int32_t  FMC_EraseXOM(uint32_t xom_num);
 extern int32_t  FMC_GetXOMState(uint32_t xom_num);
 extern int32_t  FMC_GetBootSource(void);
@@ -359,14 +359,16 @@ extern void     FMC_SetBootSource(int32_t i32BootSrc);
 extern int32_t  FMC_Write(uint32_t u32Addr, uint32_t u32Data);
 extern int32_t  FMC_Write8Bytes(uint32_t u32addr, uint32_t u32data0, uint32_t u32data1);
 extern int32_t  FMC_WriteMultiple(uint32_t u32Addr, uint32_t pu32Buf[], uint32_t u32Len);
-extern int32_t  FMC_WriteOTP(uint32_t otp_num, uint32_t low_word, uint32_t high_word);
-extern int32_t  FMC_ReadOTP(uint32_t otp_num, uint32_t *low_word, uint32_t *high_word);
-extern int32_t  FMC_LockOTP(uint32_t otp_num);
-extern int32_t  FMC_IsOTPLocked(uint32_t otp_num);
+extern int32_t  FMC_Write_OTP(uint32_t otp_num, uint32_t low_word, uint32_t high_word);
+extern int32_t  FMC_Read_OTP(uint32_t otp_num, uint32_t *low_word, uint32_t *high_word);
+extern int32_t  FMC_Lock_OTP(uint32_t otp_num);
+extern int32_t  FMC_Is_OTP_Locked(uint32_t otp_num);
 extern int32_t  FMC_WriteConfig(uint32_t u32ConfigAddr, uint32_t u32ConfigVal);
 extern uint32_t FMC_GetChkSum(uint32_t u32addr, uint32_t u32count);
 extern uint32_t FMC_CheckAllOne(uint32_t u32addr, uint32_t u32count);
 extern int32_t  FMC_RemapBank(uint32_t u32Bank);
+extern int32_t  FMC_ConfigSecureConceal(uint32_t u32Base, uint32_t u32PageCnt, uint32_t bEnable);
+extern int32_t  FMC_SetSecureConcealActive(void);
 
 /** @} end of group FMC_EXPORTED_FUNCTIONS */
 /** @} end of group FMC_Driver */
