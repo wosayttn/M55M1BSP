@@ -14,13 +14,8 @@ static SPIM_T *gpasSPIMModule[] =
     SPIM1,
 };
 
-#if defined (__ARMCC_VERSION)
 static __attribute__((aligned(32))) uint8_t g_buff[BUFFER_SIZE] = {0};
 static __attribute__((aligned(32))) uint8_t g_buff1[BUFFER_SIZE] = {0};
-#else
-static __align(32) uint8_t g_buff[BUFFER_SIZE] = {0};
-static __align(32) uint8_t g_buff1[BUFFER_SIZE] = {0};
-#endif //__ARMCC_VERSION
 
 static volatile uint8_t gu32TestSPIMModule = 0;
 
@@ -321,7 +316,6 @@ int32_t SPIM_FindAndInitDMADMMPhase(SPIM_T *spim,
 
     return SPIM_OK;
 }
-
 
 /**
   * @brief      SPIM Default Config HyperBus Access Module Parameters.

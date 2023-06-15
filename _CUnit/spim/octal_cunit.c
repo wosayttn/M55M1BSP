@@ -91,17 +91,17 @@ void MT35x_EnterOctalDDRMode(SPIM_T *pSPIMx)
     SPIM_MT35x_4Bytes_Enable(pSPIMx, 0, 1, 0);
 
     //Enter Octal DDR Mode
-    SPIM_IO_SendCMDPhase(pSPIMx, OPCODE_WR_VCONFIG, PHASE_NORMAL_MODE, 0, 1);
-    SPIM_IO_SendAddrPhase(pSPIMx, 0, 0x00, PHASE_NORMAL_MODE, 0, 0);
-    SPIM_IO_SendDataPhase(pSPIMx, u8CMDBuf, 1, PHASE_NORMAL_MODE, 0, 1);
+    SPIM_IO_SendCMDPhase(pSPIMx, SPIM_IO_WRITE_PHASE, OPCODE_WR_VCONFIG, PHASE_NORMAL_MODE, 0);
+    SPIM_IO_SendAddrPhase(pSPIMx, 0, 0x00, PHASE_NORMAL_MODE, 0);
+    SPIM_IO_SendDataPhase(pSPIMx, SPIM_IO_WRITE_PHASE, u8CMDBuf, 1, PHASE_NORMAL_MODE, 0);
 
     //Read volatile configure register value
     SPIM_MT35x_4Bytes_Enable(pSPIMx, 1, 8, 1);
-    SPIM_IO_SendCMDPhase(pSPIMx, OPCODE_RD_VCONFIG, PHASE_OCTAL_MODE, 1, 0);
-    SPIM_IO_SendAddrPhase(pSPIMx, 1, 0x00, PHASE_OCTAL_MODE, 0, 1);
+    SPIM_IO_SendCMDPhase(pSPIMx, SPIM_IO_READ_PHASE, OPCODE_RD_VCONFIG, PHASE_OCTAL_MODE, 1);
+    SPIM_IO_SendAddrPhase(pSPIMx, 1, 0x00, PHASE_OCTAL_MODE, 1);
     //SPIM_IO_DCPhase(pSPIMx, 2, PHASE_NORMAL_MODE, 0);
     SPIM_IO_SendDummyCycle(pSPIMx, 16);
-    SPIM_IO_SendDataPhase(pSPIMx, u8CMDBuf, 1, PHASE_OCTAL_MODE, 1, 0);
+    SPIM_IO_SendDataPhase(pSPIMx, SPIM_IO_READ_PHASE, u8CMDBuf, 1, PHASE_OCTAL_MODE, 1);
 
     printf("Octal Mode = 0x%X\r\n", u8CMDBuf[0]);
 }
@@ -111,18 +111,18 @@ void MT35x_ExitOctalDDRMode(SPIM_T *pSPIMx)
     uint8_t u8CMDBuf[1] = {0xFF};
 
     //Exit Octal DDR Mode
-    SPIM_IO_SendCMDPhase(pSPIMx, OPCODE_WR_VCONFIG, PHASE_OCTAL_MODE, 1, 1);
-    SPIM_IO_SendAddrPhase(pSPIMx, 1, 0x00, PHASE_OCTAL_MODE, 0, 1);
-    SPIM_IO_SendDataPhase(pSPIMx, u8CMDBuf, 1, PHASE_OCTAL_MODE, 1, 1);
+    SPIM_IO_SendCMDPhase(pSPIMx, SPIM_IO_WRITE_PHASE, OPCODE_WR_VCONFIG, PHASE_OCTAL_MODE, 1);
+    SPIM_IO_SendAddrPhase(pSPIMx, 1, 0x00, PHASE_OCTAL_MODE, 1);
+    SPIM_IO_SendDataPhase(pSPIMx, SPIM_IO_WRITE_PHASE, u8CMDBuf, 1, PHASE_OCTAL_MODE, 1);
 
     SPIM_MT35x_4Bytes_Enable(pSPIMx, 0, 1, 0);
 
     //Read Config Reg
-    SPIM_IO_SendCMDPhase(pSPIMx, OPCODE_RD_VCONFIG, PHASE_NORMAL_MODE, 0, 0);
-    SPIM_IO_SendAddrPhase(pSPIMx, 0, 0x00, PHASE_NORMAL_MODE, 0, 0);
+    SPIM_IO_SendCMDPhase(pSPIMx, SPIM_IO_READ_PHASE, OPCODE_RD_VCONFIG, PHASE_NORMAL_MODE, 0);
+    SPIM_IO_SendAddrPhase(pSPIMx, 0, 0x00, PHASE_NORMAL_MODE, 0);
     //SPIM_IO_DCPhase(pSPIMx, 1, PHASE_NORMAL_MODE, 0);
     SPIM_IO_SendDummyCycle(pSPIMx, 8);
-    SPIM_IO_SendDataPhase(pSPIMx, u8CMDBuf, 1, PHASE_NORMAL_MODE, 0, 0);
+    SPIM_IO_SendDataPhase(pSPIMx, SPIM_IO_READ_PHASE, u8CMDBuf, 1, PHASE_NORMAL_MODE, 0);
     printf("Octal Mode = 0x%X\r\n", u8CMDBuf[0]);
 }
 

@@ -14,13 +14,8 @@
 #include "hyperram_code.h"
 
 //------------------------------------------------------------------------------
-#if defined (__ARMCC_VERSION)
 __attribute__((aligned(32))) static uint8_t g_au8SrcArray[BUFF_SIZE] = {0};
 __attribute__((aligned(32))) static uint8_t g_au8DestArray[BUFF_SIZE] = {0};
-#else
-__align(32) static uint8_t g_au8SrcArray[BUFF_SIZE] = {0};
-__align(32) static uint8_t g_au8DestArray[BUFF_SIZE] = {0};
-#endif //__ARMCC_VERSION
 
 //------------------------------------------------------------------------------
 /**
