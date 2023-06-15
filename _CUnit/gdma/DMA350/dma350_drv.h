@@ -53,7 +53,8 @@ extern "C" {
 #define DMA350_INITIALIZED (1UL << 0)
 
 /* DMA350 DMA Device error enumeration types */
-enum dma350_error_t {
+enum dma350_error_t
+{
     DMA350_ERR_NONE = 0,       /*!< No error */
     DMA350_ERR_IIDR_MISMATCH,  /*!< Error: DMA350 driver does not support this
                                 *   implementer of the hardware */
@@ -65,8 +66,10 @@ enum dma350_error_t {
 };
 
 /* ARM DMA350 DMA INFO register BUILDCFG0 field Type */
-union dma350_dmainfo_buildcfg0_t {
-    struct {
+union dma350_dmainfo_buildcfg0_t
+{
+    struct
+    {
         uint32_t FRAMETYPE: 3;   /*!< bit:  0.. 2 FRAMETYPE[ 2:0] */
         uint32_t RESERVED0: 1;   /*!< bit:      3 RESERVED0 */
         uint32_t NUM_CHANNELS: 6; /*!< bit:  4.. 9 NUM_CHANNELS[ 5:0] */
@@ -80,8 +83,10 @@ union dma350_dmainfo_buildcfg0_t {
 };
 
 /* ARM DMA350 DMA INFO register BUILDCFG1 field Type */
-union dma350_dmainfo_buildcfg1_t {
-    struct {
+union dma350_dmainfo_buildcfg1_t
+{
+    struct
+    {
         uint32_t NUM_TRIGGER_IN: 9; /*!< bit:  0.. 8 NUM_TRIGGER_IN[ 8:0] */
         uint32_t NUM_TRIGGER_OUT: 7; /*!< bit:  9..15 NUM_TRIGGER_OUT[ 6:0] */
         uint32_t HAS_TRIGSEL: 1;    /*!< bit:     16 HAS_TRIGSEL */
@@ -93,7 +98,8 @@ union dma350_dmainfo_buildcfg1_t {
 };
 
 /* ARM DMA350 DMA device configuration structure */
-struct dma350_dev_cfg_t {
+struct dma350_dev_cfg_t
+{
     DMASECCFG_TypeDef *dma_sec_cfg;     /*!< DMA350 secure config */
     DMASECCTRL_TypeDef *dma_sec_ctrl;   /*!< DMA350 secure control */
     DMANSECCTRL_TypeDef *dma_nsec_ctrl; /*!< DMA350 non-secure control */
@@ -101,13 +107,15 @@ struct dma350_dev_cfg_t {
 };
 
 /* ARM DMA350 DMA device data structure */
-struct dma350_dev_data_t {
+struct dma350_dev_data_t
+{
     uint32_t state; /*!< Indicates if the DMA350 driver
                      *   is initialized and enabled */
 };
 
 /* ARM DMA350 DMA device structure */
-struct dma350_dev_t {
+struct dma350_dev_t
+{
     const struct dma350_dev_cfg_t *const cfg; /*!< DMA350 DMA configuration */
     struct dma350_dev_data_t *const data;     /*!< DMA350 DMA data */
 };
@@ -251,7 +259,7 @@ void dma350_clear_secaccvio_status(struct dma350_dev_t *dev);
  *       Operation will fail if channel is enabled.
  */
 enum dma350_error_t dma350_set_ch_secure(struct dma350_dev_t *dev,
-        uint8_t channel);
+                                         uint8_t channel);
 
 /**
  * \brief Set DMA350 DMA Channel to non-secure.
@@ -265,7 +273,7 @@ enum dma350_error_t dma350_set_ch_secure(struct dma350_dev_t *dev,
  *       Operation will fail if channel is enabled.
  */
 enum dma350_error_t dma350_set_ch_nonsecure(struct dma350_dev_t *dev,
-        uint8_t channel);
+                                            uint8_t channel);
 
 /**
  * \brief Set DMA350 DMA Channel to privileged.
@@ -286,7 +294,7 @@ enum dma350_error_t dma350_set_ch_nonsecure(struct dma350_dev_t *dev,
  *
  */
 enum dma350_error_t dma350_set_ch_privileged(struct dma350_dev_t *dev,
-        uint8_t channel);
+                                             uint8_t channel);
 
 /**
  * \brief Set DMA350 DMA Channel to unprivileged.
@@ -300,7 +308,7 @@ enum dma350_error_t dma350_set_ch_privileged(struct dma350_dev_t *dev,
  *       Operation will fail if channel is enabled.
  */
 enum dma350_error_t dma350_set_ch_unprivileged(struct dma350_dev_t *dev,
-        uint8_t channel);
+                                               uint8_t channel);
 
 /**
  * \brief Set DMA350 DMA Trigger input to secure.
@@ -314,7 +322,7 @@ enum dma350_error_t dma350_set_ch_unprivileged(struct dma350_dev_t *dev,
  *       Operation will fail if channel is enabled.
  */
 enum dma350_error_t dma350_set_trigin_secure(struct dma350_dev_t *dev,
-        uint8_t trigger);
+                                             uint8_t trigger);
 
 /**
  * \brief Set DMA350 DMA Trigger input to non-secure.
@@ -328,7 +336,7 @@ enum dma350_error_t dma350_set_trigin_secure(struct dma350_dev_t *dev,
  *       Operation will fail if channel is enabled.
  */
 enum dma350_error_t dma350_set_trigin_nonsecure(struct dma350_dev_t *dev,
-        uint8_t trigger);
+                                                uint8_t trigger);
 
 /**
  * \brief Set DMA350 DMA Trigger output to secure.
@@ -342,7 +350,7 @@ enum dma350_error_t dma350_set_trigin_nonsecure(struct dma350_dev_t *dev,
  *       Operation will fail if channel is enabled.
  */
 enum dma350_error_t dma350_set_trigout_secure(struct dma350_dev_t *dev,
-        uint8_t trigger);
+                                              uint8_t trigger);
 
 /**
  * \brief Set DMA350 DMA Trigger output to non-secure.
@@ -356,12 +364,13 @@ enum dma350_error_t dma350_set_trigout_secure(struct dma350_dev_t *dev,
  *       Operation will fail if channel is enabled.
  */
 enum dma350_error_t dma350_set_trigout_nonsecure(struct dma350_dev_t *dev,
-        uint8_t trigger);
+                                                 uint8_t trigger);
 
 __STATIC_INLINE
 uint8_t dma350_get_num_ch(const struct dma350_dev_t *dev)
 {
-    return (union dma350_dmainfo_buildcfg0_t) {
+    return (union dma350_dmainfo_buildcfg0_t)
+    {
         .w = dev->cfg->dma_info->DMA_BUILDCFG0
     } .b.NUM_CHANNELS;
 }

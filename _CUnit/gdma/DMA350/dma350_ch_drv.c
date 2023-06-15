@@ -34,7 +34,8 @@ uint32_t *dma350_cmdlink_generate(struct dma350_cmdlink_gencfg_t *cmdlink_cfg,
     /* Check if cmdlink fits inside the buffer. */
     /* Header bit 0 and 1 have no associated registers. +1 is For the header */
     if (&buffer[__builtin_popcount((cmdlink_cfg->header) & 0xFFFFFFFCUL) + 1] >=
-            buffer_end) {
+            buffer_end)
+    {
         return NULL;
     }
 
@@ -43,10 +44,14 @@ uint32_t *dma350_cmdlink_generate(struct dma350_cmdlink_gencfg_t *cmdlink_cfg,
 
     /* Note: REGCLEAR (Bit 0) has no associated field and Bit 1 is reserved,
      *       cfg starts from Bit 2 */
-    for (header_sel = (0x1UL << 2); header_sel; header_sel <<= 1) {
-        if (cmdlink_cfg->header & header_sel) {
+    for (header_sel = (0x1UL << 2); header_sel; header_sel <<= 1)
+    {
+        if (cmdlink_cfg->header & header_sel)
+        {
             *(buffer++) = *(cfg++);
-        } else {
+        }
+        else
+        {
             cfg++;
         }
     }
@@ -56,7 +61,8 @@ uint32_t *dma350_cmdlink_generate(struct dma350_cmdlink_gencfg_t *cmdlink_cfg,
 
 void dma350_cmdlink_init(struct dma350_cmdlink_gencfg_t *cmdlink_cfg)
 {
-    static const struct dma350_cmdlink_gencfg_t default_cmdlink = {
+    static const struct dma350_cmdlink_gencfg_t default_cmdlink =
+    {
         .header = 0,
         .cfg = {
             .intren = DMA350_CH_INTREN_RESET_VALUE,

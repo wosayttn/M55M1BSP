@@ -84,6 +84,8 @@ struct dma350_ch_dev_t *const GDMA_CH_DEV_S[] =
 
 uint8_t src_array[0x100] __ALIGNED(4);
 uint8_t des_array[0x100] __ALIGNED(4);
+uint32_t descriptors[0x100];
+
 /*---------------------------------------------------------------------------------------------------------*/
 /* Test function                                                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -146,6 +148,7 @@ void printf_array(const void *src,
     GDMA_2DRotate        @ GDMA_2DTransfer
     GDMA_2DWrap          @ GDMA_2DTransfer
     GDMA_BasicMode       @ GDMA_1DTransfer
+    GDMA_ScatterGather   @ GDMA_CommandLinking
     GDMA_TemplatedMode   @ GDMA_1DTransfer
 */
 
@@ -343,9 +346,71 @@ void GDMA_2DTransfer(void)
     }
 }
 
+void GDMA_CommandLinking(void)
+{
+    struct dma350_ch_dev_t *dev;
+    enum dma350_lib_error_t lib_err;
+    struct dma350_cmdlink_gencfg_t cmdlink_cfg;
+    union dma350_ch_status_t status;
+    uint32_t *buffer;
+    int i, j;
+    //
+    uint32_t size = 8;
+    //
+    GDMA_Reset();
+    CU_ASSERT(DMA350_ERR_NONE == dma350_init(&GDMA_DEV_S));
+
+    for (i = 0; i < 8 * 8; i++)
+    {
+        src_array[i] = i;
+    }
+
+    memset(des_array, 0, 0x100);
+    // 5.7 Command linking
+    // Table 5-15: Command link example memory map, HEADER_2
+    dma350_cmdlink_init(&cmdlink_cfg);
+    dma350_cmdlink_set_srcaddr32(&cmdlink_cfg, (uint32_t)src_array);
+    dma350_cmdlink_set_desaddr32(&cmdlink_cfg, (uint32_t)des_array + size);
+    dma350_cmdlink_set_xsize16(&cmdlink_cfg, (uint16_t)size * 2, (uint16_t)size * 2);
+    dma350_cmdlink_set_linkaddr32(&cmdlink_cfg, 0);
+    buffer = dma350_cmdlink_generate(&cmdlink_cfg, descriptors, descriptors + 0x100 - 1);
+    CU_ASSERT(buffer != NULL);
+
+    //
+
+    if (buffer != NULL)
+    {
+        dma350_ch_enable_linkaddr(GDMA_CH_DEV_S[0]);
+        dma350_ch_set_linkaddr32(GDMA_CH_DEV_S[0], (uint32_t) descriptors);
+        lib_err = dma350_memcpy(GDMA_CH_DEV_S[0],
+                                src_array,
+                                des_array,
+                                size,
+                                DMA350_LIB_EXEC_BLOCKING);
+        CU_ASSERT(DMA350_LIB_ERR_NONE == lib_err);
+
+        if (DMA350_LIB_ERR_NONE == lib_err)
+        {
+            // first command
+            for (i = 0; i < size; i++)
+            {
+                CU_ASSERT(des_array[i] == src_array[i]);
+            }
+
+            // second command
+            for (i = 0; i < size * 2; i++)
+            {
+                CU_ASSERT(des_array[size + i] == src_array[i]);
+            }
+        }
+
+        // printf_array(des_array, 8, 8);
+    }
+}
 CU_TestInfo GDMA_Examples[] =
 {
-    {" 1: Test 1DTransfer (Basic & Template)", GDMA_1DTransfer},
-    {" 2: Test 2DTransfer (Rotate, Mirror, & Wrap).", GDMA_2DTransfer},
+    {" 1: Test 1DTransfer (Basic & Template) ...", GDMA_1DTransfer},
+    {" 2: Test 2DTransfer (Rotate, Mirror & Wrap) ...", GDMA_2DTransfer},
+    {" 3: Test ScatterGather ...", GDMA_CommandLinking},
     CU_TEST_INFO_NULL
 };
