@@ -802,9 +802,11 @@ void API_USBD_ProcessSetupPacket()
     USBD_Open(&gsInfo_MSC, NULL, NULL);
     USBD_CONFIG_EP(0, USBD_CFG_EPMODE_IN);
     USBD_CONFIG_EP(1, USBD_CFG_EPMODE_IN); /* Also set Endpoint buffer 1 as IN endpoint for control OUT endpoint. Just for CUnit test. */
-    outp32(0x400C0500, EP0_BUF_OFFSET); /* EP[0]->BUFSEG */
-    outp32(0x400C0510, EP1_BUF_OFFSET); /* EP[1]->BUFSEG */
-    /* EP2 ==> Bulk IN endpoint, device endpoint number 2. */
+//    outp32(0x400C0500, EP0_BUF_OFFSET); /* EP[0]->BUFSEG */
+//    outp32(0x400C0510, EP1_BUF_OFFSET); /* EP[1]->BUFSEG */
+    outp32(0x40250500, EP0_BUF_OFFSET); /* EP[0]->BUFSEG */
+    outp32(0x40250510, EP1_BUF_OFFSET); /* EP[1]->BUFSEG */
+  	/* EP2 ==> Bulk IN endpoint, device endpoint number 2. */
     USBD_CONFIG_EP(EP2, USBD_CFG_EPMODE_IN | 2);
     /* Buffer range for EP2 */
     USBD_SET_EP_BUF_ADDR(EP2, EP2_BUF_OFFSET);
@@ -812,13 +814,13 @@ void API_USBD_ProcessSetupPacket()
     /* --- Standard request "SET_ADDRESS" test --- */
     //outp8(0x400C0800, 0x00); /* Host to device; standard request. */
     outp8(USBD_BUF_BASE, 0x00); /* Host to device; standard request. */
-    outp8(0x400C0801, 5);    /* SET_ADDRESS */
-    outp8(0x400C0802, DEVICE_ADDRESS); /* wValue: USB device address */
-    outp8(0x400C0803, 0);
-    outp8(0x400C0804, 0); /* wIndex */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 0); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250801, 5);    /* SET_ADDRESS */
+    outp8(0x40250802, DEVICE_ADDRESS); /* wValue: USB device address */
+    outp8(0x40250803, 0);
+    outp8(0x40250804, 0); /* wIndex */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 0); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
@@ -829,14 +831,14 @@ void API_USBD_ProcessSetupPacket()
 
 
     /* --- Standard request "SET_CONFIGURATION" test --- */
-    outp8(0x400C0800, REQ_STANDARD); /* Host to device; standard request. */
-    outp8(0x400C0801, 9);    /* SET_CONFIGURATION */
-    outp8(0x400C0802, CONFIGURATION_VALUE); /* wValue: Configuration value */
-    outp8(0x400C0803, 0);
-    outp8(0x400C0804, 0); /* wIndex */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 0); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, REQ_STANDARD); /* Host to device; standard request. */
+    outp8(0x40250801, 9);    /* SET_CONFIGURATION */
+    outp8(0x40250802, CONFIGURATION_VALUE); /* wValue: Configuration value */
+    outp8(0x40250803, 0);
+    outp8(0x40250804, 0); /* wIndex */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 0); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
@@ -846,73 +848,73 @@ void API_USBD_ProcessSetupPacket()
 
 
     /* --- Standard request "GET_CONFIGURATION" test --- */
-    outp8(0x400C0800, 0x80); /* Device to host; standard request. */
-    outp8(0x400C0801, 0x8);  /* GET_CONFIGURATION */
-    outp8(0x400C0802, 0); /* wValue */
-    outp8(0x400C0803, 0);
-    outp8(0x400C0804, 0); /* wIndex */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 0x01); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x80); /* Device to host; standard request. */
+    outp8(0x40250801, 0x8);  /* GET_CONFIGURATION */
+    outp8(0x40250802, 0); /* wValue */
+    outp8(0x40250803, 0);
+    outp8(0x40250804, 0); /* wIndex */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 0x01); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == 1);
-    CU_ASSERT(inp8(0x400C0800 + EP0_BUF_OFFSET) == CONFIGURATION_VALUE);
+    CU_ASSERT(inp8(0x40250800 + EP0_BUF_OFFSET) == CONFIGURATION_VALUE);
     CU_ASSERT(USBD->EP[1].MXPLD == 20); /* MAX_PACKET_SIZE: 20 */
     //CU_ASSERT(USBD->EP[1].MXPLD == 0);
 
     /* --- Standard request "SET_FEATURE" & "CLEAR_FEATURE" test --- */
-    outp8(0x400C0800, 0x00); /* Host to device; standard request. */
-    outp8(0x400C0801, 0x3);  /* SET_FEATURE */
-    outp8(0x400C0802, FEATURE_ENDPOINT_HALT); /* wValue: ENDPOINT_HALT standard feature selector */
-    outp8(0x400C0803, 0);
-    outp8(0x400C0804, 2); /* wIndex: device endpoint number 2 (bulk IN) */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 0x0); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x00); /* Host to device; standard request. */
+    outp8(0x40250801, 0x3);  /* SET_FEATURE */
+    outp8(0x40250802, FEATURE_ENDPOINT_HALT); /* wValue: ENDPOINT_HALT standard feature selector */
+    outp8(0x40250803, 0);
+    outp8(0x40250804, 2); /* wIndex: device endpoint number 2 (bulk IN) */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 0x0); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[2].CFGP & 2); /* SSTALL */
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == 0);
 
-    outp8(0x400C0800, 0x00); /* Host to device; standard request. */
-    outp8(0x400C0801, 0x1);  /* CLEAR_FEATURE */
-    outp8(0x400C0802, 0); /* wValue: ENDPOINT_HALT standard feature selector */
-    outp8(0x400C0803, 0);
-    outp8(0x400C0804, 2); /* wIndex: device endpoint number 2 (bulk IN) */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 0x0); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x00); /* Host to device; standard request. */
+    outp8(0x40250801, 0x1);  /* CLEAR_FEATURE */
+    outp8(0x40250802, 0); /* wValue: ENDPOINT_HALT standard feature selector */
+    outp8(0x40250803, 0);
+    outp8(0x40250804, 2); /* wIndex: device endpoint number 2 (bulk IN) */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 0x0); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT((USBD->EP[2].CFGP & 2) == 0); /* SSTALL */
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == 0);
 
-    outp8(0x400C0800, 0x00); /* Host to device; standard request. */
-    outp8(0x400C0801, 0x3);  /* SET_FEATURE */
-    outp8(0x400C0802, FEATURE_DEVICE_REMOTE_WAKEUP); /* wValue: DEVICE_REMOTE_WAKEUP standard feature selector */
-    outp8(0x400C0803, 0);
-    outp8(0x400C0804, 0); /* wIndex */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 0x0); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x00); /* Host to device; standard request. */
+    outp8(0x40250801, 0x3);  /* SET_FEATURE */
+    outp8(0x40250802, FEATURE_DEVICE_REMOTE_WAKEUP); /* wValue: DEVICE_REMOTE_WAKEUP standard feature selector */
+    outp8(0x40250803, 0);
+    outp8(0x40250804, 0); /* wIndex */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 0x0); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(g_usbd_RemoteWakeupEn == 1);
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == 0);
 
-    outp8(0x400C0800, 0x00); /* Host to device; standard request. */
-    outp8(0x400C0801, 0x1);  /* CLEAR_FEATURE */
-    outp8(0x400C0802, 1); /* wValue: DEVICE_REMOTE_WAKEUP standard feature selector */
-    outp8(0x400C0803, 0);
-    outp8(0x400C0804, 0); /* wIndex */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 0x0); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x00); /* Host to device; standard request. */
+    outp8(0x40250801, 0x1);  /* CLEAR_FEATURE */
+    outp8(0x40250802, 1); /* wValue: DEVICE_REMOTE_WAKEUP standard feature selector */
+    outp8(0x40250803, 0);
+    outp8(0x40250804, 0); /* wIndex */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 0x0); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(g_usbd_RemoteWakeupEn == 0);
@@ -921,45 +923,45 @@ void API_USBD_ProcessSetupPacket()
 
 
     /* --- Standard request "SET_INTERFACE" test --- */
-    outp8(0x400C0800, 0x01); /* Host to device; standard request. */
-    outp8(0x400C0801, 0xB);  /* SET_INTERFACE */
-    outp8(0x400C0802, ALT_INTERFACE); /* wValue: alternate interface setting */
-    outp8(0x400C0803, 0);
-    outp8(0x400C0804, 0); /* wIndex: interface number */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 0x0); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x01); /* Host to device; standard request. */
+    outp8(0x40250801, 0xB);  /* SET_INTERFACE */
+    outp8(0x40250802, ALT_INTERFACE); /* wValue: alternate interface setting */
+    outp8(0x40250803, 0);
+    outp8(0x40250804, 0); /* wIndex: interface number */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 0x0); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == 0);
 
     /* --- Standard request "GET_INTERFACE" test --- */
-    outp8(0x400C0800, 0x81); /* Device to host; standard request. */
-    outp8(0x400C0801, 0xA);  /* GET_INTERFACE */
-    outp8(0x400C0802, 0); /* wValue */
-    outp8(0x400C0803, 0);
-    outp8(0x400C0804, 0); /* wIndex: interface number */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 0x01); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x81); /* Device to host; standard request. */
+    outp8(0x40250801, 0xA);  /* GET_INTERFACE */
+    outp8(0x40250802, 0); /* wValue */
+    outp8(0x40250803, 0);
+    outp8(0x40250804, 0); /* wIndex: interface number */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 0x01); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == 1);
-    CU_ASSERT(inp8(0x400C0800 + EP0_BUF_OFFSET) == ALT_INTERFACE);
+    CU_ASSERT(inp8(0x40250800 + EP0_BUF_OFFSET) == ALT_INTERFACE);
     CU_ASSERT(USBD->EP[1].MXPLD == 20); /* MAX_PACKET_SIZE: 20 */
 
 
     /* --- Standard request "GET_DESCRIPTOR" test --- */
-    outp8(0x400C0800, 0x80); /* Device to host; standard request. */
-    outp8(0x400C0801, 0x6);  /* GET_DESCRIPTOR */
-    outp8(0x400C0802, 0); /* wValue: descriptor type (high byte) and descriptor index (low byte). */
-    outp8(0x400C0803, 1); /* 1: device descriptor */
-    outp8(0x400C0804, 0); /* wIndex */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, LEN_DEVICE); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x80); /* Device to host; standard request. */
+    outp8(0x40250801, 0x6);  /* GET_DESCRIPTOR */
+    outp8(0x40250802, 0); /* wValue: descriptor type (high byte) and descriptor index (low byte). */
+    outp8(0x40250803, 1); /* 1: device descriptor */
+    outp8(0x40250804, 0); /* wIndex */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, LEN_DEVICE); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
@@ -967,20 +969,20 @@ void API_USBD_ProcessSetupPacket()
     /* Check EP0 buffer */
     for(u32Count = 0; u32Count < LEN_DEVICE; u32Count++)
     {
-        if(inp8(0x400C0800 + EP0_BUF_OFFSET + u32Count) != gu8DeviceDescriptor[u32Count])
+        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8DeviceDescriptor[u32Count])
             u32ErrorCount++;
     }
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
     CU_ASSERT(USBD->EP[1].MXPLD == MAX_PACKET_SIZE);
 
-    outp8(0x400C0800, 0x80); /* Device to host; standard request. */
-    outp8(0x400C0801, 0x6);  /* GET_DESCRIPTOR */
-    outp8(0x400C0802, 0); /* wValue: descriptor type (high byte) and descriptor index (low byte). */
-    outp8(0x400C0803, 2); /* 2: configuration descriptor */
-    outp8(0x400C0804, 0); /* wIndex */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, LEN_CONFIG + LEN_INTERFACE + LEN_ENDPOINT * 2); /* wLength (9+9+7*2) */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x80); /* Device to host; standard request. */
+    outp8(0x40250801, 0x6);  /* GET_DESCRIPTOR */
+    outp8(0x40250802, 0); /* wValue: descriptor type (high byte) and descriptor index (low byte). */
+    outp8(0x40250803, 2); /* 2: configuration descriptor */
+    outp8(0x40250804, 0); /* wIndex */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, LEN_CONFIG + LEN_INTERFACE + LEN_ENDPOINT * 2); /* wLength (9+9+7*2) */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
@@ -988,7 +990,7 @@ void API_USBD_ProcessSetupPacket()
     /* Check EP0 buffer */
     for(u32Count = 0; u32Count < MAX_PACKET_SIZE; u32Count++)
     {
-        if(inp8(0x400C0800 + EP0_BUF_OFFSET + u32Count) != gu8ConfigDescriptorMSC[u32Count])
+        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8ConfigDescriptorMSC[u32Count])
             u32ErrorCount++;
     }
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
@@ -999,21 +1001,21 @@ void API_USBD_ProcessSetupPacket()
     /* Check EP0 buffer */
     for(u32Count = 0; u32Count < (LEN_CONFIG + LEN_INTERFACE + LEN_ENDPOINT * 2) - MAX_PACKET_SIZE; u32Count++)
     {
-        if(inp8(0x400C0800 + EP0_BUF_OFFSET + u32Count) != gu8ConfigDescriptorMSC[MAX_PACKET_SIZE + u32Count])
+        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8ConfigDescriptorMSC[MAX_PACKET_SIZE + u32Count])
             u32ErrorCount++;
     }
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
 
 
     USBD_Open(&gsInfo_HID, NULL, NULL);
-    outp8(0x400C0800, 0x80); /* Device to host; standard request. */
-    outp8(0x400C0801, 0x6);  /* GET_DESCRIPTOR */
-    outp8(0x400C0802, 0); /* wValue: descriptor type (high byte) and descriptor index (low byte). */
-    outp8(0x400C0803, DESC_HID_RPT); /* DESC_HID_RPT (0x22): HID report descriptor */
-    outp8(0x400C0804, 0); /* wIndex */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 52); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x80); /* Device to host; standard request. */
+    outp8(0x40250801, 0x6);  /* GET_DESCRIPTOR */
+    outp8(0x40250802, 0); /* wValue: descriptor type (high byte) and descriptor index (low byte). */
+    outp8(0x40250803, DESC_HID_RPT); /* DESC_HID_RPT (0x22): HID report descriptor */
+    outp8(0x40250804, 0); /* wIndex */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 52); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
@@ -1021,7 +1023,7 @@ void API_USBD_ProcessSetupPacket()
     /* Check EP0 buffer */
     for(u32Count = 0; u32Count < MAX_PACKET_SIZE; u32Count++)
     {
-        if(inp8(0x400C0800 + EP0_BUF_OFFSET + u32Count) != HID_MouseReportDescriptor[u32Count])
+        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != HID_MouseReportDescriptor[u32Count])
             u32ErrorCount++;
     }
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
@@ -1032,7 +1034,7 @@ void API_USBD_ProcessSetupPacket()
     /* Check EP0 buffer */
     for(u32Count = 0; u32Count < MAX_PACKET_SIZE; u32Count++)
     {
-        if(inp8(0x400C0800 + EP0_BUF_OFFSET + u32Count) != HID_MouseReportDescriptor[MAX_PACKET_SIZE + u32Count])
+        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != HID_MouseReportDescriptor[MAX_PACKET_SIZE + u32Count])
             u32ErrorCount++;
     }
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
@@ -1042,21 +1044,21 @@ void API_USBD_ProcessSetupPacket()
     /* Check EP0 buffer */
     for(u32Count = 0; u32Count < (52 - MAX_PACKET_SIZE * 2); u32Count++)
     {
-        if(inp8(0x400C0800 + EP0_BUF_OFFSET + u32Count) != HID_MouseReportDescriptor[MAX_PACKET_SIZE * 2 + u32Count])
+        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != HID_MouseReportDescriptor[MAX_PACKET_SIZE * 2 + u32Count])
             u32ErrorCount++;
     }
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
 
 
     USBD_Open(&gsInfo_MSC, NULL, NULL);
-    outp8(0x400C0800, 0x80); /* Device to host; standard request. */
-    outp8(0x400C0801, 0x6);  /* GET_DESCRIPTOR */
-    outp8(0x400C0802, 0); /* wValue: descriptor type (high byte) and descriptor index (low byte). */
-    outp8(0x400C0803, 3); /* 3: string descriptor */
-    outp8(0x400C0804, 0); /* wIndex */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 4); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x80); /* Device to host; standard request. */
+    outp8(0x40250801, 0x6);  /* GET_DESCRIPTOR */
+    outp8(0x40250802, 0); /* wValue: descriptor type (high byte) and descriptor index (low byte). */
+    outp8(0x40250803, 3); /* 3: string descriptor */
+    outp8(0x40250804, 0); /* wIndex */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 4); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
@@ -1064,20 +1066,20 @@ void API_USBD_ProcessSetupPacket()
     /* Check EP0 buffer */
     for(u32Count = 0; u32Count < 4; u32Count++)
     {
-        if(inp8(0x400C0800 + EP0_BUF_OFFSET + u32Count) != gu8StringLang[u32Count])
+        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8StringLang[u32Count])
             u32ErrorCount++;
     }
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
     CU_ASSERT(USBD->EP[1].MXPLD == MAX_PACKET_SIZE);
 
-    outp8(0x400C0800, 0x80); /* Device to host; standard request. */
-    outp8(0x400C0801, 0x6);  /* GET_DESCRIPTOR */
-    outp8(0x400C0802, 1); /* wValue: descriptor type (high byte) and descriptor index (low byte). */
-    outp8(0x400C0803, 3); /* 3: string descriptor */
-    outp8(0x400C0804, 0); /* wIndex */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 16); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x80); /* Device to host; standard request. */
+    outp8(0x40250801, 0x6);  /* GET_DESCRIPTOR */
+    outp8(0x40250802, 1); /* wValue: descriptor type (high byte) and descriptor index (low byte). */
+    outp8(0x40250803, 3); /* 3: string descriptor */
+    outp8(0x40250804, 0); /* wIndex */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 16); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
@@ -1085,20 +1087,20 @@ void API_USBD_ProcessSetupPacket()
     /* Check EP0 buffer */
     for(u32Count = 0; u32Count < 16; u32Count++)
     {
-        if(inp8(0x400C0800 + EP0_BUF_OFFSET + u32Count) != gu8VendorStringDesc[u32Count])
+        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8VendorStringDesc[u32Count])
             u32ErrorCount++;
     }
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
     CU_ASSERT(USBD->EP[1].MXPLD == MAX_PACKET_SIZE);
 
-    outp8(0x400C0800, 0x80); /* Device to host; standard request. */
-    outp8(0x400C0801, 0x6);  /* GET_DESCRIPTOR */
-    outp8(0x400C0802, 2); /* wValue: descriptor type (high byte) and descriptor index (low byte). */
-    outp8(0x400C0803, 3); /* 3: string descriptor */
-    outp8(0x400C0804, 0); /* wIndex */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 22); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x80); /* Device to host; standard request. */
+    outp8(0x40250801, 0x6);  /* GET_DESCRIPTOR */
+    outp8(0x40250802, 2); /* wValue: descriptor type (high byte) and descriptor index (low byte). */
+    outp8(0x40250803, 3); /* 3: string descriptor */
+    outp8(0x40250804, 0); /* wIndex */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 22); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
@@ -1106,7 +1108,7 @@ void API_USBD_ProcessSetupPacket()
     /* Check EP0 buffer */
     for(u32Count = 0; u32Count < MAX_PACKET_SIZE; u32Count++)
     {
-        if(inp8(0x400C0800 + EP0_BUF_OFFSET + u32Count) != gu8ProductStringDesc[u32Count])
+        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8ProductStringDesc[u32Count])
             u32ErrorCount++;
     }
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
@@ -1117,69 +1119,69 @@ void API_USBD_ProcessSetupPacket()
     /* Check EP0 buffer */
     for(u32Count = 0; u32Count < gu8ProductStringDesc[0] - MAX_PACKET_SIZE; u32Count++)
     {
-        if(inp8(0x400C0800 + EP0_BUF_OFFSET + u32Count) != gu8ProductStringDesc[MAX_PACKET_SIZE + u32Count])
+        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8ProductStringDesc[MAX_PACKET_SIZE + u32Count])
             u32ErrorCount++;
     }
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
 
 
     /* --- Standard request "GET_STATUS" test --- */
-    outp8(0x400C0800, 0x80); /* Device to host; standard request. */
-    outp8(0x400C0801, 0x0);  /* GET_STATUS */
-    outp8(0x400C0802, 0); /* wValue */
-    outp8(0x400C0803, 0);
-    outp8(0x400C0804, 0); /* wIndex: 0 for device */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 0x2); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x80); /* Device to host; standard request. */
+    outp8(0x40250801, 0x0);  /* GET_STATUS */
+    outp8(0x40250802, 0); /* wValue */
+    outp8(0x40250803, 0);
+    outp8(0x40250804, 0); /* wIndex: 0 for device */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 0x2); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == 2);
-    CU_ASSERT(inp8(0x400C0800 + EP0_BUF_OFFSET) == 1);
-    CU_ASSERT(inp8(0x400C0800 + EP0_BUF_OFFSET + 1) == 0);
+    CU_ASSERT(inp8(0x40250800 + EP0_BUF_OFFSET) == 1);
+    CU_ASSERT(inp8(0x40250800 + EP0_BUF_OFFSET + 1) == 0);
     CU_ASSERT(USBD->EP[1].MXPLD == 20); /* MAX_PACKET_SIZE: 20 */
 
-    outp8(0x400C0800, 0x81); /* Device to host; standard request. */
-    outp8(0x400C0801, 0x0);  /* GET_STATUS */
-    outp8(0x400C0802, 0); /* wValue */
-    outp8(0x400C0803, 0);
-    outp8(0x400C0804, 0); /* wIndex: interface number */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 0x2); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x81); /* Device to host; standard request. */
+    outp8(0x40250801, 0x0);  /* GET_STATUS */
+    outp8(0x40250802, 0); /* wValue */
+    outp8(0x40250803, 0);
+    outp8(0x40250804, 0); /* wIndex: interface number */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 0x2); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == 2);
-    CU_ASSERT(inp8(0x400C0800 + EP0_BUF_OFFSET) == 0);
-    CU_ASSERT(inp8(0x400C0800 + EP0_BUF_OFFSET + 1) == 0);
+    CU_ASSERT(inp8(0x40250800 + EP0_BUF_OFFSET) == 0);
+    CU_ASSERT(inp8(0x40250800 + EP0_BUF_OFFSET + 1) == 0);
     CU_ASSERT(USBD->EP[1].MXPLD == 20); /* MAX_PACKET_SIZE: 20 */
 
-    outp8(0x400C0800, 0x82); /* Device to host; standard request. */
-    outp8(0x400C0801, 0x0);  /* GET_STATUS */
-    outp8(0x400C0802, 0); /* wValue */
-    outp8(0x400C0803, 0);
-    outp8(0x400C0804, 0); /* wIndex: endpoint number */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 0x2); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x82); /* Device to host; standard request. */
+    outp8(0x40250801, 0x0);  /* GET_STATUS */
+    outp8(0x40250802, 0); /* wValue */
+    outp8(0x40250803, 0);
+    outp8(0x40250804, 0); /* wIndex: endpoint number */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 0x2); /* wLength */
+    outp8(0x40250807, 0);
 
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == 2);
-    CU_ASSERT(inp8(0x400C0800 + EP0_BUF_OFFSET) == 0);
-    CU_ASSERT(inp8(0x400C0800 + EP0_BUF_OFFSET + 1) == 0);
+    CU_ASSERT(inp8(0x40250800 + EP0_BUF_OFFSET) == 0);
+    CU_ASSERT(inp8(0x40250800 + EP0_BUF_OFFSET + 1) == 0);
     CU_ASSERT(USBD->EP[1].MXPLD == 20); /* MAX_PACKET_SIZE: 20 */
 
-    outp8(0x400C0800, 0x82); /* Device to host; standard request. */
-    outp8(0x400C0801, 0x0);  /* GET_STATUS */
-    outp8(0x400C0802, 0); /* wValue */
-    outp8(0x400C0803, 0);
-    outp8(0x400C0804, 2); /* wIndex: endpoint number */
-    outp8(0x400C0805, 0);
-    outp8(0x400C0806, 0x2); /* wLength */
-    outp8(0x400C0807, 0);
+    outp8(0x40250800, 0x82); /* Device to host; standard request. */
+    outp8(0x40250801, 0x0);  /* GET_STATUS */
+    outp8(0x40250802, 0); /* wValue */
+    outp8(0x40250803, 0);
+    outp8(0x40250804, 2); /* wIndex: endpoint number */
+    outp8(0x40250805, 0);
+    outp8(0x40250806, 0x2); /* wLength */
+    outp8(0x40250807, 0);
     USBD_SetStall(2);
 
     //USBD_ProcessSetupPacket();
@@ -1188,8 +1190,8 @@ void API_USBD_ProcessSetupPacket()
     USBD_StandardRequest();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == 2);
-    CU_ASSERT(inp8(0x400C0800 + EP0_BUF_OFFSET) == 1);
-    CU_ASSERT(inp8(0x400C0800 + EP0_BUF_OFFSET + 1) == 0);
+    CU_ASSERT(inp8(0x40250800 + EP0_BUF_OFFSET) == 1);
+    CU_ASSERT(inp8(0x40250800 + EP0_BUF_OFFSET + 1) == 0);
     CU_ASSERT(USBD->EP[1].MXPLD == 20); /* MAX_PACKET_SIZE: 20 */
 
 
@@ -1208,14 +1210,14 @@ void API_USBD_CtrlIn()
 
     USBD_Open(&gsInfo_MSC, NULL, NULL);
     USBD_CONFIG_EP(0, USBD_CFG_EPMODE_IN);
-    outp32(0x400C0500, 0x100); /* EP[0]->BUFSEG */
+    outp32(0x40250500, 0x100); /* EP[0]->BUFSEG */
 
     USBD_PrepareCtrlIn(u8CtrlInBuffer, 50);
     CU_ASSERT(USBD->EP[0].CFG & 0x80);
     CU_ASSERT(USBD->EP[0].MXPLD == 20);
     for(u32Count = 0; u32Count < 20; u32Count++)
     {
-        if(inp8(0x400C0900 + u32Count) != u32Count)
+        if(inp8(0x40250900 + u32Count) != u32Count)
             u32ErrorCount++;
     }
 
@@ -1223,7 +1225,7 @@ void API_USBD_CtrlIn()
     CU_ASSERT(USBD->EP[0].MXPLD == 20);
     for(u32Count = 0; u32Count < 20; u32Count++)
     {
-        if(inp8(0x400C0900 + u32Count) != u32Count + 20)
+        if(inp8(0x40250900 + u32Count) != u32Count + 20)
             u32ErrorCount++;
     }
 
@@ -1231,7 +1233,7 @@ void API_USBD_CtrlIn()
     CU_ASSERT(USBD->EP[0].MXPLD == 10);
     for(u32Count = 0; u32Count < 10; u32Count++)
     {
-        if(inp8(0x400C0900 + u32Count) != u32Count + 40)
+        if(inp8(0x40250900 + u32Count) != u32Count + 40)
             u32ErrorCount++;
     }
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
@@ -1244,7 +1246,7 @@ void API_USBD_CtrlIn()
     CU_ASSERT(USBD->EP[0].MXPLD == 3);
     for(u32Count = 0; u32Count < 3; u32Count++)
     {
-        if(inp8(0x400C0900 + u32Count) != (0xF | u32Count))
+        if(inp8(0x40250900 + u32Count) != (0xF | u32Count))
             u32ErrorCount++;
     }
 
@@ -1263,20 +1265,20 @@ void API_USBD_CtrlOut()
 
     USBD_Open(&gsInfo_MSC, NULL, NULL);
     USBD_CONFIG_EP(1, USBD_CFG_EPMODE_IN);
-    outp32(0x400C0510, 0x100); /* EP[1]->BUFSEG */
+    outp32(0x40250510, 0x100); /* EP[1]->BUFSEG */
     USBD_PrepareCtrlOut(u8CtrlOutBuffer, 50);
 
     for(u32Count = 0; u32Count < 20; u32Count++)
-        outp8(0x400C0900 + u32Count, u32Count);
+        outp8(0x40250900 + u32Count, u32Count);
     USBD_CtrlOut();
 
     for(u32Count = 0; u32Count < 20; u32Count++)
-        outp8(0x400C0900 + u32Count, u32Count + 20);
+        outp8(0x40250900 + u32Count, u32Count + 20);
     USBD_CtrlOut();
 
-    outp32(0x400C0514, 10); /* EP[1]->MXPLD */
+    outp32(0x40250514, 10); /* EP[1]->MXPLD */
     for(u32Count = 0; u32Count < 10; u32Count++)
-        outp8(0x400C0900 + u32Count, u32Count + 40);
+        outp8(0x40250900 + u32Count, u32Count + 40);
     USBD_CtrlOut();
 
     for(u32Count = 0; u32Count < 50; u32Count++)
