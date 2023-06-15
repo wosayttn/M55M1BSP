@@ -113,22 +113,22 @@ void MACRO_OTFC_CTL()
      *  OTFC_CTL_EN_ON() / OTFC_CTL_EN_OFF()
      */
     pOTFCModule->CTL = 0;
-    OTFC_CTL_PR_ON(pOTFCModule, OTFC_PR_0);
+    OTFC_ENABLE_PR(pOTFCModule, OTFC_PR_0);
     CU_ASSERT_TRUE((pOTFCModule->CTL & (1UL << (0 * 8))) >> (0 * 8));
     OTFC_CTL_PR_OFF(pOTFCModule, OTFC_PR_0);
     CU_ASSERT_FALSE((pOTFCModule->CTL & (1UL << (0 * 8))) >> (0 * 8));
 
-    OTFC_CTL_PR_ON(pOTFCModule, 1);
+    OTFC_ENABLE_PR(pOTFCModule, 1);
     CU_ASSERT_TRUE((pOTFCModule->CTL & (1UL << (1 * 8))) >> (1 * 8));
     OTFC_CTL_PR_OFF(pOTFCModule, 1);
     CU_ASSERT_FALSE((pOTFCModule->CTL & (1UL << (1 * 8))) >> (1 * 8));
 
-    OTFC_CTL_PR_ON(pOTFCModule, 2);
+    OTFC_ENABLE_PR(pOTFCModule, 2);
     CU_ASSERT_TRUE((pOTFCModule->CTL & (1UL << (2 * 8))) >> (2 * 8));
     OTFC_CTL_PR_OFF(pOTFCModule, 2);
     CU_ASSERT_FALSE((pOTFCModule->CTL & (1UL << (2 * 8))) >> (2 * 8));
 
-    OTFC_CTL_PR_ON(pOTFCModule, 3);
+    OTFC_ENABLE_PR(pOTFCModule, 3);
     CU_ASSERT_TRUE((pOTFCModule->CTL & (1UL << (3 * 8))) >> (3 * 8));
     OTFC_CTL_PR_OFF(pOTFCModule, 3);
     CU_ASSERT_FALSE((pOTFCModule->CTL & (1UL << (3 * 8))) >> (3 * 8));
@@ -258,19 +258,20 @@ void OTFC_KeyFormRegister_Func()
         SPIM_Hyper_EraseHRAM(pSPIMx, offset, TEST_BUFF_SIZE);
         popDat(u8TstBuf1, TEST_BUFF_SIZE);
 
-        OTFC_PR_KeyFromRegister(pOTFCModule,
-                                u32PRx,
-                                offset,
-                                offset + TEST_BUFF_SIZE,
-                                gau32AESKey[0],
-                                gau32AESKey[1],
-                                gau32AESKey[2],
-                                gau32AESKey[3],
-                                gau32AESKey[4],
-                                gau32AESKey[5],
-                                gau32AESKey[6],
-                                gau32AESKey[7]);
+        OTFC_SetKeyToReg(pOTFCModule,
+                         u32PRx,
+                         offset,
+                         offset + TEST_BUFF_SIZE,
+                         gau32AESKey[0],
+                         gau32AESKey[1],
+                         gau32AESKey[2],
+                         gau32AESKey[3],
+                         gau32AESKey[4],
+                         gau32AESKey[5],
+                         gau32AESKey[6],
+                         gau32AESKey[7]);
 
+        OTFC_ENABLE_PR(pOTFCModule, u32PRx);
         SPIM_ENABLE_CIPHER(pSPIMx);
 
         SPIM_DMAWrite_Hyper(pSPIMx, offset, u8TstBuf1, TEST_BUFF_SIZE);
@@ -285,7 +286,7 @@ void OTFC_KeyFormRegister_Func()
         }
 
         SPIM_DISABLE_CIPHER(pSPIMx);
-        OTFC_PR_Disable(pOTFCModule, u32PRx);
+        OTFC_DISABLE_PR(pOTFCModule, u32PRx);
 
         u32PRx++;
 
@@ -335,7 +336,7 @@ void OTFC_KeyFormKSSRAM_Func()
 
     i32KeyIdx = KS_SetAESToKeyStoreSRAM(eMemType, TRUE, gau32AESKey);
 
-    OTFC_PR_KeyFromKeyStore(pOTFCModule,
+    OTFC_SetKeyFromKeyStore(pOTFCModule,
                             u32PRx,
                             offset,
                             offset + HRAM_PAGE_SIZE,
@@ -355,6 +356,7 @@ void OTFC_KeyFormKSSRAM_Func()
         SPIM_Hyper_EraseHRAM(pSPIMx, offset, TEST_BUFF_SIZE);
         popDat(u8TstBuf1, TEST_BUFF_SIZE);
 
+        OTFC_ENABLE_PR(pOTFCModule, u32PRx);
         SPIM_ENABLE_CIPHER(pSPIMx);
 
         SPIM_DMAWrite_Hyper(pSPIMx, offset, u8TstBuf1, TEST_BUFF_SIZE);
@@ -370,7 +372,7 @@ void OTFC_KeyFormKSSRAM_Func()
     }
 
     SPIM_DISABLE_CIPHER(pSPIMx);
-    OTFC_PR_Disable(pOTFCModule, u32PRx);
+    OTFC_DISABLE_PR(pOTFCModule, u32PRx);
 
     CU_PASS();
 }

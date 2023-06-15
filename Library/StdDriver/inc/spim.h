@@ -337,8 +337,8 @@ typedef enum
 /**
  * @details     Set 4-byte address.
  * @param   x   Enable/Disable 4 bytes address.
- *              - \ref SPIM_OP_ENABLE  : Enable
- *              - \ref SPIM_OP_DISABLE : Disable
+ *              - \ref SPIM_OP_ENABLE
+ *              - \ref SPIM_OP_DISABLE
  * \hideinitializer
  */
 #define SPIM_SET_4BYTE_ADDR_EN(spim, x)                              \
@@ -1850,17 +1850,14 @@ typedef struct
     uint32_t u32DataDTR;        /*!< Data use DTR mode */
 
     uint32_t u32DcNum;          /*!< Dummy cycle count */
-    //uint32_t u32DcPhase;        /*!< Dummy cycle phase mode */
-    //uint32_t u32DcDTR;          /*!< Dummy cycle use DTR mode */
 
-    /* Continue read mode only support 0xBB, 0xEB, 0xE7, 0x0D, 0xBD, and 0xED */
+    /* Continue read mode only support 0xBB, 0xEB, 0xE7, 0x0D, 0xBD, and 0xED
+       in Direct Map Mode */
     uint32_t u32ContRdEn;       /*!< Enable Continue Read mode */
     uint32_t u32RdModePhase;    /*!< Read mode phase mode */
     uint32_t u32RdModeWidth;    /*!< Read mode phase mode */
     uint32_t u32RdModeDTR;      /*!< Read mode use DTR mode */
 
-    //uint32_t u32Is4ByteAddr;    /*!< 4 bytes address mode */
-    //uint32_t u32Sync;           /*!< Wait device ready */
 } PHASE_SET_T;  /*!< Structure holds SPIM IO phase info */
 
 
@@ -2185,8 +2182,8 @@ int32_t SPIM_DMADMM_SetDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32N
 
 /* SPI flash command phase table init API */
 void SPIM_DMADMM_InitPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32OPMode);
-void SPIM_DMA_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint32_t u32WrSize, uint8_t *pu8TxBuf);
-int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint32_t u32RdSize, uint8_t *pu8RxBuf, int isSync);
+void SPIM_DMA_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, int is4ByteAddr, uint32_t u32Addr, uint32_t u32WrSize, uint8_t *pu8TxBuf);
+int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, int is4ByteAddr, uint32_t u32Addr, uint32_t u32RdSize, uint8_t *pu8RxBuf, int isSync);
 void SPIM_DMM_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, int is4ByteAddr, uint32_t u32IdleIntvl);
 
 /* Use Normal I/O mode send phase data */
