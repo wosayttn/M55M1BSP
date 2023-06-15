@@ -27,7 +27,7 @@ static uint32_t  g_bDoISPFFTest = FALSE;
 
 void FMC_ISPFF_Test(uint32_t bTRUE)
 {
-	g_bDoISPFFTest = bTRUE;
+    g_bDoISPFFTest = bTRUE;
 }
 
 /**
@@ -257,7 +257,7 @@ int32_t FMC_Erase(uint32_t u32PageAddr)
   * @note     Global error code g_FMC_i32ErrCode
   *           -1  Erase failed or erase time-out
   */
-int32_t FMC_EraseBank(uint32_t u32BankAddr)
+int32_t FMC_Erase_Bank(uint32_t u32BankAddr)
 {
     int32_t  ret = 0;
     int32_t i32TimeOutCnt;
@@ -327,26 +327,26 @@ int32_t FMC_EraseXOM(uint32_t u32XomNum)
         {
             switch (u32XomNum)
             {
-                case 0u:
-                    u32Addr = (FMC->XOMR0STS & 0xFFFFFF00u) >> 8u;
-                    break;
+            case 0u:
+                u32Addr = (FMC->XOMR0STS & 0xFFFFFF00u) >> 8u;
+                break;
 
-                case 1u:
-                    u32Addr = (FMC->XOMR1STS & 0xFFFFFF00u) >> 8u;
-                    break;
+            case 1u:
+                u32Addr = (FMC->XOMR1STS & 0xFFFFFF00u) >> 8u;
+                break;
 
-                case 2u:
-                    u32Addr = (FMC->XOMR2STS & 0xFFFFFF00u) >> 8u;
-                    break;
+            case 2u:
+                u32Addr = (FMC->XOMR2STS & 0xFFFFFF00u) >> 8u;
+                break;
 
-                case 3u:
-                    u32Addr = (FMC->XOMR3STS & 0xFFFFFF00u) >> 8u;
-                    break;
+            case 3u:
+                u32Addr = (FMC->XOMR3STS & 0xFFFFFF00u) >> 8u;
+                break;
 
-                default:
-                    /* Should not be here */
-                    i32RetCode = -2;
-                    goto lexit;
+            default:
+                /* Should not be here */
+                i32RetCode = -2;
+                goto lexit;
             }
 
             FMC->ISPCMD  = FMC_ISPCMD_PAGE_ERASE;
@@ -476,8 +476,8 @@ uint32_t FMC_Read(uint32_t u32Addr)
             return 0xFFFFFFFF;
         }
     }
-    
-    if(g_bDoISPFFTest)
+
+    if (g_bDoISPFFTest)
     {
         if (FMC->ISPSTS & FMC_ISPSTS_ISPFF_Msk)
         {
@@ -594,8 +594,8 @@ int32_t FMC_Write(uint32_t u32Addr, uint32_t u32Data)
             return -1;
         }
     }
-    
-    if(g_bDoISPFFTest)
+
+    if (g_bDoISPFFTest)
     {
         if (FMC->ISPSTS & FMC_ISPSTS_ISPFF_Msk)
         {
@@ -605,7 +605,7 @@ int32_t FMC_Write(uint32_t u32Addr, uint32_t u32Data)
             return -1;
         }
     }
-    
+
     return 0;
 }
 
@@ -648,7 +648,7 @@ int32_t FMC_Write8Bytes(uint32_t u32addr, uint32_t u32data0, uint32_t u32data1)
     {
         FMC->ISPSTS |= FMC_ISPSTS_ISPFF_Msk;
         g_FMC_i32ErrCode = -1;
-        if(g_bDoISPFFTest)
+        if (g_bDoISPFFTest)
             printf("     * ISPFF is set !\n");
         ret = -1;
     }
@@ -677,10 +677,10 @@ int32_t FMC_WriteMultiple(uint32_t u32Addr, uint32_t pu32Buf[], uint32_t u32Len)
 
     g_FMC_i32ErrCode = 0;
 
-    if (((u32Addr % 8) != 0) || 
-        ((u32Addr < FMC_APROM_BASE) || ((u32Addr + u32Len) > FMC_APROM_END)) && 
-        ((u32Addr < FMC_LDROM_BASE) || ((u32Addr + u32Len) > FMC_LDROM_END))
-    )
+    if (((u32Addr % 8) != 0) ||
+            ((u32Addr < FMC_APROM_BASE) || ((u32Addr + u32Len) > FMC_APROM_END)) &&
+            ((u32Addr < FMC_LDROM_BASE) || ((u32Addr + u32Len) > FMC_LDROM_END))
+       )
     {
         g_FMC_i32ErrCode = -2;
         return -2;
@@ -799,7 +799,7 @@ int32_t FMC_WriteMultiple(uint32_t u32Addr, uint32_t pu32Buf[], uint32_t u32Len)
   *           -1  Program failed or time-out
   *           -2  Invalid OTP number
   */
-int32_t FMC_WriteOTP(uint32_t otp_num, uint32_t low_word, uint32_t high_word)
+int32_t FMC_Write_OTP(uint32_t otp_num, uint32_t low_word, uint32_t high_word)
 {
     int32_t  ret = 0;
     int32_t i32TimeOutCnt;
@@ -882,7 +882,7 @@ int32_t FMC_WriteOTP(uint32_t otp_num, uint32_t low_word, uint32_t high_word)
   *           -1  Read failed or time-out
   *           -2  Invalid OTP number
   */
-int32_t FMC_ReadOTP(uint32_t otp_num, uint32_t *low_word, uint32_t *high_word)
+int32_t FMC_Read_OTP(uint32_t otp_num, uint32_t *low_word, uint32_t *high_word)
 {
     int32_t  ret = 0;
     int32_t i32TimeOutCnt;
@@ -941,7 +941,7 @@ int32_t FMC_ReadOTP(uint32_t otp_num, uint32_t *low_word, uint32_t *high_word)
   *           -1  Failed to write OTP lock bits or write time-out
   *           -2  Invalid OTP number
   */
-int32_t FMC_LockOTP(uint32_t otp_num)
+int32_t FMC_Lock_OTP(uint32_t otp_num)
 {
     int32_t  ret = 0;
     int32_t i32TimeOutCnt;
@@ -996,7 +996,7 @@ int32_t FMC_LockOTP(uint32_t otp_num)
   *           -1  Failed to read OTP lock bits or read time-out
   *           -2  Invalid OTP number
   */
-int32_t FMC_IsOTPLocked(uint32_t otp_num)
+int32_t FMC_Is_OTP_Locked(uint32_t otp_num)
 {
     int32_t  ret = 0;
     int32_t i32TimeOutCnt;
@@ -1115,6 +1115,7 @@ int32_t FMC_WriteConfig(uint32_t u32ConfigAddr, uint32_t u32ConfigVal)
   *           -1  Run/Read check sum time-out failed
   *           -2  u32addr or u32count must be aligned with 8 KB page alignment
   */
+#if 0   // TESTCHIP_ONLY not support
 uint32_t  FMC_GetChkSum(uint32_t u32addr, uint32_t u32count)
 {
     uint32_t   ret;
@@ -1144,8 +1145,8 @@ uint32_t  FMC_GetChkSum(uint32_t u32addr, uint32_t u32count)
                 return 0xFFFFFFFF;
             }
         }
-        
-        if(g_bDoISPFFTest)
+
+        if (g_bDoISPFFTest)
         {
             if (FMC->ISPSTS & FMC_ISPSTS_ISPFF_Msk)
             {
@@ -1170,8 +1171,8 @@ uint32_t  FMC_GetChkSum(uint32_t u32addr, uint32_t u32count)
                 return 0xFFFFFFFF;
             }
         }
-        
-        if(g_bDoISPFFTest)
+
+        if (g_bDoISPFFTest)
         {
             if (FMC->ISPSTS & FMC_ISPSTS_ISPFF_Msk)
             {
@@ -1187,7 +1188,7 @@ uint32_t  FMC_GetChkSum(uint32_t u32addr, uint32_t u32count)
 
     return ret;
 }
-
+#endif
 
 /**
   * @brief Run flash all one verification and get result.
@@ -1200,6 +1201,7 @@ uint32_t  FMC_GetChkSum(uint32_t u32addr, uint32_t u32count)
   * @note     Global error code g_FMC_i32ErrCode
   *           -1  RUN_ALL_ONE or CHECK_ALL_ONE commands time-out
   */
+#if 0   // TESTCHIP_ONLY not support
 uint32_t  FMC_CheckAllOne(uint32_t u32addr, uint32_t u32count)
 {
     uint32_t  ret = READ_ALLONE_CMD_FAIL;
@@ -1250,7 +1252,8 @@ uint32_t  FMC_CheckAllOne(uint32_t u32addr, uint32_t u32count)
             {
                 g_FMC_i32ErrCode = -1;
             }
-        } while ((FMC->ISPDAT == 0UL) && (g_FMC_i32ErrCode == 0));
+        }
+        while ((FMC->ISPDAT == 0UL) && (g_FMC_i32ErrCode == 0));
     }
 
     if (g_FMC_i32ErrCode == 0)
@@ -1265,6 +1268,7 @@ uint32_t  FMC_CheckAllOne(uint32_t u32addr, uint32_t u32count)
 
     return ret;
 }
+#endif
 
 /**
   * @brief     Remap Bank0/Bank1

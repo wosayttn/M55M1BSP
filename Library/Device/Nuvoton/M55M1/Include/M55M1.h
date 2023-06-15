@@ -125,12 +125,12 @@ typedef enum IRQn
     BPWM0_IRQn                    =  38,      /*!< BPWM0 Interrupt                          */
     BPWM1_IRQn                    =  39,      /*!< BPWM1 Interrupt                          */
 
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
     PDMA0_IRQn                    =  41,      /*!< PDMA0 Interrupt                          */
     PDMA1_IRQn                    =  42,      /*!< PDMA1 Interrupt                          */
     LPPDMA_IRQn                   =  43,      /*!< Low Power PDMA Interrupt                 */
     SCU_IRQn                      =  44,      /*!< SCU Interrupt                            */
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
     KS_IRQn                       =  46,      /*!< Key Store Interrupt                      */
     TIMER0_IRQn                   =  47,      /*!< Timer0 Interrupt                         */
     TIMER1_IRQn                   =  48,      /*!< Timer1 Interrupt                         */
@@ -139,7 +139,7 @@ typedef enum IRQn
     TIMER3_IRQn                   =  50,      /*!< Timer3 Interrupt                         */
     LPTMR0_IRQn                   =  51,      /*!< Low Power Timer 0 Interrupt              */
     LPTMR1_IRQn                   =  52,      /*!< Low Power Timer 1 Interrupt              */
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
     TTMR0_IRQn                    =  54,      /*!< Tick Timer 0 Interrupt                   */
     TTMR1_IRQn                    =  55,      /*!< Tick Timer 1 Interrupt                   */
     USBH0_IRQn                    =  56,      /*!< USB Host 0 Interrupt                     */
@@ -158,9 +158,9 @@ typedef enum IRQn
     SPI2_IRQn                     =  68,      /*!< SPI2 Interrupt                           */
     SPI3_IRQn                     =  69,      /*!< SPI3 Interrupt                           */
 
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
     LPSPI0_IRQn                   =  71,      /*!< Low Power SPI 0 Interrupt                */
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
     SPIM0_IRQn                    =  73,      /*!< SPIM0 Interrupt                          */
     SPIM1_IRQn                    =  74,      /*!< SPIM1 Interrupt                          */
     UART0_IRQn                    =  75,      /*!< UART0 Interrupt                          */
@@ -174,21 +174,21 @@ typedef enum IRQn
     UART7_IRQn                    =  82,      /*!< UART7 Interrupt                          */
     UART8_IRQn                    =  83,      /*!< UART8 Interrupt                          */
     UART9_IRQn                    =  84,      /*!< UART9 Interrupt                          */
-                                              /*!< Reserved                                 */
-                                              /*!< Reserved                                 */
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
+    /*!< Reserved                                 */
+    /*!< Reserved                                 */
     EINT6_IRQn                    =  88,      /*!< External Input 6 Interrupt               */
     EINT7_IRQn                    =  89,      /*!< External Input 7 Interrupt               */
 
     LPUART0_IRQn                  =  90,      /*!< Low Power UART 0 Interrupt               */
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
     I2C0_IRQn                     =  92,      /*!< I2C0 Interrupt                           */
     I2C1_IRQn                     =  93,      /*!< I2C1 Interrupt                           */
     I2C2_IRQn                     =  94,      /*!< I2C2 Interrupt                           */
     I2C3_IRQn                     =  95,      /*!< I2C3 Interrupt                           */
     LPI2C0_IRQn                   =  96,      /*!< Low Power I2C 0 Interrupt                */
     USCI0_IRQn                    =  97,      /*!< USCI0 Interrupt                          */
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
     SC0_IRQn                      =  99,      /*!< Smart Card Host 0 Interrupt              */
 
     SC1_IRQn                      = 100,      /*!< Smart Card Host 1 Interrupt              */
@@ -200,7 +200,7 @@ typedef enum IRQn
     I2S1_IRQn                     = 106,      /*!< I2S1 Interrupt                           */
     TRNG_IRQn                     = 107,      /*!< TRNG Interrupt                           */
     I3C0_IRQn                     = 108,      /*!< I3C0 Interrupt                           */
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
 
     OTFC0_IRQn                    = 110,      /*!< OTFC0 Interrupt                          */
     OTFC1_IRQn                    = 111,      /*!< OTFC1 Interrupt                          */
@@ -216,8 +216,8 @@ typedef enum IRQn
     CANFD11_IRQn                  = 120,      /*!< CANFD11 Interrupt                        */
     ACMP01_IRQn                   = 121,      /*!< ACMP0 and ACMP1 Interrupt                */
     ACMP23_IRQn                   = 122,      /*!< ACMP2 and ACMP3 Interrupt                */
-                                              /*!< Reserved                                 */
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
+    /*!< Reserved                                 */
     CRC_IRQn                      = 125,      /*!< CRC Interrupt                            */
     EADC00_IRQn                   = 126,      /*!< EADC0 Interrupt 0                        */
     EADC01_IRQn                   = 127,      /*!< EADC0 Interrupt 1                        */
@@ -230,7 +230,7 @@ typedef enum IRQn
     EADC13_IRQn                   = 133,      /*!< EADC1 Interrupt 3                        */
     LPADC0_IRQn                   = 134,      /*!< Low Power ADC 0 Interrupt                */
     DAC01_IRQn                    = 135,      /*!< DAC0 and DAC1 Interrupt                  */
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
     EQEI0_IRQn                    = 137,      /*!< EQEI0 Interrupt                          */
     EQEI1_IRQn                    = 138,      /*!< EQEI1 Interrupt                          */
     EQEI2_IRQn                    = 139,      /*!< EQEI2 Interrupt                          */
@@ -240,22 +240,22 @@ typedef enum IRQn
     ECAP1_IRQn                    = 142,      /*!< ECAP1 Interrupt                          */
     ECAP2_IRQn                    = 143,      /*!< ECAP2 Interrupt                          */
     ECAP3_IRQn                    = 144,      /*!< ECAP3 Interrupt                          */
-                                              /*!< Reserved                                 */
-                                              /*!< Reserved                                 */
-                                              /*!< Reserved                                 */
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
+    /*!< Reserved                                 */
+    /*!< Reserved                                 */
+    /*!< Reserved                                 */
     AWF_IRQn                      = 149,      /*!< AWF Interrupt                            */
 
     UTCPD_IRQn                    = 150,      /*!< UTCPD Interrupt                          */
-                                              /*!< Reserved                                 */
-                                              /*!< Reserved                                 */
-                                              /*!< Reserved                                 */
-                                              /*!< Reserved                                 */
-                                              /*!< Reserved                                 */
-                                              /*!< Reserved                                 */
-                                              /*!< Reserved                                 */
-                                              /*!< Reserved                                 */
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
+    /*!< Reserved                                 */
+    /*!< Reserved                                 */
+    /*!< Reserved                                 */
+    /*!< Reserved                                 */
+    /*!< Reserved                                 */
+    /*!< Reserved                                 */
+    /*!< Reserved                                 */
+    /*!< Reserved                                 */
 
     GDMACH0_IRQn                  = 160,      /*!< GDMA Channel 0 Interrupt                 */
     GDMACH1_IRQn                  = 161,      /*!< GDMA Channel 1 Interrupt                 */
@@ -670,8 +670,8 @@ typedef enum IRQn
 #define SPI1_S                    ((SPI_T *)      SPI1_BASE)
 #define SPI2_S                    ((SPI_T *)      SPI2_BASE)
 #define SPI3_S                    ((SPI_T *)      SPI3_BASE)
-#define SPIM0_S					  ((SPIM_T *)     SPIM0_BASE)
-#define SPIM1_S					  ((SPIM_T *)     SPIM1_BASE)
+#define SPIM0_S                   ((SPIM_T *)     SPIM0_BASE)
+#define SPIM1_S                   ((SPIM_T *)     SPIM1_BASE)
 #define SYS_S                     ((SYS_T *)      SYS_BASE)
 #define TAMPER_S                  ((TAMPER_T *)   TAMPER_BASE)
 #define TIMER0_S                  ((TIMER_T *)    TIMER0_BASE)
@@ -792,9 +792,9 @@ typedef enum IRQn
 #define SPI1_NS                   ((SPI_T *)      (SPI1_BASE      + NS_OFFSET))
 #define SPI2_NS                   ((SPI_T *)      (SPI2_BASE      + NS_OFFSET))
 #define SPI3_NS                   ((SPI_T *)      (SPI3_BASE      + NS_OFFSET))
-#define SPIM0_NS    			  ((SPIM_T *)     (SPIM0_BASE     + NS_OFFSET))
-#define SPIM1_NS    			  ((SPIM_T *)     (SPIM1_BASE     + NS_OFFSET))
-#define SYS_NS      			  ((SYS_T *)      (SYS_BASE       + NS_OFFSET))
+#define SPIM0_NS                  ((SPIM_T *)     (SPIM0_BASE     + NS_OFFSET))
+#define SPIM1_NS                  ((SPIM_T *)     (SPIM1_BASE     + NS_OFFSET))
+#define SYS_NS                    ((SYS_T *)      (SYS_BASE       + NS_OFFSET))
 #define TIMER0_NS                 ((TIMER_T *)    (TIMER0_BASE    + NS_OFFSET))
 #define TIMER1_NS                 ((TIMER_T *)    (TIMER1_BASE    + NS_OFFSET))
 #define TIMER2_NS                 ((TIMER_T *)    (TIMER2_BASE    + NS_OFFSET))
@@ -864,556 +864,556 @@ typedef enum IRQn
 /* SCU Configured peripheral */
 /* SCU_D0PNS0 */
 #if defined (SCU_INIT_D0PNS0_VAL) && (SCU_INIT_D0PNS0_VAL & SCU_D0PNS0_NPU_Msk)
-    #define NPU          NPU_NS
+#define NPU          NPU_NS
 #else
-    #define NPU          NPU_S
+#define NPU          NPU_S
 #endif
 
 /* SCU_D0PNS2 */
 #if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM0_Msk)
-    #define SPIM0        SPIM0_NS
+#define SPIM0        SPIM0_NS
 #else
-    #define SPIM0        SPIM0_S
+#define SPIM0        SPIM0_S
 #endif
 
 #if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM1_Msk)
-    #define SPIM1        SPIM1_NS
+#define SPIM1        SPIM1_NS
 #else
-    #define SPIM1        SPIM1_S
+#define SPIM1        SPIM1_S
 #endif
 
 /* SCU_D1PNS0 */
 #if defined (SCU_INIT_D1PNS0_VAL) && (SCU_INIT_D1PNS0_VAL & SCU_D1PNS0_PDMA0_Msk)
-    #define PDMA0        PDMA0_NS
+#define PDMA0        PDMA0_NS
 #else
-    #define PDMA0        PDMA0_S
+#define PDMA0        PDMA0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS0_VAL) && (SCU_INIT_D1PNS0_VAL & SCU_D1PNS0_PDMA1_Msk)
-    #define PDMA1        PDMA1_NS
+#define PDMA1        PDMA1_NS
 #else
-    #define PDMA1        PDMA1_S
+#define PDMA1        PDMA1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS0_VAL) && (SCU_INIT_D1PNS0_VAL & SCU_D1PNS0_USBH0_Msk)
-    #define USBH0        USBH0_NS
+#define USBH0        USBH0_NS
 #else
-    #define USBH0        USBH0_S
+#define USBH0        USBH0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS0_VAL) && (SCU_INIT_D1PNS0_VAL & SCU_D1PNS0_USBH1_Msk)
-    #define USBH1        USBH1_NS
+#define USBH1        USBH1_NS
 #else
-    #define USBH1        USBH1_S
+#define USBH1        USBH1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS0_VAL) && (SCU_INIT_D1PNS0_VAL & SCU_D1PNS0_HSUSBH_Msk)
-    #define HSUSBH       HSUSBH_NS
+#define HSUSBH       HSUSBH_NS
 #else
-    #define HSUSBH       HSUSBH_S
+#define HSUSBH       HSUSBH_S
 #endif
 
 #if defined (SCU_INIT_D1PNS0_VAL) && (SCU_INIT_D1PNS0_VAL & SCU_D1PNS0_HSUSBD_Msk)
-    #define HSUSBD       HSUSBD_NS
+#define HSUSBD       HSUSBD_NS
 #else
-    #define HSUSBD       HSUSBD_S
+#define HSUSBD       HSUSBD_S
 #endif
 
 #if defined (SCU_INIT_D1PNS0_VAL) && (SCU_INIT_D1PNS0_VAL & SCU_D1PNS0_SDH0_Msk)
-    #define SDH0         SDH0_NS
+#define SDH0         SDH0_NS
 #else
-    #define SDH0         SDH0_S
+#define SDH0         SDH0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS0_VAL) && (SCU_INIT_D1PNS0_VAL & SCU_D1PNS0_SDH1_Msk)
-    #define SDH1         SDH1_NS
+#define SDH1         SDH1_NS
 #else
-    #define SDH1         SDH1_S
+#define SDH1         SDH1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS0_VAL) && (SCU_INIT_D1PNS0_VAL & SCU_D1PNS0_EMAC0_Msk)
-    #define EMAC0        EMAC0_NS
+#define EMAC0        EMAC0_NS
 #else
-    #define EMAC0        EMAC0_S
+#define EMAC0        EMAC0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS0_VAL) && (SCU_INIT_D1PNS0_VAL & SCU_D1PNS0_CRYPTO_Msk)
-    #define CRYPTO       CRYPTO_NS
+#define CRYPTO       CRYPTO_NS
 #else
-    #define CRYPTO       CRYPTO_S
+#define CRYPTO       CRYPTO_S
 #endif
 
 #if defined (SCU_INIT_D1PNS0_VAL) && (SCU_INIT_D1PNS0_VAL & SCU_D1PNS0_CRC_Msk)
-    #define CRC          CRC_NS
+#define CRC          CRC_NS
 #else
-    #define CRC          CRC_S
+#define CRC          CRC_S
 #endif
 
 /* SCU_D1PNS1 */
 #if defined (SCU_INIT_D1PNS1_VAL) && (SCU_INIT_D1PNS1_VAL & SCU_D1PNS1_KDF_Msk)
-    #define KDF          KDF_NS
+#define KDF          KDF_NS
 #else
-    #define KDF          KDF_S
+#define KDF          KDF_S
 #endif
 
 #if defined (SCU_INIT_D1PNS1_VAL) && (SCU_INIT_D1PNS1_VAL & SCU_D1PNS1_CANFD0_Msk)
-    #define CANFD0       CANFD0_NS
+#define CANFD0       CANFD0_NS
 #else
-    #define CANFD0       CANFD0_S
+#define CANFD0       CANFD0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS1_VAL) && (SCU_INIT_D1PNS1_VAL & SCU_D1PNS1_CANFD1_Msk)
-    #define CANFD1       CANFD1_NS
+#define CANFD1       CANFD1_NS
 #else
-    #define CANFD1       CANFD1_S
+#define CANFD1       CANFD1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS1_VAL) && (SCU_INIT_D1PNS1_VAL & SCU_D1PNS1_ETMC_Msk)
-    #define ETMC         ETMC_NS
+#define ETMC         ETMC_NS
 #else
-    #define ETMC         ETMC_S
+#define ETMC         ETMC_S
 #endif
 
 #if defined (SCU_INIT_D1PNS1_VAL) && (SCU_INIT_D1PNS1_VAL & SCU_D1PNS1_SWDH_Msk)
-    #define SWDH         SWDH_NS
+#define SWDH         SWDH_NS
 #else
-    #define SWDH         SWDH_S
+#define SWDH         SWDH_S
 #endif
 
 #if defined (SCU_INIT_D1PNS1_VAL) && (SCU_INIT_D1PNS1_VAL & SCU_D1PNS1_SWODEC_Msk)
-    #define SWODEC       SWODEC_NS
+#define SWODEC       SWODEC_NS
 #else
-    #define SWODEC       SWODEC_S
+#define SWODEC       SWODEC_S
 #endif
 
 #if defined (SCU_INIT_D1PNS1_VAL) && (SCU_INIT_D1PNS1_VAL & SCU_D1PNS1_EBI_Msk)
-    #define EBI          EBI_NS
+#define EBI          EBI_NS
 #else
-    #define EBI          EBI_S
+#define EBI          EBI_S
 #endif
 
 /* SCU_D1PNS2 */
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_WWDT0_Msk)
-    #define WWDT0        WWDT0_NS
+#define WWDT0        WWDT0_NS
 #else
-    #define WWDT0        WWDT0_S
+#define WWDT0        WWDT0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_EADC0_Msk)
-    #define EADC0        EADC0_NS
+#define EADC0        EADC0_NS
 #else
-    #define EADC0        EADC0_S
+#define EADC0        EADC0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_EPWM0_Msk)
-    #define EPWM0        EPWM0_NS
+#define EPWM0        EPWM0_NS
 #else
-    #define EPWM0        EPWM0_S
+#define EPWM0        EPWM0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_BPWM0_Msk)
-    #define BPWM0        BPWM0_NS
+#define BPWM0        BPWM0_NS
 #else
-    #define BPWM0        BPWM0_S
+#define BPWM0        BPWM0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_EQEI0_Msk)
-    #define EQEI0        EQEI0_NS
+#define EQEI0        EQEI0_NS
 #else
-    #define EQEI0        EQEI0_S
+#define EQEI0        EQEI0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_EQEI2_Msk)
-    #define EQEI2        EQEI2_NS
+#define EQEI2        EQEI2_NS
 #else
-    #define EQEI2        EQEI2_S
+#define EQEI2        EQEI2_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_ECAP0_Msk)
-    #define ECAP0        ECAP0_NS
+#define ECAP0        ECAP0_NS
 #else
-    #define ECAP0        ECAP0_S
+#define ECAP0        ECAP0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_ECAP2_Msk)
-    #define ECAP2        ECAP2_NS
+#define ECAP2        ECAP2_NS
 #else
-    #define ECAP2        ECAP2_S
+#define ECAP2        ECAP2_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_I2C0_Msk)
-    #define I2C0         I2C0_NS
+#define I2C0         I2C0_NS
 #else
-    #define I2C0         I2C0_S
+#define I2C0         I2C0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_I2C2_Msk)
-    #define I2C2         I2C2_NS
+#define I2C2         I2C2_NS
 #else
-    #define I2C2         I2C2_S
+#define I2C2         I2C2_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_QSPI0_Msk)
-    #define QSPI0        QSPI0_NS
+#define QSPI0        QSPI0_NS
 #else
-    #define QSPI0        QSPI0_S
+#define QSPI0        QSPI0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_SPI0_Msk)
-    #define SPI0         SPI0_NS
+#define SPI0         SPI0_NS
 #else
-    #define SPI0         SPI0_S
+#define SPI0         SPI0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_SPI2_Msk)
-    #define SPI2         SPI2_NS
+#define SPI2         SPI2_NS
 #else
-    #define SPI2         SPI2_S
+#define SPI2         SPI2_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_UART0_Msk)
-    #define UART0        UART0_NS
+#define UART0        UART0_NS
 #else
-    #define UART0        UART0_S
+#define UART0        UART0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_UART2_Msk)
-    #define UART2        UART2_NS
+#define UART2        UART2_NS
 #else
-    #define UART2        UART2_S
+#define UART2        UART2_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_UART4_Msk)
-    #define UART4        UART4_NS
+#define UART4        UART4_NS
 #else
-    #define UART4        UART4_S
+#define UART4        UART4_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_UART6_Msk)
-    #define UART6        UART6_NS
+#define UART6        UART6_NS
 #else
-    #define UART6        UART6_S
+#define UART6        UART6_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_UART8_Msk)
-    #define UART8        UART8_NS
+#define UART8        UART8_NS
 #else
-    #define UART8        UART8_S
+#define UART8        UART8_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_USCI0_Msk)
-    #define USCI0        USCI0_NS
-    #define UI2C0        UI2C0_NS
-    #define USPI0        USPI0_NS
-    #define UUART0       UUART0_NS
+#define USCI0        USCI0_NS
+#define UI2C0        UI2C0_NS
+#define USPI0        USPI0_NS
+#define UUART0       UUART0_NS
 #else
-    #define USCI0        USCI0_S
-    #define UI2C0        UI2C0_S
-    #define USPI0        USPI0_S
-    #define UUART0       UUART0_S
+#define USCI0        USCI0_S
+#define UI2C0        UI2C0_S
+#define USPI0        USPI0_S
+#define UUART0       UUART0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_SC0_Msk)
-    #define SC0          SC0_NS
+#define SC0          SC0_NS
 #else
-    #define SC0          SC0_S
+#define SC0          SC0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_SC2_Msk)
-    #define SC2          SC2_NS
+#define SC2          SC2_NS
 #else
-    #define SC2          SC2_S
+#define SC2          SC2_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_PSIO_Msk)
-    #define PSIO         PSIO_NS
+#define PSIO         PSIO_NS
 #else
-    #define PSIO         PSIO_S
+#define PSIO         PSIO_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_TMR01_Msk)
-    #define TIMER0       TIMER0_NS
-    #define TIMER1       TIMER1_NS
+#define TIMER0       TIMER0_NS
+#define TIMER1       TIMER1_NS
 #else
-    #define TIMER0       TIMER0_S
-    #define TIMER1       TIMER1_S
+#define TIMER0       TIMER0_S
+#define TIMER1       TIMER1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_DAC01_Msk)
-    #define DAC0         DAC0_NS
-    #define DAC1         DAC1_NS
+#define DAC0         DAC0_NS
+#define DAC1         DAC1_NS
 #else
-    #define DAC0         DAC0_S
-    #define DAC1         DAC1_S
+#define DAC0         DAC0_S
+#define DAC1         DAC1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_HSOTG_Msk)
-    #define HSOTG        HSOTG_NS
+#define HSOTG        HSOTG_NS
 #else
-    #define HSOTG        HSOTG_S
+#define HSOTG        HSOTG_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_I2S0_Msk)
-    #define I2S0         I2S0_NS
+#define I2S0         I2S0_NS
 #else
-    #define I2S0         I2S0_S
+#define I2S0         I2S0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_ACMP01_Msk)
-    #define ACMP01       ACMP01_NS
+#define ACMP01       ACMP01_NS
 #else
-    #define ACMP01       ACMP01_S
+#define ACMP01       ACMP01_S
 #endif
 
 #if defined (SCU_INIT_D1PNS2_VAL) && (SCU_INIT_D1PNS2_VAL & SCU_D1PNS2_USBD_Msk)
-    #define USBD         USBD_NS
+#define USBD         USBD_NS
 #else
-    #define USBD         USBD_S
+#define USBD         USBD_S
 #endif
 
 /* SCU_D1PNS4 */
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_WWDT1_Msk)
-    #define WWDT1        WWDT1_NS
+#define WWDT1        WWDT1_NS
 #else
-    #define WWDT1        WWDT1_S
+#define WWDT1        WWDT1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_EADC1_Msk)
-    #define EADC1        EADC1_NS
+#define EADC1        EADC1_NS
 #else
-    #define EADC1        EADC1_S
+#define EADC1        EADC1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_EPWM1_Msk)
-    #define EPWM1        EPWM1_NS
+#define EPWM1        EPWM1_NS
 #else
-    #define EPWM1        EPWM1_S
+#define EPWM1        EPWM1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_BPWM1_Msk)
-    #define BPWM1        BPWM1_NS
+#define BPWM1        BPWM1_NS
 #else
-    #define BPWM1        BPWM1_S
+#define BPWM1        BPWM1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_EQEI1_Msk)
-    #define EQEI1        EQEI1_NS
+#define EQEI1        EQEI1_NS
 #else
-    #define EQEI1        EQEI1_S
+#define EQEI1        EQEI1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_EQEI3_Msk)
-    #define EQEI3        EQEI3_NS
+#define EQEI3        EQEI3_NS
 #else
-    #define EQEI3        EQEI3_S
+#define EQEI3        EQEI3_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_ECAP1_Msk)
-    #define ECAP1        ECAP1_NS
+#define ECAP1        ECAP1_NS
 #else
-    #define ECAP1        ECAP1_S
+#define ECAP1        ECAP1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_ECAP3_Msk)
-    #define ECAP3        ECAP3_NS
+#define ECAP3        ECAP3_NS
 #else
-    #define ECAP3        ECAP3_S
+#define ECAP3        ECAP3_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_I2C1_Msk)
-    #define I2C1         I2C1_NS
+#define I2C1         I2C1_NS
 #else
-    #define I2C1         I2C1_S
+#define I2C1         I2C1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_I2C3_Msk)
-    #define I2C3         I2C3_NS
+#define I2C3         I2C3_NS
 #else
-    #define I2C3         I2C3_S
+#define I2C3         I2C3_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_QSPI1_Msk)
-    #define QSPI1        QSPI1_NS
+#define QSPI1        QSPI1_NS
 #else
-    #define QSPI1        QSPI1_S
+#define QSPI1        QSPI1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_SPI1_Msk)
-    #define SPI1         SPI1_NS
+#define SPI1         SPI1_NS
 #else
-    #define SPI1         SPI1_S
+#define SPI1         SPI1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_SPI3_Msk)
-    #define SPI3         SPI3_NS
+#define SPI3         SPI3_NS
 #else
-    #define SPI3         SPI3_S
+#define SPI3         SPI3_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_UART1_Msk)
-    #define UART1        UART1_NS
+#define UART1        UART1_NS
 #else
-    #define UART1        UART1_S
+#define UART1        UART1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_UART3_Msk)
-    #define UART3        UART3_NS
+#define UART3        UART3_NS
 #else
-    #define UART3        UART3_S
+#define UART3        UART3_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_UART5_Msk)
-    #define UART5        UART5_NS
+#define UART5        UART5_NS
 #else
-    #define UART5        UART5_S
+#define UART5        UART5_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_UART7_Msk)
-    #define UART7        UART7_NS
+#define UART7        UART7_NS
 #else
-    #define UART7        UART7_S
+#define UART7        UART7_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_UART9_Msk)
-    #define UART9        UART9_NS
+#define UART9        UART9_NS
 #else
-    #define UART9        UART9_S
+#define UART9        UART9_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_SC1_Msk)
-    #define SC1          SC1_NS
+#define SC1          SC1_NS
 #else
-    #define SC1          SC1_S
+#define SC1          SC1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_OTG_Msk)
-    #define OTG          OTG_NS
+#define OTG          OTG_NS
 #else
-    #define OTG          OTG_S
+#define OTG          OTG_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_KPI_Msk)
-    #define KPI          KPI_NS
+#define KPI          KPI_NS
 #else
-    #define KPI          KPI_S
+#define KPI          KPI_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_TMR23_Msk)
-    #define TIMER2       TIMER2_NS
-    #define TIMER3       TIMER3_NS
+#define TIMER2       TIMER2_NS
+#define TIMER3       TIMER3_NS
 #else
-    #define TIMER2       TIMER2_S
-    #define TIMER3       TIMER3_S
+#define TIMER2       TIMER2_S
+#define TIMER3       TIMER3_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_TRNG_Msk)
-    #define TRNG         TRNG_NS
+#define TRNG         TRNG_NS
 #else
-    #define TRNG         TRNG_S
+#define TRNG         TRNG_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_RTC_Msk)
-    #define RTC          RTC_NS
+#define RTC          RTC_NS
 #else
-    #define RTC          RTC_S
+#define RTC          RTC_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_I2S1_Msk)
-    #define I2S1         I2S1_NS
+#define I2S1         I2S1_NS
 #else
-    #define I2S1         I2S1_S
+#define I2S1         I2S1_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_ACMP23_Msk)
-    #define ACMP23       ACMP23_NS
+#define ACMP23       ACMP23_NS
 #else
-    #define ACMP23       ACMP23_S
+#define ACMP23       ACMP23_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_I3C0_Msk)
-    #define I3C0         I3C0_NS
+#define I3C0         I3C0_NS
 #else
-    #define I3C0         I3C0_S
+#define I3C0         I3C0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_UTCPD_Msk)
-    #define UTCPD        UTCPD_NS
+#define UTCPD        UTCPD_NS
 #else
-    #define UTCPD        UTCPD_S
+#define UTCPD        UTCPD_S
 #endif
 
 /* SCU_D2PNS0 */
 #if defined (SCU_INIT_D2PNS0_VAL) && (SCU_INIT_D2PNS0_VAL & SCU_D2PNS0_LPPDMA_Msk)
-    #define LPPDMA       LPPDMA_NS
+#define LPPDMA       LPPDMA_NS
 #else
-    #define LPPDMA       LPPDMA_S
+#define LPPDMA       LPPDMA_S
 #endif
 
 #if defined (SCU_INIT_D2PNS0_VAL) && (SCU_INIT_D2PNS0_VAL & SCU_D2PNS0_CCAP_Msk)
-    #define CCAP         CCAP_NS
+#define CCAP         CCAP_NS
 #else
-    #define CCAP         CCAP_S
+#define CCAP         CCAP_S
 #endif
 
 #if defined (SCU_INIT_D2PNS0_VAL) && (SCU_INIT_D2PNS0_VAL & SCU_D2PNS0_LPGPIO_Msk)
-    #define LPGPIO       LPGPIO_NS
+#define LPGPIO       LPGPIO_NS
 #else
-    #define LPGPIO       LPGPIO_S
+#define LPGPIO       LPGPIO_S
 #endif
 
 /* SCU_D2PNS2 */
 #if defined (SCU_INIT_D2PNS2_VAL) && (SCU_INIT_D2PNS2_VAL & SCU_D2PNS2_LPTMR01_Msk)
-    #define LPTMR0       LPTMR0_NS
-    #define LPTMR1       LPTMR1_NS
+#define LPTMR0       LPTMR0_NS
+#define LPTMR1       LPTMR1_NS
 #else
-    #define LPTMR0       LPTMR0_S
-    #define LPTMR1       LPTMR1_S
+#define LPTMR0       LPTMR0_S
+#define LPTMR1       LPTMR1_S
 #endif
 
 #if defined (SCU_INIT_D2PNS2_VAL) && (SCU_INIT_D2PNS2_VAL & SCU_D2PNS2_TTMR01_Msk)
-    #define TTMR0        TTMR0_NS
-    #define TTMR1        TTMR1_NS
+#define TTMR0        TTMR0_NS
+#define TTMR1        TTMR1_NS
 #else
-    #define TTMR0        TTMR0_S
-    #define TTMR1        TTMR1_S
+#define TTMR0        TTMR0_S
+#define TTMR1        TTMR1_S
 #endif
 
 #if defined (SCU_INIT_D2PNS2_VAL) && (SCU_INIT_D2PNS2_VAL & SCU_D2PNS2_LPADC0_Msk)
-    #define LPADC0       LPADC0_NS
+#define LPADC0       LPADC0_NS
 #else
-    #define LPADC0       LPADC0_S
+#define LPADC0       LPADC0_S
 #endif
 
 #if defined (SCU_INIT_D2PNS2_VAL) && (SCU_INIT_D2PNS2_VAL & SCU_D2PNS2_LPI2C0_Msk)
-    #define LPI2C0       LPI2C0_NS
+#define LPI2C0       LPI2C0_NS
 #else
-    #define LPI2C0       LPI2C0_S
+#define LPI2C0       LPI2C0_S
 #endif
 
 #if defined (SCU_INIT_D2PNS2_VAL) && (SCU_INIT_D2PNS2_VAL & SCU_D2PNS2_LPSPI0_Msk)
-    #define LPSPI0       LPSPI0_NS
+#define LPSPI0       LPSPI0_NS
 #else
-    #define LPSPI0       LPSPI0_S
+#define LPSPI0       LPSPI0_S
 #endif
 
 #if defined (SCU_INIT_D2PNS2_VAL) && (SCU_INIT_D2PNS2_VAL & SCU_D2PNS2_DMIC0_Msk)
-    #define DMIC0        DMIC0_NS
-    #define VAD0         VAD0_NS
+#define DMIC0        DMIC0_NS
+#define VAD0         VAD0_NS
 #else
-    #define DMIC0        DMIC0_S
-    #define VAD0         VAD0_S
+#define DMIC0        DMIC0_S
+#define VAD0         VAD0_S
 #endif
 
 #if defined (SCU_INIT_D2PNS2_VAL) && (SCU_INIT_D2PNS2_VAL & SCU_D2PNS2_LPUART0_Msk)
-    #define LPUART0      LPUART0_NS
+#define LPUART0      LPUART0_NS
 #else
-    #define LPUART0      LPUART0_S
+#define LPUART0      LPUART0_S
 #endif
 
 #if defined (SCU_INIT_D2PNS2_VAL) && (SCU_INIT_D2PNS2_VAL & SCU_D2PNS2_AWF_Msk)
-    #define AWF          AWF_NS
+#define AWF          AWF_NS
 #else
-    #define AWF          AWF_S
+#define AWF          AWF_S
 #endif
 
 /** @} end of group PERIPHERAL_SNS */
@@ -1691,7 +1691,6 @@ typedef volatile uint64_t vu64;   ///< Define 64-bit unsigned volatile data type
 #include "rtc.h"
 #include "sc.h"
 #include "scu/scu.h"
-#include "scu/fvc.h"
 #include "scu/dpm.h"
 #include "scu/plm.h"
 #include "scu/mpc.h"

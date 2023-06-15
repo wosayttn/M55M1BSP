@@ -105,15 +105,15 @@ DESC_HUB_T;
 /*   Port reset retry and time-out settings                                 */
 /*--------------------------------------------------------------------------*/
 #ifndef __PLDM_EMU__
-#define HUB_DEBOUNCE_TIME              500      /* Hub connect/disconnect de-bounce time in ms     */
-#define PORT_RESET_RETRY               1        /* port reset retry times                          */
-#define PORT_RESET_TIME_MS             50       /* port reset time (ms)                            */
-#define PORT_RESET_RETRY_INC_MS        250      /* increased reset time (ms) after reset failed    */
+    #define HUB_DEBOUNCE_TIME              500      /* Hub connect/disconnect de-bounce time in ms     */
+    #define PORT_RESET_RETRY               1        /* port reset retry times                          */
+    #define PORT_RESET_TIME_MS             50       /* port reset time (ms)                            */
+    #define PORT_RESET_RETRY_INC_MS        250      /* increased reset time (ms) after reset failed    */
 #else
-#define HUB_DEBOUNCE_TIME              1        /* Hub connect/disconnect de-bounce time in ms     */
-#define PORT_RESET_RETRY               1        /* port reset retry times                          */
-#define PORT_RESET_TIME_MS             20       /* port reset time (ms)                            */
-#define PORT_RESET_RETRY_INC_MS        250      /* increased reset time (ms) after reset failed    */
+    #define HUB_DEBOUNCE_TIME              1        /* Hub connect/disconnect de-bounce time in ms     */
+    #define PORT_RESET_RETRY               1        /* port reset retry times                          */
+    #define PORT_RESET_TIME_MS             20       /* port reset time (ms)                            */
+    #define PORT_RESET_RETRY_INC_MS        250      /* increased reset time (ms) after reset failed    */
 #endif
 
 #define HUB_STATUS_MAX_BYTE            2        /* maximum number of interrupt-in status bytes     */
@@ -130,8 +130,8 @@ typedef struct hub_dev_t
     uint16_t   sc_bitmap;              /*!< Hub and Port Status Change Bitmap     \hideinitializer */
     uint8_t    bNbrPorts;              /*!< Number of ports                       \hideinitializer */
     uint8_t    bPwrOn2PwrGood;         /*!< Hub power on to power good time       \hideinitializer */
-    char       pos_id[MAX_HUB_DEVICE+1];   /*!< Hub position identifier           \hideinitializer */
-    int        (*port_reset)(struct hub_dev_t *hub, int port);/*!< Port reset function                   \hideinitializer */
+    char       pos_id[MAX_HUB_DEVICE + 1]; /*!< Hub position identifier           \hideinitializer */
+    int (*port_reset)(struct hub_dev_t *hub, int port);              /*!< Port reset function                   \hideinitializer */
     UDEV_T     *children;              /*!< Child device list.                    \hideinitializer */
 } HUB_DEV_T;
 

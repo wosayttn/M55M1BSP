@@ -340,8 +340,8 @@ void LPSPI_SetFIFO(LPSPI_T *lpspi, uint32_t u32TxThreshold, uint32_t u32RxThresh
   */
 uint32_t LPSPI_GetBusClock(LPSPI_T *lpspi)
 {
-    uint32_t u32Div;
-    uint32_t u32ClkSrc;
+    uint32_t u32Div = 0;
+    uint32_t u32ClkSrc = 0;
 
     /* Get DIVIDER setting */
     u32Div = (lpspi->CLKDIV & LPSPI_CLKDIV_DIVIDER_Msk) >> LPSPI_CLKDIV_DIVIDER_Pos;

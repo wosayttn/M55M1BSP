@@ -58,7 +58,7 @@ extern "C"
 /**
   * @brief      Disable EQEI compare function
   * @param[in]  eeqei     The pointer of the specified EQEI module.
-  * 
+  *
   * @details    This macro disable EQEI counter compare function.
   * \hideinitializer
   */
@@ -67,7 +67,7 @@ extern "C"
 /**
   * @brief      Enable EQEI compare function
   * @param[in]  eeqei     The pointer of the specified EQEI module.
-  * 
+  *
   * @details    This macro enable EQEI counter compare function.
   * \hideinitializer
   */
@@ -76,7 +76,7 @@ extern "C"
 /**
   * @brief      Disable EQEI index latch function
   * @param[in]  eeqei     The pointer of the specified EQEI module.
-  * 
+  *
   * @details    This macro disable EQEI index trigger counter latch function.
   * \hideinitializer
   */
@@ -85,7 +85,7 @@ extern "C"
 /**
   * @brief      Enable EQEI index latch function
   * @param[in]  eeqei     The pointer of the specified EQEI module.
-  * 
+  *
   * @details    This macro enable EQEI index trigger counter latch function.
   * \hideinitializer
   */
@@ -94,7 +94,7 @@ extern "C"
 /**
   * @brief      Disable EQEI index reload function
   * @param[in]  eeqei     The pointer of the specified EQEI module.
-  * 
+  *
   * @details    This macro disable EQEI index trigger counter reload function.
   * \hideinitializer
   */
@@ -103,7 +103,7 @@ extern "C"
 /**
   * @brief      Enable EQEI index reload function
   * @param[in]  eeqei     The pointer of the specified EQEI module.
-  * 
+  *
   * @details    This macro enable EQEI index trigger counter reload function.
   * \hideinitializer
   */
@@ -116,7 +116,7 @@ extern "C"
   *                             - \ref EQEI_CTL_CHAEN_Msk    : QEA input
   *                             - \ref EQEI_CTL_CHAEN_Msk    : QEB input
   *                             - \ref EQEI_CTL_IDXEN_Msk    : IDX input
-  * 
+  *
   * @details    This macro disable specified EQEI signal input.
   * \hideinitializer
   */
@@ -129,7 +129,7 @@ extern "C"
   *                             - \ref EQEI_CTL_CHAEN_Msk    : QEA input
   *                             - \ref EQEI_CTL_CHBEN_Msk    : QEB input
   *                             - \ref EQEI_CTL_IDXEN_Msk    : IDX input
-  * 
+  *
   * @details    This macro enable specified EQEI signal input.
   * \hideinitializer
   */
@@ -142,7 +142,7 @@ extern "C"
   *                             - \ref EQEI_CTL_CHAINV_Msk   : QEA Input
   *                             - \ref EQEI_CTL_CHBINV_Msk   : QEB Input
   *                             - \ref EQEI_CTL_IDXINV_Msk   : IDX Input
-  * 
+  *
   * @details    This macro disable specified EQEI signal inverted input polarity.
   * \hideinitializer
   */
@@ -155,7 +155,7 @@ extern "C"
   *                             - \ref EQEI_CTL_CHAINV_Msk   : QEA Input
   *                             - \ref EQEI_CTL_CHBINV_Msk   : QEB Input
   *                             - \ref EQEI_CTL_IDXINV_Msk   : IDX Input
-  * 
+  *
   * @details    This macro inverse specified EQEI signal input polarity.
   * \hideinitializer
   */
@@ -169,7 +169,7 @@ extern "C"
   *                         - \ref EQEI_CTL_OVUNIEN_Msk  : Counter overflow or underflow interrupt
   *                         - \ref EQEI_CTL_CMPIEN_Msk   : Compare-match interrupt
   *                         - \ref EQEI_CTL_IDXIEN_Msk   : Index detected interrupt
-  * 
+  *
   * @details    This macro disable specified EQEI interrupt.
   * \hideinitializer
   */
@@ -183,7 +183,7 @@ extern "C"
   *                         - \ref EQEI_CTL_OVUNIEN_Msk  : Counter overflow or underflow interrupt
   *                         - \ref EQEI_CTL_CMPIEN_Msk   : Compare-match interrupt
   *                         - \ref EQEI_CTL_IDXIEN_Msk   : Index detected interrupt
-  * 
+  *
   * @details    This macro enable specified EQEI interrupt.
   * \hideinitializer
   */
@@ -192,7 +192,7 @@ extern "C"
 /**
   * @brief      Disable EQEI noise filter
   * @param[in]  eqei         The pointer of the specified EQEI module.
-  * 
+  *
   * @details    This macro disable EQEI noise filter function.
   * \hideinitializer
   */
@@ -208,7 +208,7 @@ extern "C"
   *                         - \ref EQEI_CTL_NFCLKSEL_DIV16
   *                         - \ref EQEI_CTL_NFCLKSEL_DIV32
   *                         - \ref EQEI_CTL_NFCLKSEL_DIV64
-  * 
+  *
   * @details    This macro enable EQEI noise filter function and select noise filter clock.
   * \hideinitializer
   */
@@ -286,7 +286,7 @@ extern "C"
   *                         - \ref EQEI_STATUS_OVUNF_Msk     : Counter overflow or underflow flag
   *                         - \ref EQEI_STATUS_CMPF_Msk      : Compare-match flag
   *                         - \ref EQEI_STATUS_IDXF_Msk      : Index detected flag
-  * 
+  *
   * @details    This macro clear EQEI specified interrupt flag.
   * \hideinitializer
   */
@@ -296,7 +296,7 @@ extern "C"
   * @brief      Set EQEI counter compare value
   * @param[in]  eqei         The pointer of the specified EQEI module.
   * @param[in]  u32Value    The counter compare value.
-  * 
+  *
   * @details    This macro set EQEI pulse counter compare value.
   * \hideinitializer
   */
@@ -306,7 +306,7 @@ extern "C"
   * @brief      Set EQEI counter value
   * @param[in]  eqei         The pointer of the specified EQEI module.
   * @param[in]  u32Value    The counter compare value.
-  * 
+  *
   * @details    This macro set EQEI pulse counter value.
   * \hideinitializer
   */
@@ -321,7 +321,7 @@ extern "C"
   *                         - \ref EQEI_CTL_HOLDTMR1_Msk     : Hold EQEI_CNT by Timer1
   *                         - \ref EQEI_CTL_HOLDTMR2_Msk     : Hold EQEI_CNT by Timer2
   *                         - \ref EQEI_CTL_HOLDTMR3_Msk     : Hold EQEI_CNT by Timer3
-  * 
+  *
   * @details    This macro enable EQEI counter hold mode.
   * \hideinitializer
   */
@@ -336,7 +336,7 @@ extern "C"
   *                         - \ref EQEI_CTL_HOLDTMR1_Msk     : Hold EQEI_CNT by Timer1
   *                         - \ref EQEI_CTL_HOLDTMR2_Msk     : Hold EQEI_CNT by Timer2
   *                         - \ref EQEI_CTL_HOLDTMR3_Msk     : Hold EQEI_CNT by Timer3
-  * 
+  *
   * @details    This macro disable EQEI counter hold mode.
   * \hideinitializer
   */
@@ -360,18 +360,18 @@ extern "C"
   *                         - \ref EQEI_CTL_X2_FREE_COUNTING_MODE
   *                         - \ref EQEI_CTL_X4_COMPARE_COUNTING_MODE
   *                         - \ref EQEI_CTL_X2_COMPARE_COUNTING_MODE
-  * 
+  *
   * @details    This macro set EQEI counting mode.
   * \hideinitializer
   */
 #define EQEI_SET_CNT_MODE(eqei, u32Mode)       ((eqei)->CTL = ((eqei)->CTL & (~EQEI_CTL_MODE_Msk)) | (u32Mode))
 
-void EQEI_Close(EQEI_T* eqei);
-void EQEI_DisableInt(EQEI_T* eqei, uint32_t u32IntSel);
-void EQEI_EnableInt(EQEI_T* eqei, uint32_t u32IntSel);
-void EQEI_Open(EQEI_T* eqei, uint32_t u32Mode, uint32_t u32Value);
-void EQEI_Start(EQEI_T* eqei);
-void EQEI_Stop(EQEI_T* eqei);
+void EQEI_Close(EQEI_T *eqei);
+void EQEI_DisableInt(EQEI_T *eqei, uint32_t u32IntSel);
+void EQEI_EnableInt(EQEI_T *eqei, uint32_t u32IntSel);
+void EQEI_Open(EQEI_T *eqei, uint32_t u32Mode, uint32_t u32Value);
+void EQEI_Start(EQEI_T *eqei);
+void EQEI_Stop(EQEI_T *eqei);
 
 /** @} end of group EQEI_EXPORTED_FUNCTIONS */
 /** @} end of group EQEI_Driver */

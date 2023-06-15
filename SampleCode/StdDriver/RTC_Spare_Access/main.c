@@ -15,16 +15,15 @@
 void SYS_Init(void);
 void UART_Init(void);
 
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init System Clock                                                                                       */
+/*---------------------------------------------------------------------------------------------------------*/
 void SYS_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/  
     /* Set X32_OUT(PF.4) and X32_IN(PF.5)*/
-    SET_X32_IN_PF5(); 
+    SET_X32_IN_PF5();
     SET_X32_OUT_PF4();
-    
+
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
     /* Enable External LXT clock */
@@ -40,7 +39,7 @@ void SYS_Init(void)
 
     /* Switch SCLK clock source to PLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-    
+
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
 
@@ -54,7 +53,7 @@ void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-   
+
     /* Enable module clock */
     CLK_EnableModuleClock(RTC0_MODULE);
 
@@ -65,9 +64,11 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-    
-}
 
+}
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init UART                                                                                               */
+/*---------------------------------------------------------------------------------------------------------*/
 void UART_Init(void)
 {
     /* Configure UART and set UART Baudrate */
@@ -95,12 +96,12 @@ int main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    printf("\n\nCPU @ %dHz\n", SystemCoreClock);
+    printf("\n\nCPU @ %uHz\n", SystemCoreClock);
     printf("+------------------------------------------------+\n");
     printf("|    RTC Spare Register Read/Write Sample Code   |\n");
     printf("+------------------------------------------------+\n\n");
-    
-    
+
+
     /* Set LXT as RTC clock source */
     RTC_SetClockSource(RTC_CLOCK_SOURCE_LXT);
 
@@ -113,11 +114,11 @@ int main(void)
     sInitTime.u32Second     = 0;
     sInitTime.u32DayOfWeek  = RTC_MONDAY;
     sInitTime.u32TimeScale  = RTC_CLOCK_24;
-    
+
     /* check rtc reset status */
     sptrInitTime = (RTC->INIT & RTC_INIT_ACTIVE_Msk) ? NULL : &sInitTime;
-    
-    if(RTC_Open(sptrInitTime) != 0)
+
+    if (RTC_Open(sptrInitTime) != 0)
     {
         printf("\n RTC initial fail!!");
         printf("\n Please check h/w setting!!");
@@ -130,30 +131,31 @@ int main(void)
     RTC_EnableSpareAccess();
 
     /* Write spare register */
-    for(i = 0; i < 20; i++)
+    for (i = 0; i < 20; i++)
     {
         RTC_WRITE_SPARE_REGISTER(RTC, i, i);
     }
 
     /* Check spare register data */
-    for(i = 0; i < 20; i++)
+    for (i = 0; i < 20; i++)
     {
         u32SPRData = RTC_READ_SPARE_REGISTER(RTC, i);
-        if(u32SPRData != i)
+
+        if (u32SPRData != i)
         {
-            printf(" SPARE_REGISTER[%d] = 0x%x.\n", i, u32SPRData);
+            printf(" SPARE_REGISTER[%u] = 0x%x.\n", i, u32SPRData);
             printf(" Get spare register Fail!! \n");
             return -1;
         }
         else
         {
-            printf(" SPARE_REGISTER[%d] = 0x%x.\n", i, u32SPRData);
+            printf(" SPARE_REGISTER[%u] = 0x%x.\n", i, u32SPRData);
         }
     }
 
     printf("\n Compare spare registers data ... Pass!! \n");
 
-    while(1) {}
+    while (1) {}
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

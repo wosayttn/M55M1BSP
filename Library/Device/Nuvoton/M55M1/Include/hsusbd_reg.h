@@ -29,23 +29,23 @@ typedef struct
 {
     /**
      * @var HSUSBD_EP_T::EPDAT
-     * Offset: 0x00  Endpoint n Data Register
+     * Offset: 0x64/0x8C/0xB4/0xDC/0x104/0x12C/0x154/0x17C/0x1A4/0x1CC/0x1F4/0x21C/0x244/0x26C/0x294/0x2BC/0x2E4/0x30C  Endpoint n Data Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[31:0]  |EPDAT     |Endpoint A~L Data Register
-     * |        |          |Endpoint A~L data buffer for the buffer transaction (read or write).
+     * |[31:0]  |EPDAT     |Endpoint A~R Data Register
+     * |        |          |Endpoint A~R data buffer for the buffer transaction (read or write).
      * |        |          |Note: Only word access is supported.
      * @var HSUSBD_EP_T::EPDAT_BYTE
-     * Offset: 0x00  Endpoint n Data Register
+     * Offset: 0x64/0x8C/0xB4/0xDC/0x104/0x12C/0x154/0x17C/0x1A4/0x1CC/0x1F4/0x21C/0x244/0x26C/0x294/0x2BC/0x2E4/0x30C  Endpoint n Data Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[7:0]   |EPDAT     |Endpoint A~L Data Register
-     * |        |          |Endpoint A~L data buffer for the buffer transaction (read or write).
+     * |[7:0]   |EPDAT     |Endpoint A~R Data Register
+     * |        |          |Endpoint A~R data buffer for the buffer transaction (read or write).
      * |        |          |Note: Only byte access is supported.
      * @var HSUSBD_EP_T::EPINTSTS
-     * Offset: 0x04  Endpoint n Interrupt Status Register
+     * Offset: 0x68/0x90/0xB8/0xE0/0x108/0x130/0x158/0x180/0x1A8/0x1D0/0x1F8/0x220/0x248/0x270/0x298/0x2C0/0x2E8/0x310  Endpoint n Interrupt Status Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
@@ -109,7 +109,7 @@ typedef struct
      * |        |          |1 = Received bulk out short packet (including zero length packet).
      * |        |          |Note: Write 1 to clear this bit to 0.
      * @var HSUSBD_EP_T::EPINTEN
-     * Offset: 0x08  Endpoint n Interrupt Enable Register
+     * Offset: 0x6C/0x94/0xBC/0xE4/0x10C/0x134/0x15C/0x184/0x1AC/0x1D4/0x1FC/0x224/0x24C/0x274/0x29C/0x2C4/0x2EC/0x314  Endpoint n Interrupt Enable Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
@@ -166,7 +166,7 @@ typedef struct
      * |        |          |0 = Bulk out interrupt Disabled.
      * |        |          |1 = Bulk out interrupt Enabled.
      * @var HSUSBD_EP_T::EPDATCNT
-     * Offset: 0x0C  Endpoint n Data Available Count Register
+     * Offset: 0x70/0x98/0xC0/0xE8/0x110/0x138/0x160/0x188/0x1B0/0x1D8/0x200/0x228/0x250/0x278/0x2A0/0x2C8/0x2F0/0x318  Endpoint n Data Available Count Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
@@ -176,7 +176,7 @@ typedef struct
      * |[30:16] |DMALOOP   |DMA Loop
      * |        |          |This register is the remaining DMA loop to complete. Each loop means 32-byte transfer.
      * @var HSUSBD_EP_T::EPRSPCTL
-     * Offset: 0x10  Endpoint n Response Control Register
+     * Offset: 0x74/0x9C/0xC4/0xEC/0x114/0x13C/0x164/0x18C/0x1B4/0x1DC/0x204/0x22C/0x254/0x27C/0x2A4/0x2CC/0x2F4/0x31C  Endpoint n Response Control Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
@@ -224,14 +224,14 @@ typedef struct
      * |        |          |0 = Buffer Not Disabled when Bulk-OUT short packet is received.
      * |        |          |1 = Buffer Disabled when Bulk-OUT short packet is received.
      * @var HSUSBD_EP_T::EPMPS
-     * Offset: 0x14  Endpoint n Maximum Packet Size Register
+     * Offset: 0x78/0xA0/0xC8/0xF0/0x118/0x140/0x168/0x190/0x1B8/0x1E0/0x208/0x230/0x258/0x280/0x2A8/0x2D0/0x2F8/0x320   Endpoint n Maximum Packet Size Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[10:0]  |EPMPS     |Endpoint Maximum Packet Size
      * |        |          |This field determines the Maximum Packet Size of the Endpoint.
      * @var HSUSBD_EP_T::EPTXCNT
-     * Offset: 0x18  Endpoint n Transfer Count Register
+     * Offset: 0x7C/0xA4/0xCC/0xF4/0x11C/0x144/0x16C/0x194/0x1BC/0x1E4/0x20C/0x234/0x25C/0x284/0x2AC/0x2D4/0x2FC/0x324  Endpoint n Transfer Count Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
@@ -239,7 +239,7 @@ typedef struct
      * |        |          |For IN endpoints, this field determines the total number of bytes to be sent to the host in case of manual validation method.
      * |        |          |For OUT endpoints, this field has no effect.
      * @var HSUSBD_EP_T::EPCFG
-     * Offset: 0x1C  Endpoint n Configuration Register
+     * Offset: 0x80/0xA8/0xD0/0xF8/0x120/0x148/0x170/0x198/0x1C0/0x1E8/0x210/0x238/0x260/0x288/0x2B0/0x2D8/0x300/0x328  Endpoint n Configuration Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
@@ -262,14 +262,14 @@ typedef struct
      * |        |          |This field selects the number of the endpoint. Valid numbers 1 to 15.
      * |        |          |Note: Do not support two endpoints have same endpoint number.
      * @var HSUSBD_EP_T::EPBUFST
-     * Offset: 0x20  Endpoint n RAM Start Address Register
+     * Offset: 0x84/0xAC/0xD4/0xFC/0x124/0x14C/0x174/0x19C/0x1C4/0x1EC/0x214/0x23C/0x264/0x28C/0x2B4/0x2DC/0x304/0x32C  Endpoint n RAM Start Address Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[11:0]  |SADDR     |Endpoint Start Address
      * |        |          |This is the start-address of the RAM space allocated for the endpoint A~L.
      * @var HSUSBD_EP_T::EPBUFEND
-     * Offset: 0x24  Endpoint n RAM End Address Register
+     * Offset: 0x88/0xB0/0xD8/0x100/0x128/0x150/0x178/0x1A0/0x1C8/0x1F0/0x218/0x240/0x268/0x290/0x2B8/0x2E0/0x308/0x330  Endpoint n RAM End Address Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
@@ -363,6 +363,30 @@ typedef struct
      * |        |          |When set, the corresponding Endpoint L's interrupt status register should be read to determine the cause of the interrupt.
      * |        |          |0 = No interrupt event occurred.
      * |        |          |1 = The related interrupt event is occurred.
+     * |[14]    |EPMIF     |Endpoint M Interrupt
+     * |        |          |When set, the corresponding Endpoint M's interrupt status register should be read to determine the cause of the interrupt.
+     * |        |          |0 = No interrupt event occurred.
+     * |        |          |1 = The related interrupt event is occurred.
+     * |[15]    |EPNIF     |Endpoint N Interrupt
+     * |        |          |When set, the corresponding Endpoint N's interrupt status register should be read to determine the cause of the interrupt.
+     * |        |          |0 = No interrupt event occurred.
+     * |        |          |1 = The related interrupt event is occurred.
+     * |[16]    |EPOIF     |Endpoint O Interrupt
+     * |        |          |When set, the corresponding Endpoint O's interrupt status register should be read to determine the cause of the interrupt.
+     * |        |          |0 = No interrupt event occurred.
+     * |        |          |1 = The related interrupt event is occurred.
+     * |[17]    |EPPIF     |Endpoint P Interrupt
+     * |        |          |When set, the corresponding Endpoint P's interrupt status register should be read to determine the cause of the interrupt.
+     * |        |          |0 = No interrupt event occurred.
+     * |        |          |1 = The related interrupt event is occurred.
+     * |[18]    |EPQIF     |Endpoint Q Interrupt
+     * |        |          |When set, the corresponding Endpoint Q's interrupt status register should be read to determine the cause of the interrupt.
+     * |        |          |0 = No interrupt event occurred.
+     * |        |          |1 = The related interrupt event is occurred.	 
+     * |[19]    |EPRIF     |Endpoint R Interrupt
+     * |        |          |When set, the corresponding Endpoint R's interrupt status register should be read to determine the cause of the interrupt.
+     * |        |          |0 = No interrupt event occurred.
+     * |        |          |1 = The related interrupt event is occurred.
      * @var HSUSBD_T::GINTEN
      * Offset: 0x08  Global Interrupt Enable Register
      * ---------------------------------------------------------------------------------------------------
@@ -424,6 +448,30 @@ typedef struct
      * |        |          |When set, this bit enables a local interrupt to be generated when an interrupt is pending for the endpoint L
      * |        |          |0 = The related interrupt Disabled.
      * |        |          |1 = The related interrupt Enabled.
+     * |[14]    |EPMIEN    |Interrupt Enable Control for Endpoint M
+     * |        |          |When set, this bit enables a local interrupt to be generated when an interrupt is pending for the endpoint M
+     * |        |          |0 = The related interrupt Disabled.
+     * |        |          |1 = The related interrupt Enabled.
+     * |[15]    |EPNIEN    |Interrupt Enable Control for Endpoint N
+     * |        |          |When set, this bit enables a local interrupt to be generated when an interrupt is pending for the endpoint N
+     * |        |          |0 = The related interrupt Disabled.
+     * |        |          |1 = The related interrupt Enabled.
+     * |[16]    |EPOIEN    |Interrupt Enable Control for Endpoint O
+     * |        |          |When set, this bit enables a local interrupt to be generated when an interrupt is pending for the endpoint O
+     * |        |          |0 = The related interrupt Disabled.
+     * |        |          |1 = The related interrupt Enabled.
+     * |[17]    |EPPIEN    |Interrupt Enable Control for Endpoint P
+     * |        |          |When set, this bit enables a local interrupt to be generated when an interrupt is pending for the endpoint P
+     * |        |          |0 = The related interrupt Disabled.
+     * |        |          |1 = The related interrupt Enabled.
+     * |[18]    |EPQIEN    |Interrupt Enable Control for Endpoint Q
+     * |        |          |When set, this bit enables a local interrupt to be generated when an interrupt is pending for the endpoint Q
+     * |        |          |0 = The related interrupt Disabled.
+     * |        |          |1 = The related interrupt Enabled.
+     * |[19]    |EPRIEN    |Interrupt Enable Control for Endpoint R
+     * |        |          |When set, this bit enables a local interrupt to be generated when an interrupt is pending for the endpoint R
+     * |        |          |0 = The related interrupt Disabled.
+     * |        |          |1 = The related interrupt Enabled.	 
      * @var HSUSBD_T::BUSINTSTS
      * Offset: 0x10  USB Bus Interrupt Status Register
      * ---------------------------------------------------------------------------------------------------
@@ -462,10 +510,14 @@ typedef struct
      * |        |          |0 = Usable clock is not available.
      * |        |          |1 = Usable clock is available from the transceiver.
      * |        |          |Note: Write 1 to clear this bit to 0.
-     * |[8]     |VBUSDETIF |VBUS Detection Interrupt Status
+     * |[8]     |VBUSDETIF |VBUS Detection Interrupt
      * |        |          |0 = No VBUS is plug-in.
      * |        |          |1 = VBUS is plug-in.
      * |        |          |Note: Write 1 to clear this bit to 0.
+     * |[9]     |LPMTKNIF  |LPM Token Interrupt
+     * |        |          |0 = No LPM token has been received from the host.
+     * |        |          |1 = A LPM token has been received from the host.
+     * |        |          |Note: Write 1 to clear this bit to 0.	 
      * @var HSUSBD_T::BUSINTEN
      * Offset: 0x14  USB Bus Interrupt Enable Register
      * ---------------------------------------------------------------------------------------------------
@@ -503,6 +555,9 @@ typedef struct
      * |        |          |This bit enables the VBUS floating detection interrupt.
      * |        |          |0 = VBUS floating detection interrupt Disabled.
      * |        |          |1 = VBUS floating detection interrupt Enabled.
+     * |[9]     |LPMTKNIEN |LPM Token Interrupt Enable Bit
+     * |        |          |0 = The LPM token interrupt Disabled.
+     * |        |          |1 = The LPM token interrupt Enabled.	 
      * @var HSUSBD_T::OPER
      * Offset: 0x18  USB Operational Register
      * ---------------------------------------------------------------------------------------------------
@@ -799,14 +854,14 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[11:0]  |SADDR     |Control-endpoint Start Address
+     * |[12:0]  |SADDR     |Control-endpoint Start Address
      * |        |          |This is the start-address of the RAM space allocated for the control-endpoint.
      * @var HSUSBD_T::CEPBUFEND
      * Offset: 0x58  Control Endpoint RAM End Address Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[11:0]  |EADDR     |Control-endpoint End Address
+     * |[12:0]  |EADDR     |Control-endpoint End Address
      * |        |          |This is the end-address of the RAM space allocated for the control-endpoint.
      * @var HSUSBD_T::DMACTL
      * Offset: 0x5C  DMA Control Status Register
@@ -839,6 +894,69 @@ typedef struct
      * | :----: | :----:   | :---- |
      * |[19:0]  |DMACNT    |DMA Transfer Count
      * |        |          |The transfer count of the DMA operation to be performed is written to this register.
+     * @var HSUSBD_T::BCDC
+     * Offset: 0x6F8  USB Device Battery Charge Detect Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |BCDEN     |Battery Charge Detect Enable
+     * |        |          |Enable battery charge detect, user select DETMOD then observer DETSTS to decide contact
+     * |        |          |port PHY be used to BCD, can't be used to communication when BCDEN = 1
+     * |        |          |0 = Normal operation
+     * |        |          |1 = Battery charge detect operation
+     * |[3:1]   |DETMOD    |Detect Mode
+     * |        |          |When BCDEN = 1, select detect mode to perform
+     * |        |          |000 = Idle, nothing to detect
+     * |        |          |001 = VBUS detect, detect USB VBUS whether great than threshold voltage
+     * |        |          |010 = Data contact detect(DCD), detect data pin contact status
+     * |        |          |011 = Primary detect(PD), distinguish between (SDP or NUSP) and (CDP or DCP)
+     * |        |          |100 = Secondary detect(SD), distinguish between CDP and DCP
+     * |        |          |101~111 = Reserved
+     * |[4]     |DETSTS    |Detect Status (Read Only)
+     * |        |          |When DETMOD = 000(IDLE), DETSTS = 0
+     * |        |          |
+     * |        |          |When DETMOD = 001(VBUS detect)
+     * |        |          |000 = VBUS is less than threshold voltage
+     * |        |          |001 = VBUS is greater than threshold voltage
+     * |        |          |
+     * |        |          |When DETMOD = 010(DCD detect)
+     * |        |          |000 = Data pin not contacted
+     * |        |          |001 = Data pin contacted
+     * |        |          |
+     * |        |          |When DETMOD = 011(PD)
+     * |        |          |000 = SDP port or not USB support port. If it is not USB support, NUSP is 1
+     * |        |          |001 = DCP or CDP
+     * |        |          |
+     * |        |          |When DETMOD = 100(SD)
+     * |        |          |000 = CDP
+     * |        |          |001 = DCP
+     * |[5]     |USP       |Not USB Support Port (Read Only)
+     * |        |          |When DETMOD = 011(PD), detect DM be pulled logic high, it means contact port not USB support port
+     * |        |          |0 = USB support port
+     * |        |          |1 = Special port.(PS/2 or proprietary charger)
+     * |[30]    |BCDIEN    |Battery Charge Detect Interrupt Enable Bit
+     * |        |          |0 = BCD Interrupt Disabled.
+     * |        |          |1 = BCD Interrupt Enabled.
+     * |[31]    |BCDIF     |Battery Charge Detect Interrupt Status
+     * |        |          |It supports VBUSOK and DCD interrupt status. 
+     * |        |          |When HSUSBD_BCDC[0] = 1, HSUSBD_BCDC[3:1] = 001, VBUS is detected.
+     * |        |          |When HSUSBD_BCDC[0] = 1, HSUSBD_BCDC[3:1] = 010, DCD is detected.	 
+     * |        |          |0 = BCD event did not occur.
+     * |        |          |1 = BCD event occurred.
+     * |        |          |Note: Write 1 to clear this bit to 0.	 
+     * Offset: 0x6FC  LPM Control and Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- | 
+     * |[12]    |LPMEN     |LPM Function Enable Bit
+     * |        |          |0 = The LPM function Disabled.
+     * |        |          |1 = The LPM function Enabled.
+     * |[13]    |LPMSLEEPEN|LPM Sleep Function Enable Bit
+     * |        |          |0 = The LPM sleep function Disabled.
+     * |        |          |1 = The LPM sleep function Enabled.
+     * |[14]    |LPMSENDNYET|NLPM Send NYET Response
+     * |        |          |0 = Not send a NYET handshake as response to the LPM token.
+     * |        |          |1 = Send a NYET handshake as response to the LPM token.	  
      * @var HSUSBD_T::DMAADDR
      * Offset: 0x700  AHB DMA Address Register
      * ---------------------------------------------------------------------------------------------------
@@ -861,6 +979,15 @@ typedef struct
      * |[24]    |VBUSWKEN  |Wake-up Enable Bit
      * |        |          |0 = The wake-up function Disabled.
      * |        |          |1 = The wake-up function Enabled.
+     * |[25]    |LINESTATEWKEN|Line State Wake-up Enable Bit
+     * |        |          |0 = The Line State wake-up function Disabled.
+     * |        |          |1 = The Line State wake-up function Enabled.
+     * |[26]    |STALLREVER|Stall Revert Write Pointer Enable Bit
+     * |        |          |0 = The Stall revert write pointer function Disabled.
+     * |        |          |1 = The Stall revert write pointer function Enabled.
+     * |[27]    |PHYCLKSTB |PHY Clock Stable Flag
+     * |        |          |0 = The PHY clock is not stable for USB device usage.
+     * |        |          |1 = The PHY clock is stable for USB device usage.	 
      * |[31]    |VBUSDET   |VBUS Status
      * |        |          |0 = The VBUS is not detected yet.
      * |        |          |1 = The VBUS is detected.
@@ -903,10 +1030,10 @@ typedef struct
     __IO uint32_t DMACTL;                /*!< [0x005c] DMA Control Status Register                                      */
     __IO uint32_t DMACNT;                /*!< [0x0060] DMA Count Register                                               */
 
-    HSUSBD_EP_T EP[12];
+    HSUSBD_EP_T EP[18];
 
     /// @cond HIDDEN_SYMBOLS
-    __I  uint32_t RESERVE2[301];
+    __I  uint32_t RESERVE2[241];
     /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t BCDC;                  /*!< [0x06f8] Battery Charge Detect Control Register                           */
     __IO uint32_t LPMCSR;                /*!< [0x06fc] LPM Control and Status Register                                  */
@@ -1206,10 +1333,10 @@ typedef struct
 #define HSUSBD_SETUP7_6_SETUP7_Msk       (0xfful << HSUSBD_SETUP7_6_SETUP7_Pos)            /*!< HSUSBD_T::SETUP7_6: SETUP7 Mask        */
 
 #define HSUSBD_CEPBUFST_SADDR_Pos        (0)                                               /*!< HSUSBD_T::CEPBUFST: SADDR Position     */
-#define HSUSBD_CEPBUFST_SADDR_Msk        (0xffful << HSUSBD_CEPBUFST_SADDR_Pos)            /*!< HSUSBD_T::CEPBUFST: SADDR Mask         */
+#define HSUSBD_CEPBUFST_SADDR_Msk        (0x1fffful << HSUSBD_CEPBUFST_SADDR_Pos)          /*!< HSUSBD_T::CEPBUFST: SADDR Mask         */
 
 #define HSUSBD_CEPBUFEND_EADDR_Pos       (0)                                               /*!< HSUSBD_T::CEPBUFEND: EADDR Position    */
-#define HSUSBD_CEPBUFEND_EADDR_Msk       (0xffful << HSUSBD_CEPBUFEND_EADDR_Pos)           /*!< HSUSBD_T::CEPBUFEND: EADDR Mask        */
+#define HSUSBD_CEPBUFEND_EADDR_Msk       (0x1fffful << HSUSBD_CEPBUFEND_EADDR_Pos)         /*!< HSUSBD_T::CEPBUFEND: EADDR Mask        */
 
 #define HSUSBD_DMACTL_EPNUM_Pos          (0)                                               /*!< HSUSBD_T::DMACTL: EPNUM Position       */
 #define HSUSBD_DMACTL_EPNUM_Msk          (0xful << HSUSBD_DMACTL_EPNUM_Pos)                /*!< HSUSBD_T::DMACTL: EPNUM Mask           */

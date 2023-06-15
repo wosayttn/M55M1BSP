@@ -48,10 +48,10 @@ int32_t KDF_GetKeyBitSize(uint32_t u32KeySizeSel)
 {
     int32_t  i;
     uint32_t au32KeyBitLenTbl[] = { 128, 163, 192, 224, 233, 255, 256, 283, 384, 409, 512, 521, 571 };
-    
-    if (u32KeySizeSel > (sizeof(au32KeyBitLenTbl) / sizeof(au32KeyBitLenTbl[0])))
+
+    if (u32KeySizeSel >= (sizeof(au32KeyBitLenTbl) / sizeof(au32KeyBitLenTbl[0])))
         return eKDF_ERRCODE_INVALID_PARAM;
-    
+
     return au32KeyBitLenTbl[u32KeySizeSel];
 }
 
@@ -139,7 +139,7 @@ int32_t KDF_DeriveKey(E_KDF_MODE eMode, uint32_t u32DeriveKeyParam, uint32_t u32
     uint32_t u32Idx = 0, u32NotAlignByte;
     int32_t  i32LeftKeyBitSize = u32KeyBitSize;
     uint32_t u32TimeOutCount, u32ByteCnt, u32WordCnt;
-    
+
     KDF->CTL   = eMode | u32DeriveKeyParam;
     KDF->KLEN  = u32KeyBitSize;
     KDF->KSCTL = KDF_KEYOUT_TO_REG;
@@ -153,22 +153,22 @@ int32_t KDF_DeriveKey(E_KDF_MODE eMode, uint32_t u32DeriveKeyParam, uint32_t u32
 
         /* Wait until KDF HMAC engine become idle */
         u32TimeOutCount = KDF_TIMEOUT;
-        
-        while(KDF->STS & KDF_STS_HMACBUSY_Msk)
+
+        while (KDF->STS & KDF_STS_HMACBUSY_Msk)
         {
-            if(--u32TimeOutCount == 0)
+            if (--u32TimeOutCount == 0)
             {
                 return eKDF_ERRCODE_TIMEOUT;
             }
         }
-        
+
         /* Check status */
-        if(KDF->STS & (KDF_STS_NEXTERR_Msk | KDF_STS_KSERR_Msk))
+        if (KDF->STS & (KDF_STS_NEXTERR_Msk | KDF_STS_KSERR_Msk))
             return eKDF_ERRCODE_FAIL;
-        
+
         /* Store output key to pu32KeyOut */
         u32ByteCnt = (i32LeftKeyBitSize / 8) + ((i32LeftKeyBitSize % 8) > 0);
-        
+
         /* Maximum byte count of derived key is 32 bytes per derivation */
         if (u32ByteCnt > 32)
             u32ByteCnt = 32;
@@ -181,19 +181,19 @@ int32_t KDF_DeriveKey(E_KDF_MODE eMode, uint32_t u32DeriveKeyParam, uint32_t u32
         u32Idx += i;
         i32LeftKeyBitSize -= (u32ByteCnt * 8);
     }
-    
+
     /* Stop KDF derive opeation */
     KDF->CTL |= KDF_CTL_FINISH_Msk;
     /* Wait until KDF become idle */
     u32TimeOutCount = KDF_TIMEOUT;
-    while(KDF->STS & (KDF_STS_BUSY_Msk | KDF_STS_HMACBUSY_Msk))
+    while (KDF->STS & (KDF_STS_BUSY_Msk | KDF_STS_HMACBUSY_Msk))
     {
-        if(--u32TimeOutCount == 0)
+        if (--u32TimeOutCount == 0)
         {
             return eKDF_ERRCODE_TIMEOUT;
         }
     }
-    
+
     return eKDF_ERRCODE_SUCCESS;
 }
 
@@ -238,26 +238,26 @@ int32_t KDF_DeriveKey(E_KDF_MODE eMode, uint32_t u32DeriveKeyParam, uint32_t u32
 int32_t KDF_DeriveKeyToKS(KS_MEM_Type eMemType, E_KDF_MODE eMode, uint32_t u32DeriveKeyParam, uint32_t u32KeySizeSel, uint32_t u32KeyMeta)
 {
     uint32_t u32TimeOutCount;
-    
+
     KDF->CTL    = eMode | u32DeriveKeyParam;
     KDF->KSCTL  = (eMemType << KDF_KSCTL_WSDST_Pos) | KDF_KEYOUT_TO_KS | u32KeyMeta;
     KDF->KSSIZE = u32KeySizeSel;
     KDF->CTL    = KDF->CTL | KDF_CTL_START_Msk;
-    
+
     /* Waiting for busy */
     u32TimeOutCount = KDF_TIMEOUT;
-    
-    while(KDF->STS & (KDF_STS_BUSY_Msk | KDF_STS_HMACBUSY_Msk))
+
+    while (KDF->STS & (KDF_STS_BUSY_Msk | KDF_STS_HMACBUSY_Msk))
     {
-        if(--u32TimeOutCount == 0)
+        if (--u32TimeOutCount == 0)
         {
             return eKDF_ERRCODE_TIMEOUT;
         }
     }
-    
-    if(KDF->STS & (KDF_STS_NEXTERR_Msk | KDF_STS_KSERR_Msk))
+
+    if (KDF->STS & (KDF_STS_NEXTERR_Msk | KDF_STS_KSERR_Msk))
         return eKDF_ERRCODE_FAIL;
-    
+
     return (KDF->KSSTS & KDF_KSSTS_NUM_Msk);
 }
 

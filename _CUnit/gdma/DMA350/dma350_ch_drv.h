@@ -87,7 +87,8 @@ extern "C" {
     } while (0)
 
 /* DMA350 DMA Channel error enumeration types */
-enum dma350_ch_error_t {
+enum dma350_ch_error_t
+{
     DMA350_CH_ERR_NONE = 0,      /*!< No error */
     DMA350_CH_ERR_IIDR_MISMATCH, /*!< Error: DMA350 driver does not support this
                                   *   implementer of the hardware */
@@ -100,25 +101,29 @@ enum dma350_ch_error_t {
 };
 
 /* ARM DMA350 DMA Channel device configuration structure */
-struct dma350_ch_dev_cfg_t {
+struct dma350_ch_dev_cfg_t
+{
     DMACH_TypeDef *const ch_base; /*!< DMA350 DMA Channel base address */
     const uint8_t channel;        /*!< DMA350 DMA Channel number */
 };
 
 /* ARM DMA350 DMA Channel device data structure */
-struct dma350_ch_dev_data_t {
+struct dma350_ch_dev_data_t
+{
     uint32_t state; /*!< Indicates if the DMA350 Channel driver
                      *   is initialized and enabled */
 };
 
 /* ARM DMA350 DMA Channel device structure */
-struct dma350_ch_dev_t {
+struct dma350_ch_dev_t
+{
     const struct dma350_ch_dev_cfg_t cfg; /*!< DMA350 DMA Channel Config */
     struct dma350_ch_dev_data_t data;     /*!< DMA350 DMA Channel Data */
 };
 
 /* ARM DMA350 DMA Channel commands */
-enum dma350_ch_cmd_t {
+enum dma350_ch_cmd_t
+{
     DMA350_CH_CMD_ENABLECMD = DMA_CH_CMD_ENABLECMD,
     DMA350_CH_CMD_CLEARCMD = DMA_CH_CMD_CLEARCMD,
     DMA350_CH_CMD_DISABLECMD = DMA_CH_CMD_DISABLECMD,
@@ -131,21 +136,22 @@ enum dma350_ch_cmd_t {
     DMA350_CH_CMD_SRCSWTRIGINREQ_BLOCK =
         DMA_CH_CMD_SRCSWTRIGINREQ | DMA_CH_CMD_SRCSWTRIGINTYPE_1,
     DMA350_CH_CMD_SRCSWTRIGINREQ_BLOCK_LAST = DMA_CH_CMD_SRCSWTRIGINREQ |
-            DMA_CH_CMD_SRCSWTRIGINTYPE_1 |
-            DMA_CH_CMD_SRCSWTRIGINTYPE_0,
+                                              DMA_CH_CMD_SRCSWTRIGINTYPE_1 |
+                                              DMA_CH_CMD_SRCSWTRIGINTYPE_0,
     DMA350_CH_CMD_DESSWTRIGINREQ = DMA_CH_CMD_DESSWTRIGINREQ,
     DMA350_CH_CMD_DESSWTRIGINREQ_LAST =
         DMA_CH_CMD_DESSWTRIGINREQ | DMA_CH_CMD_DESSWTRIGINTYPE_0,
     DMA350_CH_CMD_DESSWTRIGINREQ_BLOCK =
         DMA_CH_CMD_DESSWTRIGINREQ | DMA_CH_CMD_DESSWTRIGINTYPE_1,
     DMA350_CH_CMD_DESSWTRIGINREQ_BLOCK_LAST = DMA_CH_CMD_DESSWTRIGINREQ |
-            DMA_CH_CMD_DESSWTRIGINTYPE_1 |
-            DMA_CH_CMD_DESSWTRIGINTYPE_0,
+                                              DMA_CH_CMD_DESSWTRIGINTYPE_1 |
+                                              DMA_CH_CMD_DESSWTRIGINTYPE_0,
     DMA350_CH_CMD_SWTRIGOUTACK = DMA_CH_CMD_SWTRIGOUTACK
 };
 
 /* ARM DMA350 DMA Channel status bits */
-enum dma350_ch_stat_t {
+enum dma350_ch_stat_t
+{
     DMA350_CH_STAT_DONE = DMA_CH_STATUS_STAT_DONE,
     DMA350_CH_STAT_ERR = DMA_CH_STATUS_STAT_ERR,
     DMA350_CH_STAT_DISABLED = DMA_CH_STATUS_STAT_DISABLED,
@@ -161,7 +167,8 @@ enum dma350_ch_stat_t {
 };
 
 /* ARM DMA350 DMA Channel interrupt bits */
-enum dma350_ch_intr_t {
+enum dma350_ch_intr_t
+{
     DMA350_CH_INTREN_DONE = DMA_CH_INTREN_INTREN_DONE,
     DMA350_CH_INTREN_ERR = DMA_CH_INTREN_INTREN_ERR,
     DMA350_CH_INTREN_DISABLED = DMA_CH_INTREN_INTREN_DISABLED,
@@ -177,7 +184,8 @@ enum dma350_ch_intr_t {
 };
 
 /* ARM DMA350 DMA Channel Transfer size */
-enum dma350_ch_transize_t {
+enum dma350_ch_transize_t
+{
     DMA350_CH_TRANSIZE_8BITS = 0,
     DMA350_CH_TRANSIZE_16BITS = DMA_CH_CTRL_TRANSIZE_0,
     DMA350_CH_TRANSIZE_32BITS = DMA_CH_CTRL_TRANSIZE_1,
@@ -192,7 +200,8 @@ enum dma350_ch_transize_t {
 };
 
 /* ARM DMA350 DMA Channel XTYPE */
-enum dma350_ch_xtype_t {
+enum dma350_ch_xtype_t
+{
     DMA350_CH_XTYPE_DISABLE = 0,
     DMA350_CH_XTYPE_CONTINUE = DMA_CH_CTRL_XTYPE_0,
     DMA350_CH_XTYPE_WRAP = DMA_CH_CTRL_XTYPE_1,
@@ -200,7 +209,8 @@ enum dma350_ch_xtype_t {
 };
 
 /* ARM DMA350 DMA Channel YTYPE */
-enum dma350_ch_ytype_t {
+enum dma350_ch_ytype_t
+{
     DMA350_CH_YTYPE_DISABLE = 0,
     DMA350_CH_YTYPE_CONTINUE = DMA_CH_CTRL_YTYPE_0,
     DMA350_CH_YTYPE_WRAP = DMA_CH_CTRL_YTYPE_1,
@@ -208,7 +218,8 @@ enum dma350_ch_ytype_t {
 };
 
 /* ARM DMA350 DMA Channel Automatic register reload type */
-enum dma350_ch_regreloadtype_t {
+enum dma350_ch_regreloadtype_t
+{
     DMA350_CH_REGRELOADTYPE_DISABLE = 0,
     DMA350_CH_REGRELOADTYPE_SRC_DES_SIZE = DMA_CH_CTRL_REGRELOADTYPE_0,
     DMA350_CH_REGRELOADTYPE_SRC_ADDR_SRC_DES_SIZE =
@@ -221,7 +232,8 @@ enum dma350_ch_regreloadtype_t {
 };
 
 /* ARM DMA350 DMA Channel Done type */
-enum dma350_ch_donetype_t {
+enum dma350_ch_donetype_t
+{
     DMA350_CH_DONETYPE_NONE = 0,
     DMA350_CH_DONETYPE_END_OF_CMD = DMA_CH_CTRL_DONETYPE_0,
     DMA350_CH_DONETYPE_END_OF_AUTORESTART =
@@ -229,7 +241,8 @@ enum dma350_ch_donetype_t {
 };
 
 /* ARM DMA350 DMA Channel Source Trigger Input Type */
-enum dma350_ch_srctrigintype_t {
+enum dma350_ch_srctrigintype_t
+{
     DMA350_CH_SRCTRIGINTYPE_SOFTWARE_ONLY = 0,
     DMA350_CH_SRCTRIGINTYPE_HW = DMA_CH_SRCTRIGINCFG_SRCTRIGINTYPE_1,
     DMA350_CH_SRCTRIGINTYPE_INTERNAL = DMA_CH_SRCTRIGINCFG_SRCTRIGINTYPE_1 |
@@ -237,7 +250,8 @@ enum dma350_ch_srctrigintype_t {
 };
 
 /* ARM DMA350 DMA Channel Source Trigger Input Mode */
-enum dma350_ch_srctriginmode_t {
+enum dma350_ch_srctriginmode_t
+{
     DMA350_CH_SRCTRIGINMODE_CMD = 0,
     DMA350_CH_SRCTRIGINMODE_DMA_FLOW_CTRL = DMA_CH_SRCTRIGINCFG_SRCTRIGINMODE_1,
     DMA350_CH_SRCTRIGINMODE_PERIPH_FLOW_CTRL =
@@ -246,7 +260,8 @@ enum dma350_ch_srctriginmode_t {
 };
 
 /* ARM DMA350 DMA Channel Destination Trigger Input Type */
-enum dma350_ch_destrigintype_t {
+enum dma350_ch_destrigintype_t
+{
     DMA350_CH_DESTRIGINTYPE_SOFTWARE_ONLY = 0,
     DMA350_CH_DESTRIGINTYPE_HW = DMA_CH_DESTRIGINCFG_DESTRIGINTYPE_1,
     DMA350_CH_DESTRIGINTYPE_INTERNAL = DMA_CH_DESTRIGINCFG_DESTRIGINTYPE_1 |
@@ -254,7 +269,8 @@ enum dma350_ch_destrigintype_t {
 };
 
 /* ARM DMA350 DMA Channel Destination Trigger Input Mode */
-enum dma350_ch_destriginmode_t {
+enum dma350_ch_destriginmode_t
+{
     DMA350_CH_DESTRIGINMODE_CMD = 0,
     DMA350_CH_DESTRIGINMODE_DMA_FLOW_CTRL = DMA_CH_DESTRIGINCFG_DESTRIGINMODE_1,
     DMA350_CH_DESTRIGINMODE_PERIPH_FLOW_CTRL =
@@ -263,7 +279,8 @@ enum dma350_ch_destriginmode_t {
 };
 
 /* ARM DMA350 DMA Channel Trigger Output Type */
-enum dma350_ch_trigouttype_t {
+enum dma350_ch_trigouttype_t
+{
     DMA350_CH_TRIGOUTTYPE_SOFTWARE_ONLY = 0,
     DMA350_CH_TRIGOUTTYPE_HW = DMA_CH_TRIGOUTCFG_TRIGOUTTYPE_1,
     DMA350_CH_TRIGOUTTYPE_INTERNAL =
@@ -271,15 +288,18 @@ enum dma350_ch_trigouttype_t {
 };
 
 /* ARM DMA350 DMA Channel Stream Interface operation Type */
-enum dma350_ch_streamtype_t {
+enum dma350_ch_streamtype_t
+{
     DMA350_CH_STREAMTYPE_IN_OUT = 0,
     DMA350_CH_STREAMTYPE_OUT_ONLY = DMA_CH_STREAMINTCFG_STREAMTYPE_0,
     DMA350_CH_STREAMTYPE_IN_ONLY = DMA_CH_STREAMINTCFG_STREAMTYPE_1
 };
 
 /* ARM DMA350 DMA Channel Status Type */
-union dma350_ch_status_t {
-    struct {
+union dma350_ch_status_t
+{
+    struct
+    {
         uint32_t INTR_DONE: 1;           /*!< bit:      0 INTR_DONE */
         uint32_t INTR_ERR: 1;            /*!< bit:      1 INTR_ERR */
         uint32_t INTR_DISABLED: 1;       /*!< bit:      2 INTR_DISABLED */
@@ -306,7 +326,8 @@ union dma350_ch_status_t {
 
 /* ARM DMA350 DMA Command link register structure */
 /* Note: Field order must match the order of the bits in the header */
-struct dma350_cmdlink_reg_t {
+struct dma350_cmdlink_reg_t
+{
     /* Note: REGCLEAR (Bit 0) has no associated field and Bit 1 is reserved */
     uint32_t intren;       /* Bit 2  */
     uint32_t ctrl;         /* Bit 3  */
@@ -341,7 +362,8 @@ struct dma350_cmdlink_reg_t {
 };
 
 /* ARM DMA350 DMA Command link generator config structure */
-struct dma350_cmdlink_gencfg_t {
+struct dma350_cmdlink_gencfg_t
+{
     uint32_t header;
     struct dma350_cmdlink_reg_t cfg;
 };
@@ -3226,7 +3248,8 @@ void dma350_cmdlink_set_src_trans_nonsecure(
 {
     cmdlink_cfg->cfg.srctranscfg |= DMA_CH_SRCTRANSCFG_SRCNONSECATTR_Msk;
 
-    if (cmdlink_cfg->cfg.srctranscfg == DMA350_CH_SRCTRANSCFG_RESET_VALUE) {
+    if (cmdlink_cfg->cfg.srctranscfg == DMA350_CH_SRCTRANSCFG_RESET_VALUE)
+    {
         cmdlink_cfg->header &= (~DMA350_CMDLINK_SRCTRANSCFG_SET);
     }
 }
@@ -3245,7 +3268,8 @@ void dma350_cmdlink_set_des_trans_nonsecure(
 {
     cmdlink_cfg->cfg.destranscfg |= DMA_CH_DESTRANSCFG_DESNONSECATTR_Msk;
 
-    if (cmdlink_cfg->cfg.destranscfg == DMA350_CH_DESTRANSCFG_RESET_VALUE) {
+    if (cmdlink_cfg->cfg.destranscfg == DMA350_CH_DESTRANSCFG_RESET_VALUE)
+    {
         cmdlink_cfg->header &= (~DMA350_CMDLINK_DESTRANSCFG_SET);
     }
 }
@@ -3264,7 +3288,8 @@ void dma350_cmdlink_set_src_trans_unprivileged(
 {
     cmdlink_cfg->cfg.srctranscfg &= (~DMA_CH_SRCTRANSCFG_SRCPRIVATTR_Msk);
 
-    if (cmdlink_cfg->cfg.srctranscfg == DMA350_CH_SRCTRANSCFG_RESET_VALUE) {
+    if (cmdlink_cfg->cfg.srctranscfg == DMA350_CH_SRCTRANSCFG_RESET_VALUE)
+    {
         cmdlink_cfg->header &= (~DMA350_CMDLINK_SRCTRANSCFG_SET);
     }
 }
@@ -3283,7 +3308,8 @@ void dma350_cmdlink_set_des_trans_unprivileged(
 {
     cmdlink_cfg->cfg.destranscfg &= (~DMA_CH_DESTRANSCFG_DESPRIVATTR_Msk);
 
-    if (cmdlink_cfg->cfg.destranscfg == DMA350_CH_DESTRANSCFG_RESET_VALUE) {
+    if (cmdlink_cfg->cfg.destranscfg == DMA350_CH_DESTRANSCFG_RESET_VALUE)
+    {
         cmdlink_cfg->header &= (~DMA350_CMDLINK_DESTRANSCFG_SET);
     }
 }
@@ -3359,7 +3385,8 @@ void dma350_cmdlink_set_tmpltsize(struct dma350_cmdlink_gencfg_t *cmdlink_cfg,
                                   uint8_t src_tmpltsize, uint8_t des_tmpltsize)
 {
     if (src_tmpltsize <= DMA350_CH_TMPLTCFG_SRCTMPLTSIZE_MAX &&
-            des_tmpltsize <= DMA350_CH_TMPLTCFG_DESTMPLTSIZE_MAX) {
+            des_tmpltsize <= DMA350_CH_TMPLTCFG_DESTMPLTSIZE_MAX)
+    {
         cmdlink_cfg->header |= DMA350_CMDLINK_TMPLTCFG_SET;
         cmdlink_cfg->cfg.tmpltcfg = (des_tmpltsize & 0x000000FFUL)
                                     << DMA_CH_TMPLTCFG_DESTMPLTSIZE_Pos;
@@ -3640,7 +3667,8 @@ bool dma350_ch_is_ready(struct dma350_ch_dev_t *dev)
 __STATIC_INLINE
 union dma350_ch_status_t dma350_ch_get_status(struct dma350_ch_dev_t *dev)
 {
-    return (union dma350_ch_status_t) {
+    return (union dma350_ch_status_t)
+    {
         .w = (dev->cfg.ch_base->CH_STATUS)
     };
 }

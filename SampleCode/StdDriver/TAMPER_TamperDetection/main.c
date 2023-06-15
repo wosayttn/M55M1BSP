@@ -11,41 +11,46 @@
 #include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* Global variables                                                                                        */
+/* Functions and variables declaration                                                                     */
+/*---------------------------------------------------------------------------------------------------------*/
+static volatile uint8_t s_u8Option;
+
+int32_t KS_TRIG(void);
+void SYS_Init(void);
+void UART_Init(void);
+int32_t KS_Init(void);
+int32_t KeyStoreSRAM(void);
+/*---------------------------------------------------------------------------------------------------------*/
+/* Check Debug UART TX Buffer is or not empty                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
 int IsDebugFifoEmpty(void)
 {
     return ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) != 0U);
 }
-
-static volatile uint8_t s_u8Option;
-
-int32_t KS_TRIG(void);
-void TAMPER_IRQHandler(void);
-void SYS_Init(void);
-void UART_Init(void);
-int32_t KS_Init(void);
-int32_t KeyStoreSRAM(void);
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* Check Key status                                                                                        */
+/*---------------------------------------------------------------------------------------------------------*/
 int32_t KS_TRIG(void)
 {
     uint32_t u32TimeOutCnt;
-     
+
     u32TimeOutCnt = KS_TIMEOUT;
+
     /* Wait BUSY(KS_STS[7]) to 0 */
-    u32TimeOutCnt = KS_TIMEOUT;
-    while(KS->STS & KS_STS_INITDONE_Msk)
+    while (KS->STS & KS_STS_INITDONE_Msk)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for Key Store INIT flag time-out!\n");
             return -1;
         }
     }
+
     /* Claer EIF and IF STS */
     KS->STS = (KS_STS_EIF_Msk | KS_STS_IF_Msk);
+
     /* Check BUSY(KS_STS[2]) is 0 and EIF(KS_STS[1]) is 0 */
-    if(KS->STS & (KS_STS_BUSY_Msk | KS_STS_EIF_Msk))
+    if (KS->STS & (KS_STS_BUSY_Msk | KS_STS_EIF_Msk))
     {
         printf("Key store status is wrong!\n");
     }
@@ -58,9 +63,10 @@ int32_t KS_TRIG(void)
 
     /* Wait BUSY(KS_STS[2]) to 0 */
     u32TimeOutCnt = KS_TIMEOUT;
-    while(KS->STS & KS_STS_BUSY_Msk)
+
+    while (KS->STS & KS_STS_BUSY_Msk)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for Key Store busy flag time-out!\n");
             return -1;
@@ -69,71 +75,82 @@ int32_t KS_TRIG(void)
 
     /* Read key from KS_KEY[0]~[7] registers if EIF(KS_STS[1]) is 1 */
     u32TimeOutCnt = KS_TIMEOUT;
-    while(!(KS->STS & KS_STS_EIF_Msk))
+
+    while (!(KS->STS & KS_STS_EIF_Msk))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for Key Store time-out!\n");
             return -1;
         }
     }
 
-    if(KS->REMAIN != 0x20001000)
+    if (KS->REMAIN != 0x20001000)
     {
         printf(" Fail! Remaining 0x%X space not clear for SRAM.\n", KS->REMAIN & 0x1FFF);
     }
 
     return 0;
 }
-
+/**
+ * @brief       IRQ Handler for TAMPER Interrupt
+ *
+ * @param       None
+ *
+ * @return      None
+ *
+ * @details     The TAMPER_IRQHandler is default IRQ of EQEI0, declared in startup_M55M1.c.
+ */
 void TAMPER_IRQHandler(void)
 {
-    uint32_t i;
-    uint32_t u32FlagStatus;
-    uint32_t u32TimeOutCnt;
-
     /* Tamper interrupt occurred */
-    if(TAMPER_GET_INT_FLAG())
+    if (TAMPER_GET_INT_FLAG())
     {
+        uint32_t i;
+        uint32_t u32FlagStatus;
+        uint32_t u32TimeOutCnt;
+
         /* Get tamper interrupt status */
         u32FlagStatus = TAMPER_GET_INT_STATUS();
 
-        for(i = 0; i < 6; i++)
+        for (i = 0; i < 6; i++)
         {
-            if(u32FlagStatus & (0x1UL << (i + TAMPER_INTSTS_TAMP0IF_Pos)))
-                printf(" Tamper %d Detected!!\n", i);
+            if (u32FlagStatus & (0x1UL << (i + TAMPER_INTSTS_TAMP0IF_Pos)))
+                printf(" Tamper %u Detected!!\n", i);
         }
 
-        if(s_u8Option == '0')
+        if (s_u8Option == '0')
         {
             /* Clear tamper interrupt status */
             TAMPER_CLR_INT_STATUS(u32FlagStatus);
 
             printf(" System wake-up!\n");
         }
-        else if(s_u8Option == '1')
+        else if (s_u8Option == '1')
         {
             /* Clear tamper interrupt status */
             TAMPER_CLR_INT_STATUS(u32FlagStatus);
 
             printf(" Check keys are all zero ...");
-            if( KS_TRIG() == 0 )
+
+            if (KS_TRIG() == 0)
                 printf(" Pass!\n");
         }
 
         /* To check if all the debug messages are finished */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while(IsDebugFifoEmpty() == 0)
-            if(--u32TimeOutCnt == 0) break;
+
+        while (IsDebugFifoEmpty() == 0)
+            if (--u32TimeOutCnt == 0) break;
+
         SYS_ResetChip();
     }
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init System Clock                                                                                       */
+/*---------------------------------------------------------------------------------------------------------*/
 void SYS_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/  
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
     /* Enable Internal RC 32KHz clock */
@@ -143,7 +160,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     /* Waiting for Low speed Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
-    
+
     /* Enable PLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
@@ -164,10 +181,7 @@ void SYS_Init(void)
     SystemCoreClockUpdate();
     /* set power level to level 1 */
     PMC_SetPowerLevel(PMC_PLCTL_PLSEL_PL1);
-    
-    /* Set module clock*/
-    CLK_SetModuleClock(WDT0_MODULE,CLK_WDTSEL_WDT0SEL_LIRC,0);
-        
+
     /* Enable module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
@@ -176,7 +190,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(KS0_MODULE);
     CLK_EnableModuleClock(FMC0_MODULE);
     CLK_EnableModuleClock(ISP0_MODULE);
-        
+
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 
@@ -184,20 +198,24 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-    
+
     /* Set PF multi-function pins for GPIO*/
     SET_TAMPER2_PF8();
     SET_TAMPER3_PF9();
-    
-}
 
+}
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init UART                                                                                               */
+/*---------------------------------------------------------------------------------------------------------*/
 void UART_Init(void)
 {
 
     /* Configure UART0 and set UART0 Baudrate */
     UART_Open(UART0, 115200);
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init Key Store                                                                                          */
+/*---------------------------------------------------------------------------------------------------------*/
 int32_t KS_Init(void)
 {
     uint32_t u32TimeOutCnt;
@@ -207,9 +225,10 @@ int32_t KS_Init(void)
 
     /* Waiting for initialization was done */
     u32TimeOutCnt = KS_TIMEOUT;
-    while(!(KS->STS & KS_STS_INITDONE_Msk))
+
+    while (!(KS->STS & KS_STS_INITDONE_Msk))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for Key Store initialization done time-out!\n");
             return -1;
@@ -218,14 +237,17 @@ int32_t KS_Init(void)
 
     return 0;
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* KEY Stroe SRAM                                                                                          */
+/*---------------------------------------------------------------------------------------------------------*/
 int32_t KeyStoreSRAM(void)
 {
     uint32_t u32TimeOutCnt;
 
     u32TimeOutCnt = SystemCoreClock;
+
     /* Check BUSY(KS_STS[2]), EIF(KS_STS[1]) and SRAMFULL(KS_STS[3]) is 0 */
-    if(KS->STS & (KS_STS_BUSY_Msk | KS_STS_EIF_Msk | KS_STS_SRAMFULL_Msk))
+    if (KS->STS & (KS_STS_BUSY_Msk | KS_STS_EIF_Msk | KS_STS_SRAMFULL_Msk))
     {
         printf("Key store status is wrong!\n");
     }
@@ -245,17 +267,17 @@ int32_t KeyStoreSRAM(void)
     KS->KEY[5] = 0x12345678;
     KS->KEY[6] = 0x12345678;
     KS->KEY[7] = 0x12345678;
-    
+
     /* Clear Status */
-    KS->STS = KS_STS_EIF_Msk | KS_STS_IF_Msk; 
+    KS->STS = KS_STS_EIF_Msk | KS_STS_IF_Msk;
 
     /* Set START(KS_CTL[0]) to 1 */
     KS->CTL |= (1 << KS_CTL_START_Pos);
 
     /* Wait BUSY(KS_STS[2]) to 0 */
-    while(KS->STS & KS_STS_BUSY_Msk)
+    while (KS->STS & KS_STS_BUSY_Msk)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for Key Store busy flag time-out!\n");
             return -1;
@@ -263,7 +285,7 @@ int32_t KeyStoreSRAM(void)
     }
 
     /* Check EIF(KS_STS[1]) is 0 */
-    if(KS->STS & KS_STS_EIF_Msk)
+    if (KS->STS & KS_STS_EIF_Msk)
     {
         printf("EIF(KS_STS[1]) is not 0.\n");
     }
@@ -276,7 +298,6 @@ int32_t KeyStoreSRAM(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
-    uint32_t u32TimeOutCnt;
     uint32_t u32Confi3Read;
 
     /* Unlock protected registers */
@@ -300,20 +321,21 @@ int main(void)
     /* Enable Tamper Domain */
     u32Confi3Read = FMC_Read(FMC_USER_CONFIG_3);
     printf("CONFI3=0x%8X\n", u32Confi3Read);
-    
-    if(u32Confi3Read == 0x5aa5ffff){
+
+    if (u32Confi3Read == 0x5aa5ffff)
+    {
         FMC_ENABLE_ISP();
         FMC_ENABLE_CFG_UPDATE();
         FMC_WriteConfig(FMC_USER_CONFIG_3, 0x5a5affff);
-        FMC_WriteConfig(FMC_USER_CONFIG_3, 0x5a5affff);
         SYS_ResetChip();
-        while(1);
+
+        while (1);
     }
 
     /* Lock protected registers */
     SYS_LockReg();
 
-    printf("\n\nCPU @ %dHz\n", SystemCoreClock);
+    printf("\n\nCPU @ %uHz\n", SystemCoreClock);
     printf("+--------------------------------------+\n");
     printf("|     Tamper Detection Sample Code     |\n");
     printf("+--------------------------------------+\n\n");
@@ -342,7 +364,7 @@ int main(void)
     TAMPER_EnableInt(TAMPER_INTEN_TAMP2IEN_Msk | TAMPER_INTEN_TAMP3IEN_Msk);
     NVIC_EnableIRQ(TAMPER_IRQn);
 
-    if(s_u8Option == '0')
+    if (s_u8Option == '0')
     {
         printf("# Please connect TAMPER2/3(PF.8/9) pins to Low to generate TAMPER event.\n");
         printf("# Press any key to start test:\n\n");
@@ -357,12 +379,15 @@ int main(void)
         PMC_SetPowerDownMode(PMC_NPD0, PMC_PLCTL_PLSEL_PL1);
         printf("# System enter to power-down mode ...\n");
         /* To check if all the debug messages are finished */
+        uint32_t u32TimeOutCnt;
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while(IsDebugFifoEmpty() == 0)
-            if(--u32TimeOutCnt == 0) break;
+
+        while (IsDebugFifoEmpty() == 0)
+            if (--u32TimeOutCnt == 0) break;
+
         PMC_PowerDown();
     }
-    else if(s_u8Option == '1')
+    else if (s_u8Option == '1')
     {
         /* Enable to trigger Key Store */
         TAMPER_ENABLE_KS_TRIG();
@@ -371,10 +396,12 @@ int main(void)
         SYS_UnlockReg();
 
         /* Init Key Store */
-        if( KS_Init() <0 ) return -1;
+        if (KS_Init() < 0) return -1;
 
         printf("# Write keys ...");
-        if( KeyStoreSRAM() < 0 ) return -1;
+
+        if (KeyStoreSRAM() < 0) return -1;
+
         printf(" Done!\n\n");
 
         printf("# Please connect TAMPER2/3(PF.8/9) pins to Low to generate TAMPER event.\n");
@@ -384,7 +411,7 @@ int main(void)
         printf("# Check keys in SRAM of Key Store when tamper event occurred:\n");
 
         /* Wait for tamper event interrupt happened */
-        while(1);
+        while (1);
     }
 }
 

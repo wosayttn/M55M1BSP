@@ -24,7 +24,8 @@
 /******************************************************************************/
 /*                Type definitions for DMA350 register blocks                */
 /******************************************************************************/
-typedef struct {
+typedef struct
+{
     __IOM uint32_t CH_CMD;                             /*!< Address offset: 0x000, Channel DMA Command Register */
     __IOM uint32_t CH_STATUS;                          /*!< Address offset: 0x004, Channel Status Register */
     __IOM uint32_t CH_INTREN;                          /*!< Address offset: 0x008, Channel Interrupt Enable Register */
@@ -71,7 +72,8 @@ typedef struct {
     __IOM uint32_t CH_BUILDCFG0;                       /*!< Address offset: 0x0F8, Channel Build Configuration and Capability Register 0 */
     __IOM uint32_t CH_BUILDCFG1;                       /*!< Address offset: 0x0FC, Channel Build Configuration and Capability Register 1 */
 } DMACH_TypeDef;
-typedef struct {
+typedef struct
+{
     __IOM uint32_t NSEC_CHINTRSTATUS0;                 /*!< Address offset: 0x000, Non-Secure Channel Interrupt Status Register 0 */
     uint32_t       RESERVED0[1];                       /*!< Address offset: 0x4 - 0x4, Reserved */
     __IOM uint32_t NSEC_STATUS;                        /*!< Address offset: 0x008, Non-Secure Status Register */
@@ -85,7 +87,8 @@ typedef struct {
     __IOM uint32_t NSEC_SIGNALPTR;                     /*!< Address offset: 0x0F8, Non-Secure Unit Signal Pointer */
     __IOM uint32_t NSEC_SIGNALVAL;                     /*!< Address offset: 0x0FC, Non-Secure Unit Signal Value Register */
 } DMANSECCTRL_TypeDef;
-typedef struct {
+typedef struct
+{
     __IOM uint32_t SEC_CHINTRSTATUS0;                  /*!< Address offset: 0x000, Secure Channel Interrupt Status Register 0 */
     uint32_t       RESERVED0[1];                       /*!< Address offset: 0x4 - 0x4, Reserved */
     __IOM uint32_t SEC_STATUS;                         /*!< Address offset: 0x008, Secure Status Register */
@@ -99,7 +102,8 @@ typedef struct {
     __IOM uint32_t SEC_SIGNALPTR;                      /*!< Address offset: 0x0F8, Secure Unit Signal Pointer */
     __IOM uint32_t SEC_SIGNALVAL;                      /*!< Address offset: 0x0FC, Secure Unit Signal Value Register */
 } DMASECCTRL_TypeDef;
-typedef struct {
+typedef struct
+{
     __IOM uint32_t SCFG_CHSEC0;                        /*!< Address offset: 0x000, Secure Configuration Channel Security Mapping Register 0 */
     uint32_t       RESERVED0[1];                       /*!< Address offset: 0x4 - 0x4, Reserved */
     __IOM uint32_t SCFG_TRIGINSEC0;                    /*!< Address offset: 0x008, Secure Configuration Trigger Input Security Mapping Register 0 */
@@ -109,7 +113,8 @@ typedef struct {
     __IOM uint32_t SCFG_CTRL;                          /*!< Address offset: 0x040, Secure Configuration Control */
     __IOM uint32_t SCFG_INTRSTATUS;                    /*!< Address offset: 0x044, Secure Configuration Interrupt Status */
 } DMASECCFG_TypeDef;
-typedef struct {
+typedef struct
+{
     uint32_t       RESERVED0[44];                      /*!< Address offset: 0x0 - 0xAC, Reserved */
     __IOM uint32_t DMA_BUILDCFG0;                      /*!< Address offset: 0x0B0, DMA Build Configuration Register 0 */
     __IOM uint32_t DMA_BUILDCFG1;                      /*!< Address offset: 0x0B4, DMA Build Configuration Register 1 */

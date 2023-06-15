@@ -221,14 +221,14 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/hal/components/stdout/user_input.c</locationURI>
 		</link>
 		<link>
-			<name>hal-platfrom-m55m1/hyperflash_init.c</name>
+			<name>hal-platfrom-m55m1/hyperflash_code.c</name>
 			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/hal/platform/m55m1/hyperflash_init.c</locationURI>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/hal/platform/m55m1/hyperflash_code.c</locationURI>
 		</link>
 		<link>
-			<name>hal-platfrom-m55m1/hyperram_init.c</name>
+			<name>hal-platfrom-m55m1/hyperram_code.c</name>
 			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/hal/platform/m55m1/hyperram_init.c</locationURI>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/hal/platform/m55m1/hyperram_code.c</locationURI>
 		</link>
 		<link>
 			<name>hal-platfrom-m55m1/platform_drivers.c</name>

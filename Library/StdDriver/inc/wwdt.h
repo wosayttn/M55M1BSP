@@ -133,7 +133,7 @@ extern "C"
   */
 #define WWDT_RELOAD_COUNTER(wwdt)       (wwdt->RLDCNT = WWDT_RELOAD_WORD)
 
-void WWDT_Open(WWDT_T* wwdt,uint32_t u32PreScale, uint32_t u32CmpValue, uint32_t u32EnableInt);
+void WWDT_Open(WWDT_T *wwdt, uint32_t u32PreScale, uint32_t u32CmpValue, uint32_t u32EnableInt);
 
 /** @} end of group WWDT_EXPORTED_FUNCTIONS */
 /** @} end of group WWDT_Driver */

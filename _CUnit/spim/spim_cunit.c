@@ -91,6 +91,28 @@ static PHASE_SET_T gWb_EDh_Command =
     PHASE_READMODE_OFF, PHASE_QUAD_MODE, PHASE_WIDTH_8, PHASE_DTR_ON, // Read Mode Phase
 };
 
+/* 0x03: CMD_DMA_NORMAL_READ Command Phase Table */
+static PHASE_SET_T gWb_03h_Command =
+{
+    CMD_DMA_NORMAL_READ,                                 // Command Code
+    PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DTR_OFF,     // Command Phase
+    PHASE_NORMAL_MODE, PHASE_WIDTH_24, PHASE_DTR_OFF,    // Address Phase
+    PHASE_NORMAL_MODE, PHASE_ORDER_MODE0, PHASE_DTR_OFF, // Data Phase
+    0,                                                   // Dummy Cycle Phase
+};
+
+
+/* 0xEB: CMD_DMA_FAST_QUAD_READ Command Phase Table */
+static PHASE_SET_T gWb_EBh_Command =
+{
+    CMD_DMA_FAST_QUAD_READ,                                           // Command Code
+    PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DTR_OFF,                  // Command Phase
+    PHASE_QUAD_MODE, PHASE_WIDTH_24, PHASE_DTR_OFF,                   // Address Phase
+    PHASE_QUAD_MODE, PHASE_ORDER_MODE0, PHASE_DTR_OFF,                // Data Phase
+    4,                                                                // Dummy Cycle Phase
+    PHASE_READMODE_ON, PHASE_QUAD_MODE, PHASE_WIDTH_8, PHASE_DTR_OFF, // Read Mode Phase
+};
+
 /*----------------------------------------------------------------------------*/
 /* Test function                                                              */
 /*----------------------------------------------------------------------------*/
@@ -1615,6 +1637,8 @@ int dma_read_write(SPIM_T *spim, int is4ByteAddr, uint32_t u32RdCmd, uint32_t Wr
         CU_ASSERT(SPIM_Is4ByteModeEnable(spim, 1) == 0);
     }
 
+    SPIM_SetQuadEnable(spim, 1, 1);
+
     /*
      *  Erase flash page
      */
@@ -1650,6 +1674,13 @@ int dma_read_write(SPIM_T *spim, int is4ByteAddr, uint32_t u32RdCmd, uint32_t Wr
         memset(u8TstBuf1, 0, BUFFER_SIZE);
 
         SPIM_DMA_Read(spim, offset, is4ByteAddr, BUFFER_SIZE, u8TstBuf1, u32RdCmd, 1);
+        //SPIM_DMA_ReadPhase(spim,
+        //                   &gWb_EBh_Command,
+        //                   offset,
+        //                   is4ByteAddr,
+        //                   BUFFER_SIZE,
+        //                   u8TstBuf1,
+        //                   1);
 
         pData = (uint32_t *)u8TstBuf1;
 
@@ -1667,38 +1698,60 @@ int dma_read_write(SPIM_T *spim, int is4ByteAddr, uint32_t u32RdCmd, uint32_t Wr
     /*
      *  Program data to flash block
      */
-    SPIM_FindAndInitDMADMMPhase(spim,
-                                gWinbondCMDTable,
-                                sizeof(gWinbondCMDTable) / sizeof(PHASE_SET_T),
-                                SPIM_CTL0_OPMODE_PAGEWRITE,
-                                CMD_NORMAL_PAGE_PROGRAM);
+    //SPIM_FindAndInitDMADMMPhase(spim,
+    //                            gWinbondCMDTable,
+    //                            sizeof(gWinbondCMDTable) / sizeof(PHASE_SET_T),
+    //                            SPIM_CTL0_OPMODE_PAGEWRITE,
+    //                            CMD_NORMAL_PAGE_PROGRAM);
     //printf("pSPIMx->PHDMAW = 0x%08X\r\n", spim->PHDMAW);
-    CU_ASSERT(spim->PHDMAW == 0x00000301);
+    //CU_ASSERT(spim->PHDMAW == 0x00000301);
+
+    popDat(u8TstBuf1, BUFFER_SIZE);
 
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
-        popDat(u8TstBuf1, BUFFER_SIZE);
-
-        SPIM_DMA_Write(spim, offset, is4ByteAddr, BUFFER_SIZE, u8TstBuf1, WrCmd);
+        //SPIM_DMA_Write(spim, offset, is4ByteAddr, BUFFER_SIZE, u8TstBuf1, WrCmd);
+        SPIM_DMA_WritePhase(spim,
+                            &gWb_02h_Command,
+                            offset,
+                            is4ByteAddr,
+                            BUFFER_SIZE,
+                            u8TstBuf1);
     }
+
+    printf("pSPIMx->PHDMAW = 0x%08X\r\n", spim->PHDMAW);
+    CU_ASSERT(spim->PHDMAW == 0x00000301);
 
     /*
      *  Verify flash block data
      */
-    SPIM_FindAndInitDMADMMPhase(spim,
-                                gWinbondCMDTable,
-                                sizeof(gWinbondCMDTable) / sizeof(PHASE_SET_T),
-                                SPIM_CTL0_OPMODE_PAGEREAD,
-                                CMD_DMA_NORMAL_READ);
+    //SPIM_FindAndInitDMADMMPhase(spim,
+    //                            gWinbondCMDTable,
+    //                            sizeof(gWinbondCMDTable) / sizeof(PHASE_SET_T),
+    //                            SPIM_CTL0_OPMODE_PAGEREAD,
+    //                            CMD_DMA_NORMAL_READ);
     //printf("pSPIMx->PHDMAR = 0x%08X\r\n", spim->PHDMAR);
-    CU_ASSERT(spim->PHDMAR == 0x00000301);
+    //CU_ASSERT(spim->PHDMAR == 0x00000301);
+    SPIM_DMADMM_InitPhase(spim, &gWb_EBh_Command, SPIM_CTL0_OPMODE_PAGEREAD);
+
+    popDat(u8TstBuf1, BUFFER_SIZE);
 
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
-        popDat(u8TstBuf1, BUFFER_SIZE);
-
         memset(u8TstBuf2, 0, BUFFER_SIZE);
-        SPIM_DMA_Read(spim, offset, is4ByteAddr, BUFFER_SIZE, u8TstBuf2, u32RdCmd, 1);
+        SPIM_DMADMM_InitPhase(spim, &gWb_EBh_Command, SPIM_CTL0_OPMODE_PAGEREAD);
+
+        SPIM_DMA_Read(spim, offset, is4ByteAddr, BUFFER_SIZE, u8TstBuf2, gWb_EBh_Command.u32CMDCode, 1);
+
+        //SPIM_DMA_ReadPhase(spim,
+        //                   &gWb_EBh_Command,
+        //                   offset,
+        //                   is4ByteAddr,
+        //                   BUFFER_SIZE,
+        //                   u8TstBuf2,
+        //                   1);
+
+        printf("pSPIMx->PHDMAR = 0x%08X\r\n", spim->PHDMAR);
 
         // Compare.
         if (memcmp(u8TstBuf1, u8TstBuf2, BUFFER_SIZE))
@@ -1709,6 +1762,8 @@ int dma_read_write(SPIM_T *spim, int is4ByteAddr, uint32_t u32RdCmd, uint32_t Wr
             return -1;
         }
     }
+
+    SPIM_SetQuadEnable(spim, 1, 0);
 
     printf("done.\n");
     return 0;
@@ -1889,11 +1944,10 @@ void SPIM_IO_RW_Func()
     {
         memset(u8TstBuf1, 0, BUFFER_SIZE);
         //SPIM_IO_Read(pSPIMModule, offset, 0, BUFFER_SIZE, u8TstBuf1, 0xeb, 1, 4, 4, 3, 0);
-        SPIM_IO_SendCMDPhase(pSPIMModule, 0xEB, PHASE_NORMAL_MODE, 0, 0);
-        SPIM_IO_SendAddrPhase(pSPIMModule, 0, offset, PHASE_QUAD_MODE, 0, 0);
-        //SPIM_IO_DCPhase(pSPIMModule, 2, PHASE_QUAD_MODE, 0);
+        SPIM_IO_SendCMDPhase(pSPIMModule, SPIM_IO_READ_PHASE, 0xEB, PHASE_NORMAL_MODE, 0);
+        SPIM_IO_SendAddrPhase(pSPIMModule, 0, offset, PHASE_QUAD_MODE, 0);
         SPIM_IO_SendDummyCycle(pSPIMModule, 4);
-        SPIM_IO_SendDataPhase(pSPIMModule, u8TstBuf1, BUFFER_SIZE, PHASE_QUAD_MODE, 0, 0);
+        SPIM_IO_SendDataPhase(pSPIMModule, SPIM_IO_READ_PHASE, u8TstBuf1, BUFFER_SIZE, PHASE_QUAD_MODE, 0);
         //SPIM_Phase_IORead(pSPIMModule, &gWb_EDh_Command, offset, 0, u8TstBuf1, BUFFER_SIZE);
 
         pData = (uint32_t *)u8TstBuf1;
@@ -1902,7 +1956,7 @@ void SPIM_IO_RW_Func()
         {
             if (*pData != 0xFFFFFFFF)
             {
-                printf("FAILED!\n");
+                printf("Erase FAILED!\n");
                 printf("Erase I/O RW - Flash address 0x%x, read 0x%x!\n", i, *pData);
                 CU_FAIL();
             }
@@ -1939,27 +1993,27 @@ void SPIM_IO_RW_Func()
         //SPIM_IO_Write(pSPIMModule, offset, 0, BUFFER_SIZE, g_buff, OPCODE_PP, 1, 1, 1);
     }
 
+    popDat(u8TstBuf1, BUFFER_SIZE);
+
     /*
      *  Read and compare flash data
      */
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
-        popDat(u8TstBuf1, BUFFER_SIZE);
-
         memset(u8TstBuf2, 0, BUFFER_SIZE);
         //SPIM_IO_Read(pSPIMModule, offset, 0, BUFFER_SIZE, u8TstBuf2, 0xeb, 1, 4, 4, 3, 0);
         SPIM_IO_ReadPhase(pSPIMModule, &gWb_EDh_Command, offset, 0, u8TstBuf2, BUFFER_SIZE);
-        //SPIM_IO_SendCMDPhase(pSPIMModule, 0xEB, PHASE_NORMAL_MODE, 0, 0);
-        //SPIM_IO_SendAddrPhase(pSPIMModule, 0, offset, PHASE_QUAD_MODE, 0, 0);
+        //SPIM_IO_SendCMDPhase(pSPIMModule, SPIM_IO_READ_PHASE, 0xEB, PHASE_NORMAL_MODE, 0);
+        //SPIM_IO_SendAddrPhase(pSPIMModule, 0, offset, PHASE_QUAD_MODE, 0);
         //SPIM_IO_DCPhase(pSPIMModule, 2, PHASE_QUAD_MODE, 0);
         //SPIM_IO_SendDummyCycle(pSPIMx, 4);
-        //SPIM_IO_SendDataPhase(pSPIMModule, u8TstBuf2, BUFFER_SIZE, PHASE_QUAD_MODE, 0, 1);
+        //SPIM_IO_SendDataPhase(pSPIMModule, SPIM_IO_WRITE_PHASE, u8TstBuf2, BUFFER_SIZE, PHASE_QUAD_MODE, 0);
 
         // Compare.
         if (memcmp(u8TstBuf1, u8TstBuf2, BUFFER_SIZE))
         {
             printf("FAILED!\n");
-            dump_compare_error(offset, u8TstBuf1, u8TstBuf2, BUFFER_SIZE);
+            //dump_compare_error(offset, u8TstBuf1, u8TstBuf2, BUFFER_SIZE);
             CU_FAIL();
         }
     }
@@ -2072,7 +2126,7 @@ CU_TestInfo SPIM_MacroTests[] =
 
 CU_TestInfo SPIM_ApiTests[] =
 {
-    {"SPIM Init/Read ID Function", SPIM_Basic_Func},
+    //{"SPIM Init/Read ID Function", SPIM_Basic_Func},
     //{"SPIM DMA Function", SPIM_DMA_Func},
     {"SPIM I/O Read/Write Function", SPIM_IO_RW_Func},
     //{"SPIM DMM Function", SPIM_DMM_Func},

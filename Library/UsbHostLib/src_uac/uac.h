@@ -4,7 +4,7 @@
  * @brief    USB Host audio class header file.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #ifndef __INCLUDED_UAC_H__
 #define __INCLUDED_UAC_H__
@@ -18,9 +18,9 @@
  */
 #define UAC_ERRMSG     printf
 #ifdef UAC_DEBUG
-#define UAC_DBGMSG      printf
+    #define UAC_DBGMSG      printf
 #else
-#define UAC_DBGMSG(...)
+    #define UAC_DBGMSG(...)
 #endif
 
 typedef enum

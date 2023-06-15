@@ -4,7 +4,7 @@
  * @brief    USB Host library HID core driver.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include <stdio.h>
@@ -30,11 +30,12 @@ static int get_free_utr_slot(HID_DEV_T *hdev)
 {
     int    i;
 
-    for(i = 0; i < CONFIG_HID_DEV_MAX_PIPE; i++)
+    for (i = 0; i < CONFIG_HID_DEV_MAX_PIPE; i++)
     {
-        if(hdev->utr_list[i] == NULL)
+        if (hdev->utr_list[i] == NULL)
             return i;
     }
+
     return -1;
 }
 
@@ -55,10 +56,10 @@ int32_t  usbh_hid_get_report_descriptor(HID_DEV_T *hdev, uint8_t *desc_buf, int 
     uint32_t   xfer_len;
     int        ret;
 
-    if(buf_max_len < 9)
+    if (buf_max_len < 9)
         return HID_RET_INVALID_PARAMETER;
 
-    if(!hdev || !hdev->iface)
+    if (!hdev || !hdev->iface)
         return USBH_ERR_NOT_FOUND;
 
     iface = (IFACE_T *)hdev->iface;
@@ -71,11 +72,12 @@ int32_t  usbh_hid_get_report_descriptor(HID_DEV_T *hdev, uint8_t *desc_buf, int 
                          buf_max_len,                   /* wLength                               */
                          desc_buf, &xfer_len, USB_CTRL_TIMEOUT_MS);
 
-    if((ret < 0) || (xfer_len == 0))
+    if ((ret < 0) || (xfer_len == 0))
     {
         HID_DBGMSG("failed to get HID descriptor.\n");
         return HID_RET_IO_ERR;
     }
+
     return (int)xfer_len;
 }
 
@@ -101,7 +103,7 @@ int32_t  usbh_hid_get_report(HID_DEV_T *hdev, int rtp_typ, int rtp_id,
     uint32_t   xfer_len;
     int        ret;
 
-    if(!hdev || !hdev->iface)
+    if (!hdev || !hdev->iface)
         return USBH_ERR_NOT_FOUND;
 
     iface = (IFACE_T *)hdev->iface;
@@ -113,11 +115,13 @@ int32_t  usbh_hid_get_report(HID_DEV_T *hdev, int rtp_typ, int rtp_id,
                          iface->if_num,                 /* wIndex                                */
                          len,                           /* wLength                               */
                          data, &xfer_len, USB_CTRL_TIMEOUT_MS);
-    if(ret < 0)
+
+    if (ret < 0)
     {
         HID_DBGMSG("failed to get report!\n");
         return HID_RET_IO_ERR;
     }
+
     return (int)xfer_len;
 }
 
@@ -145,7 +149,7 @@ int32_t  usbh_hid_set_report(HID_DEV_T *hdev, int rtp_typ, int rtp_id,
     uint32_t   xfer_len;
     int        ret;
 
-    if(!hdev || !hdev->iface)
+    if (!hdev || !hdev->iface)
         return USBH_ERR_NOT_FOUND;
 
     iface = (IFACE_T *)hdev->iface;
@@ -157,11 +161,13 @@ int32_t  usbh_hid_set_report(HID_DEV_T *hdev, int rtp_typ, int rtp_id,
                          iface->if_num,                 /* wIndex                                */
                          len,                           /* wLength                               */
                          data, &xfer_len, USB_CTRL_TIMEOUT_MS);
-    if(ret < 0)
+
+    if (ret < 0)
     {
         HID_DBGMSG("failed to set report!\n");
         return HID_RET_IO_ERR;
     }
+
     return (int)xfer_len;
 }
 
@@ -180,22 +186,25 @@ int32_t  usbh_hid_set_report_non_blocking(HID_DEV_T *hdev, int rtp_typ, int rtp_
     UTR_T      *utr;
     int        status;
 
-    if(!hdev || !hdev->iface)
+    if (!hdev || !hdev->iface)
         return USBH_ERR_NOT_FOUND;
 
     iface = (IFACE_T *)hdev->iface;
 
     utr = hdev->rpd.utr_led;
-    if(utr == NULL)
+
+    if (utr == NULL)
     {
         utr = alloc_utr(iface->udev);
-        if(utr == NULL)
+
+        if (utr == NULL)
             return USBH_ERR_MEMORY_OUT;
+
         hdev->rpd.utr_led = utr;
     }
     else
     {
-        if(utr->bIsTransferDone == 0)
+        if (utr->bIsTransferDone == 0)
             return HID_RET_IO_ERR;        /* unlikely! the last LED control trnasfer is not completed */
     }
 
@@ -211,11 +220,13 @@ int32_t  usbh_hid_set_report_non_blocking(HID_DEV_T *hdev, int rtp_typ, int rtp_
     utr->bIsTransferDone = 0;
 
     status = iface->udev->hc_driver->ctrl_xfer(utr);
-    if(status < 0)
+
+    if (status < 0)
     {
         iface->udev->ep0.hw_pipe = NULL;
         return status;
     }
+
     return 0;
 }
 
@@ -238,7 +249,7 @@ int32_t  usbh_hid_get_idle(HID_DEV_T *hdev, int rtp_id, uint8_t *idle_rate)
     uint32_t   xfer_len;
     int        ret;
 
-    if(!hdev || !hdev->iface)
+    if (!hdev || !hdev->iface)
         return USBH_ERR_NOT_FOUND;
 
     iface = (IFACE_T *)hdev->iface;
@@ -251,11 +262,12 @@ int32_t  usbh_hid_get_idle(HID_DEV_T *hdev, int rtp_id, uint8_t *idle_rate)
                          1,                             /* wLength                               */
                          idle_rate, &xfer_len, USB_CTRL_TIMEOUT_MS);
 
-    if((ret < 0) || (xfer_len != 1))
+    if ((ret < 0) || (xfer_len != 1))
     {
         HID_DBGMSG("failed to get idle rate! %d\n", ret);
         return HID_RET_IO_ERR;
     }
+
     return HID_RET_OK;
 }
 
@@ -278,7 +290,7 @@ int32_t  usbh_hid_set_idle(HID_DEV_T *hdev, int rtp_id, uint8_t idle_rate)
     uint16_t   wValue = idle_rate;
     int        ret;
 
-    if(!hdev || !hdev->iface)
+    if (!hdev || !hdev->iface)
         return USBH_ERR_NOT_FOUND;
 
     iface = (IFACE_T *)hdev->iface;
@@ -291,11 +303,12 @@ int32_t  usbh_hid_set_idle(HID_DEV_T *hdev, int rtp_id, uint8_t idle_rate)
                          0,                             /* wLength                               */
                          NULL, &xfer_len, USB_CTRL_TIMEOUT_MS);
 
-    if(ret < 0)
+    if (ret < 0)
     {
         HID_DBGMSG("failed to set idle rate! %d\n", ret);
         return HID_RET_IO_ERR;
     }
+
     return HID_RET_OK;
 }
 
@@ -316,7 +329,7 @@ int32_t  usbh_hid_get_protocol(HID_DEV_T *hdev, uint8_t *protocol)
     uint32_t    xfer_len;
     int         ret;
 
-    if(!hdev || !hdev->iface)
+    if (!hdev || !hdev->iface)
         return USBH_ERR_NOT_FOUND;
 
     iface = (IFACE_T *)hdev->iface;
@@ -329,11 +342,12 @@ int32_t  usbh_hid_get_protocol(HID_DEV_T *hdev, uint8_t *protocol)
                          1,                             /* wLength                               */
                          protocol, &xfer_len, USB_CTRL_TIMEOUT_MS);
 
-    if((ret < 0) || (xfer_len != 1))
+    if ((ret < 0) || (xfer_len != 1))
     {
         HID_DBGMSG("failed to get idle rate! %d\n", ret);
         return HID_RET_IO_ERR;
     }
+
     return HID_RET_OK;
 }
 
@@ -354,7 +368,7 @@ int32_t  usbh_hid_set_protocol(HID_DEV_T *hdev, uint8_t protocol)
     uint32_t   xfer_len;
     int        ret;
 
-    if(!hdev || !hdev->iface)
+    if (!hdev || !hdev->iface)
         return USBH_ERR_NOT_FOUND;
 
     iface = (IFACE_T *)hdev->iface;
@@ -367,11 +381,12 @@ int32_t  usbh_hid_set_protocol(HID_DEV_T *hdev, uint8_t protocol)
                          0,                             /* wLength                               */
                          NULL, &xfer_len, USB_CTRL_TIMEOUT_MS);
 
-    if(ret < 0)
+    if (ret < 0)
     {
         HID_DBGMSG("failed to set idle rate! %d\n", ret);
         return HID_RET_IO_ERR;
     }
+
     return HID_RET_OK;
 }
 
@@ -389,33 +404,38 @@ static void  hid_read_irq(UTR_T *utr)
 
     hdev = (HID_DEV_T *)utr->context;
 
-    if(utr->status != 0)
+    if (utr->status != 0)
     {
         HID_DBGMSG("hid_read_irq - has error: 0x%x\n", utr->status);
-        if(hdev->read_func)
+
+        if (hdev->read_func)
             hdev->read_func(hdev, utr->ep->bEndpointAddress, utr->status, utr->buff, 0);
+
         return;
     }
 
-    if(hdev->bSubClassCode == HID_SUBCLASS_BOOT_DEVICE)
+    if (hdev->bSubClassCode == HID_SUBCLASS_BOOT_DEVICE)
     {
-        if(hdev->bProtocolCode == HID_PROTOCOL_MOUSE)
+        if (hdev->bProtocolCode == HID_PROTOCOL_MOUSE)
             hid_parse_mouse_reports(hdev, utr->buff, utr->xfer_len);
 
-        if(hdev->bProtocolCode == HID_PROTOCOL_KEYBOARD)
+        if (hdev->bProtocolCode == HID_PROTOCOL_KEYBOARD)
             hid_parse_keyboard_reports(hdev, utr->buff, utr->xfer_len);
     }
 
-    if(hdev->read_func && utr->xfer_len)
+    if (hdev->read_func && utr->xfer_len)
         hdev->read_func(hdev, utr->ep->bEndpointAddress, utr->status, utr->buff, utr->xfer_len);
 
     utr->xfer_len = 0;
     ret = usbh_int_xfer(utr);
-    if(ret)
+
+    if (ret)
     {
         HID_DBGMSG("hid_read_irq - failed to submit interrupt-in request (%d)", ret);
-        if(hdev->read_func)
+
+        if (hdev->read_func)
             hdev->read_func(hdev, utr->ep->bEndpointAddress, ret, utr->buff, 0);
+
         usbh_free_mem(utr->buff, utr->data_len);
         free_utr(utr);
     }
@@ -433,14 +453,14 @@ static void  hid_write_irq(UTR_T *utr)
 
     hdev = (HID_DEV_T *)utr->context;
 
-    if(utr->status)
+    if (utr->status)
     {
         HID_DBGMSG("hid_write_irq - has error: 0x%x\n", utr->status);
         hdev->write_func(hdev, utr->ep->bEndpointAddress, utr->status, utr->buff, &(utr->data_len));
         return;
     }
 
-    if(hdev->write_func)
+    if (hdev->write_func)
     {
         utr->data_len = utr->ep->wMaxPacketSize;
         hdev->write_func(hdev, utr->ep->bEndpointAddress, utr->status, utr->buff, &(utr->data_len));
@@ -448,7 +468,8 @@ static void  hid_write_irq(UTR_T *utr)
 
     utr->xfer_len = 0;
     ret = usbh_int_xfer(utr);
-    if(ret)
+
+    if (ret)
     {
         HID_DBGMSG("hid_write_irq - failed to submit interrupt-out request (%d)", ret);
         hdev->write_func(hdev, utr->ep->bEndpointAddress, ret, utr->buff, &(utr->data_len));
@@ -475,15 +496,16 @@ int32_t usbh_hid_start_int_read(HID_DEV_T *hdev, uint8_t ep_addr, HID_IR_FUNC *f
     EP_INFO_T  *ep;
     int         i, ret;
 
-    if((!iface) || (!iface->udev))
+    if ((!iface) || (!iface->udev))
         return HID_RET_DEV_NOT_FOUND;
 
-    if(!func)
+    if (!func)
         return HID_RET_INVALID_PARAMETER;
 
     for (i = 0; i < CONFIG_HID_DEV_MAX_PIPE; i++)
     {
         utr = hdev->utr_list[i];
+
         if ((utr != NULL) && (utr->ep != NULL) && (utr->ep->bEndpointAddress == ep_addr))
         {
             return HID_RET_XFER_IS_RUNNING;      /* transfer of this pipe is running      */
@@ -495,15 +517,17 @@ int32_t usbh_hid_start_int_read(HID_DEV_T *hdev, uint8_t ep_addr, HID_IR_FUNC *f
     else
         ep = usbh_iface_find_ep(iface, ep_addr, 0);
 
-    if(ep == NULL)
+    if (ep == NULL)
         return USBH_ERR_EP_NOT_FOUND;
 
     utr = alloc_utr(iface->udev);
-    if(!utr)
+
+    if (!utr)
         return USBH_ERR_MEMORY_OUT;
 
     utr->buff = usbh_alloc_mem(ep->wMaxPacketSize);
-    if(utr->buff == NULL)
+
+    if (utr->buff == NULL)
     {
         free_utr(utr);
         return USBH_ERR_MEMORY_OUT;
@@ -517,7 +541,8 @@ int32_t usbh_hid_start_int_read(HID_DEV_T *hdev, uint8_t ep_addr, HID_IR_FUNC *f
     utr->func = hid_read_irq;
 
     ret = usbh_int_xfer(utr);
-    if(ret < 0)
+
+    if (ret < 0)
     {
         HID_DBGMSG("Error - failed to submit interrupt read request (%d)", ret);
         usbh_free_mem(utr->buff, utr->data_len);
@@ -526,7 +551,8 @@ int32_t usbh_hid_start_int_read(HID_DEV_T *hdev, uint8_t ep_addr, HID_IR_FUNC *f
     }
 
     i = get_free_utr_slot(hdev);
-    if(i < 0)
+
+    if (i < 0)
     {
         HID_DBGMSG("Error - No free HID slot!\n");
         usbh_quit_utr(utr);
@@ -557,16 +583,17 @@ int32_t usbh_hid_stop_int_read(HID_DEV_T *hdev, uint8_t ep_addr)
     UTR_T      *utr;
     int        i, ret;
 
-    if((!iface) || (!iface->udev))
+    if ((!iface) || (!iface->udev))
         return HID_RET_DEV_NOT_FOUND;
 
-    for(i = 0; i < CONFIG_HID_DEV_MAX_PIPE; i++)
+    for (i = 0; i < CONFIG_HID_DEV_MAX_PIPE; i++)
     {
         utr = hdev->utr_list[i];
-        if(ep_addr == 0)
+
+        if (ep_addr == 0)
         {
             /* Find any running UTR whose endpoint direction is IN                     */
-            if((utr != NULL) && (utr->ep != NULL) &&
+            if ((utr != NULL) && (utr->ep != NULL) &&
                     ((utr->ep->bEndpointAddress & EP_ADDR_DIR_MASK) == EP_ADDR_DIR_IN))
             {
                 break;
@@ -575,15 +602,16 @@ int32_t usbh_hid_stop_int_read(HID_DEV_T *hdev, uint8_t ep_addr)
         else
         {
             /* Find any running UTR whose endpoint address is matched with ep_addr     */
-            if((utr != NULL) && (utr->ep != NULL) && (utr->ep->bEndpointAddress == ep_addr))
+            if ((utr != NULL) && (utr->ep != NULL) && (utr->ep->bEndpointAddress == ep_addr))
             {
                 break;                          /* UTR found                                  */
             }
         }
+
         utr = NULL;
     }
 
-    if(utr == NULL)
+    if ((utr == NULL) || (i >= CONFIG_HID_DEV_MAX_PIPE))
         return HID_RET_DEV_NOT_FOUND;
 
     hdev->utr_list[i] = NULL;               /* remove it from HID UTR list                */
@@ -613,15 +641,16 @@ int32_t usbh_hid_start_int_write(HID_DEV_T *hdev, uint8_t ep_addr, HID_IW_FUNC *
     EP_INFO_T  *ep;
     int        i, ret;
 
-    if((!iface) || (!iface->udev))
+    if ((!iface) || (!iface->udev))
         return HID_RET_DEV_NOT_FOUND;
 
-    if(!func)
+    if (!func)
         return HID_RET_INVALID_PARAMETER;
 
     for (i = 0; i < CONFIG_HID_DEV_MAX_PIPE; i++)
     {
         utr = hdev->utr_list[i];
+
         if ((utr != NULL) && (utr->ep != NULL) && (utr->ep->bEndpointAddress == ep_addr))
         {
             return HID_RET_XFER_IS_RUNNING;      /* transfer of this pipe is running      */
@@ -633,15 +662,17 @@ int32_t usbh_hid_start_int_write(HID_DEV_T *hdev, uint8_t ep_addr, HID_IW_FUNC *
     else
         ep = usbh_iface_find_ep(iface, ep_addr, 0);
 
-    if(ep == NULL)
+    if (ep == NULL)
         return USBH_ERR_EP_NOT_FOUND;
 
     utr = alloc_utr(iface->udev);
-    if(!utr)
+
+    if (!utr)
         return USBH_ERR_MEMORY_OUT;
 
     utr->buff = usbh_alloc_mem(ep->wMaxPacketSize);
-    if(utr->buff == NULL)
+
+    if (utr->buff == NULL)
     {
         free_utr(utr);
         return USBH_ERR_MEMORY_OUT;
@@ -659,7 +690,8 @@ int32_t usbh_hid_start_int_write(HID_DEV_T *hdev, uint8_t ep_addr, HID_IW_FUNC *
     func(hdev, ep->bEndpointAddress, 0, utr->buff, &(utr->data_len));
 
     ret = usbh_int_xfer(utr);
-    if(ret < 0)
+
+    if (ret < 0)
     {
         HID_DBGMSG("Error - failed to submit interrupt read request (%d)", ret);
         free_utr(utr);
@@ -667,7 +699,8 @@ int32_t usbh_hid_start_int_write(HID_DEV_T *hdev, uint8_t ep_addr, HID_IW_FUNC *
     }
 
     i = get_free_utr_slot(hdev);
-    if(i < 0)
+
+    if (i < 0)
     {
         HID_DBGMSG("Error - No free HID slot!\n");
         usbh_quit_utr(utr);
@@ -698,16 +731,17 @@ int32_t usbh_hid_stop_int_write(HID_DEV_T *hdev, uint8_t ep_addr)
     UTR_T      *utr;
     int        i, ret;
 
-    if((!iface) || (!iface->udev))
+    if ((!iface) || (!iface->udev))
         return HID_RET_DEV_NOT_FOUND;
 
-    for(i = 0; i < CONFIG_HID_DEV_MAX_PIPE; i++)
+    for (i = 0; i < CONFIG_HID_DEV_MAX_PIPE; i++)
     {
         utr = hdev->utr_list[i];
-        if(ep_addr == 0)
+
+        if (ep_addr == 0)
         {
             /* Find any running UTR whose endpoint direction is OUT                    */
-            if((utr != NULL) && (utr->ep != NULL) &&
+            if ((utr != NULL) && (utr->ep != NULL) &&
                     ((utr->ep->bEndpointAddress & EP_ADDR_DIR_MASK) == EP_ADDR_DIR_OUT))
             {
                 break;
@@ -716,15 +750,16 @@ int32_t usbh_hid_stop_int_write(HID_DEV_T *hdev, uint8_t ep_addr)
         else
         {
             /* Find any running UTR whose endpoint address is matched with ep_addr     */
-            if((utr != NULL) && (utr->ep != NULL) && (utr->ep->bEndpointAddress == ep_addr))
+            if ((utr != NULL) && (utr->ep != NULL) && (utr->ep->bEndpointAddress == ep_addr))
             {
                 break;                          /* UTR found                                  */
             }
         }
+
         utr = NULL;
     }
 
-    if(utr == NULL)
+    if ((utr == NULL) || (i >= CONFIG_HID_DEV_MAX_PIPE))
         return HID_RET_DEV_NOT_FOUND;
 
     hdev->utr_list[i] = NULL;               /* remove it from HID UTR list                */

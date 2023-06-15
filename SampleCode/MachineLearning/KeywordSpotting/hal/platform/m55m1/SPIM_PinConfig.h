@@ -1,5 +1,5 @@
-#ifndef _TC8263_PIN_CONFIG_H_
-#define _TC8263_PIN_CONFIG_H_
+#ifndef _SPIM_PIN_CONFIG_H_
+#define _SPIM_PIN_CONFIG_H_
 
 #define SPIM0_RST_PIN_INIT()                SPIM0_RST_PIN
 #define SPIM0_CLK_PIN_INIT()                SPIM0_CLK_PIN

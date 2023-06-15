@@ -30,11 +30,13 @@
 /* Initialize a Drive                                                    */
 /*-----------------------------------------------------------------------*/
 
-DSTATUS disk_initialize (BYTE pdrv)       /* Physical drive number (0..) */
+DSTATUS disk_initialize(BYTE pdrv)        /* Physical drive number (0..) */
 {
     usbh_pooling_hubs();
+
     if (usbh_umas_disk_status(pdrv) == UMAS_ERR_NO_DEVICE)
         return STA_NODISK;
+
     return RES_OK;
 }
 
@@ -43,11 +45,13 @@ DSTATUS disk_initialize (BYTE pdrv)       /* Physical drive number (0..) */
 /* Get Disk Status                                                       */
 /*-----------------------------------------------------------------------*/
 
-DSTATUS disk_status (BYTE pdrv)       /* Physical drive number (0..) */
+DSTATUS disk_status(BYTE pdrv)        /* Physical drive number (0..) */
 {
     usbh_pooling_hubs();
+
     if (usbh_umas_disk_status(pdrv) == UMAS_ERR_NO_DEVICE)
         return STA_NODISK;
+
     return RES_OK;
 }
 
@@ -55,7 +59,7 @@ DSTATUS disk_status (BYTE pdrv)       /* Physical drive number (0..) */
 /*-----------------------------------------------------------------------*/
 /* Read Sector(s)                                                        */
 /*-----------------------------------------------------------------------*/
-DRESULT disk_read (
+DRESULT disk_read(
     BYTE pdrv,      /* Physical drive number (0..) */
     BYTE *buff,     /* Data buffer to store read data */
     DWORD sector,   /* Sector address (LBA) */
@@ -63,11 +67,12 @@ DRESULT disk_read (
 )
 {
     int       ret;
-//  int       sec_size;
+    //  int       sec_size;
 
     //printf("disk_read - drv:%d, sec:%d, cnt:%d, buff:0x%x\n", pdrv, sector, count, (uint32_t)buff);
 
     ret = usbh_umas_read(pdrv, sector, count, buff);
+
     if (ret != UMAS_OK)
     {
         usbh_umas_reset_disk(pdrv);
@@ -92,7 +97,7 @@ DRESULT disk_read (
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
 
-DRESULT disk_write (
+DRESULT disk_write(
     BYTE pdrv,          /* Physical drive number (0..) */
     const BYTE *buff,   /* Data to be written */
     DWORD sector,       /* Sector address (LBA) */
@@ -100,11 +105,12 @@ DRESULT disk_write (
 )
 {
     int       ret;
-//  int       sec_size;
+    //  int       sec_size;
 
     //printf("disk_write - drv:%d, sec:%d, cnt:%d, buff:0x%x\n", pdrv, sector, count, (uint32_t)buff);
 
     ret = usbh_umas_write(pdrv, sector, count, (uint8_t *)buff);
+
     if (ret != UMAS_OK)
     {
         usbh_umas_reset_disk(pdrv);
@@ -128,7 +134,7 @@ DRESULT disk_write (
 /* Miscellaneous Functions                                               */
 /*-----------------------------------------------------------------------*/
 
-DRESULT disk_ioctl (
+DRESULT disk_ioctl(
     BYTE pdrv,      /* Physical drive number (0..) */
     BYTE cmd,       /* Control code */
     void *buff      /* Buffer to send/receive control data */

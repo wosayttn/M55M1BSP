@@ -15,7 +15,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Functions and variables declaration                                                                     */
 /*---------------------------------------------------------------------------------------------------------*/
-static volatile uint8_t g_u8IsAlarm = FALSE;
+static volatile uint8_t s_u8IsAlarm = FALSE;
 
 void RTC_AlarmHandle(void);
 void RTC_IRQHandler(void);
@@ -29,7 +29,7 @@ void UART_Init(void);
 void RTC_AlarmHandle(void)
 {
     printf(" Alarm!!\n");
-    g_u8IsAlarm = TRUE;
+    s_u8IsAlarm = TRUE;
 }
 
 /**
@@ -44,7 +44,7 @@ void RTC_AlarmHandle(void)
 void RTC_IRQHandler(void)
 {
     /* To check if RTC alarm interrupt occurred */
-    if(RTC_GET_ALARM_INT_FLAG(RTC) == 1)
+    if (RTC_GET_ALARM_INT_FLAG(RTC) == 1)
     {
         /* Clear RTC alarm interrupt flag */
         RTC_CLEAR_ALARM_INT_FLAG(RTC);
@@ -52,7 +52,7 @@ void RTC_IRQHandler(void)
         RTC_AlarmHandle();
     }
 
-    if(RTC_GET_TICK_INT_FLAG(RTC) == 1)
+    if (RTC_GET_TICK_INT_FLAG(RTC) == 1)
     {
         /* Clear RTC tick interrupt flag */
         RTC_CLEAR_TICK_INT_FLAG(RTC);
@@ -63,11 +63,11 @@ void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/  
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Set X32_OUT(PF.4) and X32_IN(PF.5)*/
-    SET_X32_IN_PF5(); 
+    SET_X32_IN_PF5();
     SET_X32_OUT_PF4();
-    
+
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
     /* Enable External LXT clock */
@@ -83,7 +83,7 @@ void SYS_Init(void)
 
     /* Switch SCLK clock source to PLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-    
+
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
 
@@ -97,7 +97,7 @@ void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-   
+
     /* Enable module clock */
     CLK_EnableModuleClock(RTC0_MODULE);
 
@@ -108,7 +108,7 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-    
+
 }
 
 void UART_Init(void)
@@ -123,7 +123,7 @@ void UART_Init(void)
 int main(void)
 {
     S_RTC_TIME_DATA_T sInitTime, sCurTime;
-    S_RTC_TIME_DATA_T *sptrInitTime;
+    S_RTC_TIME_DATA_T *spInitTime;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -137,7 +137,7 @@ int main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    printf("\n\nCPU @ %dHz\n", SystemCoreClock);
+    printf("\n\nCPU @ %uHz\n", SystemCoreClock);
     printf("+----------------------------------+\n");
     printf("|    RTC Alarm Test Sample Code    |\n");
     printf("+----------------------------------+\n\n");
@@ -154,11 +154,11 @@ int main(void)
     sInitTime.u32Second     = 0;
     sInitTime.u32DayOfWeek  = RTC_MONDAY;
     sInitTime.u32TimeScale  = RTC_CLOCK_24;
-    
+
     /* check rtc reset status */
-    sptrInitTime = (RTC->INIT & RTC_INIT_ACTIVE_Msk) ? NULL : &sInitTime;
-    
-    if(RTC_Open(sptrInitTime) != 0)
+    spInitTime = (RTC->INIT & RTC_INIT_ACTIVE_Msk) ? NULL : &sInitTime;
+
+    if (RTC_Open(spInitTime) != 0)
     {
         printf("\n RTC initial fail!!");
         printf("\n Please check h/w setting!!");
@@ -167,24 +167,24 @@ int main(void)
 
     printf("\nRTC Alarm Test (Alarm after 10 seconds)\n\n");
 
-    g_u8IsAlarm = FALSE;
+    s_u8IsAlarm = FALSE;
 
     /* Get the current time */
     RTC_GetDateAndTime(&sCurTime);
 
-    printf("Current Time: %d/%02d/%02d %02d:%02d:%02d\n",
+    printf("Current Time: %u/%02u/%02u %02u:%02u:%02u\n",
            sCurTime.u32Year, sCurTime.u32Month, sCurTime.u32Day,
            sCurTime.u32Hour, sCurTime.u32Minute, sCurTime.u32Second);
 
     /* The alarm time setting */
     sCurTime.u32Second = sCurTime.u32Second + T_AlarmTime;
-    
+
     if (sCurTime.u32Second >= T_60SEC)
     {
         sCurTime.u32Minute = sCurTime.u32Minute + (sCurTime.u32Second / T_60SEC);
         sCurTime.u32Second = sCurTime.u32Second % T_60SEC;
     }
-    
+
     /* Set the alarm time */
     RTC_SetAlarmDateAndTime(&sCurTime);
 
@@ -195,12 +195,12 @@ int main(void)
     RTC_EnableInt(RTC_INTEN_ALMIEN_Msk);
     NVIC_EnableIRQ(RTC_IRQn);
 
-    while(g_u8IsAlarm == FALSE) {}
+    while (s_u8IsAlarm == FALSE) {}
 
     /* Get the current time */
     RTC_GetDateAndTime(&sCurTime);
 
-    printf("Current Time: %d/%02d/%02d %02d:%02d:%02d\n",
+    printf("Current Time: %u/%02u/%02u %02u:%02u:%02u\n",
            sCurTime.u32Year, sCurTime.u32Month, sCurTime.u32Day,
            sCurTime.u32Hour, sCurTime.u32Minute, sCurTime.u32Second);
 
@@ -210,7 +210,7 @@ int main(void)
 
     printf("\nRTC Alarm Test End !!\n");
 
-    while(1) {}
+    while (1) {}
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

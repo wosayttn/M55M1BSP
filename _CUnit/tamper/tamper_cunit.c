@@ -1,13 +1,11 @@
-/*---------------------------------------------------------------------------------------------------------*/
-/*                                                                                                         */
-/* Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.                                        */
-/*                                                                                                         */
-/*---------------------------------------------------------------------------------------------------------*/
-/* File Contents:                                                                                          */
-/*   tamper_cunit.c                                                                                        */
-/*            The test function of TAMPER for CUnit.                                                       */
-/* Project:   M2354                                                                                        */
-/*---------------------------------------------------------------------------------------------------------*/
+/******************************************************************************
+* @file    tamper_cunit.c
+* @version V1.00
+* @brief   tamper CUnit Test
+*
+* SPDX-License-Identifier: Apache-2.0
+* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Includes of system headers                                                                              */
@@ -151,13 +149,14 @@ void CONSTANT_TAMPER(void)
         CU_ASSERT_EQUAL((TAMPER->TIOCTL & TAMPER_TIOCTL_TAMP5DBEN_Msk), 0);
 
         /* To check if TAMPER snooper pin interrupt occurred */
-        if(TAMPER_GET_INT_FLAG() == 1)
+        if (TAMPER_GET_INT_FLAG() == 1)
         {
             printf("\n        * Get TAMPER FLAGs: 0x%x", TAMPER_GET_INT_STATUS());
             /* Clear TAMPER snooper pin interrupt flag */
             TAMPER_CLR_INT_STATUS(TAMPER_GET_INT_STATUS());
             CU_ASSERT_EQUAL(TAMPER_GET_INT_STATUS(), 0);
         }
+
         TAMPER_StaticTamperDisable(u32TamperSel);
     }
 
@@ -192,13 +191,14 @@ void CONSTANT_TAMPER(void)
         CU_ASSERT_EQUAL((TAMPER->TIOCTL & TAMPER_TIOCTL_DYN2ISS_Msk), 0);
 
         /* To check if TAMPER snooper pin interrupt occurred */
-        if(TAMPER_GET_INT_FLAG() == 1)
+        if (TAMPER_GET_INT_FLAG() == 1)
         {
             printf("\n        * Get TAMPER FLAGs: 0x%x", TAMPER_GET_INT_STATUS());
             /* Clear TAMPER snooper pin interrupt flag */
             TAMPER_CLR_INT_STATUS(TAMPER_GET_INT_STATUS());
             CU_ASSERT_EQUAL(TAMPER_GET_INT_STATUS(), 0);
         }
+
         TAMPER_DynamicTamperDisable(u32PairSel);
 
         CU_ASSERT_EQUAL((TAMPER->TIOCTL & TAMPER_TIOCTL_TAMP0EN_Msk), 0);
@@ -241,7 +241,7 @@ void CONSTANT_TAMPER(void)
     }
 
     {
-        for(i = 0; i < 8; i++)
+        for (i = 0; i < 8; i++)
         {
             TAMPER_DynamicTamperConfig(au32SeedChangeRate[i], 0, 0, 0);
 
@@ -249,30 +249,32 @@ void CONSTANT_TAMPER(void)
         }
 
 #if 0 /* seed reload bit will auto-clear, can not check this bit */
-        for(i = 0; i < 2; i++)
+
+        for (i = 0; i < 2; i++)
         {
             TAMPER_DynamicTamperConfig(au32SeedChangeRate[0], i, 0, 0);
 
             CU_ASSERT_EQUAL((TAMPER->TIOCTL & TAMPER_TIOCTL_SEEDRLD_Msk), (0x0 << 4));
         }
+
 #endif
 
-        for(i = 0; i < 2; i++)
+        for (i = 0; i < 2; i++)
         {
             TAMPER_DynamicTamperConfig(au32SeedChangeRate[0], 0, u32RefPattern[i], 0);
 
-            if(u32RefPattern[i] == TAMPER_REF_SEED)
+            if (u32RefPattern[i] == TAMPER_REF_SEED)
             {
                 CU_ASSERT_EQUAL((TAMPER->TIOCTL & TAMPER_TIOCTL_DYNSRC_Msk), (0x1 << 3));
             }
 
-            if(u32RefPattern[i] == TAMPER_REF_RANDOM_PATTERN)
+            if (u32RefPattern[i] == TAMPER_REF_RANDOM_PATTERN)
             {
                 CU_ASSERT_EQUAL((TAMPER->TIOCTL & TAMPER_TIOCTL_DYNSRC_Msk), (0x0 << 3));
             }
         }
 
-        for(i = 0; i < 5; i++)
+        for (i = 0; i < 5; i++)
         {
             TAMPER_DynamicTamperConfig(au32SeedChangeRate[0], 0, 0, (i * 5));
 
@@ -282,7 +284,7 @@ void CONSTANT_TAMPER(void)
 
     /* Check Active Shield */
     /* has not support     */
-#if 0    
+#if 0
     CU_ASSERT_EQUAL(TAMPER_MAX_PAIR_NUM, 3);
     {
         uint32_t u32PairSel1 = (TAMPER_PAIR0_SELECT | TAMPER_PAIR1_SELECT | TAMPER_PAIR2_SELECT);
@@ -319,13 +321,14 @@ void CONSTANT_TAMPER(void)
         CU_ASSERT_EQUAL((TAMPER->ACTSTIOCTL2 & TAMPER_ACTSTIOCTL2_ADYN1ISS2_Msk), 0);
 
         /* To check if TAMPER snooper pin interrupt occurred */
-        if(TAMPER_GET_INT_FLAG() == 1)
+        if (TAMPER_GET_INT_FLAG() == 1)
         {
             printf("\n        * Get TAMPER FLAGs: 0x%x", TAMPER_GET_INT_STATUS());
             /* Clear TAMPER snooper pin interrupt flag */
             TAMPER_CLR_INT_STATUS(TAMPER_GET_INT_STATUS());
             CU_ASSERT_EQUAL(TAMPER_GET_INT_STATUS(), 0);
         }
+
         TAMPER_ActiveShieldDynamicTamperDisable(u32PairSel1, u32PairSel2);
 
         CU_ASSERT_EQUAL((TAMPER->ACTSTIOCTL1 & TAMPER_ACTSTIOCTL1_ATAMP0EN_Msk), 0);
@@ -383,7 +386,7 @@ void CONSTANT_TAMPER(void)
     }
 
     {
-        for(i = 0; i < 8; i++)
+        for (i = 0; i < 8; i++)
         {
             TAMPER_ActiveShieldDynamicTamperConfig(au32ACTSSeedChangeRate[i], 0, 0, 0, au32ACTSSeedChangeRate[i], 0, 0, 0);
 
@@ -392,33 +395,35 @@ void CONSTANT_TAMPER(void)
         }
 
 #if 0 /* seed reload bit will auto-clear, can not check this bit */
-        for(i = 0; i < 2; i++)
+
+        for (i = 0; i < 2; i++)
         {
             TAMPER_ActiveShieldDynamicTamperConfig(au32ACTSSeedChangeRate[0], i, 0, 0, au32ACTSSeedChangeRate[0], i, 0, 0);
 
             CU_ASSERT_EQUAL((TAMPER->TIOCTL & TAMPER_TIOCTL_SEEDRLD_Msk), (0x0 << 4));
             CU_ASSERT_EQUAL((TAMPER->ACTSTIOCTL2 & TAMPER_ACTSTIOCTL2_SEEDRLD2_Msk), (0x0 << 4));
         }
+
 #endif
 
-        for(i = 0; i < 2; i++)
+        for (i = 0; i < 2; i++)
         {
             TAMPER_ActiveShieldDynamicTamperConfig(au32ACTSSeedChangeRate[0], 0, u32RefPattern[i], 0, au32ACTSSeedChangeRate[0], 0, u32RefPattern[i], 0);
 
-            if(u32RefPattern[i] == TAMPER_REF_SEED)
+            if (u32RefPattern[i] == TAMPER_REF_SEED)
             {
                 CU_ASSERT_EQUAL((TAMPER->ACTSTIOCTL1 & TAMPER_ACTSTIOCTL1_ADYNSRC_Msk), (0x1 << 3));
                 CU_ASSERT_EQUAL((TAMPER->ACTSTIOCTL2 & TAMPER_ACTSTIOCTL2_ADYNSRC2_Msk), (0x1 << 3));
             }
 
-            if(u32RefPattern[i] == TAMPER_REF_RANDOM_PATTERN)
+            if (u32RefPattern[i] == TAMPER_REF_RANDOM_PATTERN)
             {
                 CU_ASSERT_EQUAL((TAMPER->ACTSTIOCTL1 & TAMPER_ACTSTIOCTL1_ADYNSRC_Msk), (0x0 << 3));
                 CU_ASSERT_EQUAL((TAMPER->ACTSTIOCTL2 & TAMPER_ACTSTIOCTL2_ADYNSRC2_Msk), (0x0 << 3));
             }
         }
 
-        for(i = 0; i < 5; i++)
+        for (i = 0; i < 5; i++)
         {
             TAMPER_ActiveShieldDynamicTamperConfig(au32ACTSSeedChangeRate[0], 0, 0, (i * 5), au32ACTSSeedChangeRate[0], 0, 0, (i * 5));
 
@@ -426,7 +431,7 @@ void CONSTANT_TAMPER(void)
             CU_ASSERT_EQUAL((TAMPER->SEED2 & TAMPER_SEED2_SEED2_Msk), (i * 5));
         }
     }
-#endif    
+#endif
 }
 
 void MACRO_TAMPER(void)
@@ -451,12 +456,12 @@ void MACRO_TAMPER(void)
     TAMPER_DISABLE_LXTDET();
     CU_ASSERT((TAMPER->FUNEN & TAMPER_FUNEN_LXTDETEN_Msk) == 0x0);
 
-/* M55 has not support */
-//    /* Enable/Disable HXT Clock Detection */
-//    TAMPER_ENABLE_HXTDET();
-//    CU_ASSERT((TAMPER->FUNEN & TAMPER_FUNEN_HXTDETEN_Msk) == TAMPER_FUNEN_HXTDETEN_Msk);
-//    TAMPER_DISABLE_HXTDET();
-//    CU_ASSERT((TAMPER->FUNEN & TAMPER_FUNEN_HXTDETEN_Msk) == 0x0);
+    /* M55 has not support */
+    //    /* Enable/Disable HXT Clock Detection */
+    //    TAMPER_ENABLE_HXTDET();
+    //    CU_ASSERT((TAMPER->FUNEN & TAMPER_FUNEN_HXTDETEN_Msk) == TAMPER_FUNEN_HXTDETEN_Msk);
+    //    TAMPER_DISABLE_HXTDET();
+    //    CU_ASSERT((TAMPER->FUNEN & TAMPER_FUNEN_HXTDETEN_Msk) == 0x0);
 
     /* Tamper I/O TAMPER/RTC Block Detection Selection */
     TAMPER_IOSEL_TAMPER(TAMPER_TAMPER0_SELECT);
@@ -501,9 +506,9 @@ void MACRO_TAMPER(void)
     CU_ASSERT((TAMPER->FUNEN & 0xF000000) == 0x1000000);
 
     /* Enable/Disable Trigger Test */
-//    TAMPER_ENABLE_FMC_TRIG();
-//    CU_ASSERT((TAMPER->TRIEN & 0x3F) == TAMPER_TRIEN_FMCTRIGEN_Msk);
-//    TAMPER_DISABLE_FMC_TRIG();
+    //    TAMPER_ENABLE_FMC_TRIG();
+    //    CU_ASSERT((TAMPER->TRIEN & 0x3F) == TAMPER_TRIEN_FMCTRIGEN_Msk);
+    //    TAMPER_DISABLE_FMC_TRIG();
     CU_ASSERT((TAMPER->TRIEN & 0x3F) == 0x0);
     TAMPER_ENABLE_KS_TRIG();
     CU_ASSERT((TAMPER->TRIEN & 0x3F) == TAMPER_TRIEN_KSTRIGEN_Msk);
