@@ -3092,10 +3092,10 @@
     <group>
         <name>hal-platfrom-m55m1</name>
         <file>
-            <name>$PROJ_DIR$\..\hal\platform\m55m1\hyperflash_init.c</name>
+            <name>$PROJ_DIR$\..\hal\platform\m55m1\hyperflash_code.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\hal\platform\m55m1\hyperram_init.c</name>
+            <name>$PROJ_DIR$\..\hal\platform\m55m1\hyperram_code.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\hal\platform\m55m1\platform_drivers.c</name>

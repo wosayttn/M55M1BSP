@@ -1,41 +1,21 @@
 /**************************************************************************//**
- * @file    hyperFlash_init.h
- * @version V1.00
- * @brief   HyerRAM driver header file
+ * @file        hyperflash_code.h
+ * @version     V3.00
+ * @brief       HyperFlash device driver
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2019 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
-#ifndef __HYPERFLASH_INIT_H__
-#define __HYPERFLASH_INIT_H__
-
-#include <stdint.h>
-
-/*----------------------------------------------------------------------------*/
-/* Include related headers                                                    */
-/*----------------------------------------------------------------------------*/
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-/** @addtogroup Standard_Driver Standard Driver
-  @{
-*/
-//------------------------------------------------------------------------------
-// HyerRAM Test Port
-//------------------------------------------------------------------------------
-#define DLL_MAX_DELAY_NUM                   (0x05) //0x1F
-
-#define TEST_BUFF_SIZE                      (0x200)
+#ifndef __HYPER_FLASH_CODE_H__
+#define __HYPER_FLASH_CODE_H__
 
 //------------------------------------------------------------------------------
 // HyperFlash Operation Command
 //------------------------------------------------------------------------------
 //#define HFLH_START_ADDR                     (0x0)
 #define HFLH_PAGE_SIZE                      (0x200)
+
 /*
  * @Note: one sector = 256K
  * @Note: S26KL512S and S26KS512S Sector Count = 256
@@ -71,69 +51,41 @@ extern "C"
 #define CMD_98                              (0x98) //Read ID Command
 
 #define CMD_80                              (0x80) //Erase first commnad
-#define CMD_10                              (0x10) //Erase Chip Commnad
-#define CMD_30                              (0x30) //Erase Sector Commnad
-#define CMD_33                              (0x33) //Blank Check
+#define CMD_10                              (0x10) //Erase chip commnad
+#define CMD_30                              (0x30) //Erase sector Commnad
+#define CMD_33                              (0x33) //Blank check
+#define CMD_WORD_PROGRAM                    (0xA0)
 
-#define ERASE_NON_VOL_CONF_REG              (0xC8)
+//------------------------------------------------------------------------------
+// HyperFlash Register Address
+//------------------------------------------------------------------------------
+#define ERASE_NVCR_REG                      (0xC8)
 #define LOAD_VCR_REG                        (0x38)
 #define READ_VCR_REG                        (0xC7)
 #define WRITE_NVCR_REG                      (0x39)
 #define READ_NVCR_REG                       (0xC6)
-#define CMD_WORD_PROGRAM                    (0xA0)
 
 //------------------------------------------------------------------------------
 // HyperFlash Common Macro
 //------------------------------------------------------------------------------
-#define HFLH_MAX_CS_LOW                     0xFFFF//(0xFFFF)//(800)
+#define HFLH_MAX_CS_LOW                     (0xFFFF)
 #define HFLH_WR_ACCTIME                     (1)
 #define HFLH_RD_ACCTIME                     (9)
 
-/** @addtogroup HyperFlash_Driver HyperFlash Driver
-  @{
-*/
+#define HFLH_VCR_LTCY_Pos                   (4)
+#define HFLH_VCR_LTCY_Msk                   (0xFUL << HFLH_VCR_LTCY_Pos)
 
-/** @addtogroup HyerRAM_EXPORTED_CONSTANTS HyerRAM Exported Constants
-  @{
-*/
+void HyperFlash_WriteOPCMD(SPIM_T *spim, uint32_t u32CMD, uint32_t u32Addr);
+uint16_t HyperFlash_ReadData1CmdSets2Byte(SPIM_T *spim, uint32_t u32LastCMD, uint32_t u32RdAddr);
+uint16_t HyperFlash_ReadData4CmdSets(SPIM_T *spim, uint32_t u32LastCMD, uint32_t u32RdAddr);
 
-//extern uint8_t tstbuf[];
-//extern uint8_t tstbuf2[];
-
-/*----------------------------------------------------------------------------*/
-/* Define Function Prototypes                                                 */
-/*----------------------------------------------------------------------------*/
-/* SPIM Init HyperBus Mode */
-void SPIM_HyperFlash_Init(SPIM_T *pSPIMx, uint32_t u32CacheOn);
-void HyperFlash_EraseSector(SPIM_T *pSPIMx, uint32_t u32SectorCnt);
-void HyperFlash_ChipErase(SPIM_T *pSPIMx);
-
-/* HyperFlash Training DLL Delay Time Function */
-int SPIM_HyperFlashDLLDelayTimeTraining(SPIM_T *pSPIMx);
-
-/* Erase HyperFlash */
-
-#if 0
-/* HyperFlash Enter DMM Mode API */
-uint32_t SPIM_GetDmmMapAddr(SPIM_T *pSPIMx);
-#endif
-
-/* HyperFlash CMD IO R/W API */
-void HyperFlash_DMMWriteData(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvWrBuf, uint32_t u32NTx);
-void HyperFlash_DMMReadData(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvRdBuf, uint32_t u32NRx);
+void HyperFlash_Init(SPIM_T *spim);
+int32_t HyperFlash_WaitBusBusy(SPIM_T *spim);
+void HyperFlash_EraseSector(SPIM_T *spim, uint32_t u32SAddr);
 void HyperFlash_DMARead(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvRdBuf, uint32_t u32NRx);
-void HyperFlash_DMAWrite(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvWrBuf, uint32_t u32NTx);
-void HyperFlash_IO_Read(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvRdBuf, uint32_t u32NRx);
-void HyperFlash_IO_Write(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvWrBuf, uint32_t u32NTx);
-void HyperFlash_DMMRead(SPIM_T *pSPIMx);
-void HyperFlash_DMMWrite(SPIM_T *pSPIMx);
+void HyperFlash_DMAWrite(SPIM_T *pSPIMx, uint32_t u32SAddr, uint8_t *pu8WrBuf, uint32_t u32NTx);
+void HyperFlash_PinConfig(SPIM_T *spim);
 
-/** @} end of group HyerRAM_EXPORTED_FUNCTIONS */
-/** @} end of group HyerRAM_Driver */
-/** @} end of group Standard_Driver */
+#endif  /* __HYPER_FLASH_CODE_H__ */
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* __HYPERFLASH_INIT_H__ */
+/*** (C) COPYRIGHT 2019 Nuvoton Technology Corp. ***/

@@ -609,14 +609,14 @@
               <FilePath>..\hal\platform\m55m1\timer_m55m1_platform.c</FilePath>
             </File>
             <File>
-              <FileName>hyperflash_init.c</FileName>
+              <FileName>hyperflash_code.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\hal\platform\m55m1\hyperflash_init.c</FilePath>
+              <FilePath>..\hal\platform\m55m1\hyperflash_code.c</FilePath>
             </File>
             <File>
-              <FileName>hyperram_init.c</FileName>
+              <FileName>hyperram_code.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\hal\platform\m55m1\hyperram_init.c</FilePath>
+              <FilePath>..\hal\platform\m55m1\hyperram_code.c</FilePath>
             </File>
           </Files>
         </Group>

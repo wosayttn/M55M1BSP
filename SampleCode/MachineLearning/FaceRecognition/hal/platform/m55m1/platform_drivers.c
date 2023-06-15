@@ -23,8 +23,8 @@
 #include "ethosu_npu_init.h"
 #endif /* ARM_NPU */
 
-#include "hyperflash_init.h"
-#include "hyperram_init.h"
+#include "hyperflash_code.h"
+#include "hyperram_code.h"
 
 #define HYPERRAM_SPIM_PORT SPIM0
 #define HYPERFLASH_SPIM_PORT SPIM1
@@ -115,30 +115,15 @@ static void SYS_Init(void)
     /* Set multi-function pins for UART0 RXD and TXD */
     SET_UART0_RXD_PB12();
     SET_UART0_TXD_PB13();
+
+	HyperRAM_PinConfig(HYPERRAM_SPIM_PORT);
+	HyperFlash_PinConfig(HYPERFLASH_SPIM_PORT);	
 }
 
 static void UART0_Init(void)
 {
     /* Configure UART0 and set UART0 baud rate */
     UART_Open(UART0, 115200);
-}
-
-
-#define SPIM_CACHE_ON_OFF	0		//SPIM cache on
-//#define SPIM_CACHE_ON_OFF	1		//SPIM cache off
-
-static int32_t HyperRAM_Init(void)
-{
-    SPIM_HyperRAM_Init(HYPERRAM_SPIM_PORT, SPIM_CACHE_ON_OFF);	
-
-	return 0;
-}
-
-static int32_t HyperFlash_Init(void)
-{
-    SPIM_HyperFlash_Init(HYPERFLASH_SPIM_PORT, SPIM_CACHE_ON_OFF);	
-
-	return 0;
 }
 
 int platform_init(void)
@@ -153,8 +138,8 @@ int platform_init(void)
 
     SYS_LockReg();                   /* Unlock register lock protect */
 
-    HyperRAM_Init();
-    HyperFlash_Init();
+    HyperRAM_Init(HYPERRAM_SPIM_PORT);
+    HyperFlash_Init(HYPERFLASH_SPIM_PORT);
 
     info("%s: complete\n", __FUNCTION__);
 
