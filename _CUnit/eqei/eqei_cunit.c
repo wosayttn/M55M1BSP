@@ -1,15 +1,11 @@
-/*---------------------------------------------------------------------------------------------------------*/
-/* Winbond Electronics Corporation confidential                                                            */
-/*                                                                                                         */
-/* Copyright (c) 2007 by Winbond Electronics Corporation                                                   */
-/* All rights reserved                                                                                     */
-/*                                                                                                         */
-/*---------------------------------------------------------------------------------------------------------*/
-/* File Contents:                                                                                          */
-/*   timer_cunit_test.c                                                                                    */
-/*            The test function of VIC for CUnit.                                                          */
-/* Project:   DA8205                                                                                       */
-/*---------------------------------------------------------------------------------------------------------*/
+/******************************************************************************
+* @file    eqei_cunit.c
+* @version V1.00
+* @brief   eqei CUnit Test
+*
+* SPDX-License-Identifier: Apache-2.0
+* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Includes of system headers                                                                              */
@@ -33,8 +29,14 @@ extern unsigned int ERR_STATE1;
 /* Test function                                                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
 
-int suite_success_init(void) { return 0; }
-int suite_success_clean(void) { return 0; }
+int suite_success_init(void)
+{
+    return 0;
+}
+int suite_success_clean(void)
+{
+    return 0;
+}
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Function: function_name                                                                                 */
@@ -50,17 +52,20 @@ int suite_success_clean(void) { return 0; }
 /*---------------------------------------------------------------------------------------------------------*/
 
 CU_SuiteInfo suites[] =
-    {
+{
 
-        {"QEI API", suite_success_init, suite_success_clean, NULL, NULL, QEI_ApiTests},
-        {"QEI MACRO", suite_success_init, suite_success_clean, NULL, NULL, QEI_MacroTests},
+    {"QEI API", suite_success_init, suite_success_clean, NULL, NULL, QEI_ApiTests},
+    {"QEI MACRO", suite_success_init, suite_success_clean, NULL, NULL, QEI_MacroTests},
 
-        CU_SUITE_INFO_NULL};
+    CU_SUITE_INFO_NULL
+};
 
 #define TestChNum 4
 uint8_t u8TestChIdx; // QEI channel index
-EQEI_T *TestCh[TestChNum] = {
-    EQEI0, EQEI1, EQEI2, EQEI3};
+EQEI_T *TestCh[TestChNum] =
+{
+    EQEI0, EQEI1, EQEI2, EQEI3
+};
 
 void EQEI0_IRQHandler(void)
 {
@@ -82,7 +87,8 @@ void EQEI3_IRQHandler(void)
     EQEI3->STATUS = EQEI3->STATUS;
 }
 
-const uint32_t au32QeiModeSel[4] = {
+const uint32_t au32QeiModeSel[4] =
+{
     EQEI_CTL_X4_FREE_COUNTING_MODE,
     EQEI_CTL_X2_FREE_COUNTING_MODE,
     EQEI_CTL_X4_COMPARE_COUNTING_MODE,
@@ -131,7 +137,8 @@ void TestFunc_QEI_Open()
     }
 }
 
-const uint32_t au32QeiINTSel[] = {
+const uint32_t au32QeiINTSel[] =
+{
     EQEI_CTL_OVUNIEN_Msk, // 16 : Direction change interrupt
     EQEI_CTL_DIRIEN_Msk,  // 17 : Counter overflow or underflow interrupt
     EQEI_CTL_CMPIEN_Msk,  // 18 : Compare-match interrupt
@@ -197,13 +204,15 @@ void TestFunc_QEI_TestMacro()
     }
 }
 
-const uint32_t au32QeiNFSel[] = {
+const uint32_t au32QeiNFSel[] =
+{
     EQEI_CTL_NFCLKSEL_DIV1,
     EQEI_CTL_NFCLKSEL_DIV2,
     EQEI_CTL_NFCLKSEL_DIV4,
     EQEI_CTL_NFCLKSEL_DIV16,
     EQEI_CTL_NFCLKSEL_DIV32,
-    EQEI_CTL_NFCLKSEL_DIV64};
+    EQEI_CTL_NFCLKSEL_DIV64
+};
 
 void TestFunc_QEI_TestMacroNF()
 {
@@ -231,7 +240,8 @@ void TestFunc_QEI_TestMacroNF()
 #define EQEIBPIN 1
 #define EQEIXPIN 2
 
-volatile uint32_t *au32QeiPin[12] = {
+volatile uint32_t *au32QeiPin[12] =
+{
     &PA4,
     &PA3,
     &PA5,
@@ -320,7 +330,7 @@ void TestFunc_QEI_TestMacroINT()
             *(au32QeiPin[(u8TestChIdx * 3) + EQEIBPIN]) = 0; // 00
             CLK_SysTickDelay(10);
         }
-        
+
         CU_ASSERT(EQEI_GET_INT_FLAG(TestCh[u8TestChIdx], EQEI_STATUS_CMPF_Msk) == 1);
         EQEI_CLR_INT_FLAG(TestCh[u8TestChIdx], EQEI_STATUS_CMPF_Msk);
         CU_ASSERT(EQEI_GET_INT_FLAG(TestCh[u8TestChIdx], EQEI_STATUS_CMPF_Msk) == 0);
@@ -337,6 +347,7 @@ void TestFunc_QEI_TestMacroINT()
             *(au32QeiPin[(u8TestChIdx * 3) + EQEIBPIN]) = 0; // 00
             CLK_SysTickDelay(10);
         }
+
         CU_ASSERT(EQEI_GET_INT_FLAG(TestCh[u8TestChIdx], EQEI_STATUS_OVUNF_Msk) == 1);
         EQEI_CLR_INT_FLAG(TestCh[u8TestChIdx], EQEI_STATUS_OVUNF_Msk);
         CU_ASSERT(EQEI_GET_INT_FLAG(TestCh[u8TestChIdx], EQEI_STATUS_OVUNF_Msk) == 0);
@@ -382,13 +393,15 @@ void TestFunc_QEI_TestMacroINT()
     }
 }
 
-const uint32_t au32QeiInputSel[3] = {
+const uint32_t au32QeiInputSel[3] =
+{
     EQEI_CTL_CHAEN_Msk,
     EQEI_CTL_CHBEN_Msk,
     EQEI_CTL_IDXEN_Msk,
 };
 
-const uint32_t au32QeiInvSel[3] = {
+const uint32_t au32QeiInvSel[3] =
+{
     EQEI_CTL_CHAINV_Msk,
     EQEI_CTL_CHAINV_Msk,
     EQEI_CTL_IDXINV_Msk,
@@ -574,20 +587,22 @@ void TestFunc_QEI_TestMacroHOLD()
 }
 
 CU_TestInfo QEI_ApiTests[] =
-    {
-        {"Testing QEI_Open Function.", TestFunc_QEI_Open},
-        {"Testing QEI_EnableInt Function.", TestFunc_QEI_EnableInt},
+{
+    {"Testing QEI_Open Function.", TestFunc_QEI_Open},
+    {"Testing QEI_EnableInt Function.", TestFunc_QEI_EnableInt},
 
-        CU_TEST_INFO_NULL};
+    CU_TEST_INFO_NULL
+};
 
 CU_TestInfo QEI_MacroTests[] =
-    {
+{
 
-        {"Testing Macro.", TestFunc_QEI_TestMacro},
-        {"Testing Macro about noise filter.", TestFunc_QEI_TestMacroNF},
-        {"Testing Macro about interrupt.", TestFunc_QEI_TestMacroINT},
-        {"Testing Macro about input.", TestFunc_QEI_TestMacroINPUT},
-        {"Testing Macro about latch.", TestFunc_QEI_TestMacroLATCH},
-        {"Testing Macro about hold.", TestFunc_QEI_TestMacroHOLD},
+    {"Testing Macro.", TestFunc_QEI_TestMacro},
+    {"Testing Macro about noise filter.", TestFunc_QEI_TestMacroNF},
+    {"Testing Macro about interrupt.", TestFunc_QEI_TestMacroINT},
+    {"Testing Macro about input.", TestFunc_QEI_TestMacroINPUT},
+    {"Testing Macro about latch.", TestFunc_QEI_TestMacroLATCH},
+    {"Testing Macro about hold.", TestFunc_QEI_TestMacroHOLD},
 
-        CU_TEST_INFO_NULL};
+    CU_TEST_INFO_NULL
+};

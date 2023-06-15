@@ -16,11 +16,11 @@ static volatile uint8_t g_u8WWDTINTCounts;
 
 #define WWDT_PORT   (0)
 #if (WWDT_PORT != 0)
-#define WWDT            WWDT1
-#define WWDT_IRQHandler WWDT1_IRQHandler
+    #define WWDT            WWDT1
+    #define WWDT_IRQHandler WWDT1_IRQHandler
 #else
-#define WWDT            WWDT0
-#define WWDT_IRQHandler WWDT0_IRQHandler
+    #define WWDT            WWDT0
+    #define WWDT_IRQHandler WWDT0_IRQHandler
 #endif
 
 /**
@@ -31,7 +31,7 @@ static volatile uint8_t g_u8WWDTINTCounts;
  */
 void WWDT_IRQHandler(void)
 {
-    if(WWDT_GET_INT_FLAG(WWDT) == 1)
+    if (WWDT_GET_INT_FLAG(WWDT) == 1)
     {
         /* Clear WWDT compare match interrupt flag */
         WWDT_CLEAR_INT_FLAG(WWDT);
@@ -40,7 +40,7 @@ void WWDT_IRQHandler(void)
 
         g_u8WWDTINTCounts++;
 
-        if(g_u8WWDTINTCounts < 10)
+        if (g_u8WWDTINTCounts < 10)
         {
             /* To reload the WWDT counter value to 0x3F */
             WWDT_RELOAD_COUNTER(WWDT);
@@ -54,7 +54,7 @@ void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/  
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -66,7 +66,7 @@ void SYS_Init(void)
 
     /* Switch SCLK clock source to PLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-    
+
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
 
@@ -80,19 +80,19 @@ void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-    
+
     /* Set module clock*/
-#if (WWDT_PORT != 0)    
-    CLK_SetModuleClock(WWDT1_MODULE,CLK_WWDTSEL_WWDT1SEL_HCLK0_DIV2048,0);
+#if (WWDT_PORT != 0)
+    CLK_SetModuleClock(WWDT1_MODULE, CLK_WWDTSEL_WWDT1SEL_HCLK0_DIV2048, 0);
 #else
-    CLK_SetModuleClock(WWDT0_MODULE,CLK_WWDTSEL_WWDT0SEL_HCLK0_DIV2048,0);
+    CLK_SetModuleClock(WWDT0_MODULE, CLK_WWDTSEL_WWDT0SEL_HCLK0_DIV2048, 0);
 #endif
 
     /* Enable module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
 
-#if (WWDT_PORT != 0)    
+#if (WWDT_PORT != 0)
     CLK_EnableModuleClock(WWDT1_MODULE);
 #else
     CLK_EnableModuleClock(WWDT0_MODULE);
@@ -105,7 +105,7 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-    
+
     /* Set PC multi-function pins for GPIO*/
     SET_GPIO_PA0();
 }
@@ -135,23 +135,24 @@ int main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    printf("\n\nCPU @ %d Hz\n", SystemCoreClock);
+    printf("\n\nCPU @ %u Hz\n", SystemCoreClock);
     printf("+------------------------------------------------+\n");
     printf("|    WWDT Compare Match Interrupt Sample Code    |\n");
     printf("+------------------------------------------------+\n\n");
 
     /* To check if system has been reset by WWDT time-out reset or not */
-    if(WWDT_GET_RESET_FLAG(WWDT) == 1)
+    if (WWDT_GET_RESET_FLAG(WWDT) == 1)
     {
         printf("*** System has been reset by WWDT time-out reset event. [WWDT_CTL: 0x%08X] ***\n\n", WWDT->CTL);
         WWDT_CLEAR_RESET_FLAG(WWDT);
-        while(1) {}
+
+        while (1) {}
     }
 
     dPeriodTime = (((double)(1000000 * 2048) / (double)CLK_GetHCLK0Freq()) * 1024) * 32;
 
     printf("# WWDT Settings: \n");
-    printf("    - Clock source is HCLK0/2048 (%d Hz)    \n", CLK_GetHCLK0Freq() / 2048);
+    printf("    - Clock source is HCLK0/2048 (%u Hz)    \n", CLK_GetHCLK0Freq() / 2048);
     printf("    - WWDT counter prescale period is 1024, \n");
     printf("        and max WWDT time-out period is 1024 * (64 * WWDT_CLK)\n");
     printf("    - Interrupt enable                      \n");
@@ -164,7 +165,7 @@ int main(void)
     printf("        when interrupt counts large than 10.\n\n");
 
     /* Use PA.0 to check WWDT compare match interrupt period time */
-    GPIO_SetMode(PA, BIT0,GPIO_MODE_OUTPUT);
+    GPIO_SetMode(PA, BIT0, GPIO_MODE_OUTPUT);
     PA0 = 1;
 
     /* Enable WWDT NVIC */
@@ -182,11 +183,11 @@ int main(void)
         Enable WWDT compare match interrupt;
     */
     /* Note: WWDT_CTL register can be written only once after chip is powered on or reset */
-    WWDT_Open(WWDT,WWDT_PRESCALER_1024, 32, TRUE);
+    WWDT_Open(WWDT, WWDT_PRESCALER_1024, 32, TRUE);
 
     printf("[WWDT_CTL: 0x%08X]\n\n", WWDT->CTL);
 
-    while(1) {}
+    while (1) {}
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

@@ -4,7 +4,7 @@
  * @brief    USB Host mass storage class header file.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #ifndef _USBH_MSC_H_
 #define _USBH_MSC_H_
@@ -17,9 +17,9 @@
 //#define MSC_DEBUG
 
 #ifdef MSC_DEBUG
-#define msc_debug_msg       printf
+    #define msc_debug_msg       printf
 #else
-#define msc_debug_msg(...)
+    #define msc_debug_msg(...)
 #endif
 
 #define USBDRV_0                  3      /* FATFS assigned USB disk drive volumn number base   */

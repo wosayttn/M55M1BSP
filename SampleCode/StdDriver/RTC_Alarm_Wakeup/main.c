@@ -12,13 +12,23 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Functions and variables declaration                                                                     */
 /*---------------------------------------------------------------------------------------------------------*/
-static volatile uint8_t g_u8IsRTCAlarmINT = 0;
+static volatile uint8_t s_u8IsRTCAlarmINT = 0;
 
 
 void RTC_IRQHandler(void);
 void SYS_Init(void);
 void UART_Init(void);
 
+/**
+ * @brief    Check if debug message finished
+ *
+ * @param    None
+ *
+ * @retval   1: Message is finished
+ * @retval   0: Message is transmitting.
+ *
+ * @details  Check if message finished (FIFO empty of debug port)
+ */
 int IsDebugFifoEmpty(void)
 {
     return ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) != 0U);
@@ -36,30 +46,29 @@ int IsDebugFifoEmpty(void)
 void RTC_IRQHandler(void)
 {
     /* To check if RTC alarm interrupt occurred */
-    if(RTC_GET_ALARM_INT_FLAG(RTC) == 1)
+    if (RTC_GET_ALARM_INT_FLAG(RTC) == 1)
     {
         /* Clear RTC alarm interrupt flag */
         RTC_CLEAR_ALARM_INT_FLAG(RTC);
 
-        g_u8IsRTCAlarmINT ++;
+        s_u8IsRTCAlarmINT ++;
     }
 
-    if(RTC_GET_TICK_INT_FLAG(RTC) == 1)
+    if (RTC_GET_TICK_INT_FLAG(RTC) == 1)
     {
         /* Clear RTC tick interrupt flag */
         RTC_CLEAR_TICK_INT_FLAG(RTC);
     }
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init System Clock                                                                                       */
+/*---------------------------------------------------------------------------------------------------------*/
 void SYS_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/  
     /* Set X32_OUT(PF.4) and X32_IN(PF.5)*/
-    SET_X32_IN_PF5(); 
+    SET_X32_IN_PF5();
     SET_X32_OUT_PF4();
-    
+
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
     /* Enable External LXT clock */
@@ -75,7 +84,7 @@ void SYS_Init(void)
 
     /* Switch SCLK clock source to PLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-    
+
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
 
@@ -89,7 +98,7 @@ void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-   
+
     /* Enable module clock */
     CLK_EnableModuleClock(RTC0_MODULE);
 
@@ -100,9 +109,11 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-    
-}
 
+}
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init UART                                                                                               */
+/*---------------------------------------------------------------------------------------------------------*/
 void UART_Init(void)
 {
     /* Configure UART and set UART Baudrate */
@@ -129,7 +140,7 @@ int main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    printf("\n\nCPU @ %dHz\n", SystemCoreClock);
+    printf("\n\nCPU @ %uHz\n", SystemCoreClock);
     printf("+-------------------------------------+\n");
     printf("|    RTC Alarm Wake-up Sample Code    |\n");
     printf("+-------------------------------------+\n\n");
@@ -149,7 +160,8 @@ int main(void)
     sWriteRTC.u32Minute     = 59;
     sWriteRTC.u32Second     = 50;
     sWriteRTC.u32TimeScale  = RTC_CLOCK_24;
-    if(RTC_Open(&sWriteRTC) != 0)
+
+    if (RTC_Open(&sWriteRTC) != 0)
     {
         printf("\n RTC initial fail!!");
         printf("\n Please check h/w setting!!");
@@ -173,25 +185,27 @@ int main(void)
     printf("# Set RTC alarm date/time:   2023/06/08 23:59:55.\n");
     printf("# Wait system waken-up by RTC alarm interrupt event.\n");
 
-    g_u8IsRTCAlarmINT = 0;
+    s_u8IsRTCAlarmINT = 0;
 
     /* System enter to Power-down (NPD0)*/
     /* To program PMC->PWRCTL register, it needs to disable register protection first. */
     SYS_UnlockReg();
-    PMC_SetPowerDownMode(PMC_NPD0,PMC_PLCTL_PLSEL_PL1);
+    PMC_SetPowerDownMode(PMC_NPD0, PMC_PLCTL_PLSEL_PL1);
     printf("\nSystem enter to power-down mode ...\n");
     /* To check if all the debug messages are finished */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(IsDebugFifoEmpty() == 0)
-        if(--u32TimeOutCnt == 0) break;
+
+    while (IsDebugFifoEmpty() == 0)
+        if (--u32TimeOutCnt == 0) break;
+
     PMC_PowerDown();
 
-    while(g_u8IsRTCAlarmINT == 0) {}
+    while (s_u8IsRTCAlarmINT == 0) {}
 
     /* Read current RTC date/time */
     RTC_GetDateAndTime(&sReadRTC);
     printf("System has been waken-up and current date/time is:\n");
-    printf("    %d/%02d/%02d %02d:%02d:%02d\n",
+    printf("    %u/%02u/%02u %02u:%02u:%02u\n",
            sReadRTC.u32Year, sReadRTC.u32Month, sReadRTC.u32Day, sReadRTC.u32Hour, sReadRTC.u32Minute, sReadRTC.u32Second);
 
 
@@ -201,28 +215,30 @@ int main(void)
     RTC_SetAlarmDate(2023, 6, 9);
     RTC_SetAlarmTime(0, 0, 5, RTC_CLOCK_24, 0);
 
-    g_u8IsRTCAlarmINT = 0;
+    s_u8IsRTCAlarmINT = 0;
 
     /* System enter to Power-down (NPD1) */
     /* To program PMC->PWRCTL register, it needs to disable register protection first. */
     SYS_UnlockReg();
-    PMC_SetPowerDownMode(PMC_NPD1,PMC_PLCTL_PLSEL_PL1);    
+    PMC_SetPowerDownMode(PMC_NPD1, PMC_PLCTL_PLSEL_PL1);
     printf("\nSystem enter to power-down mode ...\n");
     /* To check if all the debug messages are finished */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(IsDebugFifoEmpty() == 0)
-        if(--u32TimeOutCnt == 0) break;
+
+    while (IsDebugFifoEmpty() == 0)
+        if (--u32TimeOutCnt == 0) break;
+
     PMC_PowerDown();
 
-    while(g_u8IsRTCAlarmINT == 0) {}
+    while (s_u8IsRTCAlarmINT == 0) {}
 
     /* Read current RTC date/time */
     RTC_GetDateAndTime(&sReadRTC);
     printf("System has been waken-up and current date/time is:\n");
-    printf("    %d/%02d/%02d %02d:%02d:%02d\n",
+    printf("    %u/%02u/%02u %02u:%02u:%02u\n",
            sReadRTC.u32Year, sReadRTC.u32Month, sReadRTC.u32Day, sReadRTC.u32Hour, sReadRTC.u32Minute, sReadRTC.u32Second);
 
-    while(1) {}
+    while (1) {}
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

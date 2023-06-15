@@ -117,9 +117,9 @@ void TAMPER_StaticTamperEnable(uint32_t u32TamperSelect, uint32_t u32DetecLevel,
     u32TmpReg = (TAMPER_TIOCTL_TAMP0EN_Msk | (u32DetecLevel << TAMPER_TIOCTL_TAMP0LV_Pos) |
                  (u32DebounceEn << TAMPER_TIOCTL_TAMP0DBEN_Pos));
 
-    for(i = 0UL; i < (uint32_t)TAMPER_MAX_TAMPER_PIN_NUM; i++)
+    for (i = 0UL; i < (uint32_t)TAMPER_MAX_TAMPER_PIN_NUM; i++)
     {
-        if(u32TamperSelect & (0x1UL << i))
+        if (u32TamperSelect & (0x1UL << i))
         {
             u32Reg &= ~((TAMPER_TIOCTL_TAMP0EN_Msk | TAMPER_TIOCTL_TAMP0LV_Msk | TAMPER_TIOCTL_TAMP0DBEN_Msk) << (i * 4UL));
             u32Reg |= (u32TmpReg << (i * 4UL));
@@ -153,9 +153,9 @@ void TAMPER_StaticTamperDisable(uint32_t u32TamperSelect)
 
     u32TmpReg = TAMPER_TIOCTL_TAMP0EN_Msk;
 
-    for(i = 0UL; i < (uint32_t)TAMPER_MAX_TAMPER_PIN_NUM; i++)
+    for (i = 0UL; i < (uint32_t)TAMPER_MAX_TAMPER_PIN_NUM; i++)
     {
-        if(u32TamperSelect & (0x1UL << i))
+        if (u32TamperSelect & (0x1UL << i))
         {
             u32Reg &= ~(u32TmpReg << (i * 4UL));
         }
@@ -206,7 +206,7 @@ void TAMPER_DynamicTamperEnable(uint32_t u32PairSel, uint32_t u32DebounceEn, uin
     u32Reg &= ~(TAMPER_TIOCTL_DYN1ISS_Msk | TAMPER_TIOCTL_DYN2ISS_Msk);
     u32Reg |= ((u32Pair1Source & 0x1UL) << TAMPER_TIOCTL_DYN1ISS_Pos) | ((u32Pair2Source & 0x1UL) << TAMPER_TIOCTL_DYN2ISS_Pos);
 
-    if(u32DebounceEn)
+    if (u32DebounceEn)
     {
         u32TmpReg = (TAMPER_TIOCTL_TAMP0EN_Msk | TAMPER_TIOCTL_TAMP1EN_Msk |
                      TAMPER_TIOCTL_TAMP0DBEN_Msk | TAMPER_TIOCTL_TAMP1DBEN_Msk | TAMPER_TIOCTL_DYNPR0EN_Msk);
@@ -216,22 +216,22 @@ void TAMPER_DynamicTamperEnable(uint32_t u32PairSel, uint32_t u32DebounceEn, uin
         u32TmpReg = (TAMPER_TIOCTL_TAMP0EN_Msk | TAMPER_TIOCTL_TAMP1EN_Msk | TAMPER_TIOCTL_DYNPR0EN_Msk);
     }
 
-    for(i = 0UL; i < (uint32_t)TAMPER_MAX_PAIR_NUM; i++)
+    for (i = 0UL; i < (uint32_t)TAMPER_MAX_PAIR_NUM; i++)
     {
-        if(u32PairSel & (0x1UL << i))
+        if (u32PairSel & (0x1UL << i))
         {
             u32Reg &= ~((TAMPER_TIOCTL_TAMP0DBEN_Msk | TAMPER_TIOCTL_TAMP1DBEN_Msk) << (i * 8UL));
             u32Reg |= (u32TmpReg << (i * 8UL));
         }
     }
 
-    if((u32Pair1Source) && (u32PairSel & (uint32_t)TAMPER_PAIR1_SELECT))
+    if ((u32Pair1Source) && (u32PairSel & (uint32_t)TAMPER_PAIR1_SELECT))
     {
         u32Reg &= ~TAMPER_TIOCTL_TAMP2EN_Msk;
         u32Reg |= u32Tamper2Debounce;
     }
 
-    if((u32Pair2Source) && (u32PairSel & (uint32_t)TAMPER_PAIR2_SELECT))
+    if ((u32Pair2Source) && (u32PairSel & (uint32_t)TAMPER_PAIR2_SELECT))
     {
         u32Reg &= ~TAMPER_TIOCTL_TAMP4EN_Msk;
         u32Reg |= u32Tamper4Debounce;
@@ -260,21 +260,21 @@ void TAMPER_DynamicTamperDisable(uint32_t u32PairSel)
 
     u32Reg = TAMPER->TIOCTL;
 
-    if((u32Reg & (uint32_t)TAMPER_TIOCTL_DYN1ISS_Msk) && (u32PairSel & (uint32_t)TAMPER_PAIR1_SELECT))
+    if ((u32Reg & (uint32_t)TAMPER_TIOCTL_DYN1ISS_Msk) && (u32PairSel & (uint32_t)TAMPER_PAIR1_SELECT))
     {
         u32Tamper2En = u32Reg & TAMPER_TIOCTL_TAMP2EN_Msk;
     }
 
-    if((u32Reg & (uint32_t)TAMPER_TIOCTL_DYN2ISS_Msk) && (u32PairSel & (uint32_t)TAMPER_PAIR2_SELECT))
+    if ((u32Reg & (uint32_t)TAMPER_TIOCTL_DYN2ISS_Msk) && (u32PairSel & (uint32_t)TAMPER_PAIR2_SELECT))
     {
         u32Tamper4En = u32Reg & TAMPER_TIOCTL_TAMP4EN_Msk;
     }
 
     u32TmpReg = (TAMPER_TIOCTL_TAMP0EN_Msk | TAMPER_TIOCTL_TAMP1EN_Msk | TAMPER_TIOCTL_DYNPR0EN_Msk);
 
-    for(i = 0UL; i < (uint32_t)TAMPER_MAX_PAIR_NUM; i++)
+    for (i = 0UL; i < (uint32_t)TAMPER_MAX_PAIR_NUM; i++)
     {
-        if(u32PairSel & (0x1UL << i))
+        if (u32PairSel & (0x1UL << i))
         {
             u32Reg &= ~(u32TmpReg << ((i * 8UL)));
         }

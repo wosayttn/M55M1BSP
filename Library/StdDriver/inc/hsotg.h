@@ -49,8 +49,8 @@ extern "C"
 
 /**
   * @brief This macro is used to enable HSOTG function
-  * 
-  * 
+  *
+  *
   * @details This macro will set OTGEN bit of HSOTG_CTL register to enable HSOTG function.
   * \hideinitializer
   */
@@ -58,8 +58,8 @@ extern "C"
 
 /**
   * @brief This macro is used to disable HSOTG function
-  * 
-  * 
+  *
+  *
   * @details This macro will clear OTGEN bit of HSOTG_CTL register to disable HSOTG function.
   * \hideinitializer
   */
@@ -67,8 +67,8 @@ extern "C"
 
 /**
   * @brief This macro is used to enable USB PHY
-  * 
-  * 
+  *
+  *
   * @details When the USB role is selected as HSOTG device, use this macro to enable USB PHY.
   *          This macro will set OTGPHYEN bit of HSOTG_PHYCTL register to enable USB PHY.
   * \hideinitializer
@@ -77,8 +77,8 @@ extern "C"
 
 /**
   * @brief This macro is used to disable USB PHY
-  * 
-  * 
+  *
+  *
   * @details This macro will clear OTGPHYEN bit of HSOTG_PHYCTL register to disable USB PHY.
   * \hideinitializer
   */
@@ -86,8 +86,8 @@ extern "C"
 
 /**
   * @brief This macro is used to enable ID detection function
-  * 
-  * 
+  *
+  *
   * @details This macro will set IDDETEN bit of HSOTG_PHYCTL register to enable ID detection function.
   * \hideinitializer
   */
@@ -95,8 +95,8 @@ extern "C"
 
 /**
   * @brief This macro is used to disable ID detection function
-  * 
-  * 
+  *
+  *
   * @details This macro will clear IDDETEN bit of HSOTG_PHYCTL register to disable ID detection function.
   * \hideinitializer
   */
@@ -104,8 +104,8 @@ extern "C"
 
 /**
   * @brief This macro is used to enable HSOTG wake-up function
-  * 
-  * 
+  *
+  *
   * @details This macro will set WKEN bit of HSOTG_CTL register to enable HSOTG wake-up function.
   * \hideinitializer
   */
@@ -113,8 +113,8 @@ extern "C"
 
 /**
   * @brief This macro is used to disable HSOTG wake-up function
-  * 
-  * 
+  *
+  *
   * @details This macro will clear WKEN bit of HSOTG_CTL register to disable HSOTG wake-up function.
   * \hideinitializer
   */
@@ -125,7 +125,7 @@ extern "C"
   * @param[in] u32Pol The polarity selection. Valid values are listed below.
   *                    - \ref HSOTG_VBUS_EN_ACTIVE_HIGH
   *                    - \ref HSOTG_VBUS_EN_ACTIVE_LOW
-  * 
+  *
   * @details This macro is used to set the polarity of external USB VBUS power switch enable signal.
   * \hideinitializer
   */
@@ -136,7 +136,7 @@ extern "C"
   * @param[in] u32Pol The polarity selection. Valid values are listed below.
   *                    - \ref HSOTG_VBUS_ST_VALID_HIGH
   *                    - \ref HSOTG_VBUS_ST_VALID_LOW
-  * 
+  *
   * @details This macro is used to set the polarity of external USB VBUS power switch status signal.
   * \hideinitializer
   */
@@ -158,7 +158,7 @@ extern "C"
   *                    - \ref HSOTG_INTEN_VBCHGIEN_Msk
   *                    - \ref HSOTG_INTEN_SECHGIEN_Msk
   *                    - \ref HSOTG_INTEN_SRPDETIEN_Msk
-  * 
+  *
   * @details This macro will enable HSOTG related interrupts specified by u32Mask parameter.
   * \hideinitializer
   */
@@ -180,7 +180,7 @@ extern "C"
   *                    - \ref HSOTG_INTEN_VBCHGIEN_Msk
   *                    - \ref HSOTG_INTEN_SECHGIEN_Msk
   *                    - \ref HSOTG_INTEN_SRPDETIEN_Msk
-  * 
+  *
   * @details This macro will disable HSOTG related interrupts specified by u32Mask parameter.
   * \hideinitializer
   */
@@ -224,7 +224,7 @@ extern "C"
   *                    - \ref HSOTG_INTSTS_VBCHGIF_Msk
   *                    - \ref HSOTG_INTSTS_SECHGIF_Msk
   *                    - \ref HSOTG_INTSTS_SRPDETIF_Msk
-  * 
+  *
   * @details This macro will clear HSOTG related interrupt flags specified by u32Mask parameter.
   * \hideinitializer
   */

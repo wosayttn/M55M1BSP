@@ -49,7 +49,7 @@
   * @details    This function makes WWDT module start counting with different counter period by pre-scale setting and compared window value.
   * @note       This WWDT_CTL register can be write only one time after chip is powered on or reset.
   */
-void WWDT_Open(WWDT_T*    wwdt,
+void WWDT_Open(WWDT_T    *wwdt,
                uint32_t u32PreScale,
                uint32_t u32CmpValue,
                uint32_t u32EnableInt)

@@ -29,7 +29,7 @@ void SC0_IRQHandler(void)
     /* Please don't remove any of the function calls below */
 
     // Card insert/remove event occurred, no need to check other event...
-    if(SCLIB_CheckCDEvent(SC_INTF))
+    if (SCLIB_CheckCDEvent(SC_INTF))
         return;
 
     // Check if there's any timeout event occurs. If so, it usually indicates an error
@@ -46,12 +46,11 @@ void SC0_IRQHandler(void)
 
     return;
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init System Clock                                                                                       */
+/*---------------------------------------------------------------------------------------------------------*/
 void SYS_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/    
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -63,7 +62,7 @@ void SYS_Init(void)
 
     /* Switch SCLK clock source to PLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-    
+
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
 
@@ -77,10 +76,10 @@ void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-    
+
     /* Enable SC0 module clock and clock source from HIRC divide 3, 4MHz*/
     CLK_SetModuleClock(SC0_MODULE, CLK_SCSEL_SC0SEL_HIRC, CLK_SCDIV_SC0DIV(3));
-   
+
     /* Enable module clock */
     CLK_EnableModuleClock(SC0_MODULE);
 
@@ -99,14 +98,14 @@ void SYS_Init(void)
     SET_SC0_CLK_PB5();
     SET_SC0_nCD_PC12();
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init UART                                                                                               */
+/*---------------------------------------------------------------------------------------------------------*/
 void UART_Init(void)
 {
     /* Configure UART0 and set UART0 baud rate */
     UART_Open(DEBUG_PORT, 115200);
 }
-
-
 /*---------------------------------------------------------------------------------------------------------*/
 /*  MAIN function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -128,7 +127,7 @@ int main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    printf("\n\nCPU @ %dHz\n", SystemCoreClock);
+    printf("\n\nCPU @ %uHz\n", SystemCoreClock);
     printf("+--------------------------------------+\n");
     printf("|    Read Smartcard ATR Sample Code    |\n");
     printf("+--------------------------------------+\n\n");
@@ -148,7 +147,7 @@ int main(void)
     NVIC_EnableIRQ(SC0_IRQn);
 
     // Wait 'til card insert
-    while(SC_IsCardInserted(SC0) == FALSE);
+    while (SC_IsCardInserted(SC0) == FALSE);
 
     /*
         Activate slot 0, and disable EMV2000 check during card activation
@@ -157,7 +156,8 @@ int main(void)
         parameter set as TRUE, SCLIB will report activation failure for cards comply with ISO 7816 but not EMV2000
     */
     i32Ret = SCLIB_Activate(SC_INTF, FALSE);
-    if(i32Ret == SCLIB_SUCCESS)
+
+    if (i32Ret == SCLIB_SUCCESS)
     {
         /*
             Use SCLIB_GetCardInfo to get information about the card, which includes ATR.
@@ -169,14 +169,16 @@ int main(void)
         */
         SCLIB_GetCardInfo(SC_INTF, &sCardInfo);
         printf("\nATR: ");
-        for(i = 0; i < sCardInfo.ATR_Len; i++)
+
+        for (i = 0; i < sCardInfo.ATR_Len; i++)
             printf("%02x ", sCardInfo.ATR_Buf[i]);
+
         printf("\n");
     }
     else
         printf("\nSmartcard activate failed\n");
 
-    while(1) {}
+    while (1) {}
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
