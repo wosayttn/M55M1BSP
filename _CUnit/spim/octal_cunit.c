@@ -27,18 +27,18 @@
 static PHASE_SET_T gMU_82h_WrCMD =
 {
     CMD_OCTAL_PAGE_PROG_MICRON,                            //Command Code
-    PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DTR_OFF,       //Command Phase
-    PHASE_NORMAL_MODE, PHASE_WIDTH_32, PHASE_DTR_OFF,        //Address Phase
-    PHASE_OCTAL_MODE, PHASE_ORDER_MODE0, PHASE_DTR_OFF,    //Data Phase
+    PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,       //Command Phase
+    PHASE_NORMAL_MODE, PHASE_WIDTH_32, PHASE_DISABLE_DTR,        //Address Phase
+    PHASE_OCTAL_MODE, PHASE_ORDER_MODE0, PHASE_DISABLE_DTR,    //Data Phase
 };
 
 /* 0xCB : CMD_OCTAL_FAST_IO_READ Command Phase Table */
 static PHASE_SET_T gMU_CBh_RdCMD =
 {
     CMD_OCTAL_FAST_IO_READ,                            // Command Code
-    PHASE_OCTAL_MODE, PHASE_WIDTH_16, PHASE_DTR_ON,    // Command Phase
-    PHASE_OCTAL_MODE, PHASE_WIDTH_32, PHASE_DTR_ON,    // Address Phase
-    PHASE_OCTAL_MODE, PHASE_ORDER_MODE0, PHASE_DTR_ON, // Data Phase
+    PHASE_OCTAL_MODE, PHASE_WIDTH_16, PHASE_ENABLE_DTR,    // Command Phase
+    PHASE_OCTAL_MODE, PHASE_WIDTH_32, PHASE_ENABLE_DTR,    // Address Phase
+    PHASE_OCTAL_MODE, PHASE_ORDER_MODE0, PHASE_ENABLE_DTR, // Data Phase
     16,                                                // Dummy Cycle Number
 };
 
