@@ -26,7 +26,7 @@
   * @param[in]  eqei         The pointer of the specified EQEI module.
   * @details    This function reset EQEI configuration and stop EQEI counting.
   */
-void EQEI_Close(EQEI_T* eqei)
+void EQEI_Close(EQEI_T *eqei)
 {
     /* Reset EQEI configuration */
     eqei->CTL = (uint32_t)0;
@@ -42,21 +42,21 @@ void EQEI_Close(EQEI_T* eqei)
   *                         - \ref EQEI_CTL_IDXIEN_Msk   : Index detected interrupt
   * @details    This function disable EQEI specified interrupt.
   */
-void EQEI_DisableInt(EQEI_T* eqei, uint32_t u32IntSel)
+void EQEI_DisableInt(EQEI_T *eqei, uint32_t u32IntSel)
 {
     /* Disable EQEI specified interrupt */
     EQEI_DISABLE_INT(eqei, u32IntSel);
 
     /* Disable NVIC EQEI IRQ */
-    if(eqei ==(EQEI_T*)EQEI0)
+    if (eqei == (EQEI_T *)EQEI0)
     {
         NVIC_DisableIRQ((IRQn_Type)EQEI0_IRQn);
     }
-    else if(eqei ==(EQEI_T*)EQEI1)
+    else if (eqei == (EQEI_T *)EQEI1)
     {
         NVIC_DisableIRQ((IRQn_Type)EQEI1_IRQn);
     }
-    else if(eqei ==(EQEI_T*)EQEI2)
+    else if (eqei == (EQEI_T *)EQEI2)
     {
         NVIC_DisableIRQ((IRQn_Type)EQEI2_IRQn);
     }
@@ -76,21 +76,21 @@ void EQEI_DisableInt(EQEI_T* eqei, uint32_t u32IntSel)
   *                         - \ref EQEI_CTL_IDXIEN_Msk   : Index detected interrupt
   * @details    This function enable EQEI specified interrupt.
   */
-void EQEI_EnableInt(EQEI_T* eqei, uint32_t u32IntSel)
+void EQEI_EnableInt(EQEI_T *eqei, uint32_t u32IntSel)
 {
     /* Enable EQEI specified interrupt */
     EQEI_ENABLE_INT(eqei, u32IntSel);
 
     /* Enable NVIC EQEI IRQ */
-    if(eqei == (EQEI_T*)EQEI0)
+    if (eqei == (EQEI_T *)EQEI0)
     {
         NVIC_EnableIRQ(EQEI0_IRQn);
     }
-    else if(eqei == (EQEI_T*)EQEI1)
+    else if (eqei == (EQEI_T *)EQEI1)
     {
         NVIC_EnableIRQ(EQEI1_IRQn);
     }
-    else if(eqei == (EQEI_T*)EQEI2)
+    else if (eqei == (EQEI_T *)EQEI2)
     {
         NVIC_EnableIRQ(EQEI2_IRQn);
     }
@@ -114,7 +114,7 @@ void EQEI_EnableInt(EQEI_T* eqei, uint32_t u32IntSel)
   * @param[in]  u32Value    The counter maximum value in compare-counting mode.
   * @details    This function set EQEI in specified mode and enable input.
   */
-void EQEI_Open(EQEI_T* eqei, uint32_t u32Mode, uint32_t u32Value)
+void EQEI_Open(EQEI_T *eqei, uint32_t u32Mode, uint32_t u32Value)
 {
     /* Set EQEI function configuration */
     /* Set EQEI counting mode */
@@ -130,7 +130,7 @@ void EQEI_Open(EQEI_T* eqei, uint32_t u32Mode, uint32_t u32Value)
   * @param[in]  eqei     The pointer of the specified EQEI module.
   * @details    This function enable EQEI function and start EQEI counting.
   */
-void EQEI_Start(EQEI_T* eqei)
+void EQEI_Start(EQEI_T *eqei)
 {
     /* Enable EQEI controller function */
     eqei->CTL |= EQEI_CTL_EQEIEN_Msk;
@@ -141,7 +141,7 @@ void EQEI_Start(EQEI_T* eqei)
   * @param[in]  eqei     The pointer of the specified EQEI module.
   * @details    This function disable EQEI function and stop EQEI counting.
   */
-void EQEI_Stop(EQEI_T* eqei)
+void EQEI_Stop(EQEI_T *eqei)
 {
     /* Disable EQEI controller function */
     eqei->CTL &= (~EQEI_CTL_EQEIEN_Msk);

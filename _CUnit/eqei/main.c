@@ -1,39 +1,11 @@
-/****************************************************************************
- *                                                                           *
- * Copyright (c) 2004 - 2007 Winbond Electronics Corp. All rights reserved.  *
- *                                                                           *
- *****************************************************************************/
-
-/****************************************************************************
- * FILENAME
- *   run_test.c
- *
- * VERSION
- *   1.0
- *
- * DESCRIPTION
- *   The  main program of CUnit test
- *
- * DATA STRUCTURES
- *   None
- *
- * FUNCTIONS
- *   AddTests
- *   main
- *
- * HISTORY
- *   2007-06-28    Ver 1.0 Modified by NS21 WTLiu
- *
- * REMARK
- *   None
- ****************************************************************************/
-
-/***************************************************************************
-  HISTORY
-  2007-06-28    V1.0
-  1. Preliminary Version
-
-***************************************************************************/
+/******************************************************************************
+* @file    main.c
+* @version V1.00
+* @brief   CUnit test main function
+*
+* SPDX-License-Identifier: Apache-2.0
+* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
 
 // Library header file
 #include <stdio.h>
@@ -43,14 +15,14 @@
 #include "Console.h"
 #include "NuMicro.h"
 #include "eqei_cunit.h"
-#include "../pldm_emu.h" 
+#include "../pldm_emu.h"
 
 #ifndef DEBUG_PORT
     #define DEBUG_PORT UART0
 #endif
 
 #ifndef DEBUG_PORT_Init
-void DEBUG_PORT_Init(UART_T* psUART, uint32_t u32Baudrate)
+void DEBUG_PORT_Init(UART_T *psUART, uint32_t u32Baudrate)
 {
     UART_Open(psUART, u32Baudrate);
 }
@@ -65,13 +37,13 @@ void SYS_Init(void)
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Enable clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);    
+    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-    
+
     /* Enable PLL0 200MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
@@ -80,13 +52,13 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK2DIV(2);
     CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);   
+    CLK_SET_PCLK4DIV(2);
 
     /* Enable UART module clock */
     CLK_EnableModuleClock(UART0_MODULE);
@@ -94,31 +66,31 @@ void SYS_Init(void)
     CLK_EnableModuleClock(EQEI1_MODULE);
     CLK_EnableModuleClock(EQEI2_MODULE);
     CLK_EnableModuleClock(EQEI3_MODULE);
-    
+
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
     CLK_EnableModuleClock(GPIOC_MODULE);
     CLK_EnableModuleClock(GPIOD_MODULE);
     CLK_EnableModuleClock(GPIOE_MODULE);
     CLK_EnableModuleClock(GPIOF_MODULE);
-    
+
     SYS_ResetModule(SYS_UART0RST);
     SYS_ResetModule(SYS_EQEI0RST);
     SYS_ResetModule(SYS_EQEI1RST);
     SYS_ResetModule(SYS_EQEI2RST);
     SYS_ResetModule(SYS_EQEI3RST);
-    
+
     /* Select UART module clock source as HXT and UART module clock divider as 1 */
     CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
 
-    
+
     SystemCoreClockUpdate();
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set PD multi-function pins for UART0 RXD(PB.12) and TXD(PB.13) */
     SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13(); 
+    SET_UART0_TXD_PB13();
 }
 
 void exit(int32_t code)
@@ -149,7 +121,7 @@ void Enable_SelfTest(void)
     PA9 = PA8 = PA10 = 0;
 
     GPIO_SetMode(PD, BIT0, GPIO_MODE_OUTPUT);
-    GPIO_SetMode(PD, BIT13,GPIO_MODE_OUTPUT);
+    GPIO_SetMode(PD, BIT13, GPIO_MODE_OUTPUT);
     GPIO_SetMode(PD, BIT1, GPIO_MODE_OUTPUT);
     PD0 = PD13 = PD1 = 0;
 

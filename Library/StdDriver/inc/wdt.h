@@ -146,9 +146,9 @@ extern "C"
 #define WDT_RESET_COUNTER(wdt)             (wdt->RSTCNT = WDT_RESET_COUNTER_KEYWORD)
 
 /* Declare these inline functions here to avoid MISRA C 2004 rule 8.1 error */
-__STATIC_INLINE void WDT_Close(WDT_T* wdt);
-__STATIC_INLINE void WDT_EnableInt(WDT_T* wdt);
-__STATIC_INLINE void WDT_DisableInt(WDT_T* wdt);
+__STATIC_INLINE void WDT_Close(WDT_T *wdt);
+__STATIC_INLINE void WDT_EnableInt(WDT_T *wdt);
+__STATIC_INLINE void WDT_DisableInt(WDT_T *wdt);
 
 /**
   * @brief      Stop WDT Counting
@@ -158,7 +158,7 @@ __STATIC_INLINE void WDT_DisableInt(WDT_T* wdt);
   *
   * @details    This function will stop WDT counting and disable WDT module.
   */
-__STATIC_INLINE void WDT_Close(WDT_T* wdt)
+__STATIC_INLINE void WDT_Close(WDT_T *wdt)
 {
     wdt->CTL = 0UL;
     return;
@@ -172,7 +172,7 @@ __STATIC_INLINE void WDT_Close(WDT_T* wdt)
   *
   * @details    This function will enable the WDT time-out interrupt function.
   */
-__STATIC_INLINE void WDT_EnableInt(WDT_T* wdt)
+__STATIC_INLINE void WDT_EnableInt(WDT_T *wdt)
 {
     wdt->CTL |= WDT_CTL_INTEN_Msk;
     return;
@@ -186,7 +186,7 @@ __STATIC_INLINE void WDT_EnableInt(WDT_T* wdt)
   *
   * @details    This function will disable the WDT time-out interrupt function.
   */
-__STATIC_INLINE void WDT_DisableInt(WDT_T* wdt)
+__STATIC_INLINE void WDT_DisableInt(WDT_T *wdt)
 {
     /* Do not touch another write 1 clear bits */
     wdt->CTL &= ~(WDT_CTL_INTEN_Msk);
@@ -194,7 +194,7 @@ __STATIC_INLINE void WDT_DisableInt(WDT_T* wdt)
     return;
 }
 
-void WDT_Open(WDT_T* wdt,uint32_t u32TimeoutInterval, uint32_t u32ResetDelay, uint32_t u32EnableReset, uint32_t u32EnableWakeup);
+void WDT_Open(WDT_T *wdt, uint32_t u32TimeoutInterval, uint32_t u32ResetDelay, uint32_t u32EnableReset, uint32_t u32EnableWakeup);
 
 /** @} end of group WDT_EXPORTED_FUNCTIONS */
 /** @} end of group WDT_Driver */

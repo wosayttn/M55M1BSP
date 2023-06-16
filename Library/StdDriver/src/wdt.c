@@ -47,7 +47,7 @@
   *             enable or disable WDT time-out reset system or wake-up system.
   * @note       Please make sure that Register Write-Protection Function has been disabled before using this function.
   */
-void WDT_Open(WDT_T*   wdt,
+void WDT_Open(WDT_T   *wdt,
               uint32_t u32TimeoutInterval,
               uint32_t u32ResetDelay,
               uint32_t u32EnableReset,

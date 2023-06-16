@@ -12,11 +12,11 @@
 #define RELOAD_CONDITION  3
 #define WWDT_PORT   (0)
 #if (WWDT_PORT != 0)
-#define WWDT            WWDT1
-#define WWDT_IRQHandler WWDT1_IRQHandler
+    #define WWDT            WWDT1
+    #define WWDT_IRQHandler WWDT1_IRQHandler
 #else
-#define WWDT            WWDT0
-#define WWDT_IRQHandler WWDT0_IRQHandler
+    #define WWDT            WWDT0
+    #define WWDT_IRQHandler WWDT0_IRQHandler
 #endif
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global Interface Variables Declarations                                                                 */
@@ -28,9 +28,9 @@ int IsDebugFifoEmpty(void)
 
 void UserAlgorithm(void)
 {
-    printf("-> Reload WWDT counter (%d) in UserAlgorithm()\n",WWDT->CNT);
+    printf("-> Reload WWDT counter (%u) in UserAlgorithm()\n", WWDT->CNT);
 
-    while(!IsDebugFifoEmpty());
+    while (!IsDebugFifoEmpty());
 
     /* To reload the WWDT counter value to 0x3F */
     WWDT_RELOAD_COUNTER(WWDT);
@@ -43,17 +43,17 @@ void Delay_ms(uint32_t ms)
     uint32_t i;
     uint32_t cnt = 0;
 
-    printf("\nDelay %d ms before UserAlgorithm()\n",ms);
+    printf("\nDelay %u ms before UserAlgorithm()\n", ms);
     printf("WWDT Counter\n");
 
-    for(i=0 ; i<ms ; i++)
+    for (i = 0 ; i < ms ; i++)
     {
         CLK_SysTickDelay(1000);
 
-        if(WWDT->CNT != cnt)
+        if (WWDT->CNT != cnt)
         {
             cnt = WWDT->CNT;
-            printf("%2d \n",WWDT->CNT);
+            printf("%2u \n", WWDT->CNT);
         }
     }
 }
@@ -72,14 +72,14 @@ volatile uint8_t g_u32WWDTINTCounts;
  */
 void WWDT_IRQHandler(void)
 {
-    if(WWDT_GET_INT_FLAG(WWDT) == 1)
+    if (WWDT_GET_INT_FLAG(WWDT) == 1)
     {
         /* Clear WWDT compare match interrupt flag */
         WWDT_CLEAR_INT_FLAG(WWDT);
 
         g_u32WWDTINTCounts++;
 
-        printf("\nWWDT compare match interrupt occurred. (Interrupt Count %d)\n", g_u32WWDTINTCounts);
+        printf("\nWWDT compare match interrupt occurred. (Interrupt Count %u)\n", g_u32WWDTINTCounts);
     }
 }
 
@@ -87,7 +87,7 @@ void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/  
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -99,7 +99,7 @@ void SYS_Init(void)
 
     /* Switch SCLK clock source to PLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-    
+
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
 
@@ -113,19 +113,19 @@ void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-    
+
     /* Set module clock*/
-#if (WWDT_PORT != 0)    
-    CLK_SetModuleClock(WWDT1_MODULE,CLK_WWDTSEL_WWDT1SEL_HCLK0_DIV2048,0);
+#if (WWDT_PORT != 0)
+    CLK_SetModuleClock(WWDT1_MODULE, CLK_WWDTSEL_WWDT1SEL_HCLK0_DIV2048, 0);
 #else
-    CLK_SetModuleClock(WWDT0_MODULE,CLK_WWDTSEL_WWDT0SEL_HCLK0_DIV2048,0);
+    CLK_SetModuleClock(WWDT0_MODULE, CLK_WWDTSEL_WWDT0SEL_HCLK0_DIV2048, 0);
 #endif
 
     /* Enable module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
 
-#if (WWDT_PORT != 0)    
+#if (WWDT_PORT != 0)
     CLK_EnableModuleClock(WWDT1_MODULE);
 #else
     CLK_EnableModuleClock(WWDT0_MODULE);
@@ -138,7 +138,7 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-    
+
     /* Set PC multi-function pins for GPIO*/
     SET_GPIO_PA0();
 }
@@ -164,7 +164,7 @@ int main(void)
     /* Init UART0 to 115200-8n1 for print message */
     UART_Open(UART0, 115200);
 
-    printf("\n\nCPU @ %d Hz\n", SystemCoreClock);
+    printf("\n\nCPU @ %u Hz\n", SystemCoreClock);
     printf("+------------------------------------------------+\n");
     printf("|         WWDT Reload Counter Sample Code        |\n");
     printf("+------------------------------------------------+\n\n");
@@ -175,11 +175,12 @@ int main(void)
     printf(" Condition 3 - Reload inside the WWDT window region \n\n");
 
     /* To check if system has been reset by WWDT time-out reset or not */
-    if(WWDT_GET_RESET_FLAG(WWDT) == 1)
+    if (WWDT_GET_RESET_FLAG(WWDT) == 1)
     {
         printf("*** System has been reset by WWDT time-out reset event. [WWDT_CTL: 0x%08X] ***\n\n", WWDT->CTL);
         WWDT_CLEAR_RESET_FLAG(WWDT);
-        while(1);
+
+        while (1);
     }
 
     /* WWDT clock source is HCLK0 / 2048 */
@@ -187,7 +188,7 @@ int main(void)
     dCompareMatchPeriodTime = (((double)(1000000 * 2048) / (double)CLK_GetHCLK0Freq()) * 1024) * 32 / 1000;
 
     printf("# WWDT Settings: \n");
-    printf("    - Clock source is HCLK/2048 (%d Hz)    \n", CLK_GetHCLK0Freq() / 2048);
+    printf("    - Clock source is HCLK/2048 (%u Hz)    \n", CLK_GetHCLK0Freq() / 2048);
     printf("    - WWDT counter prescale period is 1024  \n");
     printf("    - Interrupt enable                      \n");
     printf("    - Window Compare value is 32            \n");
@@ -202,8 +203,8 @@ int main(void)
     printf("        when interrupt counts large than 10.\n\n");
 
     /* Use PA.0 to check reload WWDT counter period time */
-    GPIO_SetMode(PA, BIT0,GPIO_MODE_OUTPUT);
-		
+    GPIO_SetMode(PA, BIT0, GPIO_MODE_OUTPUT);
+
     PA0 = 1;
 
     /* Enable WWDT NVIC */
@@ -237,9 +238,9 @@ int main(void)
         Enable WWDT compare match interrupt
     */
     /* Note: WWDT_CTL register can be written only once after chip is powered on or reset */
-    WWDT_Open(WWDT,WWDT_PRESCALER_1024, 32, TRUE);
+    WWDT_Open(WWDT, WWDT_PRESCALER_1024, 32, TRUE);
 
-    while(1)
+    while (1)
     {
 #if RELOAD_CONDITION == 1
         /* Reload before the WWDT window region */
@@ -252,7 +253,8 @@ int main(void)
         /* Delay_ms > 745.65 ms */
         Delay_ms((uint32_t) dTimeOutPeriodTime + 1);
 #elif RELOAD_CONDITION == 3
-        if(g_u32WWDTINTCounts > 10)
+
+        if (g_u32WWDTINTCounts > 10)
         {
             /* Reload after the WWDT window region */
             /* Wait CNTDAT count to 0, System reset immediately */
@@ -265,6 +267,7 @@ int main(void)
             /* 745.65 ms > Delay_ms > 372.83 ms */
             Delay_ms((uint32_t) dCompareMatchPeriodTime + 1);
         }
+
 #endif
 
         UserAlgorithm();

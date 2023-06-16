@@ -221,16 +221,16 @@ typedef struct report_info
     uint8_t         report_count;
     struct
     {
-        uint32_t    constant:1;         /* {Data (0) | Constant (1)}                */
-        uint32_t    variable:1;         /* {Array (0) | Variable (1)}               */
-        uint32_t    relative:1;         /* {Absolute (0) | Relative (1)}            */
-        uint32_t    wrap:1;             /* {No Wrap (0) | Wrap (1)}                 */
-        uint32_t    non_linear:1;       /* {Linear (0) | Non Linear (1)}            */
-        uint32_t    no_preferred:1;     /* {Preferred State (0) | No Preferred (1)} */
-        uint32_t    null_state:1;       /* {No Null position (0) | Null state(1)}   */
-        uint32_t    is_volatile:1;      /* {Non Volatile (0) | Volatile (1)}        */
-        uint32_t    buffered_bytes:1;   /* {Bit Field (0) | Buffered Bytes (1)}     */
-        uint32_t    reserved:23;        /* Reserved (0)                             */
+        uint32_t    constant: 1;        /* {Data (0) | Constant (1)}                */
+        uint32_t    variable: 1;        /* {Array (0) | Variable (1)}               */
+        uint32_t    relative: 1;        /* {Absolute (0) | Relative (1)}            */
+        uint32_t    wrap: 1;            /* {No Wrap (0) | Wrap (1)}                 */
+        uint32_t    non_linear: 1;      /* {Linear (0) | Non Linear (1)}            */
+        uint32_t    no_preferred: 1;    /* {Preferred State (0) | No Preferred (1)} */
+        uint32_t    null_state: 1;      /* {No Null position (0) | Null state(1)}   */
+        uint32_t    is_volatile: 1;     /* {Non Volatile (0) | Volatile (1)}        */
+        uint32_t    buffered_bytes: 1;  /* {Bit Field (0) | Buffered Bytes (1)}     */
+        uint32_t    reserved: 23;       /* Reserved (0)                             */
     } status;
     struct report_info  *next;
 } RP_INFO_T;

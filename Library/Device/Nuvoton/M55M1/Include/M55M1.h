@@ -1664,6 +1664,8 @@ typedef volatile uint64_t vu64;   ///< Define 64-bit unsigned volatile data type
 #include "epwm.h"
 #include "eqei.h"
 #include "fmc.h"
+#include "gdma/dma350_lib.h"
+#include "gdma/dma350_drv.h"
 #include "gpio.h"
 #include "hsotg.h"
 #include "hsusbd.h"

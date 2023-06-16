@@ -23,16 +23,9 @@ typedef void (FUNC_PTR)(void);
 static FUNC_PTR *func;
 
 //------------------------------------------------------------------------------
-static void __set_SP(uint32_t _sp)
-{
-    __asm__ __volatile__("MSR MSP, r0");
-    __asm__ __volatile__("BX lr");
-}
-
 int SPIM_load_image_to_HyperRAM(SPIM_T *spim, uint32_t image_base, uint32_t image_limit)
 {
-    volatile uint32_t u32Addr = 0, u32i, u32ImageSize = 0, *pu32Loader = NULL;
-    volatile uint32_t u32EraseCount = 0;
+    uint32_t u32Addr = 0, u32i, u32ImageSize = 0, *pu32Loader = NULL;
     uint8_t *pu8SrcBuf = (uint8_t *)malloc(sizeof(uint8_t) * BUFF_SIZE);
     uint8_t *pu8CmpBuf = (uint8_t *)malloc(sizeof(uint8_t) * BUFF_SIZE);
 
@@ -111,7 +104,7 @@ int HyperRAM_LoadCodeAndRun(SPIM_T *spim)
     /* Enter direct-mapped mode to run new applications */
     SPIM_EnterDirectMapMode_Hyper(spim);
 
-    func = (void *)(u32DMMAddr + 1);
+    func = (FUNC_PTR *)(u32DMMAddr + 1);
     func();
 
     return 0;

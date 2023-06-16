@@ -53,8 +53,7 @@ extern "C" {
 #define DMA350_INITIALIZED (1UL << 0)
 
 /* DMA350 DMA Device error enumeration types */
-enum dma350_error_t
-{
+enum dma350_error_t {
     DMA350_ERR_NONE = 0,       /*!< No error */
     DMA350_ERR_IIDR_MISMATCH,  /*!< Error: DMA350 driver does not support this
                                 *   implementer of the hardware */
@@ -66,40 +65,35 @@ enum dma350_error_t
 };
 
 /* ARM DMA350 DMA INFO register BUILDCFG0 field Type */
-union dma350_dmainfo_buildcfg0_t
-{
-    struct
-    {
-        uint32_t FRAMETYPE: 3;   /*!< bit:  0.. 2 FRAMETYPE[ 2:0] */
-        uint32_t RESERVED0: 1;   /*!< bit:      3 RESERVED0 */
-        uint32_t NUM_CHANNELS: 6; /*!< bit:  4.. 9 NUM_CHANNELS[ 5:0] */
-        uint32_t ADDR_WIDTH: 6;  /*!< bit: 10..15 ADDR_WIDTH[ 5:0] */
-        uint32_t DATA_WIDTH: 3;  /*!< bit: 16..18 DATA_WIDTH[ 2:0] */
-        uint32_t RESERVED1: 1;   /*!< bit:     19 RESERVED1 */
-        uint32_t CHID_WIDTH: 5;  /*!< bit: 20..24 CHID_WIDTH[ 4:0] */
-        uint32_t RESERVED2: 7;   /*!< bit: 25..31 RESERVED2[ 6:0] */
+union dma350_dmainfo_buildcfg0_t {
+    struct {
+        uint32_t FRAMETYPE:3;    /*!< bit:  0.. 2 FRAMETYPE[ 2:0] */
+        uint32_t RESERVED0:1;    /*!< bit:      3 RESERVED0 */
+        uint32_t NUM_CHANNELS:6; /*!< bit:  4.. 9 NUM_CHANNELS[ 5:0] */
+        uint32_t ADDR_WIDTH:6;   /*!< bit: 10..15 ADDR_WIDTH[ 5:0] */
+        uint32_t DATA_WIDTH:3;   /*!< bit: 16..18 DATA_WIDTH[ 2:0] */
+        uint32_t RESERVED1:1;    /*!< bit:     19 RESERVED1 */
+        uint32_t CHID_WIDTH:5;   /*!< bit: 20..24 CHID_WIDTH[ 4:0] */
+        uint32_t RESERVED2:7;    /*!< bit: 25..31 RESERVED2[ 6:0] */
     } b;                         /*!< Structure used for bit access */
     uint32_t w;                  /*!< Type used for word access */
 };
 
 /* ARM DMA350 DMA INFO register BUILDCFG1 field Type */
-union dma350_dmainfo_buildcfg1_t
-{
-    struct
-    {
-        uint32_t NUM_TRIGGER_IN: 9; /*!< bit:  0.. 8 NUM_TRIGGER_IN[ 8:0] */
-        uint32_t NUM_TRIGGER_OUT: 7; /*!< bit:  9..15 NUM_TRIGGER_OUT[ 6:0] */
-        uint32_t HAS_TRIGSEL: 1;    /*!< bit:     16 HAS_TRIGSEL */
-        uint32_t RESERVED0: 7;      /*!< bit: 17..23 RESERVED0[ 6:0] */
-        uint32_t RESERVED1: 1;      /*!< bit:     24 RESERVED1 */
-        uint32_t RESERVED2: 7;      /*!< bit: 25..31 RESERVED2[ 6:0] */
+union dma350_dmainfo_buildcfg1_t {
+    struct {
+        uint32_t NUM_TRIGGER_IN:9;  /*!< bit:  0.. 8 NUM_TRIGGER_IN[ 8:0] */
+        uint32_t NUM_TRIGGER_OUT:7; /*!< bit:  9..15 NUM_TRIGGER_OUT[ 6:0] */
+        uint32_t HAS_TRIGSEL:1;     /*!< bit:     16 HAS_TRIGSEL */
+        uint32_t RESERVED0:7;       /*!< bit: 17..23 RESERVED0[ 6:0] */
+        uint32_t RESERVED1:1;       /*!< bit:     24 RESERVED1 */
+        uint32_t RESERVED2:7;       /*!< bit: 25..31 RESERVED2[ 6:0] */
     } b;                            /*!< Structure used for bit access */
     uint32_t w;                     /*!< Type used for word access */
 };
 
 /* ARM DMA350 DMA device configuration structure */
-struct dma350_dev_cfg_t
-{
+struct dma350_dev_cfg_t {
     DMASECCFG_TypeDef *dma_sec_cfg;     /*!< DMA350 secure config */
     DMASECCTRL_TypeDef *dma_sec_ctrl;   /*!< DMA350 secure control */
     DMANSECCTRL_TypeDef *dma_nsec_ctrl; /*!< DMA350 non-secure control */
@@ -107,15 +101,13 @@ struct dma350_dev_cfg_t
 };
 
 /* ARM DMA350 DMA device data structure */
-struct dma350_dev_data_t
-{
+struct dma350_dev_data_t {
     uint32_t state; /*!< Indicates if the DMA350 driver
                      *   is initialized and enabled */
 };
 
 /* ARM DMA350 DMA device structure */
-struct dma350_dev_t
-{
+struct dma350_dev_t {
     const struct dma350_dev_cfg_t *const cfg; /*!< DMA350 DMA configuration */
     struct dma350_dev_data_t *const data;     /*!< DMA350 DMA data */
 };
@@ -369,10 +361,9 @@ enum dma350_error_t dma350_set_trigout_nonsecure(struct dma350_dev_t *dev,
 __STATIC_INLINE
 uint8_t dma350_get_num_ch(const struct dma350_dev_t *dev)
 {
-    return (union dma350_dmainfo_buildcfg0_t)
-    {
+    return (union dma350_dmainfo_buildcfg0_t) {
         .w = dev->cfg->dma_info->DMA_BUILDCFG0
-    } .b.NUM_CHANNELS;
+    }.b.NUM_CHANNELS;
 }
 
 __STATIC_INLINE

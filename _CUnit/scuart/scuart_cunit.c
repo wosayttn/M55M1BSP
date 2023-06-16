@@ -1,15 +1,11 @@
-/*---------------------------------------------------------------------------------------------------------*/
-/* Nuvoton Electronics Corporation confidential                                                            */
-/*                                                                                                         */
-/* Copyright (c) 2016 by Nuvoton Technology Corporation                                                    */
-/* All rights reserved                                                                                     */
-/*                                                                                                         */
-/*---------------------------------------------------------------------------------------------------------*/
-/* File Contents:                                                                                          */
-/*   scuart_cunit.c                                                                                        */
-/*            The test function of SC_UART for CUnit.                                                      */
-/* Project:   TC8237 (M251)                                                                               */
-/*---------------------------------------------------------------------------------------------------------*/
+/******************************************************************************
+* @file    scuart_cunit.c
+* @version V1.00
+* @brief   scuart CUnit Test
+*
+* SPDX-License-Identifier: Apache-2.0
+* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Includes of system headers                                                                              */
@@ -111,16 +107,16 @@ const uint32_t au32Result[] =
 
 int32_t SCUART_InitClock(void)
 {
-    /* Enable clock */  
+    /* Enable clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-    
+
     CLK_SetModuleClock(SC0_MODULE, CLK_SCSEL_SC0SEL_HIRC, 0);
     CLK_SetModuleClock(SC1_MODULE, CLK_SCSEL_SC1SEL_HIRC, 0);
     CLK_SetModuleClock(SC2_MODULE, CLK_SCSEL_SC1SEL_HIRC, 0);
-    
+
     CLK_EnableModuleClock(SC0_MODULE);
     CLK_EnableModuleClock(SC1_MODULE);
     CLK_EnableModuleClock(SC2_MODULE);
@@ -160,10 +156,14 @@ void MACRO_CONSTANT_Test(void)
             for (j = 0; j < sizeof(au32PARITYSel) / sizeof(au32PARITYSel[0]); j++)
             {
                 SCUART_SetLineConfig(pSC[port], 115200, au32CHARLen[i], au32PARITYSel[j], SCUART_STOP_BIT_1);
+
                 while ((pSC[port]->CTL & SC_CTL_SYNC_Msk) == SC_CTL_SYNC_Msk) {};
+
                 //printf("REG:0x%08x, CTLREF:0x%08x\n",pSC[port]->UARTCTL,pSC[port]->CTL);
                 CU_ASSERT_EQUAL(pSC[port]->CTL, 0x8001);
+
                 CU_ASSERT_EQUAL(pSC[port]->UARTCTL, au32Result[k++]);
+
                 SCUART_Close(pSC[port]);
 
                 while ((pSC[port]->CTL & SC_CTL_SYNC_Msk) == SC_CTL_SYNC_Msk) {};
@@ -181,11 +181,15 @@ void MACRO_CONSTANT_Test(void)
             for (j = 0; j < sizeof(au32PARITYSel) / sizeof(au32PARITYSel[0]); j++)
             {
                 SCUART_SetLineConfig(pSC[port], 115200, au32CHARLen[i], au32PARITYSel[j], SCUART_STOP_BIT_2);
+
                 while ((pSC[port]->CTL & SC_CTL_SYNC_Msk) == SC_CTL_SYNC_Msk) {};
+
                 //D_msg("BAUD:%d, REG:0x%08x\n", u32CurBAUD, pSC[port]->UARTCTL);
                 //printf("REG:0x%08x, CTLREF:0x%08x\n",pSC[port]->UARTCTL,pSC[port]->CTL);
                 CU_ASSERT_EQUAL(pSC[port]->CTL, 0x0001);
+
                 CU_ASSERT_EQUAL(pSC[port]->UARTCTL, au32Result[k++]);
+
                 SCUART_Close(pSC[port]);
 
                 while ((pSC[port]->CTL & SC_CTL_SYNC_Msk) == SC_CTL_SYNC_Msk) {};
@@ -250,20 +254,20 @@ void MACRO_CONSTANT_Test(void)
         SCUART_WAIT_TX_EMPTY(pSC[port]) {};
         //printf("port%d, [INIT 0x%08x]\n", port,pSC[port]->INTSTS);
         CU_ASSERT_EQUAL(SCUART_GET_INT_FLAG(pSC[port], SC_INTSTS_TERRIF_Msk), 1);
-        
+
         CU_ASSERT_EQUAL(SCUART_GET_ERR_FLAG(pSC[port]), 0);
         SCUART_CLR_INT_FLAG(pSC[port], SC_INTSTS_TERRIF_Msk); /* no effect */
         CU_ASSERT_EQUAL(SCUART_GET_INT_FLAG(pSC[port], SC_INTSTS_TERRIF_Msk), 1);
         SCUART_CLR_ERR_FLAG(pSC[port], SC_STATUS_TXOV_Msk);
         CU_ASSERT_EQUAL(SCUART_GET_INT_FLAG(pSC[port], SC_INTSTS_TERRIF_Msk), 0);
- 
+
 
         while (SCUART_IS_RX_READY(pSC[port]) == 0) {};
 
         CLK_SysTickDelay(10000);
-            
-        //printf("port%d, [INIT 0x%08x]\n", port,pSC[port]->INTSTS);    
-        CU_ASSERT_EQUAL(SCUART_GET_INT_FLAG(pSC[port], SC_INTSTS_TBEIF_Msk), 1);   
+
+        //printf("port%d, [INIT 0x%08x]\n", port,pSC[port]->INTSTS);
+        CU_ASSERT_EQUAL(SCUART_GET_INT_FLAG(pSC[port], SC_INTSTS_TBEIF_Msk), 1);
 
         i = 0;
 
@@ -322,13 +326,18 @@ void API_SCUART_Test(void)
         {
             CU_FAIL("Baudrate calculate FAIL");
         }
+
         while ((pSC[port]->CTL & SC_CTL_SYNC_Msk) == SC_CTL_SYNC_Msk) {};
+
         CU_ASSERT_EQUAL(pSC[port]->CTL,    0x8001);
+
         CU_ASSERT_EQUAL(pSC[port]->UARTCTL,  0x41);
+
         CU_ASSERT_EQUAL(pSC[port]->ETUCTL, (__HXT / 115200) - 1);
 
         /* Check SCUART_Write(), SCUART_Read(), SCUART_GET_TX_FULL() and SCUART_GET_RX_EMPTY() */
         pSC[port]->PINCTL |= BIT31; /* Enable INTERNAL Loop Back Test */
+
         SCUART_Write(pSC[port], au8TxBuf, sizeof(au8TxBuf)); /* Include SCUART_GET_TX_FULL() */
 
         //            CU_ASSERT_EQUAL(SCUART_IS_TX_ACTIVE(pSC[port]), 0);

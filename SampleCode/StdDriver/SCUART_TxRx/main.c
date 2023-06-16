@@ -13,7 +13,7 @@
 /* Functions and variables declaration                                                                     */
 /*---------------------------------------------------------------------------------------------------------*/
 /* This is the string we used in loopback demo */
-static uint8_t g_au8TxBuf[] = "Hello World!";
+static uint8_t s_au8TxBuf[] = "Hello World!";
 
 void SC0_IRQHandler(void);
 void SYS_Init(void);
@@ -29,19 +29,18 @@ void SC0_IRQHandler(void)
 {
     // Print SCUART received data to UART port
     // Data length here is short, so we're not care about UART FIFO over flow.
-    while(!SCUART_GET_RX_EMPTY(SC0))
+    while (!SCUART_GET_RX_EMPTY(SC0))
         UART_WRITE(DEBUG_PORT, SCUART_READ(SC0));
 
     // RDA is the only interrupt enabled in this sample, this status bit
     // automatically cleared after Rx FIFO empty. So no need to clear interrupt
     // status here.
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init System Clock                                                                                       */
+/*---------------------------------------------------------------------------------------------------------*/
 void SYS_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/    
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -53,7 +52,7 @@ void SYS_Init(void)
 
     /* Switch SCLK clock source to PLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-    
+
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
 
@@ -67,10 +66,10 @@ void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-    
+
     /* Enable SC0 module clock and clock source from HIRC divide 1 */
     CLK_SetModuleClock(SC0_MODULE, CLK_SCSEL_SC0SEL_HIRC, CLK_SCDIV_SC0DIV(1));
-   
+
     /* Enable module clock */
     CLK_EnableModuleClock(SC0_MODULE);
 
@@ -86,7 +85,9 @@ void SYS_Init(void)
     SET_SC0_DAT_PB4();
     SET_SC0_CLK_PB5();
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init UART                                                                                               */
+/*---------------------------------------------------------------------------------------------------------*/
 void UART_Init(void)
 {
 
@@ -112,7 +113,7 @@ int main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    printf("\n\nCPU @ %dHz\n", SystemCoreClock);
+    printf("\n\nCPU @ %uHz\n", SystemCoreClock);
     printf("+----------------------------------------+\n");
     printf("|    Smartcard UART Mode Sample Code     |\n");
     printf("+----------------------------------------+\n\n");
@@ -133,9 +134,9 @@ int main(void)
         Send the demo string out from SC0_CLK pin,
         Received data from SC0_DAT pin will be print out to UART console
     */
-    SCUART_Write(SC0, g_au8TxBuf, sizeof(g_au8TxBuf));
+    SCUART_Write(SC0, s_au8TxBuf, sizeof(s_au8TxBuf));
 
-    while(1) {}
+    while (1) {}
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * @brief    Implement WDT0 time-out interrupt event to wake up system and generate 
+ * @brief    Implement WDT0 time-out interrupt event to wake up system and generate
  *           time-out reset system event while WDT time-out reset delay period expired.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
@@ -31,10 +31,10 @@ int IsDebugFifoEmpty(void)
  */
 void WDT0_IRQHandler(void)
 {
-    if(g_u32WDTINTCounts < 10)
+    if (g_u32WDTINTCounts < 10)
         WDT_RESET_COUNTER(WDT0);
 
-    if(WDT_GET_TIMEOUT_INT_FLAG(WDT0) == 1)
+    if (WDT_GET_TIMEOUT_INT_FLAG(WDT0) == 1)
     {
         /* Clear WDT time-out interrupt flag */
         WDT_CLEAR_TIMEOUT_INT_FLAG(WDT0);
@@ -42,7 +42,7 @@ void WDT0_IRQHandler(void)
         g_u32WDTINTCounts++;
     }
 
-    if(WDT_GET_TIMEOUT_WAKEUP_FLAG(WDT0) == 1)
+    if (WDT_GET_TIMEOUT_WAKEUP_FLAG(WDT0) == 1)
     {
         /* Clear WDT time-out wake-up flag */
         WDT_CLEAR_TIMEOUT_WAKEUP_FLAG(WDT0);
@@ -55,7 +55,7 @@ void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/  
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
     /* Enable Internal RC 32KHz clock */
@@ -65,7 +65,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     /* Waiting for Low speed Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
-    
+
     /* Enable PLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
@@ -84,15 +84,15 @@ void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-    
+
     /* Set module clock*/
-    CLK_SetModuleClock(WDT0_MODULE,CLK_WDTSEL_WDT0SEL_LIRC,0);
-        
+    CLK_SetModuleClock(WDT0_MODULE, CLK_WDTSEL_WDT0SEL_LIRC, 0);
+
     /* Enable module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
     CLK_EnableModuleClock(WDT0_MODULE);
-        
+
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 
@@ -100,7 +100,7 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-    
+
     /* Set PC multi-function pins for GPIO*/
     SET_GPIO_PA0();
 }
@@ -122,17 +122,18 @@ int main(void)
     /* Init UART0 for printf */
     UART_Open(UART0, 115200);
 
-    printf("\n\nCPU @ %d Hz\n", SystemCoreClock);
+    printf("\n\nCPU @ %u Hz\n", SystemCoreClock);
     printf("+----------------------------------------+\n");
     printf("|    WDT Time-out Wake-up Sample Code    |\n");
     printf("+----------------------------------------+\n\n");
 
     /* To check if system has been reset by WDT time-out reset or not */
-    if(WDT_GET_RESET_FLAG(WDT0) == 1)
+    if (WDT_GET_RESET_FLAG(WDT0) == 1)
     {
         WDT_CLEAR_RESET_FLAG(WDT0);
         printf("*** System has been reset by WDT time-out event ***\n\n");
-        while(1);
+
+        while (1);
     }
 
     printf("# WDT Settings:\n");
@@ -151,7 +152,7 @@ int main(void)
 
     /* Use PA.0 to check time-out period time */
     GPIO_SetMode(PA, BIT0, GPIO_MODE_OUTPUT);
-		
+
     PA0 = 1;
 
     /* Enable WDT NVIC */
@@ -163,30 +164,32 @@ int main(void)
 
     /* Configure WDT settings and start WDT counting */
     g_u32WDTINTCounts = g_u8IsWDTWakeupINT = 0;
-		
-    WDT_Open(WDT0,WDT_TIMEOUT_2POW14, WDT_RESET_DELAY_18CLK, TRUE, TRUE);
+
+    WDT_Open(WDT0, WDT_TIMEOUT_2POW14, WDT_RESET_DELAY_18CLK, TRUE, TRUE);
 
     /* Enable WDT interrupt function */
     WDT_EnableInt(WDT0);
 
-    while(1)
+    while (1)
     {
         /* System enter to Power-down */
         /* To program PWRCTL register, it needs to disable register protection first. */
         SYS_UnlockReg();
-        PMC_SetPowerDownMode(PMC_NPD0,PMC_PLCTL_PLSEL_PL1);
+        PMC_SetPowerDownMode(PMC_NPD0, PMC_PLCTL_PLSEL_PL1);
         printf("\nSystem enter to power-down mode ...\n");
+
         /* To check if all the debug messages are finished */
-        while(IsDebugFifoEmpty() == 0);
+        while (IsDebugFifoEmpty() == 0);
+
         PMC_PowerDown();
 
         /* Check if WDT time-out interrupt and wake-up occurred or not */
-        while(g_u8IsWDTWakeupINT == 0);
+        while (g_u8IsWDTWakeupINT == 0);
 
         g_u8IsWDTWakeupINT = 0;
         PA0 ^= 1;
 
-        printf("System has been waken up done. WDT interrupt counts: %d.\n\n", g_u32WDTINTCounts);
+        printf("System has been waken up done. WDT interrupt counts: %u.\n\n", g_u32WDTINTCounts);
     }
 }
 

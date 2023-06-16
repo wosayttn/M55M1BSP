@@ -18,13 +18,13 @@
 
 /// @cond HIDDEN_SYMBOLS
 
-#define _ohci    		_ohci0
-#define ohci_driver		ohci0_driver
+#define _ohci           _ohci0
+#define ohci_driver     ohci0_driver
 
 #define OHCI_IRQHandler   USBH0_IRQHandler
 
 #define ENABLE_OHCI_IRQ   ENABLE_OHCI0_IRQ
-#define DISABLE_OHCI_IRQ  DISABLE_OHCI0_IRQ  
+#define DISABLE_OHCI_IRQ  DISABLE_OHCI0_IRQ
 
 static uint16_t  port_mask = 0x0001;
 

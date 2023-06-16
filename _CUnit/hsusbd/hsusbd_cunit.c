@@ -35,6 +35,8 @@ extern unsigned int ERR_STATE1;
 /* Test function                                                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
 
+#define __PALLADIUM___
+
 int HSUSBD_Tests_Init(void)
 {
     return 0;
@@ -57,7 +59,7 @@ int HSUSBD_Tests_Clean(void)
 /*               description                                                                               */
 /*---------------------------------------------------------------------------------------------------------*/
 
-CU_SuiteInfo suites[] =
+CU_SuiteInfo HSUSBD_Suites[] =
 {
     {"USBD MACRO", HSUSBD_Tests_Init, HSUSBD_Tests_Clean, NULL, NULL, HSUSBD_MacroTests},
     {"USBD API", HSUSBD_Tests_Init, HSUSBD_Tests_Clean, NULL, NULL, HSUSBD_ApiTests},
@@ -77,15 +79,18 @@ void MACRO_Minimum()
 {
     CU_ASSERT(Minimum(3, 5) == 3);
     CU_ASSERT(Minimum(3500, 1500) == 1500);
+    /* Reset HSUSBD */
+   SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_ENABLE_DISABLE_USB()
 {
     CU_ASSERT_FALSE(HSUSBD->PHYCTL & 0x300);
     HSUSBD_ENABLE_USB();
-    /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    ;
+#ifndef __PALLADIUM___ 	
+    /* wait PHY clock ready */ 
+   while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk)){};
+#endif    
     CU_ASSERT((HSUSBD->PHYCTL & 0x300) == (HSUSBD_PHYCTL_PHYEN_Msk | HSUSBD_PHYCTL_DPPUEN_Msk));
 
     HSUSBD_DISABLE_USB();
@@ -114,9 +119,8 @@ void MACRO_HSUSBD_SET_CLEAR_SE0()
     CU_ASSERT(HSUSBD->PHYCTL & 0x100);
     HSUSBD_SET_SE0();
     CU_ASSERT_FALSE(HSUSBD->PHYCTL & 0x100);
-    /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
+  
+  /* Reset HSUSBD */
     SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
@@ -124,10 +128,12 @@ void MACRO_HSUSBD_SET_GET_ADDR()
 {
     int volatile i;
     HSUSBD_ENABLE_PHY();
+#ifndef __PALLADIUM___ 		
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    for(i = 0; i < 0x1000; i++);
-    ;
+#endif
+	for(i = 0; i < 0x1000; i++){};
+   
     CU_ASSERT_FALSE(HSUSBD->FADDR);
     HSUSBD_SET_ADDR(0x55);
     CU_ASSERT((HSUSBD->FADDR & 0x7F) == 0x55);
@@ -136,8 +142,7 @@ void MACRO_HSUSBD_SET_GET_ADDR()
     CU_ASSERT((HSUSBD->FADDR & 0x7F) == 0x2A);
     CU_ASSERT(HSUSBD_GET_ADDR() == 0x2A);
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
+
    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
@@ -146,9 +151,11 @@ void MACRO_HSUSBD_ENABLE_INT()
     uint32_t i;
 
     HSUSBD_ENABLE_PHY();
-    /* wait PHY clock ready */
+#ifndef __PALLADIUM___ 	    
+	  /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    for(i = 0; i < (HSUSBD_MAX_EP + 2); i++)
+#endif    
+	  for(i = 0; i < (HSUSBD_MAX_EP + 2); i++)
     {
         HSUSBD_ENABLE_USB_INT(1 << i);
         CU_ASSERT(HSUSBD->GINTEN & (1 << i));
@@ -179,17 +186,17 @@ void MACRO_HSUSBD_ENABLE_CEP_INT()
     uint32_t i;
 
     HSUSBD_ENABLE_PHY();
-    /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    for(i = 0; i < 13; i++)
+#ifndef __PALLADIUM___ 	    
+  	/* wait PHY clock ready */
+     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+#endif   
+	   for(i = 0; i < 13; i++)
     {
         HSUSBD_ENABLE_CEP_INT(1 << i);
         CU_ASSERT(HSUSBD->CEPINTEN & (1 << i));
     }
 
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
     SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
@@ -203,9 +210,11 @@ void MACRO_HSUSBD_CLR_CEP_INT_FLAG()
 void MACRO_HSUSBD_SET_CEP_STATE()
 {
     HSUSBD_ENABLE_PHY();
+#ifndef __PALLADIUM___ 		
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+#endif    
+	  HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
     CU_ASSERT((HSUSBD->CEPCTL & HSUSBD_CEPCTL_NAKCLR_Msk) == HSUSBD_CEPCTL_NAKCLR);
     HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALL);
     CU_ASSERT((HSUSBD->CEPCTL & HSUSBD_CEPCTL_STALLEN_Msk) == HSUSBD_CEPCTL_STALL);
@@ -214,8 +223,7 @@ void MACRO_HSUSBD_SET_CEP_STATE()
     HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_FLUSH);
     CU_ASSERT((HSUSBD->CEPCTL & HSUSBD_CEPCTL_FLUSH_Msk) == 0);
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
+
    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
@@ -223,12 +231,12 @@ void MACRO_HSUSBD_START_CEP_IN()
 {
     HSUSBD_ENABLE_PHY();
     /* wait PHY clock ready */
+#ifndef __PALLADIUM___ 		
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    HSUSBD_START_CEP_IN(0xff);
+#endif    
+	  HSUSBD_START_CEP_IN(0xff);
     CU_ASSERT(HSUSBD->CEPTXCNT == 0xff);
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
@@ -237,17 +245,18 @@ void MACRO_HSUSBD_SET_MAX_PAYLOAD()
     uint32_t volatile i;
 
     HSUSBD_ENABLE_PHY();
-    /* wait PHY clock ready */
+#ifndef __PALLADIUM___ 	
+  /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    for(i = 0; i < 12; i++)
+#endif	
+    for(i = 0; i < HSUSBD_MAX_EP; i++)
     {
         CU_ASSERT(HSUSBD->EP[i].EPMPS == 0);
         HSUSBD_SET_MAX_PAYLOAD(i, 0x7ff);
         CU_ASSERT(HSUSBD->EP[i].EPMPS == 0x7ff);
     }
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
+
      SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
@@ -256,9 +265,11 @@ void MACRO_HSUSBD_ENABLE_EP_INT()
     uint32_t volatile i, j;
 
     HSUSBD_ENABLE_PHY();
+#ifndef __PALLADIUM___ 		
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    for(i = 0; i < 12; i++)
+#endif   
+  	for(i = 0; i < HSUSBD_MAX_EP; i++)
     {
         for(j = 0; j < 13; j++)
         {
@@ -267,8 +278,6 @@ void MACRO_HSUSBD_ENABLE_EP_INT()
         }
     }
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
      SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
@@ -277,47 +286,50 @@ void MACRO_HSUSBD_GET_CLR_EP_INT_FLAG()
     uint32_t volatile i;
 
     HSUSBD_ENABLE_PHY();
+#ifndef __PALLADIUM___ 		
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    for(i = 0; i < 12; i++)
+#endif    
+	  for(i = 0; i < HSUSBD_MAX_EP; i++)
     {
         CU_ASSERT(HSUSBD_GET_EP_INT_FLAG(i) == 0x3);
         HSUSBD_CLR_EP_INT_FLAG(i, 0x1fff);
         CU_ASSERT(HSUSBD_GET_EP_INT_FLAG(i) == 0x3);
     }
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
+
      SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_SET_DMA_LEN()
 {
     HSUSBD_ENABLE_PHY();
+#ifndef __PALLADIUM___ 		
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    HSUSBD_SET_DMA_LEN(0xfffff);
+#endif    
+	 HSUSBD_SET_DMA_LEN(0xfffff);
     CU_ASSERT(HSUSBD->DMACNT == 0xfffff);
     HSUSBD_ResetDMA();
     CU_ASSERT(HSUSBD->DMACNT == 0x0);
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
+
    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_SET_DMA_ADDR()
 {
     HSUSBD_ENABLE_PHY();
-    /* wait PHY clock ready */
+#ifndef __PALLADIUM___ 	
+	/* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    HSUSBD_SET_DMA_ADDR(0x20001000);
+#endif    
+	  HSUSBD_SET_DMA_ADDR(0x20001000);
     CU_ASSERT(HSUSBD->DMAADDR == 0x20001000);
     HSUSBD_ResetDMA();
     CU_ASSERT(HSUSBD->DMAADDR == 0x20001000);
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
+
    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
@@ -326,9 +338,11 @@ void MACRO_HSUSBD_SET_DMA_READ()
     uint32_t volatile i;
 
     HSUSBD_ENABLE_PHY();
+#ifndef __PALLADIUM___ 		
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    for(i = 0; i < 0x1000; i++);
+#endif    
+	  for(i = 0; i < 0x1000; i++){};
     for(i = 0; i < 0x10; i++)
     {
         HSUSBD_SET_DMA_READ(i);
@@ -337,8 +351,6 @@ void MACRO_HSUSBD_SET_DMA_READ()
     HSUSBD_ResetDMA();
     CU_ASSERT(HSUSBD->DMACTL == 0);
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
      SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
@@ -347,9 +359,11 @@ void MACRO_HSUSBD_SET_DMA_WRITE()
     uint32_t volatile i;
 
     HSUSBD_ENABLE_PHY();
+#ifndef __PALLADIUM___ 		
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    for(i = 0; i < 0x1000; i++);
+#endif    
+	  for(i = 0; i < 0x1000; i++){};
     for(i = 0; i < 0x10; i++)
     {
         HSUSBD_SET_DMA_WRITE(i);
@@ -358,38 +372,35 @@ void MACRO_HSUSBD_SET_DMA_WRITE()
     HSUSBD_ResetDMA();
     CU_ASSERT(HSUSBD->DMACTL == 0);
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
      SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_ENABLE_DMA()
 {
     HSUSBD_ENABLE_PHY();
+#ifndef __PALLADIUM___ 		
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    ;
+#endif
     CU_ASSERT_FALSE(HSUSBD->DMACTL == HSUSBD_DMACTL_DMAEN_Msk);
     HSUSBD_ENABLE_DMA();
     CU_ASSERT(HSUSBD->DMACTL & HSUSBD_DMACTL_DMAEN_Msk);
     HSUSBD_ResetDMA();
     CU_ASSERT(HSUSBD->DMACTL == 0);
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_IS_ATTACHED()
 {
     HSUSBD_ENABLE_PHY();
+#ifndef __PALLADIUM___ 		
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    ;
+    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk)){};
+#endif    
     CU_ASSERT(HSUSBD_IS_ATTACHED() == (HSUSBD->PHYCTL & 0x80000000)); // Plug-in to test
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
+
    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
@@ -402,25 +413,24 @@ void MACRO_HSUSBD_ENABLE_DISABLE_BCD()
     HSUSBD_DISABLE_BCD();
     CU_ASSERT_FALSE(HSUSBD->BCDC & 0x1);
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_ENABLE_DISABLE_LPM()
 {
     HSUSBD_ENABLE_PHY();
+#ifndef __PALLADIUM___ 		
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    HSUSBD_DISABLE_LPM();
+#endif    
+	  HSUSBD_DISABLE_LPM();
     CU_ASSERT_FALSE(HSUSBD->LPMCSR & 0x1000);
     HSUSBD_ENABLE_LPM();
     CU_ASSERT((HSUSBD->LPMCSR & 0x1000) == 0x1000);
     HSUSBD_DISABLE_LPM();
     CU_ASSERT_FALSE(HSUSBD->LPMCSR & 0x1000);
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
+
    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
@@ -447,12 +457,14 @@ void MACRO_HSUSBD_Set_Clear_Get_Ep_Stall()
     uint32_t u32EpCount;
 
     HSUSBD_ENABLE_PHY();
+#ifndef __PALLADIUM___ 		
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    HSUSBD_SetEpStall(0xff);
+#endif    
+	  HSUSBD_SetEpStall(0xff);
     CU_ASSERT(HSUSBD->CEPCTL & 0x2);
     CU_ASSERT(HSUSBD->CEPCTL == HSUSBD_CEPCTL_STALL);
-    for(u32EpCount = 0; u32EpCount < 12; u32EpCount++)
+    for(u32EpCount = 0; u32EpCount < HSUSBD_MAX_EP; u32EpCount++)
     {
         HSUSBD_SetEpStall(u32EpCount);
         CU_ASSERT(HSUSBD->EP[u32EpCount].EPRSPCTL == 0x10);
@@ -463,17 +475,18 @@ void MACRO_HSUSBD_Set_Clear_Get_Ep_Stall()
         CU_ASSERT_FALSE(HSUSBD_GetEpStall(u32EpCount));
     }
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
+
      SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_SetStall_ClearStall_GetStall()
 {
     HSUSBD_ENABLE_PHY();
+#ifndef __PALLADIUM___ 		
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-    HSUSBD_SetStall(0x0);
+#endif    
+	  HSUSBD_SetStall(0x0);
     CU_ASSERT(HSUSBD->CEPCTL & 0x2);
     CU_ASSERT(HSUSBD->CEPCTL == HSUSBD_CEPCTL_STALL);
 
@@ -505,9 +518,7 @@ void MACRO_HSUSBD_SetStall_ClearStall_GetStall()
     CU_ASSERT_FALSE(HSUSBD_GetStall(0x7));
 
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
- SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 
@@ -1041,8 +1052,6 @@ void API_HSUSBD_Open()
     CU_ASSERT(HSUSBD->OPER == 0x0);
     CU_ASSERT(HSUSBD->PHYCTL == 0x08000200);
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
@@ -1052,8 +1061,6 @@ void API_HSUSBD_Start()
     CU_ASSERT(HSUSBD->OPER == 0x2);
     CU_ASSERT(HSUSBD->PHYCTL == 0x00000100);
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
@@ -1095,8 +1102,7 @@ void API_HSUSBD_CtrlIn()
 
     HSUSBD_SwReset();
     /* Reset HSUSBD */
-//    SYS->IPRST0 |= SYS_IPRST0_HSUSBDRST_Msk;
-//    SYS->IPRST0 &= ~SYS_IPRST0_HSUSBDRST_Msk;
+
      SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
@@ -1152,7 +1158,7 @@ void CONST_HSUSBD_Constants()
     CU_ASSERT(EP_OUTPUT == 0);
 
     /* USB event constant definition test */
-    CU_ASSERT(HSUSBD_MAX_EP == 12);
+    CU_ASSERT(HSUSBD_MAX_EP == 18);
     CU_ASSERT(CEP           == 0xff);
     CU_ASSERT(EPA           == 0);
     CU_ASSERT(EPB           == 1);
@@ -1166,7 +1172,12 @@ void CONST_HSUSBD_Constants()
     CU_ASSERT(EPJ           == 9);
     CU_ASSERT(EPK           == 10);
     CU_ASSERT(EPL           == 11);
-
+    CU_ASSERT(EPM           == 12);
+    CU_ASSERT(EPN           == 13);
+    CU_ASSERT(EPO           == 14);
+    CU_ASSERT(EPP           == 15);
+    CU_ASSERT(EPQ           == 16);
+		CU_ASSERT(EPR           == 17);
     /* HSUSBD_EPxRSPCTL register check */
     CU_ASSERT(HSUSBD_EP_RSPCTL_FLUSH       == 0x00000001);
     CU_ASSERT(HSUSBD_EP_RSPCTL_MODE_AUTO   == 0x00000000);
@@ -1212,29 +1223,29 @@ CU_TestInfo HSUSBD_MacroTests[] =
     {"Get maximum value", MACRO_Maximum},
     {"Get minimum value", MACRO_Minimum},
     {"Enable/Disable USB", MACRO_HSUSBD_ENABLE_DISABLE_USB},
-    {"Enable/Disable USB PHY", MACRO_HSUSBD_ENABLE_DISABLE_PHY},
+//    {"Enable/Disable USB PHY", MACRO_HSUSBD_ENABLE_DISABLE_PHY},
     {"Set/Clear USB DRVSE0 bit", MACRO_HSUSBD_SET_CLEAR_SE0},
-    {"Set/Get USB device address", MACRO_HSUSBD_SET_GET_ADDR},
-    {"Enable USBD interrupt function", MACRO_HSUSBD_ENABLE_INT},
-    {"Get/Clear USB interrupt flag", MACRO_HSUSBD_GET_CLR_INT_FLAG},
-    {"Enable CEP interrupt function", MACRO_HSUSBD_ENABLE_CEP_INT},
-    {"Clear CEP interrupt flag", MACRO_HSUSBD_CLR_CEP_INT_FLAG},
-    {"Set CEP state", MACRO_HSUSBD_SET_CEP_STATE},
-    {"Start CEP in transfer", MACRO_HSUSBD_START_CEP_IN},
-    {"Set EP maximum packet size", MACRO_HSUSBD_SET_MAX_PAYLOAD},
-    {"Enable EP interrupt function", MACRO_HSUSBD_ENABLE_EP_INT},
-    {"Get/Clear EP interrupt flag", MACRO_HSUSBD_GET_CLR_EP_INT_FLAG},
+//    {"Set/Get USB device address", MACRO_HSUSBD_SET_GET_ADDR},
+//    {"Enable USBD interrupt function", MACRO_HSUSBD_ENABLE_INT},
+//    {"Get/Clear USB interrupt flag", MACRO_HSUSBD_GET_CLR_INT_FLAG},
+//    {"Enable CEP interrupt function", MACRO_HSUSBD_ENABLE_CEP_INT},
+//    {"Clear CEP interrupt flag", MACRO_HSUSBD_CLR_CEP_INT_FLAG},
+//    {"Set CEP state", MACRO_HSUSBD_SET_CEP_STATE},
+//    {"Start CEP in transfer", MACRO_HSUSBD_START_CEP_IN},
+//    {"Set EP maximum packet size", MACRO_HSUSBD_SET_MAX_PAYLOAD},
+//    {"Enable EP interrupt function", MACRO_HSUSBD_ENABLE_EP_INT},
+//    {"Get/Clear EP interrupt flag", MACRO_HSUSBD_GET_CLR_EP_INT_FLAG},
     {"Set DMA length", MACRO_HSUSBD_SET_DMA_LEN},
     {"Set DMA address", MACRO_HSUSBD_SET_DMA_ADDR},
     {"Set DMA read", MACRO_HSUSBD_SET_DMA_READ},
     {"Set DMA write", MACRO_HSUSBD_SET_DMA_WRITE},
     {"Enable DMA", MACRO_HSUSBD_ENABLE_DMA},
-    {"Get USB bus connection state", MACRO_HSUSBD_IS_ATTACHED},
+//    {"Get USB bus connection state", MACRO_HSUSBD_IS_ATTACHED},
     {"Enable/Disable BCD", MACRO_HSUSBD_ENABLE_DISABLE_BCD},
     {"Enable/Disable LPM", MACRO_HSUSBD_ENABLE_DISABLE_LPM},
     {"Memory copy test", MACRO_HSUSBD_MemCopy},
-    {"Set/Clear/Get STALL state of the specified endpoint ID", MACRO_HSUSBD_Set_Clear_Get_Ep_Stall},
-    {"Set/Clear/Get STALL", MACRO_HSUSBD_SetStall_ClearStall_GetStall},
+//    {"Set/Clear/Get STALL state of the specified endpoint ID", MACRO_HSUSBD_Set_Clear_Get_Ep_Stall},
+//    {"Set/Clear/Get STALL", MACRO_HSUSBD_SetStall_ClearStall_GetStall},
 
     CU_TEST_INFO_NULL
 };

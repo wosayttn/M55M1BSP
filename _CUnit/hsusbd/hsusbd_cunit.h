@@ -24,7 +24,7 @@
 #ifndef _TEST_FUN_H_
 #define _TEST_FUN_H_
 
-extern CU_SuiteInfo suites[];
+extern CU_SuiteInfo HSUSBD_Suites[];
 extern CU_TestInfo HSUSBD_MacroTests[];
 extern CU_TestInfo HSUSBD_ApiTests[];
 extern CU_TestInfo HSUSBD_ConstantTest[];

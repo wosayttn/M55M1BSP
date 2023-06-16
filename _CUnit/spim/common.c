@@ -14,13 +14,8 @@ static SPIM_T *gpasSPIMModule[] =
     SPIM1,
 };
 
-#if defined (__ARMCC_VERSION)
 static __attribute__((aligned(32))) uint8_t g_buff[BUFFER_SIZE] = {0};
 static __attribute__((aligned(32))) uint8_t g_buff1[BUFFER_SIZE] = {0};
-#else
-static __align(32) uint8_t g_buff[BUFFER_SIZE] = {0};
-static __align(32) uint8_t g_buff1[BUFFER_SIZE] = {0};
-#endif //__ARMCC_VERSION
 
 static volatile uint8_t gu32TestSPIMModule = 0;
 
@@ -270,59 +265,6 @@ void RunTestFunction(S_TestMenu *pTestMenu, uint32_t u32MenuSize, uint32_t u32SP
 //------------------------------------------------------------------------------
 // SPIM API
 //------------------------------------------------------------------------------
-/**
- * @brief Search SPI Flash Command and init DMA/DMM SPI flash read/wirte command phase
- *
- * @param spim
- * @param pPhaseTable   Check SPI Flash specifications for support command codes,
- *                      and create command phase table.
- * @param u32TableSize  Phase Talbe total size
- * @param u32OPMode     SPI Function Operation Mode
- *                      - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
- *                      - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
- *                      - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
- * @param u32CMDCode
- * @return     SPIM_OK          SPIM operation OK.
- *             SPIM_ERR_FAIL    SPIM operation Fail.
- */
-int32_t SPIM_FindAndInitDMADMMPhase(SPIM_T *spim,
-                                    PHASE_SET_T *pPhaseTable,
-                                    uint32_t u32TableSize,
-                                    uint32_t u32OPMode,
-                                    uint32_t u32CMDCode)
-{
-    uint32_t u32i = 1;
-    int32_t i32found = SPIM_ERR_FAIL;
-    uint32_t u32TableIdx = 0;
-    PHASE_SET_T *pTmpTable = NULL;
-
-    for (u32i = 0; u32i < u32TableSize; u32i++)
-    {
-        /*
-         * If element is found in array then raise found flag
-         * and terminate from loop.
-         */
-        if (pPhaseTable[u32i].u32CMDCode == u32CMDCode)
-        {
-            i32found = SPIM_OK;
-            u32TableIdx = u32i;
-            break;
-        }
-    }
-
-    if (i32found != SPIM_OK)
-    {
-        return SPIM_ERR_FAIL;
-    }
-
-    pTmpTable = (PHASE_SET_T *)&pPhaseTable[u32TableIdx];
-
-    SPIM_DMADMM_InitPhase(spim, pTmpTable, u32OPMode);
-
-    return SPIM_OK;
-}
-
-
 /**
   * @brief      SPIM Default Config HyperBus Access Module Parameters.
   * @param      spim

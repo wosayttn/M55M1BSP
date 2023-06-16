@@ -12,19 +12,19 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Functions and variables declaration                                                                     */
 /*---------------------------------------------------------------------------------------------------------*/
-static volatile uint32_t g_u32IsTamper = FALSE;
+static volatile uint32_t s_u32IsTamper = FALSE;
 
 void SYS_Init(void);
 void UART_Init(void);
 
 /**
- * @brief       IRQ Handler for RTC TAMPER Interrupt
+ * @brief       IRQ Handler for RTCTAMPER Interrupt
  *
  * @param       None
  *
  * @return      None
  *
- * @details     The RTC_TAMPER_IRQHandler is default IRQ of RTC TAMPER, declared in startup_M2354.s.
+ * @details     The RTCTAMPER_IRQHandler is default IRQ of RTC TAMPER, declared in startup_M55M1.s.
  */
 void RTCTAMPER_IRQHandler(void)
 {
@@ -32,26 +32,26 @@ void RTCTAMPER_IRQHandler(void)
     uint32_t i;
 
     /* Tamper interrupt occurred */
-    if(RTC_GET_TAMPER_INT_FLAG(RTC))
+    if (RTC_GET_TAMPER_INT_FLAG(RTC))
     {
         u32FlagStatus = RTC_GET_TAMPER_INT_STATUS(RTC);
 
-        for(i = 0; i < 6; i++)
+        for (i = 0; i < 6; i++)
         {
-            if(u32FlagStatus & (0x1UL << (i + RTC_INTSTS_TAMP0IF_Pos)))
-                printf(" Tamper %d Detected!!\n", i);
+            if (u32FlagStatus & (0x1UL << (i + RTC_INTSTS_TAMP0IF_Pos)))
+                printf(" Tamper %u Detected!!\n", i);
         }
 
         u32TAMPCAL = RTC->TAMPCAL;
         u32TAMPTIME = RTC->TAMPTIME;
-        printf(" Tamper detected date/time: 20%d%d/%d%d/%d%d ",
+        printf(" Tamper detected date/time: 20%u%u/%u%u/%u%u ",
                (uint32_t)((u32TAMPCAL & RTC_TAMPCAL_TENYEAR_Msk) >> RTC_TAMPCAL_TENYEAR_Pos),
                (uint32_t)((u32TAMPCAL & RTC_TAMPCAL_YEAR_Msk) >> RTC_TAMPCAL_YEAR_Pos),
                (uint32_t)((u32TAMPCAL & RTC_TAMPCAL_TENMON_Msk) >> RTC_TAMPCAL_TENMON_Pos),
                (uint32_t)((u32TAMPCAL & RTC_TAMPCAL_MON_Msk) >> RTC_TAMPCAL_MON_Pos),
                (uint32_t)((u32TAMPCAL & RTC_TAMPCAL_TENDAY_Msk) >> RTC_TAMPCAL_TENDAY_Pos),
                (uint32_t)((u32TAMPCAL & RTC_TAMPCAL_DAY_Msk) >> RTC_TAMPCAL_DAY_Pos));
-        printf("%d%d:%d%d:%d%d.\n\n",
+        printf("%u%u:%u%u:%u%u.\n\n",
                (uint32_t)((u32TAMPTIME & RTC_TAMPTIME_TENHR_Msk) >> RTC_TAMPTIME_TENHR_Pos),
                (uint32_t)((u32TAMPTIME & RTC_TAMPTIME_HR_Msk) >> RTC_TAMPTIME_HR_Pos),
                (uint32_t)((u32TAMPTIME & RTC_TAMPTIME_TENMIN_Msk) >> RTC_TAMPTIME_TENMIN_Pos),
@@ -60,19 +60,18 @@ void RTCTAMPER_IRQHandler(void)
                (uint32_t)((u32TAMPTIME & RTC_TAMPTIME_SEC_Msk) >> RTC_TAMPTIME_SEC_Pos));
 
         RTC_CLEAR_TAMPER_INT_FLAG(RTC, u32FlagStatus);
-        g_u32IsTamper = TRUE;
+        s_u32IsTamper = TRUE;
     }
 }
-
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init System Clock                                                                                       */
+/*---------------------------------------------------------------------------------------------------------*/
 void SYS_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/  
     /* Set X32_OUT(PF.4) and X32_IN(PF.5)*/
-    SET_X32_IN_PF5(); 
+    SET_X32_IN_PF5();
     SET_X32_OUT_PF4();
-    
+
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
     /* Enable External LXT clock */
@@ -88,7 +87,7 @@ void SYS_Init(void)
 
     /* Switch SCLK clock source to PLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-    
+
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
 
@@ -102,7 +101,7 @@ void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-   
+
     /* Enable module clock */
     CLK_EnableModuleClock(RTC0_MODULE);
 
@@ -113,17 +112,19 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-    
-    /* Set multi-function pins for RTC Tamper */
-   SET_TAMPER0_PF6();
-   SET_TAMPER1_PF7();
-   SET_TAMPER2_PF8();
-   SET_TAMPER3_PF9();
-   SET_TAMPER4_PF10();
-   SET_TAMPER5_PF11();
-    
-}
 
+    /* Set multi-function pins for RTC Tamper */
+    SET_TAMPER0_PF6();
+    SET_TAMPER1_PF7();
+    SET_TAMPER2_PF8();
+    SET_TAMPER3_PF9();
+    SET_TAMPER4_PF10();
+    SET_TAMPER5_PF11();
+
+}
+/*---------------------------------------------------------------------------------------------------------*/
+/* Init UART                                                                                               */
+/*---------------------------------------------------------------------------------------------------------*/
 void UART_Init(void)
 {
     /* Configure UART and set UART Baudrate */
@@ -136,7 +137,7 @@ void UART_Init(void)
 int main(void)
 {
     S_RTC_TIME_DATA_T sInitTime, sGetTime;
-    S_RTC_TIME_DATA_T *sptrInitTime;
+    S_RTC_TIME_DATA_T *spInitTime;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -150,7 +151,7 @@ int main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    printf("\n\nCPU @ %dHz\n", SystemCoreClock);
+    printf("\n\nCPU @ %uHz\n", SystemCoreClock);
     printf("+-------------------------------------+\n");
     printf("|    RTC Dynamic Tamper Sample Code   |\n");
     printf("+-------------------------------------+\n\n");
@@ -167,11 +168,11 @@ int main(void)
     sInitTime.u32Second     = 0;
     sInitTime.u32DayOfWeek  = RTC_MONDAY;
     sInitTime.u32TimeScale  = RTC_CLOCK_24;
-    
+
     /* check rtc reset status */
-    sptrInitTime = (RTC->INIT & RTC_INIT_ACTIVE_Msk) ? NULL : &sInitTime;
-    
-    if(RTC_Open(sptrInitTime) != 0)
+    spInitTime = (RTC->INIT & RTC_INIT_ACTIVE_Msk) ? NULL : &sInitTime;
+
+    if (RTC_Open(spInitTime) != 0)
     {
         printf("\n RTC initial fail!!");
         printf("\n Please check h/w setting!!");
@@ -179,7 +180,7 @@ int main(void)
     }
 
     RTC_GetDateAndTime(&sGetTime);
-    printf("# Initial data/time is: %d/%02d/%02d %02d:%02d:%02d.\n",
+    printf("# Initial data/time is: %u/%02u/%02u %02u:%02u:%02u.\n",
            sGetTime.u32Year, sGetTime.u32Month, sGetTime.u32Day, sGetTime.u32Hour, sGetTime.u32Minute, sGetTime.u32Second);
     printf("# Please connect (tamper0 & tamper1) and (tamper2 & tamper3) and (tamper4 & tamper5) first.\n");
     printf("                    (PF.6 to PF.7)          (PF.8 to PF.9)         (PF.10 to PF.11)\n");
@@ -194,16 +195,17 @@ int main(void)
     RTC_DynamicTamperEnable(RTC_PAIR0_SELECT | RTC_PAIR1_SELECT | RTC_PAIR2_SELECT, RTC_TAMPER_DEBOUNCE_ENABLE, 0, 0);
     RTC_DynamicTamperConfig(RTC_2POW10_CLK, 1, 0, RTC_REF_RANDOM_PATTERN);
 
-    g_u32IsTamper = FALSE;
+    s_u32IsTamper = FALSE;
 
     /* Enable RTC Tamper Interrupt */
     RTC_EnableInt(RTC_INTEN_TAMP1IEN_Msk | RTC_INTEN_TAMP3IEN_Msk | RTC_INTEN_TAMP5IEN_Msk);
     NVIC_EnableIRQ(RTCTAMPER_IRQn);
 
-    while(1)
+    while (1)
     {
-        while(g_u32IsTamper == FALSE) {}
-        g_u32IsTamper = FALSE;
+        while (s_u32IsTamper == FALSE) {}
+
+        s_u32IsTamper = FALSE;
     }
 }
 

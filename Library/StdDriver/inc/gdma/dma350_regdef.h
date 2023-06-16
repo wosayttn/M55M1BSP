@@ -26,112 +26,112 @@
 /******************************************************************************/
 typedef struct
 {
-    __IOM uint32_t CH_CMD;                             /*!< Address offset: 0x000, Channel DMA Command Register */
-    __IOM uint32_t CH_STATUS;                          /*!< Address offset: 0x004, Channel Status Register */
-    __IOM uint32_t CH_INTREN;                          /*!< Address offset: 0x008, Channel Interrupt Enable Register */
-    __IOM uint32_t CH_CTRL;                            /*!< Address offset: 0x00C, Channel Control Register */
-    __IOM uint32_t CH_SRCADDR;                         /*!< Address offset: 0x010, Channel Source Address Register */
-    __IOM uint32_t CH_SRCADDRHI;                       /*!< Address offset: 0x014, Channel Source Address Register High Bits [63:32] */
-    __IOM uint32_t CH_DESADDR;                         /*!< Address offset: 0x018, Channel Destination Address Register */
-    __IOM uint32_t CH_DESADDRHI;                       /*!< Address offset: 0x01C, Channel Destination Address Register, High Bits [63:32] */
-    __IOM uint32_t CH_XSIZE;                           /*!< Address offset: 0x020, Channel X Dimension Size Register, Lower Bits [15:0] */
-    __IOM uint32_t CH_XSIZEHI;                         /*!< Address offset: 0x024, Channel X Dimension Size Register, High Bits [31:16] */
-    __IOM uint32_t CH_SRCTRANSCFG;                     /*!< Address offset: 0x028, Channel Source Transfer Configuration Register */
-    __IOM uint32_t CH_DESTRANSCFG;                     /*!< Address offset: 0x02C, Channel Destination Transfer Configuration Register */
-    __IOM uint32_t CH_XADDRINC;                        /*!< Address offset: 0x030, Channel X Dimension Address Increment Register */
-    __IOM uint32_t CH_YADDRSTRIDE;                     /*!< Address offset: 0x034, Channel Y Dimension Address Stride Register */
-    __IOM uint32_t CH_FILLVAL;                         /*!< Address offset: 0x038, Channel Fill Pattern Value Register */
-    __IOM uint32_t CH_YSIZE;                           /*!< Address offset: 0x03C, Channel Y Dimensions Size Register */
-    __IOM uint32_t CH_TMPLTCFG;                        /*!< Address offset: 0x040, Channel Template Configuration Register */
-    __IOM uint32_t CH_SRCTMPLT;                        /*!< Address offset: 0x044, Channel Source Template Pattern Register */
-    __IOM uint32_t CH_DESTMPLT;                        /*!< Address offset: 0x048, Channel Destination Template Pattern Register */
-    __IOM uint32_t CH_SRCTRIGINCFG;                    /*!< Address offset: 0x04C, Channel Source Trigger In Configuration Register */
-    __IOM uint32_t CH_DESTRIGINCFG;                    /*!< Address offset: 0x050, Channel Destination Trigger In Configuration Register */
-    __IOM uint32_t CH_TRIGOUTCFG;                      /*!< Address offset: 0x054, Channel Trigger Out Configuration Register */
-    __IOM uint32_t CH_GPOEN0;                          /*!< Address offset: 0x058, Channel GPO  Driving Enable Register 0 */
-    uint32_t       RESERVED0[1];                       /*!< Address offset: 0x5C - 0x5C, Reserved */
-    __IOM uint32_t CH_GPOVAL0;                         /*!< Address offset: 0x060, Channel GPO Value Register 0 */
-    uint32_t       RESERVED1[1];                       /*!< Address offset: 0x64 - 0x64, Reserved */
-    __IOM uint32_t CH_STREAMINTCFG;                    /*!< Address offset: 0x068, Channel Stream Interface Configuration Register */
-    uint32_t       RESERVED2[1];                       /*!< Address offset: 0x6C - 0x6C, Reserved */
-    __IOM uint32_t CH_LINKATTR;                        /*!< Address offset: 0x070, Channel Link Address Memory Attributes Register */
-    __IOM uint32_t CH_AUTOCFG;                         /*!< Address offset: 0x074, Channel Automatic Command Restart Configuration Register */
-    __IOM uint32_t CH_LINKADDR;                        /*!< Address offset: 0x078, Channel Link Address Register */
-    __IOM uint32_t CH_LINKADDRHI;                      /*!< Address offset: 0x07C, Channel Link Address Register, High Bits [63:32] */
-    __IOM uint32_t CH_GPOREAD0;                        /*!< Address offset: 0x080, Channel GPO Read Value Register 0 */
-    uint32_t       RESERVED3[1];                       /*!< Address offset: 0x84 - 0x84, Reserved */
-    __IOM uint32_t CH_WRKREGPTR;                       /*!< Address offset: 0x088, Channel Working Register Pointer Register */
-    __IOM uint32_t CH_WRKREGVAL;                       /*!< Address offset: 0x08C, Channel - Working Register Value Register */
-    __IOM uint32_t CH_ERRINFO;                         /*!< Address offset: 0x090, Channel Error Information Register */
-    uint32_t       RESERVED4[13];                      /*!< Address offset: 0x94 - 0xC4, Reserved */
-    __IOM uint32_t CH_IIDR;                            /*!< Address offset: 0x0C8, Channel Implementation Identification Register */
-    __IOM uint32_t CH_AIDR;                            /*!< Address offset: 0x0CC, Channel Architecture Identification Register */
-    uint32_t       RESERVED5[6];                       /*!< Address offset: 0xD0 - 0xE4, Reserved */
-    __IOM uint32_t CH_ISSUECAP;                        /*!< Address offset: 0x0E8, Used for setting issuing capability threshold. */
-    uint32_t       RESERVED6[3];                       /*!< Address offset: 0xEC - 0xF4, Reserved */
-    __IOM uint32_t CH_BUILDCFG0;                       /*!< Address offset: 0x0F8, Channel Build Configuration and Capability Register 0 */
-    __IOM uint32_t CH_BUILDCFG1;                       /*!< Address offset: 0x0FC, Channel Build Configuration and Capability Register 1 */
+  __IOM uint32_t CH_CMD;                             /*!< Address offset: 0x000, Channel DMA Command Register */
+  __IOM uint32_t CH_STATUS;                          /*!< Address offset: 0x004, Channel Status Register */
+  __IOM uint32_t CH_INTREN;                          /*!< Address offset: 0x008, Channel Interrupt Enable Register */
+  __IOM uint32_t CH_CTRL;                            /*!< Address offset: 0x00C, Channel Control Register */
+  __IOM uint32_t CH_SRCADDR;                         /*!< Address offset: 0x010, Channel Source Address Register */
+  __IOM uint32_t CH_SRCADDRHI;                       /*!< Address offset: 0x014, Channel Source Address Register High Bits [63:32] */
+  __IOM uint32_t CH_DESADDR;                         /*!< Address offset: 0x018, Channel Destination Address Register */
+  __IOM uint32_t CH_DESADDRHI;                       /*!< Address offset: 0x01C, Channel Destination Address Register, High Bits [63:32] */
+  __IOM uint32_t CH_XSIZE;                           /*!< Address offset: 0x020, Channel X Dimension Size Register, Lower Bits [15:0] */
+  __IOM uint32_t CH_XSIZEHI;                         /*!< Address offset: 0x024, Channel X Dimension Size Register, High Bits [31:16] */
+  __IOM uint32_t CH_SRCTRANSCFG;                     /*!< Address offset: 0x028, Channel Source Transfer Configuration Register */
+  __IOM uint32_t CH_DESTRANSCFG;                     /*!< Address offset: 0x02C, Channel Destination Transfer Configuration Register */
+  __IOM uint32_t CH_XADDRINC;                        /*!< Address offset: 0x030, Channel X Dimension Address Increment Register */
+  __IOM uint32_t CH_YADDRSTRIDE;                     /*!< Address offset: 0x034, Channel Y Dimension Address Stride Register */
+  __IOM uint32_t CH_FILLVAL;                         /*!< Address offset: 0x038, Channel Fill Pattern Value Register */
+  __IOM uint32_t CH_YSIZE;                           /*!< Address offset: 0x03C, Channel Y Dimensions Size Register */
+  __IOM uint32_t CH_TMPLTCFG;                        /*!< Address offset: 0x040, Channel Template Configuration Register */
+  __IOM uint32_t CH_SRCTMPLT;                        /*!< Address offset: 0x044, Channel Source Template Pattern Register */
+  __IOM uint32_t CH_DESTMPLT;                        /*!< Address offset: 0x048, Channel Destination Template Pattern Register */
+  __IOM uint32_t CH_SRCTRIGINCFG;                    /*!< Address offset: 0x04C, Channel Source Trigger In Configuration Register */
+  __IOM uint32_t CH_DESTRIGINCFG;                    /*!< Address offset: 0x050, Channel Destination Trigger In Configuration Register */
+  __IOM uint32_t CH_TRIGOUTCFG;                      /*!< Address offset: 0x054, Channel Trigger Out Configuration Register */
+  __IOM uint32_t CH_GPOEN0;                          /*!< Address offset: 0x058, Channel GPO  Driving Enable Register 0 */
+  uint32_t       RESERVED0[1];                       /*!< Address offset: 0x5C - 0x5C, Reserved */
+  __IOM uint32_t CH_GPOVAL0;                         /*!< Address offset: 0x060, Channel GPO Value Register 0 */
+  uint32_t       RESERVED1[1];                       /*!< Address offset: 0x64 - 0x64, Reserved */
+  __IOM uint32_t CH_STREAMINTCFG;                    /*!< Address offset: 0x068, Channel Stream Interface Configuration Register */
+  uint32_t       RESERVED2[1];                       /*!< Address offset: 0x6C - 0x6C, Reserved */
+  __IOM uint32_t CH_LINKATTR;                        /*!< Address offset: 0x070, Channel Link Address Memory Attributes Register */
+  __IOM uint32_t CH_AUTOCFG;                         /*!< Address offset: 0x074, Channel Automatic Command Restart Configuration Register */
+  __IOM uint32_t CH_LINKADDR;                        /*!< Address offset: 0x078, Channel Link Address Register */
+  __IOM uint32_t CH_LINKADDRHI;                      /*!< Address offset: 0x07C, Channel Link Address Register, High Bits [63:32] */
+  __IOM uint32_t CH_GPOREAD0;                        /*!< Address offset: 0x080, Channel GPO Read Value Register 0 */
+  uint32_t       RESERVED3[1];                       /*!< Address offset: 0x84 - 0x84, Reserved */
+  __IOM uint32_t CH_WRKREGPTR;                       /*!< Address offset: 0x088, Channel Working Register Pointer Register */
+  __IOM uint32_t CH_WRKREGVAL;                       /*!< Address offset: 0x08C, Channel - Working Register Value Register */
+  __IOM uint32_t CH_ERRINFO;                         /*!< Address offset: 0x090, Channel Error Information Register */
+  uint32_t       RESERVED4[13];                      /*!< Address offset: 0x94 - 0xC4, Reserved */
+  __IOM uint32_t CH_IIDR;                            /*!< Address offset: 0x0C8, Channel Implementation Identification Register */
+  __IOM uint32_t CH_AIDR;                            /*!< Address offset: 0x0CC, Channel Architecture Identification Register */
+  uint32_t       RESERVED5[6];                       /*!< Address offset: 0xD0 - 0xE4, Reserved */
+  __IOM uint32_t CH_ISSUECAP;                        /*!< Address offset: 0x0E8, Used for setting issuing capability threshold. */
+  uint32_t       RESERVED6[3];                       /*!< Address offset: 0xEC - 0xF4, Reserved */
+  __IOM uint32_t CH_BUILDCFG0;                       /*!< Address offset: 0x0F8, Channel Build Configuration and Capability Register 0 */
+  __IOM uint32_t CH_BUILDCFG1;                       /*!< Address offset: 0x0FC, Channel Build Configuration and Capability Register 1 */
 } DMACH_TypeDef;
 typedef struct
 {
-    __IOM uint32_t NSEC_CHINTRSTATUS0;                 /*!< Address offset: 0x000, Non-Secure Channel Interrupt Status Register 0 */
-    uint32_t       RESERVED0[1];                       /*!< Address offset: 0x4 - 0x4, Reserved */
-    __IOM uint32_t NSEC_STATUS;                        /*!< Address offset: 0x008, Non-Secure Status Register */
-    __IOM uint32_t NSEC_CTRL;                          /*!< Address offset: 0x00C, Non-Secure Control Register */
-    uint32_t       RESERVED1[1];                       /*!< Address offset: 0x10 - 0x10, Reserved */
-    __IOM uint32_t NSEC_CHPTR;                         /*!< Address offset: 0x014, Non-Secure Channel Pointer */
-    __IOM uint32_t NSEC_CHCFG;                         /*!< Address offset: 0x018, Non-Secure Channel Configuration Register */
-    uint32_t       RESERVED2[53];                      /*!< Address offset: 0x1C - 0xEC, Reserved */
-    __IOM uint32_t NSEC_STATUSPTR;                     /*!< Address offset: 0x0F0, Non-Secure Unit Status Pointer Register */
-    __IOM uint32_t NSEC_STATUSVAL;                     /*!< Address offset: 0x0F4, Non-Secure Unit Status Value Register */
-    __IOM uint32_t NSEC_SIGNALPTR;                     /*!< Address offset: 0x0F8, Non-Secure Unit Signal Pointer */
-    __IOM uint32_t NSEC_SIGNALVAL;                     /*!< Address offset: 0x0FC, Non-Secure Unit Signal Value Register */
+  __IOM uint32_t NSEC_CHINTRSTATUS0;                 /*!< Address offset: 0x000, Non-Secure Channel Interrupt Status Register 0 */
+  uint32_t       RESERVED0[1];                       /*!< Address offset: 0x4 - 0x4, Reserved */
+  __IOM uint32_t NSEC_STATUS;                        /*!< Address offset: 0x008, Non-Secure Status Register */
+  __IOM uint32_t NSEC_CTRL;                          /*!< Address offset: 0x00C, Non-Secure Control Register */
+  uint32_t       RESERVED1[1];                       /*!< Address offset: 0x10 - 0x10, Reserved */
+  __IOM uint32_t NSEC_CHPTR;                         /*!< Address offset: 0x014, Non-Secure Channel Pointer */
+  __IOM uint32_t NSEC_CHCFG;                         /*!< Address offset: 0x018, Non-Secure Channel Configuration Register */
+  uint32_t       RESERVED2[53];                      /*!< Address offset: 0x1C - 0xEC, Reserved */
+  __IOM uint32_t NSEC_STATUSPTR;                     /*!< Address offset: 0x0F0, Non-Secure Unit Status Pointer Register */
+  __IOM uint32_t NSEC_STATUSVAL;                     /*!< Address offset: 0x0F4, Non-Secure Unit Status Value Register */
+  __IOM uint32_t NSEC_SIGNALPTR;                     /*!< Address offset: 0x0F8, Non-Secure Unit Signal Pointer */
+  __IOM uint32_t NSEC_SIGNALVAL;                     /*!< Address offset: 0x0FC, Non-Secure Unit Signal Value Register */
 } DMANSECCTRL_TypeDef;
 typedef struct
 {
-    __IOM uint32_t SEC_CHINTRSTATUS0;                  /*!< Address offset: 0x000, Secure Channel Interrupt Status Register 0 */
-    uint32_t       RESERVED0[1];                       /*!< Address offset: 0x4 - 0x4, Reserved */
-    __IOM uint32_t SEC_STATUS;                         /*!< Address offset: 0x008, Secure Status Register */
-    __IOM uint32_t SEC_CTRL;                           /*!< Address offset: 0x00C, Secure Control Register */
-    uint32_t       RESERVED1[1];                       /*!< Address offset: 0x10 - 0x10, Reserved */
-    __IOM uint32_t SEC_CHPTR;                          /*!< Address offset: 0x014, Secure Channel Pointer */
-    __IOM uint32_t SEC_CHCFG;                          /*!< Address offset: 0x018, Secure Channel Configuration Register */
-    uint32_t       RESERVED2[53];                      /*!< Address offset: 0x1C - 0xEC, Reserved */
-    __IOM uint32_t SEC_STATUSPTR;                      /*!< Address offset: 0x0F0, Secure Unit Status Pointer Register */
-    __IOM uint32_t SEC_STATUSVAL;                      /*!< Address offset: 0x0F4, Secure Unit Status Value Register */
-    __IOM uint32_t SEC_SIGNALPTR;                      /*!< Address offset: 0x0F8, Secure Unit Signal Pointer */
-    __IOM uint32_t SEC_SIGNALVAL;                      /*!< Address offset: 0x0FC, Secure Unit Signal Value Register */
+  __IOM uint32_t SEC_CHINTRSTATUS0;                  /*!< Address offset: 0x000, Secure Channel Interrupt Status Register 0 */
+  uint32_t       RESERVED0[1];                       /*!< Address offset: 0x4 - 0x4, Reserved */
+  __IOM uint32_t SEC_STATUS;                         /*!< Address offset: 0x008, Secure Status Register */
+  __IOM uint32_t SEC_CTRL;                           /*!< Address offset: 0x00C, Secure Control Register */
+  uint32_t       RESERVED1[1];                       /*!< Address offset: 0x10 - 0x10, Reserved */
+  __IOM uint32_t SEC_CHPTR;                          /*!< Address offset: 0x014, Secure Channel Pointer */
+  __IOM uint32_t SEC_CHCFG;                          /*!< Address offset: 0x018, Secure Channel Configuration Register */
+  uint32_t       RESERVED2[53];                      /*!< Address offset: 0x1C - 0xEC, Reserved */
+  __IOM uint32_t SEC_STATUSPTR;                      /*!< Address offset: 0x0F0, Secure Unit Status Pointer Register */
+  __IOM uint32_t SEC_STATUSVAL;                      /*!< Address offset: 0x0F4, Secure Unit Status Value Register */
+  __IOM uint32_t SEC_SIGNALPTR;                      /*!< Address offset: 0x0F8, Secure Unit Signal Pointer */
+  __IOM uint32_t SEC_SIGNALVAL;                      /*!< Address offset: 0x0FC, Secure Unit Signal Value Register */
 } DMASECCTRL_TypeDef;
 typedef struct
 {
-    __IOM uint32_t SCFG_CHSEC0;                        /*!< Address offset: 0x000, Secure Configuration Channel Security Mapping Register 0 */
-    uint32_t       RESERVED0[1];                       /*!< Address offset: 0x4 - 0x4, Reserved */
-    __IOM uint32_t SCFG_TRIGINSEC0;                    /*!< Address offset: 0x008, Secure Configuration Trigger Input Security Mapping Register 0 */
-    uint32_t       RESERVED1[7];                       /*!< Address offset: 0xC - 0x24, Reserved */
-    __IOM uint32_t SCFG_TRIGOUTSEC0;                   /*!< Address offset: 0x028, Secure Configuration Trigger Output Security Mapping Register 0 */
-    uint32_t       RESERVED2[5];                       /*!< Address offset: 0x2C - 0x3C, Reserved */
-    __IOM uint32_t SCFG_CTRL;                          /*!< Address offset: 0x040, Secure Configuration Control */
-    __IOM uint32_t SCFG_INTRSTATUS;                    /*!< Address offset: 0x044, Secure Configuration Interrupt Status */
+  __IOM uint32_t SCFG_CHSEC0;                        /*!< Address offset: 0x000, Secure Configuration Channel Security Mapping Register 0 */
+  uint32_t       RESERVED0[1];                       /*!< Address offset: 0x4 - 0x4, Reserved */
+  __IOM uint32_t SCFG_TRIGINSEC0;                    /*!< Address offset: 0x008, Secure Configuration Trigger Input Security Mapping Register 0 */
+  uint32_t       RESERVED1[7];                       /*!< Address offset: 0xC - 0x24, Reserved */
+  __IOM uint32_t SCFG_TRIGOUTSEC0;                   /*!< Address offset: 0x028, Secure Configuration Trigger Output Security Mapping Register 0 */
+  uint32_t       RESERVED2[5];                       /*!< Address offset: 0x2C - 0x3C, Reserved */
+  __IOM uint32_t SCFG_CTRL;                          /*!< Address offset: 0x040, Secure Configuration Control */
+  __IOM uint32_t SCFG_INTRSTATUS;                    /*!< Address offset: 0x044, Secure Configuration Interrupt Status */
 } DMASECCFG_TypeDef;
 typedef struct
 {
-    uint32_t       RESERVED0[44];                      /*!< Address offset: 0x0 - 0xAC, Reserved */
-    __IOM uint32_t DMA_BUILDCFG0;                      /*!< Address offset: 0x0B0, DMA Build Configuration Register 0 */
-    __IOM uint32_t DMA_BUILDCFG1;                      /*!< Address offset: 0x0B4, DMA Build Configuration Register 1 */
-    __IOM uint32_t DMA_BUILDCFG2;                      /*!< Address offset: 0x0B8, DMA Build Configuration Register 2 */
-    uint32_t       RESERVED1[3];                       /*!< Address offset: 0xBC - 0xC4, Reserved */
-    __IOM uint32_t IIDR;                               /*!< Address offset: 0x0C8, Implementation Identification Register */
-    __IOM uint32_t AIDR;                               /*!< Address offset: 0x0CC, Architecture Identification Register */
-    __IOM uint32_t PIDR4;                              /*!< Address offset: 0x0D0, Peripheral ID4 Register */
-    uint32_t       RESERVED2[3];                       /*!< Address offset: 0xD4 - 0xDC, Reserved */
-    __IOM uint32_t PIDR0;                              /*!< Address offset: 0x0E0, Peripheral ID0 Register */
-    __IOM uint32_t PIDR1;                              /*!< Address offset: 0x0E4, Peripheral ID1 Register */
-    __IOM uint32_t PIDR2;                              /*!< Address offset: 0x0E8, Peripheral ID2 Register */
-    __IOM uint32_t PIDR3;                              /*!< Address offset: 0x0EC, Peripheral ID 3 Register */
-    __IOM uint32_t CIDR0;                              /*!< Address offset: 0x0F0, Component ID0 Register */
-    __IOM uint32_t CIDR1;                              /*!< Address offset: 0x0F4, Component ID1 Register */
-    __IOM uint32_t CIDR2;                              /*!< Address offset: 0x0F8, Component ID2 Register */
-    __IOM uint32_t CIDR3;                              /*!< Address offset: 0x0FC, Component ID3 Register */
+  uint32_t       RESERVED0[44];                      /*!< Address offset: 0x0 - 0xAC, Reserved */
+  __IOM uint32_t DMA_BUILDCFG0;                      /*!< Address offset: 0x0B0, DMA Build Configuration Register 0 */
+  __IOM uint32_t DMA_BUILDCFG1;                      /*!< Address offset: 0x0B4, DMA Build Configuration Register 1 */
+  __IOM uint32_t DMA_BUILDCFG2;                      /*!< Address offset: 0x0B8, DMA Build Configuration Register 2 */
+  uint32_t       RESERVED1[3];                       /*!< Address offset: 0xBC - 0xC4, Reserved */
+  __IOM uint32_t IIDR;                               /*!< Address offset: 0x0C8, Implementation Identification Register */
+  __IOM uint32_t AIDR;                               /*!< Address offset: 0x0CC, Architecture Identification Register */
+  __IOM uint32_t PIDR4;                              /*!< Address offset: 0x0D0, Peripheral ID4 Register */
+  uint32_t       RESERVED2[3];                       /*!< Address offset: 0xD4 - 0xDC, Reserved */
+  __IOM uint32_t PIDR0;                              /*!< Address offset: 0x0E0, Peripheral ID0 Register */
+  __IOM uint32_t PIDR1;                              /*!< Address offset: 0x0E4, Peripheral ID1 Register */
+  __IOM uint32_t PIDR2;                              /*!< Address offset: 0x0E8, Peripheral ID2 Register */
+  __IOM uint32_t PIDR3;                              /*!< Address offset: 0x0EC, Peripheral ID 3 Register */
+  __IOM uint32_t CIDR0;                              /*!< Address offset: 0x0F0, Component ID0 Register */
+  __IOM uint32_t CIDR1;                              /*!< Address offset: 0x0F4, Component ID1 Register */
+  __IOM uint32_t CIDR2;                              /*!< Address offset: 0x0F8, Component ID2 Register */
+  __IOM uint32_t CIDR3;                              /*!< Address offset: 0x0FC, Component ID3 Register */
 } DMAINFO_TypeDef;
 
 /******************************************************************************/
