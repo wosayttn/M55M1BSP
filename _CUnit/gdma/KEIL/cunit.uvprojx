@@ -338,9 +338,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>DEBUG_PORT=UART0, STDIN_ECHO=1,CMSIS_device_header=\"NuMicro.h\"</Define>
+              <Define>DEBUG_PORT=UART0, STDIN_ECHO=1</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\Library\CMSIS\Core\Include;..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\Library\StdDriver\inc;..\..\common\inc</IncludePath>
+              <IncludePath>..\..\..\Library\CMSIS\Core\Include;..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\Library\StdDriver\inc;..\..\common\inc;..\..\..\Library\StdDriver\inc\gdma</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -467,42 +467,22 @@
             <File>
               <FileName>dma350_address_remap_template.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\DMA350\dma350_address_remap_template.c</FilePath>
+              <FilePath>..\..\..\Library\StdDriver\src\gdma\dma350_address_remap_template.c</FilePath>
             </File>
             <File>
               <FileName>dma350_ch_drv.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\DMA350\dma350_ch_drv.c</FilePath>
-            </File>
-            <File>
-              <FileName>dma350_ch_drv.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\DMA350\dma350_ch_drv.h</FilePath>
+              <FilePath>..\..\..\Library\StdDriver\src\gdma\dma350_ch_drv.c</FilePath>
             </File>
             <File>
               <FileName>dma350_drv.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\DMA350\dma350_drv.c</FilePath>
-            </File>
-            <File>
-              <FileName>dma350_drv.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\DMA350\dma350_drv.h</FilePath>
+              <FilePath>..\..\..\Library\StdDriver\src\gdma\dma350_drv.c</FilePath>
             </File>
             <File>
               <FileName>dma350_lib.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\DMA350\dma350_lib.c</FilePath>
-            </File>
-            <File>
-              <FileName>dma350_lib.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\DMA350\dma350_lib.h</FilePath>
-            </File>
-            <File>
-              <FileName>dma350_regdef.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\DMA350\dma350_regdef.h</FilePath>
+              <FilePath>..\..\..\Library\StdDriver\src\gdma\dma350_lib.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -840,9 +820,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>DEBUG_PORT=UART0, STDIN_ECHO=1,CMSIS_device_header=\"NuMicro.h\"</Define>
+              <Define>DEBUG_PORT=UART0, STDIN_ECHO=1,</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\Library\CMSIS\Core\Include;..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\Library\StdDriver\inc;..\..\common\inc</IncludePath>
+              <IncludePath>..\..\..\Library\CMSIS\Core\Include;..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\Library\StdDriver\inc;..\..\common\inc;..\..\..\Library\StdDriver\inc\gdma</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -969,42 +949,22 @@
             <File>
               <FileName>dma350_address_remap_template.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\DMA350\dma350_address_remap_template.c</FilePath>
+              <FilePath>..\..\..\Library\StdDriver\src\gdma\dma350_address_remap_template.c</FilePath>
             </File>
             <File>
               <FileName>dma350_ch_drv.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\DMA350\dma350_ch_drv.c</FilePath>
-            </File>
-            <File>
-              <FileName>dma350_ch_drv.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\DMA350\dma350_ch_drv.h</FilePath>
+              <FilePath>..\..\..\Library\StdDriver\src\gdma\dma350_ch_drv.c</FilePath>
             </File>
             <File>
               <FileName>dma350_drv.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\DMA350\dma350_drv.c</FilePath>
-            </File>
-            <File>
-              <FileName>dma350_drv.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\DMA350\dma350_drv.h</FilePath>
+              <FilePath>..\..\..\Library\StdDriver\src\gdma\dma350_drv.c</FilePath>
             </File>
             <File>
               <FileName>dma350_lib.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\DMA350\dma350_lib.c</FilePath>
-            </File>
-            <File>
-              <FileName>dma350_lib.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\DMA350\dma350_lib.h</FilePath>
-            </File>
-            <File>
-              <FileName>dma350_regdef.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\DMA350\dma350_regdef.h</FilePath>
+              <FilePath>..\..\..\Library\StdDriver\src\gdma\dma350_lib.c</FilePath>
             </File>
           </Files>
         </Group>

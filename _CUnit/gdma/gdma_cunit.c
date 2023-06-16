@@ -12,11 +12,6 @@
 
 // ref: arm_corelink_dma-350_controller_technical_reference_manual_102482_0000_02_en.pdf
 
-// DMA350 Native Driver
-#include "DMA350\dma350_lib.h"
-#include "DMA350\dma350_drv.h"
-#include "DMA350\dma350_ch_drv.h"
-
 /*---------------------------------------------------------------------------------------------------------*/
 /* Includes of local headers                                                                               */
 /*---------------------------------------------------------------------------------------------------------*/
