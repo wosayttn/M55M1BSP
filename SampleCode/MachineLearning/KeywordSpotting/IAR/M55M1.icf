@@ -47,5 +47,5 @@ place in DTCM_region   { readwrite,
                         block CSTACK, block HEAP };
 place in SRAM012_region   { section .bss.sram.data, section .bss.NoInit.activation_buf_sram };
 /* place in HYPERRAM_region   { section .bss.NoInit.activation_buf_sram }; */
-place in HYPERFLASH_region   { section ifm, section nn_model };
+/* place in HYPERFLASH_region   { section ifm, section nn_model }; */
 

@@ -16,7 +16,7 @@
 
 /**
     @addtogroup REGISTER Control Register
-    @{
+  @{
 */
 
 /**
@@ -153,138 +153,130 @@ typedef struct
 typedef struct
 {
     /**
-    * @var OTFC_T::CTL
-    * Offset: 0x00  OTFC Control Register
-    * ---------------------------------------------------------------------------------------------------
-    * |Bits    |Field     |Descriptions
-    * | :----: | :----:   | :---- |
-    * |[0]     |EN0       |Protection Region 0 Enable
-    * |        |          |0 = No effect.
-    * |        |          |1 = OTFC protection region 0 Enabled.
-    * |[1]     |RST0      |Protection Region 0 Reset
-    * |        |          |0 = No effect.
-    * |        |          |1 = Clear the seeting of OTFC protection region 0.
-    * |[2]     |KSWAP0    |Protection Region 0 Key and Nonce Swap
-    * |        |          |0 = Keep the original order.
-    * |        |          |1 = The order that CPU feeds key and nonce to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
-    * |[3]     |DFAPEN0   |Protection Region 0 Differential Fault Attack Protection Enable
-    * |        |          |0 = Protection Region 0 Differential Fault Attack Protection Disabled.
-    * |        |          |1 = Protection Region 0 Differential Fault Attack Protection Enabled.
-    * |[7]     |IEN0      |Protection Region 0 Interrupt Enable Bit
-    * |        |          |0 = Protection Region 0 interrupt Disabled.
-    * |        |          |1 = Protection Region 0 interrupt Enabled.
-    * |[8]     |EN1       |Protection Region 1 Enable
-    * |        |          |0 = No effect.
-    * |        |          |1 = OTFC protection region 1 Enabled.
-    * |[9]     |RST1      |Protection Region 1 Reset
-    * |        |          |0 = No effect.
-    * |        |          |1 = Clear the seeting of OTFC protection region 1.
-    * |[10]    |KSWAP1    |Protection Region 1 Key and Nonce Swap
-    * |        |          |0 = Keep the original order.
-    * |        |          |1 = The order that CPU feeds key and nonce to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
-    * |[11]    |DFAPEN1   |Protection Region 1 Differential Fault Attack Protection Enable
-    * |        |          |0 = Protection Region 1 Differential Fault Attack Protection Disabled.
-    * |        |          |1 = Protection Region 1 Differential Fault Attack Protection Enabled.
-    * |[15]    |IEN1      |Protection Region 1 Interrupt Enable Bit
-    * |        |          |0 = Protection Region 1 interrupt Disabled.
-    * |        |          |1 = Protection Region 1 interrupt Enabled.
-    * |[16]    |EN2       |Protection Region 2 Enable
-    * |        |          |0 = No effect.
-    * |        |          |1 = OTFC protection region 2 Enabled.
-    * |[17]    |RST2      |Protection Region 2 Reset
-    * |        |          |0 = No effect.
-    * |        |          |1 = Clear the seeting of OTFC protection region 2.
-    * |[18]    |KSWAP2    |Protection Region 2 Key and Nonce Swap
-    * |        |          |0 = Keep the original order.
-    * |        |          |1 = The order that CPU feeds key and nonce to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
-    * |[19]    |DFAPEN2   |Protection Region 2 Differential Fault Attack Protection Enable
-    * |        |          |0 = Protection Region 2 Differential Fault Attack Protection Disabled.
-    * |        |          |1 = Protection Region 2 Differential Fault Attack Protection Enabled.
-    * |[23]    |IEN2      |Protection Region 2 Interrupt Enable Bit
-    * |        |          |0 = Protection Region 2 interrupt Disabled.
-    * |        |          |1 = Protection Region 2 interrupt Enabled.
-    * |[24]    |EN3       |Protection Region 3 Enable
-    * |        |          |0 = No effect.
-    * |        |          |1 = OTFC protection region 3 Enabled.
-    * |[25]    |RST3      |Protection Region 3 Reset
-    * |        |          |0 = No effect.
-    * |        |          |1 = Clear the seeting of OTFC protection region 3.
-    * |[26]    |KSWAP3    |Protection Region 3 Key and Nonce Swap
-    * |        |          |0 = Keep the original order.
-    * |        |          |1 = The order that CPU feeds key and nonce to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
-    * |[27]    |DFAPEN3   |Protection Region 3 Differential Fault Attack Protection Enable
-    * |        |          |0 = Protection Region 3 Differential Fault Attack Protection Disabled.
-    * |        |          |1 = Protection Region 3 Differential Fault Attack Protection Enabled.
-    * |[31]    |IEN3      |Protection Region 3 Interrupt Enable Bit
-    * |        |          |0 = Protection Region 3 interrupt Disabled.
-    * |        |          |1 = Protection Region 3 interrupt Enabled.
-    * @var OTFC_T::STS
-    * Offset: 0x04  OTFC Status Flag Register
-    * ---------------------------------------------------------------------------------------------------
-    * |Bits    |Field     |Descriptions
-    * | :----: | :----:   | :---- |
-    * |[0]     |BUSY0     |OTFC Protrction Region 0 Busy (Read Only)
-    * |        |          |0 = The OTFC Protrction Region 0 is idle.
-    * |        |          |1 = The OTFC Protrction Region 0 is under processing.
-    * |[5]     |KSERR0    |OTFC Protrction Region 0 Access Key Store Error Flag (Read Only)
-    * |        |          |0 = No error.
-    * |        |          |1 = Key Store access error will stop OTFC engine in Protrction Region 0.
-    * |[6]     |DFAERR0   |OTFC Protrction Region 0 Differential Fault Attack Error Flag
-    * |        |          |0 = No error.
-    * |        |          |1 = Differential Fault Attack happened in protrction region 0
-    * |        |          |The results from AES engine are incorrect.
-    * |[7]     |IF0       |OTFC Protrction Region 0 Interrupt Flag
-    * |        |          |0 = No OTFC Protrction Region 0 interrupt.
-    * |        |          |1 = OTFC Protrction Region 0 interrupt.
-    * |        |          |Note: This bit is cleared by writing 1 and it has no effect by writing 0.
-    * |[8]     |BUSY1     |OTFC Protrction Region 1 Busy (Read Only)
-    * |        |          |0 = The OTFC Protrction Region 1 is idle.
-    * |        |          |1 = The OTFC Protrction Region 1 is under processing.
-    * |[13]    |KSERR1    |OTFC Protrction Region 1 Access Key Store Error Flag (Read Only)
-    * |        |          |0 = No error.
-    * |        |          |1 = Key Store access error will stop OTFC engine in Protrction Region 1.
-    * |[14]    |DFAERR1   |OTFC Protrction Region 1 Differential Fault Attack Error Flag
-    * |        |          |0 = No error.
-    * |        |          |1 = Differential Fault Attack happened in protrction region 1
-    * |        |          |The results from AES engine are incorrect.
-    * |[15]    |IF1       |OTFC Protrction Region 1 Interrupt Flag
-    * |        |          |0 = No OTFC Protrction Region 1 interrupt.
-    * |        |          |1 = OTFC Protrction Region 1 interrupt.
-    * |        |          |Note: This bit is cleared by writing 1 and it has no effect by writing 0.
-    * |[16]    |BUSY2     |OTFC Protrction Region 2 Busy (Read Only)
-    * |        |          |0 = The OTFC Protrction Region 2 is idle.
-    * |        |          |1 = The OTFC Protrction Region 2 is under processing.
-    * |[21]    |KSERR2    |OTFC Protrction Region 2 Access Key Store Error Flag (Read Only)
-    * |        |          |0 = No error.
-    * |        |          |1 = Key Store access error will stop OTFC engine in Protrction Region 2.
-    * |[22]    |DFAERR2   |OTFC Protrction Region 2 Differential Fault Attack Error Flag
-    * |        |          |0 = No error.
-    * |        |          |1 = Differential Fault Attack happened in protrction region 2
-    * |        |          |The results from AES engine are incorrect.
-    * |[23]    |IF2       |OTFC Protrction Region 2 Interrupt Flag
-    * |        |          |0 = No OTFC Protrction Region 2 interrupt.
-    * |        |          |1 = OTFC Protrction Region 2 interrupt.
-    * |        |          |Note: This bit is cleared by writing 1 and it has no effect by writing 0.
-    * |[24]    |BUSY3     |OTFC Protrction Region 3 Busy (Read Only)
-    * |        |          |0 = The OTFC Protrction Region 3 is idle.
-    * |        |          |1 = The OTFC Protrction Region 3 is under processing.
-    * |[29]    |KSERR3    |OTFC Protrction Region 3 Access Key Store Error Flag (Read Only)
-    * |        |          |0 = No error.
-    * |        |          |1 = Key Store access error will stop OTFC engine in Protrction Region 3.
-    * |[30]    |DFAERR3   |OTFC Protrction Region 3 Differential Fault Attack Error Flag
-    * |        |          |0 = No error.
-    * |        |          |1 = Differential Fault Attack happened in protrction region 3
-    * |        |          |The results from AES engine are incorrect.
-    * |[31]    |IF3       |OTFC Protrction Region 3 Interrupt Flag
-    * |        |          |0 = No OTFC Protrction Region 3 interrupt.
-    * |        |          |1 = OTFC Protrction Region 3 interrupt.
-    * |        |          |Note: This bit is cleared by writing 1 and it has no effect by writing 0.
-    */
-    __IO uint32_t CTL;                   /*!< [0x0000] OTFC Control Register                                            */
-    __IO uint32_t STS;                   /*!< [0x0004] OTFC Status Flag Register                                        */
+     * @var OTFC_T::CTL
+     * Offset: 0x00  OTFC Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |EN0       |Protection Region 0 Enable
+     * |        |          |0 = No effect.
+     * |        |          |1 = OTFC protection region 0 Enabled.
+     * |[1]     |RST0      |Protection Region 0 Reset
+     * |        |          |0 = No effect.
+     * |        |          |1 = Clear the seeting setting of OTFC protection region 0.
+     * |        |          |Note: This bit is always 0 when it is read back.
+     * |[2]     |KSWAP0    |Protection Region 0 Key and Nonce Swap
+     * |        |          |0 = Keep the original order in OTFCx_PR0_KEYy.
+     * |        |          |1 = The order that CPU feeds key and nonce to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
+     * |[7]     |IEN0      |Protection Region 0 Interrupt Enable Bit
+     * |        |          |0 = Protection Region 0 interrupt Disabled.
+     * |        |          |1 = Protection Region 0 interrupt Enabled.
+     * |[8]     |EN1       |Protection Region 1 Enable
+     * |        |          |0 = No effect.
+     * |        |          |1 = OTFC protection region 1 Enabled.
+     * |[9]     |RST1      |Protection Region 1 Reset
+     * |        |          |0 = No effect.
+     * |        |          |1 = Clear the seeting setting of OTFC protection region 1.
+     * |        |          |Note: This bit is always 0 when it is read back.
+     * |[10]    |KSWAP1    |Protection Region 1 Key and Nonce Swap
+     * |        |          |0 = Keep the original order in OTFCx_PR1_KEYy..
+     * |        |          |1 = The order that CPU feeds key and nonce to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
+     * |[15]    |IEN1      |Protection Region 1 Interrupt Enable Bit
+     * |        |          |0 = Protection Region 1 interrupt Disabled.
+     * |        |          |1 = Protection Region 1 interrupt Enabled.
+     * |[16]    |EN2       |Protection Region 2 Enable
+     * |        |          |0 = No effect.
+     * |        |          |1 = OTFC protection region 2 Enabled.
+     * |[17]    |RST2      |Protection Region 2 Reset
+     * |        |          |0 = No effect.
+     * |        |          |1 = Clear the seeting setting of OTFC protection region 2.
+     * |        |          |Note: This bit is always 0 when it is read back.
+     * |[18]    |KSWAP2    |Protection Region 2 Key and Nonce Swap
+     * |        |          |0 = Keep the original order in OTFCx_PR2_KEYy.
+     * |        |          |1 = The order that CPU feeds key and nonce to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
+     * |[23]    |IEN2      |Protection Region 2 Interrupt Enable Bit
+     * |        |          |0 = Protection Region 2 interrupt Disabled.
+     * |        |          |1 = Protection Region 2 interrupt Enabled.
+     * |[24]    |EN3       |Protection Region 3 Enable
+     * |        |          |0 = No effect.
+     * |        |          |1 = OTFC protection region 3 Enabled.
+     * |[25]    |RST3      |Protection Region 3 Reset
+     * |        |          |0 = No effect.
+     * |        |          |1 = Clear the seeting setting of OTFC protection region 3.
+     * |        |          |Note: This bit is always 0 when it is read back.
+     * |[26]    |KSWAP3    |Protection Region 3 Key and Nonce Swap
+     * |        |          |0 = Keep the original order in OTFCx_PR3_KEYy.
+     * |        |          |1 = The order that CPU feeds key and nonce to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
+     * |[31]    |IEN3      |Protection Region 3 Interrupt Enable Bit
+     * |        |          |0 = Protection Region 3 interrupt Disabled.
+     * |        |          |1 = Protection Region 3 interrupt Enabled.
+     * @var OTFC_T::STS
+     * Offset: 0x04  OTFC Status Flag Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |BUSY0     |OTFC Protrction Region 0 Busy (Read Only)
+     * |        |          |0 = The OTFC Protrction Region 0 is idle.
+     * |        |          |1 = The OTFC Protrction Region 0 is under processing.
+     * |[5]     |KSERR0    |OTFC Protrction Region 0 Access Key Store Error Flag (Read Only)
+     * |        |          |0 = No error.
+     * |        |          |1 = Key Store access error will stop OTFC engine in Protrction Region 0.
+     * |[6]     |DFAERR0   |OTFC Protrction Region 0 Differential Fault Attack Error Flag (Read Only)
+     * |        |          |0 = No error.
+     * |        |          |1 = Differential Fault Attack happened in protrction region 0
+     * |        |          |The results from AES engine are incorrect.
+     * |[7]     |IF0       |OTFC Protrction Region 0 Interrupt Flag
+     * |        |          |0 = No OTFC Protrction Region 0 interrupt.
+     * |        |          |1 = OTFC Protrction Region 0 interrupt.
+     * |        |          |Note: This bit is cleared by writing 1 and it has no effect by writing 0.
+     * |[8]     |BUSY1     |OTFC Protrction Region 1 Busy (Read Only)
+     * |        |          |0 = The OTFC Protrction Region 1 is idle.
+     * |        |          |1 = The OTFC Protrction Region 1 is under processing.
+     * |[13]    |KSERR1    |OTFC Protrction Region 1 Access Key Store Error Flag (Read Only)
+     * |        |          |0 = No error.
+     * |        |          |1 = Key Store access error will stop OTFC engine in Protrction Region 1.
+     * |[14]    |DFAERR1   |OTFC Protrction Region 1 Differential Fault Attack Error Flag (Read Only)
+     * |        |          |0 = No error.
+     * |        |          |1 = Differential Fault Attack happened in protrction region 1
+     * |        |          |The results from AES engine are incorrect.
+     * |[15]    |IF1       |OTFC Protrction Region 1 Interrupt Flag
+     * |        |          |0 = No OTFC Protrction Region 1 interrupt.
+     * |        |          |1 = OTFC Protrction Region 1 interrupt.
+     * |        |          |Note: This bit is cleared by writing 1 and it has no effect by writing 0.
+     * |[16]    |BUSY2     |OTFC Protrction Region 2 Busy (Read Only)
+     * |        |          |0 = The OTFC Protrction Region 2 is idle.
+     * |        |          |1 = The OTFC Protrction Region 2 is under processing.
+     * |[21]    |KSERR2    |OTFC Protrction Region 2 Access Key Store Error Flag (Read Only)
+     * |        |          |0 = No error.
+     * |        |          |1 = Key Store access error will stop OTFC engine in Protrction Region 2.
+     * |[22]    |DFAERR2   |OTFC Protrction Region 2 Differential Fault Attack Error Flag (Read Only)
+     * |        |          |0 = No error.
+     * |        |          |1 = Differential Fault Attack happened in protrction region 2
+     * |        |          |The results from AES engine are incorrect.
+     * |[23]    |IF2       |OTFC Protrction Region 2 Interrupt Flag
+     * |        |          |0 = No OTFC Protrction Region 2 interrupt.
+     * |        |          |1 = OTFC Protrction Region 2 interrupt.
+     * |        |          |Note: This bit is cleared by writing 1 and it has no effect by writing 0.
+     * |[24]    |BUSY3     |OTFC Protrction Region 3 Busy (Read Only)
+     * |        |          |0 = The OTFC Protrction Region 3 is idle.
+     * |        |          |1 = The OTFC Protrction Region 3 is under processing.
+     * |[29]    |KSERR3    |OTFC Protrction Region 3 Access Key Store Error Flag (Read Only)
+     * |        |          |0 = No error.
+     * |        |          |1 = Key Store access error will stop OTFC engine in Protrction Region 3.
+     * |[30]    |DFAERR3   |OTFC Protrction Region 3 Differential Fault Attack Error Flag (Read Only)
+     * |        |          |0 = No error.
+     * |        |          |1 = Differential Fault Attack happened in protrction region 3
+     * |        |          |The results from AES engine are incorrect.
+     * |[31]    |IF3       |OTFC Protrction Region 3 Interrupt Flag
+     * |        |          |0 = No OTFC Protrction Region 3 interrupt.
+     * |        |          |1 = OTFC Protrction Region 3 interrupt.
+     * |        |          |Note: This bit is cleared by writing 1 and it has no effect by writing 0.
+     */
+    __IO uint32_t CTL;                  /*!< [0x0000] OTFC Control Register                                            */
+    __IO uint32_t STS;                  /*!< [0x0004] OTFC Status Flag Register                                        */
     __I  uint32_t RESERVE0[2];
 
-    PR_T PR[4];
+    PR_T PR[4];                         /* Protect region table */
 
     //__IO uint32_t PR0_SADDR;             /*!< [0x0010] OTFC Protection Region 0 Start Address Register                  */
     //__IO uint32_t PR0_EADDR;             /*!< [0x0014] OTFC Protection Region 0 End Address Register                    */
@@ -357,9 +349,6 @@ typedef struct
 #define OTFC_CTL_KSWAP0_Pos              (2)                                               /*!< OTFC_T::CTL: KSWAP0 Position           */
 #define OTFC_CTL_KSWAP0_Msk              (0x1ul << OTFC_CTL_KSWAP0_Pos)                    /*!< OTFC_T::CTL: KSWAP0 Mask               */
 
-#define OTFC_CTL_DFAPEN0_Pos             (3)                                               /*!< OTFC_T::CTL: DFAPEN0 Position          */
-#define OTFC_CTL_DFAPEN0_Msk             (0x1ul << OTFC_CTL_DFAPEN0_Pos)                   /*!< OTFC_T::CTL: DFAPEN0 Mask              */
-
 #define OTFC_CTL_IEN0_Pos                (7)                                               /*!< OTFC_T::CTL: IEN0 Position             */
 #define OTFC_CTL_IEN0_Msk                (0x1ul << OTFC_CTL_IEN0_Pos)                      /*!< OTFC_T::CTL: IEN0 Mask                 */
 
@@ -371,9 +360,6 @@ typedef struct
 
 #define OTFC_CTL_KSWAP1_Pos              (10)                                              /*!< OTFC_T::CTL: KSWAP1 Position           */
 #define OTFC_CTL_KSWAP1_Msk              (0x1ul << OTFC_CTL_KSWAP1_Pos)                    /*!< OTFC_T::CTL: KSWAP1 Mask               */
-
-#define OTFC_CTL_DFAPEN1_Pos             (11)                                              /*!< OTFC_T::CTL: DFAPEN1 Position          */
-#define OTFC_CTL_DFAPEN1_Msk             (0x1ul << OTFC_CTL_DFAPEN1_Pos)                   /*!< OTFC_T::CTL: DFAPEN1 Mask              */
 
 #define OTFC_CTL_IEN1_Pos                (15)                                              /*!< OTFC_T::CTL: IEN1 Position             */
 #define OTFC_CTL_IEN1_Msk                (0x1ul << OTFC_CTL_IEN1_Pos)                      /*!< OTFC_T::CTL: IEN1 Mask                 */
@@ -387,9 +373,6 @@ typedef struct
 #define OTFC_CTL_KSWAP2_Pos              (18)                                              /*!< OTFC_T::CTL: KSWAP2 Position           */
 #define OTFC_CTL_KSWAP2_Msk              (0x1ul << OTFC_CTL_KSWAP2_Pos)                    /*!< OTFC_T::CTL: KSWAP2 Mask               */
 
-#define OTFC_CTL_DFAPEN2_Pos             (19)                                              /*!< OTFC_T::CTL: DFAPEN2 Position          */
-#define OTFC_CTL_DFAPEN2_Msk             (0x1ul << OTFC_CTL_DFAPEN2_Pos)                   /*!< OTFC_T::CTL: DFAPEN2 Mask              */
-
 #define OTFC_CTL_IEN2_Pos                (23)                                              /*!< OTFC_T::CTL: IEN2 Position             */
 #define OTFC_CTL_IEN2_Msk                (0x1ul << OTFC_CTL_IEN2_Pos)                      /*!< OTFC_T::CTL: IEN2 Mask                 */
 
@@ -401,9 +384,6 @@ typedef struct
 
 #define OTFC_CTL_KSWAP3_Pos              (26)                                              /*!< OTFC_T::CTL: KSWAP3 Position           */
 #define OTFC_CTL_KSWAP3_Msk              (0x1ul << OTFC_CTL_KSWAP3_Pos)                    /*!< OTFC_T::CTL: KSWAP3 Mask               */
-
-#define OTFC_CTL_DFAPEN3_Pos             (27)                                              /*!< OTFC_T::CTL: DFAPEN3 Position          */
-#define OTFC_CTL_DFAPEN3_Msk             (0x1ul << OTFC_CTL_DFAPEN3_Pos)                   /*!< OTFC_T::CTL: DFAPEN3 Mask              */
 
 #define OTFC_CTL_IEN3_Pos                (31)                                              /*!< OTFC_T::CTL: IEN3 Position             */
 #define OTFC_CTL_IEN3_Msk                (0x1ul << OTFC_CTL_IEN3_Pos)                      /*!< OTFC_T::CTL: IEN3 Mask                 */
@@ -494,6 +474,164 @@ typedef struct
 
 #define OTFC_PR_NONCE2_NONCE_Pos         (0)                                               /*!< OTFC_T::PR_NONCE2: NONCE Position     */
 #define OTFC_PR_NONCE2_NONCE_Msk         (0xfffffffful << OTFC_PR_NONCE2_NONCE_Pos)        /*!< OTFC_T::PR_NONCE2: NONCE Mask         */
+
+#if 0
+    #define OTFC_PR0_SADDR_SADDR_Pos         (0)                                               /*!< OTFC_T::PR0_SADDR: SADDR Position      */
+    #define OTFC_PR0_SADDR_SADDR_Msk         (0xfffffffful << OTFC_PR0_SADDR_SADDR_Pos)        /*!< OTFC_T::PR0_SADDR: SADDR Mask          */
+
+    #define OTFC_PR0_EADDR_EADDR_Pos         (0)                                               /*!< OTFC_T::PR0_EADDR: EADDR Position      */
+    #define OTFC_PR0_EADDR_EADDR_Msk         (0xfffffffful << OTFC_PR0_EADDR_EADDR_Pos)        /*!< OTFC_T::PR0_EADDR: EADDR Mask          */
+
+    #define OTFC_PR0_KSCTL_NUM_Pos           (0)                                               /*!< OTFC_T::PR0_KSCTL: NUM Position        */
+    #define OTFC_PR0_KSCTL_NUM_Msk           (0x1ful << OTFC_PR0_KSCTL_NUM_Pos)                /*!< OTFC_T::PR0_KSCTL: NUM Mask            */
+
+    #define OTFC_PR0_KSCTL_RSRC_Pos          (5)                                               /*!< OTFC_T::PR0_KSCTL: RSRC Position       */
+    #define OTFC_PR0_KSCTL_RSRC_Msk          (0x1ul << OTFC_PR0_KSCTL_RSRC_Pos)                /*!< OTFC_T::PR0_KSCTL: RSRC Mask           */
+
+    #define OTFC_PR0_KSCTL_RSSRC_Pos         (6)                                               /*!< OTFC_T::PR0_KSCTL: RSSRC Position      */
+    #define OTFC_PR0_KSCTL_RSSRC_Msk         (0x3ul << OTFC_PR0_KSCTL_RSSRC_Pos)               /*!< OTFC_T::PR0_KSCTL: RSSRC Mask          */
+
+    #define OTFC_PR0_KEY0_KEY_Pos            (0)                                               /*!< OTFC_T::PR0_KEY0: KEY Position         */
+    #define OTFC_PR0_KEY0_KEY_Msk            (0xfffffffful << OTFC_PR0_KEY0_KEY_Pos)           /*!< OTFC_T::PR0_KEY0: KEY Mask             */
+
+    #define OTFC_PR0_KEY1_KEY_Pos            (0)                                               /*!< OTFC_T::PR0_KEY1: KEY Position         */
+    #define OTFC_PR0_KEY1_KEY_Msk            (0xfffffffful << OTFC_PR0_KEY1_KEY_Pos)           /*!< OTFC_T::PR0_KEY1: KEY Mask             */
+
+    #define OTFC_PR0_KEY2_KEY_Pos            (0)                                               /*!< OTFC_T::PR0_KEY2: KEY Position         */
+    #define OTFC_PR0_KEY2_KEY_Msk            (0xfffffffful << OTFC_PR0_KEY2_KEY_Pos)           /*!< OTFC_T::PR0_KEY2: KEY Mask             */
+
+    #define OTFC_PR0_KEY3_KEY_Pos            (0)                                               /*!< OTFC_T::PR0_KEY3: KEY Position         */
+    #define OTFC_PR0_KEY3_KEY_Msk            (0xfffffffful << OTFC_PR0_KEY3_KEY_Pos)           /*!< OTFC_T::PR0_KEY3: KEY Mask             */
+
+    #define OTFC_PR0_SCRAMBLE_SCRAMBLE_Pos   (0)                                               /*!< OTFC_T::PR0_SCRAMBLE: SCRAMBLE Position*/
+    #define OTFC_PR0_SCRAMBLE_SCRAMBLE_Msk   (0xfffffffful << OTFC_PR0_SCRAMBLE_SCRAMBLE_Pos)  /*!< OTFC_T::PR0_SCRAMBLE: SCRAMBLE Mask    */
+
+    #define OTFC_PR0_NONCE0_NONCE_Pos        (0)                                               /*!< OTFC_T::PR0_NONCE0: NONCE Position     */
+    #define OTFC_PR0_NONCE0_NONCE_Msk        (0xfffffffful << OTFC_PR0_NONCE0_NONCE_Pos)       /*!< OTFC_T::PR0_NONCE0: NONCE Mask         */
+
+    #define OTFC_PR0_NONCE1_NONCE_Pos        (0)                                               /*!< OTFC_T::PR0_NONCE1: NONCE Position     */
+    #define OTFC_PR0_NONCE1_NONCE_Msk        (0xfffffffful << OTFC_PR0_NONCE1_NONCE_Pos)       /*!< OTFC_T::PR0_NONCE1: NONCE Mask         */
+
+    #define OTFC_PR0_NONCE2_NONCE_Pos        (0)                                               /*!< OTFC_T::PR0_NONCE2: NONCE Position     */
+    #define OTFC_PR0_NONCE2_NONCE_Msk        (0xfffffffful << OTFC_PR0_NONCE2_NONCE_Pos)       /*!< OTFC_T::PR0_NONCE2: NONCE Mask         */
+
+    #define OTFC_PR1_SADDR_SADDR_Pos         (0)                                               /*!< OTFC_T::PR1_SADDR: SADDR Position      */
+    #define OTFC_PR1_SADDR_SADDR_Msk         (0xfffffffful << OTFC_PR1_SADDR_SADDR_Pos)        /*!< OTFC_T::PR1_SADDR: SADDR Mask          */
+
+    #define OTFC_PR1_EADDR_EADDR_Pos         (0)                                               /*!< OTFC_T::PR1_EADDR: EADDR Position      */
+    #define OTFC_PR1_EADDR_EADDR_Msk         (0xfffffffful << OTFC_PR1_EADDR_EADDR_Pos)        /*!< OTFC_T::PR1_EADDR: EADDR Mask          */
+
+    #define OTFC_PR1_KSCTL_NUM_Pos           (0)                                               /*!< OTFC_T::PR1_KSCTL: NUM Position        */
+    #define OTFC_PR1_KSCTL_NUM_Msk           (0x1ful << OTFC_PR1_KSCTL_NUM_Pos)                /*!< OTFC_T::PR1_KSCTL: NUM Mask            */
+
+    #define OTFC_PR1_KSCTL_RSRC_Pos          (5)                                               /*!< OTFC_T::PR1_KSCTL: RSRC Position       */
+    #define OTFC_PR1_KSCTL_RSRC_Msk          (0x1ul << OTFC_PR1_KSCTL_RSRC_Pos)                /*!< OTFC_T::PR1_KSCTL: RSRC Mask           */
+
+    #define OTFC_PR1_KSCTL_RSSRC_Pos         (6)                                               /*!< OTFC_T::PR1_KSCTL: RSSRC Position      */
+    #define OTFC_PR1_KSCTL_RSSRC_Msk         (0x3ul << OTFC_PR1_KSCTL_RSSRC_Pos)               /*!< OTFC_T::PR1_KSCTL: RSSRC Mask          */
+
+    #define OTFC_PR1_KEY0_KEY_Pos            (0)                                               /*!< OTFC_T::PR1_KEY0: KEY Position         */
+    #define OTFC_PR1_KEY0_KEY_Msk            (0xfffffffful << OTFC_PR1_KEY0_KEY_Pos)           /*!< OTFC_T::PR1_KEY0: KEY Mask             */
+
+    #define OTFC_PR1_KEY1_KEY_Pos            (0)                                               /*!< OTFC_T::PR1_KEY1: KEY Position         */
+    #define OTFC_PR1_KEY1_KEY_Msk            (0xfffffffful << OTFC_PR1_KEY1_KEY_Pos)           /*!< OTFC_T::PR1_KEY1: KEY Mask             */
+
+    #define OTFC_PR1_KEY2_KEY_Pos            (0)                                               /*!< OTFC_T::PR1_KEY2: KEY Position         */
+    #define OTFC_PR1_KEY2_KEY_Msk            (0xfffffffful << OTFC_PR1_KEY2_KEY_Pos)           /*!< OTFC_T::PR1_KEY2: KEY Mask             */
+
+    #define OTFC_PR1_KEY3_KEY_Pos            (0)                                               /*!< OTFC_T::PR1_KEY3: KEY Position         */
+    #define OTFC_PR1_KEY3_KEY_Msk            (0xfffffffful << OTFC_PR1_KEY3_KEY_Pos)           /*!< OTFC_T::PR1_KEY3: KEY Mask             */
+
+    #define OTFC_PR1_SCRAMBLE_SCRAMBLE_Pos   (0)                                               /*!< OTFC_T::PR1_SCRAMBLE: SCRAMBLE Position*/
+    #define OTFC_PR1_SCRAMBLE_SCRAMBLE_Msk   (0xfffffffful << OTFC_PR1_SCRAMBLE_SCRAMBLE_Pos)  /*!< OTFC_T::PR1_SCRAMBLE: SCRAMBLE Mask    */
+
+    #define OTFC_PR1_NONCE0_NONCE_Pos        (0)                                               /*!< OTFC_T::PR1_NONCE0: NONCE Position     */
+    #define OTFC_PR1_NONCE0_NONCE_Msk        (0xfffffffful << OTFC_PR1_NONCE0_NONCE_Pos)       /*!< OTFC_T::PR1_NONCE0: NONCE Mask         */
+
+    #define OTFC_PR1_NONCE1_NONCE_Pos        (0)                                               /*!< OTFC_T::PR1_NONCE1: NONCE Position     */
+    #define OTFC_PR1_NONCE1_NONCE_Msk        (0xfffffffful << OTFC_PR1_NONCE1_NONCE_Pos)       /*!< OTFC_T::PR1_NONCE1: NONCE Mask         */
+
+    #define OTFC_PR1_NONCE2_NONCE_Pos        (0)                                               /*!< OTFC_T::PR1_NONCE2: NONCE Position     */
+    #define OTFC_PR1_NONCE2_NONCE_Msk        (0xfffffffful << OTFC_PR1_NONCE2_NONCE_Pos)       /*!< OTFC_T::PR1_NONCE2: NONCE Mask         */
+
+    #define OTFC_PR2_SADDR_SADDR_Pos         (0)                                               /*!< OTFC_T::PR2_SADDR: SADDR Position      */
+    #define OTFC_PR2_SADDR_SADDR_Msk         (0xfffffffful << OTFC_PR2_SADDR_SADDR_Pos)        /*!< OTFC_T::PR2_SADDR: SADDR Mask          */
+
+    #define OTFC_PR2_EADDR_EADDR_Pos         (0)                                               /*!< OTFC_T::PR2_EADDR: EADDR Position      */
+    #define OTFC_PR2_EADDR_EADDR_Msk         (0xfffffffful << OTFC_PR2_EADDR_EADDR_Pos)        /*!< OTFC_T::PR2_EADDR: EADDR Mask          */
+
+    #define OTFC_PR2_KSCTL_NUM_Pos           (0)                                               /*!< OTFC_T::PR2_KSCTL: NUM Position        */
+    #define OTFC_PR2_KSCTL_NUM_Msk           (0x1ful << OTFC_PR2_KSCTL_NUM_Pos)                /*!< OTFC_T::PR2_KSCTL: NUM Mask            */
+
+    #define OTFC_PR2_KSCTL_RSRC_Pos          (5)                                               /*!< OTFC_T::PR2_KSCTL: RSRC Position       */
+    #define OTFC_PR2_KSCTL_RSRC_Msk          (0x1ul << OTFC_PR2_KSCTL_RSRC_Pos)                /*!< OTFC_T::PR2_KSCTL: RSRC Mask           */
+
+    #define OTFC_PR2_KSCTL_RSSRC_Pos         (6)                                               /*!< OTFC_T::PR2_KSCTL: RSSRC Position      */
+    #define OTFC_PR2_KSCTL_RSSRC_Msk         (0x3ul << OTFC_PR2_KSCTL_RSSRC_Pos)               /*!< OTFC_T::PR2_KSCTL: RSSRC Mask          */
+
+    #define OTFC_PR2_KEY0_KEY_Pos            (0)                                               /*!< OTFC_T::PR2_KEY0: KEY Position         */
+    #define OTFC_PR2_KEY0_KEY_Msk            (0xfffffffful << OTFC_PR2_KEY0_KEY_Pos)           /*!< OTFC_T::PR2_KEY0: KEY Mask             */
+
+    #define OTFC_PR2_KEY1_KEY_Pos            (0)                                               /*!< OTFC_T::PR2_KEY1: KEY Position         */
+    #define OTFC_PR2_KEY1_KEY_Msk            (0xfffffffful << OTFC_PR2_KEY1_KEY_Pos)           /*!< OTFC_T::PR2_KEY1: KEY Mask             */
+
+    #define OTFC_PR2_KEY2_KEY_Pos            (0)                                               /*!< OTFC_T::PR2_KEY2: KEY Position         */
+    #define OTFC_PR2_KEY2_KEY_Msk            (0xfffffffful << OTFC_PR2_KEY2_KEY_Pos)           /*!< OTFC_T::PR2_KEY2: KEY Mask             */
+
+    #define OTFC_PR2_KEY3_KEY_Pos            (0)                                               /*!< OTFC_T::PR2_KEY3: KEY Position         */
+    #define OTFC_PR2_KEY3_KEY_Msk            (0xfffffffful << OTFC_PR2_KEY3_KEY_Pos)           /*!< OTFC_T::PR2_KEY3: KEY Mask             */
+
+    #define OTFC_PR2_SCRAMBLE_SCRAMBLE_Pos   (0)                                               /*!< OTFC_T::PR2_SCRAMBLE: SCRAMBLE Position*/
+    #define OTFC_PR2_SCRAMBLE_SCRAMBLE_Msk   (0xfffffffful << OTFC_PR2_SCRAMBLE_SCRAMBLE_Pos)  /*!< OTFC_T::PR2_SCRAMBLE: SCRAMBLE Mask    */
+
+    #define OTFC_PR2_NONCE0_NONCE_Pos        (0)                                               /*!< OTFC_T::PR2_NONCE0: NONCE Position     */
+    #define OTFC_PR2_NONCE0_NONCE_Msk        (0xfffffffful << OTFC_PR2_NONCE0_NONCE_Pos)       /*!< OTFC_T::PR2_NONCE0: NONCE Mask         */
+
+    #define OTFC_PR2_NONCE1_NONCE_Pos        (0)                                               /*!< OTFC_T::PR2_NONCE1: NONCE Position     */
+    #define OTFC_PR2_NONCE1_NONCE_Msk        (0xfffffffful << OTFC_PR2_NONCE1_NONCE_Pos)       /*!< OTFC_T::PR2_NONCE1: NONCE Mask         */
+
+    #define OTFC_PR2_NONCE2_NONCE_Pos        (0)                                               /*!< OTFC_T::PR2_NONCE2: NONCE Position     */
+    #define OTFC_PR2_NONCE2_NONCE_Msk        (0xfffffffful << OTFC_PR2_NONCE2_NONCE_Pos)       /*!< OTFC_T::PR2_NONCE2: NONCE Mask         */
+
+    #define OTFC_PR3_SADDR_SADDR_Pos         (0)                                               /*!< OTFC_T::PR3_SADDR: SADDR Position      */
+    #define OTFC_PR3_SADDR_SADDR_Msk         (0xfffffffful << OTFC_PR3_SADDR_SADDR_Pos)        /*!< OTFC_T::PR3_SADDR: SADDR Mask          */
+
+    #define OTFC_PR3_EADDR_EADDR_Pos         (0)                                               /*!< OTFC_T::PR3_EADDR: EADDR Position      */
+    #define OTFC_PR3_EADDR_EADDR_Msk         (0xfffffffful << OTFC_PR3_EADDR_EADDR_Pos)        /*!< OTFC_T::PR3_EADDR: EADDR Mask          */
+
+    #define OTFC_PR3_KSCTL_NUM_Pos           (0)                                               /*!< OTFC_T::PR3_KSCTL: NUM Position        */
+    #define OTFC_PR3_KSCTL_NUM_Msk           (0x1ful << OTFC_PR3_KSCTL_NUM_Pos)                /*!< OTFC_T::PR3_KSCTL: NUM Mask            */
+
+    #define OTFC_PR3_KSCTL_RSRC_Pos          (5)                                               /*!< OTFC_T::PR3_KSCTL: RSRC Position       */
+    #define OTFC_PR3_KSCTL_RSRC_Msk          (0x1ul << OTFC_PR3_KSCTL_RSRC_Pos)                /*!< OTFC_T::PR3_KSCTL: RSRC Mask           */
+
+    #define OTFC_PR3_KSCTL_RSSRC_Pos         (6)                                               /*!< OTFC_T::PR3_KSCTL: RSSRC Position      */
+    #define OTFC_PR3_KSCTL_RSSRC_Msk         (0x3ul << OTFC_PR3_KSCTL_RSSRC_Pos)               /*!< OTFC_T::PR3_KSCTL: RSSRC Mask          */
+
+    #define OTFC_PR3_KEY0_KEY_Pos            (0)                                               /*!< OTFC_T::PR3_KEY0: KEY Position         */
+    #define OTFC_PR3_KEY0_KEY_Msk            (0xfffffffful << OTFC_PR3_KEY0_KEY_Pos)           /*!< OTFC_T::PR3_KEY0: KEY Mask             */
+
+    #define OTFC_PR3_KEY1_KEY_Pos            (0)                                               /*!< OTFC_T::PR3_KEY1: KEY Position         */
+    #define OTFC_PR3_KEY1_KEY_Msk            (0xfffffffful << OTFC_PR3_KEY1_KEY_Pos)           /*!< OTFC_T::PR3_KEY1: KEY Mask             */
+
+    #define OTFC_PR3_KEY2_KEY_Pos            (0)                                               /*!< OTFC_T::PR3_KEY2: KEY Position         */
+    #define OTFC_PR3_KEY2_KEY_Msk            (0xfffffffful << OTFC_PR3_KEY2_KEY_Pos)           /*!< OTFC_T::PR3_KEY2: KEY Mask             */
+
+    #define OTFC_PR3_KEY3_KEY_Pos            (0)                                               /*!< OTFC_T::PR3_KEY3: KEY Position         */
+    #define OTFC_PR3_KEY3_KEY_Msk            (0xfffffffful << OTFC_PR3_KEY3_KEY_Pos)           /*!< OTFC_T::PR3_KEY3: KEY Mask             */
+
+    #define OTFC_PR3_SCRAMBLE_SCRAMBLE_Pos   (0)                                               /*!< OTFC_T::PR3_SCRAMBLE: SCRAMBLE Position*/
+    #define OTFC_PR3_SCRAMBLE_SCRAMBLE_Msk   (0xfffffffful << OTFC_PR3_SCRAMBLE_SCRAMBLE_Pos)  /*!< OTFC_T::PR3_SCRAMBLE: SCRAMBLE Mask    */
+
+    #define OTFC_PR3_NONCE0_NONCE_Pos        (0)                                               /*!< OTFC_T::PR3_NONCE0: NONCE Position     */
+    #define OTFC_PR3_NONCE0_NONCE_Msk        (0xfffffffful << OTFC_PR3_NONCE0_NONCE_Pos)       /*!< OTFC_T::PR3_NONCE0: NONCE Mask         */
+
+    #define OTFC_PR3_NONCE1_NONCE_Pos        (0)                                               /*!< OTFC_T::PR3_NONCE1: NONCE Position     */
+    #define OTFC_PR3_NONCE1_NONCE_Msk        (0xfffffffful << OTFC_PR3_NONCE1_NONCE_Pos)       /*!< OTFC_T::PR3_NONCE1: NONCE Mask         */
+
+    #define OTFC_PR3_NONCE2_NONCE_Pos        (0)                                               /*!< OTFC_T::PR3_NONCE2: NONCE Position     */
+    #define OTFC_PR3_NONCE2_NONCE_Msk        (0xfffffffful << OTFC_PR3_NONCE2_NONCE_Pos)       /*!< OTFC_T::PR3_NONCE2: NONCE Mask         */
+#endif //0
 
 /** @} OTFC_CONST */
 /** @} end of OTFC register group */

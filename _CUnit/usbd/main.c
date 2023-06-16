@@ -60,6 +60,12 @@ void SYS_Init(void)
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
+	
+	    /* Enable External RC 48MHz clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
+
+    /* Waiting for External RC clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
     /* Enable PLL0 200MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_200MHZ, CLK_APLL0_SELECT);
@@ -104,8 +110,8 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-    /* Enable USBD module clock */
-    CLK_EnableModuleClock(USBD0_MODULE);
+//    /* Enable USBD module clock */
+//    CLK_EnableModuleClock(USBD0_MODULE);
 
     CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
     /* Enable IP clock */

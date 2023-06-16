@@ -78,7 +78,7 @@ void SYS_Init(void)
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK2DIV(2);
     CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    CLK_SET_PCLK4DIV(4);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -86,24 +86,6 @@ void SYS_Init(void)
 
     /* Set the Debug UART port clock */
     SetDebugUartCLK();
-
-
-    /* Enable ACMP module clock */
-    CLK_EnableModuleClock(ACMP01_MODULE);
-    /* Enable ACMP module clock */
-    CLK_EnableModuleClock(ACMP23_MODULE);
-    /* Enable GPA module clock */
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    /* Enable GPB module clock */
-    CLK_EnableModuleClock(GPIOB_MODULE);
-    /* Enable GPA module clock */
-    CLK_EnableModuleClock(GPIOD_MODULE);
-    /* Enable GPB module clock */
-    CLK_EnableModuleClock(GPIOE_MODULE);
-     /* Enable GPA module clock */
-    CLK_EnableModuleClock(GPIOG_MODULE);
-    /* Enable GPB module clock */
-    CLK_EnableModuleClock(GPIOH_MODULE);
 
     SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;    /* select HSUSBD */
     /* Enable USB PHY */
@@ -113,7 +95,7 @@ void SYS_Init(void)
 
     /* Enable IP clock */
     CLK_EnableModuleClock(HSUSBD0_MODULE);
-    
+//    CLK->HSUSBDCTL |= CLK_HSUSBDCTL_HSUSBD0CKEN_Msk; 
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -122,7 +104,7 @@ void SYS_Init(void)
 
 //    InitDebugUart();
     /* Lock protected registers */
-    SYS_LockReg();
+//    SYS_LockReg();
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -135,27 +117,39 @@ void SYS_Init(void)
 
 void exit(int32_t code)
 {
-    if(code)
-        while(1); // Fail
+    if (code)
+        while (1);  // Fail
     else
-        while(1); // Success
+        while (1);  // Success
+}
+
+void AddTests(void)
+{
+    assert((NULL != CU_get_registry()));
+    assert(!CU_is_test_running());
+ 
+    if (CUE_SUCCESS != CU_register_suites(HSUSBD_Suites))
+    {
+        fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
+        exit(EXIT_FAILURE);
+    }
+
 }
 
 int main(int argc, char *argv[])
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
-    /* Init System, peripheral clock and multi-function I/O */
+    /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-
-    /* Lock protected registers */
-    //SYS_LockReg();
-     //    UART_Open(DEBUG_PORT, 115200);
+    /* Init DEBUG_PORT to 115200-8N1 for printf */
+//    UART_Open(DEBUG_PORT, 115200);
     DEBUG_PORT_Init(DEBUG_PORT, 115200);
 
+    printf("\n\n");
+    printf("+--------------------------------------+\n");
+    printf("|          M55M1 ACMP CUnit Test       |\n");
+    printf("+--------------------------------------+\n");
 
-    if(CU_initialize_registry())
+    if (CU_initialize_registry())
     {
         fprintf(stderr, " Initialization of Test Registry failed. ");
         exit(EXIT_FAILURE);
@@ -167,17 +161,5 @@ int main(int argc, char *argv[])
         CU_cleanup_registry();
     }
 
-    while(SYS->PDID);
-}
-
-void AddTests(void)
-{
-    CU_get_registry();
-    CU_is_test_running();
-
-    if(CUE_SUCCESS != CU_register_suites(suites))
-    {
-        fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
-        exit(EXIT_FAILURE);
-    }
+    while (1) ;
 }

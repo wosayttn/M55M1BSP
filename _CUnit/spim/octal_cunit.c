@@ -23,24 +23,23 @@
 #include "common.h"
 
 //------------------------------------------------------------------------------
-static PHASE_SET_T gMicronCMDTable[] =
+/* 0x82 : CMD_OCTAL_PAGE_PROG_MICRON Command Phase Table */
+static PHASE_SET_T gMU_82h_WrCMD =
 {
-    /* 0x82 : CMD_OCTAL_PAGE_PROG_MICRON Command Phase Table */
-    {
-        CMD_OCTAL_PAGE_PROG_MICRON,                            //Command Code
-        PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DTR_OFF,       //Command Phase
-        PHASE_NORMAL_MODE, PHASE_WIDTH_32, PHASE_DTR_OFF,        //Address Phase
-        PHASE_OCTAL_MODE, PHASE_ORDER_MODE0, PHASE_DTR_OFF,    //Data Phase
-    },
+    CMD_OCTAL_PAGE_PROG_MICRON,                            //Command Code
+    PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,       //Command Phase
+    PHASE_NORMAL_MODE, PHASE_WIDTH_32, PHASE_DISABLE_DTR,        //Address Phase
+    PHASE_OCTAL_MODE, PHASE_ORDER_MODE0, PHASE_DISABLE_DTR,    //Data Phase
+};
 
-    /* 0xCB : CMD_OCTAL_FAST_IO_READ Command Phase Table */
-    {
-        CMD_OCTAL_FAST_IO_READ,                             // Command Code
-        PHASE_OCTAL_MODE, PHASE_WIDTH_16, PHASE_DTR_ON,     // Command Phase
-        PHASE_OCTAL_MODE, PHASE_WIDTH_32, PHASE_DTR_ON,     // Address Phase
-        PHASE_OCTAL_MODE, PHASE_ORDER_MODE0, PHASE_DTR_ON,  // Data Phase
-        16,                                                 // Dummy Cycle Number
-    },
+/* 0xCB : CMD_OCTAL_FAST_IO_READ Command Phase Table */
+static PHASE_SET_T gMU_CBh_RdCMD =
+{
+    CMD_OCTAL_FAST_IO_READ,                            // Command Code
+    PHASE_OCTAL_MODE, PHASE_WIDTH_16, PHASE_ENABLE_DTR,    // Command Phase
+    PHASE_OCTAL_MODE, PHASE_WIDTH_32, PHASE_ENABLE_DTR,    // Address Phase
+    PHASE_OCTAL_MODE, PHASE_ORDER_MODE0, PHASE_ENABLE_DTR, // Data Phase
+    16,                                                // Dummy Cycle Number
 };
 
 //------------------------------------------------------------------------------
@@ -164,19 +163,19 @@ void SPIM_OctalTrainingDllLatency()
 
     MT35x_EnterOctalDDRMode(pSPIMx);
 
-    SPIM_FindAndInitDMADMMPhase(pSPIMx,
-                                gMicronCMDTable,
-                                sizeof(gMicronCMDTable) / sizeof(gMicronCMDTable[0]),
-                                SPIM_CTL0_OPMODE_PAGEREAD,
-                                CMD_OCTAL_FAST_IO_READ);
-    CU_ASSERT(pSPIMx->PHDMAR == 0x33003C3A);
-
     for (u8RdDelay = 0; u8RdDelay <= SPIM_MAX_DLL_LATENCY; u8RdDelay++)
     {
         memset(u8TstBuf2, 0, u32TestSize);
         SPIM_CtrlDLLDelayTime(pSPIMx, 0, 0, 0, 0, u8RdDelay);
 
-        SPIM_DMA_Read(pSPIMx, 0, 0, 32, u8TstBuf2, CMD_OCTAL_FAST_IO_READ, 1);
+        SPIM_DMA_ReadPhase(pSPIMx,
+                           &gMU_CBh_RdCMD,
+                           0,
+                           0,
+                           32,
+                           u8TstBuf2,
+                           1);
+        CU_ASSERT(pSPIMx->PHDMAR == 0x33003C3A);
 
         if (memcmp(u8TstBuf1, u8TstBuf2, u32TestSize))
         {
@@ -244,36 +243,38 @@ void SPIM_OctalDMA_Func()
         CU_ASSERT(SPIM_Is4ByteModeEnable(pSPIMModule, 1) == 0);
     }
 
-    SPIM_FindAndInitDMADMMPhase(pSPIMModule,
-                                gMicronCMDTable,
-                                sizeof(gMicronCMDTable) / sizeof(PHASE_SET_T),
-                                SPIM_CTL0_OPMODE_PAGEWRITE,
-                                CMD_OCTAL_PAGE_PROG_MICRON);
-    printf("pSPIMx->PHDMAW = 0x%08X\r\n", pSPIMModule->PHDMAW);
-    CU_ASSERT(pSPIMModule->PHDMAW == 0x30000401);
+    popDat(u8TstBuf1, BUFFER_SIZE);
 
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
-        popDat(u8TstBuf1, BUFFER_SIZE);
-        SPIM_DMA_Write(pSPIMModule, offset, is4ByteAddr, BUFFER_SIZE, u8TstBuf1, CMD_OCTAL_PAGE_PROG_MICRON);
+        SPIM_DMA_WritePhase(pSPIMModule,
+                            &gMU_82h_WrCMD,
+                            is4ByteAddr,
+                            offset,
+                            BUFFER_SIZE,
+                            u8TstBuf1);
+
+        //printf("pSPIMx->PHDMAW = 0x%08X\r\n", pSPIMModule->PHDMAW);
+        CU_ASSERT(pSPIMModule->PHDMAW == 0x30000401);
     }
 
     MT35x_EnterOctalDDRMode(pSPIMModule);
 
-    SPIM_FindAndInitDMADMMPhase(pSPIMModule,
-                                gMicronCMDTable,
-                                sizeof(gMicronCMDTable) / sizeof(PHASE_SET_T),
-                                SPIM_CTL0_OPMODE_PAGEREAD,
-                                CMD_OCTAL_FAST_IO_READ);
-    //printf("pSPIMx->PHDMAR = 0x%08X\r\n", pSPIMModule->PHDMAR);
-    CU_ASSERT(pSPIMModule->PHDMAR == 0x33003C3A);
+    popDat(u8TstBuf1, BUFFER_SIZE);
 
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
-        popDat(u8TstBuf1, BUFFER_SIZE);
-
         memset(u8TstBuf2, 0, BUFFER_SIZE);
-        SPIM_DMA_Read(pSPIMModule, offset, is4ByteAddr, BUFFER_SIZE, u8TstBuf2, CMD_OCTAL_FAST_IO_READ, 1);
+        SPIM_DMA_ReadPhase(pSPIMModule,
+                           &gMU_CBh_RdCMD,
+                           is4ByteAddr,
+                           offset,
+                           BUFFER_SIZE,
+                           u8TstBuf2,
+                           1);
+
+        //printf("pSPIMx->PHDMAR = 0x%08X\r\n", pSPIMModule->PHDMAR);
+        CU_ASSERT(pSPIMModule->PHDMAR == 0x33003C3A);
 
         // Compare.
         if (memcmp(u8TstBuf1, u8TstBuf2, BUFFER_SIZE))
@@ -332,31 +333,26 @@ void SPIM_OctalDMM_Func()
     //                  8;
     //}
 
-    SPIM_FindAndInitDMADMMPhase(pSPIMModule,
-                                gMicronCMDTable,
-                                sizeof(gMicronCMDTable) / sizeof(PHASE_SET_T),
-                                SPIM_CTL0_OPMODE_PAGEWRITE,
-                                CMD_OCTAL_PAGE_PROG_MICRON);
-    //printf("pSPIMx->PHDMAW = 0x%08X\r\n", pSPIMModule->PHDMAW);
-    CU_ASSERT(pSPIMModule->PHDMAW == 0x30000401);
-
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
         popDat(u8TstBuf1, BUFFER_SIZE);
-        SPIM_DMA_Write(pSPIMModule, offset, is4ByteAddr, BUFFER_SIZE, u8TstBuf1, CMD_OCTAL_PAGE_PROG_MICRON);
+
+        SPIM_DMA_WritePhase(pSPIMModule,
+                            &gMU_82h_WrCMD,
+                            is4ByteAddr,
+                            offset,
+                            BUFFER_SIZE,
+                            u8TstBuf1);
+
+        //printf("pSPIMx->PHDMAW = 0x%08X\r\n", pSPIMModule->PHDMAW);
+        CU_ASSERT(pSPIMModule->PHDMAW == 0x30000401);
     }
 
     MT35x_EnterOctalDDRMode(pSPIMModule);
 
-    SPIM_FindAndInitDMADMMPhase(pSPIMModule,
-                                gMicronCMDTable,
-                                sizeof(gMicronCMDTable) / sizeof(PHASE_SET_T),
-                                SPIM_CTL0_OPMODE_DIRECTMAP,
-                                CMD_OCTAL_FAST_IO_READ);
+    SPIM_DMM_ReadPhase(pSPIMModule, &gMU_CBh_RdCMD, is4ByteAddr, 0);
     printf("pSPIMx->PHDMM = 0x%08X\r\n", pSPIMModule->PHDMM);
     CU_ASSERT(pSPIMModule->PHDMM == 0x33003C3A);
-
-    SPIM_EnterDirectMapMode(pSPIMModule, is4ByteAddr, CMD_OCTAL_FAST_IO_READ, 0);  // Switch to Direct Map mode.cmd_idx].u32CMD, idlIntvl);     // Switch to Direct Map mode.
 
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
