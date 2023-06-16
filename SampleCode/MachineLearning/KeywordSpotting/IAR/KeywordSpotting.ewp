@@ -713,7 +713,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>FaceRecognition.out</state>
+                    <state>KeywordSpotting.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>

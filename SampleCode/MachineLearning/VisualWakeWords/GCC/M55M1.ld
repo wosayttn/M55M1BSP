@@ -277,10 +277,4 @@ SECTIONS
   /* Check if data + heap + stack exceeds DTCM limit */
   ASSERT(__StackLimit >= __HeapLimit, "region DTCM overflowed with stack")
 
-  .hyperflash :
-  {
-    . = ALIGN(16);
-    *(ifm)
-    *(nn_model)
-  } > HYPERFLASH AT > HYPERFLASH
 }
