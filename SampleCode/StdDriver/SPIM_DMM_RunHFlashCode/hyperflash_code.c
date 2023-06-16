@@ -13,6 +13,11 @@
 #include "NuMicro.h"
 #include "hyperflash_code.h"
 
+//------------------------------------------------------------------------------
+__attribute__((aligned(32))) uint8_t g_au8SrcArray[HFLH_PAGE_SIZE] = {0};
+__attribute__((aligned(32))) uint8_t g_au8DestArray[HFLH_PAGE_SIZE] = {0};
+
+//------------------------------------------------------------------------------
 /**
  * @brief Send Hyper Flash Operation Command
  *
@@ -90,34 +95,36 @@ void HyperFlash_EraseSector(SPIM_T *spim, uint32_t u32SAddr)
 #endif //SPIM_CACHE_EN
 }
 
-void HyperFlash_DMA_WriteByPage(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvWrBuf, uint32_t u32NTx)
+void HyperFlash_DMA_WriteByPage(SPIM_T *pSPIMx, uint32_t u32SAddr, uint8_t *pu8WrBuf, uint32_t u32NTx)
 {
     HyperFlash_WriteOPCMD(pSPIMx, CMD_COMMON_555, CMD_COMMON_AA);
     HyperFlash_WriteOPCMD(pSPIMx, CMD_COMMON_2AA, CMD_COMMON_55);
     HyperFlash_WriteOPCMD(pSPIMx, CMD_COMMON_555, CMD_A0);
 
-    SPIM_DMAWrite_Hyper(pSPIMx, u32SAddr, pvWrBuf, u32NTx);
+    SPIM_DMAWrite_Hyper(pSPIMx, u32SAddr, pu8WrBuf, u32NTx);
 
     HyperFlash_WaitBusBusy(pSPIMx);
 }
 
-void HyperFlash_DMAWrite(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvWrBuf, uint32_t u32NTx)
+void HyperFlash_DMAWrite(SPIM_T *pSPIMx, uint32_t u32SAddr, uint8_t *pu8WrBuf, uint32_t u32NTx)
 {
-    uint32_t   pageOffset, toWr;
-    uint32_t   buf_idx = 0UL;
+    uint32_t pageOffset = 0;
 
     pageOffset = u32SAddr % HFLH_PAGE_SIZE;
 
     if ((pageOffset + u32NTx) <= HFLH_PAGE_SIZE)
     {
         /* Do all the bytes fit onto one page ? */
-        HyperFlash_DMA_WriteByPage(pSPIMx, u32SAddr, pvWrBuf, u32NTx);
+        HyperFlash_DMA_WriteByPage(pSPIMx, u32SAddr, pu8WrBuf, u32NTx);
     }
     else
     {
+        uint32_t toWr = 0;
+        uint32_t buf_idx = 0;
+
         toWr = HFLH_PAGE_SIZE - pageOffset;               /* Size of data remaining on the first page. */
 
-        HyperFlash_DMA_WriteByPage(pSPIMx, u32SAddr, (void *)&pvWrBuf[buf_idx], toWr);
+        HyperFlash_DMA_WriteByPage(pSPIMx, u32SAddr, &pu8WrBuf[buf_idx], toWr);
 
         u32SAddr += toWr;                         /* Advance indicator. */
         u32NTx -= toWr;
@@ -132,7 +139,7 @@ void HyperFlash_DMAWrite(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvWrBuf, uint3
                 toWr = u32NTx;
             }
 
-            HyperFlash_DMA_WriteByPage(pSPIMx, u32SAddr, &pvWrBuf[buf_idx], toWr);
+            HyperFlash_DMA_WriteByPage(pSPIMx, u32SAddr, &pu8WrBuf[buf_idx], toWr);
 
             u32SAddr += toWr;                 /* Advance indicator. */
             u32NTx -= toWr;
@@ -141,9 +148,9 @@ void HyperFlash_DMAWrite(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvWrBuf, uint3
     }
 }
 
-void HyperFlash_DMARead(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvRdBuf, uint32_t u32NRx)
+void HyperFlash_DMARead(SPIM_T *pSPIMx, uint32_t u32SAddr, uint8_t *pu8RdBuf, uint32_t u32NRx)
 {
-    SPIM_DMARead_Hyper(pSPIMx, u32SAddr, pvRdBuf, u32NRx);
+    SPIM_DMARead_Hyper(pSPIMx, u32SAddr, pu8RdBuf, u32NRx);
 }
 
 /**
@@ -154,17 +161,17 @@ void HyperFlash_DMARead(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvRdBuf, uint32
 void SPIM_TrainingDLLDelayTime(SPIM_T *spim)
 {
     uint8_t u8RdDelay = 0;
-    uint8_t u8Temp = 0;
+    uint8_t u8Temp;
     uint8_t u8RdDelayIdx = 0;
     uint8_t u8RdDelayRes[SPIM_MAX_DLL_LATENCY] = {0};
     uint32_t u32i = 0;
-    uint32_t u32j = 0;
+    uint32_t u32j;
     uint32_t u32SrcAddr = 0;
     uint32_t u32TestSize = 32;
-    uint32_t u32SrcArray[32] = {0};
-    uint32_t u32DestArray[32] = {0};
-    uint32_t u32DMMAddr = SPIM_GetDirectMapAddress(spim);
-    int *pi32SrcAddr = (int *)(u32DMMAddr + u32SrcAddr);
+    uint8_t u32SrcArray[32] = {0};
+    uint8_t u32DestArray[32] = {0};
+    //uint32_t u32DMMAddr = SPIM_GetDirectMapAddress(spim);
+    //int *pi32SrcAddr = (int *)(u32DMMAddr + u32SrcAddr);
 
     /* Erase HyperFlash */
     HyperFlash_EraseSector(spim, 0); //one sector = 256KB
@@ -172,7 +179,7 @@ void SPIM_TrainingDLLDelayTime(SPIM_T *spim)
     HyperFlash_DMAWrite(spim, u32SrcAddr, u32SrcArray, u32TestSize);
 
     /* Enter direct-mapped mode to run new applications */
-    SPIM_EnterDirectMapMode_Hyper(spim);
+    //SPIM_EnterDirectMapMode_Hyper(spim);
 
     for (u8RdDelay = 0; u8RdDelay <= SPIM_MAX_DLL_LATENCY; u8RdDelay++)
     {
@@ -180,8 +187,8 @@ void SPIM_TrainingDLLDelayTime(SPIM_T *spim)
         SPIM_CtrlDLLDelayTime(spim, 0, 0, 0, 0, u8RdDelay);
 
         /* Read Data from HyperFlash */
-        //HyperFlash_DMARead(spim, u32SrcAddr, u32DestArray, u32TestSize);
-        memcpy(u32DestArray, pi32SrcAddr, u32TestSize);
+        HyperFlash_DMARead(spim, u32SrcAddr, u32DestArray, u32TestSize);
+        //memcpy(u32DestArray, pi32SrcAddr, u32TestSize);
 
         /* Verify the data and save the number of successful delay steps */
         if (memcmp(u32SrcArray, u32DestArray, u32TestSize))

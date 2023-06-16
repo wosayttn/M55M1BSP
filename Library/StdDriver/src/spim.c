@@ -799,7 +799,6 @@ void SPIM_ReadJedecId(SPIM_T *spim, uint8_t *pu8IdBuf, uint32_t u32NRx,
 {
     uint8_t cmdBuf[2] = { OPCODE_RDID, OPCODE_RDID };   /* 2-byte JEDEC ID command. */
     uint8_t u8CmdSize = 1;
-    uint32_t u32i = 0;
 
     SPIM_SET_DTR_MODE(spim, u32DTREn);      /* DTR Activated. */
 
@@ -816,6 +815,8 @@ void SPIM_ReadJedecId(SPIM_T *spim, uint8_t *pu8IdBuf, uint32_t u32NRx,
 
     if (u32DummyCycle != 0)
     {
+        uint32_t u32i = 0;
+
         cmdBuf[0] = 0x0;
         cmdBuf[1] = 0x0;
 
@@ -1192,9 +1193,7 @@ int32_t SPIM_Is4ByteModeEnable(SPIM_T *spim, uint32_t u32NBit)
 int32_t SPIM_Enable_4Bytes_Mode(SPIM_T *spim, int isEn, uint32_t u32NBit,  uint32_t u32DTREn)
 {
     int32_t  isSupt = 0L, ret = SPIM_ERR_FAIL;
-    uint8_t idBuf[3];
-    uint8_t cmdBuf[1];                           /* 1-byte Enter/Exit 4-Byte Mode command. */
-    volatile int32_t i32TimeOutCount = 0;
+    uint8_t idBuf[3];                        /* 1-byte Enter/Exit 4-Byte Mode command. */
 
     SPIM_ReadJedecId(spim, idBuf, sizeof(idBuf), u32NBit, 0, DISABLE);
 
@@ -1231,6 +1230,8 @@ int32_t SPIM_Enable_4Bytes_Mode(SPIM_T *spim, int isEn, uint32_t u32NBit,  uint3
 
     if ((isSupt) && (idBuf[0] != MFGID_SPANSION))
     {
+        uint8_t cmdBuf[1];
+
         cmdBuf[0] = isEn ? OPCODE_EN4B : OPCODE_EX4B;
 
         //SPIM_SET_DTR_MODE(spim, 1);
@@ -1248,6 +1249,8 @@ int32_t SPIM_Enable_4Bytes_Mode(SPIM_T *spim, int isEn, uint32_t u32NBit,  uint3
 
         if (idBuf[0] != MFGID_MXIC)
         {
+            volatile int32_t i32TimeOutCount = 0;
+
             /*
              *  About over 100 instrucsions executed, just want to give
              *  a time-out about 1 seconds to avoid infinite loop
@@ -1328,6 +1331,9 @@ void SPIM_ChipErase(SPIM_T *spim, uint32_t u32NBit, int isSync)
   * @param      u32Addr         Block to erase which contains the u32Addr.
   * @param      is4ByteAddr     4-byte u32Address or not.
   * @param      u8ErsCmd        Erase command.
+  *                             - ref OPCODE_SE_4K
+  *                             - ref OPCODE_BE_32K
+  *                             - ref OPCODE_BE_64K
   * @param      u32NBit         N-bit transmit/receive.
   * @param      isSync          Block or not.
   * @return     None.
@@ -2086,7 +2092,7 @@ void SPIM_IO_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable,
                         uint32_t u32Addr, int is4ByteAddr,
                         uint8_t *pu8TxBuf, uint32_t u32WrSize)
 {
-    uint32_t  pageOffset, toWr;
+    uint32_t  pageOffset;
     uint32_t  buf_idx = 0UL;
 
     pageOffset = u32Addr % 256UL;
@@ -2097,7 +2103,7 @@ void SPIM_IO_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable,
     }
     else
     {
-        toWr = 256UL - pageOffset;               /* Size of data remaining on the first page. */
+        uint32_t toWr = 256UL - pageOffset;               /* Size of data remaining on the first page. */
 
         SPIM_WriteInPageDataByPhaseIO(spim, psPhaseTable, u32Addr, is4ByteAddr, &pu8TxBuf[buf_idx], toWr);
         u32Addr += toWr;                         /* Advance indicator.  */
@@ -2181,7 +2187,7 @@ void SPIM_IO_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
                    uint32_t u32NBitCmd, uint32_t u32NBitAddr, uint32_t u32NBitDat,
                    uint32_t u32DTREn)
 {
-    uint32_t  pageOffset, toWr;
+    uint32_t  pageOffset;
     uint32_t  buf_idx = 0UL;
 
     pageOffset = u32Addr % 256UL;
@@ -2193,7 +2199,7 @@ void SPIM_IO_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
     }
     else
     {
-        toWr = 256UL - pageOffset;               /* Size of data remaining on the first page. */
+        uint32_t toWr = 256UL - pageOffset;               /* Size of data remaining on the first page. */
 
         SPIM_WriteInPageDataByIO(spim, u32Addr, is4ByteAddr, toWr, &pu8TxBuf[buf_idx],
                                  wrCmd, u32NBitCmd, u32NBitAddr, u32NBitDat, u32DTREn, 1);
@@ -2298,8 +2304,7 @@ void SPIM_IO_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32N
 void SPIM_DMA_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
                     uint32_t u32NTx, uint8_t *pu8TxBuf, uint32_t wrCmd)
 {
-    uint32_t   pageOffset, toWr;
-    uint32_t   buf_idx = 0UL;
+    uint32_t pageOffset;
 
     /* DTR mode and 16-bit set to dual commands */
     if ((SPIM_GET_PHDMAW_CMD_WIDTH(spim) == PHASE_WIDTH_16) &&
@@ -2317,7 +2322,8 @@ void SPIM_DMA_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
     }
     else
     {
-        toWr = 256UL - pageOffset;               /* Size of data remaining on the first page. */
+        uint32_t buf_idx = 0UL;
+        uint32_t toWr = 256UL - pageOffset;               /* Size of data remaining on the first page. */
 
         SPIM_WriteInPageDataByPageWrite(spim, u32Addr, is4ByteAddr, toWr, &pu8TxBuf[buf_idx], wrCmd, 1);
 
@@ -2565,7 +2571,7 @@ void SPIM_InitHyper(SPIM_T *spim, uint32_t u32Div)
     SPIM_SET_OP_MODE(spim, SPIM_OP_HYPER_MODE); /* Enable SPIM Hyper Bus Mode */
 
     /* Check if clock divider is 1 or 2 */
-    if (u32Div <= 0)
+    if (u32Div == 0)
     {
         u32Div = 1;
     }
@@ -2611,7 +2617,7 @@ int32_t SPIM_ResetHyper(SPIM_T *spim)
 {
     spim->HYPER_CMD = SPIM_HYPER_CMD_RESET;
 
-    if (SPIM_IsCMDIdle(spim) == SPIM_ERR_TIMEOUT)
+    if (SPIM_IsCMDIdle(spim) != SPIM_OK)
     {
         return SPIM_ERR_TIMEOUT;
     }
@@ -2697,7 +2703,7 @@ int32_t SPIM_WriteHyperRAMReg(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Value)
         return SPIM_ERR_FAIL;
     }
 
-    spim->HYPER_WDATA &= ~0xFFFFFFFF;
+    SPIM_CLEAR_HYPER_WDATA(spim);
 
     spim->HYPER_ADR = u32Addr;
     spim->HYPER_WDATA = u32Value;
@@ -2764,7 +2770,7 @@ int32_t SPIM_Read2Word(SPIM_T *spim, uint32_t u32Addr)
   */
 int32_t SPIM_Write1Byte(SPIM_T *spim, uint32_t u32Addr, uint8_t u8Data)
 {
-    spim->HYPER_WDATA &= ~0xFFFFFFFF;
+    SPIM_CLEAR_HYPER_WDATA(spim);
 
     spim->HYPER_ADR = u32Addr;
     spim->HYPER_WDATA = u8Data;
@@ -2790,7 +2796,7 @@ int32_t SPIM_Write1Byte(SPIM_T *spim, uint32_t u32Addr, uint8_t u8Data)
   */
 int32_t SPIM_Write2Byte(SPIM_T *spim, uint32_t u32Addr, uint16_t u16Data)
 {
-    spim->HYPER_WDATA &= ~0xFFFFFFFF;
+    SPIM_CLEAR_HYPER_WDATA(spim);
 
     spim->HYPER_ADR = u32Addr;
     spim->HYPER_WDATA = u16Data;
@@ -2816,7 +2822,7 @@ int32_t SPIM_Write2Byte(SPIM_T *spim, uint32_t u32Addr, uint16_t u16Data)
   */
 int32_t SPIM_Write3Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data)
 {
-    spim->HYPER_WDATA &= ~0xFFFFFFFF;
+    SPIM_CLEAR_HYPER_WDATA(spim);
 
     spim->HYPER_ADR = u32Addr;
     spim->HYPER_WDATA = u32Data;
@@ -2842,7 +2848,7 @@ int32_t SPIM_Write3Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data)
   */
 int32_t SPIM_Write4Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data)
 {
-    spim->HYPER_WDATA &= ~0xFFFFFFFF;
+    SPIM_CLEAR_HYPER_WDATA(spim);
 
     spim->HYPER_ADR = u32Addr;
     spim->HYPER_WDATA = u32Data;

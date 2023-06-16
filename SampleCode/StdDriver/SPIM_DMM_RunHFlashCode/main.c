@@ -17,32 +17,17 @@
 //------------------------------------------------------------------------------
 #define SPIM_HFLASH_PORT            SPIM0
 
-#define BUFF_SIZE                   0x200
-
 //------------------------------------------------------------------------------
-#if defined (__ARMCC_VERSION)
-__attribute__((aligned(32))) uint8_t g_au8SrcArray[BUFF_SIZE] = {0};
-__attribute__((aligned(32))) uint8_t g_au8DestArray[BUFF_SIZE] = {0};
-#else
-__align(32) uint8_t g_au8SrcArray[BUFF_SIZE] = {0};
-__align(32) uint8_t g_au8DestArray[BUFF_SIZE] = {0};
-#endif //__ARMCC_VERSION
-
 typedef void (FUNC_PTR)(void);
 
 static FUNC_PTR *func;
 
 //------------------------------------------------------------------------------
-static void __set_SP(uint32_t _sp)
-{
-    __asm__ __volatile__("MSR MSP, r0");
-    __asm__ __volatile__("BX lr");
-}
-
 int SPIM_load_image_to_HyperFlash(SPIM_T *spim, uint32_t image_base, uint32_t image_limit)
 {
-    volatile uint32_t u32Addr = 0, u32i = 0, u32ImageSize = 0, *pu32Loader = NULL;
-    volatile uint32_t u32EraseCount = 0;
+    uint32_t u32Addr = 0, u32i, u32ImageSize = 0, *pu32Loader = NULL;
+    uint8_t *pu8SrcBuf = (uint8_t *)malloc(sizeof(uint8_t) * HFLH_PAGE_SIZE);
+    uint8_t *pu8DestBuf = (uint8_t *)malloc(sizeof(uint8_t) * HFLH_PAGE_SIZE);
 
     u32ImageSize = (image_limit - image_base);
     pu32Loader = (uint32_t *)image_base;
@@ -52,13 +37,13 @@ int SPIM_load_image_to_HyperFlash(SPIM_T *spim, uint32_t image_base, uint32_t im
     /* Erase HyperFlash, 1 sector = 256KB */
     HyperFlash_EraseSector(spim, 0);
 
-    for (u32Addr = 0; u32Addr < u32ImageSize; u32Addr += BUFF_SIZE)
+    for (u32Addr = 0; u32Addr < u32ImageSize; u32Addr += HFLH_PAGE_SIZE)
     {
-        memset(g_au8SrcArray, 0, BUFF_SIZE);
+        memset(pu8SrcBuf, 0, HFLH_PAGE_SIZE);
 
-        for (u32i = 0; u32i < BUFF_SIZE; u32i += 4, pu32Loader++)
+        for (u32i = 0; u32i < HFLH_PAGE_SIZE; u32i += 4, pu32Loader++)
         {
-            outpw((uint32_t *)(&g_au8SrcArray[u32i]), *pu32Loader);
+            outpw((uint32_t *)(&pu8SrcBuf[u32i]), *pu32Loader);
 
             if ((u32Addr + u32i) >= u32ImageSize)
                 break;
@@ -66,15 +51,15 @@ int SPIM_load_image_to_HyperFlash(SPIM_T *spim, uint32_t image_base, uint32_t im
 
         printf("\tProgram...");
 
-        HyperFlash_DMAWrite(spim, u32Addr, g_au8SrcArray, BUFF_SIZE);
+        HyperFlash_DMAWrite(spim, u32Addr, pu8SrcBuf, HFLH_PAGE_SIZE);
 
         printf("\tVerify...\r\n");
 
-        memset(g_au8DestArray, 0, BUFF_SIZE);
+        memset(pu8DestBuf, 0, HFLH_PAGE_SIZE);
 
-        HyperFlash_DMARead(spim, u32Addr, g_au8DestArray, BUFF_SIZE);
+        HyperFlash_DMARead(spim, u32Addr, pu8DestBuf, HFLH_PAGE_SIZE);
 
-        if (memcmp(g_au8SrcArray, g_au8DestArray, BUFF_SIZE))
+        if (memcmp(pu8SrcBuf, pu8DestBuf, HFLH_PAGE_SIZE))
         {
             printf("!!!\tData compare failed at block 0x%x\r\n", u32Addr);
 
@@ -82,13 +67,18 @@ int SPIM_load_image_to_HyperFlash(SPIM_T *spim, uint32_t image_base, uint32_t im
             {
                 printf("Addr 0x%x - expect: 0x%02x, read: 0x%02x\r\n",
                        u32i,
-                       g_au8SrcArray[u32i],
-                       g_au8DestArray[u32i]);
+                       pu8SrcBuf[u32i],
+                       pu8DestBuf[u32i]);
             }
 
+            free(pu8SrcBuf);
+            free(pu8DestBuf);
             return -1;
         }
     }
+
+    free(pu8SrcBuf);
+    free(pu8DestBuf);
 
     printf("OK.\n");
 
@@ -116,7 +106,7 @@ int HyperFlash_LoadCodeAndRun(SPIM_T *spim)
     /* Enter direct-mapped mode to run new applications */
     SPIM_EnterDirectMapMode_Hyper(spim);
 
-    func = (void *)(u32DMMAddr + 1);
+    func = (FUNC_PTR *)(u32DMMAddr + 1);
     func();
 
     return 0;

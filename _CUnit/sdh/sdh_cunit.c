@@ -391,7 +391,7 @@ void BasicTestISRHandle(SDH_T *pSDHx, SDH_INFO_T *pSDHxInfo)
 
 void SDH0_IRQHandler()
 {
-    SDH_INFO_T *pSDH0Info = (SDH_INFO_T *)GetSDHInfoMsg(SDH0);
+    SDH_INFO_T *pSDH0Info = (SDH_INFO_T *)SDH_GetSDInfoMsg(SDH0);
 
     printf("112");
     BasicTestISRHandle(SDH0, pSDH0Info);
@@ -399,7 +399,7 @@ void SDH0_IRQHandler()
 
 void SDH1_IRQHandler()
 {
-    SDH_INFO_T *pSDH1Info = (SDH_INFO_T *)GetSDHInfoMsg(SDH1);
+    SDH_INFO_T *pSDH1Info = (SDH_INFO_T *)SDH_GetSDInfoMsg(SDH1);
     printf("113");
     BasicTestISRHandle(SDH1, pSDH1Info);
 }
@@ -408,7 +408,7 @@ void SDH_Show_info(SDH_T *pSDHx)
 {
     SDH_INFO_T *pSDHxInfo = NULL;//(SDH_INFO_T *)GetSDHInfo(u32SDHModule);
 
-    pSDHxInfo = (SDH_INFO_T *)GetSDHInfoMsg(pSDHx);
+    pSDHxInfo = (SDH_INFO_T *)SDH_GetSDInfoMsg(pSDHx);
 
     // get information about SD card
     SDH_Get_SD_info(pSDHx);
@@ -458,7 +458,7 @@ void SDH_ClearCardDetect(SDH_T *pSDHx)
 {
     SDH_INFO_T *pSDHxInfo = NULL;
 
-    pSDHxInfo = (SDH_INFO_T *)GetSDHInfoMsg(pSDHx);
+    pSDHxInfo = (SDH_INFO_T *)SDH_GetSDInfoMsg(pSDHx);
 
     if (is_sd_card_insert(pSDHx))
     {
@@ -492,7 +492,7 @@ void API_SDH_Function(void)
     SDH_INFO_T *pSDHInfo = NULL;
 
     pSDHModule = (SDH_T *)GetSDHModule(GetSDHModuleIdx());
-    pSDHInfo = (SDH_INFO_T *)GetSDHInfoMsg(pSDHModule);
+    pSDHInfo = (SDH_INFO_T *)SDH_GetSDInfoMsg(pSDHModule);
 
     pu8WriteBuf = (uint8_t *)&WriteBuffer[0];
     pu8ReadBuf = (uint8_t *)&ReadBuffer[0];
@@ -506,7 +506,7 @@ void API_SDH_Function(void)
     {
         memset(pSDHInfo, 0, sizeof(SDH_INFO_T));
 
-        SDH_INT_EN(pSDHModule);
+        SDH_Enable_Int(pSDHModule);
         SDH_Open(pSDHModule, au32CardDetectSrc[j]);
         SDH_Probe(pSDHModule);
 
@@ -605,11 +605,11 @@ void MACRO_SD(void)
     SDH_INFO_T *pSDHInfo = NULL;
 
     pSDHModule = (SDH_T *)GetSDHModule(GetSDHModuleIdx());
-    pSDHInfo = (SDH_INFO_T *)GetSDHInfoMsg(pSDHModule);
+    pSDHInfo = (SDH_INFO_T *)SDH_GetSDInfoMsg(pSDHModule);
 
     memset(pSDHInfo, 0, sizeof(SDH_INFO_T));
 
-    SDH_INT_EN(pSDHModule);
+    SDH_Enable_Int(pSDHModule);
     SDH_Open(pSDHModule, CardDetect_From_GPIO);
     SDH_Probe(pSDHModule);
 

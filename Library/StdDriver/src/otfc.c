@@ -4,7 +4,7 @@
  * @brief    OTFC driver source file
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include "NuMicro.h"
@@ -22,12 +22,12 @@
 */
 static int32_t otfc_wait_busy(OTFC_T *otfc, uint32_t u32PR)
 {
-    uint32_t u32Timeout = OTFC_TIMEOUT;
+    int32_t i32Timeout = OTFC_TIMEOUT;
 
     /* Wait Protection Region 0 ~ 3 not Busy*/
     while (OTFC_GET_BUSY(otfc, u32PR) == 1)
     {
-        if (u32Timeout-- <= 0)
+        if (i32Timeout-- <= 0)
         {
             return OTFC_ERR_TIMEOUT;
         }
@@ -54,7 +54,7 @@ static int32_t otfc_wait_busy(OTFC_T *otfc, uint32_t u32PR)
  */
 int32_t OTFC_SetKeyFromKeyStore(OTFC_T *otfc, uint32_t u32PR,
                                 uint32_t u32SAddr, uint32_t u32EAddr,
-                                uint32_t u32KeyNum, uint32_t u8KeySrc,
+                                uint32_t u32KeyNum, uint32_t u32KeySrc,
                                 uint32_t u32Scramble,
                                 uint32_t u32Nonce0, uint32_t u32Nonce1, uint32_t u32Nonce2)
 {
@@ -68,23 +68,22 @@ int32_t OTFC_SetKeyFromKeyStore(OTFC_T *otfc, uint32_t u32PR,
     OTFC_RESET_PR(otfc, u32PR);
 
     /* Set Protection Region Start and End Address */
-    OTFC_PR_START_ADDR(otfc, u32PR, u32SAddr);
-    OTFC_PR_END_ADDR(otfc, u32PR, u32EAddr);
+    OTFC_SET_START_ADDR(otfc, u32PR, u32SAddr);
+    OTFC_SET_END_ADDR(otfc, u32PR, u32EAddr);
 
     /* Set Protection Region Scramble/Nonce0/1/2 Key */
-    OTFC_PR_SCRAMBLE(otfc, u32PR, u32Scramble);
-    OTFC_PR_NONCE0(otfc, u32PR, u32Nonce0);
-    OTFC_PR_NONCE1(otfc, u32PR, u32Nonce1);
-    OTFC_PR_NONCE2(otfc, u32PR, u32Nonce2);
+    OTFC_SET_SCRAMBLE(otfc, u32PR, u32Scramble);
+    OTFC_SET_NONCE0(otfc, u32PR, u32Nonce0);
+    OTFC_SET_NONCE1(otfc, u32PR, u32Nonce1);
+    OTFC_SET_NONCE2(otfc, u32PR, u32Nonce2);
+
+    /* Clear protect region setting */
+    OTFC_CLEAR_KSCTRL(otfc, u32PR);
 
     /* Set Key Store key number */
-    otfc->PR[u32PR].PR_KSCTL &= ~(0xFFul << OTFC_PR_KSCTL_NUM_Pos);
-    otfc->PR[u32PR].PR_KSCTL = ((u32KeyNum << OTFC_PR_KSCTL_NUM_Pos)  |
-                                (u8KeySrc << OTFC_PR_KSCTL_RSSRC_Pos) |
-                                OTFC_PR_KSCTL_RSRC_Msk);
-
-    /* Protection Region Enable */
-    //OTFC_Enable_PR(otfc, u32PR);
+    otfc->PR[u32PR].PR_KSCTL |= (((u32KeyNum & 0x1F) << OTFC_PR_KSCTL_NUM_Pos)  |
+                                 (u32KeySrc << OTFC_PR_KSCTL_RSSRC_Pos) |
+                                 OTFC_PR_KSCTL_RSRC_Msk);
 
     return OTFC_OK;
 }
@@ -116,19 +115,20 @@ int32_t OTFC_SetKeyTableToReg(OTFC_T *otfc,
     OTFC_CLEAR_KSCTRL(otfc, u32PR);
 
     /* Protection Region 0 ~ 3 key is read from registers OTFC_PRx_KEYx */
-    OTFC_PR_START_ADDR(otfc, u32PR, u32SAddr);
-    OTFC_PR_END_ADDR(otfc, u32PR, u32EAddr);
-    OTFC_PR_KEY0(otfc, u32PR, psKeyTable->u32Key0);
-    OTFC_PR_KEY1(otfc, u32PR, psKeyTable->u32Key1);
-    OTFC_PR_KEY2(otfc, u32PR, psKeyTable->u32Key2);
-    OTFC_PR_KEY3(otfc, u32PR, psKeyTable->u32Key3);
-    OTFC_PR_SCRAMBLE(otfc, u32PR, psKeyTable->u32Scramble);
-    OTFC_PR_NONCE0(otfc, u32PR, psKeyTable->u32Nonce0);
-    OTFC_PR_NONCE1(otfc, u32PR, psKeyTable->u32Nonce1);
-    OTFC_PR_NONCE2(otfc, u32PR, psKeyTable->u32Nonce2);
-
-    /* Protection Region Enable */
-    //OTFC_Enable_PR(otfc, u32PR);
+    OTFC_SET_START_ADDR(otfc, u32PR, u32SAddr);
+    OTFC_SET_END_ADDR(otfc, u32PR, u32EAddr);
+    OTFC_SET_KEY0(otfc, u32PR, psKeyTable->u32Key0);
+    OTFC_SET_KEY1(otfc, u32PR, psKeyTable->u32Key1);
+    OTFC_SET_KEY2(otfc, u32PR, psKeyTable->u32Key2);
+    OTFC_SET_KEY3(otfc, u32PR, psKeyTable->u32Key3);
+    OTFC_SET_SCRAMBLE(otfc, u32PR, psKeyTable->u32Scramble);
+    OTFC_SET_NONCE0(otfc, u32PR, psKeyTable->u32Nonce0);
+    OTFC_SET_NONCE1(otfc, u32PR, psKeyTable->u32Nonce1);
+    OTFC_SET_NONCE2(otfc, u32PR, psKeyTable->u32Nonce2);
 
     return OTFC_OK;
 }
+
+/** @} end of group OTFC_EXPORTED_FUNCTIONS */
+/** @} end of group OTFC_Driver */
+/** @} end of group Standard_Driver */
