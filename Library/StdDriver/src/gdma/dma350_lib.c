@@ -13,12 +13,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-/* Header for target specific MPU definitions */
-#ifndef CMSIS_device_header
-/* CMSIS pack default header, containing the CMSIS_device_header definition */
-#include "RTE_Components.h"
-#endif
-#include CMSIS_device_header
+#include "NuMicro.h"
 
 /**********************************************/
 /************** Static Functions **************/
@@ -217,6 +212,8 @@ static enum dma350_lib_error_t dma350_get_memattr(void* address,
         /* Extract 8-bit attribute */
         memattr->mpu_attribute = (mpu_attri_raw >> ((mpu_attr_idx & 0x3) << 3)) & 0xFFUL;
     } else {
+        /* For M55M1: If addrsss bit[28] is set, use non-secure access */
+        memattr->nonsecure = (((uint32_t)address & NS_OFFSET) == NS_OFFSET);
         /* If MPU is not enabled, use privileged access */
         memattr->unprivileged = false;
         /* Default memory map lookup for attributes */
