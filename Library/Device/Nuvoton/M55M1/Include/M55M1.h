@@ -545,6 +545,14 @@ typedef enum IRQn
 #define I3C0_BASE                 (APB3PERIPH_BASE + 0x0A000UL)
 #define UTCPD_BASE                (APB3PERIPH_BASE + 0x0B000UL)
 
+#if defined (SCU_INIT_D1PNS4_VAL) && (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_UTCPD_Msk)
+#define UTCPD0_BASE               (APB3PERIPH_BASE + 0x0B000UL+ NS_OFFSET)
+#define UTCPD1_BASE               (APB3PERIPH_BASE + 0x0B000UL+ NS_OFFSET)
+#else
+#define UTCPD0_BASE               (APB3PERIPH_BASE + 0x0B000UL)
+#define UTCPD1_BASE               (APB3PERIPH_BASE + 0x0B000UL)
+#endif
+
 /* APB4 peripheral (PCLK4 clock domain) */
 #define LPTMR0_BASE               (APB4PERIPH_BASE + 0x00000UL)
 #define LPTMR1_BASE               (APB4PERIPH_BASE + 0x00100UL)
@@ -1707,7 +1715,6 @@ typedef volatile uint64_t vu64;   ///< Define 64-bit unsigned volatile data type
 #include "trng.h"
 #include "ttmr.h"
 #include "uart.h"
-//#include "utcpd.h"
 #include "usbd.h"
 #include "usci_i2c.h"
 #include "usci_spi.h"
