@@ -124,7 +124,15 @@ void EBI_InitPins(void)
 int32_t EBI_InitClock(void)
 {
     CLK_EnableModuleClock(EBI0_MODULE);
-    return 0;
+    
+    if (CLK->EBICTL & CLK_EBICTL_EBI0CKEN_Msk)
+    {
+       return 0;
+    }
+    else
+    {
+        return 1;
+    }
 }
 
 int32_t ResetEBIRegister(uint32_t u32BankNum)
