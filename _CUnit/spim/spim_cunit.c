@@ -34,30 +34,30 @@ static uint8_t idBuf[3] = {0};
 static PHASE_SET_T gWB_02h_WrCMD =
 {
     CMD_NORMAL_PAGE_PROGRAM,                                //Command Code
-    PHASE_NORMAL_MODE, PHASE_WIDTH_8,  PHASE_DTR_OFF,       //Command Phase
-    PHASE_NORMAL_MODE, PHASE_WIDTH_24, PHASE_DTR_OFF,       //Address Phase
-    PHASE_NORMAL_MODE, PHASE_ORDER_MODE0,  PHASE_DTR_OFF,   //Data Phase
+    PHASE_NORMAL_MODE, PHASE_WIDTH_8,  PHASE_DISABLE_DTR,       //Command Phase
+    PHASE_NORMAL_MODE, PHASE_WIDTH_24, PHASE_DISABLE_DTR,       //Address Phase
+    PHASE_NORMAL_MODE, PHASE_ORDER_MODE0,  PHASE_DISABLE_DTR,   //Data Phase
     0,
 };
 
 /* 0xED: CMD_DMA_FAST_QUAD_DTR_READ Command Phase Table */
 static PHASE_SET_T gWB_EDh_RdCMD =
 {
-    CMD_DMA_FAST_QUAD_DTR_READ,                                           // Command Code
-    PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DTR_OFF,                  // Command Phase
-    PHASE_QUAD_MODE, PHASE_WIDTH_24, PHASE_DTR_ON,                  // Address Phase
-    PHASE_QUAD_MODE, PHASE_ORDER_MODE0, PHASE_DTR_ON,               // Data Phase
-    7,                                                                // Dummy Cycle Phase
-    PHASE_READMODE_OFF, PHASE_QUAD_MODE, PHASE_WIDTH_8, PHASE_DTR_ON, // Read Mode Phase
+    CMD_DMA_FAST_QUAD_DTR_READ,                                            // Command Code
+    PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,                       // Command Phase
+    PHASE_QUAD_MODE, PHASE_WIDTH_24, PHASE_ENABLE_DTR,                         // Address Phase
+    PHASE_QUAD_MODE, PHASE_ORDER_MODE0, PHASE_ENABLE_DTR,                      // Data Phase
+    7,                                                                     // Dummy Cycle Phase
+    PHASE_ENABLE_CONT_READ, PHASE_QUAD_MODE, PHASE_WIDTH_8, PHASE_ENABLE_DTR,  // Read Mode Phase
 };
 
 /* 0x03: CMD_DMA_NORMAL_READ Command Phase Table */
 static PHASE_SET_T gWB_03h_RdCMD =
 {
     CMD_DMA_NORMAL_READ,                                 // Command Code
-    PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DTR_OFF,     // Command Phase
-    PHASE_NORMAL_MODE, PHASE_WIDTH_24, PHASE_DTR_OFF,    // Address Phase
-    PHASE_NORMAL_MODE, PHASE_ORDER_MODE0, PHASE_DTR_OFF, // Data Phase
+    PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,     // Command Phase
+    PHASE_NORMAL_MODE, PHASE_WIDTH_24, PHASE_DISABLE_DTR,    // Address Phase
+    PHASE_NORMAL_MODE, PHASE_ORDER_MODE0, PHASE_DISABLE_DTR, // Data Phase
     0,                                                   // Dummy Cycle Phase
 };
 
@@ -65,12 +65,12 @@ static PHASE_SET_T gWB_03h_RdCMD =
 /* 0xEB: CMD_DMA_FAST_QUAD_READ Command Phase Table */
 static PHASE_SET_T gWB_EBh_RdCMD =
 {
-    CMD_DMA_FAST_QUAD_READ,                                           // Command Code
-    PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DTR_OFF,                  // Command Phase
-    PHASE_QUAD_MODE, PHASE_WIDTH_24, PHASE_DTR_OFF,                   // Address Phase
-    PHASE_QUAD_MODE, PHASE_ORDER_MODE0, PHASE_DTR_OFF,                // Data Phase
-    4,                                                                // Dummy Cycle Phase
-    PHASE_READMODE_ON, PHASE_QUAD_MODE, PHASE_WIDTH_8, PHASE_DTR_OFF, // Read Mode Phase
+    CMD_DMA_FAST_QUAD_READ,                                                 // Command Code
+    PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,                        // Command Phase
+    PHASE_QUAD_MODE, PHASE_WIDTH_24, PHASE_DISABLE_DTR,                         // Address Phase
+    PHASE_QUAD_MODE, PHASE_ORDER_MODE0, PHASE_DISABLE_DTR,                      // Data Phase
+    4,                                                                      // Dummy Cycle Phase
+    PHASE_ENABLE_CONT_READ, PHASE_QUAD_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,  // Read Mode Phase
 };
 
 /*----------------------------------------------------------------------------*/
@@ -884,7 +884,7 @@ void MACRO_SPIM_DMMCTL()
     pSPIMModule->DMMCTL |= 0;
     SPIM_ENABLE_DMM_HYPDONE(pSPIMModule);
 
-    while (SPIM_WAIT_DMM_HYPDONE(pSPIMModule)) {}
+    while (SPIM_GET_DMM_HYPDONE(pSPIMModule)) {}
 
     CU_ASSERT_FALSE((pSPIMModule->DMMCTL & SPIM_DMMCTL_HYPDONE_Msk) >> SPIM_DMMCTL_HYPDONE_Pos);
 

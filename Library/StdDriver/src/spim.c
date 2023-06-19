@@ -607,20 +607,29 @@ static void SPIM_ReadSecurityRegister(SPIM_T *spim, uint8_t dataBuf[], uint32_t 
  *
  * @param spim
  */
-void SPIM_ExitContReadMode(SPIM_T *spim)
+int32_t SPIM_SetContReadDisable(SPIM_T *spim)
 {
-    uint8_t cmdBuf[4] = {0xFF, 0xFF, 0xFF, 0xFF};       /* 4-byte Exit Continue Read Data. */
-
     SPIM_SetQuadEnable(spim, 1, 1);
 
-    SPIM_SET_SS_EN(spim, 1);                /* CS activated. */
+    SPIM_SET_SS_EN(spim, 1);                        /* CS activated. */
 
-    SwitchNBitOutput(spim, 4);
-    spim_write(spim, cmdBuf, sizeof(cmdBuf));
+    spim->TX[0] = 0xFFFFFFFF;
 
-    SPIM_SET_SS_EN(spim, 0);                /* CS deactivated. */
+    SwitchNBitOutput(spim, 4);                      /* Quad output mode */
+    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_IO);     /* Switch to normal mode. */
+    SPIM_SET_DATA_WIDTH(spim, 32UL);
+    SPIM_SET_BURST_DATA(spim, 1UL);
+
+    if (SPIM_WaitSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
+    {
+        return SPIM_ERR_TIMEOUT;
+    }
+
+    SPIM_SET_SS_EN(spim, 0);                        /* CS deactivated. */
 
     SPIM_SetQuadEnable(spim, 0, 1);
+
+    return SPIM_OK;
 }
 
 /**
@@ -902,7 +911,7 @@ static void spim_enable_spansion_quad_mode(SPIM_T *spim, int isEn)
   * @return     SPIM_OK          SPIM operation OK.
   *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
   */
-int32_t SPIM_SetWrapAroundEnable(SPIM_T *spim, int isEn, uint32_t u32WaBit)
+int32_t SPIM_SetWrapAroundEnable(SPIM_T *spim, int isEn)
 {
     uint32_t u32CmdBuf[2] = {0x00000000, 0x11011101};
 
@@ -1676,7 +1685,7 @@ int32_t SPIM_DMADMM_SetContReadPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t 
     *pu32PhaseReg |= (u32NBit << SPIM_PHDMAR_BM_MODE_Pos);
     *pu32PhaseReg |= (u32DTREn << SPIM_PHDMAR_DTR_MODE_Pos);
 
-    if ((u32ContEn == PHASE_READMODE_ON) &&
+    if ((u32ContEn == PHASE_ENABLE_CONT_READ) &&
             (u32OPMode == SPIM_CTL0_OPMODE_DIRECTMAP))
     {
         SPIM_ENABLE_DMM_CREN(spim);
@@ -1799,7 +1808,7 @@ void SPIM_DMADMM_InitPhase(SPIM_T *spim,
 }
 
 /**
- * @brief   Set DMA write phase and DMA write data
+ * @brief   Phase table DMA Write
  *
  * @param spim
  * @param psPhaseTable  Check SPI Flash specifications for support command codes,
@@ -1824,7 +1833,7 @@ void SPIM_DMA_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable,
 }
 
 /**
- * @brief   Set DMA read phase andd DMA read data
+ * @brief   Phase table DMA Read.
  *
  * @param spim
  * @param psPhaseTable  Check SPI Flash specifications for support command codes,
@@ -1852,7 +1861,7 @@ int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable,
 }
 
 /**
- * @brief   Set Direct Map phase and enter direct map mode
+ * @brief   Phase table DMM Read.
  *
  * @param spim
  * @param psPhaseTable  Check SPI Flash specifications for support command codes,
@@ -1868,7 +1877,7 @@ void SPIM_DMM_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, int is4ByteAddr
 }
 
 /**
- * @brief Normal I/O mode data phase
+ * @brief Normal I/O mode data phase.
  *
  * @param spim
  * @param u32OPMode     Normal I/O read or wirte mode.
@@ -1916,7 +1925,7 @@ void SPIM_IO_SendDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint8_t *pu8TRxBuf,
 }
 
 /**
- * @brief Send dummy cycle clock through normal mode
+ * @brief Normal I/O mode send dummy cycle clocks.
  *
  * @param spim
  * @param u32NDummy dummy clocks, reference SPI flash command specification
@@ -1946,7 +1955,7 @@ int32_t SPIM_IO_SendDummyCycle(SPIM_T *spim, int u32NDummy)
 }
 
 /**
- * @brief   Normal I/O mode address phase
+ * @brief   Normal I/O mode send address phase
  *
  * @param spim
  * @param u32Is4ByteAddr    SPI Flash 4 Bytes Address
@@ -1998,7 +2007,7 @@ void SPIM_IO_SendAddrPhase(SPIM_T *spim,
 }
 
 /**
- * @brief Normal I/O mode sends commands using a phase table.
+ * @brief Normal I/O mode sends commands phase.
  *
  * @param spim
  * @param u32OPMode     Normal I/O read or wirte mode.
@@ -2424,49 +2433,17 @@ void SPIM_EnterDirectMapMode(SPIM_T *spim, int is4ByteAddr,
   * @return     SPIM_OK          SPIM operation OK.
   *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
   */
-int32_t SPIM_ExitDirectMapMode(SPIM_T *spim)
+void SPIM_ExitDirectMapMode(SPIM_T *spim)
 {
-    uint32_t u32CmdBuf = 0xFFFFFFFF;
-
-    spim->TX[0] = u32CmdBuf;
-
-    SPIM_SetQuadEnable(spim, 1, 1);
-
-    SPIM_SET_SS_EN(spim, 1);
-
-    SwitchNBitOutput(spim, 4UL);
-    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_IO);    /* Switch to Normal mode. */
-    SPIM_SET_DATA_WIDTH(spim, 32UL);
-    SPIM_SET_BURST_DATA(spim, 1);
-
-    if (SPIM_WaitSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
+    if (SPIM_GET_DMM_BWEN(spim) == SPIM_OP_ENABLE)
     {
-        return SPIM_ERR_TIMEOUT;
+        SPIM_SetWrapAroundEnable(spim, 0);
     }
 
-    SPIM_SET_SS_EN(spim, 0);
-
-    SPIM_SetQuadEnable(spim, 0, 1);
-
-    spim->TX[0] = u32CmdBuf;
-
-    SPIM_SET_SS_EN(spim, 1);
-
-    SwitchNBitOutput(spim, 2UL);
-    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_IO);    /* Switch to Normal mode. */
-    SPIM_SET_DATA_WIDTH(spim, 32UL);
-    SPIM_SET_BURST_DATA(spim, 1);
-
-    if (SPIM_WaitSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
+    if (SPIM_GET_MODE_DATA(spim) == CMD_CONTINUE_READ_MODE)
     {
-        return SPIM_ERR_TIMEOUT;
+        SPIM_SetContReadDisable(spim);
     }
-
-    SPIM_SET_SS_EN(spim, 0);
-
-    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_IO); /* Switch back to Normal mode.  */
-
-    return SPIM_OK;
 }
 
 /**
@@ -2975,7 +2952,7 @@ int32_t SPIM_IsDMMDone_Hyper(SPIM_T *spim)
 
     SPIM_ENABLE_DMM_HYPDONE(spim);       /* HyperBus DMM Mode Done.  */
 
-    while (SPIM_WAIT_DMM_HYPDONE(spim))
+    while (SPIM_GET_DMM_HYPDONE(spim))
     {
         if (--u32TimeOutCount <= 0)
         {
