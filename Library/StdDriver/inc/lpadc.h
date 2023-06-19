@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     lpadc.h
  * @version  V1.00
- * @brief    LPADC driver header file
+ * @brief    M55M1 series LPADC driver header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -117,7 +117,7 @@ extern "C"
 #define LPADC_AUTOCTL_TRIGSEL_WKIOD0    (7UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)    /*!< LPADC Automatic Operation Trigger Source Select is WKIOD0  \hideinitializer */
 #define LPADC_AUTOCTL_TRIGSEL_ACMP0     (8UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)    /*!< LPADC Automatic Operation Trigger Source Select is ACMP0  \hideinitializer */
 #define LPADC_AUTOCTL_TRIGSEL_ACMP1     (9UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)    /*!< LPADC Automatic Operation Trigger Source Select is ACMP1  \hideinitializer */
-#define LPADC_AUTOCTL_TRIGSEL_ACMP2     (10UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)    /*!< LPADC Automatic Operation Trigger Source Select is ACMP2  \hideinitializer */
+#define LPADC_AUTOCTL_TRIGSEL_ACMP2     (10UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)   /*!< LPADC Automatic Operation Trigger Source Select is ACMP2  \hideinitializer */
 #define LPADC_AUTOCTL_TRIGSEL_ACMP3     (11UL<<LPADC_AUTOCTL_TRIGSEL_Pos | LPADC_AUTOCTL_TRIGEN_Msk)   /*!< LPADC Automatic Operation Trigger Source Select is ACMP3  \hideinitializer */
 
 
@@ -239,14 +239,14 @@ extern int32_t g_LPADC_i32ErrCode;
   * \hideinitializer
   */
 #define LPADC_ENABLE_CMP0(lpadc, \
-                        u32ChNum, \
-                        u32Condition, \
-                        u32Data, \
-                        u32MatchCount) ((lpadc)->ADCMPR[0] = ((u32ChNum) << LPADC_ADCMPR_CMPCH_Pos) | \
-                                                           (u32Condition) | \
-                                                           ((u32Data) << LPADC_ADCMPR_CMPD_Pos) | \
-                                                           (((u32MatchCount) - 1) << LPADC_ADCMPR_CMPMATCNT_Pos) |\
-                                                           LPADC_ADCMPR_CMPEN_Msk)
+                          u32ChNum, \
+                          u32Condition, \
+                          u32Data, \
+                          u32MatchCount) ((lpadc)->ADCMPR[0] = ((u32ChNum) << LPADC_ADCMPR_CMPCH_Pos) | \
+                                                               (u32Condition) | \
+                                                               ((u32Data) << LPADC_ADCMPR_CMPD_Pos) | \
+                                                               (((u32MatchCount) - 1) << LPADC_ADCMPR_CMPMATCNT_Pos) |\
+                                                               LPADC_ADCMPR_CMPEN_Msk)
 
 /**
   * @brief Disable comparator 0
@@ -273,14 +273,14 @@ extern int32_t g_LPADC_i32ErrCode;
   * \hideinitializer
   */
 #define LPADC_ENABLE_CMP1(lpadc, \
-                        u32ChNum, \
-                        u32Condition, \
-                        u32Data, \
-                        u32MatchCount) ((lpadc)->ADCMPR[1] = ((u32ChNum) << LPADC_ADCMPR_CMPCH_Pos) | \
-                                                           (u32Condition) | \
-                                                           ((u32Data) << LPADC_ADCMPR_CMPD_Pos) | \
-                                                           (((u32MatchCount) - 1) << LPADC_ADCMPR_CMPMATCNT_Pos) |\
-                                                           LPADC_ADCMPR_CMPEN_Msk)
+                          u32ChNum, \
+                          u32Condition, \
+                          u32Data, \
+                          u32MatchCount) ((lpadc)->ADCMPR[1] = ((u32ChNum) << LPADC_ADCMPR_CMPCH_Pos) | \
+                                                               (u32Condition) | \
+                                                               ((u32Data) << LPADC_ADCMPR_CMPD_Pos) | \
+                                                               (((u32MatchCount) - 1) << LPADC_ADCMPR_CMPMATCNT_Pos) |\
+                                                               LPADC_ADCMPR_CMPEN_Msk)
 
 /**
   * @brief Disable comparator 1.
@@ -554,16 +554,19 @@ extern int32_t g_LPADC_i32ErrCode;
  */
 #define LPADC_CLEAR_Compare_1_WAKEUP_FLAG(lpuart)    ((lpuart)->AUTOSTS = LPADC_AUTOSTS_CMP1WKF_Msk)
 
-void LPADC_Open(LPADC_T *lpadc,uint32_t u32InputMode,uint32_t u32OpMode,uint32_t u32ChMask);
+void LPADC_Open(LPADC_T *lpadc, uint32_t u32InputMode, uint32_t u32OpMode, uint32_t u32ChMask);
 void LPADC_Close(LPADC_T *lpadc);
-void LPADC_EnableHWTrigger(LPADC_T *lpadc,uint32_t u32Source);
+void LPADC_EnableHWTrigger(LPADC_T *lpadc, uint32_t u32Source);
 void LPADC_DisableHWTrigger(LPADC_T *lpadc);
 void LPADC_EnableInt(LPADC_T *lpadc, uint32_t u32Mask);
 void LPADC_DisableInt(LPADC_T *lpadc, uint32_t u32Mask);
-void LPADC_SetExtendSampleTime(LPADC_T *lpadc,uint32_t u32ExtendSampleTime);
-void LPADC_SelectAutoOperationMode(LPADC_T *lpadc,uint32_t u32TrigSel);
+void LPADC_SetExtendSampleTime(LPADC_T *lpadc, uint32_t u32ExtendSampleTime);
+void LPADC_SelectAutoOperationMode(LPADC_T *lpadc, uint32_t u32TrigSel);
+
 /** @} end of group LPADC_EXPORTED_FUNCTIONS */
+
 /** @} end of group LPADC_Driver */
+
 /** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
@@ -571,3 +574,4 @@ void LPADC_SelectAutoOperationMode(LPADC_T *lpadc,uint32_t u32TrigSel);
 #endif
 
 #endif //__LPADC_H__
+

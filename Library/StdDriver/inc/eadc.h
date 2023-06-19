@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     eadc.h
  * @version  V1.00
- * @brief    EADC driver header file
+ * @brief    M55M1 series EADC driver header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -430,7 +430,7 @@ extern "C"
                          u32Condition,\
                          u16CMPData,\
                          u32MatchCount) ((eadc)->CMP[0] = (((eadc)->CMP[0] & ~(EADC_CMP_CMPSPL_Msk|EADC_CMP_CMPCOND_Msk|EADC_CMP_CMPDAT_Msk|EADC_CMP_CMPMCNT_Msk))|\
-                                                            (((u32ModuleNum) << EADC_CMP_CMPSPL_Pos)|\
+                                                           (((u32ModuleNum) << EADC_CMP_CMPSPL_Pos)|\
                                                             (u32Condition) |\
                                                             ((u16CMPData) << EADC_CMP_CMPDAT_Pos)| \
                                                             (((u32MatchCount) - 1) << EADC_CMP_CMPMCNT_Pos)|\
@@ -456,7 +456,7 @@ extern "C"
                          u32Condition,\
                          u16CMPData,\
                          u32MatchCount) ((eadc)->CMP[1] = (((eadc)->CMP[1] & ~(EADC_CMP_CMPSPL_Msk|EADC_CMP_CMPCOND_Msk|EADC_CMP_CMPDAT_Msk|EADC_CMP_CMPMCNT_Msk))|\
-                                                            (((u32ModuleNum) << EADC_CMP_CMPSPL_Pos)|\
+                                                           (((u32ModuleNum) << EADC_CMP_CMPSPL_Pos)|\
                                                             (u32Condition) |\
                                                             ((u16CMPData) << EADC_CMP_CMPDAT_Pos)| \
                                                             (((u32MatchCount) - 1) << EADC_CMP_CMPMCNT_Pos)|\
@@ -482,7 +482,7 @@ extern "C"
                          u32Condition,\
                          u16CMPData,\
                          u32MatchCount) ((eadc)->CMP[2] = (((eadc)->CMP[2] & ~(EADC_CMP_CMPSPL_Msk|EADC_CMP_CMPCOND_Msk|EADC_CMP_CMPDAT_Msk|EADC_CMP_CMPMCNT_Msk))|\
-                                                            (((u32ModuleNum) << EADC_CMP_CMPSPL_Pos)|\
+                                                           (((u32ModuleNum) << EADC_CMP_CMPSPL_Pos)|\
                                                             (u32Condition) |\
                                                             ((u16CMPData) << EADC_CMP_CMPDAT_Pos)| \
                                                             (((u32MatchCount) - 1) << EADC_CMP_CMPMCNT_Pos)|\
@@ -508,7 +508,7 @@ extern "C"
                          u32Condition,\
                          u16CMPData,\
                          u32MatchCount) ((eadc)->CMP[3] = (((eadc)->CMP[3] & ~(EADC_CMP_CMPSPL_Msk|EADC_CMP_CMPCOND_Msk|EADC_CMP_CMPDAT_Msk|EADC_CMP_CMPMCNT_Msk))|\
-                                                            (((u32ModuleNum) << EADC_CMP_CMPSPL_Pos)|\
+                                                           (((u32ModuleNum) << EADC_CMP_CMPSPL_Pos)|\
                                                             (u32Condition) |\
                                                             ((u16CMPData) << EADC_CMP_CMPDAT_Pos)| \
                                                             (((u32MatchCount) - 1) << EADC_CMP_CMPMCNT_Pos)|\
@@ -602,8 +602,8 @@ extern "C"
   * @details The 12-bit conversion result will be left aligned and stored in EADC_DATn[15:4] (n=0~23).
   * \hideinitializer
   */
-  
-  
+
+
 #define EADC_ENABLE_LEFT_ALIGN(eadc, u32ModuleNum)  (((u32ModuleNum) < 19) ? ((eadc)->MCTL1[(u32ModuleNum)] |= EADC_MCTL1_ALIGN_Msk) : ((eadc)->M19CTL1[(u32ModuleNum)-19] |= EADC_MCTL1_ALIGN_Msk))
 
 /**
@@ -684,7 +684,9 @@ void EADC_SetTriggerDelayTime(EADC_T *eadc, uint32_t u32ModuleNum, uint32_t u32T
 void EADC_SetExtendSampleTime(EADC_T *eadc, uint32_t u32ModuleNum, uint32_t u32ExtendSampleTime);
 
 /** @} end of group EADC_EXPORTED_FUNCTIONS */
+
 /** @} end of group EADC_Driver */
+
 /** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
@@ -692,3 +694,4 @@ void EADC_SetExtendSampleTime(EADC_T *eadc, uint32_t u32ModuleNum, uint32_t u32E
 #endif
 
 #endif /* __EADC_H__ */
+

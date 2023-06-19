@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     usbd.h
  * @version  V1.00
- * @brief    USBD driver header file
+ * @brief    M55M1 series USBD driver header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -685,9 +685,9 @@ extern const S_USBD_INFO_T gsInfo;
   */
 __STATIC_INLINE void USBD_MemCopy(uint8_t dest[], uint8_t src[], uint32_t size)
 {
-    uint32_t volatile i=0ul;
+    uint32_t volatile i = 0ul;
 
-    while(size--)
+    while (size--)
     {
         dest[i] = src[i];
         i++;
@@ -710,12 +710,12 @@ __STATIC_INLINE void USBD_SetStall(uint8_t epnum)
     uint32_t u32Cfg;
     uint32_t i;
 
-    for(i = 0ul; i < USBD_MAX_EP; i++)
+    for (i = 0ul; i < USBD_MAX_EP; i++)
     {
         u32CfgAddr = (uint32_t)(i << 4) + (uint32_t)&USBD->EP[0].CFG; /* USBD_CFG0 */
         u32Cfg = *((__IO uint32_t *)(u32CfgAddr));
 
-        if((u32Cfg & 0xful) == epnum)
+        if ((u32Cfg & 0xful) == epnum)
         {
             u32CfgAddr = (uint32_t)(i << 4) + (uint32_t)&USBD->EP[0].CFGP; /* USBD_CFGP0 */
             u32Cfg = *((__IO uint32_t *)(u32CfgAddr));
@@ -742,12 +742,12 @@ __STATIC_INLINE void USBD_ClearStall(uint8_t epnum)
     uint32_t u32Cfg;
     uint32_t i;
 
-    for(i = 0ul; i < USBD_MAX_EP; i++)
+    for (i = 0ul; i < USBD_MAX_EP; i++)
     {
         u32CfgAddr = (uint32_t)(i << 4) + (uint32_t)&USBD->EP[0].CFG; /* USBD_CFG0 */
         u32Cfg = *((__IO uint32_t *)(u32CfgAddr));
 
-        if((u32Cfg & 0xful) == epnum)
+        if ((u32Cfg & 0xful) == epnum)
         {
             u32CfgAddr = (uint32_t)(i << 4) + (uint32_t)&USBD->EP[0].CFGP; /* USBD_CFGP0 */
             u32Cfg = *((__IO uint32_t *)(u32CfgAddr));
@@ -775,12 +775,12 @@ __STATIC_INLINE uint32_t USBD_GetStall(uint8_t epnum)
     uint32_t u32Cfg;
     uint32_t i;
 
-    for(i = 0ul; i < USBD_MAX_EP; i++)
+    for (i = 0ul; i < USBD_MAX_EP; i++)
     {
         u32CfgAddr = (uint32_t)(i << 4) + (uint32_t)&USBD->EP[0].CFG; /* USBD_CFG0 */
         u32Cfg = *((__IO uint32_t *)(u32CfgAddr));
 
-        if((u32Cfg & 0xful) == epnum)
+        if ((u32Cfg & 0xful) == epnum)
         {
             u32CfgAddr = (uint32_t)(i << 4) + (uint32_t)&USBD->EP[0].CFGP; /* USBD_CFGP0 */
             break;
@@ -825,3 +825,4 @@ void USBD_LockEpStall(uint32_t u32EpBitmap);
 #endif
 
 #endif /*__USBD_H__*/
+

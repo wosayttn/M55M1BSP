@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     dac.h
  * @version  V1.00
- * @brief    DAC driver header file
+ * @brief    M55M1 series DAC driver header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -266,7 +266,9 @@ void DAC_Close(DAC_T *dac, uint32_t u32Ch);
 uint32_t DAC_SetDelayTime(DAC_T *dac, uint32_t u32Delay);
 
 /** @} end of group DAC_EXPORTED_FUNCTIONS */
+
 /** @} end of group DAC_Driver */
+
 /** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
@@ -274,3 +276,4 @@ uint32_t DAC_SetDelayTime(DAC_T *dac, uint32_t u32Delay);
 #endif
 
 #endif /* __DAC_H__ */
+

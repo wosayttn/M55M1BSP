@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     uart.h
  * @version  V1.00
- * @brief    UART driver header file
+ * @brief    M55M1 series UART driver header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -400,9 +400,9 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /* static inline functions                                                                                 */
 /*---------------------------------------------------------------------------------------------------------*/
-/* Declare these inline functions here to avoid MISRA C 2004 rule 8.1 error */
-static __INLINE void UART_CLEAR_RTS(UART_T* uart);
-static __INLINE void UART_SET_RTS(UART_T* uart);
+
+static __INLINE void UART_CLEAR_RTS(UART_T *uart);
+static __INLINE void UART_SET_RTS(UART_T *uart);
 
 
 /**
@@ -414,7 +414,7 @@ static __INLINE void UART_SET_RTS(UART_T* uart);
  *
  *    @details      This macro set RTS pin to low.
  */
-__STATIC_INLINE void UART_CLEAR_RTS(UART_T* uart)
+__STATIC_INLINE void UART_CLEAR_RTS(UART_T *uart)
 {
     uart->MODEM |= UART_MODEM_RTSACTLV_Msk;
     uart->MODEM &= ~UART_MODEM_RTS_Msk;
@@ -430,7 +430,7 @@ __STATIC_INLINE void UART_CLEAR_RTS(UART_T* uart)
  *
  *    @details      This macro set RTS pin to high.
  */
-__STATIC_INLINE void UART_SET_RTS(UART_T* uart)
+__STATIC_INLINE void UART_SET_RTS(UART_T *uart)
 {
     uart->MODEM |= UART_MODEM_RTSACTLV_Msk | UART_MODEM_RTS_Msk;
 }
@@ -562,25 +562,29 @@ __STATIC_INLINE void UART_SET_RTS(UART_T* uart)
  */
 #define UART_TXRX_SWAP_DISABLE(uart)   ((uart)->FUNCSEL &= ~UART_FUNCSEL_TXRXSWP_Msk)
 
-void UART_ClearIntFlag(UART_T* uart, uint32_t u32InterruptFlag);
-void UART_Close(UART_T* uart);
-void UART_DisableFlowCtrl(UART_T* uart);
-void UART_DisableInt(UART_T*  uart, uint32_t u32InterruptFlag);
-void UART_EnableFlowCtrl(UART_T* uart);
-void UART_EnableInt(UART_T*  uart, uint32_t u32InterruptFlag);
-void UART_Open(UART_T* uart, uint32_t u32baudrate);
-uint32_t UART_Read(UART_T* uart, uint8_t pu8RxBuf[], uint32_t u32ReadBytes);
-void UART_SetLineConfig(UART_T* uart, uint32_t u32baudrate, uint32_t u32data_width, uint32_t u32parity, uint32_t  u32stop_bits);
-void UART_SetTimeoutCnt(UART_T* uart, uint32_t u32TOC);
-void UART_SelectIrDAMode(UART_T* uart, uint32_t u32Buadrate, uint32_t u32Direction);
-void UART_SelectRS485Mode(UART_T* uart, uint32_t u32Mode, uint32_t u32Addr);
-void UART_SelectLINMode(UART_T* uart, uint32_t u32Mode, uint32_t u32BreakLength);
-uint32_t UART_Write(UART_T* uart, uint8_t pu8TxBuf[], uint32_t u32WriteBytes);
+/* Function prototype declaration */
+void UART_ClearIntFlag(UART_T *uart, uint32_t u32InterruptFlag);
+void UART_Close(UART_T *uart);
+void UART_DisableFlowCtrl(UART_T *uart);
+void UART_DisableInt(UART_T  *uart, uint32_t u32InterruptFlag);
+void UART_EnableFlowCtrl(UART_T *uart);
+void UART_EnableInt(UART_T  *uart, uint32_t u32InterruptFlag);
+void UART_Open(UART_T *uart, uint32_t u32baudrate);
+uint32_t UART_Read(UART_T *uart, uint8_t pu8RxBuf[], uint32_t u32ReadBytes);
+void UART_SetLineConfig(UART_T *uart, uint32_t u32baudrate, uint32_t u32data_width, uint32_t u32parity, uint32_t  u32stop_bits);
+void UART_SetTimeoutCnt(UART_T *uart, uint32_t u32TOC);
+void UART_SelectIrDAMode(UART_T *uart, uint32_t u32Buadrate, uint32_t u32Direction);
+void UART_SelectRS485Mode(UART_T *uart, uint32_t u32Mode, uint32_t u32Addr);
+void UART_SelectLINMode(UART_T *uart, uint32_t u32Mode, uint32_t u32BreakLength);
+uint32_t UART_Write(UART_T *uart, uint8_t pu8TxBuf[], uint32_t u32WriteBytes);
 void UART_SelectSingleWireMode(UART_T *uart);
-void UART_SetBaudRateFrationalDivider(UART_T* uart, uint32_t u32BRFD);
-void UART_DisableBaudRateFrationalDivider(UART_T* uart);
+void UART_SetBaudRateFrationalDivider(UART_T *uart, uint32_t u32BRFD);
+void UART_DisableBaudRateFrationalDivider(UART_T *uart);
+
 /** @} end of group UART_EXPORTED_FUNCTIONS */
+
 /** @} end of group UART_Driver */
+
 /** @} end of group Standard_Driver */
 
 #ifdef __cplusplus

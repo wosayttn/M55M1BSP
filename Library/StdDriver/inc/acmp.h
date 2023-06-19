@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     acmp.h
  * @version  V1.00
- * @brief    ACMP driver header file
+ * @brief    M55M1 series ACMP driver header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -19,9 +19,11 @@ extern "C"
   @{
 */
 
+
 /** @addtogroup ACMP_Driver ACMP Driver
   @{
 */
+
 
 /** @addtogroup ACMP_EXPORTED_CONSTANTS ACMP Exported Constants
   @{
@@ -38,8 +40,8 @@ extern "C"
 #define ACMP_CTL_FILTSEL_16PCLK      (5UL << ACMP_CTL_FILTSEL_Pos) /*!< ACMP_CTL setting for 16 PCLK filter count. \hideinitializer */
 #define ACMP_CTL_FILTSEL_32PCLK      (6UL << ACMP_CTL_FILTSEL_Pos) /*!< ACMP_CTL setting for 32 PCLK filter count. \hideinitializer */
 #define ACMP_CTL_FILTSEL_64PCLK      (7UL << ACMP_CTL_FILTSEL_Pos) /*!< ACMP_CTL setting for 64 PCLK filter count. \hideinitializer */
-#define ACMP_CTL_FILTSEL_128PCLK     ((7UL << ACMP_CTL_FILTSEL_Pos) | 1UL << ACMP_CTL_FCLKDIV_Pos ) /*!< ACMP_CTL setting for 128 PCLK filter count. \hideinitializer */
-#define ACMP_CTL_FILTSEL_256PCLK     ((7UL << ACMP_CTL_FILTSEL_Pos) | 2UL << ACMP_CTL_FCLKDIV_Pos ) /*!< ACMP_CTL setting for 256 PCLK filter count. \hideinitializer */
+#define ACMP_CTL_FILTSEL_128PCLK     ((7UL << ACMP_CTL_FILTSEL_Pos) | 1UL << ACMP_CTL_FCLKDIV_Pos) /*!< ACMP_CTL setting for 128 PCLK filter count. \hideinitializer */
+#define ACMP_CTL_FILTSEL_256PCLK     ((7UL << ACMP_CTL_FILTSEL_Pos) | 2UL << ACMP_CTL_FCLKDIV_Pos) /*!< ACMP_CTL setting for 256 PCLK filter count. \hideinitializer */
 
 #define ACMP_CTL_INTPOL_RF           (0UL << ACMP_CTL_INTPOL_Pos)  /*!< ACMP_CTL setting for selecting rising edge and falling edge as interrupt condition. \hideinitializer */
 #define ACMP_CTL_INTPOL_R            (1UL << ACMP_CTL_INTPOL_Pos)  /*!< ACMP_CTL setting for selecting rising edge as interrupt condition. \hideinitializer */
@@ -437,7 +439,9 @@ void ACMP_Open(ACMP_T *acmp, uint32_t u32ChNum, uint32_t u32NegSrc, uint32_t u32
 void ACMP_Close(ACMP_T *acmp, uint32_t u32ChNum);
 
 /** @} end of group ACMP_EXPORTED_FUNCTIONS */
+
 /** @} end of group ACMP_Driver */
+
 /** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
@@ -445,3 +449,4 @@ void ACMP_Close(ACMP_T *acmp, uint32_t u32ChNum);
 #endif
 
 #endif /* __ACMP_H__ */
+

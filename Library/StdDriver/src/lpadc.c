@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     lpadc.c
  * @version  V1.00
- * @brief    LPADC driver source file
+ * @brief    M55M1 series LPADC driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -42,35 +42,33 @@ int32_t g_LPADC_i32ErrCode = 0;   /*!< LPADC global error code */
   * @note This API will reset and calibrate LPADC if LPADC never be calibrated after chip power on.
   * @note This function sets g_LPADC_i32ErrCode to LPADC_TIMEOUT_ERR if CALIF(LPADC_ADCALSTSR[0]) is not set to 1
   */
-void LPADC_Open(LPADC_T *lpadc,
-                uint32_t u32InputMode,
-                uint32_t u32OpMode,
-                uint32_t u32ChMask)
+void LPADC_Open(LPADC_T *lpadc, uint32_t u32InputMode, uint32_t u32OpMode, uint32_t u32ChMask)
 {
     uint32_t u32Delay = SystemCoreClock;    /* 1 second */
-//    uint32_t u32Temp;
+    uint32_t u32Temp;
 
     g_LPADC_i32ErrCode = 0;
     /*Enable the LPADC Power on*/
     LPADC_POWER_ON(lpadc);
+
     /*Wait the LPADC Power On Ready  */
-    while(!(lpadc->ADSR0 & LPADC_ADSR0_ADPRDY_Msk))
+    while (!(lpadc->ADSR0 & LPADC_ADSR0_ADPRDY_Msk))
     {
-      if (--u32Delay == 0)
-      {
-          g_LPADC_i32ErrCode = LPADC_TIMEOUT_ERR;
-          break;
-       }
-     }
+        if (--u32Delay == 0)
+        {
+            g_LPADC_i32ErrCode = LPADC_TIMEOUT_ERR;
+            break;
+        }
+    }
 
 
-#if(0)
     /* Do calibration for LPADC to decrease the effect of electrical random noise. */
     if ((lpadc->ADCALSTS & LPADC_ADCALSTS_CALIF_Msk) == 0)
     {
         /* Must reset LPADC before LPADC calibration */
         lpadc->ADCR |= LPADC_ADCR_RESET_Msk;
-        while((lpadc->ADCR & LPADC_ADCR_RESET_Msk) == LPADC_ADCR_RESET_Msk)
+
+        while ((lpadc->ADCR & LPADC_ADCR_RESET_Msk) == LPADC_ADCR_RESET_Msk)
         {
             if (--u32Delay == 0)
             {
@@ -83,7 +81,8 @@ void LPADC_Open(LPADC_T *lpadc,
         lpadc->ADCAL |= LPADC_ADCAL_CALEN_Msk;            /* Enable Calibration function */
         LPADC_START_CONV(lpadc);                          /* Start to calibration */
         u32Delay = SystemCoreClock;
-        while((lpadc->ADCALSTS & LPADC_ADCALSTS_CALIF_Msk) != LPADC_ADCALSTS_CALIF_Msk)    /* Wait calibration finish */
+
+        while ((lpadc->ADCALSTS & LPADC_ADCALSTS_CALIF_Msk) != LPADC_ADCALSTS_CALIF_Msk)   /* Wait calibration finish */
         {
             if (--u32Delay == 0)
             {
@@ -92,9 +91,10 @@ void LPADC_Open(LPADC_T *lpadc,
             }
         }
     }
-     /* Read channel 0 ADDR to clear Valid flag of channel 0 that set by calibration. */
+
+    /* Read channel 0 ADDR to clear Valid flag of channel 0 that set by calibration. */
     u32Temp = LPADC0->ADDR[0];
-#endif
+
     lpadc->ADCR = (lpadc->ADCR & (~(LPADC_ADCR_DIFFEN_Msk | LPADC_ADCR_ADMD_Msk))) | (u32InputMode) | (u32OpMode);
 
     lpadc->ADCHER = (lpadc->ADCHER & ~LPADC_ADCHER_CHEN_Msk) | (u32ChMask);
@@ -109,7 +109,7 @@ void LPADC_Open(LPADC_T *lpadc,
   */
 void LPADC_Close(LPADC_T *lpadc)
 {
-  
+
     /*Enable the LPADC Power on*/
     lpadc->ADCR &= ~LPADC_ADCR_ADEN_Msk;
 
@@ -138,7 +138,7 @@ void LPADC_Close(LPADC_T *lpadc)
   * @return None
   * @note Software should disable TRGEN (ADCR[8]) and ADST (ADCR[11]) before change TRGS(ADCR[5:4]).
   */
-void LPADC_EnableHWTrigger(LPADC_T *lpadc,uint32_t u32Source)
+void LPADC_EnableHWTrigger(LPADC_T *lpadc, uint32_t u32Source)
 {
 
     lpadc->ADCR = (lpadc->ADCR & ~(LPADC_ADCR_TRGS_Msk | LPADC_ADCR_TRGCOND_Msk | LPADC_ADCR_TRGEN_Msk)) |
@@ -170,11 +170,13 @@ void LPADC_DisableHWTrigger(LPADC_T *lpadc)
   */
 void LPADC_EnableInt(LPADC_T *lpadc, uint32_t u32Mask)
 {
-    if((u32Mask) & LPADC_ADF_INT)
+    if ((u32Mask) & LPADC_ADF_INT)
         lpadc->ADCR |= LPADC_ADCR_ADIE_Msk;
-    if((u32Mask) & LPADC_CMP0_INT)
+
+    if ((u32Mask) & LPADC_CMP0_INT)
         lpadc->ADCMPR[0] |= LPADC_ADCMPR_CMPIE_Msk;
-    if((u32Mask) & LPADC_CMP1_INT)
+
+    if ((u32Mask) & LPADC_CMP1_INT)
         lpadc->ADCMPR[1] |= LPADC_ADCMPR_CMPIE_Msk;
 
     return;
@@ -193,11 +195,13 @@ void LPADC_EnableInt(LPADC_T *lpadc, uint32_t u32Mask)
   */
 void LPADC_DisableInt(LPADC_T *lpadc, uint32_t u32Mask)
 {
-    if((u32Mask) & LPADC_ADF_INT)
+    if ((u32Mask) & LPADC_ADF_INT)
         lpadc->ADCR &= ~LPADC_ADCR_ADIE_Msk;
-    if((u32Mask) & LPADC_CMP0_INT)
+
+    if ((u32Mask) & LPADC_CMP0_INT)
         lpadc->ADCMPR[0] &= ~LPADC_ADCMPR_CMPIE_Msk;
-    if((u32Mask) & LPADC_CMP1_INT)
+
+    if ((u32Mask) & LPADC_CMP1_INT)
         lpadc->ADCMPR[1] &= ~LPADC_ADCMPR_CMPIE_Msk;
 
     return;
@@ -238,14 +242,14 @@ void LPADC_SetExtendSampleTime(LPADC_T *lpadc, uint32_t u32ExtendSampleTime)
   * @return  None
   * @details The function is used to set Automatic Operation relative setting.
   */
-void LPADC_SelectAutoOperationMode(LPADC_T *lpadc,uint32_t u32TrigSel)
+void LPADC_SelectAutoOperationMode(LPADC_T *lpadc, uint32_t u32TrigSel)
 {
     /* Automatic Operation Mode Enable */
     lpadc->AUTOCTL |= LPADC_AUTOCTL_AUTOEN_Msk;
-  
-    lpadc->AUTOCTL &= ~(LPADC_AUTOCTL_TRIGSEL_Msk |LPADC_AUTOCTL_TRIGEN_Msk);
-  
-    lpadc->AUTOCTL |= u32TrigSel; 
+
+    lpadc->AUTOCTL &= ~(LPADC_AUTOCTL_TRIGSEL_Msk | LPADC_AUTOCTL_TRIGEN_Msk);
+
+    lpadc->AUTOCTL |= u32TrigSel;
 }
 
 /*@}*/ /* end of group LPADC_EXPORTED_FUNCTIONS */
@@ -254,4 +258,3 @@ void LPADC_SelectAutoOperationMode(LPADC_T *lpadc,uint32_t u32TrigSel)
 
 /*@}*/ /* end of group Standard_Driver */
 
-/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
