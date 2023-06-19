@@ -178,22 +178,22 @@ int xatoi(          /* 0:Failed, 1:Successful */
 
         switch (c)
         {
-        case 'x':       /* hexadecimal */
-            r = 16;
-            c = *(++(*str));
-            break;
+            case 'x':       /* hexadecimal */
+                r = 16;
+                c = *(++(*str));
+                break;
 
-        case 'b':       /* binary */
-            r = 2;
-            c = *(++(*str));
-            break;
+            case 'b':       /* binary */
+                r = 2;
+                c = *(++(*str));
+                break;
 
-        default:
-            if (c <= ' ') return 1; /* single zero */
+            default:
+                if (c <= ' ') return 1; /* single zero */
 
-            if (c < '0' || c > '9') return 0;   /* invalid char */
+                if (c < '0' || c > '9') return 0;   /* invalid char */
 
-            r = 8;      /* octal */
+                r = 8;      /* octal */
         }
     }
     else
@@ -470,12 +470,6 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOI_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
 
-    /* Enable UART clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
-
     /* USB Host desired input clock is 48 MHz. Set as PLL/2 divided by 2 (192/2/2 = 48) */
     CLK_SetModuleClock(USBH0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
     CLK_SetModuleClock(HSUSBH0_MODULE, 0, 0);
@@ -597,754 +591,753 @@ int32_t main(void)
         switch (*ptr++)
         {
 
-        case 'q' :  /* Exit program */
-            return 0;
+            case 'q' :  /* Exit program */
+                return 0;
 
-        case '5':
-            for (sector_no = 0; sector_no < 128000; sector_no++)
-            {
-                if (sector_no % 1000 == 0)
-                    printf("\nLBK transfer count: Ii:%d, Io: %d, Si:%d, So:%d\n", int_in_cnt, int_out_cnt, iso_in_cnt, iso_out_cnt);
-
-                printf("Test sector %d\r", sector_no);
-
-                memset(buff1, 87, 512);
-                memset(buff2, 0x87, 512);
-
-                res = (FRESULT)disk_read(3, buff1, sector_no, 1);
-
-                if (res)
+            case '5':
+                for (sector_no = 0; sector_no < 128000; sector_no++)
                 {
-                    printf("read failed at %d, rc=%d\n", sector_no, (WORD)res);
-                    put_rc(res);
-                    break;
-                }
+                    if (sector_no % 1000 == 0)
+                        printf("\nLBK transfer count: Ii:%d, Io: %d, Si:%d, So:%d\n", int_in_cnt, int_out_cnt, iso_in_cnt, iso_out_cnt);
 
-                res = (FRESULT)disk_read(3, buff2, sector_no, 1);
+                    printf("Test sector %d\r", sector_no);
 
-                if (res)
-                {
-                    printf("read failed at %d, rc=%d\n", sector_no, (WORD)res);
-                    put_rc(res);
-                    break;
-                }
+                    memset(buff1, 87, 512);
+                    memset(buff2, 0x87, 512);
 
-                if (memcmp(buff1, buff2, 512) != 0)
-                {
-                    printf("\nData compare failed!!\n");
-                    break;
-                }
-            }
-
-            break;
-
-        case '4' :
-        case '6' :
-        case '7' :
-            ptr--;
-            *(ptr + 1) = ':';
-            *(ptr + 2) = 0;
-            put_rc(f_chdrive((TCHAR *)ptr));
-            break;
-
-        case 'd' :
-            switch (*ptr++)
-            {
-            case 'd' :  /* dd [<lba>] - Dump sector */
-                if (!xatoi(&ptr, &p2)) p2 = sect;
-
-                res = (FRESULT)disk_read(3, Buff, p2, 1);
-
-                if (res)
-                {
-                    printf("rc=%d\n", (WORD)res);
-                    break;
-                }
-
-                sect = p2 + 1;
-                printf("Sector:%d\n", (INT)p2);
-
-                for (buf = (unsigned char *)Buff, ofs = 0; ofs < 0x200; buf += 16, ofs += 16)
-                    put_dump(buf, ofs, 16);
-
-                break;
-
-            case 't' :  /* dt - raw sector read/write performance test */
-                printf("Raw sector read performance test...\n");
-                timer_init();
-
-                for (s1 = 0; s1 < (0x800000 / BUFF_SIZE); s1++)
-                {
-                    s2 = BUFF_SIZE / 512;   /* sector count for each read  */
-                    res = (FRESULT)disk_read(3, Buff, 10000 + s1 * s2, s2);
+                    res = (FRESULT)disk_read(3, buff1, sector_no, 1);
 
                     if (res)
                     {
-                        printf("read failed at %d, rc=%d\n", 10000 + s1 * s2, (WORD)res);
+                        printf("read failed at %d, rc=%d\n", sector_no, (WORD)res);
                         put_rc(res);
                         break;
                     }
 
-                    if (s1 % 256 == 0)
-                        printf("%d KB\n", (s1 * BUFF_SIZE) / 1024);
-                }
-
-                p1 = get_timer_value();
-                printf("time = %d.%02d\n", (INT)(p1 / 100), (INT)(p1 % 100));
-                printf("Raw read speed: %d KB/s\n", (INT)(((0x800000 * 100) / p1) / 1024));
-
-                printf("Raw sector write performance test...\n");
-                timer_init();
-
-                for (s1 = 0; s1 < (0x800000 / BUFF_SIZE); s1++)
-                {
-                    s2 = BUFF_SIZE / 512;   /* sector count for each read  */
-                    res = (FRESULT)disk_write(3, Buff, 20000 + s1 * s2, s2);
+                    res = (FRESULT)disk_read(3, buff2, sector_no, 1);
 
                     if (res)
                     {
-                        printf("write failed at %d, rc=%d\n", 20000 + s1 * s2, (WORD)res);
+                        printf("read failed at %d, rc=%d\n", sector_no, (WORD)res);
                         put_rc(res);
                         break;
                     }
 
-                    if (s1 % 256 == 0)
-                        printf("%d KB\n", (s1 * BUFF_SIZE) / 1024);
+                    if (memcmp(buff1, buff2, 512) != 0)
+                    {
+                        printf("\nData compare failed!!\n");
+                        break;
+                    }
                 }
 
-                p1 = get_timer_value();
-                printf("time = %d.%02d\n", (INT)(p1 / 100), (INT)(p1 % 100));
-                printf("Raw write speed: %d KB/s\n", (INT)(((0x800000 * 100) / p1) / 1024));
                 break;
 
-            case 'z' :  /* dz - file read/write performance test */
+            case '4' :
+            case '6' :
+            case '7' :
+                ptr--;
+                *(ptr + 1) = ':';
+                *(ptr + 2) = 0;
+                put_rc(f_chdrive((TCHAR *)ptr));
+                break;
+
+            case 'd' :
+                switch (*ptr++)
+                {
+                    case 'd' :  /* dd [<lba>] - Dump sector */
+                        if (!xatoi(&ptr, &p2)) p2 = sect;
+
+                        res = (FRESULT)disk_read(3, Buff, p2, 1);
+
+                        if (res)
+                        {
+                            printf("rc=%d\n", (WORD)res);
+                            break;
+                        }
+
+                        sect = p2 + 1;
+                        printf("Sector:%d\n", (INT)p2);
+
+                        for (buf = (unsigned char *)Buff, ofs = 0; ofs < 0x200; buf += 16, ofs += 16)
+                            put_dump(buf, ofs, 16);
+
+                        break;
+
+                    case 't' :  /* dt - raw sector read/write performance test */
+                        printf("Raw sector read performance test...\n");
+                        timer_init();
+
+                        for (s1 = 0; s1 < (0x800000 / BUFF_SIZE); s1++)
+                        {
+                            s2 = BUFF_SIZE / 512;   /* sector count for each read  */
+                            res = (FRESULT)disk_read(3, Buff, 10000 + s1 * s2, s2);
+
+                            if (res)
+                            {
+                                printf("read failed at %d, rc=%d\n", 10000 + s1 * s2, (WORD)res);
+                                put_rc(res);
+                                break;
+                            }
+
+                            if (s1 % 256 == 0)
+                                printf("%d KB\n", (s1 * BUFF_SIZE) / 1024);
+                        }
+
+                        p1 = get_timer_value();
+                        printf("time = %d.%02d\n", (INT)(p1 / 100), (INT)(p1 % 100));
+                        printf("Raw read speed: %d KB/s\n", (INT)(((0x800000 * 100) / p1) / 1024));
+
+                        printf("Raw sector write performance test...\n");
+                        timer_init();
+
+                        for (s1 = 0; s1 < (0x800000 / BUFF_SIZE); s1++)
+                        {
+                            s2 = BUFF_SIZE / 512;   /* sector count for each read  */
+                            res = (FRESULT)disk_write(3, Buff, 20000 + s1 * s2, s2);
+
+                            if (res)
+                            {
+                                printf("write failed at %d, rc=%d\n", 20000 + s1 * s2, (WORD)res);
+                                put_rc(res);
+                                break;
+                            }
+
+                            if (s1 % 256 == 0)
+                                printf("%d KB\n", (s1 * BUFF_SIZE) / 1024);
+                        }
+
+                        p1 = get_timer_value();
+                        printf("time = %d.%02d\n", (INT)(p1 / 100), (INT)(p1 % 100));
+                        printf("Raw write speed: %d KB/s\n", (INT)(((0x800000 * 100) / p1) / 1024));
+                        break;
+
+                    case 'z' :  /* dz - file read/write performance test */
 #if 1
-                printf("File write performance test...\n");
-                res = f_open(&file1, "3:\\tfile", FA_CREATE_ALWAYS | FA_WRITE);
+                        printf("File write performance test...\n");
+                        res = f_open(&file1, "3:\\tfile", FA_CREATE_ALWAYS | FA_WRITE);
 
-                if (res)
-                {
-                    put_rc(res);
-                    break;
-                }
+                        if (res)
+                        {
+                            put_rc(res);
+                            break;
+                        }
 
-                timer_init();
+                        timer_init();
 
-                for (s1 = 0; s1 < (0x800000 / BUFF_SIZE); s1++)
-                {
-                    res = f_write(&file1, Buff, BUFF_SIZE, &cnt);
+                        for (s1 = 0; s1 < (0x800000 / BUFF_SIZE); s1++)
+                        {
+                            res = f_write(&file1, Buff, BUFF_SIZE, &cnt);
 
-                    if (res || (cnt != BUFF_SIZE))
-                    {
-                        put_rc(res);
-                        break;
-                    }
+                            if (res || (cnt != BUFF_SIZE))
+                            {
+                                put_rc(res);
+                                break;
+                            }
 
-                    if (s1 % 128 == 0)
-                        printf("%d KB\n", (s1 * BUFF_SIZE) / 1024);
-                }
+                            if (s1 % 128 == 0)
+                                printf("%d KB\n", (s1 * BUFF_SIZE) / 1024);
+                        }
 
-                p1 = get_timer_value();
-                f_close(&file1);
-                printf("time = %d.%02d\n", (INT)p1 / 100, (INT)p1 % 100);
-                printf("File write speed: %d KB/s\n", (INT)((0x800000 * 100) / p1) / 1024);
+                        p1 = get_timer_value();
+                        f_close(&file1);
+                        printf("time = %d.%02d\n", (INT)p1 / 100, (INT)p1 % 100);
+                        printf("File write speed: %d KB/s\n", (INT)((0x800000 * 100) / p1) / 1024);
 #endif
-                printf("File read performance test...\n");
-                res = f_open(&file1, "3:\\tfile", FA_READ);
+                        printf("File read performance test...\n");
+                        res = f_open(&file1, "3:\\tfile", FA_READ);
 
-                if (res)
-                {
-                    put_rc(res);
-                    break;
-                }
+                        if (res)
+                        {
+                            put_rc(res);
+                            break;
+                        }
 
-                timer_init();
+                        timer_init();
 
-                for (s1 = 0; s1 < (0x800000 / BUFF_SIZE); s1++)
-                {
-                    res = f_read(&file1, Buff, BUFF_SIZE, &cnt);
+                        for (s1 = 0; s1 < (0x800000 / BUFF_SIZE); s1++)
+                        {
+                            res = f_read(&file1, Buff, BUFF_SIZE, &cnt);
 
-                    if (res || (cnt != BUFF_SIZE))
-                    {
-                        put_rc(res);
+                            if (res || (cnt != BUFF_SIZE))
+                            {
+                                put_rc(res);
+                                break;
+                            }
+
+                            if (s1 % 128 == 0)
+                                printf("%d KB\n", (s1 * BUFF_SIZE) / 1024);
+                        }
+
+                        p1 = get_timer_value();
+                        f_close(&file1);
+                        printf("time = %d.%02d\n", (INT)(p1 / 100), (INT)(p1 % 100));
+                        printf("File read speed: %d KB/s\n", (INT)(((0x800000 * 100) / p1) / 1024));
                         break;
-                    }
-
-                    if (s1 % 128 == 0)
-                        printf("%d KB\n", (s1 * BUFF_SIZE) / 1024);
                 }
 
-                p1 = get_timer_value();
-                f_close(&file1);
-                printf("time = %d.%02d\n", (INT)(p1 / 100), (INT)(p1 % 100));
-                printf("File read speed: %d KB/s\n", (INT)(((0x800000 * 100) / p1) / 1024));
-                break;
-            }
-
-            break;
-
-        case 'b' :
-            switch (*ptr++)
-            {
-            case 'd' :  /* bd <addr> - Dump R/W buffer */
-                if (!xatoi(&ptr, &p1)) break;
-
-                for (ptr = (char *)&Buff[p1], ofs = p1, cnt = 32; cnt; cnt--, ptr += 16, ofs += 16)
-                    put_dump((BYTE *)ptr, ofs, 16);
-
                 break;
 
-            case 'e' :  /* be <addr> [<data>] ... - Edit R/W buffer */
-                if (!xatoi(&ptr, &p1)) break;
-
-                if (xatoi(&ptr, &p2))
+            case 'b' :
+                switch (*ptr++)
                 {
-                    do
-                    {
-                        Buff[p1++] = (BYTE)p2;
-                    }
-                    while (xatoi(&ptr, &p2));
+                    case 'd' :  /* bd <addr> - Dump R/W buffer */
+                        if (!xatoi(&ptr, &p1)) break;
 
-                    break;
+                        for (ptr = (char *)&Buff[p1], ofs = p1, cnt = 32; cnt; cnt--, ptr += 16, ofs += 16)
+                            put_dump((BYTE *)ptr, ofs, 16);
+
+                        break;
+
+                    case 'e' :  /* be <addr> [<data>] ... - Edit R/W buffer */
+                        if (!xatoi(&ptr, &p1)) break;
+
+                        if (xatoi(&ptr, &p2))
+                        {
+                            do
+                            {
+                                Buff[p1++] = (BYTE)p2;
+                            } while (xatoi(&ptr, &p2));
+
+                            break;
+                        }
+
+                        for (;;)
+                        {
+                            printf("%04X %02X-", (WORD)p1, Buff[p1]);
+                            get_line(Line, sizeof(Line));
+                            ptr = Line;
+
+                            if (*ptr == '.') break;
+
+                            if (*ptr < ' ')
+                            {
+                                p1++;
+                                continue;
+                            }
+
+                            if (xatoi(&ptr, &p2))
+                                Buff[p1++] = (BYTE)p2;
+                            else
+                                printf("???\n");
+                        }
+
+                        break;
+
+                    case 'r' :  /* br <sector> [<n>] - Read disk into R/W buffer */
+                        if (!xatoi(&ptr, &p2)) break;
+
+                        if (!xatoi(&ptr, &p3)) p3 = 1;
+
+                        printf("rc=%d\n", disk_read(3, Buff, p2, p3));
+                        break;
+
+                    case 'w' :  /* bw <sector> [<n>] - Write R/W buffer into disk */
+                        if (!xatoi(&ptr, &p2)) break;
+
+                        if (!xatoi(&ptr, &p3)) p3 = 1;
+
+                        printf("rc=%d\n", disk_write(3, Buff, p2, p3));
+                        break;
+
+                    case 'f' :  /* bf <n> - Fill working buffer */
+                        if (!xatoi(&ptr, &p1)) break;
+
+                        memset(Buff, (int)p1, BUFF_SIZE);
+                        break;
+
                 }
 
-                for (;;)
+                break;
+
+
+
+            case 'f' :
+                switch (*ptr++)
                 {
-                    printf("%04X %02X-", (WORD)p1, Buff[p1]);
-                    get_line(Line, sizeof(Line));
-                    ptr = Line;
 
-                    if (*ptr == '.') break;
+                    case 's' :  /* fs - Show logical drive status */
+                        res = f_getfree("", (DWORD *)&p2, &fs);
 
-                    if (*ptr < ' ')
-                    {
-                        p1++;
-                        continue;
-                    }
+                        if (res)
+                        {
+                            put_rc(res);
+                            break;
+                        }
 
-                    if (xatoi(&ptr, &p2))
-                        Buff[p1++] = (BYTE)p2;
-                    else
-                        printf("???\n");
-                }
-
-                break;
-
-            case 'r' :  /* br <sector> [<n>] - Read disk into R/W buffer */
-                if (!xatoi(&ptr, &p2)) break;
-
-                if (!xatoi(&ptr, &p3)) p3 = 1;
-
-                printf("rc=%d\n", disk_read(3, Buff, p2, p3));
-                break;
-
-            case 'w' :  /* bw <sector> [<n>] - Write R/W buffer into disk */
-                if (!xatoi(&ptr, &p2)) break;
-
-                if (!xatoi(&ptr, &p3)) p3 = 1;
-
-                printf("rc=%d\n", disk_write(3, Buff, p2, p3));
-                break;
-
-            case 'f' :  /* bf <n> - Fill working buffer */
-                if (!xatoi(&ptr, &p1)) break;
-
-                memset(Buff, (int)p1, BUFF_SIZE);
-                break;
-
-            }
-
-            break;
-
-
-
-        case 'f' :
-            switch (*ptr++)
-            {
-
-            case 's' :  /* fs - Show logical drive status */
-                res = f_getfree("", (DWORD *)&p2, &fs);
-
-                if (res)
-                {
-                    put_rc(res);
-                    break;
-                }
-
-                printf("FAT type = FAT%d\nBytes/Cluster = %d\nNumber of FATs = %d\n"
-                       "Root DIR entries = %d\nSectors/FAT = %d\nNumber of clusters = %d\n"
-                       "FAT start (lba) = %d\nDIR start (lba,clustor) = %d\nData start (lba) = %d\n\n...",
-                       ft[fs->fs_type & 3], (INT)(fs->csize * 512UL), fs->n_fats,
-                       fs->n_rootdir, (INT)(fs->fsize), (INT)(fs->n_fatent - 2),
-                       (INT)(fs->fatbase), (INT)(fs->dirbase), (INT)(fs->database)
-                      );
-                acc_size = acc_files = acc_dirs = 0;
+                        printf("FAT type = FAT%d\nBytes/Cluster = %d\nNumber of FATs = %d\n"
+                               "Root DIR entries = %d\nSectors/FAT = %d\nNumber of clusters = %d\n"
+                               "FAT start (lba) = %d\nDIR start (lba,clustor) = %d\nData start (lba) = %d\n\n...",
+                               ft[fs->fs_type & 3], (INT)(fs->csize * 512UL), fs->n_fats,
+                               fs->n_rootdir, (INT)(fs->fsize), (INT)(fs->n_fatent - 2),
+                               (INT)(fs->fatbase), (INT)(fs->dirbase), (INT)(fs->database)
+                              );
+                        acc_size = acc_files = acc_dirs = 0;
 #if _USE_LFN
-                Finfo.lfname = Lfname;
-                Finfo.lfsize = sizeof(Lfname);
+                        Finfo.lfname = Lfname;
+                        Finfo.lfsize = sizeof(Lfname);
 #endif
-                res = scan_files(ptr);
+                        res = scan_files(ptr);
 
-                if (res)
-                {
-                    put_rc(res);
-                    break;
-                }
+                        if (res)
+                        {
+                            put_rc(res);
+                            break;
+                        }
 
-                printf("\r%d files, %d bytes.\n%d folders.\n"
-                       "%d KB total disk space.\n%d KB available.\n",
-                       acc_files, (INT)(acc_size), acc_dirs,
-                       (INT)((fs->n_fatent - 2) * (fs->csize / 2)), (INT)(p2 * (fs->csize / 2))
-                      );
-                break;
+                        printf("\r%d files, %d bytes.\n%d folders.\n"
+                               "%d KB total disk space.\n%d KB available.\n",
+                               acc_files, (INT)(acc_size), acc_dirs,
+                               (INT)((fs->n_fatent - 2) * (fs->csize / 2)), (INT)(p2 * (fs->csize / 2))
+                              );
+                        break;
 
-            case 'l' :  /* fl [<path>] - Directory listing */
-                while (*ptr == ' ') ptr++;
+                    case 'l' :  /* fl [<path>] - Directory listing */
+                        while (*ptr == ' ') ptr++;
 
-                res = f_opendir(&dir, ptr);
+                        res = f_opendir(&dir, ptr);
 
-                if (res)
-                {
-                    put_rc(res);
-                    break;
-                }
+                        if (res)
+                        {
+                            put_rc(res);
+                            break;
+                        }
 
-                p1 = s1 = s2 = 0;
+                        p1 = s1 = s2 = 0;
 
-                for (;;)
-                {
-                    res = f_readdir(&dir, &Finfo);
+                        for (;;)
+                        {
+                            res = f_readdir(&dir, &Finfo);
 
-                    if ((res != FR_OK) || !Finfo.fname[0]) break;
+                            if ((res != FR_OK) || !Finfo.fname[0]) break;
 
-                    if (Finfo.fattrib & AM_DIR)
-                    {
-                        s2++;
-                    }
-                    else
-                    {
-                        s1++;
-                        p1 += Finfo.fsize;
-                    }
+                            if (Finfo.fattrib & AM_DIR)
+                            {
+                                s2++;
+                            }
+                            else
+                            {
+                                s1++;
+                                p1 += Finfo.fsize;
+                            }
 
-                    printf("%c%c%c%c%c %d/%02d/%02d %02d:%02d    %9d  %s",
-                           (Finfo.fattrib & AM_DIR) ? 'D' : '-',
-                           (Finfo.fattrib & AM_RDO) ? 'R' : '-',
-                           (Finfo.fattrib & AM_HID) ? 'H' : '-',
-                           (Finfo.fattrib & AM_SYS) ? 'S' : '-',
-                           (Finfo.fattrib & AM_ARC) ? 'A' : '-',
-                           (Finfo.fdate >> 9) + 1980, (Finfo.fdate >> 5) & 15, Finfo.fdate & 31,
-                           (Finfo.ftime >> 11), (Finfo.ftime >> 5) & 63, (INT)Finfo.fsize, Finfo.fname);
+                            printf("%c%c%c%c%c %d/%02d/%02d %02d:%02d    %9d  %s",
+                                   (Finfo.fattrib & AM_DIR) ? 'D' : '-',
+                                   (Finfo.fattrib & AM_RDO) ? 'R' : '-',
+                                   (Finfo.fattrib & AM_HID) ? 'H' : '-',
+                                   (Finfo.fattrib & AM_SYS) ? 'S' : '-',
+                                   (Finfo.fattrib & AM_ARC) ? 'A' : '-',
+                                   (Finfo.fdate >> 9) + 1980, (Finfo.fdate >> 5) & 15, Finfo.fdate & 31,
+                                   (Finfo.ftime >> 11), (Finfo.ftime >> 5) & 63, (INT)Finfo.fsize, Finfo.fname);
 #if _USE_LFN
 
-                    for (p2 = strlen(Finfo.fname); p2 < 14; p2++)
-                        printf(" ");
+                            for (p2 = strlen(Finfo.fname); p2 < 14; p2++)
+                                printf(" ");
 
-                    printf("%s\n", Lfname);
+                            printf("%s\n", Lfname);
 #else
-                    printf("\n");
+                            printf("\n");
 #endif
-                }
+                        }
 
-                printf("%4d File(s),%10d bytes total\n%4d Dir(s)", s1, (INT)p1, s2);
+                        printf("%4d File(s),%10d bytes total\n%4d Dir(s)", s1, (INT)p1, s2);
 
-                if (f_getfree(ptr, (DWORD *)&p1, &fs) == FR_OK)
-                    printf(", %10d bytes free\n", (INT)(p1 * fs->csize * 512));
+                        if (f_getfree(ptr, (DWORD *)&p1, &fs) == FR_OK)
+                            printf(", %10d bytes free\n", (INT)(p1 * fs->csize * 512));
 
-                break;
+                        break;
 
 
-            case 'o' :  /* fo <mode> <file> - Open a file */
-                if (!xatoi(&ptr, &p1)) break;
+                    case 'o' :  /* fo <mode> <file> - Open a file */
+                        if (!xatoi(&ptr, &p1)) break;
 
-                while (*ptr == ' ') ptr++;
+                        while (*ptr == ' ') ptr++;
 
-                put_rc(f_open(&file1, ptr, (BYTE)p1));
-                break;
+                        put_rc(f_open(&file1, ptr, (BYTE)p1));
+                        break;
 
-            case 'c' :  /* fc - Close a file */
-                put_rc(f_close(&file1));
-                break;
+                    case 'c' :  /* fc - Close a file */
+                        put_rc(f_close(&file1));
+                        break;
 
-            case 'e' :  /* fe - Seek file pointer */
-                if (!xatoi(&ptr, &p1)) break;
+                    case 'e' :  /* fe - Seek file pointer */
+                        if (!xatoi(&ptr, &p1)) break;
 
-                res = f_lseek(&file1, p1);
-                put_rc(res);
-
-                if (res == FR_OK)
-                    printf("fptr=%d(0x%lX)\n", (INT)file1.fptr, file1.fptr);
-
-                break;
-
-            case 'd' :  /* fd <len> - read and dump file from current fp */
-                if (!xatoi(&ptr, &p1)) break;
-
-                ofs = file1.fptr;
-
-                while (p1)
-                {
-                    if ((UINT)p1 >= 16)
-                    {
-                        cnt = 16;
-                        p1 -= 16;
-                    }
-                    else
-                    {
-                        cnt = p1;
-                        p1 = 0;
-                    }
-
-                    res = f_read(&file1, Buff, cnt, &cnt);
-
-                    if (res != FR_OK)
-                    {
+                        res = f_lseek(&file1, p1);
                         put_rc(res);
+
+                        if (res == FR_OK)
+                            printf("fptr=%d(0x%lX)\n", (INT)file1.fptr, file1.fptr);
+
                         break;
-                    }
 
-                    if (!cnt) break;
+                    case 'd' :  /* fd <len> - read and dump file from current fp */
+                        if (!xatoi(&ptr, &p1)) break;
 
-                    put_dump(Buff, ofs, cnt);
-                    ofs += 16;
-                }
+                        ofs = file1.fptr;
 
-                break;
+                        while (p1)
+                        {
+                            if ((UINT)p1 >= 16)
+                            {
+                                cnt = 16;
+                                p1 -= 16;
+                            }
+                            else
+                            {
+                                cnt = p1;
+                                p1 = 0;
+                            }
 
-            case 'r' :  /* fr <len> - read file */
-                if (!xatoi(&ptr, &p1)) break;
+                            res = f_read(&file1, Buff, cnt, &cnt);
 
-                p2 = 0;
-                timer_init();
+                            if (res != FR_OK)
+                            {
+                                put_rc(res);
+                                break;
+                            }
 
-                while (p1)
-                {
-                    if ((UINT)p1 >= blen)
-                    {
-                        cnt = blen;
-                        p1 -= blen;
-                    }
-                    else
-                    {
-                        cnt = p1;
+                            if (!cnt) break;
+
+                            put_dump(Buff, ofs, cnt);
+                            ofs += 16;
+                        }
+
+                        break;
+
+                    case 'r' :  /* fr <len> - read file */
+                        if (!xatoi(&ptr, &p1)) break;
+
+                        p2 = 0;
+                        timer_init();
+
+                        while (p1)
+                        {
+                            if ((UINT)p1 >= blen)
+                            {
+                                cnt = blen;
+                                p1 -= blen;
+                            }
+                            else
+                            {
+                                cnt = p1;
+                                p1 = 0;
+                            }
+
+                            res = f_read(&file1, Buff, cnt, &s2);
+
+                            if (res != FR_OK)
+                            {
+                                put_rc(res);
+                                break;
+                            }
+
+                            p2 += s2;
+
+                            if (cnt != s2) break;
+                        }
+
+                        p1 = get_timer_value();
+
+                        if (p1)
+                            printf("%d bytes read with %d kB/sec.\n", (INT)p2, (INT)(((p2 * 100) / p1) / 1024));
+
+                        break;
+
+                    case 'w' :  /* fw <len> <val> - write file */
+                        if (!xatoi(&ptr, &p1) || !xatoi(&ptr, &p2)) break;
+
+                        memset(Buff, (BYTE)p2, blen);
+                        p2 = 0;
+                        timer_init();
+
+                        while (p1)
+                        {
+                            if ((UINT)p1 >= blen)
+                            {
+                                cnt = blen;
+                                p1 -= blen;
+                            }
+                            else
+                            {
+                                cnt = p1;
+                                p1 = 0;
+                            }
+
+                            res = f_write(&file1, Buff, cnt, &s2);
+
+                            if (res != FR_OK)
+                            {
+                                put_rc(res);
+                                break;
+                            }
+
+                            p2 += s2;
+
+                            if (cnt != s2) break;
+                        }
+
+                        p1 = get_timer_value();
+
+                        if (p1)
+                            printf("%d bytes written with %d kB/sec.\n", (INT)p2, (INT)(((p2 * 100) / p1) / 1024));
+
+                        break;
+
+                    case 'n' :  /* fn <old_name> <new_name> - Change file/dir name */
+                        while (*ptr == ' ') ptr++;
+
+                        ptr2 = strchr(ptr, ' ');
+
+                        if (!ptr2) break;
+
+                        *ptr2++ = 0;
+
+                        while (*ptr2 == ' ') ptr2++;
+
+                        put_rc(f_rename(ptr, ptr2));
+                        break;
+
+                    case 'u' :  /* fu <name> - Unlink a file or dir */
+                        while (*ptr == ' ') ptr++;
+
+                        put_rc(f_unlink(ptr));
+                        break;
+
+                    case 'v' :  /* fv - Truncate file */
+                        put_rc(f_truncate(&file1));
+                        break;
+
+                    case 'k' :  /* fk <name> - Create a directory */
+                        while (*ptr == ' ') ptr++;
+
+                        put_rc(f_mkdir(ptr));
+                        break;
+
+                    case 'a' :  /* fa <atrr> <mask> <name> - Change file/dir attribute */
+                        if (!xatoi(&ptr, &p1) || !xatoi(&ptr, &p2)) break;
+
+                        while (*ptr == ' ') ptr++;
+
+                        put_rc(f_chmod(ptr, p1, p2));
+                        break;
+
+                    case 't' :  /* ft <year> <month> <day> <hour> <min> <sec> <name> - Change timestamp */
+                        if (!xatoi(&ptr, &p1) || !xatoi(&ptr, &p2) || !xatoi(&ptr, &p3)) break;
+
+                        Finfo.fdate = (WORD)(((p1 - 1980) << 9) | ((p2 & 15) << 5) | (p3 & 31));
+
+                        if (!xatoi(&ptr, &p1) || !xatoi(&ptr, &p2) || !xatoi(&ptr, &p3)) break;
+
+                        Finfo.ftime = (WORD)(((p1 & 31) << 11) | ((p1 & 63) << 5) | ((p1 >> 1) & 31));
+                        put_rc(f_utime(ptr, &Finfo));
+                        break;
+
+                    case 'x' : /* fx <src_name> <dst_name> - Copy file */
+                        while (*ptr == ' ') ptr++;
+
+                        ptr2 = strchr(ptr, ' ');
+
+                        if (!ptr2) break;
+
+                        *ptr2++ = 0;
+
+                        while (*ptr2 == ' ') ptr2++;
+
+                        printf("Opening \"%s\"", ptr);
+                        res = f_open(&file1, ptr, FA_OPEN_EXISTING | FA_READ);
+                        printf("\n");
+
+                        if (res)
+                        {
+                            put_rc(res);
+                            break;
+                        }
+
+                        printf("Creating \"%s\"", ptr2);
+                        res = f_open(&file2, ptr2, FA_CREATE_ALWAYS | FA_WRITE);
+                        putchar('\n');
+
+                        if (res)
+                        {
+                            put_rc(res);
+                            f_close(&file1);
+                            break;
+                        }
+
+                        printf("Copying...");
                         p1 = 0;
-                    }
 
-                    res = f_read(&file1, Buff, cnt, &s2);
+                        for (;;)
+                        {
+                            res = f_read(&file1, Buff, BUFF_SIZE, &s1);
 
-                    if (res != FR_OK)
-                    {
-                        put_rc(res);
+                            if (res || s1 == 0) break;   /* error or eof */
+
+                            res = f_write(&file2, Buff, s1, &s2);
+                            p1 += s2;
+
+                            if (res || s2 < s1) break;   /* error or disk full */
+
+                            if ((p1 % 0x10000) == 0)
+                                printf("\n%d KB copyed.", (INT)(p1 / 1024));
+
+                            printf(".");
+                        }
+
+                        printf("\n%d bytes copied.\n", (INT)p1);
+                        f_close(&file1);
+                        f_close(&file2);
                         break;
-                    }
 
-                    p2 += s2;
+                    case 'y' : /* fz <src_name> <dst_name> - Compare file */
+                        while (*ptr == ' ') ptr++;
 
-                    if (cnt != s2) break;
-                }
+                        ptr2 = strchr(ptr, ' ');
 
-                p1 = get_timer_value();
+                        if (!ptr2) break;
 
-                if (p1)
-                    printf("%d bytes read with %d kB/sec.\n", (INT)p2, (INT)(((p2 * 100) / p1) / 1024));
+                        *ptr2++ = 0;
 
-                break;
+                        while (*ptr2 == ' ') ptr2++;
 
-            case 'w' :  /* fw <len> <val> - write file */
-                if (!xatoi(&ptr, &p1) || !xatoi(&ptr, &p2)) break;
+                        printf("Opening \"%s\"", ptr);
+                        res = f_open(&file1, ptr, FA_OPEN_EXISTING | FA_READ);
+                        printf("\n");
 
-                memset(Buff, (BYTE)p2, blen);
-                p2 = 0;
-                timer_init();
+                        if (res)
+                        {
+                            put_rc(res);
+                            break;
+                        }
 
-                while (p1)
-                {
-                    if ((UINT)p1 >= blen)
-                    {
-                        cnt = blen;
-                        p1 -= blen;
-                    }
-                    else
-                    {
-                        cnt = p1;
+                        printf("Opening \"%s\"", ptr2);
+                        res = f_open(&file2, ptr2, FA_OPEN_EXISTING | FA_READ);
+                        putchar('\n');
+
+                        if (res)
+                        {
+                            put_rc(res);
+                            f_close(&file1);
+                            break;
+                        }
+
+                        printf("Compare...");
                         p1 = 0;
-                    }
 
-                    res = f_write(&file1, Buff, cnt, &s2);
+                        for (;;)
+                        {
+                            res = f_read(&file1, Buff, BUFF_SIZE, &s1);
 
-                    if (res != FR_OK)
-                    {
-                        put_rc(res);
+                            if (res || s1 == 0)
+                            {
+                                printf("\nRead file %s terminated. (%d)\n", ptr, res);
+                                break;     /* error or eof */
+                            }
+
+                            res = f_read(&file2, Buff2, BUFF_SIZE, &s2);
+
+                            if (res || s2 == 0)
+                            {
+                                printf("\nRead file %s terminated. (%d)\n", ptr2, res);
+                                break;     /* error or eof */
+                            }
+
+                            p1 += s2;
+
+                            if (res || s2 < s1) break;   /* error or disk full */
+
+                            if (memcmp(Buff, Buff2, s1) != 0)
+                            {
+                                printf("Compre failed!! %d %d\n", s1, s2);
+                                break;
+                            }
+
+                            if ((p1 % 0x10000) == 0)
+                                printf("\n%d KB compared.", (INT)(p1 / 1024));
+
+                            printf(".");
+                        }
+
+                        if (s1 == 0)
+                            printf("\nPASS. \n ");
+
+                        f_close(&file1);
+                        f_close(&file2);
                         break;
-                    }
-
-                    p2 += s2;
-
-                    if (cnt != s2) break;
-                }
-
-                p1 = get_timer_value();
-
-                if (p1)
-                    printf("%d bytes written with %d kB/sec.\n", (INT)p2, (INT)(((p2 * 100) / p1) / 1024));
-
-                break;
-
-            case 'n' :  /* fn <old_name> <new_name> - Change file/dir name */
-                while (*ptr == ' ') ptr++;
-
-                ptr2 = strchr(ptr, ' ');
-
-                if (!ptr2) break;
-
-                *ptr2++ = 0;
-
-                while (*ptr2 == ' ') ptr2++;
-
-                put_rc(f_rename(ptr, ptr2));
-                break;
-
-            case 'u' :  /* fu <name> - Unlink a file or dir */
-                while (*ptr == ' ') ptr++;
-
-                put_rc(f_unlink(ptr));
-                break;
-
-            case 'v' :  /* fv - Truncate file */
-                put_rc(f_truncate(&file1));
-                break;
-
-            case 'k' :  /* fk <name> - Create a directory */
-                while (*ptr == ' ') ptr++;
-
-                put_rc(f_mkdir(ptr));
-                break;
-
-            case 'a' :  /* fa <atrr> <mask> <name> - Change file/dir attribute */
-                if (!xatoi(&ptr, &p1) || !xatoi(&ptr, &p2)) break;
-
-                while (*ptr == ' ') ptr++;
-
-                put_rc(f_chmod(ptr, p1, p2));
-                break;
-
-            case 't' :  /* ft <year> <month> <day> <hour> <min> <sec> <name> - Change timestamp */
-                if (!xatoi(&ptr, &p1) || !xatoi(&ptr, &p2) || !xatoi(&ptr, &p3)) break;
-
-                Finfo.fdate = (WORD)(((p1 - 1980) << 9) | ((p2 & 15) << 5) | (p3 & 31));
-
-                if (!xatoi(&ptr, &p1) || !xatoi(&ptr, &p2) || !xatoi(&ptr, &p3)) break;
-
-                Finfo.ftime = (WORD)(((p1 & 31) << 11) | ((p1 & 63) << 5) | ((p1 >> 1) & 31));
-                put_rc(f_utime(ptr, &Finfo));
-                break;
-
-            case 'x' : /* fx <src_name> <dst_name> - Copy file */
-                while (*ptr == ' ') ptr++;
-
-                ptr2 = strchr(ptr, ' ');
-
-                if (!ptr2) break;
-
-                *ptr2++ = 0;
-
-                while (*ptr2 == ' ') ptr2++;
-
-                printf("Opening \"%s\"", ptr);
-                res = f_open(&file1, ptr, FA_OPEN_EXISTING | FA_READ);
-                printf("\n");
-
-                if (res)
-                {
-                    put_rc(res);
-                    break;
-                }
-
-                printf("Creating \"%s\"", ptr2);
-                res = f_open(&file2, ptr2, FA_CREATE_ALWAYS | FA_WRITE);
-                putchar('\n');
-
-                if (res)
-                {
-                    put_rc(res);
-                    f_close(&file1);
-                    break;
-                }
-
-                printf("Copying...");
-                p1 = 0;
-
-                for (;;)
-                {
-                    res = f_read(&file1, Buff, BUFF_SIZE, &s1);
-
-                    if (res || s1 == 0) break;   /* error or eof */
-
-                    res = f_write(&file2, Buff, s1, &s2);
-                    p1 += s2;
-
-                    if (res || s2 < s1) break;   /* error or disk full */
-
-                    if ((p1 % 0x10000) == 0)
-                        printf("\n%d KB copyed.", (INT)(p1 / 1024));
-
-                    printf(".");
-                }
-
-                printf("\n%d bytes copied.\n", (INT)p1);
-                f_close(&file1);
-                f_close(&file2);
-                break;
-
-            case 'y' : /* fz <src_name> <dst_name> - Compare file */
-                while (*ptr == ' ') ptr++;
-
-                ptr2 = strchr(ptr, ' ');
-
-                if (!ptr2) break;
-
-                *ptr2++ = 0;
-
-                while (*ptr2 == ' ') ptr2++;
-
-                printf("Opening \"%s\"", ptr);
-                res = f_open(&file1, ptr, FA_OPEN_EXISTING | FA_READ);
-                printf("\n");
-
-                if (res)
-                {
-                    put_rc(res);
-                    break;
-                }
-
-                printf("Opening \"%s\"", ptr2);
-                res = f_open(&file2, ptr2, FA_OPEN_EXISTING | FA_READ);
-                putchar('\n');
-
-                if (res)
-                {
-                    put_rc(res);
-                    f_close(&file1);
-                    break;
-                }
-
-                printf("Compare...");
-                p1 = 0;
-
-                for (;;)
-                {
-                    res = f_read(&file1, Buff, BUFF_SIZE, &s1);
-
-                    if (res || s1 == 0)
-                    {
-                        printf("\nRead file %s terminated. (%d)\n", ptr, res);
-                        break;     /* error or eof */
-                    }
-
-                    res = f_read(&file2, Buff2, BUFF_SIZE, &s2);
-
-                    if (res || s2 == 0)
-                    {
-                        printf("\nRead file %s terminated. (%d)\n", ptr2, res);
-                        break;     /* error or eof */
-                    }
-
-                    p1 += s2;
-
-                    if (res || s2 < s1) break;   /* error or disk full */
-
-                    if (memcmp(Buff, Buff2, s1) != 0)
-                    {
-                        printf("Compre failed!! %d %d\n", s1, s2);
-                        break;
-                    }
-
-                    if ((p1 % 0x10000) == 0)
-                        printf("\n%d KB compared.", (INT)(p1 / 1024));
-
-                    printf(".");
-                }
-
-                if (s1 == 0)
-                    printf("\nPASS. \n ");
-
-                f_close(&file1);
-                f_close(&file2);
-                break;
 
 #if _FS_RPATH
 
-            case 'g' :  /* fg <path> - Change current directory */
-                while (*ptr == ' ') ptr++;
+                    case 'g' :  /* fg <path> - Change current directory */
+                        while (*ptr == ' ') ptr++;
 
-                put_rc(f_chdir(ptr));
-                break;
+                        put_rc(f_chdir(ptr));
+                        break;
 
-            case 'j' :  /* fj <drive#> - Change current drive */
-                while (*ptr == ' ') ptr++;
+                    case 'j' :  /* fj <drive#> - Change current drive */
+                        while (*ptr == ' ') ptr++;
 
-                dump_buff_hex((uint8_t *)&p1, 16);
-                put_rc(f_chdrive((TCHAR *)ptr));
-                break;
+                        dump_buff_hex((uint8_t *)&p1, 16);
+                        put_rc(f_chdrive((TCHAR *)ptr));
+                        break;
 #endif
 #if _USE_MKFS
 
-            case 'm' :  /* fm <partition rule> <sect/clust> - Create file system */
-                if (!xatoi(&ptr, &p2) || !xatoi(&ptr, &p3)) break;
+                    case 'm' :  /* fm <partition rule> <sect/clust> - Create file system */
+                        if (!xatoi(&ptr, &p2) || !xatoi(&ptr, &p3)) break;
 
-                printf("The memory card will be formatted. Are you sure? (Y/n)=");
-                get_line(ptr, sizeof(Line));
+                        printf("The memory card will be formatted. Are you sure? (Y/n)=");
+                        get_line(ptr, sizeof(Line));
 
-                if (*ptr == 'Y')
-                    put_rc(f_mkfs(0, (BYTE)p2, (WORD)p3));
+                        if (*ptr == 'Y')
+                            put_rc(f_mkfs(0, (BYTE)p2, (WORD)p3));
 
-                break;
+                        break;
 #endif
 
-            case 'z' :  /* fz [<rw size>] - Change R/W length for fr/fw/fx command */
-                if (xatoi(&ptr, &p1) && p1 >= 1 && (size_t)p1 <= BUFF_SIZE)
-                    blen = p1;
+                    case 'z' :  /* fz [<rw size>] - Change R/W length for fr/fw/fx command */
+                        if (xatoi(&ptr, &p1) && p1 >= 1 && (size_t)p1 <= BUFF_SIZE)
+                            blen = p1;
 
-                printf("blen=%d\n", blen);
+                        printf("blen=%d\n", blen);
+                        break;
+                }
+
                 break;
-            }
 
-            break;
-
-        case '?':       /* Show usage */
-            printf(
-                _T("n: - Change default drive (USB drive is 3~7)\n")
-                _T("dd [<lba>] - Dump sector\n")
-                //_T("ds <pd#> - Show disk status\n")
-                _T("\n")
-                _T("bd <ofs> - Dump working buffer\n")
-                _T("be <ofs> [<data>] ... - Edit working buffer\n")
-                _T("br <pd#> <sect> [<num>] - Read disk into working buffer\n")
-                _T("bw <pd#> <sect> [<num>] - Write working buffer into disk\n")
-                _T("bf <val> - Fill working buffer\n")
-                _T("\n")
-                _T("fs - Show volume status\n")
-                _T("fl [<path>] - Show a directory\n")
-                _T("fo <mode> <file> - Open a file\n")
-                _T("fc - Close the file\n")
-                _T("fe <ofs> - Move fp in normal seek\n")
-                //_T("fE <ofs> - Move fp in fast seek or Create link table\n")
-                _T("fd <len> - Read and dump the file\n")
-                _T("fr <len> - Read the file\n")
-                _T("fw <len> <val> - Write to the file\n")
-                _T("fn <object name> <new name> - Rename an object\n")
-                _T("fu <object name> - Unlink an object\n")
-                _T("fv - Truncate the file at current fp\n")
-                _T("fk <dir name> - Create a directory\n")
-                _T("fa <atrr> <mask> <object name> - Change object attribute\n")
-                _T("ft <year> <month> <day> <hour> <min> <sec> <object name> - Change timestamp of an object\n")
-                _T("fx <src file> <dst file> - Copy a file\n")
-                _T("fg <path> - Change current directory\n")
-                _T("fj <ld#> - Change current drive. For example: <fj 4:>\n")
-                _T("fm <ld#> <rule> <cluster size> - Create file system\n")
-                _T("\n")
-            );
-            break;
+            case '?':       /* Show usage */
+                printf(
+                    _T("n: - Change default drive (USB drive is 3~7)\n")
+                    _T("dd [<lba>] - Dump sector\n")
+                    //_T("ds <pd#> - Show disk status\n")
+                    _T("\n")
+                    _T("bd <ofs> - Dump working buffer\n")
+                    _T("be <ofs> [<data>] ... - Edit working buffer\n")
+                    _T("br <pd#> <sect> [<num>] - Read disk into working buffer\n")
+                    _T("bw <pd#> <sect> [<num>] - Write working buffer into disk\n")
+                    _T("bf <val> - Fill working buffer\n")
+                    _T("\n")
+                    _T("fs - Show volume status\n")
+                    _T("fl [<path>] - Show a directory\n")
+                    _T("fo <mode> <file> - Open a file\n")
+                    _T("fc - Close the file\n")
+                    _T("fe <ofs> - Move fp in normal seek\n")
+                    //_T("fE <ofs> - Move fp in fast seek or Create link table\n")
+                    _T("fd <len> - Read and dump the file\n")
+                    _T("fr <len> - Read the file\n")
+                    _T("fw <len> <val> - Write to the file\n")
+                    _T("fn <object name> <new name> - Rename an object\n")
+                    _T("fu <object name> - Unlink an object\n")
+                    _T("fv - Truncate the file at current fp\n")
+                    _T("fk <dir name> - Create a directory\n")
+                    _T("fa <atrr> <mask> <object name> - Change object attribute\n")
+                    _T("ft <year> <month> <day> <hour> <min> <sec> <object name> - Change timestamp of an object\n")
+                    _T("fx <src file> <dst file> - Copy a file\n")
+                    _T("fg <path> - Change current directory\n")
+                    _T("fj <ld#> - Change current drive. For example: <fj 4:>\n")
+                    _T("fm <ld#> <rule> <cluster size> - Create file system\n")
+                    _T("\n")
+                );
+                break;
         }
     }
 

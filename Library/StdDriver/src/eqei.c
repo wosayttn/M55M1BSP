@@ -46,24 +46,6 @@ void EQEI_DisableInt(EQEI_T *eqei, uint32_t u32IntSel)
 {
     /* Disable EQEI specified interrupt */
     EQEI_DISABLE_INT(eqei, u32IntSel);
-
-    /* Disable NVIC EQEI IRQ */
-    if (eqei == (EQEI_T *)EQEI0)
-    {
-        NVIC_DisableIRQ((IRQn_Type)EQEI0_IRQn);
-    }
-    else if (eqei == (EQEI_T *)EQEI1)
-    {
-        NVIC_DisableIRQ((IRQn_Type)EQEI1_IRQn);
-    }
-    else if (eqei == (EQEI_T *)EQEI2)
-    {
-        NVIC_DisableIRQ((IRQn_Type)EQEI2_IRQn);
-    }
-    else
-    {
-        NVIC_DisableIRQ((IRQn_Type)EQEI3_IRQn);
-    }
 }
 
 /**
@@ -80,24 +62,6 @@ void EQEI_EnableInt(EQEI_T *eqei, uint32_t u32IntSel)
 {
     /* Enable EQEI specified interrupt */
     EQEI_ENABLE_INT(eqei, u32IntSel);
-
-    /* Enable NVIC EQEI IRQ */
-    if (eqei == (EQEI_T *)EQEI0)
-    {
-        NVIC_EnableIRQ(EQEI0_IRQn);
-    }
-    else if (eqei == (EQEI_T *)EQEI1)
-    {
-        NVIC_EnableIRQ(EQEI1_IRQn);
-    }
-    else if (eqei == (EQEI_T *)EQEI2)
-    {
-        NVIC_EnableIRQ(EQEI2_IRQn);
-    }
-    else
-    {
-        NVIC_EnableIRQ(EQEI3_IRQn);
-    }
 }
 
 /**
