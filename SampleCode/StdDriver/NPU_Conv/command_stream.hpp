@@ -33,21 +33,24 @@
  ****************************************************************************/
 
 #ifndef ETHOSU_BASEP_INDEXES
-#define ETHOSU_BASEP_INDEXES 8
+    #define ETHOSU_BASEP_INDEXES 8
 #endif
 
 /****************************************************************************
  * Types
  ****************************************************************************/
 
-namespace EthosU {
-namespace CommandStream {
+namespace EthosU
+{
+namespace CommandStream
+{
 
 /****************************************************************************
  * DataPointer
  ****************************************************************************/
 
-struct DataPointer {
+struct DataPointer
+{
     DataPointer();
     DataPointer(const char *_data, size_t _size);
 
@@ -63,7 +66,8 @@ struct DataPointer {
 
 using PmuEvents = std::array<ethosu_pmu_event_type, ETHOSU_PMU_NCOUNTERS>;
 
-class Pmu {
+class Pmu
+{
 public:
     Pmu(ethosu_driver *_drv, const PmuEvents &_config = {});
 
@@ -84,7 +88,8 @@ private:
 
 using BasePointers = std::array<DataPointer, ETHOSU_BASEP_INDEXES>;
 
-class CommandStream {
+class CommandStream
+{
 public:
     CommandStream(const DataPointer &_commandStream,
                   const BasePointers &_pointers = {},

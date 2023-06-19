@@ -27,8 +27,10 @@
 
 using namespace std;
 
-namespace EthosU {
-namespace CommandStream {
+namespace EthosU
+{
+namespace CommandStream
+{
 
 /****************************************************************************
  * DataPointer
@@ -38,13 +40,17 @@ DataPointer::DataPointer() : data(nullptr), size(0) {}
 
 DataPointer::DataPointer(const char *_data, size_t _size) : data(_data), size(_size) {}
 
-bool DataPointer::operator!=(const DataPointer &other) {
-    if (size != other.size) {
+bool DataPointer::operator!=(const DataPointer &other)
+{
+    if (size != other.size)
+    {
         return true;
     }
 
-    for (size_t i = 0; i < size; i++) {
-        if (data[i] != other.data[i]) {
+    for (size_t i = 0; i < size; i++)
+    {
+        if (data[i] != other.data[i])
+        {
             return true;
         }
     }
@@ -56,7 +62,8 @@ bool DataPointer::operator!=(const DataPointer &other) {
  * PmuConfig
  ****************************************************************************/
 
-Pmu::Pmu(ethosu_driver *_drv, const PmuEvents &_config) : drv(_drv), config(_config) {
+Pmu::Pmu(ethosu_driver *_drv, const PmuEvents &_config) : drv(_drv), config(_config)
+{
     // Enable PMU block
     ETHOSU_PMU_Enable(drv);
 
@@ -64,18 +71,21 @@ Pmu::Pmu(ethosu_driver *_drv, const PmuEvents &_config) : drv(_drv), config(_con
     ETHOSU_PMU_CNTR_Enable(drv, ETHOSU_PMU_CCNT_Msk);
 
     // Configure event types
-    for (size_t i = 0; i < config.size(); i++) {
+    for (size_t i = 0; i < config.size(); i++)
+    {
         ETHOSU_PMU_Set_EVTYPER(drv, i, config[i]);
         ETHOSU_PMU_CNTR_Enable(drv, 1 << i);
     }
 }
 
-void Pmu::clear() {
+void Pmu::clear()
+{
     ETHOSU_PMU_CYCCNT_Reset(drv);
     ETHOSU_PMU_EVCNTR_ALL_Reset(drv);
 }
 
-void Pmu::print() {
+void Pmu::print()
+{
     printf("PMU={cycleCount=%llu, events=[%" PRIu32 ", %" PRIu32 ", %" PRIu32 ", %" PRIu32 "]}\n",
            ETHOSU_PMU_Get_CCNTR(drv),
            ETHOSU_PMU_Get_EVCNTR(drv, 0),
@@ -84,11 +94,13 @@ void Pmu::print() {
            ETHOSU_PMU_Get_EVCNTR(drv, 3));
 }
 
-uint64_t Pmu::getCycleCount() const {
+uint64_t Pmu::getCycleCount() const
+{
     return ETHOSU_PMU_Get_CCNTR(drv);
 }
 
-uint32_t Pmu::getEventCount(size_t index) const {
+uint32_t Pmu::getEventCount(size_t index) const
+{
     return ETHOSU_PMU_Get_EVCNTR(drv, index);
 }
 
@@ -100,31 +112,38 @@ CommandStream::CommandStream(const DataPointer &_commandStream,
                              const BasePointers &_basePointers,
                              const PmuEvents &_pmuEvents) :
     drv(ethosu_reserve_driver()),
-    commandStream(_commandStream), basePointers(_basePointers), pmu(drv, _pmuEvents) {
+    commandStream(_commandStream), basePointers(_basePointers), pmu(drv, _pmuEvents)
+{
 
     // Use simplified driver setup
     ethosu_request_power(drv);
 }
 
-CommandStream::~CommandStream() {
+CommandStream::~CommandStream()
+{
     ethosu_release_power(drv);
     ethosu_release_driver(drv);
 }
 
-int CommandStream::run(size_t repeat) {
+int CommandStream::run(size_t repeat)
+{
     // Base pointer array
     uint64_t baseAddress[ETHOSU_BASEP_INDEXES];
     size_t baseAddressSize[ETHOSU_BASEP_INDEXES];
-    for (size_t i = 0; i < ETHOSU_BASEP_INDEXES; i++) {
+
+    for (size_t i = 0; i < ETHOSU_BASEP_INDEXES; i++)
+    {
         baseAddress[i]     = reinterpret_cast<uint64_t>(basePointers[i].data);
         baseAddressSize[i] = reinterpret_cast<size_t>(basePointers[i].size);
     }
 
-    while (repeat-- > 0) {
+    while (repeat-- > 0)
+    {
         int error = ethosu_invoke_v3(
-            drv, commandStream.data, commandStream.size, baseAddress, baseAddressSize, ETHOSU_BASEP_INDEXES, nullptr);
+                        drv, commandStream.data, commandStream.size, baseAddress, baseAddressSize, ETHOSU_BASEP_INDEXES, nullptr);
 
-        if (error != 0) {
+        if (error != 0)
+        {
             printf("Inference failed. error=%d\n", error);
             return 1;
         }
@@ -133,15 +152,18 @@ int CommandStream::run(size_t repeat) {
     return 0;
 }
 
-DataPointer &CommandStream::getCommandStream() {
+DataPointer &CommandStream::getCommandStream()
+{
     return commandStream;
 }
 
-BasePointers &CommandStream::getBasePointers() {
+BasePointers &CommandStream::getBasePointers()
+{
     return basePointers;
 }
 
-Pmu &CommandStream::getPmu() {
+Pmu &CommandStream::getPmu()
+{
     return pmu;
 }
 
