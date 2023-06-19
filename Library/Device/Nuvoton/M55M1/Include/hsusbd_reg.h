@@ -11,7 +11,7 @@
 #define __HSUSBD_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -382,7 +382,7 @@ typedef struct
      * |[18]    |EPQIF     |Endpoint Q Interrupt
      * |        |          |When set, the corresponding Endpoint Q's interrupt status register should be read to determine the cause of the interrupt.
      * |        |          |0 = No interrupt event occurred.
-     * |        |          |1 = The related interrupt event is occurred.	 
+     * |        |          |1 = The related interrupt event is occurred.
      * |[19]    |EPRIF     |Endpoint R Interrupt
      * |        |          |When set, the corresponding Endpoint R's interrupt status register should be read to determine the cause of the interrupt.
      * |        |          |0 = No interrupt event occurred.
@@ -471,7 +471,7 @@ typedef struct
      * |[19]    |EPRIEN    |Interrupt Enable Control for Endpoint R
      * |        |          |When set, this bit enables a local interrupt to be generated when an interrupt is pending for the endpoint R
      * |        |          |0 = The related interrupt Disabled.
-     * |        |          |1 = The related interrupt Enabled.	 
+     * |        |          |1 = The related interrupt Enabled.
      * @var HSUSBD_T::BUSINTSTS
      * Offset: 0x10  USB Bus Interrupt Status Register
      * ---------------------------------------------------------------------------------------------------
@@ -517,7 +517,7 @@ typedef struct
      * |[9]     |LPMTKNIF  |LPM Token Interrupt
      * |        |          |0 = No LPM token has been received from the host.
      * |        |          |1 = A LPM token has been received from the host.
-     * |        |          |Note: Write 1 to clear this bit to 0.	 
+     * |        |          |Note: Write 1 to clear this bit to 0.
      * @var HSUSBD_T::BUSINTEN
      * Offset: 0x14  USB Bus Interrupt Enable Register
      * ---------------------------------------------------------------------------------------------------
@@ -557,7 +557,7 @@ typedef struct
      * |        |          |1 = VBUS floating detection interrupt Enabled.
      * |[9]     |LPMTKNIEN |LPM Token Interrupt Enable Bit
      * |        |          |0 = The LPM token interrupt Disabled.
-     * |        |          |1 = The LPM token interrupt Enabled.	 
+     * |        |          |1 = The LPM token interrupt Enabled.
      * @var HSUSBD_T::OPER
      * Offset: 0x18  USB Operational Register
      * ---------------------------------------------------------------------------------------------------
@@ -938,16 +938,16 @@ typedef struct
      * |        |          |0 = BCD Interrupt Disabled.
      * |        |          |1 = BCD Interrupt Enabled.
      * |[31]    |BCDIF     |Battery Charge Detect Interrupt Status
-     * |        |          |It supports VBUSOK and DCD interrupt status. 
+     * |        |          |It supports VBUSOK and DCD interrupt status.
      * |        |          |When HSUSBD_BCDC[0] = 1, HSUSBD_BCDC[3:1] = 001, VBUS is detected.
-     * |        |          |When HSUSBD_BCDC[0] = 1, HSUSBD_BCDC[3:1] = 010, DCD is detected.	 
+     * |        |          |When HSUSBD_BCDC[0] = 1, HSUSBD_BCDC[3:1] = 010, DCD is detected.
      * |        |          |0 = BCD event did not occur.
      * |        |          |1 = BCD event occurred.
-     * |        |          |Note: Write 1 to clear this bit to 0.	 
+     * |        |          |Note: Write 1 to clear this bit to 0.
      * Offset: 0x6FC  LPM Control and Status Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- | 
+     * | :----: | :----:   | :---- |
      * |[12]    |LPMEN     |LPM Function Enable Bit
      * |        |          |0 = The LPM function Disabled.
      * |        |          |1 = The LPM function Enabled.
@@ -956,7 +956,7 @@ typedef struct
      * |        |          |1 = The LPM sleep function Enabled.
      * |[14]    |LPMSENDNYET|NLPM Send NYET Response
      * |        |          |0 = Not send a NYET handshake as response to the LPM token.
-     * |        |          |1 = Send a NYET handshake as response to the LPM token.	  
+     * |        |          |1 = Send a NYET handshake as response to the LPM token.
      * @var HSUSBD_T::DMAADDR
      * Offset: 0x700  AHB DMA Address Register
      * ---------------------------------------------------------------------------------------------------
@@ -987,7 +987,7 @@ typedef struct
      * |        |          |1 = The Stall revert write pointer function Enabled.
      * |[27]    |PHYCLKSTB |PHY Clock Stable Flag
      * |        |          |0 = The PHY clock is not stable for USB device usage.
-     * |        |          |1 = The PHY clock is stable for USB device usage.	 
+     * |        |          |1 = The PHY clock is stable for USB device usage.
      * |[31]    |VBUSDET   |VBUS Status
      * |        |          |0 = The VBUS is not detected yet.
      * |        |          |1 = The VBUS is detected.
@@ -1547,7 +1547,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __HSUSBD_REG_H__ */

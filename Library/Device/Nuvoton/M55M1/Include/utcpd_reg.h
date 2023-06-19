@@ -8,13 +8,13 @@
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 
- 
- 
+
+
 #ifndef __UTCPD_REG_H__
 #define __UTCPD_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 /**
     @addtogroup REGISTER Control Register
@@ -26,1475 +26,1103 @@
     Memory Mapped Structure for UTCPD Controller
     @{
 */
- 
+
 typedef struct
 {
 
 
-/**
- * @var UTCPD_T::VID
- * Offset: 0x00  UTCPD Vendor ID Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |VID       |UTCPD Vendor ID
- * |        |          |Vendor identifier is used to identify the TCPC vendor, the VID is a unique 16-bit unsigned integer assigned by USB-IF to the Vendor
- * @var UTCPD_T::PID
- * Offset: 0x04  UTCPD Product ID Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |PID       |UTCPD Product ID
- * |        |          |USB Product ID is used to identify the product 
- * @var UTCPD_T::DID
- * Offset: 0x08  UTCPD Device ID Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |DID       |UTCPD Device ID
- * |        |          |USB Device ID is used to identify the release version of the product
- * @var UTCPD_T::TCREV
- * Offset: 0x0C  UTCPD USB Type C Revision Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |TCREV     |UTCPD USB Type C Revision
- * |        |          |USB Type-C Cable and Connector Specification Revision 1.3
- * @var UTCPD_T::PDREV
- * Offset: 0x10  UTCPD USB PD Revision Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |PDVER     |UTCPD USB PD Vision
- * |        |          |USB Power Delivery Specification Version 1.1 
- * |[15:8]  |PDREV     |UTCPD USB PD Revision
- * |        |          |USB Power Delivery Specification revision 3.1 
- * @var UTCPD_T::IS
- * Offset: 0x14  UTCPD Interrupt Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |CCSCHIS   |CC Status Changed
- * |        |          |0 = CC status not change.
- * |        |          |1= CC status changed.
- * |        |          |Note: It is cleared by software writing 1 into this bit.
- * |[1]     |PWRSCHIS  |Power Status Changed
- * |        |          |0 = Power status not change.
- * |        |          |1 = Power status changed.
- * |        |          |Note: It is cleared by software writing 1 into this bit.
- * |[2]     |RXSOPIS   |Received SOP Message
- * |        |          |0 = No SOP message Received.
- * |        |          |1 = Received SOP message (Set after sending GoodCRC??. =yes)
- * |        |          |UTCPD_RXBCNT being set to 0 does not set this bit.
- * |        |          |Note: It is cleared by software writing 1 into this bit.
- * |[3]     |RXHRSTIS  |Received Hard Reset
- * |        |          |0 = No Hard reset Received.
- * |        |          |1 = Received Hard reset.
- * |        |          |Note: It is cleared by software writing 1 into this bit.
- * |[4]     |TXFALIS   |Transmit SOP Fail
- * |        |          |0 = No Transmit SOP fail.
- * |        |          |1 = SOP* message transmission not successful, no GoodCRC response received on SOP* message transmission
- * |        |          |Transmit SOP* message buffer registers are empty.
- * |        |          |Note: It is cleared by software writing 1 into this bit.
- * |[5]     |TXDCUTIS  |Transmit SOP* Message Discarded
- * |        |          |0 = No TX SOP discarded.
- * |        |          |1 = Reset or SOP* message transmission not sent due to incoming receive message
- * |        |          |Transmit SOP* message buffer registers are empty.
- * |        |          |Note: It is cleared by software writing 1 into this bit.
- * |[6]     |TXOKIS    |Transmit SOP* Message Successful
- * |        |          |0 = No TX SOP* transmit.
- * |        |          |1 = Reset or SOP* message transmission successful
- * |        |          |GoodCRC response received on SOP* message transmission
- * |        |          |Transmit SOP* message buffer registers are empty.
- * |        |          |Note: It is cleared by software writing 1 into this bit.
- * |[7]     |VBAMHIS   |VBUS Voltage Alarm High
- * |        |          |0 = No high voltage alarm has occurred.
- * |        |          |1= A high voltage alarm has occurred.
- * |        |          |This bit will be set high when DSVBAM (UTCPD_PWRCTL[5]) is low and VBUS voltage is higher than VBAMH (UTCPD_VBAMH[9:0]).
- * |        |          |Note: It is cleared by software writing 1 into this bit.
- * |[8]     |VBAMLIS   |VBUS Voltage Alarm Low
- * |        |          |0 = No Low voltage alarm has occurred.
- * |        |          |1= A Low voltage alarm has occurred.
- * |        |          |This bit will be set high when DSVBAM (UTCPD_PWRCTL[5]]) is low and VBUS voltage is lower than VBAML (UTCPD_VBAML[9:0]).
- * |        |          |Note: It is cleared by software writing 1 into this bit.
- * |[9]     |FUTIS     |Fault Occur
- * |        |          |0 = No fault occurs.
- * |        |          |1= A Fault has occurred. Read the FUT_STS register.
- * |        |          |Note: It is cleared by software writing 1 into this bit.
- * |[10]    |RXOFIS    |Rx Buffer Overflow
- * |        |          |0 = RX buffer is functioning properly.
- * |        |          |1 = RX buffer has overflowed.
- * |        |          |Writing 1 to this register acknowledges the overflow
- * |        |          |The overflow is cleared by writing 1 to RXSOPIS (UTCPD_IS[2])
- * |[11]    |SKDCDTIS  |VBUS Sink Disconnect Detected
- * |        |          |0 = No disconnect detected.
- * |        |          |1 = A VBUS Sink disconnect threshold crossing has been detected.
- * |        |          |This bit will be set when VBMONI (UTCPD_PWRCTL[6]) is enabled and VBUS voltage drop lower than SKVBDCTH (UTCPD_SKVBDCTH[9:0]).
- * |        |          |Note: It is cleared by software writing 1 into this bit.
- * |[15]    |VNDIS     |Vendor Define Event Detected
- * |        |          |0 = No vendor defined interrupt status has been detected.
- * |        |          |1 = A vendor defined interrupt status has been detected
- * |        |          |Refer the vender defined interrupt status register.
- * |        |          |Note: It is cleared by software writing 1 into this bit. 
- * @var UTCPD_T::IE
- * Offset: 0x18  UTCPD Interrupt Enable Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |CCSCHIE   |CC Status Changed Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * |[1]     |PWRSCHIE  |Power Status Changed Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * |[2]     |RXSOPIE   |Received SOP Message Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * |[3]     |RXHRSTIE  |Received Hard Reset Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * |[4]     |TXFAILIE  |Transmit SOP Fail Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * |[5]     |TXDCUTIE  |Transmit SOP* Message Discarded Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled. 
- * |[6]     |TXOKIE    |Transmit SOP* Message Successful Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * |[7]     |VBAMHIE   |VBUS Voltage Alarm High Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled. 
- * |[8]     |VBAMLIE   |VBUS Voltage Alarm Low Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled. 
- * |[9]     |FUTIE     |Fault Occur Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled. 
- * |[10]    |RXOFIE    |Rx Buffer Overflow Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled. 
- * |[11]    |SKDCDTIE  |VBUS Sink Disconnect Detected Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled. 
- * |[15]    |VNDIE     |Vendor Define Event Detected Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * @var UTCPD_T::PWRSTSIE
- * Offset: 0x1C  UTCPD Power Status Interrupt Enable Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |SKVBIE    |Sinking VBUS Status Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * |[1]     |VCPSIE    |VCONN Present Status Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * |[2]     |VBPSIE    |VBUS Present Status Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * |[3]     |VBDTDGIE  |VBUS Detection Status Change Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * |[4]     |SRVBIE    |Sourcing VBUS Status Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * |[5]     |SRHVIE    |Sourcing High Voltage Status Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * |[7]     |DACONIE   |Debug Accessory Connected Status Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * @var UTCPD_T::FUTSTSIE
- * Offset: 0x20  UTCPD Fault Status Interrupt Enable Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[1]     |VCOCIE    |VCONN OCP Fault Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled. 
- * |[2]     |VBOVIE    |Internal VBUS OVP Fault Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled. 
- * |[3]     |VBOCIE    |External VBUS OCP Fault Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled. 
- * |[4]     |FDGFALIE  |Force Discharge Failed Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled. 
- * |[5]     |ADGFALIE  |Auto Discharge Failed Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled. 
- * |[6]     |FOFFVBIE  |Force Off VBUS Interrupt Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * @var UTCPD_T::CTL
- * Offset: 0x24  UTCPD Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |ORIENT    |Plug Orientation
- * |        |          |0 = When VCONN is enabled, apply it to the CC2 pin
- * |        |          |Monitor the CC1 pin for BMC communications if PD messaging is enabled.
- * |        |          |1 = When VCONN is enabled, apply it to the CC1 pin. Monitor the CC2 pin for BMC
- * |        |          |communications if PD messaging is enabled. 
- * |[1]     |BISTEN    |BIST Test Mode
- * |        |          |Setting this bit to 1 is intended to be used only when a USB compliance tester is using USB BIST Test Data to test the PHY layer of the UTCPD
- * |        |          |The CPU should clear this bit when a detach is detected.
- * |        |          |0 = Normal Operation.
- * |        |          |1 = BIST Test Mode. 
- * @var UTCPD_T::PINPL
- * Offset: 0x28  UTCPD Pin Polarity Control  Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |VBSRENPL  |VBUS Source Enable Polarity
- * |        |          |0 = Low active.
- * |        |          |1 = High active. 
- * |[1]     |VBSKENPL  |VBUS Sink Enable Polarity
- * |        |          |0 = Low active.
- * |        |          |1 = High active. 
- * |[2]     |VBDGENPL  |VBUS Discharge Enable Polarity
- * |        |          |It is for Bleed Discharge Enable Polarity.
- * |        |          |0 = Low active.
- * |        |          |1 = High active.
- * |[3]     |TXFRSPL   |Fast Role Swap TX Polarity
- * |        |          |0 = Low active.
- * |        |          |1 = High active.
- * |[4]     |VCOCPL    |VCONN Overcurrent event Polarity
- * |        |          |0 = Low active.
- * |        |          |1 = High active.
- * |[5]     |VBOCPL    |VBUS Overcurrent event Polarity
- * |        |          |0 = Low active.
- * |        |          |1 = High active.
- * |[8]     |VCENPL    |VCONN Enable Polarity
- * |        |          |0 = Low active.
- * |        |          |1 = High active.
- * |[9]     |VCDGENPL  |VCONN Discharge Enable Polarity
- * |        |          |0 = Low active.
- * |        |          |1 = High active.
- * |[10]    |FOFFVBPL  |Force Off VBUS event Polarity
- * |        |          |0 = Low active.
- * |        |          |1 = High active.
- * @var UTCPD_T::ROLCTL
- * Offset: 0x2C  UTCPD Role Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[1:0]   |CC1       |CC1
- * |        |          |00 = Reserved.
- * |        |          |01b = Rp (Use Rp definition in RPVALUE).
- * |        |          |10 = Rd.
- * |        |          |11 = Open (Disconnect or dont care). 
- * |[3:2]   |CC2       |CC2
- * |        |          |00 = Reserved.
- * |        |          |01 = Rp (Use Rp definition in RPVALUE).
- * |        |          |10 = Rd.
- * |        |          |11 = Open (Disconnect or don't care). 
- * |[5:4]   |RPVALUE   |Rp Value
- * |        |          |00 = Rp default.
- * |        |          |01 = Rp 1.5A.
- * |        |          |10 = Rp 3.0A.
- * |        |          |11 = Reserved. 
- * |[6]     |DRP       |DRP
- * |        |          |0 = No DRP.
- * |        |          |1 = DRP.
- * |        |          |The UTCPD toggles CC1 & CC2 after receiving LK4CON (UTCPD_CMD[5]) and until a connection is detected
- * |        |          |Upon connection, the UTCPD shall resolve to either an Rp or Rd and report the CC1/CC2 State in the CC_STS register
- * @var UTCPD_T::FUTCTL
- * Offset: 0x30  UTCPD Fault Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |VCOVDTDS  |External VCONN Overcurrent Fault Detect Disable
- * |        |          |0 = External VCONN OCP circuit enabled.
- * |        |          |1 = External VCONN OCP circuit disabled. 
- * |[1]     |VBOVDTDS  |Internal VBUS Over Voltage Protection Fault Detect Disable
- * |        |          |0 = Internal OVP circuit enabled.
- * |        |          |1 = Internal OVP circuit disabled.
- * |        |          |Note: Internal VBUS over voltage protection means to use ADC to measure VBUS voltage. 
- * |[2]     |VBOCDTDS  |External VBUS Overcurrent Protection Fault Detect Disable
- * |        |          |0 = External OCP circuit enabled.
- * |        |          |1 = External OCP circuit disabled. 
- * |[3]     |VBDGTMDS  |VBUS Discharge Fault Detection Timer Disable
- * |        |          |0 = VBUS Discharge Fault Detection Timer enabled.
- * |        |          |1 = VBUS Discharge Fault Detection Timer disabled.
- * |        |          |This enables the timer for both force discharge and auto discharge
- * |        |          |No timer for bleed discharge
- * |        |          |Once time-out, UTCPD will compare VBUS voltage with VSAFE0V or SP_DGTH, depends on setting of ADGDC and FDGEN.
- * |[4]     |FOFFVBDS  |Force Off VBUS Disable
- * |        |          |0 = Enabled.
- * |        |          |1 = Disabled.
- * @var UTCPD_T::PWRCTL
- * Offset: 0x34  UTCPD Power Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |VCEN      |Enable VCONN
- * |        |          |0 = Disable VCONN Source (default).
- * |        |          |1 = Enable VCONN Source to CC. 
- * |[1]     |VCPWR     |VCONN Power Supported
- * |        |          |0 = UTCPD delivers at least 1W on VCONN.
- * |        |          |1 = UTCPD delivers at least the power indicated in CPVCPWR (UTCPD_DVCAP2[3:1]).
- * |[2]     |FDGEN     |Enable Force Discharge
- * |        |          |0 = Disable forced discharge (default).
- * |        |          |1 = Enable forced discharge of VBUS.
- * |        |          |Force discharge is used for source only.
- * |        |          |This bit will only be cleared by CPU.
- * |[3]     |BDGEN     |Enable Bleed Discharge
- * |        |          |0 = Disable bleed discharge (default).
- * |        |          |1 = Enable bleed discharge of VBUS.
- * |        |          |Bleed Discharge is a low current discharge to provide a minimum load current if needed
- * |        |          |10K Ohms or 2mA recommended. Bleed discharge is used for sink only.
- * |        |          |This bit will only be cleared by CPU.
- * |[4]     |ADGDC     |Auto Discharge Disconnect
- * |        |          |0 = The UTCPD shall not automatically discharge VBUS based on VBUS voltage (default).
- * |        |          |1 = The UTCPD shall automatically discharge when disconnect detected.
- * |        |          |Setting this bit in a Source UTCPD triggers the following actions upon a disconnect detection:
- * |        |          |1. Disable sourcing power over VBUS
- * |        |          |2. VBUS discharge
- * |        |          |Sourcing power over VBUS shall be disabled before or at the same time as starting VBUS discharge.
- * |        |          |Setting this bit in a Sink UTCPD triggers the following action upon a disconnect detection:
- * |        |          |1. VBUS discharge
- * |        |          |The UTCPD shall automatically disable discharge (without clearing this bit) once the voltage on VBUS is below vSafe0V (max)
- * |        |          |UTCPD shall not re-apply discharge circuit if VBUS rises above vSafe0V.
- * |        |          |This bit will only be cleared by CPU.
- * |[5]     |DSVBAM    |Disable VBUS Voltage Alarms
- * |        |          |0 = VBUS Voltage Alarms Power status reporting is enabled.
- * |        |          |1 = VBUS Voltage Alarms Power status reporting is disabled (default). 
- * |[6]     |VBMONI    |VBUS Voltage Monitor Enable
- * |        |          |0 = VBUS Voltage Monitoring is enabled.
- * |        |          |1 = VBUS Voltage Monitoring is disabled (default).
- * |        |          |Controls VBUS voltage Monitoring. UTCPD_VBVOL shall report all zeroes if disabled. 
- * @var UTCPD_T::CCSTS
- * Offset: 0x38  UTCPD CC Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[1:0]   |CC1STATE  |CC1 State
- * |        |          |If (CC1 (UTCPD_ROLCTL[1:0])=Rp) or (CONRLT (UTCPD_CCSTS[4]) = 0).
- * |        |          |00 = SRC.Open (Open, Rp).
- * |        |          |01 = SRC.Ra (below maximum vRa).
- * |        |          |10 = SRC.Rd (within the vRd range).
- * |        |          |11 = reserved.
- * |        |          |If (CC1 (UTCPD_ROLCTL[1:0])=Rd) or (CONRLT (UTCPD_CCSTS[4]) = 1).
- * |        |          |00 = SNK.Open (Below maximum vRa).
- * |        |          |01 = SNK.Default (Above minimum vRd-Connect).
- * |        |          |10 = SNK.Power1.5 (Above minimum vRd-Connect) Detects Rp 1.5A.
- * |        |          |11 = SNK.Power3.0 (Above minimum vRd-Connect) Detects Rp 3.0A.
- * |        |          |If CC1 (UTCPD_ROLCTL[1:0])=Reserved, this field is set to 00.
- * |        |          |If CC1 (UTCPD_ROLCTL[1:0])=Open, this field is set to 00.
- * |        |          |This field always returns 00 if (LK4CONN=1) or (VCEN (UTCPD_PWRCTL[0])]=1 and ORIENT (UTCPD_CTL[0])=1)
- * |        |          |Otherwise, the returned value depends upon CC1 (UTCPD_ROLCTL[1:0])
- * |[3:2]   |CC2STATE  |CC2 State
- * |        |          |If (CC2 (UTCPD_ROLCTL[3:2]=Rp) or (CONRLT (UTCPD_CCSTS[4]) = 0).
- * |        |          |00 = SRC.Open (Open, Rp).
- * |        |          |01 = SRC.Ra (below maximum vRa).
- * |        |          |10 = SRC.Rd (within the vRd range).
- * |        |          |11 = reserved.
- * |        |          |If (CC2 (UTCPD_ROLCTL[3:2])=Rd) or (CONRLT (UTCPD_CCSTS[4]) = 1).
- * |        |          |00 = SNK.Open (Below maximum vRa).
- * |        |          |01 = SNK.Default (Above minimum vRd-Connect).
- * |        |          |10 = SNK.Power1.5 (Above minimum vRd-Connect) Detects Rp 1.5A.
- * |        |          |11 = SNK.Power3.0 (Above minimum vRd-Connect) Detects Rp 3.0A.
- * |        |          |If CC2 (UTCPD_ROLCTL[3:2])=Reserved, this field is set to 00.
- * |        |          |If CC2 (UTCPD_ROLCTL[3:2])=Open, this field is set to 00.
- * |        |          |This field always returns 00 if (LK4CONN=1) or (VCEN (UTCPD_PWRCTL[0])=1 and ORIENT (UTCPD_CTL[0])=0)
- * |        |          |Otherwise, the returned value depends upon CC2 (UTCPD_ROLCTL[3:2])
- * |[4]     |CONRLT    |Connect Result (read only)
- * |        |          |0 = the UTCPD is presenting Rp.
- * |        |          |1 = the UTCPD is presenting Rd. 
- * |[5]     |LK4CONN   |Looking for Connection
- * |        |          |0 = UTCPD is not actively looking for a connection
- * |        |          |A transition from '1' to '0' indicates a potential connection has been found.
- * |        |          |1 = UTCPD is looking for a connection (toggling as a DRP or looking for a connection as Sink/Source only condition)
- * @var UTCPD_T::PWRSTS
- * Offset: 0x3C  UTCPD Power Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |SKVB      |Sinking VBUS
- * |        |          |0 = Sink is Disconnected (Default).
- * |        |          |1 = UTCPD is sinking VBUS to the system load. 
- * |[1]     |VCPS      |VCONN Present
- * |        |          |0 = VCONN is not present.
- * |        |          |1 = This bit is asserted when VCONN present CC1 or CC2. Threshold is fixed at 2.4V.
- * |        |          |If VCEN (UTCPD_PWRCTL[0])] is disabled VCONN Present should be set to 0. 
- * |[2]     |VBPS      |VBUS Present
- * |        |          |0 = VBUS Disconnected.
- * |        |          |1 = VBUS Connected.
- * |        |          |The UTCPD shall report VBUS present when UTCPD detects VBUS rises above 4V.
- * |        |          |The UTCPD shall report VBUS is not present when UTCPD detects VBUS falls below 3.5V. 
- * |[3]     |VBPSDTEN  |VBUS Present Detection Enabled
- * |        |          |0 = VBUS Present Detection Disabled.
- * |        |          |1 = VBUS Present Detection Enabled (default). 
- * |[4]     |SRVB      |Sourcing VBUS
- * |        |          |0 = Sourcing VBUS is disabled.
- * |        |          |1 = Sourcing VBUS is enabled.
- * |        |          |This bit does not control the path, just provides a monitor of the status. 
- * |[5]     |SRHV      |Sourcing High Voltage
- * |        |          |0 = VSAFE5V.
- * |        |          |1 = Higher Voltage.
- * |        |          |This bit does not control the power path, it just provides a monitor of the status
- * |        |          |This bit is asserted as long as the UTCPD is sourcing nondefault voltage over VBUS (i.e
- * |        |          |not VSAFE5V) as a response to CPU writing 0x88 to CMD (Source VBUS High Voltage)
- * |[7]     |DACON     |Debug Accessory Connected
- * |        |          |0 = No Debug Accessory connected (default).
- * |        |          |1 = Debug Accessory connected. 
- * @var UTCPD_T::FUTSTS
- * Offset: 0x40  UTCPD Fault Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[1]     |VCOCFUT   |VCONN Overcurrent Protection Fault
- * |        |          |0 = Not in an overcurrent protection state.
- * |        |          |1 = Overcurrent fault latched. 
- * |[2]     |VBOVFUT   |VBUS Over Voltage Protection Fault
- * |        |          |0 = No Fault detected.
- * |        |          |1 = Over-voltage fault latched.
- * |[3]     |VBOCFUT   |VBUS Overcurrent Protection Fault
- * |        |          |0 = Not in an overcurrent protection state.
- * |        |          |1 = Overcurrent fault latched. 
- * |[4]     |FDGFAL    |Force Discharge Failed
- * |        |          |0 = No discharge failure.
- * |        |          |1 = Discharge commanded by the TCPM failed.
- * |        |          |If FDGEN (UTCPD_PWRCTL[2]) is set, the UTCPD shall report a discharge fails if VBUS is not below vSafe0V within tSafe0V
- * |[5]     |ADGFAL    |Auto Discharge Failed
- * |        |          |0 = No discharge failure.
- * |        |          |1 = Discharge commanded by the TCPM failed.
- * |        |          |If ADGDC (UTCPD_PWRCTL[4]) is set, the UTCPD shall report discharge fails if VBUS is not below vSafe0V within tSafe0V
- * |[6]     |FOFFVB    |Force Off VBUS
- * |        |          |0 = No Fault Detected, no action (default and not supported).
- * |        |          |1 = VBUS Source/Sink has been forced off due to external fault.
- * |        |          |The UTCPD has disconnected VBUS due to external inputs (EINT0 ~ EINT5)
- * @var UTCPD_T::CMD
- * Offset: 0x44  UTCPD Command Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |CMD       |Command Set
- * |        |          |0x22 = Disable VBUS Detect.
- * |        |          |0x33 = Enable VBUS Detect.
- * |        |          |0x44 = Disable Sink VBUS.
- * |        |          |0x55h = Enable Sink VBUS.
- * |        |          |0x66 = Disable Source VBUS.
- * |        |          |0x77 = Enable Source VBUS 5V.
- * |        |          |0x88 = Source VBUS High Voltage.
- * |        |          |0x99h = Look4Connection.
- * |        |          |0xAA = RxOneMore
- * |        |          |(u9019u662Fu4EC0u9EBC??? &agrave;after send good CRC, then clear receive event DT_RXVNT)
- * |        |          |Others: Reserved.
- * |        |          |The Command is issued by the CPU
- * |        |          |The Command is cleared by the UTCPD after being acted upon
- * |        |          |It always read as 0.
- * @var UTCPD_T::DVCAP1
- * Offset: 0x48  UTCPD Device Capabilities 1 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |CPSRVB    |Source VBUS
- * |        |          |0 = TCPC is not capable of controlling the source path to VBUS.
- * |        |          |1 = TCPC is capable of controlling the source path to VBUS. 
- * |[1]     |CPSRHV    |Source High Voltage VBUS
- * |        |          |0 = UTCPD is not capable of controlling the source high voltage path to VBUS.
- * |        |          |1 = UTCPD is capable of controlling the source high voltage path to VBUS. 
- * |[2]     |CPSKVB    |Sink VBUS
- * |        |          |0 = UTCPD is not capable controlling the sink path to the system load.
- * |        |          |1 = UTCPD is capable of controlling the sink path to the system load. 
- * |[3]     |CPSRVC    |Source VCONN
- * |        |          |0 = UTCPD is not capable of switching VCONN.
- * |        |          |1 = UTCPD is capable of switching VCONN. 
- * |[4]     |CPSDBG    |SOP'_DBG/SOPu201D_DBG Support
- * |        |          |0 = All SOP* except SOP'_DBG/SOPu201D_DBG.
- * |        |          |1 = All SOP* messages are supported. 
- * |[7:5]   |CPROL     |Roles Supported
- * |        |          |000 = USB Type-C Port Manager can configure the Port as Source only or Sink only (not DRP).
- * |        |          |001 = Source only.
- * |        |          |010 = Sink only.
- * |        |          |011 = Sink with accessory support.
- * |        |          |100 = DRP only.
- * |        |          |101 = Source, Sink, DRP, Adapter/Cable all supported.
- * |        |          |110 = Source, Sink, DRP.
- * |        |          |111 = Not valid. 
- * |[9:8]   |CPSRRE    |Source Resistor Supported
- * |        |          |00 = Rp default only.
- * |        |          |01 = Rp 1.5A and default.
- * |        |          |10 = Rp 3.0A, 1.5A, and default.
- * |        |          |11 = Reserved. 
- * |[10]    |CPVBAM    |VBUS Measurement and Alarm Capable
- * |        |          |0 = No VBUS voltage measurement nor VBUS Alarms.
- * |        |          |1 = VBUS voltage measurement and VBUS Alarms. 
- * |[11]    |CPFDG     |Force Discharge
- * |        |          |0 = No Force Discharge implemented.
- * |        |          |1 = Force Discharge is implemented.
- * |[12]    |CPBDG     |Bleed Discharge
- * |        |          |0 = No Bleed Discharge implemented.
- * |        |          |1 = Bleed Discharge is implemented. 
- * |[13]    |CPVBOVP   |VBUS OVP Reporting
- * |        |          |0 = VBUS OVP is not reported.
- * |        |          |1 = VBUS OVP is reported. 
- * |[14]    |CPVBOCP   |VBUS OCP Reporting
- * |        |          |0 = VBUS OCP is not reported.
- * |        |          |1 = VBUS OCP is reported. 
- * @var UTCPD_T::DVCAP2
- * Offset: 0x4C  UTCPD Device Capabilities 2 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |CPVCOC    |VCONN Overcurrent Fault Capable
- * |        |          |0 = UTCPD is not capable of detecting a Vconn fault.
- * |        |          |1 = UTCPD is capable of detecting a Vconn fault. 
- * |[3:1]   |CPVCPWR   |VCONN Power Supported
- * |        |          |000 = 1.0W.
- * |        |          |001 = 1.5W.
- * |        |          |010 = 2.0W.
- * |        |          |011 = 3W.
- * |        |          |100 = 4W.
- * |        |          |101 = 5W.
- * |        |          |110 = 6W.
- * |        |          |111 = External. 
- * |[5:4]   |CPVBAMLS  |VBUS Voltage Alarm LSB
- * |        |          |00 = UTCPD has 25mV LSB for its voltage alarm and uses all 10 bits in.
- * |        |          |VB_AMH and VB_AML.
- * |        |          |Others = Reserved.
- * |[6]     |CPSPDGTH  |Stop Discharge Threshold
- * |        |          |0 = UTCPD_SPDGTH not implemented.
- * |        |          |1 = UTCPD_SPDGTH implemented. 
- * |[7]     |CPSKDCDT  |Sink Disconnect Detection
- * |        |          |0 = UTCPD_SKVBDCTH not implemented.
- * |        |          |1 = UTCPD_SKVBDCTH implemented. 
- * @var UTCPD_T::MSHEAD
- * Offset: 0x50  UTCPD Message Header Info Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |PWRROL    |Power Role
- * |        |          |0 = Sink.
- * |        |          |1 = Source. 
- * |[2:1]   |PDREV     |USB PD Specification Revision
- * |        |          |00 = Revision 1.0.
- * |        |          |01 = Revision 2.0.
- * |        |          |10 = Revision 3.0.
- * |        |          |11 = Revision 3.1.
- * |[3]     |DAROL     |Data Role
- * |        |          |0 = UFP.
- * |        |          |1 = DFP. 
- * |[4]     |CABPLG    |Cable Plug
- * |        |          |0 = Message originated from Source, Sink, or DRP.
- * |        |          |1 = Message originated from a Cable Plug. 
- * @var UTCPD_T::DTRXEVNT
- * Offset: 0x54  UTCPD Enable Detect RX Event Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |SOPEN     |Enable SOP message
- * |        |          |0 = UTCPD does not detect SOP message (default).
- * |        |          |1 = UTCPD detects SOP message. 
- * |[1]     |SOPPEN    |Enable SOP' message
- * |        |          |0 = UTCPD does not detect SOP' message (default).
- * |        |          |1 = UTCPD detects SOP' message. 
- * |[2]     |SOPPPEN   |Enable SOP'' message
- * |        |          |0 = UTCPD does not detect SOP'' message (default).
- * |        |          |1 = UTCPD detects SOP'' message. 
- * |[3]     |SDBGPEN   |Enable SOP_DBG' message
- * |        |          |0 = UTCPD does not detect SOP_DBG' message (default).
- * |        |          |1 = UTCPD detects SOP_DBG' message. 
- * |[4]     |SDBGPPEN  |Enable SOP_DBG'' message
- * |        |          |0 = UTCPD does not detect SOP_DBG'' message (default).
- * |        |          |1 = UTCPD detects SOP_DBG'' message. 
- * |[5]     |HRSTEN    |Enable Hard Reset
- * |        |          |0 = UTCPD does not detect Hard Reset signaling (default).
- * |        |          |1 = UTCPD detects Hard Reset signaling. 
- * |[6]     |CABRSTEN  |Enable Cable Reset
- * |        |          |0 = UTCPD does not detect Cable Reset signaling (default).
- * |        |          |1 = UTCPD detects Cable Reset signaling. 
- * @var UTCPD_T::RXBCNT
- * Offset: 0x58  UTCPD RX Byte Count Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |RXBCNT    |Receive Byte Count
- * |        |          |Indicates number of bytes in this register that are not stale
- * |        |          |CPU should read the first RXBCNT bytes in this register
- * |        |          |This is the number of bytes in the UTCPD_RXDAx plus three (for the RXFTYPE and RXHEAD).
- * |        |          |The UTCPD shall clear the UTCPD_DTRXEVNT and the UTCPD_RXBCNT register to disable the PD message passing when CPU writes the UTCPD_TXCTL register requesting a Hard Reset
- * @var UTCPD_T::RXFTYPE
- * Offset: 0x5C  UTCPD Received Frame Type Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[2:0]   |RXFTYPE   |Received Frame Type
- * |        |          |000 = Received SOP.
- * |        |          |001 = Received SOP'.
- * |        |          |010 = Received SOP''.
- * |        |          |011 = Received SOP_DBG'.
- * |        |          |100 = Received SOP_DBG''.
- * |        |          |110 = Received Cable Reset.
- * |        |          |All others are reserved. 
- * @var UTCPD_T::RXHEAD
- * Offset: 0x60  UTCPD Received Header Data Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |RXHEAD0   |USB PD message header byte 0 
- * |[15:8]  |RXHEAD1   |USB PD message header byte 1 
- * @var UTCPD_T::RXDA0
- * Offset: 0x70  UTCPD Received Data0 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |RXDAB0    |USB PD Received Datax byte 0 
- * |[15:8]  |RXDAB1    |USB PD Received Datax byte 1 
- * |[23:16] |RXDAB2    |USB PD Received Datax byte 2
- * |[31:24] |RXDAB3    |USB PD Received Datax byte 3
- * @var UTCPD_T::RXDA1
- * Offset: 0x74  UTCPD Received Data1 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |RXDAB0    |USB PD Received Datax byte 0 
- * |[15:8]  |RXDAB1    |USB PD Received Datax byte 1 
- * |[23:16] |RXDAB2    |USB PD Received Datax byte 2
- * |[31:24] |RXDAB3    |USB PD Received Datax byte 3
- * @var UTCPD_T::RXDA2
- * Offset: 0x78  UTCPD Received Data2 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |RXDAB0    |USB PD Received Datax byte 0 
- * |[15:8]  |RXDAB1    |USB PD Received Datax byte 1 
- * |[23:16] |RXDAB2    |USB PD Received Datax byte 2
- * |[31:24] |RXDAB3    |USB PD Received Datax byte 3
- * @var UTCPD_T::RXDA3
- * Offset: 0x7C  UTCPD Received Data3 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |RXDAB0    |USB PD Received Datax byte 0 
- * |[15:8]  |RXDAB1    |USB PD Received Datax byte 1 
- * |[23:16] |RXDAB2    |USB PD Received Datax byte 2
- * |[31:24] |RXDAB3    |USB PD Received Datax byte 3
- * @var UTCPD_T::RXDA4
- * Offset: 0x80  UTCPD Received Data4 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |RXDAB0    |USB PD Received Datax byte 0 
- * |[15:8]  |RXDAB1    |USB PD Received Datax byte 1 
- * |[23:16] |RXDAB2    |USB PD Received Datax byte 2
- * |[31:24] |RXDAB3    |USB PD Received Datax byte 3
- * @var UTCPD_T::RXDA5
- * Offset: 0x84  UTCPD Received Data5 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |RXDAB0    |USB PD Received Datax byte 0 
- * |[15:8]  |RXDAB1    |USB PD Received Datax byte 1 
- * |[23:16] |RXDAB2    |USB PD Received Datax byte 2
- * |[31:24] |RXDAB3    |USB PD Received Datax byte 3
- * @var UTCPD_T::RXDA6
- * Offset: 0x88  UTCPD Received Data6 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |RXDAB0    |USB PD Received Datax byte 0 
- * |[15:8]  |RXDAB1    |USB PD Received Datax byte 1 
- * |[23:16] |RXDAB2    |USB PD Received Datax byte 2
- * |[31:24] |RXDAB3    |USB PD Received Datax byte 3
- * @var UTCPD_T::TXCTL
- * Offset: 0x90  UTCPD TX Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[2:0]   |TXSTYPE   |Transmit SOP* message
- * |        |          |000 = Transmit SOP.
- * |        |          |001 = Transmit SOP'.
- * |        |          |010 = Transmit SOP''.
- * |        |          |011 = Transmit SOP_DBG'.
- * |        |          |100 = Transmit SOP_DBG''.
- * |        |          |101 = Transmit Hard Reset.
- * |        |          |110 = Transmit Cable Reset.
- * |        |          |111 = Transmit BIST Carrier Mode 2.
- * |        |          |The UTCPD shall ignore the Retry Counter bits when transmitting a Hard Reset, Cable Reset, or BIST Carrier
- * |[5:4]   |RETRYCNT  |Retry Counter
- * |        |          |00 = No message retry is required.
- * |        |          |01 = Automatically retry message transmission once.
- * |        |          |10 = Automatically retry message transmission twice.
- * |        |          |11 = Automatically retry message transmission three times. 
- * @var UTCPD_T::TXBCNT
- * Offset: 0x94  UTCPD TX Byte Count Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |TXBCNT    |Transmit Byte Count
- * |        |          |This is the number of bytes in the UTCPD_TXDA plus two (for the TXHEAD)
- * |        |          |If a previous transmit request has not yet completed when TX_CTL is written requesting a Hard Reset, the UTCPD shall assert the Transmission Discarded bit(TXDCUTIS (UTCPD_IS[5])).
- * |        |          |The UTCPD shall assert both TXOKIS (UTCPD_IS[6]) and TXFALIS (UTCPD_IS[4]) after it completes the sending of a Hard Reset
- * @var UTCPD_T::TXHEAD
- * Offset: 0x98  UTCPD TX Header Data Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |TXHEAD0   |Transmit Header Byte 0
- * |[15:8]  |TXHEAD1   |Transmit Header Byte 1
- * @var UTCPD_T::TXDA0
- * Offset: 0xA0  UTCPD Transmit Data0 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |TXDAB0    |USB PD Transmit Datax byte 0 
- * |[15:8]  |TXDAB1    |USB PD Transmit Datax byte 1
- * |[23:16] |TXDAB2    |USB PD Transmit Datax byte 2
- * |[31:24] |TXDAB3    |USB PD Transmit Datax byte 3
- * @var UTCPD_T::TXDA1
- * Offset: 0xA4  UTCPD Transmit Data1 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |TXDAB0    |USB PD Transmit Datax byte 0 
- * |[15:8]  |TXDAB1    |USB PD Transmit Datax byte 1
- * |[23:16] |TXDAB2    |USB PD Transmit Datax byte 2
- * |[31:24] |TXDAB3    |USB PD Transmit Datax byte 3
- * @var UTCPD_T::TXDA2
- * Offset: 0xA8  UTCPD Transmit Data2 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |TXDAB0    |USB PD Transmit Datax byte 0 
- * |[15:8]  |TXDAB1    |USB PD Transmit Datax byte 1
- * |[23:16] |TXDAB2    |USB PD Transmit Datax byte 2
- * |[31:24] |TXDAB3    |USB PD Transmit Datax byte 3
- * @var UTCPD_T::TXDA3
- * Offset: 0xAC  UTCPD Transmit Data3 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |TXDAB0    |USB PD Transmit Datax byte 0 
- * |[15:8]  |TXDAB1    |USB PD Transmit Datax byte 1
- * |[23:16] |TXDAB2    |USB PD Transmit Datax byte 2
- * |[31:24] |TXDAB3    |USB PD Transmit Datax byte 3
- * @var UTCPD_T::TXDA4
- * Offset: 0xB0  UTCPD Transmit Data4 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |TXDAB0    |USB PD Transmit Datax byte 0 
- * |[15:8]  |TXDAB1    |USB PD Transmit Datax byte 1
- * |[23:16] |TXDAB2    |USB PD Transmit Datax byte 2
- * |[31:24] |TXDAB3    |USB PD Transmit Datax byte 3
- * @var UTCPD_T::TXDA5
- * Offset: 0xB4  UTCPD Transmit Data5 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |TXDAB0    |USB PD Transmit Datax byte 0 
- * |[15:8]  |TXDAB1    |USB PD Transmit Datax byte 1
- * |[23:16] |TXDAB2    |USB PD Transmit Datax byte 2
- * |[31:24] |TXDAB3    |USB PD Transmit Datax byte 3
- * @var UTCPD_T::TXDA6
- * Offset: 0xB8  UTCPD Transmit Data6 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |TXDAB0    |USB PD Transmit Datax byte 0 
- * |[15:8]  |TXDAB1    |USB PD Transmit Datax byte 1
- * |[23:16] |TXDAB2    |USB PD Transmit Datax byte 2
- * |[31:24] |TXDAB3    |USB PD Transmit Datax byte 3
- * @var UTCPD_T::VBVOL
- * Offset: 0xC0  UTCPD VBUS Voltage Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[9:0]   |VBVOL     |VBUS voltage measurement
- * |        |          |10-bit measurement of (VBUS / Scale Factor)
- * |        |          |CPU multiplies this value by the scale factor to obtain the voltage measurement
- * |        |          |Voltages greater than or equal to 4V shall meet +/-2% absolute value or +/- 50mV, whichever is greater
- * |        |          |The LSB is 25mV
- * |[11:10] |VBSCALE   |VBUS Scale Factor
- * |        |          |00 = VBUS measurement not scaled.
- * |        |          |01 = VBUS measurement divided by 2.
- * |        |          |10 = VBUS measurement divided by 4.
- * |        |          |11 = reserved. 
- * @var UTCPD_T::SKVBDCTH
- * Offset: 0xC4  UTCPD VBUS Sink disconnect threshold Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[9:0]   |SKVBDCTH  |Sink VBUS disconnect threshold
- * |        |          |10-bit for voltage threshold with 25mV LSB. (Default 3.5V)
- * |        |          |A value of zero disables this threshold.
- * @var UTCPD_T::SPDGTH
- * Offset: 0xC8  UTCPD VBUS Stop Discharge threshold Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[9:0]   |SPDGTH    |VBUS Stop Force Discharge Threshold
- * |        |          |This value is used as a threshold hold for force discharge fail.
- * |        |          |The default is 0.8V.
- * |        |          |The CPU writes to this register to set the threshold at which a Source shall stop the Forced Discharge circuit when FDGEN (UTCPD_PWRCTL[2]) is 1.
- * @var UTCPD_T::VBAMH
- * Offset: 0xCC  UTCPD VBUS voltage high alarm threshold Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[9:0]   |VBAMH     |VBUS voltage high Alarm threshold register
- * @var UTCPD_T::VBAML
- * Offset: 0xD0  UTCPD VBUS voltage low alarm threshold Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[9:0]   |VBAML     |VBUS voltage low Alarm threshold register
- * @var UTCPD_T::VNDIS
- * Offset: 0xD4  UTCPD Vendor defined Interrupt Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |RXFRSIS   |Fast Role Swap RX Interrupt Status
- * |        |          |0 = Cleared.
- * |        |          |1 = The event has been detected.
- * |[1]     |TXFRSIS   |Fast Role Swap TX Interrupt Status
- * |        |          |0 = Cleared.
- * |        |          |1 = The event has been detected.
- * |[3]     |CRCERRIS  |CRC Error Interrupt Status
- * |        |          |0 = Cleared.
- * |        |          |1 = The event has been detected. 
- * |[5]     |VCDGIS    |VCONN Discharge Interrupt Status 
- * @var UTCPD_T::VNDIE
- * Offset: 0xD8  UTCPD Vendor defined Interrupt Enable Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |RXFRSIE   |Fast Role Swap RX Interrupt Enable
- * |        |          |0 = Disable.
- * |        |          |1 = Enable.
- * |[1]     |TXFRSIE   |Fast Role Swap TX Interrupt Enable
- * |        |          |0 = Disable.
- * |        |          |1 = Enable.
- * |[3]     |CRCERRIE  |CRC Error Interrupt Enable
- * |        |          |0 = Disable.
- * |        |          |1 = Enable.
- * |[5]     |VCDGIE    |VCONN Discharge Interrupt Enable
- * |        |          |0 = Disable.
- * |        |          |1 = Enable.
- * @var UTCPD_T::MUXSEL
- * Offset: 0xDC  UTCPD Mux Select Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[3:0]   |VBOCS     |VBUS Overcurrent Source Select
- * |        |          |0000 = EINT0.
- * |        |          |0001 = EINT1.
- * |        |          |0010 = EINT2.
- * |        |          |0011 = EINT3.
- * |        |          |0100 = ADCMPF0.
- * |        |          |0101 = ACMP0.
- * |        |          |0110 = ACMP1.
- * |        |          |0111 = ACMP2.
- * |        |          |1000 = ACMP3.
- * |        |          |Others = Reserved.
- * |[7:4]   |VCOCS     |VCONN Overcurrent Source Select
- * |        |          |0000 = EINT0.
- * |        |          |0001 = EINT1.
- * |        |          |0010 = EINT2.
- * |        |          |0011 = EINT3.
- * |        |          |0100 = ADCMPF1.
- * |        |          |0101 = ACMP0.
- * |        |          |0110 = ACMP1.
- * |        |          |0111 = ACMP2.
- * |        |          |1000 = ACMP3.
- * |        |          |Others = Reserved.
- * |[10:8]  |FVBS      |Force off VBUS Select
- * |        |          |000 = ENIT0.
- * |        |          |001 = EINT1.
- * |        |          |010 = EINT2.
- * |        |          |011 = ENIT3.
- * |        |          |100 = EINT4.
- * |        |          |101 = EINT5.
- * |        |          |Others = Reserved.
- * |[16:12] |ADCSELVB  |ADC Channel Select for VBUS
- * |        |          |ADC result will be latched into VBVOL register once ADCCSELVB matches ADC_CHSEL and ADC finishes.
- * |[21:17] |ADCSELVC  |ADC Channel Select for VCONN
- * |        |          |ADC result will be latched into VCVOL register once ADCCSELVC matches ADC_CHSEL and ADC finishes.
- * |[24]    |CC1VCENS  |CC1 VCONN Enable Select
- * |        |          |0 = Merged CC1 and CC2 VCONN enable signal.
- * |        |          |1 = CC1 VCONN enable signal.
- * |[25]    |CC1FRSS   |CC1 VCONN Fast Role Swap Select
- * |        |          |0 = Merged CC1 and CC2 VCONN Fast Role Swap signal.
- * |        |          |1 = CC1 VCONN Fast Role Swap signal.
- * |[28]    |CC2VCENS  |CC2 VCONN Enable Select
- * |        |          |0 = Merged CC1 and CC2 VCONN enable signal.
- * |        |          |1 = CC2 VCONN enable signal.
- * |[29]    |CC2FRSS   |CC2 VCONN Fast Role Swap Select
- * |        |          |0 = Merged CC1 and CC2 Fast Role Swap signal.
- * |        |          |1 = CC2 VCONN discharge signal.
- * @var UTCPD_T::VCDGCTL
- * Offset: 0xE0  UTCPD VCONN Discharge Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |VCDGDTEN  |VCONN Discharge Detect Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled. 
- * |[1]     |VCDGEN    |VCONN Discharge Enable
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * |[4:2]   |VB_ST_DB  |Vbus stop discharge de-bounce timer
- * |        |          |This is internal use oly. CPU will read as Zero.
- * |        |          |31u * 4 * Value 
- * |[6:5]   |VB_OP_DB  |Vbus open discharge de-bounce timer
- * |        |          |This is internal use oly. CPU will read as Zero.
- * |        |          |31u * Value 
- * @var UTCPD_T::PHYSLEW
- * Offset: 0xE4  UTCPD PHY Slew Rate Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[2:0]   |TXRTRIM   |TX Trim Rising slew rate
- * |        |          |It is for BMC eye diagram.
- * |        |          |Trim PHY TX Rising slew rate (from ROMMAP)
- * |[5:3]   |TXFTRIM   |TX Trim Falling slew rate
- * |        |          |It is for BMC eye diagram.
- * |        |          |Trim PHY TX falling slew rate. (from ROMMAP)
- * |[7:6]   |IDLESEL   |Bus Idle Select
- * |        |          |00 = Digital bus no transaction over 12us.
- * |        |          |01 = Digital and analog bus no transaction over 12us.
- * |        |          |10 = Analog bus no transaction over 12us.
- * |        |          |11 = CC pins no activity.
- * |        |          |Only after bus idle, the de-bounce circuit starts.
- * @var UTCPD_T::ADGTM
- * Offset: 0xE8  UTCPD Auto Discharge Time Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |ADGTM     |Auto Discharge time
- * |        |          |Default Time = 31.25us x 16 x 100 (0x16) = 49.9ms. 
- * @var UTCPD_T::VSAFE0V
- * Offset: 0xEC  UTCPD Auto Discharge VSAFE0V Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[9:0]   |VSAFE0V   |Set the vSafe0V voltage level. 
- * @var UTCPD_T::VSAFE5V
- * Offset: 0xF0  UTCPD VSAFE5V Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[9:0]   |VSAFE5V   |Set the vSafe5V voltage level
- * |        |          |For fast role swap voltage comparison.
- * @var UTCPD_T::RATIO
- * Offset: 0xF4  UTCPD DRP Toggle Ratio Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[2:0]   |DRPRATIO  |The percent of time that a DRP shall advertise source & sink during tDRP
- * |        |          |000 = 50:50 (Sink : Source).
- * |        |          |010 = 30:70 (Sink : Source).
- * |        |          |001 = 40:60 (Sink : Source).
- * |        |          |101 = 60:40 (Sink : Source).
- * |        |          |110 =70:30 (Sink: Source).
- * |        |          |111 = Reserved. 
- * |[3]     |VBSEL     |VBUS_VOLTAGE_SEL
- * |        |          |Select comparing value (vbus_voltage_s) during vbus discharge determines to stop discharging or not.
- * |        |          |1: vbus voltage value from adc
- * |        |          |0: vbus voltage value from adc only when VBMONI (UTCPD_PWRCT[6]) is 1. 
- * |[5]     |SPVBUS    |Stop source VBUS or sink VBUS when force discharge
- * |        |          |If enable this bit, stop source VBUS or sink VBUS when force discharge 
- * |[6]     |ADCAVG    |ADC moving average enable
- * |        |          |If enable this bit, average the ADC value for 4 times 
- * |[7]     |SIMSHORT  |Shorten simulation time
- * |        |          |It's an internal setting.
- * |        |          |Short the long timer when simulation
- * @var UTCPD_T::INTFRAME
- * Offset: 0xF8  UTCPD Inter-Frame Time Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |INTFRAME  |USB PD Inter frame gap
- * |        |          |Each unit time: 83ns (12 MHz RC)
- * |        |          |Time = 83ns x 16 x Inter frame gap time.
- * |        |          |Example = 83ns x 16 x 25(8'b00011001) = 33.2us. 
- * @var UTCPD_T::VBOVTH
- * Offset: 0xFC  UTCPD VBUS Over Voltage Threshold Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[9:0]   |VBOVTH    |VBUS Over Voltage Threshold
- * |        |          |This value defines the VBUS over voltage threshold
- * |        |          |10-bit for voltage threshold with 25mV LSB. 
- * @var UTCPD_T::VNDINIT
- * Offset: 0x100  UTCPD Vendor Initial Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[6:4]   |DVCAPDEF  |Device Capability Default Setting
- * |        |          |Write the Register will update the value to Device_Cap.RoleSupport, ROLE_CONTROL and MESSAGE_HEADER_INFO register, please refer the following table
- * |        |          |(DevCap_DEF Table)
- * @var UTCPD_T::BMCTXBP
- * Offset: 0x104  UTCPD BMC TX Bit Period Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |BMCTXBP   |BMC Tx bit period
- * |        |          |It's for BMC eye diagram.
- * |        |          |Example 12 MHz = 83.33ns.
- * |        |          |83.33ns x (39 + 1) = 3.33us. 
- * @var UTCPD_T::BMCTXDU
- * Offset: 0x108  UTCPD BMC TX Duty Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[6:0]   |DUOFFS2   |BMC Tx duty offset parameter 2
- * |        |          |It's for BMC eye diagram.
- * |        |          |Offset count value.
- * |        |          |Example 12 MHz = 83.33ns. 
- * |[7]     |DUOFFS1   |BMC Tx duty offset parameter 1
- * |        |          |It's for BMC eye diagram.
- * |        |          |0: Increase duty offset? (+)
- * |        |          |1: Decrease duty offset? (-) 
- * @var UTCPD_T::VCPSVOL
- * Offset: 0x10C  VCONN Present Voltage Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[9:0]   |VCPSVOL   |VCONN Present voltage
- * |        |          |Detect Voltage = 60h * 0.025V = 2.42V. 
- * @var UTCPD_T::VCUV
- * Offset: 0x110  VCONN Under Voltage Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[9:0]   |VCUV      |VCONN under voltage comparator
- * |        |          |Detect Voltage = 20h * 0.025V = 0.8V. 
- * @var UTCPD_T::BMCSLICE
- * Offset: 0x118  UTCPD BMC SLICE Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[1:0]   |SLICEL    |TX Slice Low Level Control
- * |        |          |Low level slice control (The LSB is 2mV.)
- * |        |          |00: 0.18V
- * |        |          |01: 0.2V
- * |        |          |10: 0.22V
- * |        |          |11: 0.24V (Default) 
- * |[3:2]   |SLICEH    |TX Slice High Level Control
- * |        |          |High level slice control (The LSB is 2mV.)
- * |        |          |00: 0.84V (Default)
- * |        |          |01: 0.86V
- * |        |          |10: 0.88V
- * |        |          |11: 0.9V 
- * |[6:4]   |SLICEM    |TX Slice Middle Level Control
- * |        |          |Middle level slice control (The LSB is 2mV.)
- * |        |          |000: 0.48V
- * |        |          |100: 0.56V (Default)
- * |        |          |111: 0.62V 
- * |[10:8]  |TRIMRD    |TRIMRD
- * |[15:12] |TRIMRP    |TRIMRP
- * |[18:16] |TRIMV1P1  |TRIMV1P1
- * |[22:20] |TRIMVBUS  |TRIMVBUS
- * |[27:24] |VTRIM     |VTRIM
- * @var UTCPD_T::PHYCTL
- * Offset: 0x11C  UTCPD PHY Power Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |PHYPWR    |Analog PHY Power
- * |        |          |0: Power down PHY
- * |        |          |1: Enable PHY
- * |        |          |Analog PHY power default is off before UTCPD clock available
- * |        |          |Once UTCPD clock is on, the analog PHY power will be on as well.
- * |        |          |Turning off PHY power whenu2026u2026
- * |        |          |1.
- * |        |          |2.
- * |[1]     |DBCTL     |Dead Battery control
- * |        |          |0: Dead Battery circuit control internal Rd/Rp.
- * |        |          |1: Role Control Register control internal Rd/Rp. 
- * @var UTCPD_T::FRSRXCTL
- * Offset: 0x120  UTCPD CC Fast Swap RX Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |FRSTX     |CC transmitter fast swap signal
- * |        |          |Pulse width: 85us 
- * |[1]     |DSFRSTX   |CC detect another port sink disconnect and auto transmitter fast swap signal
- * |        |          |0: Disable
- * |        |          |1: Enable 
- * |[2]     |FRSDVVB   |CC receive fast swap and auto drive Source VBUS
- * |        |          |0: Disable
- * |        |          |1: Enable 
- * |[3]     |FRSRXEN   |CC receive fast swap Rx Enable
- * |        |          |0: Disable
- * |        |          |1: Enable 
- * |[4]     |CC1VCOV   |CC1 VCONN Present
- * |        |          |Set Voltage Level:
- * |        |          |0xF1: VCONN Present Voltage comparator 
- * |[5]     |CC2VCPS   |CC2 VCONN Present
- * |        |          |Set Voltage Level:
- * |        |          |0xF1: VCONN Present Voltage comparator 
- * |[6]     |CC1VCDG   |CC1 VCONN Discharge
- * |        |          |Set Voltage Level:
- * |        |          |0xF2: CC under voltage comparator for VCONN discharge. 
- * |[7]     |CC2VCDG   |CC2 VCONN Discharge
- * |        |          |Set Voltage Level:
- * |        |          |0xF2: CC under voltage comparator for VCONN discharge 
- * @var UTCPD_T::VCVOL
- * Offset: 0x124  UTCPD VCONN Voltage Measurement Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[9:0]   |VCVOL     |VCONN Voltage Measurement
- * |        |          |The LSB is 25mV
- * @var UTCPD_T::SLICTL
- * Offset: 0x200  UTCPD Slice Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[3:0]   |ATEST     |ATEST pin control
- * |        |          |Default :0000b 
- * |[4]     |SLIAEN    |T_slice_all_EN
- * |        |          |1: all of slice enable always turn on. 
- * |[5]     |SLIMIDS   |T_slice_mid_EN_sel
- * |        |          |1: slice enable will don't care 0x2F and keep always turn on. 
- * @var UTCPD_T::CCDBTM
- * Offset: 0x204  UTCPD CC pin Debounce Time Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |CCDB      |CC De-bounce time
- * |        |          |Each unit time is 8 ms
- * |        |          |Ex. 0xD * 8 = 104 ms.
- * @var UTCPD_T::FILTM
- * Offset: 0x208  UTCPD CC pin Filter Time Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |CCFIL     |filter time
- * |        |          |Max value is 0x10.
- * |        |          |Each unit time is 31.2 us
- * |        |          |Ex. 31.2 *0x4 = 124.8 us.
- * @var UTCPD_T::RSTEVNT
- * Offset: 0x20C  UTCPD Reset Event Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[5]     |RXBUFRST  |BMC Rx buffer reset (CPU control)
- * |[6]     |TXBUFRST  |BMC Tx buffer reset (CPU control) 
- * @var UTCPD_T::NOGCRC
- * Offset: 0x210  UTCPD No Good CRC Reply Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |DSS       |Mask SOP message GoodCRC
- * |        |          |0b: Disable
- * |        |          |1b: Enable 
- * |[1]     |DSSP      |Mask SOP' message GoodCRC
- * |        |          |0b: Disable
- * |        |          |1b: Enable 
- * |[2]     |DSSPP     |Mask SOP'' message GoodCRC
- * |        |          |0b: Disable
- * |        |          |1b: Enable 
- * |[3]     |DSDBGSP   |Mask SOP_DBG' message GoodCRC
- * |        |          |0b: Disable
- * |        |          |1b: Enable 
- * |[4]     |DSDBGSPP  |Mask SOP_DBG'' message GoodCRC
- * |        |          |0b: Disable
- * |        |          |1b: Enable 
- * @var UTCPD_T::DSSTS
- * Offset: 0x214  UTCPD Monitor Disconnect Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |SRDC      |Source Disconnect
- * |        |          |0: Not Dis-connect
- * |        |          |1: Dis-connected 
- * |[1]     |SKDC      |Sink Disconnect
- * |        |          |0: Not Dis-connect
- * |        |          |1: Dis-connected 
- * |[3]     |NODRP     |No DRP and CC Open
- * |        |          |ROLCTL.DRP : No DRP
- * |        |          |ROLCTL.CC2 : Open
- * |        |          |ROLCTL.CC1 : Open 
- * |[5]     |BISTALL   |Any BIST MODE
- * |        |          |0: No Bist mode received
- * |        |          |1: Received Any BIST Mode. 
- * |[6]     |BISTDA    |BIST Test Data
- * |        |          |0: No Bist data received
- * |        |          |1: Received BIST Test Data. 
- * |[7]     |BIST2     |BIST Mode 2
- * |        |          |0: No Bist mode 2 recevied.
- * |        |          |1: Received BIST mode 2 
- * @var UTCPD_T::PHYIDLE
- * Offset: 0x218  UTCPD PHY Idle Time Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |PHYIDLE   |PHY Bus Idle Time
- * |        |          |PHY bus idle timeout time
- * |        |          |Time = 83ns x 2 x PHY_IDLE.
- * |        |          |Example = 83.3ns x 2 x 8'h48 = 83.3 x 144 = 11.99ussor bus idle time).
- * @var UTCPD_T::CCSTATE
- * Offset: 0x21C  UTCPD CC state Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |CCFSM     |CC State Machine
- * |        |          |0:cc_state_type_maintain
- * |        |          |1:cc_state_type_apply_Rd
- * |        |          |2:cc_state_type_apply_Rp
- * |        |          |3:cc_state_type_p_connect_as_snk
- * |        |          |4:cc_state_type_p_connect_as_src
- * |        |          |5:cc_state_type_attached_src
- * |        |          |6:cc_state_type_attached_snk
- * |        |          |7:cc_state_type_connected_invalid
- * |        |          |8:cc_state_type_apply_rc
- * |        |          |9:cc_state_type_disconnected_as_src
- * |        |          |10:cc_state_type_disconnected_as_snk 
- * |[7:5]   |CCSTATE   |CC pin 1 state
- * |        |          |0:cc_pin_type_cc_unknown
- * |        |          |1:cc_pin_type_cc_src_open
- * |        |          |2:cc_pin_type_cc_src_ra
- * |        |          |3:cc_pin_type_cc_src_rd
- * |        |          |4:cc_pin_type_cc_snk_rp
- * |        |          |5:cc_pin_type_cc_snk_open 
- * @var UTCPD_T::CCSTSINT
- * Offset: 0x220  UTCPD CC status Internal Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[1:0]   |CC1SRSTS  |CC1 Source Status 
- * |[3:2]   |CC1SKSTS  |CC1 Sink Status 
- * |[5:4]   |CC2SRSTS  |CC2 Source Status 
- * |[7:6]   |CC2SKSTS  |CC2 Sink Status 
- * @var UTCPD_T::BM14
- * Offset: 0x224  UTCPD BMC CDR 1/4 Time  Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[3:0]   |BMC14S    |BMC CDR Monitor Start Point as BMC's Bit-Interval is shorter
- * |        |          |Normal BMC's Bit-Interval is 3.3us (Bit-Rate = 300kps) and the Monitor Start Point is 0.83us (=83.33ns x 10).
- * |        |          |If BMC's Bit-Interval < 3.3us (Bit-Rate > 300kbps), the Start Monitor Point will be reconfigured as below.
- * |        |          |Monitor Start Point: 83.33ns x 9 = 0.75us (Default). 
- * |[7:4]   |BMC14LG   |BMC CDR Monitor Start Point as BMC's Bit-Interval is longer
- * |        |          |Normal BMC's Bit-Interval is 3.3us (Bit-Rate = 300kps) and the Monitor Start Point is 0.83us (=83.33ns x 10).
- * |        |          |If BMC's Bit-Interval > 3.3us (Bit-Rate < 300kbps), the Start Monitor Point will be reconfigured as below.
- * |        |          |Monitor Start Point: 83.33ns x 11 = 0.91us (Default). 
- * @var UTCPD_T::BM34
- * Offset: 0x228  UTCPD BMC CDR 3/4 Time  Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[3:0]   |BMC34S    |BMC CDR Monitor End Point as BMC's Bit-Interval is shorter
- * |        |          |Normal BMC's Bit-Interval is 3.3us (Bit-Rate = 300kps) and the Monitor End Point is 2.5us (=83.33ns x 30).
- * |        |          |If BMC's Bit-Interval < 3.3us (Bit-Rate > 300kbps), the End Monitor Point will be reconfigured as below.
- * |        |          |End Monitor Point: 83.33ns x (24 + 3) = 2.25us (Default). 
- * |[7:4]   |BMC34LG   |BMC CDR Monitor End Point as BMC's Bit-Interval is longer
- * |        |          |Normal BMC's Bit-Interval is 3.3us (Bit-Rate = 300kps) and the Monitor End Point is 2.5us (=83.33ns x 30).
- * |        |          |If BMC's Bit-Interval > 3.3us (Bit-Rate < 300kbps), the End Monitor Point will be reconfigured as below.
- * |        |          |End Monitor Point: 83.33ns x (24 + 9) = 2.75us (Default). 
- * @var UTCPD_T::MSDUTTM
- * Offset: 0x22C  UTCPD Message Discard Time  Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |MESSDCUT  |BMC PHY Message Discard Time
- * |        |          |Time = 83ns x 16 x Discard Time.
- * |        |          |Example = 83ns x 16 x 24(8'b00011000) = 31.87us. 
- * @var UTCPD_T::CCUPDN
- * Offset: 0x230  UTCPD CC pin Pull up or Down Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |CC1UP     |CC1: Pull up control 
- * |[1]     |CC2UP     |CC2: Pull up control 
- * |[2]     |CC1DOWN   |CC1: Pull Down control 
- * |[3]     |CC2DOWN   |CC2: Pull Down control 
- * @var UTCPD_T::BMSTATE
- * Offset: 0x234  UTCPD BMC TX and RX State Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[3:0]   |TXSTATE   |TX_STATE 
- * |[7:4]   |RXSTATE   |RX_STATE 
- * @var UTCPD_T::PHYCMP
- * Offset: 0x238  UTCPD PHY Comparator State Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |CC1detra  |CC1_det_ra 
- * |[1]     |CC1detrd  |CC1_det_rd 
- * |[2]     |CC1detdf  |CC1_det_def 
- * |[3]     |CC1det15  |CC1_det_1p5a 
- * |[4]     |CC1det3a  |CC1_det_3a 
- * |[7:5]   |CC1state  |CC1_state[2:0]
- * |        |          |Monitor CC1 state
- * |        |          |0:cc pin type cc unknown
- * |        |          |1:cc pin type cc open
- * |        |          |2:cc pin type cc SRC_Ra
- * |        |          |3:cc pin type cc SRC_Rd
- * |        |          |4:cc pin type cc SNK_Rp
- * |        |          |5:cc pin type cc SNK_Open 
- * |[8]     |CC2detra  |CC2_det_ra 
- * |[9]     |CC2detrd  |CC2_det_rd 
- * |[10]    |CC2detdf  |CC2_det_def 
- * |[11]    |CC2det1p5 |CC2_det_1p5a 
- * |[12]    |CC2det3a  |CC2_det_3a 
- * |[15:13] |CC2state  |CC2_state[2:0]
- * |        |          |Monitor CC2 state
- * |        |          |0:cc pin type cc unknown
- * |        |          |1:cc pin type cc open
- * |        |          |2:cc pin type cc src_ra
- * |        |          |3:cc pin type cc src_rd
- * |        |          |4:cc pin type cc snk_rp
- * |        |          |5:cc pin type cc snk_open 
- * @var UTCPD_T::SKDC
- * Offset: 0x23C  UTCPD Sink Disconnect Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |VDRC      |VD_sink_disconnect_condition_RC
- * |        |          |0: Normal
- * |        |          |1: For RC Mode. 
- * |[1]     |CCSKOPEN  |cc_snk_open_mask 
- * |[2]     |DGSKOPEN  |dischg_snk_open_mask 
- * |[3]     |CON       |connect_resut_mask 
- * |[6:4]   |SRCOPEN   |sc_src_open_mask[2:0] 
- * @var UTCPD_T::ADGSTATE
- * Offset: 0x240  UTCPD Auto Discharge State Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[2:0]   |SKDGSTA   |vbus_snk_dischg_state
- * |        |          |Monitor VBUS sink discharge state
- * |        |          |0: VBUS sink auto discharge idle
- * |        |          |1: VBUS sink bleed discharge start
- * |        |          |2: VBUS sink auto discharge start
- * |        |          |3: VBUS sink auto discharge stop wait time 
- * |[5:3]   |SRDGSTA   |vbus_src_dischg_state
- * |        |          |Monitor VBUS source discharge state
- * |        |          |0: VBUS source auto discharge idle
- * |        |          |1: VBUS source auto discharge start
- * |        |          |2: VBUS source auto dis discharge stop
- * |        |          |3: VBUS source auto discharge stop wait time 
- * |[6]     |SKDCDET   |vbus_voltage_sink_disconnect_thd_lower_det
- * |        |          |0:no detect VBUS voltage lower than SKVBDGTH
- * |        |          |1:detect VBUS voltage lower than SKVBDGTH 
- * |[7]     |DSPDGDET  |vbus_voltage_stop_dischg_thd_lower_det
- * |        |          |0:no detect VBUS voltage lower than SP_DGTH
- * |        |          |1:detect VBUS voltage lower than SP_DGTH 
- * @var UTCPD_T::VBRDTO
- * Offset: 0x244  UTCPD VBUS Read Timeout Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |VBTOUT    |VBUS voltage read timeout enable
- * |        |          |Timeout: 10ms 
- * @var UTCPD_T::ITEST
- * Offset: 0x248  UTCPD Internal Test Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[3]     |ADCDONE   |vbus adc done detection
- * |        |          |0: vbus adc circuit is at conversion status
- * |        |          |1:vbus adc circuit is at un-conversion status 
- * |[4]     |VSAFE0VL  |vbus_vsafe0v_lower detection
- * |        |          |0:no detect vbus voltage lower than vsafe0v
- * |        |          |1:detect vbus vboltage lower than vsafe0v 
- * |[5]     |ADCUPD    |ADC Voltage Reading Updated State
- * |        |          |0: Update is on-going.
- * |        |          |1: Update stopped. 
- * |[6]     |VCDET     |VCONN detection
- * |        |          |0:no detect VCONN present
- * |        |          |1:detect VCONN present 
- * |[7]     |VBDET     |VBUS detection
- * |        |          |0:No detect VBUS present
- * |        |          |1:Detect VBUS present 
- * @var UTCPD_T::TM
- * Offset: 0x24C  UTCPD Test Mode Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |BIST2     |BIST Mode 2
- * |        |          |1b: BIST 2 output on-going 
- * |[1]     |8OFFVB    |Force off Vbus
- * |        |          |1b: force off vbus from input 
- * |[6:4]   |RXBUFSTS  |Rx buf status
- * |        |          |Rx buffer1~3's status 
- * |[7]     |TXBUFRDY  |Tx buffer ready
- * |        |          |0: Tx buffer not empty.
- * |        |          |1: Tx buffer ready for write 
- * @var UTCPD_T::TXRXSTS
- * Offset: 0x250  UTCPD TX and RX State Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |TCACTIVE  |Type C active mode
- * |        |          |1b: active 
- * |[3:1]   |TXPKG     |Tx package state
- * |        |          |000: reset
- * |        |          |001: success and fail
- * |        |          |010: success
- * |        |          |011: fail
- * |        |          |100: busy
- * |        |          |101: discard 
- * |[6:4]   |RXPKG     |Rx package state
- * |        |          |000 : reset
- * |        |          |001: receive message
- * |        |          |010 receive hard reset
- * |        |          |011: receive cable reset 
- * |[7]     |RXINBUF   |Rx package in buffer
- * |        |          |1b: package in buffer 
- * @var UTCPD_T::SRST
- * Offset: 0x260  UTCPD Soft Reset Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |SRST      |Software control bit 
- * @var UTCPD_T::VCOCVOL
- * Offset: 0x264  VCONN OC Voltage Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[1:0]   |VCOCL     |VCONN OC Trigger Level high
- * |        |          |VCONN switch overcurrent state eliminated level setting bits. 
- * |[3:2]   |VCOCH     |VCONN OC Trigger Level high
- * |        |          |VCONN switch overcurrent trigger level setting bits. 
- * @var UTCPD_T::CLKINFO
- * Offset: 0x300  UTCPD Clock Information Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |ReadyFlag |RC32K domain ready flag Check if the register value is loaded to RC32K domain by reading this flag
- * |        |          |0 : The RC32K signal is not ready
- * |        |          |1 : The RC32K signal is ready
- * |[4]     |WKEN      |Wakeup enable
- * |        |          |0 : UTCPD wakeup function Disabled.
- * |        |          |1 : UTCPD wakeup function Enabled.
- * @var UTCPD_T::TEST1
- * Offset: 0x304  UTCPD Test1 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |PDCFG     |PD Configuration
- * |[15:8]  |BMCCFG    |BMC Configuration
- * |[31]    |ANATXEN   |Analog TX enable
- * @var UTCPD_T::TEST2
- * Offset: 0x308  UTCPD Test2 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[3:0]   |DBGSET    |Debug set
- * |        |          |Setting to 0x5 will activate debug mode
- * @var UTCPD_T::TEST3
- * Offset: 0x30C  UTCPD Test3 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * @var UTCPD_T::TEST4
- * Offset: 0x310  UTCPD Test4 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- */
+    /**
+     * @var UTCPD_T::VID
+     * Offset: 0x00  UTCPD Vendor ID Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |VID       |UTCPD Vendor ID
+     * |        |          |Vendor identifier is used to identify the TCPC vendor, the VID is a unique 16-bit unsigned integer assigned by USB-IF to the Vendor
+     * @var UTCPD_T::PID
+     * Offset: 0x04  UTCPD Product ID Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |PID       |UTCPD Product ID
+     * |        |          |USB Product ID is used to identify the product
+     * @var UTCPD_T::DID
+     * Offset: 0x08  UTCPD Device ID Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |DID       |UTCPD Device ID
+     * |        |          |USB Device ID is used to identify the release version of the product
+     * @var UTCPD_T::TCREV
+     * Offset: 0x0C  UTCPD USB Type C Revision Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |TCREV     |UTCPD USB Type C Revision
+     * |        |          |USB Type-C Cable and Connector Specification Revision 1.3
+     * @var UTCPD_T::PDREV
+     * Offset: 0x10  UTCPD USB PD Revision Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |PDVER     |UTCPD USB PD Vision
+     * |        |          |USB Power Delivery Specification Version 1.1
+     * |[15:8]  |PDREV     |UTCPD USB PD Revision
+     * |        |          |USB Power Delivery Specification revision 3.1
+     * @var UTCPD_T::IS
+     * Offset: 0x14  UTCPD Interrupt Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |CCSCHIS   |CC Status Changed
+     * |        |          |0 = CC status not change.
+     * |        |          |1= CC status changed.
+     * |        |          |Note: It is cleared by software writing 1 into this bit.
+     * |[1]     |PWRSCHIS  |Power Status Changed
+     * |        |          |0 = Power status not change.
+     * |        |          |1 = Power status changed.
+     * |        |          |Note: It is cleared by software writing 1 into this bit.
+     * |[2]     |RXSOPIS   |Received SOP Message
+     * |        |          |0 = No SOP message Received.
+     * |        |          |1 = Received SOP message (Set after sending GoodCRC??. =yes)
+     * |        |          |UTCPD_RXBCNT being set to 0 does not set this bit.
+     * |        |          |Note: It is cleared by software writing 1 into this bit.
+     * |[3]     |RXHRSTIS  |Received Hard Reset
+     * |        |          |0 = No Hard reset Received.
+     * |        |          |1 = Received Hard reset.
+     * |        |          |Note: It is cleared by software writing 1 into this bit.
+     * |[4]     |TXFALIS   |Transmit SOP Fail
+     * |        |          |0 = No Transmit SOP fail.
+     * |        |          |1 = SOP* message transmission not successful, no GoodCRC response received on SOP* message transmission
+     * |        |          |Transmit SOP* message buffer registers are empty.
+     * |        |          |Note: It is cleared by software writing 1 into this bit.
+     * |[5]     |TXDCUTIS  |Transmit SOP* Message Discarded
+     * |        |          |0 = No TX SOP discarded.
+     * |        |          |1 = Reset or SOP* message transmission not sent due to incoming receive message
+     * |        |          |Transmit SOP* message buffer registers are empty.
+     * |        |          |Note: It is cleared by software writing 1 into this bit.
+     * |[6]     |TXOKIS    |Transmit SOP* Message Successful
+     * |        |          |0 = No TX SOP* transmit.
+     * |        |          |1 = Reset or SOP* message transmission successful
+     * |        |          |GoodCRC response received on SOP* message transmission
+     * |        |          |Transmit SOP* message buffer registers are empty.
+     * |        |          |Note: It is cleared by software writing 1 into this bit.
+     * |[7]     |VBAMHIS   |VBUS Voltage Alarm High
+     * |        |          |0 = No high voltage alarm has occurred.
+     * |        |          |1= A high voltage alarm has occurred.
+     * |        |          |This bit will be set high when DSVBAM (UTCPD_PWRCTL[5]) is low and VBUS voltage is higher than VBAMH (UTCPD_VBAMH[9:0]).
+     * |        |          |Note: It is cleared by software writing 1 into this bit.
+     * |[8]     |VBAMLIS   |VBUS Voltage Alarm Low
+     * |        |          |0 = No Low voltage alarm has occurred.
+     * |        |          |1= A Low voltage alarm has occurred.
+     * |        |          |This bit will be set high when DSVBAM (UTCPD_PWRCTL[5]]) is low and VBUS voltage is lower than VBAML (UTCPD_VBAML[9:0]).
+     * |        |          |Note: It is cleared by software writing 1 into this bit.
+     * |[9]     |FUTIS     |Fault Occur
+     * |        |          |0 = No fault occurs.
+     * |        |          |1= A Fault has occurred. Read the FUT_STS register.
+     * |        |          |Note: It is cleared by software writing 1 into this bit.
+     * |[10]    |RXOFIS    |Rx Buffer Overflow
+     * |        |          |0 = RX buffer is functioning properly.
+     * |        |          |1 = RX buffer has overflowed.
+     * |        |          |Writing 1 to this register acknowledges the overflow
+     * |        |          |The overflow is cleared by writing 1 to RXSOPIS (UTCPD_IS[2])
+     * |[11]    |SKDCDTIS  |VBUS Sink Disconnect Detected
+     * |        |          |0 = No disconnect detected.
+     * |        |          |1 = A VBUS Sink disconnect threshold crossing has been detected.
+     * |        |          |This bit will be set when VBMONI (UTCPD_PWRCTL[6]) is enabled and VBUS voltage drop lower than SKVBDCTH (UTCPD_SKVBDCTH[9:0]).
+     * |        |          |Note: It is cleared by software writing 1 into this bit.
+     * |[15]    |VNDIS     |Vendor Define Event Detected
+     * |        |          |0 = No vendor defined interrupt status has been detected.
+     * |        |          |1 = A vendor defined interrupt status has been detected
+     * |        |          |Refer the vender defined interrupt status register.
+     * |        |          |Note: It is cleared by software writing 1 into this bit.
+     * @var UTCPD_T::IE
+     * Offset: 0x18  UTCPD Interrupt Enable Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |CCSCHIE   |CC Status Changed Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[1]     |PWRSCHIE  |Power Status Changed Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[2]     |RXSOPIE   |Received SOP Message Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[3]     |RXHRSTIE  |Received Hard Reset Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[4]     |TXFAILIE  |Transmit SOP Fail Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[5]     |TXDCUTIE  |Transmit SOP* Message Discarded Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[6]     |TXOKIE    |Transmit SOP* Message Successful Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[7]     |VBAMHIE   |VBUS Voltage Alarm High Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[8]     |VBAMLIE   |VBUS Voltage Alarm Low Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[9]     |FUTIE     |Fault Occur Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[10]    |RXOFIE    |Rx Buffer Overflow Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[11]    |SKDCDTIE  |VBUS Sink Disconnect Detected Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[15]    |VNDIE     |Vendor Define Event Detected Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * @var UTCPD_T::PWRSTSIE
+     * Offset: 0x1C  UTCPD Power Status Interrupt Enable Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |SKVBIE    |Sinking VBUS Status Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[1]     |VCPSIE    |VCONN Present Status Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[2]     |VBPSIE    |VBUS Present Status Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[3]     |VBDTDGIE  |VBUS Detection Status Change Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[4]     |SRVBIE    |Sourcing VBUS Status Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[5]     |SRHVIE    |Sourcing High Voltage Status Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[7]     |DACONIE   |Debug Accessory Connected Status Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * @var UTCPD_T::FUTSTSIE
+     * Offset: 0x20  UTCPD Fault Status Interrupt Enable Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[1]     |VCOCIE    |VCONN OCP Fault Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[2]     |VBOVIE    |Internal VBUS OVP Fault Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[3]     |VBOCIE    |External VBUS OCP Fault Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[4]     |FDGFALIE  |Force Discharge Failed Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[5]     |ADGFALIE  |Auto Discharge Failed Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[6]     |FOFFVBIE  |Force Off VBUS Interrupt Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * @var UTCPD_T::CTL
+     * Offset: 0x24  UTCPD Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |ORIENT    |Plug Orientation
+     * |        |          |0 = When VCONN is enabled, apply it to the CC2 pin
+     * |        |          |Monitor the CC1 pin for BMC communications if PD messaging is enabled.
+     * |        |          |1 = When VCONN is enabled, apply it to the CC1 pin. Monitor the CC2 pin for BMC
+     * |        |          |communications if PD messaging is enabled.
+     * |[1]     |BISTEN    |BIST Test Mode
+     * |        |          |Setting this bit to 1 is intended to be used only when a USB compliance tester is using USB BIST Test Data to test the PHY layer of the UTCPD
+     * |        |          |The CPU should clear this bit when a detach is detected.
+     * |        |          |0 = Normal Operation.
+     * |        |          |1 = BIST Test Mode.
+     * @var UTCPD_T::PINPL
+     * Offset: 0x28  UTCPD Pin Polarity Control  Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |VBSRENPL  |VBUS Source Enable Polarity
+     * |        |          |0 = Low active.
+     * |        |          |1 = High active.
+     * |[1]     |VBSKENPL  |VBUS Sink Enable Polarity
+     * |        |          |0 = Low active.
+     * |        |          |1 = High active.
+     * |[2]     |VBDGENPL  |VBUS Discharge Enable Polarity
+     * |        |          |It is for Bleed Discharge Enable Polarity.
+     * |        |          |0 = Low active.
+     * |        |          |1 = High active.
+     * |[3]     |TXFRSPL   |Fast Role Swap TX Polarity
+     * |        |          |0 = Low active.
+     * |        |          |1 = High active.
+     * |[4]     |VCOCPL    |VCONN Overcurrent event Polarity
+     * |        |          |0 = Low active.
+     * |        |          |1 = High active.
+     * |[5]     |VBOCPL    |VBUS Overcurrent event Polarity
+     * |        |          |0 = Low active.
+     * |        |          |1 = High active.
+     * |[8]     |VCENPL    |VCONN Enable Polarity
+     * |        |          |0 = Low active.
+     * |        |          |1 = High active.
+     * |[9]     |VCDGENPL  |VCONN Discharge Enable Polarity
+     * |        |          |0 = Low active.
+     * |        |          |1 = High active.
+     * |[10]    |FOFFVBPL  |Force Off VBUS event Polarity
+     * |        |          |0 = Low active.
+     * |        |          |1 = High active.
+     * @var UTCPD_T::ROLCTL
+     * Offset: 0x2C  UTCPD Role Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[1:0]   |CC1       |CC1
+     * |        |          |00 = Reserved.
+     * |        |          |01b = Rp (Use Rp definition in RPVALUE).
+     * |        |          |10 = Rd.
+     * |        |          |11 = Open (Disconnect or dont care).
+     * |[3:2]   |CC2       |CC2
+     * |        |          |00 = Reserved.
+     * |        |          |01 = Rp (Use Rp definition in RPVALUE).
+     * |        |          |10 = Rd.
+     * |        |          |11 = Open (Disconnect or don't care).
+     * |[5:4]   |RPVALUE   |Rp Value
+     * |        |          |00 = Rp default.
+     * |        |          |01 = Rp 1.5A.
+     * |        |          |10 = Rp 3.0A.
+     * |        |          |11 = Reserved.
+     * |[6]     |DRP       |DRP
+     * |        |          |0 = No DRP.
+     * |        |          |1 = DRP.
+     * |        |          |The UTCPD toggles CC1 & CC2 after receiving LK4CON (UTCPD_CMD[5]) and until a connection is detected
+     * |        |          |Upon connection, the UTCPD shall resolve to either an Rp or Rd and report the CC1/CC2 State in the CC_STS register
+     * @var UTCPD_T::FUTCTL
+     * Offset: 0x30  UTCPD Fault Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |VCOVDTDS  |External VCONN Overcurrent Fault Detect Disable
+     * |        |          |0 = External VCONN OCP circuit enabled.
+     * |        |          |1 = External VCONN OCP circuit disabled.
+     * |[1]     |VBOVDTDS  |Internal VBUS Over Voltage Protection Fault Detect Disable
+     * |        |          |0 = Internal OVP circuit enabled.
+     * |        |          |1 = Internal OVP circuit disabled.
+     * |        |          |Note: Internal VBUS over voltage protection means to use ADC to measure VBUS voltage.
+     * |[2]     |VBOCDTDS  |External VBUS Overcurrent Protection Fault Detect Disable
+     * |        |          |0 = External OCP circuit enabled.
+     * |        |          |1 = External OCP circuit disabled.
+     * |[3]     |VBDGTMDS  |VBUS Discharge Fault Detection Timer Disable
+     * |        |          |0 = VBUS Discharge Fault Detection Timer enabled.
+     * |        |          |1 = VBUS Discharge Fault Detection Timer disabled.
+     * |        |          |This enables the timer for both force discharge and auto discharge
+     * |        |          |No timer for bleed discharge
+     * |        |          |Once time-out, UTCPD will compare VBUS voltage with VSAFE0V or SP_DGTH, depends on setting of ADGDC and FDGEN.
+     * |[4]     |FOFFVBDS  |Force Off VBUS Disable
+     * |        |          |0 = Enabled.
+     * |        |          |1 = Disabled.
+     * @var UTCPD_T::PWRCTL
+     * Offset: 0x34  UTCPD Power Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |VCEN      |Enable VCONN
+     * |        |          |0 = Disable VCONN Source (default).
+     * |        |          |1 = Enable VCONN Source to CC.
+     * |[1]     |VCPWR     |VCONN Power Supported
+     * |        |          |0 = UTCPD delivers at least 1W on VCONN.
+     * |        |          |1 = UTCPD delivers at least the power indicated in CPVCPWR (UTCPD_DVCAP2[3:1]).
+     * |[2]     |FDGEN     |Enable Force Discharge
+     * |        |          |0 = Disable forced discharge (default).
+     * |        |          |1 = Enable forced discharge of VBUS.
+     * |        |          |Force discharge is used for source only.
+     * |        |          |This bit will only be cleared by CPU.
+     * |[3]     |BDGEN     |Enable Bleed Discharge
+     * |        |          |0 = Disable bleed discharge (default).
+     * |        |          |1 = Enable bleed discharge of VBUS.
+     * |        |          |Bleed Discharge is a low current discharge to provide a minimum load current if needed
+     * |        |          |10K Ohms or 2mA recommended. Bleed discharge is used for sink only.
+     * |        |          |This bit will only be cleared by CPU.
+     * |[4]     |ADGDC     |Auto Discharge Disconnect
+     * |        |          |0 = The UTCPD shall not automatically discharge VBUS based on VBUS voltage (default).
+     * |        |          |1 = The UTCPD shall automatically discharge when disconnect detected.
+     * |        |          |Setting this bit in a Source UTCPD triggers the following actions upon a disconnect detection:
+     * |        |          |1. Disable sourcing power over VBUS
+     * |        |          |2. VBUS discharge
+     * |        |          |Sourcing power over VBUS shall be disabled before or at the same time as starting VBUS discharge.
+     * |        |          |Setting this bit in a Sink UTCPD triggers the following action upon a disconnect detection:
+     * |        |          |1. VBUS discharge
+     * |        |          |The UTCPD shall automatically disable discharge (without clearing this bit) once the voltage on VBUS is below vSafe0V (max)
+     * |        |          |UTCPD shall not re-apply discharge circuit if VBUS rises above vSafe0V.
+     * |        |          |This bit will only be cleared by CPU.
+     * |[5]     |DSVBAM    |Disable VBUS Voltage Alarms
+     * |        |          |0 = VBUS Voltage Alarms Power status reporting is enabled.
+     * |        |          |1 = VBUS Voltage Alarms Power status reporting is disabled (default).
+     * |[6]     |VBMONI    |VBUS Voltage Monitor Enable
+     * |        |          |0 = VBUS Voltage Monitoring is enabled.
+     * |        |          |1 = VBUS Voltage Monitoring is disabled (default).
+     * |        |          |Controls VBUS voltage Monitoring. UTCPD_VBVOL shall report all zeroes if disabled.
+     * @var UTCPD_T::CCSTS
+     * Offset: 0x38  UTCPD CC Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[1:0]   |CC1STATE  |CC1 State
+     * |        |          |If (CC1 (UTCPD_ROLCTL[1:0])=Rp) or (CONRLT (UTCPD_CCSTS[4]) = 0).
+     * |        |          |00 = SRC.Open (Open, Rp).
+     * |        |          |01 = SRC.Ra (below maximum vRa).
+     * |        |          |10 = SRC.Rd (within the vRd range).
+     * |        |          |11 = reserved.
+     * |        |          |If (CC1 (UTCPD_ROLCTL[1:0])=Rd) or (CONRLT (UTCPD_CCSTS[4]) = 1).
+     * |        |          |00 = SNK.Open (Below maximum vRa).
+     * |        |          |01 = SNK.Default (Above minimum vRd-Connect).
+     * |        |          |10 = SNK.Power1.5 (Above minimum vRd-Connect) Detects Rp 1.5A.
+     * |        |          |11 = SNK.Power3.0 (Above minimum vRd-Connect) Detects Rp 3.0A.
+     * |        |          |If CC1 (UTCPD_ROLCTL[1:0])=Reserved, this field is set to 00.
+     * |        |          |If CC1 (UTCPD_ROLCTL[1:0])=Open, this field is set to 00.
+     * |        |          |This field always returns 00 if (LK4CONN=1) or (VCEN (UTCPD_PWRCTL[0])]=1 and ORIENT (UTCPD_CTL[0])=1)
+     * |        |          |Otherwise, the returned value depends upon CC1 (UTCPD_ROLCTL[1:0])
+     * |[3:2]   |CC2STATE  |CC2 State
+     * |        |          |If (CC2 (UTCPD_ROLCTL[3:2]=Rp) or (CONRLT (UTCPD_CCSTS[4]) = 0).
+     * |        |          |00 = SRC.Open (Open, Rp).
+     * |        |          |01 = SRC.Ra (below maximum vRa).
+     * |        |          |10 = SRC.Rd (within the vRd range).
+     * |        |          |11 = reserved.
+     * |        |          |If (CC2 (UTCPD_ROLCTL[3:2])=Rd) or (CONRLT (UTCPD_CCSTS[4]) = 1).
+     * |        |          |00 = SNK.Open (Below maximum vRa).
+     * |        |          |01 = SNK.Default (Above minimum vRd-Connect).
+     * |        |          |10 = SNK.Power1.5 (Above minimum vRd-Connect) Detects Rp 1.5A.
+     * |        |          |11 = SNK.Power3.0 (Above minimum vRd-Connect) Detects Rp 3.0A.
+     * |        |          |If CC2 (UTCPD_ROLCTL[3:2])=Reserved, this field is set to 00.
+     * |        |          |If CC2 (UTCPD_ROLCTL[3:2])=Open, this field is set to 00.
+     * |        |          |This field always returns 00 if (LK4CONN=1) or (VCEN (UTCPD_PWRCTL[0])=1 and ORIENT (UTCPD_CTL[0])=0)
+     * |        |          |Otherwise, the returned value depends upon CC2 (UTCPD_ROLCTL[3:2])
+     * |[4]     |CONRLT    |Connect Result (read only)
+     * |        |          |0 = the UTCPD is presenting Rp.
+     * |        |          |1 = the UTCPD is presenting Rd.
+     * |[5]     |LK4CONN   |Looking for Connection
+     * |        |          |0 = UTCPD is not actively looking for a connection
+     * |        |          |A transition from '1' to '0' indicates a potential connection has been found.
+     * |        |          |1 = UTCPD is looking for a connection (toggling as a DRP or looking for a connection as Sink/Source only condition)
+     * @var UTCPD_T::PWRSTS
+     * Offset: 0x3C  UTCPD Power Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |SKVB      |Sinking VBUS
+     * |        |          |0 = Sink is Disconnected (Default).
+     * |        |          |1 = UTCPD is sinking VBUS to the system load.
+     * |[1]     |VCPS      |VCONN Present
+     * |        |          |0 = VCONN is not present.
+     * |        |          |1 = This bit is asserted when VCONN present CC1 or CC2. Threshold is fixed at 2.4V.
+     * |        |          |If VCEN (UTCPD_PWRCTL[0])] is disabled VCONN Present should be set to 0.
+     * |[2]     |VBPS      |VBUS Present
+     * |        |          |0 = VBUS Disconnected.
+     * |        |          |1 = VBUS Connected.
+     * |        |          |The UTCPD shall report VBUS present when UTCPD detects VBUS rises above 4V.
+     * |        |          |The UTCPD shall report VBUS is not present when UTCPD detects VBUS falls below 3.5V.
+     * |[3]     |VBPSDTEN  |VBUS Present Detection Enabled
+     * |        |          |0 = VBUS Present Detection Disabled.
+     * |        |          |1 = VBUS Present Detection Enabled (default).
+     * |[4]     |SRVB      |Sourcing VBUS
+     * |        |          |0 = Sourcing VBUS is disabled.
+     * |        |          |1 = Sourcing VBUS is enabled.
+     * |        |          |This bit does not control the path, just provides a monitor of the status.
+     * |[5]     |SRHV      |Sourcing High Voltage
+     * |        |          |0 = VSAFE5V.
+     * |        |          |1 = Higher Voltage.
+     * |        |          |This bit does not control the power path, it just provides a monitor of the status
+     * |        |          |This bit is asserted as long as the UTCPD is sourcing nondefault voltage over VBUS (i.e
+     * |        |          |not VSAFE5V) as a response to CPU writing 0x88 to CMD (Source VBUS High Voltage)
+     * |[7]     |DACON     |Debug Accessory Connected
+     * |        |          |0 = No Debug Accessory connected (default).
+     * |        |          |1 = Debug Accessory connected.
+     * @var UTCPD_T::FUTSTS
+     * Offset: 0x40  UTCPD Fault Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[1]     |VCOCFUT   |VCONN Overcurrent Protection Fault
+     * |        |          |0 = Not in an overcurrent protection state.
+     * |        |          |1 = Overcurrent fault latched.
+     * |[2]     |VBOVFUT   |VBUS Over Voltage Protection Fault
+     * |        |          |0 = No Fault detected.
+     * |        |          |1 = Over-voltage fault latched.
+     * |[3]     |VBOCFUT   |VBUS Overcurrent Protection Fault
+     * |        |          |0 = Not in an overcurrent protection state.
+     * |        |          |1 = Overcurrent fault latched.
+     * |[4]     |FDGFAL    |Force Discharge Failed
+     * |        |          |0 = No discharge failure.
+     * |        |          |1 = Discharge commanded by the TCPM failed.
+     * |        |          |If FDGEN (UTCPD_PWRCTL[2]) is set, the UTCPD shall report a discharge fails if VBUS is not below vSafe0V within tSafe0V
+     * |[5]     |ADGFAL    |Auto Discharge Failed
+     * |        |          |0 = No discharge failure.
+     * |        |          |1 = Discharge commanded by the TCPM failed.
+     * |        |          |If ADGDC (UTCPD_PWRCTL[4]) is set, the UTCPD shall report discharge fails if VBUS is not below vSafe0V within tSafe0V
+     * |[6]     |FOFFVB    |Force Off VBUS
+     * |        |          |0 = No Fault Detected, no action (default and not supported).
+     * |        |          |1 = VBUS Source/Sink has been forced off due to external fault.
+     * |        |          |The UTCPD has disconnected VBUS due to external inputs (EINT0 ~ EINT5)
+     * @var UTCPD_T::CMD
+     * Offset: 0x44  UTCPD Command Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |CMD       |Command Set
+     * |        |          |0x22 = Disable VBUS Detect.
+     * |        |          |0x33 = Enable VBUS Detect.
+     * |        |          |0x44 = Disable Sink VBUS.
+     * |        |          |0x55h = Enable Sink VBUS.
+     * |        |          |0x66 = Disable Source VBUS.
+     * |        |          |0x77 = Enable Source VBUS 5V.
+     * |        |          |0x88 = Source VBUS High Voltage.
+     * |        |          |0x99h = Look4Connection.
+     * |        |          |0xAA = RxOneMore
+     * |        |          |Others: Reserved.
+     * |        |          |The Command is issued by the CPU
+     * |        |          |The Command is cleared by the UTCPD after being acted upon
+     * |        |          |It always read as 0.
+     * @var UTCPD_T::DVCAP1
+     * Offset: 0x48  UTCPD Device Capabilities 1 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |CPSRVB    |Source VBUS
+     * |        |          |0 = TCPC is not capable of controlling the source path to VBUS.
+     * |        |          |1 = TCPC is capable of controlling the source path to VBUS.
+     * |[1]     |CPSRHV    |Source High Voltage VBUS
+     * |        |          |0 = UTCPD is not capable of controlling the source high voltage path to VBUS.
+     * |        |          |1 = UTCPD is capable of controlling the source high voltage path to VBUS.
+     * |[2]     |CPSKVB    |Sink VBUS
+     * |        |          |0 = UTCPD is not capable controlling the sink path to the system load.
+     * |        |          |1 = UTCPD is capable of controlling the sink path to the system load.
+     * |[3]     |CPSRVC    |Source VCONN
+     * |        |          |0 = UTCPD is not capable of switching VCONN.
+     * |        |          |1 = UTCPD is capable of switching VCONN.
+     * |[4]     |CPSDBG    |SOP'_DBG/SOPu201D_DBG Support
+     * |        |          |0 = All SOP* except SOP'_DBG/SOPu201D_DBG.
+     * |        |          |1 = All SOP* messages are supported.
+     * |[7:5]   |CPROL     |Roles Supported
+     * |        |          |000 = USB Type-C Port Manager can configure the Port as Source only or Sink only (not DRP).
+     * |        |          |001 = Source only.
+     * |        |          |010 = Sink only.
+     * |        |          |011 = Sink with accessory support.
+     * |        |          |100 = DRP only.
+     * |        |          |101 = Source, Sink, DRP, Adapter/Cable all supported.
+     * |        |          |110 = Source, Sink, DRP.
+     * |        |          |111 = Not valid.
+     * |[9:8]   |CPSRRE    |Source Resistor Supported
+     * |        |          |00 = Rp default only.
+     * |        |          |01 = Rp 1.5A and default.
+     * |        |          |10 = Rp 3.0A, 1.5A, and default.
+     * |        |          |11 = Reserved.
+     * |[10]    |CPVBAM    |VBUS Measurement and Alarm Capable
+     * |        |          |0 = No VBUS voltage measurement nor VBUS Alarms.
+     * |        |          |1 = VBUS voltage measurement and VBUS Alarms.
+     * |[11]    |CPFDG     |Force Discharge
+     * |        |          |0 = No Force Discharge implemented.
+     * |        |          |1 = Force Discharge is implemented.
+     * |[12]    |CPBDG     |Bleed Discharge
+     * |        |          |0 = No Bleed Discharge implemented.
+     * |        |          |1 = Bleed Discharge is implemented.
+     * |[13]    |CPVBOVP   |VBUS OVP Reporting
+     * |        |          |0 = VBUS OVP is not reported.
+     * |        |          |1 = VBUS OVP is reported.
+     * |[14]    |CPVBOCP   |VBUS OCP Reporting
+     * |        |          |0 = VBUS OCP is not reported.
+     * |        |          |1 = VBUS OCP is reported.
+     * @var UTCPD_T::DVCAP2
+     * Offset: 0x4C  UTCPD Device Capabilities 2 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |CPVCOC    |VCONN Overcurrent Fault Capable
+     * |        |          |0 = UTCPD is not capable of detecting a Vconn fault.
+     * |        |          |1 = UTCPD is capable of detecting a Vconn fault.
+     * |[3:1]   |CPVCPWR   |VCONN Power Supported
+     * |        |          |000 = 1.0W.
+     * |        |          |001 = 1.5W.
+     * |        |          |010 = 2.0W.
+     * |        |          |011 = 3W.
+     * |        |          |100 = 4W.
+     * |        |          |101 = 5W.
+     * |        |          |110 = 6W.
+     * |        |          |111 = External.
+     * |[5:4]   |CPVBAMLS  |VBUS Voltage Alarm LSB
+     * |        |          |00 = UTCPD has 25mV LSB for its voltage alarm and uses all 10 bits in.
+     * |        |          |VB_AMH and VB_AML.
+     * |        |          |Others = Reserved.
+     * |[6]     |CPSPDGTH  |Stop Discharge Threshold
+     * |        |          |0 = UTCPD_SPDGTH not implemented.
+     * |        |          |1 = UTCPD_SPDGTH implemented.
+     * |[7]     |CPSKDCDT  |Sink Disconnect Detection
+     * |        |          |0 = UTCPD_SKVBDCTH not implemented.
+     * |        |          |1 = UTCPD_SKVBDCTH implemented.
+     * @var UTCPD_T::MSHEAD
+     * Offset: 0x50  UTCPD Message Header Info Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |PWRROL    |Power Role
+     * |        |          |0 = Sink.
+     * |        |          |1 = Source.
+     * |[2:1]   |PDREV     |USB PD Specification Revision
+     * |        |          |00 = Revision 1.0.
+     * |        |          |01 = Revision 2.0.
+     * |        |          |10 = Revision 3.0.
+     * |        |          |11 = Revision 3.1.
+     * |[3]     |DAROL     |Data Role
+     * |        |          |0 = UFP.
+     * |        |          |1 = DFP.
+     * |[4]     |CABPLG    |Cable Plug
+     * |        |          |0 = Message originated from Source, Sink, or DRP.
+     * |        |          |1 = Message originated from a Cable Plug.
+     * @var UTCPD_T::DTRXEVNT
+     * Offset: 0x54  UTCPD Enable Detect RX Event Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |SOPEN     |Enable SOP message
+     * |        |          |0 = UTCPD does not detect SOP message (default).
+     * |        |          |1 = UTCPD detects SOP message.
+     * |[1]     |SOPPEN    |Enable SOP' message
+     * |        |          |0 = UTCPD does not detect SOP' message (default).
+     * |        |          |1 = UTCPD detects SOP' message.
+     * |[2]     |SOPPPEN   |Enable SOP'' message
+     * |        |          |0 = UTCPD does not detect SOP'' message (default).
+     * |        |          |1 = UTCPD detects SOP'' message.
+     * |[3]     |SDBGPEN   |Enable SOP_DBG' message
+     * |        |          |0 = UTCPD does not detect SOP_DBG' message (default).
+     * |        |          |1 = UTCPD detects SOP_DBG' message.
+     * |[4]     |SDBGPPEN  |Enable SOP_DBG'' message
+     * |        |          |0 = UTCPD does not detect SOP_DBG'' message (default).
+     * |        |          |1 = UTCPD detects SOP_DBG'' message.
+     * |[5]     |HRSTEN    |Enable Hard Reset
+     * |        |          |0 = UTCPD does not detect Hard Reset signaling (default).
+     * |        |          |1 = UTCPD detects Hard Reset signaling.
+     * |[6]     |CABRSTEN  |Enable Cable Reset
+     * |        |          |0 = UTCPD does not detect Cable Reset signaling (default).
+     * |        |          |1 = UTCPD detects Cable Reset signaling.
+     * @var UTCPD_T::RXBCNT
+     * Offset: 0x58  UTCPD RX Byte Count Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |RXBCNT    |Receive Byte Count
+     * |        |          |Indicates number of bytes in this register that are not stale
+     * |        |          |CPU should read the first RXBCNT bytes in this register.
+     * |        |          |This is the number of bytes in the UTCPD_RXDAx plus three (for the RXFTYPE and RXHEAD).
+     * |        |          |The UTCPD shall clear the UTCPD_DTRXEVNT and the UTCPD_RXBCNT register to disable the PD message passing when CPU writes the UTCPD_TXCTL register requesting a Hard Reset.
+     * @var UTCPD_T::RXFTYPE
+     * Offset: 0x5C  UTCPD Received Frame Type Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[2:0]   |RXFTYPE   |Received Frame Type
+     * |        |          |000 = Received SOP.
+     * |        |          |001 = Received SOP'.
+     * |        |          |010 = Received SOP''.
+     * |        |          |011 = Received SOP_DBG'.
+     * |        |          |100 = Received SOP_DBG''.
+     * |        |          |110 = Received Cable Reset.
+     * |        |          |All others are reserved.
+     * @var UTCPD_T::RXHEAD
+     * Offset: 0x60  UTCPD Received Header Data Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |RXHEAD0   |USB PD message header byte 0
+     * |[15:8]  |RXHEAD1   |USB PD message header byte 1
+     * @var UTCPD_T::RXDA0
+     * Offset: 0x70  UTCPD Received Data0 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |RXDAB0    |USB PD Received Datax byte 0
+     * |[15:8]  |RXDAB1    |USB PD Received Datax byte 1
+     * |[23:16] |RXDAB2    |USB PD Received Datax byte 2
+     * |[31:24] |RXDAB3    |USB PD Received Datax byte 3
+     * @var UTCPD_T::RXDA1
+     * Offset: 0x74  UTCPD Received Data1 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |RXDAB0    |USB PD Received Datax byte 0
+     * |[15:8]  |RXDAB1    |USB PD Received Datax byte 1
+     * |[23:16] |RXDAB2    |USB PD Received Datax byte 2
+     * |[31:24] |RXDAB3    |USB PD Received Datax byte 3
+     * @var UTCPD_T::RXDA2
+     * Offset: 0x78  UTCPD Received Data2 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |RXDAB0    |USB PD Received Datax byte 0
+     * |[15:8]  |RXDAB1    |USB PD Received Datax byte 1
+     * |[23:16] |RXDAB2    |USB PD Received Datax byte 2
+     * |[31:24] |RXDAB3    |USB PD Received Datax byte 3
+     * @var UTCPD_T::RXDA3
+     * Offset: 0x7C  UTCPD Received Data3 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |RXDAB0    |USB PD Received Datax byte 0
+     * |[15:8]  |RXDAB1    |USB PD Received Datax byte 1
+     * |[23:16] |RXDAB2    |USB PD Received Datax byte 2
+     * |[31:24] |RXDAB3    |USB PD Received Datax byte 3
+     * @var UTCPD_T::RXDA4
+     * Offset: 0x80  UTCPD Received Data4 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |RXDAB0    |USB PD Received Datax byte 0
+     * |[15:8]  |RXDAB1    |USB PD Received Datax byte 1
+     * |[23:16] |RXDAB2    |USB PD Received Datax byte 2
+     * |[31:24] |RXDAB3    |USB PD Received Datax byte 3
+     * @var UTCPD_T::RXDA5
+     * Offset: 0x84  UTCPD Received Data5 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |RXDAB0    |USB PD Received Datax byte 0
+     * |[15:8]  |RXDAB1    |USB PD Received Datax byte 1
+     * |[23:16] |RXDAB2    |USB PD Received Datax byte 2
+     * |[31:24] |RXDAB3    |USB PD Received Datax byte 3
+     * @var UTCPD_T::RXDA6
+     * Offset: 0x88  UTCPD Received Data6 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |RXDAB0    |USB PD Received Datax byte 0
+     * |[15:8]  |RXDAB1    |USB PD Received Datax byte 1
+     * |[23:16] |RXDAB2    |USB PD Received Datax byte 2
+     * |[31:24] |RXDAB3    |USB PD Received Datax byte 3
+     * @var UTCPD_T::TXCTL
+     * Offset: 0x90  UTCPD TX Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[2:0]   |TXSTYPE   |Transmit SOP* message
+     * |        |          |000 = Transmit SOP.
+     * |        |          |001 = Transmit SOP'.
+     * |        |          |010 = Transmit SOP''.
+     * |        |          |011 = Transmit SOP_DBG'.
+     * |        |          |100 = Transmit SOP_DBG''.
+     * |        |          |101 = Transmit Hard Reset.
+     * |        |          |110 = Transmit Cable Reset.
+     * |        |          |111 = Transmit BIST Carrier Mode 2.
+     * |        |          |The UTCPD shall ignore the Retry Counter bits when transmitting a Hard Reset, Cable Reset, or BIST Carrier
+     * |[5:4]   |RETRYCNT  |Retry Counter
+     * |        |          |00 = No message retry is required.
+     * |        |          |01 = Automatically retry message transmission once.
+     * |        |          |10 = Automatically retry message transmission twice.
+     * |        |          |11 = Automatically retry message transmission three times.
+     * @var UTCPD_T::TXBCNT
+     * Offset: 0x94  UTCPD TX Byte Count Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |TXBCNT    |Transmit Byte Count
+     * |        |          |This is the number of bytes in the UTCPD_TXDA plus two (for the TXHEAD)
+     * |        |          |If a previous transmit request has not yet completed when TX_CTL is written requesting a Hard Reset, the UTCPD shall assert the Transmission Discarded bit(TXDCUTIS (UTCPD_IS[5])).
+     * |        |          |The UTCPD shall assert both TXOKIS (UTCPD_IS[6]) and TXFALIS (UTCPD_IS[4]) after it completes the sending of a Hard Reset
+     * @var UTCPD_T::TXHEAD
+     * Offset: 0x98  UTCPD TX Header Data Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |TXHEAD0   |Transmit Header Byte 0
+     * |[15:8]  |TXHEAD1   |Transmit Header Byte 1
+     * @var UTCPD_T::TXDA0
+     * Offset: 0xA0  UTCPD Transmit Data0 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |TXDAB0    |USB PD Transmit Datax byte 0
+     * |[15:8]  |TXDAB1    |USB PD Transmit Datax byte 1
+     * |[23:16] |TXDAB2    |USB PD Transmit Datax byte 2
+     * |[31:24] |TXDAB3    |USB PD Transmit Datax byte 3
+     * @var UTCPD_T::TXDA1
+     * Offset: 0xA4  UTCPD Transmit Data1 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |TXDAB0    |USB PD Transmit Datax byte 0
+     * |[15:8]  |TXDAB1    |USB PD Transmit Datax byte 1
+     * |[23:16] |TXDAB2    |USB PD Transmit Datax byte 2
+     * |[31:24] |TXDAB3    |USB PD Transmit Datax byte 3
+     * @var UTCPD_T::TXDA2
+     * Offset: 0xA8  UTCPD Transmit Data2 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |TXDAB0    |USB PD Transmit Datax byte 0
+     * |[15:8]  |TXDAB1    |USB PD Transmit Datax byte 1
+     * |[23:16] |TXDAB2    |USB PD Transmit Datax byte 2
+     * |[31:24] |TXDAB3    |USB PD Transmit Datax byte 3
+     * @var UTCPD_T::TXDA3
+     * Offset: 0xAC  UTCPD Transmit Data3 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |TXDAB0    |USB PD Transmit Datax byte 0
+     * |[15:8]  |TXDAB1    |USB PD Transmit Datax byte 1
+     * |[23:16] |TXDAB2    |USB PD Transmit Datax byte 2
+     * |[31:24] |TXDAB3    |USB PD Transmit Datax byte 3
+     * @var UTCPD_T::TXDA4
+     * Offset: 0xB0  UTCPD Transmit Data4 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |TXDAB0    |USB PD Transmit Datax byte 0
+     * |[15:8]  |TXDAB1    |USB PD Transmit Datax byte 1
+     * |[23:16] |TXDAB2    |USB PD Transmit Datax byte 2
+     * |[31:24] |TXDAB3    |USB PD Transmit Datax byte 3
+     * @var UTCPD_T::TXDA5
+     * Offset: 0xB4  UTCPD Transmit Data5 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |TXDAB0    |USB PD Transmit Datax byte 0
+     * |[15:8]  |TXDAB1    |USB PD Transmit Datax byte 1
+     * |[23:16] |TXDAB2    |USB PD Transmit Datax byte 2
+     * |[31:24] |TXDAB3    |USB PD Transmit Datax byte 3
+     * @var UTCPD_T::TXDA6
+     * Offset: 0xB8  UTCPD Transmit Data6 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |TXDAB0    |USB PD Transmit Datax byte 0
+     * |[15:8]  |TXDAB1    |USB PD Transmit Datax byte 1
+     * |[23:16] |TXDAB2    |USB PD Transmit Datax byte 2
+     * |[31:24] |TXDAB3    |USB PD Transmit Datax byte 3
+     * @var UTCPD_T::VBVOL
+     * Offset: 0xC0  UTCPD VBUS Voltage Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[9:0]   |VBVOL     |VBUS voltage measurement
+     * |        |          |10-bit measurement of (VBUS / Scale Factor)
+     * |        |          |CPU multiplies this value by the scale factor to obtain the voltage measurement
+     * |        |          |Voltages greater than or equal to 4V shall meet +/-2% absolute value or +/- 50mV, whichever is greater
+     * |        |          |The LSB is 25mV
+     * |[11:10] |VBSCALE   |VBUS Scale Factor
+     * |        |          |00 = VBUS measurement not scaled.
+     * |        |          |01 = VBUS measurement divided by 2.
+     * |        |          |10 = VBUS measurement divided by 4.
+     * |        |          |11 = reserved.
+     * @var UTCPD_T::SKVBDCTH
+     * Offset: 0xC4  UTCPD VBUS Sink disconnect threshold Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[9:0]   |SKVBDCTH  |Sink VBUS disconnect threshold
+     * |        |          |10-bit for voltage threshold with 25mV LSB. (Default 3.5V)
+     * |        |          |A value of zero disables this threshold.
+     * @var UTCPD_T::SPDGTH
+     * Offset: 0xC8  UTCPD VBUS Stop Discharge threshold Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[9:0]   |SPDGTH    |VBUS Stop Force Discharge Threshold
+     * |        |          |This value is used as a threshold hold for force discharge fail.
+     * |        |          |The default is 0.8V.
+     * |        |          |The CPU writes to this register to set the threshold at which a Source shall stop the Forced Discharge circuit when FDGEN (UTCPD_PWRCTL[2]) is 1.
+     * @var UTCPD_T::VBAMH
+     * Offset: 0xCC  UTCPD VBUS voltage high alarm threshold Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[9:0]   |VBAMH     |VBUS voltage high Alarm threshold register
+     * @var UTCPD_T::VBAML
+     * Offset: 0xD0  UTCPD VBUS voltage low alarm threshold Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[9:0]   |VBAML     |VBUS voltage low Alarm threshold register
+     * @var UTCPD_T::VNDIS
+     * Offset: 0xD4  UTCPD Vendor defined Interrupt Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |RXFRSIS   |Fast Role Swap RX Interrupt Status
+     * |        |          |0 = Cleared.
+     * |        |          |1 = The event has been detected.
+     * |[1]     |TXFRSIS   |Fast Role Swap TX Interrupt Status
+     * |        |          |0 = Cleared.
+     * |        |          |1 = The event has been detected.
+     * |[3]     |CRCERRIS  |CRC Error Interrupt Status
+     * |        |          |0 = Cleared.
+     * |        |          |1 = The event has been detected.
+     * |[5]     |VCDGIS    |VCONN Discharge Interrupt Status
+     * @var UTCPD_T::VNDIE
+     * Offset: 0xD8  UTCPD Vendor defined Interrupt Enable Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |RXFRSIE   |Fast Role Swap RX Interrupt Enable
+     * |        |          |0 = Disable.
+     * |        |          |1 = Enable.
+     * |[1]     |TXFRSIE   |Fast Role Swap TX Interrupt Enable
+     * |        |          |0 = Disable.
+     * |        |          |1 = Enable.
+     * |[3]     |CRCERRIE  |CRC Error Interrupt Enable
+     * |        |          |0 = Disable.
+     * |        |          |1 = Enable.
+     * |[5]     |VCDGIE    |VCONN Discharge Interrupt Enable
+     * |        |          |0 = Disable.
+     * |        |          |1 = Enable.
+     * @var UTCPD_T::MUXSEL
+     * Offset: 0xDC  UTCPD Mux Select Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[3:0]   |VBOCS     |VBUS Overcurrent Source Select
+     * |        |          |0000 = EINT0.
+     * |        |          |0001 = EINT1.
+     * |        |          |0010 = EINT2.
+     * |        |          |0011 = EINT3.
+     * |        |          |0100 = ADCMPF0.
+     * |        |          |0101 = ACMP0.
+     * |        |          |0110 = ACMP1.
+     * |        |          |0111 = ACMP2.
+     * |        |          |1000 = ACMP3.
+     * |        |          |Others = Reserved.
+     * |[7:4]   |VCOCS     |VCONN Overcurrent Source Select
+     * |        |          |0000 = EINT0.
+     * |        |          |0001 = EINT1.
+     * |        |          |0010 = EINT2.
+     * |        |          |0011 = EINT3.
+     * |        |          |0100 = ADCMPF1.
+     * |        |          |0101 = ACMP0.
+     * |        |          |0110 = ACMP1.
+     * |        |          |0111 = ACMP2.
+     * |        |          |1000 = ACMP3.
+     * |        |          |Others = Reserved.
+     * |[10:8]  |FVBS      |Force off VBUS Select
+     * |        |          |000 = ENIT0.
+     * |        |          |001 = EINT1.
+     * |        |          |010 = EINT2.
+     * |        |          |011 = ENIT3.
+     * |        |          |100 = EINT4.
+     * |        |          |101 = EINT5.
+     * |        |          |Others = Reserved.
+     * |[16:12] |ADCSELVB  |ADC Channel Select for VBUS
+     * |        |          |ADC result will be latched into VBVOL register once ADCCSELVB matches ADC_CHSEL and ADC finishes.
+     * |[21:17] |ADCSELVC  |ADC Channel Select for VCONN
+     * |        |          |ADC result will be latched into VCVOL register once ADCCSELVC matches ADC_CHSEL and ADC finishes.
+     * |[24]    |CC1VCENS  |CC1 VCONN Enable Select
+     * |        |          |0 = Merged CC1 and CC2 VCONN enable signal.
+     * |        |          |1 = CC1 VCONN enable signal.
+     * |[25]    |CC1FRSS   |CC1 VCONN Fast Role Swap Select
+     * |        |          |0 = Merged CC1 and CC2 VCONN Fast Role Swap signal.
+     * |        |          |1 = CC1 VCONN Fast Role Swap signal.
+     * |[28]    |CC2VCENS  |CC2 VCONN Enable Select
+     * |        |          |0 = Merged CC1 and CC2 VCONN enable signal.
+     * |        |          |1 = CC2 VCONN enable signal.
+     * |[29]    |CC2FRSS   |CC2 VCONN Fast Role Swap Select
+     * |        |          |0 = Merged CC1 and CC2 Fast Role Swap signal.
+     * |        |          |1 = CC2 VCONN discharge signal.
+     * @var UTCPD_T::VCDGCTL
+     * Offset: 0xE0  UTCPD VCONN Discharge Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |VCDGDTEN  |VCONN Discharge Detect Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |[1]     |VCDGEN    |VCONN Discharge Enable
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * @var UTCPD_T::PHYSLEW
+     * Offset: 0xE4  UTCPD PHY Slew Rate Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[2:0]   |TXRTRIM   |TX Trim Rising slew rate
+     * |        |          |It is for BMC eye diagram.
+     * |        |          |Trim PHY TX Rising slew rate (from ROMMAP)
+     * |[5:3]   |TXFTRIM   |TX Trim Falling slew rate
+     * |        |          |It is for BMC eye diagram.
+     * |        |          |Trim PHY TX falling slew rate. (from ROMMAP)
+     * @var UTCPD_T::ADGTM
+     * Offset: 0xE8  UTCPD Auto Discharge Time Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |ADGTM     |Auto Discharge time
+     * |        |          |Default Time = 31.25us x 16 x 100 (0x16) = 49.9ms.
+     * @var UTCPD_T::VSAFE0V
+     * Offset: 0xEC  UTCPD Auto Discharge VSAFE0V Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[9:0]   |VSAFE0V   |Set the vSafe0V voltage level.
+     * @var UTCPD_T::VSAFE5V
+     * Offset: 0xF0  UTCPD VSAFE5V Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[9:0]   |VSAFE5V   |Set the vSafe5V voltage level
+     * |        |          |For fast role swap voltage comparison.
+     * @var UTCPD_T::RATIO
+     * Offset: 0xF4  UTCPD DRP Toggle Ratio Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[2:0]   |DRPRATIO  |The percent of time that a DRP shall advertise source & sink during tDRP
+     * |        |          |000 = 50:50 (Sink : Source).
+     * |        |          |010 = 30:70 (Sink : Source).
+     * |        |          |001 = 40:60 (Sink : Source).
+     * |        |          |101 = 60:40 (Sink : Source).
+     * |        |          |110 =70:30 (Sink: Source).
+     * |        |          |111 = Reserved.
+     * |[3]     |VBSEL     |VBUS_VOLTAGE_SEL
+     * |        |          |Select comparing value (vbus_voltage_s) during vbus discharge determines to stop discharging or not.
+     * |        |          |1: vbus voltage value from adc
+     * |        |          |0: vbus voltage value from adc only when VBMONI (UTCPD_PWRCT[6]) is 1.
+     * |[6]     |ADCAVG    |ADC moving average enable
+     * |        |          |If enable this bit, average the ADC value for 4 times
+     * @var UTCPD_T::INTFRAME
+     * Offset: 0xF8  UTCPD Inter-Frame Time Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |INTFRAME  |USB PD Inter frame gap
+     * |        |          |Each unit time: 83ns (12 MHz RC)
+     * |        |          |Time = 83ns x 16 x Inter frame gap time.
+     * |        |          |Example = 83ns x 16 x 25(8'b00011001) = 33.2us.
+     * @var UTCPD_T::VBOVTH
+     * Offset: 0xFC  UTCPD VBUS Over Voltage Threshold Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[9:0]   |VBOVTH    |VBUS Over Voltage Threshold
+     * |        |          |This value defines the VBUS over voltage threshold
+     * |        |          |10-bit for voltage threshold with 25mV LSB.
+     * @var UTCPD_T::VNDINIT
+     * Offset: 0x100  UTCPD Vendor Initial Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[6:4]   |DVCAPDEF  |Device Capability Default Setting
+     * |        |          |Write the Register will update the value to Device_Cap.RoleSupport, ROLE_CONTROL and MESSAGE_HEADER_INFO register, please refer the following table
+     * |        |          |(DevCap_DEF Table)
+     * @var UTCPD_T::BMCTXBP
+     * Offset: 0x104  UTCPD BMC TX Bit Period Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |BMCTXBP   |BMC Tx bit period
+     * |        |          |It's for BMC eye diagram.
+     * |        |          |Example 12 MHz = 83.33ns.
+     * |        |          |83.33ns x (39 + 1) = 3.33us.
+     * @var UTCPD_T::BMCTXDU
+     * Offset: 0x108  UTCPD BMC TX Duty Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[6:0]   |DUOFFS2   |BMC Tx duty offset parameter 2
+     * |        |          |It's for BMC eye diagram.
+     * |        |          |Offset count value.
+     * |        |          |Example 12 MHz = 83.33ns.
+     * |[7]     |DUOFFS1   |BMC Tx duty offset parameter 1
+     * |        |          |It's for BMC eye diagram.
+     * |        |          |0: Increase duty offset? (+)
+     * |        |          |1: Decrease duty offset? (-)
+     * @var UTCPD_T::VCPSVOL
+     * Offset: 0x10C  VCONN Present Voltage Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[9:0]   |VCPSVOL   |VCONN Present voltage
+     * |        |          |Detect Voltage = 60h * 0.025V = 2.42V.
+     * @var UTCPD_T::VCUV
+     * Offset: 0x110  VCONN Under Voltage Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[9:0]   |VCUV      |VCONN under voltage comparator
+     * |        |          |Detect Voltage = 20h * 0.025V = 0.8V.
+     * @var UTCPD_T::BMCSLICE
+     * Offset: 0x118  UTCPD BMC SLICE Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[1:0]   |SLICEL    |TX Slice Low Level Control
+     * |        |          |Low level slice control (The LSB is 2mV.)
+     * |        |          |00: 0.18V
+     * |        |          |01: 0.2V
+     * |        |          |10: 0.22V
+     * |        |          |11: 0.24V (Default)
+     * |[3:2]   |SLICEH    |TX Slice High Level Control
+     * |        |          |High level slice control (The LSB is 2mV.)
+     * |        |          |00: 0.84V (Default)
+     * |        |          |01: 0.86V
+     * |        |          |10: 0.88V
+     * |        |          |11: 0.9V
+     * |[6:4]   |SLICEM    |TX Slice Middle Level Control
+     * |        |          |Middle level slice control (The LSB is 2mV.)
+     * |        |          |000: 0.48V
+     * |        |          |100: 0.56V (Default)
+     * |        |          |111: 0.62V
+     * |[10:8]  |TRIMRD    |TRIMRD
+     * |[15:12] |TRIMRP    |TRIMRP
+     * |[18:16] |TRIMV1P1  |TRIMV1P1
+     * |[22:20] |TRIMVBUS  |TRIMVBUS
+     * |[27:24] |VTRIM     |VTRIM
+     * @var UTCPD_T::PHYCTL
+     * Offset: 0x11C  UTCPD PHY Power Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |PHYPWR    |Analog PHY Power
+     * |        |          |0: Power down PHY
+     * |        |          |1: Enable PHY
+     * |        |          |Analog PHY power default is off before UTCPD clock available
+     * |        |          |Once UTCPD clock is on, the analog PHY power will be on as well.
+     * |        |          |Turning off PHY power whenu2026u2026
+     * |        |          |1.
+     * |        |          |2.
+     * |[1]     |DBCTL     |Dead Battery control
+     * |        |          |0: Dead Battery circuit control internal Rd/Rp.
+     * |        |          |1: Role Control Register control internal Rd/Rp.
+     * @var UTCPD_T::FRSRXCTL
+     * Offset: 0x120  UTCPD CC Fast Swap RX Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |FRSTX     |CC transmitter fast swap signal
+     * |        |          |Pulse width: 85us
+     * |[2]     |FRSDVVB   |CC receive fast swap and auto drive Source VBUS
+     * |        |          |0: Disable
+     * |        |          |1: Enable
+     * |[3]     |FRSRXEN   |CC receive fast swap Rx Enable
+     * |        |          |0: Disable
+     * |        |          |1: Enable
+     * @var UTCPD_T::VCVOL
+     * Offset: 0x124  UTCPD VCONN Voltage Measurement Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[9:0]   |VCVOL     |VCONN Voltage Measurement
+     * |        |          |The LSB is 25mV
+     * @var UTCPD_T::CLKINFO
+     * Offset: 0x300  UTCPD Clock Information Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |ReadyFlag |RC32K domain ready flag Check if the register value is loaded to RC32K domain by reading this flag
+     * |        |          |0 : The RC32K signal is not ready
+     * |        |          |1 : The RC32K signal is ready
+     * |[4]     |WKEN      |Wakeup enable
+     * |        |          |0 : UTCPD wakeup function Disabled.
+     * |        |          |1 : UTCPD wakeup function Enabled.
+     */
     __IO uint32_t VID;                   /*!< [0x0000] UTCPD Vendor ID Register                                         */
     __IO uint32_t PID;                   /*!< [0x0004] UTCPD Product ID Register                                        */
     __IO uint32_t DID;                   /*!< [0x0008] UTCPD Device ID Register                                         */
@@ -1567,37 +1195,8 @@ typedef struct
     __IO uint32_t PHYCTL;                /*!< [0x011c] UTCPD PHY Power Control Register                                 */
     __IO uint32_t FRSRXCTL;              /*!< [0x0120] UTCPD CC Fast Swap RX Control Register                           */
     __I  uint32_t VCVOL;                 /*!< [0x0124] UTCPD VCONN Voltage Measurement Register                         */
-    __I  uint32_t RESERVE5[54];
-    __IO uint32_t SLICTL;                /*!< [0x0200] UTCPD Slice Control Register                                     */
-    __IO uint32_t CCDBTM;                /*!< [0x0204] UTCPD CC pin Debounce Time Register                              */
-    __IO uint32_t FILTM;                 /*!< [0x0208] UTCPD CC pin Filter Time Register                                */
-    __IO uint32_t RSTEVNT;               /*!< [0x020c] UTCPD Reset Event Register                                       */
-    __IO uint32_t NOGCRC;                /*!< [0x0210] UTCPD No Good CRC Reply Register                                 */
-    __I  uint32_t DSSTS;                 /*!< [0x0214] UTCPD Monitor Disconnect Status Register                         */
-    __IO uint32_t PHYIDLE;               /*!< [0x0218] UTCPD PHY Idle Time Register                                     */
-    __I  uint32_t CCSTATE;               /*!< [0x021c] UTCPD CC state Register                                          */
-    __I  uint32_t CCSTSINT;              /*!< [0x0220] UTCPD CC status Internal Register                                */
-    __IO uint32_t BM14;                  /*!< [0x0224] UTCPD BMC CDR 1/4 Time  Register                                 */
-    __IO uint32_t BM34;                  /*!< [0x0228] UTCPD BMC CDR 3/4 Time  Register                                 */
-    __IO uint32_t MSDUTTM;               /*!< [0x022c] UTCPD Message Discard Time  Register                             */
-    __IO uint32_t CCUPDN;                /*!< [0x0230] UTCPD CC pin Pull up or Down Register                            */
-    __I  uint32_t BMSTATE;               /*!< [0x0234] UTCPD BMC TX and RX State Register                               */
-    __I  uint32_t PHYCMP;                /*!< [0x0238] UTCPD PHY Comparator State Register                              */
-    __IO uint32_t SKDC;                  /*!< [0x023c] UTCPD Sink Disconnect Register                                   */
-    __IO uint32_t ADGSTATE;              /*!< [0x0240] UTCPD Auto Discharge State Register                              */
-    __I  uint32_t VBRDTO;                /*!< [0x0244] UTCPD VBUS Read Timeout Register                                 */
-    __I  uint32_t ITEST;                 /*!< [0x0248] UTCPD Internal Test Register                                     */
-    __I  uint32_t TM;                    /*!< [0x024c] UTCPD Test Mode Register                                         */
-    __I  uint32_t TXRXSTS;               /*!< [0x0250] UTCPD TX and RX State Register                                   */
-    __I  uint32_t RESERVE6[3];
-    __IO uint32_t SRST;                  /*!< [0x0260] UTCPD Soft Reset Register                                        */
-    __I  uint32_t VCOCVOL;               /*!< [0x0264] VCONN OC Voltage Register                                        */
-    __I  uint32_t RESERVE7[38];
+    __I  uint32_t RESERVE5[118];
     __IO uint32_t CLKINFO;               /*!< [0x0300] UTCPD Clock Information Register                                 */
-    __IO uint32_t TEST1;                 /*!< [0x0304] UTCPD Test1 Register                                             */
-    __IO uint32_t TEST2;                 /*!< [0x0308] UTCPD Test2 Register                                             */
-    __IO uint32_t TEST3;                 /*!< [0x030c] UTCPD Test3 Register                                             */
-    __IO uint32_t TEST4;                 /*!< [0x0310] UTCPD Test4 Register                                             */
 
 } UTCPD_T;
 
@@ -2350,227 +1949,6 @@ typedef struct
 #define UTCPD_VCVOL_VCVOL_Pos            (0)                                               /*!< UTCPD_T::VCVOL: VCVOL Position         */
 #define UTCPD_VCVOL_VCVOL_Msk            (0x3fful << UTCPD_VCVOL_VCVOL_Pos)                /*!< UTCPD_T::VCVOL: VCVOL Mask             */
 
-#define UTCPD_SLICTL_ATEST_Pos           (0)                                               /*!< UTCPD_T::SLICTL: ATEST Position        */
-#define UTCPD_SLICTL_ATEST_Msk           (0xful << UTCPD_SLICTL_ATEST_Pos)                 /*!< UTCPD_T::SLICTL: ATEST Mask            */
-
-#define UTCPD_SLICTL_SLIAEN_Pos          (4)                                               /*!< UTCPD_T::SLICTL: SLIAEN Position       */
-#define UTCPD_SLICTL_SLIAEN_Msk          (0x1ul << UTCPD_SLICTL_SLIAEN_Pos)                /*!< UTCPD_T::SLICTL: SLIAEN Mask           */
-
-#define UTCPD_SLICTL_SLIMIDS_Pos         (5)                                               /*!< UTCPD_T::SLICTL: SLIMIDS Position      */
-#define UTCPD_SLICTL_SLIMIDS_Msk         (0x1ul << UTCPD_SLICTL_SLIMIDS_Pos)               /*!< UTCPD_T::SLICTL: SLIMIDS Mask          */
-
-#define UTCPD_CCDBTM_CCDB_Pos            (0)                                               /*!< UTCPD_T::CCDBTM: CCDB Position         */
-#define UTCPD_CCDBTM_CCDB_Msk            (0xfful << UTCPD_CCDBTM_CCDB_Pos)                 /*!< UTCPD_T::CCDBTM: CCDB Mask             */
-
-#define UTCPD_FILTM_CCFIL_Pos            (0)                                               /*!< UTCPD_T::FILTM: CCFIL Position         */
-#define UTCPD_FILTM_CCFIL_Msk            (0xfful << UTCPD_FILTM_CCFIL_Pos)                 /*!< UTCPD_T::FILTM: CCFIL Mask             */
-
-#define UTCPD_RSTEVNT_RXBUFRST_Pos       (5)                                               /*!< UTCPD_T::RSTEVNT: RXBUFRST Position    */
-#define UTCPD_RSTEVNT_RXBUFRST_Msk       (0x1ul << UTCPD_RSTEVNT_RXBUFRST_Pos)             /*!< UTCPD_T::RSTEVNT: RXBUFRST Mask        */
-
-#define UTCPD_RSTEVNT_TXBUFRST_Pos       (6)                                               /*!< UTCPD_T::RSTEVNT: TXBUFRST Position    */
-#define UTCPD_RSTEVNT_TXBUFRST_Msk       (0x1ul << UTCPD_RSTEVNT_TXBUFRST_Pos)             /*!< UTCPD_T::RSTEVNT: TXBUFRST Mask        */
-
-#define UTCPD_NOGCRC_DSS_Pos             (0)                                               /*!< UTCPD_T::NOGCRC: DSS Position          */
-#define UTCPD_NOGCRC_DSS_Msk             (0x1ul << UTCPD_NOGCRC_DSS_Pos)                   /*!< UTCPD_T::NOGCRC: DSS Mask              */
-
-#define UTCPD_NOGCRC_DSSP_Pos            (1)                                               /*!< UTCPD_T::NOGCRC: DSSP Position         */
-#define UTCPD_NOGCRC_DSSP_Msk            (0x1ul << UTCPD_NOGCRC_DSSP_Pos)                  /*!< UTCPD_T::NOGCRC: DSSP Mask             */
-
-#define UTCPD_NOGCRC_DSSPP_Pos           (2)                                               /*!< UTCPD_T::NOGCRC: DSSPP Position        */
-#define UTCPD_NOGCRC_DSSPP_Msk           (0x1ul << UTCPD_NOGCRC_DSSPP_Pos)                 /*!< UTCPD_T::NOGCRC: DSSPP Mask            */
-
-#define UTCPD_NOGCRC_DSDBGSP_Pos         (3)                                               /*!< UTCPD_T::NOGCRC: DSDBGSP Position      */
-#define UTCPD_NOGCRC_DSDBGSP_Msk         (0x1ul << UTCPD_NOGCRC_DSDBGSP_Pos)               /*!< UTCPD_T::NOGCRC: DSDBGSP Mask          */
-
-#define UTCPD_NOGCRC_DSDBGSPP_Pos        (4)                                               /*!< UTCPD_T::NOGCRC: DSDBGSPP Position     */
-#define UTCPD_NOGCRC_DSDBGSPP_Msk        (0x1ul << UTCPD_NOGCRC_DSDBGSPP_Pos)              /*!< UTCPD_T::NOGCRC: DSDBGSPP Mask         */
-
-#define UTCPD_DSSTS_SRDC_Pos             (0)                                               /*!< UTCPD_T::DSSTS: SRDC Position          */
-#define UTCPD_DSSTS_SRDC_Msk             (0x1ul << UTCPD_DSSTS_SRDC_Pos)                   /*!< UTCPD_T::DSSTS: SRDC Mask              */
-
-#define UTCPD_DSSTS_SKDC_Pos             (1)                                               /*!< UTCPD_T::DSSTS: SKDC Position          */
-#define UTCPD_DSSTS_SKDC_Msk             (0x1ul << UTCPD_DSSTS_SKDC_Pos)                   /*!< UTCPD_T::DSSTS: SKDC Mask              */
-
-#define UTCPD_DSSTS_NODRP_Pos            (3)                                               /*!< UTCPD_T::DSSTS: NODRP Position         */
-#define UTCPD_DSSTS_NODRP_Msk            (0x1ul << UTCPD_DSSTS_NODRP_Pos)                  /*!< UTCPD_T::DSSTS: NODRP Mask             */
-
-#define UTCPD_DSSTS_BISTALL_Pos          (5)                                               /*!< UTCPD_T::DSSTS: BISTALL Position       */
-#define UTCPD_DSSTS_BISTALL_Msk          (0x1ul << UTCPD_DSSTS_BISTALL_Pos)                /*!< UTCPD_T::DSSTS: BISTALL Mask           */
-
-#define UTCPD_DSSTS_BISTDA_Pos           (6)                                               /*!< UTCPD_T::DSSTS: BISTDA Position        */
-#define UTCPD_DSSTS_BISTDA_Msk           (0x1ul << UTCPD_DSSTS_BISTDA_Pos)                 /*!< UTCPD_T::DSSTS: BISTDA Mask            */
-
-#define UTCPD_DSSTS_BIST2_Pos            (7)                                               /*!< UTCPD_T::DSSTS: BIST2 Position         */
-#define UTCPD_DSSTS_BIST2_Msk            (0x1ul << UTCPD_DSSTS_BIST2_Pos)                  /*!< UTCPD_T::DSSTS: BIST2 Mask             */
-
-#define UTCPD_PHYIDLE_PHYIDLE_Pos        (0)                                               /*!< UTCPD_T::PHYIDLE: PHYIDLE Position     */
-#define UTCPD_PHYIDLE_PHYIDLE_Msk        (0xfful << UTCPD_PHYIDLE_PHYIDLE_Pos)             /*!< UTCPD_T::PHYIDLE: PHYIDLE Mask         */
-
-#define UTCPD_CCSTATE_CCFSM_Pos          (0)                                               /*!< UTCPD_T::CCSTATE: CCFSM Position       */
-#define UTCPD_CCSTATE_CCFSM_Msk          (0x1ful << UTCPD_CCSTATE_CCFSM_Pos)               /*!< UTCPD_T::CCSTATE: CCFSM Mask           */
-
-#define UTCPD_CCSTATE_CCSTATE_Pos        (5)                                               /*!< UTCPD_T::CCSTATE: CCSTATE Position     */
-#define UTCPD_CCSTATE_CCSTATE_Msk        (0x7ul << UTCPD_CCSTATE_CCSTATE_Pos)              /*!< UTCPD_T::CCSTATE: CCSTATE Mask         */
-
-#define UTCPD_CCSTSINT_CC1SRSTS_Pos      (0)                                               /*!< UTCPD_T::CCSTSINT: CC1SRSTS Position   */
-#define UTCPD_CCSTSINT_CC1SRSTS_Msk      (0x3ul << UTCPD_CCSTSINT_CC1SRSTS_Pos)            /*!< UTCPD_T::CCSTSINT: CC1SRSTS Mask       */
-
-#define UTCPD_CCSTSINT_CC1SKSTS_Pos      (2)                                               /*!< UTCPD_T::CCSTSINT: CC1SKSTS Position   */
-#define UTCPD_CCSTSINT_CC1SKSTS_Msk      (0x3ul << UTCPD_CCSTSINT_CC1SKSTS_Pos)            /*!< UTCPD_T::CCSTSINT: CC1SKSTS Mask       */
-
-#define UTCPD_CCSTSINT_CC2SRSTS_Pos      (4)                                               /*!< UTCPD_T::CCSTSINT: CC2SRSTS Position   */
-#define UTCPD_CCSTSINT_CC2SRSTS_Msk      (0x3ul << UTCPD_CCSTSINT_CC2SRSTS_Pos)            /*!< UTCPD_T::CCSTSINT: CC2SRSTS Mask       */
-
-#define UTCPD_CCSTSINT_CC2SKSTS_Pos      (6)                                               /*!< UTCPD_T::CCSTSINT: CC2SKSTS Position   */
-#define UTCPD_CCSTSINT_CC2SKSTS_Msk      (0x3ul << UTCPD_CCSTSINT_CC2SKSTS_Pos)            /*!< UTCPD_T::CCSTSINT: CC2SKSTS Mask       */
-
-#define UTCPD_BM14_BMC14S_Pos            (0)                                               /*!< UTCPD_T::BM14: BMC14S Position         */
-#define UTCPD_BM14_BMC14S_Msk            (0xful << UTCPD_BM14_BMC14S_Pos)                  /*!< UTCPD_T::BM14: BMC14S Mask             */
-
-#define UTCPD_BM14_BMC14LG_Pos           (4)                                               /*!< UTCPD_T::BM14: BMC14LG Position        */
-#define UTCPD_BM14_BMC14LG_Msk           (0xful << UTCPD_BM14_BMC14LG_Pos)                 /*!< UTCPD_T::BM14: BMC14LG Mask            */
-
-#define UTCPD_BM34_BMC34S_Pos            (0)                                               /*!< UTCPD_T::BM34: BMC34S Position         */
-#define UTCPD_BM34_BMC34S_Msk            (0xful << UTCPD_BM34_BMC34S_Pos)                  /*!< UTCPD_T::BM34: BMC34S Mask             */
-
-#define UTCPD_BM34_BMC34LG_Pos           (4)                                               /*!< UTCPD_T::BM34: BMC34LG Position        */
-#define UTCPD_BM34_BMC34LG_Msk           (0xful << UTCPD_BM34_BMC34LG_Pos)                 /*!< UTCPD_T::BM34: BMC34LG Mask            */
-
-#define UTCPD_MSDUTTM_MESSDCUT_Pos       (0)                                               /*!< UTCPD_T::MSDUTTM: MESSDCUT Position    */
-#define UTCPD_MSDUTTM_MESSDCUT_Msk       (0xfful << UTCPD_MSDUTTM_MESSDCUT_Pos)            /*!< UTCPD_T::MSDUTTM: MESSDCUT Mask        */
-
-#define UTCPD_CCUPDN_CC1UP_Pos           (0)                                               /*!< UTCPD_T::CCUPDN: CC1UP Position        */
-#define UTCPD_CCUPDN_CC1UP_Msk           (0x1ul << UTCPD_CCUPDN_CC1UP_Pos)                 /*!< UTCPD_T::CCUPDN: CC1UP Mask            */
-
-#define UTCPD_CCUPDN_CC2UP_Pos           (1)                                               /*!< UTCPD_T::CCUPDN: CC2UP Position        */
-#define UTCPD_CCUPDN_CC2UP_Msk           (0x1ul << UTCPD_CCUPDN_CC2UP_Pos)                 /*!< UTCPD_T::CCUPDN: CC2UP Mask            */
-
-#define UTCPD_CCUPDN_CC1DOWN_Pos         (2)                                               /*!< UTCPD_T::CCUPDN: CC1DOWN Position      */
-#define UTCPD_CCUPDN_CC1DOWN_Msk         (0x1ul << UTCPD_CCUPDN_CC1DOWN_Pos)               /*!< UTCPD_T::CCUPDN: CC1DOWN Mask          */
-
-#define UTCPD_CCUPDN_CC2DOWN_Pos         (3)                                               /*!< UTCPD_T::CCUPDN: CC2DOWN Position      */
-#define UTCPD_CCUPDN_CC2DOWN_Msk         (0x1ul << UTCPD_CCUPDN_CC2DOWN_Pos)               /*!< UTCPD_T::CCUPDN: CC2DOWN Mask          */
-
-#define UTCPD_BMSTATE_TXSTATE_Pos        (0)                                               /*!< UTCPD_T::BMSTATE: TXSTATE Position     */
-#define UTCPD_BMSTATE_TXSTATE_Msk        (0xful << UTCPD_BMSTATE_TXSTATE_Pos)              /*!< UTCPD_T::BMSTATE: TXSTATE Mask         */
-
-#define UTCPD_BMSTATE_RXSTATE_Pos        (4)                                               /*!< UTCPD_T::BMSTATE: RXSTATE Position     */
-#define UTCPD_BMSTATE_RXSTATE_Msk        (0xful << UTCPD_BMSTATE_RXSTATE_Pos)              /*!< UTCPD_T::BMSTATE: RXSTATE Mask         */
-
-#define UTCPD_PHYCMP_CC1detra_Pos        (0)                                               /*!< UTCPD_T::PHYCMP: CC1detra Position     */
-#define UTCPD_PHYCMP_CC1detra_Msk        (0x1ul << UTCPD_PHYCMP_CC1detra_Pos)              /*!< UTCPD_T::PHYCMP: CC1detra Mask         */
-
-#define UTCPD_PHYCMP_CC1detrd_Pos        (1)                                               /*!< UTCPD_T::PHYCMP: CC1detrd Position     */
-#define UTCPD_PHYCMP_CC1detrd_Msk        (0x1ul << UTCPD_PHYCMP_CC1detrd_Pos)              /*!< UTCPD_T::PHYCMP: CC1detrd Mask         */
-
-#define UTCPD_PHYCMP_CC1detdf_Pos        (2)                                               /*!< UTCPD_T::PHYCMP: CC1detdf Position     */
-#define UTCPD_PHYCMP_CC1detdf_Msk        (0x1ul << UTCPD_PHYCMP_CC1detdf_Pos)              /*!< UTCPD_T::PHYCMP: CC1detdf Mask         */
-
-#define UTCPD_PHYCMP_CC1det15_Pos        (3)                                               /*!< UTCPD_T::PHYCMP: CC1det15 Position     */
-#define UTCPD_PHYCMP_CC1det15_Msk        (0x1ul << UTCPD_PHYCMP_CC1det15_Pos)              /*!< UTCPD_T::PHYCMP: CC1det15 Mask         */
-
-#define UTCPD_PHYCMP_CC1det3a_Pos        (4)                                               /*!< UTCPD_T::PHYCMP: CC1det3a Position     */
-#define UTCPD_PHYCMP_CC1det3a_Msk        (0x1ul << UTCPD_PHYCMP_CC1det3a_Pos)              /*!< UTCPD_T::PHYCMP: CC1det3a Mask         */
-
-#define UTCPD_PHYCMP_CC1state_Pos        (5)                                               /*!< UTCPD_T::PHYCMP: CC1state Position     */
-#define UTCPD_PHYCMP_CC1state_Msk        (0x7ul << UTCPD_PHYCMP_CC1state_Pos)              /*!< UTCPD_T::PHYCMP: CC1state Mask         */
-
-#define UTCPD_PHYCMP_CC2detra_Pos        (8)                                               /*!< UTCPD_T::PHYCMP: CC2detra Position     */
-#define UTCPD_PHYCMP_CC2detra_Msk        (0x1ul << UTCPD_PHYCMP_CC2detra_Pos)              /*!< UTCPD_T::PHYCMP: CC2detra Mask         */
-
-#define UTCPD_PHYCMP_CC2detrd_Pos        (9)                                               /*!< UTCPD_T::PHYCMP: CC2detrd Position     */
-#define UTCPD_PHYCMP_CC2detrd_Msk        (0x1ul << UTCPD_PHYCMP_CC2detrd_Pos)              /*!< UTCPD_T::PHYCMP: CC2detrd Mask         */
-
-#define UTCPD_PHYCMP_CC2detdf_Pos        (10)                                              /*!< UTCPD_T::PHYCMP: CC2detdf Position     */
-#define UTCPD_PHYCMP_CC2detdf_Msk        (0x1ul << UTCPD_PHYCMP_CC2detdf_Pos)              /*!< UTCPD_T::PHYCMP: CC2detdf Mask         */
-
-#define UTCPD_PHYCMP_CC2det1p5_Pos       (11)                                              /*!< UTCPD_T::PHYCMP: CC2det1p5 Position    */
-#define UTCPD_PHYCMP_CC2det1p5_Msk       (0x1ul << UTCPD_PHYCMP_CC2det1p5_Pos)             /*!< UTCPD_T::PHYCMP: CC2det1p5 Mask        */
-
-#define UTCPD_PHYCMP_CC2det3a_Pos        (12)                                              /*!< UTCPD_T::PHYCMP: CC2det3a Position     */
-#define UTCPD_PHYCMP_CC2det3a_Msk        (0x1ul << UTCPD_PHYCMP_CC2det3a_Pos)              /*!< UTCPD_T::PHYCMP: CC2det3a Mask         */
-
-#define UTCPD_PHYCMP_CC2state_Pos        (13)                                              /*!< UTCPD_T::PHYCMP: CC2state Position     */
-#define UTCPD_PHYCMP_CC2state_Msk        (0x7ul << UTCPD_PHYCMP_CC2state_Pos)              /*!< UTCPD_T::PHYCMP: CC2state Mask         */
-
-#define UTCPD_SKDC_VDRC_Pos              (0)                                               /*!< UTCPD_T::SKDC: VDRC Position           */
-#define UTCPD_SKDC_VDRC_Msk              (0x1ul << UTCPD_SKDC_VDRC_Pos)                    /*!< UTCPD_T::SKDC: VDRC Mask               */
-
-#define UTCPD_SKDC_CCSKOPEN_Pos          (1)                                               /*!< UTCPD_T::SKDC: CCSKOPEN Position       */
-#define UTCPD_SKDC_CCSKOPEN_Msk          (0x1ul << UTCPD_SKDC_CCSKOPEN_Pos)                /*!< UTCPD_T::SKDC: CCSKOPEN Mask           */
-
-#define UTCPD_SKDC_DGSKOPEN_Pos          (2)                                               /*!< UTCPD_T::SKDC: DGSKOPEN Position       */
-#define UTCPD_SKDC_DGSKOPEN_Msk          (0x1ul << UTCPD_SKDC_DGSKOPEN_Pos)                /*!< UTCPD_T::SKDC: DGSKOPEN Mask           */
-
-#define UTCPD_SKDC_CON_Pos               (3)                                               /*!< UTCPD_T::SKDC: CON Position            */
-#define UTCPD_SKDC_CON_Msk               (0x1ul << UTCPD_SKDC_CON_Pos)                     /*!< UTCPD_T::SKDC: CON Mask                */
-
-#define UTCPD_SKDC_SRCOPEN_Pos           (4)                                               /*!< UTCPD_T::SKDC: SRCOPEN Position        */
-#define UTCPD_SKDC_SRCOPEN_Msk           (0x7ul << UTCPD_SKDC_SRCOPEN_Pos)                 /*!< UTCPD_T::SKDC: SRCOPEN Mask            */
-
-#define UTCPD_ADGSTATE_SKDGSTA_Pos       (0)                                               /*!< UTCPD_T::ADGSTATE: SKDGSTA Position    */
-#define UTCPD_ADGSTATE_SKDGSTA_Msk       (0x7ul << UTCPD_ADGSTATE_SKDGSTA_Pos)             /*!< UTCPD_T::ADGSTATE: SKDGSTA Mask        */
-
-#define UTCPD_ADGSTATE_SRDGSTA_Pos       (3)                                               /*!< UTCPD_T::ADGSTATE: SRDGSTA Position    */
-#define UTCPD_ADGSTATE_SRDGSTA_Msk       (0x7ul << UTCPD_ADGSTATE_SRDGSTA_Pos)             /*!< UTCPD_T::ADGSTATE: SRDGSTA Mask        */
-
-#define UTCPD_ADGSTATE_SKDCDET_Pos       (6)                                               /*!< UTCPD_T::ADGSTATE: SKDCDET Position    */
-#define UTCPD_ADGSTATE_SKDCDET_Msk       (0x1ul << UTCPD_ADGSTATE_SKDCDET_Pos)             /*!< UTCPD_T::ADGSTATE: SKDCDET Mask        */
-
-#define UTCPD_ADGSTATE_DSPDGDET_Pos      (7)                                               /*!< UTCPD_T::ADGSTATE: DSPDGDET Position   */
-#define UTCPD_ADGSTATE_DSPDGDET_Msk      (0x1ul << UTCPD_ADGSTATE_DSPDGDET_Pos)            /*!< UTCPD_T::ADGSTATE: DSPDGDET Mask       */
-
-#define UTCPD_VBRDTO_VBTOUT_Pos          (0)                                               /*!< UTCPD_T::VBRDTO: VBTOUT Position       */
-#define UTCPD_VBRDTO_VBTOUT_Msk          (0x1ul << UTCPD_VBRDTO_VBTOUT_Pos)                /*!< UTCPD_T::VBRDTO: VBTOUT Mask           */
-
-#define UTCPD_ITEST_ADCDONE_Pos          (3)                                               /*!< UTCPD_T::ITEST: ADCDONE Position       */
-#define UTCPD_ITEST_ADCDONE_Msk          (0x1ul << UTCPD_ITEST_ADCDONE_Pos)                /*!< UTCPD_T::ITEST: ADCDONE Mask           */
-
-#define UTCPD_ITEST_VSAFE0VL_Pos         (4)                                               /*!< UTCPD_T::ITEST: VSAFE0VL Position      */
-#define UTCPD_ITEST_VSAFE0VL_Msk         (0x1ul << UTCPD_ITEST_VSAFE0VL_Pos)               /*!< UTCPD_T::ITEST: VSAFE0VL Mask          */
-
-#define UTCPD_ITEST_ADCUPD_Pos           (5)                                               /*!< UTCPD_T::ITEST: ADCUPD Position        */
-#define UTCPD_ITEST_ADCUPD_Msk           (0x1ul << UTCPD_ITEST_ADCUPD_Pos)                 /*!< UTCPD_T::ITEST: ADCUPD Mask            */
-
-#define UTCPD_ITEST_VCDET_Pos            (6)                                               /*!< UTCPD_T::ITEST: VCDET Position         */
-#define UTCPD_ITEST_VCDET_Msk            (0x1ul << UTCPD_ITEST_VCDET_Pos)                  /*!< UTCPD_T::ITEST: VCDET Mask             */
-
-#define UTCPD_ITEST_VBDET_Pos            (7)                                               /*!< UTCPD_T::ITEST: VBDET Position         */
-#define UTCPD_ITEST_VBDET_Msk            (0x1ul << UTCPD_ITEST_VBDET_Pos)                  /*!< UTCPD_T::ITEST: VBDET Mask             */
-
-#define UTCPD_TM_BIST2_Pos               (0)                                               /*!< UTCPD_T::TM: BIST2 Position            */
-#define UTCPD_TM_BIST2_Msk               (0x1ul << UTCPD_TM_BIST2_Pos)                     /*!< UTCPD_T::TM: BIST2 Mask                */
-
-#define UTCPD_TM_8OFFVB_Pos              (1)                                               /*!< UTCPD_T::TM: 8OFFVB Position           */
-#define UTCPD_TM_8OFFVB_Msk              (0x1ul << UTCPD_TM_8OFFVB_Pos)                    /*!< UTCPD_T::TM: 8OFFVB Mask               */
-
-#define UTCPD_TM_RXBUFSTS_Pos            (4)                                               /*!< UTCPD_T::TM: RXBUFSTS Position         */
-#define UTCPD_TM_RXBUFSTS_Msk            (0x7ul << UTCPD_TM_RXBUFSTS_Pos)                  /*!< UTCPD_T::TM: RXBUFSTS Mask             */
-
-#define UTCPD_TM_TXBUFRDY_Pos            (7)                                               /*!< UTCPD_T::TM: TXBUFRDY Position         */
-#define UTCPD_TM_TXBUFRDY_Msk            (0x1ul << UTCPD_TM_TXBUFRDY_Pos)                  /*!< UTCPD_T::TM: TXBUFRDY Mask             */
-
-#define UTCPD_TXRXSTS_TCACTIVE_Pos       (0)                                               /*!< UTCPD_T::TXRXSTS: TCACTIVE Position    */
-#define UTCPD_TXRXSTS_TCACTIVE_Msk       (0x1ul << UTCPD_TXRXSTS_TCACTIVE_Pos)             /*!< UTCPD_T::TXRXSTS: TCACTIVE Mask        */
-
-#define UTCPD_TXRXSTS_TXPKG_Pos          (1)                                               /*!< UTCPD_T::TXRXSTS: TXPKG Position       */
-#define UTCPD_TXRXSTS_TXPKG_Msk          (0x7ul << UTCPD_TXRXSTS_TXPKG_Pos)                /*!< UTCPD_T::TXRXSTS: TXPKG Mask           */
-
-#define UTCPD_TXRXSTS_RXPKG_Pos          (4)                                               /*!< UTCPD_T::TXRXSTS: RXPKG Position       */
-#define UTCPD_TXRXSTS_RXPKG_Msk          (0x7ul << UTCPD_TXRXSTS_RXPKG_Pos)                /*!< UTCPD_T::TXRXSTS: RXPKG Mask           */
-
-#define UTCPD_TXRXSTS_RXINBUF_Pos        (7)                                               /*!< UTCPD_T::TXRXSTS: RXINBUF Position     */
-#define UTCPD_TXRXSTS_RXINBUF_Msk        (0x1ul << UTCPD_TXRXSTS_RXINBUF_Pos)              /*!< UTCPD_T::TXRXSTS: RXINBUF Mask         */
-
-#define UTCPD_SRST_SRST_Pos              (0)                                               /*!< UTCPD_T::SRST: SRST Position           */
-#define UTCPD_SRST_SRST_Msk              (0x1ul << UTCPD_SRST_SRST_Pos)                    /*!< UTCPD_T::SRST: SRST Mask               */
-
-#define UTCPD_VCOCVOL_VCOCL_Pos          (0)                                               /*!< UTCPD_T::VCOCVOL: VCOCL Position       */
-#define UTCPD_VCOCVOL_VCOCL_Msk          (0x3ul << UTCPD_VCOCVOL_VCOCL_Pos)                /*!< UTCPD_T::VCOCVOL: VCOCL Mask           */
-
-#define UTCPD_VCOCVOL_VCOCH_Pos          (2)                                               /*!< UTCPD_T::VCOCVOL: VCOCH Position       */
-#define UTCPD_VCOCVOL_VCOCH_Msk          (0x3ul << UTCPD_VCOCVOL_VCOCH_Pos)                /*!< UTCPD_T::VCOCVOL: VCOCH Mask           */
 
 #define UTCPD_CLKINFO_ReadyFlag_Pos      (0)                                               /*!< UTCPD_T::CLKINFO: ReadyFlag Position   */
 #define UTCPD_CLKINFO_ReadyFlag_Msk      (0x1ul << UTCPD_CLKINFO_ReadyFlag_Pos)            /*!< UTCPD_T::CLKINFO: ReadyFlag Mask       */
@@ -2578,31 +1956,14 @@ typedef struct
 #define UTCPD_CLKINFO_WKEN_Pos           (4)                                               /*!< UTCPD_T::CLKINFO: WKEN Position        */
 #define UTCPD_CLKINFO_WKEN_Msk           (0x1ul << UTCPD_CLKINFO_WKEN_Pos)                 /*!< UTCPD_T::CLKINFO: WKEN Mask            */
 
-#define UTCPD_TEST1_PDCFG_Pos            (0)                                               /*!< UTCPD_T::TEST1: PDCFG Position         */
-#define UTCPD_TEST1_PDCFG_Msk            (0xfful << UTCPD_TEST1_PDCFG_Pos)                 /*!< UTCPD_T::TEST1: PDCFG Mask             */
-
-#define UTCPD_TEST1_BMCCFG_Pos           (8)                                               /*!< UTCPD_T::TEST1: BMCCFG Position        */
-#define UTCPD_TEST1_BMCCFG_Msk           (0xfful << UTCPD_TEST1_BMCCFG_Pos)                /*!< UTCPD_T::TEST1: BMCCFG Mask            */
-
-#define UTCPD_TEST1_ANATXEN_Pos          (31)                                              /*!< UTCPD_T::TEST1: ANATXEN Position       */
-#define UTCPD_TEST1_ANATXEN_Msk          (0x1ul << UTCPD_TEST1_ANATXEN_Pos)                /*!< UTCPD_T::TEST1: ANATXEN Mask           */
-
-#define UTCPD_TEST2_DBGSET_Pos           (0)                                               /*!< UTCPD_T::TEST2: DBGSET Position        */
-#define UTCPD_TEST2_DBGSET_Msk           (0xful << UTCPD_TEST2_DBGSET_Pos)                 /*!< UTCPD_T::TEST2: DBGSET Mask            */
 
 /** @} UTCPD_CONST */
 /** @} end of UTCPD register group */
-
-
-
-/**
-    @addtogroup UTCPD_NS_CONST UTCPD_NS Bit Field Definition
-    Constant Definitions for UTCPD_NS Controller
-@{ */
+/** @} end of REGISTER group */
 
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __UTCPD_REG_H__ */

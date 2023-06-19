@@ -11,7 +11,7 @@
 #define __EADC_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -242,7 +242,7 @@ typedef struct
      * |        |          |1 = Comparator 2 trigger EPWM brake is enabled.
      * |[23]    |CMP3TRG   |ADC Comparator 3 Trigger EPWM Brake Enable Bit
      * |        |          |0 = Comparator 3 trigger EPWM brake is disabled.
-     * |        |          |1 = Comparator 3 trigger EPWM brake is enabled.     
+     * |        |          |1 = Comparator 3 trigger EPWM brake is enabled.
      * @var EADC_T::SCTL[19]
      * Offset: 0x80/0x84/0x88/0x8C/0x90/0x94/0x98/0x9C/0xA0/0xA4/0xA8/0xAC/0xB0/0xB4/0xB8/0xBC/0xC0/0xC4/0xC8  EADC Sample Module 0~18 Control Register
      * ---------------------------------------------------------------------------------------------------
@@ -410,7 +410,7 @@ typedef struct
      * |        |          |1 = Sample Module 26 interrupt Enabled.
      * |[27]    |SPLIE27   |Sample Module 27 Interrupt Enable Bit
      * |        |          |0 = Sample Module 27 interrupt Disabled.
-     * |        |          |1 = Sample Module 27 interrupt Enabled.     
+     * |        |          |1 = Sample Module 27 interrupt Enabled.
      * @var EADC_T::CMP[4]
      * Offset: 0xE0/0xE4/0xE8/0xEC  EADC Result Compare Register 0~3
      * ---------------------------------------------------------------------------------------------------
@@ -456,7 +456,7 @@ typedef struct
      * |        |          |11000 = Sample Module 24 conversion result EADC_DAT24 is selected to be compared.
      * |        |          |11001 = Sample Module 25 conversion result EADC_DAT25 is selected to be compared.
      * |        |          |11010 = Sample Module 26 conversion result EADC_DAT26 is selected to be compared.
-     * |        |          |11011 = Sample Module 27 conversion result EADC_DAT27 is selected to be compared.     
+     * |        |          |11011 = Sample Module 27 conversion result EADC_DAT27 is selected to be compared.
      * |[11:8]  |CMPMCNT   |Compare Match Count
      * |        |          |When the specified EADC sample module analog conversion result matches the compare condition defined by CMPCOND (EADC_CMPn[2], n=0~3), the internal match counter will increase 1
      * |        |          |If the compare result does not meet the compare condition, the internal compare match counter will reset to 0
@@ -846,7 +846,7 @@ typedef struct
     __IO uint32_t PENDSTS;          /*!< [0x58] EADC Start of Conversion Pending Flag Register               */
     __IO uint32_t OVSTS;            /*!< [0x5C] EADC Sample Module Start of Conversion Overrun Flag Register */
     __IO uint32_t CTL1;             /*!< [0x60] EADC Control1 Register                                       */
-    __I  uint32_t RESERVE0[7];                                                                                
+    __I  uint32_t RESERVE0[7];
     __IO uint32_t SCTL[19];         /*!< [0x80-0xC8] EADC Sample Module 0~18 Control Register                */
     __I  uint32_t RESERVE1[1];
     __IO uint32_t INTSRC[4];        /*!< [0xD0-0xDC] EADC Interrupt 0~3 Source Enable Control Register.      */
@@ -1770,19 +1770,19 @@ typedef struct
 
 #define EADC_INTSRC0_SPLIE22_Pos        (22)                                        /*!< EADC_T::INTSRC0: SPLIE22 Position           */
 #define EADC_INTSRC0_SPLIE22_Msk        (0x1UL << EADC_INTSRC0_SPLIE22_Pos)         /*!< EADC_T::INTSRC0: SPLIE22 Mask               */
-                                        
+
 #define EADC_INTSRC0_SPLIE23_Pos        (23)                                        /*!< EADC_T::INTSRC0: SPLIE23 Position           */
 #define EADC_INTSRC0_SPLIE23_Msk        (0x1UL << EADC_INTSRC0_SPLIE23_Pos)         /*!< EADC_T::INTSRC0: SPLIE23 Mask               */
-                                        
+
 #define EADC_INTSRC0_SPLIE24_Pos        (24)                                        /*!< EADC_T::INTSRC0: SPLIE24 Position           */
 #define EADC_INTSRC0_SPLIE24_Msk        (0x1UL << EADC_INTSRC0_SPLIE24_Pos)         /*!< EADC_T::INTSRC0: SPLIE24 Mask               */
-                                        
+
 #define EADC_INTSRC0_SPLIE25_Pos        (25)                                        /*!< EADC_T::INTSRC0: SPLIE25 Position           */
 #define EADC_INTSRC0_SPLIE25_Msk        (0x1UL << EADC_INTSRC0_SPLIE25_Pos)         /*!< EADC_T::INTSRC0: SPLIE25 Mask               */
-                                        
+
 #define EADC_INTSRC0_SPLIE26_Pos        (26)                                        /*!< EADC_T::INTSRC0: SPLIE26 Position           */
 #define EADC_INTSRC0_SPLIE26_Msk        (0x1UL << EADC_INTSRC0_SPLIE26_Pos)         /*!< EADC_T::INTSRC0: SPLIE26 Mask               */
-                                        
+
 #define EADC_INTSRC0_SPLIE27_Pos        (27)                                        /*!< EADC_T::INTSRC0: SPLIE27 Position           */
 #define EADC_INTSRC0_SPLIE27_Msk        (0x1UL << EADC_INTSRC0_SPLIE27_Pos)         /*!< EADC_T::INTSRC0: SPLIE27 Mask               */
 
@@ -2547,73 +2547,73 @@ typedef struct
 
 #define EADC_DAT20_RESULT_Pos           (0)                                         /*!< EADC_T::DAT20: RESULT Position             */
 #define EADC_DAT20_RESULT_Msk           (0xffffUL << EADC_DAT20_RESULT_Pos)         /*!< EADC_T::DAT20: RESULT Mask                 */
-                
+
 #define EADC_DAT20_OV_Pos               (16)                                        /*!< EADC_T::DAT20: OV Position                 */
 #define EADC_DAT20_OV_Msk               (0x1UL << EADC_DAT20_OV_Pos)                /*!< EADC_T::DAT20: OV Mask                     */
-                
+
 #define EADC_DAT20_VALID_Pos            (17)                                        /*!< EADC_T::DAT20: VALID Position              */
 #define EADC_DAT20_VALID_Msk            (0x1UL << EADC_DAT20_VALID_Pos)             /*!< EADC_T::DAT20: VALID Mask                  */
 
 #define EADC_DAT21_RESULT_Pos           (0)                                         /*!< EADC_T::DAT21: RESULT Position             */
 #define EADC_DAT21_RESULT_Msk           (0xffffUL << EADC_DAT21_RESULT_Pos)         /*!< EADC_T::DAT21: RESULT Mask                 */
-                
+
 #define EADC_DAT21_OV_Pos               (16)                                        /*!< EADC_T::DAT21: OV Position                 */
 #define EADC_DAT21_OV_Msk               (0x1UL << EADC_DAT21_OV_Pos)                /*!< EADC_T::DAT21: OV Mask                     */
-                
+
 #define EADC_DAT21_VALID_Pos            (17)                                        /*!< EADC_T::DAT21: VALID Position              */
 #define EADC_DAT21_VALID_Msk            (0x1UL << EADC_DAT21_VALID_Pos)             /*!< EADC_T::DAT21: VALID Mask                  */
 
 #define EADC_DAT22_RESULT_Pos           (0)                                         /*!< EADC_T::DAT22: RESULT Position             */
 #define EADC_DAT22_RESULT_Msk           (0xffffUL << EADC_DAT22_RESULT_Pos)         /*!< EADC_T::DAT22: RESULT Mask                 */
-                
+
 #define EADC_DAT22_OV_Pos               (16)                                        /*!< EADC_T::DAT22: OV Position                 */
 #define EADC_DAT22_OV_Msk               (0x1UL << EADC_DAT22_OV_Pos)                /*!< EADC_T::DAT22: OV Mask                     */
-                
+
 #define EADC_DAT22_VALID_Pos            (17)                                        /*!< EADC_T::DAT22: VALID Position              */
 #define EADC_DAT22_VALID_Msk            (0x1UL << EADC_DAT22_VALID_Pos)             /*!< EADC_T::DAT22: VALID Mask                  */
 
 #define EADC_DAT23_RESULT_Pos           (0)                                         /*!< EADC_T::DAT23: RESULT Position             */
 #define EADC_DAT23_RESULT_Msk           (0xffffUL << EADC_DAT23_RESULT_Pos)         /*!< EADC_T::DAT23: RESULT Mask                 */
-                
+
 #define EADC_DAT23_OV_Pos               (16)                                        /*!< EADC_T::DAT23: OV Position                 */
 #define EADC_DAT23_OV_Msk               (0x1UL << EADC_DAT23_OV_Pos)                /*!< EADC_T::DAT23: OV Mask                     */
-                
+
 #define EADC_DAT23_VALID_Pos            (17)                                        /*!< EADC_T::DAT23: VALID Position              */
 #define EADC_DAT23_VALID_Msk            (0x1UL << EADC_DAT23_VALID_Pos)             /*!< EADC_T::DAT23: VALID Mask                  */
 
 #define EADC_DAT24_RESULT_Pos           (0)                                         /*!< EADC_T::DAT24: RESULT Position             */
 #define EADC_DAT24_RESULT_Msk           (0xffffUL << EADC_DAT24_RESULT_Pos)         /*!< EADC_T::DAT24: RESULT Mask                 */
-                
+
 #define EADC_DAT24_OV_Pos               (16)                                        /*!< EADC_T::DAT24: OV Position                 */
 #define EADC_DAT24_OV_Msk               (0x1UL << EADC_DAT24_OV_Pos)                /*!< EADC_T::DAT24: OV Mask                     */
-                
+
 #define EADC_DAT24_VALID_Pos            (17)                                        /*!< EADC_T::DAT24: VALID Position              */
 #define EADC_DAT24_VALID_Msk            (0x1UL << EADC_DAT24_VALID_Pos)             /*!< EADC_T::DAT24: VALID Mask                  */
 
 #define EADC_DAT25_RESULT_Pos           (0)                                         /*!< EADC_T::DAT25: RESULT Position             */
 #define EADC_DAT25_RESULT_Msk           (0xffffUL << EADC_DAT25_RESULT_Pos)         /*!< EADC_T::DAT25: RESULT Mask                 */
-                
+
 #define EADC_DAT25_OV_Pos               (16)                                        /*!< EADC_T::DAT25: OV Position                 */
 #define EADC_DAT25_OV_Msk               (0x1UL << EADC_DAT25_OV_Pos)                /*!< EADC_T::DAT25: OV Mask                     */
-                
+
 #define EADC_DAT25_VALID_Pos            (17)                                        /*!< EADC_T::DAT25: VALID Position              */
 #define EADC_DAT25_VALID_Msk            (0x1UL << EADC_DAT25_VALID_Pos)             /*!< EADC_T::DAT25: VALID Mask                  */
 
 #define EADC_DAT26_RESULT_Pos           (0)                                         /*!< EADC_T::DAT26: RESULT Position             */
 #define EADC_DAT26_RESULT_Msk           (0xffffUL << EADC_DAT26_RESULT_Pos)         /*!< EADC_T::DAT26: RESULT Mask                 */
-                
+
 #define EADC_DAT26_OV_Pos               (16)                                        /*!< EADC_T::DAT26: OV Position                 */
 #define EADC_DAT26_OV_Msk               (0x1UL << EADC_DAT26_OV_Pos)                /*!< EADC_T::DAT26: OV Mask                     */
-                
+
 #define EADC_DAT26_VALID_Pos            (17)                                        /*!< EADC_T::DAT26: VALID Position              */
 #define EADC_DAT26_VALID_Msk            (0x1UL << EADC_DAT26_VALID_Pos)             /*!< EADC_T::DAT26: VALID Mask                  */
 
 #define EADC_DAT27_RESULT_Pos           (0)                                         /*!< EADC_T::DAT27: RESULT Position             */
 #define EADC_DAT27_RESULT_Msk           (0xffffUL << EADC_DAT27_RESULT_Pos)         /*!< EADC_T::DAT27: RESULT Mask                 */
-                
+
 #define EADC_DAT27_OV_Pos               (16)                                        /*!< EADC_T::DAT27: OV Position                 */
 #define EADC_DAT27_OV_Msk               (0x1UL << EADC_DAT27_OV_Pos)                /*!< EADC_T::DAT27: OV Mask                     */
-                
+
 #define EADC_DAT27_VALID_Pos            (17)                                        /*!< EADC_T::DAT27: VALID Position              */
 #define EADC_DAT27_VALID_Msk            (0x1UL << EADC_DAT27_VALID_Pos)             /*!< EADC_T::DAT27: VALID Mask                  */
 
@@ -2827,7 +2827,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __EADC_REG_H__ */

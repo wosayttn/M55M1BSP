@@ -11,7 +11,7 @@
 #define __CANFD_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 typedef struct
@@ -1313,7 +1313,7 @@ typedef struct
 #define CANFD_IR_BEC_Msk                (0x1ul << CANFD_IR_BEC_Pos)                      /*!< CANFD_T::IR: BEC Mask                 */
 
 #define CANFD_IR_BEU_Pos                (21)                                              /*!< CANFD_T::IR: BEU Position             */
-#define CANFD_IR_BEU_Msk                (0x1ul << CANFD_IR_BEU_Pos)                       /*!< CANFD_T::IR: BEU Mask             */ 
+#define CANFD_IR_BEU_Msk                (0x1ul << CANFD_IR_BEU_Pos)                       /*!< CANFD_T::IR: BEU Mask             */
 
 #define CANFD_IR_ELO_Pos                 (22)                                              /*!< CANFD_T::IR: ELO Position              */
 #define CANFD_IR_ELO_Msk                 (0x1ul << CANFD_IR_ELO_Pos)                       /*!< CANFD_T::IR: ELO Mask                  */

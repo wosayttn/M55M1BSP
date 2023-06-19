@@ -11,7 +11,7 @@
 #define __LPUART_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -575,7 +575,7 @@ typedef struct
      * |        |          |Setting this bit can disable TX and RX.
      * |        |          |0 = Deglitch Disabled.
      * |        |          |1 = Deglitch Enabled.
-     * |        |          |Note 1: When this bit is set to logic 1, any pulse width less than about 150 ns will be considered a glitch and will be removed in the serial data input (RX). 
+     * |        |          |Note 1: When this bit is set to logic 1, any pulse width less than about 150 ns will be considered a glitch and will be removed in the serial data input (RX).
      * |        |          |This bit acts only on RX line and has no effect on the transmitter logic.
      * |        |          |Note 2: It is recommended to set this bit only when operating at baud rate under 2.5 Mbps.
      * |[7]     |TXRXSWP   |TX and RX Swap Enable Bit
@@ -679,7 +679,7 @@ typedef struct
      * |        |          |These bits field have no effect when the state trancing of RS485 transceiver is from RX to TX state.
      * |        |          |Note: It is valid only when RS485AUD (LPUART_ALTCTL[10]) is set.
      * @var LPUART_T::AUTOCTL
-     * Offset: 0x58  LPUART Automatic Operation Control Register 
+     * Offset: 0x58  LPUART Automatic Operation Control Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
@@ -704,10 +704,10 @@ typedef struct
      * |        |          |0 = Bus Idle Time-out Wake-up system function Disabled.
      * |        |          |1 = Bus Idle Time-out Wake-up system function Enabled.
      * |        |          |Note 1: When the system is in Power-down mode, Bus Idle Time-out Wake-up will wake-up system from Power-down mode if WKAOTOEN (LPUART_AUTOCTL[8]) is set to '1'.
-     * |        |          |Note 2: When WKAOTOEN (LPUART_AUTOCTL[8]) is reset to '0',Bus Idle Time-out Wake-up event will not wake up the system. Moreover, 
+     * |        |          |Note 2: When WKAOTOEN (LPUART_AUTOCTL[8]) is reset to '0',Bus Idle Time-out Wake-up event will not wake up the system. Moreover,
      * |        |          |Bus Idle Time-out Wake-up event will gate the UART clock off if WKAOTOEN (LPUART_AUTOCTL[8]) and AOCKAWOEN (LPUART_AUTOCTL[4]) are both reset to '0'.
      * |[9]     |SWTRIG    |Software Trigger (Write Only)
-     * |        |          |After AOEN(LPUART_AUTOCTL[31]) is set to 1, software can manually trigger the automatic TX operation by 
+     * |        |          |After AOEN(LPUART_AUTOCTL[31]) is set to 1, software can manually trigger the automatic TX operation by
      * |        |          |writing 1 to this bit.
      * |[31]    |AOEN      |Automatic Operation Enable Bit
      * |        |          |0 = Automatic Operation Disabled.
@@ -741,13 +741,13 @@ typedef struct
     __IO uint32_t RESERVE0[1];
     __IO uint32_t ALTCTL;                /*!< [0x002c] LPUART Alternate Control/Status Register                           */
     __IO uint32_t FUNCSEL;               /*!< [0x0030] LPUART Function Select Register                                    */
-    __IO uint32_t RESERVE1[2]; 
+    __IO uint32_t RESERVE1[2];
     __IO uint32_t BRCOMP;                /*!< [0x003c] LPUART Baud Rate Compensation Register                             */
     __IO uint32_t WKCTL;                 /*!< [0x0040] LPUART Wake-up Control Register                                    */
     __IO uint32_t WKSTS;                 /*!< [0x0044] LPUART Wake-up Status Register                                     */
     __IO uint32_t DWKCOMP;               /*!< [0x0048] LPUART Incoming Data Wake-up Compensation Register                 */
     __IO uint32_t RS485DD;               /*!< [0x004C] LPUART RS485 Transceiver Deactivate Delay Register                 */
-    __IO uint32_t RESERVE2[2];              
+    __IO uint32_t RESERVE2[2];
     __IO uint32_t AUTOCTL;               /*!< [0x0058] LPUART Automatic Operation Control Register                        */
     __IO uint32_t AUTOSTS;               /*!< [0x005C] LPUART Automatic Operation Status Register                         */
     __I  uint32_t RESERVE3[999];
@@ -1122,7 +1122,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __LPUART_REG_H__ */
