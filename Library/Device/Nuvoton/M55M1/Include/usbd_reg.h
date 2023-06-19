@@ -11,7 +11,7 @@
 #define __USBD_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -83,7 +83,7 @@ typedef struct
      * |        |          |When DBEN = 1 and endpoint successful transfer, DBTGACTIVE of each double buffer will be toggled automatically by hardware.
      * |[11]    |DBEN      |Double Buffer Enable
      * |        |          |0 = Single buffer mode.
-     * |        |          |1 = Double buffer mode.	 
+     * |        |          |1 = Double buffer mode.
      * @var USBD_EP_T::CFGP
      * Offset: 0x50C/0x51C/0x52C/0x53C/0x54C/0x55C/0x56C/0x57C/0x58C/0x59C/0x5AC/0x5BC/0x5CC/0x5EC/0x5FC/0x60C/0x61C/0x62C/0x63C/0x64C/0x65C/0x66C/0x67C/0x68C  Endpoint n Set Stall and Clear In/Out Ready Control Register
      * ---------------------------------------------------------------------------------------------------
@@ -248,7 +248,7 @@ typedef struct
      * |        |          |1 = Pull-up resistor in USB_D+ bus Active.
      * |[9]     |PWRDN     |Power-down PHY Transceiver, Low Active
      * |        |          |0 = Power-down related circuit of PHY transceiver.
-     * |        |          |1 = Turn-on related circuit of PHY transceiver.	 
+     * |        |          |1 = Turn-on related circuit of PHY transceiver.
      * |[10]    |BYTEM     |CPU Access USB SRAM Size Mode Selection
      * |        |          |0 = Word mode: The size of the transfer from CPU to USB SRAM can be Word only.
      * |        |          |1 = Byte mode: The size of the transfer from CPU to USB SRAM can be Byte only.
@@ -488,7 +488,7 @@ typedef struct
      * |        |          |0010 = Out Packet Data0 ACK.
      * |        |          |0011 = Setup ACK.
      * |        |          |0110 = Out Packet Data1 ACK.
-     * |        |          |0111 = Isochronous transfer end.	 	 
+     * |        |          |0111 = Isochronous transfer end.
      * @var USBD_T::EPSTS3
      * Offset: 0x2C  USB Device Endpoint Status Register 3
      * ---------------------------------------------------------------------------------------------------
@@ -501,7 +501,7 @@ typedef struct
      * |        |          |0010 = Out Packet Data0 ACK.
      * |        |          |0011 = Setup ACK.
      * |        |          |0110 = Out Packet Data1 ACK.
-     * |        |          |0111 = Isochronous transfer end.     
+     * |        |          |0111 = Isochronous transfer end.
      * @var USBD_T::EPINTSTS
      * Offset: 0x30  USB Device Endpoint Interrupt Event Status Register
      * ---------------------------------------------------------------------------------------------------
@@ -606,8 +606,8 @@ typedef struct
      * |[24]    |EPEVT24   |Endpoint 24's USB Event Status
      * |        |          |0 = No event occurred in endpoint 24.
      * |        |          |1 = USB event occurred on Endpoint 24.
-     * |        |          |Check USBD_EPSTS3[3:0] to know which kind of USB event was occurred, cleared by writing 1 to USBD_EPINTSTS[24] or USBD_INTSTS[1].	 
-	 * @var USBD_T::LPMATTR
+     * |        |          |Check USBD_EPSTS3[3:0] to know which kind of USB event was occurred, cleared by writing 1 to USBD_EPINTSTS[24] or USBD_INTSTS[1].
+     * @var USBD_T::LPMATTR
      * Offset: 0x88  USB LPM Attribution Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -996,7 +996,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __USBD_REG_H__ */

@@ -11,7 +11,7 @@
 #define __DAC_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -75,7 +75,7 @@ typedef struct
      * |[17]    |GPIOEN    |GPIO Mode Enable Bit
      * |        |          |0 = GPIO PIN can output DAC0_OUT voltage.
      * |        |          |1 = GPIO PIN can be used as other MFP.
-	 * |[18]    |BYPASS    |Bypass Buffer Mode
+     * |[18]    |BYPASS    |Bypass Buffer Mode
      * |        |          |0 = Output voltage buffer Enabled.
      * |        |          |1 = Output voltage buffer Disabled.
      * @var DAC_T::SWTRG
@@ -159,7 +159,7 @@ typedef struct
     __I  uint32_t DATOUT;                /*!< [0x000c] DAC Data Output Register                                         */
     __IO uint32_t STATUS;                /*!< [0x0010] DAC Status Register                                              */
     __IO uint32_t TCTL;                  /*!< [0x0014] DAC Timing Control Register                                      */
-	__I  uint32_t RESERVE[6];            
+    __I  uint32_t RESERVE[6];
     __IO uint32_t GRPDAT;                /*!< [0x0030] DAC Timing Control Register                                      */
 
 } DAC_T;
@@ -237,7 +237,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __DAC_REG_H__ */
