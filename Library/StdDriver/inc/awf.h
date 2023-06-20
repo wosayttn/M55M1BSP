@@ -91,6 +91,13 @@ extern "C"
   */
 #define AWF_CLEAR_LTH_INT_FLAG()       (AWF->STATUS |= AWF_STATUS_LTHIS_Msk)
 
+
+/* Declare these inline functions here to avoid MISRA C 2004 rule 8.1 error */
+__STATIC_INLINE void AWF_EnableInt(uint32_t u32IntMask);
+__STATIC_INLINE void AWF_DisableInt(uint32_t u32IntMask);
+__STATIC_INLINE void AWF_EnableWakeup(uint32_t u32TWKMask);
+__STATIC_INLINE void AWF_DisableWakeup(uint32_t u32TWKMask);
+
 /**
   * @brief      Enable AWF Interrupt
   * @param[in]  u32IntMask Specify the interrupt source. Including:
@@ -139,10 +146,6 @@ __STATIC_INLINE void AWF_DisableWakeup(uint32_t u32TWKMask)
     AWF->CTL &= ~u32TWKMask;
 }
 
-void AWF_EnableInt(uint32_t u32IntMask);
-void AWF_DisableInt(uint32_t u32IntMask);
-void AWF_EnableWakeup(uint32_t u32TWKMask);
-void AWF_DisableWakeup(uint32_t u32TWKMask);
 uint32_t AWF_GetAccumlationValue(void);
 void AWF_Open(uint32_t u32IntEn, uint32_t u32WakeupEn, uint32_t u32HTHValue, uint32_t u32LTHValue, uint32_t u32WBINITValue, uint32_t u32ACCCount);
 void AWF_Close(void);
