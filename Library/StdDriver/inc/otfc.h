@@ -358,6 +358,13 @@ extern "C"
         otfc->PR[pr].PR_NONCE2 = key;  \
     } while (0)
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* static inline functions                                                                                 */
+/*---------------------------------------------------------------------------------------------------------*/
+/* Declare these inline functions here to avoid MISRA C 2004 rule 8.1 error */
+__STATIC_INLINE int32_t OTFC_Enable_PR(OTFC_T *otfc, uint32_t u32PR);
+__STATIC_INLINE int32_t OTFC_Disable_PR(OTFC_T *otfc, uint32_t u32PR);
+
 /**
  * @brief Enable OTFC Protection Region.
  *
