@@ -749,7 +749,7 @@ void Test_MACRO_LPI2C_Control_Read_Status()
     I2C_SetSlaveAddrMask(I2C0, 2, 0x04);
     I2C_SetSlaveAddrMask(I2C0, 3, 0x02);
     /* I2C0 enter no address SLV mode */
-    I2C_SET_CONTROL_REG(I2C0, LPI2C_CTL_SI_AA);
+    I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
     //
     LPI2C_START(LPI2C0);
     CU_ASSERT((LPI2C0->CTL0 & LPI2C_CTL_STA) == LPI2C_CTL_STA);
