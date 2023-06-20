@@ -411,91 +411,77 @@ void Test_API_LPI2C_Control_Read_Status()
     DBG_MSG("\n - LPI2C Test PASS\n");
 }
 
-void API_Test_I2C0_as_SlaveTxRx_Handler(uint32_t u32Status)
+/*
+    I2C_SlaveTRx can be a normal I2C Slave (g_u8RegCnt == 0),
+    or I2C EEPROM with 1 Reg Offset (g_u8RegCnt == 1),
+    or I2C EEPROM with 2 Reg Offset (g_u8RegCnt == 2).
+*/
+volatile uint8_t g_u8SlvDataLen;
+volatile uint16_t g_u16RecvAddr;
+volatile uint8_t g_u8RegCnt;
+volatile uint8_t g_au8SlvRxData[4];
+volatile uint32_t slave_buff_addr;
+volatile uint8_t g_au8SlvData[256];
+
+void I2C_SlaveTRx(uint32_t u32Status)
 {
-    //printf("STA: %08X\n", u32Status);
-    if (u32Status == 0x60) {                    /* Own SLA+W has been receive; ACK has been return */
-        g_u32Idx = 0;
-        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0x80)                 /* Previously address with own SLA address
-                                                       Data has been received; ACK has been returned*/
-    {
-        pu8dstBuf[g_u32Idx++] = (uint8_t) I2C_GET_DATA(I2C0);
-
-        if (u32RceLen == g_u32Idx) {
-            I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-            g_u32Idx = 0;
-            return;
-        }
-
-        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0xA8) { //slave Tx addrees and ACK
-        g_u32Idx = 0;
-        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-        I2C_SetData(I2C0, pu8srcBuf[g_u32Idx++]);
-    } else if (u32Status == 0xC0) {
-        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0xB8) {
-        I2C_SetData(I2C0, pu8srcBuf[g_u32Idx++]);
-        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0x88) {
-    } else if (u32Status == 0xA0)                 /* A STOP or repeated START has been received while still
-                                                       addressed as Slave/Receiver*/
-    {
-        //g_u8SlvDataLen = 0;
-        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else {
-        /* TO DO */
-        printf("Status 0x%x is NOT processed\n", u32Status);
-    }
-}
-
-void API_Test_I2C0_as_SlaveTxasEEPROM_Handler(uint32_t u32Status)
-{
-    static uint8_t addr_cnt = 0;
+    uint8_t u8Data;
 
     if (u32Status == 0x60) {                    /* Own SLA+W has been receive; ACK has been return */
-        g_u32Idx = 0;     //EEPROM device address
-        g_u16AddressTmp = 0;//reset address tmp
-        addr_cnt = 0;     //reset addr cnt counter
+        g_u8SlvDataLen = 0;
+        g_u16RecvAddr = (uint8_t)I2C_GET_DATA(I2C0);
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
     } else if (u32Status == 0x80)                 /* Previously address with own SLA address
-                                                       Data has been received; ACK has been returned*/
+                                                   Data has been received; ACK has been returned*/
     {
-        if (addr_cnt == 0) { //EEPROM addeess
-            if (g_u8RegAddrBytes == 1) {
-                g_u16AddressTmp = (uint8_t) I2C_GET_DATA(I2C0);    //for EEPROM address checking
+        u8Data = (uint8_t) I2C_GET_DATA(I2C0);
+
+        if (g_u8SlvDataLen < g_u8RegCnt) {
+            g_au8SlvRxData[g_u8SlvDataLen++] = u8Data;
+
+            if (g_u8RegCnt == 1) {
+                slave_buff_addr = g_au8SlvRxData[0];
             } else {
-                g_u16AddressTmp = (uint16_t)(I2C_GET_DATA(I2C0) << 8);    //for EEPROM address checking
+                slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
             }
+        } else {
+            g_au8SlvData[slave_buff_addr++] = u8Data;
+        }
 
-            I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-            addr_cnt++;
-            return;
-        } else if ((g_u8RegAddrBytes == 2) && (addr_cnt == 1)) {
-            g_u16AddressTmp |= (uint16_t)(I2C_GET_DATA(I2C0) & 0xff);  //for EEPROM address checking
-            I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-            addr_cnt++;
+        // Only support 256 Bytes
+        slave_buff_addr &= 0x00FF;
+        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
+    } else if (u32Status == 0xA8) {             /* Own SLA+R has been receive; ACK has been return */
+        I2C_SET_DATA(I2C0, g_au8SlvData[slave_buff_addr++]);
+        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
+    } else if (u32Status == 0xB8) {             /* Data byte in I2CDAT has been transmitted ACK has been received */
+        I2C_SET_DATA(I2C0, g_au8SlvData[slave_buff_addr++]);
+
+        if (slave_buff_addr == 256) {
+            slave_buff_addr = 0;
+        }
+
+        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
+    } else if (u32Status == 0xC0)                 /* Data byte or last data in I2CDAT has been transmitted
+                                                   Not ACK has been received */
+    {
+        g_u8SlvDataLen = 0;
+        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
+    } else if (u32Status == 0x88)                 /* Previously addressed with own SLA address; NOT ACK has
+                                                   been returned */
+    {
+        g_u8SlvDataLen = 0;
+        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
+    } else if (u32Status == 0xA0)                 /* A STOP or repeated START has been received while still
+                                                   addressed as Slave/Receiver*/
+    {
+        g_u8SlvDataLen = 0;
+        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
+    } else {
+        if (u32Status == 0xF8) { // Bus Released
             return;
         }
 
-        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI); // 8-Bit address EEPROM address only
-        return;
-    } else if (u32Status == 0xA8) { //slave Tx addrees and ACK
-        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-        I2C_SetData(I2C0, pu8srcBuf[g_u32Idx++]);
-    } else if (u32Status == 0xC0) {
-        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI); //get NACK
-    } else if (u32Status == 0xB8) {
-        I2C_SetData(I2C0, pu8srcBuf[g_u32Idx++]);
-        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0x88) {
-        //I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI); //get NACK
-    } else if (u32Status == 0xA0)                 /* A STOP or repeated START has been received while still
-                                                       addressed as Slave/Receiver*/
-    {
-        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else {
         /* TO DO */
         printf("Status 0x%x is NOT processed\n", u32Status);
     }
@@ -505,12 +491,10 @@ void Test_API_LPI2C_ReadWriteRelatedTest(void)
 {
     uint8_t I2C_SLVAddr[4] = {15, 35, 55, 75};
     uint8_t au8Src[7] = {0x94, 0x56, 0xAA, 0x55, 0xFF, 0xAA, 0x87};
-    //uint8_t au8Dst[7] = {0};
-    uint8_t au8Dst[sizeof(au8Src)] = {0};
+    uint8_t au8Tmp[7] = {0};
     uint32_t rxLen;
     uint32_t i;
     /*Reset all test flow control variables*/
-    pu8dstBuf = au8Dst; //set destination for I2C0 IRQHandler
     g_u32Idx = 0; //reset index for destination buffer I2C0 IRQHandler
     u32RceLen = 0;
     /*LPI2C0 as master, I2C0 as slave*/
@@ -529,182 +513,188 @@ void Test_API_LPI2C_ReadWriteRelatedTest(void)
     }
 
     /*initialize the dst buffer*/
-    memset(au8Dst, 0, sizeof(au8Dst));
+    memset(pu8dstBuf, 0, 256);
     // LPI2C_WriteByte
     {
         printf("\n\tTest LPI2C_WriteByte");
         u32RceLen = 1;
-        fpI2C_WrRd_Test_Handler = API_Test_I2C0_as_SlaveTxRx_Handler; //switch the test mode te Wr/Rd APIs test.
+        g_u8RegCnt = 0;
+        slave_buff_addr = 0;
+        fpI2C_WrRd_Test_Handler = I2C_SlaveTRx;
         /*Set slave I2C0*/
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
         LPI2C_WriteByte(LPI2C0, I2C_SLVAddr[1], 0x88);
-        CU_ASSERT_EQUAL(0x88, pu8dstBuf[0]);
+        CU_ASSERT_EQUAL(0x88, g_au8SlvData[0]);
     }
     // LPI2C_WriteMultiBytes
     {
         printf("\n\tTest LPI2C_WriteMultiBytes");
         u32RceLen = sizeof(au8Src);
-        fpI2C_WrRd_Test_Handler = API_Test_I2C0_as_SlaveTxRx_Handler;
+        g_u8RegCnt = 0;
+        slave_buff_addr = 0;
+        fpI2C_WrRd_Test_Handler = I2C_SlaveTRx;
         /*Set slave I2C0*/
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
         LPI2C_WriteMultiBytes(LPI2C0, I2C_SLVAddr[2], au8Src, u32RceLen);
 
         for (i = 0 ; i < u32RceLen; i++) {
-            CU_ASSERT_EQUAL(au8Src[i], pu8dstBuf[i]);
+            CU_ASSERT_EQUAL(au8Src[i], g_au8SlvData[i]);
         }
     }
     //LPI2C_ReadByte
     {
         printf("\n\tTest LPI2C_ReadByte");
         u32RceLen = sizeof(au8Src);
-        pu8srcBuf = au8Src; // for I2C0 as slave TX
-        fpI2C_WrRd_Test_Handler = API_Test_I2C0_as_SlaveTxRx_Handler;
+        g_u8RegCnt = 0;
+        slave_buff_addr = 0;
+        fpI2C_WrRd_Test_Handler = I2C_SlaveTRx;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-        CU_ASSERT_EQUAL(LPI2C_ReadByte(LPI2C0, I2C_SLVAddr[3]), au8Src[0]);
+        CU_ASSERT_EQUAL(LPI2C_ReadByte(LPI2C0, I2C_SLVAddr[3]), g_au8SlvData[0]);
     }
     //LPI2C_ReadMultiBytes
     {
         printf("\n\tTest LPI2C_ReadMultiBytes");
-        u32RceLen = sizeof(au8Src);
-        pu8srcBuf = au8Src; // for I2C0 as slave TX
+        u32RceLen = sizeof(au8Tmp);
         /*reset the dst buffer*/
-        memset(au8Dst, 0, sizeof(au8Dst));
-        fpI2C_WrRd_Test_Handler = API_Test_I2C0_as_SlaveTxRx_Handler;
+        memset(au8Tmp, 0, sizeof(au8Tmp));
+        g_u8RegCnt = 0;
+        slave_buff_addr = 0;
+        fpI2C_WrRd_Test_Handler = I2C_SlaveTRx;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-        LPI2C_ReadMultiBytes(LPI2C0, I2C_SLVAddr[0], au8Dst, sizeof(au8Dst));
+        LPI2C_ReadMultiBytes(LPI2C0, I2C_SLVAddr[0], au8Tmp, sizeof(au8Tmp));
 
-        for (i = 0; i < sizeof(au8Dst); i++) {
-            CU_ASSERT_EQUAL(au8Src[i], au8Dst[i]);
+        for (i = 0; i < sizeof(au8Tmp); i++) {
+            CU_ASSERT_EQUAL(au8Tmp[i], g_au8SlvData[i]);
         }
     }
     //LPI2C_WriteByteOneReg
     {
         printf("\n\tTest LPI2C_WriteByteOneReg");
-        fpI2C_WrRd_Test_Handler = API_Test_I2C0_as_SlaveTxRx_Handler;
+        g_u8RegCnt = 1;
+        slave_buff_addr = 0;
+        fpI2C_WrRd_Test_Handler = I2C_SlaveTRx;
         u32RceLen = 2;
-        memset(au8Dst, 0, sizeof(au8Dst));
+        memset((void *)g_au8SlvData, 0, 256);
         /*Set slave I2C0*/
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
         LPI2C_WriteByteOneReg(LPI2C0, I2C_SLVAddr[2], 0x87, 0x94);
-        CU_ASSERT_EQUAL(0x87, pu8dstBuf[0]);
-        CU_ASSERT_EQUAL(0x94, pu8dstBuf[1]);
+        CU_ASSERT_EQUAL(0x87, g_au8SlvRxData[0]);
+        CU_ASSERT_EQUAL(0x94, g_au8SlvData[0x87]);
     }
     //LPI2C_WriteMultiBytesOneReg
     {
         printf("\n\tTest LPI2C_WriteMultiBytesOneReg");
-        fpI2C_WrRd_Test_Handler = API_Test_I2C0_as_SlaveTxRx_Handler;
+        g_u8RegCnt = 1;
+        slave_buff_addr = 0;
+        fpI2C_WrRd_Test_Handler = I2C_SlaveTRx;
         u32RceLen = sizeof(au8Src) - 1 + 1;
-        memset(au8Dst, 0, sizeof(au8Dst));
+        memset((void *)g_au8SlvData, 0, 256);
         /*Set slave I2C0*/
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
         LPI2C_WriteMultiBytesOneReg(LPI2C0, I2C_SLVAddr[2], 0x56, au8Src, sizeof(au8Src) - 1);
-        CU_ASSERT_EQUAL(0x56, pu8dstBuf[0]);
+        CU_ASSERT_EQUAL(0x56, g_au8SlvRxData[0]);
 
         for (i = 0; i < (sizeof(au8Src) - 1); i++) {
-            CU_ASSERT_EQUAL(au8Src[i], pu8dstBuf[i + 1]);
+            CU_ASSERT_EQUAL(au8Src[i], g_au8SlvData[0x56 + i]);
         }
     }
     //LPI2C_WriteByteTwoRegs
     {
         printf("\n\tTest LPI2C_WriteByteTwoRegs");
-        fpI2C_WrRd_Test_Handler = API_Test_I2C0_as_SlaveTxRx_Handler;
+        g_u8RegCnt = 2;
+        slave_buff_addr = 0;
+        fpI2C_WrRd_Test_Handler = I2C_SlaveTRx;
         u32RceLen = 3;
-        memset(au8Dst, 0, sizeof(au8Dst));
+        memset((void *)g_au8SlvData, 0, 256);
         /*Set slave I2C0*/
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
         LPI2C_WriteByteTwoRegs(LPI2C0, I2C_SLVAddr[3], 0x9999, 99);
-        CU_ASSERT_EQUAL(((0x9999) >> 8) & 0xff, pu8dstBuf[0]);
-        CU_ASSERT_EQUAL(0x9999 & 0xff, pu8dstBuf[1]);
-        CU_ASSERT_EQUAL(99, pu8dstBuf[2]);
+        CU_ASSERT_EQUAL(((0x9999) >> 8) & 0xff, g_au8SlvRxData[0]);
+        CU_ASSERT_EQUAL(0x9999 & 0xff, g_au8SlvRxData[1]);
+        CU_ASSERT_EQUAL(99, g_au8SlvData[0x9999 & 0xFF]);
     }
     //LPI2C_WriteMultiBytesTwoRegs
     {
         printf("\n\tTest LPI2C_WriteMultiBytesTwoRegs");
-        fpI2C_WrRd_Test_Handler = API_Test_I2C0_as_SlaveTxRx_Handler;
+        g_u8RegCnt = 2;
+        slave_buff_addr = 0;
+        fpI2C_WrRd_Test_Handler = I2C_SlaveTRx;
         u32RceLen = sizeof(au8Src) - 2 + 2;
-        memset(au8Dst, 0, sizeof(au8Dst));
+        memset((void *)g_au8SlvData, 0, 256);
         /*Set slave I2C0*/
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
         LPI2C_WriteMultiBytesTwoRegs(LPI2C0, I2C_SLVAddr[3], 9999, au8Src, sizeof(au8Src) - 2);
-        CU_ASSERT_EQUAL(((9999) >> 8) & 0xff, pu8dstBuf[0]);
-        CU_ASSERT_EQUAL(9999 & 0xff, pu8dstBuf[1]);
+        CU_ASSERT_EQUAL(((9999) >> 8) & 0xff, g_au8SlvRxData[0]);
+        CU_ASSERT_EQUAL(9999 & 0xff, g_au8SlvRxData[1]);
 
         for (i = 0; i < (sizeof(au8Src) - 2); i++) {
-            CU_ASSERT_EQUAL(au8Src[i], pu8dstBuf[i + 2]);
+            CU_ASSERT_EQUAL(au8Src[i], g_au8SlvData[(9999 + i) & 0xFF]);
         }
     }
     //LPI2C_ReadByteOneReg
     {
         printf("\n\tTest LPI2C_ReadByteOneReg");
-        u32RceLen = sizeof(au8Dst); //fist dst is used as address buffer
-        pu8srcBuf = (uint8_t *)au8Src; // for I2C0 as slave TX
-        g_u16AddressTmp = 0; //for EEPROM address checking
-        /*reset the dst buffer*/
-        memset(au8Dst, 0, sizeof(au8Dst));
-        CU_ASSERT_EQUAL(au8Dst[0], 0);
-        g_u8RegAddrBytes = 1;
-        fpI2C_WrRd_Test_Handler = API_Test_I2C0_as_SlaveTxasEEPROM_Handler;
+        g_au8SlvData[0x78] = 0x88;
+        g_u8RegCnt = 1;
+        slave_buff_addr = 0;
+        fpI2C_WrRd_Test_Handler = I2C_SlaveTRx;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-        CU_ASSERT_EQUAL(LPI2C_ReadByteOneReg(LPI2C0, I2C_SLVAddr[0], 0x78), pu8srcBuf[0]);
-        CU_ASSERT_EQUAL((uint8_t)g_u16AddressTmp, 0x78);
+        CU_ASSERT_EQUAL(LPI2C_ReadByteOneReg(LPI2C0, I2C_SLVAddr[0], 0x78), 0x88);
     }
     //LPI2C_ReadMultiBytesOneReg
     {
         printf("\n\tTest LPI2C_ReadMultiBytesOneReg");
-        u32RceLen = sizeof(au8Dst); //fist dst is used as address buffer
-        pu8srcBuf = (uint8_t *)au8Src; // for I2C0 as slave TX
-        g_u16AddressTmp = 0; //for EEPROM address checking
+        u32RceLen = sizeof(au8Src); //fist dst is used as address buffer
         /*reset the dst buffer*/
-        memset(au8Dst, 0, sizeof(au8Dst));
-        g_u8RegAddrBytes = 1;
-        fpI2C_WrRd_Test_Handler = API_Test_I2C0_as_SlaveTxasEEPROM_Handler;
+        memcpy((void *)(g_au8SlvData + 0x87), au8Src, sizeof(au8Src));
+        memset((void *)au8Tmp, 0, sizeof(au8Tmp));
+        g_u8RegCnt = 1;
+        slave_buff_addr = 0;
+        fpI2C_WrRd_Test_Handler = I2C_SlaveTRx;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-        CU_ASSERT_EQUAL(LPI2C_ReadMultiBytesOneReg(LPI2C0, I2C_SLVAddr[0], 0x87, au8Dst, u32RceLen), u32RceLen);
-        CU_ASSERT_EQUAL((uint8_t)g_u16AddressTmp, 0x87);
+        CU_ASSERT_EQUAL(LPI2C_ReadMultiBytesOneReg(LPI2C0, I2C_SLVAddr[0], 0x87, au8Tmp, u32RceLen), u32RceLen);
+        CU_ASSERT_EQUAL(0x87, g_au8SlvRxData[0]);
 
-        for (i = 0; i < sizeof(au8Dst); i++) {
-            CU_ASSERT_EQUAL(au8Src[i], au8Dst[i]);
+        for (i = 0; i < sizeof(au8Tmp); i++) {
+            CU_ASSERT_EQUAL(au8Tmp[i], g_au8SlvData[(0x87 + i) & 0xFF]);
         }
     }
     //LPI2C_ReadMultiBytesTwoRegs
     {
         printf("\n\tTest LPI2C_ReadMultiBytesTwoRegs");
-        u32RceLen = sizeof(au8Dst); //fist dst is used as address buffer
-        pu8srcBuf = (uint8_t *)au8Src; // for I2C0 as slave TX
-        g_u16AddressTmp = 0; //for EEPROM address checking
+        u32RceLen = sizeof(au8Src);
         /*reset the dst buffer*/
-        memset(au8Dst, 0, sizeof(au8Dst));
-        CU_ASSERT_EQUAL(au8Dst[0], 0);
-        g_u8RegAddrBytes = 2;
-        fpI2C_WrRd_Test_Handler = API_Test_I2C0_as_SlaveTxasEEPROM_Handler;
+        /*reset the dst buffer*/
+        memcpy((void *)(g_au8SlvData + (0x5566 & 0xFF)), au8Src, sizeof(au8Src));
+        memset((void *)au8Tmp, 0, sizeof(au8Tmp));
+        g_u8RegCnt = 2;
+        slave_buff_addr = 0;
+        fpI2C_WrRd_Test_Handler = I2C_SlaveTRx;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-        CU_ASSERT_EQUAL(LPI2C_ReadMultiBytesTwoRegs(LPI2C0, I2C_SLVAddr[3], 0x5566, au8Dst, u32RceLen), u32RceLen);
-        CU_ASSERT_EQUAL(g_u16AddressTmp, 0x5566);
+        CU_ASSERT_EQUAL(LPI2C_ReadMultiBytesTwoRegs(LPI2C0, I2C_SLVAddr[3], 0x5566, au8Tmp, u32RceLen), u32RceLen);
+        CU_ASSERT_EQUAL(0x55, g_au8SlvRxData[0]);
+        CU_ASSERT_EQUAL(0x66, g_au8SlvRxData[1]);
 
-        for (i = 0; i < sizeof(au8Dst); i++) {
-            CU_ASSERT_EQUAL(au8Src[i], au8Dst[i]);
+        for (i = 0; i < sizeof(au8Tmp); i++) {
+            CU_ASSERT_EQUAL(au8Tmp[i], g_au8SlvData[(0x5566 + i) & 0xFF]);
         }
     }
     //LPI2C_ReadByteTwoRegs
     {
         printf("\n\tTest LPI2C_ReadByteTwoRegs");
-        u32RceLen = sizeof(au8Dst); //fist dst is used as address buffer
-        pu8srcBuf = (uint8_t *)au8Src; // for I2C0 as slave TX
-        g_u16AddressTmp = 0; //for EEPROM address checking
+        u32RceLen = sizeof(au8Src); //fist dst is used as address buffer
         /*reset the dst buffer*/
-        memset(au8Dst, 0, sizeof(au8Dst));
-        CU_ASSERT_EQUAL(au8Dst[0], 0);
-        g_u8RegAddrBytes = 2;
-        fpI2C_WrRd_Test_Handler = API_Test_I2C0_as_SlaveTxasEEPROM_Handler;
+        g_au8SlvData[0x9930 & 0xFF] = 0x77;
+        g_u8RegCnt = 2;
+        slave_buff_addr = 0;
+        fpI2C_WrRd_Test_Handler = I2C_SlaveTRx;
         LPI2C_SET_CONTROL_REG(I2C0, LPI2C_CTL_SI_AA);
-        CU_ASSERT_EQUAL(LPI2C_ReadByteTwoRegs(LPI2C0, I2C_SLVAddr[3], 0x9930), pu8srcBuf[0]);
-        CU_ASSERT_EQUAL(g_u16AddressTmp, 0x9930);
+        CU_ASSERT_EQUAL(LPI2C_ReadByteTwoRegs(LPI2C0, I2C_SLVAddr[3], 0x9930), 0x77);
+        CU_ASSERT_EQUAL(0x99, g_au8SlvRxData[0]);
+        CU_ASSERT_EQUAL(0x30, g_au8SlvRxData[1]);
     }
     /*Close all rlated settings*/
     fpI2C_WrRd_Test_Handler = NULL; // back to non-Wr/Rd API test
-    pu8dstBuf = au8Dst; //set destination for I2C0 IRQHandler
-    g_u32Idx = 0; //reset index for destination buffer I2C0 IRQHandler
-    u32RceLen = 0;
     LPI2C_Close(LPI2C0);
     I2C_Close(I2C0);
 }

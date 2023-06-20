@@ -109,6 +109,10 @@ void I2C_SlaveTRx(uint32_t u32Status)
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
     } else {
+        if (u32Status == 0xF8) { // Bus Released
+            return;
+        }
+
         /* TO DO */
         printf("Status 0x%x is NOT processed\n", u32Status);
     }
