@@ -174,14 +174,14 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 #define I3C_STS_NO_ERR                      (0L)        /*!< Return no error */
 #define I3C_STS_SUCCESS                     (0L)        /*!< Return success */
-#define I3C_STS_TX_FULL                     (-1L)       /*!< Return TX FIFO full */
+#define I3C_TIMEOUT_ERR                     (-1L)       /*!< I3C operation abort due to timeout error */
+#define I3C_STS_TX_FULL                     (-2L)       /*!< Return TX FIFO full */
 #define I3C_STS_CMDQ_FULL                   (-3L)       /*!< Return Command Queue full */
 #define I3C_STS_RESPQ_EMPTY                 (-4L)       /*!< Return Response Queue empty */
 #define I3C_STS_DMA_ERR                     (-5L)       /*!< Return DMA error */
 #define I3C_STS_INVALID_INPUT               (-1000L)    /*!< Return invalid input parameter */
 #define I3C_STS_INVALID_STATE               (-2000L)    /*!< Return invalid/unexpected state */
 
-#define I3C_TIMEOUT_ERR                     (-1L)       /*!< I3C operation abort due to timeout error */
 
 /** @} end of group I3C_EXPORTED_CONSTANTS */
 
@@ -701,7 +701,7 @@ extern "C"
  * @details     This macro set the I2C Fast Mode Open Drain High Count
  * \hideinitializer
  */
-#define I3C_SET_SCL_FM_HCNT(i3c, u32Cnt)    ((i3c)->SCLFM = ((i3c)->SCLFM & ~I3C_SCLFM_FMHCNT_Msk) | ((u32Cnt & 0xFF) << I3C_SCLFM_FMHCNT_Pos))
+#define I3C_SET_SCL_FM_HCNT(i3c, u32Cnt)    ((i3c)->SCLFM = ((i3c)->SCLFM & ~I3C_SCLFM_FMHCNT_Msk) | ((u32Cnt & 0xFFFF) << I3C_SCLFM_FMHCNT_Pos))
 
 /**
  * @brief       Set I2C Fast Mode Open Drain Low Count
@@ -712,7 +712,7 @@ extern "C"
  * @details     This macro set the I2C Fast Mode Open Drain Low Count
  * \hideinitializer
  */
-#define I3C_SET_SCL_FM_LCNT(i3c, u32Cnt)    ((i3c)->SCLFM = ((i3c)->SCLFM & ~I3C_SCLFM_FMLCNT_Msk) | ((u32Cnt & 0xFF) << I3C_SCLFM_FMLCNT_Pos))
+#define I3C_SET_SCL_FM_LCNT(i3c, u32Cnt)    ((i3c)->SCLFM = ((i3c)->SCLFM & ~I3C_SCLFM_FMLCNT_Msk) | ((u32Cnt & 0xFFFF) << I3C_SCLFM_FMLCNT_Pos))
 
 /**
  * @brief       Set I2C Fast Mode Plus Open Drain High Count
@@ -734,7 +734,7 @@ extern "C"
  * @details     This macro set the I2C Fast Mode Open Drain Low Count
  * \hideinitializer
  */
-#define I3C_SET_SCL_FMP_LCNT(i3c, u32Cnt)   ((i3c)->SCLFMP = ((i3c)->SCLFMP & ~I3C_SCLFMP_FMPLCNT_Msk) | ((u32Cnt & 0xFF) << I3C_SCLFMP_FMPLCNT_Pos))
+#define I3C_SET_SCL_FMP_LCNT(i3c, u32Cnt)   ((i3c)->SCLFMP = ((i3c)->SCLFMP & ~I3C_SCLFMP_FMPLCNT_Msk) | ((u32Cnt & 0xFFFF) << I3C_SCLFMP_FMPLCNT_Pos))
 
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -834,7 +834,6 @@ int32_t I3C_SendIBIRequest(I3C_T *i3c, uint8_t u8MandatoryData, uint32_t u32Payl
 int32_t I3C_EnableHJRequest(I3C_T *i3c, uint32_t u32ModeSel);
 int32_t I3C_DisableHJRequest(I3C_T *i3c);
 int32_t I3C_RespErrorRecovery(I3C_T *i3c, uint32_t u32RespStatus);
-// I3C Master
 int32_t I3C_SetDeviceAddr(I3C_T *i3c, uint8_t u8DevIndex, uint8_t u8DevType, uint8_t u8DAddr, int8_t u8SAddr);
 int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TID, uint32_t *pu32TxBuf, uint16_t u16WriteBytes);
 int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TID, uint32_t *pu32RxBuf, uint16_t u16ReadBytes);

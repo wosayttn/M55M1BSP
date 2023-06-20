@@ -45,7 +45,6 @@ void I3C_Open(I3C_T *i3c,
 {
     /* Disable I3C Controller */
     I3C_Disable(i3c);
-
     i3c->DEVCTLE = u32MasterSlave; // [0] 0: master, 1: slave
 
     if (u32MasterSlave == I3C_MASTER)
@@ -66,10 +65,8 @@ void I3C_Open(I3C_T *i3c,
         i3c->DBTHCTL = 0x00000003; // set rx/tx buffer size
         i3c->DEVADDR = ((u8StaticAddr << I3C_DEVADDR_SA_Pos) | I3C_DEVADDR_SAVALID_Msk)
                        | ((u8StaticAddr << I3C_DEVADDR_DA_Pos) | I3C_DEVADDR_DAVALID_Msk);
-
         /* Enable all interrupt status */
         i3c->INTSTSEN = 0xFFFFFFFF;
-
     }
     else
     {
@@ -85,7 +82,6 @@ void I3C_Open(I3C_T *i3c,
 
         /* Enable all interrupt status */
         i3c->INTSTSEN = 0xFFFFFFFF;
-
         /* Set Tx/Rx/CmdQ/ReapQ threshold to 0 */
         i3c->DBTHCTL = 0x0;
         i3c->QUETHCTL = 0x0;
@@ -322,7 +318,6 @@ int32_t I3C_SendIBIRequest(I3C_T *i3c, uint8_t u8MandatoryData, uint32_t u32Payl
     /* Trigger IBI request */
     /* SIR_EN bit be cleared automatically after the Master accepts the IBI request or Slave unable to issue the IBI request */
     i3c->SIR |= I3C_SIR_EN_Msk;
-    PB2 = 0;
     return I3C_STS_NO_ERR;
 }
 
@@ -484,7 +479,6 @@ int32_t I3C_RespErrorRecovery(I3C_T *i3c, uint32_t u32RespStatus)
   */
 int32_t I3C_SetDeviceAddr(I3C_T *i3c, uint8_t u8DevIndex, uint8_t u8DevType, uint8_t u8DAddr, int8_t u8SAddr)
 {
-
     uint32_t i, count, u32Device = 0;
 
     if ((u8DAddr & 0x80) || (u8SAddr & 0x80))
@@ -555,7 +549,6 @@ int32_t I3C_SetDeviceAddr(I3C_T *i3c, uint8_t u8DevIndex, uint8_t u8DevType, uin
     }
 
     return I3C_STS_NO_ERR;
-
 }
 
 /**
@@ -612,6 +605,12 @@ int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8T
                        | ((((1 << u16WriteBytes) - 1) & 0x07) << I3C_CMDQUE_BYTESTRB_Pos)
                        | I3C_CMD_ATTR_SHORT_DATA_ARG);
 
+        /* Check if CmdQ is full */
+        if (I3C_IS_CMDQ_FULL(i3c))
+        {
+            return I3C_STS_CMDQ_FULL;
+        }
+
         i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_SDAP_Msk | I3C_CMDQUE_ROC_Msk
                        | (u32Speed & I3C_CMDQUE_SPEED_Msk)
                        | ((u8DevIndex & 0x1F) << I3C_CMDQUE_DEVINDX_Pos)
@@ -622,12 +621,17 @@ int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8T
     {
         i3c->CMDQUE = ((u16WriteBytes << I3C_CMDQUE_DATLEN_Pos) | I3C_CMD_ATTR_TRANSFER_ARG);
 
+        /* Check if CmdQ is full */
+        if (I3C_IS_CMDQ_FULL(i3c))
+        {
+            return I3C_STS_CMDQ_FULL;
+        }
+
         i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_ROC_Msk
                        | (u32Speed & I3C_CMDQUE_SPEED_Msk)
                        | ((u8DevIndex & 0x1F) << I3C_CMDQUE_DEVINDX_Pos)
                        | ((u8TID & 0x07) << I3C_CMDQUE_TID_Pos)
                        | I3C_CMD_ATTR_TRANSFER_CMD);
-
 
         for (i = 0; i < ((u16WriteBytes + 3) / 4); i++)
         {
@@ -636,19 +640,14 @@ int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8T
             /* Check if TX buffer is full */
             while (I3C_IS_TX_FULL(i3c))
             {
-
                 if (--u32TimeOutCount == 0)
                 {
                     return I3C_STS_TX_FULL;
                 }
-
-
             }
 
             i3c->TXRXDAT = pu32TxBuf[i];
-
         }
-
     }
 
     while ((I3C0->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
@@ -662,7 +661,6 @@ int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8T
     }
 
     return I3C_STS_NO_ERR;
-
 }
 
 /**
@@ -698,7 +696,7 @@ int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8T
 int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TID, uint32_t *pu32RxBuf, uint16_t u16ReadBytes)
 {
     uint32_t i;
-    uint32_t u32TimeOutCount = 0u;
+    uint32_t u32TimeOutCount = (SystemCoreClock / 1000);
     uint32_t response, readBytes = 0;
 
     if ((u16ReadBytes == 0) || (pu32RxBuf == NULL))
@@ -712,8 +710,13 @@ int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TI
         return I3C_STS_CMDQ_FULL;
     }
 
-
     i3c->CMDQUE = ((u16ReadBytes << I3C_CMDQUE_DATLEN_Pos) | I3C_CMD_ATTR_TRANSFER_ARG);
+
+    /* Check if CmdQ is full */
+    if (I3C_IS_CMDQ_FULL(i3c))
+    {
+        return I3C_STS_CMDQ_FULL;
+    }
 
     i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_RNW_Msk | I3C_CMDQUE_ROC_Msk
                    | (u32Speed & I3C_CMDQUE_SPEED_Msk)
@@ -721,44 +724,32 @@ int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TI
                    | ((u8TID & 0x07) << I3C_CMDQUE_TID_Pos)
                    | I3C_CMD_ATTR_TRANSFER_CMD);
 
-
-
-
-    while ((i3c->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
-
+    while ((i3c->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0)
+    {
+        if (--u32TimeOutCount == 0)
+        {
+            return I3C_TIMEOUT_ERR;
+        }
+    };
 
     response = i3c->RESPQUE;
-    printf("Response = 0x%08X\n", response);
 
     if ((response & I3C_RESPQUE_ERRSTS_Msk) != I3C_RESP_NO_ERR)
     {
         return I3C_STS_INVALID_STATE;
     }
 
-
     response = ((response  & I3C_RESPQUE_DATLEN_Msk) + 3) / 4;
 
     if (response != 0)
     {
-
         for (i = 0; i < response; i++)
         {
             pu32RxBuf[i] = I3C0->TXRXDAT ;
         }
-
-
-        for (i = 0; i < response; i++)
-        {
-            printf("Read Data = 0x%08X\n", pu32RxBuf[i]);
-        }
-
-        UART_WAIT_TX_EMPTY(UART0);
     }
 
-
-
     return I3C_STS_NO_ERR;
-
 }
 
 /**
@@ -775,7 +766,6 @@ int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TI
 int32_t I3C_BroadcastRSTDAA(I3C_T *i3c)
 {
     uint32_t response;
-
     I3C0->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_ROC_Msk
                     | I3C_CMDQUE_CP_Msk
                     | ((I3C_CCC_RSTDAA(TRUE) <<  I3C_CMDQUE_CMD_Pos) & I3C_CMDQUE_CMD_Msk)
@@ -809,7 +799,6 @@ int32_t I3C_BroadcastRSTDAA(I3C_T *i3c)
 int32_t I3C_UnicastSETDASA(I3C_T *i3c, uint8_t u8DevIndex)
 {
     uint32_t response;
-
     i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_ROC_Msk
                    | I3C_DEVCOUNT(1)
                    | ((u8DevIndex & 0x1F) << I3C_CMDQUE_DEVINDX_Pos)
