@@ -50,6 +50,10 @@ typedef enum
 /* DPM Time-out Handler Constant Definitions                                                               */
 /*---------------------------------------------------------------------------------------------------------*/
 #define DPM_TIMEOUT         (SystemCoreClock)   /*!< 1 second time-out */
+
+/*---------------------------------------------------------------------------------------------------------*/
+/* DPM Error Code Constant Definitions                                                               */
+/*---------------------------------------------------------------------------------------------------------*/
 #define DPM_TIMEOUT_ERR     (-1L)               /*!< DPM time-out error value */
 
 /** @}*/ /* end of group WDT_EXPORTED_CONSTANTS */
@@ -88,11 +92,11 @@ extern int32_t g_DPM_i32ErrCode;
   * @details    This macro waits DPM_NSSTS busy flag is cleared and skips when time-out.
   * @note       This macro sets g_DPM_i32ErrCode to DPM_TIMEOUT_ERR if waiting DPM time-out.
   */
-#define DPM_WAIT_NSSTS_BUSY() \
+#define DPM_WAIT_NSSTS_BUSY(pDPM) \
     do { \
         uint32_t u32TimeOutCnt = DPM_TIMEOUT; \
         g_DPM_i32ErrCode = 0; \
-        while (DPM->NSSTS & DPM_NSSTS_BUSY_Msk) \
+        while (pDPM->NSSTS & DPM_NSSTS_BUSY_Msk) \
         { \
             if (--u32TimeOutCnt == 0) \
             { \
