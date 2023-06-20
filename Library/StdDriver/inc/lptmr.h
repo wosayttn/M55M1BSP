@@ -201,6 +201,7 @@ __STATIC_INLINE uint32_t LPTMR_GetCaptureData(LPTMR_T *lptmr);
 __STATIC_INLINE uint32_t LPTMR_GetCounter(LPTMR_T *lptmr);
 __STATIC_INLINE void LPTMR_EnablePDCLK(LPTMR_T *lptmr);
 __STATIC_INLINE void LPTMR_DisablePDCLK(LPTMR_T *lptmr);
+__STATIC_INLINE void LPTMR_EventCounterSelect(LPTMR_T *lptmr, uint32_t u32Src);
 
 /**
   * @brief      Start LPTMR Counting
@@ -556,6 +557,25 @@ __STATIC_INLINE void LPTMR_EnablePDCLK(LPTMR_T *lptmr)
 __STATIC_INLINE void LPTMR_DisablePDCLK(LPTMR_T *lptmr)
 {
     lptmr->CTL &= ~LPTMR_CTL_PDCLKEN_Msk;
+}
+
+/**
+  * @brief      Select LPtmr Event Counter Source
+  *
+  * @param[in]  lptmr       The pointer of the specified LPTMR module. It could be LPTMR0, LPTMR1.
+  * @param[in]  u32Src      LPtmr Event Counter source. Possible values are
+  *                         - \ref LPTMR_EVENT_COUNTER_SOURCE_TMX
+  *                         - \ref LPTMR_EVENT_COUNTER_SOURCE_ACMP0
+  *                         - \ref LPTMR_EVENT_COUNTER_SOURCE_ACMP1
+  *                         - \ref LPTMR_EVENT_COUNTER_SOURCE_ACMP2
+  *                         - \ref LPTMR_EVENT_COUNTER_SOURCE_ACMP3
+  * @return     None
+  *
+  * @details    This API is used to select lptmr Event Counter source from TMx or internal singal.
+  */
+__STATIC_INLINE void LPTMR_EventCounterSelect(LPTMR_T *lptmr, uint32_t u32Src)
+{
+    lptmr->EXTCTL = (lptmr->EXTCTL & ~LPTMR_EXTCTL_ECNTSSEL_Msk) | u32Src;
 }
 
 uint32_t LPTMR_Open(LPTMR_T *lptmr, uint32_t u32Mode, uint32_t u32Freq);
