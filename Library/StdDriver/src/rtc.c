@@ -73,7 +73,7 @@ int32_t RTC_Open(S_RTC_TIME_DATA_T *sPt)
 
         while (RTC->INIT != RTC_INIT_ACTIVE_Msk)
         {
-            if (--u32TimeOutCount == 0) return -1;
+            if (--u32TimeOutCount == 0) return RTC_ERR_TIMEOUT;
         }
     }
 
@@ -83,7 +83,7 @@ int32_t RTC_Open(S_RTC_TIME_DATA_T *sPt)
         RTC_SetDateAndTime(sPt);
     }
 
-    return 0;
+    return RTC_OK;
 }
 
 /**
@@ -1077,7 +1077,7 @@ void RTC_DynamicTamperConfig(uint32_t u32ChangeRate, uint32_t u32SeedReload, uin
   */
 uint32_t RTC_SetClockSource(uint32_t u32ClkSrc)
 {
-    uint32_t u32TrimDefault = inpw(SYS_BASE + 0x14Cul);
+    uint32_t u32TrimDefault = inpw(SYS + 0xF94ul); // need modify.
 
     if (u32ClkSrc == RTC_CLOCK_SOURCE_LXT)
     {
@@ -1090,7 +1090,7 @@ uint32_t RTC_SetClockSource(uint32_t u32ClkSrc)
     else if (u32ClkSrc == RTC_CLOCK_SOURCE_LIRC32K)
     {
         /* Load LIRC32 trim setting */
-        RTC->LXTCTL = ((RTC->LXTCTL & ~(0x1FFul << 16)) | ((u32TrimDefault & 0x1FFul) << 16));
+        RTC->TEST = ((RTC->TEST & ~(0x1FFul << 8)) | ((u32TrimDefault & 0x1FFul) << 8));
 
         /* RTC clock source is LIRC32K */
         RTC->LXTCTL |= RTC_LXTCTL_LIRC32KEN_Msk;
