@@ -70,7 +70,7 @@ extern "C"
 #define FMC_VECMAP_SIZE         0x400UL                                 /*!< VECMAP Size (1024 bytes)           \hideinitializer */
 #define FMC_PAGE_ADDR_MASK      0xFFFFE000UL                            /*!< Flash page address mask            \hideinitializer */
 #define FMC_MULTI_WORD_PROG_LEN 512UL                                   /*!< Length of multi-word program.      \hideinitializer */
-#define FMC_APPROT_BLOCK_SIZE   0x8000UL                                /*!< APROM APPROT size (32K bytes)      \hideinitializer */
+#define FMC_APWPROT_BLOCK_SIZE  0x8000UL                                /*!< APWPROT block size (32K bytes)     \hideinitializer */
 #define FMC_OTP_ENTRY_CNT       256UL                                   /*!< OTP entry number                   \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -126,6 +126,19 @@ extern "C"
 #define FMC_TIMEOUT_CHKSUM      (SystemCoreClock << 1) /*!< Get checksum command time-out 2 s   \hideinitializer */
 #define FMC_TIMEOUT_CHKALLONE   (SystemCoreClock << 1) /*!< Check-all-one command time-out 2 s  \hideinitializer */
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* FMC Error Code Constant Definitions                                                                     */
+/*---------------------------------------------------------------------------------------------------------*/
+#define FMC_OK                      (0UL)   /*!< FMC operation OK                         */
+#define FMC_ERR_TIMEOUT             (-1UL)  /*!< FMC operation timeout                    */
+#define FMC_ERR_READ_FAILED         (-2UL)  /*!< FMC read error                           */
+#define FMC_ERR_PROG_FAILED         (-2UL)  /*!< FMC program error                        */
+#define FMC_ERR_ERASE_FAILED        (-2UL)  /*!< FMC erase error                          */
+#define FMC_ERR_INVALID_PARAM       (-3UL)  /*!< FMC operation timeout                    */
+#define FMC_ERR_SC_ENABLED          (-4UL)  /*!< FMC secure conceal is enabled            */
+#define FMC_ERR_SC_INVALID_BASE     (-5UL)  /*!< FMC invalid secure conceal base address (Must be page alignment and cannot set first page of APROM */
+#define FMC_ERR_SC_INVALID_PAGECNT  (-6UL)  /*!< FMC invalid secure conceal page count    */
+
 /** @} end of group FMC_EXPORTED_CONSTANTS */
 
 
@@ -133,11 +146,9 @@ extern "C"
     @{
 */
 
-
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Macros                                                                                                 */
 /*---------------------------------------------------------------------------------------------------------*/
-
 #define FMC_SET_APROM_BOOT()         (FMC->ISPCTL &= ~FMC_ISPCTL_BS_Msk)                       /*!< Select booting from APROM  \hideinitializer */
 #define FMC_SET_LDROM_BOOT()         (FMC->ISPCTL |= FMC_ISPCTL_BS_Msk)                        /*!< Select booting from LDROM  \hideinitializer */
 #define FMC_ENABLE_AP_UPDATE()       (FMC->ISPCTL |=  FMC_ISPCTL_APUEN_Msk)                    /*!< Enable APROM update        \hideinitializer */
@@ -146,12 +157,16 @@ extern "C"
 #define FMC_DISABLE_CFG_UPDATE()     (FMC->ISPCTL &= ~FMC_ISPCTL_CFGUEN_Msk)                   /*!< Disable User Config update \hideinitializer */
 #define FMC_ENABLE_LD_UPDATE()       (FMC->ISPCTL |=  FMC_ISPCTL_LDUEN_Msk)                    /*!< Enable LDROM update        \hideinitializer */
 #define FMC_DISABLE_LD_UPDATE()      (FMC->ISPCTL &= ~FMC_ISPCTL_LDUEN_Msk)                    /*!< Disable LDROM update       \hideinitializer */
-#define FMC_DISABLE_ISP()            (FMC->ISPCTL &= ~FMC_ISPCTL_ISPEN_Msk)                    /*!< Disable ISP function       \hideinitializer */
 #define FMC_ENABLE_ISP()             (FMC->ISPCTL |=  FMC_ISPCTL_ISPEN_Msk)                    /*!< Enable ISP function        \hideinitializer */
-#define FMC_GET_FAIL_FLAG()          ((FMC->ISPCTL & FMC_ISPCTL_ISPFF_Msk) ? 1UL : 0UL)        /*!< Get ISP fail flag          \hideinitializer */
+#define FMC_DISABLE_ISP()            (FMC->ISPCTL &= ~FMC_ISPCTL_ISPEN_Msk)                    /*!< Disable ISP function       \hideinitializer */
+#define FMC_GET_FAIL_FLAG()          ((FMC->ISPCTL & FMC_ISPCTL_ISPFF_Msk) ? TRUE : FALSE)     /*!< Get ISP fail flag          \hideinitializer */
 #define FMC_CLR_FAIL_FLAG()          (FMC->ISPCTL |= FMC_ISPCTL_ISPFF_Msk)                     /*!< Clear ISP fail flag        \hideinitializer */
-#define FMC_ENABLE_APWPROT(u8Block)  (FMC->APPROT |= (1ul << u8Block))                         /*!< Enable APPROT Block        \hideinitializer */
-#define FMC_DISABLE_APWPROT(u8Block) (FMC->APPROT &= ~(1ul << u8Block))                        /*!< Disable APPROT Block       \hideinitializer */
+#define FMC_ENABLE_APWPROT(u32Bank, u32BlockMask)  (FMC->APWPROT[(u32Bank) & 0x1] |=  (u32BlockMask))    /*!< Enable APWPROT Block       \hideinitializer */
+#define FMC_DISABLE_APWPROT(u32Bank, u32BlockMask) (FMC->APWPROT[(u32Bank) & 0x1] &= ~(u32BlockMask))    /*!< Disable APWPROT Block      \hideinitializer */
+#define FMC_LOCK_APWPROT(u32Bank)      (FMC->APWPKEEP = (FMC->APWPKEEP & ~(0xFFFF << ((u32Bank) * 16))) | (0x55AA << ((u32Bank) * 16)))   /*!< Lock APWPROT (Need chip reset to unlock) \hideinitializer */
+#define FMC_IS_APWPROT_LCOKED(u32Bank) ((((FMC->APWPKEEP >> ((u32Bank) * 16)) & 0xFFFF) == 0x55AA) ? TRUE: FALSE)                         /*!< Unlock APWPROT  \hideinitializer */
+#define FMC_SET_SC_ACTIVE()            (FMC->SCACT  |= FMC_SCACT_SCACT_Msk)                          /*!< Activate secure conceal function (Need chip reset to deactivate) \hideinitializer */
+#define FMC_GET_SC_ACTIVE()            ((FMC->SCACT & FMC_SCACT_SCACT_Msk) ? TRUE : FALSE)           /*!< Get secure conceal function active flag \hideinitializer */
 /** @} end of group FMC_EXPORTED_MACROS */
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -168,16 +183,19 @@ extern int32_t  g_FMC_i32ErrCode;
 /*---------------------------------------------------------------------------------------------------------*/
 
 /**
- * @brief       Get current vector mapping address.
- * @param       None
- * @return      The current vector mapping address.
- * @details     To get VECMAP value which is the page address for remapping to vector page (0x0).
- * @note
- *              VECMAP only valid when new IAP function is enabled. (CBS = 10'b or 00'b)
- */
-__STATIC_INLINE uint32_t FMC_GetVECMAP(void)
+  * @brief Enable FMC ISP function
+  */
+__STATIC_INLINE void FMC_Open(void)
 {
-    return (FMC->ISPSTS & FMC_ISPSTS_VECMAP_Msk);
+    FMC->ISPCTL |=  FMC_ISPCTL_ISPEN_Msk;
+}
+
+/**
+  * @brief Disable FMC ISP function.
+  */
+__STATIC_INLINE void FMC_Close(void)
+{
+    FMC->ISPCTL &= ~FMC_ISPCTL_ISPEN_Msk;
 }
 
 /**
@@ -187,7 +205,7 @@ __STATIC_INLINE uint32_t FMC_GetVECMAP(void)
   * @details  The company ID of Nuvoton is fixed to be 0xDA
   *
   * @note     Global error code g_FMC_i32ErrCode
-  *           -1  Read time-out
+  *           FMC_ERR_TIMEOUT  Read time-out
   */
 __STATIC_INLINE uint32_t FMC_ReadCID(void)
 {
@@ -203,7 +221,7 @@ __STATIC_INLINE uint32_t FMC_ReadCID(void)
     {
         if (i32TimeOutCnt-- <= 0)
         {
-            g_FMC_i32ErrCode = -1;
+            g_FMC_i32ErrCode = FMC_ERR_TIMEOUT;
             return 0xFFFFFFFF;
         }
     }
@@ -218,7 +236,7 @@ __STATIC_INLINE uint32_t FMC_ReadCID(void)
   * @details  This function is used to read product ID.
   *
   * @note     Global error code g_FMC_i32ErrCode
-  *           -1  Read time-out
+  *           FMC_ERR_TIMEOUT  Read time-out
   */
 __STATIC_INLINE uint32_t FMC_ReadPID(void)
 {
@@ -234,7 +252,7 @@ __STATIC_INLINE uint32_t FMC_ReadPID(void)
     {
         if (i32TimeOutCnt-- <= 0)
         {
-            g_FMC_i32ErrCode = -1;
+            g_FMC_i32ErrCode = FMC_ERR_TIMEOUT;
             return 0xFFFFFFFF;
         }
     }
@@ -249,7 +267,7 @@ __STATIC_INLINE uint32_t FMC_ReadPID(void)
  * @details     To read out 96-bit Unique ID.
  *
  * @note        Global error code g_FMC_i32ErrCode
- *              -1  Read time-out
+ *              FMC_ERR_TIMEOUT  Read time-out
  */
 __STATIC_INLINE uint32_t FMC_ReadUID(uint8_t u8Index)
 {
@@ -266,7 +284,7 @@ __STATIC_INLINE uint32_t FMC_ReadUID(uint8_t u8Index)
     {
         if (i32TimeOutCnt-- <= 0)
         {
-            g_FMC_i32ErrCode = -1;
+            g_FMC_i32ErrCode = FMC_ERR_TIMEOUT;
             return 0xFFFFFFFF;
         }
     }
@@ -281,7 +299,7 @@ __STATIC_INLINE uint32_t FMC_ReadUID(uint8_t u8Index)
   * @details    This function is used to read unique chip ID (UCID). 0xFFFFFFFF means read failed.
   *
   * @note       Global error code g_FMC_i32ErrCode
-  *             -1  Read time-out
+  *             FMC_ERR_TIMEOUT  Read time-out
   */
 __STATIC_INLINE uint32_t FMC_ReadUCID(uint32_t u32Index)
 {
@@ -297,7 +315,7 @@ __STATIC_INLINE uint32_t FMC_ReadUCID(uint32_t u32Index)
     {
         if (i32TimeOutCnt-- <= 0)
         {
-            g_FMC_i32ErrCode = -1;
+            g_FMC_i32ErrCode = FMC_ERR_TIMEOUT;
             return 0xFFFFFFFF;
         }
     }
@@ -311,12 +329,12 @@ __STATIC_INLINE uint32_t FMC_ReadUCID(uint32_t u32Index)
  * @return      To set VECMAP to remap specified page address to 0x0.
  * @details     This function is used to set VECMAP to map specified page to vector page (0x0).
  * @retval      0   Success
- * @retval      -1  Failed
+ * @retval      FMC_ERR_TIMEOUT  Failed
  * @note
  *              VECMAP only valid when new IAP function is enabled. (CBS = 10'b or 00'b)
  *
  * @note        Global error code g_FMC_i32ErrCode
- *              -1  Command time-out
+ *              FMC_ERR_TIMEOUT  Command time-out
  */
 __STATIC_INLINE int32_t FMC_SetVectorPageAddr(uint32_t u32PageAddr)
 {
@@ -332,43 +350,55 @@ __STATIC_INLINE int32_t FMC_SetVectorPageAddr(uint32_t u32PageAddr)
     {
         if (i32TimeOutCnt-- <= 0)
         {
-            g_FMC_i32ErrCode = -1;
-            return -1;
+            g_FMC_i32ErrCode = FMC_ERR_TIMEOUT;
+            return FMC_ERR_TIMEOUT;
         }
     }
 
     return 0;
 }
 
+
+/**
+ * @brief       Get current vector mapping address.
+ * @param       None
+ * @return      The current vector mapping address.
+ * @details     To get VECMAP value which is the page address for remapping to vector page (0x0).
+ * @note
+ *              VECMAP only valid when new IAP function is enabled. (CBS = 10'b or 00'b)
+ */
+__STATIC_INLINE uint32_t FMC_GetVECMAP(void)
+{
+    return (FMC->ISPSTS & FMC_ISPSTS_VECMAP_Msk);
+}
+
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Functions                                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-extern void     FMC_ISPFF_Test(uint32_t bTRUE);
-extern void     FMC_Close(void);
-extern int32_t  FMC_ConfigXOM(uint32_t xom_num, uint32_t xom_base, uint8_t xom_page);
-extern int32_t  FMC_Erase(uint32_t u32PageAddr);
-extern int32_t  FMC_EraseConfig(uint32_t u32ConfigAddr);
-extern int32_t  FMC_Erase_Bank(uint32_t u32BankAddr);
-extern int32_t  FMC_EraseXOM(uint32_t xom_num);
-extern int32_t  FMC_GetXOMState(uint32_t xom_num);
-extern int32_t  FMC_GetBootSource(void);
-extern void     FMC_Open(void);
 extern uint32_t FMC_Read(uint32_t u32Addr);
-extern int32_t  FMC_Read_64(uint32_t u32addr, uint32_t *u32data0, uint32_t *u32data1);
-extern void     FMC_SetBootSource(int32_t i32BootSrc);
+extern int32_t  FMC_Read_64(uint32_t u32Addr, uint32_t *pu32Data0, uint32_t *pu32Data1);
 extern int32_t  FMC_Write(uint32_t u32Addr, uint32_t u32Data);
-extern int32_t  FMC_Write8Bytes(uint32_t u32addr, uint32_t u32data0, uint32_t u32data1);
+extern int32_t  FMC_Write8Bytes(uint32_t u32Addr, uint32_t u32Data0, uint32_t u32Data1);
 extern int32_t  FMC_WriteMultiple(uint32_t u32Addr, uint32_t pu32Buf[], uint32_t u32Len);
-extern int32_t  FMC_Write_OTP(uint32_t otp_num, uint32_t low_word, uint32_t high_word);
-extern int32_t  FMC_Read_OTP(uint32_t otp_num, uint32_t *low_word, uint32_t *high_word);
-extern int32_t  FMC_Lock_OTP(uint32_t otp_num);
-extern int32_t  FMC_Is_OTP_Locked(uint32_t otp_num);
+extern int32_t  FMC_Erase(uint32_t u32PageAddr);
 extern int32_t  FMC_WriteConfig(uint32_t u32ConfigAddr, uint32_t u32ConfigVal);
-extern uint32_t FMC_GetChkSum(uint32_t u32addr, uint32_t u32count);
-extern uint32_t FMC_CheckAllOne(uint32_t u32addr, uint32_t u32count);
+extern int32_t  FMC_EraseConfig(uint32_t u32ConfigAddr);
 extern int32_t  FMC_RemapBank(uint32_t u32Bank);
-extern int32_t  FMC_ConfigSecureConceal(uint32_t u32Base, uint32_t u32PageCnt, uint32_t bEnable);
-extern int32_t  FMC_SetSecureConcealActive(void);
+extern int32_t  FMC_Erase_Bank(uint32_t u32BankAddr);
+extern int32_t  FMC_ConfigXOM(uint32_t u32XomNum, uint32_t u32XomBase, uint8_t u8XomPageCnt);
+extern int32_t  FMC_GetXOMState(uint32_t u32XomNum);
+extern int32_t  FMC_EraseXOM(uint32_t u32XomNum);
+extern int32_t  FMC_GetBootSource(void);
+extern int32_t  FMC_Read_OTP(uint32_t u32OtpNum, uint32_t *pu32LowWord, uint32_t *pu32HighWord);
+extern int32_t  FMC_Write_OTP(uint32_t u32OtpNum, uint32_t u32LowWord, uint32_t u32HighWord);
+extern int32_t  FMC_Lock_OTP(uint32_t u32OtpNum);
+extern int32_t  FMC_Is_OTP_Locked(uint32_t u32OtpNum);
+extern int32_t  FMC_ConfigSecureConceal(uint32_t u32Base, uint32_t u32PageCnt, uint32_t bActiveEnable);
+
+#if 0   // TESTCHIP_ONLY not support
+extern uint32_t FMC_GetChkSum(uint32_t u32Addr, uint32_t u32count);
+extern uint32_t FMC_CheckAllOne(uint32_t u32Addr, uint32_t u32count);
+#endif  // TESTCHIP_ONLY not support
 
 /** @} end of group FMC_EXPORTED_FUNCTIONS */
 /** @} end of group FMC_Driver */
