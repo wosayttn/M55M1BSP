@@ -42,10 +42,12 @@ uint32_t TTMR_Open(TTMR_T *ttmr, uint32_t u32Mode, uint32_t u32Freq)
 {
     uint32_t u32Clk = TTMR_GetModuleClock(ttmr);
     uint32_t u32Cmpr = 0UL, u32Prescale = 0UL;
-    if(u32Freq == 0)
-			return 0 ;
+
+    if (u32Freq == 0)
+        return 0 ;
+
     /* Fastest possible ttmr working freq is (u32Clk / 2). While cmpr = 2, prescaler = 0. */
-    if(u32Freq > (u32Clk / 2UL))
+    if (u32Freq > (u32Clk / 2UL))
     {
         u32Cmpr = 2UL;
     }
@@ -53,6 +55,7 @@ uint32_t TTMR_Open(TTMR_T *ttmr, uint32_t u32Mode, uint32_t u32Freq)
     {
         u32Cmpr = u32Clk / u32Freq;
         u32Prescale = (u32Cmpr >> 24);  /* for 24 bits CMPDAT */
+
         if (u32Prescale > 0UL)
             u32Cmpr = u32Cmpr / (u32Prescale + 1UL);
     }
@@ -60,7 +63,7 @@ uint32_t TTMR_Open(TTMR_T *ttmr, uint32_t u32Mode, uint32_t u32Freq)
     ttmr->CTL = (u32Mode | u32Prescale);
     ttmr->CMP = u32Cmpr;
 
-    return(u32Clk / (u32Cmpr * (u32Prescale + 1UL)));
+    return (u32Clk / (u32Cmpr * (u32Prescale + 1UL)));
 }
 
 
@@ -100,30 +103,32 @@ void TTMR_Delay(TTMR_T *ttmr, uint32_t u32Usec)
     /* Clear current ttmr configuration */
     ttmr->CTL = 0UL;
 
-    if(u32Clk <= 1000000UL)   /* min delay is 1000 us if ttmr clock source is <= 1 MHz */
+    if (u32Clk <= 1000000UL)  /* min delay is 1000 us if ttmr clock source is <= 1 MHz */
     {
-        if(u32Usec < 1000UL)
+        if (u32Usec < 1000UL)
         {
             u32Usec = 1000UL;
         }
-        if(u32Usec > 1000000UL)
+
+        if (u32Usec > 1000000UL)
         {
             u32Usec = 1000000UL;
         }
     }
     else
     {
-        if(u32Usec < 100UL)
+        if (u32Usec < 100UL)
         {
             u32Usec = 100UL;
         }
-        if(u32Usec > 1000000UL)
+
+        if (u32Usec > 1000000UL)
         {
             u32Usec = 1000000UL;
         }
     }
 
-    if(u32Clk <= 1000000UL)
+    if (u32Clk <= 1000000UL)
     {
         u32Prescale = 0UL;
         u32NsecPerTick = 1000000000UL / u32Clk;
@@ -133,6 +138,7 @@ void TTMR_Delay(TTMR_T *ttmr, uint32_t u32Usec)
     {
         u32Cmpr = u32Usec * (u32Clk / 1000000UL);
         u32Prescale = (u32Cmpr >> 24);  /* for 24 bits CMPDAT */
+
         if (u32Prescale > 0UL)
             u32Cmpr = u32Cmpr / (u32Prescale + 1UL);
     }
@@ -142,12 +148,12 @@ void TTMR_Delay(TTMR_T *ttmr, uint32_t u32Usec)
 
     /* When system clock is faster than ttmr clock, it is possible ttmr active bit cannot set in time while we check it.
        And the while loop below return immediately, so put a tiny delay here allowing ttmr start counting and raise active flag. */
-    for(; delay > 0UL; delay--)
+    for (; delay > 0UL; delay--)
     {
         __NOP();
     }
 
-    while(ttmr->CTL & TTMR_CTL_ACTSTS_Msk)
+    while (ttmr->CTL & TTMR_CTL_ACTSTS_Msk)
     {
         ;
     }
@@ -168,16 +174,16 @@ uint32_t TTMR_GetModuleClock(TTMR_T *ttmr)
     uint32_t u32Src = 0UL, u32Clk;
     const uint32_t au32Clk[] = {0UL, __LXT, __LIRC, __MIRC, __HIRC};
 
-    if(ttmr == TTMR0)
+    if (ttmr == TTMR0)
     {
         u32Src = (CLK->TTMRSEL & CLK_TTMRSEL_TTMR0SEL_Msk) >> CLK_TTMRSEL_TTMR0SEL_Pos;
     }
-    else if(ttmr == TTMR1)
+    else if (ttmr == TTMR1)
     {
         u32Src = (CLK->TTMRSEL & CLK_TTMRSEL_TTMR1SEL_Msk) >> CLK_TTMRSEL_TTMR1SEL_Pos;
     }
 
-    if(u32Src == 0UL)
+    if (u32Src == 0UL)
     {
         u32Clk = CLK_GetPCLK4Freq();
     }
@@ -199,7 +205,7 @@ uint32_t TTMR_GetModuleClock(TTMR_T *ttmr)
   */
 void TTMR_SetTriggerTarget(TTMR_T *ttmr, uint32_t u32Mask)
 {
-    ttmr->TRGCTL = (ttmr->TRGCTL & ~( TTMR_TRGCTL_TRGEN_Msk | TTMR_TRGCTL_TRGLPPDMA_Msk)) | u32Mask;
+    ttmr->TRGCTL = (ttmr->TRGCTL & ~(TTMR_TRGCTL_TRGEN_Msk | TTMR_TRGCTL_TRGLPPDMA_Msk)) | u32Mask;
 }
 
 /**
@@ -219,10 +225,12 @@ int32_t TTMR_ResetCounter(TTMR_T *ttmr)
     ttmr->CNT = 0UL;
     /* Takes 2~3 ECLKs to reset timer counter */
     u32Delay = (SystemCoreClock / TTMR_GetModuleClock(ttmr)) * 3;
-    while(((ttmr->CNT&TTMR_CNT_RSTACT_Msk) == TTMR_CNT_RSTACT_Msk) && (--u32Delay))
+
+    while (((ttmr->CNT & TTMR_CNT_RSTACT_Msk) == TTMR_CNT_RSTACT_Msk) && (--u32Delay))
     {
         __NOP();
     }
+
     return u32Delay > 0 ? TTMR_OK : TTMR_ERR_TIMEOUT;
 }
 

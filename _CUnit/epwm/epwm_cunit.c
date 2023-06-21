@@ -89,10 +89,10 @@ int EPWM_Test_Clean(void)
     CLK_DisableModuleClock(EPWM1_MODULE);
     return 0;
 }
-void Func_EPWM_Start() 
+void Func_EPWM_Start()
 {
     uint32_t u32TestCh = 0, j = 0;
-    
+
     /* Reset EPWM */
     SYS_ResetModule(SYS_EPWM0RST);
     SYS_ResetModule(SYS_EPWM1RST);
@@ -104,7 +104,7 @@ void Func_EPWM_Start()
         {
             EPWM_Start(g_apEPWMModule[j], 1 << u32TestCh);
             CU_ASSERT_EQUAL(g_apEPWMModule[j]->CNTEN & ((1 << EPWM_CNTEN_CNTEN0_Pos) << u32TestCh), 1 << u32TestCh);
-          
+
             EPWM_ForceStop(g_apEPWMModule[j], 1 << u32TestCh);
             CU_ASSERT_EQUAL(g_apEPWMModule[j]->CNTEN & ((1 << EPWM_CNTEN_CNTEN0_Pos) << u32TestCh), 0 << u32TestCh);
         }
@@ -114,53 +114,55 @@ void Func_EPWM_Start()
         {
             EPWM_Start(g_apEPWMModule[j], 1 << u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CNTEN, 0x0000003F);
 
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_ForceStop(g_apEPWMModule[j], 1 << u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CNTEN, 0);
 
         //test case 3: enable/disable multiple channels each time
         EPWM_Start(g_apEPWMModule[j], EPWM_CH_0_MASK | EPWM_CH_1_MASK);
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CNTEN, 0x00000003);
-        
+
         EPWM_ForceStop(g_apEPWMModule[j], EPWM_CH_0_MASK | EPWM_CH_1_MASK);
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CNTEN, 0);
-        
+
         EPWM_Start(g_apEPWMModule[j], EPWM_CH_0_MASK | EPWM_CH_1_MASK | EPWM_CH_2_MASK);
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CNTEN, 0x00000007);
-        
+
         EPWM_ForceStop(g_apEPWMModule[j], EPWM_CH_0_MASK | EPWM_CH_1_MASK | EPWM_CH_2_MASK);
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CNTEN, 0);
-        
+
         EPWM_Start(g_apEPWMModule[j], EPWM_CH_0_MASK | EPWM_CH_1_MASK | EPWM_CH_2_MASK | EPWM_CH_3_MASK);
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CNTEN, 0x000000F);
-        
+
         EPWM_ForceStop(g_apEPWMModule[j], EPWM_CH_0_MASK | EPWM_CH_1_MASK | EPWM_CH_2_MASK | EPWM_CH_3_MASK);
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CNTEN, 0);
 
         EPWM_Start(g_apEPWMModule[j], EPWM_CH_0_MASK | EPWM_CH_1_MASK | EPWM_CH_2_MASK | EPWM_CH_3_MASK | EPWM_CH_4_MASK);
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CNTEN, 0x000001F);
-        
+
         EPWM_ForceStop(g_apEPWMModule[j], EPWM_CH_0_MASK | EPWM_CH_1_MASK | EPWM_CH_2_MASK | EPWM_CH_3_MASK | EPWM_CH_4_MASK);
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CNTEN, 0);
 
         EPWM_Start(g_apEPWMModule[j], EPWM_CH_0_MASK | EPWM_CH_1_MASK | EPWM_CH_2_MASK | EPWM_CH_3_MASK | EPWM_CH_4_MASK | EPWM_CH_5_MASK);
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CNTEN, 0x000003F);
-        
+
         EPWM_ForceStop(g_apEPWMModule[j], EPWM_CH_0_MASK | EPWM_CH_1_MASK | EPWM_CH_2_MASK | EPWM_CH_3_MASK | EPWM_CH_4_MASK | EPWM_CH_5_MASK);
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CNTEN, 0);
     }
 }
 
-void Func_EPWM_Stop() 
+void Func_EPWM_Stop()
 {
     uint32_t u32TestCh = 0, x = 0;
-    
+
     Func_EPWM_Start();
-    
+
     /* Reset EPWM */
     SYS_ResetModule(SYS_EPWM0RST);
     SYS_ResetModule(SYS_EPWM1RST);
@@ -172,36 +174,37 @@ void Func_EPWM_Stop()
         {
             EPWM_SET_CNR(g_apEPWMModule[x], u32TestCh, 0x100);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->PERIOD[u32TestCh], 0x100);
-            
+
             EPWM_Stop(g_apEPWMModule[x], 1 << u32TestCh);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->PERIOD[u32TestCh], 0);
         }
 
         //test case 2: enable/disable one channel each time, then check at final action=> ignore
-    //     for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
-    //     {
-    //         EPWM_SET_CNR(g_apEPWMModule[x], u32TestCh, 0x100);
-    //     }
+        //     for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
+        //     {
+        //         EPWM_SET_CNR(g_apEPWMModule[x], u32TestCh, 0x100);
+        //     }
 
-    //     for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
-    //     {
-    //         EPWM_Stop(g_apEPWMModule[x], 1 << u32TestCh);
-    //     }
-    //     CU_ASSERT_EQUAL(g_apEPWMModule[x]->CNR0, 0);
-    //     CU_ASSERT_EQUAL(g_apEPWMModule[x]->CNR1, 0);
-    //     CU_ASSERT_EQUAL(g_apEPWMModule[x]->CNR2, 0);
-    //     CU_ASSERT_EQUAL(g_apEPWMModule[x]->CNR3, 0);
+        //     for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
+        //     {
+        //         EPWM_Stop(g_apEPWMModule[x], 1 << u32TestCh);
+        //     }
+        //     CU_ASSERT_EQUAL(g_apEPWMModule[x]->CNR0, 0);
+        //     CU_ASSERT_EQUAL(g_apEPWMModule[x]->CNR1, 0);
+        //     CU_ASSERT_EQUAL(g_apEPWMModule[x]->CNR2, 0);
+        //     CU_ASSERT_EQUAL(g_apEPWMModule[x]->CNR3, 0);
 
         //test case 3: enable/disable multiple channels each time
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_SET_CNR(g_apEPWMModule[x], u32TestCh, 0x100);
         }
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->PERIOD[u32TestCh], 0x100);
         }
-        
+
         EPWM_Stop(g_apEPWMModule[x], EPWM_CH_0_MASK | EPWM_CH_1_MASK | EPWM_CH_2_MASK | EPWM_CH_3_MASK | EPWM_CH_4_MASK | EPWM_CH_5_MASK);
 
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
@@ -211,12 +214,12 @@ void Func_EPWM_Stop()
     }
 }
 
-void Func_EPWM_EnableADCTrigger() 
+void Func_EPWM_EnableADCTrigger()
 {
     uint32_t u32TestCh = 0, x = 0;
-    
+
     Func_EPWM_Start();
-    
+
     /* Reset EPWM */
     SYS_ResetModule(SYS_EPWM0RST);
     SYS_ResetModule(SYS_EPWM1RST);
@@ -226,7 +229,7 @@ void Func_EPWM_EnableADCTrigger()
         //test case 1: enable/disable one channel each time, then check each action
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
-            if(u32TestCh < 4)
+            if (u32TestCh < 4)
             {
                 EPWM_EnableADCTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRG_ADC_EVEN_ZERO);
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->EADCTS0 & ((EPWM_EADCTS0_TRGEN0_Msk | EPWM_EADCTS0_TRGSEL0_Msk) << (u32TestCh * 8)), 0x80 << (u32TestCh * 8));
@@ -453,6 +456,7 @@ void Func_EPWM_EnableADCTrigger()
         {
             EPWM_EnableADCTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRG_ADC_CH_0_FREE_CMP_UP);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->EADCTS0, 0x8A8A8A8A);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->EADCTS1, 0x8A8A);
 
@@ -460,11 +464,12 @@ void Func_EPWM_EnableADCTrigger()
         {
             EPWM_DisableADCTrigger(g_apEPWMModule[x], u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->EADCTS0, 0x0A0A0A0A);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->EADCTS1, 0x0A0A);
     }
 }
-void Func_EPWM_EnableCapture() 
+void Func_EPWM_EnableCapture()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -480,16 +485,17 @@ void Func_EPWM_EnableCapture()
             EPWM_EnableCapture(g_apEPWMModule[x], 1 << u32TestCh);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPINEN & (EPWM_CAPINEN_CAPINEN0_Msk << u32TestCh), 1 << u32TestCh);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPCTL & (EPWM_CAPCTL_CAPEN0_Msk << u32TestCh), 1 << u32TestCh);
-            EPWM_DisableCapture(g_apEPWMModule[x], 1 <<u32TestCh);
+            EPWM_DisableCapture(g_apEPWMModule[x], 1 << u32TestCh);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPINEN & (EPWM_CAPINEN_CAPINEN0_Msk << u32TestCh), 0 << u32TestCh);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPCTL & (EPWM_CAPCTL_CAPEN0_Msk << u32TestCh), 0 << u32TestCh);
         }
-        
+
         //test case 2: enable/disable one channel each time, then check at final action
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_EnableCapture(g_apEPWMModule[x], 1 << u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPINEN, 0x3F);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPCTL, 0x3F);
 
@@ -497,6 +503,7 @@ void Func_EPWM_EnableCapture()
         {
             EPWM_DisableCapture(g_apEPWMModule[x], 1 << u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPINEN, 0);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPCTL, 0);
 
@@ -506,7 +513,7 @@ void Func_EPWM_EnableCapture()
             EPWM_EnableCapture(g_apEPWMModule[x], 7 << u32TestCh);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPINEN & (7 << u32TestCh), 7 << u32TestCh);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPCTL & (7 << u32TestCh), 7 << u32TestCh);
-            
+
             EPWM_DisableCapture(g_apEPWMModule[x], 7 << u32TestCh);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPINEN, 0);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPCTL, 0);
@@ -514,7 +521,7 @@ void Func_EPWM_EnableCapture()
     }
 }
 
-void Func_EPWM_EnableOutput() 
+void Func_EPWM_EnableOutput()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -538,11 +545,14 @@ void Func_EPWM_EnableOutput()
         {
             EPWM_EnableOutput(g_apEPWMModule[x], 1 << u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->POEN, 0x3F);
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_DisableOutput(g_apEPWMModule[x], 1 << u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->POEN, 0);
 
         //test case 3: enable/disable multiple channels each time
@@ -550,14 +560,14 @@ void Func_EPWM_EnableOutput()
         {
             EPWM_EnableOutput(g_apEPWMModule[x], 7 << u32TestCh);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->POEN, 7 << u32TestCh);
-            
+
             EPWM_DisableOutput(g_apEPWMModule[x], 7 << u32TestCh);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->POEN, 0);
         }
     }
 }
 
-void Func_EPWM_EnablePDMA() 
+void Func_EPWM_EnablePDMA()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -573,52 +583,67 @@ void Func_EPWM_EnablePDMA()
             uint32_t u32IsOddCh;
             u32IsOddCh = u32TestCh % 2;
             EPWM_EnablePDMA(g_apEPWMModule[x], u32TestCh, TRUE, EPWM_CAPTURE_PDMA_RISING_FALLING_LATCH);
-            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh/2*8)), ((u32IsOddCh << 4) | (1 << 3) | (3 << 1) | (1 << 0)) << (u32TestCh/2*8));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh / 2 * 8)),
+                            ((u32IsOddCh << 4) | (1 << 3) | (3 << 1) | (1 << 0)) << (u32TestCh / 2 * 8));
             EPWM_DisablePDMA(g_apEPWMModule[x], u32TestCh);
-            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh/2*8)), ((u32IsOddCh << 4) | (1 << 3) | (3 << 1) | (0 << 0)) << (u32TestCh/2*8));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh / 2 * 8)),
+                            ((u32IsOddCh << 4) | (1 << 3) | (3 << 1) | (0 << 0)) << (u32TestCh / 2 * 8));
 
             EPWM_EnablePDMA(g_apEPWMModule[x], u32TestCh, FALSE, EPWM_CAPTURE_PDMA_RISING_FALLING_LATCH);
-            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh/2*8)), ((u32IsOddCh << 4) | (0 << 3) | (3 << 1) | (1 << 0)) << (u32TestCh/2*8));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh / 2 * 8)),
+                            ((u32IsOddCh << 4) | (0 << 3) | (3 << 1) | (1 << 0)) << (u32TestCh / 2 * 8));
             EPWM_DisablePDMA(g_apEPWMModule[x], u32TestCh);
-            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh/2*8)), ((u32IsOddCh << 4) | (0 << 3) | (3 << 1) | (0 << 0)) << (u32TestCh/2*8));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh / 2 * 8)),
+                            ((u32IsOddCh << 4) | (0 << 3) | (3 << 1) | (0 << 0)) << (u32TestCh / 2 * 8));
 
             EPWM_EnablePDMA(g_apEPWMModule[x], u32TestCh, TRUE, EPWM_CAPTURE_PDMA_RISING_LATCH);
-            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh/2*8)), ((u32IsOddCh << 4) | (1 << 3) | (1 << 1) | (1 << 0)) << (u32TestCh/2*8));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh / 2 * 8)),
+                            ((u32IsOddCh << 4) | (1 << 3) | (1 << 1) | (1 << 0)) << (u32TestCh / 2 * 8));
             EPWM_DisablePDMA(g_apEPWMModule[x], u32TestCh);
-            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh/2*8)), ((u32IsOddCh << 4) | (1 << 3) | (1 << 1) | (0 << 0)) << (u32TestCh/2*8));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh / 2 * 8)),
+                            ((u32IsOddCh << 4) | (1 << 3) | (1 << 1) | (0 << 0)) << (u32TestCh / 2 * 8));
 
             EPWM_EnablePDMA(g_apEPWMModule[x], u32TestCh, FALSE, EPWM_CAPTURE_PDMA_RISING_LATCH);
-            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh/2*8)), ((u32IsOddCh << 4) | (0 << 3) | (1 << 1) | (1 << 0)) << (u32TestCh/2*8));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh / 2 * 8)),
+                            ((u32IsOddCh << 4) | (0 << 3) | (1 << 1) | (1 << 0)) << (u32TestCh / 2 * 8));
             EPWM_DisablePDMA(g_apEPWMModule[x], u32TestCh);
-            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh/2*8)), ((u32IsOddCh << 4) | (0 << 3) | (1 << 1) | (0 << 0)) << (u32TestCh/2*8));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh / 2 * 8)),
+                            ((u32IsOddCh << 4) | (0 << 3) | (1 << 1) | (0 << 0)) << (u32TestCh / 2 * 8));
 
             EPWM_EnablePDMA(g_apEPWMModule[x], u32TestCh, TRUE, EPWM_CAPTURE_PDMA_FALLING_LATCH);
-            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh/2*8)), ((u32IsOddCh << 4) | (1 << 3) | (2 << 1) | (1 << 0)) << (u32TestCh/2*8));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh / 2 * 8)),
+                            ((u32IsOddCh << 4) | (1 << 3) | (2 << 1) | (1 << 0)) << (u32TestCh / 2 * 8));
             EPWM_DisablePDMA(g_apEPWMModule[x], u32TestCh);
-            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh/2*8)), ((u32IsOddCh << 4) | (1 << 3) | (2 << 1) | (0 << 0)) << (u32TestCh/2*8));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh / 2 * 8)),
+                            ((u32IsOddCh << 4) | (1 << 3) | (2 << 1) | (0 << 0)) << (u32TestCh / 2 * 8));
 
             EPWM_EnablePDMA(g_apEPWMModule[x], u32TestCh, FALSE, EPWM_CAPTURE_PDMA_FALLING_LATCH);
-            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh/2*8)), ((u32IsOddCh << 4) | (0 << 3) | (2 << 1) | (1 << 0)) << (u32TestCh/2*8));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh / 2 * 8)),
+                            ((u32IsOddCh << 4) | (0 << 3) | (2 << 1) | (1 << 0)) << (u32TestCh / 2 * 8));
             EPWM_DisablePDMA(g_apEPWMModule[x], u32TestCh);
-            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh/2*8)), ((u32IsOddCh << 4) | (0 << 3) | (2 << 1) | (0 << 0)) << (u32TestCh/2*8));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL & ((EPWM_PDMACTL_CHSEL0_1_Msk | EPWM_PDMACTL_CAPORD0_1_Msk | EPWM_PDMACTL_CAPMOD0_1_Msk | EPWM_PDMACTL_CHEN0_1_Msk) << (u32TestCh / 2 * 8)),
+                            ((u32IsOddCh << 4) | (0 << 3) | (2 << 1) | (0 << 0)) << (u32TestCh / 2 * 8));
         }
-        
+
         //test case 2: enable/disable one channel each time, then check at final action
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_EnablePDMA(g_apEPWMModule[x], u32TestCh, TRUE, EPWM_CAPTURE_PDMA_RISING_FALLING_LATCH);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL, 0x1F1F1F);
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_DisablePDMA(g_apEPWMModule[x], u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->PDMACTL, 0x1E1E1E);
 
     }
 }
 
-void Func_EPWM_EnableDeadZone() 
+void Func_EPWM_EnableDeadZone()
 {
     uint32_t x = 0;
 
@@ -644,7 +669,7 @@ void Func_EPWM_EnableDeadZone()
         EPWM_DisableRisingDeadZone(g_apEPWMModule[x], 0);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->DTCTL, 0);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->RDTCNT[0], 0xFFF);
-        
+
         EPWM_EnableFallingDeadZone(g_apEPWMModule[x], 1, 0xFFF);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->DTCTL, BIT8);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->FDTCNT[0], 0xFFF);
@@ -670,7 +695,7 @@ void Func_EPWM_EnableDeadZone()
         EPWM_DisableRisingDeadZone(g_apEPWMModule[x], 2);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->DTCTL, 0);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->RDTCNT[1], 0xFFF);
-        
+
         EPWM_EnableFallingDeadZone(g_apEPWMModule[x], 3, 0xFFF);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->DTCTL, BIT9);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->FDTCNT[1], 0xFFF);
@@ -696,7 +721,7 @@ void Func_EPWM_EnableDeadZone()
         EPWM_DisableRisingDeadZone(g_apEPWMModule[x], 4);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->DTCTL, 0);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->RDTCNT[2], 0xFFF);
-        
+
         EPWM_EnableFallingDeadZone(g_apEPWMModule[x], 5, 0xFFF);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->DTCTL, BIT10);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->FDTCNT[2], 0xFFF);
@@ -723,14 +748,14 @@ void Func_EPWM_EnableDeadZone()
         EPWM_EnableRisingDeadZone(g_apEPWMModule[x], 3, 0xA5);
         EPWM_EnableRisingDeadZone(g_apEPWMModule[x], 4, 0xA5);
         EPWM_EnableRisingDeadZone(g_apEPWMModule[x], 5, 0xA5);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->DTCTL, BIT10|BIT9|BIT8|BIT2|BIT1|BIT0);
+        CU_ASSERT_EQUAL(g_apEPWMModule[x]->DTCTL, BIT10 | BIT9 | BIT8 | BIT2 | BIT1 | BIT0);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->FDTCNT[0], 0x5A);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->FDTCNT[1], 0x5A);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->FDTCNT[2], 0x5A);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->RDTCNT[0], 0xA5);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->RDTCNT[1], 0xA5);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->RDTCNT[2], 0xA5);
-        
+
         EPWM_DisableRisingDeadZone(g_apEPWMModule[x], 0);
         EPWM_DisableRisingDeadZone(g_apEPWMModule[x], 1);
         EPWM_DisableRisingDeadZone(g_apEPWMModule[x], 2);
@@ -753,7 +778,7 @@ void Func_EPWM_EnableDeadZone()
     }
 }
 
-void Func_EPWM_EnableCaptureInt() 
+void Func_EPWM_EnableCaptureInt()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -776,21 +801,25 @@ void Func_EPWM_EnableCaptureInt()
             EPWM_DisableCaptureInt(g_apEPWMModule[x], u32TestCh, EPWM_CAPTURE_INT_FALLING_LATCH);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPIEN, 0);
         }
+
         //test case 2: enable/disable one channel each time, then check at final action
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_EnableCaptureInt(g_apEPWMModule[x], u32TestCh, EPWM_CAPTURE_INT_RISING_LATCH | EPWM_CAPTURE_INT_FALLING_LATCH);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPIEN, 0x3F3F);
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_DisableCaptureInt(g_apEPWMModule[x], u32TestCh, EPWM_CAPTURE_INT_RISING_LATCH | EPWM_CAPTURE_INT_FALLING_LATCH);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPIEN, 0);
     }
 }
 
-void Func_EPWM_EnableDutyInt() 
+void Func_EPWM_EnableDutyInt()
 {
     uint32_t u32TestCh = 0, x = 0;
     uint32_t au32RegCheck[6] = {0x01010000, 0x03030000, 0x07070000, 0x0F0F0000, 0x1F1F0000, 0x3F3F0000};
@@ -822,6 +851,7 @@ void Func_EPWM_EnableDutyInt()
             EPWM_EnableDutyInt(g_apEPWMModule[x], u32TestCh, EPWM_DUTY_INT_DOWN_COUNT_MATCH_CMP | EPWM_DUTY_INT_UP_COUNT_MATCH_CMP);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->INTEN0, au32RegCheck[u32TestCh]);
         }
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_DisableDutyInt(g_apEPWMModule[x], u32TestCh);
@@ -830,7 +860,7 @@ void Func_EPWM_EnableDutyInt()
     }
 }
 
-void Func_EPWM_EnablePeriodInt() 
+void Func_EPWM_EnablePeriodInt()
 {
     uint32_t u32TestCh = 0, x = 0;
     uint32_t au32RegCheck[6] = {0x00000100, 0x00000300, 0x00000700, 0x00000F00, 0x00001F00, 0x00003F00};
@@ -857,6 +887,7 @@ void Func_EPWM_EnablePeriodInt()
             EPWM_EnablePeriodInt(g_apEPWMModule[x], u32TestCh, NULL);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->INTEN0, au32RegCheck[u32TestCh]);
         }
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_DisablePeriodInt(g_apEPWMModule[x], u32TestCh);
@@ -865,7 +896,7 @@ void Func_EPWM_EnablePeriodInt()
     }
 }
 
-void Func_EPWM_ENABLE_OUTPUT_INVERTER() 
+void Func_EPWM_ENABLE_OUTPUT_INVERTER()
 {
     uint32_t u32TestCh = 0, j = 0;
     uint32_t au32RegWrite[7] = {0x0000003F, 0x0000001F, 0x0000000F, 0x00000007, 0x00000003, 0x00000001, 0};
@@ -892,7 +923,7 @@ void Func_EPWM_ENABLE_OUTPUT_INVERTER()
     }
 }
 
-void Func_EPWM_SET_PRESCALER() 
+void Func_EPWM_SET_PRESCALER()
 {
     uint32_t u32TestCh = 0, x = 0;
     uint32_t u32PrescalerPatternIdx = 0, u32PrescalerPatternCount = 0, u32PrescalerPatternData = 0;
@@ -901,7 +932,7 @@ void Func_EPWM_SET_PRESCALER()
     SYS_ResetModule(SYS_EPWM0RST);
     SYS_ResetModule(SYS_EPWM1RST);
 
-    u32PrescalerPatternCount = sizeof(TwelveBitsPatternTable)/sizeof(uint32_t);
+    u32PrescalerPatternCount = sizeof(TwelveBitsPatternTable) / sizeof(uint32_t);
 
     for (x = 0; x < EPWM_MODULE_NUM; x++)
     {
@@ -918,7 +949,7 @@ void Func_EPWM_SET_PRESCALER()
     }
 }
 
-void Func_EPWM_SET_CMR() 
+void Func_EPWM_SET_CMR()
 {
     uint32_t u32TestCh = 0, x = 0;
     uint32_t u32PrescalerPatternIdx = 0, u32PrescalerPatternCount = 0, u32PrescalerPatternData = 0;
@@ -927,7 +958,7 @@ void Func_EPWM_SET_CMR()
     SYS_ResetModule(SYS_EPWM0RST);
     SYS_ResetModule(SYS_EPWM1RST);
 
-    u32PrescalerPatternCount = sizeof(SixteenBitsPatternTable)/sizeof(uint32_t);
+    u32PrescalerPatternCount = sizeof(SixteenBitsPatternTable) / sizeof(uint32_t);
 
     for (x = 0; x < EPWM_MODULE_NUM; x++)
     {
@@ -941,13 +972,13 @@ void Func_EPWM_SET_CMR()
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->CMPDAT[u32TestCh] & EPWM_CMPDAT0_CMP_Msk, u32PrescalerPatternData);
 
                 EPWM_SET_CNR(g_apEPWMModule[x], u32TestCh, u32PrescalerPatternData);
-                CU_ASSERT_EQUAL(g_apEPWMModule[x]->PERIOD[u32TestCh] & EPWM_PERIOD0_PERIOD_Msk, u32PrescalerPatternData);            
+                CU_ASSERT_EQUAL(g_apEPWMModule[x]->PERIOD[u32TestCh] & EPWM_PERIOD0_PERIOD_Msk, u32PrescalerPatternData);
             }
         }
     }
 }
 
-void Func_EPWM_SET_ALIGNED_TYPE() 
+void Func_EPWM_SET_ALIGNED_TYPE()
 {
     uint32_t u32TestCh = 0, j = 0;
     uint32_t au32ChMsk[6] = {0x00000001, 0x00000003, 0x00000007, 0x0000000F, 0x0000001F, 0x0000003F};
@@ -965,7 +996,7 @@ void Func_EPWM_SET_ALIGNED_TYPE()
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CTL1 & 2, 2);
         EPWM_SET_ALIGNED_TYPE(g_apEPWMModule[j], EPWM_CH_0_MASK, EPWM_EDGE_ALIGNED);
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CTL1 & 1, 1);
-        
+
         EPWM_SET_ALIGNED_TYPE(g_apEPWMModule[j], EPWM_CH_1_MASK, EPWM_CENTER_ALIGNED);
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CTL1 & (2 << 2), 2 << 2);
         EPWM_SET_ALIGNED_TYPE(g_apEPWMModule[j], EPWM_CH_1_MASK, EPWM_EDGE_ALIGNED);
@@ -996,23 +1027,26 @@ void Func_EPWM_SET_ALIGNED_TYPE()
         {
             EPWM_SET_ALIGNED_TYPE(g_apEPWMModule[j], 1 << u32TestCh, EPWM_EDGE_ALIGNED);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CTL1, 0x555);
 
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_SET_ALIGNED_TYPE(g_apEPWMModule[j], 1 << u32TestCh, EPWM_CENTER_ALIGNED);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[j]->CTL1, 0xAAA);
-        
+
         /* clear CTL1 register value */
         g_apEPWMModule[j]->CTL1 = 0;
-        
+
         //test case 3: enable/disable multiple channels each time
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_SET_ALIGNED_TYPE(g_apEPWMModule[j], au32ChMsk[u32TestCh], EPWM_EDGE_ALIGNED);
             CU_ASSERT_EQUAL(g_apEPWMModule[j]->CTL1, au32RegCheck1[u32TestCh]);
         }
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_SET_ALIGNED_TYPE(g_apEPWMModule[j], au32ChMsk[u32TestCh], EPWM_CENTER_ALIGNED);
@@ -1021,7 +1055,7 @@ void Func_EPWM_SET_ALIGNED_TYPE()
     }
 }
 
-void Func_EPWM_ENABLE_COMPLEMENTARY_MODE() 
+void Func_EPWM_ENABLE_COMPLEMENTARY_MODE()
 {
     uint32_t x = 0;
 
@@ -1032,13 +1066,13 @@ void Func_EPWM_ENABLE_COMPLEMENTARY_MODE()
     for (x = 0; x < EPWM_MODULE_NUM; x++)
     {
         EPWM_ENABLE_COMPLEMENTARY_MODE(g_apEPWMModule[x]);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->CTL1 & (0x7ul<<EPWM_CTL1_OUTMODE0_Pos), 0x07000000);
+        CU_ASSERT_EQUAL(g_apEPWMModule[x]->CTL1 & (0x7ul << EPWM_CTL1_OUTMODE0_Pos), 0x07000000);
         EPWM_DISABLE_COMPLEMENTARY_MODE(g_apEPWMModule[x]);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->CTL1 & (0x7ul<<EPWM_CTL1_OUTMODE0_Pos), 0);
+        CU_ASSERT_EQUAL(g_apEPWMModule[x]->CTL1 & (0x7ul << EPWM_CTL1_OUTMODE0_Pos), 0);
     }
 }
 
-void Func_EPWM_ENABLE_GROUP_MODE() 
+void Func_EPWM_ENABLE_GROUP_MODE()
 {
     uint32_t x = 0;
 
@@ -1055,7 +1089,7 @@ void Func_EPWM_ENABLE_GROUP_MODE()
     }
 }
 
-void Func_EPWM_ENABLE_TIMER_SYNC() 
+void Func_EPWM_ENABLE_TIMER_SYNC()
 {
     uint32_t u32TestCh = 0, j = 0;
     uint32_t au32RegCheck[6] = {0x1, 0x3, 0x7, 0xF, 0x1F, 0x3F};
@@ -1082,6 +1116,7 @@ void Func_EPWM_ENABLE_TIMER_SYNC()
             EPWM_ENABLE_TIMER_SYNC(g_apEPWMModule[j], 1 << u32TestCh, EPWM_SSCTL_SSRC_EPWM0);
             CU_ASSERT_EQUAL(g_apEPWMModule[j]->SSCTL, au32RegCheck[u32TestCh]);
         }
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_DISABLE_TIMER_SYNC(g_apEPWMModule[j], 1 << u32TestCh);
@@ -1090,7 +1125,7 @@ void Func_EPWM_ENABLE_TIMER_SYNC()
     }
 }
 
-void Func_EPWM_MASK_OUTPUT() 
+void Func_EPWM_MASK_OUTPUT()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -1110,7 +1145,7 @@ void Func_EPWM_MASK_OUTPUT()
     }
 }
 
-void Func_EPWM_SET_FTCMR() 
+void Func_EPWM_SET_FTCMR()
 {
     uint32_t u32TestCh = 0, x = 0;
     uint32_t u32PatternIdx = 0, u32PatternCount = 0, u32PatternData = 0;
@@ -1119,7 +1154,7 @@ void Func_EPWM_SET_FTCMR()
     SYS_ResetModule(SYS_EPWM0RST);
     SYS_ResetModule(SYS_EPWM1RST);
 
-    u32PatternCount = sizeof(SixteenBitsPatternTable)/sizeof(uint32_t);
+    u32PatternCount = sizeof(SixteenBitsPatternTable) / sizeof(uint32_t);
 
     for (x = 0; x < EPWM_MODULE_NUM; x++)
     {
@@ -1130,13 +1165,13 @@ void Func_EPWM_SET_FTCMR()
                 u32PatternData = SixteenBitsPatternTable[u32PatternIdx];
 
                 EPWM_SET_FTCMR(g_apEPWMModule[x], u32TestCh, u32PatternData);
-                CU_ASSERT_EQUAL(*(__IO uint32_t *) (&(g_apEPWMModule[x]->FTCMPDAT[0]) + ((u32TestCh) >> 1)) & EPWM_CMPDAT0_CMP_Msk, u32PatternData);
+                CU_ASSERT_EQUAL(*(__IO uint32_t *)(&(g_apEPWMModule[x]->FTCMPDAT[0]) + ((u32TestCh) >> 1)) & EPWM_CMPDAT0_CMP_Msk, u32PatternData);
             }
         }
     }
 }
 
-void Func_EPWM_SET_LOAD_WINDOW() 
+void Func_EPWM_SET_LOAD_WINDOW()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -1153,19 +1188,22 @@ void Func_EPWM_SET_LOAD_WINDOW()
             EPWM_SET_PRESCALER(g_apEPWMModule[x], u32TestCh, 500);
             EPWM_EnableLoadMode(g_apEPWMModule[x], u32TestCh, EPWM_LOAD_MODE_WINDOW);
         }
-        
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             g_apEPWMModule[x]->INTSTS0 = 0x3F3F3F3F;
             EPWM_Start(g_apEPWMModule[x], 1 << u32TestCh);
             EPWM_SET_LOAD_WINDOW(g_apEPWMModule[x], 1 << u32TestCh);
-            CU_ASSERT_EQUAL(g_apEPWMModule[x]->LOAD, 1 << u32TestCh);	// added 
-            while((g_apEPWMModule[x]->INTSTS0 & ((1 << EPWM_INTSTS0_CMPUIF0_Pos) << u32TestCh)) == 0){};
-        ////    while(EPWM_GetDutyIntFlag(g_apEPWMModule[x], u32TestCh) == 0);
-		      	CU_ASSERT_EQUAL(g_apEPWMModule[x]->LOAD, 1 << u32TestCh);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->LOAD, 1 << u32TestCh);   // added
+
+            while ((g_apEPWMModule[x]->INTSTS0 & ((1 << EPWM_INTSTS0_CMPUIF0_Pos) << u32TestCh)) == 0) {};
+
+            ////    while(EPWM_GetDutyIntFlag(g_apEPWMModule[x], u32TestCh) == 0);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->LOAD, 1 << u32TestCh);
 
             //The load bit by hardware cleared when current EPWM period end
-            while((g_apEPWMModule[x]->INTSTS0 & ((1 << EPWM_INTSTS0_PIF0_Pos) << u32TestCh)) != ((1 << EPWM_INTSTS0_PIF0_Pos) << u32TestCh));
+            while ((g_apEPWMModule[x]->INTSTS0 & ((1 << EPWM_INTSTS0_PIF0_Pos) << u32TestCh)) != ((1 << EPWM_INTSTS0_PIF0_Pos) << u32TestCh));
+
             EPWM_Stop(g_apEPWMModule[x], 1 << u32TestCh);
             EPWM_ForceStop(g_apEPWMModule[x], 1 << u32TestCh);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->LOAD, 0);
@@ -1173,7 +1211,7 @@ void Func_EPWM_SET_LOAD_WINDOW()
     }
 }
 
-void Func_EPWM_SET_DEADZONE_CLK_SRC() 
+void Func_EPWM_SET_DEADZONE_CLK_SRC()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -1183,20 +1221,20 @@ void Func_EPWM_SET_DEADZONE_CLK_SRC()
 
     /* unlock protected registers */
     SYS_UnlockReg();
-	
+
     for (x = 0; x < EPWM_MODULE_NUM; x++)
     {
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_SET_DEADZONE_CLK_SRC(g_apEPWMModule[x], u32TestCh, TRUE);
-            CU_ASSERT_EQUAL(g_apEPWMModule[x]->DTCTL, (EPWM_DTCTL_DTCKSEL0_Msk << (u32TestCh>>1)));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->DTCTL, (EPWM_DTCTL_DTCKSEL0_Msk << (u32TestCh >> 1)));
             EPWM_SET_DEADZONE_CLK_SRC(g_apEPWMModule[x], u32TestCh, FALSE);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->DTCTL, 0);
         }
     }
 }
 
-void Func_EPWM_CLR_COUNTER() 
+void Func_EPWM_CLR_COUNTER()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -1213,10 +1251,14 @@ void Func_EPWM_CLR_COUNTER()
             EPWM_SET_CMR(g_apEPWMModule[x], u32TestCh, 500);
             EPWM_SET_PRESCALER(EPWM0, u32TestCh, 0x400);
             EPWM_Start(g_apEPWMModule[x], 1 << u32TestCh);
-            while((g_apEPWMModule[x]->INTSTS0 & ((1 << EPWM_INTSTS0_CMPUIF0_Pos) << u32TestCh)) != (1 << EPWM_INTSTS0_CMPUIF0_Pos) << u32TestCh);
+
+            while ((g_apEPWMModule[x]->INTSTS0 & ((1 << EPWM_INTSTS0_CMPUIF0_Pos) << u32TestCh)) != (1 << EPWM_INTSTS0_CMPUIF0_Pos) << u32TestCh);
+
             EPWM_ForceStop(g_apEPWMModule[x], 1 << u32TestCh);
             EPWM_CLR_COUNTER(g_apEPWMModule[x], 1 << u32TestCh);
-            while ((g_apEPWMModule[x])->CNTCLR & (1 << u32TestCh)){};
+
+            while ((g_apEPWMModule[x])->CNTCLR & (1 << u32TestCh)) {};
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->CNTCLR, 0);
         }
     }
@@ -1236,13 +1278,13 @@ void Func_EPWM_SET_OUTPUT_LEVEL()
     {
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
-            for (u32ZeroIdx = 0; u32ZeroIdx < sizeof(au32PatternData)/sizeof(uint32_t); u32ZeroIdx++)
+            for (u32ZeroIdx = 0; u32ZeroIdx < sizeof(au32PatternData) / sizeof(uint32_t); u32ZeroIdx++)
             {
-                for (u32CmpuIdx = 0; u32CmpuIdx < sizeof(au32PatternData)/sizeof(uint32_t); u32CmpuIdx++)
+                for (u32CmpuIdx = 0; u32CmpuIdx < sizeof(au32PatternData) / sizeof(uint32_t); u32CmpuIdx++)
                 {
-                    for (u32PeriodIdx = 0; u32PeriodIdx < sizeof(au32PatternData)/sizeof(uint32_t); u32PeriodIdx++)
+                    for (u32PeriodIdx = 0; u32PeriodIdx < sizeof(au32PatternData) / sizeof(uint32_t); u32PeriodIdx++)
                     {
-                        for (u32CmpdIdx = 0; u32CmpdIdx < sizeof(au32PatternData)/sizeof(uint32_t); u32CmpdIdx++)
+                        for (u32CmpdIdx = 0; u32CmpdIdx < sizeof(au32PatternData) / sizeof(uint32_t); u32CmpdIdx++)
                         {
                             EPWM_SET_OUTPUT_LEVEL(g_apEPWMModule[x], 1 << u32TestCh, au32PatternData[u32ZeroIdx], au32PatternData[u32CmpuIdx], au32PatternData[u32PeriodIdx], au32PatternData[u32CmpdIdx]);
                             CU_ASSERT_EQUAL(g_apEPWMModule[x]->WGCTL0 & (3 << (EPWM_WGCTL0_ZPCTL0_Pos + (u32TestCh << 1))), au32PatternData[u32ZeroIdx] << (u32TestCh << 1));
@@ -1258,7 +1300,7 @@ void Func_EPWM_SET_OUTPUT_LEVEL()
     }
 }
 
-void Func_EPWM_GetADCTriggerFlag() 
+void Func_EPWM_GetADCTriggerFlag()
 {
     uint32_t u32TestCh = 0, j = 0;
 
@@ -1274,7 +1316,8 @@ void Func_EPWM_GetADCTriggerFlag()
             EPWM_SET_CMR(g_apEPWMModule[j], u32TestCh, 5);
             EPWM_SET_PRESCALER(g_apEPWMModule[j], u32TestCh, 2);
             EPWM_SET_ALIGNED_TYPE(g_apEPWMModule[j], 1 << u32TestCh, EPWM_CENTER_ALIGNED);
-            if (u32TestCh%2)
+
+            if (u32TestCh % 2)
             {
                 EPWM_EnableADCTrigger(g_apEPWMModule[j], u32TestCh, EPWM_TRG_ADC_ODD_PERIOD);
             }
@@ -1282,22 +1325,26 @@ void Func_EPWM_GetADCTriggerFlag()
             {
                 EPWM_EnableADCTrigger(g_apEPWMModule[j], u32TestCh, EPWM_TRG_ADC_EVEN_PERIOD);
             }
-            EPWM_EnableOutput(g_apEPWMModule[j], 1 << u32TestCh);
-            EPWM_Start(g_apEPWMModule[j], 1 << u32TestCh);        
 
-            while(EPWM_GetADCTriggerFlag(g_apEPWMModule[j], u32TestCh) == 0){};
+            EPWM_EnableOutput(g_apEPWMModule[j], 1 << u32TestCh);
+            EPWM_Start(g_apEPWMModule[j], 1 << u32TestCh);
+
+            while (EPWM_GetADCTriggerFlag(g_apEPWMModule[j], u32TestCh) == 0) {};
+
             CU_ASSERT_EQUAL(EPWM_GetADCTriggerFlag(g_apEPWMModule[j], u32TestCh), 1);
 
             EPWM_DisableADCTrigger(g_apEPWMModule[j], u32TestCh);
+
             EPWM_ForceStop(g_apEPWMModule[j], 1 << u32TestCh);
 
             EPWM_ClearADCTriggerFlag(g_apEPWMModule[j], u32TestCh, NULL);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[j]->STATUS & ((1 << EPWM_STATUS_EADCTRGF0_Pos) << u32TestCh), 0);
         }
     }
 }
 
-void Func_EPWM_GetDutyIntFlag() 
+void Func_EPWM_GetDutyIntFlag()
 {
     uint32_t u32TestCh = 0, j = 0;
 
@@ -1316,33 +1363,41 @@ void Func_EPWM_GetDutyIntFlag()
             EPWM_EnableDutyInt(g_apEPWMModule[j], u32TestCh, EPWM_DUTY_INT_DOWN_COUNT_MATCH_CMP);
             EPWM_Start(g_apEPWMModule[j], 1 << u32TestCh);
 
-            while(EPWM_GetDutyIntFlag(g_apEPWMModule[j], u32TestCh) == 0){};
+            while (EPWM_GetDutyIntFlag(g_apEPWMModule[j], u32TestCh) == 0) {};
+
             CU_ASSERT_EQUAL(EPWM_GetDutyIntFlag(g_apEPWMModule[j], u32TestCh), 1);
 
             EPWM_DisableDutyInt(g_apEPWMModule[j], u32TestCh);
+
             EPWM_ForceStop(g_apEPWMModule[j], 1 << u32TestCh);
 
             EPWM_ClearDutyIntFlag(g_apEPWMModule[j], u32TestCh);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[j]->INTSTS0 & ((1 << EPWM_INTSTS0_CMPDIF0_Pos) << u32TestCh), 0);
 
             /* change EPWM operates at up counter type */
             EPWM_SET_ALIGNED_TYPE(g_apEPWMModule[j], 1 << u32TestCh, EPWM_UP_COUNTER);
+
             EPWM_EnableDutyInt(g_apEPWMModule[j], u32TestCh, EPWM_DUTY_INT_UP_COUNT_MATCH_CMP);
+
             EPWM_Start(g_apEPWMModule[j], 1 << u32TestCh);
 
-            while(EPWM_GetDutyIntFlag(g_apEPWMModule[j], u32TestCh) == 0){};
+            while (EPWM_GetDutyIntFlag(g_apEPWMModule[j], u32TestCh) == 0) {};
+
             CU_ASSERT_EQUAL(EPWM_GetDutyIntFlag(g_apEPWMModule[j], u32TestCh), 1);
 
             EPWM_DisableDutyInt(g_apEPWMModule[j], u32TestCh);
+
             EPWM_ForceStop(g_apEPWMModule[j], 1 << u32TestCh);
 
             EPWM_ClearDutyIntFlag(g_apEPWMModule[j], u32TestCh);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[j]->INTSTS0 & ((1 << EPWM_INTSTS0_CMPDIF0_Pos) << u32TestCh), 0);
         }
     }
 }
 
-void Func_EPWM_GetPeriodIntFlag() 
+void Func_EPWM_GetPeriodIntFlag()
 {
     uint32_t u32TestCh = 0, j = 0;
 
@@ -1358,21 +1413,24 @@ void Func_EPWM_GetPeriodIntFlag()
             EPWM_SET_CMR(g_apEPWMModule[j], u32TestCh, 5);
             EPWM_SET_PRESCALER(g_apEPWMModule[j], u32TestCh, 2);
             EPWM_EnablePeriodInt(g_apEPWMModule[j], u32TestCh, NULL);
-            EPWM_Start(g_apEPWMModule[j], 1 << u32TestCh);        
-            
-            while(EPWM_GetPeriodIntFlag(g_apEPWMModule[j], u32TestCh) == 0){};
+            EPWM_Start(g_apEPWMModule[j], 1 << u32TestCh);
+
+            while (EPWM_GetPeriodIntFlag(g_apEPWMModule[j], u32TestCh) == 0) {};
+
             CU_ASSERT_EQUAL(EPWM_GetPeriodIntFlag(g_apEPWMModule[j], u32TestCh), 1);
 
             EPWM_DisablePeriodInt(g_apEPWMModule[j], u32TestCh);
+
             EPWM_ForceStop(g_apEPWMModule[j], 1 << u32TestCh);
-            
+
             EPWM_ClearPeriodIntFlag(g_apEPWMModule[j], u32TestCh);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[j]->INTSTS0 & ((1 << EPWM_INTSTS0_PIF0_Pos) << u32TestCh), 0);
         }
     }
 }
 
-void Func_EPWM_GetCaptureIntFlag() 
+void Func_EPWM_GetCaptureIntFlag()
 {
     volatile uint32_t u32Loop = 0, j = 0;
     uint32_t u32TestCh = 0, u32CapCh = 0;
@@ -1401,8 +1459,8 @@ void Func_EPWM_GetCaptureIntFlag()
             EPWM_EnableOutput(g_apEPWMModule[j], 1 << u32TestCh);
             EPWM_Start(g_apEPWMModule[j], 1 << u32TestCh);
 
-            u32CapCh = (u32TestCh % 2)? (u32TestCh - 1):(u32TestCh + 1);
-            
+            u32CapCh = (u32TestCh % 2) ? (u32TestCh - 1) : (u32TestCh + 1);
+
             /*Set Pwm mode*/
             g_apEPWMModule[j]->CTL1 &= ~((1 << EPWM_CTL1_CNTMODE0_Pos) << u32CapCh);
             EPWM_SET_CNR(g_apEPWMModule[j], u32CapCh, 10000);
@@ -1417,9 +1475,10 @@ void Func_EPWM_GetCaptureIntFlag()
             EPWM_Start(g_apEPWMModule[j], 1 << u32CapCh);
 
             u32Loop = 0;
-            while(EPWM_GetCaptureIntFlag(g_apEPWMModule[j], u32CapCh) < 3)
+
+            while (EPWM_GetCaptureIntFlag(g_apEPWMModule[j], u32CapCh) < 3)
             {
-                if (u32Loop++ > (SystemCoreClock/1000))
+                if (u32Loop++ > (SystemCoreClock / 1000))
                 {
                     if (g_apEPWMModule[j] == EPWM0)
                     {
@@ -1429,24 +1488,26 @@ void Func_EPWM_GetCaptureIntFlag()
                     {
                         CU_FAIL("Check EPWM1_CH0(PC.6)<->EPWM1_CH1(PC.7)");
                     }
+
                     return;
                     //break;
                 }
             }
+
             CU_ASSERT_EQUAL(EPWM_GetCaptureIntFlag(g_apEPWMModule[j], u32CapCh), 3);
 
             EPWM_DisableCapture(g_apEPWMModule[j], 1 << u32CapCh);
             EPWM_ClearCaptureIntFlag(g_apEPWMModule[j], u32CapCh, EPWM_CAPTURE_INT_FALLING_LATCH | EPWM_CAPTURE_INT_RISING_LATCH);
             CU_ASSERT_EQUAL(g_apEPWMModule[j]->CAPIF, 0);
-            
-////            CU_ASSERT_EQUAL(EPWM_GET_CAPTURE_RISING_DATA(g_apEPWMModule[j], u32CapCh), g_apEPWMModule[j]->CAPDAT[1].RCAPDAT);
-////            CU_ASSERT_EQUAL(EPWM_GET_CAPTURE_FALLING_DATA(g_apEPWMModule[j], u32CapCh), g_apEPWMModule[j]->CAPDAT[1].FCAPDAT);
+
+            ////            CU_ASSERT_EQUAL(EPWM_GET_CAPTURE_RISING_DATA(g_apEPWMModule[j], u32CapCh), g_apEPWMModule[j]->CAPDAT[1].RCAPDAT);
+            ////            CU_ASSERT_EQUAL(EPWM_GET_CAPTURE_FALLING_DATA(g_apEPWMModule[j], u32CapCh), g_apEPWMModule[j]->CAPDAT[1].FCAPDAT);
 
             CU_ASSERT_EQUAL(EPWM_GET_CAPTURE_RISING_DATA(g_apEPWMModule[j], u32CapCh), g_apEPWMModule[j]->RCAPDAT1);
             CU_ASSERT_EQUAL(EPWM_GET_CAPTURE_FALLING_DATA(g_apEPWMModule[j], u32CapCh), g_apEPWMModule[j]->FCAPDAT1);
-            
-    //         EPWM_DisableOutput(g_apEPWMModule[j], 1 << u32TestCh);
-    //         EPWM_ForceStop(g_apEPWMModule[j], 1 << u32TestCh);
+
+            //         EPWM_DisableOutput(g_apEPWMModule[j], 1 << u32TestCh);
+            //         EPWM_ForceStop(g_apEPWMModule[j], 1 << u32TestCh);
             EPWM_ForceStop(g_apEPWMModule[j], 1 << u32CapCh);
 
             EPWM_DisableCaptureInt(g_apEPWMModule[j], u32CapCh, EPWM_CAPTURE_INT_RISING_LATCH);
@@ -1459,13 +1520,15 @@ void Func_EPWM_GetCaptureIntFlag()
             EPWM_Start(g_apEPWMModule[j], 1 << u32CapCh);
 
             u32Loop = 0;
-            while(EPWM_GetCaptureIntFlag(g_apEPWMModule[j], u32CapCh) < 3)
+
+            while (EPWM_GetCaptureIntFlag(g_apEPWMModule[j], u32CapCh) < 3)
             {
-                if (u32Loop++ > (SystemCoreClock/1000))
+                if (u32Loop++ > (SystemCoreClock / 1000))
                 {
                     break;
                 }
             }
+
             //CU_ASSERT_EQUAL(EPWM_GetCaptureIntFlag(g_apEPWMModule[j], 1), 2);
             CU_ASSERT_EQUAL(EPWM_GetCaptureIntFlag(g_apEPWMModule[j], u32CapCh), 3);
 
@@ -1473,8 +1536,8 @@ void Func_EPWM_GetCaptureIntFlag()
             EPWM_ClearCaptureIntFlag(g_apEPWMModule[j], u32CapCh, EPWM_CAPTURE_INT_FALLING_LATCH);
             CU_ASSERT_EQUAL(g_apEPWMModule[j]->CAPIF, 0x00000001 << u32CapCh);
 
-    //         EPWM_DisableOutput(g_apEPWMModule[j], 1 << u32TestCh);
-    //         EPWM_ForceStop(g_apEPWMModule[j], 1 << u32TestCh);
+            //         EPWM_DisableOutput(g_apEPWMModule[j], 1 << u32TestCh);
+            //         EPWM_ForceStop(g_apEPWMModule[j], 1 << u32TestCh);
             EPWM_ForceStop(g_apEPWMModule[j], 1 << u32CapCh);
 
             EPWM_DisableCaptureInt(g_apEPWMModule[j], u32CapCh, EPWM_CAPTURE_INT_FALLING_LATCH);
@@ -1487,13 +1550,15 @@ void Func_EPWM_GetCaptureIntFlag()
             EPWM_Start(g_apEPWMModule[j], 1 << u32CapCh);
 
             u32Loop = 0;
-            while(EPWM_GetCaptureIntFlag(g_apEPWMModule[j], u32CapCh) < 3)
+
+            while (EPWM_GetCaptureIntFlag(g_apEPWMModule[j], u32CapCh) < 3)
             {
-                if (u32Loop++ > (SystemCoreClock/1000))
+                if (u32Loop++ > (SystemCoreClock / 1000))
                 {
                     break;
                 }
             }
+
             //CU_ASSERT_EQUAL(EPWM_GetCaptureIntFlag(g_apEPWMModule[j], u32CapCh), 2);
             CU_ASSERT_EQUAL(EPWM_GetCaptureIntFlag(g_apEPWMModule[j], u32CapCh), 3);
 
@@ -1511,7 +1576,7 @@ void Func_EPWM_GetCaptureIntFlag()
     }
 }
 
-void Func_EPWM_ConfigOutputChannel() 
+void Func_EPWM_ConfigOutputChannel()
 {
     uint32_t j = 0, u32TestCh = 0, u32DutyIndex = 0, u32PeriodIndex = 0;
     uint32_t au32Period[2] = {1000, 100};
@@ -1525,22 +1590,22 @@ void Func_EPWM_ConfigOutputChannel()
 
     for (j = 0; j < EPWM_MODULE_NUM; j++)
     {
-        for (u32DutyIndex = 0; u32DutyIndex < sizeof(au32Duty)/sizeof(uint32_t); u32DutyIndex++)
+        for (u32DutyIndex = 0; u32DutyIndex < sizeof(au32Duty) / sizeof(uint32_t); u32DutyIndex++)
         {
-            for (u32PeriodIndex = 0; u32PeriodIndex < sizeof(au32Period)/sizeof(uint32_t); u32PeriodIndex++)
+            for (u32PeriodIndex = 0; u32PeriodIndex < sizeof(au32Period) / sizeof(uint32_t); u32PeriodIndex++)
             {
                 for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
                 {
                     CU_ASSERT_EQUAL(EPWM_ConfigOutputChannel(g_apEPWMModule[j], u32TestCh, au32Period[u32PeriodIndex], au32Duty[u32DutyIndex]), au32Period[u32PeriodIndex]);
                     CU_ASSERT_EQUAL(g_apEPWMModule[j]->CTL1 & ((1 << EPWM_CTL1_CNTMODE0_Pos) << u32TestCh), 0 << (16 + u32TestCh));//auto-reload mode
-                    CU_ASSERT_EQUAL((g_apEPWMModule[j]->CTL1 & (( 1 << EPWM_CTL1_CNTTYPE0_Pos) << (2 * u32TestCh))), 0 << (2 * u32TestCh));//edge-aligned type
+                    CU_ASSERT_EQUAL((g_apEPWMModule[j]->CTL1 & ((1 << EPWM_CTL1_CNTTYPE0_Pos) << (2 * u32TestCh))), 0 << (2 * u32TestCh)); //edge-aligned type
                 }
             }
         }
     }
 }
 
-void Func_EPWM_ConfigCaptureChannel() 
+void Func_EPWM_ConfigCaptureChannel()
 {
     uint32_t j = 0, u32TestCh = 0, u32CapTimeIndex = 0;
     uint32_t au32CapTime[2];
@@ -1553,7 +1618,7 @@ void Func_EPWM_ConfigCaptureChannel()
 
     for (j = 0; j < EPWM_MODULE_NUM; j++)
     {
-        for (u32CapTimeIndex = 0; u32CapTimeIndex < sizeof(au32CapTime)/sizeof(uint32_t); u32CapTimeIndex++)
+        for (u32CapTimeIndex = 0; u32CapTimeIndex < sizeof(au32CapTime) / sizeof(uint32_t); u32CapTimeIndex++)
         {
             for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
             {
@@ -1564,7 +1629,7 @@ void Func_EPWM_ConfigCaptureChannel()
     }
 }
 
-void Func_EPWM_EnableDACTrigger() 
+void Func_EPWM_EnableDACTrigger()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -1606,11 +1671,14 @@ void Func_EPWM_EnableDACTrigger()
             EPWM_EnableDACTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRIGGER_DAC_COMPARE_UP);
             EPWM_EnableDACTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRIGGER_DAC_COMPARE_DOWN);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->DACTRGEN, 0x3F3F3F3F);
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_DisableDACTrigger(g_apEPWMModule[x], u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->DACTRGEN, 0);
 
         //test case 3: enable/disable multiple conditions each time
@@ -1619,14 +1687,14 @@ void Func_EPWM_EnableDACTrigger()
             EPWM_EnableDACTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRIGGER_DAC_ZERO | EPWM_TRIGGER_DAC_COMPARE_UP);
             EPWM_EnableDACTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRIGGER_DAC_PERIOD | EPWM_TRIGGER_DAC_COMPARE_DOWN);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->DACTRGEN, 0x01010101 << u32TestCh);
-            
+
             EPWM_DisableDACTrigger(g_apEPWMModule[x], u32TestCh);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->DACTRGEN, 0);
         }
     }
 }
 
-void Func_EPWM_GetDACTriggerFlag() 
+void Func_EPWM_GetDACTriggerFlag()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -1634,9 +1702,9 @@ void Func_EPWM_GetDACTriggerFlag()
     SYS_ResetModule(SYS_EPWM0RST);
     SYS_ResetModule(SYS_EPWM1RST);
 
-//     /* Enable DAC module clock */ //=> it just check EPWM flag, so needn't enable DAC module clock
-//     CLK->APBCLK1 |= CLK_APBCLK1_DACCKEN_Msk;
-//     DAC->CTL |= (DAC_EPWM0_TRIGGER | DAC_CTL_DACEN_Msk);
+    //     /* Enable DAC module clock */ //=> it just check EPWM flag, so needn't enable DAC module clock
+    //     CLK->APBCLK1 |= CLK_APBCLK1_DACCKEN_Msk;
+    //     DAC->CTL |= (DAC_EPWM0_TRIGGER | DAC_CTL_DACEN_Msk);
 
     for (x = 0; x < EPWM_MODULE_NUM; x++)
     {
@@ -1652,33 +1720,55 @@ void Func_EPWM_GetDACTriggerFlag()
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->DACTRGEN & ((1 << EPWM_DACTRGEN_ZTE0_Pos) << u32TestCh), 1 << u32TestCh);
             EPWM_ClearZeroIntFlag(g_apEPWMModule[x], u32TestCh);
             EPWM_Start(g_apEPWMModule[x], 1 << u32TestCh);
-            while(EPWM_GetZeroIntFlag(g_apEPWMModule[x], u32TestCh) == 0){};
+
+            while (EPWM_GetZeroIntFlag(g_apEPWMModule[x], u32TestCh) == 0) {};
+
             CU_ASSERT_EQUAL(EPWM_GetDACTriggerFlag(g_apEPWMModule[x], u32TestCh), 1);
+
             EPWM_ForceStop(g_apEPWMModule[x], 1 << u32TestCh);
+
             EPWM_ClearDACTriggerFlag(g_apEPWMModule[x], u32TestCh, NULL);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->STATUS & EPWM_STATUS_DACTRGF_Msk, 0);
+
             EPWM_DisableDACTrigger(g_apEPWMModule[x], u32TestCh);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->DACTRGEN, 0);
 
             //EPWM trigger DAC at period point
             EPWM_EnableDACTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRIGGER_DAC_PERIOD);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->DACTRGEN & ((1 << EPWM_DACTRGEN_PTE0_Pos) << u32TestCh), 0x0100 << u32TestCh);
+
             EPWM_ClearPeriodIntFlag(g_apEPWMModule[x], u32TestCh);
+
             EPWM_Start(g_apEPWMModule[x], 1 << u32TestCh);
-            while(EPWM_GetPeriodIntFlag(g_apEPWMModule[x], u32TestCh) == 0){};
+
+            while (EPWM_GetPeriodIntFlag(g_apEPWMModule[x], u32TestCh) == 0) {};
+
             CU_ASSERT_EQUAL(EPWM_GetDACTriggerFlag(g_apEPWMModule[x], u32TestCh), 1);
+
             EPWM_ForceStop(g_apEPWMModule[x], 1 << u32TestCh);
+
             EPWM_ClearDACTriggerFlag(g_apEPWMModule[x], u32TestCh, NULL);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->STATUS & EPWM_STATUS_DACTRGF_Msk, 0);
+
             EPWM_DisableDACTrigger(g_apEPWMModule[x], u32TestCh);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->DACTRGEN, 0);
 
             //EPWM trigger DAC at compare up point
             EPWM_EnableDACTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRIGGER_DAC_COMPARE_UP);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->DACTRGEN & ((1 << EPWM_DACTRGEN_CUTRGE0_Pos) << u32TestCh), 0x010000 << u32TestCh);
+
             EPWM_ClearDutyIntFlag(g_apEPWMModule[x], u32TestCh);
+
             EPWM_Start(g_apEPWMModule[x], 1 << u32TestCh);
-            while(EPWM_GetDutyIntFlag(g_apEPWMModule[x], u32TestCh) == 0);
+
+            while (EPWM_GetDutyIntFlag(g_apEPWMModule[x], u32TestCh) == 0);
+
             //CU_ASSERT_EQUAL(EPWM_GetDACTriggerFlag(g_apEPWMModule[x], u32TestCh), 1);
             EPWM_ForceStop(g_apEPWMModule[x], 1 << u32TestCh);
             EPWM_ClearDACTriggerFlag(g_apEPWMModule[x], u32TestCh, NULL);
@@ -1692,50 +1782,66 @@ void Func_EPWM_GetDACTriggerFlag()
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->DACTRGEN & ((1 << EPWM_DACTRGEN_CDTRGE0_Pos) << u32TestCh), 0x01000000 << u32TestCh);
             EPWM_ClearDutyIntFlag(g_apEPWMModule[x], u32TestCh);
             EPWM_Start(g_apEPWMModule[x], 1 << u32TestCh);
-            while(EPWM_GetDutyIntFlag(g_apEPWMModule[x], u32TestCh) == 0){};
+
+            while (EPWM_GetDutyIntFlag(g_apEPWMModule[x], u32TestCh) == 0) {};
+
             CU_ASSERT_EQUAL(EPWM_GetDACTriggerFlag(g_apEPWMModule[x], u32TestCh), 1);
+
             EPWM_ForceStop(g_apEPWMModule[x], 1 << u32TestCh);
+
             EPWM_ClearDACTriggerFlag(g_apEPWMModule[x], u32TestCh, NULL);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->STATUS & EPWM_STATUS_DACTRGF_Msk, 0);
+
             EPWM_DisableDACTrigger(g_apEPWMModule[x], u32TestCh);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->DACTRGEN, 0);
         }
     }
+
     /* Disable EPWM module clock */
-//     CLK->APBCLK1 &= ~CLK_APBCLK1_DACCKEN_Msk;
+    //     CLK->APBCLK1 &= ~CLK_APBCLK1_DACCKEN_Msk;
 }
 
-void Func_EPWM_EnableFaultBrake() 
+void Func_EPWM_EnableFaultBrake()
 {
     uint32_t u32TestCh = 0, x = 0;
     uint32_t u32PatternIdx = 0, u32PatternCount = 0, u32ChMskIdx = 0;
     uint32_t au32PatternData[16] = \
-                {EPWM_FB_EDGE_ACMP0, EPWM_FB_EDGE_ACMP1, EPWM_FB_EDGE_BKP0, EPWM_FB_EDGE_BKP1, EPWM_FB_EDGE_SYS_CSS, EPWM_FB_EDGE_SYS_BOD, EPWM_FB_EDGE_SYS_RAM, EPWM_FB_EDGE_SYS_COR,\
-                 EPWM_FB_LEVEL_ACMP0, EPWM_FB_LEVEL_ACMP1, EPWM_FB_LEVEL_BKP0, EPWM_FB_LEVEL_BKP1, EPWM_FB_LEVEL_SYS_CSS, EPWM_FB_LEVEL_SYS_BOD, EPWM_FB_LEVEL_SYS_RAM, EPWM_FB_LEVEL_SYS_COR};
+    {
+        EPWM_FB_EDGE_ACMP0, EPWM_FB_EDGE_ACMP1, EPWM_FB_EDGE_BKP0, EPWM_FB_EDGE_BKP1, EPWM_FB_EDGE_SYS_CSS, EPWM_FB_EDGE_SYS_BOD, EPWM_FB_EDGE_SYS_RAM, EPWM_FB_EDGE_SYS_COR, \
+        EPWM_FB_LEVEL_ACMP0, EPWM_FB_LEVEL_ACMP1, EPWM_FB_LEVEL_BKP0, EPWM_FB_LEVEL_BKP1, EPWM_FB_LEVEL_SYS_CSS, EPWM_FB_LEVEL_SYS_BOD, EPWM_FB_LEVEL_SYS_RAM, EPWM_FB_LEVEL_SYS_COR
+    };
 
     uint32_t au32BRKCTLRegMsk[16] = \
-                 {EPWM_BRKCTL0_1_CPO0EBEN_Msk, EPWM_BRKCTL0_1_CPO1EBEN_Msk, EPWM_BRKCTL0_1_BRKP0EEN_Msk, EPWM_BRKCTL0_1_BRKP1EEN_Msk, \
-                  EPWM_BRKCTL0_1_SYSEBEN_Msk, EPWM_BRKCTL0_1_SYSEBEN_Msk, EPWM_BRKCTL0_1_SYSEBEN_Msk, EPWM_BRKCTL0_1_SYSEBEN_Msk, \
-                  EPWM_BRKCTL0_1_CPO0LBEN_Msk, EPWM_BRKCTL0_1_CPO1LBEN_Msk, EPWM_BRKCTL0_1_BRKP0LEN_Msk, EPWM_BRKCTL0_1_BRKP1LEN_Msk, \
-                  EPWM_BRKCTL0_1_SYSLBEN_Msk, EPWM_BRKCTL0_1_SYSLBEN_Msk, EPWM_BRKCTL0_1_SYSLBEN_Msk, EPWM_BRKCTL0_1_SYSLBEN_Msk};
+    {
+        EPWM_BRKCTL0_1_CPO0EBEN_Msk, EPWM_BRKCTL0_1_CPO1EBEN_Msk, EPWM_BRKCTL0_1_BRKP0EEN_Msk, EPWM_BRKCTL0_1_BRKP1EEN_Msk, \
+        EPWM_BRKCTL0_1_SYSEBEN_Msk, EPWM_BRKCTL0_1_SYSEBEN_Msk, EPWM_BRKCTL0_1_SYSEBEN_Msk, EPWM_BRKCTL0_1_SYSEBEN_Msk, \
+        EPWM_BRKCTL0_1_CPO0LBEN_Msk, EPWM_BRKCTL0_1_CPO1LBEN_Msk, EPWM_BRKCTL0_1_BRKP0LEN_Msk, EPWM_BRKCTL0_1_BRKP1LEN_Msk, \
+        EPWM_BRKCTL0_1_SYSLBEN_Msk, EPWM_BRKCTL0_1_SYSLBEN_Msk, EPWM_BRKCTL0_1_SYSLBEN_Msk, EPWM_BRKCTL0_1_SYSLBEN_Msk
+    };
 
     uint32_t au32BRKCTLRegCheck[16] = \
-                 {0x1, 0x2, 0x10, 0x20, \
-                  0x80, 0x80, 0x80, 0x80, \
-                  0x100, 0x200, 0x1000, 0x2000, \
-                  0x8000, 0x8000, 0x8000, 0x8000};
+    {
+        0x1, 0x2, 0x10, 0x20, \
+        0x80, 0x80, 0x80, 0x80, \
+        0x100, 0x200, 0x1000, 0x2000, \
+        0x8000, 0x8000, 0x8000, 0x8000
+    };
 
     uint32_t au32FAILBRKRegCheck[16] = \
-                 {0, 0, 0, 0, \
-                  0x1, 0x2, 0x4, 0x8, \
-                  0, 0, 0, 0, \
-                  0x1, 0x2, 0x4, 0x8};
+    {
+        0, 0, 0, 0, \
+        0x1, 0x2, 0x4, 0x8, \
+        0, 0, 0, 0, \
+        0x1, 0x2, 0x4, 0x8
+    };
 
     /* Reset EPWM */
     SYS_ResetModule(SYS_EPWM0RST);
     SYS_ResetModule(SYS_EPWM1RST);
 
-    u32PatternCount = sizeof(au32PatternData)/sizeof(uint32_t);
+    u32PatternCount = sizeof(au32PatternData) / sizeof(uint32_t);
 
     /* unlock protected registers */
     SYS_UnlockReg();
@@ -1750,16 +1856,18 @@ void Func_EPWM_EnableFaultBrake()
                 EPWM_EnableFaultBrake(g_apEPWMModule[x], 1 << u32TestCh, 1 << u32TestCh, au32PatternData[u32PatternIdx]);
                 CU_ASSERT_EQUAL(*(__IO uint32_t *)(&(g_apEPWMModule[x]->BRKCTL[0]) + (u32TestCh >> 1)) & (au32BRKCTLRegMsk[u32PatternIdx]), au32BRKCTLRegCheck[u32PatternIdx]);
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->FAILBRK, au32FAILBRKRegCheck[u32PatternIdx]);
-                if(u32TestCh % 2 == 0)
+
+                if (u32TestCh % 2 == 0)
                 {
                     //CU_ASSERT_EQUAL((*(__IO uint32_t *)(&(g_apEPWMModule[x]->BRKCTL0_1) + (u32TestCh >> 1))) & (EPWM_BRKCTL0_1_BRKAEVEN_Msk), 3 << 16);
-                    CU_ASSERT_EQUAL((*(__IO uint32_t *)(&(g_apEPWMModule[x]->BRKCTL[0]) + (u32TestCh >> 1))) & (EPWM_BRKCTL0_1_BRKAEVEN_Msk|EPWM_BRKCTL0_1_BRKAODD_Msk), 0xB << 16);
+                    CU_ASSERT_EQUAL((*(__IO uint32_t *)(&(g_apEPWMModule[x]->BRKCTL[0]) + (u32TestCh >> 1))) & (EPWM_BRKCTL0_1_BRKAEVEN_Msk | EPWM_BRKCTL0_1_BRKAODD_Msk), 0xB << 16);
                 }
                 else
                 {
                     //CU_ASSERT_EQUAL((*(__IO uint32_t *)(&(g_apEPWMModule[x]->BRKCTL0_1) + (u32TestCh >> 1))) & (EPWM_BRKCTL0_1_BRKAODD_Msk), 3 << 18);
-                    CU_ASSERT_EQUAL((*(__IO uint32_t *)(&(g_apEPWMModule[x]->BRKCTL[0]) + (u32TestCh >> 1))) & (EPWM_BRKCTL0_1_BRKAEVEN_Msk|EPWM_BRKCTL0_1_BRKAODD_Msk), 0xE << 16);
+                    CU_ASSERT_EQUAL((*(__IO uint32_t *)(&(g_apEPWMModule[x]->BRKCTL[0]) + (u32TestCh >> 1))) & (EPWM_BRKCTL0_1_BRKAEVEN_Msk | EPWM_BRKCTL0_1_BRKAODD_Msk), 0xE << 16);
                 }
+
                 g_apEPWMModule[x]->FAILBRK = 0;
             }
         }
@@ -1772,6 +1880,7 @@ void Func_EPWM_EnableFaultBrake()
                 EPWM_EnableFaultBrake(g_apEPWMModule[x], 1 << u32TestCh, 1 << u32TestCh, au32PatternData[u32PatternIdx]);
             }
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->BRKCTL[0], 0x000AB3B3);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->BRKCTL[1], 0x000AB3B3);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->BRKCTL[2], 0x000EB3B3);
@@ -1780,37 +1889,41 @@ void Func_EPWM_EnableFaultBrake()
         //test case 3: enable/disable multiple conditions each time
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
-            for (u32ChMskIdx = 0; u32ChMskIdx < sizeof(SixBitsPatternTable)/sizeof(uint32_t); u32ChMskIdx++)
+            for (u32ChMskIdx = 0; u32ChMskIdx < sizeof(SixBitsPatternTable) / sizeof(uint32_t); u32ChMskIdx++)
             {
                 EPWM_EnableFaultBrake(g_apEPWMModule[x], 1 << u32TestCh, 0x3F, au32PatternData[u32PatternIdx]);
             }
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->BRKCTL[0], 0x000FB3B3);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->BRKCTL[1], 0x000FB3B3);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->BRKCTL[2], 0x000FB3B3);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->FAILBRK, 0xF);
 
-            for (u32ChMskIdx = 0; u32ChMskIdx < sizeof(SixBitsPatternTable)/sizeof(uint32_t); u32ChMskIdx++)
+            for (u32ChMskIdx = 0; u32ChMskIdx < sizeof(SixBitsPatternTable) / sizeof(uint32_t); u32ChMskIdx++)
             {
                 EPWM_EnableFaultBrake(g_apEPWMModule[x], 1 << u32TestCh, 0x2A, au32PatternData[u32PatternIdx]);
             }
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->BRKCTL[0], 0x000EB3B3);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->BRKCTL[1], 0x000EB3B3);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->BRKCTL[2], 0x000EB3B3);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->FAILBRK, 0xF);
 
-            for (u32ChMskIdx = 0; u32ChMskIdx < sizeof(SixBitsPatternTable)/sizeof(uint32_t); u32ChMskIdx++)
+            for (u32ChMskIdx = 0; u32ChMskIdx < sizeof(SixBitsPatternTable) / sizeof(uint32_t); u32ChMskIdx++)
             {
                 EPWM_EnableFaultBrake(g_apEPWMModule[x], 1 << u32TestCh, 0x15, au32PatternData[u32PatternIdx]);
             }
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->BRKCTL[0], 0x000BB3B3);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->BRKCTL[1], 0x000BB3B3);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->BRKCTL[2], 0x000BB3B3);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->FAILBRK, 0xF);
 
-            for (u32ChMskIdx = 0; u32ChMskIdx < sizeof(SixBitsPatternTable)/sizeof(uint32_t); u32ChMskIdx++)
+            for (u32ChMskIdx = 0; u32ChMskIdx < sizeof(SixBitsPatternTable) / sizeof(uint32_t); u32ChMskIdx++)
             {
                 EPWM_EnableFaultBrake(g_apEPWMModule[x], 1 << u32TestCh, 0x00, au32PatternData[u32PatternIdx]);
             }
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->BRKCTL[0], 0x000AB3B3);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->BRKCTL[1], 0x000AB3B3);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->BRKCTL[2], 0x000AB3B3);
@@ -1819,7 +1932,7 @@ void Func_EPWM_EnableFaultBrake()
     }
 }
 
-void Func_EPWM_EnableFaultBrakeInt() 
+void Func_EPWM_EnableFaultBrakeInt()
 {
     uint32_t x = 0;
 
@@ -1838,7 +1951,7 @@ void Func_EPWM_EnableFaultBrakeInt()
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->INTEN1, 0x700);
         EPWM_DisableFaultBrakeInt(g_apEPWMModule[x], EPWM_FB_LEVEL);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->INTEN1, 0);
-        
+
         //test case 2: enable/disable one channel each time, then check at final action
         EPWM_EnableFaultBrakeInt(g_apEPWMModule[x], EPWM_FB_EDGE);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->INTEN1, 0x7);
@@ -1850,7 +1963,7 @@ void Func_EPWM_EnableFaultBrakeInt()
     }
 }
 
-void Func_EPWM_EnableZeroInt() 
+void Func_EPWM_EnableZeroInt()
 {
     uint32_t u32TestCh = 0, x = 0;
     uint32_t au32RegCheck[6] = {0x00000001, 0x00000003, 0x00000007, 0x0000000F, 0x0000001F, 0x0000003F};
@@ -1877,6 +1990,7 @@ void Func_EPWM_EnableZeroInt()
             EPWM_EnableZeroInt(g_apEPWMModule[x], u32TestCh);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->INTEN0, au32RegCheck[u32TestCh]);
         }
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_DisableZeroInt(g_apEPWMModule[x], u32TestCh);
@@ -1885,7 +1999,7 @@ void Func_EPWM_EnableZeroInt()
     }
 }
 
-void Func_EPWM_GetZeroIntFlag() 
+void Func_EPWM_GetZeroIntFlag()
 {
     uint32_t u32TestCh = 0, j = 0;
 
@@ -1901,26 +2015,29 @@ void Func_EPWM_GetZeroIntFlag()
             EPWM_SET_CMR(g_apEPWMModule[j], u32TestCh, 5);
             EPWM_SET_PRESCALER(g_apEPWMModule[j], u32TestCh, 2);
             EPWM_EnableZeroInt(g_apEPWMModule[j], u32TestCh);
-            EPWM_Start(g_apEPWMModule[j], 1 << u32TestCh);        
-            
-            while(EPWM_GetZeroIntFlag(g_apEPWMModule[j], u32TestCh) == 0){};
+            EPWM_Start(g_apEPWMModule[j], 1 << u32TestCh);
+
+            while (EPWM_GetZeroIntFlag(g_apEPWMModule[j], u32TestCh) == 0) {};
+
             CU_ASSERT_EQUAL(EPWM_GetZeroIntFlag(g_apEPWMModule[j], u32TestCh), 1);
 
             EPWM_DisableZeroInt(g_apEPWMModule[j], u32TestCh);
+
             EPWM_ForceStop(g_apEPWMModule[j], 1 << u32TestCh);
-            
+
             EPWM_ClearZeroIntFlag(g_apEPWMModule[j], u32TestCh);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[j]->INTSTS0 & ((1 << EPWM_INTSTS0_ZIF0_Pos) << u32TestCh), 0);
         }
     }
 }
 
-void Func_EPWM_EnableAcc() 
+void Func_EPWM_EnableAcc()
 {
     uint32_t u32TestCh = 0, x = 0;
     uint32_t u32PatternIdx = 0, u32PatternCount = 0;
     uint32_t au32PatternData[4] = \
-                {EPWM_IFA_ZERO_POINT, EPWM_IFA_PERIOD_POINT, EPWM_IFA_COMPARE_UP_COUNT_POINT, EPWM_IFA_COMPARE_DOWN_COUNT_POINT};
+    {EPWM_IFA_ZERO_POINT, EPWM_IFA_PERIOD_POINT, EPWM_IFA_COMPARE_UP_COUNT_POINT, EPWM_IFA_COMPARE_DOWN_COUNT_POINT};
     uint32_t au32EnableRegCheck[4] = {0x80000000, 0x90000000, 0xA0000000, 0xB0000000};
     uint32_t au32DisableRegCheck[4] = {0x0, 0x10000000, 0x20000000, 0x30000000};
 
@@ -1928,14 +2045,14 @@ void Func_EPWM_EnableAcc()
     SYS_ResetModule(SYS_EPWM0RST);
     SYS_ResetModule(SYS_EPWM1RST);
 
-    u32PatternCount = sizeof(au32PatternData)/sizeof(uint32_t);
+    u32PatternCount = sizeof(au32PatternData) / sizeof(uint32_t);
 
     for (x = 0; x < EPWM_MODULE_NUM; x++)
     {
         //test case 1: enable/disable one channel each time, then check each action
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
-            for (u32PatternIdx = 0; u32PatternIdx < u32PatternCount;u32PatternIdx++)
+            for (u32PatternIdx = 0; u32PatternIdx < u32PatternCount; u32PatternIdx++)
             {
                 EPWM_EnableAcc(g_apEPWMModule[x], u32TestCh, 0xF, au32PatternData[u32PatternIdx]);
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[u32TestCh], (au32EnableRegCheck[u32PatternIdx] | 0xF));
@@ -1963,7 +2080,7 @@ void Func_EPWM_EnableAcc()
         //test case 2: enable/disable one channel each time, then check at final action
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
-            for (u32PatternIdx = 0; u32PatternIdx < u32PatternCount;u32PatternIdx++)
+            for (u32PatternIdx = 0; u32PatternIdx < u32PatternCount; u32PatternIdx++)
             {
                 EPWM_EnableAcc(g_apEPWMModule[x], u32TestCh, 0xF, au32PatternData[u32PatternIdx]);
                 EPWM_DisableAcc(g_apEPWMModule[x], u32TestCh);
@@ -1971,16 +2088,19 @@ void Func_EPWM_EnableAcc()
                 EPWM_DisableAcc(g_apEPWMModule[x], u32TestCh);
             }
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[5], 0x3000000A);
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_DisableAcc(g_apEPWMModule[x], u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[5], 0x3000000A);
     }
 }
 
-void Func_EPWM_EnableAccInt() 
+void Func_EPWM_EnableAccInt()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -2026,16 +2146,19 @@ void Func_EPWM_EnableAccInt()
         {
             EPWM_EnableAccInt(g_apEPWMModule[x], u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->AINTEN, 0x3F);
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_DisableAccInt(g_apEPWMModule[x], u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->AINTEN, 0);
     }
 }
 
-void Func_EPWM_EnableAccStopMode() 
+void Func_EPWM_EnableAccStopMode()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -2081,18 +2204,21 @@ void Func_EPWM_EnableAccStopMode()
         {
             EPWM_EnableAccStopMode(g_apEPWMModule[x], u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[0] & EPWM_IFA0_STPMOD_Msk, EPWM_IFA0_STPMOD_Msk);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[1] & EPWM_IFA0_STPMOD_Msk, EPWM_IFA0_STPMOD_Msk);				
+        CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[1] & EPWM_IFA0_STPMOD_Msk, EPWM_IFA0_STPMOD_Msk);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[2] & EPWM_IFA0_STPMOD_Msk, EPWM_IFA0_STPMOD_Msk);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[3] & EPWM_IFA0_STPMOD_Msk, EPWM_IFA0_STPMOD_Msk);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[4] & EPWM_IFA0_STPMOD_Msk, EPWM_IFA0_STPMOD_Msk);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[5] & EPWM_IFA0_STPMOD_Msk, EPWM_IFA0_STPMOD_Msk);
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_DisableAccStopMode(g_apEPWMModule[x], u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[0] & EPWM_IFA0_STPMOD_Msk, 0);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[1] & EPWM_IFA0_STPMOD_Msk, 0);				
+        CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[1] & EPWM_IFA0_STPMOD_Msk, 0);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[2] & EPWM_IFA0_STPMOD_Msk, 0);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[3] & EPWM_IFA0_STPMOD_Msk, 0);
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->IFA[4] & EPWM_IFA0_STPMOD_Msk, 0);
@@ -2100,7 +2226,7 @@ void Func_EPWM_EnableAccStopMode()
     }
 }
 
-void Func_EPWM_GetAccInt() 
+void Func_EPWM_GetAccInt()
 {
     uint32_t u32TestCh = 0, x = 0;
     //uint32_t au32RegCheck[6] = {0x81, 0x83, 0x8007, 0x800F, 0x80001F, 0x80003F};
@@ -2112,7 +2238,7 @@ void Func_EPWM_GetAccInt()
 
     for (x = 0; x < EPWM_MODULE_NUM; x++)
     {
-        for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh+=2)
+        for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh += 2)
         {
             EPWM_SET_CNR(g_apEPWMModule[x], u32TestCh, 10);
             EPWM_SET_CMR(g_apEPWMModule[x], u32TestCh, 5);
@@ -2120,34 +2246,44 @@ void Func_EPWM_GetAccInt()
             EPWM_EnableAcc(g_apEPWMModule[x], u32TestCh, 0xF, EPWM_IFA_ZERO_POINT);
             EPWM_Start(g_apEPWMModule[x], 1 << u32TestCh);
 
-            while(EPWM_GetAccInt(g_apEPWMModule[x], u32TestCh) == 0){};
+            while (EPWM_GetAccInt(g_apEPWMModule[x], u32TestCh) == 0) {};
+
             CU_ASSERT_EQUAL(EPWM_GetAccInt(g_apEPWMModule[x], u32TestCh), 1);
 
             EPWM_ForceStop(g_apEPWMModule[x], 1 << u32TestCh);
-            CU_ASSERT_EQUAL(EPWM_GetAccCounter(g_apEPWMModule[x], u32TestCh), 0xF+1);
+
+            CU_ASSERT_EQUAL(EPWM_GetAccCounter(g_apEPWMModule[x], u32TestCh), 0xF + 1);
 
             EPWM_ClearAccInt(g_apEPWMModule[x], u32TestCh);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->INTSTS0, au32ClearRegCheck[u32TestCh]);
-            
-            EPWM_SET_CNR(g_apEPWMModule[x], u32TestCh+1, 10);
-            EPWM_SET_CMR(g_apEPWMModule[x], u32TestCh+1, 5);
-            EPWM_SET_PRESCALER(g_apEPWMModule[x], u32TestCh+1, 2);
+
+            EPWM_SET_CNR(g_apEPWMModule[x], u32TestCh + 1, 10);
+
+            EPWM_SET_CMR(g_apEPWMModule[x], u32TestCh + 1, 5);
+
+            EPWM_SET_PRESCALER(g_apEPWMModule[x], u32TestCh + 1, 2);
+
             EPWM_EnableAcc(g_apEPWMModule[x], u32TestCh + 1, 0xF, EPWM_IFA_PERIOD_POINT);
+
             EPWM_Start(g_apEPWMModule[x], 1 << (u32TestCh + 1));
 
-            while(EPWM_GetAccInt(g_apEPWMModule[x], u32TestCh + 1) == 0){};
+            while (EPWM_GetAccInt(g_apEPWMModule[x], u32TestCh + 1) == 0) {};
+
             CU_ASSERT_EQUAL(EPWM_GetAccInt(g_apEPWMModule[x], u32TestCh + 1), 1);
 
             EPWM_ForceStop(g_apEPWMModule[x], 1 << (u32TestCh + 1));
-            CU_ASSERT_EQUAL(EPWM_GetAccCounter(g_apEPWMModule[x], u32TestCh + 1), 0xF+1);
+
+            CU_ASSERT_EQUAL(EPWM_GetAccCounter(g_apEPWMModule[x], u32TestCh + 1), 0xF + 1);
 
             EPWM_ClearAccInt(g_apEPWMModule[x], u32TestCh + 1);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->INTSTS0, au32ClearRegCheck[u32TestCh + 1]);
         }
     }
 }
 
-void Func_EPWM_GetFTDutyIntFlag() 
+void Func_EPWM_GetFTDutyIntFlag()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -2158,7 +2294,7 @@ void Func_EPWM_GetFTDutyIntFlag()
     for (x = 0; x < EPWM_MODULE_NUM; x++)
     {
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
-        //for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh+=2)
+            //for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh+=2)
         {
             EPWM_SET_CNR(g_apEPWMModule[x], u32TestCh, 10);
             EPWM_SET_CMR(g_apEPWMModule[x], u32TestCh, 5);
@@ -2167,32 +2303,39 @@ void Func_EPWM_GetFTDutyIntFlag()
             EPWM_SET_ALIGNED_TYPE(g_apEPWMModule[x], 1 << u32TestCh, EPWM_EDGE_ALIGNED);
             EPWM_Start(g_apEPWMModule[x], 1 << u32TestCh);
 
-            while(EPWM_GetFTDutyIntFlag(g_apEPWMModule[x], u32TestCh) == 0){};
+            while (EPWM_GetFTDutyIntFlag(g_apEPWMModule[x], u32TestCh) == 0) {};
+
             CU_ASSERT_EQUAL(EPWM_GetFTDutyIntFlag(g_apEPWMModule[x], u32TestCh), 1);
 
             EPWM_ForceStop(g_apEPWMModule[x], 1 << u32TestCh);
 
             EPWM_ClearFTDutyIntFlag(g_apEPWMModule[x], u32TestCh);
+
             CU_ASSERT_EQUAL(EPWM_GetFTDutyIntFlag(g_apEPWMModule[x], u32TestCh), 0);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->FTCI & ((0x7ul << EPWM_FTCI_FTCMD0_Pos) << (u32TestCh >> 1)), 0);
 
             /* change EPWM operates at up counter type */
             EPWM_SET_ALIGNED_TYPE(g_apEPWMModule[x], 1 << u32TestCh, EPWM_UP_COUNTER);
+
             EPWM_Start(g_apEPWMModule[x], 1 << u32TestCh);
 
-            while(EPWM_GetFTDutyIntFlag(g_apEPWMModule[x], u32TestCh) == 0){};
+            while (EPWM_GetFTDutyIntFlag(g_apEPWMModule[x], u32TestCh) == 0) {};
+
             CU_ASSERT_EQUAL(EPWM_GetFTDutyIntFlag(g_apEPWMModule[x], u32TestCh), 1);
 
             EPWM_ForceStop(g_apEPWMModule[x], 1 << u32TestCh);
 
             EPWM_ClearFTDutyIntFlag(g_apEPWMModule[x], u32TestCh);
+
             CU_ASSERT_EQUAL(EPWM_GetFTDutyIntFlag(g_apEPWMModule[x], u32TestCh), 0);
-            CU_ASSERT_EQUAL(g_apEPWMModule[x]->FTCI & ((0x7ul << EPWM_FTCI_FTCMU0_Pos)<< (u32TestCh >> 1)), 0);
+
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->FTCI & ((0x7ul << EPWM_FTCI_FTCMU0_Pos) << (u32TestCh >> 1)), 0);
         }
     }
 }
 
-void Func_EPWM_EnableLoadMode() 
+void Func_EPWM_EnableLoadMode()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -2228,18 +2371,21 @@ void Func_EPWM_EnableLoadMode()
             EPWM_EnableLoadMode(g_apEPWMModule[x], u32TestCh, EPWM_LOAD_MODE_WINDOW);
             EPWM_EnableLoadMode(g_apEPWMModule[x], u32TestCh, EPWM_LOAD_MODE_CENTER);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->CTL0, 0x003F3F3F);
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_DisableLoadMode(g_apEPWMModule[x], u32TestCh, EPWM_LOAD_MODE_IMMEDIATE);
             EPWM_DisableLoadMode(g_apEPWMModule[x], u32TestCh, EPWM_LOAD_MODE_WINDOW);
             EPWM_DisableLoadMode(g_apEPWMModule[x], u32TestCh, EPWM_LOAD_MODE_CENTER);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->CTL0, 0);
     }
 }
 
-void Func_EPWM_ConfigSyncPhase() 
+void Func_EPWM_ConfigSyncPhase()
 {
     uint32_t u32TestCh = 0, x = 0;
     uint32_t u32PatternIdx = 0, u32PatternCount = 0;
@@ -2250,7 +2396,7 @@ void Func_EPWM_ConfigSyncPhase()
     SYS_ResetModule(SYS_EPWM0RST);
     SYS_ResetModule(SYS_EPWM1RST);
 
-    u32PatternCount = sizeof(au32PatternData)/sizeof(uint32_t);
+    u32PatternCount = sizeof(au32PatternData) / sizeof(uint32_t);
 
     for (x = 0; x < EPWM_MODULE_NUM; x++)
     {
@@ -2261,19 +2407,20 @@ void Func_EPWM_ConfigSyncPhase()
             {
                 EPWM_ConfigSyncPhase(g_apEPWMModule[x], u32TestCh, au32PatternData[u32PatternIdx], EPWM_PHS_DIR_DECREMENT, SixteenBitsPatternTable[u32PatternIdx]);
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->SYNC & ((3 << EPWM_SYNC_SINSRC0_Pos) << ((u32TestCh >> 1) * 2)), au32RegCheck[u32PatternIdx] << ((u32TestCh >> 1) * 2));
-                CU_ASSERT_EQUAL(g_apEPWMModule[x]->PHS[(u32TestCh/2)], SixteenBitsPatternTable[u32PatternIdx]);
-                
+                CU_ASSERT_EQUAL(g_apEPWMModule[x]->PHS[(u32TestCh / 2)], SixteenBitsPatternTable[u32PatternIdx]);
+
                 EPWM_ConfigSyncPhase(g_apEPWMModule[x], u32TestCh, au32PatternData[u32PatternIdx], EPWM_PHS_DIR_INCREMENT, SixteenBitsPatternTable[u32PatternIdx]);
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->SYNC & ((0x3ful << EPWM_SYNC_SINSRC0_Pos) << ((u32TestCh >> 1) * 2)), (au32RegCheck[u32PatternIdx] << ((u32TestCh >> 1) * 2)));
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->SYNC & ((1 << EPWM_SYNC_PHSDIR0_Pos) << (u32TestCh >> 1)), 0x1000000 << (u32TestCh >> 1));
-                CU_ASSERT_EQUAL(g_apEPWMModule[x]->PHS[(u32TestCh/2)], SixteenBitsPatternTable[u32PatternIdx]);
+                CU_ASSERT_EQUAL(g_apEPWMModule[x]->PHS[(u32TestCh / 2)], SixteenBitsPatternTable[u32PatternIdx]);
             }
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->SYNC, 0x07003F00);
     }
 }
 
-void Func_EPWM_EnableSyncPhase() 
+void Func_EPWM_EnableSyncPhase()
 {
     uint32_t u32TestCh = 0, x = 0;
     uint32_t u32PatternIdx = 0;
@@ -2301,20 +2448,24 @@ void Func_EPWM_EnableSyncPhase()
         {
             EPWM_EnableSyncPhase(g_apEPWMModule[x], 1 << u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->SYNC, 0x7);
+
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
             EPWM_DisableSyncPhase(g_apEPWMModule[x], 1 << u32TestCh);
         }
+
         CU_ASSERT_EQUAL(g_apEPWMModule[x]->SYNC, 0);
 
         //test case 3: enable/disable multiple conditions each time
-        for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegWrite)/sizeof(uint32_t); u32PatternIdx++)
+        for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegWrite) / sizeof(uint32_t); u32PatternIdx++)
         {
             EPWM_EnableSyncPhase(g_apEPWMModule[x], au32RegWrite[u32PatternIdx]);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->SYNC, au32RegEnableCheck[u32PatternIdx]);
         }
-        for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegWrite)/sizeof(uint32_t); u32PatternIdx++)
+
+        for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegWrite) / sizeof(uint32_t); u32PatternIdx++)
         {
             EPWM_DisableSyncPhase(g_apEPWMModule[x], au32RegWrite[u32PatternIdx]);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->SYNC, au32RegDisableCheck[u32PatternIdx]);
@@ -2322,12 +2473,13 @@ void Func_EPWM_EnableSyncPhase()
     }
 }
 
-void Func_EPWM_EnableSyncNoiseFilter() 
+void Func_EPWM_EnableSyncNoiseFilter()
 {
     uint32_t x = 0;
     uint32_t u32PatternIdx = 0;
     uint32_t au32RegPattern[8] = {EPWM_NF_CLK_DIV_1, EPWM_NF_CLK_DIV_2, EPWM_NF_CLK_DIV_4, EPWM_NF_CLK_DIV_8, \
-                                  EPWM_NF_CLK_DIV_16, EPWM_NF_CLK_DIV_32, EPWM_NF_CLK_DIV_64, EPWM_NF_CLK_DIV_128};
+                                  EPWM_NF_CLK_DIV_16, EPWM_NF_CLK_DIV_32, EPWM_NF_CLK_DIV_64, EPWM_NF_CLK_DIV_128
+                                 };
 
     /* Reset EPWM */
     SYS_ResetModule(SYS_EPWM0RST);
@@ -2335,7 +2487,7 @@ void Func_EPWM_EnableSyncNoiseFilter()
 
     for (x = 0; x < EPWM_MODULE_NUM; x++)
     {
-        for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegPattern)/sizeof(uint32_t); u32PatternIdx++)
+        for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegPattern) / sizeof(uint32_t); u32PatternIdx++)
         {
             EPWM_EnableSyncNoiseFilter(g_apEPWMModule[x], 7, au32RegPattern[u32PatternIdx]);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->SYNC, 0x710000 | au32RegPattern[u32PatternIdx] << 17);
@@ -2360,7 +2512,7 @@ void Func_EPWM_EnableSyncNoiseFilter()
     }
 }
 
-void Func_EPWM_EnableSyncPinInverse() 
+void Func_EPWM_EnableSyncPinInverse()
 {
     uint32_t x = 0;
 
@@ -2377,7 +2529,7 @@ void Func_EPWM_EnableSyncPinInverse()
     }
 }
 
-void Func_EPWM_SetClockSource() 
+void Func_EPWM_SetClockSource()
 {
     uint32_t u32TestCh = 0, x = 0;
     uint32_t u32PatternIdx = 0;
@@ -2387,7 +2539,8 @@ void Func_EPWM_SetClockSource()
                                     0x4, 0x104, 0x204, 0x304, 0x404, \
                                     0x4, 0x104, 0x204, 0x304, 0x404, \
                                     0x404, 0x10404, 0x20404, 0x30404, 0x40404, \
-                                    0x404, 0x10404, 0x20404, 0x30404, 0x40404};
+                                    0x404, 0x10404, 0x20404, 0x30404, 0x40404
+                                   };
     /* Reset EPWM */
     SYS_ResetModule(SYS_EPWM0RST);
     SYS_ResetModule(SYS_EPWM1RST);
@@ -2396,7 +2549,7 @@ void Func_EPWM_SetClockSource()
     {
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
-            for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegPattern)/sizeof(uint32_t); u32PatternIdx++)
+            for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegPattern) / sizeof(uint32_t); u32PatternIdx++)
             {
                 EPWM_SetClockSource(g_apEPWMModule[x], u32TestCh, au32RegPattern[u32PatternIdx]);
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->CLKSRC, au32RegCheck[u32TestCh * 5 + u32PatternIdx]);
@@ -2405,12 +2558,13 @@ void Func_EPWM_SetClockSource()
     }
 }
 
-void Func_EPWM_EnableBrakeNoiseFilter() 
+void Func_EPWM_EnableBrakeNoiseFilter()
 {
     uint32_t x = 0;
     uint32_t u32PatternIdx = 0;
     uint32_t au32RegPattern[8] = {EPWM_NF_CLK_DIV_1, EPWM_NF_CLK_DIV_2, EPWM_NF_CLK_DIV_4, EPWM_NF_CLK_DIV_8, \
-                                  EPWM_NF_CLK_DIV_16, EPWM_NF_CLK_DIV_32, EPWM_NF_CLK_DIV_64, EPWM_NF_CLK_DIV_128};
+                                  EPWM_NF_CLK_DIV_16, EPWM_NF_CLK_DIV_32, EPWM_NF_CLK_DIV_64, EPWM_NF_CLK_DIV_128
+                                 };
 
     uint32_t u32PreReg = 0;
     /* Reset EPWM */
@@ -2419,7 +2573,7 @@ void Func_EPWM_EnableBrakeNoiseFilter()
 
     for (x = 0; x < EPWM_MODULE_NUM; x++)
     {
-        for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegPattern)/sizeof(uint32_t); u32PatternIdx++)
+        for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegPattern) / sizeof(uint32_t); u32PatternIdx++)
         {
             EPWM_EnableBrakeNoiseFilter(g_apEPWMModule[x], 0, 7, au32RegPattern[u32PatternIdx]);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->BNF, 0x71 | au32RegPattern[u32PatternIdx] << 1);
@@ -2443,7 +2597,8 @@ void Func_EPWM_EnableBrakeNoiseFilter()
         }
 
         u32PreReg = g_apEPWMModule[x]->BNF;
-        for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegPattern)/sizeof(uint32_t); u32PatternIdx++)
+
+        for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegPattern) / sizeof(uint32_t); u32PatternIdx++)
         {
             EPWM_EnableBrakeNoiseFilter(g_apEPWMModule[x], 1, 7, au32RegPattern[u32PatternIdx]);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->BNF, 0x7100 | au32RegPattern[u32PatternIdx] << 9 | u32PreReg);
@@ -2468,7 +2623,7 @@ void Func_EPWM_EnableBrakeNoiseFilter()
     }
 }
 
-void Func_EPWM_EnableBrakePinInverse() 
+void Func_EPWM_EnableBrakePinInverse()
 {
     uint32_t x = 0;
 
@@ -2489,7 +2644,7 @@ void Func_EPWM_EnableBrakePinInverse()
     }
 }
 
-void Func_EPWM_SetBrakePinSource() 
+void Func_EPWM_SetBrakePinSource()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -2510,7 +2665,7 @@ void Func_EPWM_SetBrakePinSource()
     }
 }
 
-void Func_EPWM_CaptureInputNoiseFilter() 
+void Func_EPWM_CaptureInputNoiseFilter()
 {
     uint32_t x = 0;
     uint32_t u32TestCh = 0;
@@ -2523,37 +2678,37 @@ void Func_EPWM_CaptureInputNoiseFilter()
     {
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
-        EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 1, EPWM_NF_CLK_DIV_2);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (1 << EPWM_CAPNF_CAPNFCNT_Pos) | (1 << EPWM_CAPNF_CAPNFSEL_Pos)));
+            EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 1, EPWM_NF_CLK_DIV_2);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (1 << EPWM_CAPNF_CAPNFCNT_Pos) | (1 << EPWM_CAPNF_CAPNFSEL_Pos)));
 
-        EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 2, EPWM_NF_CLK_DIV_4);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (2 << EPWM_CAPNF_CAPNFCNT_Pos) | (2 << EPWM_CAPNF_CAPNFSEL_Pos)));
+            EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 2, EPWM_NF_CLK_DIV_4);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (2 << EPWM_CAPNF_CAPNFCNT_Pos) | (2 << EPWM_CAPNF_CAPNFSEL_Pos)));
 
-        EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 3, EPWM_NF_CLK_DIV_8);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (3 << EPWM_CAPNF_CAPNFCNT_Pos) | (3 << EPWM_CAPNF_CAPNFSEL_Pos)));
+            EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 3, EPWM_NF_CLK_DIV_8);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (3 << EPWM_CAPNF_CAPNFCNT_Pos) | (3 << EPWM_CAPNF_CAPNFSEL_Pos)));
 
-        EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 4, EPWM_NF_CLK_DIV_16);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (4 << EPWM_CAPNF_CAPNFCNT_Pos) | (4 << EPWM_CAPNF_CAPNFSEL_Pos)));
+            EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 4, EPWM_NF_CLK_DIV_16);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (4 << EPWM_CAPNF_CAPNFCNT_Pos) | (4 << EPWM_CAPNF_CAPNFSEL_Pos)));
 
-        EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 5, EPWM_NF_CLK_DIV_32);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (5 << EPWM_CAPNF_CAPNFCNT_Pos) | (5 << EPWM_CAPNF_CAPNFSEL_Pos)));
+            EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 5, EPWM_NF_CLK_DIV_32);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (5 << EPWM_CAPNF_CAPNFCNT_Pos) | (5 << EPWM_CAPNF_CAPNFSEL_Pos)));
 
-        EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 6, EPWM_NF_CLK_DIV_64);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (6 << EPWM_CAPNF_CAPNFCNT_Pos) | (6 << EPWM_CAPNF_CAPNFSEL_Pos)));
+            EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 6, EPWM_NF_CLK_DIV_64);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (6 << EPWM_CAPNF_CAPNFCNT_Pos) | (6 << EPWM_CAPNF_CAPNFSEL_Pos)));
 
-        EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 7, EPWM_NF_CLK_DIV_128);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (7 << EPWM_CAPNF_CAPNFCNT_Pos) | (7 << EPWM_CAPNF_CAPNFSEL_Pos)));
+            EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 7, EPWM_NF_CLK_DIV_128);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (7 << EPWM_CAPNF_CAPNFCNT_Pos) | (7 << EPWM_CAPNF_CAPNFSEL_Pos)));
 
-        EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 0, EPWM_NF_CLK_DIV_1);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (0 << EPWM_CAPNF_CAPNFCNT_Pos) | (0 << EPWM_CAPNF_CAPNFSEL_Pos)));
+            EPWM_EnableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh, 0, EPWM_NF_CLK_DIV_1);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], (EPWM_CAPNF_CAPNFEN_Msk | (0 << EPWM_CAPNF_CAPNFCNT_Pos) | (0 << EPWM_CAPNF_CAPNFSEL_Pos)));
 
-        EPWM_DisableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], 0x0);
+            EPWM_DisableCaptureInputNoiseFilter(g_apEPWMModule[x], u32TestCh);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->CAPNF[u32TestCh], 0x0);
         }
     }
 }
 
-void Func_EPWM_ExtEventTrigger() 
+void Func_EPWM_ExtEventTrigger()
 {
     uint32_t x = 0;
     uint32_t u32TestCh = 0;
@@ -2566,37 +2721,37 @@ void Func_EPWM_ExtEventTrigger()
     {
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
-        EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT1, EPWM_EXT_TGR_COUNTER_RESET);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (1 << EPWM_EXTETCTL_EXTTRGS_Pos) | (0 << EPWM_EXTETCTL_CNTACTS_Pos)));
+            EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT1, EPWM_EXT_TGR_COUNTER_RESET);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (1 << EPWM_EXTETCTL_EXTTRGS_Pos) | (0 << EPWM_EXTETCTL_CNTACTS_Pos)));
 
-        EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT2, EPWM_EXT_TGR_COUNTER_START);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (2 << EPWM_EXTETCTL_EXTTRGS_Pos) | (1 << EPWM_EXTETCTL_CNTACTS_Pos)));
+            EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT2, EPWM_EXT_TGR_COUNTER_START);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (2 << EPWM_EXTETCTL_EXTTRGS_Pos) | (1 << EPWM_EXTETCTL_CNTACTS_Pos)));
 
-        EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT3, EPWM_EXT_TGR_COUNTER_RESET_AND_START);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (3 << EPWM_EXTETCTL_EXTTRGS_Pos) | (2 << EPWM_EXTETCTL_CNTACTS_Pos)));
+            EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT3, EPWM_EXT_TGR_COUNTER_RESET_AND_START);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (3 << EPWM_EXTETCTL_EXTTRGS_Pos) | (2 << EPWM_EXTETCTL_CNTACTS_Pos)));
 
-        EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT4, EPWM_EXT_TGR_COUNTER_RESET);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (4 << EPWM_EXTETCTL_EXTTRGS_Pos) | (0 << EPWM_EXTETCTL_CNTACTS_Pos)));
+            EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT4, EPWM_EXT_TGR_COUNTER_RESET);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (4 << EPWM_EXTETCTL_EXTTRGS_Pos) | (0 << EPWM_EXTETCTL_CNTACTS_Pos)));
 
-        EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT5, EPWM_EXT_TGR_COUNTER_START);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (5 << EPWM_EXTETCTL_EXTTRGS_Pos) | (1 << EPWM_EXTETCTL_CNTACTS_Pos)));
+            EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT5, EPWM_EXT_TGR_COUNTER_START);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (5 << EPWM_EXTETCTL_EXTTRGS_Pos) | (1 << EPWM_EXTETCTL_CNTACTS_Pos)));
 
-        EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT6, EPWM_EXT_TGR_COUNTER_RESET_AND_START);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (6 << EPWM_EXTETCTL_EXTTRGS_Pos) | (2 << EPWM_EXTETCTL_CNTACTS_Pos)));
+            EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT6, EPWM_EXT_TGR_COUNTER_RESET_AND_START);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (6 << EPWM_EXTETCTL_EXTTRGS_Pos) | (2 << EPWM_EXTETCTL_CNTACTS_Pos)));
 
-        EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT7, EPWM_EXT_TGR_COUNTER_START);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (7 << EPWM_EXTETCTL_EXTTRGS_Pos) | (1 << EPWM_EXTETCTL_CNTACTS_Pos)));
+            EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT7, EPWM_EXT_TGR_COUNTER_START);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (7 << EPWM_EXTETCTL_EXTTRGS_Pos) | (1 << EPWM_EXTETCTL_CNTACTS_Pos)));
 
-        EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT0, EPWM_EXT_TGR_COUNTER_RESET);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (0 << EPWM_EXTETCTL_EXTTRGS_Pos) | (0 << EPWM_EXTETCTL_CNTACTS_Pos)));
+            EPWM_EnableExtEventTrigger(g_apEPWMModule[x], u32TestCh, EPWM_EXT_TGR_PIN_INT0, EPWM_EXT_TGR_COUNTER_RESET);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], (EPWM_EXTETCTL_EXTETEN_Msk | (0 << EPWM_EXTETCTL_EXTTRGS_Pos) | (0 << EPWM_EXTETCTL_CNTACTS_Pos)));
 
-        EPWM_DisableExtEventTrigger(g_apEPWMModule[x], u32TestCh);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], 0x0);
+            EPWM_DisableExtEventTrigger(g_apEPWMModule[x], u32TestCh);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->EXTETCTL[u32TestCh], 0x0);
         }
     }
 }
 
-void Func_EPWM_SWEventOutput() 
+void Func_EPWM_SWEventOutput()
 {
     uint32_t x = 0;
     uint32_t u32TestCh = 0;
@@ -2609,29 +2764,29 @@ void Func_EPWM_SWEventOutput()
     {
         for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh++)
         {
-        EPWM_EnableSWEventOutput(g_apEPWMModule[x], u32TestCh, EPWM_OUTPUT_LOW);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFTRG, 0x1<< (u32TestCh));
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFCTL, ((1UL) << (u32TestCh << 1U)));
+            EPWM_EnableSWEventOutput(g_apEPWMModule[x], u32TestCh, EPWM_OUTPUT_LOW);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFTRG, 0x1 << (u32TestCh));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFCTL, ((1UL) << (u32TestCh << 1U)));
 
-        EPWM_EnableSWEventOutput(g_apEPWMModule[x], u32TestCh, EPWM_OUTPUT_HIGH);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFTRG, 0x1<< (u32TestCh));
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFCTL, ((2UL) << (u32TestCh << 1U)));
+            EPWM_EnableSWEventOutput(g_apEPWMModule[x], u32TestCh, EPWM_OUTPUT_HIGH);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFTRG, 0x1 << (u32TestCh));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFCTL, ((2UL) << (u32TestCh << 1U)));
 
-        EPWM_EnableSWEventOutput(g_apEPWMModule[x], u32TestCh, EPWM_OUTPUT_TOGGLE);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFTRG, 0x1<< (u32TestCh));
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFCTL, ((3UL) << (u32TestCh << 1U)));
+            EPWM_EnableSWEventOutput(g_apEPWMModule[x], u32TestCh, EPWM_OUTPUT_TOGGLE);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFTRG, 0x1 << (u32TestCh));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFCTL, ((3UL) << (u32TestCh << 1U)));
 
-        EPWM_EnableSWEventOutput(g_apEPWMModule[x], u32TestCh, EPWM_OUTPUT_NOTHING);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFTRG, 0x1<< (u32TestCh));
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFCTL, ((0UL) << (u32TestCh << 1U)));
+            EPWM_EnableSWEventOutput(g_apEPWMModule[x], u32TestCh, EPWM_OUTPUT_NOTHING);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFTRG, 0x1 << (u32TestCh));
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFCTL, ((0UL) << (u32TestCh << 1U)));
 
-        EPWM_DisableSWEventOutput(g_apEPWMModule[x], u32TestCh);
-        CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFTRG, 0x0);
+            EPWM_DisableSWEventOutput(g_apEPWMModule[x], u32TestCh);
+            CU_ASSERT_EQUAL(g_apEPWMModule[x]->SWEOFTRG, 0x0);
         }
     }
 }
 
-void Func_EPWM_GetWrapAroundFlag() 
+void Func_EPWM_GetWrapAroundFlag()
 {
     uint32_t u32TestCh = 0, j = 0;
 
@@ -2646,20 +2801,22 @@ void Func_EPWM_GetWrapAroundFlag()
             EPWM_SET_CNR(g_apEPWMModule[j], u32TestCh, 0xFFFF);
             EPWM_SET_CMR(g_apEPWMModule[j], u32TestCh, 5);
             EPWM_SET_PRESCALER(g_apEPWMModule[j], u32TestCh, 1);
-            EPWM_Start(g_apEPWMModule[j], 1 << u32TestCh);        
-            
-            while(EPWM_GetWrapAroundFlag(g_apEPWMModule[j], u32TestCh) == 0){};
+            EPWM_Start(g_apEPWMModule[j], 1 << u32TestCh);
+
+            while (EPWM_GetWrapAroundFlag(g_apEPWMModule[j], u32TestCh) == 0) {};
+
             CU_ASSERT_EQUAL(EPWM_GetWrapAroundFlag(g_apEPWMModule[j], u32TestCh), 1);
 
             EPWM_ForceStop(g_apEPWMModule[j], 1 << u32TestCh);
-            
+
             EPWM_ClearWrapAroundFlag(g_apEPWMModule[j], u32TestCh);
+
             CU_ASSERT_EQUAL(g_apEPWMModule[j]->STATUS & ((1 << EPWM_STATUS_CNTMAXF0_Pos) << u32TestCh), 0);
         }
     }
 }
 
-void Func_EPWM_GetFaultBrakeIntFlag() 
+void Func_EPWM_GetFaultBrakeIntFlag()
 {
     uint32_t u32TestCh = 0, x = 0;
 
@@ -2669,7 +2826,7 @@ void Func_EPWM_GetFaultBrakeIntFlag()
 
     for (x = 0; x < EPWM_MODULE_NUM; x++)
     {
-        for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh+=2)
+        for (u32TestCh = 0; u32TestCh < EPWM_MAX_CH; u32TestCh += 2)
         {
             EPWM_TRIGGER_BRAKE(g_apEPWMModule[x], 1 << (u32TestCh >> 1), EPWM_FB_LEVEL);
             CU_ASSERT_EQUAL(g_apEPWMModule[x]->INTSTS1, 0x300 << u32TestCh);
@@ -2686,15 +2843,15 @@ void Func_EPWM_GetFaultBrakeIntFlag()
     }
 }
 
-void Func_EPWM_TRIGGER_SYNC() 
+void Func_EPWM_TRIGGER_SYNC()
 {
-//     uint32_t u32TestCh = 0, x = 0;
+    //     uint32_t u32TestCh = 0, x = 0;
 
     /* Reset EPWM */
     SYS_ResetModule(SYS_EPWM0RST);
     SYS_ResetModule(SYS_EPWM1RST);
 
-//     for (x = 0; x < EPWM_MODULE_NUM; x++)
+    //     for (x = 0; x < EPWM_MODULE_NUM; x++)
     {
 
         EPWM_TRIGGER_SYNC(g_apEPWMModule[0], 0);
@@ -2741,7 +2898,7 @@ void Func_EPWM_TRIGGER_SYNC()
     }
 }
 
-void Func_EPWM_CONSTANT() 
+void Func_EPWM_CONSTANT()
 {
     /* Reset EPWM */
     SYS_ResetModule(SYS_EPWM0RST);
@@ -2752,19 +2909,22 @@ void Func_EPWM_CONSTANT()
 
 }
 
-CU_SuiteInfo EPWMSuites[] = {
+CU_SuiteInfo EPWMSuites[] =
+{
     { "EPWM Const Test", EPWM_Test_Init, EPWM_Test_Clean, NULL, NULL, EPWM_ConstTest },
     { "EPWM Macro Test", EPWM_Test_Init, EPWM_Test_Clean, NULL, NULL, EPWM_MacroTest },
     { "EPWM Func  Test", EPWM_Test_Init, EPWM_Test_Clean, NULL, NULL, EPWM_FuncTest },
     CU_SUITE_INFO_NULL
 };
 
-CU_TestInfo  EPWM_ConstTest[] = {
+CU_TestInfo  EPWM_ConstTest[] =
+{
     {"Test EPWM_CONSTANT:", Func_EPWM_CONSTANT},
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo  EPWM_MacroTest[] = {
+CU_TestInfo  EPWM_MacroTest[] =
+{
     {"Test EPWM_ENABLE_OUTPUT_INVERTER():", Func_EPWM_ENABLE_OUTPUT_INVERTER},
     {"Test EPWM_SET_PRESCALER():", Func_EPWM_SET_PRESCALER},
     {"Test EPWM_SET_CMR()/EPWM_SET_CNR():", Func_EPWM_SET_CMR},
@@ -2782,7 +2942,8 @@ CU_TestInfo  EPWM_MacroTest[] = {
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo  EPWM_FuncTest[] = {
+CU_TestInfo  EPWM_FuncTest[] =
+{
     {"Test EPWM_Start()/EPWM_ForceStop()/EPWM_Stop():", Func_EPWM_Stop},
     {"Test EPWM_EnableADCTrigger()/EPWM_DisableADCTrigger():", Func_EPWM_EnableADCTrigger},
     {"Test EPWM_EnableCapture()/EPWM_DisableCapture():", Func_EPWM_EnableCapture},

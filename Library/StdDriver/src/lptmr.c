@@ -44,10 +44,11 @@ uint32_t LPTMR_Open(LPTMR_T *lptmr, uint32_t u32Mode, uint32_t u32Freq)
     uint32_t u32Clk = LPTMR_GetModuleClock(lptmr);
     uint32_t u32Cmpr = 0UL, u32Prescale = 0UL;
 
-    if(u32Freq == 0)
-			return 0 ;
+    if (u32Freq == 0)
+        return 0 ;
+
     /* Fastest possible lptmr working freq is (u32Clk / 2). While cmpr = 2, prescaler = 0. */
-    if(u32Freq > (u32Clk / 2UL))
+    if (u32Freq > (u32Clk / 2UL))
     {
         u32Cmpr = 2UL;
     }
@@ -55,6 +56,7 @@ uint32_t LPTMR_Open(LPTMR_T *lptmr, uint32_t u32Mode, uint32_t u32Freq)
     {
         u32Cmpr = u32Clk / u32Freq;
         u32Prescale = (u32Cmpr >> 24);  /* for 24 bits CMPDAT */
+
         if (u32Prescale > 0UL)
             u32Cmpr = u32Cmpr / (u32Prescale + 1UL);
     }
@@ -62,7 +64,7 @@ uint32_t LPTMR_Open(LPTMR_T *lptmr, uint32_t u32Mode, uint32_t u32Freq)
     lptmr->CTL = (u32Mode | u32Prescale);
     lptmr->CMP = u32Cmpr;
 
-    return(u32Clk / (u32Cmpr * (u32Prescale + 1UL)));
+    return (u32Clk / (u32Cmpr * (u32Prescale + 1UL)));
 }
 
 
@@ -104,30 +106,32 @@ void LPTMR_Delay(LPTMR_T *lptmr, uint32_t u32Usec)
     lptmr->CTL = 0UL;
     lptmr->EXTCTL = 0UL;
 
-    if(u32Clk <= 1000000UL)   /* min delay is 1000 us if lptmr clock source is <= 1 MHz */
+    if (u32Clk <= 1000000UL)  /* min delay is 1000 us if lptmr clock source is <= 1 MHz */
     {
-        if(u32Usec < 1000UL)
+        if (u32Usec < 1000UL)
         {
             u32Usec = 1000UL;
         }
-        if(u32Usec > 1000000UL)
+
+        if (u32Usec > 1000000UL)
         {
             u32Usec = 1000000UL;
         }
     }
     else
     {
-        if(u32Usec < 100UL)
+        if (u32Usec < 100UL)
         {
             u32Usec = 100UL;
         }
-        if(u32Usec > 1000000UL)
+
+        if (u32Usec > 1000000UL)
         {
             u32Usec = 1000000UL;
         }
     }
 
-    if(u32Clk <= 1000000UL)
+    if (u32Clk <= 1000000UL)
     {
         u32Prescale = 0UL;
         u32NsecPerTick = 1000000000UL / u32Clk;
@@ -137,6 +141,7 @@ void LPTMR_Delay(LPTMR_T *lptmr, uint32_t u32Usec)
     {
         u32Cmpr = u32Usec * (u32Clk / 1000000UL);
         u32Prescale = (u32Cmpr >> 24);  /* for 24 bits CMPDAT */
+
         if (u32Prescale > 0UL)
             u32Cmpr = u32Cmpr / (u32Prescale + 1UL);
     }
@@ -146,12 +151,12 @@ void LPTMR_Delay(LPTMR_T *lptmr, uint32_t u32Usec)
 
     /* When system clock is faster than lptmr clock, it is possible lptmr active bit cannot set in time while we check it.
        And the while loop below return immediately, so put a tiny delay here allowing lptmr start counting and raise active flag. */
-    for(; delay > 0UL; delay--)
+    for (; delay > 0UL; delay--)
     {
         __NOP();
     }
 
-    while(lptmr->CTL & LPTMR_CTL_ACTSTS_Msk)
+    while (lptmr->CTL & LPTMR_CTL_ACTSTS_Msk)
     {
         ;
     }
@@ -279,19 +284,21 @@ void LPTMR_DisableEventCounter(LPTMR_T *lptmr)
   */
 uint32_t LPTMR_GetModuleClock(LPTMR_T *lptmr)
 {
-    uint32_t u32Src, u32Clk;
+    uint32_t u32Src = 0UL, u32Clk = 0UL;
     const uint32_t au32Clk[] = {0UL, __LXT, __LIRC, __MIRC, __HIRC, 0UL};
 
-    if(lptmr == LPTMR0)
+    if (lptmr == LPTMR0)
     {
         u32Src = (CLK->LPTMRSEL & CLK_LPTMRSEL_LPTMR0SEL_Msk) >> CLK_LPTMRSEL_LPTMR0SEL_Pos;
     }
-    else if(lptmr == LPTMR1)
+    else if (lptmr == LPTMR1)
     {
         u32Src = (CLK->LPTMRSEL & CLK_LPTMRSEL_LPTMR1SEL_Msk) >> CLK_LPTMRSEL_LPTMR1SEL_Pos;
     }
+    else
+        return u32Clk;
 
-    if(u32Src == 0UL)
+    if (u32Src == 0UL)
     {
         u32Clk = CLK_GetPCLK2Freq();
     }
@@ -346,10 +353,12 @@ int32_t LPTMR_ResetCounter(LPTMR_T *lptmr)
     lptmr->CNT = 0UL;
     /* Takes 2~3 ECLKs to reset lptmr counter */
     u32Delay = (SystemCoreClock / LPTMR_GetModuleClock(lptmr)) * 3;
-    while(((lptmr->CNT&LPTMR_CNT_RSTACT_Msk) == LPTMR_CNT_RSTACT_Msk) && (--u32Delay))
+
+    while (((lptmr->CNT & LPTMR_CNT_RSTACT_Msk) == LPTMR_CNT_RSTACT_Msk) && (--u32Delay))
     {
         __NOP();
     }
+
     return u32Delay > 0 ? LPTMR_OK : LPTMR_ERR_TIMEOUT;
 }
 

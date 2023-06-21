@@ -58,7 +58,7 @@ uint32_t TPWM_ConfigOutputFreqAndDuty(TIMER_T *timer, uint32_t u32Frequency, uin
     uint32_t u32PWMClockFreq, u32TargetFreq;
     uint32_t u32Prescaler = 0x1000UL, u32Period, u32CMP;
 
-    if((timer == TIMER0) || (timer == TIMER2))
+    if ((timer == TIMER0) || (timer == TIMER2))
     {
         u32PWMClockFreq = CLK_GetPCLK0Freq();
     }
@@ -68,16 +68,17 @@ uint32_t TPWM_ConfigOutputFreqAndDuty(TIMER_T *timer, uint32_t u32Frequency, uin
     }
 
     /* Calculate u16PERIOD and u16PSC */
-    for(u32Prescaler = 1UL; u32Prescaler <= 0x1000UL; u32Prescaler++)
+    for (u32Prescaler = 1UL; u32Prescaler <= 0x1000UL; u32Prescaler++)
     {
         u32Period = (u32PWMClockFreq / u32Prescaler) / u32Frequency;
 
         /* If target u32Period is larger than 0x10000, need to use a larger prescaler */
-        if(u32Period <= 0x10000UL)
+        if (u32Period <= 0x10000UL)
         {
             break;
         }
     }
+
     /* Store return value here 'cos we're gonna change u32Prescaler & u32Period to the real value to fill into register */
     u32TargetFreq = (u32PWMClockFreq / u32Prescaler) / u32Period;
 
@@ -91,7 +92,8 @@ uint32_t TPWM_ConfigOutputFreqAndDuty(TIMER_T *timer, uint32_t u32Frequency, uin
     TPWM_SET_PRESCALER(timer, (u32Prescaler - 1UL));
 
     TPWM_SET_PERIOD(timer, (u32Period - 1UL));
-    if(u32DutyCycle)
+
+    if (u32DutyCycle)
     {
         u32CMP = (u32DutyCycle * u32Period) / 100UL;
     }
@@ -181,7 +183,7 @@ void TPWM_DisableCounter(TIMER_T *timer)
 }
 
 /**
-  * @brief      Enable Trigger ADC
+  * @brief      Enable Trigger EADC
   *
   * @param[in]  timer           The pointer of the specified Timer module. It could be TIMER0, TIMER1, TIMER2, TIMER3.
   * @param[in]  u32Condition    The condition to trigger EADC. It could be one of following conditions:
@@ -195,21 +197,21 @@ void TPWM_DisableCounter(TIMER_T *timer)
   *
   * @details    This function is used to enable specified counter compare event to trigger EADC.
   */
-void TPWM_EnableTriggerADC(TIMER_T *timer, uint32_t u32Condition)
+void TPWM_EnableTriggerEADC(TIMER_T *timer, uint32_t u32Condition)
 {
     timer->PWMTRGCTL = TIMER_PWMTRGCTL_TRGEADC_Msk | u32Condition;
 }
 
 /**
-  * @brief      Disable Trigger ADC
+  * @brief      Disable Trigger EADC
   *
   * @param[in]  timer       The pointer of the specified Timer module. It could be TIMER0, TIMER1, TIMER2, TIMER3.
   *
   * @return     None
   *
-  * @details    This function is used to disable counter compare event to trigger ADC.
+  * @details    This function is used to disable counter compare event to trigger EADC.
   */
-void TPWM_DisableTriggerADC(TIMER_T *timer)
+void TPWM_DisableTriggerEADC(TIMER_T *timer)
 {
     timer->PWMTRGCTL = 0x0UL;
 }
@@ -219,30 +221,34 @@ void TPWM_DisableTriggerADC(TIMER_T *timer)
   *
   * @param[in]  timer           The pointer of the specified Timer module. It could be TIMER0, TIMER1, TIMER2, TIMER3.
   * @param[in]  u32CH0Level     PWMx_CH0 output level while fault brake event occurs. Valid value is one of following setting
-  *                                 - \ref TPWM_OUTPUT_TOGGLE
-  *                                 - \ref TPWM_OUTPUT_NOTHING
-  *                                 - \ref TPWM_OUTPUT_LOW
-  *                                 - \ref TPWM_OUTPUT_HIGH
+  *                                 - \ref TPWM_BRK_OUT_DISABLE
+  *                                 - \ref TPWM_BRK_OUT_TRI_STATE
+  *                                 - \ref TPWM_BRK_OUT_LOW
+  *                                 - \ref TPWM_BRK_OUT_HIGH
   * @param[in]  u32CH1Level     PWMx_CH1 output level while fault brake event occurs. Valid value is one of following setting
-  *                                 - \ref TPWM_OUTPUT_TOGGLE
-  *                                 - \ref TPWM_OUTPUT_NOTHING
-  *                                 - \ref TPWM_OUTPUT_LOW
-  *                                 - \ref TPWM_OUTPUT_HIGH
+  *                                 - \ref TPWM_BRK_OUT_DISABLE
+  *                                 - \ref TPWM_BRK_OUT_TRI_STATE
+  *                                 - \ref TPWM_BRK_OUT_LOW
+  *                                 - \ref TPWM_BRK_OUT_HIGH
   * @param[in]  u32BrakeSource  Fault brake source, combination of following source
   *                                 - \ref TPWM_BRAKE_SOURCE_EDGE_ACMP0
   *                                 - \ref TPWM_BRAKE_SOURCE_EDGE_ACMP1
+  *                                 - \ref TPWM_BRAKE_SOURCE_EDGE_ACMP2
+  *                                 - \ref TPWM_BRAKE_SOURCE_EDGE_ACMP3
   *                                 - \ref TPWM_BRAKE_SOURCE_EDGE_BKPIN
   *                                 - \ref TPWM_BRAKE_SOURCE_EDGE_SYS_CSS
   *                                 - \ref TPWM_BRAKE_SOURCE_EDGE_SYS_BOD
-  *                                 - \ref TPWM_BRAKE_SOURCE_EDGE_SYS_COR
   *                                 - \ref TPWM_BRAKE_SOURCE_EDGE_SYS_RAM
+  *                                 - \ref TPWM_BRAKE_SOURCE_EDGE_SYS_COR
   *                                 - \ref TPWM_BRAKE_SOURCE_LEVEL_ACMP0
   *                                 - \ref TPWM_BRAKE_SOURCE_LEVEL_ACMP1
+  *                                 - \ref TPWM_BRAKE_SOURCE_LEVEL_ACMP2
+  *                                 - \ref TPWM_BRAKE_SOURCE_LEVEL_ACMP3
   *                                 - \ref TPWM_BRAKE_SOURCE_LEVEL_BKPIN
   *                                 - \ref TPWM_BRAKE_SOURCE_LEVEL_SYS_CSS
   *                                 - \ref TPWM_BRAKE_SOURCE_LEVEL_SYS_BOD
-  *                                 - \ref TPWM_BRAKE_SOURCE_LEVEL_SYS_COR
   *                                 - \ref TPWM_BRAKE_SOURCE_LEVEL_SYS_RAM
+  *                                 - \ref TPWM_BRAKE_SOURCE_LEVEL_SYS_COR
   *
   * @return     None
   *
@@ -308,7 +314,7 @@ void TPWM_DisableFaultBrakeInt(TIMER_T *timer, uint32_t u32IntSource)
   */
 uint32_t TPWM_GetFaultBrakeIntFlag(TIMER_T *timer, uint32_t u32IntSource)
 {
-    return ((timer->PWMINTSTS1 & (0x3UL << u32IntSource))? 1UL : 0UL);
+    return ((timer->PWMINTSTS1 & (0x3UL << u32IntSource)) ? 1UL : 0UL);
 }
 
 /**
@@ -449,7 +455,7 @@ void TPWM_SetBrakePinSource(TIMER_T *timer, uint32_t u32BrakePinNum)
 void TPWM_EnableAcc(TIMER_T *timer, uint32_t u32IntFlagCnt, uint32_t u32IntAccSrc)
 {
     timer->PWMIFA = (((timer)->PWMIFA & ~(TIMER_PWMIFA_IFACNT_Msk | TIMER_PWMIFA_IFASEL_Msk | TIMER_PWMIFA_STPMOD_Msk))
-                        | (TIMER_PWMIFA_IFAEN_Msk | (u32IntFlagCnt << TIMER_PWMIFA_IFACNT_Pos) | (u32IntAccSrc << TIMER_PWMIFA_IFASEL_Pos)));
+                     | (TIMER_PWMIFA_IFAEN_Msk | (u32IntFlagCnt << TIMER_PWMIFA_IFACNT_Pos) | (u32IntAccSrc << TIMER_PWMIFA_IFASEL_Pos)));
 }
 
 /**
@@ -505,7 +511,7 @@ void TPWM_ClearAccInt(TIMER_T *timer)
   */
 uint32_t TPWM_GetAccInt(TIMER_T *timer)
 {
-    return (((timer)->PWMAINTSTS & TIMER_PWMAINTSTS_IFAIF_Msk)? 1UL : 0UL);
+    return (((timer)->PWMAINTSTS & TIMER_PWMAINTSTS_IFAIF_Msk) ? 1UL : 0UL);
 }
 
 /**
@@ -574,7 +580,7 @@ void TPWM_DisableAccStopMode(TIMER_T *timer)
 void TPWM_EnableExtEventTrigger(TIMER_T *timer, uint32_t u32ExtEventSrc, uint32_t u32CounterAction)
 {
     timer->PWMEXTETCTL = (((timer)->PWMEXTETCTL & ~(TIMER_PWMEXTETCTL_EXTTRGS_Msk | TIMER_PWMEXTETCTL_CNTACTS_Msk))
-                        | (TIMER_PWMEXTETCTL_EXTETEN_Msk | (u32ExtEventSrc << TIMER_PWMEXTETCTL_EXTTRGS_Pos) | (u32CounterAction << TIMER_PWMEXTETCTL_CNTACTS_Pos)));
+                          | (TIMER_PWMEXTETCTL_EXTETEN_Msk | (u32ExtEventSrc << TIMER_PWMEXTETCTL_EXTTRGS_Pos) | (u32CounterAction << TIMER_PWMEXTETCTL_CNTACTS_Pos)));
 }
 
 /**

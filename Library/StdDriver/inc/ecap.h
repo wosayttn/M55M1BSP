@@ -271,12 +271,12 @@ extern "C"
   * \hideinitializer
   */
 #define ECAP_SET_CNT_CLEAR_EVENT(ecap, u32Event) do{ \
-    if((u32Event) & ECAP_CTL0_CMPCLREN_Msk) \
-        (ecap)->CTL0 |= ECAP_CTL0_CMPCLREN_Msk; \
-    else \
-        (ecap)->CTL0 &= ~ECAP_CTL0_CMPCLREN_Msk; \
-    (ecap)->CTL1 = ((ecap)->CTL1 &~0x00700F00) | ((u32Event) & 0x00700F00); \
-  }while(0);
+        if((u32Event) & ECAP_CTL0_CMPCLREN_Msk) \
+            (ecap)->CTL0 |= ECAP_CTL0_CMPCLREN_Msk; \
+        else \
+            (ecap)->CTL0 &= ~ECAP_CTL0_CMPCLREN_Msk; \
+        (ecap)->CTL1 = ((ecap)->CTL1 &~0x00700F00) | ((u32Event) & 0x00700F00); \
+    }while(0);
 
 /**
   * @brief This macro is used to enable reload function
@@ -493,10 +493,10 @@ extern "C"
   */
 #define ECAP_SET_CNT_CMP(ecap, u32Val) ((ecap)->CNTCMP = (u32Val))
 
-void ECAP_Open(ECAP_T* ecap, uint32_t u32FuncMask);
-void ECAP_Close(ECAP_T* ecap);
-void ECAP_EnableINT(ECAP_T* ecap, uint32_t u32Mask);
-void ECAP_DisableINT(ECAP_T* ecap, uint32_t u32Mask);
+void ECAP_Open(ECAP_T *ecap, uint32_t u32FuncMask);
+void ECAP_Close(ECAP_T *ecap);
+void ECAP_EnableINT(ECAP_T *ecap, uint32_t u32Mask);
+void ECAP_DisableINT(ECAP_T *ecap, uint32_t u32Mask);
 
 /** @} end of group ECAP_EXPORTED_FUNCTIONS */
 /** @} end of group ECAP_Driver */

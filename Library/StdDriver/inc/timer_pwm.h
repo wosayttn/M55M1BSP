@@ -43,47 +43,53 @@ extern "C"
 /*  Counter Mode Constant Definitions                                                                      */
 /*---------------------------------------------------------------------------------------------------------*/
 #define TPWM_AUTO_RELOAD_MODE                   (0UL)                            /*!< Auto-reload mode \hideinitializer */
-#define TPWM_ONE_SHOT_MODE                      (TIMER_PWMCTL_CNTMODE_Msk)       /*!< One-shot mode \hideinitializer */
-
-/*---------------------------------------------------------------------------------------------------------*/
-/*  Output Level Constant Definitions                                                                      */
-/*---------------------------------------------------------------------------------------------------------*/
-#define TPWM_OUTPUT_TOGGLE                      (0UL)      /*!< Timer PWM output toggle \hideinitializer */
-#define TPWM_OUTPUT_NOTHING                     (1UL)      /*!< Timer PWM output nothing \hideinitializer */
-#define TPWM_OUTPUT_LOW                         (2UL)      /*!< Timer PWM output low \hideinitializer */
-#define TPWM_OUTPUT_HIGH                        (3UL)      /*!< Timer PWM output high \hideinitializer */
+#define TPWM_ONE_SHOT_MODE                      (1UL)       /*!< One-shot mode \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Trigger EADC Source Select Constant Definitions                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-#define TPWM_TRIGGER_EADC_AT_ZERO_POINT                     (0UL << TIMER_PWMTRGCTL_TRGSEL_Pos)     /*!< Timer PWM trigger EADC while counter zero point event occurred \hideinitializer */
-#define TPWM_TRIGGER_EADC_AT_PERIOD_POINT                   (1UL << TIMER_PWMTRGCTL_TRGSEL_Pos)     /*!< Timer PWM trigger EADC while counter period point event occurred \hideinitializer */
-#define TPWM_TRIGGER_EADC_AT_ZERO_OR_PERIOD_POINT           (2UL << TIMER_PWMTRGCTL_TRGSEL_Pos)     /*!< Timer PWM trigger EADC while counter zero or period point event occurred \hideinitializer */
-#define TPWM_TRIGGER_EADC_AT_COMPARE_UP_COUNT_POINT         (3UL << TIMER_PWMTRGCTL_TRGSEL_Pos)     /*!< Timer PWM trigger EADC while counter up count compare point event occurred \hideinitializer */
-#define TPWM_TRIGGER_EADC_AT_COMPARE_DOWN_COUNT_POINT       (4UL << TIMER_PWMTRGCTL_TRGSEL_Pos)     /*!< Timer PWM trigger EADC while counter down count compare point event occurred \hideinitializer */
+#define TPWM_TRIGGER_AT_ZERO_POINT                     (0UL << TIMER_PWMTRGCTL_TRGSEL_Pos)     /*!< Timer PWM trigger EADC while counter zero point event occurred \hideinitializer */
+#define TPWM_TRIGGER_AT_PERIOD_POINT                   (1UL << TIMER_PWMTRGCTL_TRGSEL_Pos)     /*!< Timer PWM trigger EADC while counter period point event occurred \hideinitializer */
+#define TPWM_TRIGGER_AT_ZERO_OR_PERIOD_POINT           (2UL << TIMER_PWMTRGCTL_TRGSEL_Pos)     /*!< Timer PWM trigger EADC while counter zero or period point event occurred \hideinitializer */
+#define TPWM_TRIGGER_AT_COMPARE_UP_COUNT_POINT         (3UL << TIMER_PWMTRGCTL_TRGSEL_Pos)     /*!< Timer PWM trigger EADC while counter up count compare point event occurred \hideinitializer */
+#define TPWM_TRIGGER_AT_COMPARE_DOWN_COUNT_POINT       (4UL << TIMER_PWMTRGCTL_TRGSEL_Pos)     /*!< Timer PWM trigger EADC while counter down count compare point event occurred \hideinitializer */
+
+#define TPWM_TRIGGER_EADC_AT_ZERO_POINT                     (TPWM_TRIGGER_AT_ZERO_POINT)     /*!< Timer PWM trigger EADC while counter zero point event occurred \hideinitializer */
+#define TPWM_TRIGGER_EADC_AT_PERIOD_POINT                   (TPWM_TRIGGER_AT_PERIOD_POINT)     /*!< Timer PWM trigger EADC while counter period point event occurred \hideinitializer */
+#define TPWM_TRIGGER_EADC_AT_ZERO_OR_PERIOD_POINT           (TPWM_TRIGGER_AT_ZERO_OR_PERIOD_POINT)     /*!< Timer PWM trigger EADC while counter zero or period point event occurred \hideinitializer */
+#define TPWM_TRIGGER_EADC_AT_COMPARE_UP_COUNT_POINT         (TPWM_TRIGGER_AT_COMPARE_UP_COUNT_POINT)     /*!< Timer PWM trigger EADC while counter up count compare point event occurred \hideinitializer */
+#define TPWM_TRIGGER_EADC_AT_COMPARE_DOWN_COUNT_POINT       (TPWM_TRIGGER_AT_COMPARE_DOWN_COUNT_POINT)     /*!< Timer PWM trigger EADC while counter down count compare point event occurred \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Brake Control Constant Definitions                                                                     */
 /*---------------------------------------------------------------------------------------------------------*/
 #define TPWM_BRAKE_SOURCE_EDGE_ACMP0            (TIMER_PWMBRKCTL_CPO0EBEN_Msk) /*!< Comparator 0 as edge-detect fault brake source \hideinitializer */
 #define TPWM_BRAKE_SOURCE_EDGE_ACMP1            (TIMER_PWMBRKCTL_CPO1EBEN_Msk) /*!< Comparator 1 as edge-detect fault brake source \hideinitializer */
+#define TPWM_BRAKE_SOURCE_EDGE_ACMP2            (TIMER_PWMBRKCTL_CPO2EBEN_Msk) /*!< Comparator 2 as edge-detect fault brake source \hideinitializer */
+#define TPWM_BRAKE_SOURCE_EDGE_ACMP3            (TIMER_PWMBRKCTL_CPO3EBEN_Msk) /*!< Comparator 3 as edge-detect fault brake source \hideinitializer */
 #define TPWM_BRAKE_SOURCE_EDGE_BKPIN            (TIMER_PWMBRKCTL_BRKPEEN_Msk)  /*!< Brake pin as edge-detect fault brake source \hideinitializer */
 #define TPWM_BRAKE_SOURCE_EDGE_SYS_CSS          (TIMER_PWMBRKCTL_SYSEBEN_Msk | (TIMER_PWMFAILBRK_CSSBRKEN_Msk << 16))    /*!< System fail condition: clock security system detection as edge-detect fault brake source \hideinitializer */
 #define TPWM_BRAKE_SOURCE_EDGE_SYS_BOD          (TIMER_PWMBRKCTL_SYSEBEN_Msk | (TIMER_PWMFAILBRK_BODBRKEN_Msk << 16))    /*!< System fail condition: brown-out detection as edge-detect fault brake source \hideinitializer */
-#define TPWM_BRAKE_SOURCE_EDGE_SYS_COR          (TIMER_PWMBRKCTL_SYSEBEN_Msk | (TIMER_PWMFAILBRK_CORBRKEN_Msk << 16))    /*!< System fail condition: core lockup detection as edge-detect fault brake source \hideinitializer */
 #define TPWM_BRAKE_SOURCE_EDGE_SYS_RAM          (TIMER_PWMBRKCTL_SYSEBEN_Msk | (TIMER_PWMFAILBRK_RAMBRKEN_Msk << 16))    /*!< System fail condition: SRAM parity error detection as edge-detect fault brake source \hideinitializer */
-
+#define TPWM_BRAKE_SOURCE_EDGE_SYS_COR          (TIMER_PWMBRKCTL_SYSEBEN_Msk | (TIMER_PWMFAILBRK_CORBRKEN_Msk << 16))    /*!< System fail condition: core lockup detection as edge-detect fault brake source \hideinitializer */
 
 #define TPWM_BRAKE_SOURCE_LEVEL_ACMP0           (TIMER_PWMBRKCTL_CPO0LBEN_Msk)  /*!< Comparator 0 as level-detect fault brake source \hideinitializer */
 #define TPWM_BRAKE_SOURCE_LEVEL_ACMP1           (TIMER_PWMBRKCTL_CPO1LBEN_Msk)  /*!< Comparator 1 as level-detect fault brake source \hideinitializer */
+#define TPWM_BRAKE_SOURCE_LEVEL_ACMP2           (TIMER_PWMBRKCTL_CPO2LBEN_Msk)  /*!< Comparator 2 as level-detect fault brake source \hideinitializer */
+#define TPWM_BRAKE_SOURCE_LEVEL_ACMP3           (TIMER_PWMBRKCTL_CPO3LBEN_Msk)  /*!< Comparator 3 as level-detect fault brake source \hideinitializer */
 #define TPWM_BRAKE_SOURCE_LEVEL_BKPIN           (TIMER_PWMBRKCTL_BRKPLEN_Msk)   /*!< Brake pin as level-detect fault brake source \hideinitializer */
 #define TPWM_BRAKE_SOURCE_LEVEL_SYS_CSS         (TIMER_PWMBRKCTL_SYSLBEN_Msk | (TIMER_PWMFAILBRK_CSSBRKEN_Msk << 16))    /*!< System fail condition: clock security system detection as level-detect fault brake source \hideinitializer */
 #define TPWM_BRAKE_SOURCE_LEVEL_SYS_BOD         (TIMER_PWMBRKCTL_SYSLBEN_Msk | (TIMER_PWMFAILBRK_BODBRKEN_Msk << 16))    /*!< System fail condition: brown-out detection as level-detect fault brake source \hideinitializer */
-#define TPWM_BRAKE_SOURCE_LEVEL_SYS_COR         (TIMER_PWMBRKCTL_SYSLBEN_Msk | (TIMER_PWMFAILBRK_CORBRKEN_Msk << 16))    /*!< System fail condition: core lockup detection as level-detect fault brake source \hideinitializer */
 #define TPWM_BRAKE_SOURCE_LEVEL_SYS_RAM         (TIMER_PWMBRKCTL_SYSLBEN_Msk | (TIMER_PWMFAILBRK_RAMBRKEN_Msk << 16))    /*!< System fail condition: SRAM parity error detection as level-detect fault brake source \hideinitializer */
+#define TPWM_BRAKE_SOURCE_LEVEL_SYS_COR         (TIMER_PWMBRKCTL_SYSLBEN_Msk | (TIMER_PWMFAILBRK_CORBRKEN_Msk << 16))    /*!< System fail condition: core lockup detection as level-detect fault brake source \hideinitializer */
 
 #define TPWM_BRAKE_EDGE                         (TIMER_PWMSWBRK_BRKETRG_Msk)    /*!< Edge-detect fault brake \hideinitializer */
 #define TPWM_BRAKE_LEVEL                        (TIMER_PWMSWBRK_BRKLTRG_Msk)    /*!< Level-detect fault brake \hideinitializer */
+
+#define TPWM_BRK_OUT_DISABLE         (0UL)
+#define TPWM_BRK_OUT_TRI_STATE       (1UL)
+#define TPWM_BRK_OUT_LOW             (2UL)
+#define TPWM_BRK_OUT_HIGH            (3UL)
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Load Mode Constant Definitions                                                                         */
@@ -671,29 +677,29 @@ extern "C"
 #define TPWM_CLEAR_REACH_MAX_CNT_STATUS(timer)  ((timer)->PWMSTATUS = TIMER_PWMSTATUS_CNTMAXF_Msk)
 
 /**
-  * @brief      Get Trigger ADC Status
+  * @brief      Get Trigger EADC Status
   *
   * @param[in]  timer   The pointer of the specified Timer module. It could be TIMER0, TIMER1, TIMER2, TIMER3.
   *
-  * @retval     0       Trigger ADC start conversion is not occur
-  * @retval     1       Specified counter compare event has trigger ADC start conversion
+  * @retval     0       Trigger EADC start conversion is not occur
+  * @retval     1       Specified counter compare event has trigger EADC start conversion
   *
-  * @details    This macro is used to indicate PWM counter compare event has triggered ADC start conversion.
+  * @details    This macro is used to indicate PWM counter compare event has triggered EADC start conversion.
   * \hideinitializer
   */
-#define TPWM_GET_TRG_ADC_STATUS(timer)          (((timer)->PWMSTATUS & TIMER_PWMSTATUS_EADCTRGF_Msk)? 1 : 0)
+#define TPWM_GET_TRG_EADC_STATUS(timer)          (((timer)->PWMSTATUS & TIMER_PWMSTATUS_EADCTRGF_Msk)? 1 : 0)
 
 /**
-  * @brief      Clear Trigger ADC Status
+  * @brief      Clear Trigger EADC Status
   *
   * @param[in]  timer   The pointer of the specified Timer module. It could be TIMER0, TIMER1, TIMER2, TIMER3.
   *
   * @return     None
   *
-  * @details    This macro is used to clear PWM counter compare event trigger ADC status.
+  * @details    This macro is used to clear PWM counter compare event trigger EADC status.
   * \hideinitializer
   */
-#define TPWM_CLEAR_TRG_ADC_STATUS(timer)        ((timer)->PWMSTATUS = TIMER_PWMSTATUS_EADCTRGF_Msk)
+#define TPWM_CLEAR_TRG_EADC_STATUS(timer)        ((timer)->PWMSTATUS = TIMER_PWMSTATUS_EADCTRGF_Msk)
 
 /**
   * @brief      Set Brake Event at Brake Pin High or Low-to-High
@@ -737,6 +743,19 @@ extern "C"
   */
 #define TPWM_SET_BRAKE_PIN_SOURCE(timer, pin)   ((timer)->PWMBNF = ((timer)->PWMBNF & ~TIMER_PWMBNF_BKPINSRC_Msk) | ((pin)<<TIMER_PWMBNF_BKPINSRC_Pos))
 
+/**
+  * @brief      Select Counter Mode
+  *
+  * @param[in]  timer       The pointer of the specified Timer module. It could be TIMER0, TIMER1, TIMER2, TIMER3.
+  * @param[in]  mode        Counter Mode selection, valid values are:
+  *                         - \ref TPWM_AUTO_RELOAD_MODE
+  *                         - \ref TPWM_ONE_SHOT_MODE
+  * @return     None
+  *
+  * @details    This macro is used to select timer Counter Mode.
+  */
+#define TPWM_SET_CNT_MODE(timer, mode)      ((timer)->PWMCTL = ((timer)->PWMCTL&~TIMER_PWMCTL_CNTMODE_Msk) | (mode<<TIMER_PWMCTL_CNTMODE_Pos))
+
 void TPWM_SetCounterClockSource(TIMER_T *timer, uint32_t u32CntClkSrc);
 uint32_t TPWM_ConfigOutputFreqAndDuty(TIMER_T *timer, uint32_t u32Frequency, uint32_t u32DutyCycle);
 void TPWM_EnableDeadTime(TIMER_T *timer, uint32_t u32DTCount);
@@ -744,8 +763,8 @@ void TPWM_EnableDeadTimeWithPrescale(TIMER_T *timer, uint32_t u32DTCount);
 void TPWM_DisableDeadTime(TIMER_T *timer);
 void TPWM_EnableCounter(TIMER_T *timer);
 void TPWM_DisableCounter(TIMER_T *timer);
-void TPWM_EnableTriggerADC(TIMER_T *timer, uint32_t u32Condition);
-void TPWM_DisableTriggerADC(TIMER_T *timer);
+void TPWM_EnableTriggerEADC(TIMER_T *timer, uint32_t u32Condition);
+void TPWM_DisableTriggerEADC(TIMER_T *timer);
 void TPWM_EnableFaultBrake(TIMER_T *timer, uint32_t u32CH0Level, uint32_t u32CH1Level, uint32_t u32BrakeSource);
 void TPWM_EnableFaultBrakeInt(TIMER_T *timer, uint32_t u32IntSource);
 void TPWM_DisableFaultBrakeInt(TIMER_T *timer, uint32_t u32IntSource);

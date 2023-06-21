@@ -82,9 +82,9 @@ int32_t TTMR_InitClock(void)
 
     CLK_EnableModuleClock(TTMR0_MODULE);
     CLK_EnableModuleClock(TTMR1_MODULE);
-	
-	  CLK->TTMRSEL = (CLK->TTMRSEL & ~(CLK_TTMRSEL_TTMR0SEL_Msk | CLK_TTMRSEL_TTMR1SEL_Msk)) |
-										 (CLK_TTMRSEL_TTMR0SEL_PCLK4 | CLK_TTMRSEL_TTMR1SEL_PCLK4);
+
+    CLK->TTMRSEL = (CLK->TTMRSEL & ~(CLK_TTMRSEL_TTMR0SEL_Msk | CLK_TTMRSEL_TTMR1SEL_Msk)) |
+                   (CLK_TTMRSEL_TTMR0SEL_PCLK4 | CLK_TTMRSEL_TTMR1SEL_PCLK4);
 
     return 0;
 }
@@ -118,15 +118,15 @@ const uint32_t au32OPModeSel[] =
 {
     TTMR_ONESHOT_MODE,
     TTMR_PERIODIC_MODE,
-	  (2UL << TTMR_CTL_OPMODE_Pos),
+    (2UL << TTMR_CTL_OPMODE_Pos),
     TTMR_CONTINUOUS_MODE,
 };
 
 void CONST_Operation_Mode(void)
-{  
-    CU_ASSERT_EQUAL(TTMR_ONESHOT_MODE, 0);   
-    CU_ASSERT_EQUAL(TTMR_PERIODIC_MODE, (1UL << TTMR_CTL_OPMODE_Pos)); 
-    CU_ASSERT_EQUAL(TTMR_CONTINUOUS_MODE, (3UL << TTMR_CTL_OPMODE_Pos));    
+{
+    CU_ASSERT_EQUAL(TTMR_ONESHOT_MODE, 0);
+    CU_ASSERT_EQUAL(TTMR_PERIODIC_MODE, (1UL << TTMR_CTL_OPMODE_Pos));
+    CU_ASSERT_EQUAL(TTMR_CONTINUOUS_MODE, (3UL << TTMR_CTL_OPMODE_Pos));
 }
 
 void CONST_Event_Trigger(void)
@@ -416,7 +416,7 @@ void API_TIMER_Wakeup(void)
     CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
 
     CLK->TTMRSEL = (CLK->TTMRSEL & ~(CLK_TTMRSEL_TTMR0SEL_Msk | CLK_TTMRSEL_TTMR1SEL_Msk)) |
-										 (CLK_TTMRSEL_TTMR0SEL_LIRC | CLK_TTMRSEL_TTMR1SEL_LIRC);
+                   (CLK_TTMRSEL_TTMR0SEL_LIRC | CLK_TTMRSEL_TTMR1SEL_LIRC);
 
     CU_ASSERT_EQUAL(ClearTimerRegs(TimerCh[0]), 0);
 
@@ -428,7 +428,7 @@ void API_TIMER_Wakeup(void)
     {
         TimerCh[i]->CMP = 100;
         TimerCh[i]->CTL = TTMR_CONTINUOUS_MODE | TTMR_CTL_INTEN_Msk;
-			  TTMR_EnableWakeup(TimerCh[i]);
+        TTMR_EnableWakeup(TimerCh[i]);
 
         g_u8IsTMRWKF[i] = 0;
 
@@ -467,50 +467,53 @@ void API_TIMER_GetModuleClock(void)
 
     /* Check TIMER_GetModuleClock */
     CLK->TTMRSEL = (CLK->TTMRSEL & ~(CLK_TTMRSEL_TTMR0SEL_Msk | CLK_TTMRSEL_TTMR1SEL_Msk)) |
-										 (CLK_TTMRSEL_TTMR0SEL_MIRC | CLK_TTMRSEL_TTMR1SEL_MIRC);
+                   (CLK_TTMRSEL_TTMR0SEL_MIRC | CLK_TTMRSEL_TTMR1SEL_MIRC);
     CU_ASSERT_EQUAL(TTMR_GetModuleClock(TTMR0), __MIRC);
     CU_ASSERT_EQUAL(TTMR_GetModuleClock(TTMR1), __MIRC);
     printf(" [%d]", TTMR_GetModuleClock(TTMR0));
 
     CLK->TTMRSEL = (CLK->TTMRSEL & ~(CLK_TTMRSEL_TTMR0SEL_Msk | CLK_TTMRSEL_TTMR1SEL_Msk)) |
-										 (CLK_TTMRSEL_TTMR0SEL_LIRC | CLK_TTMRSEL_TTMR1SEL_LIRC);
+                   (CLK_TTMRSEL_TTMR0SEL_LIRC | CLK_TTMRSEL_TTMR1SEL_LIRC);
     CU_ASSERT_EQUAL(TTMR_GetModuleClock(TTMR0), __LIRC);
     CU_ASSERT_EQUAL(TTMR_GetModuleClock(TTMR1), __LIRC);
     printf(" [%d]", TTMR_GetModuleClock(TTMR1));
-    
-	  CLK->TTMRSEL = (CLK->TTMRSEL & ~(CLK_TTMRSEL_TTMR0SEL_Msk | CLK_TTMRSEL_TTMR1SEL_Msk)) |
-										 (CLK_TTMRSEL_TTMR0SEL_HIRC | CLK_TTMRSEL_TTMR1SEL_HIRC);
+
+    CLK->TTMRSEL = (CLK->TTMRSEL & ~(CLK_TTMRSEL_TTMR0SEL_Msk | CLK_TTMRSEL_TTMR1SEL_Msk)) |
+                   (CLK_TTMRSEL_TTMR0SEL_HIRC | CLK_TTMRSEL_TTMR1SEL_HIRC);
     CU_ASSERT_EQUAL(TTMR_GetModuleClock(TTMR0), __HIRC);
     CU_ASSERT_EQUAL(TTMR_GetModuleClock(TTMR1), __HIRC);
     printf(" [%d]", TTMR_GetModuleClock(TTMR0));
-    
-	  CLK->TTMRSEL = (CLK->TTMRSEL & ~(CLK_TTMRSEL_TTMR0SEL_Msk | CLK_TTMRSEL_TTMR1SEL_Msk)) |
-										 (CLK_TTMRSEL_TTMR0SEL_PCLK4 | CLK_TTMRSEL_TTMR1SEL_PCLK4);
+
+    CLK->TTMRSEL = (CLK->TTMRSEL & ~(CLK_TTMRSEL_TTMR0SEL_Msk | CLK_TTMRSEL_TTMR1SEL_Msk)) |
+                   (CLK_TTMRSEL_TTMR0SEL_PCLK4 | CLK_TTMRSEL_TTMR1SEL_PCLK4);
     CU_ASSERT_EQUAL(TTMR_GetModuleClock(TTMR0), CLK_GetPCLK4Freq());
     CU_ASSERT_EQUAL(TTMR_GetModuleClock(TTMR1), CLK_GetPCLK4Freq());
     printf(" [%d]", TTMR_GetModuleClock(TTMR1));
 
-	  CLK->TTMRSEL = (CLK->TTMRSEL & ~(CLK_TTMRSEL_TTMR0SEL_Msk | CLK_TTMRSEL_TTMR1SEL_Msk)) |
-										 (CLK_TTMRSEL_TTMR0SEL_LXT | CLK_TTMRSEL_TTMR1SEL_LXT);
+    CLK->TTMRSEL = (CLK->TTMRSEL & ~(CLK_TTMRSEL_TTMR0SEL_Msk | CLK_TTMRSEL_TTMR1SEL_Msk)) |
+                   (CLK_TTMRSEL_TTMR0SEL_LXT | CLK_TTMRSEL_TTMR1SEL_LXT);
     CU_ASSERT_EQUAL(TTMR_GetModuleClock(TTMR0), __LXT);
     CU_ASSERT_EQUAL(TTMR_GetModuleClock(TTMR1), __LXT);
     printf(" [%d]", TTMR_GetModuleClock(TTMR0));
 }
 
-CU_SuiteInfo TTmrSuites[] = {
+CU_SuiteInfo TTmrSuites[] =
+{
     { "TTmr Const Test", TTmr_Test_Init, TTmr_Test_Clean, NULL, NULL, TTmr_ConstTest },
     { "TTmr Macro Test", TTmr_Test_Init, TTmr_Test_Clean, NULL, NULL, TTmr_MacroTest },
     { "TTmr Func  Test", TTmr_Test_Init, TTmr_Test_Clean, NULL, NULL, TTmr_FuncTest },
     CU_SUITE_INFO_NULL
 };
 
-CU_TestInfo  TTmr_ConstTest[] = {
+CU_TestInfo  TTmr_ConstTest[] =
+{
     { "Check Operation Mode",  CONST_Operation_Mode },
     { "Check Event Trigger",  CONST_Event_Trigger },
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo  TTmr_MacroTest[] = {
+CU_TestInfo  TTmr_MacroTest[] =
+{
     { "Check TTMR_SET_CMP_VALUE",  MACRO_TIMER_SET_CMP_VALUE },
     { "Check TTMR_SET_PRESCALE_VALUE",  MACRO_TIMER_SET_PRESCALE_VALUE },
     { "Check TTMR_SET_OPMODE",  MACRO_TIMER_SET_OPMODE_VALUE },
@@ -518,7 +521,8 @@ CU_TestInfo  TTmr_MacroTest[] = {
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo  TTmr_FuncTest[] = {
+CU_TestInfo  TTmr_FuncTest[] =
+{
     {"Check TTMR APIs...",                                     API_TIMER_APIs},
     {"Check TTMR Open/Close and Enable/Disable Interrupt API", API_TIMER_OpenAndInterrupt},
     {"Check TTMR Delay API",                                   API_TIMER_Delay},

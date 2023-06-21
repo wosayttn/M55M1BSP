@@ -36,16 +36,16 @@ int32_t LPTMR_PWM_Init(void)
     CLK_EnableModuleClock(LPTMR0_MODULE);
     CLK_EnableModuleClock(LPTMR1_MODULE);
 
-	  CLK->LPTMRSEL = (CLK->LPTMRSEL & ~(CLK_LPTMRSEL_LPTMR0SEL_Msk | CLK_LPTMRSEL_LPTMR1SEL_Msk)) |
-										 (CLK_LPTMRSEL_LPTMR0SEL_HIRC | CLK_LPTMRSEL_LPTMR1SEL_HIRC);
+    CLK->LPTMRSEL = (CLK->LPTMRSEL & ~(CLK_LPTMRSEL_LPTMR0SEL_Msk | CLK_LPTMRSEL_LPTMR1SEL_Msk)) |
+                    (CLK_LPTMRSEL_LPTMR0SEL_HIRC | CLK_LPTMRSEL_LPTMR1SEL_HIRC);
 
     /* Check LPTPWM_ENABLE_PWM_MODE */
-		LPTPWM_ENABLE_PWM_MODE(LPTMR0);
-		CU_ASSERT_EQUAL(CLK->LPTMRSEL&CLK_LPTMRSEL_LPTMR0SEL_Msk, (0x4<<CLK_LPTMRSEL_LPTMR0SEL_Pos));
-		CU_ASSERT_EQUAL(LPTMR0->CTL, BIT15);
-		LPTPWM_ENABLE_PWM_MODE(LPTMR1);
-		CU_ASSERT_EQUAL(CLK->LPTMRSEL&CLK_LPTMRSEL_LPTMR1SEL_Msk, (0x4<<CLK_LPTMRSEL_LPTMR1SEL_Pos));
-		CU_ASSERT_EQUAL(LPTMR1->CTL, BIT15);
+    LPTPWM_ENABLE_PWM_MODE(LPTMR0);
+    CU_ASSERT_EQUAL(CLK->LPTMRSEL & CLK_LPTMRSEL_LPTMR0SEL_Msk, (0x4 << CLK_LPTMRSEL_LPTMR0SEL_Pos));
+    CU_ASSERT_EQUAL(LPTMR0->CTL, BIT15);
+    LPTPWM_ENABLE_PWM_MODE(LPTMR1);
+    CU_ASSERT_EQUAL(CLK->LPTMRSEL & CLK_LPTMRSEL_LPTMR1SEL_Msk, (0x4 << CLK_LPTMRSEL_LPTMR1SEL_Pos));
+    CU_ASSERT_EQUAL(LPTMR1->CTL, BIT15);
 
     /* Check LPTPWM_DISABLE_PWM_MODE */
     LPTPWM_DISABLE_PWM_MODE(LPTMR0);
@@ -63,7 +63,7 @@ int32_t LPTMR_PWM_Init(void)
 void CONST_Output_Mode(void)
 {
     CU_ASSERT_EQUAL(LPTPWM_CH0, BIT0);
-    CU_ASSERT_EQUAL(LPTPWM_TOUT_PIN_FROM_TX, (0UL<<LPTMR_PWMPOCTL_POSEL_Pos));
+    CU_ASSERT_EQUAL(LPTPWM_TOUT_PIN_FROM_TX, (0UL << LPTMR_PWMPOCTL_POSEL_Pos));
     CU_ASSERT_EQUAL(LPTPWM_TOUT_PIN_FROM_TX_EXT, (BIT8));
     CU_ASSERT_EQUAL(LPTPWM_AUTO_RELOAD_MODE, (0UL));
     CU_ASSERT_EQUAL(LPTPWM_ONE_SHOT_MODE, (1UL));
@@ -72,7 +72,7 @@ void CONST_Output_Mode(void)
 void CONST_Trigger_Mode(void)
 {
     CU_ASSERT_EQUAL(LPTPWM_TRGEN, LPTMR_PWMTRGCTL_TRGEN_Msk);
-    CU_ASSERT_EQUAL(LPTPWM_TRG_TO_LPPDMA, (LPTMR_PWMTRGCTL_TRGEN_Msk|LPTMR_PWMTRGCTL_PWMTRGLPPDMA_Msk));
+    CU_ASSERT_EQUAL(LPTPWM_TRG_TO_LPPDMA, (LPTMR_PWMTRGCTL_TRGEN_Msk | LPTMR_PWMTRGCTL_PWMTRGLPPDMA_Msk));
     CU_ASSERT_EQUAL(LPTPWM_TRIGGER_AT_PERIOD_POINT, (0UL));
     CU_ASSERT_EQUAL(LPTPWM_TRIGGER_AT_COMPARE_POINT, (1UL));
     CU_ASSERT_EQUAL(LPTPWM_TRIGGER_AT_PERIOD_OR_COMPARE_POINT, (2UL));
@@ -85,7 +85,8 @@ void Check_Basic_MACRO(void)
     LPTMR_PWM_Init();
 
     /* Check LPTPWM_SET_PRESCALER, LPTPWM_GET_PRESCALER */
-    for(i=0; i<2; i++) {
+    for (i = 0; i < 2; i++)
+    {
         printf("LPTPWM_SET_PRESCALER (Ch-%d)\n", i);
         LPTPWM_SET_PRESCALER((LPTMR_T *)LPTMRCh[i], 0x5A);
         CU_ASSERT_EQUAL(LPTPWM_GET_PRESCALER((LPTMR_T *)LPTMRCh[i]), 0x5A);
@@ -170,8 +171,8 @@ void Check_Advance_MACRO(void)
 
     LPTMR_PWM_Init();
 
-	  CLK->LPTMRSEL = (CLK->LPTMRSEL & ~(CLK_LPTMRSEL_LPTMR0SEL_Msk | CLK_LPTMRSEL_LPTMR1SEL_Msk)) |
-										 (CLK_LPTMRSEL_LPTMR0SEL_PCLK4 | CLK_LPTMRSEL_LPTMR1SEL_PCLK4);
+    CLK->LPTMRSEL = (CLK->LPTMRSEL & ~(CLK_LPTMRSEL_LPTMR0SEL_Msk | CLK_LPTMRSEL_LPTMR1SEL_Msk)) |
+                    (CLK_LPTMRSEL_LPTMR0SEL_PCLK4 | CLK_LPTMRSEL_LPTMR1SEL_PCLK4);
 
     /* Initial LPTMR PWM */
     for (i = 0; i < 2; i++)
@@ -182,7 +183,7 @@ void Check_Advance_MACRO(void)
         LPTPWM_ENABLE_IFA((LPTMR_T *)LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, LPTMR_PWMIFA_IFAEN_Msk);
         LPTPWM_IFASEL_CMPUIF((LPTMR_T *)LPTMRCh[i]);
-        CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, (2<<LPTMR_PWMIFA_IFASEL_Pos));
+        CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, (2 << LPTMR_PWMIFA_IFASEL_Pos));
     }
 
     /* Check LPTPWM_START_COUNTER */
@@ -201,21 +202,28 @@ void Check_Advance_MACRO(void)
 
     /* Check LPTPWM_GET_REACH_MAX_CNT_STATUS */
     while (LPTPWM_GET_REACH_MAX_CNT_STATUS(LPTMR1) == 0) {};
+
     CU_ASSERT_EQUAL(LPTPWM_GET_REACH_MAX_CNT_STATUS(LPTMR0), 0x1);
+
     CU_ASSERT_EQUAL(LPTPWM_GET_REACH_MAX_CNT_STATUS(LPTMR1), 0x1);
 
     for (i = 0; i < 2; i++)
-        CU_ASSERT (LPTMRCh[i]->PWMCNT < 0xFFFF);
+        CU_ASSERT(LPTMRCh[i]->PWMCNT < 0xFFFF);
 
     /* Check LPTPWM_CLEAR_COUNTER */
-    for(i=0; i<2; i++) {
-        while(1) {
-            if((LPTMRCh[i]->PWMCNT > 0x12000) && (LPTMRCh[i]->PWMCNT < 0x13000)) {
+    for (i = 0; i < 2; i++)
+    {
+        while (1)
+        {
+            if ((LPTMRCh[i]->PWMCNT > 0x12000) && (LPTMRCh[i]->PWMCNT < 0x13000))
+            {
                 break;
             }
         }
+
         LPTPWM_CLEAR_COUNTER((LPTMR_T *)LPTMRCh[i]);
-        __NOP(); __NOP();
+        __NOP();
+        __NOP();
         CU_ASSERT((LPTMRCh[i]->PWMCNT < 0x10100));
     }
 
@@ -274,7 +282,8 @@ void Check_IFA_MACRO(void)
     LPTMR_PWM_Init();
 
     /* Check LPTPWM_IFA */
-    for(i=0; i<2; i++) {
+    for (i = 0; i < 2; i++)
+    {
         printf("LPTPWM_ENABLE_IFA (Ch-%d)\n", i);
         LPTPWM_ENABLE_IFA((LPTMR_T *)LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, BIT31);
@@ -284,16 +293,16 @@ void Check_IFA_MACRO(void)
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, BIT24);
         LPTPWM_DISABLE_IFA_STOPCNT((LPTMR_T *)LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, 0UL);
-        LPTPWM_SET_IFACNT((LPTMR_T *)LPTMRCh[i],0x5A5A);
+        LPTPWM_SET_IFACNT((LPTMR_T *)LPTMRCh[i], 0x5A5A);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, 0x5A5A);
-        LPTPWM_SET_IFACNT((LPTMR_T *)LPTMRCh[i],0xA5A5);
+        LPTPWM_SET_IFACNT((LPTMR_T *)LPTMRCh[i], 0xA5A5);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, 0xA5A5);
-        LPTPWM_SET_IFACNT((LPTMR_T *)LPTMRCh[i],0);
+        LPTPWM_SET_IFACNT((LPTMR_T *)LPTMRCh[i], 0);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, 0);
         LPTPWM_IFASEL_PIF((LPTMR_T *)LPTMRCh[i]);
-        CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, (1<<LPTMR_PWMIFA_IFASEL_Pos));
+        CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, (1 << LPTMR_PWMIFA_IFASEL_Pos));
         LPTPWM_IFASEL_CMPUIF((LPTMR_T *)LPTMRCh[i]);
-        CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, (2<<LPTMR_PWMIFA_IFASEL_Pos));
+        CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, (2 << LPTMR_PWMIFA_IFASEL_Pos));
         LPTPWM_ENABLE_IFA_TRGLPPDMA((LPTMR_T *)LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMAPDMACTL, LPTMR_PWMAPDMACTL_APDMAEN_Msk);
         LPTPWM_DISABLE_IFA_TRGLPPDMA((LPTMR_T *)LPTMRCh[i]);
@@ -327,36 +336,42 @@ void API_LPTPWM_ConfigOutputFreqAndDuty(void)
     CU_ASSERT_EQUAL(u32TragerFreq, 12000);
     u32PERIOD = LPTPWM_GET_PERIOD(LPTMR0);
     u32CMP = LPTPWM_GET_CMPDAT(LPTMR0);
-    CU_ASSERT_EQUAL((u32CMP*2), (u32PERIOD+1));
-    CU_ASSERT_EQUAL((LPTMR0->PWMCTL&BIT3), LPTPWM_AUTO_RELOAD_MODE);
+    CU_ASSERT_EQUAL((u32CMP * 2), (u32PERIOD + 1));
+    CU_ASSERT_EQUAL((LPTMR0->PWMCTL & BIT3), LPTPWM_AUTO_RELOAD_MODE);
     printf("\n%d, %d ", u32CMP, u32PERIOD);
 
     u32TragerFreq = LPTPWM_ConfigOutputFreqAndDuty(LPTMR1, 1000, 20);
     CU_ASSERT_EQUAL(u32TragerFreq, 1000);
     u32PERIOD = LPTPWM_GET_PERIOD(LPTMR1);
     u32CMP = LPTPWM_GET_CMPDAT(LPTMR1);
-    CU_ASSERT_EQUAL((u32CMP*5), (u32PERIOD+1));
-    CU_ASSERT_EQUAL((LPTMR1->PWMCTL&BIT3), LPTPWM_AUTO_RELOAD_MODE);
+    CU_ASSERT_EQUAL((u32CMP * 5), (u32PERIOD + 1));
+    CU_ASSERT_EQUAL((LPTMR1->PWMCTL & BIT3), LPTPWM_AUTO_RELOAD_MODE);
     printf("\n%d, %d ", u32CMP, u32PERIOD);
 
     /* Check LPTPWM_EnableCounter */
-    for(i=0; i<2; i++) {
-        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMCTL&BIT0), 0x0);
+    for (i = 0; i < 2; i++)
+    {
+        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMCTL & BIT0), 0x0);
     }
-    for(i=0; i<2; i++) {
+
+    for (i = 0; i < 2; i++)
+    {
         LPTPWM_EnableCounter((LPTMR_T *)LPTMRCh[i]);
-        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMCTL&BIT0), 0x1);
+        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMCTL & BIT0), 0x1);
     }
+
     /* Check LPTPWM_DisableCounter */
-    for(i=0; i<2; i++) {
+    for (i = 0; i < 2; i++)
+    {
         LPTPWM_DisableCounter((LPTMR_T *)LPTMRCh[i]);
-        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMCTL&BIT0), 0x0);
+        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMCTL & BIT0), 0x0);
     }
 
     /* Check LPTPWM_ONE_SHOT_MODE */
-    for(i=0; i<2; i++) {
+    for (i = 0; i < 2; i++)
+    {
         LPTPWM_SET_CNT_MODE(LPTMRCh[i], LPTPWM_ONE_SHOT_MODE);
-        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMCTL&BIT3), BIT3);
+        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMCTL & BIT3), BIT3);
     }
 }
 
@@ -387,43 +402,47 @@ void API_LPTPWM_Trigger(void)
         CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & BIT2), 0x0);
 
         LPTPWM_EnableTrigger((LPTMR_T *)LPTMRCh[i], LPTPWM_TRG_TO_LPPDMA, LPTPWM_TRIGGER_AT_PERIOD_POINT);
-        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & (BIT2|BIT9)), (BIT2|BIT9));
+        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & (BIT2 | BIT9)), (BIT2 | BIT9));
         CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & 0x3), 0x0);
         LPTPWM_DisableTrigger((LPTMR_T *)LPTMRCh[i], LPTPWM_TRG_TO_LPPDMA);
-        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & (BIT2|BIT9)), 0x0);
+        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & (BIT2 | BIT9)), 0x0);
         LPTPWM_EnableTrigger((LPTMR_T *)LPTMRCh[i], LPTPWM_TRG_TO_LPPDMA, LPTPWM_TRIGGER_AT_COMPARE_POINT);
-        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & (BIT2|BIT9)), (BIT2|BIT9));
+        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & (BIT2 | BIT9)), (BIT2 | BIT9));
         CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & 0x3), 0x1);
         LPTPWM_DisableTrigger((LPTMR_T *)LPTMRCh[i], LPTPWM_TRG_TO_LPPDMA);
-        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & (BIT2|BIT9)), 0x0);
+        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & (BIT2 | BIT9)), 0x0);
         LPTPWM_EnableTrigger((LPTMR_T *)LPTMRCh[i], LPTPWM_TRG_TO_LPPDMA, LPTPWM_TRIGGER_AT_PERIOD_OR_COMPARE_POINT);
-        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & (BIT2|BIT9)), (BIT2|BIT9));
+        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & (BIT2 | BIT9)), (BIT2 | BIT9));
         CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & 0x3), 0x2);
         LPTPWM_DisableTrigger((LPTMR_T *)LPTMRCh[i], LPTPWM_TRG_TO_LPPDMA);
-        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & (BIT2|BIT9)), 0x0);
+        CU_ASSERT_EQUAL((LPTMRCh[i]->PWMTRGCTL & (BIT2 | BIT9)), 0x0);
     }
 }
 
-CU_SuiteInfo lptpwmSuites[] = {
+CU_SuiteInfo lptpwmSuites[] =
+{
     { "lptpwm Const Test", lptpwm_Test_Init, lptpwm_Test_Clean, NULL, NULL, lptpwm_ConstTest },
     { "lptpwm Macro Test", lptpwm_Test_Init, lptpwm_Test_Clean, NULL, NULL, lptpwm_MacroTest },
     { "lptpwm Func  Test", lptpwm_Test_Init, lptpwm_Test_Clean, NULL, NULL, lptpwm_FuncTest },
     CU_SUITE_INFO_NULL
 };
 
-CU_TestInfo  lptpwm_ConstTest[] = {
+CU_TestInfo  lptpwm_ConstTest[] =
+{
     { "Const Output_Mod",  CONST_Output_Mode },
     { "Const Trigger_Mode",  CONST_Trigger_Mode },
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo  lptpwm_MacroTest[] = {
+CU_TestInfo  lptpwm_MacroTest[] =
+{
     {"Check LPTMR PWM Basic MACRO ",    Check_Basic_MACRO},
     {"Check LPTMR PWM Advance MACRO ",  Check_Advance_MACRO},
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo  lptpwm_FuncTest[] = {
+CU_TestInfo  lptpwm_FuncTest[] =
+{
     {"Check Configure Freq. and Duty API ",       API_LPTPWM_ConfigOutputFreqAndDuty},
     {"Check Trigger LPIPs APIs ",                 API_LPTPWM_Trigger},
     CU_TEST_INFO_NULL

@@ -38,11 +38,11 @@ uint32_t LPTPWM_ConfigOutputFreqAndDuty(LPTMR_T *lptmr, uint32_t u32Frequency, u
     uint32_t u32Prescaler = 0x100UL, u32Period, u32CMP;
     const uint32_t au32Clk[] = {0UL, __LXT, __LIRC, __MIRC, __HIRC, 0UL};
 
-    if(lptmr == LPTMR0)
+    if (lptmr == LPTMR0)
     {
         u32Src = (CLK->LPTMRSEL & CLK_LPTMRSEL_LPTMR0SEL_Msk) >> CLK_LPTMRSEL_LPTMR0SEL_Pos;
     }
-    else if(lptmr == LPTMR1)
+    else if (lptmr == LPTMR1)
     {
         u32Src = (CLK->LPTMRSEL & CLK_LPTMRSEL_LPTMR1SEL_Msk) >> CLK_LPTMRSEL_LPTMR1SEL_Pos;
     }
@@ -143,7 +143,7 @@ void LPTPWM_DisableCounter(LPTMR_T *lptmr)
   */
 void LPTPWM_EnableTrigger(LPTMR_T *lptmr, uint32_t u32TargetMask, uint32_t u32Condition)
 {
-    lptmr->PWMTRGCTL &= ~( LPTMR_PWMTRGCTL_PWMTRGLPPDMA_Msk | LPTMR_PWMTRGCTL_TRGEN_Msk| LPTMR_PWMTRGCTL_TRGSEL_Msk);
+    lptmr->PWMTRGCTL &= ~(LPTMR_PWMTRGCTL_PWMTRGLPPDMA_Msk | LPTMR_PWMTRGCTL_TRGEN_Msk | LPTMR_PWMTRGCTL_TRGSEL_Msk);
     lptmr->PWMTRGCTL |= (u32TargetMask) | (u32Condition);
 }
 

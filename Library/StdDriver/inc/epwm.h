@@ -458,7 +458,7 @@ extern "C"
  * \hideinitializer
  */
 #define EPWM_SET_ALIGNED_TYPE(epwm, u32ChannelMask, u32AlignedType) \
-   do{ \
+    do{ \
         int i; \
         for(i = 0; i < 6; i++) { \
             if((u32ChannelMask) & (1 << i)) \
@@ -529,7 +529,7 @@ extern "C"
  * \hideinitializer
  */
 #define EPWM_SET_OUTPUT_LEVEL(epwm, u32ChannelMask, u32ZeroLevel, u32CmpUpLevel, u32PeriodLevel, u32CmpDownLevel) \
-   do{ \
+    do{ \
         int i; \
         for(i = 0; i < 6; i++) { \
             if((u32ChannelMask) & (1 << i)) { \
@@ -567,7 +567,7 @@ extern "C"
  */
 #define EPWM_SET_DEADZONE_CLK_SRC(epwm, u32ChannelNum, u32AfterPrescaler) \
     ((epwm)->DTCTL = (((epwm)->DTCTL & ~(EPWM_DTCTL_DTCKSEL0_Msk << (u32ChannelNum >> 1U))) | \
-    (((u32AfterPrescaler) << EPWM_DTCTL_DTCKSEL0_Pos)<<(u32ChannelNum >> 1U))))
+                      (((u32AfterPrescaler) << EPWM_DTCTL_DTCKSEL0_Pos)<<(u32ChannelNum >> 1U))))
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define EPWM functions prototype                                                                          */
