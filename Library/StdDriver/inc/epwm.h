@@ -45,8 +45,8 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Aligned Type Constant Definitions                                                                      */
 /*---------------------------------------------------------------------------------------------------------*/
-#define EPWM_EDGE_ALIGNED                         (1U)      /*!< EPWM working in edge aligned type(down count) \hideinitializer */
-#define EPWM_CENTER_ALIGNED                       (2U)      /*!< EPWM working in center aligned type \hideinitializer */
+#define EPWM_EDGE_ALIGNED                  (EPWM_DOWN_COUNTER)      /*!< EPWM working in edge aligned type(down count) \hideinitializer */
+#define EPWM_CENTER_ALIGNED                (EPWM_UP_DOWN_COUNTER)      /*!< EPWM working in center aligned type \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Output Level Constant Definitions                                                                      */
@@ -83,6 +83,8 @@ extern "C"
 #define EPWM_TRG_ADC_CH_2_FREE_CMP_DOWN                  (13U)    /*!< EPWM trigger ADC while counter of channel 2 matches down count to free comparator point \hideinitializer */
 #define EPWM_TRG_ADC_CH_4_FREE_CMP_UP                    (14U)    /*!< EPWM trigger ADC while counter of channel 4 matches up count to free comparator point \hideinitializer */
 #define EPWM_TRG_ADC_CH_4_FREE_CMP_DOWN                  (15U)    /*!< EPWM trigger ADC while counter of channel 4 matches down count to free comparator point \hideinitializer */
+#define EPWM_TRG_ADC_EVEN_IFACC                          (16U)    /*!< EPWM trigger ADC while even channel Interrupt Flag Accumulator Interrupt \hideinitializer */
+#define EPWM_TRG_ADC_ODD_IFACC                           (17U)    /*!< EPWM trigger ADC while odd channel Interrupt Flag Accumulator Interrupt \hideinitializer */
 
 #define EPWM_TRIGGER_DAC_ZERO                            (0x1U)           /*!< EPWM trigger DAC while counter down count to 0  \hideinitializer */
 #define EPWM_TRIGGER_DAC_PERIOD                          (0x100U)         /*!< EPWM trigger DAC while counter matches (PERIOD + 1) \hideinitializer */
@@ -200,6 +202,25 @@ extern "C"
 #define EPWM_FDCTL_FDCKSEL_CLK_DIV_2              (1UL << EPWM_FDCTL0_FDCKSEL_Pos)    /*!<  Fault detect clock selects to fault detect clock divided by 2 \hideinitializer */
 #define EPWM_FDCTL_FDCKSEL_CLK_DIV_4              (2UL << EPWM_FDCTL0_FDCKSEL_Pos)    /*!<  Fault detect clock selects to fault detect clock divided by 4 \hideinitializer */
 #define EPWM_FDCTL_FDCKSEL_CLK_DIV_8              (3UL << EPWM_FDCTL0_FDCKSEL_Pos)    /*!<  Fault detect clock selects to fault detect clock divided by 8 \hideinitializer */
+
+/*---------------------------------------------------------------------------------------------------------*/
+/*  External Event Trigger Pin Constant Definitions                                                        */
+/*---------------------------------------------------------------------------------------------------------*/
+#define EPWM_EXT_TGR_PIN_INT0                (0U)         /*!< EPWM external event trigger source form INT0 pin \hideinitializer */
+#define EPWM_EXT_TGR_PIN_INT1                (1U)         /*!< EPWM external event trigger source form INT1 pin \hideinitializer */
+#define EPWM_EXT_TGR_PIN_INT2                (2U)         /*!< EPWM external event trigger source form INT2 pin \hideinitializer */
+#define EPWM_EXT_TGR_PIN_INT3                (3U)         /*!< EPWM external event trigger source form INT3 pin \hideinitializer */
+#define EPWM_EXT_TGR_PIN_INT4                (4U)         /*!< EPWM external event trigger source form INT4 pin \hideinitializer */
+#define EPWM_EXT_TGR_PIN_INT5                (5U)         /*!< EPWM external event trigger source form INT5 pin \hideinitializer */
+#define EPWM_EXT_TGR_PIN_INT6                (6U)         /*!< EPWM external event trigger source form INT6 pin \hideinitializer */
+#define EPWM_EXT_TGR_PIN_INT7                (7U)         /*!< EPWM external event trigger source form INT7 pin \hideinitializer */
+
+/*---------------------------------------------------------------------------------------------------------*/
+/*  External Event Trigger Counter Action Constant Definitions                                             */
+/*---------------------------------------------------------------------------------------------------------*/
+#define EPWM_EXT_TGR_COUNTER_RESET              (0U)      /*!< EPWM external event trigger counter reset \hideinitializer */
+#define EPWM_EXT_TGR_COUNTER_START              (1U)      /*!< EPWM external event trigger counter start \hideinitializer */
+#define EPWM_EXT_TGR_COUNTER_RESET_AND_START    (2U)      /*!< EPWM external event trigger counter reset and start \hideinitializer */
 
 
 /** @} end of group EPWM_EXPORTED_CONSTANTS */
@@ -427,8 +448,11 @@ extern "C"
  * @param[in] u32ChannelMask Combination of enabled channels. Each bit corresponds to a channel
  *                           Bit 0 represents channel 0, bit 1 represents channel 1...
  * @param[in] u32AlignedType EPWM aligned type, valid values are:
- *              - \ref EPWM_EDGE_ALIGNED
- *              - \ref EPWM_CENTER_ALIGNED
+ *              - \ref EPWM_EDGE_ALIGNED(EPWM_DOWN_COUNTER)
+ *              - \ref EPWM_CENTER_ALIGNED(EPWM_UP_DOWN_COUNTER)
+ *              - \ref EPWM_UP_COUNTER
+ *              - \ref EPWM_DOWN_COUNTER
+ *              - \ref EPWM_UP_DOWN_COUNTER
  * @return None
  * @details This macro is used to set the EPWM aligned type of specified channel(s).
  * \hideinitializer
@@ -542,8 +566,8 @@ extern "C"
  * \hideinitializer
  */
 #define EPWM_SET_DEADZONE_CLK_SRC(epwm, u32ChannelNum, u32AfterPrescaler) \
-    ((epwm)->DTCTL = (((epwm)->DTCTL & ~(EPWM_DTCTL_DTCKSEL0_Msk << (u32ChannelNum))) | \
-    (((u32AfterPrescaler) << EPWM_DTCTL_DTCKSEL0_Pos)<<(u32ChannelNum))))
+    ((epwm)->DTCTL = (((epwm)->DTCTL & ~(EPWM_DTCTL_DTCKSEL0_Msk << (u32ChannelNum >> 1U))) | \
+    (((u32AfterPrescaler) << EPWM_DTCTL_DTCKSEL0_Pos)<<(u32ChannelNum >> 1U))))
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define EPWM functions prototype                                                                          */
@@ -638,6 +662,13 @@ void EPWM_EnableFaultDetectInt(EPWM_T *epwm, uint32_t u32ChannelNum);
 void EPWM_DisableFaultDetectInt(EPWM_T *epwm, uint32_t u32ChannelNum);
 void EPWM_ClearFaultDetectInt(EPWM_T *epwm, uint32_t u32ChannelNum);
 uint32_t EPWM_GetFaultDetectInt(EPWM_T *epwm, uint32_t u32ChannelNum);
+void EPWM_EnableCaptureInputNoiseFilter(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32FilterCount, uint32_t u32ClkSrcSel);
+void EPWM_DisableCaptureInputNoiseFilter(EPWM_T *epwm, uint32_t u32ChannelNum);
+void EPWM_EnableExtEventTrigger(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32ExtEventSrc, uint32_t u32CounterAction);
+void EPWM_DisableExtEventTrigger(EPWM_T *epwm, uint32_t u32ChannelNum);
+uint32_t EPWM_GetAccCounter(EPWM_T *epwm, uint32_t u32ChannelNum);
+void EPWM_EnableSWEventOutput(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32OutputLevel);
+void EPWM_DisableSWEventOutput(EPWM_T *epwm, uint32_t u32ChannelNum);
 
 /** @} end of group EPWM_EXPORTED_FUNCTIONS */
 /** @} end of group EPWM_Driver */

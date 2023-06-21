@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     lpuart.c
  * @version  V1.00
- * @brief    LPUART driver source file
+ * @brief    M55M1 series LPUART driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -26,7 +26,7 @@
  *    @brief        Clear LPUART specified interrupt flag
  *
  *    @param[in]    lpuart                The pointer of the specified LPUART module.
- *    @param[in]    u32InterruptFlag    The specified interrupt of LPUART module. 
+ *    @param[in]    u32InterruptFlag    The specified interrupt of LPUART module.
  *                                      - \ref LPUART_INTSTS_WKIF_Msk      : Wake-up interrupt
  *                                      - \ref LPUART_INTSTS_BUFERRINT_Msk : Buffer Error interrupt
  *                                      - \ref LPUART_INTSTS_MODEMINT_Msk  : Modem Status interrupt
@@ -37,16 +37,16 @@
  *    @details      The function is used to clear LPUART specified interrupt flag.
  */
 
-void LPUART_ClearIntFlag(LPUART_T* lpuart, uint32_t u32InterruptFlag)
+void LPUART_ClearIntFlag(LPUART_T *lpuart, uint32_t u32InterruptFlag)
 {
 
-    if(u32InterruptFlag & LPUART_INTSTS_RLSINT_Msk)   /* Clear Receive Line Status Interrupt */
+    if (u32InterruptFlag & LPUART_INTSTS_RLSINT_Msk)  /* Clear Receive Line Status Interrupt */
     {
-        lpuart->FIFOSTS = LPUART_FIFOSTS_BIF_Msk | LPUART_FIFOSTS_FEF_Msk | LPUART_FIFOSTS_PEF_Msk;
-        lpuart->FIFOSTS = LPUART_FIFOSTS_ADDRDETF_Msk;
+        lpuart->FIFOSTS |= (LPUART_FIFOSTS_BIF_Msk | LPUART_FIFOSTS_FEF_Msk | LPUART_FIFOSTS_PEF_Msk);
+        lpuart->FIFOSTS |= LPUART_FIFOSTS_ADDRDETF_Msk;
     }
 
-    if(u32InterruptFlag & LPUART_INTSTS_MODEMINT_Msk)   /* Clear Modem Status Interrupt */
+    if (u32InterruptFlag & LPUART_INTSTS_MODEMINT_Msk)  /* Clear Modem Status Interrupt */
     {
         lpuart->MODEMSTS |= LPUART_MODEMSTS_CTSDETF_Msk;
     }
@@ -54,15 +54,15 @@ void LPUART_ClearIntFlag(LPUART_T* lpuart, uint32_t u32InterruptFlag)
     {
     }
 
-    if(u32InterruptFlag & LPUART_INTSTS_BUFERRINT_Msk)   /* Clear Buffer Error Interrupt */
+    if (u32InterruptFlag & LPUART_INTSTS_BUFERRINT_Msk)  /* Clear Buffer Error Interrupt */
     {
         lpuart->FIFOSTS = LPUART_FIFOSTS_RXOVIF_Msk | LPUART_FIFOSTS_TXOVIF_Msk;
     }
 
-    if(u32InterruptFlag & LPUART_INTSTS_WKINT_Msk)   /* Clear Wake-up Interrupt */
+    if (u32InterruptFlag & LPUART_INTSTS_WKINT_Msk)  /* Clear Wake-up Interrupt */
     {
         lpuart->WKSTS = LPUART_WKSTS_CTSWKF_Msk  | LPUART_WKSTS_DATWKF_Msk  |
-                        LPUART_WKSTS_RFRTWKF_Msk |LPUART_WKSTS_RS485WKF_Msk |
+                        LPUART_WKSTS_RFRTWKF_Msk | LPUART_WKSTS_RS485WKF_Msk |
                         LPUART_WKSTS_TOUTWKF_Msk;
     }
 
@@ -79,7 +79,7 @@ void LPUART_ClearIntFlag(LPUART_T* lpuart, uint32_t u32InterruptFlag)
  *
  *  @details    The function is used to disable LPUART interrupt.
  */
-void LPUART_Close(LPUART_T* lpuart)
+void LPUART_Close(LPUART_T *lpuart)
 {
     lpuart->INTEN = 0ul;
 }
@@ -94,7 +94,7 @@ void LPUART_Close(LPUART_T* lpuart)
  *
  *  @details    The function is used to disable LPUART auto flow control.
  */
-void LPUART_DisableFlowCtrl(LPUART_T* lpuart)
+void LPUART_DisableFlowCtrl(LPUART_T *lpuart)
 {
     lpuart->INTEN &= ~(LPUART_INTEN_ATORTSEN_Msk | LPUART_INTEN_ATOCTSEN_Msk);
 }
@@ -118,7 +118,7 @@ void LPUART_DisableFlowCtrl(LPUART_T* lpuart)
  *
  *    @details      The function is used to disable LPUART specified interrupt and disable NVIC LPUART IRQ.
  */
-void LPUART_DisableInt(LPUART_T*  lpuart, uint32_t u32InterruptFlag)
+void LPUART_DisableInt(LPUART_T  *lpuart, uint32_t u32InterruptFlag)
 {
     /* Disable LPUART specified interrupt */
     LPUART_DISABLE_INT(lpuart, u32InterruptFlag);
@@ -134,7 +134,7 @@ void LPUART_DisableInt(LPUART_T*  lpuart, uint32_t u32InterruptFlag)
  *
  *    @details      The function is used to Enable LPUART auto flow control.
  */
-void LPUART_EnableFlowCtrl(LPUART_T* lpuart)
+void LPUART_EnableFlowCtrl(LPUART_T *lpuart)
 {
     /* Set RTS pin output is low level active */
     lpuart->MODEM |= LPUART_MODEM_RTSACTLV_Msk;
@@ -164,7 +164,7 @@ void LPUART_EnableFlowCtrl(LPUART_T* lpuart)
  *
  *    @details      The function is used to enable LPUART specified interrupt and enable NVIC LPUART IRQ.
  */
-void LPUART_EnableInt(LPUART_T*  lpuart, uint32_t u32InterruptFlag)
+void LPUART_EnableInt(LPUART_T  *lpuart, uint32_t u32InterruptFlag)
 {
     /* Enable LPUART specified interrupt */
     LPUART_ENABLE_INT(lpuart, u32InterruptFlag);
@@ -181,14 +181,13 @@ void LPUART_EnableInt(LPUART_T*  lpuart, uint32_t u32InterruptFlag)
  *
  *    @details      This function use to enable LPUART function and set baud-rate.
  */
-void LPUART_Open(LPUART_T* lpuart, uint32_t u32baudrate)
+void LPUART_Open(LPUART_T *lpuart, uint32_t u32baudrate)
 {
-    uint32_t u32LpUartClkSrcSel=0ul, u32LpUartClkDivNum=0ul;
-    uint32_t u32ClkTbl[4] = {0,__LXT, __MIRC, __HIRC};
-    uint32_t u32Baud_Div = 0ul;
+    uint32_t u32LpUartClkSrcSel = 0ul, u32LpUartClkDivNum = 0ul;
+    uint32_t u32ClkTbl[4] = {0, __LXT, __MIRC, __HIRC};
 
 
-    if(lpuart==(LPUART_T*)LPUART0)
+    if (lpuart == (LPUART_T *)LPUART0)
     {
         /* Get LPUART clock source selection */
         u32LpUartClkSrcSel = ((CLK->LPUARTSEL & CLK_LPUARTSEL_LPUART0SEL_Msk)) >> CLK_LPUARTSEL_LPUART0SEL_Pos;
@@ -208,17 +207,19 @@ void LPUART_Open(LPUART_T* lpuart, uint32_t u32baudrate)
     lpuart->FIFO &= ~(LPUART_FIFO_RFITL_Msk | LPUART_FIFO_RTSTRGLV_Msk);
 
     /* Get PLL clock frequency if LPUART clock source selection is PCLK2 */
-    if(u32LpUartClkSrcSel == 0ul)
+    if (u32LpUartClkSrcSel == 0ul)
     {
-         u32ClkTbl[0] =CLK_GetPCLK4Freq();
+        u32ClkTbl[0] = CLK_GetPCLK4Freq();
     }
 
     /* Set LPUART baud rate */
-    if(u32baudrate != 0ul)
+    if (u32baudrate != 0ul)
     {
+        uint32_t u32Baud_Div;
+
         u32Baud_Div = LPUART_BAUD_MODE2_DIVIDER((u32ClkTbl[u32LpUartClkSrcSel]) / (u32LpUartClkDivNum + 1ul), u32baudrate);
 
-        if(u32Baud_Div > 0xFFFFul)
+        if (u32Baud_Div > 0xFFFFul)
         {
             lpuart->BAUD = (LPUART_BAUD_MODE0 | LPUART_BAUD_MODE0_DIVIDER((u32ClkTbl[u32LpUartClkSrcSel]) / (u32LpUartClkDivNum + 1ul), u32baudrate));
         }
@@ -241,19 +242,20 @@ void LPUART_Open(LPUART_T* lpuart, uint32_t u32baudrate)
  *
  *    @details      The function is used to read Rx data from RX FIFO and the data will be stored in pu8RxBuf.
  */
-uint32_t LPUART_Read(LPUART_T* lpuart, uint8_t pu8RxBuf[], uint32_t u32ReadBytes)
+uint32_t LPUART_Read(LPUART_T *lpuart, uint8_t pu8RxBuf[], uint32_t u32ReadBytes)
 {
     uint32_t  u32Count, u32delayno;
     uint32_t  u32Exit = 0ul;
 
-    for(u32Count = 0ul; u32Count < u32ReadBytes; u32Count++)
+    for (u32Count = 0ul; u32Count < u32ReadBytes; u32Count++)
     {
         u32delayno = 0ul;
 
-        while(lpuart->FIFOSTS & LPUART_FIFOSTS_RXEMPTY_Msk)   /* Check RX empty => failed */
+        while (lpuart->FIFOSTS & LPUART_FIFOSTS_RXEMPTY_Msk)  /* Check RX empty => failed */
         {
             u32delayno++;
-            if(u32delayno >= 0x40000000ul)
+
+            if (u32delayno >= 0x40000000ul)
             {
                 u32Exit = 1ul;
                 break;
@@ -263,7 +265,7 @@ uint32_t LPUART_Read(LPUART_T* lpuart, uint8_t pu8RxBuf[], uint32_t u32ReadBytes
             }
         }
 
-        if(u32Exit == 1ul)
+        if (u32Exit == 1ul)
         {
             break;
         }
@@ -304,14 +306,12 @@ uint32_t LPUART_Read(LPUART_T* lpuart, uint8_t pu8RxBuf[], uint32_t u32ReadBytes
  *
  *    @details      This function use to config LPUART line setting.
  */
-void LPUART_SetLineConfig(LPUART_T* lpuart, uint32_t u32baudrate, uint32_t u32data_width, uint32_t u32parity, uint32_t  u32stop_bits)
+void LPUART_SetLineConfig(LPUART_T *lpuart, uint32_t u32baudrate, uint32_t u32data_width, uint32_t u32parity, uint32_t  u32stop_bits)
 {
-    uint32_t u32UartClkSrcSel=0ul, u32UartClkDivNum=0ul;
-    uint32_t u32ClkTbl[4] = {0,__LXT, __MIRC, __HIRC};
-    uint32_t u32Baud_Div = 0ul;
+    uint32_t u32UartClkSrcSel = 0ul, u32UartClkDivNum = 0ul;
+    uint32_t u32ClkTbl[4] = {0, __LXT, __MIRC, __HIRC};
 
-
-    if(lpuart==(LPUART_T*)LPUART0)
+    if (lpuart == (LPUART_T *)LPUART0)
     {
 
         /* Get LPUART clock source selection */
@@ -321,20 +321,22 @@ void LPUART_SetLineConfig(LPUART_T* lpuart, uint32_t u32baudrate, uint32_t u32da
     }
 
     /* Get PLL clock frequency if LPUART clock source selection is PCLK2 */
-    if(u32UartClkSrcSel == 0ul)
+    if (u32UartClkSrcSel == 0ul)
     {
-      u32ClkTbl[0] =CLK_GetPCLK4Freq();
+        u32ClkTbl[0] = CLK_GetPCLK4Freq();
     }
     else
     {
     }
 
     /* Set LPUART baud rate */
-    if(u32baudrate != 0ul)
+    if (u32baudrate != 0ul)
     {
+        uint32_t u32Baud_Div;
+
         u32Baud_Div = LPUART_BAUD_MODE2_DIVIDER((u32ClkTbl[u32UartClkSrcSel]) / (u32UartClkDivNum + 1ul), u32baudrate);
 
-        if(u32Baud_Div > 0xFFFFul)
+        if (u32Baud_Div > 0xFFFFul)
         {
             lpuart->BAUD = (LPUART_BAUD_MODE0 | LPUART_BAUD_MODE0_DIVIDER((u32ClkTbl[u32UartClkSrcSel]) / (u32UartClkDivNum + 1ul), u32baudrate));
         }
@@ -359,7 +361,7 @@ void LPUART_SetLineConfig(LPUART_T* lpuart, uint32_t u32baudrate, uint32_t u32da
  *
  *    @details      This function use to set Rx timeout count.
  */
-void LPUART_SetTimeoutCnt(LPUART_T* lpuart, uint32_t u32TOC)
+void LPUART_SetTimeoutCnt(LPUART_T *lpuart, uint32_t u32TOC)
 {
     /* Set time-out interrupt comparator */
     lpuart->TOUT = (lpuart->TOUT & ~LPUART_TOUT_TOIC_Msk) | (u32TOC);
@@ -383,7 +385,7 @@ void LPUART_SetTimeoutCnt(LPUART_T* lpuart, uint32_t u32TOC)
  *
  *    @details      The function is used to set RS485 relative setting.
  */
-void LPUART_SelectRS485Mode(LPUART_T* lpuart, uint32_t u32Mode, uint32_t u32Addr)
+void LPUART_SelectRS485Mode(LPUART_T *lpuart, uint32_t u32Mode, uint32_t u32Addr)
 {
     /* Select LPUART RS485 function mode */
     lpuart->FUNCSEL = LPUART_FUNCSEL_RS485;
@@ -406,18 +408,20 @@ void LPUART_SelectRS485Mode(LPUART_T* lpuart, uint32_t u32Mode, uint32_t u32Addr
  *
  *    @details      The function is to write data into TX buffer to transmit data by LPUART.
  */
-uint32_t LPUART_Write(LPUART_T* lpuart, uint8_t pu8TxBuf[], uint32_t u32WriteBytes)
+uint32_t LPUART_Write(LPUART_T *lpuart, uint8_t pu8TxBuf[], uint32_t u32WriteBytes)
 {
     uint32_t  u32Count, u32delayno;
     uint32_t  u32Exit = 0ul;
 
-    for(u32Count = 0ul; u32Count != u32WriteBytes; u32Count++)
+    for (u32Count = 0ul; u32Count != u32WriteBytes; u32Count++)
     {
         u32delayno = 0ul;
-        while(lpuart->FIFOSTS & LPUART_FIFOSTS_TXFULL_Msk)   /* Check Tx Full */
+
+        while (lpuart->FIFOSTS & LPUART_FIFOSTS_TXFULL_Msk)  /* Check Tx Full */
         {
             u32delayno++;
-            if(u32delayno >= 0x40000000ul)
+
+            if (u32delayno >= 0x40000000ul)
             {
                 u32Exit = 1ul;
                 break;
@@ -427,7 +431,7 @@ uint32_t LPUART_Write(LPUART_T* lpuart, uint8_t pu8TxBuf[], uint32_t u32WriteByt
             }
         }
 
-        if(u32Exit == 1ul)
+        if (u32Exit == 1ul)
         {
             break;
         }
@@ -458,23 +462,25 @@ uint32_t LPUART_Write(LPUART_T* lpuart, uint8_t pu8TxBuf[], uint32_t u32WriteByt
  *
  *    @details      The function is used to set Automatic Operation relative setting.
  */
-void LPUART_SelectAutoOperationMode(LPUART_T* lpuart, uint32_t u32TrigSel)
+void LPUART_SelectAutoOperationMode(LPUART_T *lpuart, uint32_t u32TrigSel)
 {
     /* Set Automatic Operation Enable */
     lpuart->AUTOCTL |= LPUART_AUTOCTL_AOEN_Msk;
-    
+
     /*Set Automatic Operation Clock Always-on*/
     lpuart->AUTOCTL |= LPUART_AUTOCTL_CKAWOEN_Msk;
 
-    
-    // Set Auto Operation mode Trigger source 
+
+    // Set Auto Operation mode Trigger source
     lpuart->AUTOCTL &= ~(LPUART_AUTOCTL_TRIGSEL_Msk | LPUART_AUTOCTL_TRIGEN_Msk);
     lpuart->AUTOCTL |=  u32TrigSel;
-  
+
 
 }
 
 
 /** @} end of group LPUART_EXPORTED_FUNCTIONS */
+
 /** @} end of group LPUART_Driver */
+
 /** @} end of group Standard_Driver */

@@ -25,7 +25,7 @@ int32_t g_DPM_i32ErrCode = 0; /*!< DPM global error code */
 
 /**
   * @brief      Set Debug Disable
-  * @param[in]  u32dpm  The pointer of the specified DPM module
+  * @param[in]  u32DPM  The pointer of the specified DPM module
   *                     - \ref SECURE_DPM
   *                     - \ref NONSECURE_DPM
   * @return     None
@@ -33,30 +33,34 @@ int32_t g_DPM_i32ErrCode = 0; /*!< DPM global error code */
   *             The debug disable function works after reset (chip reset or pin reset).
   * @note       This function sets g_DPM_i32ErrCode to DPM_TIMEOUT_ERR if waiting DPM time-out.
   */
-void DPM_SetDebugDisable(uint32_t u32dpm)
+void DPM_SetDebugDisable(uint32_t u32DPM)
 {
-    DPM_T *dpm;
+    DPM_T *psDPM;
 
-    if (__PC()&NS_OFFSET) dpm = DPM_NS;
-    else dpm = DPM;
+    if (__PC() & NS_OFFSET)
+        psDPM = DPM_NS;
+    else
+        psDPM = DPM;
 
-    if (u32dpm == SECURE_DPM) /* Secure DPM */
+    if (u32DPM == SECURE_DPM) /* Secure DPM */
     {
         DPM_WAIT_STS_BUSY();
+
         if (g_DPM_i32ErrCode == 0)
-            dpm->CTL = (DPM->CTL & (~DPM_CTL_RWVCODE_Msk)) | (DPM_CTL_WVCODE | DPM_CTL_DBGDIS_Msk);
+            psDPM->CTL = (psDPM->CTL & (~DPM_CTL_RWVCODE_Msk)) | (DPM_CTL_WVCODE | DPM_CTL_DBGDIS_Msk);
     }
     else    /* Non-secure DPM */
     {
-        DPM_WAIT_NSSTS_BUSY();
+        DPM_WAIT_NSSTS_BUSY(psDPM);
+
         if (g_DPM_i32ErrCode == 0)
-            dpm->NSCTL = (dpm->NSCTL & (~DPM_NSCTL_RWVCODE_Msk)) | (DPM_NSCTL_WVCODE | DPM_NSCTL_DBGDIS_Msk);
+            psDPM->NSCTL = (psDPM->NSCTL & (~DPM_NSCTL_RWVCODE_Msk)) | (DPM_NSCTL_WVCODE | DPM_NSCTL_DBGDIS_Msk);
     }
 }
 
 /**
   * @brief      Set Debug Lock
-  * @param[in]  u32dpm  Select DPM module. Valid values are:
+  * @param[in]  u32DPM  Select DPM module. Valid values are:
   *                     - \ref SECURE_DPM
   *                     - \ref NONSECURE_DPM
   * @return     None
@@ -64,30 +68,34 @@ void DPM_SetDebugDisable(uint32_t u32dpm)
   *             The debug lock function works after reset (chip reset or pin reset).
   * @note       This function sets g_DPM_i32ErrCode to DPM_TIMEOUT_ERR if waiting DPM time-out.
   */
-void DPM_SetDebugLock(uint32_t u32dpm)
+void DPM_SetDebugLock(uint32_t u32DPM)
 {
-    DPM_T *dpm;
+    DPM_T *psDPM;
 
-    if (__PC()&NS_OFFSET) dpm = DPM_NS;
-    else dpm = DPM;
+    if (__PC() & NS_OFFSET)
+        psDPM = DPM_NS;
+    else
+        psDPM = DPM;
 
-    if (u32dpm == SECURE_DPM) /* Secure DPM */
+    if (u32DPM == SECURE_DPM) /* Secure DPM */
     {
         DPM_WAIT_STS_BUSY();
+
         if (g_DPM_i32ErrCode == 0)
-            dpm->CTL = (dpm->CTL & (~DPM_CTL_RWVCODE_Msk)) | (DPM_CTL_WVCODE | DPM_CTL_LOCK_Msk);
+            psDPM->CTL = (psDPM->CTL & (~DPM_CTL_RWVCODE_Msk)) | (DPM_CTL_WVCODE | DPM_CTL_LOCK_Msk);
     }
     else    /* Non-secure DPM */
     {
-        DPM_WAIT_NSSTS_BUSY();
+        DPM_WAIT_NSSTS_BUSY(psDPM);
+
         if (g_DPM_i32ErrCode == 0)
-            dpm->NSCTL = (dpm->NSCTL & (~DPM_NSCTL_RWVCODE_Msk)) | (DPM_NSCTL_WVCODE | DPM_NSCTL_LOCK_Msk);
+            psDPM->NSCTL = (psDPM->NSCTL & (~DPM_NSCTL_RWVCODE_Msk)) | (DPM_NSCTL_WVCODE | DPM_NSCTL_LOCK_Msk);
     }
 }
 
 /**
   * @brief      Get Debug Disable
-  * @param[in]  u32dpm  Select DPM module. Valid values are:
+  * @param[in]  u32DPM  Select DPM module. Valid values are:
   *                     - \ref SECURE_DPM
   *                     - \ref NONSECURE_DPM
   * @retval     0   Debug is not in disable status.
@@ -98,25 +106,29 @@ void DPM_SetDebugLock(uint32_t u32dpm)
   *             If Non-secure debug is disabled, debugger cannot access all Secure and Non-secure region.
   * @note       This function sets g_DPM_i32ErrCode to DPM_TIMEOUT_ERR if waiting DPM time-out.
   */
-int32_t DPM_GetDebugDisable(uint32_t u32dpm)
+int32_t DPM_GetDebugDisable(uint32_t u32DPM)
 {
     int32_t i32RetVal = DPM_TIMEOUT_ERR;
-    DPM_T *dpm;
+    DPM_T *psDPM;
 
-    if (__PC()&NS_OFFSET) dpm = DPM_NS;
-    else dpm = DPM;
+    if (__PC() & NS_OFFSET)
+        psDPM = DPM_NS;
+    else
+        psDPM = DPM;
 
-    if (u32dpm == SECURE_DPM) /* Secure DPM */
+    if (u32DPM == SECURE_DPM) /* Secure DPM */
     {
         DPM_WAIT_STS_BUSY();
+
         if (g_DPM_i32ErrCode == 0)
-            i32RetVal = (dpm->STS & DPM_STS_DBGDIS_Msk) >> DPM_STS_DBGDIS_Pos;
+            i32RetVal = (psDPM->STS & DPM_STS_DBGDIS_Msk) >> DPM_STS_DBGDIS_Pos;
     }
     else    /* Non-secure DPM */
     {
-        DPM_WAIT_NSSTS_BUSY();
+        DPM_WAIT_NSSTS_BUSY(psDPM);
+
         if (g_DPM_i32ErrCode == 0)
-            i32RetVal = (dpm->NSSTS & DPM_NSSTS_DBGDIS_Msk) >> DPM_NSSTS_DBGDIS_Pos;
+            i32RetVal = (psDPM->NSSTS & DPM_NSSTS_DBGDIS_Msk) >> DPM_NSSTS_DBGDIS_Pos;
     }
 
     return i32RetVal;
@@ -124,7 +136,7 @@ int32_t DPM_GetDebugDisable(uint32_t u32dpm)
 
 /**
   * @brief      Get Debug Lock
-  * @param[in]  u32dpm  Select DPM module. Valid values are:
+  * @param[in]  u32DPM  Select DPM module. Valid values are:
   *                     - \ref SECURE_DPM
   *                     - \ref NONSECURE_DPM
   * @retval     0   Debug is not in lock status.
@@ -135,25 +147,29 @@ int32_t DPM_GetDebugDisable(uint32_t u32dpm)
   *             If Non-secure debug is locked, debugger cannot access all Secure and Non-secure region.
   * @note       This function sets g_DPM_i32ErrCode to DPM_TIMEOUT_ERR if waiting DPM time-out.
   */
-int32_t DPM_GetDebugLock(uint32_t u32dpm)
+int32_t DPM_GetDebugLock(uint32_t u32DPM)
 {
     int32_t i32RetVal = DPM_TIMEOUT_ERR;
-    DPM_T *dpm;
+    DPM_T *psDPM;
 
-    if (__PC()&NS_OFFSET) dpm = DPM_NS;
-    else dpm = DPM;
+    if (__PC() & NS_OFFSET)
+        psDPM = DPM_NS;
+    else
+        psDPM = DPM;
 
-    if (u32dpm == SECURE_DPM) /* Secure DPM */
+    if (u32DPM == SECURE_DPM) /* Secure DPM */
     {
         DPM_WAIT_STS_BUSY();
+
         if (g_DPM_i32ErrCode == 0)
-            i32RetVal = (dpm->STS & DPM_STS_LOCK_Msk) >> DPM_STS_LOCK_Pos;
+            i32RetVal = (psDPM->STS & DPM_STS_LOCK_Msk) >> DPM_STS_LOCK_Pos;
     }
-    else                    /* Non-secure DPM */
+    else    /* Non-secure DPM */
     {
-        DPM_WAIT_NSSTS_BUSY();
+        DPM_WAIT_NSSTS_BUSY(psDPM);
+
         if (g_DPM_i32ErrCode == 0)
-            i32RetVal = (dpm->NSSTS & DPM_NSSTS_LOCK_Msk) >> DPM_NSSTS_LOCK_Pos;
+            i32RetVal = (psDPM->NSSTS & DPM_NSSTS_LOCK_Msk) >> DPM_NSSTS_LOCK_Pos;
     }
 
     return i32RetVal;
@@ -161,7 +177,7 @@ int32_t DPM_GetDebugLock(uint32_t u32dpm)
 
 /**
   * @brief      Update DPM Password
-  * @param[in]  u32dpm        Select DPM module. Valid values are:
+  * @param[in]  u32DPM        Select DPM module. Valid values are:
   *                           - \ref SECURE_DPM
   *                           - \ref NONSECURE_DPM
   * @param[in]  au32Password  Password length is 256 bits.
@@ -171,48 +187,55 @@ int32_t DPM_GetDebugLock(uint32_t u32dpm)
   * @details    This function updates Secure or Non-secure DPM password.
   * @note       This function sets g_DPM_i32ErrCode to DPM_TIMEOUT_ERR if waiting DPM time-out.
   */
-int32_t DPM_SetPasswordUpdate(uint32_t u32dpm, uint32_t au32Pwd[])
+int32_t DPM_SetPasswordUpdate(uint32_t u32DPM, uint32_t au32Pwd[])
 {
     uint32_t u32i;
     int32_t i32RetVal = DPM_TIMEOUT_ERR;
-    DPM_T *dpm;
+    DPM_T *psDPM;
 
-    if (__PC()&NS_OFFSET) dpm = DPM_NS;
-    else dpm = DPM;
+    if (__PC() & NS_OFFSET)
+        psDPM = DPM_NS;
+    else
+        psDPM = DPM;
 
-    if (u32dpm == SECURE_DPM) /* Secure DPM */
+    if (u32DPM == SECURE_DPM) /* Secure DPM */
     {
         /* Set Secure DPM password */
         for (u32i = 0; u32i < 4; u32i++)
         {
             DPM_WAIT_STS_BUSY();
-            if (g_DPM_i32ErrCode == 0)
-                dpm->SPW[u32i] = au32Pwd[u32i];
-            else break;
+
+            if (g_DPM_i32ErrCode != 0)
+                break;
+
+            psDPM->SPW[u32i] = au32Pwd[u32i];
         }
 
         /* Set Secure DPM password update */
         if (g_DPM_i32ErrCode == 0)
         {
             DPM_WAIT_STS_BUSY();
+
             if (g_DPM_i32ErrCode == 0)
-                dpm->CTL = (dpm->CTL & (~DPM_CTL_RWVCODE_Msk)) | (DPM_CTL_WVCODE | DPM_CTL_PWUPD_Msk);
+                psDPM->CTL = (psDPM->CTL & (~DPM_CTL_RWVCODE_Msk)) | (DPM_CTL_WVCODE | DPM_CTL_PWUPD_Msk);
         }
 
         /* Check Secure DPM password update flag */
         if (g_DPM_i32ErrCode == 0)
         {
             DPM_WAIT_STS_BUSY();
+
             if (g_DPM_i32ErrCode == 0)
-                i32RetVal = (dpm->STS & DPM_STS_PWUOK_Msk) >> DPM_STS_PWUOK_Pos;
+                i32RetVal = (psDPM->STS & DPM_STS_PWUOK_Msk) >> DPM_STS_PWUOK_Pos;
         }
 
         /* Clear Secure DPM password update flag */
         if (g_DPM_i32ErrCode == 0)
         {
             DPM_WAIT_STS_BUSY();
+
             if ((i32RetVal == 1) && (g_DPM_i32ErrCode == 0))
-                dpm->STS = DPM_STS_PWUOK_Msk;
+                psDPM->STS = DPM_STS_PWUOK_Msk;
         }
     }
     else    /* Non-secure DPM */
@@ -220,34 +243,39 @@ int32_t DPM_SetPasswordUpdate(uint32_t u32dpm, uint32_t au32Pwd[])
         /* Set Non-secure DPM password */
         for (u32i = 0; u32i < 4; u32i++)
         {
-            DPM_WAIT_NSSTS_BUSY();
-            if (g_DPM_i32ErrCode == 0)
-                dpm->NSPW[u32i] = au32Pwd[u32i];
-            else break;
+            DPM_WAIT_NSSTS_BUSY(psDPM);
+
+            if (g_DPM_i32ErrCode != 0)
+                break;
+
+            psDPM->NSPW[u32i] = au32Pwd[u32i];
         }
 
         /* Set Non-secure DPM password update */
         if (g_DPM_i32ErrCode == 0)
         {
-            DPM_WAIT_NSSTS_BUSY();
+            DPM_WAIT_NSSTS_BUSY(psDPM);
+
             if (g_DPM_i32ErrCode == 0)
-                dpm->NSCTL = (dpm->NSCTL & (~DPM_CTL_RWVCODE_Msk)) | (DPM_CTL_WVCODE | DPM_NSCTL_PWUPD_Msk);
+                psDPM->NSCTL = (psDPM->NSCTL & (~DPM_CTL_RWVCODE_Msk)) | (DPM_CTL_WVCODE | DPM_NSCTL_PWUPD_Msk);
         }
 
         /* Check Non-secure DPM password update flag */
         if (g_DPM_i32ErrCode == 0)
         {
-            DPM_WAIT_NSSTS_BUSY();
+            DPM_WAIT_NSSTS_BUSY(psDPM);
+
             if (g_DPM_i32ErrCode == 0)
-                i32RetVal = (dpm->NSSTS & DPM_NSSTS_PWUOK_Msk) >> DPM_NSSTS_PWUOK_Pos;
+                i32RetVal = (psDPM->NSSTS & DPM_NSSTS_PWUOK_Msk) >> DPM_NSSTS_PWUOK_Pos;
         }
 
         /* Clear Non-secure DPM password update flag */
         if (g_DPM_i32ErrCode == 0)
         {
-            DPM_WAIT_NSSTS_BUSY();
+            DPM_WAIT_NSSTS_BUSY(psDPM);
+
             if ((i32RetVal == 1) && (g_DPM_i32ErrCode == 0))
-                dpm->NSSTS = DPM_NSSTS_PWUOK_Msk;
+                psDPM->NSSTS = DPM_NSSTS_PWUOK_Msk;
         }
     }
 
@@ -256,7 +284,7 @@ int32_t DPM_SetPasswordUpdate(uint32_t u32dpm, uint32_t au32Pwd[])
 
 /**
   * @brief      Compare DPM Password
-  * @param[in]  u32dpm  Select DPM module. Valid values are:
+  * @param[in]  u32DPM  Select DPM module. Valid values are:
   *                     - \ref SECURE_DPM
   *                     - \ref NONSECURE_DPM
   * @retval     0   The password comparison can be proccessed.
@@ -267,19 +295,21 @@ int32_t DPM_SetPasswordUpdate(uint32_t u32dpm, uint32_t au32Pwd[])
   *             The comparison result is checked by DPM_GetPasswordErrorFlag().
   * @note       This function sets g_DPM_i32ErrCode to DPM_TIMEOUT_ERR if waiting DPM time-out.
   */
-int32_t DPM_SetPasswordCompare(uint32_t u32dpm, uint32_t au32Pwd[])
+int32_t DPM_SetPasswordCompare(uint32_t u32DPM, uint32_t au32Pwd[])
 {
     uint32_t u32i;
     int32_t i32RetVal = DPM_TIMEOUT_ERR;
-    DPM_T *dpm;
+    DPM_T *psDPM;
 
-    if (__PC()&NS_OFFSET) dpm = DPM_NS;
-    else dpm = DPM;
+    if (__PC() & NS_OFFSET)
+        psDPM = DPM_NS;
+    else
+        psDPM = DPM;
 
-    if (u32dpm == SECURE_DPM) /* Secure DPM */
+    if (u32DPM == SECURE_DPM) /* Secure DPM */
     {
         /* Check Secure DPM password compare fail times maximum flag */
-        if (dpm->STS & DPM_STS_PWFMAX_Msk)
+        if (psDPM->STS & DPM_STS_PWFMAX_Msk)
         {
             i32RetVal = 1;
         }
@@ -289,18 +319,21 @@ int32_t DPM_SetPasswordCompare(uint32_t u32dpm, uint32_t au32Pwd[])
             for (u32i = 0; u32i < 4; u32i++)
             {
                 DPM_WAIT_STS_BUSY();
-                if (g_DPM_i32ErrCode == 0)
-                    dpm->SPW[u32i] = au32Pwd[u32i];
-                else break;
+
+                if (g_DPM_i32ErrCode != 0)
+                    break;
+
+                psDPM->SPW[u32i] = au32Pwd[u32i];
             }
 
             /* Set Secure DPM password cpmpare */
             if (g_DPM_i32ErrCode == 0)
             {
                 DPM_WAIT_STS_BUSY();
+
                 if (g_DPM_i32ErrCode == 0)
                 {
-                    dpm->CTL = (dpm->CTL & (~DPM_CTL_RWVCODE_Msk)) | (DPM_CTL_WVCODE | DPM_CTL_PWCMP_Msk);
+                    psDPM->CTL = (psDPM->CTL & (~DPM_CTL_RWVCODE_Msk)) | (DPM_CTL_WVCODE | DPM_CTL_PWCMP_Msk);
                     i32RetVal = 0;
                 }
             }
@@ -309,7 +342,7 @@ int32_t DPM_SetPasswordCompare(uint32_t u32dpm, uint32_t au32Pwd[])
     else    /* Non-secure DPM */
     {
         /* Check Non-secure DPM password compare fail times maximum flag */
-        if (dpm->NSSTS & DPM_NSSTS_PWFMAX_Msk)
+        if (psDPM->NSSTS & DPM_NSSTS_PWFMAX_Msk)
         {
             i32RetVal = 1;
         }
@@ -318,19 +351,22 @@ int32_t DPM_SetPasswordCompare(uint32_t u32dpm, uint32_t au32Pwd[])
             /* Set Non-secure DPM password */
             for (u32i = 0; u32i < 4; u32i++)
             {
-                DPM_WAIT_NSSTS_BUSY();
-                if (g_DPM_i32ErrCode == 0)
-                    dpm->NSPW[u32i] = au32Pwd[u32i];
-                else break;
+                DPM_WAIT_NSSTS_BUSY(psDPM);
+
+                if (g_DPM_i32ErrCode != 0)
+                    break;
+
+                psDPM->NSPW[u32i] = au32Pwd[u32i];
             }
 
             /* Set Non-secure DPM password compare */
             if (g_DPM_i32ErrCode == 0)
             {
-                DPM_WAIT_NSSTS_BUSY();
+                DPM_WAIT_NSSTS_BUSY(psDPM);
+
                 if (g_DPM_i32ErrCode == 0)
                 {
-                    dpm->NSCTL = (dpm->NSCTL & (~DPM_NSCTL_RWVCODE_Msk)) | (DPM_NSCTL_WVCODE | DPM_NSCTL_PWCMP_Msk);
+                    psDPM->NSCTL = (psDPM->NSCTL & (~DPM_NSCTL_RWVCODE_Msk)) | (DPM_NSCTL_WVCODE | DPM_NSCTL_PWCMP_Msk);
                     i32RetVal = 0;
                 }
             }
@@ -342,7 +378,7 @@ int32_t DPM_SetPasswordCompare(uint32_t u32dpm, uint32_t au32Pwd[])
 
 /**
   * @brief      Get DPM Password Error Flag
-  * @param[in]  u32dpm        Select DPM module. Valid values are:
+  * @param[in]  u32DPM        Select DPM module. Valid values are:
   *                           - \ref SECURE_DPM
   *                           - \ref NONSECURE_DPM
   * @retval     0   Specified DPM module password compare error flag is 0.
@@ -351,27 +387,31 @@ int32_t DPM_SetPasswordCompare(uint32_t u32dpm, uint32_t au32Pwd[])
   * @details    This function returns Secure or Non-secure DPM password compare error flag.
   * @note       This function sets g_DPM_i32ErrCode to DPM_TIMEOUT_ERR if waiting DPM time-out.
   */
-int32_t DPM_GetPasswordErrorFlag(uint32_t u32dpm)
+int32_t DPM_GetPasswordErrorFlag(uint32_t u32DPM)
 {
     int32_t i32RetVal = DPM_TIMEOUT_ERR;
-    DPM_T *dpm;
+    DPM_T *psDPM;
 
-    if (__PC()&NS_OFFSET) dpm = DPM_NS;
-    else dpm = DPM;
+    if (__PC() & NS_OFFSET)
+        psDPM = DPM_NS;
+    else
+        psDPM = DPM;
 
-    if (u32dpm == SECURE_DPM) /* Secure DPM */
+    if (u32DPM == SECURE_DPM) /* Secure DPM */
     {
         /* Check Secure DPM password compare error flag */
         DPM_WAIT_STS_BUSY();
+
         if (g_DPM_i32ErrCode == 0)
-            i32RetVal = (dpm->STS & DPM_STS_PWCERR_Msk) >> DPM_STS_PWCERR_Pos;
+            i32RetVal = (psDPM->STS & DPM_STS_PWCERR_Msk) >> DPM_STS_PWCERR_Pos;
     }
     else    /* Non-secure DPM */
     {
         /* Check Non-secure DPM password compare error flag */
-        DPM_WAIT_NSSTS_BUSY();
+        DPM_WAIT_NSSTS_BUSY(psDPM);
+
         if (g_DPM_i32ErrCode == 0)
-            i32RetVal = (dpm->NSSTS & DPM_NSSTS_PWCERR_Msk) >> DPM_NSSTS_PWCERR_Pos;
+            i32RetVal = (psDPM->NSSTS & DPM_NSSTS_PWCERR_Msk) >> DPM_NSSTS_PWCERR_Pos;
     }
 
     return i32RetVal;
@@ -393,6 +433,7 @@ int32_t DPM_GetIntFlag(void)
     int32_t i32RetVal = DPM_TIMEOUT_ERR;
 
     DPM_WAIT_STS_BUSY();
+
     if (g_DPM_i32ErrCode == 0)
         i32RetVal = (DPM->STS & DPM_STS_INT_Msk) >> DPM_STS_INT_Pos;
 
@@ -402,97 +443,107 @@ int32_t DPM_GetIntFlag(void)
 
 /**
   * @brief      Clear DPM Password Error Flag
-  * @param[in]  u32dpm        Select DPM module. Valid values are:
+  * @param[in]  u32DPM        Select DPM module. Valid values are:
   *                           - \ref SECURE_DPM
   *                           - \ref NONSECURE_DPM
   * @return     None
   * @details    This function clears Secure or Non-secure DPM password compare error flag.
   * @note       This function sets g_DPM_i32ErrCode to DPM_TIMEOUT_ERR if waiting DPM time-out.
   */
-void DPM_ClearPasswordErrorFlag(uint32_t u32dpm)
+void DPM_ClearPasswordErrorFlag(uint32_t u32DPM)
 {
-    DPM_T *dpm;
+    DPM_T *psDPM;
 
-    if (__PC()&NS_OFFSET) dpm = DPM_NS;
-    else dpm = DPM;
+    if (__PC() & NS_OFFSET)
+        psDPM = DPM_NS;
+    else
+        psDPM = DPM;
 
-    if (u32dpm == SECURE_DPM) /* Secure DPM */
+    if (u32DPM == SECURE_DPM) /* Secure DPM */
     {
         DPM_WAIT_STS_BUSY();
+
         if (g_DPM_i32ErrCode == 0)
-            dpm->STS = DPM_STS_PWCERR_Msk;
+            psDPM->STS = DPM_STS_PWCERR_Msk;
     }
     else    /* Non-secure DPM */
     {
-        DPM_WAIT_NSSTS_BUSY();
+        DPM_WAIT_NSSTS_BUSY(psDPM);
+
         if (g_DPM_i32ErrCode == 0)
-            dpm->NSSTS = DPM_NSSTS_PWCERR_Msk;
+            psDPM->NSSTS = DPM_NSSTS_PWCERR_Msk;
     }
 }
 
 /**
   * @brief      Enable Debugger Write Access
-  * @param[in]  u32dpm        Select DPM module. Valid values are:
+  * @param[in]  u32DPM        Select DPM module. Valid values are:
   *                           - \ref SECURE_DPM
   *                           - \ref NONSECURE_DPM
   * @return     None
   * @details    This function enables external debugger to write Secure or Non-secure DPM registers.
   * @note       This function sets g_DPM_i32ErrCode to DPM_TIMEOUT_ERR if waiting DPM time-out.
   */
-void DPM_EnableDebuggerWriteAccess(uint32_t u32dpm)
+void DPM_EnableDebuggerWriteAccess(uint32_t u32DPM)
 {
-    DPM_T *dpm;
+    DPM_T *psDPM;
 
-    if (__PC()&NS_OFFSET) dpm = DPM_NS;
-    else dpm = DPM;
+    if (__PC() & NS_OFFSET)
+        psDPM = DPM_NS;
+    else
+        psDPM = DPM;
 
-    if (u32dpm == SECURE_DPM) /* Secure DPM */
+    if (u32DPM == SECURE_DPM) /* Secure DPM */
     {
         DPM_WAIT_STS_BUSY();
+
         if (g_DPM_i32ErrCode == 0)
-            dpm->CTL = (dpm->CTL & (~(DPM_CTL_RWVCODE_Msk | DPM_CTL_DACCWDIS_Msk))) | DPM_CTL_WVCODE;
+            psDPM->CTL = (psDPM->CTL & (~(DPM_CTL_RWVCODE_Msk | DPM_CTL_DACCWDIS_Msk))) | DPM_CTL_WVCODE;
     }
     else    /* Non-secure DPM */
     {
-        DPM_WAIT_NSSTS_BUSY();
+        DPM_WAIT_NSSTS_BUSY(psDPM);
+
         if (g_DPM_i32ErrCode == 0)
-            dpm->NSCTL = (dpm->NSCTL & (~(DPM_NSCTL_RWVCODE_Msk | DPM_NSCTL_DACCWDIS_Msk))) | DPM_NSCTL_WVCODE;
+            psDPM->NSCTL = (psDPM->NSCTL & (~(DPM_NSCTL_RWVCODE_Msk | DPM_NSCTL_DACCWDIS_Msk))) | DPM_NSCTL_WVCODE;
     }
 }
 
 /**
   * @brief      Disable Debugger Write Access
-  * @param[in]  u32dpm        Select DPM module. Valid values are:
+  * @param[in]  u32DPM        Select DPM module. Valid values are:
   *                           - \ref SECURE_DPM
   *                           - \ref NONSECURE_DPM
   * @return     None.
   * @details    This function disables external debugger to write Secure or Non-secure DPM registers.
   * @note       This function sets g_DPM_i32ErrCode to DPM_TIMEOUT_ERR if waiting DPM time-out.
   */
-void DPM_DisableDebuggerWriteAccess(uint32_t u32dpm)
+void DPM_DisableDebuggerWriteAccess(uint32_t u32DPM)
 {
-    DPM_T *dpm;
+    DPM_T *psDPM;
 
-    if (__PC()&NS_OFFSET) dpm = DPM_NS;
-    else dpm = DPM;
+    if (__PC() & NS_OFFSET)
+        psDPM = DPM_NS;
+    else
+        psDPM = DPM;
 
-    if (u32dpm == SECURE_DPM) /* Secure DPM */
+    if (u32DPM == SECURE_DPM) /* Secure DPM */
     {
         DPM_WAIT_STS_BUSY();
+
         if (g_DPM_i32ErrCode == 0)
-            dpm->CTL = (dpm->CTL & (~DPM_CTL_RWVCODE_Msk)) | (DPM_CTL_WVCODE | DPM_CTL_DACCWDIS_Msk);
+            psDPM->CTL = (psDPM->CTL & (~DPM_CTL_RWVCODE_Msk)) | (DPM_CTL_WVCODE | DPM_CTL_DACCWDIS_Msk);
     }
     else    /* Non-secure DPM */
     {
-        DPM_WAIT_NSSTS_BUSY();
+        DPM_WAIT_NSSTS_BUSY(psDPM);
+
         if (g_DPM_i32ErrCode == 0)
-            dpm->NSCTL = (dpm->NSCTL & (~DPM_NSCTL_RWVCODE_Msk)) | (DPM_NSCTL_WVCODE | DPM_NSCTL_DACCWDIS_Msk);
+            psDPM->NSCTL = (psDPM->NSCTL & (~DPM_NSCTL_RWVCODE_Msk)) | (DPM_NSCTL_WVCODE | DPM_NSCTL_DACCWDIS_Msk);
     }
 }
 
 
 /** @} end of group DPM_EXPORTED_FUNCTIONS */
-
 /** @} end of group DPM_Driver */
-
 /** @} end of group Standard_Driver */

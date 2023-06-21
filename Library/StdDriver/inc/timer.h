@@ -55,8 +55,8 @@ extern "C"
 #define TIMER_CAPSRC_TX_EXT                     (0UL << TIMER_CTL_CAPSRC_Pos)      /*!< Capture source from Tx_EXT pin \hideinitializer */
 #define TIMER_CAPSRC_TMX_EXT                    (0UL << TIMER_CTL_CAPSRC_Pos)     /*!< Capture source from TMx_EXT pin      \hideinitializer */
 #define TIMER_CAPSRC_INTERNAL                   (1UL << TIMER_CTL_CAPSRC_Pos)      /*!< Capture source from Internal event such as LIRC or ACMP0/1 \hideinitializer */
-#define TIMER_CAPTURE_SOURCE_FROM_PIN           (0UL << TIMER_CTL_CAPSRC_Pos)      /*!< The capture source is from TMx_EXT pin \hideinitializer */
-#define TIMER_CAPTURE_SOURCE_FROM_INTERNAL      (1UL << TIMER_CTL_CAPSRC_Pos)      /*!< The capture source is from internal ACMPx signal or clock source \hideinitializer */
+#define TIMER_CAPTURE_SOURCE_FROM_PIN           (TIMER_CAPSRC_TMX_EXT)      /*!< The capture source is from TMx_EXT pin \hideinitializer */
+#define TIMER_CAPTURE_SOURCE_FROM_INTERNAL      (TIMER_CAPSRC_INTERNAL)      /*!< The capture source is from internal ACMPx signal or clock source \hideinitializer */
 /* Capture Sourdce Divider */
 #define TIMER_CAPTURE_SRCDIV_1                  (0UL << TIMER_EXTCTL_CAPDIVSCL_Pos) /*!< Input capture source divide 1 \hideinitializer */
 #define TIMER_CAPTURE_SRCDIV_2                  (1UL << TIMER_EXTCTL_CAPDIVSCL_Pos) /*!< Input capture source divide 2 \hideinitializer */
@@ -67,15 +67,15 @@ extern "C"
 #define TIMER_CAPTURE_SRCDIV_64                 (6UL << TIMER_EXTCTL_CAPDIVSCL_Pos) /*!< Input capture source divide 64 \hideinitializer */
 #define TIMER_CAPTURE_SRCDIV_128                (7UL << TIMER_EXTCTL_CAPDIVSCL_Pos) /*!< Input capture source divide 128 \hideinitializer */
 #define TIMER_CAPTURE_SRCDIV_256                (8UL << TIMER_EXTCTL_CAPDIVSCL_Pos) /*!< Input capture source divide 256 \hideinitializer */
-#define TIMER_CAPTURE_SOURCE_DIV_1              (0UL << TIMER_EXTCTL_CAPDIVSCL_Pos) /*!< Input capture source divide 1 \hideinitializer */
-#define TIMER_CAPTURE_SOURCE_DIV_2              (1UL << TIMER_EXTCTL_CAPDIVSCL_Pos) /*!< Input capture source divide 2 \hideinitializer */
-#define TIMER_CAPTURE_SOURCE_DIV_4              (2UL << TIMER_EXTCTL_CAPDIVSCL_Pos) /*!< Input capture source divide 4 \hideinitializer */
-#define TIMER_CAPTURE_SOURCE_DIV_8              (3UL << TIMER_EXTCTL_CAPDIVSCL_Pos) /*!< Input capture source divide 8 \hideinitializer */
-#define TIMER_CAPTURE_SOURCE_DIV_16             (4UL << TIMER_EXTCTL_CAPDIVSCL_Pos) /*!< Input capture source divide 16 \hideinitializer */
-#define TIMER_CAPTURE_SOURCE_DIV_32             (5UL << TIMER_EXTCTL_CAPDIVSCL_Pos) /*!< Input capture source divide 32 \hideinitializer */
-#define TIMER_CAPTURE_SOURCE_DIV_64             (6UL << TIMER_EXTCTL_CAPDIVSCL_Pos) /*!< Input capture source divide 64 \hideinitializer */
-#define TIMER_CAPTURE_SOURCE_DIV_128            (7UL << TIMER_EXTCTL_CAPDIVSCL_Pos) /*!< Input capture source divide 128 \hideinitializer */
-#define TIMER_CAPTURE_SOURCE_DIV_256            (8UL << TIMER_EXTCTL_CAPDIVSCL_Pos) /*!< Input capture source divide 256 \hideinitializer */
+#define TIMER_CAPTURE_SOURCE_DIV_1              (TIMER_CAPTURE_SRCDIV_1) /*!< Input capture source divide 1 \hideinitializer */
+#define TIMER_CAPTURE_SOURCE_DIV_2              (TIMER_CAPTURE_SRCDIV_2) /*!< Input capture source divide 2 \hideinitializer */
+#define TIMER_CAPTURE_SOURCE_DIV_4              (TIMER_CAPTURE_SRCDIV_4) /*!< Input capture source divide 4 \hideinitializer */
+#define TIMER_CAPTURE_SOURCE_DIV_8              (TIMER_CAPTURE_SRCDIV_8) /*!< Input capture source divide 8 \hideinitializer */
+#define TIMER_CAPTURE_SOURCE_DIV_16             (TIMER_CAPTURE_SRCDIV_16) /*!< Input capture source divide 16 \hideinitializer */
+#define TIMER_CAPTURE_SOURCE_DIV_32             (TIMER_CAPTURE_SRCDIV_32) /*!< Input capture source divide 32 \hideinitializer */
+#define TIMER_CAPTURE_SOURCE_DIV_64             (TIMER_CAPTURE_SRCDIV_64) /*!< Input capture source divide 64 \hideinitializer */
+#define TIMER_CAPTURE_SOURCE_DIV_128            (TIMER_CAPTURE_SRCDIV_128) /*!< Input capture source divide 128 \hideinitializer */
+#define TIMER_CAPTURE_SOURCE_DIV_256            (TIMER_CAPTURE_SRCDIV_256) /*!< Input capture source divide 256 \hideinitializer */
 /* Internal Capture Sourdce Selection */
 #define TIMER_INTERCAPSEL_ACMP0                 (0UL << TIMER_EXTCTL_ICAPSEL_Pos)   /*!< Capture source from Internal event ACMP0   \hideinitializer */
 #define TIMER_INTERCAPSEL_ACMP1                 (1UL << TIMER_EXTCTL_ICAPSEL_Pos)   /*!< Capture source from Internal event ACMP1   \hideinitializer */
@@ -239,11 +239,13 @@ __STATIC_INLINE void TIMER_DisableCaptureInt(TIMER_T *timer);
 __STATIC_INLINE uint32_t TIMER_GetIntFlag(TIMER_T *timer);
 __STATIC_INLINE void TIMER_ClearIntFlag(TIMER_T *timer);
 __STATIC_INLINE uint32_t TIMER_GetCaptureIntFlag(TIMER_T *timer);
+__STATIC_INLINE uint32_t TIMER_GetCaptureIntFlagOV(TIMER_T *timer);
 __STATIC_INLINE void TIMER_ClearCaptureIntFlag(TIMER_T *timer);
 __STATIC_INLINE uint32_t TIMER_GetWakeupFlag(TIMER_T *timer);
 __STATIC_INLINE void TIMER_ClearWakeupFlag(TIMER_T *timer);
 __STATIC_INLINE uint32_t TIMER_GetCaptureData(TIMER_T *timer);
 __STATIC_INLINE uint32_t TIMER_GetCounter(TIMER_T *timer);
+__STATIC_INLINE void TIMER_EventCounterSelect(TIMER_T *timer, uint32_t u32Src);
 
 /**
   * @brief      Start Timer Counting
@@ -488,6 +490,21 @@ __STATIC_INLINE uint32_t TIMER_GetCaptureIntFlag(TIMER_T *timer)
 }
 
 /**
+  * @brief      Get Timer Capture Interrupt Flag Overrun
+  *
+  * @param[in]  timer   The pointer of the specified Timer module. It could be TIMER0, TIMER1, TIMER2, TIMER3.
+  *
+  * @retval     0   Timer capture interrupt did not Overrun
+  * @retval     1   Timer capture interrupt Overrun
+  *
+  * @details    This function indicates Timer capture trigger interrupt Overrun or not.
+  */
+__STATIC_INLINE uint32_t TIMER_GetCaptureIntFlagOV(TIMER_T *timer)
+{
+    return ((timer->EINTSTS & TIMER_EINTSTS_CAPIFOV_Msk) ? 1UL : 0UL);
+}
+
+/**
   * @brief      Clear Timer Capture Interrupt Flag
   *
   * @param[in]  timer       The pointer of the specified Timer module. It could be TIMER0, TIMER1, TIMER2, TIMER3.
@@ -556,6 +573,26 @@ __STATIC_INLINE uint32_t TIMER_GetCaptureData(TIMER_T *timer)
 __STATIC_INLINE uint32_t TIMER_GetCounter(TIMER_T *timer)
 {
     return timer->CNT;
+}
+
+/**
+  * @brief      Select Timer Event Counter Source
+  *
+  * @param[in]  timer       The pointer of the specified Timer module. It could be TIMER0, TIMER1, TIMER2, TIMER3.
+  * @param[in]  u32Src      Timer Event Counter source. Possible values are
+  *                         - \ref TIMER_EVENT_COUNTER_SOURCE_TMX
+  *                         - \ref TIMER_EVENT_COUNTER_SOURCE_USB
+  *                         - \ref TIMER_EVENT_COUNTER_SOURCE_ACMP0
+  *                         - \ref TIMER_EVENT_COUNTER_SOURCE_ACMP1
+  *                         - \ref TIMER_EVENT_COUNTER_SOURCE_ACMP2
+  *                         - \ref TIMER_EVENT_COUNTER_SOURCE_ACMP3
+  * @return     None
+  *
+  * @details    This API is used to select Timer Event Counter source from TMx or internal singal.
+  */
+__STATIC_INLINE void TIMER_EventCounterSelect(TIMER_T *timer, uint32_t u32Src)
+{
+    timer->EXTCTL = (timer->EXTCTL & ~TIMER_EXTCTL_ECNTSSEL_Msk) | u32Src;
 }
 
 uint32_t TIMER_Open(TIMER_T *timer, uint32_t u32Mode, uint32_t u32Freq);

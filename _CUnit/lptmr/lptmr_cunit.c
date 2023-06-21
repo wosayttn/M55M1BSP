@@ -89,7 +89,7 @@ int32_t LPTMR_InitClock(void)
 	  CLK->LPTMRSEL = (CLK->LPTMRSEL & ~(CLK_LPTMRSEL_LPTMR0SEL_Msk | CLK_LPTMRSEL_LPTMR1SEL_Msk)) |
 										 (CLK_LPTMRSEL_LPTMR0SEL_PCLK4 | CLK_LPTMRSEL_LPTMR1SEL_PCLK4);
 
-    return -1;
+    return 0;
 }
 
 int32_t IsLPTMRRegsCleared(LPTMR_T *LPTMR)
@@ -599,6 +599,22 @@ void API_LPTMR_EventCounter(void)
         }
     }
 
+    /* Check LPTMR_EventCounterSelect */
+    for (i = 0; i < 2; i++)
+    {
+				CU_ASSERT_EQUAL(ClearLPTMRRegs(LPTMRCh[i]), 0);
+	
+				LPTMR_EventCounterSelect(LPTMRCh[i], LPTMR_EVENT_COUNTER_SOURCE_TMX);
+				CU_ASSERT_EQUAL(LPTMRCh[i]->EXTCTL, LPTMR_EVENT_COUNTER_SOURCE_TMX);
+				LPTMR_EventCounterSelect(LPTMRCh[i], LPTMR_EVENT_COUNTER_SOURCE_ACMP0);
+				CU_ASSERT_EQUAL(LPTMRCh[i]->EXTCTL, LPTMR_EVENT_COUNTER_SOURCE_ACMP0);
+				LPTMR_EventCounterSelect(LPTMRCh[i], LPTMR_EVENT_COUNTER_SOURCE_ACMP1);
+				CU_ASSERT_EQUAL(LPTMRCh[i]->EXTCTL, LPTMR_EVENT_COUNTER_SOURCE_ACMP1);
+				LPTMR_EventCounterSelect(LPTMRCh[i], LPTMR_EVENT_COUNTER_SOURCE_ACMP2);
+				CU_ASSERT_EQUAL(LPTMRCh[i]->EXTCTL, LPTMR_EVENT_COUNTER_SOURCE_ACMP2);
+				LPTMR_EventCounterSelect(LPTMRCh[i], LPTMR_EVENT_COUNTER_SOURCE_ACMP3);
+				CU_ASSERT_EQUAL(LPTMRCh[i]->EXTCTL, LPTMR_EVENT_COUNTER_SOURCE_ACMP3);
+    }
 
     /* With LPTMR_SELECT_TOUT_PIN */
     for (i = 0; i < 2; i++)
@@ -804,10 +820,10 @@ void API_LPTMR_CaptureStatus(void)
 
     /* Check LPTMR_StartCapture, LPTMR_GetCaptureIntFlag, LPTMR_ClearCaptureIntFlag and LPTMR_GetCaptureData */
 
-    /* Set TM0 ~ TM1 capture pins, PA.11, PA.10 as GPIO output pins */
+    /* Set TM0_EXT ~ TM1_EXT capture pins, PA.11, PA.10 as GPIO output pins */
     GPIO_SetMode(PA, BIT11|BIT10, GPIO_MODE_OUTPUT);
 
-    /* Set TM0_EXT ~ TM1_EXT capture pins, PB.5, PB.4 as GPIO output pins */
+    /* Set TM0 ~ TM1 capture pins, PB.5, PB.4 as GPIO output pins */
     GPIO_SetMode(PB, BIT5|BIT4, GPIO_MODE_OUTPUT);
     /* Set PA.11 (T0_EXT pin) as GPIO output mode */
     PA11 = 1;
@@ -955,9 +971,9 @@ exit_test:
 }
 
 CU_SuiteInfo LPTMRSuites[] = {
-    { "Template Const Test", LPTMR_Test_Init, LPTMR_Test_Clean, NULL, NULL, LPTMR_ConstTest },
-    { "Template Macro Test", LPTMR_Test_Init, LPTMR_Test_Clean, NULL, NULL, LPTMR_MacroTest },
-    { "Template Func  Test", LPTMR_Test_Init, LPTMR_Test_Clean, NULL, NULL, LPTMR_FuncTest },
+    { "LPTMR Const Test", LPTMR_Test_Init, LPTMR_Test_Clean, NULL, NULL, LPTMR_ConstTest },
+    { "LPTMR Macro Test", LPTMR_Test_Init, LPTMR_Test_Clean, NULL, NULL, LPTMR_MacroTest },
+    { "LPTMR Func  Test", LPTMR_Test_Init, LPTMR_Test_Clean, NULL, NULL, LPTMR_FuncTest },
     CU_SUITE_INFO_NULL
 };
 

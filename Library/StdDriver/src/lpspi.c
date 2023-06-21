@@ -90,7 +90,7 @@ static uint32_t CheckLPSPI0ClockSource(void)
   */
 uint32_t LPSPI_Open(LPSPI_T *lpspi, uint32_t u32MasterSlave, uint32_t u32LPSPIMode, uint32_t u32DataWidth, uint32_t u32BusClock)
 {
-    uint32_t u32ClkSrc = 0U, u32Div, u32HCLKFreq, u32RetValue = 0U;
+    uint32_t u32HCLKFreq = 0, u32RetValue = 0U;
 
     if (u32DataWidth == 32U)
     {
@@ -102,6 +102,8 @@ uint32_t LPSPI_Open(LPSPI_T *lpspi, uint32_t u32MasterSlave, uint32_t u32LPSPIMo
 
     if (u32MasterSlave == LPSPI_MASTER)
     {
+        uint32_t u32ClkSrc = 0U;
+
         /* Default setting: slave selection signal is active low; disable automatic slave selection function. */
         lpspi->SSCTL = LPSPI_SS_ACTIVE_LOW;
 
@@ -143,11 +145,13 @@ uint32_t LPSPI_Open(LPSPI_T *lpspi, uint32_t u32MasterSlave, uint32_t u32LPSPIMo
         }
         else
         {
+            uint32_t u32Div = 0;
+
             u32Div = (((u32ClkSrc * 10U) / u32BusClock + 5U) / 10U) - 1U; /* Round to the nearest integer */
 
             if (u32Div > 0xFFU)
             {
-                u32Div = 0xFFU;
+                //u32Div = 0xFFU;
                 lpspi->CLKDIV |= LPSPI_CLKDIV_DIVIDER_Msk;
                 /* Return master peripheral clock rate */
                 u32RetValue = (u32ClkSrc / (0xFFU + 1U));
@@ -258,7 +262,7 @@ void LPSPI_EnableAutoSS(LPSPI_T *lpspi, uint32_t u32SSPinMask, uint32_t u32Activ
 uint32_t LPSPI_SetBusClock(LPSPI_T *lpspi, uint32_t u32BusClock)
 {
     uint32_t u32ClkSrc, u32HCLKFreq;
-    uint32_t u32Div, u32RetValue;
+    uint32_t u32RetValue;
 
     /* Get system clock frequency */
     u32HCLKFreq = CLK_GetSCLKFreq();
@@ -298,11 +302,13 @@ uint32_t LPSPI_SetBusClock(LPSPI_T *lpspi, uint32_t u32BusClock)
     }
     else
     {
+        uint32_t u32Div = 0;
+
         u32Div = (((u32ClkSrc * 10U) / u32BusClock + 5U) / 10U) - 1U; /* Round to the nearest integer */
 
         if (u32Div > 0x1FFU)
         {
-            u32Div = 0x1FFU;
+            //u32Div = 0x1FFU;
             lpspi->CLKDIV |= LPSPI_CLKDIV_DIVIDER_Msk;
             /* Return master peripheral clock rate */
             u32RetValue = (u32ClkSrc / (0xFFU + 1U));

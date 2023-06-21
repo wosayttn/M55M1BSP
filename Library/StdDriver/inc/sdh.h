@@ -30,7 +30,7 @@ extern "C"
   @{
 */
 
-#define SDH_ERR_ID            (0xFFFF0100ul) /*!< SDH error ID  \hideinitializer */
+#define SDH_ERR_ID            (0xFFFF0100ul)        /*!< SDH error ID  \hideinitializer */
 
 #define SDH_TIMEOUT           (SDH_ERR_ID|0x01ul)  /*!< Timeout  \hideinitializer */
 #define SDH_NO_MEMORY         (SDH_ERR_ID|0x02ul)  /*!< OOM  \hideinitializer */
@@ -47,31 +47,33 @@ extern "C"
 #define SDH_TYPE_EMMC         (4ul) /*!< eMMC card  \hideinitializer */
 
 /* SD error */
-#define SDH_NO_SD_CARD        (SDH_ERR_ID|0x10ul) /*!< Card removed  \hideinitializer */
-#define SDH_ERR_DEVICE        (SDH_ERR_ID|0x11ul) /*!< Device error  \hideinitializer */
-#define SDH_INIT_TIMEOUT      (SDH_ERR_ID|0x12ul) /*!< Card init timeout  \hideinitializer */
-#define SDH_SELECT_ERROR      (SDH_ERR_ID|0x13ul) /*!< Card select error  \hideinitializer */
-#define SDH_WRITE_PROTECT     (SDH_ERR_ID|0x14ul) /*!< Card write protect  \hideinitializer */
-#define SDH_INIT_ERROR        (SDH_ERR_ID|0x15ul) /*!< Card init error  \hideinitializer */
-#define SDH_CRC7_ERROR        (SDH_ERR_ID|0x16ul) /*!< CRC 7 error  \hideinitializer */
-#define SDH_CRC16_ERROR       (SDH_ERR_ID|0x17ul) /*!< CRC 16 error  \hideinitializer */
-#define SDH_CRC_ERROR         (SDH_ERR_ID|0x18ul) /*!< CRC error  \hideinitializer */
-#define SDH_CMD8_ERROR        (SDH_ERR_ID|0x19ul) /*!< Command 8 error  \hideinitializer */
+#define SDH_NO_SD_CARD        (SDH_ERR_ID | 0x10ul) /*!< Card removed  \hideinitializer */
+#define SDH_ERR_DEVICE        (SDH_ERR_ID | 0x11ul) /*!< Device error  \hideinitializer */
+#define SDH_INIT_TIMEOUT      (SDH_ERR_ID | 0x12ul) /*!< Card init timeout  \hideinitializer */
+#define SDH_SELECT_ERROR      (SDH_ERR_ID | 0x13ul) /*!< Card select error  \hideinitializer */
+#define SDH_WRITE_PROTECT     (SDH_ERR_ID | 0x14ul) /*!< Card write protect  \hideinitializer */
+#define SDH_INIT_ERROR        (SDH_ERR_ID | 0x15ul) /*!< Card init error  \hideinitializer */
+#define SDH_CRC7_ERROR        (SDH_ERR_ID | 0x16ul) /*!< CRC 7 error  \hideinitializer */
+#define SDH_CRC16_ERROR       (SDH_ERR_ID | 0x17ul) /*!< CRC 16 error  \hideinitializer */
+#define SDH_CRC_ERROR         (SDH_ERR_ID | 0x18ul) /*!< CRC error  \hideinitializer */
+#define SDH_CMD8_ERROR        (SDH_ERR_ID | 0x19ul) /*!< Command 8 error  \hideinitializer */
 
-#define MMC_FREQ              (20000ul)     /*!< output 20MHz to MMC  \hideinitializer */
-#define SD_FREQ               (25000ul)     /*!< output 25MHz to SD  \hideinitializer */
-#define SDHC_FREQ             (50000ul)     /*!< output 50MHz to SDH \hideinitializer */
+#define MMC_FREQ              (20000ul) /*!< output 20MHz to MMC  \hideinitializer */
+#define SD_FREQ               (25000ul) /*!< output 25MHz to SD  \hideinitializer */
+#define SDHC_FREQ             (50000ul) /*!< output 50MHz to SDH \hideinitializer */
 
 #define SD_PORT0              (1UL << 0)    /*!< Card select SD0 \hideinitializer */
 #define SD_PORT1              (1UL << 2)    /*!< Card select SD1 \hideinitializer */
 #define CardDetect_From_GPIO  (1ul << 8)    /*!< Card detection pin is GPIO \hideinitializer */
 #define CardDetect_From_DAT3  (1ul << 9)    /*!< Card detection pin is DAT3 \hideinitializer */
 
+/* SDH Wait Status Timeout Count */
+#define SDH_TIMEOUT_CNT       SystemCoreClock   /*!< SDH time-out counter (1 second time-out) \hideinitializer */
+
 /* SDH Define Error Code */
-#define SDH_TIMEOUT_CNT       SystemCoreClock     /*!< SDH time-out counter (1 second time-out) \hideinitializer */
-#define SDH_OK                ( 0L)               /*!< SDH operation OK \hideinitializer */
-#define SDH_ERR_FAIL          (-1L)               /*!< SDH operation failed \hideinitializer */
-#define SDH_ERR_TIMEOUT       (-2L)               /*!< SDH operation abort due to timeout error \hideinitializer */
+#define SDH_OK                ( 0L)             /*!< SDH operation OK \hideinitializer */
+#define SDH_ERR_FAIL          (-1L)             /*!< SDH operation failed \hideinitializer */
+#define SDH_ERR_TIMEOUT       (-2L)             /*!< SDH operation abort due to timeout error \hideinitializer */
 
 /* SDH Define Block Size */
 #define SDH_BLOCK_SIZE        (512ul)
@@ -123,10 +125,10 @@ extern int32_t g_SDH_i32ErrCode;
  * \hideinitializer
  */
 #define SDH_ENABLE_INT(sdh, u32IntMask) \
-  do                                    \
-  {                                     \
-    sdh->INTEN |= (u32IntMask);         \
-  } while (0)
+    do                                  \
+    {                                   \
+        sdh->INTEN |= (u32IntMask);     \
+    } while (0)
 
 /**
  *  @brief    Disable specified interrupt.
@@ -145,10 +147,10 @@ extern int32_t g_SDH_i32ErrCode;
  * \hideinitializer
  */
 #define SDH_DISABLE_INT(sdh, u32IntMask) \
-  do                                     \
-  {                                      \
-    sdh->INTEN &= ~(u32IntMask);         \
-  } while (0)
+    do                                   \
+    {                                    \
+        sdh->INTEN &= ~(u32IntMask);     \
+    } while (0)
 
 /**
  *  @brief    Get specified interrupt flag/status.
@@ -211,20 +213,18 @@ extern int32_t g_SDH_i32ErrCode;
 #define SDH_GET_CARD_CAPACITY(sdh)  (((sdh) == SDH0)? SD0.diskSize : SD1.diskSize)
 
 //------------------------------------------------------------------------------
-void *GetSDH0SDHCBuffer(void);
-void *GetSDH1SDHCBuffer(void);
-void *GetSDHInfoMsg(SDH_T *sdh);
+void *SDH_GetSDH0Buffer(void);
+void *SDH_GetSDH1Buffer(void);
+void *SDH_GetSDInfoMsg(SDH_T *sdh);
 
-void SDH_INT_EN(SDH_T *sdh);
 void SDH_Open(SDH_T *sdh, uint32_t u32CardDetSrc);
 void SDH_Close(SDH_T *sdh);
 uint32_t SDH_Probe(SDH_T *sdh);
 uint32_t SDH_Read(SDH_T *sdh, uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32_t u32SecCount);
 uint32_t SDH_Write(SDH_T *sdh, uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32_t u32SecCount);
+void SDH_Enable_Int(SDH_T *sdh);
 
 uint32_t SDH_CardDetection(SDH_T *sdh);
-void SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc);
-void SDH_Close_Disk(SDH_T *sdh);
 void SDH_Get_SD_info(SDH_T *sdh);
 void SDH_Set_clock(SDH_T *sdh, uint32_t sd_clock_khz);
 

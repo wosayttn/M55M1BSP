@@ -4,7 +4,7 @@
  * @brief   OTFC driver header file
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #ifndef __OTFC_H__
@@ -66,9 +66,9 @@ extern "C"
 #define OTFC_KS_OTP_KEY                 (0x10)    /*!< Key is read from the OTP of Key Store. */
 
 /**
-  * @brief  Enable OTFC Protection Region 0 ~ 3 function.
+  * @brief  Enable OTFC Protection Region.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * \hideinitializer
   */
 #define OTFC_ENABLE_PR(otfc, pr)                        \
@@ -78,9 +78,9 @@ extern "C"
     } while (0)
 
 /**
- * @brief Disable Protection Region
+ * @brief   Disable Protection Region
  * @param[in] otfc The base address of OTFC module.
- * @param[in] pr    Protection Region 0 ~ 3.
+ * @param[in] pr    Protection Region. It could be 0 ~ 3.
  *
  */
 #define OTFC_DISABLE_PR(otfc, pr)                        \
@@ -90,9 +90,9 @@ extern "C"
     } while (0)
 
 /**
-  * @brief  Reset OTFC Protection Region 0 ~ 3 function.
+  * @brief  Reset OTFC Protection Region.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * \hideinitializer
   */
 #define OTFC_RESET_PR(otfc, pr)                                              \
@@ -102,9 +102,9 @@ extern "C"
     } while (0)
 
 /**
- * @brief  Enable OTFC Protection Region 0 ~ 3 Key and Nonce Swap function.
+ * @brief  Enable Swap Key, Scramble and Nonce.
  * @param[in] otfc The base address of OTFC module.
- * @param[in] pr    Protection Region 0 ~ 3.
+ * @param[in] pr    Protection Region. It could be 0 ~ 3.
  * \hideinitializer
  */
 #define OTFC_ENABLE_KEY_SWAP(otfc, pr)                                        \
@@ -114,9 +114,9 @@ extern "C"
     } while (0)
 
 /**
-  * @brief  Disable OTFC Protection Region 0 ~ 3 Key and Nonce Swap function.
+  * @brief  Disable Swap Key, Scramble and Nonce.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * \hideinitializer
   */
 #define OTFC_DISABLE_KEY_SWAP(otfc, pr)                                        \
@@ -126,9 +126,9 @@ extern "C"
     } while (0)
 
 /**
-  * @brief  OTFC Protection Region 0 ~ 3 Interrupt Enable Bit function.
+  * @brief  Enable Interrupt.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * \hideinitializer
   */
 #define OTFC_ENABLE_INT(otfc, pr)                                            \
@@ -138,9 +138,9 @@ extern "C"
     } while (0)
 
 /**
-  * @brief  OTFC Protection Region 0 ~ 3 Interrupt Enable Bit function.
+  * @brief  Disable Interrupt.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * \hideinitializer
   */
 #define OTFC_DISABLE_INT(otfc, pr)                                            \
@@ -150,25 +150,25 @@ extern "C"
     } while (0)
 
 /**
-  * @brief  OTFC Protrction Region 0 ~ 3 Busy. (Read Only)
+  * @brief  Get Busy Status. (Read Only)
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * \hideinitializer
   */
 #define OTFC_GET_BUSY(otfc, pr)   \
     (otfc->STS & (0x1ul << (pr * OTFC_CTL_PR_Pos)))
 
 /**
-  * @brief  OTFC Protrction Region 0 Access Key Store Error Flag. (Read Only)
+  * @brief  Get Access Key Store Error Flag. (Read Only)
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * \hideinitializer
   */
 #define OTFC_GET_KSERR(otfc, pr)    \
     (otfc->STS & (0x1ul << ((pr * OTFC_CTL_PR_Pos) + OTFC_STS_KSERR_Pos)))
 
 /**
-* @brief  OTFC Protrction Region 0 ~ 3 Differential Fault Attack Error Flag.
+* @brief    Get Differential Fault Attack Error Flag.
 * @param[in] otfc The base address of OTFC module.
 * @param[in] pr     Protection Region 0 ~ 3.
 * \hideinitializer
@@ -177,44 +177,44 @@ extern "C"
     (otfc->STS & (0x1ul << ((pr * OTFC_CTL_PR_Pos) + OTFC_STS_DFAE_Pos)))
 
 /**
-  * @brief  OTFC Protrction Region 0 ~ 3 Interrupt Flag.
+  * @brief  Get Interrupt Flag.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * \hideinitializer
   */
 #define OTFC_GET_IF(otfc, pr)   \
     (otfc->STS & (0x1ul << ((pr * OTFC_CTL_PR_Pos) + OTFC_STS_IF_Pos)))
 
 /**
-  * @brief  OTFC Protrction Region 0 ~ 3 Start Address Register.
+  * @brief  Set Protection Start Address.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * @param[in] saddr is the protection start address.
   * \hideinitializer
   */
-#define OTFC_PR_START_ADDR(otfc, pr, saddr) \
-    do                                      \
-    {                                       \
-        otfc->PR[pr].PR_SADDR = saddr;      \
+#define OTFC_SET_START_ADDR(otfc, pr, saddr) \
+    do                                       \
+    {                                        \
+        otfc->PR[pr].PR_SADDR = saddr;       \
     } while (0)
 
 /**
-  * @brief  OTFC Protrction Region End Address Register.
+  * @brief  Set Protrction End Address.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * @param[in] eaddr is the protection end address.
   * \hideinitializer
   */
-#define OTFC_PR_END_ADDR(otfc, pr, eaddr) \
-    do                                    \
-    {                                     \
-        otfc->PR[pr].PR_EADDR |= eaddr;   \
+#define OTFC_SET_END_ADDR(otfc, pr, eaddr) \
+    do                                     \
+    {                                      \
+        otfc->PR[pr].PR_EADDR |= eaddr;    \
     } while (0)
 
 /**
-  * @brief  Clear OTFC Protrction Region 0 ~ 3 KSCTRL Register Setting
+  * @brief  Clear Key Store Control Setting.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * \hideinitializer
   */
 #define OTFC_CLEAR_KSCTRL(otfc, pr)                                  \
@@ -257,105 +257,105 @@ extern "C"
 /**
   * @brief  The KEY keeps the security key for AES .
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * @param[in] key  The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_PR_KEY0(otfc, pr, key) \
-    do                              \
-    {                               \
-        otfc->PR[pr].PR_KEY0 = key; \
+#define OTFC_SET_KEY0(otfc, pr, key) \
+    do                               \
+    {                                \
+        otfc->PR[pr].PR_KEY0 = key;  \
     } while (0)
 
 /**
   * @brief  The KEY keeps the security key for AES.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * @param[in] key  The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_PR_KEY1(otfc, pr, key) \
-    do                              \
-    {                               \
-        otfc->PR[pr].PR_KEY1 = key; \
+#define OTFC_SET_KEY1(otfc, pr, key) \
+    do                               \
+    {                                \
+        otfc->PR[pr].PR_KEY1 = key;  \
     } while (0)
 
 /**
   * @brief  The KEY keeps the security key for AES.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * @param[in] key The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_PR_KEY2(otfc, pr, key) \
-    do                              \
-    {                               \
-        otfc->PR[pr].PR_KEY2 = key; \
+#define OTFC_SET_KEY2(otfc, pr, key) \
+    do                               \
+    {                                \
+        otfc->PR[pr].PR_KEY2 = key;  \
     } while (0)
 
 /**
   * @brief  The KEY keeps the security key for AES.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * @param[in] key  The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_PR_KEY3(otfc, pr, key) \
-    do                              \
-    {                               \
-        otfc->PR[pr].PR_KEY3 = key; \
+#define OTFC_SET_KEY3(otfc, pr, key) \
+    do                               \
+    {                                \
+        otfc->PR[pr].PR_KEY3 = key;  \
     } while (0)
 
 /**
-  * @brief  The scramble key for address cipher funtcion.
+  * @brief  The scramble key for address cipher.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * @param[in] key  The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_PR_SCRAMBLE(otfc, pr, key) \
-    do                                  \
-    {                                   \
-        otfc->PR[pr].PR_SCRAMBLE = key; \
+#define OTFC_SET_SCRAMBLE(otfc, pr, key) \
+    do                                   \
+    {                                    \
+        otfc->PR[pr].PR_SCRAMBLE = key;  \
     } while (0)
 
 /**
   * @brief  Three nonces are for the address cipher function in OTFC.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * @param[in] key The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_PR_NONCE0(otfc, pr, key) \
-    do                                \
-    {                                 \
-        otfc->PR[pr].PR_NONCE0 = key; \
+#define OTFC_SET_NONCE0(otfc, pr, key) \
+    do                                 \
+    {                                  \
+        otfc->PR[pr].PR_NONCE0 = key;  \
     } while (0)
 
 /**
   * @brief  Three nonces are for the address cipher function in OTFC.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * @param[in] key The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_PR_NONCE1(otfc, pr, key) \
-    do                                \
-    {                                 \
-        otfc->PR[pr].PR_NONCE1 = key; \
+#define OTFC_SET_NONCE1(otfc, pr, key) \
+    do                                 \
+    {                                  \
+        otfc->PR[pr].PR_NONCE1 = key;  \
     } while (0)
 
 /**
   * @brief  Three nonces are for the address cipher function in OTFC.
   * @param[in] otfc The base address of OTFC module.
-  * @param[in] pr   Protection Region 0 ~ 3.
+  * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * @param[in] key The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_PR_NONCE2(otfc, pr, key) \
-    do                                \
-    {                                 \
-        otfc->PR[pr].PR_NONCE2 = key; \
+#define OTFC_SET_NONCE2(otfc, pr, key) \
+    do                                 \
+    {                                  \
+        otfc->PR[pr].PR_NONCE2 = key;  \
     } while (0)
 
 /**
@@ -400,16 +400,16 @@ __STATIC_INLINE int32_t OTFC_Disable_PR(OTFC_T *otfc, uint32_t u32PR)
 
 typedef struct
 {
-    uint32_t u32Key0;       /*!< The security key for AES */
-    uint32_t u32Key1;       /*!< The security key for AES */
-    uint32_t u32Key2;       /*!< The security key for AES */
-    uint32_t u32Key3;       /*!< The security key for AES */
+    uint32_t u32Key0; /*!< The security key for AES */
+    uint32_t u32Key1; /*!< The security key for AES */
+    uint32_t u32Key2; /*!< The security key for AES */
+    uint32_t u32Key3; /*!< The security key for AES */
 
-    uint32_t u32Scramble;   /*!< Scramble key */
+    uint32_t u32Scramble; /*!< Scramble key */
 
-    uint32_t u32Nonce0;     /*!< Nonce Word */
-    uint32_t u32Nonce1;     /*!< Nonce Word */
-    uint32_t u32Nonce2;     /*!< Nonce Word */
+    uint32_t u32Nonce0; /*!< Nonce Word */
+    uint32_t u32Nonce1; /*!< Nonce Word */
+    uint32_t u32Nonce2; /*!< Nonce Word */
 } OTFC_KEY_T;
 
 /** @addtogroup OTFC_EXPORTED_FUNCTIONS OTFC Exported Functions
@@ -423,7 +423,7 @@ int32_t OTFC_SetKeyTableToReg(OTFC_T *otfc,
 
 int32_t OTFC_SetKeyFromKeyStore(OTFC_T *otfc, uint32_t u32PR,
                                 uint32_t u32SAddr, uint32_t u32EAddr,
-                                uint32_t u32KeyNum, uint32_t u8KeySrc,
+                                uint32_t u32KeyNum, uint32_t u32KeySrc,
                                 uint32_t u32Scramble,
                                 uint32_t u32Nonce0, uint32_t u32Nonce1, uint32_t u32Nonce2);
 

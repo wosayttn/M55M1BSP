@@ -38,7 +38,7 @@ extern "C"
 #define WDT_TIMEOUT_2POW14          (5UL << WDT_CTL_TOUTSEL_Pos) /*!< Setting WDT time-out interval to 2^14 * WDT clocks \hideinitializer */
 #define WDT_TIMEOUT_2POW16          (6UL << WDT_CTL_TOUTSEL_Pos) /*!< Setting WDT time-out interval to 2^16 * WDT clocks \hideinitializer */
 #define WDT_TIMEOUT_2POW18          (7UL << WDT_CTL_TOUTSEL_Pos) /*!< Setting WDT time-out interval to 2^18 * WDT clocks \hideinitializer */
-#define WDT_TIMEOUT_2POW20          (8UL << WDT_CTL_TOUTSEL_Pos) /*!< Setting WDT time-out interval to 2^18 * WDT clocks \hideinitializer */
+#define WDT_TIMEOUT_2POW20          (8UL << WDT_CTL_TOUTSEL_Pos) /*!< Setting WDT time-out interval to 2^20 * WDT clocks \hideinitializer */
 /*---------------------------------------------------------------------------------------------------------*/
 /*  WDT  Reset Delay Period Constant Definitions                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -51,6 +51,14 @@ extern "C"
 /*  WDT Free Reset Counter Keyword Constant Definitions                                                    */
 /*---------------------------------------------------------------------------------------------------------*/
 #define WDT_RESET_COUNTER_KEYWORD   (0x00005AA5UL)    /*!< Fill this value to WDT_RSTCNT register to free reset WDT counter \hideinitializer */
+
+/*---------------------------------------------------------------------------------------------------------*/
+/* WDT Define Error Code                                                                                   */
+/*---------------------------------------------------------------------------------------------------------*/
+#define WDT_TIMEOUT         SystemCoreClock     /*!< WDT time-out counter (1 second time-out) \hideinitializer */
+#define WDT_OK              ( 0L)               /*!< WDT operation OK \hideinitializer */
+#define WDT_FAIL            (-1L)               /*!< WDT operation failed \hideinitializer */
+#define WDT_ERR_TIMEOUT     (-2L)               /*!< WDT operation abort due to timeout error \hideinitializer */
 
 /** @} end of group WDT_EXPORTED_CONSTANTS */
 
@@ -160,8 +168,15 @@ __STATIC_INLINE void WDT_DisableInt(WDT_T *wdt);
   */
 __STATIC_INLINE void WDT_Close(WDT_T *wdt)
 {
+    uint32_t u32TimeOutCnt = WDT_TIMEOUT;
+
     wdt->CTL = 0UL;
-    return;
+
+    while (wdt->CTL & WDT_CTL_SYNC_Msk) /* Wait disable WDTEN bit completed, it needs 4 * WDT_CLK. */
+    {
+        if (--u32TimeOutCnt == 0) break;
+    }
+
 }
 
 /**
@@ -175,7 +190,6 @@ __STATIC_INLINE void WDT_Close(WDT_T *wdt)
 __STATIC_INLINE void WDT_EnableInt(WDT_T *wdt)
 {
     wdt->CTL |= WDT_CTL_INTEN_Msk;
-    return;
 }
 
 /**
@@ -190,11 +204,9 @@ __STATIC_INLINE void WDT_DisableInt(WDT_T *wdt)
 {
     /* Do not touch another write 1 clear bits */
     wdt->CTL &= ~(WDT_CTL_INTEN_Msk);
-    wdt->STATUS &= ~(WDT_STATUS_RSTF_Msk | WDT_STATUS_IF_Msk | WDT_STATUS_WKF_Msk);
-    return;
 }
 
-void WDT_Open(WDT_T *wdt, uint32_t u32TimeoutInterval, uint32_t u32ResetDelay, uint32_t u32EnableReset, uint32_t u32EnableWakeup);
+int32_t WDT_Open(WDT_T *wdt, uint32_t u32TimeoutInterval, uint32_t u32ResetDelay, uint32_t u32EnableReset, uint32_t u32EnableWakeup);
 
 /** @} end of group WDT_EXPORTED_FUNCTIONS */
 /** @} end of group WDT_Driver */

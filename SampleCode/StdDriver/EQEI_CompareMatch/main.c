@@ -142,6 +142,9 @@ int32_t main(void)
     /* Enable EQEI interrupt */
     EQEI_EnableInt(EQEI0, EQEI_CTL_CMPIEN_Msk | EQEI_CTL_OVUNIEN_Msk);
 
+    /* Enable EQEI IRQ */
+    NVIC_EnableIRQ(EQEI0_IRQn);
+
     /* Start EQEI function */
     EQEI_Start(EQEI0);
 

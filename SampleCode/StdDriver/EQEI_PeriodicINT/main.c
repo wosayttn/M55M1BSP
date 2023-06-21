@@ -138,8 +138,8 @@ int32_t main(void)
     EQEI1->UTCMP = 36000000 / 2;
 
     /* Enable EQEI interrupt */
-    EQEI0->CTL2 |= (EQEI_CTL2_UTIEIEN_Msk | EQEI_STATUS_PHEF_Msk);
-    EQEI1->CTL2 |= (EQEI_CTL2_UTIEIEN_Msk | EQEI_STATUS_PHEF_Msk);
+    EQEI0->CTL2 |= EQEI_CTL2_UTIEIEN_Msk;
+    EQEI1->CTL2 |= EQEI_CTL2_UTIEIEN_Msk;
     NVIC_EnableIRQ(EQEI0_IRQn);
     NVIC_EnableIRQ(EQEI1_IRQn);
 

@@ -430,19 +430,9 @@
               <FilePath>..\..\..\Library\StdDriver\src\pdma.c</FilePath>
             </File>
             <File>
-              <FileName>usci_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Library\StdDriver\src\usci_i2c.c</FilePath>
-            </File>
-            <File>
               <FileName>i2c.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Library\StdDriver\src\i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Library\StdDriver\src\gpio.c</FilePath>
             </File>
             <File>
               <FileName>pmc.c</FileName>
@@ -897,19 +887,9 @@
               <FilePath>..\..\..\Library\StdDriver\src\pdma.c</FilePath>
             </File>
             <File>
-              <FileName>usci_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Library\StdDriver\src\usci_i2c.c</FilePath>
-            </File>
-            <File>
               <FileName>i2c.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Library\StdDriver\src\i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Library\StdDriver\src\gpio.c</FilePath>
             </File>
             <File>
               <FileName>pmc.c</FileName>

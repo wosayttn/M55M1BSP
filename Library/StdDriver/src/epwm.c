@@ -272,6 +272,8 @@ void EPWM_ForceStop(EPWM_T *epwm, uint32_t u32ChannelMask)
  *                  - \ref EPWM_TRG_ADC_CH_2_FREE_CMP_DOWN
  *                  - \ref EPWM_TRG_ADC_CH_4_FREE_CMP_UP
  *                  - \ref EPWM_TRG_ADC_CH_4_FREE_CMP_DOWN
+ *                  - \ref EPWM_TRG_ADC_EVEN_IFACC
+ *                  - \ref EPWM_TRG_ADC_ODD_IFACC
  * @return None
  * @details This function is used to enable selected channel to trigger ADC.
  */
@@ -1757,6 +1759,140 @@ void EPWM_ClearFaultDetectInt(EPWM_T *epwm, uint32_t u32ChannelNum)
 uint32_t EPWM_GetFaultDetectInt(EPWM_T *epwm, uint32_t u32ChannelNum)
 {
     return (((epwm)->FDSTS & (EPWM_FDSTS_FDIF0_Msk << (u32ChannelNum))) ? 1UL : 0UL);
+}
+
+/**
+  * @brief      Enable Capture Input Noise Filter Function
+  * @param[in] epwm The pointer of the specified EPWM module.
+  *                - EPWM0 : EPWM Group 0
+  *                - EPWM1 : EPWM Group 1
+  * @param[in] u32ChannelNum EPWM channel number. Valid values are between 0~5.
+  * @param[in]  u32FilterCount  Noise filter counter. Valid values are between 0~7.
+  * @param[in]  u32ClkSrcSel    Noise filter counter clock source, could be one of following source
+  *              - \ref EPWM_NF_CLK_DIV_1
+  *              - \ref EPWM_NF_CLK_DIV_2
+  *              - \ref EPWM_NF_CLK_DIV_4
+  *              - \ref EPWM_NF_CLK_DIV_8
+  *              - \ref EPWM_NF_CLK_DIV_16
+  *              - \ref EPWM_NF_CLK_DIV_32
+  *              - \ref EPWM_NF_CLK_DIV_64
+  *              - \ref EPWM_NF_CLK_DIV_128
+  *
+  * @return     None
+  *
+  * @details    This function is used to enable capture input noise filter function.
+  */
+void EPWM_EnableCaptureInputNoiseFilter(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32FilterCount, uint32_t u32ClkSrcSel)
+{
+    epwm->CAPNF[u32ChannelNum] = (((epwm)->CAPNF[u32ChannelNum] & ~(EPWM_CAPNF_CAPNFCNT_Msk | EPWM_CAPNF_CAPNFSEL_Msk))
+                    | (EPWM_CAPNF_CAPNFEN_Msk | (u32FilterCount << LPTMR_CAPNF_CAPNFCNT_Pos) | (u32ClkSrcSel << EPWM_CAPNF_CAPNFSEL_Pos)));
+}
+
+/**
+  * @brief      Disable Capture Input Noise Filter Function
+  *
+  * @param[in] epwm The pointer of the specified EPWM module.
+  *                - EPWM0 : EPWM Group 0
+  *                - EPWM1 : EPWM Group 1
+  * @param[in] u32ChannelNum EPWM channel number. Valid values are between 0~5.
+  * @return     None
+  *
+  * @details    This function is used to disable capture input noise filter function.
+  */
+void EPWM_DisableCaptureInputNoiseFilter(EPWM_T *epwm, uint32_t u32ChannelNum)
+{
+    epwm->CAPNF[u32ChannelNum] &= ~EPWM_CAPNF_CAPNFEN_Msk;
+}
+
+/**
+  * @brief      Enable External Event Trigger Counter Action
+  * @param[in] epwm The pointer of the specified EPWM module.
+  *                - EPWM0 : EPWM Group 0
+  *                - EPWM1 : EPWM Group 1
+  * @param[in] u32ChannelNum EPWM channel number. Valid values are between 0~5.
+  * @param[in]  u32ExtEventSrc      External event source selection.
+  *                                 - \ref EPWM_EXT_TGR_PIN_INT0
+  *                                 - \ref EPWM_EXT_TGR_PIN_INT1
+  *                                 - \ref EPWM_EXT_TGR_PIN_INT2
+  *                                 - \ref EPWM_EXT_TGR_PIN_INT3
+  *                                 - \ref EPWM_EXT_TGR_PIN_INT4
+  *                                 - \ref EPWM_EXT_TGR_PIN_INT5
+  *                                 - \ref EPWM_EXT_TGR_PIN_INT6
+  *                                 - \ref EPWM_EXT_TGR_PIN_INT7
+  * @param[in]  u32CounterAction    Counter action selection.
+  *                                 - \ref EPWM_EXT_TGR_COUNTER_RESET
+  *                                 - \ref EPWM_EXT_TGR_COUNTER_START
+  *                                 - \ref EPWM_EXT_TGR_COUNTER_RESET_AND_START
+  * @return     None
+  * @details    This function is used to enable external event to trigger the counter specified action.
+  */
+void EPWM_EnableExtEventTrigger(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32ExtEventSrc, uint32_t u32CounterAction)
+{
+    epwm->EXTETCTL[u32ChannelNum] = (((epwm)->EXTETCTL[u32ChannelNum] & ~(EPWM_EXTETCTL_EXTTRGS_Msk | EPWM_EXTETCTL_CNTACTS_Msk))
+                        | (EPWM_EXTETCTL_EXTETEN_Msk | (u32ExtEventSrc << EPWM_EXTETCTL_EXTTRGS_Pos) | (u32CounterAction << EPWM_EXTETCTL_CNTACTS_Pos)));
+}
+
+/**
+  * @brief      Disable External Event Trigger Counter Action
+  * @param[in] epwm The pointer of the specified EPWM module.
+  *                - EPWM0 : EPWM Group 0
+  *                - EPWM1 : EPWM Group 1
+  * @param[in] u32ChannelNum EPWM channel number. Valid values are between 0~5.
+  * @return     None
+  * @details    This function is used to disable external event to trigger counter action.
+  */
+void EPWM_DisableExtEventTrigger(EPWM_T *epwm, uint32_t u32ChannelNum)
+{
+    epwm->EXTETCTL[u32ChannelNum] &= ~EPWM_EXTETCTL_EXTETEN_Msk;
+}
+
+/**
+ * @brief Get how many interrupt are accumulated of selected channel
+ * @param[in] epwm The pointer of the specified EPWM module
+ *                - EPWM0 : EPWM Group 0
+ *                - EPWM1 : EPWM Group 1
+ * @param[in] u32ChannelNum EPWM channel number. Valid values are between 0~5
+ * @retval 0~0xFF: Accumulator interrupt counters
+ *
+ * @details This function is used to Get how many interrupt are accumulated when using interrupt flag accumulator function.
+ */
+uint32_t EPWM_GetAccCounter(EPWM_T *epwm, uint32_t u32ChannelNum)
+{
+    return epwm->IFACNT[u32ChannelNum];
+}
+
+/**
+ * @brief Enable Software Event Trigger function of selected channel.
+ * @param[in] epwm The pointer of the specified EPWM module.
+ *                - EPWM0 : EPWM Group 0
+ *                - EPWM1 : EPWM Group 1
+ * @param[in] u32ChannelNum EPWM channel number. Valid values are between 0~5.
+ * @param[in]  u32OutputLevel    Output Level selection.
+ *                                 - \ref EPWM_OUTPUT_NOTHING
+ *                                 - \ref EPWM_OUTPUT_LOW
+ *                                 - \ref EPWM_OUTPUT_HIGH
+ *                                 - \ref EPWM_OUTPUT_TOGGLE
+ * @return None
+ * @details This function is used to enable Software Event Trigger function of selected channel.
+ */
+void EPWM_EnableSWEventOutput(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32OutputLevel)
+{
+    (epwm)->SWEOFTRG |= (EPWM_SWEOFTRG_SWETRG0_Msk << (u32ChannelNum));
+    (epwm)->SWEOFCTL = (((epwm)->SWEOFCTL & ~((EPWM_SWEOFCTL_OUTACTS0_Msk << (u32ChannelNum << 1U)))) | ((u32OutputLevel) << (u32ChannelNum << 1U)));
+}
+
+/**
+ * @brief Disable Software Event Trigger function of selected channel.
+ * @param[in] epwm The pointer of the specified EPWM module.
+ *                - EPWM0 : EPWM Group 0
+ *                - EPWM1 : EPWM Group 1
+ * @param[in] u32ChannelNum EPWM channel number. Valid values are between 0~5.
+ * @return None
+ * @details This function is used to disable Software Event Trigger function of selected channel.
+ */
+void EPWM_DisableSWEventOutput(EPWM_T *epwm, uint32_t u32ChannelNum)
+{
+    (epwm)->SWEOFTRG &= ~(EPWM_SWEOFTRG_SWETRG0_Msk << u32ChannelNum);
 }
 
 /** @} end of group EPWM_EXPORTED_FUNCTIONS */

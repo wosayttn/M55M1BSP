@@ -1,7 +1,7 @@
 /****************************************************************************
  * @file     canfd.h
  * @version  V1.00
- * @brief    M253 series CAN FD driver source file
+ * @brief    M55M1 series CAN FD driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -30,10 +30,8 @@ extern "C"
 #define CANFD_OP_CAN_MODE     0
 #define CANFD_OP_CAN_FD_MODE  1
 
-#define CANFD_READ_REG_TIMEOUT    48                 /*!< CANFD read register time-out count */
-
 /* Reserved number of elements in Message RAM - used for calculation of start addresses within RAM Configuration
-   some element_numbers set to less than max, to stay altogether below 256 words of MessageRAM requirement*/
+   some element_numbers set to less than max, to stay altogether below 1536 words of MessageRAM requirement*/
 #define CANFD_MAX_11_BIT_FTR_ELEMS    128ul  /*!<  maximum is 128 11-bit Filter */
 #define CANFD_MAX_29_BIT_FTR_ELEMS    64ul   /*!<  maximum is  64 29-bit Filter */
 #define CANFD_MAX_RX_FIFO0_ELEMS      64ul   /*!<  maximum is  64 Rx FIFO 0 elements */
@@ -117,8 +115,8 @@ typedef enum
 /* CAN FD Tx FIFO/Queue Mode. */
 typedef enum
 {
-  eCANFD_QUEUE_MODE = 0, /*!< Tx FIFO operation. */
-  eCANFD_FIFO_MODE = 1   /*!< Tx Queue operation. */
+    eCANFD_QUEUE_MODE = 0, /*!< Tx FIFO operation. */
+    eCANFD_FIFO_MODE = 1   /*!< Tx Queue operation. */
 } E_CANFD_TX_MODE;
 
 /* TX Buffer Configuration Parameters  */
@@ -200,8 +198,8 @@ typedef struct
     uint32_t  u32RxBuf;          /*!< Rx Buffer element size in words */
     uint32_t  u32TxBuf;          /*!< Tx Buffer element size in words */
     uint32_t  u32TxFifoQueue;    /*!< Tx FIFO/Queue element size in words(Be aware that the sum of Tx buff and Tx FIFO/Queue may be not greater than 32) */
-	uint32_t  u32TxEventFifo;    /*!< Tx Event FIFO element size in words(Be aware that the sum of Tx buff and Tx FIFO/Queue may be not greater than 32)*/
-	uint32_t  u32UserDef;        /*!< Element for user define */
+    uint32_t  u32TxEventFifo;    /*!< Tx Event FIFO element size in words(Be aware that the sum of Tx buff and Tx FIFO/Queue may be not greater than 32)*/
+    uint32_t  u32UserDef;        /*!< Element for user define */
 } CANFD_ELEM_SIZE_T;
 
 /* CAN FD Message frame structure */
@@ -286,14 +284,14 @@ typedef struct
     };
     uint8_t           u8MsgMarker;                     /*! Message marker (will be copied to TX Event FIFO element) */
     uint16_t          u16RxTimestamp;                  /*! Rx Timestamp(CCCR.UTSU = 0)) */
-    uint8_t           u8RxTimestampPointer;            /*! Rx Timestamp Pointer(CCCR.UTSU = 1))*/ 
-	uint8_t           bTimestampCaptured;              /*! Timestamp Captured                             */
-	uint8_t           u8FilterIndex;                   /*! Filter Index(Index of matching Rx acceptance filter element (in valid if ANMF = ‘1’)*/
-	uint8_t           bNonMatchingFrame;               /*! Accepted Non-matching Frame                              */
-	uint8_t           bFDFormat;                       /*! FD Format (1 = FD Format)                                */
-    uint8_t           bBitRateSwitch;                  /*! Bit Rate Switch (1 = with Bit Rate Switch)               */
-    uint8_t           bErrStaInd;                      /*! Error State Indicator                                    */
-    uint8_t           bEvntFifoCon;                    /*! Event FIFO Control (1 = Store TX Event FIFO element after transmission)*/         
+    uint8_t           u8RxTimestampPointer;            /*! Rx Timestamp Pointer(CCCR.UTSU = 1)) */
+    uint8_t           bTimestampCaptured;              /*! Timestamp Captured */
+    uint8_t           u8FilterIndex;                   /*! Filter Index(Index of matching Rx acceptance filter element (in valid if ANMF = ‘1’) */
+    uint8_t           bNonMatchingFrame;               /*! Accepted Non-matching Frame */
+    uint8_t           bFDFormat;                       /*! FD Format (1 = FD Format) */
+    uint8_t           bBitRateSwitch;                  /*! Bit Rate Switch (1 = with Bit Rate Switch) */
+    uint8_t           bErrStaInd;                      /*! Error State Indicator */
+    uint8_t           bEvntFifoCon;                    /*! Event FIFO Control (1 = Store TX Event FIFO element after transmission) */
 } CANFD_FD_MSG_T;
 
 
@@ -411,14 +409,14 @@ void CANFD_EnableInt(CANFD_T *canfd, uint32_t u32IntLine0, uint32_t u32IntLine1,
 void CANFD_DisableInt(CANFD_T *canfd, uint32_t u32IntLine0, uint32_t u32IntLine1, uint32_t u32TXBTIE, uint32_t u32TXBCIE);
 uint32_t CANFD_TransmitTxMsg(CANFD_T *canfd, uint32_t u32TxBufIdx, CANFD_FD_MSG_T *psTxMsg);
 uint32_t CANFD_TransmitDMsg(CANFD_T *canfd, uint32_t u32TxBufIdx, CANFD_FD_MSG_T *psTxMsg);
-void CANFD_CopyDataToTransmitBuffer(CANFD_T *psCanfd,uint32_t u32TxBufIdx,CANFD_FD_MSG_T *psTxMsg);
+void CANFD_CopyDataToTransmitBuffer(CANFD_T *psCanfd, uint32_t u32TxBufIdx, CANFD_FD_MSG_T *psTxMsg);
 void CANFD_SetGFC(CANFD_T *canfd, E_CANFD_ACC_NON_MATCH_FRM eNMStdFrm, E_CANFD_ACC_NON_MATCH_FRM eEMExtFrm, uint32_t u32RejRmtStdFrm, uint32_t u32RejRmtExtFrm);
 void CANFD_SetSIDFltr(CANFD_T *canfd, uint32_t u32FltrIdx, uint32_t u32Filter);
 void CANFD_SetXIDFltr(CANFD_T *canfd, uint32_t u32FltrIdx, uint32_t u32FilterLow, uint32_t u32FilterHigh);
 uint32_t CANFD_ReadRxBufMsg(CANFD_T *canfd, uint8_t u8MbIdx, CANFD_FD_MSG_T *psMsgBuf);
 uint32_t CANFD_ReadRxFifoMsg(CANFD_T *canfd, uint8_t u8FifoIdx, CANFD_FD_MSG_T *psMsgBuf);
-void CANFD_CopyDBufToMsgBuf(CANFD_T *canfd,CANFD_BUF_T *psRxBuffer, CANFD_FD_MSG_T *psMsgBuf);
-void CANFD_CopyRxFifoToMsgBuf(CANFD_T *canfd,CANFD_BUF_T *psRxBuf, CANFD_FD_MSG_T *psMsgBuf);
+void CANFD_CopyDBufToMsgBuf(CANFD_T *canfd, CANFD_BUF_T *psRxBuffer, CANFD_FD_MSG_T *psMsgBuf);
+void CANFD_CopyRxFifoToMsgBuf(CANFD_T *canfd, CANFD_BUF_T *psRxBuf, CANFD_FD_MSG_T *psMsgBuf);
 uint32_t CANFD_GetRxFifoWaterLvl(CANFD_T *canfd, uint32_t u32RxFifoNum);
 uint32_t CANFD_ReadTxFifoEventMsg(CANFD_T *psCanfd, uint8_t u8MbIdx, CANFD_TX_EVNT_ELEM_T *psEventFifoMsgBuf);
 void CANFD_TxBufCancelReq(CANFD_T *canfd, uint32_t u32TxBufIdx);
@@ -438,7 +436,6 @@ void CANFD_RunToNormal(CANFD_T *canfd, uint8_t u8Enable);
 void CANFD_GetDefaultConfig(CANFD_FD_T *psConfig, uint8_t u8OpMode);
 void CANFD_ClearStatusFlag(CANFD_T *canfd, uint32_t u32InterruptFlag);
 uint32_t CANFD_GetStatusFlag(CANFD_T *canfd, uint32_t u32IntTypeFlag);
-//uint32_t CANFD_ReadReg(__I uint32_t *pu32RegAddr);
 
 /** @} end of group CANFD_EXPORTED_FUNCTIONS */
 

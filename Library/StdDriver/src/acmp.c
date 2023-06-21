@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     acmp.c
  * @version  V1.00
- * @brief    ACMP driver source file
+ * @brief    M55M1 series ACMP driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -46,67 +46,73 @@ int32_t g_ACMP_i32ErrCode = 0;  /*!< ACMP global error code */
   */
 void ACMP_Open(ACMP_T *acmp, uint32_t u32ChNum, uint32_t u32NegSrc, uint32_t u32HysSel)
 {
-    uint32_t u32Delay = SystemCoreClock;    /* 1 second */
-
     g_ACMP_i32ErrCode = 0;
 
-#if(0)
     /* Do calibration for ACMP to decrease the effect of electrical random noise. */
     if (((acmp->CALSR & ACMP_CALSR_DONE0_Msk) == 0) || ((acmp->CALSR & ACMP_CALSR_DONE1_Msk) == 0))
     {
+        uint32_t u32Delay = 0;
         /* Unlock protected registers */
         SYS_UnlockReg();
-        if(acmp == ACMP01)
+
+        if (acmp == ACMP01)
         {
-         /* Must reset ACMP before ACMP calibration */
-           SYS_ResetModule(SYS_ACMP01RST);
+            /* Must reset ACMP before ACMP calibration */
+            SYS_ResetModule(SYS_ACMP01RST);
         }
         else
-        {  /* Must reset ACMP before ACMP calibration */
-           SYS_ResetModule(SYS_ACMP23RST);
+        {
+            /* Must reset ACMP before ACMP calibration */
+            SYS_ResetModule(SYS_ACMP23RST);
         }
+
         /* Lock protected registers */
         SYS_LockReg();
-        /* Calibration ACMP0/ACMP2*/
-        acmp->CTL[0] |= ACMP_CTL_ACMPEN_Msk;
 
-        /* MUST enable CRV and set NEGSEL to CRV for ACMP calibration. */
-        acmp->VREF = (ACMP_VREF_CRV0EN_Msk | ACMP_VREF_CRV0SSEL_Msk);
-        acmp->CTL[0] = (acmp->CTL[0] & ~(ACMP_CTL_NEGSEL_Msk)) | 
-                       (ACMP_CTL_NEGSEL_CRV);
-
-        acmp->CALCTL |= ACMP_CALCTL_CALTRG0_Msk;            /* Start to calibration */
-        u32Delay = SystemCoreClock;
-        while ((acmp->CALSR & ACMP_CALSR_DONE0_Msk) == 0)   /* Wait calibration finish */
+        if (u32ChNum == 0)
         {
-            if (--u32Delay == 0)
+            /* Calibration ACMP0/ACMP2*/
+            acmp->CTL[0] |= ACMP_CTL_ACMPEN_Msk;
+
+            /* MUST enable CRV and set NEGSEL to CRV for ACMP calibration. */
+            acmp->VREF = (ACMP_VREF_CRV0EN_Msk | ACMP_VREF_CRV0SSEL_Msk);
+            acmp->CTL[0] = (acmp->CTL[0] & ~(ACMP_CTL_NEGSEL_Msk)) | (ACMP_CTL_NEGSEL_CRV);
+
+            acmp->CALCTL |= ACMP_CALCTL_CALTRG0_Msk;            /* Start to calibration */
+            u32Delay = SystemCoreClock;   /* 1 second */
+
+            while ((acmp->CALSR & ACMP_CALSR_DONE0_Msk) == 0)   /* Wait calibration finish */
             {
-                g_ACMP_i32ErrCode = ACMP_TIMEOUT_ERR;
-                break;
+                if (--u32Delay == 0)
+                {
+                    g_ACMP_i32ErrCode = ACMP_TIMEOUT_ERR;
+                    break;
+                }
             }
         }
-
-        /* Calibration ACMP1/ACMP3 */
-        acmp->CTL[1] |= ACMP_CTL_ACMPEN_Msk;
-
-        /* MUST enable CRV and set NEGSEL to CRV for ACMP calibration. */
-        acmp->VREF = (ACMP_VREF_CRV1EN_Msk | ACMP_VREF_CRV1SSEL_Msk);
-        acmp->CTL[1] = (acmp->CTL[1] & ~(ACMP_CTL_NEGSEL_Msk)) | 
-                       (ACMP_CTL_NEGSEL_CRV);
-
-        acmp->CALCTL |= ACMP_CALCTL_CALTRG1_Msk;            /* Start to calibration */
-        u32Delay = SystemCoreClock;
-        while ((acmp->CALSR & ACMP_CALSR_DONE1_Msk) == 0)  /* Wait calibration finish */
+        else
         {
-            if (--u32Delay == 0)
+            /* Calibration ACMP1/ACMP3 */
+            acmp->CTL[1] |= ACMP_CTL_ACMPEN_Msk;
+
+            /* MUST enable CRV and set NEGSEL to CRV for ACMP calibration. */
+            acmp->VREF = (ACMP_VREF_CRV1EN_Msk | ACMP_VREF_CRV1SSEL_Msk);
+            acmp->CTL[1] = (acmp->CTL[1] & ~(ACMP_CTL_NEGSEL_Msk)) | (ACMP_CTL_NEGSEL_CRV);
+
+            acmp->CALCTL |= ACMP_CALCTL_CALTRG1_Msk;            /* Start to calibration */
+            u32Delay = SystemCoreClock; /* 1 second */
+
+            while ((acmp->CALSR & ACMP_CALSR_DONE1_Msk) == 0)  /* Wait calibration finish */
             {
-                g_ACMP_i32ErrCode = ACMP_TIMEOUT_ERR;
-                break;
+                if (--u32Delay == 0)
+                {
+                    g_ACMP_i32ErrCode = ACMP_TIMEOUT_ERR;
+                    break;
+                }
             }
         }
-
     }
-#endif
+
     acmp->CTL[u32ChNum] = (acmp->CTL[u32ChNum] & (~(ACMP_CTL_NEGSEL_Msk | ACMP_CTL_HYSSEL_Msk))) | (u32NegSrc | u32HysSel | ACMP_CTL_ACMPEN_Msk);
 }
 
@@ -126,5 +132,7 @@ void ACMP_Close(ACMP_T *acmp, uint32_t u32ChNum)
 }
 
 /** @} end of group ACMP_EXPORTED_FUNCTIONS */
+
 /** @} end of group ACMP_Driver */
+
 /** @} end of group Standard_Driver */

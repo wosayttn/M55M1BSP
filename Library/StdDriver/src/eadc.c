@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     eadc.c
  * @version  V1.00
- * @brief    EADC driver source file
+ * @brief    M55M1 series EADC driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -35,7 +35,7 @@
 void EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
 {
     /* Enable EADC Boost mode */
-    outpw(EADC0_BASE+0xFF4, inpw(EADC0_BASE+0xFF4) | BIT1);
+    outpw(EADC0_BASE + 0xFF4, inpw(EADC0_BASE + 0xFF4) | BIT1);
 
     eadc->CTL &= (~EADC_CTL_DIFFEN_Msk);
 
@@ -93,10 +93,7 @@ void EADC_Close(EADC_T *eadc)
   * @details Each of ADC control logic modules 0~18 which is configurable for ADC converter channel EADC_CH0~18 and trigger source.
   *         sample module 19~21 is fixed for ADC channel 19, 20, 21 input sources as band-gap voltage, temperature sensor, and DAC0 output.
   */
-void EADC_ConfigSampleModule(EADC_T *eadc, \
-                             uint32_t u32ModuleNum, \
-                             uint32_t u32TriggerSrc, \
-                             uint32_t u32Channel)
+void EADC_ConfigSampleModule(EADC_T *eadc, uint32_t u32ModuleNum, uint32_t u32TriggerSrc, uint32_t u32Channel)
 {
     if (u32ModuleNum < 19)
     {
@@ -105,8 +102,8 @@ void EADC_ConfigSampleModule(EADC_T *eadc, \
     }
     else
     {
-        eadc->SCTL19[u32ModuleNum-19] &= ~(EADC_SCTL_EXTFEN_Msk | EADC_SCTL_EXTREN_Msk | EADC_SCTL_TRGSEL_Msk | EADC_SCTL_CHSEL_Msk);
-        eadc->SCTL19[u32ModuleNum-19] |= (u32TriggerSrc | u32Channel);
+        eadc->SCTL19[u32ModuleNum - 19] &= ~(EADC_SCTL_EXTFEN_Msk | EADC_SCTL_EXTREN_Msk | EADC_SCTL_TRGSEL_Msk | EADC_SCTL_CHSEL_Msk);
+        eadc->SCTL19[u32ModuleNum - 19] |= (u32TriggerSrc | u32Channel);
     }
 }
 
@@ -125,10 +122,7 @@ void EADC_ConfigSampleModule(EADC_T *eadc, \
   * @details User can configure the trigger delay time by setting TRGDLYCNT (EADC_SCTLn[15:8], n=0~15) and TRGDLYDIV (EADC_SCTLn[7:6], n=0~15).
   *         Trigger delay time = (u32TriggerDelayTime) x Trigger delay clock period.
   */
-void EADC_SetTriggerDelayTime(EADC_T *eadc, \
-                              uint32_t u32ModuleNum, \
-                              uint32_t u32TriggerDelayTime, \
-                              uint32_t u32DelayClockDivider)
+void EADC_SetTriggerDelayTime(EADC_T *eadc, uint32_t u32ModuleNum, uint32_t u32TriggerDelayTime, uint32_t u32DelayClockDivider)
 {
     if (u32ModuleNum < 19)
     {
@@ -137,8 +131,8 @@ void EADC_SetTriggerDelayTime(EADC_T *eadc, \
     }
     else
     {
-        eadc->SCTL19[u32ModuleNum-19] &= ~(EADC_SCTL_TRGDLYDIV_Msk | EADC_SCTL_TRGDLYCNT_Msk);
-        eadc->SCTL19[u32ModuleNum-19] |= ((u32TriggerDelayTime << EADC_SCTL_TRGDLYCNT_Pos) | u32DelayClockDivider);
+        eadc->SCTL19[u32ModuleNum - 19] &= ~(EADC_SCTL_TRGDLYDIV_Msk | EADC_SCTL_TRGDLYCNT_Msk);
+        eadc->SCTL19[u32ModuleNum - 19] |= ((u32TriggerDelayTime << EADC_SCTL_TRGDLYCNT_Pos) | u32DelayClockDivider);
     }
 }
 
@@ -160,11 +154,13 @@ void EADC_SetExtendSampleTime(EADC_T *eadc, uint32_t u32ModuleNum, uint32_t u32E
     }
     else
     {
-        eadc->SCTL19[u32ModuleNum-19] &= ~EADC_SCTL_EXTSMPT_Msk;
-        eadc->SCTL19[u32ModuleNum-19] |= (u32ExtendSampleTime << EADC_SCTL_EXTSMPT_Pos);
+        eadc->SCTL19[u32ModuleNum - 19] &= ~EADC_SCTL_EXTSMPT_Msk;
+        eadc->SCTL19[u32ModuleNum - 19] |= (u32ExtendSampleTime << EADC_SCTL_EXTSMPT_Pos);
     }
 }
 
 /** @} end of group EADC_EXPORTED_FUNCTIONS */
+
 /** @} end of group EADC_Driver */
+
 /** @} end of group Standard_Driver */

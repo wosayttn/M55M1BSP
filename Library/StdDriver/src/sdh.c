@@ -34,29 +34,23 @@
 int32_t g_SDH_i32ErrCode = 0;       /*!< SDH global error code */
 static uint32_t _SDH0_ReferenceClock, _SDH1_ReferenceClock;
 
-#ifdef __ICCARM__
-    #pragma data_alignment = 4
-    static uint8_t _SDH0_ucSDHCBuffer[512];
-    static uint8_t _SDH1_ucSDHCBuffer[512];
-#else
-    static uint8_t _SDH0_ucSDHCBuffer[512] __attribute__((aligned(4)));
-    static uint8_t _SDH1_ucSDHCBuffer[512] __attribute__((aligned(4)));
-#endif
+__attribute__((aligned(4))) static uint8_t _SDH0_ucSDHCBuffer[SDH_BLOCK_SIZE] = {0};
+__attribute__((aligned(4))) static uint8_t _SDH1_ucSDHCBuffer[SDH_BLOCK_SIZE] = {0};
 
 SDH_INFO_T SD0, SD1;
 
 //------------------------------------------------------------------------------
-void *GetSDH0SDHCBuffer(void)
+void *SDH_GetSDH0Buffer(void)
 {
     return &_SDH0_ucSDHCBuffer[0];
 }
 
-void *GetSDH1SDHCBuffer(void)
+void *SDH_GetSDH1Buffer(void)
 {
     return &_SDH1_ucSDHCBuffer[0];
 }
 
-void *GetSDHInfoMsg(SDH_T *sdh)
+void *SDH_GetSDInfoMsg(SDH_T *sdh)
 {
     if (sdh == SDH0)
     {
@@ -72,10 +66,9 @@ void *GetSDHInfoMsg(SDH_T *sdh)
 
 void SDH_CheckRB(SDH_T *sdh)
 {
-    uint32_t u32TimeOutCount1, u32TimeOutCount2;
+    uint32_t u32TimeOutCount1 = 0, u32TimeOutCount2 = SDH_TIMEOUT_CNT;
 
     g_SDH_i32ErrCode = 0;
-    u32TimeOutCount2 = SDH_TIMEOUT_CNT;
 
     while (1)
     {
@@ -103,7 +96,6 @@ void SDH_CheckRB(SDH_T *sdh)
         }
     }
 }
-
 
 uint32_t SDH_SDCommand(SDH_T *sdh, uint32_t ucCmd, uint32_t uArg)
 {
@@ -553,7 +545,7 @@ uint32_t SDH_CardDetection(SDH_T *sdh)
             pSD->IsCardInsert = (uint8_t)TRUE;
         }
     }
-    else if ((sdh->INTEN & SDH_INTEN_CDSRC_Msk) != SDH_INTEN_CDSRC_Msk)
+    else
     {
         sdh->CTL |= SDH_CTL_CLKKEEP_Msk;
 
@@ -1098,7 +1090,7 @@ void SDH_Get_SD_info(SDH_T *sdh)
  *
  *  @return None
  */
-void SDH_INT_EN(SDH_T *sdh)
+void SDH_Enable_Int(SDH_T *sdh)
 {
     if (sdh == SDH0)
     {
@@ -1351,11 +1343,6 @@ uint32_t SDH_Read(SDH_T *sdh, uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32_
 
         while (!pSD->DataReadyFlag)
         {
-            if (pSD->DataReadyFlag)
-            {
-                break;
-            }
-
             if (pSD->IsCardInsert == FALSE)
             {
                 return SDH_NO_SD_CARD;

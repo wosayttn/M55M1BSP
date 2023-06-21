@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     dac.c
  * @version  V1.00
- * @brief    DAC driver source file
+ * @brief    M55M1 series DAC driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -81,5 +81,7 @@ uint32_t DAC_SetDelayTime(DAC_T *dac, uint32_t u32Delay)
 }
 
 /** @} end of group DAC_EXPORTED_FUNCTIONS */
+
 /** @} end of group DAC_Driver */
+
 /** @} end of group Standard_Driver */

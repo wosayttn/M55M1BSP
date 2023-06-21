@@ -40,6 +40,27 @@ typedef struct {
     uint16_t    st;
 } KPI_KEY_T;
 
+
+/*---------------------------------------------------------------------------------------------------------*/
+/*  KPI_CTL constant definitions.                                                                            */
+/*---------------------------------------------------------------------------------------------------------*/
+#define KPI_ROW_SCAN_DELAY4CLK      (0x0 << KPI_CTL_ROWDLY_Pos) /*!< Delay cycle when row change */
+#define KPI_ROW_SCAN_DELAY8CLK      (0x1 << KPI_CTL_ROWDLY_Pos) /*!< Delay cycle when row change */
+#define KPI_ROW_SCAN_DELAY16CLK     (0x2 << KPI_CTL_ROWDLY_Pos) /*!< Delay cycle when row change */
+#define KPI_ROW_SCAN_DELAY32CLK     (0x3 << KPI_CTL_ROWDLY_Pos) /*!< Delay cycle when row change */
+
+#define KPI_COL_SAMPLE_8CLK         (0x3 << KPI_CTL_DBCLKSEL_Pos) /*!< Scan in De-bounce Sampling Cycle Selection */
+#define KPI_COL_SAMPLE_16CLK        (0x4 << KPI_CTL_DBCLKSEL_Pos) /*!< Scan in De-bounce Sampling Cycle Selection */
+#define KPI_COL_SAMPLE_32CLK        (0x5 << KPI_CTL_DBCLKSEL_Pos) /*!< Scan in De-bounce Sampling Cycle Selection */
+#define KPI_COL_SAMPLE_64CLK        (0x6 << KPI_CTL_DBCLKSEL_Pos) /*!< Scan in De-bounce Sampling Cycle Selection */
+#define KPI_COL_SAMPLE_128CLK       (0x7 << KPI_CTL_DBCLKSEL_Pos) /*!< Scan in De-bounce Sampling Cycle Selection */
+#define KPI_COL_SAMPLE_256CLK       (0x8 << KPI_CTL_DBCLKSEL_Pos) /*!< Scan in De-bounce Sampling Cycle Selection */
+#define KPI_COL_SAMPLE_512CLK       (0x9 << KPI_CTL_DBCLKSEL_Pos) /*!< Scan in De-bounce Sampling Cycle Selection */
+#define KPI_COL_SAMPLE_1024CLK      (0xA << KPI_CTL_DBCLKSEL_Pos) /*!< Scan in De-bounce Sampling Cycle Selection */
+#define KPI_COL_SAMPLE_2048CLK      (0xB << KPI_CTL_DBCLKSEL_Pos) /*!< Scan in De-bounce Sampling Cycle Selection */
+#define KPI_COL_SAMPLE_4096CLK      (0xC << KPI_CTL_DBCLKSEL_Pos) /*!< Scan in De-bounce Sampling Cycle Selection */
+#define KPI_COL_SAMPLE_8192CLK      (0xD << KPI_CTL_DBCLKSEL_Pos) /*!< Scan in De-bounce Sampling Cycle Selection */
+
 /** @} end of group KPI_EXPORTED_CONSTANTS */
 
 /** @addtogroup KPI_EXPORTED_FUNCTIONS KPI Exported Functions
@@ -48,9 +69,9 @@ typedef struct {
 
 int32_t KPI_Open(uint32_t u32Rows, uint32_t u32Columns, KPI_KEY_T *pkeyQueue, uint32_t u32MaxKeyCnt);
 void KPI_Close(void);
+void KPI_ConfigKeyScanTiming(uint32_t u32PreScale, uint32_t u32Debounce, uint32_t u32ScanDelay);
 int32_t KPI_kbhit(void);
 KPI_KEY_T KPI_GetKey(void);
-void KPI_SetSampleTime(uint32_t ms);
 
 /** @} end of group KPI_EXPORTED_FUNCTIONS */
 /** @} end of group KPI_Driver */

@@ -1404,6 +1404,8 @@ typedef struct
      * |        |          |1101 = EPWM_CH2 down-count free CMPDAT point.
      * |        |          |1110 = EPWM_CH4 up-count free CMPDAT point.
      * |        |          |1111 = EPWM_CH4 down-count free CMPDAT point.
+     * |        |          |10000 = EPWM_CH0 Interrupt Flag Accumulator Interrupt.
+     * |        |          |10001 = EPWM_CH1 Interrupt Flag Accumulator Interrupt.
      * |[7]     |TRGEN0    |EPWM_CH0 Trigger EADC enable bit
      * |[11:8]  |TRGSEL1   |EPWM_CH1 Trigger EADC Source Select
      * |        |          |0000 = EPWM_CH0 zero point.
@@ -1422,6 +1424,8 @@ typedef struct
      * |        |          |1101 = EPWM_CH2 down-count free CMPDAT point.
      * |        |          |1110 = EPWM_CH4 up-count free CMPDAT point.
      * |        |          |1111 = EPWM_CH4 down-count free CMPDAT point.
+     * |        |          |10000 = EPWM_CH0 Interrupt Flag Accumulator Interrupt.
+     * |        |          |10001 = EPWM_CH1 Interrupt Flag Accumulator Interrupt.
      * |[15]    |TRGEN1    |EPWM_CH1 Trigger EADC enable bit
      * |[19:16] |TRGSEL2   |EPWM_CH2 Trigger EADC Source Select
      * |        |          |0000 = EPWM_CH2 zero point.
@@ -1440,6 +1444,8 @@ typedef struct
      * |        |          |1101 = EPWM_CH2 down-count free CMPDAT point.
      * |        |          |1110 = EPWM_CH4 up-count free CMPDAT point.
      * |        |          |1111 = EPWM_CH4 down-count free CMPDAT point.
+     * |        |          |10000 = EPWM_CH2 Interrupt Flag Accumulator Interrupt.
+     * |        |          |10001 = EPWM_CH3 Interrupt Flag Accumulator Interrupt.
      * |[23]    |TRGEN2    |EPWM_CH2 Trigger EADC enable bit
      * |[27:24] |TRGSEL3   |EPWM_CH3 Trigger EADC Source Select
      * |        |          |0000 = EPWM_CH2 zero point.
@@ -1458,6 +1464,8 @@ typedef struct
      * |        |          |1101 = EPWM_CH2 down-count free CMPDAT point.
      * |        |          |1110 = EPWM_CH4 up-count free CMPDAT point.
      * |        |          |1111 = EPWM_CH4 down-count free CMPDAT point.
+     * |        |          |10000 = EPWM_CH2 Interrupt Flag Accumulator Interrupt.
+     * |        |          |10001 = EPWM_CH3 Interrupt Flag Accumulator Interrupt.
      * |[31]    |TRGEN3    |EPWM_CH3 Trigger EADC enable bit
      * @var EPWM_T::EADCTS1
      * Offset: 0xFC  EPWM Trigger EADC Source Select Register 1
@@ -1481,6 +1489,8 @@ typedef struct
      * |        |          |1101 = EPWM_CH2 down-count free CMPDAT point.
      * |        |          |1110 = EPWM_CH4 up-count free CMPDAT point.
      * |        |          |1111 = EPWM_CH4 down-count free CMPDAT point.
+     * |        |          |10000 = EPWM_CH4 Interrupt Flag Accumulator Interrupt.
+     * |        |          |10001 = EPWM_CH5 Interrupt Flag Accumulator Interrupt.
      * |[7]     |TRGEN4    |EPWM_CH4 Trigger EADC enable bit
      * |[11:8]  |TRGSEL5   |EPWM_CH5 Trigger EADC Source Select
      * |        |          |0000 = EPWM_CH4 zero point.
@@ -1499,6 +1509,8 @@ typedef struct
      * |        |          |1101 = EPWM_CH2 down-count free CMPDAT point.
      * |        |          |1110 = EPWM_CH4 up-count free CMPDAT point.
      * |        |          |1111 = EPWM_CH4 down-count free CMPDAT point.
+     * |        |          |10000 = EPWM_CH4 Interrupt Flag Accumulator Interrupt.
+     * |        |          |10001 = EPWM_CH5 Interrupt Flag Accumulator Interrupt.
      * |[15]    |TRGEN5    |EPWM_CH5 Trigger EADC enable bit
      * @var EPWM_T::FTCMPDAT[3]
      * Offset: 0x100  EPWM Free Trigger Compare Register 0/1,2/3,4/5

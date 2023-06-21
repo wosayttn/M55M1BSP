@@ -27,7 +27,7 @@ __attribute__((aligned(32))) static uint8_t g_au8DestArray[BUFF_SIZE] = {0};
  */
 void HyperRAM_Erase(SPIM_T *spim, uint32_t u32StartAddr, uint32_t u32EraseSize)
 {
-    uint16_t u16Data = 0;
+    uint16_t u16Data;
     uint32_t u32i = 0;
     uint32_t u32RemainSize = (u32EraseSize % 2);
 
@@ -70,11 +70,11 @@ void HyperRAM_Erase(SPIM_T *spim, uint32_t u32StartAddr, uint32_t u32EraseSize)
 void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
 {
     uint8_t u8RdDelay = 0;
-    uint8_t u8Temp = 0;
+    uint8_t u8Temp;
     uint8_t u8RdDelayIdx = 0;
     uint8_t u8RdDelayRes[SPIM_MAX_DLL_LATENCY] = {0};
     uint32_t u32i = 0;
-    uint32_t u32j = 0;
+    uint32_t u32j;
     uint32_t u32SrcAddr = 0;
     uint32_t u32TestSize = 32;
     uint32_t u32DMMAddr = SPIM_GetDirectMapAddress(spim);
