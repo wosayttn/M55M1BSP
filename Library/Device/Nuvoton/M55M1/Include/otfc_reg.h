@@ -68,7 +68,7 @@ typedef struct
     * ---------------------------------------------------------------------------------------------------
     * |Bits    |Field     |Descriptions
     * | :----: | :----:   | :---- |
-    * |[31:0]  |KEY       |OTFC_PRx_KEYx
+    * |[31:0]  |KEY       |OTFC_PRx_KEY0
     * |        |          |The KEY keeps the security key for AES operation in protection region 0~3.
     * |        |          |x = 0, 1, 2, 3.
     * |        |          |The security key for AES accelerator is 128 bits and four 32-bit registers are to store each security key.
@@ -78,7 +78,7 @@ typedef struct
     * ---------------------------------------------------------------------------------------------------
     * |Bits    |Field     |Descriptions
     * | :----: | :----:   | :---- |
-    * |[31:0]  |KEY       |OTFC_PRx_KEYx
+    * |[31:0]  |KEY       |OTFC_PRx_KEY1
     * |        |          |The KEY keeps the security key for AES operation in protection region 0~3.
     * |        |          |x = 0, 1, 2, 3.
     * |        |          |The security key for AES accelerator is 128 bits and four 32-bit registers are to store each security key.
@@ -88,7 +88,7 @@ typedef struct
     * ---------------------------------------------------------------------------------------------------
     * |Bits    |Field     |Descriptions
     * | :----: | :----:   | :---- |
-    * |[31:0]  |KEY       |OTFC_PRx_KEYx
+    * |[31:0]  |KEY       |OTFC_PRx_KEY2
     * |        |          |The KEY keeps the security key for AES operation in protection region 0~3.
     * |        |          |x = 0, 1, 2, 3.
     * |        |          |The security key for AES accelerator is 128 bits and four 32-bit registers are to store each security key.
@@ -98,7 +98,7 @@ typedef struct
     * ---------------------------------------------------------------------------------------------------
     * |Bits    |Field     |Descriptions
     * | :----: | :----:   | :---- |
-    * |[31:0]  |KEY       |OTFC_PRx_KEYx
+    * |[31:0]  |KEY       |OTFC_PRx_KEY3
     * |        |          |The KEY keeps the security key for AES operation in protection region 0~3.
     * |        |          |x = 0, 1, 2, 3.
     * |        |          |The security key for AES accelerator is 128 bits and four 32-bit registers are to store each security key.
@@ -109,7 +109,7 @@ typedef struct
     * |Bits    |Field     |Descriptions
     * | :----: | :----:   | :---- |
     * |[31:0]  |SCRAMBLE  |Protection Region 0~3 Scramble key Register
-    * |        |          |The scramble key for address cipher funtcion in protection region 0~3.
+    * |        |          |The scramble key for address cipher function in protection region 0~3.
     * @var OTFC_T::PRx_NONCE0
     * Offset: 0x44 0x84 0xC4 0x104 OTFC Protection Region 0~3 Nonce Word 0 Register
     * ---------------------------------------------------------------------------------------------------
@@ -163,7 +163,7 @@ typedef struct
      * |        |          |1 = OTFC protection region 0 Enabled.
      * |[1]     |RST0      |Protection Region 0 Reset
      * |        |          |0 = No effect.
-     * |        |          |1 = Clear the seeting setting of OTFC protection region 0.
+     * |        |          |1 = Clear the setting setting of OTFC protection region 0.
      * |        |          |Note: This bit is always 0 when it is read back.
      * |[2]     |KSWAP0    |Protection Region 0 Key and Nonce Swap
      * |        |          |0 = Keep the original order in OTFCx_PR0_KEYy.
@@ -176,7 +176,7 @@ typedef struct
      * |        |          |1 = OTFC protection region 1 Enabled.
      * |[9]     |RST1      |Protection Region 1 Reset
      * |        |          |0 = No effect.
-     * |        |          |1 = Clear the seeting setting of OTFC protection region 1.
+     * |        |          |1 = Clear the setting setting of OTFC protection region 1.
      * |        |          |Note: This bit is always 0 when it is read back.
      * |[10]    |KSWAP1    |Protection Region 1 Key and Nonce Swap
      * |        |          |0 = Keep the original order in OTFCx_PR1_KEYy..
@@ -189,7 +189,7 @@ typedef struct
      * |        |          |1 = OTFC protection region 2 Enabled.
      * |[17]    |RST2      |Protection Region 2 Reset
      * |        |          |0 = No effect.
-     * |        |          |1 = Clear the seeting setting of OTFC protection region 2.
+     * |        |          |1 = Clear the setting setting of OTFC protection region 2.
      * |        |          |Note: This bit is always 0 when it is read back.
      * |[18]    |KSWAP2    |Protection Region 2 Key and Nonce Swap
      * |        |          |0 = Keep the original order in OTFCx_PR2_KEYy.
@@ -202,7 +202,7 @@ typedef struct
      * |        |          |1 = OTFC protection region 3 Enabled.
      * |[25]    |RST3      |Protection Region 3 Reset
      * |        |          |0 = No effect.
-     * |        |          |1 = Clear the seeting setting of OTFC protection region 3.
+     * |        |          |1 = Clear the setting setting of OTFC protection region 3.
      * |        |          |Note: This bit is always 0 when it is read back.
      * |[26]    |KSWAP3    |Protection Region 3 Key and Nonce Swap
      * |        |          |0 = Keep the original order in OTFCx_PR3_KEYy.
@@ -215,61 +215,61 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[0]     |BUSY0     |OTFC Protrction Region 0 Busy (Read Only)
-     * |        |          |0 = The OTFC Protrction Region 0 is idle.
-     * |        |          |1 = The OTFC Protrction Region 0 is under processing.
-     * |[5]     |KSERR0    |OTFC Protrction Region 0 Access Key Store Error Flag (Read Only)
+     * |[0]     |BUSY0     |OTFC Protection Region 0 Busy (Read Only)
+     * |        |          |0 = The OTFC Protection Region 0 is idle.
+     * |        |          |1 = The OTFC Protection Region 0 is under processing.
+     * |[5]     |KSERR0    |OTFC Protection Region 0 Access Key Store Error Flag (Read Only)
      * |        |          |0 = No error.
-     * |        |          |1 = Key Store access error will stop OTFC engine in Protrction Region 0.
-     * |[6]     |DFAERR0   |OTFC Protrction Region 0 Differential Fault Attack Error Flag (Read Only)
+     * |        |          |1 = Key Store access error will stop OTFC engine in Protection Region 0.
+     * |[6]     |DFAERR0   |OTFC Protection Region 0 Differential Fault Attack Error Flag (Read Only)
      * |        |          |0 = No error.
-     * |        |          |1 = Differential Fault Attack happened in protrction region 0
+     * |        |          |1 = Differential Fault Attack happened in protection region 0
      * |        |          |The results from AES engine are incorrect.
-     * |[7]     |IF0       |OTFC Protrction Region 0 Interrupt Flag
-     * |        |          |0 = No OTFC Protrction Region 0 interrupt.
-     * |        |          |1 = OTFC Protrction Region 0 interrupt.
+     * |[7]     |IF0       |OTFC Protection Region 0 Interrupt Flag
+     * |        |          |0 = No OTFC Protection Region 0 interrupt.
+     * |        |          |1 = OTFC Protection Region 0 interrupt.
      * |        |          |Note: This bit is cleared by writing 1 and it has no effect by writing 0.
-     * |[8]     |BUSY1     |OTFC Protrction Region 1 Busy (Read Only)
-     * |        |          |0 = The OTFC Protrction Region 1 is idle.
-     * |        |          |1 = The OTFC Protrction Region 1 is under processing.
-     * |[13]    |KSERR1    |OTFC Protrction Region 1 Access Key Store Error Flag (Read Only)
+     * |[8]     |BUSY1     |OTFC Protection Region 1 Busy (Read Only)
+     * |        |          |0 = The OTFC Protection Region 1 is idle.
+     * |        |          |1 = The OTFC Protection Region 1 is under processing.
+     * |[13]    |KSERR1    |OTFC Protection Region 1 Access Key Store Error Flag (Read Only)
      * |        |          |0 = No error.
-     * |        |          |1 = Key Store access error will stop OTFC engine in Protrction Region 1.
-     * |[14]    |DFAERR1   |OTFC Protrction Region 1 Differential Fault Attack Error Flag (Read Only)
+     * |        |          |1 = Key Store access error will stop OTFC engine in Protection Region 1.
+     * |[14]    |DFAERR1   |OTFC Protection Region 1 Differential Fault Attack Error Flag (Read Only)
      * |        |          |0 = No error.
-     * |        |          |1 = Differential Fault Attack happened in protrction region 1
+     * |        |          |1 = Differential Fault Attack happened in protection region 1
      * |        |          |The results from AES engine are incorrect.
-     * |[15]    |IF1       |OTFC Protrction Region 1 Interrupt Flag
-     * |        |          |0 = No OTFC Protrction Region 1 interrupt.
-     * |        |          |1 = OTFC Protrction Region 1 interrupt.
+     * |[15]    |IF1       |OTFC Protection Region 1 Interrupt Flag
+     * |        |          |0 = No OTFC Protection Region 1 interrupt.
+     * |        |          |1 = OTFC Protection Region 1 interrupt.
      * |        |          |Note: This bit is cleared by writing 1 and it has no effect by writing 0.
-     * |[16]    |BUSY2     |OTFC Protrction Region 2 Busy (Read Only)
-     * |        |          |0 = The OTFC Protrction Region 2 is idle.
-     * |        |          |1 = The OTFC Protrction Region 2 is under processing.
-     * |[21]    |KSERR2    |OTFC Protrction Region 2 Access Key Store Error Flag (Read Only)
+     * |[16]    |BUSY2     |OTFC Protection Region 2 Busy (Read Only)
+     * |        |          |0 = The OTFC Protection Region 2 is idle.
+     * |        |          |1 = The OTFC Protection Region 2 is under processing.
+     * |[21]    |KSERR2    |OTFC Protection Region 2 Access Key Store Error Flag (Read Only)
      * |        |          |0 = No error.
-     * |        |          |1 = Key Store access error will stop OTFC engine in Protrction Region 2.
-     * |[22]    |DFAERR2   |OTFC Protrction Region 2 Differential Fault Attack Error Flag (Read Only)
+     * |        |          |1 = Key Store access error will stop OTFC engine in Protection Region 2.
+     * |[22]    |DFAERR2   |OTFC Protection Region 2 Differential Fault Attack Error Flag (Read Only)
      * |        |          |0 = No error.
-     * |        |          |1 = Differential Fault Attack happened in protrction region 2
+     * |        |          |1 = Differential Fault Attack happened in protection region 2
      * |        |          |The results from AES engine are incorrect.
-     * |[23]    |IF2       |OTFC Protrction Region 2 Interrupt Flag
-     * |        |          |0 = No OTFC Protrction Region 2 interrupt.
-     * |        |          |1 = OTFC Protrction Region 2 interrupt.
+     * |[23]    |IF2       |OTFC Protection Region 2 Interrupt Flag
+     * |        |          |0 = No OTFC Protection Region 2 interrupt.
+     * |        |          |1 = OTFC Protection Region 2 interrupt.
      * |        |          |Note: This bit is cleared by writing 1 and it has no effect by writing 0.
-     * |[24]    |BUSY3     |OTFC Protrction Region 3 Busy (Read Only)
-     * |        |          |0 = The OTFC Protrction Region 3 is idle.
-     * |        |          |1 = The OTFC Protrction Region 3 is under processing.
-     * |[29]    |KSERR3    |OTFC Protrction Region 3 Access Key Store Error Flag (Read Only)
+     * |[24]    |BUSY3     |OTFC Protection Region 3 Busy (Read Only)
+     * |        |          |0 = The OTFC Protection Region 3 is idle.
+     * |        |          |1 = The OTFC Protection Region 3 is under processing.
+     * |[29]    |KSERR3    |OTFC Protection Region 3 Access Key Store Error Flag (Read Only)
      * |        |          |0 = No error.
-     * |        |          |1 = Key Store access error will stop OTFC engine in Protrction Region 3.
-     * |[30]    |DFAERR3   |OTFC Protrction Region 3 Differential Fault Attack Error Flag (Read Only)
+     * |        |          |1 = Key Store access error will stop OTFC engine in Protection Region 3.
+     * |[30]    |DFAERR3   |OTFC Protection Region 3 Differential Fault Attack Error Flag (Read Only)
      * |        |          |0 = No error.
-     * |        |          |1 = Differential Fault Attack happened in protrction region 3
+     * |        |          |1 = Differential Fault Attack happened in protection region 3
      * |        |          |The results from AES engine are incorrect.
-     * |[31]    |IF3       |OTFC Protrction Region 3 Interrupt Flag
-     * |        |          |0 = No OTFC Protrction Region 3 interrupt.
-     * |        |          |1 = OTFC Protrction Region 3 interrupt.
+     * |[31]    |IF3       |OTFC Protection Region 3 Interrupt Flag
+     * |        |          |0 = No OTFC Protection Region 3 interrupt.
+     * |        |          |1 = OTFC Protection Region 3 interrupt.
      * |        |          |Note: This bit is cleared by writing 1 and it has no effect by writing 0.
      */
     __IO uint32_t CTL;                  /*!< [0x0000] OTFC Control Register                                            */
