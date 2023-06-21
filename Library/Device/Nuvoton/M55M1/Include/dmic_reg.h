@@ -195,14 +195,14 @@ typedef struct
  * |[31]    |FIFOBISTEN|FIFO BIST Test Enable (Internal use)
  * |        |          |0 = Disable DMIC FIFO BIST testing.
  * |        |          |1 = Enable DMIC FIFO BIST testing.
- * @var DMIC_T::PDMACTL
- * Offset: 0x0C  DMIC PDMA Control Register
+ * @var DMIC_T::LPPDMACTL
+ * Offset: 0x0C  DMIC LPPDMA Control Register
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[0]     |PDMAEN    |PDMA Transfer Enable Bit
- * |        |          |0 = PDMA data transfer Disabled.
- * |        |          |1 = PDMA data transfer Enabled.
+ * |[0]     |LPPDMAEN  |LPPDMA Transfer Enable Bit
+ * |        |          |0 = LPPDMA data transfer Disabled.
+ * |        |          |1 = LPPDMA data transfer Enabled.
  * @var DMIC_T::FIFO
  * Offset: 0x10  DMIC FIFO Data Output Register
  * ---------------------------------------------------------------------------------------------------
@@ -395,7 +395,7 @@ typedef struct
     __IO uint32_t CTL;                   /*!< [0x0000] DMIC Control Register                                            */
     __IO uint32_t DIV;                   /*!< [0x0004] DMIC Clock Divider Register                                      */
     __I  uint32_t STATUS;                /*!< [0x0008] DMIC Status Register                                             */
-    __IO uint32_t PDMACTL;               /*!< [0x000c] DMIC PDMA Control Register                                       */
+    __IO uint32_t LPPDMACTL;               /*!< [0x000c] DMIC LPPDMA Control Register                                       */
 //    __I  uint32_t FIFO;                  /*!< [0x0010] DMIC FIFO Data Output Register                                   */
     __IO  uint32_t FIFO;//for test                  /*!< [0x0010] DMIC FIFO Data Output Register                                   */
     __IO uint32_t GAINCTL0;              /*!< [0x0014] DMIC Channel 0 and 1 Volume Control Register                     */
@@ -705,8 +705,8 @@ typedef struct
 #define DMIC_PDMACTL_LPPDMAEN_Pos          (0)                                               /*!< DMIC_T::PDMACTL: PDMAEN Position       */
 #define DMIC_PDMACTL_LPPDMAEN_Msk          (0x1ul << DMIC_PDMACTL_LPPDMAEN_Pos)                /*!< DMIC_T::PDMACTL: PDMAEN Mask           */
 
-#define DMIC_LPPDMACTL_LPPDMAEN_Pos          (0)                                               /*!< DMIC_T::PDMACTL: PDMAEN Position       */
-#define DMIC_LPPDMACTL_LPPDMAEN_Msk          (0x1ul << DMIC_LPPDMACTL_LPPDMAEN_Pos)                /*!< DMIC_T::PDMACTL: PDMAEN Mask           */
+#define DMIC_LPPDMACTL_LPPDMAEN_Pos          (0)                                               /*!< DMIC_T::LPPDMACTL: LPPDMAEN Position       */
+#define DMIC_LPPDMACTL_LPPDMAEN_Msk          (0x1ul << DMIC_LPPDMACTL_LPPDMAEN_Pos)                /*!< DMIC_T::LPPDMACTL: LPPDMAEN Mask           */
 
 #define DMIC_FIFO_FIFO_Pos               (0)                                               /*!< DMIC_T::FIFO: FIFO Position            */
 #define DMIC_FIFO_FIFO_Msk               (0xfffffful << DMIC_FIFO_FIFO_Pos)              /*!< DMIC_T::FIFO: FIFO Mask                */

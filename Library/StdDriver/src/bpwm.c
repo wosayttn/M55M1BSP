@@ -42,7 +42,7 @@ uint32_t BPWM_ConfigCaptureChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_
     (void)u32ChannelNum;
     (void)u32CaptureEdge;
 
-    if(bpwm == BPWM0)
+    if (bpwm == BPWM0)
     {
         u32Src = CLK->BPWMSEL & CLK_BPWMSEL_BPWM0SEL_Msk;
     }
@@ -51,7 +51,7 @@ uint32_t BPWM_ConfigCaptureChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_
         u32Src = CLK->BPWMSEL & CLK_BPWMSEL_BPWM1SEL_Msk;
     }
 
-    if(u32Src == 1UL)
+    if (u32Src == 1UL)
     {
         /* clock source is from HCLK0 clock */
         u32BPWMClockSrc = CLK_GetHCLK0Freq();
@@ -60,7 +60,8 @@ uint32_t BPWM_ConfigCaptureChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_
     {
         /* clock source is from PCLK */
         SystemCoreClockUpdate();
-        if(bpwm == BPWM0)
+
+        if (bpwm == BPWM0)
         {
             u32BPWMClockSrc = CLK_GetPCLK0Freq();
         }
@@ -71,11 +72,13 @@ uint32_t BPWM_ConfigCaptureChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_
     }
 
     u32BPWMClockSrc /= 1000UL;
-    for(u32Prescale = 1UL; u32Prescale <= 0x1000UL; u32Prescale++)
+
+    for (u32Prescale = 1UL; u32Prescale <= 0x1000UL; u32Prescale++)
     {
         uint32_t u32Exit = 0UL;
         u32NearestUnitTimeNsec = (1000000UL * u32Prescale) / u32BPWMClockSrc;
-        if(u32NearestUnitTimeNsec < u32UnitTimeNsec)
+
+        if (u32NearestUnitTimeNsec < u32UnitTimeNsec)
         {
             if (u32Prescale == 0x1000UL)   /* limit to the maximum unit time(nano second) */
             {
@@ -91,6 +94,7 @@ uint32_t BPWM_ConfigCaptureChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_
         {
             u32Exit = 1UL;
         }
+
         if (u32Exit)
         {
             break;
@@ -131,7 +135,7 @@ uint32_t BPWM_ConfigOutputChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t
     uint32_t i;
     uint32_t u32Prescale = 1UL, u32CNR = 0xFFFFUL;
 
-    if(bpwm == BPWM0)
+    if (bpwm == BPWM0)
     {
         u32Src = CLK->BPWMSEL & CLK_BPWMSEL_BPWM0SEL_Msk;
     }
@@ -140,7 +144,7 @@ uint32_t BPWM_ConfigOutputChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t
         u32Src = CLK->BPWMSEL & CLK_BPWMSEL_BPWM1SEL_Msk;
     }
 
-    if(u32Src == 1UL)
+    if (u32Src == 1UL)
     {
         /* clock source is from HCLK0 clock */
         u32BPWMClockSrc = CLK_GetHCLK0Freq();
@@ -149,7 +153,8 @@ uint32_t BPWM_ConfigOutputChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t
     {
         /* clock source is from PCLK */
         SystemCoreClockUpdate();
-        if(bpwm == BPWM0)
+
+        if (bpwm == BPWM0)
         {
             u32BPWMClockSrc = CLK_GetPCLK0Freq();
         }
@@ -159,16 +164,18 @@ uint32_t BPWM_ConfigOutputChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t
         }
     }
 
-    for(u32Prescale = 1UL; u32Prescale < 0xFFFUL; u32Prescale++)   /* prescale could be 0~0xFFF */
+    for (u32Prescale = 1UL; u32Prescale < 0xFFFUL; u32Prescale++)  /* prescale could be 0~0xFFF */
     {
         i = (u32BPWMClockSrc / u32Frequency) / u32Prescale;
+
         /* If target value is larger than CNR, need to use a larger prescaler */
-        if(i <= (0x10000UL))
+        if (i <= (0x10000UL))
         {
             u32CNR = i;
             break;
         }
     }
+
     /* Store return value here 'cos we're gonna change u32Prescale & u32CNR to the real value to fill into register */
     i = u32BPWMClockSrc / (u32Prescale * u32CNR);
 
@@ -192,7 +199,7 @@ uint32_t BPWM_ConfigOutputChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t
     (bpwm)->WGCTL1 = ((bpwm)->WGCTL1 & ~((BPWM_WGCTL1_CMPDCTL0_Msk | BPWM_WGCTL1_CMPUCTL0_Msk) << (u32ChannelNum << 1))) | \
                      (BPWM_OUTPUT_LOW << (u32ChannelNum << 1UL << BPWM_WGCTL1_CMPUCTL0_Pos));
 
-    return(i);
+    return (i);
 }
 
 /**
@@ -262,7 +269,7 @@ void BPWM_ForceStop(BPWM_T *bpwm, uint32_t u32ChannelMask)
  */
 void BPWM_EnableADCTrigger(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t u32Condition)
 {
-    if(u32ChannelNum < 4UL)
+    if (u32ChannelNum < 4UL)
     {
         (bpwm)->EADCTS0 &= ~((BPWM_EADCTS0_TRGSEL0_Msk) << (u32ChannelNum << 3UL));
         (bpwm)->EADCTS0 |= ((BPWM_EADCTS0_TRGEN0_Msk | u32Condition) << (u32ChannelNum << 3UL));
@@ -285,7 +292,7 @@ void BPWM_EnableADCTrigger(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t u32Con
  */
 void BPWM_DisableADCTrigger(BPWM_T *bpwm, uint32_t u32ChannelNum)
 {
-    if(u32ChannelNum < 4UL)
+    if (u32ChannelNum < 4UL)
     {
         (bpwm)->EADCTS0 &= ~(BPWM_EADCTS0_TRGEN0_Msk << (u32ChannelNum << 3UL));
     }

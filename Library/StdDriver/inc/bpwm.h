@@ -114,8 +114,8 @@ extern "C"
  * @param[in] bpwm The pointer of the specified BPWM module
  * @param[in] u32ChannelMask Combination of enabled channels. This parameter is not used.
  * @param[in] u32SyncSrc Synchronous start source selection, valid values are:
- *              - \ref BPWM_SSCTL_SSRC_PWM0
- *              - \ref BPWM_SSCTL_SSRC_PWM1
+ *              - \ref BPWM_SSCTL_SSRC_EPWM0
+ *              - \ref BPWM_SSCTL_SSRC_EPWM1
  *              - \ref BPWM_SSCTL_SSRC_BPWM0
  *              - \ref BPWM_SSCTL_SSRC_BPWM1
  * @return None
@@ -310,7 +310,7 @@ extern "C"
  * \hideinitializer
  */
 #define BPWM_SET_OUTPUT_LEVEL(bpwm, u32ChannelMask, u32ZeroLevel, u32CmpUpLevel, u32PeriodLevel, u32CmpDownLevel) \
-   do{ \
+    do{ \
         uint32_t i; \
         for(i = 0UL; i < 6UL; i++) { \
             if((u32ChannelMask) & (1UL << i)) { \

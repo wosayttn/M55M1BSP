@@ -27,8 +27,8 @@ BPWM_T *g_apPWMModule[BPWM_MODULE_NUM] = {BPWM0, BPWM1};
 
 void ResetBPWM(void)
 {
-	  SYS_ResetModule(SYS_BPWM0RST);
-	  SYS_ResetModule(SYS_BPWM1RST);
+    SYS_ResetModule(SYS_BPWM0RST);
+    SYS_ResetModule(SYS_BPWM1RST);
 }
 
 int BPWM_Test_Init(void)
@@ -2026,19 +2026,22 @@ void Func_49_BPWM_GetWrapAroundFlag()
     }
 }
 
-CU_SuiteInfo BPWMSuites[] = {
+CU_SuiteInfo BPWMSuites[] =
+{
     { "BPWM Const Test", BPWM_Test_Init, BPWM_Test_Clean, NULL, NULL, BPWM_ConstTest },
     { "BPWM Macro Test", BPWM_Test_Init, BPWM_Test_Clean, NULL, NULL, BPWM_MacroTest },
     { "BPWM Func  Test", BPWM_Test_Init, BPWM_Test_Clean, NULL, NULL, BPWM_FuncTest },
     CU_SUITE_INFO_NULL
 };
 
-CU_TestInfo  BPWM_ConstTest[] = {
+CU_TestInfo  BPWM_ConstTest[] =
+{
     { "Test BPWM_CONSTANT",  Func_BPWM_CONSTANT },
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo  BPWM_MacroTest[] = {
+CU_TestInfo  BPWM_MacroTest[] =
+{
     {"1. BPWM_ENABLE_OUTPUT_INVERTER():", Func_1_BPWM_ENABLE_OUTPUT_INVERTER},
     {"2. BPWM_SET_PRESCALER()/BPWM_GET_PRESCALER():", Func_2_BPWM_SET_PRESCALER},
     {"3. BPWM_SET_CMR()/BPWM_SET_CNR()/BPWM_GET_CMR()/BPWM_GET_CNR():", Func_3_BPWM_SET_CMR},
@@ -2050,7 +2053,8 @@ CU_TestInfo  BPWM_MacroTest[] = {
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo  BPWM_FuncTest[] = {
+CU_TestInfo  BPWM_FuncTest[] =
+{
     {"15. BPWM_Start()/BPWM_ForceStop()/BPWM_Stop():", Func_15_BPWM_Stop},
     {"16. BPWM_EnableADCTrigger()/BPWM_DisableADCTrigger():", Func_16_BPWM_EnableADCTrigger},
     {"17. BPWM_EnableCapture()/BPWM_DisableCapture():", Func_17_BPWM_EnableCapture},

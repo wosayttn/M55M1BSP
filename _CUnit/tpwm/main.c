@@ -1,7 +1,7 @@
 /******************************************************************************
 * @file    main.c
 * @version V1.00
-* @brief   Timer
+* @brief   Tpwm
 *
 * SPDX-License-Identifier: Apache-2.0
 * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -12,7 +12,7 @@
 #include "NuMicro.h"
 #include "CUnit.h"
 #include "Console.h"
-#include "timer_cunit.h"
+#include "tpwm_cunit.h"
 
 #ifndef DEBUG_PORT
     #define DEBUG_PORT UART0
@@ -87,7 +87,7 @@ void AddTests(void)
     assert((NULL != CU_get_registry()));
     assert(!CU_is_test_running());
 
-    if (CUE_SUCCESS != CU_register_suites(TimerSuites))
+    if (CUE_SUCCESS != CU_register_suites(TpwmSuites))
     {
         fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
         exit(EXIT_FAILURE);
@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
 
     printf("\n\n");
     printf("+--------------------------------------+\n");
-    printf("|       M55M1 CUnit Test Timer      |\n");
+    printf("|       M55M1 CUnit Test Tpwm      |\n");
     printf("+--------------------------------------+\n");
 
     if (CU_initialize_registry())

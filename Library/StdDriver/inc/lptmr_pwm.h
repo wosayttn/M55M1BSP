@@ -46,9 +46,9 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /*  LPTPWM Trigger LPIPs Source Select Constant Definitions                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-#define LPTPWM_TRIGGER_AT_PERIOD_POINT            (0UL)       /*!< LPTmr PWM trigger EADC while counter period point event occurred \hideinitializer */
-#define LPTPWM_TRIGGER_AT_COMPARE_POINT           (1UL)       /*!< LPTmr PWM trigger EADC while counter compare point event occurred \hideinitializer */
-#define LPTPWM_TRIGGER_AT_PERIOD_OR_COMPARE_POINT (2UL)       /*!< LPTmr PWM trigger EADC while counter period or compare point event occurred \hideinitializer */
+#define LPTPWM_TRIGGER_AT_PERIOD_POINT            (0UL)       /*!< LPTmr PWM trigger LPIPs while counter period point event occurred \hideinitializer */
+#define LPTPWM_TRIGGER_AT_COMPARE_POINT           (1UL)       /*!< LPTmr PWM trigger LPIPs while counter compare point event occurred \hideinitializer */
+#define LPTPWM_TRIGGER_AT_PERIOD_OR_COMPARE_POINT (2UL)       /*!< LPTmr PWM trigger LPIPs while counter period or compare point event occurred \hideinitializer */
 
 #define LPTPWM_TRGEN                             (LPTMR_PWMTRGCTL_TRGEN_Msk)                /*!< Each lptmr event to trigger Low Power IP \hideinitializer */
 #define LPTPWM_TRG_TO_LPPDMA                     (LPTMR_PWMTRGCTL_TRGEN_Msk|LPTMR_PWMTRGCTL_PWMTRGLPPDMA_Msk)            /*!< Each lptmr event to trigger LPPDMA transfer \hideinitializer */
@@ -560,7 +560,7 @@ __STATIC_INLINE void LPTPWM_DisablePDCLK(LPTMR_T *lptmr);
   */
 __STATIC_INLINE void LPTPWM_EnableWakeup(LPTMR_T *lptmr)
 {
-	  lptmr->CTL |= LPTMR_CTL_PDCLKEN_Msk;
+    lptmr->CTL |= LPTMR_CTL_PDCLKEN_Msk;
     lptmr->PWMCTL |= LPTMR_PWMCTL_PWMINTWKEN_Msk;
 }
 

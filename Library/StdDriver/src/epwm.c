@@ -39,7 +39,7 @@ uint32_t EPWM_ConfigCaptureChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_
     uint32_t u32NearestUnitTimeNsec;
     uint32_t u16Prescale = 1U, u16CNR = 0xFFFFU;
 
-    if(epwm == EPWM0)
+    if (epwm == EPWM0)
     {
         u32Src = CLK->EPWMSEL & CLK_EPWMSEL_EPWM0SEL_Msk;
     }
@@ -48,7 +48,7 @@ uint32_t EPWM_ConfigCaptureChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_
         u32Src = CLK->EPWMSEL & CLK_EPWMSEL_EPWM1SEL_Msk;
     }
 
-    if(u32Src == 1U)
+    if (u32Src == 1U)
     {
         /* clock source is from HCLK0 clock */
         u32EPWMClockSrc = CLK_GetHCLK0Freq();
@@ -57,7 +57,8 @@ uint32_t EPWM_ConfigCaptureChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_
     {
         /* clock source is from PCLK */
         SystemCoreClockUpdate();
-        if(epwm == EPWM0)
+
+        if (epwm == EPWM0)
         {
             u32EPWMClockSrc = CLK_GetPCLK0Freq();
         }
@@ -68,13 +69,15 @@ uint32_t EPWM_ConfigCaptureChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_
     }
 
     u32EPWMClockSrc /= 1000U;
-    for(u16Prescale = 1U; u16Prescale <= 0x1000U; u16Prescale++)
+
+    for (u16Prescale = 1U; u16Prescale <= 0x1000U; u16Prescale++)
     {
         uint32_t u32Exit = 0U;
         u32NearestUnitTimeNsec = (1000000U * u16Prescale) / u32EPWMClockSrc;
-        if(u32NearestUnitTimeNsec < u32UnitTimeNsec)
+
+        if (u32NearestUnitTimeNsec < u32UnitTimeNsec)
         {
-            if(u16Prescale == 0x1000U)    /* limit to the maximum unit time(nano second) */
+            if (u16Prescale == 0x1000U)   /* limit to the maximum unit time(nano second) */
             {
                 u32Exit = 1U;
             }
@@ -82,7 +85,8 @@ uint32_t EPWM_ConfigCaptureChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_
             {
                 u32Exit = 0U;
             }
-            if(!((1000000U * (u16Prescale + 1U) > (u32NearestUnitTimeNsec * u32EPWMClockSrc))))
+
+            if (!((1000000U * (u16Prescale + 1U) > (u32NearestUnitTimeNsec * u32EPWMClockSrc))))
             {
                 u32Exit = 1U;
             }
@@ -95,6 +99,7 @@ uint32_t EPWM_ConfigCaptureChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_
         {
             u32Exit = 1U;
         }
+
         if (u32Exit == 1U)
         {
             break;
@@ -137,7 +142,7 @@ uint32_t EPWM_ConfigOutputChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t
     uint32_t i;
     uint32_t u32Prescale = 1U, u32CNR = 0xFFFFU;
 
-    if(epwm == EPWM0)
+    if (epwm == EPWM0)
     {
         u32Src = CLK->EPWMSEL & CLK_EPWMSEL_EPWM0SEL_Msk;
     }
@@ -146,7 +151,7 @@ uint32_t EPWM_ConfigOutputChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t
         u32Src = CLK->EPWMSEL & CLK_EPWMSEL_EPWM1SEL_Msk;
     }
 
-    if(u32Src == 1U)
+    if (u32Src == 1U)
     {
         /* clock source is from HCLK0 clock */
         u32EPWMClockSrc = CLK_GetHCLK0Freq();
@@ -155,7 +160,8 @@ uint32_t EPWM_ConfigOutputChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t
     {
         /* clock source is from PCLK */
         SystemCoreClockUpdate();
-        if(epwm == EPWM0)
+
+        if (epwm == EPWM0)
         {
             u32EPWMClockSrc = CLK_GetPCLK0Freq();
         }
@@ -165,16 +171,18 @@ uint32_t EPWM_ConfigOutputChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t
         }
     }
 
-    for(u32Prescale = 1U; u32Prescale < 0xFFFU; u32Prescale++)   /* prescale could be 0~0xFFF */
+    for (u32Prescale = 1U; u32Prescale < 0xFFFU; u32Prescale++)  /* prescale could be 0~0xFFF */
     {
         i = (u32EPWMClockSrc / u32Frequency) / u32Prescale;
+
         /* If target value is larger than CNR, need to use a larger prescaler */
-        if(i < (0x10000U))
+        if (i < (0x10000U))
         {
             u32CNR = i;
             break;
         }
     }
+
     /* Store return value here 'cos we're gonna change u16Prescale & u16CNR to the real value to fill into register */
     i = u32EPWMClockSrc / (u32Prescale * u32CNR);
 
@@ -183,7 +191,7 @@ uint32_t EPWM_ConfigOutputChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t
     u32Prescale -= 1U;
     EPWM_SET_PRESCALER(epwm, u32ChannelNum, u32Prescale);
     /* set EPWM to up counter type(edge aligned) and auto-reload mode */
-    (epwm)->CTL1 = ((epwm)->CTL1 & ~((EPWM_CTL1_CNTTYPE0_Msk << (u32ChannelNum << 1U))|((1UL << EPWM_CTL1_CNTMODE0_Pos) << u32ChannelNum)));
+    (epwm)->CTL1 = ((epwm)->CTL1 & ~((EPWM_CTL1_CNTTYPE0_Msk << (u32ChannelNum << 1U)) | ((1UL << EPWM_CTL1_CNTMODE0_Pos) << u32ChannelNum)));
 
     u32CNR -= 1U;
     EPWM_SET_CNR(epwm, u32ChannelNum, u32CNR);
@@ -194,7 +202,7 @@ uint32_t EPWM_ConfigOutputChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t
     (epwm)->WGCTL1 = ((epwm)->WGCTL1 & ~((EPWM_WGCTL1_CMPDCTL0_Msk | EPWM_WGCTL1_CMPUCTL0_Msk) << (u32ChannelNum << 1U))) | \
                      ((uint32_t)EPWM_OUTPUT_LOW << ((u32ChannelNum << 1U) + (uint32_t)EPWM_WGCTL1_CMPUCTL0_Pos));
 
-    return(i);
+    return (i);
 }
 
 /**
@@ -225,9 +233,10 @@ void EPWM_Start(EPWM_T *epwm, uint32_t u32ChannelMask)
 void EPWM_Stop(EPWM_T *epwm, uint32_t u32ChannelMask)
 {
     uint32_t i;
-    for(i = 0U; i < EPWM_CHANNEL_NUM; i ++)
+
+    for (i = 0U; i < EPWM_CHANNEL_NUM; i ++)
     {
-        if(u32ChannelMask & (1UL << i))
+        if (u32ChannelMask & (1UL << i))
         {
             (epwm)->PERIOD[i] = 0U;
         }
@@ -279,7 +288,7 @@ void EPWM_ForceStop(EPWM_T *epwm, uint32_t u32ChannelMask)
  */
 void EPWM_EnableADCTrigger(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32Condition)
 {
-    if(u32ChannelNum < 4U)
+    if (u32ChannelNum < 4U)
     {
         (epwm)->EADCTS0 &= ~((EPWM_EADCTS0_TRGSEL0_Msk) << (u32ChannelNum << 3U));
         (epwm)->EADCTS0 |= ((EPWM_EADCTS0_TRGEN0_Msk | u32Condition) << (u32ChannelNum << 3));
@@ -302,7 +311,7 @@ void EPWM_EnableADCTrigger(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32Con
  */
 void EPWM_DisableADCTrigger(EPWM_T *epwm, uint32_t u32ChannelNum)
 {
-    if(u32ChannelNum < 4U)
+    if (u32ChannelNum < 4U)
     {
         (epwm)->EADCTS0 &= ~(EPWM_EADCTS0_TRGEN0_Msk << (u32ChannelNum << 3U));
     }
@@ -332,7 +341,7 @@ int32_t EPWM_EnableADCTriggerPrescale(EPWM_T *epwm, uint32_t u32ChannelNum, uint
     if ((epwm)->EADCPSCCTL & (1UL << u32ChannelNum))
         return (-1);
 
-    if(u32ChannelNum < 4UL)
+    if (u32ChannelNum < 4UL)
     {
         (epwm)->EADCPSC0 = ((epwm)->EADCPSC0 & ~((EPWM_EADCPSC0_EADCPSC0_Msk) << (u32ChannelNum << 3))) | \
                            (u32Prescale << (u32ChannelNum << 3));
@@ -344,7 +353,7 @@ int32_t EPWM_EnableADCTriggerPrescale(EPWM_T *epwm, uint32_t u32ChannelNum, uint
         (epwm)->EADCPSC1 = ((epwm)->EADCPSC1 & ~((EPWM_EADCPSC1_EADCPSC4_Msk) << ((u32ChannelNum - 4UL) << 3))) | \
                            (u32Prescale << ((u32ChannelNum - 4UL) << 3));
         (epwm)->EADCPSCNT1 = ((epwm)->EADCPSCNT1 & ~((EPWM_EADCPSCNT1_PSCNT4_Msk) << ((u32ChannelNum - 4UL) << 3))) | \
-                           (u32PrescaleCnt << ((u32ChannelNum - 4UL) << 3));
+                             (u32PrescaleCnt << ((u32ChannelNum - 4UL) << 3));
     }
 
     (epwm)->EADCPSCCTL |= EPWM_EADCPSCCTL_PSCEN0_Msk << u32ChannelNum;
@@ -393,7 +402,7 @@ void EPWM_ClearADCTriggerFlag(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32
  */
 uint32_t EPWM_GetADCTriggerFlag(EPWM_T *epwm, uint32_t u32ChannelNum)
 {
-    return (((epwm)->STATUS & (EPWM_STATUS_EADCTRGF0_Msk << u32ChannelNum))?1UL:0UL);
+    return (((epwm)->STATUS & (EPWM_STATUS_EADCTRGF0_Msk << u32ChannelNum)) ? 1UL : 0UL);
 }
 
 /**
@@ -457,7 +466,7 @@ void EPWM_ClearDACTriggerFlag(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32
  */
 uint32_t EPWM_GetDACTriggerFlag(EPWM_T *epwm, uint32_t u32ChannelNum)
 {
-    return (((epwm)->STATUS & EPWM_STATUS_DACTRGF_Msk)?1UL:0UL);
+    return (((epwm)->STATUS & EPWM_STATUS_DACTRGF_Msk) ? 1UL : 0UL);
 }
 
 /**
@@ -495,11 +504,11 @@ void EPWM_EnableFaultBrake(EPWM_T *epwm, uint32_t u32ChannelMask, uint32_t u32Le
 {
     uint32_t i;
 
-    for(i = 0U; i < EPWM_CHANNEL_NUM; i ++)
+    for (i = 0U; i < EPWM_CHANNEL_NUM; i ++)
     {
-        if(u32ChannelMask & (1UL << i))
+        if (u32ChannelMask & (1UL << i))
         {
-            if((u32BrakeSource == EPWM_FB_EDGE_SYS_CSS) || (u32BrakeSource == EPWM_FB_EDGE_SYS_BOD) || \
+            if ((u32BrakeSource == EPWM_FB_EDGE_SYS_CSS) || (u32BrakeSource == EPWM_FB_EDGE_SYS_BOD) || \
                     (u32BrakeSource == EPWM_FB_EDGE_SYS_RAM) || (u32BrakeSource == EPWM_FB_EDGE_SYS_COR) || \
                     (u32BrakeSource == EPWM_FB_LEVEL_SYS_CSS) || (u32BrakeSource == EPWM_FB_LEVEL_SYS_BOD) || \
                     (u32BrakeSource == EPWM_FB_LEVEL_SYS_RAM) || (u32BrakeSource == EPWM_FB_LEVEL_SYS_COR))
@@ -513,9 +522,9 @@ void EPWM_EnableFaultBrake(EPWM_T *epwm, uint32_t u32ChannelMask, uint32_t u32Le
             }
         }
 
-        if(u32LevelMask & (1UL << i))
+        if (u32LevelMask & (1UL << i))
         {
-            if((i & 0x1U) == 0U)
+            if ((i & 0x1U) == 0U)
             {
                 /* set brake action as high level for even channel */
                 (epwm)->BRKCTL[i >> 1] &= ~EPWM_BRKCTL0_1_BRKAEVEN_Msk;
@@ -530,7 +539,7 @@ void EPWM_EnableFaultBrake(EPWM_T *epwm, uint32_t u32ChannelMask, uint32_t u32Le
         }
         else
         {
-            if((i & 0x1U) == 0U)
+            if ((i & 0x1U) == 0U)
             {
                 /* set brake action as low level for even channel */
                 (epwm)->BRKCTL[i >> 1U] &= ~EPWM_BRKCTL0_1_BRKAEVEN_Msk;
@@ -680,7 +689,7 @@ void EPWM_DisablePDMA(EPWM_T *epwm, uint32_t u32ChannelNum)
 void EPWM_EnableFallingDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32FDuration)
 {
     /* every two channels share the same setting */
-    (epwm)->DTCTL |= (EPWM_DTCTL_FDTEN0_Msk<<((u32ChannelNum) >> 1U));
+    (epwm)->DTCTL |= (EPWM_DTCTL_FDTEN0_Msk << ((u32ChannelNum) >> 1U));
     (epwm)->FDTCNT[(u32ChannelNum) >> 1U] |= u32FDuration;
 }
 
@@ -699,7 +708,7 @@ void EPWM_EnableFallingDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u
 void EPWM_EnableRisingDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32RDuration)
 {
     /* every two channels share the same setting */
-    (epwm)->DTCTL |= (EPWM_DTCTL_RDTEN0_Msk<<((u32ChannelNum) >> 1U));
+    (epwm)->DTCTL |= (EPWM_DTCTL_RDTEN0_Msk << ((u32ChannelNum) >> 1U));
     (epwm)->RDTCNT[(u32ChannelNum) >> 1U] |= u32RDuration;
 }
 
@@ -732,7 +741,7 @@ void EPWM_EnableRisingDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u3
 void EPWM_DisableFallingDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum)
 {
     /* every two channels shares the same setting */
-    (epwm)->DTCTL &= ~(EPWM_DTCTL_FDTEN0_Msk<<((u32ChannelNum) >> 1U));
+    (epwm)->DTCTL &= ~(EPWM_DTCTL_FDTEN0_Msk << ((u32ChannelNum) >> 1U));
 }
 
 /**
@@ -748,7 +757,7 @@ void EPWM_DisableFallingDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum)
 void EPWM_DisableRisingDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum)
 {
     /* every two channels shares the same setting */
-    (epwm)->DTCTL &= ~(EPWM_DTCTL_RDTEN0_Msk<<((u32ChannelNum) >> 1U));
+    (epwm)->DTCTL &= ~(EPWM_DTCTL_RDTEN0_Msk << ((u32ChannelNum) >> 1U));
 }
 
 /**
@@ -1078,7 +1087,7 @@ uint32_t EPWM_GetZeroIntFlag(EPWM_T *epwm, uint32_t u32ChannelNum)
 void EPWM_EnableAcc(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32IntFlagCnt, uint32_t u32IntAccSrc)
 {
     (epwm)->IFA[u32ChannelNum] = (((epwm)->IFA[u32ChannelNum] & ~((EPWM_IFA0_IFACNT_Msk | EPWM_IFA0_IFASEL_Msk))) | \
-                                  (EPWM_IFA0_IFAEN_Msk | (u32IntAccSrc << EPWM_IFA0_IFASEL_Pos) | u32IntFlagCnt) );
+                                  (EPWM_IFA0_IFAEN_Msk | (u32IntAccSrc << EPWM_IFA0_IFASEL_Pos) | u32IntFlagCnt));
 }
 
 /**
@@ -1317,9 +1326,10 @@ void EPWM_ConfigSyncPhase(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32Sync
 void EPWM_EnableSyncPhase(EPWM_T *epwm, uint32_t u32ChannelMask)
 {
     uint32_t i;
-    for(i = 0U; i < EPWM_CHANNEL_NUM; i ++)
+
+    for (i = 0U; i < EPWM_CHANNEL_NUM; i ++)
     {
-        if(u32ChannelMask & (1UL << i))
+        if (u32ChannelMask & (1UL << i))
         {
             (epwm)->SYNC |= ((1UL << EPWM_SYNC_PHSEN0_Pos) << (i >> 1U));
         }
@@ -1340,9 +1350,10 @@ void EPWM_EnableSyncPhase(EPWM_T *epwm, uint32_t u32ChannelMask)
 void EPWM_DisableSyncPhase(EPWM_T *epwm, uint32_t u32ChannelMask)
 {
     uint32_t i;
-    for(i = 0U; i < EPWM_CHANNEL_NUM; i ++)
+
+    for (i = 0U; i < EPWM_CHANNEL_NUM; i ++)
     {
-        if(u32ChannelMask & (1UL << i))
+        if (u32ChannelMask & (1UL << i))
         {
             (epwm)->SYNC &= ~((1UL << EPWM_SYNC_PHSEN0_Pos) << (i >> 1U));
         }
@@ -1658,7 +1669,7 @@ void EPWM_DisableFaultDetectOutput(EPWM_T *epwm, uint32_t u32ChannelNum)
 void EPWM_EnableFaultDetectDeglitch(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32DeglitchSmpCycle)
 {
     (epwm)->FDCTL[(u32ChannelNum)] = ((epwm)->FDCTL[(u32ChannelNum)] & (~EPWM_FDCTL0_DGSMPCYC_Msk)) | \
-                                      (EPWM_FDCTL0_FDDGEN_Msk | ((u32DeglitchSmpCycle) << EPWM_FDCTL0_DGSMPCYC_Pos));
+                                     (EPWM_FDCTL0_FDDGEN_Msk | ((u32DeglitchSmpCycle) << EPWM_FDCTL0_DGSMPCYC_Pos));
 }
 
 /**
@@ -1785,7 +1796,7 @@ uint32_t EPWM_GetFaultDetectInt(EPWM_T *epwm, uint32_t u32ChannelNum)
 void EPWM_EnableCaptureInputNoiseFilter(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32FilterCount, uint32_t u32ClkSrcSel)
 {
     epwm->CAPNF[u32ChannelNum] = (((epwm)->CAPNF[u32ChannelNum] & ~(EPWM_CAPNF_CAPNFCNT_Msk | EPWM_CAPNF_CAPNFSEL_Msk))
-                    | (EPWM_CAPNF_CAPNFEN_Msk | (u32FilterCount << LPTMR_CAPNF_CAPNFCNT_Pos) | (u32ClkSrcSel << EPWM_CAPNF_CAPNFSEL_Pos)));
+                                  | (EPWM_CAPNF_CAPNFEN_Msk | (u32FilterCount << LPTMR_CAPNF_CAPNFCNT_Pos) | (u32ClkSrcSel << EPWM_CAPNF_CAPNFSEL_Pos)));
 }
 
 /**
@@ -1829,7 +1840,7 @@ void EPWM_DisableCaptureInputNoiseFilter(EPWM_T *epwm, uint32_t u32ChannelNum)
 void EPWM_EnableExtEventTrigger(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32ExtEventSrc, uint32_t u32CounterAction)
 {
     epwm->EXTETCTL[u32ChannelNum] = (((epwm)->EXTETCTL[u32ChannelNum] & ~(EPWM_EXTETCTL_EXTTRGS_Msk | EPWM_EXTETCTL_CNTACTS_Msk))
-                        | (EPWM_EXTETCTL_EXTETEN_Msk | (u32ExtEventSrc << EPWM_EXTETCTL_EXTTRGS_Pos) | (u32CounterAction << EPWM_EXTETCTL_CNTACTS_Pos)));
+                                     | (EPWM_EXTETCTL_EXTETEN_Msk | (u32ExtEventSrc << EPWM_EXTETCTL_EXTTRGS_Pos) | (u32CounterAction << EPWM_EXTETCTL_CNTACTS_Pos)));
 }
 
 /**
