@@ -643,7 +643,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>Blinky.bin</state>
+                    <state>TicklessIdle.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -690,7 +690,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>Blinky.out</state>
+                    <state>TicklessIdle.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -726,7 +726,7 @@
                 </option>
                 <option>
                     <name>IlinkMapFile</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkLogFile</name>
@@ -754,7 +754,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\..\..\..\..\\Library\Device\Nuvoton\M55M1\Source\IAR\M55M1.icf</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\IAR\M55M1.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -1071,27 +1071,6 @@
         </file>
     </group>
     <group>
-        <name>CommonDemo</name>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\FreeRTOS\Demo\Common\Minimal\blocktim.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\FreeRTOS\Demo\Common\Minimal\countsem.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\FreeRTOS\Demo\Common\Minimal\dynamic.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\FreeRTOS\Demo\Common\Minimal\QueueOverwrite.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\FreeRTOS\Demo\Common\Minimal\QueueSet.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\FreeRTOS\Demo\Common\Minimal\recmutex.c</name>
-        </file>
-    </group>
-    <group>
         <name>FreeRTOS</name>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\ThirdParty\FreeRTOS\Source\portable\MemMang\heap_3.c</name>
@@ -1121,7 +1100,16 @@
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\clk.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\gpio.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\pmc.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\rtc.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sys.c</name>
@@ -1133,19 +1121,13 @@
     <group>
         <name>User</name>
         <file>
-            <name>$PROJ_DIR$\..\main-blinky.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\main-full.c</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\..\main.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\ParTest.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\Reg_Test.c</name>
+            <name>$PROJ_DIR$\..\PortSuppressTicksAndSleep.c</name>
         </file>
     </group>
 </project>
