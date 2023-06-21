@@ -747,6 +747,7 @@ void API_SPI_Open()
 
     u32ReturnValue = SPI_Open(SPIModule, SPI_MASTER, SPI_MODE_0, 8, 1000000);
     //printf("1 SPIModule->CTL =  %x\r\n", SPIModule->CTL);
+    //printf("1 u32ReturnValue =  %d\r\n", u32ReturnValue);
     CU_ASSERT(SPIModule->CTL == 0x00000835);
     CU_ASSERT(SPIModule->CLKDIV == 0x0000002F);
     CU_ASSERT(SPIModule->SSCTL == 0);
@@ -757,30 +758,33 @@ void API_SPI_Open()
 
     u32ReturnValue = SPI_Open(SPIModule, SPI_SLAVE, SPI_MODE_1, 16, 2000000);
     //printf("2 SPIModule->CTL =  %x\r\n", SPIModule->CTL);
+    //printf("2 u32ReturnValue =  %d\r\n", u32ReturnValue);
     CU_ASSERT(SPIModule->CTL == 0x00041037);
     CU_ASSERT(SPIModule->CLKDIV == 0x00000000);
     CU_ASSERT(SPIModule->SSCTL == 0x0);
-    CU_ASSERT(u32ReturnValue == 48000000);
+    CU_ASSERT(u32ReturnValue == 100000000);
 
     /* Reset SPI1 */
     ResetSPI(GetSPIModuleIdx());
 
     u32ReturnValue = SPI_Open(SPIModule, SPI_MASTER, SPI_MODE_2, 24, 5000000);
-    //printf("3 SPIModule->CTL =  %x\r\n", SPIModule->CTL);
+    //printf("3 SPIModule->CLKDIV =  %x\r\n", SPIModule->CLKDIV);
+    //printf("3 u32ReturnValue =  %d\r\n", u32ReturnValue);
     CU_ASSERT(SPIModule->CTL == 0x0000183F);
-    CU_ASSERT(SPIModule->CLKDIV == 0x00000009);
+    CU_ASSERT(SPIModule->CLKDIV == 0x000000013);
     CU_ASSERT(SPIModule->SSCTL == 0x0);
-    CU_ASSERT(u32ReturnValue == 4800000);
+    CU_ASSERT(u32ReturnValue == 5000000);
 
     /* Reset SPIModule */
     ResetSPI(GetSPIModuleIdx());
 
     u32ReturnValue = SPI_Open(SPIModule, SPI_MASTER, SPI_MODE_3, 32, 32000000);
-    //printf("4 SPIModule->CTL =  %x\r\n", SPIModule->CTL);
+    //printf("4 SPIModule->CLKDIV =  %x\r\n", SPIModule->CLKDIV);
+    //printf("3 u32ReturnValue =  %d\r\n", u32ReturnValue);
     CU_ASSERT(SPIModule->CTL == 0x0000003D);
-    CU_ASSERT(SPIModule->CLKDIV == 0x00000001);
+    CU_ASSERT(SPIModule->CLKDIV == 0x00000002);
     CU_ASSERT(SPIModule->SSCTL == 0x0);
-    CU_ASSERT(u32ReturnValue == 24000000);
+    CU_ASSERT(u32ReturnValue == 33333333);
 
     /* Reset SPI1 */
     ResetSPI(GetSPIModuleIdx());
@@ -876,7 +880,8 @@ void API_SPI_SetBusClock_GetBusClock()
     SPIModule = (SPI_T *)GetSPIxModule(GetSPIModuleIdx());
 
     u32ReturnValue = SPI_SetBusClock(SPIModule, 200000);
-    CU_ASSERT(SPIModule->CLKDIV == 0x00000EF);
+    //printf("SPIModule->CLKDIV = %x\r\n", SPIModule->CLKDIV);
+    CU_ASSERT(SPIModule->CLKDIV == 0x000001F3);
     CU_ASSERT(u32ReturnValue == 200000);
     u32ReturnValue = SPI_GetBusClock(SPIModule);
     CU_ASSERT(u32ReturnValue == 200000);
@@ -1887,7 +1892,8 @@ void API_I2S_Open()
     CU_ASSERT(SPIModule->I2SCTL == 0x30000137);
     CU_ASSERT(SPIModule->FIFOCTL == 0x21000000);
     CU_ASSERT(SPIModule->I2SCLK == 0x00000000);
-    CU_ASSERT(u32ReturnValue == 48000000);
+    //printf("1890 u32ReturnValue = %d\r\n", u32ReturnValue);
+    CU_ASSERT(u32ReturnValue == 100000000);
 
     /* Reset SPI */
     ResetSPI(GetSPIModuleIdx());

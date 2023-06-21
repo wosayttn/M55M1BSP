@@ -37,6 +37,7 @@
 #include "CUnit.h"
 #include "Console.h"
 #include "i2s_cunit.h"
+#include "../pldm_emu.h"
 
 //------------------------------------------------------------------------------
 //#define PLLCON_SETTING      CLK_PLLCON_50MHz_HXT
@@ -50,9 +51,6 @@ void AddTests(void);
 //------------------------------------------------------------------------------
 void SYS_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -68,18 +66,18 @@ void SYS_Init(void)
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
-    /* Set HCLK2 divide 1 */
-    CLK_SET_HCLK2DIV(1);
+    /* Set HCLK2 divide 2 */
+    CLK_SET_HCLK2DIV(2);
 
-    /* Set PCLKx divide 1 */
-    CLK_SET_PCLK0DIV(1);
-    CLK_SET_PCLK1DIV(1);
-    CLK_SET_PCLK2DIV(1);
-    CLK_SET_PCLK3DIV(1);
-    CLK_SET_PCLK4DIV(1);
+    /* Set PCLKx divide 2 */
+    CLK_SET_PCLK0DIV(2);
+    CLK_SET_PCLK1DIV(2);
+    CLK_SET_PCLK2DIV(2);
+    CLK_SET_PCLK3DIV(2);
+    CLK_SET_PCLK4DIV(2);
 
     /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
     /* Enable IP clock */

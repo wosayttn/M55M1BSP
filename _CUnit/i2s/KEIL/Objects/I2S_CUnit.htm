@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\I2S_CUnit.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\I2S_CUnit.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6180002: Last Updated: Thu Jun 15 18:57:44 2023
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6180002: Last Updated: Wed Jun 21 10:28:34 2023
 <BR><P>
 <H3>Maximum Stack Usage =        448 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -354,9 +354,9 @@ Global Symbols
 <LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_drsub
+<BR>[Called By]<UL><LI><a href="#[132]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_drsub
 <LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dsub
-<LI><a href="#[132]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
 </UL>
 
 <P><STRONG><a name="[c8]"></a>__aeabi_dsub</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, dadd.o(.text), UNUSED)
@@ -478,7 +478,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> i2s_cunit.o(.data.I2S_ApiTests)
 </UL>
-<P><STRONG><a name="[3]"></a>API_I2S_EnableMCLK</STRONG> (Thumb, 2408 bytes, Stack size 48 bytes, i2s_cunit.o(.text.API_I2S_EnableMCLK))
+<P><STRONG><a name="[3]"></a>API_I2S_EnableMCLK</STRONG> (Thumb, 2420 bytes, Stack size 48 bytes, i2s_cunit.o(.text.API_I2S_EnableMCLK))
 <BR><BR>[Stack]<UL><LI>Max Depth = 148<LI>Call Chain = API_I2S_EnableMCLK &rArr; CU_assertImplementation &rArr; add_failure &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CU_assertImplementation
@@ -1588,7 +1588,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_m55m1.o(RESET)
 </UL>
-<P><STRONG><a name="[11f]"></a>SYS_Init</STRONG> (Thumb, 326 bytes, Stack size 8 bytes, main.o(.text.SYS_Init))
+<P><STRONG><a name="[11f]"></a>SYS_Init</STRONG> (Thumb, 318 bytes, Stack size 8 bytes, main.o(.text.SYS_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = SYS_Init &rArr; CLK_EnableAPLL
 </UL>
 <BR>[Calls]<UL><LI><a href="#[120]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_EnableXtalRC

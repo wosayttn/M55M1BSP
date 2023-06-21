@@ -45,6 +45,7 @@
 #include "Console.h"
 #include "sdh_cunit.h"
 #include "PinConfig.h"
+#include "../pldm_emu.h"
 
 //------------------------------------------------------------------------------
 // Internal funcfion definition
@@ -102,22 +103,13 @@ void DebugPort_Init()
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
-#ifdef __PLDM_EMU__
-    DEBUG_PORT->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400); // The setting is for Palladium
-#else
-    /* Configure UART0 and set UART0 Baudrate */
-    //UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(PLL_CLOCK, 115200);
-    DEBUG_PORT->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(12000000, 115200);
-#endif //#ifndef __PLDM_EMU__
-    DEBUG_PORT->LINE = UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1;
+    /* Init Debug UART to 115200-8N1 for print message */
+    InitDebugUart();
 }
 
 void exit(int32_t code)

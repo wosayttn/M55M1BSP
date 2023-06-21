@@ -808,8 +808,8 @@ void API_QSPI_Open()
     CU_ASSERT(QSPIModule->CTL == ((0x8 << QSPI_CTL_DWIDTH_Pos) |
                                   QSPI_CTL_TXNEG_Msk |
                                   QSPI_CTL_QSPIEN_Msk)); //0x00000805
-    //printf("QSPIModule->CLKDIV = %x\r\n", QSPIModule->CLKDIV);
-    CU_ASSERT(QSPIModule->CLKDIV == 0x0000002F);
+    //printf("1 QSPIModule->CLKDIV = %x\r\n", QSPIModule->CLKDIV);
+    CU_ASSERT(QSPIModule->CLKDIV == 0x00000063);
     CU_ASSERT(QSPIModule->SSCTL == 0);
     CU_ASSERT(u32ReturnValue == 1000000);
     /* Reset QSPI0 */
@@ -819,7 +819,8 @@ void API_QSPI_Open()
     CU_ASSERT(QSPIModule->CTL == (QSPI_CTL_SLAVE_Msk | (0x10 << QSPI_CTL_DWIDTH_Pos) | QSPI_CTL_RXNEG_Msk | QSPI_CTL_QSPIEN_Msk)); // 0x00041003
     CU_ASSERT(QSPIModule->CLKDIV == 0x00000000);
     CU_ASSERT(QSPIModule->SSCTL == 0x0);
-    CU_ASSERT(u32ReturnValue == 48000000);
+    //printf("u32ReturnValue = %d\r\n", u32ReturnValue);
+    CU_ASSERT(u32ReturnValue == 100000000);
     /* Reset QSPI0 */
     ResetQSPI(GetQSPIModuleIdx());
 
@@ -827,7 +828,7 @@ void API_QSPI_Open()
     CU_ASSERT(QSPIModule->CTL == (QSPI_CTL_SLAVE_Msk | (0x10 << QSPI_CTL_DWIDTH_Pos) | QSPI_CTL_RXNEG_Msk | QSPI_CTL_QSPIEN_Msk)); // 0x00041003
     CU_ASSERT(QSPIModule->CLKDIV == 0x00000000);
     CU_ASSERT(QSPIModule->SSCTL == 0x0);
-    CU_ASSERT(u32ReturnValue == 48000000);
+    CU_ASSERT(u32ReturnValue == 100000000);
     /* Reset QSPI0 */
     ResetQSPI(GetQSPIModuleIdx());
 
@@ -835,7 +836,7 @@ void API_QSPI_Open()
     CU_ASSERT(QSPIModule->CTL == (QSPI_CTL_SLAVE_Msk | (0x10 << QSPI_CTL_DWIDTH_Pos) | QSPI_CTL_RXNEG_Msk | QSPI_CTL_QSPIEN_Msk)); // 0x00041003
     CU_ASSERT(QSPIModule->CLKDIV == 0x00000000);
     CU_ASSERT(QSPIModule->SSCTL == 0x0);
-    CU_ASSERT(u32ReturnValue == 48000000);
+    CU_ASSERT(u32ReturnValue == 100000000);
     /* Reset QSPI0 */
     ResetQSPI(GetQSPIModuleIdx());
 
@@ -843,7 +844,7 @@ void API_QSPI_Open()
     CU_ASSERT(QSPIModule->CTL == (QSPI_CTL_SLAVE_Msk | (0x10 << QSPI_CTL_DWIDTH_Pos) | QSPI_CTL_RXNEG_Msk | QSPI_CTL_QSPIEN_Msk)); // 0x00041003
     CU_ASSERT(QSPIModule->CLKDIV == 0x00000000);
     CU_ASSERT(QSPIModule->SSCTL == 0x0);
-    CU_ASSERT(u32ReturnValue == 48000000);
+    CU_ASSERT(u32ReturnValue == 100000000);
     /* Reset QSPI0 */
     ResetQSPI(GetQSPIModuleIdx());
 
@@ -852,43 +853,44 @@ void API_QSPI_Open()
     CU_ASSERT(QSPIModule->CTL == (QSPI_CTL_SLAVE_Msk | (0x18 << QSPI_CTL_DWIDTH_Pos) | QSPI_CTL_CLKPOL_Msk | QSPI_CTL_RXNEG_Msk | QSPI_CTL_QSPIEN_Msk)); // 0x0004180B
     CU_ASSERT(QSPIModule->CLKDIV == 0x00000000);
     CU_ASSERT(QSPIModule->SSCTL == 0x0);
-    CU_ASSERT(u32ReturnValue == 48000000);
+    CU_ASSERT(u32ReturnValue == 100000000);
     /* Reset QSPI0 */
     ResetQSPI(GetQSPIModuleIdx());
 
     u32ReturnValue = QSPI_Open(QSPIModule, QSPI_MASTER, QSPI_MODE_3, 32, 36000000);
     CU_ASSERT(QSPIModule->CTL == (QSPI_CTL_CLKPOL_Msk | QSPI_CTL_TXNEG_Msk | QSPI_CTL_QSPIEN_Msk));   //0x0000000D
-    CU_ASSERT(QSPIModule->CLKDIV == 0x00000000);
+    //printf("2 QSPIModule->CLKDIV = %x\r\n", QSPIModule->CLKDIV);
+    CU_ASSERT(QSPIModule->CLKDIV == 0x00000002);
     CU_ASSERT(QSPIModule->SSCTL == 0x0);
     //printf("1 u32ReturnValue = %d\r\n", u32ReturnValue);
-    CU_ASSERT(u32ReturnValue == 48000000);
+    CU_ASSERT(u32ReturnValue == 33333333);
     /* Reset QSPI0 */
     ResetQSPI(GetQSPIModuleIdx());
 
     u32ReturnValue = QSPI_Open(QSPIModule, QSPI_MASTER, QSPI_MODE_3, 32, 36000000);
     CU_ASSERT(QSPIModule->CTL == (QSPI_CTL_CLKPOL_Msk | QSPI_CTL_TXNEG_Msk | QSPI_CTL_QSPIEN_Msk));   //0x0000000D
-    CU_ASSERT(QSPIModule->CLKDIV == 0x00000000);
+    CU_ASSERT(QSPIModule->CLKDIV == 0x00000002);
     CU_ASSERT(QSPIModule->SSCTL == 0x0);
     //printf("2 u32ReturnValue = %d\r\n", u32ReturnValue);
-    CU_ASSERT(u32ReturnValue == 48000000);
+    CU_ASSERT(u32ReturnValue == 33333333);
     /* Reset QSPI0 */
     ResetQSPI(GetQSPIModuleIdx());
 
     u32ReturnValue = QSPI_Open(QSPIModule, QSPI_MASTER, QSPI_MODE_3, 32, 36000000);
     CU_ASSERT(QSPIModule->CTL == (QSPI_CTL_CLKPOL_Msk | QSPI_CTL_TXNEG_Msk | QSPI_CTL_QSPIEN_Msk));   //0x0000000D
-    CU_ASSERT(QSPIModule->CLKDIV == 0x00000000);
+    CU_ASSERT(QSPIModule->CLKDIV == 0x00000002);
     CU_ASSERT(QSPIModule->SSCTL == 0x0);
     //printf("3 u32ReturnValue = %d\r\n", u32ReturnValue);
-    CU_ASSERT(u32ReturnValue == 48000000);
+    CU_ASSERT(u32ReturnValue == 33333333);
     /* Reset QSPI0 */
     ResetQSPI(GetQSPIModuleIdx());
 
     u32ReturnValue = QSPI_Open(QSPIModule, QSPI_MASTER, QSPI_MODE_3, 32, 36000000);
     CU_ASSERT(QSPIModule->CTL == (QSPI_CTL_CLKPOL_Msk | QSPI_CTL_TXNEG_Msk | QSPI_CTL_QSPIEN_Msk));   //0x0000000D
-    CU_ASSERT(QSPIModule->CLKDIV == 0x00000000);
+    CU_ASSERT(QSPIModule->CLKDIV == 0x00000002);
     CU_ASSERT(QSPIModule->SSCTL == 0x0);
     //printf("4 u32ReturnValue = %d\r\n", u32ReturnValue);
-    CU_ASSERT(u32ReturnValue == 48000000);
+    CU_ASSERT(u32ReturnValue == 33333333);
     /* Reset QSPI0 */
     ResetQSPI(GetQSPIModuleIdx());
 }
@@ -985,7 +987,7 @@ void API_QSPI_SetBusClock_GetBusClock()
 
     u32ReturnValue = QSPI_SetBusClock(QSPIModule, 200 * 1000);
     //printf("1 QSPIModule->CLKDIV = %d\r\n", QSPIModule->CLKDIV);
-    CU_ASSERT(QSPIModule->CLKDIV == 0x00000EF);
+    CU_ASSERT(QSPIModule->CLKDIV == 0x000001F3);
     CU_ASSERT(u32ReturnValue == 200000);
     u32ReturnValue = QSPI_GetBusClock(QSPIModule);
     CU_ASSERT(u32ReturnValue == 200000);
@@ -995,10 +997,10 @@ void API_QSPI_SetBusClock_GetBusClock()
     u32ReturnValue = QSPI_SetBusClock(QSPIModule, 70 * 1000 * 1000);
     CU_ASSERT(QSPIModule->CLKDIV == 0x00000000);
     //printf("2 GetBusClock u32ReturnValue = %d\r\n", u32ReturnValue);
-    CU_ASSERT(u32ReturnValue == 48 * 1000 * 1000);
+    CU_ASSERT(u32ReturnValue == 100 * 1000 * 1000);
     u32ReturnValue = QSPI_GetBusClock(QSPIModule);
     //printf("3 GetBusClock u32ReturnValue = %d\r\n", u32ReturnValue);
-    CU_ASSERT(u32ReturnValue == 48 * 1000 * 1000);
+    CU_ASSERT(u32ReturnValue == 100 * 1000 * 1000);
     /* Reset QSPI0 */
     ResetQSPI(GetQSPIModuleIdx());
 }
@@ -1326,7 +1328,7 @@ void API_QSPI_GetIntFlag_ClearIntFlag()
 
 void API_QSPI_GetStatus()
 {
-    uint32_t u32DelayCount;
+    volatile uint32_t u32DelayCount;
     QSPI_T *QSPIModule = NULL;
 
     QSPIModule = (QSPI_T *)GetQSPIModule(GetQSPIModuleIdx());

@@ -41,6 +41,7 @@
 #include "otfc_cunit.h"
 #include "octal_cunit.h"
 #include "common.h"
+#include "../pldm_emu.h"
 
 //------------------------------------------------------------------------------
 //#define HIGH_SPEED_BOARD
@@ -75,60 +76,33 @@ int SPIM_SelTestSuite(void)
 
 void SYS_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/
     /* Unlock protected registers */
     SYS_UnlockReg();
 
-#ifdef __PLDM_EMU__
-    /* r5464, Trim Filter Behavior */
-    SYS->HIRC48MCFCTL = 0x00009999;
-#endif
-
-    /* Enable HXT Clock Source */
-    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
-    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-
-    /* Enable MIRC Clock Source */
-    CLK_EnableXtalRC(CLK_SRCCTL_MIRCEN_Msk);
-    CLK_WaitClockReady(CLK_STATUS_MIRCSTB_Msk);
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
+
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Enable HIRC48M Clock Source */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
-    CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
-
-#if (USE_HXT_SRC == 1)
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HXT, CLK_ACLKDIV_ACLKDIV(1));
-#else
-    /* Switch SCLK clock source to HIRC before PLL setting */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
-
-    /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_200MHZ, CLK_APLL0_SELECT);
+    /* Enable PLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
-    /* Switch HCLK clock source to HXT */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-#endif //USE_HXT_SRC
 
-    CLK_SET_HCLK0DIV(1);
-    CLK_SET_HCLK1DIV(1);
+    /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
 
-    /* Set both PCLK0 and PCLK1 as HCLK/2 */
-    CLK_PCLKDIV_PCLK0DIV(2);
-    CLK_PCLKDIV_PCLK1DIV(2);
-    CLK_PCLKDIV_PCLK2DIV(2);
-    CLK_PCLKDIV_PCLK3DIV(2);
-    CLK_PCLKDIV_PCLK4DIV(2);
+    /* Set PCLKx divide 2 */
+    CLK_SET_PCLK0DIV(2);
+    CLK_SET_PCLK1DIV(2);
+    CLK_SET_PCLK2DIV(2);
+    CLK_SET_PCLK3DIV(2);
+    CLK_SET_PCLK4DIV(2);
 
     /* Update System Core Clock */
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
     /* Enable CRYPTO and TRNG and Key Store module clock */
@@ -159,43 +133,16 @@ void SYS_Init(void)
 
 void DebugPort_Init(void)
 {
-    CLK_EnableModuleClock(UART0_MODULE);
+    /* Enable UART0 module clock */
+    SetDebugUartCLK();
 
-    /* Select IP clock source */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init I/O Multi-function                                                                                 */
+    /*---------------------------------------------------------------------------------------------------------*/
+    SetDebugUartMFP();
 
-    /*------------------------------------------------------------------------*/
-    /* Init UART                                                              */
-    /*------------------------------------------------------------------------*/
-    /* Set GPB multi-function pins for UART0 RXD and TXD */
-    SYS->GPB_MFP3 &= ~(SYS_GPB_MFP3_PB12MFP_Msk | SYS_GPB_MFP3_PB13MFP_Msk);
-    SYS->GPB_MFP3 |= (SYS_GPB_MFP3_PB12MFP_UART0_RXD | SYS_GPB_MFP3_PB13MFP_UART0_TXD);
-
-    //SYS->GPC_MFP2 = (SYS->GPC_MFP2 & ~SYS_GPC_MFP2_PC11MFP_Msk) | SYS_GPC_MFP2_PC11MFP_UART0_RXD;
-    //SYS->GPC_MFP3 = (SYS->GPC_MFP3 & ~SYS_GPC_MFP3_PC12MFP_Msk) | SYS_GPC_MFP3_PC12MFP_UART0_TXD;
-
-    //SYS->GPD_MFP0 &= ~(SYS_GPD_MFP0_PD2MFP_Msk | SYS_GPD_MFP0_PD3MFP_Msk);
-    //SYS->GPD_MFP0 |= (SYS_GPD_MFP0_PD2MFP_UART0_RXD | SYS_GPD_MFP0_PD3MFP_UART0_TXD);
-
-    //SYS->GPH_MFP2 = (SYS->GPH_MFP2 & (~SYS_GPH_MFP2_PH10MFP_Msk)) | (SYS_GPH_MFP2_PH10MFP_UART0_TXD);
-    //SYS->GPH_MFP2 = (SYS->GPH_MFP2 & (~SYS_GPH_MFP2_PH11MFP_Msk)) | (SYS_GPH_MFP2_PH11MFP_UART0_RXD);
-
-    /* Reset IP */
-    //SYS->UARTRST |=  SYS_UARTRST_UART0RST_Msk;
-    //SYS->UARTRST &= ~SYS_UARTRST_UART0RST_Msk;
-
-#ifdef __PLDM_EMU__
-#if (USE_HXT_SRC == 1)
-    DEBUG_PORT->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 9600); // The setting is for Palladium
-#else
-    DEBUG_PORT->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400); // The setting is for Palladium
-#endif //USE_HXT_SRC
-#else
-    /* Configure UART0 and set UART0 Baudrate */
-    //UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(PLL_CLOCK, 115200);
-    DEBUG_PORT->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(12000000, 115200);
-#endif //#ifndef __PLDM_EMU__
-    DEBUG_PORT->LINE = UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1;
+    /* Init Debug UART to 115200-8N1 for print message */
+    InitDebugUart();
 }
 
 void exit(int32_t code)
@@ -212,14 +159,6 @@ int main()
     uint32_t u32SPIMPort = 0;
     uint32_t u32SPIMDiv = 0;
     SPIM_T *pSPIMModule = NULL;
-
-#ifdef __PLDM_EMU__
-    SCB_DisableICache();
-    SCB_DisableDCache();
-
-    //SCB_EnableICache();
-    //SCB_EnableDCache();
-#endif //__PLDM_EMU__
 
     /* Init System, IP clock and multi-function I/O */
     SYS_Init(); //In the end of SYS_Init() will issue SYS_LockReg() to lock protected register. If user want to write protected register, please issue SYS_UnlockReg() to unlock protected register.

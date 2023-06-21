@@ -265,7 +265,6 @@ void SPI_ClkEnable(uint32_t u32SPIModule)
 
         case C_SPI1:
             CLK->SPICTL |= CLK_SPICTL_SPI1CKEN_Msk;
-
             break;
 
         case C_SPI2:

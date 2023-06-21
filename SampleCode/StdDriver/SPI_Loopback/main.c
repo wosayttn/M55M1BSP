@@ -42,7 +42,7 @@ void SYS_Init(void)
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
@@ -107,8 +107,8 @@ void SPI_Init(void)
 /* ------------- */
 int main(void)
 {
-    volatile uint32_t u32DataCount = 0, u32TestCycle = 0, u32Err = 0;
-    volatile uint32_t u32TimeOutCount = 0;
+    uint32_t u32DataCount = 0, u32TestCycle = 0, u32Err = 0;
+    uint32_t u32TimeOutCount = 0;
 
     /* Unlock protected registers */
     SYS_UnlockReg();

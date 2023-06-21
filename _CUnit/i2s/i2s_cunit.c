@@ -1151,7 +1151,7 @@ void API_I2S_EnableMCLK()
     //printf("6 u32ReturnValue = %d\r\n", u32ReturnValue);
     //printf("6 pI2SModule->CLKDIV = %x\r\n", pI2SModule->CLKDIV);
     CU_ASSERT(pI2SModule->CTL0 == 0x00008000);
-    CU_ASSERT(pI2SModule->CLKDIV == 0x00000008);
+    CU_ASSERT(pI2SModule->CLKDIV == 0x00000004);
     CU_ASSERT(u32ReturnValue == 12500000);
 
     /* Reset I2S */

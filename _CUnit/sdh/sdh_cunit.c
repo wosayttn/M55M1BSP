@@ -180,6 +180,7 @@ void SDH_ClockEnable(uint32_t u32SDHModule)
 
 void SelectSDHClockSrc(uint32_t u32SDHModule)
 {
+#if 0
     int i32Index = 0;
     struct
     {
@@ -230,6 +231,26 @@ void SelectSDHClockSrc(uint32_t u32SDHModule)
         case C_SDH1:
             CLK_SetModuleClock(SDH1_MODULE,
                                (i32Index << CLK_SDHSEL_SDH1SEL_Pos),
+                               CLK_SDHDIV_SDH1DIV(10));
+            break;
+    }
+
+#endif //0
+
+    /* Enable SDH clock */
+    SDH_ClockEnable(u32SDHModule);
+
+    switch (u32SDHModule)
+    {
+        case C_SDH0:
+            CLK_SetModuleClock(SDH0_MODULE,
+                               (0 << CLK_SDHSEL_SDH0SEL_Pos),
+                               CLK_SDHDIV_SDH0DIV(10));
+            break;
+
+        case C_SDH1:
+            CLK_SetModuleClock(SDH1_MODULE,
+                               (0 << CLK_SDHSEL_SDH1SEL_Pos),
                                CLK_SDHDIV_SDH1DIV(10));
             break;
     }
@@ -507,6 +528,7 @@ void API_SDH_Function(void)
         memset(pSDHInfo, 0, sizeof(SDH_INFO_T));
 
         SDH_Enable_Int(pSDHModule);
+
         SDH_Open(pSDHModule, au32CardDetectSrc[j]);
         SDH_Probe(pSDHModule);
 
@@ -609,8 +631,9 @@ void MACRO_SD(void)
 
     memset(pSDHInfo, 0, sizeof(SDH_INFO_T));
 
-    SDH_Enable_Int(pSDHModule);
     SDH_Open(pSDHModule, CardDetect_From_GPIO);
+    SDH_Enable_Int(pSDHModule);
+
     SDH_Probe(pSDHModule);
 
     CU_ASSERT(SDH_GET_INT_FLAG(pSDHModule, SDH_INTSTS_CDSTS_Msk) == 0);

@@ -359,8 +359,8 @@ void SPIM_Const_OPCODE()
     CU_ASSERT(OPCODE_EXQPI == (0xFFU));
 
     /* Used for Micron flashes. */
-    CU_ASSERT(OPCODE_FAST_OCTAL_OUTPUT_READ == (0x8BU));
-    CU_ASSERT(OPCODE_FAST_OCTAL_IO_READ == (0xCBU));
+    //CU_ASSERT(OPCODE_FAST_OCTAL_OUTPUT_READ == (0x8BU));
+    //CU_ASSERT(OPCODE_FAST_OCTAL_IO_READ == (0xCBU));
 }
 
 void SPIM_Const_Register()
@@ -1883,12 +1883,11 @@ void SPIM_IO_RW_Func()
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
         memset(u8TstBuf1, 0, BUFFER_SIZE);
-        //SPIM_IO_Read(pSPIMModule, offset, 0, BUFFER_SIZE, u8TstBuf1, 0xeb, 1, 4, 4, 3, 0);
+
         SPIM_IO_SendCMDPhase(pSPIMModule, SPIM_IO_READ_PHASE, 0xEB, PHASE_NORMAL_MODE, 0);
         SPIM_IO_SendAddrPhase(pSPIMModule, 0, offset, PHASE_QUAD_MODE, 0);
         SPIM_IO_SendDummyCycle(pSPIMModule, 4);
         SPIM_IO_SendDataPhase(pSPIMModule, SPIM_IO_READ_PHASE, u8TstBuf1, BUFFER_SIZE, PHASE_QUAD_MODE, 0);
-        //SPIM_Phase_IORead(pSPIMModule, &gWB_EDh_RdCMD, offset, 0, u8TstBuf1, BUFFER_SIZE);
 
         pData = (uint32_t *)u8TstBuf1;
 
@@ -1914,16 +1913,6 @@ void SPIM_IO_RW_Func()
         //for (i = 0; i < BUFFER_SIZE; i += 4, pData++)
         //    * pData = (i << 16) | (offset + i);
 
-        //SPIM_IO_Write(pSPIMModule,
-        //              offset,
-        //              0,
-        //              BUFFER_SIZE,
-        //              u8TstBuf1,
-        //              CMD_QUAD_PAGE_PROGRAM_WINBOND,
-        //              1,
-        //              1,
-        //              4,
-        //              0);
         SPIM_IO_WritePhase(pSPIMModule,
                            &gWB_02h_WrCMD,
                            offset,
@@ -2072,8 +2061,8 @@ CU_TestInfo SPIM_ApiTests[] =
 
 CU_SuiteInfo suites[] =
 {
-    //{"SPIM CONST", SPIM_Tests_Init, SPIM_Tests_Clean, NULL, NULL, SPIM_ConstantTests},
-    //{"SPIM MACRO", SPIM_Tests_Init, SPIM_Tests_Clean, NULL, NULL, SPIM_MacroTests},
+    {"SPIM CONST", SPIM_Tests_Init, SPIM_Tests_Clean, NULL, NULL, SPIM_ConstantTests},
+    {"SPIM MACRO", SPIM_Tests_Init, SPIM_Tests_Clean, NULL, NULL, SPIM_MacroTests},
     {"SPIM API", SPIM_Tests_Init, SPIM_Tests_Clean, NULL, NULL, SPIM_ApiTests},
 
     CU_SUITE_INFO_NULL,

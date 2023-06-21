@@ -33,7 +33,7 @@ void SYS_Init(void)
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
@@ -91,7 +91,7 @@ void QSPI_Init(void)
 
 int main(void)
 {
-    volatile uint32_t u32TxDataCount = 0, u32RxDataCount = 0;
+    uint32_t u32TxDataCount = 0, u32RxDataCount = 0;
 
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();

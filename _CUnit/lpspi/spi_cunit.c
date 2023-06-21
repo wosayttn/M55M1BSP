@@ -602,9 +602,10 @@ void API_LPSPI_Open()
     u32ReturnValue = LPSPI_Open(SPIModule, LPSPI_SLAVE, LPSPI_MODE_1, 16, 2000000);
     CU_ASSERT(SPIModule->CTL == 0x00041003);
     //printf("2 SPIModule->CLKDIV =  %x\r\n", SPIModule->CLKDIV);
+    //printf("2 u32ReturnValue =  %d\r\n", u32ReturnValue);
     CU_ASSERT(SPIModule->CLKDIV == 0x00000000);
     CU_ASSERT(SPIModule->SSCTL == 0x0);
-    CU_ASSERT(u32ReturnValue == 48000000);
+    CU_ASSERT(u32ReturnValue == 50000000);
 
     /* Reset SPI */
     LPSPI_ModuleReset(GetLPSPIModuleIdx());
