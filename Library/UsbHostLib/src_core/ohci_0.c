@@ -17,7 +17,7 @@
 #include "ohci.h"
 
 /// @cond HIDDEN_SYMBOLS
-
+#define _ohci_port      (0UL)
 #define _ohci           _ohci0
 #define ohci_driver     ohci0_driver
 

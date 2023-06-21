@@ -69,11 +69,11 @@ void  usbh_core_init()
 
     usbh_memory_init();
 #ifdef ENABLE_OHCI0
-    _ohci0->HcMiscControl |= USBH_HcMiscControl_OCAL_Msk; /* Over-current active low */
+    //_ohci0->HcMiscControl |= USBH_HcMiscControl_OCAL_Msk; /* Over-current active low */
 #endif
 
 #ifdef ENABLE_OHCI1
-    _ohci1->HcMiscControl |= USBH_HcMiscControl_OCAL_Msk; /* Over-current active low */
+    //_ohci1->HcMiscControl |= USBH_HcMiscControl_OCAL_Msk; /* Over-current active low */
 #endif
     //_ohci->HcMiscControl &= ~USBH_HcMiscControl_OCAL_Msk; /* Over-current active high */
 
@@ -147,9 +147,9 @@ void usbh_suspend()
     if (_ohci0->HcRhPortStatus[0] & USBH_HcRhPortStatus_CCS_Msk)
         _ohci0->HcRhPortStatus[0] = USBH_HcRhPortStatus_PSS_Msk;    /* set port suspend    */
 
-    /*port 1 is ?*/
-    if (_ohci0->HcRhPortStatus[1] & USBH_HcRhPortStatus_CCS_Msk)
-        _ohci0->HcRhPortStatus[1] = USBH_HcRhPortStatus_PSS_Msk;    /* set port suspend    */
+    //    /* for Enhanced using */
+    //    if (_ohci0->HcRhPortStatus[1] & USBH_HcRhPortStatus_CCS_Msk)
+    //        _ohci0->HcRhPortStatus[1] = USBH_HcRhPortStatus_PSS_Msk;    /* set port suspend    */
 
     /* enable Device Remote Wakeup */
     _ohci0->HcRhStatus |= USBH_HcRhStatus_DRWE_Msk;
@@ -168,9 +168,9 @@ void usbh_suspend()
     if (_ohci1->HcRhPortStatus[0] & USBH_HcRhPortStatus_CCS_Msk)
         _ohci1->HcRhPortStatus[0] = USBH_HcRhPortStatus_PSS_Msk;    /* set port suspend    */
 
-    /* M460HD has port 1, but M460LD has no port 1 */
-    if (_ohci1->HcRhPortStatus[1] & USBH_HcRhPortStatus_CCS_Msk)
-        _ohci1->HcRhPortStatus[1] = USBH_HcRhPortStatus_PSS_Msk;    /* set port suspend    */
+    //    /* for Enhanced using */
+    //    if (_ohci1->HcRhPortStatus[1] & USBH_HcRhPortStatus_CCS_Msk)
+    //        _ohci1->HcRhPortStatus[1] = USBH_HcRhPortStatus_PSS_Msk;    /* set port suspend    */
 
     /* enable Device Remote Wakeup */
     _ohci1->HcRhStatus |= USBH_HcRhStatus_DRWE_Msk;
@@ -199,6 +199,9 @@ void usbh_suspend()
         {
             break;
         }
+
+        delay_us(1000);         /* wait 1 ms */
+        time_out --;
     }
 
     if (time_out == 0)
@@ -217,15 +220,15 @@ void usbh_suspend()
 void usbh_resume(void)
 {
 #ifdef ENABLE_OHCI0
-    /* port is Synopsys */
+    /*hydra*/
     _ohci0->HcControl = (_ohci0->HcControl & ~USBH_HcControl_HCFS_Msk) | (1 << USBH_HcControl_HCFS_Pos);
 
     if (_ohci0->HcRhPortStatus[0] & USBH_HcRhPortStatus_PSS_Msk)
         _ohci0->HcRhPortStatus[0] = USBH_HcRhPortStatus_POCI_Msk;   /* clear suspend status */
 
-    /* M460HD has port 1, but M460LD has no port 1 */
-    if (_ohci0->HcRhPortStatus[1] & USBH_HcRhPortStatus_PSS_Msk)
-        _ohci0->HcRhPortStatus[1] = USBH_HcRhPortStatus_POCI_Msk;   /* clear suspend status */
+    /* for Enhanced using */
+    //    if (_ohci0->HcRhPortStatus[1] & USBH_HcRhPortStatus_PSS_Msk)
+    //        _ohci0->HcRhPortStatus[1] = USBH_HcRhPortStatus_POCI_Msk;   /* clear suspend status */
 
     delay_us(30000);                       /* wait at least 20ms for Host to resume device */
 
@@ -234,15 +237,15 @@ void usbh_resume(void)
 #endif
 
 #ifdef ENABLE_OHCI1
-    /*hydra*/
+    /*Synopsys*/
     _ohci1->HcControl = (_ohci1->HcControl & ~USBH_HcControl_HCFS_Msk) | (1 << USBH_HcControl_HCFS_Pos);
 
     if (_ohci1->HcRhPortStatus[0] & USBH_HcRhPortStatus_PSS_Msk)
         _ohci1->HcRhPortStatus[0] = USBH_HcRhPortStatus_POCI_Msk;   /* clear suspend status */
 
-    /* TC8263 */
-    if (_ohci1->HcRhPortStatus[1] & USBH_HcRhPortStatus_PSS_Msk)
-        _ohci1->HcRhPortStatus[1] = USBH_HcRhPortStatus_POCI_Msk;   /* clear suspend status */
+    /* for Enhanced using */
+    //    if (_ohci1->HcRhPortStatus[1] & USBH_HcRhPortStatus_PSS_Msk)
+    //        _ohci1->HcRhPortStatus[1] = USBH_HcRhPortStatus_POCI_Msk;   /* clear suspend status */
 
     delay_us(30000);                       /* wait at least 20ms for Host to resume device */
 
@@ -503,34 +506,34 @@ void  dump_config_descriptor(DESC_CONF_T *desc)
     {
         switch (bptr[1])
         {
-        case USB_DT_CONFIGURATION:
-            USB_debug("\n[Configuration Descriptor]\n");
-            USB_debug("----------------------------------------------\n");
-            USB_debug("  Length              = %2d\n",  desc->bLength);
-            USB_debug("  DescriptorType      = %02x\n", desc->bDescriptorType);
-            USB_debug("  wTotalLength        = %2d\n", desc->wTotalLength);
-            USB_debug("  bNumInterfaces      = %d\n", desc->bNumInterfaces);
-            USB_debug("  bConfigurationValue = %d\n", desc->bConfigurationValue);
-            USB_debug("  iConfiguration      = %d\n", desc->iConfiguration);
-            USB_debug("  bmAttributes        = 0x%02x\n", desc->bmAttributes);
-            USB_debug("  MaxPower            = %d\n", desc->MaxPower);
-            break;
+            case USB_DT_CONFIGURATION:
+                USB_debug("\n[Configuration Descriptor]\n");
+                USB_debug("----------------------------------------------\n");
+                USB_debug("  Length              = %2d\n",  desc->bLength);
+                USB_debug("  DescriptorType      = %02x\n", desc->bDescriptorType);
+                USB_debug("  wTotalLength        = %2d\n", desc->wTotalLength);
+                USB_debug("  bNumInterfaces      = %d\n", desc->bNumInterfaces);
+                USB_debug("  bConfigurationValue = %d\n", desc->bConfigurationValue);
+                USB_debug("  iConfiguration      = %d\n", desc->iConfiguration);
+                USB_debug("  bmAttributes        = 0x%02x\n", desc->bmAttributes);
+                USB_debug("  MaxPower            = %d\n", desc->MaxPower);
+                break;
 
-        case USB_DT_INTERFACE:
-            usbh_dump_interface_descriptor((DESC_IF_T *)bptr);
-            break;
+            case USB_DT_INTERFACE:
+                usbh_dump_interface_descriptor((DESC_IF_T *)bptr);
+                break;
 
-        case USB_DT_ENDPOINT:
-            usbh_dump_endpoint_descriptor((DESC_EP_T *)bptr);
-            break;
+            case USB_DT_ENDPOINT:
+                usbh_dump_endpoint_descriptor((DESC_EP_T *)bptr);
+                break;
 
-        default:
-            hdr = (DESC_HDR_T *)bptr;
-            USB_debug("\n!![Unknown Descriptor]\n");
-            USB_debug("----------------------------------------------\n");
-            USB_debug("Length              = %2d\n",  hdr->bLength);
-            USB_debug("DescriptorType      = %02x\n", hdr->bDescriptorType);
-            break;
+            default:
+                hdr = (DESC_HDR_T *)bptr;
+                USB_debug("\n!![Unknown Descriptor]\n");
+                USB_debug("----------------------------------------------\n");
+                USB_debug("Length              = %2d\n",  hdr->bLength);
+                USB_debug("DescriptorType      = %02x\n", hdr->bDescriptorType);
+                break;
         }
 
         if (bptr[0] == 0)

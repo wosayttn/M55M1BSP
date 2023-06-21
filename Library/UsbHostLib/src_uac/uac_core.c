@@ -610,8 +610,8 @@ int usbh_uac_start_audio_in(UAC_DEV_T *uac, UAC_CB_FUNC *func)
 
     if (asif->ep == NULL)
         return UAC_RET_FUNC_NOT_FOUND;
-
-    ep = asif->ep;
+    else
+        ep = asif->ep;
 
 #ifdef UAC_DEBUG
     UAC_DBGMSG("Activated isochronous-in endpoint =>");
@@ -868,8 +868,8 @@ int usbh_uac_start_audio_out(UAC_DEV_T *uac, UAC_CB_FUNC *func)
 
     if (asif->ep == NULL)
         return UAC_RET_FUNC_NOT_FOUND;
-
-    ep = asif->ep;
+    else
+        ep = asif->ep;
 
 #ifdef UAC_DEBUG
     UAC_DBGMSG("Activated isochronous-out endpoint =>");

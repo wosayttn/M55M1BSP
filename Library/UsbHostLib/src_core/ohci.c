@@ -253,8 +253,8 @@ static void ohci_suspend(void)
     if (_ohci->HcRhPortStatus[0] & 0x1)
         _ohci->HcRhPortStatus[0] = 0x4;
 
-    if (_ohci->HcRhPortStatus[1] & 0x1)
-        _ohci->HcRhPortStatus[1] = 0x4;
+    //    if (_ohci->HcRhPortStatus[1] & 0x1)
+    //        _ohci->HcRhPortStatus[1] = 0x4;
 
     /* enable Device Remote Wakeup */
     _ohci->HcRhStatus |= USBH_HcRhStatus_DRWE_Msk;
@@ -274,8 +274,8 @@ static void ohci_resume(void)
     if (_ohci->HcRhPortStatus[0] & 0x4)
         _ohci->HcRhPortStatus[0] = 0x8;
 
-    if (_ohci->HcRhPortStatus[1] & 0x4)
-        _ohci->HcRhPortStatus[1] = 0x8;
+    //    if (_ohci->HcRhPortStatus[1] & 0x4)
+    //        _ohci->HcRhPortStatus[1] = 0x8;
 }
 
 static void ohci_shutdown(void)
@@ -598,8 +598,7 @@ static int ohci_bulk_xfer(UTR_T *utr)
 
             td_p->NextTD = (uint32_t)td;
         }
-    }
-    while (data_len > 0);
+    } while (data_len > 0);
 
     /*------------------------------------------------------------------------------------*/
     /*  Start transfer                                                                    */
@@ -1082,25 +1081,25 @@ static void td_done(TD_T *td)
 
         switch (info & TD_TYPE_Msk)
         {
-        case TD_TYPE_CTRL:
-            if (info & TD_CTRL_DATA)
-            {
+            case TD_TYPE_CTRL:
+                if (info & TD_CTRL_DATA)
+                {
+                    if (td->CBP == 0)
+                        utr->xfer_len += td->BE - td->buff_start + 1;
+                    else
+                        utr->xfer_len += td->CBP - td->buff_start;
+                }
+
+                break;
+
+            case TD_TYPE_BULK:
+            case TD_TYPE_INT:
                 if (td->CBP == 0)
                     utr->xfer_len += td->BE - td->buff_start + 1;
                 else
                     utr->xfer_len += td->CBP - td->buff_start;
-            }
 
-            break;
-
-        case TD_TYPE_BULK:
-        case TD_TYPE_INT:
-            if (td->CBP == 0)
-                utr->xfer_len += td->BE - td->buff_start + 1;
-            else
-                utr->xfer_len += td->CBP - td->buff_start;
-
-            break;
+                break;
         }
     }
 
@@ -1362,14 +1361,16 @@ static void dump_ohci_regs()
     USB_debug("    HcRhDescriptorB    = 0x%x\n", _ohci->HcRhDescriptorB);
     USB_debug("    HcRhStatus         = 0x%x\n", _ohci->HcRhStatus);
     USB_debug("    HcRhPortStatus0    = 0x%x\n", _ohci->HcRhPortStatus[0]);
-    USB_debug("    HcRhPortStatus1    = 0x%x\n", _ohci->HcRhPortStatus[1]);
+    //USB_debug("    HcRhPortStatus1    = 0x%x\n", _ohci->HcRhPortStatus[1]);
+#if (_ohci_port == 0)
     USB_debug("    HcPhyControl       = 0x%x\n", _ohci->HcPhyControl);
-    USB_debug("    HcMiscControl      = 0x%x\n", _ohci->HcMiscControl);
+#endif
+    //USB_debug("    HcMiscControl      = 0x%x\n", _ohci->HcMiscControl);
 }
 
 static void dump_ohci_ports()
 {
-    USB_debug("_ohci port0=0x%x, port1=0x%x\n", _ohci->HcRhPortStatus[0], _ohci->HcRhPortStatus[1]);
+    USB_debug("_ohci port0=0x%x\n", _ohci->HcRhPortStatus[0]);
 }
 
 #endif  // ENABLE_DEBUG_MSG

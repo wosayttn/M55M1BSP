@@ -11,7 +11,7 @@
 #define __HSUSBH_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -126,7 +126,7 @@ typedef struct
      * |        |          |Values mean:
      * |        |          |00 = 1024 elements (4096 bytes) Default value.
      * |        |          |01 = 512 elements (2048 bytes).
-     * |        |          |10 = 256 elements (1024 bytes) u2013 for resource-constrained environment.
+     * |        |          |10 = 256 elements (1024 bytes) - for resource-constrained environment.
      * |        |          |11 = Reserved.
      * |[4]     |PSEN      |Periodic Schedule Enable (Read/Write)
      * |        |          |This bit controls whether the host controller skips processing the Periodic Schedule. Values mean:
@@ -255,11 +255,11 @@ typedef struct
      * |        |          |Bits [N:3] are used for the Frame List current index
      * |        |          |This means that each location of the frame list is accessed 8 times (frames or micro-frames) before moving to the next index
      * |        |          |The following illustrates values of N based on the value of the Frame List Size field in the USBCMD register.
-     * |        |          |FLSZ (UCMDR[3:2] Number Elements N
-     * |        |          |0x0 1024 12
-     * |        |          |0x1 512 11
-     * |        |          |0x2 256 10
-     * |        |          |0x3 Reserved
+     * |        |          |FLSZ (UCMDR[3:2] Number Elements  N
+     * |        |          |0x0              1024             12
+     * |        |          |0x1              512              11
+     * |        |          |0x2              256              10
+     * |        |          |0x3              Reserved
      * @var HSUSBH_T::UPFLBAR
      * Offset: 0x24  USB Periodic Frame List Base Address Register
      * ---------------------------------------------------------------------------------------------------
@@ -324,7 +324,7 @@ typedef struct
      * |[4]     |OCA       |Overcurrent Active (Read Only)
      * |        |          |This bit will automatically transition from a one to a zero when the overcurrent condition is removed.
      * |        |          |0 = This port does not have an overcurrent condition.
-     * |        |          |1 = This port currently has an overcurrent condition. 
+     * |        |          |1 = This port currently has an overcurrent condition.
      * |[5]     |OCC       |Overcurrent Change
      * |        |          |0 = Default.
      * |        |          |1 = This bit gets set to a one when there is a change to Overcurrent Active
@@ -333,15 +333,15 @@ typedef struct
      * |[6]     |FPR       |Force Port Resume (Read/Write)
      * |        |          |This functionality defined for manipulating this bit depends on the value of the Suspend bit
      * |        |          |For example, if the port is not suspended (Suspend and Enabled bits are a one) and software transitions this bit to a one, then the effects on the bus are undefined.
-     * |        |          |Software sets this bit to a 1 to drive resume signaling
-     * |        |          |The Host Controller sets this bit to a 1 if a J-to-K transition is detected while the port is in the Suspend state
-     * |        |          |When this bit transitions to a one because a J-to-K transition is detected, the Port Change Detect bit in the USBSTS register is also set to a one
+     * |        |          |Software sets this bit to a 1 to drive resume signaling.
+     * |        |          |The Host Controller sets this bit to a 1 if a J-to-K transition is detected while the port is in the Suspend state.
+     * |        |          |When this bit transitions to a one because a J-to-K transition is detected, the Port Change Detect bit in the USBSTS register is also set to a one.
      * |        |          |If software sets this bit to a one, the host controller must not set the Port Change Detect bit.
-     * |        |          |Note that when the EHCI controller owns the port, the resume sequence follows the defined sequence documented in the USB Specification Revision 2.0
-     * |        |          |The resume signaling (Full-speed 'K') is driven on the port as long as this bit remains a one
-     * |        |          |Software must appropriately time the Resume and set this bit to a zero when the appropriate amount of time has elapsed
-     * |        |          |Writing a zero (from one) causes the port to return to high-speed mode (forcing the bus below the port into a high-speed idle)
-     * |        |          |This bit will remain a one until the port has switched to the high-speed idle
+     * |        |          |Note that when the EHCI controller owns the port, the resume sequence follows the defined sequence documented in the USB Specification Revision 2.0.
+     * |        |          |The resume signaling (Full-speed 'K') is driven on the port as long as this bit remains a one.
+     * |        |          |Software must appropriately time the Resume and set this bit to a zero when the appropriate amount of time has elapsed.
+     * |        |          |Writing a zero (from one) causes the port to return to high-speed mode (forcing the bus below the port into a high-speed idle).
+     * |        |          |This bit will remain a one until the port has switched to the high-speed idle.
      * |        |          |The host controller must complete this transition within 2 milliseconds of software setting this bit to a zero.
      * |        |          |This field is zero if Port Power is zero.
      * |        |          |0 = No resume (K-state) detected/driven on port.
@@ -352,9 +352,9 @@ typedef struct
      * |        |          |01 = Port Disable.
      * |        |          |10 = Port Enable.
      * |        |          |11 = Port Suspend.
-     * |        |          |When in suspend state, downstream propagation of data is blocked on this port, except for port reset
-     * |        |          |The blocking occurs at the end of the current transaction, if a transaction was in progress when this bit was written to 1
-     * |        |          |In the suspend state, the port is sensitive to resume detection
+     * |        |          |When in suspend state, downstream propagation of data is blocked on this port, except for port reset.
+     * |        |          |The blocking occurs at the end of the current transaction, if a transaction was in progress when this bit was written to 1.
+     * |        |          |In the suspend state, the port is sensitive to resume detection.
      * |        |          |Note that the bit status does not change until the port is suspended and that there may be a delay in suspending a port if there is a transaction currently in progress on the USB.
      * |        |          |A write of zero to this bit is ignored by the host controller
      * |        |          |The host controller will unconditionally set this bit to a zero when:
@@ -366,15 +366,15 @@ typedef struct
      * |        |          |0 = Port not in suspend state.
      * |        |          |1 = Port in suspend state.
      * |[8]     |PRST      |Port Reset (Read/Write)
-     * |        |          |When software writes a one to this bit (from a zero), the bus reset sequence as defined in the USB Specification Revision 2.0 is started
-     * |        |          |Software writes a zero to this bit to terminate the bus reset sequence
+     * |        |          |When software writes a one to this bit (from a zero), the bus reset sequence as defined in the USB Specification Revision 2.0 is started.
+     * |        |          |Software writes a zero to this bit to terminate the bus reset sequence.
      * |        |          |Software must keep this bit at a one long enough to ensure the reset sequence, as specified in the USB Specification Revision 2.0, completes
      * |        |          |Note: when software writes this bit to a one, it must also write a zero to the Port Enable bit.
-     * |        |          |Note that when software writes a zero to this bit there may be a delay before the bit status changes to a zero
-     * |        |          |The bit status will not read as a zero until after the reset has completed
+     * |        |          |Note that when software writes a zero to this bit there may be a delay before the bit status changes to a zero.
+     * |        |          |The bit status will not read as a zero until after the reset has completed.
      * |        |          |If the port is in high-speed mode after reset is complete, the host controller will automatically enable this port (e.g
-     * |        |          |set the Port Enable bit to a one)
-     * |        |          |A host controller must terminate the reset and stabilize the state of the port within 2 milliseconds of software transitioning this bit from a one to a zero
+     * |        |          |set the Port Enable bit to a one).
+     * |        |          |A host controller must terminate the reset and stabilize the state of the port within 2 milliseconds of software transitioning this bit from a one to a zero.
      * |        |          |For example: if the port detects that the attached device is high-speed during reset, then the host controller must have the port in the enabled state within 2ms of software writing this bit to a zero.
      * |        |          |The HCHalted bit in the USBSTS register should be a zero before software attempts to use this bit
      * |        |          |The host controller may hold Port Reset asserted to a one when the HCHalted bit is a one.
@@ -382,8 +382,8 @@ typedef struct
      * |        |          |0 = Port is not in Reset.
      * |        |          |1 = Port is in Reset.
      * |[11:10] |LSTS      |Line Status (Read Only)
-     * |        |          |These bits reflect the current logical levels of the D+ (bit 11) and D- (bit 10) signal lines
-     * |        |          |These bits are used for detection of low-speed USB devices prior to the port reset and enable sequence
+     * |        |          |These bits reflect the current logical levels of the D+ (bit 11) and D- (bit 10) signal lines.
+     * |        |          |These bits are used for detection of low-speed USB devices prior to the port reset and enable sequence.
      * |        |          |This field is valid only when the port enable bit is zero and the current connect status bit is set to a one.
      * |        |          |The encoding of the bits are:
      * |        |          |Bits[11:10] USB State Interpretation
@@ -394,15 +394,15 @@ typedef struct
      * |        |          |This value of this field is undefined if Port Power is zero.
      * |[12]    |PP        |Port Power
      * |        |          |Host controller has port power control switches
-     * |        |          |This bit represents the Current setting of the switch (0 = off, 1 = on)
+     * |        |          |This bit represents the Current setting of the switch (0 = off, 1 = on).
      * |        |          |When power is not available on a port (i.e
      * |        |          |PP equals a 0), the port is nonfunctional and will not report attaches, detaches, etc.
      * |        |          |When an overcurrent condition is detected on a powered port and PPC is a one, the PP bit in each affected port may be transitioned by the host controller from a 1 to 0 (removing power from the port).
      * |[13]    |PO        |Port Owner (Read/Write)
-     * |        |          |This bit unconditionally goes to a 0b when the Configured bit in the CONFIGFLAG register makes a 0 to 1 transition
+     * |        |          |This bit unconditionally goes to a 0b when the Configured bit in the CONFIGFLAG register makes a 0 to 1 transition.
      * |        |          |This bit unconditionally goes to 1 whenever the Configured bit is zero.
-     * |        |          |System software uses this field to release ownership of the port to a selected host controller (in the event that the attached device is not a high-speed device)
-     * |        |          |Software writes a one to this bit when the attached device is not a high-speed device
+     * |        |          |System software uses this field to release ownership of the port to a selected host controller (in the event that the attached device is not a high-speed device).
+     * |        |          |Software writes a one to this bit when the attached device is not a high-speed device.
      * |        |          |A one in this bit means that a companion host controller owns and controls the port.
      * |[19:16] |PTC       |Port Test Control (Read/Write)
      * |        |          |When this field is zero, the port is NOT operating in a test mode
@@ -615,9 +615,9 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[1:0]   |CBSR      |Control Bulk Service Ratio
-     * |        |          |This specifies the service ratio between Control and Bulk EDs
-     * |        |          |Before processing any of the non-periodic lists, HC must compare the ratio specified with its internal count on how many nonempty Control EDs have been processed, in determining whether to continue serving another Control ED or switching to Bulk EDs
-     * |        |          |The internal count will be retained when crossing the frame boundary
+     * |        |          |This specifies the service ratio between Control and Bulk EDs.
+     * |        |          |Before processing any of the non-periodic lists, HC must compare the ratio specified with its internal count on how many nonempty Control EDs have been processed, in determining whether to continue serving another Control ED or switching to Bulk EDs.
+     * |        |          |The internal count will be retained when crossing the frame boundary.
      * |        |          |In case of reset, HCD is responsible for restoring this value.
      * |        |          |00 = Number of Control EDs over Bulk EDs served is 1:1.
      * |        |          |01 = Number of Control EDs over Bulk EDs served is 2:1.
@@ -630,7 +630,7 @@ typedef struct
      * |        |          |1 = Processing of the Periodic (Interrupt and Isochronous) list in the next frame Enabled.
      * |        |          |Note: To enable the processing of the Isochronous list, user has to set both PLE and IE (HcControl[3]) high.
      * |[3]     |IE        |Isochronous List Enable Bit
-     * |        |          |Both ISOEn and PLE (HcControl[2]) high enables Host Controller to process the Isochronous list
+     * |        |          |Both ISOEn and PLE (HcControl[2]) high enables Host Controller to process the Isochronous list.
      * |        |          |Either ISOEn or PLE (HcControl[2]) is low disables Host Controller to process the Isochronous list.
      * |        |          |0 = Processing of the Isochronous list after next SOF (Start-Of-Frame) Disabled.
      * |        |          |1 = Processing of the Isochronous list in the next frame Enabled, if the PLE (HcControl[2]) is high, too.
@@ -680,17 +680,17 @@ typedef struct
      * | :----: | :----:   | :---- |
      * |[0]     |SO        |Scheduling Overrun
      * |        |          |Set when the List Processor determines a Schedule Overrun has occurred.
-     * |        |          |0 = Schedule Overrun didnu2019t occur.
+     * |        |          |0 = Schedule Overrun didn't occur.
      * |        |          |1 = Schedule Overrun has occurred.
      * |        |          |Note: This bit is cleared by writing 1 to it.
      * |[1]     |WDH       |Write Back Done Head
      * |        |          |Set after the Host Controller has written HcDoneHead to HccaDoneHead
      * |        |          |Further updates of the HccaDoneHead will not occur until this bit has been cleared.
-     * |        |          |0 = Host Controller didnu2019t update HccaDoneHead.
+     * |        |          |0 = Host Controller didn't update HccaDoneHead.
      * |        |          |1 = Host Controller has written HcDoneHead to HccaDoneHead.
      * |        |          |Note: This bit is cleared by writing 1 to it.
      * |[2]     |SF        |Start of Frame
-     * |        |          |Set when the Frame Management functional block signals a u2018Start of Frameu2019 event
+     * |        |          |Set when the Frame Management functional block signals a 'Start of Frame' event
      * |        |          |Host Control generates a SOF token at the same time.
      * |        |          |0 = Not the start of a frame.
      * |        |          |1 = Indicate the start of a frame and Host Controller generates a SOF token.
@@ -759,7 +759,7 @@ typedef struct
      * |        |          |1 = Interrupt generation due to RHSC (HcInterruptStatus[6]) Enabled.
      * |[31]    |MIE       |Master Interrupt Enable Bit
      * |        |          |This bit is a global interrupt enable
-     * |        |          |A write of u20181u2019 allows interrupts to be enabled via the specific enable bits listed above
+     * |        |          |A write of '1' allows interrupts to be enabled via the specific enable bits listed above
      * |        |          |Interrupt generation due to RHSC (HcInterruptStatus[6]), FNO (HcInterruptStatus[5]), RD (HcInterruptStatus[3]), SF (HcInterruptStatus[2]), WDH (HcInterruptStatus[1]) or SO (HcInterruptStatus[0]) are enabled only if the corresponding bit in HcInterruptEnable is 1 and MIE is 1.
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
@@ -815,7 +815,7 @@ typedef struct
      * |        |          |0 = Interrupt generation due to RHSC (HcInterruptStatus[6]) Disabled.
      * |        |          |1 = Interrupt generation due to RHSC (HcInterruptStatus[6]) Enabled.
      * |[31]    |MIE       |Master Interrupt Disable Bit
-     * |        |          |Global interrupt disable. Writing u20181u2019 to disable all interrupts.
+     * |        |          |Global interrupt disable. Writing '1' to disable all interrupts.
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
      * |        |          |1 = Disable global interrupt.
@@ -877,13 +877,13 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[13:0]  |FI        |Frame Interval
-     * |        |          |This field specifies the length of a frame as (bit times - 1)
+     * |        |          |This field specifies the length of a frame as (bit times - 1).
      * |        |          |For 12,000 bit times in a frame, a value of 11,999 is stored here.
      * |[29:16] |FSMPS     |FS Largest Data Packet
      * |        |          |This field specifies a value that is loaded into the Largest Data Packet Counter at the beginning of each frame.
      * |[31]    |FIT       |Frame Interval Toggle
      * |        |          |This bit is toggled by Host Controller Driver when it loads a new value into FI (HcFmInterval[13:0]).
-     * |        |          |0 = Host Controller Driver didnu2019t load new value into FI (HcFmInterval[13:0]).
+     * |        |          |0 = Host Controller Driver didn't load new value into FI (HcFmInterval[13:0]).
      * |        |          |1 = Host Controller Driver loads a new value into FI (HcFmInterval[13:0]).
      * @var USBH1_T::HcFmRemaining
      * Offset: 0x38  Host Controller Frame Remaining Register
@@ -891,8 +891,8 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[13:0]  |FR        |Frame Remaining
-     * |        |          |When the Host Controller is in the USBOPERATIONAL state, this 14-bit field decrements each 12 MHz clock period
-     * |        |          |When the count reaches 0, (end of frame) the counter reloads with Frame Interval
+     * |        |          |When the Host Controller is in the USBOPERATIONAL state, this 14-bit field decrements each 12 MHz clock period.
+     * |        |          |When the count reaches 0, (end of frame) the counter reloads with Frame Interval.
      * |        |          |In addition, the counter loads when the Host Controller transitions into USBOPERATIONAL.
      * |[31]    |FRT       |Frame Remaining Toggle
      * |        |          |This bit is loaded from the FIT (HcFmInterval[31]) whenever FR (HcFmRemaining[13:0]) reaches 0.
@@ -902,8 +902,8 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[15:0]  |FN        |Frame Number
-     * |        |          |This 16-bit incrementing counter field is incremented coincident with the re-load of FR (HcFmRemaining[13:0])
-     * |        |          |The count rolls over from u2018FFFFhu2019 to u20180h.u2019
+     * |        |          |This 16-bit incrementing counter field is incremented coincident with the re-load of FR (HcFmRemaining[13:0]).
+     * |        |          |The count rolls over from 'FFFFh' to '0h'.
      * @var USBH1_T::HcPeriodicStart
      * Offset: 0x40  Host Controller Periodic Start Register
      * ---------------------------------------------------------------------------------------------------
@@ -917,8 +917,8 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[11:0]  |LST       |Low-speed Threshold
-     * |        |          |This field contains a value which is compared to the FR (HcFmRemaining[13:0]) field prior to initiating a Low-speed transaction
-     * |        |          |The transaction is started only if FR (HcFmRemaining[13:0]) >= this field
+     * |        |          |This field contains a value which is compared to the FR (HcFmRemaining[13:0]) field prior to initiating a Low-speed transaction.
+     * |        |          |The transaction is started only if FR (HcFmRemaining[13:0]) >= this field.
      * |        |          |The value is calculated by Host Controller Driver with the consideration of transmission and setup overhead.
      * @var USBH1_T::HcRhDescriptorA
      * Offset: 0x48  Host Controller Root Hub Descriptor A Register
@@ -1068,12 +1068,12 @@ typedef struct
      * |[16]    |CSC       |Connect Status Change
      * |        |          |This bit indicates connect or disconnect event has been detected (CCS (HcRhPortStatus[0]) changed).
      * |        |          |Write 1 to clear this bit to zero.
-     * |        |          |0 = No connect/disconnect event (CCS (HcRhPortStatus[0]) didnu2019t change).
+     * |        |          |0 = No connect/disconnect event (CCS (HcRhPortStatus[0]) didn't change).
      * |        |          |1 = Hardware detection of connect/disconnect event (CCS (HcRhPortStatus[0]) changed).
      * |[17]    |PESC      |Port Enable Status Change
      * |        |          |This bit indicates that the port has been disabled (PES (HcRhPortStatus6[1]) cleared) due to a hardware event.
      * |        |          |Write 1 to clear this bit to zero.
-     * |        |          |0 = PES (HcRhPortStatus[1]) didnu2019t change.
+     * |        |          |0 = PES (HcRhPortStatus[1]) didn't change.
      * |        |          |1 = PES (HcRhPortStatus[1]) changed.
      * |[18]    |PSSC      |Port Suspend Status Change
      * |        |          |This bit indicates the completion of the selective resume sequence for the port.
@@ -1083,46 +1083,13 @@ typedef struct
      * |[19]    |OCIC      |Port overcurrent Indicator Change
      * |        |          |This bit is set when POCI (HcRhPortStatus[3]) changes.
      * |        |          |Write 1 to clear this bit to zero.
-     * |        |          |0 = POCI (HcRhPortStatus[3]) didnu2019t change.
+     * |        |          |0 = POCI (HcRhPortStatus[3]) didn't change.
      * |        |          |1 = POCI (HcRhPortStatus[3]) changes.
      * |[20]    |PRSC      |Port Reset Status Change
      * |        |          |This bit indicates that the port reset signal has completed.
      * |        |          |Write 1 to clear this bit to zero.
      * |        |          |0 = Port reset is not complete.
      * |        |          |1 = Port reset is complete.
-     * @var USBH1_T::HcPhyControl
-     * Offset: 0x200  Host Controller PHY Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[27]    |STBYEN    |USB Transceiver Standby Enable Bit
-     * |        |          |This bit controls if USB transceiver could enter the standby mode to reduce power consumption.
-     * |        |          |0 = The USB transceiver would never enter the standby mode.
-     * |        |          |1 = The USB transceiver will enter standby mode while port is in power off state (port power is inactive).
-     * @var USBH1_T::HcMiscControl
-     * Offset: 0x204  Host Controller Miscellaneous Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[1]     |ABORT     |AHB Bus ERROR Response
-     * |        |          |This bit indicates there is an ERROR response received in AHB bus.
-     * |        |          |0 = No ERROR response received.
-     * |        |          |1 = ERROR response received.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[3]     |OCAL      |Overcurrent Active Low
-     * |        |          |This bit controls the polarity of overcurrent flag from external power IC.
-     * |        |          |0 = Overcurrent flag is high active.
-     * |        |          |1 = Overcurrent flag is low active.
-     * |[4]     |PPCAL     |Port Power Control Active Low
-     * |        |          |This bit controls the polarity of port power control to external power IC.
-     * |        |          |0 = Port power control is high active.
-     * |        |          |1 = Port power control is low active.
-     * |[16]    |DPRT1     |Disable Port 1
-     * |        |          |This bit controls if the connection between USB host controller and transceiver of port 1 is disabled
-     * |        |          |If the connection is disabled, the USB host controller will not recognize any event of USB bus.
-     * |        |          |Set this bit high, the transceiver of port 1 will also be forced into the standby mode no matter what USB host controller operation is.
-     * |        |          |0 = The connection between USB host controller and transceiver of port 1 Enabled.
-     * |        |          |1 = The connection between USB host controller and transceiver of port 1 Disabled and the transceiver of port 1 will also be forced into the standby mode.
      */
     __I  uint32_t HcRevision;            /*!< [0x0000] Host Controller Revision Register                                */
     __IO uint32_t HcControl;             /*!< [0x0004] Host Controller Control Register                                 */
@@ -1147,8 +1114,6 @@ typedef struct
     __IO uint32_t HcRhStatus;            /*!< [0x0050] Host Controller Root Hub Status Register                         */
     __IO uint32_t HcRhPortStatus[6];     /*!< [0x0054] Host Controller Root Hub Port Status                             */
     __I  uint32_t RESERVE0[101];
-    __IO uint32_t HcPhyControl;          /*!< [0x0200] Host Controller PHY Control Register                             */
-    __IO uint32_t HcMiscControl;         /*!< [0x0204] Host Controller Miscellaneous Control Register                   */
 
 } USBH1_T;
 
@@ -1367,24 +1332,12 @@ typedef struct
 #define USBH1_HcRhPortStatus_PRSC_Pos    (20)                                              /*!< USBH1_T::HcRhPortStatus: PRSC Position */
 #define USBH1_HcRhPortStatus_PRSC_Msk    (0x1ul << USBH1_HcRhPortStatus_PRSC_Pos)          /*!< USBH1_T::HcRhPortStatus: PRSC Mask     */
 
-#define USBH1_HcPhyControl_STBYEN_Pos    (27)                                              /*!< USBH_T::HcPhyControl: STBYEN Position  */
-#define USBH1_HcPhyControl_STBYEN_Msk    (0x1ul << USBH_HcPhyControl_STBYEN_Pos)           /*!< USBH_T::HcPhyControl: STBYEN Mask      */
-
-#define USBH1_HcMiscControl_ABORT_Pos    (1)                                               /*!< USBH_T::HcMiscControl: ABORT Position  */
-#define USBH1_HcMiscControl_ABORT_Msk    (0x1ul << USBH_HcMiscControl_ABORT_Pos)           /*!< USBH_T::HcMiscControl: ABORT Mask      */
-
-#define USBH1_HcMiscControl_OCAL_Pos     (3)                                               /*!< USBH_T::HcMiscControl: OCAL Position   */
-#define USBH1_HcMiscControl_OCAL_Msk     (0x1ul << USBH_HcMiscControl_OCAL_Pos)            /*!< USBH_T::HcMiscControl: OCAL Mask       */
-
-#define USBH1_HcMiscControl_PPCAL_Pos    (4)                                               /*!< USBH_T::HcMiscControl: PPCAL Position  */
-#define USBH1_HcMiscControl_PPCAL_Msk    (0x1ul << USBH_HcMiscControl_PPCAL_Pos)           /*!< USBH_T::HcMiscControl: PPCAL Mask      */
-
 /** @} HSUSBH_CONST */
 /** @} end of HSUSBH register group */
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __HSUSBH_REG_H__ */
