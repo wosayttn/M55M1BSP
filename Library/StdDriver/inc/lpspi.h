@@ -119,11 +119,7 @@ extern "C"
   * @details    Write 1 to UNITIF bit of LPSPI_STATUS register to clear the unit transfer interrupt flag.
   * \hideinitializer
   */
-#define LPSPI_CLR_UNIT_TRANS_INT_FLAG(lpspi)  \
-  do                                          \
-  {                                           \
-    lpspi->STATUS |= LPSPI_STATUS_UNITIF_Msk; \
-  } while (0)
+#define LPSPI_CLR_UNIT_TRANS_INT_FLAG(lpspi)    (lpspi->STATUS |= LPSPI_STATUS_UNITIF_Msk)
 
 /**
   * @brief      Trigger RX PDMA function.
@@ -132,11 +128,7 @@ extern "C"
   * @details    Set RXPDMAEN bit of LPSPI_PDMACTL register to enable RX PDMA transfer function.
   * \hideinitializer
   */
-#define LPSPI_TRIGGER_RX_PDMA(lpspi)              \
-  do                                              \
-  {                                               \
-    lpspi->PDMACTL |= LPSPI_PDMACTL_RXPDMAEN_Msk; \
-  } while (0)
+#define LPSPI_TRIGGER_RX_PDMA(lpspi)    (lpspi->PDMACTL |= LPSPI_PDMACTL_RXPDMAEN_Msk)
 
 /**
   * @brief      Trigger TX PDMA function.
@@ -145,11 +137,7 @@ extern "C"
   * @details    Set TXPDMAEN bit of LPSPI_PDMACTL register to enable TX PDMA transfer function.
   * \hideinitializer
   */
-#define LPSPI_TRIGGER_TX_PDMA(lpspi)              \
-  do                                              \
-  {                                               \
-    lpspi->PDMACTL |= LPSPI_PDMACTL_TXPDMAEN_Msk; \
-  } while (0)
+#define LPSPI_TRIGGER_TX_PDMA(lpspi)    (lpspi->PDMACTL |= LPSPI_PDMACTL_TXPDMAEN_Msk)
 
 /**
   * @brief      Trigger TX and RX PDMA function.
@@ -158,12 +146,8 @@ extern "C"
   * @details    Set TXPDMAEN bit and RXPDMAEN bit of LPSPI_PDMACTL register to enable TX and RX PDMA transfer function.
   * \hideinitializer
   */
-#define LPSPI_TRIGGER_TX_RX_PDMA(lpspi)             \
-  do                                                \
-  {                                                 \
-    lpspi->PDMACTL |= (LPSPI_PDMACTL_TXPDMAEN_Msk | \
-                       LPSPI_PDMACTL_RXPDMAEN_Msk); \
-  } while (0)
+#define LPSPI_TRIGGER_TX_RX_PDMA(lpspi) \
+    (lpspi->PDMACTL = (LPSPI_PDMACTL_TXPDMAEN_Msk | LPSPI_PDMACTL_RXPDMAEN_Msk))
 
 /**
   * @brief      Disable RX PDMA transfer.
@@ -172,11 +156,7 @@ extern "C"
   * @details    Clear RXPDMAEN bit of LPSPI_PDMACTL register to disable RX PDMA transfer function.
   * \hideinitializer
   */
-#define LPSPI_DISABLE_RX_PDMA(lpspi)                 \
-  do                                                 \
-  {                                                  \
-    lpspi->PDMACTL &= ~(LPSPI_PDMACTL_RXPDMAEN_Msk); \
-  } while (0)
+#define LPSPI_DISABLE_RX_PDMA(lpspi)    (lpspi->PDMACTL &= ~(LPSPI_PDMACTL_RXPDMAEN_Msk))
 
 /**
   * @brief      Disable TX PDMA transfer.
@@ -185,11 +165,7 @@ extern "C"
   * @details    Clear TXPDMAEN bit of LPSPI_PDMACTL register to disable TX PDMA transfer function.
   * \hideinitializer
   */
-#define LPSPI_DISABLE_TX_PDMA(lpspi)                 \
-  do                                                 \
-  {                                                  \
-    lpspi->PDMACTL &= ~(LPSPI_PDMACTL_TXPDMAEN_Msk); \
-  } while (0)
+#define LPSPI_DISABLE_TX_PDMA(lpspi)    (lpspi->PDMACTL &= ~(LPSPI_PDMACTL_TXPDMAEN_Msk))
 
 /**
   * @brief      Disable TX and RX PDMA transfer.
@@ -198,12 +174,8 @@ extern "C"
   * @details    Clear TXPDMAEN bit and RXPDMAEN bit of LPSPI_PDMACTL register to disable TX and RX PDMA transfer function.
   * \hideinitializer
   */
-#define LPSPI_DISABLE_TX_RX_PDMA(lpspi)              \
-  do                                                 \
-  {                                                  \
-    lpspi->PDMACTL &= ~(LPSPI_PDMACTL_TXPDMAEN_Msk | \
-                        LPSPI_PDMACTL_RXPDMAEN_Msk); \
-  } while (0)
+#define LPSPI_DISABLE_TX_RX_PDMA(lpspi) \
+    (lpspi->PDMACTL &= ~(LPSPI_PDMACTL_TXPDMAEN_Msk | LPSPI_PDMACTL_RXPDMAEN_Msk))
 
 /**
   * @brief      Get the count of available data in RX FIFO.
@@ -212,7 +184,8 @@ extern "C"
   * @details    Read RXCNT (LPSPI_STATUS[27:24]) to get the count of available data in RX FIFO.
   * \hideinitializer
   */
-#define LPSPI_GET_RX_FIFO_COUNT(lpspi)  ((lpspi->STATUS & LPSPI_STATUS_RXCNT_Msk) >> LPSPI_STATUS_RXCNT_Pos)
+#define LPSPI_GET_RX_FIFO_COUNT(lpspi)  \
+    ((lpspi->STATUS & LPSPI_STATUS_RXCNT_Msk) >> LPSPI_STATUS_RXCNT_Pos)
 
 /**
   * @brief      Get the RX FIFO empty flag.
@@ -222,7 +195,8 @@ extern "C"
   * @details    Read RXEMPTY bit of LPSPI_STATUS register to get the RX FIFO empty flag.
   * \hideinitializer
   */
-#define LPSPI_GET_RX_FIFO_EMPTY_FLAG(lpspi) ((lpspi->STATUS & LPSPI_STATUS_RXEMPTY_Msk) >> LPSPI_STATUS_RXEMPTY_Pos)
+#define LPSPI_GET_RX_FIFO_EMPTY_FLAG(lpspi) \
+    ((lpspi->STATUS & LPSPI_STATUS_RXEMPTY_Msk) >> LPSPI_STATUS_RXEMPTY_Pos)
 
 /**
   * @brief      Get the TX FIFO empty flag.
@@ -232,7 +206,8 @@ extern "C"
   * @details    Read TXEMPTY bit of LPSPI_STATUS register to get the TX FIFO empty flag.
   * \hideinitializer
   */
-#define LPSPI_GET_TX_FIFO_EMPTY_FLAG(lpspi) ((lpspi->STATUS & LPSPI_STATUS_TXEMPTY_Msk) >> LPSPI_STATUS_TXEMPTY_Pos)
+#define LPSPI_GET_TX_FIFO_EMPTY_FLAG(lpspi) \
+    ((lpspi->STATUS & LPSPI_STATUS_TXEMPTY_Msk) >> LPSPI_STATUS_TXEMPTY_Pos)
 
 /**
   * @brief      Get the TX FIFO full flag.
@@ -242,7 +217,8 @@ extern "C"
   * @details    Read TXFULL bit of LPSPI_STATUS register to get the TX FIFO full flag.
   * \hideinitializer
   */
-#define LPSPI_GET_TX_FIFO_FULL_FLAG(lpspi)  ((lpspi->STATUS & LPSPI_STATUS_TXFULL_Msk) >> LPSPI_STATUS_TXFULL_Pos)
+#define LPSPI_GET_TX_FIFO_FULL_FLAG(lpspi)  \
+    ((lpspi->STATUS & LPSPI_STATUS_TXFULL_Msk) >> LPSPI_STATUS_TXFULL_Pos)
 
 /**
   * @brief      Get the datum read from RX register.
@@ -261,11 +237,7 @@ extern "C"
   * @details    Write u32TxData to LPSPI_TX register.
   * \hideinitializer
   */
-#define LPSPI_WRITE_TX(lpspi, u32TxData) \
-  do                                     \
-  {                                      \
-    lpspi->TX = (u32TxData);             \
-  } while (0)
+#define LPSPI_WRITE_TX(lpspi, u32TxData)    (lpspi->TX = (u32TxData))
 
 /**
   * @brief      Set SPIx_SS pin to high state.
@@ -274,12 +246,9 @@ extern "C"
   * @details    Disable automatic slave selection function and set SPIx_SS pin to high state.
   * \hideinitializer
   */
-#define LPSPI_SET_SS_HIGH(lpspi)                                     \
-  do                                                                 \
-  {                                                                  \
-    lpspi->SSCTL &= ~(LPSPI_SSCTL_AUTOSS_Msk);                       \
-    lpspi->SSCTL |= (LPSPI_SSCTL_SSACTPOL_Msk | LPSPI_SSCTL_SS_Msk); \
-  } while (0)
+#define LPSPI_SET_SS_HIGH(lpspi)    \
+    (lpspi->SSCTL = (lpspi->SSCTL & ~(LPSPI_SSCTL_AUTOSS_Msk)) | \
+                    (LPSPI_SSCTL_SSACTPOL_Msk | LPSPI_SSCTL_SS_Msk))
 
 /**
   * @brief      Set SPIx_SS pin to low state.
@@ -288,12 +257,9 @@ extern "C"
   * @details    Disable automatic slave selection function and set SPIx_SS pin to low state.
   * \hideinitializer
   */
-#define LPSPI_SET_SS_LOW(lpspi)                                           \
-  do                                                                      \
-  {                                                                       \
-    lpspi->SSCTL &= ~(LPSPI_SSCTL_AUTOSS_Msk | LPSPI_SSCTL_SSACTPOL_Msk); \
-    lpspi->SSCTL |= LPSPI_SSCTL_SS_Msk;                                   \
-  } while (0)
+#define LPSPI_SET_SS_LOW(lpspi) \
+    (lpspi->SSCTL = (lpspi->SSCTL & ~(LPSPI_SSCTL_AUTOSS_Msk | LPSPI_SSCTL_SSACTPOL_Msk)) | \
+                    LPSPI_SSCTL_SS_Msk)
 
 /**
   * @brief      Enable Byte Reorder function.
@@ -302,11 +268,7 @@ extern "C"
   * @details    Enable Byte Reorder function. The suspend interval depends on the setting of SUSPITV (LPSPI_CTL[7:4]).
   * \hideinitializer
   */
-#define LPSPI_ENABLE_BYTE_REORDER(lpspi) \
-  do                                     \
-  {                                      \
-    lpspi->CTL |= LPSPI_CTL_REORDER_Msk; \
-  } while (0)
+#define LPSPI_ENABLE_BYTE_REORDER(lpspi)    (lpspi->CTL |= LPSPI_CTL_REORDER_Msk)
 
 /**
   * @brief      Disable Byte Reorder function.
@@ -315,11 +277,7 @@ extern "C"
   * @details    Clear REORDER bit field of LPSPI_CTL register to disable Byte Reorder function.
   * \hideinitializer
   */
-#define LPSPI_DISABLE_BYTE_REORDER(lpspi)   \
-  do                                        \
-  {                                         \
-    lpspi->CTL &= ~(LPSPI_CTL_REORDER_Msk); \
-  } while (0)
+#define LPSPI_DISABLE_BYTE_REORDER(lpspi)   (lpspi->CTL &= ~(LPSPI_CTL_REORDER_Msk))
 
 /**
   * @brief      Set the length of suspend interval.
@@ -330,12 +288,9 @@ extern "C"
   *             The length of suspend interval is ((u32SuspCycle + 0.5) * the length of one LPSPI bus clock cycle).
   * \hideinitializer
   */
-#define LPSPI_SET_SUSPEND_CYCLE(lpspi, u32SuspCycle)         \
-  do                                                         \
-  {                                                          \
-    lpspi->CTL &= ~(LPSPI_CTL_SUSPITV_Msk);                  \
-    lpspi->CTL |= ((u32SuspCycle) << LPSPI_CTL_SUSPITV_Pos); \
-  } while (0)
+#define LPSPI_SET_SUSPEND_CYCLE(lpspi, u32SuspCycle)        \
+    (lpspi->CTL = (lpspi->CTL & ~(LPSPI_CTL_SUSPITV_Msk)) | \
+                  ((u32SuspCycle) << LPSPI_CTL_SUSPITV_Pos))
 
 /**
   * @brief      Set the LPSPI transfer sequence with LSB first.
@@ -344,11 +299,7 @@ extern "C"
   * @details    Set LSB bit of LPSPI_CTL register to set the LPSPI transfer sequence with LSB first.
   * \hideinitializer
   */
-#define LPSPI_SET_LSB_FIRST(lpspi)   \
-  do                                 \
-  {                                  \
-    lpspi->CTL |= LPSPI_CTL_LSB_Msk; \
-  } while (0)
+#define LPSPI_SET_LSB_FIRST(lpspi)  (lpspi->CTL |= LPSPI_CTL_LSB_Msk)
 
 /**
   * @brief      Set the LPSPI transfer sequence with MSB first.
@@ -357,11 +308,7 @@ extern "C"
   * @details    Clear LSB bit of LPSPI_CTL register to set the LPSPI transfer sequence with MSB first.
   * \hideinitializer
   */
-#define LPSPI_SET_MSB_FIRST(lpspi)      \
-  do                                    \
-  {                                     \
-    lpspi->CTL &= ~(LPSPI_CTL_LSB_Msk); \
-  } while (0)
+#define LPSPI_SET_MSB_FIRST(lpspi)  (lpspi->CTL &= ~(LPSPI_CTL_LSB_Msk))
 
 /**
   * @brief      Set the data width of a LPSPI transaction.
@@ -371,12 +318,9 @@ extern "C"
   * @details    The data width can be 8 ~ 32 bits.
   * \hideinitializer
   */
-#define LPSPI_SET_DATA_WIDTH(lpspi, u32Width)                    \
-  do                                                             \
-  {                                                              \
-    lpspi->CTL &= ~(LPSPI_CTL_DWIDTH_Msk);                       \
-    (lpspi->CTL |= (((u32Width)&0x1F) << LPSPI_CTL_DWIDTH_Pos)); \
-  } while (0)
+#define LPSPI_SET_DATA_WIDTH(lpspi, u32Width)               \
+    (lpspi->CTL = (lpspi->CTL & ~(LPSPI_CTL_DWIDTH_Msk)) |  \
+                  (((u32Width) & 0x1F) << LPSPI_CTL_DWIDTH_Pos))
 
 /**
   * @brief      Get the LPSPI busy state.
@@ -386,7 +330,8 @@ extern "C"
   * @details    This macro will return the busy state of LPSPI controller.
   * \hideinitializer
   */
-#define LPSPI_IS_BUSY(lpspi)  ((lpspi->STATUS & LPSPI_STATUS_BUSY_Msk) >> LPSPI_STATUS_BUSY_Pos)
+#define LPSPI_IS_BUSY(lpspi)  \
+    ((lpspi->STATUS & LPSPI_STATUS_BUSY_Msk) >> LPSPI_STATUS_BUSY_Pos)
 
 /**
   * @brief      Enable LPSPI controller.
@@ -395,11 +340,7 @@ extern "C"
   * @details    Set SPIEN (LPSPI_CTL[0]) to enable LPSPI controller.
   * \hideinitializer
   */
-#define LPSPI_ENABLE(lpspi)            \
-  do                                   \
-  {                                    \
-    lpspi->CTL |= LPSPI_CTL_SPIEN_Msk; \
-  } while (0)
+#define LPSPI_ENABLE(lpspi) (lpspi->CTL |= LPSPI_CTL_SPIEN_Msk)
 
 /**
   * @brief      Disable LPSPI controller.
@@ -408,11 +349,7 @@ extern "C"
   * @details    Clear SPIEN (LPSPI_CTL[0]) to disable LPSPI controller.
   * \hideinitializer
   */
-#define LPSPI_DISABLE(lpspi)              \
-  do                                      \
-  {                                       \
-    lpspi->CTL &= ~(LPSPI_CTL_SPIEN_Msk); \
-  } while (0)
+#define LPSPI_DISABLE(lpspi)    (lpspi->CTL &= ~(LPSPI_CTL_SPIEN_Msk))
 
 /**
   * @brief      Set Automatic Operation Trigger Source Select.
@@ -429,12 +366,9 @@ extern "C"
   * @return     None.
   * \hideinitializer
   */
-#define LPSPI_SET_TRIGSRC(lpspi, x)                     \
-  do                                                    \
-  {                                                     \
-    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_TRIGSEL_Msk);     \
-    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_TRIGSEL_Pos); \
-  } while (0)
+#define LPSPI_SET_TRIGSRC(lpspi, x) \
+    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_TRIGSEL_Msk)) | \
+                      ((x) << LPSPI_AUTOCTL_TRIGSEL_Pos))
 
 /**
 * @brief      Get Automatic Operation Trigger Source Select.
@@ -442,7 +376,8 @@ extern "C"
 * @return     None.
 * \hideinitializer
 */
-#define LPSPI_GET_TRIGSRC(lpspi)  ((lpspi->AUTOCTL & LPSPI_AUTOCTL_TRIGSEL_Msk) >> LPSPI_AUTOCTL_TRIGSEL_Pos)
+#define LPSPI_GET_TRIGSRC(lpspi)    \
+    ((lpspi->AUTOCTL & LPSPI_AUTOCTL_TRIGSEL_Msk) >> LPSPI_AUTOCTL_TRIGSEL_Pos)
 
 /**
   * @brief      Automatic Operation Trigger Enable.
@@ -453,12 +388,9 @@ extern "C"
   * @return     None.
   * \hideinitializer
   */
-#define LPSPI_AUTO_TRIGEN(lpspi, x)                    \
-  do                                                   \
-  {                                                    \
-    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_TRIGEN_Msk);     \
-    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_TRIGEN_Pos); \
-  } while (0)
+#define LPSPI_AUTO_TRIGEN(lpspi, x) \
+    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_TRIGEN_Msk)) | \
+                      ((x) << LPSPI_AUTOCTL_TRIGEN_Pos))
 
 /**
   * @brief      TCNT Count Match Interrupt Enable
@@ -469,12 +401,9 @@ extern "C"
   * @return     None.
   * \hideinitializer
   */
-#define LPSPI_AUTO_TCNTINT(lpspi, x)                   \
-  do                                                   \
-  {                                                    \
-    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_CNTIEN_Msk);     \
-    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_CNTIEN_Pos); \
-  } while (0)
+#define LPSPI_AUTO_TCNTINT(lpspi, x)    \
+    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_CNTIEN_Msk)) | \
+                      ((x) << LPSPI_AUTOCTL_CNTIEN_Pos))
 
 /**
   * @brief      Full RX Data Acception Enable Bit.
@@ -485,12 +414,9 @@ extern "C"
   * @return     None.
   * \hideinitializer
   */
-#define LPSPI_AUTO_FULLRX(lpspi, x)                      \
-  do                                                     \
-  {                                                      \
-    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_FULLRXEN_Msk);     \
-    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_FULLRXEN_Pos); \
-  } while (0)
+#define LPSPI_AUTO_FULLRX(lpspi, x) \
+    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_FULLRXEN_Msk)) | \
+                      ((x) << LPSPI_AUTOCTL_FULLRXEN_Pos))
 
 /**
   * @brief      Slave Select Wake Up Enable Bit.
@@ -501,12 +427,9 @@ extern "C"
   * @return     None.
   * \hideinitializer
   */
-#define LPSPI_AUTO_SSWKEN(lpspi, x)                    \
-  do                                                   \
-  {                                                    \
-    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_SSWKEN_Msk);     \
-    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_SSWKEN_Pos); \
-  } while (0)
+#define LPSPI_AUTO_SSWKEN(lpspi, x) \
+    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_SSWKEN_Msk)) | \
+                      ((x) << LPSPI_AUTOCTL_SSWKEN_Pos))
 
 /**
   * @brief      Automatic Operation Mode Enable Bit.
@@ -517,12 +440,9 @@ extern "C"
   * @return     None.
   * \hideinitializer
   */
-#define LPSPI_AUTO_EN(lpspi, x)                        \
-  do                                                   \
-  {                                                    \
-    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_AUTOEN_Msk);     \
-    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_AUTOEN_Pos); \
-  } while (0)
+#define LPSPI_AUTO_EN(lpspi, x) \
+    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_AUTOEN_Msk)) | \
+                      ((x) << LPSPI_AUTOCTL_AUTOEN_Pos))
 
 /**
   * @brief      Software Trigger.
@@ -533,12 +453,9 @@ extern "C"
   * @return     None.
   * \hideinitializer
   */
-#define LPSPI_AUTO_SWTRIG(lpspi, x)                   \
-  do                                                  \
-  {                                                   \
-    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_SWTRG_Msk);     \
-    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_SWTRG_Pos); \
-  } while (0)
+#define LPSPI_AUTO_SWTRIG(lpspi, x) \
+    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_SWTRG_Msk)) | \
+                      ((x) << LPSPI_AUTOCTL_SWTRG_Pos))
 
 /**
   * @brief      TCNT Count Match Wake Up Enable Bit.
@@ -549,12 +466,9 @@ extern "C"
   * @return     None.
   * \hideinitializer
   */
-#define LPSPI_AUTO_TCNTWKEN(lpspi, x)                   \
-  do                                                    \
-  {                                                     \
-    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_CNTWKEN_Msk);     \
-    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_CNTWKEN_Pos); \
-  } while (0)
+#define LPSPI_AUTO_TCNTWKEN(lpspi, x)   \
+    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_CNTWKEN_Msk)) | \
+                      ((x) << LPSPI_AUTOCTL_CNTWKEN_Pos))
 
 /**
   * @brief      Set Auomatic Operation RX Transfer Count.
@@ -563,12 +477,9 @@ extern "C"
   * @return     None.
   * \hideinitializer
   */
-#define LPSPI_SET_AUTO_TCNT(lpspi, x)                \
-  do                                                 \
-  {                                                  \
-    lpspi->AUTOCTL &= ~(LPSPI_AUTOCTL_TCNT_Msk);     \
-    lpspi->AUTOCTL |= (x << LPSPI_AUTOCTL_TCNT_Pos); \
-  } while (0)
+#define LPSPI_SET_AUTO_TCNT(lpspi, x)   \
+    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_TCNT_Msk)) | \
+                      ((x) << LPSPI_AUTOCTL_TCNT_Pos))
 
 /**
 * @brief      Get Auomatic Operation RX Transfer Count.
@@ -576,7 +487,8 @@ extern "C"
 * @return     None.
 * \hideinitializer
 */
-#define LPSPI_GET_AUTO_TCNT(lpspi) ((lpspi->AUTOCTL & LPSPI_AUTOCTL_TCNT_Msk) >> LPSPI_AUTOCTL_TCNT_Pos)
+#define LPSPI_GET_AUTO_TCNT(lpspi)  \
+    ((lpspi->AUTOCTL & LPSPI_AUTOCTL_TCNT_Msk) >> LPSPI_AUTOCTL_TCNT_Pos)
 
 /**
   * @brief      TCNT Count Match Interrupt Flag.
@@ -584,7 +496,8 @@ extern "C"
   * @return     None.
   * \hideinitializer
   */
-#define LPSPI_GET_AUTOSTS_CNTIF(lpspi) ((lpspi->AUTOCTL & LPSPI_AUTOSTS_CNTIF_Msk) >> LPSPI_AUTOSTS_CNTIF_Pos)
+#define LPSPI_GET_AUTOSTS_CNTIF(lpspi)  \
+    ((lpspi->AUTOCTL & LPSPI_AUTOSTS_CNTIF_Msk) >> LPSPI_AUTOSTS_CNTIF_Pos)
 
 /**
   * @brief      Slave Select Wake Up Flag.
@@ -592,7 +505,8 @@ extern "C"
   * @return     None.
   * \hideinitializer
   */
-#define LPSPI_GET_AUTOSTS_SSWKF(lpspi) ((lpspi->AUTOCTL & LPSPI_AUTOSTS_SSWKF_Msk) >> LPSPI_AUTOSTS_SSWKF_Pos)
+#define LPSPI_GET_AUTOSTS_SSWKF(lpspi)  \
+    ((lpspi->AUTOCTL & LPSPI_AUTOSTS_SSWKF_Msk) >> LPSPI_AUTOSTS_SSWKF_Pos)
 
 /**
   * @brief      Automatic Operation Busy Flag.
@@ -600,7 +514,8 @@ extern "C"
   * @return     None.
   * \hideinitializer
   */
-#define LPSPI_GET_AUTOSTS_BUSY(lpspi) ((lpspi->AUTOCTL & LPSPI_AUTOSTS_AOBUSY_Msk) >> LPSPI_AUTOSTS_AOBUSY_Pos)
+#define LPSPI_GET_AUTOSTS_BUSY(lpspi)   \
+    ((lpspi->AUTOCTL & LPSPI_AUTOSTS_AOBUSY_Msk) >> LPSPI_AUTOSTS_AOBUSY_Pos)
 
 /**
   * @brief      TCNT Count Match Wake Up Flag.
@@ -608,7 +523,8 @@ extern "C"
   * @return     None.
   * \hideinitializer
   */
-#define LPSPI_GET_AUTOSTS_CNTWKF(lpspi) ((lpspi->AUTOCTL & LPSPI_AUTOSTS_CNTWKF_Msk) >> LPSPI_AUTOSTS_CNTWKF_Pos)
+#define LPSPI_GET_AUTOSTS_CNTWKF(lpspi) \
+    ((lpspi->AUTOCTL & LPSPI_AUTOSTS_CNTWKF_Msk) >> LPSPI_AUTOSTS_CNTWKF_Pos)
 
 /* Function prototype declaration */
 uint32_t LPSPI_Open(LPSPI_T *lpspi, uint32_t u32MasterSlave, uint32_t u32SPIMode, uint32_t u32DataWidth, uint32_t u32BusClock);

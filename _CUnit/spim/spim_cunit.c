@@ -31,7 +31,7 @@ extern unsigned int ERR_STATE1;
 static uint8_t idBuf[3] = {0};
 
 /* 0x02 : CMD_NORMAL_PAGE_PROGRAM Command Phase Table */
-static PHASE_SET_T gWB_02h_WrCMD =
+static SPIM_PHASE_T gWB_02h_WrCMD =
 {
     CMD_NORMAL_PAGE_PROGRAM,                                //Command Code
     PHASE_NORMAL_MODE, PHASE_WIDTH_8,  PHASE_DISABLE_DTR,       //Command Phase
@@ -41,7 +41,7 @@ static PHASE_SET_T gWB_02h_WrCMD =
 };
 
 /* 0xED: CMD_DMA_FAST_QUAD_DTR_READ Command Phase Table */
-static PHASE_SET_T gWB_EDh_RdCMD =
+static SPIM_PHASE_T gWB_EDh_RdCMD =
 {
     CMD_DMA_FAST_QUAD_DTR_READ,                                            // Command Code
     PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,                       // Command Phase
@@ -52,7 +52,7 @@ static PHASE_SET_T gWB_EDh_RdCMD =
 };
 
 /* 0x03: CMD_DMA_NORMAL_READ Command Phase Table */
-static PHASE_SET_T gWB_03h_RdCMD =
+static SPIM_PHASE_T gWB_03h_RdCMD =
 {
     CMD_DMA_NORMAL_READ,                                 // Command Code
     PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,     // Command Phase
@@ -63,7 +63,7 @@ static PHASE_SET_T gWB_03h_RdCMD =
 
 
 /* 0xEB: CMD_DMA_FAST_QUAD_READ Command Phase Table */
-static PHASE_SET_T gWB_EBh_RdCMD =
+static SPIM_PHASE_T gWB_EBh_RdCMD =
 {
     CMD_DMA_FAST_QUAD_READ,                                                 // Command Code
     PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,                        // Command Phase
@@ -419,9 +419,9 @@ void MACRO_SPIM_CTL0()
     /*
      *  SPIM_SET_OP_MODE(x)
      */
-    SPIM_SET_OP_MODE(pSPIMModule, SPIM_OP_HYPER_MODE);
+    SPIM_HYPER_ENABLE_HYPMODE(pSPIMModule);
     CU_ASSERT_TRUE(pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk);
-    SPIM_SET_OP_MODE(pSPIMModule, SPIM_OP_FLASH_MODE);
+    SPIM_SET_FLASH_MODE(pSPIMModule);
     CU_ASSERT_FALSE(pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk);
 
     /*
@@ -882,9 +882,9 @@ void MACRO_SPIM_DMMCTL()
      *  SPIM_ENABLE_DMM_HYPDONE()
      */
     pSPIMModule->DMMCTL |= 0;
-    SPIM_ENABLE_DMM_HYPDONE(pSPIMModule);
+    SPIM_HYPER_ENABLE_DMMDONE(pSPIMModule);
 
-    while (SPIM_GET_DMM_HYPDONE(pSPIMModule)) {}
+    while (SPIM_HYPER_GET_DMMDONE(pSPIMModule)) {}
 
     CU_ASSERT_FALSE((pSPIMModule->DMMCTL & SPIM_DMMCTL_HYPDONE_Msk) >> SPIM_DMMCTL_HYPDONE_Pos);
 
@@ -1887,7 +1887,7 @@ void SPIM_IO_RW_Func()
         SPIM_IO_SendCMDPhase(pSPIMModule, SPIM_IO_READ_PHASE, 0xEB, PHASE_NORMAL_MODE, 0);
         SPIM_IO_SendAddrPhase(pSPIMModule, 0, offset, PHASE_QUAD_MODE, 0);
         SPIM_IO_SendDummyCycle(pSPIMModule, 4);
-        SPIM_IO_SendDataPhase(pSPIMModule, SPIM_IO_READ_PHASE, u8TstBuf1, BUFFER_SIZE, PHASE_QUAD_MODE, 0);
+        SPIM_IO_SendDataPhase(pSPIMModule, SPIM_IO_READ_PHASE, u8TstBuf1, BUFFER_SIZE, PHASE_NORMAL_MODE, PHASE_QUAD_MODE, 0);
 
         pData = (uint32_t *)u8TstBuf1;
 
@@ -1916,7 +1916,6 @@ void SPIM_IO_RW_Func()
         SPIM_IO_WritePhase(pSPIMModule,
                            &gWB_02h_WrCMD,
                            offset,
-                           0,
                            u8TstBuf1,
                            BUFFER_SIZE);
         //SPIM_IO_Write(pSPIMModule, offset, 0, BUFFER_SIZE, g_buff, OPCODE_PP, 1, 1, 1);
@@ -1931,7 +1930,7 @@ void SPIM_IO_RW_Func()
     {
         memset(u8TstBuf2, 0, BUFFER_SIZE);
         //SPIM_IO_Read(pSPIMModule, offset, 0, BUFFER_SIZE, u8TstBuf2, 0xeb, 1, 4, 4, 3, 0);
-        SPIM_IO_ReadPhase(pSPIMModule, &gWB_EDh_RdCMD, offset, 0, u8TstBuf2, BUFFER_SIZE);
+        SPIM_IO_ReadPhase(pSPIMModule, &gWB_EDh_RdCMD, offset, u8TstBuf2, BUFFER_SIZE);
         //SPIM_IO_SendCMDPhase(pSPIMModule, SPIM_IO_READ_PHASE, 0xEB, PHASE_NORMAL_MODE, 0);
         //SPIM_IO_SendAddrPhase(pSPIMModule, 0, offset, PHASE_QUAD_MODE, 0);
         //SPIM_IO_DCPhase(pSPIMModule, 2, PHASE_QUAD_MODE, 0);

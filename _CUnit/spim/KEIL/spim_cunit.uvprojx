@@ -439,6 +439,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Library\StdDriver\src\ks.c</FilePath>
             </File>
+            <File>
+              <FileName>spim_hyper.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\spim_hyper.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -920,6 +925,11 @@
               <FileName>ks.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Library\StdDriver\src\ks.c</FilePath>
+            </File>
+            <File>
+              <FileName>spim_hyper.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\spim_hyper.c</FilePath>
             </File>
           </Files>
         </Group>

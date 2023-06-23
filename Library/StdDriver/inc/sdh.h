@@ -124,11 +124,7 @@ extern int32_t g_SDH_i32ErrCode;
  *  @return   None.
  * \hideinitializer
  */
-#define SDH_ENABLE_INT(sdh, u32IntMask) \
-    do                                  \
-    {                                   \
-        sdh->INTEN |= (u32IntMask);     \
-    } while (0)
+#define SDH_ENABLE_INT(sdh, u32IntMask) (sdh->INTEN |= (u32IntMask))
 
 /**
  *  @brief    Disable specified interrupt.
@@ -146,11 +142,7 @@ extern int32_t g_SDH_i32ErrCode;
  *  @return   None.
  * \hideinitializer
  */
-#define SDH_DISABLE_INT(sdh, u32IntMask) \
-    do                                   \
-    {                                    \
-        sdh->INTEN &= ~(u32IntMask);     \
-    } while (0)
+#define SDH_DISABLE_INT(sdh, u32IntMask)    (sdh->INTEN &= ~(u32IntMask))
 
 /**
  *  @brief    Get specified interrupt flag/status.

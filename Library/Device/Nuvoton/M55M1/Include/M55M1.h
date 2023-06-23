@@ -1708,6 +1708,7 @@ typedef volatile uint64_t vu64;   ///< Define 64-bit unsigned volatile data type
 #include "sdh.h"
 #include "spi.h"
 #include "spim.h"
+#include "spim_hyper.h"
 #include "sys.h"
 #include "tamper.h"
 #include "timer.h"
