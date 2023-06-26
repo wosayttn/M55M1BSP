@@ -79,10 +79,10 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /*  COMMAND_QUEUE_PORT_ADDR_ASSGN_CMD - CMD_ATTR field values                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-#define I3C_CMD_ATTR_TRANSFER_CMD   0x0       // (TRANSFER_CMD): Transfer Command
-#define I3C_CMD_ATTR_TRANSFER_ARG   0x1       // (TRANSFER_ARG): Transfer Argument
-#define I3C_CMD_ATTR_SHORT_DATA_ARG 0x2       // (SHORT_DATA_ARG): Short Data Argument
-#define I3C_CMD_ATTR_ADDR_ASSGN_CMD 0x3       // (ADDR_ASSGN_CMD): Address Assignment Command
+#define I3C_CMDATTR_TRANSFER_CMD   0x0       /*!<  (TRANSFER_CMD): Transfer Command */
+#define I3C_CMDATTR_TRANSFER_ARG   0x1       /*!<  (TRANSFER_ARG): Transfer Argument */
+#define I3C_CMDATTR_SHORT_DATA_ARG 0x2       /*!<  (SHORT_DATA_ARG): Short Data Argument */
+#define I3C_CMDATTR_ADDR_ASSGN_CMD 0x3       /*!<  (ADDR_ASSGN_CMD): Address Assignment Command */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  I3C Maximum RX/TX FIFO and Response/Command Queue Constant Definitions                                 */
@@ -93,24 +93,36 @@ extern "C"
 #define I3C_DEVICE_CMD_QUEUE_CNT            (4UL)   /*!< Maximum Command Queue count of I3C */
 
 /*---------------------------------------------------------------------------------------------------------*/
+/*  I3C Device Type Constant Definitions                                                                   */
+/*---------------------------------------------------------------------------------------------------------*/
+#define I3C_DEVTYPE_I2C        (0x1U)               /*!< Target Device Type is I2C slave */
+#define I3C_DEVTYPE_I3C        (0x0U)               /*!< Target Device Type is I3C slave */
+
+/*---------------------------------------------------------------------------------------------------------*/
 /*  I3C Transfer Mode and Spped Constant Definitions                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
-#define I3C_SPEED_SDR0                      (0UL << I3C_CMDQUE_SPEED_Pos)
-#define I3C_SPEED_SDR1                      (1UL << I3C_CMDQUE_SPEED_Pos)
-#define I3C_SPEED_SDR2                      (2UL << I3C_CMDQUE_SPEED_Pos)
-#define I3C_SPEED_SDR3                      (3UL << I3C_CMDQUE_SPEED_Pos)
-#define I3C_SPEED_SDR4                      (4UL << I3C_CMDQUE_SPEED_Pos)
-#define I3C_SPEED_HDRDDR                    (6UL << I3C_CMDQUE_SPEED_Pos)
-#define I3C_SPEED_I2CFM                     (7UL << I3C_CMDQUE_SPEED_Pos)
-#define I2C_SPEED_I2CFM                     (0UL << I3C_CMDQUE_SPEED_Pos)
-#define I2C_SPEED_I2CFMPLUS                 (1UL << I3C_CMDQUE_SPEED_Pos)
+#define I3C_DEVI3C_SPEED_SDR0                       (0UL << I3C_CMDQUE_SPEED_Pos)
+#define I3C_DEVI3C_SPEED_SDR1                       (1UL << I3C_CMDQUE_SPEED_Pos)
+#define I3C_DEVI3C_SPEED_SDR2                       (2UL << I3C_CMDQUE_SPEED_Pos)
+#define I3C_DEVI3C_SPEED_SDR3                       (3UL << I3C_CMDQUE_SPEED_Pos)
+#define I3C_DEVI3C_SPEED_SDR4                       (4UL << I3C_CMDQUE_SPEED_Pos)
+#define I3C_DEVI3C_SPEED_HDRDDR                     (6UL << I3C_CMDQUE_SPEED_Pos)
+#define I3C_DEVI3C_SPEED_I2CFM                      (7UL << I3C_CMDQUE_SPEED_Pos)
+#define I3C_DEVI2C_SPEED_I2CFM                      (0UL << I3C_CMDQUE_SPEED_Pos)
+#define I3C_DEVI2C_SPEED_I2CFMPLUS                  (1UL << I3C_CMDQUE_SPEED_Pos)
+
+/*---------------------------------------------------------------------------------------------------------*/
+/*  I3C Transfer ID Constant Definitions                                                                   */
+/*---------------------------------------------------------------------------------------------------------*/
+#define I3C_TX_TID  0x05                            /*!< Magic numbers for identifying TX transfer responses */
+#define I3C_RX_TID  0x03                            /*!< Magic numbers for identifying RX transfer responses */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  I3C Support ENTDAA CCC or Hot-Join Generation Constant Definitions                                     */
 /*---------------------------------------------------------------------------------------------------------*/
 #define I3C_SUPPORT_ENTDAA                  (0UL)   /*!< Support to receive ENTDAA CCC */
-#define I3C_SUPPORT_ADAPTIVE_HJ             (1UL)  /*!< Support to initiate Hot-Join after receiving broadcast header 7'h7E */
-#define I3C_SUPPORT_IMMEDIATE_HJ            (2UL)  /*!< Support to initiate Hot-Join immediately after I3C controller enabled */
+#define I3C_SUPPORT_ADAPTIVE_HJ             (1UL)   /*!< Support to initiate Hot-Join after receiving broadcast header 7'h7E */
+#define I3C_SUPPORT_IMMEDIATE_HJ            (2UL)   /*!< Support to initiate Hot-Join immediately after I3C controller enabled */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  I3C Error Status in Response Queue Constant Definitions                                                */
@@ -657,7 +669,7 @@ extern "C"
  * @details     This macro set the I3C Open Drain High Count
  * \hideinitializer
  */
-#define I3C_SET_SCL_OD_HCNT(i3c, u32Cnt)    ((i3c)->SCLOD = ((i3c)->SCLOD & ~I3C_SCLOD_ODHCNT_Msk) | ((u32Cnt & 0xFF) << I3C_SCLOD_ODHCNT_Pos))
+#define I3C_SET_SCLOD_HCNT(i3c, u32Cnt)    ((i3c)->SCLOD = ((i3c)->SCLOD & ~I3C_SCLOD_ODHCNT_Msk) | ((u32Cnt & 0xFF) << I3C_SCLOD_ODHCNT_Pos))
 
 /**
  * @brief       Set I3C Open Drain Low Count
@@ -668,7 +680,7 @@ extern "C"
  * @details     This macro set the I3C Open Drain Low Count
  * \hideinitializer
  */
-#define I3C_SET_SCL_OD_LCNT(i3c, u32Cnt)    ((i3c)->SCLOD = ((i3c)->SCLOD & ~I3C_SCLOD_ODLCNT_Msk) | ((u32Cnt & 0xFF) << I3C_SCLOD_ODLCNT_Pos))
+#define I3C_SET_SCLOD_LCNT(i3c, u32Cnt)    ((i3c)->SCLOD = ((i3c)->SCLOD & ~I3C_SCLOD_ODLCNT_Msk) | ((u32Cnt & 0xFF) << I3C_SCLOD_ODLCNT_Pos))
 
 /**
  * @brief       Set I3C Push Pull High Count
@@ -679,7 +691,7 @@ extern "C"
  * @details     This macro set the I3C Push Pull High Count
  * \hideinitializer
  */
-#define I3C_SET_SCL_PP_HCNT(i3c, u32Cnt)    ((i3c)->SCLPP = ((i3c)->SCLPP & ~I3C_SCLPP_PPHCNT_Msk) | ((u32Cnt & 0xFF) << I3C_SCLPP_PPHCNT_Pos))
+#define I3C_SET_SCLPP_HCNT(i3c, u32Cnt)    ((i3c)->SCLPP = ((i3c)->SCLPP & ~I3C_SCLPP_PPHCNT_Msk) | ((u32Cnt & 0xFF) << I3C_SCLPP_PPHCNT_Pos))
 
 /**
  * @brief       Set I3C Push Pull Low Count
@@ -690,7 +702,7 @@ extern "C"
  * @details     This macro set the I3C Push Pull Low Count
  * \hideinitializer
  */
-#define I3C_SET_SCL_PP_LCNT(i3c, u32Cnt)    ((i3c)->SCLPP = ((i3c)->SCLPP & ~I3C_SCLPP_PPLCNT_Msk) | ((u32Cnt & 0xFF) << I3C_SCLPP_PPLCNT_Pos))
+#define I3C_SET_SCLPP_LCNT(i3c, u32Cnt)    ((i3c)->SCLPP = ((i3c)->SCLPP & ~I3C_SCLPP_PPLCNT_Msk) | ((u32Cnt & 0xFF) << I3C_SCLPP_PPLCNT_Pos))
 
 /**
  * @brief       Set I2C Fast Mode Open Drain High Count
@@ -701,7 +713,7 @@ extern "C"
  * @details     This macro set the I2C Fast Mode Open Drain High Count
  * \hideinitializer
  */
-#define I3C_SET_SCL_FM_HCNT(i3c, u32Cnt)    ((i3c)->SCLFM = ((i3c)->SCLFM & ~I3C_SCLFM_FMHCNT_Msk) | ((u32Cnt & 0xFFFF) << I3C_SCLFM_FMHCNT_Pos))
+#define I3C_SET_SCLFM_HCNT(i3c, u32Cnt)    ((i3c)->SCLFM = ((i3c)->SCLFM & ~I3C_SCLFM_FMHCNT_Msk) | ((u32Cnt & 0xFFFF) << I3C_SCLFM_FMHCNT_Pos))
 
 /**
  * @brief       Set I2C Fast Mode Open Drain Low Count
@@ -712,7 +724,7 @@ extern "C"
  * @details     This macro set the I2C Fast Mode Open Drain Low Count
  * \hideinitializer
  */
-#define I3C_SET_SCL_FM_LCNT(i3c, u32Cnt)    ((i3c)->SCLFM = ((i3c)->SCLFM & ~I3C_SCLFM_FMLCNT_Msk) | ((u32Cnt & 0xFFFF) << I3C_SCLFM_FMLCNT_Pos))
+#define I3C_SET_SCLFM_LCNT(i3c, u32Cnt)    ((i3c)->SCLFM = ((i3c)->SCLFM & ~I3C_SCLFM_FMLCNT_Msk) | ((u32Cnt & 0xFFFF) << I3C_SCLFM_FMLCNT_Pos))
 
 /**
  * @brief       Set I2C Fast Mode Plus Open Drain High Count
@@ -723,7 +735,7 @@ extern "C"
  * @details     This macro set the I2C Fast Mode Plus Open Drain High Count
  * \hideinitializer
  */
-#define I3C_SET_SCL_FMP_HCNT(i3c, u32Cnt)   ((i3c)->SCLFMP = ((i3c)->SCLFMP & ~I3C_SCLFMP_FMPHCNT_Msk) | ((u32Cnt & 0xFF) << I3C_SCLFMP_FMPHCNT_Pos))
+#define I3C_SET_SCLFMP_HCNT(i3c, u32Cnt)   ((i3c)->SCLFMP = ((i3c)->SCLFMP & ~I3C_SCLFMP_FMPHCNT_Msk) | ((u32Cnt & 0xFF) << I3C_SCLFMP_FMPHCNT_Pos))
 
 /**
  * @brief       Set I2C Fast Mode Plus Open Drain Low Count
@@ -734,7 +746,7 @@ extern "C"
  * @details     This macro set the I2C Fast Mode Open Drain Low Count
  * \hideinitializer
  */
-#define I3C_SET_SCL_FMP_LCNT(i3c, u32Cnt)   ((i3c)->SCLFMP = ((i3c)->SCLFMP & ~I3C_SCLFMP_FMPLCNT_Msk) | ((u32Cnt & 0xFFFF) << I3C_SCLFMP_FMPLCNT_Pos))
+#define I3C_SET_SCLFMP_LCNT(i3c, u32Cnt)   ((i3c)->SCLFMP = ((i3c)->SCLFMP & ~I3C_SCLFMP_FMPLCNT_Msk) | ((u32Cnt & 0xFFFF) << I3C_SCLFMP_FMPLCNT_Pos))
 
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -835,8 +847,8 @@ int32_t I3C_EnableHJRequest(I3C_T *i3c, uint32_t u32ModeSel);
 int32_t I3C_DisableHJRequest(I3C_T *i3c);
 int32_t I3C_RespErrorRecovery(I3C_T *i3c, uint32_t u32RespStatus);
 int32_t I3C_SetDeviceAddr(I3C_T *i3c, uint8_t u8DevIndex, uint8_t u8DevType, uint8_t u8DAddr, int8_t u8SAddr);
-int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TID, uint32_t *pu32TxBuf, uint16_t u16WriteBytes);
-int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TID, uint32_t *pu32RxBuf, uint16_t u16ReadBytes);
+int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_t *pu32TxBuf, uint16_t u16WriteBytes);
+int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_t *pu32RxBuf, uint16_t u16ReadBytes);
 int32_t I3C_BroadcastRSTDAA(I3C_T *i3c);
 int32_t I3C_UnicastSETDASA(I3C_T *i3c, uint8_t u8DevIndex);
 

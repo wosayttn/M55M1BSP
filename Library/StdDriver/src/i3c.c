@@ -466,7 +466,7 @@ int32_t I3C_RespErrorRecovery(I3C_T *i3c, uint32_t u32RespStatus)
   * @param[in]  *i3c            Point to I3C peripheral
   * @param[in]  u8DevIndex      the offset of Device Address Table.
   *                             It could be 0 ~ 6 for DEV1ADR to DEV7ADR.
-  * @param[in]  u8DevType       the slave device type. It could be 0 for I3C device and 1 for I2C device
+  * @param[in]  u8DevType       the slave device type. It could be I3C_DEVTYPE_I3C for I3C device and I3C_DEVTYPE_I2C for I2C device
   * @param[in]  u8DAddr         7Bits Device Synamic Address
   * @param[in]  u8SAddr         7Bits Device Static Address
   *
@@ -508,7 +508,7 @@ int32_t I3C_SetDeviceAddr(I3C_T *i3c, uint8_t u8DevIndex, uint8_t u8DevType, uin
     u32Device |= (u8SAddr << I3C_DEVADR_SADDR_Pos);
 
     // Device Type
-    if (u8DevType != 0)
+    if (u8DevType != I3C_DEVTYPE_I3C)
     {
         u32Device |= (1 << I3C_DEVADR_DEVICE_Pos);
     }
@@ -558,16 +558,15 @@ int32_t I3C_SetDeviceAddr(I3C_T *i3c, uint8_t u8DevIndex, uint8_t u8DevType, uin
   * @param[in]  u8DevIndex      the offset of Device Address Table.
   *                             It could be 0 ~ 6 for DEV1ADR to DEV7ADR.
   * @param[in]  u32Speed        the speed in which the transfer should be driven. It could be
-  *                                 \ref I3C_SPEED_SDR0
-  *                                 \ref I3C_SPEED_SDR1
-  *                                 \ref I3C_SPEED_SDR2
-  *                                 \ref I3C_SPEED_SDR3
-  *                                 \ref I3C_SPEED_SDR4
-  *                                 \ref I3C_SPEED_HDRDDR
-  *                                 \ref I3C_SPEED_I2CFM
-  *                                 \ref I2C_SPEED_I2CFM
-  *                                 \ref I2C_SPEED_I2CFMPLUS
-  * @param[in]  u8TID           Specified Transmit Transaction ID in Command Queue.
+  *                                 \ref I3C_DEVI3C_SPEED_SDR0
+  *                                 \ref I3C_DEVI3C_SPEED_SDR1
+  *                                 \ref I3C_DEVI3C_SPEED_SDR2
+  *                                 \ref I3C_DEVI3C_SPEED_SDR3
+  *                                 \ref I3C_DEVI3C_SPEED_SDR4
+  *                                 \ref I3C_DEVI3C_SPEED_HDRDDR
+  *                                 \ref I3C_DEVI3C_SPEED_I2CFM
+  *                                 \ref I3C_DEVI2C_SPEED_I2CFM
+  *                                 \ref I3C_DEVI2C_SPEED_I2CFMPLUS
   * @param[in]  *pu32TxBuf      Pointer to array to write data to Slave
   * @param[in]  u16WriteBytes   How many bytes need to write to Slave
   *
@@ -581,7 +580,7 @@ int32_t I3C_SetDeviceAddr(I3C_T *i3c, uint8_t u8DevIndex, uint8_t u8DevType, uin
   * @note       Device Address Table must be set before using this function.
   *
   */
-int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TID, uint32_t *pu32TxBuf, uint16_t u16WriteBytes)
+int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_t *pu32TxBuf, uint16_t u16WriteBytes)
 {
     uint32_t i;
     uint8_t u8Xfering = 1u, u8Err = 0u, u8Ctrl = 0u;
@@ -603,7 +602,7 @@ int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8T
     {
         i3c->CMDQUE = (((pu32TxBuf[0] & 0x00FFFFFF) << I3C_CMDQUE_DATBYTE0_Pos)
                        | ((((1 << u16WriteBytes) - 1) & 0x07) << I3C_CMDQUE_BYTESTRB_Pos)
-                       | I3C_CMD_ATTR_SHORT_DATA_ARG);
+                       | I3C_CMDATTR_SHORT_DATA_ARG);
 
         /* Check if CmdQ is full */
         if (I3C_IS_CMDQ_FULL(i3c))
@@ -614,12 +613,12 @@ int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8T
         i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_SDAP_Msk | I3C_CMDQUE_ROC_Msk
                        | (u32Speed & I3C_CMDQUE_SPEED_Msk)
                        | ((u8DevIndex & 0x1F) << I3C_CMDQUE_DEVINDX_Pos)
-                       | ((u8TID & 0x07) << I3C_CMDQUE_TID_Pos)
-                       | I3C_CMD_ATTR_TRANSFER_CMD);
+                       | (I3C_TX_TID << I3C_CMDQUE_TID_Pos)
+                       | I3C_CMDATTR_TRANSFER_CMD);
     }
     else
     {
-        i3c->CMDQUE = ((u16WriteBytes << I3C_CMDQUE_DATLEN_Pos) | I3C_CMD_ATTR_TRANSFER_ARG);
+        i3c->CMDQUE = ((u16WriteBytes << I3C_CMDQUE_DATLEN_Pos) | I3C_CMDATTR_TRANSFER_ARG);
 
         /* Check if CmdQ is full */
         if (I3C_IS_CMDQ_FULL(i3c))
@@ -630,8 +629,8 @@ int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8T
         i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_ROC_Msk
                        | (u32Speed & I3C_CMDQUE_SPEED_Msk)
                        | ((u8DevIndex & 0x1F) << I3C_CMDQUE_DEVINDX_Pos)
-                       | ((u8TID & 0x07) << I3C_CMDQUE_TID_Pos)
-                       | I3C_CMD_ATTR_TRANSFER_CMD);
+                       | (I3C_TX_TID << I3C_CMDQUE_TID_Pos)
+                       | I3C_CMDATTR_TRANSFER_CMD);
 
         for (i = 0; i < ((u16WriteBytes + 3) / 4); i++)
         {
@@ -670,16 +669,15 @@ int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8T
   * @param[in]  u8DevIndex      the offset of Device Address Table.
   *                             It could be 0 ~ 6 for DEV1ADR to DEV7ADR.
   * @param[in]  u32Speed        the speed in which the transfer should be driven. It could be
-  *                                 \ref I3C_SPEED_SDR0
-  *                                 \ref I3C_SPEED_SDR1
-  *                                 \ref I3C_SPEED_SDR2
-  *                                 \ref I3C_SPEED_SDR3
-  *                                 \ref I3C_SPEED_SDR4
-  *                                 \ref I3C_SPEED_HDRDDR
-  *                                 \ref I3C_SPEED_I2CFM
-  *                                 \ref I2C_SPEED_I2CFM
-  *                                 \ref I2C_SPEED_I2CFMPLUS
-  * @param[in]  u8TID           Specified Transmit Transaction ID in Command Queue.
+  *                                 \ref I3C_DEVI3C_SPEED_SDR0
+  *                                 \ref I3C_DEVI3C_SPEED_SDR1
+  *                                 \ref I3C_DEVI3C_SPEED_SDR2
+  *                                 \ref I3C_DEVI3C_SPEED_SDR3
+  *                                 \ref I3C_DEVI3C_SPEED_SDR4
+  *                                 \ref I3C_DEVI3C_SPEED_HDRDDR
+  *                                 \ref I3C_DEVI3C_SPEED_I2CFM
+  *                                 \ref I3C_DEVI2C_SPEED_I2CFM
+  *                                 \ref I3C_DEVI2C_SPEED_I2CFMPLUS
   * @param[in]  *pu32RxBuf      Pointer to array to read data from Slave
   * @param[in]  u16ReadBytes    How many bytes need to read from Slave
   *
@@ -693,7 +691,7 @@ int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8T
   * @note       if u16ReadBytes is not
   *
   */
-int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TID, uint32_t *pu32RxBuf, uint16_t u16ReadBytes)
+int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_t *pu32RxBuf, uint16_t u16ReadBytes)
 {
     uint32_t i;
     uint32_t u32TimeOutCount = (SystemCoreClock / 1000);
@@ -710,7 +708,7 @@ int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TI
         return I3C_STS_CMDQ_FULL;
     }
 
-    i3c->CMDQUE = ((u16ReadBytes << I3C_CMDQUE_DATLEN_Pos) | I3C_CMD_ATTR_TRANSFER_ARG);
+    i3c->CMDQUE = ((u16ReadBytes << I3C_CMDQUE_DATLEN_Pos) | I3C_CMDATTR_TRANSFER_ARG);
 
     /* Check if CmdQ is full */
     if (I3C_IS_CMDQ_FULL(i3c))
@@ -721,8 +719,8 @@ int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint8_t u8TI
     i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_RNW_Msk | I3C_CMDQUE_ROC_Msk
                    | (u32Speed & I3C_CMDQUE_SPEED_Msk)
                    | ((u8DevIndex & 0x1F) << I3C_CMDQUE_DEVINDX_Pos)
-                   | ((u8TID & 0x07) << I3C_CMDQUE_TID_Pos)
-                   | I3C_CMD_ATTR_TRANSFER_CMD);
+                   | (I3C_RX_TID << I3C_CMDQUE_TID_Pos)
+                   | I3C_CMDATTR_TRANSFER_CMD);
 
     while ((i3c->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0)
     {
@@ -769,7 +767,7 @@ int32_t I3C_BroadcastRSTDAA(I3C_T *i3c)
     I3C0->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_ROC_Msk
                     | I3C_CMDQUE_CP_Msk
                     | ((I3C_CCC_RSTDAA(TRUE) <<  I3C_CMDQUE_CMD_Pos) & I3C_CMDQUE_CMD_Msk)
-                    | I3C_CMD_ATTR_TRANSFER_CMD);
+                    | I3C_CMDATTR_TRANSFER_CMD);
 
     while ((I3C0->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
 
@@ -803,7 +801,7 @@ int32_t I3C_UnicastSETDASA(I3C_T *i3c, uint8_t u8DevIndex)
                    | I3C_DEVCOUNT(1)
                    | ((u8DevIndex & 0x1F) << I3C_CMDQUE_DEVINDX_Pos)
                    | (I3C_CCC_SETDASA <<  I3C_CMDQUE_CMD_Pos)
-                   | I3C_CMD_ATTR_ADDR_ASSGN_CMD);
+                   | I3C_CMDATTR_ADDR_ASSGN_CMD);
 
     while ((I3C0->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
 
