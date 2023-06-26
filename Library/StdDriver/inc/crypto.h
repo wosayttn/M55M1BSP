@@ -114,6 +114,10 @@ extern "C"
 #define RSA_MODE_SCAP           (0x100UL)     /*!< RSA select SCAP mode                  \hideinitializer */
 #define RSA_MODE_CRT_SCAP       (0x104UL)     /*!< RSA select CRT SCAP mode              \hideinitializer */
 #define RSA_MODE_CRTBYPASS_SCAP (0x10CUL)     /*!< RSA select CRT bypass SCAP mode       \hideinitializer */
+
+/** @} end of CRYPTO_EXPORTED_CONSTANTS CRYPTO Exported Constants*/
+
+
 typedef enum
 {
     /*!< ECC curve                \hideinitializer */
@@ -238,6 +242,9 @@ typedef struct
 
 /** @} end of group CRYPTO_EXPORTED_CONSTANTS */
 
+/** @addtogroup CRYPTO_EXPORTED_MACROS
+  @{
+*/
 /**
   * @brief This macro enables PRNG interrupt.
   * @param crpt     Specified cripto module
@@ -445,10 +452,10 @@ typedef struct
   * \hideinitializer
   */
 #define RSA_CLR_INT_FLAG(crypto)      ((crypto)->INTSTS = (CRYPTO_INTSTS_RSAIF_Msk|CRYPTO_INTSTS_RSAEIF_Msk))
-/** @} end of group M55M1_CRYPTO_EXPORTED_MACROS */
+/** @} end of group CRYPTO_EXPORTED_MACROS */
 
 
-/** @addtogroup CRYPTO_EXPORTED_FUNCTIONS CRYPTO Exported Functions
+/** @addtogroup CRYPTO_EXPORTED_FUNCTIONS
   @{
 */
 void PRNG_Open(CRYPTO_T *crypto, uint32_t u32KeySize, uint32_t u32SeedReload, uint32_t u32Seed);
@@ -495,7 +502,6 @@ int32_t ECC_GetCurve(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, ECC_CURVE *curve);
 int32_t ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message, int x_ksnum, int y_ksnum, char *R, char *S);
 
 int ecc_strcmp(char *s1, char *s2);
-
 void Hex2Reg(char input[], uint32_t volatile reg[]);
 void Reg2Hex(int32_t count, uint32_t volatile reg[], char output[]);
 void Hex2RegEx(char input[], uint32_t volatile reg[], int shift);

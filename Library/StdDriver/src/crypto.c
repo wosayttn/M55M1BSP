@@ -29,11 +29,6 @@
   @{
 */
 
-
-/** @addtogroup CRYPTO_EXPORTED_FUNCTIONS CRYPTO Exported Functions
-  @{
-*/
-
 /** @cond HIDDEN_SYMBOLS */
 static uint32_t g_AES_CTL[4];
 static uint32_t g_TDES_CTL[4];
@@ -49,6 +44,10 @@ void  dump_buff_hex(uint8_t *pucBuff, int nBytes);
 /** @endcond HIDDEN_SYMBOLS */
 
 
+
+/** @addtogroup CRYPTO_EXPORTED_FUNCTIONS CRYPTO Exported Functions
+  @{
+*/
 /**
   * @brief  Open PRNG function
   * @param[in]  crypto   Reference to Crypto module.

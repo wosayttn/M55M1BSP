@@ -78,11 +78,12 @@ int32_t TRNG_GenWord(uint32_t *u32RndNum)
     uint32_t   i, u32Reg, timeout;
 
     *u32RndNum = 0;
+
     u32Reg = TRNG->CTL;
 
     for (i = 0; i < 4; i++)
     {
-        TRNG->CTL = TRNG_CTL_TRNGEN_Msk | u32Reg;
+        TRNG->CTL = TRNG_CTL_START_Msk | u32Reg;
 
         /* TRNG should generate one byte per 125*8 us */
         for (timeout = (CLK_GetHCLK0Freq() / 100); timeout > 0; timeout--)
@@ -112,12 +113,12 @@ int32_t TRNG_GenWord(uint32_t *u32RndNum)
 int32_t TRNG_GenBignum(uint8_t u8BigNum[], int32_t i32Len)
 {
     uint32_t   i, u32Reg, timeout;
-
+    
     u32Reg = TRNG->CTL;
 
     for (i = 0; i < i32Len/8; i++)
     {
-        TRNG->CTL = TRNG_CTL_TRNGEN_Msk | u32Reg;
+        TRNG->CTL = TRNG_CTL_START_Msk | u32Reg;
 
         /* TRNG should generate one byte per 125*8 us */
         for (timeout = (CLK_GetHCLK0Freq() / 100); timeout > 0; timeout--)
@@ -152,7 +153,7 @@ int32_t TRNG_GenBignumHex(char cBigNumHex[], int32_t i32Len)
     idx = 0;
     for (i = 0; i < i32Len/8; i++)
     {
-        TRNG->CTL = TRNG_CTL_TRNGEN_Msk | u32Reg;
+        TRNG->CTL = TRNG_CTL_START_Msk | u32Reg;
 
         /* TRNG should generate one byte per 125*8 us */
         for (timeout = (CLK_GetHCLK0Freq() / 100); timeout > 0; timeout--)

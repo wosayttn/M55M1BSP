@@ -38,7 +38,43 @@ extern "C"
 #define TRNG_CTL_MODE_OUTPUT_ENTROPY               0x00
 #define TRNG_CTL_MODE_OUTPUT_NRBG                  0x01
 #define TRNG_CTL_MODE_OUTPUT_DRBG                  0x10
+/** @} end of group TRNG_EXPORTED_CONSTANTS */
 
+
+/** @addtogroup TRNG_EXPORTED_MACROS TRNG Exported Macros
+  @{
+*/
+
+/**
+  * @brief This macro enables TRNG interrupt.
+  * @param trng     Specified trng module
+  * @return None
+  * \hideinitializer
+  */
+#define TRNG_ENABLE_INT(trng)       ((trng)->CTL |= TRNG_CTL_DVIEN_Msk)
+
+/**
+  * @brief This macro disables TRNG interrupt.
+  * @param trng     Specified trng module
+  * @return None
+  * \hideinitializer
+  */
+#define TRNG_DISABLE_INT(trng)      ((trng)->CTL &= ~TRNG_CTL_DVIEN_Msk)
+
+/**
+  * @brief This macro gets TRNG interrupt flag.
+  * @param trng     Specified trng module
+  * @return TRNG interrupt flag.
+  * \hideinitializer
+  */
+#define TRNG_GET_INT_FLAG(trng)     ((trng)->STS & TRNG_STS_DVIF_Msk)
+
+
+/** @} end of group TRNG_EXPORTED_MACROS */
+
+/** @addtogroup TRNG_EXPORTED_FUNCTIONS TRNG Exported Functions
+  @{
+*/
 /*----------------------------------------------------------------------------------------------*/
 /*  Functions                                                                                   */
 /*----------------------------------------------------------------------------------------------*/
