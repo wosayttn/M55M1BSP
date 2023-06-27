@@ -27,7 +27,6 @@ extern "C"
 /** @addtogroup RNG_EXPORTED_CONSTANTS RNG Exported Constants
   @{
 */
-
 /**@}*/ /* end of group RNG_EXPORTED_CONSTANTS */
 
 

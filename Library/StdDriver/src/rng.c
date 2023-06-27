@@ -23,22 +23,22 @@
   @{
 */
 
-typedef enum _RNG_KEY_SIZE
-{
-    KEY_128 = 0,
-    KEY_192 = 2,
-    KEY_224 = 3,
-    KEY_233 = 4,
-    KEY_255 = 5,
-    KEY_256 = 6,
-    KEY_283 = 7,
-    KEY_384 = 8,
-    KEY_409 = 9,
-    KEY_512 = 10,
-    KEY_521 = 11,
-    KEY_571 = 12
+//typedef enum _RNG_KEY_SIZE
+//{
+//    KEY_128 = 0,
+//    KEY_192 = 2,
+//    KEY_224 = 3,
+//    KEY_233 = 4,
+//    KEY_255 = 5,
+//    KEY_256 = 6,
+//    KEY_283 = 7,
+//    KEY_384 = 8,
+//    KEY_409 = 9,
+//    KEY_512 = 10,
+//    KEY_521 = 11,
+//    KEY_571 = 12
 
-} eRNG_SZ;
+//} eRNG_SZ;
 
 
 /**
@@ -107,7 +107,7 @@ int32_t RNG_Open()
     TRNG->CTL |= TRNG_CTL_START_Msk;      
     /* Waiting for ready */
     i = 0;
-    while((TRNG->CTL & TRNG_CTL_READY_Msk) == 0)
+    while((TRNG->CTL & TRNG_STS_TRNGRDY_Msk) == 0)
     {
         if(i++ > timeout)
         {
@@ -172,7 +172,7 @@ int32_t RNG_Random(uint32_t *pu32Buf, int32_t nWords)
         nWords = 8;
 
     /* Trig to generate seed 256 bits random number */
-    CRYPTO->PRNG_CTL = (6 << CRYPTO_PRNG_CTL_KEYSZ_Pos) | CRYPTO_PRNG_CTL_START_Msk;
+    CRYPTO->PRNG_CTL = (PRNG_KEY_SIZE_256 << CRYPTO_PRNG_CTL_KEYSZ_Pos) | CRYPTO_PRNG_CTL_START_Msk;
 
     timeout = 0x10000;
     while(CRYPTO->PRNG_CTL & CRYPTO_PRNG_CTL_BUSY_Msk)
@@ -342,7 +342,7 @@ int32_t RNG_EntropyPoll(uint8_t* pu8Out, int32_t i32Len)
     int32_t timeout;
     int32_t i;
 
-    if((TRNG->CTL & TRNG_CTL_READY_Msk) == 0)
+    if((TRNG->CTL & TRNG_STS_TRNGRDY_Msk) == 0)
     {
         /* TRNG is not in active */
         printf("trng is not active\n");
@@ -355,7 +355,7 @@ int32_t RNG_EntropyPoll(uint8_t* pu8Out, int32_t i32Len)
     for(i = 0; i < i32Len; i++)
     {
         timeout = SystemCoreClock;
-        while((TRNG->CTL & TRNG_CTL_DVIF_Msk) == 0)
+        while((TRNG->CTL & TRNG_STS_DVIF_Msk) == 0)
         {
             if(timeout-- <= 0)
             {
@@ -365,7 +365,7 @@ int32_t RNG_EntropyPoll(uint8_t* pu8Out, int32_t i32Len)
             }
         }
         /* Get one byte entroy */
-        *pu8Out++ = TRNG->DATA;
+        *pu8Out++ = TRNG->DATA_OUT[0];
     }
 
     return i32Len;
