@@ -227,6 +227,12 @@ void MACRO_CONSTANT_Test(void)
         SC_DISABLE_INT(pSC[port + NS_idx], (SC_INTEN_ACERRIEN_Msk | SC_INTEN_RXTOIEN_Msk | SC_INTEN_INITIEN_Msk | SC_INTEN_CDIEN_Msk));
         CU_ASSERT_EQUAL(pSC[port + NS_idx]->INTEN, 0x0);
 
+        /* SC_SET_ETUDIV() */
+        SC_SET_ETUDIV(pSC[port + NS_idx], 11);
+        CU_ASSERT_EQUAL(pSC[port + NS_idx]->ETUCTL, 0x0B);
+        SC_SET_ETUDIV(pSC[port + NS_idx], 371);
+        CU_ASSERT_EQUAL(pSC[port + NS_idx]->ETUCTL, 0x173);
+
         /* Check SC_SET_VCC_PIN() */
         CU_ASSERT_EQUAL((pSC[port + NS_idx]->PINCTL & SC_PINCTL_PWREN_Msk), 0x0);
         SC_SET_VCC_PIN(pSC[port + NS_idx], SC_PIN_STATE_HIGH);

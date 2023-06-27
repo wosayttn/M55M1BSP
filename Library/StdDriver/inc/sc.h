@@ -105,6 +105,68 @@ extern "C"
 #define SC_DISABLE_INT(sc, u32Mask)     ((sc)->INTEN &= ~(u32Mask))
 
 /**
+  * @brief      Check Smartcard Interrupt Status Flag
+  *
+  * @param[in]  psSC    The pointer of smartcard module.
+  * @param[in]  u32Mask Interrupt mask to be disabled. A combination of
+  *                         - \ref SC_INTSTS_ACERRIF_Msk
+  *                         - \ref SC_INTSTS_RXTOIF_Msk
+  *                         - \ref SC_INTSTS_INITIF_Msk
+  *                         - \ref SC_INTSTS_CDIF_Msk
+  *                         - \ref SC_INTSTS_BGTIF_Msk
+  *                         - \ref SC_INTSTS_TMR2IF_Msk
+  *                         - \ref SC_INTSTS_TMR1IF_Msk
+  *                         - \ref SC_INTSTS_TMR0IF_Msk
+  *                         - \ref SC_INTSTS_TERRIF_Msk
+  *                         - \ref SC_INTSTS_TBEIF_Msk
+  *                         - \ref SC_INTSTS_RDAIF_Msk
+  *
+  *
+  * @details    The macro is used to check Auto-convention error interrupt, Receiver buffer time-out interrupt, Initial end interrupt,
+  *             Card detect interrupt, Block guard time interrupt, Timer2 interrupt, Timer1 interrupt, Timer0 interrupt,
+  *             Transfer error interrupt, Transmit buffer empty interrupt or Receive data reach trigger level interrupt.
+  * \hideinitializer
+  */
+#define SC_GET_INTSTS(sc, u32Mask)     ((sc)->INTSTS &= u32Mask)
+
+/**
+  * @brief      Clear Smartcard Interrupt Status Flag
+  *
+  * @param[in]  psSC    The pointer of smartcard module.
+  * @param[in]  u32Mask Interrupt mask to be disabled. A combination of
+  *                         - \ref SC_INTSTS_ACERRIF_Msk
+  *                         - \ref SC_INTSTS_RXTOIF_Msk
+  *                         - \ref SC_INTSTS_INITIF_Msk
+  *                         - \ref SC_INTSTS_CDIF_Msk
+  *                         - \ref SC_INTSTS_BGTIF_Msk
+  *                         - \ref SC_INTSTS_TMR2IF_Msk
+  *                         - \ref SC_INTSTS_TMR1IF_Msk
+  *                         - \ref SC_INTSTS_TMR0IF_Msk
+  *                         - \ref SC_INTSTS_TERRIF_Msk
+  *                         - \ref SC_INTSTS_TBEIF_Msk
+  *                         - \ref SC_INTSTS_RDAIF_Msk
+  *
+  *
+  * @details    The macro is used to check Auto-convention error interrupt, Receiver buffer time-out interrupt, Initial end interrupt,
+  *             Card detect interrupt, Block guard time interrupt, Timer2 interrupt, Timer1 interrupt, Timer0 interrupt,
+  *             Transfer error interrupt, Transmit buffer empty interrupt or Receive data reach trigger level interrupt.
+  * \hideinitializer
+  */
+#define SC_CLEAR_INTSTS(sc, u32Mask)     ((sc)->INTSTS = u32Mask)
+
+/**
+  * @brief      Set ETU Divider
+  *
+  * @param[in]  sc      The pointer of smartcard module.
+  * @param[in]  u32Mask ETU divider value
+  *
+  *
+  * @details    The macro is used to give ETU divider. Its value must be given more than 4.
+  * \hideinitializer
+  */
+#define SC_SET_ETUDIV(sc, u32Mask)     ((sc)->ETUCTL = (((sc)->ETUCTL&(~SC_ETUCTL_ETURDIV_Msk)) | (u32Mask <<SC_ETUCTL_ETURDIV_Pos)))
+
+/**
   * @brief      This macro set VCC pin state of smartcard interface
   *
   * @param[in]  sc          The pointer of smartcard module.

@@ -930,8 +930,6 @@ void RTC_DynamicTamperEnable(uint32_t u32PairSel, uint32_t u32DebounceEn, uint32
     u32Tamper2Debounce = u32Reg & RTC_TAMPCTL_TAMP2DEN_Msk;
     u32Tamper4Debounce = u32Reg & RTC_TAMPCTL_TAMP4DEN_Msk;
 
-    u32Reg &= ~(RTC_TAMPCTL_TAMP0EN_Msk | RTC_TAMPCTL_TAMP1EN_Msk | RTC_TAMPCTL_TAMP2EN_Msk |
-                RTC_TAMPCTL_TAMP3EN_Msk | RTC_TAMPCTL_TAMP4EN_Msk | RTC_TAMPCTL_TAMP5EN_Msk);
     u32Reg &= ~(RTC_TAMPCTL_DYN1ISS_Msk | RTC_TAMPCTL_DYN2ISS_Msk);
     u32Reg |= ((u32Pair1Source & 0x1ul) << RTC_TAMPCTL_DYN1ISS_Pos) | ((u32Pair2Source & 0x1ul) << RTC_TAMPCTL_DYN2ISS_Pos);
 
@@ -1077,8 +1075,6 @@ void RTC_DynamicTamperConfig(uint32_t u32ChangeRate, uint32_t u32SeedReload, uin
   */
 uint32_t RTC_SetClockSource(uint32_t u32ClkSrc)
 {
-    uint32_t u32TrimDefault = inpw(SYS + 0xF94ul); // need modify.
-
     if (u32ClkSrc == RTC_CLOCK_SOURCE_LXT)
     {
         /* RTC clock source is external LXT */
@@ -1089,6 +1085,8 @@ uint32_t RTC_SetClockSource(uint32_t u32ClkSrc)
     }
     else if (u32ClkSrc == RTC_CLOCK_SOURCE_LIRC32K)
     {
+        uint32_t u32TrimDefault = inpw(SYS + 0xF94ul); // need modify.
+
         /* Load LIRC32 trim setting */
         RTC->TEST = ((RTC->TEST & ~(0x1FFul << 8)) | ((u32TrimDefault & 0x1FFul) << 8));
 
