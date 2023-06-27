@@ -50,9 +50,14 @@ extern "C"
 #define OTFC_CTL_SWAP_Pos               (2)
 #define OTFC_CTL_INT_Pos                (7)
 
-#define OTFC_STS_KSERR_Pos              (5)
-#define OTFC_STS_DFAE_Pos               (6)
-#define OTFC_STS_IF_Pos                 (7)
+#define OTFC_STS_KSERR_Pos(pr)          ((pr * OTFC_CTL_PR_Pos) + 5)
+#define OTFC_STS_KSERR_Msk(pr)          (0x1ul << OTFC_STS_KSERR_Pos(pr))
+
+#define OTFC_STS_DFAE_Pos(pr)           ((pr * OTFC_CTL_PR_Pos) + 6)
+#define OTFC_STS_DFAE_Mak(pr)           (0x1ul << OTFC_STS_DFAE_Pos(pr))
+
+#define OTFC_STS_IF_Pos(pr)             ((pr * OTFC_CTL_PR_Pos) + 7)
+#define OTFC_STS_IF_Msk(pr)             (0x1ul << OTFC_STS_IF_Pos(pr))
 
 #define OTFC_PR_0                       (0)     /*!< OTFC Protection Region 0 */
 #define OTFC_PR_1                       (1)     /*!< OTFC Protection Region 1 */
@@ -62,8 +67,8 @@ extern "C"
 #define OTFC_KEY_SRC_REG                (0x00)    /*!< OTFC Protection Region key source from register */
 #define OTFC_KEY_SRC_KS                 (0x01)    /*!< OTFC Protection Region key source from key store */
 
-#define OTFC_KS_SRAM_KEY                (0x00)    /*!< Key is read from the SRAM of Key Store. */
-#define OTFC_KS_OTP_KEY                 (0x10)    /*!< Key is read from the OTP of Key Store. */
+#define OTFC_KS_SRC_SRAM                (0x00)    /*!< Key is read from the SRAM of Key Store. */
+#define OTFC_KS_SRC_OTP                 (0x10)    /*!< Key is read from the OTP of Key Store. */
 
 /**
   * @brief  Enable OTFC Protection Region.
@@ -71,7 +76,7 @@ extern "C"
   * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * \hideinitializer
   */
-#define OTFC_ENABLE_PR(otfc, pr)    (otfc->CTL |= (0x1ul << (pr * OTFC_CTL_PR_Pos)))
+#define OTFC_ENABLE_PR(otfc, pr)    (otfc->CTL |= (0x1ul << ((pr) * OTFC_CTL_PR_Pos)))
 
 /**
  * @brief   Disable Protection Region
@@ -79,7 +84,7 @@ extern "C"
  * @param[in] pr    Protection Region. It could be 0 ~ 3.
  *
  */
-#define OTFC_DISABLE_PR(otfc, pr)   (otfc->CTL &= ~(0x1ul << (pr * OTFC_CTL_PR_Pos)))
+#define OTFC_DISABLE_PR(otfc, pr)   (otfc->CTL &= ~(0x1ul << ((pr) * OTFC_CTL_PR_Pos)))
 
 /**
   * @brief  Reset OTFC Protection Region.
@@ -88,7 +93,7 @@ extern "C"
   * \hideinitializer
   */
 #define OTFC_RESET_PR(otfc, pr) \
-    (otfc->CTL |= (0x1ul << ((pr * OTFC_CTL_PR_Pos) + OTFC_CTL_RST_Pos)))
+    (otfc->CTL |= (0x1ul << (((pr) * OTFC_CTL_PR_Pos) + OTFC_CTL_RST_Pos)))
 
 /**
  * @brief  Enable Swap Key, Scramble and Nonce.
@@ -96,8 +101,8 @@ extern "C"
  * @param[in] pr    Protection Region. It could be 0 ~ 3.
  * \hideinitializer
  */
-#define OTFC_ENABLE_KEY_SWAP(otfc, pr)
-(otfc->CTL |= (0x1ul << ((pr *OTFC_CTL_PR_Pos) + OTFC_CTL_SWAP_Pos)))
+#define OTFC_ENABLE_KEYSWAP(otfc, pr)  \
+    (otfc->CTL |= (0x1ul << (((pr) *OTFC_CTL_PR_Pos) + OTFC_CTL_SWAP_Pos)))
 
 /**
   * @brief  Disable Swap Key, Scramble and Nonce.
@@ -105,8 +110,8 @@ extern "C"
   * @param[in] pr   Protection Region. It could be 0 ~ 3.
   * \hideinitializer
   */
-#define OTFC_DISABLE_KEY_SWAP(otfc, pr) \
-    (otfc->CTL &= ~(0x1ul << ((pr * OTFC_CTL_PR_Pos) + OTFC_CTL_SWAP_Pos)))
+#define OTFC_DISABLE_KEYSWAP(otfc, pr) \
+    (otfc->CTL &= ~(0x1ul << (((pr) * OTFC_CTL_PR_Pos) + OTFC_CTL_SWAP_Pos)))
 
 /**
   * @brief  Enable Interrupt.
@@ -115,7 +120,7 @@ extern "C"
   * \hideinitializer
   */
 #define OTFC_ENABLE_INT(otfc, pr)   \
-    (otfc->CTL |= (0x1ul << ((pr * OTFC_CTL_PR_Pos) + OTFC_CTL_INT_Pos)))
+    (otfc->CTL |= (0x1ul << (((pr) * OTFC_CTL_PR_Pos) + OTFC_CTL_INT_Pos)))
 
 /**
   * @brief  Disable Interrupt.
@@ -124,7 +129,7 @@ extern "C"
   * \hideinitializer
   */
 #define OTFC_DISABLE_INT(otfc, pr)  \
-    (otfc->CTL &= ~(0x1ul << ((pr * OTFC_CTL_PR_Pos) + OTFC_CTL_INT_Pos)))
+    (otfc->CTL &= ~(0x1ul << (((pr) * OTFC_CTL_PR_Pos) + OTFC_CTL_INT_Pos)))
 
 /**
   * @brief  Get Busy Status. (Read Only)
@@ -133,7 +138,7 @@ extern "C"
   * \hideinitializer
   */
 #define OTFC_GET_BUSY(otfc, pr)   \
-    (otfc->STS & (0x1ul << (pr * OTFC_CTL_PR_Pos)) >> (pr * OTFC_CTL_PR_Pos))
+    (otfc->STS & (0x1ul << ((pr) * OTFC_CTL_PR_Pos)) >> ((pr) * OTFC_CTL_PR_Pos))
 
 /**
   * @brief  Get Access Key Store Error Flag. (Read Only)
@@ -142,7 +147,7 @@ extern "C"
   * \hideinitializer
   */
 #define OTFC_GET_KSERR(otfc, pr)    \
-    (otfc->STS & (0x1ul << ((pr * OTFC_CTL_PR_Pos) + OTFC_STS_KSERR_Pos)) >> ((pr * OTFC_CTL_PR_Pos) + OTFC_STS_KSERR_Pos))
+    ((otfc->STS & (OTFC_STS_KSERR_Msk(pr))) >> (OTFC_STS_KSERR_Pos(pr)))
 
 /**
 * @brief    Get Differential Fault Attack Error Flag.
@@ -151,7 +156,7 @@ extern "C"
 * \hideinitializer
 */
 #define OTFC_GET_DFAERR(otfc, pr)   \
-    (otfc->STS & (0x1ul << ((pr * OTFC_CTL_PR_Pos) + OTFC_STS_DFAE_Pos)) >> ((pr * OTFC_CTL_PR_Pos) + OTFC_STS_DFAE_Pos))
+    ((otfc->STS & (OTFC_STS_DFAE_Mak(pr))) >> (OTFC_STS_DFAE_Pos(pr)))
 
 /**
   * @brief  Get Interrupt Flag.
@@ -160,7 +165,7 @@ extern "C"
   * \hideinitializer
   */
 #define OTFC_GET_IF(otfc, pr)   \
-    (otfc->STS & (0x1ul << ((pr * OTFC_CTL_PR_Pos) + OTFC_STS_IF_Pos)) >> ((pr * OTFC_CTL_PR_Pos) + OTFC_STS_IF_Pos)))
+    ((otfc->STS & (OTFC_STS_IF_Msk(pr))) >> (OTFC_STS_IF_Msk(pr)))
 
 /**
   * @brief  Set Protection Start Address.
@@ -169,7 +174,7 @@ extern "C"
   * @param[in] saddr is the protection start address.
   * \hideinitializer
   */
-#define OTFC_SET_START_ADDR(otfc, pr, saddr)    (otfc->PR[pr].PR_SADDR = saddr)
+#define OTFC_SET_START_ADDR(otfc, pr, saddr)    (otfc->PR[(pr)].SADDR = saddr)
 
 /**
   * @brief  Set Protrction End Address.
@@ -178,7 +183,7 @@ extern "C"
   * @param[in] eaddr is the protection end address.
   * \hideinitializer
   */
-#define OTFC_SET_END_ADDR(otfc, pr, eaddr)  (otfc->PR[pr].PR_EADDR = eaddr)
+#define OTFC_SET_END_ADDR(otfc, pr, eaddr)  (otfc->PR[(pr)].EADDR = eaddr)
 
 /**
   * @brief  Clear Key Store Control Setting.
@@ -187,7 +192,16 @@ extern "C"
   * \hideinitializer
   */
 #define OTFC_CLEAR_KSCTRL(otfc, pr) \
-    (otfc->PR[pr].PR_KSCTL &= ~(0xFFul << OTFC_PR_KSCTL_NUM_Pos))
+    (otfc->PR[(pr)].KSCTL &= ~(0xFFul << OTFC_PR_KSCTL_NUM_Pos))
+
+/**
+  * @brief  Read the key source from the register.
+  * @param[in] otfc     The base address of OTFC module.
+  * @param[in] pr       Protection Region 0 ~ 3.
+  * \hideinitializer
+  */
+#define OTFC_ENABLE_REG_KEY(otfc, pr)   \
+    (otfc->PR[(pr)].KSCTL &= ~(OTFC_PR_KSCTL_NUM_Msk | OTFC_PR_KSCTL_RSRC_Msk))
 
 /**
   * @brief  Read the key source from the key store in SRAM.
@@ -196,9 +210,9 @@ extern "C"
   * @param[in] key_nun  key number of key store.
   * \hideinitializer
   */
-#define OTFC_ENABLE_KS_SRAM(otfc, pr, key_num)                                      \
-    (otfc->PR[pr].PR_KSCTL = (otfc->PR[pr].PR_KSCTL & ~(OTFC_PR_KSCTL_NUM_Msk)) |   \
-                             ((key_num << OTFC_PR_KSCTL_NUM_Pos) | OTFC_PR_KSCTL_RSRC_Msk))
+#define OTFC_ENABLE_KS_SRAM(otfc, pr, key_num)                                        \
+    (otfc->PR[(pr)].KSCTL = (otfc->PR[(pr)].KSCTL & ~(OTFC_PR_KSCTL_NUM_Msk)) |   \
+                            (((key_num) << OTFC_PR_KSCTL_NUM_Pos) | OTFC_PR_KSCTL_RSRC_Msk))
 
 /**
   * @brief  Read the key source from the key store in OTP.
@@ -207,11 +221,11 @@ extern "C"
   * @param[in] key_nun  key number of key store.
   * \hideinitializer
   */
-#define OTFC_ENABLE_KS_OTP(otfc, pr, key_num)                                       \
-    (otfc->PR[pr].PR_KSCTL = (otfc->PR[pr].PR_KSCTL & ~(OTFC_PR_KSCTL_NUM_Msk)) |   \
-                             ((key_num << OTFC_PR_KSCTL_NUM_Pos) |                  \
-                              (OTFC_KS_OTP_KEY << OTFC_PR_KSCTL_RSSRC_Pos) |        \
-                              OTFC_PR_KSCTL_RSRC_Msk))
+#define OTFC_ENABLE_KS_OTP(otfc, pr, key_num)                                         \
+    (otfc->PR[(pr)].KSCTL = (otfc->PR[(pr)].KSCTL & ~(OTFC_PR_KSCTL_NUM_Msk)) |       \
+                            (((key_num) << OTFC_PR_KSCTL_NUM_Pos) |                  \
+                             (OTFC_KS_SRC_OTP << OTFC_PR_KSCTL_RSSRC_Pos) |          \
+                             OTFC_PR_KSCTL_RSRC_Msk))
 
 /**
   * @brief  The KEY keeps the security key for AES .
@@ -220,7 +234,7 @@ extern "C"
   * @param[in] key  The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_SET_KEY0(otfc, pr, key)    (otfc->PR[pr].PR_KEY0 = key)
+#define OTFC_SET_KEY0(otfc, pr, key)    (otfc->PR[(pr)].KEY0 = (key))
 
 /**
   * @brief  The KEY keeps the security key for AES.
@@ -229,7 +243,7 @@ extern "C"
   * @param[in] key  The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_SET_KEY1(otfc, pr, key)    (otfc->PR[pr].PR_KEY1 = key)
+#define OTFC_SET_KEY1(otfc, pr, key)    (otfc->PR[(pr)].KEY1 = (key))
 
 /**
   * @brief  The KEY keeps the security key for AES.
@@ -238,7 +252,7 @@ extern "C"
   * @param[in] key The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_SET_KEY2(otfc, pr, key)    (otfc->PR[pr].PR_KEY2 = key)
+#define OTFC_SET_KEY2(otfc, pr, key)    (otfc->PR[(pr)].KEY2 = (key))
 
 /**
   * @brief  The KEY keeps the security key for AES.
@@ -247,7 +261,7 @@ extern "C"
   * @param[in] key  The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_SET_KEY3(otfc, pr, key)    (otfc->PR[pr].PR_KEY3 = key)
+#define OTFC_SET_KEY3(otfc, pr, key)    (otfc->PR[(pr)].KEY3 = (key))
 
 /**
   * @brief  The scramble key for address cipher.
@@ -256,7 +270,7 @@ extern "C"
   * @param[in] key  The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_SET_SCRAMBLE(otfc, pr, key)    (otfc->PR[pr].PR_SCRAMBLE = key)
+#define OTFC_SET_SCRAMBLE(otfc, pr, key)    (otfc->PR[(pr)].SCRAMBLE = (key))
 
 /**
   * @brief  Three nonces are for the address cipher function in OTFC.
@@ -265,7 +279,7 @@ extern "C"
   * @param[in] key The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_SET_NONCE0(otfc, pr, key)  (otfc->PR[pr].PR_NONCE0 = key)
+#define OTFC_SET_NONCE0(otfc, pr, key)  (otfc->PR[(pr)].NONCE0 = (key))
 
 /**
   * @brief  Three nonces are for the address cipher function in OTFC.
@@ -274,7 +288,7 @@ extern "C"
   * @param[in] key The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_SET_NONCE1(otfc, pr, key)  (otfc->PR[pr].PR_NONCE1 = key)
+#define OTFC_SET_NONCE1(otfc, pr, key)  (otfc->PR[(pr)].NONCE1 = (key))
 
 /**
   * @brief  Three nonces are for the address cipher function in OTFC.
@@ -283,83 +297,25 @@ extern "C"
   * @param[in] key The KEY keeps the security key for AES.
   * \hideinitializer
   */
-#define OTFC_SET_NONCE2(otfc, pr, key)  (otfc->PR[pr].PR_NONCE2 = key)
-
-/*---------------------------------------------------------------------------------------------------------*/
-/* static inline functions                                                                                 */
-/*---------------------------------------------------------------------------------------------------------*/
-/* Declare these inline functions here to avoid MISRA C 2004 rule 8.1 error */
-__STATIC_INLINE int32_t OTFC_Enable_PR(OTFC_T *otfc, uint32_t u32PR);
-__STATIC_INLINE int32_t OTFC_Disable_PR(OTFC_T *otfc, uint32_t u32PR);
-
-/**
- * @brief Enable OTFC Protection Region.
- *
- * @param otfc  The base address of OTFC module.
- * @param u32PR Protection Region 0 ~ 3.
- * @return __STATIC_INLINE
- */
-__STATIC_INLINE int32_t OTFC_Enable_PR(OTFC_T *otfc, uint32_t u32PR)
-{
-    if (u32PR > 3)
-    {
-        return OTFC_ERR_FAIL;
-    }
-
-    OTFC_ENABLE_PR(otfc, u32PR);
-
-    return OTFC_OK;
-}
-
-/**
- * @brief Disable OTFC Protection Region.
- *
- * @param otfc  The base address of OTFC module.
- * @param u32PR Protection Region 0 ~ 3.
- * @return __STATIC_INLINE
- */
-__STATIC_INLINE int32_t OTFC_Disable_PR(OTFC_T *otfc, uint32_t u32PR)
-{
-    if (u32PR > 3)
-    {
-        return OTFC_ERR_FAIL;
-    }
-
-    OTFC_DISABLE_PR(otfc, u32PR);
-
-    return OTFC_OK;
-}
+#define OTFC_SET_NONCE2(otfc, pr, key)  (otfc->PR[(pr)].NONCE2 = (key))
 
 /** @} end of group OTFC_EXPORTED_CONSTANTS */
-
-typedef struct
-{
-    uint32_t u32Key0; /*!< The security key for AES */
-    uint32_t u32Key1; /*!< The security key for AES */
-    uint32_t u32Key2; /*!< The security key for AES */
-    uint32_t u32Key3; /*!< The security key for AES */
-
-    uint32_t u32Scramble; /*!< Scramble key */
-
-    uint32_t u32Nonce0; /*!< Nonce Word */
-    uint32_t u32Nonce1; /*!< Nonce Word */
-    uint32_t u32Nonce2; /*!< Nonce Word */
-} OTFC_KEY_T;
 
 /** @addtogroup OTFC_EXPORTED_FUNCTIONS OTFC Exported Functions
   @{
 */
-int32_t OTFC_SetKeyTableToReg(OTFC_T *otfc,
-                              OTFC_KEY_T *psKeyTable,
+int32_t OTFC_SetKeyFromKeyReg(OTFC_T *otfc,
+                              uint32_t *pau32KeyTable,
                               uint32_t u32PR,
                               uint32_t u32SAddr,
                               uint32_t u32EAddr);
 
 int32_t OTFC_SetKeyFromKeyStore(OTFC_T *otfc, uint32_t u32PR,
                                 uint32_t u32SAddr, uint32_t u32EAddr,
-                                uint32_t u32KeyNum, uint32_t u32KeySrc,
-                                uint32_t u32Scramble,
-                                uint32_t u32Nonce0, uint32_t u32Nonce1, uint32_t u32Nonce2);
+                                uint32_t u32KeyNum, uint32_t u32KeySrc);
+
+int32_t OTFC_SetScrambleNum(OTFC_T *otfc, uint32_t u32PR, uint32_t u32Scramble);
+int32_t OTFC_SetNonceNum(OTFC_T *otfc, uint32_t u32PR, uint32_t u32Nonce0, uint32_t u32Nonce1, uint32_t u32Nonce2);
 
 /** @} end of group OTFC_EXPORTED_FUNCTIONS */
 /** @} end of group OTFC_Driver */

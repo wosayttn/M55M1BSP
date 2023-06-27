@@ -266,6 +266,81 @@ void RunTestFunction(S_TestMenu *pTestMenu, uint32_t u32MenuSize, uint32_t u32SP
 // SPIM API
 //------------------------------------------------------------------------------
 /**
+ * @brief   Phase table DMA Write
+ *
+ * @param spim
+ * @param psPhaseTable  Check SPI Flash specifications for support command codes,
+ *                      and create command phase table.
+ * @param u32Addr       Write Address.
+ * @param is4ByteAddr   Enable 4 Bytes Address Mode.
+ * @param u32WrSize     Write Data Size.
+ * @param pu8TxBuf      Write Data Buffer.
+ */
+void SPIM_DMA_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
+                         int is4ByteAddr, uint32_t u32Addr, uint32_t u32WrSize,
+                         uint8_t *pu8TxBuf)
+{
+    if (psPhaseTable != NULL)
+    {
+        SPIM_DMADMM_InitPhase(spim, psPhaseTable, SPIM_CTL0_OPMODE_PAGEWRITE);
+    }
+
+    SPIM_DMA_Write(spim,
+                   u32Addr,
+                   is4ByteAddr,
+                   u32WrSize,
+                   pu8TxBuf,
+                   psPhaseTable->u32CMDCode);
+}
+
+/**
+ * @brief   Phase table DMA Read.
+ *
+ * @param spim
+ * @param psPhaseTable  Check SPI Flash specifications for support command codes,
+ *                      and create command phase table.
+ * @param u32Addr       Read SPI Flash Address.
+ * @param is4ByteAddr   Enable 4 Bytes Address.
+ * @param u32RdSize     Read Data Size.
+ * @param pu8RxBuf      Read Data Buffer.
+ * @param isSync        Wait SPIM Enable Done
+ * @return int32_t
+ */
+int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
+                           int is4ByteAddr, uint32_t u32Addr, uint32_t u32RdSize,
+                           uint8_t *pu8RxBuf, int isSync)
+{
+    if (psPhaseTable != NULL)
+    {
+        SPIM_DMADMM_InitPhase(spim, psPhaseTable, SPIM_CTL0_OPMODE_PAGEREAD);
+    }
+
+    return SPIM_DMA_Read(spim,
+                         u32Addr,
+                         is4ByteAddr,
+                         u32RdSize,
+                         pu8RxBuf,
+                         psPhaseTable->u32CMDCode,
+                         isSync);
+}
+
+/**
+ * @brief   Phase table DMM Read.
+ *
+ * @param spim
+ * @param psPhaseTable  Check SPI Flash specifications for support command codes,
+ *                      and create command phase table.
+ * @param is4ByteAddr   Enable 4 Bytes Address.
+ * @param u32IdleIntvl  Direct Map Mode Idle Interval Time.
+ */
+void SPIM_DMM_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, int is4ByteAddr, uint32_t u32IdleIntvl)
+{
+    SPIM_DMADMM_InitPhase(spim, psPhaseTable, SPIM_CTL0_OPMODE_DIRECTMAP);
+
+    SPIM_EnterDirectMapMode(spim, is4ByteAddr, psPhaseTable->u32CMDCode, u32IdleIntvl);
+}
+
+/**
   * @brief      SPIM Default Config HyperBus Access Module Parameters.
   * @param      spim
   * @param      u32CSMaxLT Chip Select Maximum Low Time 0 ~ 0xFFFF, Default Set 0x02ED
@@ -276,25 +351,25 @@ void RunTestFunction(S_TestMenu *pTestMenu, uint32_t u32MenuSize, uint32_t u32SP
 void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR)
 {
     /* Chip Select Setup Time 2.5 */
-    SPIM_SET_HYPER_CONFIG1_CSST(spim, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
+    SPIM_HYPER_SET_CONFIG1_CSST(spim, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
 
     /* Chip Select Hold Time 3.5 HCLK */
-    SPIM_SET_HYPER_CONFIG1_CSH(spim, SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
+    SPIM_HYPER_SET_CONFIG1_CSH(spim, SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
 
     /* Chip Select High between Transaction as 2 HCLK cycles */
-    SPIM_SET_HYPER_CONFIG1_CSHI(spim, 2);
+    SPIM_HYPER_SET_CONFIG1_CSHI(spim, 2);
 
     /* Chip Select Masximum low time HCLK */
-    SPIMS_SET_HYPER_CONFIG1_CSMAXLT(spim, u32CSMaxLow);
+    SPIM_HYPER_SET_CONFIG1_CSMAXLT(spim, u32CSMaxLow);
 
     /* Initial Device RESETN Low Time 255 */
-    SPIM_SET_HYPER_CONFIG2_RSTNLT(spim, 0xFF);
+    SPIM_HYPER_SET_CONFIG2_RSTNLT(spim, 0xFF);
 
     /* Initial Read Access Time Clock cycle*/
-    SPIM_SET_HYPER_CONFIG2_ACCTRD(spim, u32AcctRD);
+    SPIM_HYPER_SET_CONFIG2_ACCTRD(spim, u32AcctRD);
 
     /* Initial Write Access Time Clock cycle*/
-    SPIM_SET_HYPER_CONFIG2_ACCTWR(spim, u32AcctWR);
+    SPIM_HYPER_SET_CONFIG2_ACCTWR(spim, u32AcctWR);
 }
 
 /**

@@ -47,7 +47,7 @@ int OTFC_Tests_Init(void)
 
     pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
-    SPIM_SET_OP_MODE(pSPIMModule, SPIM_OP_HYPER_MODE);     //Enable HyperBus Mode
+    SPIM_HYPER_ENABLE_HYPMODE(pSPIMModule);     //Enable HyperBus Mode
     //CU_ASSERT_TRUE((pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk) >> SPIM_CTL0_HYPER_EN_Pos);
 
     SPIM_SET_CLOCK_DIVIDER(pSPIMModule, 1); /* Set SPIM clock as HCLK divided by 2 */
@@ -59,7 +59,7 @@ int OTFC_Tests_Init(void)
 
     SPIM_Hyper_DefaultConfig(pSPIMModule, 780, 7, 7);
 
-    SPIM_ResetHyper(pSPIMModule);
+    SPIM_HYPER_Reset(pSPIMModule);
 
     for (u32Delay = 0; u32Delay < 0x400; u32Delay++) {}
 
@@ -72,7 +72,7 @@ int OTFC_Tests_Clean(void)
 
     pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
-    SPIM_SET_OP_MODE(pSPIMModule, SPIM_OP_FLASH_MODE);     //Restore SPI Flash Mode
+    SPIM_SET_FLASH_MODE(pSPIMModule);     //Restore SPI Flash Mode
     //CU_ASSERT_FALSE((pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk) >> SPIM_CTL0_HYPER_EN_Pos);
 
     return 0;
@@ -86,9 +86,20 @@ void OTFC_Const_PR()
     CU_ASSERT(OTFC_CTL_SWAP_Pos == (2));
     CU_ASSERT(OTFC_CTL_INT_Pos == (7));
 
-    CU_ASSERT(OTFC_STS_KSERR_Pos == (5));
-    CU_ASSERT(OTFC_STS_DFAE_Pos == (6));
-    CU_ASSERT(OTFC_STS_IF_Pos == (7));
+    CU_ASSERT(OTFC_STS_KSERR_Pos(0) == (5));
+    CU_ASSERT(OTFC_STS_KSERR_Pos(1) == (5));
+    CU_ASSERT(OTFC_STS_KSERR_Pos(2) == (5));
+    CU_ASSERT(OTFC_STS_KSERR_Pos(3) == (5));
+
+    CU_ASSERT(OTFC_STS_DFAE_Pos(0) == (6));
+    CU_ASSERT(OTFC_STS_DFAE_Pos(1) == (6));
+    CU_ASSERT(OTFC_STS_DFAE_Pos(2) == (6));
+    CU_ASSERT(OTFC_STS_DFAE_Pos(3) == (6));
+
+    CU_ASSERT(OTFC_STS_IF_Pos(0) == (7));
+    CU_ASSERT(OTFC_STS_IF_Pos(1) == (7));
+    CU_ASSERT(OTFC_STS_IF_Pos(2) == (7));
+    CU_ASSERT(OTFC_STS_IF_Pos(3) == (7));
 
     CU_ASSERT(OTFC_PR_0 == (0));
     CU_ASSERT(OTFC_PR_1 == (1));
@@ -98,8 +109,8 @@ void OTFC_Const_PR()
     CU_ASSERT(OTFC_KEY_SRC_REG == (0x00));
     CU_ASSERT(OTFC_KEY_SRC_KS == (0x01));
 
-    CU_ASSERT(OTFC_KS_SRAM_KEY == (0x00));
-    CU_ASSERT(OTFC_KS_OTP_KEY == (0x10));
+    CU_ASSERT(OTFC_KS_SRC_SRAM == (0x00));
+    CU_ASSERT(OTFC_KS_SRC_OTP == (0x10));
 }
 
 void MACRO_OTFC_CTL()
@@ -112,22 +123,22 @@ void MACRO_OTFC_CTL()
      *  OTFC_CTL_EN_ON() / OTFC_CTL_EN_OFF()
      */
     pOTFCModule->CTL = 0;
-    OTFC_Enable_PR(pOTFCModule, OTFC_PR_0);
+    OTFC_ENABLE_PR(pOTFCModule, OTFC_PR_0);
     CU_ASSERT_TRUE((pOTFCModule->CTL & (1UL << (0 * 8))) >> (0 * 8));
     OTFC_DISABLE_PR(pOTFCModule, OTFC_PR_0);
     CU_ASSERT_FALSE((pOTFCModule->CTL & (1UL << (0 * 8))) >> (0 * 8));
 
-    OTFC_Enable_PR(pOTFCModule, 1);
+    OTFC_ENABLE_PR(pOTFCModule, 1);
     CU_ASSERT_TRUE((pOTFCModule->CTL & (1UL << (1 * 8))) >> (1 * 8));
     OTFC_DISABLE_PR(pOTFCModule, 1);
     CU_ASSERT_FALSE((pOTFCModule->CTL & (1UL << (1 * 8))) >> (1 * 8));
 
-    OTFC_Enable_PR(pOTFCModule, 2);
+    OTFC_ENABLE_PR(pOTFCModule, 2);
     CU_ASSERT_TRUE((pOTFCModule->CTL & (1UL << (2 * 8))) >> (2 * 8));
     OTFC_DISABLE_PR(pOTFCModule, 2);
     CU_ASSERT_FALSE((pOTFCModule->CTL & (1UL << (2 * 8))) >> (2 * 8));
 
-    OTFC_Enable_PR(pOTFCModule, 3);
+    OTFC_ENABLE_PR(pOTFCModule, 3);
     CU_ASSERT_TRUE((pOTFCModule->CTL & (1UL << (3 * 8))) >> (3 * 8));
     OTFC_DISABLE_PR(pOTFCModule, 3);
     CU_ASSERT_FALSE((pOTFCModule->CTL & (1UL << (3 * 8))) >> (3 * 8));
@@ -146,27 +157,27 @@ void MACRO_OTFC_CTL()
     CU_ASSERT_FALSE((pOTFCModule->CTL & ((3 * 8) + 1)) >> ((3 * 8) + 1));
 
     /*
-     *  OTFC_ENABLE_KEY_SWAP()/OTFC_DISABLE_KEY_SWAP()
+     *  OTFC_ENABLE_KEYSWAP()/OTFC_DISABLE_KEYSWAP()
      */
     pOTFCModule->CTL = 0;
-    OTFC_ENABLE_KEY_SWAP(pOTFCModule, 0);
+    OTFC_ENABLE_KEYSWAP(pOTFCModule, 0);
     CU_ASSERT_TRUE((pOTFCModule->CTL & (1UL << ((0 * 8) + 2))) >> ((0 * 8) + 2));
-    OTFC_DISABLE_KEY_SWAP(pOTFCModule, 0);
+    OTFC_DISABLE_KEYSWAP(pOTFCModule, 0);
     CU_ASSERT_FALSE((pOTFCModule->CTL & (1UL << ((0 * 8) + 2))) >> ((0 * 8) + 2));
     pOTFCModule->CTL = 0;
-    OTFC_ENABLE_KEY_SWAP(pOTFCModule, 1);
+    OTFC_ENABLE_KEYSWAP(pOTFCModule, 1);
     CU_ASSERT_TRUE((pOTFCModule->CTL & (1UL << ((1 * 8) + 2))) >> ((1 * 8) + 2));
-    OTFC_DISABLE_KEY_SWAP(pOTFCModule, 1);
+    OTFC_DISABLE_KEYSWAP(pOTFCModule, 1);
     CU_ASSERT_FALSE((pOTFCModule->CTL & (1UL << ((1 * 8) + 2))) >> ((1 * 8) + 2));
     pOTFCModule->CTL = 0;
-    OTFC_ENABLE_KEY_SWAP(pOTFCModule, 2);
+    OTFC_ENABLE_KEYSWAP(pOTFCModule, 2);
     CU_ASSERT_TRUE((pOTFCModule->CTL & (1UL << ((2 * 8) + 2))) >> ((2 * 8) + 2));
-    OTFC_DISABLE_KEY_SWAP(pOTFCModule, 2);
+    OTFC_DISABLE_KEYSWAP(pOTFCModule, 2);
     CU_ASSERT_FALSE((pOTFCModule->CTL & (1UL << ((2 * 8) + 2))) >> ((2 * 8) + 2));
     pOTFCModule->CTL = 0;
-    OTFC_ENABLE_KEY_SWAP(pOTFCModule, 3);
+    OTFC_ENABLE_KEYSWAP(pOTFCModule, 3);
     CU_ASSERT_TRUE((pOTFCModule->CTL & (1UL << ((3 * 8) + 2))) >> ((3 * 8) + 2));
-    OTFC_DISABLE_KEY_SWAP(pOTFCModule, 3);
+    OTFC_DISABLE_KEYSWAP(pOTFCModule, 3);
     CU_ASSERT_FALSE((pOTFCModule->CTL & (1UL << ((3 * 8) + 2))) >> ((3 * 8) + 2));
 
     /*
@@ -205,7 +216,7 @@ void OTFC_KeyFormRegister_Func()
     uint8_t *u8TstBuf1 = (uint8_t *)GetTestBuffer1();
     uint8_t *u8TstBuf2 = (uint8_t *)GetTestBuffer2();
     // Key = 0x7A29E38E 063FF08A 2F7A7F2A 93484D6F 93484D6F 2F7A7F2A 063FF08A 7A29E38E
-    OTFC_KEY_T sOTFCKey =
+    uint32_t au32OTFCKey[8] =
     {
         0x93484D6F, //Key0
         0x2F7A7F2A, //Key1
@@ -228,22 +239,22 @@ void OTFC_KeyFormRegister_Func()
         /*  Erase page and verify                               */
         /*------------------------------------------------------*/
         // Erase accessed address range.
-        SPIM_Hyper_EraseHRAM(pSPIMx, offset, TEST_BUFF_SIZE);
+        SPIM_HYPER_EraseHRAM(pSPIMx, offset, TEST_BUFF_SIZE);
         popDat(u8TstBuf1, TEST_BUFF_SIZE);
 
-        OTFC_SetKeyTableToReg(pOTFCModule,
-                              &sOTFCKey,
+        OTFC_SetKeyFromKeyReg(pOTFCModule,
+                              au32OTFCKey,
                               u32PRx,
                               offset,
                               offset + TEST_BUFF_SIZE);
 
-        OTFC_Enable_PR(pOTFCModule, u32PRx);
+        OTFC_ENABLE_PR(pOTFCModule, u32PRx);
         SPIM_ENABLE_CIPHER(pSPIMx);
 
-        SPIM_DMAWrite_Hyper(pSPIMx, offset, u8TstBuf1, TEST_BUFF_SIZE);
+        SPIM_HYPER_DMAWrite(pSPIMx, offset, u8TstBuf1, TEST_BUFF_SIZE);
 
         memset(u8TstBuf2, 0x0, TEST_BUFF_SIZE);
-        SPIM_DMARead_Hyper(pSPIMx, offset, u8TstBuf2, TEST_BUFF_SIZE);
+        SPIM_HYPER_DMARead(pSPIMx, offset, u8TstBuf2, TEST_BUFF_SIZE);
 
         if (memcmp(u8TstBuf1, u8TstBuf2, TEST_BUFF_SIZE))
         {
@@ -307,11 +318,11 @@ void OTFC_KeyFormKSSRAM_Func()
                             offset,
                             offset + HRAM_PAGE_SIZE,
                             i32KeyIdx,
-                            OTFC_KS_SRAM_KEY,
-                            gau32AESKey[4],
-                            gau32AESKey[5],
-                            gau32AESKey[6],
-                            gau32AESKey[7]);
+                            OTFC_KS_SRC_SRAM);
+
+    OTFC_SetScrambleNum(pOTFCModule, u32PRx, gau32AESKey[4]);
+
+    OTFC_SetNonceNum(pOTFCModule, u32PRx, gau32AESKey[5], gau32AESKey[6], gau32AESKey[7]);
 
     for (offset = 0; offset < HRAM_PAGE_SIZE; offset += TEST_BUFF_SIZE)
     {
@@ -319,16 +330,16 @@ void OTFC_KeyFormKSSRAM_Func()
         /*  Erase page and verify                               */
         /*------------------------------------------------------*/
         // Erase accessed address range.
-        SPIM_Hyper_EraseHRAM(pSPIMx, offset, TEST_BUFF_SIZE);
+        SPIM_HYPER_EraseHRAM(pSPIMx, offset, TEST_BUFF_SIZE);
         popDat(u8TstBuf1, TEST_BUFF_SIZE);
 
-        OTFC_Enable_PR(pOTFCModule, u32PRx);
+        OTFC_ENABLE_PR(pOTFCModule, u32PRx);
         SPIM_ENABLE_CIPHER(pSPIMx);
 
-        SPIM_DMAWrite_Hyper(pSPIMx, offset, u8TstBuf1, TEST_BUFF_SIZE);
+        SPIM_HYPER_DMAWrite(pSPIMx, offset, u8TstBuf1, TEST_BUFF_SIZE);
 
         memset(u8TstBuf2, 0x0, TEST_BUFF_SIZE);
-        SPIM_DMARead_Hyper(pSPIMx, offset, u8TstBuf2, TEST_BUFF_SIZE);
+        SPIM_HYPER_DMARead(pSPIMx, offset, u8TstBuf2, TEST_BUFF_SIZE);
 
         if (memcmp(u8TstBuf1, u8TstBuf2, TEST_BUFF_SIZE))
         {

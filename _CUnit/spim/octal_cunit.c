@@ -24,7 +24,7 @@
 
 //------------------------------------------------------------------------------
 /* 0x82 : CMD_OCTAL_PAGE_PROG_MICRON Command Phase Table */
-static PHASE_SET_T gMU_82h_WrCMD =
+static SPIM_PHASE_T gMU_82h_WrCMD =
 {
     CMD_OCTAL_PAGE_PROG_MICRON,                            //Command Code
     PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,       //Command Phase
@@ -33,7 +33,7 @@ static PHASE_SET_T gMU_82h_WrCMD =
 };
 
 /* 0xCB : CMD_OCTAL_FAST_IO_READ Command Phase Table */
-static PHASE_SET_T gMU_CBh_RdCMD =
+static SPIM_PHASE_T gMU_CBh_RdCMD =
 {
     CMD_OCTAL_FAST_IO_READ,                            // Command Code
     PHASE_OCTAL_MODE, PHASE_WIDTH_16, PHASE_ENABLE_DTR,    // Command Phase
@@ -92,7 +92,7 @@ void MT35x_EnterOctalDDRMode(SPIM_T *pSPIMx)
     //Enter Octal DDR Mode
     SPIM_IO_SendCMDPhase(pSPIMx, SPIM_IO_WRITE_PHASE, OPCODE_WR_VCONFIG, PHASE_NORMAL_MODE, 0);
     SPIM_IO_SendAddrPhase(pSPIMx, 0, 0x00, PHASE_NORMAL_MODE, 0);
-    SPIM_IO_SendDataPhase(pSPIMx, SPIM_IO_WRITE_PHASE, u8CMDBuf, 1, PHASE_NORMAL_MODE, 0);
+    SPIM_IO_SendDataPhase(pSPIMx, SPIM_IO_WRITE_PHASE, u8CMDBuf, 1, PHASE_NORMAL_MODE, PHASE_NORMAL_MODE, 0);
 
     //Read volatile configure register value
     SPIM_MT35x_4Bytes_Enable(pSPIMx, 1, 8, 1);
@@ -100,7 +100,7 @@ void MT35x_EnterOctalDDRMode(SPIM_T *pSPIMx)
     SPIM_IO_SendAddrPhase(pSPIMx, 1, 0x00, PHASE_OCTAL_MODE, 1);
     //SPIM_IO_DCPhase(pSPIMx, 2, PHASE_NORMAL_MODE, 0);
     SPIM_IO_SendDummyCycle(pSPIMx, 16);
-    SPIM_IO_SendDataPhase(pSPIMx, SPIM_IO_READ_PHASE, u8CMDBuf, 1, PHASE_OCTAL_MODE, 1);
+    SPIM_IO_SendDataPhase(pSPIMx, SPIM_IO_READ_PHASE, u8CMDBuf, 1, PHASE_OCTAL_MODE, PHASE_OCTAL_MODE, 1);
 
     printf("Octal Mode = 0x%X\r\n", u8CMDBuf[0]);
 }
@@ -112,7 +112,7 @@ void MT35x_ExitOctalDDRMode(SPIM_T *pSPIMx)
     //Exit Octal DDR Mode
     SPIM_IO_SendCMDPhase(pSPIMx, SPIM_IO_WRITE_PHASE, OPCODE_WR_VCONFIG, PHASE_OCTAL_MODE, 1);
     SPIM_IO_SendAddrPhase(pSPIMx, 1, 0x00, PHASE_OCTAL_MODE, 1);
-    SPIM_IO_SendDataPhase(pSPIMx, SPIM_IO_WRITE_PHASE, u8CMDBuf, 1, PHASE_OCTAL_MODE, 1);
+    SPIM_IO_SendDataPhase(pSPIMx, SPIM_IO_WRITE_PHASE, u8CMDBuf, 1, PHASE_OCTAL_MODE, PHASE_OCTAL_MODE, 1);
 
     SPIM_MT35x_4Bytes_Enable(pSPIMx, 0, 1, 0);
 
@@ -121,7 +121,7 @@ void MT35x_ExitOctalDDRMode(SPIM_T *pSPIMx)
     SPIM_IO_SendAddrPhase(pSPIMx, 0, 0x00, PHASE_NORMAL_MODE, 0);
     //SPIM_IO_DCPhase(pSPIMx, 1, PHASE_NORMAL_MODE, 0);
     SPIM_IO_SendDummyCycle(pSPIMx, 8);
-    SPIM_IO_SendDataPhase(pSPIMx, SPIM_IO_READ_PHASE, u8CMDBuf, 1, PHASE_NORMAL_MODE, 0);
+    SPIM_IO_SendDataPhase(pSPIMx, SPIM_IO_READ_PHASE, u8CMDBuf, 1, PHASE_NORMAL_MODE, PHASE_NORMAL_MODE, 0);
     printf("Octal Mode = 0x%X\r\n", u8CMDBuf[0]);
 }
 
@@ -166,7 +166,7 @@ void SPIM_OctalTrainingDllLatency()
     for (u8RdDelay = 0; u8RdDelay <= SPIM_MAX_DLL_LATENCY; u8RdDelay++)
     {
         memset(u8TstBuf2, 0, u32TestSize);
-        SPIM_CtrlDLLDelayTime(pSPIMx, 0, 0, 0, 0, u8RdDelay);
+        SPIM_CtrlDLLDelayTime(pSPIMx, u8RdDelay);
 
         SPIM_DMA_ReadPhase(pSPIMx,
                            &gMU_CBh_RdCMD,
@@ -216,7 +216,7 @@ void SPIM_OctalTrainingDllLatency()
 
     printf("\r\nDLL Delay Time Num = %d\r\n\r\n", u8RdDelayRes[u8RdDelayIdx]);
 
-    SPIM_CtrlDLLDelayTime(pSPIMx, 0, 0, 0, 0, u8RdDelayRes[u8RdDelayIdx]);
+    SPIM_CtrlDLLDelayTime(pSPIMx, u8RdDelayRes[u8RdDelayIdx]);
     CU_ASSERT(((pSPIMx->DLL0 & SPIM_DLL0_DLL_DNUM_Msk) >> SPIM_DLL0_DLL_DNUM_Pos) == u8RdDelayRes[u8RdDelayIdx]);
 
     CU_PASS();

@@ -135,20 +135,20 @@ typedef struct
     * |        |          |x = 0, 1, 2.
     * |        |          |Three nonces (OTFC_PRx_NONCE0, OTFC_PRx_NONCE1, and OTFC_PRx_NONCE2) are for the address cipher function in OTFC.
     */
-    __IO uint32_t PR_SADDR;             /*!< [0x0010] OTFC Protection Region 0~3 Start Address Register                  */
-    __IO uint32_t PR_EADDR;             /*!< [0x0014] OTFC Protection Region 0~3 End Address Register                    */
-    __O  uint32_t PR_KSCTL;             /*!< [0x0018] OTFC Protection Region 0~3 Key Control Register                    */
+    __IO uint32_t SADDR;             /*!< [0x0010] OTFC Protection Region 0~3 Start Address Register                  */
+    __IO uint32_t EADDR;             /*!< [0x0014] OTFC Protection Region 0~3 End Address Register                    */
+    __O  uint32_t KSCTL;             /*!< [0x0018] OTFC Protection Region 0~3 Key Control Register                    */
     __I  uint32_t RESERVE1[1];
-    __O  uint32_t PR_KEY0;              /*!< [0x0020] OTFC Protection Region 0~3 KEY Word 0 Register                     */
-    __O  uint32_t PR_KEY1;              /*!< [0x0024] OTFC Protection Region 0~3 KEY Word 1 Register                     */
-    __O  uint32_t PR_KEY2;              /*!< [0x0028] OTFC Protection Region 0~3 KEY Word 2 Register                     */
-    __O  uint32_t PR_KEY3;              /*!< [0x002c] OTFC Protection Region 0~3 KEY Word 3 Register                     */
+    __O  uint32_t KEY0;              /*!< [0x0020] OTFC Protection Region 0~3 KEY Word 0 Register                     */
+    __O  uint32_t KEY1;              /*!< [0x0024] OTFC Protection Region 0~3 KEY Word 1 Register                     */
+    __O  uint32_t KEY2;              /*!< [0x0028] OTFC Protection Region 0~3 KEY Word 2 Register                     */
+    __O  uint32_t KEY3;              /*!< [0x002c] OTFC Protection Region 0~3 KEY Word 3 Register                     */
     __I  uint32_t RESERVE2[4];
-    __O  uint32_t PR_SCRAMBLE;          /*!< [0x0040] OTFC Protection Region 0~3 Scramble key Register                   */
-    __O  uint32_t PR_NONCE0;            /*!< [0x0044] OTFC Protection Region 0~3 Nonce Word 0 Register                   */
-    __O  uint32_t PR_NONCE1;            /*!< [0x0048] OTFC Protection Region 0~3 Nonce Word 1 Register                   */
-    __O  uint32_t PR_NONCE2;            /*!< [0x004c] OTFC Protection Region 0~3 Nonce Word 2 Register                   */
-} PR_T;
+    __O  uint32_t SCRAMBLE;          /*!< [0x0040] OTFC Protection Region 0~3 Scramble key Register                   */
+    __O  uint32_t NONCE0;            /*!< [0x0044] OTFC Protection Region 0~3 Nonce Word 0 Register                   */
+    __O  uint32_t NONCE1;            /*!< [0x0048] OTFC Protection Region 0~3 Nonce Word 1 Register                   */
+    __O  uint32_t NONCE2;            /*!< [0x004c] OTFC Protection Region 0~3 Nonce Word 2 Register                   */
+} OTFC_PR_T;
 
 typedef struct
 {
@@ -276,63 +276,7 @@ typedef struct
     __IO uint32_t STS;                  /*!< [0x0004] OTFC Status Flag Register                                        */
     __I  uint32_t RESERVE0[2];
 
-    PR_T PR[4];                         /* Protect region table */
-
-    //__IO uint32_t PR0_SADDR;             /*!< [0x0010] OTFC Protection Region 0 Start Address Register                  */
-    //__IO uint32_t PR0_EADDR;             /*!< [0x0014] OTFC Protection Region 0 End Address Register                    */
-    //__O  uint32_t PR0_KSCTL;             /*!< [0x0018] OTFC Protection Region 0 Key Control Register                    */
-    //__I  uint32_t RESERVE1[1];
-    //__O  uint32_t PR0_KEY0;              /*!< [0x0020] OTFC Protection Region 0 KEY Word 0 Register                     */
-    //__O  uint32_t PR0_KEY1;              /*!< [0x0024] OTFC Protection Region 0 KEY Word 1 Register                     */
-    //__O  uint32_t PR0_KEY2;              /*!< [0x0028] OTFC Protection Region 0 KEY Word 2 Register                     */
-    //__O  uint32_t PR0_KEY3;              /*!< [0x002c] OTFC Protection Region 0 KEY Word 3 Register                     */
-    //__I  uint32_t RESERVE2[4];
-    //__O  uint32_t PR0_SCRAMBLE;          /*!< [0x0040] OTFC Protection Region 0 Scramble key Register                   */
-    //__O  uint32_t PR0_NONCE0;            /*!< [0x0044] OTFC Protection Region 0 Nonce Word 0 Register                   */
-    //__O  uint32_t PR0_NONCE1;            /*!< [0x0048] OTFC Protection Region 0 Nonce Word 1 Register                   */
-    //__O  uint32_t PR0_NONCE2;            /*!< [0x004c] OTFC Protection Region 0 Nonce Word 2 Register                   */
-
-    //__IO uint32_t PR1_SADDR;             /*!< [0x0050] OTFC Protection Region 1 Start Address Register                  */
-    //__IO uint32_t PR1_EADDR;             /*!< [0x0054] OTFC Protection Region 1 End Address Register                    */
-    //__O  uint32_t PR1_KSCTL;             /*!< [0x0058] OTFC Protection Region 1 Key Control Register                    */
-    //__I  uint32_t RESERVE3[1];
-    //__O  uint32_t PR1_KEY0;              /*!< [0x0060] OTFC Protection Region 1 KEY Word 0 Register                     */
-    //__O  uint32_t PR1_KEY1;              /*!< [0x0064] OTFC Protection Region 1 KEY Word 1 Register                     */
-    //__O  uint32_t PR1_KEY2;              /*!< [0x0068] OTFC Protection Region 1 KEY Word 2 Register                     */
-    //__O  uint32_t PR1_KEY3;              /*!< [0x006c] OTFC Protection Region 1 KEY Word 3 Register                     */
-    //__I  uint32_t RESERVE4[4];
-    //__O  uint32_t PR1_SCRAMBLE;          /*!< [0x0080] OTFC Protection Region 1 Scramble key Register                   */
-    //__O  uint32_t PR1_NONCE0;            /*!< [0x0084] OTFC Protection Region 1 Nonce Word 0 Register                   */
-    //__O  uint32_t PR1_NONCE1;            /*!< [0x0088] OTFC Protection Region 1 Nonce Word 1 Register                   */
-    //__O  uint32_t PR1_NONCE2;            /*!< [0x008c] OTFC Protection Region 1 Nonce Word 2 Register                   */
-
-    //__IO uint32_t PR2_SADDR;             /*!< [0x0090] OTFC Protection Region 2 Start Address Register                  */
-    //__IO uint32_t PR2_EADDR;             /*!< [0x0094] OTFC Protection Region 2 End Address Register                    */
-    //__O  uint32_t PR2_KSCTL;             /*!< [0x0098] OTFC Protection Region 2 Key Control Register                    */
-    //__I  uint32_t RESERVE5[1];
-    //__O  uint32_t PR2_KEY0;              /*!< [0x00a0] OTFC Protection Region 2 KEY Word 0 Register                     */
-    //__O  uint32_t PR2_KEY1;              /*!< [0x00a4] OTFC Protection Region 2 KEY Word 1 Register                     */
-    //__O  uint32_t PR2_KEY2;              /*!< [0x00a8] OTFC Protection Region 2 KEY Word 2 Register                     */
-    //__O  uint32_t PR2_KEY3;              /*!< [0x00ac] OTFC Protection Region 2 KEY Word 3 Register                     */
-    //__I  uint32_t RESERVE6[4];
-    //__O  uint32_t PR2_SCRAMBLE;          /*!< [0x00c0] OTFC Protection Region 2 Scramble key Register                   */
-    //__O  uint32_t PR2_NONCE0;            /*!< [0x00c4] OTFC Protection Region 2 Nonce Word 0 Register                   */
-    //__O  uint32_t PR2_NONCE1;            /*!< [0x00c8] OTFC Protection Region 2 Nonce Word 1 Register                   */
-    //__O  uint32_t PR2_NONCE2;            /*!< [0x00cc] OTFC Protection Region 2 Nonce Word 2 Register                   */
-
-    //__IO uint32_t PR3_SADDR;             /*!< [0x00d0] OTFC Protection Region 3 Start Address Register                  */
-    //__IO uint32_t PR3_EADDR;             /*!< [0x00d4] OTFC Protection Region 3 End Address Register                    */
-    //__O  uint32_t PR3_KSCTL;             /*!< [0x00d8] OTFC Protection Region 3 Key Control Register                    */
-    //__I  uint32_t RESERVE7[1];
-    //__O  uint32_t PR3_KEY0;              /*!< [0x00e0] OTFC Protection Region 3 KEY Word 0 Register                     */
-    //__O  uint32_t PR3_KEY1;              /*!< [0x00e4] OTFC Protection Region 3 KEY Word 1 Register                     */
-    //__O  uint32_t PR3_KEY2;              /*!< [0x00e8] OTFC Protection Region 3 KEY Word 2 Register                     */
-    //__O  uint32_t PR3_KEY3;              /*!< [0x00ec] OTFC Protection Region 3 KEY Word 3 Register                     */
-    //__I  uint32_t RESERVE8[4];
-    //__O  uint32_t PR3_SCRAMBLE;          /*!< [0x0100] OTFC Protection Region 3 Scramble key Register                   */
-    //__O  uint32_t PR3_NONCE0;            /*!< [0x0104] OTFC Protection Region 3 Nonce Word 0 Register                   */
-    //__O  uint32_t PR3_NONCE1;            /*!< [0x0108] OTFC Protection Region 3 Nonce Word 1 Register                   */
-    //__O  uint32_t PR3_NONCE2;            /*!< [0x010c] OTFC Protection Region 3 Nonce Word 2 Register                   */
+    OTFC_PR_T PR[4];                    /* Protect region table */
 } OTFC_T;
 
 /**

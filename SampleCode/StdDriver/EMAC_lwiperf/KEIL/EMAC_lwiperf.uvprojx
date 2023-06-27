@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>EMAC_TxRx</TargetName>
+      <TargetName>EMAC_lwiperf</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>EMAC_TxRx</OutputName>
+          <OutputName>EMAC_lwiperf</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>DEBUG_PORT=UART0, NVT_ICACHE_OFF, NVT_DCACHE_OFF</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\StdDriver\inc\emac;..\</IncludePath>
+              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\StdDriver\inc\emac;..\;..\..\..\..\ThirdParty\lwIP\src\include;..\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -420,6 +420,11 @@
               <FilePath>..\..\..\..\Library\StdDriver\src\uart.c</FilePath>
             </File>
             <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\timer.c</FilePath>
+            </File>
+            <File>
               <FileName>synopGMAC_Dev.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\emac\synopGMAC_Dev.c</FilePath>
@@ -445,6 +450,16 @@
               <FilePath>..\main.c</FilePath>
             </File>
             <File>
+              <FileName>queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>sys_arch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\sys_arch.c</FilePath>
+            </File>
+            <File>
               <FileName>emac.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\emac.c</FilePath>
@@ -454,10 +469,145 @@
               <FileType>1</FileType>
               <FilePath>..\mii.c</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>LwIP</GroupName>
+          <Files>
             <File>
-              <FileName>net.c</FileName>
+              <FileName>lwiperf.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\net.c</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\apps\lwiperf\lwiperf.c</FilePath>
+            </File>
+            <File>
+              <FileName>def.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\def.c</FilePath>
+            </File>
+            <File>
+              <FileName>dns.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\dns.c</FilePath>
+            </File>
+            <File>
+              <FileName>inet_chksum.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\inet_chksum.c</FilePath>
+            </File>
+            <File>
+              <FileName>init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\init.c</FilePath>
+            </File>
+            <File>
+              <FileName>ip.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\ip.c</FilePath>
+            </File>
+            <File>
+              <FileName>mem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\mem.c</FilePath>
+            </File>
+            <File>
+              <FileName>memp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\memp.c</FilePath>
+            </File>
+            <File>
+              <FileName>netif.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\netif.c</FilePath>
+            </File>
+            <File>
+              <FileName>pbuf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\pbuf.c</FilePath>
+            </File>
+            <File>
+              <FileName>raw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\raw.c</FilePath>
+            </File>
+            <File>
+              <FileName>stats.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\stats.c</FilePath>
+            </File>
+            <File>
+              <FileName>sys_lwip.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\sys_lwip.c</FilePath>
+            </File>
+            <File>
+              <FileName>tcp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\tcp.c</FilePath>
+            </File>
+            <File>
+              <FileName>tcp_in.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\tcp_in.c</FilePath>
+            </File>
+            <File>
+              <FileName>tcp_out.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\tcp_out.c</FilePath>
+            </File>
+            <File>
+              <FileName>timeouts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\timeouts.c</FilePath>
+            </File>
+            <File>
+              <FileName>udp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\udp.c</FilePath>
+            </File>
+            <File>
+              <FileName>autoip.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\ipv4\autoip.c</FilePath>
+            </File>
+            <File>
+              <FileName>dhcp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\ipv4\dhcp.c</FilePath>
+            </File>
+            <File>
+              <FileName>etharp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\ipv4\etharp.c</FilePath>
+            </File>
+            <File>
+              <FileName>icmp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\ipv4\icmp.c</FilePath>
+            </File>
+            <File>
+              <FileName>igmp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\ipv4\igmp.c</FilePath>
+            </File>
+            <File>
+              <FileName>ip4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\ipv4\ip4.c</FilePath>
+            </File>
+            <File>
+              <FileName>ip4_addr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\ipv4\ip4_addr.c</FilePath>
+            </File>
+            <File>
+              <FileName>ip4_frag.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\core\ipv4\ip4_frag.c</FilePath>
+            </File>
+            <File>
+              <FileName>ethernet.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\lwIP\src\netif\ethernet.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -476,7 +626,7 @@
       <Layer>
         <LayName>Project</LayName>
         <LayPrjMark>1</LayPrjMark>
-        <LayTitle>EMAC_TxRx</LayTitle>
+        <LayTitle>EMAC_lwiperf</LayTitle>
       </Layer>
     </Layers>
   </LayerInfo>

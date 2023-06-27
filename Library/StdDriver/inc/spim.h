@@ -175,10 +175,6 @@ extern "C"
 #define PHASE_ENABLE_DTR                    (0x01)  /* Double data rate mode enable */
 #define PHASE_DISABLE_DTR                   (0x00)  /* Double data rate mode disable */
 
-/* SPIM Operation mode. */
-#define SPIM_OP_FLASH_MODE                  (0x0)   /* SPIROM operates in SPI Flash mode.  */
-#define SPIM_OP_HYPER_MODE                  (0x1)   /* SPIROM operates in HYPER Device mode. */
-
 #define SPIM_IO_WRITE_PHASE                 (0x01)  /* SPIM IO write phase mode.  */
 #define SPIM_IO_READ_PHASE                  (0x00)  /* SPIM IO read phase mode.  */
 
@@ -310,13 +306,9 @@ typedef enum
 
 /**
  * @brief       Enable Hyper Device Mode.
- * @param[in]   x   SPIM operation Mode Bit
- *                  - \ref SPIM_OP_FLASH_MODE
- *                  - \ref SPIM_OP_HYPER_MODE
- * \hideinitializer
+* \hideinitializer
  */
-#define SPIM_SET_OP_MODE(spim, x)   \
-    (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_HYPER_EN_Msk)) | (x << SPIM_CTL0_HYPER_EN_Pos))
+#define SPIM_SET_FLASH_MODE(spim) (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_HYPER_EN_Msk)))
 
 /**
  * @brief       Set 4-byte address.
@@ -512,7 +504,7 @@ typedef enum
  * \hideinitializer
  */
 #define SPIM_SET_DTR_MODE(spim, x)  \
-    (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_DTR_NORM_Msk) | (x << SPIM_CTL0_DTR_NORM_Pos))
+    (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_DTR_NORM_Msk) | (x << SPIM_CTL0_DTR_NORM_Pos)))
 
 /**
  * @brief   Get DTR(Data Transfer Rate) mode to be enabled/disabled.
@@ -756,19 +748,6 @@ typedef enum
  * \hideinitializer
  */
 #define SPIM_DISABLE_DMM_CREN(spim) (spim->DMMCTL &= ~(SPIM_DMMCTL_CREN_Msk))
-
-/**
- * @brief   Stop DMM mode Transfer.
- * \hideinitializer
- */
-#define SPIM_ENABLE_DMM_HYPDONE(spim)   (spim->DMMCTL |= SPIM_DMMCTL_HYPDONE_Msk)
-
-/**
- * @brief   Wait DMM mode complete to stop TX/RX.
- * \hideinitializer
- */
-#define SPIM_GET_DMM_HYPDONE(spim)  \
-    ((spim->DMMCTL & SPIM_DMMCTL_HYPDONE_Msk) >> SPIM_DMMCTL_HYPDONE_Pos)
 
 /**
  * @brief   Set dummy cycle number (Only DMA Command Mode). It could be 0 ~ 0xFF.
@@ -1458,7 +1437,7 @@ typedef struct
     uint32_t u32ByteOrder;      /*!< Data Byte Order */
     uint32_t u32DataDTR;        /*!< Data use DTR mode */
 
-    uint32_t u32DcNum;          /*!< Dummy cycle count */
+    uint32_t u32DcNum;          /*!< Dummy `cycle count */
 
     /* Continue read mode only support 0xBB, 0xEB, 0xE7, 0x0D, 0xBD, and 0xED
        in Direct Map Mode */
@@ -1467,222 +1446,12 @@ typedef struct
     uint32_t u32RdModeWidth;    /*!< Read mode phase mode */
     uint32_t u32RdModeDTR;      /*!< Read mode use DTR mode */
 
-} PHASE_SET_T;  /*!< Structure holds SPIM IO phase info */
+} SPIM_PHASE_T;  /*!< Structure holds SPIM IO phase info */
 
 
 /** @addtogroup SPIM HYPER_EXPORTED_CONSTANTS HYPER Exported Constants
   @{
 */
-#define HYPER_RAM_ID_REG0                   (0x00000000)    /* Hyper RAM Identification Register 0. */
-#define HYPER_RAM_ID_REG1                   (0x00000002)    /* Hyper RAM Identification Register 1. */
-#define HYPER_RAM_CONFIG_REG0               (0x00001000)    /* Hyper RAM Configuration Register 0. */
-#define HYPER_RAM_CONFIG_REG1               (0x00001002)    /* Hyper RAM Configuration Register 1. */
-
-#define SPIM_HYPER_CMD_IDLE                 (0x00000000)    /* Hyper Bus interface is Idle. */
-#define SPIM_HYPER_CMD_RESET                (0x00000001)    /* Reset Hyper Bus Devices. */
-#define SPIM_HYPER_CMD_READ_HRAM_REGISTER   (0x00000002)    /* Read Hyper RAM Regsiter (16-Bit, Read Data[15:0]. */
-#define SPIM_HYPER_CMD_EXIT_HS_PD           (0x00000005)    /* Exit From Hybrid Sleep and deep power down. */
-#define SPIM_HYPER_CMD_WRITE_HRAM_REGISTER  (0x00000007)    /* Write Hyper RAM Regsiter (16-Bit, Write Data[15:0]. */
-#define SPIM_HYPER_CMD_READ_1_WORD          (0x00000008)    /* Read 1 word (Read Data[15:0]) from Hyper Bus Devices. */
-#define SPIM_HYPER_CMD_READ_2_WORD          (0x00000009)    /* Read 2 word (Read Data[31:0]) from Hyper Bus Devices. */
-#define SPIM_HYPER_CMD_WRITE_1_BYTE         (0x0000000C)    /* Write 1 Byte (Write Data[7:0]) to Hyper Bus Devices. */
-#define SPIM_HYPER_CMD_WRITE_2_BYTE         (0x0000000D)    /* Write 2 Byte (Write Data[15:0]) to Hyper Bus Devices. */
-#define SPIM_HYPER_CMD_WRITE_3_BYTE         (0x0000000E)    /* Write 3 Byte (Write Data[23:0]) to Hyper Bus Devices. */
-#define SPIM_HYPER_CMD_WRITE_4_BYTE         (0x0000000F)    /* Write 4 Byte (Write Data[31:0]) to Hyper Bus Devices. */
-
-/*----------------------------------------------------------------------------*/
-/* SPIM_HYPER_CONFIG1: Chip Select Setup Time to Next CK Rising Edge
-    00 = 1.5 HCLK cycles.
-    01 = 2.5 HCLK cycles.
-    10 = 3.5 HCLK cycles.
-    11 = 4.5 HCLK cycles.
-*/
-/*----------------------------------------------------------------------------*/
-#define SPIM_HYPER_CONFIG1_CSST_1_5_HCLK    (0x0)
-#define SPIM_HYPER_CONFIG1_CSST_2_5_HCLK    (0x1)
-#define SPIM_HYPER_CONFIG1_CSST_3_5_HCLK    (0x2)
-#define SPIM_HYPER_CONFIG1_CSST_4_5_HCLK    (0x3)
-
-/*----------------------------------------------------------------------------*/
-/* SPIM_HYPER_CONFIG1: Chip Select Hold Time After CK Falling Edge
-    00 = 0.5 HCLK cycles.
-    01 = 1.5 HCLK cycles.
-    10 = 2.5 HCLK cycles.
-    11 = 3.5 HCLK cycles.
-*/
-/*----------------------------------------------------------------------------*/
-#define SPIM_HYPER_CONFIG1_CSH_0_5_HCLK    (0x0)
-#define SPIM_HYPER_CONFIG1_CSH_1_5_HCLK    (0x1)
-#define SPIM_HYPER_CONFIG1_CSH_2_5_HCLK    (0x2)
-#define SPIM_HYPER_CONFIG1_CSH_3_5_HCLK    (0x3)
-
-/*----------------------------------------------------------------------------*/
-/* SPIM_HYPER_CONFIG1: Chip Select High between Transaction
-    10 = 0.5 HCLK cycles.
-    ...
-    1111 = 3.5 HCLK cycles.
-*/
-/*----------------------------------------------------------------------------*/
-#define SPIM_HYPER_CONFIG1_CSHI_2_HCLK    (0x02)
-#define SPIM_HYPER_CONFIG1_CSHI_3_HCLK    (0x03)
-#define SPIM_HYPER_CONFIG1_CSHI_4_HCLK    (0x04)
-#define SPIM_HYPER_CONFIG1_CSHI_5_HCLK    (0x05)
-#define SPIM_HYPER_CONFIG1_CSHI_6_HCLK    (0x06)
-#define SPIM_HYPER_CONFIG1_CSHI_7_HCLK    (0x07)
-#define SPIM_HYPER_CONFIG1_CSHI_8_HCLK    (0x08)
-#define SPIM_HYPER_CONFIG1_CSHI_9_HCLK    (0x09)
-#define SPIM_HYPER_CONFIG1_CSHI_10_HCLK   (0x0A)
-#define SPIM_HYPER_CONFIG1_CSHI_11_HCLK   (0x0B)
-#define SPIM_HYPER_CONFIG1_CSHI_12_HCLK   (0x0C)
-#define SPIM_HYPER_CONFIG1_CSHI_13_HCLK   (0x0D)
-#define SPIM_HYPER_CONFIG1_CSHI_14_HCLK   (0x0E)
-#define SPIM_HYPER_CONFIG1_CSHI_15_HCLK   (0x0F)
-
-/*----------------------------------------------------------------------------*/
-/*  Define SPIM HYPER Macros and functions                                    */
-/*----------------------------------------------------------------------------*/
-/**
-  * @brief      Set Hyper Chip Select Setup Time to Next CK Rising Edge.
-  * @param[in]  x   Chip Select Setup Time to Next CK Rising Edge.
-  *                 - \ref SPIM_HYPER_CONFIG1_CSST_1_5_HCLK : 1.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSST_2_5_HCLK : 2.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSST_3_5_HCLK : 3.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSST_4_5_HCLK : 4.5 HCLK cycles
-  * \hideinitializer
-  */
-#define SPIM_SET_HYPER_CONFIG1_CSST(spim, x)    \
-    (spim->HYPER_CONFIG1 = (spim->HYPER_CONFIG1 & ~(SPIM_HYPER_CONFIG1_CSST_Msk)) | (x << SPIM_HYPER_CONFIG1_CSST_Pos))
-
-/**
-  * @brief      Set Hyper Chip Select Hold Time After CK Falling Edge.
-  * @param[in]  x   Chip Select Hold Time After CK Falling Edge.
-  *                 - \ref SPIM_HYPER_CONFIG1_CSH_0_5_HCLK : 0.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSH_1_5_HCLK : 1.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSH_2_5_HCLK : 2.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSH_3_5_HCLK : 3.5 HCLK cycles
-  * \hideinitializer
-  */
-#define SPIM_SET_HYPER_CONFIG1_CSH(spim, x) \
-    (spim->HYPER_CONFIG1 = (spim->HYPER_CONFIG1 & ~(SPIM_HYPER_CONFIG1_CSH_Msk)) | \
-                           ((x) << SPIM_HYPER_CONFIG1_CSH_Pos))
-
-/**
-  * @brief      Set Hyper Chip Select High between Transaction.
-  * @param[in]  x   Set Chip Select High between Transaction as u8Value HCLK cycles.
-                    It could be 2 ~ 16.
-  * \hideinitializer
-  */
-#define SPIM_SET_HYPER_CONFIG1_CSHI(spim, x)                              \
-    do                                                                    \
-    {                                                                     \
-        uint32_t u32Value = 0;                                            \
-        if (x <= 1)                                                       \
-        {                                                                 \
-            u32Value = 2;                                                 \
-        }                                                                 \
-        else                                                              \
-        {                                                                 \
-            u32Value = x;                                                 \
-        }                                                                 \
-        spim->HYPER_CONFIG1 &= ~(SPIM_HYPER_CONFIG1_CSHI_Msk);            \
-        spim->HYPER_CONFIG1 |= (u32Value << SPIM_HYPER_CONFIG1_CSHI_Pos); \
-    } while (0)
-
-/**
-  * @brief      Set Hyper Chip Select Maximum Low Time.
-  * @param[in]  u32CsMaxLT  Set Hyper Chip Select Maximum Low Time as u32CsMaxLT HCLK cycles.
-  *                         It could be 1 ~ 2048.
-  * \hideinitializer
-  */
-#define SPIMS_SET_HYPER_CONFIG1_CSMAXLT(spim, u32CsMaxLT)   \
-    (spim->HYPER_CONFIG1 = (spim->HYPER_CONFIG1 & ~(SPIM_HYPER_CONFIG1_CSMAXLT_Msk)) | \
-                           ((u32CsMaxLT - 1) << SPIM_HYPER_CONFIG1_CSMAXLT_Pos))
-/**
-  * @brief  Get Hyper Chip Select Maximum Low Time.
-  * \hideinitializer
-  */
-#define SPIM_GET_HYPER_CONFIG1_CSMAXLT(spim)    \
-    (((spim->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSMAXLT_Msk) >> SPIM_HYPER_CONFIG1_CSMAXLT_Pos) + 1UL)
-
-/**
-  * @brief  Set Hyper Chip Initial Read Access Time.
-  * @param[in]  x   Initial Access Time. It could be 1 ~ 31.
-  * \hideinitializer
-  */
-#define SPIM_SET_HYPER_CONFIG2_ACCTWR(spim, x)  \
-    (spim->HYPER_CONFIG2 = (spim->HYPER_CONFIG2 & ~(SPIM_HYPER_CONFIG2_ACCTWR_Msk)) | \
-                           (x << SPIM_HYPER_CONFIG2_ACCTWR_Pos))
-
-/**
-  * @brief  Get Hyper Chip Initial Read Access Time.
-  * \hideinitializer
-  */
-#define SPIM_GET_HYPER_CONFIG2_ACCTWR(spim) \
-    ((spim->HYPER_CONFIG2 & SPIM_HYPER_CONFIG2_ACCTWR_Msk) >> SPIM_HYPER_CONFIG2_ACCTWR_Pos)
-
-/**
-  * @brief      Set Hyper Device RESETN Low Time.
-  * @param[in]  u8Value Initial Device RESETN Low Time. It could be 0 ~ 255.
-  * \hideinitializer
-  */
-#define SPIM_SET_HYPER_CONFIG2_RSTNLT(spim, u8Value)    \
-    (spim->HYPER_CONFIG2 = (spim->HYPER_CONFIG2 & ~(SPIM_HYPER_CONFIG2_RSTNLT_Msk)) |\
-                           (u8Value << SPIM_HYPER_CONFIG2_RSTNLT_Pos))
-
-/**
-  * @brief  Get Hyper Device RESETN Low Time.
-  * \hideinitializer
-  */
-#define SPIM_GET_HYPER_CONFIG2_RSTNLT(spim) \
-    ((spim->HYPER_CONFIG2 & SPIM_HYPER_CONFIG2_RSTNLT_Msk) >> SPIM_HYPER_CONFIG2_RSTNLT_Pos)
-
-/**
-  * @brief      Set Hyper Chip Initial Read Access Time.
-  * @param[in]  x   Initial Access Time. It could be 1 ~ 31.
-  * \hideinitializer
-  */
-#define SPIM_SET_HYPER_CONFIG2_ACCTRD(spim, x)  \
-    (spim->HYPER_CONFIG2 = (spim->HYPER_CONFIG2 & ~(SPIM_HYPER_CONFIG2_ACCTRD_Msk)) |\
-                           (x << SPIM_HYPER_CONFIG2_ACCTRD_Pos))
-
-/**
-  * @brief  Get Hyper Chip Initial Read Access Time.
-  * \hideinitializer
-  */
-#define SPIM_GET_HYPER_CONFIG2_ACCTRD(spim) \
-    ((spim->HYPER_CONFIG2 & SPIM_HYPER_CONFIG2_ACCTRD_Msk) >> SPIM_HYPER_CONFIG2_ACCTRD_Pos)
-
-/**
- * @brief Clear Hyper Bus Write DATA
- * \hideinitializer
- */
-#define SPIM_CLEAR_HYPER_WDATA(spim)    (spim->HYPER_WDATA &= ~(0xFFFFFFFF))
-
-/**
- * @brief   Enable Hyper Chip Operation Done Interrupt.
- * \hideinitializer
- */
-#define SPIM_ENABLE_HYPER_INT(spim) (spim->HYPER_INTEN |= SPIM_HYPER_INTEN_OPINTEN_Msk)
-
-/**
- * @brief   Disable Hyper Chip Operation Done Interrupt.
- * \hideinitializer
- */
-#define SPIM_DISABLE_HYPER_INT(spim)    (spim->HYPER_INTEN &= ~(SPIM_HYPER_INTEN_OPINTEN_Msk))
-
-/**
- * @brief   Get Hyper Bus Operation Done Interrupt.
- * \hideinitializer
- */
-#define SPIM_GET_HYPER_INT(spim)    \
-    ((spim->HYPER_INTEN & SPIM_HYPER_INTEN_OPINTEN_Msk) >> SPIM_HYPER_INTEN_OPINTEN_Pos)
-
-/**
- * @brief   Get Hyper Chip Operation Done Interrupt.
- * \hideinitializer
- */
-#define SPIM_GET_HYPER_INTSTS(spim) \
-    ((spim->HYPER_INTEN & SPIM_HYPER_INTEN_OPINTEN_Msk) >> SPIM_HYPER_INTEN_OPINTEN_Pos)
 
 /** @} end of group SPIM_EXPORTED_CONSTANTS */
 
@@ -1691,7 +1460,7 @@ typedef struct
 */
 
 /* Octal SPI flash and hyper device training DLL API */
-int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32ClkOnNum, uint32_t u32TrimNum, uint32_t u32LKNum, uint32_t u32OVNum, uint32_t u32DelayNum);
+int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum);
 
 /*----------------------------------------------------------------------------*/
 /* SPIM Define Function Prototypes                                            */
@@ -1734,20 +1503,21 @@ void SPIM_WinbondUnlock(SPIM_T *spim, uint32_t u32NBit);
 
 /* PHDMAW/PHDMAR/PHDMM Register Settings for DMA Read/DMA Write/DMM Read */
 int32_t SPIM_DMADMM_ClearPhaseSetting(SPIM_T *spim, uint32_t u32OPMode);
+
 int32_t SPIM_DMADMM_SetCMDPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn);
 int32_t SPIM_DMADMM_SetAddrPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn);
 int32_t SPIM_DMADMM_SetContReadPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32ContEn, uint32_t u32DTREn);
 int32_t SPIM_DMADMM_SetDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32ByteOrder, uint32_t u32RdDQS, uint32_t u32DTREn);
 
 /* Phase table init API, Phase Table Setting reference SPI Flash specification. */
-void SPIM_DMADMM_InitPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32OPMode);
+void SPIM_DMADMM_InitPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, uint32_t u32OPMode);
 
 /* Phase table DMA Write. */
-void SPIM_DMA_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, int is4ByteAddr, uint32_t u32Addr, uint32_t u32WrSize, uint8_t *pu8TxBuf);
-/* Phase table DMA Read. */
-int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, int is4ByteAddr, uint32_t u32Addr, uint32_t u32RdSize, uint8_t *pu8RxBuf, int isSync);
-/* Phase table DMM Read. */
-void SPIM_DMM_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, int is4ByteAddr, uint32_t u32IdleIntvl);
+//void SPIM_DMA_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, int is4ByteAddr, uint32_t u32Addr, uint32_t u32WrSize, uint8_t *pu8TxBuf);
+///* Phase table DMA Read. */
+//int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, int is4ByteAddr, uint32_t u32Addr, uint32_t u32RdSize, uint8_t *pu8RxBuf, int isSync);
+///* Phase table DMM Read. */
+//void SPIM_DMM_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, int is4ByteAddr, uint32_t u32IdleIntvl);
 
 /* Normal I/O send command phase. */
 void SPIM_IO_SendCMDPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32OpCMD, uint32_t u32CMDPhase, uint32_t u32DTREn);
@@ -1756,43 +1526,18 @@ void SPIM_IO_SendAddrPhase(SPIM_T *spim, uint32_t u32Is4ByteAddr, uint32_t u32Ad
 /* Normal I/O send dummy cycle. */
 int32_t SPIM_IO_SendDummyCycle(SPIM_T *spim, int u32NDummy);
 /* Normal I/O send data phase. */
-void SPIM_IO_SendDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint8_t *pu8TRxBuf, uint32_t u32TRxSize, uint32_t u32DataPhae, uint32_t u32DTREn);
+void SPIM_IO_SendDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint8_t *pu8TRxBuf, uint32_t u32TRxSize, uint32_t u32CMDPhase, uint32_t u32DataPhae, uint32_t u32DTREn);
 
 /* Phase table use normal I/O write */
-void SPIM_IO_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint8_t *pu8RxBuf, uint32_t u32WrSize);
+void SPIM_IO_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, uint32_t u32Addr, uint8_t *pu8RxBuf, uint32_t u32WrSize);
 /* Phase table use normal I/O read */
-void SPIM_IO_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, uint32_t u32Addr, int is4ByteAddr, uint8_t *pu8RxBuf, uint32_t u32RdSize);
+void SPIM_IO_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, uint32_t u32Addr, uint8_t *pu8RxBuf, uint32_t u32RdSize);
 
 /* Wait SPI flash write operation done */
 int32_t SPIM_WaitSPIMENDone(SPIM_T *spim, uint32_t u32IsSync);
 
 /* Set Micron MT35X SPI flash 4 bytes address access */
 void SPIM_MT35x_4Bytes_Enable(SPIM_T *spim, int isEn, uint32_t u32NBit, uint32_t u32DTREn);
-
-/*----------------------------------------------------------------------------*/
-/* SPIM Hyper Device Define Function Prototypes                               */
-/*----------------------------------------------------------------------------*/
-/* HyperRAM */
-int32_t SPIM_ExitHSAndDPD(SPIM_T *spim);
-int32_t SPIM_ReadHyperRAMReg(SPIM_T *spim, uint32_t u32Addr);
-int32_t SPIM_WriteHyperRAMReg(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Value);
-
-/* Hyper Device API */
-void SPIM_InitHyper(SPIM_T *spim, uint32_t u32Div);
-int32_t SPIM_ResetHyper(SPIM_T *spim);
-int16_t SPIM_Read1Word(SPIM_T *spim, uint32_t u32Addr);
-int32_t SPIM_Read2Word(SPIM_T *spim, uint32_t u32Addr);
-int32_t SPIM_Write1Byte(SPIM_T *spim, uint32_t u32Addr, uint8_t u8Data);
-int32_t SPIM_Write2Byte(SPIM_T *spim, uint32_t u32Addr, uint16_t u16Data);
-int32_t SPIM_Write3Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data);
-int32_t SPIM_Write4Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data);
-
-int32_t SPIM_DMAWrite_Hyper(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8WrBuf, uint32_t u32NTx);
-int32_t SPIM_DMARead_Hyper(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8RdBuf, uint32_t u32NRx);
-
-void SPIM_EnterDirectMapMode_Hyper(SPIM_T *spim);
-void SPIM_ExitDirectMapMode_Hyper(SPIM_T *spim);
-int32_t SPIM_IsDMMDone_Hyper(SPIM_T *spim);
 
 /** @} end of group SPIM_EXPORTED_FUNCTIONS */
 /** @} end of group SPIM_Driver */

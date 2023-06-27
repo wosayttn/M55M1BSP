@@ -464,16 +464,6 @@ int32_t SPIM_WaitSPIMENDone(SPIM_T *spim, uint32_t u32IsSync)
                 }
             }
         }
-        else if (SPIM_GET_HYPER_INT(spim))
-        {
-            while (SPIM_GET_HYPER_INTSTS(spim))
-            {
-                if (--i32TimeOutCount <= 0)
-                {
-                    return SPIM_ERR_TIMEOUT;
-                }
-            }
-        }
         else
         {
             while (SPIM_WAIT_FREE(spim))
@@ -717,7 +707,7 @@ int32_t SPIM_InitFlash(SPIM_T *spim, int clrWP)
     uint32_t  i = 0;
     int32_t   ret = SPIM_ERR_FAIL;
 
-    SPIM_SET_OP_MODE(spim, SPIM_OP_FLASH_MODE); /* Enable SPIM Hyper Bus Mode */
+    SPIM_SET_FLASH_MODE(spim); /* Enable SPIM Hyper Bus Mode */
 
     SPIM_SET_SS_ACTLVL(spim, 0);
 
@@ -1759,7 +1749,7 @@ int32_t SPIM_DMADMM_SetDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32N
  *                      - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
  */
 void SPIM_DMADMM_InitPhase(SPIM_T *spim,
-                           PHASE_SET_T *psPhaseTable,
+                           SPIM_PHASE_T *psPhaseTable,
                            uint32_t u32OPMode)
 {
     uint32_t u32RDQSOn = 0;
@@ -1814,75 +1804,6 @@ void SPIM_DMADMM_InitPhase(SPIM_T *spim,
 }
 
 /**
- * @brief   Phase table DMA Write
- *
- * @param spim
- * @param psPhaseTable  Check SPI Flash specifications for support command codes,
- *                      and create command phase table.
- * @param u32Addr       Write Address.
- * @param is4ByteAddr   Enable 4 Bytes Address Mode.
- * @param u32WrSize     Write Data Size.
- * @param pu8TxBuf      Write Data Buffer.
- */
-void SPIM_DMA_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable,
-                         int is4ByteAddr, uint32_t u32Addr, uint32_t u32WrSize,
-                         uint8_t *pu8TxBuf)
-{
-    SPIM_DMADMM_InitPhase(spim, psPhaseTable, SPIM_CTL0_OPMODE_PAGEWRITE);
-
-    SPIM_DMA_Write(spim,
-                   u32Addr,
-                   is4ByteAddr,
-                   u32WrSize,
-                   pu8TxBuf,
-                   psPhaseTable->u32CMDCode);
-}
-
-/**
- * @brief   Phase table DMA Read.
- *
- * @param spim
- * @param psPhaseTable  Check SPI Flash specifications for support command codes,
- *                      and create command phase table.
- * @param u32Addr       Read SPI Flash Address.
- * @param is4ByteAddr   Enable 4 Bytes Address.
- * @param u32RdSize     Read Data Size.
- * @param pu8RxBuf      Read Data Buffer.
- * @param isSync        Wait SPIM Enable Done
- * @return int32_t
- */
-int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable,
-                           int is4ByteAddr, uint32_t u32Addr, uint32_t u32RdSize,
-                           uint8_t *pu8RxBuf, int isSync)
-{
-    SPIM_DMADMM_InitPhase(spim, psPhaseTable, SPIM_CTL0_OPMODE_PAGEREAD);
-
-    return SPIM_DMA_Read(spim,
-                         u32Addr,
-                         is4ByteAddr,
-                         u32RdSize,
-                         pu8RxBuf,
-                         psPhaseTable->u32CMDCode,
-                         isSync);
-}
-
-/**
- * @brief   Phase table DMM Read.
- *
- * @param spim
- * @param psPhaseTable  Check SPI Flash specifications for support command codes,
- *                      and create command phase table.
- * @param is4ByteAddr   Enable 4 Bytes Address.
- * @param u32IdleIntvl  Direct Map Mode Idle Interval Time.
- */
-void SPIM_DMM_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, int is4ByteAddr, uint32_t u32IdleIntvl)
-{
-    SPIM_DMADMM_InitPhase(spim, psPhaseTable, SPIM_CTL0_OPMODE_DIRECTMAP);
-
-    SPIM_EnterDirectMapMode(spim, is4ByteAddr, psPhaseTable->u32CMDCode, u32IdleIntvl);
-}
-
-/**
  * @brief Normal I/O mode data phase.
  *
  * @param spim
@@ -1904,7 +1825,7 @@ void SPIM_DMM_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable, int is4ByteAddr
  *                      - \ref 1 : write mode and wait write done
  */
 void SPIM_IO_SendDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint8_t *pu8TRxBuf,
-                           uint32_t u32TRxSize, uint32_t u32DataPhase, uint32_t u32DTREn)
+                           uint32_t u32TRxSize, uint32_t u32CMDPhase, uint32_t u32DataPhase, uint32_t u32DTREn)
 {
     SPIM_SET_DTR_MODE(spim, u32DTREn); /* DTR Activated. */
     //SPIM_SET_RDQS_MODE(spim, u32DTREn);
@@ -1926,7 +1847,7 @@ void SPIM_IO_SendDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint8_t *pu8TRxBuf,
 
     if (u32OPMode == SPIM_IO_WRITE_PHASE)
     {
-        SPIM_Wait_Write_Done(spim, u32DataPhase);
+        SPIM_Wait_Write_Done(spim, SPIM_GetIOPhaseSize(u32CMDPhase));
     }
 }
 
@@ -1998,12 +1919,12 @@ void SPIM_IO_SendAddrPhase(SPIM_T *spim,
         u8CmdBuf[u8BufIdx++] = (uint8_t)(u32Addr >> 16);
         u8CmdBuf[u8BufIdx++] = (uint8_t)(u32Addr >> 8);
         u8CmdBuf[u8BufIdx++] = (uint8_t) u32Addr;
-    }
 
-    if ((SPIM_GetIOPhaseSize(u32AddrPhase) == 2) ||
-            (SPIM_GetIOPhaseSize(u32AddrPhase) == 4))
-    {
-        u8BufIdx++;
+        if ((SPIM_GetIOPhaseSize(u32AddrPhase) == 2) ||
+                (SPIM_GetIOPhaseSize(u32AddrPhase) == 4))
+        {
+            u8BufIdx++;
+        }
     }
 
     SwitchNBitOutput(spim, SPIM_GetIOPhaseSize(u32AddrPhase));
@@ -2061,10 +1982,15 @@ void SPIM_IO_SendCMDPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32OpCMD,
 }
 
 
-void SPIM_WriteInPageDataByPhaseIO(SPIM_T *spim, PHASE_SET_T *psPhaseTable,
+void SPIM_WriteInPageDataByPhaseIO(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
                                    uint32_t u32Addr, int is4ByteAddr,
                                    uint8_t *pu8RxBuf, uint32_t u32RdSize)
 {
+    SPIM_SetQuadEnable(spim,
+                       ((psPhaseTable->u32AddrPhase == PHASE_QUAD_MODE) ||
+                        (psPhaseTable->u32DataPhase == PHASE_QUAD_MODE)) ? 1 : 0,
+                       1);
+
     SPIM_IO_SendCMDPhase(spim,
                          SPIM_IO_WRITE_PHASE,
                          psPhaseTable->u32CMDCode,
@@ -2084,31 +2010,46 @@ void SPIM_WriteInPageDataByPhaseIO(SPIM_T *spim, PHASE_SET_T *psPhaseTable,
                           SPIM_IO_WRITE_PHASE,
                           pu8RxBuf,
                           u32RdSize,
+                          psPhaseTable->u32CMDPhase,
                           psPhaseTable->u32DataPhase,
                           psPhaseTable->u32DataDTR);
+
+    SPIM_SetQuadEnable(spim, 0, 1);
 }
 
-void SPIM_IO_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable,
-                        uint32_t u32Addr, int is4ByteAddr,
-                        uint8_t *pu8TxBuf, uint32_t u32WrSize)
+void SPIM_IO_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
+                        uint32_t u32Addr, uint8_t *pu8TxBuf, uint32_t u32WrSize)
 {
-    uint32_t  pageOffset;
-    uint32_t  buf_idx = 0UL;
+    uint32_t u32PageOffset;
+    uint32_t u32BufIdx = 0UL;
+    uint32_t u32Is4ByteAddr = 0;
 
-    pageOffset = u32Addr % 256UL;
-
-    if ((pageOffset + u32WrSize) <= 256UL)          /* Do all the bytes fit onto one page ? */
+    if (psPhaseTable->u32AddrWidth == PHASE_WIDTH_32)
     {
-        SPIM_WriteInPageDataByPhaseIO(spim, psPhaseTable, u32Addr, is4ByteAddr, &pu8TxBuf[buf_idx], u32WrSize);
+        u32Is4ByteAddr = 1;
     }
     else
     {
-        uint32_t toWr = 256UL - pageOffset;               /* Size of data remaining on the first page. */
+        u32Is4ByteAddr = 0;
+    }
 
-        SPIM_WriteInPageDataByPhaseIO(spim, psPhaseTable, u32Addr, is4ByteAddr, &pu8TxBuf[buf_idx], toWr);
+    SPIM_Enable_4Bytes_Mode(spim, u32Is4ByteAddr, 1, 0);
+    SPIM_SET_4BYTE_ADDR_EN(spim, u32Is4ByteAddr);
+
+    u32PageOffset = u32Addr % 256UL;
+
+    if ((u32PageOffset + u32WrSize) <= 256UL)          /* Do all the bytes fit onto one page ? */
+    {
+        SPIM_WriteInPageDataByPhaseIO(spim, psPhaseTable, u32Addr, u32Is4ByteAddr, &pu8TxBuf[u32BufIdx], u32WrSize);
+    }
+    else
+    {
+        uint32_t toWr = 256UL - u32PageOffset;               /* Size of data remaining on the first page. */
+
+        SPIM_WriteInPageDataByPhaseIO(spim, psPhaseTable, u32Addr, u32Is4ByteAddr, &pu8TxBuf[u32BufIdx], toWr);
         u32Addr += toWr;                         /* Advance indicator.  */
         u32WrSize -= toWr;
-        buf_idx += toWr;
+        u32BufIdx += toWr;
 
         while (u32WrSize)
         {
@@ -2119,10 +2060,10 @@ void SPIM_IO_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable,
                 toWr = u32WrSize;
             }
 
-            SPIM_WriteInPageDataByPhaseIO(spim, psPhaseTable, u32Addr, is4ByteAddr, &pu8TxBuf[buf_idx], toWr);
+            SPIM_WriteInPageDataByPhaseIO(spim, psPhaseTable, u32Addr, u32Is4ByteAddr, &pu8TxBuf[u32BufIdx], toWr);
             u32Addr += toWr;                 /* Advance indicator.  */
             u32WrSize -= toWr;
-            buf_idx += toWr;
+            u32BufIdx += toWr;
         }
     }
 }
@@ -2143,10 +2084,28 @@ void SPIM_IO_WritePhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable,
   *                         - \ref SPIM_OP_DISABLE
   * @return     None.
   */
-void SPIM_IO_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable,
-                       uint32_t u32Addr, int is4ByteAddr,
-                       uint8_t *pu8RxBuf, uint32_t u32RdSize)
+void SPIM_IO_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
+                       uint32_t u32Addr, uint8_t *pu8RxBuf, uint32_t u32RdSize)
 {
+    uint32_t u32Is4ByteAddr = 0;
+
+    if (psPhaseTable->u32AddrWidth == PHASE_WIDTH_32)
+    {
+        u32Is4ByteAddr = 1;
+    }
+    else
+    {
+        u32Is4ByteAddr = 0;
+    }
+
+    SPIM_Enable_4Bytes_Mode(spim, u32Is4ByteAddr, 1, 0);
+    SPIM_SET_4BYTE_ADDR_EN(spim, u32Is4ByteAddr);
+
+    SPIM_SetQuadEnable(spim,
+                       ((psPhaseTable->u32AddrPhase == PHASE_QUAD_MODE) ||
+                        (psPhaseTable->u32DataPhase == PHASE_QUAD_MODE)) ? 1 : 0,
+                       1);
+
     SPIM_IO_SendCMDPhase(spim,
                          SPIM_IO_READ_PHASE,
                          psPhaseTable->u32CMDCode,
@@ -2154,7 +2113,7 @@ void SPIM_IO_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable,
                          psPhaseTable->u32CMDDTR);
 
     SPIM_IO_SendAddrPhase(spim,
-                          is4ByteAddr,
+                          u32Is4ByteAddr,
                           u32Addr,
                           psPhaseTable->u32AddrPhase,
                           psPhaseTable->u32AddrDTR);
@@ -2166,8 +2125,11 @@ void SPIM_IO_ReadPhase(SPIM_T *spim, PHASE_SET_T *psPhaseTable,
                           SPIM_IO_READ_PHASE,
                           pu8RxBuf,
                           u32RdSize,
+                          psPhaseTable->u32CMDPhase,
                           psPhaseTable->u32DataPhase,
                           psPhaseTable->u32DataDTR);
+
+    SPIM_SetQuadEnable(spim, 0, 1);
 }
 
 /**
@@ -2300,6 +2262,8 @@ void SPIM_IO_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32N
   * @param      pu8TxBuf    Transmit buffer.
   * @param      wrCmd       Write command.
   * @return     None.
+  *
+  * @note       Before calling this API, must first call SPIM_DMADMM_InitPhase to set PHDMAW.
   */
 void SPIM_DMA_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
                     uint32_t u32NTx, uint8_t *pu8TxBuf, uint32_t wrCmd)
@@ -2360,6 +2324,7 @@ void SPIM_DMA_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
   * @return     SPIM_OK          SPIM operation OK.
   *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
   *             if waiting SPIM time-out.
+  * @note       Before calling this API, must first call SPIM_DMADMM_InitPhase to set PHDMAR.
   */
 int SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
                   uint32_t u32NRx, uint8_t *pu8RxBuf, uint32_t u32RdCmd, int isSync)
@@ -2416,6 +2381,7 @@ uint32_t SPIM_GetDirectMapAddress(SPIM_T *spim)
   * @param      u32RdCmd        Read command.
   * @param      u32IdleIntvl    Idle interval.
   * @return     None.
+  * @note       Before calling this API, must first call SPIM_DMADMM_InitPhase to set PHDMM.
   */
 void SPIM_EnterDirectMapMode(SPIM_T *spim, int is4ByteAddr,
                              uint32_t u32RdCmd, uint32_t u32IdleIntvl)
@@ -2464,35 +2430,19 @@ void SPIM_ExitDirectMapMode(SPIM_T *spim)
   *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
   * @note       This function sets SPIM_ERR_TIMEOUT, if waiting Hyper Chip time-out.
   * @note       First fix DIVIDER to set the frequency of SPIM output bus clock.
+  * @note       DLL default setting support
+  *             1. Micron MT35XU02GCBA Octal SPI Flash.
+  *             2. Winbond W958D8NBYA HyperRAM.
+  *             3. Infineon S26KLxxS/S26KSxxS HyperFlash.
+  *             Other device users must refer to the device specification set
+  *             SPIM_SET_DLL2_CLKON_NUM()
+  *             SPIM_SET_DLL2_TRIM_NUM()
+  *             SPIM_SET_DLL1_LOCKK_VALID()
+  *             SPIM_SET_DLL1_OUT_VALID()
   */
-int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32ClkOnNum, uint32_t u32TrimNum,
-                              uint32_t u32LKNum, uint32_t u32OVNum, uint32_t u32DelayNum)
+int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 {
     int i32Timeout = SPIM_TIMEOUT;
-
-    /* The default value of CLKONNUM is 0x07D0 when frequency of DLL reference clock
-       is 100 MHz and enable time of DLL clock divider is 20us */
-    if (u32ClkOnNum != 0)
-    {
-        SPIM_SET_DLL2_CLKON_NUM(spim, u32ClkOnNum);
-    }
-
-    if (u32TrimNum != 0)
-    {
-        SPIM_SET_DLL2_TRIM_NUM(spim, u32TrimNum);
-    }
-
-    /* The default value of DLLLKNUM is 0x07D0 when frequency of DLL reference clock
-       is 100 MHz and DLL lock time is 20us. */
-    if (u32LKNum != 0)
-    {
-        SPIM_SET_DLL1_LOCKK_VALID(spim, u32LKNum);
-    }
-
-    if (u32OVNum != 0)
-    {
-        SPIM_SET_DLL1_OUT_VALID(spim, u32OVNum);
-    }
 
     /* SPIM starts to send DLL reference clock to DLL circuit
        that the frequency is the same as the SPIM output bus clock. */
@@ -2548,419 +2498,6 @@ int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32ClkOnNum, uint32_t u32Tr
     while (SPIM_WAIT_DLL0_REFRESH(spim) != 0)
     {
         if (i32Timeout-- <= 0)
-        {
-            return SPIM_ERR_TIMEOUT;
-        }
-    }
-
-    return SPIM_OK;
-}
-
-//------------------------------------------------------------------------------
-// SPIM Hyper Define Function Prototypes
-//------------------------------------------------------------------------------
-/**
- * @brief   Set Hyper Bus Mode
- *
- * @param spim
- * @param u32Div Hyper bus device the setting values of DIVIDER are only 1 and 2.
- * @return int
- */
-void SPIM_InitHyper(SPIM_T *spim, uint32_t u32Div)
-{
-    SPIM_SET_OP_MODE(spim, SPIM_OP_HYPER_MODE); /* Enable SPIM Hyper Bus Mode */
-
-    /* Check if clock divider is 1 or 2 */
-    if (u32Div == 0)
-    {
-        u32Div = 1;
-    }
-    else if (u32Div > 2)
-    {
-        u32Div = 2;
-    }
-
-    SPIM_SET_CLOCK_DIVIDER(spim, u32Div);
-}
-
-/**
- * @brief Wait Hyper Bus interface is Idle
- *
- * @param spim
- * @return     SPIM_OK          SPIM operation OK.
- *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
- * @note       This function sets SPIM_ERR_TIMEOUT, if waiting Hyper Chip time-out.
- */
-static int32_t SPIM_IsCMDIdle(SPIM_T *spim)
-{
-    volatile int32_t i32TimeOutCnt = SPIM_TIMEOUT;
-
-    while (spim->HYPER_CMD != SPIM_HYPER_CMD_IDLE)
-    {
-        if (i32TimeOutCnt-- <= 0)
-        {
-            return SPIM_ERR_TIMEOUT;
-        }
-    }
-
-    return SPIM_OK;
-}
-
-/**
-  * @brief      Reset hyper chip function
-  * @param      spim
-  * @return     SPIM_OK          SPIM operation OK.
-  *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       if waiting Hyper Chip time-out.
-  */
-int32_t SPIM_ResetHyper(SPIM_T *spim)
-{
-    spim->HYPER_CMD = SPIM_HYPER_CMD_RESET;
-
-    if (SPIM_IsCMDIdle(spim) != SPIM_OK)
-    {
-        return SPIM_ERR_TIMEOUT;
-    }
-
-    return SPIM_OK;
-}
-
-/**
-  * @brief      Exit from Hybrid sleep and deep Power down function
-  * @param      spim
-  * @return     SPIM_OK          SPIM operation OK.
-  *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_ERR_TIMEOUT, if waiting Hyper Chip time-out.
-  */
-int32_t SPIM_ExitHSAndDPD(SPIM_T *spim)
-{
-    spim->HYPER_CMD = SPIM_HYPER_CMD_EXIT_HS_PD;
-
-    if (SPIM_IsCMDIdle(spim) != SPIM_OK)
-    {
-        return SPIM_ERR_TIMEOUT;
-    }
-
-    return SPIM_OK;
-}
-
-/**
-  * @brief      Read hyper chip register space
-  * @param      spim
-  * @param[in]  u32Addr  Address of hyper chip register space
-  *                 - \ref HYPER_CHIP_ID_REG0       : 0x0000_0000 = Identification Register 0
-  *                 - \ref HYPER_CHIP_ID_REG1       : 0x0000_0002 = Identification Register 1
-  *                 - \ref HYPER_CHIP_CONFIG_REG0   : 0x0000_1000 = Configuration Register 0
-  *                 - \ref HYPER_CHIP_CONFIG_REG1   : 0x0000_1002 = Configuration Register 1
-  * @return     SPIM_OK          SPIM operation OK.
-  *             SPIM_ERR_FAIL    SPIM operation Fail.
-  *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_ERR_TIMEOUT, if waiting Hyper Chip time-out.
-  */
-int32_t SPIM_ReadHyperRAMReg(SPIM_T *spim, uint32_t u32Addr)
-{
-    if ((u32Addr != HYPER_RAM_ID_REG0) &&
-            (u32Addr != HYPER_RAM_ID_REG1) &&
-            (u32Addr != HYPER_RAM_CONFIG_REG0) &&
-            (u32Addr != HYPER_RAM_CONFIG_REG1))
-    {
-        return SPIM_ERR_FAIL;
-    }
-
-    spim->HYPER_ADR = u32Addr;
-
-    spim->HYPER_CMD = SPIM_HYPER_CMD_READ_HRAM_REGISTER;
-
-    if (SPIM_IsCMDIdle(spim) != SPIM_OK)
-    {
-        return SPIM_ERR_TIMEOUT;
-    }
-
-    return (spim->HYPER_RDATA & 0xFFFF);
-}
-
-/**
-  * @brief      Write Hyper Chip register space
-  * @param      spim
-  * @param[in]  u32Addr  Address of Hyper Chip register space
-  *                 - \ref HYPER_CHIP_ID_REG0       : 0x0000_0000 = Identification Register 0
-  *                 - \ref HYPER_CHIP_ID_REG1       : 0x0000_0002 = Identification Register 1
-  *                 - \ref HYPER_CHIP_CONFIG_REG0   : 0x0000_1000 = Configuration Register 0
-  *                 - \ref HYPER_CHIP_CONFIG_REG1   : 0x0000_1002 = Configuration Register 1
-  * @param[in]
-  * @return     SPIM_OK          SPIM operation OK.
-  *             SPIM_ERR_FAIL    SPIM operation Fail.
-  *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_ERR_TIMEOUT, if waiting Hyper Chip time-out.
-  */
-int32_t SPIM_WriteHyperRAMReg(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Value)
-{
-    if ((u32Addr != HYPER_RAM_ID_REG0) &&
-            (u32Addr != HYPER_RAM_ID_REG1) &
-            (u32Addr != HYPER_RAM_CONFIG_REG0) &&
-            (u32Addr != HYPER_RAM_CONFIG_REG1))
-    {
-        return SPIM_ERR_FAIL;
-    }
-
-    SPIM_CLEAR_HYPER_WDATA(spim);
-
-    spim->HYPER_ADR = u32Addr;
-    spim->HYPER_WDATA = u32Value;
-
-    spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_HRAM_REGISTER;
-
-    if (SPIM_IsCMDIdle(spim) != SPIM_OK)
-    {
-        return SPIM_ERR_TIMEOUT;
-    }
-
-    return SPIM_OK;
-}
-
-/**
-  * @brief      Read 1 word from hyper chip space
-  * @param      spim
-  * @param[in]  u32Addr  Address of hyper chip space
-  * @return     The 16 bit data of hyper chip space.
-  * @note       This function sets SPIM_ERR_TIMEOUT if waiting Hyper Chip time-out.
-  */
-int16_t SPIM_Read1Word(SPIM_T *spim, uint32_t u32Addr)
-{
-    spim->HYPER_ADR = u32Addr;
-
-    spim->HYPER_CMD = SPIM_HYPER_CMD_READ_1_WORD;
-
-    if (SPIM_IsCMDIdle(spim) != SPIM_OK)
-    {
-        return SPIM_ERR_TIMEOUT;
-    }
-
-    return (spim->HYPER_RDATA & 0xFFFF);
-}
-
-/**
-  * @brief      Read 2 word from hyper chip space
-  * @param      spim
-  * @param[in]  u32Addr  Address of hyper chip space
-  * @return     The 32bit data of hyper chip space.
-  */
-int32_t SPIM_Read2Word(SPIM_T *spim, uint32_t u32Addr)
-{
-    spim->HYPER_ADR = u32Addr;
-
-    spim->HYPER_CMD = SPIM_HYPER_CMD_READ_2_WORD;
-
-    if (SPIM_IsCMDIdle(spim) != SPIM_OK)
-    {
-        return SPIM_ERR_TIMEOUT;
-    }
-
-    return (spim->HYPER_RDATA & 0xFFFFFFFF);
-}
-
-/**
-  * @brief      Write 1 byte to hyper chip space
-  * @param      spim
-  * @param[in]  u32Addr  Address of hyper chip space
-  * @param[in]  u8Data   8 bits data to be written to hyper chip space
-  * @return     SPIM_OK          SPIM operation OK.
-  *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_ERR_TIMEOUT, if waiting Hyper Chip time-out.
-  */
-int32_t SPIM_Write1Byte(SPIM_T *spim, uint32_t u32Addr, uint8_t u8Data)
-{
-    SPIM_CLEAR_HYPER_WDATA(spim);
-
-    spim->HYPER_ADR = u32Addr;
-    spim->HYPER_WDATA = u8Data;
-
-    spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_1_BYTE;
-
-    if (SPIM_IsCMDIdle(spim) != SPIM_OK)
-    {
-        return SPIM_ERR_TIMEOUT;
-    }
-
-    return SPIM_OK;
-}
-
-/**
-  * @brief      Write 2 bytes to Hyper Chip space
-  * @param      spim
-  * @param[in]  u32Addr  Address of Hyper Chip space
-  * @param[in]  u16Data  16 bits data to be written to Hyper Chip space
-  * @return     SPIM_OK          SPIM operation OK.
-  *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_ERR_TIMEOUT, if waiting Hyper Chip time-out.
-  */
-int32_t SPIM_Write2Byte(SPIM_T *spim, uint32_t u32Addr, uint16_t u16Data)
-{
-    SPIM_CLEAR_HYPER_WDATA(spim);
-
-    spim->HYPER_ADR = u32Addr;
-    spim->HYPER_WDATA = u16Data;
-
-    spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_2_BYTE;
-
-    if (SPIM_IsCMDIdle(spim) != SPIM_OK)
-    {
-        return SPIM_ERR_TIMEOUT;
-    }
-
-    return SPIM_OK;
-}
-
-/**
-  * @brief      Write 3 bytes to Hyper Chip space
-  * @param      spim
-  * @param[in]  u32Addr  Address of Hyper Chip space
-  * @param[in]  u32Data  24 bits data to be written to Hyper Chip space
-  * @return     SPIM_OK          SPIM operation OK.
-  *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_ERR_TIMEOUT, if waiting Hyper Chip time-out.
-  */
-int32_t SPIM_Write3Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data)
-{
-    SPIM_CLEAR_HYPER_WDATA(spim);
-
-    spim->HYPER_ADR = u32Addr;
-    spim->HYPER_WDATA = u32Data;
-
-    spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_3_BYTE;
-
-    if (SPIM_IsCMDIdle(spim) != SPIM_OK)
-    {
-        return SPIM_ERR_TIMEOUT;
-    }
-
-    return SPIM_OK;
-}
-
-/**
-  * @brief      Write 4 byte to hyper chip space
-  * @param      spim
-  * @param[in]  u32Addr  Address of hyper chip space
-  * @param[in]  u32Data  32 bits data to be written to hyper chip space
-  * @return     SPIM_OK          SPIM operation OK.
-  *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_ERR_TIMEOUT, if waiting Hyper Chip time-out.
-  */
-int32_t SPIM_Write4Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data)
-{
-    SPIM_CLEAR_HYPER_WDATA(spim);
-
-    spim->HYPER_ADR = u32Addr;
-    spim->HYPER_WDATA = u32Data;
-
-    spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_4_BYTE;
-
-    if (SPIM_IsCMDIdle(spim) != SPIM_OK)
-    {
-        return SPIM_ERR_TIMEOUT;
-    }
-
-    return SPIM_OK;
-}
-
-/**
-  * @brief      Write data to HyperBus Module.
-  * @param      u32Addr     Start address to write.
-  * @param      pu8WrBuf    Transmit buffer.
-  * @param      u32NTx      Number of bytes to write.
-  * @return     SPIM_OK          SPIM operation OK.
-  *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_ERR_TIMEOUT, if waiting Hyper Chip time-out.
-  */
-int32_t SPIM_DMAWrite_Hyper(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8WrBuf, uint32_t u32NTx)
-{
-    if (pu8WrBuf == NULL)
-    {
-        return SPIM_ERR_FAIL;
-    }
-
-    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEWRITE);  /* Switch to DMA Write mode.   */
-
-    spim->SRAMADDR = (uint32_t) pu8WrBuf;                /* SRAM u32Address.  */
-    spim->DMACNT = u32NTx;                              /* Transfer length.  */
-    spim->FADDR = u32Addr;                              /* Flash u32Address. */
-
-    if (SPIM_WaitSPIMENDone(spim, 1) != SPIM_OK)
-    {
-        return SPIM_ERR_TIMEOUT;
-    }
-
-    return SPIM_OK;
-}
-
-/**
-  * @brief      Read data from HyperBus Module.
-  * @param      u32Addr     Start address to read.
-  * @param      pu8RdBuf    Receive buffer.
-  * @param      u32NRx      Number of bytes to read.
-  * @return     SPIM_OK          SPIM operation OK.
-  *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_ERR_TIMEOUT, if waiting Hyper Chip time-out.
-  */
-int32_t SPIM_DMARead_Hyper(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8RdBuf, uint32_t u32NRx)
-{
-    if (pu8RdBuf == NULL)
-    {
-        return SPIM_ERR_FAIL;
-    }
-
-    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEREAD);   /* Switch to DMA Write mode.   */
-
-    spim->SRAMADDR = (uint32_t) pu8RdBuf;                /* SRAM u32Address. */
-    spim->DMACNT = u32NRx;                              /* Transfer length. */
-    spim->FADDR = u32Addr;                              /* Flash u32Address. */
-
-    if (SPIM_WaitSPIMENDone(spim, 1) != SPIM_OK)
-    {
-        return SPIM_ERR_TIMEOUT;
-    }
-
-    return SPIM_OK;
-}
-
-/**
-  * @brief      SPIM Hyper Mode Enter DMM Mode
-  * @param      spim
-  * @return     None.
-  * @note       This function sets SPIM_ERR_TIMEOUT if waiting Hyper Chip time-out.
-  */
-void SPIM_EnterDirectMapMode_Hyper(SPIM_T *spim)
-{
-    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_DIRECTMAP);  /* Switch to DMA Write mode.   */
-}
-
-/**
-  * @brief      SPIM Hyper Mode Exit DMM Mode
-  * @param      spim
-  * @return     None.
-  * @note       This function sets SPIM_ERR_TIMEOUT if waiting Hyper Chip time-out.
-  */
-void SPIM_ExitDirectMapMode_Hyper(SPIM_T *spim)
-{
-    SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_IO);       /* Switch back to Normal mode.  */
-}
-
-/**
-  * @brief      Wait Hyper Direct Map Mode Read/Write Done.
-  * @param      spim
-  * @return     SPIM_OK          SPIM operation OK.
-  *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_ERR_TIMEOUT, if waiting Hyper Chip time-out.
-  */
-int32_t SPIM_IsDMMDone_Hyper(SPIM_T *spim)
-{
-    volatile int32_t u32TimeOutCount = SPIM_TIMEOUT;
-
-    SPIM_ENABLE_DMM_HYPDONE(spim);       /* HyperBus DMM Mode Done.  */
-
-    while (SPIM_GET_DMM_HYPDONE(spim))
-    {
-        if (--u32TimeOutCount <= 0)
         {
             return SPIM_ERR_TIMEOUT;
         }
