@@ -196,7 +196,7 @@ int SPIM_Tests_HyperInit(void)
     //CU_ASSERT(SPIM_GET_CLOCK_DIVIDER(pSPIMModule) == 1);
 
     //SPIM Def. Enable Cipher, First Disable the test.
-    SPIM_DISABLE_CIPHER(pSPIMModule);
+    SPIM_HYPER_DISABLE_CIPHER(pSPIMModule);
     //CU_ASSERT_TRUE((pSPIMModule->CTL0 & SPIM_CTL0_CIPHOFF_Msk) >> SPIM_CTL0_CIPHOFF_Pos);
 
     SPIM_Hyper_DefaultConfig(pSPIMModule, 780, 7, 7);
@@ -211,7 +211,7 @@ int SPIM_Tests_HyperClean(void)
     return 0;
 }
 
-void SPIM_HYPER_EraseHRAM(SPIM_T *pSPIMx, uint32_t u32StartAddr, uint32_t u32EraseSize)
+void SPIM_EraseHyperRAM(SPIM_T *pSPIMx, uint32_t u32StartAddr, uint32_t u32EraseSize)
 {
     uint16_t u16Data = 0;
     uint32_t u32i = 0;
@@ -270,7 +270,7 @@ void SPIM_HyperDMM_Func()
         /*------------------------------------------------------*/
         /*  Erase page and verify                               */
         /*------------------------------------------------------*/
-        SPIM_HYPER_EraseHRAM(pSPIMx, addr, addr + TEST_BUFF_SIZE);
+        SPIM_EraseHyperRAM(pSPIMx, addr, addr + TEST_BUFF_SIZE);
 
         popDat(u8TstBuf1, TEST_BUFF_SIZE);
 
@@ -357,7 +357,7 @@ void SPIM_HyperDMA_Func()
         /*  Erase page and verify                               */
         /*------------------------------------------------------*/
         // Erase accessed address range.
-        SPIM_HYPER_EraseHRAM(pSPIMx, offset, TEST_BUFF_SIZE);
+        SPIM_EraseHyperRAM(pSPIMx, offset, TEST_BUFF_SIZE);
         popDat(u8TstBuf1, TEST_BUFF_SIZE);
 
         SPIM_HYPER_DMAWrite(pSPIMx, offset, u8TstBuf1, TEST_BUFF_SIZE);
@@ -386,17 +386,12 @@ void TrainingDllLatency()
     uint32_t u32SrcAddr = 0;
     uint32_t u32TestSize = 32;
     SPIM_T *pSPIMx = NULL;
-#if defined (__ARMCC_VERSION)
     __attribute__((aligned(32))) uint8_t u8TstBuf1[32] = {0};
     __attribute__((aligned(32))) uint8_t u8TstBuf2[32] = {0};
-#else
-    __align(32) uint8_t u8TstBuf1[32] = {0};
-    __align(32) uint8_t u8TstBuf2[32] = {0};
-#endif //__ARMCC_VERSION
 
     pSPIMx = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
-    SPIM_HYPER_EraseHRAM(pSPIMx, u32SrcAddr, u32TestSize);
+    SPIM_EraseHyperRAM(pSPIMx, u32SrcAddr, u32TestSize);
 
     popDat(&u8TstBuf1[0], u32TestSize);
 
@@ -405,10 +400,11 @@ void TrainingDllLatency()
         SPIM_HYPER_Write1Byte(pSPIMx, u32i, u8TstBuf1[u32i]);
     }
 
-    for (u8RdDelay = 0; u8RdDelay <= SPIM_MAX_DLL_LATENCY; u8RdDelay++)
+    for (u8RdDelay = 0; u8RdDelay <= SPIM_HYPER_MAX_LATENCY; u8RdDelay++)
     {
-        memset(u8TstBuf2, 0, u32TestSize);
         SPIM_HYPER_CtrlDLLDelayTime(pSPIMx, u8RdDelay);
+
+        memset(u8TstBuf2, 0, u32TestSize);
 
         SPIM_HYPER_DMARead(pSPIMx, u32SrcAddr, u8TstBuf2, u32TestSize);
 

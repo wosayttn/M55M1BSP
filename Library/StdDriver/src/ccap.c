@@ -29,26 +29,25 @@
  *             - HSP     Sensor Hsync Polarity. It should be either \ref CCAP_PAR_HSP_LOW or \ref CCAP_PAR_HSP_HIGH
  *             - PCLK    Sensor Pixel Clock Polarity. It should be either \ref CCAP_PAR_PCLKP_LOW or \ref CCAP_PAR_PCLKP_HIGH
  *             - SNRTYPE Sensor Input Type. It should be either \ref CCAP_PAR_SENTYPE_CCIR601 or \ref CCAP_PAR_SENTYPE_CCIR656
- * @param[in]  u32InFormat  Image Data Output Format. It should be
- *             - INFMT   Sensor Input Data Format. It should be one of the following settings
- *                       - \ref CCAP_PAR_INFMT_YUV422
- *                       - \ref CCAP_PAR_INFMT_RGB565
- *                       - \ref CCAP_PAR_INFMT_RGB888
- *             - DATORD  Sensor Input Data Order. It should be one of the following settings
- *                       - \ref CCAP_PAR_INDATORD_YUYV
- *                       - \ref CCAP_PAR_INDATORD_YVYU
- *                       - \ref CCAP_PAR_INDATORD_UYVY
- *                       - \ref CCAP_PAR_INDATORD_VYUY
- *                       - \ref CCAP_PAR_INDATORD_RGGB
- *                       - \ref CCAP_PAR_INDATORD_BGGR
- *                       - \ref CCAP_PAR_INDATORD_GBRG
- *                       - \ref CCAP_PAR_INDATORD_GRBG
- *                       - \ref CCAP_PAR_INDATORD_RGB888_RGB
- *                       - \ref CCAP_PAR_INDATORD_RGB888_RBG
- *                       - \ref CCAP_PAR_INDATORD_RGB888_GRB
- *                       - \ref CCAP_PAR_INDATORD_RGB888_GBR
- *                       - \ref CCAP_PAR_INDATORD_RGB888_BRG
- *                       - \ref CCAP_PAR_INDATORD_RGB888_BGR
+ * @param[in]  u32InFormat  Image Data Input Format. It should be (INFMT | INDATORD)
+ *             - INFMT      Sensor Input Data Format.
+ *             - INDATORD   Sensor Input Data Order.
+ *              | INFMT                      | INDATORD                          |
+ *              | :-----------------         | :---------------------------------|
+ *              |\ref CCAP_PAR_INFMT_YUV422  |\ref CCAP_PAR_INDATORD_YUYV        |
+ *              |\ref CCAP_PAR_INFMT_YUV422  |\ref CCAP_PAR_INDATORD_YVYU        |
+ *              |\ref CCAP_PAR_INFMT_YUV422  |\ref CCAP_PAR_INDATORD_UYVY        |
+ *              |\ref CCAP_PAR_INFMT_YUV422  |\ref CCAP_PAR_INDATORD_VYUY        |
+ *              |\ref CCAP_PAR_INFMT_RGB565  |\ref CCAP_PAR_INDATORD_RGGB        |
+ *              |\ref CCAP_PAR_INFMT_RGB565  |\ref CCAP_PAR_INDATORD_BGGR        |
+ *              |\ref CCAP_PAR_INFMT_RGB565  |\ref CCAP_PAR_INDATORD_GBRG        |
+ *              |\ref CCAP_PAR_INFMT_RGB565  |\ref CCAP_PAR_INDATORD_GRBG        |
+ *              |\ref CCAP_PAR_INFMT_RGB888  |\ref CCAP_PAR_INDATORD_RGB888_RGB  |
+ *              |\ref CCAP_PAR_INFMT_RGB888  |\ref CCAP_PAR_INDATORD_RGB888_RBG  |
+ *              |\ref CCAP_PAR_INFMT_RGB888  |\ref CCAP_PAR_INDATORD_RGB888_GRB  |
+ *              |\ref CCAP_PAR_INFMT_RGB888  |\ref CCAP_PAR_INDATORD_RGB888_GBR  |
+ *              |\ref CCAP_PAR_INFMT_RGB888  |\ref CCAP_PAR_INDATORD_RGB888_BRG  |
+ *              |\ref CCAP_PAR_INFMT_RGB888  |\ref CCAP_PAR_INDATORD_RGB888_BGR  |
  * @param[in]  u32OutFormat Image Data Output Format. It should be
  *             - OUTFMT  Image Data Format Output to System Memory. It should be one of the following settings
  *                       - \ref CCAP_PAR_OUTFMT_YUV422
@@ -56,7 +55,13 @@
  *                       - \ref CCAP_PAR_OUTFMT_RGB555
  *                       - \ref CCAP_PAR_OUTFMT_RGB565
  *                       - \ref CCAP_PAR_OUTFMT_RGB888_U8
+ *                       - \ref CCAP_PAR_OUTFMT_BGR888_U8
  *                       - \ref CCAP_PAR_OUTFMT_RGB888_I8
+ *                       - \ref CCAP_PAR_OUTFMT_BGR888_I8
+ *                       - \ref CCAP_PAR_OUTFMT_ARGB888_U8
+ *                       - \ref CCAP_PAR_OUTFMT_BGRA888_U8
+ *                       - \ref CCAP_PAR_OUTFMT_ARGB888_I8
+ *                       - \ref CCAP_PAR_OUTFMT_BGRA888_I8
  *
  * @return     None
  *
@@ -83,9 +88,9 @@ void CCAP_Open(uint32_t u32SensorProp, uint32_t u32InFormat, uint32_t u32OutForm
  * @brief      Set Cropping Window Starting Address and Size
  *
  * @param[in]  u32VStart: Cropping Window Vertical Starting Address. It should be 0 ~ 0x7FF.
- * @param[in]  u32HStart: Cropping Window Horizontal Starting Address. It should be 0 ~ 0x7FF.
+ * @param[in]  u32HStart: Cropping Window Horizontal Starting Address. It should be 0 ~ 0xFFF.
  * @param[in]  u32Height: Cropping Window Height. It should be 0 ~ 0x7FF.
- * @param[in]  u32Width:  Cropping Window Width. It should be 0 ~ 0x7FF.
+ * @param[in]  u32Width:  Cropping Window Width. It should be 0 ~ 0xFFF.
  *
  * @return     None
  *
@@ -97,149 +102,7 @@ void CCAP_SetCroppingWindow(uint32_t u32VStart, uint32_t u32HStart, uint32_t u32
                  | (((u32VStart << 16) | u32HStart));
 
     CCAP->CWS = (CCAP->CWS & ~(CCAP_CWS_CWH_Msk | CCAP_CWS_CWW_Msk))
-                | ((u32Height << 16)| u32Width);
-}
-
-/**
- * @brief      Set System Memory Packet Base Address
- *
- * @param[in]  u32Address: Set CCAP_PKTBA0 register. It should be 0x0 ~ 0xFFFFFFFF.
- *
- * @return     None
- *
- * @details    This function is used to set System Memory Packet Base Address 0 Register.
- */
-void CCAP_SetPacketBuf(uint32_t u32Address)
-{
-    CCAP->PKTBA0 = u32Address;
-    CCAP->CTL |= CCAP_CTL_UPDATE_Msk;
-}
-
-/**
- * @brief      Close Camera Capture Interface
- *
- * @param      None
- *
- * @return     None
- *
- * @details    This function is used to disable Camera Capture Interface.
- */
-void CCAP_Close(void)
-{
-    CCAP->CTL &= ~CCAP_CTL_CCAPEN;
-}
-
-/**
- * @brief      Enable CCAP Interrupt
- *
- * @param[in]  u32IntMask  Interrupt settings. It could be
- *                         - \ref CCAP_INTEN_VIEN_Msk
- *                         - \ref CCAP_INTEN_MEIEN_Msk
- *                         - \ref CCAP_INTEN_ADDRMIEN_Msk
- *                         - \ref CCAP_INTEN_MDIEN_Msk
- *
- * @return     None
- *
- * @details    This function is used to enable Video Frame End Interrupt,
- *             Bus Master Transfer Error Interrupt and Memory Address Match Interrupt.
- */
-void CCAP_EnableInt(uint32_t u32IntMask)
-{
-    CCAP->INTEN = (CCAP->INTEN & ~(CCAP_INTEN_VIEN_Msk | CCAP_INTEN_MEIEN_Msk | CCAP_INTEN_ADDRMIEN_Msk | CCAP_INTEN_MDIEN_Msk) )
-                | u32IntMask;
-}
-
-/**
- * @brief      Disable CCAP Interrupt
- *
- * @param[in]  u32IntMask  Interrupt settings. It could be
- *                         - \ref CCAP_INTEN_VIEN_Msk
- *                         - \ref CCAP_INTEN_MEIEN_Msk
- *                         - \ref CCAP_INTEN_ADDRMIEN_Msk
- *                         - \ref CCAP_INTEN_MDIEN_Msk
- *
- * @return     None
- *
- * @details    This function is used to disable Video Frame End Interrupt,
- *             Bus Master Transfer Error Interrupt and Memory Address Match Interrupt.
- */
-void CCAP_DisableInt(uint32_t u32IntMask)
-{
-    CCAP->INTEN = (CCAP->INTEN & ~(u32IntMask));
-}
-
-/**
- * @brief      Enable Monochrome CMOS Sensor
- *
- * @param[in]  u32Interface  Data I/O interface setting. It could be
- *                           - \ref CCAP_CTL_MY8_MY4
- *                           - \ref CCAP_CTL_MY8_MY4_SWAP
- *                           - \ref CCAP_CTL_MY8_MY8
- * @return     None
- *
- * @details    This function is used to select monochrome CMOS sensor and set data width.
- */
-void CCAP_EnableMono(uint32_t u32Interface)
-{
-    CCAP->CTL = (CCAP->CTL & ~(CCAP_CTL_MY8_MY4_Msk | CCAP_CTL_MY4_SWAP_Msk)) | CCAP_CTL_MONO_Msk | u32Interface;
-}
-
-/**
- * @brief      Disable Monochrome CMOS Sensor
- *
- * @param      None
- *
- * @return     None
- *
- * @details    This function is used to disable monochrome CMOS sensor selection.
- */
-void CCAP_DisableMono(void)
-{
-    CCAP->CTL &= ~CCAP_CTL_MONO_Msk;
-}
-
-/**
- * @brief      Enable Luminance 8-bit Y to 1-bit Y Conversion
- *
- * @param[in]  u32th   Luminance Y8 to Y1 Threshold Value. It should be 0 ~ 255.
- *
- * @return     None
- *
- * @details    This function is used to enable luminance Y8 to Y1 function and set its threshold value.
- */
-void CCAP_EnableLumaYOne(uint32_t u32Threshold)
-{
-    CCAP->CTL |= CCAP_CTL_Luma_Y_One_Msk;
-    CCAP->LUMA_Y1_THD = u32Threshold & 0xff;
-}
-
-/**
- * @brief      Disable Luminance 8-bit Y to 1-bit Y Conversion
- *
- * @param      None
- *
- * @return     None
- *
- * @details    This function is used to disable luminance Y8 to Y1 function.
- *
- */
-void CCAP_DisableLumaYOne(void)
-{
-    CCAP->CTL &= ~CCAP_CTL_Luma_Y_One_Msk;
-}
-
-/**
- * @brief      Start Camera Capture Interface
- *
- * @param      None
- *
- * @return     None
- *
- * @details    This function is used to start Camera Capture Interface function.
- */
-void CCAP_Start(void)
-{
-    CCAP->CTL |= CCAP_CTL_CCAPEN;
+                | ((u32Height << 16) | u32Width);
 }
 
 /**
@@ -256,16 +119,16 @@ void CCAP_Start(void)
  */
 int32_t CCAP_Stop(uint32_t u32FrameComplete)
 {
-    uint32_t u32TimeOutCnt = SystemCoreClock<<1;  /* 2 second */
+    uint32_t u32TimeOutCnt = SystemCoreClock << 1; /* 2 second */
 
     if (u32FrameComplete == FALSE)
         CCAP->CTL &= ~CCAP_CTL_CCAPEN;
     else
     {
         CCAP->CTL |= CCAP_CTL_SHUTTER_Msk;
-        while(!CCAP_IS_STOPPED())
+        while (!CCAP_IS_STOPPED())
         {
-            if(--u32TimeOutCnt == 0) return CCAP_ERR_TIMEOUT;
+            if (--u32TimeOutCnt == 0) return CCAP_ERR_TIMEOUT;
         }
     }
 
@@ -289,21 +152,21 @@ void CCAP_SetPacketScaling(uint32_t u32VNumerator, uint32_t u32VDenominator, uin
     uint32_t u32NumeratorL, u32NumeratorH;
     uint32_t u32DenominatorL, u32DenominatorH;
 
-    u32NumeratorL = u32VNumerator&0xFF;
-    u32NumeratorH = u32VNumerator>>8;
-    u32DenominatorL = u32VDenominator&0xFF;
-    u32DenominatorH = u32VDenominator>>8;
+    u32NumeratorL = u32VNumerator & 0xFF;
+    u32NumeratorH = u32VNumerator >> 8;
+    u32DenominatorL = u32VDenominator & 0xFF;
+    u32DenominatorH = u32VDenominator >> 8;
     CCAP->PKTSL = (CCAP->PKTSL & ~(CCAP_PKTSL_PKTSVNL_Msk | CCAP_PKTSL_PKTSVML_Msk))
-                  | ((u32NumeratorL << 24)| (u32DenominatorL << 16));
+                  | ((u32NumeratorL << 24) | (u32DenominatorL << 16));
     CCAP->PKTSM = (CCAP->PKTSM & ~(CCAP_PKTSM_PKTSVNH_Msk | CCAP_PKTSM_PKTSVMH_Msk))
                   | ((u32NumeratorH << 24) | (u32DenominatorH << 16));
 
-    u32NumeratorL = u32HNumerator&0xFF;
-    u32NumeratorH = u32HNumerator>>8;
-    u32DenominatorL = u32HDenominator&0xFF;
-    u32DenominatorH = u32HDenominator>>8;
+    u32NumeratorL = u32HNumerator & 0xFF;
+    u32NumeratorH = u32HNumerator >> 8;
+    u32DenominatorL = u32HDenominator & 0xFF;
+    u32DenominatorH = u32HDenominator >> 8;
     CCAP->PKTSL = (CCAP->PKTSL & ~(CCAP_PKTSL_PKTSHNL_Msk | CCAP_PKTSL_PKTSHML_Msk))
-                  | ((u32NumeratorL << 8)| u32DenominatorL);
+                  | ((u32NumeratorL << 8) | u32DenominatorL);
     CCAP->PKTSM = (CCAP->PKTSM & ~(CCAP_PKTSM_PKTSHNH_Msk | CCAP_PKTSM_PKTSHMH_Msk))
                   | ((u32NumeratorH << 8) | u32DenominatorH);
 }
@@ -317,46 +180,54 @@ void CCAP_SetPacketScaling(uint32_t u32VNumerator, uint32_t u32VDenominator, uin
  *
  * @details   This function is used to set Packet Frame Output Pixel Stride Width.
  */
-void CCAP_SetPacketStride(uint32_t u32Stride )
+void CCAP_SetPacketStride(uint32_t u32Stride)
 {
     CCAP->STRIDE = (CCAP->STRIDE & ~CCAP_STRIDE_PKTSTRIDE_Msk) | u32Stride;
 }
 
 
 /**
- * @brief      Set Motion Detection Window
+ * @brief      Set Motion Detection region
  *
- * @param[in]  u32Y:      Motion Detection Window Vertical Starting Address. It should be 0 ~ 239.
- * @param[in]  u32X:      Motion Detection Window Horizontal Starting Address. It should be 0 ~ 319.
- * @param[in]  u32Height: Motion Detection Window Height. It should be 0 ~ 240.
- * @param[in]  u32Width:  Motion Detection Window Width. It should be 0 ~ 320.
- *
- * @return     None
+ * @param[in]  u32Y             Motion Detection region vertical start address. It could be 0 ~ 239.
+ * @param[in]  u32X             Motion Detection region horizontal start address. It could be 0 ~ 319.
+ * @param[in]  u32Height        Motion Detection region height. It could be 0 ~ 240.
+ * @param[in]  u32Width         Motion Detection region width. It could be 0 ~ 320.
+ * @param[in]  u32Sensitivity   Motion detection sensitivity. It could be 0 ~ 100.
+ *                              0:   Least sensitive
+ *                              100: Most sensitive
+ * @return     CCAP_OK                      Success
+ *             CCAP_ERR_INVALID_MD_REGION   Invalid motion detection region
+ *             CCAP_ERR_INVALID_PARAM       Invalid sensitivity value
  *
  * @details    This function is used to set cropping window starting address and size.
  */
-int32_t CCAP_SetMDWindow(uint32_t u32Y, uint32_t u32X, uint32_t u32Height, uint32_t u32Width)
+int32_t CCAP_SetMD_RegionSensitivity(uint32_t u32Y, uint32_t u32X, uint32_t u32Height, uint32_t u32Width, uint32_t u32Sensitivity)
 {
     int32_t  x, y;
     uint32_t u32WinStartX, u32WinStartY, u32WinEndX, u32WinEndY;
-    uint32_t u32WinIdx;
+    uint32_t u32WinIdx, u32Threshold;
 
-    if ((u32Y + u32Height) > 240 || (u32X + u32Width) > 320)
-        return CCAP_ERR_INVALID_MD_WINDOW;
+    if ((u32Y + u32Height) > CCAP_MD_HEIGHT || (u32X + u32Width) > CCAP_MD_WIDTH)
+        return CCAP_ERR_INVALID_MD_REGION;
 
     if (u32Height == 0 || u32Width == 0)
-        return CCAP_ERR_INVALID_MD_WINDOW;
+        return CCAP_ERR_INVALID_MD_REGION;
+
+    if (u32Sensitivity > 100)
+        return CCAP_ERR_INVALID_PARAM;
+
+    u32Threshold = CCAP_MD_MAX_WINDOW_SAD - ((u32Sensitivity * CCAP_MD_MAX_WINDOW_SAD) / 100);
 
     for (x = 0; x < 4; x++)
     {
         for (y = 0; y < 4; y++)
         {
             u32WinIdx    = x + y * 4;
-            u32WinStartX = x * CCAP_MD_CELL_WIDHT;
+            u32WinStartX = x * CCAP_MD_CELL_WIDTH;
             u32WinStartY = y * CCAP_MD_CELL_HEIGHT;
-            u32WinEndX   = u32WinStartX + CCAP_MD_CELL_WIDHT;
+            u32WinEndX   = u32WinStartX + CCAP_MD_CELL_WIDTH;
             u32WinEndY   = u32WinStartY + CCAP_MD_CELL_HEIGHT;
-            //printf("(%d, %d) - (%d, %d)\n", u32WinStartX, u32WinStartY, u32WinEndX, u32WinEndY);
 
             if ((u32X >= u32WinEndX) || (u32Y >= u32WinEndY))
                 continue;
@@ -366,7 +237,7 @@ int32_t CCAP_SetMDWindow(uint32_t u32Y, uint32_t u32X, uint32_t u32Height, uint3
                 if ((u32Y >= u32WinStartY) && (u32Y < u32WinEndY))
                 {
                     CCAP->MDCTL |= (1 << u32WinIdx);
-                    //printf("11 (%d, %d) - (%d, %d)\n", u32WinStartX, u32WinStartY, u32WinEndX, u32WinEndY);
+                    CCAP_SET_MD_WIN_THRESHOLD(u32WinIdx, u32Threshold);
                     continue;
                 }
             }
@@ -376,7 +247,7 @@ int32_t CCAP_SetMDWindow(uint32_t u32Y, uint32_t u32X, uint32_t u32Height, uint3
                 if (((u32X + u32Width) > u32WinStartX) && ((u32Y + u32Height) > u32WinStartY))
                 {
                     CCAP->MDCTL |= (1 << u32WinIdx);
-                    //printf("22 (%d, %d) - (%d, %d)\n", u32WinStartX, u32WinStartY, u32WinEndX, u32WinEndY);
+                    CCAP_SET_MD_WIN_THRESHOLD(u32WinIdx, u32Threshold);
                 }
             }
         }
@@ -386,55 +257,19 @@ int32_t CCAP_SetMDWindow(uint32_t u32Y, uint32_t u32X, uint32_t u32Height, uint3
 }
 
 /**
- * @brief     Set CCAP Motion Detection Window Threshold for sensitivity level of single window
+ * @brief     Set CCAP motion detection total sensitivity level
  *
- * @param[in] u32WinBitmask        Motion Detection Window Bitmask. It could be 0x0 ~ 0xFFFF.
- * @param[in] u32WeightNumerator   Numerator of Motion Detection Window Weight.
- * @param[in] u32WeightDenominator Denominator of Motion Detection Window Weight. It could not be zero.
- *                                 Window weight = Numerator / Denominator.
- *                                 Window weight is 1: Most sensitive
- *                                 Window weight is 0: Less sensitive.
- * @return    None
- *
- * @details   Set Camera Capture Interface motion detection total threshold
+ * @param[in]  u32Sensitivity   Motion detection sensitivity. It could be 0 ~ 100.
+ *                              0:   Least sensitive
+ *                              100: Most sensitive
+ * @return    CCAP_OK                   Success
+ *            CCAP_ERR_INVALID_PARAM    Invalid parameter
+ * @details   Set Camera Capture Interface motion detection total threshold.
+ *            If total SAD > total threshold, CCAP_INTSTS_MDINTF_MODE1_Msk is raised.
  */
-int32_t CCAP_SetMDWinWeight(uint32_t u32WinBitmask, uint32_t u32WeightNumerator, uint32_t u32WeightDenominator)
+int32_t CCAP_SetMD_GlobalSensitivity(uint32_t u32Sensitivity)
 {
-    int32_t i;
-
-    if (u32WeightDenominator == 0)
-        return CCAP_ERR_INVALID_PARAM;
-
-    for (i = 0; i < CCAP_MD_WINDOW_CNT; i++)
-    {
-        if (u32WinBitmask & (1 << i))
-            CCAP_SET_MD_WIN_THRESHOLD(i, CCAP_MD_MAX_WINDOW_SAD - ((u32WeightNumerator /u32WeightDenominator) * CCAP_MD_MAX_WINDOW_SAD));
-    }
-
-    return CCAP_OK;
-}
-
-/**
- * @brief     Set CCAP Motion Detection Window Threshold for sensitivity level of single window
- *
- * @param[in] u32WinBitmask        Motion Detection Window Bitmask. It could be 0x0 ~ 0xFFFF.
- * @param[in] u32WeightNumerator   Numerator of Motion Detection Window Weight.
- * @param[in] u32WeightDenominator Denominator of Motion Detection Window Weight. It could not be zero.
- *                                 Window weight = Numerator / Denominator.
- *                                 Window weight is 1: Most sensitive
- *                                 Window weight is 0: Less sensitive.
- * @return    None
- *
- * @details   Set Camera Capture Interface motion detection total threshold
- */
-int32_t CCAP_SetMDTotalWeight(uint32_t u32WeightNumerator, uint32_t u32WeightDenominator)
-{
-    int32_t i;
-
-    if (u32WeightDenominator == 0)
-        return CCAP_ERR_INVALID_PARAM;
-
-    CCAP_SET_MD_TOTAL_THRESHOLD(CCAP_MD_MAX_TOTAL_SAD - ((u32WeightNumerator /u32WeightDenominator) * CCAP_MD_MAX_TOTAL_SAD));
+    CCAP_SET_MD_TOTAL_THRESHOLD(CCAP_MD_MAX_TOTAL_SAD - ((u32Sensitivity * CCAP_MD_MAX_TOTAL_SAD) / 100));
 
     return CCAP_OK;
 }

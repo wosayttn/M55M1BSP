@@ -475,6 +475,7 @@ extern "C"
 
 /* Octal SPI flash and hyper device training DLL API */
 int32_t SPIM_HYPER_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum);
+uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim);
 
 /* HyperRAM */
 int32_t SPIM_HYPER_ExitHSAndDPD(SPIM_T *spim);

@@ -110,8 +110,10 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /* CCAP Motion Detection definitions                                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
-#define CCAP_MD_CELL_WIDHT              (80ul)
+#define CCAP_MD_CELL_WIDTH              (80ul)
 #define CCAP_MD_CELL_HEIGHT             (60ul)
+#define CCAP_MD_WIDTH                   (320ul)
+#define CCAP_MD_HEIGHT                  (240ul)
 #define CCAP_MD_WINDOW_CNT              (16ul)
 #define CCAP_MD_MAX_WINDOW_SAD          (0x12AD4ul)
 #define CCAP_MD_MAX_TOTAL_SAD           (CCAP_MD_MAX_WINDOW_SAD * CCAP_MD_WINDOW_CNT)
@@ -122,7 +124,7 @@ extern "C"
 #define CCAP_OK                         ( 0L)   /*!< CCAP operation OK                         */
 #define CCAP_ERR_FAIL                   (-1L)   /*!< CCAP operation failed                     */
 #define CCAP_ERR_TIMEOUT                (-2L)   /*!< CCAP operation abort due to timeout error */
-#define CCAP_ERR_INVALID_MD_WINDOW      (-3L)   /*!< CCAP invalid motion detection window      */
+#define CCAP_ERR_INVALID_MD_REGION      (-3L)   /*!< CCAP invalid motion detection region      */
 #define CCAP_ERR_INVALID_PARAM          (-4L)   /*!< CCAP invalid parameter                    */
 
 /** @} end of group CCAP_EXPORTED_CONSTANTS */
@@ -153,8 +155,6 @@ extern "C"
  *                          - \ref CCAP_INTSTS_MDINTF_MODE1_Msk
  *                          - \ref CCAP_INTSTS_MDINTF_MODE2_Msk
  *
- * @return    None
- *
  * @details   Clear Camera Capture Interface interrupt flag
  */
 #define CCAP_CLR_INT_FLAG(u32IntMask) (CCAP->INTSTS |= (u32IntMask))
@@ -179,7 +179,7 @@ extern "C"
  *                                  Bit n is 1 = Motion Detection Window n is enabled.
  *                                  (0,  0)----(80,  0)----(160,  0)----(240,  0)---------
  *                                    |           |            |            |            |
- *                                    |     0     |      1     |      2     |      3     |
+ *                                    |     W0     |      W1     |      W2     |      W3     |
  *                                    |           |            |            |            |
  *                                  (0, 60)----(80, 60)----(160, 60)----(240, 60)---------
  *                                    |           |            |            |            |
@@ -195,8 +195,6 @@ extern "C"
  *                                    |           |            |            |            |
  *                                    -----------------------------------------------(319,239)
  *
- * @return    None
- *
  * @details   Enable Camera Capture Interface motion detection window
  */
 #define CCAP_ENABLE_MD_WINDOW(u32WindowMsk) (CCAP->MDCTL = (CCAP->MDCTL & ~0xFFFF) | (u32WindowMsk))
@@ -206,8 +204,6 @@ extern "C"
  *
  * @param     u32WindowMsk          Motion Detection Window Bitmask
  *                                  It could be 0x0 ~ 0xFFFF.
- *
- * @return    None
  *
  * @details   Disable Camera Capture Interface motion detection window
  */
@@ -222,7 +218,6 @@ extern "C"
  *                                  - \ref CCAP_MD_TRIG_TTMR0
  *                                  - \ref CCAP_MD_TRIG_TTMR1
  * @param[in] bWakeUp               CCAP interrupt signal will generate a wake-up trigger event to CPU
- * @return    None
  *
  * @details   Set Camera Capture Interface motion detection trigger source
  *
@@ -235,8 +230,6 @@ extern "C"
  *
  * @param[in] u32TotalThreshold     Motion Detection Total Threshold
  *                                  It could be 0 (Most sensitive) ~ 0x12AD40 (Mode 1 interrupt is disabled).
- *
- * @return    None
  *
  * @details   Set Camera Capture Interface motion detection total threshold
  *            When Motion Detection Total SAD (Sum of Absolute Differences) (CCAP_MDTSAD) is greater than
@@ -252,14 +245,13 @@ extern "C"
  * @param[in] u32WinOverflowCnt     Motion Detection Total Window Overflow Count Threshold
  *                                  It could be 0x0 (Most sensitive) ~ 0xF (Less sensitive).
  *
- * @return    None
  *
  * @details   Set motion detection window overflow count threshold
  *            When Motion Detection Window Overflow counter (CCAP_MDWOC) is greater than
  *            Motion Detection Window Overflow Counter Threshold (CCAP_MDWOCTH),
  *            CCAP will trigger Motion Detection Mode 2 interrupt.
  */
-#define CCAP_SET_MD_WIN_OVERFLOW_THRESHOLD(u32WinOverflowCnt) (CCAP->MDWOCTH = (u32WinOverflowCnt))
+#define CCAP_SET_MD_OVERFLOW_WIN_THRESHOLD(u32WinOverflowCnt) (CCAP->MDWOCTH = (u32WinOverflowCnt))
 
 /**
  * @brief     Set CCAP Motion Detection Window Threshold for sensitivity level of single window
@@ -268,29 +260,135 @@ extern "C"
  * @param[in] u32Threshold:        Motion Detection Window Threshold
  *                                 It could be 0 (Most sensitive) ~ 0x12AD4 (This window is disabled).
  *
- * @return    None
- *
  * @details   Set Camera Capture Interface motion detection total threshold
  */
 #define CCAP_SET_MD_WIN_THRESHOLD(u32WinIdx, u32Threshold) (CCAP->MDWTH[u32WinIdx] = (u32Threshold))
 
+/**
+ * @brief      Set System Memory Packet Base Address
+ *
+ * @param[in]  u32Address: Set CCAP_PKTBA0 register. It should be 0x0 ~ 0xFFFFFFFF.
+ *
+ * @details    This function is used to set System Memory Packet Base Address 0 Register.
+ */
+__STATIC_INLINE void CCAP_SetPacketBuf(uint32_t u32Address)
+{
+    CCAP->PKTBA0 = u32Address;
+    CCAP->CTL |= CCAP_CTL_UPDATE_Msk;
+}
+
+/**
+ * @brief      Close Camera Capture Interface
+ */
+__STATIC_INLINE void CCAP_Close(void)
+{
+    CCAP->CTL &= ~CCAP_CTL_CCAPEN;
+}
+
+/**
+ * @brief      Enable CCAP Interrupt
+ *
+ * @param[in]  u32IntMask  Interrupt settings. It could be
+ *                         - \ref CCAP_INT_VIEN_ENABLE
+ *                         - \ref CCAP_INT_MEIEN_ENABLE
+ *                         - \ref CCAP_INT_ADDRMIEN_ENABLE
+ *                         - \ref CCAP_INT_MDIEN_MODE1_ENABLE
+ *                         - \ref CCAP_INT_MDIEN_MODE2_ENABLE
+ *
+ * @details    This function is used to enable Video Frame End Interrupt,
+ *             Bus Master Transfer Error Interrupt and Memory Address Match Interrupt.
+ */
+__STATIC_INLINE void CCAP_EnableInt(uint32_t u32IntMask)
+{
+    CCAP->INTEN = (CCAP->INTEN & ~(CCAP_INTEN_VIEN_Msk | CCAP_INTEN_MEIEN_Msk | CCAP_INTEN_ADDRMIEN_Msk | CCAP_INTEN_MDIEN_Msk))
+                  | u32IntMask;
+}
+
+/**
+ * @brief      Disable CCAP Interrupt
+ *
+ * @param[in]  u32IntMask  Interrupt settings. It could be
+ *                         - \ref CCAP_INTEN_VIEN_Msk
+ *                         - \ref CCAP_INTEN_MEIEN_Msk
+ *                         - \ref CCAP_INTEN_ADDRMIEN_Msk
+ *                         - \ref CCAP_INTEN_MDIEN_Msk
+ *
+ * @details    This function is used to disable Video Frame End Interrupt,
+ *             Bus Master Transfer Error Interrupt and Memory Address Match Interrupt.
+ */
+__STATIC_INLINE void CCAP_DisableInt(uint32_t u32IntMask)
+{
+    CCAP->INTEN = (CCAP->INTEN & ~(u32IntMask));
+}
+
+/**
+ * @brief      Enable Monochrome CMOS Sensor
+ *
+ * @param[in]  u32Interface  Data I/O interface setting. It could be
+ *                           - \ref CCAP_CTL_MY8_MY4
+ *                           - \ref CCAP_CTL_MY8_MY4_SWAP
+ *                           - \ref CCAP_CTL_MY8_MY8
+ *
+ * @details    This function is used to select monochrome CMOS sensor and set data width.
+ */
+__STATIC_INLINE void CCAP_EnableMono(uint32_t u32Interface)
+{
+    CCAP->CTL = (CCAP->CTL & ~(CCAP_CTL_MY8_MY4_Msk | CCAP_CTL_MY4_SWAP_Msk)) | CCAP_CTL_MONO_Msk | u32Interface;
+}
+
+/**
+ * @brief      Disable Monochrome CMOS Sensor selection
+ */
+__STATIC_INLINE void CCAP_DisableMono(void)
+{
+    CCAP->CTL &= ~CCAP_CTL_MONO_Msk;
+}
+
+/**
+ * @brief      Enable Luminance 8-bit Y to 1-bit Y Conversion
+ *
+ * @param[in]  u32Threshold   Luminance Y8 to Y1 Threshold Value. It should be 0 ~ 255.
+ *
+ * @details    This function is used to enable luminance Y8 to Y1 function and set its threshold value.
+ */
+__STATIC_INLINE void CCAP_EnableLumaYOne(uint32_t u32Threshold)
+{
+    CCAP->CTL |= CCAP_CTL_Luma_Y_One_Msk;
+    CCAP->LUMA_Y1_THD = u32Threshold & 0xff;
+}
+
+/**
+ * @brief      Disable Luminance 8-bit Y to 1-bit Y Conversion
+ */
+__STATIC_INLINE void CCAP_DisableLumaYOne(void)
+{
+    CCAP->CTL &= ~CCAP_CTL_Luma_Y_One_Msk;
+}
+
+/**
+ * @brief      Start Camera Capture Interface function
+ */
+__STATIC_INLINE void CCAP_Start(void)
+{
+    CCAP->CTL |= CCAP_CTL_CCAPEN;
+}
+
 void CCAP_Open(uint32_t u32SensorProp, uint32_t u32InFormat, uint32_t u32OutFormat);
+void CCAP_Close(void);
 void CCAP_SetCroppingWindow(uint32_t u32VStart, uint32_t u32HStart, uint32_t u32Height, uint32_t u32Width);
 void CCAP_SetPacketBuf(uint32_t u32Address);
-void CCAP_Close(void);
+void CCAP_SetPacketScaling(uint32_t u32VNumerator, uint32_t u32VDenominator, uint32_t u32HNumerator, uint32_t u32HDenominator);
+void CCAP_SetPacketStride(uint32_t u32Stride);
 void CCAP_EnableInt(uint32_t u32IntMask);
 void CCAP_DisableInt(uint32_t u32IntMask);
 void CCAP_Start(void);
 int32_t CCAP_Stop(uint32_t u32FrameComplete);
-void CCAP_SetPacketScaling(uint32_t u32VNumerator, uint32_t u32VDenominator, uint32_t u32HNumerator, uint32_t u32HDenominator);
-void CCAP_SetPacketStride(uint32_t u32Stride);
 void CCAP_EnableMono(uint32_t u32Interface);
 void CCAP_DisableMono(void);
 void CCAP_EnableLumaYOne(uint32_t u32Threshold);
 void CCAP_DisableLumaYOne(void);
-int32_t CCAP_SetMDWindow(uint32_t u32Y, uint32_t u32X, uint32_t u32Height, uint32_t u32Width);
-int32_t CCAP_SetMDWinWeight(uint32_t u32WinBitmask, uint32_t u32WeightNumerator, uint32_t u32WeightDenominator);
-int32_t CCAP_SetMDTotalWeight(uint32_t u32WeightNumerator, uint32_t u32WeightDenominator);
+int32_t CCAP_SetMD_RegionSensitivity(uint32_t u32Y, uint32_t u32X, uint32_t u32Height, uint32_t u32Width, uint32_t u32Sensitivity);
+int32_t CCAP_SetMD_GlobalSensitivity(uint32_t u32Sensitivity);
 
 /** @} end of group CCAP_EXPORTED_FUNCTIONS */
 /** @} end of group CCAP_Driver */

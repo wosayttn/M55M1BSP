@@ -23,6 +23,27 @@
 */
 
 /**
+  * @brief      Get Direct Map Address.
+  * @param      spim
+  * @return     Direct Mapping Address
+  */
+uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim)
+{
+    uint32_t u32DMMAddr = 0;
+
+    if (spim == SPIM0)
+    {
+        u32DMMAddr = SPIM0_DMM_MAP_ADDR;
+    }
+    else if (spim == SPIM1)
+    {
+        u32DMMAddr = SPIM1_DMM_MAP_ADDR;
+    }
+
+    return u32DMMAddr;
+}
+
+/**
   * @brief      SPIM used to delay the read data strobe (DQS/RWDS) from Octal SPI Flash and Hyper bus device
   * @param      spim
   * @param      u32ClkOnNum Clock Cycle Number between DLL OLDO Enable and DLL Clock Divider Enable
@@ -147,7 +168,7 @@ int32_t SPIM_HYPER_WaitSPIMENDone(SPIM_T *spim, uint32_t u32IsSync)
         }
         else
         {
-            while (SPIM_WAIT_FREE(spim))
+            while (SPIM_IS_BUSY(spim))
             {
                 if (--i32TimeOutCount <= 0)
                 {
@@ -513,7 +534,7 @@ int32_t SPIM_HYPER_DMARead(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8RdBuf, ui
 
     SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEREAD);   /* Switch to DMA Write mode.   */
 
-    spim->SRAMADDR = (uint32_t) pu8RdBuf;                /* SRAM u32Address. */
+    spim->SRAMADDR = (uint32_t) pu8RdBuf;               /* SRAM u32Address. */
     spim->DMACNT = u32NRx;                              /* Transfer length. */
     spim->FADDR = u32Addr;                              /* Flash u32Address. */
 

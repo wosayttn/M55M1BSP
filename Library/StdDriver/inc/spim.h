@@ -308,23 +308,23 @@ typedef enum
  * @brief       Enable Hyper Device Mode.
 * \hideinitializer
  */
-#define SPIM_SET_FLASH_MODE(spim) (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_HYPER_EN_Msk)))
+#define SPIM_SET_FLASH_MODE(spim)   (spim->CTL0 &= ~(SPIM_CTL0_HYPER_EN_Msk))
 
 /**
- * @brief       Set 4-byte address.
+ * @brief           Set 4-byte address.
  * @param[in]   x   Enable/Disable 4 bytes address.
  *                  - \ref SPIM_OP_ENABLE
  *                  - \ref SPIM_OP_DISABLE
  * \hideinitializer
  */
-#define SPIM_SET_4BYTE_ADDR_EN(spim, x) \
+#define SPIM_SET_4BYTE_ADDR(spim, x) \
     (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_B4ADDREN_Msk)) | (((x) ? 1UL : 0UL) << SPIM_CTL0_B4ADDREN_Pos))
 
 /**
  * @brief   Get 4-byte address to be enabled/disabled.
  * \hideinitializer
  */
-#define SPIM_GET_4BYTE_ADDR_EN(spim)    \
+#define SPIM_GET_4BYTE_ADDR(spim)    \
     ((spim->CTL0 & SPIM_CTL0_B4ADDREN_Msk) >> SPIM_CTL0_B4ADDREN_Pos)
 
 /**
@@ -396,7 +396,7 @@ typedef enum
  * \hideinitializer
  */
 #define SPIM_GET_BURST_DATA(spim)   \
-    ((spim->CTL0 & SPIM_CTL0_BURSTNUM_Msk) >> SPIM_CTL0_BURSTNUM_Pos)
+    (((spim->CTL0 & SPIM_CTL0_BURSTNUM_Msk) >> SPIM_CTL0_BURSTNUM_Pos) + 1UL)
 
 /**
  * @brief       Set suspend interval.
@@ -504,7 +504,7 @@ typedef enum
  * \hideinitializer
  */
 #define SPIM_SET_DTR_MODE(spim, x)  \
-    (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_DTR_NORM_Msk) | (x << SPIM_CTL0_DTR_NORM_Pos)))
+    (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_DTR_NORM_Msk) | (((x) ? 1UL : 0UL) << SPIM_CTL0_DTR_NORM_Pos)))
 
 /**
  * @brief   Get DTR(Data Transfer Rate) mode to be enabled/disabled.
@@ -521,7 +521,7 @@ typedef enum
  * \hideinitializer
  */
 #define SPIM_SET_RDQS_MODE(spim, x) \
-    (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_RDQS_NORM_Msk)) | (x << SPIM_CTL0_RDQS_NORM_Pos))
+    (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_RDQS_NORM_Msk)) | (((x) ? 1UL : 0UL) << SPIM_CTL0_RDQS_NORM_Pos))
 
 /**
  * @brief   Get Read DQS Mode to be enabled/disabled.

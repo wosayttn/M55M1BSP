@@ -2136,7 +2136,7 @@
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\spim.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\spim_hyper.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sys.c</name>

@@ -98,9 +98,8 @@ void MT35x_EnterOctalDDRMode(SPIM_T *pSPIMx)
     SPIM_MT35x_4Bytes_Enable(pSPIMx, 1, 8, 1);
     SPIM_IO_SendCMDPhase(pSPIMx, SPIM_IO_READ_PHASE, OPCODE_RD_VCONFIG, PHASE_OCTAL_MODE, 1);
     SPIM_IO_SendAddrPhase(pSPIMx, 1, 0x00, PHASE_OCTAL_MODE, 1);
-    //SPIM_IO_DCPhase(pSPIMx, 2, PHASE_NORMAL_MODE, 0);
     SPIM_IO_SendDummyCycle(pSPIMx, 16);
-    SPIM_IO_SendDataPhase(pSPIMx, SPIM_IO_READ_PHASE, u8CMDBuf, 1, PHASE_OCTAL_MODE, PHASE_OCTAL_MODE, 1);
+    SPIM_IO_SendDataPhase(pSPIMx, SPIM_IO_READ_PHASE, u8CMDBuf, 1, PHASE_NORMAL_MODE, PHASE_OCTAL_MODE, 1);
 
     printf("Octal Mode = 0x%X\r\n", u8CMDBuf[0]);
 }
@@ -136,45 +135,26 @@ void SPIM_OctalTrainingDllLatency()
     uint32_t u32SrcAddr = 0;
     uint32_t u32TestSize = 32;
     SPIM_T *pSPIMx = NULL;
-#if defined (__ARMCC_VERSION)
     __attribute__((aligned(32))) uint8_t u8TstBuf1[32] = {0};
     __attribute__((aligned(32))) uint8_t u8TstBuf2[32] = {0};
-#else
-    __align(32) uint8_t u8TstBuf1[32] = {0};
-    __align(32) uint8_t u8TstBuf2[32] = {0};
-#endif //__ARMCC_VERSION
 
     pSPIMx = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
     SPIM_EraseAddrRange(pSPIMx, 0, 0, FLASH_PAGE_SIZE, OPCODE_BE_64K, FLASH_PAGE_SIZE, 1);
 
-    popDat(&u8TstBuf1[0], u32TestSize);
+    popDat(u8TstBuf1, u32TestSize);
 
-    SPIM_IO_Write(pSPIMx,
-                  0,
-                  0,
-                  u32TestSize,
-                  u8TstBuf1,
-                  CMD_NORMAL_PAGE_PROGRAM,
-                  1,
-                  1,
-                  1,
-                  0);
+    SPIM_IO_WritePhase(pSPIMx, &gMU_82h_WrCMD, 0, u8TstBuf1, u32TestSize);
 
     MT35x_EnterOctalDDRMode(pSPIMx);
 
     for (u8RdDelay = 0; u8RdDelay <= SPIM_MAX_DLL_LATENCY; u8RdDelay++)
     {
-        memset(u8TstBuf2, 0, u32TestSize);
         SPIM_CtrlDLLDelayTime(pSPIMx, u8RdDelay);
 
-        SPIM_DMA_ReadPhase(pSPIMx,
-                           &gMU_CBh_RdCMD,
-                           0,
-                           0,
-                           32,
-                           u8TstBuf2,
-                           1);
+        memset(u8TstBuf2, 0, u32TestSize);
+
+        SPIM_DMA_ReadPhase(pSPIMx, &gMU_CBh_RdCMD, 0, 0, 32, u8TstBuf2, 1);
         CU_ASSERT(pSPIMx->PHDMAR == 0x33003C3A);
 
         if (memcmp(u8TstBuf1, u8TstBuf2, u32TestSize))

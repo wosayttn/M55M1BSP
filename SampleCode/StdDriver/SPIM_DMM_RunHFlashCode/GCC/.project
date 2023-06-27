@@ -72,7 +72,7 @@
 		<link>
 			<name>Library/spim.c</name>
 			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/spim.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/spim_hyper.c</locationURI>
 		</link>
 		<link>
 			<name>Library/gpio.c</name>

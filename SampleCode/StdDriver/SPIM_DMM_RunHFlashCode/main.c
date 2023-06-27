@@ -87,7 +87,7 @@ int SPIM_load_image_to_HyperFlash(SPIM_T *spim, uint32_t image_base, uint32_t im
 
 int HyperFlash_LoadCodeAndRun(SPIM_T *spim)
 {
-    uint32_t u32DMMAddr = SPIM_GetDirectMapAddress(spim);
+    uint32_t u32DMMAddr = SPIM_HYPER_GetDMMAddress(spim);
 
     if (&UserImageBase_start == &UserImageBase_finish)
     {
@@ -104,7 +104,7 @@ int HyperFlash_LoadCodeAndRun(SPIM_T *spim)
     }
 
     /* Enter direct-mapped mode to run new applications */
-    SPIM_EnterDirectMapMode_Hyper(spim);
+    SPIM_HYPER_EnterDirectMapMode(spim);
 
     func = (FUNC_PTR *)(u32DMMAddr + 1);
     func();

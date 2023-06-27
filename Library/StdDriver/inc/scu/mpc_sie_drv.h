@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019, 2021 Arm Limited. All rights reserved.
+ * Copyright (c) 2016-2022 Arm Limited. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,88 +18,68 @@
  * \file mpc_sie_drv.h
  * \brief Generic driver for ARM SIE Memory Protection
  *        Controllers (MPC).
+ *        Features of ARM MPC driver:
+ *          1. Get MPC block size
+ *          2. Configure memory region
+ *          3. Get memory region configuration
+ *          4. Get/Set MPC control value
+ *          5. Get configured secure response
+ *          6. Set secure response type
+ *          7. Enable/Disable/Clear MPC interrupt
+ *          8. Get MPC interrupt state
+ *          9. Lock down MPC configuration
+ *          10. Check if gating is present in hardware
+ *          11. Get ID register value
+ *          12. Check ack for gating incoming transfers
+ *          13. Request/Release for gating incoming transfers
  */
 
-#ifndef __MPC_SIE__DRV_H__
-#define __MPC_SIE__DRV_H__
+#ifndef __MPC_SIE_DRV_H__
+#define __MPC_SIE_DRV_H__
 
-#include <stdbool.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 /* Values for hardware version in PIDR0 reg */
-#define SIE200 0x60
-#define SIE300 0x65
+#define SIE200      0x60
+#define SIE300      0x65
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* ARM MPC memory mapped register access structure */
-struct mpc_sie_reg_map_t
-{
-    volatile uint32_t ctrl;           /* (R/W) MPC Control */
-    volatile uint32_t reserved[3];    /* Reserved */
-    volatile uint32_t blk_max;        /* (R/ ) Maximum value of block based index */
-    volatile uint32_t blk_cfg;        /* (R/ ) Block configuration */
-    volatile uint32_t blk_idx;        /* (R/W) Index value for accessing block
-                                       *       based look up table
-                                       */
-    volatile uint32_t blk_lutn;       /* (R/W) Block based gating
-                                       *       Look Up Table (LUT)
-                                       */
-    volatile uint32_t int_stat;       /* (R/ ) Interrupt state */
-    volatile uint32_t int_clear;      /* ( /W) Interrupt clear */
-    volatile uint32_t int_en;         /* (R/W) Interrupt enable */
-    volatile uint32_t int_info1;      /* (R/ ) Interrupt information 1 */
-    volatile uint32_t int_info2;      /* (R/ ) Interrupt information 2 */
-    volatile uint32_t int_set;        /* ( /W) Interrupt set. Debug purpose only */
-    volatile uint32_t reserved2[998]; /* Reserved */
-    volatile uint32_t pidr4;          /* (R/ ) Peripheral ID 4 */
-    volatile uint32_t pidr5;          /* (R/ ) Peripheral ID 5 */
-    volatile uint32_t pidr6;          /* (R/ ) Peripheral ID 6 */
-    volatile uint32_t pidr7;          /* (R/ ) Peripheral ID 7 */
-    volatile uint32_t pidr0;          /* (R/ ) Peripheral ID 0 */
-    volatile uint32_t pidr1;          /* (R/ ) Peripheral ID 1 */
-    volatile uint32_t pidr2;          /* (R/ ) Peripheral ID 2 */
-    volatile uint32_t pidr3;          /* (R/ ) Peripheral ID 3 */
-    volatile uint32_t cidr0;          /* (R/ ) Component ID 0 */
-    volatile uint32_t cidr1;          /* (R/ ) Component ID 1 */
-    volatile uint32_t cidr2;          /* (R/ ) Component ID 2 */
-    volatile uint32_t cidr3;          /* (R/ ) Component ID 3 */
-};
-
 /* Error code returned by the driver functions */
 enum mpc_sie_error_t
 {
-    MPC_SIE_ERR_NONE,                          /*!< No error */
-    MPC_SIE_INVALID_ARG,                       /*!< MPC invalid input arguments */
-    MPC_SIE_NOT_INIT,                          /*!< MPC not initialized */
-    MPC_SIE_ERR_NOT_IN_RANGE,                  /*!< Address does not belong to a range
-                                                *   controlled by the MPC */
-    MPC_SIE_ERR_NOT_ALIGNED,                   /*!< Address is not aligned on the block size
-                                                *   of this MPC
-                                                */
-    MPC_SIE_ERR_INVALID_RANGE,                 /*!< The given address range to configure
-                                                *   is invalid. This could be because:
-                                                *   - The base and limit swapped
-                                                *   - The base and limit addresses
-                                                *     are in different ranges
-                                                */
+    MPC_SIE_ERR_NONE,          /*!< No error */
+    MPC_SIE_INVALID_ARG,       /*!< MPC invalid input arguments */
+    MPC_SIE_NOT_INIT,          /*!< MPC not initialized */
+    MPC_SIE_ERR_NOT_IN_RANGE,  /*!< Address does not belong to a range
+                                   *   controlled by the MPC */
+    MPC_SIE_ERR_NOT_ALIGNED,   /*!< Address is not aligned on the block size
+                                   *   of this MPC
+                                   */
+    MPC_SIE_ERR_INVALID_RANGE, /*!< The given address range to configure
+                                   *   is invalid. This could be because:
+                                   *   - The base and limit swapped
+                                   *   - The base and limit addresses
+                                   *     are in different ranges
+                                   */
     MPC_SIE_ERR_RANGE_SEC_ATTR_NON_COMPATIBLE, /*!< The given range cannot be
-                                                *   accessed with the wanted
-                                                *   security attributes
-                                                */
-    MPC_SIE_UNSUPPORTED_HARDWARE_VERSION,      /*!< MPC hardware version read from
-                                                *   PIDR0 is not supported
-                                                */
-    MPC_SIE_ERR_GATING_NOT_PRESENT             /*!< MPC gating not present in HW */
+                                                   *   accessed with the wanted
+                                                   *   security attributes
+                                                   */
+    MPC_SIE_UNSUPPORTED_HARDWARE_VERSION, /*!< MPC hardware version read from
+                                              *   PIDR0 is not supported
+                                              */
+    MPC_SIE_ERR_GATING_NOT_PRESENT        /*!< MPC gating not present in HW */
 };
 
 /* Security attribute used in various place of the API */
 enum mpc_sie_sec_attr_t
 {
-    MPC_SIE_SEC_ATTR_SECURE,    /*!< Secure attribute */
-    MPC_SIE_SEC_ATTR_NONSECURE, /*!< Non-secure attribute */
+    MPC_SIE_SEC_ATTR_SECURE,     /*!< Secure attribute */
+    MPC_SIE_SEC_ATTR_NONSECURE,  /*!< Non-secure attribute */
     /*!< Used when getting the configuration of a memory range and some blocks
      *   are secure whereas some other are non secure
      */
@@ -109,73 +89,68 @@ enum mpc_sie_sec_attr_t
 /* What can happen when trying to do an illegal memory access */
 enum mpc_sie_sec_resp_t
 {
-    MPC_SIE_RESP_RAZ_WI,              /*!< Read As Zero, Write Ignored */
-    MPC_SIE_RESP_BUS_ERROR,           /*!< Bus error */
-    MPC_SIE_RESP_WAIT_GATING_DISABLED /*!< Wait until gating is disabled */
+    MPC_SIE_RESP_RAZ_WI,    /*!< Read As Zero, Write Ignored */
+    MPC_SIE_RESP_BUS_ERROR, /*!< Bus error */
+    MPC_SIE_RESP_WAIT_GATING_DISABLED  /*!< Wait until gating is disabled */
 };
 
 /* Description of a memory range controlled by the MPC */
 struct mpc_sie_memory_range_t
 {
-    const uint32_t base;                /*!< Base address (included in the range) */
-    const uint32_t limit;               /*!< Limit address (included in the range) */
-    const uint32_t range_offset;        /*!< Offset of current range area to the 0
-                                         *   point of the whole area (the sum of the
-                                         *   sizes of the previous memory ranges
-                                         *   covered by the same MPC)
-                                         */
+    const uint32_t base;   /*!< Base address (included in the range) */
+    const uint32_t limit;  /*!< Limit address (included in the range) */
+    const uint32_t range_offset; /*!< Offset of current range area to the 0
+                                  *   point of the whole area (the sum of the
+                                  *   sizes of the previous memory ranges
+                                  *   covered by the same MPC)
+                                  */
     const enum mpc_sie_sec_attr_t attr; /*!< Optional security attribute
-                                         *   needed to be matched when
-                                         *   accessing this range.
-                                         *   For example, the non-secure
-                                         *   alias of a memory region can not
-                                         *   be accessed using secure access,
-                                         *   and configuring the MPC to
-                                         *   secure using that range will not
-                                         *   be permitted by the driver.
-                                         */
+                                            *   needed to be matched when
+                                            *   accessing this range.
+                                            *   For example, the non-secure
+                                            *   alias of a memory region can not
+                                            *   be accessed using secure access,
+                                            *   and configuring the MPC to
+                                            *   secure using that range will not
+                                            *   be permitted by the driver.
+                                            */
 };
 
 /* ARM MPC SIE device configuration structure */
 struct mpc_sie_dev_cfg_t
 {
-    const uint32_t base; /*!< MPC base address */
+    const uint32_t base;  /*!< MPC base address */
+    /*!< Array of pointers to memory ranges controlled by the MPC */
+    const struct mpc_sie_memory_range_t **range_list;
+    uint8_t nbr_of_ranges;  /*!< Number of memory ranges in the list */
 };
 
 /* ARM MPC SIE device data structure */
 struct mpc_sie_dev_data_t
 {
-    /*!< Array of pointers to memory ranges controlled by the MPC */
-    const struct mpc_sie_memory_range_t **range_list;
-    uint8_t nbr_of_ranges; /*!< Number of memory ranges in the list */
-    bool is_initialized;   /*!< Indicates if the MPC driver
-                            *   is initialized and enabled
-                            */
-    uint32_t sie_version;  /*!< SIE version */
+    bool is_initialized;    /*!< Indicates if the MPC driver
+                             *   is initialized and enabled
+                             */
+    uint32_t sie_version;   /*!< SIE version */
 };
 
 /* ARM MPC SIE device structure */
 struct mpc_sie_dev_t
 {
-    const struct mpc_sie_dev_cfg_t *const cfg; /*!< MPC configuration */
-    struct mpc_sie_dev_data_t *const data;     /*!< MPC data */
+    const struct mpc_sie_dev_cfg_t *const cfg;  /*!< MPC configuration */
+    struct mpc_sie_dev_data_t *const data;      /*!< MPC data */
 };
 
 /**
  * \brief Initializes a MPC device.
  *
  * \param[in] dev            MPC device \ref mpc_sie_dev_t
- * \param[in] range_list     List of memory ranges controller by the MPC
- *                           (\ref mpc_sie_memory_range_t). This list can not
- *                           freed after the initializations.
- * \param[in] nbr_of_ranges  Number of memory ranges
  *
  * \return Returns error code as specified in \ref mpc_sie_error_t
  *
  * \note This function doesn't check if dev is NULL.
  */
-enum mpc_sie_error_t
-mpc_sie_init(struct mpc_sie_dev_t *dev, const struct mpc_sie_memory_range_t **range_list, uint8_t nbr_of_ranges);
+enum mpc_sie_error_t mpc_sie_init(struct mpc_sie_dev_t *dev);
 
 /**
  * \brief Gets MPC block size. All regions must be aligned on this block
@@ -188,7 +163,8 @@ mpc_sie_init(struct mpc_sie_dev_t *dev, const struct mpc_sie_memory_range_t **ra
  *
  * \note This function doesn't check if dev is NULL.
  */
-enum mpc_sie_error_t mpc_sie_get_block_size(struct mpc_sie_dev_t *dev, uint32_t *blk_size);
+enum mpc_sie_error_t mpc_sie_get_block_size(struct mpc_sie_dev_t *dev,
+        uint32_t *blk_size);
 
 /**
  * \brief Configures a memory region (base and limit included).
@@ -232,8 +208,10 @@ enum mpc_sie_error_t mpc_sie_config_region(struct mpc_sie_dev_t *dev,
  *
  * \note This function doesn't check if dev is NULL.
  */
-enum mpc_sie_error_t
-mpc_sie_get_region_config(struct mpc_sie_dev_t *dev, uint32_t base, uint32_t limit, enum mpc_sie_sec_attr_t *attr);
+enum mpc_sie_error_t mpc_sie_get_region_config(struct mpc_sie_dev_t *dev,
+        uint32_t base,
+        uint32_t limit,
+        enum mpc_sie_sec_attr_t *attr);
 
 /**
  * \brief Gets the MPC control value.
@@ -245,7 +223,8 @@ mpc_sie_get_region_config(struct mpc_sie_dev_t *dev, uint32_t base, uint32_t lim
  *
  * \note This function doesn't check if dev is NULL.
  */
-enum mpc_sie_error_t mpc_sie_get_ctrl(struct mpc_sie_dev_t *dev, uint32_t *ctrl_val);
+enum mpc_sie_error_t mpc_sie_get_ctrl(struct mpc_sie_dev_t *dev,
+                                      uint32_t *ctrl_val);
 
 /**
  * \brief Sets the MPC control value.
@@ -257,7 +236,8 @@ enum mpc_sie_error_t mpc_sie_get_ctrl(struct mpc_sie_dev_t *dev, uint32_t *ctrl_
  *
  * \note This function doesn't check if dev is NULL.
  */
-enum mpc_sie_error_t mpc_sie_set_ctrl(struct mpc_sie_dev_t *dev, uint32_t mpc_ctrl);
+enum mpc_sie_error_t mpc_sie_set_ctrl(struct mpc_sie_dev_t *dev,
+                                      uint32_t mpc_ctrl);
 
 /**
  * \brief Gets the configured secure response.
@@ -269,7 +249,8 @@ enum mpc_sie_error_t mpc_sie_set_ctrl(struct mpc_sie_dev_t *dev, uint32_t mpc_ct
  *
  * \note This function doesn't check if dev is NULL.
  */
-enum mpc_sie_error_t mpc_sie_get_sec_resp(struct mpc_sie_dev_t *dev, enum mpc_sie_sec_resp_t *sec_rep);
+enum mpc_sie_error_t mpc_sie_get_sec_resp(struct mpc_sie_dev_t *dev,
+        enum mpc_sie_sec_resp_t *sec_rep);
 
 /**
  * \brief Sets the response type when SW asks to gate the incoming transfers.
@@ -279,7 +260,8 @@ enum mpc_sie_error_t mpc_sie_get_sec_resp(struct mpc_sie_dev_t *dev, enum mpc_si
  *
  * \note This function doesn't check if dev is NULL.
  */
-enum mpc_sie_error_t mpc_sie_set_sec_resp(struct mpc_sie_dev_t *dev, enum mpc_sie_sec_resp_t sec_rep);
+enum mpc_sie_error_t mpc_sie_set_sec_resp(struct mpc_sie_dev_t *dev,
+        enum mpc_sie_sec_resp_t sec_rep);
 
 /**
  * \brief Enables MPC interrupt.
@@ -342,7 +324,8 @@ enum mpc_sie_error_t mpc_sie_lock_down(struct mpc_sie_dev_t *dev);
  *
  * \note This function doesn't check if dev is NULL.
  */
-enum mpc_sie_error_t mpc_sie_is_gating_present(struct mpc_sie_dev_t *dev, bool *gating_present);
+enum mpc_sie_error_t mpc_sie_is_gating_present(struct mpc_sie_dev_t *dev,
+        bool *gating_present);
 
 /**
  * \brief Returns the value of Peripheral ID 0 register.
@@ -383,13 +366,6 @@ void mpc_sie_request_gating(struct mpc_sie_dev_t *dev);
  * \note This function doesn't check if dev is NULL.
  */
 void mpc_sie_release_gating(struct mpc_sie_dev_t *dev);
-
-int SetupMPC(const uint32_t mpc_baseaddr,
-             const uint32_t mem_baseaddr, const uint32_t mem_size,
-             const uint32_t baseaddr_s,  /* Secure base address */
-             const uint32_t len_s,       /* Length (in bytes) of secure region */
-             const uint32_t baseaddr_ns, /* Non-secure base address */
-             const uint32_t len_ns);      /* Length (in bytes) of non-secure region */
 
 #ifdef __cplusplus
 }
