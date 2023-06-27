@@ -14,17 +14,6 @@
 #include "Console.h"
 #include "template_cunit.h"
 
-#ifndef DEBUG_PORT
-    #define DEBUG_PORT UART0
-#endif
-
-#ifndef DEBUG_PORT_Init
-void DEBUG_PORT_Init(UART_T* psUART, uint32_t u32Baudrate)
-{
-    UART_Open(psUART, u32Baudrate);
-}
-#endif
-
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -47,7 +36,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -100,7 +89,7 @@ int main(int argc, char *argv[])
     SYS_Init();
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
-    
+
     printf("\n\n");
     printf("+--------------------------------------+\n");
     printf("|       M55M1 CUnit Test Template      |\n");

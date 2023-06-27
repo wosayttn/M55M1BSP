@@ -48,7 +48,7 @@ typedef enum KSMEM
 #define KS_OP_WRITE         (1 << KS_CTL_OPMODE_Pos)
 #define KS_OP_ERASE         (2 << KS_CTL_OPMODE_Pos)    /*!< Only for SRAM and OTP      */
 #define KS_OP_ERASE_ALL     (3 << KS_CTL_OPMODE_Pos)    /*!< Only for SRAM and Flash    */
-#define KS_OP_REVOKE        (4 << KS_CTL_OPMODE_Pos)    
+#define KS_OP_REVOKE        (4 << KS_CTL_OPMODE_Pos)
 #define KS_OP_REMAN         (5 << KS_CTL_OPMODE_Pos)    /*!< Only for SRAM              */
 #define KS_OP_LOCK          (7 << KS_CTL_OPMODE_Pos)    /*!< Only for OTP               */
 
@@ -111,23 +111,45 @@ typedef enum KSMEM
   * @details    This function is used to enable scramle function of Key Store.
   */
 #define KS_SCRAMBLING()             (KS->CTL |= KS_CTL_SCMB_Msk)
+
 /**
   * @brief      Get OTP key status
   * @details    This function is used to get OTP key status.
   */
 #define KS_OTPKEY_STS(i32KeyIdx)    ((KS->OTPSTS & (1 << i32KeyIdx)) > 0)
+
 /**
   * @brief      Enable KS interrupt
   * @details    This function is used to enable KS interrupt.
   */
 #define KS_ENABLE_INT()             (KS->CTL |= KS_CTL_IEN_Msk)
+
 /**
   * @brief      Disable KS interrupt
   * @details    This function is used to disable KS interrupt.
   */
 #define KS_DISABLE_INT()            (KS->CTL &= ~KS_CTL_IEN_Msk)
 
+/**
+  * @brief      This function is used to get KS status.
+  * @param[in]  u32Status. Including :
+  *             - \ref KS_STS_IF_Msk
+  *             - \ref KS_STS_EIF_Msk
+  *             - \ref KS_STS_BUSY_Msk
+  *             - \ref KS_STS_SRAMFULL_Msk
+  *             - \ref KS_STS_FLASHFULL_Msk
+  *             - \ref KS_STS_INITDONE_Msk
+  *             - \ref KS_STS_RAMINV_Msk
+  */
+#define KS_GET_STS(u32Status)       (KS->STS & (u32Status))
 
+/**
+  * @brief      This function is used to clear KS status.
+  * @param[in]  u32Status. Including :
+  *             - \ref KS_STS_IF_Msk
+  *             - \ref KS_STS_EIF_Msk
+  */
+#define KS_CLR_STS(u32Status)       (KS->STS = (u32Status))
 
 /** @} end of group KS_EXPORTED_CONSTANTS */
 

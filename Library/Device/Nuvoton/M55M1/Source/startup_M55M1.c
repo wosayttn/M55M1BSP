@@ -147,7 +147,7 @@ void RTCTAMPER_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void SC0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void SC1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void SC2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void SCU_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void SCU_IRQHandler(void) __attribute__((weak));
 void SDH0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void SDH1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void SPI0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
@@ -415,7 +415,8 @@ __NO_RETURN void Reset_Handler(void)
             SYS->REGLCTL = 0x59UL;
             SYS->REGLCTL = 0x16UL;
             SYS->REGLCTL = 0x88UL;
-        } while (SYS->REGLCTL == 0UL);
+        }
+        while (SYS->REGLCTL == 0UL);
 
         // Switch SRAM0 to normal power mode
         if (PMC->SYSRB0PC != 0)
@@ -488,9 +489,9 @@ struct ExcContext
 
 void HardFault_Handler(void)
 {
-    int irq;
-    struct ExcContext *e;
-    uint32_t sp;
+    int irq = 0;
+    struct ExcContext *e = NULL;
+    uint32_t sp = 0;
     uint32_t u32CFSR, u32BFAR;
 
     __ASM volatile("mrs %0, ipsr            \n" // Read IPSR (Exception number)
@@ -503,8 +504,11 @@ void HardFault_Handler(void)
                    "mov %2, sp              \n"
                    : "=r"(irq), "=r"(e), "=r"(sp));
 
-    printf("Hard fault. irq=%d, pc=0x%08" PRIx32 ", lr=0x%08" PRIx32 ", xpsr=0x%08" PRIx32 ", sp=0x%08" PRIx32 "\n",
-           irq, e->pc, e->lr, e->xPsr, sp);
+    if (e != NULL)
+    {
+        printf("Hard fault. irq=%d, pc=0x%08" PRIx32 ", lr=0x%08" PRIx32 ", xpsr=0x%08" PRIx32 ", sp=0x%08" PRIx32 "\n",
+               irq, e->pc, e->lr, e->xPsr, sp);
+    }
     /* Read volatile registers into temporary variables to fix IAR [Pa082] the order of volatile accesses is undefined */
     u32CFSR = SCB->CFSR;
     u32BFAR = SCB->BFAR;
@@ -513,7 +517,6 @@ void HardFault_Handler(void)
     // Get the instruction caused the hardfault
     ProcessHardFault((uint32_t *)e);
 }
-
 
 /*----------------------------------------------------------------------------
   Default Handler for Exceptions / Interrupts

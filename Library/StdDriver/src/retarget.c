@@ -244,7 +244,7 @@ static char GetChar(void)
 #endif
 }
 
-void ProcessHardFault(uint32_t *excContext)
+__WEAK void ProcessHardFault(uint32_t *excContext)
 {
     uint32_t inst, addr, taddr, tdata;
     uint32_t rm, rn, rt, imm5, imm8;

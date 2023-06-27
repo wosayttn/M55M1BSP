@@ -34,7 +34,7 @@ extern "C" {
  *----------------------------------------------------------------------------*/
 
 #ifndef __HSI
-        #define __HSI       (200000000UL)         /*!< PLL default output is 200 MHz */
+#define __HSI       (200000000UL)         /*!< PLL default output is 200 MHz */
 #endif
 
 #ifndef __HXT
@@ -59,18 +59,18 @@ extern uint32_t PllClock;                 /*!< PLL Output Clock Frequency       
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3L)
 #if defined (__ICCARM__)
-    #define __NONSECURE_ENTRY       __cmse_nonsecure_entry
-    #define __NONSECURE_ENTRY_WEAK  __cmse_nonsecure_entry //__weak
-    #define __NONSECURE_CALL        __cmse_nonsecure_call
+#define __NONSECURE_ENTRY       __cmse_nonsecure_entry
+#define __NONSECURE_ENTRY_WEAK  __cmse_nonsecure_entry //__weak
+#define __NONSECURE_CALL        __cmse_nonsecure_call
 #else
-    #define __NONSECURE_ENTRY       __attribute__ ((cmse_nonsecure_entry))
-    #define __NONSECURE_ENTRY_WEAK  __attribute__ ((cmse_nonsecure_entry, weak))
-    #define __NONSECURE_CALL        __attribute__ ((cmse_nonsecure_call))
+#define __NONSECURE_ENTRY       __attribute__ ((cmse_nonsecure_entry))
+#define __NONSECURE_ENTRY_WEAK  __attribute__ ((cmse_nonsecure_entry, weak))
+#define __NONSECURE_CALL        __attribute__ ((cmse_nonsecure_call))
 #endif
 #else
-    #define __NONSECURE_ENTRY
-    #define __NONSECURE_ENTRY_WEAK
-    #define __NONSECURE_CALL
+#define __NONSECURE_ENTRY
+#define __NONSECURE_ENTRY_WEAK
+#define __NONSECURE_CALL
 #endif
 
 /**
@@ -88,7 +88,7 @@ extern uint32_t SystemCoreClock;
 
    Initialize the System and update the SystemCoreClock variable.
  */
-extern void SystemInit (void);
+extern void SystemInit(void);
 
 
 /**
@@ -96,7 +96,7 @@ extern void SystemInit (void);
 
    Updates the SystemCoreClock with current core Clock retrieved from cpu registers.
  */
-extern void SystemCoreClockUpdate (void);
+extern void SystemCoreClockUpdate(void);
 
 /**
  * @brief   Gets the internal processor clock.
@@ -125,7 +125,6 @@ extern void SetDebugUartMFP(void);
  */
 extern void SetDebugUartCLK(void);
 
-
 /**
  * @brief    Init UART
  *
@@ -135,6 +134,24 @@ extern void SetDebugUartCLK(void);
  * @details  Initialize debug UART to 115200-8n1
  */
 extern void InitDebugUart(void);
+
+/**
+ * @brief    Setup MPC configuration
+ *
+ * @param    u32MPCBaseAddr     Memory Protection Controller Secure base address
+ * @param    u32MemBaseAddr     Memory base address
+ * @param    u32MemByteSize     Length (in bytes) of memory
+ * @param    u32MemBaseAddr_S   Secure base address
+ * @param    u32MemByteSize_S   Length (in bytes) of secure region
+ * @param    u32MemBaseAddr_NS  Non-secure base address
+ * @param    u32MemByteSize_NS  Length (in bytes) of non-secure region
+ */
+extern int32_t SetupMPC(
+    const uint32_t u32MPCBaseAddr,
+    const uint32_t u32MemBaseAddr,    const uint32_t u32MemByteSize,
+    const uint32_t u32MemBaseAddr_S,  const uint32_t u32MemByteSize_S,
+    const uint32_t u32MemBaseAddr_NS, const uint32_t u32MemByteSize_NS
+);
 
 #endif /* NVT_DBG_UART_OFF */
 

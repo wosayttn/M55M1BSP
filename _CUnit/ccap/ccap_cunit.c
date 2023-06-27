@@ -105,7 +105,8 @@ uint32_t g_au32IntMask[] =
 void TestFunc_CCAP_Function()
 {
 
-    {   // CCAP_SetCroppingWindow START
+    {
+        // CCAP_SetCroppingWindow START
         uint32_t i, j, k, l;
         uint32_t u32CropStart, u32CropSize;
 
@@ -122,7 +123,8 @@ void TestFunc_CCAP_Function()
                     }
     }   // CCAP_SetCroppingWindow END
 
-    {   // CCAP_SetPacketBuf START
+    {
+        // CCAP_SetPacketBuf START
         uint32_t i;
         uint32_t au32Addr[] = { 0x00000000, 0x55555555, 0xAAAAAAAA, 0xFFFFFFFF };
         uint32_t u32FrameBuf;
@@ -135,7 +137,8 @@ void TestFunc_CCAP_Function()
         }
     }   // CCAP_SetPacketBuf END
 
-    {   // CCAP_EnableInt/CCAP_DisableInt START
+    {
+        // CCAP_EnableInt/CCAP_DisableInt START
         uint32_t i;
 
         for (i = 0; i < sizeof(g_au32IntMask) / sizeof(uint32_t); i++)
@@ -148,19 +151,22 @@ void TestFunc_CCAP_Function()
         }
     }   // CCAP_EnableInt/CCAP_DisableInt END
 
-    {   // CCAP_Start START
+    {
+        // CCAP_Start START
         CCAP->CTL &= ~CCAP_CTL_CCAPEN;
         CU_ASSERT((CCAP->CTL & CCAP_CTL_CCAPEN) == 0);
         CCAP_Start();
         CU_ASSERT((CCAP->CTL & CCAP_CTL_CCAPEN_Msk) == CCAP_CTL_CCAPEN);
     }   // CCAP_Start END
 
-    {   // CCAP_Stop START
+    {
+        // CCAP_Stop START
         CCAP_Stop(FALSE);
         CU_ASSERT((CCAP->CTL & CCAP_CTL_CCAPEN) == 0);
     }   // CCAP_Stop END
 
-    {   // CCAP_SetPacketScaling START
+    {
+        // CCAP_SetPacketScaling START
         uint32_t  a, b, c, d;
         uint32_t u32Data[] = { 0x0000, 0x5555, 0xAAAA, 0xFFFF };
         uint32_t PKTSLt, PKTSMt;
@@ -185,7 +191,8 @@ void TestFunc_CCAP_Function()
                     }
     }   // CCAP_SetPacketScaling END
 
-    {   // CCAP_SetPacketStride START
+    {
+        // CCAP_SetPacketStride START
         uint32_t i;
 
         for (i = 0; i < 0x3FFF; i += 0x10)
@@ -195,7 +202,8 @@ void TestFunc_CCAP_Function()
         }
     }   // CCAP_SetPacketStride END
 
-    {   // CCAP_EnableMono/CCAP_DisableMono
+    {
+        // CCAP_EnableMono/CCAP_DisableMono
         uint32_t i;
         uint32_t au32Interface[] = { CCAP_CTL_MY8_MY4, CCAP_CTL_MY8_MY4_SWAP, CCAP_CTL_MY8_MY8 };
 
@@ -209,7 +217,8 @@ void TestFunc_CCAP_Function()
         CU_ASSERT((CCAP->CTL & CCAP_CTL_MONO_Msk) == 0);
     }   // CCAP_EnableMono/CCAP_DisableMono END
 
-    {   // CCAP_EnableLumaYOne/CCAP_DisableLumaYOne
+    {
+        // CCAP_EnableLumaYOne/CCAP_DisableLumaYOne
         uint32_t i;
 
         for (i = 0; i < 0xFF; i++)
@@ -240,14 +249,17 @@ void TestFunc_CCAP_Define()
     CU_ASSERT(CCAP_INTSTS_MDINTF_MODE1_Msk == (1ul << CCAP_INTSTS_MDINTF_Pos));
     CU_ASSERT(CCAP_INTSTS_MDINTF_MODE2_Msk == (2ul << CCAP_INTSTS_MDINTF_Pos));
 
-    CU_ASSERT(CCAP_MD_CELL_WIDHT     == 80ul);
+    CU_ASSERT(CCAP_MD_CELL_WIDTH     == 80ul);
     CU_ASSERT(CCAP_MD_CELL_HEIGHT    == 60ul);
+    CU_ASSERT(CCAP_MD_WIDTH          == 320ul);
+    CU_ASSERT(CCAP_MD_HEIGHT         == 240ul);
     CU_ASSERT(CCAP_MD_WINDOW_CNT     == 16ul);
     CU_ASSERT(CCAP_MD_MAX_WINDOW_SAD == 0x12AD4ul);
     CU_ASSERT(CCAP_MD_MAX_TOTAL_SAD  == 0x12AD40ul);
 }
 
-uint32_t u32IntFlagMask[] = {
+uint32_t u32IntFlagMask[] =
+{
     CCAP_INTSTS_VINTF_Msk, CCAP_INTSTS_MEINTF_Msk, CCAP_INTSTS_ADDRMINTF_Msk, CCAP_INTSTS_MDINTF_MODE1_Msk, CCAP_INTSTS_MDINTF_MODE2_Msk
 };
 
@@ -261,7 +273,8 @@ void TestFunc_CCAP_Macro()
     CCAP->CTL = CCAP->CTL & ~CCAP_CTL_CCAPEN_Msk;
     CU_ASSERT(CCAP_IS_STOPPED() == 1);
 
-    {   // CCAP_CLR_INT_FLAG START
+    {
+        // CCAP_CLR_INT_FLAG START
         for (i = 0; i < sizeof(u32IntFlagMask) / sizeof(uint32_t); i++)
         {
             CCAP_CLR_INT_FLAG(u32IntFlagMask[i]);
@@ -269,11 +282,13 @@ void TestFunc_CCAP_Macro()
         }
     }   // CCAP_CLR_INT_FLAG END
 
-    {   // CCAP_GET_INT_STS START
+    {
+        // CCAP_GET_INT_STS START
         CU_ASSERT((CCAP_GET_INT_STS() == CCAP->INTSTS));
     }   // CCAP_GET_INT_STS END
 
-    {   // CCAP_ENABLE_MD_WINDOW/CCAP_DISABLE_MD_WINDOW START
+    {
+        // CCAP_ENABLE_MD_WINDOW/CCAP_DISABLE_MD_WINDOW START
         CCAP_DISABLE_MD_WINDOW(0xFFFF);
         CU_ASSERT_EQUAL((uint32_t)CCAP->MDCTL, 0);
 
@@ -286,11 +301,13 @@ void TestFunc_CCAP_Macro()
         }
     }   // CCAP_ENABLE_MD_WINDOW/CCAP_DISABLE_MD_WINDOW END
 
-    {   // CCAP_SET_MD_TRIG_SRC START
+    {
+        // CCAP_SET_MD_TRIG_SRC START
 
     }   // CCAP_SET_MD_TRIG_SRC END
 
-    {   // CCAP_SET_MD_WIN_THRESHOLD START
+    {
+        // CCAP_SET_MD_WIN_THRESHOLD START
         for (i = 0; i < 16; i++)
         {
             for (j = 0; j < 0x12AD4 + 255; j += 33)
@@ -301,7 +318,8 @@ void TestFunc_CCAP_Macro()
         }
     }   // CCAP_SET_MD_WIN_THRESHOLD END
 
-    {   // CCAP_SET_MD_TOTAL_THRESHOLD START
+    {
+        // CCAP_SET_MD_TOTAL_THRESHOLD START
         for (i = 0; i < 0x12AD40 + 255; i += 33)
         {
             CCAP_SET_MD_TOTAL_THRESHOLD(i);
@@ -341,35 +359,30 @@ void TestFunc_CCAP_MotionDetection()
 
     for (i = 0; i < 16; i++)
     {
-        u32WinMask = (1 << i);
-        x  = (80 * (i % 4));
-        y  = (60 * (i / 4));
-
-        CCAP_DISABLE_MD_WINDOW(0xFFFF);
-        CCAP_SetMDWindow(y, x, 60, 80);
-        CU_ASSERT_EQUAL((uint32_t)CCAP->MDCTL, u32WinMask);
-        CU_ASSERT_EQUAL(((uint32_t)CCAP->MDCTL & 0xFFFF0000), 0);
-
-        if ((uint32_t)CCAP->MDCTL != u32WinMask)
+        for (j = 0; j <= 100; j++)
         {
-            printf("(%d, %d) - (%d, %d) \n", x, y, x + 80, y + 60);
-            printf("CCAP->MDCTL: 0x%08X, u32WinMask: 0x%08X\n", CCAP->MDCTL, u32WinMask);
+            u32WinMask = (1 << i);
+            x  = (80 * (i % 4));
+            y  = (60 * (i / 4));
+
+            CCAP_DISABLE_MD_WINDOW(0xFFFF);
+            CCAP_SetMD_RegionSensitivity(y, x, 60, 80, j);
+            CU_ASSERT_EQUAL((uint32_t)CCAP->MDCTL, u32WinMask);
+            CU_ASSERT_EQUAL(((uint32_t)CCAP->MDCTL & 0xFFFF0000), 0);
+            CU_ASSERT_EQUAL(CCAP->MDWTH[i], CCAP_MD_MAX_WINDOW_SAD - ((j * CCAP_MD_MAX_WINDOW_SAD) / 100));
+
+            if ((uint32_t)CCAP->MDCTL != u32WinMask)
+            {
+                printf("(%d, %d) - (%d, %d) \n", x, y, x + 80, y + 60);
+                printf("CCAP->MDCTL: 0x%08X, u32WinMask: 0x%08X\n", CCAP->MDCTL, u32WinMask);
+            }
         }
     }
 
-    for (i = 0; i < 16; i++)
+    for (j = 0; j <= 100; j++)
     {
-        for (j = 0; j < 4; j++)
-        {
-            CCAP_SetMDWinWeight((1 << i), j, 4);
-            CU_ASSERT_EQUAL(CCAP->MDWTH[i], CCAP_MD_MAX_WINDOW_SAD - (j / 4) * CCAP_MD_MAX_WINDOW_SAD);
-        }
-    }
-
-    for (j = 0; j < 4; j++)
-    {
-        CCAP_SetMDTotalWeight(j, 4);
-        CU_ASSERT_EQUAL(CCAP->MDTTH, CCAP_MD_MAX_TOTAL_SAD - (j / 4) * CCAP_MD_MAX_TOTAL_SAD);
+        CCAP_SetMD_GlobalSensitivity(j);
+        CU_ASSERT_EQUAL(CCAP->MDTTH, CCAP_MD_MAX_TOTAL_SAD - ((j * CCAP_MD_MAX_TOTAL_SAD) / 100));
     }
 
     CCAP_SET_MD_TRIG_SRC(CCAP_MD_TRIG_LPTMR0, TRUE);
@@ -383,7 +396,7 @@ void TestFunc_CCAP_MotionDetection()
 
     for (i = 0; i < 16; i++)
     {
-        CCAP_SET_MD_WIN_OVERFLOW_THRESHOLD(i);
+        CCAP_SET_MD_OVERFLOW_WIN_THRESHOLD(i);
         CU_ASSERT_EQUAL(CCAP->MDWOCTH, i);
     }
 }

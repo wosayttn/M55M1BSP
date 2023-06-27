@@ -215,14 +215,134 @@ void FMC_NSCBA_Setup(void)
     }
 }
 
-#define NVIC_ITNS_CONF(IRQn)  (NVIC->ITNS[(IRQn / 32)] |= (1 << (IRQn % 32)))
+#define NVIC_ITNS_CONF(IRQn)    (NVIC->ITNS[(IRQn / 32)] |= (1 << (IRQn % 32)))
+#define MPC_RANGE_LIST_LEN      (2)
+
+/**
+ * @brief    Setup MPC configuration
+ *
+ * @param    u32MPCBaseAddr     Memory Protection Controller Secure base address
+ * @param    u32MemBaseAddr     Memory base address
+ * @param    u32MemByteSize     Length (in bytes) of memory
+ * @param    u32MemBaseAddr_S   Secure base address
+ * @param    u32MemByteSize_S   Length (in bytes) of secure region
+ * @param    u32MemBaseAddr_NS  Non-secure base address
+ * @param    u32MemByteSize_NS  Length (in bytes) of non-secure region
+ */
+int32_t SetupMPC(
+    const uint32_t u32MPCBaseAddr,
+    const uint32_t u32MemBaseAddr,    const uint32_t u32MemByteSize,
+    const uint32_t u32MemBaseAddr_S,  const uint32_t u32MemByteSize_S,
+    const uint32_t u32MemBaseAddr_NS, const uint32_t u32MemByteSize_NS
+)
+{
+    /* Secure range */
+    const struct mpc_sie_memory_range_t mpc_range_s =
+    {
+        .base         = u32MemBaseAddr,
+        .limit        = u32MemBaseAddr + u32MemByteSize - 1,
+        .range_offset = 0,
+        .attr         = MPC_SIE_SEC_ATTR_SECURE
+    };
+
+    /* Non-secure range */
+    const struct mpc_sie_memory_range_t mpc_range_ns =
+    {
+        .base         = u32MemBaseAddr + NS_OFFSET,
+        .limit        = u32MemBaseAddr + NS_OFFSET + u32MemByteSize - 1,
+        .range_offset = 0,
+        .attr         =  MPC_SIE_SEC_ATTR_NONSECURE
+    };
+
+    /* Consolidated ranges */
+    const struct mpc_sie_memory_range_t *mpc_range_list[MPC_RANGE_LIST_LEN] =
+    {
+        &mpc_range_s, &mpc_range_ns
+    };
+
+    /* MPC device configuration controller */
+    const struct mpc_sie_dev_cfg_t mpc_dev_cfg =
+    {
+        .base          = u32MPCBaseAddr,
+        .range_list    = mpc_range_list,
+        .nbr_of_ranges = MPC_RANGE_LIST_LEN
+    };
+
+    /* MPC device data */
+    struct mpc_sie_dev_data_t mpc_dev_data =
+    {
+        .is_initialized = false
+    };
+
+    /* MPC device itself */
+    struct mpc_sie_dev_t mpc_dev =
+    {
+        &mpc_dev_cfg, &mpc_dev_data
+    };
+
+    enum mpc_sie_error_t eRetCode = MPC_SIE_ERR_NONE;
+
+    /* Initialise this MPC device */
+    if ((eRetCode = mpc_sie_init(&mpc_dev)) != MPC_SIE_ERR_NONE)
+    {
+        return eRetCode;
+    }
+
+    /* Configure non-secure region */
+    if (u32MemByteSize_NS > 0)
+    {
+        if ((eRetCode = mpc_sie_config_region(&mpc_dev, u32MemBaseAddr_NS, u32MemBaseAddr_NS + u32MemByteSize_NS - 1, MPC_SIE_SEC_ATTR_NONSECURE)) != MPC_SIE_ERR_NONE)
+        {
+            return eRetCode;
+        }
+    }
+
+    /* Configure secure region */
+    if (u32MemByteSize_S > 0)
+    {
+        if ((eRetCode = mpc_sie_config_region(&mpc_dev, u32MemBaseAddr_S, u32MemBaseAddr_S + u32MemByteSize_S - 1, MPC_SIE_SEC_ATTR_SECURE)) != MPC_SIE_ERR_NONE)
+        {
+            return eRetCode;
+        }
+    }
+
+    if (get_sie_version(&mpc_dev) == SIE200)
+    {
+        if ((eRetCode = mpc_sie_set_sec_resp(&mpc_dev, MPC_SIE_RESP_BUS_ERROR)) != MPC_SIE_ERR_NONE)
+        {
+            return eRetCode;
+        }
+
+        if ((eRetCode = mpc_sie_irq_enable(&mpc_dev)) != MPC_SIE_ERR_NONE)
+        {
+            return eRetCode;
+        }
+    }
+
+    mpc_sie_clear_irq(&mpc_dev);
+
+    /* Lock down the configuration */
+    if ((eRetCode = mpc_sie_lock_down(&mpc_dev)) != MPC_SIE_ERR_NONE)
+    {
+        return eRetCode;
+    }
+
+    /* Add barriers to assure the MPC configuration is done before continue
+     * the execution.
+     */
+    __DSB();
+    __ISB();
+
+    return MPC_SIE_ERR_NONE;
+}
 
 /**
  * @brief    Setup Security Configuration Unit
  */
 void SCU_Setup(void)
 {
-    int32_t i;
+    int32_t  i;
+    uint32_t u32SRAMx_NonSecureSize = 0;
 
     SYS_ResetModule(SYS_SCU0RST);
     SCU->D0PNS0 = SCU_INIT_D0PNS0_VAL;
@@ -246,16 +366,27 @@ void SCU_Setup(void)
     SCU->IONS[9] = SCU_INIT_IONS9_VAL;
 
     /* Set Secure/Non-secure SRAM region through MPC */
-    if (SCU_SECURE_SRAM_SIZE <= SRAM0_SIZE)
+    if ((NON_SECURE_SRAM_BASE & ~NS_OFFSET) < SRAM1_BASE)
     {
-        SetupMPC(SRAM0MPC_BASE, SRAM0_BASE, SRAM0_SIZE, SRAM0_BASE, SCU_SECURE_SRAM_SIZE, NON_SECURE_SRAM_BASE,   SRAM0_SIZE - SCU_SECURE_SRAM_SIZE);
+        u32SRAMx_NonSecureSize = SRAM0_SIZE - SCU_SECURE_SRAM_SIZE;
+        SetupMPC(SRAM0MPC_BASE, SRAM0_BASE, SRAM0_SIZE, SRAM0_BASE, SCU_SECURE_SRAM_SIZE, NON_SECURE_SRAM_BASE,   u32SRAMx_NonSecureSize);
+        /* SRAM1/2 all Non-secure */
         SetupMPC(SRAM1MPC_BASE, SRAM1_BASE, SRAM1_SIZE, SRAM1_BASE, 0, SRAM1_BASE + NS_OFFSET, SRAM1_SIZE);
+        SetupMPC(SRAM2MPC_BASE, SRAM2_BASE, SRAM2_SIZE, SRAM2_BASE, 0, SRAM2_BASE + NS_OFFSET, SRAM2_SIZE);
+    }
+    else if ((NON_SECURE_SRAM_BASE & ~NS_OFFSET) < SRAM2_BASE)
+    {
+        u32SRAMx_NonSecureSize = (SRAM0_SIZE + SRAM1_SIZE) - SCU_SECURE_SRAM_SIZE;
+        SetupMPC(SRAM1MPC_BASE, SRAM1_BASE, SRAM1_SIZE, SRAM1_BASE, SCU_SECURE_SRAM_SIZE - SRAM0_SIZE,
+                 NON_SECURE_SRAM_BASE, u32SRAMx_NonSecureSize);
+        /* SRAM2 all Non-secure */
+        SetupMPC(SRAM2MPC_BASE, SRAM2_BASE, SRAM2_SIZE, SRAM2_BASE, 0, SRAM2_BASE + NS_OFFSET, SRAM2_SIZE);
     }
     else
     {
-        SetupMPC(SRAM0MPC_BASE, SRAM0_BASE, SRAM0_SIZE, SRAM0_BASE, SRAM0_SIZE, SRAM0_BASE + NS_OFFSET, 0);
-        SetupMPC(SRAM1MPC_BASE, SRAM1_BASE, SRAM1_SIZE, SRAM1_BASE, SCU_SECURE_SRAM_SIZE - SRAM0_SIZE, NON_SECURE_SRAM_BASE,
-                 (SRAM0_SIZE + SRAM1_SIZE) - SCU_SECURE_SRAM_SIZE);
+        u32SRAMx_NonSecureSize = (SRAM0_SIZE + SRAM1_SIZE + SRAM2_SIZE) - SCU_SECURE_SRAM_SIZE;
+        SetupMPC(SRAM2MPC_BASE, SRAM2_BASE, SRAM2_SIZE, SRAM2_BASE, SCU_SECURE_SRAM_SIZE - SRAM0_SIZE - SRAM1_SIZE,
+                 NON_SECURE_SRAM_BASE, u32SRAMx_NonSecureSize);
     }
 
     /* Set interrupt to non-secure according to DxPNSy settings */
@@ -592,6 +723,11 @@ void SCU_Setup(void)
     SCU->SVIEN0 = (uint32_t)(-1);
     SCU->SVIEN1 = (uint32_t)(-1);
     NVIC_EnableIRQ(SCU_IRQn);
+}
+
+__WEAK void SCU_IRQHandler(void)
+{
+
 }
 
 /**
