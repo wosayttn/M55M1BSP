@@ -29,39 +29,38 @@
 int32_t TRNG_Open(void)
 {
     int i;
-	SYS_ResetModule(SYS_TRNG0RST);
+    SYS_ResetModule(SYS_TRNG0RST);
 
-  	TRNG->CTL |= TRNG_CTL_LDOEN_Msk;	
+    TRNG->CTL |= TRNG_CTL_LDOEN_Msk;
     /* Waiting for ready */
     while((TRNG->STS & TRNG_STS_LDORDY_Msk) == 0)
     {
         printf("Waiting for ready\n");
-	};
-	
-	TRNG->CTL &= ~TRNG_CTL_NRST_Msk;
+    }
 
-	CLK_SysTickDelay(1);
+    TRNG->CTL &= ~TRNG_CTL_NRST_Msk;
 
-	TRNG->CTL |= (TRNG_CTL_NRST_Msk);
+    CLK_SysTickDelay(1);
 
-	TRNG->CTL |= (TRNG_CTL_TRNGEN_Msk);
-	
-	printf("TRNG->STS0 0x%x \n",TRNG->STS);	
+    TRNG->CTL |= (TRNG_CTL_NRST_Msk);
+
+    TRNG->CTL |= (TRNG_CTL_TRNGEN_Msk);
+
+    printf("TRNG->STS0 0x%x \n",TRNG->STS);
 
     /* Waiting for ready */
     while((TRNG->STS & TRNG_STS_TRNGRDY_Msk) == 0);
 
-	for(i=0; i<3; i++)
-	printf("TRNG->STS: loop%d  0x%x \n", i, TRNG->STS);
-	
-	if((TRNG->STS & 0x70) != 0x70)
-	{
-		printf("Entropy source test fail!\n");
-		while(1);
-	
-    return -1;		
-	}
-	return 0;
+    for(i=0; i<3; i++)
+        printf("TRNG->STS: loop%d  0x%x \n", i, TRNG->STS);
+
+    if((TRNG->STS & 0x70) != 0x70)
+    {
+        printf("Entropy source test fail!\n");
+
+        return -1;
+    }
+    return 0;
 }
 
 
@@ -113,7 +112,7 @@ int32_t TRNG_GenWord(uint32_t *u32RndNum)
 int32_t TRNG_GenBignum(uint8_t u8BigNum[], int32_t i32Len)
 {
     uint32_t   i, u32Reg, timeout;
-    
+
     u32Reg = TRNG->CTL;
 
     for (i = 0; i < i32Len/8; i++)

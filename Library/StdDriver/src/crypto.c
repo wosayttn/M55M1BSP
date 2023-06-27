@@ -70,7 +70,7 @@ void PRNG_Open(CRYPTO_T *crypto, uint32_t u32KeySize, uint32_t u32SeedReload, ui
     }
 
     crypto->PRNG_CTL =  (u32KeySize << CRYPTO_PRNG_CTL_KEYSZ_Pos) |
-                      (u32SeedReload << CRYPTO_PRNG_CTL_SEEDRLD_Pos);
+                        (u32SeedReload << CRYPTO_PRNG_CTL_SEEDRLD_Pos);
 }
 
 /**
@@ -132,10 +132,10 @@ void AES_Open(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t u32EncDec,
               uint32_t u32OpMode, uint32_t u32KeySize, uint32_t u32SwapType)
 {
     crypto->AES_CTL =  // (u32Channel << CRYPTO_AES_CTL_CHANNEL_Pos) |
-                    (u32EncDec << CRYPTO_AES_CTL_ENCRYPTO_Pos) |
-                    (u32OpMode << CRYPTO_AES_CTL_OPMODE_Pos) |
-                    (u32KeySize << CRYPTO_AES_CTL_KEYSZ_Pos) |
-                    (u32SwapType << CRYPTO_AES_CTL_OUTSWAP_Pos);
+        (u32EncDec << CRYPTO_AES_CTL_ENCRYPTO_Pos) |
+        (u32OpMode << CRYPTO_AES_CTL_OPMODE_Pos) |
+        (u32KeySize << CRYPTO_AES_CTL_KEYSZ_Pos) |
+        (u32SwapType << CRYPTO_AES_CTL_OUTSWAP_Pos);
     g_AES_CTL[u32Channel] = crypto->AES_CTL;
 }
 
@@ -170,11 +170,11 @@ void AES_Start(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t u32DMAMode)
   */
 void AES_Start_KS(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t u32DMAMode, int ksel, int knum)
 {
-	if (ksel == 0)
-		crypto->AES_KSCTL = CRYPTO_AES_KSCTL_RSRC_Msk | knum;     /* from KS SRAM */
-	else
-		crypto->AES_KSCTL = (2<<CRYPTO_AES_KSCTL_RSSRC_Pos) | CRYPTO_AES_KSCTL_RSRC_Msk | knum; /* from KS OTP */
-		
+    if (ksel == 0)
+        crypto->AES_KSCTL = CRYPTO_AES_KSCTL_RSRC_Msk | knum;     /* from KS SRAM */
+    else
+        crypto->AES_KSCTL = (2<<CRYPTO_AES_KSCTL_RSSRC_Pos) | CRYPTO_AES_KSCTL_RSRC_Msk | knum; /* from KS OTP */
+
     crypto->AES_CTL = g_AES_CTL[u32Channel];
     crypto->AES_CTL |= CRYPTO_AES_CTL_START_Msk | (u32DMAMode << CRYPTO_AES_CTL_DMALAST_Pos);
 }
@@ -271,7 +271,7 @@ void AES_SetDMATransfer(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t u32SrcAd
 void SHA_Open(CRYPTO_T *crypto, uint32_t u32OpMode, uint32_t u32SwapType, uint32_t hmac_key_len)
 {
     crypto->HMAC_CTL = (u32OpMode << CRYPTO_HMAC_CTL_OPMODE_Pos) |
-                     (u32SwapType << CRYPTO_HMAC_CTL_OUTSWAP_Pos);
+                       (u32SwapType << CRYPTO_HMAC_CTL_OUTSWAP_Pos);
 
     if (hmac_key_len != 0UL)
     {
@@ -766,21 +766,21 @@ const ECC_CURVE _Curve[] =
         CURVE_GF_P
     },
     {
-	CURVE_25519,
-	64,		// Echar
-	"0000000000000000000000000000000000000000000000000000000000076D06",  /* a */ 
-	"0000000000000000000000000000000000000000000000000000000000000001",  /* b */
-	"0000000000000000000000000000000000000000000000000000000000000009",  /* x */
-	"20ae19a1b8a086b4e01edd2c7748d14c923d4d7e6d7c61b229e9c5a27eced3d9",  /* y */
-	78,		// Epl
-	"7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFED",  /* p */
-	78,		// Eol
-	"1000000000000000000000000000000014def9dea2f79cd65812631a5cf5d3ed",  /* n */
-	255,	// key_len
-	10,
-	5,
-	2,
-	CURVE_GF_P
+        CURVE_25519,
+        64,		// Echar
+        "0000000000000000000000000000000000000000000000000000000000076D06",  /* a */
+        "0000000000000000000000000000000000000000000000000000000000000001",  /* b */
+        "0000000000000000000000000000000000000000000000000000000000000009",  /* x */
+        "20ae19a1b8a086b4e01edd2c7748d14c923d4d7e6d7c61b229e9c5a27eced3d9",  /* y */
+        78,		// Epl
+        "7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFED",  /* p */
+        78,		// Eol
+        "1000000000000000000000000000000014def9dea2f79cd65812631a5cf5d3ed",  /* n */
+        255,	// key_len
+        10,
+        5,
+        2,
+        CURVE_GF_P
     },
 };
 
@@ -829,17 +829,17 @@ static char  ch2hex(char ch)
 
 static int  __strlen(char *str)
 {
-	char  *p = str;
-	int   len = 0;
-	while (*p != 0)
-	{
-		p++;
-		len++;
-		if (len > 1024)   /* max. 4096 bits */
-			break;
-	}
-	// printf("< %d >\n", len);
-	return len;
+    char  *p = str;
+    int   len = 0;
+    while (*p != 0)
+    {
+        p++;
+        len++;
+        if (len > 1024)   /* max. 4096 bits */
+            break;
+    }
+    // printf("< %d >\n", len);
+    return len;
 }
 
 void Hex2Reg(char input[], uint32_t volatile reg[])
@@ -850,7 +850,7 @@ void Hex2Reg(char input[], uint32_t volatile reg[])
 
     si = (int)__strlen(input) - 1;
     ri = 0;
-    
+
     // printf("<%d>\n", si);
 
     while (si >= 0)
@@ -995,7 +995,7 @@ int32_t ecc_init_curve(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve)
             Hex2Reg(pCurve->Pp, crypto->ECC_N);
         }
     }
-dump_ecc_reg("Init N:", crypto->ECC_N, 18);
+    dump_ecc_reg("Init N:", crypto->ECC_N, 18);
     //dump_ecc_reg("CRYPTO_ECC_CURVE_N", crypto->ECC_N, 10);
     return ret;
 }
@@ -1075,7 +1075,7 @@ void ECC_Complete(CRYPTO_T *crypto)
     {
         g_ECC_done = 1UL;
         crypto->INTSTS = CRYPTO_INTSTS_ECCIF_Msk;
-         printf("ECC done IRQ.\n");
+        printf("ECC done IRQ.\n");
     }
 
     if (crypto->INTSTS & CRYPTO_INTSTS_ECCEIF_Msk)
@@ -1090,11 +1090,12 @@ void ECC_Complete(CRYPTO_T *crypto)
 
 void ECC_Start(uint32_t ecc_ctl)
 {
-	g_ECC_done = g_ECCERR_done = 0UL;
-	CRYPTO->ECC_CTL |= ecc_ctl;
-	while ((g_ECC_done | g_ECCERR_done) == 0UL) {
-		printf("ECC_start - CTL = 0x%x, STS = 0x%x\n",  CRYPTO->ECC_CTL, CRYPTO->ECC_STS);
-	}
+    g_ECC_done = g_ECCERR_done = 0UL;
+    CRYPTO->ECC_CTL |= ecc_ctl;
+    while ((g_ECC_done | g_ECCERR_done) == 0UL)
+    {
+        printf("ECC_start - CTL = 0x%x, STS = 0x%x\n",  CRYPTO->ECC_CTL, CRYPTO->ECC_STS);
+    }
 }
 
 /**
@@ -1190,20 +1191,20 @@ int32_t  ECC_GeneratePublicKey(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *pr
         if  (ecc_curve == CURVE_25519)
         {
             // dump_ecc_reg("CRYPTO_ECC_POINT_X2", crypto->ECC_X2, 10);
-			// crypto->ECC_CTL |= CRYPTO_ECC_CTL_SCAP_Msk;       
-            crypto->ECC_CTL |= CRYPTO_ECC_CTL_SPCEN_Msk;       
+            // crypto->ECC_CTL |= CRYPTO_ECC_CTL_SCAP_Msk;
+            crypto->ECC_CTL |= CRYPTO_ECC_CTL_SPCEN_Msk;
         }
 
-    	/* enable side-channel attack protection */
-    	crypto->ECC_CTL |= CRYPTO_ECC_CTL_SCAP_Msk | CRYPTO_ECC_CTL_ASCAP_Msk;
+        /* enable side-channel attack protection */
+        crypto->ECC_CTL |= CRYPTO_ECC_CTL_SCAP_Msk | CRYPTO_ECC_CTL_ASCAP_Msk;
 
         g_ECC_done = g_ECCERR_done = 0UL;
         crypto->ECC_CTL |= ((uint32_t)pCurve->key_len << CRYPTO_ECC_CTL_CURVEM_Pos) |
-                         ECCOP_POINT_MUL | CRYPTO_ECC_CTL_PFA2C_Msk | CRYPTO_ECC_CTL_START_Msk;
+                           ECCOP_POINT_MUL | CRYPTO_ECC_CTL_PFA2C_Msk | CRYPTO_ECC_CTL_START_Msk;
 
         while ((g_ECC_done | g_ECCERR_done) == 0UL)
         {
-			//printf("ECC_CTL = 0x%x, ECC_STS = 0x%x\n",  crypto->ECC_CTL, crypto->ECC_STS);
+            //printf("ECC_CTL = 0x%x, ECC_STS = 0x%x\n",  crypto->ECC_CTL, crypto->ECC_STS);
         }
 
         Reg2Hex(pCurve->Echar, crypto->ECC_X1, public_k1);
@@ -1218,7 +1219,7 @@ int32_t  ECC_GeneratePublicKey(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *pr
   * @param[in]  crypto        Reference to Crypto module.
   * @param[in]  ecc_curve   The pre-defined ECC curve.
   * @param[in]  k_ksnum     k_ksnum >= 0x80: Use Key Store OTP key number "k_ksnum - 0x80" as input private key
-  *                         k_ksnum >= 0:    Use Key Store SRAM key number k_ksnum as input private key  
+  *                         k_ksnum >= 0:    Use Key Store SRAM key number k_ksnum as input private key
   * @param[in]  is_ecdh     Key Store key was written with ECDH bit enable
   * @param[out] public_k1   The output public key 1.
   * @param[out] public_k2   The output public key 2.
@@ -1240,24 +1241,24 @@ int32_t  ECC_GeneratePublicKey_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k
         {
             crypto->ECC_K[i] = 0UL;
         }
-    	if (k_ksnum >= 0x80)
-    	{
-    		if (is_ecdh)
-    			crypto->ECC_KSCTL = (0x2UL<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) | CRYPTO_ECC_KSCTL_ECDH_Msk |
-    	    	               CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum - 0x80);
-    		else
-    			crypto->ECC_KSCTL = (0x2UL<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) | 
-    	    	               CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum - 0x80);
-    	}
-    	else
-    	{
-    		if (is_ecdh)
-    			crypto->ECC_KSCTL = (0<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) | CRYPTO_ECC_KSCTL_ECDH_Msk |
-    	    	              CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum);
-    		else
-    			crypto->ECC_KSCTL = (0<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) | 
-    	    	              CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum);
-    	}
+        if (k_ksnum >= 0x80)
+        {
+            if (is_ecdh)
+                crypto->ECC_KSCTL = (0x2UL<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) | CRYPTO_ECC_KSCTL_ECDH_Msk |
+                                    CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum - 0x80);
+            else
+                crypto->ECC_KSCTL = (0x2UL<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+                                    CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum - 0x80);
+        }
+        else
+        {
+            if (is_ecdh)
+                crypto->ECC_KSCTL = (0<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) | CRYPTO_ECC_KSCTL_ECDH_Msk |
+                                    CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum);
+            else
+                crypto->ECC_KSCTL = (0<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+                                    CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum);
+        }
 
         /* set FSEL (Field selection) */
         if (pCurve->GF == (int)CURVE_GF_2M)
@@ -1275,16 +1276,16 @@ int32_t  ECC_GeneratePublicKey_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k
             crypto->ECC_X2[i] = 0UL;
         }
         Hex2Reg(pCurve->Eorder, crypto->ECC_X2);
-        
+
         g_ECC_done = g_ECCERR_done = 0UL;
         crypto->ECC_CTL |= ((uint32_t)pCurve->key_len << CRYPTO_ECC_CTL_CURVEM_Pos) |
-                         ECCOP_POINT_MUL | CRYPTO_ECC_CTL_START_Msk;
-                         
+                           ECCOP_POINT_MUL | CRYPTO_ECC_CTL_START_Msk;
+
         while ((g_ECC_done | g_ECCERR_done) == 0UL)
         {
         }
         crypto->ECC_KSCTL = 0;
- 
+
         Reg2Hex(pCurve->Echar, crypto->ECC_X1, public_k1);
         Reg2Hex(pCurve->Echar, crypto->ECC_Y1, public_k2);
     }
@@ -1338,7 +1339,7 @@ int32_t  ECC_Mutiply(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char x1[], char y1
 
         g_ECC_done = g_ECCERR_done = 0UL;
         crypto->ECC_CTL |= ((uint32_t)pCurve->key_len << CRYPTO_ECC_CTL_CURVEM_Pos) |
-                         ECCOP_POINT_MUL | CRYPTO_ECC_CTL_START_Msk;
+                           ECCOP_POINT_MUL | CRYPTO_ECC_CTL_START_Msk;
 
         while ((g_ECC_done | g_ECCERR_done) == 0UL)
         {
@@ -1364,7 +1365,7 @@ int32_t  ECC_Mutiply(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char x1[], char y1
   * @param[out] y1          The input point Y.
   * @param[in]  k_ksnum     -1:  do not use Key Store, instead, use <k> as input multiplier
   *                         k_ksnum >= 0x80: Use Key Store OTP key number "k_ksnum - 0x80" as input multiplier
-  *                         k_ksnum >= 0:    Use Key Store SRAM key number k_ksnum as input multiplier  
+  *                         k_ksnum >= 0:    Use Key Store SRAM key number k_ksnum as input multiplier
   * @param[in]  k           The multiplier
   * @param[in]  ecc_curve   The pre-defined ECC curve.
   * @param[out] x2          The x-coordinate of output point.
@@ -1372,8 +1373,8 @@ int32_t  ECC_Mutiply(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char x1[], char y1
   * @return  0    Success.
   * @return  -1   "ecc_curve" value is invalid.
   */
-int32_t  ECC_Mutiply_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int x1_ksnum, char x1[], int y1_ksnum, char y1[], 
-							int k_ksnum, char *k, char x2[], char y2[])
+int32_t  ECC_Mutiply_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int x1_ksnum, char x1[], int y1_ksnum, char y1[],
+                        int k_ksnum, char *k, char x2[], char y2[])
 {
     int32_t    i, ret = 0;
     uint32_t   ecc_ksxy = 0;
@@ -1392,47 +1393,47 @@ int32_t  ECC_Mutiply_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int x1_ksnum, c
             crypto->ECC_K[i] = 0UL;
         }
 
-    	if (x1_ksnum >= 0x80)
-    	{
-    	    ecc_ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (x1_ksnum - 0x80);
-    	}
-    	else if (x1_ksnum >= 0)
-    	{
-			ecc_ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (x1_ksnum);
-		}
-    	else
-    	{
-    		Hex2Reg(x1, crypto->ECC_X1);
-    	}
+        if (x1_ksnum >= 0x80)
+        {
+            ecc_ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (x1_ksnum - 0x80);
+        }
+        else if (x1_ksnum >= 0)
+        {
+            ecc_ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (x1_ksnum);
+        }
+        else
+        {
+            Hex2Reg(x1, crypto->ECC_X1);
+        }
 
-    	if (y1_ksnum >= 0x80)
-    	{
-    	    ecc_ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (y1_ksnum - 0x80);
-    	}
-    	else if (x1_ksnum >= 0)
-    	{
-			ecc_ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (y1_ksnum);
-		}
-    	else
-    	{
-    		Hex2Reg(x1, crypto->ECC_Y1);
-    	}
-    	crypto->ECC_KSXY = ecc_ksxy;
+        if (y1_ksnum >= 0x80)
+        {
+            ecc_ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (y1_ksnum - 0x80);
+        }
+        else if (x1_ksnum >= 0)
+        {
+            ecc_ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (y1_ksnum);
+        }
+        else
+        {
+            Hex2Reg(x1, crypto->ECC_Y1);
+        }
+        crypto->ECC_KSXY = ecc_ksxy;
 
-    	if (k_ksnum >= 0x80)
-    	{
-    		crypto->ECC_KSCTL = (2<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) | 
-    	    	               CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum - 0x80);
-    	}
-    	else if (k_ksnum >= 0)
-    	{
-    		crypto->ECC_KSCTL = (0<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) | 
-    	    	              CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum);
-    	}
-    	else
-    	{
-    		Hex2Reg(k, crypto->ECC_K);
-    	}
+        if (k_ksnum >= 0x80)
+        {
+            crypto->ECC_KSCTL = (2<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+                                CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum - 0x80);
+        }
+        else if (k_ksnum >= 0)
+        {
+            crypto->ECC_KSCTL = (0<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+                                CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum);
+        }
+        else
+        {
+            Hex2Reg(k, crypto->ECC_K);
+        }
 
         /* set FSEL (Field selection) */
         if (pCurve->GF == (int)CURVE_GF_2M)
@@ -1447,7 +1448,7 @@ int32_t  ECC_Mutiply_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int x1_ksnum, c
 
         g_ECC_done = g_ECCERR_done = 0UL;
         crypto->ECC_CTL |= ((uint32_t)pCurve->key_len << CRYPTO_ECC_CTL_CURVEM_Pos) |
-                         ECCOP_POINT_MUL | CRYPTO_ECC_CTL_START_Msk;
+                           ECCOP_POINT_MUL | CRYPTO_ECC_CTL_START_Msk;
 
         while ((g_ECC_done | g_ECCERR_done) == 0UL)
         {
@@ -1522,7 +1523,7 @@ int32_t  ECC_GenerateSecretZ(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *priv
         }
         g_ECC_done = g_ECCERR_done = 0UL;
         crypto->ECC_CTL |= ((uint32_t)pCurve->key_len << CRYPTO_ECC_CTL_CURVEM_Pos) |
-                         ECCOP_POINT_MUL | CRYPTO_ECC_CTL_START_Msk;
+                           ECCOP_POINT_MUL | CRYPTO_ECC_CTL_START_Msk;
 
         while ((g_ECC_done | g_ECCERR_done) == 0UL)
         {
@@ -1541,7 +1542,7 @@ int32_t  ECC_GenerateSecretZ(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *priv
   * @param[in]  ecc_curve   The pre-defined ECC curve.
   * @param[in]  k_ksnum     -1:  do not use Key Store, instead, use <private_k> as input private key
   *                         k_ksnum >= 0x80: Use Key Store OTP key number "k_ksnum - 0x80" as input private key
-  *                         k_ksnum >= 0:    Use Key Store SRAM key number k_ksnum as input private key  
+  *                         k_ksnum >= 0:    Use Key Store SRAM key number k_ksnum as input private key
   * @param[in]  private_k   One's own private key.
   * @param[in]  public_x    The other party's publick key x.
   * @param[in]  public_y    The other party's publick key y.
@@ -1553,15 +1554,15 @@ int32_t  ECC_GenerateSecretZ(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *priv
   *                         1: Owner is HMAC
   *                         4: Owner is ECC
   *                         5: Owner is CPU
-  *                         
+  *
   * @param[out] secret_z    The ECC CDH secret Z.
   * @return  > 0     Secret Z output to Key Store. The key number.
   * @return  = 0     Success.
   * @return  < 0     "ecc_curve" value is invalid.
   */
-int32_t  ECC_GenerateSecretZ_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k_ksnum, char *private_k, 
-							char public_x[], char public_y[], 
-							int z_to_ks, int z_owner, char secret_z[])
+int32_t  ECC_GenerateSecretZ_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k_ksnum, char *private_k,
+                                char public_x[], char public_y[],
+                                int z_to_ks, int z_owner, char secret_z[])
 {
     int32_t    i;
     uint32_t   ecc_ksctl;
@@ -1571,7 +1572,7 @@ int32_t  ECC_GenerateSecretZ_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k_k
         return -1;
     }
 
-	ecc_ksctl = CRYPTO_ECC_KSCTL_ECDH_Msk;
+    ecc_ksctl = CRYPTO_ECC_KSCTL_ECDH_Msk;
 
     for (i = 0; i < 18; i++)
     {
@@ -1579,20 +1580,20 @@ int32_t  ECC_GenerateSecretZ_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k_k
         crypto->ECC_X1[i] = 0UL;
         crypto->ECC_Y1[i] = 0UL;
     }
-    
+
     if (k_ksnum >= 0x80)
     {
-    	ecc_ksctl |= (0x2<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) | 
-    	                   CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum - 0x80);
+        ecc_ksctl |= (0x2<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+                     CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum - 0x80);
     }
     else if (k_ksnum >= 0)
     {
-    	ecc_ksctl |= (0<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) | 
-    	                  CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum);
+        ecc_ksctl |= (0<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+                     CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum);
     }
 #if 0
     else if ((ecc_curve == CURVE_B_163) || (ecc_curve == CURVE_B_233) || (ecc_curve == CURVE_B_283) ||
-            (ecc_curve == CURVE_B_409) || (ecc_curve == CURVE_B_571) || (ecc_curve == CURVE_K_163))
+             (ecc_curve == CURVE_B_409) || (ecc_curve == CURVE_B_571) || (ecc_curve == CURVE_K_163))
     {
         Hex2RegEx(private_k, crypto->ECC_K, 1);
     }
@@ -1601,20 +1602,20 @@ int32_t  ECC_GenerateSecretZ_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k_k
     {
         Hex2RegEx(private_k, crypto->ECC_K, 2);
     }
-#endif    
+#endif
     else
     {
         Hex2Reg(private_k, crypto->ECC_K);
     }
-    
-   	Hex2Reg(public_x, crypto->ECC_X1);
-   	Hex2Reg(public_y, crypto->ECC_Y1);
-    
+
+    Hex2Reg(public_x, crypto->ECC_X1);
+    Hex2Reg(public_y, crypto->ECC_Y1);
+
     if (z_to_ks)
     {
-    	ecc_ksctl |= (z_owner << CRYPTO_ECC_KSCTL_OWNER_Pos) | CRYPTO_ECC_KSCTL_WDST_Msk;
-	}
-    
+        ecc_ksctl |= (z_owner << CRYPTO_ECC_KSCTL_OWNER_Pos) | CRYPTO_ECC_KSCTL_WDST_Msk;
+    }
+
     crypto->ECC_KSCTL = ecc_ksctl;
 
     /* set FSEL (Field selection) */
@@ -1627,16 +1628,16 @@ int32_t  ECC_GenerateSecretZ_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k_k
         /*  CURVE_GF_P */
         crypto->ECC_CTL = CRYPTO_ECC_CTL_FSEL_Msk;
     }
-    
+
     printf("ECC_KSCTL = 0x%x\n", ecc_ksctl);
 
     //    dump_ecc_reg("CRYPTO_ECC_POINT_X1", crypto->ECC_X1, 10);
     //    dump_ecc_reg("CRYPTO_ECC_POINT_Y1", crypto->ECC_Y1, 10);
     //    dump_ecc_reg("CRYPTO_ECC_CURVE_K", crypto->ECC_K, 10);
-    
+
     g_ECC_done = g_ECCERR_done = 0UL;
     crypto->ECC_CTL |= ((uint32_t)pCurve->key_len << CRYPTO_ECC_CTL_CURVEM_Pos) |
-                         ECCOP_POINT_MUL | CRYPTO_ECC_CTL_START_Msk;
+                       ECCOP_POINT_MUL | CRYPTO_ECC_CTL_START_Msk;
 
 
     while ((g_ECC_done | g_ECCERR_done) == 0UL)
@@ -1645,12 +1646,12 @@ int32_t  ECC_GenerateSecretZ_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k_k
     crypto->ECC_KSCTL = 0;
     crypto->ECC_KSXY = 0;
 
-	if (z_to_ks)
-		return crypto->ECC_KSSTS & 0x1f;
-	else
-	{
-    	Reg2Hex(pCurve->Echar, crypto->ECC_X1, secret_z);
-    	return 0;
+    if (z_to_ks)
+        return crypto->ECC_KSSTS & 0x1f;
+    else
+    {
+        Reg2Hex(pCurve->Echar, crypto->ECC_X1, secret_z);
+        return 0;
     }
 }
 
@@ -1678,13 +1679,13 @@ static void run_ecc_codec(CRYPTO_T *crypto, uint32_t mode, int enable_scap)
     }
 
     g_ECC_done = g_ECCERR_done = 0UL;
-    
+
     if (enable_scap)
     {
-    	/* enable side-channel attack protection */
-    	crypto->ECC_CTL |= CRYPTO_ECC_CTL_SCAP_Msk | CRYPTO_ECC_CTL_ASCAP_Msk;
+        /* enable side-channel attack protection */
+        crypto->ECC_CTL |= CRYPTO_ECC_CTL_SCAP_Msk | CRYPTO_ECC_CTL_ASCAP_Msk;
     }
-    
+
     crypto->ECC_CTL |= ((uint32_t)pCurve->key_len << CRYPTO_ECC_CTL_CURVEM_Pos) | mode | CRYPTO_ECC_CTL_START_Msk;
     while ((g_ECC_done | g_ECCERR_done) == 0UL)
     {
@@ -1791,7 +1792,7 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
 
         /*
          *   4. Compute s = k^-1 �� (e + d �� r)(mod n). If s = 0, go to step 2
-         *      (1) Write the curve order to N registers 
+         *      (1) Write the curve order to N registers
          *      (2) Write the random integer k to X1 and d to Y1
          *      (3) Write the r to X2 and e to Y2
          *      (4) Set CURVEM(CRYPTO_ECC_CTL[31:22]) to key length
@@ -1835,14 +1836,14 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_Y2[i] = 0UL;
         }
-		Hex2Reg(message, crypto->ECC_Y2);
+        Hex2Reg(message, crypto->ECC_Y2);
 
         /* 4-(4) Set CURVEM(CRYPTO_ECC_CTL[31:22]) to key length  */
         /* 4-(5) Set ECCOP(CRYPTO_ECC_CTL[10:9]) to 01            */
         /* 4-(6) Set ECDSAS(CRYPTO_ECC_CTL[4]) to 1               */
         /* 4-(7) Set START(CRYPTO_ECC_CTL[0]) to 1                */
         /* 4-(8) Wait for BUSY(CRYPTO_ECC_STS[0]) be cleared      */
-        
+
         CRYPTO_DBGMSG("4-(8) Wait for BUSY be cleared...\n");
 
         run_ecc_codec(crypto, ECCOP_MODULE | MODOP_DIV | CRYPTO_ECC_CTL_ECDSAS_Msk, 0);
@@ -2102,8 +2103,8 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
 
 int32_t  ECC_Write_N(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve)
 {
-	int   i;
-	
+    int   i;
+
     if (ecc_init_curve(crypto, ecc_curve) != 0)
     {
         return -1;
@@ -2123,9 +2124,9 @@ int32_t  ECC_Write_N(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve)
   * @param[in]  ecc_curve   The pre-defined ECC curve.
   * @param[in]  message     The hash value of source context.
   * @param[in]  d_ksnum     d_ksnum >= 0x80: Use Key Store OTP key number "d_ksnum - 0x80" as input private key
-  *                         d_ksnum >= 0:    Use Key Store SRAM key number d_ksnum as input private key  
+  *                         d_ksnum >= 0:    Use Key Store SRAM key number d_ksnum as input private key
   * @param[in]  k_ksnum     k_ksnum >= 0x80: Use Key Store OTP key number "d_ksnum - 0x80" as input random number
-  *                         k_ksnum >= 0:    Use Key Store SRAM key number d_ksnum as input random number  
+  *                         k_ksnum >= 0:    Use Key Store SRAM key number d_ksnum as input random number
   * @param[out] R           R of the (R,S) pair digital signature
   * @param[out] S           S of the (R,S) pair digital signature
   * @return  0    Success.
@@ -2133,7 +2134,7 @@ int32_t  ECC_Write_N(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve)
   */
 
 int32_t  ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message,
-                               int d_ksnum, int k_ksnum, char *R, char *S)
+                                  int d_ksnum, int k_ksnum, char *R, char *S)
 {
     uint32_t volatile temp_result1[18], temp_result2[18];
     uint32_t   ksxy;
@@ -2180,16 +2181,16 @@ int32_t  ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char 
             crypto->ECC_K[i] = 0UL;
         }
 
-    	if (k_ksnum >= 0x80)
-    	{
-    		crypto->ECC_KSCTL = (0x2UL<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) | 
-    	                   CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum - 0x80);
-    	}
-    	else
-    	{
-   			crypto->ECC_KSCTL = (0<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) | 
-   	    	              CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum);
-    	}
+        if (k_ksnum >= 0x80)
+        {
+            crypto->ECC_KSCTL = (0x2UL<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+                                CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum - 0x80);
+        }
+        else
+        {
+            crypto->ECC_KSCTL = (0<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+                                CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum);
+        }
 
         for (i = 0; i < 18; i++)
         {
@@ -2212,7 +2213,7 @@ int32_t  ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char 
         {
             crypto->ECC_Y1[i] = 0UL;
         }
-printf("second\n");
+        printf("second\n");
         run_ecc_codec(crypto, ECCOP_MODULE | MODOP_ADD, 0);
 
         /* 3-(15) Read X1 registers to get r */
@@ -2228,7 +2229,7 @@ printf("second\n");
 
         /*
          *   4. Compute s = k^-1 �� (e + d �� r)(mod n). If s = 0, go to step 2
-         *      (1) Write the curve order to N registers 
+         *      (1) Write the curve order to N registers
          *      (2) Write the random integer k to X1 and d to Y1
          *      (3) Write the r to X2 and e to Y2
          *      (4) Set CURVEM(CRYPTO_ECC_CTL[31:22]) to key length
@@ -2250,34 +2251,34 @@ printf("second\n");
 
         /*  4-(2) Write the random integer k to X1 and d to Y1 */
 
-		ksxy = CRYPTO_ECC_KSXY_RSRCXY_Msk;
+        ksxy = CRYPTO_ECC_KSXY_RSRCXY_Msk;
 
-    	if (k_ksnum >= 0x80)
-    	{
-    		ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | (k_ksnum - 0x80);
-    	}
-    	else if (k_ksnum >= 0)
-    	{
-    		ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | (k_ksnum);
-    	}
-    	else 
-    		return -3;
+        if (k_ksnum >= 0x80)
+        {
+            ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | (k_ksnum - 0x80);
+        }
+        else if (k_ksnum >= 0)
+        {
+            ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | (k_ksnum);
+        }
+        else
+            return -3;
 
-    	if (d_ksnum >= 0x80)
-    	{
-    		ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | ((d_ksnum - 0x80) << 8);
-    	}
-    	else if (d_ksnum >= 0)
-    	{
-    		ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | (d_ksnum << 8);
-    	}
-    	else
-    	{
-    		return -3;
-    	}
-    	
-    	printf("Write KSXY 0x%x\n", ksxy);
-    	crypto->ECC_KSXY = ksxy;
+        if (d_ksnum >= 0x80)
+        {
+            ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | ((d_ksnum - 0x80) << 8);
+        }
+        else if (d_ksnum >= 0)
+        {
+            ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | (d_ksnum << 8);
+        }
+        else
+        {
+            return -3;
+        }
+
+        printf("Write KSXY 0x%x\n", ksxy);
+        crypto->ECC_KSXY = ksxy;
 
 
         /*  4-(3) Write the r to X2 and e to Y2 */
@@ -2290,14 +2291,14 @@ printf("second\n");
         {
             crypto->ECC_Y2[i] = 0UL;
         }
-		Hex2Reg(message, crypto->ECC_Y2);
+        Hex2Reg(message, crypto->ECC_Y2);
 
         /* 4-(4) Set CURVEM(CRYPTO_ECC_CTL[31:22]) to key length  */
         /* 4-(5) Set ECCOP(CRYPTO_ECC_CTL[10:9]) to 01            */
         /* 4-(6) Set ECDSAS(CRYPTO_ECC_CTL[4]) to 1               */
         /* 4-(7) Set START(CRYPTO_ECC_CTL[0]) to 1                */
         /* 4-(8) Wait for BUSY(CRYPTO_ECC_STS[0]) be cleared      */
-        
+
         CRYPTO_DBGMSG("4-(8) Wait for BUSY be cleared...\n");
 
         run_ecc_codec(crypto, ECCOP_MODULE | MODOP_DIV | CRYPTO_ECC_CTL_ECDSAS_Msk, 0);
@@ -2530,7 +2531,7 @@ int32_t  ECC_VerifySignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *mess
             crypto->ECC_X2[i] = 0UL;
         }
         Hex2Reg(pCurve->Eorder, crypto->ECC_X2);
-        
+
         run_ecc_codec(crypto, ECCOP_POINT_MUL, 1);
 
         /* (7) Read X1, Y1 registers to get u1*G */
@@ -2684,7 +2685,7 @@ int32_t  ECC_VerifySignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *mess
   * @return  -3   KS error
   */
 int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message,
-                             int x_ksnum, int y_ksnum, char *R, char *S)
+                                int x_ksnum, int y_ksnum, char *R, char *S)
 {
     uint32_t  temp_result1[18], temp_result2[18];
     uint32_t  temp_x[18], temp_y[18];
@@ -2908,36 +2909,36 @@ int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *m
 
         //Hex2Reg(public_k1, crypto->ECC_X1);
         //Hex2Reg(public_k2, crypto->ECC_Y1);
-		
-		ksxy = CRYPTO_ECC_KSXY_RSRCXY_Msk;
 
-    	if (x_ksnum >= 0x80)
-    	{
-    		ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | (x_ksnum - 0x80);
-    	}
-    	else if (x_ksnum >= 0)
-    	{
-    		ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | (x_ksnum);
-    	}
-    	else 
-    		return -3;
+        ksxy = CRYPTO_ECC_KSXY_RSRCXY_Msk;
 
-    	if (y_ksnum >= 0x80)
-    	{
-    		ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | ((y_ksnum - 0x80) << 8);
-    	}
-    	else if (y_ksnum >= 0)
-    	{
-    		ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | (y_ksnum << 8);
-    	}
-    	else
-    	{
-    		return -3;
-    	}
-    	
-    	printf("Write KSXY 0x%x\n", ksxy);
-    	crypto->ECC_KSXY = ksxy;
-    	
+        if (x_ksnum >= 0x80)
+        {
+            ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | (x_ksnum - 0x80);
+        }
+        else if (x_ksnum >= 0)
+        {
+            ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | (x_ksnum);
+        }
+        else
+            return -3;
+
+        if (y_ksnum >= 0x80)
+        {
+            ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | ((y_ksnum - 0x80) << 8);
+        }
+        else if (y_ksnum >= 0)
+        {
+            ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | (y_ksnum << 8);
+        }
+        else
+        {
+            return -3;
+        }
+
+        printf("Write KSXY 0x%x\n", ksxy);
+        crypto->ECC_KSXY = ksxy;
+
         /* (10) Write u2 to K registers */
         for (i = 0; i < 18; i++)
         {
@@ -3082,32 +3083,32 @@ static int32_t CheckRsaBufferSize(uint32_t u32OpMode, uint32_t u32BufSize, uint3
     {
         switch(u32OpMode)
         {
-            case RSA_MODE_NORMAL:
-                if(u32BufSize != s_au32RsaBufSizeTbl[BUF_NORMAL])
-                    return (-1);
-                break;
-            case RSA_MODE_CRT:
-                if(u32BufSize != s_au32RsaBufSizeTbl[BUF_CRT])
-                    return (-1);
-                break;
-            case RSA_MODE_CRTBYPASS:
-                if(u32BufSize != s_au32RsaBufSizeTbl[BUF_CRTBYPASS])
-                    return (-1);
-                break;
-            case RSA_MODE_SCAP:
-                if(u32BufSize != s_au32RsaBufSizeTbl[BUF_SCAP])
-                    return (-1);
-                break;
-            case RSA_MODE_CRT_SCAP:
-                if(u32BufSize != s_au32RsaBufSizeTbl[BUF_CRT_SCAP])
-                    return (-1);
-                break;
-            case RSA_MODE_CRTBYPASS_SCAP:
-                if(u32BufSize != s_au32RsaBufSizeTbl[BUF_CRTBYPASS_SCAP])
-                    return (-1);
-                break;
-            default:
+        case RSA_MODE_NORMAL:
+            if(u32BufSize != s_au32RsaBufSizeTbl[BUF_NORMAL])
                 return (-1);
+            break;
+        case RSA_MODE_CRT:
+            if(u32BufSize != s_au32RsaBufSizeTbl[BUF_CRT])
+                return (-1);
+            break;
+        case RSA_MODE_CRTBYPASS:
+            if(u32BufSize != s_au32RsaBufSizeTbl[BUF_CRTBYPASS])
+                return (-1);
+            break;
+        case RSA_MODE_SCAP:
+            if(u32BufSize != s_au32RsaBufSizeTbl[BUF_SCAP])
+                return (-1);
+            break;
+        case RSA_MODE_CRT_SCAP:
+            if(u32BufSize != s_au32RsaBufSizeTbl[BUF_CRT_SCAP])
+                return (-1);
+            break;
+        case RSA_MODE_CRTBYPASS_SCAP:
+            if(u32BufSize != s_au32RsaBufSizeTbl[BUF_CRTBYPASS_SCAP])
+                return (-1);
+            break;
+        default:
+            return (-1);
         }
     }
     return 0;
@@ -3347,8 +3348,8 @@ int32_t RSA_SetDMATransfer_KS(CRYPTO_T *crpt, char *Src, char *n, uint32_t u32PN
 
 volatile int  g_CHAPOLY_done = 0;
 /**
-  * @brief  ECC interrupt service routine. User application 
-  *         must invoke this function in his CRYPTO_IRQHandler() 
+  * @brief  ECC interrupt service routine. User application
+  *         must invoke this function in his CRYPTO_IRQHandler()
   *         to let Crypto driver know ECC processing was done.
   * @param[in]  crypto         The pointer of CRYPTO module
   * @return   none
@@ -3356,15 +3357,15 @@ volatile int  g_CHAPOLY_done = 0;
 void CHAPOLY_Complete(CRYPTO_T *crypto)
 {
     if (CHAPOLY_GET_INT_FLAG(crypto))
-	{
+    {
         g_CHAPOLY_done = 1;
         if (crypto->INTSTS & CRYPTO_INTSTS_CHAPOLYEIF_Msk)
         {
             printf("CHAPOLY INTSTS error flag set!!\n");
-		}
+        }
         printf("CHAPOLY INTSTS = 0x%08x !!\n", CRYPTO->CHAPOLY_STS);
-		CHAPOLY_CLR_INT_FLAG(crypto);
-	}
+        CHAPOLY_CLR_INT_FLAG(crypto);
+    }
 }
 
 
@@ -3373,24 +3374,24 @@ void CHAPOLY_Complete(CRYPTO_T *crypto)
   * @param[in]  crypto          The pointer of CRYPTO module
   * @param[in]  key             The pointer of key array
   * @param[in]  nonce           The pointer of nonce array
-  * @param[in]  counter         The block counter 
+  * @param[in]  counter         The block counter
   * @return None
   */
 void CHA_SetKeyandNonce(CRYPTO_T *crypto,  unsigned char *key, unsigned char *nonce, int counter)
 {
-	int i;
-	uint32_t  data32, ctrl = 0;
-	for (i = 0; i < 8; i++) 
+    int i;
+    uint32_t  data32, ctrl = 0;
+    for (i = 0; i < 8; i++)
     {
         crypto->CHAPOLY_KEY[i] = *(uint32_t *)(&key[i * 4]);
-	
-	}
-	for (i = 0; i < 3; i++) 
+
+    }
+    for (i = 0; i < 3; i++)
     {
-		crypto->CHAPOLY_NONCE[i] = *(uint32_t *)(&nonce[i * 4]);
-			
-	}
-	crypto->CHAPOLY_BLOCKCNT = counter;
+        crypto->CHAPOLY_NONCE[i] = *(uint32_t *)(&nonce[i * 4]);
+
+    }
+    crypto->CHAPOLY_BLOCKCNT = counter;
 }
 
 
@@ -3404,13 +3405,13 @@ void CHA_SetKeyandNonce(CRYPTO_T *crypto,  unsigned char *key, unsigned char *no
   */
 void CHA_SetDMATransfer(CRYPTO_T *crypto, uint8_t* u8pInputData,  uint8_t* u8pOutputData, int src_len)
 {
-	crypto->CHAPOLY_SADDR = (uint32_t)u8pInputData;
-	crypto->CHAPOLY_DADDR = (uint32_t)u8pOutputData;
-	crypto->CHAPOLY_CNT = src_len;
-	
-	memset(&u8pInputData[src_len], 0, 4);  // for non-4-bytes-aligned do_swap_to
+    crypto->CHAPOLY_SADDR = (uint32_t)u8pInputData;
+    crypto->CHAPOLY_DADDR = (uint32_t)u8pOutputData;
+    crypto->CHAPOLY_CNT = src_len;
 
-//	  memset(&source[src_len], 0, 4);  // for non-4-bytes-aligned do_swap_to  
+    memset(&u8pInputData[src_len], 0, 4);  // for non-4-bytes-aligned do_swap_to
+
+//	  memset(&source[src_len], 0, 4);  // for non-4-bytes-aligned do_swap_to
 //	  memcpy(u8pInputData, source, src_len);
 }
 
@@ -3423,26 +3424,29 @@ void CHA_SetDMATransfer(CRYPTO_T *crypto, uint8_t* u8pInputData,  uint8_t* u8pOu
   */
 void CHA_Start(CRYPTO_T *crypto, int is_encrypt)
 {
-	 int   i;
-	 uint32_t  data32, ctrl = 0;
-	 g_CHAPOLY_done = 0;
-    	
-   	__DSB();
-   	
-   	if (is_encrypt) {
-   		printf("Is encrypt.\n");
-   		ctrl |= CRYPTO_CHAPOLY_CTL_ENCRYPTO_Msk;
-   	} else {
-   		printf(" Is decrypt.\n");
-	}
-   		
-   crypto->CHAPOLY_CTL = ctrl | (CHAPOLY_MODE_CHACHA20 << CRYPTO_CHAPOLY_CTL_OPMODE_Pos);
-	
-	__DSB();
-   	crypto->CHAPOLY_CTL |=  CRYPTO_CHAPOLY_CTL_DMAEN_Msk | CRYPTO_CHAPOLY_CTL_START_Msk;
+    int   i;
+    uint32_t  data32, ctrl = 0;
+    g_CHAPOLY_done = 0;
+
+    __DSB();
+
+    if (is_encrypt)
+    {
+        printf("Is encrypt.\n");
+        ctrl |= CRYPTO_CHAPOLY_CTL_ENCRYPTO_Msk;
+    }
+    else
+    {
+        printf(" Is decrypt.\n");
+    }
+
+    crypto->CHAPOLY_CTL = ctrl | (CHAPOLY_MODE_CHACHA20 << CRYPTO_CHAPOLY_CTL_OPMODE_Pos);
+
+    __DSB();
+    crypto->CHAPOLY_CTL |=  CRYPTO_CHAPOLY_CTL_DMAEN_Msk | CRYPTO_CHAPOLY_CTL_START_Msk;
 
 #ifdef ENABLE_INTERRUPT
-	while (!g_CHAPOLY_done);
+    while (!g_CHAPOLY_done);
 #else
     while (crypto->CHAPOLY_STS & CRYPTO_CHAPOLY_STS_BUSY_Msk);
 #endif
@@ -3456,16 +3460,16 @@ void CHA_Start(CRYPTO_T *crypto, int is_encrypt)
   */
 void POLY1305_SetKeyandClearNonce(CRYPTO_T *crypto,  unsigned char *key)
 {
-	int  i;
-	uint32_t  ctrl = 0;
-		
+    int  i;
+    uint32_t  ctrl = 0;
+
     memcpy((void*)(crypto->CHAPOLY_KEY), key, 32);
-	for (i = 0; i < 8; i++) 
+    for (i = 0; i < 8; i++)
     {
-	    crypto->CHAPOLY_KEY[i] = *(uint32_t *)(&key[i * 4]);
+        crypto->CHAPOLY_KEY[i] = *(uint32_t *)(&key[i * 4]);
     }
-	for (i = 0; i < 3; i++)
-	    crypto->CHAPOLY_NONCE[i] = 0;
+    for (i = 0; i < 3; i++)
+        crypto->CHAPOLY_NONCE[i] = 0;
 }
 
 /**
@@ -3479,13 +3483,13 @@ void POLY1305_SetKeyandClearNonce(CRYPTO_T *crypto,  unsigned char *key)
 void POLY1305_SetDMATransfer(CRYPTO_T *crypto, uint8_t* u8pInputData,  uint8_t* u8pOutputData, int src_len)
 {
     crypto->CHAPOLY_BLOCKCNT = 0;
-	crypto->CHAPOLY_SADDR = (uint32_t)u8pInputData;
-	crypto->CHAPOLY_DADDR = (uint32_t)u8pOutputData;
-	crypto->CHAPOLY_CNT = src_len;
+    crypto->CHAPOLY_SADDR = (uint32_t)u8pInputData;
+    crypto->CHAPOLY_DADDR = (uint32_t)u8pOutputData;
+    crypto->CHAPOLY_CNT = src_len;
 }
 
 /**
-  * @brief  Start Poly1305 
+  * @brief  Start Poly1305
   * @param[in]  crypto          The pointer of CRYPTO module
   * @param[in]  u8pInputData    The pointer of input data
   * @return None
@@ -3493,41 +3497,41 @@ void POLY1305_SetDMATransfer(CRYPTO_T *crypto, uint8_t* u8pInputData,  uint8_t* 
 void POLY1305_Start(CRYPTO_T *crypto)
 {
     uint32_t  ctrl = 0;
-	  g_CHAPOLY_done = 0;
-    	
-   	__DSB();
-   	
-   	ctrl |= (CHAPOLY_MODE_POLY1305 << CRYPTO_CHAPOLY_CTL_OPMODE_Pos);
-	// ctrl |= CRPT_CHAPOLY_CTL_INSWAP_Msk | CRPT_CHAPOLY_CTL_OUTSWAP_Msk;
+    g_CHAPOLY_done = 0;
 
-   	crypto->CHAPOLY_CTL = ctrl | CRYPTO_CHAPOLY_CTL_DMAEN_Msk | CRYPTO_CHAPOLY_CTL_DMALAST_Msk | CRYPTO_CHAPOLY_CTL_START_Msk;
+    __DSB();
+
+    ctrl |= (CHAPOLY_MODE_POLY1305 << CRYPTO_CHAPOLY_CTL_OPMODE_Pos);
+    // ctrl |= CRPT_CHAPOLY_CTL_INSWAP_Msk | CRPT_CHAPOLY_CTL_OUTSWAP_Msk;
+
+    crypto->CHAPOLY_CTL = ctrl | CRYPTO_CHAPOLY_CTL_DMAEN_Msk | CRYPTO_CHAPOLY_CTL_DMALAST_Msk | CRYPTO_CHAPOLY_CTL_START_Msk;
 
 #ifdef ENABLE_INTERRUPT
-	while (!g_CHAPOLY_done);
+    while (!g_CHAPOLY_done);
 #else
     while (CRYPTO->CHAPOLY_STS & CRYPTO_CHAPOLY_STS_BUSY_Msk);
 #endif
 }
 
 /**
-  * @brief  Start Chachapoly AEAD 
+  * @brief  Start Chachapoly AEAD
   * @param[in]  crypto       The pointer of CRYPTO module
   * @return None
   */
 void CHAPOLY_Start(CRYPTO_T *crypto)
 {
     uint32_t  ctrl = 0;
-	  g_CHAPOLY_done = 0;
-    	
-   	__DSB();
+    g_CHAPOLY_done = 0;
 
-   	ctrl |= ( CHAPOLY_MODE_AEAD<< CRYPTO_CHAPOLY_CTL_OPMODE_Pos);
-	// ctrl |= CRPT_CHAPOLY_CTL_INSWAP_Msk | CRPT_CHAPOLY_CTL_OUTSWAP_Msk;
+    __DSB();
 
-   	crypto->CHAPOLY_CTL = ctrl | CRYPTO_CHAPOLY_CTL_DMAEN_Msk | CRYPTO_CHAPOLY_CTL_DMALAST_Msk | CRYPTO_CHAPOLY_CTL_START_Msk;
+    ctrl |= ( CHAPOLY_MODE_AEAD<< CRYPTO_CHAPOLY_CTL_OPMODE_Pos);
+    // ctrl |= CRPT_CHAPOLY_CTL_INSWAP_Msk | CRPT_CHAPOLY_CTL_OUTSWAP_Msk;
+
+    crypto->CHAPOLY_CTL = ctrl | CRYPTO_CHAPOLY_CTL_DMAEN_Msk | CRYPTO_CHAPOLY_CTL_DMALAST_Msk | CRYPTO_CHAPOLY_CTL_START_Msk;
 
 #ifdef ENABLE_INTERRUPT
-	while (!g_CHAPOLY_done);
+    while (!g_CHAPOLY_done);
 #else
     while (CRYPTO->CHAPOLY_STS & CRYPTO_CHAPOLY_STS_BUSY_Msk);
 #endif
