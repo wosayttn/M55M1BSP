@@ -115,14 +115,21 @@ void SPIM0_IRQHandler(void)
 int SPIM_Tests_Init(void)
 {
     SPIM_T *pSPIMModule = NULL;
+    uint32_t u32SPIMDiv = 0;
 
     pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
-    // SPIM_SET_CLOCK_DIVIDER(pSPIMModule, 10);        /* Set SPIM clock as HCLK divided by 2 */
+    SPIMx_SysReset(GetSPIMTestModuleIdx());
 
-    // SPIM_SET_RXCLKDLY_RDDLYSEL(pSPIMModule, 2);    /* Insert 0 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
-    // SPIM_SET_RXCLKDLY_RDEDGE(pSPIMModule);         /* Use SPI input clock rising edge to sample received data. */
-    // SPIM_SET_DMAR_DC(pSPIMModule, 8);              /* Set 8 dummy cycle. */
+    //SPIM Def. Enable Cipher, First Disable the test.
+    SPIM_DISABLE_CIPHER(pSPIMModule);
+
+    u32SPIMDiv = GetSPIMClkDivNum();
+
+    SPIM_SET_CLOCK_DIVIDER(pSPIMModule, u32SPIMDiv); /* Set SPIM clock as HCLK divided by 2 */
+
+    SPIM_SET_CLOCK_DIVIDER(pSPIMModule, u32SPIMDiv); /* Set SPIM clock as HCLK divided by 2 */
+    printf("SPIM Clock Divider = %ld\r\n", SPIM_GET_CLOCK_DIVIDER(pSPIMModule));
 
     if (SPIM_InitFlash(pSPIMModule, 1) != 0) /* Initialized SPI flash */
     {
@@ -164,7 +171,7 @@ void spim_dma_read(SPIM_T *spim, uint32_t u32Addr, uint32_t u32NRx, uint8_t *pu8
     SPIM_SET_SPIM_MODE(spim, CMD_DMA_FAST_READ);    // SPIM mode.
     CU_ASSERT(SPIM_GET_SPIM_MODE(spim) == CMD_DMA_FAST_READ);
 
-    SPIM_SET_4BYTE_ADDR_EN(spim, 0);            // Enable/disable 4-Byte Address.
+    SPIM_SET_4BYTE_ADDR(spim, 0);            // Enable/disable 4-Byte Address.
 
     spim->SRAMADDR = (uint32_t) pu8RxBuf;       // SRAM u32Address.
     spim->DMACNT = BUFFER_SIZE;                 // Transfer length.
@@ -386,8 +393,6 @@ void MACRO_SPIM_CTL0()
     SPIM_T *pSPIMModule = NULL;
 
     pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
-    //SPIM->KEY1 = SPIM_KEY_1;
-    //SPIM->KEY2 = SPIM_KEY_2;
 
     /*
      *  SPIM_ENABLE_CIPHER()
@@ -425,16 +430,16 @@ void MACRO_SPIM_CTL0()
     CU_ASSERT_FALSE(pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk);
 
     /*
-     *  _SPIM_SET_4BYTE_ADDR_EN(x)
+     *  _SPIM_SET_4BYTE_ADDR(x)
      */
     pSPIMModule->CTL0 = 0;
-    SPIM_SET_4BYTE_ADDR_EN(pSPIMModule, 1);
+    SPIM_SET_4BYTE_ADDR(pSPIMModule, 1);
     CU_ASSERT_TRUE(pSPIMModule->CTL0 & SPIM_CTL0_B4ADDREN_Msk);
-    CU_ASSERT_TRUE(SPIM_GET_4BYTE_ADDR_EN(pSPIMModule));
+    CU_ASSERT_TRUE(SPIM_GET_4BYTE_ADDR(pSPIMModule));
 
-    SPIM_SET_4BYTE_ADDR_EN(pSPIMModule, 0);
+    SPIM_SET_4BYTE_ADDR(pSPIMModule, 0);
     CU_ASSERT_FALSE(pSPIMModule->CTL0 & SPIM_CTL0_B4ADDREN_Msk);
-    CU_ASSERT_FALSE(SPIM_GET_4BYTE_ADDR_EN(pSPIMModule));
+    CU_ASSERT_FALSE(SPIM_GET_4BYTE_ADDR(pSPIMModule));
 
     /*
      *  SPIM_ENABLE_INT()
@@ -466,13 +471,13 @@ void MACRO_SPIM_CTL0()
      */
     pSPIMModule->CTL0 = 0;
     SPIM_SET_BURST_DATA(pSPIMModule, 1);
-    CU_ASSERT(SPIM_GET_BURST_DATA(pSPIMModule) == 0x0);
-    SPIM_SET_BURST_DATA(pSPIMModule, 2);
     CU_ASSERT(SPIM_GET_BURST_DATA(pSPIMModule) == 0x1);
-    SPIM_SET_BURST_DATA(pSPIMModule, 3);
+    SPIM_SET_BURST_DATA(pSPIMModule, 2);
     CU_ASSERT(SPIM_GET_BURST_DATA(pSPIMModule) == 0x2);
-    SPIM_SET_BURST_DATA(pSPIMModule, 4);
+    SPIM_SET_BURST_DATA(pSPIMModule, 3);
     CU_ASSERT(SPIM_GET_BURST_DATA(pSPIMModule) == 0x3);
+    SPIM_SET_BURST_DATA(pSPIMModule, 4);
+    CU_ASSERT(SPIM_GET_BURST_DATA(pSPIMModule) == 0x4);
 
     /*
      *  SPIM_ENABLE_SING_INPUT_MODE()
@@ -1857,8 +1862,6 @@ void SPIM_IO_RW_Func()
 
     pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
-    //SPIM_SET_CLOCK_DIVIDER(pSPIMModule, 10);       /* Set SPIM clock as HCLK divided by 4 */
-
     if (SPIM_InitFlash(pSPIMModule, 1) != 0)        /* Initialized SPI flash */
     {
         printf("SPIM flash initialize failed!\n");
@@ -1872,10 +1875,7 @@ void SPIM_IO_RW_Func()
     /*
      *  Erase flash page
      */
-    //SPIM_EraseBlock(pSPIMModule, 0, 0, OPCODE_BE_64K, 1, 1);
     SPIM_EraseAddrRange(pSPIMModule, 0, 0, FLASH_BLOCK_SIZE, OPCODE_BE_64K, FLASH_BLOCK_SIZE, 1);
-
-    SPIM_SetQuadEnable(pSPIMModule, 1, 1);
 
     /*
      *  Verify flash page be erased
@@ -1902,26 +1902,23 @@ void SPIM_IO_RW_Func()
         }
     }
 
+    popDat(u8TstBuf1, BUFFER_SIZE);
+
     /*
      *  Program data to flash block
      */
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
-        popDat(u8TstBuf1, BUFFER_SIZE);
         //pData = (uint32_t *)u8TstBuf1;
 
         //for (i = 0; i < BUFFER_SIZE; i += 4, pData++)
         //    * pData = (i << 16) | (offset + i);
 
-        SPIM_IO_WritePhase(pSPIMModule,
-                           &gWB_02h_WrCMD,
-                           offset,
-                           u8TstBuf1,
-                           BUFFER_SIZE);
+        SPIM_IO_WritePhase(pSPIMModule, &gWB_02h_WrCMD, offset, u8TstBuf1, BUFFER_SIZE);
         //SPIM_IO_Write(pSPIMModule, offset, 0, BUFFER_SIZE, g_buff, OPCODE_PP, 1, 1, 1);
     }
 
-    popDat(u8TstBuf1, BUFFER_SIZE);
+    printf("SPIM Clock Divider = %ld\r\n", SPIM_GET_CLOCK_DIVIDER(pSPIMModule));
 
     /*
      *  Read and compare flash data
@@ -1929,24 +1926,17 @@ void SPIM_IO_RW_Func()
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
         memset(u8TstBuf2, 0, BUFFER_SIZE);
-        //SPIM_IO_Read(pSPIMModule, offset, 0, BUFFER_SIZE, u8TstBuf2, 0xeb, 1, 4, 4, 3, 0);
+
         SPIM_IO_ReadPhase(pSPIMModule, &gWB_EDh_RdCMD, offset, u8TstBuf2, BUFFER_SIZE);
-        //SPIM_IO_SendCMDPhase(pSPIMModule, SPIM_IO_READ_PHASE, 0xEB, PHASE_NORMAL_MODE, 0);
-        //SPIM_IO_SendAddrPhase(pSPIMModule, 0, offset, PHASE_QUAD_MODE, 0);
-        //SPIM_IO_DCPhase(pSPIMModule, 2, PHASE_QUAD_MODE, 0);
-        //SPIM_IO_SendDummyCycle(pSPIMx, 4);
-        //SPIM_IO_SendDataPhase(pSPIMModule, SPIM_IO_WRITE_PHASE, u8TstBuf2, BUFFER_SIZE, PHASE_QUAD_MODE, 0);
 
         // Compare.
         if (memcmp(u8TstBuf1, u8TstBuf2, BUFFER_SIZE))
         {
             printf("FAILED!\n");
-            //dump_compare_error(offset, u8TstBuf1, u8TstBuf2, BUFFER_SIZE);
+            dump_compare_error(offset, u8TstBuf1, u8TstBuf2, BUFFER_SIZE);
             CU_FAIL();
         }
     }
-
-    SPIM_SetQuadEnable(pSPIMModule, 0, 1);
 
     printf("IO Test done.\n");
     CU_PASS();

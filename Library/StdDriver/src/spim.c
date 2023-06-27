@@ -181,7 +181,7 @@ static int32_t spim_write(SPIM_T *spim, uint8_t pu8TxBuf[], uint32_t u32NTx)
             SPIM_SET_DATA_WIDTH(spim, 32UL);
             SPIM_SET_BURST_DATA(spim, dataNum);
 
-            if (SPIM_WaitSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
+            if (SPIM_WaitSPIMENDone(spim, 1) != SPIM_OK)
             {
                 return SPIM_ERR_TIMEOUT;
             }
@@ -201,7 +201,7 @@ static int32_t spim_write(SPIM_T *spim, uint8_t pu8TxBuf[], uint32_t u32NTx)
             SPIM_SET_DATA_WIDTH(spim, (rnm * 8UL));
             SPIM_SET_BURST_DATA(spim, 1UL);
 
-            if (SPIM_WaitSPIMENDone(spim, 1) == SPIM_ERR_TIMEOUT)
+            if (SPIM_WaitSPIMENDone(spim, 1) != SPIM_OK)
             {
                 return SPIM_ERR_TIMEOUT;
             }
@@ -466,7 +466,7 @@ int32_t SPIM_WaitSPIMENDone(SPIM_T *spim, uint32_t u32IsSync)
         }
         else
         {
-            while (SPIM_WAIT_FREE(spim))
+            while (SPIM_IS_BUSY(spim))
             {
                 if (--i32TimeOutCount <= 0)
                 {
@@ -1488,7 +1488,7 @@ static int32_t SPIM_WriteInPageDataByPageWrite(SPIM_T *spim, uint32_t u32Addr,
 
     SPIM_Set_Write_Enable(spim, 1, 1);                  /* Write Enable. */
 
-    SPIM_SET_4BYTE_ADDR_EN(spim, is4ByteAddr);          /* Enable/disable 4-Byte Address. */
+    SPIM_SET_4BYTE_ADDR(spim, is4ByteAddr);          /* Enable/disable 4-Byte Address. */
 
     SPIM_SET_SPIM_MODE(spim, wrCmd);                    /* SPIM mode. */
     SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEWRITE);  /* Switch to Page Write mode. */
@@ -1825,9 +1825,10 @@ void SPIM_DMADMM_InitPhase(SPIM_T *spim,
  *                      - \ref 1 : write mode and wait write done
  */
 void SPIM_IO_SendDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint8_t *pu8TRxBuf,
-                           uint32_t u32TRxSize, uint32_t u32CMDPhase, uint32_t u32DataPhase, uint32_t u32DTREn)
+                           uint32_t u32TRxSize, uint32_t u32CMDPhase,
+                           uint32_t u32DataPhase, uint32_t u32DTREn)
 {
-    SPIM_SET_DTR_MODE(spim, u32DTREn); /* DTR Activated. */
+    SPIM_SET_DTR_MODE(spim, u32DTREn);              /* DTR Activated. */
     //SPIM_SET_RDQS_MODE(spim, u32DTREn);
 
     if (u32OPMode == SPIM_IO_WRITE_PHASE)
@@ -1845,7 +1846,7 @@ void SPIM_IO_SendDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint8_t *pu8TRxBuf,
     SPIM_SET_DTR_MODE(spim, SPIM_OP_DISABLE);       /* DTR Deactivated. */
     SPIM_SET_RDQS_MODE(spim, SPIM_OP_DISABLE);
 
-    if (u32OPMode == SPIM_IO_WRITE_PHASE)
+    if ((u32OPMode == SPIM_IO_WRITE_PHASE) && (u32TRxSize > 1))
     {
         SPIM_Wait_Write_Done(spim, SPIM_GetIOPhaseSize(u32CMDPhase));
     }
@@ -2034,7 +2035,7 @@ void SPIM_IO_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
     }
 
     SPIM_Enable_4Bytes_Mode(spim, u32Is4ByteAddr, 1, 0);
-    SPIM_SET_4BYTE_ADDR_EN(spim, u32Is4ByteAddr);
+    SPIM_SET_4BYTE_ADDR(spim, u32Is4ByteAddr);
 
     u32PageOffset = u32Addr % 256UL;
 
@@ -2099,7 +2100,7 @@ void SPIM_IO_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
     }
 
     SPIM_Enable_4Bytes_Mode(spim, u32Is4ByteAddr, 1, 0);
-    SPIM_SET_4BYTE_ADDR_EN(spim, u32Is4ByteAddr);
+    SPIM_SET_4BYTE_ADDR(spim, u32Is4ByteAddr);
 
     SPIM_SetQuadEnable(spim,
                        ((psPhaseTable->u32AddrPhase == PHASE_QUAD_MODE) ||
@@ -2198,6 +2199,9 @@ void SPIM_IO_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
   * @param      u32NBitAddr N-bit transmit u32Address.
   * @param      u32NBitDat  N-bit transmit/receive data.
   * @param      u32NDummy   Number of dummy bytes following address.
+  * @param      u32DTREn    Double Data Rate Mode
+  *                         - \ref SPIM_OP_ENABLE
+  *                         - \ref SPIM_OP_DISABLE
   * @return     None.
   */
 void SPIM_IO_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32NRx, uint8_t *pu8RxBuf, uint8_t rdCmd,
@@ -2235,23 +2239,27 @@ void SPIM_IO_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32N
         buf_idx++;
     }
 
+    SPIM_SET_DTR_MODE(spim, u32DTREn);                  /* DTR Activated. */
     SwitchNBitOutput(spim, u32NBitAddr);
     spim_write(spim, cmdBuf, buf_idx);                 /* Write out u32Address. */
 
-    buf_idx = 0UL;
+    //buf_idx = 0UL;
 
-    while (u32NDummy --)
-    {
-        cmdBuf[buf_idx++] = 0x00U;
-    }
+    //while (u32NDummy--)
+    //{
+    //    cmdBuf[buf_idx++] = 0x00U;
+    //}
 
     /* Same bit mode as above. */
-    spim_write(spim, cmdBuf, buf_idx);                 /* Write out dummy bytes. */
+    //spim_write(spim, cmdBuf, buf_idx);                 /* Write out dummy bytes. */
+    SPIM_IO_SendDummyCycle(spim, u32NDummy);           /* Write out dummy bytes. */
 
+    SPIM_SET_DTR_MODE(spim, u32DTREn);                 /* DTR Activated. */
     SwitchNBitInput(spim, u32NBitDat);
     spim_read(spim, pu8RxBuf, u32NRx);                 /* Read back data.  */
 
     SPIM_SET_SS_EN(spim, 0);                           /* CS deactivated.  */
+    SPIM_SET_DTR_MODE(spim, SPIM_OP_DISABLE);          /* DTR Activated. */
 }
 
 /**
@@ -2336,7 +2344,7 @@ int SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
         u32RdCmd = ((u32RdCmd << 8) | u32RdCmd);
     }
 
-    SPIM_SET_4BYTE_ADDR_EN(spim, is4ByteAddr);          /* Enable/disable 4-Byte Address. */
+    SPIM_SET_4BYTE_ADDR(spim, is4ByteAddr);          /* Enable/disable 4-Byte Address. */
 
     SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEREAD);   /* Switch to Page Read mode. */
 
@@ -2393,7 +2401,7 @@ void SPIM_EnterDirectMapMode(SPIM_T *spim, int is4ByteAddr,
         u32RdCmd = ((u32RdCmd << 8) | u32RdCmd);
     }
 
-    SPIM_SET_4BYTE_ADDR_EN(spim, is4ByteAddr);           /* Enable/disable 4-byte u32Address. */
+    SPIM_SET_4BYTE_ADDR(spim, is4ByteAddr);           /* Enable/disable 4-byte u32Address. */
     SPIM_SET_SPIM_MODE(spim, u32RdCmd);                  /* SPIM mode. */
     SPIM_SET_IDL_INTVL(spim, u32IdleIntvl);              /* Idle interval. */
     SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_DIRECTMAP);   /* Switch to Direct Map mode. */

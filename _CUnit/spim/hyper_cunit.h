@@ -32,7 +32,7 @@
 
 //------------------------------------------------------------------------------
 int SPIM_Tests_HyperInit(void);
-void SPIM_HYPER_EraseHRAM(SPIM_T *pSPIMx, uint32_t u32StartAddr, uint32_t u32EraseSize);
+void SPIM_EraseHyperRAM(SPIM_T *pSPIMx, uint32_t u32StartAddr, uint32_t u32EraseSize);
 void TrainingDllLatency();
 
 void SPIM_Const_HYPER_REG();

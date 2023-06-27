@@ -11,7 +11,7 @@
 #define __USPI_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -92,31 +92,28 @@ typedef struct
      * |        |          |1 = Time measurement counter with fDIV_CLK.
      * |[25:16] |CLKDIV    |Clock Divider
      * |        |          |This bit field defines the ratio between the protocol clock frequency fPROT_CLK and the clock divider frequency fDIV_CLK (fDIV_CLK = fPROT_CLK / (CLKDIV+1) ).
-     * |        |          |Note: In UART function, it can be updated by hardware in the 4th falling edge of the input data 0x55 when the auto baud rate function (ABREN(USPI_PROTCTL[6])) is enabled
-     * |        |          |The revised value is the average bit time between bit 5 and bit 6
-     * |        |          |The user can use revised CLKDIV and new BRDETITV (USPI_PROTCTL[24:16]) to calculate the precise baud rate.
      * @var USPI_T::DATIN0
      * Offset: 0x10  USCI Input Data Signal Configuration Register 0
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[0]     |SYNCSEL   |Input Signal Synchronization Selection
-     * |        |          |This bit selects if the un-synchronized input signal (with optionally inverted) or the   synchronized (and optionally filtered) signal can be used as input for the   data shift unit.
+     * |        |          |This bit selects if the un-synchronized input signal (with optionally inverted) or the synchronized (and optionally filtered) signal can be used as input for the data shift unit.
      * |        |          |0 = The un-synchronized signal can be taken as input for the data shift unit.
      * |        |          |1 = The synchronized signal can be taken as input for the data shift unit.
-     * |        |          |Note: In SPI protocol, we suggest this bit   should be set as 0.
+     * |        |          |Note: In SPI protocol, we suggest this bit should be set as 0.
      * |[2]     |ININV     |Input Signal Inverse Selection
      * |        |          |This bit defines the inverter enable of the input asynchronous signal.
      * |        |          |0 = The un-synchronized input signal will not be inverted.
      * |        |          |1 = The un-synchronized input signal will be inverted.
-     * |        |          |Note: In SPI protocol, we suggest this bit   should be set as 0.
+     * |        |          |Note: In SPI protocol, we suggest this bit should be set as 0.
      * @var USPI_T::CTLIN0
      * Offset: 0x20  USCI Input Control Signal Configuration Register 0
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[0]     |SYNCSEL   |Input Synchronization Signal Selection
-     * |        |          |This bit selects if the un-synchronized input signal (with optionally inverted) or the   synchronized (and optionally filtered) signal can be used as input for the   data shift unit.
+     * |        |          |This bit selects if the un-synchronized input signal (with optionally inverted) or the synchronized (and optionally filtered) signal can be used as input for the data shift unit.
      * |        |          |0 = The un-synchronized signal can be taken as input for the data shift unit.
      * |        |          |1 = The synchronized signal can be taken as input for the data shift unit.
      * |        |          |Note: In SPI protocol, we suggest this bit   should be set as 0.
@@ -130,7 +127,7 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[0]     |SYNCSEL   |Input Synchronization Signal Selection
-     * |        |          |This bit selects if the un-synchronized input signal or the synchronized (and   optionally filtered) signal can be used as input for the data shift unit.
+     * |        |          |This bit selects if the un-synchronized input signal or the synchronized (and optionally filtered) signal can be used as input for the data shift unit.
      * |        |          |0 = The un-synchronized signal can be taken as input for the data shift unit.
      * |        |          |1 = The synchronized signal can be taken as input for the data shift unit.
      * |        |          |Note: In SPI protocol, we suggest this bit   should be set as 0.
@@ -150,8 +147,8 @@ typedef struct
      * |        |          |This bit defines the relation between the internal control signal and the output control signal.
      * |        |          |0 = No effect.
      * |        |          |1 = The control signal will be inverted before its output.
-     * |        |          |Note: The control signal has different definitions in different protocol
-     * |        |          |In SPI protocol, the control signal means slave select signal
+     * |        |          |Note: The control signal has different definitions in different protocol.
+     * |        |          |In SPI protocol, the control signal means slave select signal.
      * |[11:8]  |DWIDTH    |Word Length of Transmission
      * |        |          |This bit field defines the data word length (amount of bits) for reception and transmission
      * |        |          |The data word is always right-aligned in the data buffer
@@ -254,13 +251,16 @@ typedef struct
      * |[1]     |TXPDMAEN  |PDMA Transmit Channel Available
      * |        |          |0 = Transmit PDMA function Disabled.
      * |        |          |1 = Transmit PDMA function Enabled.
+     * |        |          |Note 1: In SPI Master mode with full duplex transfer, if both TX and RX PDMA functions are enabled,
+     * |        |          |RX PDMA function cannot be enabled prior to TX PDMA function.User can enable TX PDMA function firstly or enable both functions simultaneously.
+     * |        |          |Note 2: In SPI Master mode with full duplex transfer, if both TX and RX PDMA functions are enabled,
+     * |        |          |TX PDMA function cannot be disabled prior to RX PDMA function.User can disable RX PDMA function firstly or disable both functions simultaneously.
      * |[2]     |RXPDMAEN  |PDMA Receive Channel Available
      * |        |          |0 = Receive PDMA function Disabled.
      * |        |          |1 = Receive PDMA function Enabled.
      * |[3]     |PDMAEN    |PDMA Mode Enable Bit
      * |        |          |0 = PDMA function Disabled.
      * |        |          |1 = PDMA function Enabled.
-     * |        |          |Notice: The I2C is not supporting PDMA function.
      * @var USPI_T::WKCTL
      * Offset: 0x54  USCI Wake-up Control Register
      * ---------------------------------------------------------------------------------------------------
@@ -269,9 +269,6 @@ typedef struct
      * |[0]     |WKEN      |Wake-up Enable Bit
      * |        |          |0 = Wake-up function Disabled.
      * |        |          |1 = Wake-up function Enabled.
-     * |[1]     |WKADDREN  |Wake-up Address Match Enable Bit
-     * |        |          |0 = The chip is woken up according data toggle.
-     * |        |          |1 = The chip is woken up according address match.
      * |[2]     |PDBOPT    |Power Down Blocking Option
      * |        |          |0 = If user attempts to enter Power-down mode by executing WFI while the protocol is in transferring, MCU will stop the transfer and enter Power-down mode immediately.
      * |        |          |1 = If user attempts to enter Power-down mode by executing WFI while the protocol is in transferring, the on-going transfer will not be stopped and MCU will enter idle mode immediately.
@@ -582,9 +579,6 @@ typedef struct
 #define USPI_WKCTL_WKEN_Pos              (0)                                               /*!< USPI_T::WKCTL: WKEN Position           */
 #define USPI_WKCTL_WKEN_Msk              (0x1ul << USPI_WKCTL_WKEN_Pos)                    /*!< USPI_T::WKCTL: WKEN Mask               */
 
-#define USPI_WKCTL_WKADDREN_Pos          (1)                                               /*!< USPI_T::WKCTL: WKADDREN Position       */
-#define USPI_WKCTL_WKADDREN_Msk          (0x1ul << USPI_WKCTL_WKADDREN_Pos)                /*!< USPI_T::WKCTL: WKADDREN Mask           */
-
 #define USPI_WKCTL_PDBOPT_Pos            (2)                                               /*!< USPI_T::WKCTL: PDBOPT Position         */
 #define USPI_WKCTL_PDBOPT_Msk            (0x1ul << USPI_WKCTL_PDBOPT_Pos)                  /*!< USPI_T::WKCTL: PDBOPT Mask             */
 
@@ -671,7 +665,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __USPI_REG_H__ */

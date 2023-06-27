@@ -4,7 +4,7 @@
  * @brief    USCI_SPI driver source file
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include "NuMicro.h"
@@ -49,7 +49,7 @@ uint32_t USPI_Open(USPI_T *uspi, uint32_t u32MasterSlave, uint32_t u32SPIMode,  
 
     if (uspi == (USPI_T *)USPI0)
     {
-        u32Pclk = CLK_GetPCLK0Freq();
+        u32Pclk = CLK_GetPCLK1Freq();
     }
 
     if (u32BusClock != 0ul)
@@ -165,7 +165,7 @@ uint32_t USPI_SetBusClock(USPI_T *uspi, uint32_t u32BusClock)
 
     if (uspi == USPI0)
     {
-        u32Pclk = CLK_GetPCLK0Freq();
+        u32Pclk = CLK_GetPCLK1Freq();
     }
 
     u32ClkDiv = (uint32_t)((((((u32Pclk / 2ul) * 10ul) / (u32BusClock)) + 5ul) / 10ul) - 1ul); /* Compute proper divider for USCI_SPI clock */
@@ -191,7 +191,7 @@ uint32_t USPI_GetBusClock(USPI_T *uspi)
 
     if (uspi == USPI0)
     {
-        u32BusClk = (uint32_t)(CLK_GetPCLK0Freq() / ((u32ClkDiv + 1ul) << 1));
+        u32BusClk = (uint32_t)(CLK_GetPCLK1Freq() / ((u32ClkDiv + 1ul) << 1));
     }
 
     return u32BusClk;

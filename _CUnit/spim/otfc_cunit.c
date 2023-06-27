@@ -239,7 +239,7 @@ void OTFC_KeyFormRegister_Func()
         /*  Erase page and verify                               */
         /*------------------------------------------------------*/
         // Erase accessed address range.
-        SPIM_HYPER_EraseHRAM(pSPIMx, offset, TEST_BUFF_SIZE);
+        SPIM_EraseHyperRAM(pSPIMx, offset, TEST_BUFF_SIZE);
         popDat(u8TstBuf1, TEST_BUFF_SIZE);
 
         OTFC_SetKeyFromKeyReg(pOTFCModule,
@@ -330,7 +330,7 @@ void OTFC_KeyFormKSSRAM_Func()
         /*  Erase page and verify                               */
         /*------------------------------------------------------*/
         // Erase accessed address range.
-        SPIM_HYPER_EraseHRAM(pSPIMx, offset, TEST_BUFF_SIZE);
+        SPIM_EraseHyperRAM(pSPIMx, offset, TEST_BUFF_SIZE);
         popDat(u8TstBuf1, TEST_BUFF_SIZE);
 
         OTFC_ENABLE_PR(pOTFCModule, u32PRx);

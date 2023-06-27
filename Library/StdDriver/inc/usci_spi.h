@@ -4,7 +4,7 @@
  * @brief    USCI_SPI driver header file
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #ifndef __USCI_SPI_H__
