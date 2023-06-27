@@ -425,9 +425,9 @@
               <FilePath>..\..\..\..\Library\StdDriver\src\gpio.c</FilePath>
             </File>
             <File>
-              <FileName>spim.c</FileName>
+              <FileName>spim_hyper.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\spim.c</FilePath>
+              <FilePath>..\..\..\..\Library\StdDriver\src\spim_hyper.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -872,9 +872,9 @@
               <FilePath>..\..\..\..\Library\StdDriver\src\gpio.c</FilePath>
             </File>
             <File>
-              <FileName>spim.c</FileName>
+              <FileName>spim_hyper.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\spim.c</FilePath>
+              <FilePath>..\..\..\..\Library\StdDriver\src\spim_hyper.c</FilePath>
             </File>
           </Files>
         </Group>

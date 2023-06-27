@@ -49,13 +49,13 @@ int SPIM_load_image_to_HyperRAM(SPIM_T *spim, uint32_t image_base, uint32_t imag
 
         printf("\tProgram ...");
 
-        SPIM_DMAWrite_Hyper(spim, u32Addr, pu8SrcBuf, BUFF_SIZE);
+        SPIM_HYPER_DMAWrite(spim, u32Addr, pu8SrcBuf, BUFF_SIZE);
 
         printf("\tVerify ...\r\n");
 
         memset(pu8CmpBuf, 0, BUFF_SIZE);
 
-        SPIM_DMARead_Hyper(spim, u32Addr, pu8CmpBuf, BUFF_SIZE);
+        SPIM_HYPER_DMARead(spim, u32Addr, pu8CmpBuf, BUFF_SIZE);
 
         if (memcmp(pu8SrcBuf, pu8CmpBuf, BUFF_SIZE))
         {
@@ -85,7 +85,7 @@ int SPIM_load_image_to_HyperRAM(SPIM_T *spim, uint32_t image_base, uint32_t imag
 
 int HyperRAM_LoadCodeAndRun(SPIM_T *spim)
 {
-    uint32_t u32DMMAddr = SPIM_GetDirectMapAddress(spim);
+    uint32_t u32DMMAddr = SPIM_HYPER_GetDMMAddress(spim);
 
     if (&UserImageBase_start == &UserImageBase_finish)
     {
@@ -102,7 +102,7 @@ int HyperRAM_LoadCodeAndRun(SPIM_T *spim)
     }
 
     /* Enter direct-mapped mode to run new applications */
-    SPIM_EnterDirectMapMode_Hyper(spim);
+    SPIM_HYPER_EnterDirectMapMode(spim);
 
     func = (FUNC_PTR *)(u32DMMAddr + 1);
     func();

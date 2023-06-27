@@ -22,7 +22,7 @@
   </DaveTm>
 
   <Target>
-    <TargetName>SPIM_CUnit</TargetName>
+    <TargetName>SPIM_Test</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>
@@ -190,7 +190,7 @@
   </Target>
 
   <Target>
-    <TargetName>SPIM_CUnit_PLDM_ICE</TargetName>
+    <TargetName>SPIM_Test_PLDM_ICE</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>
@@ -353,7 +353,7 @@
       <DebugFlag>
         <trace>0</trace>
         <periodic>1</periodic>
-        <aLwin>1</aLwin>
+        <aLwin>0</aLwin>
         <aCover>0</aCover>
         <aSer1>0</aSer1>
         <aSer2>0</aSer2>
@@ -405,7 +405,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</PathWithFileName>
       <FilenameWithoutPath>startup_M55M1.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -417,7 +417,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</PathWithFileName>
       <FilenameWithoutPath>system_M55M1.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -426,7 +426,7 @@
 
   <Group>
     <GroupName>Library</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -437,7 +437,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Library\StdDriver\src\clk.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\Library\StdDriver\src\clk.c</PathWithFileName>
       <FilenameWithoutPath>clk.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -449,7 +449,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Library\StdDriver\src\retarget.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\Library\StdDriver\src\retarget.c</PathWithFileName>
       <FilenameWithoutPath>retarget.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -461,7 +461,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Library\StdDriver\src\sys.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\Library\StdDriver\src\sys.c</PathWithFileName>
       <FilenameWithoutPath>sys.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -473,7 +473,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Library\StdDriver\src\uart.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\Library\StdDriver\src\uart.c</PathWithFileName>
       <FilenameWithoutPath>uart.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -485,7 +485,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Library\StdDriver\src\spim.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\Library\StdDriver\src\spim.c</PathWithFileName>
       <FilenameWithoutPath>spim.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -497,7 +497,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Library\StdDriver\src\gpio.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\Library\StdDriver\src\gpio.c</PathWithFileName>
       <FilenameWithoutPath>gpio.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -509,7 +509,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Library\StdDriver\src\otfc.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\Library\StdDriver\src\otfc.c</PathWithFileName>
       <FilenameWithoutPath>otfc.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -521,7 +521,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Library\StdDriver\src\ks.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\Library\StdDriver\src\ks.c</PathWithFileName>
       <FilenameWithoutPath>ks.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -533,8 +533,20 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Library\StdDriver\src\spim_hyper.c</PathWithFileName>
-      <FilenameWithoutPath>spim_hyper.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\Library\StdDriver\src\crypto.c</PathWithFileName>
+      <FilenameWithoutPath>crypto.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>2</GroupNumber>
+      <FileNumber>12</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\..\..\Library\StdDriver\src\trng.c</PathWithFileName>
+      <FilenameWithoutPath>trng.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -542,22 +554,10 @@
 
   <Group>
     <GroupName>User</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
-    <File>
-      <GroupNumber>3</GroupNumber>
-      <FileNumber>12</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\main.c</PathWithFileName>
-      <FilenameWithoutPath>main.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
     <File>
       <GroupNumber>3</GroupNumber>
       <FileNumber>13</FileNumber>
@@ -565,20 +565,20 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\spim_cunit.c</PathWithFileName>
-      <FilenameWithoutPath>spim_cunit.c</FilenameWithoutPath>
+      <PathWithFileName>..\User\main.c</PathWithFileName>
+      <FilenameWithoutPath>main.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>3</GroupNumber>
       <FileNumber>14</FileNumber>
-      <FileType>4</FileType>
+      <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\common\CUnitTestM55.lib</PathWithFileName>
-      <FilenameWithoutPath>CUnitTestM55.lib</FilenameWithoutPath>
+      <PathWithFileName>..\User\common.c</PathWithFileName>
+      <FilenameWithoutPath>common.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -589,8 +589,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\common.c</PathWithFileName>
-      <FilenameWithoutPath>common.c</FilenameWithoutPath>
+      <PathWithFileName>..\User\RegisterTest.c</PathWithFileName>
+      <FilenameWithoutPath>RegisterTest.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -601,44 +601,120 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\hyper_cunit.c</PathWithFileName>
-      <FilenameWithoutPath>hyper_cunit.c</FilenameWithoutPath>
+      <PathWithFileName>..\User\spim_common.c</PathWithFileName>
+      <FilenameWithoutPath>spim_common.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
+  </Group>
+
+  <Group>
+    <GroupName>otfc</GroupName>
+    <tvExp>0</tvExp>
+    <tvExpOptDlg>0</tvExpOptDlg>
+    <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>3</GroupNumber>
+      <GroupNumber>4</GroupNumber>
       <FileNumber>17</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\otfc_cunit.c</PathWithFileName>
-      <FilenameWithoutPath>otfc_cunit.c</FilenameWithoutPath>
+      <PathWithFileName>..\otfc\otfc_common.c</PathWithFileName>
+      <FilenameWithoutPath>otfc_common.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>3</GroupNumber>
+      <GroupNumber>4</GroupNumber>
       <FileNumber>18</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\otfc_ks.c</PathWithFileName>
-      <FilenameWithoutPath>otfc_ks.c</FilenameWithoutPath>
+      <PathWithFileName>..\otfc\sw_otfc\20221104\otfc_model.c</PathWithFileName>
+      <FilenameWithoutPath>otfc_model.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
+  </Group>
+
+  <Group>
+    <GroupName>spi_flash</GroupName>
+    <tvExp>1</tvExp>
+    <tvExpOptDlg>0</tvExpOptDlg>
+    <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>3</GroupNumber>
+      <GroupNumber>5</GroupNumber>
       <FileNumber>19</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\octal_cunit.c</PathWithFileName>
-      <FilenameWithoutPath>octal_cunit.c</FilenameWithoutPath>
+      <PathWithFileName>..\spi_flash\cmdcode.c</PathWithFileName>
+      <FilenameWithoutPath>cmdcode.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>5</GroupNumber>
+      <FileNumber>20</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\spi_flash\flash_test.c</PathWithFileName>
+      <FilenameWithoutPath>flash_test.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>5</GroupNumber>
+      <FileNumber>21</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\spi_flash\id_test.c</PathWithFileName>
+      <FilenameWithoutPath>id_test.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>5</GroupNumber>
+      <FileNumber>22</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\spi_flash\dma_rw_test.c</PathWithFileName>
+      <FilenameWithoutPath>dma_rw_test.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>5</GroupNumber>
+      <FileNumber>23</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\spi_flash\flash_common.c</PathWithFileName>
+      <FilenameWithoutPath>flash_common.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>5</GroupNumber>
+      <FileNumber>24</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\spi_flash\flash_io_test.c</PathWithFileName>
+      <FilenameWithoutPath>flash_io_test.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

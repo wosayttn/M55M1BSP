@@ -402,8 +402,9 @@ void TrainingDllLatency()
 
     for (u8RdDelay = 0; u8RdDelay <= SPIM_HYPER_MAX_LATENCY; u8RdDelay++)
     {
-        memset(u8TstBuf2, 0, u32TestSize);
         SPIM_HYPER_CtrlDLLDelayTime(pSPIMx, u8RdDelay);
+
+        memset(u8TstBuf2, 0, u32TestSize);
 
         SPIM_HYPER_DMARead(pSPIMx, u32SrcAddr, u8TstBuf2, u32TestSize);
 

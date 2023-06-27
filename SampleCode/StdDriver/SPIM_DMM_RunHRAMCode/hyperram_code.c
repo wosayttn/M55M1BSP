@@ -33,8 +33,8 @@ void HyperRAM_Erase(SPIM_T *spim, uint32_t u32StartAddr, uint32_t u32EraseSize)
 
     for (u32i = 0; u32i <= (u32EraseSize - u32RemainSize); u32i += 2)
     {
-        SPIM_Write2Byte(spim, (u32StartAddr + u32i), 0x0000);
-        u16Data = SPIM_Read1Word(spim, (u32StartAddr + u32i));
+        SPIM_HYPER_Write2Byte(spim, (u32StartAddr + u32i), 0x0000);
+        u16Data = SPIM_HYPER_Read1Word(spim, (u32StartAddr + u32i));
 
         if (u16Data != 0x0000)
         {
@@ -48,8 +48,8 @@ void HyperRAM_Erase(SPIM_T *spim, uint32_t u32StartAddr, uint32_t u32EraseSize)
 
     if (u32RemainSize != 0)
     {
-        SPIM_Write1Byte(spim, (u32StartAddr + (u32EraseSize - 1)), 0x00);
-        u16Data = SPIM_Read1Word(spim, (u32StartAddr + u32EraseSize));
+        SPIM_HYPER_Write1Byte(spim, (u32StartAddr + (u32EraseSize - 1)), 0x00);
+        u16Data = SPIM_HYPER_Read1Word(spim, (u32StartAddr + u32EraseSize));
 
         if ((u16Data & 0xFF) != 0)
         {
@@ -77,7 +77,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     uint32_t u32j;
     uint32_t u32SrcAddr = 0;
     uint32_t u32TestSize = 32;
-    uint32_t u32DMMAddr = SPIM_GetDirectMapAddress(spim);
+    uint32_t u32DMMAddr = SPIM_HYPER_GetDMMAddress(spim);
     int *pi32SrcAddr = (int *)(u32DMMAddr + u32SrcAddr);
 
     /* Erase HyperRAM */
@@ -87,21 +87,21 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     for (u32i = u32SrcAddr; u32i < u32TestSize; u32i++)
     {
         g_au8SrcArray[u32i] = (u32i + 0x01);
-        SPIM_Write1Byte(spim, u32i, g_au8SrcArray[u32i]);
+        SPIM_HYPER_Write1Byte(spim, u32i, g_au8SrcArray[u32i]);
     }
 
-    SPIM_EnterDirectMapMode_Hyper(spim);
+    //SPIM_HYPER_EnterDirectMapMode(spim);
 
     for (u8RdDelay = 0; u8RdDelay <= SPIM_MAX_DLL_LATENCY; u8RdDelay++)
     {
         memset(g_au8DestArray, 0, sizeof(g_au8DestArray));
 
         /* Set DLL calibration to select the valid delay step number */
-        SPIM_CtrlDLLDelayTime(spim, 0, 0, 0, 0, u8RdDelay);
+        SPIM_HYPER_CtrlDLLDelayTime(spim, u8RdDelay);
 
         /* Read Data from HyperRAM */
-        //SPIM_DMARead_Hyper(spim, u32SrcAddr, g_au8DestArray, u32TestSize);
-        memcpy(g_au8DestArray, pi32SrcAddr, u32TestSize);
+        SPIM_HYPER_DMARead(spim, u32SrcAddr, g_au8DestArray, u32TestSize);
+        //memcpy(g_au8DestArray, pi32SrcAddr, u32TestSize);
 
         /* Verify the data and save the number of successful delay steps */
         if (memcmp(g_au8SrcArray, g_au8DestArray, u32TestSize))
@@ -115,7 +115,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
         }
     }
 
-    SPIM_ExitDirectMapMode_Hyper(spim);
+    SPIM_HYPER_ExitDirectMapMode(spim);
 
     /* Sort delay step number */
     for (u32i = 0 ; u32i <= u8RdDelayIdx ; u32i = u32i + 1)
@@ -141,7 +141,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     }
 
     /* Set the number of intermediate delay steps */
-    SPIM_CtrlDLLDelayTime(spim, 0, 0, 0, 0, u8RdDelayRes[u8RdDelayIdx]);
+    SPIM_HYPER_CtrlDLLDelayTime(spim, u8RdDelayRes[u8RdDelayIdx]);
 }
 
 /**
@@ -155,31 +155,31 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
 void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR)
 {
     /* Chip Select Setup Time 2.5 */
-    SPIM_SET_HYPER_CONFIG1_CSST(spim, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
+    SPIM_HYPER_SET_CONFIG1_CSST(spim, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
 
     /* Chip Select Hold Time 3.5 HCLK */
-    SPIM_SET_HYPER_CONFIG1_CSH(spim, SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
+    SPIM_HYPER_SET_CONFIG1_CSH(spim, SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
 
     /* Chip Select High between Transaction as 2 HCLK cycles */
-    SPIM_SET_HYPER_CONFIG1_CSHI(spim, 2);
+    SPIM_HYPER_SET_CONFIG1_CSHI(spim, 2);
 
     /* Chip Select Masximum low time HCLK */
-    SPIMS_SET_HYPER_CONFIG1_CSMAXLT(spim, u32CSMaxLow);
+    SPIM_HYPER_SET_CONFIG1_CSMAXLT(spim, u32CSMaxLow);
 
     /* Initial Device RESETN Low Time 255 */
-    SPIM_SET_HYPER_CONFIG2_RSTNLT(spim, 0xFF);
+    SPIM_HYPER_SET_CONFIG2_RSTNLT(spim, 0xFF);
 
     /* Initial Read Access Time Clock cycle*/
-    SPIM_SET_HYPER_CONFIG2_ACCTRD(spim, u32AcctRD);
+    SPIM_HYPER_SET_CONFIG2_ACCTRD(spim, u32AcctRD);
 
     /* Initial Write Access Time Clock cycle*/
-    SPIM_SET_HYPER_CONFIG2_ACCTWR(spim, u32AcctWR);
+    SPIM_HYPER_SET_CONFIG2_ACCTWR(spim, u32AcctWR);
 }
 
 void HyperRAM_Init(SPIM_T *spim)
 {
     /* Enable SPIM Hyper Bus Mode */
-    SPIM_InitHyper(spim, 1);
+    SPIM_HYPER_Init(spim, 1);
 
 #if (SPIM_CACHE_EN == 1)
     /* Enable SPIM Cache */
@@ -190,7 +190,7 @@ void HyperRAM_Init(SPIM_T *spim)
     SPIM_DISABLE_CIPHER(spim);
 
     /* Reset HyperRAM */
-    SPIM_ResetHyper(spim);
+    SPIM_HYPER_Reset(spim);
 
     /* Set R/W Latency Number */
     SPIM_Hyper_DefaultConfig(spim, 780, 7, 7);
