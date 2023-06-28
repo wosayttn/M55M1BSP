@@ -13,6 +13,10 @@
 /** @addtogroup Standard_Driver Standard Driver
   @{
 */
+#define PHASE_CLR_CMD_Pos               (0)
+#define PHASE_CLR_ADDR_Pos              (8)
+#define PHASE_CLR_READMODE_Pos          (16)
+#define PHASE_CLR_DATA_Pos              (24)
 
 /** @addtogroup SPIM_Driver SPIM Driver
   @{
@@ -1598,7 +1602,8 @@ int32_t SPIM_DMADMM_SetCMDPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NB
         return SPIM_ERR_FAIL;
     }
 
-    *pu32PhaseReg &= ~(0xFF);  /* clear Command phase setting. */
+    /* clear Command phase setting. */
+    *pu32PhaseReg &= ~(0xFFUL << PHASE_CLR_CMD_Pos);
 
     *pu32PhaseReg |= (u32Width << SPIM_PHDMAW_DW_CMD_Pos);
     *pu32PhaseReg |= (u32DTREn << SPIM_PHDMAR_DTR_CMD_Pos);
@@ -1637,7 +1642,8 @@ int32_t SPIM_DMADMM_SetAddrPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32N
         return SPIM_ERR_FAIL;
     }
 
-    *pu32PhaseReg &= ~(0xFF << 8); /* clear Address phase setting. */
+    /* clear Address phase setting. */
+    *pu32PhaseReg &= ~(0xFFUL << PHASE_CLR_ADDR_Pos);
 
     *pu32PhaseReg |= (u32Width << SPIM_PHDMAW_DW_ADDR_Pos);
     *pu32PhaseReg |= (u32NBit << SPIM_PHDMAW_BM_ADDR_Pos);
@@ -1675,7 +1681,8 @@ int32_t SPIM_DMADMM_SetContReadPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t 
         return SPIM_ERR_FAIL;
     }
 
-    *pu32PhaseReg &= ~(0xFF << 16);    /* clear Read Mode phase setting. */
+    /* clear Read Mode phase setting. */
+    *pu32PhaseReg &= ~(0xFFUL << PHASE_CLR_READMODE_Pos);
 
     *pu32PhaseReg |= (u32Width << SPIM_PHDMAR_DW_MODE_Pos);
     *pu32PhaseReg |= (u32NBit << SPIM_PHDMAR_BM_MODE_Pos);
@@ -1728,7 +1735,8 @@ int32_t SPIM_DMADMM_SetDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32N
         return SPIM_ERR_FAIL;
     }
 
-    *pu32PhaseReg &= ~(0xFF << 24);     /* clear Data phase setting. */
+    /* clear Data phase setting. */
+    *pu32PhaseReg &= ~(0xFFUL << PHASE_CLR_DATA_Pos);
 
     *pu32PhaseReg |= (u32DTREn << SPIM_PHDMAR_DTR_DATA_Pos);
     *pu32PhaseReg |= (u32RdDQS << SPIM_PHDMAR_RDQS_DATA_Pos);
