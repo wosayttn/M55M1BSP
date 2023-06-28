@@ -33,22 +33,22 @@ extern "C"
   @{
 */
 
-#define SPIM0_HYPER_DMM_SADDR               (0x80000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
-#define SPIM0_HYPER_DMM_NSADDR              (0x90000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
+#define SPIM_HYPER_DMM0_SADDR               (0x80000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
+#define SPIM_HYPER_DMM0_NSADDR              (0x90000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
 
-#define SPIM1_HYPER_DMM_SADDR               (0x82000000UL)  /*!< SPIM1 DMM mode memory map base secure address    \hideinitializer */
-#define SPIM1_HYPER_DMM_NSADDR              (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
+#define SPIM_HYPER_DMM1_SADDR               (0x82000000UL)  /*!< SPIM1 DMM mode memory map base secure address    \hideinitializer */
+#define SPIM_HYPER_DMM1_NSADDR              (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
 
 #if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM0_Msk)
-#define SPIM0_HYPER_DMM_ADDR                SPIM0_HYPER_DMM_NSADDR
+#define SPIM_HYPER_DMM0_ADDR                SPIM_HYPER_DMM0_NSADDR
 #else
-#define SPIM0_HYPER_DMM_ADDR                SPIM0_HYPER_DMM_SADDR
+#define SPIM_HYPER_DMM0_ADDR                SPIM_HYPER_DMM0_SADDR
 #endif //
 
 #if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM1_Msk)
-#define SPIM1_HYPER_DMM_ADDR                SPIM1_HYPER_DMM_NSADDR
+#define SPIM_HYPER_DMM1_ADDR                SPIM_HYPER_DMM1_NSADDR
 #else
-#define SPIM1_HYPER_DMM_ADDR                SPIM1_HYPER_DMM_SADDR
+#define SPIM_HYPER_DMM1_ADDR                SPIM_HYPER_DMM1_SADDR
 #endif //
 
 #define SPIM_HYPER_DMM_SIZE                 (0x2000000UL)       /*!< DMM mode memory mapping size        \hideinitializer */

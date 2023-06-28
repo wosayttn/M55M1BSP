@@ -33,11 +33,11 @@ uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim)
 
     if (spim == SPIM0)
     {
-        u32DMMAddr = SPIM0_HYPER_DMM_ADDR;
+        u32DMMAddr = SPIM_HYPER_DMM0_ADDR;
     }
     else if (spim == SPIM1)
     {
-        u32DMMAddr = SPIM1_HYPER_DMM_ADDR;
+        u32DMMAddr = SPIM_HYPER_DMM1_ADDR;
     }
 
     return u32DMMAddr;

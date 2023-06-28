@@ -33,22 +33,22 @@ extern "C"
   @{
 */
 
-#define SPIM0_DMM_MAP_SADDR                 (0x80000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
-#define SPIM0_DMM_MAP_NSADDR                (0x90000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
+#define SPIM_DMM0_SADDR                     (0x80000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
+#define SPIM_DMM0_NSADDR                    (0x90000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
 
-#define SPIM1_DMM_MAP_SADDR                 (0x82000000UL)  /*!< SPIM1 DMM mode memory map base secure address    \hideinitializer */
-#define SPIM1_DMM_MAP_NSADDR                (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
+#define SPIM_DMM1_SADDR                     (0x82000000UL)  /*!< SPIM1 DMM mode memory map base secure address    \hideinitializer */
+#define SPIM_DMM1_NSADDR                    (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
 
 #if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM0_Msk)
-#define SPIM0_DMM_MAP_ADDR                  SPIM0_DMM_MAP_NSADDR
+#define SPIM_DMM0_ADDR                      SPIM_DMM0_NSADDR
 #else
-#define SPIM0_DMM_MAP_ADDR                  SPIM0_DMM_MAP_SADDR
+#define SPIM_DMM0_ADDR                      SPIM_DMM0_SADDR
 #endif //
 
 #if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM1_Msk)
-#define SPIM1_DMM_MAP_ADDR                  SPIM1_DMM_MAP_NSADDR
+#define SPIM_DMM1_ADDR                      SPIM_DMM1_NSADDR
 #else
-#define SPIM1_DMM_MAP_ADDR                  SPIM1_DMM_MAP_SADDR
+#define SPIM_DMM1_ADDR                      SPIM_DMM1_SADDR
 #endif //
 
 #define SPIM_DMM_SIZE                       (0x2000000UL)       /*!< DMM mode memory mapping size        \hideinitializer */
@@ -1491,7 +1491,7 @@ void SPIM_IO_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32R
 void SPIM_DMA_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32NTx, uint8_t *pu8TxBuf, uint32_t wrCmd);
 int SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32NRx, uint8_t *pu8RxBuf, uint32_t u32RdCmd, int isSync);
 
-uint32_t SPIM_GetDirectMapAddress(SPIM_T *spim);
+uint32_t SPIM_GetDMMAddress(SPIM_T *spim);
 void SPIM_EnterDirectMapMode(SPIM_T *spim, int is4ByteAddr, uint32_t u32RdCmd, uint32_t u32IdleIntvl);
 void SPIM_ExitDirectMapMode(SPIM_T *spim);
 

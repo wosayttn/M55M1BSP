@@ -13,6 +13,12 @@
   @{
 */
 
+#define QSPI_CLKSEL_HXT            (0x0UL)
+#define QSPI_CLKSEL_APLL0_DIV2     (0x1UL)
+#define QSPI_CLKSEL_PCLK          (0x2UL)
+#define QSPI_CLKSEL_HIRC           (0x3UL)
+#define QSPI_CLKSEL_HIRC48M_DIV4   (0x4UL)
+
 /** @addtogroup QSPI_Driver QSPI Driver
   @{
 */
@@ -21,89 +27,96 @@
   @{
 */
 
-/*Select PCLK as the clock source of QSPI */
-static uint32_t QSPI_GetPCLKSrc(QSPI_T *qspi)
+static void QSPI_SetPCLKSrc(QSPI_T *qspi)
 {
-    uint32_t u32RetValue = 0;
-
     /* Unlock protected registers */
     SYS_UnlockReg();
 
     if (qspi == QSPI0)
     {
         CLK->QSPISEL = (CLK->QSPISEL & (~CLK_QSPISEL_QSPI0SEL_Msk)) | CLK_QSPISEL_QSPI0SEL_PCLK0;
-        u32RetValue = CLK_GetPCLK0Freq();
     }
     else if (qspi == QSPI1)
     {
         CLK->QSPISEL = (CLK->QSPISEL & (~CLK_QSPISEL_QSPI1SEL_Msk)) | CLK_QSPISEL_QSPI1SEL_PCLK2;
-        u32RetValue = CLK_GetPCLK1Freq();
     }
 
     /* Lock protected registers */
     SYS_LockReg();
+}
+
+/*Select PCLK as the clock source of QSPI */
+static uint32_t QSPI_GetPCLKSrc(QSPI_T *qspi)
+{
+    uint32_t u32RetValue = 0;
+
+    if (qspi == QSPI0)
+    {
+        u32RetValue = CLK_GetPCLK0Freq();
+    }
+    else if (qspi == QSPI1)
+    {
+        u32RetValue = CLK_GetPCLK2Freq();
+    }
 
     return u32RetValue;
 }
 
-static uint32_t QSPI_CheckQSPI1ClkSrc(void)
+/**
+ * @brief Check SPI Clock Source Frequency.
+ *
+ * @param spi       The pointer of the specified SPI module.
+ * @return uint32_t Clock Frequency
+ */
+static uint32_t QSPI_CheckClockSource(QSPI_T *qspi)
 {
-    uint32_t u32ClkSrc = 0;
+    uint32_t u32QSPIClkSrcSel = 0ul;
+    uint32_t u32RetValue = 0ul;
 
-    switch (CLK->QSPISEL & CLK_QSPISEL_QSPI1SEL_Msk)
+    /* Get UART clock source selection and UART clock divider number */
+    switch ((uint32_t)qspi)
     {
-        case CLK_QSPISEL_QSPI1SEL_HXT:
-            u32ClkSrc = __HXT; /* Clock source is HXT */
+        case QSPI0_BASE:
+            u32QSPIClkSrcSel = ((CLK->QSPISEL & CLK_QSPISEL_QSPI0SEL_Msk) >> CLK_QSPISEL_QSPI0SEL_Pos);
             break;
 
-        case CLK_QSPISEL_QSPI1SEL_APLL0_DIV2:
-            u32ClkSrc = (CLK_GetAPLL0ClockFreq() >> 1); /* Clock source is PLL */
+        case QSPI1_BASE:
+            u32QSPIClkSrcSel = ((CLK->QSPISEL & CLK_QSPISEL_QSPI1SEL_Msk) >> CLK_QSPISEL_QSPI1SEL_Pos);
             break;
 
-        case CLK_QSPISEL_QSPI1SEL_PCLK2:
-            u32ClkSrc = CLK_GetPCLK2Freq();            /* Clock source is PCLK0 */
-            break;
-
-        case CLK_QSPISEL_QSPI1SEL_HIRC:
-            u32ClkSrc = __HIRC;
-            break;
-
-        case CLK_QSPISEL_QSPI1SEL_HIRC48M_DIV4:
-            u32ClkSrc = (__HIRC48M / 4);
+        default:
+            u32QSPIClkSrcSel = QSPI_CLKSEL_HXT;
             break;
     }
 
-    return u32ClkSrc;
-}
-
-static uint32_t QSPI_CheckQSPI0ClkSrc(void)
-{
-    uint32_t u32ClkSrc = 0;
-
-    switch (CLK->QSPISEL & CLK_QSPISEL_QSPI0SEL_Msk)
+    switch (u32QSPIClkSrcSel)
     {
-        case CLK_QSPISEL_QSPI0SEL_HXT:
-            u32ClkSrc = __HXT; /* Clock source is HXT */
+        case QSPI_CLKSEL_HXT:
+            u32RetValue = __HXT;                            /* Clock source is HXT */
             break;
 
-        case CLK_QSPISEL_QSPI0SEL_APLL0_DIV2:
-            u32ClkSrc = (CLK_GetAPLL0ClockFreq() >> 1); /* Clock source is PLL */
+        case QSPI_CLKSEL_APLL0_DIV2:
+            u32RetValue = (CLK_GetAPLL0ClockFreq() >> 1);   /* Clock source is APLL0 */
             break;
 
-        case CLK_QSPISEL_QSPI0SEL_PCLK0:
-            u32ClkSrc = CLK_GetPCLK0Freq(); /* Clock source is PCLK0 */
+        case QSPI_CLKSEL_PCLK:
+            u32RetValue = QSPI_GetPCLKSrc(qspi);            /* Clock source is PCLK */
             break;
 
-        case CLK_QSPISEL_QSPI0SEL_HIRC:
-            u32ClkSrc = __HIRC;
+        case QSPI_CLKSEL_HIRC:
+            u32RetValue = __HIRC;                           /* Clock source is HIRC 12Mhz */
             break;
 
-        case CLK_QSPISEL_QSPI0SEL_HIRC48M_DIV4:
-            u32ClkSrc = (__HIRC48M / 4);
+        case QSPI_CLKSEL_HIRC48M_DIV4:
+            u32RetValue = (__HIRC48M / 4);                   /* Clock source is HIRC 48Mhz / 4 */
+            break;
+
+        default:
+            u32RetValue = __HXT;                            /* Clock source is HXT */
             break;
     }
 
-    return u32ClkSrc;
+    return u32RetValue;
 }
 
 /**
@@ -153,18 +166,11 @@ uint32_t QSPI_Open(QSPI_T *qspi, uint32_t u32MasterSlave, uint32_t u32QSPIMode, 
         if (u32BusClock >= u32HCLKFreq)
         {
             /* Select PCLK as the clock source of QSPI */
-            QSPI_GetPCLKSrc(qspi);
+            QSPI_SetPCLKSrc(qspi);
         }
 
         /* Check clock source of QSPI */
-        if (qspi == QSPI0)
-        {
-            u32ClkSrc = QSPI_CheckQSPI0ClkSrc();
-        }
-        else if (qspi == QSPI1)
-        {
-            u32ClkSrc = QSPI_CheckQSPI1ClkSrc();
-        }
+        u32ClkSrc = QSPI_CheckClockSource(qspi);
 
         if (u32BusClock >= u32HCLKFreq)
         {
@@ -322,18 +328,11 @@ uint32_t QSPI_SetBusClock(QSPI_T *qspi, uint32_t u32BusClock)
     if (u32BusClock >= u32HCLKFreq)
     {
         /* Select PCLK as the clock source of QSPI */
-        QSPI_GetPCLKSrc(qspi);
+        QSPI_SetPCLKSrc(qspi);
     }
 
     /* Check clock source of QSPI */
-    if (qspi == QSPI0)
-    {
-        u32ClkSrc = QSPI_CheckQSPI0ClkSrc();
-    }
-    else if (qspi == QSPI1)
-    {
-        u32ClkSrc = QSPI_CheckQSPI1ClkSrc();
-    }
+    u32ClkSrc = QSPI_CheckClockSource(qspi);
 
     if (u32BusClock >= u32HCLKFreq)
     {
@@ -408,14 +407,7 @@ uint32_t QSPI_GetBusClock(QSPI_T *qspi)
     u32Div = (qspi->CLKDIV & QSPI_CLKDIV_DIVIDER_Msk) >> QSPI_CLKDIV_DIVIDER_Pos;
 
     /* Check clock source of QSPI */
-    if (qspi == QSPI0)
-    {
-        u32ClkSrc = QSPI_CheckQSPI0ClkSrc();
-    }
-    else if (qspi == QSPI1)
-    {
-        u32ClkSrc = QSPI_CheckQSPI1ClkSrc();
-    }
+    u32ClkSrc = QSPI_CheckClockSource(qspi);
 
     /* Return QSPI bus clock rate */
     return (u32ClkSrc / (u32Div + 1U));

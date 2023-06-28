@@ -2396,17 +2396,17 @@ int SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
   * @param      spim
   * @return     Direct Mapping Address
   */
-uint32_t SPIM_GetDirectMapAddress(SPIM_T *spim)
+uint32_t SPIM_GetDMMAddress(SPIM_T *spim)
 {
     uint32_t u32DMMAddr = 0;
 
     if (spim == SPIM0)
     {
-        u32DMMAddr = SPIM0_DMM_MAP_ADDR;
+        u32DMMAddr = SPIM_DMM0_ADDR;
     }
     else if (spim == SPIM1)
     {
-        u32DMMAddr = SPIM1_DMM_MAP_ADDR;
+        u32DMMAddr = SPIM_DMM1_ADDR;
     }
 
     return u32DMMAddr;
