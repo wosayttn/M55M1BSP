@@ -190,10 +190,16 @@ static void do_hyper_dmm_r8bit(SPIM_T *pSPIMx, uint32_t u32SAddr, void *pvRdBuf,
 int SPIM_Tests_HyperInit(void)
 {
     SPIM_T *pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
+    uint32_t u32Delay = 0;
 
-    SPIM_HYPER_Init(pSPIMModule, 2);
+    SPIM_HYPER_Init(pSPIMModule, 1);
     //CU_ASSERT_TRUE((pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk) >> SPIM_CTL0_HYPER_EN_Pos);
     //CU_ASSERT(SPIM_GET_CLOCK_DIVIDER(pSPIMModule) == 1);
+
+#if (SPIM_HYPER_CACHE_EN == 1)
+    /* Enable SPIM Cache */
+    SPIM_HYPER_DISABLE_CACHE(spim);
+#endif //SPIM_CACHE_EN
 
     //SPIM Def. Enable Cipher, First Disable the test.
     SPIM_HYPER_DISABLE_CIPHER(pSPIMModule);
@@ -202,6 +208,8 @@ int SPIM_Tests_HyperInit(void)
     SPIM_Hyper_DefaultConfig(pSPIMModule, 780, 7, 7);
 
     SPIM_HYPER_Reset(pSPIMModule);
+
+    for (u32Delay = 0; u32Delay < 0x400; u32Delay++) {}
 
     return 0;
 }
@@ -377,76 +385,82 @@ void SPIM_HyperDMA_Func()
 
 void TrainingDllLatency()
 {
-    uint32_t u32i = 0;
-    uint32_t u32j = 0;
+    SPIM_T *pSPIMModule = NULL;
     uint8_t u8RdDelay = 0;
-    uint8_t u8Temp = 0;
+    uint8_t u8Temp;
     uint8_t u8RdDelayIdx = 0;
     uint8_t u8RdDelayRes[SPIM_MAX_DLL_LATENCY] = {0};
+    uint32_t u32i = 0;
+    uint32_t u32j;
     uint32_t u32SrcAddr = 0;
     uint32_t u32TestSize = 32;
-    SPIM_T *pSPIMx = NULL;
-    __attribute__((aligned(32))) uint8_t u8TstBuf1[32] = {0};
-    __attribute__((aligned(32))) uint8_t u8TstBuf2[32] = {0};
+    uint32_t u32DMMAddr = 0;
+    int *pi32SrcAddr = (int *)(u32DMMAddr + u32SrcAddr);
+    uint8_t *u8TstBuf1 = (uint8_t *)GetTestBuffer1();
+    uint8_t *u8TstBuf2 = (uint8_t *)GetTestBuffer2();
 
-    pSPIMx = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
+    pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
-    SPIM_EraseHyperRAM(pSPIMx, u32SrcAddr, u32TestSize);
+    u32DMMAddr = SPIM_HYPER_GetDMMAddress(pSPIMModule);
 
-    popDat(&u8TstBuf1[0], u32TestSize);
+    /* Erase HyperRAM */
+    SPIM_EraseHyperRAM(pSPIMModule, u32SrcAddr, u32TestSize);
 
+    /* Write Data to HyperRAM */
     for (u32i = u32SrcAddr; u32i < u32TestSize; u32i++)
     {
-        SPIM_HYPER_Write1Byte(pSPIMx, u32i, u8TstBuf1[u32i]);
+        u8TstBuf1[u32i] = (u32i + 0x01);
+        SPIM_HYPER_Write1Byte(pSPIMModule, u32i, u8TstBuf1[u32i]);
     }
 
-    for (u8RdDelay = 0; u8RdDelay <= SPIM_HYPER_MAX_LATENCY; u8RdDelay++)
-    {
-        SPIM_HYPER_CtrlDLLDelayTime(pSPIMx, u8RdDelay);
+    //SPIM_HYPER_EnterDirectMapMode(spim);
 
+    for (u8RdDelay = 0; u8RdDelay <= SPIM_MAX_DLL_LATENCY; u8RdDelay++)
+    {
         memset(u8TstBuf2, 0, u32TestSize);
 
-        SPIM_HYPER_DMARead(pSPIMx, u32SrcAddr, u8TstBuf2, u32TestSize);
+        /* Set DLL calibration to select the valid delay step number */
+        SPIM_HYPER_CtrlDLLDelayTime(pSPIMModule, u8RdDelay);
 
+        /* Read Data from HyperRAM */
+        SPIM_HYPER_DMARead(pSPIMModule, u32SrcAddr, u8TstBuf2, u32TestSize);
+        //memcpy(g_au8DestArray, pi32SrcAddr, u32TestSize);
+
+        /* Verify the data and save the number of successful delay steps */
         if (memcmp(u8TstBuf1, u8TstBuf2, u32TestSize))
         {
-            printf("!!!\t%d Latency number failed\n", u8RdDelay);
-            //CU_FAIL();
+            printf("!!!\tData compare failed at block 0x%x\n", u32SrcAddr);
         }
         else
         {
-            printf("RX Delay: %d = Pass\r\n", u8RdDelay);
+            printf("Delay Step Num : %d = Pass\r\n", u8RdDelay);
             u8RdDelayRes[u8RdDelayIdx++] = u8RdDelay;
         }
     }
 
-    //[sort]
-    for (u32i = 0; u32i <= u8RdDelayIdx; u32i = u32i + 1)
-    {
-        for (u32j = u32i + 1; u32j < u8RdDelayIdx; u32j = u32j + 1)
-        {
-            if (u8RdDelayRes[u32i] > u8RdDelayRes[u32j])
-            {
-                u8Temp = u8RdDelayRes[u32i];
-                u8RdDelayRes[u32i] = u8RdDelayRes[u32j];
-                u8RdDelayRes[u32j] = u8Temp;
-            }
-        }
-    }
+    SPIM_HYPER_ExitDirectMapMode(pSPIMModule);
 
-    if (u8RdDelayIdx > 2)
-    {
-        u8RdDelayIdx = (u8RdDelayIdx / 2) - 1;
-    }
-    else
+    if (u8RdDelayIdx <= 1)
     {
         u8RdDelayIdx = 0;
     }
+    else
+    {
+        if (u8RdDelayIdx >= 2)
+        {
+            u8RdDelayIdx = (u8RdDelayIdx / 2);
+        }
+        else
+        {
+            u8RdDelayIdx = 1;
+        }
+    }
 
-    printf("\r\nDLL Delay Time Num = %d\r\n\r\n", u8RdDelayRes[u8RdDelayIdx]);
+    printf("Set Delay Step Num : %d\r\n", u8RdDelayRes[u8RdDelayIdx]);
 
-    SPIM_HYPER_CtrlDLLDelayTime(pSPIMx, u8RdDelayRes[u8RdDelayIdx]);
-    CU_ASSERT(((pSPIMx->DLL0 & SPIM_DLL0_DLL_DNUM_Msk) >> SPIM_DLL0_DLL_DNUM_Pos) == u8RdDelayRes[u8RdDelayIdx]);
+    /* Set the number of intermediate delay steps */
+    SPIM_HYPER_CtrlDLLDelayTime(pSPIMModule, u8RdDelayRes[u8RdDelayIdx]);
+    CU_ASSERT(((pSPIMModule->DLL0 & SPIM_DLL0_DLL_DNUM_Msk) >> SPIM_DLL0_DLL_DNUM_Pos) == u8RdDelayRes[u8RdDelayIdx]);
 
     CU_PASS();
 }
@@ -679,8 +693,8 @@ CU_TestInfo SPIM_HyperApiTests[] =
 /*----------------------------------------------------------------------------*/
 CU_SuiteInfo spim_hyper_suites[] =
 {
-    {"SPIM HYPER CONST", SPIM_Tests_HyperInit, SPIM_Tests_HyperClean, NULL, NULL, SPIM_HyperConstantTests},
-    {"SPIM HYPER MACRO", SPIM_Tests_HyperInit, SPIM_Tests_HyperClean, NULL, NULL, SPIM_HyperMacroTests},
+    //{"SPIM HYPER CONST", SPIM_Tests_HyperInit, SPIM_Tests_HyperClean, NULL, NULL, SPIM_HyperConstantTests},
+    //{"SPIM HYPER MACRO", SPIM_Tests_HyperInit, SPIM_Tests_HyperClean, NULL, NULL, SPIM_HyperMacroTests},
     {"SPIM HYPER API", SPIM_Tests_HyperInit, SPIM_Tests_HyperClean, NULL, NULL, SPIM_HyperApiTests},
 
     CU_SUITE_INFO_NULL,

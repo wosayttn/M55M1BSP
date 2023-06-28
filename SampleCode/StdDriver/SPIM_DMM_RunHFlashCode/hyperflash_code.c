@@ -202,27 +202,20 @@ void SPIM_TrainingDLLDelayTime(SPIM_T *spim)
         }
     }
 
-    /* Sort delay step number */
-    for (u32i = 0 ; u32i <= u8RdDelayIdx ; u32i = u32i + 1)
+    if (u8RdDelayIdx <= 1)
     {
-        for (u32j = u32i + 1 ; u32j < u8RdDelayIdx ; u32j = u32j + 1)
-        {
-            if (u8RdDelayRes[u32i] > u8RdDelayRes[u32j])
-            {
-                u8Temp = u8RdDelayRes[u32i];
-                u8RdDelayRes[u32i] = u8RdDelayRes[u32j];
-                u8RdDelayRes[u32j] = u8Temp;
-            }
-        }
-    }
-
-    if (u8RdDelayIdx > 2)
-    {
-        u8RdDelayIdx = (u8RdDelayIdx / 2) - 1;
+        u8RdDelayIdx = 0;
     }
     else
     {
-        u8RdDelayIdx = 0;
+        if (u8RdDelayIdx >= 2)
+        {
+            u8RdDelayIdx = (u8RdDelayIdx / 2);
+        }
+        else
+        {
+            u8RdDelayIdx = 1;
+        }
     }
 
     /* Set the number of intermediate delay steps */

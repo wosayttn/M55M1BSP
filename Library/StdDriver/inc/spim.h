@@ -593,7 +593,7 @@ typedef enum
 #define SPIM_WAIT_FREE(spim)    \
     while((spim->CTL1 & SPIM_CTL1_SPIMEN_Msk) >> SPIM_CTL1_SPIMEN_Pos)
 
-#if (SPIM_CACHE_EN == 1)
+#if (SPIM_CACHE_EN == 1)    // TESTCHIP_ONLY not support
 /**
  * @brief   Enable cache.
  * \hideinitializer

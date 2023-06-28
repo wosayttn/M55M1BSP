@@ -484,7 +484,7 @@ int32_t SPIM_HYPER_DMAWrite(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8WrBuf, u
     spim->DMACNT = u32NTx;                              /* Transfer length.  */
     spim->FADDR = u32Addr;                              /* Flash u32Address. */
 
-    if (SPIM_HYPER_WaitSPIMENDone(spim, 1) != SPIM_HYPER_OK)
+    if (SPIM_HYPER_WaitSPIMENDone(spim, SPIM_HYPER_ENABLE) != SPIM_HYPER_OK)
     {
         return SPIM_HYPER_ERR_TIMEOUT;
     }
@@ -514,7 +514,7 @@ int32_t SPIM_HYPER_DMARead(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8RdBuf, ui
     spim->DMACNT = u32NRx;                              /* Transfer length. */
     spim->FADDR = u32Addr;                              /* Flash u32Address. */
 
-    if (SPIM_HYPER_WaitSPIMENDone(spim, 1) != SPIM_HYPER_OK)
+    if (SPIM_HYPER_WaitSPIMENDone(spim, SPIM_HYPER_ENABLE) != SPIM_HYPER_OK)
     {
         return SPIM_HYPER_ERR_TIMEOUT;
     }
