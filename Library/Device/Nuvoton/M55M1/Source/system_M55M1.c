@@ -13,11 +13,6 @@
 
 #include "NuMicro.h"
 
-#if defined (__ARM_FEATURE_CMSE) &&  (__ARM_FEATURE_CMSE == 3U)
-    #include "partition_M55M1.h"
-#endif
-
-
 /*----------------------------------------------------------------------------
   Exception / Interrupt Vector table
  *----------------------------------------------------------------------------*/

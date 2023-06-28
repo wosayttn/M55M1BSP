@@ -1,16 +1,14 @@
 /**************************************************************************//**
- * @file     partition_M55M1.h
+ * @file     partition_M55M1_template.h
  * @version  V1.00
- * @brief    Initial Setup for Secure / Non-Secure Attribution Zones for M55M1
+ * @brief    Default Initial Setup for Secure / Non-Secure Attribution Zones for M55M1
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
-#ifndef PARTITION_M55M1_H
-#define PARTITION_M55M1_H
-
-/* Copy template from Library\StdDriver\inc\partition_M55M1.h */
+#ifndef PARTITION_M55M1_TEMPLATE_H
+#define PARTITION_M55M1_TEMPLATE_H
 
 /*
 //-------- <<< Use Configuration Wizard in Context Menu >>> -----------------
@@ -104,7 +102,7 @@
 ; <h> ITCM Configuration
  *---------------------------------------------------------------------*/
 /* Total ITCM Size */
-/* 
+/*
 // <o.0..17> Total ITCM Size
 //  <0x0=>        0 KB
 //  <0x8000=>    32 KB
@@ -130,7 +128,7 @@
 ; <h> DTCM Configuration
  *---------------------------------------------------------------------*/
 /* Total DTCM Size */
-/* 
+/*
 // <o.0..17> Total DTCM Size
 //  <0x0=>        0 KB
 //  <0x8000=>    32 KB
@@ -859,4 +857,4 @@
                 ((SAU_INIT_NSC##n << SAU_RLAR_NSC_Pos)  & SAU_RLAR_NSC_Msk)   | 1U
 
 
-#endif  /* PARTITION_M55M1_H */
+#endif  /* PARTITION_M55M1_TEMPLATE_H */
