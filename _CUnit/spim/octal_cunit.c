@@ -154,7 +154,7 @@ void SPIM_OctalTrainingDllLatency()
 
         memset(u8TstBuf2, 0, u32TestSize);
 
-        SPIM_DMA_ReadPhase(pSPIMx, &gMU_CBh_RdCMD, 0, 0, 32, u8TstBuf2, 1);
+        SPIM_DMA_ReadPhase(pSPIMx, &gMU_CBh_RdCMD, 0, u8TstBuf2, 32, 1);
         CU_ASSERT(pSPIMx->PHDMAR == 0x33003C3A);
 
         if (memcmp(u8TstBuf1, u8TstBuf2, u32TestSize))
@@ -169,27 +169,20 @@ void SPIM_OctalTrainingDllLatency()
         }
     }
 
-    //[sort]
-    for (u32i = 0; u32i <= u8RdDelayIdx; u32i = u32i + 1)
+    if (u8RdDelayIdx <= 1)
     {
-        for (u32j = u32i + 1; u32j < u8RdDelayIdx; u32j = u32j + 1)
-        {
-            if (u8RdDelayRes[u32i] > u8RdDelayRes[u32j])
-            {
-                u8Temp = u8RdDelayRes[u32i];
-                u8RdDelayRes[u32i] = u8RdDelayRes[u32j];
-                u8RdDelayRes[u32j] = u8Temp;
-            }
-        }
-    }
-
-    if (u8RdDelayIdx > 2)
-    {
-        u8RdDelayIdx = (u8RdDelayIdx / 2) - 1;
+        u8RdDelayIdx = 0;
     }
     else
     {
-        u8RdDelayIdx = 0;
+        if (u8RdDelayIdx >= 2)
+        {
+            u8RdDelayIdx = (u8RdDelayIdx / 2);
+        }
+        else
+        {
+            u8RdDelayIdx = 1;
+        }
     }
 
     MT35x_ExitOctalDDRMode(pSPIMx);
@@ -229,10 +222,9 @@ void SPIM_OctalDMA_Func()
     {
         SPIM_DMA_WritePhase(pSPIMModule,
                             &gMU_82h_WrCMD,
-                            is4ByteAddr,
                             offset,
-                            BUFFER_SIZE,
-                            u8TstBuf1);
+                            u8TstBuf1,
+                            BUFFER_SIZE);
 
         //printf("pSPIMx->PHDMAW = 0x%08X\r\n", pSPIMModule->PHDMAW);
         CU_ASSERT(pSPIMModule->PHDMAW == 0x30000401);
@@ -247,10 +239,9 @@ void SPIM_OctalDMA_Func()
         memset(u8TstBuf2, 0, BUFFER_SIZE);
         SPIM_DMA_ReadPhase(pSPIMModule,
                            &gMU_CBh_RdCMD,
-                           is4ByteAddr,
                            offset,
-                           BUFFER_SIZE,
                            u8TstBuf2,
+                           BUFFER_SIZE,
                            1);
 
         //printf("pSPIMx->PHDMAR = 0x%08X\r\n", pSPIMModule->PHDMAR);
@@ -319,10 +310,9 @@ void SPIM_OctalDMM_Func()
 
         SPIM_DMA_WritePhase(pSPIMModule,
                             &gMU_82h_WrCMD,
-                            is4ByteAddr,
                             offset,
-                            BUFFER_SIZE,
-                            u8TstBuf1);
+                            u8TstBuf1,
+                            BUFFER_SIZE);
 
         //printf("pSPIMx->PHDMAW = 0x%08X\r\n", pSPIMModule->PHDMAW);
         CU_ASSERT(pSPIMModule->PHDMAW == 0x30000401);

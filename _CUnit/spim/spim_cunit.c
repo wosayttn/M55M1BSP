@@ -1663,10 +1663,9 @@ int dma_read_write(SPIM_T *spim, int is4ByteAddr)
         //SPIM_DMA_Write(spim, offset, is4ByteAddr, BUFFER_SIZE, u8TstBuf1, WrCmd);
         SPIM_DMA_WritePhase(spim,
                             &gWB_02h_WrCMD,
-                            is4ByteAddr,
                             offset,
-                            BUFFER_SIZE,
-                            u8TstBuf1);
+                            u8TstBuf1,
+                            BUFFER_SIZE);
     }
 
     //printf("pSPIMx->PHDMAW = 0x%08X\r\n", spim->PHDMAW);
@@ -1686,14 +1685,6 @@ int dma_read_write(SPIM_T *spim, int is4ByteAddr)
         SPIM_DMADMM_InitPhase(spim, &gWB_EBh_RdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
 
         SPIM_DMA_Read(spim, offset, is4ByteAddr, BUFFER_SIZE, u8TstBuf2, gWB_EBh_RdCMD.u32CMDCode, 1);
-
-        //SPIM_DMA_ReadPhase(spim,
-        //                   &gWB_EBh_RdCMD,
-        //                   is4ByteAddr,
-        //                   offset,
-        //                   BUFFER_SIZE,
-        //                   u8TstBuf2,
-        //                   1);
 
         //printf("pSPIMx->PHDMAR = 0x%08X\r\n", spim->PHDMAR);
         CU_ASSERT(spim->PHDMAR == 0x20212301);

@@ -277,17 +277,23 @@ void RunTestFunction(S_TestMenu *pTestMenu, uint32_t u32MenuSize, uint32_t u32SP
  * @param pu8TxBuf      Write Data Buffer.
  */
 void SPIM_DMA_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
-                         int is4ByteAddr, uint32_t u32Addr, uint32_t u32WrSize,
-                         uint8_t *pu8TxBuf)
+                         uint32_t u32Addr, uint8_t *pu8TxBuf, uint32_t u32WrSize)
 {
+    uint32_t u32Is4ByteAddr = 0;
+
     if (psPhaseTable != NULL)
     {
         SPIM_DMADMM_InitPhase(spim, psPhaseTable, SPIM_CTL0_OPMODE_PAGEWRITE);
     }
 
+    if (psPhaseTable->u32AddrPhase == PHASE_WIDTH_32)
+    {
+        u32Is4ByteAddr = 1;
+    }
+
     SPIM_DMA_Write(spim,
                    u32Addr,
-                   is4ByteAddr,
+                   u32Is4ByteAddr,
                    u32WrSize,
                    pu8TxBuf,
                    psPhaseTable->u32CMDCode);
@@ -307,17 +313,24 @@ void SPIM_DMA_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
  * @return int32_t
  */
 int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
-                           int is4ByteAddr, uint32_t u32Addr, uint32_t u32RdSize,
-                           uint8_t *pu8RxBuf, int isSync)
+                           uint32_t u32Addr, uint8_t *pu8RxBuf,
+                           uint32_t u32RdSize, int isSync)
 {
+    uint32_t u32Is4ByteAddr = 0;
+
     if (psPhaseTable != NULL)
     {
         SPIM_DMADMM_InitPhase(spim, psPhaseTable, SPIM_CTL0_OPMODE_PAGEREAD);
     }
 
+    if (psPhaseTable->u32AddrPhase == PHASE_WIDTH_32)
+    {
+        u32Is4ByteAddr = 1;
+    }
+
     return SPIM_DMA_Read(spim,
                          u32Addr,
-                         is4ByteAddr,
+                         u32Is4ByteAddr,
                          u32RdSize,
                          pu8RxBuf,
                          psPhaseTable->u32CMDCode,

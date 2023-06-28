@@ -148,25 +148,25 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
 void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR)
 {
     /* Chip Select Setup Time 2.5 */
-    SPIM_HYPER_SET_CONFIG1_CSST(spim, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
+    SPIM_HYPER_SET_CFG1CSST(spim, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
 
     /* Chip Select Hold Time 3.5 HCLK */
-    SPIM_HYPER_SET_CONFIG1_CSH(spim, SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
+    SPIM_HYPER_SET_CFG1CSH(spim, SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
 
     /* Chip Select High between Transaction as 2 HCLK cycles */
-    SPIM_HYPER_SET_CONFIG1_CSHI(spim, 2);
+    SPIM_HYPER_SET_CFG1CSHI(spim, 2);
 
     /* Chip Select Masximum low time HCLK */
-    SPIM_HYPER_SET_CONFIG1_CSMAXLT(spim, u32CSMaxLow);
+    SPIM_HYPER_SET_CFG1CSMAXLT(spim, u32CSMaxLow);
 
     /* Initial Device RESETN Low Time 255 */
-    SPIM_HYPER_SET_CONFIG2_RSTNLT(spim, 0xFF);
+    SPIM_HYPER_SET_CFG2RSTNLT(spim, 0xFF);
 
     /* Initial Read Access Time Clock cycle*/
-    SPIM_HYPER_SET_CONFIG2_ACCTRD(spim, u32AcctRD);
+    SPIM_HYPER_SET_CFG2ACCTRD(spim, u32AcctRD);
 
     /* Initial Write Access Time Clock cycle*/
-    SPIM_HYPER_SET_CONFIG2_ACCTWR(spim, u32AcctWR);
+    SPIM_HYPER_SET_CFG2ACCTWR(spim, u32AcctWR);
 }
 
 void HyperRAM_Init(SPIM_T *spim)

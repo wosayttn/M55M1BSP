@@ -63,21 +63,21 @@ uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim)
   */
 int32_t SPIM_HYPER_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 {
-    int i32Timeout = SPIM_HYPER_TIMEOUT;
+    volatile int i32Timeout = SPIM_HYPER_TIMEOUT;
 
     /* SPIM starts to send DLL reference clock to DLL circuit
        that the frequency is the same as the SPIM output bus clock. */
-    SPIM_HYPER_ENABLE_DLL0_OLDO(spim, 1);
+    SPIM_HYPER_ENABLE_DLL0OLDO(spim, 1);
 
     /* User asserts this control register to 0x1,
        the DLL circuit begins searching for lock with DLL reference clock. */
-    SPIM_HYPER_ENABLE_DLL0_OVRST(spim, 1);
+    SPIM_HYPER_ENABLE_DLL0OVRST(spim, 1);
 
     i32Timeout = SPIM_HYPER_TIMEOUT;
 
     /* Polling the DLL status register DLLCKON to 0x1,
        and the value 0x1 indicates that clock divider circuit inside DLL is enabled. */
-    while (SPIM_HYPER_GET_DLL0_CLKON(spim) != 1)
+    while (SPIM_HYPER_GET_DLL0CLKON(spim) != 1)
     {
         if (i32Timeout-- <= 0)
         {
@@ -89,7 +89,7 @@ int32_t SPIM_HYPER_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 
     /* Polling the DLL status register DLLLOCK to 0x1,
        and the value 0x1 indicates that DLL circuit is in lock state */
-    while (SPIM_HYPER_GET_DLL0_LOCK(spim) != 1)
+    while (SPIM_HYPER_GET_DLL0LOCK(spim) != 1)
     {
         if (i32Timeout-- <= 0)
         {
@@ -101,7 +101,7 @@ int32_t SPIM_HYPER_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 
     /* Polling the DLL status register DLLREADY to 0x1,
        and the value 0x1 indicates that output of DLL circuit is ready. */
-    while (SPIM_HYPER_GET_DLL0_READY(spim) != 1)
+    while (SPIM_HYPER_GET_DLL0READY(spim) != 1)
     {
         if (i32Timeout-- <= 0)
         {
@@ -110,13 +110,13 @@ int32_t SPIM_HYPER_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
     }
 
     /* Set this valid delay number to control register DLL_DNUM. */
-    SPIM_HYPER_SET_DLL0_DELAYNUM(spim, u32DelayNum);
+    SPIM_HYPER_SET_DLL0DNUM(spim, u32DelayNum);
 
     i32Timeout = SPIM_HYPER_TIMEOUT;
 
     /* Polling DLL status register DLL_REF to 1
        to know the updating flow of DLL delay step number is finish or not. */
-    while (SPIM_HYPER_GET_DLL0_REFRESH(spim) != 0)
+    while (SPIM_HYPER_GET_DLL0REF(spim) != 0)
     {
         if (i32Timeout-- <= 0)
         {
@@ -202,7 +202,7 @@ void SPIM_HYPER_Init(SPIM_T *spim, uint32_t u32Div)
     /* Enable SPIM Hyper Bus Mode */
     SPIM_HYPER_ENABLE_HYPMODE(spim);
 
-    SPIM_HYPER_SET_CLOCK_DIVIDER(spim, u32Div);
+    SPIM_HYPER_SET_CLKDIV(spim, u32Div);
 }
 
 /**
@@ -247,21 +247,21 @@ int32_t SPIM_HYPER_ExitHSAndDPD(SPIM_T *spim)
   * @brief      Read hyper chip register space
   * @param      spim
   * @param[in]  u32Addr  Address of hyper chip register space
-  *                 - \ref HYPER_CHIP_ID_REG0       : 0x0000_0000 = Identification Register 0
-  *                 - \ref HYPER_CHIP_ID_REG1       : 0x0000_0002 = Identification Register 1
-  *                 - \ref HYPER_CHIP_CONFIG_REG0   : 0x0000_1000 = Configuration Register 0
-  *                 - \ref HYPER_CHIP_CONFIG_REG1   : 0x0000_1002 = Configuration Register 1
-  * @return     SPIM_HYPER_OK          SPIM operation OK.
+  *                 - \ref HYPER_RAM_ID_REG0       : 0x0000_0000 = Identification Register 0
+  *                 - \ref HYPER_RAM_ID_REG1       : 0x0000_0002 = Identification Register 1
+  *                 - \ref HYPER_RAM_CONFIG_REG0   : 0x0000_1000 = Configuration Register 0
+  *                 - \ref HYPER_RAM_CONFIG_REG1   : 0x0000_1002 = Configuration Register 1
+  * @return     SPIM_HYPER_OK      SPIM operation OK.
   *             SPIM_HYPER_ERR_FAIL    SPIM operation Fail.
   *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
   * @note       This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
   */
 int32_t SPIM_HYPER_ReadHyperRAMReg(SPIM_T *spim, uint32_t u32Addr)
 {
-    if ((u32Addr != SPIM_HYPER_RAM_ID_REG0) &&
-            (u32Addr != SPIM_HYPER_RAM_ID_REG1) &&
-            (u32Addr != SPIM_HYPER_RAM_CONFIG_REG0) &&
-            (u32Addr != SPIM_HYPER_RAM_CONFIG_REG1))
+    if ((u32Addr != HYPER_RAM_ID_REG0) &&
+            (u32Addr != HYPER_RAM_ID_REG1) &&
+            (u32Addr != HYPER_RAM_CONFIG_REG0) &&
+            (u32Addr != HYPER_RAM_CONFIG_REG1))
     {
         return SPIM_HYPER_ERR_FAIL;
     }
@@ -282,22 +282,22 @@ int32_t SPIM_HYPER_ReadHyperRAMReg(SPIM_T *spim, uint32_t u32Addr)
   * @brief      Write Hyper Chip register space
   * @param      spim
   * @param[in]  u32Addr  Address of Hyper Chip register space
-  *                 - \ref HYPER_CHIP_ID_REG0       : 0x0000_0000 = Identification Register 0
-  *                 - \ref HYPER_CHIP_ID_REG1       : 0x0000_0002 = Identification Register 1
-  *                 - \ref HYPER_CHIP_CONFIG_REG0   : 0x0000_1000 = Configuration Register 0
-  *                 - \ref HYPER_CHIP_CONFIG_REG1   : 0x0000_1002 = Configuration Register 1
+  *                 - \ref HYPER_RAM_ID_REG0       : 0x0000_0000 = Identification Register 0
+  *                 - \ref HYPER_RAM_ID_REG1       : 0x0000_0002 = Identification Register 1
+  *                 - \ref HYPER_RAM_CONFIG_REG0   : 0x0000_1000 = Configuration Register 0
+  *                 - \ref HYPER_RAM_CONFIG_REG1   : 0x0000_1002 = Configuration Register 1
   * @param[in]
-  * @return     SPIM_HYPER_OK          SPIM operation OK.
+  * @return     SPIM_HYPER_OK      SPIM operation OK.
   *             SPIM_HYPER_ERR_FAIL    SPIM operation Fail.
   *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
   * @note       This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
   */
 int32_t SPIM_HYPER_WriteHyperRAMReg(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Value)
 {
-    if ((u32Addr != SPIM_HYPER_RAM_ID_REG0) &&
-            (u32Addr != SPIM_HYPER_RAM_ID_REG1) &
-            (u32Addr != SPIM_HYPER_RAM_CONFIG_REG0) &&
-            (u32Addr != SPIM_HYPER_RAM_CONFIG_REG1))
+    if ((u32Addr != HYPER_RAM_ID_REG0) &&
+            (u32Addr != HYPER_RAM_ID_REG1) &
+            (u32Addr != HYPER_RAM_CONFIG_REG0) &&
+            (u32Addr != HYPER_RAM_CONFIG_REG1))
     {
         return SPIM_HYPER_ERR_FAIL;
     }
@@ -363,7 +363,7 @@ int32_t SPIM_HYPER_Read2Word(SPIM_T *spim, uint32_t u32Addr)
   * @param      spim
   * @param[in]  u32Addr  Address of hyper chip space
   * @param[in]  u8Data   8 bits data to be written to hyper chip space
-  * @return     SPIM_HYPER_OK          SPIM operation OK.
+  * @return     SPIM_HYPER_OK      SPIM operation OK.
   *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
   * @note       This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
   */

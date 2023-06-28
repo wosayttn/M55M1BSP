@@ -71,10 +71,10 @@ extern "C"
 #define SPIM_HYPER_ERR_TIMEOUT              (-2L)   /*!< SPIM_HYPER operation abort due to timeout error */
 
 /* HyperRAM Register Address */
-#define SPIM_HYPER_RAM_ID_REG0              (0x00000000)    /* Hyper RAM Identification Register 0. */
-#define SPIM_HYPER_RAM_ID_REG1              (0x00000002)    /* Hyper RAM Identification Register 1. */
-#define SPIM_HYPER_RAM_CONFIG_REG0          (0x00001000)    /* Hyper RAM Configuration Register 0. */
-#define SPIM_HYPER_RAM_CONFIG_REG1          (0x00001002)    /* Hyper RAM Configuration Register 1. */
+#define HYPER_RAM_ID_REG0                   (0x00000000)    /* Hyper RAM Identification Register 0. */
+#define HYPER_RAM_ID_REG1                   (0x00000002)    /* Hyper RAM Identification Register 1. */
+#define HYPER_RAM_CONFIG_REG0               (0x00001000)    /* Hyper RAM Configuration Register 0. */
+#define HYPER_RAM_CONFIG_REG1               (0x00001002)    /* Hyper RAM Configuration Register 1. */
 
 /* SPIM Hyper Mode Command */
 #define SPIM_HYPER_CMD_IDLE                 (0x00000000)    /* Hyper Bus interface is Idle. */
@@ -247,7 +247,7 @@ extern "C"
  *                  - \ref only support 1 or 2
  * \hideinitializer
  */
-#define SPIM_HYPER_SET_CLOCK_DIVIDER(spim, x) \
+#define SPIM_HYPER_SET_CLKDIV(spim, x) \
     (spim->CTL1 = (spim->CTL1 & ~(SPIM_CTL1_DIVIDER_Msk)) | ((x) << SPIM_CTL1_DIVIDER_Pos))
 
 /**
@@ -273,7 +273,7 @@ extern "C"
  *          - \ref SPIM_HYPER_DISABLE
  * \hideinitializer
  */
-#define SPIM_HYPER_ENABLE_DLL0_OLDO(spim, x)  \
+#define SPIM_HYPER_ENABLE_DLL0OLDO(spim, x)  \
     (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLOLDO_Msk)) | (((x) ? 1UL : 0UL) << SPIM_DLL0_DLLOLDO_Pos))
 
 /**
@@ -283,49 +283,49 @@ extern "C"
  *          - \ref SPIM_HYPER_DISABLE
  * \hideinitializer
  */
-#define SPIM_HYPER_ENABLE_DLL0_OVRST(spim, x) \
+#define SPIM_HYPER_ENABLE_DLL0OVRST(spim, x) \
     (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLOVRST_Msk)) | (((x) ? 1UL : 0UL) << SPIM_DLL0_DLLOVRST_Pos))
 
 /**
  * @brief   Get DLL0 Output Valid Counter Reset Done.
  * \hideinitializer
  */
-#define SPIM_HYPER_GET_DLL0_OVRST(spim)  \
+#define SPIM_HYPER_GET_DLL0OVRST(spim)  \
     ((spim->DLL0 & SPIM_DLL0_DLLOVRST_Msk) >> SPIM_DLL0_DLLOVRST_Pos)
 
 /**
  * @brief   Get DLL0 Clock Divider Circuit Status Bit.
  * \hideinitializer
  */
-#define SPIM_HYPER_GET_DLL0_CLKON(spim)  \
+#define SPIM_HYPER_GET_DLL0CLKON(spim)  \
     ((spim->DLL0 & SPIM_DLL0_DLLCLKON_Msk) >> SPIM_DLL0_DLLCLKON_Pos)
 
 /**
  * @brief   Get DLL0 Lock Status Bit.
  * \hideinitializer
  */
-#define SPIM_HYPER_GET_DLL0_LOCK(spim)   \
+#define SPIM_HYPER_GET_DLL0LOCK(spim)   \
     ((spim->DLL0 & SPIM_DLL0_DLLLOCK_Msk) >> SPIM_DLL0_DLLLOCK_Pos)
 
 /**
  * @brief   Get DLL0 Output Ready Status.
  * \hideinitializer
  */
-#define SPIM_HYPER_GET_DLL0_READY(spim)  \
+#define SPIM_HYPER_GET_DLL0READY(spim)  \
     ((spim->DLL0 & SPIM_DLL0_DLLREADY_Msk) >> SPIM_DLL0_DLLREADY_Pos)
 
 /**
  * @brief   Get DLL0 Refresh Status Bit.
  * \hideinitializer
  */
-#define SPIM_HYPER_GET_DLL0_REFRESH(spim)    \
+#define SPIM_HYPER_GET_DLL0REF(spim)    \
     ((spim->DLL0 & SPIM_DLL0_DLL_REF_Msk) >> SPIM_DLL0_DLL_REF_Pos)
 
 /**
  * @brief   Set DLL0 Delay Step Number. It could be 0 ~ 0x1F.
  * \hideinitializer
  */
-#define SPIM_HYPER_SET_DLL0_DELAYNUM(spim, x)    \
+#define SPIM_HYPER_SET_DLL0DNUM(spim, x)    \
     (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLL_DNUM_Msk)) | ((x) << SPIM_DLL0_DLL_DNUM_Pos))
 
 /**
@@ -333,59 +333,46 @@ extern "C"
  *          It could be 0 ~ 0xFFFF.
  * \hideinitializer
  */
-#define SPIM_HYPER_SET_DLL1_OUTVALID(spim, x)    \
+#define SPIM_HYPER_SET_DLL1OVNUM(spim, x)    \
     (spim->DLL1 = (spim->DLL1 & ~(SPIM_DLL1_DLLOVNUM_Msk)) | ((x) << SPIM_DLL1_DLLOVNUM_Pos))
 
 /**
- * @brief   Get Cycle Number of DLL1 Ouput Valid. It could be 0 ~ 0xFFFF.
+ * @brief   Get Cycle Number of between DLL Lock and DLL Output Valid.
  * \hideinitializer
  */
-#define SPIM_HYPER_GET_DLL1_LOCKVALID(spim) \
-    ((spim->DLL1 & SPIM_DLL1_DLLLKNUM_Msk) >> SPIM_DLL1_DLLLKNUM_Pos)
+#define SPIM_HYPER_GET_DLL1OVNUM(spim) \
+    ((spim->DLL1 & SPIM_DLL1_DLLOVNUM_Msk) >> SPIM_DLL1_DLLOVNUM_Pos)
 
 /**
  * @brief   Set Cycle Number between DLL Clock Divider Enable and DLL Lock Valid.
  *          It could be 0 ~ 0xFFFF.
  * \hideinitializer
  */
-#define SPIM_HYPER_SET_DLL1_LOCKVALID(spim, x)  \
+#define SPIM_HYPER_SET_DLL1LKNUM(spim, x)  \
     (spim->DLL1 = (spim->DLL1 & ~(SPIM_DLL1_DLLLKNUM_Msk)) | ((x) << SPIM_DLL1_DLLLKNUM_Pos))
 
 /**
  * @brief   Get Cycle Number between DLL Clock Divider Enable and DLL Lock Valid.
  * \hideinitializer
  */
-#define SPIM_HYPER_GET_DLL1_LOCKVALID(spim) \
+#define SPIM_HYPER_GET_DLL1LKNUM(spim) \
     ((spim->DLL1 & SPIM_DLL1_DLLLKNUM_Msk) >> SPIM_DLL1_DLLLKNUM_Pos)
-
-/**
- * @brief   Get Cycle Number of DLL1 Ouput Valid.
- * \hideinitializer
- */
-#define SPIM_HYPER_GET_DLL1_OUTVALID(spim)   (spim->DLL1 & SPIM_DLL1_DLLOVNUM_Msk)
-
-/**
- * @brief   Set Cycle Number of DLL1 Lock Time. It could be 0 ~ 0xFFFF.
- * \hideinitializer
- */
-#define SPIM_HYPER_SET_DLL1_LOCKTIME(spim, x)    \
-    (spim->DLL1 = (spim->DLL1 & ~(SPIM_DLL1_DLLLKNUM_Msk)) | ((x) << SPIM_DLL1_DLLLKNUM_Pos))
-
-/**
- * @brief   Set Cycle Number of between DLL OLDO Enable and DLL Clock Divider Enable Time.
- *          It could be 0 ~ 0xFFFF.
- * \hideinitializer
- */
-#define SPIM_HYPER_SET_DLL2_CLKONNUM(spim, x)    \
-    (spim->DLL2 = (spim->DLL2 & ~(SPIM_DLL2_CLKONNUM_Msk)) | ((x) << SPIM_DLL2_CLKONNUM_Pos))
 
 /**
  * @brief   Set Cycle Number of between DLL Output Valid and DLL Auto Trim Enable Time.
  *          It could be 0 ~ 0xFFFF.
  * \hideinitializer
  */
-#define SPIM_HYPER_SET_DLL2_TRIMNUM(spim, x) \
+#define SPIM_HYPER_SET_DLL2TRIMNUM(spim, x) \
     (spim->DLL2 = (spim->DLL2 & ~(SPIM_DLL2_TRIMNUM_Msk)) | ((x) << SPIM_DLL2_TRIMNUM_Pos))
+
+/**
+ * @brief   Set Cycle Number of between DLL OLDO Enable and DLL Clock Divider Enable Time.
+ *          It could be 0 ~ 0xFFFF.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_SET_DLL2CLKONNUM(spim, x)    \
+    (spim->DLL2 = (spim->DLL2 & ~(SPIM_DLL2_CLKONNUM_Msk)) | ((x) << SPIM_DLL2_CLKONNUM_Pos))
 
 /**
   * @brief      Set Hyper Chip Select Setup Time to Next CK Rising Edge.
@@ -396,7 +383,7 @@ extern "C"
   *                 - \ref SPIM_HYPER_CONFIG1_CSST_4_5_HCLK : 4.5 HCLK cycles
   * \hideinitializer
   */
-#define SPIM_HYPER_SET_CONFIG1_CSST(spim, x)    \
+#define SPIM_HYPER_SET_CFG1CSST(spim, x)    \
     (spim->HYPER_CONFIG1 = (spim->HYPER_CONFIG1 & ~(SPIM_HYPER_CONFIG1_CSST_Msk)) | \
                            ((x) << SPIM_HYPER_CONFIG1_CSST_Pos))
 
@@ -409,7 +396,7 @@ extern "C"
   *                 - \ref SPIM_HYPER_CONFIG1_CSH_3_5_HCLK : 3.5 HCLK cycles
   * \hideinitializer
   */
-#define SPIM_HYPER_SET_CONFIG1_CSH(spim, x) \
+#define SPIM_HYPER_SET_CFG1CSH(spim, x) \
     (spim->HYPER_CONFIG1 = (spim->HYPER_CONFIG1 & ~(SPIM_HYPER_CONFIG1_CSH_Msk)) | \
                            ((x) << SPIM_HYPER_CONFIG1_CSH_Pos))
 
@@ -419,7 +406,7 @@ extern "C"
                     It could be 2 ~ 16.
   * \hideinitializer
   */
-#define SPIM_HYPER_SET_CONFIG1_CSHI(spim, x)    \
+#define SPIM_HYPER_SET_CFG1CSHI(spim, x)    \
     (spim->HYPER_CONFIG1 = (spim->HYPER_CONFIG1 & ~(SPIM_HYPER_CONFIG1_CSHI_Msk)) | \
                            ((x) << SPIM_HYPER_CONFIG1_CSHI_Pos))
 
@@ -429,14 +416,14 @@ extern "C"
   *                         It could be 1 ~ 2048.
   * \hideinitializer
   */
-#define SPIM_HYPER_SET_CONFIG1_CSMAXLT(spim, u32CsMaxLT)   \
+#define SPIM_HYPER_SET_CFG1CSMAXLT(spim, u32CsMaxLT)   \
     (spim->HYPER_CONFIG1 = (spim->HYPER_CONFIG1 & ~(SPIM_HYPER_CONFIG1_CSMAXLT_Msk)) | \
                            (((u32CsMaxLT) - 1) << SPIM_HYPER_CONFIG1_CSMAXLT_Pos))
 /**
   * @brief  Get Hyper Chip Select Maximum Low Time.
   * \hideinitializer
   */
-#define SPIM_HYPER_GET_CONFIG1_CSMAXLT(spim)    \
+#define SPIM_HYPER_GET_CFG1CSMAXLT(spim)    \
     (((spim->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSMAXLT_Msk) >> SPIM_HYPER_CONFIG1_CSMAXLT_Pos) + 1UL)
 
 /**
@@ -444,7 +431,7 @@ extern "C"
   * @param[in]  x   Initial Access Time. It could be 1 ~ 31.
   * \hideinitializer
   */
-#define SPIM_HYPER_SET_CONFIG2_ACCTWR(spim, x)  \
+#define SPIM_HYPER_SET_CFG2ACCTWR(spim, x)  \
     (spim->HYPER_CONFIG2 = (spim->HYPER_CONFIG2 & ~(SPIM_HYPER_CONFIG2_ACCTWR_Msk)) | \
                            ((x) << SPIM_HYPER_CONFIG2_ACCTWR_Pos))
 
@@ -452,7 +439,7 @@ extern "C"
   * @brief  Get Hyper Chip Initial Read Access Time.
   * \hideinitializer
   */
-#define SPIM_HYPER_GET_CONFIG2_ACCTWR(spim) \
+#define SPIM_HYPER_GET_CFG2ACCTWR(spim) \
     ((spim->HYPER_CONFIG2 & SPIM_HYPER_CONFIG2_ACCTWR_Msk) >> SPIM_HYPER_CONFIG2_ACCTWR_Pos)
 
 /**
@@ -460,7 +447,7 @@ extern "C"
   * @param[in]  u8Value Initial Device RESETN Low Time. It could be 0 ~ 255.
   * \hideinitializer
   */
-#define SPIM_HYPER_SET_CONFIG2_RSTNLT(spim, u8Value)    \
+#define SPIM_HYPER_SET_CFG2RSTNLT(spim, u8Value)    \
     (spim->HYPER_CONFIG2 = (spim->HYPER_CONFIG2 & ~(SPIM_HYPER_CONFIG2_RSTNLT_Msk)) |\
                            ((u8Value) << SPIM_HYPER_CONFIG2_RSTNLT_Pos))
 
@@ -468,7 +455,7 @@ extern "C"
   * @brief  Get Hyper Device RESETN Low Time.
   * \hideinitializer
   */
-#define SPIM_HYPER_GET_CONFIG2_RSTNLT(spim) \
+#define SPIM_HYPER_GET_CFG2RSTNLT(spim) \
     ((spim->HYPER_CONFIG2 & SPIM_HYPER_CONFIG2_RSTNLT_Msk) >> SPIM_HYPER_CONFIG2_RSTNLT_Pos)
 
 /**
@@ -476,7 +463,7 @@ extern "C"
   * @param[in]  x   Initial Access Time. It could be 1 ~ 31.
   * \hideinitializer
   */
-#define SPIM_HYPER_SET_CONFIG2_ACCTRD(spim, x)  \
+#define SPIM_HYPER_SET_CFG2ACCTRD(spim, x)  \
     (spim->HYPER_CONFIG2 = (spim->HYPER_CONFIG2 & ~(SPIM_HYPER_CONFIG2_ACCTRD_Msk)) |   \
                            ((x) << SPIM_HYPER_CONFIG2_ACCTRD_Pos))
 
@@ -484,7 +471,7 @@ extern "C"
   * @brief  Get Hyper Chip Initial Read Access Time.
   * \hideinitializer
   */
-#define SPIM_HYPER_GET_CONFIG2_ACCTRD(spim) \
+#define SPIM_HYPER_GET_CFG2ACCTRD(spim) \
     ((spim->HYPER_CONFIG2 & SPIM_HYPER_CONFIG2_ACCTRD_Msk) >> SPIM_HYPER_CONFIG2_ACCTRD_Pos)
 
 /**
