@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>SPI_CUnit</TargetName>
+      <TargetName>LPSPI_CUnit</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>SPI_CUnit</OutputName>
+          <OutputName>LPSPI_CUnit</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -440,14 +440,14 @@
               <FilePath>..\main.c</FilePath>
             </File>
             <File>
-              <FileName>spi_common.c</FileName>
+              <FileName>lpspi_common.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\spi_common.c</FilePath>
+              <FilePath>..\lpspi_common.c</FilePath>
             </File>
             <File>
-              <FileName>spi_cunit.c</FileName>
+              <FileName>lpspi_cunit.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\spi_cunit.c</FilePath>
+              <FilePath>..\lpspi_cunit.c</FilePath>
             </File>
             <File>
               <FileName>CUnitTestM55.lib</FileName>
@@ -459,7 +459,7 @@
       </Groups>
     </Target>
     <Target>
-      <TargetName>SPI_CUnit_PLDM_ICE</TargetName>
+      <TargetName>LPSPI_CUnit_PLDM_ICE</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
@@ -501,7 +501,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>SPI_Cunit</OutputName>
+          <OutputName>LPSPI_Cunit</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -892,14 +892,14 @@
               <FilePath>..\main.c</FilePath>
             </File>
             <File>
-              <FileName>spi_common.c</FileName>
+              <FileName>lpspi_common.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\spi_common.c</FilePath>
+              <FilePath>..\lpspi_common.c</FilePath>
             </File>
             <File>
-              <FileName>spi_cunit.c</FileName>
+              <FileName>lpspi_cunit.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\spi_cunit.c</FilePath>
+              <FilePath>..\lpspi_cunit.c</FilePath>
             </File>
             <File>
               <FileName>CUnitTestM55.lib</FileName>

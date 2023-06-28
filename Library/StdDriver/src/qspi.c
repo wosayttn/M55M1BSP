@@ -63,24 +63,24 @@ static uint32_t QSPI_GetPCLKSrc(QSPI_T *qspi)
 }
 
 /**
- * @brief Check SPI Clock Source Frequency.
+ * @brief Check QSPI Clock Source Frequency.
  *
- * @param spi       The pointer of the specified SPI module.
+ * @param qspi      The pointer of the specified QSPI module.
  * @return uint32_t Clock Frequency
  */
-static uint32_t QSPI_CheckClockSource(QSPI_T *qspi)
+static uint32_t QSPI_GetModuleClkSrcFrq(QSPI_T *qspi)
 {
     uint32_t u32QSPIClkSrcSel = 0ul;
     uint32_t u32RetValue = 0ul;
 
-    /* Get UART clock source selection and UART clock divider number */
+    /* Get QSPI clock source selection */
     switch ((uint32_t)qspi)
     {
-        case QSPI0_BASE:
+        case (uint32_t)QSPI0:
             u32QSPIClkSrcSel = ((CLK->QSPISEL & CLK_QSPISEL_QSPI0SEL_Msk) >> CLK_QSPISEL_QSPI0SEL_Pos);
             break;
 
-        case QSPI1_BASE:
+        case (uint32_t)QSPI1:
             u32QSPIClkSrcSel = ((CLK->QSPISEL & CLK_QSPISEL_QSPI1SEL_Msk) >> CLK_QSPISEL_QSPI1SEL_Pos);
             break;
 
@@ -170,7 +170,7 @@ uint32_t QSPI_Open(QSPI_T *qspi, uint32_t u32MasterSlave, uint32_t u32QSPIMode, 
         }
 
         /* Check clock source of QSPI */
-        u32ClkSrc = QSPI_CheckClockSource(qspi);
+        u32ClkSrc = QSPI_GetModuleClkSrcFrq(qspi);
 
         if (u32BusClock >= u32HCLKFreq)
         {
@@ -332,7 +332,7 @@ uint32_t QSPI_SetBusClock(QSPI_T *qspi, uint32_t u32BusClock)
     }
 
     /* Check clock source of QSPI */
-    u32ClkSrc = QSPI_CheckClockSource(qspi);
+    u32ClkSrc = QSPI_GetModuleClkSrcFrq(qspi);
 
     if (u32BusClock >= u32HCLKFreq)
     {
@@ -407,7 +407,7 @@ uint32_t QSPI_GetBusClock(QSPI_T *qspi)
     u32Div = (qspi->CLKDIV & QSPI_CLKDIV_DIVIDER_Msk) >> QSPI_CLKDIV_DIVIDER_Pos;
 
     /* Check clock source of QSPI */
-    u32ClkSrc = QSPI_CheckClockSource(qspi);
+    u32ClkSrc = QSPI_GetModuleClkSrcFrq(qspi);
 
     /* Return QSPI bus clock rate */
     return (u32ClkSrc / (u32Div + 1U));

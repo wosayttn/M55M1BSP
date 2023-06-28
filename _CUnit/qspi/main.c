@@ -15,6 +15,7 @@
 #include "Console.h"
 #include "qspi_cunit.h"
 #include "NuMicro.h"
+#include "common.h"
 #include "../pldm_emu.h"
 
 //------------------------------------------------------------------------------
@@ -22,6 +23,23 @@
 void AddTests(void);
 
 //------------------------------------------------------------------------------
+int QSPI_SelectModuleTest(void)
+{
+    uint32_t u32Index = 0;
+    S_TestOption sSelTestSuite[] =
+    {
+        {"QSPI0 Module"},
+        {"QSPI1 Module"},
+    };
+
+    printf("\r\n\r\n");
+    u32Index = GetRequireOptions(sSelTestSuite, sizeof(sSelTestSuite) / sizeof(sSelTestSuite[0]));
+
+    SetQSPIModuleIdx(u32Index);
+
+    return (int)u32Index;
+}
+
 #ifndef __aeabi_assert
 void __aeabi_assert(char const *msg, char const *file, int line)
 {
@@ -116,6 +134,8 @@ int main()
     SYS_Init();
 
     DebugPort_Init();
+
+    QSPI_SelectModuleTest();
 
     /* Got no where to go, just loop forever */
     if (CU_initialize_registry())

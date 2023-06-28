@@ -105,27 +105,27 @@ static uint32_t SPI_GetPCLKFreq(SPI_T *spi)
  * @param spi       The pointer of the specified SPI module.
  * @return uint32_t Clock Frequency
  */
-static uint32_t SPI_CheckClockSource(SPI_T *spi)
+static uint32_t SPI_GetModuleClkkSrcFreq(SPI_T *spi)
 {
     uint32_t u32SPIClkSrcSel = 0ul;
     uint32_t u32RetValue = 0ul;
 
-    /* Get UART clock source selection and UART clock divider number */
+    /* Get SPI clock source selection */
     switch ((uint32_t)spi)
     {
-        case SPI0_BASE:
+        case (uint32_t)SPI0:
             u32SPIClkSrcSel = ((CLK->SPISEL & CLK_SPISEL_SPI0SEL_Msk) >> CLK_SPISEL_SPI0SEL_Pos);
             break;
 
-        case SPI1_BASE:
+        case (uint32_t)SPI1:
             u32SPIClkSrcSel = ((CLK->SPISEL & CLK_SPISEL_SPI1SEL_Msk) >> CLK_SPISEL_SPI1SEL_Pos);
             break;
 
-        case SPI2_BASE:
+        case (uint32_t)SPI2:
             u32SPIClkSrcSel = ((CLK->SPISEL & CLK_SPISEL_SPI2SEL_Msk) >> CLK_SPISEL_SPI2SEL_Pos);
             break;
 
-        case SPI3_BASE:
+        case (uint32_t)SPI3:
             u32SPIClkSrcSel = ((CLK->SPISEL & CLK_SPISEL_SPI3SEL_Msk) >> CLK_SPISEL_SPI3SEL_Pos);
             break;
 
@@ -220,7 +220,7 @@ uint32_t SPI_Open(SPI_T *spi, uint32_t u32MasterSlave, uint32_t u32SPIMode, uint
         }
 
         /* Check clock source of SPI */
-        u32ClkSrc = SPI_CheckClockSource(spi);
+        u32ClkSrc = SPI_GetModuleClkkSrcFreq(spi);
 
         if (u32BusClock >= u32HCLKFreq)
         {
@@ -394,7 +394,7 @@ uint32_t SPI_SetBusClock(SPI_T *spi, uint32_t u32BusClock)
     }
 
     /* Check clock source of SPI */
-    u32ClkSrc = SPI_CheckClockSource(spi);
+    u32ClkSrc = SPI_GetModuleClkkSrcFreq(spi);
 
     if (u32BusClock >= u32HCLKFreq)
     {
@@ -468,7 +468,7 @@ uint32_t SPI_GetBusClock(SPI_T *spi)
     u32Div = ((spi->CLKDIV & SPI_CLKDIV_DIVIDER_Msk) >> SPI_CLKDIV_DIVIDER_Pos);
 
     /* Check clock source of SPI */
-    u32ClkSrc = SPI_CheckClockSource(spi);
+    u32ClkSrc = SPI_GetModuleClkkSrcFreq(spi);
 
     /* Return SPI bus clock rate */
     return (u32ClkSrc / (u32Div + 1U));
@@ -931,7 +931,7 @@ static uint32_t SPII2S_GetSourceClockFreq(SPI_T *i2s)
 {
     uint32_t u32Freq = 0;
 
-    u32Freq = SPI_CheckClockSource(i2s);
+    u32Freq = SPI_GetModuleClkkSrcFreq(i2s);
 
     return u32Freq;
 }

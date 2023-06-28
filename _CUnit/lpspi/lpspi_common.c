@@ -3,10 +3,10 @@
 
 #include "NuMicro.h"
 #include "PinConfig.h"
-#include "spi_common.h"
+#include "lpspi_common.h"
 
 //------------------------------------------------------------------------------
-char *GetTestSPIName(uint32_t u32Index)
+char *GetTestLPSPIName(uint32_t u32Index)
 {
     switch (u32Index)
     {
@@ -107,7 +107,7 @@ void LPSPI_CLK_Sel(uint32_t u32SPIModule, uint32_t u32ClkSrc)
             printf("\r\n");
             printf("===================================================\r\n");
             printf("%s initiation failed, please check your configuration\r\n",
-                   GetTestSPIName(u32SPIModule));
+                   GetTestLPSPIName(u32SPIModule));
             printf("===================================================\r\n");
             printf("\r\n");
 

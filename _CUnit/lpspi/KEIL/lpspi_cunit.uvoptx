@@ -22,7 +22,7 @@
   </DaveTm>
 
   <Target>
-    <TargetName>SPI_CUnit</TargetName>
+    <TargetName>LPSPI_CUnit</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>
@@ -198,7 +198,7 @@
   </Target>
 
   <Target>
-    <TargetName>SPI_CUnit_PLDM_ICE</TargetName>
+    <TargetName>LPSPI_CUnit_PLDM_ICE</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>
@@ -510,8 +510,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\spi_common.c</PathWithFileName>
-      <FilenameWithoutPath>spi_common.c</FilenameWithoutPath>
+      <PathWithFileName>..\lpspi_common.c</PathWithFileName>
+      <FilenameWithoutPath>lpspi_common.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -522,8 +522,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\spi_cunit.c</PathWithFileName>
-      <FilenameWithoutPath>spi_cunit.c</FilenameWithoutPath>
+      <PathWithFileName>..\lpspi_cunit.c</PathWithFileName>
+      <FilenameWithoutPath>lpspi_cunit.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

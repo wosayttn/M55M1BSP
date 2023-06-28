@@ -62,18 +62,18 @@ static uint32_t LPSPI_GetPCLKSrc(LPSPI_T *lpspi)
 /**
  * @brief Check LPSPI Clock Source Frequency.
  *
- * @param lpspi       The pointer of the specified SPI module.
+ * @param lpspi     The pointer of the specified LPSPI module.
  * @return uint32_t Clock Frequency
  */
-static uint32_t LPSPI_CheckClockSource(LPSPI_T *lpspi)
+static uint32_t LPSPI_GetModuleClkSrcFreq(LPSPI_T *lpspi)
 {
     uint32_t u32LPSPIClkSrcSel = 0ul;
     uint32_t u32RetValue = 0ul;
 
-    /* Get UART clock source selection and UART clock divider number */
+    /* Get LPSPI clock source selection */
     switch ((uint32_t)lpspi)
     {
-        case LPSPI0_BASE:
+        case (uint32_t)LPSPI0:
             u32LPSPIClkSrcSel = ((CLK->LPSPISEL & CLK_LPSPISEL_LPSPI0SEL_Msk) >> CLK_LPSPISEL_LPSPI0SEL_Pos);
             break;
 
@@ -152,7 +152,7 @@ uint32_t LPSPI_Open(LPSPI_T *lpspi, uint32_t u32MasterSlave, uint32_t u32LPSPIMo
         }
 
         /* Check clock source of LPSPI */
-        u32ClkSrc = LPSPI_CheckClockSource(lpspi);
+        u32ClkSrc = LPSPI_GetModuleClkSrcFreq(lpspi);
 
         if (u32BusClock >= u32HCLKFreq)
         {
@@ -306,7 +306,7 @@ uint32_t LPSPI_SetBusClock(LPSPI_T *lpspi, uint32_t u32BusClock)
     }
 
     /* Check clock source of SPI */
-    u32ClkSrc = LPSPI_CheckClockSource(lpspi);
+    u32ClkSrc = LPSPI_GetModuleClkSrcFreq(lpspi);
 
     if (u32BusClock >= u32HCLKFreq)
     {
@@ -382,7 +382,7 @@ uint32_t LPSPI_GetBusClock(LPSPI_T *lpspi)
     u32Div = (lpspi->CLKDIV & LPSPI_CLKDIV_DIVIDER_Msk) >> LPSPI_CLKDIV_DIVIDER_Pos;
 
     /* Check clock source of LPSPI */
-    u32ClkSrc = LPSPI_CheckClockSource(lpspi);
+    u32ClkSrc = LPSPI_GetModuleClkSrcFreq(lpspi);
 
     /* Return LPSPI bus clock rate */
     return (u32ClkSrc / (u32Div + 1U));

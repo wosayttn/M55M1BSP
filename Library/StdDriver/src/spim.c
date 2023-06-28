@@ -1756,9 +1756,7 @@ int32_t SPIM_DMADMM_SetDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32N
  *                      - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
  *                      - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
  */
-void SPIM_DMADMM_InitPhase(SPIM_T *spim,
-                           SPIM_PHASE_T *psPhaseTable,
-                           uint32_t u32OPMode)
+void SPIM_DMADMM_InitPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, uint32_t u32OPMode)
 {
     uint32_t u32RDQSOn = 0;
     uint32_t u32Is4ByteAddr = 0;
