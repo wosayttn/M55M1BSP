@@ -300,7 +300,7 @@ uint32_t LPTMR_GetModuleClock(LPTMR_T *lptmr)
 
     if (u32Src == 0UL)
     {
-        u32Clk = CLK_GetPCLK2Freq();
+        u32Clk = CLK_GetPCLK4Freq();
     }
     else
     {

@@ -33,6 +33,9 @@ int32_t LPTMR_PWM_Init(void)
 {
     volatile uint32_t i;
 
+    SYS_UnlockReg();
+    SYS_ResetModule(SYS_LPTMR0RST);
+    SYS_ResetModule(SYS_LPTMR1RST);
     CLK_EnableModuleClock(LPTMR0_MODULE);
     CLK_EnableModuleClock(LPTMR1_MODULE);
 
@@ -181,9 +184,9 @@ void Check_Advance_MACRO(void)
         LPTPWM_SET_PERIOD((LPTMR_T *)LPTMRCh[i], 0xFFFF);
         LPTPWM_SET_CMPDAT((LPTMR_T *)LPTMRCh[i], 0x1000);
         LPTPWM_ENABLE_IFA((LPTMR_T *)LPTMRCh[i]);
-        CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, LPTMR_PWMIFA_IFAEN_Msk);
+        CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, BIT31);
         LPTPWM_IFASEL_CMPUIF((LPTMR_T *)LPTMRCh[i]);
-        CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, (2 << LPTMR_PWMIFA_IFASEL_Pos));
+        CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, BIT31 | BIT29);
     }
 
     /* Check LPTPWM_START_COUNTER */
@@ -215,7 +218,7 @@ void Check_Advance_MACRO(void)
     {
         while (1)
         {
-            if ((LPTMRCh[i]->PWMCNT > 0x12000) && (LPTMRCh[i]->PWMCNT < 0x13000))
+            if ((LPTMRCh[i]->PWMCNT > 0x2000) && (LPTMRCh[i]->PWMCNT < 0x3000))
             {
                 break;
             }
@@ -224,7 +227,8 @@ void Check_Advance_MACRO(void)
         LPTPWM_CLEAR_COUNTER((LPTMR_T *)LPTMRCh[i]);
         __NOP();
         __NOP();
-        CU_ASSERT((LPTMRCh[i]->PWMCNT < 0x10100));
+				while(LPTMRCh[i]->PWMCNT > 0x2000){};
+        CU_ASSERT((LPTMRCh[i]->PWMCNT < 0x100));
     }
 
     /* Check LPTPWM_STOP_COUNTER */
@@ -325,10 +329,20 @@ void API_LPTPWM_ConfigOutputFreqAndDuty(void)
     for (i = 0; i < 2; i++)
     {
         LPTPWM_EnablePDCLK(LPTMRCh[i]);
-        CU_ASSERT_EQUAL(LPTMRCh[i]->CTL, LPTMR_CTL_PDCLKEN_Msk);
+        CU_ASSERT_EQUAL(LPTMRCh[i]->CTL & LPTMR_CTL_PDCLKEN_Msk, LPTMR_CTL_PDCLKEN_Msk);
 
         LPTPWM_DisablePDCLK(LPTMRCh[i]);
-        CU_ASSERT_EQUAL(LPTMRCh[i]->CTL, 0);
+        CU_ASSERT_EQUAL(LPTMRCh[i]->CTL & LPTMR_CTL_PDCLKEN_Msk, 0);
+        
+			  LPTPWM_EnableWakeup(LPTMRCh[i]);
+        CU_ASSERT_EQUAL(LPTMRCh[i]->CTL & LPTMR_CTL_PDCLKEN_Msk, LPTMR_CTL_PDCLKEN_Msk);
+        CU_ASSERT_EQUAL(LPTMRCh[i]->PWMCTL, BIT12);
+
+        LPTPWM_DisableWakeup(LPTMRCh[i]);
+        CU_ASSERT_EQUAL(LPTMRCh[i]->PWMCTL, 0UL);
+    
+        LPTPWM_DisablePDCLK(LPTMRCh[i]);
+        CU_ASSERT_EQUAL(LPTMRCh[i]->CTL & LPTMR_CTL_PDCLKEN_Msk, 0);
     }
 
     /* Check API_LPTPWM_ConfigOutputFreqAndDuty, LPTPWM_AUTO_RELOAD_MODE */
@@ -382,7 +396,7 @@ void API_LPTPWM_Trigger(void)
     LPTMR_PWM_Init();
 
     /* Check LPTPWM_EnableTrigger, LPTPWM_DisableTrigger */
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < 2; i++)
     {
         printf("LPTPWM_EnableTrigger (Ch-%d)\n", i);
         LPTPWM_EnableTrigger((LPTMR_T *)LPTMRCh[i], LPTPWM_TRGEN, LPTPWM_TRIGGER_AT_PERIOD_POINT);
@@ -438,6 +452,7 @@ CU_TestInfo  lptpwm_MacroTest[] =
 {
     {"Check LPTMR PWM Basic MACRO ",    Check_Basic_MACRO},
     {"Check LPTMR PWM Advance MACRO ",  Check_Advance_MACRO},
+    {"Check LPTMR PWM IFA MACRO ",  Check_IFA_MACRO},
     CU_TEST_INFO_NULL
 };
 

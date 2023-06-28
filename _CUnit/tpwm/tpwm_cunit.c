@@ -35,6 +35,7 @@ int32_t TIMER_PWM_Init(void)
 {
     volatile uint32_t i;
 
+    SYS_UnlockReg();
     SYS_ResetModule(SYS_TMR0RST);
     SYS_ResetModule(SYS_TMR1RST);
     SYS_ResetModule(SYS_TMR2RST);

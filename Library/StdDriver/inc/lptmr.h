@@ -76,8 +76,8 @@ extern "C"
 
 #define LPTMR_TRGSRC_TIMEOUT_EVENT              (0UL << LPTMR_TRGCTL_TRGSSEL_Pos)       /*!< Select internal trigger source from lptmr time-out event \hideinitializer */
 #define LPTMR_TRGSRC_CAPTURE_EVENT              (1UL << LPTMR_TRGCTL_TRGSSEL_Pos)       /*!< Select internal trigger source from lptmr capture event \hideinitializer */
-#define LPTMR_TRGSEL_CAPTURE_EVENT              LPTMR_TRGSRC_TIMEOUT_EVENT
-#define LPTMR_TRGSEL_TIMEOUT_EVENT              LPTMR_TRGSRC_CAPTURE_EVENT
+#define LPTMR_TRGSEL_TIMEOUT_EVENT              LPTMR_TRGSRC_TIMEOUT_EVENT
+#define LPTMR_TRGSEL_CAPTURE_EVENT              LPTMR_TRGSRC_CAPTURE_EVENT
 
 #define LPTMR_TRGEN                             (LPTMR_TRGCTL_TRGEN_Msk)                /*!< Each lptmr event to trigger Low Power IP \hideinitializer */
 #define LPTMR_TRG_TO_LPPDMA                     (LPTMR_TRGCTL_TRGLPPDMA_Msk)            /*!< Each lptmr event to trigger PDMA transfer \hideinitializer */
