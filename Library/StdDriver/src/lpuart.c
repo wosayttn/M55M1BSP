@@ -50,9 +50,6 @@ void LPUART_ClearIntFlag(LPUART_T *lpuart, uint32_t u32InterruptFlag)
     {
         lpuart->MODEMSTS |= LPUART_MODEMSTS_CTSDETF_Msk;
     }
-    else
-    {
-    }
 
     if (u32InterruptFlag & LPUART_INTSTS_BUFERRINT_Msk)  /* Clear Buffer Error Interrupt */
     {
@@ -106,7 +103,6 @@ void LPUART_DisableFlowCtrl(LPUART_T *lpuart)
  *    @param[in]    lpuart                The pointer of the specified LPUART module.
  *    @param[in]    u32InterruptFlag    The specified interrupt of LPUART module.
  *                                      - \ref LPUART_INTEN_WKIEN_Msk      : Wake-up interrupt
- *                                      - \ref LPUART_INTEN_LINIEN_Msk     : Lin bus interrupt
  *                                      - \ref LPUART_INTEN_BUFERRIEN_Msk  : Buffer Error interrupt
  *                                      - \ref LPUART_INTEN_RXTOIEN_Msk    : Rx time-out interrupt
  *                                      - \ref LPUART_INTEN_MODEMIEN_Msk   : Modem status interrupt
@@ -174,7 +170,7 @@ void LPUART_EnableInt(LPUART_T  *lpuart, uint32_t u32InterruptFlag)
 /**
  *    @brief        Open and set LPUART function
  *
- *    @param[in]    lpuart            The pointer of the specified LPUART module.
+ *    @param[in]    lpuart          The pointer of the specified LPUART module.
  *    @param[in]    u32baudrate     The baudrate of LPUART module.
  *
  *    @return       None
@@ -234,7 +230,7 @@ void LPUART_Open(LPUART_T *lpuart, uint32_t u32baudrate)
 /**
  *    @brief        Read LPUART data
  *
- *    @param[in]    lpuart            The pointer of the specified LPUART module.
+ *    @param[in]    lpuart          The pointer of the specified LPUART module.
  *    @param[in]    pu8RxBuf        The buffer to receive the data of receive FIFO.
  *    @param[in]    u32ReadBytes    The the read bytes number of data.
  *
@@ -283,7 +279,7 @@ uint32_t LPUART_Read(LPUART_T *lpuart, uint8_t pu8RxBuf[], uint32_t u32ReadBytes
 /**
  *    @brief        Set LPUART line configuration
  *
- *    @param[in]    lpuart            The pointer of the specified LPUART module.
+ *    @param[in]    lpuart          The pointer of the specified LPUART module.
  *    @param[in]    u32baudrate     The register value of baudrate of LPUART module.
  *                                  If u32baudrate = 0, LPUART baudrate will not change.
  *    @param[in]    u32data_width   The data length of LPUART module.
@@ -354,7 +350,7 @@ void LPUART_SetLineConfig(LPUART_T *lpuart, uint32_t u32baudrate, uint32_t u32da
 /**
  *    @brief        Set Rx timeout count
  *
- *    @param[in]    lpuart    The pointer of the specified LPUART module.
+ *    @param[in]    lpuart  The pointer of the specified LPUART module.
  *    @param[in]    u32TOC  Rx timeout counter.
  *
  *    @return       None
