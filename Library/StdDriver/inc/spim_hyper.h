@@ -60,9 +60,6 @@ extern "C"
 
 #define SPIM_HYPER_CACHE_EN                 (0)                 /*!< SPIM_HYPER cache on/off    \hideinitializer */
 
-/* SPIM_HYPER Operation mode. */
-#define SPIM_HYPER_MODE                     (0x1)   /* SPIROM operates in HYPER Device mode. */
-
 /* SPIM_HYPER Wait State Timeout Counter. */
 #define SPIM_HYPER_TIMEOUT                  SystemCoreClock /*!< SPIM_HYPER time-out counter (1 second time-out) */
 
@@ -180,7 +177,39 @@ extern "C"
  * \hideinitializer
  */
 #define SPIM_HYPER_ENABLE_HYPMODE(spim)   \
-    (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_HYPER_EN_Msk)) | (SPIM_HYPER_MODE << SPIM_CTL0_HYPER_EN_Pos))
+    (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_HYPER_EN_Msk)) | (SPIM_CTL0_HYPER_EN_Msk))
+
+/**
+ * @brief       Set operation mode.
+ * @param[in]   x   SPI Function Operation Mode
+ *                  - \ref SPIM_CTL0_OPMODE_IO
+ *                  - \ref SPIM_CTL0_OPMODE_PAGEWRITE
+ *                  - \ref SPIM_CTL0_OPMODE_PAGEREAD
+ *                  - \ref SPIM_CTL0_OPMODE_DIRECTMAP
+ * \hideinitializer
+ */
+#define SPIM_HYPER_SET_OPMODE(spim, x)    \
+    (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_OPMODE_Msk)) | (x))
+
+/**
+ * @brief   Get operation mode.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_GET_OPMODE(spim)   \
+    ((spim->CTL0 & SPIM_CTL0_OPMODE_Msk) >> SPIM_CTL0_OPMODE_Pos)
+
+/**
+ * @brief   Start operation.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_SET_GO(spim)   (spim->CTL1 |= SPIM_CTL1_SPIMEN_Msk)
+
+/**
+ * @brief   Is engine busy.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_IS_BUSY(spim)  \
+    ((spim->CTL1 & SPIM_CTL1_SPIMEN_Msk) >> SPIM_CTL1_SPIMEN_Pos)
 
 #if (SPIM_HYPER_CACHE_EN == 1)
 /**
@@ -210,13 +239,25 @@ extern "C"
 #endif //SPIM_HYPER_CACHE_EN
 
 /**
+ * @brief       Set SPIM clock divider.
+ * @param[in]   x   Clock Divider Register
+ *                  SPI Flash For DTR commands
+ *                  - \ref only 1, 2, 4, 8, 16, 32,….
+ *                  Hyper Device Mode
+ *                  - \ref only support 1 or 2
+ * \hideinitializer
+ */
+#define SPIM_HYPER_SET_CLOCK_DIVIDER(spim, x) \
+    (spim->CTL1 = (spim->CTL1 & ~(SPIM_CTL1_DIVIDER_Msk)) | ((x) << SPIM_CTL1_DIVIDER_Pos))
+
+/**
  * @brief   Stop DMM mode Transfer.
  * \hideinitializer
  */
 #define SPIM_HYPER_ENABLE_DMMDONE(spim)   (spim->DMMCTL |= SPIM_DMMCTL_HYPDONE_Msk)
 
 /**
- * @brief   Wait DMM mode complete to stop TX/RX.
+ * @brief   Get DMM mode complete to stop TX/RX.
  * \hideinitializer
  */
 #define SPIM_HYPER_GET_DMMDONE(spim)  \
@@ -226,7 +267,10 @@ extern "C"
 /* SPIM_DLLx constant definitions                                            */
 /*----------------------------------------------------------------------------*/
 /**
- * @brief   Set DLL0 OLDO Enable Bit, 0: Disable, 1: Enable.
+ * @brief   Set DLL0 OLDO Enable Bit
+ * @param x is DLL circuit power mode.
+ *          - \ref SPIM_HYPER_ENABLE
+ *          - \ref SPIM_HYPER_DISABLE
  * \hideinitializer
  */
 #define SPIM_HYPER_ENABLE_DLL0_OLDO(spim, x)  \
@@ -234,44 +278,47 @@ extern "C"
 
 /**
  * @brief   Set DLL0 Output Valid Counter Reset.
+ * @param x is starts to count from 0x0 to DLLOVNUM
+ *          - \ref SPIM_HYPER_ENABLE
+ *          - \ref SPIM_HYPER_DISABLE
  * \hideinitializer
  */
 #define SPIM_HYPER_ENABLE_DLL0_OVRST(spim, x) \
     (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLOVRST_Msk)) | (((x) ? 1UL : 0UL) << SPIM_DLL0_DLLOVRST_Pos))
 
 /**
- * @brief   Wait DLL0 Output Valid Counter Reset Done.
+ * @brief   Get DLL0 Output Valid Counter Reset Done.
  * \hideinitializer
  */
-#define SPIM_HYPER_WAIT_DLL0_OVRST(spim)  \
+#define SPIM_HYPER_GET_DLL0_OVRST(spim)  \
     ((spim->DLL0 & SPIM_DLL0_DLLOVRST_Msk) >> SPIM_DLL0_DLLOVRST_Pos)
 
 /**
- * @brief   Wait DLL0 Clock Divider Circuit Status Bit.
+ * @brief   Get DLL0 Clock Divider Circuit Status Bit.
  * \hideinitializer
  */
-#define SPIM_HYPER_WAIT_DLL0_CLKON(spim)  \
+#define SPIM_HYPER_GET_DLL0_CLKON(spim)  \
     ((spim->DLL0 & SPIM_DLL0_DLLCLKON_Msk) >> SPIM_DLL0_DLLCLKON_Pos)
 
 /**
- * @brief   Wait DLL0 Lock Status Bit.
+ * @brief   Get DLL0 Lock Status Bit.
  * \hideinitializer
  */
-#define SPIM_HYPER_WAIT_DLL0_LOCK(spim)   \
+#define SPIM_HYPER_GET_DLL0_LOCK(spim)   \
     ((spim->DLL0 & SPIM_DLL0_DLLLOCK_Msk) >> SPIM_DLL0_DLLLOCK_Pos)
 
 /**
- * @brief   Wait DLL0 Output Ready Status.
+ * @brief   Get DLL0 Output Ready Status.
  * \hideinitializer
  */
-#define SPIM_HYPER_WAIT_DLL0_READY(spim)  \
+#define SPIM_HYPER_GET_DLL0_READY(spim)  \
     ((spim->DLL0 & SPIM_DLL0_DLLREADY_Msk) >> SPIM_DLL0_DLLREADY_Pos)
 
 /**
- * @brief   Wait DLL0 Refresh Status Bit.
+ * @brief   Get DLL0 Refresh Status Bit.
  * \hideinitializer
  */
-#define SPIM_HYPER_WAIT_DLL0_REFRESH(spim)    \
+#define SPIM_HYPER_GET_DLL0_REFRESH(spim)    \
     ((spim->DLL0 & SPIM_DLL0_DLL_REF_Msk) >> SPIM_DLL0_DLL_REF_Pos)
 
 /**

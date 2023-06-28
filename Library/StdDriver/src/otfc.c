@@ -91,8 +91,8 @@ int32_t OTFC_SetNonceNum(OTFC_T *otfc, uint32_t u32PR,
  *
  * @param[in] otfc  is the base address of OTFC module.
  * @param[in] u32PR is the Protection Region 0 ~ 3.
- * @param[in] u32SAddr  is the Protection Region Start Address
- * @param[in] u32EAddr  is the Protection Region End Address
+ * @param[in] u32SAddr  is the protection region start address
+ * @param[in] u32EAddr  is the protection region end address
  * @param[in] u32KeyNum is the KEY Store of KEY number
  * @param[in] u8KeySrc  is the Key Source form Key Store SRAM or OTP
  *                      - OTFC_KS_SRC_SRAM
@@ -140,7 +140,7 @@ int32_t OTFC_SetKeyFromKeyStore(OTFC_T *otfc, uint32_t u32PR,
  * @param psKeyTable  OTFC key table.
  * @param u32PR       Protection region 0 ~ 3.
  * @param u32SAddr    Protection region start address.
- * @param u32EAddr    Protection region start address.
+ * @param u32EAddr    Protection region end address.
  */
 int32_t OTFC_SetKeyFromKeyReg(OTFC_T *otfc,
                               uint32_t *pau32KeyTable,

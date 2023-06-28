@@ -191,7 +191,7 @@ int SPIM_Tests_HyperInit(void)
 {
     SPIM_T *pSPIMModule = (SPIM_T *)GetSPIMModule(GetSPIMTestModuleIdx());
 
-    SPIM_HYPER_Init(pSPIMModule, 1);
+    SPIM_HYPER_Init(pSPIMModule, 2);
     //CU_ASSERT_TRUE((pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk) >> SPIM_CTL0_HYPER_EN_Pos);
     //CU_ASSERT(SPIM_GET_CLOCK_DIVIDER(pSPIMModule) == 1);
 
@@ -679,8 +679,8 @@ CU_TestInfo SPIM_HyperApiTests[] =
 /*----------------------------------------------------------------------------*/
 CU_SuiteInfo spim_hyper_suites[] =
 {
-    //{"SPIM HYPER CONST", SPIM_Tests_HyperInit, SPIM_Tests_HyperClean, NULL, NULL, SPIM_HyperConstantTests},
-    //{"SPIM HYPER MACRO", SPIM_Tests_HyperInit, SPIM_Tests_HyperClean, NULL, NULL, SPIM_HyperMacroTests},
+    {"SPIM HYPER CONST", SPIM_Tests_HyperInit, SPIM_Tests_HyperClean, NULL, NULL, SPIM_HyperConstantTests},
+    {"SPIM HYPER MACRO", SPIM_Tests_HyperInit, SPIM_Tests_HyperClean, NULL, NULL, SPIM_HyperMacroTests},
     {"SPIM HYPER API", SPIM_Tests_HyperInit, SPIM_Tests_HyperClean, NULL, NULL, SPIM_HyperApiTests},
 
     CU_SUITE_INFO_NULL,

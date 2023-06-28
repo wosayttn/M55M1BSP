@@ -1488,7 +1488,7 @@ static int32_t SPIM_WriteInPageDataByPageWrite(SPIM_T *spim, uint32_t u32Addr,
 
     SPIM_Set_Write_Enable(spim, 1, 1);                  /* Write Enable. */
 
-    SPIM_SET_4BYTE_ADDR(spim, is4ByteAddr);          /* Enable/disable 4-Byte Address. */
+    SPIM_SET_4BYTE_ADDR(spim, is4ByteAddr);             /* Enable/disable 4-Byte Address. */
 
     SPIM_SET_SPIM_MODE(spim, wrCmd);                    /* SPIM mode. */
     SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEWRITE);  /* Switch to Page Write mode. */
@@ -1753,6 +1753,24 @@ void SPIM_DMADMM_InitPhase(SPIM_T *spim,
                            uint32_t u32OPMode)
 {
     uint32_t u32RDQSOn = 0;
+    uint32_t u32Is4ByteAddr = 0;
+
+    if (psPhaseTable->u32AddrWidth == PHASE_WIDTH_32)
+    {
+        u32Is4ByteAddr = 1;
+    }
+    else
+    {
+        u32Is4ByteAddr = 0;
+    }
+
+    SPIM_Enable_4Bytes_Mode(spim, u32Is4ByteAddr, 1, 0);
+    SPIM_SET_4BYTE_ADDR(spim, u32Is4ByteAddr);
+
+    SPIM_SetQuadEnable(spim,
+                       ((psPhaseTable->u32AddrPhase == PHASE_QUAD_MODE) ||
+                        (psPhaseTable->u32DataPhase == PHASE_QUAD_MODE)) ? 1 : 0,
+                       1);
 
     SPIM_DISABLE_DMM_BWEN(spim);
     SPIM_DISABLE_DMM_CREN(spim);
@@ -1920,12 +1938,12 @@ void SPIM_IO_SendAddrPhase(SPIM_T *spim,
         u8CmdBuf[u8BufIdx++] = (uint8_t)(u32Addr >> 16);
         u8CmdBuf[u8BufIdx++] = (uint8_t)(u32Addr >> 8);
         u8CmdBuf[u8BufIdx++] = (uint8_t) u32Addr;
+    }
 
-        if ((SPIM_GetIOPhaseSize(u32AddrPhase) == 2) ||
-                (SPIM_GetIOPhaseSize(u32AddrPhase) == 4))
-        {
-            u8BufIdx++;
-        }
+    if ((SPIM_GetIOPhaseSize(u32AddrPhase) == 2) ||
+            (SPIM_GetIOPhaseSize(u32AddrPhase) == 4))
+    {
+        u8BufIdx++;
     }
 
     SwitchNBitOutput(spim, SPIM_GetIOPhaseSize(u32AddrPhase));
@@ -1985,13 +2003,8 @@ void SPIM_IO_SendCMDPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32OpCMD,
 
 void SPIM_WriteInPageDataByPhaseIO(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
                                    uint32_t u32Addr, int is4ByteAddr,
-                                   uint8_t *pu8RxBuf, uint32_t u32RdSize)
+                                   uint8_t *pu8TxBuf, uint32_t u32RdSize)
 {
-    SPIM_SetQuadEnable(spim,
-                       ((psPhaseTable->u32AddrPhase == PHASE_QUAD_MODE) ||
-                        (psPhaseTable->u32DataPhase == PHASE_QUAD_MODE)) ? 1 : 0,
-                       1);
-
     SPIM_IO_SendCMDPhase(spim,
                          SPIM_IO_WRITE_PHASE,
                          psPhaseTable->u32CMDCode,
@@ -2009,13 +2022,11 @@ void SPIM_WriteInPageDataByPhaseIO(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
 
     SPIM_IO_SendDataPhase(spim,
                           SPIM_IO_WRITE_PHASE,
-                          pu8RxBuf,
+                          pu8TxBuf,
                           u32RdSize,
                           psPhaseTable->u32CMDPhase,
                           psPhaseTable->u32DataPhase,
                           psPhaseTable->u32DataDTR);
-
-    SPIM_SetQuadEnable(spim, 0, 1);
 }
 
 void SPIM_IO_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
@@ -2036,6 +2047,11 @@ void SPIM_IO_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
 
     SPIM_Enable_4Bytes_Mode(spim, u32Is4ByteAddr, 1, 0);
     SPIM_SET_4BYTE_ADDR(spim, u32Is4ByteAddr);
+
+    SPIM_SetQuadEnable(spim,
+                       ((psPhaseTable->u32AddrPhase == PHASE_QUAD_MODE) ||
+                        (psPhaseTable->u32DataPhase == PHASE_QUAD_MODE)) ? 1 : 0,
+                       1);
 
     u32PageOffset = u32Addr % 256UL;
 
@@ -2067,6 +2083,8 @@ void SPIM_IO_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
             u32BufIdx += toWr;
         }
     }
+
+    SPIM_SetQuadEnable(spim, 0, 1);
 }
 
 /**
@@ -2085,6 +2103,17 @@ void SPIM_IO_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
   *                         - \ref SPIM_OP_DISABLE
   * @return     None.
   */
+
+/**
+ * @brief
+ *
+ * @param spim          Read data from SPI Flash by use phase table (I/O mode).
+ * @param psPhaseTable  Check SPI Flash specifications for support command codes,
+ *                      and create command phase table.
+ * @param u32Addr       Read start address
+ * @param pu8RxBuf      Data buffer
+ * @param u32RdSize     Read data size
+ */
 void SPIM_IO_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
                        uint32_t u32Addr, uint8_t *pu8RxBuf, uint32_t u32RdSize)
 {
@@ -2344,7 +2373,7 @@ int SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
         u32RdCmd = ((u32RdCmd << 8) | u32RdCmd);
     }
 
-    SPIM_SET_4BYTE_ADDR(spim, is4ByteAddr);          /* Enable/disable 4-Byte Address. */
+    SPIM_SET_4BYTE_ADDR(spim, is4ByteAddr);             /* Enable/disable 4-Byte Address. */
 
     SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEREAD);   /* Switch to Page Read mode. */
 
@@ -2464,7 +2493,7 @@ int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 
     /* Polling the DLL status register DLLCKON to 0x1,
        and the value 0x1 indicates that clock divider circuit inside DLL is enabled. */
-    while (SPIM_WAIT_DLL0_CLKON(spim) != 1)
+    while (SPIM_GET_DLL0_CLKON(spim) != 1)
     {
         if (i32Timeout-- <= 0)
         {
@@ -2476,7 +2505,7 @@ int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 
     /* Polling the DLL status register DLLLOCK to 0x1,
        and the value 0x1 indicates that DLL circuit is in lock state */
-    while (SPIM_WAIT_DLL0_LOCK(spim) != 1)
+    while (SPIM_GET_DLL0_LOCK(spim) != 1)
     {
         if (i32Timeout-- <= 0)
         {
@@ -2488,7 +2517,7 @@ int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 
     /* Polling the DLL status register DLLREADY to 0x1,
        and the value 0x1 indicates that output of DLL circuit is ready. */
-    while (SPIM_WAIT_DLL0_READY(spim) != 1)
+    while (SPIM_GET_DLL0_READY(spim) != 1)
     {
         if (i32Timeout-- <= 0)
         {
@@ -2503,7 +2532,7 @@ int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 
     /* Polling DLL status register DLL_REF to 1
        to know the updating flow of DLL delay step number is finish or not. */
-    while (SPIM_WAIT_DLL0_REFRESH(spim) != 0)
+    while (SPIM_GET_DLL0_REFRESH(spim) != 0)
     {
         if (i32Timeout-- <= 0)
         {

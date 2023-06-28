@@ -591,7 +591,7 @@ typedef enum
  * \hideinitializer
  */
 #define SPIM_WAIT_FREE(spim)    \
-    ((spim->CTL1 & SPIM_CTL1_SPIMEN_Msk) >> SPIM_CTL1_SPIMEN_Pos)
+    while((spim->CTL1 & SPIM_CTL1_SPIMEN_Msk) >> SPIM_CTL1_SPIMEN_Pos)
 
 #if (SPIM_CACHE_EN == 1)
 /**
@@ -693,7 +693,7 @@ typedef enum
  * @brief   Set DMA/DMM mode SPI flash active SCLK time. It could be 0 ~ 0xFF.
  * \hideinitializer
  */
-#define SPIM_SET_DMM_ACTSCLKT(spim, x)  \
+#define SPIM_SET_DMADMM_ACTSCLKT(spim, x)  \
     (spim->DMMCTL = (spim->DMMCTL & ~SPIM_DMMCTL_ACTSCLKT_Msk) | \
                     ((((x) & 0xFUL) << SPIM_DMMCTL_ACTSCLKT_Pos) | SPIM_DMMCTL_UACTSCLK_Msk))
 
@@ -701,7 +701,7 @@ typedef enum
  * @brief   Reset SPI flash active SCLK time.
  * \hideinitializer
  */
-#define SPIM_RESET_DMM_ACTSCLK(spim)    (spim->DMMCTL &= ~(SPIM_DMMCTL_UACTSCLK_Msk))
+#define SPIM_RESET_DMADMM_ACTSCLK(spim)    (spim->DMMCTL &= ~(SPIM_DMMCTL_UACTSCLK_Msk))
 
 /**
  * @brief   Set DMM mode SPI flash deselect time. It could be 0 ~ 0xFF.
@@ -1318,38 +1318,38 @@ typedef enum
     (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLOVRST_Msk)) | (((x) ? 1UL : 0UL) << SPIM_DLL0_DLLOVRST_Pos))
 
 /**
- * @brief   Wait DLL0 Output Valid Counter Reset Done.
+ * @brief   Get DLL0 Output Valid Counter Reset Done.
  * \hideinitializer
  */
-#define SPIM_WAIT_DLL0_OVRST(spim)  \
+#define SPIM_GET_DLL0_OVRST(spim)  \
     ((spim->DLL0 & SPIM_DLL0_DLLOVRST_Msk) >> SPIM_DLL0_DLLOVRST_Pos)
 
 /**
- * @brief   Wait DLL0 Clock Divider Circuit Status Bit.
+ * @brief   Get DLL0 Clock Divider Circuit Status Bit.
  * \hideinitializer
  */
-#define SPIM_WAIT_DLL0_CLKON(spim)  \
+#define SPIM_GET_DLL0_CLKON(spim)  \
     ((spim->DLL0 & SPIM_DLL0_DLLCLKON_Msk) >> SPIM_DLL0_DLLCLKON_Pos)
 
 /**
- * @brief   Wait DLL0 Lock Status Bit.
+ * @brief   Get DLL0 Lock Status Bit.
  * \hideinitializer
  */
-#define SPIM_WAIT_DLL0_LOCK(spim)   \
+#define SPIM_GET_DLL0_LOCK(spim)   \
     ((spim->DLL0 & SPIM_DLL0_DLLLOCK_Msk) >> SPIM_DLL0_DLLLOCK_Pos)
 
 /**
- * @brief   Wait DLL0 Output Ready Status.
+ * @brief   Get DLL0 Output Ready Status.
  * \hideinitializer
  */
-#define SPIM_WAIT_DLL0_READY(spim)  \
+#define SPIM_GET_DLL0_READY(spim)  \
     ((spim->DLL0 & SPIM_DLL0_DLLREADY_Msk) >> SPIM_DLL0_DLLREADY_Pos)
 
 /**
- * @brief   Wait DLL0 Refresh Status Bit.
+ * @brief   Get DLL0 Refresh Status Bit.
  * \hideinitializer
  */
-#define SPIM_WAIT_DLL0_REFRESH(spim)    \
+#define SPIM_GET_DLL0_REFRESH(spim)    \
     ((spim->DLL0 & SPIM_DLL0_DLL_REF_Msk) >> SPIM_DLL0_DLL_REF_Pos)
 
 /**
