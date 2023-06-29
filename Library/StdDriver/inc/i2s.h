@@ -321,8 +321,6 @@ void I2S_DisableMCLK(I2S_T *i2s);
 void I2S_SetFIFO(I2S_T *i2s, uint32_t u32TxThreshold, uint32_t u32RxThreshold);
 void I2S_ConfigureTDM(I2S_T *i2s, uint32_t u32ChannelWidth, uint32_t u32ChannelNum, uint32_t u32SyncWidth);
 
-void I2S_Reset(I2S_T *i2s);
-
 /** @} end of group I2S_EXPORTED_FUNCTIONS */
 /** @} end of group I2S_Driver */
 /** @} end of group Standard_Driver */

@@ -711,7 +711,7 @@ int32_t SPIM_InitFlash(SPIM_T *spim, int clrWP)
     uint32_t  i = 0;
     int32_t   ret = SPIM_ERR_FAIL;
 
-    SPIM_SET_FLASH_MODE(spim); /* Enable SPIM Hyper Bus Mode */
+    SPIM_SET_FLASH_MODE(spim); /* Enable SPI Flash Mode */
 
     SPIM_SET_SS_ACTLVL(spim, 0);
 
@@ -2478,10 +2478,10 @@ void SPIM_ExitDirectMapMode(SPIM_T *spim)
   *             2. Winbond W958D8NBYA HyperRAM.
   *             3. Infineon S26KLxxS/S26KSxxS HyperFlash.
   *             Other device users must refer to the device specification set
-  *             SPIM_SET_DLL2_CLKON_NUM()
-  *             SPIM_SET_DLL2_TRIM_NUM()
-  *             SPIM_SET_DLL1_LOCKK_VALID()
-  *             SPIM_SET_DLL1_OUT_VALID()
+  *             SPIM_SET_DLLCLKON_NUM()
+  *             SPIM_SET_DLLTRIM_NUM()
+  *             SPIM_SET_DLLLOCK_VALID()
+  *             SPIM_SET_DLLOV_NUM()
   */
 int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 {
@@ -2489,17 +2489,17 @@ int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 
     /* SPIM starts to send DLL reference clock to DLL circuit
        that the frequency is the same as the SPIM output bus clock. */
-    SPIM_ENABLE_DLL0_OLDO(spim, 1);
+    SPIM_ENABLE_DLLOLDO(spim, 1);
 
     /* User asserts this control register to 0x1,
        the DLL circuit begins searching for lock with DLL reference clock. */
-    SPIM_ENABLE_DLL0_OVRST(spim, 1);
+    SPIM_ENABLE_DLLOVRST(spim, 1);
 
     i32Timeout = SPIM_TIMEOUT;
 
     /* Polling the DLL status register DLLCKON to 0x1,
        and the value 0x1 indicates that clock divider circuit inside DLL is enabled. */
-    while (SPIM_GET_DLL0_CLKON(spim) != 1)
+    while (SPIM_GET_DLLCLKON(spim) != 1)
     {
         if (i32Timeout-- <= 0)
         {
@@ -2511,7 +2511,7 @@ int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 
     /* Polling the DLL status register DLLLOCK to 0x1,
        and the value 0x1 indicates that DLL circuit is in lock state */
-    while (SPIM_GET_DLL0_LOCK(spim) != 1)
+    while (SPIM_GET_DLLLOCK(spim) != 1)
     {
         if (i32Timeout-- <= 0)
         {
@@ -2523,7 +2523,7 @@ int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 
     /* Polling the DLL status register DLLREADY to 0x1,
        and the value 0x1 indicates that output of DLL circuit is ready. */
-    while (SPIM_GET_DLL0_READY(spim) != 1)
+    while (SPIM_GET_DLLREADY(spim) != 1)
     {
         if (i32Timeout-- <= 0)
         {
@@ -2532,13 +2532,13 @@ int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
     }
 
     /* Set this valid delay number to control register DLL_DNUM. */
-    SPIM_SET_DLL0_DELAY_NUM(spim, u32DelayNum);
+    SPIM_SET_DLLDLY_NUM(spim, u32DelayNum);
 
     i32Timeout = SPIM_TIMEOUT;
 
     /* Polling DLL status register DLL_REF to 1
        to know the updating flow of DLL delay step number is finish or not. */
-    while (SPIM_GET_DLL0_REFRESH(spim) != 0)
+    while (SPIM_GET_DLLREF(spim) != 0)
     {
         if (i32Timeout-- <= 0)
         {

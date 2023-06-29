@@ -114,7 +114,6 @@ typedef struct
      * |        |          |0 = TX DTR (Transmit Double Transfer Rate) mode Disabled.
      * |        |          |1 = TX DTR (Transmit Double Transfer Rate) mode Enabled.
      * |        |          |Note: QSPI mMaster mode supports TXDTR mode, and QSPI sSlave mode does not support this mode.
-     * |        |          |Note 2: This mode is M48xGC/M48xG8 Only.
      * @var QSPI_T::CLKDIV
      * Offset: 0x04  QSPI Clock Divider Register
      * ---------------------------------------------------------------------------------------------------
@@ -137,7 +136,7 @@ typedef struct
      * |        |          |1 = set Set the QSPIx_SS line to active state.
      * |        |          |If the AUTOSS bit is set to 1,
      * |        |          |0 = Keep the QSPIx_SS line at inactive state.
-     * |        |          |1 = QSPIx_SS line will be automatically driven to active state for the duration of data transfer, and will be driven to inactive state for the rest of the time
+     * |        |          |1 = QSPIx_SS line will be automatically driven to active state for the duration of data transfer, and will be driven to inactive state for the rest of the time.
      * |        |          |The active state of QSPIx_SS is specified in SSACTPOL (QSPIx_SSCTL[2]).
      * |        |          |Note: Master Only.
      * |[2]     |SSACTPOL  |Slave Selection Active Polarity
@@ -264,13 +263,10 @@ typedef struct
      * |        |          |1 = QSPI controller is in busy state.
      * |        |          |The following lists the bus busy conditions:
      * |        |          |a. SPIEN (QSPIx_CTL[0]) = 1 and TXEMPTY = 0.
-     * |        |          |b
-     * |        |          |For QSPI Master mode, SPIEN (QSPIx_CTL[0]) = 1 and TXEMPTY = 1 but the current transaction is not finished yet.
+     * |        |          |b. For QSPI Master mode, SPIEN (QSPIx_CTL[0]) = 1 and TXEMPTY = 1 but the current transaction is not finished yet.
      * |        |          |c. For QSPI Master mode, SPIEN (QSPIx_CTL[0]) = 1 and RXONLY = 1.
-     * |        |          |d
-     * |        |          |For QSPI Slave mode, SPIEN (QSPIx_CTL[0]) = 1 and there is serial clock input into the QSPI core logic when slave select is active.
-     * |        |          |e
-     * |        |          |For QSPI Slave mode, SPIEN (QSPIx_CTL[0]) = 1 and the transmit buffer or transmit shift register is not empty even if the slave select is inactive.
+     * |        |          |d. For QSPI Slave mode, SPIEN (QSPIx_CTL[0]) = 1 and there is serial clock input into the QSPI core logic when slave select is active.
+     * |        |          |e. For QSPI Slave mode, SPIEN (QSPIx_CTL[0]) = 1 and the transmit buffer or transmit shift register is not empty even if the slave select is inactive.
      * |        |          |Note: By applications, this QSPI busy flag should be used with other status registers in QSPIx_STATUS such as TXCNT, RXCNT, TXTHIF, TXFULL, TXEMPTY, RXTHIF, RXFULL, RXEMPTY, and UNITIF
      * |        |          |Therefore the QSPI transfer done events of TX/RX operations can be obtained at correct timing point.
      * |[1]     |UNITIF    |Unit Transfer Interrupt Flag
@@ -384,60 +380,6 @@ typedef struct
      * |        |          |There are 8-level FIFO buffers in this controller
      * |        |          |The data receive register holds the data received from QSPI data input pin
      * |        |          |If the RXEMPTY (QSPIx_STATUS[8) is not set to 1, the receive FIFO buffers can be accessed through software by reading this register.
-     * @var QSPI_T::INTERNAL
-     * Offset: 0x48  QSPI Internal Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[3]     |DLATCH    |Data Latch Mode (INTERNAL ONLY)
-     * |        |          |It is used to adjust the input data source in data received direction
-     * |        |          |If the output clock delay by PAD and the system loading is less than half cycle of QSPI_CLK in Master mode, the internal data shall be latched by the negative edge of QSPI module clock to fix the data is available
-     * |        |          |On the contrary, if the output clock delay is over than half cycle of QSPI_CLK in Master mode, the internal data shall be latched by the positive edge of QSPI module clock
-     * |        |          |This bit is used to enable /disable the data latched cycle which is tuned by hardware circuit
-     * |        |          |If the output clock delay is less than half cycle of QSPI_CLK, there is active high signal in QSPI internal hardware
-     * |        |          |If the active high signal is fail, the user can set the DATMODE as 1 to force the latched data in the right cycle.
-     * |[7]     |SELFTEST  |Self-test Enable Bit
-     * |        |          |0 = The self-test function Disabled.
-     * |        |          |1 = Enable the self-test function. The Master received data will be the same as the transmit datum.
-     * |[8]     |DEGOFF    |QSPI Bus Clock Deglitch Circuit Disable Bit
-     * |        |          |0 = The QSPI bus clock Input deglitch circuit
-     * |        |          |It can filter 1~2ns glitch on the QSPI bus clock when bus Enabled.
-     * |        |          |1 = The QSPI bus clock Input deglitch circuit Disabled.
-     * |[11]    |MRXCLKS   |SPI Master Receiver Clock Source
-     * |        |          |It is used to select the clock source of receive data sampled into RX skew buffer while QSPI Master mode due to the system noise in serial clock bus.
-     * |        |          |0 = Sample RX data by the Master feedback QSPI_CLK (Chip PAD-out loopback to PAD-in).
-     * |        |          |1 = Sample RX data latter the 0.0 period of sending QSPI_CLK.
-     * |        |          |Note: It is use in MRXPHASE = 4u2019h0 only.
-     * |[15:12] |MRXPHASE  |QSPI Master Receive Phase Selection (INTERNAL ONLY)
-     * |        |          |It is used to adjust the timing of receive data sampled into RX skew buffer while QSPI Master mode due to the PAD I/O latency (send QSPI_CLK to Slave device through the output pin and then wait the receive data from Slave device through the input pin)
-     * |        |          |0x0: Sample RX data by the Master feedback QSPI_CLK (Chip PAD-out loopback to PAD-in)
-     * |        |          |0x1: Sample RX data latter the half-0.5 period of sending QSPI_CLK
-     * |        |          |0x2: Sample RX data latter the one-1 period of sending QSPI_CLK
-     * |        |          |0x3: Sample RX data latter the 1.5 period of sending QSPI_CLK
-     * |        |          |0x4: Sample RX data latter the 2 periods of sending QSPI_CLK
-     * |        |          |...
-     * |        |          |0xb: Sample RX data latter the 5.5 periods of sending QSPI_CLK
-     * |        |          |Others are reserved.
-     * |        |          |Others are reserved.
-     * |        |          |Note: MRXPHASE equals to 0x1 when TX DTR mode enable and SPI master mode enable.
-     * |[19:16] |RXRP      |RX FIFO Read Pointer (INTERNAL ONLY)
-     * |[23:20] |RXWP      |RX FIFO Write Pointer (INTERNAL ONLY)
-     * |[27:24] |TXRP      |TX FIFO Read Pointer (INTERNAL ONLY)
-     * |[31:28] |TXWP      |TX FIFO Write Pointer (INTERNAL ONLY)
-     * @var QSPI_T::VERSION
-     * Offset: 0xFFC  QSPI Version Number Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[15:0]  |MINOR     |Minor Version Number (INTERNAL ONLY)
-     * |        |          |Minor version number is dependent on ECO version control
-     * |        |          |0x0000: (current Minor Version Number)
-     * |[23:16] |SUB       |Sub Version Number (INTERNAL ONLY)
-     * |        |          |Sub version number is relative to key feature
-     * |        |          |0x02: (current Sub Version Number)
-     * |[31:24] |MAJOR     |Major Version Number (INTERNAL ONLY)
-     * |        |          |Major version number is correlated to Product Line
-     * |        |          |0x02: (current Major Version Number)
      */
     __IO uint32_t CTL;                   /*!< [0x0000] QSPI Control Register                                            */
     __IO uint32_t CLKDIV;                /*!< [0x0004] QSPI Clock Divider Register                                      */

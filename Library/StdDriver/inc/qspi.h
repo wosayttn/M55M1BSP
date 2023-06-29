@@ -4,7 +4,7 @@
  * @brief    QSPI driver header file
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #ifndef __QSPI_H__
@@ -27,76 +27,43 @@ extern "C"
   @{
 */
 
-#define QSPI_MODE_0         (QSPI_CTL_TXNEG_Msk)                            /*!< CLKPOL=0; RXNEG=0; TXNEG=1 \hideinitializer */
-#define QSPI_MODE_1         (QSPI_CTL_RXNEG_Msk)                            /*!< CLKPOL=0; RXNEG=1; TXNEG=0 \hideinitializer */
-#define QSPI_MODE_2         (QSPI_CTL_CLKPOL_Msk | QSPI_CTL_RXNEG_Msk)      /*!< CLKPOL=1; RXNEG=1; TXNEG=0 \hideinitializer */
-#define QSPI_MODE_3         (QSPI_CTL_CLKPOL_Msk | QSPI_CTL_TXNEG_Msk)      /*!< CLKPOL=1; RXNEG=0; TXNEG=1 \hideinitializer */
+#define QSPI_MODE_0                     (QSPI_CTL_TXNEG_Msk)                        /*!< CLKPOL=0; RXNEG=0; TXNEG=1 \hideinitializer */
+#define QSPI_MODE_1                     (QSPI_CTL_RXNEG_Msk)                        /*!< CLKPOL=0; RXNEG=1; TXNEG=0 \hideinitializer */
+#define QSPI_MODE_2                     (QSPI_CTL_CLKPOL_Msk | QSPI_CTL_RXNEG_Msk)  /*!< CLKPOL=1; RXNEG=1; TXNEG=0 \hideinitializer */
+#define QSPI_MODE_3                     (QSPI_CTL_CLKPOL_Msk | QSPI_CTL_TXNEG_Msk)  /*!< CLKPOL=1; RXNEG=0; TXNEG=1 \hideinitializer */
 
-#define QSPI_SLAVE          (QSPI_CTL_SLAVE_Msk)                            /*!< Set as slave \hideinitializer */
-#define QSPI_MASTER         (0x0UL)                                         /*!< Set as master \hideinitializer */
+#define QSPI_SLAVE                      (QSPI_CTL_SLAVE_Msk)              /*!< Set as slave \hideinitializer */
+#define QSPI_MASTER                     (0x0UL)                           /*!< Set as master \hideinitializer */
 
-#define QSPI_SS             (QSPI_SSCTL_SS_Msk)                             /*!< Set SS \hideinitializer */
-#define QSPI_SS_ACTIVE_HIGH (QSPI_SSCTL_SSACTPOL_Msk)                       /*!< SS active high \hideinitializer */
-#define QSPI_SS_ACTIVE_LOW  (0x0UL)                                         /*!< SS active low \hideinitializer */
+#define QSPI_SS                         (QSPI_SSCTL_SS_Msk)               /*!< Set SS \hideinitializer */
+#define QSPI_SS_ACTIVE_HIGH             (QSPI_SSCTL_SSACTPOL_Msk)         /*!< SS active high \hideinitializer */
+#define QSPI_SS_ACTIVE_LOW              (0x0UL)                           /*!< SS active low \hideinitializer */
 
 /* QSPI Interrupt Mask */
-#define QSPI_UNIT_INT_Pos               (0)
-#define QSPI_UNIT_INT_MASK              (1UL << QSPI_UNIT_INT_Pos)          /*!< Unit transfer interrupt mask \hideinitializer */
-
-#define QSPI_SSACT_INT_Pos              (1)
-#define QSPI_SSACT_INT_MASK             (1UL << QSPI_SSACT_INT_Pos)         /*!< Slave selection signal active interrupt mask \hideinitializer */
-
-#define QSPI_SSINACT_INT_Pos            (2)
-#define QSPI_SSINACT_INT_MASK           (1UL << QSPI_SSINACT_INT_Pos)       /*!< Slave selection signal inactive interrupt mask \hideinitializer */
-
-#define QSPI_SLVUR_INT_Pos              (3)
-#define QSPI_SLVUR_INT_MASK             (1UL << QSPI_SLVUR_INT_Pos)         /*!< Slave under run interrupt mask \hideinitializer */
-
-#define QSPI_SLVBE_INT_Pos              (4)
-#define QSPI_SLVBE_INT_MASK             (1UL << QSPI_SLVBE_INT_Pos)         /*!< Slave bit count error interrupt mask \hideinitializer */
-
-#define QSPI_SLVTO_INT_Pos              (5)
-#define QSPI_SLVTO_INT_MASK             (1UL << QSPI_SLVTO_INT_Pos)         /*!< Slave Mode Time-out interrupt mask \hideinitializer */
-
-#define QSPI_TXUF_INT_Pos               (6)
-#define QSPI_TXUF_INT_MASK              (1UL << QSPI_TXUF_INT_Pos)          /*!< Slave TX underflow interrupt mask \hideinitializer */
-
-#define QSPI_FIFO_TXTH_INT_Pos          (7)
-#define QSPI_FIFO_TXTH_INT_MASK         (1UL << QSPI_FIFO_TXTH_INT_Pos)     /*!< FIFO TX threshold interrupt mask \hideinitializer */
-
-#define QSPI_FIFO_RXTH_INT_Pos          (8)
-#define QSPI_FIFO_RXTH_INT_MASK         (1UL << QSPI_FIFO_RXTH_INT_Pos)     /*!< FIFO RX threshold interrupt mask \hideinitializer */
-
-#define QSPI_FIFO_RXOV_INT_Pos          (9)
-#define QSPI_FIFO_RXOV_INT_MASK         (1UL << QSPI_FIFO_RXOV_INT_Pos)     /*!< FIFO RX overrun interrupt mask \hideinitializer */
-
-#define QSPI_FIFO_RXTO_INT_Pos          (10)
-#define QSPI_FIFO_RXTO_INT_MASK         (1UL << QSPI_FIFO_RXTO_INT_Pos)     /*!< FIFO RX time-out interrupt mask \hideinitializer */
+#define QSPI_UNIT_INT_MASK              (0x001U)                          /*!< Unit transfer interrupt mask \hideinitializer */
+#define QSPI_SSACT_INT_MASK             (0x002U)                          /*!< Slave selection signal active interrupt mask \hideinitializer */
+#define QSPI_SSINACT_INT_MASK           (0x004U)                          /*!< Slave selection signal inactive interrupt mask \hideinitializer */
+#define QSPI_SLVUR_INT_MASK             (0x008U)                          /*!< Slave under run interrupt mask \hideinitializer */
+#define QSPI_SLVBE_INT_MASK             (0x010U)                          /*!< Slave bit count error interrupt mask \hideinitializer */
+#define QSPI_SLVTO_INT_MASK             (0x020U)                          /*!< Slave mode time-out interrupt mask \hideinitializer */
+#define QSPI_TXUF_INT_MASK              (0x040U)                          /*!< Slave TX underflow interrupt mask \hideinitializer */
+#define QSPI_FIFO_TXTH_INT_MASK         (0x080U)                          /*!< FIFO TX threshold interrupt mask \hideinitializer */
+#define QSPI_FIFO_RXTH_INT_MASK         (0x100U)                          /*!< FIFO RX threshold interrupt mask \hideinitializer */
+#define QSPI_FIFO_RXOV_INT_MASK         (0x200U)                          /*!< FIFO RX overrun interrupt mask \hideinitializer */
+#define QSPI_FIFO_RXTO_INT_MASK         (0x400U)                          /*!< FIFO RX time-out interrupt mask \hideinitializer */
 
 /* QSPI Status Mask */
-#define QSPI_BUSY_Pos                   (0)
-#define QSPI_BUSY_MASK                  (1UL << QSPI_BUSY_Pos)              /*!< Busy status mask \hideinitializer */
+#define QSPI_BUSY_MASK                  (0x01U)                           /*!< Busy status mask \hideinitializer */
+#define QSPI_RX_EMPTY_MASK              (0x02U)                           /*!< RX empty status mask \hideinitializer */
+#define QSPI_RX_FULL_MASK               (0x04U)                           /*!< RX full status mask \hideinitializer */
+#define QSPI_TX_EMPTY_MASK              (0x08U)                           /*!< TX empty status mask \hideinitializer */
+#define QSPI_TX_FULL_MASK               (0x10U)                           /*!< TX full status mask \hideinitializer */
+#define QSPI_TXRX_RESET_MASK            (0x20U)                           /*!< TX or RX reset status mask \hideinitializer */
+#define QSPI_SPIEN_STS_MASK             (0x40U)                           /*!< SPIEN status mask \hideinitializer */
+#define QSPI_SSLINE_STS_MASK            (0x80U)                           /*!< QSPIx_SS line status mask \hideinitializer */
 
-#define QSPI_RX_EMPTY_Pos               (1)
-#define QSPI_RX_EMPTY_MASK              (1UL << QSPI_RX_EMPTY_Pos)          /*!< RX empty status mask \hideinitializer */
-
-#define QSPI_RX_FULL_Pos                (2)
-#define QSPI_RX_FULL_MASK               (1UL << QSPI_RX_FULL_Pos)           /*!< RX full status mask \hideinitializer */
-
-#define QSPI_TX_EMPTY_Pos               (3)
-#define QSPI_TX_EMPTY_MASK              (1UL << QSPI_TX_EMPTY_Pos)          /*!< TX empty status mask \hideinitializer */
-
-#define QSPI_TX_FULL_Pos                (4)
-#define QSPI_TX_FULL_MASK               (1UL << QSPI_TX_FULL_Pos)           /*!< TX full status mask \hideinitializer */
-
-#define QSPI_TXRX_RESET_Pos             (5)
-#define QSPI_TXRX_RESET_MASK            (1UL << QSPI_TXRX_RESET_Pos)        /*!< TX or RX reset status mask \hideinitializer */
-
-#define QSPI_QSPIEN_STS_Pos             (6)
-#define QSPI_QSPIEN_STS_MASK            (1UL << QSPI_QSPIEN_STS_Pos)        /*!< QSPIEN status mask \hideinitializer */
-
-#define QSPI_SSLINE_STS_Pos             (7)
-#define QSPI_SSLINE_STS_MASK            (1UL << QSPI_SSLINE_STS_Pos)        /*!< QSPIx_SS line status mask \hideinitializer */
+/* QSPI Status2 Mask */
+#define QSPI_SLVBENUM_MASK              (0x01U)                           /*!< Effective bit number of uncompleted RX data status mask \hideinitializer */
 
 /** @} end of group QSPI_EXPORTED_CONSTANTS */
 
@@ -445,4 +412,4 @@ uint32_t QSPI_GetStatus(QSPI_T *qspi, uint32_t u32Mask);
 }
 #endif
 
-#endif
+#endif  /* __QSPI_H__ */

@@ -4,7 +4,7 @@
  * @brief    QSPI driver source file
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include "NuMicro.h"
@@ -15,7 +15,7 @@
 
 #define QSPI_CLKSEL_HXT            (0x0UL)
 #define QSPI_CLKSEL_APLL0_DIV2     (0x1UL)
-#define QSPI_CLKSEL_PCLK          (0x2UL)
+#define QSPI_CLKSEL_PCLK           (0x2UL)
 #define QSPI_CLKSEL_HIRC           (0x3UL)
 #define QSPI_CLKSEL_HIRC48M_DIV4   (0x4UL)
 
@@ -26,7 +26,7 @@
 /** @addtogroup QSPI_EXPORTED_FUNCTIONS QSPI Exported Functions
   @{
 */
-
+/* Set PCLK as the clock source of QSPI */
 static void QSPI_SetPCLKSrc(QSPI_T *qspi)
 {
     /* Unlock protected registers */
@@ -34,19 +34,19 @@ static void QSPI_SetPCLKSrc(QSPI_T *qspi)
 
     if (qspi == QSPI0)
     {
-        CLK->QSPISEL = (CLK->QSPISEL & (~CLK_QSPISEL_QSPI0SEL_Msk)) | CLK_QSPISEL_QSPI0SEL_PCLK0;
+        CLK->QSPISEL = (CLK->QSPISEL & ~(CLK_QSPISEL_QSPI0SEL_Msk)) | (CLK_QSPISEL_QSPI0SEL_PCLK0);
     }
     else if (qspi == QSPI1)
     {
-        CLK->QSPISEL = (CLK->QSPISEL & (~CLK_QSPISEL_QSPI1SEL_Msk)) | CLK_QSPISEL_QSPI1SEL_PCLK2;
+        CLK->QSPISEL = (CLK->QSPISEL & ~(CLK_QSPISEL_QSPI1SEL_Msk)) | (CLK_QSPISEL_QSPI1SEL_PCLK2);
     }
 
     /* Lock protected registers */
     SYS_LockReg();
 }
 
-/*Select PCLK as the clock source of QSPI */
-static uint32_t QSPI_GetPCLKSrc(QSPI_T *qspi)
+/* Get the PCLK clock frequency of QSPI */
+static uint32_t QSPI_GetPCLKSrcFreq(QSPI_T *qspi)
 {
     uint32_t u32RetValue = 0;
 
@@ -63,7 +63,7 @@ static uint32_t QSPI_GetPCLKSrc(QSPI_T *qspi)
 }
 
 /**
- * @brief Check QSPI Clock Source Frequency.
+ * @brief Get QSPI Clock Source Frequency.
  *
  * @param qspi      The pointer of the specified QSPI module.
  * @return uint32_t Clock Frequency
@@ -100,7 +100,7 @@ static uint32_t QSPI_GetModuleClkSrcFrq(QSPI_T *qspi)
             break;
 
         case QSPI_CLKSEL_PCLK:
-            u32RetValue = QSPI_GetPCLKSrc(qspi);            /* Clock source is PCLK */
+            u32RetValue = QSPI_GetPCLKSrcFreq(qspi);        /* Clock source is PCLK */
             break;
 
         case QSPI_CLKSEL_HIRC:
@@ -108,7 +108,7 @@ static uint32_t QSPI_GetModuleClkSrcFrq(QSPI_T *qspi)
             break;
 
         case QSPI_CLKSEL_HIRC48M_DIV4:
-            u32RetValue = (__HIRC48M / 4);                   /* Clock source is HIRC 48Mhz / 4 */
+            u32RetValue = (__HIRC48M / 4);                  /* Clock source is HIRC 48Mhz / 4 */
             break;
 
         default:
@@ -169,7 +169,7 @@ uint32_t QSPI_Open(QSPI_T *qspi, uint32_t u32MasterSlave, uint32_t u32QSPIMode, 
             QSPI_SetPCLKSrc(qspi);
         }
 
-        /* Check clock source of QSPI */
+        /* Get clock source of QSPI */
         u32ClkSrc = QSPI_GetModuleClkSrcFrq(qspi);
 
         if (u32BusClock >= u32HCLKFreq)
@@ -227,8 +227,8 @@ uint32_t QSPI_Open(QSPI_T *qspi, uint32_t u32MasterSlave, uint32_t u32QSPIMode, 
         /* Set DIVIDER = 0 */
         qspi->CLKDIV = 0U;
 
-        /* Select PCLK as the clock source of QSPI */
-        u32RetValue = QSPI_GetPCLKSrc(qspi);
+        /* Get the PCLK clock frequency of QSPI */
+        u32RetValue = QSPI_GetPCLKSrcFreq(qspi);
     }
 
     return u32RetValue;
@@ -247,13 +247,11 @@ void QSPI_Close(QSPI_T *qspi)
     /* Reset QSPI */
     if (qspi == QSPI0)
     {
-        SYS->QSPIRST |= SYS_QSPIRST_QSPI0RST_Msk;
-        SYS->QSPIRST &= ~SYS_QSPIRST_QSPI0RST_Msk;
+        SYS_ResetModule(SYS_QSPI0RST);
     }
     else if (qspi == QSPI1)
     {
-        SYS->QSPIRST |= SYS_QSPIRST_QSPI1RST_Msk;
-        SYS->QSPIRST &= ~SYS_QSPIRST_QSPI1RST_Msk;
+        SYS_ResetModule(SYS_QSPI1RST);
     }
 
     /* Lock protected registers */
@@ -331,7 +329,7 @@ uint32_t QSPI_SetBusClock(QSPI_T *qspi, uint32_t u32BusClock)
         QSPI_SetPCLKSrc(qspi);
     }
 
-    /* Check clock source of QSPI */
+    /* Get clock source of QSPI */
     u32ClkSrc = QSPI_GetModuleClkSrcFrq(qspi);
 
     if (u32BusClock >= u32HCLKFreq)
@@ -406,7 +404,7 @@ uint32_t QSPI_GetBusClock(QSPI_T *qspi)
     /* Get DIVIDER setting */
     u32Div = (qspi->CLKDIV & QSPI_CLKDIV_DIVIDER_Msk) >> QSPI_CLKDIV_DIVIDER_Pos;
 
-    /* Check clock source of QSPI */
+    /* Get clock source of QSPI */
     u32ClkSrc = QSPI_GetModuleClkSrcFrq(qspi);
 
     /* Return QSPI bus clock rate */
@@ -831,9 +829,9 @@ uint32_t QSPI_GetStatus(QSPI_T *qspi, uint32_t u32Mask)
     u32TmpValue = (qspi->STATUS & QSPI_STATUS_QSPIENSTS_Msk);
 
     /* Check QSPIEN flag */
-    if ((u32Mask & QSPI_QSPIEN_STS_MASK) && (u32TmpValue))
+    if ((u32Mask & QSPI_SPIEN_STS_MASK) && (u32TmpValue))
     {
-        u32Flag |= QSPI_QSPIEN_STS_MASK;
+        u32Flag |= QSPI_SPIEN_STS_MASK;
     }
 
     u32TmpValue = (qspi->STATUS & QSPI_STATUS_SSLINE_Msk);

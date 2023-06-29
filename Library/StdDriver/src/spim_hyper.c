@@ -56,10 +56,10 @@ uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim)
   *             2. Winbond W958D8NBYA HyperRAM.
   *             3. Infineon S26KLxxS/S26KSxxS HyperFlash.
   *             Other device users must refer to the device specification set
-  *             SPIM_HYPER_SET_DLL2_CLKON_NUM()
-  *             SPIM_HYPER_SET_DLL2_TRIM_NUM()
-  *             SPIM_HYPER_SET_DLL1_LOCKK_VALID()
-  *             SPIM_HYPER_SET_DLL1_OUT_VALID()
+  *             SPIM_HYPER_SET_DLLCLKON_NUM()
+  *             SPIM_HYPER_SET_DLLTRIM_NUM()
+  *             SPIM_HYPER_SET_DLLLOCK_NUM()
+  *             SPIM_HYPER_SET_DLLOV_NUM()
   */
 int32_t SPIM_HYPER_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 {
@@ -67,17 +67,17 @@ int32_t SPIM_HYPER_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 
     /* SPIM starts to send DLL reference clock to DLL circuit
        that the frequency is the same as the SPIM output bus clock. */
-    SPIM_HYPER_ENABLE_DLL0OLDO(spim, 1);
+    SPIM_HYPER_ENABLE_DLLOLDO(spim, 1);
 
     /* User asserts this control register to 0x1,
        the DLL circuit begins searching for lock with DLL reference clock. */
-    SPIM_HYPER_ENABLE_DLL0OVRST(spim, 1);
+    SPIM_HYPER_ENABLE_DLLOVRST(spim, 1);
 
     i32Timeout = SPIM_HYPER_TIMEOUT;
 
     /* Polling the DLL status register DLLCKON to 0x1,
        and the value 0x1 indicates that clock divider circuit inside DLL is enabled. */
-    while (SPIM_HYPER_GET_DLL0CLKON(spim) != 1)
+    while (SPIM_HYPER_GET_DLLCLKON(spim) != 1)
     {
         if (i32Timeout-- <= 0)
         {
@@ -89,7 +89,7 @@ int32_t SPIM_HYPER_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 
     /* Polling the DLL status register DLLLOCK to 0x1,
        and the value 0x1 indicates that DLL circuit is in lock state */
-    while (SPIM_HYPER_GET_DLL0LOCK(spim) != 1)
+    while (SPIM_HYPER_GET_DLLLOCK(spim) != 1)
     {
         if (i32Timeout-- <= 0)
         {
@@ -101,7 +101,7 @@ int32_t SPIM_HYPER_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
 
     /* Polling the DLL status register DLLREADY to 0x1,
        and the value 0x1 indicates that output of DLL circuit is ready. */
-    while (SPIM_HYPER_GET_DLL0READY(spim) != 1)
+    while (SPIM_HYPER_GET_DLLREADY(spim) != 1)
     {
         if (i32Timeout-- <= 0)
         {
@@ -110,13 +110,13 @@ int32_t SPIM_HYPER_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
     }
 
     /* Set this valid delay number to control register DLL_DNUM. */
-    SPIM_HYPER_SET_DLL0DNUM(spim, u32DelayNum);
+    SPIM_HYPER_SET_DLLDLY_NUM(spim, u32DelayNum);
 
     i32Timeout = SPIM_HYPER_TIMEOUT;
 
     /* Polling DLL status register DLL_REF to 1
        to know the updating flow of DLL delay step number is finish or not. */
-    while (SPIM_HYPER_GET_DLL0REF(spim) != 0)
+    while (SPIM_HYPER_GET_DLLREF(spim) != 0)
     {
         if (i32Timeout-- <= 0)
         {
@@ -258,10 +258,10 @@ int32_t SPIM_HYPER_ExitHSAndDPD(SPIM_T *spim)
   */
 int32_t SPIM_HYPER_ReadHyperRAMReg(SPIM_T *spim, uint32_t u32Addr)
 {
-    if ((u32Addr != HYPER_RAM_ID_REG0) &&
-            (u32Addr != HYPER_RAM_ID_REG1) &&
-            (u32Addr != HYPER_RAM_CONFIG_REG0) &&
-            (u32Addr != HYPER_RAM_CONFIG_REG1))
+    if ((u32Addr != HYPERRAM_ID_REG0) &&
+            (u32Addr != HYPERRAM_ID_REG1) &&
+            (u32Addr != HYPERRAM_CONFIG_REG0) &&
+            (u32Addr != HYPERRAM_CONFIG_REG1))
     {
         return SPIM_HYPER_ERR_FAIL;
     }
@@ -294,10 +294,10 @@ int32_t SPIM_HYPER_ReadHyperRAMReg(SPIM_T *spim, uint32_t u32Addr)
   */
 int32_t SPIM_HYPER_WriteHyperRAMReg(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Value)
 {
-    if ((u32Addr != HYPER_RAM_ID_REG0) &&
-            (u32Addr != HYPER_RAM_ID_REG1) &
-            (u32Addr != HYPER_RAM_CONFIG_REG0) &&
-            (u32Addr != HYPER_RAM_CONFIG_REG1))
+    if ((u32Addr != HYPERRAM_ID_REG0) &&
+            (u32Addr != HYPERRAM_ID_REG1) &
+            (u32Addr != HYPERRAM_CONFIG_REG0) &&
+            (u32Addr != HYPERRAM_CONFIG_REG1))
     {
         return SPIM_HYPER_ERR_FAIL;
     }
@@ -478,7 +478,7 @@ int32_t SPIM_HYPER_DMAWrite(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8WrBuf, u
         return SPIM_HYPER_ERR_FAIL;
     }
 
-    SPIM_HYPER_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEWRITE);  /* Switch to DMA Write mode.   */
+    SPIM_HYPER_SET_OPMODE(spim, SPIM_HYPER_OPMODE_PAGEWRITE);  /* Switch to DMA Write mode.   */
 
     spim->SRAMADDR = (uint32_t) pu8WrBuf;                /* SRAM u32Address.  */
     spim->DMACNT = u32NTx;                              /* Transfer length.  */
@@ -508,7 +508,7 @@ int32_t SPIM_HYPER_DMARead(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8RdBuf, ui
         return SPIM_HYPER_ERR_FAIL;
     }
 
-    SPIM_HYPER_SET_OPMODE(spim, SPIM_CTL0_OPMODE_PAGEREAD);   /* Switch to DMA Write mode.   */
+    SPIM_HYPER_SET_OPMODE(spim, SPIM_HYPER_OPMODE_PAGEREAD);   /* Switch to DMA Write mode.   */
 
     spim->SRAMADDR = (uint32_t) pu8RdBuf;               /* SRAM u32Address. */
     spim->DMACNT = u32NRx;                              /* Transfer length. */
@@ -530,7 +530,7 @@ int32_t SPIM_HYPER_DMARead(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8RdBuf, ui
   */
 void SPIM_HYPER_EnterDirectMapMode(SPIM_T *spim)
 {
-    SPIM_HYPER_SET_OPMODE(spim, SPIM_CTL0_OPMODE_DIRECTMAP);  /* Switch to DMA Write mode.   */
+    SPIM_HYPER_SET_OPMODE(spim, SPIM_HYPER_OPMODE_DIRECTMAP);  /* Switch to DMA Write mode.   */
 }
 
 /**
@@ -541,7 +541,7 @@ void SPIM_HYPER_EnterDirectMapMode(SPIM_T *spim)
   */
 void SPIM_HYPER_ExitDirectMapMode(SPIM_T *spim)
 {
-    SPIM_HYPER_SET_OPMODE(spim, SPIM_CTL0_OPMODE_IO);       /* Switch back to Normal mode.  */
+    SPIM_HYPER_SET_OPMODE(spim, SPIM_HYPER_OPMODE_IO);       /* Switch back to Normal mode.  */
 }
 
 /**

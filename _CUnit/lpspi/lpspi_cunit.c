@@ -821,9 +821,9 @@ void API_LPSPI_GetIntFlag_ClearIntFlag()
     while ((LPSPIModule->STATUS & 0x0000002) == 0) __NOP();
 
     /* Check unit transfer interrupt flag */
-    CU_ASSERT_TRUE(LPSPI_GetIntFlag(LPSPIModule, LPSPI_UNIT_INT_MASK) >> LPSPI_UNIT_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(LPSPIModule, LPSPI_UNIT_INT_MASK) == LPSPI_UNIT_INT_MASK);
     LPSPI_ClearIntFlag(LPSPIModule, LPSPI_UNIT_INT_MASK);
-    CU_ASSERT_FALSE(LPSPI_GetIntFlag(LPSPIModule, LPSPI_UNIT_INT_MASK) >> LPSPI_UNIT_INT_Pos);
+    CU_ASSERT(LPSPI_GetIntFlag(LPSPIModule, LPSPI_UNIT_INT_MASK) == LPSPI_UNIT_INT_MASK);
     /* Reset SPI */
     LPSPI_ModuleReset(GetLPSPIModuleIdx());
     __NOP();

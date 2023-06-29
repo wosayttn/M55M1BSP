@@ -1335,13 +1335,13 @@ void API_QSPI_GetStatus()
 
     QSPIModule->CLKDIV = 0;
     /* Check SPIEN flag */
-    CU_ASSERT(QSPI_GetStatus(QSPIModule, QSPI_QSPIEN_STS_MASK) == 0);
+    CU_ASSERT(QSPI_GetStatus(QSPIModule, QSPI_SPIEN_STS_MASK) == 0);
     /* Slave mode, SPI mode 0. */
     QSPIModule->CTL = 0x00040005;
     /* Check busy flag */
     CU_ASSERT(QSPI_GetStatus(QSPIModule, QSPI_BUSY_MASK) == 0);
     /* Check SPIEN flag */
-    CU_ASSERT(QSPI_GetStatus(QSPIModule, QSPI_QSPIEN_STS_MASK) == QSPI_QSPIEN_STS_MASK);
+    CU_ASSERT(QSPI_GetStatus(QSPIModule, QSPI_SPIEN_STS_MASK) == QSPI_SPIEN_STS_MASK);
 
     /* SPI TX empty flag test */
     /* Check TX empty flag */

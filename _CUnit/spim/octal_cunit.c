@@ -328,11 +328,11 @@ void SPIM_OctalDMM_Func()
     {
         if (GetSPIMTestModuleIdx() == C_SPIM0)
         {
-            u32DMMAddress = SPIM0_DMM_MAP_ADDR;
+            u32DMMAddress = SPIM_DMM0_ADDR;
         }
         else if (GetSPIMTestModuleIdx() == C_SPIM1)
         {
-            u32DMMAddress = SPIM1_DMM_MAP_ADDR;
+            u32DMMAddress = SPIM_DMM1_ADDR;
         }
 
         memcpy(u8TstBuf1, (uint8_t *)(u32DMMAddress + offset), BUFFER_SIZE);

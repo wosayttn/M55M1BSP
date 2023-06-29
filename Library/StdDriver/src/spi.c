@@ -200,7 +200,7 @@ uint32_t SPI_Open(SPI_T *spi, uint32_t u32MasterSlave, uint32_t u32SPIMode, uint
     }
 
     /* Get system clock frequency */
-    u32HCLKFreq = CLK_GetSCLKFreq(); //CLK_GetHCLKFreq();
+    u32HCLKFreq = CLK_GetSCLKFreq();
 
     if (u32MasterSlave == SPI_MASTER)
     {
@@ -294,29 +294,22 @@ void SPI_Close(SPI_T *spi)
     /* Unlock protected registers */
     SYS_UnlockReg();
 
+    /* Reset SPI */
     if (spi == SPI0)
     {
-        /* Reset SPI */
-        SYS->SPIRST |= SYS_SPIRST_SPI0RST_Msk;
-        SYS->SPIRST &= ~SYS_SPIRST_SPI0RST_Msk;
+        SYS_ResetModule(SYS_SPI0RST);
     }
     else if (spi == SPI1)
     {
-        /* Reset SPI */
-        SYS->SPIRST |= SYS_SPIRST_SPI1RST_Msk;
-        SYS->SPIRST &= ~SYS_SPIRST_SPI1RST_Msk;
+        SYS_ResetModule(SYS_SPI1RST);
     }
     else if (spi == SPI2)
     {
-        /* Reset SPI */
-        SYS->SPIRST |= SYS_SPIRST_SPI2RST_Msk;
-        SYS->SPIRST &= ~SYS_SPIRST_SPI2RST_Msk;
+        SYS_ResetModule(SYS_SPI2RST);
     }
     else
     {
-        /* Reset SPI */
-        SYS->SPIRST |= SYS_SPIRST_SPI3RST_Msk;
-        SYS->SPIRST &= ~SYS_SPIRST_SPI3RST_Msk;
+        SYS_ResetModule(SYS_SPI3RST);
     }
 
     /* Lock protected registers */
@@ -385,7 +378,7 @@ uint32_t SPI_SetBusClock(SPI_T *spi, uint32_t u32BusClock)
     uint32_t u32Div, u32RetValue;
 
     /* Get system clock frequency */
-    u32HCLKFreq = CLK_GetSCLKFreq();//CLK_GetHCLKFreq();
+    u32HCLKFreq = CLK_GetSCLKFreq();
 
     if (u32BusClock >= u32HCLKFreq)
     {
@@ -430,7 +423,7 @@ uint32_t SPI_SetBusClock(SPI_T *spi, uint32_t u32BusClock)
         }
         else
         {
-            spi->CLKDIV = (spi->CLKDIV & (~SPI_CLKDIV_DIVIDER_Msk)) | (u32Div << SPI_CLKDIV_DIVIDER_Pos);
+            spi->CLKDIV = (spi->CLKDIV & ~(SPI_CLKDIV_DIVIDER_Msk)) | (u32Div << SPI_CLKDIV_DIVIDER_Pos);
             /* Return master peripheral clock rate */
             u32RetValue = (u32ClkSrc / (u32Div + 1U));
         }

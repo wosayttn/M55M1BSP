@@ -210,7 +210,7 @@ extern "C"
   * @param[in] key_nun  key number of key store.
   * \hideinitializer
   */
-#define OTFC_ENABLE_KS_SRAM(otfc, pr, key_num)                                        \
+#define OTFC_ENABLE_KS_SRAM(otfc, pr, key_num)                                    \
     (otfc->PR[(pr)].KSCTL = (otfc->PR[(pr)].KSCTL & ~(OTFC_PR_KSCTL_NUM_Msk)) |   \
                             (((key_num) << OTFC_PR_KSCTL_NUM_Pos) | OTFC_PR_KSCTL_RSRC_Msk))
 
@@ -221,8 +221,8 @@ extern "C"
   * @param[in] key_nun  key number of key store.
   * \hideinitializer
   */
-#define OTFC_ENABLE_KS_OTP(otfc, pr, key_num)                                         \
-    (otfc->PR[(pr)].KSCTL = (otfc->PR[(pr)].KSCTL & ~(OTFC_PR_KSCTL_NUM_Msk)) |       \
+#define OTFC_ENABLE_KS_OTP(otfc, pr, key_num)                                        \
+    (otfc->PR[(pr)].KSCTL = (otfc->PR[(pr)].KSCTL & ~(OTFC_PR_KSCTL_NUM_Msk)) |      \
                             (((key_num) << OTFC_PR_KSCTL_NUM_Pos) |                  \
                              (OTFC_KS_SRC_OTP << OTFC_PR_KSCTL_RSSRC_Pos) |          \
                              OTFC_PR_KSCTL_RSRC_Msk))
