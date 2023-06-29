@@ -1550,13 +1550,6 @@ int32_t SPIM_DMADMM_SetDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32N
 /* Phase table init API, Phase Table Setting reference SPI Flash specification. */
 void SPIM_DMADMM_InitPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, uint32_t u32OPMode);
 
-/* Phase table DMA Write. */
-//void SPIM_DMA_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, int is4ByteAddr, uint32_t u32Addr, uint32_t u32WrSize, uint8_t *pu8TxBuf);
-///* Phase table DMA Read. */
-//int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, int is4ByteAddr, uint32_t u32Addr, uint32_t u32RdSize, uint8_t *pu8RxBuf, int isSync);
-///* Phase table DMM Read. */
-//void SPIM_DMM_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, int is4ByteAddr, uint32_t u32IdleIntvl);
-
 /* Normal I/O send command phase. */
 void SPIM_IO_SendCMDPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32OpCMD, uint32_t u32CMDPhase, uint32_t u32DTREn);
 /* Normal I/O send address phase. */

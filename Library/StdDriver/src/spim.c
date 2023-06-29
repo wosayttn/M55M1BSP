@@ -2006,10 +2006,9 @@ void SPIM_IO_SendCMDPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32OpCMD,
     SPIM_SET_DTR_MODE(spim, SPIM_OP_DISABLE);   /* DTR Deactivated. */
 }
 
-
-void SPIM_WriteInPageDataByPhaseIO(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
-                                   uint32_t u32Addr, int is4ByteAddr,
-                                   uint8_t *pu8TxBuf, uint32_t u32RdSize)
+static void SPIM_WriteInPageDataByPhaseIO(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
+                                          uint32_t u32Addr, int is4ByteAddr,
+                                          uint8_t *pu8TxBuf, uint32_t u32RdSize)
 {
     SPIM_IO_SendCMDPhase(spim,
                          SPIM_IO_WRITE_PHASE,

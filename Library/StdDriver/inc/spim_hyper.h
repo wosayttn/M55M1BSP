@@ -103,10 +103,10 @@ extern "C"
     11 = 4.5 HCLK cycles.
 */
 /*----------------------------------------------------------------------------*/
-#define SPIM_HYPER_CONFIG1_CSST_1_5_HCLK    (0x0)
-#define SPIM_HYPER_CONFIG1_CSST_2_5_HCLK    (0x1)
-#define SPIM_HYPER_CONFIG1_CSST_3_5_HCLK    (0x2)
-#define SPIM_HYPER_CONFIG1_CSST_4_5_HCLK    (0x3)
+#define SPIM_HYPER_CSST_1_5_HCLK    (0x0)
+#define SPIM_HYPER_CSST_2_5_HCLK    (0x1)
+#define SPIM_HYPER_CSST_3_5_HCLK    (0x2)
+#define SPIM_HYPER_CSST_4_5_HCLK    (0x3)
 
 /*----------------------------------------------------------------------------*/
 /* SPIM_HYPER_CONFIG1: Chip Select Hold Time After CK Falling Edge
@@ -116,10 +116,10 @@ extern "C"
     11 = 3.5 HCLK cycles.
 */
 /*----------------------------------------------------------------------------*/
-#define SPIM_HYPER_CONFIG1_CSH_0_5_HCLK    (0x0)
-#define SPIM_HYPER_CONFIG1_CSH_1_5_HCLK    (0x1)
-#define SPIM_HYPER_CONFIG1_CSH_2_5_HCLK    (0x2)
-#define SPIM_HYPER_CONFIG1_CSH_3_5_HCLK    (0x3)
+#define SPIM_HYPER_CSH_0_5_HCLK    (0x0)
+#define SPIM_HYPER_CSH_1_5_HCLK    (0x1)
+#define SPIM_HYPER_CSH_2_5_HCLK    (0x2)
+#define SPIM_HYPER_CSH_3_5_HCLK    (0x3)
 
 /*----------------------------------------------------------------------------*/
 /* SPIM_HYPER_CONFIG1: Chip Select High between Transaction
@@ -128,20 +128,20 @@ extern "C"
     1111 = 3.5 HCLK cycles.
 */
 /*----------------------------------------------------------------------------*/
-#define SPIM_HYPER_CONFIG1_CSHI_2_HCLK    (0x02)
-#define SPIM_HYPER_CONFIG1_CSHI_3_HCLK    (0x03)
-#define SPIM_HYPER_CONFIG1_CSHI_4_HCLK    (0x04)
-#define SPIM_HYPER_CONFIG1_CSHI_5_HCLK    (0x05)
-#define SPIM_HYPER_CONFIG1_CSHI_6_HCLK    (0x06)
-#define SPIM_HYPER_CONFIG1_CSHI_7_HCLK    (0x07)
-#define SPIM_HYPER_CONFIG1_CSHI_8_HCLK    (0x08)
-#define SPIM_HYPER_CONFIG1_CSHI_9_HCLK    (0x09)
-#define SPIM_HYPER_CONFIG1_CSHI_10_HCLK   (0x0A)
-#define SPIM_HYPER_CONFIG1_CSHI_11_HCLK   (0x0B)
-#define SPIM_HYPER_CONFIG1_CSHI_12_HCLK   (0x0C)
-#define SPIM_HYPER_CONFIG1_CSHI_13_HCLK   (0x0D)
-#define SPIM_HYPER_CONFIG1_CSHI_14_HCLK   (0x0E)
-#define SPIM_HYPER_CONFIG1_CSHI_15_HCLK   (0x0F)
+#define SPIM_HYPER_CSHI_2_HCLK    (0x02)
+#define SPIM_HYPER_CSHI_3_HCLK    (0x03)
+#define SPIM_HYPER_CSHI_4_HCLK    (0x04)
+#define SPIM_HYPER_CSHI_5_HCLK    (0x05)
+#define SPIM_HYPER_CSHI_6_HCLK    (0x06)
+#define SPIM_HYPER_CSHI_7_HCLK    (0x07)
+#define SPIM_HYPER_CSHI_8_HCLK    (0x08)
+#define SPIM_HYPER_CSHI_9_HCLK    (0x09)
+#define SPIM_HYPER_CSHI_10_HCLK   (0x0A)
+#define SPIM_HYPER_CSHI_11_HCLK   (0x0B)
+#define SPIM_HYPER_CSHI_12_HCLK   (0x0C)
+#define SPIM_HYPER_CSHI_13_HCLK   (0x0D)
+#define SPIM_HYPER_CSHI_14_HCLK   (0x0E)
+#define SPIM_HYPER_CSHI_15_HCLK   (0x0F)
 
 /** @} end of group SPIM_HYPER_EXPORTED_CONSTANTS */
 
@@ -384,10 +384,10 @@ extern "C"
 /**
   * @brief      Set Hyper Chip Select Setup Time to Next CK Rising Edge.
   * @param[in]  x   Chip Select Setup Time to Next CK Rising Edge.
-  *                 - \ref SPIM_HYPER_CONFIG1_CSST_1_5_HCLK : 1.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSST_2_5_HCLK : 2.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSST_3_5_HCLK : 3.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSST_4_5_HCLK : 4.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSST_1_5_HCLK : 1.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSST_2_5_HCLK : 2.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSST_3_5_HCLK : 3.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSST_4_5_HCLK : 4.5 HCLK cycles
   * \hideinitializer
   */
 #define SPIM_HYPER_SET_CSST(spim, x)    \
@@ -397,10 +397,10 @@ extern "C"
 /**
   * @brief      Set Hyper Chip Select Hold Time After CK Falling Edge.
   * @param[in]  x   Chip Select Hold Time After CK Falling Edge.
-  *                 - \ref SPIM_HYPER_CONFIG1_CSH_0_5_HCLK : 0.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSH_1_5_HCLK : 1.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSH_2_5_HCLK : 2.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSH_3_5_HCLK : 3.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSH_0_5_HCLK : 0.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSH_1_5_HCLK : 1.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSH_2_5_HCLK : 2.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSH_3_5_HCLK : 3.5 HCLK cycles
   * \hideinitializer
   */
 #define SPIM_HYPER_SET_CSH(spim, x) \
@@ -411,6 +411,20 @@ extern "C"
   * @brief      Set Hyper Chip Select High between Transaction.
   * @param[in]  x   Set Chip Select High between Transaction as u8Value HCLK cycles.
                     It could be 2 ~ 16.
+  *                 - \ref SPIM_HYPER_CSHI_2_HCLK  : 2 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_3_HCLK  : 3 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_4_HCLK  : 4 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_5_HCLK  : 5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_6_HCLK  : 6 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_7_HCLK  : 7 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_8_HCLK  : 8 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_9_HCLK  : 9 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_10_HCLK : 10 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_11_HCLK : 11 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_12_HCLK : 12 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_13_HCLK : 13 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_14_HCLK : 14 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_15_HCLK : 15 HCLK cycles
   * \hideinitializer
   */
 #define SPIM_HYPER_SET_CSHI(spim, x)    \
