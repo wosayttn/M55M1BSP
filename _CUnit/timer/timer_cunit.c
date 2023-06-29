@@ -128,15 +128,15 @@ int32_t TIMER_InitClock(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
+    CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_HIRC, NULL);
+    CLK_SetModuleClock(TMR1_MODULE, CLK_TMRSEL_TMR1SEL_HIRC, NULL);
+    CLK_SetModuleClock(TMR2_MODULE, CLK_TMRSEL_TMR2SEL_HIRC, NULL);
+    CLK_SetModuleClock(TMR3_MODULE, CLK_TMRSEL_TMR3SEL_HIRC, NULL);
+
     CLK_EnableModuleClock(TMR0_MODULE);
     CLK_EnableModuleClock(TMR1_MODULE);
     CLK_EnableModuleClock(TMR2_MODULE);
     CLK_EnableModuleClock(TMR3_MODULE);
-
-    CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_PCLK1, NULL);
-    CLK_SetModuleClock(TMR1_MODULE, CLK_TMRSEL_TMR1SEL_PCLK1, NULL);
-    CLK_SetModuleClock(TMR2_MODULE, CLK_TMRSEL_TMR2SEL_PCLK3, NULL);
-    CLK_SetModuleClock(TMR3_MODULE, CLK_TMRSEL_TMR3SEL_PCLK3, NULL);
 
     return 0;
 }
