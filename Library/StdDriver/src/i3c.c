@@ -798,7 +798,7 @@ int32_t I3C_UnicastSETDASA(I3C_T *i3c, uint8_t u8DevIndex)
 {
     uint32_t response;
     i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_ROC_Msk
-                   | I3C_DEVCOUNT(1)
+                   | (1 << I3C_CMDQUE_DEVCOUNT_Pos)
                    | ((u8DevIndex & 0x1F) << I3C_CMDQUE_DEVINDX_Pos)
                    | (I3C_CCC_SETDASA <<  I3C_CMDQUE_CMD_Pos)
                    | I3C_CMDATTR_ADDR_ASSGN_CMD);
