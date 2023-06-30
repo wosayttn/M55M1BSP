@@ -61,8 +61,6 @@ extern "C"
 #define SPIM_OP_ENABLE                      (0x01UL)            /* SPIM Operation Enable */
 #define SPIM_OP_DISABLE                     (0x00UL)            /* SPIM Operation Disable */
 
-#define SPIM_EN_CACHE                       (0)                 /*!< SPIM cache on/off    \hideinitializer */
-
 /*----------------------------------------------------------------------------*/
 /* SPIM_CTL0 constant definitions                                             */
 /*----------------------------------------------------------------------------*/
@@ -573,7 +571,7 @@ typedef enum
 #define SPIM_WAIT_FREE(spim)    \
     while((spim->CTL1 & SPIM_CTL1_SPIMEN_Msk) >> SPIM_CTL1_SPIMEN_Pos)
 
-#if (SPIM_EN_CACHE == 1)    // TESTCHIP_ONLY not support
+#if (SPIM_REG_CACHE == 1)    // TESTCHIP_ONLY not support
 /**
  * @brief   Enable cache.
  * \hideinitializer
@@ -598,7 +596,49 @@ typedef enum
  */
 #define SPIM_INVALID_CACHE(spim)    (spim->CTL1 |= SPIM_CTL1_CDINVAL_Msk)
 
-#endif //SPIM_EN_CACHE
+/**
+ * @brief   Cache Write Through Enable.
+ * \hideinitializer
+ */
+#define SPIM_ENABLE_CAWRTHEN(spim)    (spim->CTL1 |= SPIM_CTL1_CAWRTHEN_Msk)
+
+/**
+ * @brief   Cache Write Through Disable.
+ * \hideinitializer
+ */
+#define SPIM_DISABLE_CAWRTHEN(spim)    (spim->CTL1 &= ~SPIM_CTL1_CAWRTHEN_Msk)
+
+/**
+ * @brief   Cache Auto Selection Updated Cache Line Number Enable.
+ * \hideinitializer
+ */
+#define SPIM_ENABLE_AUTOSCLN(spim)    (spim->CTL1 |= SPIM_CTL1_AUTOSCLN_Msk)
+
+/**
+ * @brief   Cache Auto Selection Updated Cache Line Number Disable.
+ * \hideinitializer
+ */
+#define SPIM_DISABLE_AUTOSCLN(spim)    (spim->CTL1 &= ~SPIM_CTL1_AUTOSCLN_Msk)
+
+/**
+ * @brief   Set Updated Cache Line Number per Cache Miss.
+ * @param[in]   x   SPI Function Operation Mode
+ *                  - \ref 0x01 : Update one cache line per cache miss. (default)
+ *                  - \ref 0x02 : Update two cache line per cache miss.
+ *                  - \ref 0x03 : Update three cache line per cache miss.
+ *                  - \ref 0x04 : Update four cache line per cache miss.
+ * \hideinitializer
+ */
+#define SPIM_SET_UPDCLNUM(spim, x)    \
+    (spim->CTL1 = (spim->CTL1 & ~(SPIM_CTL1_UPDCLNUM_Msk)) | (x))
+
+/**
+ * @brief   Reset Updated Cache Line Number per Cache Miss.
+ * \hideinitializer
+ */
+#define SPIM_RESET_UPDCLNUM(spim) (spim->CTL1 &= ~(SPIM_CTL1_UPDCLNUM_Msk))
+
+#endif //SPIM_REG_CACHE
 
 /**
  * @brief       Set SS(Select Active) to active level.

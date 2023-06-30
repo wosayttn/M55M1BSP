@@ -55,10 +55,8 @@ extern "C"
 
 #define SPIM_HYPER_MAX_LATENCY              (0x05)              /*!< Maximum DLL training number        \hideinitializer */
 
-#define SPIM_HYPER_ENABLE                   (0x01UL)            /* SPIM_HYPER Operation Enable */
-#define SPIM_HYPER_DISABLE                  (0x00UL)            /* SPIM_HYPER Operation Disable */
-
-#define SPIM_HYPER_EN_CACHE                 (0)                 /*!< SPIM_HYPER cache on/off    \hideinitializer */
+#define SPIM_HYPER_OP_ENABLE                (0x01UL)            /* SPIM_HYPER Operation Enable */
+#define SPIM_HYPER_OP_DISABLE               (0x00UL)            /* SPIM_HYPER Operation Disable */
 
 /* SPIM_HYPER Wait State Timeout Counter. */
 #define SPIM_HYPER_TIMEOUT                  SystemCoreClock     /*!< SPIM_HYPER time-out counter (1 second time-out) */
@@ -202,24 +200,24 @@ extern "C"
 #define SPIM_HYPER_IS_BUSY(spim)  \
     ((spim->CTL1 & SPIM_CTL1_SPIMEN_Msk) >> SPIM_CTL1_SPIMEN_Pos)
 
-#if (SPIM_HYPER_EN_CACHE == 1) // TESTCHIP_ONLY not support
+#if (SPIM_REG_CACHE == 1) // TESTCHIP_ONLY not support
 /**
  * @brief   Enable cache.
  * \hideinitializer
  */
-#define SPIM_HYPER_ENABLE_CACHE(spim) (spim->CTL1 &= ~(SPIM_CTL1_CACHEOFF_Msk))
+#define SPIM_HYPER_ENABLE_CACHE(spim)   (spim->CTL1 &= ~(SPIM_CTL1_CACHEOFF_Msk))
 
 /**
  * @brief   Disable cache.
  * \hideinitializer
  */
-#define SPIM_HYPER_DISABLE_CACHE(spim)    (spim->CTL1 |= SPIM_CTL1_CACHEOFF_Msk)
+#define SPIM_HYPER_DISABLE_CACHE(spim)  (spim->CTL1 |= SPIM_CTL1_CACHEOFF_Msk)
 
 /**
  * @brief   Is cache enabled.
  * \hideinitializer
  */
-//#define SPIM_HYPER_IS_CACHE_EN(spim)    ((spim->CTL1 & SPIM_CTL1_CACHEOFF_Msk) ? 0 : 1)
+#define SPIM_HYPER_GET_CACHE_EN(spim)    ((spim->CTL1 & SPIM_CTL1_CACHEOFF_Msk) >> SPIM_CTL1_CACHEOFF_Pos)
 
 /**
  * @brief   Invalidate cache.
@@ -227,7 +225,49 @@ extern "C"
  */
 #define SPIM_HYPER_INVALID_CACHE(spim)    (spim->CTL1 |= SPIM_CTL1_CDINVAL_Msk)
 
-#endif //SPIM_HYPER_EN_CACHE
+/**
+ * @brief   Cache Write Through Enable.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_ENABLE_CAWRTHEN(spim)    (spim->CTL1 |= SPIM_CTL1_CAWRTHEN_Msk)
+
+/**
+ * @brief   Cache Write Through Disable.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_DISABLE_CAWRTHEN(spim)    (spim->CTL1 &= ~SPIM_CTL1_CAWRTHEN_Msk)
+
+/**
+ * @brief   Cache Auto Selection Updated Cache Line Number Enable.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_ENABLE_AUTOSCLN(spim)    (spim->CTL1 |= SPIM_CTL1_AUTOSCLN_Msk)
+
+/**
+ * @brief   Cache Auto Selection Updated Cache Line Number Disable.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_DISABLE_AUTOSCLN(spim)    (spim->CTL1 &= ~SPIM_CTL1_AUTOSCLN_Msk)
+
+/**
+ * @brief   Set Updated Cache Line Number per Cache Miss.
+ * @param[in]   x   SPI Function Operation Mode
+ *                  - \ref 0x01 : Update one cache line per cache miss. (default)
+ *                  - \ref 0x02 : Update two cache line per cache miss. 
+ *                  - \ref 0x03 : Update three cache line per cache miss.
+ *                  - \ref 0x04 : Update four cache line per cache miss. 
+ * \hideinitializer
+ */
+#define SPIM_HYPER_SET_UPDCLNUM(spim, x)    \
+    (spim->CTL1 = (spim->CTL1 & ~(SPIM_CTL1_UPDCLNUM_Msk)) | (x))
+
+/**
+ * @brief   Reset Updated Cache Line Number per Cache Miss.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_RESET_UPDCLNUM(spim) (spim->CTL1 &= ~(SPIM_CTL1_UPDCLNUM_Msk))
+    
+#endif //SPIM_REG_CACHE
 
 /**
  * @brief       Set SPIM clock divider.
@@ -276,22 +316,22 @@ extern "C"
 /**
  * @brief   Set DLL0 OLDO Enable Bit
  * @param x is DLL circuit power mode.
- *          - \ref SPIM_HYPER_ENABLE
- *          - \ref SPIM_HYPER_DISABLE
+ *          - \ref SPIM_HYPER_OP_ENABLE
+ *          - \ref SPIM_HYPER_OP_DISABLE
  * \hideinitializer
  */
 #define SPIM_HYPER_ENABLE_DLLOLDO(spim, x)  \
-    (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLOLDO_Msk)) | (((x) ? 1UL : 0UL) << SPIM_DLL0_DLLOLDO_Pos))
+    (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLOLDO_Msk)) | ((x) << SPIM_DLL0_DLLOLDO_Pos))
 
 /**
  * @brief   Set DLL0 Output Valid Counter Reset.
  * @param x is starts to count from 0x0 to DLLOVNUM
- *          - \ref SPIM_HYPER_ENABLE
- *          - \ref SPIM_HYPER_DISABLE
+ *          - \ref SPIM_HYPER_OP_ENABLE
+ *          - \ref SPIM_HYPER_OP_DISABLE
  * \hideinitializer
  */
 #define SPIM_HYPER_ENABLE_DLLOVRST(spim, x) \
-    (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLOVRST_Msk)) | (((x) ? 1UL : 0UL) << SPIM_DLL0_DLLOVRST_Pos))
+    (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLOVRST_Msk)) | ((x) << SPIM_DLL0_DLLOVRST_Pos))
 
 /**
  * @brief   Get DLL0 Output Valid Counter Reset Done.
@@ -562,7 +602,8 @@ __STATIC_INLINE void SPIM_HYPER_DISABLE_CIPHER(SPIM_T *spim)
 }
 
 /* Octal SPI flash and hyper device training DLL API */
-int32_t SPIM_HYPER_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum);
+int32_t SPIM_HYPER_SetDLLDelayNum(SPIM_T *spim, uint32_t u32DelayNum);
+
 uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim);
 
 /* HyperRAM */

@@ -4,7 +4,7 @@
  * @brief    This example shows the subroutine when the application starts
  *           from HyperRAM.
  *
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -141,13 +141,15 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    SetDebugUartCLK();
-
     /* Enable SPIM0 peripheral clock */
     CLK_EnableModuleClock(SPIM0_MODULE);
 
-    /* Set PB multi-function pins for UART0 RXD=PB.12 and TXD=PB.13 */
+    /* Enable UART0 module clock */
+    SetDebugUartCLK();
+
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init I/O Multi-function                                                                                 */
+    /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
     /* Setup SPIM0 multi-function pins */
@@ -188,7 +190,7 @@ int main(void)
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
 
-    /* Init UART to 115200-8n1 for print message */
+    /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
     printf("+-------------------------------------------------------+\n");
