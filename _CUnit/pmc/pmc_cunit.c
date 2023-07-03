@@ -784,6 +784,12 @@ void PMC_Macro_Test(void)
     PMC_RELEASE_GPIO();
     //Auto clear by hardware
     CU_ASSERT((PMC->IOSHCTL & PMC_IOSHCTL_IOHR_Msk) >> PMC_IOSHCTL_IOHR_Pos == 0x0UL);
+    
+    PMC_ENABLE_INT();
+    CU_ASSERT((PMC->INTEN & PMC_INTEN_PDWKIEN_Msk) >> PMC_INTEN_PDWKIEN_Pos == 0x1UL);
+    
+    PMC_DISABLE_INT(); 
+    CU_ASSERT((PMC->INTEN & PMC_INTEN_PDWKIEN_Msk) >> PMC_INTEN_PDWKIEN_Pos == 0x0UL);    
 }
 void PMC_Const_Test(void)
 {

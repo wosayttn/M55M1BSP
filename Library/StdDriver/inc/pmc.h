@@ -233,10 +233,22 @@ enum
 #define PMC_DISABLE_TGPIN_GPD()   (PMC->GPDTGCTL &= ~(PMC_GPDTGCTL_TGPFEN_Msk | PMC_GPDTGCTL_TGPREN_Msk))
 
 /**
-  * @brief      Release GPIO hold status
-  * @details    This macro release GPIO hold status from power-down wake-up
+  * @brief      Release GPIO Hold Status
+  * @details    This macro releases GPIO hold status from power-down wake-up
   */
 #define PMC_RELEASE_GPIO()    (PMC->IOSHCTL |= PMC_IOSHCTL_IOHR_Msk)
+
+/**
+  * @brief      Enable PMC Interrupt
+  * @details    This macro enables PMC interrtup
+  */
+#define PMC_ENABLE_INT()    (PMC->INTEN |= PMC_INTEN_PDWKIEN_Msk)
+
+/**
+  * @brief      Disable PMC Interrupt
+  * @details    This macro disables PMC interrtup
+  */
+#define PMC_DISABLE_INT()    (PMC->INTEN &= ~PMC_INTEN_PDWKIEN_Msk)
 
 int32_t PMC_SetPowerLevel(uint32_t u32PowerLevel);
 int32_t PMC_SetPowerRegulator(uint32_t u32PowerRegulator);
