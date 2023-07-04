@@ -792,35 +792,17 @@ typedef struct
 #define VAD_CTL0_STAT_Pos                (0)                                               /*!< VAD_T::CTL0: STAT Position             */
 #define VAD_CTL0_STAT_Msk                (0xfful << VAD_CTL0_STAT_Pos)                     /*!< VAD_T::CTL0: STAT Mask                 */
 
-#define VAD_CTL0_STAAT_Pos               (8)                                               /*!< VAD_T::CTL0: STAAT Position            */
-#define VAD_CTL0_STAAT_Msk               (0xful << VAD_CTL0_STAAT_Pos)                     /*!< VAD_T::CTL0: STAAT Mask                */
-
-#define VAD_CTL0_STPS_Pos                (12)                                              /*!< VAD_T::CTL0: STPS Position             */
-#define VAD_CTL0_STPS_Msk                (0x7ul << VAD_CTL0_STPS_Pos)                      /*!< VAD_T::CTL0: STPS Mask                 */
-
 #define VAD_CTL0_LTAT_Pos                (16)                                              /*!< VAD_T::CTL0: LTAT Position             */
 #define VAD_CTL0_LTAT_Msk                (0xful << VAD_CTL0_LTAT_Pos)                      /*!< VAD_T::CTL0: LTAT Mask                 */
 
-#define VAD_CTL0_TESTMODE_Pos            (20)                                              /*!< VAD_T::CTL0: TESTMODE Position         */
-#define VAD_CTL0_TESTMODE_Msk            (0x1ul << VAD_CTL0_TESTMODE_Pos)                  /*!< VAD_T::CTL0: TESTMODE Mask             */
-
 #define VAD_CTL1_STTHREHWM_Pos           (0)                                               /*!< VAD_T::CTL1: STTHREHWM Position        */
 #define VAD_CTL1_STTHREHWM_Msk           (0xfffful << VAD_CTL1_STTHREHWM_Pos)              /*!< VAD_T::CTL1: STTHREHWM Mask            */
-
-#define VAD_CTL1_STTHRELWM_Pos           (16)                                              /*!< VAD_T::CTL1: STTHRELWM Position        */
-#define VAD_CTL1_STTHRELWM_Msk           (0xfffful << VAD_CTL1_STTHRELWM_Pos)              /*!< VAD_T::CTL1: STTHRELWM Mask            */
-
-#define VAD_CTL2_STATHRE_Pos             (0)                                               /*!< VAD_T::CTL2: STATHRE Position          */
-#define VAD_CTL2_STATHRE_Msk             (0xfffful << VAD_CTL2_STATHRE_Pos)                /*!< VAD_T::CTL2: STATHRE Mask              */
 
 #define VAD_CTL2_LTTHRE_Pos              (16)                                              /*!< VAD_T::CTL2: LTTHRE Position           */
 #define VAD_CTL2_LTTHRE_Msk              (0xfffful << VAD_CTL2_LTTHRE_Pos)                 /*!< VAD_T::CTL2: LTTHRE Mask               */
 
 #define VAD_CTL3_DEVTHRE_Pos             (0)                                               /*!< VAD_T::CTL3: DEVTHRE Position          */
 #define VAD_CTL3_DEVTHRE_Msk             (0xfffful << VAD_CTL3_DEVTHRE_Pos)                /*!< VAD_T::CTL3: DEVTHRE Mask              */
-
-#define VAD_CTL3_HOT_Pos                 (16)                                              /*!< VAD_T::CTL3: HOT Position              */
-#define VAD_CTL3_HOT_Msk                 (0xfffful << VAD_CTL3_HOT_Pos)                    /*!< VAD_T::CTL3: HOT Mask                  */
 
 #define VAD_STATUS0_STP_Pos              (0)                                               /*!< VAD_T::STATUS0: STP Position           */
 #define VAD_STATUS0_STP_Msk              (0xfffful << VAD_STATUS0_STP_Pos)                 /*!< VAD_T::STATUS0: STP Mask               */

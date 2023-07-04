@@ -580,7 +580,7 @@ __STATIC_INLINE void LPTMR_EventCounterSelect(LPTMR_T *lptmr, uint32_t u32Src)
 
 uint32_t LPTMR_Open(LPTMR_T *lptmr, uint32_t u32Mode, uint32_t u32Freq);
 void LPTMR_Close(LPTMR_T *lptmr);
-void LPTMR_Delay(LPTMR_T *lptmr, uint32_t u32Usec);
+int32_t LPTMR_Delay(LPTMR_T *lptmr, uint32_t u32Usec);
 void LPTMR_EnableCapture(LPTMR_T *lptmr, uint32_t u32CapMode, uint32_t u32Edge);
 void LPTMR_CaptureSelect(LPTMR_T *lptmr, uint32_t u32Src);
 void LPTMR_DisableCapture(LPTMR_T *lptmr);

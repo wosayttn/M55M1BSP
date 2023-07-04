@@ -55,7 +55,6 @@ extern "C"
 #define ECAP_COMPARE_FUNCTION                 0x02     /*!< Input capture compare function                   */
 #define ECAP_RELOAD_COMPARE_FUNCTION          0x03     /*!< Input capture reload & compare function          */
 #define ECAP_DISABLE_COMPARE                  (ECAP_DISABLE_COMPARE_RELOAD)    /*!< Input capture compare and reload function disable \hideinitializer */
-//#define ECAP_COMPARE_FUNCTION                 (1UL<<ECAP_CTL0_CMPEN_Pos)    /*!< Input capture compare function  \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* ECAP CTL1 constant definitions                                                                          */
@@ -277,6 +276,7 @@ extern "C"
             (ecap)->CTL0 &= ~ECAP_CTL0_CMPCLREN_Msk; \
         (ecap)->CTL1 = ((ecap)->CTL1 &~0x00700F00) | ((u32Event) & 0x00700F00); \
     }while(0);
+#define ECAP_SET_CNT_CLRRLD_EVENT  ECAP_SET_CNT_CLEAR_EVENT
 
 /**
   * @brief This macro is used to enable reload function
@@ -321,7 +321,7 @@ extern "C"
   * \hideinitializer
   */
 #define ECAP_ENABLE_CNT(ecap) ((ecap)->CTL0 |= ECAP_CTL0_CAPEN_Msk)
-//#define ECAP_ENABLE_CAP       ECAP_ENABLE_CNT
+#define ECAP_ENABLE_CAP       ECAP_ENABLE_CNT
 
 /**
   * @brief This macro is used to disable input capture function.
@@ -331,7 +331,7 @@ extern "C"
   * \hideinitializer
   */
 #define ECAP_DISABLE_CNT(ecap) ((ecap)->CTL0 &= ~ECAP_CTL0_CAPEN_Msk)
-//#define ECAP_DISABLE_CAP       ECAP_DISABLE_CNT
+#define ECAP_DISABLE_CAP       ECAP_DISABLE_CNT
 
 /**
   * @brief This macro is used to select input channel edge detection
@@ -363,6 +363,14 @@ extern "C"
   * \hideinitializer
   */
 #define ECAP_SEL_RELOAD_TRIG_SRC(ecap, u32TrigSrc) ((ecap)->CTL1 = ((ecap)->CTL1 & ~0xF00)|(u32TrigSrc))
+
+/**
+  * @brief This macro is used to select ECAP counter reload trigger source from Overflow
+  * @param[in] ecap      Specify ECAP port
+  * @return None
+  * @details This macro will select capture counter reload trigger source from Overflow.
+  * \hideinitializer
+  */
 #define ECAP_SEL_OVRRLD_TRIG_SRC(ecap)   (ecap)->CTL1 =  (ecap)->CTL1 | ECAP_CTL1_OVRLDEN_Msk
 
 /**

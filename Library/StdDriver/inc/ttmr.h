@@ -315,7 +315,7 @@ __STATIC_INLINE void TTMR_DisablePDCLK(TTMR_T *ttmr)
 
 uint32_t TTMR_Open(TTMR_T *ttmr, uint32_t u32Mode, uint32_t u32Freq);
 void TTMR_Close(TTMR_T *ttmr);
-void TTMR_Delay(TTMR_T *ttmr, uint32_t u32Usec);
+int32_t TTMR_Delay(TTMR_T *ttmr, uint32_t u32Usec);
 uint32_t TTMR_GetModuleClock(TTMR_T *ttmr);
 void TTMR_SetTriggerTarget(TTMR_T *ttmr, uint32_t u32Mask);
 int32_t TTMR_ResetCounter(TTMR_T *ttmr);

@@ -27,74 +27,67 @@ extern "C"
 */
 
 /**
-  * @brief      Start DMIC module
-  * @param[in]  dmic: The base address of DMIC module
-  * @return     None.
+  * @brief      Set DMIC DSP Gain Volume.
+  * @param[in]  dmic The base address of DMIC module
+  * @param[in]  u32ChMsk Select channel.
+  *             - \ref DMIC_CTL_CHEN0_Msk									
+  *             - \ref DMIC_CTL_CHEN1_Msk
+  *             - \ref DMIC_CTL_CHEN2_Msk									
+  *             - \ref DMIC_CTL_CHEN3_Msk
+  * @param[in]  u32ChVolume Gain Volume. CHVOL= -128-(Real_Gain)(dB),9-bit signed 2s complement number.
+  * @return     None
+  * @details    Set DMIC DSP volume/gain,if the desired gain is 0dB, the program value will be -128 (0xC000).
+	*             if the desired gain is -20dB, then the programmed value will be -108(0xCA00)
   */
-void DMIC_Open(DMIC_T *dmic, uint32_t u32ChMsk, uint32_t u32Width)
+void DMIC_SetDSPGainVolume(DMIC_T *dmic, uint32_t u32ChMsk, int16_t i16ChVolume)
 {
-    uint32_t  i;
-    DMIC0->CTL |= (DMIC_CTL_DSPMEMT_Msk);
+	  int16_t i16TmpChVolume= -128-(i16ChVolume);
+	  int16_t i16SetChVolume;
 
-    //  delay(100);
-    for (i = 0; i < 128; i++)
-    {
-        if (i == 58 | i == 122)
-        {
-            DMIC0->DSP0RAMDATA = 0xF80000;
-            DMIC0->DSP1RAMDATA = 0xF80000;
-        }
-        else if (i == 62 | i == 126)
-        {
-            DMIC0->DSP0RAMDATA = 0x400;
-            DMIC0->DSP1RAMDATA = 0x400;
-        }
-        else
-        {
-            DMIC0->DSP0RAMDATA = 0x0;
-            DMIC0->DSP1RAMDATA = 0x0;
-        }
-    }
-
-    printf("RAM Initialze Done....i=%d\n", i);
-    DMIC0->CTL &= (~DMIC_CTL_DSPMEMT_Msk);
-
-    if (DMIC0->DSP0ROMMBISTH != 0x00000027 || DMIC0->DSP1ROMMBISTH != 0x00000027)
-        printf("DSPxROMMBISTH Err");
-
-    if (DMIC0->DSP0ROMMBISTL != 0xc9bf447c || DMIC0->DSP1ROMMBISTL != 0xc9bf447c)
-        printf("DSPxROMMBISTL Err");
-
-    DMIC_ENABLE_CHANNEL(dmic, u32ChMsk);
-    DMIC_SET_FIFOWIDTH(dmic, u32Width);
+	  if(i16TmpChVolume >0)
+			i16SetChVolume = i16TmpChVolume<<7;
+		else
+			i16SetChVolume = ((i16TmpChVolume<<7)|BIT15);
+			
+    if(u32ChMsk & DMIC_CTL_CHEN0_Msk){
+            (dmic)->GAINCTL0 = (dmic->GAINCTL0 & ~(DMIC_GAINCTL0_CHyyLVOL_Msk)) |(i16SetChVolume & DMIC_GAINCTL0_CHyyLVOL_Msk);
+		}
+    if(u32ChMsk & DMIC_CTL_CHEN1_Msk){
+            (dmic)->GAINCTL0 = (dmic->GAINCTL0 & ~(DMIC_GAINCTL0_CHxxRVOL_Msk)) |(i16SetChVolume <<DMIC_GAINCTL0_CHxxRVOL_Pos);
+		}
+    if(u32ChMsk & DMIC_CTL_CHEN2_Msk){
+            (dmic)->GAINCTL1 = (dmic->GAINCTL1 & ~(DMIC_GAINCTL1_CHyyLVOL_Msk)) |(i16SetChVolume & DMIC_GAINCTL1_CHyyLVOL_Msk);
+		}
+    if(u32ChMsk & DMIC_CTL_CHEN3_Msk){
+            (dmic)->GAINCTL1 = (dmic->GAINCTL1 & ~(DMIC_GAINCTL1_CHxxRVOL_Msk)) |(i16SetChVolume <<DMIC_GAINCTL1_CHxxRVOL_Pos);
+		}
 }
 
 /**
-  * @brief      Stop DMIC module
-  * @param[in]  dmic: The base address of DMIC module
-  * @return     None.
+  * @brief      Clear the FIFO
+  * @param[in]  dmic The base address of DMIC module
+  *
+  * @details    To clear the FIFO, need to write FCLR to 11b, 
+	*             and can read the EMPTY bit to make sure that the FIFO has been cleared.
   */
-void DMIC_Close(DMIC_T *dmic)
-{
-    DMIC_DISABLE_CHANNEL(dmic, DMIC_CTL_CHEN0_Msk | DMIC_CTL_CHEN1_Msk | DMIC_CTL_CHEN2_Msk | DMIC_CTL_CHEN3_Msk);
-}
-
-void DMIC_FIFO_CLR(DMIC_T *dmic)
+void DMIC_ClearFIFO(DMIC_T *dmic)
 {
     (dmic)->DIV |= DMIC_DIV_FCLR_Msk;
 
     while (!DMIC_IS_FIFOEMPTY(dmic)) {};
 }
+
 /**
   * @brief      Set the sample Rate of data
   * @param[in]  dmic The base address of DMIC module
   * @param      u32SampleRate is sample Rate of data.
   * @return     Real sample rate.
+  * @Note       This API maybe modify OSR setting for sample Rate
   */
 uint32_t DMIC_SetSampleRate(DMIC_T *dmic, uint32_t u32SampleRate)
 {
-    uint16_t const au16OSRTable[] = {64, 128, 256, 50, 0, 0, 0, 100};
-    uint32_t u32SourceClock, u32BusClock, u32MainClock, u32OSR, u32Temp;
+    uint16_t const au16OSRTable[] = {64, 128, 256, 100, 0, 0, 0, 50};
+    uint32_t u32SourceClock, u32BusClock, u32MainClock, u32OSR, u32MDiv, u32SDiv=1;
 
     // Get DMIC clock source.
     switch (CLK->DMICSEL & CLK_DMICSEL_DMIC0SEL_Msk)
@@ -108,7 +101,7 @@ uint32_t DMIC_SetSampleRate(DMIC_T *dmic, uint32_t u32SampleRate)
             break;
 
         case CLK_DMICSEL_DMIC0SEL_MIRC:
-            u32SourceClock = CLK_GetMIRCFreq();
+            u32SourceClock = __MIRC;//CLK_GetMIRCFreq();
             break;
 
         case CLK_DMICSEL_DMIC0SEL_HIRC:
@@ -127,7 +120,13 @@ uint32_t DMIC_SetSampleRate(DMIC_T *dmic, uint32_t u32SampleRate)
             return 0;
     }
 
-    // Get OSR config and cal BusClock.
+	  // Get OSR config and cal BusClock.
+	  // F_DMIC_MCLK = Fs * K
+	  // F_DMIC_CLK = Fs * OSR
+	  // F_DMIC_CLK = (F_DMIC_MCLK)/(1 + MCLKDIV)
+	  // => Fs * OSR = (Fs * K)/(1 + MCLKDIV)
+	  // => K = OSR * (1 + MCLKDIV)
+	  // K should be divisible by OSR
     switch (dmic->DIV & DMIC_DIV_OSR_Msk)
     {
         case DMIC_DIV_DOWNSAMPLE_50:
@@ -138,10 +137,12 @@ uint32_t DMIC_SetSampleRate(DMIC_T *dmic, uint32_t u32SampleRate)
             u32OSR = au16OSRTable[(dmic->DIV & DMIC_DIV_OSR_Msk) >> DMIC_DIV_OSR_Pos];
             break;
 
-        //      case DMIC_DIV_DOWNSAMPLE_50:
-        //      case DMIC_DIV_DOWNSAMPLE_100:       u32OSR = (u32SampleRate>=32500)?50:100;                                     break;
+//        case DMIC_DIV_DOWNSAMPLE_50:
+//        case DMIC_DIV_DOWNSAMPLE_100:
+//					  u32OSR = (u32SampleRate>=32500)?50:100; 
+//				    break;
         default:
-            u32OSR = 1;
+            u32OSR = 64;
             break;
     }
 
@@ -156,39 +157,36 @@ uint32_t DMIC_SetSampleRate(DMIC_T *dmic, uint32_t u32SampleRate)
             dmic->DIV = 0;
             return 0;
         }
-        else if (u32SampleRate * 64 > u32SourceClock)
-        {
-            DMIC_ENABLE_DOWMSAMPLE(DMIC0, DMIC_DIV_DOWNSAMPLE_50);
-            printf("DMIC change u32OSR %d!\n", u32OSR);
-            u32OSR = 50;
-        }
         else
         {
-            DMIC_ENABLE_DOWMSAMPLE(DMIC0, DMIC_DIV_DOWNSAMPLE_64);
+            DMIC_SET_DOWMSAMPLE(DMIC0, DMIC_DIV_DOWNSAMPLE_50);
+            u32OSR = 50;
             printf("DMIC change u32OSR %d!\n", u32OSR);
-            u32OSR = 64;
         }
-
         u32BusClock = u32SampleRate * u32OSR;
-        u32MainClock = u32BusClock;
-    }
-    else
-    {
-        // Cal main working clock(Depends on whether the frequency is divided).
-        u32MainClock = u32SampleRate * (((u32SourceClock % u32SampleRate) != 0) ? 256 : 500);
     }
 
-    if (u32MainClock > u32SourceClock)
-    {
-        u32MainClock = u32BusClock;
-        printf("DMIC MainClock %d \n", u32MainClock);
-    }
-
-    dmic->DIV = (dmic->DIV & ~(DMIC_DIV_DMCLKDIV_Msk)) | ((u32MainClock / u32BusClock - 1) << DMIC_DIV_DMCLKDIV_Pos);
+		u32MDiv = u32SourceClock/u32BusClock;
+		if(u32MDiv>64){
+			u32SDiv=(u32MDiv/64)+1;
+			u32MDiv = u32SourceClock/u32SDiv/u32BusClock;
+		}
+		if((u32SourceClock/u32SDiv)%u32BusClock==0){
+			u32MainClock = (u32SourceClock/u32SDiv);
+		}
+		else{
+      u32MainClock = u32BusClock*u32MDiv;
+		}
+		
     CLK->DMICDIV = (u32SourceClock / u32MainClock - 1);
-    u32Temp = (CLK->DMICDIV + 1);
+    u32SDiv = (CLK->DMICDIV + 1);
+		if(u32SourceClock/u32SDiv/u32BusClock)
+        dmic->DIV = (dmic->DIV & ~(DMIC_DIV_DMCLKDIV_Msk)) | ((u32SourceClock/u32SDiv/ u32BusClock - 1) << DMIC_DIV_DMCLKDIV_Pos);
+    else
+			  
+        dmic->DIV = (dmic->DIV & ~(DMIC_DIV_DMCLKDIV_Msk)) | (0UL << DMIC_DIV_DMCLKDIV_Pos);
 
-    return ((u32SourceClock / u32Temp) / (((dmic->DIV & DMIC_DIV_DMCLKDIV_Msk) >> DMIC_DIV_DMCLKDIV_Pos) + 1)) / u32OSR;
+    return ((u32SourceClock / u32SDiv) / (((dmic->DIV & DMIC_DIV_DMCLKDIV_Msk) >> DMIC_DIV_DMCLKDIV_Pos) + 1)) / u32OSR;
 }
 
 /**
@@ -197,9 +195,9 @@ uint32_t DMIC_SetSampleRate(DMIC_T *dmic, uint32_t u32SampleRate)
   * @param[in]  u32SampleRate Sample Rate of input voice data.
   * @return     Real detect sample rate.
   */
-uint32_t VAD_SetSampleRate(VAD_T *vad, uint32_t u32SampleRate)
+uint32_t DMIC_VAD_SetSampleRate(VAD_T *vad, uint32_t u32SampleRate)
 {
-    uint16_t const au16OSRTable[4] = {48, 64, 96};
+    uint16_t const au16OSRTable[3] = {48, 64, 96};
     uint32_t u32SourceClock, u32BusClock, u32MainClock, u32OSR;
 
     // Get VAD clock source.
@@ -210,7 +208,7 @@ uint32_t VAD_SetSampleRate(VAD_T *vad, uint32_t u32SampleRate)
             break;
 
         case CLK_DMICSEL_VAD0SEL_MIRC:
-            u32SourceClock = __MIRC;
+            u32SourceClock = __MIRC;//CLK_GetMIRCFreq();
             break;
 
         case CLK_DMICSEL_VAD0SEL_HIRC:
@@ -222,50 +220,17 @@ uint32_t VAD_SetSampleRate(VAD_T *vad, uint32_t u32SampleRate)
     }
 
     // Get OSR config and cal BusClock.
-    u32OSR = (((vad->SINCCTL & VAD_SINCCTL_SINCOSR_Msk) >> VAD_SINCCTL_SINCOSR_Pos) >= 3) ? 1 : (au16OSRTable[(vad->SINCCTL & VAD_SINCCTL_SINCOSR_Msk) >> VAD_SINCCTL_SINCOSR_Pos]);
+    u32OSR = (((vad->SINCCTL & VAD_SINCCTL_SINCOSR_Msk) >> VAD_SINCCTL_SINCOSR_Pos) >= 3) ? 48 : (au16OSRTable[(vad->SINCCTL & VAD_SINCCTL_SINCOSR_Msk) >> VAD_SINCCTL_SINCOSR_Pos]);
     // Cal BusClock.
     u32BusClock = u32SampleRate * u32OSR;
     // Cal main working clock
     u32MainClock = u32BusClock * 4;
-
-    vad->SINCCTL = (vad->SINCCTL & ~(VAD_SINCCTL_VADMCLKDIV_Msk)) | ((u32MainClock / u32BusClock - 1) << VAD_SINCCTL_VADMCLKDIV_Pos);
+    if(u32SourceClock / u32MainClock)
+        vad->SINCCTL = (vad->SINCCTL & ~(VAD_SINCCTL_VADMCLKDIV_Msk)) | ((u32SourceClock / u32MainClock - 1) << VAD_SINCCTL_VADMCLKDIV_Pos);
+    else			  
+        vad->SINCCTL = (vad->SINCCTL & ~(VAD_SINCCTL_VADMCLKDIV_Msk)) | (0UL << VAD_SINCCTL_VADMCLKDIV_Pos);
 
     return ((u32SourceClock / (((vad->SINCCTL & VAD_SINCCTL_VADMCLKDIV_Msk) >> VAD_SINCCTL_VADMCLKDIV_Pos) + 1)) / 4 / u32OSR);
-}
-
-/**
-  * @brief      Write BIQ's coefficient value.
-  * @param[in]  vad The base address of VAD module
-  * @return     None.
-  */
-void VAD_WriteBIQCoeff(VAD_T *vad, uint8_t u8Coeff, uint32_t u32Value)
-{
-    switch (u8Coeff)
-    {
-        case VAD_COEFF_B0:
-            (vad)->BIQCTL1 = ((vad)->BIQCTL1 & ~VAD_BIQCTL1_BIQB0_Msk) | ((u32Value << VAD_BIQCTL1_BIQB0_Pos)&VAD_BIQCTL1_BIQB0_Msk);
-            break;
-
-        case VAD_COEFF_B1:
-            (vad)->BIQCTL1 = ((vad)->BIQCTL1 & ~VAD_BIQCTL1_BIQB1_Msk) | ((u32Value << VAD_BIQCTL1_BIQB1_Pos)&VAD_BIQCTL1_BIQB1_Msk);
-            break;
-
-        case VAD_COEFF_B2:
-            (vad)->BIQCTL2 = ((vad)->BIQCTL2 & ~VAD_BIQCTL2_BIQB2_Msk) | ((u32Value << VAD_BIQCTL2_BIQB2_Pos)&VAD_BIQCTL2_BIQB2_Msk);
-            break;
-
-        case VAD_COEFF_A1:
-            (vad)->BIQCTL0 = ((vad)->BIQCTL0 & ~VAD_BIQCTL0_BIQA1_Msk) | ((u32Value << VAD_BIQCTL0_BIQA1_Pos)&VAD_BIQCTL0_BIQA1_Pos);
-            break;
-
-        case VAD_COEFF_A2:
-            (vad)->BIQCTL0 = ((vad)->BIQCTL0 & ~VAD_BIQCTL0_BIQA2_Msk) | ((u32Value << VAD_BIQCTL0_BIQA2_Pos)&VAD_BIQCTL0_BIQA2_Pos);
-            break;
-    }
-
-    //        VAD0->BIQCTL0 = 0x19a0c715;
-    //        VAD0->BIQCTL1 = 0xc6bb1ca3;
-    //        VAD0->BIQCTL2 = 0x80001ca3;
 }
 
 /*@}*/ /* end of group DMIC_EXPORTED_FUNCTIONS */

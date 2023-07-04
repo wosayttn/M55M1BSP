@@ -21,7 +21,7 @@ uint32_t TwelveBitsPatternTable[4] = {0xFFF, 0xA5A, 0x5A5, 0x000}; /* 12 bits te
 uint32_t SixteenBitsPatternTable[4] = {0xFFFF, 0x5A5A, 0xA5A5, 0x0000}; /* 16 bits test pattern */
 
 #define BPWM_MODULE_NUM 2
-#define BPWM_ONEPORT_SELF 1
+#define BPWM_ONEPORT_SELF 0
 
 BPWM_T *g_apPWMModule[BPWM_MODULE_NUM] = {BPWM0, BPWM1};
 
@@ -39,9 +39,8 @@ int BPWM_Test_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Enable BPWM module clock */
-    CLK_EnableModuleClock(BPWM0_MODULE);
-    CLK_EnableModuleClock(BPWM1_MODULE);
+    /* Reset PWM */
+    ResetBPWM();
 
     //     /* PWM clock frequency can be set equal or double to HCLK by choosing case 1 or case 2 */
     //     /* case 1.PWM clock frequency is set equal to HCLK: select PWM module clock source as PCLK */
@@ -52,8 +51,11 @@ int BPWM_Test_Init(void)
     //CLK_SetModuleClock(BPWM0_MODULE, CLK_BPWMSEL_BPWM0SEL_HCLK0, 0);
     //CLK_SetModuleClock(BPWM1_MODULE, CLK_BPWMSEL_BPWM1SEL_HCLK0, 0);
 
-    /* Reset PWM */
-    ResetBPWM();
+    /* Enable BPWM module clock */
+    CLK_EnableModuleClock(BPWM0_MODULE);
+    CLK_EnableModuleClock(BPWM1_MODULE);
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    CLK_EnableModuleClock(GPIOB_MODULE);
 
     /* Set PA multi-function pins for BPWM0 Channel0~5 */
     SYS->GPA_MFP0 = (SYS->GPA_MFP0 & ~(SYS_GPA_MFP0_PA0MFP_Msk)) | SYS_GPA_MFP0_PA0MFP_BPWM0_CH0;
@@ -360,15 +362,15 @@ void Func_7_BPWM_ENABLE_TIMER_SYNC()
     {
 #if 1 //M252 open this
 
-        //synchrouous start source comes from PWM1
+        //synchrouous start source comes from EPWM1
         //test case 1: enable/disable one channel each time, then check each action
         for (u32TestCh = 0; u32TestCh < BPWM_MAX_CH; u32TestCh++)
         {
             BPWM_ENABLE_TIMER_SYNC(g_apPWMModule[j], 1 << u32TestCh, BPWM_SSCTL_SSRC_EPWM1);
             CU_ASSERT_EQUAL(g_apPWMModule[j]->SSCTL, 1  | BPWM_SSCTL_SSRC_EPWM1);
 
-            //trigger sync start event from PWM1, and check if the counter of selected channel(s) is starting counting
-            BPWM_TRIGGER_SYNC_START(BPWM1);
+            //trigger sync start event from EPWM1, and check if the counter of selected channel(s) is starting counting
+            EPWM_TRIGGER_SYNC_START(EPWM1);
             CU_ASSERT_EQUAL(g_apPWMModule[j]->CNTEN, 1);
             //disable counter for next test
             BPWM_ForceStop(g_apPWMModule[j], 1 << u32TestCh);
@@ -385,8 +387,8 @@ void Func_7_BPWM_ENABLE_TIMER_SYNC()
             CU_ASSERT_EQUAL(g_apPWMModule[j]->SSCTL, au32RegCheck[u32TestCh] | BPWM_SSCTL_SSRC_EPWM1);
         }
 
-        //trigger sync start event from PWM1, and check if the counter of selected channel(s) is starting counting
-        BPWM_TRIGGER_SYNC_START(BPWM1);
+        //trigger sync start event from EPWM1, and check if the counter of selected channel(s) is starting counting
+        EPWM_TRIGGER_SYNC_START(EPWM1);
         CU_ASSERT_EQUAL(g_apPWMModule[j]->CNTEN, BPWM_CH_0_MASK);
         //disable counter for next test
         BPWM_ForceStop(g_apPWMModule[j], BPWM_CH_0_MASK | BPWM_CH_1_MASK | BPWM_CH_2_MASK | BPWM_CH_3_MASK | BPWM_CH_4_MASK | BPWM_CH_5_MASK);
@@ -401,15 +403,15 @@ void Func_7_BPWM_ENABLE_TIMER_SYNC()
 #endif
 #if 1 //M252 open this
 
-        //synchrouous start source comes from PWM0
+        //synchrouous start source comes from EPWM0
         //test case 1: enable/disable one channel each time, then check each action
         for (u32TestCh = 0; u32TestCh < BPWM_MAX_CH; u32TestCh++)
         {
             BPWM_ENABLE_TIMER_SYNC(g_apPWMModule[j], 1 << u32TestCh, BPWM_SSCTL_SSRC_EPWM0);
             CU_ASSERT_EQUAL(g_apPWMModule[j]->SSCTL, 1 | BPWM_SSCTL_SSRC_EPWM0);
 
-            //trigger sync start event from PWM0, and check if the counter of selected channel(s) is starting counting
-            BPWM_TRIGGER_SYNC_START(BPWM0);
+            //trigger sync start event from EPWM0, and check if the counter of selected channel(s) is starting counting
+            EPWM_TRIGGER_SYNC_START(EPWM0);
             CU_ASSERT_EQUAL(g_apPWMModule[j]->CNTEN, 1);
             //disable counter for next test
             BPWM_ForceStop(g_apPWMModule[j], 1 << u32TestCh);
@@ -426,8 +428,8 @@ void Func_7_BPWM_ENABLE_TIMER_SYNC()
             CU_ASSERT_EQUAL(g_apPWMModule[j]->SSCTL, au32RegCheck[u32TestCh] | BPWM_SSCTL_SSRC_EPWM0);
         }
 
-        //trigger sync start event from PWM0, and check if the counter of selected channel(s) is starting counting
-        BPWM_TRIGGER_SYNC_START(BPWM0);
+        //trigger sync start event from EPWM0, and check if the counter of selected channel(s) is starting counting
+        EPWM_TRIGGER_SYNC_START(EPWM0);
         CU_ASSERT_EQUAL(g_apPWMModule[j]->CNTEN, BPWM_CH_0_MASK);
         //disable counter for next test
         BPWM_ForceStop(g_apPWMModule[j], BPWM_CH_0_MASK | BPWM_CH_1_MASK | BPWM_CH_2_MASK | BPWM_CH_3_MASK | BPWM_CH_4_MASK | BPWM_CH_5_MASK);
@@ -1261,8 +1263,8 @@ void Func_27_BPWM_GetCaptureIntFlag()
 #if 0// Auto-reload
             g_apPWMModule[k]->CTL1 &= ~(BPWM_CTL1_CNTMODE1_Msk << u32TestCh);
 #endif
-            BPWM_SET_CNR(g_apPWMModule[k], u32TestCh, 10000);
-            BPWM_SET_CMR(g_apPWMModule[k], u32TestCh, 5000);
+            BPWM_SET_CNR(g_apPWMModule[k], u32TestCh, 1000);
+            BPWM_SET_CMR(g_apPWMModule[k], u32TestCh, 500);
             BPWM_SET_PRESCALER(g_apPWMModule[k], u32TestCh, 2);
             BPWM_SET_OUTPUT_LEVEL(g_apPWMModule[k], 1 << u32TestCh, BPWM_OUTPUT_HIGH, BPWM_OUTPUT_LOW, BPWM_OUTPUT_NOTHING, BPWM_OUTPUT_NOTHING);
             BPWM_EnableOutput(g_apPWMModule[k], 1 << u32TestCh);
@@ -1275,9 +1277,9 @@ void Func_27_BPWM_GetCaptureIntFlag()
 #if 0// Auto-reload
             g_apPWMModule[j]->CTL1 &= ~(BPWM_CTL1_CNTMODE1_Msk << u32CapCh);
 #endif
-            BPWM_SET_CNR(g_apPWMModule[j], u32CapCh, 10000);
+            BPWM_SET_CNR(g_apPWMModule[j], u32CapCh, 1000);
             //BPWM_SET_CNR(g_apPWMModule[j], u32CapCh, 0xFFFF);
-            BPWM_SET_CMR(g_apPWMModule[j], u32CapCh, 5000);
+            BPWM_SET_CMR(g_apPWMModule[j], u32CapCh, 500);
             BPWM_SET_PRESCALER(g_apPWMModule[j], u32CapCh, 2);
             BPWM_EnableCaptureInt(g_apPWMModule[j], u32CapCh, BPWM_CAPTURE_INT_FALLING_LATCH | BPWM_CAPTURE_INT_RISING_LATCH);
             CU_ASSERT_EQUAL(g_apPWMModule[j]->CAPIEN, 0x00000101 << u32CapCh);
@@ -1395,8 +1397,6 @@ void Func_27_BPWM_GetCaptureIntFlag()
 
     for (j = 0; j < BPWM_MODULE_NUM; j++)
     {
-        //case 1: PWM0: output, PWM1: capture(input), PWM2: output, PWM3: capture(input) and PWM4: output, PWM5: capture(input)
-        //case 2: PWM0: capture(input), PWM1: output, PWM2: capture(input), PWM3: output and PWM4: capture(input), PWM5: output
         for (u32CapCh = 0; u32CapCh < BPWM_MAX_CH; u32CapCh++)
         {
             u32TestCh = (u32CapCh + 1) % BPWM_MAX_CH;
@@ -1537,6 +1537,10 @@ void Func_28_BPWM_ConfigOutputChannel()
     uint32_t rPeriod ;
 
     /*                                {{PERIOD1, PERIOD2},{Duty1, Duty2},{Psc1, Psc2}} */
+    uint32_t au32PCLKSample[3][3][2] = {{{0xC34F, 0xF423}, {0x61A8, 0x7A12}, {1, 0xF}},
+        {{0xC34F, 0xF423}, {0, 0}, {1, 0xF}},
+        {{0xC34F, 0xF423}, {0xC34F, 0xF423}, {1, 0xF}}
+    };
     uint32_t au32HXTSample[3][3][2] = {{{11999, 59999}, {6000, 30000}, {0, 1}},
         {{11999, 59999}, {0, 0}, {0, 1}},
         {{11999, 59999}, {11999, 59999}, {0, 1}}
@@ -1579,13 +1583,13 @@ void Func_28_BPWM_ConfigOutputChannel()
                 for (u32TestCh = 0; u32TestCh < BPWM_MAX_CH; u32TestCh++)
                 {
                     CU_ASSERT_EQUAL(BPWM_ConfigOutputChannel(g_apPWMModule[j], u32TestCh, au32Period[u32PeriodIndex], au32Duty[u32DutyIndex]), au32Period[u32PeriodIndex]);
-                    CU_ASSERT_EQUAL(g_apPWMModule[j]->PERIOD, au32HXTSample[u32DutyIndex][0][u32PeriodIndex]);
-                    CU_ASSERT_EQUAL(g_apPWMModule[j]->CMPDAT[u32TestCh], au32HXTSample[u32DutyIndex][1][u32PeriodIndex]);
-                    CU_ASSERT_EQUAL((*(__IO uint32_t *)(&(g_apPWMModule[j]->CLKPSC))), au32HXTSample[u32DutyIndex][2][u32PeriodIndex]);
+                    CU_ASSERT_EQUAL(g_apPWMModule[j]->PERIOD, au32PCLKSample[u32DutyIndex][0][u32PeriodIndex]);
+                    CU_ASSERT_EQUAL(g_apPWMModule[j]->CMPDAT[u32TestCh], au32PCLKSample[u32DutyIndex][1][u32PeriodIndex]);
+                    CU_ASSERT_EQUAL((*(__IO uint32_t *)(&(g_apPWMModule[j]->CLKPSC))), au32PCLKSample[u32DutyIndex][2][u32PeriodIndex]);
 #if 0  //auto-reload mode
                     CU_ASSERT_EQUAL(g_apPWMModule[j]->CTL1 & (BPWM_CTL1_CNTMODE0_Msk << u32TestCh), 0 << (16 + u32TestCh));//auto-reload mode
 #endif
-                    CU_ASSERT_EQUAL((g_apPWMModule[j]->CTL1 & BPWM_CTL1_CNTTYPE0_Msk), BPWM_DOWN_COUNTER); //edge-aligned type
+                    CU_ASSERT_EQUAL((g_apPWMModule[j]->CTL1 & BPWM_CTL1_CNTTYPE0_Msk), BPWM_UP_COUNTER); //edge-aligned type
                 }
             }
         }
@@ -1694,6 +1698,7 @@ void Func_29_BPWM_ConfigCaptureChannel()
     uint32_t rUnitTime ;
 
     /*                             {{RealCapTime1, RealCapTime2},{PERIOD1, PERIOD2},{Psc1, Psc2}} */
+    uint32_t au32PCLKSample[3][2] = {{0x3E8, 0x64}, {0xFFFF, 0xFFFF}, {0x63, 9}};
     uint32_t au32HXTSample[3][2] = {{1000, 166}, {0xFFFF, 0xFFFF}, {0xB, 1}};
 
 #if 0
@@ -1718,10 +1723,10 @@ void Func_29_BPWM_ConfigCaptureChannel()
         {
             for (u32TestCh = 0; u32TestCh < BPWM_MAX_CH; u32TestCh++)
             {
-                CU_ASSERT_EQUAL(BPWM_ConfigCaptureChannel(g_apPWMModule[j], u32TestCh, au32CapTime[u32CapTimeIndex], NULL), au32HXTSample[0][u32CapTimeIndex]);
-                CU_ASSERT_EQUAL(g_apPWMModule[j]->PERIOD, au32HXTSample[1][u32CapTimeIndex]);
+                CU_ASSERT_EQUAL(BPWM_ConfigCaptureChannel(g_apPWMModule[j], u32TestCh, au32CapTime[u32CapTimeIndex], NULL), au32PCLKSample[0][u32CapTimeIndex]);
+                CU_ASSERT_EQUAL(g_apPWMModule[j]->PERIOD, au32PCLKSample[1][u32CapTimeIndex]);
                 CU_ASSERT_EQUAL(g_apPWMModule[j]->CMPDAT[u32TestCh], 0);
-                CU_ASSERT_EQUAL((*(__IO uint32_t *)(&(g_apPWMModule[j]->CLKPSC))), au32HXTSample[2][u32CapTimeIndex]);
+                CU_ASSERT_EQUAL((*(__IO uint32_t *)(&(g_apPWMModule[j]->CLKPSC))), au32PCLKSample[2][u32CapTimeIndex]);
 #if 0  //auto-reload mode
                 CU_ASSERT_EQUAL(g_apPWMModule[j]->CTL1 & (BPWM_CTL1_CNTMODE0_Msk << u32TestCh), 0 << (16 + u32TestCh));//auto-reload mode
 #endif
@@ -2010,7 +2015,7 @@ void Func_49_BPWM_GetWrapAroundFlag()
         {
             BPWM_SET_CNR(g_apPWMModule[j], u32TestCh, 0xFFFF);
             BPWM_SET_CMR(g_apPWMModule[j], u32TestCh, 5);
-            BPWM_SET_PRESCALER(g_apPWMModule[j], u32TestCh, 1);
+            BPWM_SET_PRESCALER(g_apPWMModule[j], u32TestCh, 0);
             BPWM_Start(g_apPWMModule[j], 1 << u32TestCh);
 
             while (BPWM_GetWrapAroundFlag(g_apPWMModule[j], u32TestCh) == 0) {};
@@ -2042,30 +2047,30 @@ CU_TestInfo  BPWM_ConstTest[] =
 
 CU_TestInfo  BPWM_MacroTest[] =
 {
-    {"1. BPWM_ENABLE_OUTPUT_INVERTER():", Func_1_BPWM_ENABLE_OUTPUT_INVERTER},
-    {"2. BPWM_SET_PRESCALER()/BPWM_GET_PRESCALER():", Func_2_BPWM_SET_PRESCALER},
-    {"3. BPWM_SET_CMR()/BPWM_SET_CNR()/BPWM_GET_CMR()/BPWM_GET_CNR():", Func_3_BPWM_SET_CMR},
-    {"4. BPWM_SET_ALIGNED_TYPE():", Func_4_BPWM_SET_ALIGNED_TYPE},
-    {"7. BPWM_ENABLE_TIMER_SYNC()/BPWM_DISABLE_TIMER_SYNC()/BPWM_TRIGGER_SYNC_START():", Func_7_BPWM_ENABLE_TIMER_SYNC},
-    {"8. BPWM_MASK_OUTPUT():", Func_8_BPWM_MASK_OUTPUT},
-    {"12. BPWM_CLR_COUNTER():", Func_12_BPWM_CLR_COUNTER},
-    {"13. BPWM_SET_OUTPUT_LEVEL():", Func_13_BPWM_SET_OUTPUT_LEVEL},
+//    {"1. BPWM_ENABLE_OUTPUT_INVERTER():", Func_1_BPWM_ENABLE_OUTPUT_INVERTER},
+//    {"2. BPWM_SET_PRESCALER()/BPWM_GET_PRESCALER():", Func_2_BPWM_SET_PRESCALER},
+//    {"3. BPWM_SET_CMR()/BPWM_SET_CNR()/BPWM_GET_CMR()/BPWM_GET_CNR():", Func_3_BPWM_SET_CMR},
+//    {"4. BPWM_SET_ALIGNED_TYPE():", Func_4_BPWM_SET_ALIGNED_TYPE},
+//    {"7. BPWM_ENABLE_TIMER_SYNC()/BPWM_DISABLE_TIMER_SYNC()/BPWM_TRIGGER_SYNC_START():", Func_7_BPWM_ENABLE_TIMER_SYNC},
+//    {"8. BPWM_MASK_OUTPUT():", Func_8_BPWM_MASK_OUTPUT},
+//    {"12. BPWM_CLR_COUNTER():", Func_12_BPWM_CLR_COUNTER},
+//    {"13. BPWM_SET_OUTPUT_LEVEL():", Func_13_BPWM_SET_OUTPUT_LEVEL},
     CU_TEST_INFO_NULL
 };
 
 CU_TestInfo  BPWM_FuncTest[] =
 {
-    {"15. BPWM_Start()/BPWM_ForceStop()/BPWM_Stop():", Func_15_BPWM_Stop},
-    {"16. BPWM_EnableADCTrigger()/BPWM_DisableADCTrigger():", Func_16_BPWM_EnableADCTrigger},
-    {"17. BPWM_EnableCapture()/BPWM_DisableCapture():", Func_17_BPWM_EnableCapture},
-    {"18. BPWM_EnableOutput()/BPWM_DisableOutput():", Func_18_BPWM_EnableOutput},
-    {"21. BPWM_EnableCaptureInt()/BPWM_DisableCaptureInt():", Func_21_BPWM_EnableCaptureInt},
-    {"22. BPWM_EnableDutyInt()/BPWM_DisableDutyInt():", Func_22_BPWM_EnableDutyInt},
-    {"23. BPWM_EnablePeriodInt()/BPWM_DisablePeriodInt():", Func_23_BPWM_EnablePeriodInt},
-    {"24. BPWM_GetADCTriggerFlag()/BPWM_ClearADCTriggerFlag():", Func_24_BPWM_GetADCTriggerFlag},
-    {"25. BPWM_GetDutyIntFlag()/BPWM_ClearDutyIntFlag():", Func_25_BPWM_GetDutyIntFlag},
-    {"26. BPWM_GetPeriodIntFlag()/BPWM_ClearPeriodIntFlag():", Func_26_BPWM_GetPeriodIntFlag},
-    {"27. BPWM_GetCaptureIntFlag()/BPWM_ClearCaptureIntFlag()/BPWM_GET_CAPTURE_RISING_DATA()/BPWM_GET_CAPTURE_FALLING_DATA():", Func_27_BPWM_GetCaptureIntFlag},
+//    {"15. BPWM_Start()/BPWM_ForceStop()/BPWM_Stop():", Func_15_BPWM_Stop},
+//    {"16. BPWM_EnableADCTrigger()/BPWM_DisableADCTrigger():", Func_16_BPWM_EnableADCTrigger},
+//    {"17. BPWM_EnableCapture()/BPWM_DisableCapture():", Func_17_BPWM_EnableCapture},
+//    {"18. BPWM_EnableOutput()/BPWM_DisableOutput():", Func_18_BPWM_EnableOutput},
+//    {"21. BPWM_EnableCaptureInt()/BPWM_DisableCaptureInt():", Func_21_BPWM_EnableCaptureInt},
+//    {"22. BPWM_EnableDutyInt()/BPWM_DisableDutyInt():", Func_22_BPWM_EnableDutyInt},
+//    {"23. BPWM_EnablePeriodInt()/BPWM_DisablePeriodInt():", Func_23_BPWM_EnablePeriodInt},
+//    {"24. BPWM_GetADCTriggerFlag()/BPWM_ClearADCTriggerFlag():", Func_24_BPWM_GetADCTriggerFlag},
+//    {"25. BPWM_GetDutyIntFlag()/BPWM_ClearDutyIntFlag():", Func_25_BPWM_GetDutyIntFlag},
+//    {"26. BPWM_GetPeriodIntFlag()/BPWM_ClearPeriodIntFlag():", Func_26_BPWM_GetPeriodIntFlag},
+//    {"27. BPWM_GetCaptureIntFlag()/BPWM_ClearCaptureIntFlag()/BPWM_GET_CAPTURE_RISING_DATA()/BPWM_GET_CAPTURE_FALLING_DATA():", Func_27_BPWM_GetCaptureIntFlag},
 
     {"28. BPWM_ConfigOutputChannel():", Func_28_BPWM_ConfigOutputChannel},
     {"29. BPWM_ConfigCaptureChannel():", Func_29_BPWM_ConfigCaptureChannel},

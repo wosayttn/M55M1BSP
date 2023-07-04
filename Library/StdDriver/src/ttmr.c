@@ -88,17 +88,18 @@ void TTMR_Close(TTMR_T *ttmr)
   * @param[in]  ttmr        The pointer of the specified Timer module. It could be TTMR0, TTMR1.
   * @param[in]  u32Usec     Delay period in micro seconds. Valid values are between 100~1000000 (100 micro second ~ 1 second).
   *
-  * @return     None
+  * @retval     TTMR_OK          Delay success, target delay time reached
+  * @retval     TTMR_ERR_TIMEOUT Delay function execute failed due to timer stop working
   *
   * @details    This API is used to create a delay loop for u32usec micro seconds by using ttmr one-shot mode.
   * @note       This API overwrites the register setting of the ttmr used to count the delay time.
   * @note       This API use polling mode. So there is no need to enable interrupt for the ttmr module used to generate delay.
   */
-void TTMR_Delay(TTMR_T *ttmr, uint32_t u32Usec)
+int32_t TTMR_Delay(TTMR_T *ttmr, uint32_t u32Usec)
 {
     uint32_t u32Clk = TTMR_GetModuleClock(ttmr);
     uint32_t u32Prescale = 0UL, delay = (SystemCoreClock / u32Clk) + 1UL;
-    uint32_t u32Cmpr, u32NsecPerTick;
+    uint32_t u32Cmpr, u32Cntr, u32NsecPerTick, i = 0UL;
 
     /* Clear current ttmr configuration */
     ttmr->CTL = 0UL;
@@ -153,10 +154,29 @@ void TTMR_Delay(TTMR_T *ttmr, uint32_t u32Usec)
         __NOP();
     }
 
+    /* Add a bail out counter here in case timer clock source is disabled accidentally.
+       Prescale counter reset every ECLK * (prescale value + 1).
+       The u32Delay here is to make sure timer counter value changed when prescale counter reset */
+    delay = (SystemCoreClock / TTMR_GetModuleClock(ttmr)) * (u32Prescale + 1);
+    u32Cntr = ttmr->CNT;
+
     while (ttmr->CTL & TTMR_CTL_ACTSTS_Msk)
     {
-        ;
+        /* Bailed out if timer stop counting e.g. Some interrupt handler close timer clock source. */
+        if (u32Cntr == ttmr->CNT)
+        {
+            if (i++ > delay)
+            {
+                return TTMR_ERR_TIMEOUT;
+            }
+        }
+        else
+        {
+            i = 0;
+            u32Cntr = ttmr->CNT;
+        }
     }
+    return TTMR_OK;
 }
 
 /**

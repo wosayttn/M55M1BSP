@@ -61,8 +61,8 @@ void SYS_Init(void)
     SystemCoreClockUpdate();
 
     /* Enable module clock */
-    CLK_EnableModuleClock(TTMR0_MODULE);
-    CLK_EnableModuleClock(TTMR1_MODULE);
+    //CLK_EnableModuleClock(TTMR0_MODULE);
+    //CLK_EnableModuleClock(TTMR1_MODULE);
 
     /* Enable UART0 module clock */
     SetDebugUartCLK();
