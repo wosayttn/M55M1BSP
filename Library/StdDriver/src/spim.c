@@ -69,9 +69,6 @@ static void SPIM_WriteInPageDataByIO(SPIM_T *spim, uint32_t u32Addr, int is4Byte
 static int32_t SPIM_WriteInPageDataByPageWrite(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
                                                uint32_t u32NTx, uint8_t pu8TxBuf[], uint32_t wrCmd,
                                                int isSync);
-#if 0 /* not used */
-    static void spim_eon_set_qpi_mode(SPIM_T *spim, int isEn);
-#endif //0
 
 //------------------------------------------------------------------------------
 static void N_delay(int n)
@@ -379,26 +376,6 @@ static void SPIM_WriteStatusRegister2(SPIM_T *spim, uint8_t dataBuf[], uint32_t 
     SPIM_SET_SS_EN(spim, 0);        /* CS deactivated. */
 }
 
-#if 0  /* not used */
-/**
-  * @brief      Issue Write Status Register #3 command.
-  * @param      dataBuf     Transmit buffer.
-  * @param      u32NTx      Size of transmit buffer.
-  * @param      u32NBit     N-bit transmit/receive.
-  * @return     None.
-  */
-static void SPIM_WriteStatusRegister3(uint8_t dataBuf[], uint32_t u32NTx, uint32_t u32NBit)
-{
-    uint8_t cmdBuf[] = {OPCODE_WRSR3, 0x00U};    /* 1-byte Write Status Register #2 command + 1-byte data. */
-    cmdBuf[1] = dataBuf[0];
-
-    SPIM_SET_SS_EN(1);                          /* CS activated. */
-    SwitchNBitOutput(u32NBit);
-    spim_write(cmdBuf, sizeof(cmdBuf));
-    SPIM_SET_SS_EN(0);                          /* CS deactivated. */
-}
-#endif
-
 /**
   * @brief      Issue Read Config Register #3 command.
   * @param      dataBuf     Receive buffer.
@@ -554,26 +531,6 @@ void SPIM_ReadConfigRegister(SPIM_T *spim, uint8_t u8RdCMD, uint32_t u32Addr, ui
 
     SPIM_SET_SS_EN(spim, 0);                        /* CS deactivated. */
 }
-
-#if 0  /* not used */
-/**
-  * @brief      Issue Write Security Register command.
-  * @param      dataBuf     Transmit buffer.
-  * @param      u32NTx      Size of transmit buffer.
-  * @param      u32NBit     N-bit transmit/receive.
-  * @return     None.
-  */
-static void SPIM_WriteSecurityRegister(uint8_t dataBuf[], uint32_t u32NTx, uint32_t u32NBit)
-{
-    uint8_t cmdBuf[] = {OPCODE_WRSCUR, 0x00U};   /* 1-byte Write Status Register #2 command + 1-byte data. */
-    cmdBuf[1] = dataBuf[0];
-
-    SPIM_SET_SS_EN(1);                          /* CS activated. */
-    SwitchNBitOutput(u32NBit);
-    spim_write(cmdBuf, sizeof(cmdBuf));
-    SPIM_SET_SS_EN(0);                          /* CS deactivated. */
-}
-#endif
 
 /**
   * @brief      Issue Read Security Register command.
@@ -1000,46 +957,6 @@ void SPIM_SetQuadEnable(SPIM_T *spim, int isEn, uint32_t u32NBit)
     }
 }
 
-#if 0 /* not used */
-/**
-  * @brief      Enter/exit QPI mode.
-  * @param      isEn    QPI Mode
- *                      - \ref SPIM_OP_ENABLE
- *                      - \ref SPIM_OP_DISABLE
-  * @return     None.
-  */
-static void spim_eon_set_qpi_mode(SPIM_T *spim, int isEn)
-{
-    uint8_t cmdBuf[1];                                  /* 1-byte command. */
-
-    uint8_t status[1];
-    SPIM_ReadStatusRegister(spim, status, sizeof(status), 1UL);
-    SPIM_DBGMSG("Status: 0x%x\n", status[0]);
-
-    if (isEn)                                           /* Assume in SPI mode. */
-    {
-        cmdBuf[0] = OPCODE_ENQPI;
-
-        SPIM_SET_SS_EN(spim, 1);                        /* CS activated. */
-        SwitchNBitOutput(spim, 1UL);
-        spim_write(spim, cmdBuf, sizeof(cmdBuf));
-        SPIM_SET_SS_EN(spim, 0);                        /* CS deactivated. */
-    }
-    else                                                /* Assume in QPI mode. */
-    {
-        cmdBuf[0] = OPCODE_EXQPI;
-
-        SPIM_SET_SS_EN(spim, 1);                        /* CS activated. */
-        SwitchNBitOutput(spim, 4UL);
-        spim_write(spim, cmdBuf, sizeof(cmdBuf));
-        SPIM_SET_SS_EN(spim, 0);                        /* CS deactivated. */
-    }
-
-    SPIM_ReadStatusRegister(spim, status, sizeof(status), 1UL);
-    SPIM_DBGMSG("Status: 0x%x\n", status[0]);
-}
-#endif //0
-
 static void SPIM_SPANSION_4Bytes_Enable(SPIM_T *spim, int isEn, uint32_t u32NBit)
 {
     uint8_t cmdBuf[2];
@@ -1075,42 +992,6 @@ static void SPIM_SPANSION_4Bytes_Enable(SPIM_T *spim, int isEn, uint32_t u32NBit
     spim_write(spim, cmdBuf, 2UL);
 
     SPIM_SET_SS_EN(spim, 0);                     /* CS deactivated. */
-}
-
-/**
- * @brief   Micron Chip Enter/Exit 4-byte address mode.
- *
- * @param spim
- * @param isEn          Enable/disable.
- * @param u32NBit       N-bit transmit/receive.
- * @param u32DTREn      DTR Mode.
- *                      - \ref SPIM_OP_ENABLE
- *                      - \ref SPIM_OP_DISABLE
- * @return              None.
- */
-void SPIM_MT35x_4Bytes_Enable(SPIM_T *spim, int isEn, uint32_t u32NBit, uint32_t u32DTREn)
-{
-    uint8_t cmdBuf[2] = {0};
-    uint8_t u8CmdSize = 1;
-
-    SPIM_SET_DTR_MODE(spim, u32DTREn); /* DTR Activated. */
-
-    cmdBuf[0] = isEn ? OPCODE_EN4B : OPCODE_EX4B;
-
-    if (u32DTREn == 1)
-    {
-        //cmdBuf[0] = isEn ? OPCODE_EN4B : OPCODE_EX4B;
-        cmdBuf[u8CmdSize++] = isEn ? OPCODE_EN4B : OPCODE_EX4B;
-    }
-
-    SPIM_SET_SS_EN(spim, 1);                      /* CS activated.    */
-
-    SwitchNBitOutput(spim, u32NBit);
-    spim_write(spim, cmdBuf, u8CmdSize);
-
-    SPIM_SET_SS_EN(spim, 0);
-
-    SPIM_SET_DTR_MODE(spim, 0); /* DTR Deactivated. */
 }
 
 /** @cond HIDDEN_SYMBOLS */
@@ -2397,27 +2278,6 @@ int SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
 }
 
 /**
-  * @brief      Get Direct Map Address.
-  * @param      spim
-  * @return     Direct Mapping Address
-  */
-uint32_t SPIM_GetDMMAddress(SPIM_T *spim)
-{
-    uint32_t u32DMMAddr = 0;
-
-    if (spim == SPIM0)
-    {
-        u32DMMAddr = SPIM_DMM0_ADDR;
-    }
-    else if (spim == SPIM1)
-    {
-        u32DMMAddr = SPIM_DMM1_ADDR;
-    }
-
-    return u32DMMAddr;
-}
-
-/**
   * @brief      Enter Direct Map mode.
   * @param      is4ByteAddr     4-byte u32Address or not.
   * @param      u32RdCmd        Read command.
@@ -2482,7 +2342,7 @@ void SPIM_ExitDirectMapMode(SPIM_T *spim)
   *             SPIM_SET_DLLLOCK_VALID()
   *             SPIM_SET_DLLOV_NUM()
   */
-int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum)
+int32_t SPIM_SetDLLDelayNum(SPIM_T *spim, uint32_t u32DelayNum)
 {
     int i32Timeout = SPIM_TIMEOUT;
 

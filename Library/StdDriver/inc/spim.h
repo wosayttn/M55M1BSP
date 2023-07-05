@@ -36,20 +36,20 @@ extern "C"
 #define SPIM_DMM0_SADDR                     (0x80000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
 #define SPIM_DMM0_NSADDR                    (0x90000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
 
-#define SPIM_DMM1_SADDR                     (0x82000000UL)  /*!< SPIM1 DMM mode memory map base secure address    \hideinitializer */
-#define SPIM_DMM1_NSADDR                    (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
+#define SPIM_DMM1_SADDR                     (0x82000000UL)  /*!< SPIM1 DMM mode memory map base secure address    \hideinitializer */ // TESTCHIP_ONLY
+#define SPIM_DMM1_NSADDR                    (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */ // TESTCHIP_ONLY
 
 #if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM0_Msk)
 #define SPIM_DMM0_ADDR                      SPIM_DMM0_NSADDR
 #else
 #define SPIM_DMM0_ADDR                      SPIM_DMM0_SADDR
-#endif //
+#endif
 
-#if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM1_Msk)
+#if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM1_Msk) // TESTCHIP_ONLY
 #define SPIM_DMM1_ADDR                      SPIM_DMM1_NSADDR
 #else
 #define SPIM_DMM1_ADDR                      SPIM_DMM1_SADDR
-#endif //
+#endif
 
 #define SPIM_DMM_SIZE                       (0x2000000UL)       /*!< DMM mode memory mapping size        \hideinitializer */
 
@@ -572,24 +572,6 @@ typedef enum
     while((spim->CTL1 & SPIM_CTL1_SPIMEN_Msk) >> SPIM_CTL1_SPIMEN_Pos)
 
 #if (SPIM_REG_CACHE == 1)    // TESTCHIP_ONLY not support
-/**
- * @brief   Enable cache.
- * \hideinitializer
- */
-#define SPIM_ENABLE_CACHE(spim) (spim->CTL1 &= ~(SPIM_CTL1_CACHEOFF_Msk))
-
-/**
- * @brief   Disable cache.
- * \hideinitializer
- */
-#define SPIM_DISABLE_CACHE(spim)    (spim->CTL1 |= SPIM_CTL1_CACHEOFF_Msk)
-
-/**
- * @brief   Is cache enabled.
- * \hideinitializer
- */
-//#define SPIM_IS_CACHE_EN(spim)    ((spim->CTL1 & SPIM_CTL1_CACHEOFF_Msk) ? 0 : 1)
-
 /**
  * @brief   Invalidate cache.
  * \hideinitializer
@@ -1465,8 +1447,13 @@ typedef enum
 /*----------------------------------------------------------------------------*/
 /* static inline functions                                                    */
 /*----------------------------------------------------------------------------*/
-__STATIC_INLINE void SPIM_ENABLE_CIPHER(SPIM_T *spim);
 __STATIC_INLINE void SPIM_DISABLE_CIPHER(SPIM_T *spim);
+__STATIC_INLINE void SPIM_ENABLE_CIPHER(SPIM_T *spim);
+
+__STATIC_INLINE void SPIM_DISABLE_CACHE(SPIM_T *spim);
+__STATIC_INLINE void SPIM_ENABLE_CACHE(SPIM_T *spim);
+
+__STATIC_INLINE uint32_t SPIM_GetDMMAddress(SPIM_T *spim);
 
 /**
  * @brief   Enable cipher.
@@ -1494,6 +1481,65 @@ __STATIC_INLINE void SPIM_DISABLE_CIPHER(SPIM_T *spim)
     spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_BALEN_Msk)) | (SPIM_CTL0_CIPHOFF_Msk);
 
     SPIM_SET_DMM_DESELTIM(spim, 0x08);
+}
+
+/**
+ * @brief   Disable cache.
+ *
+ * @param spim
+ * @note    Minimum time width of SPIM_SS
+ *          deselect time = (DESELTIM + 1) * AHB clock cycle time.
+ */
+__STATIC_INLINE void SPIM_DISABLE_CACHE(SPIM_T *spim)
+{
+    (spim->CTL1 |= SPIM_CTL1_CACHEOFF_Msk);
+
+    /* Cipher Disabled Set Deselect Time 0x01 */
+    if (((spim->CTL0 & SPIM_CTL0_CIPHOFF_Msk) >> SPIM_CTL0_CIPHOFF_Pos) != SPIM_OP_DISABLE)
+    {
+        SPIM_HYPER_SET_DMM_DESELTIM(spim, 0x1);
+    }
+}
+
+#if (SPIM_REG_CACHE == 1) // TESTCHIP_ONLY not support
+/**
+ * @brief   Enable cache.
+ *
+ * @param spim
+ * @note    Minimum time width of SPIM_SS
+ *          deselect time = (DESELTIM + 4) * AHB clock cycle time.
+ */
+__STATIC_INLINE void SPIM_ENABLE_CACHE(SPIM_T *spim)
+{
+    (spim->CTL1 &= ~(SPIM_CTL1_CACHEOFF_Msk));
+
+    /* Cipher Disabled Set Deselect Time 0x04 */
+    if (((spim->CTL0 & SPIM_CTL0_CIPHOFF_Msk) >> SPIM_CTL0_CIPHOFF_Pos) != SPIM_OP_DISABLE)
+    {
+        SPIM_HYPER_SET_DMM_DESELTIM(spim, 0x4);
+    }
+}
+#endif
+
+/**
+  * @brief      Get Direct Map Address.
+  * @param      spim
+  * @return     Direct Mapping Address
+  */
+__STATIC_INLINE uint32_t SPIM_GetDMMAddress(SPIM_T *spim)
+{
+    uint32_t u32DMMAddr = 0;
+
+    if (spim == SPIM0)
+    {
+        u32DMMAddr = SPIM_DMM0_ADDR;
+    }
+    else if (spim == SPIM1) // TESTCHIP_ONLY
+    {
+        u32DMMAddr = SPIM_DMM1_ADDR;
+    }
+
+    return u32DMMAddr;
 }
 
 /** @addtogroup SPIM_EXPORTED_TYPEDEF SPIM Exported Type Defines
@@ -1538,7 +1584,7 @@ typedef struct
 */
 
 /* Octal SPI flash and hyper device training DLL API */
-int32_t SPIM_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum);
+int32_t SPIM_SetDLLDelayNum(SPIM_T *spim, uint32_t u32DelayNum);
 
 /*----------------------------------------------------------------------------*/
 /* SPIM Define Function Prototypes                                            */
@@ -1569,7 +1615,6 @@ void SPIM_IO_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32R
 void SPIM_DMA_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32NTx, uint8_t *pu8TxBuf, uint32_t wrCmd);
 int SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32NRx, uint8_t *pu8RxBuf, uint32_t u32RdCmd, int isSync);
 
-uint32_t SPIM_GetDMMAddress(SPIM_T *spim);
 void SPIM_EnterDirectMapMode(SPIM_T *spim, int is4ByteAddr, uint32_t u32RdCmd, uint32_t u32IdleIntvl);
 void SPIM_ExitDirectMapMode(SPIM_T *spim);
 
@@ -1606,9 +1651,6 @@ void SPIM_IO_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, uint32_t u32Add
 
 /* Wait SPI flash write operation done */
 int32_t SPIM_WaitSPIMENDone(SPIM_T *spim, uint32_t u32IsSync);
-
-/* Set Micron MT35X SPI flash 4 bytes address access */
-void SPIM_MT35x_4Bytes_Enable(SPIM_T *spim, int isEn, uint32_t u32NBit, uint32_t u32DTREn);
 
 /** @} end of group SPIM_EXPORTED_FUNCTIONS */
 /** @} end of group SPIM_Driver */

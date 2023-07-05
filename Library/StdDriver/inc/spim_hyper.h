@@ -36,6 +36,7 @@ extern "C"
 #define SPIM_HYPER_DMM0_SADDR               (0x80000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
 #define SPIM_HYPER_DMM0_NSADDR              (0x90000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
 
+// TESTCHIP_ONLY
 #define SPIM_HYPER_DMM1_SADDR               (0x82000000UL)  /*!< SPIM1 DMM mode memory map base secure address    \hideinitializer */
 #define SPIM_HYPER_DMM1_NSADDR              (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
 
@@ -43,13 +44,13 @@ extern "C"
 #define SPIM_HYPER_DMM0_ADDR                SPIM_HYPER_DMM0_NSADDR
 #else
 #define SPIM_HYPER_DMM0_ADDR                SPIM_HYPER_DMM0_SADDR
-#endif //
+#endif
 
-#if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM1_Msk)
+#if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM1_Msk) // TESTCHIP_ONLY
 #define SPIM_HYPER_DMM1_ADDR                SPIM_HYPER_DMM1_NSADDR
 #else
 #define SPIM_HYPER_DMM1_ADDR                SPIM_HYPER_DMM1_SADDR
-#endif //
+#endif
 
 #define SPIM_HYPER_DMM_SIZE                 (0x2000000UL)       /*!< DMM mode memory mapping size        \hideinitializer */
 
@@ -202,18 +203,6 @@ extern "C"
 
 #if (SPIM_REG_CACHE == 1) // TESTCHIP_ONLY not support
 /**
- * @brief   Enable cache.
- * \hideinitializer
- */
-#define SPIM_HYPER_ENABLE_CACHE(spim)   (spim->CTL1 &= ~(SPIM_CTL1_CACHEOFF_Msk))
-
-/**
- * @brief   Disable cache.
- * \hideinitializer
- */
-#define SPIM_HYPER_DISABLE_CACHE(spim)  (spim->CTL1 |= SPIM_CTL1_CACHEOFF_Msk)
-
-/**
  * @brief   Is cache enabled.
  * \hideinitializer
  */
@@ -253,9 +242,9 @@ extern "C"
  * @brief   Set Updated Cache Line Number per Cache Miss.
  * @param[in]   x   SPI Function Operation Mode
  *                  - \ref 0x01 : Update one cache line per cache miss. (default)
- *                  - \ref 0x02 : Update two cache line per cache miss. 
+ *                  - \ref 0x02 : Update two cache line per cache miss.
  *                  - \ref 0x03 : Update three cache line per cache miss.
- *                  - \ref 0x04 : Update four cache line per cache miss. 
+ *                  - \ref 0x04 : Update four cache line per cache miss.
  * \hideinitializer
  */
 #define SPIM_HYPER_SET_UPDCLNUM(spim, x)    \
@@ -266,8 +255,8 @@ extern "C"
  * \hideinitializer
  */
 #define SPIM_HYPER_RESET_UPDCLNUM(spim) (spim->CTL1 &= ~(SPIM_CTL1_UPDCLNUM_Msk))
-    
-#endif //SPIM_REG_CACHE
+
+#endif
 
 /**
  * @brief       Set SPIM clock divider.
@@ -287,7 +276,7 @@ extern "C"
  */
 #define SPIM_HYPER_SET_DMM_DESELTIM(spim, x)  \
     (spim->DMMCTL = (spim->DMMCTL & ~SPIM_DMMCTL_DESELTIM_Msk) | \
-                    (((x)&0x1FUL) << SPIM_DMMCTL_DESELTIM_Pos))
+                    (((x) & 0x1FUL) << SPIM_DMMCTL_DESELTIM_Pos))
 
 /**
  * @brief   Get current DMM mode SPI flash deselect time setting.
@@ -570,8 +559,27 @@ extern "C"
 /*----------------------------------------------------------------------------*/
 /* static inline functions                                                    */
 /*----------------------------------------------------------------------------*/
-__STATIC_INLINE void SPIM_HYPER_ENABLE_CIPHER(SPIM_T *spim);
 __STATIC_INLINE void SPIM_HYPER_DISABLE_CIPHER(SPIM_T *spim);
+__STATIC_INLINE void SPIM_HYPER_ENABLE_CIPHER(SPIM_T *spim);
+
+__STATIC_INLINE void SPIM_HYPER_DISABLE_CACHE(SPIM_T *spim);
+__STATIC_INLINE void SPIM_HYPER_ENABLE_CACHE(SPIM_T *spim);
+
+__STATIC_INLINE uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim);
+
+/**
+ * @brief   Disable cipher.
+ *
+ * @param spim
+ * @note    When encryption/decryption of SPIM is disabled,
+ *          please set SPIM_HYPER_SET_DMM_DESELTIM >= 0x8.
+ */
+__STATIC_INLINE void SPIM_HYPER_DISABLE_CIPHER(SPIM_T *spim)
+{
+    spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_BALEN_Msk)) | (SPIM_CTL0_CIPHOFF_Msk);
+
+    SPIM_HYPER_SET_DMM_DESELTIM(spim, 0x08);
+}
 
 /**
  * @brief   Enable cipher.
@@ -588,23 +596,66 @@ __STATIC_INLINE void SPIM_HYPER_ENABLE_CIPHER(SPIM_T *spim)
 }
 
 /**
- * @brief   Disable cipher.
+ * @brief   Disable cache.
  *
  * @param spim
- * @note    When encryption/decryption of SPIM is disabled,
- *          please set SPIM_HYPER_SET_DMM_DESELTIM >= 0x8.
+ * @note    Minimum time width of SPIM_SS
+ *          deselect time = (DESELTIM + 1) * AHB clock cycle time.
  */
-__STATIC_INLINE void SPIM_HYPER_DISABLE_CIPHER(SPIM_T *spim)
+__STATIC_INLINE void SPIM_HYPER_DISABLE_CACHE(SPIM_T *spim)
 {
-    spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_BALEN_Msk)) | (SPIM_CTL0_CIPHOFF_Msk);
+    (spim->CTL1 |= SPIM_CTL1_CACHEOFF_Msk);
 
-    SPIM_HYPER_SET_DMM_DESELTIM(spim, 0x08);
+    /* Cipher Disabled Set Deselect Time 0x01 */
+    if (((spim->CTL0 & SPIM_CTL0_CIPHOFF_Msk) >> SPIM_CTL0_CIPHOFF_Pos) != SPIM_OP_DISABLE)
+    {
+        SPIM_HYPER_SET_DMM_DESELTIM(spim, 0x1);
+    }
+}
+
+#if (SPIM_REG_CACHE == 1) // TESTCHIP_ONLY not support
+/**
+ * @brief   Enable cache.
+ *
+ * @param spim
+ * @note    Minimum time width of SPIM_SS
+ *          deselect time = (DESELTIM + 4) * AHB clock cycle time.
+ */
+__STATIC_INLINE void SPIM_HYPER_ENABLE_CACHE(SPIM_T *spim)
+{
+    (spim->CTL1 &= ~(SPIM_CTL1_CACHEOFF_Msk));
+
+    /* Cipher Disabled Set Deselect Time 0x04 */
+    if (((spim->CTL0 & SPIM_CTL0_CIPHOFF_Msk) >> SPIM_CTL0_CIPHOFF_Pos) != SPIM_OP_DISABLE)
+    {
+        SPIM_HYPER_SET_DMM_DESELTIM(spim, 0x4);
+    }
+}
+#endif
+
+/**
+  * @brief      Get Direct Map Address.
+  * @param      spim
+  * @return     Direct Mapping Address
+  */
+__STATIC_INLINE uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim)
+{
+    uint32_t u32DMMAddr = 0;
+
+    if (spim == SPIM0)
+    {
+        u32DMMAddr = SPIM_HYPER_DMM0_ADDR;
+    }
+    else if (spim == SPIM1) // TESTCHIP_ONLY
+    {
+        u32DMMAddr = SPIM_HYPER_DMM1_ADDR;
+    }
+
+    return u32DMMAddr;
 }
 
 /* Octal SPI flash and hyper device training DLL API */
 int32_t SPIM_HYPER_SetDLLDelayNum(SPIM_T *spim, uint32_t u32DelayNum);
-
-uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim);
 
 /* HyperRAM */
 int32_t SPIM_HYPER_ExitHSAndDPD(SPIM_T *spim);

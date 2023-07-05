@@ -21,28 +21,6 @@
 /** @addtogroup SPIM_HYPER_EXPORTED_FUNCTIONS SPIM_HYPER Exported Functions
   @{
 */
-
-/**
-  * @brief      Get Direct Map Address.
-  * @param      spim
-  * @return     Direct Mapping Address
-  */
-uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim)
-{
-    uint32_t u32DMMAddr = 0;
-
-    if (spim == SPIM0)
-    {
-        u32DMMAddr = SPIM_HYPER_DMM0_ADDR;
-    }
-    else if (spim == SPIM1)
-    {
-        u32DMMAddr = SPIM_HYPER_DMM1_ADDR;
-    }
-
-    return u32DMMAddr;
-}
-
 /**
   * @brief      SPIM used to delay the read data strobe (DQS/RWDS) from Octal SPI Flash and Hyper bus device
   * @param      spim
