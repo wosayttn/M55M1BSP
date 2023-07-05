@@ -661,7 +661,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>1</hasPrio>
+                <hasPrio>208</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -1695,7 +1695,7 @@
                 <option>
                     <name>OOCOutputFormat</name>
                     <version>3</version>
-                    <state>0</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>OCOutputOverride</name>
@@ -1703,7 +1703,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>HSUSBH_USBH_MassStorage.srec</state>
+                    <state>HSUSBH_USBH_MassStorage.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -1711,7 +1711,7 @@
                 </option>
                 <option>
                     <name>OOCObjCopyEnable</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -1721,7 +1721,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>16</hasPrio>
+                <hasPrio>1</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>

@@ -2151,6 +2151,9 @@
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\tamper.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\timer.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\uart.c</name>
         </file>
     </group>
