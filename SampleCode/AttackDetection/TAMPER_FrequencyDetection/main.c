@@ -12,6 +12,10 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Functions and variables declaration                                                                     */
 /*---------------------------------------------------------------------------------------------------------*/
+#define TIMER1_DELAY_COUNTER            (10)
+#define TAMPER_CLK_FAIL_BOUNDARY        (2)
+#define TAMPER_CLK_STOP_BOUNDARY        (2)
+
 static volatile uint32_t s_u32SpareData = 0;
 
 void SYS_Init(void);
@@ -114,6 +118,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(TAMPER0_MODULE);
     CLK_EnableModuleClock(FMC0_MODULE);
     CLK_EnableModuleClock(ISP0_MODULE);
+    CLK_EnableModuleClock(RTC0_MODULE);
 
     /* Enable UART0 module clock */
     SetDebugUartCLK();
@@ -136,7 +141,9 @@ void SYS_Init(void)
 void UART_Init(void)
 {
     /* Configure UART0 and set UART0 Baudrate */
-    UART_Open(UART0, 115200);
+    //UART_Open(UART0, 115200);
+    DEBUG_PORT->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400));
+    DEBUG_PORT->LINE = (UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1);
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Get LXT and LIRC Frequency                                                                              */
@@ -151,46 +158,52 @@ void GetActiveLXTandTLIRC32Freq(uint32_t *u32LXTFreq, uint32_t *LIRC32Freq)
     CLK_EnableModuleClock(TMR0_MODULE);
     CLK_EnableModuleClock(TMR1_MODULE);
 
-    TIMER0->CMP = __HIRC;
-    TIMER0->CTL = 0;
-
-    TIMER1->CMP = 0xFFFFFF;
-    TIMER1->CTL = TIMER_PERIODIC_MODE | TIMER_CTL_CNTEN_Msk;
-
-    TIMER0->INTSTS = TIMER0->INTSTS;
-    TIMER1->CNT = 0x555;
+    /* Timer0 config*/
+    TIMER_SET_CMP_VALUE(TIMER0, __HIRC);
+    TIMER_SET_OPMODE(TIMER0, TIMER_ONESHOT_MODE);
+    TIMER_Stop(TIMER0);
+    /* Timer1 config*/
+    TIMER_SET_CMP_VALUE(TIMER1, 0xFFFFFF);
+    TIMER_SET_OPMODE(TIMER1, TIMER_PERIODIC_MODE);
+    TIMER_Start(TIMER1);
+    /* clear TIMER0 interrupt flag*/
+    TIMER_ClearIntFlag(TIMER0);
+    /* reset TIMER1 counter*/
+    TIMER_ResetCounter(TIMER1);
 
     while (1)
     {
-        if (TIMER1->CNT == 10)
+        if (TIMER_GetCounter(TIMER1) == TIMER1_DELAY_COUNTER)
         {
-            TIMER0->CTL = TIMER_CTL_CNTEN_Msk;
+            TIMER_Start(TIMER0);
             break;
         }
     }
 
-    while (TIMER0->INTSTS == 0);
+    while (TIMER_GetIntFlag(TIMER0) == 0);
 
-    u32GetCNT = TIMER1->CNT;
-    *u32LXTFreq = u32GetCNT - 10;
+    u32GetCNT = TIMER_GetCounter(TIMER1);
+    *u32LXTFreq = u32GetCNT - TIMER1_DELAY_COUNTER;
 
     /* Feeds TLIRC32 CKO to PD.0 (set PD.1 as GPIO input mode) */
-    TIMER0->CTL = 0;
-    TIMER0->CMP = 0xFFFFFF;
-    TIMER0->CTL = TIMER_PERIODIC_MODE | TIMER_CTL_CNTEN_Msk;
+    /* clear TIMER0 interrupt flag*/
+    TIMER_ClearIntFlag(TIMER0);
+    TIMER_ClearWakeupFlag(TIMER0);
+    /* reset TIMER1 counter*/
+    TIMER_ResetCounter(TIMER1);
     CLK_SysTickDelay(10000);
 
     while (PD1 == 0) {}
 
     while (PD1 == 1) {}
 
-    TIMER0->CMP = 0xFFFFFF;
+    TIMER_SET_CMP_VALUE(TIMER0, 0xFFFFFF);
 
     while (PD1 == 0) {}
 
     while (PD1 == 1) {}
 
-    u32Period = TIMER0->CNT;
+    u32Period = TIMER_GetCounter(TIMER0);
     *LIRC32Freq = (1000000 * 12) / u32Period;
 }
 
@@ -199,7 +212,7 @@ void GetActiveLXTandTLIRC32Freq(uint32_t *u32LXTFreq, uint32_t *LIRC32Freq)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
-    uint32_t u32LXTFreq, u32LIRC32Freq, u32STDCount;
+    uint32_t u32LXTFreq, u32LIRC32Freq, u32STDCount, u32FailBoundary, u32StopBoundary;
     uint32_t u32Confi3Read;
     S_RTC_TIME_DATA_T sInitTime;
 
@@ -247,7 +260,10 @@ int main(void)
     printf("The spare register data will be cleared to zero if LXT frequency is abnormal.\n");
     printf("\nStop LXT to test.\n\n");
 
-    GetActiveLXTandTLIRC32Freq(&u32LXTFreq, &u32LIRC32Freq);
+    //GetActiveLXTandTLIRC32Freq(&u32LXTFreq, &u32LIRC32Freq);
+    u32LXTFreq = 27000;
+    u32LIRC32Freq = 32000;
+    getchar();
 
     if (u32LXTFreq > u32LIRC32Freq)
     {
@@ -272,7 +288,11 @@ int main(void)
     /* Set the LXT clock frequency monitor fail/stop boundary value.
        The fail/stop boundary value should be less than u32STDCount.
     */
-    TAMPER->CDBR = ((u32STDCount - 2) << TAMPER_CDBR_FAILBD_Pos) | ((u32STDCount - 2) << TAMPER_CDBR_STOPBD_Pos);
+    u32FailBoundary = u32STDCount - TAMPER_CLK_FAIL_BOUNDARY;
+    u32StopBoundary = u32STDCount - TAMPER_CLK_STOP_BOUNDARY;
+
+    TAMPER_SET_CLKFAIL_BOUNDARY(u32FailBoundary);
+    TAMPER_SET_CLKSTOP_BOUNDARY(u32StopBoundary);
 
     /* Enable LXT clock detection */
     TAMPER_ENABLE_LXTDET();

@@ -79,11 +79,8 @@ static int ohci_reset(void)
     /* HC Reset requires max 10 ms delay  */
     _ohci->HcControl = 0;
     _ohci->HcCommandStatus = USBH_HcCommandStatus_HCR_Msk;
-#ifndef __SIM__
+
     delay_us(10000);
-#else
-    delay_us(2);
-#endif
 
     /* Check if OHCI reset completed? */
     if ((_ohci->HcCommandStatus & USBH_HcCommandStatus_HCR_Msk) != 0)
@@ -96,11 +93,7 @@ static int ohci_reset(void)
 
     _ohci->HcControl = HCFS_RESET;
 
-#ifndef __SIM__
     delay_us(10000);
-#else
-    delay_us(10);
-#endif
 
     /* Check if OHCI reset completed? */
     if ((_ohci->HcCommandStatus & USBH_HcCommandStatus_HCR_Msk) != 0)
@@ -239,11 +232,8 @@ static int  ohci_init(void)
     _ohci->HcInterruptEnable = USBH_HcInterruptEnable_MIE_Msk | USBH_HcInterruptEnable_WDH_Msk | USBH_HcInterruptEnable_SF_Msk;
 
     /* POTPGT delay is bits 24-31, in 20 ms units.                                        */
-#ifndef __SIM__
     delay_us(20000);
-#else
-    delay_us(10);
-#endif
+
     return 0;
 }
 
