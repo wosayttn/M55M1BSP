@@ -974,7 +974,7 @@ typedef struct
 
     #define SPIM_CTL1_CDINVAL_Pos            (3)                                               /*!< SPIM_T::CTL1: CDINVAL Position         */
     #define SPIM_CTL1_CDINVAL_Msk            (0x1ul << SPIM_CTL1_CDINVAL_Pos)                  /*!< SPIM_T::CTL1: CDINVAL Mask             */
-#endif //(SPIM_REG_CACHE == 1)
+#endif 
 
 #define SPIM_CTL1_SS_Pos                 (4)                                               /*!< SPIM_T::CTL1: SS Position              */
 #define SPIM_CTL1_SS_Msk                 (0x1ul << SPIM_CTL1_SS_Pos)                       /*!< SPIM_T::CTL1: SS Mask                  */
@@ -988,7 +988,7 @@ typedef struct
 
     #define SPIM_CTL1_AUTOSCLN_Pos           (7)                                               /*!< SPIM_T::CTL1: AUTOSCLN Position        */
     #define SPIM_CTL1_AUTOSCLN_Msk           (0x1ul << SPIM_CTL1_AUTOSCLN_Pos)                 /*!< SPIM_T::CTL1: AUTOSCLN Mask            */
-#endif //(SPIM_REG_CACHE == 1)
+#endif
 
 #define SPIM_CTL1_IDLETIME_Pos           (8)                                               /*!< SPIM_T::CTL1: IDLETIME Position        */
 #define SPIM_CTL1_IDLETIME_Msk           (0xful << SPIM_CTL1_IDLETIME_Pos)                 /*!< SPIM_T::CTL1: IDLETIME Mask            */
@@ -996,7 +996,7 @@ typedef struct
 #if (SPIM_REG_CACHE == 1) //TESTCHIP_ONLY not support
     #define SPIM_CTL1_UPDCLNUM_Pos           (12)                                              /*!< SPIM_T::CTL1: UPDCLNUM Position        */
     #define SPIM_CTL1_UPDCLNUM_Msk           (0xful << SPIM_CTL1_UPDCLNUM_Pos)                 /*!< SPIM_T::CTL1: UPDCLNUM Mask            */
-#endif //(SPIM_REG_CACHE == 1)
+#endif
 
 #define SPIM_CTL1_DIVIDER_Pos            (16)                                              /*!< SPIM_T::CTL1: DIVIDER Position         */
 #define SPIM_CTL1_DIVIDER_Msk            (0xfffful << SPIM_CTL1_DIVIDER_Pos)               /*!< SPIM_T::CTL1: DIVIDER Mask             */

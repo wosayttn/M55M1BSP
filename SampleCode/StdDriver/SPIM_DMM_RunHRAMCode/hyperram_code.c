@@ -97,7 +97,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
         memset(g_au8DestArray, 0, sizeof(g_au8DestArray));
 
         /* Set DLL calibration to select the valid delay step number */
-        SPIM_HYPER_CtrlDLLDelayTime(spim, u8RdDelay);
+        SPIM_HYPER_SetDLLDelayNum(spim, u8RdDelay);
 
         /* Read Data from HyperRAM */
         SPIM_HYPER_DMARead(spim, u32SrcAddr, g_au8DestArray, u32TestSize);
@@ -134,7 +134,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     }
 
     /* Set the number of intermediate delay steps */
-    SPIM_HYPER_CtrlDLLDelayTime(spim, u8RdDelayRes[u8RdDelayIdx]);
+    SPIM_HYPER_SetDLLDelayNum(spim, u8RdDelayRes[u8RdDelayIdx]);
 }
 
 /**

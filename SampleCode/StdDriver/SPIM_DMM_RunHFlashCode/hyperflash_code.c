@@ -184,7 +184,7 @@ void SPIM_TrainingDLLDelayTime(SPIM_T *spim)
     for (u8RdDelay = 0; u8RdDelay <= SPIM_MAX_DLL_LATENCY; u8RdDelay++)
     {
         /* Set DLL calibration to select the valid delay step number */
-        SPIM_HYPER_CtrlDLLDelayTime(spim, u8RdDelay);
+        SPIM_HYPER_SetDLLDelayNum(spim, u8RdDelay);
 
         /* Read Data from HyperFlash */
         HyperFlash_DMARead(spim, u32SrcAddr, u32DestArray, u32TestSize);
@@ -219,7 +219,7 @@ void SPIM_TrainingDLLDelayTime(SPIM_T *spim)
     }
 
     /* Set the number of intermediate delay steps */
-    SPIM_HYPER_CtrlDLLDelayTime(spim, u8RdDelayRes[u8RdDelayIdx]);
+    SPIM_HYPER_SetDLLDelayNum(spim, u8RdDelayRes[u8RdDelayIdx]);
 }
 
 /**
@@ -276,7 +276,7 @@ void HyperFlash_SetReadLatency(SPIM_T *spim, uint32_t u32Latency)
     /* HyperFlash default read latency is 16 and write is always 1 */
     SPIM_Hyper_DefaultConfig(spim, HFLH_MAX_CS_LOW, 16, HFLH_WR_ACCTIME);
 
-    SPIM_HYPER_CtrlDLLDelayTime(spim, 1);
+    SPIM_HYPER_SetDLLDelayNum(spim, 1);
 
     /* Read non-volatile config register default value */
     u32RegValue = HyperFlash_ReadNVCRegister(spim);

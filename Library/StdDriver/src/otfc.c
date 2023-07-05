@@ -22,7 +22,7 @@
 */
 static int32_t otfc_wait_busy(OTFC_T *otfc, uint32_t u32PR)
 {
-    int32_t i32Timeout = OTFC_TIMEOUT;
+    volatile int32_t i32Timeout = OTFC_TIMEOUT;
 
     /* Wait Protection Region 0 ~ 3 not Busy*/
     while (OTFC_GET_BUSY(otfc, u32PR) == 1)
@@ -39,8 +39,12 @@ static int32_t otfc_wait_busy(OTFC_T *otfc, uint32_t u32PR)
 /**
  * @brief   Set Scramble Number
  *
- * @param otfc              is the base address of OTFC module.
- * @param u32PR             is the Protection Region 0 ~ 3.
+ * @param otfc  is the base address of OTFC module.
+ * @param[in] u32PR Protection Region.
+ *                  - \ref OTFC_PR_0
+ *                  - \ref OTFC_PR_1
+ *                  - \ref OTFC_PR_2
+ *                  - \ref OTFC_PR_3
  * @param[in] u32Scramble   if the Protection Region Scramble key
  * @return int32_t
  */
@@ -61,8 +65,12 @@ int32_t OTFC_SetScrambleNum(OTFC_T *otfc, uint32_t u32PR, uint32_t u32Scramble)
 /**
  * @brief Set nonce number
  *
- * @param otfc          is the base address of OTFC module.
- * @param u32PR         is the Protection Region 0 ~ 3.
+ * @param otfc  is the base address of OTFC module.
+ * @param[in] u32PR Protection Region.
+ *                  - \ref OTFC_PR_0
+ *                  - \ref OTFC_PR_1
+ *                  - \ref OTFC_PR_2
+ *                  - \ref OTFC_PR_3
  * @param[in] u32Nonce0 is the Protection Region Nonce Word 0 Key
  * @param[in] u32Nonce1 is the Protection Region Nonce Word 1 Key
  * @param[in] u32Nonce2 is the Protection Region Nonce Word 2 Key
@@ -90,7 +98,11 @@ int32_t OTFC_SetNonceNum(OTFC_T *otfc, uint32_t u32PR,
  * @brief   Enable OTFC Protection Region 0 ~ 3 and Use Key Source From Key store.
  *
  * @param[in] otfc  is the base address of OTFC module.
- * @param[in] u32PR is the Protection Region 0 ~ 3.
+ * @param[in] u32PR Protection Region.
+ *                  - \ref OTFC_PR_0
+ *                  - \ref OTFC_PR_1
+ *                  - \ref OTFC_PR_2
+ *                  - \ref OTFC_PR_3
  * @param[in] u32SAddr  is the protection region start address
  * @param[in] u32EAddr  is the protection region end address
  * @param[in] u32KeyNum is the KEY Store of KEY number
@@ -136,17 +148,18 @@ int32_t OTFC_SetKeyFromKeyStore(OTFC_T *otfc, uint32_t u32PR,
 /**
  * @brief Use Key table set OTFC protection Region 0 ~ 3 key Source to register.
  *
- * @param otfc
- * @param psKeyTable  OTFC key table.
- * @param u32PR       Protection region 0 ~ 3.
- * @param u32SAddr    Protection region start address.
- * @param u32EAddr    Protection region end address.
+ * @param[in] otfc
+ * @param[in] psKeyTable  OTFC key table.
+ * @param[in] u32PR       Protection Region.
+ *                        - \ref OTFC_PR_0
+ *                        - \ref OTFC_PR_1
+ *                        - \ref OTFC_PR_2
+ *                        - \ref OTFC_PR_3
+ * @param[in] u32SAddr    Protection region start address.
+ * @param[in] u32EAddr    Protection region end address.
  */
-int32_t OTFC_SetKeyFromKeyReg(OTFC_T *otfc,
-                              uint32_t *pau32KeyTable,
-                              uint32_t u32PR,
-                              uint32_t u32SAddr,
-                              uint32_t u32EAddr)
+int32_t OTFC_SetKeyFromKeyReg(OTFC_T *otfc, uint32_t *pau32KeyTable, uint32_t u32PR,
+                              uint32_t u32SAddr, uint32_t u32EAddr)
 {
     /* Wait Protection Region 0 ~ 3 not Busy*/
     if (otfc_wait_busy(otfc, u32PR) != OTFC_OK)

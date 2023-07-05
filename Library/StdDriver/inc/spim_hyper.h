@@ -70,16 +70,10 @@ extern "C"
 #define SPIM_HYPER_ERR_TIMEOUT              (-2L)           /*!< SPIM_HYPER operation abort due to timeout error */
 
 /* SPIM Hyper Operation Mode */
-#define SPIM_HYPER_OPMODE_IO                (0UL << SPIM_CTL0_OPMODE_Pos)   /*!< SPIM_CTL0: I/O Mode \hideinitializer */
-#define SPIM_HYPER_OPMODE_PAGEWRITE         (1UL << SPIM_CTL0_OPMODE_Pos)   /*!< SPIM_CTL0: Page Write Mode \hideinitializer */
-#define SPIM_HYPER_OPMODE_PAGEREAD          (2UL << SPIM_CTL0_OPMODE_Pos)   /*!< SPIM_CTL0: Page Read Mode \hideinitializer */
-#define SPIM_HYPER_OPMODE_DIRECTMAP         (3UL << SPIM_CTL0_OPMODE_Pos)   /*!< SPIM_CTL0: Direct Map Mode \hideinitializer */
-
-/* HyperRAM Register Address */
-#define HYPERRAM_ID_REG0                   (0x00000000)    /* Hyper RAM Identification Register 0. */
-#define HYPERRAM_ID_REG1                   (0x00000002)    /* Hyper RAM Identification Register 1. */
-#define HYPERRAM_CONFIG_REG0               (0x00001000)    /* Hyper RAM Configuration Register 0. */
-#define HYPERRAM_CONFIG_REG1               (0x00001002)    /* Hyper RAM Configuration Register 1. */
+#define SPIM_HYPER_OPMODE_IO                (0UL)           /*!< SPIM_CTL0: I/O Mode \hideinitializer */
+#define SPIM_HYPER_OPMODE_PAGEWRITE         (1UL)           /*!< SPIM_CTL0: Page Write Mode \hideinitializer */
+#define SPIM_HYPER_OPMODE_PAGEREAD          (2UL)           /*!< SPIM_CTL0: Page Read Mode \hideinitializer */
+#define SPIM_HYPER_OPMODE_DIRECTMAP         (3UL)           /*!< SPIM_CTL0: Direct Map Mode \hideinitializer */
 
 /* SPIM Hyper Mode Command */
 #define SPIM_HYPER_CMD_IDLE                 (0x00000000)    /* Hyper Bus interface is Idle. */
@@ -93,6 +87,12 @@ extern "C"
 #define SPIM_HYPER_CMD_WRITE_2_BYTE         (0x0000000D)    /* Write 2 Byte (Write Data[15:0]) to Hyper Bus Devices. */
 #define SPIM_HYPER_CMD_WRITE_3_BYTE         (0x0000000E)    /* Write 3 Byte (Write Data[23:0]) to Hyper Bus Devices. */
 #define SPIM_HYPER_CMD_WRITE_4_BYTE         (0x0000000F)    /* Write 4 Byte (Write Data[31:0]) to Hyper Bus Devices. */
+
+/* HyperRAM Register Address */
+#define HYPERRAM_ID_REG0                    (0x00000000)    /* Hyper RAM Identification Register 0. */
+#define HYPERRAM_ID_REG1                    (0x00000002)    /* Hyper RAM Identification Register 1. */
+#define HYPERRAM_CONFIG_REG0                (0x00001000)    /* Hyper RAM Configuration Register 0. */
+#define HYPERRAM_CONFIG_REG1                (0x00001002)    /* Hyper RAM Configuration Register 1. */
 
 /*----------------------------------------------------------------------------*/
 /* SPIM_HYPER_CONFIG1: Chip Select Setup Time to Next CK Rising Edge
@@ -179,7 +179,7 @@ extern "C"
  * \hideinitializer
  */
 #define SPIM_HYPER_SET_OPMODE(spim, x)    \
-    (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_OPMODE_Msk)) | (x))
+    (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_OPMODE_Msk)) | ((x) << SPIM_CTL0_OPMODE_Pos))
 
 /**
  * @brief   Get operation mode.
@@ -224,7 +224,7 @@ extern "C"
  * @brief   Cache Write Through Disable.
  * \hideinitializer
  */
-#define SPIM_HYPER_DISABLE_CAWRTHEN(spim)    (spim->CTL1 &= ~SPIM_CTL1_CAWRTHEN_Msk)
+#define SPIM_HYPER_DISABLE_CAWRTHEN(spim)    (spim->CTL1 &= ~(SPIM_CTL1_CAWRTHEN_Msk))
 
 /**
  * @brief   Cache Auto Selection Updated Cache Line Number Enable.
@@ -236,7 +236,7 @@ extern "C"
  * @brief   Cache Auto Selection Updated Cache Line Number Disable.
  * \hideinitializer
  */
-#define SPIM_HYPER_DISABLE_AUTOSCLN(spim)    (spim->CTL1 &= ~SPIM_CTL1_AUTOSCLN_Msk)
+#define SPIM_HYPER_DISABLE_AUTOSCLN(spim)    (spim->CTL1 &= ~(SPIM_CTL1_AUTOSCLN_Msk))
 
 /**
  * @brief   Set Updated Cache Line Number per Cache Miss.
@@ -248,7 +248,7 @@ extern "C"
  * \hideinitializer
  */
 #define SPIM_HYPER_SET_UPDCLNUM(spim, x)    \
-    (spim->CTL1 = (spim->CTL1 & ~(SPIM_CTL1_UPDCLNUM_Msk)) | (x))
+    (spim->CTL1 = (spim->CTL1 & ~(SPIM_CTL1_UPDCLNUM_Msk)) | (x) << SPIM_CTL1_UPDCLNUM_Pos)
 
 /**
  * @brief   Reset Updated Cache Line Number per Cache Miss.
