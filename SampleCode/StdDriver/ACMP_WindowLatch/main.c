@@ -145,3 +145,5 @@ int32_t main(void)
 
     while (1);
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

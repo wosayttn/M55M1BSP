@@ -4,7 +4,7 @@
  * @brief    Demonstrate the usage of ACMP window compare function
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2019 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -170,6 +170,7 @@ int32_t main(void)
     while (1);
 
 }
-/*** (C) COPYRIGHT 2019 Nuvoton Technology Corp. ***/
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
 
 
