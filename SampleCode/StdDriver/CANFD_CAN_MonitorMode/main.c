@@ -4,7 +4,7 @@
  * @brief    Use CAN Monitor mode to monitor the CAN bus communication test.
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
 #include "stdio.h"
@@ -101,7 +101,7 @@ uint32_t Get_CAN_BitRate(CANFD_T *psCanfd)
 
     if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_HXT >> CLK_CANFDSEL_CANFD0SEL_Pos) )
      u32CanClk = CLK_GetHXTFreq();
-    else if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD1SEL_APLL0_DIV2 >> CLK_CANFDSEL_CANFD0SEL_Pos) )
+    else if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_APLL0_DIV2 >> CLK_CANFDSEL_CANFD0SEL_Pos) )
      u32CanClk = CLK_GetAPLL0ClockFreq()/2;
     else if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_HCLK0 >> CLK_CANFDSEL_CANFD0SEL_Pos) )
      u32CanClk = CLK_GetHCLK0Freq();
@@ -153,14 +153,14 @@ void SYS_Init(void)
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK2DIV(2);
     CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(4);
+    CLK_SET_PCLK4DIV(2);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
     /* Select CAN FD0 clock source is HCLK */
-    CLK_SetModuleClock(CANFD0_MODULE, CLK_CANFDSEL_CANFD0SEL_HCLK0, CLK_CANFDDIV_CANFD0DIV(1));
+    CLK_SetModuleClock(CANFD0_MODULE, CLK_CANFDSEL_CANFD0SEL_APLL0_DIV2, CLK_CANFDDIV_CANFD0DIV(1));
     /* Enable CAN FD0 peripheral clock */
     CLK_EnableModuleClock(CANFD0_MODULE);
 
@@ -307,3 +307,5 @@ int32_t main(void)
 
     }
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
