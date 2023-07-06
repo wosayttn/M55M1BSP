@@ -197,7 +197,7 @@ extern "C"
  *
  * @details   Enable Camera Capture Interface motion detection window
  */
-#define CCAP_ENABLE_MD_WINDOW(u32WindowMsk) (CCAP->MDCTL = (CCAP->MDCTL & ~0xFFFF) | (u32WindowMsk))
+#define CCAP_MD_ENABLE_WINDOW(u32WindowMsk) (CCAP->MDCTL = (CCAP->MDCTL & ~0xFFFF) | (u32WindowMsk))
 
 /**
  * @brief     Disable CCAP Motion Detection Window
@@ -207,7 +207,7 @@ extern "C"
  *
  * @details   Disable Camera Capture Interface motion detection window
  */
-#define CCAP_DISABLE_MD_WINDOW(u32WindowMsk) (CCAP->MDCTL = (CCAP->MDCTL & ~(u32WindowMsk)))
+#define CCAP_MD_DISABLE_WINDOW(u32WindowMsk) (CCAP->MDCTL = (CCAP->MDCTL & ~(u32WindowMsk)))
 
 /**
  * @brief     Set CCAP Motion Detection Trigger Source
@@ -222,7 +222,7 @@ extern "C"
  * @details   Set Camera Capture Interface motion detection trigger source
  *
  */
-#define CCAP_SET_MD_TRIG_SRC(u32TrigSrc, bWakeUp) \
+#define CCAP_MD_SET_TRIG_SRC(u32TrigSrc, bWakeUp) \
     (CCAP->MDTRG_WK = (CCAP->MDTRG_WK & ~(CCAP_MDTRG_WK_WKEN_Msk | CCAP_MDTRG_WK_TRGSEL_Msk)) | ((u32TrigSrc) | ((bWakeUp) << CCAP_MDTRG_WK_WKEN_Pos)))
 
 /**
@@ -237,7 +237,7 @@ extern "C"
  *            CCAP will trigger Motion Detection Mode 1 interrupt.
  *
  */
-#define CCAP_SET_MD_TOTAL_THRESHOLD(u32TotalThreshold) (CCAP->MDTTH = (u32TotalThreshold))
+#define CCAP_MD_SET_TOTAL_THRESHOLD(u32TotalThreshold) (CCAP->MDTTH = (u32TotalThreshold))
 
 /**
  * @brief     Set CCAP Motion Detection Window Overflow Count Threshold
@@ -251,7 +251,7 @@ extern "C"
  *            Motion Detection Window Overflow Counter Threshold (CCAP_MDWOCTH),
  *            CCAP will trigger Motion Detection Mode 2 interrupt.
  */
-#define CCAP_SET_MD_OVERFLOW_WIN_THRESHOLD(u32WinOverflowCnt) (CCAP->MDWOCTH = (u32WinOverflowCnt))
+#define CCAP_MD_SET_OVERFLOW_WIN_THRESHOLD(u32WinOverflowCnt) (CCAP->MDWOCTH = (u32WinOverflowCnt))
 
 /**
  * @brief     Set CCAP Motion Detection Window Threshold for sensitivity level of single window
@@ -262,7 +262,7 @@ extern "C"
  *
  * @details   Set Camera Capture Interface motion detection total threshold
  */
-#define CCAP_SET_MD_WIN_THRESHOLD(u32WinIdx, u32Threshold) (CCAP->MDWTH[u32WinIdx] = (u32Threshold))
+#define CCAP_MD_SET_WIN_THRESHOLD(u32WinIdx, u32Threshold) (CCAP->MDWTH[u32WinIdx] = (u32Threshold))
 
 /**
  * @brief      Set System Memory Packet Base Address
@@ -322,6 +322,23 @@ __STATIC_INLINE void CCAP_DisableInt(uint32_t u32IntMask)
 }
 
 /**
+ * @brief      Disable CCAP Interrupt
+ *
+ * @param[in]  u32IntMask  Interrupt settings. It could be
+ *                         - \ref CCAP_INTEN_VIEN_Msk
+ *                         - \ref CCAP_INTEN_MEIEN_Msk
+ *                         - \ref CCAP_INTEN_ADDRMIEN_Msk
+ *                         - \ref CCAP_INTEN_MDIEN_Msk
+ *
+ * @details    This function is used to disable Video Frame End Interrupt,
+ *             Bus Master Transfer Error Interrupt and Memory Address Match Interrupt.
+ */
+__STATIC_INLINE uint32_t CCAP_IsIntEnabled(uint32_t u32IntMask)
+{
+    return CCAP->INTEN;
+}
+
+/**
  * @brief      Enable Monochrome CMOS Sensor
  *
  * @param[in]  u32Interface  Data I/O interface setting. It could be
@@ -342,6 +359,14 @@ __STATIC_INLINE void CCAP_EnableMono(uint32_t u32Interface)
 __STATIC_INLINE void CCAP_DisableMono(void)
 {
     CCAP->CTL &= ~CCAP_CTL_MONO_Msk;
+}
+
+/**
+ * @brief      Enable update register at new frame
+ */
+__STATIC_INLINE void CCAP_EnableUpdate(void)
+{
+    CCAP->CTL |= CCAP_CTL_UPDATE;
 }
 
 /**
@@ -387,8 +412,8 @@ void CCAP_EnableMono(uint32_t u32Interface);
 void CCAP_DisableMono(void);
 void CCAP_EnableLumaYOne(uint32_t u32Threshold);
 void CCAP_DisableLumaYOne(void);
-int32_t CCAP_SetMD_RegionSensitivity(uint32_t u32Y, uint32_t u32X, uint32_t u32Height, uint32_t u32Width, uint32_t u32Sensitivity);
-int32_t CCAP_SetMD_GlobalSensitivity(uint32_t u32Sensitivity);
+int32_t CCAP_MD_SetRegionSensitivity(uint32_t u32Y, uint32_t u32X, uint32_t u32Height, uint32_t u32Width, uint32_t u32Sensitivity);
+int32_t CCAP_MD_SetGlobalSensitivity(uint32_t u32Sensitivity);
 
 /** @} end of group CCAP_EXPORTED_FUNCTIONS */
 /** @} end of group CCAP_Driver */

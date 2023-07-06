@@ -14,7 +14,8 @@
 #include "Console.h"
 #include "ks_cunit.h"
 
-const uint32_t gc_au32KeySize[] = {
+const uint32_t gc_au32KeySize[] =
+{
     KS_META_128, KS_META_163, KS_META_192, KS_META_224,
     KS_META_233, KS_META_255, KS_META_256, KS_META_283,
     KS_META_384, KS_META_409, KS_META_512, KS_META_521,
@@ -75,51 +76,51 @@ void Func_ReadWriteEraseAll(void)
 #if 1
     /* SRAM */
     eMemType = KS_SRAM;
-    
+
     for (i = 0; i < (sizeof(gc_au32KeySize) / sizeof(gc_au32KeySize[0])); i++)
     {
         u32Meta = KS_META_AES | gc_au32KeySize[i] | KS_META_READABLE;
         memset((void *)au32ReadKey, 0, sizeof(au32ReadKey));
-        
+
         for (j = 0; j < 128; j++)
             au32Key[j] += j + i;
-        
+
         CU_ASSERT((i32Key = KS_Write(eMemType, u32Meta, au32Key)) >= 0);
         CU_ASSERT(KS_GetRemainKeyCount(eMemType) == (KS_MAX_SRAM_KEY_CNT - i - 1));
         wlen = KS_GetKeyWordCnt(u32Meta);
-        
+
         CU_ASSERT(KS_Read(eMemType, i32Key, au32ReadKey, wlen) == 0);
         CU_ASSERT(strncmp((void *)au32Key, (void *)au32ReadKey, wlen * 4) == 0);
     }
-    
+
     CU_ASSERT(KS_EraseAll(eMemType) == 0);
     CU_ASSERT(KS_GetRemainKeyCount(eMemType) == KS_MAX_SRAM_KEY_CNT);
-    
+
     /* Flash */
     eMemType = KS_FLASH;
-    
+
     for (i = 0; i < (sizeof(gc_au32KeySize) / sizeof(gc_au32KeySize[0])); i++)
     {
         u32Meta = KS_META_AES | gc_au32KeySize[i] | KS_META_READABLE;
         memset((void *)au32ReadKey, 0, sizeof(au32ReadKey));
-        
+
         for (j = 0; j < 128; j++)
             au32Key[j] += j + i;
-        
+
         CU_ASSERT((i32Key = KS_Write(eMemType, u32Meta, au32Key)) >= 0);
         CU_ASSERT(KS_GetRemainKeyCount(eMemType) == (KS_MAX_FLASH_KEY_CNT - i - 1));
         wlen = KS_GetKeyWordCnt(u32Meta);
-        
+
         CU_ASSERT(KS_Read(eMemType, i32Key, au32ReadKey, wlen) == 0);
         CU_ASSERT(strncmp((void *)au32Key, (void *)au32ReadKey, wlen * 4) == 0);
     }
-    
+
     CU_ASSERT(KS_EraseAll(eMemType) == 0);
     CU_ASSERT(KS_GetRemainKeyCount(eMemType) == KS_MAX_FLASH_KEY_CNT);
 #else
     /* SRAM */
     eMemType = KS_SRAM;
-    
+
     u32Meta = KS_META_AES | KS_META_163 | KS_META_READABLE;
     memset((void *)au32ReadKey, 0, 128 * 4);
 
@@ -494,7 +495,7 @@ void Func_ReadWriteEraseAll(void)
     wlen = KS_GetKeyWordCnt(u32Meta);
     CU_ASSERT(KS_Read(eMemType, i32Key, au32ReadKey, wlen) < 0);
     CU_ASSERT(strncmp((void *)au32Key, (void *)au32ReadKey, wlen * 4) != 0);
-    
+
     /* KS_META_CHACHA */
     u32Meta = KS_META_CHACHA | KS_META_4096 | KS_META_READABLE;
     memset((void *)au32ReadKey, 0, 128 * 4);
@@ -506,7 +507,7 @@ void Func_ReadWriteEraseAll(void)
     wlen = KS_GetKeyWordCnt(u32Meta);
     CU_ASSERT(KS_Read(eMemType, i32Key, au32ReadKey, wlen) == 0);
     CU_ASSERT(strncmp((void *)au32Key, (void *)au32ReadKey, wlen * 4) == 0);
-    
+
     CU_ASSERT(KS_EraseAll(eMemType) == 0);
 }
 
@@ -522,7 +523,7 @@ void Func_EraseKey(void)
     }
 
     CU_ASSERT(KS_EraseAll(KS_SRAM) == 0);
-    
+
     for (i = 0; i < 6; i++)
     {
         au32KeyIdx[i] = KS_Write(KS_SRAM, KS_META_AES | KS_META_256 | KS_META_READABLE, au32Key);
@@ -620,7 +621,7 @@ void Func_RemainSizeTest(void)
     CU_ASSERT((au32KeyIdx = KS_Write(KS_SRAM, KS_META_AES | KS_META_256 | KS_META_READABLE, au32Key)) >= 0);
     CU_ASSERT((u32Size2  = KS_GetRemainSize(KS_SRAM)) < u32Size);
     CU_ASSERT(KS_GetRemainKeyCount(KS_SRAM) < KS_MAX_SRAM_KEY_CNT);
-    
+
     CU_ASSERT(KS_EraseAll(KS_SRAM) == 0);
     CU_ASSERT(KS_GetRemainSize(KS_SRAM) == KS_MAX_SRAM_SPACE);
     CU_ASSERT(KS_GetRemainKeyCount(KS_SRAM) == KS_MAX_SRAM_KEY_CNT);
@@ -662,9 +663,9 @@ void Func_ScrambleTest(void)
     int32_t  i, i32KeyIdx;
     uint32_t u32Meta, u32WordCnt;
     uint32_t au32WriteKey[8], au32ScrKey[4], au32ReadKey[8];
-    
+
     CU_ASSERT(KS_EraseAll(KS_SRAM) == 0);
-    
+
     for (i = 0; i < KS_MAX_SRAM_KEY_CNT; i++)
     {
         KS_SCRAMBLING();
@@ -672,7 +673,7 @@ void Func_ScrambleTest(void)
         memset(au32ScrKey, (0xA5 + i), sizeof(au32ScrKey));
         memset(au32ReadKey, 0, sizeof(au32ReadKey));
         u32Meta = KS_META_ECC | KS_META_256 | KS_META_READABLE;
-        
+
         memcpy((void *)KS->SCMBKEY, au32ScrKey, sizeof(au32ScrKey));
         CU_ASSERT((i32KeyIdx = KS_Write(KS_SRAM, u32Meta, au32WriteKey)) >= 0);
         u32WordCnt = KS_GetKeyWordCnt(u32Meta);
@@ -689,18 +690,18 @@ void Func_OTP_ReadWriteErase(void)
     uint32_t au32Key[8], au32ReadKey[8];
     uint32_t bSecure = TRUE,
              bPriv   = TRUE;
-    
+
     // Skip first two OTP key or chip will enter secure boot check fail loop
-    for (i = 2; i <= KS_MAX_OTP_KEY_CNT; i++)
+    for (i = 2; i <= KS_MAX_OTPKEY_CNT; i++)
     {
         memset(au32Key, i + 0x5A, sizeof(au32Key));
         memset(au32ReadKey, 0, sizeof(au32ReadKey));
-        
+
         u32Meta = KS_META_CPU | KS_META_READABLE | gc_au32KeySize[i32KeySizeIdx++] | (bSecure ? KS_META_SECURE : KS_META_NONSECURE) | (bPriv ? KS_META_PRIV : KS_META_NONPRIV);
         CU_ASSERT((i32KeyIdx = KS_WriteOTP(i, u32Meta, au32Key)) == i);
         u32WordCnt = KS_GetKeyWordCnt(u32Meta);
-        
-        if (i == KS_KDF_ROOT_OTP_KEY)
+
+        if (i == KS_KDF_ROOT_OTPKEY)
         {
             CU_ASSERT(KS_Read(KS_OTP, i32KeyIdx, au32ReadKey, u32WordCnt) != 0);
         }
@@ -710,11 +711,11 @@ void Func_OTP_ReadWriteErase(void)
             CU_ASSERT(strncmp((void *)au32Key, (void *)au32ReadKey, u32WordCnt * 4) <= 0);
         }
 
-        CU_ASSERT(KS_OTPKEY_STS(i32KeyIdx) == TRUE);
+        CU_ASSERT(KS_GET_OTPKEY_STS(i32KeyIdx) == TRUE);
         CU_ASSERT(KS_LockOTPKey(i) == 0);
         CU_ASSERT(KS_EraseOTPKey(i) != 0);
-        
-        if (i == KS_KDF_ROOT_OTP_KEY)
+
+        if (i == KS_KDF_ROOT_OTPKEY)
         {
             CU_ASSERT(KS_Read(KS_OTP, i32KeyIdx, au32ReadKey, u32WordCnt) != 0);
         }
@@ -723,10 +724,10 @@ void Func_OTP_ReadWriteErase(void)
             CU_ASSERT(KS_Read(KS_OTP, i32KeyIdx, au32ReadKey, u32WordCnt) == 0);
             CU_ASSERT(strncmp((void *)au32Key, (void *)au32ReadKey, u32WordCnt * 4) <= 0);
         }
-        
+
         bSecure ^= 1;
         bPriv ^= bSecure;
-        
+
         if (gc_au32KeySize[i32KeySizeIdx] == KS_META_256)
             i32KeySizeIdx = 0;
     }

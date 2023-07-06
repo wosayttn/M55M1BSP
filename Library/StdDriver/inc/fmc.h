@@ -389,10 +389,10 @@ extern int32_t  FMC_ConfigXOM(uint32_t u32XomNum, uint32_t u32XomBase, uint8_t u
 extern int32_t  FMC_GetXOMState(uint32_t u32XomNum);
 extern int32_t  FMC_EraseXOM(uint32_t u32XomNum);
 extern int32_t  FMC_GetBootSource(void);
-extern int32_t  FMC_Read_OTP(uint32_t u32OtpNum, uint32_t *pu32LowWord, uint32_t *pu32HighWord);
-extern int32_t  FMC_Write_OTP(uint32_t u32OtpNum, uint32_t u32LowWord, uint32_t u32HighWord);
-extern int32_t  FMC_Lock_OTP(uint32_t u32OtpNum);
-extern int32_t  FMC_Is_OTP_Locked(uint32_t u32OtpNum);
+extern int32_t  FMC_ReadOTP(uint32_t u32OtpNum, uint32_t *pu32LowWord, uint32_t *pu32HighWord);
+extern int32_t  FMC_WriteOTP(uint32_t u32OtpNum, uint32_t u32LowWord, uint32_t u32HighWord);
+extern int32_t  FMC_LockOTP(uint32_t u32OtpNum);
+extern int32_t  FMC_IsOTPLocked(uint32_t u32OtpNum);
 extern int32_t  FMC_ConfigSecureConceal(uint32_t u32Base, uint32_t u32PageCnt, uint32_t bActiveEnable);
 
 #if 0   // TESTCHIP_ONLY not support

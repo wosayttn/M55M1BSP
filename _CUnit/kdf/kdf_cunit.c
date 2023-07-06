@@ -20,11 +20,12 @@
 #define NVT_BIT_PER_WORD    32
 #define NVT_BITCNT_TO_WORDCNT(u32BitCnt)     (((u32BitCnt) / NVT_BIT_PER_WORD) + ((u32BitCnt % NVT_BIT_PER_WORD) > 0))
 
-static uint32_t g_au32KeySize[] = {
-    KDF_KS_KEY_SIZE_128, KDF_KS_KEY_SIZE_163, KDF_KS_KEY_SIZE_192, KDF_KS_KEY_SIZE_224,
-    KDF_KS_KEY_SIZE_233, KDF_KS_KEY_SIZE_255, KDF_KS_KEY_SIZE_256, KDF_KS_KEY_SIZE_283,
-    KDF_KS_KEY_SIZE_384, KDF_KS_KEY_SIZE_409, KDF_KS_KEY_SIZE_512, KDF_KS_KEY_SIZE_521,
-    KDF_KS_KEY_SIZE_571
+static uint32_t g_au32KeySize[] =
+{
+    KDF_KS_KEYSIZE_128, KDF_KS_KEYSIZE_163, KDF_KS_KEYSIZE_192, KDF_KS_KEYSIZE_224,
+    KDF_KS_KEYSIZE_233, KDF_KS_KEYSIZE_255, KDF_KS_KEYSIZE_256, KDF_KS_KEYSIZE_283,
+    KDF_KS_KEYSIZE_384, KDF_KS_KEYSIZE_409, KDF_KS_KEYSIZE_512, KDF_KS_KEYSIZE_521,
+    KDF_KS_KEYSIZE_571
 };
 static uint32_t  s_au32Keyout[0xFF00 / NVT_BIT_PER_WORD];
 static char     s_strKeyout[256];
@@ -32,11 +33,11 @@ static char     hex_char_tbl[] = "0123456789abcdef";
 
 static char  ch2hex(char ch)
 {
-    if(ch <= '9')
+    if (ch <= '9')
     {
         return ch - '0';
     }
-    else if((ch <= 'z') && (ch >= 'a'))
+    else if ((ch <= 'z') && (ch >= 'a'))
     {
         return ch - 'a' + 10U;
     }
@@ -68,10 +69,10 @@ void Hex2Reg_Order(char strInput[], uint32_t volatile u32Reg[])
     si = 0;
     ri = 0;
 
-    while(si < (int)strlen(strInput))
+    while (si < (int)strlen(strInput))
     {
         val32 = 0UL;
-        for(i = 0UL; (i < 8UL) && (si < (int)strlen(strInput)); i++)
+        for (i = 0UL; (i < 8UL) && (si < (int)strlen(strInput)); i++)
         {
             hex = ch2hex(strInput[si]);
             val32 |= (uint32_t)hex << ((7 - i) * 4UL);
@@ -89,9 +90,9 @@ void Reg2Hex_Order(int32_t i32Count, uint32_t volatile u32Reg[], char strOutput[
     strOutput[i32Count] = 0U;
     idx = 0;
 
-    for(ri = 0; idx < i32Count; ri++)
+    for (ri = 0; idx < i32Count; ri++)
     {
-        for(i = 0UL; (i < 8UL) && (idx < i32Count); i++)
+        for (i = 0UL; (i < 8UL) && (idx < i32Count); i++)
         {
             strOutput[idx] = get_Nth_nibble_char(u32Reg[ri], 7 - i);
             idx++;
@@ -121,9 +122,9 @@ void Func_SetDataTest(void)
         }
 
         KDF_SetKeyInput(au8Data, i);
-        KDF_SetSalt    (au8Data, i);
-        KDF_SetLabel   (au8Data, i);
-        KDF_SetContext (au8Data, i);
+        KDF_SetSalt(au8Data, i);
+        KDF_SetLabel(au8Data, i);
+        KDF_SetContext(au8Data, i);
     }
 }
 
@@ -205,7 +206,8 @@ void Func_DeriveKey_Test(void)
 {
     int32_t  i;
     uint32_t u32TestBitSize, u32ByteCnt, u32TestIdx;
-    uint32_t au32TestDeriveKeyParam[] = {
+    uint32_t au32TestDeriveKeyParam[] =
+    {
         KDF_KEYIN_FROM_REG    | KDF_SALT_FROM_REG    | KDF_LABEL_FROM_REG    | KDF_CONTEXT_FROM_REG,
         KDF_KEYIN_FROM_REG    | KDF_SALT_FROM_REG    | KDF_LABEL_FROM_REG    | KDF_CONTEXT_FROM_RANDOM,
         KDF_KEYIN_FROM_REG    | KDF_SALT_FROM_REG    | KDF_LABEL_FROM_RANDOM | KDF_CONTEXT_FROM_REG,
@@ -269,8 +271,8 @@ void Func_DeriveKeyToKS_Test(void)
     uint32_t u32DeriveKeyParam, u32KeyMeta;
     uint32_t au32ReadKey[18];
     uint32_t au32MemType[]    = { KS_SRAM, KS_FLASH },
-             au32KeyOwner[]   = { KDF_KS_OWNER_AES, KDF_KS_OWNER_HMAC, KDF_KS_OWNER_ECC, KDF_KS_OWNER_CPU, KDF_KS_OWNER_CHACHA },
-             au32SecurePriv[] = { (KDF_KS_NON_SECURE | KDF_KS_NON_PRIV), (KDF_KS_NON_SECURE | KDF_KS_PRIV), (KDF_KS_SECURE | KDF_KS_NON_PRIV), (KDF_KS_SECURE | KDF_KS_PRIV) };
+                                au32KeyOwner[]   = { KDF_KS_OWNER_AES, KDF_KS_OWNER_HMAC, KDF_KS_OWNER_ECC, KDF_KS_OWNER_CPU, KDF_KS_OWNER_CHACHA },
+                                        au32SecurePriv[] = { (KDF_KS_NON_SECURE | KDF_KS_NON_PRIV), (KDF_KS_NON_SECURE | KDF_KS_PRIV), (KDF_KS_SECURE | KDF_KS_NON_PRIV), (KDF_KS_SECURE | KDF_KS_PRIV) };
 
     CU_ASSERT(KS_Open() == 0);
 
@@ -333,18 +335,21 @@ void Const_Test(void)
     CU_ASSERT((KDF->CTL & KDF_CTL_CTXTSEL_Msk) ==  KDF_CONTEXT_FROM_RANDOM);
 }
 
-CU_SuiteInfo KDF_Suites[] = {
+CU_SuiteInfo KDF_Suites[] =
+{
     { "KDF Const Test", KDF_Test_Init, KDF_Test_Clean, NULL, NULL, KDF_ConstTest },
     { "KDF Func  Test", KDF_Test_Init, KDF_Test_Clean, NULL, NULL, KDF_FuncTest },
     CU_SUITE_INFO_NULL
 };
 
-CU_TestInfo  KDF_ConstTest[] = {
+CU_TestInfo  KDF_ConstTest[] =
+{
     { "Const",  Const_Test },
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo  KDF_FuncTest[] = {
+CU_TestInfo  KDF_FuncTest[] =
+{
     { "Set Data",           Func_SetDataTest },
     { "Derive Key",         Func_DeriveKey_Test },
     { "Vefify Derive Key",  Func_VerifyDeriveKey_Test },
