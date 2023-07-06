@@ -417,7 +417,7 @@ typedef struct
 /**@}*/ /* DPM_CONST */
 /**@}*/ /* end of DPM register group */
 
-
+#if 0   /* TESTCHIP_ONLY not support */
 /*---------------------- Firmware Version Counter -------------------------*/
 /**
     @addtogroup FVC Firmware Version Counter (FVC)
@@ -561,6 +561,7 @@ typedef struct
 
 /**@}*/ /* FVC_CONST */
 /**@}*/ /* end of FVC register group */
+#endif  /* TESTCHIP_ONLY not support */
 
 
 /*---------------------- Product Life-cycle Manager -------------------------*/

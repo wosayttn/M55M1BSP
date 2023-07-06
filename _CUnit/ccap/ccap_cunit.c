@@ -288,44 +288,44 @@ void TestFunc_CCAP_Macro()
     }   // CCAP_GET_INT_STS END
 
     {
-        // CCAP_ENABLE_MD_WINDOW/CCAP_DISABLE_MD_WINDOW START
-        CCAP_DISABLE_MD_WINDOW(0xFFFF);
+        // CCAP_MD_ENABLE_WINDOW/CCAP_MD_DISABLE_WINDOW START
+        CCAP_MD_DISABLE_WINDOW(0xFFFF);
         CU_ASSERT_EQUAL((uint32_t)CCAP->MDCTL, 0);
 
         for (i = 0; i < 16; i++)
         {
-            CCAP_ENABLE_MD_WINDOW(1 << i);
+            CCAP_MD_ENABLE_WINDOW(1 << i);
             CU_ASSERT_EQUAL((uint32_t)CCAP->MDCTL, 1 << i);
-            CCAP_DISABLE_MD_WINDOW(1 << i);
+            CCAP_MD_DISABLE_WINDOW(1 << i);
             CU_ASSERT_EQUAL((uint32_t)CCAP->MDCTL, 0);
         }
-    }   // CCAP_ENABLE_MD_WINDOW/CCAP_DISABLE_MD_WINDOW END
+    }   // CCAP_MD_ENABLE_WINDOW/CCAP_MD_DISABLE_WINDOW END
 
     {
-        // CCAP_SET_MD_TRIG_SRC START
+        // CCAP_MD_SET_TRIG_SRC START
 
-    }   // CCAP_SET_MD_TRIG_SRC END
+    }   // CCAP_MD_SET_TRIG_SRC END
 
     {
-        // CCAP_SET_MD_WIN_THRESHOLD START
+        // CCAP_MD_SET_WIN_THRESHOLD START
         for (i = 0; i < 16; i++)
         {
             for (j = 0; j < 0x12AD4 + 255; j += 33)
             {
-                CCAP_SET_MD_WIN_THRESHOLD(i, j);
+                CCAP_MD_SET_WIN_THRESHOLD(i, j);
                 CU_ASSERT_EQUAL((uint32_t)CCAP->MDWTH[i], j);
             }
         }
-    }   // CCAP_SET_MD_WIN_THRESHOLD END
+    }   // CCAP_MD_SET_WIN_THRESHOLD END
 
     {
-        // CCAP_SET_MD_TOTAL_THRESHOLD START
+        // CCAP_MD_SET_TOTAL_THRESHOLD START
         for (i = 0; i < 0x12AD40 + 255; i += 33)
         {
-            CCAP_SET_MD_TOTAL_THRESHOLD(i);
+            CCAP_MD_SET_TOTAL_THRESHOLD(i);
             CU_ASSERT_EQUAL((uint32_t)CCAP->MDTTH, i);
         }
-    }   // CCAP_SET_MD_TOTAL_THRESHOLD END
+    }   // CCAP_MD_SET_TOTAL_THRESHOLD END
 }
 
 uint32_t u32Freq[]      = { 0, 1, 2, 3  };
@@ -365,8 +365,8 @@ void TestFunc_CCAP_MotionDetection()
             x  = (80 * (i % 4));
             y  = (60 * (i / 4));
 
-            CCAP_DISABLE_MD_WINDOW(0xFFFF);
-            CCAP_SetMD_RegionSensitivity(y, x, 60, 80, j);
+            CCAP_MD_DISABLE_WINDOW(0xFFFF);
+            CCAP_MD_SetRegionSensitivity(y, x, 60, 80, j);
             CU_ASSERT_EQUAL((uint32_t)CCAP->MDCTL, u32WinMask);
             CU_ASSERT_EQUAL(((uint32_t)CCAP->MDCTL & 0xFFFF0000), 0);
             CU_ASSERT_EQUAL(CCAP->MDWTH[i], CCAP_MD_MAX_WINDOW_SAD - ((j * CCAP_MD_MAX_WINDOW_SAD) / 100));
@@ -381,22 +381,22 @@ void TestFunc_CCAP_MotionDetection()
 
     for (j = 0; j <= 100; j++)
     {
-        CCAP_SetMD_GlobalSensitivity(j);
+        CCAP_MD_SetGlobalSensitivity(j);
         CU_ASSERT_EQUAL(CCAP->MDTTH, CCAP_MD_MAX_TOTAL_SAD - ((j * CCAP_MD_MAX_TOTAL_SAD) / 100));
     }
 
-    CCAP_SET_MD_TRIG_SRC(CCAP_MD_TRIG_LPTMR0, TRUE);
+    CCAP_MD_SET_TRIG_SRC(CCAP_MD_TRIG_LPTMR0, TRUE);
     CU_ASSERT_EQUAL(((uint32_t)CCAP->MDTRG_WK & CCAP_MDTRG_WK_TRGSEL_Msk), CCAP_MD_TRIG_LPTMR0);
-    CCAP_SET_MD_TRIG_SRC(CCAP_MD_TRIG_LPTMR1, TRUE);
+    CCAP_MD_SET_TRIG_SRC(CCAP_MD_TRIG_LPTMR1, TRUE);
     CU_ASSERT_EQUAL(((uint32_t)CCAP->MDTRG_WK & CCAP_MDTRG_WK_TRGSEL_Msk), CCAP_MD_TRIG_LPTMR1);
-    CCAP_SET_MD_TRIG_SRC(CCAP_MD_TRIG_TTMR0, TRUE);
+    CCAP_MD_SET_TRIG_SRC(CCAP_MD_TRIG_TTMR0, TRUE);
     CU_ASSERT_EQUAL(((uint32_t)CCAP->MDTRG_WK & CCAP_MDTRG_WK_TRGSEL_Msk), CCAP_MD_TRIG_TTMR0);
-    CCAP_SET_MD_TRIG_SRC(CCAP_MD_TRIG_TTMR1, TRUE);
+    CCAP_MD_SET_TRIG_SRC(CCAP_MD_TRIG_TTMR1, TRUE);
     CU_ASSERT_EQUAL(((uint32_t)CCAP->MDTRG_WK & CCAP_MDTRG_WK_TRGSEL_Msk), CCAP_MD_TRIG_TTMR1);
 
     for (i = 0; i < 16; i++)
     {
-        CCAP_SET_MD_OVERFLOW_WIN_THRESHOLD(i);
+        CCAP_MD_SET_OVERFLOW_WIN_THRESHOLD(i);
         CU_ASSERT_EQUAL(CCAP->MDWOCTH, i);
     }
 }
