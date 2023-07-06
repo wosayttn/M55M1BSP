@@ -91,6 +91,11 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/tamper.c</locationURI>
 		</link>
 		<link>
+			<name>Driver/timer.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/timer.c</locationURI>
+		</link>
+		<link>
 			<name>Driver/uart.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/uart.c</locationURI>

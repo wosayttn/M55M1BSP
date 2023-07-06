@@ -22,25 +22,6 @@
 /** @addtogroup RNG_EXPORTED_FUNCTIONS RNG Exported Functions
   @{
 */
-
-//typedef enum _RNG_KEY_SIZE
-//{
-//    KEY_128 = 0,
-//    KEY_192 = 2,
-//    KEY_224 = 3,
-//    KEY_233 = 4,
-//    KEY_255 = 5,
-//    KEY_256 = 6,
-//    KEY_283 = 7,
-//    KEY_384 = 8,
-//    KEY_409 = 9,
-//    KEY_512 = 10,
-//    KEY_521 = 11,
-//    KEY_571 = 12
-
-//} eRNG_SZ;
-
-
 /**
  *  @brief      Basic Configuration of TRNG and PRNG
  *
@@ -55,9 +36,8 @@ static void RNG_BasicConfig()
 
     /* TRNG & PRNG clock enable and module reset*/
     CLK_EnableModuleClock(CRYPTO0_MODULE);
-    SYS_ResetModule(SYS_CRYPTO0RST);
     CLK_EnableModuleClock(TRNG0_MODULE);
-    SYS_ResetModule(SYS_TRNG0RST);
+
 
     /* Enable LDOEN  */
     TRNG->CTL |= TRNG_CTL_LDOEN_Msk;	
@@ -228,6 +208,8 @@ int32_t RNG_ECDSA_Init(uint32_t u32KeySize, uint32_t au32ECC_N[18])
 /**
  *  @brief      To generate a key to KS SRAM for ECDSA.
  *
+ *  @param[in]  u32KeySize  It could be PRNG_KEY_SIZE_128 ~ PRNG_KEY_SIZE_571
+ *
  *  @return     -1      Failed
  *              Others  The key number in KS SRAM
  *
@@ -300,6 +282,8 @@ int32_t RNG_ECDH_Init(uint32_t u32KeySize, uint32_t au32ECC_N[18])
 /**
  *  @brief      To generate a key to KS SRAM for ECDH.
  *
+ *  @param[in]  u32KeySize  It could be PRNG_KEY_SIZE_128 ~ PRNG_KEY_SIZE_571
+ *
  *  @return     -1      Failed
  *              Others  The key number in KS SRAM
  *
@@ -332,12 +316,16 @@ int32_t RNG_ECDH(uint32_t u32KeySize)
 /**
  *  @brief      To generate entropy from hardware entropy source (TRNG)
  *
+ *  @param[in]  pu32Out  Buffer pointer to store the random number in word
+ *
+ *  @param[in]  i32Len   The specified number of byte to get.
+ *
  *  @return     -1       Failed
  *               Others  The bytes in pu8Out buffer
  *
  *  @details    The function is used to generate entropy from TRNG.
  */
-int32_t RNG_EntropyPoll(uint8_t* pu8Out, int32_t i32Len)
+int32_t RNG_EntropyPoll(uint32_t* pu32Out, int32_t i32Len)
 {
     int32_t timeout;
     int32_t i;
@@ -345,7 +333,6 @@ int32_t RNG_EntropyPoll(uint8_t* pu8Out, int32_t i32Len)
     if((TRNG->CTL & TRNG_STS_TRNGRDY_Msk) == 0)
     {
         /* TRNG is not in active */
-        printf("trng is not active\n");
         return -1;
     }
 
@@ -360,12 +347,11 @@ int32_t RNG_EntropyPoll(uint8_t* pu8Out, int32_t i32Len)
             if(timeout-- <= 0)
             {
                 /* Timeout error */
-                printf("timeout\n");
                 return -1;
             }
         }
         /* Get one byte entroy */
-        *pu8Out++ = TRNG->DATA_OUT[0];
+        *pu32Out++ = TRNG->DATA_OUT[0];
     }
 
     return i32Len;

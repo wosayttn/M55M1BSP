@@ -464,6 +464,30 @@ __STATIC_INLINE void TAMPER_VG_TRIM_INIT()
   */
 #define TAMPER_GET_INT_STATUS()    ((TAMPER->INTSTS & (0x007707FF)))
 
+/**
+* @brief      Set Clock FAIL Boundary Register[23:16]
+  *
+  * @param[in]  u32RegValue     The clock FAIL boundary register value. the vlaue range is 0x1 ~ 0xFF 
+  *
+  *
+  * @details    Set clock fail boundary to CBDR register.
+  * \hideinitializer
+  */
+#define TAMPER_SET_CLKFAIL_BOUNDARY(u32RegValue)    ((uint32_t)(TAMPER->CDBR = (TAMPER->CDBR & (~TAMPER_CDBR_FAILBD_Msk)) | (u32RegValue << (TAMPER_CDBR_FAILBD_Pos))))
+
+
+/**
+* @brief      Set Clock Stop Boundary Register [7:0]
+  *
+  * @param[in]  u32RegValue     The clock stop boundary register value. the vlaue range is 0x1 ~ 0xFF 
+  *
+  *
+  * @details    Set clock stop boundary to CBDR register.
+  * \hideinitializer
+  */
+#define TAMPER_SET_CLKSTOP_BOUNDARY(u32RegValue)     ((uint32_t)(TAMPER->CDBR = (TAMPER->CDBR & (~TAMPER_CDBR_STOPBD_Msk)) | (u32RegValue << (TAMPER_CDBR_STOPBD_Pos))))
+
+
 void TAMPER_EnableInt(uint32_t u32IntFlagMask);
 void TAMPER_DisableInt(uint32_t u32IntFlagMask);
 void TAMPER_StaticTamperEnable(uint32_t u32TamperSelect, uint32_t u32DetecLevel, uint32_t u32DebounceEn);

@@ -620,7 +620,7 @@ void API_TIMER_Delay(void)
             TIMER1->CMP = 0xFFFFFF;
             TIMER_Delay(TimerCh[i], 100);
             u32TDR[2] = TIMER_GetCounter(TIMER1);
-            printf("TIMER[%d] [%d] [%d] [%d]\n",i, u32TDR[0], u32TDR[1], u32TDR[2]);
+            printf("TIMER[%d] [%d] [%d] [%d]\n", i, u32TDR[0], u32TDR[1], u32TDR[2]);
         }
         else
         {
@@ -639,16 +639,16 @@ void API_TIMER_Delay(void)
             TIMER0->CMP = 0xFFFFFF;
             TIMER_Delay(TimerCh[i], 100);
             u32TDR[2] = TIMER_GetCounter(TIMER0);
-            printf("TIMER[%d] [%d] [%d] [%d]\n",i, u32TDR[0], u32TDR[1], u32TDR[2]);
+            printf("TIMER[%d] [%d] [%d] [%d]\n", i, u32TDR[0], u32TDR[1], u32TDR[2]);
         }
 
-//        if (((u32TDR[0] > 1200) || (u32TDR[0] <= 1000)) ||
-//                ((u32TDR[1] > 502500) || (u32TDR[1] <= 500000)) ||
-//                ((u32TDR[2] > 1005000) || (u32TDR[2] <= 1000000)))
-//        {
-//            CU_FAIL("TIMER counter value FAIL");
-//            break;
-//        }
+        //        if (((u32TDR[0] > 1200) || (u32TDR[0] <= 1000)) ||
+        //                ((u32TDR[1] > 502500) || (u32TDR[1] <= 500000)) ||
+        //                ((u32TDR[2] > 1005000) || (u32TDR[2] <= 1000000)))
+        //        {
+        //            CU_FAIL("TIMER counter value FAIL");
+        //            break;
+        //        }
     }
 
     TIMER_Stop(TIMER0);
@@ -768,6 +768,8 @@ void API_TIMER_GetModuleClock(void)
     CU_ASSERT_EQUAL(TIMER_GetModuleClock(TIMER3), 0UL);
     printf(" [%d]", TIMER_GetModuleClock(TIMER1));
 
+    /* r5464, Trim Filter Behavior */
+    SYS->HIRC48MCFCTL = 0x00009999;
     CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
@@ -781,8 +783,10 @@ void API_TIMER_GetModuleClock(void)
     CU_ASSERT_EQUAL(TIMER_GetModuleClock(TIMER3), __HIRC48M / 4);
     printf(" [%d]", TIMER_GetModuleClock(TIMER2));
 
+    /* Bypass LXT Stable Count */
+    SYS->ALTCTL1 |= SYS_ALTCTL1_LXTFSTB_Msk;
     CLK_EnableXtalRC(CLK_SRCCTL_LXTEN_Msk);
-    //CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
+    CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
     CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_LXT, NULL);
     CLK_SetModuleClock(TMR1_MODULE, CLK_TMRSEL_TMR1SEL_LXT, NULL);
@@ -1363,12 +1367,12 @@ void Func_Test(void)
     CU_ASSERT_EQUAL(TIMER0->CTL, 0);
     CU_ASSERT_EQUAL(TIMER0->EXTCTL, 0);
 
-//    TIMER_Delay(TIMER0, 1000000);
-//    CU_ASSERT_EQUAL(TIMER0->CMP * (((TIMER0->CTL & TIMER_CTL_PSC_Msk) >> TIMER_CTL_PSC_Pos) + 1) / (timerClkSrc / 1000000), 1000000);
-//    TIMER_Delay(TIMER0, 100000);
-//    CU_ASSERT_EQUAL(TIMER0->CMP * (((TIMER0->CTL & TIMER_CTL_PSC_Msk) >> TIMER_CTL_PSC_Pos) + 1) / (timerClkSrc / 1000000), 100000);
-//    TIMER_Delay(TIMER0, 10000);
-//    CU_ASSERT_EQUAL(TIMER0->CMP * (((TIMER0->CTL & TIMER_CTL_PSC_Msk) >> TIMER_CTL_PSC_Pos) + 1) / (timerClkSrc / 1000000), 10000);
+    //    TIMER_Delay(TIMER0, 1000000);
+    //    CU_ASSERT_EQUAL(TIMER0->CMP * (((TIMER0->CTL & TIMER_CTL_PSC_Msk) >> TIMER_CTL_PSC_Pos) + 1) / (timerClkSrc / 1000000), 1000000);
+    //    TIMER_Delay(TIMER0, 100000);
+    //    CU_ASSERT_EQUAL(TIMER0->CMP * (((TIMER0->CTL & TIMER_CTL_PSC_Msk) >> TIMER_CTL_PSC_Pos) + 1) / (timerClkSrc / 1000000), 100000);
+    //    TIMER_Delay(TIMER0, 10000);
+    //    CU_ASSERT_EQUAL(TIMER0->CMP * (((TIMER0->CTL & TIMER_CTL_PSC_Msk) >> TIMER_CTL_PSC_Pos) + 1) / (timerClkSrc / 1000000), 10000);
     TIMER_Delay(TIMER0, 1000);
     CU_ASSERT_EQUAL(TIMER0->CMP * (((TIMER0->CTL & TIMER_CTL_PSC_Msk) >> TIMER_CTL_PSC_Pos) + 1) / (timerClkSrc / 1000000), 1000);
     TIMER_Delay(TIMER0, 100);
@@ -1425,8 +1429,10 @@ void Func_Test(void)
     tmp = TIMER_GetModuleClock(TIMER0);
     CU_ASSERT_EQUAL(tmp, __HXT);
 
+    /* Bypass LXT Stable Count */
+    SYS->ALTCTL1 |= SYS_ALTCTL1_LXTFSTB_Msk;
     CLK_EnableXtalRC(CLK_SRCCTL_LXTEN_Msk);
-    //CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
+    CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
     CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_LXT, NULL);
     tmp = TIMER_GetModuleClock(TIMER0);
@@ -1455,6 +1461,8 @@ void Func_Test(void)
     tmp = TIMER_GetModuleClock(TIMER0);
     CU_ASSERT_EQUAL(tmp, __HIRC);
 
+    /* r5464, Trim Filter Behavior */
+    SYS->HIRC48MCFCTL = 0x00009999;
     CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 

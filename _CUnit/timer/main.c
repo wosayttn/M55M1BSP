@@ -72,7 +72,7 @@ void SYS_Init(void)
     SetDebugUartMFP();
 
     /* Lock protected registers */
-    SYS_LockReg();
+    //SYS_LockReg();
 }
 
 void exit(int32_t code)

@@ -227,7 +227,9 @@ void Check_Advance_MACRO(void)
         LPTPWM_CLEAR_COUNTER((LPTMR_T *)LPTMRCh[i]);
         __NOP();
         __NOP();
-				while(LPTMRCh[i]->PWMCNT > 0x2000){};
+
+        while (LPTMRCh[i]->PWMCNT > 0x2000) {};
+
         CU_ASSERT((LPTMRCh[i]->PWMCNT < 0x100));
     }
 
@@ -333,14 +335,14 @@ void API_LPTPWM_ConfigOutputFreqAndDuty(void)
 
         LPTPWM_DisablePDCLK(LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->CTL & LPTMR_CTL_PDCLKEN_Msk, 0);
-        
-			  LPTPWM_EnableWakeup(LPTMRCh[i]);
+
+        LPTPWM_EnableWakeup(LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->CTL & LPTMR_CTL_PDCLKEN_Msk, LPTMR_CTL_PDCLKEN_Msk);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMCTL, BIT12);
 
         LPTPWM_DisableWakeup(LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMCTL, 0UL);
-    
+
         LPTPWM_DisablePDCLK(LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->CTL & LPTMR_CTL_PDCLKEN_Msk, 0);
     }

@@ -104,14 +104,23 @@ void delay_us(int usec)
      *  Configure Timer0, clock source from HIRC_12M. Prescale 12
      */
     /* TIMER0 clock from HIRC */
-    CLK->TMRSEL = (CLK->TMRSEL & ~(CLK_TMRSEL_TMR0SEL_Msk)) | CLK_TMRSEL_TMR0SEL_HIRC;
-    CLK->TMRCTL |= CLK_TMRCTL_TMR0CKEN_Msk;
-    TIMER0->CTL = 0;        /* disable timer */
-    TIMER0->INTSTS = (TIMER_INTSTS_TIF_Msk | TIMER_INTSTS_TWKF_Msk);   /* write 1 to clear for safety */
-    TIMER0->CMP = usec;
-    TIMER0->CTL = (11 << TIMER_CTL_PSC_Pos) | TIMER_ONESHOT_MODE | TIMER_CTL_CNTEN_Msk;
+    CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_HIRC, 0);
+    CLK_EnableModuleClock(TMR0_MODULE);
 
-    while (!TIMER0->INTSTS);
+    TIMER_SET_PRESCALE_VALUE(TIMER0, (12 - 1));
+    /* stop timer0 */
+    TIMER_Stop(TIMER0);
+    /* write 1 to clear for safety */
+    TIMER_ClearIntFlag(TIMER0);
+    TIMER_ClearWakeupFlag(TIMER0);
+    /* set timer cmp value */
+    TIMER_SET_CMP_VALUE(TIMER0, usec);
+    /* Timer0 config to oneshot mode */
+    TIMER_SET_OPMODE(TIMER0, TIMER_ONESHOT_MODE);
+    /* start timer0*/
+    TIMER_Start(TIMER0);
+
+    while (TIMER_GetIntFlag(TIMER0) == 0);
 }
 
 void  dump_buff_hex(uint8_t *pucBuff, int nBytes)
@@ -431,7 +440,9 @@ void SYS_Init(void)
 
     /* Unlock protected registers */
     SYS_UnlockReg();
-
+#ifdef __PLDM_EMU__
+    SYS->HIRC48MCFCTL = 0x00009999;
+#endif
     /* Enable clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
@@ -470,12 +481,12 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOI_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
 
-    /* USB Host desired input clock is 48 MHz. Set as PLL/2 divided by 2 (192/2/2 = 48) */
-    CLK_SetModuleClock(USBH0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
+    /* USB Host desired input clock is 48 MHz. Set as HIRC48M divided by 1 (48/1 = 48) */
+    //CLK_SetModuleClock(USBH0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
     CLK_SetModuleClock(HSUSBH0_MODULE, 0, 0);
 
     /* Enable USBH module clock */
-    CLK_EnableModuleClock(USBH0_MODULE);
+    //CLK_EnableModuleClock(USBH0_MODULE);
     /* Enable HSUSBH module clock */
     CLK_EnableModuleClock(HSUSBH0_MODULE);
 
@@ -485,6 +496,8 @@ void SYS_Init(void)
     //SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
     //delay_us(20);
 
+    /* Set Debug Uart CLK*/
+    SetDebugUartCLK();
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
@@ -492,8 +505,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    SetDebugUartMFP();
 
     SET_USB_VBUS_EN_PB15();
     SET_USB_VBUS_ST_PC14();
@@ -544,14 +556,12 @@ int32_t main(void)
     /* Configure UART0 and set UART0 baud rate */
     UART_Open(UART0, 115200);
 #else
-    UART0->LINE = UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1;
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400); // The setting is for Palladium
+    DEBUG_PORT->LINE = UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1;
+    DEBUG_PORT->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400); // The setting is for Palladium
 #endif
 
-#ifdef __PLDM_EMU__
     SCB_DisableICache();
     SCB_DisableDCache();
-#endif
 
     enable_sys_tick(100);
 

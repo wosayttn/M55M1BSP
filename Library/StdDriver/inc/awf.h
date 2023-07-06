@@ -39,19 +39,19 @@ extern "C"
   * @brief      This macro is used to set high threshold value.
   * @param[in]  u32Value is HTH Value. It could be 0~524288.
   */
-#define AWF_SET_HTH_VALUE(u32Value)        (AWF->HTH = (AWF->HTH & ~AWF_HTH_AWFHTH_Msk) | (u32Value << AWF_HTH_AWFHTH_Pos))
+#define AWF_SET_HTH(u32Value)        (AWF->HTH = (AWF->HTH & ~AWF_HTH_AWFHTH_Msk) | (u32Value << AWF_HTH_AWFHTH_Pos))
 
 /**
   * @brief      This macro is used to set low threshold value.
   * @param[in]  u32Value is LTH Value. It could be 0~524288.
   */
-#define AWF_SET_LTH_VALUE(u32Value)        (AWF->LTH = (AWF->LTH & ~AWF_LTH_AWFLTH_Msk) | (u32Value << AWF_LTH_AWFLTH_Pos))
+#define AWF_SET_LTH(u32Value)        (AWF->LTH = (AWF->LTH & ~AWF_LTH_AWFLTH_Msk) | (u32Value << AWF_LTH_AWFLTH_Pos))
 
 /**
   * @brief      This macro is used to set AWF word buffer initial value.
   * @param[in]  u32Value is WBINIT Value. It could be 0~65535.
   */
-#define AWF_SET_WBINIT_VALUE(u32Value)      (AWF->WBINIT = (AWF->WBINIT & ~AWF_WBINIT_WBINIT_Msk) | (u32Value << AWF_WBINIT_WBINIT_Pos))
+#define AWF_SET_WBINIT(u32Value)      (AWF->WBINIT = (AWF->WBINIT & ~AWF_WBINIT_WBINIT_Msk) | (u32Value << AWF_WBINIT_WBINIT_Pos))
 
 /**
   * @brief      This macro is used to Write AWF data holding register value.
@@ -90,6 +90,16 @@ extern "C"
   * \hideinitializer
   */
 #define AWF_CLEAR_LTH_INT_FLAG()       (AWF->STATUS |= AWF_STATUS_LTHIS_Msk)
+
+
+/**
+  * @brief      Get Accumlation Value.
+  * @retval     Accumlation value.
+  * @details    This API is used to get Accumlation value.
+  *             Accumulated value will be accumulated from word0 to word[ACUCNT-1].
+  * \hideinitializer
+  */
+#define AWF_GET_ACUVAL()        (AWF->ACUVAL & AWF_ACUVAL_ACUVAL_Msk)
 
 
 /* Declare these inline functions here to avoid MISRA C 2004 rule 8.1 error */
@@ -146,8 +156,7 @@ __STATIC_INLINE void AWF_DisableWakeup(uint32_t u32TWKMask)
     AWF->CTL &= ~u32TWKMask;
 }
 
-uint32_t AWF_GetAccumlationValue(void);
-void AWF_Open(uint32_t u32IntEn, uint32_t u32WakeupEn, uint32_t u32HTHValue, uint32_t u32LTHValue, uint32_t u32WBINITValue, uint32_t u32ACCCount);
+void AWF_Open(uint32_t u32IntEn, uint32_t u32WakeupEn, uint32_t u32HTH, uint32_t u32LTH, uint32_t u32WBINIT, uint32_t u32ACCCount);
 void AWF_Close(void);
 
 /** @} end of group AWF_EXPORTED_FUNCTIONS */

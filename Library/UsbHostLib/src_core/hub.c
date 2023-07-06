@@ -425,11 +425,8 @@ static int do_port_reset(HUB_DEV_T *hub, int port)
 
         while (get_ticks() - t0 < (reset_time / 10) + 1) /* time-out?                      */
         {
-#ifndef __SIM__
-            delay_us(5000);                 /* wait 5 ms                                  */
-#else
             delay_us(12000);
-#endif
+
             ret = get_port_status(hub, port, &wPortStatus, &wPortChange);
 
             if (ret < 0)
@@ -691,8 +688,7 @@ int  usbh_pooling_hubs(void)
 
         if (ret)
             change = 1;
-    }
-    while (ret == 1);
+    } while (ret == 1);
 
 #endif
 
@@ -704,8 +700,7 @@ int  usbh_pooling_hubs(void)
 
         if (ret)
             change = 1;
-    }
-    while (ret == 1);
+    } while (ret == 1);
 
 #endif
 
@@ -717,8 +712,7 @@ int  usbh_pooling_hubs(void)
 
         if (ret)
             change = 1;
-    }
-    while (ret == 1);
+    } while (ret == 1);
 
 #endif
 
@@ -728,8 +722,7 @@ int  usbh_pooling_hubs(void)
 
         if (ret)
             change = 1;
-    }
-    while (ret == 1);
+    } while (ret == 1);
 
     return change;
 }

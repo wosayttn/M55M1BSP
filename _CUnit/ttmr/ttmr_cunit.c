@@ -375,13 +375,13 @@ void API_TIMER_Delay(void)
             u32TDR[2] = TTMR_GetCounter(TTMR0);
         }
 
-//        if (((u32TDR[0] > 1200) || (u32TDR[0] <= 1000)) ||
-//                ((u32TDR[1] > 502500) || (u32TDR[1] <= 500000)) ||
-//                ((u32TDR[2] > 1005000) || (u32TDR[2] <= 1000000)))
-//        {
-//            CU_FAIL("TTMR counter value FAIL");
-//            break;
-//        }
+        //        if (((u32TDR[0] > 1200) || (u32TDR[0] <= 1000)) ||
+        //                ((u32TDR[1] > 502500) || (u32TDR[1] <= 500000)) ||
+        //                ((u32TDR[2] > 1005000) || (u32TDR[2] <= 1000000)))
+        //        {
+        //            CU_FAIL("TTMR counter value FAIL");
+        //            break;
+        //        }
     }
 
     TTMR_Stop(TTMR0);

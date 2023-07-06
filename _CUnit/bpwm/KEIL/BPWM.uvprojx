@@ -434,6 +434,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Library\StdDriver\src\gpio.c</FilePath>
             </File>
+            <File>
+              <FileName>epwm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\epwm.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -880,6 +885,11 @@
               <FileName>gpio.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Library\StdDriver\src\gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>epwm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\epwm.c</FilePath>
             </File>
           </Files>
         </Group>

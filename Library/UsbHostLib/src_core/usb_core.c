@@ -1043,41 +1043,21 @@ int  connect_device(UDEV_T *udev)
     int          ret;
 
     USB_debug("Connect device =>\n");
-#ifndef __SIM__
+
 #ifndef __PLDM_EMU__
     delay_us(100 * 1000);                   /* initially, give 100 ms delay               */
 #else
     delay_us(12 * 1000);                   /* initially, give 100 ms delay               */
 #endif
-#else
-    delay_us(12000);
-#endif
+    USB_debug("get device =>\n");
     usbh_get_device_descriptor(udev, &udev->descriptor);
 
-#ifdef __SIM__
-    GPIO_SetMode(PA, BIT0, GPIO_MODE_OUTPUT);
-    int PA0_Cnt = 0;
-
-    while (PA0_Cnt <= 5)
-    {
-        PA0 ^= 1;
-        __NOP();
-        __NOP();
-        PA0_Cnt++;
-    }
-
-#endif
-
     reset_device(udev);
-
-#ifndef __SIM__
+    USB_debug("reset device =>\n");
 #ifndef __PLDM_EMU__
     delay_us(100 * 1000);                   /* initially, give 100 ms delay               */
 #else
     delay_us(12 * 1000);                   /* initially, give 100 ms delay               */
-#endif
-#else
-    delay_us(12000);
 #endif
 
     ret = usbh_set_address(udev);
@@ -1088,15 +1068,12 @@ int  connect_device(UDEV_T *udev)
         return ret;
     }
 
-#ifndef __SIM__
 #ifndef __PLDM_EMU__
     delay_us(100 * 1000);                   /* initially, give 100 ms delay               */
 #else
     delay_us(1 * 1000);                   /* initially, give 100 ms delay               */
 #endif
-#else
-    delay_us(12000);
-#endif
+
 
     USB_debug("New %s device address %d assigned.\n", (udev->speed == SPEED_HIGH) ? "high-speed" : ((udev->speed == SPEED_FULL) ? "full-speed" : "low-speed"), udev->dev_num);
 
@@ -1196,20 +1173,6 @@ int  connect_device(UDEV_T *udev)
         }
     }
 
-#ifdef __SIM__
-    GPIO_SetMode(PA, BIT1, GPIO_MODE_OUTPUT);
-    int PA1_Cnt = 0;
-
-    while (PA1_Cnt <= 5)
-    {
-        PA1 ^= 1;
-        __NOP();
-        __NOP();
-        PA1_Cnt++;
-    }
-
-#endif
-
     if (g_conn_func)
         g_conn_func(udev, 0);
 
@@ -1252,15 +1215,13 @@ int  usbh_reset_device(UDEV_T *udev)
     /*------------------------------------------------------------------------------------*/
     USB_debug("Port device =>\n");
     reset_device(udev);
-#ifndef __SIM__
+
 #ifndef __PLDM_EMU__
     delay_us(100 * 1000);                   /* initially, give 100 ms delay               */
 #else
     delay_us(1 * 1000);                   /* initially, give 100 ms delay               */
 #endif
-#else
-    delay_us(12000);
-#endif
+
     /*------------------------------------------------------------------------------------*/
     /*  Set address (use current address)                                                 */
     /*------------------------------------------------------------------------------------*/
@@ -1276,15 +1237,12 @@ int  usbh_reset_device(UDEV_T *udev)
     if (ret < 0)
         return ret;
 
-#ifndef __SIM__
 #ifndef __PLDM_EMU__
     delay_us(100 * 1000);                   /* after set address, give 100 ms delay       */
 #else
     delay_us(1 * 1000);                   /* after set address, give 100 ms delay       */
 #endif
-#else
-    delay_us(12000);
-#endif
+
     /*------------------------------------------------------------------------------------*/
     /*  Get device descriptor                                                             */
     /*------------------------------------------------------------------------------------*/

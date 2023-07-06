@@ -33,11 +33,12 @@ int IsDebugFifoEmpty(void)
 int32_t KS_TRIG(void)
 {
     uint32_t u32TimeOutCnt;
+    uint32_t au32Key[8];
 
     u32TimeOutCnt = KS_TIMEOUT;
 
     /* Wait BUSY(KS_STS[7]) to 0 */
-    while (KS->STS & KS_STS_INITDONE_Msk)
+    while (KS_GET_STS(KS_STS_INITDONE_Msk))
     {
         if (--u32TimeOutCnt == 0)
         {
@@ -46,48 +47,21 @@ int32_t KS_TRIG(void)
         }
     }
 
-    /* Claer EIF and IF STS */
-    KS->STS = (KS_STS_EIF_Msk | KS_STS_IF_Msk);
-
-    /* Check BUSY(KS_STS[2]) is 0 and EIF(KS_STS[1]) is 0 */
-    if (KS->STS & (KS_STS_BUSY_Msk | KS_STS_EIF_Msk))
+    if (KS_Open() != KS_OK)
     {
-        printf("Key store status is wrong!\n");
+        printf("Init Key Store fail !\n");
+        return -1;
     }
 
-    /* Set OPMODE(KS_CTL[3:1]) to 000 */
-    KS->CTL = (KS->CTL & (~KS_CTL_OPMODE_Msk)) | (0 << KS_CTL_OPMODE_Pos);
-
-    /* Set START(KS_CTL[0]) to 1 */
-    KS->CTL |= (1 << KS_CTL_START_Pos);
-
-    /* Wait BUSY(KS_STS[2]) to 0 */
-    u32TimeOutCnt = KS_TIMEOUT;
-
-    while (KS->STS & KS_STS_BUSY_Msk)
+    if (KS_Read(KS_SRAM, 0, au32Key, 8) == KS_OK)
     {
-        if (--u32TimeOutCnt == 0)
-        {
-            printf("Wait for Key Store busy flag time-out!\n");
-            return -1;
-        }
+        printf("Read SRAM key from Key Store should not ok !\n");
+        return -1;
     }
 
-    /* Read key from KS_KEY[0]~[7] registers if EIF(KS_STS[1]) is 1 */
-    u32TimeOutCnt = KS_TIMEOUT;
-
-    while (!(KS->STS & KS_STS_EIF_Msk))
+    if (KS_GetRemainSize(KS_SRAM) != KS_MAX_SRAM_SPACE)
     {
-        if (--u32TimeOutCnt == 0)
-        {
-            printf("Wait for Key Store time-out!\n");
-            return -1;
-        }
-    }
-
-    if (KS->REMAIN != 0x20001000)
-    {
-        printf(" Fail! Remaining 0x%X space not clear for SRAM.\n", KS->REMAIN & 0x1FFF);
+        printf(" Fail! Remaining 0x%X space not clear for SRAM.\n", KS_GetRemainSize(KS_SRAM));
     }
 
     return 0;
@@ -214,80 +188,26 @@ void UART_Init(void)
     UART_Open(UART0, 115200);
 }
 /*---------------------------------------------------------------------------------------------------------*/
-/* Init Key Store                                                                                          */
-/*---------------------------------------------------------------------------------------------------------*/
-int32_t KS_Init(void)
-{
-    uint32_t u32TimeOutCnt;
-
-    /* Key store initialization */
-    KS->CTL = KS_CTL_INIT_Msk | KS_CTL_START_Msk;
-
-    /* Waiting for initialization was done */
-    u32TimeOutCnt = KS_TIMEOUT;
-
-    while (!(KS->STS & KS_STS_INITDONE_Msk))
-    {
-        if (--u32TimeOutCnt == 0)
-        {
-            printf("Wait for Key Store initialization done time-out!\n");
-            return -1;
-        }
-    }
-
-    return 0;
-}
-/*---------------------------------------------------------------------------------------------------------*/
 /* KEY Stroe SRAM                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t KeyStoreSRAM(void)
 {
     uint32_t u32TimeOutCnt;
-
-    u32TimeOutCnt = SystemCoreClock;
-
-    /* Check BUSY(KS_STS[2]), EIF(KS_STS[1]) and SRAMFULL(KS_STS[3]) is 0 */
-    if (KS->STS & (KS_STS_BUSY_Msk | KS_STS_EIF_Msk | KS_STS_SRAMFULL_Msk))
-    {
-        printf("Key store status is wrong!\n");
-    }
-
-    /* Configure according key's metadata */
-    KS->METADATA = ((0x1 << KS_METADATA_READABLE_Pos) | (0x6 << KS_METADATA_SIZE_Pos) | (0x5 << KS_METADATA_OWNER_Pos) | (0x0 << KS_METADATA_DST_Pos));
-
-    /* Set OPMODE(KS_CTL[3:1]) to 001. */
-    KS->CTL = (KS->CTL & (~KS_CTL_OPMODE_Msk)) | (1 << KS_CTL_OPMODE_Pos);
+    uint32_t au32KSKeyArary[8];
 
     /* Write key to KS_KEY[0]~[7] registers */
-    KS->KEY[0] = 0x12345678;
-    KS->KEY[1] = 0x12345678;
-    KS->KEY[2] = 0x12345678;
-    KS->KEY[3] = 0x12345678;
-    KS->KEY[4] = 0x12345678;
-    KS->KEY[5] = 0x12345678;
-    KS->KEY[6] = 0x12345678;
-    KS->KEY[7] = 0x12345678;
+    au32KSKeyArary[0] = 0x12345678;
+    au32KSKeyArary[1] = 0x12345678;
+    au32KSKeyArary[2] = 0x12345678;
+    au32KSKeyArary[3] = 0x12345678;
+    au32KSKeyArary[4] = 0x12345678;
+    au32KSKeyArary[5] = 0x12345678;
+    au32KSKeyArary[6] = 0x12345678;
+    au32KSKeyArary[7] = 0x12345678;
 
-    /* Clear Status */
-    KS->STS = KS_STS_EIF_Msk | KS_STS_IF_Msk;
-
-    /* Set START(KS_CTL[0]) to 1 */
-    KS->CTL |= (1 << KS_CTL_START_Pos);
-
-    /* Wait BUSY(KS_STS[2]) to 0 */
-    while (KS->STS & KS_STS_BUSY_Msk)
+    if (KS_Write(KS_SRAM, (KS_META_READABLE | KS_META_CPU | KS_META_256), au32KSKeyArary) != KS_OK)
     {
-        if (--u32TimeOutCnt == 0)
-        {
-            printf("Wait for Key Store busy flag time-out!\n");
-            return -1;
-        }
-    }
-
-    /* Check EIF(KS_STS[1]) is 0 */
-    if (KS->STS & KS_STS_EIF_Msk)
-    {
-        printf("EIF(KS_STS[1]) is not 0.\n");
+        return -1;
     }
 
     return 0;
@@ -396,11 +316,21 @@ int main(void)
         SYS_UnlockReg();
 
         /* Init Key Store */
-        if (KS_Init() < 0) return -1;
+        if (KS_Open() != KS_OK)
+        {
+            printf("Init Key Store fail !\n");
+
+            while (1);
+        }
 
         printf("# Write keys ...");
 
-        if (KeyStoreSRAM() < 0) return -1;
+        if (KeyStoreSRAM() != KS_OK)
+        {
+            printf("Creta key fail !\n");
+
+            while (1);
+        }
 
         printf(" Done!\n\n");
 

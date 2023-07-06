@@ -500,11 +500,6 @@ int32_t ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
 int32_t ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message,  int d_ksnum, int k_ksnum, char *R, char *S);
 int32_t ECC_GetCurve(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, ECC_CURVE *curve);
 int32_t ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message, int x_ksnum, int y_ksnum, char *R, char *S);
-
-int ecc_strcmp(char *s1, char *s2);
-void Hex2Reg(char input[], uint32_t volatile reg[]);
-void Reg2Hex(int32_t count, uint32_t volatile reg[], char output[]);
-void Hex2RegEx(char input[], uint32_t volatile reg[], int shift);
 /** @} end of group CRYPTO_EXPORTED_FUNCTIONS */
 /** @} end of group CRYPTO_Driver */
 /** @} end of group Standard_Driver */

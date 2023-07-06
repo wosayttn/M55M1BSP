@@ -30,7 +30,6 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /*  CRC Polynomial Mode Constant Definitions                                                               */
 /*---------------------------------------------------------------------------------------------------------*/
-#define CRC_CCITT           (0UL << CRC_CTL_CRCMODE_Pos) /*!<CRC Polynomial Mode - CCITT \hideinitializer */
 #define CRC_8               (1UL << CRC_CTL_CRCMODE_Pos) /*!<CRC Polynomial Mode - CRC8 \hideinitializer */
 #define CRC_16              (2UL << CRC_CTL_CRCMODE_Pos) /*!<CRC Polynomial Mode - CRC16 \hideinitializer */
 #define CRC_32              (3UL << CRC_CTL_CRCMODE_Pos) /*!<CRC Polynomial Mode - CRC32 \hideinitializer */
@@ -102,8 +101,8 @@ extern "C"
 #define CRC_DMA_RESUME(crc)                  ((crc)->DMACTL &= ~CRC_DMACTL_PAUSE_Msk)
 #define CRC_IS_DMA_PAUSE(crc)                ((crc)->DMACTL & CRC_DMACTL_PAUSE_Msk)
 #define CRC_DMA_START(crc)                   ((crc)->DMACTL |= CRC_DMACTL_START_Msk)
-#define CRC_SET_DMA_SADDR(crc, Addr)         ((crc)->SADDR = Addr) //less than 0xE0000000
-#define CRC_SET_DMACNT_WORD(crc, Word)       ((crc)->DMACNT = (Word<<CRC_DMACNT_DMACNT_Pos))
+#define CRC_SET_DMA_SADDR(crc, Addr)         ((crc)->SADDR = (Addr)) //less than 0xE0000000
+#define CRC_SET_DMACNT_WORD(crc, Word)       ((crc)->DMACNT = ((Word)<<CRC_DMACNT_DMACNT_Pos))
 #define CRC_GET_STATUS(crc)                  ((crc)->DMASTS)
 
 void CRC_Open(uint32_t u32Mode, uint32_t u32Attribute, uint32_t u32Seed, uint32_t u32DataLen);

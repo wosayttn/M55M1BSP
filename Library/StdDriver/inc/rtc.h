@@ -199,6 +199,28 @@ typedef struct
 #define RTC_CLEAR_TICK_INT_FLAG(rtc)    ((rtc)->INTSTS = RTC_INTSTS_TICKIF_Msk)
 
 /**
+  * @brief      Clear RTC CLK FAIL Interrupt Flag
+  *
+  * @param[in]  rtc         The pointer of RTC module.
+  *
+  *
+  * @details    This macro is used to clear RTC clock frequency fail interrupt flag.
+  * \hideinitializer
+  */
+#define RTC_CLEAR_CLKFAIL_INT_FLAG(rtc)    ((rtc)->INTSTS = RTC_INTSTS_CLKFIF_Msk)
+
+/**
+  * @brief      Clear RTC CLK STOP Interrupt Flag
+  *
+  * @param[in]  rtc         The pointer of RTC module.
+  *
+  *
+  * @details    This macro is used to clear RTC clock frequency stop interrupt flag.
+  * \hideinitializer
+  */
+#define RTC_CLEAR_CLKSTOP_INT_FLAG(rtc)    ((rtc)->INTSTS = RTC_INTSTS_CLKSTIF_Msk)
+
+/**
   * @brief      Clear RTC Tamper Interrupt Flag
   *
   * @param[in]  rtc             The pointer of RTC module.
@@ -241,6 +263,32 @@ typedef struct
   * \hideinitializer
   */
 #define RTC_GET_TICK_INT_FLAG(rtc)          (((rtc)->INTSTS & RTC_INTSTS_TICKIF_Msk)? 1:0)
+
+/**
+  * @brief      Get LXT Clock Monitor Fail Interrupt Flag
+  *
+  * @param[in]  rtc         The pointer of RTC module.
+  *
+  * @retval     0   LXT frequency is normal.
+  * @retval     1   LXT frequency is abnormal.
+  *
+  * @details    This macro indicates LXT clock monitor fail interrupt occurred or not.
+  * \hideinitializer
+  */
+#define RTC_GET_CLKFAIL_INT_FLAG(rtc)         (((rtc)->INTSTS & RTC_INTSTS_CLKFIF_Msk)? 1:0)
+
+/**
+  * @brief      Get LXT Clock Monitor Stop Interrupt Flag
+  *
+  * @param[in]  rtc         The pointer of RTC module.
+  *
+  * @retval     0   LXT frequency is normal.
+  * @retval     1   LXT frequency is almost stop.
+  *
+  * @details    This macro indicates LXT clock monitor fail interrupt occurred or not.
+  * \hideinitializer
+  */
+#define RTC_GET_CLKSTOP_INT_FLAG(rtc)          (((rtc)->INTSTS & RTC_INTSTS_CLKSTIF_Msk)? 1:0)
 
 /**
   * @brief      Set I/O Control By GPIO
@@ -355,6 +403,30 @@ typedef struct
   */
 #define RTC_WRITE_SPARE_REGISTER(rtc, u32RegNum, u32RegValue)   ((rtc)->SPR[(u32RegNum)] = (u32RegValue))
 
+/**
+  * @brief      Set Clock FAIL Boundary Register
+  *
+  * @param[in]  rtc             The pointer of RTC module.
+  * @param[in]  u32RegValue     The clock FAIL boundary register value. the vlaue range is 0x1 ~ 0xFF 
+  *
+  *
+  * @details    Set clock fail boundary to CBDR register.
+  * \hideinitializer
+  */
+#define RTC_SET_CLKFAIL_BOUNDARY(rtc, u32RegValue)   ((rtc)->CDBR = (((rtc)->CDBR & (~RTC_CDBR_FAILBD_Msk)) | (u32RegValue << (RTC_CDBR_FAILBD_Pos))))
+
+/**
+  * @brief      Set Clock Stop Boundary Register
+  *
+  * @param[in]  rtc             The pointer of RTC module.
+  * @param[in]  u32RegValue     The clock stop boundary register value. the vlaue range is 0x1 ~ 0xFF 
+  *
+  *
+  * @details    Set clock stop boundary to CBDR register.
+  * \hideinitializer
+  */
+#define RTC_SET_CLKSTOP_BOUNDARY(rtc, u32RegValue)   ((rtc)->CDBR = (((rtc)->CDBR & (~RTC_CDBR_STOPBD_Msk)) | (u32RegValue << (RTC_CDBR_STOPBD_Pos))))
+
 
 int32_t RTC_Open(S_RTC_TIME_DATA_T *sPt);
 void RTC_Close(void);
@@ -383,6 +455,9 @@ void RTC_DynamicTamperConfig(uint32_t u32ChangeRate, uint32_t u32SeedReload, uin
 uint32_t RTC_SetClockSource(uint32_t u32ClkSrc);
 void RTC_SetGPIOMode(uint32_t u32PFPin, uint32_t u32Mode, uint32_t u32DigitalCtl, uint32_t u32PullCtl, uint32_t u32OutputLevel);
 void RTC_SetGPIOLevel(uint32_t u32PFPin, uint32_t u32OutputLevel);
+void RTC_EnableClockFrequencyDetector(uint32_t u32FailBoundary, uint32_t u32StopBoundary);
+void RTC_DisableClockFrequencyDetector(void);
+
 
 /** @} end of group RTC_EXPORTED_FUNCTIONS */
 /** @} end of group RTC_Driver */
