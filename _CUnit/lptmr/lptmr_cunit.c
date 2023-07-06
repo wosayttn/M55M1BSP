@@ -659,7 +659,7 @@ void API_LPTMR_Delay(void)
             LPTMR1->CMP = 0xFFFFFF;
             LPTMR_Delay(LPTMRCh[i], 100);
             u32TDR[2] = LPTMR_GetCounter(LPTMR1);
-            printf("LPTMR[%d] [%d] [%d] [%d]\n",i, u32TDR[0], u32TDR[1], u32TDR[2]);
+            printf("LPTMR[%d] [%d] [%d] [%d]\n", i, u32TDR[0], u32TDR[1], u32TDR[2]);
         }
         else
         {
@@ -677,16 +677,16 @@ void API_LPTMR_Delay(void)
             LPTMR0->CMP = 0xFFFFFF;
             LPTMR_Delay(LPTMRCh[i], 100);
             u32TDR[2] = LPTMR_GetCounter(LPTMR0);
-            printf("LPTMR[%d] [%d] [%d] [%d]\n",i, u32TDR[0], u32TDR[1], u32TDR[2]);
+            printf("LPTMR[%d] [%d] [%d] [%d]\n", i, u32TDR[0], u32TDR[1], u32TDR[2]);
         }
 
-//        if (((u32TDR[0] > 1200) || (u32TDR[0] <= 1000)) ||
-//                ((u32TDR[1] > 502500) || (u32TDR[1] <= 500000)) ||
-//                ((u32TDR[2] > 1005000) || (u32TDR[2] <= 1000000)))
-//        {
-//            CU_FAIL("LPTMR counter value FAIL");
-//            break;
-//        }
+        //        if (((u32TDR[0] > 1200) || (u32TDR[0] <= 1000)) ||
+        //                ((u32TDR[1] > 502500) || (u32TDR[1] <= 500000)) ||
+        //                ((u32TDR[2] > 1005000) || (u32TDR[2] <= 1000000)))
+        //        {
+        //            CU_FAIL("LPTMR counter value FAIL");
+        //            break;
+        //        }
     }
 
     LPTMR_Stop(LPTMR0);

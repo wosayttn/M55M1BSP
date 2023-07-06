@@ -620,7 +620,7 @@ void API_TIMER_Delay(void)
             TIMER1->CMP = 0xFFFFFF;
             TIMER_Delay(TimerCh[i], 100);
             u32TDR[2] = TIMER_GetCounter(TIMER1);
-            printf("TIMER[%d] [%d] [%d] [%d]\n",i, u32TDR[0], u32TDR[1], u32TDR[2]);
+            printf("TIMER[%d] [%d] [%d] [%d]\n", i, u32TDR[0], u32TDR[1], u32TDR[2]);
         }
         else
         {
@@ -639,16 +639,16 @@ void API_TIMER_Delay(void)
             TIMER0->CMP = 0xFFFFFF;
             TIMER_Delay(TimerCh[i], 100);
             u32TDR[2] = TIMER_GetCounter(TIMER0);
-            printf("TIMER[%d] [%d] [%d] [%d]\n",i, u32TDR[0], u32TDR[1], u32TDR[2]);
+            printf("TIMER[%d] [%d] [%d] [%d]\n", i, u32TDR[0], u32TDR[1], u32TDR[2]);
         }
 
-//        if (((u32TDR[0] > 1200) || (u32TDR[0] <= 1000)) ||
-//                ((u32TDR[1] > 502500) || (u32TDR[1] <= 500000)) ||
-//                ((u32TDR[2] > 1005000) || (u32TDR[2] <= 1000000)))
-//        {
-//            CU_FAIL("TIMER counter value FAIL");
-//            break;
-//        }
+        //        if (((u32TDR[0] > 1200) || (u32TDR[0] <= 1000)) ||
+        //                ((u32TDR[1] > 502500) || (u32TDR[1] <= 500000)) ||
+        //                ((u32TDR[2] > 1005000) || (u32TDR[2] <= 1000000)))
+        //        {
+        //            CU_FAIL("TIMER counter value FAIL");
+        //            break;
+        //        }
     }
 
     TIMER_Stop(TIMER0);
@@ -1367,12 +1367,12 @@ void Func_Test(void)
     CU_ASSERT_EQUAL(TIMER0->CTL, 0);
     CU_ASSERT_EQUAL(TIMER0->EXTCTL, 0);
 
-//    TIMER_Delay(TIMER0, 1000000);
-//    CU_ASSERT_EQUAL(TIMER0->CMP * (((TIMER0->CTL & TIMER_CTL_PSC_Msk) >> TIMER_CTL_PSC_Pos) + 1) / (timerClkSrc / 1000000), 1000000);
-//    TIMER_Delay(TIMER0, 100000);
-//    CU_ASSERT_EQUAL(TIMER0->CMP * (((TIMER0->CTL & TIMER_CTL_PSC_Msk) >> TIMER_CTL_PSC_Pos) + 1) / (timerClkSrc / 1000000), 100000);
-//    TIMER_Delay(TIMER0, 10000);
-//    CU_ASSERT_EQUAL(TIMER0->CMP * (((TIMER0->CTL & TIMER_CTL_PSC_Msk) >> TIMER_CTL_PSC_Pos) + 1) / (timerClkSrc / 1000000), 10000);
+    //    TIMER_Delay(TIMER0, 1000000);
+    //    CU_ASSERT_EQUAL(TIMER0->CMP * (((TIMER0->CTL & TIMER_CTL_PSC_Msk) >> TIMER_CTL_PSC_Pos) + 1) / (timerClkSrc / 1000000), 1000000);
+    //    TIMER_Delay(TIMER0, 100000);
+    //    CU_ASSERT_EQUAL(TIMER0->CMP * (((TIMER0->CTL & TIMER_CTL_PSC_Msk) >> TIMER_CTL_PSC_Pos) + 1) / (timerClkSrc / 1000000), 100000);
+    //    TIMER_Delay(TIMER0, 10000);
+    //    CU_ASSERT_EQUAL(TIMER0->CMP * (((TIMER0->CTL & TIMER_CTL_PSC_Msk) >> TIMER_CTL_PSC_Pos) + 1) / (timerClkSrc / 1000000), 10000);
     TIMER_Delay(TIMER0, 1000);
     CU_ASSERT_EQUAL(TIMER0->CMP * (((TIMER0->CTL & TIMER_CTL_PSC_Msk) >> TIMER_CTL_PSC_Pos) + 1) / (timerClkSrc / 1000000), 1000);
     TIMER_Delay(TIMER0, 100);

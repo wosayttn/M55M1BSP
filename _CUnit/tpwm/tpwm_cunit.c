@@ -569,8 +569,8 @@ void API_TPWM_ConfigOutputFreqAndDuty(void)
     printf("\n%d, %d ", u32CMP, u32PERIOD);
 
     u32TragerFreq = TPWM_ConfigOutputFreqAndDuty(TIMER3, 24000, 40);
-//    printf("\n u32TragerFreq %d ",u32TragerFreq);
-//    CU_ASSERT_EQUAL(u32TragerFreq, 24000);
+    //    printf("\n u32TragerFreq %d ",u32TragerFreq);
+    //    CU_ASSERT_EQUAL(u32TragerFreq, 24000);
     CU_ASSERT_EQUAL(u32TragerFreq, 24003);
     u32PERIOD = TPWM_GET_PERIOD(TIMER3);
     u32CMP = TPWM_GET_CMPDAT(TIMER3);
@@ -1050,7 +1050,7 @@ void Const1_Test(void)
 
 void Macro1_Test(void)
 {
-    volatile uint32_t i,x;
+    volatile uint32_t i, x;
 
     TIMER_PWM_Init();
 

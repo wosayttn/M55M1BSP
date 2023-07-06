@@ -20,7 +20,7 @@
 #endif
 
 #ifndef DEBUG_PORT_Init
-void DEBUG_PORT_Init(UART_T* psUART, uint32_t u32Baudrate)
+void DEBUG_PORT_Init(UART_T *psUART, uint32_t u32Baudrate)
 {
     UART_Open(psUART, u32Baudrate);
 }
@@ -48,7 +48,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
     SYS_Init();
     /* Init DEBUG_PORT to 115200-8N1 for printf */
     DEBUG_PORT_Init(DEBUG_PORT, 115200);
-    
+
     printf("\n\n");
     printf("+--------------------------------------+\n");
     printf("|       M55M1 CUnit Test dmic      |\n");

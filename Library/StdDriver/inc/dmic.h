@@ -31,12 +31,12 @@ extern "C"
 /* DMIC CTL Constant Definitions                                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
 #define DMIC_CTL_FIFOWIDTH_24         (DMIC_CTL_FIFOWIDTH_Msk)
-#define DMIC_CTL_FIFOWIDTH_16         (0UL << DMIC_CTL_FIFOWIDTH_Pos)
+#define DMIC_CTL_FIFOWIDTH_16         (0UL<<DMIC_CTL_FIFOWIDTH_Pos)
 
-#define DMIC_CTL_GAINSTEP_1_2         (0UL << DMIC_CTL_GAINSTEP_Pos)
-#define DMIC_CTL_GAINSTEP_1_4         (1UL << DMIC_CTL_GAINSTEP_Pos)
-#define DMIC_CTL_GAINSTEP_1_8         (2UL << DMIC_CTL_GAINSTEP_Pos)
-#define DMIC_CTL_GAINSTEP_1_16        (3UL << DMIC_CTL_GAINSTEP_Pos)
+#define DMIC_CTL_GAINSTEP_1_2         (0UL<<DMIC_CTL_GAINSTEP_Pos)
+#define DMIC_CTL_GAINSTEP_1_4         (1UL<<DMIC_CTL_GAINSTEP_Pos)
+#define DMIC_CTL_GAINSTEP_1_8         (2UL<<DMIC_CTL_GAINSTEP_Pos)
+#define DMIC_CTL_GAINSTEP_1_16        (3UL<<DMIC_CTL_GAINSTEP_Pos)
 
 #define DMIC_DIV_DOWNSAMPLE_64        (0x0UL<<DMIC_DIV_OSR_Pos)          /*!< DMIC Down Sample Rate 32 */
 #define DMIC_DIV_DOWNSAMPLE_128       (0x1UL<<DMIC_DIV_OSR_Pos)          /*!< DMIC Down Sample Rate 64 */
@@ -57,38 +57,38 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /* VAD SINCCTL Constant Definitions                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-#define VAD_SINC_CTL_DOWNSAMPLE_48    (0x0UL<<VAD_SINCCTL_SINCOSR_Pos)          /*!< VAD SINC Filter Down Sample Rate 48 */
-#define VAD_SINC_CTL_DOWNSAMPLE_64    (0x1UL<<VAD_SINCCTL_SINCOSR_Pos)          /*!< VAD SINC Filter Down Sample Rate 64 */
-#define VAD_SINC_CTL_DOWNSAMPLE_96    (0x2UL<<VAD_SINCCTL_SINCOSR_Pos)          /*!< VAD SINC Filter Down Sample Rate 96 */
+#define DMIC_VAD_SINC_CTL_DOWNSAMPLE_48    (0x0UL<<VAD_SINCCTL_SINCOSR_Pos)          /*!< VAD SINC Filter Down Sample Rate 48 */
+#define DMIC_VAD_SINC_CTL_DOWNSAMPLE_64    (0x1UL<<VAD_SINCCTL_SINCOSR_Pos)          /*!< VAD SINC Filter Down Sample Rate 64 */
+#define DMIC_VAD_SINC_CTL_DOWNSAMPLE_96    (0x2UL<<VAD_SINCCTL_SINCOSR_Pos)          /*!< VAD SINC Filter Down Sample Rate 96 */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* VAD CTL Constant Definitions                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-#define VAD_CTL0_STAT_16MS            (0x99UL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 16 ms */
-#define VAD_CTL0_STAT_8MS             (0xaaUL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 8 ms */
-#define VAD_CTL0_STAT_4MS             (0xbbUL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 4 ms */
-#define VAD_CTL0_STAT_2MS             (0xccUL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 2 ms */
+#define DMIC_VAD_CTL0_STAT_16MS            (0x99UL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 16 ms */
+#define DMIC_VAD_CTL0_STAT_8MS             (0xaaUL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 8 ms */
+#define DMIC_VAD_CTL0_STAT_4MS             (0xbbUL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 4 ms */
+#define DMIC_VAD_CTL0_STAT_2MS             (0xccUL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 2 ms */
 
-#define VAD_CTL0_LTAT_512MS           (0x4UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 512 ms */
-#define VAD_CTL0_LTAT_256MS           (0x5UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 256 ms */
-#define VAD_CTL0_LTAT_128MS           (0x6UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 128 ms */
-#define VAD_CTL0_LTAT_64MS            (0x7UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 64 ms */
+#define DMIC_VAD_CTL0_LTAT_512MS           (0x4UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 512 ms */
+#define DMIC_VAD_CTL0_LTAT_256MS           (0x5UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 256 ms */
+#define DMIC_VAD_CTL0_LTAT_128MS           (0x6UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 128 ms */
+#define DMIC_VAD_CTL0_LTAT_64MS            (0x7UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 64 ms */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* VAD Power Threshold Definitions                                                                         */
 /*---------------------------------------------------------------------------------------------------------*/
-#define VAD_POWERTHRE_0DB             (0x0001UL)                                 /*!< VAD power threshold 0DB       */
-#define VAD_POWERTHRE_10DB            (0x0003UL)                                 /*!< VAD power threshold 10DB      */
-#define VAD_POWERTHRE_20DB            (0x000AUL)                                 /*!< VAD power threshold 20DB      */
-#define VAD_POWERTHRE_30DB            (0x0020UL)                                 /*!< VAD power threshold 30DB      */
-#define VAD_POWERTHRE_40DB            (0x0067UL)                                 /*!< VAD power threshold 40DB      */
-#define VAD_POWERTHRE_50DB            (0x0147UL)                                 /*!< VAD power threshold 50DB      */
-#define VAD_POWERTHRE_60DB            (0x040CUL)                                 /*!< VAD power threshold 60DB      */
-#define VAD_POWERTHRE_70DB            (0x0CCCUL)                                 /*!< VAD power threshold 70DB      */
-#define VAD_POWERTHRE_80DB            (0x2879UL)                                 /*!< VAD power threshold 80DB      */
-#define VAD_POWERTHRE_90DB            (0x7FFFUL)                                 /*!< VAD power threshold 90DB      */
+#define DMIC_VAD_POWERTHRE_0DB             (0x0001UL)                                 /*!< VAD power threshold 0DB       */
+#define DMIC_VAD_POWERTHRE_10DB            (0x0003UL)                                 /*!< VAD power threshold 10DB      */
+#define DMIC_VAD_POWERTHRE_20DB            (0x000AUL)                                 /*!< VAD power threshold 20DB      */
+#define DMIC_VAD_POWERTHRE_30DB            (0x0020UL)                                 /*!< VAD power threshold 30DB      */
+#define DMIC_VAD_POWERTHRE_40DB            (0x0067UL)                                 /*!< VAD power threshold 40DB      */
+#define DMIC_VAD_POWERTHRE_50DB            (0x0147UL)                                 /*!< VAD power threshold 50DB      */
+#define DMIC_VAD_POWERTHRE_60DB            (0x040CUL)                                 /*!< VAD power threshold 60DB      */
+#define DMIC_VAD_POWERTHRE_70DB            (0x0CCCUL)                                 /*!< VAD power threshold 70DB      */
+#define DMIC_VAD_POWERTHRE_80DB            (0x2879UL)                                 /*!< VAD power threshold 80DB      */
+#define DMIC_VAD_POWERTHRE_90DB            (0x7FFFUL)                                 /*!< VAD power threshold 90DB      */
 
-/*@}*/ /* end of group DMIC_EXPORTED_CONSTANTS */
+/*@} end of group DMIC_EXPORTED_CONSTANTS */
 
 
 /* VAD Biquad Filter Coefficient Struct */
@@ -114,7 +114,7 @@ typedef struct
   * @return     None
   * @details    Channel 01 latched on rising or falling edge of DMIC_CLK.
   */
-#define DMIC_SET_LATCH01DATA(dmic,u32Value)             ((dmic)->CTL = ((dmic)->CTL & ~(DMIC_CTL_LCHEDGE01_Msk))|u32Value)
+#define DMIC_SET_LATCHEDGE_CH01(dmic,u32Value)             ((dmic)->CTL = ((dmic)->CTL & ~(DMIC_CTL_LCHEDGE01_Msk))|(u32Value))
 
 /**
   * @brief      Set DMIC channel 23 data latch edge.
@@ -125,7 +125,7 @@ typedef struct
   * @return     None
   * @details    Channel 23 latched on rising or falling edge of DMIC_CLK.
   */
-#define DMIC_SET_LATCH23DATA(dmic,u32Value)             ((dmic)->CTL = ((dmic)->CTL & ~(DMIC_CTL_LCHEDGE23_Msk))|u32Value)
+#define DMIC_SET_LATCHEDGE_CH23(dmic,u32Value)             ((dmic)->CTL = ((dmic)->CTL & ~(DMIC_CTL_LCHEDGE23_Msk))|(u32Value))
 
 /**
   * @brief      Enable DMIC's channel
@@ -160,7 +160,7 @@ typedef struct
   * @return     None
   * @details    DMIC FIFO threshold interrupt Enabled.
   */
-#define DMIC_ENABLE_FIFOTHRESHOLDINT(dmic,u8Value)    ((dmic)->DIV = (((dmic)->DIV&~DMIC_DIV_DMTH_Msk)|((((uint32_t)u8Value)<<DMIC_DIV_DMTH_Pos)&DMIC_DIV_DMTH_Msk))|DMIC_DIV_DMTHIE_Msk)
+#define DMIC_ENABLE_FIFOTH_INT(dmic,u8Value)    ((dmic)->DIV = (((dmic)->DIV&~DMIC_DIV_DMTH_Msk)|((((uint32_t)u8Value)<<DMIC_DIV_DMTH_Pos)&DMIC_DIV_DMTH_Msk))|DMIC_DIV_DMTHIE_Msk)
 
 /**
   * @brief      Disable DMIC FIFO threshold interrupt.
@@ -168,7 +168,7 @@ typedef struct
   * @return     None
   * @details    DMIC FIFO threshold interrupt Disabled.
   */
-#define DMIC_DISABLE_FIFOTHRESHOLDINT(dmic)           ((dmic)->DIV &= (~DMIC_DIV_DMTHIE_Msk))
+#define DMIC_DISABLE_FIFOTH_INT(dmic)           ((dmic)->DIV &= (~DMIC_DIV_DMTHIE_Msk))
 
 /**
   * @brief      Enable DMIC down sample rate.
@@ -182,7 +182,7 @@ typedef struct
   * @return     None
   * @details    Enable DMIC down sample rate funciton and set down sample value.
   */
-#define DMIC_SET_DOWMSAMPLE(dmic,u32Value)         ((dmic)->DIV = (((dmic)->DIV) & (~DMIC_DIV_OSR_Msk))|u32Value)
+#define DMIC_SET_DOWNSAMPLE(dmic,u32Value)         ((dmic)->DIV = (((dmic)->DIV) & (~DMIC_DIV_OSR_Msk))|(u32Value))
 
 /**
   * @brief      Enable DMIC LPPDMA function.
@@ -235,13 +235,13 @@ typedef struct
   * @brief      Enable VAD down sample rate.
   * @param[in]  vad The base address of VAD module
   * @param[in]  u32Value Down sample rate value.
-  *             - \ref VAD_SINC_CTL_DOWNSAMPLE_48
-  *             - \ref VAD_SINC_CTL_DOWNSAMPLE_64
-  *             - \ref VAD_SINC_CTL_DOWNSAMPLE_96
+  *             - \ref DMIC_VAD_SINC_CTL_DOWNSAMPLE_48
+  *             - \ref DMIC_VAD_SINC_CTL_DOWNSAMPLE_64
+  *             - \ref DMIC_VAD_SINC_CTL_DOWNSAMPLE_96
   * @return     None
   * @details    Enable VAD down sample rate funciton and set down sample value.
   */
-#define DMIC_VAD_SET_DOWMSAMPLE(vad,u32Value)         ((vad)->SINCCTL = ((vad)->SINCCTL & ~VAD_SINCCTL_SINCOSR_Msk)|u32Value)
+#define DMIC_VAD_SET_DOWNSAMPLE(vad,u32Value)         ((vad)->SINCCTL = ((vad)->SINCCTL & ~VAD_SINCCTL_SINCOSR_Msk)|(u32Value))
 
 /**
   * @brief      Enable VAD function.
@@ -263,25 +263,25 @@ typedef struct
   * @brief      Set Short Term Attack Time
   * @param[in]  vad The base address of VAD module
   * @param[in]  u32Time Short Term Attack Time.
-  *             - \ref VAD_CTL0_STAT_16MS
-  *             - \ref VAD_CTL0_STAT_8MS
-  *             - \ref VAD_CTL0_STAT_4MS
-  *             - \ref VAD_CTL0_STAT_2MS
+  *             - \ref DMIC_VAD_CTL0_STAT_16MS
+  *             - \ref DMIC_VAD_CTL0_STAT_8MS
+  *             - \ref DMIC_VAD_CTL0_STAT_4MS
+  *             - \ref DMIC_VAD_CTL0_STAT_2MS
   * @return     None
   */
-#define DMIC_VAD_SET_STAT(vad,u32Time)                   ((vad)->CTL0 = ((vad)->CTL0 & ~VAD_CTL0_STAT_Msk)|u32Time)
+#define DMIC_VAD_SET_STAT(vad,u32Time)                   ((vad)->CTL0 = ((vad)->CTL0 & ~VAD_CTL0_STAT_Msk)|(u32Time))
 
 /**
   * @brief      Set Long Term Attack Time
   * @param[in]  vad The base address of VAD module
   * @param[in]  u32Time Long Term Attack Time.
-  *             - \ref VAD_CTL0_LTAT_512MS
-  *             - \ref VAD_CTL0_LTAT_256MS
-  *             - \ref VAD_CTL0_LTAT_128MS
-  *             - \ref VAD_CTL0_LTAT_64MS
+  *             - \ref DMIC_VAD_CTL0_LTAT_512MS
+  *             - \ref DMIC_VAD_CTL0_LTAT_256MS
+  *             - \ref DMIC_VAD_CTL0_LTAT_128MS
+  *             - \ref DMIC_VAD_CTL0_LTAT_64MS
   * @return     None
   */
-#define DMIC_VAD_SET_LTAT(vad,u32Time)                   ((vad)->CTL0 = ((vad)->CTL0 & ~VAD_CTL0_LTAT_Msk)|u32Time)
+#define DMIC_VAD_SET_LTAT(vad,u32Time)                   ((vad)->CTL0 = ((vad)->CTL0 & ~VAD_CTL0_LTAT_Msk)|(u32Time))
 
 /**
   * @brief      Set Short Term Power Threshold.
@@ -289,7 +289,7 @@ typedef struct
   * @param[in]  u32Upper Short Term Upper Limit Threshold
   * @return     None
   */
-#define DMIC_VAD_SET_STTHRE(vad,u32Upper)       ((vad)->CTL1 = ((vad)->CTL1&~VAD_CTL1_STTHREHWM_Msk)|(u32Upper&VAD_CTL1_STTHREHWM_Msk))
+#define DMIC_VAD_SET_STTHRE(vad,u32Upper)       ((vad)->CTL1 = ((vad)->CTL1&~VAD_CTL1_STTHREHWM_Msk)|((u32Upper)&VAD_CTL1_STTHREHWM_Msk))
 
 /**
   * @brief      Get short term signal power value.
@@ -306,7 +306,7 @@ typedef struct
   * @param[in]  u32Value Long Term Power Threshold
   * @return     None
   */
-#define DMIC_VAD_SET_LTTHRE(vad,u32Value)       ((vad)->CTL2 = ((vad)->CTL2&~VAD_CTL2_LTTHRE_Msk)|((u32Value<<VAD_CTL2_LTTHRE_Pos)&VAD_CTL2_LTTHRE_Msk))
+#define DMIC_VAD_SET_LTTHRE(vad,u32Value)       ((vad)->CTL2 = ((vad)->CTL2&~VAD_CTL2_LTTHRE_Msk)|(((u32Value)<<VAD_CTL2_LTTHRE_Pos)&VAD_CTL2_LTTHRE_Msk))
 
 /**
   * @brief      Get long term signal power value.
@@ -323,7 +323,7 @@ typedef struct
   * @param[in]  u32Value Deviation Threshold
   * @return     None
   */
-#define DMIC_VAD_SET_DEVTHRE(vad,u32Value)                ((vad)->CTL3 = ((vad)->CTL3&~VAD_CTL3_DEVTHRE_Msk)|(u32Value&VAD_CTL3_DEVTHRE_Msk))
+#define DMIC_VAD_SET_DEVTHRE(vad,u32Value)                ((vad)->CTL3 = ((vad)->CTL3&~VAD_CTL3_DEVTHRE_Msk)|((u32Value)&VAD_CTL3_DEVTHRE_Msk))
 
 /**
   * @brief      Get deviation of the Long Term and Short Term Power value
@@ -387,7 +387,7 @@ __STATIC_INLINE void DMIC_VAD_SetBIQCoeff(VAD_T *vad, DMIC_VAD_BIQ_T *psBIQCoeff
   */
 __STATIC_INLINE void DMIC_SetFIFOWidth(DMIC_T *dmic, uint32_t u32Width)
 {
-	dmic->CTL = (dmic->CTL & ~(DMIC_CTL_FIFOWIDTH_Msk))|u32Width;
+    dmic->CTL = (dmic->CTL & ~(DMIC_CTL_FIFOWIDTH_Msk)) | (u32Width);
 }
 
 /**
@@ -403,7 +403,7 @@ __STATIC_INLINE void DMIC_SetFIFOWidth(DMIC_T *dmic, uint32_t u32Width)
   */
 __STATIC_INLINE void DMIC_SetGainStep(DMIC_T *dmic, uint32_t u32Volume)
 {
-	dmic->CTL = (dmic->CTL & ~(DMIC_CTL_GAINSTEP_Msk))|u32Volume;
+    dmic->CTL = (dmic->CTL & ~(DMIC_CTL_GAINSTEP_Msk)) | (u32Volume);
 }
 
 /**
@@ -414,8 +414,14 @@ __STATIC_INLINE void DMIC_SetGainStep(DMIC_T *dmic, uint32_t u32Volume)
   */
 __STATIC_INLINE void DMIC_ResetDSP(DMIC_T *dmic)
 {
-	dmic->CTL |= DMIC_CTL_SWRST_Msk;
-	while(dmic->CTL & DMIC_CTL_SWRST_Msk){};
+    uint32_t u32Delay;
+    dmic->CTL |= DMIC_CTL_SWRST_Msk;
+    u32Delay = SystemCoreClock >> 3;
+
+    while ((dmic->CTL & DMIC_CTL_SWRST_Msk) && (--u32Delay))
+    {
+        __NOP();
+    }
 }
 
 /**
@@ -429,7 +435,7 @@ __STATIC_INLINE void DMIC_ResetDSP(DMIC_T *dmic)
   */
 __STATIC_INLINE void DMIC_EnableHPF(DMIC_T *dmic, uint32_t u32ChHPF)
 {
-	dmic->CTL |= u32ChHPF;
+    dmic->CTL |= (u32ChHPF);
 }
 
 /**
@@ -443,7 +449,7 @@ __STATIC_INLINE void DMIC_EnableHPF(DMIC_T *dmic, uint32_t u32ChHPF)
   */
 __STATIC_INLINE void DMIC_DisableHPF(DMIC_T *dmic, uint32_t u32ChHPF)
 {
-	dmic->CTL &= (~u32ChHPF);
+    dmic->CTL &= ~(u32ChHPF);
 }
 
 /**
@@ -459,7 +465,7 @@ __STATIC_INLINE void DMIC_DisableHPF(DMIC_T *dmic, uint32_t u32ChHPF)
   */
 __STATIC_INLINE void DMIC_EnableMute(DMIC_T *dmic, uint32_t u32ChMute)
 {
-	dmic->CTL |= u32ChMute;
+    dmic->CTL |= (u32ChMute);
 }
 
 /**
@@ -475,7 +481,7 @@ __STATIC_INLINE void DMIC_EnableMute(DMIC_T *dmic, uint32_t u32ChMute)
   */
 __STATIC_INLINE void DMIC_DisableMute(DMIC_T *dmic, uint32_t u32ChMute)
 {
-	dmic->CTL &= (~u32ChMute);
+    dmic->CTL &= ~(u32ChMute);
 }
 
 /**
@@ -500,23 +506,25 @@ __STATIC_INLINE uint32_t DMIC_GetFIFOPTR(DMIC_T *dmic)
   */
 __STATIC_INLINE void DMIC_VAD_SetBIQCoeff(VAD_T *vad, DMIC_VAD_BIQ_T *psBIQCoeff)
 {
-	vad->BIQCTL0 = (vad->BIQCTL0 & ~VAD_BIQCTL0_BIQA1_Msk)|((psBIQCoeff->u16BIQCoeffA1<<VAD_BIQCTL0_BIQA1_Pos)&VAD_BIQCTL0_BIQA1_Msk);
-  vad->BIQCTL0 = (vad->BIQCTL0 & ~VAD_BIQCTL0_BIQA2_Msk)|((psBIQCoeff->u16BIQCoeffA2<<VAD_BIQCTL0_BIQA2_Pos)&VAD_BIQCTL0_BIQA2_Msk);
-	vad->BIQCTL1 = (vad->BIQCTL1 & ~VAD_BIQCTL1_BIQB0_Msk)|((psBIQCoeff->u16BIQCoeffB0<<VAD_BIQCTL1_BIQB0_Pos)&VAD_BIQCTL1_BIQB0_Msk);
-	vad->BIQCTL1 = (vad->BIQCTL1 & ~VAD_BIQCTL1_BIQB1_Msk)|((psBIQCoeff->u16BIQCoeffB1<<VAD_BIQCTL1_BIQB1_Pos)&VAD_BIQCTL1_BIQB1_Msk);
-	vad->BIQCTL2 = (vad->BIQCTL2 & ~VAD_BIQCTL2_BIQB2_Msk)|((psBIQCoeff->u16BIQCoeffB2<<VAD_BIQCTL2_BIQB2_Pos)&VAD_BIQCTL2_BIQB2_Msk);
+    vad->BIQCTL0 = (vad->BIQCTL0 & ~VAD_BIQCTL0_BIQA1_Msk) | ((psBIQCoeff->u16BIQCoeffA1 << VAD_BIQCTL0_BIQA1_Pos)&VAD_BIQCTL0_BIQA1_Msk);
+    vad->BIQCTL0 = (vad->BIQCTL0 & ~VAD_BIQCTL0_BIQA2_Msk) | ((psBIQCoeff->u16BIQCoeffA2 << VAD_BIQCTL0_BIQA2_Pos)&VAD_BIQCTL0_BIQA2_Msk);
+    vad->BIQCTL1 = (vad->BIQCTL1 & ~VAD_BIQCTL1_BIQB0_Msk) | ((psBIQCoeff->u16BIQCoeffB0 << VAD_BIQCTL1_BIQB0_Pos)&VAD_BIQCTL1_BIQB0_Msk);
+    vad->BIQCTL1 = (vad->BIQCTL1 & ~VAD_BIQCTL1_BIQB1_Msk) | ((psBIQCoeff->u16BIQCoeffB1 << VAD_BIQCTL1_BIQB1_Pos)&VAD_BIQCTL1_BIQB1_Msk);
+    vad->BIQCTL2 = (vad->BIQCTL2 & ~VAD_BIQCTL2_BIQB2_Msk) | ((psBIQCoeff->u16BIQCoeffB2 << VAD_BIQCTL2_BIQB2_Pos)&VAD_BIQCTL2_BIQB2_Msk);
 }
 
 void DMIC_SetDSPGainVolume(DMIC_T *dmic, uint32_t u32ChMsk, int16_t i16ChVolume);
 void DMIC_ClearFIFO(DMIC_T *dmic);
 uint32_t DMIC_SetSampleRate(DMIC_T *dmic, uint32_t u32SampleRate);
+uint32_t DMIC_GetSampleRate(DMIC_T *dmic);
 
 uint32_t DMIC_VAD_SetSampleRate(VAD_T *vad, uint32_t u32SampleRate);
-/*@}*/ /* end of group DMIC_EXPORTED_FUNCTIONS */
+uint32_t DMIC_VAD_GetSampleRate(VAD_T *vad);
+/*@} end of group DMIC_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group DMIC_Driver */
+/*@} end of group DMIC_Driver */
 
-/*@}*/ /* end of group Device_Driver */
+/*@} end of group Device_Driver */
 
 #ifdef __cplusplus
 }

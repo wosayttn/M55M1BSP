@@ -176,6 +176,7 @@ int32_t TTMR_Delay(TTMR_T *ttmr, uint32_t u32Usec)
             u32Cntr = ttmr->CNT;
         }
     }
+
     return TTMR_OK;
 }
 
