@@ -124,11 +124,10 @@ int SPIMPortSelect(uint32_t u32SPIMPort);
 void SPIM_EraseAddrRange(SPIM_T *pSPIMx, uint32_t u32Addr, int is4ByteAddr, uint32_t len, uint32_t u32ErsCmd, uint32_t u32ErsBlkSize, uint32_t u32NBit);
 
 void SPIM_DMA_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
-                         int is4ByteAddr, uint32_t u32Addr, uint32_t u32WrSize,
-                         uint8_t *pu8TxBuf);
+                         uint32_t u32Addr, uint8_t *pu8TxBuf, uint32_t u32WrSize);
 int32_t SPIM_DMA_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
-                           int is4ByteAddr, uint32_t u32Addr, uint32_t u32RdSize,
-                           uint8_t *pu8RxBuf, int isSync);
+                           uint32_t u32Addr, uint8_t *pu8RxBuf,
+                           uint32_t u32RdSize, int isSync);
 void SPIM_DMM_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, int is4ByteAddr, uint32_t u32IdleIntvl);
 
 #endif /* _COMMON_H_ */

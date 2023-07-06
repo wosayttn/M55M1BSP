@@ -24,6 +24,10 @@
 #ifndef _TEST_FUN_H_
 #define _TEST_FUN_H_
 
+#include <stdint.h>
+
+void SetQSPIModuleIdx(uint32_t u32SetValue);
+
 extern CU_SuiteInfo suites[];
 extern CU_TestInfo QSPI_MacroTests[];
 extern CU_TestInfo QSPI_ApiTests[];

@@ -34,7 +34,7 @@
   */
 uint32_t LPTPWM_ConfigOutputFreqAndDuty(LPTMR_T *lptmr, uint32_t u32Frequency, uint32_t u32DutyCycle)
 {
-    uint32_t u32PWMClockFreq, u32TargetFreq, u32Src;
+    uint32_t u32PWMClockFreq, u32TargetFreq = 0UL, u32Src = 0UL;
     uint32_t u32Prescaler = 0x100UL, u32Period, u32CMP;
     const uint32_t au32Clk[] = {0UL, __LXT, __LIRC, __MIRC, __HIRC, 0UL};
 
@@ -46,10 +46,12 @@ uint32_t LPTPWM_ConfigOutputFreqAndDuty(LPTMR_T *lptmr, uint32_t u32Frequency, u
     {
         u32Src = (CLK->LPTMRSEL & CLK_LPTMRSEL_LPTMR1SEL_Msk) >> CLK_LPTMRSEL_LPTMR1SEL_Pos;
     }
+    else
+        return (u32TargetFreq);
 
     if (u32Src == 0UL)
     {
-        u32PWMClockFreq = CLK_GetPCLK2Freq();
+        u32PWMClockFreq = CLK_GetPCLK4Freq();
     }
     else
     {

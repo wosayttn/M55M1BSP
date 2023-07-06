@@ -13,6 +13,7 @@
 #include "CUnit.h"
 #include "Console.h"
 #include "bpwm_cunit.h"
+#include "../pldm_emu.h"
 
 #ifndef DEBUG_PORT
     #define DEBUG_PORT UART0
@@ -71,7 +72,7 @@ void SYS_Init(void)
     SetDebugUartMFP();
 
     /* Lock protected registers */
-    SYS_LockReg();
+    //SYS_LockReg();
 }
 
 void exit(int32_t code)

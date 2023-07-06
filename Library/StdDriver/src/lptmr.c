@@ -90,17 +90,18 @@ void LPTMR_Close(LPTMR_T *lptmr)
   * @param[in]  lptmr       The pointer of the specified LPTMR module. It could be LPTMR0, LPTMR1.
   * @param[in]  u32Usec     Delay period in micro seconds. Valid values are between 100~1000000 (100 micro second ~ 1 second).
   *
-  * @return     None
+  * @retval     LPTMR_OK          Delay success, target delay time reached
+  * @retval     LPTMR_ERR_TIMEOUT Delay function execute failed due to timer stop working
   *
   * @details    This API is used to create a delay loop for u32usec micro seconds by using lptmr one-shot mode.
   * @note       This API overwrites the register setting of the lptmr used to count the delay time.
   * @note       This API use polling mode. So there is no need to enable interrupt for the lptmr module used to generate delay.
   */
-void LPTMR_Delay(LPTMR_T *lptmr, uint32_t u32Usec)
+int32_t LPTMR_Delay(LPTMR_T *lptmr, uint32_t u32Usec)
 {
     uint32_t u32Clk = LPTMR_GetModuleClock(lptmr);
     uint32_t u32Prescale = 0UL, delay = (SystemCoreClock / u32Clk) + 1UL;
-    uint32_t u32Cmpr, u32NsecPerTick;
+    uint32_t u32Cmpr, u32Cntr, u32NsecPerTick, i = 0UL;
 
     /* Clear current lptmr configuration */
     lptmr->CTL = 0UL;
@@ -156,12 +157,31 @@ void LPTMR_Delay(LPTMR_T *lptmr, uint32_t u32Usec)
         __NOP();
     }
 
+    /* Add a bail out counter here in case timer clock source is disabled accidentally.
+       Prescale counter reset every ECLK * (prescale value + 1).
+       The u32Delay here is to make sure timer counter value changed when prescale counter reset */
+    delay = (SystemCoreClock / LPTMR_GetModuleClock(lptmr)) * (u32Prescale + 1);
+    u32Cntr = lptmr->CNT;
+
     while (lptmr->CTL & LPTMR_CTL_ACTSTS_Msk)
     {
-        ;
+        /* Bailed out if timer stop counting e.g. Some interrupt handler close timer clock source. */
+        if (u32Cntr == lptmr->CNT)
+        {
+            if (i++ > delay)
+            {
+                return LPTMR_ERR_TIMEOUT;
+            }
+        }
+        else
+        {
+            i = 0;
+            u32Cntr = lptmr->CNT;
+        }
     }
-}
 
+    return LPTMR_OK;
+}
 
 /**
   * @brief      Enable LPTMR Capture Function
@@ -300,7 +320,7 @@ uint32_t LPTMR_GetModuleClock(LPTMR_T *lptmr)
 
     if (u32Src == 0UL)
     {
-        u32Clk = CLK_GetPCLK2Freq();
+        u32Clk = CLK_GetPCLK4Freq();
     }
     else
     {

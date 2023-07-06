@@ -288,7 +288,7 @@ void PMC_Idle(void)
   *             - \ref PMC_PLCTL_PLSEL_PL1  : Supports system clock up to 200MHz.
   *             - \ref PMC_PLCTL_PLSEL_PL2  : Supports system clock up to 100MHz.
   *             - \ref PMC_PLCTL_PLSEL_PL3  : Supports system clock up to 12MHz.
-  *             Power level settings are ignored in PMC_NPD2/PMC_NPD4/PMC_SPD1/PMC_DPD0/PMC_DPD1.
+  *             Power level set value is ignored in PMC_NPD2/PMC_NPD4/PMC_SPD1/PMC_DPD0/PMC_DPD1 power-down mode.
   * @retval     PMC_OK          PMC operation OK.
   * @retval     PMC_ERR_TIMEOUT PMC operation abort due to timeout error.
   * @details    This function is used to set power-down mode.
@@ -476,8 +476,59 @@ void PMC_EnableTGPin(uint32_t u32Port, uint32_t u32Pin, uint32_t u32TriggerType,
 }
 
 /**
+ * @brief       Enable standby wake-up timer and set Time-out interval.
+ * @param[in]   u32Interval   The Time-out Interval selection. It could be
+ *                             - \ref PMC_STMRWKCTL_STMRIS_512
+ *                             - \ref PMC_STMRWKCTL_STMRIS_1024
+ *                             - \ref PMC_STMRWKCTL_STMRIS_2048
+ *                             - \ref PMC_STMRWKCTL_STMRIS_4096
+ *                             - \ref PMC_STMRWKCTL_STMRIS_8192
+ *                             - \ref PMC_STMRWKCTL_STMRIS_16384
+ *                             - \ref PMC_STMRWKCTL_STMRIS_32768
+ *                             - \ref PMC_STMRWKCTL_STMRIS_65536
+ *                             - \ref PMC_STMRWKCTL_STMRIS_131072
+ *                             - \ref PMC_STMRWKCTL_STMRIS_262144
+ *                             - \ref PMC_STMRWKCTL_STMRIS_524288
+ *                             - \ref PMC_STMRWKCTL_STMRIS_1048576
+ *                             - \ref PMC_STMRWKCTL_STMRIS_2097152
+ *                             - \ref PMC_STMRWKCTL_STMRIS_4194304
+ * @retval      PMC_OK          PMC operation OK.
+ * @retval      PMC_ERR_TIMEOUT PMC operation abort due to timeout error.
+ * @details     This function enable standby wake-up timer and set Time-out interval.
+                The register write-protection function should be disabled before using this function.
+ */
+int32_t PMC_EnableSTMR(uint32_t u32Interval)
+{
+    if (PMC_Wait_BusyFlag(PMC_STMRWKCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
+    PMC->STMRWKCTL = ((PMC->STMRWKCTL & ~PMC_STMRWKCTL_STMRIS_Msk) | u32Interval);
+
+    if (PMC_Wait_BusyFlag(PMC_STMRWKCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
+    PMC->STMRWKCTL |= PMC_STMRWKCTL_STMREN_Msk;
+
+    return PMC_OK;
+}
+
+/**
+ * @brief       Disable standby wake-up timer.
+ * @retval      PMC_OK          PMC operation OK.
+ * @retval      PMC_ERR_TIMEOUT PMC operation abort due to timeout error.
+ * @details     This function isable standby wake-up timer.
+                The register write-protection function should be disabled before using this function.
+ */
+int32_t PMC_DisableSTMR(void)
+{
+    if (PMC_Wait_BusyFlag(PMC_STMRWKCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
+
+    PMC->STMRWKCTL &= ~PMC_STMRWKCTL_STMREN_Msk;
+
+    return PMC_OK;
+}
+
+/**
  * @brief       Check PMC busy flag
- * @param[in]   None
+ * @param[in]   PMCBusyFlagAddr   The Busy Flag selection. It could be
  *              - \ref PMC_PWRCTL_BUSY_FLAG
  *              - \ref PMC_PLCTL_BUSY_FLAG
  *              - \ref PMC_PLSTS_BUSY_FLAG

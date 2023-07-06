@@ -76,8 +76,8 @@ extern "C"
 
 #define LPTMR_TRGSRC_TIMEOUT_EVENT              (0UL << LPTMR_TRGCTL_TRGSSEL_Pos)       /*!< Select internal trigger source from lptmr time-out event \hideinitializer */
 #define LPTMR_TRGSRC_CAPTURE_EVENT              (1UL << LPTMR_TRGCTL_TRGSSEL_Pos)       /*!< Select internal trigger source from lptmr capture event \hideinitializer */
-#define LPTMR_TRGSEL_CAPTURE_EVENT              LPTMR_TRGSRC_TIMEOUT_EVENT
-#define LPTMR_TRGSEL_TIMEOUT_EVENT              LPTMR_TRGSRC_CAPTURE_EVENT
+#define LPTMR_TRGSEL_TIMEOUT_EVENT              LPTMR_TRGSRC_TIMEOUT_EVENT
+#define LPTMR_TRGSEL_CAPTURE_EVENT              LPTMR_TRGSRC_CAPTURE_EVENT
 
 #define LPTMR_TRGEN                             (LPTMR_TRGCTL_TRGEN_Msk)                /*!< Each lptmr event to trigger Low Power IP \hideinitializer */
 #define LPTMR_TRG_TO_LPPDMA                     (LPTMR_TRGCTL_TRGLPPDMA_Msk)            /*!< Each lptmr event to trigger PDMA transfer \hideinitializer */
@@ -580,7 +580,7 @@ __STATIC_INLINE void LPTMR_EventCounterSelect(LPTMR_T *lptmr, uint32_t u32Src)
 
 uint32_t LPTMR_Open(LPTMR_T *lptmr, uint32_t u32Mode, uint32_t u32Freq);
 void LPTMR_Close(LPTMR_T *lptmr);
-void LPTMR_Delay(LPTMR_T *lptmr, uint32_t u32Usec);
+int32_t LPTMR_Delay(LPTMR_T *lptmr, uint32_t u32Usec);
 void LPTMR_EnableCapture(LPTMR_T *lptmr, uint32_t u32CapMode, uint32_t u32Edge);
 void LPTMR_CaptureSelect(LPTMR_T *lptmr, uint32_t u32Src);
 void LPTMR_DisableCapture(LPTMR_T *lptmr);

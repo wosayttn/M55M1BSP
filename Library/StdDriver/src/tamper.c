@@ -36,7 +36,6 @@
   *                                 - \ref TAMPER_INTEN_OVPIEN_Msk
   *                                 - \ref TAMPER_INTEN_VGPIEN_Msk
   *                                 - \ref TAMPER_INTEN_VGNIEN_Msk
-  *                                 - \ref TAMPER_INTEN_ACTSIEN_Msk
   *                                 - \ref TAMPER_INTEN_RTCLVRIEN_Msk
   *                                 - \ref TAMPER_INTEN_RTCIOIEN_Msk
   *                                 - \ref TAMPER_INTEN_RTCLKIEN_Msk
@@ -67,7 +66,6 @@ void TAMPER_EnableInt(uint32_t u32IntFlagMask)
   *                                 - \ref TAMPER_INTEN_OVPIEN_Msk
   *                                 - \ref TAMPER_INTEN_VGPIEN_Msk
   *                                 - \ref TAMPER_INTEN_VGNIEN_Msk
-  *                                 - \ref TAMPER_INTEN_ACTSIEN_Msk
   *                                 - \ref TAMPER_INTEN_RTCLVRIEN_Msk
   *                                 - \ref TAMPER_INTEN_RTCIOIEN_Msk
   *                                 - \ref TAMPER_INTEN_RTCLKIEN_Msk
@@ -201,8 +199,6 @@ void TAMPER_DynamicTamperEnable(uint32_t u32PairSel, uint32_t u32DebounceEn, uin
     u32Tamper2Debounce = u32Reg & TAMPER_TIOCTL_TAMP2DBEN_Msk;
     u32Tamper4Debounce = u32Reg & TAMPER_TIOCTL_TAMP4DBEN_Msk;
 
-    u32Reg &= ~(TAMPER_TIOCTL_TAMP0EN_Msk | TAMPER_TIOCTL_TAMP1EN_Msk | TAMPER_TIOCTL_TAMP2EN_Msk |
-                TAMPER_TIOCTL_TAMP3EN_Msk | TAMPER_TIOCTL_TAMP4EN_Msk | TAMPER_TIOCTL_TAMP5EN_Msk);
     u32Reg &= ~(TAMPER_TIOCTL_DYN1ISS_Msk | TAMPER_TIOCTL_DYN2ISS_Msk);
     u32Reg |= ((u32Pair1Source & 0x1UL) << TAMPER_TIOCTL_DYN1ISS_Pos) | ((u32Pair2Source & 0x1UL) << TAMPER_TIOCTL_DYN2ISS_Pos);
 

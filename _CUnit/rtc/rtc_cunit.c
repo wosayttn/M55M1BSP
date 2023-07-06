@@ -1307,16 +1307,108 @@ void API_RTC_ClockSource_Func(void)
     CU_ASSERT_EQUAL(pRTC->LXTCTL & (BIT7 | BIT6), 0);
     RTC_SetClockSource(RTC_CLOCK_SOURCE_LIRC);
     CU_ASSERT_EQUAL(pRTC->LXTCTL & BIT7, BIT7);
+#ifndef _PZ1_EMU_
     RTC_SetClockSource(RTC_CLOCK_SOURCE_LIRC32K);
     CU_ASSERT_EQUAL(pRTC->LXTCTL & (BIT7 | BIT6 | BIT0), (BIT6 | BIT0));
+#endif
     RTC_SetClockSource(RTC_CLOCK_SOURCE_LXT);
     CU_ASSERT_EQUAL(pRTC->LXTCTL & (BIT7 | BIT6), 0);
     RTC_SetClockSource(RTC_CLOCK_SOURCE_LIRC);
     CU_ASSERT_EQUAL(pRTC->LXTCTL & BIT7, BIT7);
+#ifndef _PZ1_EMU_
     RTC_SetClockSource(RTC_CLOCK_SOURCE_LIRC32K);
     CU_ASSERT_EQUAL(pRTC->LXTCTL & (BIT7 | BIT6 | BIT0), (BIT6 | BIT0));
+#endif
     RTC_SetClockSource(RTC_CLOCK_SOURCE_LXT);
     CU_ASSERT_EQUAL(pRTC->LXTCTL & (BIT7 | BIT6), 0);
+
+    RTC_Close();
+}
+
+void API_RTC_ClockDetector_Func(void)
+{
+    volatile uint32_t u32Timeout;
+    RTC_T *pRTC;
+
+    pRTC = RTC;
+
+    /* Init RTC clock */
+    CU_ASSERT_EQUAL(RTC_InitClock(), 0);
+
+    u32Timeout = SystemCoreClock / 10;
+    pRTC->INIT = RTC_INIT_KEY;
+
+    while (pRTC->INIT != RTC_INIT_ACTIVE_Msk)
+    {
+        if (u32Timeout-- == 0)
+        {
+            CU_FAIL("INIT FAIL");
+            return ;
+        }
+    }
+
+    RTC_SetClockSource(RTC_CLOCK_SOURCE_LXT);
+    printf("\n\nChange LXT Frequency to 0 after, press any key....\r\n");
+    getchar();
+
+    RTC_EnableClockFrequencyDetector(125, 125);
+    printf("CLKDCTL:%x,%x,%x\r\n", pRTC->CLKDCTL, (125 << (RTC_CDBR_FAILBD_Pos)), (125 << (RTC_CDBR_STOPBD_Pos)));
+    CU_ASSERT_EQUAL((pRTC->CDBR & RTC_CDBR_FAILBD_Msk), (125 << (RTC_CDBR_FAILBD_Pos)));
+    CU_ASSERT_EQUAL((pRTC->CDBR & RTC_CDBR_STOPBD_Msk), (125 << (RTC_CDBR_STOPBD_Pos)));
+    CU_ASSERT_EQUAL((pRTC->CLKDCTL & RTC_CLKDCTL_LXTFDEN_Msk), RTC_CLKDCTL_LXTFDEN_Msk);
+    CU_ASSERT_EQUAL((pRTC->CLKDCTL & RTC_CLKDCTL_LXTSTSW_Msk), RTC_CLKDCTL_LXTSTSW_Msk);
+    CU_ASSERT_EQUAL((pRTC->CLKDCTL & RTC_CLKDCTL_LXTFSW_Msk), RTC_CLKDCTL_LXTFSW_Msk);
+    CU_ASSERT_EQUAL((pRTC->LXTCTL & BIT0), BIT0);
+
+    /* Check Fail / Stop intsts*/
+    u32Timeout = SystemCoreClock / 10;
+
+    while (1)
+    {
+        if (RTC_GET_CLKFAIL_INT_FLAG(pRTC) == 1)
+        {
+            CU_ASSERT_EQUAL((pRTC->CLKDCTL & RTC_CLKDCTL_SWLIRCF_Msk), RTC_CLKDCTL_SWLIRCF_Msk);
+            CU_ASSERT_EQUAL((pRTC->CLKDCTL & RTC_CLKDCTL_LXTSLOWF_Msk), RTC_CLKDCTL_LXTSLOWF_Msk);
+
+            RTC_CLEAR_CLKFAIL_INT_FLAG(pRTC);
+            break;
+        }
+
+        if (u32Timeout-- == 0)
+        {
+            CU_FAIL("RTC_GET_CLKFAIL_INT_FLAG FAIL");
+            return ;
+        }
+    }
+
+    CU_ASSERT_EQUAL(RTC_GET_CLKFAIL_INT_FLAG(pRTC), 0);
+
+    u32Timeout = SystemCoreClock / 10;
+
+    while (1)
+    {
+        if (RTC_GET_CLKSTOP_INT_FLAG(pRTC) == 1)
+        {
+            RTC_CLEAR_CLKSTOP_INT_FLAG(pRTC);
+            break;
+        }
+
+        if (u32Timeout-- == 0)
+        {
+            CU_FAIL("RTC_CLEAR_CLKSTOP_INT_FLAG FAIL");
+            return ;
+        }
+    }
+
+    CU_ASSERT_EQUAL(RTC_GET_CLKSTOP_INT_FLAG(pRTC), 0);
+
+    RTC_DisableClockFrequencyDetector();
+    CU_ASSERT_EQUAL((pRTC->CDBR & RTC_CDBR_FAILBD_Msk), (0xF0 << (RTC_CDBR_FAILBD_Pos)));
+    CU_ASSERT_EQUAL((pRTC->CDBR & RTC_CDBR_STOPBD_Msk), (0xF0 << (RTC_CDBR_STOPBD_Pos)));
+    CU_ASSERT_EQUAL((pRTC->CLKDCTL & RTC_CLKDCTL_LXTFDEN_Msk), 0);
+    CU_ASSERT_EQUAL((pRTC->CLKDCTL & RTC_CLKDCTL_LXTSTSW_Msk), 0);
+    CU_ASSERT_EQUAL((pRTC->CLKDCTL & RTC_CLKDCTL_LXTFSW_Msk), 0);
+    CU_ASSERT_EQUAL((pRTC->LXTCTL & BIT0), 0);
 
     RTC_Close();
 }
@@ -1333,5 +1425,6 @@ CU_TestInfo RTC_API[] =
     {"Check RTC Data, Time APIs ",      API_RTC_DataTime_Func},
     {"Check RTC IO Control APIs ",      API_RTC_IO_Control_Func},
     {"Check RTC Clock Source API ",     API_RTC_ClockSource_Func},
+    {"Check RTC Clock Detector API",    API_RTC_ClockDetector_Func},
     CU_TEST_INFO_NULL
 };

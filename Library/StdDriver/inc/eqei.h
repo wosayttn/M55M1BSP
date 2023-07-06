@@ -366,6 +366,81 @@ extern "C"
   */
 #define EQEI_SET_CNT_MODE(eqei, u32Mode)       ((eqei)->CTL = ((eqei)->CTL & (~EQEI_CTL_MODE_Msk)) | (u32Mode))
 
+/**
+  * @brief      Set EQEI Uint Timer Compared Value
+  *
+  * @param[in]  eqei       The pointer of the specified Eqei module. It could be EQEI0, EQEI1, EQEI2, EQEI3.
+  * @param[in]  u32Value    Timer compare value. Valid values are between 0 to 0xFFFFFFFF.
+  *
+  * @return     None
+  *
+  * @details    This macro is used to set eqei uint timer compared value to adjust eqei uint timer time-out interval.
+  *
+  * \hideinitializer
+  */
+#define EQEI_SET_UINT_TIMER_CMP_VALUE(eqei, u32Value)        ((eqei)->UTCMP = (u32Value))
+
+__STATIC_INLINE void EQEI_StartUintTimer(EQEI_T *eqei);
+__STATIC_INLINE void EQEI_StopUintTimer(EQEI_T *eqei);
+__STATIC_INLINE void EQEI_EnableUintTimerINT(EQEI_T *eqei);
+__STATIC_INLINE void EQEI_DisableUintTimerINT(EQEI_T *eqei);
+
+/**
+  * @brief      Start EQEI Uint TImer Function
+  *
+  * @param[in]  eqei       The pointer of the specified Eqei module. It could be EQEI0, EQEI1, EQEI2, EQEI3.
+  *
+  * @return     None
+  *
+  * @details    This function is used to start EQEI Uint Timer function.
+  */
+__STATIC_INLINE void EQEI_StartUintTimer(EQEI_T *eqei)
+{
+    eqei->CTL2 |= EQEI_CTL2_UTEN_Msk;
+}
+
+/**
+  * @brief      Stop EQEI Uint Timer Function
+  *
+  * @param[in]  eqei       The pointer of the specified EQEI module. It could be EQEI0, EQEI1, EQEI2, EQEI3.
+  *
+  * @return     None
+  *
+  * @details    This function is used to stop EQEI Uint Timer function.
+  */
+__STATIC_INLINE void EQEI_StopUintTimer(EQEI_T *eqei)
+{
+    eqei->CTL2 &= ~EQEI_CTL2_UTEN_Msk;
+}
+
+/**
+  * @brief      Enable Uint timer interrupt
+  *
+  * @param[in]  eqei       The pointer of the specified EQEI module. It could be EQEI0, EQEI1, EQEI2, EQEI3.
+  *
+  * @return     None
+  *
+  * @details    This function is used to enable the uint timer interrupt.
+  */
+__STATIC_INLINE void EQEI_EnableUintTimerINT(EQEI_T *eqei)
+{
+    eqei->CTL2 |= EQEI_CTL2_UTIEIEN_Msk;
+}
+
+/**
+  * @brief      Enable Uint timer interrupt
+  *
+  * @param[in]  eqei       The pointer of the specified EQEI module. It could be EQEI0, EQEI1, EQEI2, EQEI3.
+  *
+  * @return     None
+  *
+  * @details    This function is used to enable the uint timer interrupt.
+  */
+__STATIC_INLINE void EQEI_DisableUintTimerINT(EQEI_T *eqei)
+{
+    eqei->CTL2 &= ~EQEI_CTL2_UTIEIEN_Msk;
+}
+
 void EQEI_Close(EQEI_T *eqei);
 void EQEI_DisableInt(EQEI_T *eqei, uint32_t u32IntSel);
 void EQEI_EnableInt(EQEI_T *eqei, uint32_t u32IntSel);

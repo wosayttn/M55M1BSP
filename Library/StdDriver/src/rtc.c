@@ -930,8 +930,6 @@ void RTC_DynamicTamperEnable(uint32_t u32PairSel, uint32_t u32DebounceEn, uint32
     u32Tamper2Debounce = u32Reg & RTC_TAMPCTL_TAMP2DEN_Msk;
     u32Tamper4Debounce = u32Reg & RTC_TAMPCTL_TAMP4DEN_Msk;
 
-    u32Reg &= ~(RTC_TAMPCTL_TAMP0EN_Msk | RTC_TAMPCTL_TAMP1EN_Msk | RTC_TAMPCTL_TAMP2EN_Msk |
-                RTC_TAMPCTL_TAMP3EN_Msk | RTC_TAMPCTL_TAMP4EN_Msk | RTC_TAMPCTL_TAMP5EN_Msk);
     u32Reg &= ~(RTC_TAMPCTL_DYN1ISS_Msk | RTC_TAMPCTL_DYN2ISS_Msk);
     u32Reg |= ((u32Pair1Source & 0x1ul) << RTC_TAMPCTL_DYN1ISS_Pos) | ((u32Pair2Source & 0x1ul) << RTC_TAMPCTL_DYN2ISS_Pos);
 
@@ -1077,8 +1075,6 @@ void RTC_DynamicTamperConfig(uint32_t u32ChangeRate, uint32_t u32SeedReload, uin
   */
 uint32_t RTC_SetClockSource(uint32_t u32ClkSrc)
 {
-    uint32_t u32TrimDefault = inpw(SYS + 0xF94ul); // need modify.
-
     if (u32ClkSrc == RTC_CLOCK_SOURCE_LXT)
     {
         /* RTC clock source is external LXT */
@@ -1089,6 +1085,8 @@ uint32_t RTC_SetClockSource(uint32_t u32ClkSrc)
     }
     else if (u32ClkSrc == RTC_CLOCK_SOURCE_LIRC32K)
     {
+        uint32_t u32TrimDefault = inpw(SYS + 0xF94ul); // need modify.
+
         /* Load LIRC32 trim setting */
         RTC->TEST = ((RTC->TEST & ~(0x1FFul << 8)) | ((u32TrimDefault & 0x1FFul) << 8));
 
@@ -1198,6 +1196,62 @@ void RTC_SetGPIOLevel(uint32_t u32PFPin, uint32_t u32OutputLevel)
                         (u32OutputLevel << ((u32Offset * 8) + 2));
     }
 }
+
+/**
+ * @brief Enable clock frequency fail detector function. 
+ * 
+ * @param[in] u32FailBoundary       LXT Clock Frequency Detector Fail Boundary, valid values are between 0x1 ~ 0xFF. 
+ * @param[in] u32StopBoundary       LXT Clock Stop Frequency Detector Stop Boundary, valid values are between 0x1 ~ 0xFF.
+ * 
+ * @details This API is used to enable the clock frequency detector.
+ */
+void RTC_EnableClockFrequencyDetector(uint32_t u32FailBoundary, uint32_t u32StopBoundary)
+{
+    /* limit u32FailBoundary to 255, because FAILBD[23:16] register max vlaue is 0xFF*/
+    if (u32FailBoundary > 255)
+    {
+        u32FailBoundary = 255;
+    }
+    
+    /* limit u32StopBoundary to 255, because STOPBD[7:0] register max vlaue is 0xFF*/
+    if (u32StopBoundary > 255)
+    {
+        u32StopBoundary = 255;
+    }    
+      
+    /* Set the LXT clock frequency monitor fail/stop boundary value.*/
+    RTC->CDBR = ((u32FailBoundary) << RTC_CDBR_FAILBD_Pos) | ((u32StopBoundary) << RTC_CDBR_STOPBD_Pos);
+
+    /* Set clock fail/stop detector function enabled */
+    RTC->CLKDCTL = RTC_CLKDCTL_LXTFDEN_Msk;
+
+    /* Set clock fail/stop detector switch LIRC32K enabled */
+    RTC->CLKDCTL |= RTC_CLKDCTL_LXTFSW_Msk | RTC_CLKDCTL_LXTSTSW_Msk;
+
+    /* Enable LIRC32K source */
+    RTC->LXTCTL |= RTC_LXTCTL_LIRC32KEN_Msk;
+}
+
+/**
+ * @brief Disable clock frequency fail detector function.
+ * 
+ * @details This API is used to disable the clock frequency detector.
+ */
+void RTC_DisableClockFrequencyDetector(void)
+{
+    /* clear clock fail/stop detector function enabled */
+    RTC->CLKDCTL &= ~(RTC_CLKDCTL_LXTFDEN_Msk);
+
+    /* clear clock fail/stop detector switch LIRC32K enabled */
+    RTC->CLKDCTL &= ~(RTC_CLKDCTL_LXTFSW_Msk | RTC_CLKDCTL_LXTSTSW_Msk);
+
+    /* Set the LXT clock frequency monitor fail/stop boundary to default value.*/
+    RTC->CDBR = ((0xF0) << RTC_CDBR_FAILBD_Pos) | ((0XF0) << RTC_CDBR_STOPBD_Pos);
+
+    /* disable LIRC32K source */
+    RTC->LXTCTL &= ~(RTC_LXTCTL_LIRC32KEN_Msk);
+}
+
 
 /** @} end of group RTC_EXPORTED_FUNCTIONS */
 /** @} end of group RTC_Driver */

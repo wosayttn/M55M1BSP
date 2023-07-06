@@ -139,7 +139,20 @@ uint32_t I2S_Open(I2S_T *i2s, uint32_t u32MasterSlave, uint32_t u32SampleRate, u
     uint16_t u16Divider;
     uint32_t u32BitRate, u32SrcClk;
 
-    I2S_Reset(i2s);
+    /* Unlock protected registers for ISP function */
+    SYS_UnlockReg();
+
+    if (i2s == I2S0)
+    {
+        SYS_ResetModule(SYS_I2S0RST);
+    }
+    else if (i2s == I2S1)
+    {
+        SYS_ResetModule(SYS_I2S1RST);
+    }
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     i2s->CTL0 = (u32MasterSlave | u32WordWidth | u32MonoData | u32DataFormat);
     i2s->CTL1 = (I2S_FIFO_TX_LEVEL_WORD_8 | I2S_FIFO_RX_LEVEL_WORD_8);
@@ -283,24 +296,6 @@ void I2S_ConfigureTDM(I2S_T *i2s, uint32_t u32ChannelWidth, uint32_t u32ChannelN
                 (u32ChannelWidth << I2S_CTL0_CHWIDTH_Pos) |
                 (u32ChannelNum << I2S_CTL0_TDMCHNUM_Pos) |
                 (u32SyncWidth << I2S_CTL0_PCMSYNC_Pos);
-}
-
-void I2S_Reset(I2S_T *i2s)
-{
-    /* Unlock protected registers for ISP function */
-    SYS_UnlockReg();
-
-    if (i2s == I2S0)
-    {
-        SYS_ResetModule(SYS_I2S0RST);
-    }
-    else if (i2s == I2S1)
-    {
-        SYS_ResetModule(SYS_I2S1RST);
-    }
-
-    /* Lock protected registers */
-    SYS_LockReg();
 }
 
 /** @} end of group I2S_EXPORTED_FUNCTIONS */

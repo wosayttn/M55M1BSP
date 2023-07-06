@@ -119,27 +119,28 @@ int32_t main(void)
     /* Init UART0 for printf */
     UART0_Init();
 
-    printf("\n\nCPU @ %uHz\n", SystemCoreClock);
-
+    printf("CPU @ %uHz\n", SystemCoreClock);
+    printf("PLCK0 @ %uHz\n", CLK_GetPCLK0Freq());
+    printf("PLCK2 @ %uHz\n\n", CLK_GetPCLK2Freq());
     printf("+-----------------------------------------+\n");
     printf("|     EQEI Unit Timer Sample Code         |\n");
     printf("+-----------------------------------------+\n\n");
-    printf("# Unit Timer0 Settings:\n");
+    printf("# EQEI0 Unit Timer Settings:\n");
     printf("    - Clock source is PCLK0       \n");
     printf("    - Compare Value frequency is 1 Hz\n");
     printf("    - Interrupt enable          \n");
-    printf("# Unit Timer1 Settings:\n");
+    printf("# EQEI1 Unit Timer Settings:\n");
     printf("    - Clock source is PCLK2      \n");
     printf("    - Compare Value frequency is 2 Hz\n");
     printf("    - Interrupt enable          \n");
 
     /* Set Unit Timer compare value */
-    EQEI0->UTCMP = 36000000;
-    EQEI1->UTCMP = 36000000 / 2;
+    EQEI_SET_UINT_TIMER_CMP_VALUE(EQEI0, CLK_GetPCLK0Freq());
+    EQEI_SET_UINT_TIMER_CMP_VALUE(EQEI1, (CLK_GetPCLK2Freq() / 2));
 
     /* Enable EQEI interrupt */
-    EQEI0->CTL2 |= EQEI_CTL2_UTIEIEN_Msk;
-    EQEI1->CTL2 |= EQEI_CTL2_UTIEIEN_Msk;
+    EQEI_EnableUintTimerINT(EQEI0);
+    EQEI_EnableUintTimerINT(EQEI1);
     NVIC_EnableIRQ(EQEI0_IRQn);
     NVIC_EnableIRQ(EQEI1_IRQn);
 
@@ -149,8 +150,8 @@ int32_t main(void)
     u32InitCount = g_au32TMRINTCount[0];
 
     /* Start EQEI Unit TImer */
-    EQEI0->CTL2 |= EQEI_CTL2_UTEN_Msk;
-    EQEI1->CTL2 |= EQEI_CTL2_UTEN_Msk;
+    EQEI_StartUintTimer(EQEI0);
+    EQEI_StartUintTimer(EQEI1);
 
     /* Check EQEI Unit Timer0 ~ Timer1 interrupt counts */
     printf("# EQEI Unit Timer interrupt counts :\n");

@@ -78,12 +78,10 @@
 /*----------------------------------------------------------------------------------------*/
 /*   Debug settings                                                                       */
 /*----------------------------------------------------------------------------------------*/
-#ifndef __SIM__
-    #define ENABLE_ERROR_MSG                    /* enable debug messages                      */
-    #define ENABLE_DEBUG_MSG                    /* enable debug messages                      */
-#endif
+#define ENABLE_ERROR_MSG                    /* enable debug messages                      */
+#define ENABLE_DEBUG_MSG                    /* enable debug messages                      */
 //#define ENABLE_VERBOSE_DEBUG              /* verbos debug messages                      */
-//#define DUMP_DESCRIPTOR                     /* dump descriptors                           */
+//#define DUMP_DESCRIPTOR                   /* dump descriptors                           */
 
 #ifdef ENABLE_ERROR_MSG
     #define USB_error            printf

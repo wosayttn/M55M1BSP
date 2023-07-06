@@ -173,39 +173,6 @@ enum
 #define PMC_WKPIN5_BOTHEDGE   (0x3UL << PMC_PINWKCTL_WKPINEN5_Pos)    /*!< Enable Wake-up pin4 (GPA.12) both edge at Deep Power-down mode \hideinitializer */
 
 /**
- * @brief       Set Standby Timer Wake-up Time-out Interval
- * @param[in]   u32Interval   The Time-out Interval selection. It could be
- *                             - \ref PMC_STMRWKCTL_STMRIS_512
- *                             - \ref PMC_STMRWKCTL_STMRIS_1024
- *                             - \ref PMC_STMRWKCTL_STMRIS_2048
- *                             - \ref PMC_STMRWKCTL_STMRIS_4096
- *                             - \ref PMC_STMRWKCTL_STMRIS_8192
- *                             - \ref PMC_STMRWKCTL_STMRIS_16384
- *                             - \ref PMC_STMRWKCTL_STMRIS_32768
- *                             - \ref PMC_STMRWKCTL_STMRIS_65536
- *                             - \ref PMC_STMRWKCTL_STMRIS_131072
- *                             - \ref PMC_STMRWKCTL_STMRIS_262144
- *                             - \ref PMC_STMRWKCTL_STMRIS_524288
- *                             - \ref PMC_STMRWKCTL_STMRIS_1048576
- *                             - \ref PMC_STMRWKCTL_STMRIS_2097152
- *                             - \ref PMC_STMRWKCTL_STMRIS_4194304
- * @details     This function set standby Timer Wake-up Time-out Interval.
- */
-#define PMC_SET_STMRWK_INTERVAL(u32Interval)   (PMC->STMRWKCTL = ((PMC->STMRWKCTL & ~PMC_STMRWKCTL_STMRIS_Msk) | u32Interval))
-
-/**
-  * @brief      Disable Wake-up Timer
-  * @details    This macro disables Wake-up timer at Standby or Deep Power-down mode.
-  */
-#define PMC_DISABLE_STMR()       (PMC->STMRWKCTL &= ~PMC_STMRWKCTL_STMREN_Msk)
-
-/**
-  * @brief      Enable Wake-up Timer
-  * @details    This macro enables Wake-up timer at Standby or Deep Power-down mode.
-  */
-#define PMC_ENABLE_STMR()        (PMC->STMRWKCTL |= PMC_STMRWKCTL_STMREN_Msk)
-
-/**
   * @brief      Disable Wake-up Pin 0
   * @details    This macro disables Wake-up pin 0 (GPC.0) at Power-down mode.
   */
@@ -265,6 +232,24 @@ enum
   */
 #define PMC_DISABLE_TGPIN_GPD()   (PMC->GPDTGCTL &= ~(PMC_GPDTGCTL_TGPFEN_Msk | PMC_GPDTGCTL_TGPREN_Msk))
 
+/**
+  * @brief      Release GPIO Hold Status
+  * @details    This macro releases GPIO hold status from power-down wake-up
+  */
+#define PMC_RELEASE_GPIO()    (PMC->IOSHCTL |= PMC_IOSHCTL_IOHR_Msk)
+
+/**
+  * @brief      Enable PMC Interrupt
+  * @details    This macro enables PMC interrtup
+  */
+#define PMC_ENABLE_INT()    (PMC->INTEN |= PMC_INTEN_PDWKIEN_Msk)
+
+/**
+  * @brief      Disable PMC Interrupt
+  * @details    This macro disables PMC interrtup
+  */
+#define PMC_DISABLE_INT()    (PMC->INTEN &= ~PMC_INTEN_PDWKIEN_Msk)
+
 int32_t PMC_SetPowerLevel(uint32_t u32PowerLevel);
 int32_t PMC_SetPowerRegulator(uint32_t u32PowerRegulator);
 int32_t PMC_SetSRAMPowerMode(uint32_t u32SRAMSel, uint32_t u32PowerMode);
@@ -274,6 +259,8 @@ int32_t PMC_SetPowerDownMode(uint32_t u32PDMode, uint32_t u32PowerLevel);
 void PMC_EnableWKPIN(uint32_t u32TriggerType);
 uint32_t PMC_GetPMCWKSrc(void);
 void PMC_EnableTGPin(uint32_t u32Port, uint32_t u32Pin, uint32_t u32TriggerType, uint32_t u32DebounceEn, uint32_t u32WakeupEn);
+int32_t PMC_EnableSTMR(uint32_t u32Interval);
+int32_t PMC_DisableSTMR(void);
 int32_t PMC_Wait_BusyFlag(uint32_t PMCBusyFlagAddr);
 
 /** @} end of group PMC_EXPORTED_FUNCTIONS */

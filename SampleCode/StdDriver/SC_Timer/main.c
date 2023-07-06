@@ -25,10 +25,10 @@ void SC0_IRQHandler(void)
 {
     static uint32_t u32Sec = 1;
 
-    if (SC0->INTSTS & SC_INTSTS_TMR0IF_Msk)
+    if (SC_INTSTS_TMR0IF_Msk == SC_GET_INTSTS(SC0, SC_INTSTS_TMR0IF_Msk))
     {
         /* Clear interrupt flag */
-        SC0->INTSTS = SC_INTSTS_TMR0IF_Msk;
+        SC_CLEAR_INTSTS(SC0, SC_INTSTS_TMR0IF_Msk);
         printf("%u sec\n", u32Sec++);
     }
 }
@@ -117,7 +117,7 @@ int main(void)
     NVIC_EnableIRQ(SC0_IRQn);
 
     /* Real ETU divider value is "11+1=12", and the duration of each ETU is 12/SC_CLK */
-    SC0->ETUCTL = 11;
+    SC_SET_ETUDIV(SC0, 11);
 
     /* Each 1,000,000 ETU will generate TIMER0 timeout event */
     SC_StartTimer(SC0, 0, SC_TMR_MODE_4, 1000000);  // timer counter will be reloaded.

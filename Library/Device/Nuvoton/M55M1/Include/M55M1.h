@@ -308,11 +308,11 @@ typedef enum IRQn
 
 
 #include "core_cm55.h"                        /* Processor and core peripheral */
-#include "system_M55M1.h"                    /* System Header */
+#include "system_M55M1.h"                     /* System header */
 #if __has_include("partition_M55M1.h")
-#include "partition_M55M1.h"
+#include "partition_M55M1.h"                  /* User defined setup for Secure/Non-Secure Zones */
 #else
-#include "partition_M55M1_template.h"
+#include "partition_M55M1_template.h"         /* Default setup for Secure/Non-Secure Zones */
 #endif
 
 /******************************************************************************/

@@ -505,7 +505,7 @@ extern "C"
   *
   * @details    This macro gets the Transmit Transaction ID from the response data for the transmit command.
   */
-#define I3C_GET_RESP_TID(resp)              (((resp)&I3C_RESPQUE_MASTER_TID_Msk) >> I3C_RESPQUE_TID_Pos)
+#define I3C_GET_RESP_TID(resp)              (((resp)&I3C_RESPQUE_TID_Msk) >> I3C_RESPQUE_TID_Pos)
 
 /**
   * @brief      Get HDR Command Code

@@ -1335,13 +1335,13 @@ void API_QSPI_GetStatus()
 
     QSPIModule->CLKDIV = 0;
     /* Check SPIEN flag */
-    CU_ASSERT(QSPI_GetStatus(QSPIModule, QSPI_QSPIEN_STS_MASK) == 0);
+    CU_ASSERT(QSPI_GetStatus(QSPIModule, QSPI_SPIEN_STS_MASK) == 0);
     /* Slave mode, SPI mode 0. */
     QSPIModule->CTL = 0x00040005;
     /* Check busy flag */
     CU_ASSERT(QSPI_GetStatus(QSPIModule, QSPI_BUSY_MASK) == 0);
     /* Check SPIEN flag */
-    CU_ASSERT(QSPI_GetStatus(QSPIModule, QSPI_QSPIEN_STS_MASK) == QSPI_QSPIEN_STS_MASK);
+    CU_ASSERT(QSPI_GetStatus(QSPIModule, QSPI_SPIEN_STS_MASK) == QSPI_SPIEN_STS_MASK);
 
     /* SPI TX empty flag test */
     /* Check TX empty flag */
@@ -1480,44 +1480,44 @@ void API_QSPI_GetStatus()
 
 CU_TestInfo QSPI_MacroTests[] =
 {
-    {"Clear SPI unit transfer interrupt flag", MACRO_QSPI_CLR_UNIT_TRANS_INT_FLAG},
-    {"Enable/Disable SPI 2-Bit transfer mode", MACRO_QSPI_ENABLE_DISABLE_2BIT_MODE},
-    {"Enable/Disable SPI Slave 3-Wire mode", MACRO_QSPI_ENABLE_DISABLE_3WIRE_MODE},
-    {"Disable SPI Dual I/O mode", MACRO_QSPI_DISABLE_DUAL_MODE},
-    {"Disable SPI Quad I/O mode", MACRO_QSPI_DISABLE_QUAD_MODE},
-    {"Enable SPI Dual input mode", MACRO_QSPI_ENABLE_DUAL_INPUT_MODE},
-    {"Enable SPI Dual output mode", MACRO_QSPI_ENABLE_DUAL_OUTPUT_MODE},
-    {"Enable SPI Quad input mode", MACRO_QSPI_ENABLE_QUAD_INPUT_MODE},
-    {"Enable SPI Quad output mode", MACRO_QSPI_ENABLE_QUAD_OUTPUT_MODE},
-    {"Trigger/Disable SPI RX DMA transfer", MACRO_QSPI_TRIGGER_DISABLE_RX_PDMA},
-    {"Trigger/Disable SPI TX DMA transfer", MACRO_QSPI_TRIGGER_DISABLE_TX_PDMA},
-    {"Get SPI RX FIFO count and empty flag", MACRO_QSPI_GET_RX_FIFO_COUNT_EMPTY_FLAG},
-    {"Get SPI TX FIFO empty and full flag", MACRO_QSPI_GET_TX_FIFO_EMPTY_FULL_FLAG},
-    {"Read SPI RX", MACRO_QSPI_READ_RX},
-    {"Write SPI TX", MACRO_QSPI_WRITE_TX},
-    {"Set SPI SS pin to high state", MACRO_QSPI_SET_SS_HIGH},
-    {"Set SPI SS pin to low state", MACRO_QSPI_SET_SS_LOW},
-    {"Enable/Disable SPI Byte Reorder function", MACRO_QSPI_ENABLE_DISABLE_BYTE_REORDER},
-    {"Set SPI suspend cycle", MACRO_QSPI_SET_SUSPEND_CYCLE},
-    {"Set SPI transfer sequence with LSB/MSB first", MACRO_QSPI_SET_LSB_MSB_FIRST},
-    {"Set SPI data width", MACRO_QSPI_SET_DATA_WIDTH},
-    {"Get SPI busy flag", MACRO_QSPI_IS_BUSY},
-    {"Enable/Disable SPI", MACRO_QSPI_ENABLE_DISABLE},
+    {"Clear QSPI unit transfer interrupt flag", MACRO_QSPI_CLR_UNIT_TRANS_INT_FLAG},
+    {"Enable/Disable QSPI 2-Bit transfer mode", MACRO_QSPI_ENABLE_DISABLE_2BIT_MODE},
+    {"Enable/Disable QSPI Slave 3-Wire mode", MACRO_QSPI_ENABLE_DISABLE_3WIRE_MODE},
+    {"Disable QSPI Dual I/O mode", MACRO_QSPI_DISABLE_DUAL_MODE},
+    {"Disable QSPI Quad I/O mode", MACRO_QSPI_DISABLE_QUAD_MODE},
+    {"Enable QSPI Dual input mode", MACRO_QSPI_ENABLE_DUAL_INPUT_MODE},
+    {"Enable QSPI Dual output mode", MACRO_QSPI_ENABLE_DUAL_OUTPUT_MODE},
+    {"Enable QSPI Quad input mode", MACRO_QSPI_ENABLE_QUAD_INPUT_MODE},
+    {"Enable QSPI Quad output mode", MACRO_QSPI_ENABLE_QUAD_OUTPUT_MODE},
+    {"Trigger/Disable QSPI RX DMA transfer", MACRO_QSPI_TRIGGER_DISABLE_RX_PDMA},
+    {"Trigger/Disable QSPI TX DMA transfer", MACRO_QSPI_TRIGGER_DISABLE_TX_PDMA},
+    {"Get QSPI RX FIFO count and empty flag", MACRO_QSPI_GET_RX_FIFO_COUNT_EMPTY_FLAG},
+    {"Get QSPI TX FIFO empty and full flag", MACRO_QSPI_GET_TX_FIFO_EMPTY_FULL_FLAG},
+    {"Read QSPI RX", MACRO_QSPI_READ_RX},
+    {"Write QSPI TX", MACRO_QSPI_WRITE_TX},
+    {"Set QSPI SS pin to high state", MACRO_QSPI_SET_SS_HIGH},
+    {"Set QSPI SS pin to low state", MACRO_QSPI_SET_SS_LOW},
+    {"Enable/Disable QSPI Byte Reorder function", MACRO_QSPI_ENABLE_DISABLE_BYTE_REORDER},
+    {"Set QSPI suspend cycle", MACRO_QSPI_SET_SUSPEND_CYCLE},
+    {"Set QSPI transfer sequence with LSB/MSB first", MACRO_QSPI_SET_LSB_MSB_FIRST},
+    {"Set QSPI data width", MACRO_QSPI_SET_DATA_WIDTH},
+    {"Get QSPI busy flag", MACRO_QSPI_IS_BUSY},
+    {"Enable/Disable QSPI", MACRO_QSPI_ENABLE_DISABLE},
     CU_TEST_INFO_NULL
 };
 
 CU_TestInfo QSPI_ApiTests[] =
 {
-    {"SPI Open", API_QSPI_Open},
-    {"SPI Close", API_QSPI_Close},
-    {"Clear SPI RX FIFO", API_QSPI_ClearRxFIFO},
-    {"Clear SPI TX FIFO", API_QSPI_ClearTxFIFO},
-    {"Enable/Disable SPI automatic slave selection function", API_QSPI_EnableAutoSS_DisableAutoSS},
-    {"Set/Get SPI bus clock rate", API_QSPI_SetBusClock_GetBusClock},
-    {"Set SPI FIFO threshold", API_QSPI_SetFIFO},
-    {"Enable/Disable SPI interrupt function", API_QSPI_EnableInt_DisableInt},
-    {"Get/Clear SPI interrupt flag", API_QSPI_GetIntFlag_ClearIntFlag},
-    {"Get SPI status", API_QSPI_GetStatus},
+    {"QSPI Open", API_QSPI_Open},
+    {"QSPI Close", API_QSPI_Close},
+    {"Clear QSPI RX FIFO", API_QSPI_ClearRxFIFO},
+    {"Clear QSPI TX FIFO", API_QSPI_ClearTxFIFO},
+    {"Enable/Disable QSPI automatic slave selection function", API_QSPI_EnableAutoSS_DisableAutoSS},
+    {"Set/Get QSPI bus clock rate", API_QSPI_SetBusClock_GetBusClock},
+    {"Set QSPI FIFO threshold", API_QSPI_SetFIFO},
+    {"Enable/Disable QSPI interrupt function", API_QSPI_EnableInt_DisableInt},
+    {"Get/Clear QSPI interrupt flag", API_QSPI_GetIntFlag_ClearIntFlag},
+    {"Get QSPI status", API_QSPI_GetStatus},
 
     CU_TEST_INFO_NULL
 };

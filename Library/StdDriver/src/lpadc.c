@@ -110,7 +110,7 @@ void LPADC_Open(LPADC_T *lpadc, uint32_t u32InputMode, uint32_t u32OpMode, uint3
 void LPADC_Close(LPADC_T *lpadc)
 {
 
-    /*Enable the LPADC Power on*/
+    /*Disable the LPADC Power on*/
     lpadc->ADCR &= ~LPADC_ADCR_ADEN_Msk;
 
     /* Unlock protected registers */

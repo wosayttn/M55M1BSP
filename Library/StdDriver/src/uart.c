@@ -27,6 +27,7 @@
  *
  *    @param[in]    uart                The pointer of the specified UART module.
  *    @param[in]    u32InterruptFlag    The specified interrupt of UART module.
+ *                                      - \ref UART_INTSTS_SWBEINT_Msk   : Single-wire Bit Error Detect Interrupt 
  *                                      - \ref UART_INTSTS_LININT_Msk    : LIN bus interrupt
  *                                      - \ref UART_INTSTS_WKIF_Msk      : Wake-up interrupt
  *                                      - \ref UART_INTSTS_BUFERRINT_Msk : Buffer Error interrupt
@@ -41,6 +42,11 @@
 void UART_ClearIntFlag(UART_T *uart, uint32_t u32InterruptFlag)
 {
 
+	if (u32InterruptFlag & UART_INTSTS_SWBEINT_Msk)   /* Clear Bit Error Detection Interrupt */
+    {
+        uart->FIFOSTS = UART_INTSTS_SWBEIF_Msk;
+    }
+
     if (u32InterruptFlag & UART_INTSTS_RLSINT_Msk)  /* Clear Receive Line Status Interrupt */
     {
         uart->FIFOSTS |= (UART_FIFOSTS_BIF_Msk | UART_FIFOSTS_FEF_Msk | UART_FIFOSTS_PEF_Msk);
@@ -50,9 +56,6 @@ void UART_ClearIntFlag(UART_T *uart, uint32_t u32InterruptFlag)
     if (u32InterruptFlag & UART_INTSTS_MODEMINT_Msk)  /* Clear Modem Status Interrupt */
     {
         uart->MODEMSTS |= UART_MODEMSTS_CTSDETF_Msk;
-    }
-    else
-    {
     }
 
     if (u32InterruptFlag & UART_INTSTS_BUFERRINT_Msk)  /* Clear Buffer Error Interrupt */
@@ -112,6 +115,7 @@ void UART_DisableFlowCtrl(UART_T *uart)
  *
  *    @param[in]    uart                The pointer of the specified UART module.
  *    @param[in]    u32InterruptFlag    The specified interrupt of UART module.
+ *                                      - \ref UART_INTSTS_SWBEINT_Msk   : Single-wire Bit Error Detect Interrupt
  *                                      - \ref UART_INTEN_WKIEN_Msk      : Wake-up interrupt
  *                                      - \ref UART_INTEN_LINIEN_Msk     : Lin bus interrupt
  *                                      - \ref UART_INTEN_BUFERRIEN_Msk  : Buffer Error interrupt
@@ -159,6 +163,7 @@ void UART_EnableFlowCtrl(UART_T *uart)
  *
  *    @param[in]    uart                The pointer of the specified UART module.
  *    @param[in]    u32InterruptFlag    The specified interrupt of UART module:
+ *                                      - \ref UART_INTSTS_SWBEINT_Msk   : Single-wire Bit Error Detect Interrupt 
  *                                      - \ref UART_INTEN_WKIEN_Msk      : Wake-up interrupt
  *                                      - \ref UART_INTEN_LINIEN_Msk     : Lin bus interrupt
  *                                      - \ref UART_INTEN_BUFERRIEN_Msk  : Buffer Error interrupt
@@ -455,15 +460,12 @@ void UART_SetLineConfig(UART_T *uart, uint32_t u32baudrate, uint32_t u32data_wid
         u32UartClkDivNum = (CLK->UARTDIV1 & CLK_UARTDIV1_UART9DIV_Msk) >> CLK_UARTDIV1_UART9DIV_Pos;
     }
 
-    /* Get PLL clock frequency if UART clock source selection is PLL */
+    /* Get APLL0 clock frequency if UART clock source selection is APLL0 */
     if (u32UartClkSrcSel == 3ul)
     {
-        //FIXME waiting for DTS UART clock source
         u32ClkTbl[u32UartClkSrcSel] = CLK_GetAPLL0ClockFreq() / 2;
     }
-    else
-    {
-    }
+
 
     /* Set UART baud rate */
     if (u32baudrate != 0ul)
@@ -602,15 +604,12 @@ void UART_SelectIrDAMode(UART_T *uart, uint32_t u32Buadrate, uint32_t u32Directi
     }
 
 
-    /* Get PLL clock frequency if UART clock source selection is PLL */
+    /* Get APLL0 clock frequency if UART clock source selection is APLL0 */
     if (u32UartClkSrcSel == 3ul)
     {
-        //FIXME waiting for DTS UART clock source
         u32ClkTbl[u32UartClkSrcSel] = CLK_GetAPLL0ClockFreq() / 2;
     }
-    else
-    {
-    }
+
 
     /* Set UART IrDA baud rate in mode 0 */
     if (u32Buadrate != 0ul)
@@ -785,7 +784,7 @@ void UART_SetBaudRateFrationalDivider(UART_T *uart, uint32_t u32BRFD)
 void UART_DisableBaudRateFrationalDivider(UART_T *uart)
 {
     /* Disanble Baud Rate fractional divider fuction */
-    /*Clear the Baud Rate fractional divider value   */
+    /* Clear the Baud Rate fractional divider value   */
     uart->BAUD &= ~(UART_BAUD_BRFDEN_Msk | UART_BAUD_BRFD_Msk);
 
 }
