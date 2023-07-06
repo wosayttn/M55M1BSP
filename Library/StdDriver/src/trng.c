@@ -136,7 +136,7 @@ int32_t TRNG_GenBignum(uint8_t u8BigNum[], int32_t i32Len)
 
 /**
   * @brief   Generate a big number in hex format.
-  * @param[out]  cBigNumHex  The output hex format big number.
+  * @param[out]  cBigNumHex  Buffer of output hex format big number. Buffer size should be (i32Len/2)+1
   * @param[in]   i32Len      Request bit length of the output big number. It must be multiple of 8.
   *
   * @return  Success or time-out.
