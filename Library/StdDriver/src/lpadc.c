@@ -94,7 +94,11 @@ void LPADC_Open(LPADC_T *lpadc, uint32_t u32InputMode, uint32_t u32OpMode, uint3
 
     /* Read channel 0 ADDR to clear Valid flag of channel 0 that set by calibration. */
     u32Temp = LPADC0->ADDR[0];
-
+    /* Currently Sample Time basically needs 5 cycles */
+    /* Workaround solution for LPADC0->DEBUG(from M2L31) */
+    outp32((uint32_t)lpadc + 0xFF4, inp32(LPADC0_BASE + 0xFF4) | (BIT5|BIT4|BIT1));
+    outp32((uint32_t)lpadc + 0xFF0, inp32(LPADC0_BASE + 0xFF0) | (BIT8));
+    
     lpadc->ADCR = (lpadc->ADCR & (~(LPADC_ADCR_DIFFEN_Msk | LPADC_ADCR_ADMD_Msk))) | (u32InputMode) | (u32OpMode);
 
     lpadc->ADCHER = (lpadc->ADCHER & ~LPADC_ADCHER_CHEN_Msk) | (u32ChMask);
@@ -210,8 +214,7 @@ void LPADC_DisableInt(LPADC_T *lpadc, uint32_t u32Mask)
 /**
   * @brief Set LPADC extend sample time.
   * @param[in] lpadc The pointer of the specified LPADC module.
-  * @param[in] u32ModuleNum Decides the sample module number, valid value are 0.
-  * @param[in] u32ExtendSampleTime Decides the extend sampling time, the range is from 0~255 LPADC clock. Valid value are from 0 to 0xFF.
+  * @param[in] u32ExtendSampleTime Decides the extend sampling time, the range is from 0~16383 LPADC clock. Valid value are from 0 to 0xFF.
   * @return None
   * @details When A/D converting at high conversion rate, the sampling time of analog input voltage may not enough if input channel loading is heavy,
   *         user can extend A/D sampling time after trigger source is coming to get enough sampling time.

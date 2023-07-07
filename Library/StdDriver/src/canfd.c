@@ -392,7 +392,6 @@ static uint8_t CANFD_DecodeDLC(uint8_t u8Dlc)
  */
 static void CANFD_SetTimingConfig(CANFD_T *psCanfd, const CANFD_TIMEING_CONFIG_T *psConfig)
 {
-    uint32_t *pu32DBTP = NULL;
 
     /* configuration change enable */
     psCanfd->CCCR |= CANFD_CCCR_CCE_Msk;
@@ -639,7 +638,7 @@ void CANFD_Open(CANFD_T *psCanfd, CANFD_FD_T *psCanfdStr)
         }
         else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HCLK0)
         {
-            u32CanFdClock = CLK_GetSCLKFreq();
+            u32CanFdClock = CLK_GetHCLK0Freq();
         }
         else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HIRC)
         {
@@ -747,36 +746,6 @@ void CANFD_Close(CANFD_T *psCanfd)
         NVIC_DisableIRQ(CANFD11_IRQn);
     }
 }
-
-
-/**
- * @brief       Get the element's address when read transmit buffer.
- *
- * @param[in]   psCanfd      The pointer of the specified CAN FD module.
- * @param[in]   u32Idx       The number of the transmit buffer element
- *
- * @return      Address of the element in transmit buffer.
- *
- * @details     The function is used to get the element's address when read transmit buffer.
- */
-static uint32_t CANFD_GetTxBufferElementAddress(CANFD_T *psCanfd, uint32_t u32Idx)
-{
-    uint32_t u32Size = 0;
-
-    u32Size = ((psCanfd->TXESC & CANFD_TXESC_TBDS_Msk) >> CANFD_TXESC_TBDS_Pos);
-
-    if (u32Size < 5U)
-    {
-        u32Size += 4U;
-    }
-    else
-    {
-        u32Size = u32Size * 4U - 10U;
-    }
-
-    return (psCanfd->TXBC & CANFD_TXBC_TBSA_Msk) + (u32Idx * u32Size * 4U);
-}
-
 
 /**
  * @brief       Get the element's address when read transmit buffer.
