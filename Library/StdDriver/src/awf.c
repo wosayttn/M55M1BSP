@@ -38,7 +38,7 @@
   * @param[in]  u32HTH is HTH Value. It could be 0~524288.
   * @param[in]  u32LTH is LTH Value. It could be 0~524288.
   * @param[in]  u32WBINIT is WBINIT Value. It could be 0~65535.
-  * @param[in]  u32ACCCount is AccumlationCount. It could be 2~8.
+  * @param[in]  u32ACCCount is Accumulation count. It could be 2~8.
   * @details    Determine interrupt and wake-up enable or disable. \n
   *             Set suitable threshold and word buffer initial value in this API.
   */
@@ -70,8 +70,8 @@ void AWF_Close(void)
     AWF_SET_WBINIT(AWF_CLOSE);
     AWF_SET_HTH(AWF_CLOSE);
     AWF_SET_LTH(AWF_CLOSE);
-    AWF_CLEAR_HTH_INT_FLAG();
-    AWF_CLEAR_LTH_INT_FLAG();
+    AWF_CLEAR_HTH_INTFLAG();
+    AWF_CLEAR_LTH_INTFLAG();
 }
 
 /** @} end of group AWF_EXPORTED_FUNCTIONS */

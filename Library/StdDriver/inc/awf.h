@@ -30,34 +30,34 @@ extern "C"
 
 
 /**
-  * @brief      This macro is used to set accumlation count.
-  * @param[in]  u32Count is AccumlationCount. It could be 2~8.
+  * @brief      This macro is used to set accumulation count.
+  * @param[in]  u32Count is AccumulationCount. It could be 2~8.
   */
-#define AWF_SET_ACC_COUNT(u32Count)     (AWF->CTL = (AWF->CTL & ~AWF_CTL_ACUCNT_Msk) | (u32Count << AWF_CTL_ACUCNT_Pos))
+#define AWF_SET_ACC_COUNT(u32Count)    (AWF->CTL = (AWF->CTL & ~AWF_CTL_ACUCNT_Msk) | (u32Count << AWF_CTL_ACUCNT_Pos))
 
 /**
   * @brief      This macro is used to set high threshold value.
   * @param[in]  u32Value is HTH Value. It could be 0~524288.
   */
-#define AWF_SET_HTH(u32Value)        (AWF->HTH = (AWF->HTH & ~AWF_HTH_AWFHTH_Msk) | (u32Value << AWF_HTH_AWFHTH_Pos))
+#define AWF_SET_HTH(u32Value)    (AWF->HTH = (AWF->HTH & ~AWF_HTH_AWFHTH_Msk) | (u32Value << AWF_HTH_AWFHTH_Pos))
 
 /**
   * @brief      This macro is used to set low threshold value.
   * @param[in]  u32Value is LTH Value. It could be 0~524288.
   */
-#define AWF_SET_LTH(u32Value)        (AWF->LTH = (AWF->LTH & ~AWF_LTH_AWFLTH_Msk) | (u32Value << AWF_LTH_AWFLTH_Pos))
+#define AWF_SET_LTH(u32Value)    (AWF->LTH = (AWF->LTH & ~AWF_LTH_AWFLTH_Msk) | (u32Value << AWF_LTH_AWFLTH_Pos))
 
 /**
   * @brief      This macro is used to set AWF word buffer initial value.
   * @param[in]  u32Value is WBINIT Value. It could be 0~65535.
   */
-#define AWF_SET_WBINIT(u32Value)      (AWF->WBINIT = (AWF->WBINIT & ~AWF_WBINIT_WBINIT_Msk) | (u32Value << AWF_WBINIT_WBINIT_Pos))
+#define AWF_SET_WBINIT(u32Value)    (AWF->WBINIT = (AWF->WBINIT & ~AWF_WBINIT_WBINIT_Msk) | (u32Value << AWF_WBINIT_WBINIT_Pos))
 
 /**
   * @brief      This macro is used to Write AWF data holding register value.
   * @param[in]  u32Value is WBINIT Value. It could be 0~65535.
   */
-#define AWF_WRITE_DAT(u32Value)     (AWF->DAT = u32Value)
+#define AWF_WRITE_DAT(u32Value)    (AWF->DAT = u32Value)
 
 /**
   * @brief      Get AWF HTH Interrupt Flag
@@ -66,7 +66,7 @@ extern "C"
   * @details    This macro indicates AWF HTH Interrupt occurred or not.
   * \hideinitializer
   */
-#define AWF_GET_HTH_INT_FLAG()          ((AWF->STATUS & AWF_STATUS_HTHIS_Msk) >> AWF_STATUS_HTHIS_Pos)
+#define AWF_GET_HTH_INTFLAG()    ((AWF->STATUS & AWF_STATUS_HTHIS_Msk) >> AWF_STATUS_HTHIS_Pos)
 
 /**
   * @brief      Get AWF LTH Interrupt Flag
@@ -75,31 +75,30 @@ extern "C"
   * @details    This macro indicates AWF LTH Interrupt occurred or not.
   * \hideinitializer
   */
-#define AWF_GET_LTH_INT_FLAG()          ((AWF->STATUS & AWF_STATUS_LTHIS_Msk) >> AWF_STATUS_LTHIS_Pos)
+#define AWF_GET_LTH_INTFLAG()    ((AWF->STATUS & AWF_STATUS_LTHIS_Msk) >> AWF_STATUS_LTHIS_Pos)
 
 /**
   * @brief      Clear AWF HTH Interrupt Flag
   * @details    Write 1 to clear HTH interrupt flag.
   * \hideinitializer
   */
-#define AWF_CLEAR_HTH_INT_FLAG()       (AWF->STATUS |= AWF_STATUS_HTHIS_Msk)
+#define AWF_CLEAR_HTH_INTFLAG()    (AWF->STATUS |= AWF_STATUS_HTHIS_Msk)
 
 /**
   * @brief      Clear AWF LTH Interrupt Flag
   * @details    Write 1 to clear LTH interrupt flag.
   * \hideinitializer
   */
-#define AWF_CLEAR_LTH_INT_FLAG()       (AWF->STATUS |= AWF_STATUS_LTHIS_Msk)
-
+#define AWF_CLEAR_LTH_INTFLAG()    (AWF->STATUS |= AWF_STATUS_LTHIS_Msk)
 
 /**
-  * @brief      Get Accumlation Value.
-  * @retval     Accumlation value.
-  * @details    This API is used to get Accumlation value.
+  * @brief      Get Accumulation Value.
+  * @retval     Accumulation value.
+  * @details    This API is used to get Accumulation value.
   *             Accumulated value will be accumulated from word0 to word[ACUCNT-1].
   * \hideinitializer
   */
-#define AWF_GET_ACUVAL()        (AWF->ACUVAL & AWF_ACUVAL_ACUVAL_Msk)
+#define AWF_GET_ACUVAL()    (AWF->ACUVAL & AWF_ACUVAL_ACUVAL_Msk)
 
 
 /* Declare these inline functions here to avoid MISRA C 2004 rule 8.1 error */
