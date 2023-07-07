@@ -61,7 +61,7 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/retarget.c</locationURI>
 		</link>
 		<link>
-			<name>Driver/acmp.c</name>
+			<name>Driver/canfd.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/canfd.c</locationURI>
 		</link>	
