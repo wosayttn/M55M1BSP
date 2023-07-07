@@ -202,7 +202,7 @@ void CCAP_SetPacketStride(uint32_t u32Stride)
  *
  * @details    This function is used to set cropping window starting address and size.
  */
-int32_t CCAP_SetMD_RegionSensitivity(uint32_t u32Y, uint32_t u32X, uint32_t u32Height, uint32_t u32Width, uint32_t u32Sensitivity)
+int32_t CCAP_MD_SetRegionSensitivity(uint32_t u32Y, uint32_t u32X, uint32_t u32Height, uint32_t u32Width, uint32_t u32Sensitivity)
 {
     int32_t  x, y;
     uint32_t u32WinStartX, u32WinStartY, u32WinEndX, u32WinEndY;
@@ -237,7 +237,7 @@ int32_t CCAP_SetMD_RegionSensitivity(uint32_t u32Y, uint32_t u32X, uint32_t u32H
                 if ((u32Y >= u32WinStartY) && (u32Y < u32WinEndY))
                 {
                     CCAP->MDCTL |= (1 << u32WinIdx);
-                    CCAP_SET_MD_WIN_THRESHOLD(u32WinIdx, u32Threshold);
+                    CCAP_MD_SET_WIN_THRESHOLD(u32WinIdx, u32Threshold);
                     continue;
                 }
             }
@@ -247,7 +247,7 @@ int32_t CCAP_SetMD_RegionSensitivity(uint32_t u32Y, uint32_t u32X, uint32_t u32H
                 if (((u32X + u32Width) > u32WinStartX) && ((u32Y + u32Height) > u32WinStartY))
                 {
                     CCAP->MDCTL |= (1 << u32WinIdx);
-                    CCAP_SET_MD_WIN_THRESHOLD(u32WinIdx, u32Threshold);
+                    CCAP_MD_SET_WIN_THRESHOLD(u32WinIdx, u32Threshold);
                 }
             }
         }
@@ -267,9 +267,9 @@ int32_t CCAP_SetMD_RegionSensitivity(uint32_t u32Y, uint32_t u32X, uint32_t u32H
  * @details   Set Camera Capture Interface motion detection total threshold.
  *            If total SAD > total threshold, CCAP_INTSTS_MDINTF_MODE1_Msk is raised.
  */
-int32_t CCAP_SetMD_GlobalSensitivity(uint32_t u32Sensitivity)
+int32_t CCAP_MD_SetGlobalSensitivity(uint32_t u32Sensitivity)
 {
-    CCAP_SET_MD_TOTAL_THRESHOLD(CCAP_MD_MAX_TOTAL_SAD - ((u32Sensitivity * CCAP_MD_MAX_TOTAL_SAD) / 100));
+    CCAP_MD_SET_TOTAL_THRESHOLD(CCAP_MD_MAX_TOTAL_SAD - ((u32Sensitivity * CCAP_MD_MAX_TOTAL_SAD) / 100));
 
     return CCAP_OK;
 }

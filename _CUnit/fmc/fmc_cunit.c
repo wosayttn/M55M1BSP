@@ -200,7 +200,7 @@ void API_FMC_OTP()
 
     for (i = 0; i < FMC_OTP_ENTRY_CNT; i++)
     {
-        if (FMC_Read_OTP(i, &otp_lw, &otp_hw) != 0)
+        if (FMC_ReadOTP(i, &otp_lw, &otp_hw) != 0)
         {
             printf("Read OTP%d failed!\n", i);
             CU_FAIL();
@@ -221,13 +221,13 @@ void API_FMC_OTP()
 
     printf("Program OTP%d with 0x%x-0x%x...\n", i, 0x5A5A0000 | i, 0x00005A5A | i);
 
-    if (FMC_Write_OTP(i, 0x5A5A0000 | i, 0x00005A5A | i) != 0)
+    if (FMC_WriteOTP(i, 0x5A5A0000 | i, 0x00005A5A | i) != 0)
     {
         printf("Failed to program OTP%d!\n", i);
         CU_FAIL();
     }
 
-    if (FMC_Read_OTP(i, &otp_lw, &otp_hw) != 0)
+    if (FMC_ReadOTP(i, &otp_lw, &otp_hw) != 0)
     {
         printf("Read OTP%d failed after programmed!\n", i);
         CU_FAIL();
@@ -241,25 +241,25 @@ void API_FMC_OTP()
         CU_FAIL();
     }
 
-    if (FMC_Is_OTP_Locked(i))
+    if (FMC_IsOTPLocked(i))
     {
         CU_FAIL();
     }
 
     printf("Lock OTP%d...\n", i);
 
-    if (FMC_Lock_OTP(i) != 0)
+    if (FMC_LockOTP(i) != 0)
     {
         printf("Failed to lock OTP%d!\n", i);
         CU_FAIL();
     }
 
-    if (!FMC_Is_OTP_Locked(i))
+    if (!FMC_IsOTPLocked(i))
     {
         CU_FAIL();
     }
 
-    if (FMC_Read_OTP(i, &otp_lw, &otp_hw) != 0)
+    if (FMC_ReadOTP(i, &otp_lw, &otp_hw) != 0)
     {
         printf("Read OTP%d failed after programmed!\n", i);
         CU_FAIL();

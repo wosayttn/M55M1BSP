@@ -271,7 +271,7 @@
         <bEvRecOn>1</bEvRecOn>
         <bSchkAxf>0</bSchkAxf>
         <bTchkAxf>0</bTchkAxf>
-        <nTsel>14</nTsel>
+        <nTsel>15</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
         <sDlgDll></sDlgDll>
@@ -317,22 +317,6 @@
           <Type>0</Type>
           <LineNumber>77</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>539004062</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\..\..\Library\StdDriver\src\qspi.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\QSPI_Cunit\../../../Library/StdDriver/src/qspi.c\77</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>77</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
           <Address>539004762</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
@@ -345,7 +329,7 @@
           <Expression>\\QSPI_Cunit\../../../Library/StdDriver/src/qspi.c\77</Expression>
         </Bp>
         <Bp>
-          <Number>2</Number>
+          <Number>1</Number>
           <Type>0</Type>
           <LineNumber>77</LineNumber>
           <EnabledFlag>1</EnabledFlag>

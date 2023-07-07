@@ -4,7 +4,7 @@
  * @brief    Use CAN mode function to do internal loopback test.
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
 #include "string.h"
@@ -69,7 +69,7 @@ void SYS_Init(void)
    /* Enable PLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
 
-    /* Switch SCLK clock source to PLL0 and divide 1 */
+    /* Switch SCLK clock source to APLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
@@ -80,13 +80,13 @@ void SYS_Init(void)
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK2DIV(2);
     CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(4);
+    CLK_SET_PCLK4DIV(2);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Select CAN FD0 clock source is HCLK */
+    /* Select CAN FD0 clock source is APLL0/2 */
     CLK_SetModuleClock(CANFD0_MODULE, CLK_CANFDSEL_CANFD0SEL_APLL0_DIV2, CLK_CANFDDIV_CANFD0DIV(1));
     /* Enable CAN FD0 peripheral clock */
     CLK_EnableModuleClock(CANFD0_MODULE);
@@ -238,3 +238,5 @@ int32_t main(void)
 
     while (1) {}
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

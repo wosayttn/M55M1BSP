@@ -21,16 +21,7 @@
     @{
 */
 
-/**
-  * @brief      Get Accumlation Value.
-  * @return     Accumlation value.
-  * @details    This API is used to get Accumlation value.
-  *             Accumulated value will be accumulated from word0 to word[ACUCNT-1].
-  */
-uint32_t AWF_GetAccumlationValue(void)
-{
-    return (AWF->ACUVAL) & AWF_ACUVAL_ACUVAL_Msk;
-}
+
 
 /**
   * @brief      This API is used to enable awf function
@@ -44,14 +35,14 @@ uint32_t AWF_GetAccumlationValue(void)
   *             - \ref AWF_LTWK_ENABLE
   *             - \ref AWF_BOTHWK_ENABLE
   *             - \ref AWF_BOTHWK_DISABLE
-  * @param[in]  u32ACCCount is AccumlationCount. It could be 2~8.
-  * @param[in]  u32HTHValue is HTH Value. It could be 0~524288.
-  * @param[in]  u32LTHValue is LTH Value. It could be 0~524288.
-  * @param[in]  u32WBINITValue is WBINIT Value. It could be 0~65535.
+  * @param[in]  u32HTH is HTH Value. It could be 0~524288.
+  * @param[in]  u32LTH is LTH Value. It could be 0~524288.
+  * @param[in]  u32WBINIT is WBINIT Value. It could be 0~65535.
+  * @param[in]  u32ACCCount is Accumulation count. It could be 2~8.
   * @details    Determine interrupt and wake-up enable or disable. \n
   *             Set suitable threshold and word buffer initial value in this API.
   */
-void AWF_Open(uint32_t u32IntEn, uint32_t u32WakeupEn, uint32_t u32HTHValue, uint32_t u32LTHValue, uint32_t u32WBINITValue, uint32_t u32ACCCount)
+void AWF_Open(uint32_t u32IntEn, uint32_t u32WakeupEn, uint32_t u32HTH, uint32_t u32LTH, uint32_t u32WBINIT, uint32_t u32ACCCount)
 {
     /* Set interrupt function*/
     AWF->CTL = ((AWF->CTL & ~(AWF_CTL_HTIEN_Msk | AWF_CTL_LTIEN_Msk | AWF_CTL_HTWKEN_Msk | AWF_CTL_LTWKEN_Msk)) | u32IntEn | u32WakeupEn);
@@ -60,13 +51,13 @@ void AWF_Open(uint32_t u32IntEn, uint32_t u32WakeupEn, uint32_t u32HTHValue, uin
     AWF->CTL = ((AWF->CTL & ~AWF_CTL_ACUCNT_Msk) | (u32ACCCount << AWF_CTL_ACUCNT_Pos));
 
     /* Set high threshold value*/
-    AWF_SET_HTH_VALUE(u32HTHValue);
+    AWF_SET_HTH(u32HTH);
 
     /* Set low threshold value*/
-    AWF_SET_LTH_VALUE(u32LTHValue);
+    AWF_SET_LTH(u32LTH);
 
     /* Set word buffer initial value*/
-    AWF_SET_WBINIT_VALUE(u32WBINITValue);
+    AWF_SET_WBINIT(u32WBINIT);
 }
 
 /**
@@ -76,9 +67,11 @@ void AWF_Close(void)
 {
     /* Clear all setting value */
     AWF->CTL = AWF_CLOSE;
-    AWF_SET_WBINIT_VALUE(AWF_CLOSE);
-    AWF_SET_HTH_VALUE(AWF_CLOSE);
-    AWF_SET_LTH_VALUE(AWF_CLOSE);
+    AWF_SET_WBINIT(AWF_CLOSE);
+    AWF_SET_HTH(AWF_CLOSE);
+    AWF_SET_LTH(AWF_CLOSE);
+    AWF_CLEAR_HTH_INTFLAG();
+    AWF_CLEAR_LTH_INTFLAG();
 }
 
 /** @} end of group AWF_EXPORTED_FUNCTIONS */

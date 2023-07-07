@@ -29,9 +29,9 @@ extern "C"
 
 #define KS_TOMETAKEY(x)             (((uint32_t)(x) << KS_METADATA_NUMBER_Pos) & KS_METADATA_NUMBER_Msk)
 #define KS_TOKEYIDX(x)              (((uint32_t)(x) & KS_METADATA_NUMBER_Msk) >> KS_METADATA_NUMBER_Pos)
-#define KS_MAX_OTP_KEY_CNT          15
-#define KS_KDF_ROOT_OTP_KEY         (KS_MAX_OTP_KEY_CNT)
-#define KS_MAX_OTP_KEY_ERASE_CNT    3
+#define KS_MAX_OTPKEY_CNT          15
+#define KS_KDF_ROOT_OTPKEY         (KS_MAX_OTPKEY_CNT)
+#define KS_MAX_OTPKEY_ERASE_CNT    3
 #define KS_MAX_SRAM_KEY_CNT         0x20
 #define KS_MAX_SRAM_SPACE           0x1000
 #define KS_MAX_FLASH_KEY_CNT        0x20
@@ -116,7 +116,7 @@ typedef enum KSMEM
   * @brief      Get OTP key status
   * @details    This function is used to get OTP key status.
   */
-#define KS_OTPKEY_STS(i32KeyIdx)    ((KS->OTPSTS & (1 << i32KeyIdx)) > 0)
+#define KS_GET_OTPKEY_STS(i32KeyIdx)    ((KS->OTPSTS & (1 << i32KeyIdx)) > 0)
 
 /**
   * @brief      Enable KS interrupt

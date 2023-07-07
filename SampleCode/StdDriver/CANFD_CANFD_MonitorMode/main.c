@@ -4,7 +4,7 @@
  * @brief    Use CANFD Monitor mode to listen to CAN bus communication test.
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
 #include "stdio.h"
@@ -101,7 +101,7 @@ uint32_t Get_CANFD_NominalBitRate(CANFD_T *psCanfd)
 
     if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_HXT >> CLK_CANFDSEL_CANFD0SEL_Pos) )
      u32CanClk = CLK_GetHXTFreq();
-    else if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD1SEL_APLL0_DIV2 >> CLK_CANFDSEL_CANFD0SEL_Pos) )
+    else if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_APLL0_DIV2 >> CLK_CANFDSEL_CANFD0SEL_Pos) )
      u32CanClk = CLK_GetAPLL0ClockFreq()/2;
     else if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_HCLK0 >> CLK_CANFDSEL_CANFD0SEL_Pos) )
      u32CanClk = CLK_GetHCLK0Freq();
@@ -131,9 +131,11 @@ uint32_t Get_CANFD_DataBitRate(CANFD_T *psCanfd)
     uint8_t  u8Tq = 0;
     uint8_t  u8NtSeg1 = 0;
     uint8_t  u8NtSeg2 = 0;
+
+ 
     if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_HXT >> CLK_CANFDSEL_CANFD0SEL_Pos) )
      u32CanClk = CLK_GetHXTFreq();
-    else if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD1SEL_APLL0_DIV2 >> CLK_CANFDSEL_CANFD0SEL_Pos) )
+    else if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_APLL0_DIV2 >> CLK_CANFDSEL_CANFD0SEL_Pos) )
      u32CanClk = CLK_GetAPLL0ClockFreq()/2;
     else if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_HCLK0 >> CLK_CANFDSEL_CANFD0SEL_Pos) )
      u32CanClk = CLK_GetHCLK0Freq();
@@ -171,8 +173,8 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
+   /* Enable APLL0 160MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_160MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
@@ -185,7 +187,7 @@ void SYS_Init(void)
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK2DIV(2);
     CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(4);
+    CLK_SET_PCLK4DIV(2);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -337,3 +339,5 @@ int32_t main(void)
       }
     }
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

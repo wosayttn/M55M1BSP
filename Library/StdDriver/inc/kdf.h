@@ -38,19 +38,19 @@ extern "C"
 #define KDF_KS_SECURE           (0x1UL << KDF_KSCTL_TRUST_Pos)  /*!< Secure key                            */
 #define KDF_KS_NON_SECURE       (0x0UL << KDF_KSCTL_TRUST_Pos)  /*!< Non-Secure key                        */
 
-#define KDF_KS_KEY_SIZE_128     (0x0UL)                         /*!< Key size 128 bits                     */
-#define KDF_KS_KEY_SIZE_163     (0x1UL)                         /*!< Key size 163 bits                     */
-#define KDF_KS_KEY_SIZE_192     (0x2UL)                         /*!< Key size 192 bits                     */
-#define KDF_KS_KEY_SIZE_224     (0x3UL)                         /*!< Key size 224 bits                     */
-#define KDF_KS_KEY_SIZE_233     (0x4UL)                         /*!< Key size 233 bits                     */
-#define KDF_KS_KEY_SIZE_255     (0x5UL)                         /*!< Key size 255 bits                     */
-#define KDF_KS_KEY_SIZE_256     (0x6UL)                         /*!< Key size 256 bits                     */
-#define KDF_KS_KEY_SIZE_283     (0x7UL)                         /*!< Key size 283 bits                     */
-#define KDF_KS_KEY_SIZE_384     (0x8UL)                         /*!< Key size 384 bits                     */
-#define KDF_KS_KEY_SIZE_409     (0x9UL)                         /*!< Key size 409 bits                     */
-#define KDF_KS_KEY_SIZE_512     (0xAUL)                         /*!< Key size 512 bits                     */
-#define KDF_KS_KEY_SIZE_521     (0xBUL)                         /*!< Key size 521 bits                     */
-#define KDF_KS_KEY_SIZE_571     (0xCUL)                         /*!< Key size 571 bits                     */
+#define KDF_KS_KEYSIZE_128     (0x0UL)                          /*!< Key size 128 bits                     */
+#define KDF_KS_KEYSIZE_163     (0x1UL)                          /*!< Key size 163 bits                     */
+#define KDF_KS_KEYSIZE_192     (0x2UL)                          /*!< Key size 192 bits                     */
+#define KDF_KS_KEYSIZE_224     (0x3UL)                          /*!< Key size 224 bits                     */
+#define KDF_KS_KEYSIZE_233     (0x4UL)                          /*!< Key size 233 bits                     */
+#define KDF_KS_KEYSIZE_255     (0x5UL)                          /*!< Key size 255 bits                     */
+#define KDF_KS_KEYSIZE_256     (0x6UL)                          /*!< Key size 256 bits                     */
+#define KDF_KS_KEYSIZE_283     (0x7UL)                          /*!< Key size 283 bits                     */
+#define KDF_KS_KEYSIZE_384     (0x8UL)                          /*!< Key size 384 bits                     */
+#define KDF_KS_KEYSIZE_409     (0x9UL)                          /*!< Key size 409 bits                     */
+#define KDF_KS_KEYSIZE_512     (0xAUL)                          /*!< Key size 512 bits                     */
+#define KDF_KS_KEYSIZE_521     (0xBUL)                          /*!< Key size 521 bits                     */
+#define KDF_KS_KEYSIZE_571     (0xCUL)                          /*!< Key size 571 bits                     */
 
 #define KDF_KEYIN_FROM_REG      (0UL << KDF_CTL_KEYINSEL_Pos)   /*!< KDF key input from register           */
 #define KDF_KEYIN_FROM_NVM      (1UL << KDF_CTL_KEYINSEL_Pos)   /*!< KDF key input from NVM (KS OTP Key15) */
@@ -87,9 +87,9 @@ extern int32_t  g_KDF_i32ErrCode;                               /*!< KDF global 
 */
 
 void KDF_SetKeyInput(const uint8_t pu8KeyInput[], uint32_t u32ByteCnt);
-void KDF_SetSalt    (const uint8_t pu8Salt    [], uint32_t u32ByteCnt);
-void KDF_SetLabel   (const uint8_t pu8Label   [], uint32_t u32ByteCnt);
-void KDF_SetContext (const uint8_t pu8Context [], uint32_t u32ByteCnt);
+void KDF_SetSalt(const uint8_t pu8Salt    [], uint32_t u32ByteCnt);
+void KDF_SetLabel(const uint8_t pu8Label   [], uint32_t u32ByteCnt);
+void KDF_SetContext(const uint8_t pu8Context [], uint32_t u32ByteCnt);
 int32_t KDF_GetKeyBitSize(uint32_t u32KeySizeOpt);
 int32_t KDF_DeriveKey(E_KDF_MODE eMode, uint32_t u32DeriveKeyParam, uint32_t u32KeyBitSize, uint32_t *pu32KeyOut);
 int32_t KDF_DeriveKeyToKS(KS_MEM_Type eMemType, E_KDF_MODE eMode, uint32_t u32DeriveKeyParam, uint32_t u32KeySizeSel, uint32_t u32KeyMeta);

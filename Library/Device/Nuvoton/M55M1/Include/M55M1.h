@@ -259,6 +259,7 @@ typedef enum IRQn
 
     GDMACH0_IRQn                  = 160,      /*!< GDMA Channel 0 Interrupt                 */
     GDMACH1_IRQn                  = 161,      /*!< GDMA Channel 1 Interrupt                 */
+    TOTAL_IRQn_CNT                = GDMACH1_IRQn + 16,
 } IRQn_Type;
 
 
@@ -472,7 +473,7 @@ typedef enum IRQn
 #define LPPDMA_BASE               (AHB2PERIPH_BASE + 0x00000UL)
 #define CCAP_BASE                 (AHB2PERIPH_BASE + 0x01000UL)
 #define SCU_BASE                  (AHB2PERIPH_BASE + 0x02000UL)
-#define FVC_BASE                  (AHB2PERIPH_BASE + 0x02500UL)
+/*#define FVC_BASE                  (AHB2PERIPH_BASE + 0x02500UL)*/ /* TESTCHIP_ONLY not support */
 #define DPM_BASE                  (AHB2PERIPH_BASE + 0x02600UL)
 #define PLM_BASE                  (AHB2PERIPH_BASE + 0x02700UL)
 #define LPGPIO_BASE               (AHB2PERIPH_BASE + 0x03000UL)
@@ -616,7 +617,7 @@ typedef enum IRQn
 #define EQEI2_S                   ((EQEI_T *)     EQEI2_BASE)
 #define EQEI3_S                   ((EQEI_T *)     EQEI3_BASE)
 #define FMC_S                     ((FMC_T *)      FMC_BASE)
-#define FVC_S                     ((FVC_T *)      FVC_BASE)
+/*#define FVC_S                     ((FVC_T *)      FVC_BASE)*/ /* TESTCHIP_ONLY not support */
 
 #define GDMA_S                                   (GDMA_BASE)
 #define GPIO_S                    ((GPIO_INT_T *) GPIO_INT_BASE)
@@ -669,9 +670,6 @@ typedef enum IRQn
 #define SC1_S                     ((SC_T *)       SC1_BASE)
 #define SC2_S                     ((SC_T *)       SC2_BASE)
 #define SCU_S                     ((SCU_T *)      SCU_BASE)
-#define FVC_S                     ((FVC_T *)      FVC_BASE)
-#define DPM_S                     ((DPM_T *)      DPM_BASE)
-#define PLM_S                     ((PLM_T *)      PLM_BASE)
 #define SDH0_S                    ((SDH_T *)      SDH0_BASE)
 #define SDH1_S                    ((SDH_T *)      SDH1_BASE)
 #define SPI0_S                    ((SPI_T *)      SPI0_BASE)
@@ -853,7 +851,7 @@ typedef enum IRQn
 /* Always Secure peripheral */
 #define CLK       CLK_S
 #define DPM       DPM_S
-#define FVC       FVC_S
+/*#define FVC       FVC_S*/ /* TESTCHIP_ONLY not support */
 #define FMC       FMC_S
 #define GPIO      GPIO_S
 #define KS        KS_S

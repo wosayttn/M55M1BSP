@@ -392,8 +392,6 @@ int32_t FMC_Erase(uint32_t u32PageAddr)
   */
 int32_t FMC_WriteConfig(uint32_t u32ConfigAddr, uint32_t u32ConfigVal)
 {
-    int   i;
-
     FMC_ENABLE_CFG_UPDATE();
 
     if (FMC_EraseConfig(u32ConfigAddr) != 0)
@@ -703,8 +701,6 @@ int32_t FMC_ConfigXOM(uint32_t u32XomNum, uint32_t u32XomBase, uint8_t u8XomPage
   */
 int32_t FMC_GetXOMState(uint32_t u32XomNum)
 {
-    uint32_t u32IsActive;
-
     if (u32XomNum >= XOMR_CNT)
     {
         return FMC_ERR_INVALID_PARAM;
@@ -843,7 +839,7 @@ int32_t FMC_GetBootSource(void)
   *           -1  Read failed or time-out
   *           -2  Invalid OTP number
   */
-int32_t FMC_Read_OTP(uint32_t u32OtpNum, uint32_t *pu32LowWord, uint32_t *pu32HighWord)
+int32_t FMC_ReadOTP(uint32_t u32OtpNum, uint32_t *pu32LowWord, uint32_t *pu32HighWord)
 {
     int32_t i32RetCode = FMC_OK;
     int32_t i32TimeOutCnt;
@@ -904,7 +900,7 @@ int32_t FMC_Read_OTP(uint32_t u32OtpNum, uint32_t *pu32LowWord, uint32_t *pu32Hi
   *           -1  Program failed or time-out
   *           -2  Invalid OTP number
   */
-int32_t FMC_Write_OTP(uint32_t u32OtpNum, uint32_t u32LowWord, uint32_t u32HighWord)
+int32_t FMC_WriteOTP(uint32_t u32OtpNum, uint32_t u32LowWord, uint32_t u32HighWord)
 {
     int32_t i32RetCode = FMC_OK;
     int32_t i32TimeOutCnt;
@@ -985,7 +981,7 @@ int32_t FMC_Write_OTP(uint32_t u32OtpNum, uint32_t u32LowWord, uint32_t u32HighW
   *           -1  Failed to write OTP lock bits or write time-out
   *           -2  Invalid OTP number
   */
-int32_t FMC_Lock_OTP(uint32_t u32OtpNum)
+int32_t FMC_LockOTP(uint32_t u32OtpNum)
 {
     int32_t i32RetCode = FMC_OK;
     int32_t i32TimeOutCnt;
@@ -1040,7 +1036,7 @@ int32_t FMC_Lock_OTP(uint32_t u32OtpNum)
   *           -1  Failed to read OTP lock bits or read time-out
   *           -2  Invalid OTP number
   */
-int32_t FMC_Is_OTP_Locked(uint32_t u32OtpNum)
+int32_t FMC_IsOTPLocked(uint32_t u32OtpNum)
 {
     int32_t i32RetCode = FMC_OK;
     int32_t i32TimeOutCnt;
@@ -1108,7 +1104,7 @@ int32_t FMC_Is_OTP_Locked(uint32_t u32OtpNum)
 int32_t  FMC_ConfigSecureConceal(uint32_t u32Base, uint32_t u32PageCnt, uint32_t bActiveEnable)
 {
     int32_t  i32RetCode = FMC_OK;
-    uint32_t u32Config4, u32Config5, u32Config6;
+    uint32_t u32Config6;
 
     if ((u32Base == FMC_APROM_BASE) || (u32Base % FMC_FLASH_PAGE_SIZE) != 0)
         return FMC_ERR_SC_INVALID_BASE;
@@ -1120,6 +1116,9 @@ int32_t  FMC_ConfigSecureConceal(uint32_t u32Base, uint32_t u32PageCnt, uint32_t
 
     if (u32Config6 != 0xFFFFFFFF)
         return FMC_ERR_SC_ENABLED;
+
+    if ((FMC_Read(FMC_USER_CONFIG_4) == u32Base) && (FMC_Read(FMC_USER_CONFIG_5) == u32PageCnt))
+        return FMC_OK;
 
     if ((i32RetCode = FMC_EraseConfig(FMC_USER_CONFIG_4)) != FMC_OK)
         return i32RetCode;
