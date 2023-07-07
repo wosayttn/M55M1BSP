@@ -24,7 +24,10 @@ void DAC01_IRQHandler(void);
 void EPWM0_Init(void);
 void SYS_Init(void);
 
-
+#if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
+    extern void initialise_monitor_handles(void);
+#endif
+                                     
 void DAC01_IRQHandler(void)
 {
     if(DAC_GET_INT_FLAG(DAC0, 0))
@@ -64,7 +67,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
    /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
@@ -93,6 +96,8 @@ void SYS_Init(void)
     /* Select EPWM0 module clock source as PCLK0 */
     CLK_SetModuleClock(EPWM0_MODULE, CLK_EPWMSEL_EPWM0SEL_PCLK0, 0);
 
+    /* Enable GPB peripheral clock */
+    CLK_EnableModuleClock(GPIOB_MODULE);
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
@@ -143,13 +148,19 @@ void EPWM0_Init(void)
 
 int32_t main(void)
 {
-
+    /* Unlock protected registers */
+    SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
 
+#if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
+    initialise_monitor_handles();
+#endif
     /* Configure UART0 and set UART0 baud rate */
     InitDebugUart();
 
+    /* Lock protected registers */
+    SYS_LockReg();
     /* Init EPWM for DAC */
     EPWM0_Init();
 
