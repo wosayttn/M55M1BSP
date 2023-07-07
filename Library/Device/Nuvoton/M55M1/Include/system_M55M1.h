@@ -22,12 +22,15 @@ extern "C" {
 #define DEBUG_PORT      UART0             /*!< Set default Debug UART Port used for retarget.c to output debug message */
 #endif
 
-#define __PC()                                                         \
-  __extension__({                                                              \
-    register unsigned int current_pc;                                          \
-    __asm volatile("mov %0, pc" : "=r"(current_pc) : : );                \
-    current_pc;                                                                \
-  })
+#define ICACHE_LINE_SIZE                        (__SCB_ICACHE_LINE_SIZE)    /*!< ICache line byte size              */
+#define DCACHE_LINE_SIZE                        (__SCB_DCACHE_LINE_SIZE)    /*!< DCache line byte size              */
+#define ALIGN_DCACHE_LINE_SIZE(u32ByteSize)     (((u32ByteSize) + (DCACHE_LINE_SIZE) - 1) & ~((DCACHE_LINE_SIZE) - 1))  /* Align to DCache line size */
+#define __PC()                                              \
+  __extension__({                                           \
+    register unsigned int current_pc;                       \
+    __asm volatile("mov %0, pc" : "=r"(current_pc) : : );   \
+    current_pc;                                             \
+  })    /*!< Current program counter            */
 
 /*----------------------------------------------------------------------------
   Define clocks

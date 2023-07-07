@@ -68,21 +68,21 @@ int RETARGET(_write)(FILEHANDLE fh, const unsigned char *buf, unsigned int len, 
 
     switch (fh)
     {
-        case STDOUT:
-        case STDERR:
+    case STDOUT:
+    case STDERR:
+    {
+        unsigned int i;
+
+        for (i = 0; i < len; i++)
         {
-            unsigned int i;
-
-            for (i = 0; i < len; i++)
-            {
-                SendChar(buf[i]);
-            }
-
-            return IO_OUTPUT(len);
+            SendChar(buf[i]);
         }
 
-        default:
-            return EOF;
+        return IO_OUTPUT(len);
+    }
+
+    default:
+        return EOF;
     }
 }
 
@@ -94,38 +94,38 @@ int RETARGET(_read)(FILEHANDLE fh, unsigned char *buf, unsigned int len, int mod
 
     switch (fh)
     {
-        case STDIN:
+    case STDIN:
+    {
+        int c;
+        unsigned int i;
+
+        for (i = 0; i < len; i++)
         {
-            int c;
-            unsigned int i;
+            c = GetChar();
 
-            for (i = 0; i < len; i++)
+            if (c == EOF)
             {
-                c = GetChar();
-
-                if (c == EOF)
-                {
-                    return EOF;
-                }
-
-                buf[i] = (unsigned char)c;
-#if (STDIN_ECHO != 0)
-                SendChar(c);
-#endif
-
-                if (c == '\n')
-                {
-                    i++;
-                    break;
-                }
-
+                return EOF;
             }
 
-            return i;
+            buf[i] = (unsigned char)c;
+#if (STDIN_ECHO != 0)
+            SendChar(c);
+#endif
+
+            if (c == '\n')
+            {
+                i++;
+                break;
+            }
+
         }
 
-        default:
-            return EOF;
+        return i;
+    }
+
+    default:
+        return EOF;
     }
 }
 
@@ -133,13 +133,13 @@ int RETARGET(_istty)(FILEHANDLE fh)
 {
     switch (fh)
     {
-        case STDIN:
-        case STDOUT:
-        case STDERR:
-            return 1;
+    case STDIN:
+    case STDOUT:
+    case STDERR:
+        return 1;
 
-        default:
-            return 0;
+    default:
+        return 0;
     }
 }
 
@@ -262,3 +262,9 @@ void RETARGET(_exit)(int return_code)
 
     while (1) {}
 }
+
+int RETARGET(getchar)(void)
+{
+    return ((int)GetChar());
+}
+
