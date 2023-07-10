@@ -30,6 +30,7 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /*  CRC Polynomial Mode Constant Definitions                                                               */
 /*---------------------------------------------------------------------------------------------------------*/
+#define CRC_CCITT           (0UL << CRC_CTL_CRCMODE_Pos) /*!<CRC Polynomial Mode - CCITT \hideinitializer */
 #define CRC_8               (1UL << CRC_CTL_CRCMODE_Pos) /*!<CRC Polynomial Mode - CRC8 \hideinitializer */
 #define CRC_16              (2UL << CRC_CTL_CRCMODE_Pos) /*!<CRC Polynomial Mode - CRC16 \hideinitializer */
 #define CRC_32              (3UL << CRC_CTL_CRCMODE_Pos) /*!<CRC Polynomial Mode - CRC32 \hideinitializer */
