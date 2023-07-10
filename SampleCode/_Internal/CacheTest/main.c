@@ -28,8 +28,9 @@
 #include "NuMicro.h"
 
 #define PDMA_CHAN  0
-uint32_t g_au32TestSrcBuf[256] __ALIGNED(32),
-         g_au32TestDstBuf[256] __ALIGNED(32);
+/* Base address and size of cache buffer must be DCACHE_LINE_SIZE byte aligned */
+uint32_t g_au32TestSrcBuf[ALIGN_DCACHE_LINE_SIZE(256)] __ALIGNED(DCACHE_LINE_SIZE),
+         g_au32TestDstBuf[ALIGN_DCACHE_LINE_SIZE(256)] __ALIGNED(DCACHE_LINE_SIZE);
 
 static void SYS_Init(void)
 {
