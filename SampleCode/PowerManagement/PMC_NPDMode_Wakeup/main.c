@@ -198,6 +198,4 @@ int32_t main(void)
         /* Lock protected registers */
         SYS_LockReg();
     }
-
-    while (1);
 }

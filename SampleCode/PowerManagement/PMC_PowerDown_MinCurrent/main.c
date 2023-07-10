@@ -126,8 +126,6 @@ void GPC_IRQHandler(void)
 
 int32_t LvrSetting(void)
 {
-    uint32_t u32TimeOutCnt;
-
     if (SET_LVR == 0)
     {
         /* Disable LVR and wait for LVR stable */
