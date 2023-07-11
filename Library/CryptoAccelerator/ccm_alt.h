@@ -53,7 +53,7 @@
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "config.h"
 #else
-#include MBEDTLS_CONFIG_FILE
+#include "mbedtls_config.h"
 #endif
 
 #include "mbedtls/cipher.h"

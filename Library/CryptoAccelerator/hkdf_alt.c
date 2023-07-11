@@ -24,7 +24,8 @@
 #include "mbedtls/hkdf.h"
 #include "mbedtls/platform_util.h"
 #include "mbedtls/error.h"
-
+#include <string.h>
+#include "NuMicro.h"
 
 /* 
    HKDF is the composition of two functions, 
@@ -37,7 +38,7 @@ static int __nvt_hkdf_KeyBitSizeConv(size_t i_len)
 {
     uint32_t au32KeyBitLenTbl[13] = { 128, 163, 192, 224, 233, 255, 256, 283, 384, 409, 512, 521, 571 };
     uint8_t  u8ii;
-    for (u8ii=0; u8ii<13; u8ii+)
+    for (u8ii=0; u8ii<13; u8ii++)
     {
         if( (uint32_t)(i_len) == au32KeyBitLenTbl[u8ii] )
         {
@@ -59,13 +60,13 @@ static int __nvt_hkdf(const mbedtls_md_info_t *md, const unsigned char *salt,
     
     int i32Ret;
         
-    KDF_SetKeyInput(ikm, u32ByteCnt);
+    KDF_SetKeyInput(ikm, u32BitCnt);
     
     KDF_SetSalt(salt, (uint32_t)(salt_len));
     
     KDF_SetContext(info, (uint32_t)(info_len));
     
-    i32Ret = KDF_DeriveKey(E_KDF_MODE,uint32_t u32DeriveKeyParam, (uint32_t)(okm_len), okm);
+    i32Ret = KDF_DeriveKey(eKDF_MODE_HKDF, u32DeriveKeyParam, (uint32_t)(okm_len), okm);
     
     return i32Ret;
 }

@@ -357,9 +357,9 @@ int32_t RNG_EntropyPoll(uint32_t* pu32Out, int32_t i32Len)
     return i32Len;
 }
 
-/**@}*/ /* end of group RNG_EXPORTED_FUNCTIONS */
+/**@}end of group RNG_EXPORTED_FUNCTIONS */
 
-/**@}*/ /* end of group RNG_Driver */
+/**@}end of group RNG_Driver */
 
-/**@}*/ /* end of group Standard_Driver */
+/**@}end of group Standard_Driver */
 

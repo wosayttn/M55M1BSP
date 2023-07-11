@@ -14,10 +14,6 @@
 /*---------------------------------------------------------------------------------------------------------*/
 #define PDMA_TEST_LENGTH 64
 
-#ifdef __CCARM__
-    extern uint32_t Image$$RW$$Base;
-#endif
-
 __attribute__((aligned)) static uint8_t au8SrcArray[256];
 __attribute__((aligned)) static uint8_t au8DestArray0[256];
 __attribute__((aligned)) static uint8_t au8DestArray1[256];
@@ -31,8 +27,6 @@ typedef struct dma_desc_t
 } DMA_DESC_T;
 
 static DMA_DESC_T DMA_DESC[2]; /* Descriptor table */
-
-void PDMA0_IRQHandler(void);
 
 /**
  * @brief       PDMA0 IRQ
@@ -136,10 +130,6 @@ int main(void)
     /* Enable Scatter Gather mode, assign the first scatter-gather descriptor table is table 1,
        and set transfer mode as memory to memory */
     PDMA_SetTransferMode(PDMA0, 4, PDMA_MEM, 1, (uint32_t)&DMA_DESC[0]);
-    /* Set SRAM R/W base of Scatter-Gather mode */
-#ifdef __CCARM__
-    PDMA0->SCATBA = (uint32_t)&Image$$RW$$Base;
-#endif
     /*------------------------------------------------------------------------------------------------------
 
                          au8SrcArray                         au8DestArray0
