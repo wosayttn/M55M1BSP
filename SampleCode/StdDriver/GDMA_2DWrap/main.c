@@ -1,25 +1,28 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief    Use GDMA channel 0 to transfer data from memory to memory.
+ * @brief    Use GDMA channel 0 to do WRAP for 2D.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <stdio.h>
+#include <string.h>
 #include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */
 /*---------------------------------------------------------------------------------------------------------*/
-#define GDMA_TEST_LENGTH 64
+#define GDMA_SRC_XSIZE 4
+#define GDMA_SRC_YSIZE 4
+#define GDMA_DES_XSIZE 8
+#define GDMA_DES_YSIZE 8
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-__attribute__((aligned)) static uint8_t au8SrcArray[GDMA_TEST_LENGTH];
-__attribute__((aligned)) static uint8_t au8DestArray[GDMA_TEST_LENGTH];
-static uint32_t volatile g_u32IsTestOver = 0;
+__attribute__((aligned)) static uint8_t au8SrcArray[GDMA_SRC_XSIZE * GDMA_SRC_YSIZE];
+__attribute__((aligned)) static uint8_t au8DestArray[GDMA_DES_XSIZE * GDMA_DES_YSIZE];
 
 /* DMA350 driver structures */
 static const struct dma350_dev_cfg_t GDMA_DEV_CFG_S =
@@ -65,31 +68,6 @@ struct dma350_ch_dev_t *const GDMA_CH_DEV_S[] =
     &GDMA_CH1_DEV_S,
 };
 
-
-/**
- * @brief       GDMA0 Channel 0 IRQ
- *
- * @param       None
- *
- * @return      None
- *
- * @details     The GDMA0 Channel 0 default IRQ, declared in startup_M55M1.c.
- */
-void GDMACH0_IRQHandler(void)
-{
-    union dma350_ch_status_t status = dma350_ch_get_status(GDMA_CH_DEV_S[0]);
-
-    if (status.b.STAT_DONE)
-    {
-        GDMA_CH_DEV_S[0]->cfg.ch_base->CH_STATUS = DMA350_CH_STAT_DONE;
-        g_u32IsTestOver = 1;
-    }
-    else
-    {
-        g_u32IsTestOver = 2;
-    }
-}
-
 static void SYS_Init(void)
 {
     /* Unlock protected registers */
@@ -133,7 +111,8 @@ static void SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
-    uint32_t i, u32TimeOutCnt;
+    enum dma350_lib_error_t lib_err;
+    uint32_t i, j;
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
     /* Init Debug UART to 115200-8N1 for print message */
@@ -142,86 +121,80 @@ int main(void)
     initialise_monitor_handles();
 #endif
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
-    printf("+--------------------------------------------------------------+ \n");
-    printf("|    GDMA Memory to Memory Driver Sample Code (Interrupt Mode) | \n");
-    printf("+--------------------------------------------------------------+ \n");
+    printf("+------------------------------+ \n");
+    printf("|    GDMA WRAP for 2D Sample   | \n");
+    printf("+------------------------------+ \n");
     /* Reset GDMA module */
     SYS_UnlockReg();
     SYS_ResetModule(SYS_GDMA0RST);
     SYS_LockReg();
 
-    for (i = 0; i < GDMA_TEST_LENGTH; i++)
+    for (i = 0; i < GDMA_SRC_XSIZE * GDMA_SRC_YSIZE; i++)
     {
         au8SrcArray[i] = (uint8_t) i;
-        au8DestArray[i] = 0;
     }
 
+    memset(au8DestArray, 0, GDMA_DES_XSIZE * GDMA_DES_YSIZE);
     /*------------------------------------------------------------------------------------------------------
 
-                         au8SrcArray           au8DestArray
-                         ------------    -->   -------------
-                       /|    [0]     |         |    [0]     |\
-                        |    [1]     |         |    [1]     |
-       GDMA_TEST_LENGTH |    ...     |         |    ...     | GDMA_TEST_LENGTH
-                        |    [62]    |         |    [62]    |
-                       \|    [63]    |         |    [63]    |/
-                         ------------           ------------
-                         \          /           \          /
-                           one byte               one byte
+
+                         au8SrcArray                           au8DestArray
+                         ---------------------------   -->   -----------------------------
+                       /| [0]  | [1]  |  [2] |  [3] |       | [0]  | [1]  ...  [6] |  [7] |\
+                        |      |      |      |      |       |      |      |        |      |
+         GDMA_SRC_YSIZE |             ...           |       |             ...             | GDMA_DES_YSIZE
+                        |      |      |      |      |       |      |      |        |      |
+                       \| [12] | [13] | [14] | [15] |       | [56] | [57] ... [62] | [63] |/
+                         ---------------------------         -----------------------------
+                         \                         /         \                           /
+                               GDMA_SRC_XSIZE                       GDMA_DES_XSIZE
 
       GDMA transfer configuration:
 
         Channel = 0
-        Operation mode = basic mode
-
-        Transfer count = GDMA_TEST_LENGTH
+        Trasnfer type  = 2D
+        Transfer count = GDMA_DES_XSIZE * GDMA_DES_YSIZE
         Transfer width = 8 bits(one byte)
         Source address = au8SrcArray
-        Source address increment size = 8 bits(one byte)
+        Source address increment size = GDMA_SRC_XSIZE bytes
         Destination address = au8DestArray
-        Destination address increment size = 8 bits(one byte)
+        Destination address increment size = GDMA_DES_XSIZE bytes
 
-        Total transfer length = GDMA_TEST_LENGTH * 8 bits
+        Total transfer length = GDMA_DES_XSIZE * GDMA_DES_YSIZE * 8 bits
     ------------------------------------------------------------------------------------------------------*/
     /* Initializes GDMA */
     dma350_init(&GDMA_DEV_S);
-    /* Enable NVIC for GDMA CH0 */
-    NVIC_EnableIRQ(GDMACH0_IRQn);
-    g_u32IsTestOver = 0;
-    dma350_memcpy(GDMA_CH_DEV_S[0],
-                  au8SrcArray, au8DestArray,
-                  GDMA_TEST_LENGTH,
-                  DMA350_LIB_EXEC_IRQ);
-    /* Waiting for transfer done */
-    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-
-    while (g_u32IsTestOver == 0)
-    {
-        if (--u32TimeOutCnt == 0)
-        {
-            printf("Wait for GDMA CH0 transfer done time-out!\n");
-            break;
-        }
-    }
+    /* 2D Wrap */
+    lib_err = dma350_draw_from_canvas(GDMA_CH_DEV_S[0],
+                                      au8SrcArray, au8DestArray,
+                                      GDMA_SRC_XSIZE, GDMA_SRC_YSIZE,
+                                      GDMA_SRC_XSIZE,
+                                      GDMA_DES_XSIZE, GDMA_DES_YSIZE,
+                                      GDMA_DES_XSIZE,
+                                      DMA350_CH_TRANSIZE_8BITS,
+                                      DMA350_LIB_TRANSFORM_NONE,
+                                      DMA350_LIB_EXEC_BLOCKING);
 
     /* Check transfer result */
-    if (g_u32IsTestOver == 1)
+    if (lib_err == DMA350_LIB_ERR_NONE)
     {
-        printf("test done...\n");
+        printf("2D Wrap\n");
 
-        /* Compare data */
-        for (i = 0; i < GDMA_TEST_LENGTH; i++)
+        for (i = 0; i < GDMA_DES_YSIZE; i++)
         {
-            if (au8SrcArray[i] != au8DestArray[i])
+            printf("\n\t[%02d] ", i * GDMA_DES_XSIZE);
+
+            for (j = 0; j < GDMA_DES_XSIZE; j++)
             {
-                printf(" - Compare data fail\n");
-                break;
+                printf("%02d ", au8DestArray[i * GDMA_DES_XSIZE + j]);
             }
         }
+
+        printf("\nGDMA Transfer done\n");
     }
-    else if (g_u32IsTestOver == 2)
+    else
     {
-        printf("unknown interrupt !!\n");
+        printf("\nGDMA transfer error !!\n");
     }
 
     while (1);
