@@ -291,25 +291,45 @@ extern "C"
   */
 #define EADC_GET_CONV_DATA(eadc, u32ModuleNum)  (((u32ModuleNum) < 19) ? ((eadc)->DAT[(u32ModuleNum)] & EADC_DAT_RESULT_Msk) : ((eadc)->DAT19[(u32ModuleNum)-19] & EADC_DAT_RESULT_Msk))
 
-/**
-  * @brief Get the data overrun flag of the user-specified sample module.
-  * @param[in] eadc The pointer of the specified EADC module.
-  * @param[in] u32ModuleMask The combination of data overrun status bits. Each bit corresponds to a data overrun status, valid range are between 1~0xFFFFFFF.
-  * @return Return the data overrun flag of the user-specified sample module.
-  * @details This macro is used to read OV bit field to get data overrun status.
-  * \hideinitializer
-  */
-#define EADC_GET_DATA_OVERRUN_FLAG(eadc, u32ModuleMask) ((((eadc)->STATUS0 >> EADC_STATUS0_OV_Pos) | ((eadc)->STATUS1 & EADC_STATUS1_OV_Msk)) & (u32ModuleMask))
 
 /**
-  * @brief Get the data valid flag of the user-specified sample module.
-  * @param[in] eadc The pointer of the specified EADC module.
-  * @param[in] u32ModuleMask The combination of data valid status bits. Each bit corresponds to a data valid status, valid range are between 1~0xFFFFFFF.
-  * @return Return the data valid flag of the user-specified sample module.
-  * @details This macro is used to read VALID bit field to get data valid status.
-  * \hideinitializer
-  */
-#define EADC_GET_DATA_VALID_FLAG(eadc, u32ModuleMask) ((((eadc)->STATUS0 & EADC_STATUS0_VALID_Msk) | (((eadc)->STATUS1 & EADC_STATUS1_VALID_Msk) << 16)) & (u32ModuleMask))
+ *    @brief        Get the data valid flag of the user-specified sample module
+ *
+ *    @param[in]    eadc    The pointer of the specified EADC module
+ *    @param[in]    u32ModuleMask   The combination of data valid status bits. Each bit corresponds to a data valid status, valid range are between 1~0xFFFFFFF.
+ *    @return       Return the data valid flag of the user-specified sample module.
+ *
+ *    @details      This macro is used to read VALID bit field to get data valid status.
+ */
+__STATIC_INLINE uint32_t EADC_GET_DATA_VALID_FLAG(EADC_T *eadc , uint32_t u32ModuleMask)
+{
+    uint32_t u32VALID = 0;
+
+    u32VALID = (eadc->STATUS0 & EADC_STATUS0_VALID_Msk);
+    u32VALID |= ((eadc->STATUS1 & EADC_STATUS1_VALID_Msk) << 16);
+
+    return  (u32VALID & u32ModuleMask);
+}
+
+
+/**
+ *    @brief         Get the data overrun flag of the user-specified sample module
+ *
+ *    @param[in]    eadc    The pointer of the specified EADC module
+ *    @param[in]    u32ModuleMask   The combination of data overrun status bits. Each bit corresponds to a data valid status, valid range are between 1~0xFFFFFFF.
+ *    @return       Return the data valid flag of the user-specified sample module.
+ *
+ *    @details      This macro is used to read OV bit field to get data overrun status.
+ */
+__STATIC_INLINE uint32_t EADC_GET_DATA_OVERRUN_FLAG(EADC_T *eadc , uint32_t u32ModuleMask)
+{
+    uint32_t u32OVFlag = 0;
+
+    u32OVFlag = ((eadc->STATUS0 & EADC_STATUS0_OV_Msk) >> EADC_STATUS0_OV_Pos);
+    u32OVFlag |= (eadc->STATUS1 & EADC_STATUS1_OV_Msk);
+
+    return  (u32OVFlag & u32ModuleMask);
+}
 
 /**
   * @brief Get the double data of the user-specified sample module.

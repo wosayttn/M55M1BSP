@@ -36,7 +36,7 @@ int32_t g_LPADC_i32ErrCode = 0;   /*!< LPADC global error code */
   *                       - \ref LPADC_ADCR_ADMD_CONTINUOUS           :Continuous scan mode.
   * @param[in] u32ChMask Channel enable bit. Each bit corresponds to a input channel. Bit 0 is channel 0, bit 1 is channel 1..., bit 15 is channel 15.
   * @return  None
-  * @note M031 series MCU LPADC can only convert 1 channel at a time. If more than 1 channels are enabled, only channel
+  * @note LPADC can only convert 1 channel at a time. If more than 1 channels are enabled, only channel
   *       with smallest number will be convert.
   * @note This API does not turn on LPADC power nor does trigger LPADC conversion.
   * @note This API will reset and calibrate LPADC if LPADC never be calibrated after chip power on.
@@ -129,24 +129,38 @@ void LPADC_Close(LPADC_T *lpadc)
   * @brief Configure the hardware trigger condition and enable hardware trigger
   * @param[in] lpadc The pointer of the specified LPADC module
   * @param[in] u32Source Decides the hardware trigger source. Valid values are:
-  *                       - \ref LPADC_LOW_LEVEL_TRIGGER      : A/D conversion is triggered by external STADC pin low level.
-  *                       - \ref LPADC_HIGH_LEVEL_TRIGGER     : A/D conversion is triggered by external STADC pin High level.
-  *                       - \ref LPADC_FALLING_EDGE_TRIGGER   : A/D conversion is triggered by external STADC pin falling edge.
-  *                       - \ref LPADC_RISING_EDGE_TRIGGER    : A/D conversion is triggered by external STADC pin rsing edge.
+  *                       - \ref LPADC_STADC_TRIGGER          : A/D conversion is started by external STADC pin.
   *                       - \ref LPADC_BPWM_TRIGGER           : A/D conversion is triggered by BPWM.
   *                       - \ref LPADC_EPWM_TRIGGER           : A/D conversion is triggered by EPWM.
   *                       - \ref LPADC_ACMP0_TRIGGER          : A/D conversion is triggered by ACMP0.
   *                       - \ref LPADC_ACMP1_TRIGGER          : A/D conversion is triggered by ACMP1.
   *                       - \ref LPADC_ACMP2_TRIGGER          : A/D conversion is triggered by ACMP2.
   *                       - \ref LPADC_ACMP3_TRIGGER          : A/D conversion is triggered by ACMP3.
+  * @param[in] u32Param While LPADC trigger by external pin, this parameter is used to set trigger condition.
+  *                     Valid values are:
+  *                      - \ref LPADC_ADCR_TRGCOND_LOW_LEVEL     :STADC Low level active
+  *                      - \ref LPADC_ADCR_TRGCOND_HIGH_LEVEL    :STADC High level active
+  *                      - \ref LPADC_ADCR_TRGCOND_FALLING_EDGE  :STADC Falling edge active
+  *                      - \ref LPADC_ADCR_TRGCOND_RISING_EDGE   :STADC Rising edge active
+  *                     While LPADC trigger by other source, this parameter is unused.
   * @return None
   * @note Software should disable TRGEN (ADCR[8]) and ADST (ADCR[11]) before change TRGS(ADCR[5:4]).
   */
-void LPADC_EnableHWTrigger(LPADC_T *lpadc, uint32_t u32Source)
+void LPADC_EnableHWTrigger(LPADC_T *lpadc, uint32_t u32Source,uint32_t u32Param)
 {
-
-    lpadc->ADCR = (lpadc->ADCR & ~(LPADC_ADCR_TRGS_Msk | LPADC_ADCR_TRGCOND_Msk | LPADC_ADCR_TRGEN_Msk)) |
-                  ((u32Source) | LPADC_ADCR_TRGEN_Msk);
+    /*Software should clear TRGEN bit before changing TRGS bits.*/ 
+    lpadc->ADCR = (lpadc->ADCR & ~(LPADC_ADCR_TRGEN_Msk));
+	
+    if(u32Source == LPADC_STADC_TRIGGER)
+    {
+        lpadc->ADCR = (lpadc->ADCR & ~(LPADC_ADCR_TRGS_Msk | LPADC_ADCR_TRGCOND_Msk)) |
+                      ((u32Source) | (u32Param) | LPADC_ADCR_TRGEN_Msk);
+    }
+    else
+    {
+        lpadc->ADCR = (lpadc->ADCR & ~(LPADC_ADCR_TRGS_Msk | LPADC_ADCR_TRGCOND_Msk)) |
+                      ((u32Source) | LPADC_ADCR_TRGEN_Msk);
+    }
 
 }
 
@@ -157,7 +171,9 @@ void LPADC_EnableHWTrigger(LPADC_T *lpadc, uint32_t u32Source)
   */
 void LPADC_DisableHWTrigger(LPADC_T *lpadc)
 {
-    lpadc->ADCR &= ~(LPADC_ADCR_TRGS_Msk | LPADC_ADCR_TRGCOND_Msk | LPADC_ADCR_TRGEN_Msk);
+	/*Software should clear TRGEN bit before changing TRGS bits.*/ 
+    lpadc->ADCR &= ~(LPADC_ADCR_TRGEN_Msk); 
+    lpadc->ADCR &= ~(LPADC_ADCR_TRGS_Msk | LPADC_ADCR_TRGCOND_Msk);
 
 }
 
@@ -214,12 +230,13 @@ void LPADC_DisableInt(LPADC_T *lpadc, uint32_t u32Mask)
 /**
   * @brief Set LPADC extend sample time.
   * @param[in] lpadc The pointer of the specified LPADC module.
-  * @param[in] u32ExtendSampleTime Decides the extend sampling time, the range is from 0~16383 LPADC clock. Valid value are from 0 to 0xFF.
+  * @param[in] u32ModuleNum Decides the sample module number, valid value are 0.  
+  * @param[in] u32ExtendSampleTime Decides the extend sampling time, the range is from 0~16383 LPADC clock. Valid value are from 0 to 0x3FFF.
   * @return None
   * @details When A/D converting at high conversion rate, the sampling time of analog input voltage may not enough if input channel loading is heavy,
   *         user can extend A/D sampling time after trigger source is coming to get enough sampling time.
   */
-void LPADC_SetExtendSampleTime(LPADC_T *lpadc, uint32_t u32ExtendSampleTime)
+void LPADC_SetExtendSampleTime(LPADC_T *lpadc, uint32_t u32ModuleNum, uint32_t u32ExtendSampleTime)
 {
     lpadc->ESMPCTL = (lpadc->ESMPCTL & ~LPADC_ESMPCTL_EXTSMPT_Msk) |
                      (u32ExtendSampleTime << LPADC_ESMPCTL_EXTSMPT_Pos);
