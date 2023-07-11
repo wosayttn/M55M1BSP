@@ -37,12 +37,20 @@
 #define M258G            2
 #define CHIP_VERSION     M258G
 
-uint32_t au32ExTriggeSource[10]=
+uint32_t au32STADC_TriggeEvent[4]=
 {
  LPADC_LOW_LEVEL_TRIGGER,
  LPADC_HIGH_LEVEL_TRIGGER,
  LPADC_FALLING_EDGE_TRIGGER,
  LPADC_RISING_EDGE_TRIGGER, 
+
+};
+uint32_t au32ExTriggeSource[10]=
+{
+ LPADC_STADC_TRIGGER,
+ LPADC_STADC_TRIGGER,
+ LPADC_STADC_TRIGGER,
+ LPADC_STADC_TRIGGER, 
  LPADC_BPWM_TRIGGER,
  LPADC_EPWM_TRIGGER,
  LPADC_ACMP0_TRIGGER,
@@ -117,16 +125,18 @@ void CU_LPADC_API_Function_Test(LPADC_T *psLpadc)
 
     for(u32TrgScr=0;u32TrgScr<10;u32TrgScr++)
     {
-       LPADC_EnableHWTrigger(psLpadc,au32ExTriggeSource[u32TrgScr]);
+       
        if(u32TrgScr < 4)
        {
+        LPADC_EnableHWTrigger(psLpadc,au32ExTriggeSource[u32TrgScr],au32STADC_TriggeEvent[u32TrgScr]);
         CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_TRGS_Msk, 0x0);
         CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_TRGCOND_Msk, (u32TrgScr << LPADC_ADCR_TRGCOND_Pos));
        }
         else
        {
+         LPADC_EnableHWTrigger(psLpadc,au32ExTriggeSource[u32TrgScr],0);
          CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_TRGS_Msk, au32ExTriggeSource[u32TrgScr]);
-        CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_TRGCOND_Msk,0x0);
+         CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_TRGCOND_Msk,0x0);
        }
        
        CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_TRGEN_Msk, (0x1 << 8));
@@ -183,7 +193,7 @@ void CU_LPADC_API_Function_Test(LPADC_T *psLpadc)
     
      for(u32Cnt=0;u32Cnt<16384;u32Cnt++)
      {
-        LPADC_SetExtendSampleTime(psLpadc,u32Cnt);
+        LPADC_SetExtendSampleTime(psLpadc,0,u32Cnt);
         CU_ASSERT_EQUAL(psLpadc->ESMPCTL & LPADC_ESMPCTL_EXTSMPT_Msk,u32Cnt);
      }
     
