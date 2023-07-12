@@ -14,13 +14,7 @@
 /* Hardware includes. */
 #include "NuMicro.h"
 
-extern int IsDebugFifoEmpty(void);
-
-volatile uint8_t g_u8IsRTCAlarmINT = 0, g_u8IsGPIOINT = 0;
-volatile uint32_t u32SubSecCntRecord = 0, u32SecCntRecord = 0;
-
-S_RTC_TIME_DATA_T sWriteRTC, sReadRTC;
-volatile uint32_t g_u32WriteRTC_Ticks, g_u32ReadRTC_Ticks;
+#define PMC_IDLE_MODE
 
 #define RTC_TIME_HZCNT_Pos               (24)                                              /*!< RTC_T::TIME: HZCNT Position            */
 #define RTC_TIME_HZCNT_Msk               (0x7ful << RTC_TIME_HZCNT_Pos)                    /*!< RTC_T::TIME: HZCNT Mask                */
@@ -54,6 +48,9 @@ int IsDebugFifoEmpty(void)
  */
 void RTC_IRQHandler(void)
 {
+	uint32_t u32ReadRTC_Ticks;
+	S_RTC_TIME_DATA_T sReadRTC;
+
     /* To check if RTC alarm interrupt occurred */
     if(RTC_GET_ALARM_INT_FLAG(RTC) == 1)
     {
@@ -62,12 +59,11 @@ void RTC_IRQHandler(void)
 
         /* Read current RTC date/time/ticks */
         RTC_GetDateAndTime(&sReadRTC);
-        g_u32ReadRTC_Ticks = ((RTC->TIME & RTC_TIME_HZCNT_Msk) >> RTC_TIME_HZCNT_Pos);
+        u32ReadRTC_Ticks = ((RTC->TIME & RTC_TIME_HZCNT_Msk) >> RTC_TIME_HZCNT_Pos);
 
         printf("RTC Alarm: %d/%02d/%02d %02d:%02d:%02d.%02d\n",
-               sReadRTC.u32Year, sReadRTC.u32Month, sReadRTC.u32Day, sReadRTC.u32Hour, sReadRTC.u32Minute, sReadRTC.u32Second, g_u32ReadRTC_Ticks * 100 / 128);
+               sReadRTC.u32Year, sReadRTC.u32Month, sReadRTC.u32Day, sReadRTC.u32Hour, sReadRTC.u32Minute, sReadRTC.u32Second, u32ReadRTC_Ticks * 100 / 128);
 
-        g_u8IsRTCAlarmINT++;
     }
 
     /* To check if RTC tick interrupt occurred */
@@ -89,40 +85,33 @@ void RTC_IRQHandler(void)
  */
 void GPB_IRQHandler(void)
 {
+	uint32_t u32ReadRTC_Ticks;
+	S_RTC_TIME_DATA_T sReadRTC;
+
     if(GPIO_GET_INT_FLAG(PB, BIT1))      /* To check if PB.1 interrupt occurred */
     {
         GPIO_CLR_INT_FLAG(PB, BIT1);
         printf("CPU woken up by external interrupt (PB.1 INT occurred).\n");
-
-        g_u8IsGPIOINT ++;
     }
     else if(GPIO_GET_INT_FLAG(PB, BIT2)) /* To check if PB.2 interrupt occurred */
     {
         GPIO_CLR_INT_FLAG(PB, BIT2);
         printf("CPU woken up by external interrupt (PB.2 INT occurred).\n");
-
-        g_u8IsGPIOINT ++;
     }
     else if(GPIO_GET_INT_FLAG(PB, BIT3)) /* To check if PB.3 interrupt occurred */
     {
         GPIO_CLR_INT_FLAG(PB, BIT3);
         printf("CPU woken up by external interrupt (PB.3 INT occurred).\n");
-
-        g_u8IsGPIOINT ++;
     }
     else if(GPIO_GET_INT_FLAG(PB, BIT4)) /* To check if PB.4 interrupt occurred */
     {
         GPIO_CLR_INT_FLAG(PB, BIT4);
         printf("CPU woken up by external interrupt (PB.4 INT occurred).\n");
-
-        g_u8IsGPIOINT ++;
     }
     else if(GPIO_GET_INT_FLAG(PB, BIT5)) /* To check if PB.5 interrupt occurred */
     {
         GPIO_CLR_INT_FLAG(PB, BIT5);
         printf("CPU woken up by external interrupt (PB.5 INT occurred).\n");
-
-        g_u8IsGPIOINT ++;
     }
     else
     {
@@ -133,37 +122,35 @@ void GPB_IRQHandler(void)
 
     /* Read current RTC date/time */
     RTC_GetDateAndTime(&sReadRTC);
-    g_u32ReadRTC_Ticks = ((RTC->TIME & RTC_TIME_HZCNT_Msk) >> RTC_TIME_HZCNT_Pos);
+    u32ReadRTC_Ticks = ((RTC->TIME & RTC_TIME_HZCNT_Msk) >> RTC_TIME_HZCNT_Pos);
 
-//    printf("IO wakup up time: %d/%02d/%02d %02d:%02d:%02d.%02d\n",
-//            sReadRTC.u32Year, sReadRTC.u32Month, sReadRTC.u32Day, sReadRTC.u32Hour, sReadRTC.u32Minute, sReadRTC.u32Second, g_u32ReadRTC_Ticks * 100 / 128);
+    printf("IO wakup up time: %d/%02d/%02d %02d:%02d:%02d.%02d\n",
+            sReadRTC.u32Year, sReadRTC.u32Month, sReadRTC.u32Day, sReadRTC.u32Hour, sReadRTC.u32Minute, sReadRTC.u32Second, u32ReadRTC_Ticks * 100 / 128);
 }
 
 void PowerDownFunction(void)
 {
-    uint32_t u32TimeOutCnt;
+#if defined(PMC_IDLE_MODE)
+	PMC_Idle();
+#else
 
-#if 0
+    uint32_t u32TimeOutCnt;
     /* Select Power-down mode */
     PMC_SetPowerDownMode(PMC_NPD0, PMC_PLCTL_PLSEL_PL1);
-#endif
-	
     /* To check if all the debug messages are finished */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(IsDebugFifoEmpty() == 0)
-        if(--u32TimeOutCnt == 0) break;
+		if(--u32TimeOutCnt == 0) break;
 
-#if 0
     /* Enter to Power-down mode */
     PMC_PowerDown();
 #endif
-    /* Enter to idle mode */
-	PMC_Idle();
 }
 
 void vParTestInitialise(void)
 {
     uint32_t u32Pin;
+	S_RTC_TIME_DATA_T sWriteRTC;
 
     SYS_UnlockReg();
 
@@ -202,6 +189,10 @@ void vParTestInitialise(void)
     CLK_SET_PCLK2DIV(2);
     CLK_SET_PCLK3DIV(2);
     CLK_SET_PCLK4DIV(2);
+
+	/* Update System Core Clock */
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
+    SystemCoreClockUpdate();
 
     /* Enable GPIO module clock */
     CLK_EnableModuleClock(GPIOB_MODULE);
@@ -247,6 +238,9 @@ void vParTestInitialise(void)
     /* Enable RTC module clock */
     CLK_EnableModuleClock(RTC0_MODULE);
 
+	/* Set LXT as RTC clock source */
+    RTC_SetClockSource(RTC_CLOCK_SOURCE_LXT);
+
     /* Enable RTC NVIC */
     NVIC_EnableIRQ(RTC_IRQn);
 
@@ -266,6 +260,8 @@ void vParTestInitialise(void)
         printf("\n Please check h/w setting!!");
         while(1);
     }
+
+	RTC_SetTickPeriod(RTC_TICK_1_128_SEC);
 
     /* Enable sub-second counter */
     RTC->CLKFMT |= RTC_CLKFMT_HZCNTEN_Msk;

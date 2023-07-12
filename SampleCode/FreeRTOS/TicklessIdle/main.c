@@ -16,7 +16,8 @@
 #include "partest.h"
 #include "NuMicro.h"
 
-#define TIME_DELAY_SLEEP  500
+//#define TIME_DELAY_SLEEP  500
+#define TIME_DELAY_SLEEP  30
 #define tickless_task_PRIORITY  (configMAX_PRIORITIES - 2)
 
 #define LED     PH4
@@ -80,6 +81,7 @@ static void prvSetupHardware(void)
 
 void vApplicationMallocFailedHook( void )
 {
+	printf("vApplicationMallocFailedHook\n");
 	/* vApplicationMallocFailedHook() will only be called if
 	configUSE_MALLOC_FAILED_HOOK is set to 1 in FreeRTOSConfig.h.  It is a hook
 	function that will get called if a call to pvPortMalloc() fails.
@@ -100,6 +102,7 @@ void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
 	( void ) pcTaskName;
 	( void ) pxTask;
 
+	printf("vApplicationMallocFailedHook\n");
 	/* Run time stack overflow checking is performed if
 	configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2.  This hook
 	function is called if a stack overflow is detected. */

@@ -370,10 +370,10 @@
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\ARM\M55M1.scatter</ScatterFile>
+            <ScatterFile>.\M55M1.scatter</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
-            <Misc>--predefine="-DHEAP_SIZE=0x20000" --predefine="-DSTACK_SIZE=0x40000"</Misc>
+            <Misc></Misc>
             <LinkerInputFile></LinkerInputFile>
             <DisabledWarnings></DisabledWarnings>
           </LDads>

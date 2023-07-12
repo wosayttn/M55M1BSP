@@ -190,6 +190,7 @@ void vParTestSetLED( unsigned long ulLED, signed portBASE_TYPE xValue )
 void vParTestToggleLED( unsigned long ulLED )
 {
     (void)ulLED;
+	printf("vParTestToggleLED \n");
     PA11 ^= 1;
 }
 /*-----------------------------------------------------------*/

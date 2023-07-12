@@ -109,6 +109,7 @@ void vApplicationMallocFailedHook( void )
 	FreeRTOSConfig.h, and the xPortGetFreeHeapSize() API function can be used
 	to query the size of free heap space that remains (although it does not
 	provide information on how the remaining heap might be fragmented). */
+	printf("vApplicationMallocFailedHook\n");
 	taskDISABLE_INTERRUPTS();
 	for( ;; );
 }
@@ -133,6 +134,7 @@ void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
 	( void ) pcTaskName;
 	( void ) pxTask;
 
+	printf("vApplicationMallocFailedHook\n");
 	/* Run time stack overflow checking is performed if
 	configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2.  This hook
 	function is called if a stack overflow is detected. */

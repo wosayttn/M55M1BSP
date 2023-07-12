@@ -38,65 +38,26 @@
 
 #include "NuMicro.h"
 
-#if defined (__MPU_DEMO__)
-#include "mpu_demo.h"
-
-/* Externs needed by the MPU setup code. These are defined in Scatter-Loading
- * description file (FreeRTOSDemo_ns.sct). */
-extern uint32_t Image$$ER_IROM_NS_PRIVILEGED$$Base;
-extern uint32_t Image$$ER_IROM_NS_PRIVILEGED_ALIGN$$Limit;
-extern uint32_t Image$$ER_IROM_NS_FREERTOS_SYSTEM_CALLS$$Base;
-extern uint32_t Image$$ER_IROM_NS_FREERTOS_SYSTEM_CALLS_ALIGN$$Limit;
-extern uint32_t Image$$ER_IROM_NS_UNPRIVILEGED$$Base;
-extern uint32_t Image$$ER_IROM_NS_UNPRIVILEGED_ALIGN$$Limit;
-
-extern uint32_t Image$$ER_IRAM_NS_PRIVILEGED$$Base;
-extern uint32_t Image$$ER_IRAM_NS_PRIVILEGED_ALIGN$$Limit;
-extern uint32_t Image$$ER_IRAM_NS_UNPRIVILEGED$$Base;
-extern uint32_t Image$$ER_IRAM_NS_UNPRIVILEGED_ALIGN$$Limit;
-
-/* Privileged flash. */
-const uint32_t * __privileged_functions_start__		= ( uint32_t * ) &( Image$$ER_IROM_NS_PRIVILEGED$$Base );
-const uint32_t * __privileged_functions_end__		= ( uint32_t * ) ( ( uint32_t ) &( Image$$ER_IROM_NS_PRIVILEGED_ALIGN$$Limit ) - 0x1 ); /* Last address in privileged Flash region. */
-
-/* Flash containing system calls. */
-const uint32_t * __syscalls_flash_start__			= ( uint32_t * ) &( Image$$ER_IROM_NS_FREERTOS_SYSTEM_CALLS$$Base );
-const uint32_t * __syscalls_flash_end__				= ( uint32_t * ) ( ( uint32_t ) &( Image$$ER_IROM_NS_FREERTOS_SYSTEM_CALLS_ALIGN$$Limit ) - 0x1 ); /* Last address in Flash region containing system calls. */
-
-/* Unprivileged flash. Note that the section containing system calls is
- * unprivileged so that unprivileged tasks can make system calls. */
-const uint32_t * __unprivileged_flash_start__		= ( uint32_t * ) &( Image$$ER_IROM_NS_UNPRIVILEGED$$Base );
-const uint32_t * __unprivileged_flash_end__			= ( uint32_t * ) ( ( uint32_t ) &( Image$$ER_IROM_NS_UNPRIVILEGED_ALIGN$$Limit ) - 0x1 ); /* Last address in un-privileged Flash region. */
-
-/* RAM with priviledged access only. This contains kernel data. */
-const uint32_t * __privileged_sram_start__			= ( uint32_t * ) &( Image$$ER_IRAM_NS_PRIVILEGED$$Base );
-const uint32_t * __privileged_sram_end__			= ( uint32_t * ) ( ( uint32_t ) &( Image$$ER_IRAM_NS_PRIVILEGED_ALIGN$$Limit ) - 0x1 ); /* Last address in privileged RAM. */
-
-/* Unprivileged RAM. */
-const uint32_t * __unprivileged_sram_start__		= ( uint32_t * ) &( Image$$ER_IRAM_NS_UNPRIVILEGED$$Base );
-const uint32_t * __unprivileged_sram_end__			= ( uint32_t * ) ( ( uint32_t ) &( Image$$ER_IRAM_NS_UNPRIVILEGED_ALIGN$$Limit ) - 0x1 ); /* Last address in un-privileged RAM. */
-
-#endif
-/*-----------------------------------------------------------*/
-
+#if 0
 void SystemInit() {
     /* secure world is doing the neccessary setup, since it has
      * the privilege to do so, and non-secure doesn't
      */
 }
 
+void DEBUG_PORT_Init(void)
+{
+    /* Init UART to 115200-8n1 for print message */
+    UART_Open(UART1, 115200);
+}
+
+#endif
 
 /**
  * @brief Create all demo tasks.
  */
 static void prvCreateTasks( void );
 
-/**
- * @brief The mem fault handler.
- *
- * It calls a function called vHandleMemoryFault.
- */
-void MemManage_Handler( void ) __attribute__ ( ( naked ) );
 /*-----------------------------------------------------------*/
 
 /*
@@ -118,6 +79,12 @@ void MemManage_Handler( void ) __attribute__ ( ( naked ) );
 /* Non-Secure main. */
 int main( void )
 {
+//	DEBUG_PORT_Init();
+
+	printf("NonSecure main \n");
+	while(1){}
+
+
 	/* Create tasks. */
 	prvCreateTasks();
 
@@ -133,11 +100,6 @@ int main( void )
 
 static void prvCreateTasks( void )
 {
-#if defined (__MPU_DEMO__)
-	/* Create tasks for the MPU Demo. */
-	vStartMPUDemo();
-#endif
-
 	/* Create tasks for the TZ Demo. */
 	vStartTZDemo();
 
@@ -205,24 +167,6 @@ void vApplicationGetTimerTaskMemory( StaticTask_t ** ppxTimerTaskTCBBuffer,
 	*pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
 }
 /*-----------------------------------------------------------*/
-#if defined (__MPU_DEMO__)
-
-void MemManage_Handler( void )
-{
-	__asm volatile
-	(
-		" tst lr, #4										\n"
-		" ite eq											\n"
-		" mrseq r0, msp										\n"
-		" mrsne r0, psp										\n"
-		" ldr r1, handler_address_const						\n"
-		" bx r1												\n"
-		"													\n"
-		" handler_address_const: .word vHandleMemoryFault	\n"
-	);
-}
-/*-----------------------------------------------------------*/
-#endif
 
 void vApplicationTickHook( void )
 {
