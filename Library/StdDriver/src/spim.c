@@ -916,7 +916,7 @@ void SPIM_SetQuadEnable(SPIM_T *spim, int isEn, uint32_t u32NBit)
                 dataBuf[1] &= ~SR2_QE;
             }
 
-            SPIM_SetWriteEnable(spim, 1, u32NBit);   /* Write Enable.    */
+            SPIM_SetWriteEnable(spim, SPIM_OP_ENABLE, u32NBit);   /* Write Enable.    */
             SPIM_WriteStatusRegister2(spim, dataBuf, sizeof(dataBuf), u32NBit);
             spim_wait_writedone(spim, u32NBit);
 
@@ -1643,6 +1643,10 @@ void SPIM_DMADMM_InitPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, uint32_t u3
 {
     uint32_t u32Is4ByteAddr = 0;
     uint32_t u32QuadMode = 0;
+    uint32_t u32CmdBit = SPIM_PhaseModeToNBit(psPhaseTable->u32CMDPhase);
+
+    /* Disable SPI Flash Quad Mode */
+    SPIM_SetQuadEnable(spim, SPIM_OP_DISABLE, u32CmdBit);
 
     /* Clear SPIM Read Mode (Continue Read) */
     SPIM_CLEAR_MODE_DATA(spim);
@@ -1651,13 +1655,13 @@ void SPIM_DMADMM_InitPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, uint32_t u3
     u32QuadMode = (((psPhaseTable->u32AddrPhase == PHASE_QUAD_MODE) ||
                     (psPhaseTable->u32DataPhase == PHASE_QUAD_MODE)) ? SPIM_OP_ENABLE : SPIM_OP_DISABLE);
 
-    SPIM_Enable_4Bytes_Mode(spim, u32Is4ByteAddr, SPIM_PhaseModeToNBit(psPhaseTable->u32CMDPhase));
+    SPIM_Enable_4Bytes_Mode(spim, u32Is4ByteAddr, u32CmdBit);
 
     SPIM_SET_4BYTE_ADDR(spim, u32Is4ByteAddr);
 
     if (u32QuadMode == SPIM_OP_ENABLE)
     {
-        SPIM_SetQuadEnable(spim, u32QuadMode, 1UL);
+        SPIM_SetQuadEnable(spim, u32QuadMode, u32CmdBit);
     }
 
     SPIM_DISABLE_DMM_BWEN(spim);
@@ -1677,7 +1681,7 @@ void SPIM_DMADMM_InitPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, uint32_t u3
                              psPhaseTable->u32AddrWidth,
                              psPhaseTable->u32AddrDTR);
 
-    /* Set DMA/DMM Continue Read Phase */
+    /* Set DMA Read/DMM Continue Read Phase */
     SPIM_DMADMM_SetContReadPhase(spim,
                                  u32OPMode,
                                  psPhaseTable->u32RdModePhase,
@@ -1994,7 +1998,7 @@ void SPIM_IO_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
 {
     uint32_t u32Is4ByteAddr = 0;
 
-    u32Is4ByteAddr = ((psPhaseTable->u32AddrWidth == PHASE_WIDTH_32) ? 1 : 0);
+    u32Is4ByteAddr = ((psPhaseTable->u32AddrWidth == PHASE_WIDTH_32) ? SPIM_OP_ENABLE : SPIM_OP_DISABLE);
 
     SPIM_Enable_4Bytes_Mode(spim, u32Is4ByteAddr, SPIM_PhaseModeToNBit(psPhaseTable->u32CMDPhase));
     SPIM_SET_4BYTE_ADDR(spim, u32Is4ByteAddr);

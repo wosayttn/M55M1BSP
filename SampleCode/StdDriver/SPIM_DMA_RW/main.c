@@ -16,6 +16,22 @@
 
 __attribute__((aligned(32))) uint8_t g_buff[BUFFER_SIZE] = {0};
 
+/* Program Command Phase */
+extern SPIM_PHASE_T sWb02hWrCMD;
+extern SPIM_PHASE_T sWb12hWrCMD;
+
+/* Standard Read Command Phase */
+extern SPIM_PHASE_T sWb0BhRdCMD;
+
+/* Dual Read Command Phase */
+extern SPIM_PHASE_T sWbBBhRdCMD;
+extern SPIM_PHASE_T sWbBChRdCMD;
+
+/* Quad Read Command Phase */
+extern SPIM_PHASE_T sWbEBhRdCMD;
+extern SPIM_PHASE_T sWbEChRdCMD;
+
+//------------------------------------------------------------------------------
 void SYS_Init(void)
 {
     /* Unlock protected registers */
@@ -84,12 +100,6 @@ int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
     uint32_t i = 0, offset = 0;             /* variables */
     uint32_t *pData = NULL;
 
-    //if (SPIM_Enable_4Bytes_Mode(SPIM0, is4ByteAddr, 1) != 0)
-    //{
-    //    printf("SPIM_Enable_4Bytes_Mode failed!\n");
-    //    return -1;
-    //}
-
     /*
      *  Erase flash page
      */
@@ -100,19 +110,13 @@ int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
     /*
      *  Verify flash page be erased
      */
-    //if ((u32RdCmd == CMD_DMA_NORMAL_QUAD_READ) || (u32RdCmd == CMD_DMA_FAST_QUAD_READ) ||
-    //        (u32RdCmd == CMD_DMA_FAST_READ_QUAD_OUTPUT))
-    //    SPIM_SetQuadEnable(SPIM0, 1, 1);
-
     printf("Verify SPI flash block 0x%x be erased...", TEST_BLOCK_ADDR);
 
     //for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
         memset(g_buff, 0, BUFFER_SIZE);
-        SPIM_DMA_Read(SPIM0, TEST_BLOCK_ADDR + offset, is4ByteAddr, BUFFER_SIZE,
-                      g_buff, u32RdCmd, 1);
-        //SPIM_IO_Read(SPIM0, TEST_BLOCK_ADDR + offset, is4ByteAddr, BUFFER_SIZE,
-        //             g_buff, OPCODE_FAST_READ, 1, 1, 1, 1);
+        SPIM_IO_Read(SPIM0, TEST_BLOCK_ADDR + offset, is4ByteAddr, BUFFER_SIZE,
+                     g_buff, OPCODE_FAST_READ, 1, 1, 1, 1);
 
         pData = (uint32_t *)g_buff;
 
@@ -128,8 +132,6 @@ int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
     }
 
     printf("done.\n");
-
-    //SPIM_SetQuadEnable(SPIM0, 0, 1);
 
     /*
      *  Program data to flash block
@@ -151,10 +153,6 @@ int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
     /*
      *  Verify flash block data
      */
-    //if ((u32RdCmd == CMD_DMA_NORMAL_QUAD_READ) || (u32RdCmd == CMD_DMA_FAST_QUAD_READ) ||
-    //        (u32RdCmd == CMD_DMA_FAST_READ_QUAD_OUTPUT))
-    //    SPIM_SetQuadEnable(SPIM0, 1, 1);
-
     printf("Verify SPI flash block 0x%x data...", TEST_BLOCK_ADDR);
 
     //for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
@@ -177,7 +175,6 @@ int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
 
     }
 
-    //SPIM_SetQuadEnable(SPIM0, 0, 1);
     printf("done.\n");
     return 0;
 }
@@ -185,25 +182,6 @@ int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
 int main()
 {
     uint8_t idBuf[3];
-    /* 0x02h : CMD_NORMAL_PAGE_PROGRAM Command Phase Table */
-    SPIM_PHASE_T sWb02hWrCMD =
-    {
-        CMD_NORMAL_PAGE_PROGRAM,                                    //Command Code
-        PHASE_NORMAL_MODE, PHASE_WIDTH_8,  PHASE_DISABLE_DTR,       //Command Phase
-        PHASE_NORMAL_MODE, PHASE_WIDTH_24, PHASE_DISABLE_DTR,       //Address Phase
-        PHASE_NORMAL_MODE, PHASE_ORDER_MODE0,  PHASE_DISABLE_DTR,   //Data Phase
-        0,
-    };
-
-    /* 0x0B: CMD_DMA_FAST_READ Command Phase Table */
-    SPIM_PHASE_T sWb03hRdCMD =
-    {
-        CMD_DMA_NORMAL_READ,                                        // Command Code
-        PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,        // Command Phase
-        PHASE_NORMAL_MODE, PHASE_WIDTH_24, PHASE_DISABLE_DTR,       // Address Phase
-        PHASE_NORMAL_MODE, PHASE_ORDER_MODE0, PHASE_DISABLE_DTR,    // Data Phase
-        0,                                                          // Dummy Cycle Phase
-    };
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -243,20 +221,21 @@ int main()
 
     printf("\n[Fast Read] 3-bytes address mode, Fast Read command...");
 
-    SPIM_DMADMM_InitPhase(SPIM0, &sWb03hRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
+    SPIM_DMADMM_InitPhase(SPIM0, &sWb0BhRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
     SPIM_DMADMM_InitPhase(SPIM0, &sWb02hWrCMD, SPIM_CTL0_OPMODE_PAGEWRITE);
 
-    if (dma_read_write(0, sWb03hRdCMD.u32CMDCode, sWb02hWrCMD.u32CMDCode) < 0)
+    if (dma_read_write(0, sWb0BhRdCMD.u32CMDCode, sWb02hWrCMD.u32CMDCode) < 0)
     {
         printf("  FAILED!!\n");
         goto lexit;
     }
 
     printf("[OK].\n");
-#if 0
-    printf("\n[Fast Read Dual Output] 3-bytes address mode, Fast Read Dual command...");
 
-    if (dma_read_write(0, CMD_DMA_FAST_READ_DUAL_OUTPUT, CMD_NORMAL_PAGE_PROGRAM, 8) < 0)
+    printf("\n[Fast Read Dual Output] 3-bytes address mode, Fast Read Dual command...");
+    SPIM_DMADMM_InitPhase(SPIM0, &sWbBBhRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
+
+    if (dma_read_write(0, sWbBBhRdCMD.u32CMDCode, sWb02hWrCMD.u32CMDCode) < 0)
     {
         printf("  FAILED!!\n");
         goto lexit;
@@ -265,19 +244,23 @@ int main()
     printf("[OK].\n");
 
     printf("\n[Fast Read Quad Output] 3-bytes address mode, Fast Read Quad command...");
+    SPIM_DMADMM_InitPhase(SPIM0, &sWbEBhRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
 
-    if (dma_read_write(0, CMD_DMA_FAST_QUAD_READ, CMD_NORMAL_PAGE_PROGRAM, 4) < 0)
+    if (dma_read_write(0, sWbEBhRdCMD.u32CMDCode, sWb02hWrCMD.u32CMDCode) < 0)
     {
         printf("  FAILED!!\n");
         goto lexit;
     }
 
     printf("[OK].\n");
-#endif //0
-#if 0  /* W25Q20 does not support 4-bytes address mode. */
-    printf("\n[Fast Read Dual I/O] 4-bytes address mode, dual read...");
 
-    if (dma_read_write(1, CMD_DMA_FAST_DUAL_READ, CMD_NORMAL_PAGE_PROGRAM, 8) < 0)
+#if 1
+    SPIM_DMADMM_InitPhase(SPIM0, &sWb12hWrCMD, SPIM_CTL0_OPMODE_PAGEWRITE);
+
+    printf("\n[Fast Read Dual I/O] 4-bytes address mode, dual read...");
+    SPIM_DMADMM_InitPhase(SPIM0, &sWbBChRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
+
+    if (dma_read_write(1, sWbBChRdCMD.u32CMDCode, sWb12hWrCMD.u32CMDCode) < 0)
     {
         printf("  FAILED!!\n");
         goto lexit;
@@ -286,8 +269,9 @@ int main()
     printf("[OK].\n");
 
     printf("\n[Fast Read Quad I/O] 4-bytes address mode, quad read...");
+    SPIM_DMADMM_InitPhase(SPIM0, &sWbEChRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
 
-    if (dma_read_write(1, CMD_DMA_FAST_QUAD_READ, CMD_NORMAL_PAGE_PROGRAM, 4) < 0)
+    if (dma_read_write(1, sWbEChRdCMD.u32CMDCode, sWb12hWrCMD.u32CMDCode) < 0)
     {
         printf("  FAILED!!\n");
         goto lexit;
