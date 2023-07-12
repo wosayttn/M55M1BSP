@@ -83,11 +83,11 @@
 #endif
 
 #ifndef STACK_SIZE
-#define STACK_SIZE 0x400
+#define STACK_SIZE 0xa000
 #endif
 
 #ifndef HEAP_SIZE
-#define HEAP_SIZE 0x400
+#define HEAP_SIZE  0xa000
 #endif
 
 #define ITCM_START      0x00000000
@@ -96,7 +96,7 @@
 #define DTCM_SIZE       0x00020000
 
 #define FLASH_START     0x00100000
-#define FLASH_SIZE      0x00200000
+#define FLASH_SIZE      0x00100000
 
 /* SRAM012 */
 #define SRAM012_START    0x20100000
@@ -202,3 +202,4 @@ APP_IMAGE FLASH_START FLASH_SIZE
     }
 #endif
 }
+	

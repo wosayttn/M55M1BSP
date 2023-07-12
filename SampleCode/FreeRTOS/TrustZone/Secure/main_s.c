@@ -28,8 +28,6 @@
 
 /* Use CMSE intrinsics */
 #include <arm_cmse.h>
-//#include "RTE_Components.h"
-//#include CMSIS_device_header
 #include "NuMicro.h"
 /* FreeRTOS includes. */
 #include "secure_port_macros.h"

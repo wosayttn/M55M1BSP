@@ -82,8 +82,8 @@
           <AfterMake>
             <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>1</RunUserProg2>
-            <UserProg1Name>fromelf --bin --output=image\ "$L@L.axf"</UserProg1Name>
-            <UserProg2Name>fromelf --text -c "$L@L.axf" --output=outfile.lst</UserProg2Name>
+            <UserProg1Name>fromelf --bin ".\Objects\@L.axf" --output ".\release\@L.bin"</UserProg1Name>
+            <UserProg2Name>..\..\..\binToDat.bat ".\Objects\@L.axf"</UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
             <nStopA1X>0</nStopA1X>
@@ -337,9 +337,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>TF_LITE_STATIC_MEMORY, ARM_MATH_DSP, ARM_NPU, CPU_PROFILE_ENABLED, ACTIVATION_BUF_SZ=0x00100000, __PROFILE, USE_CCAP</Define>
+              <Define>TF_LITE_STATIC_MEMORY, ARM_MATH_DSP, ARM_NPU, ACTIVATION_BUF_SZ=0x00100000, USE_CCAP</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\CMSIS\DSP\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\StdDriver\inc\npu;..\application\main\include;..\application\tflu\include;..\use_case\include;..\generated\include;..\log\include;..\math\include;..\hal\include;..\hal\components\lcd\include;..\hal\components\lcd;..\hal\components\stdout\include;..\hal\components\platform_pmu\include;..\hal\platform\m55m1\include;..\hal\platform\m55m1;..\hal\components\npu\include;..\hal\components\img_sensor\include;..\hal\components\img_sensor\sensor;..\profiler\include;..\..\..\..\ThirdParty\openmv\omv\imlib;..\..\..\..\ThirdParty\openmv\omv\alloc;..\..\..\..\ThirdParty\openmv\omv\common;..\..\..\..\ThirdParty\openmv\omv\Lib;..\..\..\..\ThirdParty\tflite_micro;..\..\..\..\ThirdParty\tflite_micro\_deps\tensorflow-flatbuffers-src\include</IncludePath>
+              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\CMSIS\DSP\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\StdDriver\inc\npu;..\..\..\..\ThirdParty\openmv\omv\imlib;..\..\..\..\ThirdParty\openmv\omv\alloc;..\..\..\..\ThirdParty\openmv\omv\common;..\..\..\..\ThirdParty\openmv\omv\Lib;..\..\..\..\ThirdParty\tflite_micro;..\..\..\..\ThirdParty\tflite_micro\_deps\tensorflow-flatbuffers-src\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\log\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\math\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\main\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\include;..\Device\include;..\Model\include;..\NPU\include;..\Pattern\include;..\ProfilerCounter\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -419,11 +419,6 @@
               <FilePath>..\..\..\..\Library\StdDriver\src\clk.c</FilePath>
             </File>
             <File>
-              <FileName>spim.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\spim.c</FilePath>
-            </File>
-            <File>
               <FileName>sys.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\sys.c</FilePath>
@@ -433,30 +428,35 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\gpio.c</FilePath>
             </File>
+            <File>
+              <FileName>ethosu_device_u55_u65.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\npu\ethosu_device_u55_u65.c</FilePath>
+            </File>
+            <File>
+              <FileName>ethosu_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\npu\ethosu_driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>ethosu_pmu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\npu\ethosu_pmu.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
-          <GroupName>application-main</GroupName>
+          <GroupName>Application</GroupName>
           <Files>
             <File>
-              <FileName>Main.cc</FileName>
+              <FileName>BoardInit.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\application\main\Main.cc</FilePath>
+              <FilePath>..\BoardInit.cpp</FilePath>
             </File>
             <File>
-              <FileName>UseCaseCommonUtils.cc</FileName>
+              <FileName>main.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\application\main\UseCaseCommonUtils.cc</FilePath>
-            </File>
-            <File>
-              <FileName>Classifier.cc</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\application\main\Classifier.cc</FilePath>
-            </File>
-            <File>
-              <FileName>ImageUtils.cc</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\application\main\ImageUtils.cc</FilePath>
+              <FilePath>..\main.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -486,217 +486,102 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>use_case</GroupName>
+          <GroupName>Model</GroupName>
           <Files>
             <File>
-              <FileName>MainLoop.cc</FileName>
+              <FileName>VisualWakeWordModel.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\use_case\MainLoop.cc</FilePath>
+              <FilePath>..\Model\VisualWakeWordModel.cpp</FilePath>
             </File>
             <File>
-              <FileName>UseCaseHandler.cc</FileName>
+              <FileName>vww_96_int8_vela.tflite.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\use_case\UseCaseHandler.cc</FilePath>
+              <FilePath>..\Model\vww_96_int8_vela.tflite.cpp</FilePath>
             </File>
             <File>
-              <FileName>VisualWakeWordModel.cc</FileName>
+              <FileName>Labels.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\use_case\VisualWakeWordModel.cc</FilePath>
+              <FilePath>..\Model\Labels.cpp</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
-          <GroupName>hal</GroupName>
+          <GroupName>Pattern</GroupName>
           <Files>
             <File>
-              <FileName>hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\hal.c</FilePath>
+              <FileName>InputFiles.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Pattern\InputFiles.cpp</FilePath>
             </File>
             <File>
-              <FileName>hal_timer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\hal_timer.c</FilePath>
+              <FileName>man_in_red_jacket.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Pattern\man_in_red_jacket.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>st_paul_s_cathedral.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Pattern\st_paul_s_cathedral.cpp</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
-          <GroupName>hal-components-lcd</GroupName>
-          <Files>
-            <File>
-              <FileName>lcd_img.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\components\lcd\lcd_img.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>hal-components-stdout</GroupName>
-          <Files>
-            <File>
-              <FileName>user_input.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\components\stdout\user_input.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>hal-components-lcd-glcd_stubs</GroupName>
-          <Files>
-            <File>
-              <FileName>glcd_stubs.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\components\lcd\glcd_stubs\glcd_stubs.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>hal-components-npu</GroupName>
-          <Files>
-            <File>
-              <FileName>ethosu_cpu_cache.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\components\npu\ethosu_cpu_cache.c</FilePath>
-            </File>
-            <File>
-              <FileName>ethosu_npu_init.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\components\npu\ethosu_npu_init.c</FilePath>
-            </File>
-            <File>
-              <FileName>ethosu_profiler.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\components\npu\ethosu_profiler.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>hal-components-img_sensor</GroupName>
-          <Files>
-            <File>
-              <FileName>img_sensor.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\components\img_sensor\img_sensor.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>hal-components-img_sensor-sensor</GroupName>
-          <Files>
-            <File>
-              <FileName>sensor_PLDM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\components\img_sensor\sensor\sensor_PLDM.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>hal-platform-m55m1</GroupName>
-          <Files>
-            <File>
-              <FileName>platform_drivers.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\platform\m55m1\platform_drivers.c</FilePath>
-            </File>
-            <File>
-              <FileName>timer_m55m1_platform.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\platform\m55m1\timer_m55m1_platform.c</FilePath>
-            </File>
-            <File>
-              <FileName>hyperflash_code.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\platform\m55m1\hyperflash_code.c</FilePath>
-            </File>
-            <File>
-              <FileName>hyperram_code.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\platform\m55m1\hyperram_code.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>application-tflu</GroupName>
+          <GroupName>ArmMLApi</GroupName>
           <Files>
             <File>
               <FileName>Model.cc</FileName>
               <FileType>8</FileType>
-              <FilePath>..\application\tflu\Model.cc</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\source\Model.cc</FilePath>
             </File>
             <File>
               <FileName>TensorFlowLiteMicro.cc</FileName>
               <FileType>8</FileType>
-              <FilePath>..\application\tflu\TensorFlowLiteMicro.cc</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\source\TensorFlowLiteMicro.cc</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>profiler</GroupName>
-          <Files>
             <File>
-              <FileName>Profiler.cc</FileName>
+              <FileName>Classifier.cc</FileName>
               <FileType>8</FileType>
-              <FilePath>..\profiler\Profiler.cc</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\source\Classifier.cc</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>generated</GroupName>
-          <Files>
-            <File>
-              <FileName>InputFiles.cc</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\generated\InputFiles.cc</FilePath>
-            </File>
-            <File>
-              <FileName>Labels.cc</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\generated\Labels.cc</FilePath>
-            </File>
-            <File>
-              <FileName>man_in_red_jacket.cc</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\generated\man_in_red_jacket.cc</FilePath>
-            </File>
-            <File>
-              <FileName>st_paul_s_cathedral.cc</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\generated\st_paul_s_cathedral.cc</FilePath>
-            </File>
-            <File>
-              <FileName>vww_96_int8_vela.tflite.cc</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\generated\vww_96_int8_vela.tflite.cc</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>ethosu</GroupName>
-          <Files>
-            <File>
-              <FileName>ethosu_device_u55_u65.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\npu\ethosu_device_u55_u65.c</FilePath>
-            </File>
-            <File>
-              <FileName>ethosu_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\npu\ethosu_driver.c</FilePath>
-            </File>
-            <File>
-              <FileName>ethosu_pmu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\npu\ethosu_pmu.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>math</GroupName>
-          <Files>
             <File>
               <FileName>PlatformMath.cc</FileName>
               <FileType>8</FileType>
-              <FilePath>..\math\PlatformMath.cc</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\math\PlatformMath.cc</FilePath>
+            </File>
+            <File>
+              <FileName>Profiler.cc</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\Profiler.cc</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>NPU</GroupName>
+          <Files>
+            <File>
+              <FileName>ethosu_cpu_cache.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\NPU\ethosu_cpu_cache.c</FilePath>
+            </File>
+            <File>
+              <FileName>ethosu_npu_init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\NPU\ethosu_npu_init.c</FilePath>
+            </File>
+            <File>
+              <FileName>ethosu_profiler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\NPU\ethosu_profiler.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>ProfilerCounter</GroupName>
+          <Files>
+            <File>
+              <FileName>pmu_counter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ProfilerCounter\pmu_counter.c</FilePath>
             </File>
           </Files>
         </Group>

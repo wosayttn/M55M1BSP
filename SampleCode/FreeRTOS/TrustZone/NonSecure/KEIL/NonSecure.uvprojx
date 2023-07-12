@@ -82,8 +82,8 @@
           <AfterMake>
             <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>1</RunUserProg2>
-            <UserProg1Name>fromelf --bin ".\Objects\@L.axf" --output ".\Objects\@L.bin"</UserProg1Name>
-            <UserProg2Name>fromelf --text -c ".\Objects\@L.axf" --output ".\Objects\@L.txt"</UserProg2Name>
+            <UserProg1Name>fromelf --bin ".\Objects\@L.axf" --output ".\release\@L.bin"</UserProg1Name>
+            <UserProg2Name>..\..\..\..\binToDat.bat ".\Objects\@L.axf"</UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
             <nStopA1X>0</nStopA1X>
@@ -337,7 +337,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>TRUSTZONE_BUILD,TRUSTZONE_NONSECURE,SYSTEM_CORE_CLOCK=180000000</Define>
+              <Define>TRUSTZONE_BUILD,TRUSTZONE_NONSECURE,SYSTEM_CORE_CLOCK=180000000, NVT_DCACHE_OFF, NVT_ICACHE_OFF, DEBUG_PORT=UART1</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\..\ThirdParty\FreeRTOS\Source\include;..\..\..\..\..\ThirdParty\FreeRTOS\Source\portable\GCC\ARM_CM55\non_secure;..\..\..\..\..\ThirdParty\FreeRTOS\Source\portable\GCC\ARM_CM55\secure;..\..\..\..\..\ThirdParty\FreeRTOS\Demo\Common\include;..\..\..\TrustZone;..\..\..\..\..\Library\StdDriver\inc;..\..\tz_demo</IncludePath>
             </VariousControls>
@@ -398,6 +398,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</FilePath>
             </File>
+            <File>
+              <FileName>system_M55M1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -449,62 +454,6 @@
               <FilePath>..\..\..\..\..\ThirdParty\FreeRTOS\Source\portable\MemMang\heap_3.c</FilePath>
             </File>
             <File>
-              <FileName>mpu_wrappers.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\ThirdParty\FreeRTOS\Source\portable\Common\mpu_wrappers.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>0</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <uGnu>2</uGnu>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>2</vShortEn>
-                    <vShortWch>2</vShortWch>
-                    <v6Lto>2</v6Lto>
-                    <v6WtE>2</v6WtE>
-                    <v6Rtti>2</v6Rtti>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>port.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\ThirdParty\FreeRTOS\Source\portable\GCC\ARM_CM33\non_secure\port.c</FilePath>
@@ -533,6 +482,21 @@
               <FileName>retarget.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\Library\StdDriver\src\retarget.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Library\StdDriver\src\uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>clk.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Library\StdDriver\src\clk.c</FilePath>
+            </File>
+            <File>
+              <FileName>sys.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Library\StdDriver\src\sys.c</FilePath>
             </File>
           </Files>
         </Group>

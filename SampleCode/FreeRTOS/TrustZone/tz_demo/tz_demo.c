@@ -70,27 +70,6 @@ static void prvSecureCallingTask( void * pvParameters );
 
 void vStartTZDemo( void )
 {
-#if defined (__MPU_DEMO__)
-    static StackType_t xSecureCallingTaskStack[ configMINIMAL_STACK_SIZE ] __attribute__( ( aligned( 32 ) ) );
-    TaskParameters_t xSecureCallingTaskParameters =
-    {
-        .pvTaskCode     = prvSecureCallingTask,
-        .pcName         = "SecCalling",
-        .usStackDepth   = configMINIMAL_STACK_SIZE,
-        .pvParameters   = 0,
-        .uxPriority     = tskIDLE_PRIORITY,
-        .puxStackBuffer = xSecureCallingTaskStack,
-        .xRegions       =
-        {
-            { ulNonSecureCounter, 32, tskMPU_REGION_READ_WRITE | tskMPU_REGION_EXECUTE_NEVER },
-            { 0,                  0,  0                                                      },
-            { 0,                  0,  0                                                      },
-        }
-    };
-
-    /* Create an unprivileged task which calls secure functions. */
-    xTaskCreateRestricted( &( xSecureCallingTaskParameters ), NULL );
-#else
 	int i;
 	
 	for( i = 0 ; i < NUM_TASKS; i ++)
@@ -101,7 +80,6 @@ void vStartTZDemo( void )
 				tskIDLE_PRIORITY,
 				NULL ); /* FREERTOS_SYSTEM_CALL */
 
-#endif
 }
 /*-----------------------------------------------------------*/
 

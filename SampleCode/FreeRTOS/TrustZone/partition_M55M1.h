@@ -72,7 +72,7 @@
 //                                         <0x180000=> 1536 KB
 
 */
-#define SCU_SECURE_SRAM_SIZE      0x20000
+#define SCU_SECURE_SRAM_SIZE      0x80000
 #define NON_SECURE_SRAM_BASE      (0x30100000 + SCU_SECURE_SRAM_SIZE)
 
 /*
@@ -709,16 +709,16 @@
    <e>SAU Region 4
    <i> Setup SAU Region 4
 */
-#define SAU_INIT_REGION4    1
+#define SAU_INIT_REGION4    0
 /*
      <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START4     FMC_NON_SECURE_BASE      /* start address of SAU region 4 */
+#define SAU_INIT_START4     0      /* start address of SAU region 4 */
 
 /*
      <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END4       0x100FFFFF      /* end address of SAU region 4 */
+#define SAU_INIT_END4       0      /* end address of SAU region 4 */
 
 /*
      <o>Region is
@@ -739,19 +739,19 @@
 /*
      <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START5     0x00807E00
+#define SAU_INIT_START5     FMC_NON_SECURE_BASE
 
 /*
      <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END5       0x00807FFF
+#define SAU_INIT_END5       0x102FFFFF
 
 /*
      <o>Region is
          <0=>Non-Secure
          <1=>Secure, Non-Secure Callable
 */
-#define SAU_INIT_NSC5       1
+#define SAU_INIT_NSC5       0
 /*
    </e>
 */
@@ -770,7 +770,7 @@
 /*
      <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END6       0x3004FFFF
+#define SAU_INIT_END6       0x301FFFFF
 
 /*
      <o>Region is

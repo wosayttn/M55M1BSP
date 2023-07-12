@@ -754,7 +754,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\..\..\..\..\\Library\Device\Nuvoton\M55M1\Source\IAR\M55M1.icf</state>
+                    <state>$PROJ_DIR$\M55M1.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
