@@ -53,6 +53,8 @@ extern "C"
 #define LPADC_HIGH_LEVEL_TRIGGER          ((0UL<<LPADC_ADCR_TRGS_Pos)|LPADC_ADCR_TRGCOND_HIGH_LEVEL)    /*!< A/D conversion is triggered by external STADC pin high level  \hideinitializer */
 #define LPADC_FALLING_EDGE_TRIGGER        ((0UL<<LPADC_ADCR_TRGS_Pos)|LPADC_ADCR_TRGCOND_FALLING_EDGE)  /*!< A/D conversion is triggered by external STADC pin falling edge \hideinitializer */
 #define LPADC_RISING_EDGE_TRIGGER         ((0UL<<LPADC_ADCR_TRGS_Pos)|LPADC_ADCR_TRGCOND_RISING_EDGE)   /*!< A/D conversion is triggered by external STADC pin rising edge  \hideinitializer */
+
+#define LPADC_STADC_TRIGGER               (0UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is triggered by external STADC pin   \hideinitializer */
 #define LPADC_BPWM_TRIGGER                (2UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is triggered by BPWM     \hideinitializer */
 #define LPADC_EPWM_TRIGGER                (4UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is triggered by EPWM     \hideinitializer */
 #define LPADC_ACMP0_TRIGGER               (8UL<<LPADC_ADCR_TRGS_Pos)     /*!< A/D conversion is triggered by ACMP0    \hideinitializer */
@@ -421,7 +423,7 @@ extern int32_t g_LPADC_i32ErrCode;
 /**
  *    @brief        Enable specified LPADC Automatic Operation Mode Conversion End Wake-up function
  *
- *    @param[in]    lpadc        The pointer of the specified LPUART module
+ *    @param[in]    lpadc        The pointer of the specified LPADC module
  *
  *    @return       None
  *
@@ -432,7 +434,7 @@ extern int32_t g_LPADC_i32ErrCode;
 /**
  *    @brief        Disable specified  LPADC Automatic Operation Mode Conversion End Wake-up  function
  *
- *    @param[in]    lpadc        The pointer of the specified LPUART module
+ *    @param[in]    lpadc        The pointer of the specified LPADC module
  *
  *    @return       None
  *
@@ -475,7 +477,7 @@ extern int32_t g_LPADC_i32ErrCode;
 
 #define  LPADC_COMPARATOR_1_MATCH_WAKEUP_ENABLE(lpadc)    ((lpadc)->AUTOCTL |= LPADC_AUTOCTL_CMP1WKEN_Msk)
 /**
- *    @brief        Disable specified LPUART Automatic Operation Mode Comparator 1 Wake-up  function
+ *    @brief        Disable specified LPADC Automatic Operation Mode Comparator 1 Wake-up  function
  *
  *    @param[in]    lpadc   The pointer of the specified LPADC module
  *
@@ -496,7 +498,7 @@ extern int32_t g_LPADC_i32ErrCode;
  *    @details      This macro get Conversion End Wake-up Status register value.
  *    \hideinitializer
  */
-#define LPADC_GET_CONVERSION_END_WAKEUP_FLAG(lpuart) (((lpadc)->AUTOSTS & LPADC_AUTOSTS_ADWKF_Msk )>> LPADC_AUTOSTS_ADWKF_Pos)
+#define LPADC_GET_CONVERSION_END_WAKEUP_FLAG(LPADC) (((lpadc)->AUTOSTS & LPADC_AUTOSTS_ADWKF_Msk )>> LPADC_AUTOSTS_ADWKF_Pos)
 /**
  *    @brief        Clear Conversion End Wake-up Flag
  *
@@ -506,7 +508,7 @@ extern int32_t g_LPADC_i32ErrCode;
  *
  *    @details      This macro clear Conversion End Wake-up flag.
  */
-#define LPADC_CLEAR_CONVERSION_END_WAKEUP_FLAG(lpuart)    ((lpuart)->AUTOSTS = LPUART_AUTOSTS_AOTOWKF_Msk)
+#define LPADC_CLEAR_CONVERSION_END_WAKEUP_FLAG(lpadc)    ((lpadc)->AUTOSTS = LPUART_AUTOSTS_AOTOWKF_Msk)
 
 /**
  *    @brief        Automatic Operation  Compare 0 Wake-up Status register value
@@ -519,7 +521,7 @@ extern int32_t g_LPADC_i32ErrCode;
  *    @details      This macro get Compare 0 Wake-up Status register value.
  *    \hideinitializer
  */
-#define LPADC_GET_Compare_0_WAKEUP_FLAG(lpuart) (((lpadc)->AUTOSTS & LPADC_AUTOSTS_CMP0WKF_Msk )>> LPADC_AUTOSTS_CMP0WKF_Pos)
+#define LPADC_GET_Compare_0_WAKEUP_FLAG(lpadc) (((lpadc)->AUTOSTS & LPADC_AUTOSTS_CMP0WKF_Msk )>> LPADC_AUTOSTS_CMP0WKF_Pos)
 /**
  *    @brief        Clear  Compare 0 Wake-up Flag
  *
@@ -529,7 +531,7 @@ extern int32_t g_LPADC_i32ErrCode;
  *
  *    @details      This macro clear Compare 0 Wake-up flag.
  */
-#define LPADC_CLEAR_Compare_0_WAKEUP_FLAG(lpuart)    ((lpuart)->AUTOSTS = LPADC_AUTOSTS_CMP0WKF_Msk)
+#define LPADC_CLEAR_Compare_0_WAKEUP_FLAG(lpadc)    ((lpadc)->AUTOSTS = LPADC_AUTOSTS_CMP0WKF_Msk)
 
 /**
  *    @brief        Automatic Operation Compare 1 Wake-up Status register value
@@ -542,7 +544,7 @@ extern int32_t g_LPADC_i32ErrCode;
  *    @details      This macro get Compare 1 Wake-up Status register value.
  *    \hideinitializer
  */
-#define LPADC_GET_Compare_1_WAKEUP_FLAG(lpuart) (((lpadc)->AUTOSTS & LPADC_AUTOSTS_CMP1WKF_Msk )>> LPADC_AUTOSTS_CMP1WKF_Pos)
+#define LPADC_GET_Compare_1_WAKEUP_FLAG(lpadc) (((lpadc)->AUTOSTS & LPADC_AUTOSTS_CMP1WKF_Msk )>> LPADC_AUTOSTS_CMP1WKF_Pos)
 /**
  *    @brief        Clear Compare 1 Wake-up Flag
  *
@@ -552,15 +554,15 @@ extern int32_t g_LPADC_i32ErrCode;
  *
  *    @details      This macro clear Compare 1 Wake-up flag.
  */
-#define LPADC_CLEAR_Compare_1_WAKEUP_FLAG(lpuart)    ((lpuart)->AUTOSTS = LPADC_AUTOSTS_CMP1WKF_Msk)
+#define LPADC_CLEAR_Compare_1_WAKEUP_FLAG(lpadc)    ((lpadc)->AUTOSTS = LPADC_AUTOSTS_CMP1WKF_Msk)
 
 void LPADC_Open(LPADC_T *lpadc, uint32_t u32InputMode, uint32_t u32OpMode, uint32_t u32ChMask);
 void LPADC_Close(LPADC_T *lpadc);
-void LPADC_EnableHWTrigger(LPADC_T *lpadc, uint32_t u32Source);
+void LPADC_EnableHWTrigger(LPADC_T *lpadc, uint32_t u32Source,uint32_t u32Param);
 void LPADC_DisableHWTrigger(LPADC_T *lpadc);
 void LPADC_EnableInt(LPADC_T *lpadc, uint32_t u32Mask);
 void LPADC_DisableInt(LPADC_T *lpadc, uint32_t u32Mask);
-void LPADC_SetExtendSampleTime(LPADC_T *lpadc, uint32_t u32ExtendSampleTime);
+void LPADC_SetExtendSampleTime(LPADC_T *lpadc, uint32_t u32ModuleNum, uint32_t u32ExtendSampleTime);
 void LPADC_SelectAutoOperationMode(LPADC_T *lpadc, uint32_t u32TrigSel);
 
 /** @} end of group LPADC_EXPORTED_FUNCTIONS */
