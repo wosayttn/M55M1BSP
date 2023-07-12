@@ -45,8 +45,7 @@ int32_t g_LPADC_i32ErrCode = 0;   /*!< LPADC global error code */
 void LPADC_Open(LPADC_T *lpadc, uint32_t u32InputMode, uint32_t u32OpMode, uint32_t u32ChMask)
 {
     uint32_t u32Delay = SystemCoreClock;    /* 1 second */
-    uint32_t u32Temp;
-
+    
     g_LPADC_i32ErrCode = 0;
     /*Enable the LPADC Power on*/
     LPADC_POWER_ON(lpadc);
@@ -93,7 +92,7 @@ void LPADC_Open(LPADC_T *lpadc, uint32_t u32InputMode, uint32_t u32OpMode, uint3
     }
 
     /* Read channel 0 ADDR to clear Valid flag of channel 0 that set by calibration. */
-    u32Temp = LPADC0->ADDR[0];
+    uint32_t u32Temp  = LPADC0->ADDR[0];
     /* Currently Sample Time basically needs 5 cycles */
     /* Workaround solution for LPADC0->DEBUG(from M2L31) */
     outp32((uint32_t)lpadc + 0xFF4, inp32(LPADC0_BASE + 0xFF4) | (BIT5|BIT4|BIT1));
@@ -148,9 +147,9 @@ void LPADC_Close(LPADC_T *lpadc)
   */
 void LPADC_EnableHWTrigger(LPADC_T *lpadc, uint32_t u32Source,uint32_t u32Param)
 {
-    /*Software should clear TRGEN bit before changing TRGS bits.*/ 
-    lpadc->ADCR = (lpadc->ADCR & ~(LPADC_ADCR_TRGEN_Msk));
-	
+    /* Software should clear TRGEN bit and ADST bit before changing TRGS bits. */
+    lpadc->ADCR &= ~(LPADC_ADCR_TRGEN_Msk | LPADC_ADCR_ADST_Msk);
+
     if(u32Source == LPADC_STADC_TRIGGER)
     {
         lpadc->ADCR = (lpadc->ADCR & ~(LPADC_ADCR_TRGS_Msk | LPADC_ADCR_TRGCOND_Msk)) |
@@ -171,8 +170,8 @@ void LPADC_EnableHWTrigger(LPADC_T *lpadc, uint32_t u32Source,uint32_t u32Param)
   */
 void LPADC_DisableHWTrigger(LPADC_T *lpadc)
 {
-	/*Software should clear TRGEN bit before changing TRGS bits.*/ 
-    lpadc->ADCR &= ~(LPADC_ADCR_TRGEN_Msk); 
+    /* Software should clear TRGEN bit and ADST bit before changing TRGS bits. */
+    lpadc->ADCR &= ~(LPADC_ADCR_TRGEN_Msk | LPADC_ADCR_ADST_Msk); 
     lpadc->ADCR &= ~(LPADC_ADCR_TRGS_Msk | LPADC_ADCR_TRGCOND_Msk);
 
 }

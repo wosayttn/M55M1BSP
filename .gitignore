@@ -118,3 +118,5 @@ version.ini
 !SampleCode/StdDriver/FMC_IAP/KEIL/obj/fmc_ld_main.bin
 !SampleCode/XOM/XOMLib/lib/XOMLib.a
 !SampleCode/XOM/XOMLib/lib/XOMLib.lib
+/SampleCode/StdDriver/CANFD_CANFD_TxRx/KEIL/Objects/CANFD_CANFD_TxRx.htm
+/SampleCode/StdDriver/CANFD_CANFD_TxRx/KEIL/Objects/CANFD_CANFD_TxRx.lnp

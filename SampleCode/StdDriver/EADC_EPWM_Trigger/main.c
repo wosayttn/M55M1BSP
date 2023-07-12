@@ -135,7 +135,7 @@ void EPWM0_Init()
 void EADC_FunctionTest()
 {
     uint8_t  u8Option;
-    uint8_t u8Index = 0;
+    uint8_t  u8Index = 0;
     int32_t  ai32ConversionData[6] = {0};
     uint32_t u32COVNUMFlag = 0; 
     
