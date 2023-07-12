@@ -1172,17 +1172,17 @@ void SPIM_WinbondUnlock(SPIM_T *spim, uint32_t u32NBit)
   * @param      isSync      Block or not.
   * @return     None.
   */
-void SPIM_ChipErase(SPIM_T *spim, uint32_t u32NBit, uint32_t u32DTREn, int isSync)
+void SPIM_ChipErase(SPIM_T *spim, uint32_t u32NBit, int isSync)
 {
-    uint8_t cmdBuf[] = {OPCODE_CHIP_ERASE, OPCODE_CHIP_ERASE};    /* 1-byte Chip Erase command. */
+    uint8_t cmdBuf[] = {OPCODE_CHIP_ERASE, OPCODE_CHIP_ERASE};      /* 1-byte Chip Erase command. */
 
-    SPIM_SetWriteEnable(spim, 1, u32NBit);           /* Write Enable.    */
+    SPIM_SetWriteEnable(spim, SPIM_OP_ENABLE, u32NBit);             /* Write Enable.    */
 
-    SPIM_SET_SS_EN(spim, 1);                          /* CS activated.    */
+    SPIM_SET_SS_EN(spim, SPIM_OP_ENABLE);                           /* CS activated.    */
 
-    spim_write_data(spim, cmdBuf, (u32DTREn == SPIM_OP_ENABLE) ? 2UL : 1UL, u32NBit);
+    spim_write_data(spim, cmdBuf, (SPIM_GET_DTR_MODE(spim) == SPIM_OP_ENABLE) ? 2UL : 1UL, u32NBit);
 
-    SPIM_SET_SS_EN(spim, 0);                          /* CS deactivated.  */
+    SPIM_SET_SS_EN(spim, SPIM_OP_DISABLE);                          /* CS deactivated.  */
 
     if (isSync)
     {

@@ -1611,7 +1611,7 @@ void SPIM_SetWriteEnable(SPIM_T *spim, int isEn, uint32_t u32NBit);
 void SPIM_ReadConfigRegister(SPIM_T *spim, uint8_t u8RdCMD, uint32_t u32Addr, uint8_t *pu8DataBuf, uint32_t u32NRx, uint32_t u32NBit);
 void SPIM_WriteConfigRegister(SPIM_T *spim, uint8_t u8CMD, uint32_t u32Addr, uint8_t u8Data, uint32_t u32NBit);
 
-void SPIM_ChipErase(SPIM_T *spim, uint32_t u32NBit, uint32_t u32DTREn, int isSync);
+void SPIM_ChipErase(SPIM_T *spim, uint32_t u32NBit, int isSync);
 void SPIM_EraseBlock(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint8_t u8ErsCmd, uint32_t u32NBit, int isSync);
 
 uint32_t SPIM_PhaseModeToNBit(uint32_t u32Phase);
