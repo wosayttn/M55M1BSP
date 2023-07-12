@@ -1622,6 +1622,7 @@ int32_t SPIM_DMADMM_SetDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32N
     *pu32PhaseReg &= ~(0xFFUL << PHASE_CLR_DATA_Pos);
 
     *pu32PhaseReg |= (u32DTREn << SPIM_PHDMAR_DTR_DATA_Pos);
+    *pu32PhaseReg &= ~(SPIM_PHDMAR_RDQS_DATA_Msk);
     *pu32PhaseReg |= (u32ByteOrder << SPIM_PHDMAW_PBO_DATA_Pos);
     *pu32PhaseReg |= (u32NBit << SPIM_PHDMAW_BM_DATA_Pos);
 
