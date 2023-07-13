@@ -1379,7 +1379,7 @@ static int32_t SPIM_WriteInPageDataByPageWrite(SPIM_T *spim, uint32_t u32Addr,
 /** @endcond HIDDEN_SYMBOLS */
 
 /**
- * @brief Calculate I/O phase bit mode size.
+ * @brief Convert I/O phase bit mode size.
  *
  * @param u32Phase
  *          - \ref PHASE_NORMAL_MODE : 1 Bit Mode
@@ -1416,30 +1416,6 @@ uint32_t SPIM_PhaseModeToNBit(uint32_t u32Phase)
 }
 
 /**
- * @brief Clear DMAW/DMAR/DMM Phase Config
- * @param      spim
- * @param u32OPMode SPI Function Operation Mode
- *                  - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
- *                  - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
- *                  - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
- * @return     SPIM_OK          SPIM operation OK.
- *             SPIM_ERR_FAIL    SPIM operation Fail.
- */
-int32_t SPIM_DMADMM_ClearPhaseSetting(SPIM_T *spim, uint32_t u32OPMode)
-{
-    uint32_t *pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
-
-    if (pu32PhaseReg == NULL)
-    {
-        return SPIM_ERR_FAIL;
-    }
-
-    *pu32PhaseReg &= ~(0xFFFFFFFF);    /* clear phase setting. */
-
-    return SPIM_OK;
-}
-
-/**
  * @brief Set DMA/DMM Command Phase
  * @param spim
  * @param u32OPMode SPI Function Operation Mode
@@ -1458,7 +1434,7 @@ int32_t SPIM_DMADMM_ClearPhaseSetting(SPIM_T *spim, uint32_t u32OPMode)
  *                  - \ref PHASE_WIDTH_32   : Set Command Width 32bit
  * @param u32DTREn  Set Enable/Disable DTR(Double Transfer Rate) Mode 0 or 1
  */
-int32_t SPIM_DMADMM_SetCMDPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn)
+static int32_t spim_set_cmdphase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn)
 {
     uint32_t *pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
 
@@ -1498,7 +1474,7 @@ int32_t SPIM_DMADMM_SetCMDPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NB
  * @return     SPIM_OK          SPIM operation OK.
  *             SPIM_ERR_FAIL    SPIM operation Fail.
  */
-int32_t SPIM_DMADMM_SetAddrPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn)
+static int32_t spim_set_addrphase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn)
 {
     uint32_t *pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
 
@@ -1537,7 +1513,7 @@ int32_t SPIM_DMADMM_SetAddrPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32N
  * @return     SPIM_OK          SPIM operation OK.
  *             SPIM_ERR_FAIL    SPIM operation Fail.
  */
-int32_t SPIM_DMADMM_SetContReadPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32ContEn, uint32_t u32DTREn)
+static int32_t spim_set_contreadphase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32ContEn, uint32_t u32DTREn)
 {
     uint32_t *pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
 
@@ -1570,22 +1546,6 @@ int32_t SPIM_DMADMM_SetContReadPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t 
 }
 
 /**
- * @brief Set DMA read/DMM mode read DQS mode enable bit for data phase
- *
- * @param spim
- * @param u32OPMode SPI Function Operation Mode
- * @param u32RdDQS  Enable/Disable Read DQS
- *                  - \ref SPIM_OP_ENABLE
- *                  - \ref SPIM_OP_DISABLE
- */
-void SPIM_DMADMM_SetRWDQS(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32RdDQS)
-{
-    uint32_t *pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
-
-    *pu32PhaseReg |= (u32RdDQS << SPIM_PHDMAR_RDQS_DATA_Pos);
-}
-
-/**
  * @brief Set DMA/DMM Data Phase
  * @param spim
  * @param u32OPMode SPI Function Operation Mode
@@ -1608,8 +1568,8 @@ void SPIM_DMADMM_SetRWDQS(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32RdDQS)
  * @return     SPIM_OK          SPIM operation OK.
  *             SPIM_ERR_FAIL    SPIM operation Fail.
  */
-int32_t SPIM_DMADMM_SetDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit,
-                                 uint32_t u32ByteOrder, uint32_t u32DTREn)
+static int32_t spim_set_dataphase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit,
+                                  uint32_t u32ByteOrder, uint32_t u32DTREn)
 {
     uint32_t *pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
 
@@ -1627,6 +1587,22 @@ int32_t SPIM_DMADMM_SetDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32N
     *pu32PhaseReg |= (u32NBit << SPIM_PHDMAW_BM_DATA_Pos);
 
     return SPIM_OK;
+}
+
+/**
+ * @brief Set DMA read/DMM mode read DQS mode enable bit for data phase
+ *
+ * @param spim
+ * @param u32OPMode SPI Function Operation Mode
+ * @param u32RdDQS  Enable/Disable Read DQS
+ *                  - \ref SPIM_OP_ENABLE
+ *                  - \ref SPIM_OP_DISABLE
+ */
+void SPIM_DMADMM_SetRWDQS(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32RdDQS)
+{
+    uint32_t *pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
+
+    *pu32PhaseReg |= (u32RdDQS << SPIM_PHDMAR_RDQS_DATA_Pos);
 }
 
 /**
@@ -1668,33 +1644,33 @@ void SPIM_DMADMM_InitPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, uint32_t u3
     SPIM_DISABLE_DMM_CREN(spim);
 
     /* Set Flash Command Phase */
-    SPIM_DMADMM_SetCMDPhase(spim,
-                            u32OPMode,
-                            psPhaseTable->u32CMDPhase,
-                            psPhaseTable->u32CMDWidth,
-                            psPhaseTable->u32CMDDTR);
+    spim_set_cmdphase(spim,
+                      u32OPMode,
+                      psPhaseTable->u32CMDPhase,
+                      psPhaseTable->u32CMDWidth,
+                      psPhaseTable->u32CMDDTR);
 
     /* Set Flash Address Phase */
-    SPIM_DMADMM_SetAddrPhase(spim,
-                             u32OPMode,
-                             psPhaseTable->u32AddrPhase,
-                             psPhaseTable->u32AddrWidth,
-                             psPhaseTable->u32AddrDTR);
+    spim_set_addrphase(spim,
+                       u32OPMode,
+                       psPhaseTable->u32AddrPhase,
+                       psPhaseTable->u32AddrWidth,
+                       psPhaseTable->u32AddrDTR);
 
     /* Set DMA Read/DMM Continue Read Phase */
-    SPIM_DMADMM_SetContReadPhase(spim,
-                                 u32OPMode,
-                                 psPhaseTable->u32RdModePhase,
-                                 psPhaseTable->u32RdModeWidth,
-                                 psPhaseTable->u32ContRdEn,
-                                 psPhaseTable->u32RdModeDTR);
+    spim_set_contreadphase(spim,
+                           u32OPMode,
+                           psPhaseTable->u32RdModePhase,
+                           psPhaseTable->u32RdModeWidth,
+                           psPhaseTable->u32ContRdEn,
+                           psPhaseTable->u32RdModeDTR);
 
     /* Set Flash Data Phase */
-    SPIM_DMADMM_SetDataPhase(spim,
-                             u32OPMode,
-                             psPhaseTable->u32DataPhase,
-                             psPhaseTable->u32ByteOrder,
-                             psPhaseTable->u32DataDTR);
+    spim_set_dataphase(spim,
+                       u32OPMode,
+                       psPhaseTable->u32DataPhase,
+                       psPhaseTable->u32ByteOrder,
+                       psPhaseTable->u32DataDTR);
 
     /* Set Dummy Cycle After Address. */
     if (u32OPMode == SPIM_CTL0_OPMODE_PAGEREAD)
@@ -2230,8 +2206,8 @@ void SPIM_DMA_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
   *             if waiting SPIM time-out.
   * @note       Before calling this API, must first call SPIM_DMADMM_InitPhase to set PHDMAR.
   */
-int SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
-                  uint32_t u32NRx, uint8_t *pu8RxBuf, uint32_t u32RdCmd, int isSync)
+int32_t SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
+                      uint32_t u32NRx, uint8_t *pu8RxBuf, uint32_t u32RdCmd, int isSync)
 {
     /* DTR mode and 16-bit set to dual commands */
     if ((SPIM_GET_PHDMAR_CMD_WIDTH(spim) == PHASE_WIDTH_16) &&
