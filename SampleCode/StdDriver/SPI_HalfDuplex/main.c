@@ -1,12 +1,12 @@
 /**************************************************************************//**
  * @file     main.c
- * @version  V3.00
+ * @version  V1.00
  * @brief    Demonstrate SPI half-duplex mode.
  *           SPI0 will be configured as Master mode and SPI1 will be configured as Slave mode.
  *           Both SPI0 and SPI1 will be configured as half-duplex mode.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -51,12 +51,6 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
-    /* Enable UART peripheral clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
-
     /* Enable SPI0 module clock */
     CLK_EnableModuleClock(SPI0_MODULE);
 
@@ -69,10 +63,12 @@ void SYS_Init(void)
     /* Select SPI1 module clock source as PCLK0 */
     CLK_SetModuleClock(SPI1_MODULE, CLK_SPISEL_SPI1SEL_PCLK2, MODULE_NoMsk);
 
+    /* Enable UART0 module clock */
+    SetDebugUartCLK();
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set PB multi-function pins for UART0 RXD=PB.12 and TXD=PB.13 */
     SetDebugUartMFP();
 
     /* Configure SPI0 related multi-function pins. GPA[3,2,0] : SPI0_SS, SPI0_CLK, SPI0_MOSI. */

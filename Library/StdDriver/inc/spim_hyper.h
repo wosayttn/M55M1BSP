@@ -36,6 +36,7 @@ extern "C"
 #define SPIM_HYPER_DMM0_SADDR               (0x80000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
 #define SPIM_HYPER_DMM0_NSADDR              (0x90000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
 
+// TESTCHIP_ONLY
 #define SPIM_HYPER_DMM1_SADDR               (0x82000000UL)  /*!< SPIM1 DMM mode memory map base secure address    \hideinitializer */
 #define SPIM_HYPER_DMM1_NSADDR              (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
 
@@ -43,22 +44,20 @@ extern "C"
 #define SPIM_HYPER_DMM0_ADDR                SPIM_HYPER_DMM0_NSADDR
 #else
 #define SPIM_HYPER_DMM0_ADDR                SPIM_HYPER_DMM0_SADDR
-#endif //
+#endif
 
-#if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM1_Msk)
+#if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM1_Msk) // TESTCHIP_ONLY
 #define SPIM_HYPER_DMM1_ADDR                SPIM_HYPER_DMM1_NSADDR
 #else
 #define SPIM_HYPER_DMM1_ADDR                SPIM_HYPER_DMM1_SADDR
-#endif //
+#endif
 
 #define SPIM_HYPER_DMM_SIZE                 (0x2000000UL)       /*!< DMM mode memory mapping size        \hideinitializer */
 
 #define SPIM_HYPER_MAX_LATENCY              (0x05)              /*!< Maximum DLL training number        \hideinitializer */
 
-#define SPIM_HYPER_ENABLE                   (0x01UL)            /* SPIM_HYPER Operation Enable */
-#define SPIM_HYPER_DISABLE                  (0x00UL)            /* SPIM_HYPER Operation Disable */
-
-#define SPIM_HYPER_EN_CACHE                 (0)                 /*!< SPIM_HYPER cache on/off    \hideinitializer */
+#define SPIM_HYPER_OP_ENABLE                (0x01UL)            /* SPIM_HYPER Operation Enable */
+#define SPIM_HYPER_OP_DISABLE               (0x00UL)            /* SPIM_HYPER Operation Disable */
 
 /* SPIM_HYPER Wait State Timeout Counter. */
 #define SPIM_HYPER_TIMEOUT                  SystemCoreClock     /*!< SPIM_HYPER time-out counter (1 second time-out) */
@@ -71,16 +70,10 @@ extern "C"
 #define SPIM_HYPER_ERR_TIMEOUT              (-2L)           /*!< SPIM_HYPER operation abort due to timeout error */
 
 /* SPIM Hyper Operation Mode */
-#define SPIM_HYPER_OPMODE_IO                (0UL << SPIM_CTL0_OPMODE_Pos)   /*!< SPIM_CTL0: I/O Mode \hideinitializer */
-#define SPIM_HYPER_OPMODE_PAGEWRITE         (1UL << SPIM_CTL0_OPMODE_Pos)   /*!< SPIM_CTL0: Page Write Mode \hideinitializer */
-#define SPIM_HYPER_OPMODE_PAGEREAD          (2UL << SPIM_CTL0_OPMODE_Pos)   /*!< SPIM_CTL0: Page Read Mode \hideinitializer */
-#define SPIM_HYPER_OPMODE_DIRECTMAP         (3UL << SPIM_CTL0_OPMODE_Pos)   /*!< SPIM_CTL0: Direct Map Mode \hideinitializer */
-
-/* HyperRAM Register Address */
-#define HYPERRAM_ID_REG0                   (0x00000000)    /* Hyper RAM Identification Register 0. */
-#define HYPERRAM_ID_REG1                   (0x00000002)    /* Hyper RAM Identification Register 1. */
-#define HYPERRAM_CONFIG_REG0               (0x00001000)    /* Hyper RAM Configuration Register 0. */
-#define HYPERRAM_CONFIG_REG1               (0x00001002)    /* Hyper RAM Configuration Register 1. */
+#define SPIM_HYPER_OPMODE_IO                (0UL)           /*!< SPIM_CTL0: I/O Mode \hideinitializer */
+#define SPIM_HYPER_OPMODE_PAGEWRITE         (1UL)           /*!< SPIM_CTL0: Page Write Mode \hideinitializer */
+#define SPIM_HYPER_OPMODE_PAGEREAD          (2UL)           /*!< SPIM_CTL0: Page Read Mode \hideinitializer */
+#define SPIM_HYPER_OPMODE_DIRECTMAP         (3UL)           /*!< SPIM_CTL0: Direct Map Mode \hideinitializer */
 
 /* SPIM Hyper Mode Command */
 #define SPIM_HYPER_CMD_IDLE                 (0x00000000)    /* Hyper Bus interface is Idle. */
@@ -95,6 +88,12 @@ extern "C"
 #define SPIM_HYPER_CMD_WRITE_3_BYTE         (0x0000000E)    /* Write 3 Byte (Write Data[23:0]) to Hyper Bus Devices. */
 #define SPIM_HYPER_CMD_WRITE_4_BYTE         (0x0000000F)    /* Write 4 Byte (Write Data[31:0]) to Hyper Bus Devices. */
 
+/* HyperRAM Register Address */
+#define HYPERRAM_ID_REG0                    (0x00000000)    /* Hyper RAM Identification Register 0. */
+#define HYPERRAM_ID_REG1                    (0x00000002)    /* Hyper RAM Identification Register 1. */
+#define HYPERRAM_CONFIG_REG0                (0x00001000)    /* Hyper RAM Configuration Register 0. */
+#define HYPERRAM_CONFIG_REG1                (0x00001002)    /* Hyper RAM Configuration Register 1. */
+
 /*----------------------------------------------------------------------------*/
 /* SPIM_HYPER_CONFIG1: Chip Select Setup Time to Next CK Rising Edge
     00 = 1.5 HCLK cycles.
@@ -103,10 +102,10 @@ extern "C"
     11 = 4.5 HCLK cycles.
 */
 /*----------------------------------------------------------------------------*/
-#define SPIM_HYPER_CONFIG1_CSST_1_5_HCLK    (0x0)
-#define SPIM_HYPER_CONFIG1_CSST_2_5_HCLK    (0x1)
-#define SPIM_HYPER_CONFIG1_CSST_3_5_HCLK    (0x2)
-#define SPIM_HYPER_CONFIG1_CSST_4_5_HCLK    (0x3)
+#define SPIM_HYPER_CSST_1_5_HCLK    (0x0)
+#define SPIM_HYPER_CSST_2_5_HCLK    (0x1)
+#define SPIM_HYPER_CSST_3_5_HCLK    (0x2)
+#define SPIM_HYPER_CSST_4_5_HCLK    (0x3)
 
 /*----------------------------------------------------------------------------*/
 /* SPIM_HYPER_CONFIG1: Chip Select Hold Time After CK Falling Edge
@@ -116,10 +115,10 @@ extern "C"
     11 = 3.5 HCLK cycles.
 */
 /*----------------------------------------------------------------------------*/
-#define SPIM_HYPER_CONFIG1_CSH_0_5_HCLK    (0x0)
-#define SPIM_HYPER_CONFIG1_CSH_1_5_HCLK    (0x1)
-#define SPIM_HYPER_CONFIG1_CSH_2_5_HCLK    (0x2)
-#define SPIM_HYPER_CONFIG1_CSH_3_5_HCLK    (0x3)
+#define SPIM_HYPER_CSH_0_5_HCLK    (0x0)
+#define SPIM_HYPER_CSH_1_5_HCLK    (0x1)
+#define SPIM_HYPER_CSH_2_5_HCLK    (0x2)
+#define SPIM_HYPER_CSH_3_5_HCLK    (0x3)
 
 /*----------------------------------------------------------------------------*/
 /* SPIM_HYPER_CONFIG1: Chip Select High between Transaction
@@ -128,20 +127,20 @@ extern "C"
     1111 = 3.5 HCLK cycles.
 */
 /*----------------------------------------------------------------------------*/
-#define SPIM_HYPER_CONFIG1_CSHI_2_HCLK    (0x02)
-#define SPIM_HYPER_CONFIG1_CSHI_3_HCLK    (0x03)
-#define SPIM_HYPER_CONFIG1_CSHI_4_HCLK    (0x04)
-#define SPIM_HYPER_CONFIG1_CSHI_5_HCLK    (0x05)
-#define SPIM_HYPER_CONFIG1_CSHI_6_HCLK    (0x06)
-#define SPIM_HYPER_CONFIG1_CSHI_7_HCLK    (0x07)
-#define SPIM_HYPER_CONFIG1_CSHI_8_HCLK    (0x08)
-#define SPIM_HYPER_CONFIG1_CSHI_9_HCLK    (0x09)
-#define SPIM_HYPER_CONFIG1_CSHI_10_HCLK   (0x0A)
-#define SPIM_HYPER_CONFIG1_CSHI_11_HCLK   (0x0B)
-#define SPIM_HYPER_CONFIG1_CSHI_12_HCLK   (0x0C)
-#define SPIM_HYPER_CONFIG1_CSHI_13_HCLK   (0x0D)
-#define SPIM_HYPER_CONFIG1_CSHI_14_HCLK   (0x0E)
-#define SPIM_HYPER_CONFIG1_CSHI_15_HCLK   (0x0F)
+#define SPIM_HYPER_CSHI_2_HCLK    (0x02)
+#define SPIM_HYPER_CSHI_3_HCLK    (0x03)
+#define SPIM_HYPER_CSHI_4_HCLK    (0x04)
+#define SPIM_HYPER_CSHI_5_HCLK    (0x05)
+#define SPIM_HYPER_CSHI_6_HCLK    (0x06)
+#define SPIM_HYPER_CSHI_7_HCLK    (0x07)
+#define SPIM_HYPER_CSHI_8_HCLK    (0x08)
+#define SPIM_HYPER_CSHI_9_HCLK    (0x09)
+#define SPIM_HYPER_CSHI_10_HCLK   (0x0A)
+#define SPIM_HYPER_CSHI_11_HCLK   (0x0B)
+#define SPIM_HYPER_CSHI_12_HCLK   (0x0C)
+#define SPIM_HYPER_CSHI_13_HCLK   (0x0D)
+#define SPIM_HYPER_CSHI_14_HCLK   (0x0E)
+#define SPIM_HYPER_CSHI_15_HCLK   (0x0F)
 
 /** @} end of group SPIM_HYPER_EXPORTED_CONSTANTS */
 
@@ -180,7 +179,7 @@ extern "C"
  * \hideinitializer
  */
 #define SPIM_HYPER_SET_OPMODE(spim, x)    \
-    (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_OPMODE_Msk)) | (x))
+    (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_OPMODE_Msk)) | ((x) << SPIM_CTL0_OPMODE_Pos))
 
 /**
  * @brief   Get operation mode.
@@ -202,24 +201,12 @@ extern "C"
 #define SPIM_HYPER_IS_BUSY(spim)  \
     ((spim->CTL1 & SPIM_CTL1_SPIMEN_Msk) >> SPIM_CTL1_SPIMEN_Pos)
 
-#if (SPIM_HYPER_EN_CACHE == 1) // TESTCHIP_ONLY not support
-/**
- * @brief   Enable cache.
- * \hideinitializer
- */
-#define SPIM_HYPER_ENABLE_CACHE(spim) (spim->CTL1 &= ~(SPIM_CTL1_CACHEOFF_Msk))
-
-/**
- * @brief   Disable cache.
- * \hideinitializer
- */
-#define SPIM_HYPER_DISABLE_CACHE(spim)    (spim->CTL1 |= SPIM_CTL1_CACHEOFF_Msk)
-
+#if (SPIM_REG_CACHE == 1) // TESTCHIP_ONLY not support
 /**
  * @brief   Is cache enabled.
  * \hideinitializer
  */
-//#define SPIM_HYPER_IS_CACHE_EN(spim)    ((spim->CTL1 & SPIM_CTL1_CACHEOFF_Msk) ? 0 : 1)
+#define SPIM_HYPER_GET_CACHE_EN(spim)    ((spim->CTL1 & SPIM_CTL1_CACHEOFF_Msk) >> SPIM_CTL1_CACHEOFF_Pos)
 
 /**
  * @brief   Invalidate cache.
@@ -227,7 +214,49 @@ extern "C"
  */
 #define SPIM_HYPER_INVALID_CACHE(spim)    (spim->CTL1 |= SPIM_CTL1_CDINVAL_Msk)
 
-#endif //SPIM_HYPER_EN_CACHE
+/**
+ * @brief   Cache Write Through Enable.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_ENABLE_CAWRTHEN(spim)    (spim->CTL1 |= SPIM_CTL1_CAWRTHEN_Msk)
+
+/**
+ * @brief   Cache Write Through Disable.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_DISABLE_CAWRTHEN(spim)    (spim->CTL1 &= ~(SPIM_CTL1_CAWRTHEN_Msk))
+
+/**
+ * @brief   Cache Auto Selection Updated Cache Line Number Enable.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_ENABLE_AUTOSCLN(spim)    (spim->CTL1 |= SPIM_CTL1_AUTOSCLN_Msk)
+
+/**
+ * @brief   Cache Auto Selection Updated Cache Line Number Disable.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_DISABLE_AUTOSCLN(spim)    (spim->CTL1 &= ~(SPIM_CTL1_AUTOSCLN_Msk))
+
+/**
+ * @brief   Set Updated Cache Line Number per Cache Miss.
+ * @param[in]   x   SPI Function Operation Mode
+ *                  - \ref 0x01 : Update one cache line per cache miss. (default)
+ *                  - \ref 0x02 : Update two cache line per cache miss.
+ *                  - \ref 0x03 : Update three cache line per cache miss.
+ *                  - \ref 0x04 : Update four cache line per cache miss.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_SET_UPDCLNUM(spim, x)    \
+    (spim->CTL1 = (spim->CTL1 & ~(SPIM_CTL1_UPDCLNUM_Msk)) | (x) << SPIM_CTL1_UPDCLNUM_Pos)
+
+/**
+ * @brief   Reset Updated Cache Line Number per Cache Miss.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_RESET_UPDCLNUM(spim) (spim->CTL1 &= ~(SPIM_CTL1_UPDCLNUM_Msk))
+
+#endif
 
 /**
  * @brief       Set SPIM clock divider.
@@ -247,7 +276,7 @@ extern "C"
  */
 #define SPIM_HYPER_SET_DMM_DESELTIM(spim, x)  \
     (spim->DMMCTL = (spim->DMMCTL & ~SPIM_DMMCTL_DESELTIM_Msk) | \
-                    (((x)&0x1FUL) << SPIM_DMMCTL_DESELTIM_Pos))
+                    (((x) & 0x1FUL) << SPIM_DMMCTL_DESELTIM_Pos))
 
 /**
  * @brief   Get current DMM mode SPI flash deselect time setting.
@@ -276,22 +305,22 @@ extern "C"
 /**
  * @brief   Set DLL0 OLDO Enable Bit
  * @param x is DLL circuit power mode.
- *          - \ref SPIM_HYPER_ENABLE
- *          - \ref SPIM_HYPER_DISABLE
+ *          - \ref SPIM_HYPER_OP_ENABLE
+ *          - \ref SPIM_HYPER_OP_DISABLE
  * \hideinitializer
  */
 #define SPIM_HYPER_ENABLE_DLLOLDO(spim, x)  \
-    (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLOLDO_Msk)) | (((x) ? 1UL : 0UL) << SPIM_DLL0_DLLOLDO_Pos))
+    (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLOLDO_Msk)) | ((x) << SPIM_DLL0_DLLOLDO_Pos))
 
 /**
  * @brief   Set DLL0 Output Valid Counter Reset.
  * @param x is starts to count from 0x0 to DLLOVNUM
- *          - \ref SPIM_HYPER_ENABLE
- *          - \ref SPIM_HYPER_DISABLE
+ *          - \ref SPIM_HYPER_OP_ENABLE
+ *          - \ref SPIM_HYPER_OP_DISABLE
  * \hideinitializer
  */
 #define SPIM_HYPER_ENABLE_DLLOVRST(spim, x) \
-    (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLOVRST_Msk)) | (((x) ? 1UL : 0UL) << SPIM_DLL0_DLLOVRST_Pos))
+    (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLOVRST_Msk)) | ((x) << SPIM_DLL0_DLLOVRST_Pos))
 
 /**
  * @brief   Get DLL0 Output Valid Counter Reset Done.
@@ -384,10 +413,10 @@ extern "C"
 /**
   * @brief      Set Hyper Chip Select Setup Time to Next CK Rising Edge.
   * @param[in]  x   Chip Select Setup Time to Next CK Rising Edge.
-  *                 - \ref SPIM_HYPER_CONFIG1_CSST_1_5_HCLK : 1.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSST_2_5_HCLK : 2.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSST_3_5_HCLK : 3.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSST_4_5_HCLK : 4.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSST_1_5_HCLK : 1.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSST_2_5_HCLK : 2.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSST_3_5_HCLK : 3.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSST_4_5_HCLK : 4.5 HCLK cycles
   * \hideinitializer
   */
 #define SPIM_HYPER_SET_CSST(spim, x)    \
@@ -397,10 +426,10 @@ extern "C"
 /**
   * @brief      Set Hyper Chip Select Hold Time After CK Falling Edge.
   * @param[in]  x   Chip Select Hold Time After CK Falling Edge.
-  *                 - \ref SPIM_HYPER_CONFIG1_CSH_0_5_HCLK : 0.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSH_1_5_HCLK : 1.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSH_2_5_HCLK : 2.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CONFIG1_CSH_3_5_HCLK : 3.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSH_0_5_HCLK : 0.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSH_1_5_HCLK : 1.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSH_2_5_HCLK : 2.5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSH_3_5_HCLK : 3.5 HCLK cycles
   * \hideinitializer
   */
 #define SPIM_HYPER_SET_CSH(spim, x) \
@@ -411,6 +440,20 @@ extern "C"
   * @brief      Set Hyper Chip Select High between Transaction.
   * @param[in]  x   Set Chip Select High between Transaction as u8Value HCLK cycles.
                     It could be 2 ~ 16.
+  *                 - \ref SPIM_HYPER_CSHI_2_HCLK  : 2 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_3_HCLK  : 3 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_4_HCLK  : 4 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_5_HCLK  : 5 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_6_HCLK  : 6 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_7_HCLK  : 7 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_8_HCLK  : 8 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_9_HCLK  : 9 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_10_HCLK : 10 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_11_HCLK : 11 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_12_HCLK : 12 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_13_HCLK : 13 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_14_HCLK : 14 HCLK cycles
+  *                 - \ref SPIM_HYPER_CSHI_15_HCLK : 15 HCLK cycles
   * \hideinitializer
   */
 #define SPIM_HYPER_SET_CSHI(spim, x)    \
@@ -516,8 +559,27 @@ extern "C"
 /*----------------------------------------------------------------------------*/
 /* static inline functions                                                    */
 /*----------------------------------------------------------------------------*/
-__STATIC_INLINE void SPIM_HYPER_ENABLE_CIPHER(SPIM_T *spim);
 __STATIC_INLINE void SPIM_HYPER_DISABLE_CIPHER(SPIM_T *spim);
+__STATIC_INLINE void SPIM_HYPER_ENABLE_CIPHER(SPIM_T *spim);
+
+__STATIC_INLINE void SPIM_HYPER_DISABLE_CACHE(SPIM_T *spim);
+__STATIC_INLINE void SPIM_HYPER_ENABLE_CACHE(SPIM_T *spim);
+
+__STATIC_INLINE uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim);
+
+/**
+ * @brief   Disable cipher.
+ *
+ * @param spim
+ * @note    When encryption/decryption of SPIM is disabled,
+ *          please set SPIM_HYPER_SET_DMM_DESELTIM >= 0x8.
+ */
+__STATIC_INLINE void SPIM_HYPER_DISABLE_CIPHER(SPIM_T *spim)
+{
+    spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_BALEN_Msk)) | (SPIM_CTL0_CIPHOFF_Msk);
+
+    SPIM_HYPER_SET_DMM_DESELTIM(spim, 0x08);
+}
 
 /**
  * @brief   Enable cipher.
@@ -534,22 +596,66 @@ __STATIC_INLINE void SPIM_HYPER_ENABLE_CIPHER(SPIM_T *spim)
 }
 
 /**
- * @brief   Disable cipher.
+ * @brief   Disable cache.
  *
  * @param spim
- * @note    When encryption/decryption of SPIM is disabled,
- *          please set SPIM_HYPER_SET_DMM_DESELTIM >= 0x8.
+ * @note    Minimum time width of SPIM_SS
+ *          deselect time = (DESELTIM + 1) * AHB clock cycle time.
  */
-__STATIC_INLINE void SPIM_HYPER_DISABLE_CIPHER(SPIM_T *spim)
+__STATIC_INLINE void SPIM_HYPER_DISABLE_CACHE(SPIM_T *spim)
 {
-    spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_BALEN_Msk)) | (SPIM_CTL0_CIPHOFF_Msk);
+    (spim->CTL1 |= SPIM_CTL1_CACHEOFF_Msk);
 
-    SPIM_HYPER_SET_DMM_DESELTIM(spim, 0x08);
+    /* Cipher Disabled Set Deselect Time 0x01 */
+    if (((spim->CTL0 & SPIM_CTL0_CIPHOFF_Msk) >> SPIM_CTL0_CIPHOFF_Pos) != SPIM_OP_DISABLE)
+    {
+        SPIM_HYPER_SET_DMM_DESELTIM(spim, 0x1);
+    }
+}
+
+#if (SPIM_REG_CACHE == 1) // TESTCHIP_ONLY not support
+/**
+ * @brief   Enable cache.
+ *
+ * @param spim
+ * @note    Minimum time width of SPIM_SS
+ *          deselect time = (DESELTIM + 4) * AHB clock cycle time.
+ */
+__STATIC_INLINE void SPIM_HYPER_ENABLE_CACHE(SPIM_T *spim)
+{
+    (spim->CTL1 &= ~(SPIM_CTL1_CACHEOFF_Msk));
+
+    /* Cipher Disabled Set Deselect Time 0x04 */
+    if (((spim->CTL0 & SPIM_CTL0_CIPHOFF_Msk) >> SPIM_CTL0_CIPHOFF_Pos) != SPIM_OP_DISABLE)
+    {
+        SPIM_HYPER_SET_DMM_DESELTIM(spim, 0x4);
+    }
+}
+#endif
+
+/**
+  * @brief      Get Direct Map Address.
+  * @param      spim
+  * @return     Direct Mapping Address
+  */
+__STATIC_INLINE uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim)
+{
+    uint32_t u32DMMAddr = 0;
+
+    if (spim == SPIM0)
+    {
+        u32DMMAddr = SPIM_HYPER_DMM0_ADDR;
+    }
+    else if (spim == SPIM1) // TESTCHIP_ONLY
+    {
+        u32DMMAddr = SPIM_HYPER_DMM1_ADDR;
+    }
+
+    return u32DMMAddr;
 }
 
 /* Octal SPI flash and hyper device training DLL API */
-int32_t SPIM_HYPER_CtrlDLLDelayTime(SPIM_T *spim, uint32_t u32DelayNum);
-uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim);
+int32_t SPIM_HYPER_SetDLLDelayNum(SPIM_T *spim, uint32_t u32DelayNum);
 
 /* HyperRAM */
 int32_t SPIM_HYPER_ExitHSAndDPD(SPIM_T *spim);

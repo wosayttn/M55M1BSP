@@ -108,7 +108,7 @@ static void SYS_Init(void)
 int main(void)
 {
     enum dma350_lib_error_t lib_err;
-    uint32_t i, j;
+    uint32_t i;
     uint32_t u32SrcTmpl, u32DesTmpl, u32SrcTmplSize, u32DesTmplSize;
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
@@ -138,7 +138,7 @@ int main(void)
                          ------------    -->   -------------
                        /|    [0]     |         |    [0]     |\
                         |    [1]     |         |    [1]     |
-       u32SrcTmplSize   |    ...     |         |    ...     | u32DesTmpl
+    u32SrcTmplSize + 1  |    ...     |         |    ...     | u32DesTmplSize + 1
                         |    [6]     |         |    [2]     |
                        \|    [7]     |         |    [3]     |/
                          ------------           ------------

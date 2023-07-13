@@ -1148,26 +1148,6 @@ void SDH_Open(SDH_T *sdh, uint32_t u32CardDetSrc)
         }
     }
 
-#if 0
-
-    if (sdh == SDH0)
-    {
-        NVIC_EnableIRQ(SDH0_IRQn);
-        memset(&SD0, 0, sizeof(SDH_INFO_T));
-        SD0.dmabuf = _SDH0_ucSDHCBuffer;
-    }
-    else if (sdh == SDH1)
-    {
-        NVIC_EnableIRQ(SDH1_IRQn);
-        memset(&SD1, 0, sizeof(SDH_INFO_T));
-        SD1.dmabuf = _SDH1_ucSDHCBuffer;
-    }
-    else
-    {
-    }
-
-#endif //0
-
     sdh->GCTL = SDH_GCTL_SDEN_Msk;
 
     if ((u32CardDetSrc & CardDetect_From_DAT3) == CardDetect_From_DAT3)

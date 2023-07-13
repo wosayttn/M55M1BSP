@@ -1,16 +1,12 @@
 /******************************************************************************
  * @file     main.c
  * @version  V1.00
- * $Revision: 2 $
- * $Date: 20/08/11 2:29p $
  * @brief    Implement SPI Master loop back transfer. This sample code needs to
  *           connect MISO_0 pin and MOSI_0 pin together. It will compare the
  *           received data with transmitted data.
  *
- * @note
  * SPDX-License-Identifier: Apache-2.0
- * Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
- *
+ * Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -58,19 +54,18 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
-
     /* Select PCLK0 as the clock source of SPI0 */
     CLK_SetModuleClock(SPI0_MODULE, CLK_SPISEL_SPI0SEL_PCLK0, MODULE_NoMsk);
-
-    /* Enable UART peripheral clock */
-    CLK_EnableModuleClock(UART0_MODULE);
 
     /* Enable SPI0 peripheral clock */
     CLK_EnableModuleClock(SPI0_MODULE);
 
-    /* Set PB multi-function pins for UART0 RXD=PB.12 and TXD=PB.13 */
+    /* Enable UART0 module clock */
+    SetDebugUartCLK();
+
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init I/O Multi-function                                                                                 */
+    /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
     /* Setup SPI0 multi-function pins */
@@ -119,7 +114,7 @@ int main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
+    /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
     /* Init SPI */

@@ -14,6 +14,8 @@
     #pragma anon_unions
 #endif
 
+#define SPIM_REG_CACHE                  (1) /*!< SPIM cache on/off    \hideinitializer */
+
 /**
     @addtogroup REGISTER Control Register
   @{
@@ -106,11 +108,13 @@ typedef struct
      * |        |          |0x1 = DMA write mode. (Note2) (Note3)
      * |        |          |0x2 = DMA read mode. (Note3)
      * |        |          |0x3 = Direct Memory Mapping mode (DMM mode) (Default). (Note4)
-     * |        |          |Note 1: In DMA write mode, hardware will send just one page program command per operation
-     * |        |          |Users must take care of cross-page cases.
-     * |        |          |Note 2: For SPI Flash/Hyper device with 32 Mbytes, access address range is from 0x00000000 to 0x01FFFFFF when using Normal I/O mode, DMA write mode, and DMA read mode to write/read SPI Flash and Hyper device
+     * |        |          |Note 1: After using Normal I/O mode of SPI Flash/Hyper device controller to program the content of SPI Flash and Hyper device, please set CDINVAL(SPIM_CTL1[3]) to 0x1 (Set all cache data to be invalid).
+     * |        |          |Note 2: In DMA write mode, hardware will send just one page program command per operation
+     * |        |          |Users must take care of cross-page cases
+     * |        |          |After using DMA write mode to program the content of SPI Flash and Hyper device, please set CDINVAL(SPIM_CTL1[3]) to 0x1 (Set all cache data to be invalid).
+     * |        |          |Note 3: For SPI Flash/Hyper device with 32 Mbytes, access address range is from 0x00000000 to 0x01FFFFFF when using Normal I/O mode, DMA write mode, and DMA read mode to write/read SPI Flash and Hyper device
      * |        |          |Please user check size of used SPI Flash component to know access address range of SPI Flash and Hyper device.
-     * |        |          |Note 3: For SPI Flash/Hyper device with 32 Mbytes, access address range is from 0x08000000 to 0x09FFFFFF when using Direct Memory mapping mode (DMM mode) to read SPI Flash and write/read Hyper device
+     * |        |          |Note 4: For SPI Flash/Hyper device with 32 Mbytes, access address range is from 0x08000000 to 0x09FFFFFF when using Direct Memory mapping mode (DMM mode) to read SPI Flash and write/read Hyper device
      * |        |          |Please user check size of used storage components to know access address range
      * |        |          |Mbytes Mbytes
      * |[24]    |DTR_NORM  |Double Transfer Rate Mode Enable Bit for Normal I/O Mode
@@ -155,21 +159,46 @@ typedef struct
      * |        |          |1 = The transfer has not finished yet.
      * |        |          |Note: All registers should be set before writing 1 to the SPIMEN bit
      * |        |          |When a transfer is in progress, user should not write to any register of this peripheral.
+     * |[1]     |CACHEOFF  |Cache Memory Function Disable Bit
+     * |        |          |0 = Cache memory function Enabled. (Default)
+     * |        |          |1 = Cache memory function Disabled.
+     * |[3]     |CDINVAL   |Cache Data Invalid Enable Bit
+     * |        |          |Write Operation:
+     * |        |          |0 = No effect.
+     * |        |          |1 = Set all cache data to be invalid. This bit is cleared by hardware automatically.
+     * |        |          |Read Operation: No effect
+     * |        |          |Note: When SPI Flash memory is page erasing or whole Flash erasing, please set CDINVAL to 0x1
+     * |        |          |After using normal I/O mode to program or erase the content of SPI Flash, please set CDINVAL to 0x1.
      * |[4]     |SS        |Slave Select Active Enable Bit
      * |        |          |0 = SPIM_SS is in active level.
      * |        |          |1 = SPIM_SS is in inactive level (Default).
      * |        |          |Note: This interface can only drive one device/slave at a given time
      * |        |          |Therefore, the slave selects of the selected device must be set to its active level before starting any read or write transfer
-     * |        |          |Functional description of SSACTPOL(SPIM_CTL1[5]) and SS is shown in Table 1.1-1
+     * |        |          |Functional description of SSACTPOL(SPIM_CTL1[5]) and SS is shown in Table 1.1-11.11
      * |[5]     |SSACTPOL  |Slave Select Active Level
-     * |        |          |It defines the active level of device/slave select signal (SPIM_SS), as shown in Table 1.1-1
+     * |        |          |It defines the active level of device/slave select signal (SPIM_SS), as shown in Table 1.1-11.11
      * |        |          |0 = The SPIM_SS slave select signal is active low.
      * |        |          |1 = The SPIM_SS slave select signal is active high.
+     * |[6]     |CAWRTHEN  |Cache Write Through Enable Bit
+     * |        |          |0 = Cache write-through function is disabled.
+     * |        |          |1 = Cache write-through function is enabled.
+     * |[7]     |AUTOSCLN  |Auto Selection Updated Cache Line Number Enable Bit
+     * |        |          |0 = Auto-selection function is diabled for number of updated cache line per cache miss, and user can use UPDCLNUM (SPIM_CTL1[15:12]) to adjust number of updated cache line per cache miss manually
+     * |        |          |(default)
+     * |        |          |1 = Auto-selection function is enabled for number of updated cache line per cache miss
+     * |        |          |SPIM will load one cache data line (1x16bytes data), two cache data lines (2x16bytes data), three cache data lines (3x16bytes data), or four cache data lines (4x16bytes data) by hardware automatically with previous history of cache miss and data correlation.Reserved.
      * |[11:8]  |IDLETIME  |Idle Time Interval
      * |        |          |In DMM mode, IDLETIME is set to control the minimum idle time between two SPI Flash accesses.
      * |        |          |Minimum idle time = (IDLETIME + 1) * AHB clock cycle time.
      * |        |          |Note 1: Only used for DMM mode.
      * |        |          |Note 2: AHB clock cycle time = 1/AHB clock frequency.
+     * |[15:12] |UPDCLNUM  |Updated Cache Line Number per Cache Miss
+     * |        |          |0x1 = Update one cache line per cache miss. (default)
+     * |        |          |0x2 = Update two cache lines per cache miss.
+     * |        |          |0x3 = Update three cache lines per cache miss.
+     * |        |          |0x4 = Update four cache lines per cache miss.
+     * |        |          |Others = Reserved.
+     * |        |          |Note 1: Data size of each cache line is 16 bytes.
      * |[31:16] |DIVIDER   |Clock Divider Register
      * |        |          |The value in this field is the frequency divider of the AHB clock (HCLK) to generate the serial SPI output clock "SCLK" on the output SPIM_CLK pin
      * |        |          |The desired frequency is obtained according to the following equation:
@@ -177,7 +206,7 @@ typedef struct
      * |        |          |Note 2: SCLK is serial SPI output clock.
      * |        |          |Note 3: Each SPI Flash command has the limitation of the maximum operation frequency of SCLK
      * |        |          |Please check the specification of the used SPI Flash component to decide the frequency of SPI Flash clock for different command operations of SPI Flash.
-     * |        |          |Note 4: For DTR commands, the setting values of DIVIDER are only 1,2,4,8,16,32,.....
+     * |        |          |Note 4: For DTR commands, the setting values of DIVIDER are only 1,2,4,8,16,32,...
      * |        |          |Note 5: For commands of Hyper bus device, the setting values of DIVIDER are only 1 and 2.
      * @var SPIM_T::RXCLKDLY
      * Offset: 0x0C  RX Clock Delay Control Register
@@ -280,15 +309,21 @@ typedef struct
      * |[23:16] |DESELTIM  |SPI Flash Deselect Time for Direct Memory Mapping Mode Only
      * |        |          |Set the minimum time width of SPI Flash deselect time (i.e
      * |        |          |Minimum SPIM_SS deselect time), as shown in Figure 1.1-5.
+     * |        |          |(1) Cache function disable:
      * |        |          |Minimum time width of SPIM_SS deselect time = (DESELTIM + 1) * AHB clock cycle time.
+     * |        |          |(2) Cache function enable:
+     * |        |          |Minimum time width of SPIM_SS deselect time = (DESELTIM + 4) * AHB clock cycle time.
      * |        |          |Note 1: AHB clock cycle time = 1/AHB clock frequency.
      * |        |          |Note 2: When cipher encryption/decryption is enabled, please set this register value >= 0x10
      * |        |          |When cipher encryption/decryption is disabled, please set this register value >= 0x8.
      * |        |          |Note 3: Please check the used SPI Flash specification to know the setting value of this register, and different SPI Flash vendor may use different setting values.
-     * |[24]    |BWEN      |16 Bytes Burst Wrap Mode Enable Bit for Direct Memory Mapping Mode, and Read Command Code 0xEB, and 0xE7 Only
+     * |[24]    |BWEN      |16 Bytes Burst Wrap Mode Enable Bit for Direct Memory Mapping Mode, Cache Enable, and Read Command Code 0xEB, and 0xE7 Only
      * |        |          |0 = Burst Wrap Mode Disabled. (Default)
      * |        |          |1 = Burst Wrap Mode Enabled.
-     * |        |          |In direct memory mapping mode, both of quad read commands "0xEB and "0xE7 support burst wrap mode for cache application and performance enhance.
+     * |        |          |In direct memory mapping mode, both of quad read commands "0xEB" and "0xE7" support burst wrap mode for cache application and performance enhance
+     * |        |          |For cache application, the burst wrap mode can be used to fill the cache line quickly (In this SPI Flash controller, use cache data line with 16 bytes size)
+     * |        |          |For performance enhance with direct memory mapping mode and cache enable, when cache data is miss, the burst wrap mode can let MCU get the required SPI Flash data quickly.
+     * |        |          |Note: In Direct Memory Mapping Mode, the cache function needs to be enabled when 16 bytes burst wrap mode is enabled.
      * |[25]    |CREN      |Continuous Read Mode Enable Bit for Direct Memory Mapping Mode, Read Command Codes 0xBB, 0xEB, 0xE7, 0x0D, 0xBD, and 0xED Only
      * |        |          |0 = Continuous Read Mode Disabled. (Default)
      * |        |          |1 = Continuous Read Mode Enabled.
@@ -331,7 +366,8 @@ typedef struct
      * |        |          |(2) Read Command Code for DMA Read mode and DMM mode of SPIM
      * |        |          |Note 1: Quad mode of SPI Flash must be enabled first by normal I/O mode before using quad page program/quad read commands.
      * |        |          |Note 2: Please check SPI Flash specifications for support command codes.
-     * |        |          |Note 3: Please disable "continuous read mode" and "burst wrap mode" before DMA write mode of SPI Flash controller is used to program data of SPI Flash.
+     * |        |          |Note 3: Please disable "continuous read mode" and "burst wrap mode" before DMA write mode of SPI Flash controller is used to program data of SPI Flash
+     * |        |          |After using DMA write mode of SPI Flash controller to program the content of SPI Flash, please set CDINVAL(SPIM_CTL1[3]) to 0x1 (Set all cache data to be invalid).
      * @var SPIM_T::MODE
      * Offset: 0x50  Mode Data Register
      * ---------------------------------------------------------------------------------------------------
@@ -713,10 +749,9 @@ typedef struct
      * | :----: | :----:   | :---- |
      * |[1:0]   |CSST      |Chip Select Setup Time to Next CK Rising Edge
      * |        |          |This field indicates the setup time between the chip select and the next CK rising edge
-     * |        |          |00 = 1.5 HCLK cycles.
-     * |        |          |01 = 2.5 HCLK cycles.
      * |        |          |10 = 3.5 HCLK cycles.
      * |        |          |11 = 4.5 HCLK cycles.
+     * |        |          |Others = Reserved.
      * |[5:4]   |CSH       |Chip Select Hold Time After CK Falling Edge
      * |        |          |This field indicates the hold time between the last CK falling edge and chip select
      * |        |          |00 = 0.5 HCLK cycles.
@@ -933,14 +968,35 @@ typedef struct
 #define SPIM_CTL1_SPIMEN_Pos             (0)                                               /*!< SPIM_T::CTL1: SPIMEN Position          */
 #define SPIM_CTL1_SPIMEN_Msk             (0x1ul << SPIM_CTL1_SPIMEN_Pos)                   /*!< SPIM_T::CTL1: SPIMEN Mask              */
 
+#if (SPIM_REG_CACHE == 1) //TESTCHIP_ONLY not support
+    #define SPIM_CTL1_CACHEOFF_Pos           (1)                                               /*!< SPIM_T::CTL1: CACHEOFF Position        */
+    #define SPIM_CTL1_CACHEOFF_Msk           (0x1ul << SPIM_CTL1_CACHEOFF_Pos)                 /*!< SPIM_T::CTL1: CACHEOFF Mask            */
+
+    #define SPIM_CTL1_CDINVAL_Pos            (3)                                               /*!< SPIM_T::CTL1: CDINVAL Position         */
+    #define SPIM_CTL1_CDINVAL_Msk            (0x1ul << SPIM_CTL1_CDINVAL_Pos)                  /*!< SPIM_T::CTL1: CDINVAL Mask             */
+#endif 
+
 #define SPIM_CTL1_SS_Pos                 (4)                                               /*!< SPIM_T::CTL1: SS Position              */
 #define SPIM_CTL1_SS_Msk                 (0x1ul << SPIM_CTL1_SS_Pos)                       /*!< SPIM_T::CTL1: SS Mask                  */
 
 #define SPIM_CTL1_SSACTPOL_Pos           (5)                                               /*!< SPIM_T::CTL1: SSACTPOL Position        */
 #define SPIM_CTL1_SSACTPOL_Msk           (0x1ul << SPIM_CTL1_SSACTPOL_Pos)                 /*!< SPIM_T::CTL1: SSACTPOL Mask            */
 
+#if (SPIM_REG_CACHE == 1) //TESTCHIP_ONLY not support
+    #define SPIM_CTL1_CAWRTHEN_Pos           (6)                                               /*!< SPIM_T::CTL1: CAWRTHEN Position        */
+    #define SPIM_CTL1_CAWRTHEN_Msk           (0x1ul << SPIM_CTL1_CAWRTHEN_Pos)                 /*!< SPIM_T::CTL1: CAWRTHEN Mask            */
+
+    #define SPIM_CTL1_AUTOSCLN_Pos           (7)                                               /*!< SPIM_T::CTL1: AUTOSCLN Position        */
+    #define SPIM_CTL1_AUTOSCLN_Msk           (0x1ul << SPIM_CTL1_AUTOSCLN_Pos)                 /*!< SPIM_T::CTL1: AUTOSCLN Mask            */
+#endif
+
 #define SPIM_CTL1_IDLETIME_Pos           (8)                                               /*!< SPIM_T::CTL1: IDLETIME Position        */
 #define SPIM_CTL1_IDLETIME_Msk           (0xful << SPIM_CTL1_IDLETIME_Pos)                 /*!< SPIM_T::CTL1: IDLETIME Mask            */
+
+#if (SPIM_REG_CACHE == 1) //TESTCHIP_ONLY not support
+    #define SPIM_CTL1_UPDCLNUM_Pos           (12)                                              /*!< SPIM_T::CTL1: UPDCLNUM Position        */
+    #define SPIM_CTL1_UPDCLNUM_Msk           (0xful << SPIM_CTL1_UPDCLNUM_Pos)                 /*!< SPIM_T::CTL1: UPDCLNUM Mask            */
+#endif
 
 #define SPIM_CTL1_DIVIDER_Pos            (16)                                              /*!< SPIM_T::CTL1: DIVIDER Position         */
 #define SPIM_CTL1_DIVIDER_Msk            (0xfffful << SPIM_CTL1_DIVIDER_Pos)               /*!< SPIM_T::CTL1: DIVIDER Mask             */

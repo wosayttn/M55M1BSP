@@ -1,6 +1,6 @@
 /**************************************************************************//**
  * @file     main.c
- * @version  V3.00
+ * @version  V1.00
  * @brief    Configure QSPI0 as Slave 3 wire mode and demonstrate how to
  *           communicate with an off-chip SPI Master device with FIFO mode.
  *           This sample code needs to work with SPI_MasterFIFOMode sample code.
@@ -49,21 +49,20 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
-
     /* Select PCLK0 as the clock source of QSPI0 */
     CLK_SetModuleClock(QSPI0_MODULE, CLK_QSPISEL_QSPI0SEL_PCLK0, MODULE_NoMsk);
-
-    /* Enable UART peripheral clock */
-    CLK_EnableModuleClock(UART0_MODULE);
 
     /* Enable QSPI0 peripheral clock */
     CLK_EnableModuleClock(QSPI0_MODULE);
 
     CLK_EnableModuleClock(GPIOA_MODULE);
 
-    /* Set PB multi-function pins for UART0 RXD=PB.12 and TXD=PB.13 */
+    /* Enable UART0 module clock */
+    SetDebugUartCLK();
+
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init I/O Multi-function                                                                                 */
+    /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
     /* Setup QSPI0 multi-function pins */
@@ -96,7 +95,7 @@ int main(void)
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
 
-    /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
+    /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
     /* Init QSPI */

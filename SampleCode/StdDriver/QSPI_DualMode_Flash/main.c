@@ -1,6 +1,6 @@
 /******************************************************************************
  * @file     main.c
- * @version  V3.00
+ * @version  V1.00
  * @brief    Access SPI flash using QSPI dual mode.
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -356,19 +356,18 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
-
     /* Select PCLK0 as the clock source of QSPI0 */
     CLK_SetModuleClock(QSPI0_MODULE, CLK_QSPISEL_QSPI0SEL_PCLK0, MODULE_NoMsk);
-
-    /* Enable UART peripheral clock */
-    CLK_EnableModuleClock(UART0_MODULE);
 
     /* Enable QSPI0 peripheral clock */
     CLK_EnableModuleClock(QSPI0_MODULE);
 
-    /* Set PB multi-function pins for UART0 RXD=PB.12 and TXD=PB.13 */
+    /* Enable UART0 module clock */
+    SetDebugUartCLK();
+
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init I/O Multi-function                                                                                 */
+    /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
     /* Setup QSPI0 multi-function pins */
@@ -398,7 +397,7 @@ int main(void)
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
 
-    /* Init UART0 to 115200-8n1 for print message */
+    /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
     /* Configure SPI_FLASH_PORT as a master, MSB first, 8-bit transaction, QSPI Mode-0 timing, clock is 2MHz */
