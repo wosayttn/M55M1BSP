@@ -18,19 +18,19 @@
  *----------------------------------------------------------------------------*/
 extern const VECTOR_TABLE_Type __VECTOR_TABLE[];
 
-
 /*----------------------------------------------------------------------------
   System Core Clock Variable
  *----------------------------------------------------------------------------*/
 uint32_t SystemCoreClock = __HSI;                /*!< System Clock Frequency (Core Clock) */
 uint32_t CyclesPerUs     = (__HSI / 1000000UL);  /*!< Cycles per micro second             */
 uint32_t PllClock        = __HSI;                /*!< PLL Output Clock Frequency          */
+uint32_t g_u32NonCacheableBase  = 0,
+         g_u32NonCacheableLimit = 0;
 
 void TZ_SAU_Setup(void);
 void FMC_NSCBA_Setup(void);
 void SCU_Setup(void);
 void NSC_Init(uint32_t u32RegionIdx);
-
 
 /*----------------------------------------------------------------------------
   System Core Clock update function
@@ -111,6 +111,32 @@ __WEAK void InitDebugUart(void)
  *----------------------------------------------------------------------------*/
 __attribute__((constructor)) void SystemInit(void)
 {
+#if defined (__ICCARM__)
+    __WEAK extern uint32_t _region_NonCacheable_start__, _region_NonCacheable_end__;
+
+    if (((uint32_t)&_region_NonCacheable_start__) && ((uint32_t)&_region_NonCacheable_end__))
+    {
+        g_u32NonCacheableBase  = (uint32_t)&_region_NonCacheable_start__;
+        g_u32NonCacheableLimit = (uint32_t)&_region_NonCacheable_end__;
+    }
+#elif defined(__ARMCC_VERSION)
+    __WEAK extern uint32_t Image$$SRAM_NONCACHEABLE$$Base, Image$$SRAM_NONCACHEABLE$$Limit;
+
+    if (((uint32_t)&Image$$SRAM_NONCACHEABLE$$Base) && ((uint32_t)&Image$$SRAM_NONCACHEABLE$$Limit))
+    {
+        g_u32NonCacheableBase  = (uint32_t)&Image$$SRAM_NONCACHEABLE$$Base;
+        g_u32NonCacheableLimit = DCACHE_ALIGN_LINE_SIZE((uint32_t)&Image$$SRAM_NONCACHEABLE$$Limit) - 1;
+    }
+#else
+    __WEAK extern uint32_t __SRAM_NONCACHEABLE_start, __SRAM_NONCACHEABLE_end;
+
+    if (((uint32_t)&__SRAM_NONCACHEABLE_start) && ((uint32_t)&__SRAM_NONCACHEABLE_end))
+    {
+        g_u32NonCacheableBase  = (uint32_t)&__SRAM_NONCACHEABLE_start;
+        g_u32NonCacheableLimit = (uint32_t)&__SRAM_NONCACHEABLE_end;
+    }
+#endif
+
 #if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
     SCB->VTOR = (uint32_t)(&__VECTOR_TABLE[0]);
 #endif
@@ -142,6 +168,31 @@ __attribute__((constructor)) void SystemInit(void)
     SCB->CCR |= SCB_CCR_LOB_Msk;
     __DSB();
     __ISB();
+
+#ifndef NVT_DCACHE_OFF
+    if (g_u32NonCacheableLimit > g_u32NonCacheableBase)
+    {
+        /* Disable D-Cache */
+        SCB_DisableDCache();
+        /* Configure MPU memory attribute */
+        /*
+         * Attribute 0
+         * Memory Type = Normal
+         * Attribute   = Outer Non-cacheable, Inner Non-cacheable
+         */
+        ARM_MPU_SetMemAttr(0UL, ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
+
+        /* Configure MPU memory regions */
+        ARM_MPU_SetRegion(0UL,                                                       /* Region 0 */
+                          ARM_MPU_RBAR((uint32_t)g_u32NonCacheableBase, ARM_MPU_SH_NON, 0, 0, 1),  /* Non-shareable, read/write, privileged, non-executable */
+                          ARM_MPU_RLAR((uint32_t)g_u32NonCacheableLimit, 0)                        /* Use Attr 0 */
+                         );
+        /* Enable MPU */
+        ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
+        /* Enable D-Cache */
+        SCB_EnableDCache();
+    }
+#endif
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
     TZ_SAU_Setup();

@@ -639,7 +639,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>Project.bin</state>
+                    <state>NonCacheable.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -686,7 +686,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>Project.out</state>
+                    <state>NonCacheable.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -983,7 +983,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>Project_import_lib.o</state>
+                    <state>NonCacheable_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1070,6 +1070,12 @@
         <name>Library</name>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\clk.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\fmc.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\pdma.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>

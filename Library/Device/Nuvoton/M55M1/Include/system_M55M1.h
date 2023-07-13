@@ -15,6 +15,9 @@
 extern "C" {
 #endif
 
+#if defined (__ICCARM__)
+//#pragma diag_suppress=Be006
+#endif
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro Definition                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -24,7 +27,14 @@ extern "C" {
 
 #define ICACHE_LINE_SIZE                        (__SCB_ICACHE_LINE_SIZE)    /*!< ICache line byte size              */
 #define DCACHE_LINE_SIZE                        (__SCB_DCACHE_LINE_SIZE)    /*!< DCache line byte size              */
-#define ALIGN_DCACHE_LINE_SIZE(u32ByteSize)     (((u32ByteSize) + (DCACHE_LINE_SIZE) - 1) & ~((DCACHE_LINE_SIZE) - 1))  /* Align to DCache line size */
+#define DCACHE_ALIGN_LINE_SIZE(u32ByteSize)     (((u32ByteSize) + (DCACHE_LINE_SIZE) - 1) & ~((DCACHE_LINE_SIZE) - 1))  /* Align to DCache line size */
+
+#define NVT_ITCM                                __attribute__((section("ITCM")))                /*!< Placed declaration code in ITCM region */
+#define NVT_DTCM                                __attribute__((section("DTCM.zi")))             /*!< Placed declaration data in DTCM region */
+#define NVT_DTCM_INIT                           __attribute__((section("DTCM.init")))           /*!< Placed declaration data in DTCM region */
+#define NVT_NONCACHEABLE                        __attribute__((section("NonCacheable.zi")))     /*!< Placed declaration data in NonCacheable region */
+#define NVT_NONCACHEABLE_INIT                   __attribute__((section("NonCacheable.init")))   /*!< Placed declaration data in NonCacheable region */
+
 #define __PC()                                              \
   __extension__({                                           \
     register unsigned int current_pc;                       \

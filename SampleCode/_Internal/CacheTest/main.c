@@ -29,8 +29,8 @@
 
 #define PDMA_CHAN  0
 /* Base address and size of cache buffer must be DCACHE_LINE_SIZE byte aligned */
-uint32_t g_au32TestSrcBuf[ALIGN_DCACHE_LINE_SIZE(256)] __ALIGNED(DCACHE_LINE_SIZE),
-         g_au32TestDstBuf[ALIGN_DCACHE_LINE_SIZE(256)] __ALIGNED(DCACHE_LINE_SIZE);
+uint32_t g_au32TestSrcBuf[DCACHE_ALIGN_LINE_SIZE(256)] __ALIGNED(DCACHE_LINE_SIZE),
+         g_au32TestDstBuf[DCACHE_ALIGN_LINE_SIZE(256)] __ALIGNED(DCACHE_LINE_SIZE);
 
 static void SYS_Init(void)
 {
