@@ -251,7 +251,6 @@ uint32_t EMAC_ReceivePkt(void)
 {
     uint32_t len = 0;
     PKT_FRAME_T* psPktFrame;
-    struct pbuf *p;
 	
     if ( (len = synop_handle_received_data(&GMACdev, &psPktFrame)) > 0 )
     {		
