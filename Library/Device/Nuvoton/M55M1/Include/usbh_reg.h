@@ -10,7 +10,7 @@
 #define __USBH_REG_H__
 
 #if defined ( __CC_ARM   )
-    #pragma anon_unions
+#pragma anon_unions
 #endif
 
 /**
@@ -355,6 +355,7 @@ typedef struct
      * | :----: | :----:   | :---- |
      * |[7:0]   |NDP       |Number Downstream Ports
      * |        |          |USB host control supports two downstream ports and only one port is available in this series of chip.
+     * |        |          |Note: NDP = 6 in this series of chip.
      * |[8]     |PSM       |Power Switching Mode
      * |        |          |This bit is used to specify how the power switching of the Root Hub ports is controlled.
      * |        |          |0 = Global switching.
@@ -519,6 +520,30 @@ typedef struct
      * |        |          |This bit controls if USB transceiver could enter the standby mode to reduce power consumption.
      * |        |          |0 = The USB transceiver would never enter the standby mode.
      * |        |          |1 = The USB transceiver will enter standby mode while port is in power off state (port power is inactive).
+     * @var USBH_T::HcMiscControl
+     * Offset: 0x204  Host Controller Miscellaneous Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[1]     |ABORT     |AHB Bus ERROR Response
+     * |        |          |This bit indicates there is an ERROR response received in AHB bus.
+     * |        |          |0 = No ERROR response received.
+     * |        |          |1 = ERROR response received.
+     * |        |          |Note: This bit is cleared by writing 1 to it.
+     * |[3]     |OCAL      |Overcurrent Active Low
+     * |        |          |This bit controls the polarity of overcurrent flag from external power IC.
+     * |        |          |0 = Overcurrent flag is high active.
+     * |        |          |1 = Overcurrent flag is low active.
+     * |[4]     |PPCAL     |Port Power Control Active Low
+     * |        |          |This bit controls the polarity of port power control to external power IC.
+     * |        |          |0 = Port power control is high active.
+     * |        |          |1 = Port power control is low active.
+     * |[16]    |DPRT1     |Disable Port 1
+     * |        |          |This bit controls if the connection between USB host controller and transceiver of port 1 is disabled
+     * |        |          |If the connection is disabled, the USB host controller will not recognize any event of USB bus.
+     * |        |          |Set this bit high, the transceiver of port 1 will also be forced into the standby mode no matter what USB host controller operation is.
+     * |        |          |0 = The connection between USB host controller and transceiver of port 1 Enabled.
+     * |        |          |1 = The connection between USB host controller and transceiver of port 1 Disabled and the transceiver of port 1 will also be forced into the standby mode.
      */
     __I  uint32_t HcRevision;            /*!< [0x0000] Host Controller Revision Register                                */
     __IO uint32_t HcControl;             /*!< [0x0004] Host Controller Control Register                                 */
@@ -544,6 +569,7 @@ typedef struct
     __IO uint32_t HcRhPortStatus[6];     /*!< [0x0054] Host Controller Root Hub Port Status                             */
     __I  uint32_t RESERVE0[101];
     __IO uint32_t HcPhyControl;          /*!< [0x0200] Host Controller PHY Control Register                             */
+    __IO uint32_t HcMiscControl;         /*!< [0x0204] Host Controller Miscellaneous Control Register                   */
 
 } USBH_T;
 
@@ -763,12 +789,24 @@ typedef struct
 #define USBH_HcPhyControl_STBYEN_Pos     (27)                                              /*!< USBH_T::HcPhyControl: STBYEN Position  */
 #define USBH_HcPhyControl_STBYEN_Msk     (0x1ul << USBH_HcPhyControl_STBYEN_Pos)           /*!< USBH_T::HcPhyControl: STBYEN Mask      */
 
+#define USBH_HcMiscControl_ABORT_Pos     (1)                                               /*!< USBH_T::HcMiscControl: ABORT Position  */
+#define USBH_HcMiscControl_ABORT_Msk     (0x1ul << USBH_HcMiscControl_ABORT_Pos)           /*!< USBH_T::HcMiscControl: ABORT Mask      */
+
+#define USBH_HcMiscControl_OCAL_Pos      (3)                                               /*!< USBH_T::HcMiscControl: OCAL Position   */
+#define USBH_HcMiscControl_OCAL_Msk      (0x1ul << USBH_HcMiscControl_OCAL_Pos)            /*!< USBH_T::HcMiscControl: OCAL Mask       */
+
+#define USBH_HcMiscControl_PPCAL_Pos     (4)                                               /*!< USBH_T::HcMiscControl: PPCAL Position  */
+#define USBH_HcMiscControl_PPCAL_Msk     (0x1ul << USBH_HcMiscControl_PPCAL_Pos)           /*!< USBH_T::HcMiscControl: PPCAL Mask      */
+
+#define USBH_HcMiscControl_DPRT1_Pos     (16)                                              /*!< USBH_T::HcMiscControl: DPRT1 Position  */
+#define USBH_HcMiscControl_DPRT1_Msk     (0x1ul << USBH_HcMiscControl_DPRT1_Pos)           /*!< USBH_T::HcMiscControl: DPRT1 Mask      */
+
 /** @} USBH_CONST */
 /** @} end of USBH register group */
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-    #pragma no_anon_unions
+#pragma no_anon_unions
 #endif
 
 #endif /* __USBH_REG_H__ */

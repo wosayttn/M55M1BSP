@@ -825,7 +825,8 @@ void EPWM_ClearCaptureIntFlag(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32
  */
 uint32_t EPWM_GetCaptureIntFlag(EPWM_T *epwm, uint32_t u32ChannelNum)
 {
-    return (((((epwm)->CAPIF & (EPWM_CAPIF_CFLIF0_Msk << u32ChannelNum)) ? 1UL : 0UL) << 1) | \
+    
+   return (((((epwm)->CAPIF & (EPWM_CAPIF_CFLIF0_Msk << u32ChannelNum)) ? 1UL : 0UL) << 1) | \
             (((epwm)->CAPIF & (EPWM_CAPIF_CRLIF0_Msk << u32ChannelNum)) ? 1UL : 0UL));
 }
 /**

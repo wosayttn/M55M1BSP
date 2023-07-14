@@ -100,7 +100,9 @@ __WEAK void InitDebugUart(void)
     /* Reset UART module */
     SYS_ResetModule(SYS_UART0RST);
     /* Init UART to 115200-8n1 for print message */
-    UART_Open(DEBUG_PORT, 115200);
+//    UART_Open(DEBUG_PORT, 115200);
+    DEBUG_PORT->LINE = (UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1);
+    DEBUG_PORT->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400));
 #endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
 }
 #endif /* NVT_DBG_UART_OFF */
