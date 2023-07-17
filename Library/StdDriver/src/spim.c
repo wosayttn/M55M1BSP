@@ -1043,9 +1043,6 @@ int32_t SPIM_Is4ByteModeEnable(SPIM_T *spim, uint32_t u32NBit)
   *                         - \ref SPIM_OP_ENABLE
   *                         - \ref SPIM_OP_DISABLE
   * @param      u32NBit     N-bit transmit/receive.
-  * @param      u32DTREn    Enable/Disable SPIM DTR Mode.
-  *                         - \ref SPIM_OP_ENABLE
-  *                         - \ref SPIM_OP_DISABLE
   * @return     SPIM_OK          SPIM operation OK.
   *             SPIM_ERR_FAIL    SPIM operation Fail.
   */
@@ -2252,7 +2249,7 @@ void SPIM_EnterDirectMapMode(SPIM_T *spim, int is4ByteAddr,
         u32RdCmd = ((u32RdCmd << 8) | u32RdCmd);
     }
 
-    SPIM_SET_4BYTE_ADDR(spim, is4ByteAddr);           /* Enable/disable 4-byte u32Address. */
+    SPIM_SET_4BYTE_ADDR(spim, is4ByteAddr);              /* Enable/disable 4-byte u32Address. */
     SPIM_SET_SPIM_MODE(spim, u32RdCmd);                  /* SPIM mode. */
     SPIM_SET_IDL_INTVL(spim, u32IdleIntvl);              /* Idle interval. */
     SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_DIRECTMAP);   /* Switch to Direct Map mode. */

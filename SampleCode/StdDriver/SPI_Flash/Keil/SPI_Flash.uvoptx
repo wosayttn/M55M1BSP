@@ -266,7 +266,7 @@
         <tDllPa></tDllPa>
         <tDlgDll></tDlgDll>
         <tDlgPa></tDlgPa>
-        <tIfile>.\sram.ini</tIfile>
+        <tIfile>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\ARM\debug-sram.ini</tIfile>
         <pMon>BIN\CMSIS_AGDI_V8M.DLL</pMon>
       </DebugOpt>
       <TargetDriverDllRegistry>

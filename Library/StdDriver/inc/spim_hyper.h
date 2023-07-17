@@ -604,8 +604,10 @@ __STATIC_INLINE void SPIM_HYPER_ENABLE_CIPHER(SPIM_T *spim)
  */
 __STATIC_INLINE void SPIM_HYPER_DISABLE_CACHE(SPIM_T *spim)
 {
+    #if (SPIM_REG_CACHE == 1) //TESTCHIP_ONLY not support
     (spim->CTL1 |= SPIM_CTL1_CACHEOFF_Msk);
-
+#endif 
+    
     /* Cipher Disabled Set Deselect Time 0x01 */
     if (((spim->CTL0 & SPIM_CTL0_CIPHOFF_Msk) >> SPIM_CTL0_CIPHOFF_Pos) != SPIM_OP_DISABLE)
     {
