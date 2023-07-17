@@ -27,7 +27,7 @@ uint32_t GetUuartBaudrate(UUART_T *uuart);
 
 void SYS_Init(void)
 {
-   /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -76,9 +76,9 @@ void SYS_Init(void)
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
-    /* Set PA multi-function pins for UART1 TXD and RXD */
-    SET_UART1_RXD_PA2();
-    SET_UART1_TXD_PA3();
+    /* Set multi-function pins for USCI0_DAT0(PA.10), USCI0_DAT1(PA.9) */
+    SET_USCI0_DAT0_PA10();
+    SET_USCI0_DAT1_PA9();
 }
 
 
