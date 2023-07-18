@@ -269,7 +269,6 @@ int32_t main(void)
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     initialise_monitor_handles();
 #endif
-    printf("__DATE__, __TIME__ : %s, %s\n", __DATE__, __TIME__);
     /*
         This sample code sets I2C bus clock to 100kHz. Then, Master accesses Slave with Byte Write
         and Byte Read operations, and check if the read data is equal to the programmed data.
@@ -298,3 +297,5 @@ int32_t main(void)
 
     while (1);
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
