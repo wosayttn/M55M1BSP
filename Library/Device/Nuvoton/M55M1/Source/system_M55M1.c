@@ -122,12 +122,12 @@ __attribute__((constructor)) void SystemInit(void)
         g_u32NonCacheableLimit = (uint32_t)&_region_NonCacheable_end__;
     }
 #elif defined(__ARMCC_VERSION)
-    __WEAK extern uint32_t Image$$SRAM_NONCACHEABLE$$Base, Image$$SRAM_NONCACHEABLE$$Limit;
+    __WEAK extern uint32_t Image$$SRAM_NONCACHEABLE$$Base, Image$$SRAM_NONCACHEABLE_END$$Base;
 
-    if (((uint32_t)&Image$$SRAM_NONCACHEABLE$$Base) && ((uint32_t)&Image$$SRAM_NONCACHEABLE$$Limit))
+    if (((uint32_t)&Image$$SRAM_NONCACHEABLE$$Base) && ((uint32_t)&Image$$SRAM_NONCACHEABLE_END$$Base))
     {
         g_u32NonCacheableBase  = (uint32_t)&Image$$SRAM_NONCACHEABLE$$Base;
-        g_u32NonCacheableLimit = DCACHE_ALIGN_LINE_SIZE((uint32_t)&Image$$SRAM_NONCACHEABLE$$Limit) - 1;
+        g_u32NonCacheableLimit = DCACHE_ALIGN_LINE_SIZE((uint32_t)&Image$$SRAM_NONCACHEABLE_END$$Base) - 1;
     }
 #else
     __WEAK extern uint32_t __SRAM_NONCACHEABLE_start, __SRAM_NONCACHEABLE_end;
@@ -135,7 +135,7 @@ __attribute__((constructor)) void SystemInit(void)
     if (((uint32_t)&__SRAM_NONCACHEABLE_start) && ((uint32_t)&__SRAM_NONCACHEABLE_end))
     {
         g_u32NonCacheableBase  = (uint32_t)&__SRAM_NONCACHEABLE_start;
-        g_u32NonCacheableLimit = (uint32_t)&__SRAM_NONCACHEABLE_end;
+        g_u32NonCacheableLimit = DCACHE_ALIGN_LINE_SIZE((uint32_t)&__SRAM_NONCACHEABLE_end) - 1;
     }
 #endif
 
