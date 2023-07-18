@@ -26,7 +26,7 @@ USBH1_T    *_ohci1;
 
 int    _IsInUsbInterrupt = 0;
 
-static UDEV_DRV_T   *_drivers[MAX_UDEV_DRIVER];
+NVT_NONCACHEABLE static UDEV_DRV_T   *_drivers[MAX_UDEV_DRIVER] __ALIGNED(32);
 
 static CONN_FUNC  *g_conn_func, *g_disconn_func;
 
@@ -142,7 +142,7 @@ void usbh_suspend()
 
 #ifdef ENABLE_OHCI0
 
-    /* port is Synopsys */
+    /* port is hydra */
     /* set port suspend if connected */
     if (_ohci0->HcRhPortStatus[0] & USBH_HcRhPortStatus_CCS_Msk)
         _ohci0->HcRhPortStatus[0] = USBH_HcRhPortStatus_PSS_Msk;    /* set port suspend    */
@@ -163,7 +163,7 @@ void usbh_suspend()
 
 #ifdef ENABLE_OHCI1
 
-    /* port is hydra */
+    /* port is Synopsys */
     /* set port suspend if connected */
     if (_ohci1->HcRhPortStatus[0] & USBH_HcRhPortStatus_CCS_Msk)
         _ohci1->HcRhPortStatus[0] = USBH_HcRhPortStatus_PSS_Msk;    /* set port suspend    */

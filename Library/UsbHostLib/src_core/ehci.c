@@ -20,22 +20,17 @@
 
 /// @cond HIDDEN_SYMBOLS
 
-static QH_T   *_H_qh;                       /* head of reclamation list                   */
-static qTD_T  *_ghost_qtd;                  /* used as a terminator qTD                   */
+static QH_T   *_H_qh;                           /* head of reclamation list                   */
+static qTD_T  *_ghost_qtd;                      /* used as a terminator qTD                   */
 static QH_T *qh_remove_list;
 
 extern ISO_EP_T  *iso_ep_list;              /* list of activated isochronous pipes        */
 extern int ehci_iso_xfer(UTR_T *utr);       /* EHCI isochronous transfer function         */
 extern int ehci_quit_iso_xfer(UTR_T *utr, EP_INFO_T *ep);
 
-#ifdef __ICCARM__
-    #pragma data_alignment=4096
-    uint32_t  _PFList[FL_SIZE];                 /* Periodic frame list (IAR)                  */
-#else
-    uint32_t _PFList[FL_SIZE] __attribute__((aligned(4096)));  /* Periodic frame list        */
-#endif
+NVT_NONCACHEABLE uint32_t _PFList[FL_SIZE] __ALIGNED(4096);  /* Periodic frame list        */
 
-QH_T   *_Iqh[NUM_IQH];
+NVT_NONCACHEABLE QH_T   *_Iqh[NUM_IQH] __ALIGNED(32);
 
 #ifdef ENABLE_ERROR_MSG
 void dump_ehci_regs(void)
@@ -108,8 +103,7 @@ void dump_ehci_asynclist(void)
         }
 
         qh = QH_PTR(qh->HLink);
-    }
-    while (qh != _H_qh);
+    } while (qh != _H_qh);
 }
 
 static void dump_ehci_asynclist_simple(void)
@@ -123,8 +117,7 @@ static void dump_ehci_asynclist_simple(void)
     {
         USB_debug("0x%08x ", (int)qh);
         qh = QH_PTR(qh->HLink);
-    }
-    while (qh != _H_qh);
+    } while (qh != _H_qh);
 
     USB_debug("\n");
 }
@@ -140,8 +133,7 @@ void dump_ehci_period_frame_list_simple(void)
     {
         USB_debug("0x%08x ", (int)qh);
         qh = QH_PTR(qh->HLink);
-    }
-    while (qh != NULL);
+    } while (qh != NULL);
 
     USB_debug("\n");
 }
@@ -489,7 +481,7 @@ static void  write_qh(UDEV_T *udev, EP_INFO_T *ep, QH_T *qh)
     /*------------------------------------------------------------------------------------*/
     if (udev->speed == SPEED_HIGH)
     {
-        cap = 0x40000000;//0 is in M460HD
+        cap = 0x40000000;
     }
     else
     {

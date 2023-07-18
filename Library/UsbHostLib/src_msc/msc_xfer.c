@@ -86,9 +86,21 @@ static int  do_scsi_command(MSC_T *msc, uint8_t *buff, uint32_t data_len, int bI
     if (data_len > 0)
     {
         if (bIsDataIn)
+        {
+#ifndef NVT_DCACHE_OFF
+            msc_debug_msg("data in :%d\r\n", data_len);
+            SCB_InvalidateDCache_by_Addr(buff, data_len);
+#endif
             ret = msc_bulk_transfer(msc, msc->ep_bulk_in, buff, data_len, 500);
+        }
         else
+        {
+#ifndef NVT_DCACHE_OFF
+            msc_debug_msg("data out :%d\r\n", data_len);
+            SCB_CleanDCache_by_Addr(buff, data_len);
+#endif
             ret = msc_bulk_transfer(msc, msc->ep_bulk_out, buff, data_len, 500);
+        }
 
         if (ret < 0)
             return ret;

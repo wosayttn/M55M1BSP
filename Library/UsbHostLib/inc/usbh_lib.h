@@ -29,6 +29,7 @@ extern "C"
 */
 
 #define USBH_OK                     0      /*!< No error.                                       */
+#define USBH_ERR_MEM_FREE_INVALID   -5     /*!< Try to free an invalid memory block             */
 #define USBH_ERR_MEMORY_OUT         -10    /*!< Out of memory.                                  */
 #define USBH_ERR_IF_ALT_LIMIT       -11    /*!< Number of alternative interface > MAX_ALT_PER_IFACE */
 #define USBH_ERR_IF_EP_LIMIT        -15    /*!< Number of endpoints > MAX_EP_PER_IFACE          */

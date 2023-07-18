@@ -32,7 +32,7 @@
 
 /// @cond HIDDEN_SYMBOLS
 
-static UAC_DEV_T   g_uac_dev[CONFIG_UAC_MAX_DEV];
+NVT_NONCACHEABLE static UAC_DEV_T   g_uac_dev[CONFIG_UAC_MAX_DEV] __ALIGNED(32);
 
 static UAC_DEV_T   *g_uac_list = NULL;
 

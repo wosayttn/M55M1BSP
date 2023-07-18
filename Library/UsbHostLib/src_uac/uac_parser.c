@@ -28,107 +28,107 @@ static int  uac_parse_ac_interface(UAC_DEV_T *uac, uint8_t *bptr)
 
     switch (((CS_HDR_T *)bptr)->bDescriptorSubtype)
     {
-    case AC_DESCRIPTOR_UNDEFINED:       /* Not interested, discard it...              */
-        UAC_DBGMSG("AC: AC_DESCRIPTOR_UNDEFINED\n");
-        break;
+        case AC_DESCRIPTOR_UNDEFINED:       /* Not interested, discard it...              */
+            UAC_DBGMSG("AC: AC_DESCRIPTOR_UNDEFINED\n");
+            break;
 
-    case HEADER:
-        /* Not interested, discard it...              */
-        UAC_DBGMSG("AC: HEADER\n");
-        break;
+        case HEADER:
+            /* Not interested, discard it...              */
+            UAC_DBGMSG("AC: HEADER\n");
+            break;
 
-    case INPUT_TERMINAL:
-        ac_itd = (AC_IT_T *)bptr;
-        UAC_DBGMSG("AC: INPUT_TERMINAL\n");
+        case INPUT_TERMINAL:
+            ac_itd = (AC_IT_T *)bptr;
+            UAC_DBGMSG("AC: INPUT_TERMINAL\n");
 
-        if (ac_itd->wTerminalType == UAC_TT_USB_STREAMING)
-        {
-            UAC_DBGMSG("USB streaming terminal found, ID=0x%x\n", ac_itd->bTerminalID);
-        }
-        else if ((ac_itd->wTerminalType & 0x200) == 0x200)
-        {
-            UAC_DBGMSG("MICROPHONE input terminal found, ID=0x%x\n", ac_itd->bTerminalID);
-            uac->acif.mic_id = ac_itd->bTerminalID;
-        }
-        else
-        {
-            UAC_DBGMSG("Unsupported INPUT TERMINAL, ignore it!\n");
-        }
+            if (ac_itd->wTerminalType == UAC_TT_USB_STREAMING)
+            {
+                UAC_DBGMSG("USB streaming terminal found, ID=0x%x\n", ac_itd->bTerminalID);
+            }
+            else if ((ac_itd->wTerminalType & 0x200) == 0x200)
+            {
+                UAC_DBGMSG("MICROPHONE input terminal found, ID=0x%x\n", ac_itd->bTerminalID);
+                uac->acif.mic_id = ac_itd->bTerminalID;
+            }
+            else
+            {
+                UAC_DBGMSG("Unsupported INPUT TERMINAL, ignore it!\n");
+            }
 
-        UAC_DBGMSG("      bTerminalID: 0%x\n", ac_itd->bTerminalID);
-        UAC_DBGMSG("      wTerminalType: 0%x\n", ac_itd->wTerminalType);
-        UAC_DBGMSG("      bAssocTerminal: 0%x\n", ac_itd->bAssocTerminal);
-        UAC_DBGMSG("      bNrChannels: 0%x\n", ac_itd->bNrChannels);
-        UAC_DBGMSG("      wChannelConfig: 0%x\n", ac_itd->wChannelConfig);
-        break;
+            UAC_DBGMSG("      bTerminalID: 0%x\n", ac_itd->bTerminalID);
+            UAC_DBGMSG("      wTerminalType: 0%x\n", ac_itd->wTerminalType);
+            UAC_DBGMSG("      bAssocTerminal: 0%x\n", ac_itd->bAssocTerminal);
+            UAC_DBGMSG("      bNrChannels: 0%x\n", ac_itd->bNrChannels);
+            UAC_DBGMSG("      wChannelConfig: 0%x\n", ac_itd->wChannelConfig);
+            break;
 
-    case OUTPUT_TERMINAL:
-        ac_otd = (AC_OT_T *)bptr;
-        UAC_DBGMSG("AC: OUTPUT_TERMINAL\n");
+        case OUTPUT_TERMINAL:
+            ac_otd = (AC_OT_T *)bptr;
+            UAC_DBGMSG("AC: OUTPUT_TERMINAL\n");
 
-        if (ac_otd->wTerminalType == UAC_TT_USB_STREAMING)
-        {
-            UAC_DBGMSG("USB streaming terminal found, ID=0x%x\n", ac_otd->bTerminalID);
-        }
-        else if ((ac_otd->wTerminalType & 0x300) == 0x300)
-        {
-            UAC_DBGMSG("SPEAKER output terminal found, ID=0x%x\n", ac_otd->bTerminalID);
-            uac->acif.speaker_id = ac_otd->bTerminalID;
-            uac->acif.speaker_fuid = ac_otd->bSourceID;
-        }
-        else
-        {
-            UAC_DBGMSG("Unsupported OUTPUT TERMINAL, ignore it!\n");
-        }
+            if (ac_otd->wTerminalType == UAC_TT_USB_STREAMING)
+            {
+                UAC_DBGMSG("USB streaming terminal found, ID=0x%x\n", ac_otd->bTerminalID);
+            }
+            else if ((ac_otd->wTerminalType & 0x300) == 0x300)
+            {
+                UAC_DBGMSG("SPEAKER output terminal found, ID=0x%x\n", ac_otd->bTerminalID);
+                uac->acif.speaker_id = ac_otd->bTerminalID;
+                uac->acif.speaker_fuid = ac_otd->bSourceID;
+            }
+            else
+            {
+                UAC_DBGMSG("Unsupported OUTPUT TERMINAL, ignore it!\n");
+            }
 
-        UAC_DBGMSG("      bTerminalID: 0%x\n", ac_otd->bTerminalID);
-        UAC_DBGMSG("      wTerminalType: 0%x\n", ac_otd->wTerminalType);
-        UAC_DBGMSG("      bAssocTerminal: 0%x\n", ac_otd->bAssocTerminal);
-        UAC_DBGMSG("      bSourceID: 0%x\n", ac_otd->bSourceID);
-        break;
+            UAC_DBGMSG("      bTerminalID: 0%x\n", ac_otd->bTerminalID);
+            UAC_DBGMSG("      wTerminalType: 0%x\n", ac_otd->wTerminalType);
+            UAC_DBGMSG("      bAssocTerminal: 0%x\n", ac_otd->bAssocTerminal);
+            UAC_DBGMSG("      bSourceID: 0%x\n", ac_otd->bSourceID);
+            break;
 
-    case MIXER_UNIT:
+        case MIXER_UNIT:
 #ifdef UAC_DEBUG
-        UAC_DBGMSG("AC: MIXER_UNIT\n");
-        UAC_DBGMSG("      bUnitID: 0%x\n", ((AC_MXR_T *)bptr)->bUnitID);
-        UAC_DBGMSG("      bNrInPins: 0%x\n", ((AC_MXR_T *)bptr)->bNrInPins);
+            UAC_DBGMSG("AC: MIXER_UNIT\n");
+            UAC_DBGMSG("      bUnitID: 0%x\n", ((AC_MXR_T *)bptr)->bUnitID);
+            UAC_DBGMSG("      bNrInPins: 0%x\n", ((AC_MXR_T *)bptr)->bNrInPins);
 #endif
-        break;
+            break;
 
-    case SELECTOR_UNIT:
+        case SELECTOR_UNIT:
 #ifdef UAC_DEBUG
-        UAC_DBGMSG("AC: SELECTOR_UNIT\n");
-        UAC_DBGMSG("      bUnitID: 0%x\n", ((AC_SU_T *)bptr)->bUnitID);
-        UAC_DBGMSG("      bNrInPins: 0%x\n", ((AC_SU_T *)bptr)->bNrInPins);
+            UAC_DBGMSG("AC: SELECTOR_UNIT\n");
+            UAC_DBGMSG("      bUnitID: 0%x\n", ((AC_SU_T *)bptr)->bUnitID);
+            UAC_DBGMSG("      bNrInPins: 0%x\n", ((AC_SU_T *)bptr)->bNrInPins);
 #endif
-        break;
+            break;
 
-    case FEATURE_UNIT:
+        case FEATURE_UNIT:
 
 #ifdef UAC_DEBUG
-        UAC_DBGMSG("AC: FEATURE_UNIT\n");
-        UAC_DBGMSG("      bUnitID: 0%x\n", ((AC_FU_T *)bptr)->bUnitID);
-        UAC_DBGMSG("      bSourceID: 0%x\n", ((AC_FU_T *)bptr)->bSourceID);
-        UAC_DBGMSG("      bControlSize: 0%x\n", ((AC_FU_T *)bptr)->bControlSize);
+            UAC_DBGMSG("AC: FEATURE_UNIT\n");
+            UAC_DBGMSG("      bUnitID: 0%x\n", ((AC_FU_T *)bptr)->bUnitID);
+            UAC_DBGMSG("      bSourceID: 0%x\n", ((AC_FU_T *)bptr)->bSourceID);
+            UAC_DBGMSG("      bControlSize: 0%x\n", ((AC_FU_T *)bptr)->bControlSize);
 #endif
-        break;
+            break;
 
-    case PROCESSING_UNIT:
+        case PROCESSING_UNIT:
 #ifdef UAC_DEBUG
-        UAC_DBGMSG("AC: PROCESSING_UNIT\n");
-        UAC_DBGMSG("      bUnitID: 0%x\n", ((AC_PU_T *)bptr)->bUnitID);
-        UAC_DBGMSG("      wProcessType: 0%x\n", ((AC_PU_T *)bptr)->wProcessType);
-        UAC_DBGMSG("      bNrInPins: 0%x\n", ((AC_PU_T *)bptr)->bNrInPins);
+            UAC_DBGMSG("AC: PROCESSING_UNIT\n");
+            UAC_DBGMSG("      bUnitID: 0%x\n", ((AC_PU_T *)bptr)->bUnitID);
+            UAC_DBGMSG("      wProcessType: 0%x\n", ((AC_PU_T *)bptr)->wProcessType);
+            UAC_DBGMSG("      bNrInPins: 0%x\n", ((AC_PU_T *)bptr)->bNrInPins);
 #endif
-        break;
+            break;
 
-    case EXTENSION_UNIT:
-        UAC_DBGMSG("AC: EXTENSION_UNIT\n");
-        break;
+        case EXTENSION_UNIT:
+            UAC_DBGMSG("AC: EXTENSION_UNIT\n");
+            break;
 
-    default:
-        UAC_ERRMSG("uac_parse_ac_interface - unrecognized bDescriptorSubtype 0x%x!\n", ((CS_HDR_T *)bptr)->bDescriptorSubtype);
-        return UAC_RET_PARSER;
+        default:
+            UAC_ERRMSG("uac_parse_ac_interface - unrecognized bDescriptorSubtype 0x%x!\n", ((CS_HDR_T *)bptr)->bDescriptorSubtype);
+            return UAC_RET_PARSER;
     }
 
     return 0;
@@ -298,29 +298,29 @@ static int  uac_parse_as_interface(AS_IF_T *asif, uint8_t *bptr)
 
     switch (((CS_HDR_T *)bptr)->bDescriptorSubtype)
     {
-    case AS_DESCRIPTOR_UNDEFINED:
-        UAC_DBGMSG("AS: AS_DESCRIPTOR_UNDEFINED\n");
-        break;
+        case AS_DESCRIPTOR_UNDEFINED:
+            UAC_DBGMSG("AS: AS_DESCRIPTOR_UNDEFINED\n");
+            break;
 
-    case AS_GENERAL:
-        asif->as_gen = (AS_GEN_T *)bptr;
-        UAC_DBGMSG("AS: AS_GENERAL\n");
-        UAC_DBGMSG("      bTerminalLink: 0%x\n", asif->as_gen->bTerminalLink);
-        UAC_DBGMSG("      wFormatTag: 0%x\n", asif->as_gen->wFormatTag);
-        break;
+        case AS_GENERAL:
+            asif->as_gen = (AS_GEN_T *)bptr;
+            UAC_DBGMSG("AS: AS_GENERAL\n");
+            UAC_DBGMSG("      bTerminalLink: 0%x\n", asif->as_gen->bTerminalLink);
+            UAC_DBGMSG("      wFormatTag: 0%x\n", asif->as_gen->wFormatTag);
+            break;
 
-    case FORMAT_TYPE:
-        asif->ft = (AS_FT1_T *)bptr;
-        UAC_DBGMSG("AS: FORMAT_TYPE\n");
-        break;
+        case FORMAT_TYPE:
+            asif->ft = (AS_FT1_T *)bptr;
+            UAC_DBGMSG("AS: FORMAT_TYPE\n");
+            break;
 
-    case FORMAT_SPECIFIC:
-        UAC_DBGMSG("AS: FORMAT_SPECIFIC\n");
-        break;
+        case FORMAT_SPECIFIC:
+            UAC_DBGMSG("AS: FORMAT_SPECIFIC\n");
+            break;
 
-    default:
-        UAC_ERRMSG("uac_parse_as_interface - unrecognized bDescriptorSubtype 0x%x!\n", ((CS_HDR_T *)bptr)->bDescriptorSubtype);
-        return UAC_RET_PARSER;
+        default:
+            UAC_ERRMSG("uac_parse_as_interface - unrecognized bDescriptorSubtype 0x%x!\n", ((CS_HDR_T *)bptr)->bDescriptorSubtype);
+            return UAC_RET_PARSER;
     }
 
     return 0;

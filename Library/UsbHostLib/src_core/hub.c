@@ -22,7 +22,7 @@
 //#define HUB_DBGMSG     printf
 #define HUB_DBGMSG(...)
 
-static HUB_DEV_T  g_hub_dev[MAX_HUB_DEVICE];
+NVT_NONCACHEABLE static HUB_DEV_T  g_hub_dev[MAX_HUB_DEVICE] __ALIGNED(32);
 
 static int do_port_reset(HUB_DEV_T *hub, int port);
 

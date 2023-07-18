@@ -430,200 +430,200 @@ static int hid_parse_item(HID_DEV_T *hdev, uint8_t *buff)
 
     switch (tag)
     {
-    /*------------------------------------------------------------------------------------*/
-    /*  Main Item Tags                                                                    */
-    /*------------------------------------------------------------------------------------*/
+        /*------------------------------------------------------------------------------------*/
+        /*  Main Item Tags                                                                    */
+        /*------------------------------------------------------------------------------------*/
 
-    case TAG_INPUT:
-        HID_DBGMSG("Input ");
-        read_main_item_status(&buff[1]);
+        case TAG_INPUT:
+            HID_DBGMSG("Input ");
+            read_main_item_status(&buff[1]);
 
-        if (_data_usage_cnt > 0)
-        {
-            int  report_count = _rp_info.report_count;
-
-            for (i = 0; i < _data_usage_cnt; i++)
+            if (_data_usage_cnt > 0)
             {
-                _rp_info.report_count = 1;
-                _rp_info.data_usage = _data_usages[i];
+                int  report_count = _rp_info.report_count;
 
-                if (hid_add_report(hdev, TAG_INPUT) != 0)
-                    return USBH_ERR_MEMORY_OUT;
+                for (i = 0; i < _data_usage_cnt; i++)
+                {
+                    _rp_info.report_count = 1;
+                    _rp_info.data_usage = _data_usages[i];
 
-                report_count--;
+                    if (hid_add_report(hdev, TAG_INPUT) != 0)
+                        return USBH_ERR_MEMORY_OUT;
+
+                    report_count--;
+                }
+
+                _rp_info.report_count = report_count;
+                _rp_info.data_usage = 0;
+                _data_usage_cnt = 0;
             }
 
-            _rp_info.report_count = report_count;
-            _rp_info.data_usage = 0;
-            _data_usage_cnt = 0;
-        }
+            if (_rp_info.report_count > 0)
+            {
+                if (hid_add_report(hdev, TAG_INPUT) != 0)
+                    return USBH_ERR_MEMORY_OUT;
+            }
 
-        if (_rp_info.report_count > 0)
-        {
-            if (hid_add_report(hdev, TAG_INPUT) != 0)
-                return USBH_ERR_MEMORY_OUT;
-        }
+            break;
 
-        break;
+        case TAG_OUTPUT:
+            HID_DBGMSG("Output ");
+            read_main_item_status(&buff[1]);
 
-    case TAG_OUTPUT:
-        HID_DBGMSG("Output ");
-        read_main_item_status(&buff[1]);
+            if (_rp_info.report_count > 0)
+            {
+                if (hid_add_report(hdev, TAG_OUTPUT) != 0)
+                    return USBH_ERR_MEMORY_OUT;
+            }
 
-        if (_rp_info.report_count > 0)
-        {
-            if (hid_add_report(hdev, TAG_OUTPUT) != 0)
-                return USBH_ERR_MEMORY_OUT;
-        }
+            break;
 
-        break;
+        case TAG_FEATURE:
+            HID_DBGMSG("Feature ");
+            read_main_item_status(&buff[1]);
+            break;
 
-    case TAG_FEATURE:
-        HID_DBGMSG("Feature ");
-        read_main_item_status(&buff[1]);
-        break;
+        case TAG_COLLECTION:
+            HID_DBGMSG("Collection ");
 
-    case TAG_COLLECTION:
-        HID_DBGMSG("Collection ");
+            if (buff[1] == 0x00)
+                HID_DBGMSG("Physical");
+            else if (buff[1] == 0x01)
+                HID_DBGMSG("Application");
+            else if (buff[1] == 0x02)
+                HID_DBGMSG("Logical");
 
-        if (buff[1] == 0x00)
-            HID_DBGMSG("Physical");
-        else if (buff[1] == 0x01)
-            HID_DBGMSG("Application");
-        else if (buff[1] == 0x02)
-            HID_DBGMSG("Logical");
+            break;
 
-        break;
+        case TAG_END_COLLECTION:
+            HID_DBGMSG("End Collection");
+            break;
 
-    case TAG_END_COLLECTION:
-        HID_DBGMSG("End Collection");
-        break;
+        /*------------------------------------------------------------------------------------*/
+        /*  Global Item Tags                                                                  */
+        /*------------------------------------------------------------------------------------*/
 
-    /*------------------------------------------------------------------------------------*/
-    /*  Global Item Tags                                                                  */
-    /*------------------------------------------------------------------------------------*/
+        case TAG_USAGE_PAGE:
+            HID_DBGMSG("Usage Page ");
+            _rp_info.usage_page = buff[1];
+            print_usage_page();
+            break;
 
-    case TAG_USAGE_PAGE:
-        HID_DBGMSG("Usage Page ");
-        _rp_info.usage_page = buff[1];
-        print_usage_page();
-        break;
+        case TAG_LOGICAL_MIN:
+            _rp_info.logical_min = hid_read_item_value(bSize, &buff[1]);
+            HID_DBGMSG("Logical Minimum (%d)", _rp_info.logical_min);
+            break;
 
-    case TAG_LOGICAL_MIN:
-        _rp_info.logical_min = hid_read_item_value(bSize, &buff[1]);
-        HID_DBGMSG("Logical Minimum (%d)", _rp_info.logical_min);
-        break;
+        case TAG_LOGICAL_MAX:
+            _rp_info.logical_max = hid_read_item_value(bSize, &buff[1]);
+            HID_DBGMSG("Logical Maximum (%d)", _rp_info.logical_max);
+            break;
 
-    case TAG_LOGICAL_MAX:
-        _rp_info.logical_max = hid_read_item_value(bSize, &buff[1]);
-        HID_DBGMSG("Logical Maximum (%d)", _rp_info.logical_max);
-        break;
+        case TAG_PHYSICAL_MIN:
+            _rp_info.physical_min = hid_read_item_value(bSize, &buff[1]);
+            HID_DBGMSG("Physical Minimum (%d)", _rp_info.physical_min);
+            break;
 
-    case TAG_PHYSICAL_MIN:
-        _rp_info.physical_min = hid_read_item_value(bSize, &buff[1]);
-        HID_DBGMSG("Physical Minimum (%d)", _rp_info.physical_min);
-        break;
+        case TAG_PHYSICAL_MAX:
+            _rp_info.physical_max = hid_read_item_value(bSize, &buff[1]);
+            HID_DBGMSG("Physical Maximum (%d)", _rp_info.physical_max);
+            break;
 
-    case TAG_PHYSICAL_MAX:
-        _rp_info.physical_max = hid_read_item_value(bSize, &buff[1]);
-        HID_DBGMSG("Physical Maximum (%d)", _rp_info.physical_max);
-        break;
+        case TAG_UNIT_EXPONENT:
+            _rp_info.unit_exponent = hid_read_item_value(bSize, &buff[1]);
+            HID_DBGMSG("Unit Exponent (%d)", _rp_info.unit_exponent);
+            break;
 
-    case TAG_UNIT_EXPONENT:
-        _rp_info.unit_exponent = hid_read_item_value(bSize, &buff[1]);
-        HID_DBGMSG("Unit Exponent (%d)", _rp_info.unit_exponent);
-        break;
+        case TAG_UNIT:
+            _rp_info.unit = hid_read_item_value(bSize, &buff[1]);
+            HID_DBGMSG("Unit (%d)", _rp_info.unit);
+            break;
 
-    case TAG_UNIT:
-        _rp_info.unit = hid_read_item_value(bSize, &buff[1]);
-        HID_DBGMSG("Unit (%d)", _rp_info.unit);
-        break;
+        case TAG_REPORT_SIZE:
+            _rp_info.report_size = buff[1];
+            HID_DBGMSG("Report Size (%d)", _rp_info.report_size);
+            break;
 
-    case TAG_REPORT_SIZE:
-        _rp_info.report_size = buff[1];
-        HID_DBGMSG("Report Size (%d)", _rp_info.report_size);
-        break;
+        case TAG_REPORT_ID:
+            _rp_info.report_id = buff[1];
+            hdev->rpd.has_report_id = 1;
+            HID_DBGMSG("Report ID (%d)", _rp_info.report_id);
+            break;
 
-    case TAG_REPORT_ID:
-        _rp_info.report_id = buff[1];
-        hdev->rpd.has_report_id = 1;
-        HID_DBGMSG("Report ID (%d)", _rp_info.report_id);
-        break;
+        case TAG_REPORT_COUNT:
+            _rp_info.report_count = buff[1];
+            HID_DBGMSG("Report Count (%d)", _rp_info.report_count);
+            break;
 
-    case TAG_REPORT_COUNT:
-        _rp_info.report_count = buff[1];
-        HID_DBGMSG("Report Count (%d)", _rp_info.report_count);
-        break;
+        case TAG_PUSH:
+            HID_DBGMSG("PUSH");
+            break;
 
-    case TAG_PUSH:
-        HID_DBGMSG("PUSH");
-        break;
+        case TAG_POP:
+            HID_DBGMSG("POP");
+            break;
 
-    case TAG_POP:
-        HID_DBGMSG("POP");
-        break;
+        /*------------------------------------------------------------------------------------*/
+        /*  Local Item Tags                                                                   */
+        /*------------------------------------------------------------------------------------*/
 
-    /*------------------------------------------------------------------------------------*/
-    /*  Local Item Tags                                                                   */
-    /*------------------------------------------------------------------------------------*/
+        case TAG_USAGE:
+            if ((buff[1] == USAGE_ID_X) || (buff[1] == USAGE_ID_Y) || (buff[1] == USAGE_ID_WHEEL))
+                _data_usages[_data_usage_cnt++] = buff[1];    /* interested usages */
+            else
+                _rp_info.app_usage = buff[1];
 
-    case TAG_USAGE:
-        if ((buff[1] == USAGE_ID_X) || (buff[1] == USAGE_ID_Y) || (buff[1] == USAGE_ID_WHEEL))
-            _data_usages[_data_usage_cnt++] = buff[1];    /* interested usages */
-        else
-            _rp_info.app_usage = buff[1];
+            HID_DBGMSG("Usage ");
+            print_usage(buff[1]);
+            break;
 
-        HID_DBGMSG("Usage ");
-        print_usage(buff[1]);
-        break;
+        case TAG_USAGE_MIN:
+            _rp_info.usage_mim = hid_read_item_value(bSize, &buff[1]);
+            HID_DBGMSG("Usage Mimimum (%d)", _rp_info.usage_mim);
+            break;
 
-    case TAG_USAGE_MIN:
-        _rp_info.usage_mim = hid_read_item_value(bSize, &buff[1]);
-        HID_DBGMSG("Usage Mimimum (%d)", _rp_info.usage_mim);
-        break;
+        case TAG_USAGE_MAX:
+            _rp_info.usage_max = hid_read_item_value(bSize, &buff[1]);
+            HID_DBGMSG("Usage Maximum (%d)", _rp_info.usage_max);
+            break;
 
-    case TAG_USAGE_MAX:
-        _rp_info.usage_max = hid_read_item_value(bSize, &buff[1]);
-        HID_DBGMSG("Usage Maximum (%d)", _rp_info.usage_max);
-        break;
+        case TAG_DESIGNATOR_INDEX:
+            _rp_info.designator_index = hid_read_item_value(bSize, &buff[1]);
+            HID_DBGMSG("Designator Index (%d)", _rp_info.designator_index);
+            break;
 
-    case TAG_DESIGNATOR_INDEX:
-        _rp_info.designator_index = hid_read_item_value(bSize, &buff[1]);
-        HID_DBGMSG("Designator Index (%d)", _rp_info.designator_index);
-        break;
+        case TAG_DESIGNATOR_MIN:
+            _rp_info.designator_min = hid_read_item_value(bSize, &buff[1]);
+            HID_DBGMSG("Designator Minimum (%d)", _rp_info.designator_min);
+            break;
 
-    case TAG_DESIGNATOR_MIN:
-        _rp_info.designator_min = hid_read_item_value(bSize, &buff[1]);
-        HID_DBGMSG("Designator Minimum (%d)", _rp_info.designator_min);
-        break;
+        case TAG_DESIGNATOR_MAX:
+            _rp_info.designator_max = hid_read_item_value(bSize, &buff[1]);
+            HID_DBGMSG("Designator Maximum (%d)", _rp_info.designator_max);
+            break;
 
-    case TAG_DESIGNATOR_MAX:
-        _rp_info.designator_max = hid_read_item_value(bSize, &buff[1]);
-        HID_DBGMSG("Designator Maximum (%d)", _rp_info.designator_max);
-        break;
+        case TAG_STRING_INDEX:
+            _rp_info.string_index = hid_read_item_value(bSize, &buff[1]);
+            HID_DBGMSG("String Index (%d)", _rp_info.string_index);
+            break;
 
-    case TAG_STRING_INDEX:
-        _rp_info.string_index = hid_read_item_value(bSize, &buff[1]);
-        HID_DBGMSG("String Index (%d)", _rp_info.string_index);
-        break;
+        case TAG_STRING_MIN:
+            _rp_info.string_min = hid_read_item_value(bSize, &buff[1]);
+            HID_DBGMSG("String Minimum (%d)", _rp_info.string_min);
+            break;
 
-    case TAG_STRING_MIN:
-        _rp_info.string_min = hid_read_item_value(bSize, &buff[1]);
-        HID_DBGMSG("String Minimum (%d)", _rp_info.string_min);
-        break;
+        case TAG_STRING_MAX:
+            _rp_info.string_max = hid_read_item_value(bSize, &buff[1]);
+            HID_DBGMSG("String Maximum (%d)", _rp_info.string_max);
+            break;
 
-    case TAG_STRING_MAX:
-        _rp_info.string_max = hid_read_item_value(bSize, &buff[1]);
-        HID_DBGMSG("String Maximum (%d)", _rp_info.string_max);
-        break;
+        case TAG_DELIMITER:
+            HID_DBGMSG("Delimiter");
+            break;
 
-    case TAG_DELIMITER:
-        HID_DBGMSG("Delimiter");
-        break;
-
-    default:
-        HID_DBGMSG("Unknow tag: 0x%x\n", tag);
-        break;
+        default:
+            HID_DBGMSG("Unknow tag: 0x%x\n", tag);
+            break;
     }
 
     HID_DBGMSG("\n");
@@ -751,24 +751,24 @@ int hid_parse_keyboard_reports(HID_DEV_T *hdev, uint8_t *data, int data_len)
         {
             switch (_keyboard_event.keycode[i])
             {
-            case KEYCODE_NUM_LOCK:
-                pressed_lock_keys |= STATE_MASK_NUM_LOCK;
-                break;
+                case KEYCODE_NUM_LOCK:
+                    pressed_lock_keys |= STATE_MASK_NUM_LOCK;
+                    break;
 
-            case KEYCODE_CAPS_LOCK:
-                pressed_lock_keys |= STATE_MASK_CAPS_LOCK;
-                break;
+                case KEYCODE_CAPS_LOCK:
+                    pressed_lock_keys |= STATE_MASK_CAPS_LOCK;
+                    break;
 
-            case KEYCODE_SCROLL_LOCK:
-                pressed_lock_keys |= STATE_MASK_SCROLL_LOCK;
-                break;
+                case KEYCODE_SCROLL_LOCK:
+                    pressed_lock_keys |= STATE_MASK_SCROLL_LOCK;
+                    break;
 
-            case 0:         /* empty */
-            case 1:         /* error */
-                break;
+                case 0:         /* empty */
+                case 1:         /* error */
+                    break;
 
-            default:
-                _keyboard_event.keycode[_keyboard_event.key_cnt++] = _keyboard_event.keycode[i];
+                default:
+                    _keyboard_event.keycode[_keyboard_event.key_cnt++] = _keyboard_event.keycode[i];
             }
         }
 

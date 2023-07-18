@@ -429,7 +429,7 @@ extern void usbh_dump_ep_info(EP_INFO_T *ep);
 extern void usbh_memory_init(void);
 extern uint32_t  usbh_memory_used(void);
 extern void *usbh_alloc_mem(int size);
-extern void usbh_free_mem(void *p, int size);
+extern int usbh_free_mem(void *p, int size);
 extern int  alloc_dev_address(void);
 extern void free_dev_address(int dev_addr);
 extern UDEV_T *alloc_device(void);

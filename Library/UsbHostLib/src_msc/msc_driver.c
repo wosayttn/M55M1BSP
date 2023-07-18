@@ -23,7 +23,7 @@
 MSC_T  *g_msc_list;       /* Global list of Mass Storage Class device. A multi-lun device can have
                              several instances appeared with different lun. */
 
-static volatile uint8_t  g_fat_drv_used[USBDRV_CNT];
+NVT_NONCACHEABLE static volatile uint8_t  g_fat_drv_used[USBDRV_CNT] __ALIGNED(32);
 static TCHAR    _path[3] = { '3', ':', 0 };
 
 static void  fatfs_drive_int()
@@ -380,23 +380,23 @@ int  usbh_umas_ioctl(int drv_no, int cmd, void *buff)
 
     switch (cmd)
     {
-    case CTRL_SYNC:
-        return RES_OK;
+        case CTRL_SYNC:
+            return RES_OK;
 
-    case GET_SECTOR_COUNT:
-        *(uint32_t *)buff = msc->uTotalSectorN;
-        return RES_OK;
+        case GET_SECTOR_COUNT:
+            *(uint32_t *)buff = msc->uTotalSectorN;
+            return RES_OK;
 
-    case GET_SECTOR_SIZE:
-        *(uint32_t *)buff = msc->nSectorSize;
-        return RES_OK;
+        case GET_SECTOR_SIZE:
+            *(uint32_t *)buff = msc->nSectorSize;
+            return RES_OK;
 
-    case GET_BLOCK_SIZE:
-        *(uint32_t *)buff = msc->nSectorSize;
-        return RES_OK;
+        case GET_BLOCK_SIZE:
+            *(uint32_t *)buff = msc->nSectorSize;
+            return RES_OK;
 
-        //case CTRL_ERASE_SECTOR:
-        //    return RES_OK;
+            //case CTRL_ERASE_SECTOR:
+            //    return RES_OK;
     }
 
     return UMAS_ERR_IVALID_PARM;
