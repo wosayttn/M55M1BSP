@@ -15,6 +15,33 @@
 
 void spim_routine(void);
 
+void SPIM_SetDMMAddrNonCacheable(void)
+{
+    uint32_t u32DMMAddr = SPIM_GetDMMAddress(SPIM0);
+
+    /* Disable D-Cache */
+    SCB_DisableDCache();
+
+    /* Configure MPU memory attribute */
+    /*
+     * Attribute 0
+     * Memory Type = Normal
+     * Attribute   = Outer Non-cacheable, Inner Non-cacheable
+     */
+    ARM_MPU_SetMemAttr(0UL, ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
+
+    /* Configure MPU memory regions */
+    ARM_MPU_SetRegion(0UL,                                                          /* Region 0 */
+                      ARM_MPU_RBAR((uint32_t)u32DMMAddr, ARM_MPU_SH_NON, 0, 0, 0),  /* Non-shareable, read/write, privileged, non-executable */
+                      ARM_MPU_RLAR((uint32_t)u32DMMAddr + 0x10000, 0)               /* Use Attr 0 */
+                     );
+    /* Enable MPU */
+    ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
+
+    /* Enable D-Cache */
+    SCB_EnableDCache();
+}
+
 void SYS_Init(void)
 {
     /* Unlock protected registers */
@@ -92,14 +119,15 @@ void SYS_Init(void)
 int main()
 {
     uint8_t idBuf[3] = {0};
-    /* 0x0B: CMD_DMA_FAST_READ Command Phase Table */
-    SPIM_PHASE_T sWb0BhRdCMD =
+    /* 0xEB: CMD_DMA_FAST_QUAD_READ Command Phase Table */
+    SPIM_PHASE_T sWbEBhRdCMD =
     {
-        CMD_DMA_FAST_READ,                                       // Command Code
-        PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,     // Command Phase
-        PHASE_NORMAL_MODE, PHASE_WIDTH_24, PHASE_DISABLE_DTR,    // Address Phase
-        PHASE_NORMAL_MODE, PHASE_ORDER_MODE0, PHASE_DISABLE_DTR, // Data Phase
-        8,                                                       // Dummy Cycle Phase
+        CMD_DMA_FAST_QUAD_READ,                                                     // Command Code
+        PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,                        // Command Phase
+        PHASE_QUAD_MODE, PHASE_WIDTH_24, PHASE_DISABLE_DTR,                         // Address Phase
+        PHASE_QUAD_MODE, PHASE_ORDER_MODE0, PHASE_DISABLE_DTR,                      // Data Phase
+        4,                                                                          // Dummy Cycle Phase
+        PHASE_ENABLE_CONT_READ, PHASE_QUAD_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,  // Read Mode Phase
     };
 
     /* Unlock protected registers */
@@ -111,13 +139,15 @@ int main()
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
+    SPIM_SetDMMAddrNonCacheable();
+
     printf("+--------------------------------------------------+\n");
     printf("|    M55M1 SPIM DMM mode running program on flash   |\n");
     printf("+--------------------------------------------------+\n");
 
     SYS_UnlockReg();                        /* Unlock protected registers                      */
 
-    SPIM_SET_CLOCK_DIVIDER(SPIM0, 1);       /* Set SPIM clock as HCLK divided by 4 */
+    SPIM_SET_CLOCK_DIVIDER(SPIM0, 2);       /* Set SPIM clock as HCLK divided by 4 */
 
     SPIM_SET_RXCLKDLY_RDDLYSEL(SPIM0, 0);   /* Insert 0 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
 
@@ -136,10 +166,12 @@ int main()
 #if (SPIM_REG_CACHE == 1) //TESTCHIP_ONLY not support
     SPIM_ENABLE_CACHE(SPIM0);
     SPIM0->CTL1 |= SPIM_CTL1_CDINVAL_Msk;        // invalid cache
+#else
+    SPIM_DISABLE_CACHE(SPIM0);
 #endif
 
-    SPIM_DMADMM_InitPhase(SPIM0, &sWb0BhRdCMD, SPIM_CTL0_OPMODE_DIRECTMAP);
-    SPIM_EnterDirectMapMode(SPIM0, USE_4_BYTES_MODE, sWb0BhRdCMD.u32CMDCode, 0);
+    SPIM_DMADMM_InitPhase(SPIM0, &sWbEBhRdCMD, SPIM_CTL0_OPMODE_DIRECTMAP);
+    SPIM_EnterDirectMapMode(SPIM0, USE_4_BYTES_MODE, sWbEBhRdCMD.u32CMDCode, 8);
 
     while (1)
     {

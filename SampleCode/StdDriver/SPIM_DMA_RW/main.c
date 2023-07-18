@@ -10,26 +10,26 @@
 
 #include "NuMicro.h"
 
-#define FLASH_BLOCK_SIZE            (64 * 1024)     /* Flash block size. Depend on the physical flash. */
+#define FLASH_BLOCK_SIZE            (8 * 1024)     /* Flash block size. Depend on the physical flash. */
 #define TEST_BLOCK_ADDR             0x10000         /* Test block address on SPI flash. */
 #define BUFFER_SIZE                 2048
 
-__attribute__((aligned(32))) uint8_t g_buff[BUFFER_SIZE] = {0};
+NVT_NONCACHEABLE __attribute__((aligned(4))) uint8_t g_buff[BUFFER_SIZE] = {0};
 
 /* Program Command Phase */
-extern SPIM_PHASE_T sWb02hWrCMD;
-extern SPIM_PHASE_T sWb12hWrCMD;
+extern SPIM_PHASE_T gsWb02hWrCMD;
+extern SPIM_PHASE_T gsWb12hWrCMD;
 
 /* Standard Read Command Phase */
-extern SPIM_PHASE_T sWb0BhRdCMD;
+extern SPIM_PHASE_T gsWb0BhRdCMD;
 
 /* Dual Read Command Phase */
-extern SPIM_PHASE_T sWbBBhRdCMD;
-extern SPIM_PHASE_T sWbBChRdCMD;
+extern SPIM_PHASE_T gsWbBBhRdCMD;
+extern SPIM_PHASE_T gsWbBChRdCMD;
 
 /* Quad Read Command Phase */
-extern SPIM_PHASE_T sWbEBhRdCMD;
-extern SPIM_PHASE_T sWbEChRdCMD;
+extern SPIM_PHASE_T gsWbEBhRdCMD;
+extern SPIM_PHASE_T gsWbEChRdCMD;
 
 //------------------------------------------------------------------------------
 void SYS_Init(void)
@@ -103,16 +103,16 @@ int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
     /*
      *  Erase flash page
      */
-    printf("Erase SPI flash block 0x%x...", TEST_BLOCK_ADDR);
+    printf("\tErase SPI flash block 0x%x...", TEST_BLOCK_ADDR);
     SPIM_EraseBlock(SPIM0, TEST_BLOCK_ADDR, is4ByteAddr, OPCODE_BE_64K, 1, 1);
     printf("done.\n");
 
     /*
      *  Verify flash page be erased
      */
-    printf("Verify SPI flash block 0x%x be erased...", TEST_BLOCK_ADDR);
+    printf("\tVerify SPI flash block 0x%x be erased...", TEST_BLOCK_ADDR);
 
-    //for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
+    for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
         memset(g_buff, 0, BUFFER_SIZE);
         SPIM_IO_Read(SPIM0, TEST_BLOCK_ADDR + offset, is4ByteAddr, BUFFER_SIZE,
@@ -125,7 +125,7 @@ int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
             if (*pData != 0xFFFFFFFF)
             {
                 printf("FAILED!\n");
-                printf("Flash address 0x%x, read 0x%x!\n", TEST_BLOCK_ADDR + i, *pData);
+                printf("\tFlash address 0x%x, read 0x%x!\n", TEST_BLOCK_ADDR + i, *pData);
                 return -1;
             }
         }
@@ -136,9 +136,9 @@ int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
     /*
      *  Program data to flash block
      */
-    printf("Program sequential data to flash block 0x%x...", TEST_BLOCK_ADDR);
+    printf("\tProgram sequential data to flash block 0x%x...", TEST_BLOCK_ADDR);
 
-    //for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
+    for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
         pData = (uint32_t *)g_buff;
 
@@ -153,9 +153,9 @@ int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
     /*
      *  Verify flash block data
      */
-    printf("Verify SPI flash block 0x%x data...", TEST_BLOCK_ADDR);
+    printf("\tVerify SPI flash block 0x%x data...", TEST_BLOCK_ADDR);
 
-    //for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
+    for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
         memset(g_buff, 0, BUFFER_SIZE);
         SPIM_DMA_Read(SPIM0, TEST_BLOCK_ADDR + offset, is4ByteAddr, BUFFER_SIZE, g_buff, u32RdCmd, 1);
@@ -167,7 +167,7 @@ int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
             if ((*pData) != ((i << 16) | (TEST_BLOCK_ADDR + offset + i)))
             {
                 printf("FAILED!\n");
-                printf("Flash address 0x%x, read 0x%x, expect 0x%x!\n",
+                printf("\tFlash address 0x%x, read 0x%x, expect 0x%x!\n",
                        TEST_BLOCK_ADDR + i, *pData, (i << 16) | (TEST_BLOCK_ADDR + offset + i));
                 return -1;
             }
@@ -201,7 +201,7 @@ int main()
 
     SYS_UnlockReg();                            /* Unlock register lock protect */
 
-    SPIM_SET_CLOCK_DIVIDER(SPIM0, 2);           /* Set SPIM clock as HCLK divided by 4 */
+    SPIM_SET_CLOCK_DIVIDER(SPIM0, 1);           /* Set SPIM clock as HCLK divided by 4 */
 
     SPIM_SET_RXCLKDLY_RDDLYSEL(SPIM0, 0);       /* Insert 0 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
 
@@ -219,12 +219,12 @@ int main()
     printf("SPIM get JEDEC ID=0x%02X, 0x%02X, 0x%02X\n",
            idBuf[0], idBuf[1], idBuf[2]);
 
-    printf("\n[Fast Read] 3-bytes address mode, Fast Read command...");
+    printf("\n[Fast Read] 3-bytes address mode, Fast Read command...\r\n");
 
-    SPIM_DMADMM_InitPhase(SPIM0, &sWb0BhRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
-    SPIM_DMADMM_InitPhase(SPIM0, &sWb02hWrCMD, SPIM_CTL0_OPMODE_PAGEWRITE);
+    SPIM_DMADMM_InitPhase(SPIM0, &gsWb0BhRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
+    SPIM_DMADMM_InitPhase(SPIM0, &gsWb02hWrCMD, SPIM_CTL0_OPMODE_PAGEWRITE);
 
-    if (dma_read_write(0, sWb0BhRdCMD.u32CMDCode, sWb02hWrCMD.u32CMDCode) < 0)
+    if (dma_read_write(0, gsWb0BhRdCMD.u32CMDCode, gsWb02hWrCMD.u32CMDCode) < 0)
     {
         printf("  FAILED!!\n");
         goto lexit;
@@ -232,10 +232,10 @@ int main()
 
     printf("[OK].\n");
 
-    printf("\n[Fast Read Dual Output] 3-bytes address mode, Fast Read Dual command...");
-    SPIM_DMADMM_InitPhase(SPIM0, &sWbBBhRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
+    printf("\n[Fast Read Dual Output] 3-bytes address mode, Fast Read Dual command...\r\n");
+    SPIM_DMADMM_InitPhase(SPIM0, &gsWbBBhRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
 
-    if (dma_read_write(0, sWbBBhRdCMD.u32CMDCode, sWb02hWrCMD.u32CMDCode) < 0)
+    if (dma_read_write(0, gsWbBBhRdCMD.u32CMDCode, gsWb02hWrCMD.u32CMDCode) < 0)
     {
         printf("  FAILED!!\n");
         goto lexit;
@@ -243,10 +243,10 @@ int main()
 
     printf("[OK].\n");
 
-    printf("\n[Fast Read Quad Output] 3-bytes address mode, Fast Read Quad command...");
-    SPIM_DMADMM_InitPhase(SPIM0, &sWbEBhRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
+    printf("\n[Fast Read Quad Output] 3-bytes address mode, Fast Read Quad command...\r\n");
+    SPIM_DMADMM_InitPhase(SPIM0, &gsWbEBhRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
 
-    if (dma_read_write(0, sWbEBhRdCMD.u32CMDCode, sWb02hWrCMD.u32CMDCode) < 0)
+    if (dma_read_write(0, gsWbEBhRdCMD.u32CMDCode, gsWb02hWrCMD.u32CMDCode) < 0)
     {
         printf("  FAILED!!\n");
         goto lexit;
@@ -254,13 +254,12 @@ int main()
 
     printf("[OK].\n");
 
-#if 1
-    SPIM_DMADMM_InitPhase(SPIM0, &sWb12hWrCMD, SPIM_CTL0_OPMODE_PAGEWRITE);
+    SPIM_DMADMM_InitPhase(SPIM0, &gsWb12hWrCMD, SPIM_CTL0_OPMODE_PAGEWRITE);
 
-    printf("\n[Fast Read Dual I/O] 4-bytes address mode, dual read...");
-    SPIM_DMADMM_InitPhase(SPIM0, &sWbBChRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
+    printf("\n[Fast Read Dual I/O] 4-bytes address mode, dual read...\r\n");
+    SPIM_DMADMM_InitPhase(SPIM0, &gsWbBChRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
 
-    if (dma_read_write(1, sWbBChRdCMD.u32CMDCode, sWb12hWrCMD.u32CMDCode) < 0)
+    if (dma_read_write(1, gsWbBChRdCMD.u32CMDCode, gsWb12hWrCMD.u32CMDCode) < 0)
     {
         printf("  FAILED!!\n");
         goto lexit;
@@ -268,17 +267,16 @@ int main()
 
     printf("[OK].\n");
 
-    printf("\n[Fast Read Quad I/O] 4-bytes address mode, quad read...");
-    SPIM_DMADMM_InitPhase(SPIM0, &sWbEChRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
+    printf("\n[Fast Read Quad I/O] 4-bytes address mode, quad read...\r\n");
+    SPIM_DMADMM_InitPhase(SPIM0, &gsWbEChRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
 
-    if (dma_read_write(1, sWbEChRdCMD.u32CMDCode, sWb12hWrCMD.u32CMDCode) < 0)
+    if (dma_read_write(1, gsWbEChRdCMD.u32CMDCode, gsWb12hWrCMD.u32CMDCode) < 0)
     {
         printf("  FAILED!!\n");
         goto lexit;
     }
 
     printf("[OK].\n");
-#endif
 
     printf("\nSPIM DMA read/write demo done.\n");
 

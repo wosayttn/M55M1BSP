@@ -45,7 +45,7 @@ char spim_getc(void)
  */
 void spim_put_string(char *str)
 {
-    while (*str)
+    while (*str != '\0')
     {
         spim_putc(*str++);
     }
@@ -53,12 +53,12 @@ void spim_put_string(char *str)
 
 void spim_routine(void)
 {
-    spim_put_string("\n\n\n");
-    spim_put_string("+------------------------------------------+\n");
-    spim_put_string("|  Program is now running on SPIM flash.   |\n");
-    spim_put_string("+------------------------------------------+\n\n");
+    spim_put_string("\r\n\r\n\r\n");
+    spim_put_string("+------------------------------------------+\r\n");
+    spim_put_string("|  Program is now running on SPIM flash.   |\r\n");
+    spim_put_string("+------------------------------------------+\r\n\r\n");
 
-    spim_put_string("\nPress any to return to main program on APROM flash...\n");
+    spim_put_string("\r\nPress any to return to main program on APROM flash...\r\n");
 
     spim_getc();
 }

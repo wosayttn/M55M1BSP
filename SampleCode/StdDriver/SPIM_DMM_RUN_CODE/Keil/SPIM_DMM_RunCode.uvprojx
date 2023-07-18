@@ -429,11 +429,6 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\spim.c</FilePath>
             </File>
-            <File>
-              <FileName>spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\spi.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -875,11 +870,6 @@
               <FileName>spim.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\spim.c</FilePath>
-            </File>
-            <File>
-              <FileName>spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\spi.c</FilePath>
             </File>
           </Files>
         </Group>
