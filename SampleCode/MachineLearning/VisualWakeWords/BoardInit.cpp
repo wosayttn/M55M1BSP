@@ -11,7 +11,7 @@
 #include "NuMicro.h"
 #include "log_macros.h"
 
-#include "NPU/ethosu_npu_init.h"
+#include "ethosu_npu_init.h"
 
 #define DESIGN_NAME "M55M1"
 
@@ -89,10 +89,6 @@ static void SYS_Init(void)
 
 	/* Enable SRAM2 module clock */
 	CLK_EnableModuleClock(SRAM2_MODULE);
-	/* Enable SPIM module clock */
-    CLK_EnableModuleClock(SPIM0_MODULE);
-	/* Enable SPIM module clock */
-    CLK_EnableModuleClock(SPIM1_MODULE);
 
 	/*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
