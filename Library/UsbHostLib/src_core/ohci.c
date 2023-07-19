@@ -25,19 +25,13 @@
 //#define ED_debug   printf
 #define ED_debug(...)
 
-
 #define PORT_CNT    (_ohci->HcRhDescriptorA & 0xf)
 
-#ifdef __ICCARM__
-    #pragma data_alignment=256
-    static HCCA_T _hcca;
-#else
-    static HCCA_T _hcca __attribute__((aligned(256)));
-#endif
+NVT_NONCACHEABLE static HCCA_T _hcca __ALIGNED(256);
 
-static ED_T   *_Ied[6];
+NVT_NONCACHEABLE static ED_T   *_Ied[6] __ALIGNED(32);
 
-static ED_T  *ed_remove_list;
+NVT_NONCACHEABLE static ED_T  *ed_remove_list __ALIGNED(32);
 
 static void add_to_ED_remove_list(ED_T *ed)
 {

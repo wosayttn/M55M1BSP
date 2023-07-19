@@ -180,7 +180,7 @@ static void  led_ctrl_irq(UTR_T *utr)
 }
 
 int32_t  usbh_hid_set_report_non_blocking(HID_DEV_T *hdev, int rtp_typ, int rtp_id,
-        uint8_t *data, int len)
+                                          uint8_t *data, int len)
 {
     IFACE_T    *iface;
     UTR_T      *utr;

@@ -28,7 +28,7 @@ extern "C"
 */
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  I2C_CTL constant definitions.                                                                            */
+/*  I2C_CTL constant definitions.                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
 #define I2C_CTL_STA_SI            0x28UL /*!< I2C_CTL setting for I2C control bits. It would set STA and SI bits          \hideinitializer */
 #define I2C_CTL_STA_SI_AA         0x2CUL /*!< I2C_CTL setting for I2C control bits. It would set STA, SI and AA bits      \hideinitializer */
@@ -53,6 +53,13 @@ extern "C"
 #define I2C_SMBD_ENABLE             0    /*!< Enable  SMBus Device Mode enable                                            \hideinitializer */
 #define I2C_PECTX_ENABLE            1    /*!< Enable  SMBus Packet Error Check Transmit function                          \hideinitializer */
 #define I2C_PECTX_DISABLE           0    /*!< Disable SMBus Packet Error Check Transmit function                          \hideinitializer */
+
+/*---------------------------------------------------------------------------------------------------------*/
+/*  I2C Data Phase Bit Count constant definitions.                                                         */
+/*---------------------------------------------------------------------------------------------------------*/
+#define I2C_DATA_PHASE_BIT_6        (0x1UL << I2C_CTL1_DPBITSEL_Pos) /*!< Setting data phase bit count to 6 bit           \hideinitializer */
+#define I2C_DATA_PHASE_BIT_7        (0x2UL << I2C_CTL1_DPBITSEL_Pos) /*!< Setting data phase bit count to 7 bit           \hideinitializer */
+#define I2C_DATA_PHASE_BIT_8        (0x3UL << I2C_CTL1_DPBITSEL_Pos) /*!< Setting data phase bit count to 8 bit           \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* I2C Define Error Code                                                                                   */
@@ -107,7 +114,7 @@ extern int32_t g_I2C_i32ErrCode;
  *
  *    @return       A byte of I2C data register
  *
- *    @details      I2C controller read data from bus and save it in I2CDAT register.
+ *    @details      I2C controller read data from bus and save it in I2C_DAT register.
  *    \hideinitializer
  */
 #define I2C_GET_DATA(i2c)   ((i2c)->DAT)
@@ -402,6 +409,22 @@ extern int32_t g_I2C_i32ErrCode;
   */
 #define I2C_DISABLE_RST_PDMA(i2c)   ((i2c)->CTL1 |= I2C_CTL1_PDMARST_Msk)
 
+/**
+ *    @brief        To clear specified interrupt flag of I2C_STATUS1
+ *
+ *    @param[in]    i2c           Specify I2C port
+ *    @param[in]    u32eIntSts    Interrupt type status
+ *                              - \ref I2C_STATUS1_ADMAT0_Msk    : I2C Address 0 Match Status
+ *                              - \ref I2C_STATUS1_ADMAT1_Msk    : I2C Address 1 Match Status
+ *                              - \ref I2C_STATUS1_ADMAT2_Msk    : I2C Address 2 Match Status
+ *                              - \ref I2C_STATUS1_ADMAT3_Msk    : I2C Address 3 Match Status
+ *                              - \ref I2C_STATUS1_DPCIF_Msk     : Transmitter empty interrupt
+ *                              - \ref I2C_STATUS1_SARCIF_Msk    : Transmitter empty interrupt
+ *
+ *    @details      This macro clear specified I2C interrupt at I2C_STATUS1.
+ */
+#define I2C_CLR_STATUS1_FLAG(i2c, u32eIntSts)  ((i2c)->STATUS1 |= u32eIntSts)
+
 /*---------------------------------------------------------------------------------------------------------*/
 /* inline functions                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -446,7 +469,8 @@ void I2C_DisableTimeout(I2C_T *i2c);
 void I2C_EnableWakeup(I2C_T *i2c);
 void I2C_DisableWakeup(I2C_T *i2c);
 void I2C_SetData(I2C_T *i2c, uint8_t u8Data);
-void I2C_SMBusClearInterruptFlag(I2C_T *i2c, uint8_t u8SMBusIntFlag);
+void I2C_EnableTwoBufferMode(I2C_T *i2c, uint32_t u32BitCount);
+void I2C_DisableTwoBufferMode(I2C_T *i2c);
 uint8_t I2C_WriteByte(I2C_T *i2c, uint8_t u8SlaveAddr, uint8_t data);
 uint32_t I2C_WriteMultiBytes(I2C_T *i2c, uint8_t u8SlaveAddr, uint8_t data[], uint32_t u32wLen);
 uint8_t I2C_WriteByteOneReg(I2C_T *i2c, uint8_t u8SlaveAddr, uint8_t u8DataAddr, uint8_t data);
@@ -460,6 +484,7 @@ uint32_t I2C_ReadMultiBytesOneReg(I2C_T *i2c, uint8_t u8SlaveAddr, uint8_t u8Dat
 uint8_t I2C_ReadByteTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr);
 uint32_t I2C_ReadMultiBytesTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, uint8_t rdata[], uint32_t u32rLen);
 uint32_t I2C_SMBusGetStatus(I2C_T *i2c);
+void I2C_SMBusClearInterruptFlag(I2C_T *i2c, uint8_t u8SMBusIntFlag);
 void I2C_SMBusSetPacketByteCount(I2C_T *i2c, uint32_t u32PktSize);
 void I2C_SMBusOpen(I2C_T *i2c, uint8_t u8HostDevice);
 void I2C_SMBusClose(I2C_T *i2c);

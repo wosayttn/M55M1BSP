@@ -46,82 +46,82 @@ static int  cdc_parse_cs_interface(CDC_DEV_T *cdev, uint8_t *buffer, int size)
 
             switch (cifd->bDescriptorSubtype)
             {
-            case CDC_DT_HDR_FUNC:
-                CDC_DBGMSG("Header Functional\n");
-                break;
+                case CDC_DT_HDR_FUNC:
+                    CDC_DBGMSG("Header Functional\n");
+                    break;
 
-            case CDC_DT_CALL_MANAGE:
-                CDC_DBGMSG("Call Management\n");
-                break;
+                case CDC_DT_CALL_MANAGE:
+                    CDC_DBGMSG("Call Management\n");
+                    break;
 
-            case CDC_DT_ABS_CTRL:
-                CDC_DBGMSG("Abstract Control Management\n");
-                break;
+                case CDC_DT_ABS_CTRL:
+                    CDC_DBGMSG("Abstract Control Management\n");
+                    break;
 
-            case CDC_DT_LINE_MANAGE:
-                CDC_DBGMSG("Direct Line Management\n");
-                break;
+                case CDC_DT_LINE_MANAGE:
+                    CDC_DBGMSG("Direct Line Management\n");
+                    break;
 
-            case CDC_DT_TEL_RINGER:
-                CDC_DBGMSG("Telephone Ringer\n");
-                break;
+                case CDC_DT_TEL_RINGER:
+                    CDC_DBGMSG("Telephone Ringer\n");
+                    break;
 
-            case CDC_DT_TEL_OPER_MODES:
-                CDC_DBGMSG("Telephone Operational Modes\n");
-                break;
+                case CDC_DT_TEL_OPER_MODES:
+                    CDC_DBGMSG("Telephone Operational Modes\n");
+                    break;
 
-            case CDC_DT_CALL_LINE_CAP:
-                CDC_DBGMSG("Telephone Call and Line State Reporting Capabilities\n");
-                break;
+                case CDC_DT_CALL_LINE_CAP:
+                    CDC_DBGMSG("Telephone Call and Line State Reporting Capabilities\n");
+                    break;
 
-            case CDC_DT_UNION:
-                CDC_DBGMSG("Union Functional\n");
+                case CDC_DT_UNION:
+                    CDC_DBGMSG("Union Functional\n");
 
-                if (cifd->bLength >= 5)
-                    cdev->ifnum_data = cifd->payload[1];
+                    if (cifd->bLength >= 5)
+                        cdev->ifnum_data = cifd->payload[1];
 
-                if (cifd->bLength >= 6)
-                {
-                    CDC_DBGMSG("Union Functional length %d, not supported!\n", cifd->bLength);
-                }
+                    if (cifd->bLength >= 6)
+                    {
+                        CDC_DBGMSG("Union Functional length %d, not supported!\n", cifd->bLength);
+                    }
 
-                break;
+                    break;
 
-            case CDC_DT_COUNTRY_SEL:
-                CDC_DBGMSG("Country Selection\n");
-                break;
+                case CDC_DT_COUNTRY_SEL:
+                    CDC_DBGMSG("Country Selection\n");
+                    break;
 
-            case CDC_DT_USB_TERMINAL:
-                CDC_DBGMSG("USB Terminal\n");
-                break;
+                case CDC_DT_USB_TERMINAL:
+                    CDC_DBGMSG("USB Terminal\n");
+                    break;
 
-            case CDC_DT_NET_CHANNEL:
-                CDC_DBGMSG("Network Channel Terminal\n");
-                break;
+                case CDC_DT_NET_CHANNEL:
+                    CDC_DBGMSG("Network Channel Terminal\n");
+                    break;
 
-            case CDC_DT_PROTO_UNIT:
-                CDC_DBGMSG("Protocol Unit\n");
-                break;
+                case CDC_DT_PROTO_UNIT:
+                    CDC_DBGMSG("Protocol Unit\n");
+                    break;
 
-            case CDC_DT_EXTENT_UNIT:
-                CDC_DBGMSG("Extension Unit\n");
-                break;
+                case CDC_DT_EXTENT_UNIT:
+                    CDC_DBGMSG("Extension Unit\n");
+                    break;
 
-            case CDC_DT_MULTI_CHANNEL:
-                CDC_DBGMSG("Multi-Channel Management\n");
-                break;
+                case CDC_DT_MULTI_CHANNEL:
+                    CDC_DBGMSG("Multi-Channel Management\n");
+                    break;
 
-            case CDC_DT_CAPI_CTRL:
-                CDC_DBGMSG("CAPI Control Management\n");
-                break;
+                case CDC_DT_CAPI_CTRL:
+                    CDC_DBGMSG("CAPI Control Management\n");
+                    break;
 
-            case CDC_DT_ETHERNET_FUNC:
-                CDC_DBGMSG("Ethernet Networking Functional\n");
-                break;
+                case CDC_DT_ETHERNET_FUNC:
+                    CDC_DBGMSG("Ethernet Networking Functional\n");
+                    break;
 
-            case CDC_DT_ATM_FUNC:
-                CDC_DBGMSG("ATM Networking Functional\n");
-                break;
+                case CDC_DT_ATM_FUNC:
+                    CDC_DBGMSG("ATM Networking Functional\n");
+                    break;
             }
 
             buffer += header->bLength;

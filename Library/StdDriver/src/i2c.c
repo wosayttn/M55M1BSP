@@ -389,7 +389,7 @@ void I2C_EnableTimeout(I2C_T *i2c, uint8_t u8LongTimeout)
  *
  * @param[in]  i2c          Specify I2C port
  *
- * @details    To disable Time-out Counter function in I2CTOC register.
+ * @details    To disable Time-out Counter function in I2C_TOCTL register.
  *
  */
 void I2C_DisableTimeout(I2C_T *i2c)
@@ -421,6 +421,52 @@ void I2C_EnableWakeup(I2C_T *i2c)
 void I2C_DisableWakeup(I2C_T *i2c)
 {
     i2c->WKCTL &= ~I2C_WKCTL_WKEN_Msk;
+}
+
+/**
+ * @brief      Enable I2C Two-level Buffer Function
+ *
+ * @param[in]  i2c          Specify I2C port
+ * @param[in]  u32BitCount  The bit count of date phase.
+ *                          - \ref I2C_DATA_PHASE_BIT_6
+ *                          - \ref I2C_DATA_PHASE_BIT_7
+ *                          - \ref I2C_DATA_PHASE_BIT_8
+ *
+ * @return     None
+ *
+ * @details    To enable I2C slave mode two-level buffer function.
+ *
+ */
+void I2C_EnableTwoBufferMode(I2C_T *i2c, uint32_t u32BitCount)
+{
+    /* Clear Interrupt Flag */
+    i2c->CTL0 = (i2c->CTL0 & ~0x3C);
+    i2c->STATUS1 &=  ~(I2C_STATUS1_DPCIF_Msk | I2C_STATUS1_SARCIF_Msk);
+
+    /* Enable slave read and data phase interrupt and set data phase bit count */
+    i2c->CTL1 |= (I2C_CTL1_DPCINTEN_Msk | I2C_CTL1_SRCINTEN_Msk | u32BitCount);
+
+    /* Enable Two-level buffer mode */
+    i2c->CTL1 |= I2C_CTL1_TWOBUFEN_Msk;
+}
+
+/**
+ * @brief      Disable I2C Two-level Buffer Function
+ *
+ * @param[in]  i2c          Specify I2C port
+ *
+ * @return     None
+ *
+ * @details    To disable I2C slave mode two-level buffer function.
+ *
+ */
+void I2C_DisableTwoBufferMode(I2C_T *i2c)
+{
+    /* Disable slave read and data phase interrupt */
+    i2c->CTL1 &= ~(I2C_CTL1_SRCINTEN_Msk | I2C_CTL1_DPCINTEN_Msk | I2C_CTL1_DPBITSEL_Msk);
+
+    /* Disable Two-level buffer mode */
+    i2c->CTL1 &= ~I2C_CTL1_TWOBUFEN_Msk;
 }
 
 /**
@@ -644,7 +690,7 @@ void I2C_SMBusClockLoTimeout(I2C_T *i2c, uint32_t ms, uint32_t u32Pclk)
 /**
   * @brief      Write a byte to Slave
   *
-  * @param[in]  *i2c            Point to I2C peripheral
+  * @param[in]  i2c             Point to I2C peripheral
   * @param[in]  u8SlaveAddr     Access Slave address(7-bit)
   * @param[in]  data            Write a byte data to Slave
   *
@@ -711,9 +757,9 @@ uint8_t I2C_WriteByte(I2C_T *i2c, uint8_t u8SlaveAddr, uint8_t data)
 /**
   * @brief      Write multi bytes to Slave
   *
-  * @param[in]  *i2c            Point to I2C peripheral
+  * @param[in]  i2c             Point to I2C peripheral
   * @param[in]  u8SlaveAddr     Access Slave address(7-bit)
-  * @param[in]  *data           Pointer to array to write data to Slave
+  * @param[in]  data[]          Pointer to array to write data to Slave
   * @param[in]  u32wLen         How many bytes need to write to Slave
   *
   * @return     A length of how many bytes have been transmitted.
@@ -783,7 +829,7 @@ uint32_t I2C_WriteMultiBytes(I2C_T *i2c, uint8_t u8SlaveAddr, uint8_t data[], ui
 /**
   * @brief      Specify a byte register address and write a byte to Slave
   *
-  * @param[in]  *i2c            Point to I2C peripheral
+  * @param[in]  i2c             Point to I2C peripheral
   * @param[in]  u8SlaveAddr     Access Slave address(7-bit)
   * @param[in]  u8DataAddr      Specify a address (1 byte) of data write to
   * @param[in]  data            A byte data to write it to Slave
@@ -1329,9 +1375,9 @@ uint8_t I2C_ReadByteOneReg(I2C_T *i2c, uint8_t u8SlaveAddr, uint8_t u8DataAddr)
 /**
   * @brief      Specify a byte register address and read multi bytes from Slave
   *
-  * @param[in]  *i2c            Point to I2C peripheral
+  * @param[in]  i2c             Point to I2C peripheral
   * @param[in]  u8SlaveAddr     Access Slave address(7-bit)
-  * @param[in]  u8DataAddr      Specify a address (1 bytes) of data read from
+  * @param[in]  u8DataAddr      Specify a address (1 byte) of data read from
   * @param[out] rdata[]         A data array to store data from Slave
   * @param[in]  u32rLen         How many bytes need to read from Slave
   *
@@ -1422,7 +1468,7 @@ uint32_t I2C_ReadMultiBytesOneReg(I2C_T *i2c, uint8_t u8SlaveAddr, uint8_t u8Dat
 /**
   * @brief      Specify two bytes register address and read a byte from Slave
   *
-  * @param[in]  *i2c            Point to I2C peripheral
+  * @param[in]  i2c             Point to I2C peripheral
   * @param[in]  u8SlaveAddr     Access Slave address(7-bit)
   * @param[in]  u16DataAddr     Specify an address(2 bytes) of data read from
   *
@@ -1514,7 +1560,7 @@ uint8_t I2C_ReadByteTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16DataAdd
 /**
   * @brief      Specify two bytes register address and read multi bytes from Slave
   *
-  * @param[in]  *i2c            Point to I2C peripheral
+  * @param[in]  i2c             Point to I2C peripheral
   * @param[in]  u8SlaveAddr     Access Slave address(7-bit)
   * @param[in]  u16DataAddr     Specify a address (2 bytes) of data read from
   * @param[out] rdata[]         A data array to store data from Slave

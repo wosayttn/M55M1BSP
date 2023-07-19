@@ -28,8 +28,8 @@ extern __NO_RETURN void __PROGRAM_START(void);
   Internal References
  *----------------------------------------------------------------------------*/
 __NO_RETURN void Reset_Handler(void);
+__NO_RETURN void Reset_Handler_Main(void);
 void Default_Handler(void);
-
 
 /*----------------------------------------------------------------------------
   Exception / Interrupt Handler
@@ -406,7 +406,18 @@ const VECTOR_TABLE_Type __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
  *----------------------------------------------------------------------------*/
 __NO_RETURN void Reset_Handler(void)
 {
-    // Function call is not allowed here because stack is not ready.
+    // Copy __set_PSP/__set_MSPLIM/__set_PSPLIM from cmsis_armclang.h
+    __ASM volatile("MSR psp, %0" : : "r"((uint32_t)(&__INITIAL_SP)) :);
+    __ASM volatile("MSR msplim, %0" : : "r"((uint32_t)(&__STACK_LIMIT)));
+    __ASM volatile("MSR psplim, %0" : : "r"((uint32_t)(&__STACK_LIMIT)));
+
+    // Move other code to Reset_Handler_Main to prevent compiler generate stack access code.
+    // Move stack pointer before setting MSPLIM might cuase hard fault due to MSPLIM violation.
+    Reset_Handler_Main();
+}
+
+__NO_RETURN void Reset_Handler_Main(void)
+{
     if ((__PC() & NS_OFFSET) == 0)
     {
         // Unlock protected registers
@@ -442,10 +453,6 @@ __NO_RETURN void Reset_Handler(void)
         // Enable SRAM1 clock
         CLK->SRAMCTL |= CLK_SRAMCTL_SRAM1CKEN_Msk;
     }
-
-    __set_PSP((uint32_t)(&__INITIAL_SP));
-    __set_MSPLIM((uint32_t)(&__STACK_LIMIT));
-    __set_PSPLIM((uint32_t)(&__STACK_LIMIT));
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
     __TZ_set_STACKSEAL_S((uint32_t *)(&__STACK_SEAL));

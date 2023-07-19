@@ -46,5 +46,6 @@ place at address mem:__ICFEDIT_intvec_start__ { readonly section .intvec };
 place in ITCM_region { section ITCM };
 place in ROM_region  { readonly } except { section ITCM };
 place in DTCM_region { section DTCM.zi, section DTCM.init };
-place in RAM_region  { readwrite, block CSTACK, block HEAP, section .bss.tensor_arena, section .bss.NoInit.activation_buf_sram };
+place at end of DTCM_region   { block CSTACK };
+place in RAM_region  { readwrite, block HEAP, section .bss.tensor_arena, section .bss.NoInit.activation_buf_sram };
 place in NonCacheable_region { section NonCacheable.zi, section NonCacheable.init };

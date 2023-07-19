@@ -167,91 +167,6 @@ extern "C"
 #define SC_SET_ETUDIV(sc, u32Mask)     ((sc)->ETUCTL = (((sc)->ETUCTL&(~SC_ETUCTL_ETURDIV_Msk)) | (u32Mask <<SC_ETUCTL_ETURDIV_Pos)))
 
 /**
-  * @brief      This macro set VCC pin state of smartcard interface
-  *
-  * @param[in]  sc          The pointer of smartcard module.
-  * @param[in]  u32State    Pin state of VCC pin, valid parameters are \ref SC_PIN_STATE_HIGH and \ref SC_PIN_STATE_LOW.
-  *
-  *
-  * @details    User can set PWREN (SC_PINCTL[0]) and PWRINV (SC_PINCTL[11]) to decide SC_PWR pin is in high or low level.
-  * \hideinitializer
-  */
-#define SC_SET_VCC_PIN(sc, u32State) \
-    do {\
-        uint32_t u32TimeOutCount = SC_TIMEOUT;\
-        while(((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)\
-            if(--u32TimeOutCount == 0) break;\
-        if(u32State)\
-            (sc)->PINCTL |= SC_PINCTL_PWREN_Msk;\
-        else\
-            (sc)->PINCTL &= ~SC_PINCTL_PWREN_Msk;\
-    }while(0)
-
-
-/**
-  * @brief      This macro turns CLK output on or off
-  *
-  * @param[in]  sc          The pointer of smartcard module.
-  * @param[in] u32OnOff     Clock on or off for selected smartcard module, valid values are \ref SC_CLK_ON and \ref SC_CLK_OFF.
-  *
-  *
-  * @details    User can set CLKKEEP (SC_PINCTL[6]) to decide SC_CLK pin always keeps free running or not.
-  * \hideinitializer
-  */
-#define SC_SET_CLK_PIN(sc, u32OnOff)\
-    do {\
-        uint32_t u32TimeOutCount = SC_TIMEOUT;\
-        while(((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)\
-            if(--u32TimeOutCount == 0) break;\
-        if(u32OnOff)\
-            (sc)->PINCTL |= SC_PINCTL_CLKKEEP_Msk;\
-        else\
-            (sc)->PINCTL &= ~(SC_PINCTL_CLKKEEP_Msk);\
-    }while(0)
-
-/**
-  * @brief      This macro set I/O pin state of smartcard interface
-  *
-  * @param[in]  sc          The pointer of smartcard module.
-  * @param[in] u32State     Pin state of I/O pin, valid parameters are \ref SC_PIN_STATE_HIGH and \ref SC_PIN_STATE_LOW.
-  *
-  *
-  * @details    User can set SCDATA (SC_PINCTL[9]) to decide SC_DATA pin to high or low.
-  * \hideinitializer
-  */
-#define SC_SET_IO_PIN(sc, u32State)\
-    do {\
-        uint32_t u32TimeOutCount = SC_TIMEOUT;\
-        while(((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)\
-            if(--u32TimeOutCount == 0) break;\
-        if(u32State)\
-            (sc)->PINCTL |= SC_PINCTL_SCDATA_Msk;\
-        else\
-            (sc)->PINCTL &= ~SC_PINCTL_SCDATA_Msk;\
-    }while(0)
-
-/**
-  * @brief      This macro set RST pin state of smartcard interface
-  *
-  * @param[in]  sc          The pointer of smartcard module.
-  * @param[in] u32State     Pin state of RST pin, valid parameters are \ref SC_PIN_STATE_HIGH and \ref SC_PIN_STATE_LOW.
-  *
-  *
-  * @details    User can set SCRST (SC_PINCTL[1]) to decide SC_RST pin to high or low.
-  * \hideinitializer
-  */
-#define SC_SET_RST_PIN(sc, u32State)\
-    do {\
-        uint32_t u32TimeOutCount = SC_TIMEOUT;\
-        while(((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)\
-            if(--u32TimeOutCount == 0) break;\
-        if(u32State)\
-            (sc)->PINCTL |= SC_PINCTL_RSTEN_Msk;\
-        else\
-            (sc)->PINCTL &= ~SC_PINCTL_RSTEN_Msk;\
-    }while(0)
-
-/**
   * @brief      This macro read one byte from smartcard module receive FIFO
   *
   * @param[in]  sc      The pointer of smartcard module.
@@ -294,7 +209,10 @@ extern "C"
 /* Declare these inline functions here to avoid MISRA C 2004 rule 8.1 error */
 __STATIC_INLINE void SC_SetTxRetry(SC_T *sc, uint32_t u32Count);
 __STATIC_INLINE void SC_SetRxRetry(SC_T *sc, uint32_t u32Count);
-
+__STATIC_INLINE void SC_SET_VCC_PIN(SC_T *sc, uint32_t u32State);
+__STATIC_INLINE void SC_SET_CLK_PIN(SC_T *sc, uint32_t u32OnOff);
+__STATIC_INLINE void SC_SET_IO_PIN(SC_T *sc, uint32_t u32State);
+__STATIC_INLINE void SC_SET_RST_PIN(SC_T *sc, uint32_t u32State);
 
 /**
   * @brief      Enable/Disable Tx error retry, and set Tx error retry count
@@ -367,6 +285,125 @@ __STATIC_INLINE void SC_SetRxRetry(SC_T *sc, uint32_t u32Count)
         (sc)->CTL |= (((u32Count) - 1UL) << SC_CTL_RXRTY_Pos) | SC_CTL_RXRTYEN_Msk;
     }
 }
+
+/**
+  * @brief      This macro set VCC pin state of smartcard interface
+  *
+  * @param[in]  sc          The pointer of smartcard module.
+  * @param[in]  u32State    Pin state of VCC pin, valid parameters are \ref SC_PIN_STATE_HIGH and \ref SC_PIN_STATE_LOW.
+  *
+  *
+  * @details    User can set PWREN (SC_PINCTL[0]) and PWRINV (SC_PINCTL[11]) to decide SC_PWR pin is in high or low level.
+  * \hideinitializer
+  */
+__STATIC_INLINE void SC_SET_VCC_PIN(SC_T *sc, uint32_t u32State)
+{
+    uint32_t u32TimeOutCount = SC_TIMEOUT;
+
+    while (((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)
+    {
+        if (--u32TimeOutCount == 0) break;
+    }
+
+    if (u32State)
+    {
+        (sc)->PINCTL |= SC_PINCTL_PWREN_Msk;
+    }
+    else
+    {
+        (sc)->PINCTL &= ~SC_PINCTL_PWREN_Msk;
+    }
+}
+
+/**
+  * @brief      This macro turns CLK output on or off
+  *
+  * @param[in]  sc          The pointer of smartcard module.
+  * @param[in] u32OnOff     Clock on or off for selected smartcard module, valid values are \ref SC_CLK_ON and \ref SC_CLK_OFF.
+  *
+  *
+  * @details    User can set CLKKEEP (SC_PINCTL[6]) to decide SC_CLK pin always keeps free running or not.
+  * \hideinitializer
+  */
+__STATIC_INLINE void SC_SET_CLK_PIN(SC_T *sc, uint32_t u32OnOff)
+{
+    uint32_t u32TimeOutCount = SC_TIMEOUT;
+
+    while (((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)
+    {
+        if (--u32TimeOutCount == 0) break;
+    }
+
+    if (u32OnOff)
+    {
+        (sc)->PINCTL |= SC_PINCTL_CLKKEEP_Msk;
+    }
+    else
+    {
+        (sc)->PINCTL &= ~(SC_PINCTL_CLKKEEP_Msk);
+    }
+}
+
+/**
+  * @brief      This macro set I/O pin state of smartcard interface
+  *
+  * @param[in]  sc          The pointer of smartcard module.
+  * @param[in] u32State     Pin state of I/O pin, valid parameters are \ref SC_PIN_STATE_HIGH and \ref SC_PIN_STATE_LOW.
+  *
+  *
+  * @details    User can set SCDATA (SC_PINCTL[9]) to decide SC_DATA pin to high or low.
+  * \hideinitializer
+  */
+__STATIC_INLINE void SC_SET_IO_PIN(SC_T *sc, uint32_t u32State)
+{
+    uint32_t u32TimeOutCount = SC_TIMEOUT;
+
+    while (((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)
+    {
+        if (--u32TimeOutCount == 0) break;
+    }
+
+    if (u32State)
+    {
+        (sc)->PINCTL |= SC_PINCTL_SCDATA_Msk;
+    }
+    else
+    {
+        (sc)->PINCTL &= ~SC_PINCTL_SCDATA_Msk;
+    }
+
+}
+
+/**
+  * @brief      This macro set RST pin state of smartcard interface
+  *
+  * @param[in]  sc          The pointer of smartcard module.
+  * @param[in] u32State     Pin state of RST pin, valid parameters are \ref SC_PIN_STATE_HIGH and \ref SC_PIN_STATE_LOW.
+  *
+  *
+  * @details    User can set SCRST (SC_PINCTL[1]) to decide SC_RST pin to high or low.
+  * \hideinitializer
+  */
+__STATIC_INLINE void SC_SET_RST_PIN(SC_T *sc, uint32_t u32State)
+{
+    uint32_t u32TimeOutCount = SC_TIMEOUT;
+
+    while (((sc)->PINCTL & SC_PINCTL_SYNC_Msk) == SC_PINCTL_SYNC_Msk)
+    {
+        if (--u32TimeOutCount == 0) break;
+    }
+
+    if (u32State)
+    {
+        (sc)->PINCTL |= SC_PINCTL_RSTEN_Msk;
+    }
+    else
+    {
+        (sc)->PINCTL &= ~SC_PINCTL_RSTEN_Msk;
+    }
+
+}
+
 
 uint32_t SC_IsCardInserted(SC_T *sc);
 void SC_ClearFIFO(SC_T *sc);

@@ -28,7 +28,7 @@ extern "C"
 */
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  LPI2C_CTL constant definitions.                                                                            */
+/*  LPI2C_CTL constant definitions.                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 #define LPI2C_CTL_STA_SI            0x28UL /*!< LPI2C_CTL setting for I2C control bits. It would set STA and SI bits          \hideinitializer */
 #define LPI2C_CTL_STA_SI_AA         0x2CUL /*!< LPI2C_CTL setting for I2C control bits. It would set STA, SI and AA bits      \hideinitializer */
@@ -41,39 +41,39 @@ extern "C"
 #define LPI2C_CTL_AA                0x04UL /*!< LPI2C_CTL setting for I2C control bits. It would set AA bit                   \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  LPI2C GCMode constant definitions.                                                                       */
+/*  LPI2C GCMode constant definitions.                                                                     */
 /*---------------------------------------------------------------------------------------------------------*/
 #define LPI2C_GCMODE_ENABLE           1    /*!< Enable  I2C GC Mode                                                         \hideinitializer */
 #define LPI2C_GCMODE_DISABLE          0    /*!< Disable I2C GC Mode                                                         \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  LPI2C AUTOMode constant definitions.                                                                        */
+/*  LPI2C AUTOMode constant definitions.                                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
-#define LPI2C_AUTO_TXPDMA             (1UL << LPI2C_AUTOCTL_AUTOMODE_Pos)    /*!< LPI2C working in auto TXPDMA mode                                              \hideinitializer */
-#define LPI2C_AUTO_RXPDMA             (2UL << LPI2C_AUTOCTL_AUTOMODE_Pos)    /*!< LPI2C working in auto RXPDMA mode                                            \hideinitializer */
-#define LPI2C_RANDOM_REPEAT_STA       (3UL << LPI2C_AUTOCTL_AUTOMODE_Pos)    /*!< LPI2C working in random read mode, repeat start between TX/RX                          \hideinitializer */
-#define LPI2C_RANDOM_STO_STA          (4UL << LPI2C_AUTOCTL_AUTOMODE_Pos)    /*!< LPI2C working in random read mode, stop and start between TX/RX                          \hideinitializer */
+#define LPI2C_AUTO_TXPDMA             (1UL << LPI2C_AUTOCTL_AUTOMODE_Pos)    /*!< LPI2C working in auto TXPDMA mode                                      \hideinitializer */
+#define LPI2C_AUTO_RXPDMA             (2UL << LPI2C_AUTOCTL_AUTOMODE_Pos)    /*!< LPI2C working in auto RXPDMA mode                                      \hideinitializer */
+#define LPI2C_RANDOM_REPEAT_STA       (3UL << LPI2C_AUTOCTL_AUTOMODE_Pos)    /*!< LPI2C working in random read mode, repeat start between TX/RX          \hideinitializer */
+#define LPI2C_RANDOM_STO_STA          (4UL << LPI2C_AUTOCTL_AUTOMODE_Pos)    /*!< LPI2C working in random read mode, stop and start between TX/RX        \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  LPI2C trigger source constant definitions.                                                                        */
+/*  LPI2C trigger source constant definitions.                                                             */
 /*---------------------------------------------------------------------------------------------------------*/
-#define LPI2C_TRGSRC_LPTMR0             0UL    /*!< LPI2C Auto-operation trigger source from LPTMR0                                              \hideinitializer */
-#define LPI2C_TRGSRC_LPTMR1             1UL    /*!< LPI2C Auto-operation trigger source from LPTMR1                                            \hideinitializer */
+#define LPI2C_TRGSRC_LPTMR0             0UL    /*!< LPI2C Auto-operation trigger source from LPTMR0                        \hideinitializer */
+#define LPI2C_TRGSRC_LPTMR1             1UL    /*!< LPI2C Auto-operation trigger source from LPTMR1                        \hideinitializer */
 #define LPI2C_TRGSRC_TTMR0              2UL    /*!< LPI2C Auto-operation trigger source from TTMR0                         \hideinitializer */
 #define LPI2C_TRGSRC_TTMR1              3UL    /*!< LPI2C Auto-operation trigger source from TTMR1                         \hideinitializer */
-#define LPI2C_TRGSRC_WKIOA              4UL    /*!< LPI2C Auto-operation trigger source from WKIOA                                              \hideinitializer */
-#define LPI2C_TRGSRC_WKIOB              5UL    /*!< LPI2C Auto-operation trigger source from WKIOB                                           \hideinitializer */
+#define LPI2C_TRGSRC_WKIOA              4UL    /*!< LPI2C Auto-operation trigger source from WKIOA                         \hideinitializer */
+#define LPI2C_TRGSRC_WKIOB              5UL    /*!< LPI2C Auto-operation trigger source from WKIOB                         \hideinitializer */
 #define LPI2C_TRGSRC_WKIOC              6UL    /*!< LPI2C Auto-operation trigger source from WKIOC                         \hideinitializer */
 #define LPI2C_TRGSRC_WKIOD              7UL    /*!< LPI2C Auto-operation trigger source from WKIOD                         \hideinitializer */
-#define LPI2C_TRGSRC_SWTRG              8UL    /*!< LPI2C Auto-operation trigger source from SWTRG                                             \hideinitializer */
+#define LPI2C_TRGSRC_SWTRG              8UL    /*!< LPI2C Auto-operation trigger source from SWTRG                         \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* I2C Define Error Code                                                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
-#define LPI2C_TIMEOUT     SystemCoreClock  /*!< LPI2C time-out counter (1 second time-out)                                    \hideinitializer */
-#define LPI2C_OK          ( 0L)            /*!< LPI2C operation OK                                                            \hideinitializer */
-#define LPI2C_ERR_FAIL    (-1L)            /*!< LPI2C operation failed                                                        \hideinitializer */
-#define LPI2C_ERR_TIMEOUT (-2L)            /*!< LPI2C operation abort due to timeout error                                    \hideinitializer */
+#define LPI2C_TIMEOUT     SystemCoreClock  /*!< LPI2C time-out counter (1 second time-out)                                 \hideinitializer */
+#define LPI2C_OK          ( 0L)            /*!< LPI2C operation OK                                                         \hideinitializer */
+#define LPI2C_ERR_FAIL    (-1L)            /*!< LPI2C operation failed                                                     \hideinitializer */
+#define LPI2C_ERR_TIMEOUT (-2L)            /*!< LPI2C operation abort due to timeout error                                 \hideinitializer */
 
 
 /*@}*/ /* end of group LPI2C_EXPORTED_CONSTANTS */

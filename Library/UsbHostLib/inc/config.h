@@ -65,8 +65,13 @@
    are all allocated from this pool. Allocated unit size is determined by MEM_POOL_UNIT_SIZE.
    May allocate one or more units depend on hardware descriptor type.                                 */
 
-#define MEM_POOL_UNIT_SIZE     64      /*!< A fixed hard coding setting. Do not change it!            */
-#define MEM_POOL_UNIT_NUM     256      /*!< Increase this or heap size if memory allocate failed.     */
+#define HW_MEM_UNIT_SIZE       64      /*!< A fixed hard coding setting. Do not change it!            */
+#define HW_MEM_UNIT_NUM       256      /*!< Increase this or heap size if memory allocate failed.     */
+
+/* USB transfer memory pool. For non-cache DMA memory allocation. */
+
+#define DMA_MEM_UNIT_SIZE    1024      /*!< A fixed hard coding setting. Do not change it!            */
+#define DMA_MEM_UNIT_NUM       32      /*!< Increase this or heap size if memory allocate failed.     */
 
 /*----------------------------------------------------------------------------------------*/
 /*   Re-defined staff for various compiler                                                */
