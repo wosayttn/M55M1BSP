@@ -1,6 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
+ * @brief
  *           Show how to set LPI2C in Slave mode and receive the data from Master.
  *           This sample code needs to work with LPI2C_Master.
  *
