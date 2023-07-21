@@ -18,6 +18,9 @@
  *----------------------------------------------------------------------------*/
 extern const VECTOR_TABLE_Type __VECTOR_TABLE[];
 
+/* Declare new vector table in DTCM */
+uint32_t VECTOR_TABLE_DTCM[TOTAL_IRQn_CNT] __ALIGNED(FMC_VECMAP_SIZE) __attribute__((section("DTCM.VTOR")));
+
 /*----------------------------------------------------------------------------
   System Core Clock Variable
  *----------------------------------------------------------------------------*/
@@ -113,6 +116,8 @@ __WEAK void InitDebugUart(void)
  *----------------------------------------------------------------------------*/
 __attribute__((constructor)) void SystemInit(void)
 {
+    int32_t i;
+
 #if defined (__ICCARM__)
     __WEAK extern uint32_t _region_NonCacheable_start__, _region_NonCacheable_end__;
 
@@ -140,7 +145,11 @@ __attribute__((constructor)) void SystemInit(void)
 #endif
 
 #if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
-    SCB->VTOR = (uint32_t)(&__VECTOR_TABLE[0]);
+    /* Copy vector table to table in DTCM */
+    for (i = 0; i < TOTAL_IRQn_CNT; i++)
+        VECTOR_TABLE_DTCM[i] = (uint32_t)__VECTOR_TABLE[i];
+
+    SCB->VTOR = (uint32_t)(&VECTOR_TABLE_DTCM[0]);
 #endif
 
 #if (defined (__FPU_USED) && (__FPU_USED == 1U)) || \
@@ -171,7 +180,7 @@ __attribute__((constructor)) void SystemInit(void)
     __DSB();
     __ISB();
 
-#ifndef NVT_DCACHE_OFF
+#ifdef NVT_DCACHE_ON
     if (g_u32NonCacheableLimit > g_u32NonCacheableBase)
     {
         /* Disable D-Cache */
@@ -194,7 +203,7 @@ __attribute__((constructor)) void SystemInit(void)
         /* Enable D-Cache */
         SCB_EnableDCache();
     }
-#endif
+#endif  // NVT_DCACHE_ON
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
     TZ_SAU_Setup();
