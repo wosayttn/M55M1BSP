@@ -274,7 +274,7 @@ int main()
 
     SPIM_DISABLE_CIPHER(SPIM0);
 
-    SPIM_DISABLE_CACHE(SPIM0);
+    SPIM_DISABLE_CACHE(pSPIMx);
 
     if (SPIM_InitFlash(SPIM0, 1) != 0)          /* Initialized SPI flash */
     {

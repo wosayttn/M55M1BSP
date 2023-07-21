@@ -104,7 +104,7 @@ int32_t OTFC_SetNonceNum(OTFC_T *otfc, uint32_t u32PR,
  *                  - \ref OTFC_PR_2
  *                  - \ref OTFC_PR_3
  * @param[in] u32SAddr  is the protection region start address
- * @param[in] u32EAddr  is the protection region end address
+ * @param[in] u32PRSize is the protection region size
  * @param[in] u32KeyNum is the KEY Store of KEY number
  * @param[in] u8KeySrc  is the Key Source form Key Store SRAM or OTP
  *                      - OTFC_KS_SRC_SRAM
@@ -113,7 +113,7 @@ int32_t OTFC_SetNonceNum(OTFC_T *otfc, uint32_t u32PR,
  *            the user must manually set the scrambling and nonce number.
  */
 int32_t OTFC_SetKeyFromKeyStore(OTFC_T *otfc, uint32_t u32PR,
-                                uint32_t u32SAddr, uint32_t u32EAddr,
+                                uint32_t u32SAddr, uint32_t u32PRSize,
                                 uint32_t u32KeyNum, uint32_t u32KeySrc)
 {
     /* Wait Protection Region 0 ~ 3 not Busy*/
@@ -127,7 +127,7 @@ int32_t OTFC_SetKeyFromKeyStore(OTFC_T *otfc, uint32_t u32PR,
 
     /* Set Protection Region Start and End Address */
     OTFC_SET_START_ADDR(otfc, u32PR, u32SAddr);
-    OTFC_SET_END_ADDR(otfc, u32PR, u32EAddr);
+    OTFC_SET_END_ADDR(otfc, u32PR, u32SAddr + u32PRSize);
 
     /* Clear protect region setting */
     OTFC_CLEAR_KSCTRL(otfc, u32PR);
@@ -156,10 +156,10 @@ int32_t OTFC_SetKeyFromKeyStore(OTFC_T *otfc, uint32_t u32PR,
  *                        - \ref OTFC_PR_2
  *                        - \ref OTFC_PR_3
  * @param[in] u32SAddr    Protection region start address.
- * @param[in] u32EAddr    Protection region end address.
+ * @param[in] u32PRSize   Protection region Size.
  */
 int32_t OTFC_SetKeyFromKeyReg(OTFC_T *otfc, uint32_t *pau32KeyTable, uint32_t u32PR,
-                              uint32_t u32SAddr, uint32_t u32EAddr)
+                              uint32_t u32SAddr, uint32_t u32PRSize)
 {
     /* Wait Protection Region 0 ~ 3 not Busy*/
     if (otfc_wait_busy(otfc, u32PR) != OTFC_OK)
@@ -174,7 +174,7 @@ int32_t OTFC_SetKeyFromKeyReg(OTFC_T *otfc, uint32_t *pau32KeyTable, uint32_t u3
 
     /* Protection Region 0 ~ 3 key is read from registers OTFC_PRx_KEYx */
     OTFC_SET_START_ADDR(otfc, u32PR, u32SAddr);
-    OTFC_SET_END_ADDR(otfc, u32PR, u32EAddr);
+    OTFC_SET_END_ADDR(otfc, u32PR, u32SAddr + u32PRSize);
     OTFC_SET_KEY0(otfc, u32PR, pau32KeyTable[0]);
     OTFC_SET_KEY1(otfc, u32PR, pau32KeyTable[1]);
     OTFC_SET_KEY2(otfc, u32PR, pau32KeyTable[2]);

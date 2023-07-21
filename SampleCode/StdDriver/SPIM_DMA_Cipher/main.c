@@ -1,7 +1,8 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * @brief    Show SPIM DMA mode read/write function.
+ * @brief    Demonstrate SPIM DMA read/write with cipher enabled. This sample
+ *           also dumps SPI flash content via I/O mode read to prove it is encrypted cipher context.
  *
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
@@ -10,10 +11,12 @@
 
 #include "NuMicro.h"
 
-#define FLASH_BLOCK_SIZE            (8 * 1024)     /* Flash block size. Depend on the physical flash. */
+//------------------------------------------------------------------------------
+#define FLASH_BLOCK_SIZE            (8 * 1024)      /* Flash block size. Depend on the physical flash. */
 #define TEST_BLOCK_ADDR             0x10000         /* Test block address on SPI flash. */
 #define BUFFER_SIZE                 2048
 
+//------------------------------------------------------------------------------
 NVT_NONCACHEABLE __attribute__((aligned(4))) uint8_t g_buff[BUFFER_SIZE] = {0};
 
 /* SPIM cipher key User defined. */
@@ -29,6 +32,7 @@ uint32_t gau32AESKey[8] =
     0x93484D6F, //NONCE2
 };
 
+//------------------------------------------------------------------------------
 /* Program Command Phase */
 extern SPIM_PHASE_T gsWb02hWrCMD;
 extern SPIM_PHASE_T gsWb12hWrCMD;
@@ -233,12 +237,13 @@ int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
     printf("done.\n");
 
     memset(g_buff, 0, 64);
-    printf("\n\nDump SPI flash with I/O read. It's the SPIM cypher encrypted text.\n");
+    printf("\n\nDump SPI flash with I/O read. It's the SPIM cipher encrypted text.\n");
     SPIM_IO_Read(SPIM0, TEST_BLOCK_ADDR, is4ByteAddr, BUFFER_SIZE, g_buff, OPCODE_FAST_READ, 1, 1, 1, 1);
     DumpBufferHex(g_buff, 64);
 
     memset(g_buff, 0, 64);
-    printf("\n\nDump SPI flash with DMA read. It's the plain text. The cypher text was decrypted by SPIM while doing DMA read.\n");
+    printf("\n\nDump SPI flash with DMA read. It's the plain text. "
+           "The cipher text was decrypted by SPIM while doing DMA read.\n");
     SPIM_DMA_Read(SPIM0, TEST_BLOCK_ADDR, is4ByteAddr, BUFFER_SIZE, g_buff, u32RdCmd, 1);
     DumpBufferHex(g_buff, 64);
 
@@ -277,7 +282,7 @@ int main()
     SPIM_SET_RXCLKDLY_RDDLYSEL(SPIM0, 0);
 
     /* Set Cipher Key and protection region */
-    OTFC_SetKeyFromKeyReg(OTFC0, gau32AESKey, OTFC_PR_0, TEST_BLOCK_ADDR, TEST_BLOCK_ADDR + BUFFER_SIZE);
+    OTFC_SetKeyFromKeyReg(OTFC0, gau32AESKey, OTFC_PR_0, TEST_BLOCK_ADDR, BUFFER_SIZE);
     OTFC_ENABLE_PR(OTFC0, OTFC_PR_0);
 
     SPIM_DISABLE_CACHE(SPIM0);

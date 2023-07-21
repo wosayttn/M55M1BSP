@@ -305,11 +305,6 @@ void HyperFlash_Init(SPIM_T *spim)
     /* Enable SPIM Hyper Bus Mode */
     SPIM_HYPER_Init(spim, 2);
 
-#if (SPIM_CACHE_EN == 1)
-    /* Enable SPIM Cache */
-    SPIM_DISABLE_CACHE(spim);
-#endif //SPIM_CACHE_EN
-
     /* SPIM Def. Enable Cipher, First Disable the test. */
     SPIM_DISABLE_CIPHER(spim);
 
@@ -318,6 +313,11 @@ void HyperFlash_Init(SPIM_T *spim)
     HyperFlash_SetReadLatency(spim, 9);
 
     SPIM_TrainingDLLDelayTime(spim);
+
+#if (SPIM_CACHE_EN == 1)
+    /* Enable SPIM Cache */
+    SPIM_HYPER_ENABLE_CACHE(spim);
+#endif //SPIM_CACHE_EN
 }
 
 /*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

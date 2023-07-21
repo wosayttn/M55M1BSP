@@ -174,11 +174,6 @@ void HyperRAM_Init(SPIM_T *spim)
     /* Enable SPIM Hyper Bus Mode */
     SPIM_HYPER_Init(spim, 1);
 
-#if (SPIM_CACHE_EN == 1)
-    /* Enable SPIM Cache */
-    SPIM_ENABLE_CACHE(spim);
-#endif //SPIM_CACHE_EN
-
     /* SPIM Def. Enable Cipher, First Disable the test. */
     SPIM_DISABLE_CIPHER(spim);
 
@@ -190,4 +185,9 @@ void HyperRAM_Init(SPIM_T *spim)
 
     /* Training DLL component delay stop number */
     HyperRAM_TrainingDelayNumber(spim);
+
+#if (SPIM_CACHE_EN == 1)
+    /* Enable SPIM Cache */
+    SPIM_ENABLE_CACHE(spim);
+#endif //SPIM_CACHE_EN
 }

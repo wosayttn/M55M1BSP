@@ -11,6 +11,7 @@
 
 #include "NuMicro.h"
 
+//------------------------------------------------------------------------------
 #define USE_4_BYTES_MODE            0     /* W25Q20 does not support 4-bytes address mode. */
 #define MFP_SELECT                  0     /* Multi-function pin select                     */
 
@@ -18,8 +19,26 @@
 #define TEST_BLOCK_ADDR             0x10000     /* Test block address on SPI flash. */
 #define BUFFER_SIZE                 2048
 
+//------------------------------------------------------------------------------
 NVT_NONCACHEABLE __attribute__((aligned(4))) uint8_t g_buff[BUFFER_SIZE] = {0};
 
+//------------------------------------------------------------------------------
+/* Program Command Phase */
+extern SPIM_PHASE_T gsWb02hWrCMD;
+extern SPIM_PHASE_T gsWb12hWrCMD;
+
+/* Standard Read Command Phase */
+extern SPIM_PHASE_T gsWb0BhRdCMD;
+
+/* Dual Read Command Phase */
+extern SPIM_PHASE_T gsWbBBhRdCMD;
+extern SPIM_PHASE_T gsWbBChRdCMD;
+
+/* Quad Read Command Phase */
+extern SPIM_PHASE_T gsWbEBhRdCMD;
+extern SPIM_PHASE_T gsWbEChRdCMD;
+
+//------------------------------------------------------------------------------
 void SYS_Init(void)
 {
     /* Unlock protected registers */
@@ -130,7 +149,7 @@ int main()
     /*
      *  Erase flash page
      */
-    printf("Erase SPI flash block 0x%x...", TEST_BLOCK_ADDR);
+    printf("\r\nErase SPI flash block 0x%x...", TEST_BLOCK_ADDR);
     SPIM_EraseBlock(SPIM0, TEST_BLOCK_ADDR, USE_4_BYTES_MODE, OPCODE_BE_64K, 1, 1);
     printf("done.\n");
 
@@ -260,6 +279,80 @@ int main()
     }
 
     SPIM_SetQuadEnable(SPIM0, 0, 1);
+
+    printf("done.\n");
+
+
+    /*
+     *  Erase flash page
+     */
+    printf("\r\nErase SPI flash block 0x%x...", TEST_BLOCK_ADDR);
+    SPIM_EraseBlock(SPIM0, TEST_BLOCK_ADDR, USE_4_BYTES_MODE, OPCODE_BE_64K, 1, 1);
+    printf("done.\n");
+
+    /*
+     *  Phase IO Program data to flash block and Phase IO Read and compare flash data
+     */
+    printf("Phase IO Program sequential data to flash block 0x%x...", TEST_BLOCK_ADDR);
+
+    for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
+    {
+        pData = (uint32_t *)g_buff;
+
+        for (i = 0; i < BUFFER_SIZE; i += 4, pData++)
+        {
+            (*pData) = (i << 16) | (TEST_BLOCK_ADDR + offset + i);
+        }
+
+        SPIM_IO_WritePhase(SPIM0, &gsWb02hWrCMD, TEST_BLOCK_ADDR + offset,
+                           g_buff, BUFFER_SIZE);
+    }
+
+    printf("done.\n");
+
+    printf("Verify SPI flash block 0x%x data with Phase IO Fast Dual Read command...", TEST_BLOCK_ADDR);
+
+    for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
+    {
+        memset(g_buff, 0, BUFFER_SIZE);
+
+        SPIM_IO_ReadPhase(SPIM0, &gsWbBBhRdCMD, TEST_BLOCK_ADDR + offset, g_buff, BUFFER_SIZE);
+
+        pData = (uint32_t *)g_buff;
+
+        for (i = 0; i < BUFFER_SIZE; i += 4, pData++)
+        {
+            if (*pData != ((i << 16) | (TEST_BLOCK_ADDR + offset + i)))
+            {
+                printf("FAILED!\n");
+                printf("Flash address 0x%x, read 0x%x, expect 0x%x!\n", TEST_BLOCK_ADDR + i, *pData, (i << 16) | (TEST_BLOCK_ADDR + offset + i));
+                goto lexit;
+            }
+        }
+    }
+
+    printf("done.\n");
+
+    printf("Verify SPI flash block 0x%x data with Phase IO Fast Quad Read command...", TEST_BLOCK_ADDR);
+
+    for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
+    {
+        memset(g_buff, 0, BUFFER_SIZE);
+
+        SPIM_IO_ReadPhase(SPIM0, &gsWbEBhRdCMD, TEST_BLOCK_ADDR + offset, g_buff, BUFFER_SIZE);
+
+        pData = (uint32_t *)g_buff;
+
+        for (i = 0; i < BUFFER_SIZE; i += 4, pData++)
+        {
+            if (*pData != ((i << 16) | (TEST_BLOCK_ADDR + offset + i)))
+            {
+                printf("FAILED!\n");
+                printf("Flash address 0x%x, read 0x%x, expect 0x%x!\n", TEST_BLOCK_ADDR + i, *pData, (i << 16) | (TEST_BLOCK_ADDR + offset + i));
+                goto lexit;
+            }
+        }
+    }
 
     printf("done.\n");
 

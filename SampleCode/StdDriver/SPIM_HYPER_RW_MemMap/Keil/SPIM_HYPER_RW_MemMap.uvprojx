@@ -429,6 +429,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\spim_hyper.c</FilePath>
             </File>
+            <File>
+              <FileName>otfc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\otfc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -524,8 +529,8 @@
           <AfterMake>
             <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>1</RunUserProg2>
-            <UserProg1Name>fromelf --bin ".\obj\@L.axf" --output ".\bin"</UserProg1Name>
-            <UserProg2Name>.\binToAscii.bat ".\Objects\@L.bin"</UserProg2Name>
+            <UserProg1Name>fromelf --bin ".\obj\@L.axf" --output ".\obj\@L.bin"</UserProg1Name>
+            <UserProg2Name>fromelf --text -c ".\obj\@L.axf" --output ".\obj\@L.txt"</UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
             <nStopA1X>0</nStopA1X>
@@ -870,6 +875,11 @@
               <FileName>spim_hyper.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\spim_hyper.c</FilePath>
+            </File>
+            <File>
+              <FileName>otfc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\otfc.c</FilePath>
             </File>
           </Files>
         </Group>

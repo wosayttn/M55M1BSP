@@ -238,8 +238,6 @@ int main()
 
 #if (SPIM_REG_CACHE == 1) // TESTCHIP_ONLY not support
     SPIM_ENABLE_CACHE(SPIM0);
-#else
-    SPIM_DISABLE_CACHE(SPIM0);
 #endif
 
     SPIM_DMADMM_InitPhase(SPIM0, &gsWb02hWrCMD, SPIM_CTL0_OPMODE_PAGEWRITE);

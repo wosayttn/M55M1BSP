@@ -102,13 +102,8 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
         //memcpy(g_au8DestArray, pi32SrcAddr, u32TestSize);
 
         /* Verify the data and save the number of successful delay steps */
-        if (memcmp(g_au8SrcArray, g_au8DestArray, u32TestSize))
+        if (memcmp(g_au8SrcArray, g_au8DestArray, u32TestSize) == 0)
         {
-            printf("!!!\tData compare failed at block 0x%x\n", u32SrcAddr);
-        }
-        else
-        {
-            printf("Delay Step Num : %d = Pass\r\n", u8RdDelay);
             u8RdDelayRes[u8RdDelayIdx++] = u8RdDelay;
         }
     }
@@ -131,6 +126,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
         }
     }
 
+    printf("Set DLL Delay Num : %d\r\n", u8RdDelayRes[u8RdDelayIdx]);
     /* Set the number of intermediate delay steps */
     SPIM_HYPER_SetDLLDelayNum(spim, u8RdDelayRes[u8RdDelayIdx]);
 }
@@ -173,19 +169,19 @@ void HyperRAM_Init(SPIM_T *spim)
     SPIM_HYPER_Init(spim, 1);
 
     /* SPIM Def. Enable Cipher, First Disable the test. */
-    SPIM_DISABLE_CIPHER(spim);
-
-    /* Reset HyperRAM */
-    SPIM_HYPER_Reset(spim);
+    SPIM_HYPER_DISABLE_CIPHER(spim);
 
     /* Set R/W Latency Number */
     SPIM_Hyper_DefaultConfig(spim, 780, 7, 7);
+
+    /* Reset HyperRAM */
+    SPIM_HYPER_Reset(spim);
 
     /* Training DLL component delay stop number */
     HyperRAM_TrainingDelayNumber(spim);
 
 #if (SPIM_REG_CACHE == 1)
     /* Enable SPIM Cache */
-    SPIM_ENABLE_CACHE(spim);
+    SPIM_HYPER_ENABLE_CACHE(spim);
 #endif //SPIM_REG_CACHE
 }

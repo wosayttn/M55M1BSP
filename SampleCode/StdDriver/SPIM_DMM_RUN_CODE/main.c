@@ -166,8 +166,6 @@ int main()
 #if (SPIM_REG_CACHE == 1) //TESTCHIP_ONLY not support
     SPIM_ENABLE_CACHE(SPIM0);
     SPIM0->CTL1 |= SPIM_CTL1_CDINVAL_Msk;        // invalid cache
-#else
-    SPIM_DISABLE_CACHE(SPIM0);
 #endif
 
     SPIM_DMADMM_InitPhase(SPIM0, &sWbEBhRdCMD, SPIM_CTL0_OPMODE_DIRECTMAP);

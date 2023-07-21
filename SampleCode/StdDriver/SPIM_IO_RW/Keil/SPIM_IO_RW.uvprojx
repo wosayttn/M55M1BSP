@@ -439,6 +439,11 @@
               <FileType>1</FileType>
               <FilePath>..\main.c</FilePath>
             </File>
+            <File>
+              <FileName>cmdcode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\cmdcode.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
@@ -875,6 +880,11 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>cmdcode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\cmdcode.c</FilePath>
             </File>
           </Files>
         </Group>

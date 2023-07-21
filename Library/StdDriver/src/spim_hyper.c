@@ -120,24 +120,11 @@ int32_t SPIM_HYPER_WaitSPIMENDone(SPIM_T *spim, uint32_t u32IsSync)
 
     if (u32IsSync)
     {
-        if (SPIM_HYPER_GET_INT(spim))
+        while (SPIM_HYPER_IS_BUSY(spim))
         {
-            while (SPIM_HYPER_GET_INTSTS(spim))
+            if (--i32TimeOutCount <= 0)
             {
-                if (--i32TimeOutCount <= 0)
-                {
-                    return SPIM_HYPER_ERR_TIMEOUT;
-                }
-            }
-        }
-        else
-        {
-            while (SPIM_HYPER_IS_BUSY(spim))
-            {
-                if (--i32TimeOutCount <= 0)
-                {
-                    return SPIM_HYPER_ERR_TIMEOUT;
-                }
+                return SPIM_HYPER_ERR_TIMEOUT;
             }
         }
     }

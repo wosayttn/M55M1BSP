@@ -188,6 +188,6 @@ void HyperRAM_Init(SPIM_T *spim)
 
 #if (SPIM_REG_CACHE == 1) //TESTCHIP_ONLY not support
     /* Enable SPIM Cache */
-    SPIM_ENABLE_CACHE(spim);
+    SPIM_HYPER_ENABLE_CACHE(spim);
 #endif
 }
