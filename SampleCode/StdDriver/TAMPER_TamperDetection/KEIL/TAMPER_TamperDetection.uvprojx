@@ -370,7 +370,7 @@
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>.\M55M1-SRAM01.scatter</ScatterFile>
+            <ScatterFile>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\ARM\M55M1.scatter</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
