@@ -26,7 +26,7 @@ void UART_Init(void);
  *
  * @details     The RTCTAMPER_IRQHandler is default IRQ of RTC TAMPER, declared in startup_M55M1.s.
  */
-void RTCTAMPER_IRQHandler(void)
+NVT_ITCM void RTCTAMPER_IRQHandler(void)
 {
     uint32_t u32FlagStatus, u32TAMPCAL, u32TAMPTIME;
     uint32_t i;
@@ -185,7 +185,7 @@ int main(void)
     printf("# Please connect (tamper0 & tamper1) and (tamper2 & tamper3) and (tamper4 & tamper5) first.\n");
     printf("                    (PF.6 to PF.7)          (PF.8 to PF.9)         (PF.10 to PF.11)\n");
     printf("# Press any key to start test:\n\n");
-    getchar();
+    //getchar();
 
     printf("# Check tamper date/time when tamper event occurred:\n\n");
 

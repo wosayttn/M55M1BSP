@@ -75,7 +75,7 @@ int32_t KS_TRIG(void)
  *
  * @details     The TAMPER_IRQHandler is default IRQ of EQEI0, declared in startup_M55M1.c.
  */
-void TAMPER_IRQHandler(void)
+NVT_ITCM void TAMPER_IRQHandler(void)
 {
     /* Tamper interrupt occurred */
     if (TAMPER_GET_INT_FLAG())
@@ -186,6 +186,7 @@ void UART_Init(void)
 
     /* Configure UART0 and set UART0 Baudrate */
     UART_Open(UART0, 115200);
+
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* KEY Stroe SRAM                                                                                          */

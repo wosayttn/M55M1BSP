@@ -23,7 +23,7 @@
 MSC_T  *g_msc_list;       /* Global list of Mass Storage Class device. A multi-lun device can have
                              several instances appeared with different lun. */
 
-NVT_NONCACHEABLE static volatile uint8_t  g_fat_drv_used[USBDRV_CNT] __ALIGNED(32);
+static volatile uint8_t  g_fat_drv_used[USBDRV_CNT];
 static TCHAR    _path[3] = { '3', ':', 0 };
 
 static void  fatfs_drive_int()
@@ -112,10 +112,15 @@ static void get_max_lun(MSC_T *msc)
 {
     UDEV_T    *udev = msc->iface->udev;
     uint32_t  read_len;
-    uint8_t   buff[2];
+    uint8_t   *buff;
     int       ret;
 
     msc->max_lun = 0;
+
+    buff = usbh_alloc_mem(8);
+
+    if (buff == NULL)
+        return;
 
     /*------------------------------------------------------------------------------------*/
     /* Issue GET MAXLUN MSC class command to get the maximum lun number                   */
@@ -131,11 +136,13 @@ static void get_max_lun(MSC_T *msc)
         if (ret == USBH_ERR_STALL)
             usbh_clear_halt(udev, 0);
 
+        usbh_free_mem(buff, 8);
         return;
     }
 
     msc->max_lun = buff[0];
     msc_debug_msg("Max lun is %d\n", msc->max_lun);
+    usbh_free_mem(buff, 8);
 }
 
 void msc_reset(MSC_T *msc)

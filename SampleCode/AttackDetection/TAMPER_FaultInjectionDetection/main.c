@@ -56,7 +56,7 @@ void UART_Init(void);
  *
  * @details     The TAMPER_IRQHandler is default IRQ of TAMPER, declared in startup_M55M1.c.
  */
-void TAMPER_IRQHandler(void)
+NVT_ITCM void TAMPER_IRQHandler(void)
 {
     uint32_t u32FlagStatus;
     uint32_t u32AESIndex;
@@ -112,7 +112,7 @@ void TAMPER_IRQHandler(void)
  *
  * @details     The CRYPTO_IRQHandler is default IRQ of CRYPTO, declared in startup_M55M1.c.
  */
-void CRYPTO_IRQHandler(void)
+NVT_ITCM void CRYPTO_IRQHandler(void)
 {
     if (AES_GET_INT_FLAG(CRYPTO))
     {

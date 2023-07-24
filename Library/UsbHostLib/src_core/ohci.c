@@ -27,11 +27,16 @@
 
 #define PORT_CNT    (_ohci->HcRhDescriptorA & 0xf)
 
-NVT_NONCACHEABLE static HCCA_T _hcca __ALIGNED(256);
+#ifdef __ICCARM__
+    #pragma data_alignment = 256
+    static HCCA_T _hcca;
+#else
+    static HCCA_T _hcca __attribute__((aligned(256)));
+#endif
 
-NVT_NONCACHEABLE static ED_T   *_Ied[6] __ALIGNED(32);
+static ED_T   *_Ied[6];
 
-NVT_NONCACHEABLE static ED_T  *ed_remove_list __ALIGNED(32);
+static ED_T  *ed_remove_list;
 
 static void add_to_ED_remove_list(ED_T *ed)
 {
@@ -1232,7 +1237,7 @@ static void remove_ed()
 
 
 //static irqreturn_t ohci_irq (struct usb_hcd *hcd)
-void OHCI_IRQHandler(void)
+NVT_ITCM void OHCI_IRQHandler(void)
 {
     TD_T       *td, *td_prev, *td_next;
     uint32_t   int_sts;

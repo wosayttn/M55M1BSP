@@ -21,7 +21,7 @@ void UART_Init(void);
   * @param  None
   * @retval None
   */
-void SC0_IRQHandler(void)
+NVT_ITCM void SC0_IRQHandler(void)
 {
     static uint32_t u32Sec = 1;
 

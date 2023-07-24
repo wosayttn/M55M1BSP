@@ -31,7 +31,7 @@ void GetActiveLXTandTLIRC32Freq(uint32_t *u32LXTFreq, uint32_t *LIRC32Freq);
  *
  * @details     The TAMPER_IRQHandler is default IRQ of TAMPER, declared in startup_M55M1.c.
  */
-void TAMPER_IRQHandler(void)
+NVT_ITCM void TAMPER_IRQHandler(void)
 {
     uint32_t u32FlagStatus;
 

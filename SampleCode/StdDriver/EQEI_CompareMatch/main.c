@@ -22,7 +22,7 @@
  *
  * @details     The EQEI0_IRQHandler is default IRQ of EQEI0, declared in startup_M55M1.c.
  */
-void EQEI0_IRQHandler(void)
+NVT_ITCM void EQEI0_IRQHandler(void)
 {
     if (EQEI_GET_INT_FLAG(EQEI0, EQEI_STATUS_CMPF_Msk))    /* Compare-match flag */
     {
