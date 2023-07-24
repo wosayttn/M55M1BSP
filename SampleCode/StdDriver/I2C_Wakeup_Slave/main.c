@@ -2,7 +2,7 @@
  * @file    main.c
  * @version V1.00
  * @brief
- *           Show how to set I2C in Slave mode and receive the data from Master.
+ *           Show how to wake up MCU from Power-down mode through I2C interface.
  *           This sample code needs to work with I2C_Master.
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -11,13 +11,18 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-/*---------------------------------------------------------------------------------------------------------*/
-/* Global variables                                                                                        */
-/*---------------------------------------------------------------------------------------------------------*/
-volatile uint8_t g_u8SlvDataLen;
+/* I2C can support NPD0 ~ NDP2 power-down mode */
+#define TEST_POWER_DOWN_MODE    PMC_NPD2
+
 volatile uint32_t slave_buff_addr;
 volatile uint8_t g_au8SlvData[256];
 volatile uint8_t g_au8SlvRxData[3];
+volatile uint8_t g_u8SlvPWRDNWK, g_u8SlvI2CWK;
+/*---------------------------------------------------------------------------------------------------------*/
+/* Global variables                                                                                        */
+/*---------------------------------------------------------------------------------------------------------*/
+volatile uint8_t g_u8DeviceAddr;
+volatile uint8_t g_u8SlvDataLen;
 
 typedef void (*I2C_FUNC)(uint32_t u32Status);
 
@@ -27,6 +32,22 @@ volatile static I2C_FUNC s_I2C0HandlerFn = NULL;
 void I2C0_IRQHandler(void)
 {
     uint32_t u32Status;
+
+    /* Check I2C Wake-up interrupt flag set or not */
+    if (I2C_GET_WAKEUP_FLAG(I2C0))
+    {
+        g_u8SlvI2CWK = I2C0->WKSTS;
+
+        /* Waiting for I2C response ACK finish */
+        while (!(I2C0->WKSTS & I2C_WKSTS_WKAKDONE_Msk));
+
+        /* Clear Wakeup done flag, I2C will release bus */
+        I2C0->WKSTS = I2C_WKSTS_WKAKDONE_Msk;
+        /* Clear I2C Wake-up interrupt flag */
+        I2C_CLEAR_WAKEUP_FLAG(I2C0);
+        return;
+    }
+
     u32Status = I2C_GET_STATUS(I2C0);
 
     if (I2C_GET_TIMEOUT_FLAG(I2C0))
@@ -44,12 +65,38 @@ void I2C0_IRQHandler(void)
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  I2C TRx Callback Function                                                                               */
+/*  Power Wake-up IRQ Handler                                                                              */
+/*---------------------------------------------------------------------------------------------------------*/
+void PMC_IRQHandler(void)
+{
+    /* check power down wakeup flag */
+    if ((PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk) == PMC_INTSTS_PDWKIF_Msk)
+    {
+        g_u8SlvPWRDNWK = PMC->INTSTS;
+        PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
+
+        while (PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk);
+    }
+}
+
+/*---------------------------------------------------------------------------------------------------------*/
+/*  Function for System Entry to Power Down Mode                                                           */
+/*---------------------------------------------------------------------------------------------------------*/
+void PowerDownFunction(void)
+{
+    /* Check if all the debug messages are finished */
+    UART_WAIT_TX_EMPTY(DEBUG_PORT);
+    /* Set Power-down mode */
+    PMC_SetPowerDownMode(TEST_POWER_DOWN_MODE, PMC_PLCTL_PLSEL_PL1);
+    /* Enter to Power-down mode */
+    PMC_PowerDown();
+}
+
+/*---------------------------------------------------------------------------------------------------------*/
+/*  I2C Slave Transmit/Receive Callback Function                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_SlaveTRx(uint32_t u32Status)
 {
-    uint8_t u8Data;
-
     if (u32Status == 0x60)                      /* Own SLA+W has been receive; ACK has been return */
     {
         g_u8SlvDataLen = 0;
@@ -58,21 +105,18 @@ void I2C_SlaveTRx(uint32_t u32Status)
     else if (u32Status == 0x80)                 /* Previously address with own SLA address
                                                    Data has been received; ACK has been returned*/
     {
-        u8Data = (unsigned char) I2C_GET_DATA(I2C0);
+        g_au8SlvRxData[g_u8SlvDataLen] = (unsigned char)I2C_GET_DATA(I2C0);
+        g_u8SlvDataLen++;
 
-        if (g_u8SlvDataLen < 2)
+        if (g_u8SlvDataLen == 2)
         {
-            g_au8SlvRxData[g_u8SlvDataLen++] = u8Data;
-            slave_buff_addr = (uint32_t)(g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
+            slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
         }
-        else
-        {
-            g_au8SlvData[slave_buff_addr++] = u8Data;
 
-            if (slave_buff_addr == 256)
-            {
-                slave_buff_addr = 0;
-            }
+        if (g_u8SlvDataLen == 3)
+        {
+            g_au8SlvData[slave_buff_addr] = g_au8SlvRxData[2];
+            g_u8SlvDataLen = 0;
         }
 
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
@@ -81,11 +125,6 @@ void I2C_SlaveTRx(uint32_t u32Status)
     {
         I2C_SET_DATA(I2C0, g_au8SlvData[slave_buff_addr]);
         slave_buff_addr++;
-        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    }
-    else if (u32Status == 0xB8)                 /* Data byte in I2CDAT has been transmitted ACK has been received */
-    {
-        I2C_SET_DATA(I2C0, g_au8SlvData[slave_buff_addr++]);
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
     }
     else if (u32Status == 0xC0)                 /* Data byte or last data in I2CDAT has been transmitted
@@ -164,15 +203,17 @@ void I2C0_Init(void)
     I2C_Open(I2C0, 100000);
     /* Get I2C0 Bus Clock */
     printf("I2C clock %d Hz\n", I2C_GetBusClockFreq(I2C0));
-    /* Set I2C0 4 Slave Addresses */
+    /* Set I2C 4 Slave Addresses */
     I2C_SetSlaveAddr(I2C0, 0, 0x15, I2C_GCMODE_DISABLE);   /* Slave Address : 0x15 */
     I2C_SetSlaveAddr(I2C0, 1, 0x35, I2C_GCMODE_DISABLE);   /* Slave Address : 0x35 */
     I2C_SetSlaveAddr(I2C0, 2, 0x55, I2C_GCMODE_DISABLE);   /* Slave Address : 0x55 */
     I2C_SetSlaveAddr(I2C0, 3, 0x75, I2C_GCMODE_DISABLE);   /* Slave Address : 0x75 */
+    /* Set I2C 4 Slave Addresses Mask */
     I2C_SetSlaveAddrMask(I2C0, 0, 0x01);
     I2C_SetSlaveAddrMask(I2C0, 1, 0x04);
     I2C_SetSlaveAddrMask(I2C0, 2, 0x01);
     I2C_SetSlaveAddrMask(I2C0, 3, 0x04);
+    /* Enable I2C interrupt */
     I2C_EnableInt(I2C0);
     NVIC_EnableIRQ(I2C0_IRQn);
 }
@@ -191,16 +232,18 @@ int32_t main(void)
     initialise_monitor_handles();
 #endif
     /*
-        This sample code sets I2C bus clock to 100kHz. Then, Master accesses Slave with Byte Write
-        and Byte Read operations, and check if the read data is equal to the programmed data.
+        This sample code is I2C SLAVE mode and it simulates EEPROM function
     */
-    printf("+-------------------------------------------------------+\n");
-    printf("|               I2C Driver Sample Code(Slave)           |\n");
-    printf("+-------------------------------------------------------+\n");
+    printf("\n");
+    printf("+----------------------------------------------------------------------+\n");
+    printf("| I2C Driver Sample Code (Slave) for wake-up & access Slave test       |\n");
+    printf("|                                                                      |\n");
+    printf("| I2C Master (I2C0) <---> I2C Slave(I2C0)                              |\n");
+    printf("+----------------------------------------------------------------------+\n");
+    printf("Configure I2C0 as a slave.\n");
+    printf("The I/O connection for I2C0:\n");
     /* Init I2C0 */
     I2C0_Init();
-    /* I2C enter no address SLV mode */
-    I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
 
     for (i = 0; i < 0x100; i++)
     {
@@ -209,8 +252,45 @@ int32_t main(void)
 
     /* I2C function to Transmit/Receive data as slave */
     s_I2C0HandlerFn = I2C_SlaveTRx;
+    /* Set I2C0 enter Not Address SLAVE mode */
+    I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+    /* Enable power wake-up interrupt */
+    PMC->INTEN |= PMC_INTEN_PDWKIEN_Msk;
+    NVIC_EnableIRQ(PMC_IRQn);
+    g_u8SlvPWRDNWK = 0;
+    /* Enable I2C wake-up */
+    I2C_EnableWakeup(I2C0);
+    g_u8SlvI2CWK = 0;
     printf("\n");
-    printf("I2C Slave Mode is Running.\n");
+    printf("\n");
+    printf("Press any key to enter power down status.\n");
+    getchar();
+
+    if (((I2C0->CTL0)&I2C_CTL0_SI_Msk) != 0)
+    {
+        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
+    }
+
+    /* Enter to Power-down mode */
+    PowerDownFunction();
+
+    /* Waiting for system wake-up and I2C wake-up finish */
+    while ((g_u8SlvPWRDNWK == 0) && (g_u8SlvI2CWK == 0));
+
+    /* Wake-up Interrupt Message */
+    printf("Power-down Wake-up INT 0x%x\n", g_u8SlvPWRDNWK);
+    printf("I2C0 WAKE INT 0x%x\n", g_u8SlvI2CWK);
+    /* Disable power wake-up interrupt */
+    PMC->INTEN &= ~PMC_INTEN_PDWKIEN_Msk;
+    NVIC_DisableIRQ(PMC_IRQn);
+    /* Lock protected registers */
+    SYS_LockReg();
+    printf("\n");
+    printf("Slave wake-up from power down status.\n");
+    printf("\n");
+    printf("Slave Waiting for receiving data.\n");
 
     while (1);
 }

@@ -175,14 +175,14 @@ static void SYS_Init(void)
 
 void UI2C0_Init(uint32_t u32ClkSpeed)
 {
-    /* Open USCI_I2C0 and set clock to 100k */
+    /* Open UI2C0 and set clock to 100k */
     UI2C_Open(UI2C0, u32ClkSpeed);
-    /* Get USCI_I2C0 Bus Clock */
+    /* Get UI2C0 Bus Clock */
     printf("UI2C0 clock %d Hz\n", UI2C_GetBusClockFreq(UI2C0));
-    /* Set USCI_I2C0 Slave Addresses */
+    /* Set UI2C0 Slave Addresses */
     UI2C_SetSlaveAddr(UI2C0, 0, 0x15, UI2C_GCMODE_DISABLE);   /* Slave Address : 0x15 */
     UI2C_SetSlaveAddr(UI2C0, 1, 0x35, UI2C_GCMODE_DISABLE);   /* Slave Address : 0x35 */
-    /* Set USCI_I2C0 Slave Addresses Mask */
+    /* Set UI2C0 Slave Addresses Mask */
     UI2C_SetSlaveAddrMask(UI2C0, 0, 0x01);                    /* Slave Address : 0x1 */
     UI2C_SetSlaveAddrMask(UI2C0, 1, 0x04);                    /* Slave Address : 0x4 */
     /* Enable UI2C0 protocol interrupt */
