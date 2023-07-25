@@ -152,7 +152,7 @@
 LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
     ER_ROM __RO_BASE __RO_SIZE  {                   ; load address = execution address
         *.o (RESET, +First)
-        *(InRoot$$Sections)
+        * (InRoot$$Sections)
         ; Make sure reset_handler ends up in root segment
         startup_M55M1.o
         .ANY (+RO)
@@ -170,7 +170,7 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
     }
 #endif
 
-    __RW __RW_BASE UNINIT __RW_SIZE              ; RW data
+    __RW __RW_BASE __RW_SIZE              ; RW data
     {
         .ANY (+RW +ZI)
     }
