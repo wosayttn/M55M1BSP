@@ -370,7 +370,7 @@
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>.\M55M1.scatter</ScatterFile>
+            <ScatterFile>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\ARM\M55M1.scatter</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -384,14 +384,14 @@
           <GroupName>CMSIS</GroupName>
           <Files>
             <File>
-              <FileName>startup_M55M1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</FilePath>
-            </File>
-            <File>
               <FileName>system_M55M1.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</FilePath>
+            </File>
+            <File>
+              <FileName>startup_M55M1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</FilePath>
             </File>
           </Files>
         </Group>

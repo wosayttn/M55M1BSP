@@ -412,10 +412,10 @@ int32_t OTFC_SetKeyFromKeyReg(OTFC_T *otfc,
                               uint32_t *pau32KeyTable,
                               uint32_t u32PR,
                               uint32_t u32SAddr,
-                              uint32_t u32EAddr);
+                              uint32_t u32PRSize);
 
 int32_t OTFC_SetKeyFromKeyStore(OTFC_T *otfc, uint32_t u32PR,
-                                uint32_t u32SAddr, uint32_t u32EAddr,
+                                uint32_t u32SAddr, uint32_t u32PRSize,
                                 uint32_t u32KeyNum, uint32_t u32KeySrc);
 
 int32_t OTFC_SetScrambleNum(OTFC_T *otfc, uint32_t u32PR, uint32_t u32Scramble);

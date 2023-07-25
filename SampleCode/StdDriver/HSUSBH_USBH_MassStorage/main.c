@@ -40,7 +40,6 @@ char Line[256];                         /* Console input buffer */
 BYTE  *Buff;
 BYTE  *Buff2;
 
-
 #ifdef __ICCARM__
     #pragma data_alignment=4
     uint8_t  buff1[BUFF_SIZE] ;       /* Working buffer */
@@ -62,7 +61,7 @@ uint32_t           g_t0;
 
 volatile int  int_cnt = 0;
 
-void SysTick_Handler(void)
+NVT_ITCM void SysTick_Handler(void)
 {
     g_tick_cnt++;
 }
@@ -440,9 +439,7 @@ void SYS_Init(void)
 
     /* Unlock protected registers */
     SYS_UnlockReg();
-#ifdef __PLDM_EMU__
-    SYS->HIRC48MCFCTL = 0x00009999;
-#endif
+
     /* Enable clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
@@ -482,11 +479,11 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOJ_MODULE);
 
     /* USB Host desired input clock is 48 MHz. Set as HIRC48M divided by 1 (48/1 = 48) */
-    //CLK_SetModuleClock(USBH0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
+    CLK_SetModuleClock(USBH0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
     CLK_SetModuleClock(HSUSBH0_MODULE, 0, 0);
 
     /* Enable USBH module clock */
-    //CLK_EnableModuleClock(USBH0_MODULE);
+    CLK_EnableModuleClock(USBH0_MODULE);
     /* Enable HSUSBH module clock */
     CLK_EnableModuleClock(HSUSBH0_MODULE);
 
@@ -507,26 +504,26 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
+    /* USB_VBUS_EN (USB 1.1 VBUS power enable pin) multi-function pin - PB.15     */
     SET_USB_VBUS_EN_PB15();
+
+    /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PC.14   */
     SET_USB_VBUS_ST_PC14();
-    SET_USB_D_MINUS_PA13();
-    SET_USB_D_PLUS_PA14();
-    SET_USB_OTG_ID_PA15();
+
+    /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PJ.13   */
+    SET_HSUSB_VBUS_EN_PJ13();
+
+    /* HSUSB_VBUS_ST (USB 2.0 over-current detect pin) multi-function pin - PJ.12 */
+    SET_HSUSB_VBUS_ST_PJ12();
+
+    /* USB 1.1 port multi-function pin VBUS, D+, D-, and ID pins */
     SET_USB_VBUS_PA12();
-
-    //SET_HSUSB_VBUS_EN_PB10();               /*!< Set PB10 function to HSUSB_VBUS_EN      */
-    //SET_HSUSB_VBUS_EN_PB15();               /*!< Set PB15 function to HSUSB_VBUS_EN      */
-    //SET_HSUSB_VBUS_EN_PB6();               /*!< Set PB6 function to HSUSB_VBUS_EN       */
-    SET_HSUSB_VBUS_EN_PJ13();               /*!< Set PJ13 function to HSUSB_VBUS_EN      */
-    //SET_HSUSB_VBUS_ST_PB11();               /*!< Set PB11 function to HSUSB_VBUS_ST      */
-    //SET_HSUSB_VBUS_ST_PB13();               /*!< Set PB13 function to HSUSB_VBUS_ST      */
-    //SET_HSUSB_VBUS_ST_PB7();               /*!< Set PB7 function to HSUSB_VBUS_ST       */
-    //SET_HSUSB_VBUS_ST_PC14();               /*!< Set PC14 function to HSUSB_VBUS_ST      */
-    SET_HSUSB_VBUS_ST_PJ12();               /*!< Set PJ12 function to HSUSB_VBUS_ST      */
-
+    SET_USB_D_N_PA13();
+    SET_USB_D_P_PA14();
+    SET_USB_OTG_ID_PA15();
 
     /* Lock protected registers */
-    //SYS_LockReg();
+    SYS_LockReg();
 }
 
 /*
@@ -559,9 +556,6 @@ int32_t main(void)
     DEBUG_PORT->LINE = UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1;
     DEBUG_PORT->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400); // The setting is for Palladium
 #endif
-
-    SCB_DisableICache();
-    SCB_DisableDCache();
 
     enable_sys_tick(100);
 
@@ -1057,6 +1051,7 @@ int32_t main(void)
                         if (!xatoi(&ptr, &p1) || !xatoi(&ptr, &p2)) break;
 
                         memset(Buff, (BYTE)p2, blen);
+
                         p2 = 0;
                         timer_init();
 

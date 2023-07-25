@@ -47,7 +47,7 @@ void UART_Init(void);
   * @param  None
   * @return None
   */
-void SC0_IRQHandler(void)
+NVT_ITCM void SC0_IRQHandler(void)
 {
     // Please don't remove any of the function calls below
     if (SCLIB_CheckCDEvent(SC_INTF))

@@ -4,7 +4,7 @@
  * @brief    Demonstrate smartcard UART mode by connecting PB.4 and PB.5 pins.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -25,7 +25,7 @@ void UART_Init(void);
   * @param  None
   * @retval None
   */
-void SC0_IRQHandler(void)
+NVT_ITCM void SC0_IRQHandler(void)
 {
     // Print SCUART received data to UART port
     // Data length here is short, so we're not care about UART FIFO over flow.
@@ -93,7 +93,6 @@ void UART_Init(void)
 
     /* Configure UART0 and set UART0 baud rate */
     UART_Open(DEBUG_PORT, 115200);
-    //UART_Open(UART1, 115200);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/

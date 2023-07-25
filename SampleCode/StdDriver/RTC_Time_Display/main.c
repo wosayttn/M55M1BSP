@@ -30,7 +30,7 @@ void UART_Init(void);
  *
  * @details     The RTC_IRQHandler is default IRQ of RTC, declared in startup_M55M1.c.
  */
-void RTC_IRQHandler(void)
+NVT_ITCM void RTC_IRQHandler(void)
 {
     if (RTC_GET_TICK_INT_FLAG(RTC) == 1)
     {

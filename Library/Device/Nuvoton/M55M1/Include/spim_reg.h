@@ -14,7 +14,7 @@
     #pragma anon_unions
 #endif
 
-#define SPIM_REG_CACHE                  (1) /*!< SPIM cache on/off    \hideinitializer */
+#define SPIM_REG_CACHE                  (0) /*!< SPIM cache on/off    \hideinitializer */
 
 /**
     @addtogroup REGISTER Control Register

@@ -29,7 +29,7 @@ int IsDebugFifoEmpty(void)
  *
  * @return      None
  */
-void WDT0_IRQHandler(void)
+NVT_ITCM void WDT0_IRQHandler(void)
 {
     if (g_u32WDTINTCounts < 10)
         WDT_RESET_COUNTER(WDT0);
@@ -137,14 +137,14 @@ int main(void)
     }
 
     printf("# WDT Settings:\n");
-    printf("    - Clock source is LIRC                  \n");
+    printf("    - Clock source is LIRC(32K Hz)          \n");
     printf("    - Time-out interval is 2^14 * WDT clock \n");
-    printf("      (around 0.4266 ~ 0.4270 s)            \n");
+    printf("      (around 0.512 ~ 0.515 s)              \n");
     printf("    - Interrupt enable                      \n");
     printf("    - Wake-up function enable               \n");
     printf("    - Reset function enable                 \n");
     printf("    - Reset delay period is 18 * WDT clock  \n");
-    printf("# System will generate a WDT time-out interrupt event after 0.4266 ~ 0.4270 s, \n");
+    printf("# System will generate a WDT time-out interrupt event after 0.512 ~ 0.515 s, \n");
     printf("    and will be wake up from power-down mode also.\n");
     printf("    (Use PA.0 high/low period time to check WDT time-out interval)\n");
     printf("# When WDT interrupt counts large than 10, \n");

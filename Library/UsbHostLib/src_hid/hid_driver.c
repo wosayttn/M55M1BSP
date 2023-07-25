@@ -20,7 +20,7 @@
 
 extern int hid_parse_report_descriptor(HID_DEV_T *hdev, IFACE_T *iface);
 
-NVT_NONCACHEABLE static HID_DEV_T  g_hid_dev[CONFIG_HID_MAX_DEV] __ALIGNED(32);
+static HID_DEV_T  g_hid_dev[CONFIG_HID_MAX_DEV];
 
 static HID_DEV_T *g_hdev_list = NULL;
 

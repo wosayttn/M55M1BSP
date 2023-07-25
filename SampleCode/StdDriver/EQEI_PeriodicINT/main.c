@@ -24,7 +24,7 @@ volatile uint32_t g_au32TMRINTCount[2] = {0};
  *
  * @details     The EQEI0_IRQHandler is default IRQ of EQEI0, declared in startup_M55M1.c.
  */
-void EQEI0_IRQHandler(void)
+NVT_ITCM void EQEI0_IRQHandler(void)
 {
     if (EQEI_GET_INT_FLAG(EQEI0, EQEI_STATUS_UTIEF_Msk))    /* EQEI Unit Timer Event flag */
     {
@@ -43,7 +43,7 @@ void EQEI0_IRQHandler(void)
  *
  * @details     The EQEI1_IRQHandler is default IRQ of EQEI1, declared in startup_M55M1.c.
  */
-void EQEI1_IRQHandler(void)
+NVT_ITCM void EQEI1_IRQHandler(void)
 {
     if (EQEI_GET_INT_FLAG(EQEI1, EQEI_STATUS_UTIEF_Msk))    /* EQEI Unit Timer Event flag */
     {

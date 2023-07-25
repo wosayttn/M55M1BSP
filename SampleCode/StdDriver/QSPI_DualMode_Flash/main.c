@@ -52,7 +52,7 @@ uint16_t SpiFlash_ReadMidDid(void)
 
     while (!QSPI_GET_RX_FIFO_EMPTY_FLAG(SPI_FLASH_PORT))
     {
-        u8RxData[u8IDCnt ++] = QSPI_READ_RX(SPI_FLASH_PORT);
+        u8RxData[u8IDCnt++] = QSPI_READ_RX(SPI_FLASH_PORT);
     }
 
     return ((u8RxData[4] << 8) | u8RxData[5]);

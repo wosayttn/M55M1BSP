@@ -24,7 +24,7 @@ void UART_Init(void);
   * @param  None
   * @retval None
   */
-void SC0_IRQHandler(void)
+NVT_ITCM void SC0_IRQHandler(void)
 {
     /* Please don't remove any of the function calls below */
 

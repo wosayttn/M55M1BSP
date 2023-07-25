@@ -27,7 +27,7 @@ void UART_Init(void);
  *
  * @details     The RTCTAMPER_IRQHandler is default IRQ of RTC TAMPER, declared in startup_M55M1.c.
  */
-void RTCTAMPER_IRQHandler(void)
+NVT_ITCM void RTCTAMPER_IRQHandler(void)
 {
     uint32_t i;
     uint32_t u32FlagStatus, u32TAMPCAL, u32TAMPTIME;
@@ -177,7 +177,7 @@ int main(void)
     /* check rtc reset status */
     sptrInitTime = (RTC->INIT & RTC_INIT_ACTIVE_Msk) ? NULL : &sInitTime;
 
-    if (RTC_Open(&sptrInitTime) != 0)
+    if (RTC_Open(sptrInitTime) != 0)
     {
         printf("\n RTC initial fail!!");
         printf("\n Please check h/w setting!!");

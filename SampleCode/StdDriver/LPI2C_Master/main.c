@@ -176,7 +176,7 @@ static void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-    /* Enable I2C0 module clock */
+    /* Enable LPI2C0 module clock */
     CLK_EnableModuleClock(LPI2C0_MODULE);
     /* Set multi-function pins for LPI2C0 SDA and SCL */
     SET_LPI2C0_SDA_PA4();

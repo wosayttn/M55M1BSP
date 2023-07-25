@@ -62,10 +62,10 @@ extern "C"
 #define LPSPI_SSLINE_STS_MASK               (0x80U)                           /*!< LPSPIx_SS line status mask \hideinitializer */
 
 /* LPSPI Auto Trigger Source */
-#define LPSPI_AUTOCTL_TRIGGER_LPTMER0       (0x00UL)
-#define LPSPI_AUTOCTL_TRIGGER_LPTMER1       (0x01UL)
-#define LPSPI_AUTOCTL_TRIGGER_TTMR0         (0x02UL)
-#define LPSPI_AUTOCTL_TRIGGER_TTMR1         (0x03UL)
+#define LPSPI_AUTOCTL_TRIGSEL_LPTMR0        (0x00UL)
+#define LPSPI_AUTOCTL_TRIGSEL_LPTMR1        (0x01UL)
+#define LPSPI_AUTOCTL_TRIGSEL_TTMR0         (0x02UL)
+#define LPSPI_AUTOCTL_TRIGSEL_TTMR1         (0x03UL)
 #define LPSPI_AUTOCTL_TRIGSEL_WKIOA         (0x04UL)
 #define LPSPI_AUTOCTL_TRIGSEL_WKIOB         (0x05UL)
 #define LPSPI_AUTOCTL_TRIGSEL_WKIOC         (0x06UL)
@@ -319,179 +319,257 @@ extern "C"
 #define LPSPI_DISABLE(lpspi)    (lpspi->CTL &= ~(LPSPI_CTL_SPIEN_Msk))
 
 /**
-  * @brief      Set Automatic Operation Trigger Source Select.
+  * @brief      Set Auto Operation RX transfer count.
   * @param[in]  lpspi The pointer of the specified LPSPI module.
-  * @param[in]  x Enable/Disable Auto Operation
-  *               - \ref LPSPI_AUTOCTL_TRIGGER_LPTMER0
-  *               - \ref LPSPI_AUTOCTL_TRIGGER_LPTMER1
-  *               - \ref LPSPI_AUTOCTL_TRIGGER_TTMR0
-  *               - \ref LPSPI_AUTOCTL_TRIGGER_TTMR1
-  *               - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOA
-  *               - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOB
-  *               - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOC
-  *               - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOD
+  * @param[in]  u32TCNT The transfer count specified in RX phase.
   * @return     None.
+  * @details    Set RX transfer count (LPSPI_AUTOCTL[23:16]).
   * \hideinitializer
   */
-#define LPSPI_SET_AUTOTRIGSRC(lpspi, x) \
-    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_TRIGSEL_Msk)) | \
-                      ((x) << LPSPI_AUTOCTL_TRIGSEL_Pos))
+#define LPSPI_SET_AUTO_RX_TCNT(lpspi, u32TCNT)  \
+    ((lpspi)->AUTOCTL = ((lpspi)->AUTOCTL & ~LPSPI_AUTOCTL_TCNT_Msk) | \
+                        ((u32TCNT & 0xFF) << LPSPI_AUTOCTL_TCNT_Pos))
 
 /**
-* @brief      Get Automatic Operation Trigger Source Select.
-* @param[in]  lpspi The pointer of the specified LPSPI module.
-* @return     None.
-* \hideinitializer
-*/
-#define LPSPI_GET_TRIGSRC(lpspi)    \
-    ((lpspi->AUTOCTL & LPSPI_AUTOCTL_TRIGSEL_Msk) >> LPSPI_AUTOCTL_TRIGSEL_Pos)
-
-/**
-  * @brief      Automatic Operation Trigger Enable.
-  * @param[in]  lpspi The pointer of the specified LPSPI module.
-  * @param[in]  x Enable/Disable Auto Operation
-  *               - \ref 0 : Disable
-  *               - \ref 1 : Enable
-  * @return     None.
-  * \hideinitializer
-  */
-#define LPSPI_AUTO_TRIGEN(lpspi, x) \
-    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_TRIGEN_Msk)) | \
-                      ((x) << LPSPI_AUTOCTL_TRIGEN_Pos))
-
-/**
-  * @brief      TCNT Count Match Interrupt Enable
-  * @param[in]  lpspi The pointer of the specified LPSPI module.
-  * @param[in]  x Enable/Disable TCNT Count Match Interrupt
-  *               - \ref 0 : Disable
-  *               - \ref 1 : Enable
-  * @return     None.
-  * \hideinitializer
-  */
-#define LPSPI_AUTO_TCNTINT(lpspi, x)    \
-    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_CNTIEN_Msk)) | \
-                      ((x) << LPSPI_AUTOCTL_CNTIEN_Pos))
-
-/**
-  * @brief      Full RX Data Acception Enable Bit.
-  * @param[in]  lpspi The pointer of the specified LPSPI module.
-  * @param[in]  x Enable/Disable Full RX Data
-  *               - \ref 0 : Disable
-  *               - \ref 1 : Enable
-  * @return     None.
-  * \hideinitializer
-  */
-#define LPSPI_AUTO_FULLRX(lpspi, x) \
-    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_FULLRXEN_Msk)) | \
-                      ((x) << LPSPI_AUTOCTL_FULLRXEN_Pos))
-
-/**
-  * @brief      Slave Select Wake Up Enable Bit.
-  * @param[in]  lpspi The pointer of the specified LPSPI module.
-  * @param[in]  x Enable/Disable Slave Select Wake Up
-  *               - \ref 0 : Disable
-  *               - \ref 1 : Enable
-  * @return     None.
-  * \hideinitializer
-  */
-#define LPSPI_AUTO_SSWKEN(lpspi, x) \
-    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_SSWKEN_Msk)) | \
-                      ((x) << LPSPI_AUTOCTL_SSWKEN_Pos))
-
-/**
-  * @brief      Automatic Operation Mode Enable Bit.
-  * @param[in]  lpspi The pointer of the specified LPSPI module.
-  * @param[in]  x Enable/Disable Automatic Operation Mode
-  *               - \ref 0 : Disable
-  *               - \ref 1 : Enable
-  * @return     None.
-  * \hideinitializer
-  */
-#define LPSPI_AUTO_EN(lpspi, x) \
-    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_AUTOEN_Msk)) | \
-                      ((x) << LPSPI_AUTOCTL_AUTOEN_Pos))
-
-/**
-  * @brief      Software Trigger.
-  * @param[in]  lpspi The pointer of the specified LPSPI module.
-  * @param[in]  x Enable/Disable Software Trigger.
-  *               - \ref 0 : Disable
-  *               - \ref 1 : Enable
-  * @return     None.
-  * \hideinitializer
-  */
-#define LPSPI_AUTO_SWTRIG(lpspi, x) \
-    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_SWTRG_Msk)) | \
-                      ((x) << LPSPI_AUTOCTL_SWTRG_Pos))
-
-/**
-  * @brief      TCNT Count Match Wake Up Enable Bit.
-  * @param[in]  lpspi The pointer of the specified LPSPI module.
-  * @param[in]  x Enable/Disable TCNT Count Match Wake Up.
-  *               - \ref 0 : Disable
-  *               - \ref 1 : Enable
-  * @return     None.
-  * \hideinitializer
-  */
-#define LPSPI_AUTO_TCNTWKEN(lpspi, x)   \
-    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_CNTWKEN_Msk)) | \
-                      ((x) << LPSPI_AUTOCTL_CNTWKEN_Pos))
-
-/**
-  * @brief      Set Auomatic Operation RX Transfer Count.
-  * @param[in]  lpspi The pointer of the specified LPSPI module.
-  * @param[in]  x Auomatic Operation RX Transfer Count 1 ~ 255.
-  * @return     None.
-  * \hideinitializer
-  */
-#define LPSPI_SET_AUTO_TCNT(lpspi, x)   \
-    (lpspi->AUTOCTL = (lpspi->AUTOCTL & ~(LPSPI_AUTOCTL_TCNT_Msk)) | \
-                      ((x) << LPSPI_AUTOCTL_TCNT_Pos))
-
-/**
-* @brief      Get Auomatic Operation RX Transfer Count.
-* @param[in]  lpspi The pointer of the specified LPSPI module.
-* @return     None.
-* \hideinitializer
-*/
-#define LPSPI_GET_AUTO_TCNT(lpspi)  \
-    ((lpspi->AUTOCTL & LPSPI_AUTOCTL_TCNT_Msk) >> LPSPI_AUTOCTL_TCNT_Pos)
-
-/**
-  * @brief      TCNT Count Match Interrupt Flag.
+  * @brief      Enable RX TCNT count match wake up.
   * @param[in]  lpspi The pointer of the specified LPSPI module.
   * @return     None.
+  * @details    Set CNTWKEN (LPSPI_AUTOCTL[10]) to enable RX TCNT count
+  *             match wake up function.
   * \hideinitializer
   */
-#define LPSPI_GET_AUTOSTS_CNTIF(lpspi)  \
-    ((lpspi->AUTOCTL & LPSPI_AUTOSTS_CNTIF_Msk) >> LPSPI_AUTOSTS_CNTIF_Pos)
+#define LPSPI_ENABLE_AUTO_CNT_WAKEUP(lpspi) ((lpspi)->AUTOCTL |= LPSPI_AUTOCTL_CNTWKEN_Msk)
 
 /**
-  * @brief      Slave Select Wake Up Flag.
+  * @brief      Disable RX TCNT count match wake up.
   * @param[in]  lpspi The pointer of the specified LPSPI module.
   * @return     None.
+  * @details    Clear CNTWKEN (LPSPI_AUTOCTL[10]) to disable RX TCNT count
+  *             match wake up function.
   * \hideinitializer
   */
-#define LPSPI_GET_AUTOSTS_SSWKF(lpspi)  \
-    ((lpspi->AUTOCTL & LPSPI_AUTOSTS_SSWKF_Msk) >> LPSPI_AUTOSTS_SSWKF_Pos)
+#define LPSPI_DISABLE_AUTO_CNT_WAKEUP(lpspi)    ((lpspi)->AUTOCTL &= ~LPSPI_AUTOCTL_CNTWKEN_Msk)
 
 /**
-  * @brief      Automatic Operation Busy Flag.
+  * @brief      Enable Software Trigger for Auto Operation.
   * @param[in]  lpspi The pointer of the specified LPSPI module.
   * @return     None.
+  * @details    Set SWTRIG (LPSPI_AUTOCTL[9], Write Only bit) to
+  *             enable Software Trigger in Auto Operation Mode.
   * \hideinitializer
   */
-#define LPSPI_GET_AUTOSTS_BUSY(lpspi)   \
-    ((lpspi->AUTOCTL & LPSPI_AUTOSTS_AOBUSY_Msk) >> LPSPI_AUTOSTS_AOBUSY_Pos)
+#define LPSPI_ENABLE_AUTO_SW_TRIG(lpspi)    ((lpspi)->AUTOCTL |= LPSPI_AUTOCTL_SWTRIG_Msk)
 
 /**
-  * @brief      TCNT Count Match Wake Up Flag.
+  * @brief      Disable Software Trigger for Auto Operation.
   * @param[in]  lpspi The pointer of the specified LPSPI module.
   * @return     None.
+  * @details    Clear SWTRIG (LPSPI_AUTOCTL[9], Write Only bit) to
+  *             disable Software Trigger in Auto Operation Mode.
   * \hideinitializer
   */
-#define LPSPI_GET_AUTOSTS_CNTWKF(lpspi) \
-    ((lpspi->AUTOCTL & LPSPI_AUTOSTS_CNTWKF_Msk) >> LPSPI_AUTOSTS_CNTWKF_Pos)
+#define LPSPI_DISABLE_AUTO_SW_TRIG(lpspi)   ((lpspi)->AUTOCTL &= ~LPSPI_AUTOCTL_SWTRIG_Msk)
+
+/**
+  * @brief      Enable LPSPI Auto Operation Mode.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * @details    Set AUTOEN (LPSPI_AUTOCTL[8]) to enable Auto Operation Mode.
+  * \hideinitializer
+  */
+#define LPSPI_ENABLE_AUTO(lpspi)    ((lpspi)->AUTOCTL |= LPSPI_AUTOCTL_AUTOEN_Msk)
+
+/**
+  * @brief      Disable LPSPI Auto Operation Mode.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * @details    Clear AUTOEN (LPSPI_AUTOCTL[8]) to disable Auto Operation Mode.
+  * \hideinitializer
+  */
+#define LPSPI_DISABLE_AUTO(lpspi)   ((lpspi)->AUTOCTL &= ~LPSPI_AUTOCTL_AUTOEN_Msk)
+
+/**
+  * @brief      Enable Slave Selection wake up.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * @details    Set SSWKEN (LPSPI_AUTOCTL[7]) to enable Slave Selection
+  *             wake up function. This bit is not related to Auto Operation.
+  * \hideinitializer
+  */
+#define LPSPI_ENABLE_SS_WAKEUP(lpspi)   ((lpspi)->AUTOCTL |= LPSPI_AUTOCTL_SSWKEN_Msk)
+
+/**
+  * @brief      Disable Slave Selection wake up.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * @details    Clear SSWKEN (LPSPI_AUTOCTL[7]) to disable Slave Selection
+  *             wake up function. This bit is not related to Auto Operation.
+  * \hideinitializer
+  */
+#define LPSPI_DISABLE_SS_WAKEUP(lpspi)  ((lpspi)->AUTOCTL &= ~LPSPI_AUTOCTL_SSWKEN_Msk)
+
+/**
+  * @brief      Enable RX function in Auto Opertion TX phase.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * @details    Set FULLRXEN (LPSPI_AUTOCTL[6]) to enable RX function
+  *             in Auto Operation TX phase.
+  * \hideinitializer
+  */
+#define LPSPI_ENABLE_AUTO_FULLRX(lpspi) ((lpspi)->AUTOCTL |= LPSPI_AUTOCTL_FULLRXEN_Msk)
+
+/**
+  * @brief      Disable RX function in Auto Opertion TX phase.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * @details    Clear FULLRXEN (LPSPI_AUTOCTL[6]) to disable RX function
+  *             in Auto Operation TX phase.
+  * \hideinitializer
+  */
+#define LPSPI_DISABLE_AUTO_FULLRX(lpspi)    ((lpspi)->AUTOCTL &= ~LPSPI_AUTOCTL_FULLRXEN_Msk)
+
+/**
+  * @brief      Enable RX TCNT count match Interrupt.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * @details    Set CNTIEN (LPSPI_AUTOCTL[5]) to enable RX TCNT count
+  *             match interrpu up function.
+  * \hideinitializer
+  */
+#define LPSPI_ENABLE_AUTO_CNT_INT(lpspi)    ((lpspi)->AUTOCTL |= LPSPI_AUTOCTL_CNTIEN_Msk)
+
+/**
+  * @brief      Disable RX TCNT count match Interrupt.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * @details    Clear CNTIEN (LPSPI_AUTOCTL[5]) to disable RX TCNT count
+  *             match interrpu up function.
+  * \hideinitializer
+  */
+#define LPSPI_DISABLE_AUTO_CNT_INT(lpspi)   ((lpspi)->AUTOCTL &= ~LPSPI_AUTOCTL_CNTIEN_Msk)
+
+/**
+  * @brief      Enable Trigger function in Auto Opertion Mode.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * @details    Set TRIGEN (LPSPI_AUTOCTL[4]) to enable Trigger function
+  *             for Trigger source from LPTMR0/1, TTMR0/1 and LPGPIO0/1/2/3
+  *             in Auto Operation Mode.
+  * \hideinitializer
+  */
+#define LPSPI_ENABLE_AUTO_TRIG(lpspi)   ((lpspi)->AUTOCTL |= LPSPI_AUTOCTL_TRIGEN_Msk)
+
+/**
+  * @brief      Disable Trigger function in Auto Opertion Mode.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * @details    Clear TRIGEN (LPSPI_AUTOCTL[4]) to disable Trigger function
+  *             for Trigger source from LPTMR0/1, TTMR0/1 and LPGPIO0/1/2/3
+  *             in Auto Operation Mode.
+  * \hideinitializer
+  */
+#define LPSPI_DISABLE_AUTO_TRIG(lpspi)  ((lpspi)->AUTOCTL &= ~LPSPI_AUTOCTL_TRIGEN_Msk)
+
+/**
+  * @brief      Set Trigger Source Selection for Auto Operation Mode.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @param[in]  u32TrigSrc The triggered source specified in Auto Operation Mode.
+  *                        This parameter could be only one of these following selections:
+  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_LPTMR0
+  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_LPTMR1
+  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_TTMR0
+  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_TTMR1
+  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOA0
+  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOB0
+  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOC0
+  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOD0
+  * @return     None.
+  * @details    Set Trigger Souce Selection (LPSPI_AUTOCTL[3:0]).
+  * \hideinitializer
+  */
+#define LPSPI_SET_AUTO_TRIG_SOURCE(lpspi, u32TrigSrc)   \
+    ((lpspi)->AUTOCTL = ((lpspi)->AUTOCTL & ~LPSPI_AUTOCTL_TRIGSEL_Msk)| \
+                        ((u32TrigSrc & 0x0F) << LPSPI_AUTOCTL_TRIGSEL_Pos))
+
+/**
+  * @brief      Get TCNT count match wake up flag in Auto Operation Mode.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @retval     0 System is not woken up by CNT match in Auto Operation Mode.
+  * @retval     1 System is woken up by CNT match in Auto Operation Mode.
+  * @details    Read CNTWKF (LPSPI_AUTOSTS[3]) register to get the CNTWK flag.
+  * \hideinitializer
+  */
+#define LPSPI_GET_AUTO_CNTWK_FLAG(lpspi)    \
+    (((lpspi)->AUTOSTS & LPSPI_AUTOSTS_CNTWKF_Msk) >> LPSPI_AUTOSTS_CNTWKF_Pos)
+
+/**
+  * @brief      Clear TCNT count match wake up flag in Auto Operation Mode
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * @details    Write 1 to CNTWKF bit of LPSPI_AUTOSTATUS register to clear CNTWK flag.
+  * \hideinitializer
+  */
+#define LPSPI_CLR_AUTO_CNTWK_FLAG(lpspi)    ((lpspi)->AUTOSTS = LPSPI_AUTOSTS_CNTWKF_Msk)
+
+/**
+  * @brief      Get Auto Busy flag in Auto Operation Mode.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @retval     0 No more request from triiger source during Auto Operation Mode
+  * @retval     1 One more request from triiger source during Auto Operation Mode
+  * @details    Read AOBUSY (LPSPI_AUTOSTS[2]) register to get the AOBUSY flag.
+  * \hideinitializer
+  */
+#define LPSPI_GET_AUTO_AOBUSY_FLAG(lpspi)   \
+    (((lpspi)->AUTOSTS & LPSPI_AUTOSTS_AOBUSY_Msk) >> LPSPI_AUTOSTS_AOBUSY_Pos)
+
+/**
+  * @brief      Clear Auto Busy flag in Auto Operation Mode.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * @details    Write 1 to AOBUSY bit of LPSPI_AUTOSTATUS register to clear AOBUSY flag.
+  * \hideinitializer
+  */
+#define LPSPI_CLR_AUTO_AOBUSY_FLAG(lpspi)   ((lpspi)->AUTOSTS = LPSPI_AUTOSTS_AOBUSY_Msk)
+
+/**
+  * @brief      Get SS wake up flag.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @retval     0 System is not woken up by Slave Select flag.
+  * @retval     1 System is woken up by Slave Select flag.
+  * @details    Read SSWKF (LPSPI_AUTOSTS[1]) register to get the SSWKF flag.
+  * \hideinitializer
+  */
+#define LPSPI_GET_SSWK_FLAG(lpspi)  \
+    (((lpspi)->AUTOSTS & LPSPI_AUTOSTS_SSWKF_Msk) >> LPSPI_AUTOSTS_SSWKF_Pos)
+
+/**
+  * @brief      Clear SS wake up flag.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * @details    Write 1 to SSWKF bit of LPSPI_AUTOSTATUS register to clear SSWKF flag.
+  * \hideinitializer
+  */
+#define LPSPI_CLR_SSWK_FLAG(lpspi)  ((lpspi)->AUTOSTS = LPSPI_AUTOSTS_SSWKF_Msk)
+
+/**
+  * @brief      Get TCNT count match interrupt flag in Auto Operation Mode.
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @retval     0 RX CNT is not matched in Auto Operation Mode.
+  * @retval     1 RX CNT is matched in Auto Operation Mode.
+  * @details    Read CNTIF (LPSPI_AUTOSTS[0]) register to get the CNTIF flag.
+  * \hideinitializer
+  */
+#define LPSPI_GET_AUTO_CNT_INT_FLAG(lpspi)  \
+    (((lpspi)->AUTOSTS & LPSPI_AUTOSTS_CNTIF_Msk) >> LPSPI_AUTOSTS_CNTIF_Pos)
+
+/**
+  * @brief      Clear TCNT count match interrupt flag in Auto Operation Mode
+  * @param[in]  lpspi The pointer of the specified LPSPI module.
+  * @return     None.
+  * @details    Write 1 to CNTIF bit of LPSPI_AUTOSTATUS register to clear CNTIF flag.
+  * \hideinitializer
+  */
+#define LPSPI_CLR_AUTO_CNT_INT_FLAG(lpspi)   ((lpspi)->AUTOSTS = LPSPI_AUTOSTS_CNTIF_Msk)
 
 /* Function prototype declaration */
 uint32_t LPSPI_Open(LPSPI_T *lpspi, uint32_t u32MasterSlave, uint32_t u32SPIMode, uint32_t u32DataWidth, uint32_t u32BusClock);

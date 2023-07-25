@@ -1043,9 +1043,6 @@ int32_t SPIM_Is4ByteModeEnable(SPIM_T *spim, uint32_t u32NBit)
   *                         - \ref SPIM_OP_ENABLE
   *                         - \ref SPIM_OP_DISABLE
   * @param      u32NBit     N-bit transmit/receive.
-  * @param      u32DTREn    Enable/Disable SPIM DTR Mode.
-  *                         - \ref SPIM_OP_ENABLE
-  *                         - \ref SPIM_OP_DISABLE
   * @return     SPIM_OK          SPIM operation OK.
   *             SPIM_ERR_FAIL    SPIM operation Fail.
   */
@@ -1305,7 +1302,7 @@ static void SPIM_WriteInPageDataByIO(SPIM_T *spim, uint32_t u32Addr,
         u32TxSize = 2UL;
     }
 
-    spim_write_data(spim, cmdBuf, u32TxSize, u32NBitCmd);                /* Write out command. */
+    spim_write_data(spim, cmdBuf, u32TxSize, u32NBitCmd);   /* Write out command. */
 
     buf_idx = 0UL;
 
@@ -1323,11 +1320,11 @@ static void SPIM_WriteInPageDataByIO(SPIM_T *spim, uint32_t u32Addr,
         cmdBuf[buf_idx++] = (uint8_t) u32Addr;
     }
 
-    spim_write_data(spim, cmdBuf, buf_idx, u32NBitAddr);                  /* Write out u32Address. */
+    spim_write_data(spim, cmdBuf, buf_idx, u32NBitAddr);    /* Write out u32Address. */
 
-    spim_write_data(spim, pu8TxBuf, u32NTx, u32NBitDat);                 /* Write out data.  */
+    spim_write_data(spim, pu8TxBuf, u32NTx, u32NBitDat);    /* Write out data.  */
 
-    SPIM_SET_SS_EN(spim, SPIM_OP_DISABLE);              /* CS deactivated.  */
+    SPIM_SET_SS_EN(spim, SPIM_OP_DISABLE);                  /* CS deactivated.  */
 
     if (isSync)
     {
@@ -2078,22 +2075,25 @@ void SPIM_IO_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
   * @param      u32NBitAddr N-bit transmit u32Address.
   * @param      u32NBitDat  N-bit transmit/receive data.
   * @param      u32NDummy   Number of dummy bytes following address.
-  * @param      u32DTREn    Double Data Rate Mode
-  *                         - \ref SPIM_OP_ENABLE
-  *                         - \ref SPIM_OP_DISABLE
   * @return     None.
   */
 void SPIM_IO_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32NRx, uint8_t *pu8RxBuf, uint8_t rdCmd,
                   uint32_t u32NBitCmd, uint32_t u32NBitAddr, uint32_t u32NBitDat, int u32NDummy)
 {
-    uint8_t   cmdBuf[16];
-    uint32_t  buf_idx;
+    uint8_t cmdBuf[16];
+    uint32_t buf_idx = 1UL;
 
-    SPIM_SET_SS_EN(spim, 1);                          /* CS activated.    */
+    SPIM_SET_SS_EN(spim, SPIM_OP_ENABLE);                   /* CS activated.    */
 
     cmdBuf[0] = rdCmd;
 
-    spim_write_data(spim, cmdBuf, 1UL, u32NBitCmd); /* Write out command. */
+    if (SPIM_GET_DTR_MODE(spim) == SPIM_OP_ENABLE)
+    {
+        cmdBuf[1] = rdCmd;
+        buf_idx = 2UL;
+    }
+
+    spim_write_data(spim, cmdBuf, buf_idx, u32NBitCmd);     /* Write out command. */
 
     buf_idx = 0UL;
 
@@ -2121,11 +2121,11 @@ void SPIM_IO_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32N
     spim_write_data(spim, cmdBuf, buf_idx, u32NBitAddr);    /* Write out u32Address. */
 
     /* Same bit mode as above. */
-    SPIM_IO_SendDummyCycle(spim, u32NDummy);             /* Write out dummy bytes. */
+    SPIM_IO_SendDummyCycle(spim, (u32NDummy * 8));          /* Write out dummy bytes. */
 
-    spim_read_data(spim, pu8RxBuf, u32NRx, u32NBitDat);  /* Read back data.  */
+    spim_read_data(spim, pu8RxBuf, u32NRx, u32NBitDat);     /* Read back data.  */
 
-    SPIM_SET_SS_EN(spim, 0);                             /* CS deactivated.  */
+    SPIM_SET_SS_EN(spim, SPIM_OP_DISABLE);                  /* CS deactivated.  */
 }
 
 /**
@@ -2252,7 +2252,7 @@ void SPIM_EnterDirectMapMode(SPIM_T *spim, int is4ByteAddr,
         u32RdCmd = ((u32RdCmd << 8) | u32RdCmd);
     }
 
-    SPIM_SET_4BYTE_ADDR(spim, is4ByteAddr);           /* Enable/disable 4-byte u32Address. */
+    SPIM_SET_4BYTE_ADDR(spim, is4ByteAddr);              /* Enable/disable 4-byte u32Address. */
     SPIM_SET_SPIM_MODE(spim, u32RdCmd);                  /* SPIM mode. */
     SPIM_SET_IDL_INTVL(spim, u32IdleIntvl);              /* Idle interval. */
     SPIM_SET_OPMODE(spim, SPIM_CTL0_OPMODE_DIRECTMAP);   /* Switch to Direct Map mode. */

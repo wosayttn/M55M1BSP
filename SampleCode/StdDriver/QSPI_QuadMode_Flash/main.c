@@ -35,13 +35,14 @@ void D2D3_SwitchToNormalMode(void)
 
 void D2D3_SwitchToQuadMode(void)
 {
-    SYS->GPA_MFP1 = (SYS->GPA_MFP1 & ~(SYS_GPA_MFP1_PA4MFP_Msk | SYS_GPA_MFP1_PA5MFP_Msk)) | SYS_GPA_MFP1_PA4MFP_QSPI0_MOSI1 | SYS_GPA_MFP1_PA5MFP_QSPI0_MISO1;
+    SYS->GPA_MFP1 = (SYS->GPA_MFP1 & ~(SYS_GPA_MFP1_PA4MFP_Msk | SYS_GPA_MFP1_PA5MFP_Msk)) |
+                    SYS_GPA_MFP1_PA4MFP_QSPI0_MOSI1 | SYS_GPA_MFP1_PA5MFP_QSPI0_MISO1;
 }
 
 uint16_t SpiFlash_ReadMidDid(void)
 {
     uint8_t u8RxData[6], u8IDCnt = 0;
-    int i32Timeout = TEST_TIMEOUT;
+    volatile int i32Timeout = TEST_TIMEOUT;
 
     // /CS: active
     QSPI_SET_SS_LOW(SPI_FLASH_PORT);
@@ -72,7 +73,7 @@ uint16_t SpiFlash_ReadMidDid(void)
 
     while (!QSPI_GET_RX_FIFO_EMPTY_FLAG(SPI_FLASH_PORT))
     {
-        u8RxData[u8IDCnt ++] = QSPI_READ_RX(SPI_FLASH_PORT);
+        u8RxData[u8IDCnt++] = QSPI_READ_RX(SPI_FLASH_PORT);
     }
 
     return ((u8RxData[4] << 8) | u8RxData[5]);
@@ -441,7 +442,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
     /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_50MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);

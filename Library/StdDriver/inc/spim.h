@@ -610,18 +610,6 @@ typedef enum
 #define SPIM_DISABLE_AUTOSCLN(spim)    (spim->CTL1 &= ~SPIM_CTL1_AUTOSCLN_Msk)
 
 /**
- * @brief   Set Updated Cache Line Number per Cache Miss.
- * @param[in]   x   SPI Function Operation Mode
- *                  - \ref 0x01 : Update one cache line per cache miss. (default)
- *                  - \ref 0x02 : Update two cache line per cache miss.
- *                  - \ref 0x03 : Update three cache line per cache miss.
- *                  - \ref 0x04 : Update four cache line per cache miss.
- * \hideinitializer
- */
-#define SPIM_SET_UPDCLNUM(spim, x)    \
-    (spim->CTL1 = (spim->CTL1 & ~(SPIM_CTL1_UPDCLNUM_Msk)) | (x) << SPIM_CTL1_UPDCLNUM_Pos)
-
-/**
  * @brief   Reset Updated Cache Line Number per Cache Miss.
  * \hideinitializer
  */
@@ -1506,7 +1494,9 @@ __STATIC_INLINE void SPIM_DISABLE_CIPHER(SPIM_T *spim)
  */
 __STATIC_INLINE void SPIM_DISABLE_CACHE(SPIM_T *spim)
 {
+#if (SPIM_REG_CACHE == 1) //TESTCHIP_ONLY not support
     (spim->CTL1 |= SPIM_CTL1_CACHEOFF_Msk);
+#endif
 
     /* Cipher Disabled Set Deselect Time 0x01 */
     if (((spim->CTL0 & SPIM_CTL0_CIPHOFF_Msk) >> SPIM_CTL0_CIPHOFF_Pos) != SPIM_OP_DISABLE)
@@ -1527,12 +1517,34 @@ __STATIC_INLINE void SPIM_ENABLE_CACHE(SPIM_T *spim)
 {
     (spim->CTL1 &= ~(SPIM_CTL1_CACHEOFF_Msk));
 
+    SPIM_ENABLE_AUTOSCLN(spim);
+    SPIM_ENABLE_CAWRTHEN(spim);
+
     /* Cipher Disabled Set Deselect Time 0x04 */
     if (((spim->CTL0 & SPIM_CTL0_CIPHOFF_Msk) >> SPIM_CTL0_CIPHOFF_Pos) != SPIM_OP_DISABLE)
     {
         SPIM_SET_DMM_DESELTIM(spim, 0x4);
     }
 }
+
+/**
+ * @brief   Set Updated Cache Line Number per Cache Miss.
+ * @param[in]   x   SPI Function Operation Mode
+ *                  - \ref 0x01 : Update one cache line per cache miss. (default)
+ *                  - \ref 0x02 : Update two cache line per cache miss.
+ *                  - \ref 0x03 : Update three cache line per cache miss.
+ *                  - \ref 0x04 : Update four cache line per cache miss.
+ * \hideinitializer
+ */
+__STATIC_INLINE void SPIM_SET_UPDCLNUM(SPIM_T *spim, uint32_t x)
+{
+    SPIM_DISABLE_AUTOSCLN(spim);
+    SPIM_DISABLE_CAWRTHEN(spim);
+
+    spim->CTL1 = (spim->CTL1 & ~(SPIM_CTL1_UPDCLNUM_Msk)) |
+                 ((x) << SPIM_CTL1_UPDCLNUM_Pos);
+}
+
 #endif
 
 /**

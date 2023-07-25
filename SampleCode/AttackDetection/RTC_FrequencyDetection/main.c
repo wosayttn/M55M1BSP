@@ -32,7 +32,7 @@ void GetActiveLXTandLIRC32Freq(uint32_t *u32LXTFreq, uint32_t *LIRC32Freq);
  *
  * @details     The RTC_IRQHandler is default IRQ of RTC, declared in startup_M55M1.c.
  */
-void RTCTAMPER_IRQHandler(void)
+NVT_ITCM void RTCTAMPER_IRQHandler(void)
 {
     if (RTC_GET_CLKFAIL_INT_FLAG(RTC))
     {

@@ -26,7 +26,7 @@ void UART_Init(void);
  *
  * @details     The RTC_TAMPER_IRQHandler is default IRQ of RTC TAMPER, declared in startup_M2354.s.
  */
-void RTCTAMPER_IRQHandler(void)
+NVT_ITCM void RTCTAMPER_IRQHandler(void)
 {
     uint32_t u32FlagStatus, u32TAMPCAL, u32TAMPTIME;
     uint32_t i;

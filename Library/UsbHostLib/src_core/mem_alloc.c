@@ -25,12 +25,23 @@
     #define mem_debug(...)
 #endif
 
-NVT_NONCACHEABLE static uint8_t _hw_mem_pool[HW_MEM_UNIT_NUM][HW_MEM_UNIT_SIZE] __ALIGNED(32);
 
-NVT_NONCACHEABLE static uint8_t _dma_mem_pool[DMA_MEM_UNIT_NUM][DMA_MEM_UNIT_SIZE] __ALIGNED(32);
+#ifdef __ICCARM__
+    #pragma data_alignment = 32
+    static uint8_t _hw_mem_pool[HW_MEM_UNIT_NUM][HW_MEM_UNIT_SIZE];                                 /* Periodic frame list        */
+#else
+    static uint8_t _hw_mem_pool[HW_MEM_UNIT_NUM][HW_MEM_UNIT_SIZE] __attribute__((aligned(4096)));  /* Periodic frame list        */
+#endif
 
-NVT_NONCACHEABLE static uint8_t  _hw_unit_used[HW_MEM_UNIT_NUM] __ALIGNED(32);
-NVT_NONCACHEABLE static uint8_t  _dma_unit_used[DMA_MEM_UNIT_NUM] __ALIGNED(32);
+#ifdef __ICCARM__
+    #pragma data_alignment = 32
+    static uint8_t _dma_mem_pool[DMA_MEM_UNIT_NUM][DMA_MEM_UNIT_SIZE];                                 /* Periodic frame list        */
+#else
+    static uint8_t _dma_mem_pool[DMA_MEM_UNIT_NUM][DMA_MEM_UNIT_SIZE] __attribute__((aligned(4096)));  /* Periodic frame list        */
+#endif
+
+static uint8_t  _hw_unit_used[HW_MEM_UNIT_NUM];
+static uint8_t  _dma_unit_used[DMA_MEM_UNIT_NUM];
 
 static volatile int  _usbh_hw_mem_used;
 static volatile int  _usbh_hw_max_mem_used;

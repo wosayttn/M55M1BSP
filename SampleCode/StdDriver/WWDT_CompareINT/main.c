@@ -29,7 +29,7 @@ static volatile uint8_t g_u8WWDTINTCounts;
  * @return      None
  * @details     The WDT_IRQHandler is default IRQ of WWDT
  */
-void WWDT_IRQHandler(void)
+NVT_ITCM void WWDT_IRQHandler(void)
 {
     if (WWDT_GET_INT_FLAG(WWDT) == 1)
     {

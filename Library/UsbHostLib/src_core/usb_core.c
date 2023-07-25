@@ -26,7 +26,7 @@ USBH1_T    *_ohci1;
 
 int    _IsInUsbInterrupt = 0;
 
-NVT_NONCACHEABLE static UDEV_DRV_T   *_drivers[MAX_UDEV_DRIVER] __ALIGNED(32);
+static UDEV_DRV_T   *_drivers[MAX_UDEV_DRIVER];
 
 static CONN_FUNC  *g_conn_func, *g_disconn_func;
 

@@ -207,7 +207,7 @@ int32_t main(void)
         g_au8SlvData[i] = 0;
     }
 
-    /* I2C function to Slave receive/transmit data */
+    /* I2C function to Transmit/Receive data as slave */
     s_I2C0HandlerFn = I2C_SlaveTRx;
     printf("\n");
     printf("I2C Slave Mode is Running.\n");

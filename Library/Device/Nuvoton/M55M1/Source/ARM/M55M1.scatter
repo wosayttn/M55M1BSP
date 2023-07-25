@@ -79,16 +79,14 @@
 #define FLASH_SIZE      0x00200000
 
 /*--------------------- Cacheable SRAM Configuration ---------------------------
-; <h> Cacheable SRAM Configuration
+; <h> SRAM Configuration
 ;   <o0> SRAM Size (in Bytes)    <0x0-0x00150000:8>
+;   <o0> SRAM Base Address    <0x20100000-0x2024FFFF:8>
+;   <o1> SRAM Size (in Bytes) <0x0-0x00150000:8>
 ; </h>
  *----------------------------------------------------------------------------*/
-#define SRAM_CACHEABLE_SIZE	    0x00130000
-
 #define SRAM_START      		0x20100000
 #define SRAM_SIZE	      		0x00150000
-#define SRAM_NONCACHEABLE_START	(SRAM_START + SRAM_CACHEABLE_SIZE)
-#define SRAM_NONCACHEABLE_SIZE	(SRAM_SIZE - SRAM_CACHEABLE_SIZE)
 
 /*--------------------- Stack / Heap Configuration ---------------------------
 ; <h> Stack / Heap Configuration
@@ -146,8 +144,7 @@
 #define __RO_SIZE           ( FLASH_SIZE - TZ_NSC_SIZE )
 
 #define __RW_BASE           ( SRAM_START )
-#define __RW_SIZE           ( SRAM_CACHEABLE_SIZE - HEAP_SIZE )
-
+#define __RW_SIZE           ( SRAM_SIZE - HEAP_SIZE )
 
 /*----------------------------------------------------------------------------
   Scatter Region definition
@@ -155,7 +152,7 @@
 LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
     ER_ROM __RO_BASE __RO_SIZE  {                   ; load address = execution address
         *.o (RESET, +First)
-        *(InRoot$$Sections)
+        * (InRoot$$Sections)
         ; Make sure reset_handler ends up in root segment
         startup_M55M1.o
         .ANY (+RO)
@@ -173,7 +170,7 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
     }
 #endif
 
-    __RW __RW_BASE UNINIT __RW_SIZE              ; RW data
+    __RW __RW_BASE __RW_SIZE              ; RW data
     {
         .ANY (+RW +ZI)
     }
@@ -184,20 +181,9 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
 
 	__DTCM DTCM_START (DTCM_SIZE - STACK_SIZE - __STACKSEAL_SIZE)
     {
+		.ANY (DTCM.VTOR)
         .ANY (DTCM.init)
         .ANY (DTCM.zi)
-    }
-
-    SRAM_NONCACHEABLE SRAM_NONCACHEABLE_START SRAM_NONCACHEABLE_SIZE
-    {
-        .ANY (NonCacheable.init)
-        .ANY (NonCacheable.zi)
-    }
-
-	; Empty section to get maximum size of NonCacheable region with Image$$SRAM_NONCACHEABLE_END$$Base
-	SRAM_NONCACHEABLE_END (SRAM_NONCACHEABLE_START + SRAM_NONCACHEABLE_SIZE)
-    {
-        .ANY (SRAM_NONCACHEABLE_END)
     }
 
     ARM_LIB_STACK __STACK_TOP EMPTY - STACK_SIZE {}     ; Reserve empty region for stack

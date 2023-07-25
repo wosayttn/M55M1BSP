@@ -28,9 +28,14 @@ extern ISO_EP_T  *iso_ep_list;              /* list of activated isochronous pip
 extern int ehci_iso_xfer(UTR_T *utr);       /* EHCI isochronous transfer function         */
 extern int ehci_quit_iso_xfer(UTR_T *utr, EP_INFO_T *ep);
 
-NVT_NONCACHEABLE uint32_t _PFList[FL_SIZE] __ALIGNED(4096);  /* Periodic frame list        */
+#ifdef __ICCARM__
+    #pragma data_alignment=4096
+    uint32_t  _PFList[FL_SIZE];                 /* Periodic frame list (IAR)                  */
+#else
+    uint32_t _PFList[FL_SIZE] __attribute__((aligned(4096)));  /* Periodic frame list        */
+#endif
 
-NVT_NONCACHEABLE QH_T   *_Iqh[NUM_IQH] __ALIGNED(32);
+QH_T   *_Iqh[NUM_IQH];
 
 #ifdef ENABLE_ERROR_MSG
 void dump_ehci_regs(void)
@@ -1182,7 +1187,7 @@ static void iaad_remove_qh()
 }
 
 //static irqreturn_t ehci_irq (struct usb_hcd *hcd)
-void EHCI_IRQHandler(void)
+NVT_ITCM void EHCI_IRQHandler(void)
 {
     uint32_t  intsts;
 

@@ -43,7 +43,7 @@ int IsDebugFifoEmpty(void)
  *
  * @details     The RTC_IRQHandler is default IRQ of RTC, declared in startup_M2354.s.
  */
-void RTC_IRQHandler(void)
+NVT_ITCM void RTC_IRQHandler(void)
 {
     /* To check if RTC alarm interrupt occurred */
     if (RTC_GET_ALARM_INT_FLAG(RTC) == 1)

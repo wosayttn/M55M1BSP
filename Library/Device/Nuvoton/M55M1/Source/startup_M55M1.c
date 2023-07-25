@@ -195,7 +195,6 @@ void WWDT1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
     #pragma GCC diagnostic ignored "-Wpedantic"
 #endif
 
-extern const VECTOR_TABLE_Type __VECTOR_TABLE[];
 const VECTOR_TABLE_Type __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
 {
     (VECTOR_TABLE_Type)(&__INITIAL_SP),       /*      Initial Stack Pointer                             */
@@ -458,15 +457,13 @@ __NO_RETURN void Reset_Handler_Main(void)
     __TZ_set_STACKSEAL_S((uint32_t *)(&__STACK_SEAL));
 #endif
 
-#ifndef NVT_ICACHE_OFF
     SCB_InvalidateICache();
     SCB_EnableICache();
-#endif
 
-#ifndef NVT_DCACHE_OFF
+#ifdef NVT_DCACHE_ON
     SCB_InvalidateDCache();
     SCB_EnableDCache();
-#endif
+#endif  // NVT_DCACHE_ON
 
     __PROGRAM_START();      // Enter PreMain (C library entry point)
 }
