@@ -11,22 +11,22 @@
 #include "common.h"
 #include "ec_commands.h"
 #ifdef SW
-    #include "i2c.h"
+#include "i2c.h"
 #else
-    #include "ec_i2c.h"
+#include "ec_i2c.h"
 #endif
 
 #include "usb_common.h"
 #include "usb_pd_tcpm.h"
 
 #ifdef SW
-    #include "util.h"
+#include "util.h"
 #endif
 
 #if defined(CONFIG_USB_PD_DUAL_ROLE_AUTO_TOGGLE) && \
     !defined(CONFIG_USB_PD_DUAL_ROLE)
-    #error "DRP auto toggle requires board to have DRP support"
-    #error "Please upgrade your board configuration"
+#error "DRP auto toggle requires board to have DRP support"
+#error "Please upgrade your board configuration"
 #endif
 
 //#ifndef CONFIG_USB_PD_TCPC
@@ -77,7 +77,7 @@ static inline int tcpc_addr_read16(int port, int i2c_addr, int reg, int *val)
  */
 
 static inline int tcpc_addr_read16_no_lpm_exit(int port, int i2c_addr,
-                                               int reg, int *val)
+        int reg, int *val)
 {
     return tcpc_addr_read16(port, i2c_addr, reg, val);
 }
@@ -188,7 +188,6 @@ static inline int tcpm_init(int port)
     int rv;
 
     rv = tcpc_config[port].drv->init(port);
-
     if (rv)
         return rv;
 
@@ -243,15 +242,13 @@ static inline int tcpm_sop_prime_enable(int port, bool enable)
 
 static inline int tcpm_set_vconn(int port, int enable)
 {
-    //#ifdef CONFIG_USB_PD_TCPC_VCONN
+//#ifdef CONFIG_USB_PD_TCPC_VCONN
 #if (CONFIG_USB_PD_TCPC_VCONN == 1)
     int rv;
 
     rv = tcpc_config[port].drv->set_vconn(port, enable);
-
     if (rv)
         return rv;
-
 #endif
 
     return tcpm_sop_prime_enable(port, enable);
@@ -260,7 +257,7 @@ static inline int tcpm_set_vconn(int port, int enable)
 static inline int tcpm_set_msg_header(int port, int power_role, int data_role)
 {
     return tcpc_config[port].drv->set_msg_header(port, power_role,
-                                                 data_role);
+            data_role);
 }
 
 static inline int tcpm_set_rx_enable(int port, int enable)
@@ -358,7 +355,6 @@ static inline int tcpm_debug_accessory(int port, bool enable)
 {
     if (tcpc_config[port].drv->debug_accessory)
         return tcpc_config[port].drv->debug_accessory(port, enable);
-
     return EC_SUCCESS;
 }
 
@@ -403,7 +399,6 @@ static inline int tcpm_get_chip_info(int port, int live,
 {
     if (tcpc_config[port].drv->get_chip_info)
         return tcpc_config[port].drv->get_chip_info(port, live, info);
-
     return EC_ERROR_UNIMPLEMENTED;
 }
 
@@ -413,10 +408,8 @@ static inline enum ec_error_list tcpc_set_bist_test_mode(int port, bool enable)
     int rv = EC_SUCCESS;
 
     tcpc = tcpc_config[port].drv;
-
     if (tcpc->set_bist_test_mode)
         rv = tcpc->set_bist_test_mode(port, enable);
-
     return rv;
 }
 
@@ -437,10 +430,8 @@ static inline int tcpm_set_frs_enable(int port, int enable)
      * if it is handled by the tcpci for the tcpc chipset
      */
     tcpc = tcpc_config[port].drv;
-
     if (tcpc->set_frs_enable)
         rv = tcpc->set_frs_enable(port, enable);
-
     return rv;
 }
 #endif /* defined(CONFIG_USB_PD_FRS_TCPC) */

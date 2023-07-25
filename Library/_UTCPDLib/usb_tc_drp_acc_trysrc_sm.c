@@ -2715,8 +2715,8 @@ static void tc_unattached_snk_entry(const int port)
 #if (CONFIG_SUPPORT_SNK == 1)
     enum pd_data_role prev_data_role;
     print_current_state(port, __FUNCTION__);
-    DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
 
+    //DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
     if (get_last_state_tc(port) != TC_UNATTACHED_SRC)
     {
         tc_detached(port);
@@ -2882,7 +2882,7 @@ static void tc_unattached_snk_exit(const int port)
 static void tc_attach_wait_snk_entry(const int port)
 {
     print_current_state(port, __FUNCTION__);
-    DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
+    //DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
     printf("AW_SNK\n");
     tc[port].cc_state = PD_CC_UNSET;
 }
@@ -3011,7 +3011,7 @@ static void tc_attached_snk_entry(const int port)
     enum tcpc_cc_voltage_status cc1, cc2;
 
     print_current_state(port, __FUNCTION__);
-    DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
+    //DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
     /*
      * Known state of attach is SNK.  We need to apply this pull value
      * to make it set in hardware at the correct time but set the common
@@ -3388,7 +3388,7 @@ static void tc_unattached_src_entry(const int port)
 #if (CONFIG_SUPPORT_SRC == 1)
     enum pd_data_role prev_data_role;
     print_current_state(port, __FUNCTION__);
-    DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
+    //DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
 
     if (get_last_state_tc(port) != TC_UNATTACHED_SNK)
     {
@@ -3538,7 +3538,7 @@ static void tc_attach_wait_src_entry(const int port)
 {
 #if (CONFIG_SUPPORT_SRC == 1)
     print_current_state(port, __FUNCTION__);
-    DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
+    //DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
     tc[port].cc_state = PD_CC_UNSET;
 #endif  /* #if (CONFIG_SUPPORT_SRC == 1) */
 }
@@ -3653,7 +3653,7 @@ static void tc_attached_src_entry(const int port)
 #if (CONFIG_SUPPORT_SRC == 1)
     enum tcpc_cc_voltage_status cc1, cc2;
     print_current_state(port, __FUNCTION__);
-    DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
+    //DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
     printf("\n asrc_e CC_STATUS = 0x%x\n", inp32(UTCPD0_BASE + TCPC_REG_CC_STATUS));
 
     if (TC_CHK_FLAG(port, TC_FLAGS_VCONN_ON))
@@ -4220,7 +4220,7 @@ __maybe_unused static void tc_drp_auto_toggle_entry(const int port)
     //outp32(UTCPD0_BASE+TCPC_REG_COMMAND, TCPC_REG_COMMAND_LOOK4CONNECTION);
 
     print_current_state(port, __FUNCTION__);
-    DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
+    //DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
 
     /*
      * We need to ensure that we are waiting in the previous Rd or Rp state
@@ -4361,7 +4361,7 @@ __maybe_unused static void tc_low_power_mode_exit(const int port)
 static void tc_try_src_entry(const int port)
 {
     print_current_state(port, __FUNCTION__);
-    DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
+    //DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
 
     tc[port].cc_state = PD_CC_UNSET;
     pd_timer_enable(port, TC_TIMER_TRY_WAIT_DEBOUNCE, PD_T_DRP_TRY);
@@ -4456,7 +4456,7 @@ static void tc_try_src_exit(const int port)
 static void tc_try_wait_snk_entry(const int port)
 {
     print_current_state(port, __FUNCTION__);
-    DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
+    //DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
 
     tc_enable_pd(port, 0);
     tc[port].cc_state = PD_CC_UNSET;
@@ -4645,7 +4645,7 @@ __maybe_unused static void tc_ct_attached_snk_entry(int port)
         assert(4);
 
     print_current_state(port, __FUNCTION__);
-    DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
+    //DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
 
     /* The port shall reject a VCONN swap request. */
     TC_SET_FLAG(port, TC_FLAGS_REJECT_VCONN_SWAP);
@@ -4720,7 +4720,8 @@ static void tc_cc_rd_entry(const int port)
  */
 static void tc_cc_rp_entry(const int port)
 {
-    DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
+    print_current_state(port, __FUNCTION__);
+    //DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
 
     /* Disable VCONN */
     if (IS_ENABLED(CONFIG_USBC_VCONN))
@@ -4736,7 +4737,8 @@ static void tc_cc_rp_entry(const int port)
  */
 static void tc_cc_open_entry(const int port)
 {
-    DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
+    print_current_state(port, __FUNCTION__);
+    //DBG_PRINTF_ENTRY("%s\n", __FUNCTION__);
     /* Ensure we are not sourcing Vbus */
     tc_src_power_off(port);
 

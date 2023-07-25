@@ -396,17 +396,20 @@ static int init_alert_mask(int port)
      */
     if (get_usb_pd_vbus_detect() == USB_PD_VBUS_DETECT_TCPC)
     {
-        mask = ( TCPC_REG_ALERT_TX_SUCCESS | TCPC_REG_ALERT_TX_FAILED |
+        mask = TCPC_REG_ALERT_TX_SUCCESS | TCPC_REG_ALERT_TX_FAILED |
                TCPC_REG_ALERT_TX_DISCARDED | TCPC_REG_ALERT_RX_STATUS |
                TCPC_REG_ALERT_RX_HARD_RST | TCPC_REG_ALERT_CC_STATUS |
-               TCPC_REG_ALERT_FAULT | TCPC_REG_ALERT_POWER_STATUS );
+               TCPC_REG_ALERT_FAULT
+               | TCPC_REG_ALERT_POWER_STATUS
+               ;
     }
     else
     {
-        mask = (TCPC_REG_ALERT_TX_SUCCESS | TCPC_REG_ALERT_TX_FAILED |
+        mask = TCPC_REG_ALERT_TX_SUCCESS | TCPC_REG_ALERT_TX_FAILED |
                TCPC_REG_ALERT_TX_DISCARDED | TCPC_REG_ALERT_RX_STATUS |
                TCPC_REG_ALERT_RX_HARD_RST | TCPC_REG_ALERT_CC_STATUS |
-               TCPC_REG_ALERT_FAULT);
+               TCPC_REG_ALERT_FAULT
+               ;
     }
 
     /* TCPCI Rev2 includes SAFE0V alerts */

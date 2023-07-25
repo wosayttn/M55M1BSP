@@ -55,8 +55,8 @@ extern "C"
 
 typedef enum
 {
-    UTCPD_PD_ATTACHED = 0,          /* Port partner attached or disattached */
-    UTCPD_PD_CONTRACT = 1,          /* PD contract established? */
+    UTCPD_PD_ATTACHED =0,           /* Port partner attached or disattached */
+    UTCPD_PD_CONTRACT =1,           /* PD contract established? */
     UTCPD_PD_SNK_VOLTAGE = 2,       /* Contract voltage */
 } E_UTCPD_PD_EVENT;
 
@@ -76,12 +76,12 @@ typedef void (*utcpd_pvFunPtr)(int port, E_UTCPD_PD_EVENT event, uint32_t op);  
 /** @addtogroup SCLIB_EXPORTED_FUNCTIONS Smartcard Library Exported Functions
   @{
 */
-void UTCPD_InstallCallback(int port, utcpd_pvFunPtr *pfn);
+void UTCPD_InstallCallback(int port, utcpd_pvFunPtr* pfn);
 
 enum pd_cc_states UTCPD_TC_get_cc_state(int port);
 enum pd_cc_states UTCPD_TC_get_polarity(int port);
-enum pd_cc_states UTCPD_PE_get_src_caps(int port, int32_t *pu32SrcArray, int32_t *pi32SrcCnt);
-enum pd_cc_states UTCPD_PE_get_snk_caps(int port, int32_t *pu32SnkArray, int32_t *pi32SnkCnt);
+enum pd_cc_states UTCPD_PE_get_src_caps(int port, int32_t* pu32SrcArray, int32_t* pi32SrcCnt);
+enum pd_cc_states UTCPD_PE_get_snk_caps(int port, int32_t* pu32SnkArray, int32_t* pi32SnkCnt);
 
 /*@}*/ /* end of group UTCPDLIB_EXPORTED_FUNCTIONS */
 

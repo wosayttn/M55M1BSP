@@ -9,15 +9,15 @@
 #define __CROS_EC_USB_PD_TCPM_TCPCI_H
 
 #ifdef SW
-    #include "config.h"
+#include "config.h"
 #endif
 
 #include "ec_commands.h"
 
 #ifdef SW
-    #include "tcpm/tcpm.h"
+#include "tcpm/tcpm.h"
 #else
-    #include "tcpm.h"
+#include "tcpm.h"
 #endif
 
 #include "usb_mux.h"
@@ -39,9 +39,9 @@
 #define TCPC_REG_PD_INT_REV_VER_1_0   0x10
 #define TCPC_REG_PD_INT_REV_VER_1_1   0x11
 #define TCPC_REG_PD_INT_REV_REV(reg) \
-    ((reg & TCOC_REG_PD_INT_REV_REV_MASK) >> 8)
+        ((reg & TCOC_REG_PD_INT_REV_REV_MASK) >> 8)
 #define TCPC_REG_PD_INT_REV_VER(reg) \
-    (reg & TCOC_REG_PD_INT_REV_VER_MASK)
+        (reg & TCOC_REG_PD_INT_REV_VER_MASK)
 
 #define TCPC_REG_ALERT             0x10
 #define TCPC_REG_ALERT_NONE         0x0000
@@ -63,8 +63,8 @@
 #define TCPC_REG_ALERT_POWER_STATUS BIT(1)
 #define TCPC_REG_ALERT_CC_STATUS    BIT(0)
 #define TCPC_REG_ALERT_TX_COMPLETE  (TCPC_REG_ALERT_TX_SUCCESS | \
-                                     TCPC_REG_ALERT_TX_DISCARDED | \
-                                     TCPC_REG_ALERT_TX_FAILED)
+                      TCPC_REG_ALERT_TX_DISCARDED | \
+                      TCPC_REG_ALERT_TX_FAILED)
 
 #define TCPC_REG_ALERT_MASK        0x12
 #define TCPC_REG_ALERT_MASK_VENDOR_DEF   BIT(15)
@@ -100,18 +100,18 @@
 #define TCPC_REG_ROLE_CTRL_CC2_MASK                    (BIT(3)|BIT(2))
 #define TCPC_REG_ROLE_CTRL_CC1_MASK                    (BIT(1)|BIT(0))
 #define TCPC_REG_ROLE_CTRL_SET(drp, rp, cc1, cc2) \
-    ((((drp) << 6) & TCPC_REG_ROLE_CTRL_DRP_MASK) | \
-     (((rp) << 4) & TCPC_REG_ROLE_CTRL_RP_MASK) | \
-     (((cc2) << 2) & TCPC_REG_ROLE_CTRL_CC2_MASK) | \
-     ((cc1) & TCPC_REG_ROLE_CTRL_CC1_MASK))
+        ((((drp) << 6) & TCPC_REG_ROLE_CTRL_DRP_MASK) | \
+        (((rp) << 4) & TCPC_REG_ROLE_CTRL_RP_MASK) | \
+        (((cc2) << 2) & TCPC_REG_ROLE_CTRL_CC2_MASK) | \
+        ((cc1) & TCPC_REG_ROLE_CTRL_CC1_MASK))
 #define TCPC_REG_ROLE_CTRL_DRP(reg) \
-    (((reg) & TCPC_REG_ROLE_CTRL_DRP_MASK) >> 6)
+        (((reg) & TCPC_REG_ROLE_CTRL_DRP_MASK) >> 6)
 #define TCPC_REG_ROLE_CTRL_RP(reg) \
-    (((reg) & TCPC_REG_ROLE_CTRL_RP_MASK) >> 4)
+        (((reg) & TCPC_REG_ROLE_CTRL_RP_MASK) >> 4)
 #define TCPC_REG_ROLE_CTRL_CC2(reg) \
-    (((reg) & TCPC_REG_ROLE_CTRL_CC2_MASK) >> 2)
+        (((reg) & TCPC_REG_ROLE_CTRL_CC2_MASK) >> 2)
 #define TCPC_REG_ROLE_CTRL_CC1(reg) \
-    ((reg) & TCPC_REG_ROLE_CTRL_CC1_MASK)
+        ((reg) & TCPC_REG_ROLE_CTRL_CC1_MASK)
 
 #define TCPC_REG_FAULT_CTRL        0x1b
 #define TCPC_REG_FAULT_CTRL_VBUS_OVP_FAULT_DIS         BIT(1)
@@ -132,15 +132,15 @@
 #define TCPC_REG_CC_STATUS_CC2_STATE_MASK              (BIT(3)|BIT(2))
 #define TCPC_REG_CC_STATUS_CC1_STATE_MASK              (BIT(1)|BIT(0))
 #define TCPC_REG_CC_STATUS_SET(term, cc1, cc2) \
-    ((term) << 4 | ((cc2) & 0x3) << 2 | ((cc1) & 0x3))
+        ((term) << 4 | ((cc2) & 0x3) << 2 | ((cc1) & 0x3))
 #define TCPC_REG_CC_STATUS_LOOK4CONNECTION(reg) \
-    ((reg & TCPC_REG_CC_STATUS_LOOK4CONNECTION_MASK) >> 5)
+        ((reg & TCPC_REG_CC_STATUS_LOOK4CONNECTION_MASK) >> 5)
 #define TCPC_REG_CC_STATUS_TERM(reg) \
-    (((reg) & TCPC_REG_CC_STATUS_CONNECT_RESULT_MASK) >> 4)
+        (((reg) & TCPC_REG_CC_STATUS_CONNECT_RESULT_MASK) >> 4)
 #define TCPC_REG_CC_STATUS_CC2(reg) \
-    (((reg) & TCPC_REG_CC_STATUS_CC2_STATE_MASK) >> 2)
+        (((reg) & TCPC_REG_CC_STATUS_CC2_STATE_MASK) >> 2)
 #define TCPC_REG_CC_STATUS_CC1(reg) \
-    ((reg) & TCPC_REG_CC_STATUS_CC1_STATE_MASK)
+        ((reg) & TCPC_REG_CC_STATUS_CC1_STATE_MASK)
 
 #define TCPC_REG_POWER_STATUS      0x1e
 #define TCPC_REG_POWER_STATUS_MASK_ALL  0xff
@@ -232,7 +232,7 @@
 
 #define TCPC_REG_MSG_HDR_INFO      0x2e
 #define TCPC_REG_MSG_HDR_INFO_SET(drole, prole) \
-    ((drole) << 3 | (PD_REV20 << 1) | (prole))
+        ((drole) << 3 | (PD_REV20 << 1) | (prole))
 #define TCPC_REG_MSG_HDR_INFO_DROLE(reg) (((reg) & 0x8) >> 3)
 #define TCPC_REG_MSG_HDR_INFO_PROLE(reg) ((reg) & 0x1)
 
@@ -255,7 +255,7 @@
 
 #define TCPC_REG_TRANSMIT          0x50
 #define TCPC_REG_TRANSMIT_SET_WITH_RETRY(retries, type) \
-    ((retries) << 4 | (type))
+        ((retries) << 4 | (type))
 #define TCPC_REG_TRANSMIT_SET_WITHOUT_RETRY(type) (type)
 #define TCPC_REG_TRANSMIT_RETRY(reg) (((reg) & 0x30) >> 4)
 #define TCPC_REG_TRANSMIT_TYPE(reg)  ((reg) & 0x7)
@@ -314,12 +314,12 @@ int tcpci_set_role_ctrl(int port, enum tcpc_drp drp, enum tcpc_rp_value rp,
 int tcpci_tcpc_drp_toggle(int port);
 #endif
 #ifdef CONFIG_USB_PD_TCPC_LOW_POWER
-    int tcpci_enter_low_power_mode(int port);
+int tcpci_enter_low_power_mode(int port);
 #endif
 enum ec_error_list tcpci_set_bist_test_mode(const int port,
-                                            const bool enable);
+        const bool enable);
 #ifdef CONFIG_USB_PD_DISCHARGE_TCPC
-    void tcpci_tcpc_discharge_vbus(int port, int enable);
+void tcpci_tcpc_discharge_vbus(int port, int enable);
 #endif
 void tcpci_tcpc_enable_auto_discharge_disconnect(int port, int enable);
 int tcpci_tcpc_debug_accessory(int port, bool enable);
@@ -330,14 +330,14 @@ int tcpci_tcpm_mux_set(const struct usb_mux *me, mux_state_t mux_state,
 int tcpci_tcpm_mux_get(const struct usb_mux *me, mux_state_t *mux_state);
 int tcpci_tcpm_mux_enter_low_power(const struct usb_mux *me);
 //int tcpci_get_chip_info(int port, int live, struct ec_response_pd_chip_info_v1* chip_info);
-int tcpci_get_chip_info(int port, int live, struct ec_response_pd_chip_info_v1 *chip_info);
+int tcpci_get_chip_info(int port, int live, struct ec_response_pd_chip_info_v1* chip_info);
 
 
 #ifdef CONFIG_USBC_PPC
-    bool tcpci_tcpm_get_snk_ctrl(int port);
-    int tcpci_tcpm_set_snk_ctrl(int port, int enable);
-    bool tcpci_tcpm_get_src_ctrl(int port);
-    int tcpci_tcpm_set_src_ctrl(int port, int enable);
+bool tcpci_tcpm_get_snk_ctrl(int port);
+int tcpci_tcpm_set_snk_ctrl(int port, int enable);
+bool tcpci_tcpm_get_src_ctrl(int port);
+int tcpci_tcpm_set_src_ctrl(int port, int enable);
 #endif
 
 int tcpci_tcpc_fast_role_swap_enable(int port, int enable);

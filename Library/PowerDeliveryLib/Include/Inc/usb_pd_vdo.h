@@ -140,7 +140,7 @@ struct product_vdo
 /* UFP VDO Version 1.2; update the value when UFP VDO version changes */
 #define VDO_UFP1(cap, ctype, alt, speed)            \
     ((0x2) << 29 | ((cap) & 0xf) << 24          \
-     | ((ctype) & 0x3) << 22 | ((alt) & 0x7) << 3 | ((speed) & 0x7))
+    | ((ctype) & 0x3) << 22 | ((alt) & 0x7) << 3 | ((speed) & 0x7))
 
 /* UFP VDO 1 Alternate Modes */
 #define VDO_UFP1_ALT_MODE_TBT3           BIT(0)
@@ -176,7 +176,7 @@ struct product_vdo
 /* DFP VDO Version 1.1; update the value when DFP VDO version changes */
 #define VDO_DFP(cap, ctype, port)           \
     ((0x1) << 29 | ((cap) & 0x7) << 24  \
-     | ((ctype) & 0x3) << 22 | ((port) & 0x1f))
+    | ((ctype) & 0x3) << 22 | ((port) & 0x1f))
 
 /* DFP VDO Host Capability */
 #define VDO_DFP_HOST_CAPABILITY_USB20 BIT(0)
@@ -275,7 +275,7 @@ union passive_cable_vdo_rev30
 {
     struct
     {
-        enum usb_rev30_ss ss : 3;
+        enum usb_rev30_ss ss: 3;
         uint32_t reserved0 : 2;
         enum usb_vbus_cur vbus_cur : 2;
         uint32_t reserved1 : 2;
@@ -366,7 +366,7 @@ union active_cable_vdo1_rev30
 {
     struct
     {
-        enum usb_rev30_ss ss : 3;
+        enum usb_rev30_ss ss: 3;
         uint32_t sop_p_p : 1;
         uint32_t vbus_cable : 1;
         enum usb_vbus_cur vbus_cur : 2;
@@ -646,10 +646,10 @@ enum idh_ptype
  * - Table 6-23 ID Header VDO PD spec 2.0 version 1.3.
  */
 #define IS_PD_IDH_UFP_PTYPE(ptype) (ptype == IDH_PTYPE_HUB || \
-                                    ptype == IDH_PTYPE_PERIPH || \
-                                    ptype == IDH_PTYPE_PSD || \
-                                    ptype == IDH_PTYPE_AMA ||  \
-                                    ptype == IDH_PTYPE_VPD)
+                    ptype == IDH_PTYPE_PERIPH || \
+                    ptype == IDH_PTYPE_PSD || \
+                    ptype == IDH_PTYPE_AMA ||  \
+                    ptype == IDH_PTYPE_VPD)
 
 struct id_header_vdo_rev20
 {
@@ -739,7 +739,7 @@ union passive_cable_vdo_rev20
 {
     struct
     {
-        enum usb_rev20_ss ss : 3;
+        enum usb_rev20_ss ss: 3;
         uint32_t reserved0 : 1;
         uint32_t vbus_cable : 1;
         enum usb_vbus_cur vbus_cur : 2;
@@ -824,7 +824,7 @@ union active_cable_vdo_rev20
 {
     struct
     {
-        enum usb_rev20_ss ss : 3;
+        enum usb_rev20_ss ss: 3;
         uint32_t sop_p_p : 1;
         uint32_t vbus_cable : 1;
         enum usb_vbus_cur vbus_cur : 2;
@@ -1039,7 +1039,7 @@ union product_type_vdo1
     uint32_t raw_value;
 };
 #ifdef SW
-    BUILD_ASSERT(sizeof(uint32_t) == sizeof(union product_type_vdo1));
+BUILD_ASSERT(sizeof(uint32_t) == sizeof(union product_type_vdo1));
 #endif
 
 union product_type_vdo2
@@ -1049,7 +1049,7 @@ union product_type_vdo2
     uint32_t raw_value;
 };
 #ifdef SW
-    BUILD_ASSERT(sizeof(uint32_t) == sizeof(union product_type_vdo2));
+BUILD_ASSERT(sizeof(uint32_t) == sizeof(union product_type_vdo2));
 #endif
 
 #endif /* __CROS_EC_USB_PD_VDO_H */

@@ -124,7 +124,7 @@ struct host_command
      * Handler for the command.  Args points to context for handler.
      * Returns result status (EC_RES_*).
      */
-    enum ec_status(*handler)(struct host_cmd_handler_args *args);
+    enum ec_status (*handler)(struct host_cmd_handler_args *args);
     /* Command code */
     int command;
     /* Mask of supported versions */
@@ -195,26 +195,26 @@ int host_is_event_set(enum host_event_code event);
 
 #ifdef CONFIG_HOSTCMD_X86
 
-    FORWARD_DECLARE_ENUM(power_state);
+FORWARD_DECLARE_ENUM(power_state);
 
-    /*
-    * Get lazy wake masks for the sleep state provided
-    *
-    * @param state Sleep state
-    * @param mask  Lazy wake mask.
-    *
-    * @return EC_SUCCESS for success and EC_ERROR_INVAL for error
-    */
+/*
+ * Get lazy wake masks for the sleep state provided
+ *
+ * @param state Sleep state
+ * @param mask  Lazy wake mask.
+ *
+ * @return EC_SUCCESS for success and EC_ERROR_INVAL for error
+ */
 
-    int get_lazy_wake_mask(enum power_state state, host_event_t *mask);
+int get_lazy_wake_mask(enum power_state state, host_event_t *mask);
 
-    /*
-    * Check if active wake mask set by host
-    *
-    *
-    * @return 1 if active wake mask set by host else return 0
-    */
-    uint8_t lpc_is_active_wm_set_by_host(void);
+/*
+ * Check if active wake mask set by host
+ *
+ *
+ * @return 1 if active wake mask set by host else return 0
+ */
+uint8_t lpc_is_active_wm_set_by_host(void);
 #endif
 
 /**
@@ -257,7 +257,7 @@ void host_packet_receive(struct host_packet *pkt);
  * Return: handler for the command, or NULL if not found.
  */
 #ifndef CONFIG_ZEPHYR
-    __error("This function should only be called from Zephyr OS code")
+__error("This function should only be called from Zephyr OS code")
 #endif
 struct host_command *zephyr_find_host_command(int command);
 
@@ -286,13 +286,13 @@ struct host_command *zephyr_find_host_command(int command);
     const struct host_command __keep __no_sanitize_address       \
     EXPAND(EC_CMD_BOARD_SPECIFIC_BASE, command) \
     __attribute__((section(".rodata.hcmds."\
-                           EXPANDSTR(EC_CMD_BOARD_SPECIFIC_BASE, command)))) \
+    EXPANDSTR(EC_CMD_BOARD_SPECIFIC_BASE, command)))) \
         = {routine, EC_PRIVATE_HOST_COMMAND_VALUE(command), \
            version_mask}
 #else /* !CONFIG_ZEPHYR && !HAS_TASK_HOSTCMD */
 #define DECLARE_HOST_COMMAND(command, routine, version_mask)    \
     enum ec_status (routine)(struct host_cmd_handler_args *args)       \
-    __attribute__((unused))
+        __attribute__((unused))
 
 #define DECLARE_PRIVATE_HOST_COMMAND(command, routine, version_mask)    \
     DECLARE_HOST_COMMAND(command, routine, version_mask)
@@ -353,7 +353,8 @@ uint32_t get_feature_flags0(void);
 uint32_t get_feature_flags1(void);
 
 #ifdef CONFIG_ZTEST
-static inline void stub_send_response_callback(struct host_cmd_handler_args *args)
+static inline void
+stub_send_response_callback(struct host_cmd_handler_args *args)
 {
     ARG_UNUSED(args);
 }
@@ -361,9 +362,9 @@ static inline void stub_send_response_callback(struct host_cmd_handler_args *arg
 #define BUILD_HOST_COMMAND(CMD, VERSION, RESPONSE)                         \
     {                                                                  \
         .command = (CMD), .version = (VERSION),                    \
-                                     .send_response = stub_send_response_callback,              \
-                                                      .response = &(RESPONSE), .response_max = sizeof(RESPONSE), \
-                                                                                               .response_size = sizeof(RESPONSE)                          \
+        .send_response = stub_send_response_callback,              \
+        .response = &(RESPONSE), .response_max = sizeof(RESPONSE), \
+        .response_size = sizeof(RESPONSE)                          \
     }
 #endif /* CONFIG_ZTEST */
 

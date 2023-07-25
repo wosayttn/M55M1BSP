@@ -8,13 +8,13 @@
 #ifndef __CROS_EC_USB_CHARGE_H
 #define __CROS_EC_USB_CHARGE_H
 #ifdef SW
-    #include "charge_manager.h"
-    #include "common.h"
-    #include "ec_commands.h"
-    #include "task.h"
+#include "charge_manager.h"
+#include "common.h"
+#include "ec_commands.h"
+#include "task.h"
 #else
-    #include "common.h"
-    #include "ec_commands.h"
+#include "common.h"
+#include "ec_commands.h"
 #endif
 
 /* USB charger voltage */
@@ -34,18 +34,18 @@
 #define USB_HOOK_VERSION 1
 
 #ifdef CONFIG_USB_PORT_POWER_SMART
-    #define USB_PORT_ENABLE_COUNT CONFIG_USB_PORT_POWER_SMART_PORT_COUNT
+#define USB_PORT_ENABLE_COUNT CONFIG_USB_PORT_POWER_SMART_PORT_COUNT
 #elif defined(CONFIG_USB_PORT_POWER_DUMB)
-    #define USB_PORT_ENABLE_COUNT USB_PORT_COUNT
+#define USB_PORT_ENABLE_COUNT USB_PORT_COUNT
 #endif
 
 /* GPIOs to enable/disable USB ports. Board specific. */
 #ifdef USB_PORT_ENABLE_COUNT
-    #ifdef CONFIG_USB_PORT_ENABLE_DYNAMIC
-        extern int usb_port_enable[USB_PORT_ENABLE_COUNT];
-    #else
-        extern const int usb_port_enable[USB_PORT_ENABLE_COUNT];
-    #endif
+#ifdef CONFIG_USB_PORT_ENABLE_DYNAMIC
+extern int usb_port_enable[USB_PORT_ENABLE_COUNT];
+#else
+extern const int usb_port_enable[USB_PORT_ENABLE_COUNT];
+#endif
 #endif /* USB_PORT_ENABLE_COUNT */
 
 /**
@@ -69,13 +69,13 @@ int usb_charge_set_mode(int usb_port_id, enum usb_charge_mode mode,
 
 /* Number of USB_CHG_* tasks */
 #ifdef HAS_TASK_USB_CHG_P2
-    #define USB_CHG_TASK_COUNT 3
+#define USB_CHG_TASK_COUNT 3
 #elif defined(HAS_TASK_USB_CHG_P1)
-    #define USB_CHG_TASK_COUNT 2
+#define USB_CHG_TASK_COUNT 2
 #elif defined(HAS_TASK_USB_CHG_P0) || defined(HAS_TASK_USB_CHG)
-    #define USB_CHG_TASK_COUNT 1
+#define USB_CHG_TASK_COUNT 1
 #else
-    #define USB_CHG_TASK_COUNT 0
+#define USB_CHG_TASK_COUNT 0
 #endif
 
 /*
@@ -84,11 +84,11 @@ int usb_charge_set_mode(int usb_port_id, enum usb_charge_mode mode,
  * is the lowest task ID and IDs are on a continuous range.
  */
 #ifdef HAS_TASK_USB_CHG_P0
-    #define USB_CHG_PORT_TO_TASK_ID(port) (TASK_ID_USB_CHG_P0 + (port))
-    #define TASK_ID_TO_USB_CHG_PORT(id) ((id) - TASK_ID_USB_CHG_P0)
+#define USB_CHG_PORT_TO_TASK_ID(port) (TASK_ID_USB_CHG_P0 + (port))
+#define TASK_ID_TO_USB_CHG_PORT(id) ((id) - TASK_ID_USB_CHG_P0)
 #else
-    #define USB_CHG_PORT_TO_TASK_ID(port) -1 /* stub task ID */
-    #define TASK_ID_TO_USB_CHG_PORT(id) 0
+#define USB_CHG_PORT_TO_TASK_ID(port) -1 /* stub task ID */
+#define TASK_ID_TO_USB_CHG_PORT(id) 0
 #endif  /* HAS_TASK_USB_CHG_P0 */
 
 /**
@@ -165,7 +165,6 @@ static inline int usb_charger_ramp_allowed(int port, int supplier)
 {
     if (port < 0 || !bc12_ports[port].drv->ramp_allowed)
         return 0;
-
     return bc12_ports[port].drv->ramp_allowed(supplier);
 }
 
@@ -182,7 +181,6 @@ static inline int usb_charger_ramp_max(int port, int supplier, int sup_curr)
 {
     if (port < 0 || !bc12_ports[port].drv->ramp_max)
         return 0;
-
     return bc12_ports[port].drv->ramp_max(supplier, sup_curr);
 }
 

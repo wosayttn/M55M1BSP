@@ -13,6 +13,20 @@
     #include "utcpdlib.h"
 #endif
 
+void i2c_check_ready(port)
+{
+    uint32_t BaseAddr;
+
+    if (port == 0)
+        BaseAddr = UTCPD0_BASE;
+    else
+        BaseAddr = UTCPD1_BASE;
+
+    do
+    {
+    } while ((inp32(BaseAddr + UTCPD_CLKINFO) & UTCPD_I2C_READY) == 0);
+}
+
 const struct i2c_port_t *get_i2c_port(const int port)
 {
     int i;
@@ -90,12 +104,13 @@ int i2c_read32(const int port,
     *data = inp32(BaseAddr + offset);
     return EC_SUCCESS;
 }
-#ifdef SW
+//#ifdef SW
 /* Not use in UTCPD */
 int i2c_write32(const int port,
                 const uint16_t addr_flags,
                 int offset, int data)
 {
+#if 0
     uint8_t buf[1 + sizeof(uint32_t)];
 
     buf[0] = offset & 0xff;
@@ -117,8 +132,22 @@ int i2c_write32(const int port,
 
     return platform_ec_i2c_write(port, addr_flags, buf,
                                  sizeof(uint32_t) + 1);
-}
+#else
+    uint32_t BaseAddr;
+
+    if (port == 0)
+        BaseAddr = UTCPD0_BASE;
+    else
+        BaseAddr = UTCPD1_BASE;
+
+    i2c_check_ready(port);
+
+    outp32(BaseAddr + offset, data);
+
+    return EC_SUCCESS;
 #endif
+}
+//#endif
 
 int i2c_read16(const int port,
                const uint16_t addr_flags,
@@ -186,6 +215,8 @@ int i2c_write16(const int port,
     else
         BaseAddr = UTCPD1_BASE;
 
+    i2c_check_ready(port);
+
     outp16(BaseAddr + offset, data & 0xFFFF);
 
     return EC_SUCCESS;
@@ -241,6 +272,8 @@ int i2c_write8(const int port,
         BaseAddr = UTCPD0_BASE;
     else
         BaseAddr = UTCPD1_BASE;
+
+    i2c_check_ready(port);
 
     if (offset == 0xE0)
     {
@@ -676,6 +709,9 @@ int i2c_write_block(const int port,
         outp8((BaseAddr + offset) + i, *(data + i));
 #else
         u32data = *data | (*(data + 1) << 8) | (*(data + 2) << 16) | (*(data + 3) << 24);
+
+        i2c_check_ready(port);
+
         outp32((BaseAddr + offset) + i, u32data);
         data = data + 4;
 #endif

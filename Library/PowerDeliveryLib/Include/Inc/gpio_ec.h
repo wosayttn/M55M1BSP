@@ -17,28 +17,28 @@
  * conflicts
  */
 #ifdef CONFIG_ZEPHYR
-    #include <drivers/gpio.h>
+#include <drivers/gpio.h>
 
-    /* Validate that Zephyr's definition are the same for overlapping defines */
-    #if GPIO_OPEN_DRAIN != (BIT(1) | BIT(2))
-        #error GPIO_OPEN_DRAIN values are not the same!
-    #elif GPIO_PULL_UP != BIT(4)
-        #error GPIO_PULL_UP values are not the same!
-    #elif GPIO_PULL_DOWN != BIT(5)
-        #error GPIO_PULL_DOWN values are not the same!
-    #elif GPIO_INPUT != BIT(8)
-        #error GPIO_INPUT values are not the same!
-    #elif GPIO_OUTPUT != BIT(9)
-        #error GPIO_PULL_DOWN values are not the same!
-    #endif
+/* Validate that Zephyr's definition are the same for overlapping defines */
+#if GPIO_OPEN_DRAIN != (BIT(1) | BIT(2))
+#error GPIO_OPEN_DRAIN values are not the same!
+#elif GPIO_PULL_UP != BIT(4)
+#error GPIO_PULL_UP values are not the same!
+#elif GPIO_PULL_DOWN != BIT(5)
+#error GPIO_PULL_DOWN values are not the same!
+#elif GPIO_INPUT != BIT(8)
+#error GPIO_INPUT values are not the same!
+#elif GPIO_OUTPUT != BIT(9)
+#error GPIO_PULL_DOWN values are not the same!
+#endif
 
-    /* Otherwise define overlapping GPIO_ flags ourselves */
+/* Otherwise define overlapping GPIO_ flags ourselves */
 #else /* !CONFIG_ZEPHYR */
-    #define GPIO_OPEN_DRAIN    (BIT(1) | BIT(2))  /* Output type is open-drain */
-    #define GPIO_PULL_UP       BIT(4)  /* Enable on-chip pullup */
-    #define GPIO_PULL_DOWN     BIT(5)  /* Enable on-chip pulldown */
-    #define GPIO_INPUT         BIT(8)  /* Input */
-    #define GPIO_OUTPUT        BIT(9)  /* Output */
+#define GPIO_OPEN_DRAIN    (BIT(1) | BIT(2))  /* Output type is open-drain */
+#define GPIO_PULL_UP       BIT(4)  /* Enable on-chip pullup */
+#define GPIO_PULL_DOWN     BIT(5)  /* Enable on-chip pulldown */
+#define GPIO_INPUT         BIT(8)  /* Input */
+#define GPIO_OUTPUT        BIT(9)  /* Output */
 #endif /* CONFIG_ZEPHYR */
 
 /*
@@ -74,7 +74,7 @@
 #define GPIO_HIB_WAKE_RISING  BIT(21) /* Hibernate wake on rising edge */
 #define GPIO_HIB_WAKE_FALLING BIT(22) /* Hibernate wake on falling edge */
 #ifdef CONFIG_GPIO_POWER_DOWN
-    #define GPIO_POWER_DOWN    BIT(23) /* Pin and pad is powered off */
+#define GPIO_POWER_DOWN    BIT(23) /* Pin and pad is powered off */
 #endif
 
 /* Common flag combinations */
@@ -92,7 +92,7 @@
 #define GPIO_INT_ANY        (GPIO_INT_BOTH | GPIO_INT_LEVEL)
 #define GPIO_INT_BOTH_DSLEEP (GPIO_INT_BOTH | GPIO_INT_DSLEEP)
 #define GPIO_HIB_WAKE_MASK   (GPIO_HIB_WAKE_HIGH | GPIO_HIB_WAKE_LOW | \
-                              GPIO_HIB_WAKE_RISING|GPIO_HIB_WAKE_FALLING)
+                  GPIO_HIB_WAKE_RISING|GPIO_HIB_WAKE_FALLING)
 
 /* Convert GPIO mask to GPIO number / index. */
 #define GPIO_MASK_TO_NUM(mask) (__fls(mask))
@@ -236,25 +236,25 @@ int gpio_is_implemented(enum gpio_signal signal);
 void gpio_set_flags(enum gpio_signal signal, int flags);
 
 #if defined(CONFIG_CMD_GPIO_EXTENDED) && !defined(CONFIG_GPIO_GET_EXTENDED)
-    #define CONFIG_GPIO_GET_EXTENDED
+#define CONFIG_GPIO_GET_EXTENDED
 #endif
 
 #ifdef CONFIG_GPIO_GET_EXTENDED
-    /**
-    * Get the current flags for a signal.
-    *
-    * @param signal    Signal to get flags for
-    * @returns The flags that are currently defined for this signal
-    */
-    int gpio_get_flags(enum gpio_signal signal);
+/**
+ * Get the current flags for a signal.
+ *
+ * @param signal    Signal to get flags for
+ * @returns The flags that are currently defined for this signal
+ */
+int gpio_get_flags(enum gpio_signal signal);
 
-    /**
-    * Get flags for GPIO by port and mask.
-    *
-    * @param port      GPIO port to set (GPIO_*)
-    * @param mask      Bitmask of pins on that port to check: one only.
-    */
-    int gpio_get_flags_by_mask(uint32_t port, uint32_t mask);
+/**
+ * Get flags for GPIO by port and mask.
+ *
+ * @param port      GPIO port to set (GPIO_*)
+ * @param mask      Bitmask of pins on that port to check: one only.
+ */
+int gpio_get_flags_by_mask(uint32_t port, uint32_t mask);
 #endif
 
 /**
@@ -379,13 +379,13 @@ void gpio_set_alternate_function(uint32_t port, uint32_t mask,
                                  enum gpio_alternate_func func);
 
 #ifdef CONFIG_GPIO_POWER_DOWN
-    /**
-    * Power down all GPIO pins in a module.
-    *
-    * @param id        Module ID to initialize
-    * @return EC_SUCCESS, or non-zero if module_id is not found.
-    */
-    int gpio_power_down_module(enum module_id id);
+/**
+ * Power down all GPIO pins in a module.
+ *
+ * @param id        Module ID to initialize
+ * @return EC_SUCCESS, or non-zero if module_id is not found.
+ */
+int gpio_power_down_module(enum module_id id);
 #endif
 
 /*

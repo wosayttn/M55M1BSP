@@ -30,9 +30,9 @@ typedef union
 } timestamp_t;
 
 #ifdef SW
-    /* Data type for POSIX style clock() implementation */
-    typedef long ec_clock_t;
-#endif
+/* Data type for POSIX style clock() implementation */
+typedef long ec_clock_t;
+#endif 
 
 /**
  * Initialize the timer module.
@@ -141,8 +141,8 @@ void timer_print_info(void);
  * Returns a free running millisecond clock counter, which matches tpm2
  * library expectations.
  */
-#ifdef SW
-    clock_t clock(void);
+#ifdef SW 
+clock_t clock(void);
 #endif
 
 /**

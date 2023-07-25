@@ -9,10 +9,10 @@
 #define __CROS_EC_USB_EBUF_H
 
 #if (CONFIG_USB_PD_REV30 == 1)
-    //#define EXTENDED_BUFFER_SIZE 260
-    #define EXTENDED_BUFFER_SIZE 28
+//#define EXTENDED_BUFFER_SIZE 260
+#define EXTENDED_BUFFER_SIZE 28
 #else
-    #define EXTENDED_BUFFER_SIZE 28
+#define EXTENDED_BUFFER_SIZE 28
 #endif
 
 struct extended_msg

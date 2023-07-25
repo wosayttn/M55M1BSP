@@ -2698,13 +2698,7 @@ static void pe_src_discovery_run(int port)
 //}
 
 
-/**
- * PE_SRC_Send_Capabilities
- */
-#if (CONFIG_DUMP_REGISTER == 1)
-static uint32_t u32target = 0;
-uint32_t Reg0[0x180 / 4]  __attribute__((aligned(32)));;
-uint32_t Reg1[0x180 / 4]  __attribute__((aligned(32)));;
+
 
 void cpu_dump(uint32_t start_addr, uint32_t end_addr)
 {
@@ -2728,6 +2722,14 @@ void cpu_dump(uint32_t start_addr, uint32_t end_addr)
 
     printf("\n\n");
 }
+
+/**
+ * PE_SRC_Send_Capabilities
+ */
+#if (CONFIG_DUMP_REGISTER == 1)
+static uint32_t u32target = 0;
+uint32_t Reg0[0x180 / 4]  __attribute__((aligned(32)));;
+uint32_t Reg1[0x180 / 4]  __attribute__((aligned(32)));;
 
 void clone_utcpd_reg(uint32_t Target)
 {
@@ -4268,9 +4270,9 @@ static void pe_snk_ready_run(int port)
 #if (CONFIG_SUPPORT_SNK == 1)
     uint32_t i;
 
-    snk_reay_count = snk_reay_count + 1;
-    //if((snk_reay_count%200) == 0)
-    //  printf("snk\n");
+    //  snk_reay_count = snk_reay_count+1;
+    //  if((snk_reay_count%2000) == 0)
+    //      printf("snk\n");
 
 #if (CONFIG_TC8260_FRS == 1)
 

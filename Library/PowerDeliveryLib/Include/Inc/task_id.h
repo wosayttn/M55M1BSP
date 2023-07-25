@@ -14,24 +14,24 @@
 #else
 
 #ifdef SW
-    #include "config.h"
-    #include "task_filter.h"
+#include "config.h"
+#include "task_filter.h"
 
 
-    /* define the name of the header containing the list of tasks */
-    #define STRINGIFY0(name)  #name
-    #define STRINGIFY(name)  STRINGIFY0(name)
-    #define CTS_TASK_LIST STRINGIFY(CTS_TASKFILE)
-    #define TEST_TASK_LIST STRINGIFY(TEST_TASKFILE)
-    #define BOARD_TASK_LIST STRINGIFY(BOARD_TASKFILE)
+/* define the name of the header containing the list of tasks */
+#define STRINGIFY0(name)  #name
+#define STRINGIFY(name)  STRINGIFY0(name)
+#define CTS_TASK_LIST STRINGIFY(CTS_TASKFILE)
+#define TEST_TASK_LIST STRINGIFY(TEST_TASKFILE)
+#define BOARD_TASK_LIST STRINGIFY(BOARD_TASKFILE)
 
-    #include BOARD_TASK_LIST
-    #ifdef CTS_MODULE
-        #include CTS_TASK_LIST
-    #endif
-    #ifdef TEST_BUILD
-        #include TEST_TASK_LIST
-    #endif
+#include BOARD_TASK_LIST
+#ifdef CTS_MODULE
+#include CTS_TASK_LIST
+#endif
+#ifdef TEST_BUILD
+#include TEST_TASK_LIST
+#endif
 
 #endif  /* SW */
 

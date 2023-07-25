@@ -14,9 +14,9 @@
 
 #include <stdint.h>
 #ifdef SW
-    #include "tcpm/tcpm.h"
+#include "tcpm/tcpm.h"
 #else
-    #include "tcpm.h"
+#include "tcpm.h"
 #endif
 /*
  * Initialize DP state for the specified port.

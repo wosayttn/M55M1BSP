@@ -431,9 +431,9 @@
               <FilePath>..\i2c_controller.c</FilePath>
             </File>
             <File>
-              <FileName>usb_pd_alt_mode_dfp.c</FileName>
+              <FileName>usb_tc_drp_acc_trysrc_sm.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\usb_pd_alt_mode_dfp.c</FilePath>
+              <FilePath>..\usb_tc_drp_acc_trysrc_sm.c</FilePath>
             </File>
             <File>
               <FileName>usb_common.c</FileName>
@@ -446,9 +446,14 @@
               <FilePath>..\dp_alt_mode.c</FilePath>
             </File>
             <File>
-              <FileName>usb_tc_drp_acc_trysrc_sm.c</FileName>
+              <FileName>usb_pd_alt_mode_dfp.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\usb_tc_drp_acc_trysrc_sm.c</FilePath>
+              <FilePath>..\usb_pd_alt_mode_dfp.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_pd_dual_role.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\usb_pd_dual_role.c</FilePath>
             </File>
             <File>
               <FileName>usb_pd_flags.c</FileName>
@@ -471,9 +476,9 @@
               <FilePath>..\task_event.c</FilePath>
             </File>
             <File>
-              <FileName>usb_pd_dual_role.c</FileName>
+              <FileName>usb_pe_drp_sm.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\usb_pd_dual_role.c</FilePath>
+              <FilePath>..\usb_pe_drp_sm.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -914,9 +919,9 @@
               <FilePath>..\i2c_controller.c</FilePath>
             </File>
             <File>
-              <FileName>usb_pd_alt_mode_dfp.c</FileName>
+              <FileName>usb_tc_drp_acc_trysrc_sm.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\usb_pd_alt_mode_dfp.c</FilePath>
+              <FilePath>..\usb_tc_drp_acc_trysrc_sm.c</FilePath>
             </File>
             <File>
               <FileName>usb_common.c</FileName>
@@ -929,9 +934,14 @@
               <FilePath>..\dp_alt_mode.c</FilePath>
             </File>
             <File>
-              <FileName>usb_tc_drp_acc_trysrc_sm.c</FileName>
+              <FileName>usb_pd_alt_mode_dfp.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\usb_tc_drp_acc_trysrc_sm.c</FilePath>
+              <FilePath>..\usb_pd_alt_mode_dfp.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_pd_dual_role.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\usb_pd_dual_role.c</FilePath>
             </File>
             <File>
               <FileName>usb_pd_flags.c</FileName>
@@ -954,9 +964,9 @@
               <FilePath>..\task_event.c</FilePath>
             </File>
             <File>
-              <FileName>usb_pd_dual_role.c</FileName>
+              <FileName>usb_pe_drp_sm.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\usb_pd_dual_role.c</FilePath>
+              <FilePath>..\usb_pe_drp_sm.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1397,9 +1407,9 @@
               <FilePath>..\i2c_controller.c</FilePath>
             </File>
             <File>
-              <FileName>usb_pd_alt_mode_dfp.c</FileName>
+              <FileName>usb_tc_drp_acc_trysrc_sm.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\usb_pd_alt_mode_dfp.c</FilePath>
+              <FilePath>..\usb_tc_drp_acc_trysrc_sm.c</FilePath>
             </File>
             <File>
               <FileName>usb_common.c</FileName>
@@ -1412,9 +1422,14 @@
               <FilePath>..\dp_alt_mode.c</FilePath>
             </File>
             <File>
-              <FileName>usb_tc_drp_acc_trysrc_sm.c</FileName>
+              <FileName>usb_pd_alt_mode_dfp.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\usb_tc_drp_acc_trysrc_sm.c</FilePath>
+              <FilePath>..\usb_pd_alt_mode_dfp.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_pd_dual_role.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\usb_pd_dual_role.c</FilePath>
             </File>
             <File>
               <FileName>usb_pd_flags.c</FileName>
@@ -1437,9 +1452,9 @@
               <FilePath>..\task_event.c</FilePath>
             </File>
             <File>
-              <FileName>usb_pd_dual_role.c</FileName>
+              <FileName>usb_pe_drp_sm.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\usb_pd_dual_role.c</FilePath>
+              <FilePath>..\usb_pe_drp_sm.c</FilePath>
             </File>
           </Files>
         </Group>

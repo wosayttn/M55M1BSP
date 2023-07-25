@@ -460,7 +460,8 @@ void pd_build_request(int32_t vpd_vdo, uint32_t *rdo, uint32_t *ma,
     {
         if (dps_is_enabled())
         {
-            max_request_mv =MIN(max_request_mv, dps_get_dynamic_voltage());
+            max_request_mv =
+                MIN(max_request_mv, dps_get_dynamic_voltage());
         }
     }
 
@@ -614,8 +615,9 @@ void pd_process_source_cap(int port, int cnt, uint32_t *src_caps)
             max_mv = MIN(max_mv, dps_get_dynamic_voltage());
 
         /* Get max power info that we could request */
-        pd_find_pdo_index(pd_get_src_cap_cnt(port), pd_get_src_caps(port),max_mv, &pdo);
-  
+        pd_find_pdo_index(pd_get_src_cap_cnt(port),
+                          pd_get_src_caps(port),
+                          max_mv, &pdo);
         pd_extract_pdo_power(pdo, &ma, &mv, &unused);
 
         /* Set max. limit, but apply 500mA ceiling */
@@ -632,8 +634,9 @@ void pd_process_source_cap(int port, int cnt, uint32_t *src_caps)
             max_mv = MIN(max_mv, dps_get_dynamic_voltage());
 
         /* Get max power info that we could request */
-        pd_find_pdo_index(pd_get_src_cap_cnt(port),pd_get_src_caps(port),max_mv, &pdo);
-
+        pd_find_pdo_index(pd_get_src_cap_cnt(port),
+                          pd_get_src_caps(port),
+                          max_mv, &pdo);
         pd_extract_pdo_power(pdo, &ma, &mv, &unused);
 
 #ifdef SW
