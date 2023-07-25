@@ -504,23 +504,23 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
+    /* USB_VBUS_EN (USB 1.1 VBUS power enable pin) multi-function pin - PB.15     */
     SET_USB_VBUS_EN_PB15();
+
+    /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PC.14   */
     SET_USB_VBUS_ST_PC14();
-    SET_USB_D_MINUS_PA13();
-    SET_USB_D_PLUS_PA14();
-    SET_USB_OTG_ID_PA15();
+
+    /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PJ.13   */
+    SET_HSUSB_VBUS_EN_PJ13();
+
+    /* HSUSB_VBUS_ST (USB 2.0 over-current detect pin) multi-function pin - PJ.12 */
+    SET_HSUSB_VBUS_ST_PJ12();
+
+    /* USB 1.1 port multi-function pin VBUS, D+, D-, and ID pins */
     SET_USB_VBUS_PA12();
-
-    //SET_HSUSB_VBUS_EN_PB10();               /*!< Set PB10 function to HSUSB_VBUS_EN      */
-    //SET_HSUSB_VBUS_EN_PB15();               /*!< Set PB15 function to HSUSB_VBUS_EN      */
-    //SET_HSUSB_VBUS_EN_PB6();               /*!< Set PB6 function to HSUSB_VBUS_EN       */
-    SET_HSUSB_VBUS_EN_PJ13();               /*!< Set PJ13 function to HSUSB_VBUS_EN      */
-    //SET_HSUSB_VBUS_ST_PB11();               /*!< Set PB11 function to HSUSB_VBUS_ST      */
-    //SET_HSUSB_VBUS_ST_PB13();               /*!< Set PB13 function to HSUSB_VBUS_ST      */
-    //SET_HSUSB_VBUS_ST_PB7();               /*!< Set PB7 function to HSUSB_VBUS_ST       */
-    //SET_HSUSB_VBUS_ST_PC14();               /*!< Set PC14 function to HSUSB_VBUS_ST      */
-    SET_HSUSB_VBUS_ST_PJ12();               /*!< Set PJ12 function to HSUSB_VBUS_ST      */
-
+    SET_USB_D_N_PA13();
+    SET_USB_D_P_PA14();
+    SET_USB_OTG_ID_PA15();
 
     /* Lock protected registers */
     SYS_LockReg();
