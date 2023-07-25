@@ -5,7 +5,7 @@
  *           This sample needs two M55 boards. One is as Host, the other is as Device.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -33,7 +33,7 @@ uint8_t volatile otg_role_change = 0;
 uint32_t volatile intcount = 0;
 volatile uint32_t  g_tick_cnt;
 
-void SysTick_Handler(void)
+NVT_ITCM void SysTick_Handler(void)
 {
     g_tick_cnt++;
 }
@@ -356,11 +356,11 @@ void SYS_Init(void)
     /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PC.14   */
     SET_USB_VBUS_ST_PC14();
 
-    /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PB.10   */
+    /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PJ.13   */
     //SET_HSUSB_VBUS_EN_PB10();
     SET_HSUSB_VBUS_EN_PJ13();
 
-    /* HSUSB_VBUS_ST (USB 2.0 over-current detect pin) multi-function pin - PB.11 */
+    /* HSUSB_VBUS_ST (USB 2.0 over-current detect pin) multi-function pin - PJ.12 */
     //SET_HSUSB_VBUS_ST_PB11();
     SET_HSUSB_VBUS_ST_PJ12();
 
@@ -391,7 +391,7 @@ void OTG_SetFeature(uint32_t value)
   * @param  None.
   * @retval None.
   */
-void HSOTG_IRQHandler(void)
+NVT_ITCM void HSOTG_IRQHandler(void)
 {
     __IO uint32_t reg, en, i;
 

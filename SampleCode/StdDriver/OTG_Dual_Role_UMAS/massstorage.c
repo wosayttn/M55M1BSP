@@ -95,7 +95,7 @@ static uint8_t s_au8ModePage_1C[8] =
 
 void USBD_IRQHandler(void);
 
-void USBD_IRQHandler(void)
+NVT_ITCM void USBD_IRQHandler(void)
 {
     uint32_t u32IntSts = USBD_GET_INT_FLAG();
     uint32_t u32State = USBD_GET_BUS_STATE();

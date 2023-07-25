@@ -85,7 +85,7 @@ static uint8_t g_au8ModePage[24] =
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01
 };
 
-void HSUSBD_IRQHandler(void)
+NVT_ITCM void HSUSBD_IRQHandler(void)
 {
     __IO uint32_t IrqStL, IrqSt;
 

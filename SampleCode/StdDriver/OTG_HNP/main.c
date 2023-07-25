@@ -33,7 +33,7 @@ __IO uint8_t otg_role_change = 0;
 uint32_t volatile intcount = 0;
 volatile uint32_t  g_tick_cnt;
 
-void SysTick_Handler(void)
+NVT_ITCM void SysTick_Handler(void)
 {
     g_tick_cnt++;
 }
@@ -392,7 +392,7 @@ void OTG_SetFeature(uint32_t value)
   * @param  None.
   * @retval None.
   */
-void USBOTG_IRQHandler(void)
+NVT_ITCM void USBOTG_IRQHandler(void)
 {
     __IO uint32_t reg, en, i;
 
