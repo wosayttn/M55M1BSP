@@ -470,9 +470,9 @@ __NO_RETURN void Reset_Handler_Main(void)
 /*----------------------------------------------------------------------------
   Hard Fault Handler
  *----------------------------------------------------------------------------*/
-extern void ProcessHardFault(uint32_t *excContext);
+extern void ProcessHardFault(uint32_t *pu32StackFrame);
 
-struct ExcContext
+struct StackFrame
 {
     uint32_t r0;
     uint32_t r1;
@@ -486,33 +486,20 @@ struct ExcContext
 
 void HardFault_Handler(void)
 {
-    int irq = 0;
-    struct ExcContext *e = NULL;
-    uint32_t sp = 0;
-    uint32_t u32CFSR, u32BFAR;
+    uint32_t u32IRQ;
+    struct StackFrame *psStackFrame = NULL;
 
+    (void)u32IRQ;
     __ASM volatile("mrs %0, ipsr            \n" // Read IPSR (Exception number)
                    "sub %0, #16             \n" // Get it into IRQn_Type range
                    "tst lr, #4              \n" // Select the stack which was in use
                    "ite eq                  \n"
                    "mrseq %1, msp           \n"
                    "mrsne %1, psp           \n"
-                   "add %1, #16             \n"
-                   "mov %2, sp              \n"
-                   : "=r"(irq), "=r"(e), "=r"(sp));
-
-    if (e != NULL)
-    {
-        printf("Hard fault. irq=%d, pc=0x%08" PRIx32 ", lr=0x%08" PRIx32 ", xpsr=0x%08" PRIx32 ", sp=0x%08" PRIx32 "\n",
-               irq, e->pc, e->lr, e->xPsr, sp);
-    }
-    /* Read volatile registers into temporary variables to fix IAR [Pa082] the order of volatile accesses is undefined */
-    u32CFSR = SCB->CFSR;
-    u32BFAR = SCB->BFAR;
-    printf("%11s cfsr=0x%08" PRIx32 " bfar=0x%08" PRIx32 " mmfar=0x%08" PRIx32 "\n", "", u32CFSR, u32BFAR, SCB->MMFAR);
-
+                   : "=r"(u32IRQ), "=r"(psStackFrame));
     // Get the instruction caused the hardfault
-    ProcessHardFault((uint32_t *)e);
+    ProcessHardFault((uint32_t *)psStackFrame);
+
 }
 
 /*----------------------------------------------------------------------------

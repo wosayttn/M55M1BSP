@@ -244,26 +244,36 @@ static char GetChar(void)
 #endif
 }
 
-__WEAK void ProcessHardFault(uint32_t *excContext)
+__WEAK void ProcessHardFault(uint32_t *pu32StackFrame)
 {
     uint32_t inst, addr, taddr, tdata;
     uint32_t rm, rn, rt, imm5, imm8;
+    uint32_t u32CFSR, u32BFAR;
 
     // It is caused by hardfault. Just process the hard fault.
-
     /*
-        r0  = excContext[0]
-        r1  = excContext[1]
-        r2  = excContext[2]
-        r3  = excContext[3]
-        r12 = excContext[4]
-        lr  = excContext[5]
-        pc  = excContext[6]
-        psr = excContext[7]
+        r0  = pu32StackFrame[0]
+        r1  = pu32StackFrame[1]
+        r2  = pu32StackFrame[2]
+        r3  = pu32StackFrame[3]
+        r12 = pu32StackFrame[4]
+        lr  = pu32StackFrame[5]
+        pc  = pu32StackFrame[6]
+        psr = pu32StackFrame[7]
     */
 
+    if (pu32StackFrame == NULL)
+        return ;
+
+    printf("Hard fault. pc=0x%08X, lr=0x%08X, xpsr=0x%08X\n",
+           pu32StackFrame[5], pu32StackFrame[6], pu32StackFrame[7]);
+    /* Read volatile registers into temporary variables to fix IAR [Pa082] the order of volatile accesses is undefined */
+    u32CFSR = SCB->CFSR;
+    u32BFAR = SCB->BFAR;
+    printf("%11s cfsr=0x%08X, bfar=0x%08X, mmfar=0x%08X\n", "", u32CFSR, u32BFAR, SCB->MMFAR);
+
     // Get the instruction caused the hardfault
-    addr = excContext[6];
+    addr = pu32StackFrame[6];
     inst = M16(addr);
 
     printf("HardFault Analysis:\n");
@@ -282,8 +292,8 @@ __WEAK void ProcessHardFault(uint32_t *excContext)
         rt = inst & 0x7;
 
         printf("LDR/STR rt=%x rm=%x rn=%x\n", rt, rm, rn);
-        taddr = excContext[rn] + excContext[rm];
-        tdata = excContext[rt];
+        taddr = pu32StackFrame[rn] + pu32StackFrame[rm];
+        tdata = pu32StackFrame[rt];
         printf("[0x%08x] 0x%04x %s 0x%x [0x%x]\n", addr, inst,
                (inst & BIT11) ? "LDR" : "STR", tdata, taddr);
     }
@@ -295,8 +305,8 @@ __WEAK void ProcessHardFault(uint32_t *excContext)
         rt = inst & 0x7;
 
         printf("LDR/STR rt=%x rn=%x imm5=%x\n", rt, rn, imm5);
-        taddr = excContext[rn] + imm5;
-        tdata = excContext[rt];
+        taddr = pu32StackFrame[rn] + imm5;
+        tdata = pu32StackFrame[rt];
         printf("[0x%08x] 0x%04x %s 0x%x [0x%x]\n", addr, inst,
                (inst & BIT11) ? "LDR" : "STR", tdata, taddr);
     }
@@ -308,8 +318,8 @@ __WEAK void ProcessHardFault(uint32_t *excContext)
         rt = inst & 0x7;
 
         printf("LDRH/STRH rt=%x rn=%x imm5=%x\n", rt, rn, imm5);
-        taddr = excContext[rn] + imm5;
-        tdata = excContext[rt];
+        taddr = pu32StackFrame[rn] + imm5;
+        tdata = pu32StackFrame[rt];
         printf("[0x%08x] 0x%04x %s 0x%x [0x%x]\n", addr, inst,
                (inst & BIT11) ? "LDR" : "STR", tdata, taddr);
     }
@@ -320,8 +330,8 @@ __WEAK void ProcessHardFault(uint32_t *excContext)
         rt = (inst >> 8) & 0x7;
 
         printf("LDRH/STRH rt=%x imm8=%x\n", rt, imm8);
-        taddr = excContext[6] + imm8;
-        tdata = excContext[rt];
+        taddr = pu32StackFrame[6] + imm8;
+        tdata = pu32StackFrame[rt];
         printf("[0x%08x] 0x%04x %s 0x%x [0x%x]\n", addr, inst,
                (inst & BIT11) ? "LDR" : "STR", tdata, taddr);
     }
