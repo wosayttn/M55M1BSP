@@ -46,6 +46,7 @@ extern "C"
 #define SPIM_HYPER_DMM0_ADDR                SPIM_HYPER_DMM0_SADDR
 #endif
 
+// TESTCHIP_ONLY
 #if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM1_Msk) // TESTCHIP_ONLY
 #define SPIM_HYPER_DMM1_ADDR                SPIM_HYPER_DMM1_NSADDR
 #else
@@ -657,10 +658,11 @@ __STATIC_INLINE uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim)
     {
         u32DMMAddr = SPIM_HYPER_DMM0_ADDR;
     }
-    else if (spim == SPIM1) // TESTCHIP_ONLY
-    {
-        u32DMMAddr = SPIM_HYPER_DMM1_ADDR;
-    }
+
+    //else if (spim == SPIM1) // TESTCHIP_ONLY
+    //{
+    //    u32DMMAddr = SPIM_HYPER_DMM1_ADDR;
+    //}
 
     return u32DMMAddr;
 }
