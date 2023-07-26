@@ -124,8 +124,9 @@ s32 synopGMAC_setup_tx_desc_queue(synopGMACdevice *gmacdev, DmaDesc *first_desc,
 
     gmacdev->TxDescCount = no_of_desc;
 
-#ifdef CACHE_ON
-    gmacdev->TxDesc      = (DmaDesc *)((u32)first_desc | UNCACHEABLE) ;
+#ifdef NVT_DCACHE_ON
+    //gmacdev->TxDesc      = (DmaDesc *)((u32)first_desc | UNCACHEABLE) ;
+    gmacdev->TxDesc      = first_desc;
 #else
     gmacdev->TxDesc      = first_desc;
 #endif
@@ -188,8 +189,9 @@ s32 synopGMAC_setup_rx_desc_queue(synopGMACdevice *gmacdev, DmaDesc *first_desc,
     TR("total size of memory required for Rx Descriptors in Ring Mode = 0x%08x\n", ((sizeof(DmaDesc) * no_of_desc)));
 
     gmacdev->RxDescCount = no_of_desc;
-#ifdef CACHE_ON
-    gmacdev->RxDesc      = (DmaDesc *)((u32)first_desc | UNCACHEABLE) ;
+#ifdef NVT_DCACHE_ON
+    //gmacdev->RxDesc      = (DmaDesc *)((u32)first_desc | UNCACHEABLE) ;
+    gmacdev->RxDesc      = first_desc;
 #else
     gmacdev->RxDesc      = first_desc;
 #endif
@@ -496,14 +498,14 @@ s32 synop_handle_received_data(synopGMACdevice *gmacdev, PKT_FRAME_T **ppsPktFra
             }
             *ppsPktFrame = (PKT_FRAME_T *)dma_addr1;
 #if 0
-#ifdef CACHE_ON
+#ifdef NVT_DCACHE_ON
             memcpy((void *)pu8rb, (void *)((u32)dma_addr1 | UNCACHEABLE), len);
 #else
             memcpy((void *)pu8rb, (void *)((u32)dma_addr1), len);
 #endif
             if (prevtx != NULL)
             {
-#ifdef CACHE_ON
+#ifdef NVT_DCACHE_ON
                 memcpy((void *)pu8rb + len, (void *)((u32)(dma_addr1 | UNCACHEABLE) + len), 4);
 #else
                 memcpy((void *)pu8rb + len, (void *)((u32)dma_addr1 + len), 4);

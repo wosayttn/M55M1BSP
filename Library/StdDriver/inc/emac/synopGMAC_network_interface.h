@@ -33,7 +33,6 @@
 #define SYNOP_GMAC_NETWORK_INTERFACE_H 1
 
 #include  "synopGMAC_Dev.h"
-//#define CACHE_ON
 
 /** Tx/Rx buffer structure */
 typedef struct

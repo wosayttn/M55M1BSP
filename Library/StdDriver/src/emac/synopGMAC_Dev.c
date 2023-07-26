@@ -1509,8 +1509,9 @@ bool synopGMAC_is_last_tx_desc(synopGMACdevice *gmacdev, DmaDesc *desc)
 s32 synopGMAC_get_tx_qptr(synopGMACdevice *gmacdev, u32 *Status, u32 *Buffer1, u32 *Length1, u32 *Data1, u32 *Ext_Status, u32 *Time_Stamp_High, u32 *Time_Stamp_Low)
 {
     u32  txover      = gmacdev->TxBusy;
-#ifdef CACHE_ON
-    DmaDesc *txdesc = (DmaDesc *)((u32)(gmacdev->TxBusyDesc) | UNCACHEABLE);
+#ifdef NVT_DCACHE_ON
+    //DmaDesc *txdesc = (DmaDesc *)((u32)(gmacdev->TxBusyDesc) | UNCACHEABLE);
+    DmaDesc *txdesc = gmacdev->TxBusyDesc;
 #else
     DmaDesc *txdesc = gmacdev->TxBusyDesc;
 #endif
@@ -1554,8 +1555,9 @@ s32 synopGMAC_get_tx_qptr(synopGMACdevice *gmacdev, u32 *Status, u32 *Buffer1, u
 DmaDesc *prevtx;
 void synopGMAC_set_crc_replacement(synopGMACdevice *gmacdev)
 {
-#ifdef CACHE_ON
-    DmaDesc *txdesc = (DmaDesc *)((u32)(gmacdev->TxNextDesc) | UNCACHEABLE);
+#ifdef NVT_DCACHE_ON
+    //DmaDesc *txdesc = (DmaDesc *)((u32)(gmacdev->TxNextDesc) | UNCACHEABLE);
+    DmaDesc *txdesc = gmacdev->TxNextDesc;
 #else
     DmaDesc *txdesc = gmacdev->TxNextDesc;
 #endif
@@ -1589,8 +1591,9 @@ void synopGMAC_clr_crc_replacement(synopGMACdevice *gmacdev)
 s32 synopGMAC_set_tx_qptr(synopGMACdevice *gmacdev, u32 Buffer1, u32 Length1, u32 Data1, u32 offload_needed, u32 ts)
 {
     u32  txnext      = gmacdev->TxNext;
-#ifdef CACHE_ON
-    DmaDesc *txdesc = (DmaDesc *)((u32)(gmacdev->TxNextDesc) | UNCACHEABLE);
+#ifdef NVT_DCACHE_ON
+    //DmaDesc *txdesc = (DmaDesc *)((u32)(gmacdev->TxNextDesc) | UNCACHEABLE);
+    DmaDesc *txdesc = gmacdev->TxNextDesc;
 #else
     DmaDesc *txdesc = gmacdev->TxNextDesc;
 #endif
@@ -1650,8 +1653,9 @@ s32 synopGMAC_set_tx_qptr(synopGMACdevice *gmacdev, u32 Buffer1, u32 Length1, u3
 s32 synopGMAC_set_rx_qptr(synopGMACdevice *gmacdev, u32 Buffer1, u32 Length1, u32 Data1)
 {
     u32  rxnext      = gmacdev->RxNext;
-#ifdef CACHE_ON
-    DmaDesc *rxdesc = (DmaDesc *)((u32)(gmacdev->RxNextDesc) | UNCACHEABLE);
+#ifdef NVT_DCACHE_ON
+    //DmaDesc *rxdesc = (DmaDesc *)((u32)(gmacdev->RxNextDesc) | UNCACHEABLE);
+    DmaDesc *rxdesc = gmacdev->RxNextDesc;
 #else
     DmaDesc *rxdesc = gmacdev->RxNextDesc;
 #endif
@@ -1708,8 +1712,9 @@ s32 synopGMAC_get_rx_qptr(synopGMACdevice *gmacdev, u32 *Status, u32 *Buffer1, u
 {
     u32 rxnext       = gmacdev->RxBusy; // index of descriptor the DMA just completed. May be useful when data
     //is spread over multiple buffers/descriptors
-#ifdef CACHE_ON
-    DmaDesc *rxdesc = (DmaDesc *)((u32)(gmacdev->RxBusyDesc) | UNCACHEABLE);
+#ifdef NVT_DCACHE_ON
+    //DmaDesc *rxdesc = (DmaDesc *)((u32)(gmacdev->RxBusyDesc) | UNCACHEABLE);
+    DmaDesc *rxdesc = gmacdev->RxBusyDesc;
 #else
     DmaDesc *rxdesc = gmacdev->RxBusyDesc;
 #endif
