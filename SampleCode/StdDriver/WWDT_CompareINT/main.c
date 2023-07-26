@@ -57,9 +57,11 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
+    CLK_EnableXtalRC(CLK_SRCCTL_LIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
+    CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
 
     /* Enable PLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
@@ -83,9 +85,9 @@ void SYS_Init(void)
 
     /* Set module clock*/
 #if (WWDT_PORT != 0)
-    CLK_SetModuleClock(WWDT1_MODULE, CLK_WWDTSEL_WWDT1SEL_HCLK0_DIV2048, 0);
+    CLK_SetModuleClock(WWDT1_MODULE, CLK_WWDTSEL_WWDT1SEL_LIRC, 0);
 #else
-    CLK_SetModuleClock(WWDT0_MODULE, CLK_WWDTSEL_WWDT0SEL_HCLK0_DIV2048, 0);
+    CLK_SetModuleClock(WWDT0_MODULE, CLK_WWDTSEL_WWDT0SEL_LIRC, 0);
 #endif
 
     /* Enable module clock */
@@ -149,15 +151,15 @@ int main(void)
         while (1) {}
     }
 
-    dPeriodTime = (((double)(1000000 * 2048) / (double)CLK_GetHCLK0Freq()) * 1024) * 32;
+    dPeriodTime = ((((double)(1000000) / (double)__LIRC) * 1024) * 32) / 1000;
 
     printf("# WWDT Settings: \n");
-    printf("    - Clock source is HCLK0/2048 (%u Hz)    \n", CLK_GetHCLK0Freq() / 2048);
+    printf("    - Clock source is LIRC (32KHz)      \n");
     printf("    - WWDT counter prescale period is 1024, \n");
     printf("        and max WWDT time-out period is 1024 * (64 * WWDT_CLK)\n");
     printf("    - Interrupt enable                      \n");
     printf("    - Window Compare value is 32            \n");
-    printf("# System will generate first WWDT compare match interrupt event after %.2f ms.\n", (dPeriodTime / 1000));
+    printf("# System will generate first WWDT compare match interrupt event after %.2f ms.\n", (dPeriodTime));
     printf("    1.) use PA.0 high/low period to check WWDT compare match interrupt period time\n");
     printf("    2.) reload WWDT counter value to avoid WWDT time-out reset system occurred\n");
     printf("        when interrupt counts less than 11.\n");
