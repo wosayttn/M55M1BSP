@@ -40,7 +40,7 @@ int32_t g_LPI2C_i32ErrCode = 0;       /*!< LPI2C global error code */
 uint32_t LPI2C_Open(LPI2C_T *i2c, uint32_t u32BusClock)
 {
     uint32_t u32Div;
-    uint32_t u32Pclk = CLK_GetPCLK2Freq();
+    uint32_t u32Pclk = CLK_GetPCLK4Freq();
     u32Div = (uint32_t)(((u32Pclk * 10U) / (u32BusClock * 4U) + 5U) / 10U - 1U); /* Compute proper divider for I2C clock */
     i2c->CLKDIV = u32Div;
 
@@ -159,7 +159,7 @@ void LPI2C_EnableInt(LPI2C_T *i2c)
 uint32_t LPI2C_GetBusClockFreq(LPI2C_T *i2c)
 {
     uint32_t u32Divider = i2c->CLKDIV;
-    uint32_t u32Pclk = CLK_GetPCLK2Freq();
+    uint32_t u32Pclk = CLK_GetPCLK4Freq();
     return (u32Pclk / ((u32Divider + 1U) << 2U));
 }
 
