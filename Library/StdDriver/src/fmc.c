@@ -206,48 +206,44 @@ int32_t FMC_Write8Bytes(uint32_t u32Addr, uint32_t u32Data0, uint32_t u32Data1)
 
 /**
   * @brief   Program Multi-Word data into specified address of flash.
+  *          This function must be executed in SRAM.
   * @param[in]  u32Addr    Start flash address in APROM where the data chunk to be programmed into.
-  *                        This address must be 8-bytes aligned to flash address.
+  *                        This address must be 16-bytes aligned to flash address.
   * @param[in]  pu32Buf    Buffer that carry the data chunk.
-  * @param[in]  u32Len     Length of the data chunk in bytes.
+  * @param[in]  u32ByteLen Length of the data chunk in bytes.
   * @retval   >=0  Number of data bytes were programmed.
   * @retval   -1   Program failed.
   * @retval   -2   Invalid address.
   *
   * @note     Global error code g_FMC_i32ErrCode
   *           -1  Program failed or time-out
-  *           -2  Invalid address
+  *           -2  Invalid address or data length
   */
-int32_t FMC_WriteMultiple(uint32_t u32Addr, uint32_t pu32Buf[], uint32_t u32Len)
+int32_t FMC_WriteMultiple(uint32_t u32Addr, uint32_t pu32Buf[], uint32_t u32ByteLen)
 {
-    int   i, idx, retval = 0;
     int32_t i32TimeOutCnt;
+    int32_t i32Idx = 0, i32RetVal = 0;
 
     g_FMC_i32ErrCode = FMC_OK;
 
-    if (((u32Addr % 8) != 0) ||
-            ((u32Addr < FMC_APROM_BASE) || ((u32Addr + u32Len) > FMC_APROM_END)) &&
-            ((u32Addr < FMC_LDROM_BASE) || ((u32Addr + u32Len) > FMC_LDROM_END))
-       )
+    /* u32Addr and u32ByteLen must be multiple of 16. */
+    if ((u32Addr % 16) != 0 || (u32ByteLen % 16) != 0)
     {
         g_FMC_i32ErrCode = -2;
         return -2;
     }
 
-    u32Len = u32Len - (u32Len % 8);         /* u32Len must be multiple of 8. */
-    idx = 0;
-
-    while (u32Len >= 8)
+    do
     {
         FMC->ISPADDR = u32Addr;
-        FMC->MPDAT0  = pu32Buf[idx++];
-        FMC->MPDAT1  = pu32Buf[idx++];
-        FMC->MPDAT2  = pu32Buf[idx++];
-        FMC->MPDAT3  = pu32Buf[idx++];
+        FMC->MPDAT0  = pu32Buf[i32Idx++];
+        FMC->MPDAT1  = pu32Buf[i32Idx++];
+        FMC->MPDAT2  = pu32Buf[i32Idx++];
+        FMC->MPDAT3  = pu32Buf[i32Idx++];
         FMC->ISPCMD  = FMC_ISPCMD_PROGRAM_MUL;
         FMC->ISPTRG  = FMC_ISPTRG_ISPGO_Msk;
 
-        for (i = 16; i < FMC_MULTI_WORD_PROG_LEN;)
+        do
         {
             i32TimeOutCnt = FMC_TIMEOUT_WRITE;
 
@@ -260,26 +256,22 @@ int32_t FMC_WriteMultiple(uint32_t u32Addr, uint32_t pu32Buf[], uint32_t u32Len)
                 }
             }
 
-            retval += 8;
-            u32Len -= 8;
+            i32RetVal += 8;
+            u32ByteLen -= 8;
 
-            if (u32Len < 8)
+            if (u32ByteLen < 8)
             {
-                return retval;
-            }
-
-            if (!(FMC->MPSTS & FMC_MPSTS_MPBUSY_Msk))
-            {
-                /* printf("    [WARNING] busy cleared after D0D1 cleared!\n"); */
-                i += 8;
                 break;
             }
 
-            FMC->MPDAT0 = pu32Buf[idx++];
-            FMC->MPDAT1 = pu32Buf[idx++];
+            if ((FMC->MPSTS & (FMC_MPSTS_MPBUSY_Msk | FMC_MPSTS_ISPFF_Msk)) != FMC_MPSTS_MPBUSY_Msk)
+            {
+                /* Busy flag is cleared after D0D1 cleared ! */
+                break;
+            }
 
-            if (i == FMC_MULTI_WORD_PROG_LEN / 4)
-                break;           // done
+            FMC->MPDAT0 = pu32Buf[i32Idx++];
+            FMC->MPDAT1 = pu32Buf[i32Idx++];
 
             i32TimeOutCnt = FMC_TIMEOUT_WRITE;
 
@@ -292,30 +284,24 @@ int32_t FMC_WriteMultiple(uint32_t u32Addr, uint32_t pu32Buf[], uint32_t u32Len)
                 }
             }
 
-            retval += 8;
-            u32Len -= 8;
+            i32RetVal += 8;
+            u32ByteLen -= 8;
 
-            if (u32Len < 8)
+            if (u32ByteLen < 8)
             {
-                return retval;
-            }
-
-            if (!(FMC->MPSTS & FMC_MPSTS_MPBUSY_Msk))
-            {
-                /* printf("    [WARNING] busy cleared after D2D3 cleared!\n"); */
-                i += 8;
                 break;
             }
 
-            FMC->MPDAT2 = pu32Buf[idx++];
-            FMC->MPDAT3 = pu32Buf[idx++];
-        }
+            if ((FMC->MPSTS & (FMC_MPSTS_MPBUSY_Msk | FMC_MPSTS_ISPFF_Msk)) != FMC_MPSTS_MPBUSY_Msk)
+            {
+                /* Busy flag is cleared after D2D3 cleared ! */
+                break;
+            }
 
-        if (i != FMC_MULTI_WORD_PROG_LEN)
-        {
-            /* printf("    [WARNING] Multi-word program interrupted at 0x%x !!\n", i); */
-            return retval;
+            FMC->MPDAT2 = pu32Buf[i32Idx++];
+            FMC->MPDAT3 = pu32Buf[i32Idx++];
         }
+        while ((i32Idx * 4) % FMC_MULTI_WORD_PROG_LEN);
 
         i32TimeOutCnt = FMC_TIMEOUT_WRITE;
 
@@ -328,10 +314,19 @@ int32_t FMC_WriteMultiple(uint32_t u32Addr, uint32_t pu32Buf[], uint32_t u32Len)
             }
         }
 
-        u32Addr += FMC_MULTI_WORD_PROG_LEN;
+        if (((i32Idx * 4) % FMC_MULTI_WORD_PROG_LEN) == 0)
+        {
+            if (!(FMC->MPSTS & FMC_MPSTS_ISPFF_Msk))
+            {
+                i32RetVal += 16;
+                u32ByteLen -= 16;
+                u32Addr += FMC_MULTI_WORD_PROG_LEN;
+            }
+        }
     }
+    while (u32ByteLen >= 8);
 
-    return retval;
+    return i32RetVal;
 }
 
 /**

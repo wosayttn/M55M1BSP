@@ -379,7 +379,7 @@ extern uint32_t FMC_Read(uint32_t u32Addr);
 extern int32_t  FMC_Read_64(uint32_t u32Addr, uint32_t *pu32Data0, uint32_t *pu32Data1);
 extern int32_t  FMC_Write(uint32_t u32Addr, uint32_t u32Data);
 extern int32_t  FMC_Write8Bytes(uint32_t u32Addr, uint32_t u32Data0, uint32_t u32Data1);
-extern int32_t  FMC_WriteMultiple(uint32_t u32Addr, uint32_t pu32Buf[], uint32_t u32Len);
+extern int32_t  FMC_WriteMultiple(uint32_t u32Addr, uint32_t pu32Buf[], uint32_t u32ByteLen);
 extern int32_t  FMC_Erase(uint32_t u32PageAddr);
 extern int32_t  FMC_WriteConfig(uint32_t u32ConfigAddr, uint32_t u32ConfigVal);
 extern int32_t  FMC_EraseConfig(uint32_t u32ConfigAddr);
