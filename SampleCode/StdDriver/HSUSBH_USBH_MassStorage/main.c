@@ -518,8 +518,8 @@ void SYS_Init(void)
 
     /* USB 1.1 port multi-function pin VBUS, D+, D-, and ID pins */
     SET_USB_VBUS_PA12();
-    SET_USB_D_N_PA13();
-    SET_USB_D_P_PA14();
+    SET_USB_D_MINUS_PA13();
+    SET_USB_D_PLUS_PA14();
     SET_USB_OTG_ID_PA15();
 
     /* Lock protected registers */
@@ -549,13 +549,8 @@ int32_t main(void)
 
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
 
-#ifndef __PLDM_EMU__
     /* Configure UART0 and set UART0 baud rate */
     UART_Open(UART0, 115200);
-#else
-    DEBUG_PORT->LINE = UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1;
-    DEBUG_PORT->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400); // The setting is for Palladium
-#endif
 
     enable_sys_tick(100);
 

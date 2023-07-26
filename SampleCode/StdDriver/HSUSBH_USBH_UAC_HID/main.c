@@ -68,7 +68,7 @@ int kbhit(void)
     return !((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0U);
 }
 
-NVT_ITCm void SysTick_Handler(void)
+NVT_ITCM void SysTick_Handler(void)
 {
     s_u32TickCnt++;
 }
@@ -206,8 +206,8 @@ void SYS_Init(void)
 
     /* USB 1.1 port multi-function pin VBUS, D+, D-, and ID pins */
     SET_USB_VBUS_PA12();
-    SET_USB_D_N_PA13();
-    SET_USB_D_P_PA14();
+    SET_USB_D_MINUS_PA13();
+    SET_USB_D_PLUS_PA14();
     SET_USB_OTG_ID_PA15();
 
     /* Lock protected registers */

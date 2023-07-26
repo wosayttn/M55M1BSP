@@ -18,7 +18,7 @@ uint8_t move_len, mouse_mode = 1;
 
 uint8_t volatile g_u8EP2Ready = 0;
 
-void USBD_IRQHandler(void)
+NVT_ITCM void USBD_IRQHandler(void)
 {
     uint32_t volatile u32IntSts = USBD_GET_INT_FLAG();
     uint32_t volatile u32State = USBD_GET_BUS_STATE();

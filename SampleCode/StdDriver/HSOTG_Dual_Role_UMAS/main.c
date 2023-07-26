@@ -20,7 +20,7 @@ uint8_t g_bIsBdevice = 0, g_bIsAdevice = 0;
 extern uint8_t volatile g_u8MscStart;
 
 /* HSOTG interrupt handler */
-void HSOTG_IRQHandler(void)
+NVT_ITCM void HSOTG_IRQHandler(void)
 {
     __IO uint32_t u32INTSTS, u32INTEN;
 
@@ -83,7 +83,7 @@ BYTE  *Buff2;
 
 volatile uint32_t  g_tick_cnt;
 
-void SysTick_Handler(void)
+NVT_ITCM void SysTick_Handler(void)
 {
     g_tick_cnt++;
 }

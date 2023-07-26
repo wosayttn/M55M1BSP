@@ -1560,10 +1560,11 @@ __STATIC_INLINE uint32_t SPIM_GetDMMAddress(SPIM_T *spim)
     {
         u32DMMAddr = SPIM_DMM0_ADDR;
     }
-    else if (spim == SPIM1) // TESTCHIP_ONLY
-    {
-        u32DMMAddr = SPIM_DMM1_ADDR;
-    }
+
+    //else if (spim == SPIM1) // TESTCHIP_ONLY
+    //{
+    //    u32DMMAddr = SPIM_DMM1_ADDR;
+    //}
 
     return u32DMMAddr;
 }

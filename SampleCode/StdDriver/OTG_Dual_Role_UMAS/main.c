@@ -33,7 +33,7 @@ void SYS_Init(void);
 void USBH_Process(void);
 
 /* OTG interrupt handler */
-void USBOTG_IRQHandler(void)
+NVT_ITCM void USBOTG_IRQHandler(void)
 {
     __IO uint32_t u32INTSTS, u32INTEN;
 
@@ -95,7 +95,7 @@ static BYTE *s_pu8Buff2;
 
 static volatile uint32_t s_u32TickCnt;
 
-void SysTick_Handler(void)
+NVT_ITCM void SysTick_Handler(void)
 {
     s_u32TickCnt++;
 }

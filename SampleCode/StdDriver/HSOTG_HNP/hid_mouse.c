@@ -18,7 +18,7 @@ uint8_t move_len, mouse_mode = 1;
 
 uint8_t volatile g_u8EPAReady = 0;
 
-void HSUSBD_IRQHandler(void)
+NVT_ITCM void HSUSBD_IRQHandler(void)
 {
     __IO uint32_t IrqStL, IrqSt;
 
