@@ -138,7 +138,8 @@ int32_t KS_Read(KS_MEM_Type eMemType, int32_t i32KeyIdx, uint32_t au32Key[], uin
         u32Cont = KS_CTL_CONT_Msk;
         i32Cnt -= 8;
         offset += 8;
-    } while (i32Cnt > 0);
+    }
+    while (i32Cnt > 0);
 
     /* Check error flag */
     if (KS->STS & KS_STS_EIF_Msk)
@@ -283,7 +284,8 @@ int32_t KS_Write(KS_MEM_Type eMemType, uint32_t u32Meta, uint32_t au32Key[])
                 return KS_ERR_TIMEOUT;
         }
 
-    } while (i32Cnt > 0);
+    }
+    while (i32Cnt > 0);
 
     /* Check error flag */
     if (KS->STS & KS_STS_EIF_Msk)
@@ -511,7 +513,7 @@ uint32_t KS_GetRemainSize(KS_MEM_Type eMemType)
     else if (eMemType == KS_FLASH)
         return (KS->REMAIN & KS_REMAIN_FRMNG_Msk) >> KS_REMAIN_FRMNG_Pos;
     else
-        return KS_ERR_PARAMETER;
+        return (uint32_t)KS_ERR_PARAMETER;
 }
 
 
@@ -530,7 +532,7 @@ uint32_t KS_GetRemainKeyCount(KS_MEM_Type eMemType)
     else if (eMemType == KS_FLASH)
         return (KS->REMKCNT & KS_REMKCNT_FRMKCNT_Msk) >> KS_REMKCNT_FRMKCNT_Pos;
     else
-        return KS_ERR_PARAMETER;
+        return (uint32_t)KS_ERR_PARAMETER;
 }
 
 
@@ -568,7 +570,6 @@ int32_t KS_WriteOTP(int32_t i32KeyIdx, uint32_t u32Meta, uint32_t au32Key[])
 {
     const uint16_t au8CntTbl[7] = { 4, 6, 6, 7, 8, 8, 8 };
     int32_t i32Cnt;
-    uint32_t u32Cont;
     int32_t offset, i, cnt, sidx;
     uint32_t u32TimeOutCount;
 
@@ -588,7 +589,6 @@ int32_t KS_WriteOTP(int32_t i32KeyIdx, uint32_t u32Meta, uint32_t au32Key[])
 
     i32Cnt = au8CntTbl[sidx];
     offset = 0;
-    u32Cont = 0;
 
     /* Prepare the key to write */
     cnt = i32Cnt;
