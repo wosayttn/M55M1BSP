@@ -10,6 +10,7 @@
 #include "NuMicro.h"
 
 #define RELOAD_CONDITION  3
+#define DELAY_100MS       100
 #define WWDT_PORT   (0)
 #if (WWDT_PORT != 0)
     #define WWDT            WWDT1
@@ -185,7 +186,7 @@ int main(void)
         while (1);
     }
 
-    /* WWDT clock source is HCLK0 / 2048 */
+    /* WWDT clock source is LIRC */
     dTimeOutPeriodTime      = (((double)(1000000) / (double)__LIRC) * 1024) * 64 / 1000;
     dCompareMatchPeriodTime = (((double)(1000000) / (double)__LIRC) * 1024) * 32 / 1000;
 
@@ -235,8 +236,8 @@ int main(void)
     printf("\n* Reload WWDT counter in UserAlgorithm()\n");
 
     /*
-        WWDT max time-out period is 1024*(64*WWDT_CLK) = 745.65 ms
-        WWDT compare value is 32 = 1024*(32*WWDT_CLK) = 372.83 ms
+        WWDT max time-out period is 1024*(64*WWDT_CLK) = 2048 ms
+        WWDT compare value is 32 = 1024*(32*WWDT_CLK) = 1024 ms
         Enable WWDT compare match interrupt
     */
     /* Note: WWDT_CTL register can be written only once after chip is powered on or reset */
@@ -247,12 +248,12 @@ int main(void)
 #if RELOAD_CONDITION == 1
         /* Reload before the WWDT window region */
         /* CNTDAT > CMPDAT, Write RLDCNT 0x5AA5 to reload WWWDT counter will reset system */
-        /* Delay_ms < 372.83 ms */
+        /* Delay_ms < 1024 ms */
         Delay_ms((uint32_t) dCompareMatchPeriodTime / 2);
 #elif RELOAD_CONDITION == 2
         /* Reload after the WWDT window region */
         /* Wait CNTDAT count to 0, System reset immediately */
-        /* Delay_ms > 745.65 ms */
+        /* Delay_ms > 2048 ms */
         Delay_ms((uint32_t) dTimeOutPeriodTime + 1);
 #elif RELOAD_CONDITION == 3
 
@@ -266,8 +267,8 @@ int main(void)
         {
             /* Reload inside the WWDT window region */
             /* CNTDAT <= CMPDAT, Write RLDCNT 0x5AA5 will reload CNTDAT to 0x3F */
-            /* 745.65 ms > Delay_ms > 372.83 ms */
-            Delay_ms((uint32_t) dCompareMatchPeriodTime + 1);
+            /* 2048 ms > Delay_ms > 1024 ms */
+            Delay_ms((uint32_t) dCompareMatchPeriodTime + DELAY_100MS);
         }
 
 #endif
