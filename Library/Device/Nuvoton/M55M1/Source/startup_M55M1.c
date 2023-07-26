@@ -69,10 +69,6 @@ void EADC00_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void EADC01_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void EADC02_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void EADC03_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EADC10_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EADC11_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EADC12_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EADC13_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void ECAP0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void ECAP1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void ECAP2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
@@ -134,7 +130,6 @@ void LPUART0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 
 void NPU_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void OTFC0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void OTFC1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void PDMA0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void PDMA1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void PMC_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
@@ -155,9 +150,7 @@ void SPI1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void SPI2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void SPI3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void SPIM0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void SPIM1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void SRAMPERR_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TAMPER_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void TIMER0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void TIMER1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void TIMER2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
@@ -197,22 +190,22 @@ void WWDT1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 
 const VECTOR_TABLE_Type __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
 {
-    (VECTOR_TABLE_Type)(&__INITIAL_SP),       /*      Initial Stack Pointer                             */
-    Reset_Handler,                            /*      Reset Handler                                     */
-    NMI_Handler,                              /*  -14 NMI Handler                                       */
-    HardFault_Handler,                        /*  -13 Hard Fault Handler                                */
-    MemManage_Handler,                        /*  -12 MPU Fault Handler                                 */
-    BusFault_Handler,                         /*  -11 Bus Fault Handler                                 */
-    UsageFault_Handler,                       /*  -10 Usage Fault Handler                               */
-    SecureFault_Handler,                      /*   -9 Secure Fault Handler                              */
-    0,                                        /*      Reserved                                          */
-    0,                                        /*      Reserved                                          */
-    0,                                        /*      Reserved                                          */
-    SVC_Handler,                              /*   -5 SVC Handler                                       */
-    DebugMon_Handler,                         /*   -4 Debug Monitor Handler                             */
-    0,                                        /*      Reserved                                          */
-    PendSV_Handler,                           /*   -2 PendSV Handler Handler                            */
-    SysTick_Handler,                          /*   -1 SysTick Handler                                   */
+    (VECTOR_TABLE_Type)(&__INITIAL_SP),       /*       Initial Stack Pointer                            */
+    Reset_Handler,                            /*       Reset Handler                                    */
+    NMI_Handler,                              /*   -14 NMI Handler                                      */
+    HardFault_Handler,                        /*   -13 Hard Fault Handler                               */
+    MemManage_Handler,                        /*   -12 MPU Fault Handler                                */
+    BusFault_Handler,                         /*   -11 Bus Fault Handler                                */
+    UsageFault_Handler,                       /*   -10 Usage Fault Handler                              */
+    SecureFault_Handler,                      /*    -9 Secure Fault Handler                             */
+    0,                                        /*       Reserved                                         */
+    0,                                        /*       Reserved                                         */
+    0,                                        /*       Reserved                                         */
+    SVC_Handler,                              /*    -5 SVC Handler                                      */
+    DebugMon_Handler,                         /*    -4 Debug Monitor Handler                            */
+    0,                                        /*       Reserved                                         */
+    PendSV_Handler,                           /*    -2 PendSV Handler Handler                           */
+    SysTick_Handler,                          /*    -1 SysTick Handler                                  */
 
     /* Interrupts */
     BODOUT_IRQHandler,                        /*!<   0 Brown-Out Low Voltage Detected Interrupt Handler */
@@ -226,7 +219,7 @@ const VECTOR_TABLE_Type __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
     WDT0_IRQHandler,                          /*!<   8 Watchdog Timer 0 Interrupt Handler               */
     WWDT0_IRQHandler,                         /*!<   9 Window Watchdog Timer 0 Interrupt Handler        */
 
-    TAMPER_IRQHandler,                        /*!<  10 Tamper Interrupt Handler                         */
+    0,                                        /*       Reserved                                         */
     WDT1_IRQHandler,                          /*!<  11 Watchdog Timer 1 Interrupt Handler               */
     WWDT1_IRQHandler,                         /*!<  12 Window Watchdog Timer 1 Interrupt Handler        */
     NPU_IRQHandler,                           /*!<  13 Neural Network Processor Interrupt Handler       */
@@ -296,7 +289,7 @@ const VECTOR_TABLE_Type __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
     LPSPI0_IRQHandler,                        /*!<  71 Low Power SPI 0 Interrupt Handler                */
     0,                                        /*!<     Reserved                                         */
     SPIM0_IRQHandler,                         /*!<  73 SPIM0 Interrupt Handler                          */
-    SPIM1_IRQHandler,                         /*!<  74 SPIM1 Interrupt Handler                          */
+    0,                                        /*!<     Reserved                                         */
     UART0_IRQHandler,                         /*!<  75 UART0 Interrupt Handler                          */
     UART1_IRQHandler,                         /*!<  76 UART1 Interrupt Handler                          */
     UART2_IRQHandler,                         /*!<  77 UART2 Interrupt Handler                          */
@@ -337,7 +330,7 @@ const VECTOR_TABLE_Type __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
     0,                                        /*!<     Reserved                                         */
 
     OTFC0_IRQHandler,                         /*!< 110 OTFC0 Interrupt Handler                          */
-    OTFC1_IRQHandler,                         /*!< 111 OTFC1 Interrupt Handler                          */
+    0,                                        /*!<     Reserved                                         */
     KPI_IRQHandler,                           /*!< 112 KPI Interrupt Handler                            */
     SDH0_IRQHandler,                          /*!< 113 SD Host 0 Interrupt Handler                      */
     SDH1_IRQHandler,                          /*!< 114 SD Host 1 Interrupt Handler                      */
@@ -358,10 +351,10 @@ const VECTOR_TABLE_Type __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
     EADC02_IRQHandler,                        /*!< 128 EADC0 Interrupt 2 Handler                        */
     EADC03_IRQHandler,                        /*!< 129 EADC0 Interrupt 3 Handler                        */
 
-    EADC10_IRQHandler,                        /*!< 130 EADC1 Interrupt 0 Handler                        */
-    EADC11_IRQHandler,                        /*!< 131 EADC1 Interrupt 1 Handler                        */
-    EADC12_IRQHandler,                        /*!< 132 EADC1 Interrupt 2 Handler                        */
-    EADC13_IRQHandler,                        /*!< 133 EADC1 Interrupt 3 Handler                        */
+    0,                                        /*!<     Reserved                                         */
+    0,                                        /*!<     Reserved                                         */
+    0,                                        /*!<     Reserved                                         */
+    0,                                        /*!<     Reserved                                         */
     LPADC0_IRQHandler,                        /*!< 134 Low Power ADC 0 Interrupt Handler                */
     DAC01_IRQHandler,                         /*!< 135 DAC0 and DAC1 Interrupt Handler                  */
     0,                                        /*!<     Reserved                                         */
