@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     PS2_Host_driver.c
- * @version  V3.00
+ * @version  V1.00
  * @brief    PS/2 Host device driver
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include "NuMicro.h"
@@ -15,13 +15,17 @@ PS2_HOST_STATUS g_Status = eHOST_IDLE;
 static void PSIO_PS2_H2D_ReadConfig(S_PSIO_PS2 *psConfig)
 {
     const S_PSIO_CP_CONFIG sClockConfig
-                     = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
-      /* Slot */        PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
-      /* Action */      PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};   
+    =  /* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
+    {
+        /* Slot */        PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
+        /* Action */      PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION
+    };
     const S_PSIO_CP_CONFIG sDataConfig
-                     = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
-      /* Slot */        PSIO_SLOT0,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
-      /* Action */      PSIO_IN_BUFFER,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};    
+    =  /* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
+    {
+        /* Slot */        PSIO_SLOT0,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
+        /* Action */      PSIO_IN_BUFFER,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION
+    };
 
     /* Update status */
     PSIO_PS2_SET_STATUS(eHOST_READY_TO_READ);
@@ -35,7 +39,7 @@ static void PSIO_PS2_H2D_ReadConfig(S_PSIO_PS2 *psConfig)
     /* Set check point configuration */
     PSIO_SET_CP_CONFIG(PSIO, psConfig->u8ClockPin, &sClockConfig);
     PSIO_SET_CP_CONFIG(PSIO, psConfig->u8DataPin, &sDataConfig);
-    
+
     /* Set data pin input data depth */
     PSIO_SET_INPUT_DEPTH(PSIO, psConfig->u8DataPin, PSIO_DEPTH1);
 
@@ -51,13 +55,17 @@ static int32_t PSIO_PS2_H2D_Send_Header(S_PSIO_PS2 *psConfig)
 {
     uint32_t u32TimeOutCnt;
     const S_PSIO_CP_CONFIG sClockConfig
-                     = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
-      /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT3,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
-      /* Action */      PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};   
+    =  /* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
+    {
+        /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT3,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
+        /* Action */      PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION
+    };
     const S_PSIO_CP_CONFIG sDataConfig
-                     = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
-      /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT3,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
-      /* Action */      PSIO_OUT_HIGH,      PSIO_OUT_HIGH,      PSIO_OUT_HIGH,      PSIO_OUT_LOW,       PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};
+    =  /* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
+    {
+        /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT3,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
+        /* Action */      PSIO_OUT_HIGH,      PSIO_OUT_HIGH,      PSIO_OUT_HIGH,      PSIO_OUT_LOW,       PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION
+    };
 
     /* Update status */
     PSIO_PS2_SET_STATUS(eHOST_WRITE);
@@ -78,7 +86,7 @@ static int32_t PSIO_PS2_H2D_Send_Header(S_PSIO_PS2 *psConfig)
     /* Set check point configuration */
     PSIO_SET_CP_CONFIG(PSIO, psConfig->u8ClockPin, &sClockConfig);
     PSIO_SET_CP_CONFIG(PSIO, psConfig->u8DataPin, &sDataConfig);
-    
+
     /* Set clock slot controller as software trigger */
     PSIO_SET_TRIGSRC(PSIO, psConfig->u8ClockSC, PSIO_SW_TRIGGER);
 
@@ -91,9 +99,10 @@ static int32_t PSIO_PS2_H2D_Send_Header(S_PSIO_PS2 *psConfig)
 
     /* Wait for slot controller is busy */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (!PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8ClockSC))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for PSIO time-out!\n");
             return -1;
@@ -102,13 +111,14 @@ static int32_t PSIO_PS2_H2D_Send_Header(S_PSIO_PS2 *psConfig)
 
     /* Waiting for slave signal, set the data pin interval keep last output */
     PSIO->GNCT[psConfig->u8DataPin].GENCTL = (PSIO->GNCT[psConfig->u8DataPin].GENCTL & ~PSIO_GNCT_GENCTL_INTERVAL_Msk)
-                                            | (PSIO_LAST_OUTPUT << PSIO_GNCT_GENCTL_INTERVAL_Pos);
+                                             | (PSIO_LAST_OUTPUT << PSIO_GNCT_GENCTL_INTERVAL_Pos);
 
     /* Wait for slot controller is not busy */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8ClockSC))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for PSIO time-out!\n");
             return -1;
@@ -140,15 +150,19 @@ uint32_t PSIO_Encode_TxData(uint32_t *u32TxData)
 
 void PSIO_PS2_H2D_Send_Data(S_PSIO_PS2 *psConfig)
 {
-    const S_PSIO_CP_CONFIG sClockConfig 
-                     = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
-      /* Slot */        PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
-      /* Action */      PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};   
-    const S_PSIO_CP_CONFIG sDataConfig 
-                     = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
-      /* Slot */        PSIO_SLOT0,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
-      /* Action */      PSIO_OUT_BUFFER,    PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};
-        
+    const S_PSIO_CP_CONFIG sClockConfig
+    =  /* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
+    {
+        /* Slot */        PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
+        /* Action */      PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION
+    };
+    const S_PSIO_CP_CONFIG sDataConfig
+    =  /* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
+    {
+        /* Slot */        PSIO_SLOT0,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
+        /* Action */      PSIO_OUT_BUFFER,    PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION
+    };
+
     /* Set clock/data slot controller slot0 tick count as 1 */
     /* For more efficient, accessing register directly */
     PSIO->SCCT[psConfig->u8ClockSC].SCSLOT   = 0x1;
@@ -157,7 +171,7 @@ void PSIO_PS2_H2D_Send_Data(S_PSIO_PS2 *psConfig)
     /* Set check point configuration */
     PSIO_SET_CP_CONFIG(PSIO, psConfig->u8ClockPin, &sClockConfig);
     PSIO_SET_CP_CONFIG(PSIO, psConfig->u8DataPin, &sDataConfig);
-      
+
     /* Set clock slot controller as falling trigger */
     PSIO_SET_TRIGSRC(PSIO, psConfig->u8ClockSC, PSIO_FALLING_TRIGGER);
 
@@ -171,7 +185,7 @@ void PSIO_PS2_H2D_Send_Data(S_PSIO_PS2 *psConfig)
 
 int32_t PSIO_PS2_HostSend(S_PSIO_PS2 *psConfig)
 {
-    if( PSIO_PS2_H2D_Send_Header(psConfig) < 0 )
+    if (PSIO_PS2_H2D_Send_Header(psConfig) < 0)
         return -1;
 
     PSIO_PS2_H2D_Send_Data(psConfig);

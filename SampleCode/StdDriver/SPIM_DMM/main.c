@@ -216,7 +216,7 @@ int main()
     InitDebugUart();
 
     printf("+-------------------------------------------+\n");
-    printf("|    M55M1 SPIM DMM mode read sample        |\n");
+    printf("|         SPIM DMM mode read sample         |\n");
     printf("+-------------------------------------------+\n");
 
     SYS_UnlockReg();                        /* Unlock register lock protect */

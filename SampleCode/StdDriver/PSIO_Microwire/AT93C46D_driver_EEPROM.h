@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file        AT93C46D_driver_EEPROM.h
- * @version     V3.00
+ * @version     V1.00
  * @brief       AT93C46D device driver
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2019 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #ifndef __AT93C46D_DRIVER_EEPROM_H__
@@ -40,4 +40,4 @@ void PSIO_AT93C46D_Init(S_PSIO_AT93C46D *psConfig);
 
 #endif  //__AT93C46D_DRIVER_EEPROM_H__
 
-/*** (C) COPYRIGHT 2019 Nuvoton Technology Corp. ***/
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

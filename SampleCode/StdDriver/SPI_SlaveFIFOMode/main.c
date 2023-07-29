@@ -1,16 +1,13 @@
 /**************************************************************************//**
  * @file     main.c
- * @version  V1.0
- * $Revision: 1 $
- * $Date: 20/07/15 5:38p $
+ * @version  V1.00
  * @brief    Configure SPI0 as Slave mode and demonstrate how to communicate
  *           with an off-chip SPI Master device with FIFO mode. This sample
  *           code needs to work with SPI_MasterFifoMode sample code.
  *
  * @note
  * SPDX-License-Identifier: Apache-2.0
- * Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
- *
+ * Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -194,4 +191,4 @@ void SPI_Init(void)
     SPI_Open(SPI0, SPI_SLAVE, SPI_MODE_0, 32, (uint32_t) NULL);
 }
 
-/*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

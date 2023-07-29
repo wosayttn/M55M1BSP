@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     NEC_IR_driver.c
- * @version  V3.00
+ * @version  V1.00
  * @brief    NEC IR device driver
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include <stdio.h>
@@ -210,11 +210,13 @@ int PSIO_NEC_Repeat(S_PSIO_NEC_CFG *pConfig)
 /*---------------------------------------------------------------------------------------------------------*/
 void PSIO_NEC_Open(S_PSIO_NEC_CFG *pConfig)
 {
-    const S_PSIO_CP_CONFIG sCheckPointConfig 
-                     = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
-      /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT3,         PSIO_SLOT4,         PSIO_SLOT5,         PSIO_SLOT6,         PSIO_SLOT7,
-      /* Action */      PSIO_OUT_BUFFER,    PSIO_OUT_BUFFER,    PSIO_OUT_BUFFER,    PSIO_OUT_BUFFER,    PSIO_OUT_BUFFER,    PSIO_OUT_BUFFER,    PSIO_OUT_BUFFER,    PSIO_OUT_BUFFER};   
-                     
+    const S_PSIO_CP_CONFIG sCheckPointConfig
+    =  /* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
+    {
+        /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT3,         PSIO_SLOT4,         PSIO_SLOT5,         PSIO_SLOT6,         PSIO_SLOT7,
+        /* Action */      PSIO_OUT_BUFFER,    PSIO_OUT_BUFFER,    PSIO_OUT_BUFFER,    PSIO_OUT_BUFFER,    PSIO_OUT_BUFFER,    PSIO_OUT_BUFFER,    PSIO_OUT_BUFFER,    PSIO_OUT_BUFFER
+    };
+
     s_pPSIOConfig = pConfig;
 
     /* PSIO pin general setting */
@@ -223,7 +225,7 @@ void PSIO_NEC_Open(S_PSIO_NEC_CFG *pConfig)
 
     /* Set data order ad LSB */
     PSIO_SET_ORDER(PSIO, pConfig->u8TxPin, PSIO_LSB);
-      
+
     /* Set check point configuration */
     PSIO_SET_CP_CONFIG(PSIO, pConfig->u8TxPin, &sCheckPointConfig);
 

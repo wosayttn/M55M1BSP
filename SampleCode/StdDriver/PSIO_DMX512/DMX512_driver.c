@@ -1,10 +1,10 @@
 /***************************************************************************//**
  * @file     DMX512_driver.c
- * @version  V3.00
+ * @version  V1.00
  * @brief    DMX512 Driver.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
 #include "DMX512_driver.h"
@@ -25,7 +25,7 @@ tPSIO_IRQHandler pfPSIO_IRQHandler = NULL;
 E_DMX512_FRAME_TYPE  DMX512_FrameDecoder(S_PSIO_DMX512_CFG *psConfig, uint16_t *pu16Data)
 {
     /* Special pattern */
-    switch(*pu16Data)
+    switch (*pu16Data)
     {
         case DMX512_PATTERN_START:
             return eDMX512_START;
@@ -34,7 +34,7 @@ E_DMX512_FRAME_TYPE  DMX512_FrameDecoder(S_PSIO_DMX512_CFG *psConfig, uint16_t *
             return eDMX512_BREAK;
     }
 
-    if((DMX512_PATTERN_DATA) != ((*pu16Data) & ~DMX512_PATTERN_DATA_MASK))
+    if ((DMX512_PATTERN_DATA) != ((*pu16Data) & ~DMX512_PATTERN_DATA_MASK))
         return eDMX512_DATA;
     else
         return eDMX512_UNDEFINE;
@@ -50,24 +50,24 @@ void PSIO_IRQHandler(void)
 void DMX512_ISRHandler_Receive_with_Filter(void)
 {
     uint16_t u16TargetChannel = s_u16TargetChannel;
-    
-    while(!PSIO_GET_TRANSFER_STATUS(PSIO, PSIO_TRANSTS_INFULL1_Msk)) {};
 
-    if(PSIO_GET_INT_FLAG(PSIO, PSIO_INTSTS_CON0IF_Msk))    /* INT0 interrupt */
+    while (!PSIO_GET_TRANSFER_STATUS(PSIO, PSIO_TRANSTS_INFULL1_Msk)) {};
+
+    if (PSIO_GET_INT_FLAG(PSIO, PSIO_INTSTS_CON0IF_Msk))   /* INT0 interrupt */
     {
         PSIO_CLEAR_INT_FLAG(PSIO, PSIO_INTSTS_CON0IF_Msk);
 
         s_u16DataTmp = (uint16_t) PSIO_GET_INPUT_DATA(PSIO, s_psRxConfig->u8RxPin);
 
-        switch(DMX512_FrameDecoder(s_psRxConfig, (uint16_t *)&s_u16DataTmp))
+        switch (DMX512_FrameDecoder(s_psRxConfig, (uint16_t *)&s_u16DataTmp))
         {
             case eDMX512_DATA:
 
-                if(eDMX512_FILTER_DATA == s_eFilterState)
+                if (eDMX512_FILTER_DATA == s_eFilterState)
                 {
                     s_u16CurChannel++;
 
-                    if(u16TargetChannel == s_u16CurChannel)
+                    if (u16TargetChannel == s_u16CurChannel)
                     {
                         s_u8RcvDone = 1;
 
@@ -80,16 +80,16 @@ void DMX512_ISRHandler_Receive_with_Filter(void)
                 break;
 
             case eDMX512_START:
-                if(eDMX512_FILTER_BREAK0 == s_eFilterState)
+                if (eDMX512_FILTER_BREAK0 == s_eFilterState)
                 {
                     s_eFilterState = eDMX512_FILTER_DATA;
                     s_u16CurChannel = 0;
                 }
-                else if(eDMX512_FILTER_DATA == s_eFilterState)
+                else if (eDMX512_FILTER_DATA == s_eFilterState)
                 {
                     s_u16CurChannel++;
 
-                    if(u16TargetChannel == s_u16CurChannel)
+                    if (u16TargetChannel == s_u16CurChannel)
                     {
                         s_u8RcvDone = 1;
 
@@ -116,28 +116,30 @@ void DMX512_ISRHandler_Receive_with_Filter(void)
 
 static __INLINE void setToData(S_PSIO_DMX512_CFG *psConfig)
 {
-    const S_PSIO_CP_CONFIG sTxConfig 
-                     = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
-      /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
-      /* Action */      PSIO_OUT_LOW,       PSIO_OUT_BUFFER,    PSIO_OUT_HIGH,      PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION}; 
-                     
+    const S_PSIO_CP_CONFIG sTxConfig
+    =  /* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
+    {
+        /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
+        /* Action */      PSIO_OUT_LOW,       PSIO_OUT_BUFFER,    PSIO_OUT_HIGH,      PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION
+    };
+
     /* Set slot count */
     PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT0, psConfig->u32SlotCnt);      /* 1 start bit */
     PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT1, psConfig->u32SlotCnt);      /* 8 data  bits */
     PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT2, (psConfig->u32SlotCnt) * 2);/* 2 stop  bits */
 
     /*Clr slot setting*/
-    PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT3, 0);  
-    PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT4, 0);  
-    PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT5, 0);  
-    PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT6, 0);  
-    PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT7, 0); 
+    PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT3, 0);
+    PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT4, 0);
+    PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT5, 0);
+    PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT6, 0);
+    PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT7, 0);
 
     /* Loop slot1 7 times */
     PSIO_SET_SCCTL(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT1, PSIO_SLOT1, 7, PSIO_REPEAT_DISABLE);
 
     /* Set check point configuration */
-    PSIO_SET_CP_CONFIG(PSIO, psConfig->u8TxPin, &sTxConfig); 
+    PSIO_SET_CP_CONFIG(PSIO, psConfig->u8TxPin, &sTxConfig);
 
     /* Set data pin output width as 8 bit */
     PSIO_SET_WIDTH(PSIO, psConfig->u8TxPin, 0, 8);
@@ -148,11 +150,13 @@ static __INLINE void setToData(S_PSIO_DMX512_CFG *psConfig)
 
 static __INLINE void setTo_BREAK_START(S_PSIO_DMX512_CFG *psConfig)
 {
-    const S_PSIO_CP_CONFIG sTxConfig 
-                     = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
-      /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT3,         PSIO_SLOT4,         PSIO_SLOT5,         PSIO_SLOT6,         PSIO_SLOT7,
-      /* Action */      PSIO_OUT_LOW,       PSIO_OUT_HIGH,      PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_OUT_HIGH}; 
-                     
+    const S_PSIO_CP_CONFIG sTxConfig
+    =  /* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
+    {
+        /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT3,         PSIO_SLOT4,         PSIO_SLOT5,         PSIO_SLOT6,         PSIO_SLOT7,
+        /* Action */      PSIO_OUT_LOW,       PSIO_OUT_HIGH,      PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_OUT_HIGH
+    };
+
     /* Set slot count */
     PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT0, psConfig->u32SlotCnt);      /* BREAK: 22 bits */
     PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8TxSlotCounter, PSIO_SLOT1, psConfig->u32SlotCnt * 2);  /* MAB: 2 bits */
@@ -172,11 +176,13 @@ static __INLINE void setTo_BREAK_START(S_PSIO_DMX512_CFG *psConfig)
 
 static __INLINE void setPSIO_Rx_11BIT(S_PSIO_DMX512_CFG *psConfig)
 {
-    const S_PSIO_CP_CONFIG sRxConfig 
-                     = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
-      /* Slot */        PSIO_SLOT0,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
-      /* Action */      PSIO_IN_BUFFER,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};  
-                     
+    const S_PSIO_CP_CONFIG sRxConfig
+    =  /* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
+    {
+        /* Slot */        PSIO_SLOT0,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
+        /* Action */      PSIO_IN_BUFFER,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION
+    };
+
     /* Set slot count */
     /* A unit of slot count is 1 bit.*/
     PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8RxSlotCounter, PSIO_SLOT0, psConfig->u32SlotCnt);
@@ -200,20 +206,20 @@ static __INLINE void setPSIO_Rx_11BIT(S_PSIO_DMX512_CFG *psConfig)
 
 uint32_t PSIO_DMX512_Open(S_PSIO_DMX512_CFG *psConfig)
 {
-    /* A unit of slot count is 1 bit. */  
+    /* A unit of slot count is 1 bit. */
     psConfig->u32SlotCnt = __HIRC / (((CLK->PSIODIV & CLK_PSIODIV_PSIO0DIV_Msk) >> CLK_PSIODIV_PSIO0DIV_Pos) + 1) / BITRATE_DMX512;
 
     psConfig->eState =  eDMX512_UNDEFINE;
 
     psConfig->pu8RcvDone = &s_u8RcvDone;
-    
+
     /* Tx pin general setting */
     PSIO_SET_GENCTL(PSIO, psConfig->u8TxPin, PSIO_PIN_ENABLE, psConfig->u8TxSlotCounter
                     , PSIO_OUTPUT_MODE, PSIO_HIGH_LEVEL, PSIO_HIGH_LEVEL);
-    
+
     /* Set data order ad LSB */
     PSIO_SET_ORDER(PSIO, psConfig->u8TxPin, PSIO_LSB);
-    
+
     /* Rx pin general setting */
     PSIO_SET_GENCTL(PSIO, psConfig->u8RxPin, PSIO_PIN_ENABLE, psConfig->u8RxSlotCounter
                     , PSIO_INPUT_MODE, PSIO_HIGH_LEVEL, PSIO_HIGH_LEVEL);
@@ -229,12 +235,12 @@ int PSIO_DMX512_Tx(S_PSIO_DMX512_CFG *psConfig, uint32_t u32OutData, E_DMX512_FR
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
     /* Wait for slot controller is not busy */
-    while(PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8TxSlotCounter))
-        if(--u32TimeOutCnt == 0) break;
+    while (PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8TxSlotCounter))
+        if (--u32TimeOutCnt == 0) break;
 
-    if(psConfig->eState != eFrameType)    /* Initial state is eDMX512_UNDEFINE */
+    if (psConfig->eState != eFrameType)   /* Initial state is eDMX512_UNDEFINE */
     {
-        switch(eFrameType)
+        switch (eFrameType)
         {
             case eDMX512_BREAK_START:
                 setTo_BREAK_START(psConfig);
@@ -253,7 +259,7 @@ int PSIO_DMX512_Tx(S_PSIO_DMX512_CFG *psConfig, uint32_t u32OutData, E_DMX512_FR
         }
     }
 
-    switch(eFrameType)
+    switch (eFrameType)
     {
         case eDMX512_DATA:
             PSIO_SET_OUTPUT_DATA(PSIO, psConfig->u8TxPin, u32OutData);
@@ -279,8 +285,8 @@ int PSIO_DMX512_getChannelData(S_PSIO_DMX512_CFG *psConfig, uint16_t u16TargetCh
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
     /* Wait for slot controller is not busy */
-    while(PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8RxSlotCounter))
-        if(--u32TimeOutCnt == 0) break;
+    while (PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8RxSlotCounter))
+        if (--u32TimeOutCnt == 0) break;
 
     setPSIO_Rx_11BIT(psConfig);
 

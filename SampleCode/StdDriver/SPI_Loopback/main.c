@@ -122,7 +122,7 @@ int main(void)
 
     printf("\n\n");
     printf("+--------------------------------------------------------------------+\n");
-    printf("|                   M55M1 SPI Driver Sample Code                     |\n");
+    printf("|                       SPI Driver Sample Code                       |\n");
     printf("+--------------------------------------------------------------------+\n");
     printf("\n");
     printf("\nThis sample code demonstrates SPI0 self loop back data transfer.\n");
@@ -149,10 +149,8 @@ int main(void)
         memset(g_au32DestinationData, 0, sizeof(g_au32DestinationData));
         u32DataCount = 0;
 
-        //if ((u32TestCycle & 0x1FF) == 0)
-        {
-            putchar('.');
-        }
+        putchar('.');
+
 
         while (1)
         {

@@ -142,7 +142,7 @@ int main()
     SPIM_SetDMMAddrNonCacheable();
 
     printf("+--------------------------------------------------+\n");
-    printf("|    M55M1 SPIM DMM mode running program on flash   |\n");
+    printf("|      SPIM DMM mode running program on flash      |\n");
     printf("+--------------------------------------------------+\n");
 
     SYS_UnlockReg();                        /* Unlock protected registers                      */

@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     WS1812B_driver_LED.h
- * @version  V3.00
+ * @version  V1.00
  * @brief    Worldsemi WS2812B LED Driver
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
 #ifndef __WS2812B_DEIVER_LED_H__

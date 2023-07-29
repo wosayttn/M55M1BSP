@@ -1,10 +1,10 @@
 /***************************************************************************//**
  * @file     DMX512_driver.h
- * @version  V3.00
+ * @version  V1.00
  * @brief    DMX512 Driver.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
 #ifndef __DMX512_DRIVER_H__

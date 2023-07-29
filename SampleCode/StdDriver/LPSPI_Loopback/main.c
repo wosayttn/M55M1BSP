@@ -41,7 +41,7 @@ int main(void)
 
     printf("\n\n");
     printf("+--------------------------------------------------------------------+\n");
-    printf("|                   M55M1 LPSPI Driver Sample Code                   |\n");
+    printf("|                      LPSPI Driver Sample Code                      |\n");
     printf("+--------------------------------------------------------------------+\n");
     printf("\n");
     printf("\nThis sample code demonstrates LPSPI0 self loop back data transfer.\n");
@@ -67,7 +67,7 @@ int main(void)
 
         u32DataCount = 0;
 
-            putchar('.');
+        putchar('.');
 
         while (1)
         {

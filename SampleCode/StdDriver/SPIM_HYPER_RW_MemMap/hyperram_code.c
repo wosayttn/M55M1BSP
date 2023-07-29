@@ -3,8 +3,7 @@
  * @version  V1.00
  * @brief    Collect of sub-routines running on SPIM flash.
  *
- *
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>

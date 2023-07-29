@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     main.c
- * @version  V3.00
+ * @version  V1.00
  * @brief    Demonstrate how to implement DMX512 protocol by PSIO.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"

@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file      HZ1050_driver_RFID.c
- * @version   V3.00
+ * @version   V1.00
  * @brief     HZ1050 device driver
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include "NuMicro.h"
@@ -13,15 +13,15 @@
 
 void PSIO_HZ1050_Init(S_PSIO_HZ1050 *psConfig)
 {
-    const S_PSIO_CP_CONFIG sData0Config 
-                     = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
-      /* Slot */        PSIO_SLOT0,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
-      /* Action */      PSIO_IN_BUFFER,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};   
-    const S_PSIO_CP_CONFIG sData1Config 
+    const S_PSIO_CP_CONFIG sData0Config
                      = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
       /* Slot */        PSIO_SLOT0,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
       /* Action */      PSIO_IN_BUFFER,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};
-          
+    const S_PSIO_CP_CONFIG sData1Config
+                     = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
+      /* Slot */        PSIO_SLOT0,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
+      /* Action */      PSIO_IN_BUFFER,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};
+
     /* PSIO pin general setting */
     PSIO_SET_GENCTL(PSIO, psConfig->u8Data0Pin, PSIO_PIN_ENABLE, psConfig->u8SlotCtrl
                     , PSIO_INPUT_MODE, PSIO_HIGH_LEVEL, PSIO_HIGH_LEVEL);
@@ -33,8 +33,8 @@ void PSIO_HZ1050_Init(S_PSIO_HZ1050 *psConfig)
     PSIO_SET_ORDER(PSIO, psConfig->u8Data1Pin, PSIO_MSB);
 
     /* Set check point configuration */
-    PSIO_SET_CP_CONFIG(PSIO, psConfig->u8Data0Pin, &sData0Config); 
-    PSIO_SET_CP_CONFIG(PSIO, psConfig->u8Data1Pin, &sData1Config); 
+    PSIO_SET_CP_CONFIG(PSIO, psConfig->u8Data0Pin, &sData0Config);
+    PSIO_SET_CP_CONFIG(PSIO, psConfig->u8Data1Pin, &sData1Config);
 
     /* Set slot0 tick count as 15 */
     PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8SlotCtrl, PSIO_SLOT0, 15);

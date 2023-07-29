@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     DS18B20_driver_thermometer.c
- * @version  V3.00
+ * @version  V1.00
  * @brief    DS18B20 device driver
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include "NuMicro.h"
@@ -15,9 +15,11 @@ int32_t PSIO_DS18B20_Write_Command(S_PSIO_DS18B20_CFG *psConfig, uint8_t u8CMD)
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
     const S_PSIO_CP_CONFIG sDataConfig
-                     = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
-      /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
-      /* Action */      PSIO_OUT_LOW,       PSIO_OUT_BUFFER,    PSIO_OUT_HIGH,      PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};  
+    =  /* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
+    {
+        /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
+        /* Action */      PSIO_OUT_LOW,       PSIO_OUT_BUFFER,    PSIO_OUT_HIGH,      PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION
+    };
 
     /* Set slot count */
     PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8SlotCtrl, PSIO_SLOT0, 2);
@@ -26,7 +28,7 @@ int32_t PSIO_DS18B20_Write_Command(S_PSIO_DS18B20_CFG *psConfig, uint8_t u8CMD)
 
     /* Set check point configuration */
     PSIO_SET_CP_CONFIG(PSIO, psConfig->u8DataPin, &sDataConfig);
-      
+
     /* Enable repeat slot0 ~ slot2 7 times */
     PSIO_SET_SCCTL(PSIO, psConfig->u8SlotCtrl, PSIO_SLOT0, PSIO_SLOT2, 7, PSIO_REPEAT_DISABLE);
 
@@ -45,7 +47,7 @@ int32_t PSIO_DS18B20_Write_Command(S_PSIO_DS18B20_CFG *psConfig, uint8_t u8CMD)
     /* Wait for slot controller is not busy */
     while (PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8SlotCtrl))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for PSIO time-out!\n");
             return -1;
@@ -64,9 +66,11 @@ int32_t PSIO_DS18B20_Reset(S_PSIO_DS18B20_CFG *psConfig)
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
     const S_PSIO_CP_CONFIG sDataConfig
-                     = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
-      /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
-      /* Action */      PSIO_OUT_LOW,       PSIO_OUT_HIGH,      PSIO_OUT_HIGH,      PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};  
+    =  /* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
+    {
+        /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
+        /* Action */      PSIO_OUT_LOW,       PSIO_OUT_HIGH,      PSIO_OUT_HIGH,      PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION
+    };
 
     /* Set slot count */
     PSIO_SCSLOT_SET_SLOT(PSIO, psConfig->u8SlotCtrl, PSIO_SLOT0, 15);
@@ -85,7 +89,7 @@ int32_t PSIO_DS18B20_Reset(S_PSIO_DS18B20_CFG *psConfig)
     /* Wait for slot controller is not busy */
     while (PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8SlotCtrl))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for PSIO time-out!\n");
             return -1;
@@ -104,9 +108,11 @@ int32_t PSIO_DS18B20_Read_Data(S_PSIO_DS18B20_CFG *psConfig, uint8_t *pu8InData)
     uint32_t u32TimeOutCnt;
     uint8_t u8Cnt = 0;
     const S_PSIO_CP_CONFIG sDataConfig
-                     = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
-      /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
-      /* Action */      PSIO_OUT_LOW,       PSIO_IN_BUFFER,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};                        
+    =  /* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
+    {
+        /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
+        /* Action */      PSIO_OUT_LOW,       PSIO_IN_BUFFER,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION
+    };
 
     /* Set check point configuration */
     PSIO_SET_CP_CONFIG(PSIO, psConfig->u8DataPin, &sDataConfig);
@@ -126,9 +132,10 @@ int32_t PSIO_DS18B20_Read_Data(S_PSIO_DS18B20_CFG *psConfig, uint8_t *pu8InData)
     {
         /* Wait for slot controller is not busy */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
         while (PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8SlotCtrl))
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for PSIO time-out!\n");
                 return -1;
@@ -140,9 +147,10 @@ int32_t PSIO_DS18B20_Read_Data(S_PSIO_DS18B20_CFG *psConfig, uint8_t *pu8InData)
 
         /* Wait for data buffer is full */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
         while (!PSIO_GET_TRANSFER_STATUS(PSIO, PSIO_TRANSTS_INFULL0_Msk))
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for PSIO time-out!\n");
                 return -1;

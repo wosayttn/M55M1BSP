@@ -346,7 +346,7 @@ int main()
     InitDebugUart();
 
     printf("+----------------------------------------+\n");
-    printf("|    M55M1 HyperRAM read/write sample    |\n");
+    printf("|       HyperRAM read/write sample       |\n");
     printf("+----------------------------------------+\n");
 
     /* Unlock protected registers */

@@ -1,8 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V0.1
- * @brief
- *           Demonstrate USCI_SPI data transfer with PDMA.
+ * @brief    Demonstrate USCI_SPI data transfer with PDMA.
  *           USCI_SPI0 will be configured as Master mode.
  *           Both TX PDMA function and RX PDMA function will be enabled.
  *

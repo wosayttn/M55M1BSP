@@ -1085,4 +1085,4 @@ int32_t main(void)
 
 
 
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

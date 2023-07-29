@@ -118,7 +118,7 @@ int main()
     InitDebugUart();
 
     printf("+-------------------------------------------+\n");
-    printf("|    M55M1 SPIM I/O mode read/write sample   |\n");
+    printf("|      SPIM I/O mode read/write sample      |\n");
     printf("+-------------------------------------------+\n");
 
     SYS_UnlockReg();                        /* Unlock register lock protect */

@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file        HZ1050_driver_RFID.h
- * @version     V3.00
+ * @version     V1.00
  * @brief       HZ1050 device driver
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #ifndef __HZ1050_DRIVER_RFID_H__

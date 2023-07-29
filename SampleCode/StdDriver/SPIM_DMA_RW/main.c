@@ -196,7 +196,7 @@ int main()
     /* SAMPLE CODE                                                            */
     /*------------------------------------------------------------------------*/
     printf("+-------------------------------------------+\n");
-    printf("|    M55M1 SPIM DMA mode read/write sample  |\n");
+    printf("|      SPIM DMA mode read/write sample      |\n");
     printf("+-------------------------------------------+\n");
 
     SYS_UnlockReg();                            /* Unlock register lock protect */
@@ -287,4 +287,4 @@ lexit:
     while (1);
 }
 
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

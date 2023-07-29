@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file        hyperflash_code.h
- * @version     V3.00
+ * @version     V1.00
  * @brief       HyperFlash device driver
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2019 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #ifndef __HYPER_RAM_CODE_H__
@@ -19,4 +19,4 @@ void HyperRAM_Init(SPIM_T *spim);
 
 #endif  /* __HYPER_RAM_CODE_H__ */
 
-/*** (C) COPYRIGHT 2019 Nuvoton Technology Corp. ***/
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
