@@ -83,8 +83,8 @@ extern "C"
 #define EPWM_TRG_ADC_CH_2_FREE_CMP_DOWN                  (13U)    /*!< EPWM trigger ADC while counter of channel 2 matches down count to free comparator point \hideinitializer */
 #define EPWM_TRG_ADC_CH_4_FREE_CMP_UP                    (14U)    /*!< EPWM trigger ADC while counter of channel 4 matches up count to free comparator point \hideinitializer */
 #define EPWM_TRG_ADC_CH_4_FREE_CMP_DOWN                  (15U)    /*!< EPWM trigger ADC while counter of channel 4 matches down count to free comparator point \hideinitializer */
-#define EPWM_TRG_ADC_EVEN_IFACC                          (16U)    /*!< EPWM trigger ADC while even channel Interrupt Flag Accumulator Interrupt \hideinitializer */
-#define EPWM_TRG_ADC_ODD_IFACC                           (17U)    /*!< EPWM trigger ADC while odd channel Interrupt Flag Accumulator Interrupt \hideinitializer */
+#define EPWM_TRG_ADC_EVEN_IFA                          (16U)    /*!< EPWM trigger ADC while even channel Interrupt Flag Accumulator Interrupt \hideinitializer */
+#define EPWM_TRG_ADC_ODD_IFA                           (17U)    /*!< EPWM trigger ADC while odd channel Interrupt Flag Accumulator Interrupt \hideinitializer */
 
 #define EPWM_TRIGGER_DAC_ZERO                            (0x1U)           /*!< EPWM trigger DAC while counter down count to 0  \hideinitializer */
 #define EPWM_TRIGGER_DAC_PERIOD                          (0x100U)         /*!< EPWM trigger DAC while counter matches (PERIOD + 1) \hideinitializer */
@@ -99,7 +99,9 @@ extern "C"
 #define EPWM_FB_EDGE_ACMP2                        (EPWM_BRKCTL0_1_CPO2EBEN_Msk)    /*!< Comparator 2 as edge-detect fault brake source \hideinitializer */
 #define EPWM_FB_EDGE_BKP0                         (EPWM_BRKCTL0_1_BRKP0EEN_Msk)    /*!< BKP0 pin as edge-detect fault brake source \hideinitializer */
 #define EPWM_FB_EDGE_BKP1                         (EPWM_BRKCTL0_1_BRKP1EEN_Msk)    /*!< BKP1 pin as edge-detect fault brake source \hideinitializer */
-#define EPWM_FB_EDGE_ADCRM                        (EPWM_BRKCTL0_1_EADCEBEN_Msk)     /*!< ADC Result Monitor (ADCRM) as edge-detect fault brake source \hideinitializer */
+#define EPWM_FB_EDGE_VBSN                         (EPWM_BRKCTL0_1_VBSNEBEN_Msk)    /*!< VBUS Sink Disable as edge-detect fault brake source \hideinitializer */
+#define EPWM_FB_EDGE_ADCRM                        (EPWM_BRKCTL0_1_EADC0EBEN_Msk)   /*!< ADC Result Monitor (ADCRM) as edge-detect fault brake source \hideinitializer */
+#define EPWM_FB_EDGE_VBSR                         (EPWM_BRKCTL0_1_VBSREBEN_Msk)    /*!< VBUS Source Disable as edge-detect fault brake source \hideinitializer */
 #define EPWM_FB_EDGE_SYS_CSS                      (EPWM_BRKCTL0_1_SYSEBEN_Msk | EPWM_FAILBRK_CSSBRKEN_Msk)    /*!< System fail condition: clock security system detection as edge-detect fault brake source \hideinitializer */
 #define EPWM_FB_EDGE_SYS_BOD                      (EPWM_BRKCTL0_1_SYSEBEN_Msk | EPWM_FAILBRK_BODBRKEN_Msk)    /*!< System fail condition: brown-out detection as edge-detect fault brake source \hideinitializer */
 #define EPWM_FB_EDGE_SYS_RAM                      (EPWM_BRKCTL0_1_SYSEBEN_Msk | EPWM_FAILBRK_RAMBRKEN_Msk)    /*!< System fail condition: SRAM parity error detection as edge-detect fault brake source \hideinitializer */
@@ -110,7 +112,9 @@ extern "C"
 #define EPWM_FB_LEVEL_ACMP2                       (EPWM_BRKCTL0_1_CPO2LBEN_Msk)    /*!< Comparator 2 as level-detect fault brake source \hideinitializer */
 #define EPWM_FB_LEVEL_BKP0                        (EPWM_BRKCTL0_1_BRKP0LEN_Msk)    /*!< BKP0 pin as level-detect fault brake source \hideinitializer */
 #define EPWM_FB_LEVEL_BKP1                        (EPWM_BRKCTL0_1_BRKP1LEN_Msk)    /*!< BKP1 pin as level-detect fault brake source \hideinitializer */
-#define EPWM_FB_LEVEL_ADCRM                       (EPWM_BRKCTL0_1_EADCLBEN_Msk)     /*!< ADC Result Monitor (ADCRM) as level-detect fault brake source \hideinitializer */
+#define EPWM_FB_LEVEL_VBSN                        (EPWM_BRKCTL0_1_VBSNLBEN_Msk)    /*!< VBUS Sink Disable as level-detect fault brake source \hideinitializer */
+#define EPWM_FB_LEVEL_ADCRM                       (EPWM_BRKCTL0_1_EADC0LBEN_Msk)   /*!< ADC Result Monitor (ADCRM) as level-detect fault brake source \hideinitializer */
+#define EPWM_FB_LEVEL_VBSR                        (EPWM_BRKCTL0_1_VBSRLBEN_Msk)    /*!< VBUS Source Disable as level-detect fault brake source \hideinitializer */
 #define EPWM_FB_LEVEL_SYS_CSS                     (EPWM_BRKCTL0_1_SYSLBEN_Msk | EPWM_FAILBRK_CSSBRKEN_Msk)    /*!< System fail condition: clock security system detection as level-detect fault brake source \hideinitializer */
 #define EPWM_FB_LEVEL_SYS_BOD                     (EPWM_BRKCTL0_1_SYSLBEN_Msk | EPWM_FAILBRK_BODBRKEN_Msk)    /*!< System fail condition: brown-out detection as level-detect fault brake source \hideinitializer */
 #define EPWM_FB_LEVEL_SYS_RAM                     (EPWM_BRKCTL0_1_SYSLBEN_Msk | EPWM_FAILBRK_RAMBRKEN_Msk)    /*!< System fail condition: SRAM parity error detection as level-detect fault brake source \hideinitializer */
@@ -291,14 +295,16 @@ extern "C"
  * @details This macro is used to disable timer synchronous start counting function of specified channel(s).
  * \hideinitializer
  */
-#define EPWM_DISABLE_TIMER_SYNC(epwm, u32ChannelMask) \
-    do{ \
-        int i;\
-        for(i = 0; i < 6; i++) { \
-            if((u32ChannelMask) & (1 << i)) \
-                (epwm)->SSCTL &= ~(1UL << i); \
-        } \
-    }while(0)
+__STATIC_INLINE void EPWM_DISABLE_TIMER_SYNC(EPWM_T *epwm, uint32_t u32ChannelMask)
+{
+    do{
+        int i;
+        for(i = 0; i < 6; i++) {
+            if((u32ChannelMask) & (1 << i))
+                (epwm)->SSCTL &= ~(1UL << i);
+        }
+    }while(0);
+}
 
 /**
  * @brief This macro enable EPWM counter synchronous start counting function.
@@ -329,8 +335,7 @@ extern "C"
  * @details This macro is used to get captured rising data of specified channel.
  * \hideinitializer
  */
-//#define EPWM_GET_CAPTURE_RISING_DATA(epwm, u32ChannelNum) ((epwm)->CAPDAT[(u32ChannelNum)].RCAPDAT)
-#define EPWM_GET_CAPTURE_RISING_DATA(pwm, u32ChannelNum) (*(__IO uint32_t *) (&((pwm)->RCAPDAT0) + 2 * (u32ChannelNum)))
+#define EPWM_GET_CAPTURE_RISING_DATA(epwm, u32ChannelNum) ((epwm)->CAPDAT[(u32ChannelNum)].RCAPDAT)
 
 /**
  * @brief This macro get captured falling data
@@ -340,8 +345,7 @@ extern "C"
  * @details This macro is used to get captured falling data of specified channel.
  * \hideinitializer
  */
-//#define EPWM_GET_CAPTURE_FALLING_DATA(epwm, u32ChannelNum) ((epwm)->CAPDAT[(u32ChannelNum)].FCAPDAT)
-#define EPWM_GET_CAPTURE_FALLING_DATA(pwm, u32ChannelNum) (*(__IO uint32_t *) (&((pwm)->FCAPDAT0) + 2 * (u32ChannelNum)))
+#define EPWM_GET_CAPTURE_FALLING_DATA(epwm, u32ChannelNum) ((epwm)->CAPDAT[(u32ChannelNum)].FCAPDAT)
 
 /**
  * @brief This macro mask output logic to high or low
@@ -367,8 +371,7 @@ extern "C"
  * @param[in] u32Prescaler Clock prescaler of specified channel. Valid values are between 0 ~ 0xFFF
  * @return None
  * @details This macro is used to set the prescaler of specified channel.
- * @note Every even channel N, and channel (N + 1) share a prescaler. So if channel 0 prescaler changed, channel 1 will also be affected.
- *       The clock of EPWM counter is divided by (u32Prescaler + 1).
+ * @note The clock of EPWM counter is divided by (u32Prescaler + 1).
  * \hideinitializer
  */
 #define EPWM_SET_PRESCALER(epwm, u32ChannelNum, u32Prescaler) ((epwm)->CLKPSC[(u32ChannelNum)] = (u32Prescaler))
@@ -379,8 +382,7 @@ extern "C"
  * @param[in] u32ChannelNum EPWM channel number. Valid values are between 0~5
  * @return Return Clock prescaler of specified channel. Valid values are between 0 ~ 0xFFF
  * @details This macro is used to get the prescaler of specified channel.
- * @note Every even channel N, and channel (N + 1) share a prescaler. So if channel 0 prescaler changed, channel 1 will also be affected.
- *       The clock of EPWM counter is divided by (u32Prescaler + 1).
+ * @note The clock of EPWM counter is divided by (u32Prescaler + 1).
  * \hideinitializer
  */
 #define EPWM_GET_PRESCALER(epwm, u32ChannelNum) ((epwm)->CLKPSC[(u32ChannelNum)])
@@ -457,14 +459,16 @@ extern "C"
  * @details This macro is used to set the EPWM aligned type of specified channel(s).
  * \hideinitializer
  */
-#define EPWM_SET_ALIGNED_TYPE(epwm, u32ChannelMask, u32AlignedType) \
-    do{ \
-        int i; \
-        for(i = 0; i < 6; i++) { \
-            if((u32ChannelMask) & (1 << i)) \
-                (epwm)->CTL1 = (((epwm)->CTL1 & ~(3UL << (i << 1))) | ((u32AlignedType) << (i << 1))); \
-        } \
-    }while(0)
+__STATIC_INLINE void EPWM_SET_ALIGNED_TYPE(EPWM_T *epwm, uint32_t u32ChannelMask, uint32_t u32AlignedType)
+{
+    do{
+        int i;
+        for(i = 0; i < 6; i++) {
+            if((u32ChannelMask) & (1 << i))
+                (epwm)->CTL1 = (((epwm)->CTL1 & ~(3UL << (i << 1))) | ((u32AlignedType) << (i << 1)));
+        }
+    }while(0);
+}
 
 /**
  * @brief Set load window of window loading mode for specified channel(s)
@@ -528,18 +532,20 @@ extern "C"
  * @details This macro is used to Set output level at zero, compare up, period(center) and compare down of specified channel(s).
  * \hideinitializer
  */
-#define EPWM_SET_OUTPUT_LEVEL(epwm, u32ChannelMask, u32ZeroLevel, u32CmpUpLevel, u32PeriodLevel, u32CmpDownLevel) \
-    do{ \
-        int i; \
-        for(i = 0; i < 6; i++) { \
-            if((u32ChannelMask) & (1 << i)) { \
-                (epwm)->WGCTL0 = (((epwm)->WGCTL0 & ~(3UL << (i << 1))) | ((u32ZeroLevel) << (i << 1))); \
-                (epwm)->WGCTL0 = (((epwm)->WGCTL0 & ~(3UL << (EPWM_WGCTL0_PRDPCTL0_Pos + (i << 1)))) | ((u32PeriodLevel) << (EPWM_WGCTL0_PRDPCTL0_Pos + (i << 1)))); \
-                (epwm)->WGCTL1 = (((epwm)->WGCTL1 & ~(3UL << (i << 1))) | ((u32CmpUpLevel) << (i << 1))); \
-                (epwm)->WGCTL1 = (((epwm)->WGCTL1 & ~(3UL << (EPWM_WGCTL1_CMPDCTL0_Pos + (i << 1)))) | ((u32CmpDownLevel) << (EPWM_WGCTL1_CMPDCTL0_Pos + (i << 1)))); \
-            } \
-        } \
-    }while(0)
+__STATIC_INLINE void EPWM_SET_OUTPUT_LEVEL(EPWM_T *epwm, uint32_t u32ChannelMask, uint32_t u32ZeroLevel, uint32_t u32CmpUpLevel, uint32_t u32PeriodLevel, uint32_t u32CmpDownLevel)
+{
+    do{
+        int i;
+        for(i = 0; i < 6; i++) {
+            if((u32ChannelMask) & (1 << i)) {
+                (epwm)->WGCTL0 = (((epwm)->WGCTL0 & ~(3UL << (i << 1))) | ((u32ZeroLevel) << (i << 1)));
+                (epwm)->WGCTL0 = (((epwm)->WGCTL0 & ~(3UL << (EPWM_WGCTL0_PRDPCTL0_Pos + (i << 1)))) | ((u32PeriodLevel) << (EPWM_WGCTL0_PRDPCTL0_Pos + (i << 1))));
+                (epwm)->WGCTL1 = (((epwm)->WGCTL1 & ~(3UL << (i << 1))) | ((u32CmpUpLevel) << (i << 1)));
+                (epwm)->WGCTL1 = (((epwm)->WGCTL1 & ~(3UL << (EPWM_WGCTL1_CMPDCTL0_Pos + (i << 1)))) | ((u32CmpDownLevel) << (EPWM_WGCTL1_CMPDCTL0_Pos + (i << 1))));
+            }
+        }
+    }while(0);
+}
 
 /**
  * @brief Trigger brake event from specified channel(s)
@@ -565,9 +571,11 @@ extern "C"
  * @note The write-protection function should be disabled before using this function.
  * \hideinitializer
  */
-#define EPWM_SET_DEADZONE_CLK_SRC(epwm, u32ChannelNum, u32AfterPrescaler) \
-    ((epwm)->DTCTL = (((epwm)->DTCTL & ~(EPWM_DTCTL_DTCKSEL0_Msk << (u32ChannelNum >> 1U))) | \
-                      (((u32AfterPrescaler) << EPWM_DTCTL_DTCKSEL0_Pos)<<(u32ChannelNum >> 1U))))
+__STATIC_INLINE void EPWM_SET_DEADZONE_CLK_SRC(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32AfterPrescaler)
+{
+	  uint32_t u32DTCLKSrc = ((u32AfterPrescaler) << EPWM_DTCTL_DTCKSEL0_Pos)<<(u32ChannelNum >> 1U);
+    epwm->DTCTL = ((epwm->DTCTL & ~(EPWM_DTCTL_DTCKSEL0_Msk << (u32ChannelNum >> 1U))) | u32DTCLKSrc);
+}
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define EPWM functions prototype                                                                          */
@@ -594,8 +602,6 @@ void EPWM_EnableOutput(EPWM_T *epwm, uint32_t u32ChannelMask);
 void EPWM_DisableOutput(EPWM_T *epwm, uint32_t u32ChannelMask);
 void EPWM_EnablePDMA(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32RisingFirst, uint32_t u32Mode);
 void EPWM_DisablePDMA(EPWM_T *epwm, uint32_t u32ChannelNum);
-//void EPWM_EnableDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32Duration);
-//void EPWM_DisableDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum);
 void EPWM_EnableFallingDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32FDuration);
 void EPWM_DisableFallingDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum);
 void EPWM_EnableRisingDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32RDuration);

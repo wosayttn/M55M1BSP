@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     ttmr.c
  * @version  V1.00
- * @brief    TTMR driver source file
+ * @brief    TTMR (Tick Timer Controller) driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -22,9 +22,9 @@
 */
 
 /**
-  * @brief      Open Timer with Operate Mode and Frequency
+  * @brief      Open TTMR with Operate Mode and Frequency
   *
-  * @param[in]  ttmr        The pointer of the specified Timer module. It could be TTMR0, TTMR1.
+  * @param[in]  ttmr        The pointer of the specified TTMR module. It could be TTMR0, TTMR1.
   * @param[in]  u32Mode     Operation mode. Possible options are
   *                         - \ref TTMR_ONESHOT_MODE
   *                         - \ref TTMR_PERIODIC_MODE
@@ -68,9 +68,9 @@ uint32_t TTMR_Open(TTMR_T *ttmr, uint32_t u32Mode, uint32_t u32Freq)
 
 
 /**
-  * @brief      Stop Timer Counting
+  * @brief      Stop TTMR Counting
   *
-  * @param[in]  ttmr   The pointer of the specified Timer module. It could be TTMR0, TTMR1.
+  * @param[in]  ttmr        The pointer of the specified TTMR module. It could be TTMR0, TTMR1.
   *
   * @return     None
   *
@@ -85,7 +85,7 @@ void TTMR_Close(TTMR_T *ttmr)
 /**
   * @brief      Create a specify Delay Time
   *
-  * @param[in]  ttmr        The pointer of the specified Timer module. It could be TTMR0, TTMR1.
+  * @param[in]  ttmr        The pointer of the specified TTMR module. It could be TTMR0, TTMR1.
   * @param[in]  u32Usec     Delay period in micro seconds. Valid values are between 100~1000000 (100 micro second ~ 1 second).
   *
   * @retval     TTMR_OK          Delay success, target delay time reached
@@ -98,7 +98,7 @@ void TTMR_Close(TTMR_T *ttmr)
 int32_t TTMR_Delay(TTMR_T *ttmr, uint32_t u32Usec)
 {
     uint32_t u32Clk = TTMR_GetModuleClock(ttmr);
-    uint32_t u32Prescale = 0UL, delay = (SystemCoreClock / u32Clk) + 1UL;
+    uint32_t u32Prescale = 0UL, u32Delay;
     uint32_t u32Cmpr, u32Cntr, u32NsecPerTick, i = 0UL;
 
     /* Clear current ttmr configuration */
@@ -147,9 +147,9 @@ int32_t TTMR_Delay(TTMR_T *ttmr, uint32_t u32Usec)
     ttmr->CMP = u32Cmpr;
     ttmr->CTL = TTMR_CTL_CNTEN_Msk | TTMR_ONESHOT_MODE | u32Prescale;
 
-    /* When system clock is faster than ttmr clock, it is possible ttmr active bit cannot set in time while we check it.
-       And the while loop below return immediately, so put a tiny delay here allowing ttmr start counting and raise active flag. */
-    for (; delay > 0UL; delay--)
+    /* When system clock is faster than TTMR clock, it is possible TTMR active bit cannot set in time while we check it.
+       And the while loop below return immediately, so put a tiny delay here allowing TTMR start counting and raise active flag. */
+    for (u32Delay = (SystemCoreClock / u32Clk) + 1UL; u32Delay > 0UL; u32Delay--)
     {
         __NOP();
     }
@@ -157,7 +157,7 @@ int32_t TTMR_Delay(TTMR_T *ttmr, uint32_t u32Usec)
     /* Add a bail out counter here in case timer clock source is disabled accidentally.
        Prescale counter reset every ECLK * (prescale value + 1).
        The u32Delay here is to make sure timer counter value changed when prescale counter reset */
-    delay = (SystemCoreClock / TTMR_GetModuleClock(ttmr)) * (u32Prescale + 1);
+    u32Delay = (SystemCoreClock / TTMR_GetModuleClock(ttmr)) * (u32Prescale + 1);
     u32Cntr = ttmr->CNT;
 
     while (ttmr->CTL & TTMR_CTL_ACTSTS_Msk)
@@ -165,7 +165,7 @@ int32_t TTMR_Delay(TTMR_T *ttmr, uint32_t u32Usec)
         /* Bailed out if timer stop counting e.g. Some interrupt handler close timer clock source. */
         if (u32Cntr == ttmr->CNT)
         {
-            if (i++ > delay)
+            if(i++ > u32Delay)
             {
                 return TTMR_ERR_TIMEOUT;
             }
@@ -181,14 +181,14 @@ int32_t TTMR_Delay(TTMR_T *ttmr, uint32_t u32Usec)
 }
 
 /**
-  * @brief      Get Timer Clock Frequency
+  * @brief      Get TTMR Clock Frequency
   *
-  * @param[in]  ttmr   The pointer of the specified Timer module. It could be TTMR0, TTMR1.
+  * @param[in]  ttmr   The pointer of the specified TTMR module. It could be TTMR0, TTMR1.
   *
-  * @return     Timer clock frequency
+  * @return     TTMR clock frequency
   *
-  * @details    This API is used to get the ttmr clock frequency.
-  * @note       This API cannot return correct clock rate if ttmr source is from external clock input.
+  * @details    This API is used to get the TTMR clock frequency.
+  * @note       This API cannot return correct clock rate if TTMR source is from external clock input.
   */
 uint32_t TTMR_GetModuleClock(TTMR_T *ttmr)
 {
@@ -208,6 +208,10 @@ uint32_t TTMR_GetModuleClock(TTMR_T *ttmr)
     {
         u32Clk = CLK_GetPCLK4Freq();
     }
+    else if (u32Src == 3UL)
+    {
+        u32Clk = CLK_GetMIRCFreq();
+    }
     else
     {
         u32Clk = au32Clk[u32Src];
@@ -217,8 +221,8 @@ uint32_t TTMR_GetModuleClock(TTMR_T *ttmr)
 }
 
 /**
-  * @brief This function is used to set modules trigger by ttmr interrupt
-  * @param[in] ttmr    The pointer of the specified Timer module. It could be TTMR0, TTMR1.
+  * @brief This function is used to set modules trigger by TTMR interrupt
+  * @param[in] ttmr    The pointer of the specified TTMR module. It could be TTMR0, TTMR1.
   * @param[in] u32Mask The mask of modules (LPADC, LPI2C, LPSPI, LPUART, CCAP and LPPDMA) trigger by ttmr. Is the combination of
   *             - \ref TTMR_TRGEN
   *             - \ref TTMR_TRG_TO_LPPDMA
@@ -230,12 +234,12 @@ void TTMR_SetTriggerTarget(TTMR_T *ttmr, uint32_t u32Mask)
 }
 
 /**
-  * @brief      Reset Counter
+  * @brief      Reset TTMR Counter
   *
-  * @param[in]  ttmr       The pointer of the specified Timer module. It could be TTMR0, TTMR1.
+  * @param[in]  ttmr       The pointer of the specified TTMR module. It could be TTMR0, TTMR1.
   *
-  * @retval     TTMR_OK          Timer reset success
-  * @retval     TTMR_ERR_TIMEOUT Timer reset failed
+  * @retval     TTMR_OK          TTMR reset success
+  * @retval     TTMR_ERR_TIMEOUT TTMR reset failed
   *
   * @details    This function is used to reset current counter value and internal prescale counter value.
   */
@@ -252,7 +256,7 @@ int32_t TTMR_ResetCounter(TTMR_T *ttmr)
         __NOP();
     }
 
-    return u32Delay > 0 ? TTMR_OK : TTMR_ERR_TIMEOUT;
+    return ((u32Delay > 0) ? TTMR_OK : TTMR_ERR_TIMEOUT);
 }
 
 /** @} end of group TTMR_EXPORTED_FUNCTIONS */

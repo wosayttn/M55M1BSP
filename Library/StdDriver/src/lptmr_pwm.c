@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     lptmr_pwm.c
  * @version  V1.00
- * @brief    LPTMR_PWM driver source file
+ * @brief    LPTMR PWM Controller(LPTMR_PWM) driver source file
  *
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
@@ -23,14 +23,14 @@
 /**
   * @brief      Configure LPTPWM Output Frequency and Duty Cycle
   *
-  * @param[in]  lptmr           The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  * @param[in]  lptmr           The pointer of the specified LPTMR module. It could be LPTMR0, LPTMR1.
   * @param[in]  u32Frequency    Target generator frequency.
   * @param[in]  u32DutyCycle    Target generator duty cycle percentage. Valid range are between 0~100. 10 means 10%, 20 means 20%...
   *
   * @return     Nearest frequency clock in nano second
   *
   * @details    This API is used to configure LPTPWM output frequency and duty cycle in up count type and auto-reload operation mode.
-  * @note       This API is only available if LPTmr PWM counter clock source is from LPTMRx_CLK.
+  * @note       This API is only available if LPTMR PWM counter clock source is from LPTMRx_CLK.
   */
 uint32_t LPTPWM_ConfigOutputFreqAndDuty(LPTMR_T *lptmr, uint32_t u32Frequency, uint32_t u32DutyCycle)
 {
@@ -52,6 +52,10 @@ uint32_t LPTPWM_ConfigOutputFreqAndDuty(LPTMR_T *lptmr, uint32_t u32Frequency, u
     if (u32Src == 0UL)
     {
         u32PWMClockFreq = CLK_GetPCLK4Freq();
+    }
+    else if (u32Src == 3UL)
+    {
+        u32PWMClockFreq = CLK_GetMIRCFreq();
     }
     else
     {
@@ -103,7 +107,7 @@ uint32_t LPTPWM_ConfigOutputFreqAndDuty(LPTMR_T *lptmr, uint32_t u32Frequency, u
 /**
   * @brief      Enable LPTPWM Counter
   *
-  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  * @param[in]  lptmr       The pointer of the specified LPTMR module. It could be LPTMR0, LPTMR1.
   *
   * @return     None
   *
@@ -117,7 +121,7 @@ void LPTPWM_EnableCounter(LPTMR_T *lptmr)
 /**
   * @brief      Disable LPTPWM Generator
   *
-  * @param[in]  lptmr       The pointer of the specified LPTmr module. It could be LPTMR0, LPTMR1.
+  * @param[in]  lptmr       The pointer of the specified LPTMR module. It could be LPTMR0, LPTMR1.
   *
   * @return     None
   *

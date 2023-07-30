@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     lptmr.h
  * @version  V1.00
- * @brief    LPTMR driver header file
+ * @brief    LPTMR Controller (Low Power Timer) driver header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -58,7 +58,7 @@ extern "C"
 #define LPTMR_INTERCAPSEL_ACMP0                 (0UL << LPTMR_EXTCTL_INTERCAPSEL_Pos)   /*!< Capture source from Internal event ACMP0 \hideinitializer */
 #define LPTMR_INTERCAPSEL_ACMP1                 (1UL << LPTMR_EXTCTL_INTERCAPSEL_Pos)   /*!< Capture source from Internal event ACMP1 \hideinitializer */
 #define LPTMR_INTERCAPSEL_ACMP2                 (7UL << LPTMR_EXTCTL_INTERCAPSEL_Pos)   /*!< Capture source from Internal event ACMP2 \hideinitializer */
-#define LPTMR_INTERCAPSEL_ACMP3                 (8UL << LPTMR_EXTCTL_INTERCAPSEL_Pos)   /*!< Capture source from Internal event ACMP2 \hideinitializer */
+#define LPTMR_INTERCAPSEL_ACMP3                 (8UL << LPTMR_EXTCTL_INTERCAPSEL_Pos)   /*!< Capture source from Internal event ACMP3 \hideinitializer */
 
 #define LPTMR_CAPTURE_FROM_ACMP0                (LPTMR_INTERCAPSEL_ACMP0)          /*!< Capture source from Internal event ACMP0 \hideinitializer  */
 #define LPTMR_CAPTURE_FROM_ACMP1                (LPTMR_INTERCAPSEL_ACMP1)          /*!< Capture source from Internal event ACMP1 \hideinitializer */
@@ -90,6 +90,8 @@ extern "C"
 #define LPTMR_CAPTURE_NOISE_FILTER_PCLK_DIV_32  (5UL)    /*!< Capture noise filter clock is PCLK divide by 32 \hideinitializer */
 #define LPTMR_CAPTURE_NOISE_FILTER_PCLK_DIV_64  (6UL)    /*!< Capture noise filter clock is PCLK divide by 64 \hideinitializer */
 #define LPTMR_CAPTURE_NOISE_FILTER_PCLK_DIV_128 (7UL)    /*!< Capture noise filter clock is PCLK divide by 128 \hideinitializer */
+
+#define LPTMR_CMP_MAX_VALUE                     (0xFFFFFFUL)                        /*!< Max LPTMR compare value \hideinitializer */
 
 #define LPTMR_OK                                ( 0L)    /*!< LPTMR operation OK \hideinitializer */
 #define LPTMR_ERR_FAIL                          (-1L)    /*!< LPTMR operation failed \hideinitializer */
@@ -446,14 +448,14 @@ __STATIC_INLINE uint32_t LPTMR_GetCaptureIntFlag(LPTMR_T *lptmr)
 }
 
 /**
-  * @brief      Get LPTMR Capture Interrupt Flag Overrun
+  * @brief      Get LPTMR Capture Interrupt Flag Overrun Status
   *
   * @param[in]  lptmr   The pointer of the specified LPTMR module. It could be LPTMR0, LPTMR1.
   *
-  * @retval     0   LPTMR capture interrupt did not Overrun
-  * @retval     1   LPTMR capture interrupt Overrun
+  * @retval     0   LPTMR capture interrupt did not overrun
+  * @retval     1   LPTMR capture interrupt overrun
   *
-  * @details    This function indicates lptmr capture trigger interrupt Overrun or not.
+  * @details    This function indicates lptmr capture trigger interrupt overrun or not.
   */
 __STATIC_INLINE uint32_t LPTMR_GetCaptureIntFlagOV(LPTMR_T *lptmr)
 {
@@ -532,7 +534,7 @@ __STATIC_INLINE uint32_t LPTMR_GetCounter(LPTMR_T *lptmr)
 }
 
 /**
-  * @brief      Enable Power-down Engine Clock
+  * @brief      Enable LPTMR Power-down Engine Clock
   *
   * @param[in]  lptmr       The pointer of the specified lptmr module. It could be LPTMR0, LPTMR1.
   *
@@ -546,7 +548,7 @@ __STATIC_INLINE void LPTMR_EnablePDCLK(LPTMR_T *lptmr)
 }
 
 /**
-  * @brief      Disable Power-down Engine Clock
+  * @brief      Disable LPTMR Power-down Engine Clock
   *
   * @param[in]  lptmr       The pointer of the specified lptmr module. It could be LPTMR0, LPTMR1.
   *
@@ -560,10 +562,10 @@ __STATIC_INLINE void LPTMR_DisablePDCLK(LPTMR_T *lptmr)
 }
 
 /**
-  * @brief      Select LPtmr Event Counter Source
+  * @brief      Select LPTMR Event Counter Source
   *
   * @param[in]  lptmr       The pointer of the specified LPTMR module. It could be LPTMR0, LPTMR1.
-  * @param[in]  u32Src      LPtmr Event Counter source. Possible values are
+  * @param[in]  u32Src      LPTMR Event Counter source. Possible values are
   *                         - \ref LPTMR_EVENT_COUNTER_SOURCE_TMX
   *                         - \ref LPTMR_EVENT_COUNTER_SOURCE_ACMP0
   *                         - \ref LPTMR_EVENT_COUNTER_SOURCE_ACMP1
@@ -571,7 +573,7 @@ __STATIC_INLINE void LPTMR_DisablePDCLK(LPTMR_T *lptmr)
   *                         - \ref LPTMR_EVENT_COUNTER_SOURCE_ACMP3
   * @return     None
   *
-  * @details    This API is used to select lptmr Event Counter source from TMx or internal singal.
+  * @details    This API is used to select lptmr Event Counter source from LPTMx or internal singal.
   */
 __STATIC_INLINE void LPTMR_EventCounterSelect(LPTMR_T *lptmr, uint32_t u32Src)
 {

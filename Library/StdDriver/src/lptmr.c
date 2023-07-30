@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     lptmr.c
  * @version  V1.00
- * @brief    LPTMR driver source file
+ * @brief    LPTMR Controller (Low Power Timer) driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -165,7 +165,7 @@ int32_t LPTMR_Delay(LPTMR_T *lptmr, uint32_t u32Usec)
 
     while (lptmr->CTL & LPTMR_CTL_ACTSTS_Msk)
     {
-        /* Bailed out if timer stop counting e.g. Some interrupt handler close timer clock source. */
+        /* Bailed out if lptmr stop counting e.g. Some interrupt handler close lptmr clock source. */
         if (u32Cntr == lptmr->CNT)
         {
             if (i++ > delay)
@@ -216,7 +216,6 @@ void LPTMR_EnableCapture(LPTMR_T *lptmr, uint32_t u32CapMode, uint32_t u32Edge)
   * @param[in]  lptmr       The pointer of the specified LPTMR module. It could be LPTMR0, LPTMR1.
   * @param[in]  u32Src      LPtmr capture source. Possible values are
   *                         - \ref LPTMR_CAPTURE_FROM_EXTERNAL
-  *                         - \ref LPTMR_CAPTURE_FROM_INTERNAL
   *                         - \ref LPTMR_CAPTURE_FROM_ACMP0
   *                         - \ref LPTMR_CAPTURE_FROM_ACMP1
   *                         - \ref LPTMR_CAPTURE_FROM_ACMP2
@@ -322,6 +321,10 @@ uint32_t LPTMR_GetModuleClock(LPTMR_T *lptmr)
     {
         u32Clk = CLK_GetPCLK4Freq();
     }
+    else if (u32Src == 3UL)
+    {
+        u32Clk = CLK_GetMIRCFreq();
+    }
     else
     {
         u32Clk = au32Clk[u32Src];
@@ -357,7 +360,7 @@ void LPTMR_SetTriggerTarget(LPTMR_T *lptmr, uint32_t u32Mask)
 }
 
 /**
-  * @brief      Reset Counter
+  * @brief      Reset LPTMR Counter
   *
   * @param[in]  lptmr       The pointer of the specified LPTMR module. It could be LPTMR0, LPTMR1.
   *
@@ -379,7 +382,7 @@ int32_t LPTMR_ResetCounter(LPTMR_T *lptmr)
         __NOP();
     }
 
-    return u32Delay > 0 ? LPTMR_OK : LPTMR_ERR_TIMEOUT;
+    return ((u32Delay > 0) ? LPTMR_OK : LPTMR_ERR_TIMEOUT);
 }
 
 /**

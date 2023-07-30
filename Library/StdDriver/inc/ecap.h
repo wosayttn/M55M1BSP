@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     ecap.h
  * @version  V1.00
- * @brief    ECAP driver header file
+ * @brief    Enhanced input capture timer (ECAP) driver header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -63,11 +63,6 @@ extern "C"
 #define ECAP_FALLING_EDGE                      (1UL<<ECAP_CTL1_EDGESEL0_Pos)   /*!< ECAP capture falling edge selection                     \hideinitializer */
 #define ECAP_RISING_FALLING_EDGE               (2UL<<ECAP_CTL1_EDGESEL0_Pos)   /*!< ECAP capture either rising or falling edge selection    \hideinitializer */
 
-#define ECAP_RELOAD_TRIG_SRC_CAPF0             (ECAP_CTL1_CAP0RLDEN_Msk)    /*!< ECAP counter reload trigger source CAPF0 selection */
-#define ECAP_RELOAD_TRIG_SRC_CAPF1             (ECAP_CTL1_CAP1RLDEN_Msk)    /*!< ECAP counter reload trigger source CAPF1 selection */
-#define ECAP_RELOAD_TRIG_SRC_CAPF2             (ECAP_CTL1_CAP2RLDEN_Msk)    /*!< ECAP counter reload trigger source CAPF2 selection */
-#define ECAP_RELOAD_TRIG_SRC_OVF               (ECAP_CTL1_OVRLDEN_Msk)    /*!< ECAP counter reload trigger source OVF selection   */
-
 #define ECAP_CAPTURE_TIMER_CLKDIV_1            (0UL<<ECAP_CTL1_CLKSEL_Pos)    /*!< ECAP capture timer clock divide by 1   \hideinitializer */
 #define ECAP_CAPTURE_TIMER_CLKDIV_4            (1UL<<ECAP_CTL1_CLKSEL_Pos)    /*!< ECAP capture timer clock divide by 4   \hideinitializer */
 #define ECAP_CAPTURE_TIMER_CLKDIV_16           (2UL<<ECAP_CTL1_CLKSEL_Pos)    /*!< ECAP capture timer clock divide by 16  \hideinitializer */
@@ -99,7 +94,7 @@ extern "C"
   *                  - \ref ECAP_NOISE_FILTER_CLKDIV_32
   *                  - \ref ECAP_NOISE_FILTER_CLKDIV_64
   * @return None
-  * @details This macro will set the sampling frequency of the noise filter cock.
+  * @details This macro will set the sampling frequency of the noise filter clock.
   * \hideinitializer
   */
 #define ECAP_SET_NOISE_FILTER_CLKDIV(ecap, u32ClkSel) ((ecap)->CTL0 = ((ecap)->CTL0 & ~ECAP_CTL0_NFCLKSEL_Msk)|(u32ClkSel))
@@ -293,7 +288,6 @@ extern "C"
   * @details This macro will disable the reload function.
   */
 #define ECAP_DISABLE_RELOAD(ecap) ((ecap)->CTL1 &= ~(ECAP_CTL1_CAP0RLDEN_Msk|ECAP_CTL1_CAP1RLDEN_Msk|ECAP_CTL1_CAP2RLDEN_Msk|ECAP_CTL1_OVRLDEN_Msk))
-#define ECAP_SEL_ALLRLDCLR_TRIG_SRC      ECAP_DISABLE_RELOAD
 
 /**
   * @brief This macro is used to enable compare function
@@ -354,10 +348,10 @@ extern "C"
   * @brief This macro is used to select ECAP counter reload trigger source
   * @param[in] ecap      Specify ECAP port
   * @param[in] u32TrigSrc The input source
-  *                  - \ref ECAP_RELOAD_TRIG_SRC_CAPF0
-  *                  - \ref ECAP_RELOAD_TRIG_SRC_CAPF1
-  *                  - \ref ECAP_RELOAD_TRIG_SRC_CAPF2
-  *                  - \ref ECAP_RELOAD_TRIG_SRC_OVF
+  *                  - \ref ECAP_CTL1_CAP0RLDEN_Msk
+  *                  - \ref ECAP_CTL1_CAP1RLDEN_Msk
+  *                  - \ref ECAP_CTL1_CAP2RLDEN_Msk
+  *                  - \ref ECAP_CTL1_OVRLDEN_Msk
   * @return None
   * @details This macro will select capture counter reload trigger source.
   * \hideinitializer

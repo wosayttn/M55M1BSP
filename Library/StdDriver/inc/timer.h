@@ -602,7 +602,6 @@ void TIMER_EnableCapture(TIMER_T *timer, uint32_t u32CapMode, uint32_t u32Edge);
 void TIMER_CaptureSelect(TIMER_T *timer, uint32_t u32Src);
 void TIMER_DisableCapture(TIMER_T *timer);
 void TIMER_EnableEventCounter(TIMER_T *timer, uint32_t u32Edge);
-//void TIMER_EventCounterSelect(TIMER_T *timer, uint32_t u32Src);
 void TIMER_DisableEventCounter(TIMER_T *timer);
 uint32_t TIMER_GetModuleClock(TIMER_T *timer);
 void TIMER_EnableFreqCounter(TIMER_T *timer,

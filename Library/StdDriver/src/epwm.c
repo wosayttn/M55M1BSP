@@ -64,7 +64,7 @@ uint32_t EPWM_ConfigCaptureChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_
         }
         else     /* (epwm == EPWM1) */
         {
-            u32EPWMClockSrc = CLK_GetPCLK1Freq();
+            u32EPWMClockSrc = CLK_GetPCLK2Freq();
         }
     }
 
@@ -81,18 +81,10 @@ uint32_t EPWM_ConfigCaptureChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_
             {
                 u32Exit = 1U;
             }
-            else
-            {
-                u32Exit = 0U;
-            }
 
             if (!((1000000U * (u16Prescale + 1U) > (u32NearestUnitTimeNsec * u32EPWMClockSrc))))
             {
                 u32Exit = 1U;
-            }
-            else
-            {
-                u32Exit = 0U;
             }
         }
         else
@@ -100,15 +92,13 @@ uint32_t EPWM_ConfigCaptureChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_
             u32Exit = 1U;
         }
 
-        if (u32Exit == 1U)
+        if (u32Exit)
         {
             break;
         }
-        else {}
     }
 
     /* convert to real register value */
-    /* every two channels share a prescaler */
     u16Prescale -= 1U;
     EPWM_SET_PRESCALER(epwm, u32ChannelNum, u16Prescale);
 
@@ -130,8 +120,6 @@ uint32_t EPWM_ConfigCaptureChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_
  * @param[in] u32Frequency Target generator frequency
  * @param[in] u32DutyCycle Target generator duty cycle percentage. Valid range are between 0 ~ 100. 10 means 10%, 20 means 20%...
  * @return Nearest frequency clock in nano second
- * @note Since every two channels, (0 & 1), (2 & 3), shares a prescaler. Call this API to configure EPWM frequency may affect
- *       existing frequency of other channel.
  * @note This function is used for initial stage.
  *       To change duty cycle later, it should get the configured period value and calculate the new comparator value.
  */
@@ -167,7 +155,7 @@ uint32_t EPWM_ConfigOutputChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t
         }
         else     /* (epwm == EPWM1) */
         {
-            u32EPWMClockSrc = CLK_GetPCLK1Freq();
+            u32EPWMClockSrc = CLK_GetPCLK2Freq();
         }
     }
 
@@ -187,7 +175,6 @@ uint32_t EPWM_ConfigOutputChannel(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t
     i = u32EPWMClockSrc / (u32Prescale * u32CNR);
 
     /* convert to real register value */
-    /* every two channels share a prescaler */
     u32Prescale -= 1U;
     EPWM_SET_PRESCALER(epwm, u32ChannelNum, u32Prescale);
     /* set EPWM to up counter type(edge aligned) and auto-reload mode */
@@ -281,8 +268,8 @@ void EPWM_ForceStop(EPWM_T *epwm, uint32_t u32ChannelMask)
  *                  - \ref EPWM_TRG_ADC_CH_2_FREE_CMP_DOWN
  *                  - \ref EPWM_TRG_ADC_CH_4_FREE_CMP_UP
  *                  - \ref EPWM_TRG_ADC_CH_4_FREE_CMP_DOWN
- *                  - \ref EPWM_TRG_ADC_EVEN_IFACC
- *                  - \ref EPWM_TRG_ADC_ODD_IFACC
+ *                  - \ref EPWM_TRG_ADC_EVEN_IFA
+ *                  - \ref EPWM_TRG_ADC_ODD_IFA
  * @return None
  * @details This function is used to enable selected channel to trigger ADC.
  */
@@ -478,20 +465,26 @@ uint32_t EPWM_GetDACTriggerFlag(EPWM_T *epwm, uint32_t u32ChannelNum)
  * @param[in] u32LevelMask Output high or low while fault brake occurs, each bit represent the level of a channel
  *                         while fault brake occurs. Bit 0 represents channel 0, bit 1 represents channel 1...
  * @param[in] u32BrakeSource Fault brake source, could be one of following source
- *                  - \ref EPWM_FB_EDGE_ADCRM
  *                  - \ref EPWM_FB_EDGE_ACMP0
  *                  - \ref EPWM_FB_EDGE_ACMP1
+ *                  - \ref EPWM_FB_EDGE_ACMP2
  *                  - \ref EPWM_FB_EDGE_BKP0
  *                  - \ref EPWM_FB_EDGE_BKP1
+ *                  - \ref EPWM_FB_EDGE_VBSN
+ *                  - \ref EPWM_FB_EDGE_ADCRM
+ *                  - \ref EPWM_FB_EDGE_VBSR
  *                  - \ref EPWM_FB_EDGE_SYS_CSS
  *                  - \ref EPWM_FB_EDGE_SYS_BOD
  *                  - \ref EPWM_FB_EDGE_SYS_RAM
  *                  - \ref EPWM_FB_EDGE_SYS_COR
- *                  - \ref EPWM_FB_LEVEL_ADCRM
  *                  - \ref EPWM_FB_LEVEL_ACMP0
  *                  - \ref EPWM_FB_LEVEL_ACMP1
+ *                  - \ref EPWM_FB_LEVEL_ACMP2
  *                  - \ref EPWM_FB_LEVEL_BKP0
  *                  - \ref EPWM_FB_LEVEL_BKP1
+ *                  - \ref EPWM_FB_LEVEL_VBSN
+ *                  - \ref EPWM_FB_LEVEL_ADCRM
+ *                  - \ref EPWM_FB_LEVEL_VBSR
  *                  - \ref EPWM_FB_LEVEL_SYS_CSS
  *                  - \ref EPWM_FB_LEVEL_SYS_BOD
  *                  - \ref EPWM_FB_LEVEL_SYS_RAM
@@ -656,25 +649,6 @@ void EPWM_DisablePDMA(EPWM_T *epwm, uint32_t u32ChannelNum)
 }
 
 /**
- * @brief Enable Dead zone of selected channel
- * @param[in] epwm The pointer of the specified EPWM module
- *                - EPWM0 : EPWM Group 0
- *                - EPWM1 : EPWM Group 1
- * @param[in] u32ChannelNum EPWM channel number. Valid values are between 0~5
- * @param[in] u32Duration Dead zone length in EPWM clock count, valid values are between 0~0xFFF, but 0 means there is no Dead zone.
- * @return None
- * @details This function is used to enable Dead zone of selected channel.
- *          The write-protection function should be disabled before using this function.
- * @note Every two channels share the same setting.
- */
-//void EPWM_EnableDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32Duration)
-//{
-//    /* every two channels share the same setting */
-//    (epwm)->DTCTL[(u32ChannelNum) >> 1U] &= ~EPWM_DTCTL0_1_DTCNT_Msk;
-//    (epwm)->DTCTL[(u32ChannelNum) >> 1U] |= EPWM_DTCTL0_1_DTEN_Msk | u32Duration;
-//}
-
-/**
  * @brief Enable Falling Dead zone of selected channel
  * @param[in] epwm The pointer of the specified EPWM module
  *                - EPWM0 : EPWM Group 0
@@ -711,22 +685,6 @@ void EPWM_EnableRisingDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u3
     (epwm)->DTCTL |= (EPWM_DTCTL_RDTEN0_Msk << ((u32ChannelNum) >> 1U));
     (epwm)->RDTCNT[(u32ChannelNum) >> 1U] |= u32RDuration;
 }
-
-/**
- * @brief Disable Dead zone of selected channel
- * @param[in] epwm The pointer of the specified EPWM module
- *                - EPWM0 : EPWM Group 0
- *                - EPWM1 : EPWM Group 1
- * @param[in] u32ChannelNum EPWM channel number. Valid values are between 0~5
- * @return None
- * @details This function is used to disable Dead zone of selected channel.
- *          The write-protection function should be disabled before using this function.
- */
-//void EPWM_DisableDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum)
-//{
-//    /* every two channels shares the same setting */
-//    (epwm)->DTCTL[(u32ChannelNum) >> 1U] &= ~EPWM_DTCTL0_1_DTEN_Msk;
-//}
 
 /**
  * @brief Disable Falling Dead zone of selected channel
@@ -825,8 +783,7 @@ void EPWM_ClearCaptureIntFlag(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32
  */
 uint32_t EPWM_GetCaptureIntFlag(EPWM_T *epwm, uint32_t u32ChannelNum)
 {
-    
-   return (((((epwm)->CAPIF & (EPWM_CAPIF_CFLIF0_Msk << u32ChannelNum)) ? 1UL : 0UL) << 1) | \
+    return (((((epwm)->CAPIF & (EPWM_CAPIF_CFLIF0_Msk << u32ChannelNum)) ? 1UL : 0UL) << 1) | \
             (((epwm)->CAPIF & (EPWM_CAPIF_CRLIF0_Msk << u32ChannelNum)) ? 1UL : 0UL));
 }
 /**

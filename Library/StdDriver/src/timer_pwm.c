@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     timer_pwm.c
  * @version  V1.00
- * @brief    TIMER_PWM driver source file
+ * @brief    Timer PWM Controller(TIMER_PWM) driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -58,13 +58,13 @@ uint32_t TPWM_ConfigOutputFreqAndDuty(TIMER_T *timer, uint32_t u32Frequency, uin
     uint32_t u32PWMClockFreq, u32TargetFreq;
     uint32_t u32Prescaler = 0x1000UL, u32Period, u32CMP;
 
-    if ((timer == TIMER0) || (timer == TIMER2))
+    if ((timer == TIMER0) || (timer == TIMER1))
     {
-        u32PWMClockFreq = CLK_GetPCLK0Freq();
+        u32PWMClockFreq = CLK_GetPCLK1Freq();
     }
     else
     {
-        u32PWMClockFreq = CLK_GetPCLK1Freq();
+        u32PWMClockFreq = CLK_GetPCLK3Freq();
     }
 
     /* Calculate u16PERIOD and u16PSC */

@@ -11,7 +11,7 @@
 #define __EPWM_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -2171,12 +2171,6 @@ typedef struct
     /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t FDEN;                  /*!< [0x0160] EPWM Fault Detect Enable Register                                 */
     __IO uint32_t FDCTL[6];              /*!< [0x0164~0x178] EPWM Fault Detect Control Register 0~5                      */
-//    __IO uint32_t FDCTL0;                /*!< [0x0164] PWM  Register                            */
-//    __IO uint32_t FDCTL1;                /*!< [0x0168] PWM  Register                            */
-//    __IO uint32_t FDCTL2;                /*!< [0x016C] PWM  Register                            */
-//    __IO uint32_t FDCTL3;                /*!< [0x0170] PWM  Register                            */
-//    __IO uint32_t FDCTL4;                /*!< [0x0174] PWM  Register                            */
-//    __IO uint32_t FDCTL5;                /*!< [0x0178] PWM  Register                            */
     __IO uint32_t FDIEN;                 /*!< [0x017C] EPWM Fault Detect Interrupt Enable Register                       */
     __IO uint32_t FDSTS;                 /*!< [0x0180] EPWM Fault Detect Interrupt Flag Register                         */
     __IO uint32_t EADCPSCCTL;            /*!< [0x0184] EPWM Trigger EADC Prescale Control Register                       */
@@ -2190,59 +2184,31 @@ typedef struct
     __IO uint32_t CAPINEN;               /*!< [0x0200] EPWM Capture Input Enable Register                                */
     __IO uint32_t CAPCTL;                /*!< [0x0204] EPWM Capture Control Register                                     */
     __I  uint32_t CAPSTS;                /*!< [0x0208] EPWM Capture Status Register                                      */
-//    ECAPDAT_T CAPDAT[6];                  /*!< [0x020C] EPWM Rising and Falling Capture Data Register 0~5                 */
-    __I  uint32_t RCAPDAT0;      /* Offset: 0x20C  PWM Rising Capture Data Register 0                                */
-    __I  uint32_t FCAPDAT0;      /* Offset: 0x210  PWM Falling Capture Data Register 0                               */
-    __I  uint32_t RCAPDAT1;      /* Offset: 0x214  PWM Rising Capture Data Register 1                                */
-    __I  uint32_t FCAPDAT1;      /* Offset: 0x218  PWM Falling Capture Data Register 1                               */
-    __I  uint32_t RCAPDAT2;      /* Offset: 0x21C  PWM Rising Capture Data Register 2                                */
-    __I  uint32_t FCAPDAT2;      /* Offset: 0x220  PWM Falling Capture Data Register 2                               */
-    __I  uint32_t RCAPDAT3;      /* Offset: 0x224  PWM Rising Capture Data Register 3                                */
-    __I  uint32_t FCAPDAT3;      /* Offset: 0x228  PWM Falling Capture Data Register 3                               */
-    __I  uint32_t RCAPDAT4;      /* Offset: 0x22C  PWM Rising Capture Data Register 4                                */
-    __I  uint32_t FCAPDAT4;      /* Offset: 0x230  PWM Falling Capture Data Register 4                               */
-    __I  uint32_t RCAPDAT5;      /* Offset: 0x234  PWM Rising Capture Data Register 5                                */
-    __I  uint32_t FCAPDAT5;      /* Offset: 0x238  PWM Falling Capture Data Register 5                               */
+    ECAPDAT_T CAPDAT[6];                  /*!< [0x020C~0x238] EPWM Rising and Falling Capture Data Register 0~5                 */
     __IO uint32_t PDMACTL;               /*!< [0x023c] EPWM PDMA Control Register                                        */
-////    __I  uint32_t PDMACAP[3];            /*!< [0x0240] EPWM Capture Channel 01,23,45 PDMA Register                       */
-    __I  uint32_t PDMACAP0_1;    /* Offset: 0x240  PWM Capture Channel 01 PDMA Register                              */
-    __I  uint32_t PDMACAP2_3;    /* Offset: 0x244  PWM Capture Channel 23 PDMA Register                              */
-    __I  uint32_t PDMACAP4_5;    /* Offset: 0x248  PWM Capture Channel 45 PDMA Register                              */
+    __I  uint32_t PDMACAP[3];            /*!< [0x0240~0x248] EPWM Capture Channel 01,23,45 PDMA Register                       */
     /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE12[1];
     /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t CAPIEN;                /*!< [0x0250] EPWM Capture Interrupt Enable Register                            */
     __IO uint32_t CAPIF;                 /*!< [0x0254] EPWM Capture Interrupt Flag Register                              */
 
-	__IO uint32_t CAPNF[6];              /*!< [0x0258] EPWM Capture Input Noise Filter Register                          */
-	__IO uint32_t EXTETCTL[6];           /*!< [0x0270] EPWM External Event Trigger Control Register                      */
-	__IO uint32_t SWEOFCTL;           	 /*!< [0x0288] EPWM Software Event Output Force Control Register                 */
-	__IO uint32_t SWEOFTRG;           	 /*!< [0x028C] EPWM Software Event Output Force Trigger Register                 */
-	__IO uint32_t CLKPSC[6];             /*!< [0x0290] EPWM Clock Prescale 1 Register				                     	 */
-	__IO uint32_t RDTCNT[3];             /*!< [0x02A8~0x02B0] EPWM Rising Dead-time 01,23,45 Counter Register 		                 	 */
-//	__IO uint32_t RDTCNT0_1;             /*!< [0x02A8] EPWM Rising Dead-time 01 Counter Register 		                 	 */
-//	__IO uint32_t RDTCNT2_3;             /*!< [0x02AC] EPWM Rising Dead-time 23 Counter Register 		                 	 */
-//	__IO uint32_t RDTCNT4_5;             /*!< [0x02B0] EPWM Rising Dead-time 45 Counter Register 		                 	 */
-	__IO uint32_t FDTCNT[3];             /*!< [0x02B4~0x02BC] EPWM Falling Dead-time 01,23,45 Counter Register 		                 	 */
-//	__IO uint32_t FDTCNT0_1;             /*!< [0x02B4] EPWM Falling Dead-time 01 Counter Register 		                 	 */
-//	__IO uint32_t FDTCNT2_3;             /*!< [0x02B8] EPWM Falling Dead-time 23 Counter Register 		                 	 */
-//	__IO uint32_t FDTCNT4_5;             /*!< [0x02BC] EPWM Falling Dead-time 45 Counter Register 		                 	 */
-	__IO uint32_t DTCTL;           	 /*!< [0x02C0] EPWM Dead-Time Control 0 Register					        	 	 */
+    __IO uint32_t CAPNF[6];              /*!< [0x0258] EPWM Capture Input Noise Filter Register                          */
+    __IO uint32_t EXTETCTL[6];           /*!< [0x0270] EPWM External Event Trigger Control Register                      */
+    __IO uint32_t SWEOFCTL;              /*!< [0x0288] EPWM Software Event Output Force Control Register                 */
+    __IO uint32_t SWEOFTRG;              /*!< [0x028C] EPWM Software Event Output Force Trigger Register                 */
+    __IO uint32_t CLKPSC[6];             /*!< [0x0290] EPWM Clock Prescale 1 Register                                        */
+    __IO uint32_t RDTCNT[3];             /*!< [0x02A8~0x02B0] EPWM Rising Dead-time 01,23,45 Counter Register                            */
+    __IO uint32_t FDTCNT[3];             /*!< [0x02B4~0x02BC] EPWM Falling Dead-time 01,23,45 Counter Register                           */
+    __IO uint32_t DTCTL;             /*!< [0x02C0] EPWM Dead-Time Control 0 Register                                     */
 
     /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE13[16];
-//    __I  uint32_t RESERVE13[43];
     /// @endcond //HIDDEN_SYMBOLS
     __I  uint32_t PBUF[6];               /*!< [0x0304] EPWM PERIOD0~5 Buffer                                             */
     __I  uint32_t CMPBUF[6];             /*!< [0x031c] EPWM CMPDAT0~5 Buffer                                             */
     __I  uint32_t RESERVE14[3];          /*!< [0x0334] OLD EPWM CPSCBUF0_1/2_3/4_5 Buffer                                     */
-//    __I  uint32_t CPSCBUF0_1;    /* Offset: 0x334  PWM CLKPSC0_1 Buffer                                              */
-//    __I  uint32_t CPSCBUF2_3;    /* Offset: 0x338  PWM CLKPSC2_3 Buffer                                              */
-//    __I  uint32_t CPSCBUF4_5;    /* Offset: 0x33C  PWM CLKPSC4_5 Buffer                                              */
-//    __I  uint32_t FTCBUF[3];             /*!< [0x0340] EPWM FTCMPDAT0_1/2_3/4_5 Buffer                                   */
-    __I  uint32_t FTCBUF0_1;     /* Offset: 0x340  PWM FTCMPDAT0_1 Buffer                                            */
-    __I  uint32_t FTCBUF2_3;     /* Offset: 0x344  PWM FTCMPDAT2_3 Buffer                                            */
-    __I  uint32_t FTCBUF4_5;     /* Offset: 0x348  PWM FTCMPDAT4_5 Buffer                                            */
+    __I  uint32_t FTCBUF[3];             /*!< [0x0340~0x348] EPWM FTCMPDAT0_1/2_3/4_5 Buffer                                   */
     __IO uint32_t FTCI;                  /*!< [0x034c] EPWM FTCMPDAT Indicator Register                                  */
     __I  uint32_t CPSCBUF[6];            /*!< [0x0350] EPWM CPSCBUF0,1,2,3,4,5 Buffer                                     */
     __I  uint32_t IFACNT[6];             /*!< [0x0368] EPWM IFACNT0,1,2,3,4,5 Buffer                                     */
@@ -4093,95 +4059,95 @@ typedef struct
 #define EPWM_CAPIF_CFLIF5_Pos             (13)                                              /*!< EPWM_T::CAPIF: CFLIF5 Position          */
 #define EPWM_CAPIF_CFLIF5_Msk             (0x1ul << EPWM_CAPIF_CFLIF5_Pos)                   /*!< EPWM_T::CAPIF: CFLIF5 Mask              */
 
-#define EPWM_CAPNF_CAPNFEN_Pos			  (0)                                               /*!< EPWM_T::CAPNF: CAPNFEN Position	     */
-#define EPWM_CAPNF_CAPNFEN_Msk  	      (0x1ul << EPWM_CAPNF_CAPNFEN_Pos)             	/*!< EPWM_T::CAPNF: CAPNFEN Mask        	 */
+#define EPWM_CAPNF_CAPNFEN_Pos            (0)                                               /*!< EPWM_T::CAPNF: CAPNFEN Position         */
+#define EPWM_CAPNF_CAPNFEN_Msk            (0x1ul << EPWM_CAPNF_CAPNFEN_Pos)                 /*!< EPWM_T::CAPNF: CAPNFEN Mask             */
 
-#define EPWM_CAPNF_CAPNFSEL_Pos			  (4)                                               /*!< EPWM_T::CAPNF: CAPNFSEL Position	     */
-#define EPWM_CAPNF_CAPNFSEL_Msk  	      (0x7ul << EPWM_CAPNF_CAPNFSEL_Pos)             	/*!< EPWM_T::CAPNF: CAPNFSEL Mask        	 */
+#define EPWM_CAPNF_CAPNFSEL_Pos           (4)                                               /*!< EPWM_T::CAPNF: CAPNFSEL Position        */
+#define EPWM_CAPNF_CAPNFSEL_Msk           (0x7ul << EPWM_CAPNF_CAPNFSEL_Pos)                /*!< EPWM_T::CAPNF: CAPNFSEL Mask            */
 
-#define EPWM_CAPNF_CAPNFCNT_Pos			  (8)                                               /*!< EPWM_T::CAPNF: CAPNFCNT Position	     */
-#define EPWM_CAPNF_CAPNFCNT_Msk  	      (0x7ul << EPWM_CAPNF_CAPNFCNT_Pos)             	/*!< EPWM_T::CAPNF: CAPNFCNT Mask        	 */
+#define EPWM_CAPNF_CAPNFCNT_Pos           (8)                                               /*!< EPWM_T::CAPNF: CAPNFCNT Position        */
+#define EPWM_CAPNF_CAPNFCNT_Msk           (0x7ul << EPWM_CAPNF_CAPNFCNT_Pos)                /*!< EPWM_T::CAPNF: CAPNFCNT Mask            */
 
-#define EPWM_EXTETCTL_EXTETEN_Pos         (0)  		                                         /*!< EPWM_T::EXTETCTL: EXTETEN Position     */
+#define EPWM_EXTETCTL_EXTETEN_Pos         (0)                                                /*!< EPWM_T::EXTETCTL: EXTETEN Position     */
 #define EPWM_EXTETCTL_EXTETEN_Msk         (0x1ul << EPWM_EXTETCTL_EXTETEN_Pos)               /*!< EPWM_T::EXTETCTL: EXTETEN Position     */
 
-#define EPWM_EXTETCTL_CNTACTS_Pos         (4)  		                                         /*!< EPWM_T::EXTETCTL: CNTACTS Position     */
+#define EPWM_EXTETCTL_CNTACTS_Pos         (4)                                                /*!< EPWM_T::EXTETCTL: CNTACTS Position     */
 #define EPWM_EXTETCTL_CNTACTS_Msk         (0x3ul << EPWM_EXTETCTL_CNTACTS_Pos)               /*!< EPWM_T::EXTETCTL: CNTACTS Position     */
 
-#define EPWM_EXTETCTL_EXTTRGS_Pos         (8)  		                                      	 /*!< EPWM_T::EXTETCTL: EXTTRGS Position     */
+#define EPWM_EXTETCTL_EXTTRGS_Pos         (8)                                                /*!< EPWM_T::EXTETCTL: EXTTRGS Position     */
 #define EPWM_EXTETCTL_EXTTRGS_Msk         (0xful << EPWM_EXTETCTL_EXTTRGS_Pos)               /*!< EPWM_T::EXTETCTL: EXTTRGS Position     */
 
-#define EPWM_SWEOFCTL_OUTACTS0_Pos		  (0)                                               /*!< EPWM_T::SWEOFCTL: OUTACTS0 Position     */
+#define EPWM_SWEOFCTL_OUTACTS0_Pos        (0)                                               /*!< EPWM_T::SWEOFCTL: OUTACTS0 Position     */
 #define EPWM_SWEOFCTL_OUTACTS0_Msk        (0x3ul << EPWM_SWEOFCTL_OUTACTS0_Pos)             /*!< EPWM_T::SWEOFCTL: OUTACTS0 Mask         */
 
-#define EPWM_SWEOFCTL_OUTACTS1_Pos		  (2)                                               /*!< EPWM_T::SWEOFCTL: OUTACTS1 Position     */
+#define EPWM_SWEOFCTL_OUTACTS1_Pos        (2)                                               /*!< EPWM_T::SWEOFCTL: OUTACTS1 Position     */
 #define EPWM_SWEOFCTL_OUTACTS1_Msk        (0x3ul << EPWM_SWEOFCTL_OUTACTS1_Pos)             /*!< EPWM_T::SWEOFCTL: OUTACTS1 Mask         */
 
-#define EPWM_SWEOFCTL_OUTACTS2_Pos		  (4)                                               /*!< EPWM_T::SWEOFCTL: OUTACTS2 Position     */
+#define EPWM_SWEOFCTL_OUTACTS2_Pos        (4)                                               /*!< EPWM_T::SWEOFCTL: OUTACTS2 Position     */
 #define EPWM_SWEOFCTL_OUTACTS2_Msk        (0x3ul << EPWM_SWEOFCTL_OUTACTS2_Pos)             /*!< EPWM_T::SWEOFCTL: OUTACTS2 Mask         */
 
-#define EPWM_SWEOFCTL_OUTACTS3_Pos		  (6)                                               /*!< EPWM_T::SWEOFCTL: OUTACTS3 Position     */
+#define EPWM_SWEOFCTL_OUTACTS3_Pos        (6)                                               /*!< EPWM_T::SWEOFCTL: OUTACTS3 Position     */
 #define EPWM_SWEOFCTL_OUTACTS3_Msk        (0x3ul << EPWM_SWEOFCTL_OUTACTS3_Pos)             /*!< EPWM_T::SWEOFCTL: OUTACTS3 Mask         */
 
-#define EPWM_SWEOFCTL_OUTACTS4_Pos		  (8)                                               /*!< EPWM_T::SWEOFCTL: OUTACTS4 Position     */
+#define EPWM_SWEOFCTL_OUTACTS4_Pos        (8)                                               /*!< EPWM_T::SWEOFCTL: OUTACTS4 Position     */
 #define EPWM_SWEOFCTL_OUTACTS4_Msk        (0x3ul << EPWM_SWEOFCTL_OUTACTS4_Pos)             /*!< EPWM_T::SWEOFCTL: OUTACTS4 Mask         */
 
-#define EPWM_SWEOFCTL_OUTACTS5_Pos		  (10)                                              /*!< EPWM_T::SWEOFCTL: OUTACTS5 Position     */
+#define EPWM_SWEOFCTL_OUTACTS5_Pos        (10)                                              /*!< EPWM_T::SWEOFCTL: OUTACTS5 Position     */
 #define EPWM_SWEOFCTL_OUTACTS5_Msk        (0x3ul << EPWM_SWEOFCTL_OUTACTS5_Pos)             /*!< EPWM_T::SWEOFCTL: OUTACTS5 Mask         */
 
-#define EPWM_SWEOFTRG_SWETRG0_Pos		  (0)                                               /*!< EPWM_T::SWEOFTRG: SWETRG0 Position     */
+#define EPWM_SWEOFTRG_SWETRG0_Pos         (0)                                               /*!< EPWM_T::SWEOFTRG: SWETRG0 Position     */
 #define EPWM_SWEOFTRG_SWETRG0_Msk         (0x1ul << EPWM_SWEOFTRG_SWETRG0_Pos)              /*!< EPWM_T::SWEOFTRG: SWETRG0 Mask         */
 
-#define EPWM_SWEOFTRG_SWETRG1_Pos		  (1)                                               /*!< EPWM_T::SWEOFTRG: SWETRG1 Position     */
+#define EPWM_SWEOFTRG_SWETRG1_Pos         (1)                                               /*!< EPWM_T::SWEOFTRG: SWETRG1 Position     */
 #define EPWM_SWEOFTRG_SWETRG1_Msk         (0x1ul << EPWM_SWEOFTRG_SWETRG1_Pos)              /*!< EPWM_T::SWEOFTRG: SWETRG1 Mask         */
 
-#define EPWM_SWEOFTRG_SWETRG2_Pos		  (2)                                               /*!< EPWM_T::SWEOFTRG: SWETRG2 Position     */
+#define EPWM_SWEOFTRG_SWETRG2_Pos         (2)                                               /*!< EPWM_T::SWEOFTRG: SWETRG2 Position     */
 #define EPWM_SWEOFTRG_SWETRG2_Msk         (0x1ul << EPWM_SWEOFTRG_SWETRG2_Pos)              /*!< EPWM_T::SWEOFTRG: SWETRG2 Mask         */
 
-#define EPWM_SWEOFTRG_SWETRG3_Pos		  (3)                                               /*!< EPWM_T::SWEOFTRG: SWETRG3 Position     */
+#define EPWM_SWEOFTRG_SWETRG3_Pos         (3)                                               /*!< EPWM_T::SWEOFTRG: SWETRG3 Position     */
 #define EPWM_SWEOFTRG_SWETRG3_Msk         (0x1ul << EPWM_SWEOFTRG_SWETRG3_Pos)              /*!< EPWM_T::SWEOFTRG: SWETRG3 Mask         */
 
-#define EPWM_SWEOFTRG_SWETRG4_Pos		  (4)                                               /*!< EPWM_T::SWEOFTRG: SWETRG4 Position     */
+#define EPWM_SWEOFTRG_SWETRG4_Pos         (4)                                               /*!< EPWM_T::SWEOFTRG: SWETRG4 Position     */
 #define EPWM_SWEOFTRG_SWETRG4_Msk         (0x1ul << EPWM_SWEOFTRG_SWETRG4_Pos)              /*!< EPWM_T::SWEOFTRG: SWETRG4 Mask         */
 
-#define EPWM_SWEOFTRG_SWETRG5_Pos		  (5)                                               /*!< EPWM_T::SWEOFTRG: SWETRG5 Position     */
+#define EPWM_SWEOFTRG_SWETRG5_Pos         (5)                                               /*!< EPWM_T::SWEOFTRG: SWETRG5 Position     */
 #define EPWM_SWEOFTRG_SWETRG5_Msk         (0x1ul << EPWM_SWEOFTRG_SWETRG5_Pos)              /*!< EPWM_T::SWEOFTRG: SWETRG5 Mask         */
 
 #define EPWM_CLKPSC_CLKPSC_Pos            (0)                                               /*!< EPWM_T::CLKPSC: CLKPSC Position        */
-#define EPWM_CLKPSC_CLKPSC_Msk            (0xffful << EPWM_CLKPSC_CLKPSC_Pos)              	/*!< EPWM_T::CLKPSC: CLKPSC Mask         	*/
+#define EPWM_CLKPSC_CLKPSC_Msk            (0xffful << EPWM_CLKPSC_CLKPSC_Pos)               /*!< EPWM_T::CLKPSC: CLKPSC Mask            */
 
 #define EPWM_RDTCNT_RDTCNT_Pos            (0)                                               /*!< EPWM_T::RDTCNT: RDTCNT Position        */
-#define EPWM_RDTCNT_RDTCNT_Msk            (0xffful << EPWM_RDTCNT_RDTCNT_Pos)              	/*!< EPWM_T::RDTCNT: RDTCNT Mask         	*/
+#define EPWM_RDTCNT_RDTCNT_Msk            (0xffful << EPWM_RDTCNT_RDTCNT_Pos)               /*!< EPWM_T::RDTCNT: RDTCNT Mask            */
 
 #define EPWM_FDTCNT_FDTCNT_Pos            (0)                                               /*!< EPWM_T::FDTCNT: FDTCNT Position        */
-#define EPWM_FDTCNT_FDTCNT_Msk            (0xffful << EPWM_FDTCNT_FDTCNT_Pos)              	/*!< EPWM_T::FDTCNT: FDTCNT Mask         	*/
+#define EPWM_FDTCNT_FDTCNT_Msk            (0xffful << EPWM_FDTCNT_FDTCNT_Pos)               /*!< EPWM_T::FDTCNT: FDTCNT Mask            */
 
 #define EPWM_DTCTL_RDTEN0_Pos            (0)                                               /*!< EPWM_T::DTCTL: RDTEN0 Position        */
-#define EPWM_DTCTL_RDTEN0_Msk            (0x1ul << EPWM_DTCTL_RDTEN0_Pos)              	/*!< EPWM_T::DTCTL: RDTEN0 Mask         	*/
+#define EPWM_DTCTL_RDTEN0_Msk            (0x1ul << EPWM_DTCTL_RDTEN0_Pos)               /*!< EPWM_T::DTCTL: RDTEN0 Mask             */
 
 #define EPWM_DTCTL_RDTEN2_Pos            (1)                                               /*!< EPWM_T::DTCTL: RDTEN2 Position        */
-#define EPWM_DTCTL_RDTEN2_Msk            (0x1ul << EPWM_DTCTL_RDTEN2_Pos)              	/*!< EPWM_T::DTCTL: RDTEN0 Mask         	*/
+#define EPWM_DTCTL_RDTEN2_Msk            (0x1ul << EPWM_DTCTL_RDTEN2_Pos)               /*!< EPWM_T::DTCTL: RDTEN0 Mask             */
 
 #define EPWM_DTCTL_RDTEN4_Pos            (2)                                               /*!< EPWM_T::DTCTL: RDTEN4 Position        */
-#define EPWM_DTCTL_RDTEN4_Msk            (0x1ul << EPWM_DTCTL_RDTEN4_Pos)              	/*!< EPWM_T::DTCTL: RDTEN0 Mask         	*/
+#define EPWM_DTCTL_RDTEN4_Msk            (0x1ul << EPWM_DTCTL_RDTEN4_Pos)               /*!< EPWM_T::DTCTL: RDTEN0 Mask             */
 
 #define EPWM_DTCTL_FDTEN0_Pos            (8)                                               /*!< EPWM_T::DTCTL: FDTEN0 Position        */
-#define EPWM_DTCTL_FDTEN0_Msk            (0x1ul << EPWM_DTCTL_FDTEN0_Pos)              	/*!< EPWM_T::DTCTL: FDTEN0 Mask         	*/
+#define EPWM_DTCTL_FDTEN0_Msk            (0x1ul << EPWM_DTCTL_FDTEN0_Pos)               /*!< EPWM_T::DTCTL: FDTEN0 Mask             */
 
 #define EPWM_DTCTL_FDTEN2_Pos            (9)                                               /*!< EPWM_T::DTCTL: FDTEN2 Position        */
-#define EPWM_DTCTL_FDTEN2_Msk            (0x1ul << EPWM_DTCTL_FDTEN2_Pos)              	/*!< EPWM_T::DTCTL: FDTEN0 Mask         	*/
+#define EPWM_DTCTL_FDTEN2_Msk            (0x1ul << EPWM_DTCTL_FDTEN2_Pos)               /*!< EPWM_T::DTCTL: FDTEN0 Mask             */
 
 #define EPWM_DTCTL_FDTEN4_Pos            (10)                                              /*!< EPWM_T::DTCTL: FDTEN4 Position        */
-#define EPWM_DTCTL_FDTEN4_Msk            (0x1ul << EPWM_DTCTL_FDTEN4_Pos)              	/*!< EPWM_T::DTCTL: FDTEN0 Mask         	*/
+#define EPWM_DTCTL_FDTEN4_Msk            (0x1ul << EPWM_DTCTL_FDTEN4_Pos)               /*!< EPWM_T::DTCTL: FDTEN0 Mask             */
 
 #define EPWM_DTCTL_DTCKSEL0_Pos          (16)                                              /*!< EPWM_T::DTCTL: DTCKSEL0 Position      */
-#define EPWM_DTCTL_DTCKSEL0_Msk          (0x1ul << EPWM_DTCTL_DTCKSEL0_Pos)            	/*!< EPWM_T::DTCTL: DTCKSEL0 Mask         	*/
+#define EPWM_DTCTL_DTCKSEL0_Msk          (0x1ul << EPWM_DTCTL_DTCKSEL0_Pos)             /*!< EPWM_T::DTCTL: DTCKSEL0 Mask           */
 
 #define EPWM_DTCTL_DTCKSEL2_Pos          (17)                                              /*!< EPWM_T::DTCTL: DTCKSEL2 Position      */
-#define EPWM_DTCTL_DTCKSEL2_Msk          (0x1ul << EPWM_DTCTL_DTCKSEL2_Pos)            	/*!< EPWM_T::DTCTL: DTCKSEL0 Mask         	*/
+#define EPWM_DTCTL_DTCKSEL2_Msk          (0x1ul << EPWM_DTCTL_DTCKSEL2_Pos)             /*!< EPWM_T::DTCTL: DTCKSEL0 Mask           */
 
 #define EPWM_DTCTL_DTCKSEL4_Pos          (18 )                                             /*!< EPWM_T::DTCTL: DTCKSEL4 Position      */
-#define EPWM_DTCTL_DTCKSEL4_Msk          (0x1ul << EPWM_DTCTL_DTCKSEL4_Pos)           	/*!< EPWM_T::DTCTL: DTCKSEL0 Mask         	*/
+#define EPWM_DTCTL_DTCKSEL4_Msk          (0x1ul << EPWM_DTCTL_DTCKSEL4_Pos)             /*!< EPWM_T::DTCTL: DTCKSEL0 Mask           */
 
 #define EPWM_PBUF0_PBUF_Pos               (0)                                               /*!< EPWM_T::PBUF0: PBUF Position            */
 #define EPWM_PBUF0_PBUF_Msk               (0xfffful << EPWM_PBUF0_PBUF_Pos)                  /*!< EPWM_T::PBUF0: PBUF Mask                */
@@ -4266,7 +4232,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __EPWM_REG_H__ */

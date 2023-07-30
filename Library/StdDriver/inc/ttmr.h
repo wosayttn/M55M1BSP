@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     ttmr.h
  * @version  V1.00
- * @brief    TTMR driver header file
+ * @brief    TTMR (Tick Timer Controller) driver header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -30,14 +30,14 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /*  TTMR Operation Mode, External Counter and Capture Mode Constant Definitions                           */
 /*---------------------------------------------------------------------------------------------------------*/
-#define TTMR_ONESHOT_MODE                 (0UL << TTMR_CTL_OPMODE_Pos)      /*!< Timer working in one-shot mode \hideinitializer */
-#define TTMR_PERIODIC_MODE                (1UL << TTMR_CTL_OPMODE_Pos)      /*!< Timer working in periodic mode \hideinitializer */
-#define TTMR_CONTINUOUS_MODE              (3UL << TTMR_CTL_OPMODE_Pos)      /*!< Timer working in continuous counting mode \hideinitializer */
+#define TTMR_ONESHOT_MODE                 (0UL << TTMR_CTL_OPMODE_Pos)      /*!< TTMR working in one-shot mode \hideinitializer */
+#define TTMR_PERIODIC_MODE                (1UL << TTMR_CTL_OPMODE_Pos)      /*!< TTMR working in periodic mode \hideinitializer */
+#define TTMR_CONTINUOUS_MODE              (3UL << TTMR_CTL_OPMODE_Pos)      /*!< TTMR working in continuous counting mode \hideinitializer */
 
-#define TTMR_TRGEN                        (TTMR_TRGCTL_TRGEN_Msk)           /*!< Each ttmr event to trigger Low Power IP \hideinitializer */
-#define TTMR_TRG_TO_LPPDMA                (TTMR_TRGCTL_TRGLPPDMA_Msk)       /*!< Each ttmr event to trigger LPPDMA transfer \hideinitializer */
+#define TTMR_TRGEN                        (TTMR_TRGCTL_TRGEN_Msk)           /*!< Each TTMR event to trigger Low Power IP \hideinitializer */
+#define TTMR_TRG_TO_LPPDMA                (TTMR_TRGCTL_TRGLPPDMA_Msk)       /*!< Each TTMR event to trigger LPPDMA transfer \hideinitializer */
 
-#define TTMR_CMP_MAX_VALUE                (0xFFFFFFUL)                      /*!< Max ttmr compare value \hideinitializer */
+#define TTMR_CMP_MAX_VALUE                (0xFFFFFFUL)                      /*!< Max TTMR compare value \hideinitializer */
 
 #define TTMR_OK                           ( 0L)    /*!< TTMR operation OK \hideinitializer */
 #define TTMR_ERR_FAIL                     (-1L)    /*!< TTMR operation failed \hideinitializer */

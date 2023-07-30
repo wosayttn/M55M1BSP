@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     ecap.c
  * @version  V1.00
- * @brief    ECAP driver source file
+ * @brief    Enhanced Input Capture Timer (ECAP) driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -30,7 +30,7 @@
   *                         - \ref ECAP_RELOAD_FUNCTION
   *                         - \ref ECAP_RELOAD_COMPARE_FUNCTION
   * @return     None
-  * @details    This macro enable input capture function and select compare and reload funciton.
+  * @details    This macro enable input capture function and select compare and reload function.
   */
 void ECAP_Open(ECAP_T *ecap, uint32_t u32FuncMask)
 {

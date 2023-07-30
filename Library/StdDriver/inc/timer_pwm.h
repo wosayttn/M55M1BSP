@@ -91,6 +91,8 @@ extern "C"
 #define TPWM_BRK_OUT_LOW             (2UL)
 #define TPWM_BRK_OUT_HIGH            (3UL)
 
+#define TPWM_OUTPUT_LOW              (TPWM_BRK_OUT_LOW)
+#define TPWM_OUTPUT_HIGH             (TPWM_BRK_OUT_HIGH)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Load Mode Constant Definitions                                                                         */
 /*---------------------------------------------------------------------------------------------------------*/

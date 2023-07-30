@@ -67,7 +67,7 @@ uint32_t BPWM_ConfigCaptureChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_
         }
         else    /* (bpwm == BPWM1) */
         {
-            u32BPWMClockSrc = CLK_GetPCLK1Freq();
+            u32BPWMClockSrc = CLK_GetPCLK2Freq();
         }
     }
 
@@ -160,7 +160,7 @@ uint32_t BPWM_ConfigOutputChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t
         }
         else     /* (bpwm == BPWM1) */
         {
-            u32BPWMClockSrc = CLK_GetPCLK1Freq();
+            u32BPWMClockSrc = CLK_GetPCLK2Freq();
         }
     }
 

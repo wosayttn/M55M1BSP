@@ -228,8 +228,8 @@ extern "C"
  * @brief This macro get the duty of the selected channel
  * @param[in] bpwm The pointer of the specified BPWM module
  * @param[in] u32ChannelNum BPWM channel number. Valid values are between 0~5
- * @return Return the duty of specified channel. Valid values are between 0~0xFFFF
- * @details This macro is used to get the duty of specified channel.
+ * @return Return the comparator of specified channel. Valid values are between 0~0xFFFF
+ * @details This macro is used to get the comparator of specified channel.
  * \hideinitializer
  */
 #define BPWM_GET_CMR(bpwm, u32ChannelNum) ((bpwm)->CMPDAT[(u32ChannelNum)])
