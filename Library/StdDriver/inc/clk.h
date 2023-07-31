@@ -1160,7 +1160,9 @@ void CLK_EnableXtalRC(uint32_t u32ClkMask);
 void CLK_DisableXtalRC(uint32_t u32ClkMask);
 uint32_t CLK_EnableModuleClock(uint64_t u64ModuleIdx);
 void CLK_DisableModuleClock(uint64_t u64ModuleIdx);
+/* TESTCHIP_ONLY start*/
 uint32_t CLK_WaitModuleClockReady(uint64_t u64ModuleIdx);
+/* TESTCHIP_ONLY end*/
 uint32_t CLK_EnableAPLL(uint32_t u32APLLClkSrc, uint32_t u32APLLFreq, uint32_t u32APLLSelect);
 void CLK_DisableAPLL(uint32_t u32APLLSelect);
 uint32_t CLK_WaitClockReady(uint32_t u32ClkMask);

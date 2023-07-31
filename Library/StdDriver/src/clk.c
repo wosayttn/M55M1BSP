@@ -781,15 +781,15 @@ void CLK_SetSCLK(uint32_t u32ClkSrc)
   * |\ref USBH0_MODULE   |\ref CLK_USBSEL_USBSEL_HIRC48M            |\ref CLK_USBDIV_USBDIV(x)       |
   * |\ref USBH0_MODULE   |\ref CLK_USBSEL_USBSEL_APLL1_DIV2         |\ref CLK_USBDIV_USBDIV(x)       |
   * |\ref WDT0_MODULE    |\ref CLK_WDTSEL_WDT0SEL_LXT               | x                              |
-  * |\ref WDT0_MODULE    |\ref CLK_WDTSEL_WDT0SEL_HCLK2_DIV2048     | x                              |
+  * |\ref WDT0_MODULE    |\ref CLK_WDTSEL_WDT0SEL_HCLK2_DIV2048     | x                              |  // TESTCHIP_ONLY
   * |\ref WDT0_MODULE    |\ref CLK_WDTSEL_WDT0SEL_LIRC              | x                              |
   * |\ref WDT1_MODULE    |\ref CLK_WDTSEL_WDT1SEL_LXT               | x                              |
-  * |\ref WDT1_MODULE    |\ref CLK_WDTSEL_WDT1SEL_HCLK2_DIV2048     | x                              |
+  * |\ref WDT1_MODULE    |\ref CLK_WDTSEL_WDT1SEL_HCLK2_DIV2048     | x                              |  // TESTCHIP_ONLY
   * |\ref WDT1_MODULE    |\ref CLK_WDTSEL_WDT1SEL_LIRC              | x                              |
-  * |\ref WWDT0_MODULE   |\ref CLK_WWDTSEL_WWDT0SEL_HCLK0_DIV2048   | x                              |
-  * |\ref WWDT0_MODULE   |\ref CLK_WWDTSEL_WWDT0SEL_LIRC            | x                              |
-  * |\ref WWDT1_MODULE   |\ref CLK_WWDTSEL_WWDT1SEL_HCLK0_DIV2048   | x                              |
-  * |\ref WWDT1_MODULE   |\ref CLK_WWDTSEL_WWDT1SEL_LIRC            | x                              |
+  * |\ref WWDT0_MODULE   |\ref CLK_WWDTSEL_WWDT0SEL_HCLK0_DIV2048   | x                              |  // TESTCHIP_ONLY
+  * |\ref WWDT0_MODULE   |\ref CLK_WWDTSEL_WWDT0SEL_LIRC            | x                              |  // TESTCHIP_ONLY
+  * |\ref WWDT1_MODULE   |\ref CLK_WWDTSEL_WWDT1SEL_HCLK0_DIV2048   | x                              |  // TESTCHIP_ONLY
+  * |\ref WWDT1_MODULE   |\ref CLK_WWDTSEL_WWDT1SEL_LIRC            | x                              |  // TESTCHIP_ONLY
   */
 void CLK_SetModuleClock(uint64_t u64ModuleIdx, uint32_t u32ClkSrc, uint32_t u32ClkDiv)
 {
@@ -1021,10 +1021,13 @@ uint32_t CLK_EnableModuleClock(uint64_t u64ModuleIdx)
     /* Enable module clock */
     *(volatile uint32_t *)u32TmpAddr |= u32TmpVal;
 
+    /* TESTCHIP_ONLY start*/
     if ((u64ModuleIdx != FMC0_MODULE) && (u64ModuleIdx != ISP0_MODULE))
     {
         u32Ret = CLK_WaitModuleClockReady(u64ModuleIdx);
     }
+
+    /* TESTCHIP_ONLY end*/
 
     return u32Ret;
 }
@@ -1283,6 +1286,7 @@ void CLK_DisableModuleClock(uint64_t u64ModuleIdx)
   * @retval     1  clock is stable
   * @details    This function is used to wait module clock ready.
   */
+/* TESTCHIP_ONLY start*/
 uint32_t CLK_WaitModuleClockReady(uint64_t u64ModuleIdx)
 {
     uint32_t u32TmpAddr = 0UL;
@@ -1304,7 +1308,7 @@ uint32_t CLK_WaitModuleClockReady(uint64_t u64ModuleIdx)
 
     return u32Ret;
 }
-
+/* TESTCHIP_ONLY end*/
 /**
   * @brief      Set PLL frequency
   * @param[in]  u32PllClkSrc is PLL clock source. Including :
@@ -1507,12 +1511,13 @@ uint32_t CLK_EnableAPLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq, uint32_t u32
         u32PllClk = FREQ_180MHZ;
     }
 
-    /* TESTCHIP_ONLY */
+    /* TESTCHIP_ONLY start*/
     if (u32PllClkSrc == CLK_APLLCTL_APLLSRC_HXT)
     {
         CLK_SysTickDelay(200);
     }
     else
+        /* TESTCHIP_ONLY end*/
     {
         /* Wait for PLL clock stable */
         if (u32PllSelect == CLK_APLL0_SELECT)
