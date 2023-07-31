@@ -10,11 +10,14 @@
 
 #include "NuMicro.h"
 
-#define USE_4_BYTES_MODE            0            /* W25Q20 does not support 4-bytes address mode. */
+//------------------------------------------------------------------------------
+#define USE_4_BYTES_MODE            0   /* W25Q20 does not support 4-bytes address mode. */
 #define SPIM_CIPHER_ON              0
 
+//------------------------------------------------------------------------------
 void spim_routine(void);
 
+//------------------------------------------------------------------------------
 void SPIM_SetDMMAddrNonCacheable(void)
 {
     uint32_t u32DMMAddr = SPIM_GetDMMAddress(SPIM0);

@@ -10,16 +10,19 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-
+//------------------------------------------------------------------------------
 #define TEST_COUNT  16
 
+//------------------------------------------------------------------------------
 uint32_t g_au32SourceData[TEST_COUNT];
 uint32_t g_au32DestinationData[TEST_COUNT];
 
+//------------------------------------------------------------------------------
 /* Function prototype declaration */
 void SYS_Init(void);
 void USCI_SPI_Init(void);
 
+//------------------------------------------------------------------------------
 int main()
 {
     uint32_t u32TxDataCount, u32RxDataCount;

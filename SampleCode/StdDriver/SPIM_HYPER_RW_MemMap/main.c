@@ -16,7 +16,7 @@
 #define BUFFER_SIZE                 2048
 
 //------------------------------------------------------------------------------
-NVT_NONCACHEABLE __attribute__((aligned(4))) uint8_t g_buff[BUFFER_SIZE] = {0};
+__attribute__((aligned(32))) uint8_t g_buff[BUFFER_SIZE] = {0};
 
 /* SPIM cipher key User defined. */
 uint32_t gau32AESKey[8] =

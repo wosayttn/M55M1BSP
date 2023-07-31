@@ -10,12 +10,15 @@
 
 #include "NuMicro.h"
 
+//------------------------------------------------------------------------------
 #define FLASH_BLOCK_SIZE            (8 * 1024)     /* Flash block size. Depend on the physical flash. */
-#define TEST_BLOCK_ADDR             0x10000         /* Test block address on SPI flash. */
+#define TEST_BLOCK_ADDR             0x10000        /* Test block address on SPI flash. */
 #define BUFFER_SIZE                 2048
 
-NVT_NONCACHEABLE __attribute__((aligned(4))) uint8_t g_buff[BUFFER_SIZE] = {0};
+//------------------------------------------------------------------------------
+__attribute__((aligned(32))) uint8_t g_buff[BUFFER_SIZE] = {0};
 
+//------------------------------------------------------------------------------
 /* Program Command Phase */
 extern SPIM_PHASE_T gsWb02hWrCMD;
 extern SPIM_PHASE_T gsWb12hWrCMD;

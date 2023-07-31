@@ -11,8 +11,10 @@
 #include "NuMicro.h"
 #include "hyperram_code.h"
 
+//------------------------------------------------------------------------------
 void spim_routine(void);
 
+//------------------------------------------------------------------------------
 void SPIM_SetDMMAddrNonCacheable(void)
 {
     uint32_t u32DMMAddr = SPIM_GetDMMAddress(SPIM0);

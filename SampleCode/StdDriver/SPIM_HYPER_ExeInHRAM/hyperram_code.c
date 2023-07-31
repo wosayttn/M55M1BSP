@@ -13,8 +13,8 @@
 #include "hyperram_code.h"
 
 //------------------------------------------------------------------------------
-NVT_NONCACHEABLE __attribute__((aligned(32))) uint8_t g_au8SrcArray[BUFF_SIZE] = {0};
-NVT_NONCACHEABLE __attribute__((aligned(32))) uint8_t g_au8DestArray[BUFF_SIZE] = {0};
+__attribute__((aligned(32))) uint8_t g_au8SrcArray[BUFF_SIZE] = {0};
+__attribute__((aligned(32))) uint8_t g_au8DestArray[BUFF_SIZE] = {0};
 
 //------------------------------------------------------------------------------
 /**
@@ -190,3 +190,5 @@ void HyperRAM_Init(SPIM_T *spim)
     SPIM_HYPER_ENABLE_CACHE(spim);
 #endif
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

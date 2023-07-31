@@ -11,19 +11,22 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
+//------------------------------------------------------------------------------
 #define USPI_MASTER_TX_DMA_CH   0
 #define USPI_MASTER_RX_DMA_CH   1
 
 #define TEST_COUNT              64
 
+//------------------------------------------------------------------------------
+/* Global variable declaration */
+uint16_t g_au16MasterToSlaveTestPattern[TEST_COUNT];
+uint16_t g_au16MasterRxBuffer[TEST_COUNT];
+
+//------------------------------------------------------------------------------
 /* Function prototype declaration */
 void SYS_Init(void);
 void USCI_SPI_Init(void);
 void SpiLoopTest_WithPDMA(void);
-
-/* Global variable declaration */
-uint16_t g_au16MasterToSlaveTestPattern[TEST_COUNT];
-uint16_t g_au16MasterRxBuffer[TEST_COUNT];
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  MAIN function                                                                                          */
@@ -298,3 +301,5 @@ void SpiLoopTest_WithPDMA(void)
 
     return;
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

@@ -10,19 +10,21 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-
+//------------------------------------------------------------------------------
 #define TEST_COUNT  16
 
+//------------------------------------------------------------------------------
 uint32_t g_au32SourceData[TEST_COUNT];
 uint32_t g_au32DestinationData[TEST_COUNT];
 volatile uint32_t g_u32TxDataCount;
 volatile uint32_t g_u32RxDataCount;
 
+//------------------------------------------------------------------------------
 /* Function prototype declaration */
 void SYS_Init(void);
 void USCI_SPI_Init(void);
 
-
+//------------------------------------------------------------------------------
 int main()
 {
     uint32_t u32DataCount;
@@ -184,6 +186,5 @@ void USCI0_IRQHandler(void)
         USPI_WRITE_TX(USPI0, g_au32SourceData[g_u32TxDataCount++]);
     }
 }
-
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

@@ -11,16 +11,19 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
+//------------------------------------------------------------------------------
 #define TEST_COUNT  64
 
+//------------------------------------------------------------------------------
 uint32_t g_au32SourceData[TEST_COUNT];
 uint32_t g_au32DestinationData[TEST_COUNT];
 
+//------------------------------------------------------------------------------
 /* Function prototype declaration */
 void SYS_Init(void);
 void USCI_SPI_Init(void);
 
-
+//------------------------------------------------------------------------------
 int main()
 {
     uint32_t u32DataCount, u32TestCount, u32Err;
@@ -170,6 +173,5 @@ void USCI_SPI_Init(void)
     /* Set USCI_SPI0 clock rate = 2MHz */
     USPI_Open(USPI0, USPI_MASTER, USPI_MODE_0, 16, 2000000);
 }
-
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
