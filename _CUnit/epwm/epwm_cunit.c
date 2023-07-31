@@ -327,13 +327,13 @@ void Func_EPWM_EnableADCTrigger()
                 EPWM_DisableADCTrigger(g_apEPWMModule[x], u32TestCh);
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->EADCTS0 & ((EPWM_EADCTS0_TRGEN0_Msk | EPWM_EADCTS0_TRGSEL0_Msk) << (u32TestCh * 8)), 0x0F << (u32TestCh * 8));
 
-                EPWM_EnableADCTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRG_ADC_EVEN_IFACC);
+                EPWM_EnableADCTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRG_ADC_EVEN_IFA);
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->EADCTS0 & ((EPWM_EADCTS0_TRGEN0_Msk | EPWM_EADCTS0_TRGSEL0_Msk) << (u32TestCh * 8)), 0x90 << (u32TestCh * 8));
 
                 EPWM_DisableADCTrigger(g_apEPWMModule[x], u32TestCh);
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->EADCTS0 & ((EPWM_EADCTS0_TRGEN0_Msk | EPWM_EADCTS0_TRGSEL0_Msk) << (u32TestCh * 8)), 0x10 << (u32TestCh * 8));
 
-                EPWM_EnableADCTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRG_ADC_ODD_IFACC);
+                EPWM_EnableADCTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRG_ADC_ODD_IFA);
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->EADCTS0 & ((EPWM_EADCTS0_TRGEN0_Msk | EPWM_EADCTS0_TRGSEL0_Msk) << (u32TestCh * 8)), 0x91 << (u32TestCh * 8));
 
                 EPWM_DisableADCTrigger(g_apEPWMModule[x], u32TestCh);
@@ -437,13 +437,13 @@ void Func_EPWM_EnableADCTrigger()
                 EPWM_DisableADCTrigger(g_apEPWMModule[x], u32TestCh);
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->EADCTS1 & ((EPWM_EADCTS1_TRGEN4_Msk | EPWM_EADCTS1_TRGSEL4_Msk) << ((u32TestCh - 4) * 8)), 0x0F << ((u32TestCh - 4) * 8));
 
-                EPWM_EnableADCTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRG_ADC_EVEN_IFACC);
+                EPWM_EnableADCTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRG_ADC_EVEN_IFA);
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->EADCTS1 & ((EPWM_EADCTS1_TRGEN4_Msk | EPWM_EADCTS1_TRGSEL4_Msk) << ((u32TestCh - 4) * 8)), 0x90 << ((u32TestCh - 4) * 8));
 
                 EPWM_DisableADCTrigger(g_apEPWMModule[x], u32TestCh);
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->EADCTS1 & ((EPWM_EADCTS1_TRGEN4_Msk | EPWM_EADCTS1_TRGSEL4_Msk) << ((u32TestCh - 4) * 8)), 0x10 << ((u32TestCh - 4) * 8));
 
-                EPWM_EnableADCTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRG_ADC_ODD_IFACC);
+                EPWM_EnableADCTrigger(g_apEPWMModule[x], u32TestCh, EPWM_TRG_ADC_ODD_IFA);
                 CU_ASSERT_EQUAL(g_apEPWMModule[x]->EADCTS1 & ((EPWM_EADCTS1_TRGEN4_Msk | EPWM_EADCTS1_TRGSEL4_Msk) << ((u32TestCh - 4) * 8)), 0x91 << ((u32TestCh - 4) * 8));
 
                 EPWM_DisableADCTrigger(g_apEPWMModule[x], u32TestCh);
@@ -1500,11 +1500,11 @@ void Func_EPWM_GetCaptureIntFlag()
             EPWM_ClearCaptureIntFlag(g_apEPWMModule[j], u32CapCh, EPWM_CAPTURE_INT_FALLING_LATCH | EPWM_CAPTURE_INT_RISING_LATCH);
             CU_ASSERT_EQUAL(g_apEPWMModule[j]->CAPIF, 0);
 
-            ////            CU_ASSERT_EQUAL(EPWM_GET_CAPTURE_RISING_DATA(g_apEPWMModule[j], u32CapCh), g_apEPWMModule[j]->CAPDAT[1].RCAPDAT);
-            ////            CU_ASSERT_EQUAL(EPWM_GET_CAPTURE_FALLING_DATA(g_apEPWMModule[j], u32CapCh), g_apEPWMModule[j]->CAPDAT[1].FCAPDAT);
+            CU_ASSERT_EQUAL(EPWM_GET_CAPTURE_RISING_DATA(g_apEPWMModule[j], u32CapCh), g_apEPWMModule[j]->CAPDAT[1].RCAPDAT);
+            CU_ASSERT_EQUAL(EPWM_GET_CAPTURE_FALLING_DATA(g_apEPWMModule[j], u32CapCh), g_apEPWMModule[j]->CAPDAT[1].FCAPDAT);
 
-            CU_ASSERT_EQUAL(EPWM_GET_CAPTURE_RISING_DATA(g_apEPWMModule[j], u32CapCh), g_apEPWMModule[j]->RCAPDAT1);
-            CU_ASSERT_EQUAL(EPWM_GET_CAPTURE_FALLING_DATA(g_apEPWMModule[j], u32CapCh), g_apEPWMModule[j]->FCAPDAT1);
+            //            CU_ASSERT_EQUAL(EPWM_GET_CAPTURE_RISING_DATA(g_apEPWMModule[j], u32CapCh), g_apEPWMModule[j]->RCAPDAT1);
+            //            CU_ASSERT_EQUAL(EPWM_GET_CAPTURE_FALLING_DATA(g_apEPWMModule[j], u32CapCh), g_apEPWMModule[j]->FCAPDAT1);
 
             //         EPWM_DisableOutput(g_apEPWMModule[j], 1 << u32TestCh);
             //         EPWM_ForceStop(g_apEPWMModule[j], 1 << u32TestCh);
@@ -2853,7 +2853,6 @@ void Func_EPWM_TRIGGER_SYNC()
 
     //     for (x = 0; x < EPWM_MODULE_NUM; x++)
     {
-
         EPWM_TRIGGER_SYNC(g_apEPWMModule[0], 0);
         CU_ASSERT_EQUAL(g_apEPWMModule[0]->STATUS, 0x600);
         CU_ASSERT_EQUAL(g_apEPWMModule[1]->STATUS, 0x700);

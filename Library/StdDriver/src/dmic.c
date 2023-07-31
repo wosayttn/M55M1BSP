@@ -93,7 +93,7 @@ void DMIC_ClearFIFO(DMIC_T *dmic)
   * @brief      Get the sample Rate of DMIC
   * @param[in]  dmic The base address of DMIC module
   *
-  * @return     Real sample rate.
+  * @return     Real sample rate. 0 is DMIC clock source error.
   */
 uint32_t DMIC_GetSampleRate(DMIC_T *dmic)
 {
@@ -133,11 +133,11 @@ uint32_t DMIC_GetSampleRate(DMIC_T *dmic)
 
     switch (dmic->DIV & DMIC_DIV_OSR_Msk)
     {
-        case DMIC_DIV_DOWNSAMPLE_50:
-        case DMIC_DIV_DOWNSAMPLE_100:
-        case DMIC_DIV_DOWNSAMPLE_64:
-        case DMIC_DIV_DOWNSAMPLE_128:
-        case DMIC_DIV_DOWNSAMPLE_256:
+        case DMIC_DOWNSAMPLE_50:
+        case DMIC_DOWNSAMPLE_100:
+        case DMIC_DOWNSAMPLE_64:
+        case DMIC_DOWNSAMPLE_128:
+        case DMIC_DOWNSAMPLE_256:
             u32OSR = au16OSRTable[(dmic->DIV & DMIC_DIV_OSR_Msk) >> DMIC_DIV_OSR_Pos];
             break;
 
@@ -153,7 +153,7 @@ uint32_t DMIC_GetSampleRate(DMIC_T *dmic)
   * @brief      Set the sample Rate of data
   * @param[in]  dmic The base address of DMIC module
   * @param      u32SampleRate is sample Rate of data.
-  * @return     Real sample rate.
+  * @return     Real sample rate. 0 is DMIC clock source error.
   * @Note       This API maybe modify OSR setting for sample Rate
   */
 uint32_t DMIC_SetSampleRate(DMIC_T *dmic, uint32_t u32SampleRate)
@@ -201,16 +201,16 @@ uint32_t DMIC_SetSampleRate(DMIC_T *dmic, uint32_t u32SampleRate)
     // K should be divisible by OSR
     switch (dmic->DIV & DMIC_DIV_OSR_Msk)
     {
-        case DMIC_DIV_DOWNSAMPLE_50:
-        case DMIC_DIV_DOWNSAMPLE_100:
-        case DMIC_DIV_DOWNSAMPLE_64:
-        case DMIC_DIV_DOWNSAMPLE_128:
-        case DMIC_DIV_DOWNSAMPLE_256:
+        case DMIC_DOWNSAMPLE_50:
+        case DMIC_DOWNSAMPLE_100:
+        case DMIC_DOWNSAMPLE_64:
+        case DMIC_DOWNSAMPLE_128:
+        case DMIC_DOWNSAMPLE_256:
             u32OSR = au16OSRTable[(dmic->DIV & DMIC_DIV_OSR_Msk) >> DMIC_DIV_OSR_Pos];
             break;
 
-        //        case DMIC_DIV_DOWNSAMPLE_50:
-        //        case DMIC_DIV_DOWNSAMPLE_100:
+        //        case DMIC_DOWNSAMPLE_50:
+        //        case DMIC_DOWNSAMPLE_100:
         //                    u32OSR = (u32SampleRate>=32500)?50:100;
         //                  break;
         default:
@@ -231,7 +231,7 @@ uint32_t DMIC_SetSampleRate(DMIC_T *dmic, uint32_t u32SampleRate)
         }
         else
         {
-            DMIC_SET_DOWNSAMPLE(DMIC0, DMIC_DIV_DOWNSAMPLE_50);
+            DMIC_SET_DOWNSAMPLE(DMIC0, DMIC_DOWNSAMPLE_50);
             u32OSR = 50;
             printf("DMIC change u32OSR %d!\n", u32OSR);
         }
@@ -272,7 +272,7 @@ uint32_t DMIC_SetSampleRate(DMIC_T *dmic, uint32_t u32SampleRate)
   * @brief      Get the detect voice's sample Rate
   * @param[in]  vad The base address of VAD module
   *
-  * @return     Real detect sample rate.
+  * @return     Real detect sample rate. 0 is VAD clock source error.
   */
 uint32_t DMIC_VAD_GetSampleRate(VAD_T *vad)
 {
@@ -307,7 +307,7 @@ uint32_t DMIC_VAD_GetSampleRate(VAD_T *vad)
   * @brief      Set the detect voice's sample Rate
   * @param[in]  vad The base address of VAD module
   * @param[in]  u32SampleRate Sample Rate of input voice data.
-  * @return     Real detect sample rate.
+  * @return     Real detect sample rate. 0 is VAD clock source error.
   */
 uint32_t DMIC_VAD_SetSampleRate(VAD_T *vad, uint32_t u32SampleRate)
 {

@@ -2047,30 +2047,30 @@ CU_TestInfo  BPWM_ConstTest[] =
 
 CU_TestInfo  BPWM_MacroTest[] =
 {
-    //    {"1. BPWM_ENABLE_OUTPUT_INVERTER():", Func_1_BPWM_ENABLE_OUTPUT_INVERTER},
-    //    {"2. BPWM_SET_PRESCALER()/BPWM_GET_PRESCALER():", Func_2_BPWM_SET_PRESCALER},
-    //    {"3. BPWM_SET_CMR()/BPWM_SET_CNR()/BPWM_GET_CMR()/BPWM_GET_CNR():", Func_3_BPWM_SET_CMR},
-    //    {"4. BPWM_SET_ALIGNED_TYPE():", Func_4_BPWM_SET_ALIGNED_TYPE},
-    //    {"7. BPWM_ENABLE_TIMER_SYNC()/BPWM_DISABLE_TIMER_SYNC()/BPWM_TRIGGER_SYNC_START():", Func_7_BPWM_ENABLE_TIMER_SYNC},
-    //    {"8. BPWM_MASK_OUTPUT():", Func_8_BPWM_MASK_OUTPUT},
-    //    {"12. BPWM_CLR_COUNTER():", Func_12_BPWM_CLR_COUNTER},
-    //    {"13. BPWM_SET_OUTPUT_LEVEL():", Func_13_BPWM_SET_OUTPUT_LEVEL},
+    {"1. BPWM_ENABLE_OUTPUT_INVERTER():", Func_1_BPWM_ENABLE_OUTPUT_INVERTER},
+    {"2. BPWM_SET_PRESCALER()/BPWM_GET_PRESCALER():", Func_2_BPWM_SET_PRESCALER},
+    {"3. BPWM_SET_CMR()/BPWM_SET_CNR()/BPWM_GET_CMR()/BPWM_GET_CNR():", Func_3_BPWM_SET_CMR},
+    {"4. BPWM_SET_ALIGNED_TYPE():", Func_4_BPWM_SET_ALIGNED_TYPE},
+    {"7. BPWM_ENABLE_TIMER_SYNC()/BPWM_DISABLE_TIMER_SYNC()/BPWM_TRIGGER_SYNC_START():", Func_7_BPWM_ENABLE_TIMER_SYNC},
+    {"8. BPWM_MASK_OUTPUT():", Func_8_BPWM_MASK_OUTPUT},
+    {"12. BPWM_CLR_COUNTER():", Func_12_BPWM_CLR_COUNTER},
+    {"13. BPWM_SET_OUTPUT_LEVEL():", Func_13_BPWM_SET_OUTPUT_LEVEL},
     CU_TEST_INFO_NULL
 };
 
 CU_TestInfo  BPWM_FuncTest[] =
 {
-    //    {"15. BPWM_Start()/BPWM_ForceStop()/BPWM_Stop():", Func_15_BPWM_Stop},
-    //    {"16. BPWM_EnableADCTrigger()/BPWM_DisableADCTrigger():", Func_16_BPWM_EnableADCTrigger},
-    //    {"17. BPWM_EnableCapture()/BPWM_DisableCapture():", Func_17_BPWM_EnableCapture},
-    //    {"18. BPWM_EnableOutput()/BPWM_DisableOutput():", Func_18_BPWM_EnableOutput},
-    //    {"21. BPWM_EnableCaptureInt()/BPWM_DisableCaptureInt():", Func_21_BPWM_EnableCaptureInt},
-    //    {"22. BPWM_EnableDutyInt()/BPWM_DisableDutyInt():", Func_22_BPWM_EnableDutyInt},
-    //    {"23. BPWM_EnablePeriodInt()/BPWM_DisablePeriodInt():", Func_23_BPWM_EnablePeriodInt},
-    //    {"24. BPWM_GetADCTriggerFlag()/BPWM_ClearADCTriggerFlag():", Func_24_BPWM_GetADCTriggerFlag},
-    //    {"25. BPWM_GetDutyIntFlag()/BPWM_ClearDutyIntFlag():", Func_25_BPWM_GetDutyIntFlag},
-    //    {"26. BPWM_GetPeriodIntFlag()/BPWM_ClearPeriodIntFlag():", Func_26_BPWM_GetPeriodIntFlag},
-    //    {"27. BPWM_GetCaptureIntFlag()/BPWM_ClearCaptureIntFlag()/BPWM_GET_CAPTURE_RISING_DATA()/BPWM_GET_CAPTURE_FALLING_DATA():", Func_27_BPWM_GetCaptureIntFlag},
+    {"15. BPWM_Start()/BPWM_ForceStop()/BPWM_Stop():", Func_15_BPWM_Stop},
+    {"16. BPWM_EnableADCTrigger()/BPWM_DisableADCTrigger():", Func_16_BPWM_EnableADCTrigger},
+    {"17. BPWM_EnableCapture()/BPWM_DisableCapture():", Func_17_BPWM_EnableCapture},
+    {"18. BPWM_EnableOutput()/BPWM_DisableOutput():", Func_18_BPWM_EnableOutput},
+    {"21. BPWM_EnableCaptureInt()/BPWM_DisableCaptureInt():", Func_21_BPWM_EnableCaptureInt},
+    {"22. BPWM_EnableDutyInt()/BPWM_DisableDutyInt():", Func_22_BPWM_EnableDutyInt},
+    {"23. BPWM_EnablePeriodInt()/BPWM_DisablePeriodInt():", Func_23_BPWM_EnablePeriodInt},
+    {"24. BPWM_GetADCTriggerFlag()/BPWM_ClearADCTriggerFlag():", Func_24_BPWM_GetADCTriggerFlag},
+    {"25. BPWM_GetDutyIntFlag()/BPWM_ClearDutyIntFlag():", Func_25_BPWM_GetDutyIntFlag},
+    {"26. BPWM_GetPeriodIntFlag()/BPWM_ClearPeriodIntFlag():", Func_26_BPWM_GetPeriodIntFlag},
+    {"27. BPWM_GetCaptureIntFlag()/BPWM_ClearCaptureIntFlag()/BPWM_GET_CAPTURE_RISING_DATA()/BPWM_GET_CAPTURE_FALLING_DATA():", Func_27_BPWM_GetCaptureIntFlag},
 
     {"28. BPWM_ConfigOutputChannel():", Func_28_BPWM_ConfigOutputChannel},
     {"29. BPWM_ConfigCaptureChannel():", Func_29_BPWM_ConfigCaptureChannel},

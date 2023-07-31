@@ -30,49 +30,49 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /* DMIC CTL Constant Definitions                                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
-#define DMIC_CTL_FIFOWIDTH_24         (DMIC_CTL_FIFOWIDTH_Msk)
-#define DMIC_CTL_FIFOWIDTH_16         (0UL<<DMIC_CTL_FIFOWIDTH_Pos)
+#define DMIC_FIFOWIDTH_24         (DMIC_CTL_FIFOWIDTH_Msk)
+#define DMIC_FIFOWIDTH_16         (0UL<<DMIC_CTL_FIFOWIDTH_Pos)
 
-#define DMIC_CTL_GAINSTEP_1_2         (0UL<<DMIC_CTL_GAINSTEP_Pos)
-#define DMIC_CTL_GAINSTEP_1_4         (1UL<<DMIC_CTL_GAINSTEP_Pos)
-#define DMIC_CTL_GAINSTEP_1_8         (2UL<<DMIC_CTL_GAINSTEP_Pos)
-#define DMIC_CTL_GAINSTEP_1_16        (3UL<<DMIC_CTL_GAINSTEP_Pos)
+#define DMIC_GAINSTEP_1_2         (0UL<<DMIC_CTL_GAINSTEP_Pos)
+#define DMIC_GAINSTEP_1_4         (1UL<<DMIC_CTL_GAINSTEP_Pos)
+#define DMIC_GAINSTEP_1_8         (2UL<<DMIC_CTL_GAINSTEP_Pos)
+#define DMIC_GAINSTEP_1_16        (3UL<<DMIC_CTL_GAINSTEP_Pos)
 
-#define DMIC_DIV_DOWNSAMPLE_64        (0x0UL<<DMIC_DIV_OSR_Pos)          /*!< DMIC Down Sample Rate 32 */
-#define DMIC_DIV_DOWNSAMPLE_128       (0x1UL<<DMIC_DIV_OSR_Pos)          /*!< DMIC Down Sample Rate 64 */
-#define DMIC_DIV_DOWNSAMPLE_256       (0x2UL<<DMIC_DIV_OSR_Pos)          /*!< DMIC Down Sample Rate 128 */
-#define DMIC_DIV_DOWNSAMPLE_100       (0x3UL<<DMIC_DIV_OSR_Pos)          /*!< DMIC Down Sample Rate 50 */
-#define DMIC_DIV_DOWNSAMPLE_50        (0x7UL<<DMIC_DIV_OSR_Pos)          /*!< DMIC Down Sample Rate 100 */
+#define DMIC_DOWNSAMPLE_64        (0x0UL<<DMIC_DIV_OSR_Pos)          /*!< DMIC Down Sample Rate 32 */
+#define DMIC_DOWNSAMPLE_128       (0x1UL<<DMIC_DIV_OSR_Pos)          /*!< DMIC Down Sample Rate 64 */
+#define DMIC_DOWNSAMPLE_256       (0x2UL<<DMIC_DIV_OSR_Pos)          /*!< DMIC Down Sample Rate 128 */
+#define DMIC_DOWNSAMPLE_100       (0x3UL<<DMIC_DIV_OSR_Pos)          /*!< DMIC Down Sample Rate 50 */
+#define DMIC_DOWNSAMPLE_50        (0x7UL<<DMIC_DIV_OSR_Pos)          /*!< DMIC Down Sample Rate 100 */
 
-#define DMIC_CTL_LATCHDATA_CH01FR     (0x0UL<<DMIC_CTL_LCHEDGE01_Pos)    /*!< DMIC Data Latch Channel0 Falling Edge, Channel1 Rising Edge*/
-#define DMIC_CTL_LATCHDATA_CH01RF     (0x1UL<<DMIC_CTL_LCHEDGE01_Pos)    /*!< DMIC Data Latch Channel0 Rising Edge Channel1 Falling Edge*/
-#define DMIC_CTL_LATCHDATA_CH23FR     (0x0UL<<DMIC_CTL_LCHEDGE23_Pos)    /*!< DMIC Data Latch Channel2 Falling Edge Channel3 Rising Edge*/
-#define DMIC_CTL_LATCHDATA_CH23RF     (0x1UL<<DMIC_CTL_LCHEDGE23_Pos)    /*!< DMIC Data Latch Channel2 Rising Edge Channel3 Falling Edge*/
+#define DMIC_LATCHDATA_CH01FR     (0x0UL<<DMIC_CTL_LCHEDGE01_Pos)    /*!< DMIC Data Latch Channel0 Falling Edge, Channel1 Rising Edge*/
+#define DMIC_LATCHDATA_CH01RF     (0x1UL<<DMIC_CTL_LCHEDGE01_Pos)    /*!< DMIC Data Latch Channel0 Rising Edge Channel1 Falling Edge*/
+#define DMIC_LATCHDATA_CH23FR     (0x0UL<<DMIC_CTL_LCHEDGE23_Pos)    /*!< DMIC Data Latch Channel2 Falling Edge Channel3 Rising Edge*/
+#define DMIC_LATCHDATA_CH23RF     (0x1UL<<DMIC_CTL_LCHEDGE23_Pos)    /*!< DMIC Data Latch Channel2 Rising Edge Channel3 Falling Edge*/
 
-#define DMIC_CTL_LATCHDATA_CH01F      (DMIC_CTL_LATCHDATA_CH01FR)    /*!< DMIC Data Latch Channel0 Falling Edge, Channel1 Rising Edge */
-#define DMIC_CTL_LATCHDATA_CH01R      (DMIC_CTL_LATCHDATA_CH01RF)    /*!< DMIC Data Latch Channel0 Rising Edge Channel1 Falling Edge  */
-#define DMIC_CTL_LATCHDATA_CH23F      (DMIC_CTL_LATCHDATA_CH23FR)    /*!< DMIC Data Latch Channel2 Falling Edge Channel3 Rising Edge */
-#define DMIC_CTL_LATCHDATA_CH23R      (DMIC_CTL_LATCHDATA_CH23RF)    /*!< DMIC Data Latch Channel2 Rising Edge Channel3 Falling Edge  */
+#define DMIC_LATCHDATA_CH01F      (DMIC_LATCHDATA_CH01FR)    /*!< DMIC Data Latch Channel0 Falling Edge, Channel1 Rising Edge */
+#define DMIC_LATCHDATA_CH01R      (DMIC_LATCHDATA_CH01RF)    /*!< DMIC Data Latch Channel0 Rising Edge Channel1 Falling Edge  */
+#define DMIC_LATCHDATA_CH23F      (DMIC_LATCHDATA_CH23FR)    /*!< DMIC Data Latch Channel2 Falling Edge Channel3 Rising Edge */
+#define DMIC_LATCHDATA_CH23R      (DMIC_LATCHDATA_CH23RF)    /*!< DMIC Data Latch Channel2 Rising Edge Channel3 Falling Edge  */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* VAD SINCCTL Constant Definitions                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-#define DMIC_VAD_SINC_CTL_DOWNSAMPLE_48    (0x0UL<<VAD_SINCCTL_SINCOSR_Pos)          /*!< VAD SINC Filter Down Sample Rate 48 */
-#define DMIC_VAD_SINC_CTL_DOWNSAMPLE_64    (0x1UL<<VAD_SINCCTL_SINCOSR_Pos)          /*!< VAD SINC Filter Down Sample Rate 64 */
-#define DMIC_VAD_SINC_CTL_DOWNSAMPLE_96    (0x2UL<<VAD_SINCCTL_SINCOSR_Pos)          /*!< VAD SINC Filter Down Sample Rate 96 */
+#define DMIC_VAD_DOWNSAMPLE_48    (0x0UL<<VAD_SINCCTL_SINCOSR_Pos)          /*!< VAD SINC Filter Down Sample Rate 48 */
+#define DMIC_VAD_DOWNSAMPLE_64    (0x1UL<<VAD_SINCCTL_SINCOSR_Pos)          /*!< VAD SINC Filter Down Sample Rate 64 */
+#define DMIC_VAD_DOWNSAMPLE_96    (0x2UL<<VAD_SINCCTL_SINCOSR_Pos)          /*!< VAD SINC Filter Down Sample Rate 96 */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* VAD CTL Constant Definitions                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-#define DMIC_VAD_CTL0_STAT_16MS            (0x99UL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 16 ms */
-#define DMIC_VAD_CTL0_STAT_8MS             (0xaaUL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 8 ms */
-#define DMIC_VAD_CTL0_STAT_4MS             (0xbbUL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 4 ms */
-#define DMIC_VAD_CTL0_STAT_2MS             (0xccUL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 2 ms */
+#define DMIC_VAD_STAT_16MS            (0x99UL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 16 ms */
+#define DMIC_VAD_STAT_8MS             (0xaaUL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 8 ms */
+#define DMIC_VAD_STAT_4MS             (0xbbUL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 4 ms */
+#define DMIC_VAD_STAT_2MS             (0xccUL<<VAD_CTL0_STAT_Pos)                /*!< VAD Short Term Attack Time 2 ms */
 
-#define DMIC_VAD_CTL0_LTAT_512MS           (0x4UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 512 ms */
-#define DMIC_VAD_CTL0_LTAT_256MS           (0x5UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 256 ms */
-#define DMIC_VAD_CTL0_LTAT_128MS           (0x6UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 128 ms */
-#define DMIC_VAD_CTL0_LTAT_64MS            (0x7UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 64 ms */
+#define DMIC_VAD_LTAT_512MS           (0x4UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 512 ms */
+#define DMIC_VAD_LTAT_256MS           (0x5UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 256 ms */
+#define DMIC_VAD_LTAT_128MS           (0x6UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 128 ms */
+#define DMIC_VAD_LTAT_64MS            (0x7UL<<VAD_CTL0_LTAT_Pos)                 /*!< VAD Long Term Attack Time 64 ms */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* VAD Power Threshold Definitions                                                                         */
@@ -109,8 +109,8 @@ typedef struct
   * @brief      Set DMIC channel 01 data latch edge.
   * @param[in]  dmic The base address of DMIC module
   * @param[in]  u32Value Config channel 01 edge state(falliing or rising)
-  *             - \ref DMIC_CTL_LATCHDATA_CH01FR
-  *             - \ref DMIC_CTL_LATCHDATA_CH01RF
+  *             - \ref DMIC_LATCHDATA_CH01FR
+  *             - \ref DMIC_LATCHDATA_CH01RF
   * @return     None
   * @details    Channel 01 latched on rising or falling edge of DMIC_CLK.
   */
@@ -120,8 +120,8 @@ typedef struct
   * @brief      Set DMIC channel 23 data latch edge.
   * @param[in]  dmic The base address of DMIC module
   * @param[in]  u32Value Config channel 23 edge state(falliing or rising)
-  *             - \ref DMIC_CTL_LATCHDATA_CH23FR
-  *             - \ref DMIC_CTL_LATCHDATA_CH23RF
+  *             - \ref DMIC_LATCHDATA_CH23FR
+  *             - \ref DMIC_LATCHDATA_CH23RF
   * @return     None
   * @details    Channel 23 latched on rising or falling edge of DMIC_CLK.
   */
@@ -174,11 +174,11 @@ typedef struct
   * @brief      Enable DMIC down sample rate.
   * @param[in]  dmic The base address of DMIC module
   * @param[in]  u32Value Down sample rate value.
-  *             - \ref DMIC_DIV_DOWNSAMPLE_64
-  *             - \ref DMIC_DIV_DOWNSAMPLE_128
-  *             - \ref DMIC_DIV_DOWNSAMPLE_256
-  *             - \ref DMIC_DIV_DOWNSAMPLE_100
-  *             - \ref DMIC_DIV_DOWNSAMPLE_50
+  *             - \ref DMIC_DOWNSAMPLE_64
+  *             - \ref DMIC_DOWNSAMPLE_128
+  *             - \ref DMIC_DOWNSAMPLE_256
+  *             - \ref DMIC_DOWNSAMPLE_100
+  *             - \ref DMIC_DOWNSAMPLE_50
   * @return     None
   * @details    Enable DMIC down sample rate funciton and set down sample value.
   */
@@ -235,9 +235,9 @@ typedef struct
   * @brief      Enable VAD down sample rate.
   * @param[in]  vad The base address of VAD module
   * @param[in]  u32Value Down sample rate value.
-  *             - \ref DMIC_VAD_SINC_CTL_DOWNSAMPLE_48
-  *             - \ref DMIC_VAD_SINC_CTL_DOWNSAMPLE_64
-  *             - \ref DMIC_VAD_SINC_CTL_DOWNSAMPLE_96
+  *             - \ref DMIC_VAD_DOWNSAMPLE_48
+  *             - \ref DMIC_VAD_DOWNSAMPLE_64
+  *             - \ref DMIC_VAD_DOWNSAMPLE_96
   * @return     None
   * @details    Enable VAD down sample rate funciton and set down sample value.
   */
@@ -263,10 +263,10 @@ typedef struct
   * @brief      Set Short Term Attack Time
   * @param[in]  vad The base address of VAD module
   * @param[in]  u32Time Short Term Attack Time.
-  *             - \ref DMIC_VAD_CTL0_STAT_16MS
-  *             - \ref DMIC_VAD_CTL0_STAT_8MS
-  *             - \ref DMIC_VAD_CTL0_STAT_4MS
-  *             - \ref DMIC_VAD_CTL0_STAT_2MS
+  *             - \ref DMIC_VAD_STAT_16MS
+  *             - \ref DMIC_VAD_STAT_8MS
+  *             - \ref DMIC_VAD_STAT_4MS
+  *             - \ref DMIC_VAD_STAT_2MS
   * @return     None
   */
 #define DMIC_VAD_SET_STAT(vad,u32Time)                   ((vad)->CTL0 = ((vad)->CTL0 & ~VAD_CTL0_STAT_Msk)|(u32Time))
@@ -275,10 +275,10 @@ typedef struct
   * @brief      Set Long Term Attack Time
   * @param[in]  vad The base address of VAD module
   * @param[in]  u32Time Long Term Attack Time.
-  *             - \ref DMIC_VAD_CTL0_LTAT_512MS
-  *             - \ref DMIC_VAD_CTL0_LTAT_256MS
-  *             - \ref DMIC_VAD_CTL0_LTAT_128MS
-  *             - \ref DMIC_VAD_CTL0_LTAT_64MS
+  *             - \ref DMIC_VAD_LTAT_512MS
+  *             - \ref DMIC_VAD_LTAT_256MS
+  *             - \ref DMIC_VAD_LTAT_128MS
+  *             - \ref DMIC_VAD_LTAT_64MS
   * @return     None
   */
 #define DMIC_VAD_SET_LTAT(vad,u32Time)                   ((vad)->CTL0 = ((vad)->CTL0 & ~VAD_CTL0_LTAT_Msk)|(u32Time))
@@ -380,8 +380,8 @@ __STATIC_INLINE void DMIC_VAD_SetBIQCoeff(VAD_T *vad, DMIC_VAD_BIQ_T *psBIQCoeff
   * @brief      Set DMIC Data Effective Bit in FIFO.
   * @param[in]  dmic The base address of DMIC module
   * @param[in]  u32Width Config Data Effective Bit in FIFO
-  *             - \ref DMIC_CTL_FIFOWIDTH_24
-  *             - \ref DMIC_CTL_FIFOWIDTH_16
+  *             - \ref DMIC_FIFOWIDTH_24
+  *             - \ref DMIC_FIFOWIDTH_16
   * @return     None
   * @details    Set Data Effective 24/16 Bit in FIFO.
   */
@@ -394,10 +394,10 @@ __STATIC_INLINE void DMIC_SetFIFOWidth(DMIC_T *dmic, uint32_t u32Width)
   * @brief      Set DMIC Volume Control Gain Adjust Step.
   * @param[in]  dmic The base address of DMIC module
   * @param[in]  u32Volume  Config Volume Control Gain Adjust Step
-  *             - \ref DMIC_CTL_GAINSTEP_1_2
-  *             - \ref DMIC_CTL_GAINSTEP_1_4
-  *             - \ref DMIC_CTL_GAINSTEP_1_8
-  *             - \ref DMIC_CTL_GAINSTEP_1_16
+  *             - \ref DMIC_GAINSTEP_1_2
+  *             - \ref DMIC_GAINSTEP_1_4
+  *             - \ref DMIC_GAINSTEP_1_8
+  *             - \ref DMIC_GAINSTEP_1_16
   * @return     None
   * @details    Volume Control Gain Adjust Step is 1/2, 1/4, 1/8 or 1/16.
   */

@@ -183,7 +183,7 @@ void Check_Advance_MACRO(void)
         printf("LPTPWM_SET_CMPDAT (Ch-%d)\n", i);
         LPTPWM_SET_PERIOD((LPTMR_T *)LPTMRCh[i], 0xFFFF);
         LPTPWM_SET_CMPDAT((LPTMR_T *)LPTMRCh[i], 0x1000);
-        LPTPWM_ENABLE_IFA((LPTMR_T *)LPTMRCh[i]);
+        LPTPWM_EnableAcc((LPTMR_T *)LPTMRCh[i], 0, LPTPWM_IFA_PERIOD_POINT);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, BIT31);
         LPTPWM_IFASEL_CMPUIF((LPTMR_T *)LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, BIT31 | BIT29);
@@ -266,12 +266,12 @@ void Check_Advance_MACRO(void)
         CU_ASSERT_EQUAL(LPTPWM_GET_CMP_UP_INT_FLAG((LPTMR_T *)LPTMRCh[i]), 0x0);
     }
 
-    /* Check LPTPWM_GET_IFA_INT_FLAG, LPTPWM_CLR_IFA_INT_FLAG */
+    /* Check LPTPWM_GetAccInt, LPTPWM_ClearAccInt */
     for (i = 0; i < 2; i++)
     {
-        CU_ASSERT_EQUAL(LPTPWM_GET_IFA_INT_FLAG((LPTMR_T *)LPTMRCh[i]), 0x1);
-        LPTPWM_CLR_IFA_INT_FLAG((LPTMR_T *)LPTMRCh[i]);
-        CU_ASSERT_EQUAL(LPTPWM_GET_IFA_INT_FLAG((LPTMR_T *)LPTMRCh[i]), 0x0);
+        CU_ASSERT_EQUAL(LPTPWM_GetAccInt((LPTMR_T *)LPTMRCh[i]), 0x1);
+        LPTPWM_ClearAccInt((LPTMR_T *)LPTMRCh[i]);
+        CU_ASSERT_EQUAL(LPTPWM_GetAccInt((LPTMR_T *)LPTMRCh[i]), 0x0);
     }
 
     /* Reset LPTMR PWM function */
@@ -290,14 +290,14 @@ void Check_IFA_MACRO(void)
     /* Check LPTPWM_IFA */
     for (i = 0; i < 2; i++)
     {
-        printf("LPTPWM_ENABLE_IFA (Ch-%d)\n", i);
-        LPTPWM_ENABLE_IFA((LPTMR_T *)LPTMRCh[i]);
+        printf("LPTPWM_EnableAcc (Ch-%d)\n", i);
+        LPTPWM_EnableAcc((LPTMR_T *)LPTMRCh[i], 3, LPTPWM_IFA_PERIOD_POINT);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, BIT31);
-        LPTPWM_DISABLE_IFA((LPTMR_T *)LPTMRCh[i]);
+        LPTPWM_DisableAcc((LPTMR_T *)LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, 0UL);
-        LPTPWM_ENABLE_IFA_STOPCNT((LPTMR_T *)LPTMRCh[i]);
+        LPTPWM_EnableAccStopMode((LPTMR_T *)LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, BIT24);
-        LPTPWM_DISABLE_IFA_STOPCNT((LPTMR_T *)LPTMRCh[i]);
+        LPTPWM_DisableAccStopMode((LPTMR_T *)LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, 0UL);
         LPTPWM_SET_IFACNT((LPTMR_T *)LPTMRCh[i], 0x5A5A);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, 0x5A5A);
@@ -309,13 +309,13 @@ void Check_IFA_MACRO(void)
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, (1 << LPTMR_PWMIFA_IFASEL_Pos));
         LPTPWM_IFASEL_CMPUIF((LPTMR_T *)LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMIFA, (2 << LPTMR_PWMIFA_IFASEL_Pos));
-        LPTPWM_ENABLE_IFA_TRGLPPDMA((LPTMR_T *)LPTMRCh[i]);
+        LPTPWM_EnableAccLPPDMA((LPTMR_T *)LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMAPDMACTL, LPTMR_PWMAPDMACTL_APDMAEN_Msk);
-        LPTPWM_DISABLE_IFA_TRGLPPDMA((LPTMR_T *)LPTMRCh[i]);
+        LPTPWM_DisableAccLPPDMA((LPTMR_T *)LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMAPDMACTL, 0UL);
-        LPTPWM_ENABLE_IFA_INT((LPTMR_T *)LPTMRCh[i]);
+        LPTPWM_EnableAccInt((LPTMR_T *)LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMAINTEN, LPTMR_PWMAINTEN_IFAIEN_Msk);
-        LPTPWM_DISABLE_IFA_INT((LPTMR_T *)LPTMRCh[i]);
+        LPTPWM_DisableAccInt((LPTMR_T *)LPTMRCh[i]);
         CU_ASSERT_EQUAL(LPTMRCh[i]->PWMAINTEN, 0UL);
     }
 }
