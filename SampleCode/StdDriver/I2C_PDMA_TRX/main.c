@@ -35,7 +35,7 @@ typedef void (*I2C_FUNC)(uint32_t u32Status);
 volatile static I2C_FUNC s_I2C0HandlerFn = NULL;
 volatile static I2C_FUNC s_I2C1HandlerFn = NULL;
 
-void PDMA0_IRQHandler(void)
+NVT_ITCM void PDMA0_IRQHandler(void)
 {
     uint32_t u32Status = PDMA0->TDSTS;
 
@@ -71,7 +71,7 @@ void PDMA0_IRQHandler(void)
 }
 
 
-void I2C0_IRQHandler(void)
+NVT_ITCM void I2C0_IRQHandler(void)
 {
     uint32_t u32Status;
     u32Status = I2C_GET_STATUS(I2C0);
@@ -91,7 +91,7 @@ void I2C0_IRQHandler(void)
 }
 
 
-void I2C1_IRQHandler(void)
+NVT_ITCM void I2C1_IRQHandler(void)
 {
     uint32_t u32Status;
     u32Status = I2C_GET_STATUS(I2C1);

@@ -31,7 +31,7 @@ static uint32_t volatile g_u32IsTestOver = 0;
  *
  * @details     The LPPDMA default IRQ, declared in startup_M55M1.c.
  */
-void LPPDMA_IRQHandler(void)
+NVT_ITCM void LPPDMA_IRQHandler(void)
 {
     uint32_t u32Status = LPPDMA_GET_INT_STATUS(LPPDMA);
 

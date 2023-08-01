@@ -36,7 +36,7 @@ typedef void (*LPI2C_FUNC)(uint32_t u32Status);
 volatile static LPI2C_FUNC s_LPI2C0HandlerFn = NULL;
 
 
-void LPPDMA_IRQHandler(void)
+NVT_ITCM void LPPDMA_IRQHandler(void)
 {
     uint32_t u32Status = LPPDMA->TDSTS;
 
@@ -73,7 +73,7 @@ void LPPDMA_IRQHandler(void)
 }
 
 
-void LPI2C0_IRQHandler(void)
+NVT_ITCM void LPI2C0_IRQHandler(void)
 {
     uint32_t u32Status;
     u32Status = LPI2C_GET_STATUS(LPI2C0);

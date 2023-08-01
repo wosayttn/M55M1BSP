@@ -24,7 +24,7 @@ typedef void (*I2C_FUNC)(uint32_t u32Status);
 volatile static I2C_FUNC s_I2C0HandlerFn = NULL;
 
 
-void I2C0_IRQHandler(void)
+NVT_ITCM void I2C0_IRQHandler(void)
 {
     uint32_t u32Status;
     u32Status = I2C_GET_STATUS(I2C0);

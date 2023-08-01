@@ -34,7 +34,7 @@ volatile static UI2C_FUNC s_UI2C0HandlerFn = NULL;
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Power Wake-up IRQ Handler                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-void PMC_IRQHandler(void)
+NVT_ITCM void PMC_IRQHandler(void)
 {
     /* check power down wakeup flag */
     if ((PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk) == PMC_INTSTS_PDWKIF_Msk)
@@ -46,7 +46,7 @@ void PMC_IRQHandler(void)
     }
 }
 
-void USCI0_IRQHandler(void)
+NVT_ITCM void USCI0_IRQHandler(void)
 {
     uint32_t u32Status;
     u32Status = UI2C_GET_PROT_STATUS(UI2C0);

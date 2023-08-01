@@ -24,7 +24,7 @@ static uint8_t g_u8Rx_Buffer[PDMA_TEST_LENGTH];
 static volatile uint32_t u32IsTxTestOver = 0;
 static volatile uint32_t u32IsRxTestOver = 0;
 
-void PDMA0_IRQHandler(void);
+NVT_ITCM void PDMA0_IRQHandler(void);
 void PDMA_Init(void);
 
 /**
@@ -36,7 +36,7 @@ void PDMA_Init(void);
  *
  * @details     The PDMA0 default IRQ, declared in startup_M55M1.c.
  */
-void PDMA0_IRQHandler(void)
+NVT_ITCM void PDMA0_IRQHandler(void)
 {
     uint32_t status = PDMA_GET_INT_STATUS(PDMA0);
 

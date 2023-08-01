@@ -46,7 +46,7 @@ static volatile I2C_FUNC s_I2C1HandlerFn = NULL;
 /*---------------------------------------------------------------------------------------------------------*/
 /*  I2C0 IRQ Handler                                                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
-void I2C0_IRQHandler(void)
+NVT_ITCM void I2C0_IRQHandler(void)
 {
     uint32_t u32Status;
     u32Status = I2C_GET_STATUS(I2C0);
@@ -94,7 +94,7 @@ void I2C0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  I2C1 IRQ Handler                                                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
-void I2C1_IRQHandler(void)
+NVT_ITCM void I2C1_IRQHandler(void)
 {
     uint32_t u32Status;
     u32Status = I2C_GET_STATUS(I2C1);

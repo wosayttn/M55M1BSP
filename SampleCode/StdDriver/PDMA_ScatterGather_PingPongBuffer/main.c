@@ -42,7 +42,7 @@ static DMA_DESC_T DMA_DESC[2]; /* Descriptor table */
  *
  * @details     The PDMA0 default IRQ, declared in startup_M55M1.c.
  */
-void PDMA0_IRQHandler(void)
+NVT_ITCM void PDMA0_IRQHandler(void)
 {
     /* Check channel transfer done status */
     if (PDMA_GET_TD_STS(PDMA0) == PDMA_TDSTS_TDIF4_Msk)

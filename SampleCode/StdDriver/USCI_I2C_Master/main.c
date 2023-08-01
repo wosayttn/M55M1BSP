@@ -24,7 +24,7 @@ typedef void (*UI2C_FUNC)(uint32_t u32Status);
 volatile static UI2C_FUNC s_UI2C0HandlerFn = NULL;
 
 
-void USCI0_IRQHandler(void)
+NVT_ITCM void USCI0_IRQHandler(void)
 {
     uint32_t u32Status;
     u32Status = UI2C_GET_PROT_STATUS(UI2C0);

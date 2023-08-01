@@ -37,7 +37,7 @@ static DMA_DESC_T DMA_DESC[2]; /* Descriptor table */
  *
  * @details     The LPPDMA default IRQ, declared in startup_M55M1.c.
  */
-void LPPDMA_IRQHandler(void)
+NVT_ITCM void LPPDMA_IRQHandler(void)
 {
 }
 

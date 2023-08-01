@@ -134,7 +134,7 @@ void LPI2C_Trigger_Init(uint32_t u32Mode, uint32_t u32Src, uint32_t u32RxCnt, ui
     LPI2C0->AUTOCTL |= LPI2C_AUTOCTL_TRGEN_Msk;
 }
 
-void LPPDMA_IRQHandler(void)
+NVT_ITCM void LPPDMA_IRQHandler(void)
 {
     uint32_t u32Status = LPPDMA->TDSTS;
 
@@ -156,7 +156,7 @@ void LPPDMA_IRQHandler(void)
 }
 
 
-void LPI2C0_IRQHandler(void)
+NVT_ITCM void LPI2C0_IRQHandler(void)
 {
     uint32_t u32Status;
     u32Status = LPI2C_GET_STATUS(LPI2C0);

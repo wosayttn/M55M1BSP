@@ -27,7 +27,7 @@ static volatile LPI2C_FUNC s_LPI2C0HandlerFn = NULL;
 /*---------------------------------------------------------------------------------------------------------*/
 /*  LPI2C0 IRQ Handler                                                                                     */
 /*---------------------------------------------------------------------------------------------------------*/
-void LPI2C0_IRQHandler(void)
+NVT_ITCM void LPI2C0_IRQHandler(void)
 {
     uint32_t u32Status;
     u32Status = LPI2C_GET_STATUS(LPI2C0);
