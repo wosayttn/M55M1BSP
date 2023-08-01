@@ -261,7 +261,7 @@ void SYS_Init(void)
     SystemCoreClockUpdate();
 }
 
-void PDMA0_IRQHandler(void)
+NVT_ITCM void PDMA0_IRQHandler(void)
 {
     uint32_t u32DataCount = 0;
     uint32_t u32Status = PDMA_GET_INT_STATUS(PDMA0);

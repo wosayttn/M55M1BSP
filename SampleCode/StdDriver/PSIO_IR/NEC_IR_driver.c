@@ -17,7 +17,6 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-
 enum
 {
     eSEND_DATA = 0,
@@ -28,11 +27,10 @@ static uint32_t s_au32InternalUse[MAX_TX_CNT];     //The maximun transfer count
 static S_PSIO_NEC_CFG  *s_pPSIOConfig;
 volatile static uint8_t s_u8TransferDone = 0;
 
-
 /*---------------------------------------------------------------------------------------------------------*/
 /*  PSIO IRQ Handler                                                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
-void PSIO_IRQHandler(void)
+NVT_ITCM void PSIO_IRQHandler(void)
 {
     /* INT0 interrupt */
     if (PSIO_GET_INT_FLAG(PSIO, PSIO_INTSTS_CON0IF_Msk))

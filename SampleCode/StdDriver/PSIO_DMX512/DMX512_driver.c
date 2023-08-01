@@ -41,7 +41,7 @@ E_DMX512_FRAME_TYPE  DMX512_FrameDecoder(S_PSIO_DMX512_CFG *psConfig, uint16_t *
 }
 
 /* PSIO IRQ handler */
-void PSIO_IRQHandler(void)
+NVT_ITCM void PSIO_IRQHandler(void)
 {
     pfPSIO_IRQHandler();
 }

@@ -47,7 +47,7 @@ unsigned long get_fattime(void)
     return tmr;
 }
 
-void SDH0_IRQHandler(void)
+NVT_ITCM void SDH0_IRQHandler(void)
 {
     unsigned int volatile isr;
     unsigned int volatile ier;
@@ -144,7 +144,7 @@ void SD_Inits(void)
 
     /* Select IP clock source */
     CLK_SetModuleClock(SDH0_MODULE, CLK_SDHSEL_SDH0SEL_APLL1_DIV2, CLK_SDHDIV_SDH0DIV(5));
-    
+
     /* Enable IP clock */
     CLK_EnableModuleClock(SDH0_MODULE);
 }

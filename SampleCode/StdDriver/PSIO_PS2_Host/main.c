@@ -10,10 +10,6 @@
 #include "NuMicro.h"
 #include "PS2_Host_driver.h"
 
-void SYS_Init(void);
-void UART0_Init(void);
-void PSIO_IRQHandler(void);
-
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -21,7 +17,7 @@ S_PSIO_PS2 g_sConfig;
 volatile uint32_t g_u32TxData = 0, g_u32RxData = 0;
 volatile uint32_t g_u32RxACK = 1;
 
-void PSIO_IRQHandler(void)
+NVT_ITCM void PSIO_IRQHandler(void)
 {
     static uint8_t u8BitNumber = 0;
     uint8_t u8INT0Flag;
@@ -140,7 +136,6 @@ void PSIO_IRQHandler(void)
         }
     }
 }
-
 
 void SYS_Init(void)
 {

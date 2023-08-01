@@ -163,7 +163,7 @@ void SYS_Init(void)
     SYS->GPA_MFP1 |= SYS_GPA_MFP1_PA4MFP_SPI0_I2SMCLK;
 }
 
-void SPI0_IRQHandler()
+NVT_ITCM void SPI0_IRQHandler()
 {
     /* Write 2 TX values to TX FIFO */
     SPII2S_WRITE_TX_FIFO(SPI0, g_u32TxValue);

@@ -316,7 +316,7 @@ int32_t main(void)
     while (1);
 }
 
-void PDMA_IRQHandler(void)
+NVT_ITCM void PDMA_IRQHandler(void)
 {
     uint32_t u32Status = PDMA_GET_INT_STATUS(PDMA0);
 

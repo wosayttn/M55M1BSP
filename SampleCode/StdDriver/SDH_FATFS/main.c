@@ -43,7 +43,7 @@ uint32_t volatile gSec = 0;
 uint32_t volatile gSdInit = 0;
 
 //------------------------------------------------------------------------------
-void TIMER0_IRQHandler(void)
+NVT_ITCM void TIMER0_IRQHandler(void)
 {
     gSec++;
 
@@ -310,7 +310,7 @@ void get_line(char *buff, int len)
     putchar('\n');
 }
 
-void SDH0_IRQHandler(void)
+NVT_ITCM void SDH0_IRQHandler(void)
 {
     unsigned int volatile isr;
     unsigned int volatile ier;

@@ -224,7 +224,7 @@ void SYS_Init(void)
     SYS->GPA_MFP1 |= SYS_GPA_MFP1_PA4MFP_SPI0_I2SMCLK;
 }
 
-void PDMA0_IRQHandler(void)
+NVT_ITCM void PDMA0_IRQHandler(void)
 {
     uint32_t u32DataCount = 0;
     uint32_t u32Status = PDMA_GET_INT_STATUS(PDMA0);

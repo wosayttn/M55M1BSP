@@ -10,17 +10,13 @@
 #include "NuMicro.h"
 #include "PS2_Device_driver.h"
 
-void SYS_Init(void);
-void UART0_Init(void);
-void PSIO_IRQHandler(void);
-
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 S_PSIO_PS2 g_sConfig;
 uint8_t g_u8Stop = 0;
 
-void PSIO_IRQHandler(void)
+NVT_ITCM void PSIO_IRQHandler(void)
 {
     static uint8_t u8BitNumber = 0;
     uint8_t u8INT0Flag;

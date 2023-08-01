@@ -188,7 +188,7 @@ void LPSPI_Init(void)
     LPSPI_EnableAutoSS(LPSPI0, LPSPI_SS, LPSPI_SS_ACTIVE_LOW);
 }
 
-void LPSPI0_IRQHandler(void)
+NVT_ITCM void LPSPI0_IRQHandler(void)
 {
     /* Check RX EMPTY flag */
     while (LPSPI_GET_RX_FIFO_EMPTY_FLAG(LPSPI0) == 0)

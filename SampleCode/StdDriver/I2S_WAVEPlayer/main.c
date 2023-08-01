@@ -33,7 +33,7 @@ void delay_us(int usec);
     void NAU88L25_Reset(void);
     void NAU88L25_Setup(void);
 #endif
-void SDH0_IRQHandler(void);
+NVT_ITCM void SDH0_IRQHandler(void);
 void SD_Inits(void);
 void SYS_Init(void);
 void I2C2_Init(void);
@@ -403,7 +403,7 @@ void NAU88L25_Setup(void)
 
 #endif
 
-void SDH0_IRQHandler(void)
+NVT_ITCM void SDH0_IRQHandler(void)
 {
     unsigned int volatile isr;
 

@@ -39,7 +39,7 @@ volatile uint32_t g_u32Ifr = 0;
 #endif
 
 
-void LPSPI0_IRQHandler(void)
+NVT_ITCM void LPSPI0_IRQHandler(void)
 {
     /* for Auto Operation mode test */
     g_u32Ifr = LPSPI0->AUTOSTS;

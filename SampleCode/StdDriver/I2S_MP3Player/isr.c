@@ -12,10 +12,14 @@
 
 #include "config.h"
 
+//------------------------------------------------------------------------------
 extern volatile uint8_t aPCMBuffer_Full[2];
+
+//------------------------------------------------------------------------------
 volatile uint8_t u8PCMBuffer_Playing = 0;
 
-void PDMA0_IRQHandler(void)
+//------------------------------------------------------------------------------
+NVT_ITCM void PDMA0_IRQHandler(void)
 {
     uint32_t u32Status = PDMA_GET_INT_STATUS(PDMA0);
 

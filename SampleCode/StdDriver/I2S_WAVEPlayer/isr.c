@@ -11,9 +11,8 @@
 #include "NuMicro.h"
 #include "config.h"
 
-void PDMA0_IRQHandler(void);
-
-void PDMA0_IRQHandler(void)
+//------------------------------------------------------------------------------
+NVT_ITCM void PDMA0_IRQHandler(void)
 {
     uint32_t u32Status = PDMA_GET_INT_STATUS(PDMA0);
 

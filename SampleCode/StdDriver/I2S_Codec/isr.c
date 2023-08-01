@@ -12,11 +12,11 @@
 
 #include "config.h"
 
+//------------------------------------------------------------------------------
 static uint32_t g_au32PcmBuff[32] = {0};
 
-void I2S0_IRQHandler(void);
-
-void I2S0_IRQHandler(void)
+//------------------------------------------------------------------------------
+NVT_ITCM void I2S0_IRQHandler(void)
 {
     uint32_t u32Reg;
     uint32_t u32Len, i;

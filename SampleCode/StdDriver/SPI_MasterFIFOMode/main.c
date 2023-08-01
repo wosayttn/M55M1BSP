@@ -191,7 +191,7 @@ void SPI_Init(void)
     SPI_EnableAutoSS(SPI0, SPI_SS, SPI_SS_ACTIVE_LOW);
 }
 
-void SPI0_IRQHandler(void)
+NVT_ITCM void SPI0_IRQHandler(void)
 {
     /* Check RX EMPTY flag */
     while (SPI_GET_RX_FIFO_EMPTY_FLAG(SPI0) == 0)

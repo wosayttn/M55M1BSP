@@ -167,7 +167,7 @@ void SYS_Init(void)
     SystemCoreClockUpdate();
 }
 
-void SPI0_IRQHandler()
+NVT_ITCM void SPI0_IRQHandler()
 {
     /* Write 2 TX values to TX FIFO */
     SPII2S_WRITE_TX_FIFO(SPI0, g_u32TxValue);
