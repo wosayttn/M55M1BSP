@@ -75,7 +75,7 @@ struct dma350_ch_dev_t *const GDMA_CH_DEV_S[] =
  *
  * @details     The GDMA0 Channel 0 default IRQ, declared in startup_M55M1.c.
  */
-void GDMACH0_IRQHandler(void)
+NVT_ITCM void GDMACH0_IRQHandler(void)
 {
     union dma350_ch_status_t status = dma350_ch_get_status(GDMA_CH_DEV_S[0]);
 
