@@ -49,6 +49,7 @@ NVT_ITCM void PMC_IRQHandler(void)
 NVT_ITCM void USCI0_IRQHandler(void)
 {
     uint32_t u32Status;
+    CLK_EnableModuleClock(USCI0_MODULE);
     u32Status = UI2C_GET_PROT_STATUS(UI2C0);
 
     if (s_UI2C0HandlerFn != NULL)

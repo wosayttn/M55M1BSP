@@ -32,6 +32,7 @@ static LPI2C_FUNC s_LPI2C0HandlerFn = NULL;
 NVT_ITCM void LPI2C0_IRQHandler(void)
 {
     uint32_t u32Status;
+    CLK_EnableModuleClock(LPI2C0_MODULE);
 
     /* Check LPI2C Wake-up interrupt flag set or not */
     if (LPI2C_GET_WAKEUP_FLAG(LPI2C0))
