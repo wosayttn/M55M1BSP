@@ -87,13 +87,14 @@ void AWF_Wakeup_Test(void)
 
 void AWF_IRQHandler(void)
 {
-    uint32_t u32HTH_Flag,u32LTH_Flag,u32AccumulationValue;
-    
+    uint32_t u32HTH_Flag, u32LTH_Flag, u32AccumulationValue;
+
     u32HTH_Flag = AWF_GET_HTH_INTFLAG();
     u32LTH_Flag = AWF_GET_LTH_INTFLAG();
     u32AccumulationValue = AWF_GET_ACUVAL();
+
     /* Enable AWF0 module clock */
-    CLK_EnableModuleClock(AWF0_MODULE);
+    CLK_EnableModuleClock(AWF0_MODULE); //TESTCHIP_ONLY
 
     if (AWF_GET_HTH_INTFLAG())
     {
