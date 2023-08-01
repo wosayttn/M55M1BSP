@@ -9,8 +9,7 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-
-void EINT0_IRQHandler(void)
+NVT_ITCM void EINT0_IRQHandler(void)
 {
     /* To check if PB.5 external interrupt occurred */
     if (GPIO_GET_INT_FLAG(PB, BIT5))
@@ -20,7 +19,7 @@ void EINT0_IRQHandler(void)
     }
 }
 
-void EINT1_IRQHandler(void)
+NVT_ITCM void EINT1_IRQHandler(void)
 {
     /* To check if PB.4 external interrupt occurred */
     if (GPIO_GET_INT_FLAG(PB, BIT4))
@@ -30,7 +29,7 @@ void EINT1_IRQHandler(void)
     }
 }
 
-void EINT2_IRQHandler(void)
+NVT_ITCM void EINT2_IRQHandler(void)
 {
     /* To check if PB.3 external interrupt occurred */
     if (GPIO_GET_INT_FLAG(PB, BIT3))

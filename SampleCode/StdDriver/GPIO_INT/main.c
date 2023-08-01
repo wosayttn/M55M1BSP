@@ -10,7 +10,7 @@
 #include "NuMicro.h"
 
 
-void GPB_IRQHandler(void)
+NVT_ITCM void GPB_IRQHandler(void)
 {
     volatile uint32_t temp;
 
@@ -29,7 +29,7 @@ void GPB_IRQHandler(void)
     }
 }
 
-void GPC_IRQHandler(void)
+NVT_ITCM void GPC_IRQHandler(void)
 {
     volatile uint32_t temp;
 

@@ -25,9 +25,10 @@ void PowerDownFunction(void)
     PMC_PowerDown();
 }
 
-void GPB_IRQHandler(void)
+NVT_ITCM void GPB_IRQHandler(void)
 {
     volatile uint32_t temp;
+    CLK_EnableModuleClock(GPIOB_MODULE);
 
     /* To check if PB.3 interrupt occurred */
     if (GPIO_GET_INT_FLAG(PB, BIT3))
@@ -87,7 +88,6 @@ static void SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
-    uint32_t u32TimeOutCnt;
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
     /* Init Debug UART to 115200-8N1 for print message */
