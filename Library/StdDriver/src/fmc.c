@@ -55,7 +55,6 @@ uint32_t FMC_Read(uint32_t u32Addr)
 
     if (FMC->ISPSTS & FMC_ISPSTS_ISPFF_Msk)
     {
-        FMC->ISPSTS |= FMC_ISPSTS_ISPFF_Msk;
         g_FMC_i32ErrCode = FMC_ERR_READ_FAILED;
         return FMC_ERR_READ_FAILED;
     }
@@ -151,7 +150,6 @@ int32_t FMC_Write(uint32_t u32Addr, uint32_t u32Data)
 
     if (FMC->ISPSTS & FMC_ISPSTS_ISPFF_Msk)
     {
-        FMC->ISPSTS |= FMC_ISPSTS_ISPFF_Msk;
         g_FMC_i32ErrCode = FMC_ERR_PROG_FAILED;
         return FMC_ERR_PROG_FAILED;
     }
@@ -372,6 +370,33 @@ int32_t FMC_Erase(uint32_t u32PageAddr)
     }
 
     return i32RetCode;
+}
+
+/**
+  * @brief       Read the User Configuration words.
+  *
+  * @param[out]  u32Config  The word buffer to store the User Configuration data.
+  * @param[in]   u32Count   The word count to be read.
+  *
+  * @retval       0 Success
+  * @retval      -1 Failed
+  *
+  * @details     This function is used to read the settings of user configuration.
+  *              if u32Count = 1, Only CONFIG0 will be returned to the buffer specified by u32Config.
+  *              if u32Count = 2, Both CONFIG0 and CONFIG1 will be returned.
+  */
+int32_t FMC_ReadConfig(uint32_t u32Config[], uint32_t u32Count)
+{
+    uint32_t i;
+
+    g_FMC_i32ErrCode = FMC_OK;
+
+    for (i = 0u; i < u32Count; i++)
+    {
+        u32Config[i] = FMC_Read(FMC_CONFIG_BASE + i * 4u);
+    }
+
+    return g_FMC_i32ErrCode;
 }
 
 /**

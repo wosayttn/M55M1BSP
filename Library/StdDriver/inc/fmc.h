@@ -161,10 +161,11 @@ extern "C"
 #define FMC_DISABLE_ISP()            (FMC->ISPCTL &= ~FMC_ISPCTL_ISPEN_Msk)                    /*!< Disable ISP function       \hideinitializer */
 #define FMC_GET_FAIL_FLAG()          ((FMC->ISPCTL & FMC_ISPCTL_ISPFF_Msk) ? TRUE : FALSE)     /*!< Get ISP fail flag          \hideinitializer */
 #define FMC_CLR_FAIL_FLAG()          (FMC->ISPCTL |= FMC_ISPCTL_ISPFF_Msk)                     /*!< Clear ISP fail flag        \hideinitializer */
-#define FMC_ENABLE_APWPROT(u32Bank, u32BlockMask)  (FMC->APWPROT[(u32Bank) & 0x1] |=  (u32BlockMask))    /*!< Enable APWPROT Block       \hideinitializer */
-#define FMC_DISABLE_APWPROT(u32Bank, u32BlockMask) (FMC->APWPROT[(u32Bank) & 0x1] &= ~(u32BlockMask))    /*!< Disable APWPROT Block      \hideinitializer */
+#define FMC_ENABLE_APWPROT(u32Bank, u32BlockMask)   (FMC->APWPROT[(u32Bank) & 0x1] |=  (u32BlockMask))    /*!< Enable APWPROT Block       \hideinitializer */
+#define FMC_DISABLE_APWPROT(u32Bank, u32BlockMask)  (FMC->APWPROT[(u32Bank) & 0x1] &= ~(u32BlockMask))    /*!< Disable APWPROT Block      \hideinitializer */
+#define FMC_IS_APWPROT(u32Bank, u32BlockMask)       (FMC->APWPROT[(u32Bank) & 0x1] & (u32BlockMask))      /*!< Is APWPROT Block enabled   \hideinitializer */
 #define FMC_LOCK_APWPROT(u32Bank)      (FMC->APWPKEEP = (FMC->APWPKEEP & ~(0xFFFF << ((u32Bank) * 16))) | (0x55AA << ((u32Bank) * 16)))   /*!< Lock APWPROT (Need chip reset to unlock) \hideinitializer */
-#define FMC_IS_APWPROT_LCOKED(u32Bank) ((((FMC->APWPKEEP >> ((u32Bank) * 16)) & 0xFFFF) == 0x55AA) ? TRUE: FALSE)                         /*!< Unlock APWPROT  \hideinitializer */
+#define FMC_IS_APWPROT_LCOKED(u32Bank) ((((FMC->APWPKEEP >> ((u32Bank) * 16)) & 0xFFFF) == 0x55AA) ? TRUE: FALSE)                         /*!< Is APWPROT locked  \hideinitializer */
 #define FMC_SET_SC_ACTIVE()            (FMC->SCACT  |= FMC_SCACT_SCACT_Msk)                          /*!< Activate secure conceal function (Need chip reset to deactivate) \hideinitializer */
 #define FMC_GET_SC_ACTIVE()            ((FMC->SCACT & FMC_SCACT_SCACT_Msk) ? TRUE : FALSE)           /*!< Get secure conceal function active flag \hideinitializer */
 /** @} end of group FMC_EXPORTED_MACROS */
@@ -381,6 +382,7 @@ extern int32_t  FMC_Write(uint32_t u32Addr, uint32_t u32Data);
 extern int32_t  FMC_Write8Bytes(uint32_t u32Addr, uint32_t u32Data0, uint32_t u32Data1);
 extern int32_t  FMC_WriteMultiple(uint32_t u32Addr, uint32_t pu32Buf[], uint32_t u32ByteLen);
 extern int32_t  FMC_Erase(uint32_t u32PageAddr);
+extern int32_t  FMC_ReadConfig(uint32_t u32Config[], uint32_t u32Count);
 extern int32_t  FMC_WriteConfig(uint32_t u32ConfigAddr, uint32_t u32ConfigVal);
 extern int32_t  FMC_EraseConfig(uint32_t u32ConfigAddr);
 extern int32_t  FMC_RemapBank(uint32_t u32Bank);
