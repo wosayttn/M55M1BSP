@@ -31,6 +31,9 @@ int IsDebugFifoEmpty(void)
  */
 NVT_ITCM void WDT0_IRQHandler(void)
 {
+    // TESTCHIP_ONLY
+    CLK_WaitModuleClockReady(WDT0_MODULE);    
+    
     if (g_u32WDTINTCounts < 10)
         WDT_RESET_COUNTER(WDT0);
 

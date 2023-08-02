@@ -45,6 +45,9 @@ int IsDebugFifoEmpty(void)
  */
 NVT_ITCM void RTC_IRQHandler(void)
 {
+    // TESTCHIP_ONLY
+    CLK_WaitModuleClockReady(RTC0_MODULE);
+    
     /* To check if RTC alarm interrupt occurred */
     if (RTC_GET_ALARM_INT_FLAG(RTC) == 1)
     {
