@@ -10,14 +10,10 @@
 #include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* Macro, type and constant definitions                                                                    */
-/*---------------------------------------------------------------------------------------------------------*/
-#define PDMA_TEST_LENGTH 64
-
-/*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 uint32_t LPPDMA_TEST_LENGTH = 64;
+
 __attribute__((aligned)) static uint8_t au8SrcArray[256];
 __attribute__((aligned)) static uint8_t au8DestArray[256];
 static uint32_t volatile g_u32IsTestOver = 0;
@@ -210,7 +206,7 @@ int main(void)
         printf("target abort...\n");
     }
 
-    /* Close channel 2 */
+    /* Close LPPDMA channel */
     LPPDMA_Close(LPPDMA);
 
     while (1);

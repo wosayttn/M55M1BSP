@@ -32,6 +32,7 @@ volatile static I2C_FUNC s_I2C0HandlerFn = NULL;
 NVT_ITCM void I2C0_IRQHandler(void)
 {
     uint32_t u32Status;
+    CLK_EnableModuleClock(I2C0_MODULE);
 
     /* Check I2C Wake-up interrupt flag set or not */
     if (I2C_GET_WAKEUP_FLAG(I2C0))

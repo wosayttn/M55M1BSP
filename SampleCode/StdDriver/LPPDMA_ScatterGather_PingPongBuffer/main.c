@@ -2,7 +2,7 @@
  * @file    main.c
  * @version V1.00
  * @brief
- *           Use LPPDMA0 to implement Ping-Pong buffer by scatter-gather mode(memory to memory).
+ *           Use LPPDMA to implement Ping-Pong buffer by scatter-gather mode(memory to memory).
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -11,7 +11,7 @@
 #include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* Macro, type and constant definitions                                                                    */
+/* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 uint32_t LPPDMA_TEST_COUNT = 50;
 
@@ -235,7 +235,7 @@ int main(void)
     {
         if (--u32TimeOutCnt == 0)
         {
-            printf("Wait for LPPDMA time-out!\n");
+            printf("Wait for LPPDMA transfer done time-out!\n");
             break;
         }
     }
@@ -252,3 +252,4 @@ int main(void)
     while (1);
 }
 
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

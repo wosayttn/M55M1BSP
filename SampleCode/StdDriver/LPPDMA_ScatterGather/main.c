@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief    Use LPPDMA0 channel 2 to transfer data from memory to memory by scatter-gather mode.
+ * @brief    Use LPPDMA channel 2 to transfer data from memory to memory by scatter-gather mode.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -10,7 +10,7 @@
 #include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* Macro, type and constant definitions                                                                    */
+/* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 uint32_t LPPDMA_TEST_LENGTH = 64;
 
@@ -222,7 +222,7 @@ int main(void)
     {
         if (--u32TimeOutCnt == 0)
         {
-            printf("Wait for PDMA transfer done time-out!\n");
+            printf("Wait for LPPDMA transfer done time-out!\n");
             break;
         }
     }
