@@ -87,7 +87,7 @@ void EADC_FunctionTest()
     /* Set input mode as single-end and enable the A/D converter */
     EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
 
-    /* Set sample module 28 external sampling time to 0xF */
+    /* Set sample module 24 external sampling time to 0xF */
     EADC_SetExtendSampleTime(EADC0, 24, 0xF);
 
     /* Clear the A/D ADINT0 interrupt flag for safe */
