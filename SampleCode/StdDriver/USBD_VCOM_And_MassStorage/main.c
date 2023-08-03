@@ -358,18 +358,22 @@ int32_t main(void)
 
     /* Check if Data Flash Size is 64K. If not, to re-define Data Flash size and to enable Data Flash function */
 
-//    if(FMC_ReadConfig(au32Config, 2) < 0) //wait FMC modified
-//        return -1;
+    if(FMC_ReadConfig(au32Config, 2) < 0) //wait FMC modified
+        return -1;
 
     if(((au32Config[0] & 0x01) == 1) || (au32Config[1] != DATA_FLASH_BASE))
     {
         FMC_ENABLE_CFG_UPDATE();
         au32Config[0] &= ~0x1;
         au32Config[1] = DATA_FLASH_BASE;
-//        if(FMC_WriteConfig(au32Config, 2) < 0)   //wait FMC modified
-//            return -1;
 
-//        FMC_ReadConfig(au32Config, 2);   //wait FMC modified
+        if(FMC_WriteConfig(FMC_USER_CONFIG_0,au32Config[0]) < 0)   //wait FMC modified
+            return -1;
+
+        if(FMC_WriteConfig(FMC_USER_CONFIG_1,au32Config[1]) < 0)   //wait FMC modified
+            return -1;
+        
+        FMC_ReadConfig(au32Config, 2);   //wait FMC modified
         if(((au32Config[0] & 0x01) == 1) || (au32Config[1] != DATA_FLASH_BASE))
         {
             printf("Error: Program Config Failed!\n");
