@@ -7,10 +7,7 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 /*
- * This is a template project for M55M1 series MCU.
- * Users can create their own application based on this project.
- *
- * This template uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This sample uses internal RC as APLL0 clock source and UART0 to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
@@ -107,8 +104,7 @@ int main(void)
 
     printf("\n\nCPU @ %dHz(PLL@ %dHz)\n", SystemCoreClock, PllClock);
     printf("+------------------------------------------------------------------------+\n");
-    printf("|                          BPWM Driver Sample Code                       |\n");
-    printf("|                                                                        |\n");
+    printf("|                       BPWM SyncStart Sample Code                       |\n");
     printf("+------------------------------------------------------------------------+\n");
     printf("  This sample code will output waveform with BPWM0 and BPWM1 channel 0~5 at the same time.\n");
     printf("  I/O configuration:\n");
