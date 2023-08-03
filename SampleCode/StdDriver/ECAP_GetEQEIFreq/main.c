@@ -7,10 +7,7 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 /*
- * This is a template project for M55M1 series MCU.
- * Users can create their own application based on this project.
- *
- * This template uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This sample uses internal RC as APLL0 clock source and UART0 to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
@@ -28,10 +25,10 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-uint32_t u32Status;
-uint32_t u32IC0Hold;
+static volatile uint32_t u32Status;
+static volatile uint32_t u32IC0Hold;
 
-void TIMER0_IRQHandler(void)
+NVT_ITCM void TIMER0_IRQHandler(void)
 {
     if(TIMER_GetIntFlag(TIMER0) == 1)
     {
@@ -43,7 +40,7 @@ void TIMER0_IRQHandler(void)
     }
 }
 
-void ECAP0_IRQHandler(void)
+NVT_ITCM void ECAP0_IRQHandler(void)
 {
     /* Get input Capture status */
     u32Status = ECAP_GET_INT_STATUS(ECAP0);
@@ -204,9 +201,9 @@ int main(void)
 #endif
 
     printf("System core clock = %d\n", SystemCoreClock);
-    printf("+----------------------------------------------+\n");
-    printf("|        M460 ECAP with EQEI Sample Code        |\n");
-    printf("+----------------------------------------------+\n");
+    printf("+----------------------------------------+\n");
+    printf("|        ECAP with EQEI Sample Code      |\n");
+    printf("+----------------------------------------+\n");
     printf("\n");
     printf("  !! GPIO PA.0 toggle periodically    !!\n");
     printf("  !! Connect PA.0 --> PA.4(EQEI0_A) !!\n\n");

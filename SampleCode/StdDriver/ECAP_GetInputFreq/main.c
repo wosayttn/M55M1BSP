@@ -7,10 +7,7 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 /*
- * This is a template project for M55M1 series MCU.
- * Users can create their own application based on this project.
- *
- * This template uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This sample uses internal RC as APLL0 clock source and UART0 to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
@@ -28,10 +25,10 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-uint32_t u32Status;
-uint32_t u32IC0Hold;
+static volatile uint32_t u32Status;
+static volatile uint32_t u32IC0Hold;
 
-void TIMER0_IRQHandler(void)
+NVT_ITCM void TIMER0_IRQHandler(void)
 {
     if(TIMER_GetIntFlag(TIMER0) == 1)
     {
@@ -46,7 +43,7 @@ void TIMER0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  ECAP0 IRQ Handler                                                                                      */
 /*---------------------------------------------------------------------------------------------------------*/
-void ECAP0_IRQHandler(void)
+NVT_ITCM void ECAP0_IRQHandler(void)
 {
     /* Get input Capture status */
     u32Status = ECAP_GET_INT_STATUS(ECAP0);
@@ -172,14 +169,12 @@ void ECAP0_Init(void)
 
 void Timer0_Init(void)
 {
-
     /* Open Timer0 in periodic mode, enable interrupt and 1 interrupt tick per second */
     TIMER_Open(TIMER0,TIMER_PERIODIC_MODE,10000);
     TIMER_EnableInt(TIMER0);
 
     /* Enable Timer0 NVIC */
     NVIC_EnableIRQ(TIMER0_IRQn);
-
 }
 
 int main(void)
@@ -196,9 +191,9 @@ int main(void)
 #endif
 
     printf("System core clock = %d\n", SystemCoreClock);
-    printf("+----------------------------------------------------------+\n");
-    printf("|   M460 Enhanced Input Capture Timer Driver Sample Code   |\n");
-    printf("+----------------------------------------------------------+\n");
+    printf("+----------------------------------------------+\n");
+    printf("|   Enhanced Input Capture Timer Sample Code   |\n");
+    printf("+----------------------------------------------+\n");
     printf("\n");
     printf("  !! GPIO PA.0 toggle periodically    !!\n");
     printf("  !! Connect PA.0 --> PA.10(ECAP0_IC0) !!\n\n");
