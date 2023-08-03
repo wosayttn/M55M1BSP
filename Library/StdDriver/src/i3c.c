@@ -510,7 +510,7 @@ int32_t I3C_SetDeviceAddr(I3C_T *i3c, uint8_t u8DevIndex, uint8_t u8DevType, uin
     // Device Type
     if (u8DevType != I3C_DEVTYPE_I3C)
     {
-        u32Device |= (1 << I3C_DEVADR_DEVICE_Pos);
+        u32Device |= I3C_DEVADR_DEVICE_Msk;
     }
 
     switch (u8DevIndex)
@@ -583,7 +583,6 @@ int32_t I3C_SetDeviceAddr(I3C_T *i3c, uint8_t u8DevIndex, uint8_t u8DevType, uin
 int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_t *pu32TxBuf, uint16_t u16WriteBytes)
 {
     uint32_t i;
-    uint8_t u8Xfering = 1u, u8Err = 0u, u8Ctrl = 0u;
     uint32_t u32TimeOutCount = 0u;
     uint32_t response;
 
@@ -695,7 +694,7 @@ int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_t *pu
 {
     uint32_t i;
     uint32_t u32TimeOutCount = (SystemCoreClock / 1000);
-    uint32_t response, readBytes = 0;
+    uint32_t response;
 
     if ((u16ReadBytes == 0) || (pu32RxBuf == NULL))
     {
@@ -780,6 +779,55 @@ int32_t I3C_BroadcastRSTDAA(I3C_T *i3c)
     }
 
     return I3C_STS_NO_ERR;
+}
+
+/**
+  * @brief      Broadcast ENTDAA command
+  *
+  * @param[in]  *i3c            Point to I3C peripheral
+  * @param[in]  u8DevCount      Indicating the number of devices to be assigned with the ENTDAA command
+  *
+  * @retval     positive integer            number of devices assigned, this value should be less or equal to u8DevCount
+  * @retval     I3C_STS_INVALID_STATE       Invalid state
+  * @details    The function is used for I3C Master.
+  *
+  */
+
+int32_t I3C_BroadcastENTDAA(I3C_T *i3c, uint8_t u8DevCount)
+{
+    uint32_t response, error;
+
+    i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_ROC_Msk
+                   | (0 << I3C_CMDQUE_DEVINDX_Pos)
+                   | ((u8DevCount << I3C_CMDQUE_DEVCOUNT_Pos) & I3C_CMDQUE_DEVCOUNT_Msk)
+                   | (I3C_CCC_ENTDAA <<  I3C_CMDQUE_CMD_Pos)
+                   | I3C_CMDATTR_ADDR_ASSGN_CMD);
+
+
+    while ((I3C0->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
+
+    response = I3C0->RESPQUE;
+    error = (response & I3C_RESPQUE_ERRSTS_Msk);
+
+    if (error == I3C_RESP_NO_ERR)
+    {
+        return u8DevCount;
+    }
+    else if (error == I3C_RESP_BROADCAST_ADDR_NACK_ERR)
+    {
+        I3C0->DEVCTL |= I3C_DEVCTL_RESUME_Msk;
+        /*
+            The controller writes the transfer complete status into the Command Response queue. The Data
+            Length Field of Response Data Structure indicates remaining device count in case if the transfer is
+            terminated abruptly due to NACK response from the target.
+        */
+        return (u8DevCount - (response & I3C_RESPQUE_DATLEN_Msk));
+    }
+    else
+    {
+        I3C0->DEVCTL |= I3C_DEVCTL_RESUME_Msk;
+        return I3C_STS_INVALID_STATE;
+    }
 }
 
 /**

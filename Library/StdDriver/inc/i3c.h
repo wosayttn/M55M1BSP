@@ -850,6 +850,7 @@ int32_t I3C_SetDeviceAddr(I3C_T *i3c, uint8_t u8DevIndex, uint8_t u8DevType, uin
 int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_t *pu32TxBuf, uint16_t u16WriteBytes);
 int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_t *pu32RxBuf, uint16_t u16ReadBytes);
 int32_t I3C_BroadcastRSTDAA(I3C_T *i3c);
+int32_t I3C_BroadcastENTDAA(I3C_T *i3c, uint8_t u8DevCount);
 int32_t I3C_UnicastSETDASA(I3C_T *i3c, uint8_t u8DevIndex);
 
 
