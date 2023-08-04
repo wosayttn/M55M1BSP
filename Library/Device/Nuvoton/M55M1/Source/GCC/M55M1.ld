@@ -71,9 +71,7 @@ MEMORY
   ITCM   (rx)  : ORIGIN = 0x00000010, LENGTH = 0x00010000
   FLASH  (rx)  : ORIGIN = 0x00100000, LENGTH = 0x00200000
   DTCM   (rwx) : ORIGIN = 0x20000000, LENGTH = 0x00020000
-  SRAM   (rwx) : ORIGIN = 0x20100000, LENGTH = 0x00130000
-  /* Start address and size of NonCacheable region must be 32 byte alignment */
-  SRAM_NONCACHEABLE (rw) : ORIGIN = (ORIGIN(SRAM) + LENGTH(SRAM)), LENGTH = (0x00250000 - LENGTH(SRAM))
+  SRAM   (rwx) : ORIGIN = 0x20100000, LENGTH = 0x00150000
 }
 
 
@@ -156,11 +154,9 @@ SECTIONS
     . = ALIGN(4);
     __zero_table_start__ = .;
     LONG (__bss_start__)
-    LONG (__bss_end__ - __bss_start__)
+    LONG ((__bss_end__ - __bss_start__) / 4)
     LONG (__dtcm_zi_start__)
-    LONG (__dtcm_zi_end__ - __dtcm_zi_start__)
-    LONG (__SRAM_NONCACHEABLE_zi_start)
-    LONG (__SRAM_NONCACHEABLE_zi_end - __SRAM_NONCACHEABLE_zi_start)
+    LONG ((__dtcm_zi_end__ - __dtcm_zi_start__) / 4)
     __zero_table_end__ = .;
   } > FLASH
 
@@ -172,22 +168,17 @@ SECTIONS
     /* Section to be copied - part 1: RW data for SRAM */
     LONG (__eitcm)
     LONG (__data_start__)
-    LONG (__data_end__ - __data_start__)
+    LONG ((__data_end__ - __data_start__) / 4)
 
     /* Section to be copied - part 2: RO code for ITCM */
     LONG (__etext)
     LONG (__itcm_text_start__)
-    LONG (__itcm_text_end__ - __itcm_text_start__ )
+    LONG ((__itcm_text_end__ - __itcm_text_start__ ) / 4)
     
-    /* Section to be copied - part 3: RW data code for DTCM */
+    /* Section to be copied - part 3: RW data for DTCM */
     LONG (__esram_data)
     LONG (__dtcm_init_start__)
-    LONG (__dtcm_init_end__ - __dtcm_init_start__ )
-
-    /* Section to be copied - part 4: RW data for SRAM NonCacheable */
-    LONG (__edtcm_init_data)
-    LONG (__SRAM_NONCACHEABLE_init_start)
-    LONG (__SRAM_NONCACHEABLE_init_end - __SRAM_NONCACHEABLE_init_start)
+    LONG ((__dtcm_init_end__ - __dtcm_init_start__ ) / 4)
 
     __copy_table_end__ = .;
   } > FLASH
@@ -246,7 +237,7 @@ SECTIONS
     . = ALIGN(16);
     *(.bss.tensor_arena)
   } > SRAM
-
+ 
   .bss :
   {
     . = ALIGN(4);
@@ -263,36 +254,20 @@ SECTIONS
   .dtcm.init : AT (__esram_data)
   {
     __dtcm_init_start__ = .;
-    *(DTCM.init)
+    *(DTCM.VTOR)
+    *(DTCM.Init)
     __dtcm_init_end__ = .;
   } > DTCM
   
   .dtcm.zi (NOLOAD) :
   {
-  	. = ALIGN(4);
+    . = ALIGN(4);
     __dtcm_zi_start__ = .;
-    *(DTCM.zi)
+    *(.bss.DTCM.ZeroInit)
     __dtcm_zi_end__ = .;
   } > DTCM AT > DTCM
 
   __edtcm_init_data = __esram_data + (__dtcm_init_end__ - __dtcm_init_start__);
-  
-  .NonCacheable.init : AT (__edtcm_init_data)
-  {
-  	__SRAM_NONCACHEABLE_start = .;
-  	__SRAM_NONCACHEABLE_init_start = .;
-  	*(NonCacheable.init)
-  	__SRAM_NONCACHEABLE_init_end = .;
-  } > SRAM_NONCACHEABLE
-  
-  .NonCacheable.zi (NOLOAD) :
-  {
-  	. = ALIGN(4);
-  	__SRAM_NONCACHEABLE_zi_start = .;
-  	*(NonCacheable.zi)
-  	__SRAM_NONCACHEABLE_zi_end = .;
-  	__SRAM_NONCACHEABLE_end = (ORIGIN(SRAM_NONCACHEABLE) + LENGTH(SRAM_NONCACHEABLE));
-  } > SRAM_NONCACHEABLE AT > SRAM_NONCACHEABLE
   
   .heap (NOLOAD) :
   {

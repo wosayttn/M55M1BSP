@@ -72,6 +72,7 @@ extern "C"
 #define FMC_MULTI_WORD_PROG_LEN 512UL                                   /*!< Length of multi-word program.      \hideinitializer */
 #define FMC_APWPROT_BLOCK_SIZE  0x8000UL                                /*!< APWPROT block size (32K bytes)     \hideinitializer */
 #define FMC_OTP_ENTRY_CNT       256UL                                   /*!< OTP entry number                   \hideinitializer */
+#define FMC_BANK_SIZE           FMC_APROM_BANK_SIZE                     /*!< For backward compatible            \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  XOM region number constant definitions                                                                 */

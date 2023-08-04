@@ -85,8 +85,8 @@
  *----------------------------------------------------------------------------*/
 #define SRAM_CACHEABLE_SIZE	    0x00130000
 
-#define SRAM_START      		0x20100000
-#define SRAM_SIZE	      		0x00150000
+#define SRAM_START      0x20100000
+#define SRAM_SIZE       0x00150000
 #define SRAM_NONCACHEABLE_START	(SRAM_START + SRAM_CACHEABLE_SIZE)
 #define SRAM_NONCACHEABLE_SIZE	(SRAM_SIZE - SRAM_CACHEABLE_SIZE)
 
@@ -155,13 +155,13 @@
 LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
     ER_ROM __RO_BASE __RO_SIZE  {                   ; load address = execution address
         *.o (RESET, +First)
-        *(InRoot$$Sections)
+        * (InRoot$$Sections)
         ; Make sure reset_handler ends up in root segment
         startup_M55M1.o
         .ANY (+RO)
     }
 
-    __ITCM ITCM_START ITCM_SIZE
+    ITCM ITCM_START ITCM_SIZE
     {
         .ANY (ITCM)
     }
@@ -182,20 +182,27 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
     ARM_LIB_HEAP  __HEAP_BASE EMPTY  HEAP_SIZE {}       ; Reserve empty region for heap
 #endif
 
-	__DTCM DTCM_START (DTCM_SIZE - STACK_SIZE - __STACKSEAL_SIZE)
+    DTCM_VTOR DTCM_START
     {
-        .ANY (DTCM.init)
-        .ANY (DTCM.zi)
+        * (DTCM.VTOR)
     }
+
+    DTCM AlignExpr(+0, 8)
+    {
+        .ANY (DTCM.Init)
+		.ANY (.bss.DTCM.ZeroInit)
+    }
+
+    ScatterAssert((ImageLength(DTCM_VTOR) + ImageLength(DTCM)) < (DTCM_SIZE - STACK_SIZE - __STACKSEAL_SIZE))	; ImageLength is uncompressed size
 
     SRAM_NONCACHEABLE SRAM_NONCACHEABLE_START SRAM_NONCACHEABLE_SIZE
     {
-        .ANY (NonCacheable.init)
-        .ANY (NonCacheable.zi)
+        .ANY (NonCacheable.Init)
+        .ANY (.bss.NonCacheable.ZeroInit)
     }
 
-	; Empty section to get maximum size of NonCacheable region with Image$$SRAM_NONCACHEABLE_END$$Base
-	SRAM_NONCACHEABLE_END (SRAM_NONCACHEABLE_START + SRAM_NONCACHEABLE_SIZE)
+    ; Empty section to get maximum size of NonCacheable region with Image$$SRAM_NONCACHEABLE_END$$Base
+    SRAM_NONCACHEABLE_END (SRAM_NONCACHEABLE_START + SRAM_NONCACHEABLE_SIZE)
     {
         .ANY (SRAM_NONCACHEABLE_END)
     }

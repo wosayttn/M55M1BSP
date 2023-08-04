@@ -188,7 +188,15 @@ void WWDT1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
     #pragma GCC diagnostic ignored "-Wpedantic"
 #endif
 
+/* Initial vector table */
 const VECTOR_TABLE_Type __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
+{
+    (VECTOR_TABLE_Type)(&__INITIAL_SP),       /*       Initial Stack Pointer                            */
+    Reset_Handler,                            /*       Reset Handler                                    */
+};
+
+/* Declare new vector table in DTCM */
+const VECTOR_TABLE_Type DTCM_VECTOR_TABLE[] NVT_DTCM_VTOR =
 {
     (VECTOR_TABLE_Type)(&__INITIAL_SP),       /*       Initial Stack Pointer                            */
     Reset_Handler,                            /*       Reset Handler                                    */

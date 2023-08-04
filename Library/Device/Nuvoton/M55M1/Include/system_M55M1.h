@@ -29,11 +29,14 @@ extern "C" {
 #define DCACHE_LINE_SIZE                        (__SCB_DCACHE_LINE_SIZE)    /*!< DCache line byte size              */
 #define DCACHE_ALIGN_LINE_SIZE(u32ByteSize)     (((u32ByteSize) + (DCACHE_LINE_SIZE) - 1) & ~((DCACHE_LINE_SIZE) - 1))  /* Align to DCache line size */
 
-#define NVT_ITCM                                __attribute__((section("ITCM")))                /*!< Placed declaration code in ITCM region */
-#define NVT_DTCM                                __attribute__((section("DTCM.zi")))             /*!< Placed declaration data in DTCM region */
-#define NVT_DTCM_INIT                           __attribute__((section("DTCM.init")))           /*!< Placed declaration data in DTCM region */
-#define NVT_NONCACHEABLE                        __attribute__((section("NonCacheable.zi")))     /*!< Placed declaration data in NonCacheable region */
-#define NVT_NONCACHEABLE_INIT                   __attribute__((section("NonCacheable.init")))   /*!< Placed declaration data in NonCacheable region */
+#define NVT_ITCM                                __attribute__((section("ITCM")))                 /*!< Placed declaration code in ITCM region */
+#define NVT_DTCM_INIT                           __attribute__((section("DTCM.Init")))            /*!< Placed declaration data in DTCM region */
+#define NVT_NONCACHEABLE_INIT                   __attribute__((section("NonCacheable.Init")))    /*!< Placed declaration data in NonCacheable region */
+/* https://developer.arm.com/documentation/ka003046 */
+/* Arm Compiler 6 only creates ZI sections, if the section name starts with ".bss". */
+#define NVT_DTCM                                __attribute__((section(".bss.DTCM.ZeroInit")))          /*!< Placed declaration data in DTCM region */
+#define NVT_NONCACHEABLE                        __attribute__((section(".bss.NonCacheable.ZeroInit")))  /*!< Placed declaration data in NonCacheable region */
+#define NVT_DTCM_VTOR                           __attribute__((section("DTCM.VTOR")))
 
 #define __PC()                                              \
   __extension__({                                           \

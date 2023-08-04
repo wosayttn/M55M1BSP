@@ -17,9 +17,7 @@
   Exception / Interrupt Vector table
  *----------------------------------------------------------------------------*/
 extern const VECTOR_TABLE_Type __VECTOR_TABLE[];
-
-/* Declare new vector table in DTCM */
-uint32_t VECTOR_TABLE_DTCM[TOTAL_IRQn_CNT] __ALIGNED(FMC_VECMAP_SIZE) __attribute__((section("DTCM.VTOR")));
+extern const VECTOR_TABLE_Type DTCM_VECTOR_TABLE[];
 
 /*----------------------------------------------------------------------------
   System Core Clock Variable
@@ -116,40 +114,8 @@ __WEAK void InitDebugUart(void)
  *----------------------------------------------------------------------------*/
 __attribute__((constructor)) void SystemInit(void)
 {
-    int32_t i;
-
-#if defined (__ICCARM__)
-    __WEAK extern uint32_t _region_NonCacheable_start__, _region_NonCacheable_end__;
-
-    if (((uint32_t)&_region_NonCacheable_start__) && ((uint32_t)&_region_NonCacheable_end__))
-    {
-        g_u32NonCacheableBase  = (uint32_t)&_region_NonCacheable_start__;
-        g_u32NonCacheableLimit = (uint32_t)&_region_NonCacheable_end__;
-    }
-#elif defined(__ARMCC_VERSION)
-    __WEAK extern uint32_t Image$$SRAM_NONCACHEABLE$$Base, Image$$SRAM_NONCACHEABLE_END$$Base;
-
-    if (((uint32_t)&Image$$SRAM_NONCACHEABLE$$Base) && ((uint32_t)&Image$$SRAM_NONCACHEABLE_END$$Base))
-    {
-        g_u32NonCacheableBase  = (uint32_t)&Image$$SRAM_NONCACHEABLE$$Base;
-        g_u32NonCacheableLimit = DCACHE_ALIGN_LINE_SIZE((uint32_t)&Image$$SRAM_NONCACHEABLE_END$$Base) - 1;
-    }
-#else
-    __WEAK extern uint32_t __SRAM_NONCACHEABLE_start, __SRAM_NONCACHEABLE_end;
-
-    if (((uint32_t)&__SRAM_NONCACHEABLE_start) && ((uint32_t)&__SRAM_NONCACHEABLE_end))
-    {
-        g_u32NonCacheableBase  = (uint32_t)&__SRAM_NONCACHEABLE_start;
-        g_u32NonCacheableLimit = DCACHE_ALIGN_LINE_SIZE((uint32_t)&__SRAM_NONCACHEABLE_end) - 1;
-    }
-#endif
-
 #if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
-    /* Copy vector table to table in DTCM */
-    for (i = 0; i < TOTAL_IRQn_CNT; i++)
-        VECTOR_TABLE_DTCM[i] = (uint32_t)__VECTOR_TABLE[i];
-
-    SCB->VTOR = (uint32_t)(&VECTOR_TABLE_DTCM[0]);
+    SCB->VTOR = (uint32_t)(&DTCM_VECTOR_TABLE[0]);
 #endif
 
 #if (defined (__FPU_USED) && (__FPU_USED == 1U)) || \
@@ -181,6 +147,33 @@ __attribute__((constructor)) void SystemInit(void)
     __ISB();
 
 #ifdef NVT_DCACHE_ON
+
+#if defined (__ICCARM__)
+    __WEAK extern uint32_t _region_NonCacheable_start__, _region_NonCacheable_end__;
+
+    if (((uint32_t)&_region_NonCacheable_start__) && ((uint32_t)&_region_NonCacheable_end__))
+    {
+        g_u32NonCacheableBase  = (uint32_t)&_region_NonCacheable_start__;
+        g_u32NonCacheableLimit = (uint32_t)&_region_NonCacheable_end__;
+    }
+#elif defined(__ARMCC_VERSION)
+    __WEAK extern uint32_t Image$$SRAM_NONCACHEABLE$$Base, Image$$SRAM_NONCACHEABLE_END$$Base;
+
+    if (((uint32_t)&Image$$SRAM_NONCACHEABLE$$Base) && ((uint32_t)&Image$$SRAM_NONCACHEABLE_END$$Base))
+    {
+        g_u32NonCacheableBase  = (uint32_t)&Image$$SRAM_NONCACHEABLE$$Base;
+        g_u32NonCacheableLimit = DCACHE_ALIGN_LINE_SIZE((uint32_t)&Image$$SRAM_NONCACHEABLE_END$$Base) - 1;
+    }
+#else
+    __WEAK extern uint32_t __SRAM_NONCACHEABLE_start, __SRAM_NONCACHEABLE_end;
+
+    if (((uint32_t)&__SRAM_NONCACHEABLE_start) && ((uint32_t)&__SRAM_NONCACHEABLE_end))
+    {
+        g_u32NonCacheableBase  = (uint32_t)&__SRAM_NONCACHEABLE_start;
+        g_u32NonCacheableLimit = DCACHE_ALIGN_LINE_SIZE((uint32_t)&__SRAM_NONCACHEABLE_end) - 1;
+    }
+#endif
+
     if (g_u32NonCacheableLimit > g_u32NonCacheableBase)
     {
         /* Disable D-Cache */
@@ -203,6 +196,7 @@ __attribute__((constructor)) void SystemInit(void)
         /* Enable D-Cache */
         SCB_EnableDCache();
     }
+
 #endif  // NVT_DCACHE_ON
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
@@ -455,9 +449,6 @@ void SCU_Setup(void)
     if (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM0_Msk)
         NVIC_ITNS_CONF(SPIM0_IRQn);
 
-    if (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM1_Msk)
-        NVIC_ITNS_CONF(SPIM1_IRQn);
-
     if (SCU_INIT_D1PNS0_VAL & SCU_D1PNS0_PDMA0_Msk)
         NVIC_ITNS_CONF(PDMA0_IRQn);
 
@@ -603,14 +594,6 @@ void SCU_Setup(void)
     /* SCU_D1PNS4 */
     if (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_WWDT1_Msk)
         NVIC_ITNS_CONF(WWDT1_IRQn);
-
-    if (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_EADC1_Msk)
-    {
-        NVIC_ITNS_CONF(EADC10_IRQn);
-        NVIC_ITNS_CONF(EADC11_IRQn);
-        NVIC_ITNS_CONF(EADC12_IRQn);
-        NVIC_ITNS_CONF(EADC13_IRQn);
-    }
 
     if (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_EPWM1_Msk)
     {
