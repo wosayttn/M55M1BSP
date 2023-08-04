@@ -1078,6 +1078,9 @@
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\ks.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\otfc.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
         </file>
         <file>
