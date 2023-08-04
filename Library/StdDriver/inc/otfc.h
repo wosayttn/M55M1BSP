@@ -68,7 +68,7 @@ extern "C"
 #define OTFC_KEY_SRC_KS                 (0x01)    /*!< OTFC Protection Region key source from key store */
 
 #define OTFC_KS_SRC_SRAM                (0x00)    /*!< Key is read from the SRAM of Key Store. */
-#define OTFC_KS_SRC_OTP                 (0x10)    /*!< Key is read from the OTP of Key Store. */
+#define OTFC_KS_SRC_OTP                 (0x02)    /*!< Key is read from the OTP of Key Store. */
 
 /**
   * @brief  Enable OTFC Protection Region.
