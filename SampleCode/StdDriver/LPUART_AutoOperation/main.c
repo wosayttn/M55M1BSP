@@ -29,7 +29,7 @@ typedef struct dma_desc_t
 
 #define MAX_SG_TAB_NUM          8       /* Scater gather table nubmer */
 #define SG_TX_LENGTH            32      /* Each Scater gather transfer length */
-#define SG_BASE_ADDR            0x20310000
+#define SG_BASE_ADDR            0x20310800
 
 #if (defined(__GNUC__) && !defined(__ARMCC_VERSION))
 uint8_t SrcArray[MAX_SG_TAB_NUM*SG_TX_LENGTH] __attribute__((section(".lpSram")));
@@ -165,7 +165,7 @@ void BuildSCTab(uint32_t u32tabNum, uint32_t u32TxfSize, uint32_t pu8StarAddr)
                              ((u32TxfSize - 1) << LPPDMA_DSCT_CTL_TXCNT_Pos);
         DMA_DESC_SC[i].src = (uint32_t)(pu8StarAddr+i*u32TxfSize);
         DMA_DESC_SC[i].dest = (uint32_t)&(LPUART0->DAT);
-        DMA_DESC_SC[i].offset = (uint32_t)&DMA_DESC_SC[0] + 0x10*(i + 1) - SG_BASE_ADDR;
+        DMA_DESC_SC[i].offset = (uint32_t)&DMA_DESC_SC[0] + 0x10*(i + 1);
     }
 
     DMA_DESC_SC[u32tabNum-1].ctl = (DMA_DESC_SC[u32tabNum-1].ctl & ~(PDMA_DSCT_CTL_TBINTDIS_Msk | LPPDMA_DSCT_CTL_OPMODE_Msk))  \
@@ -176,8 +176,6 @@ void BuildSCTab(uint32_t u32tabNum, uint32_t u32TxfSize, uint32_t pu8StarAddr)
 
 void LPPDMA_TX_init(uint8_t u8TestCh, uint32_t u8TestLen)
 {
-    /* Set SRAM R/W base of Scatter-Gather mode */
-//    LPPDMA->SCATBA = (uint32_t)SG_BASE_ADDR;
 
     LPPDMA_Open(LPPDMA, 1<<u8TestCh);
 
@@ -343,6 +341,7 @@ void SYS_Init(void)
     /* Set PA multi-function pins for LPUART0 TXD and RXD*/
     SET_LPUART0_RXD_PA0();
     SET_LPUART0_TXD_PA1();
+
 
 }
 
