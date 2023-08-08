@@ -13,7 +13,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /*                                 Define functions prototype                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-void ACMP01_IRQHandler(void);
+NVT_ITCM void ACMP01_IRQHandler(void);
 void SYS_Init(void);
 int32_t main(void);
 
@@ -21,7 +21,7 @@ int32_t main(void);
     extern void initialise_monitor_handles(void);
 #endif
 
-void ACMP01_IRQHandler(void)
+NVT_ITCM void ACMP01_IRQHandler(void)
 {
     /* Clear interrupt flag */
     ACMP_CLR_INT_FLAG(ACMP01, 0);
@@ -52,7 +52,7 @@ void SYS_Init(void)
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
 
     /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
@@ -86,7 +86,7 @@ void SYS_Init(void)
     PB->MODE &= ~(GPIO_MODE_MODE2_Msk | GPIO_MODE_MODE4_Msk);
 
 
-  
+
 
     /* Set PB2 multi-function pin for ACMP0 positive input pin */
     SET_ACMP0_P1_PB2();

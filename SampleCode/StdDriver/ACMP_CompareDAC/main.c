@@ -24,8 +24,8 @@ const uint32_t g_u32ArraySize = sizeof(g_au16Square) / sizeof(uint16_t);
 /*---------------------------------------------------------------------------------------------------------*/
 /*                                 Define functions prototype                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-void DAC01_IRQHandler(void);
-void ACMP01_IRQHandler(void);
+NVT_ITCM void DAC01_IRQHandler(void);
+NVT_ITCM void ACMP01_IRQHandler(void);
 void SYS_Init(void);
 int32_t main(void);
 
@@ -35,7 +35,7 @@ int32_t main(void);
 #endif
 
 
-void DAC01_IRQHandler(void)
+NVT_ITCM void DAC01_IRQHandler(void)
 {
     if (DAC_GET_INT_FLAG(DAC0, 0))
     {
@@ -55,7 +55,7 @@ void DAC01_IRQHandler(void)
 
 }
 
-void ACMP01_IRQHandler(void)
+NVT_ITCM void ACMP01_IRQHandler(void)
 {
     static uint32_t u32Cnt = 0;
 
@@ -87,22 +87,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -115,7 +115,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-   
+
     /* Enable ACMP01 peripheral clock */
     CLK_EnableModuleClock(ACMP01_MODULE);
     /* Enable GPB peripheral clock */
@@ -167,16 +167,16 @@ int32_t main(void)
 
 #if !(defined(DEBUG_ENABLE_SEMIHOST))
     /* Init Debug UART for printf */
-      InitDebugUart();
+    InitDebugUart();
 #endif
 
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
 
-   
+
     printf("\nThis sample code demonstrates ACMP1 function. Using ACMP1_P1 (PB4) as ACMP1\n");
     printf("positive input and using DAC output as the negative input.\n");
     printf("Please connect the ACMP1_P1(PB4) to 1.5v .\n");
-    
+
 
     printf("The compare result reflects on ACMP1_O (PC0).\n");
     printf("Press any key to start ...\n");

@@ -18,12 +18,12 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /*                                 Define functions prototype                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-void ACMP01_IRQHandler(void);
+NVT_ITCM void ACMP01_IRQHandler(void);
 void SYS_Init(void);
 int32_t main(void);
 
 
-void ACMP01_IRQHandler(void)
+NVT_ITCM void ACMP01_IRQHandler(void)
 {
     static uint32_t u32Cnt = 0;
 
@@ -54,7 +54,7 @@ void SYS_Init(void)
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
 
     /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
@@ -85,11 +85,11 @@ void SYS_Init(void)
 
     /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /* Set PB.4 and PC.0 to input mode */
     PB->MODE &= ~(GPIO_MODE_MODE4_Msk);
     PC->MODE &= ~(GPIO_MODE_MODE0_Msk);
-    
+
     /* Set PB4 multi-function pin for ACMP1 positive input pin and PC0 multi-function pin for ACMP1 output pin*/
     SET_ACMP1_P1_PB4();
     SET_ACMP1_O_PC0();

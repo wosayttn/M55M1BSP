@@ -23,8 +23,8 @@ volatile int32_t  g_i32WakeUp = FALSE;
 /*---------------------------------------------------------------------------------------------------------*/
 /*                                 Define functions prototype                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-void ACMP01_IRQHandler(void);
-void PWRWU_IRQHandler(void);
+NVT_ITCM void ACMP01_IRQHandler(void);
+NVT_ITCM void PMC_IRQHandler(void);
 void EnterToPowerDown(uint32_t u32PDMode);
 void SYS_Init(void);
 int IsDebugFifoEmpty(void);
@@ -36,18 +36,20 @@ int32_t main(void);
 
 int IsDebugFifoEmpty(void)
 {
- if((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXEMPTY_Msk)!= 0)
-   return 0;
- else
-   return 1;
+    if ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXEMPTY_Msk) != 0)
+        return 0;
+    else
+        return 1;
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*                                         ACMP01  Handle                                                  */
 /*---------------------------------------------------------------------------------------------------------*/
-void ACMP01_IRQHandler(void)
+NVT_ITCM void ACMP01_IRQHandler(void)
 {
+    // TESTCHIP_ONLY
     CLK_WaitModuleClockReady(ACMP01_MODULE);
+    // TESTCHIP_ONLY
     CLK_WaitModuleClockReady(UART0_MODULE);
     printf("\nACMP1 interrupt!\n");
     /* Clear ACMP 1 interrupt flag */
@@ -59,14 +61,14 @@ void ACMP01_IRQHandler(void)
 /*                                         PWRWU  Handle                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
 
-void PMC_IRQHandler(void)
+NVT_ITCM void PMC_IRQHandler(void)
 {
-  if(PMC->INTSTS &  PMC_INTSTS_PDWKIF_Msk)
-  { 
-     printf("PMC Wake up\n");  
-     PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
-     g_i32WakeUp = TRUE;
-  }
+    if (PMC->INTSTS &  PMC_INTSTS_PDWKIF_Msk)
+    {
+        printf("PMC Wake up\n");
+        PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
+        g_i32WakeUp = TRUE;
+    }
 
 }
 /**
@@ -88,13 +90,13 @@ void EnterToPowerDown(uint32_t u32PDMode)
     PMC->INTEN &= ~PMC_INTEN_PDWKIEN_Msk;
 
     if (u32PDMode == NPD0_MODE)
-        PMC_SetPowerDownMode(PMC_NPD0,PMC_PLCTL_PLSEL_PL0);    //Power down
+        PMC_SetPowerDownMode(PMC_NPD0, PMC_PLCTL_PLSEL_PL0);   //Power down
     else if (u32PDMode == NPD1_MODE)
-         PMC_SetPowerDownMode(PMC_NPD1,PMC_PLCTL_PLSEL_PL0);    //Power down
+        PMC_SetPowerDownMode(PMC_NPD1, PMC_PLCTL_PLSEL_PL0);   //Power down
     else if (u32PDMode == NPD3_MODE)
-         PMC_SetPowerDownMode(PMC_NPD3,PMC_PLCTL_PLSEL_PL0);    //Power down
-        else if (u32PDMode == NPD3_MODE)
-         PMC_SetPowerDownMode(PMC_SPD0,PMC_PLCTL_PLSEL_PL0);    //Power down
+        PMC_SetPowerDownMode(PMC_NPD3, PMC_PLCTL_PLSEL_PL0);   //Power down
+    else if (u32PDMode == NPD3_MODE)
+        PMC_SetPowerDownMode(PMC_SPD0, PMC_PLCTL_PLSEL_PL0);   //Power down
 
     PMC->INTEN |= PMC_INTEN_PDWKIEN_Msk;
 
@@ -121,7 +123,7 @@ void SYS_Init(void)
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
 
     /* Enable APLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
