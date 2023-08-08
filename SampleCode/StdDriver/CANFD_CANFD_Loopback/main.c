@@ -24,7 +24,7 @@ volatile uint8_t   g_u8RxFIFO1CompleteFlag = 0;
 int32_t main(void);
 void SYS_Init(void);
 void CANFD0_TEST_HANDLE(void);
-void CANFD00_IRQHandler(void);
+NVT_ITCM void CANFD00_IRQHandler(void);
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     extern void initialise_monitor_handles(void);
 #endif
@@ -32,7 +32,7 @@ void CANFD00_IRQHandler(void);
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle CAN FD0 Line0 interrupt event                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
-void CANFD00_IRQHandler(void)
+NVT_ITCM void CANFD00_IRQHandler(void)
 {
     CANFD0_TEST_HANDLE();
 }
@@ -56,12 +56,12 @@ void SYS_Init(void)
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-   /* Enable Internal RC 12MHz clock */
+    /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
@@ -69,8 +69,8 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
 
-   /* Enable APLL0 160MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_160MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 160MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_160MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
@@ -92,12 +92,12 @@ void SYS_Init(void)
     CLK_EnableModuleClock(CANFD0_MODULE);
 
     /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-     /* Set PB multi-function pins for UART0 RXD and TXD */
+    /* Set PB multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
 }

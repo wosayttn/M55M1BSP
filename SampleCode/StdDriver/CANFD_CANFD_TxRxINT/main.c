@@ -38,7 +38,7 @@ void CANFD_SendMessage(CANFD_FD_MSG_T *psTxMsg, E_CANFD_ID_TYPE eIdType, uint32_
 /*---------------------------------------------------------------------------------------------------------*/
 /*  ISR to handle CAN FD Line 0 interrupt event                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-void CANFD00_IRQHandler(void)
+NVT_ITCM void CANFD00_IRQHandler(void)
 {
     printf("IR =0x%08X \n", CANFD0->IR);
     /*Clear the Interrupt flag */
@@ -60,7 +60,7 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
@@ -68,15 +68,15 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
 
-   /* Enable APLL0 160MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_160MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 160MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_160MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -94,12 +94,12 @@ void SYS_Init(void)
     CLK_EnableModuleClock(CANFD0_MODULE);
 
     /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-     /* Set PB multi-function pins for UART0 RXD and TXD */
+    /* Set PB multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
     /* Set PC multi-function pins for CAN RXD and TXD */

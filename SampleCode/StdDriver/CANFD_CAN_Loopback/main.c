@@ -23,7 +23,7 @@ volatile uint8_t   g_u8RxFifo0CompleteFlag = 0;
 int32_t main(void);
 void SYS_Init(void);
 void CANFD0_TEST_HANDLE(void);
-void CANFD00_IRQHandler(void);
+NVT_ITCM void CANFD00_IRQHandler(void);
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     extern void initialise_monitor_handles(void);
 #endif
@@ -31,7 +31,7 @@ void CANFD00_IRQHandler(void);
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle CAN FD0 Line0 interrupt event                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
-void CANFD00_IRQHandler(void)
+NVT_ITCM void CANFD00_IRQHandler(void)
 {
     CANFD0_TEST_HANDLE();
 }
@@ -59,22 +59,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable PLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -92,11 +92,11 @@ void SYS_Init(void)
     CLK_EnableModuleClock(CANFD0_MODULE);
 
     /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    SetDebugUartCLK();
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-     /* Set PB multi-function pins for UART0 RXD and TXD */
+    /* Set PB multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
 }
@@ -190,7 +190,7 @@ void CAN_Loopback(void)
     CANFD_EnableInt(CANFD0, (CANFD_IE_TOOE_Msk | CANFD_IE_RF0NE_Msk), 0, 0, 0);
     /* Enable CANFD0 IRQ00 Handler*/
     NVIC_EnableIRQ(CANFD00_IRQn);
-     /* CAN FD0 Run to Normal mode  */
+    /* CAN FD0 Run to Normal mode  */
     CANFD_RunToNormal(CANFD0, TRUE);
 
     for (u8Loop = 1 ; u8Loop < 8; u8Loop++)

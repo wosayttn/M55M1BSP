@@ -20,8 +20,8 @@ CANFD_FD_MSG_T   g_sRxFifo0MsgFrame[3];
 CANFD_FD_MSG_T   g_sRxFifo1MsgFrame[3];
 uint8_t g_u8RxFifo0RcvOk = 0;
 uint8_t g_u8RxFifo1RcvOk = 0;
-uint8_t g_u8RxFifo0MsgIndex =0;
-uint8_t g_u8RxFifo1MsgIndex =0;
+uint8_t g_u8RxFifo0MsgIndex = 0;
+uint8_t g_u8RxFifo1MsgIndex = 0;
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
@@ -29,7 +29,7 @@ uint8_t g_u8RxFifo1MsgIndex =0;
 int32_t main(void);
 void SYS_Init(void);
 void CAN_MonitorMode_Init(uint32_t u32BitRate);
-void CAN_ShowMsg(CANFD_FD_MSG_T * sRxMsg);
+void CAN_ShowMsg(CANFD_FD_MSG_T *sRxMsg);
 uint32_t Get_CAN_BitRate(CANFD_T *psCanfd);
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     extern void initialise_monitor_handles(void);
@@ -38,32 +38,35 @@ uint32_t Get_CAN_BitRate(CANFD_T *psCanfd);
 /*---------------------------------------------------------------------------------------------------------*/
 /*  ISR to handle CAN FD Line 0 interrupt event                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-void CANFD00_IRQHandler(void)
+NVT_ITCM void CANFD00_IRQHandler(void)
 {
 
     /*Rx FIFO 0 New Message Interrupt */
-    if(CANFD0->IR & CANFD_IR_RF0N_Msk )
+    if (CANFD0->IR & CANFD_IR_RF0N_Msk)
     {
-      g_u8RxFifo0RcvOk = 1;
-      CANFD_ClearStatusFlag(CANFD0, CANFD_IR_RF0N_Msk);
+        g_u8RxFifo0RcvOk = 1;
+        CANFD_ClearStatusFlag(CANFD0, CANFD_IR_RF0N_Msk);
     }
+
     /*Rx FIFO 1 New Message Interrupt */
-    if(CANFD0->IR & CANFD_IR_RF1N_Msk )
+    if (CANFD0->IR & CANFD_IR_RF1N_Msk)
     {
-      g_u8RxFifo1RcvOk = 1;
-      CANFD_ClearStatusFlag(CANFD0, CANFD_IR_RF1N_Msk);
+        g_u8RxFifo1RcvOk = 1;
+        CANFD_ClearStatusFlag(CANFD0, CANFD_IR_RF1N_Msk);
     }
+
     /*Rx FIFO 0 Message Lost Interrup*/
-    if(CANFD0->IR & CANFD_IR_RF0L_Msk)
+    if (CANFD0->IR & CANFD_IR_RF0L_Msk)
     {
-      printf("Rx FIFO 0 Message Lost(Standard ID)\n");
-      CANFD_ClearStatusFlag(CANFD0, CANFD_IR_RF0L_Msk);
+        printf("Rx FIFO 0 Message Lost(Standard ID)\n");
+        CANFD_ClearStatusFlag(CANFD0, CANFD_IR_RF0L_Msk);
     }
+
     /*Rx FIFO 1 Message Lost Interrup*/
-    if(CANFD0->IR & CANFD_IR_RF1L_Msk)
+    if (CANFD0->IR & CANFD_IR_RF1L_Msk)
     {
-      printf("Rx FIFO 1 Message Lost(Extended ID)\n");
-      CANFD_ClearStatusFlag(CANFD0, CANFD_IR_RF1L_Msk);
+        printf("Rx FIFO 1 Message Lost(Extended ID)\n");
+        CANFD_ClearStatusFlag(CANFD0, CANFD_IR_RF1L_Msk);
     }
 
 }
@@ -71,21 +74,24 @@ void CANFD00_IRQHandler(void)
 /*---------------------------------------------------------------------------*/
 /*  Show Message Function                                                    */
 /*---------------------------------------------------------------------------*/
-void CAN_ShowMsg(CANFD_FD_MSG_T * sRxMsg)
+void CAN_ShowMsg(CANFD_FD_MSG_T *sRxMsg)
 {
-   uint8_t u8Cnt;
-   /* Show the message information */
-   if(sRxMsg->eIdType == eCANFD_SID)
-   printf("Rx buf 0: ID = 0x%08X(11-bit),DLC = %d\n", sRxMsg->u32Id,sRxMsg->u32DLC);
-   else
-   printf("Rx buf 1: ID = 0x%08X(29-bit),DLC = %d\n", sRxMsg->u32Id,sRxMsg->u32DLC);
+    uint8_t u8Cnt;
 
-   printf("Message Data : ");
-   for (u8Cnt = 0; u8Cnt < sRxMsg->u32DLC; u8Cnt++)
-   {
-     printf("%02u ,", sRxMsg->au8Data[u8Cnt]);
-   }
-   printf("\n\n");
+    /* Show the message information */
+    if (sRxMsg->eIdType == eCANFD_SID)
+        printf("Rx buf 0: ID = 0x%08X(11-bit),DLC = %d\n", sRxMsg->u32Id, sRxMsg->u32DLC);
+    else
+        printf("Rx buf 1: ID = 0x%08X(29-bit),DLC = %d\n", sRxMsg->u32Id, sRxMsg->u32DLC);
+
+    printf("Message Data : ");
+
+    for (u8Cnt = 0; u8Cnt < sRxMsg->u32DLC; u8Cnt++)
+    {
+        printf("%02u ,", sRxMsg->au8Data[u8Cnt]);
+    }
+
+    printf("\n\n");
 }
 /*---------------------------------------------------------------------------*/
 /*  Get the CAN interface bit rate Function                                  */
@@ -99,24 +105,24 @@ uint32_t Get_CAN_BitRate(CANFD_T *psCanfd)
     uint8_t  u8NtSeg1 = 0;
     uint8_t  u8NtSeg2 = 0;
 
-    if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_HXT >> CLK_CANFDSEL_CANFD0SEL_Pos) )
-     u32CanClk = CLK_GetHXTFreq();
-    else if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_APLL0_DIV2 >> CLK_CANFDSEL_CANFD0SEL_Pos) )
-     u32CanClk = CLK_GetAPLL0ClockFreq()/2;
-    else if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_HCLK0 >> CLK_CANFDSEL_CANFD0SEL_Pos) )
-     u32CanClk = CLK_GetHCLK0Freq();
-    else if(CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_HIRC >> CLK_CANFDSEL_CANFD0SEL_Pos) )
-     u32CanClk = __HIRC; 
+    if (CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_HXT >> CLK_CANFDSEL_CANFD0SEL_Pos))
+        u32CanClk = CLK_GetHXTFreq();
+    else if (CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_APLL0_DIV2 >> CLK_CANFDSEL_CANFD0SEL_Pos))
+        u32CanClk = CLK_GetAPLL0ClockFreq() / 2;
+    else if (CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_HCLK0 >> CLK_CANFDSEL_CANFD0SEL_Pos))
+        u32CanClk = CLK_GetHCLK0Freq();
+    else if (CLK_GetModuleClockSource(CANFD0_MODULE) == (CLK_CANFDSEL_CANFD0SEL_HIRC >> CLK_CANFDSEL_CANFD0SEL_Pos))
+        u32CanClk = __HIRC;
     else
-     u32CanClk = __HIRC48M / 4; 
-    
+        u32CanClk = __HIRC48M / 4;
+
     u32CanDiv = ((CLK->CANFDDIV & CLK_CANFDDIV_CANFD0DIV_Msk) >> CLK_CANFDDIV_CANFD0DIV_Pos) + 1;
     u32CanClk = u32CanClk / u32CanDiv;
 
-    u8Tq = ((psCanfd->NBTP & CANFD_NBTP_NBRP_Msk) >> CANFD_NBTP_NBRP_Pos)+1 ;
+    u8Tq = ((psCanfd->NBTP & CANFD_NBTP_NBRP_Msk) >> CANFD_NBTP_NBRP_Pos) + 1 ;
     u8NtSeg1 = ((psCanfd->NBTP & CANFD_NBTP_NTSEG1_Msk) >> CANFD_NBTP_NTSEG1_Pos);
     u8NtSeg2 = ((psCanfd->NBTP & CANFD_NBTP_NTSEG2_Msk) >> CANFD_NBTP_NTSEG2_Pos);
-    u32BitRate = u32CanClk / u8Tq / (u8NtSeg1+u8NtSeg2+3); 
+    u32BitRate = u32CanClk / u8Tq / (u8NtSeg1 + u8NtSeg2 + 3);
 
     return u32BitRate;
 }
@@ -131,7 +137,7 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
@@ -139,15 +145,15 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
 
-   /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable PLL0 200MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -165,12 +171,12 @@ void SYS_Init(void)
     CLK_EnableModuleClock(CANFD0_MODULE);
 
     /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-     /* Set PB multi-function pins for UART0 RXD and TXD */
+    /* Set PB multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
     /* Set PC multi-function pins for CAN RXD and TXD */
@@ -192,14 +198,14 @@ void CAN_MonitorMode_Init(uint32_t u32BitRate)
     sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate = u32BitRate;
     sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate = 0;
     CANFD_Open(CANFD0, &sCANFD_Config);
-    printf("CAN bus monitoring baud rate(bps): %d\n",Get_CAN_BitRate(CANFD0));
+    printf("CAN bus monitoring baud rate(bps): %d\n", Get_CAN_BitRate(CANFD0));
     /*Enable the Bus Monitoring Mode */
     CANFD0->CCCR |= CANFD_CCCR_MON_Msk;
 
     /*Non-matching Frames with Extended ID and Standard ID are stored in Rx FIFO0 or Rx FIFO1,Reject all remote frames with 11-bit standard IDs and 29-bit extended IDs */
     CANFD_SetGFC(CANFD0, eCANFD_ACC_NON_MATCH_FRM_RX_FIFO0, eCANFD_ACC_NON_MATCH_FRM_RX_FIFO1, 1, 1);
     /* Enable RX FIFO New message, Message lost interrupt using interrupt line 0. */
-    CANFD_EnableInt(CANFD0, (CANFD_IE_RF0NE_Msk |CANFD_IE_RF0LE_Msk | CANFD_IE_RF1NE_Msk|CANFD_IE_RF1LE_Msk), 0, 0, 0);
+    CANFD_EnableInt(CANFD0, (CANFD_IE_RF0NE_Msk | CANFD_IE_RF0LE_Msk | CANFD_IE_RF1NE_Msk | CANFD_IE_RF1LE_Msk), 0, 0, 0);
     /* Enable CANFD0 IRQ00 Handler*/
     NVIC_EnableIRQ(CANFD00_IRQn);
     /* CAN FD0 Run to Normal mode  */
@@ -214,7 +220,7 @@ void CAN_MonitorMode_Init(uint32_t u32BitRate)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
 
     /* Init System, peripheral clock and multi-function I/O */
@@ -231,7 +237,7 @@ int32_t main(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /*                                                 SAMPLE CODE                                             */
     /*---------------------------------------------------------------------------------------------------------*/
-    printf("\n\nCPU @ %dHz\n",SystemCoreClock);
+    printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+-----------------------------------------------------------------------------+\n");
     printf("|                        CAN Monitor Mode sample code                         |\n");
     printf("+-----------------------------------------------------------------------------+\n");
@@ -272,38 +278,43 @@ int32_t main(void)
     /* CAN interface initialization*/
     CAN_MonitorMode_Init(1000000);
 
-    while(1)
+    while (1)
     {
-      
-      if(g_u8RxFifo0RcvOk == 1)
-      {
-      
-       if(g_u8RxFifo0MsgIndex > 2) 
-          g_u8RxFifo0MsgIndex = 0;
-       /*Receive the Rx Fifo0 message(Standard ID) */ 
-       CANFD_ReadRxFifoMsg(CANFD0,0,&g_sRxFifo0MsgFrame[g_u8RxFifo0MsgIndex]);
-       g_u8RxFifo0MsgIndex++; 
-       g_u8RxFifo0RcvOk = 0;
-      }
-      if(g_u8RxFifo0RcvOk == 0 && g_u8RxFifo0MsgIndex != 0)
-      {
-        CAN_ShowMsg(&g_sRxFifo0MsgFrame[g_u8RxFifo0MsgIndex-1]);
-        g_u8RxFifo0MsgIndex--; 
-      }
-      if(g_u8RxFifo1RcvOk == 1)
-      {
-       if(g_u8RxFifo1MsgIndex > 2) 
-          g_u8RxFifo1MsgIndex = 0;
-       /*Receive the Rx Fifo0 message(Extended ID) */
-       CANFD_ReadRxFifoMsg(CANFD0,1,&g_sRxFifo1MsgFrame[g_u8RxFifo1MsgIndex]);
-       g_u8RxFifo1MsgIndex++; 
-       g_u8RxFifo1RcvOk = 0;
-      }
-      if(g_u8RxFifo1RcvOk == 0 && g_u8RxFifo1MsgIndex != 0)
-      {
-        CAN_ShowMsg(&g_sRxFifo1MsgFrame[g_u8RxFifo1MsgIndex-1]);
-        g_u8RxFifo1MsgIndex--; 
-      }
+
+        if (g_u8RxFifo0RcvOk == 1)
+        {
+
+            if (g_u8RxFifo0MsgIndex > 2)
+                g_u8RxFifo0MsgIndex = 0;
+
+            /*Receive the Rx Fifo0 message(Standard ID) */
+            CANFD_ReadRxFifoMsg(CANFD0, 0, &g_sRxFifo0MsgFrame[g_u8RxFifo0MsgIndex]);
+            g_u8RxFifo0MsgIndex++;
+            g_u8RxFifo0RcvOk = 0;
+        }
+
+        if (g_u8RxFifo0RcvOk == 0 && g_u8RxFifo0MsgIndex != 0)
+        {
+            CAN_ShowMsg(&g_sRxFifo0MsgFrame[g_u8RxFifo0MsgIndex - 1]);
+            g_u8RxFifo0MsgIndex--;
+        }
+
+        if (g_u8RxFifo1RcvOk == 1)
+        {
+            if (g_u8RxFifo1MsgIndex > 2)
+                g_u8RxFifo1MsgIndex = 0;
+
+            /*Receive the Rx Fifo0 message(Extended ID) */
+            CANFD_ReadRxFifoMsg(CANFD0, 1, &g_sRxFifo1MsgFrame[g_u8RxFifo1MsgIndex]);
+            g_u8RxFifo1MsgIndex++;
+            g_u8RxFifo1RcvOk = 0;
+        }
+
+        if (g_u8RxFifo1RcvOk == 0 && g_u8RxFifo1MsgIndex != 0)
+        {
+            CAN_ShowMsg(&g_sRxFifo1MsgFrame[g_u8RxFifo1MsgIndex - 1]);
+            g_u8RxFifo1MsgIndex--;
+        }
 
     }
 }
