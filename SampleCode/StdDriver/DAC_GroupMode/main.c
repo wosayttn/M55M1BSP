@@ -20,16 +20,16 @@ static const uint32_t g_u32ArraySize = sizeof(g_au16Sine) / sizeof(uint16_t);
 static uint32_t g_u32Index = 0;
 static uint32_t g_u32Dac0Done = 0, g_u32Dac1Done = 0;
 
-void DAC01_IRQHandler(void);
+NVT_ITCM void DAC01_IRQHandler(void);
 void SYS_Init(void);
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     extern void initialise_monitor_handles(void);
 #endif
 
-void DAC01_IRQHandler(void)
+NVT_ITCM void DAC01_IRQHandler(void)
 {
-    if(DAC_GET_INT_FLAG(DAC0, 0))
+    if (DAC_GET_INT_FLAG(DAC0, 0))
     {
         /* Clear the DAC conversion complete finish flag */
         DAC_CLR_INT_FLAG(DAC0, 0);
@@ -37,7 +37,8 @@ void DAC01_IRQHandler(void)
         g_u32Dac0Done = 1;
 
     }
-    if(DAC_GET_INT_FLAG(DAC1, 0))
+
+    if (DAC_GET_INT_FLAG(DAC1, 0))
     {
 
         /* Clear the DAC conversion complete finish flag */
@@ -45,11 +46,11 @@ void DAC01_IRQHandler(void)
         DAC_WRITE_DATA(DAC1, 0, g_au16Sine[g_u32Index >= g_u32ArraySize / 2 ? g_u32Index - g_u32ArraySize / 2 : g_u32Index + g_u32ArraySize / 2]);
         g_u32Dac1Done = 1;
 
-        if(++g_u32Index == g_u32ArraySize)
+        if (++g_u32Index == g_u32ArraySize)
             g_u32Index = 0;
     }
 
-    if(g_u32Dac0Done == 1 && g_u32Dac1Done == 1)
+    if (g_u32Dac0Done == 1 && g_u32Dac1Done == 1)
     {
         DAC_START_CONV(DAC0);
         g_u32Dac0Done = g_u32Dac1Done = 0;
@@ -71,22 +72,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -130,7 +131,7 @@ int32_t main(void)
 
     /* Lock protected registers */
     SYS_LockReg();
-  
+
     printf("\n");
     printf("+------------------------------------------------------------------------+\n");
     printf("|                          DAC Driver Sample Code                        |\n");
@@ -170,7 +171,7 @@ int32_t main(void)
     /* Start A/D conversion */
     DAC_START_CONV(DAC0);
 
-    while(1){};
+    while (1) {};
 
 }
 

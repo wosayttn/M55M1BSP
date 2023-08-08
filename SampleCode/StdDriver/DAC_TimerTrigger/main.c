@@ -20,19 +20,19 @@ static const uint16_t g_au16Sine[] = {2047, 2251, 2453, 2651, 2844, 3028, 3202, 
 static const uint32_t g_u32ArraySize = sizeof(g_au16Sine) / sizeof(uint16_t);
 static uint32_t g_u32Index = 0;
 
-void DAC01_IRQHandler(void);
+NVT_ITCM void DAC01_IRQHandler(void);
 void SYS_Init(void);
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     extern void initialise_monitor_handles(void);
 #endif
 
-void DAC01_IRQHandler(void)
+NVT_ITCM void DAC01_IRQHandler(void)
 {
-    if(DAC_GET_INT_FLAG(DAC0, 0))
+    if (DAC_GET_INT_FLAG(DAC0, 0))
     {
 
-        if(g_u32Index == g_u32ArraySize)
+        if (g_u32Index == g_u32ArraySize)
             g_u32Index = 0;
         else
         {
@@ -43,6 +43,7 @@ void DAC01_IRQHandler(void)
 
         }
     }
+
     return;
 }
 
@@ -59,22 +60,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -130,7 +131,7 @@ int32_t main(void)
 #endif
 
     /* Init Debug UART for printf */
-      InitDebugUart();
+    InitDebugUart();
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -162,7 +163,7 @@ int32_t main(void)
     TIMER_SetTriggerTarget(TIMER0, TIMER_TRG_TO_DAC);
     TIMER_Start(TIMER0);
 
-    while(1);
+    while (1);
 
 }
 

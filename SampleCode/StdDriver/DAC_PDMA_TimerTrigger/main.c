@@ -37,14 +37,14 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -52,7 +52,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -150,9 +150,9 @@ int32_t main(void)
     TIMER_SetTriggerTarget(TIMER0, TIMER_TRG_TO_DAC);
     TIMER_Start(TIMER0);
 
-    while(1)
+    while (1)
     {
-        if(PDMA_GET_TD_STS(PDMA0) == 0x1)
+        if (PDMA_GET_TD_STS(PDMA0) == 0x1)
         {
             /* Re-Set transfer count and basic operation mode */
             PDMA_SetTransferCnt(PDMA0, 0, PDMA_WIDTH_16, g_u32ArraySize);
