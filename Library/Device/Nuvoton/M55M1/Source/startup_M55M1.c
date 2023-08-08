@@ -412,7 +412,7 @@ __NO_RETURN void Reset_Handler(void)
     __ASM volatile("MSR psplim, %0" : : "r"((uint32_t)(&__STACK_LIMIT)));
 
     // Move other code to Reset_Handler_Main to prevent compiler generate stack access code.
-    // Move stack pointer before setting MSPLIM might cuase hard fault due to MSPLIM violation.
+    // Move stack pointer before setting MSPLIM might cause hard fault due to MSPLIM violation.
     Reset_Handler_Main();
 }
 
@@ -505,9 +505,9 @@ void HardFault_Handler(void)
                    "mrseq %1, msp           \n"
                    "mrsne %1, psp           \n"
                    : "=r"(u32IRQ), "=r"(psStackFrame));
+
     // Get the instruction caused the hardfault
     ProcessHardFault((uint32_t *)psStackFrame);
-
 }
 
 /*----------------------------------------------------------------------------
