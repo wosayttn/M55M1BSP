@@ -164,7 +164,7 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
     }
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-    NSC_ROM TZ_NSC_START FIXED TZ_NSC_SIZE
+    NSC_ROM +0
     {
         .ANY (Veneer$$CMSE)
     }

@@ -1130,7 +1130,8 @@ __STATIC_INLINE void CLK_SysTickLongDelay(uint32_t us)
 
         /* Disable SysTick counter */
         SysTick->CTRL = 0UL;
-    } while (us > 0UL);
+    }
+    while (us > 0UL);
 }
 
 
@@ -1138,20 +1139,20 @@ void CLK_DisableCKO(void);
 void CLK_EnableCKO(uint32_t u32ClkSrc, uint32_t u32ClkDiv, uint32_t u32ClkDivBy1En);
 void CLK_DisableMIRC(void);
 uint32_t CLK_EnableMIRC(uint32_t u32MircFreq);
-uint32_t CLK_GetHXTFreq(void);
-uint32_t CLK_GetLXTFreq(void);
-uint32_t CLK_GetMIRCFreq(void);
-uint32_t CLK_GetSCLKFreq(void);
-uint32_t CLK_GetACLKFreq(void);
-uint32_t CLK_GetHCLK0Freq(void);
-uint32_t CLK_GetHCLK1Freq(void);
-uint32_t CLK_GetHCLK2Freq(void);
-uint32_t CLK_GetPCLK0Freq(void);
-uint32_t CLK_GetPCLK1Freq(void);
-uint32_t CLK_GetPCLK2Freq(void);
-uint32_t CLK_GetPCLK3Freq(void);
-uint32_t CLK_GetPCLK4Freq(void);
-uint32_t CLK_GetPCLK5Freq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetHXTFreq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetLXTFreq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetMIRCFreq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetSCLKFreq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetACLKFreq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetHCLK0Freq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetHCLK1Freq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetHCLK2Freq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetPCLK0Freq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetPCLK1Freq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetPCLK2Freq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetPCLK3Freq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetPCLK4Freq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetPCLK5Freq(void);
 uint32_t CLK_SetCoreClock(uint32_t u32Aclk);
 void CLK_SetSCLK(uint32_t u32ClkSrc);
 void CLK_SetModuleClock(uint64_t u64ModuleIdx, uint32_t u32ClkSrc, uint32_t u32ClkDiv);
@@ -1169,11 +1170,11 @@ uint32_t CLK_WaitClockReady(uint32_t u32ClkMask);
 uint32_t CLK_WaitClockDisable(uint32_t u32ClkMask);
 void CLK_EnableSysTick(uint32_t u32ClkSrc, uint32_t u32Count);
 void CLK_DisableSysTick(void);
-uint32_t CLK_GetAPLL0ClockFreq(void);
-uint32_t CLK_GetAPLL1ClockFreq(void);
-uint32_t CLK_GetModuleClockSource(uint64_t u64ModuleIdx);
-uint32_t CLK_GetModuleClockDivider(uint64_t u64ModuleIdx);
-uint32_t CLK_SystemClockUpdate(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetAPLL0ClockFreq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetAPLL1ClockFreq(void);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetModuleClockSource(uint64_t u64ModuleIdx);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_GetModuleClockDivider(uint64_t u64ModuleIdx);
+__NONSECURE_ENTRY_WEAK uint32_t CLK_SystemClockUpdate(void);
 
 /** @} end of group CLK_EXPORTED_FUNCTIONS */
 

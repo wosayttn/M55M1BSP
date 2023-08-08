@@ -114,12 +114,6 @@ extern void SystemInit(void);
  */
 extern void SystemCoreClockUpdate(void);
 
-/**
- * @brief   Gets the internal processor clock.
- * @return  Clock frequency as unsigned 32 bit value.
- **/
-extern uint32_t GetSystemCoreClock(void);
-
 #ifndef NVT_DBG_UART_OFF
 /**
  * Set debug UART multi-function pins

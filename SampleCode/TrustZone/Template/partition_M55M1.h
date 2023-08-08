@@ -1,14 +1,16 @@
 /**************************************************************************//**
- * @file     partition_M55M1_template.h
+ * @file     partition_M55M1.h
  * @version  V1.00
- * @brief    Default Initial Setup for Secure / Non-secure Attribution Zones for M55M1
+ * @brief    Initial Setup for Secure / Non-secure Attribution Zones for M55M1
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
-#ifndef PARTITION_M55M1_TEMPLATE_H
-#define PARTITION_M55M1_TEMPLATE_H
+#ifndef PARTITION_M55M1_H
+#define PARTITION_M55M1_H
+
+/* Copy from Library\StdDriver\inc\partition_M55M1_template.h and rename to partition_M55M1.h */
 
 /*
 //-------- <<< Use Configuration Wizard in Context Menu >>> -----------------
@@ -805,4 +807,5 @@
     SAU->RLAR =  (SAU_INIT_END##n                       & SAU_RLAR_LADDR_Msk) | \
                 ((SAU_INIT_NSC##n << SAU_RLAR_NSC_Pos)  & SAU_RLAR_NSC_Msk)   | 1U
 
-#endif  /* PARTITION_M55M1_TEMPLATE_H */
+
+#endif  /* PARTITION_M55M1_H */
