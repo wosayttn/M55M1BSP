@@ -27,8 +27,8 @@ static volatile uint32_t g_u32PDWK;
 
 NVT_ITCM void TIMER0_IRQHandler(void)
 {
-    CLK_WaitModuleClockReady(TMR0_MODULE);
-    CLK_WaitModuleClockReady(UART0_MODULE);
+    CLK_WaitModuleClockReady(TMR0_MODULE);//TESTCHIP_ONLY
+    CLK_WaitModuleClockReady(UART0_MODULE);//TESTCHIP_ONLY
     // Clear wake up flag
     TIMER_ClearWakeupFlag(TIMER0);
     
@@ -41,13 +41,13 @@ NVT_ITCM void TIMER0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void PMC_IRQHandler(void)
 {
+    g_u32PDWK = PMC_GetPMCWKSrc();
     /* check power down wakeup flag */
-    if ((PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk) == PMC_INTSTS_PDWKIF_Msk)
+    if (g_u32PDWK & PMC_INTSTS_PDWKIF_Msk)
     {
-        g_u32PDWK = PMC->INTSTS;
         PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
 
-        while (PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk);
+        while (PMC_GetPMCWKSrc() & PMC_INTSTS_PDWKIF_Msk);
     }
 }
 
@@ -153,8 +153,10 @@ int main(void)
     CLK_SysTickDelay(50);
     /* Enable Timer0 interrupt */
     TIMER_EnableInt(TIMER0);
+    PMC_ENABLE_INT();
     CLK_SysTickDelay(50);
     NVIC_EnableIRQ(TIMER0_IRQn);
+    NVIC_EnableIRQ(PMC_IRQn);
     /* Start Timer0 counting */
     TIMER_Start(TIMER0);
     CLK_SysTickDelay(50);

@@ -103,7 +103,7 @@ static void SYS_Init(void)
     CLK_EnableModuleClock(LPTMR0_MODULE);
 
     /* Set LPTMR0 PWM CH0(LPTM0) pin */
-    CLK_EnableModuleClock(LPTMR0_MODULE);
+    CLK_EnableModuleClock(GPIOB_MODULE);
     SET_LPTM0_PB5();
 
     /* Lock protected registers */
