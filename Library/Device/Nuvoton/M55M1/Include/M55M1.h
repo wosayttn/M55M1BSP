@@ -8,7 +8,7 @@
  ******************************************************************************/
 
 /**
-  \mainpage NuMicro M55M1/M55M1 Series CMSIS BSP Driver Reference
+  \mainpage NuMicro M55M1 Series CMSIS BSP Driver Reference
   *
   * <b>Introduction</b>
   *
@@ -44,6 +44,7 @@
   *
   * <b>Copyright Notice</b>
   *
+  * SPDX-License-Identifier: Apache-2.0<br/>
   * Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
   */
 
@@ -610,7 +611,7 @@ typedef enum IRQn
 #define EQEI2_S                   ((EQEI_T *)     EQEI2_BASE)
 #define EQEI3_S                   ((EQEI_T *)     EQEI3_BASE)
 #define FMC_S                     ((FMC_T *)      FMC_BASE)
-/*#define FVC_S                     ((FVC_T *)      FVC_BASE)*/ /* TESTCHIP_ONLY not support */
+/*#define FVC_S                   ((FVC_T *)      FVC_BASE)*/ /* TESTCHIP_ONLY not support */
 
 #define GDMA_S                                   (GDMA_BASE)
 #define GPIO_S                    ((GPIO_INT_T *) GPIO_INT_BASE)
