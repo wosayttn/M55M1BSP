@@ -44,22 +44,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -78,9 +78,9 @@ void SYS_Init(void)
     /* Enable LPUART0 peripheral clock */
     CLK_EnableModuleClock(LPUART0_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -137,14 +137,14 @@ int32_t main(void)
     /* LPUART sample function */
     LPUART_FunctionTest();
 
-    while(1);
+    while (1);
 
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle LPUART Channel 0 interrupt event                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
-void LPUART0_IRQHandler(void)
+NVT_ITCM void LPUART0_IRQHandler(void)
 {
     LPUART_TEST_HANDLE();
 }
@@ -156,25 +156,25 @@ void LPUART_TEST_HANDLE()
 {
     uint8_t u8InChar = 0xFF;
 
-    if (LPUART_GET_INT_FLAG(LPUART0,LPUART_INTSTS_RDAINT_Msk))
+    if (LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_RDAINT_Msk))
     {
         printf("\nInput:");
 
         /* Get all the input characters */
-        while(LPUART_IS_RX_READY(LPUART0))
+        while (LPUART_IS_RX_READY(LPUART0))
         {
             /* Get the character from LPUART Buffer */
             u8InChar = LPUART_READ(LPUART0);
 
             printf("%c ", u8InChar);
 
-            if(u8InChar == '0')
+            if (u8InChar == '0')
             {
                 g_bWait = FALSE;
             }
 
             /* Check if buffer full */
-            if(g_u32comRbytes < RXBUFSIZE)
+            if (g_u32comRbytes < RXBUFSIZE)
             {
                 /* Enqueue the character */
                 g_u8RecData[g_u32comRtail] = u8InChar;
@@ -182,26 +182,30 @@ void LPUART_TEST_HANDLE()
                 g_u32comRbytes++;
             }
         }
+
         printf("\nTransmission Test:");
     }
 
-    if(LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_THREINT_Msk))
+    if (LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_THREINT_Msk))
     {
         uint16_t tmp;
         tmp = g_u32comRtail;
-        if(g_u32comRhead != tmp)
+
+        if (g_u32comRhead != tmp)
         {
             u8InChar = g_u8RecData[g_u32comRhead];
-            while(LPUART_IS_TX_FULL(LPUART0));  /* Wait Tx is not full to transmit data */
+
+            while (LPUART_IS_TX_FULL(LPUART0)); /* Wait Tx is not full to transmit data */
+
             LPUART_WRITE(LPUART0, u8InChar);
             g_u32comRhead = (g_u32comRhead == (RXBUFSIZE - 1)) ? 0 : (g_u32comRhead + 1);
             g_u32comRbytes--;
         }
     }
 
-    if(LPUART0->FIFOSTS & (LPUART_FIFOSTS_BIF_Msk | LPUART_FIFOSTS_FEF_Msk | LPUART_FIFOSTS_PEF_Msk | LPUART_FIFOSTS_RXOVIF_Msk))
+    if (LPUART0->FIFOSTS & (LPUART_FIFOSTS_BIF_Msk | LPUART_FIFOSTS_FEF_Msk | LPUART_FIFOSTS_PEF_Msk | LPUART_FIFOSTS_RXOVIF_Msk))
     {
-        LPUART_ClearIntFlag(LPUART0, (LPUART_INTSTS_RLSINT_Msk| LPUART_INTSTS_BUFERRINT_Msk));
+        LPUART_ClearIntFlag(LPUART0, (LPUART_INTSTS_RLSINT_Msk | LPUART_INTSTS_BUFERRINT_Msk));
     }
 }
 
@@ -228,7 +232,8 @@ void LPUART_FunctionTest()
     /* Enable LPUART RDA and THRE interrupt */
     NVIC_EnableIRQ(LPUART0_IRQn);
     LPUART_EnableInt(LPUART0, (LPUART_INTEN_RDAIEN_Msk | LPUART_INTEN_THREIEN_Msk));
-    while(g_bWait);
+
+    while (g_bWait);
 
     /* Disable LPUART RDA and THRE interrupt */
     LPUART_DisableInt(LPUART0, (LPUART_INTEN_RDAIEN_Msk | LPUART_INTEN_THREIEN_Msk));

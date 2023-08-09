@@ -39,22 +39,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -73,9 +73,9 @@ void SYS_Init(void)
     /* Enable LPUART0 peripheral clock */
     CLK_EnableModuleClock(LPUART0_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -107,11 +107,11 @@ void LPUART0_Init(void)
 
 int32_t main(void)
 {
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
-  
+
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     initialise_monitor_handles();
 #endif
@@ -139,7 +139,7 @@ int32_t main(void)
 
     printf("\nLPUART Sample Program End\n");
 
-    while(1);
+    while (1);
 
 }
 
@@ -177,7 +177,7 @@ void AutoBaudRate_Test(void)
     printf("+-----------------------------------------------------------+\n");
     u32Item = getchar();
 
-    if(u32Item == '0')
+    if (u32Item == '0')
         AutoBaudRate_TxTest();
     else
         AutoBaudRate_RxTest();
@@ -209,24 +209,25 @@ void AutoBaudRate_TxTest(void)
         printf("%c\n", u32Item);
 
         /* Set different baud rate */
-        switch(u32Item)
+        switch (u32Item)
         {
-        case '1':
-            LPUART_SetLineConfig(LPUART0, 38400, LPUART_WORD_LEN_8, LPUART_PARITY_NONE, LPUART_STOP_BIT_1);
-            break;
-        case '2':
-            LPUART_SetLineConfig(LPUART0, 57600, LPUART_WORD_LEN_8, LPUART_PARITY_NONE, LPUART_STOP_BIT_1);
-            break;
-        default:
-            LPUART_SetLineConfig(LPUART0, 115200, LPUART_WORD_LEN_8, LPUART_PARITY_NONE, LPUART_STOP_BIT_1);
-            break;
+            case '1':
+                LPUART_SetLineConfig(LPUART0, 38400, LPUART_WORD_LEN_8, LPUART_PARITY_NONE, LPUART_STOP_BIT_1);
+                break;
+
+            case '2':
+                LPUART_SetLineConfig(LPUART0, 57600, LPUART_WORD_LEN_8, LPUART_PARITY_NONE, LPUART_STOP_BIT_1);
+                break;
+
+            default:
+                LPUART_SetLineConfig(LPUART0, 115200, LPUART_WORD_LEN_8, LPUART_PARITY_NONE, LPUART_STOP_BIT_1);
+                break;
         }
 
         /* Send input pattern 0x1 for auto baud rate detection bit length is 1-bit */
         LPUART_WRITE(LPUART0, 0x1);
 
-    }
-    while(u32Item != 27);
+    } while (u32Item != 27);
 
 }
 
@@ -236,11 +237,11 @@ void AutoBaudRate_TxTest(void)
 uint32_t GetLpUartBaudrate(LPUART_T *psLPUARTT)
 {
     uint32_t u32LpUartClkSrcSel = 0ul, u32LpUartClkDivNum = 0ul;
-    uint32_t u32ClkTbl[4] = {0,__LXT, __MIRC, __HIRC};
+    uint32_t u32ClkTbl[4] = {0, __LXT, __MIRC, __HIRC};
     uint32_t u32Baud_Div = 0ul;
 
     /* Get LPUART clock source selection and LPUART clock divider number */
-    if(psLPUARTT==(LPUART_T*)LPUART0)
+    if (psLPUARTT == (LPUART_T *)LPUART0)
     {
         /* Get LPUART clock source selection */
         u32LpUartClkSrcSel = ((CLK->LPUARTSEL & CLK_LPUARTSEL_LPUART0SEL_Msk)) >> CLK_LPUARTSEL_LPUART0SEL_Pos;
@@ -284,15 +285,15 @@ void AutoBaudRate_RxTest(void)
     printf("\nreceiving input pattern... ");
 
     /* Wait until auto baud rate detect finished or time-out */
-    while((LPUART0->ALTCTL & LPUART_ALTCTL_ABRIF_Msk) == 0);
+    while ((LPUART0->ALTCTL & LPUART_ALTCTL_ABRIF_Msk) == 0);
 
-    if(LPUART0->FIFOSTS & LPUART_FIFOSTS_ABRDIF_Msk)
+    if (LPUART0->FIFOSTS & LPUART_FIFOSTS_ABRDIF_Msk)
     {
         /* Clear auto baud rate detect finished flag */
         LPUART0->FIFOSTS = LPUART_FIFOSTS_ABRDIF_Msk;
         printf("Baud rate is %dbps.\n", GetLpUartBaudrate(LPUART0));
     }
-    else if(LPUART0->FIFOSTS & LPUART_FIFOSTS_ABRDTOIF_Msk)
+    else if (LPUART0->FIFOSTS & LPUART_FIFOSTS_ABRDTOIF_Msk)
     {
         /* Clear auto baud rate detect time-out flag */
         LPUART0->FIFOSTS = LPUART_FIFOSTS_ABRDTOIF_Msk;

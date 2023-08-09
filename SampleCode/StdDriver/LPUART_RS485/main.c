@@ -44,22 +44,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -79,9 +79,9 @@ void SYS_Init(void)
     /* Enable LPUART0 peripheral clock */
     CLK_EnableModuleClock(LPUART0_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -117,7 +117,7 @@ int32_t main(void)
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
-  
+
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     initialise_monitor_handles();
 #endif
@@ -145,7 +145,7 @@ int32_t main(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle LPUART Channel 0 interrupt event                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
-void LPUART0_IRQHandler(void)
+NVT_ITCM void LPUART0_IRQHandler(void)
 {
     RS485_HANDLE();
 }
@@ -159,7 +159,7 @@ void RS485_HANDLE()
     volatile uint32_t regRX = 0xFF;
     volatile uint32_t u32IntSts = LPUART0->INTSTS;
 
-    if (LPUART_GET_INT_FLAG(LPUART0,LPUART_INTSTS_RLSINT_Msk ) && LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_RDAINT_Msk))       /* RLS INT & RDA INT */ //For RS485 Detect Address
+    if (LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_RLSINT_Msk) && LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_RDAINT_Msk))       /* RLS INT & RDA INT */ //For RS485 Detect Address
     {
         if (LPUART_RS485_GET_ADDR_FLAG(LPUART0))   /* ADD_IF, RS485 mode */
         {
@@ -186,14 +186,14 @@ void RS485_HANDLE()
 #endif
         }
     }
-    else if (LPUART_GET_INT_FLAG(LPUART0,LPUART_INTSTS_RDAINT_Msk ) || LPUART_GET_INT_FLAG(LPUART0,LPUART_INTSTS_RXTOINT_Msk ))     /* Rx Ready or Time-out INT*/
+    else if (LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_RDAINT_Msk) || LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_RXTOINT_Msk))     /* Rx Ready or Time-out INT*/
     {
         /* Handle received data */
         while (!LPUART_GET_RX_EMPTY(LPUART0))
             printf("%2d,", LPUART_READ(LPUART0));
 
     }
-    else if (LPUART_GET_INT_FLAG(LPUART0,LPUART_INTSTS_BUFERRINT_Msk ))     /* Buffer Error INT */
+    else if (LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_BUFERRINT_Msk))     /* Buffer Error INT */
     {
         printf("\nBuffer Error...\n");
         LPUART_ClearIntFlag(LPUART0, LPUART_INTSTS_BUFERRINT_Msk);

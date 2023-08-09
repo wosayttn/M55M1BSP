@@ -23,11 +23,11 @@
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t LPUART_TEST_LENGTH = 64;
 #if (defined(__GNUC__) && !defined(__ARMCC_VERSION))
-uint8_t SrcArray[64] __attribute__((section(".lpSram")));
-uint8_t DestArray[64] __attribute__((section(".lpSram")));
+    uint8_t SrcArray[64] __attribute__((section(".lpSram")));
+    uint8_t DestArray[64] __attribute__((section(".lpSram")));
 #else
-uint8_t SrcArray[64] __attribute__((section(".ARM.__at_0x20310000")));
-uint8_t DestArray[64] __attribute__((section(".ARM.__at_0x20310100")));
+    uint8_t SrcArray[64] __attribute__((section(".ARM.__at_0x20310000")));
+    uint8_t DestArray[64] __attribute__((section(".ARM.__at_0x20310100")));
 #endif
 volatile int32_t IntCnt;
 volatile int32_t IsTestOver;
@@ -44,12 +44,12 @@ int32_t main(void);
 /*---------------------------------------------------------------------------------------------------------*/
 void ClearBuf(uint32_t u32Addr, uint32_t u32Length, uint8_t u8Pattern)
 {
-    uint8_t* pu8Ptr;
+    uint8_t *pu8Ptr;
     uint32_t i;
 
     pu8Ptr = (uint8_t *)u32Addr;
 
-    for(i = 0; i < u32Length; i++)
+    for (i = 0; i < u32Length; i++)
     {
         *pu8Ptr++ = u8Pattern;
     }
@@ -61,25 +61,24 @@ void ClearBuf(uint32_t u32Addr, uint32_t u32Length, uint8_t u8Pattern)
 void BuildSrcPattern(uint32_t u32Addr, uint32_t u32Length)
 {
     uint32_t i = 0, j, loop;
-    uint8_t* pAddr;
+    uint8_t *pAddr;
 
     pAddr = (uint8_t *)u32Addr;
 
     do
     {
-        if(u32Length > 256)     /* Pattern from 0 ~ 255 */
+        if (u32Length > 256)    /* Pattern from 0 ~ 255 */
             loop = 256;
         else
             loop = u32Length;
 
         u32Length = u32Length - loop;
 
-        for(j = 0; j < loop; j++)
+        for (j = 0; j < loop; j++)
             *pAddr++ = (uint8_t)(j + i);
 
         i++;
-    }
-    while((loop != 0) || (u32Length != 0));
+    } while ((loop != 0) || (u32Length != 0));
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -101,7 +100,7 @@ void LPPDMA_LPUART_TxTest(void)
     LPPDMA_SetBurstType(LPPDMA, LPUART_TX_DMA_CH, LPPDMA_REQ_SINGLE, 0);
 
     /* Disable table interrupt */
-    LPPDMA_DisableInt(LPPDMA,LPUART_TX_DMA_CH, LPPDMA_INT_TEMPTY );
+    LPPDMA_DisableInt(LPPDMA, LPUART_TX_DMA_CH, LPPDMA_INT_TEMPTY);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -123,7 +122,7 @@ void LPPDMA_LPUART_RxTest(void)
     LPPDMA_SetBurstType(LPPDMA, LPUART_RX_DMA_CH, LPPDMA_REQ_SINGLE, 0);
 
     /* Disable table interrupt */
-    LPPDMA_DisableInt(LPPDMA,LPUART_RX_DMA_CH, LPPDMA_INT_TEMPTY );
+    LPPDMA_DisableInt(LPPDMA, LPUART_RX_DMA_CH, LPPDMA_INT_TEMPTY);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -134,7 +133,7 @@ void LPPDMA_Callback_0(void)
     printf("\tTransfer Done %d!\r", ++IntCnt);
 
     /* Use LPPDMA to do LPUART loopback test 10 times */
-    if(IntCnt < 10)
+    if (IntCnt < 10)
     {
         /* LPUART Tx and Rx LPPDMA configuration */
         LPPDMA_LPUART_TxTest();
@@ -155,14 +154,15 @@ void LPPDMA_Callback_1(void)
     int32_t i;
 
     printf("\tTransfer Done %d!\t", ++IntCnt);
-  
+
     /* Show LPUART Rx data */
-    for(i = 0; i < LPUART_TEST_LENGTH; i++)     
-      printf(" 0x%x(%c),", DestArray[i] , DestArray[i]);
+    for (i = 0; i < LPUART_TEST_LENGTH; i++)
+        printf(" 0x%x(%c),", DestArray[i], DestArray[i]);
+
     printf("\n");
 
     /* Use LPPDMA to do LPUART Rx test 10 times */
-    if(IntCnt < 10)
+    if (IntCnt < 10)
     {
         /* LPUART Rx LPPDMA configuration */
         LPPDMA_LPUART_RxTest();
@@ -176,23 +176,25 @@ void LPPDMA_Callback_1(void)
         IsTestOver = TRUE;
     }
 }
-
-void LPPDMA_IRQHandler(void)
+/*---------------------------------------------------------------------------------------------------------*/
+/* ISR to handle LPPDMA interrupt event                                                                    */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void LPPDMA_IRQHandler(void)
 {
     /* Get LPPDMA interrupt status */
     uint32_t status = LPPDMA_GET_INT_STATUS(LPPDMA);
 
-    if(status & LPPDMA_INTSTS_ABTIF_Msk)   /* Target Abort */
+    if (status & LPPDMA_INTSTS_ABTIF_Msk)  /* Target Abort */
     {
         if (LPPDMA_GET_ABORT_STS(LPPDMA) & LPPDMA_ABTSTS_ABTIF2_Msk)
             IsTestOver = 2;
 
         LPPDMA_CLR_ABORT_FLAG(LPPDMA, LPPDMA_GET_ABORT_STS(LPPDMA));
     }
-    else if(status & LPPDMA_INTSTS_TDIF_Msk)     /* Transfer Done */
+    else if (status & LPPDMA_INTSTS_TDIF_Msk)    /* Transfer Done */
     {
         /* LPUART Tx LPPDMA transfer done interrupt flag */
-        if(LPPDMA_GET_TD_STS(LPPDMA) & (1 << LPUART_TX_DMA_CH))
+        if (LPPDMA_GET_TD_STS(LPPDMA) & (1 << LPUART_TX_DMA_CH))
         {
             /* Clear LPPDMA transfer done interrupt flag */
             LPPDMA_CLR_TD_FLAG(LPPDMA, (1 << LPUART_TX_DMA_CH));
@@ -202,7 +204,7 @@ void LPPDMA_IRQHandler(void)
         }
 
         /* LPUART Rx LPPDMA transfer done interrupt flag */
-        if(LPPDMA_GET_TD_STS(LPPDMA) & (1 << LPUART_RX_DMA_CH))
+        if (LPPDMA_GET_TD_STS(LPPDMA) & (1 << LPUART_RX_DMA_CH))
         {
             /* Clear LPPDMA transfer done interrupt flag */
             LPPDMA_CLR_TD_FLAG(LPPDMA, (1 << LPUART_RX_DMA_CH));
@@ -211,11 +213,11 @@ void LPPDMA_IRQHandler(void)
             LPUART_DISABLE_INT(LPUART0, LPUART_INTEN_RXPDMAEN_Msk);
 
             /* Handle LPPDMA transfer done interrupt event */
-            if(g_u32TwoChannelLpPdmaTest == 1)
+            if (g_u32TwoChannelLpPdmaTest == 1)
             {
                 LPPDMA_Callback_0();
             }
-            else if(g_u32TwoChannelLpPdmaTest == 0)
+            else if (g_u32TwoChannelLpPdmaTest == 0)
             {
                 LPPDMA_Callback_1();
             }
@@ -230,11 +232,11 @@ void LPPDMA_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle UART Channel 0 interrupt event                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
-void UART0_IRQHandler(void)
+NVT_ITCM void UART0_IRQHandler(void)
 {
     /* Get UART0 Rx data and send the data to LPUART0 Tx */
-    if(UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAIF_Msk))
-        LPUART_WRITE(LPUART0,UART_READ(UART0));
+    if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAIF_Msk))
+        LPUART_WRITE(LPUART0, UART_READ(UART0));
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -255,7 +257,7 @@ void LPPDMA_LPUART(int32_t i32option)
     /* Lock protected registers */
     SYS_LockReg();
 
-    if(i32option == '1')
+    if (i32option == '1')
     {
         printf("  [Using TWO LPPDMA channel].\n");
         printf("  This sample code will use LPPDMA to do LPUART0 loopback test 10 times.\n");
@@ -276,7 +278,7 @@ void LPPDMA_LPUART(int32_t i32option)
         printf("  Please input %d bytes to trigger LPPDMA one time.(Ex: Press 'a''b')\n", LPUART_TEST_LENGTH);
     }
 
-    if(g_u32TwoChannelLpPdmaTest == 1)
+    if (g_u32TwoChannelLpPdmaTest == 1)
     {
         /* Enable LPPDMA channel */
         LPPDMA_Open(LPPDMA, (1 << LPUART_RX_DMA_CH) | (1 << LPUART_TX_DMA_CH));
@@ -307,25 +309,25 @@ void LPPDMA_LPUART(int32_t i32option)
     NVIC_EnableIRQ(LPPDMA_IRQn);
 
     /* Enable UART0 RDA interrupt */
-    if(g_u32TwoChannelLpPdmaTest == 0)
+    if (g_u32TwoChannelLpPdmaTest == 0)
     {
         NVIC_EnableIRQ(UART0_IRQn);
         UART_EnableInt(UART0, UART_INTEN_RDAIEN_Msk);
     }
 
     /* Enable LPUART Tx and Rx LPPDMA function */
-    if(g_u32TwoChannelLpPdmaTest == 1)
-        LPUART_ENABLE_INT(LPUART0,LPUART_INTEN_TXPDMAEN_Msk );
+    if (g_u32TwoChannelLpPdmaTest == 1)
+        LPUART_ENABLE_INT(LPUART0, LPUART_INTEN_TXPDMAEN_Msk);
     else
         LPUART_DISABLE_INT(LPUART0, LPUART_INTEN_TXPDMAEN_Msk);
 
-    LPUART_ENABLE_INT(LPUART0,LPUART_INTEN_RXPDMAEN_Msk );
+    LPUART_ENABLE_INT(LPUART0, LPUART_INTEN_RXPDMAEN_Msk);
 
     /* Wait for LPPDMA operation finish */
-    while(IsTestOver == FALSE);
+    while (IsTestOver == FALSE);
 
     /* Check LPPDMA status */
-    if(IsTestOver == 2)
+    if (IsTestOver == 2)
         printf("target abort...\n");
 
     /* Disable LPUART Tx and Rx LPPDMA function */
@@ -355,22 +357,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -399,9 +401,9 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate PllClock, SystemCoreClock and CycylesPerUs automatically. */
     SystemCoreClockUpdate();
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -473,15 +475,15 @@ int32_t main(void)
         unItem = getchar();
 
         IsTestOver = FALSE;
-        if((unItem == '1') || (unItem == '2'))
+
+        if ((unItem == '1') || (unItem == '2'))
         {
             LPPDMA_LPUART(unItem);
             printf("\n\n  LPUART LPPDMA sample code is complete.\n");
         }
 
-    }
-    while(unItem != 27);
+    } while (unItem != 27);
 
-    while(1);
+    while (1);
 
 }

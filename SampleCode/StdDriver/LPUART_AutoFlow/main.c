@@ -37,22 +37,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -72,9 +72,9 @@ void SYS_Init(void)
     /* Enable LPUART0 peripheral clock */
     CLK_EnableModuleClock(LPUART0_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -112,7 +112,7 @@ int32_t main(void)
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
-  
+
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     initialise_monitor_handles();
 #endif
@@ -176,7 +176,7 @@ void AutoFlow_FunctionTest(void)
     printf("+---------------------------------------------------------------+\n");
     u8Item = getchar();
 
-    if(u8Item == '0')
+    if (u8Item == '0')
         AutoFlow_FunctionTxTest();
     else
         AutoFlow_FunctionRxTest();
@@ -194,13 +194,13 @@ void AutoFlow_FunctionTxTest(void)
     LPUART_EnableFlowCtrl(LPUART0);
 
     /* Send 1k bytes data */
-    for(u32i = 0; u32i < RXBUFSIZE; u32i++)
+    for (u32i = 0; u32i < RXBUFSIZE; u32i++)
     {
         /* Send 1 byte data */
         LPUART_WRITE(LPUART0, u32i & 0xFF);
 
         /* Wait if Tx FIFO is full */
-        while(LPUART_IS_TX_FULL(LPUART0));
+        while (LPUART_IS_TX_FULL(LPUART0));
     }
 
     printf("\n Transmit Done\n");
@@ -232,17 +232,19 @@ void AutoFlow_FunctionRxTest(void)
     printf("\n Starting to receive data...\n");
 
     /* Wait for receive 1k bytes data */
-    while(g_i32pointer < RXBUFSIZE);
+    while (g_i32pointer < RXBUFSIZE);
 
     /* Compare Data */
-    for(u32i = 0; u32i < RXBUFSIZE; u32i++)
+    for (u32i = 0; u32i < RXBUFSIZE; u32i++)
     {
-        if(g_u8RecData[u32i] != (u32i & 0xFF))
+        if (g_u8RecData[u32i] != (u32i & 0xFF))
         {
             printf("Compare Data Failed\n");
-            while(1);
+
+            while (1);
         }
     }
+
     printf("\n Receive OK & Check OK\n");
 
     /* Disable RDA and RTO Interrupt */
@@ -253,24 +255,24 @@ void AutoFlow_FunctionRxTest(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle LPUART0 interrupt event                                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
-void LPUART0_IRQHandler(void)
+NVT_ITCM void LPUART0_IRQHandler(void)
 {
     uint8_t u8InChar = 0xFF;
 
     /* Rx Ready or Time-out INT */
-    if(LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_RDAINT_Msk | LPUART_INTSTS_RXTOINT_Msk))
+    if (LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_RDAINT_Msk | LPUART_INTSTS_RXTOINT_Msk))
     {
         /* Read data until RX FIFO is empty */
-        while(LPUART_GET_RX_EMPTY(LPUART0) == 0)
+        while (LPUART_GET_RX_EMPTY(LPUART0) == 0)
         {
             u8InChar = LPUART_READ(LPUART0);
             g_u8RecData[g_i32pointer++] = u8InChar;
         }
     }
 
-    if(LPUART0->FIFOSTS & (LPUART_FIFOSTS_BIF_Msk | LPUART_FIFOSTS_FEF_Msk | LPUART_FIFOSTS_PEF_Msk | LPUART_FIFOSTS_RXOVIF_Msk))
+    if (LPUART0->FIFOSTS & (LPUART_FIFOSTS_BIF_Msk | LPUART_FIFOSTS_FEF_Msk | LPUART_FIFOSTS_PEF_Msk | LPUART_FIFOSTS_RXOVIF_Msk))
     {
-        LPUART_ClearIntFlag(LPUART0, (LPUART_INTSTS_RLSINT_Msk| LPUART_INTSTS_BUFERRINT_Msk));
+        LPUART_ClearIntFlag(LPUART0, (LPUART_INTSTS_RLSINT_Msk | LPUART_INTSTS_BUFERRINT_Msk));
     }
 }
 

@@ -10,7 +10,7 @@
 #include "NuMicro.h"
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
-extern void initialise_monitor_handles(void);
+    extern void initialise_monitor_handles(void);
 #endif
 
 typedef struct dma_desc_t
@@ -32,44 +32,45 @@ typedef struct dma_desc_t
 #define SG_BASE_ADDR            0x20310800
 
 #if (defined(__GNUC__) && !defined(__ARMCC_VERSION))
-uint8_t SrcArray[MAX_SG_TAB_NUM*SG_TX_LENGTH] __attribute__((section(".lpSram")));
-uint8_t DestArray[MAX_SG_TAB_NUM*SG_TX_LENGTH] __attribute__((section(".lpSram")));
+uint8_t SrcArray[MAX_SG_TAB_NUM * SG_TX_LENGTH] __attribute__((section(".lpSram")));
+uint8_t DestArray[MAX_SG_TAB_NUM * SG_TX_LENGTH] __attribute__((section(".lpSram")));
 DMA_DESC_T DMA_DESC_SC[MAX_SG_TAB_NUM] __attribute__((section(".lpSram"))) = {0};
 #else
-uint8_t SrcArray[MAX_SG_TAB_NUM*SG_TX_LENGTH] __attribute__((section(".ARM.__at_0x20310000")));
-uint8_t DestArray[MAX_SG_TAB_NUM*SG_TX_LENGTH] __attribute__((section(".ARM.__at_0x20310100")));
+uint8_t SrcArray[MAX_SG_TAB_NUM * SG_TX_LENGTH] __attribute__((section(".ARM.__at_0x20310000")));
+uint8_t DestArray[MAX_SG_TAB_NUM * SG_TX_LENGTH] __attribute__((section(".ARM.__at_0x20310100")));
 DMA_DESC_T DMA_DESC_SC[MAX_SG_TAB_NUM] __attribute__((section(".ARM.__at_0x20310800"))) = {0};
 #endif
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Data Compare function                                                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t DataCompare(uint8_t InBuffer[],uint8_t OutBuffer[],int32_t len)
+int32_t DataCompare(uint8_t InBuffer[], uint8_t OutBuffer[], int32_t len)
 {
-    int32_t i=0;
+    int32_t i = 0;
 
-    for(i=0; i<len; i++)
+    for (i = 0; i < len; i++)
     {
-        if(InBuffer[i]!=OutBuffer[i])
+        if (InBuffer[i] != OutBuffer[i])
         {
-            printf("In[%d] = %d , Out[%d] = %d\n",i,InBuffer[i],i,OutBuffer[i]);
+            printf("In[%d] = %d , Out[%d] = %d\n", i, InBuffer[i], i, OutBuffer[i]);
             return FALSE;
         }
     }
+
     return TRUE;
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Clear Buffer function                                                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
-void ClearBuf(uint32_t u32Addr, uint32_t u32Length,uint8_t u8Pattern)
+void ClearBuf(uint32_t u32Addr, uint32_t u32Length, uint8_t u8Pattern)
 {
-    uint8_t* pu8Ptr;
+    uint8_t *pu8Ptr;
     uint32_t i;
 
     pu8Ptr = (uint8_t *)u32Addr;
 
-    for (i=0; i<u32Length; i++)
+    for (i = 0; i < u32Length; i++)
     {
         *pu8Ptr++ = u8Pattern;
     }
@@ -80,8 +81,8 @@ void ClearBuf(uint32_t u32Addr, uint32_t u32Length,uint8_t u8Pattern)
 /*---------------------------------------------------------------------------------------------------------*/
 void BuildSrcPattern(uint32_t u32Addr, uint32_t u32Length)
 {
-    uint32_t i=0,j,loop;
-    uint8_t* pAddr;
+    uint32_t i = 0, j, loop;
+    uint8_t *pAddr;
 
     pAddr = (uint8_t *)u32Addr;
 
@@ -94,12 +95,11 @@ void BuildSrcPattern(uint32_t u32Addr, uint32_t u32Length)
 
         u32Length = u32Length - loop;
 
-        for(j=0; j<loop; j++)
-            *pAddr++ = (uint8_t)(j+i);
+        for (j = 0; j < loop; j++)
+            *pAddr++ = (uint8_t)(j + i);
 
         i++;
-    }
-    while ((loop !=0) || (u32Length !=0));
+    } while ((loop != 0) || (u32Length != 0));
 
 }
 
@@ -126,7 +126,7 @@ void LPTMR_trigger_init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /* LPPDMA Interrupt handler                                                                                */
 /*---------------------------------------------------------------------------------------------------------*/
-void LPPDMA_IRQHandler(void)
+NVT_ITCM void LPPDMA_IRQHandler(void)
 {
     volatile uint32_t u32RegISR, u32Temp;
 
@@ -134,13 +134,13 @@ void LPPDMA_IRQHandler(void)
 #if 0
     printf("LPDMA ISR INTSTS= 0x%x\n", u32regISR);
     printf("LPDMA CurSCAT= 0x%x\n", LPPDMA0->CURSCAT[0]);
-    printf("SC addr = 0x%x\n", (uint32_t)&(DMA_DESC_SC[MAX_SG_TAB_NUM-1]));
+    printf("SC addr = 0x%x\n", (uint32_t) & (DMA_DESC_SC[MAX_SG_TAB_NUM - 1]));
 #endif
 
     if ((u32RegISR & LPPDMA_INTSTS_TDIF_Msk) == LPPDMA_INTSTS_TDIF_Msk) /* transfer done */
     {
 
-        u32Temp =LPPDMA->TDSTS;
+        u32Temp = LPPDMA->TDSTS;
 
         //printf("LPPDMA transfer done\n");
         LPPDMA->TDSTS = u32Temp;
@@ -154,7 +154,7 @@ void BuildSCTab(uint32_t u32tabNum, uint32_t u32TxfSize, uint32_t pu8StarAddr)
 {
     uint32_t i;
 
-    for(i=0; i<u32tabNum; i++)
+    for (i = 0; i < u32tabNum; i++)
     {
         DMA_DESC_SC[i].ctl = LPPDMA_OP_SCATTER |
                              LPPDMA_REQ_SINGLE |
@@ -163,21 +163,21 @@ void BuildSCTab(uint32_t u32tabNum, uint32_t u32TxfSize, uint32_t pu8StarAddr)
                              LPPDMA_WIDTH_8 |                /* transfer width -> 8-bit */
                              LPPDMA_TBINTDIS_DISABLE |      /* Table Interrupt Disable*/
                              ((u32TxfSize - 1) << LPPDMA_DSCT_CTL_TXCNT_Pos);
-        DMA_DESC_SC[i].src = (uint32_t)(pu8StarAddr+i*u32TxfSize);
-        DMA_DESC_SC[i].dest = (uint32_t)&(LPUART0->DAT);
-        DMA_DESC_SC[i].offset = (uint32_t)&DMA_DESC_SC[0] + 0x10*(i + 1);
+        DMA_DESC_SC[i].src = (uint32_t)(pu8StarAddr + i * u32TxfSize);
+        DMA_DESC_SC[i].dest = (uint32_t) & (LPUART0->DAT);
+        DMA_DESC_SC[i].offset = (uint32_t)&DMA_DESC_SC[0] + 0x10 * (i + 1);
     }
 
-    DMA_DESC_SC[u32tabNum-1].ctl = (DMA_DESC_SC[u32tabNum-1].ctl & ~(PDMA_DSCT_CTL_TBINTDIS_Msk | LPPDMA_DSCT_CTL_OPMODE_Msk))  \
-                                   | (LPPDMA_TBINTDIS_ENABLE | LPPDMA_OP_BASIC );
-    DMA_DESC_SC[u32tabNum-1].offset = 0;
+    DMA_DESC_SC[u32tabNum - 1].ctl = (DMA_DESC_SC[u32tabNum - 1].ctl & ~(PDMA_DSCT_CTL_TBINTDIS_Msk | LPPDMA_DSCT_CTL_OPMODE_Msk))  \
+                                     | (LPPDMA_TBINTDIS_ENABLE | LPPDMA_OP_BASIC);
+    DMA_DESC_SC[u32tabNum - 1].offset = 0;
 
 }
 
 void LPPDMA_TX_init(uint8_t u8TestCh, uint32_t u8TestLen)
 {
 
-    LPPDMA_Open(LPPDMA, 1<<u8TestCh);
+    LPPDMA_Open(LPPDMA, 1 << u8TestCh);
 
     /* Setup Scatter-gather table for TX transfer */
     BuildSCTab(MAX_SG_TAB_NUM, SG_TX_LENGTH, (uint32_t)&SrcArray);
@@ -190,36 +190,36 @@ void LPPDMA_RX_init(uint8_t u8TestCh, uint32_t u8TestLen)
 {
     DSCT_T *ch_dsct;
 
-    LPPDMA_Open(LPPDMA, 1<<u8TestCh);
+    LPPDMA_Open(LPPDMA, 1 << u8TestCh);
 
-    ch_dsct = (DSCT_T  *)&LPPDMA->LPDSCT[u8TestCh];
+    ch_dsct = (DSCT_T *)&LPPDMA->LPDSCT[u8TestCh];
     ch_dsct->CTL =  LPPDMA_OP_BASIC |
                     LPPDMA_REQ_SINGLE |
                     LPPDMA_DAR_INC |                /* source address -> fixed(LPUART) */
                     LPPDMA_SAR_FIX |                /* destination address -> incremented */
                     LPPDMA_WIDTH_8 |                /* transfer width -> 8-bit */
                     LPPDMA_TBINTDIS_DISABLE |       /* Table Interrupt Disable*/
-                    ((u8TestLen-1)<<LPPDMA_DSCT_CTL_TXCNT_Pos);
+                    ((u8TestLen - 1) << LPPDMA_DSCT_CTL_TXCNT_Pos);
 
-    ch_dsct->SA = (uint32_t)&(LPUART0->DAT);        /* LPPDMA Transfer Source Address */
+    ch_dsct->SA = (uint32_t) & (LPUART0->DAT);      /* LPPDMA Transfer Source Address */
     ch_dsct->DA = (uint32_t)DestArray;              /* LPPDMA Transfer Destination Address */
     LPPDMA_SetTransferMode(LPPDMA, 1, LPPDMA_LPUART0_RX, 0, (uint32_t)&DestArray[0]);
 
     /* Enable Channel Transfer done interrupt */
-    LPPDMA_EnableInt(LPPDMA,u8TestCh, LPPDMA_INT_TRANS_DONE );
+    LPPDMA_EnableInt(LPPDMA, u8TestCh, LPPDMA_INT_TRANS_DONE);
     NVIC_EnableIRQ(LPPDMA_IRQn);
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /*  LPUART Function                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 
-void LPUART_trigger_init(LPUART_T* lpuart)
+void LPUART_trigger_init(LPUART_T *lpuart)
 {
     // set Auto Operation mode trigger source from LPTMR0
-    LPUART_SelectAutoOperationMode(LPUART0,LPUART_AUTOCTL_TRIGSEL_LPTMR0);
+    LPUART_SelectAutoOperationMode(LPUART0, LPUART_AUTOCTL_TRIGSEL_LPTMR0);
 
     /* Enable LPUART PDMA RX/TX */
-    LPUART_PDMA_ENABLE(lpuart,LPUART_INTEN_TXPDMAEN_Msk|LPUART_INTEN_RXPDMAEN_Msk);
+    LPUART_PDMA_ENABLE(lpuart, LPUART_INTEN_TXPDMAEN_Msk | LPUART_INTEN_RXPDMAEN_Msk);
 }
 
 
@@ -231,7 +231,7 @@ int32_t LPUART_AutoOP(uint32_t u32PDMode)
     LPPDMA_TX_init(0, SG_TX_LENGTH);
 
     // LPPDMA CH-1 basic Mode RX to receive LUART TX data
-    LPPDMA_RX_init(1, SG_TX_LENGTH*MAX_SG_TAB_NUM);
+    LPPDMA_RX_init(1, SG_TX_LENGTH * MAX_SG_TAB_NUM);
 
     // LUART TX to send data and RX to receive data
     LPUART_trigger_init(LPUART0);
@@ -243,8 +243,8 @@ int32_t LPUART_AutoOP(uint32_t u32PDMode)
     SYS_UnlockReg();
     /* Switch SCLK clock source to HIRC */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
-     
-    PMC_SetPowerDownMode(u32PDMode,PMC_PLCTL_PLSEL_PL0);
+
+    PMC_SetPowerDownMode(u32PDMode, PMC_PLCTL_PLSEL_PL0);
 
     /* clear all wakeup flag */
     PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;    // clear all wakeup flag
@@ -258,13 +258,14 @@ int32_t LPUART_AutoOP(uint32_t u32PDMode)
     PMC_PowerDown();
     printf("     Wakeup\n");
 
-    LPPDMA_DisableInt(LPPDMA,1, LPPDMA_INT_TRANS_DONE );
+    LPPDMA_DisableInt(LPPDMA, 1, LPPDMA_INT_TRANS_DONE);
     LPTMR_Stop(LPTMR0);
 
-    if( DataCompare( SrcArray,DestArray, SG_TX_LENGTH*MAX_SG_TAB_NUM) )
+    if (DataCompare(SrcArray, DestArray, SG_TX_LENGTH * MAX_SG_TAB_NUM))
         printf("     Data Compare OK.\n");
     else
         printf("     Data Compare Fail.\n");
+
     return 0;
 
 }
@@ -280,22 +281,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -329,9 +330,9 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate PllClock, SystemCoreClock and CycylesPerUs automatically. */
     SystemCoreClockUpdate();
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -380,10 +381,10 @@ int main(void)
     SYS_LockReg();
 
     /* Prepare Source Test Pattern for LPUART Tx */
-    BuildSrcPattern((uint32_t)SrcArray, MAX_SG_TAB_NUM*SG_TX_LENGTH);
+    BuildSrcPattern((uint32_t)SrcArray, MAX_SG_TAB_NUM * SG_TX_LENGTH);
 
     /* Clear Destination buffer for LPUART Rx */
-    ClearBuf((uint32_t)DestArray, MAX_SG_TAB_NUM*SG_TX_LENGTH, 0x55);
+    ClearBuf((uint32_t)DestArray, MAX_SG_TAB_NUM * SG_TX_LENGTH, 0x55);
 
     /*--------------------------------------------------------------------------------------------------------------*/
     /* Autmatic Operation Mode Test                                                                                 */
@@ -405,7 +406,7 @@ int main(void)
 
     printf("\n     End of Test\n");
 
-    while(1);
+    while (1);
 
 }
 
