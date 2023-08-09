@@ -36,8 +36,8 @@ void PowerDownFunction(void)
     UART_WAIT_TX_EMPTY(UART0);
 
     /* Set Power-down mode */
-    PMC_SetPowerDownMode(TEST_POWER_DOWN_MODE,PMC_PLCTL_PLSEL_PL0);
-    
+    PMC_SetPowerDownMode(TEST_POWER_DOWN_MODE, PMC_PLCTL_PLSEL_PL0);
+
     /* Enter to Power-down mode */
     PMC_PowerDown();
 }
@@ -54,22 +54,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -88,9 +88,9 @@ void SYS_Init(void)
     /* Enable LPUART0 peripheral clock */
     CLK_EnableModuleClock(LPUART0_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -123,11 +123,11 @@ void LPUART0_Init(void)
 int32_t main(void)
 {
 
- /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
-  
+
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     initialise_monitor_handles();
 #endif
@@ -142,8 +142,8 @@ int32_t main(void)
     SYS_LockReg();
 
     /* clear all wakeup flag */
-    PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk; 
-    
+    PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* SAMPLE CODE                                                                                             */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -157,29 +157,34 @@ int32_t main(void)
 
     printf("LPUART Sample Program End.\n");
 
-    while(1);
+    while (1);
 
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle LPUART Channel 1 interrupt event                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
-void LPUART0_IRQHandler(void)
+NVT_ITCM void LPUART0_IRQHandler(void)
 {
     uint32_t u32Data;
+    // TESTCHIP_ONLY
+    CLK_WaitModuleClockReady(LPUART0_MODULE);
+    // TESTCHIP_ONLY
+    CLK_WaitModuleClockReady(UART0_MODULE);
 
-    if(LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_WKINT_Msk))     /* LPUART wake-up interrupt flag */
+    if (LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_WKINT_Msk))    /* LPUART wake-up interrupt flag */
     {
         LPUART_ClearIntFlag(LPUART0, LPUART_INTSTS_WKINT_Msk);
         printf("LPUART wake-up.\n");
         UART_WAIT_TX_EMPTY(UART0);
     }
-    else if(LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_RDAINT_Msk | LPUART_INTSTS_RXTOINT_Msk))     /* LPUART receive data available flag */
+    else if (LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_RDAINT_Msk | LPUART_INTSTS_RXTOINT_Msk))    /* LPUART receive data available flag */
     {
-        while(LPUART_GET_RX_EMPTY(LPUART0) == 0)
+        while (LPUART_GET_RX_EMPTY(LPUART0) == 0)
         {
             u32Data = LPUART_READ(LPUART0);
-            if(u32Data & LPUART_DAT_PARITY_Msk)
+
+            if (u32Data & LPUART_DAT_PARITY_Msk)
                 printf("Address: 0x%X\n", (u32Data & 0xFF));
             else
                 printf("Data: 0x%X\n", u32Data);
@@ -226,9 +231,10 @@ void LPUART_DataWakeUp(void)
 void LPUART_RxThresholdWakeUp(void)
 {
     /* Wait data transmission is finished and select LPUART clock source as LXT */
-    while((LPUART0->FIFOSTS & LPUART_FIFOSTS_TXEMPTYF_Msk) == 0);
-    while((LPUART0->FIFOSTS & LPUART_FIFOSTS_RXIDLE_Msk) == 0);
-    
+    while ((LPUART0->FIFOSTS & LPUART_FIFOSTS_TXEMPTYF_Msk) == 0);
+
+    while ((LPUART0->FIFOSTS & LPUART_FIFOSTS_RXIDLE_Msk) == 0);
+
     /* Keep LPUART clock for HIRC work in power down mode */
     LPUART0->AUTOCTL |=  LPUART_AUTOCTL_AOEN_Msk | LPUART_AUTOCTL_CKAWOEN_Msk;
 
@@ -256,7 +262,7 @@ void LPUART_RS485WakeUp(void)
 
     /* Keep LPUART clock for HIRC work in power down mode */
     LPUART0->AUTOCTL |=  LPUART_AUTOCTL_AOEN_Msk | LPUART_AUTOCTL_CKAWOEN_Msk;
-    
+
     /* Set LPUART baud rate and baud rate compensation */
     LPUART_Open(LPUART0, 9600);
 
@@ -317,22 +323,27 @@ void LPUART_PowerDownWakeUpTest(void)
     LPUART_PowerDown_TestItem();
     u32Item = getchar();
     printf("%c\n\n", u32Item);
-    switch(u32Item)
+
+    switch (u32Item)
     {
-    case '1':
-        LPUART_CTSWakeUp();
-        break;
-    case '2':
-        LPUART_DataWakeUp();
-        break;
-    case '3':
-        LPUART_RxThresholdWakeUp();
-        break;
-    case '4':
-        LPUART_RS485WakeUp();
-        break;
-    default:
-        return;
+        case '1':
+            LPUART_CTSWakeUp();
+            break;
+
+        case '2':
+            LPUART_DataWakeUp();
+            break;
+
+        case '3':
+            LPUART_RxThresholdWakeUp();
+            break;
+
+        case '4':
+            LPUART_RS485WakeUp();
+            break;
+
+        default:
+            return;
     }
 
     /* Unlock protected registers before entering Power-down mode */
