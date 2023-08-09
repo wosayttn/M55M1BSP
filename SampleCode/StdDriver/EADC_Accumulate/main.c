@@ -18,7 +18,10 @@ volatile uint32_t g_u32AdcIntFlag;
     extern void initialise_monitor_handles(void);
 #endif
 
-void EADC00_IRQHandler(void)
+/*---------------------------------------------------------------------------------------------------------*/
+/* EADC interrupt handler                                                                                  */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void EADC00_IRQHandler(void)
 {
     g_u32AdcIntFlag = 1;
     EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);      /* Clear the A/D ADINT0 interrupt flag */
@@ -36,22 +39,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -71,7 +74,7 @@ void SYS_Init(void)
 
     /* Enable GPB peripheral clock */
     CLK_EnableModuleClock(GPIOB_MODULE);
- 
+
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
@@ -83,12 +86,12 @@ void SYS_Init(void)
     SetDebugUartMFP();
 
     /* Set PB.0 - PB.1 to input mode */
-    GPIO_SetMode(PB, BIT0|BIT1, GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT0 | BIT1, GPIO_MODE_INPUT);
     /* Configure the PB.0 - PB.1 ADC analog input pins. */
     SET_EADC0_CH0_PB0();
     SET_EADC0_CH1_PB1();
     /* Disable the PB.0 - PB.1 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0|BIT1);
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0 | BIT1);
 
 
 }
@@ -107,22 +110,31 @@ uint32_t EADC_Accumulate_LeftShift(uint32_t u32AccuRawResult, uint32_t u32AccuCo
     {
         case 1:
             return u32AccuRawResult;
+
         case 2:
             return u32AccuRawResult;
+
         case 4:
             return u32AccuRawResult;
+
         case 8:
             return u32AccuRawResult;
+
         case 16:
             return u32AccuRawResult;
+
         case 32:
             return (u32AccuRawResult << 1);
+
         case 64:
             return (u32AccuRawResult << 2);
+
         case 128:
             return (u32AccuRawResult << 3);
+
         case 256:
             return (u32AccuRawResult << 4);
+
         default:
             printf("*** Error! Wrong parameter %u for Accumulate.\n\n", u32AccuCount);
             return u32AccuRawResult;
@@ -151,7 +163,7 @@ void EADC_FunctionTest()
     /* Set input mode as single-end and enable the A/D converter */
     EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
 
-    while(1)
+    while (1)
     {
         printf("Select test items:\n");
         printf("  [1] Basic EADC conversion (channel 0 only)\n");
@@ -191,7 +203,7 @@ void EADC_FunctionTest()
         EADC_START_CONV(EADC0, u32ModuleMask);
 
         /* Wait EADC interrupt (g_u32AdcIntFlag will be set at IRQ_Handler function) */
-        while(g_u32AdcIntFlag == 0);
+        while (g_u32AdcIntFlag == 0);
 
         /* Get the conversion result of the sample module */
         i32ConversionData = EADC_GET_CONV_DATA(EADC0, u32ModuleNum);
@@ -239,7 +251,7 @@ int32_t main(void)
 
     printf("Exit EADC sample code\n");
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

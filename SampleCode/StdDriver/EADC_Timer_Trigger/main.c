@@ -18,6 +18,16 @@ volatile uint32_t g_u32AdcIntFlag, g_u32COVNUMFlag = 0;
     extern void initialise_monitor_handles(void);
 #endif
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* EADC interrupt handler                                                                                  */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void EADC00_IRQHandler(void)
+{
+    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);/* Clear the A/D ADINT0 interrupt flag */
+    g_u32AdcIntFlag = 1;
+    g_u32COVNUMFlag++;
+}
+
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -29,14 +39,14 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -44,7 +54,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -56,7 +66,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-   /* Enable EADC peripheral clock */
+    /* Enable EADC peripheral clock */
     CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(15));
 
     /* Enable EADC module clock */
@@ -76,24 +86,24 @@ void SYS_Init(void)
 
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
-    
+
     /* Set PB.0 - PB.3 to input mode */
-    GPIO_SetMode(PB, BIT0|BIT1|BIT2|BIT3, GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT0 | BIT1 | BIT2 | BIT3, GPIO_MODE_INPUT);
     /* Configure the PB.0 - PB.3 ADC analog input pins. */
     SET_EADC0_CH0_PB0();
     SET_EADC0_CH1_PB1();
     SET_EADC0_CH2_PB2();
     SET_EADC0_CH3_PB3();
     /* Disable the PB.0 - PB.3 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0|BIT1|BIT2|BIT3);
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0 | BIT1 | BIT2 | BIT3);
 
     /* Set PB.14 - PB.15 to input mode */
-    GPIO_SetMode(PB, BIT14|BIT15, GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT14 | BIT15, GPIO_MODE_INPUT);
     /* Configure the PB.14 - PB.15 ADC analog input pins. */
     SET_EADC0_CH14_PB14();
     SET_EADC0_CH15_PB15();
     /* Disable the PB.14 - PB.15 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT14|BIT15);
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT14 | BIT15);
 
 
 }
@@ -119,14 +129,15 @@ void EADC_FunctionTest()
 
     printf("\nIn this test, software will get 6 conversion result from the specified channel.\n");
 
-    while(1)
+    while (1)
     {
         printf("Select input mode:\n");
         printf("  [1] Single end input (channel 2 only)\n");
         printf("  [2] Differential input (channel pair 7: channel 14 and 15)\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
-        if(u8Option == '1')
+
+        if (u8Option == '1')
         {
             /* Set input mode as single-end and enable the A/D converter */
             EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
@@ -149,21 +160,21 @@ void EADC_FunctionTest()
             g_u32COVNUMFlag = 0;
             TIMER_Start(TIMER0);
 
-            while(1)
+            while (1)
             {
                 /* Wait ADC interrupt (g_u32AdcIntFlag will be set at IRQ_Handler function) */
-                while(g_u32AdcIntFlag == 0);
+                while (g_u32AdcIntFlag == 0);
 
                 /* Reset the EADC interrupt indicator */
                 g_u32AdcIntFlag = 0;
-                 
+
 
                 /* Get the conversion result of the sample module 0 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
                 i32ConversionData[u32COVNUMFlag] = EADC_GET_CONV_DATA(EADC0, 0);
                 printf("    0x%X (%d)\n", i32ConversionData[u32COVNUMFlag], i32ConversionData[u32COVNUMFlag]);
 
-                if(g_u32COVNUMFlag > 6)
+                if (g_u32COVNUMFlag > 6)
                     break;
             }
 
@@ -173,7 +184,7 @@ void EADC_FunctionTest()
             /* Disable the ADINT0 interrupt */
             EADC_DISABLE_INT(EADC0, BIT0);
         }
-        else if(u8Option == '2')
+        else if (u8Option == '2')
         {
             /* Set input mode as differential and enable the A/D converter */
             EADC_Open(EADC0, EADC_CTL_DIFFEN_DIFFERENTIAL);
@@ -196,20 +207,20 @@ void EADC_FunctionTest()
             g_u32COVNUMFlag = 0;
             TIMER_Start(TIMER0);
 
-            while(1)
+            while (1)
             {
                 /* Wait ADC interrupt (g_u32AdcIntFlag will be set at IRQ_Handler function) */
-                while(g_u32AdcIntFlag == 0);
+                while (g_u32AdcIntFlag == 0);
 
                 /* Reset the ADC interrupt indicator */
                 g_u32AdcIntFlag = 0;
-               
+
                 /* Get the conversion result of the sample module 0 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
-               i32ConversionData[u32COVNUMFlag] = EADC_GET_CONV_DATA(EADC0, 0);
+                i32ConversionData[u32COVNUMFlag] = EADC_GET_CONV_DATA(EADC0, 0);
                 printf("    0x%X (%d)\n", i32ConversionData[u32COVNUMFlag], i32ConversionData[u32COVNUMFlag]);
 
-                if(g_u32COVNUMFlag > 6)
+                if (g_u32COVNUMFlag > 6)
                     break;
             }
 
@@ -222,13 +233,6 @@ void EADC_FunctionTest()
         else
             return;
     }
-}
-
-void EADC00_IRQHandler(void)
-{
-    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);/* Clear the A/D ADINT0 interrupt flag */
-    g_u32AdcIntFlag = 1;
-    g_u32COVNUMFlag++;
 }
 
 int32_t main(void)
@@ -265,7 +269,7 @@ int32_t main(void)
 
     printf("Exit EADC sample code\n");
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

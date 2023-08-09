@@ -18,7 +18,10 @@ volatile uint32_t g_u32AdcIntFlag, g_u32COVNUMFlag = 0;
     extern void initialise_monitor_handles(void);
 #endif
 
-void EADC00_IRQHandler(void)
+/*---------------------------------------------------------------------------------------------------------*/
+/* EADC interrupt handler                                                                                  */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void EADC00_IRQHandler(void)
 {
     EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);      /* Clear the A/D ADINT0 interrupt flag */
     g_u32AdcIntFlag = 1;
@@ -36,14 +39,14 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -51,7 +54,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -85,22 +88,22 @@ void SYS_Init(void)
     SetDebugUartMFP();
 
     /* Set PB.0 - PB.3 to input mode */
-    GPIO_SetMode(PB, BIT0|BIT1|BIT2|BIT3, GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT0 | BIT1 | BIT2 | BIT3, GPIO_MODE_INPUT);
     /* Configure the PB.0 - PB.3 ADC analog input pins. */
     SET_EADC0_CH0_PB0();
     SET_EADC0_CH1_PB1();
     SET_EADC0_CH2_PB2();
     SET_EADC0_CH3_PB3();
     /* Disable the PB.0 - PB.3 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0|BIT1|BIT2|BIT3);
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0 | BIT1 | BIT2 | BIT3);
 
     /* Set PB.14 - PB.15 to input mode */
-    GPIO_SetMode(PB, BIT14|BIT15, GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT14 | BIT15, GPIO_MODE_INPUT);
     /* Configure the PB.14 - PB.15 ADC analog input pins. */
     SET_EADC0_CH14_PB14();
     SET_EADC0_CH15_PB15();
     /* Disable the PB.14 - PB.15 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT14|BIT15);
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT14 | BIT15);
 
     /* Set PA multi-function pins for EPWM0 Channel 0 */
     SET_EPWM0_CH0_PA5();
@@ -137,8 +140,8 @@ void EADC_FunctionTest()
     uint8_t  u8Option;
     uint8_t  u8Index = 0;
     int32_t  ai32ConversionData[6] = {0};
-    uint32_t u32COVNUMFlag = 0; 
-    
+    uint32_t u32COVNUMFlag = 0;
+
     printf("\n");
     printf("+---------------------------------------------------+\n");
     printf("|               EPWM trigger mode test              |\n");
@@ -146,14 +149,15 @@ void EADC_FunctionTest()
 
     printf("\nIn this test, software will get 6 conversion result from the specified channel.\n");
 
-    while(1)
+    while (1)
     {
         printf("Select input mode:\n");
         printf("  [1] Single end input (channel 2 only)\n");
         printf("  [2] Differential input (channel pair 7: channel 14 and 15)\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
-        if(u8Option == '1')
+
+        if (u8Option == '1')
         {
             /* Set input mode as single-end and enable the A/D converter */
             EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
@@ -176,10 +180,10 @@ void EADC_FunctionTest()
             g_u32COVNUMFlag = 0;
             EPWM_Start(EPWM0, BIT0); //EPWM0 channel 0 counter start running.
 
-            while(1)
+            while (1)
             {
                 /* Wait ADC interrupt (g_u32AdcIntFlag will be set at IRQ_Handler function) */
-                while(g_u32AdcIntFlag == 0);
+                while (g_u32AdcIntFlag == 0);
 
                 /* Reset the ADC interrupt indicator */
                 g_u32AdcIntFlag = 0;
@@ -188,7 +192,7 @@ void EADC_FunctionTest()
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
                 ai32ConversionData[u32COVNUMFlag] = EADC_GET_CONV_DATA(EADC0, 0);
 
-                if(g_u32COVNUMFlag > 6)
+                if (g_u32COVNUMFlag > 6)
                     break;
             }
 
@@ -198,10 +202,10 @@ void EADC_FunctionTest()
             /* Disable sample module 0 interrupt */
             EADC_DISABLE_SAMPLE_MODULE_INT(EADC0, 0, BIT0);
 
-            for(u8Index = 0;  (u8Index) < 6; u8Index++)
+            for (u8Index = 0; (u8Index) < 6; u8Index++)
                 printf("                                0x%X (%d)\n", ai32ConversionData[u8Index], ai32ConversionData[u8Index]);
         }
-        else if(u8Option == '2')
+        else if (u8Option == '2')
         {
             /* Set input mode as differential and enable the A/D converter */
             EADC_Open(EADC0, EADC_CTL_DIFFEN_DIFFERENTIAL);
@@ -223,19 +227,19 @@ void EADC_FunctionTest()
             g_u32COVNUMFlag = 0;
             EPWM_Start(EPWM0, BIT0);
 
-            while(1)
+            while (1)
             {
                 /* Wait ADC interrupt (g_u32AdcIntFlag will be set at IRQ_Handler function) */
-                while(g_u32AdcIntFlag == 0);
+                while (g_u32AdcIntFlag == 0);
 
                 /* Reset the ADC interrupt indicator */
                 g_u32AdcIntFlag = 0;
 
-               u32COVNUMFlag = g_u32COVNUMFlag - 1; 
+                u32COVNUMFlag = g_u32COVNUMFlag - 1;
                 /* Get the conversion result of the sample module 0   */
                 ai32ConversionData[u32COVNUMFlag] = EADC_GET_CONV_DATA(EADC0, 0);
 
-                if(g_u32COVNUMFlag > 6)
+                if (g_u32COVNUMFlag > 6)
                     break;
             }
 
@@ -245,7 +249,7 @@ void EADC_FunctionTest()
             /* Disable sample module 0 interrupt */
             EADC_DISABLE_SAMPLE_MODULE_INT(EADC0, 0, BIT0);
 
-            for(u8Index = 0; (u8Index) < 6; u8Index++)
+            for (u8Index = 0; (u8Index) < 6; u8Index++)
                 printf("                                0x%X (%d)\n", ai32ConversionData[u8Index], ai32ConversionData[u8Index]);
         }
         else
@@ -266,7 +270,7 @@ int32_t main(void)
 #endif
 
     /* Init Debug UART for printf */
-      InitDebugUart();
+    InitDebugUart();
 
     /* Init EPWM for EADC */
     EPWM0_Init();
@@ -288,7 +292,7 @@ int32_t main(void)
 
     printf("Exit EADC sample code\n");
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

@@ -18,6 +18,15 @@ volatile uint32_t g_u32AdcIntFlag;
     extern void initialise_monitor_handles(void);
 #endif
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* EADC interrupt handler                                                                                  */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void EADC00_IRQHandler(void)
+{
+    g_u32AdcIntFlag = 1;
+    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);      /* Clear the A/D ADINT0 interrupt flag */
+}
+
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -29,14 +38,14 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -44,7 +53,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -56,7 +65,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-   /* Enable EADC peripheral clock */
+    /* Enable EADC peripheral clock */
     CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(15));
 
     /* Enable EADC module clock */
@@ -103,7 +112,7 @@ void EADC_FunctionTest()
     EADC_START_CONV(EADC0, BIT25);
 
     /* Wait EADC conversion done */
-    while(g_u32AdcIntFlag == 0);
+    while (g_u32AdcIntFlag == 0);
 
     /* Disable the ADINT0 interrupt */
     EADC_DISABLE_INT(EADC0, BIT0);
@@ -120,14 +129,7 @@ void EADC_FunctionTest()
      *      where Vtemp_os, Tc, and Ta can be got from the data sheet document.
      *            ADC_Vref is the ADC Vref that according to the configuration of SYS and EADC.
      */
-    printf("Current Temperature = %2.1f degrees Celsius if EADC Vref = 3300mV\n\n", (0+(((float)i32ConversionData/4095*3300)-749)/(-1.698)));
-}
-
-
-void EADC00_IRQHandler(void)
-{
-    g_u32AdcIntFlag = 1;
-    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);      /* Clear the A/D ADINT0 interrupt flag */
+    printf("Current Temperature = %2.1f degrees Celsius if EADC Vref = 3300mV\n\n", (0 + (((float)i32ConversionData / 4095 * 3300) - 749) / (-1.698)));
 }
 
 int32_t main(void)
@@ -158,7 +160,7 @@ int32_t main(void)
 
     printf("Exit EADC sample code\n");
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

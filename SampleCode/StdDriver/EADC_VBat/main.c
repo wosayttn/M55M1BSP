@@ -22,11 +22,21 @@ int32_t main(void);
 void EADC_FunctionTest(void);
 void SYS_Init(void);
 void UART0_Init(void);
-void EADC00_IRQHandler(void);
+NVT_ITCM void EADC00_IRQHandler(void);
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     extern void initialise_monitor_handles(void);
 #endif
+
+/*---------------------------------------------------------------------------------------------------------*/
+/* EADC interrupt handler                                                                                  */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void EADC00_IRQHandler(void)
+{
+    g_u32AdcIntFlag = 1;
+    /* Clear the A/D ADINT0 interrupt flag */
+    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);
+}
 
 void SYS_Init(void)
 {
@@ -40,14 +50,14 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -55,7 +65,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -72,7 +82,7 @@ void SYS_Init(void)
 
     /* Enable EADC module clock */
     CLK_EnableModuleClock(EADC0_MODULE);
- 
+
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
@@ -118,9 +128,10 @@ void EADC_FunctionTest(void)
 
     /* Wait EADC conversion done */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(g_u32AdcIntFlag == 0)
+
+    while (g_u32AdcIntFlag == 0)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for EADC conversion done time-out!\n");
             return;
@@ -135,17 +146,6 @@ void EADC_FunctionTest(void)
     printf("Conversion result of VBAT/4: 0x%X (%d)\n\n", i32ConversionData, i32ConversionData);
 }
 
-
-
-/*---------------------------------------------------------------------------------------------------------*/
-/* EADC interrupt handler                                                                                  */
-/*---------------------------------------------------------------------------------------------------------*/
-void EADC00_IRQHandler(void)
-{
-    g_u32AdcIntFlag = 1;
-    /* Clear the A/D ADINT0 interrupt flag */
-    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);
-}
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
@@ -164,7 +164,7 @@ int32_t main(void)
 
 #if !(defined(DEBUG_ENABLE_SEMIHOST))
     /* Init Debug UART for printf */
-      InitDebugUart();
+    InitDebugUart();
 #endif
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -188,7 +188,7 @@ int32_t main(void)
 
     printf("Exit EADC sample code\n");
 
-    while(1);
+    while (1);
 
 }
 

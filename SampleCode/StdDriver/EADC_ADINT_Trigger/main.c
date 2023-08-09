@@ -18,7 +18,10 @@ volatile uint32_t g_u32AdcIntFlag, g_u32COVNUMFlag = 0;
     extern void initialise_monitor_handles(void);
 #endif
 
-void EADC00_IRQHandler(void)
+/*---------------------------------------------------------------------------------------------------------*/
+/* EADC interrupt handler                                                                                  */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void EADC00_IRQHandler(void)
 {
     g_u32AdcIntFlag = 1;
     EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);      /* Clear the A/D ADINT0 interrupt flag */
@@ -35,14 +38,14 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -50,7 +53,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -70,29 +73,29 @@ void SYS_Init(void)
 
     /* Enable GPB peripheral clock */
     CLK_EnableModuleClock(GPIOB_MODULE);
- 
+
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
     /* Set PB.0 - PB.3 to input mode */
-    GPIO_SetMode(PB, BIT0|BIT1|BIT2|BIT3, GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT0 | BIT1 | BIT2 | BIT3, GPIO_MODE_INPUT);
     /* Configure the PB.0 - PB.3 ADC analog input pins. */
     SET_EADC0_CH0_PB0();
     SET_EADC0_CH1_PB1();
     SET_EADC0_CH2_PB2();
     SET_EADC0_CH3_PB3();
     /* Disable the PB.0 - PB.3 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0|BIT1|BIT2|BIT3);
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0 | BIT1 | BIT2 | BIT3);
 
     /* Set PB.14 - PB.15 to input mode */
-    GPIO_SetMode(PB, BIT14|BIT15, GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT14 | BIT15, GPIO_MODE_INPUT);
     /* Configure the PB.14 - PB.15 ADC analog input pins. */
     SET_EADC0_CH14_PB14();
     SET_EADC0_CH15_PB15();
     /* Disable the PB.14 - PB.15 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT14|BIT15);
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT14 | BIT15);
 
 
 }
@@ -103,7 +106,7 @@ void EADC_FunctionTest()
     uint8_t  u8Option, u32SAMPLECount = 0;
     int32_t  ai32ConversionData[8] = {0};
 
-    
+
     /* The Maximum EADC clock frequency is 90 MHz.
      * Hence, we set PLL to 180 MHz, HCLK 180 MHz and PCLK0 to 90 MHz.
      * EADC clock source is from PCLK0/15 = 6 MHz.
@@ -113,14 +116,15 @@ void EADC_FunctionTest()
     printf("|                      ADINT trigger mode test                         |\n");
     printf("+----------------------------------------------------------------------+\n");
 
-    while(1)
+    while (1)
     {
         printf("\n\nSelect input mode:\n");
         printf("  [1] Single end input (channel 0, 1, 2 and 3)\n");
         printf("  [2] Differential input (channel pair 7: channel 14 and 15)\n");
         printf("  Other keys: exit continuous scan mode test\n");
         u8Option = getchar();
-        if(u8Option == '1')
+
+        if (u8Option == '1')
         {
             /* Set input mode as single-end and enable the A/D converter */
             EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
@@ -153,19 +157,19 @@ void EADC_FunctionTest()
             EADC_DISABLE_SAMPLE_MODULE_INT(EADC0, 0, BIT7);
 
             /* Wait conversion done */
-            while(EADC_GET_DATA_VALID_FLAG(EADC0, (BIT7|BIT6|BIT5|BIT4)) != (BIT7|BIT6|BIT5|BIT4));
+            while (EADC_GET_DATA_VALID_FLAG(EADC0, (BIT7 | BIT6 | BIT5 | BIT4)) != (BIT7 | BIT6 | BIT5 | BIT4));
 
             /* Get the conversion result of the sample module */
-            for(u32SAMPLECount = 0; u32SAMPLECount < 4; u32SAMPLECount++)
+            for (u32SAMPLECount = 0; u32SAMPLECount < 4; u32SAMPLECount++)
                 ai32ConversionData[u32SAMPLECount] = EADC_GET_CONV_DATA(EADC0, (u32SAMPLECount + 4));
 
             printf("Conversion result of channel %d: 0x%X (%d)\n", 0, ai32ConversionData[0], ai32ConversionData[0]);
             printf("Conversion result of channel %d: 0x%X (%d)\n", 1, ai32ConversionData[1], ai32ConversionData[1]);
             printf("Conversion result of channel %d: 0x%X (%d)\n", 2, ai32ConversionData[2], ai32ConversionData[2]);
-            printf("Conversion result of channel %d: 0x%X (%d)\n", 3, ai32ConversionData[3], ai32ConversionData[3]);       
+            printf("Conversion result of channel %d: 0x%X (%d)\n", 3, ai32ConversionData[3], ai32ConversionData[3]);
 
         }
-        else if(u8Option == '2')
+        else if (u8Option == '2')
         {
             /* Set input mode as differential and enable the A/D converter */
             EADC_Open(EADC0, EADC_CTL_DIFFEN_DIFFERENTIAL);
@@ -192,7 +196,7 @@ void EADC_FunctionTest()
             EADC_DISABLE_SAMPLE_MODULE_INT(EADC0, 0, BIT5);
 
             /* Wait conversion done */
-            while(EADC_GET_DATA_VALID_FLAG(EADC0, BIT5) != BIT5);
+            while (EADC_GET_DATA_VALID_FLAG(EADC0, BIT5) != BIT5);
 
             /* Get the conversion result of the sample module */
             ai32ConversionData[0] = EADC_GET_CONV_DATA(EADC0, 5);
@@ -217,7 +221,7 @@ int32_t main(void)
 
 #if !(defined(DEBUG_ENABLE_SEMIHOST))
     /* Init Debug UART for printf */
-      InitDebugUart();
+    InitDebugUart();
 #endif
 
     printf("\nSystem clock rate: %d Hz", SystemCoreClock);
@@ -234,7 +238,7 @@ int32_t main(void)
 
     printf("Exit EADC sample code\n");
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

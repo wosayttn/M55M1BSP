@@ -18,6 +18,14 @@ volatile uint32_t g_u32AdcIntFlag;
     extern void initialise_monitor_handles(void);
 #endif
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* EADC interrupt handler                                                                                  */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void EADC00_IRQHandler(void)
+{
+    g_u32AdcIntFlag = 1;
+    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);      /* Clear the A/D ADINT0 interrupt flag */
+}
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -29,14 +37,14 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -44,7 +52,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -61,7 +69,7 @@ void SYS_Init(void)
 
     /* Enable EADC module clock */
     CLK_EnableModuleClock(EADC0_MODULE);
- 
+
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
@@ -103,7 +111,7 @@ void EADC_FunctionTest()
     EADC_START_CONV(EADC0, BIT24);
 
     /* Wait EADC conversion done */
-    while(g_u32AdcIntFlag == 0);
+    while (g_u32AdcIntFlag == 0);
 
     /* Disable the ADINT0 interrupt */
     EADC_DISABLE_INT(EADC0, BIT0);
@@ -117,13 +125,7 @@ void EADC_FunctionTest()
      * If ADCREF set to 1.6V, the equation should be updated as below
      * i32ConversionData/4095*1.6, 1.6 means ADCVREF=1.6V
      */
-    printf("Band-gap = %.2f V\n\n", ((float)i32ConversionData/4095)*(float)(3.3));
-}
-
-void EADC00_IRQHandler(void)
-{
-    g_u32AdcIntFlag = 1;
-    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);      /* Clear the A/D ADINT0 interrupt flag */
+    printf("Band-gap = %.2f V\n\n", ((float)i32ConversionData / 4095) * (float)(3.3));
 }
 
 int32_t main(void)
@@ -139,7 +141,7 @@ int32_t main(void)
 
 #if !(defined(DEBUG_ENABLE_SEMIHOST))
     /* Init Debug UART for printf */
-      InitDebugUart();
+    InitDebugUart();
 #endif
 
     printf("\nSystem clock rate: %d Hz", SystemCoreClock);
@@ -156,7 +158,7 @@ int32_t main(void)
 
     printf("Exit EADC sample code\n");
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

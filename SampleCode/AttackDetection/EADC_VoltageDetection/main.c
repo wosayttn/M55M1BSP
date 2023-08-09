@@ -24,7 +24,25 @@ void SYS_Init(void);
 void UART0_Init(void);
 uint32_t GetAVDDVoltage(void);
 uint32_t GetAVDDCodeByADC(void);
-void EADC0_IRQHandler(void);
+NVT_ITCM void EADC0_IRQHandler(void);
+
+/*---------------------------------------------------------------------------------------------------------*/
+/* EADC IRQ Handler                                                                                        */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void EADC00_IRQHandler(void)
+{
+    uint32_t u32Flag;
+
+    /* Get ADC conversion finish interrupt flag */
+    u32Flag = EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);
+
+    /* Check ADC conversion finish */
+    if (u32Flag & EADC_STATUS2_ADIF0_Msk)
+        s_u8ADF = 1;
+
+    /* Clear conversion finish flag */
+    EADC_CLR_INT_FLAG(EADC0, u32Flag);
+}
 
 void SYS_Init(void)
 {
@@ -37,22 +55,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -145,7 +163,7 @@ uint32_t GetAVDDCodeByADC(void)
     u32Sum = 0;
 
     /* sample times are according to ADC_SAMPLE_COUNT definition */
-    for(u32Count = 0; u32Count < ADC_SAMPLE_COUNT; u32Count++)
+    for (u32Count = 0; u32Count < ADC_SAMPLE_COUNT; u32Count++)
     {
         /* Delay for band-gap voltage stability */
         CLK_SysTickDelay(100);
@@ -154,8 +172,10 @@ uint32_t GetAVDDCodeByADC(void)
         EADC_START_CONV(EADC0, BIT24);
 
         u32Data = 0;
+
         /* Wait conversion done */
-        while(s_u8ADF == 0);
+        while (s_u8ADF == 0);
+
         s_u8ADF = 0;
         /* Get the conversion result */
         u32Data = EADC_GET_CONV_DATA(EADC0, 24);
@@ -173,23 +193,6 @@ uint32_t GetAVDDCodeByADC(void)
     return (u32Sum >> 7);
 }
 
-/*---------------------------------------------------------------------------------------------------------*/
-/* EADC IRQ Handler                                                                                        */
-/*---------------------------------------------------------------------------------------------------------*/
-void EADC00_IRQHandler(void)
-{
-    uint32_t u32Flag;
-
-    /* Get ADC conversion finish interrupt flag */
-    u32Flag = EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);
-
-    /* Check ADC conversion finish */
-    if(u32Flag & EADC_STATUS2_ADIF0_Msk)
-        s_u8ADF = 1;
-
-    /* Clear conversion finish flag */
-    EADC_CLR_INT_FLAG(EADC0, u32Flag);
-}
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Main Function                                                                                           */
@@ -224,7 +227,8 @@ int32_t main(void)
 
     /* Measure AVDD */
     u32AVDDVoltage = GetAVDDVoltage();
-    if(u32AVDDVoltage < 1620 || u32AVDDVoltage > 3600)
+
+    if (u32AVDDVoltage < 1620 || u32AVDDVoltage > 3600)
         printf("Abnormal AVDD Voltage: %dmV\n", u32AVDDVoltage);
     else
         printf("AVDD Voltage: %dmV\n", u32AVDDVoltage);
@@ -241,7 +245,7 @@ int32_t main(void)
     /* Disable External Interrupt */
     NVIC_DisableIRQ(EADC00_IRQn);
 
-    while(1);
+    while (1);
 
 }
 

@@ -22,11 +22,20 @@ void SYS_Init(void);
 void UART0_Init(void);
 double GetTemperature(void);
 uint32_t GetTemperatureCodeFromADC(void);
-void EADC0_IRQHandler(void);
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     extern void initialise_monitor_handles(void);
 #endif
+
+/*---------------------------------------------------------------------------------------------------------*/
+/* EADC IRQ Handler                                                                                        */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void EADC00_IRQHandler(void)
+{
+    g_u32AdcIntFlag = 1;
+    /* Clear the A/D ADINT0 interrupt flag */
+    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);
+}
 
 void SYS_Init(void)
 {
@@ -39,22 +48,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -139,7 +148,7 @@ uint32_t GetTemperatureCodeFromADC(void)
     EADC_START_CONV(EADC0, BIT25);
 
     /* Wait EADC conversion done */
-    while(g_u32AdcIntFlag == 0);
+    while (g_u32AdcIntFlag == 0);
 
     /* Disable the ADINT0 interrupt */
     EADC_DISABLE_INT(EADC0, BIT0);
@@ -147,16 +156,6 @@ uint32_t GetTemperatureCodeFromADC(void)
     /* Return the conversion result of the sample module 25 */
 
     return EADC_GET_CONV_DATA(EADC0, 25);;
-}
-
-/*---------------------------------------------------------------------------------------------------------*/
-/* EADC IRQ Handler                                                                                        */
-/*---------------------------------------------------------------------------------------------------------*/
-void EADC00_IRQHandler(void)
-{
-    g_u32AdcIntFlag = 1;
-    /* Clear the A/D ADINT0 interrupt flag */
-    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -190,10 +189,12 @@ int32_t main(void)
 
     /* Measure temperature */
     dTemperature = GetTemperature();
-    if(dTemperature > 50)
+
+    if (dTemperature > 50)
         printf("Abnormal temperature: %dC\n", (int32_t)dTemperature);
     else
         printf("Chip temperature: %dC\n", (int32_t)dTemperature);
+
     /* Unlock protected registers */
     SYS_UnlockReg();
     /* Reset EADC module */
@@ -205,7 +206,7 @@ int32_t main(void)
     /* Disable External Interrupt */
     NVIC_DisableIRQ(EADC00_IRQn);
 
-    while(1);
+    while (1);
 
 }
 

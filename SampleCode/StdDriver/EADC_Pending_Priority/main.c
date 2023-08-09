@@ -12,8 +12,8 @@
 /*----------------------------------------------------------------------*/
 /* Define global variables and constants                                */
 /*----------------------------------------------------------------------*/
-volatile uint32_t g_u32EadcInt0Flag, g_u32EadcInt1Flag, 
-                  g_u32EadcInt2Flag, g_u32EadcInt3Flag;
+volatile uint32_t g_u32EadcInt0Flag, g_u32EadcInt1Flag,
+         g_u32EadcInt2Flag, g_u32EadcInt3Flag;
 
 uint32_t g_u32IntModule[4];    /* save the sample module number for ADINT0~3 */
 volatile uint32_t g_u32IntSequence[4];  /* save the interrupt sequence for ADINT0~3 */
@@ -22,6 +22,49 @@ volatile uint32_t g_u32IntSequenceIndex;
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     extern void initialise_monitor_handles(void);
 #endif
+
+/*---------------------------------------------------------------------------------------------------------*/
+/* EADC interrupt handler                                                                                  */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void EADC00_IRQHandler(void)
+{
+    g_u32EadcInt0Flag = 1;
+    /* Clear the A/D ADINT0 interrupt flag */
+    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);
+
+    /* Save the interrupt sequence about ADINT0 */
+    g_u32IntSequence[0] = g_u32IntSequenceIndex++;
+}
+
+NVT_ITCM void EADC01_IRQHandler(void)
+{
+    g_u32EadcInt1Flag = 1;
+    /* Clear the A/D ADINT1 interrupt flag */
+    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF1_Msk);
+
+    /* Save the interrupt sequence about ADINT1 */
+    g_u32IntSequence[1] = g_u32IntSequenceIndex++;
+}
+
+NVT_ITCM void EADC02_IRQHandler(void)
+{
+    g_u32EadcInt2Flag = 1;
+    /* Clear the A/D ADINT2 interrupt flag */
+    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF2_Msk);
+
+    /* Save the interrupt sequence about ADINT2 */
+    g_u32IntSequence[2] = g_u32IntSequenceIndex++;
+}
+
+NVT_ITCM void EADC03_IRQHandler(void)
+{
+    g_u32EadcInt3Flag = 1;
+    /* Clear the A/D ADINT3 interrupt flag */
+    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF3_Msk);
+
+    /* Save the interrupt sequence about ADINT3 */
+    g_u32IntSequence[3] = g_u32IntSequenceIndex++;
+}
 
 void SYS_Init(void)
 {
@@ -34,14 +77,14 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -49,7 +92,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -61,7 +104,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-   /* Enable EADC peripheral clock */
+    /* Enable EADC peripheral clock */
     CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(15));
 
     /* Enable EADC module clock */
@@ -76,7 +119,7 @@ void SYS_Init(void)
     SetDebugUartMFP();
 
     /* Set PB.0, PB.6 ~ PB.9 to input mode */
-    GPIO_SetMode(PB, BIT9|BIT8|BIT7|BIT6|BIT0, GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT9 | BIT8 | BIT7 | BIT6 | BIT0, GPIO_MODE_INPUT);
     /* Configure the EADC analog input pins.  */
     SET_EADC0_CH0_PB0();
     SET_EADC0_CH6_PB6();
@@ -84,7 +127,7 @@ void SYS_Init(void)
     SET_EADC0_CH8_PB8();
     SET_EADC0_CH9_PB9();
     /* Disable the GPB0, GPB6~9 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT9|BIT8|BIT7|BIT6|BIT0);
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT9 | BIT8 | BIT7 | BIT6 | BIT0);
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -170,7 +213,7 @@ void EADC_FunctionTest()
         for (i = 0; i < 4; i++)
         {
             i32ConversionData = EADC_GET_CONV_DATA(EADC0, g_u32IntModule[i]);
-            printf("ADINT%d: #%d, Module %d, Conversion result for channel %d: 0x%X (%d)\n", i, g_u32IntSequence[i], g_u32IntModule[i], g_u32IntModule[i]+6, i32ConversionData, i32ConversionData);
+            printf("ADINT%d: #%d, Module %d, Conversion result for channel %d: 0x%X (%d)\n", i, g_u32IntSequence[i], g_u32IntModule[i], g_u32IntModule[i] + 6, i32ConversionData, i32ConversionData);
         }
 
         printf("\n");
@@ -193,49 +236,6 @@ void EADC_FunctionTest()
     EADC_Close(EADC0);
 }
 
-
-
-void EADC00_IRQHandler(void)
-{
-    g_u32EadcInt0Flag = 1;
-    /* Clear the A/D ADINT0 interrupt flag */
-    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);
-
-    /* Save the interrupt sequence about ADINT0 */
-    g_u32IntSequence[0] = g_u32IntSequenceIndex++;
-}
-
-void EADC01_IRQHandler(void)
-{
-    g_u32EadcInt1Flag = 1;
-    /* Clear the A/D ADINT1 interrupt flag */
-    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF1_Msk);
-
-    /* Save the interrupt sequence about ADINT1 */
-    g_u32IntSequence[1] = g_u32IntSequenceIndex++;
-}
-
-void EADC02_IRQHandler(void)
-{
-    g_u32EadcInt2Flag = 1;
-    /* Clear the A/D ADINT2 interrupt flag */
-    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF2_Msk);
-
-    /* Save the interrupt sequence about ADINT2 */
-    g_u32IntSequence[2] = g_u32IntSequenceIndex++;
-}
-
-void EADC03_IRQHandler(void)
-{
-    g_u32EadcInt3Flag = 1;
-    /* Clear the A/D ADINT3 interrupt flag */
-    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF3_Msk);
-
-    /* Save the interrupt sequence about ADINT3 */
-    g_u32IntSequence[3] = g_u32IntSequenceIndex++;
-}
-
-
 int32_t main(void)
 {
     /* Unlock protected registers */
@@ -248,7 +248,7 @@ int32_t main(void)
 #endif
 
     /* Init Debug UART for printf */
-      InitDebugUart();
+    InitDebugUart();
 
     printf("\nSystem clock rate: %d Hz", SystemCoreClock);
 
@@ -270,7 +270,7 @@ int32_t main(void)
 
     printf("Exit EADC sample code\n");
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

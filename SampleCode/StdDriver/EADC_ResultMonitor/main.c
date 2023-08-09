@@ -19,6 +19,26 @@ volatile uint32_t g_u32AdcCmp1IntFlag;
     extern void initialise_monitor_handles(void);
 #endif
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* EADC interrupt handler                                                                                  */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void EADC03_IRQHandler(void)
+{
+    if (EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADCMPF0_Msk))
+    {
+        g_u32AdcCmp0IntFlag = 1;
+        EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADCMPF0_Msk);/* Clear the A/D compare flag 0 */
+    }
+
+    if (EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADCMPF1_Msk))
+    {
+        g_u32AdcCmp1IntFlag = 1;
+        EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADCMPF1_Msk);/* Clear the A/D compare flag 1 */
+    }
+
+    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF3_Msk);
+}
+
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -30,14 +50,14 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -45,7 +65,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -57,7 +77,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-   /* Enable EADC peripheral clock */
+    /* Enable EADC peripheral clock */
     CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(15));
 
     /* Enable EADC module clock */
@@ -73,14 +93,14 @@ void SYS_Init(void)
     SetDebugUartMFP();
 
     /* Set PB.0 - PB.3 to input mode */
-    GPIO_SetMode(PB, BIT0|BIT1|BIT2|BIT3, GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT0 | BIT1 | BIT2 | BIT3, GPIO_MODE_INPUT);
     /* Configure the PB.0 - PB.3 ADC analog input pins. */
     SET_EADC0_CH0_PB0();
     SET_EADC0_CH1_PB1();
     SET_EADC0_CH2_PB2();
     SET_EADC0_CH3_PB3();
     /* Disable the PB.0 - PB.3 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0|BIT1|BIT2|BIT3);
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0 | BIT1 | BIT2 | BIT3);
 
 }
 
@@ -135,7 +155,7 @@ void EADC_FunctionTest()
     EADC_START_CONV(EADC0, BIT0);
 
     /* Wait EADC compare interrupt */
-    while((g_u32AdcCmp0IntFlag == 0) && (g_u32AdcCmp1IntFlag == 0));
+    while ((g_u32AdcCmp0IntFlag == 0) && (g_u32AdcCmp1IntFlag == 0));
 
     /* Disable the sample module 0 interrupt */
     EADC_DISABLE_SAMPLE_MODULE_INT(EADC0, 0, BIT0);
@@ -147,7 +167,7 @@ void EADC_FunctionTest()
     EADC_DISABLE_CMP0(EADC0);
     EADC_DISABLE_CMP1(EADC0);
 
-    if(g_u32AdcCmp0IntFlag == 1)
+    if (g_u32AdcCmp0IntFlag == 1)
     {
         printf("Comparator 0 interrupt occurs.\nThe conversion result of channel 2 is less than 0x800\n");
     }
@@ -155,22 +175,6 @@ void EADC_FunctionTest()
     {
         printf("Comparator 1 interrupt occurs.\nThe conversion result of channel 2 is greater than or equal to 0x800\n");
     }
-}
-
-void EADC03_IRQHandler(void)
-{
-    if(EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADCMPF0_Msk))
-    {
-        g_u32AdcCmp0IntFlag = 1;
-        EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADCMPF0_Msk);/* Clear the A/D compare flag 0 */
-    }
-
-    if(EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADCMPF1_Msk))
-    {
-        g_u32AdcCmp1IntFlag = 1;
-        EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADCMPF1_Msk);/* Clear the A/D compare flag 1 */
-    }
-    EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF3_Msk);
 }
 
 int32_t main(void)
@@ -185,7 +189,7 @@ int32_t main(void)
 #endif
 
     /* Init Debug UART for printf */
-      InitDebugUart();
+    InitDebugUart();
 
     printf("\nSystem clock rate: %d Hz", SystemCoreClock);
 
@@ -201,7 +205,7 @@ int32_t main(void)
 
     printf("Exit EADC sample code\n");
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
