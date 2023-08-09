@@ -30,7 +30,6 @@ void USCI_UART_FunctionTest(void);
 void SYS_Init(void);
 void UART0_Init(void);
 void USCI0_Init(void);
-void USCI0_IRQHandler(void);
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     extern void initialise_monitor_handles(void);
@@ -38,7 +37,7 @@ void USCI0_IRQHandler(void);
 
 void SYS_Init(void)
 {
-     /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -47,22 +46,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -78,9 +77,9 @@ void SYS_Init(void)
     /* Enable USCI0 peripheral clock */
     CLK_EnableModuleClock(USCI0_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -117,7 +116,7 @@ void USCI0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-  /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
@@ -146,14 +145,14 @@ int32_t main(void)
 
     printf("\nUSCI UART Sample Demo End.\n");
 
-    while(1);
+    while (1);
 
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle USCI UART interrupt event                                                                 */
 /*---------------------------------------------------------------------------------------------------------*/
-void USCI0_IRQHandler(void)
+NVT_ITCM void USCI0_IRQHandler(void)
 {
     USCI_UART_TEST_HANDLE();
 }
@@ -166,7 +165,7 @@ void USCI_UART_TEST_HANDLE(void)
     uint8_t u8InChar = 0xFF;
     uint32_t u32IntSts = UUART0->PROTSTS;
 
-    if(u32IntSts & UUART_PROTSTS_RXENDIF_Msk)
+    if (u32IntSts & UUART_PROTSTS_RXENDIF_Msk)
     {
 
         /* Clear RX end interrupt flag */
@@ -175,7 +174,7 @@ void USCI_UART_TEST_HANDLE(void)
         printf("\nInput:");
 
         /* Get all the input characters */
-        while(!UUART_IS_RX_EMPTY(UUART0))
+        while (!UUART_IS_RX_EMPTY(UUART0))
         {
 
             /* Get the character from USCI UART Buffer */
@@ -183,13 +182,13 @@ void USCI_UART_TEST_HANDLE(void)
 
             printf("%c ", u8InChar);
 
-            if(u8InChar == '0')
+            if (u8InChar == '0')
             {
                 g_i32Wait = FALSE;
             }
 
             /* Check if buffer full */
-            if(g_u32comRbytes < RXBUFSIZE)
+            if (g_u32comRbytes < RXBUFSIZE)
             {
                 /* Enqueue the character */
                 g_au8RecData[g_u32comRtail] = u8InChar;
@@ -230,15 +229,15 @@ void USCI_UART_FunctionTest(void)
     UUART_ENABLE_TRANS_INT(UUART0, UUART_INTEN_RXENDIEN_Msk);
     NVIC_EnableIRQ(USCI0_IRQn);
 
-    while(g_i32Wait)
+    while (g_i32Wait)
     {
         u32Temp = g_u32comRtail;
 
-        if(g_u32comRhead != u32Temp)
+        if (g_u32comRhead != u32Temp)
         {
             u8InChar = g_au8RecData[g_u32comRhead];
 
-            while(UUART_IS_TX_FULL(UUART0));  /* Wait Tx is not full to transmit data */
+            while (UUART_IS_TX_FULL(UUART0)); /* Wait Tx is not full to transmit data */
 
             UUART_WRITE(UUART0, u8InChar);
             g_u32comRhead = (g_u32comRhead == (RXBUFSIZE - 1)) ? 0 : (g_u32comRhead + 1);

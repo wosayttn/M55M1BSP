@@ -36,22 +36,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -67,9 +67,9 @@ void SYS_Init(void)
     /* Enable USCI0 peripheral clock */
     CLK_EnableModuleClock(USCI0_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -100,7 +100,7 @@ void USCI0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
@@ -128,7 +128,7 @@ int32_t main(void)
 
     printf("\nUSCI UART Sample Program End\n");
 
-    while(1);
+    while (1);
 
 }
 
@@ -167,7 +167,7 @@ void USCI_AutoBaudRate_Test(void)
     printf("+------------------------------------------------------------+\n");
     u32Item = getchar();
 
-    if(u32Item == '0')
+    if (u32Item == '0')
         USCI_AutoBaudRate_TxTest();
     else
         USCI_AutoBaudRate_RxTest();
@@ -201,25 +201,26 @@ void USCI_AutoBaudRate_TxTest(void)
         printf("%c\n", u32Item);
 
         /* Set different baud rate */
-        switch(u32Item)
+        switch (u32Item)
         {
-        case '1':
-            UUART_Open(UUART0, 38400);
-            break;
-        case '2':
-            UUART_Open(UUART0, 57600);
-            break;
-        default:
-            UUART_Open(UUART0, 115200);
-            break;
+            case '1':
+                UUART_Open(UUART0, 38400);
+                break;
+
+            case '2':
+                UUART_Open(UUART0, 57600);
+                break;
+
+            default:
+                UUART_Open(UUART0, 115200);
+                break;
         }
 
         /* Send input pattern 0x55 for auto baud rate detection */
         u8Char = 0x55;
         UUART_Write(UUART0, &u8Char, 1);
 
-    }
-    while(u32Item != 27);
+    } while (u32Item != 27);
 
 }
 
@@ -259,15 +260,15 @@ void USCI_AutoBaudRate_RxTest(void)
     printf("\nreceiving input pattern... ");
 
     /* Wait until auto baud rate detect finished or time-out */
-    while(UUART0->PROTCTL & UUART_PROTCTL_ABREN_Msk);
+    while (UUART0->PROTCTL & UUART_PROTCTL_ABREN_Msk);
 
-    if(UUART_GET_PROT_STATUS(UUART0) & UUART_PROTSTS_ABRDETIF_Msk)
+    if (UUART_GET_PROT_STATUS(UUART0) & UUART_PROTSTS_ABRDETIF_Msk)
     {
         /* Clear auto baud rate detect finished flag */
         UUART_CLR_PROT_INT_FLAG(UUART0, UUART_PROTSTS_ABRDETIF_Msk);
         printf("Baud rate is %dbps.\n", GetUuartBaudrate(UUART0));
     }
-    else if(UUART_GET_PROT_STATUS(UUART0) & UUART_PROTSTS_ABERRSTS_Msk)
+    else if (UUART_GET_PROT_STATUS(UUART0) & UUART_PROTSTS_ABERRSTS_Msk)
     {
         /* Clear auto baud rate detect time-out flag */
         UUART_CLR_PROT_INT_FLAG(UUART0, UUART_PROTSTS_ABERRSTS_Msk);

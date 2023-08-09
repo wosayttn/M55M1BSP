@@ -36,7 +36,6 @@ extern char GetChar(void);
 void RS485_HANDLE(void);
 void RS485_9bitModeSlave(void);
 void RS485_FunctionTest(void);
-void USCI0_IRQHandler(void);
 void RS485_SendAddressByte(uint8_t u8data);
 void RS485_SendDataByte(uint8_t *pu8TxBuf, uint32_t u32WriteBytes);
 void RS485_9bitModeMaster(void);
@@ -51,7 +50,7 @@ void SYS_Init(void);
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle USCI interrupt event                                                                      */
 /*---------------------------------------------------------------------------------------------------------*/
-void USCI0_IRQHandler(void)
+NVT_ITCM void USCI0_IRQHandler(void)
 {
     RS485_HANDLE();
 }
@@ -65,28 +64,28 @@ void RS485_HANDLE(void)
     volatile uint32_t u32BufSts = UUART_GET_BUF_STATUS(UUART0);
     uint32_t u32Data;
 
-    if(u32ProtSts & UUART_PROTSTS_RXENDIF_Msk)      /* Receive end interrupt */
+    if (u32ProtSts & UUART_PROTSTS_RXENDIF_Msk)     /* Receive end interrupt */
     {
         /* Handle received data */
         UUART_CLR_PROT_INT_FLAG(UUART0, UUART_PROTSTS_RXENDIF_Msk);
         u32Data = UUART_READ(UUART0);
 
-        if(u32Data & 0x100)
+        if (u32Data & 0x100)
             g_au32AddrBuffer[g_u8AddrIndex++] = u32Data;
         else
         {
             g_au32DataBuffer[g_u8AddrIndex - 1][g_u8DataIndex++] = u32Data;
 
-            if(g_u8DataIndex == DATA_NUM)
+            if (g_u8DataIndex == DATA_NUM)
             {
-                if(g_u8AddrIndex == ADDR_NUM)
+                if (g_u8AddrIndex == ADDR_NUM)
                     g_u8ReceiveDone = 1;
                 else
                     g_u8DataIndex = 0;
             }
         }
     }
-    else if(u32BufSts & UUART_BUFSTS_RXOVIF_Msk)      /* Receive buffer over-run error interrupt */
+    else if (u32BufSts & UUART_BUFSTS_RXOVIF_Msk)     /* Receive buffer over-run error interrupt */
     {
         UUART_CLR_BUF_INT_FLAG(UUART0, UUART_BUFSTS_RXOVIF_Msk);
         printf("\nBuffer Error...\n");
@@ -121,13 +120,13 @@ void RS485_9bitModeSlave(void)
     printf("Ready to receive data...\n");
 
     /* Wait receive complete */
-    while(g_u8ReceiveDone == 0);
+    while (g_u8ReceiveDone == 0);
 
-    for(g_u8AddrIndex = 0; g_u8AddrIndex < ADDR_NUM; g_u8AddrIndex++)
+    for (g_u8AddrIndex = 0; g_u8AddrIndex < ADDR_NUM; g_u8AddrIndex++)
     {
         printf("\nAddr=0x%x,Get:", (g_au32AddrBuffer[g_u8AddrIndex] & 0xFF));
 
-        for(g_u8DataIndex = 0; g_u8DataIndex < DATA_NUM; g_u8DataIndex++)
+        for (g_u8DataIndex = 0; g_u8DataIndex < DATA_NUM; g_u8DataIndex++)
             printf("%d,", (g_au32DataBuffer[g_u8AddrIndex][g_u8DataIndex] & 0xFF));
     }
 
@@ -152,9 +151,10 @@ void RS485_SendDataByte(uint8_t *pu8TxBuf, uint32_t u32WriteBytes)
 {
     uint32_t u32Count;
 
-    for(u32Count = 0; u32Count != u32WriteBytes; u32Count++)
+    for (u32Count = 0; u32Count != u32WriteBytes; u32Count++)
     {
-        while(UUART_GET_TX_FULL(UUART0));           /* Wait if Tx is full */
+        while (UUART_GET_TX_FULL(UUART0));          /* Wait if Tx is full */
+
         UUART_WRITE(UUART0, pu8TxBuf[u32Count]);    /* Send UART Data from buffer */
     }
 }
@@ -189,7 +189,7 @@ void RS485_9bitModeMaster(void)
     UUART0->PROTCTL |= UUART_PROTCTL_RTSAUDIREN_Msk;
 
     /* Prepare data to transmit */
-    for(i32Idx = 0; i32Idx < 10; i32Idx++)
+    for (i32Idx = 0; i32Idx < 10; i32Idx++)
     {
         g_u8SendDataGroup1[i32Idx] = (uint8_t)i32Idx;
         g_u8SendDataGroup2[i32Idx] = (uint8_t)i32Idx + 10;
@@ -271,7 +271,7 @@ void RS485_FunctionTest(void)
               |__________|   |___________|    |___________|    |__________|
     */
 
-    if(u32Item == '0')
+    if (u32Item == '0')
         RS485_9bitModeMaster();
     else
         RS485_9bitModeSlave();
@@ -280,7 +280,7 @@ void RS485_FunctionTest(void)
 
 void SYS_Init(void)
 {
-     /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -289,22 +289,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -320,9 +320,9 @@ void SYS_Init(void)
     /* Enable USCI0 peripheral clock */
     CLK_EnableModuleClock(USCI0_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -355,7 +355,7 @@ void USCI0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-  /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
@@ -384,6 +384,6 @@ int32_t main(void)
 
     printf("\nUSCI UART Sample Program End\n");
 
-    while(1);
+    while (1);
 
 }

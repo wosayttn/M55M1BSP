@@ -26,7 +26,6 @@ void USCI_AutoFlow_FunctionRxTest(void);
 void SYS_Init(void);
 void UART0_Init(void);
 void USCI0_Init(void);
-void USCI0_IRQHandler(void);
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     extern void initialise_monitor_handles(void);
@@ -34,7 +33,7 @@ void USCI0_IRQHandler(void);
 
 void SYS_Init(void)
 {
-     /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -43,22 +42,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -74,9 +73,9 @@ void SYS_Init(void)
     /* Enable USCI0 peripheral clock */
     CLK_EnableModuleClock(USCI0_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -109,7 +108,7 @@ void USCI0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-  /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
@@ -138,7 +137,7 @@ int32_t main(void)
 
     printf("\nUSCI UART Sample Program End\n");
 
-    while(1);
+    while (1);
 
 }
 
@@ -175,7 +174,7 @@ void USCI_AutoFlow_FunctionTest(void)
     printf("+-------------------------------------------------------------+\n");
     u8Item = (uint8_t)getchar();
 
-    if(u8Item == '0')
+    if (u8Item == '0')
         USCI_AutoFlow_FunctionTxTest();
     else
         USCI_AutoFlow_FunctionRxTest();
@@ -193,13 +192,13 @@ void USCI_AutoFlow_FunctionTxTest(void)
     UUART_EnableFlowCtrl(UUART0);
 
     /* Send 1k bytes data */
-    for(u32Idx = 0; u32Idx < RXBUFSIZE; u32Idx++)
+    for (u32Idx = 0; u32Idx < RXBUFSIZE; u32Idx++)
     {
         /* Send 1 byte data */
         UUART_WRITE(UUART0, (u32Idx & 0xFF));
 
         /* Wait if Tx FIFO is full */
-        while(UUART_GET_TX_FULL(UUART0));
+        while (UUART_GET_TX_FULL(UUART0));
     }
 
     printf("\n Transmit Done\n");
@@ -222,19 +221,19 @@ void USCI_AutoFlow_FunctionRxTest(void)
     printf("\n Starting to receive data...\n");
 
     /* Wait for receive 1k bytes data */
-    while(g_i32Pointer < RXBUFSIZE);
+    while (g_i32Pointer < RXBUFSIZE);
 
     /* Compare Data */
-    for(u32Idx = 0; u32Idx < RXBUFSIZE; u32Idx++)
+    for (u32Idx = 0; u32Idx < RXBUFSIZE; u32Idx++)
     {
-        if(g_u8RecData[u32Idx] != (u32Idx & 0xFF))
+        if (g_u8RecData[u32Idx] != (u32Idx & 0xFF))
         {
             u32Err = 1;
             break;
         }
     }
 
-    if( u32Err )
+    if (u32Err)
         printf("Compare Data Failed\n");
     else
         printf("\n Receive OK & Check OK\n");
@@ -247,21 +246,21 @@ void USCI_AutoFlow_FunctionRxTest(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle USCI interrupt event                                                                      */
 /*---------------------------------------------------------------------------------------------------------*/
-void USCI0_IRQHandler(void)
+NVT_ITCM void USCI0_IRQHandler(void)
 {
 
     volatile uint32_t u32ProtSts = UUART_GET_PROT_STATUS(UUART0);
     volatile uint32_t u32BufSts = UUART_GET_BUF_STATUS(UUART0);
     uint8_t u8InChar = 0xFF;
 
-    if(u32ProtSts & UUART_PROTSTS_RXENDIF_Msk)      /* Receive end interrupt */
+    if (u32ProtSts & UUART_PROTSTS_RXENDIF_Msk)     /* Receive end interrupt */
     {
         /* Handle received data */
         UUART_CLR_PROT_INT_FLAG(UUART0, UUART_PROTSTS_RXENDIF_Msk);
         u8InChar = (uint8_t)UUART_READ(UUART0);
         g_u8RecData[g_i32Pointer++] = u8InChar;
     }
-    else if(u32BufSts & UUART_BUFSTS_RXOVIF_Msk)      /* Receive buffer over-run error interrupt */
+    else if (u32BufSts & UUART_BUFSTS_RXOVIF_Msk)     /* Receive buffer over-run error interrupt */
     {
         UUART_CLR_BUF_INT_FLAG(UUART0, UUART_BUFSTS_RXOVIF_Msk);
         printf("\nRx buffer is over-run.");

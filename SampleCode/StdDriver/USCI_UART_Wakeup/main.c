@@ -24,7 +24,6 @@ void PowerDownFunction(void);
 void SYS_Init(void);
 void UART0_Init(void);
 void USCI0_Init(void);
-void USCI0_IRQHandler(void);
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     extern void initialise_monitor_handles(void);
@@ -39,7 +38,7 @@ void PowerDownFunction(void)
     UART_WAIT_TX_EMPTY(DEBUG_PORT);
 
     /* Set Power-down mode */
-    PMC_SetPowerDownMode(TEST_POWER_DOWN_MODE,PMC_PLCTL_PLSEL_PL0);
+    PMC_SetPowerDownMode(TEST_POWER_DOWN_MODE, PMC_PLCTL_PLSEL_PL0);
 
     /* Enter to Power-down mode */
     PMC_PowerDown();
@@ -47,7 +46,7 @@ void PowerDownFunction(void)
 
 void SYS_Init(void)
 {
-     /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -56,22 +55,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -87,9 +86,9 @@ void SYS_Init(void)
     /* Enable USCI0 peripheral clock */
     CLK_EnableModuleClock(USCI0_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -122,7 +121,7 @@ void USCI0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-  /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
@@ -151,28 +150,33 @@ int32_t main(void)
 
     printf("\nUSCI UART Sample Program End\n");
 
-    while(1);
+    while (1);
 
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle USCI0 interrupt event                                                                     */
 /*---------------------------------------------------------------------------------------------------------*/
-void USCI0_IRQHandler(void)
+NVT_ITCM void USCI0_IRQHandler(void)
 {
+    // TESTCHIP_ONLY
+    CLK_WaitModuleClockReady(USCI0_MODULE);
+    // TESTCHIP_ONLY
+    CLK_WaitModuleClockReady(UART0_MODULE);
+
     uint32_t u32IntSts = UUART_GET_PROT_STATUS(UUART0);
     uint32_t u32WkSts = UUART_GET_WAKEUP_FLAG(UUART0);
 
-    if(u32WkSts & UUART_WKSTS_WKF_Msk)  /* USCI UART wake-up flag */
+    if (u32WkSts & UUART_WKSTS_WKF_Msk) /* USCI UART wake-up flag */
     {
         UUART_CLR_WAKEUP_FLAG(UUART0);
         printf("USCI UART wake-up.\n");
     }
-    else if(u32IntSts & UUART_PROTSTS_RXENDIF_Msk)  /* USCI UART receive end interrupt flag */
+    else if (u32IntSts & UUART_PROTSTS_RXENDIF_Msk) /* USCI UART receive end interrupt flag */
     {
         UUART_CLR_PROT_INT_FLAG(UUART0, UUART_PROTSTS_RXENDIF_Msk);
 
-        while(UUART_GET_RX_EMPTY(UUART0) == 0)
+        while (UUART_GET_RX_EMPTY(UUART0) == 0)
         {
             printf("Data: 0x%X\n", UUART_READ(UUART0));
         }
@@ -209,7 +213,8 @@ void USCI_UART_DataWakeUp(void)
 
     /* Calculate wake-up counter */
     u32WakeupCount = (uint32_t)(fWakeupTime * (u32PCLK / 1000000) / ((u16regCLKDIV + 1) * (u16regPDSCNT + 1)));
-    if(u32WakeupCount > 15)
+
+    if (u32WakeupCount > 15)
     {
         printf("Fail to calculate wake-up counter. USCI-UART would not get correct data after wake-up.\n");
     }
@@ -274,16 +279,19 @@ void USCI_UART_PowerDownWakeUpTest(void)
     USCI_UART_PowerDown_TestItem();
     u32Item = (uint32_t)getchar();
     printf("%c\n\n", u32Item);
-    switch(u32Item)
+
+    switch (u32Item)
     {
-    case '1':
-        USCI_UART_CTSWakeUp();
-        break;
-    case '2':
-        USCI_UART_DataWakeUp();
-        break;
-    default:
-        return;
+        case '1':
+            USCI_UART_CTSWakeUp();
+            break;
+
+        case '2':
+            USCI_UART_DataWakeUp();
+            break;
+
+        default:
+            return;
     }
 
     /* Unlock protected registers before entering Power-down mode */
@@ -293,7 +301,7 @@ void USCI_UART_PowerDownWakeUpTest(void)
     PowerDownFunction();
 
     /* Wait until USCI UART data transmission is finished */
-    while(UUART0->PROTSTS & UUART_PROTSTS_RXBUSY_Msk);
+    while (UUART0->PROTSTS & UUART_PROTSTS_RXBUSY_Msk);
 
     /* Lock protected registers after entering Power-down mode */
     SYS_LockReg();
