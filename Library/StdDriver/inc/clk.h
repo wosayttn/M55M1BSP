@@ -1130,8 +1130,7 @@ __STATIC_INLINE void CLK_SysTickLongDelay(uint32_t us)
 
         /* Disable SysTick counter */
         SysTick->CTRL = 0UL;
-    }
-    while (us > 0UL);
+    } while (us > 0UL);
 }
 
 
@@ -1155,6 +1154,7 @@ __NONSECURE_ENTRY_WEAK uint32_t CLK_GetPCLK4Freq(void);
 __NONSECURE_ENTRY_WEAK uint32_t CLK_GetPCLK5Freq(void);
 uint32_t CLK_SetCoreClock(uint32_t u32Aclk);
 void CLK_SetSCLK(uint32_t u32ClkSrc);
+uint32_t CLK_SetBusClock(uint32_t u32SCLKSrc, uint32_t u32PllFreq);
 void CLK_SetModuleClock(uint64_t u64ModuleIdx, uint32_t u32ClkSrc, uint32_t u32ClkDiv);
 void CLK_SetSysTickClockSrc(uint32_t u32ClkSrc);
 void CLK_EnableXtalRC(uint32_t u32ClkMask);

@@ -450,8 +450,8 @@ uint32_t CLK_SetCoreClock(uint32_t u32Aclk)
 /**
   * @brief      Set SCLK clock source
   * @param[in]  u32ClkSrc is SCLK clock source. Including :
-  *             - \ref CLK_SCLKSEL_SCLKSEL_MIRC
   *             - \ref CLK_SCLKSEL_SCLKSEL_HIRC
+  *             - \ref CLK_SCLKSEL_SCLKSEL_MIRC
   *             - \ref CLK_SCLKSEL_SCLKSEL_HIRC48M
   *             - \ref CLK_SCLKSEL_SCLKSEL_HXT
   *             - \ref CLK_SCLKSEL_SCLKSEL_APLL0
@@ -1964,6 +1964,126 @@ uint32_t CLK_GetModuleClockDivider(uint64_t u64ModuleIdx)
     u32DivVal = (inpw((uint32_t *)u32DivAddr) & (uint32_t)(MODULE_CLKDIV_Msk(u64ModuleIdx) << (uint32_t)MODULE_CLKDIV_Pos(u64ModuleIdx))) >> (uint32_t)MODULE_CLKDIV_Pos(u64ModuleIdx);
 
     return u32DivVal;
+}
+
+/**
+  * @brief      Set system and bus clock
+  * @param[in]  u32SCLKSrc is SCLK clock source. Including :
+  *             - \ref CLK_SCLKSEL_SCLKSEL_HIRC
+  *             - \ref CLK_SCLKSEL_SCLKSEL_MIRC
+  *             - \ref CLK_SCLKSEL_SCLKSEL_HIRC48M
+  *             - \ref CLK_SCLKSEL_SCLKSEL_HXT
+  *             - \ref CLK_SCLKSEL_SCLKSEL_APLL0
+  * @param[in]  u32PllFreq is PLL frequency. The range of u32PllFreq is 50 MHz ~ 500 MHz.
+  *             u32PllFreq is ignored when u32SCLKSrc is not CLK_SCLKSEL_SCLKSEL_APLL0.
+  * @return     SCLK frequency
+  * @details    This function is used to set the SCLK/HCLK/PCLK with clock limitations. \n
+  *             The clock limitation as following below :
+  *             ACLK is 200MHz
+  *             HCLK0/HCLK1 is 200MHz
+  *             HCLK2 is 100MHz
+  *             PCLK0/PCLK1/PCLK2/PCLK3 is 100MHz
+  *             PCLK4 is 50MHz
+  *             The register write-protection function should be disabled before using this function.
+  */
+uint32_t CLK_SetBusClock(uint32_t u32SCLKSrc, uint32_t u32PllFreq)
+{
+    uint32_t u32PllClk;
+
+    if (u32SCLKSrc == CLK_SCLKSEL_SCLKSEL_APLL0)
+    {
+        /* Select SCLK to HIRC before APLL setting*/
+        CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
+
+        /* Enable APLL0 clock */
+        u32PllClk = CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, u32PllFreq, CLK_APLL0_SELECT);
+
+        /* Set clock with limitations */
+        if (u32PllClk > FREQ_200MHZ)
+        {
+            CLK_SET_HCLK2DIV(3);
+            CLK_SET_PCLK0DIV(3);
+            CLK_SET_PCLK1DIV(3);
+            CLK_SET_PCLK2DIV(3);
+            CLK_SET_PCLK3DIV(3);
+            CLK_SET_PCLK4DIV(3);
+        }
+        else if (u32PllClk > FREQ_100MHZ)
+        {
+            CLK_SET_HCLK2DIV(2);
+            CLK_SET_PCLK0DIV(2);
+            CLK_SET_PCLK1DIV(2);
+            CLK_SET_PCLK2DIV(2);
+            CLK_SET_PCLK3DIV(2);
+            CLK_SET_PCLK4DIV(2);
+        }
+        else if (u32PllClk > FREQ_50MHZ)
+        {
+            CLK_SET_HCLK2DIV(1);
+            CLK_SET_PCLK0DIV(1);
+            CLK_SET_PCLK1DIV(1);
+            CLK_SET_PCLK2DIV(1);
+            CLK_SET_PCLK3DIV(1);
+            CLK_SET_PCLK4DIV(2);
+        }
+        else
+        {
+            CLK_SET_HCLK2DIV(1);
+            CLK_SET_PCLK0DIV(1);
+            CLK_SET_PCLK1DIV(1);
+            CLK_SET_PCLK2DIV(1);
+            CLK_SET_PCLK3DIV(1);
+            CLK_SET_PCLK4DIV(1);
+        }
+    }
+    else
+    {
+        if (u32SCLKSrc == CLK_SCLKSEL_SCLKSEL_MIRC)
+        {
+            /* Enable internal medium speed RC clock */
+            CLK_EnableXtalRC(CLK_SRCCTL_MIRCEN_Msk);
+
+            /* Waiting for internal medium speed clock ready */
+            CLK_WaitClockReady(CLK_STATUS_MIRCSTB_Msk);
+        }
+        else if (u32SCLKSrc == CLK_SCLKSEL_SCLKSEL_HIRC48M)
+        {
+            /* Enable internal RC 48MHz clock */
+            CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
+
+            /* Waiting for internal RC 48MHz clock ready */
+            CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
+        }
+        else if (u32SCLKSrc == CLK_SCLKSEL_SCLKSEL_HXT)
+        {
+            /* Enable external high speed crystal clock */
+            CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
+
+            /* Waiting for external high speed crystal clock ready */
+            CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
+        }
+        else
+        {
+            /* Enable Internal RC 12MHz clock */
+            CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
+
+            /* Waiting for Internal RC clock ready */
+            CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
+        }
+
+        /* Release clock limitations */
+        CLK_SET_HCLK2DIV(1);
+        CLK_SET_PCLK0DIV(1);
+        CLK_SET_PCLK1DIV(1);
+        CLK_SET_PCLK2DIV(1);
+        CLK_SET_PCLK3DIV(1);
+        CLK_SET_PCLK4DIV(1);
+    }
+
+    /* Switch SCLK clock */
+    CLK_SetSCLK(u32SCLKSrc);
+
+    return SystemCoreClock;
 }
 
 /** @} end of group CLK_EXPORTED_FUNCTIONS */

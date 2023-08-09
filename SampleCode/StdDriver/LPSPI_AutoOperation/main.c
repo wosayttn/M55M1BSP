@@ -18,7 +18,6 @@ volatile uint32_t g_u32LPPdmaIntFlag;
 volatile uint32_t g_u32Ifr = 0;
 
 #define DATA_COUNT                  32
-#define RX_PHASE_TCNT               1
 #define LPTMR0_FREQ                 1000
 #define LPSPI_MASTER_TX_DMA_CH      0
 #define LPSPI_MASTER_RX_DMA_CH      1
@@ -38,12 +37,16 @@ volatile uint32_t g_u32Ifr = 0;
     uint32_t g_au32MasterRxBuffer[DATA_COUNT] __attribute__((section(".ARM.__at_0x20310100")));
 #endif
 
-
 NVT_ITCM void LPSPI0_IRQHandler(void)
 {
+    volatile uint32_t u32Delay = 0;
+
     /* for Auto Operation mode test */
     g_u32Ifr = LPSPI0->AUTOSTS;
+
     LPSPI0->AUTOSTS = LPSPI0->AUTOSTS;
+
+    for (u32Delay = 0; u32Delay < 0x80; u32Delay++) {}
 }
 
 void SYS_Init(void)
@@ -182,7 +185,7 @@ void LPPDMA_Init(void)
         Burst Type = Single Transfer
     =========================================================================*/
     /* Set transfer width (32 bits) and transfer count */
-    LPPDMA_SetTransferCnt(LPPDMA0, LPSPI_MASTER_RX_DMA_CH, LPPDMA_WIDTH_32, DATA_COUNT + RX_PHASE_TCNT);
+    LPPDMA_SetTransferCnt(LPPDMA0, LPSPI_MASTER_RX_DMA_CH, LPPDMA_WIDTH_32, DATA_COUNT);
     /* Set source/destination address and attributes */
     LPPDMA_SetTransferAddr(LPPDMA0, LPSPI_MASTER_RX_DMA_CH, (uint32_t)&LPSPI0->RX, LPPDMA_SAR_FIX, (uint32_t)g_au32MasterRxBuffer, LPPDMA_DAR_INC);
     /* Set request source; set basic mode. */
@@ -216,7 +219,7 @@ void LPSPI_Init(void)
     LPSPI_ENABLE_AUTO_FULLRX(LPSPI0);
 
     /* Enable TCNT (=0, no RX phase) in RX phase */
-    LPSPI_SET_AUTO_RX_TCNT(LPSPI0, RX_PHASE_TCNT);
+    LPSPI_SET_AUTO_RX_TCNT(LPSPI0, DATA_COUNT);
 
     /* Enable Auto CNT match wake up */
     LPSPI_ENABLE_AUTO_CNT_WAKEUP(LPSPI0);
@@ -279,9 +282,9 @@ void AutoOperation_FunctionTest()
         /* Switch SCLK clock source to PLL0 and divide 1 */
         CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
-        SYS_LockReg();
-
         printf("Woken up %d times !!\n", ++g_u32WakeupCount);
+
+        SYS_LockReg();
 
         /* g_u32Ifr is set in LPSPI0 interrupt service routine */
         while (g_u32Ifr == 0);
@@ -310,12 +313,12 @@ void AutoOperation_FunctionTest()
         printf("*** Since LPSPI TX doesn't send data in RX phase, RX pin cannot get last one sample in this example code. ***\n\n");
 
         /* u32TotalRxCount is the total received data number in both TX phase (by FULLRX enabled) and RX phase */
-        u32TotalRxCount = DATA_COUNT + RX_PHASE_TCNT;
+        u32TotalRxCount = DATA_COUNT;
         ptr = g_au32MasterRxBuffer;
 
         for (i = 0; i < u32TotalRxCount; i++)
         {
-            printf("    [%2d]: %08X.\n", i, *ptr);
+            printf("    [%2d]: %08X\n", i, *ptr);
             ptr++;
         }
     }   /* end of while(1) */
@@ -341,7 +344,7 @@ int32_t main(void)
     printf("    LPSPI0 is configured to Master mode with data width is 32 bits.\n");
     printf("    For loop back test, its I/O connection: LPSPI0_MOSI(PA.0) <--> LPSPI0_MISO(PA.1) \n");
     printf(" 2. Let system enter Powerr Mode. \n");
-    printf(" 3. LPTMR0 will trigger LPSPI0 to do (32+1)-sample data transfer per one second. After finishing data transfer, \n");
+    printf(" 3. LPTMR0 will trigger LPSPI0 to do 32-sample data transfer per one second. After finishing data transfer, \n");
     printf("    system will be woken up and the received data can be checked. \n");
     printf(" 4. The above step-2 and step-3 will be executed repeatedly. \n\n");
     printf("Please hit any key to start test.\n\n");
@@ -352,5 +355,4 @@ int32_t main(void)
     printf("Exit LPSPI Auto-operation sample code\n");
 
     while (1);
-
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>SPIM_KS_Cipher</name>
+	<name>Project</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -55,6 +55,16 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/clk.c</locationURI>
 		</link>
 		<link>
+			<name>Library/i3c.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/i3c.c</locationURI>
+		</link>
+		<link>
+			<name>Library/pmc.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/pmc.c</locationURI>
+		</link>
+		<link>
 			<name>Library/retarget.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/retarget.c</locationURI>
@@ -70,34 +80,14 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/uart.c</locationURI>
 		</link>
 		<link>
-			<name>Library/spim.c</name>
+			<name>User/M55M1.ld</name>
 			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/spim.c</locationURI>
-		</link>
-		<link>
-			<name>Library/gpio.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/gpio.c</locationURI>
-		</link>
-		<link>
-			<name>Library/ks.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/ks.c</locationURI>
-		</link>
-		<link>
-			<name>Library/otfc.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/otfc.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/Library/Device/Nuvoton/M55M1/Source/GCC/M55M1.ld</locationURI>
 		</link>
 		<link>
 			<name>User/main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/main.c</locationURI>
-		</link>
-        <link>
-			<name>User/cmdcode.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/cmdcode.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

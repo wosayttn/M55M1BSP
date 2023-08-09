@@ -639,7 +639,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>SPIM_KS_Cipher.bin</state>
+                    <state>I3C_Slave_Wakeup.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -686,7 +686,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>SPIM_KS_Cipher.out</state>
+                    <state>Project.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -983,7 +983,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>SPIM_KS_Cipher_import_lib.o</state>
+                    <state>Project_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1072,19 +1072,13 @@
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\clk.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\gpio.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\i3c.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\ks.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\otfc.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\pmc.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\spim.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sys.c</name>
@@ -1095,9 +1089,6 @@
     </group>
     <group>
         <name>User</name>
-        <file>
-            <name>$PROJ_DIR$\..\cmdcode.c</name>
-        </file>
         <file>
             <name>$PROJ_DIR$\..\main.c</name>
         </file>
