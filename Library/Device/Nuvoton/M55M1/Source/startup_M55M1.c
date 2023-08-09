@@ -3,9 +3,9 @@
  * @version  V1.00
  * @brief    CMSIS Device Startup File for NuMicro M55M1
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
-*****************************************************************************/
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 
 #include <inttypes.h>
 #include <stdio.h>
@@ -35,150 +35,149 @@ void Default_Handler(void);
   Exception / Interrupt Handler
  *----------------------------------------------------------------------------*/
 /* Exceptions */
-void NMI_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void HardFault_Handler(void) __attribute__((weak));
-void MemManage_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void BusFault_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void UsageFault_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void SecureFault_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void SVC_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void DebugMon_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void PendSV_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void SysTick_Handler(void) __attribute__((weak, alias("Default_Handler")));
+void NMI_Handler         (void) __attribute__((weak, alias("Default_Handler")));
+void HardFault_Handler   (void) __attribute__((weak));
+void MemManage_Handler   (void) __attribute__((weak, alias("Default_Handler")));
+void BusFault_Handler    (void) __attribute__((weak, alias("Default_Handler")));
+void UsageFault_Handler  (void) __attribute__((weak, alias("Default_Handler")));
+void SecureFault_Handler (void) __attribute__((weak, alias("Default_Handler")));
+void SVC_Handler         (void) __attribute__((weak, alias("Default_Handler")));
+void DebugMon_Handler    (void) __attribute__((weak, alias("Default_Handler")));
+void PendSV_Handler      (void) __attribute__((weak, alias("Default_Handler")));
+void SysTick_Handler     (void) __attribute__((weak, alias("Default_Handler")));
 
-void ACMP01_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void ACMP23_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void AWF_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void BODOUT_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void BPWM0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void BPWM1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void BRAKE0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void BRAKE1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void CANFD00_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void CANFD01_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void CANFD10_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void CANFD11_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void CCAP_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void CKFAIL_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void CRC_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void CRYPTO_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void DAC01_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void DMIC0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void DMIC0VAD_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EADC00_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EADC01_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EADC02_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EADC03_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void ECAP0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void ECAP1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void ECAP2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void ECAP3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EINT0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EINT1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EINT2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EINT3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EINT4_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EINT5_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EINT6_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EINT7_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EMAC0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EPWM0P0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EPWM0P1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EPWM0P2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EPWM1P0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EPWM1P1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EPWM1P2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EQEI0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EQEI1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EQEI2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EQEI3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void ETI_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void ACMP01_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void ACMP23_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void AWF_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void BODOUT_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void BPWM0_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void BPWM1_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void BRAKE0_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void BRAKE1_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void CANFD00_IRQHandler  (void) __attribute__((weak, alias("Default_Handler")));
+void CANFD01_IRQHandler  (void) __attribute__((weak, alias("Default_Handler")));
+void CANFD10_IRQHandler  (void) __attribute__((weak, alias("Default_Handler")));
+void CANFD11_IRQHandler  (void) __attribute__((weak, alias("Default_Handler")));
+void CCAP_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void CKFAIL_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void CRC_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void CRYPTO_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void DAC01_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void DMIC0_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void DMIC0VAD_IRQHandler (void) __attribute__((weak, alias("Default_Handler")));
+void EADC00_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void EADC01_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void EADC02_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void EADC03_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void ECAP0_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void ECAP1_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void ECAP2_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void ECAP3_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void EINT0_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void EINT1_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void EINT2_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void EINT3_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void EINT4_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void EINT5_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void EINT6_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void EINT7_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void EMAC0_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void EPWM0P0_IRQHandler  (void) __attribute__((weak, alias("Default_Handler")));
+void EPWM0P1_IRQHandler  (void) __attribute__((weak, alias("Default_Handler")));
+void EPWM0P2_IRQHandler  (void) __attribute__((weak, alias("Default_Handler")));
+void EPWM1P0_IRQHandler  (void) __attribute__((weak, alias("Default_Handler")));
+void EPWM1P1_IRQHandler  (void) __attribute__((weak, alias("Default_Handler")));
+void EPWM1P2_IRQHandler  (void) __attribute__((weak, alias("Default_Handler")));
+void EQEI0_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void EQEI1_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void EQEI2_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void EQEI3_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void ETI_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
 
-void GDMACH0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void GDMACH1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void GPA_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void GPB_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void GPC_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void GPD_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void GPE_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void GPF_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void GPG_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void GPH_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void GPI_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void GPJ_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void HSOTG_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void HSUSBD_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void HSUSBH_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void I2C0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void I2C1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void I2C2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void I2C3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void I2S0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void I2S1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void I3C0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void IRC_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void ISP_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void KPI_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void KS_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void LPADC0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void LPI2C0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void LPPDMA_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void LPSPI0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void LPTMR0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void LPTMR1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void LPUART0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void GDMACH0_IRQHandler  (void) __attribute__((weak, alias("Default_Handler")));
+void GDMACH1_IRQHandler  (void) __attribute__((weak, alias("Default_Handler")));
+void GPA_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void GPB_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void GPC_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void GPD_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void GPE_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void GPF_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void GPG_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void GPH_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void GPI_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void GPJ_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void HSOTG_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void HSUSBD_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void HSUSBH_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void I2C0_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void I2C1_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void I2C2_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void I2C3_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void I2S0_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void I2S1_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void I3C0_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void IRC_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void ISP_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void KPI_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void KS_IRQHandler       (void) __attribute__((weak, alias("Default_Handler")));
+void LPADC0_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void LPI2C0_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void LPPDMA_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void LPSPI0_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void LPTMR0_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void LPTMR1_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void LPUART0_IRQHandler  (void) __attribute__((weak, alias("Default_Handler")));
 
-void NPU_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void OTFC0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void PDMA0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void PDMA1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void PMC_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void PSIO_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void QSPI0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void QSPI1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void RTC_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void NPU_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void OTFC0_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void PDMA0_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void PDMA1_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void PMC_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void PSIO_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void QSPI0_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void QSPI1_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void RTC_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
 void RTCTAMPER_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 
-void SC0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void SC1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void SC2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void SCU_IRQHandler(void) __attribute__((weak));
-void SDH0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void SDH1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void SPI0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void SPI1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void SPI2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void SPI3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void SPIM0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void SRAMPERR_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIMER0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIMER1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIMER2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIMER3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TRNG_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TTMR0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TTMR1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void UART0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void UART1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void UART2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void UART3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void UART4_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void UART5_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void UART6_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void UART7_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void UART8_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void UART9_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void USBD_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void USBH0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void USBH1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void USBOTG_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void USCI0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void UTCPD_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void WDT0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void WDT1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void WWDT0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void WWDT1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-
+void SC0_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void SC1_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void SC2_IRQHandler      (void) __attribute__((weak, alias("Default_Handler")));
+void SCU_IRQHandler      (void) __attribute__((weak));
+void SDH0_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void SDH1_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void SPI0_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void SPI1_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void SPI2_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void SPI3_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void SPIM0_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void SRAMPERR_IRQHandler (void) __attribute__((weak, alias("Default_Handler")));
+void TIMER0_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void TIMER1_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void TIMER2_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void TIMER3_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void TRNG_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void TTMR0_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void TTMR1_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void UART0_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void UART1_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void UART2_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void UART3_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void UART4_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void UART5_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void UART6_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void UART7_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void UART8_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void UART9_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void USBD_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void USBH0_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void USBH1_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void USBOTG_IRQHandler   (void) __attribute__((weak, alias("Default_Handler")));
+void USCI0_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void UTCPD_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void WDT0_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void WDT1_IRQHandler     (void) __attribute__((weak, alias("Default_Handler")));
+void WWDT0_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
+void WWDT1_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
 
 /*----------------------------------------------------------------------------
   Exception / Interrupt Vector table
@@ -189,10 +188,17 @@ void WWDT1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 #endif
 
 /* Initial vector table */
-const VECTOR_TABLE_Type __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
+/* In IAR - IRQ handlers referenced in INIT_VECTOR_TABLE are not affected by 'initialize by copy'. */
+const VECTOR_TABLE_Type INIT_VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
 {
     (VECTOR_TABLE_Type)(&__INITIAL_SP),       /*       Initial Stack Pointer                            */
     Reset_Handler,                            /*       Reset Handler                                    */
+    NMI_Handler,                              /*   -14 NMI Handler                                      */
+    HardFault_Handler,                        /*   -13 Hard Fault Handler                               */
+    MemManage_Handler,                        /*   -12 MPU Fault Handler                                */
+    BusFault_Handler,                         /*   -11 Bus Fault Handler                                */
+    UsageFault_Handler,                       /*   -10 Usage Fault Handler                              */
+    SecureFault_Handler,                      /*    -9 Secure Fault Handler                             */
 };
 
 /* Declare new vector table in DTCM */
@@ -426,8 +432,7 @@ __NO_RETURN void Reset_Handler_Main(void)
             SYS->REGLCTL = 0x59UL;
             SYS->REGLCTL = 0x16UL;
             SYS->REGLCTL = 0x88UL;
-        }
-        while (SYS->REGLCTL == 0UL);
+        } while (SYS->REGLCTL == 0UL);
 
         // Switch SRAM0 to normal power mode
         if (PMC->SYSRB0PC != 0)

@@ -167,7 +167,7 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
     }
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-    NSC_ROM TZ_NSC_START FIXED TZ_NSC_SIZE
+    NSC_ROM +0
     {
         .ANY (Veneer$$CMSE)
     }
@@ -190,7 +190,7 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
     DTCM AlignExpr(+0, 8)
     {
         .ANY (DTCM.Init)
-		.ANY (.bss.DTCM.ZeroInit)
+        .ANY (.bss.DTCM.ZeroInit)
     }
 
     ScatterAssert((ImageLength(DTCM_VTOR) + ImageLength(DTCM)) < (DTCM_SIZE - STACK_SIZE - __STACKSEAL_SIZE))	; ImageLength is uncompressed size
