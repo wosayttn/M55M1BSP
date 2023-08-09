@@ -132,7 +132,7 @@ void EMAC_Open(uint8_t *macaddr)
 /*----------------------------------------------------------------------------
   EMAC IRQ Handler
  *----------------------------------------------------------------------------*/
-void EMAC0_IRQHandler(void)
+NVT_ITCM void EMAC0_IRQHandler(void)
 {
     portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 

@@ -105,7 +105,7 @@ void PowerDownFunction(void)
  *
  * @details     The PC default IRQ, declared in startup_M2354.s.
  */
-void GPC_IRQHandler(void)
+NVT_ITCM void GPC_IRQHandler(void)
 {
     volatile uint32_t u32temp;
 
