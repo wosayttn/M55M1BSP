@@ -35,7 +35,7 @@ void IrDA_FunctionTest(void);
 void SYS_Init(void)
 {
 
-   /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -44,22 +44,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -78,9 +78,9 @@ void SYS_Init(void)
     /* Enable UART1 peripheral clock */
     CLK_EnableModuleClock(UART1_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -114,7 +114,7 @@ void UART1_Init(void)
 
 int main(void)
 {
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
@@ -228,8 +228,7 @@ void IrDA_FunctionTxTest(void)
         u8OutChar = getchar();
         printf(" Input: %c , Send %c out\n", u8OutChar, u8OutChar);
         UART_WRITE(UART1, u8OutChar);
-    }
-    while (u8OutChar != '0');
+    } while (u8OutChar != '0');
 
 }
 
@@ -254,7 +253,8 @@ void IrDA_FunctionRxTest(void)
 
     /* Reset Rx FIFO */
     UART1->FIFO |= UART_FIFO_RXRST_Msk;
-    while(UART1->FIFO & UART_FIFO_RXRST_Msk);
+
+    while (UART1->FIFO & UART_FIFO_RXRST_Msk);
 
     printf("Waiting...\n");
 
@@ -266,8 +266,7 @@ void IrDA_FunctionRxTest(void)
             u8InChar = UART_READ(UART1);
             printf("   Input: %c \n", u8InChar);
         }
-    }
-    while (u8InChar != '0');
+    } while (u8InChar != '0');
 
 }
 

@@ -36,8 +36,8 @@ void PowerDownFunction(void)
     UART_WAIT_TX_EMPTY(UART0);
 
     /* Set Power-down mode */
-    PMC_SetPowerDownMode(TEST_POWER_DOWN_MODE,PMC_PLCTL_PLSEL_PL0);
-    
+    PMC_SetPowerDownMode(TEST_POWER_DOWN_MODE, PMC_PLCTL_PLSEL_PL0);
+
     /* Enter to Power-down mode */
     PMC_PowerDown();
 }
@@ -45,7 +45,7 @@ void PowerDownFunction(void)
 void SYS_Init(void)
 {
 
-   /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -54,22 +54,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -88,9 +88,9 @@ void SYS_Init(void)
     /* Enable UART1 peripheral clock */
     CLK_EnableModuleClock(UART1_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -155,29 +155,34 @@ int32_t main(void)
 
     printf("UART Sample Program End.\n");
 
-    while(1);
+    while (1);
 
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle UART Channel 1 interrupt event                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
-void UART1_IRQHandler(void)
+NVT_ITCM void UART1_IRQHandler(void)
 {
     uint32_t u32Data;
+    // TESTCHIP_ONLY
+    CLK_WaitModuleClockReady(UART1_MODULE);
+    // TESTCHIP_ONLY
+    CLK_WaitModuleClockReady(UART0_MODULE);
 
-    if(UART_GET_INT_FLAG(UART1, UART_INTSTS_WKINT_Msk))     /* UART wake-up interrupt flag */
+    if (UART_GET_INT_FLAG(UART1, UART_INTSTS_WKINT_Msk))    /* UART wake-up interrupt flag */
     {
         UART_ClearIntFlag(UART1, UART_INTSTS_WKINT_Msk);
         printf("UART wake-up.\n");
         UART_WAIT_TX_EMPTY(UART0);
     }
-    else if(UART_GET_INT_FLAG(UART1, UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk))     /* UART receive data available flag */
+    else if (UART_GET_INT_FLAG(UART1, UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk))    /* UART receive data available flag */
     {
-        while(UART_GET_RX_EMPTY(UART1) == 0)
+        while (UART_GET_RX_EMPTY(UART1) == 0)
         {
             u32Data = UART_READ(UART1);
-            if(u32Data & UART_DAT_PARITY_Msk)
+
+            if (u32Data & UART_DAT_PARITY_Msk)
                 printf("Address: 0x%X\n", (u32Data & 0xFF));
             else
                 printf("Data: 0x%X\n", u32Data);
@@ -212,7 +217,7 @@ void UART_DataWakeUp(void)
        when the device is wake-up from power-down mode.
        If UART_CLK is selected as HIRC(12MHz) and the HIRC stable time is about 52.03us,
        the data wake-up start bit compensation value can be set as 0x270. */
-    UART_Open(UART1, 9600);    
+    UART_Open(UART1, 9600);
     UART1->DWKCOMP = 0x270;
 
     printf("System enter to Power-down mode NPD%d.\n", (int)(TEST_POWER_DOWN_MODE));
@@ -225,13 +230,15 @@ void UART_DataWakeUp(void)
 void UART_RxThresholdWakeUp(void)
 {
     /* Wait data transmission is finished and select UART clock source as LXT */
-    while((UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0);
-    while((UART0->FIFOSTS & UART_FIFOSTS_RXIDLE_Msk) == 0);
+    while ((UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0);
+
+    while ((UART0->FIFOSTS & UART_FIFOSTS_RXIDLE_Msk) == 0);
+
     CLK_SetModuleClock(UART1_MODULE, CLK_UARTSEL0_UART1SEL_HIRC, CLK_UARTDIV0_UART1DIV(1));
 
     /* Set UART baud rate and baud rate compensation */
     UART_Open(UART1, 9600);
-//    UART1->BRCOMP = 0xA5;
+    //    UART1->BRCOMP = 0xA5;
 
     /* Enable UART Rx Threshold and Rx time-out wake-up frunction */
     UART1->WKCTL |= UART_WKCTL_WKRFRTEN_Msk | UART_WKCTL_WKTOUTEN_Msk;
@@ -252,13 +259,15 @@ void UART_RxThresholdWakeUp(void)
 void UART_RS485WakeUp(void)
 {
     /* Wait data transmission is finished and select UART clock source as LXT */
-    while((UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0);
-    while((UART0->FIFOSTS & UART_FIFOSTS_RXIDLE_Msk) == 0);    
+    while ((UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0);
+
+    while ((UART0->FIFOSTS & UART_FIFOSTS_RXIDLE_Msk) == 0);
+
     CLK_SetModuleClock(UART1_MODULE, CLK_UARTSEL0_UART1SEL_HIRC, CLK_UARTDIV0_UART1DIV(1));
 
     /* Set UART baud rate and baud rate compensation */
     UART_Open(UART1, 9600);
-//    UART1->BRCOMP = 0xA5;
+    //    UART1->BRCOMP = 0xA5;
 
     /* RS485 address match (AAD mode) setting */
     UART_SelectRS485Mode(UART1, UART_ALTCTL_RS485AAD_Msk, RS485_ADDRESS);
@@ -316,22 +325,27 @@ void UART_PowerDownWakeUpTest(void)
     UART_PowerDown_TestItem();
     u32Item = getchar();
     printf("%c\n\n", u32Item);
-    switch(u32Item)
+
+    switch (u32Item)
     {
-    case '1':
-        UART_CTSWakeUp();
-        break;
-    case '2':
-        UART_DataWakeUp();
-        break;
-    case '3':
-        UART_RxThresholdWakeUp();
-        break;
-    case '4':
-        UART_RS485WakeUp();
-        break;
-    default:
-        return;
+        case '1':
+            UART_CTSWakeUp();
+            break;
+
+        case '2':
+            UART_DataWakeUp();
+            break;
+
+        case '3':
+            UART_RxThresholdWakeUp();
+            break;
+
+        case '4':
+            UART_RS485WakeUp();
+            break;
+
+        default:
+            return;
     }
 
     /* Unlock protected registers before entering Power-down mode */

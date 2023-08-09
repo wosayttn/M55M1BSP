@@ -35,7 +35,7 @@ void RS485_FunctionTest(void);
 
 void SYS_Init(void)
 {
-   /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -44,22 +44,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -78,9 +78,9 @@ void SYS_Init(void)
     /* Enable UART1 peripheral clock */
     CLK_EnableModuleClock(UART1_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -109,7 +109,7 @@ void UART1_Init()
 
 int main(void)
 {
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
@@ -140,7 +140,7 @@ int main(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle UART Channel 1 interrupt event                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
-void UART1_IRQHandler(void)
+NVT_ITCM void UART1_IRQHandler(void)
 {
     RS485_HANDLE();
 }
@@ -154,7 +154,7 @@ void RS485_HANDLE()
     volatile uint32_t regRX = 0xFF;
     volatile uint32_t u32IntSts = UART1->INTSTS;
 
-    if (UART_GET_INT_FLAG(UART1,UART_INTSTS_RLSINT_Msk ) && UART_GET_INT_FLAG(UART1, UART_INTSTS_RDAINT_Msk))       /* RLS INT & RDA INT */ //For RS485 Detect Address
+    if (UART_GET_INT_FLAG(UART1, UART_INTSTS_RLSINT_Msk) && UART_GET_INT_FLAG(UART1, UART_INTSTS_RDAINT_Msk))       /* RLS INT & RDA INT */ //For RS485 Detect Address
     {
         if (UART_RS485_GET_ADDR_FLAG(UART1))   /* ADD_IF, RS485 mode */
         {
@@ -181,14 +181,14 @@ void RS485_HANDLE()
 #endif
         }
     }
-    else if (UART_GET_INT_FLAG(UART1,UART_INTSTS_RDAINT_Msk ) || UART_GET_INT_FLAG(UART1,UART_INTSTS_RXTOINT_Msk ))     /* Rx Ready or Time-out INT*/
+    else if (UART_GET_INT_FLAG(UART1, UART_INTSTS_RDAINT_Msk) || UART_GET_INT_FLAG(UART1, UART_INTSTS_RXTOINT_Msk))     /* Rx Ready or Time-out INT*/
     {
         /* Handle received data */
         while (!UART_GET_RX_EMPTY(UART1))
             printf("%2d,", UART_READ(UART1));
 
     }
-    else if (UART_GET_INT_FLAG(UART1,UART_INTSTS_BUFERRINT_Msk ))     /* Buffer Error INT */
+    else if (UART_GET_INT_FLAG(UART1, UART_INTSTS_BUFERRINT_Msk))     /* Buffer Error INT */
     {
         printf("\nBuffer Error...\n");
         UART_ClearIntFlag(UART1, UART_INTSTS_BUFERRINT_Msk);
@@ -276,7 +276,7 @@ void RS485_9bitModeSlave()
     /* Reset RX FIFO Before Test */
     UART1->FIFO |= UART_FIFO_RXRST_Msk;
     UART1->FIFO &= ~UART_FIFO_RXRST_Msk;
-    
+
     /* Set RX Trigger Level = 1 */
     UART1->FIFO &= ~UART_FIFO_RFITL_Msk;
     UART1->FIFO |= UART_FIFO_RFITL_1BYTE;

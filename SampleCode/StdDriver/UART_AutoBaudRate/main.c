@@ -30,7 +30,7 @@ uint32_t GetUartBaudrate(UART_T *uart);
 
 void SYS_Init(void)
 {
-   /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -39,22 +39,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -73,9 +73,9 @@ void SYS_Init(void)
     /* Enable UART1 peripheral clock */
     CLK_EnableModuleClock(UART1_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -106,7 +106,7 @@ void UART1_Init(void)
 
 int32_t main(void)
 {
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
@@ -136,7 +136,7 @@ int32_t main(void)
 
     printf("\nUART Sample Program End\n");
 
-    while(1);
+    while (1);
 
 }
 
@@ -174,7 +174,7 @@ void AutoBaudRate_Test(void)
     printf("+-----------------------------------------------------------+\n");
     u32Item = getchar();
 
-    if(u32Item == '0')
+    if (u32Item == '0')
         AutoBaudRate_TxTest();
     else
         AutoBaudRate_RxTest();
@@ -206,24 +206,25 @@ void AutoBaudRate_TxTest(void)
         printf("%c\n", u32Item);
 
         /* Set different baud rate */
-        switch(u32Item)
+        switch (u32Item)
         {
-        case '1':
-            UART_SetLineConfig(UART1, 38400, UART_WORD_LEN_8, UART_PARITY_NONE, UART_STOP_BIT_1);
-            break;
-        case '2':
-            UART_SetLineConfig(UART1, 57600, UART_WORD_LEN_8, UART_PARITY_NONE, UART_STOP_BIT_1);
-            break;
-        default:
-            UART_SetLineConfig(UART1, 115200, UART_WORD_LEN_8, UART_PARITY_NONE, UART_STOP_BIT_1);
-            break;
+            case '1':
+                UART_SetLineConfig(UART1, 38400, UART_WORD_LEN_8, UART_PARITY_NONE, UART_STOP_BIT_1);
+                break;
+
+            case '2':
+                UART_SetLineConfig(UART1, 57600, UART_WORD_LEN_8, UART_PARITY_NONE, UART_STOP_BIT_1);
+                break;
+
+            default:
+                UART_SetLineConfig(UART1, 115200, UART_WORD_LEN_8, UART_PARITY_NONE, UART_STOP_BIT_1);
+                break;
         }
 
         /* Send input pattern 0x1 for auto baud rate detection bit length is 1-bit */
         UART_WRITE(UART1, 0x1);
 
-    }
-    while(u32Item != 27);
+    } while (u32Item != 27);
 
 }
 
@@ -232,8 +233,8 @@ void AutoBaudRate_TxTest(void)
 /*---------------------------------------------------------------------------------------------------------*/
 uint32_t GetUartBaudrate(UART_T *psUART)
 {
-    uint8_t u32UartClkSrcSel=0, u32UartClkDivNum=0;
-    uint32_t u32ClkTbl[5] = {__HXT,__HIRC, __LXT, 0,__HIRC48M};
+    uint8_t u32UartClkSrcSel = 0, u32UartClkDivNum = 0;
+    uint32_t u32ClkTbl[5] = {__HXT, __HIRC, __LXT, 0, __HIRC48M};
     uint32_t u32Baud_Div;
 
     if (psUART == UART0)
@@ -257,7 +258,7 @@ uint32_t GetUartBaudrate(UART_T *psUART)
         /* Get UART clock divider number */
         u32UartClkDivNum = (CLK->UARTDIV0 & CLK_UARTDIV0_UART2DIV_Msk) >> CLK_UARTDIV0_UART2DIV_Pos;
     }
-   else if (psUART == (UART_T *)UART3)
+    else if (psUART == (UART_T *)UART3)
     {
         /* Get UART clock source selection */
         u32UartClkSrcSel = (CLK->UARTSEL0 & CLK_UARTSEL0_UART3SEL_Msk) >> CLK_UARTSEL0_UART3SEL_Pos;
@@ -285,7 +286,7 @@ uint32_t GetUartBaudrate(UART_T *psUART)
         /* Get UART clock divider number */
         u32UartClkDivNum = (CLK->UARTDIV0 & CLK_UARTDIV0_UART6DIV_Msk) >> CLK_UARTDIV0_UART6DIV_Pos;
     }
-     else if (psUART == (UART_T *)UART7)
+    else if (psUART == (UART_T *)UART7)
     {
         /* Get UART clock source selection */
         u32UartClkSrcSel = (CLK->UARTSEL0 & CLK_UARTSEL0_UART7SEL_Msk) >> CLK_UARTSEL0_UART7SEL_Pos;
@@ -308,9 +309,9 @@ uint32_t GetUartBaudrate(UART_T *psUART)
     }
 
     /* Get PLL clock frequency if UART clock source selection is PLL/2 */
-    if(u32UartClkSrcSel == 3ul)
+    if (u32UartClkSrcSel == 3ul)
     {
-        u32ClkTbl[u32UartClkSrcSel] = CLK_GetAPLL0ClockFreq()/2;
+        u32ClkTbl[u32UartClkSrcSel] = CLK_GetAPLL0ClockFreq() / 2;
     }
 
     /* Get UART baud rate divider */
@@ -343,15 +344,15 @@ void AutoBaudRate_RxTest(void)
     printf("\nreceiving input pattern... ");
 
     /* Wait until auto baud rate detect finished or time-out */
-    while((UART1->ALTCTL & UART_ALTCTL_ABRIF_Msk) == 0);
+    while ((UART1->ALTCTL & UART_ALTCTL_ABRIF_Msk) == 0);
 
-    if(UART1->FIFOSTS & UART_FIFOSTS_ABRDIF_Msk)
+    if (UART1->FIFOSTS & UART_FIFOSTS_ABRDIF_Msk)
     {
         /* Clear auto baud rate detect finished flag */
         UART1->FIFOSTS = UART_FIFOSTS_ABRDIF_Msk;
         printf("Baud rate is %dbps.\n", GetUartBaudrate(UART1));
     }
-    else if(UART1->FIFOSTS & UART_FIFOSTS_ABRDTOIF_Msk)
+    else if (UART1->FIFOSTS & UART_FIFOSTS_ABRDTOIF_Msk)
     {
         /* Clear auto baud rate detect time-out flag */
         UART1->FIFOSTS = UART_FIFOSTS_ABRDTOIF_Msk;

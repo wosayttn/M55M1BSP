@@ -32,7 +32,7 @@ void AutoFlow_FunctionRxTest(void);
 
 void SYS_Init(void)
 {
-   /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -41,22 +41,22 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK2DIV(2);
@@ -75,9 +75,9 @@ void SYS_Init(void)
     /* Enable UART1 peripheral clock */
     CLK_EnableModuleClock(UART1_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -111,7 +111,7 @@ void UART1_Init(void)
 
 int main(void)
 {
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
@@ -178,7 +178,7 @@ void AutoFlow_FunctionTest(void)
     printf("+-----------------------------------------------------------+\n");
     u8Item = getchar();
 
-    if(u8Item == '0')
+    if (u8Item == '0')
         AutoFlow_FunctionTxTest();
     else
         AutoFlow_FunctionRxTest();
@@ -196,13 +196,13 @@ void AutoFlow_FunctionTxTest(void)
     UART_EnableFlowCtrl(UART1);
 
     /* Send 1k bytes data */
-    for(u32i = 0; u32i < RXBUFSIZE; u32i++)
+    for (u32i = 0; u32i < RXBUFSIZE; u32i++)
     {
         /* Send 1 byte data */
         UART_WRITE(UART1, u32i & 0xFF);
 
         /* Wait if Tx FIFO is full */
-        while(UART_IS_TX_FULL(UART1));
+        while (UART_IS_TX_FULL(UART1));
     }
 
     printf("\n Transmit Done\n");
@@ -218,7 +218,7 @@ void AutoFlow_FunctionRxTest(void)
     /* Reset RX FIFO Before Test */
     UART1->FIFO |= UART_FIFO_RXRST_Msk;
     UART1->FIFO &= ~UART_FIFO_RXRST_Msk;
-    
+
     /* Enable RTS and CTS autoflow control */
     UART_EnableFlowCtrl(UART1);
 
@@ -238,17 +238,19 @@ void AutoFlow_FunctionRxTest(void)
     printf("\n Starting to receive data...\n");
 
     /* Wait for receive 1k bytes data */
-    while(g_i32pointer < RXBUFSIZE);
+    while (g_i32pointer < RXBUFSIZE);
 
     /* Compare Data */
-    for(u32i = 0; u32i < RXBUFSIZE; u32i++)
+    for (u32i = 0; u32i < RXBUFSIZE; u32i++)
     {
-        if(g_u8RecData[u32i] != (u32i & 0xFF))
+        if (g_u8RecData[u32i] != (u32i & 0xFF))
         {
             printf("Compare Data Failed\n");
-            while(1);
+
+            while (1);
         }
     }
+
     printf("\n Receive OK & Check OK\n");
 
     /* Disable RDA and RTO Interrupt */
@@ -259,24 +261,24 @@ void AutoFlow_FunctionRxTest(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle UART Channel 1 interrupt event                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
-void UART1_IRQHandler(void)
+NVT_ITCM void UART1_IRQHandler(void)
 {
     uint8_t u8InChar = 0xFF;
 
     /* Rx Ready or Time-out INT */
-    if(UART_GET_INT_FLAG(UART1, UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk))
+    if (UART_GET_INT_FLAG(UART1, UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk))
     {
         /* Read data until RX FIFO is empty */
-        while(UART_GET_RX_EMPTY(UART1) == 0)
+        while (UART_GET_RX_EMPTY(UART1) == 0)
         {
             u8InChar = UART_READ(UART1);
             g_u8RecData[g_i32pointer++] = u8InChar;
         }
     }
 
-    if(UART1->FIFOSTS & (UART_FIFOSTS_BIF_Msk | UART_FIFOSTS_FEF_Msk | UART_FIFOSTS_PEF_Msk | UART_FIFOSTS_RXOVIF_Msk))
+    if (UART1->FIFOSTS & (UART_FIFOSTS_BIF_Msk | UART_FIFOSTS_FEF_Msk | UART_FIFOSTS_PEF_Msk | UART_FIFOSTS_RXOVIF_Msk))
     {
-        UART_ClearIntFlag(UART1, (UART_INTSTS_RLSINT_Msk| UART_INTSTS_BUFERRINT_Msk));
+        UART_ClearIntFlag(UART1, (UART_INTSTS_RLSINT_Msk | UART_INTSTS_BUFERRINT_Msk));
     }
 }
 
