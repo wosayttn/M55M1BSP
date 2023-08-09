@@ -85,7 +85,7 @@ void AWF_Wakeup_Test(void)
     LPPDMA_Close(LPPDMA);
 }
 
-void AWF_IRQHandler(void)
+NVT_ITCM void AWF_IRQHandler(void)
 {
     uint32_t u32HTH_Flag, u32LTH_Flag, u32AccumulationValue;
 

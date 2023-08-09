@@ -116,7 +116,7 @@ void SYS_Init(void)
     SYS_LockReg();
 }
 
-void PMC_IRQHandler(void)
+NVT_ITCM void PMC_IRQHandler(void)
 {
     printf("Wake-up!!!\n");
     
