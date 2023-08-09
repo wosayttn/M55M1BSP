@@ -20,6 +20,15 @@ volatile uint32_t g_u32BandGapConvValue;
     extern void initialise_monitor_handles(void);
 #endif
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* LPADC interrupt handler                                                                                 */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void LPADC0_IRQHandler(void)
+{
+    g_u32LpadcIntFlag = 1;
+    LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT); /* Clear the A/D interrupt flag */
+}
+
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -31,14 +40,14 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -46,7 +55,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -58,7 +67,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-   
+
     /* LPADC clock source is HIRC = 12MHz, set divider to 1, LPADC clock is 12 MHz */
     CLK_SetModuleClock(LPADC0_MODULE, CLK_LPADCSEL_LPADC0SEL_HIRC, CLK_LPADCDIV_LPADC0DIV(1));
 
@@ -80,7 +89,7 @@ void SYS_Init(void)
 void LPADC_FunctionTest()
 {
     int32_t  i32ConversionData;
-    int32_t  i32BuiltInData=0;
+    int32_t  i32BuiltInData = 0;
 
     printf("\n");
     printf("+----------------------------------------------------------------------+\n");
@@ -119,7 +128,7 @@ void LPADC_FunctionTest()
     LPADC_START_CONV(LPADC0);
 
     /* Wait LPADC interrupt (g_u32LpadcIntFlag will be set at LPADC0_IRQHandler function) */
-    while(g_u32LpadcIntFlag == 0);
+    while (g_u32LpadcIntFlag == 0);
 
     /* Disable the A/D interrupt */
     LPADC_DisableInt(LPADC0, LPADC_ADF_INT);
@@ -130,7 +139,7 @@ void LPADC_FunctionTest()
     /* Enable RMC ISP function to read built-in band-gap A/D conversion result*/
     SYS_UnlockReg();
     FMC_Open();
-//    i32BuiltInData = FMC_ReadBandGap(); wait the FMC driver add
+    //    i32BuiltInData = FMC_ReadBandGap(); wait the FMC driver add
 
     /* Use Conversion result of Band-gap to calculating AVdd */
 
@@ -143,14 +152,7 @@ void LPADC_FunctionTest()
     printf("Built-in band-gap A/D conversion result: 0x%X (%d) \n", i32BuiltInData, i32BuiltInData);
     printf("Conversion result of Band-gap:           0x%X (%d) \n\n", i32ConversionData, i32ConversionData);
 
-    printf("AVdd = 3072 * %d / %d = %d mV \n\n", i32BuiltInData, i32ConversionData, 3072*i32BuiltInData/i32ConversionData);
-}
-
-
-void LPADC0_IRQHandler(void)
-{
-    g_u32LpadcIntFlag = 1;
-    LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT); /* Clear the A/D interrupt flag */
+    printf("AVdd = 3072 * %d / %d = %d mV \n\n", i32BuiltInData, i32ConversionData, 3072 * i32BuiltInData / i32ConversionData);
 }
 
 int32_t main(void)
@@ -183,7 +185,7 @@ int32_t main(void)
 
     printf("Exit LPADC sample code\n");
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

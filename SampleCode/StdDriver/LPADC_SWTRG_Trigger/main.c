@@ -18,6 +18,15 @@ volatile uint32_t g_u32LpadcIntFlag;
     extern void initialise_monitor_handles(void);
 #endif
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* LPADC interrupt handler                                                                                 */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void LPADC0_IRQHandler(void)
+{
+    g_u32LpadcIntFlag = 1;
+    LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT); /* Clear the A/D interrupt flag */
+}
+
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -29,14 +38,14 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -44,7 +53,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -56,7 +65,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-   
+
     /* LPADC clock source is HIRC = 12MHz, set divider to 1, LPADC clock is 12 MHz */
     CLK_SetModuleClock(LPADC0_MODULE, CLK_LPADCSEL_LPADC0SEL_HIRC, CLK_LPADCDIV_LPADC0DIV(1));
 
@@ -71,18 +80,18 @@ void SYS_Init(void)
     /*----------------------------------------------------------------------*/
     /* Init I/O Multi-function                                              */
     /*----------------------------------------------------------------------*/
-   /* Set PB multi-function pins for Debug UART RXD and TXD */
+    /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
     /* Set PB.2 - PB.3 to input mode */
-    GPIO_SetMode(PB, BIT2|BIT3, GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT2 | BIT3, GPIO_MODE_INPUT);
 
     /* Configure the PB.2 - PB.3 LPADC analog input pins. */
     SET_LPADC0_CH2_PB2();
     SET_LPADC0_CH3_PB3();
 
     /* Disable the PB.2 - PB.3 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT2|BIT3);
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT2 | BIT3);
 
 }
 
@@ -99,7 +108,7 @@ void LPADC_FunctionTest()
     /* Enable LPADC converter */
     LPADC_POWER_ON(LPADC0);
 
-    while(1)
+    while (1)
     {
         printf("Select input mode:\n");
         printf("  [1] Single end input (channel 2 only)\n");
@@ -107,7 +116,7 @@ void LPADC_FunctionTest()
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
 
-        if(u8Option == '1')
+        if (u8Option == '1')
         {
             /* Set input mode as single-end, Single-cycle scan mode, and select channel 2 */
             LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE_CYCLE, BIT2);
@@ -124,7 +133,7 @@ void LPADC_FunctionTest()
             LPADC_START_CONV(LPADC0);
 
             /* Wait LPADC interrupt (g_u32LpadcIntFlag will be set at IRQ_Handler function) */
-            while(g_u32LpadcIntFlag == 0);
+            while (g_u32LpadcIntFlag == 0);
 
             /* Disable the sample module interrupt */
             LPADC_DisableInt(LPADC0, LPADC_ADF_INT);
@@ -133,7 +142,7 @@ void LPADC_FunctionTest()
             i32ConversionData = LPADC_GET_CONVERSION_DATA(LPADC0, 2);
             printf("Conversion result of channel 2: 0x%X (%d)\n\n", i32ConversionData, i32ConversionData);
         }
-        else if(u8Option == '2')
+        else if (u8Option == '2')
         {
             /* Set input mode as differential, Single-cycle scan mode, and select channel 2 */
             LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_DIFFERENTIAL, LPADC_ADCR_ADMD_SINGLE_CYCLE, BIT2);
@@ -150,7 +159,7 @@ void LPADC_FunctionTest()
             LPADC_START_CONV(LPADC0);
 
             /* Wait LPADC interrupt (g_u32LpadcIntFlag will be set at IRQ_Handler function) */
-            while(g_u32LpadcIntFlag == 0);
+            while (g_u32LpadcIntFlag == 0);
 
             /* Disable the sample module interrupt */
             LPADC_DisableInt(LPADC0, LPADC_ADF_INT);
@@ -163,14 +172,6 @@ void LPADC_FunctionTest()
             return ;
     }
 }
-
-
-void LPADC0_IRQHandler(void)
-{
-    g_u32LpadcIntFlag = 1;
-    LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT); /* Clear the A/D interrupt flag */
-}
-
 
 int32_t main(void)
 {
@@ -202,7 +203,7 @@ int32_t main(void)
 
     printf("Exit LPADC sample code\n");
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

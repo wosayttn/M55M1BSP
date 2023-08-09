@@ -20,6 +20,27 @@ volatile uint32_t g_u32LpadcCmp1IntFlag;
     extern void initialise_monitor_handles(void);
 #endif
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* LPADC interrupt handler                                                                                 */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void LPADC0_IRQHandler(void)
+{
+    if (LPADC_GET_INT_FLAG(LPADC0, LPADC_CMP0_INT))
+    {
+        g_u32LpadcCmp0IntFlag = 1;
+        LPADC_CLR_INT_FLAG(LPADC0, LPADC_CMP0_INT);    /* Clear the A/D compare flag 0 */
+    }
+
+    if (LPADC_GET_INT_FLAG(LPADC0, LPADC_CMP1_INT))
+    {
+        g_u32LpadcCmp1IntFlag = 1;
+        LPADC_CLR_INT_FLAG(LPADC0, LPADC_CMP1_INT);    /* Clear the A/D compare flag 1 */
+    }
+
+    g_u32LpadcIntFlag = 1;
+    LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT);
+}
+
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -31,14 +52,14 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -46,7 +67,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -58,7 +79,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-   
+
     /* LPADC clock source is HIRC = 12MHz, set divider to 1, LPADC clock is 12 MHz */
     CLK_SetModuleClock(LPADC0_MODULE, CLK_LPADCSEL_LPADC0SEL_HIRC, CLK_LPADCDIV_LPADC0DIV(1));
 
@@ -70,7 +91,7 @@ void SYS_Init(void)
     /*----------------------------------------------------------------------*/
     /* Init I/O Multi-function                                              */
     /*----------------------------------------------------------------------*/
-   /* Set PB multi-function pins for Debug UART RXD and TXD */
+    /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
     /* Set PB.2 to input mode */
@@ -132,7 +153,7 @@ void LPADC_FunctionTest()
     LPADC_START_CONV(LPADC0);
 
     /* Wait LPADC compare interrupt */
-    while(1)
+    while (1)
     {
         if (g_u32LpadcIntFlag == 1)
         {
@@ -154,7 +175,7 @@ void LPADC_FunctionTest()
     LPADC_DISABLE_CMP0(LPADC0);
     LPADC_DISABLE_CMP1(LPADC0);
 
-    if(g_u32LpadcCmp0IntFlag == 1)
+    if (g_u32LpadcCmp0IntFlag == 1)
     {
         printf("Comparator 0 interrupt occurs.\nThe conversion result of channel 2 is less than 0x800\n");
     }
@@ -162,24 +183,6 @@ void LPADC_FunctionTest()
     {
         printf("Comparator 1 interrupt occurs.\nThe conversion result of channel 2 is greater than or equal to 0x800\n");
     }
-}
-
-void LPADC0_IRQHandler(void)
-{
-    if(LPADC_GET_INT_FLAG(LPADC0, LPADC_CMP0_INT))
-    {
-        g_u32LpadcCmp0IntFlag = 1;
-        LPADC_CLR_INT_FLAG(LPADC0, LPADC_CMP0_INT);    /* Clear the A/D compare flag 0 */
-    }
-
-    if(LPADC_GET_INT_FLAG(LPADC0, LPADC_CMP1_INT))
-    {
-        g_u32LpadcCmp1IntFlag = 1;
-        LPADC_CLR_INT_FLAG(LPADC0, LPADC_CMP1_INT);    /* Clear the A/D compare flag 1 */
-    }
-
-    g_u32LpadcIntFlag = 1;
-    LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT);
 }
 
 int32_t main(void)
@@ -212,7 +215,7 @@ int32_t main(void)
 
     printf("Exit LPADC sample code\n");
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

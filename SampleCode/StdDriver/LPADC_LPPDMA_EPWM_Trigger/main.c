@@ -27,6 +27,31 @@ volatile uint32_t g_u32IsTestOver = 0;
     extern void initialise_monitor_handles(void);
 #endif
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* LPPDMA interrupt handler                                                                                */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void LPPDMA_IRQHandler(void)
+{
+    uint32_t status = LPPDMA_GET_INT_STATUS(LPPDMA);
+
+    if (status & LPPDMA_INTSTS_ABTIF_Msk)   /* abort */
+    {
+        if (LPPDMA_GET_ABORT_STS(LPPDMA) & LPPDMA_ABTSTS_ABTIF1_Msk)
+            g_u32IsTestOver = 2;
+
+        LPPDMA_CLR_ABORT_FLAG(LPPDMA, LPPDMA_ABTSTS_ABTIF1_Msk);
+    }
+    else if (status & LPPDMA_INTSTS_TDIF_Msk)     /* done */
+    {
+        if (LPPDMA_GET_TD_STS(LPPDMA) & LPPDMA_TDSTS_TDIF1_Msk)
+            g_u32IsTestOver = 1;
+
+        LPPDMA_CLR_TD_FLAG(LPPDMA, LPPDMA_TDSTS_TDIF1_Msk);
+    }
+    else
+        printf("unknown LPPDMA interrupt !!\n");
+}
+
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -38,14 +63,14 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -53,7 +78,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -72,7 +97,7 @@ void SYS_Init(void)
     /* Enable LPADC module clock */
     CLK_EnableModuleClock(LPADC0_MODULE);
 
-   /* Select EPWM0 module clock source as PCLK0 */
+    /* Select EPWM0 module clock source as PCLK0 */
     CLK_SetModuleClock(EPWM0_MODULE, CLK_EPWMSEL_EPWM0SEL_PCLK0, 0);
 
     /* Enable EPWM0 module clock */
@@ -94,18 +119,18 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                              */
     /*----------------------------------------------------------------------*/
 
-   /* Set PB multi-function pins for Debug UART RXD and TXD */
+    /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
     /* Set PB.2 - PB.3 to input mode */
-    GPIO_SetMode(PB, BIT2|BIT3, GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT2 | BIT3, GPIO_MODE_INPUT);
 
     /* Configure the PB.2 - PB.3 LPADC analog input pins.  */
     SET_EADC0_CH2_PB2();
     SET_EADC0_CH3_PB3();
 
     /* Disable the PB.2 - PB.3 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT2|BIT3);
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT2 | BIT3);
 
 }
 
@@ -152,7 +177,7 @@ void LPPDMA_Init()
     ReloadLPPDMA();
 
     /* Set source address as LPADC LPPDMA Current Transfer Data register (no increment) and destination address as g_i32ConversionData array (increment) */
-    LPPDMA_SetTransferAddr(LPPDMA, 1, (uint32_t)&(LPADC0->ADPDMA), LPPDMA_SAR_FIX, (uint32_t)g_i32ConversionData, LPPDMA_DAR_INC);
+    LPPDMA_SetTransferAddr(LPPDMA, 1, (uint32_t) & (LPADC0->ADPDMA), LPPDMA_SAR_FIX, (uint32_t)g_i32ConversionData, LPPDMA_DAR_INC);
 
     LPPDMA_SetBurstType(LPPDMA, 1, LPPDMA_REQ_SINGLE, LPPDMA_BURST_1);
 
@@ -176,7 +201,7 @@ void LPADC_FunctionTest()
     /* Enable LPADC converter */
     LPADC_POWER_ON(LPADC0);
 
-    while(1)
+    while (1)
     {
         /* reload LPPDMA configuration for next transmission */
         ReloadLPPDMA();
@@ -186,7 +211,8 @@ void LPADC_FunctionTest()
         printf("  [2] Differential input (channel pair 1 only (channel 2 and 3))\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
-        if(u8Option == '1')
+
+        if (u8Option == '1')
         {
             /* Set input mode as single-end, Single mode, and select channel 2 */
             LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT2);
@@ -203,20 +229,20 @@ void LPADC_FunctionTest()
             EPWM_Start(EPWM0, BIT0); /* EPWM0 channel 0 counter start running. */
 
             /* Wait LPPDMA interrupt (g_u32IsTestOver will be set at IRQ_Handler function) */
-            while(g_u32IsTestOver == 0);
+            while (g_u32IsTestOver == 0);
 
             g_u32IsTestOver = 0;
 
             /* Disable EPWM0 channel 0 counter */
             EPWM_ForceStop(EPWM0, BIT0); /* EPWM0 counter stop running. */
 
-           for(i = 0; (i) < 6; i++)
-           {  
+            for (i = 0; (i) < 6; i++)
+            {
                 printf("                                0x%X\n", g_i32ConversionData[i]);
                 printf("(%d)\n", (g_i32ConversionData[i] & 0xFFF));
-           }
+            }
         }
-        else if(u8Option == '2')
+        else if (u8Option == '2')
         {
             /* Set input mode as differential, Single mode, and select channel 2 */
             LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_DIFFERENTIAL, LPADC_ADCR_ADMD_SINGLE, BIT2);
@@ -233,42 +259,22 @@ void LPADC_FunctionTest()
             EPWM_Start(EPWM0, BIT0); /* EPWM0 channel 0 counter start running. */
 
             /* Wait LPPDMA interrupt (g_u32IsTestOver will be set at IRQ_Handler function) */
-            while(g_u32IsTestOver == 0);
+            while (g_u32IsTestOver == 0);
 
             g_u32IsTestOver = 0;
 
             /* Disable EPWM0 channel 0 counter */
             EPWM_ForceStop(EPWM0, BIT0); /* EPWM0 counter stop running. */
 
-            for(i = 0; (i) < 6; i++)
-            {  
+            for (i = 0; (i) < 6; i++)
+            {
                 printf("                                0x%X\n", g_i32ConversionData[i]);
                 printf("(%d)\n", (g_i32ConversionData[i] & 0xFFF));
-            }   
+            }
         }
         else
             return ;
     }
-}
-
-void LPPDMA_IRQHandler(void)
-{
-    uint32_t status = LPPDMA_GET_INT_STATUS(LPPDMA);
-
-    if(status & LPPDMA_INTSTS_ABTIF_Msk)    /* abort */
-    {
-        if(LPPDMA_GET_ABORT_STS(LPPDMA) & LPPDMA_ABTSTS_ABTIF1_Msk)
-            g_u32IsTestOver = 2;
-        LPPDMA_CLR_ABORT_FLAG(LPPDMA, LPPDMA_ABTSTS_ABTIF1_Msk);
-    }
-    else if(status & LPPDMA_INTSTS_TDIF_Msk)      /* done */
-    {
-        if(LPPDMA_GET_TD_STS(LPPDMA) & LPPDMA_TDSTS_TDIF1_Msk)
-            g_u32IsTestOver = 1;
-        LPPDMA_CLR_TD_FLAG(LPPDMA, LPPDMA_TDSTS_TDIF1_Msk);
-    }
-    else
-        printf("unknown LPPDMA interrupt !!\n");
 }
 
 int32_t main(void)
@@ -313,7 +319,7 @@ int32_t main(void)
 
     printf("Exit LPADC sample code\n");
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

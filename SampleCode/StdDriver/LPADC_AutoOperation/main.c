@@ -29,6 +29,36 @@ volatile uint32_t g_u32WakeupCount = 0;
     volatile uint32_t g_i32ConversionData[10] __attribute__((section(".ARM.__at_0x20310000")));
 #endif
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* LPPDMA interrupt handler                                                                                  */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void LPPDMA_IRQHandler(void)
+{
+    uint32_t status = LPPDMA_GET_INT_STATUS(LPPDMA);
+
+    if (status & LPPDMA_INTSTS_WKF_Msk)         /* wakeup */
+    {
+        LPPDMA->INTSTS = LPPDMA_INTSTS_WKF_Msk;
+    }
+
+    if (status & LPPDMA_INTSTS_ABTIF_Msk)       /* abort */
+    {
+        if (LPPDMA_GET_ABORT_STS(LPPDMA) & LPPDMA_ABTSTS_ABTIF1_Msk)
+            g_u32LPPdmaIntFlag = 2;
+
+        LPPDMA_CLR_ABORT_FLAG(LPPDMA, LPPDMA_ABTSTS_ABTIF1_Msk);
+    }
+    else if (status & LPPDMA_INTSTS_TDIF_Msk)   /* done */
+    {
+        if (LPPDMA_GET_TD_STS(LPPDMA) & LPPDMA_TDSTS_TDIF1_Msk)
+            g_u32LPPdmaIntFlag = 1;
+
+        LPPDMA_CLR_TD_FLAG(LPPDMA, LPPDMA_TDSTS_TDIF1_Msk);
+    }
+    else
+        printf("LPPDMA_IRQHandler: unknown LPPDMA interrupt !!\n");
+}
+
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -40,14 +70,14 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -55,7 +85,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -116,7 +146,6 @@ void SYS_Init(void)
 
 }
 
-
 void LPTPWM_Init(void)
 {
     uint32_t freq;
@@ -126,6 +155,7 @@ void LPTPWM_Init(void)
 
     /* Set LPTMR0 PWM output frequency is 1 Hz, duty 50% in up count type */
     freq = LPTPWM_ConfigOutputFreqAndDuty(LPTMR0, 1, 50);
+
     if (freq != 1)
     {
         printf("LPTPWM: Set the frequency %d different from the user !\n", freq);
@@ -138,31 +168,6 @@ void LPTPWM_Init(void)
     LPTMR_EnableWakeup(LPTMR0);
 }
 
-void LPPDMA_IRQHandler(void)
-{
-    uint32_t status = LPPDMA_GET_INT_STATUS(LPPDMA);
-
-    if(status & LPPDMA_INTSTS_WKF_Msk)          /* wakeup */
-    {
-     LPPDMA->INTSTS = LPPDMA_INTSTS_WKF_Msk; 
-    }
-
-    if(status & LPPDMA_INTSTS_ABTIF_Msk)        /* abort */
-    {
-        if(LPPDMA_GET_ABORT_STS(LPPDMA) & LPPDMA_ABTSTS_ABTIF1_Msk)
-            g_u32LPPdmaIntFlag = 2;
-        LPPDMA_CLR_ABORT_FLAG(LPPDMA, LPPDMA_ABTSTS_ABTIF1_Msk);
-    }
-    else if(status & LPPDMA_INTSTS_TDIF_Msk)    /* done */
-    {
-        if(LPPDMA_GET_TD_STS(LPPDMA) & LPPDMA_TDSTS_TDIF1_Msk)
-            g_u32LPPdmaIntFlag = 1;
-        LPPDMA_CLR_TD_FLAG(LPPDMA, LPPDMA_TDSTS_TDIF1_Msk);
-    }
-    else
-        printf("LPPDMA_IRQHandler: unknown LPPDMA interrupt !!\n");
-}
-
 void LPPDMA_Init()
 {
     uint32_t lppdma_ch = 1;
@@ -170,13 +175,12 @@ void LPPDMA_Init()
     /* Configure LPPDMA peripheral mode form LPADC to LPSRAM */
     /* Open Channel 1 */
     LPPDMA_Open(LPPDMA, BIT0 << lppdma_ch);
-                      
+
     /* Transfer count is 5, transfer width is 32 bits */
     LPPDMA_SetTransferCnt(LPPDMA, lppdma_ch, LPPDMA_WIDTH_32, 5);
 
     /* Set source address is LPADC0->ADPDMA, destination address is g_i32ConversionData[] on LPSRAM */
-    LPPDMA_SetTransferAddr(LPPDMA, lppdma_ch, (uint32_t)&(LPADC0->ADPDMA), LPPDMA_SAR_FIX,
-                                               (uint32_t)g_i32ConversionData, LPPDMA_DAR_INC);
+    LPPDMA_SetTransferAddr(LPPDMA, lppdma_ch, (uint32_t) & (LPADC0->ADPDMA), LPPDMA_SAR_FIX, (uint32_t)g_i32ConversionData, LPPDMA_DAR_INC);
     /* Request source is LPADC */
     LPPDMA_SetTransferMode(LPPDMA, lppdma_ch, LPPDMA_LPADC0_RX, FALSE, 0);
 
@@ -198,7 +202,7 @@ void LPADC_Init(void)
     LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT2);
 
     /* Enable LPADC Auto-operation and set it can be triggered by LPTMR0 */
-    LPADC_SelectAutoOperationMode(LPADC0,LPADC_AUTOCTL_TRIGSEL_LPTMR0);
+    LPADC_SelectAutoOperationMode(LPADC0, LPADC_AUTOCTL_TRIGSEL_LPTMR0);
 
     /* Set LPADC to trigger LPPDMA */
     LPADC_ENABLE_LPPDMA(LPADC0);
@@ -213,7 +217,7 @@ void AutoOperation_FunctionTest()
     /* Start LPTMR counting */
     LPTPWM_START_COUNTER(LPTMR0);
 
-    while(1)
+    while (1)
     {
         LPPDMA_Init();
 
@@ -225,7 +229,7 @@ void AutoOperation_FunctionTest()
         g_u32LPPdmaIntFlag = 0;
 
         SYS_UnlockReg();
-        PMC_SetPowerDownMode(PMC_NPD2,PMC_PLCTL_PLSEL_PL0);
+        PMC_SetPowerDownMode(PMC_NPD2, PMC_PLCTL_PLSEL_PL0);
         PMC_PowerDown();
         SYS_LockReg();
 
@@ -241,7 +245,8 @@ void AutoOperation_FunctionTest()
             printf("LPPDMA trasnfer LPADC register abort...\n");
 
         printf("Only the first 5 values are valid LPADC conversion results.\n");
-        for(i=0; i<10; i++)
+
+        for (i = 0; i < 10; i++)
         {
             printf("    [%2d]: %08X.\n", i, g_i32ConversionData[i]);
         }
@@ -288,7 +293,7 @@ int32_t main(void)
 
     printf("Exit LPADC Auto-operation sample code\n");
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
