@@ -39,7 +39,7 @@ void PowerDownFunction(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Brown Out Detector IRQ Handler                                                                         */
 /*---------------------------------------------------------------------------------------------------------*/
-void BODOUT_IRQHandler(void)
+NVT_ITCM void BODOUT_IRQHandler(void)
 {
     /* Clear BOD Interrupt Flag */
     SYS_CLEAR_BOD_INT_FLAG();
@@ -50,7 +50,7 @@ void BODOUT_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Power-down Mode Wake-up IRQ Handler                                                                    */
 /*---------------------------------------------------------------------------------------------------------*/
-void PMC_IRQHandler(void)
+NVT_ITCM void PMC_IRQHandler(void)
 {
     /* Check system power down mode wake-up interrupt status flag */
     if (PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk)
