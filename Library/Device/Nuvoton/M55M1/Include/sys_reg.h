@@ -4,7 +4,7 @@
  * @brief    SYS register definition header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #ifndef __SYS_REG_H__
 #define __SYS_REG_H__
@@ -22,7 +22,7 @@
 
 /*---------------------- System Manger Controller -------------------------*/
 /**
-    @addtogroup SYS System Manger Controller (SYS)
+    @addtogroup SYS System Manger Controller(SYS)
     Memory Mapped Structure for SYS Controller
 @{ */
  
@@ -248,7 +248,7 @@ typedef struct
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[31:0]  |ERRADDR   |System SRAM Parity Error Address
+ * |[31:0]  |ERRADDR   |System SRAM Parity Error Address (Read Only)
  * |        |          |This register shows system SRAM parity error byte address.
  * |        |          |Note: These bits are lose when D0 power is turned off.
  * @var SYS_T::SRAMPTY
@@ -479,6 +479,11 @@ typedef struct
  * |        |          |1 = HSUSB OTG PHY function Enabled.
  * |        |          |Note 1: This bit is write protected. Refer to the SYS_REGLCTL register.
  * |        |          |Note 2: This bit is lose when D1 power is turned off.
+ * |[25]    |HSUSBACT  |HSUSB PHY Active Control
+ * |        |          |This bit is used to control HSUSB PHY at reset state or active state.
+ * |        |          |0 = HSUSB PHY at reset state.
+ * |        |          |1 = HSUSB PHY at active state.
+ * |        |          |Note: After setting HSUSBEN (SYS_USBPHY[24]) to enable HSUSB PHY, user should keep HSUSB PHY at reset mode at lease 10us before changing to active mode.
  * @var SYS_T::UTCPDCTL
  * Offset: 0x34  UTCPD Control Register
  * ---------------------------------------------------------------------------------------------------
@@ -3377,6 +3382,12 @@ typedef struct
  * |        |          |1 = LPADC test mode enable.
  * |        |          |Note: This bit is only valid in alpha test mode.
  * |        |          |Note: This bit is lose when D0 power is turned off.
+ * |[13]    |VREFTMEN  |Internal VREF Test Mode Enable Bit (Write Protect)
+ * |        |          |0 = Internal VREF test mode disable.
+ * |        |          |1 = Internal VREF test mode enable.
+ * |        |          |If Internal VREF test mode enable then  PB.14 is VREF output test pin
+ * |        |          |Note: This bit is only valid in alpha test mode.
+ * |        |          |Note: This bit is lose when D0 power is turned off.
  * |[31]    |ALPHATMF  |Alpha Test Mode Flag (Read Only)
  * |        |          |This bit indicate chip enter alpha test mode.
  * |        |          |0 = Chip not enter alpha test mode.
@@ -3545,7 +3556,7 @@ typedef struct
  * |        |          |0111 = PLL1 LDO
  * |        |          |1000 = DLL0 LDO
  * |        |          |1001 = DLL1 LDO
- * |        |          |1010 = VREF OUT
+ * |        |          |1010 = Reserved.
  * |        |          |1011 = TLDO
  * |        |          |1100 = MLDO
  * |        |          |Note: These bits are write protected. Refer to the SYS_REGLCTL register.
@@ -6388,6 +6399,9 @@ typedef struct
 #define SYS_USBPHY_HSOTGPHYEN_Pos        (24)                                              /*!< SYS_T::USBPHY: HSOTGPHYEN Position     */
 #define SYS_USBPHY_HSOTGPHYEN_Msk        (0x1ul << SYS_USBPHY_HSOTGPHYEN_Pos)              /*!< SYS_T::USBPHY: HSOTGPHYEN Mask         */
 
+#define SYS_USBPHY_HSUSBACT_Pos          (25)                                              /*!< SYS_T::USBPHY: HSUSBACT Position       */
+#define SYS_USBPHY_HSUSBACT_Msk          (0x1ul << SYS_USBPHY_HSUSBACT_Pos)                /*!< SYS_T::USBPHY: HSUSBACT Mask           */
+
 #define SYS_UTCPDCTL_IOMODE_Pos          (0)                                               /*!< SYS_T::UTCPDCTL: IOMODE Position       */
 #define SYS_UTCPDCTL_IOMODE_Msk          (0x1ul << SYS_UTCPDCTL_IOMODE_Pos)                /*!< SYS_T::UTCPDCTL: IOMODE Mask           */
 
@@ -7888,6 +7902,9 @@ typedef struct
 #define SYS_ALTCTL0_LPADCTMEN_Pos        (12)                                              /*!< SYS_T::ALTCTL0: LPADCTMEN Position     */
 #define SYS_ALTCTL0_LPADCTMEN_Msk        (0x1ul << SYS_ALTCTL0_LPADCTMEN_Pos)              /*!< SYS_T::ALTCTL0: LPADCTMEN Mask         */
 
+#define SYS_ALTCTL0_VREFTMEN_Pos         (13)                                              /*!< SYS_T::ALTCTL0: VREFTMEN Position      */
+#define SYS_ALTCTL0_VREFTMEN_Msk         (0x1ul << SYS_ALTCTL0_VREFTMEN_Pos)               /*!< SYS_T::ALTCTL0: VREFTMEN Mask          */
+
 #define SYS_ALTCTL0_ALPHATMF_Pos         (31)                                              /*!< SYS_T::ALTCTL0: ALPHATMF Position      */
 #define SYS_ALTCTL0_ALPHATMF_Msk         (0x1ul << SYS_ALTCTL0_ALPHATMF_Pos)               /*!< SYS_T::ALTCTL0: ALPHATMF Mask          */
 
@@ -8932,8 +8949,8 @@ typedef struct
 #define SYS_LXTTCTL_TEMP_TRIM_Pos        (12)                                              /*!< SYS_T::LXTTCTL: TEMP_TRIM Position     */
 #define SYS_LXTTCTL_TEMP_TRIM_Msk        (0x3ul << SYS_LXTTCTL_TEMP_TRIM_Pos)              /*!< SYS_T::LXTTCTL: TEMP_TRIM Mask         */
 
-/** @} SYS_CONST */
-/** @} end of SYS register group */
-/** @} end of REGISTER group */
+/**@}*/ /* SYS_CONST */
+/**@}*/ /* end of SYS register group */
+/**@}*/ /* end of REGISTER group */
 
 #endif /* __SYS_REG_H__ */
