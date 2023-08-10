@@ -85,8 +85,8 @@
 ;   <o1> SRAM Size (in Bytes) <0x0-0x00150000:8>
 ; </h>
  *----------------------------------------------------------------------------*/
-#define SRAM_START      		0x20100000
-#define SRAM_SIZE	      		0x00150000
+#define SRAM_START      0x20100000
+#define SRAM_SIZE       0x00150000
 
 /*--------------------- Stack / Heap Configuration ---------------------------
 ; <h> Stack / Heap Configuration
@@ -158,13 +158,13 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
         .ANY (+RO)
     }
 
-    __ITCM ITCM_START ITCM_SIZE
+    ITCM ITCM_START ITCM_SIZE
     {
         .ANY (ITCM)
     }
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-    NSC_ROM TZ_NSC_START FIXED TZ_NSC_SIZE
+    NSC_ROM +0
     {
         .ANY (Veneer$$CMSE)
     }
@@ -180,12 +180,18 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
     ARM_LIB_HEAP  __HEAP_BASE EMPTY  HEAP_SIZE {}       ; Reserve empty region for heap
 #endif
 
-	__DTCM DTCM_START (DTCM_SIZE - STACK_SIZE - __STACKSEAL_SIZE)
+    DTCM_VTOR DTCM_START
     {
-		.ANY (DTCM.VTOR)
-        .ANY (DTCM.init)
-        .ANY (DTCM.zi)
+        * (DTCM.VTOR)
     }
+
+    DTCM AlignExpr(+0, 8)
+    {
+        .ANY (DTCM.Init)
+        .ANY (.bss.DTCM.ZeroInit)
+    }
+
+    ScatterAssert((ImageLength(DTCM_VTOR) + ImageLength(DTCM)) < (DTCM_SIZE - STACK_SIZE - __STACKSEAL_SIZE))	; ImageLength is uncompressed size
 
     ARM_LIB_STACK __STACK_TOP EMPTY - STACK_SIZE {}     ; Reserve empty region for stack
 
