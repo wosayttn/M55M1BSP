@@ -36,7 +36,7 @@ void SYS_Init(void)
 {
     uint32_t volatile i;
 
-   /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -50,7 +50,7 @@ void SYS_Init(void)
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-  
+
     /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
@@ -59,7 +59,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK0DIV(2);
@@ -80,7 +80,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOH_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
 
     /* Select HSUSBD */
@@ -89,7 +89,7 @@ void SYS_Init(void)
     /* Enable USB PHY */
     SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
 
-    for(i = 0; i < 0x1000; i++);   // delay > 10 us
+    for (i = 0; i < 0x1000; i++);  // delay > 10 us
 
 
     /* Enable HSUSBD module clock */
@@ -99,7 +99,7 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-     /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 }
 
@@ -128,18 +128,18 @@ int32_t main(void)
     NVIC_EnableIRQ(HSUSBD_IRQn);
 
     /* Start transaction */
-    while(1)
+    while (1)
     {
-        if(HSUSBD_IS_ATTACHED())
+        if (HSUSBD_IS_ATTACHED())
         {
             HSUSBD_Start();
             break;
         }
     }
 
-    while(1)
+    while (1)
     {
-        if(g_hsusbd_Configured)
+        if (g_hsusbd_Configured)
             MSC_ProcessCmd();
     }
 }

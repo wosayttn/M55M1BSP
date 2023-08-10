@@ -20,13 +20,13 @@
 #define USBD_VID        0x0416
 
 #ifndef __HID__
-#define USBD_PID        0xC030
+    #define USBD_PID        0xC030
 #else
-#ifdef __JOYSTICK__
-#define USBD_PID        0xC031
-#elif defined __MEDIAKEY__
-#define USBD_PID        0xC032
-#endif
+    #ifdef __JOYSTICK__
+        #define USBD_PID        0xC031
+    #elif defined __MEDIAKEY__
+        #define USBD_PID        0xC032
+    #endif
 #endif
 
 #define AUDIO_RATE  AUDIO_RATE_48K
@@ -51,12 +51,12 @@
 
 /* Define Descriptor information */
 #if(PLAY_CHANNELS == 1)
-#define PLAY_CH_CFG     1
-#define REC_CH_CFG      0
+    #define PLAY_CH_CFG     1
+    #define REC_CH_CFG      0
 #endif
 #if(PLAY_CHANNELS == 2)
-#define PLAY_CH_CFG     3
-#define REC_CH_CFG      3
+    #define PLAY_CH_CFG     3
+    #define REC_CH_CFG      3
 #endif
 
 /********************************************/
@@ -107,21 +107,21 @@
 #define SET_PROTOCOL            0x0B
 
 #ifdef __HID__
-#ifdef __MEDIAKEY__
-/* Byte 0 */
-#define HID_CTRL_MUTE        0x01
-#define HID_CTRL_VOLUME_INC  0x02
-#define HID_CTRL_VOLUME_DEC  0x04
-/* Byte 1 */
-#define HID_CTRL_PLAY        0x01
-#define HID_CTRL_STOP        0x02
-#define HID_CTRL_PAUSE       0x04
-#define HID_CTRL_NEXT        0x08
-#define HID_CTRL_PREVIOUS    0x10
-#define HID_CTRL_RECORD      0x20
-#define HID_CTRL_REWIND      0x40
-#define HID_CTRL_FF          0x80
-#endif
+    #ifdef __MEDIAKEY__
+        /* Byte 0 */
+        #define HID_CTRL_MUTE        0x01
+        #define HID_CTRL_VOLUME_INC  0x02
+        #define HID_CTRL_VOLUME_DEC  0x04
+        /* Byte 1 */
+        #define HID_CTRL_PLAY        0x01
+        #define HID_CTRL_STOP        0x02
+        #define HID_CTRL_PAUSE       0x04
+        #define HID_CTRL_NEXT        0x08
+        #define HID_CTRL_PREVIOUS    0x10
+        #define HID_CTRL_RECORD      0x20
+        #define HID_CTRL_REWIND      0x40
+        #define HID_CTRL_FF          0x80
+    #endif
 #endif
 
 
@@ -199,12 +199,12 @@ void EPD_Handler(void);
 void timer_init(void);
 void AdjustCodecPll(RESAMPLE_STATE_T r);
 #if NAU8822
-void NAU8822_Setup(void);
-void NAU8822_ConfigSampleRate(uint32_t u32SampleRate);
+    void NAU8822_Setup(void);
+    void NAU8822_ConfigSampleRate(uint32_t u32SampleRate);
 #else
-void NAU88L25_Reset(void);
-void NAU88L25_Setup(void);
-void NAU88L25_ConfigSampleRate(uint32_t u32SampleRate);
+    void NAU88L25_Reset(void);
+    void NAU88L25_Setup(void);
+    void NAU88L25_ConfigSampleRate(uint32_t u32SampleRate);
 #endif
 
 typedef struct dma_desc_t

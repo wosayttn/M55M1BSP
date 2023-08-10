@@ -14,7 +14,7 @@
 /*--------------------------------------------------------------------------*/
 void SYS_Init(void)
 {
-     uint32_t volatile i;
+    uint32_t volatile i;
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
@@ -30,7 +30,7 @@ void SYS_Init(void)
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-  
+
     /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
@@ -39,7 +39,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK0DIV(2);
@@ -60,7 +60,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOH_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
 
     /* Select HSUSBD */
@@ -69,7 +69,7 @@ void SYS_Init(void)
     /* Enable USB PHY */
     SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
 
-    for(i = 0; i < 0x1000; i++);   // delay > 10 us
+    for (i = 0; i < 0x1000; i++);  // delay > 10 us
 
 
     /* Enable HSUSBD module clock */
@@ -195,26 +195,26 @@ int32_t main(void)
     NVIC_EnableIRQ(HSUSBD_IRQn);
     HSUSBD_CLR_SE0();
 
-    while(1)
+    while (1)
     {
-        if(g_usbd_rxflag)
+        if (g_usbd_rxflag)
         {
             UAC_GetPlayData();
         }
-        else if(u8AudioPlaying && (u8TxDataCntInBuffer < 1))
+        else if (u8AudioPlaying && (u8TxDataCntInBuffer < 1))
         {
             UAC_DeviceDisable(1);
         }
 
-        if((g_usbd_UsbAudioState == UAC_START_AUDIO_RECORD) && g_usbd_txflag)
+        if ((g_usbd_UsbAudioState == UAC_START_AUDIO_RECORD) && g_usbd_txflag)
         {
             UAC_SendRecData();
         }
 
-//        if ((u8TxDataCntInBuffer != 0) && ((++i % 0x50000) == 0))
-//        {
-//            printf("%d <-> %d\n", u8TxDataCntInBuffer, u8RxDataCntInBuffer);
-//        }
+        //        if ((u8TxDataCntInBuffer != 0) && ((++i % 0x50000) == 0))
+        //        {
+        //            printf("%d <-> %d\n", u8TxDataCntInBuffer, u8RxDataCntInBuffer);
+        //        }
 #ifdef __HID__
         HID_UpdateHidData();
 #endif

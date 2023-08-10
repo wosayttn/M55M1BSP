@@ -219,17 +219,17 @@ uint8_t gu8OtherConfigDescriptorHS[] =
     /* wMaxPacketSize */
     EPA_OTHER_MAX_PKT_SIZE & 0x00FF,
     (EPA_OTHER_MAX_PKT_SIZE & 0xFF00) >> 8,
-    0x00,                           /* bInterval        */
+                                      0x00,                           /* bInterval        */
 
-    /* ENDPOINT descriptor */
-    LEN_ENDPOINT,                   /* bLength          */
-    DESC_ENDPOINT,                  /* bDescriptorType  */
-    (EP_OUTPUT | BULK_OUT_EP_NUM),  /* bEndpointAddress */
-    EP_BULK,                        /* bmAttributes     */
-    /* wMaxPacketSize */
-    EPB_OTHER_MAX_PKT_SIZE & 0x00FF,
-    (EPB_OTHER_MAX_PKT_SIZE & 0xFF00) >> 8,
-    0x00                            /* bInterval        */
+                                      /* ENDPOINT descriptor */
+                                      LEN_ENDPOINT,                   /* bLength          */
+                                      DESC_ENDPOINT,                  /* bDescriptorType  */
+                                      (EP_OUTPUT | BULK_OUT_EP_NUM),  /* bEndpointAddress */
+                                      EP_BULK,                        /* bmAttributes     */
+                                      /* wMaxPacketSize */
+                                      EPB_OTHER_MAX_PKT_SIZE & 0x00FF,
+                                      (EPB_OTHER_MAX_PKT_SIZE & 0xFF00) >> 8,
+                                      0x00                            /* bInterval        */
 };
 
 uint8_t gu8ConfigDescriptorFS[] =

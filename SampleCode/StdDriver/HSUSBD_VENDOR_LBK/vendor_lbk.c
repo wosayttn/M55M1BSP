@@ -37,24 +37,33 @@ void LBK_InitForHighSpeed(void);
 void LBK_InitForFullSpeed(void);
 void EPB_Handler(void);
 
-
-void HSUSBD_IRQHandler(void)
+/*--------------------------------------------------------------------------*/
+/**
+ * @brief       HSUSBD Interrupt Service Routine
+ *
+ * @param[in]   None
+ *
+ * @return      None
+ *
+ * @details     This function is the HSUSBD ISR
+ */
+NVT_ITCM void HSUSBD_IRQHandler(void)
 {
     __IO uint32_t IrqStL, IrqSt;
 
     IrqStL = HSUSBD->GINTSTS & HSUSBD->GINTEN;    /* get interrupt status */
 
-    if(!IrqStL)    return;
+    if (!IrqStL)    return;
 
     /* USB interrupt */
-    if(IrqStL & HSUSBD_GINTSTS_USBIF_Msk)
+    if (IrqStL & HSUSBD_GINTSTS_USBIF_Msk)
     {
         IrqSt = HSUSBD->BUSINTSTS & HSUSBD->BUSINTEN;
 
-        if(IrqSt & HSUSBD_BUSINTSTS_SOFIF_Msk)
+        if (IrqSt & HSUSBD_BUSINTSTS_SOFIF_Msk)
             HSUSBD_CLR_BUS_INT_FLAG(HSUSBD_BUSINTSTS_SOFIF_Msk);
 
-        if(IrqSt & HSUSBD_BUSINTSTS_RSTIF_Msk)
+        if (IrqSt & HSUSBD_BUSINTSTS_RSTIF_Msk)
         {
             HSUSBD_SwReset();
 
@@ -68,10 +77,11 @@ void HSUSBD_IRQHandler(void)
 
             g_DMA_RunMsk = 0;
 
-            if(HSUSBD->OPER & 0x04)   /* high speed */
+            if (HSUSBD->OPER & 0x04)  /* high speed */
                 LBK_InitForHighSpeed();
             else                    /* full speed */
                 LBK_InitForFullSpeed();
+
             HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_SETUPPKIEN_Msk);
             HSUSBD_SET_ADDR(0);
             HSUSBD_ENABLE_BUS_INT(HSUSBD_BUSINTEN_RSTIEN_Msk | HSUSBD_BUSINTEN_RESUMEIEN_Msk | HSUSBD_BUSINTEN_SUSPENDIEN_Msk);
@@ -86,33 +96,33 @@ void HSUSBD_IRQHandler(void)
             g_BulkOutDataReady = 0;
         }
 
-        if(IrqSt & HSUSBD_BUSINTSTS_RESUMEIF_Msk)
+        if (IrqSt & HSUSBD_BUSINTSTS_RESUMEIF_Msk)
         {
             HSUSBD_ENABLE_BUS_INT(HSUSBD_BUSINTEN_RSTIEN_Msk | HSUSBD_BUSINTEN_SUSPENDIEN_Msk);
             HSUSBD_CLR_BUS_INT_FLAG(HSUSBD_BUSINTSTS_RESUMEIF_Msk);
         }
 
-        if(IrqSt & HSUSBD_BUSINTSTS_SUSPENDIF_Msk)
+        if (IrqSt & HSUSBD_BUSINTSTS_SUSPENDIF_Msk)
         {
             HSUSBD_ENABLE_BUS_INT(HSUSBD_BUSINTEN_RSTIEN_Msk | HSUSBD_BUSINTEN_RESUMEIEN_Msk);
             HSUSBD_CLR_BUS_INT_FLAG(HSUSBD_BUSINTSTS_SUSPENDIF_Msk);
         }
 
-        if(IrqSt & HSUSBD_BUSINTSTS_HISPDIF_Msk)
+        if (IrqSt & HSUSBD_BUSINTSTS_HISPDIF_Msk)
         {
             HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_SETUPPKIEN_Msk);
             HSUSBD_CLR_BUS_INT_FLAG(HSUSBD_BUSINTSTS_HISPDIF_Msk);
         }
 
-        if(IrqSt & HSUSBD_BUSINTSTS_DMADONEIF_Msk)
+        if (IrqSt & HSUSBD_BUSINTSTS_DMADONEIF_Msk)
         {
             //printf("IRQ, DMACTL = 0x%x\n", HSUSBD->DMACTL);
 
             HSUSBD_CLR_BUS_INT_FLAG(HSUSBD_BUSINTSTS_DMADONEIF_Msk);
 
-            if(HSUSBD->DMACTL & HSUSBD_DMACTL_DMARD_Msk)
+            if (HSUSBD->DMACTL & HSUSBD_DMACTL_DMARD_Msk)
             {
-                if(g_hsusbd_ShortPacket == 1)
+                if (g_hsusbd_ShortPacket == 1)
                 {
                     printf("DMA IRQ g_hsusbd_ShortPacket==1\n");
                     HSUSBD->EP[EPA].EPRSPCTL = (HSUSBD->EP[EPA].EPRSPCTL & 0x10) | HSUSBD_EP_RSPCTL_SHORTTXEN;    // packet end
@@ -123,34 +133,34 @@ void HSUSBD_IRQHandler(void)
             /*
              *  Is this DMA complete interrupt for isochronous-in?
              */
-            if((HSUSBD->DMACTL & 0xf) == ISO_IN_EP_NUM)
+            if ((HSUSBD->DMACTL & 0xf) == ISO_IN_EP_NUM)
                 g_DMA_RunMsk &= ~(1 << ISO_IN_EP_NUM);
 
             /*
              *  Is this DMA complete interrupt for isochronous-out?
              */
-            if((HSUSBD->DMACTL & 0xf) == ISO_OUT_EP_NUM)
+            if ((HSUSBD->DMACTL & 0xf) == ISO_OUT_EP_NUM)
                 g_DMA_RunMsk &= ~(1 << ISO_OUT_EP_NUM);
 
             /*
              *  Is this DMA complete interrupt for bulk-in?
              */
-            if((HSUSBD->DMACTL & 0xf) == BULK_IN_EP_NUM)
+            if ((HSUSBD->DMACTL & 0xf) == BULK_IN_EP_NUM)
                 g_DMA_RunMsk &= ~(1 << BULK_IN_EP_NUM);
 
             /*
              *  Is this DMA complete interrupt for bulk-out?
              */
-            if((HSUSBD->DMACTL & 0xf) == BULK_OUT_EP_NUM)
+            if ((HSUSBD->DMACTL & 0xf) == BULK_OUT_EP_NUM)
                 g_DMA_RunMsk &= ~(1 << BULK_OUT_EP_NUM);
         }
 
-        if(IrqSt & HSUSBD_BUSINTSTS_PHYCLKVLDIF_Msk)
+        if (IrqSt & HSUSBD_BUSINTSTS_PHYCLKVLDIF_Msk)
             HSUSBD_CLR_BUS_INT_FLAG(HSUSBD_BUSINTSTS_PHYCLKVLDIF_Msk);
 
-        if(IrqSt & HSUSBD_BUSINTSTS_VBUSDETIF_Msk)
+        if (IrqSt & HSUSBD_BUSINTSTS_VBUSDETIF_Msk)
         {
-            if(HSUSBD_IS_ATTACHED())
+            if (HSUSBD_IS_ATTACHED())
             {
                 /* USB Plug In */
                 HSUSBD_ENABLE_USB();
@@ -160,38 +170,40 @@ void HSUSBD_IRQHandler(void)
                 /* USB Un-plug */
                 HSUSBD_DISABLE_USB();
             }
+
             HSUSBD_CLR_BUS_INT_FLAG(HSUSBD_BUSINTSTS_VBUSDETIF_Msk);
         }
     }
 
-    if(IrqStL & HSUSBD_GINTSTS_CEPIF_Msk)
+    if (IrqStL & HSUSBD_GINTSTS_CEPIF_Msk)
     {
         IrqSt = HSUSBD->CEPINTSTS & HSUSBD->CEPINTEN;
 
-        if(IrqSt & HSUSBD_CEPINTSTS_SETUPTKIF_Msk)
+        if (IrqSt & HSUSBD_CEPINTSTS_SETUPTKIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_SETUPTKIF_Msk);
             return;
         }
 
-        if(IrqSt & HSUSBD_CEPINTSTS_SETUPPKIF_Msk)
+        if (IrqSt & HSUSBD_CEPINTSTS_SETUPPKIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_SETUPPKIF_Msk);
             HSUSBD_ProcessSetupPacket();
             return;
         }
 
-        if(IrqSt & HSUSBD_CEPINTSTS_OUTTKIF_Msk)
+        if (IrqSt & HSUSBD_CEPINTSTS_OUTTKIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_OUTTKIF_Msk);
             HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
             return;
         }
 
-        if(IrqSt & HSUSBD_CEPINTSTS_INTKIF_Msk)
+        if (IrqSt & HSUSBD_CEPINTSTS_INTKIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
-            if(!(IrqSt & HSUSBD_CEPINTSTS_STSDONEIF_Msk))
+
+            if (!(IrqSt & HSUSBD_CEPINTSTS_STSDONEIF_Msk))
             {
                 HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_TXPKIF_Msk);
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_TXPKIEN_Msk);
@@ -202,36 +214,40 @@ void HSUSBD_IRQHandler(void)
                 HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_TXPKIF_Msk);
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_TXPKIEN_Msk | HSUSBD_CEPINTEN_STSDONEIEN_Msk);
             }
+
             return;
         }
 
-        if(IrqSt & HSUSBD_CEPINTSTS_PINGIF_Msk)
+        if (IrqSt & HSUSBD_CEPINTSTS_PINGIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_PINGIF_Msk);
             return;
         }
 
-        if(IrqSt & HSUSBD_CEPINTSTS_TXPKIF_Msk)
+        if (IrqSt & HSUSBD_CEPINTSTS_TXPKIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
             HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-            if(g_hsusbd_CtrlInSize)
+
+            if (g_hsusbd_CtrlInSize)
             {
                 HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
             }
             else
             {
-                if(g_hsusbd_CtrlZero == 1)
+                if (g_hsusbd_CtrlZero == 1)
                     HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_ZEROLEN);
+
                 HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_SETUPPKIEN_Msk | HSUSBD_CEPINTEN_STSDONEIEN_Msk);
             }
+
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_TXPKIF_Msk);
             return;
         }
 
-        if(IrqSt & HSUSBD_CEPINTSTS_RXPKIF_Msk)
+        if (IrqSt & HSUSBD_CEPINTSTS_RXPKIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_RXPKIF_Msk);
             HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
@@ -239,25 +255,25 @@ void HSUSBD_IRQHandler(void)
             return;
         }
 
-        if(IrqSt & HSUSBD_CEPINTSTS_NAKIF_Msk)
+        if (IrqSt & HSUSBD_CEPINTSTS_NAKIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_NAKIF_Msk);
             return;
         }
 
-        if(IrqSt & HSUSBD_CEPINTSTS_STALLIF_Msk)
+        if (IrqSt & HSUSBD_CEPINTSTS_STALLIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STALLIF_Msk);
             return;
         }
 
-        if(IrqSt & HSUSBD_CEPINTSTS_ERRIF_Msk)
+        if (IrqSt & HSUSBD_CEPINTSTS_ERRIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_ERRIF_Msk);
             return;
         }
 
-        if(IrqSt & HSUSBD_CEPINTSTS_STSDONEIF_Msk)
+        if (IrqSt & HSUSBD_CEPINTSTS_STSDONEIF_Msk)
         {
             HSUSBD_UpdateDeviceState();
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
@@ -265,13 +281,13 @@ void HSUSBD_IRQHandler(void)
             return;
         }
 
-        if(IrqSt & HSUSBD_CEPINTSTS_BUFFULLIF_Msk)
+        if (IrqSt & HSUSBD_CEPINTSTS_BUFFULLIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_BUFFULLIF_Msk);
             return;
         }
 
-        if(IrqSt & HSUSBD_CEPINTSTS_BUFEMPTYIF_Msk)
+        if (IrqSt & HSUSBD_CEPINTSTS_BUFEMPTYIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_BUFEMPTYIF_Msk);
             return;
@@ -279,23 +295,28 @@ void HSUSBD_IRQHandler(void)
     }
 
     /* interrupt in */
-    if(IrqStL & HSUSBD_GINTSTS_EPAIF_Msk)
+    if (IrqStL & HSUSBD_GINTSTS_EPAIF_Msk)
     {
         IrqSt = HSUSBD->EP[EPA].EPINTSTS & HSUSBD->EP[EPA].EPINTEN;
-        if(HSUSBD->EP[EPA].EPINTSTS & 0x02)
+
+        if (HSUSBD->EP[EPA].EPINTSTS & 0x02)
             g_IntInDataEmpty = 1;
+
         HSUSBD_CLR_EP_INT_FLAG(EPA, IrqSt);
     }
+
     /* interrupt out */
-    if(IrqStL & HSUSBD_GINTSTS_EPBIF_Msk)
+    if (IrqStL & HSUSBD_GINTSTS_EPBIF_Msk)
     {
         IrqSt = HSUSBD->EP[EPB].EPINTSTS & HSUSBD->EP[EPB].EPINTEN;
-        if(HSUSBD->EP[EPB].EPINTSTS & 0x01)
+
+        if (HSUSBD->EP[EPB].EPINTSTS & 0x01)
             EPB_Handler();
+
         HSUSBD_CLR_EP_INT_FLAG(EPB, IrqSt);
     }
 
-    if(IrqStL & HSUSBD_GINTSTS_EPCIF_Msk)
+    if (IrqStL & HSUSBD_GINTSTS_EPCIF_Msk)
     {
         //printf("C: 0x%x, 0x%x\n", HSUSBD->EP[EPC].EPINTSTS, HSUSBD->EP[EPC].EPINTEN);
         IrqSt = HSUSBD->EP[EPC].EPINTSTS & HSUSBD->EP[EPC].EPINTEN;
@@ -303,7 +324,7 @@ void HSUSBD_IRQHandler(void)
         g_IsoInDataEmpty = 1;
     }
 
-    if(IrqStL & HSUSBD_GINTSTS_EPDIF_Msk)
+    if (IrqStL & HSUSBD_GINTSTS_EPDIF_Msk)
     {
         printf("D: 0x%x, 0x%x\n", HSUSBD->EP[EPD].EPINTSTS, HSUSBD->EP[EPD].EPINTEN);
         IrqSt = HSUSBD->EP[EPD].EPINTSTS & HSUSBD->EP[EPD].EPINTEN;
@@ -311,14 +332,14 @@ void HSUSBD_IRQHandler(void)
         g_IsoOutDataReady = 1;
     }
 
-    if(IrqStL & HSUSBD_GINTSTS_EPEIF_Msk)
+    if (IrqStL & HSUSBD_GINTSTS_EPEIF_Msk)
     {
         IrqSt = HSUSBD->EP[EPE].EPINTSTS & HSUSBD->EP[EPE].EPINTEN;
         HSUSBD_CLR_EP_INT_FLAG(EPE, IrqSt);
         g_BulkInDataEmpty = 1;
     }
 
-    if(IrqStL & HSUSBD_GINTSTS_EPFIF_Msk)
+    if (IrqStL & HSUSBD_GINTSTS_EPFIF_Msk)
     {
         IrqSt = HSUSBD->EP[EPF].EPINTSTS & HSUSBD->EP[EPF].EPINTEN;
         HSUSBD_CLR_EP_INT_FLAG(EPF, IrqSt);
@@ -335,7 +356,7 @@ void EPB_Handler(void)
 
     len = HSUSBD->EP[EPB].EPDATCNT & 0xffff;
 
-    for(i = 0; i < len; i++)
+    for (i = 0; i < len; i++)
         g_Int_Buff[i] = HSUSBD->EP[EPB].EPDAT_BYTE;
 }
 
@@ -451,7 +472,8 @@ void VendorLBK_Init(void)
     //HSUSBD->OPER = 0;
     /* Configure USB controller */
     /* Enable USB BUS, CEP and EPA global interrupt */
-    HSUSBD_ENABLE_USB_INT(HSUSBD_GINTEN_USBIEN_Msk | HSUSBD_GINTEN_CEPIEN_Msk | HSUSBD_GINTEN_EPAIEN_Msk | HSUSBD_GINTEN_EPBIEN_Msk | HSUSBD_GINTEN_EPCIEN_Msk | HSUSBD_GINTEN_EPDIEN_Msk | HSUSBD_GINTEN_EPEIEN_Msk | HSUSBD_GINTEN_EPFIEN_Msk);
+    HSUSBD_ENABLE_USB_INT(HSUSBD_GINTEN_USBIEN_Msk | HSUSBD_GINTEN_CEPIEN_Msk | HSUSBD_GINTEN_EPAIEN_Msk | HSUSBD_GINTEN_EPBIEN_Msk | HSUSBD_GINTEN_EPCIEN_Msk | HSUSBD_GINTEN_EPDIEN_Msk |
+                          HSUSBD_GINTEN_EPEIEN_Msk | HSUSBD_GINTEN_EPFIEN_Msk);
     /* Enable BUS interrupt */
     HSUSBD_ENABLE_BUS_INT(HSUSBD_BUSINTEN_DMADONEIEN_Msk | HSUSBD_BUSINTEN_RESUMEIEN_Msk | HSUSBD_BUSINTEN_RSTIEN_Msk | HSUSBD_BUSINTEN_VBUSDETIEN_Msk);
     /* Reset Address to 0 */
@@ -469,23 +491,25 @@ void VendorLBK_ClassRequest(void)
 {
     uint8_t   data_len;
 
-    if(g_IsHighSpeedMode)
+    if (g_IsHighSpeedMode)
         data_len = CEP_MAX_PKT_SIZE;
     else
         data_len = CEP_OTHER_MAX_PKT_SIZE;
 
-    if(gUsbCmd.bmRequestType & 0x80)    /* request data transfer direction */
+    if (gUsbCmd.bmRequestType & 0x80)   /* request data transfer direction */
     {
         // Device to host
-        switch(gUsbCmd.bRequest)
+        switch (gUsbCmd.bRequest)
         {
             case REQ_GET_DATA:
-                if(g_IsHighSpeedMode)
+                if (g_IsHighSpeedMode)
                     data_len = CEP_MAX_PKT_SIZE;
                 else
                     data_len = CEP_OTHER_MAX_PKT_SIZE;
-                if(gUsbCmd.wLength < data_len)
+
+                if (gUsbCmd.wLength < data_len)
                     data_len = gUsbCmd.wLength;
+
                 HSUSBD_PrepareCtrlIn((uint8_t *)&g_Ctrl_Buff, data_len);
                 HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
@@ -500,11 +524,12 @@ void VendorLBK_ClassRequest(void)
     else
     {
         // Host to device
-        switch(gUsbCmd.bRequest)
+        switch (gUsbCmd.bRequest)
         {
             case REQ_SET_DATA:
-                if(gUsbCmd.wLength < data_len)
+                if (gUsbCmd.wLength < data_len)
                     data_len = gUsbCmd.wLength;
+
                 HSUSBD_CtrlOut((uint8_t *)&g_Ctrl_Buff, data_len);
 
                 /* Status stage */
@@ -538,15 +563,16 @@ static void LBK_GetBulkOutData(void)
     HSUSBD_ENABLE_DMA();
 
     t0 = get_ticks();
-    while(1)
+
+    while (1)
     {
-        if((g_DMA_RunMsk & (1 << BULK_OUT_EP_NUM)) == 0)
+        if ((g_DMA_RunMsk & (1 << BULK_OUT_EP_NUM)) == 0)
             break;                      /* DMA done */
 
-        if(!HSUSBD_IS_ATTACHED())
+        if (!HSUSBD_IS_ATTACHED())
             break;
 
-        if(get_ticks() - t0 > 100)
+        if (get_ticks() - t0 > 100)
         {
             printf("Warning!! LBK_GetBulkOutData DMA time-out!\n");
             break;
@@ -571,15 +597,16 @@ static void LBK_PrepareBulkInData(void)
     HSUSBD_ENABLE_DMA();
 
     t0 = get_ticks();
-    while(1)
+
+    while (1)
     {
-        if((g_DMA_RunMsk & (1 << BULK_IN_EP_NUM)) == 0)
+        if ((g_DMA_RunMsk & (1 << BULK_IN_EP_NUM)) == 0)
             break;                      /* DMA done */
 
-        if(!HSUSBD_IS_ATTACHED())
+        if (!HSUSBD_IS_ATTACHED())
             break;
 
-        if(get_ticks() - t0 > 100)
+        if (get_ticks() - t0 > 100)
         {
             printf("Warning!! LBK_PrepareBulkInData DMA time-out!\n");
             break;
@@ -604,15 +631,16 @@ static void LBK_GetIsoOutData(void)
     HSUSBD_ENABLE_DMA();
 
     t0 = get_ticks();
-    while(1)
+
+    while (1)
     {
-        if((g_DMA_RunMsk & (1 << ISO_OUT_EP_NUM)) == 0)
+        if ((g_DMA_RunMsk & (1 << ISO_OUT_EP_NUM)) == 0)
             break;                      /* DMA done */
 
-        if(!HSUSBD_IS_ATTACHED())
+        if (!HSUSBD_IS_ATTACHED())
             break;
 
-        if(get_ticks() - t0 > 100)
+        if (get_ticks() - t0 > 100)
         {
             printf("Warning!! LBK_GetIsoOutData DMA time-out!\n");
             break;
@@ -635,15 +663,16 @@ static void LBK_PrepareIsoInData(void)
     HSUSBD_ENABLE_DMA();
 
     t0 = get_ticks();
-    while(1)
+
+    while (1)
     {
-        if((g_DMA_RunMsk & (1 << ISO_IN_EP_NUM)) == 0)
+        if ((g_DMA_RunMsk & (1 << ISO_IN_EP_NUM)) == 0)
             break;                      /* DMA done */
 
-        if(!HSUSBD_IS_ATTACHED())
+        if (!HSUSBD_IS_ATTACHED())
             break;
 
-        if(get_ticks() - t0 > 100)
+        if (get_ticks() - t0 > 100)
         {
             printf("Warning!! LBK_PrepareIsoInData DMA time-out!\n");
             break;
@@ -655,35 +684,37 @@ void VendorLBK_ProcessData(void)
 {
     int         i;
 
-    if(g_IntInDataEmpty)
+    if (g_IntInDataEmpty)
     {
         g_IntInDataEmpty = 0;
+
         /* Prepare the data for next interrupt-in transfer */
-        for(i = 0; i < g_u32EpAMaxPacketSize; i++)
+        for (i = 0; i < g_u32EpAMaxPacketSize; i++)
             HSUSBD->EP[EPA].EPDAT_BYTE = g_Int_Buff[i];
+
         HSUSBD->EP[EPA].EPTXCNT = g_u32EpAMaxPacketSize;
         HSUSBD_ENABLE_EP_INT(EPA, HSUSBD_EPINTEN_INTKIEN_Msk);
     }
 
-    if(g_IsoInDataEmpty && !(HSUSBD->DMACTL & HSUSBD_DMACTL_DMAEN_Msk))
+    if (g_IsoInDataEmpty && !(HSUSBD->DMACTL & HSUSBD_DMACTL_DMAEN_Msk))
     {
         g_IsoInDataEmpty = 0;
         LBK_PrepareIsoInData();
     }
 
-    if(g_IsoOutDataReady && !(HSUSBD->DMACTL & HSUSBD_DMACTL_DMAEN_Msk))
+    if (g_IsoOutDataReady && !(HSUSBD->DMACTL & HSUSBD_DMACTL_DMAEN_Msk))
     {
         g_IsoOutDataReady = 0;
         LBK_GetIsoOutData();
     }
 
-    if(g_BulkOutDataReady && !(HSUSBD->DMACTL & HSUSBD_DMACTL_DMAEN_Msk))
+    if (g_BulkOutDataReady && !(HSUSBD->DMACTL & HSUSBD_DMACTL_DMAEN_Msk))
     {
         g_BulkOutDataReady = 0;
         LBK_GetBulkOutData();
     }
 
-    if(g_BulkInDataEmpty && !(HSUSBD->DMACTL & HSUSBD_DMACTL_DMAEN_Msk))
+    if (g_BulkInDataEmpty && !(HSUSBD->DMACTL & HSUSBD_DMACTL_DMAEN_Msk))
     {
         g_BulkInDataEmpty = 0;
         LBK_PrepareBulkInData();

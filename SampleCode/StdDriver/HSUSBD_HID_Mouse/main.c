@@ -31,7 +31,7 @@ void SYS_Init(void)
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-  
+
     /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
@@ -40,7 +40,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK0DIV(2);
@@ -61,7 +61,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOH_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
 
     /* Select HSUSBD */
@@ -70,7 +70,7 @@ void SYS_Init(void)
     /* Enable USB PHY */
     SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
 
-    for(i = 0; i < 0x1000; i++);   // delay > 10 us
+    for (i = 0; i < 0x1000; i++);  // delay > 10 us
 
 
     /* Enable HSUSBD module clock */
@@ -96,8 +96,8 @@ void GPIO_Init(void)
     PH->DBCTL = 0x16; // Debounce time is about 6ms
     NVIC_EnableIRQ(GPH_IRQn);
 }
-
-void GPH_IRQHandler(void)
+/* GPH Interrupt handler */
+NVT_ITCM void GPH_IRQHandler(void)
 {
     PH->INTSRC = 0x1;
     s_u8RemouteWakeup = 1;
@@ -118,15 +118,16 @@ void PowerDown(void)
     g_u8Suspend = 0;
     HSUSBD_ENABLE_USB();
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk))
-        if(--u32TimeOutCnt == 0) break;
+
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk))
+        if (--u32TimeOutCnt == 0) break;
 
     /* Clear PWR_DOWN_EN if it is not clear by itself */
-    if(PMC->PWRCTL & PMC_PWRCTL_PDEN_Msk)
+    if (PMC->PWRCTL & PMC_PWRCTL_PDEN_Msk)
         PMC->PWRCTL ^= PMC_PWRCTL_PDEN_Msk;
 
     /* Note HOST to resume USB tree if it is suspended and remote wakeup enabled */
-    if(g_hsusbd_RemoteWakeupEn && s_u8RemouteWakeup)
+    if (g_hsusbd_RemoteWakeupEn && s_u8RemouteWakeup)
     {
         /* Generate resume */
         HSUSBD->OPER |= HSUSBD_OPER_RESUMEEN_Msk;
@@ -170,19 +171,19 @@ int32_t main(void)
     /* Start transaction */
     HSUSBD_Start();
 
-    while(1)
+    while (1)
     {
         /* Enter power down when USB suspend */
-        if(g_u8Suspend)
+        if (g_u8Suspend)
         {
             PowerDown();
 
             /* Waiting for key release */
-            while((GPIO_GET_IN_DATA(PH) & 0x1) != 0x1);
+            while ((GPIO_GET_IN_DATA(PH) & 0x1) != 0x1);
         }
 
         /* Move mouse when Key pressed */
-        if((GPIO_GET_IN_DATA(PH) & 0x1) == 0x0)
+        if ((GPIO_GET_IN_DATA(PH) & 0x1) == 0x0)
             HID_UpdateMouseData();
     }
 }

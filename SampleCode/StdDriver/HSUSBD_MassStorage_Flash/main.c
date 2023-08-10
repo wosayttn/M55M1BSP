@@ -17,7 +17,7 @@ void SYS_Init(void)
 {
     uint32_t volatile i;
 
-   /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -31,7 +31,7 @@ void SYS_Init(void)
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-  
+
     /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
@@ -40,7 +40,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK0DIV(2);
@@ -61,7 +61,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOH_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
 
     /* Select HSUSBD */
@@ -70,7 +70,7 @@ void SYS_Init(void)
     /* Enable USB PHY */
     SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
 
-    for(i = 0; i < 0x1000; i++);   // delay > 10 us
+    for (i = 0; i < 0x1000; i++);  // delay > 10 us
 
 
     /* Enable HSUSBD module clock */
@@ -80,14 +80,14 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-     /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 }
 
 int32_t main(void)
 {
     uint32_t au32Config[2];
-  
+
     /* Unlock protected registers */
     SYS_UnlockReg();
     /* Init System, peripheral clock and multi-function I/O */
@@ -114,23 +114,24 @@ int32_t main(void)
     FMC_ENABLE_AP_UPDATE();
 
     /* Check if Data Flash Size is 64K. If not, to re-define Data Flash size and to enable Data Flash function */
-    if(FMC_ReadConfig(au32Config, 2) < 0) //wait FMC modified
+    if (FMC_ReadConfig(au32Config, 2) < 0) //wait FMC modified
         return -1;
 
-    if(((au32Config[0] & 0x01) == 1) || (au32Config[1] != DATA_FLASH_BASE))
+    if (((au32Config[0] & 0x01) == 1) || (au32Config[1] != DATA_FLASH_BASE))
     {
         FMC_ENABLE_CFG_UPDATE();
         au32Config[0] &= ~0x1;
         au32Config[1] = DATA_FLASH_BASE;
-      
-        if(FMC_WriteConfig(FMC_USER_CONFIG_0,au32Config[0]) < 0)   //wait FMC modified
+
+        if (FMC_WriteConfig(FMC_USER_CONFIG_0, au32Config[0]) < 0) //wait FMC modified
             return -1;
 
-        if(FMC_WriteConfig(FMC_USER_CONFIG_1,au32Config[1]) < 0)   //wait FMC modified
+        if (FMC_WriteConfig(FMC_USER_CONFIG_1, au32Config[1]) < 0) //wait FMC modified
             return -1;
 
         FMC_ReadConfig(au32Config, 2);
-        if(((au32Config[0] & 0x01) == 1) || (au32Config[1] != DATA_FLASH_BASE))
+
+        if (((au32Config[0] & 0x01) == 1) || (au32Config[1] != DATA_FLASH_BASE))
         {
             printf("Error: Program Config Failed!\n");
 
@@ -143,7 +144,7 @@ int32_t main(void)
         printf("chip reset\n");
 
         /* Reset Chip to reload new CONFIG value */
-         SYS_ResetChip();
+        SYS_ResetChip();
     }
 
     HSUSBD_Open(&gsHSInfo, MSC_ClassRequest, NULL);
@@ -155,18 +156,18 @@ int32_t main(void)
     NVIC_EnableIRQ(HSUSBD_IRQn);
 
     /* Start transaction */
-    while(1)
+    while (1)
     {
-        if(HSUSBD_IS_ATTACHED())
+        if (HSUSBD_IS_ATTACHED())
         {
             HSUSBD_Start();
             break;
         }
     }
 
-    while(1)
+    while (1)
     {
-        if(g_hsusbd_Configured)
+        if (g_hsusbd_Configured)
             MSC_ProcessCmd();
     }
 }

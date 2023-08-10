@@ -291,11 +291,11 @@
                 </option>
                 <option>
                     <name>IExtraOptionsCheck</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IExtraOptions</name>
-                    <state></state>
+                    <state>--diag_suppress Pa082</state>
                 </option>
                 <option>
                     <name>CCLangConformance</name>
@@ -750,7 +750,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\M55M1.icf</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\IAR\M55M1.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -1808,7 +1808,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\M55M1.icf</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\IAR\M55M1.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -2127,40 +2127,40 @@
     <group>
         <name>Driver</name>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sys.c</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\clk.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\gpio.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\uart.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\hsusbd.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\pmc.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\timer.c</name>
-        </file>		
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
+        </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\hsusbd.c</name>
-        </file>		
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sys.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\timer.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\uart.c</name>
+        </file>
     </group>
     <group>
         <name>User</name>
-        <file>
-            <name>$PROJ_DIR$\..\main.c</name>
-        </file>
         <file>
             <name>$PROJ_DIR$\..\descriptors.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\hid_mouse.c</name>
         </file>
-     </group>
+        <file>
+            <name>$PROJ_DIR$\..\main.c</name>
+        </file>
+    </group>
 </project>

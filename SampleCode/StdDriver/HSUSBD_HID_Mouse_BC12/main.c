@@ -19,7 +19,7 @@ void SYS_Init(void)
 {
     uint32_t volatile i;
 
-   /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -33,7 +33,7 @@ void SYS_Init(void)
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-  
+
     /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
@@ -42,7 +42,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK0DIV(2);
@@ -65,7 +65,7 @@ void SYS_Init(void)
     /* Enable UART0 module clock */
     CLK_EnableModuleClock(UART0_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
 
     /* Select HSUSBD */
@@ -74,7 +74,7 @@ void SYS_Init(void)
     /* Enable USB PHY */
     SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
 
-    for(i = 0; i < 0x1000; i++);   // delay > 10 us
+    for (i = 0; i < 0x1000; i++);  // delay > 10 us
 
 
     /* Enable HSUSBD module clock */
@@ -90,7 +90,7 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-     /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
 }
@@ -115,10 +115,11 @@ int32_t SysTick_Delay(TIMER_T *dummy_for_compatible __attribute__((unused)), uin
     SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
 
     i32ErrCode = 0;
+
     /* Waiting for down-count to zero */
-    while((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0)
+    while ((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             i32ErrCode = -1;
             break;
@@ -145,7 +146,7 @@ int32_t SysTick_Delay(TIMER_T *dummy_for_compatible __attribute__((unused)), uin
  */
 S_HSUSBD_BC12_PD_STATUS HSUSBD_BC_Detect(TIMER_T *pu32TimerSrc)
 {
-/* TDCD_TIMEOUT (BC1.2 SPEC): 300ms ~ 900ms */
+    /* TDCD_TIMEOUT (BC1.2 SPEC): 300ms ~ 900ms */
 #define DCD_TIMEOUT_PERIOD_US 349000UL
 
 #define ENABLE_BC12_DBG_MSG 0
@@ -157,17 +158,17 @@ S_HSUSBD_BC12_PD_STATUS HSUSBD_BC_Detect(TIMER_T *pu32TimerSrc)
 
 #define BC_DELAY(us) pfnBC_Delay(pu32TimerSrc, us)
 
-    int32_t (*pfnBC_Delay)(TIMER_T *dummy, uint32_t us);
+    int32_t (*pfnBC_Delay)(TIMER_T * dummy, uint32_t us);
 
-    if(pu32TimerSrc == NULL)
+    if (pu32TimerSrc == NULL)
     {
         pfnBC_Delay = SysTick_Delay;
     }
-    else if((pu32TimerSrc == TIMER0) ||
-            (pu32TimerSrc == TIMER1) ||
-            (pu32TimerSrc == TIMER2) ||
-            (pu32TimerSrc == TIMER3)
-           )
+    else if ((pu32TimerSrc == TIMER0) ||
+             (pu32TimerSrc == TIMER1) ||
+             (pu32TimerSrc == TIMER2) ||
+             (pu32TimerSrc == TIMER3)
+            )
     {
         pfnBC_Delay = TIMER_Delay;
     }
@@ -178,9 +179,10 @@ S_HSUSBD_BC12_PD_STATUS HSUSBD_BC_Detect(TIMER_T *pu32TimerSrc)
     }
 
     HSUSBD_ENABLE_PHY();
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
 
-    if(HSUSBD_IS_ATTACHED() == 0)
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+
+    if (HSUSBD_IS_ATTACHED() == 0)
     {
         HSUSBD->BCDC = 0;
         return HSUSBD_BC12_VBUS_OFF;
@@ -199,13 +201,13 @@ S_HSUSBD_BC12_PD_STATUS HSUSBD_BC_Detect(TIMER_T *pu32TimerSrc)
     BC_DELAY(30000); // 30 ms: wait PHY LDO stable
     HSUSBD->BCDC |= HSUSBD_BCDC_DETMOD_VBUS;
 
-    while((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) == HSUSBD_BCDC_DETSTS_VBUS_UNREACH) {}
+    while ((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) == HSUSBD_BCDC_DETSTS_VBUS_UNREACH) {}
 
     DBG_MSG("\nCheck VBUS OK\n");
     DBG_MSG("Check data pin contact status\n");
     HSUSBD->BCDC = HSUSBD_BCDC_BCDEN_Msk | HSUSBD_BCDC_DETMOD_DCD;
 
-    if(pu32TimerSrc == NULL)   /* Use SysTick timer */
+    if (pu32TimerSrc == NULL)  /* Use SysTick timer */
     {
 DCD_REPEAT_SYSTICK:
         SYS_UnlockReg();
@@ -215,28 +217,28 @@ DCD_REPEAT_SYSTICK:
         SysTick->LOAD = DCD_TIMEOUT_PERIOD_US * (SystemCoreClock / 1000000);
         SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
 
-        while(1)
+        while (1)
         {
             /* Using S/W debounce, TDCD_DBNC is 10 ms totally */
-            if((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) == HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
+            if ((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) == HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
             {
                 BC_DELAY(5000);
 
-                if((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) != HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
+                if ((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) != HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
                 {
                     goto DCD_REPEAT_SYSTICK;
                 }
 
                 BC_DELAY(4000);
 
-                if((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) != HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
+                if ((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) != HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
                 {
                     goto DCD_REPEAT_SYSTICK;
                 }
 
                 BC_DELAY(1000);
 
-                if((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) != HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
+                if ((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) != HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
                 {
                     goto DCD_REPEAT_SYSTICK;
                 }
@@ -247,7 +249,7 @@ DCD_REPEAT_SYSTICK:
                 break;
             }
 
-            if(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
+            if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
             {
                 SysTick->CTRL = 0;
                 SYS_LockReg();
@@ -269,24 +271,24 @@ DCD_REPEAT_TIMER:
             pu32TimerSrc->CTL = 0UL;
             pu32TimerSrc->EXTCTL = 0UL;
 
-            if(u32Clk <= 1000000UL)  // Minimin delay is 1000 us if timer clock source is <= 1 MHz
+            if (u32Clk <= 1000000UL) // Minimin delay is 1000 us if timer clock source is <= 1 MHz
             {
-                if(u32Usec < 1000UL)
+                if (u32Usec < 1000UL)
                     u32Usec = 1000UL;
 
-                if(u32Usec > 1000000UL)
+                if (u32Usec > 1000000UL)
                     u32Usec = 1000000UL;
             }
             else
             {
-                if(u32Usec < 100UL)
+                if (u32Usec < 100UL)
                     u32Usec = 100UL;
 
-                if(u32Usec > 1000000UL)
+                if (u32Usec > 1000000UL)
                     u32Usec = 1000000UL;
             }
 
-            if(u32Clk <= 1000000UL)
+            if (u32Clk <= 1000000UL)
             {
                 u32Prescale = 0UL;
                 u32NsecPerTick = 1000000000UL / u32Clk;
@@ -297,7 +299,7 @@ DCD_REPEAT_TIMER:
                 u32Cmpr = u32Usec * (u32Clk / 1000000UL);
                 u32Prescale = (u32Cmpr >> 24); /* for 24 bits CMPDAT */
 
-                if(u32Prescale > 0UL)
+                if (u32Prescale > 0UL)
                     u32Cmpr = u32Cmpr / (u32Prescale + 1UL);
             }
 
@@ -308,33 +310,33 @@ DCD_REPEAT_TIMER:
             // bit cannot set in time while we check it. And the while loop below return
             // immediately, so put a tiny delay here allowing timer start counting and
             // raise active flag.
-            for(; u32Delay > 0UL; u32Delay--)
+            for (; u32Delay > 0UL; u32Delay--)
             {
                 __NOP();
             }
 
-            while(1)
+            while (1)
             {
                 /* Using S/W debounce, TDCD_DBNC is 10 ms totally */
-                if((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) == HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
+                if ((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) == HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
                 {
                     BC_DELAY(5000);
 
-                    if((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) != HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
+                    if ((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) != HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
                     {
                         goto DCD_REPEAT_TIMER;
                     }
 
                     BC_DELAY(2000);
 
-                    if((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) != HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
+                    if ((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) != HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
                     {
                         goto DCD_REPEAT_TIMER;
                     }
 
                     BC_DELAY(3000);
 
-                    if((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) != HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
+                    if ((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) != HSUSBD_BCDC_DETSTS_DCD_DATA_CONTACT)
                     {
                         goto DCD_REPEAT_TIMER;
                     }
@@ -343,7 +345,7 @@ DCD_REPEAT_TIMER:
                     break;
                 }
 
-                if(!(pu32TimerSrc->CTL & TIMER_CTL_ACTSTS_Msk))
+                if (!(pu32TimerSrc->CTL & TIMER_CTL_ACTSTS_Msk))
                 {
                     DBG_MSG(" - DCD Timeout\n");
                     break;
@@ -359,7 +361,7 @@ DCD_REPEAT_TIMER:
     BC_DELAY(40000); // SPEC: TVDPSRC_ON
     BC_DELAY(1000);  // tune
 
-    if((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) == HSUSBD_BCDC_DETSTS_PD_SDP_NUSP)
+    if ((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) == HSUSBD_BCDC_DETSTS_PD_SDP_NUSP)
     {
         HSUSBD->BCDC = 0; //important: to prevent next loop un-expected pulse
         return HSUSBD_BC12_SDP;
@@ -372,7 +374,7 @@ DCD_REPEAT_TIMER:
         BC_DELAY(40000); // SPEC: TVDMSRC_ON
         BC_DELAY(5000);  // tune
 
-        if((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) == HSUSBD_BCDC_DETSTS_SD_CDP)
+        if ((HSUSBD->BCDC & HSUSBD_BCDC_DETSTS_Msk) == HSUSBD_BCDC_DETSTS_SD_CDP)
         {
             DBG_MSG("* CDP\n");
             HSUSBD->BCDC = 0; // important: to prevent next loop un-expected pulse
@@ -407,11 +409,12 @@ void PowerDown(void)
     g_u8Suspend = 0;
     HSUSBD_ENABLE_USB();
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk))
-        if(--u32TimeOutCnt == 0) break;
+
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk))
+        if (--u32TimeOutCnt == 0) break;
 
     /* Clear PWR_DOWN_EN if it is not clear by itself */
-    if(PMC->PWRCTL & PMC_PWRCTL_PDEN_Msk)
+    if (PMC->PWRCTL & PMC_PWRCTL_PDEN_Msk)
         PMC->PWRCTL ^= PMC_PWRCTL_PDEN_Msk;
 
     /* Lock protected registers */
@@ -420,7 +423,7 @@ void PowerDown(void)
 
 int32_t main(void)
 {
-   /* Init System, peripheral clock and multi-function I/O */
+    /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
     /* Unlock protected registers */
@@ -438,34 +441,34 @@ int32_t main(void)
 
 restart:
 
-    while(1)
+    while (1)
     {
         g_sChargeStatus = HSUSBD_BC_Detect(TIMER0);
 
-        if(HSUSBD_BC12_SDP == g_sChargeStatus)
+        if (HSUSBD_BC12_SDP == g_sChargeStatus)
         {
             printf("==>is SDP\n");
             break;
         }
 
-        if(HSUSBD_BC12_CDP == g_sChargeStatus)
+        if (HSUSBD_BC12_CDP == g_sChargeStatus)
         {
             printf("==>is CDP\n");
             break;
         }
 
-        if(HSUSBD_BC12_DCP == g_sChargeStatus)
+        if (HSUSBD_BC12_DCP == g_sChargeStatus)
         {
             printf("==>is DCP\n");
             break;
         }
 
-        if(HSUSBD_BC12_VBUS_OFF == g_sChargeStatus)
+        if (HSUSBD_BC12_VBUS_OFF == g_sChargeStatus)
         {
             continue;
         }
 
-        if(HSUSBD_BC12_ERROR == g_sChargeStatus)
+        if (HSUSBD_BC12_ERROR == g_sChargeStatus)
         {
             printf("parameter error\n");
             goto lexit;
@@ -485,13 +488,13 @@ restart:
     /* Start transaction */
     HSUSBD_Start();
 
-    while(1)
+    while (1)
     {
         /* Enter power down when USB suspend */
-        if(g_u8Suspend)
+        if (g_u8Suspend)
             PowerDown();
 
-        if(HSUSBD_IS_ATTACHED() == FALSE)
+        if (HSUSBD_IS_ATTACHED() == FALSE)
         {
             printf("VBUS Un-Plug\n");
             HSUSBD_SET_SE0();
@@ -503,7 +506,7 @@ restart:
 
 lexit:
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

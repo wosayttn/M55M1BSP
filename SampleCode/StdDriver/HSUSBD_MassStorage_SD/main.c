@@ -13,15 +13,15 @@
 
 uint8_t volatile g_u8SdInitFlag = 0;
 extern int32_t g_TotalSectors;
-/*--------------------------------------------------------------------------*/
 
-void SDH0_IRQHandler(void)
+/* SDH Interrupt handler */
+NVT_ITCM void SDH0_IRQHandler(void)
 {
     unsigned int volatile isr;
     unsigned int volatile ier;
 
     // FMI data abort interrupt
-    if(SDH0->GINTSTS & SDH_GINTSTS_DTAIF_Msk)
+    if (SDH0->GINTSTS & SDH_GINTSTS_DTAIF_Msk)
     {
         /* ResetAllEngine() */
         SDH0->GCTL |= SDH_GCTL_GCTLRST_Msk;
@@ -29,25 +29,28 @@ void SDH0_IRQHandler(void)
 
     //----- SD interrupt status
     isr = SDH0->INTSTS;
-    if(isr & SDH_INTSTS_BLKDIF_Msk)
+
+    if (isr & SDH_INTSTS_BLKDIF_Msk)
     {
         // block down
         SD0.DataReadyFlag = TRUE;
         SDH0->INTSTS = SDH_INTSTS_BLKDIF_Msk;
     }
 
-    if(isr & SDH_INTSTS_CDIF_Msk)
+    if (isr & SDH_INTSTS_CDIF_Msk)
     {
         // card detect
         //----- SD interrupt status
         // it is work to delay 50 times for SD_CLK = 200KHz
         {
             int volatile i;         // delay 30 fail, 50 OK
-            for(i = 0; i < 0x500; i++); // delay to make sure got updated value from REG_SDISR.
+
+            for (i = 0; i < 0x500; i++); // delay to make sure got updated value from REG_SDISR.
+
             isr = SDH0->INTSTS;
         }
 
-        if(isr & SDH_INTSTS_CDSTS_Msk)
+        if (isr & SDH_INTSTS_CDSTS_Msk)
         {
             printf("\n***** card remove !\n");
             SD0.IsCardInsert = FALSE;   // SDISR_CD_Card = 1 means card remove for GPIO mode
@@ -57,7 +60,8 @@ void SDH0_IRQHandler(void)
         {
             printf("***** card insert !\n");
             SDH_Open(SDH0, CardDetect_From_GPIO);
-            if(SDH_Probe(SDH0))
+
+            if (SDH_Probe(SDH0))
             {
                 g_u8SdInitFlag = 0;
                 printf("SD initial fail!!\n");
@@ -68,36 +72,38 @@ void SDH0_IRQHandler(void)
                 g_TotalSectors = SD0.totalSectorN;
             }
         }
+
         SDH0->INTSTS = SDH_INTSTS_CDIF_Msk;
     }
 
     // CRC error interrupt
-    if(isr & SDH_INTSTS_CRCIF_Msk)
+    if (isr & SDH_INTSTS_CRCIF_Msk)
     {
-        if(!(isr & SDH_INTSTS_CRC16_Msk))
+        if (!(isr & SDH_INTSTS_CRC16_Msk))
         {
             //printf("***** ISR sdioIntHandler(): CRC_16 error !\n");
             // handle CRC error
         }
-        else if(!(isr & SDH_INTSTS_CRC7_Msk))
+        else if (!(isr & SDH_INTSTS_CRC7_Msk))
         {
-            if(!SD0.R3Flag)
+            if (!SD0.R3Flag)
             {
                 //printf("***** ISR sdioIntHandler(): CRC_7 error !\n");
                 // handle CRC error
             }
         }
+
         SDH0->INTSTS = SDH_INTSTS_CRCIF_Msk;      // clear interrupt flag
     }
 
-    if(isr & SDH_INTSTS_DITOIF_Msk)
+    if (isr & SDH_INTSTS_DITOIF_Msk)
     {
         printf("***** ISR: data in timeout !\n");
         SDH0->INTSTS |= SDH_INTSTS_DITOIF_Msk;
     }
 
     // Response in timeout interrupt
-    if(isr & SDH_INTSTS_RTOIF_Msk)
+    if (isr & SDH_INTSTS_RTOIF_Msk)
     {
         printf("***** ISR: response in timeout !\n");
         SDH0->INTSTS |= SDH_INTSTS_RTOIF_Msk;
@@ -123,7 +129,7 @@ void SYS_Init(void)
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-  
+
     /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
@@ -132,7 +138,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK0DIV(2);
@@ -153,7 +159,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOH_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
 
     /* Select HSUSBD */
@@ -162,7 +168,7 @@ void SYS_Init(void)
     /* Enable USB PHY */
     SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
 
-    for(i = 0; i < 0x1000; i++);   // delay > 10 us
+    for (i = 0; i < 0x1000; i++);  // delay > 10 us
 
 
     /* Enable HSUSBD module clock */
@@ -212,7 +218,8 @@ int32_t main(void)
 
     /* initial SD card */
     SDH_Open(SDH0, CardDetect_From_GPIO);
-    if(SDH_Probe(SDH0))
+
+    if (SDH_Probe(SDH0))
     {
         g_u8SdInitFlag = 0;
         printf("SD initial fail!!\n");
@@ -229,18 +236,18 @@ int32_t main(void)
     NVIC_EnableIRQ(HSUSBD_IRQn);
 
     /* Start transaction */
-    while(1)
+    while (1)
     {
-        if(HSUSBD_IS_ATTACHED())
+        if (HSUSBD_IS_ATTACHED())
         {
             HSUSBD_Start();
             break;
         }
     }
 
-    while(1)
+    while (1)
     {
-        if(g_hsusbd_Configured)
+        if (g_hsusbd_Configured)
             MSC_ProcessCmd();
     }
 }

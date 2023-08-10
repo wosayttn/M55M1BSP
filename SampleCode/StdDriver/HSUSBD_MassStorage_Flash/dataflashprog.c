@@ -38,10 +38,10 @@ void DataFlashRead(uint32_t addr, uint32_t size, uint32_t buffer)
 
     pu32 = (uint32_t *)buffer;
 
-    for(i = 0; i < size / 4; i++)
+    for (i = 0; i < size / 4; i++)
     {
         /* Read from cache */
-        if(((alignAddr + i * 4) >= g_u32Tag) && ((alignAddr + i * 4) < g_u32Tag + FLASH_PAGE_SIZE))
+        if (((alignAddr + i * 4) >= g_u32Tag) && ((alignAddr + i * 4) < g_u32Tag + FLASH_PAGE_SIZE))
         {
             offset = (addr + i * 4 - g_u32Tag) / 4;
             pu32[i] = g_sectorBuf[offset];
@@ -75,24 +75,25 @@ void DataFlashWrite(uint32_t addr, uint32_t size, uint32_t buffer)
         offset = (addr & (FLASH_PAGE_SIZE - 1));
 
         /* check cache buffer */
-        if(g_u32Tag != alignAddr)
+        if (g_u32Tag != alignAddr)
         {
-            if(g_u32Tag != (uint32_t) - 1)
+            if (g_u32Tag != (uint32_t) - 1)
             {
                 /* We need to flush out cache before update it */
                 FMC_Erase(g_u32Tag);
 
-                for(i = 0; i < FLASH_PAGE_SIZE / 4; i++)
+                for (i = 0; i < FLASH_PAGE_SIZE / 4; i++)
                 {
                     FMC_Write(g_u32Tag + i * 4, g_sectorBuf[i]);
                 }
             }
 
             /* Load data to cache buffer */
-            for(i = 0; i < FLASH_PAGE_SIZE / 4; i++)
+            for (i = 0; i < FLASH_PAGE_SIZE / 4; i++)
             {
                 g_sectorBuf[i] = FMC_Read(alignAddr + i * 4);
             }
+
             g_u32Tag = alignAddr;
         }
 
@@ -100,10 +101,12 @@ void DataFlashWrite(uint32_t addr, uint32_t size, uint32_t buffer)
         pu32 = (uint32_t *)buffer;
         /* Get the update length */
         len = FLASH_PAGE_SIZE - offset;
-        if(size < len)
+
+        if (size < len)
             len = size;
+
         /* Update the destination buffer */
-        for(i = 0; i < len / 4; i++)
+        for (i = 0; i < len / 4; i++)
         {
             g_sectorBuf[offset / 4 + i] = pu32[i];
         }
@@ -111,6 +114,5 @@ void DataFlashWrite(uint32_t addr, uint32_t size, uint32_t buffer)
         size -= len;
         addr += len;
         buffer += len;
-    }
-    while(size > 0);
+    } while (size > 0);
 }

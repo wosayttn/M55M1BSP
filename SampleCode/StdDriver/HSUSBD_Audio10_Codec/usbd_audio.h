@@ -38,12 +38,12 @@
 
 /* Define Descriptor information */
 #if(PLAY_CHANNELS == 1)
-#define PLAY_CH_CFG     1
-#define REC_CH_CFG      0
+    #define PLAY_CH_CFG     1
+    #define REC_CH_CFG      0
 #endif
 #if(PLAY_CHANNELS == 2)
-#define PLAY_CH_CFG     3
-#define REC_CH_CFG      3
+    #define PLAY_CH_CFG     3
+    #define REC_CH_CFG      3
 #endif
 
 /********************************************/
@@ -143,12 +143,12 @@ void EPB_Handler(void);
 void timer_init(void);
 void AdjustCodecPll(RESAMPLE_STATE_T r);
 #if NAU8822
-void NAU8822_Setup(void);
-void NAU8822_ConfigSampleRate(uint32_t u32SampleRate);
+    void NAU8822_Setup(void);
+    void NAU8822_ConfigSampleRate(uint32_t u32SampleRate);
 #else
-void NAU88L25_Reset(void);
-void NAU88L25_Setup(void);
-void NAU88L25_ConfigSampleRate(uint32_t u32SampleRate);
+    void NAU88L25_Reset(void);
+    void NAU88L25_Setup(void);
+    void NAU88L25_ConfigSampleRate(uint32_t u32SampleRate);
 #endif
 
 typedef struct dma_desc_t
