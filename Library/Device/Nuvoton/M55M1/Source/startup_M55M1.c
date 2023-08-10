@@ -187,9 +187,16 @@ void WWDT1_IRQHandler    (void) __attribute__((weak, alias("Default_Handler")));
     #pragma GCC diagnostic ignored "-Wpedantic"
 #endif
 
-/* Initial vector table */
-/* In IAR - IRQ handlers referenced in INIT_VECTOR_TABLE are not affected by 'initialize by copy'. */
-const VECTOR_TABLE_Type INIT_VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
+/* Static vector table
+ * For performance, M55M1 places vector table in DTCM by default.
+ * User can define NVT_VECTOR_ON_FLASH to place vector table in Flash.
+ *
+ * If NVT_VECTOR_ON_FLASH is defined and use IAR,
+ *   IRQ handlers referenced in __VECTOR_TABLE (__vector_table) are protected and
+ *   not affected by 'initialize by copy'. It means IRQ handler must placed in Flash.
+ */
+const VECTOR_TABLE_Type __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
+#ifndef NVT_VECTOR_ON_FLASH
 {
     (VECTOR_TABLE_Type)(&__INITIAL_SP),       /*       Initial Stack Pointer                            */
     Reset_Handler,                            /*       Reset Handler                                    */
@@ -201,8 +208,9 @@ const VECTOR_TABLE_Type INIT_VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
     SecureFault_Handler,                      /*    -9 Secure Fault Handler                             */
 };
 
-/* Declare new vector table in DTCM */
+/* Declare new vector table placed in DTCM */
 const VECTOR_TABLE_Type DTCM_VECTOR_TABLE[] NVT_DTCM_VTOR =
+#endif
 {
     (VECTOR_TABLE_Type)(&__INITIAL_SP),       /*       Initial Stack Pointer                            */
     Reset_Handler,                            /*       Reset Handler                                    */

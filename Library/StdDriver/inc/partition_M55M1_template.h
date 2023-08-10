@@ -185,7 +185,7 @@
 #define SCU_INIT_D1PNS0_VAL         0x0
 #define SCU_INIT_D1PNS1_VAL         0x0
 #define SCU_INIT_D1PNS2_VAL         0x0
-#define SCU_INIT_D1PNS4_VAL         0x2000
+#define SCU_INIT_D1PNS4_VAL         0x0
 
 /*
 // </h>
@@ -293,7 +293,7 @@
 //   <o.14>  PC14      <0=> Secure <1=> Non-secure
 // </h>
 */
-#define SCU_INIT_IONS2_VAL          0x00000003
+#define SCU_INIT_IONS2_VAL          0x00000000
 
 /*
 // Bit 0..31
@@ -803,6 +803,6 @@
     SAU->RNR  =  (n                                     & SAU_RNR_REGION_Msk); \
     SAU->RBAR =  (SAU_INIT_START##n                     & SAU_RBAR_BADDR_Msk); \
     SAU->RLAR =  (SAU_INIT_END##n                       & SAU_RLAR_LADDR_Msk) | \
-                ((SAU_INIT_NSC##n << SAU_RLAR_NSC_Pos)  & SAU_RLAR_NSC_Msk)   | 1U
+                 ((SAU_INIT_NSC##n << SAU_RLAR_NSC_Pos)  & SAU_RLAR_NSC_Msk)   | 1U
 
 #endif  /* PARTITION_M55M1_TEMPLATE_H */

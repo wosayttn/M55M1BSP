@@ -1,29 +1,28 @@
 /****************************************************************************//**
- * @file     main.c
- * @version  V1.0
- * @brief    Implement a code and execute in SRAM to program embedded Flash.
+ * @file    main.c
+ * @version V1.0
+ * @brief   Implement a code and execute in SRAM to program embedded Flash.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
-*****************************************************************************/
+ *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
 
-#define TOTAL_VECTORS   (TOTAL_IRQn_CNT)                                    /* Total vector numbers */
-uint32_t g_au32Vector[TOTAL_IRQn_CNT] __ALIGNED(FMC_VECMAP_SIZE) = { 0 };   /* Vector space in SRAM */
-
+/* Vector table has been placed in DTCM by default. */
 extern int32_t FlashAccess_OnSRAM(void);
 
 volatile uint32_t g_u32Ticks = 0;
-void SysTick_Handler()
+
+/* Declared NVT_ITCM to place SysTick_Handler in ITCM */
+NVT_ITCM void SysTick_Handler(void)
 {
-    g_u32Ticks++;
-
-    if ((g_u32Ticks % 1000) == 0)
+    //if ((g_u32Ticks++ % 1000) == 0)
     {
-        printf("Time elapse: %d\n", g_u32Ticks / 1000);
+        //printf("[%s@0x%08X] Time elapsed: %d\n", __func__, __PC(), (g_u32Ticks / 1000));
     }
-
+    printf("[%s@0x%08X] Time elapsed: %d\n", __func__, __PC(), (g_u32Ticks++));
 }
 
 void SYS_Init(void)
@@ -79,15 +78,6 @@ int32_t main(void)
 
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-
-    /* Init Vector Table to SRAM */
-    for (i = 0; i < TOTAL_VECTORS; i++)
-    {
-        g_au32Vector[i] = pu32Vectors[i];
-    }
-
-    SCB->VTOR = (uint32_t)&g_au32Vector[0];
-
     /* Init Debug UART for print message */
     InitDebugUart();
 
@@ -102,8 +92,7 @@ int32_t main(void)
        This sample code demonstrates how to make a sub-routine code executed in SRAM.
     */
 
-    printf("Will branch to address: 0x%x\n", (uint32_t)FlashAccess_OnSRAM);
-    SCB_CleanDCache();
+    printf("Will branch to SRAM address: 0x%08X\n", (uint32_t)FlashAccess_OnSRAM);
 
     if (FlashAccess_OnSRAM())
     {

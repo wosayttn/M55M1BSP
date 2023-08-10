@@ -53,8 +53,6 @@
  * | DTCM                  | 0x3000_0000 | 0x0002_0000 | NS | Non-Secure alias for DTCM       |
  * | SRAM                  | 0x2010_0000 | 0x0015_0000 | S  | 1344 kiB                        |
  * | SRAM                  | 0x3010_0000 | 0x0015_0000 | NS | Non-Secure alias for SRAM0/1/2  |
- * | LPSRAM                | 0x2031_0000 | 0x0000_2000 | S  | 8 kiB                           |
- * | LPSRAM                | 0x3031_0000 | 0x0000_2000 | NS | Non-Secure alias for LPSRAM     |
  * +-----------------------+-------------+-------------+----+---------------------------------+
  *
  *  Note: Ethos-U55 can access FLASH, internal SRAM 0,1 => activation buffers and
@@ -70,13 +68,10 @@ __HEAP_SIZE  = 0x00000800;
 /* System memory brief */
 MEMORY
 {
-  ITCM   (rx)  : ORIGIN = 0x00000010, LENGTH = 0x00010000
+  ITCM   (rx)  : ORIGIN = 0x00000000, LENGTH = 0x00010000
   FLASH  (rx)  : ORIGIN = 0x00100000, LENGTH = 0x00200000
   DTCM   (rwx) : ORIGIN = 0x20000000, LENGTH = 0x00020000
-  SRAM   (rwx) : ORIGIN = 0x20100000, LENGTH = 0x00130000
-  /* Start address and size of NonCacheable region must be 32 byte alignment */
-  SRAM_NONCACHEABLE (rw) : ORIGIN = (ORIGIN(SRAM) + LENGTH(SRAM)), LENGTH = (0x00250000 - LENGTH(SRAM))
-  LPSRAM (rwx) : ORIGIN = 0x20310000, LENGTH = 0x00002000
+  SRAM   (rwx) : ORIGIN = 0x20100000, LENGTH = 0x00150000
 }
 
 
@@ -159,13 +154,7 @@ SECTIONS
     . = ALIGN(4);
     __zero_table_start__ = .;
     LONG (__bss_start__)
-    LONG ((__bss_end__ - __bss_start__) / 4)
-    LONG (__dtcm_zi_start__)
-    LONG ((__dtcm_zi_end__ - __dtcm_zi_start__) / 4)
-    LONG (__SRAM_NONCACHEABLE_zi_start)
-    LONG ((__SRAM_NONCACHEABLE_zi_end - __SRAM_NONCACHEABLE_zi_start) / 4)
-    LONG (__lpsram_zi_start__)
-    LONG ((__lpsram_zi_end__ - __lpsram_zi_start__) / 4)
+    LONG (__bss_end__ - __bss_start__)
     __zero_table_end__ = .;
   } > FLASH
 
@@ -174,25 +163,15 @@ SECTIONS
     . = ALIGN(4);
     __copy_table_start__ = .;
 
-    /* Section to be copied - part 1: RW data for SRAM */
+    /* Section to be copied - part 1: RW data for for DTCM */
     LONG (__eitcm)
     LONG (__data_start__)
-    LONG ((__data_end__ - __data_start__) / 4)
+    LONG (__data_end__ - __data_start__)
 
-    /* Section to be copied - part 2: RO code for ITCM */
+    /* Section to be copied - part 2: RO code for for ITCM */
     LONG (__etext)
     LONG (__itcm_text_start__)
-    LONG ((__itcm_text_end__ - __itcm_text_start__ ) / 4)
-    
-    /* Section to be copied - part 3: RW data code for DTCM */
-    LONG (__esram_data)
-    LONG (__dtcm_init_start__)
-    LONG ((__dtcm_init_end__ - __dtcm_init_start__ ) / 4)
-
-    /* Section to be copied - part 4: RW data for SRAM NonCacheable */
-    LONG (__edtcm_init_data)
-    LONG (__SRAM_NONCACHEABLE_init_start)
-    LONG ((__SRAM_NONCACHEABLE_init_end - __SRAM_NONCACHEABLE_init_start) / 4)
+    LONG (__itcm_text_end__ - __itcm_text_start__ )
 
     __copy_table_end__ = .;
   } > FLASH
@@ -207,7 +186,7 @@ SECTIONS
   .itcm : AT (__etext)
   {
     __itcm_text_start__ = .;
-    *(ITCM)
+    *(itcm)
     __itcm_text_end__ = .;
   } > ITCM
 
@@ -243,17 +222,19 @@ SECTIONS
     KEEP(*(.jcr*))
     . = ALIGN(4);
     /* All data end */
-    __data_end__ = .;
-  } > SRAM
-  
+  } > DTCM
+
+  __edtcm_data = __etext + (__data_end__ - __data_start__);
+
   .sram :
   {
     . = ALIGN(16);
     *(.bss.tensor_arena)
   } > SRAM
-  
+
   .bss :
   {
+    __data_end__ = .;
     . = ALIGN(4);
     __bss_start__ = .;
     *(.bss)
@@ -261,54 +242,9 @@ SECTIONS
     *(COMMON)
     . = ALIGN(4);
     __bss_end__ = .;
-  } > SRAM AT > SRAM
-
-  __esram_data = __eitcm + (__data_end__ - __data_start__);
-  
-  .dtcm.init : AT (__esram_data)
-  {
-    __dtcm_init_start__ = .;
-    *(DTCM.VTOR)
-    *(DTCM.Init)
-    __dtcm_init_end__ = .;
-  } > DTCM
-  
-  .dtcm.zi (NOLOAD) :
-  {
-    . = ALIGN(4);
-    __dtcm_zi_start__ = .;
-    *(.bss.DTCM.ZeroInit)
-    __dtcm_zi_end__ = .;
   } > DTCM AT > DTCM
 
-  __edtcm_init_data = __esram_data + (__dtcm_init_end__ - __dtcm_init_start__);
-  
-  .NonCacheable.Init : AT (__edtcm_init_data)
-  {
-    __SRAM_NONCACHEABLE_start = .;
-    __SRAM_NONCACHEABLE_init_start = .;
-    *(NonCacheable.Init)
-    __SRAM_NONCACHEABLE_init_end = .;
-  } > SRAM_NONCACHEABLE
-  
-  .NonCacheable.zi (NOLOAD) :
-  {
-    . = ALIGN(4);
-    __SRAM_NONCACHEABLE_zi_start = .;
-    *(.bss.NonCacheable.ZeroInit)
-    __SRAM_NONCACHEABLE_zi_end = .;
-    __SRAM_NONCACHEABLE_end = (ORIGIN(SRAM_NONCACHEABLE) + LENGTH(SRAM_NONCACHEABLE));
-  } > SRAM_NONCACHEABLE AT > SRAM_NONCACHEABLE
-  
-  .lpsram (NOLOAD) :
-  {
-    . = ALIGN(4);
-    __lpsram_zi_start__ = .;
-    *(.lpSram)
-    __lpsram_zi_end__ = .;
-  } > LPSRAM AT > LPSRAM
-
-  .heap (NOLOAD) :
+  .heap (COPY) :
   {
     . = ALIGN(8);
     __end__ = .;
@@ -316,9 +252,9 @@ SECTIONS
     . = . + __HEAP_SIZE;
     . = ALIGN(8);
     __HeapLimit = .;
-  } > SRAM
+  } > DTCM
 
-  .stack (ORIGIN(DTCM) + LENGTH(DTCM) - __STACK_SIZE) (NOLOAD) :
+  .stack (ORIGIN(DTCM) + LENGTH(DTCM) - __STACK_SIZE) (COPY) :
   {
     . = ALIGN(8);
     __StackLimit = .;
@@ -328,6 +264,6 @@ SECTIONS
   } > DTCM
   PROVIDE(__stack = __StackTop);
 
-  /* Because stack placed in DTCM, cannot check if data + heap + stack exceeds SRAM limit */
-  /*ASSERT(__StackLimit >= __HeapLimit, "region SRAM overflowed with stack")*/
+  /* Check if data + heap + stack exceeds DTCM limit */
+  ASSERT(__StackLimit >= __HeapLimit, "region DTCM overflowed with stack")
 }
