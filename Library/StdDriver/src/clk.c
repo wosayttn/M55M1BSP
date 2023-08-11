@@ -595,6 +595,8 @@ void CLK_SetSCLK(uint32_t u32ClkSrc)
   * |\ref I2S1_MODULE    |\ref CLK_I2SSEL_I2S1SEL_PCLK3             |\ref CLK_I2SDIV_I2S1DIV(x)      |
   * |\ref I2S1_MODULE    |\ref CLK_I2SSEL_I2S1SEL_HIRC              |\ref CLK_I2SDIV_I2S1DIV(x)      |
   * |\ref I2S1_MODULE    |\ref CLK_I2SSEL_I2S1SEL_HIRC48M           |\ref CLK_I2SDIV_I2S1DIV(x)      |
+  * |\ref I3C0_MODULE    |\ref CLK_I3CSEL_I3C0SEL_HCLK0             | x                              |
+  * |\ref I3C0_MODULE    |\ref CLK_I3CSEL_I3C0SEL_APLL1             | x                              |    
   * |\ref KPI0_MODULE    |\ref CLK_KPISEL_KPI0SEL_HIRC48M_DIV4      |\ref CLK_KPIDIV_KPI0DIV(x)      |
   * |\ref KPI0_MODULE    |\ref CLK_KPISEL_KPI0SEL_HIRC              |\ref CLK_KPIDIV_KPI0DIV(x)      |
   * |\ref KPI0_MODULE    |\ref CLK_KPISEL_KPI0SEL_LIRC              |\ref CLK_KPIDIV_KPI0DIV(x)      |
@@ -716,7 +718,7 @@ void CLK_SetSCLK(uint32_t u32ClkSrc)
   * |\ref TMR3_MODULE    |\ref CLK_TMRSEL_TMR3SEL_LIRC              | x                              |
   * |\ref TMR3_MODULE    |\ref CLK_TMRSEL_TMR3SEL_HIRC              | x                              |
   * |\ref TMR3_MODULE    |\ref CLK_TMRSEL_TMR3SEL_HIRC48M_DIV4      | x                              |
-  * |\ref TTMR0_MODULE   |\ref CLK_TTMRSEL_TTMR0SEL_PCLK4           | x                              |
+  * |\ref TTMR0_MODULE   |\ref CLK_TTMRSEL_TTMR0SEL_PCLK2           | x                              |
   * |\ref TTMR0_MODULE   |\ref CLK_TTMRSEL_TTMR0SEL_LXT             | x                              |
   * |\ref TTMR0_MODULE   |\ref CLK_TTMRSEL_TTMR0SEL_LIRC            | x                              |
   * |\ref TTMR0_MODULE   |\ref CLK_TTMRSEL_TTMR0SEL_MIRC            | x                              |
@@ -1976,7 +1978,8 @@ uint32_t CLK_GetModuleClockDivider(uint64_t u64ModuleIdx)
   *             - \ref CLK_SCLKSEL_SCLKSEL_APLL0
   * @param[in]  u32PllFreq is PLL frequency. The range of u32PllFreq is 50 MHz ~ 500 MHz.
   *             u32PllFreq is ignored when u32SCLKSrc is not CLK_SCLKSEL_SCLKSEL_APLL0.
-  * @return     SCLK frequency
+   *            APLL clock source is fixed HIRC in this function. 
+  * @return     Current SCLK frequency
   * @details    This function is used to set the SCLK/HCLK/PCLK with clock limitations. \n
   *             The clock limitation as following below :
   *             ACLK is 200MHz
