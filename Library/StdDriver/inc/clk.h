@@ -94,9 +94,7 @@ extern "C"
 #define CLK_CANFDSEL_CANFD1SEL_HIRC48M_DIV4 (0x4UL << CLK_CANFDSEL_CANFD1SEL_Pos)       /*!< Select CANFD1 clock source from HIRC48M/4 \hideinitializer */
 
 #define CLK_CCAPSEL_CCAP0SEL_MIRC           (0x0UL << CLK_CCAPSEL_CCAP0SEL_Pos)         /*!< Select CCAP sensor clock source from MIRC \hideinitializer */
-#define CLK_CCAPSEL_CCAP0SEL_HCLK2          (0x1UL << CLK_CCAPSEL_CCAP0SEL_Pos)         /*!< Select CCAP sensor clock source from HCLK2 \hideinitializer */
 #define CLK_CCAPSEL_CCAP0SEL_HIRC           (0x2UL << CLK_CCAPSEL_CCAP0SEL_Pos)         /*!< Select CCAP sensor clock source from HIRC \hideinitializer */
-#define CLK_CCAPSEL_CCAP0SEL_APLL0_DIV2     (0x3UL << CLK_CCAPSEL_CCAP0SEL_Pos)         /*!< Select CCAP sensor clock source from APLL0/2 \hideinitializer */
 #define CLK_CCAPSEL_CCAP0SEL_HXT            (0x4UL << CLK_CCAPSEL_CCAP0SEL_Pos)         /*!< Select CCAP sensor clock source from HXT \hideinitializer */
 
 #define CLK_CLKOSEL_CLKOSEL_SYSCLK          (0x0UL << CLK_CLKOSEL_CLKOSEL_Pos)          /*!< Select CLKO clock source from SYSCLK \hideinitializer */
@@ -307,7 +305,7 @@ extern "C"
 #define CLK_TMRSEL_TMR3SEL_HIRC             (0x5UL << CLK_TMRSEL_TMR3SEL_Pos)           /*!< Select TMR3 clock source from HIRC \hideinitializer */
 #define CLK_TMRSEL_TMR3SEL_HIRC48M_DIV4     (0x6UL << CLK_TMRSEL_TMR3SEL_Pos)           /*!< Select TMR3 clock source from HIRC48M/4 \hideinitializer */
 
-#define CLK_TTMRSEL_TTMR0SEL_PCLK4          (0x0UL << CLK_TTMRSEL_TTMR0SEL_Pos)         /*!< Select TTMR0 clock source from PCLK4 \hideinitializer */
+#define CLK_TTMRSEL_TTMR0SEL_PCLK2          (0x0UL << CLK_TTMRSEL_TTMR0SEL_Pos)         /*!< Select TTMR0 clock source from PCLK2 \hideinitializer */
 #define CLK_TTMRSEL_TTMR0SEL_LXT            (0x1UL << CLK_TTMRSEL_TTMR0SEL_Pos)         /*!< Select TTMR0 clock source from LXT \hideinitializer */
 #define CLK_TTMRSEL_TTMR0SEL_LIRC           (0x2UL << CLK_TTMRSEL_TTMR0SEL_Pos)         /*!< Select TTMR0 clock source from LIRC \hideinitializer */
 #define CLK_TTMRSEL_TTMR0SEL_MIRC           (0x3UL << CLK_TTMRSEL_TTMR0SEL_Pos)         /*!< Select TTMR0 clock source from MIRC \hideinitializer */

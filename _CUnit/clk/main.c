@@ -36,7 +36,7 @@ void SYS_Init(void)
     SYS_UnlockReg();
 
 #ifdef __PLDM_EMU__
-    SYS->HIRC48MCFCTL = 0x00009999;
+    SYS->HIRC48MCFCTL = 0x0000ffff;
     SYS->ALTCTL1 |= SYS_ALTCTL1_LXTFSTB_Msk;
     PMC->IOSHCTL |= PMC_IOSHCTL_IOHR_Msk;
 #endif    
