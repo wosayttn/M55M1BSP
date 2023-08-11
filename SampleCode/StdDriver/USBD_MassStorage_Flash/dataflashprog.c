@@ -38,10 +38,10 @@ void DataFlashRead(uint32_t u32Addr, uint32_t u32Size, uint32_t u32Buffer)
 
     pu32 = (uint32_t *)u32Buffer;
 
-    for(i = 0; i < u32Size / 4; i++)
+    for (i = 0; i < u32Size / 4; i++)
     {
         /* Read from cache */
-        if(((u32AlignAddr + i * 4) >= s_u32Tag) && ((u32AlignAddr + i * 4) < s_u32Tag + FLASH_PAGE_SIZE))
+        if (((u32AlignAddr + i * 4) >= s_u32Tag) && ((u32AlignAddr + i * 4) < s_u32Tag + FLASH_PAGE_SIZE))
         {
             u32Offset = (u32Addr + i * 4 - s_u32Tag) / 4;
             pu32[i] = s_au32SectorBuf[u32Offset];
@@ -75,24 +75,25 @@ void DataFlashWrite(uint32_t u32Addr, uint32_t u32Size, uint32_t u32Buffer)
         u32Offset = (u32Addr & (FLASH_PAGE_SIZE - 1));
 
         /* check cache buffer */
-        if(s_u32Tag != u32AlignAddr)
+        if (s_u32Tag != u32AlignAddr)
         {
-            if(s_u32Tag != (uint32_t) - 1)
+            if (s_u32Tag != (uint32_t) - 1)
             {
                 /* We need to flush out cache before update it */
                 FMC_Erase(s_u32Tag);
 
-                for(i = 0; i < FLASH_PAGE_SIZE / 4; i++)
+                for (i = 0; i < FLASH_PAGE_SIZE / 4; i++)
                 {
                     FMC_Write(s_u32Tag + i * 4, s_au32SectorBuf[i]);
                 }
             }
 
             /* Load data to cache buffer */
-            for(i = 0; i < FLASH_PAGE_SIZE / 4; i++)
+            for (i = 0; i < FLASH_PAGE_SIZE / 4; i++)
             {
                 s_au32SectorBuf[i] = FMC_Read(u32AlignAddr + i * 4);
             }
+
             s_u32Tag = u32AlignAddr;
         }
 
@@ -100,10 +101,12 @@ void DataFlashWrite(uint32_t u32Addr, uint32_t u32Size, uint32_t u32Buffer)
         pu32 = (uint32_t *)u32Buffer;
         /* Get the update length */
         u32Len = FLASH_PAGE_SIZE - u32Offset;
-        if(u32Size < u32Len)
+
+        if (u32Size < u32Len)
             u32Len = u32Size;
+
         /* Update the destination buffer */
-        for(i = 0; i < u32Len / 4; i++)
+        for (i = 0; i < u32Len / 4; i++)
         {
             s_au32SectorBuf[u32Offset / 4 + i] = pu32[i];
         }
@@ -111,6 +114,5 @@ void DataFlashWrite(uint32_t u32Addr, uint32_t u32Size, uint32_t u32Buffer)
         u32Size -= u32Len;
         u32Addr += u32Len;
         u32Buffer += u32Len;
-    }
-    while(u32Size > 0);
+    } while (u32Size > 0);
 }

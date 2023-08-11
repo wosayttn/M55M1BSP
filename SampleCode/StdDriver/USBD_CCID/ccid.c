@@ -15,7 +15,16 @@
 uint32_t volatile g_u32OutToggle = 0;
 
 /*--------------------------------------------------------------------------*/
-void USBD_IRQHandler(void)
+/**
+ * @brief       USBD Interrupt Service Routine
+ *
+ * @param[in]   None
+ *
+ * @return      None
+ *
+ * @details     This function is the USBD ISR
+ */
+NVT_ITCM void USBD_IRQHandler(void)
 {
     uint32_t u32IntSts = USBD_GET_INT_FLAG();
     uint32_t u32State = USBD_GET_BUS_STATE();

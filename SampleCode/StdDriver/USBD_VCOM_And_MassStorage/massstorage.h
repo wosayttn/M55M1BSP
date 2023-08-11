@@ -66,8 +66,8 @@ static __INLINE uint32_t get_be32(uint8_t *pu8Buf)
 
 /*!<USB Mass Storage Class - Command Block Wrapper Structure */
 #if defined(__ARMCC_VERSION)
-#pragma pack(push)
-#pragma pack(1)
+    #pragma pack(push)
+    #pragma pack(1)
 #endif
 struct CBW
 {
@@ -82,13 +82,13 @@ struct CBW
     uint8_t   au8Data[14];
 };
 #if defined(__ARMCC_VERSION)
-#pragma pack(pop)
+    #pragma pack(pop)
 #endif
 
 /*!<USB Mass Storage Class - Command Status Wrapper Structure */
 #if defined(__ARMCC_VERSION)
-#pragma pack(push)
-#pragma pack(1)
+    #pragma pack(push)
+    #pragma pack(1)
 #endif
 struct CSW
 {
@@ -98,7 +98,7 @@ struct CSW
     uint8_t   bCSWStatus;
 };
 #if defined(__ARMCC_VERSION)
-#pragma pack(pop)
+    #pragma pack(pop)
 #endif
 
 /*-------------------------------------------------------------*/

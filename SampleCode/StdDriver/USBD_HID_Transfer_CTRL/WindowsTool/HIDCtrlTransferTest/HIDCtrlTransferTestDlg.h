@@ -9,11 +9,11 @@
 // CHIDCtrlTransferTestDlg dialog
 class CHIDCtrlTransferTestDlg : public CDialog
 {
-// Construction
+    // Construction
 public:
-    CHIDCtrlTransferTestDlg(CWnd* pParent = NULL);  // standard constructor
+    CHIDCtrlTransferTestDlg(CWnd *pParent = NULL);  // standard constructor
 
-// Dialog Data
+    // Dialog Data
     enum { IDD = IDD_HIDCTRLTRANSFERTEST_DIALOG };
 
     CEdit    m_VendorID;
@@ -24,10 +24,10 @@ public:
     CString  m_ProductIDString;
     CString  m_VendorIDString;
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    virtual void DoDataExchange(CDataExchange *pDX);    // DDX/DDV support
 
 
-// Implementation
+    // Implementation
 protected:
     HICON m_hIcon;
 

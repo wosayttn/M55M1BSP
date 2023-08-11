@@ -18,14 +18,12 @@
 static uint8_t volatile s_u8RemouteWakeup = 0;
 
 void SYS_Init(void);
-void UART0_Init(void);
 void GPIO_Init(void);
-void GPA_IRQHandler(void);
 void PowerDown(void);
 
 void SYS_Init(void)
 {
-   /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -35,7 +33,7 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -43,7 +41,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK0DIV(2);
@@ -71,8 +69,8 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL1_SELECT);   
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL1_SELECT);
 
     /* Select USB clock source as PLL/2 and USB clock divider as 2 */
     CLK_SetModuleClock(USBD_MODULE, CLK_USBSEL_USBSEL_APLL1_DIV2, CLK_USBDIV_USBDIV(2));
@@ -90,7 +88,7 @@ void SYS_Init(void)
     CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
 #endif
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
 
     /* Select USBD */
@@ -114,7 +112,6 @@ void SYS_Init(void)
 }
 
 
-
 void GPIO_Init(void)
 {
     /* Enable PA0~5 interrupt for wakeup */
@@ -126,15 +123,15 @@ void GPIO_Init(void)
     PA->DBCTL = 0x16; // Debounce time is about 6ms
     NVIC_EnableIRQ(GPA_IRQn);
 }
-
-void GPA_IRQHandler(void)
+/* GPA Interrupt handler */
+NVT_ITCM void GPA_IRQHandler(void)
 {
     PA->INTSRC = 0x3f;
     s_u8RemouteWakeup = 1;
 }
 
 void PowerDown(void)
-{   
+{
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -144,11 +141,11 @@ void PowerDown(void)
     PMC_PowerDown();
 
     /* Clear PWR_DOWN_EN if it is not clear by itself */
-    if(PMC->PWRCTL & PMC_PWRCTL_PDEN_Msk)
+    if (PMC->PWRCTL & PMC_PWRCTL_PDEN_Msk)
         PMC->PWRCTL ^= PMC_PWRCTL_PDEN_Msk;
 
     /* Note HOST to resume USB tree if it is suspended and remote wakeup enabled */
-    if(g_usbd_RemoteWakeupEn && s_u8RemouteWakeup)
+    if (g_usbd_RemoteWakeupEn && s_u8RemouteWakeup)
     {
         /* Enable PHY before sending Resume('K') state */
         USBD->ATTR |= USBD_ATTR_PHYEN_Msk;
@@ -209,14 +206,15 @@ int32_t main(void)
     /* Clear SOF */
     USBD->INTSTS = USBD_INTSTS_SOFIF_Msk;
 
-    while(1)
+    while (1)
     {
 #if CRYSTAL_LESS
-         /* Start USB trim if it is not enabled. */
-        if((SYS->TCTL48M & SYS_TCTL48M_FREQSEL_Msk) != 1)
+
+        /* Start USB trim if it is not enabled. */
+        if ((SYS->TCTL48M & SYS_TCTL48M_FREQSEL_Msk) != 1)
         {
             /* Start USB trim only when SOF */
-            if(USBD->INTSTS & USBD_INTSTS_SOFIF_Msk)
+            if (USBD->INTSTS & USBD_INTSTS_SOFIF_Msk)
             {
                 /* Clear SOF */
                 USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
@@ -228,7 +226,7 @@ int32_t main(void)
         }
 
         /* Disable USB Trim when error */
-        if(SYS->TISTS48M & (SYS_TISTS48M_CLKERRIF_Msk | SYS_TISTS48M_TFAILIF_Msk))
+        if (SYS->TISTS48M & (SYS_TISTS48M_CLKERRIF_Msk | SYS_TISTS48M_TFAILIF_Msk))
         {
             /* Init TRIM */
             M32(TRIM_INIT) = u32TrimInit;
@@ -242,15 +240,16 @@ int32_t main(void)
             /* Clear SOF */
             USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
         }
+
 #endif
 
         /* Enter power down when USB suspend */
-        if(g_u8Suspend)
+        if (g_u8Suspend)
         {
             PowerDown();
 
             /* Waiting for key release */
-            while((GPIO_GET_IN_DATA(PA) & 0x3F) != 0x3F);
+            while ((GPIO_GET_IN_DATA(PA) & 0x3F) != 0x3F);
         }
 
         HID_UpdateMouseData();

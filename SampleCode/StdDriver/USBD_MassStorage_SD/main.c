@@ -22,12 +22,13 @@ void SDH0_IRQHandler(void);
 void SYS_Init(void);
 void PowerDown(void);
 
-void SDH0_IRQHandler(void)
+/* SDH Interrupt handler */
+NVT_ITCM void SDH0_IRQHandler(void)
 {
     unsigned int volatile isr;
 
     // FMI data abort interrupt
-    if(SDH0->GINTSTS & SDH_GINTSTS_DTAIF_Msk)
+    if (SDH0->GINTSTS & SDH_GINTSTS_DTAIF_Msk)
     {
         /* ResetAllEngine() */
         SDH0->GCTL |= SDH_GCTL_GCTLRST_Msk;
@@ -35,24 +36,27 @@ void SDH0_IRQHandler(void)
 
     //----- SD interrupt status
     isr = SDH0->INTSTS;
-    if(isr & SDH_INTSTS_BLKDIF_Msk)
+
+    if (isr & SDH_INTSTS_BLKDIF_Msk)
     {
         // block down
         SD0.DataReadyFlag = TRUE;
         SDH0->INTSTS = SDH_INTSTS_BLKDIF_Msk;
     }
 
-    if(isr & SDH_INTSTS_CDIF_Msk)  // card detect
+    if (isr & SDH_INTSTS_CDIF_Msk) // card detect
     {
         //----- SD interrupt status
         // it is work to delay 50 times for SD_CLK = 200KHz
         {
             int volatile i;         // delay 30 fail, 50 OK
-            for(i = 0; i < 0x500; i++); // delay to make sure got updated value from REG_SDISR.
+
+            for (i = 0; i < 0x500; i++); // delay to make sure got updated value from REG_SDISR.
+
             isr = SDH0->INTSTS;
         }
 
-        if(isr & SDH_INTSTS_CDSTS_Msk)
+        if (isr & SDH_INTSTS_CDSTS_Msk)
         {
             printf("\n***** card remove !\n");
             SD0.IsCardInsert = FALSE;   // SDISR_CD_Card = 1 means card remove for GPIO mode
@@ -62,7 +66,8 @@ void SDH0_IRQHandler(void)
         {
             printf("***** card insert !\n");
             SDH_Open(SDH0, CardDetect_From_GPIO);
-            if(SDH_Probe(SDH0))
+
+            if (SDH_Probe(SDH0))
             {
                 g_u8SdInitFlag = 0;
                 printf("SD initial fail!!\n");
@@ -73,36 +78,38 @@ void SDH0_IRQHandler(void)
                 g_u32TotalSectors = SD0.totalSectorN;
             }
         }
+
         SDH0->INTSTS = SDH_INTSTS_CDIF_Msk;
     }
 
     // CRC error interrupt
-    if(isr & SDH_INTSTS_CRCIF_Msk)
+    if (isr & SDH_INTSTS_CRCIF_Msk)
     {
-        if(!(isr & SDH_INTSTS_CRC16_Msk))
+        if (!(isr & SDH_INTSTS_CRC16_Msk))
         {
             //printf("***** ISR sdioIntHandler(): CRC_16 error !\n");
             // handle CRC error
         }
-        else if(!(isr & SDH_INTSTS_CRC7_Msk))
+        else if (!(isr & SDH_INTSTS_CRC7_Msk))
         {
-            if(!SD0.R3Flag)
+            if (!SD0.R3Flag)
             {
                 //printf("***** ISR sdioIntHandler(): CRC_7 error !\n");
                 // handle CRC error
             }
         }
+
         SDH0->INTSTS = SDH_INTSTS_CRCIF_Msk;      // clear interrupt flag
     }
 
-    if(isr & SDH_INTSTS_DITOIF_Msk)
+    if (isr & SDH_INTSTS_DITOIF_Msk)
     {
         printf("***** ISR: data in timeout !\n");
         SDH0->INTSTS |= SDH_INTSTS_DITOIF_Msk;
     }
 
     // Response in timeout interrupt
-    if(isr & SDH_INTSTS_RTOIF_Msk)
+    if (isr & SDH_INTSTS_RTOIF_Msk)
     {
         printf("***** ISR: response in timeout !\n");
         SDH0->INTSTS |= SDH_INTSTS_RTOIF_Msk;
@@ -121,7 +128,7 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -129,7 +136,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK0DIV(2);
@@ -157,8 +164,8 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL1_SELECT);   
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL1_SELECT);
 
     /* Select USB clock source as PLL/2 and USB clock divider as 2 */
     CLK_SetModuleClock(USBD_MODULE, CLK_USBSEL_USBSEL_APLL1_DIV2, CLK_USBDIV_USBDIV(2));
@@ -175,7 +182,7 @@ void SYS_Init(void)
     /* Select USB clock source as HIRC48M and USB clock divider as 1 */
     CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
 #endif
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
 
     /* Select USBD */
@@ -225,7 +232,7 @@ void PowerDown(void)
     PMC_PowerDown();
 
     /* Clear PWR_DOWN_EN if it is not clear by itself */
-    if(PMC->PWRCTL & PMC_PWRCTL_PDEN_Msk)
+    if (PMC->PWRCTL & PMC_PWRCTL_PDEN_Msk)
         PMC->PWRCTL ^= PMC_PWRCTL_PDEN_Msk;
 
     /* Lock protected registers */
@@ -258,7 +265,8 @@ int32_t main(void)
 
     /* initial SD card */
     SDH_Open(SDH0, CardDetect_From_GPIO);
-    if(SDH_Probe(SDH0))
+
+    if (SDH_Probe(SDH0))
     {
         g_u8SdInitFlag = 0;
         printf("SD initial fail!!\n");
@@ -286,14 +294,15 @@ int32_t main(void)
     NVIC_SetPriority(USBD_IRQn, 1); // Because of USBD interrupt will make SDH read abnormal, so set USBD interrupt priority lower than SDH.
     NVIC_EnableIRQ(USBD_IRQn);
 
-    while(1)
+    while (1)
     {
 #if CRYSTAL_LESS
-         /* Start USB trim if it is not enabled. */
-        if((SYS->TCTL48M & SYS_TCTL48M_FREQSEL_Msk) != 1)
+
+        /* Start USB trim if it is not enabled. */
+        if ((SYS->TCTL48M & SYS_TCTL48M_FREQSEL_Msk) != 1)
         {
             /* Start USB trim only when SOF */
-            if(USBD->INTSTS & USBD_INTSTS_SOFIF_Msk)
+            if (USBD->INTSTS & USBD_INTSTS_SOFIF_Msk)
             {
                 /* Clear SOF */
                 USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
@@ -305,7 +314,7 @@ int32_t main(void)
         }
 
         /* Disable USB Trim when error */
-        if(SYS->TISTS48M & (SYS_TISTS48M_CLKERRIF_Msk | SYS_TISTS48M_TFAILIF_Msk))
+        if (SYS->TISTS48M & (SYS_TISTS48M_CLKERRIF_Msk | SYS_TISTS48M_TFAILIF_Msk))
         {
             /* Init TRIM */
             M32(TRIM_INIT) = u32TrimInit;
@@ -319,10 +328,11 @@ int32_t main(void)
             /* Clear SOF */
             USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
         }
+
 #endif
 
         /* Enter power down when USB suspend */
-        if(g_u8Suspend)
+        if (g_u8Suspend)
             PowerDown();
 
         MSC_ProcessCmd();

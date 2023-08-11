@@ -24,20 +24,28 @@ static volatile uint8_t  s_au8IsoBuff[256];
 
 uint8_t volatile g_u8Suspend = 0;
 
-void USBD_IRQHandler(void);
-
-void USBD_IRQHandler(void)
+/*--------------------------------------------------------------------------*/
+/**
+ * @brief       USBD Interrupt Service Routine
+ *
+ * @param[in]   None
+ *
+ * @return      None
+ *
+ * @details     This function is the USBD ISR
+ */
+NVT_ITCM void USBD_IRQHandler(void)
 {
     uint32_t u32IntSts = USBD_GET_INT_FLAG();
     uint32_t u32State = USBD_GET_BUS_STATE();
 
-//------------------------------------------------------------------
-    if(u32IntSts & USBD_INTSTS_FLDET)
+    //------------------------------------------------------------------
+    if (u32IntSts & USBD_INTSTS_FLDET)
     {
         // Floating detect
         USBD_CLR_INT_FLAG(USBD_INTSTS_FLDET);
 
-        if(USBD_IS_ATTACHED())
+        if (USBD_IS_ATTACHED())
         {
             /* USB Plug In */
             USBD_ENABLE_USB();
@@ -49,20 +57,21 @@ void USBD_IRQHandler(void)
         }
     }
 
-//------------------------------------------------------------------
-    if(u32IntSts & USBD_INTSTS_BUS)
+    //------------------------------------------------------------------
+    if (u32IntSts & USBD_INTSTS_BUS)
     {
         /* Clear event flag */
         USBD_CLR_INT_FLAG(USBD_INTSTS_BUS);
 
-        if(u32State & USBD_STATE_USBRST)
+        if (u32State & USBD_STATE_USBRST)
         {
             /* Bus reset */
             USBD_ENABLE_USB();
             USBD_SwReset();
             g_u8Suspend = 0;
         }
-        if(u32State & USBD_STATE_SUSPEND)
+
+        if (u32State & USBD_STATE_SUSPEND)
         {
             /* Enter power down to wait USB attached */
             g_u8Suspend = 1;
@@ -70,7 +79,8 @@ void USBD_IRQHandler(void)
             /* Enable USB but disable PHY */
             USBD_DISABLE_PHY();
         }
-        if(u32State & USBD_STATE_RESUME)
+
+        if (u32State & USBD_STATE_RESUME)
         {
             /* Enable USB and enable PHY */
             USBD_ENABLE_USB();
@@ -78,17 +88,17 @@ void USBD_IRQHandler(void)
         }
     }
 
-//------------------------------------------------------------------
-    if(u32IntSts & USBD_INTSTS_WAKEUP)
+    //------------------------------------------------------------------
+    if (u32IntSts & USBD_INTSTS_WAKEUP)
     {
         /* Clear event flag */
         USBD_CLR_INT_FLAG(USBD_INTSTS_WAKEUP);
     }
 
-    if(u32IntSts & USBD_INTSTS_USB)
+    if (u32IntSts & USBD_INTSTS_USB)
     {
         // USB event
-        if(u32IntSts & USBD_INTSTS_SETUP)
+        if (u32IntSts & USBD_INTSTS_SETUP)
         {
             // Setup packet
             /* Clear event flag */
@@ -101,7 +111,7 @@ void USBD_IRQHandler(void)
         }
 
         // EP events
-        if(u32IntSts & USBD_INTSTS_EP0)
+        if (u32IntSts & USBD_INTSTS_EP0)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP0);
@@ -109,7 +119,7 @@ void USBD_IRQHandler(void)
             USBD_CtrlIn();
         }
 
-        if(u32IntSts & USBD_INTSTS_EP1)
+        if (u32IntSts & USBD_INTSTS_EP1)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP1);
@@ -118,7 +128,7 @@ void USBD_IRQHandler(void)
             USBD_CtrlOut();
         }
 
-        if(u32IntSts & USBD_INTSTS_EP2)
+        if (u32IntSts & USBD_INTSTS_EP2)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP2);
@@ -126,7 +136,7 @@ void USBD_IRQHandler(void)
             USBD_SET_PAYLOAD_LEN(EP2, EP2_MAX_PKT_SIZE);
         }
 
-        if(u32IntSts & USBD_INTSTS_EP3)
+        if (u32IntSts & USBD_INTSTS_EP3)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP3);
@@ -135,7 +145,7 @@ void USBD_IRQHandler(void)
             s_u8EP3Ready = 1;
         }
 
-        if(u32IntSts & USBD_INTSTS_EP4)
+        if (u32IntSts & USBD_INTSTS_EP4)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP4);
@@ -143,7 +153,7 @@ void USBD_IRQHandler(void)
             USBD_SET_PAYLOAD_LEN(EP4, EP4_MAX_PKT_SIZE);
         }
 
-        if(u32IntSts & USBD_INTSTS_EP5)
+        if (u32IntSts & USBD_INTSTS_EP5)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP5);
@@ -151,13 +161,13 @@ void USBD_IRQHandler(void)
             s_u8EP5Ready = 1;
         }
 
-        if(u32IntSts & USBD_INTSTS_EP6)
+        if (u32IntSts & USBD_INTSTS_EP6)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP6);
         }
 
-        if(u32IntSts & USBD_INTSTS_EP7)
+        if (u32IntSts & USBD_INTSTS_EP7)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP7);
@@ -254,14 +264,15 @@ void VendorLBK_ClassRequest(void)
 
     u32DataLen = (uint32_t)((buf[7] << 8) | buf[6]);
 
-    if(buf[0] & 0x80)    /* request data transfer direction */
+    if (buf[0] & 0x80)   /* request data transfer direction */
     {
         // Device to host
-        switch(buf[1])
+        switch (buf[1])
         {
             case REQ_GET_DATA:
-                if(u32DataLen > 64)
+                if (u32DataLen > 64)
                     u32DataLen = 64;
+
                 //USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&SendBuffer, g_SendLen);
                 /* Data stage */
                 USBD_PrepareCtrlIn((uint8_t *)(uint32_t)s_au8CtrlBuff, u32DataLen);
@@ -278,7 +289,7 @@ void VendorLBK_ClassRequest(void)
     else
     {
         // Host to device
-        switch(buf[1])
+        switch (buf[1])
         {
             case REQ_SET_DATA:
                 USBD_PrepareCtrlOut((uint8_t *)(uint32_t)s_au8CtrlBuff, buf[6]);
@@ -306,18 +317,19 @@ void VendorLBK_ProcessData(void)
     /*
      * Process interrupt-out
      */
-    if(s_u8EP3Ready)
+    if (s_u8EP3Ready)
     {
         s_u8EP3Ready = 0;
         u32DataLen = USBD_GET_PAYLOAD_LEN(EP3);
-        if(u32DataLen > EP3_MAX_PKT_SIZE)
+
+        if (u32DataLen > EP3_MAX_PKT_SIZE)
         {
             printf("Error! EP3 data overrun!\n");
             u32DataLen = EP3_MAX_PKT_SIZE;
         }
 
         /* Read interrupt-out packet from USBD SRAM to s_au8IntBuff[] */
-        for(i = 0; i < u32DataLen; i++)
+        for (i = 0; i < u32DataLen; i++)
             s_au8IntBuff[i] = inpb(USBD_BUF_BASE + EP3_BUF_BASE + i);
 
         /* Write s_au8IntBuff[] to USBD SRAM as next interrupt-in packet */
@@ -329,18 +341,19 @@ void VendorLBK_ProcessData(void)
     /*
      * Process isochronous-out
      */
-    if(s_u8EP5Ready)
+    if (s_u8EP5Ready)
     {
         s_u8EP5Ready = 0;
         u32DataLen = USBD_GET_PAYLOAD_LEN(EP5);
-        if(u32DataLen > EP5_MAX_PKT_SIZE)
+
+        if (u32DataLen > EP5_MAX_PKT_SIZE)
         {
             printf("Error! EP5 data overrun!\n");
             u32DataLen = EP5_MAX_PKT_SIZE;
         }
 
         /* Read isochronous-out packet from USBD SRAM to s_au8IsoBuff[] */
-        for(i = 0; i < u32DataLen; i++)
+        for (i = 0; i < u32DataLen; i++)
             s_au8IsoBuff[i] = inpb(USBD_BUF_BASE + EP5_BUF_BASE + i);
 
         /* Write s_au8IsoBuff[] to USBD SRAM as next isochronous-in packet */
@@ -352,18 +365,19 @@ void VendorLBK_ProcessData(void)
     /*
      * Process bulk-out
      */
-    if(s_u8EP7Ready)
+    if (s_u8EP7Ready)
     {
         s_u8EP7Ready = 0;
         u32DataLen = USBD_GET_PAYLOAD_LEN(EP7);
-        if(u32DataLen > EP7_MAX_PKT_SIZE)
+
+        if (u32DataLen > EP7_MAX_PKT_SIZE)
         {
             printf("Error! EP7 data overrun!\n");
             u32DataLen = EP7_MAX_PKT_SIZE;
         }
 
         /* Read bulk-out packet from USBD SRAM to s_au8BulkBuff[] */
-        for(i = 0; i < u32DataLen; i++)
+        for (i = 0; i < u32DataLen; i++)
             s_au8BulkBuff[i] = inpb(USBD_BUF_BASE + EP7_BUF_BASE + i);
 
         /* Write s_au8BulkBuff[] to USBD SRAM as next bulk-in packet */

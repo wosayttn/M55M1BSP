@@ -76,40 +76,46 @@ int Resamples(RESAMPLE_MODE_T mode, short *x, int ch_num, int samples, short *y,
     int ii;
     int f, r, s;
 
-    switch(mode)
+    switch (mode)
     {
         case E_RS_REC_CH0:
             px = px_rec_ch0;
             yt = yt_rec_ch0;
             xt = xt_rec_ch0;
             break;
+
         case E_RS_REC_CH1:
             px = px_rec_ch1;
             yt = yt_rec_ch1;
             xt = xt_rec_ch1;
             break;
+
         case E_RS_PLAY_CH0:
             px = px_play_ch0;
             yt = yt_play_ch0;
             xt = xt_play_ch0;
             break;
+
         case E_RS_PLAY_CH1:
             px = px_play_ch1;
             yt = yt_play_ch1;
             xt = xt_play_ch1;
             break;
     }
+
     r = srt[s_idx].r;
     s = srt[s_idx].s;
 
     offset = xt >> 13;
     i = 0;
+
     do
     {
         idx = yt >> 13;
         f = yt & ((1 << 13) - 1);
         ii = idx - offset;
-        if(ii < 0)
+
+        if (ii < 0)
         {
             y[i * ch_num] = ((8192 - f) * px + x[0] * f) >> 13;
         }
@@ -120,35 +126,37 @@ int Resamples(RESAMPLE_MODE_T mode, short *x, int ch_num, int samples, short *y,
 
         i++;
         yt += r;
-    }
-    while(yt < (xt + ((samples - 1) << 13)));
+    } while (yt < (xt + ((samples - 1) << 13)));
 
     px = x[(samples - 1) * ch_num];
     xt += (samples << 13);
 
-    if(xt > (s << 13))
+    if (xt > (s << 13))
     {
         xt = 0;
         yt = 0;
     }
 
-    switch(mode)
+    switch (mode)
     {
         case E_RS_REC_CH0:
             px_rec_ch0 = px;
             yt_rec_ch0 = yt;
             xt_rec_ch0 = xt;
             break;
+
         case E_RS_REC_CH1:
             px_rec_ch1 = px;
             yt_rec_ch1 = yt;
             xt_rec_ch1 = xt;
             break;
+
         case E_RS_PLAY_CH0:
             px_play_ch0 = px;
             yt_play_ch0 = yt;
             xt_play_ch0 = xt;
             break;
+
         case E_RS_PLAY_CH1:
             px_play_ch1 = px;
             yt_play_ch1 = yt;

@@ -21,9 +21,9 @@ Revision History:
 // Define API decoration for direct importing of DLL references.
 //
 #if !defined(_SETUPAPI_)
-#define WINSETUPAPI DECLSPEC_IMPORT
+    #define WINSETUPAPI DECLSPEC_IMPORT
 #else
-#define WINSETUPAPI
+    #define WINSETUPAPI
 #endif
 
 #include <pshpack1.h>   // Assume byte packing throughout
@@ -134,14 +134,14 @@ typedef struct _SP_INF_INFORMATION
 //
 // Setup callback notification routine type
 //
-typedef UINT (CALLBACK* PSP_FILE_CALLBACK_A)(
+typedef UINT(CALLBACK *PSP_FILE_CALLBACK_A)(
     IN PVOID Context,
     IN UINT Notification,
     IN UINT Param1,
     IN UINT Param2
 );
 
-typedef UINT (CALLBACK* PSP_FILE_CALLBACK_W)(
+typedef UINT(CALLBACK *PSP_FILE_CALLBACK_W)(
     IN PVOID Context,
     IN UINT Notification,
     IN UINT Param1,
@@ -790,7 +790,7 @@ typedef PSP_SELECTDEVICE_PARAMS_A PSP_SELECTDEVICE_PARAMS;
 // Structure corresponding to a DIF_DETECT install function.
 //
 
-typedef BOOL (CALLBACK* PDETECT_PROGRESS_NOTIFY)(
+typedef BOOL (CALLBACK *PDETECT_PROGRESS_NOTIFY)(
     IN PVOID ProgressNotifyParam,
     IN DWORD DetectComplete
 );
@@ -1060,7 +1060,7 @@ typedef struct _SP_DRVINSTALL_PARAMS
 //
 // Setup callback routine for comparing detection signatures
 //
-typedef DWORD (CALLBACK* PSP_DETSIG_CMPPROC)(
+typedef DWORD (CALLBACK *PSP_DETSIG_CMPPROC)(
     IN HDEVINFO         DeviceInfoSet,
     IN PSP_DEVINFO_DATA NewDeviceData,
     IN PSP_DEVINFO_DATA ExistingDeviceData,
@@ -3431,14 +3431,14 @@ typedef enum
 WINSETUPAPI
 BOOL
 WINAPI
-SetupOpenLog (
+SetupOpenLog(
     BOOL Erase
 );
 
 WINSETUPAPI
 BOOL
 WINAPI
-SetupLogErrorA (
+SetupLogErrorA(
     IN  LPCSTR              MessageString,
     IN  LogSeverity         Severity
 );
@@ -3446,7 +3446,7 @@ SetupLogErrorA (
 WINSETUPAPI
 BOOL
 WINAPI
-SetupLogErrorW (
+SetupLogErrorW(
     IN  LPCWSTR             MessageString,
     IN  LogSeverity         Severity
 );
@@ -3460,7 +3460,7 @@ SetupLogErrorW (
 WINSETUPAPI
 VOID
 WINAPI
-SetupCloseLog (
+SetupCloseLog(
     VOID
 );
 
@@ -4720,7 +4720,7 @@ SetupDiSetDeviceRegistryPropertyA(
     IN     HDEVINFO         DeviceInfoSet,
     IN OUT PSP_DEVINFO_DATA DeviceInfoData,
     IN     DWORD            Property,
-    IN     CONST BYTE*      PropertyBuffer,
+    IN     CONST BYTE      *PropertyBuffer,
     IN     DWORD            PropertyBufferSize
 );
 
@@ -4731,7 +4731,7 @@ SetupDiSetDeviceRegistryPropertyW(
     IN     HDEVINFO         DeviceInfoSet,
     IN OUT PSP_DEVINFO_DATA DeviceInfoData,
     IN     DWORD            Property,
-    IN     CONST BYTE*      PropertyBuffer,
+    IN     CONST BYTE      *PropertyBuffer,
     IN     DWORD            PropertyBufferSize
 );
 

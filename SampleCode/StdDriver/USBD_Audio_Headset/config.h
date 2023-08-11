@@ -12,9 +12,9 @@
 #define JOYSTICK    0
 
 #if MEDIAKEY
-#define __HID__
-#define __MEDIAKEY__
+    #define __HID__
+    #define __MEDIAKEY__
 #elif JOYSTICK
-#define __HID__
-#define __JOYSTICK__
+    #define __HID__
+    #define __JOYSTICK__
 #endif

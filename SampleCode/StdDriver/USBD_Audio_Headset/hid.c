@@ -49,7 +49,7 @@ void HID_UpdateHidData(void)
 #endif
     uint32_t u32RegE;
 
-    if(g_u8EP5Ready)
+    if (g_u8EP5Ready)
     {
         buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP5));
 
@@ -69,21 +69,27 @@ void HID_UpdateHidData(void)
         u32RegC = PC->PIN & 0x1e00;
         u32RegE = PE->PIN & 0x10;
 #ifdef __JOYSTICK__
-        for(i = 0; i < 5; i++)
+
+        for (i = 0; i < 5; i++)
             buf[i] = 0x7F;
 
         buf[5] = 0x0F;    /* Hat switch */
         buf[6] = 0x00;
         buf[7] = 0x00;
 #elif defined  __MEDIAKEY__
-        for(i = 0; i < 8; i++)
+
+        for (i = 0; i < 8; i++)
             buf[i] = 0;
+
 #else
-        for(i = 0; i < 8; i++)
+
+        for (i = 0; i < 8; i++)
             buf[i] = 0;
+
 #endif
 
 #ifdef __JOYSTICK__
+
         /* Input Report
          +--------+--------+--------+--------+--------+------------------+------------------+--------+
          | Byte 0 | Byte 1 | Byte 2 | Byte 3 | Byte 4 |      Byte 5      |      Byte 6      | Byte 7 |
@@ -94,19 +100,24 @@ void HID_UpdateHidData(void)
          +--------+--------+--------+--------+--------+-------+----------+------------------+--------+
         */
         /* Byte 1 */
-        if((u32RegC & (1 << 10)) == 0)       /* PC10 - Up */
+        if ((u32RegC & (1 << 10)) == 0)      /* PC10 - Up */
             buf[1] = 0x00;
-        if((u32RegC & (1 << 12)) == 0)       /* PC12 - Down */
+
+        if ((u32RegC & (1 << 12)) == 0)      /* PC12 - Down */
             buf[1] = 0xFF;
+
         /* Byte 0 */
-        if((u32RegC & (1 << 11)) == 0)       /* PC11 - Left */
+        if ((u32RegC & (1 << 11)) == 0)      /* PC11 - Left */
             buf[0] = 0x00;
-        if((u32RegE & (1 << 4)) == 0)        /* PE4 - Right */
+
+        if ((u32RegE & (1 << 4)) == 0)       /* PE4 - Right */
             buf[0] = 0xFF;
+
         /* Byte 5 */
-        if((u32RegC & (1 << 9)) == 0)        /* PC9 - Button 1 */
+        if ((u32RegC & (1 << 9)) == 0)       /* PC9 - Button 1 */
             buf[5] |= 0x10;
-        if((u32RegB & (1 << 0)) == 0)        /* PB0 - Button 2 */
+
+        if ((u32RegB & (1 << 0)) == 0)       /* PB0 - Button 2 */
             buf[5] |= 0x20;
 
 #elif defined  __MEDIAKEY__
@@ -127,18 +138,24 @@ void HID_UpdateHidData(void)
         */
         buf[0] = 0;
         buf[1] = 0;
+
         /* Byte 1 */
-        if((u32RegC & (1 << 9)) == 0)        /* PC9 - Button 1             */
+        if ((u32RegC & (1 << 9)) == 0)       /* PC9 - Button 1             */
             buf[1] |= HID_CTRL_PAUSE;        /* Play/Pause - 0x04          */
-        if((u32RegE & (1 << 4)) == 0)        /* PE4 - Right                */
+
+        if ((u32RegE & (1 << 4)) == 0)       /* PE4 - Right                */
             buf[1] |= HID_CTRL_NEXT;         /* Scan Next Track - 0x08     */
-        if((u32RegC & (1 << 11)) == 0)       /* PC11 - Left                */
+
+        if ((u32RegC & (1 << 11)) == 0)      /* PC11 - Left                */
             buf[1] |= HID_CTRL_PREVIOUS;     /* Scan Previous Track - 0x10 */
+
         /* Byte 0 */
-        if((u32RegC & (1 << 10)) == 0)       /* PC10 - Up                  */
+        if ((u32RegC & (1 << 10)) == 0)      /* PC10 - Up                  */
             buf[0] |= HID_CTRL_VOLUME_INC;   /* Volume Increment - 0x02    */
-        if((u32RegC & (1 << 12)) == 0)       /* PC12 - Down                */
+
+        if ((u32RegC & (1 << 12)) == 0)      /* PC12 - Down                */
             buf[0] |= HID_CTRL_VOLUME_DEC;   /* Volume Decrement -0x04     */
+
 #endif
         g_u8EP5Ready = 0;
         /* Set transfer length and trigger IN transfer */

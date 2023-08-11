@@ -16,20 +16,28 @@
 uint8_t volatile g_u8Suspend = 0;
 static uint8_t s_u8Idle = 0, s_u8Protocol = 0;
 
-void USBD_IRQHandler(void);
-
-void USBD_IRQHandler(void)
+/*--------------------------------------------------------------------------*/
+/**
+ * @brief       USBD Interrupt Service Routine
+ *
+ * @param[in]   None
+ *
+ * @return      None
+ *
+ * @details     This function is the USBD ISR
+ */
+NVT_ITCM void USBD_IRQHandler(void)
 {
     uint32_t u32IntSts = USBD_GET_INT_FLAG();
     uint32_t u32State = USBD_GET_BUS_STATE();
 
-//------------------------------------------------------------------
-    if(u32IntSts & USBD_INTSTS_FLDET)
+    //------------------------------------------------------------------
+    if (u32IntSts & USBD_INTSTS_FLDET)
     {
         // Floating detect
         USBD_CLR_INT_FLAG(USBD_INTSTS_FLDET);
 
-        if(USBD_IS_ATTACHED())
+        if (USBD_IS_ATTACHED())
         {
             /* USB Plug In */
             USBD_ENABLE_USB();
@@ -41,27 +49,28 @@ void USBD_IRQHandler(void)
         }
     }
 
-//------------------------------------------------------------------
-    if(u32IntSts & USBD_INTSTS_WAKEUP)
+    //------------------------------------------------------------------
+    if (u32IntSts & USBD_INTSTS_WAKEUP)
     {
         /* Clear event flag */
         USBD_CLR_INT_FLAG(USBD_INTSTS_WAKEUP);
     }
 
-//------------------------------------------------------------------
-    if(u32IntSts & USBD_INTSTS_BUS)
+    //------------------------------------------------------------------
+    if (u32IntSts & USBD_INTSTS_BUS)
     {
         /* Clear event flag */
         USBD_CLR_INT_FLAG(USBD_INTSTS_BUS);
 
-        if(u32State & USBD_STATE_USBRST)
+        if (u32State & USBD_STATE_USBRST)
         {
             /* Bus reset */
             USBD_ENABLE_USB();
             USBD_SwReset();
             g_u8Suspend = 0;
         }
-        if(u32State & USBD_STATE_SUSPEND)
+
+        if (u32State & USBD_STATE_SUSPEND)
         {
             /* Enter power down to wait USB attached */
             g_u8Suspend = 1;
@@ -69,7 +78,8 @@ void USBD_IRQHandler(void)
             /* Enable USB but disable PHY */
             USBD_DISABLE_PHY();
         }
-        if(u32State & USBD_STATE_RESUME)
+
+        if (u32State & USBD_STATE_RESUME)
         {
             /* Enable USB and enable PHY */
             USBD_ENABLE_USB();
@@ -77,13 +87,13 @@ void USBD_IRQHandler(void)
         }
     }
 
-//------------------------------------------------------------------
-    if(u32IntSts & USBD_INTSTS_USB)
+    //------------------------------------------------------------------
+    if (u32IntSts & USBD_INTSTS_USB)
     {
         extern uint8_t g_usbd_SetupPacket[];
 
         // USB event
-        if(u32IntSts & USBD_INTSTS_SETUP)
+        if (u32IntSts & USBD_INTSTS_SETUP)
         {
             // Setup packet
             /* Clear event flag */
@@ -97,7 +107,7 @@ void USBD_IRQHandler(void)
         }
 
         // EP events
-        if(u32IntSts & USBD_INTSTS_EP0)
+        if (u32IntSts & USBD_INTSTS_EP0)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP0);
@@ -105,7 +115,7 @@ void USBD_IRQHandler(void)
             USBD_CtrlIn();
         }
 
-        if(u32IntSts & USBD_INTSTS_EP1)
+        if (u32IntSts & USBD_INTSTS_EP1)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP1);
@@ -113,14 +123,14 @@ void USBD_IRQHandler(void)
             USBD_CtrlOut();
 
             // In ACK of SET_LINE_CODE
-            if(g_usbd_SetupPacket[1] == SET_LINE_CODE)
+            if (g_usbd_SetupPacket[1] == SET_LINE_CODE)
             {
-                if(g_usbd_SetupPacket[4] == 0)  /* VCOM-1 */
+                if (g_usbd_SetupPacket[4] == 0) /* VCOM-1 */
                     VCOM_LineCoding(0); /* Apply UART settings */
             }
         }
 
-        if(u32IntSts & USBD_INTSTS_EP2)
+        if (u32IntSts & USBD_INTSTS_EP2)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP2);
@@ -128,7 +138,7 @@ void USBD_IRQHandler(void)
             EP2_Handler();
         }
 
-        if(u32IntSts & USBD_INTSTS_EP3)
+        if (u32IntSts & USBD_INTSTS_EP3)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP3);
@@ -136,13 +146,13 @@ void USBD_IRQHandler(void)
             EP3_Handler();
         }
 
-        if(u32IntSts & USBD_INTSTS_EP4)
+        if (u32IntSts & USBD_INTSTS_EP4)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP4);
         }
 
-        if(u32IntSts & USBD_INTSTS_EP5)
+        if (u32IntSts & USBD_INTSTS_EP5)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP5);
@@ -150,7 +160,7 @@ void USBD_IRQHandler(void)
             EP5_Handler();
         }
 
-        if(u32IntSts & USBD_INTSTS_EP6)
+        if (u32IntSts & USBD_INTSTS_EP6)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP6);
@@ -158,31 +168,31 @@ void USBD_IRQHandler(void)
             EP6_Handler();
         }
 
-        if(u32IntSts & USBD_INTSTS_EP7)
+        if (u32IntSts & USBD_INTSTS_EP7)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP7);
         }
 
-        if(u32IntSts & USBD_INTSTS_EP8)
+        if (u32IntSts & USBD_INTSTS_EP8)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP8);
         }
 
-        if(u32IntSts & USBD_INTSTS_EP9)
+        if (u32IntSts & USBD_INTSTS_EP9)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP9);
         }
 
-        if(u32IntSts & USBD_INTSTS_EP10)
+        if (u32IntSts & USBD_INTSTS_EP10)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP10);
         }
 
-        if(u32IntSts & USBD_INTSTS_EP11)
+        if (u32IntSts & USBD_INTSTS_EP11)
         {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP11);
@@ -281,17 +291,18 @@ void HID_ClassRequest(void)
 
     USBD_GetSetupPacket(au8Buf);
 
-    if(au8Buf[0] & 0x80)    /* request data transfer direction */
+    if (au8Buf[0] & 0x80)   /* request data transfer direction */
     {
         // Device to host
-        switch(au8Buf[1])
+        switch (au8Buf[1])
         {
             case GET_LINE_CODE:
             {
-                if(au8Buf[4] == 0)    /* VCOM-1 */
+                if (au8Buf[4] == 0)   /* VCOM-1 */
                 {
                     USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_LineCoding, 7);
                 }
+
                 /* Data stage */
                 USBD_SET_DATA1(EP0);
                 USBD_SET_PAYLOAD_LEN(EP0, 7);
@@ -299,10 +310,12 @@ void HID_ClassRequest(void)
                 USBD_PrepareCtrlOut(0, 0);
                 break;
             }
+
             case GET_REPORT:
-//            {
-//                break;
-//            }
+
+            //            {
+            //                break;
+            //            }
             case GET_IDLE:
             {
                 USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
@@ -312,6 +325,7 @@ void HID_ClassRequest(void)
                 USBD_PrepareCtrlOut(0, 0);
                 break;
             }
+
             case GET_PROTOCOL:
             {
                 USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
@@ -321,6 +335,7 @@ void HID_ClassRequest(void)
                 USBD_PrepareCtrlOut(0, 0);
                 break;
             }
+
             default:
             {
                 /* Setup error, stall the device */
@@ -333,11 +348,11 @@ void HID_ClassRequest(void)
     else
     {
         // Host to device
-        switch(au8Buf[1])
+        switch (au8Buf[1])
         {
             case SET_CONTROL_LINE_STATE:
             {
-                if(au8Buf[4] == 0)    /* VCOM-1 */
+                if (au8Buf[4] == 0)   /* VCOM-1 */
                 {
                     g_u16CtrlSignal = au8Buf[3];
                     g_u16CtrlSignal = (uint16_t)(g_u16CtrlSignal << 8) | au8Buf[2];
@@ -349,10 +364,11 @@ void HID_ClassRequest(void)
                 USBD_SET_PAYLOAD_LEN(EP0, 0);
                 break;
             }
+
             case SET_LINE_CODE:
             {
                 //g_USBD_u32UsbConfig = 0100;
-                if(au8Buf[4] == 0)  /* VCOM-1 */
+                if (au8Buf[4] == 0) /* VCOM-1 */
                     USBD_PrepareCtrlOut((uint8_t *)&g_LineCoding, 7);
 
                 /* Status stage */
@@ -361,16 +377,19 @@ void HID_ClassRequest(void)
 
                 break;
             }
+
             case SET_REPORT:
             {
-                if(au8Buf[3] == 3)
+                if (au8Buf[3] == 3)
                 {
                     /* Request Type = Feature */
                     USBD_SET_DATA1(EP1);
                     USBD_SET_PAYLOAD_LEN(EP1, 0);
                 }
+
                 break;
             }
+
             case SET_IDLE:
             {
                 s_u8Idle = au8Buf[3];
@@ -379,6 +398,7 @@ void HID_ClassRequest(void)
                 USBD_SET_PAYLOAD_LEN(EP0, 0);
                 break;
             }
+
             case SET_PROTOCOL:
             {
                 s_u8Protocol = au8Buf[2];
@@ -387,6 +407,7 @@ void HID_ClassRequest(void)
                 USBD_SET_PAYLOAD_LEN(EP0, 0);
                 break;
             }
+
             default:
             {
                 // Stall
@@ -403,7 +424,7 @@ void VCOM_LineCoding(uint8_t u8Port)
 {
     uint32_t u32Reg, u32Baud_Div;
 
-    if(u8Port == 0)
+    if (u8Port == 0)
     {
         NVIC_DisableIRQ(UART0_IRQn);
         // Reset software FIFO
@@ -421,42 +442,46 @@ void VCOM_LineCoding(uint8_t u8Port)
         // Set baudrate
         u32Baud_Div = UART_BAUD_MODE2_DIVIDER(__HIRC, g_LineCoding.u32DTERate);
 
-        if(u32Baud_Div > 0xFFFF)
+        if (u32Baud_Div > 0xFFFF)
             UART0->BAUD = (UART_BAUD_MODE0 | UART_BAUD_MODE0_DIVIDER(__HIRC, g_LineCoding.u32DTERate));
         else
             UART0->BAUD = (UART_BAUD_MODE2 | u32Baud_Div);
 
         // Set parity
-        if(g_LineCoding.u8ParityType == 0)
+        if (g_LineCoding.u8ParityType == 0)
             u32Reg = 0; // none parity
-        else if(g_LineCoding.u8ParityType == 1)
+        else if (g_LineCoding.u8ParityType == 1)
             u32Reg = 0x08; // odd parity
-        else if(g_LineCoding.u8ParityType == 2)
+        else if (g_LineCoding.u8ParityType == 2)
             u32Reg = 0x18; // even parity
         else
             u32Reg = 0;
 
         // bit width
-        switch(g_LineCoding.u8DataBits)
+        switch (g_LineCoding.u8DataBits)
         {
             case 5:
                 u32Reg |= 0;
                 break;
+
             case 6:
                 u32Reg |= 1;
                 break;
+
             case 7:
                 u32Reg |= 2;
                 break;
+
             case 8:
                 u32Reg |= 3;
                 break;
+
             default:
                 break;
         }
 
         // stop bit
-        if(g_LineCoding.u8CharFormat > 0)
+        if (g_LineCoding.u8CharFormat > 0)
             u32Reg |= 0x4; // 2 or 1.5 bits
 
         UART0->LINE = u32Reg;
@@ -534,7 +559,7 @@ int32_t HID_CmdReadPages(CMD_T *pCmd)
 
     printf("Read command - Start page: %d    Pages Numbers: %d\n", u32StartPage, u32Pages);
 
-    if(u32Pages)
+    if (u32Pages)
     {
         /* Update data to page buffer to upload */
         /* TODO: We need to update the page data if got a page read command. (0xFF is used in this sample code) */
@@ -577,12 +602,14 @@ int32_t HID_CmdTest(CMD_T *pCmd)
 
     pu8 = (uint8_t *)pCmd;
     printf("Get test command #%d (%d bytes)\n", s_i32CmdTestCnt++, pCmd->u8Size);
-    for(i = 0; i < pCmd->u8Size; i++)
+
+    for (i = 0; i < pCmd->u8Size; i++)
     {
-        if((i & 0xF) == 0)
+        if ((i & 0xF) == 0)
         {
             printf("\n");
         }
+
         printf(" %02x", pu8[i]);
     }
 
@@ -601,7 +628,8 @@ uint32_t CalCheckSum(uint8_t *pu8Buf, uint32_t u32Size)
 
     i = 0;
     u32Sum = 0;
-    while(u32Size--)
+
+    while (u32Size--)
     {
         u32Sum += pu8Buf[i++];
     }
@@ -616,40 +644,45 @@ int32_t ProcessCommand(uint8_t *pu8Buffer, uint32_t u32BufferLen)
     USBD_MemCopy((uint8_t *)&s_Cmd, pu8Buffer, u32BufferLen);
 
     /* Check size */
-    if((s_Cmd.u8Size > sizeof(s_Cmd)) || (s_Cmd.u8Size > u32BufferLen))
+    if ((s_Cmd.u8Size > sizeof(s_Cmd)) || (s_Cmd.u8Size > u32BufferLen))
         return -1;
 
     /* Check signature */
-    if(s_Cmd.u32Signature != HID_CMD_SIGNATURE)
+    if (s_Cmd.u32Signature != HID_CMD_SIGNATURE)
         return -1;
 
     /* Calculate checksum & check it */
     u32Sum = CalCheckSum((uint8_t *)&s_Cmd, s_Cmd.u8Size);
-    if(u32Sum != s_Cmd.u32Checksum)
+
+    if (u32Sum != s_Cmd.u32Checksum)
         return -1;
 
-    switch(s_Cmd.u8Cmd)
+    switch (s_Cmd.u8Cmd)
     {
         case HID_CMD_ERASE:
         {
             HID_CmdEraseSectors(&s_Cmd);
             break;
         }
+
         case HID_CMD_READ:
         {
             HID_CmdReadPages(&s_Cmd);
             break;
         }
+
         case HID_CMD_WRITE:
         {
             HID_CmdWritePages(&s_Cmd);
             break;
         }
+
         case HID_CMD_TEST:
         {
             HID_CmdTest(&s_Cmd);
             break;
         }
+
         default:
             return -1;
     }
@@ -672,7 +705,7 @@ void HID_GetOutReport(uint8_t *pu8EpBuf, uint32_t u32Size)
     u32PageCnt   = s_Cmd.u32Signature; /* The signature word is used to count pages */
 
     /* Check if it is in the data phase of write command */
-    if((u8Cmd == HID_CMD_WRITE) && (u32PageCnt < u32Pages))
+    if ((u8Cmd == HID_CMD_WRITE) && (u32PageCnt < u32Pages))
     {
         /* Process the data phase of write command */
 
@@ -681,7 +714,7 @@ void HID_GetOutReport(uint8_t *pu8EpBuf, uint32_t u32Size)
         g_u32BytesInPageBuf += EP6_MAX_PKT_SIZE;
 
         /* The HOST must make sure the data is PAGE_SIZE alignment */
-        if(g_u32BytesInPageBuf >= PAGE_SIZE)
+        if (g_u32BytesInPageBuf >= PAGE_SIZE)
         {
             printf("Writing page %d\n", u32StartPage + u32PageCnt);
             /* TODO: We should program received data to storage here */
@@ -689,7 +722,7 @@ void HID_GetOutReport(uint8_t *pu8EpBuf, uint32_t u32Size)
             u32PageCnt++;
 
             /* Write command complete! */
-            if(u32PageCnt >= u32Pages)
+            if (u32PageCnt >= u32Pages)
             {
                 u8Cmd = HID_CMD_NONE;
 
@@ -706,7 +739,7 @@ void HID_GetOutReport(uint8_t *pu8EpBuf, uint32_t u32Size)
     else
     {
         /* Check and process the command packet */
-        if(ProcessCommand(pu8EpBuf, sizeof(s_Cmd)))
+        if (ProcessCommand(pu8EpBuf, sizeof(s_Cmd)))
         {
             printf("Unknown HID command!\n");
         }
@@ -727,10 +760,10 @@ void HID_SetInReport(void)
     u32PageCnt   = s_Cmd.u32Signature;
 
     /* Check if it is in data phase of read command */
-    if(u8Cmd == HID_CMD_READ)
+    if (u8Cmd == HID_CMD_READ)
     {
         /* Process the data phase of read command */
-        if((u32PageCnt >= u32TotalPages) && (g_u32BytesInPageBuf == 0))
+        if ((u32PageCnt >= u32TotalPages) && (g_u32BytesInPageBuf == 0))
         {
             /* The data transfer is complete. */
             u8Cmd = HID_CMD_NONE;
@@ -738,7 +771,7 @@ void HID_SetInReport(void)
         }
         else
         {
-            if(g_u32BytesInPageBuf == 0)
+            if (g_u32BytesInPageBuf == 0)
             {
                 /* The previous page has sent out. Read new page to page buffer */
                 /* TODO: We should update new page data here. (0xFF is used in this sample code) */

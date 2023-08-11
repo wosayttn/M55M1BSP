@@ -49,7 +49,6 @@ volatile int8_t g_i8BulkOutReady = 0;
 
 void SYS_Init(void);
 void UART0_Init(void);
-void UART0_IRQHandler(void);
 void PowerDown(void);
 /*--------------------------------------------------------------------------*/
 
@@ -65,7 +64,7 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
+    /* Enable APLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to APLL0 */
@@ -73,7 +72,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK0DIV(2);
@@ -101,8 +100,8 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL1_SELECT);   
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL1_SELECT);
 
     /* Select USB clock source as PLL/2 and USB clock divider as 2 */
     CLK_SetModuleClock(USBD_MODULE, CLK_USBSEL_USBSEL_APLL1_DIV2, CLK_USBDIV_USBDIV(2));
@@ -120,7 +119,7 @@ void SYS_Init(void)
     CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
 #endif
 
-   /* Debug UART clock setting*/
+    /* Debug UART clock setting*/
     SetDebugUartCLK();
 
     /* Select USBD */
@@ -165,7 +164,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /* UART Callback function                                                                                  */
 /*---------------------------------------------------------------------------------------------------------*/
-void UART0_IRQHandler(void)
+NVT_ITCM void UART0_IRQHandler(void)
 {
     uint8_t u8InChar;
     int32_t i32Size;
@@ -173,23 +172,25 @@ void UART0_IRQHandler(void)
 
     u32IntStatus = UART0->INTSTS;
 
-    if((u32IntStatus & UART_INTSTS_RDAIF_Msk) || (u32IntStatus & UART_INTSTS_RXTOIF_Msk))
+    if ((u32IntStatus & UART_INTSTS_RDAIF_Msk) || (u32IntStatus & UART_INTSTS_RXTOIF_Msk))
     {
         /* Receiver FIFO threshold level is reached or Rx time out */
 
         /* Get all the input characters */
-        while(!(UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk))
+        while (!(UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk))
         {
             /* Get the character from UART Buffer */
             u8InChar = (uint8_t)UART0->DAT;
 
             /* Check if buffer full */
-            if(g_u16ComRbytes < RXBUFSIZE)
+            if (g_u16ComRbytes < RXBUFSIZE)
             {
                 /* Enqueue the character */
                 s_au8ComRbuf[g_u16ComRtail++] = u8InChar;
-                if(g_u16ComRtail >= RXBUFSIZE)
+
+                if (g_u16ComRtail >= RXBUFSIZE)
                     g_u16ComRtail = 0;
+
                 g_u16ComRbytes++;
             }
             else
@@ -199,24 +200,27 @@ void UART0_IRQHandler(void)
         }
     }
 
-    if(u32IntStatus & UART_INTSTS_THREIF_Msk)
+    if (u32IntStatus & UART_INTSTS_THREIF_Msk)
     {
 
-        if(g_u16ComTbytes && (UART0->INTEN & UART_INTEN_THREIEN_Msk))
+        if (g_u16ComTbytes && (UART0->INTEN & UART_INTEN_THREIEN_Msk))
         {
             /* Fill the Tx FIFO */
             i32Size = g_u16ComTbytes;
-            if(i32Size >= UART0_FIFO_SIZE)
+
+            if (i32Size >= UART0_FIFO_SIZE)
             {
                 i32Size = UART0_FIFO_SIZE;
             }
 
-            while(i32Size)
+            while (i32Size)
             {
                 u8InChar = s_au8ComTbuf[g_u16ComThead++];
                 UART0->DAT = u8InChar;
-                if(g_u16ComThead >= TXBUFSIZE)
+
+                if (g_u16ComThead >= TXBUFSIZE)
                     g_u16ComThead = 0;
+
                 g_u16ComTbytes--;
                 i32Size--;
             }
@@ -234,19 +238,21 @@ void VCOM_TransferData(void)
     uint32_t i, u32Len;
 
     /* Check whether USB is ready for next packet or not */
-    if(g_u32TxSize == 0)
+    if (g_u32TxSize == 0)
     {
         /* Check whether we have new COM Rx data to send to USB or not */
-        if(g_u16ComRbytes)
+        if (g_u16ComRbytes)
         {
             u32Len = g_u16ComRbytes;
-            if(u32Len > EP2_MAX_PKT_SIZE)
+
+            if (u32Len > EP2_MAX_PKT_SIZE)
                 u32Len = EP2_MAX_PKT_SIZE;
 
-            for(i = 0; i < u32Len; i++)
+            for (i = 0; i < u32Len; i++)
             {
                 s_au8RxBuf[i] = s_au8ComRbuf[g_u16ComRhead++];
-                if(g_u16ComRhead >= RXBUFSIZE)
+
+                if (g_u16ComRhead >= RXBUFSIZE)
                     g_u16ComRhead = 0;
             }
 
@@ -263,18 +269,20 @@ void VCOM_TransferData(void)
             /* Prepare a zero packet if previous packet size is EP2_MAX_PKT_SIZE and
                no more data to send at this moment to note Host the transfer has been done */
             u32Len = USBD_GET_PAYLOAD_LEN(EP2);
-            if(u32Len == EP2_MAX_PKT_SIZE)
+
+            if (u32Len == EP2_MAX_PKT_SIZE)
                 USBD_SET_PAYLOAD_LEN(EP2, 0);
         }
     }
 
     /* Process the Bulk out data when bulk out data is ready. */
-    if(g_i8BulkOutReady && (g_u32RxSize <= TXBUFSIZE - g_u16ComTbytes))
+    if (g_i8BulkOutReady && (g_u32RxSize <= TXBUFSIZE - g_u16ComTbytes))
     {
-        for(i = 0; i < g_u32RxSize; i++)
+        for (i = 0; i < g_u32RxSize; i++)
         {
             s_au8ComTbuf[g_u16ComTtail++] = g_pu8RxBuf[i];
-            if(g_u16ComTtail >= TXBUFSIZE)
+
+            if (g_u16ComTtail >= TXBUFSIZE)
                 g_u16ComTtail = 0;
         }
 
@@ -290,14 +298,15 @@ void VCOM_TransferData(void)
     }
 
     /* Process the software Tx FIFO */
-    if(g_u16ComTbytes)
+    if (g_u16ComTbytes)
     {
         /* Check if Tx is working */
-        if((UART0->INTEN & UART_INTEN_THREIEN_Msk) == 0)
+        if ((UART0->INTEN & UART_INTEN_THREIEN_Msk) == 0)
         {
             /* Send one bytes out */
             UART0->DAT = s_au8ComTbuf[g_u16ComThead++];
-            if(g_u16ComThead >= TXBUFSIZE)
+
+            if (g_u16ComThead >= TXBUFSIZE)
                 g_u16ComThead = 0;
 
             g_u16ComTbytes--;
@@ -319,7 +328,7 @@ void PowerDown(void)
     PMC_PowerDown();
 
     /* Clear PWR_DOWN_EN if it is not clear by itself */
-    if(PMC->PWRCTL & PMC_PWRCTL_PDEN_Msk)
+    if (PMC->PWRCTL & PMC_PWRCTL_PDEN_Msk)
         PMC->PWRCTL ^= PMC_PWRCTL_PDEN_Msk;
 
     /* Lock protected registers */
@@ -358,23 +367,24 @@ int32_t main(void)
 
     /* Check if Data Flash Size is 64K. If not, to re-define Data Flash size and to enable Data Flash function */
 
-    if(FMC_ReadConfig(au32Config, 2) < 0) //wait FMC modified
+    if (FMC_ReadConfig(au32Config, 2) < 0) //wait FMC modified
         return -1;
 
-    if(((au32Config[0] & 0x01) == 1) || (au32Config[1] != DATA_FLASH_BASE))
+    if (((au32Config[0] & 0x01) == 1) || (au32Config[1] != DATA_FLASH_BASE))
     {
         FMC_ENABLE_CFG_UPDATE();
         au32Config[0] &= ~0x1;
         au32Config[1] = DATA_FLASH_BASE;
 
-        if(FMC_WriteConfig(FMC_USER_CONFIG_0,au32Config[0]) < 0)   //wait FMC modified
+        if (FMC_WriteConfig(FMC_USER_CONFIG_0, au32Config[0]) < 0) //wait FMC modified
             return -1;
 
-        if(FMC_WriteConfig(FMC_USER_CONFIG_1,au32Config[1]) < 0)   //wait FMC modified
+        if (FMC_WriteConfig(FMC_USER_CONFIG_1, au32Config[1]) < 0) //wait FMC modified
             return -1;
-        
+
         FMC_ReadConfig(au32Config, 2);   //wait FMC modified
-        if(((au32Config[0] & 0x01) == 1) || (au32Config[1] != DATA_FLASH_BASE))
+
+        if (((au32Config[0] & 0x01) == 1) || (au32Config[1] != DATA_FLASH_BASE))
         {
             printf("Error: Program Config Failed!\n");
             /* Disable FMC ISP function */
@@ -406,14 +416,15 @@ int32_t main(void)
     /* Clear SOF */
     USBD->INTSTS = USBD_INTSTS_SOFIF_Msk;
 
-    while(1)
+    while (1)
     {
 #if CRYSTAL_LESS
-         /* Start USB trim if it is not enabled. */
-        if((SYS->TCTL48M & SYS_TCTL48M_FREQSEL_Msk) != 1)
+
+        /* Start USB trim if it is not enabled. */
+        if ((SYS->TCTL48M & SYS_TCTL48M_FREQSEL_Msk) != 1)
         {
             /* Start USB trim only when SOF */
-            if(USBD->INTSTS & USBD_INTSTS_SOFIF_Msk)
+            if (USBD->INTSTS & USBD_INTSTS_SOFIF_Msk)
             {
                 /* Clear SOF */
                 USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
@@ -425,7 +436,7 @@ int32_t main(void)
         }
 
         /* Disable USB Trim when error */
-        if(SYS->TISTS48M & (SYS_TISTS48M_CLKERRIF_Msk | SYS_TISTS48M_TFAILIF_Msk))
+        if (SYS->TISTS48M & (SYS_TISTS48M_CLKERRIF_Msk | SYS_TISTS48M_TFAILIF_Msk))
         {
             /* Init TRIM */
             M32(TRIM_INIT) = u32TrimInit;
@@ -439,10 +450,11 @@ int32_t main(void)
             /* Clear SOF */
             USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
         }
+
 #endif
 
         /* Enter power down when USB suspend */
-        if(g_u8Suspend)
+        if (g_u8Suspend)
             PowerDown();
 
         VCOM_TransferData();

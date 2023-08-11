@@ -38,12 +38,12 @@
 
 /* Define Descriptor information */
 #if(PLAY_CHANNELS == 1)
-#define PLAY_CH_CFG     1
-#define REC_CH_CFG      0
+    #define PLAY_CH_CFG     1
+    #define REC_CH_CFG      0
 #endif
 #if(PLAY_CHANNELS == 2)
-#define PLAY_CH_CFG     3
-#define REC_CH_CFG      3
+    #define PLAY_CH_CFG     3
+    #define REC_CH_CFG      3
 #endif
 
 /********************************************/
@@ -142,16 +142,16 @@ void EP3_Handler(void);
 void timer_init(void);
 void AdjustCodecPll(RESAMPLE_STATE_T r);
 #if NAU8822
-void NAU8822_Setup(void);
-void NAU8822_ConfigSampleRate(uint32_t u32SampleRate);
-void I2C_WriteNAU8822(uint8_t u8Addr, uint16_t u16Data);
-void RecoveryFromArbLost(void);
+    void NAU8822_Setup(void);
+    void NAU8822_ConfigSampleRate(uint32_t u32SampleRate);
+    void I2C_WriteNAU8822(uint8_t u8Addr, uint16_t u16Data);
+    void RecoveryFromArbLost(void);
 #else
-void NAU88L25_Reset(void);
-void NAU88L25_Setup(void);
-void NAU88L25_ConfigSampleRate(uint32_t u32SampleRate);
-uint8_t I2C_WriteNAU88L25(uint16_t u16Addr, uint16_t u16Dat);
-uint8_t I2C_WriteMultiByteforNAU88L25(uint8_t u8ChipAddr, uint16_t u16SubAddr, const uint8_t *p, uint32_t u32Len);
+    void NAU88L25_Reset(void);
+    void NAU88L25_Setup(void);
+    void NAU88L25_ConfigSampleRate(uint32_t u32SampleRate);
+    uint8_t I2C_WriteNAU88L25(uint16_t u16Addr, uint16_t u16Dat);
+    uint8_t I2C_WriteMultiByteforNAU88L25(uint8_t u8ChipAddr, uint16_t u16SubAddr, const uint8_t *p, uint32_t u32Len);
 #endif
 
 typedef struct dma_desc_t

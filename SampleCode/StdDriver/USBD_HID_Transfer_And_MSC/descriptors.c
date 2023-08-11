@@ -51,14 +51,14 @@ static uint8_t s_au8DeviceDescriptor[] =
     /* idVendor */
     USBD_VID & 0x00FF,
     (USBD_VID & 0xFF00) >> 8,
-    /* idProduct */
-    USBD_PID & 0x00FF,
-    (USBD_PID & 0xFF00) >> 8,
-    0x00, 0x00,     /* bcdDevice */
-    0x01,           /* iManufacture */
-    0x02,           /* iProduct */
-    0x03,           /* iSerialNumber -  is required for BOT device */
-    0x01            /* bNumConfigurations */
+                        /* idProduct */
+                        USBD_PID & 0x00FF,
+                        (USBD_PID & 0xFF00) >> 8,
+                        0x00, 0x00,     /* bcdDevice */
+                        0x01,           /* iManufacture */
+                        0x02,           /* iProduct */
+                        0x03,           /* iSerialNumber -  is required for BOT device */
+                        0x01            /* bNumConfigurations */
 };
 
 /*!<USB Configure Descriptor */
@@ -97,53 +97,53 @@ static uint8_t s_au8ConfigDescriptor[] =
     sizeof(s_au8HIDDeviceReportDescriptor) & 0x00FF,
     (sizeof(s_au8HIDDeviceReportDescriptor) & 0xFF00) >> 8,
 
-    /* EP Descriptor: interrupt in. */
-    LEN_ENDPOINT,                               /* bLength */
-    DESC_ENDPOINT,                              /* bDescriptorType */
-    (INT_IN_EP_NUM | EP_INPUT),                 /* bEndpointAddress */
-    EP_INT,                                     /* bmAttributes */
-    /* wMaxPacketSize */
-    EP2_MAX_PKT_SIZE & 0x00FF,
-    (EP2_MAX_PKT_SIZE & 0xFF00) >> 8,
-    HID_DEFAULT_INT_IN_INTERVAL,                /* bInterval */
+                                                      /* EP Descriptor: interrupt in. */
+                                                      LEN_ENDPOINT,                               /* bLength */
+                                                      DESC_ENDPOINT,                              /* bDescriptorType */
+                                                      (INT_IN_EP_NUM | EP_INPUT),                 /* bEndpointAddress */
+                                                      EP_INT,                                     /* bmAttributes */
+                                                      /* wMaxPacketSize */
+                                                      EP2_MAX_PKT_SIZE & 0x00FF,
+                                                      (EP2_MAX_PKT_SIZE & 0xFF00) >> 8,
+                                                      HID_DEFAULT_INT_IN_INTERVAL,                /* bInterval */
 
-    /* EP Descriptor: interrupt out. */
-    LEN_ENDPOINT,                               /* bLength */
-    DESC_ENDPOINT,                              /* bDescriptorType */
-    (INT_OUT_EP_NUM | EP_OUTPUT),               /* bEndpointAddress */
-    EP_INT,                                     /* bmAttributes */
-    /* wMaxPacketSize */
-    EP3_MAX_PKT_SIZE & 0x00FF,
-    (EP3_MAX_PKT_SIZE & 0xFF00) >> 8,
-    HID_DEFAULT_INT_IN_INTERVAL,                /* bInterval */
+                                                      /* EP Descriptor: interrupt out. */
+                                                      LEN_ENDPOINT,                               /* bLength */
+                                                      DESC_ENDPOINT,                              /* bDescriptorType */
+                                                      (INT_OUT_EP_NUM | EP_OUTPUT),               /* bEndpointAddress */
+                                                      EP_INT,                                     /* bmAttributes */
+                                                      /* wMaxPacketSize */
+                                                      EP3_MAX_PKT_SIZE & 0x00FF,
+                                                      (EP3_MAX_PKT_SIZE & 0xFF00) >> 8,
+                                                      HID_DEFAULT_INT_IN_INTERVAL,                /* bInterval */
 
-    /* MSC Descriptor */
-    /* const BYTE cbyInterfaceDescriptor[LEN_INTERFACE] = */
-    LEN_INTERFACE,                              // bLength
-    DESC_INTERFACE,                             // bDescriptorType
-    0x01,                                       // bInterfaceNumber
-    0x00,                                       // bAlternateSetting
-    0x02,                                       // bNumEndpoints
-    0x08,                                       // bInterfaceClass
-    0x06,                                       // bInterfaceSubClass
-    0x50,                                       // bInterfaceProtocol
-    0x00,                                       // iInterface
+                                                      /* MSC Descriptor */
+                                                      /* const BYTE cbyInterfaceDescriptor[LEN_INTERFACE] = */
+                                                      LEN_INTERFACE,                              // bLength
+                                                      DESC_INTERFACE,                             // bDescriptorType
+                                                      0x01,                                       // bInterfaceNumber
+                                                      0x00,                                       // bAlternateSetting
+                                                      0x02,                                       // bNumEndpoints
+                                                      0x08,                                       // bInterfaceClass
+                                                      0x06,                                       // bInterfaceSubClass
+                                                      0x50,                                       // bInterfaceProtocol
+                                                      0x00,                                       // iInterface
 
-    /* const BYTE cbyEndpointDescriptor1[LEN_ENDPOINT] = */
-    LEN_ENDPOINT,                               // bLength
-    DESC_ENDPOINT,                              // bDescriptorType
-    (EP_INPUT | BULK_IN_EP_NUM),                // bEndpointAddress
-    EP_BULK,                                    // bmAttributes
-    EP4_MAX_PKT_SIZE, 0x00,                     // wMaxPacketSize
-    0x00,                                       // bInterval
+                                                      /* const BYTE cbyEndpointDescriptor1[LEN_ENDPOINT] = */
+                                                      LEN_ENDPOINT,                               // bLength
+                                                      DESC_ENDPOINT,                              // bDescriptorType
+                                                      (EP_INPUT | BULK_IN_EP_NUM),                // bEndpointAddress
+                                                      EP_BULK,                                    // bmAttributes
+                                                      EP4_MAX_PKT_SIZE, 0x00,                     // wMaxPacketSize
+                                                      0x00,                                       // bInterval
 
-    /* const BYTE cbyEndpointDescriptor2[LEN_ENDPOINT] = */
-    LEN_ENDPOINT,                               // bLength
-    DESC_ENDPOINT,                              // bDescriptorType
-    (EP_OUTPUT | BULK_OUT_EP_NUM),              // bEndpointAddress
-    EP_BULK,                                    // bmAttributes
-    EP5_MAX_PKT_SIZE, 0x00,                     // wMaxPacketSize
-    0x00                                        // bInterval
+                                                      /* const BYTE cbyEndpointDescriptor2[LEN_ENDPOINT] = */
+                                                      LEN_ENDPOINT,                               // bLength
+                                                      DESC_ENDPOINT,                              // bDescriptorType
+                                                      (EP_OUTPUT | BULK_OUT_EP_NUM),              // bEndpointAddress
+                                                      EP_BULK,                                    // bmAttributes
+                                                      EP5_MAX_PKT_SIZE, 0x00,                     // wMaxPacketSize
+                                                      0x00                                        // bInterval
 };
 
 /*!<USB Language String Descriptor */
@@ -186,21 +186,21 @@ static uint8_t s_au8BOSDescriptor[] =
     /* wTotalLength */
     0x0C & 0x00FF,
     (0x0C & 0xFF00) >> 8,
-    0x01,           /* bNumDeviceCaps */
+                    0x01,           /* bNumDeviceCaps */
 
-    /* Device Capability */
-    LEN_BOSCAP,     /* bLength */
-    DESC_CAPABILITY,/* bDescriptorType */
-    CAP_USB20_EXT,  /* bDevCapabilityType, 0x02 is USB 2.0 Extension */
-    0x06, 0x04, 0x00, 0x00  /* bmAttributes, 32 bits */
-    /* bit 0 : Reserved. Must 0. */
-    /* bit 1 : 1 to support LPM. */
-    /* bit 2 : 1 to support BSL & Alternat HIRD. */
-    /* bit 3 : 1 to recommend Baseline BESL. */
-    /* bit 4 : 1 to recommand Deep BESL. */
-    /* bit 11:8 : Recommend Baseline BESL value. Ignore by bit3 is zero. */
-    /* bit 15:12 : Recommend Deep BESL value. Ignore by bit4 is zero. */
-    /* bit 31:16 : Reserved. Must 0. */
+                    /* Device Capability */
+                    LEN_BOSCAP,     /* bLength */
+                    DESC_CAPABILITY,/* bDescriptorType */
+                    CAP_USB20_EXT,  /* bDevCapabilityType, 0x02 is USB 2.0 Extension */
+                    0x06, 0x04, 0x00, 0x00  /* bmAttributes, 32 bits */
+                    /* bit 0 : Reserved. Must 0. */
+                    /* bit 1 : 1 to support LPM. */
+                    /* bit 2 : 1 to support BSL & Alternat HIRD. */
+                    /* bit 3 : 1 to recommend Baseline BESL. */
+                    /* bit 4 : 1 to recommand Deep BESL. */
+                    /* bit 11:8 : Recommend Baseline BESL value. Ignore by bit3 is zero. */
+                    /* bit 15:12 : Recommend Deep BESL value. Ignore by bit4 is zero. */
+                    /* bit 31:16 : Reserved. Must 0. */
 };
 #endif
 
