@@ -46,7 +46,7 @@ void UART_FunctionTest(void);
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle UART Channel 0 interrupt event                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
-void UART0_IRQHandler(void)
+NVT_ITCM void UART0_IRQHandler(void)
 {
     UART_TEST_HANDLE();
 }

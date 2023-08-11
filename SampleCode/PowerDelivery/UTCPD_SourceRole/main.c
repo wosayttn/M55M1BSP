@@ -20,8 +20,10 @@
 #define ADC_INIT
 //#define ACMP_INIT
 
-
-void UTCPD_IRQHandler(void)
+/*---------------------------------------------------------------------------------------------------------*/
+/*                            ISR to handle UTCPD interrupt event                                          */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void UTCPD_IRQHandler(void)
 {
     uint32_t port = 0;
     tcpci_tcpc_alert(port);
@@ -218,7 +220,7 @@ void TIMER1_Init(void)
  *              Software Timer base for PD check time our mechanism
  */
 
-void TIMER0_IRQHandler(void)
+NVT_ITCM void TIMER0_IRQHandler(void)
 {
     UTCPD_TimerBaseInc();
     /* clear timer interrupt flag */
@@ -236,7 +238,7 @@ void TIMER0_IRQHandler(void)
  * @details     The Timer1 default IRQ.
  *              Utilizaton for driving ADC trigger conversion VBUS and VCONN to periodicly
  */
-void TIMER1_IRQHandler(void)
+NVT_ITCM void TIMER1_IRQHandler(void)
 {
     static uint32_t u32Sec = 1;
 

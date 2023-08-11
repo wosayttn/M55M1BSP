@@ -13,12 +13,18 @@
 volatile uint32_t g_u32AdcIntFlag0;
 volatile uint32_t g_u32AdcIntFlag1;
 
-void EADC00_IRQHandler(void)
+/*---------------------------------------------------------------------------------------------------------*/
+/*                            ISR to handle EADC00 interrupt event                                         */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void EADC00_IRQHandler(void)
 {
     g_u32AdcIntFlag0 = 1;
     EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);      /* Clear the A/D ADINT0 interrupt flag */
 }
-void EADC01_IRQHandler(void)
+/*---------------------------------------------------------------------------------------------------------*/
+/*                            ISR to handle EADC01 interrupt event                                         */
+/*---------------------------------------------------------------------------------------------------------*/
+NVT_ITCM void EADC01_IRQHandler(void)
 {
     g_u32AdcIntFlag1 = 1;
     EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF1_Msk);      /* Clear the A/D ADINT0 interrupt flag */
