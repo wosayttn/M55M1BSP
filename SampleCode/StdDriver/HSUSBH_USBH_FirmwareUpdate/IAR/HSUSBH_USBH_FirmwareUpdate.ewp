@@ -670,7 +670,7 @@
             <archiveVersion>1</archiveVersion>
             <data>
                 <prebuild></prebuild>
-                <postbuild></postbuild>
+                <postbuild>ielftool --bin-multi $PROJ_DIR$\Debug\Exe\HSUSBH_USBH_FirmwareUpdate.out  $PROJ_DIR$\Debug\Exe\HSUSBH_USBH_FirmwareUpdate.bin</postbuild>
             </data>
         </settings>
         <settings>
@@ -1721,7 +1721,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>1</hasPrio>
+                <hasPrio>192</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -1730,7 +1730,7 @@
             <archiveVersion>1</archiveVersion>
             <data>
                 <prebuild></prebuild>
-                <postbuild></postbuild>
+                <postbuild>ielftool --bin-multi $PROJ_DIR$\Release\Exe\HSUSBH_USBH_FirmwareUpdate.elf  $PROJ_DIR$\Release\Exe\HSUSBH_USBH_FirmwareUpdate.bin</postbuild>
             </data>
         </settings>
         <settings>
@@ -1750,7 +1750,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>HSUSBH_USBH_FirmwareUpdate.out</state>
+                    <state>HSUSBH_USBH_FirmwareUpdate.elf</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -1850,7 +1850,7 @@
                 </option>
                 <option>
                     <name>IlinkExtraOptions</name>
-                    <state></state>
+                    <state>ielftool --bin-multi</state>
                 </option>
                 <option>
                     <name>IlinkLowLevelInterfaceSlave</name>

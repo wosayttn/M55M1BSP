@@ -82,21 +82,8 @@ void SYS_Init(void)
     /* Waiting for LXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -185,7 +172,7 @@ int main(void)
     printf("# Please connect (tamper0 & tamper1) and (tamper2 & tamper3) and (tamper4 & tamper5) first.\n");
     printf("                    (PF.6 to PF.7)          (PF.8 to PF.9)         (PF.10 to PF.11)\n");
     printf("# Press any key to start test:\n\n");
-    //getchar();
+    getchar();
 
     printf("# Check tamper date/time when tamper event occurred:\n\n");
 

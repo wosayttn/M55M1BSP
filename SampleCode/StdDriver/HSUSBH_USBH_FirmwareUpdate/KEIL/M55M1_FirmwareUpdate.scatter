@@ -16,7 +16,7 @@
  * | Ethos-U55     |   | Cortex-M55    +--+ ITCM (64 KB)  |
  * |               |   |               |  +---------------+
  * |               |   |               |
- * |               |   |               |  +---------------+ 
+ * |               |   |               |  +---------------+
  * |  M1      M0   |   |               +--+ DTCM (128 KB) |
  * +---+-------+---+   +-------+-------+  +---------------+
  *     |       |               |
@@ -28,7 +28,7 @@
  * | AMBA AHB     | | SRAM0 | | SRAM2 |
  * +---+----------+ | SRAM1 | +-------+
  *     |            +-------+
- * +---+---+ 
+ * +---+---+
  * | FLASH |
  * +-------+
  *
@@ -91,8 +91,8 @@
 ;   <o1> SRAM Size (in Bytes) <0x0-0x00150000:8>
 ; </h>
  *----------------------------------------------------------------------------*/
-#define SRAM_START      		0x20100000
-#define SRAM_SIZE	      		0x00150000
+#define SRAM_START      0x20100000
+#define SRAM_SIZE       0x00150000
 
 /*--------------------- Stack / Heap Configuration ---------------------------
 ; <h> Stack / Heap Configuration
@@ -156,7 +156,7 @@
 #define __RO_SIZE           ( FLASH_SIZE - TZ_NSC_SIZE )
 
 #define __RW_BASE           ( SRAM_START )
-#define __RW_SIZE           ( SRAM_SIZE - STACK_SIZE - HEAP_SIZE )
+#define __RW_SIZE           ( SRAM_SIZE - HEAP_SIZE )
 
 /*----------------------------------------------------------------------------
   Scatter Region definition
@@ -164,24 +164,25 @@
 LR_ROM_1 __LDRO_BASE __LDRO_SIZE {
 	LDROM_Boot.bin __LDRO_BASE __LDRO_SIZE {
         *.o (RESET, +First)
-        *(InRoot$$Sections)
+        * (InRoot$$Sections)
         ; Make sure reset_handler ends up in root segment
         startup_M55M1.o
-		main.o (+RO)
-	}
-    __ITCM ITCM_START ITCM_SIZE
+        main.o (+RO)
+    }
+
+    ITCM ITCM_START ITCM_SIZE
     {
         .ANY (ITCM)
     }
-    
+
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-    NSC_ROM TZ_NSC_START FIXED TZ_NSC_SIZE
+    NSC_ROM +0
     {
         .ANY (Veneer$$CMSE)
     }
 #endif
-	
-    __RW __RW_BASE UNINIT __RW_SIZE              ; RW data
+
+    __RW __RW_BASE __RW_SIZE              ; RW data
     {
         .ANY (+RW +ZI)
     }
@@ -190,12 +191,18 @@ LR_ROM_1 __LDRO_BASE __LDRO_SIZE {
     ARM_LIB_HEAP  __HEAP_BASE EMPTY  HEAP_SIZE {}       ; Reserve empty region for heap
 #endif
 
-	__DTCM DTCM_START (DTCM_SIZE - STACK_SIZE - __STACKSEAL_SIZE)
+    DTCM_VTOR DTCM_START
     {
-		.ANY (DTCM.VTOR)
-        .ANY (DTCM.init)
-        .ANY (DTCM.zi)
+        * (DTCM.VTOR)
     }
+
+    DTCM AlignExpr(+0, 8)
+    {
+        .ANY (DTCM.Init)
+        .ANY (.bss.DTCM.ZeroInit)
+    }
+
+    ScatterAssert((ImageLength(DTCM_VTOR) + ImageLength(DTCM)) < (DTCM_SIZE - STACK_SIZE - __STACKSEAL_SIZE))	; ImageLength is uncompressed size
 
     ARM_LIB_STACK __STACK_TOP EMPTY - STACK_SIZE {}     ; Reserve empty region for stack
 
@@ -203,7 +210,7 @@ LR_ROM_1 __LDRO_BASE __LDRO_SIZE {
 STACKSEAL +0 EMPTY __STACKSEAL_SIZE {
         ; Reserve empty region for stack seal immediately after stack
     }
-#endif	
+#endif
 }
 
 LR_ROM_2 __APRO_ISP_BASE __APRO_ISP_SIZE  {                       ; load region size_region
