@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * @brief    Show SPIM DMA mode read/write Micron MT35xU02G octal flash function.
+ * @brief    Shows SPIM DMA mode read/write octal flash function.
  *
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
@@ -262,7 +262,7 @@ int main()
     /* SAMPLE CODE                                                            */
     /*------------------------------------------------------------------------*/
     printf("+------------------------------------------------------------------------+\n");
-    printf("|      SPIM DMA mode read/write Micron MT35XU02G octal flash sample      |\n");
+    printf("|      SPIM DMA mode read/write octal flash(Micron MT35XU02G) sample     |\n");
     printf("+------------------------------------------------------------------------+\n");
 
     SYS_UnlockReg();                            /* Unlock register lock protect */
