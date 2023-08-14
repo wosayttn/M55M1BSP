@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief    Use GDMA channel 0 to do 2D transfer (Rotate 90 degrees clockwise).
+ * @brief   Use GDMA channel 0 to do 2D transfer (Rotate 90 degrees clockwise).
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

@@ -2,7 +2,7 @@
  * @file    main.c
  * @version V1.00
  * @brief
- *           Use PDMA0 to implement Ping-Pong buffer by scatter-gather mode(memory to memory).
+ *          Use PDMA0 to implement Ping-Pong buffer by scatter-gather mode(memory to memory).
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

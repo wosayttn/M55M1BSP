@@ -2,8 +2,8 @@
  * @file    main.c
  * @version V1.00
  * @brief
- *           Demonstrate how to set I2C Master mode and Slave mode.
- *           And show how a master access a slave on a chip.
+ *          Demonstrate how to set I2C Master mode and Slave mode.
+ *          And show how a master access a slave on a chip.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

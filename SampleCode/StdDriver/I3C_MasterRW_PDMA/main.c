@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief    Demonstrate how to use I3C0 Master to reveive and transmit the data through PDMA to a Slave.
+ * @brief   Demonstrate how to use I3C0 Master to reveive and transmit the data through PDMA to a Slave.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

@@ -1,8 +1,8 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief    Show how to set USCI_I2C use Multi bytes API Read and Write data to Slave.
- *           This sample code needs to work with USCI_I2C_Slave.
+ * @brief   Show how to set USCI_I2C use Multi bytes API Read and Write data to Slave.
+ *          This sample code needs to work with USCI_I2C_Slave.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief    Use GDMA channel 0 to do 2D transfer (Mirror along X axis. Top to bottom).
+ * @brief   Use GDMA channel 0 to do 2D transfer (Mirror along X axis. Top to bottom).
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

@@ -1,9 +1,8 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief
- * @brief    Show how to wake up USCI_I2C from Deep Sleep mode.
- *           This sample code needs to work with USCI_I2C_Master.
+ * @brief   Show how to wake up USCI_I2C from Deep Sleep mode.
+ *          This sample code needs to work with USCI_I2C_Master.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

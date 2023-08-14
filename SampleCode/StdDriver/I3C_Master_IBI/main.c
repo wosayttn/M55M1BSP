@@ -1,8 +1,8 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief    Demonstrate how to use I3C0 Master to process In-Band Interrupt request from an I3C Slave.
- *           This sample code needs to work with I3C_Slave_IBI.
+ * @brief   Demonstrate how to use I3C0 Master to process In-Band Interrupt request from an I3C Slave.
+ *          This sample code needs to work with I3C_Slave_IBI.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

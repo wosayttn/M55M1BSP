@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief    Demonstrate PDMA0 channel 1 get/clear timeout flag with UART1.
+ * @brief   Demonstrate PDMA0 channel 1 get/clear timeout flag with UART1.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
