@@ -115,25 +115,12 @@ SECTIONS
   .ldrom :
   {
   	KEEP(*(.vectors))
-    . = ALIGN(4);
-    __zero_table_start__ = .;
-    LONG (__bss_start__)
-    LONG ((__bss_end__ - __bss_start__) / 4)
-    LONG (__dtcm_zi_start__)
-    LONG ((__dtcm_zi_end__ - __dtcm_zi_start__) / 4)
-    __zero_table_end__ = .;  	
   	/* ./CMSIS/startup_M55M1.o ./User/main.o(.text*) */
   	./CMSIS/startup_M55M1.o(.text*)
   	./User/main.o(.text*)
   	/* *(.text*) */
   } > FLASH2
   
-  /*
-  .zero.table :
-  {
-
-  } > FLASH2
-  */
   . = ORIGIN(FLASH);
   .text :
   {
@@ -176,7 +163,7 @@ SECTIONS
     __exidx_end = .;
   } > FLASH
 
-  /*
+  
   .zero.table :
   {
     . = ALIGN(4);
@@ -187,7 +174,7 @@ SECTIONS
     LONG ((__dtcm_zi_end__ - __dtcm_zi_start__) / 4)
     __zero_table_end__ = .;
   } > FLASH
-  */
+  
   
   .copy.table :
   {

@@ -9,8 +9,8 @@ define symbol __LDROM_intvec_start__   = 0x0F100000;
 define symbol __ICFEDIT_region_ROM_start__  = 0x00100000;
 define symbol __ICFEDIT_region_ROM_end__    = 0x002FFFFF;
 
-define symbol __LD_region_ROM_start__  = 0xF100000;
-define symbol __LD_region_ROM_end__    = 0xF100FFF;
+define symbol __LD_region_ROM_start__  = 0x0F100000;
+define symbol __LD_region_ROM_end__    = 0x0F100FFF;
 
 define symbol __AP_ISP_region_ROM_start__  = 0x00120000;
 define symbol __AP_ISP_region_ROM_end__    = 0x0013FFFF;
@@ -43,11 +43,11 @@ initialize by copy { readwrite, section DTCM.VTOR, section ITCM, section DTCM.In
 do not initialize  { section .noinit, section .bss.tensor_arena, section .bss.NoInit.activation_buf_sram };
 
 place at address mem:__LDROM_intvec_start__   
-{ 
-	readonly section .intvec,
-	readonly object main.o,
-	readonly object startup_M55M1.o
+{
+	readonly object startup_M55M1.o,
+	readonly object main.o
 };
+
 place at address mem:DTCM_intvec_start__      { section DTCM.VTOR };
 
 place in ITCM_region { section ITCM };

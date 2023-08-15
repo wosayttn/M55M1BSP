@@ -11,7 +11,7 @@
 #define __WDT_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -71,6 +71,9 @@ typedef struct
      * |        |          |0111 = 218 * WDT_CLK.
      * |        |          |1000 = 220 * WDT_CLK.
      * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
+     * |[29]    |PDRSTCNT  |Reset Counter When Entering Power Down Enable Bit
+     * |        |          |0 = WDT up counter will keep going no matter CPU enter power down or not.
+     * |        |          |1 = Reset WDT up counter value to 0 when entering power down.
      * |[30]    |SYNC      |WDT Enable Control SYNC Flag Indicator (Read Only)
      * |        |          |If user executes enable/disable WDTEN (WDT_CTL[7]), this flag can be indicated enable/disable WDTEN function is completed or not.
      * |        |          |0 = Setting WDTEN bit is completed and WDT is ready.
@@ -131,16 +134,13 @@ typedef struct
     __IO uint32_t ALTCTL;                /*!< [0x0004] WDT Alternative Control Register                                 */
     __O  uint32_t RSTCNT;                /*!< [0x0008] WDT Reset Counter Register                                       */
     __IO uint32_t STATUS;                /*!< [0x000c] WDT Status Register                                              */
-    
+
 } WDT_T;
 
 /**
     @addtogroup WDT_CONST WDT Bit Field Definition
     Constant Definitions for WDT Controller
 @{ */
-
-#define WDT_CTL_RSTCNT_Pos               (0)                                               /*!< WDT_T::CTL: RSTCNT Position            */
-#define WDT_CTL_RSTCNT_Msk               (0x1ul << WDT_CTL_RSTCNT_Pos)                     /*!< WDT_T::CTL: RSTCNT Mask                */
 
 #define WDT_CTL_RSTEN_Pos                (1)                                               /*!< WDT_T::CTL: RSTEN Position             */
 #define WDT_CTL_RSTEN_Msk                (0x1ul << WDT_CTL_RSTEN_Pos)                      /*!< WDT_T::CTL: RSTEN Mask                 */
@@ -186,7 +186,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __WDT_REG_H__ */

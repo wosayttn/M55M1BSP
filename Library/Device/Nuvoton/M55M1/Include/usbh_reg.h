@@ -10,7 +10,7 @@
 #define __USBH_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -137,7 +137,7 @@ typedef struct
      * |        |          |This bit is set when the content of HcRhStatus or the content of HcRhPortStatus register has changed.
      * |        |          |0 = The content of HcRhStatus and the content of HcRhPortStatus register didn't change.
      * |        |          |1 = The content of HcRhStatus or the content of HcRhPortStatus register has changed.
-     * |        |          |Note: This bit is cleared by writing hu20191f to HcRhPortStatus6[20:16].
+     * |        |          |Note: This bit is cleared by writing h'1f to HcRhPortStatus[20:16].
      * @var USBH_T::HcInterruptEnable
      * Offset: 0x10  Host Controller Interrupt Enable Register
      * ---------------------------------------------------------------------------------------------------
@@ -494,8 +494,8 @@ typedef struct
      * |[17]    |PESC      |Port Enable Status Change
      * |        |          |This bit indicates that the port has been disabled (PES (HcRhPortStatus[1]) cleared) due to a hardware event.
      * |        |          |Write 1 to clear this bit to zero.
-     * |        |          |0 = PES (HcRhPortStatus1[1]) didn't change.
-     * |        |          |1 = PES (HcRhPortStatus1[1]) changed.
+     * |        |          |0 = PES (HcRhPortStatus[1]) didn't change.
+     * |        |          |1 = PES (HcRhPortStatus[1]) changed.
      * |[18]    |PSSC      |Port Suspend Status Change
      * |        |          |This bit indicates the completion of the selective resume sequence for the port.
      * |        |          |Write 1 to clear this bit to zero.
@@ -806,7 +806,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __USBH_REG_H__ */

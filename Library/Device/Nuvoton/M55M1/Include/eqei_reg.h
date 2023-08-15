@@ -11,7 +11,7 @@
 #define __EQEI_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -39,7 +39,7 @@ typedef struct
      * |        |          |This register performs an integrator which count value is proportional to the encoder position
      * |        |          |The pulse counter may be initialized to a predetermined value by one of three events occurs:
      * |        |          |1. Software is written if EQEIEN (EQEI_CTL[29]) = 0.
-     * |        |          |2. CNT(EQEI_CNT[31:0]) overflows or underflows to initialize CNT.Compare-match event if EQEIEN(EQEI_CTL[29])=1 and EQEI is in compare-counting mode.
+     * |        |          |2. CNT(EQEI_CNT[31:0]) overflows or underflows to initialize CNT.
      * |        |          |3. Index signal change if EQEIEN(EQEI_CTL[29])=1 and IDXRLDEN (EQEI_CTL[27])=1.
      * @var EQEI_T::CNTHOLD
      * Offset: 0x04  EQEI Counter Hold Register
@@ -114,13 +114,13 @@ typedef struct
      * |        |          |Note: User needs to set DIRSRC(EQEI_CTL2[5:4]) when MODE(EQEI_CTL[10:8]) selects to directional counting mode
      * |[12]    |CHAINV    |Inverse QEA Input Polarity
      * |        |          |0 = Not inverse QEA input polarity.
-     * |        |          |1 = QEA input polarity is inversed to EQEI controller. 
+     * |        |          |1 = QEA input polarity is inversed to EQEI controller.
      * |[13]    |CHBINV    |Inverse QEB Input Polarity
      * |        |          |0 = Not inverse QEB input polarity.
      * |        |          |1 = QEB input polarity is inversed to EQEI controller.
      * |[14]    |IDXINV    |Inverse IDX Input Polarity
      * |        |          |0 = Not inverse IDX input polarity.
-     * |        |          |1 = IDX input polarity is inversed to EQEI controller. 
+     * |        |          |1 = IDX input polarity is inversed to EQEI controller.
      * |[15]    |IDXRSTEV  |IDX Signal Resets Enable Bit in First IDX Reset Event (Write Only)
      * |        |          |0 = The next IDX level high signal reset function Disabled.
      * |        |          |1 = The next IDX level high signal reset function Eenabled.
@@ -139,16 +139,16 @@ typedef struct
      * |        |          |1 = The IDXF can trigger EQEI interrupt Enabled.
      * |[20]    |HOLDTMR0  |Hold EQEI_CNT by Timer 0
      * |        |          |0 = TIF (TIMER0_INTSTS[0]) has no effect on HOLDCNT.
-     * |        |          |1 = A rising edge of bit TIF(TIMER0_INTSTS[0]) in timer 0 sets HOLDCNT to 1. 
+     * |        |          |1 = A rising edge of bit TIF(TIMER0_INTSTS[0]) in timer 0 sets HOLDCNT to 1.
      * |[21]    |HOLDTMR1  |Hold EQEI_CNT by Timer 1
      * |        |          |0 = TIF(TIMER1_INTSTS[0]) has no effect on HOLDCNT.
-     * |        |          |1 = A rising edge of bit TIF (TIMER1_INTSTS[0]) in timer 1 sets HOLDCNT to 1. 
+     * |        |          |1 = A rising edge of bit TIF (TIMER1_INTSTS[0]) in timer 1 sets HOLDCNT to 1.
      * |[22]    |HOLDTMR2  |Hold EQEI_CNT by Timer 2
      * |        |          |0 = TIF(TIMER2_INTSTS[0]) has no effect on HOLDCNT.
-     * |        |          |1 = A rising edge of bit TIF(TIMER2_INTSTS[0]) in timer 2 sets HOLDCNT to 1. 
+     * |        |          |1 = A rising edge of bit TIF(TIMER2_INTSTS[0]) in timer 2 sets HOLDCNT to 1.
      * |[23]    |HOLDTMR3  |Hold EQEI_CNT by Timer 3
      * |        |          |0 = TIF (TIMER3_INTSTS[0]) has no effect on HOLDCNT.
-     * |        |          |1 = A rising edge of bit TIF(TIMER3_INTSTS[0]) in timer 3 sets HOLDCNT to 1. 
+     * |        |          |1 = A rising edge of bit TIF(TIMER3_INTSTS[0]) in timer 3 sets HOLDCNT to 1.
      * |[24]    |HOLDCNT   |Hold EQEI_CNT Control
      * |        |          |When this bit is set from low to high, the CNT(EQEI_CNT[31:0]) is copied into CNTHOLD(EQEI_CNTHOLD[31:0])
      * |        |          |This bit may be set by writing 1 to it or Timer0~Timer3 interrupt flag TIF (TIMERx_INTSTS[0]).
@@ -221,7 +221,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[31:0]	|UTCMP	   |Unit Timer Counter Compare
+     * |[31:0]  |UTCMP     |Unit Timer Counter Compare
      * |        |          |If the EQEI unit timer is enable (EQEI_CTL2[8]) =1, and the unit timer counter value also matches UTCMP(EQEI_UTCMP[31:0]), then UTIEF (EQEI_STATUS[10]) will be set. This register is software writable.
      * @var EQEI_T::STATUS
      * Offset: 0x2C  EQEI Controller Status Register
@@ -435,7 +435,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __EQEI_REG_H__ */
