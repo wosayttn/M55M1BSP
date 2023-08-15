@@ -170,7 +170,7 @@ long RETARGET(_flen)(FILEHANDLE fh)
     return -1;
 }
 
-#if 0//__ARMCC_VERSION >= 6190000
+#if __ARMCC_VERSION >= 6190000
 void RETARGET(_tmpnam)(char *name, int sig, unsigned maxlen)
 {
     (void)name;
