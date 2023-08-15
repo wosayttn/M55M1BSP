@@ -170,6 +170,14 @@ long RETARGET(_flen)(FILEHANDLE fh)
     return -1;
 }
 
+#if 0//__ARMCC_VERSION >= 6190000
+void RETARGET(_tmpnam)(char *name, int sig, unsigned maxlen)
+{
+    (void)name;
+    (void)sig;
+    (void)maxlen;
+}
+#else   /* __ARMCC_VERSION < 6190000 */
 int RETARGET(_tmpnam)(char *name, int sig, unsigned maxlen)
 {
     (void)name;
@@ -178,6 +186,7 @@ int RETARGET(_tmpnam)(char *name, int sig, unsigned maxlen)
 
     return 1;
 }
+#endif
 
 char *RETARGET(_command_string)(char *cmd, int len)
 {
