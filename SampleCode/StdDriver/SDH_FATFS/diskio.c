@@ -36,7 +36,6 @@ uint32_t Tmp_Buffer[Sector_Size];
 
 DSTATUS disk_initialize(BYTE pdrv)        /* Physical drive number (0..) */
 {
-
     if (pdrv == 0)
     {
         if (SDH_GET_CARD_CAPACITY(SDH0) == 0)
@@ -51,11 +50,9 @@ DSTATUS disk_initialize(BYTE pdrv)        /* Physical drive number (0..) */
     return RES_OK;
 }
 
-
 /*-----------------------------------------------------------------------*/
 /* Get Disk Status                                                       */
 /*-----------------------------------------------------------------------*/
-
 DSTATUS disk_status(BYTE pdrv)        /* Physical drive number (0..) */
 {
     if (pdrv == 0)
@@ -72,12 +69,9 @@ DSTATUS disk_status(BYTE pdrv)        /* Physical drive number (0..) */
     return RES_OK;
 }
 
-
-
 /*-----------------------------------------------------------------------*/
 /* Read Sector(s)                                                        */
 /*-----------------------------------------------------------------------*/
-
 DRESULT disk_read(
     BYTE pdrv,      /* Physical drive number (0..) */
     BYTE *buff,     /* Data buffer to store read data */
@@ -142,12 +136,9 @@ DRESULT disk_read(
     return ret;
 }
 
-
-
 /*-----------------------------------------------------------------------*/
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
-
 DRESULT disk_write(
     BYTE pdrv,          /* Physical drive number (0..) */
     const BYTE *buff,   /* Data to be written */
@@ -222,18 +213,15 @@ DRESULT disk_write(
     return ret;
 }
 
-
 /*-----------------------------------------------------------------------*/
 /* Miscellaneous Functions                                               */
 /*-----------------------------------------------------------------------*/
-
 DRESULT disk_ioctl(
     BYTE pdrv,      /* Physical drive number (0..) */
     BYTE cmd,       /* Control code */
     void *buff      /* Buffer to send/receive control data */
 )
 {
-
     DRESULT res = RES_OK;
 
     switch (cmd)
