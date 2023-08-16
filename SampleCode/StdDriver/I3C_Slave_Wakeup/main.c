@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief    Wake up the MCU from Power-down mode after receiving read/write request from the Master.
+ * @brief   Wake up the MCU from Power-down mode after receiving read/write request from the Master.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

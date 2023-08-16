@@ -12,7 +12,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-static volatile uint32_t s_u32ResetFlagCount = 5;
+static volatile uint32_t s_u32ResetFlagCount = 0;
 
 void SysTick_Handler(void);
 void SYS_Init(void);
@@ -88,7 +88,7 @@ int32_t main(void)
     InitDebugUart();
 
     /* Generate interrupt each 1 s */
-    SysTick_Config(SystemCoreClock / 1);
+    CLK_EnableSysTick(CLK_STSEL_ST0SEL_HIRC_DIV2, CLK_STSEL_ST0SEL_HIRC_DIV2 >> 2);
     
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+-------------------------------------+\n");

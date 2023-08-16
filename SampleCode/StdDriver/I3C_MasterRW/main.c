@@ -1,8 +1,8 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief    Demonstrate how to use I3C0 Master to transmit and reveive the data from a Slave.
- *           This sample code needs to work with I3C_SlaveRW.
+ * @brief   Demonstrate how to use I3C0 Master to transmit and reveive the data from a Slave.
+ *          This sample code needs to work with I3C_SlaveRW.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

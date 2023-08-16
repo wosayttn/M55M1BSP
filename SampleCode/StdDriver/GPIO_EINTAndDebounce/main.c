@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief    Show the usage of GPIO external interrupt function and de-bounce function.
+ * @brief   Show the usage of GPIO external interrupt function and de-bounce function.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

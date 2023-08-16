@@ -1,9 +1,8 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief
- * @brief    Demonstrate LPI2C Auto-operation mode when chip enters power-down mode.
- *           This sample code needs to work with LPI2C_Slave.
+ * @brief   Demonstrate LPI2C Auto-operation mode when chip enters power-down mode.
+ *          This sample code needs to work with LPI2C_Slave.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

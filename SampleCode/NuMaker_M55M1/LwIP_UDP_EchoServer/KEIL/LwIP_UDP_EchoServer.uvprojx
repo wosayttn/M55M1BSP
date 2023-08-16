@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>Project</TargetName>
+      <TargetName>LwIP_UDP_EchoServer</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>Project</OutputName>
+          <OutputName>LwIP_UDP_EchoServer</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -731,6 +731,7 @@
       <Layer>
         <LayName>Project</LayName>
         <LayPrjMark>1</LayPrjMark>
+        <LayTitle>LwIP_UDP_EchoServer</LayTitle>
       </Layer>
     </Layers>
   </LayerInfo>

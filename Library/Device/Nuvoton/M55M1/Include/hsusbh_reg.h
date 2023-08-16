@@ -80,7 +80,7 @@ typedef struct
      * |        |          |0 = System software must use a frame list length of 1024 elements with this EHCI host controller.
      * |        |          |1 = System software can specify and use a smaller frame list and configure the host controller via the USB Command Register.
      * |[2]     |ASPC      |Asynchronous Schedule Park Capability
-     * |        |          |0 = This EHCI host controller doesnu2019t support park feature of high-speed queue heads in the Asynchronous Schedule.
+     * |        |          |0 = This EHCI host controller doesn't support park feature of high-speed queue heads in the Asynchronous Schedule.
      * |        |          |1 = This EHCI host controller support park feature of high-speed queue heads in the Asynchronous Schedule.
      * |[7:4]   |IST       |Isochronous Scheduling Threshold
      * |        |          |This field indicates, relative to the current position of the executing host controller, where software can reliably update the isochronous schedule.
@@ -656,7 +656,7 @@ typedef struct
      * |[0]     |HCR       |Host Controller Reset
      * |        |          |This bit is set to initiate the software reset of Host Controller
      * |        |          |This bit is cleared by the Host Controller, upon completed of the reset operation.
-     * |        |          |This bit, when set, didnu2019t reset the Root Hub and no subsequent reset signaling be asserted to its downstream ports.
+     * |        |          |This bit, when set, didn't reset the Root Hub and no subsequent reset signaling be asserted to its downstream ports.
      * |        |          |0 = Host Controller is not in software reset state.
      * |        |          |1 = Host Controller is in software reset state.
      * |[1]     |CLF       |Control List Filled
@@ -702,14 +702,14 @@ typedef struct
      * |        |          |Note: This bit is cleared by writing 1 to it.
      * |[5]     |FNO       |Frame Number Overflow
      * |        |          |This bit is set when bit 15 of Frame Number changes from 1 to 0 or from 0 to 1.
-     * |        |          |0 = The bit 15 of Frame Number didnu2019t change.
+     * |        |          |0 = The bit 15 of Frame Number didn't change.
      * |        |          |1 = The bit 15 of Frame Number changes from 1 to 0 or from 0 to 1.
      * |        |          |Note: This bit is cleared by writing 1 to it.
      * |[6]     |RHSC      |Root Hub Status Change
      * |        |          |This bit is set when the content of HcRhStatus or the content of HcRhPortStatus register has changed.
-     * |        |          |0 = The content of HcRhStatus and the content of HcRhPortStatus register didnu2019t change.
+     * |        |          |0 = The content of HcRhStatus and the content of HcRhPortStatus register didn't change.
      * |        |          |1 = The content of HcRhStatus or the content of HcRhPortStatus register has changed.
-     * |        |          |Note: This bit is cleared by writing hu20191f to HcRhPortStatus6[20:16].
+     * |        |          |Note: This bit is cleared by writing h'1f to HcRhPortStatus[20:16].
      * @var USBH1_T::HcInterruptEnable
      * Offset: 0x10  Host Controller Interrupt Enable Register
      * ---------------------------------------------------------------------------------------------------
@@ -967,7 +967,7 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[0]     |LPS       |Clear Global Power
-     * |        |          |In global power mode (PSM (HcRhDescriptorA[8]) = 0), this bit is written to one to clear all portsu2019 power.
+     * |        |          |In global power mode (PSM (HcRhDescriptorA[8]) = 0), this bit is written to one to clear all ports' power.
      * |        |          |This bit always read as zero.
      * |        |          |Write Operation:
      * |        |          |0 = No effect.
@@ -994,7 +994,7 @@ typedef struct
      * |[17]    |OCIC      |Overcurrent Indicator Change
      * |        |          |This bit is set by hardware when a change has occurred in OCI (HcRhStatus[1]).
      * |        |          |Write 1 to clear this bit to zero.
-     * |        |          |0 = OCI (HcRhStatus[1]) didnu2019t change.
+     * |        |          |0 = OCI (HcRhStatus[1]) didn't change.
      * |        |          |1 = OCI (HcRhStatus[1]) change.
      * |[31]    |CRWE      |Clear Remote Wake-up Enable Bit
      * |        |          |This bit is use to clear DRWE (HcRhStatus[15]).
@@ -1071,7 +1071,7 @@ typedef struct
      * |        |          |0 = No connect/disconnect event (CCS (HcRhPortStatus[0]) didn't change).
      * |        |          |1 = Hardware detection of connect/disconnect event (CCS (HcRhPortStatus[0]) changed).
      * |[17]    |PESC      |Port Enable Status Change
-     * |        |          |This bit indicates that the port has been disabled (PES (HcRhPortStatus6[1]) cleared) due to a hardware event.
+     * |        |          |This bit indicates that the port has been disabled (PES (HcRhPortStatus[1]) cleared) due to a hardware event.
      * |        |          |Write 1 to clear this bit to zero.
      * |        |          |0 = PES (HcRhPortStatus[1]) didn't change.
      * |        |          |1 = PES (HcRhPortStatus[1]) changed.
@@ -1113,7 +1113,6 @@ typedef struct
     __IO uint32_t HcRhDescriptorB;       /*!< [0x004c] Host Controller Root Hub Descriptor B Register                   */
     __IO uint32_t HcRhStatus;            /*!< [0x0050] Host Controller Root Hub Status Register                         */
     __IO uint32_t HcRhPortStatus[6];     /*!< [0x0054] Host Controller Root Hub Port Status                             */
-    __I  uint32_t RESERVE0[101];
 
 } USBH1_T;
 

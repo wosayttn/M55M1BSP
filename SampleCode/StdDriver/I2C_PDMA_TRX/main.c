@@ -2,7 +2,7 @@
  * @file    main.c
  * @version V1.00
  * @brief
- * @brief    Demonstrate I2C PDMA mode and need to connect I2C0(Master) and I2C1(Slave).
+ * @brief   Demonstrate I2C PDMA mode and need to connect I2C0(Master) and I2C1(Slave).
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

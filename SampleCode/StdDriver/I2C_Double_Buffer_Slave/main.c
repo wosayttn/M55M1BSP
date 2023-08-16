@@ -2,8 +2,8 @@
  * @file    main.c
  * @version V1.00
  * @brief
- *           Demonstrate how to set I2C two-level buffer in Slave mode to receive 256 bytes data from a master.
- *           This sample code needs to work with I2C_MultiBytes_Master.
+ *          Demonstrate how to set I2C two-level buffer in Slave mode to receive 256 bytes data from a master.
+ *          This sample code needs to work with I2C_MultiBytes_Master.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

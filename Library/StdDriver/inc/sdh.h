@@ -4,7 +4,7 @@
  * @brief    SDH driver header file
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include <stdio.h>
@@ -32,8 +32,8 @@ extern "C"
 
 #define SDH_ERR_ID            (0xFFFF0100ul)        /*!< SDH error ID  \hideinitializer */
 
-#define SDH_TIMEOUT           (SDH_ERR_ID|0x01ul)  /*!< Timeout  \hideinitializer */
-#define SDH_NO_MEMORY         (SDH_ERR_ID|0x02ul)  /*!< OOM  \hideinitializer */
+#define SDH_TIMEOUT           (SDH_ERR_ID | 0x01ul) /*!< Timeout  \hideinitializer */
+#define SDH_NO_MEMORY         (SDH_ERR_ID | 0x02ul) /*!< OOM  \hideinitializer */
 
 /*-- function return value */
 #define Successful            (0ul) /*!< Success  \hideinitializer */
@@ -68,12 +68,12 @@ extern "C"
 #define CardDetect_From_DAT3  (1ul << 9)    /*!< Card detection pin is DAT3 \hideinitializer */
 
 /* SDH Wait Status Timeout Count */
-#define SDH_TIMEOUT_CNT       SystemCoreClock   /*!< SDH time-out counter (1 second time-out) \hideinitializer */
+#define SDH_TIMEOUT_CNT       2000000      /*!< SDH time-out counter (1 second time-out) \hideinitializer */
 
 /* SDH Define Error Code */
-#define SDH_OK                ( 0L)             /*!< SDH operation OK \hideinitializer */
-#define SDH_ERR_FAIL          (-1L)             /*!< SDH operation failed \hideinitializer */
-#define SDH_ERR_TIMEOUT       (-2L)             /*!< SDH operation abort due to timeout error \hideinitializer */
+#define SDH_OK              ( 0L)          /*!< SDH operation OK \hideinitializer */
+#define SDH_ERR_FAIL        (-1L)          /*!< SDH operation failed \hideinitializer */
+#define SDH_ERR_TIMEOUT     (-2L)          /*!< SDH operation abort due to timeout error \hideinitializer */
 
 /* SDH Define Block Size */
 #define SDH_BLOCK_SIZE        (512ul)
@@ -95,6 +95,7 @@ typedef struct SDH_info_t
     unsigned int    diskSize;       /*!< Disk size in K bytes */
     int             sectorSize;     /*!< Sector size in bytes */
     unsigned char   *dmabuf;
+    int32_t         i32ErrCode;     /*!< SDH global error code */
 } SDH_INFO_T;                       /*!< Structure holds SD card info */
 
 /** @} end of group SDH_EXPORTED_TYPEDEF */
@@ -124,7 +125,7 @@ extern int32_t g_SDH_i32ErrCode;
  *  @return   None.
  * \hideinitializer
  */
-#define SDH_ENABLE_INT(sdh, u32IntMask) (sdh->INTEN |= (u32IntMask))
+#define SDH_ENABLE_INT(sdh, u32IntMask) ((sdh)->INTEN |= (u32IntMask))
 
 /**
  *  @brief    Disable specified interrupt.
@@ -142,7 +143,7 @@ extern int32_t g_SDH_i32ErrCode;
  *  @return   None.
  * \hideinitializer
  */
-#define SDH_DISABLE_INT(sdh, u32IntMask)    (sdh->INTEN &= ~(u32IntMask))
+#define SDH_DISABLE_INT(sdh, u32IntMask)    ((sdh)->INTEN &= ~(u32IntMask))
 
 /**
  *  @brief    Get specified interrupt flag/status.
@@ -165,7 +166,7 @@ extern int32_t g_SDH_i32ErrCode;
  *           1 = The specified interrupt is happened.
  * \hideinitializer
  */
-#define SDH_GET_INT_FLAG(sdh, u32IntMask) ((sdh->INTSTS & (u32IntMask)) ? 1 : 0)
+#define SDH_GET_INT_FLAG(sdh, u32IntMask) (((sdh)->INTSTS & (u32IntMask)) ? 1 : 0)
 
 /**
  *  @brief    Clear specified interrupt flag/status.
@@ -181,7 +182,7 @@ extern int32_t g_SDH_i32ErrCode;
  *  @return   None.
  * \hideinitializer
  */
-#define SDH_CLR_INT_FLAG(sdh, u32IntMask) (sdh->INTSTS = (u32IntMask))
+#define SDH_CLR_INT_FLAG(sdh, u32IntMask) ((sdh)->INTSTS = (u32IntMask))
 
 /**
  *  @brief    Check SD Card inserted or removed.
@@ -214,17 +215,19 @@ void SDH_Close(SDH_T *sdh);
 uint32_t SDH_Probe(SDH_T *sdh);
 uint32_t SDH_Read(SDH_T *sdh, uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32_t u32SecCount);
 uint32_t SDH_Write(SDH_T *sdh, uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32_t u32SecCount);
-void SDH_Enable_Int(SDH_T *sdh);
 
 uint32_t SDH_CardDetection(SDH_T *sdh);
 void SDH_Get_SD_info(SDH_T *sdh);
 void SDH_Set_clock(SDH_T *sdh, uint32_t sd_clock_khz);
 
-void SDH_CheckRB(SDH_T *sdh);
+int32_t SDH_CheckRB(SDH_T *sdh);
 uint32_t SDH_SDCmdAndRsp(SDH_T *sdh, uint32_t ucCmd, uint32_t uArg, uint32_t ntickCount);
 uint32_t SDH_SDCmdAndRsp2(SDH_T *sdh, uint32_t ucCmd, uint32_t uArg, uint32_t puR2ptr[]);
 uint32_t SDH_SDCommand(SDH_T *sdh, uint32_t ucCmd, uint32_t uArg);
 uint32_t SDH_SelectCardType(SDH_T *sdh);
+
+int SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc);
+void SDH_Close_Disk(SDH_T *sdh);
 
 /** @} end of group SDH_EXPORTED_FUNCTIONS */
 /** @} end of group SDH_Driver */

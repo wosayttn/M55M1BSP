@@ -1085,10 +1085,10 @@ uint32_t RTC_SetClockSource(uint32_t u32ClkSrc)
     }
     else if (u32ClkSrc == RTC_CLOCK_SOURCE_LIRC32K)
     {
-        uint32_t u32TrimDefault = inpw(SYS + 0xF94ul); // need modify.
+        uint32_t u32TrimDefault = inpw(SYS + 0xF94ul);
 
         /* Load LIRC32 trim setting */
-        RTC->TEST = ((RTC->TEST & ~(0x1FFul << 8)) | ((u32TrimDefault & 0x1FFul) << 8));
+        outpw((RTC + 0x1F0ul), ((inpw(RTC + 0x1F0ul) & ~(0x1FFul << 8)) | ((u32TrimDefault & 0x1FFul) << 8)));
 
         /* RTC clock source is LIRC32K */
         RTC->LXTCTL |= RTC_LXTCTL_LIRC32KEN_Msk;
@@ -1198,11 +1198,11 @@ void RTC_SetGPIOLevel(uint32_t u32PFPin, uint32_t u32OutputLevel)
 }
 
 /**
- * @brief Enable clock frequency fail detector function. 
- * 
- * @param[in] u32FailBoundary       LXT Clock Frequency Detector Fail Boundary, valid values are between 0x1 ~ 0xFF. 
+ * @brief Enable clock frequency fail detector function.
+ *
+ * @param[in] u32FailBoundary       LXT Clock Frequency Detector Fail Boundary, valid values are between 0x1 ~ 0xFF.
  * @param[in] u32StopBoundary       LXT Clock Stop Frequency Detector Stop Boundary, valid values are between 0x1 ~ 0xFF.
- * 
+ *
  * @details This API is used to enable the clock frequency detector.
  */
 void RTC_EnableClockFrequencyDetector(uint32_t u32FailBoundary, uint32_t u32StopBoundary)
@@ -1212,13 +1212,13 @@ void RTC_EnableClockFrequencyDetector(uint32_t u32FailBoundary, uint32_t u32Stop
     {
         u32FailBoundary = 255;
     }
-    
+
     /* limit u32StopBoundary to 255, because STOPBD[7:0] register max vlaue is 0xFF*/
     if (u32StopBoundary > 255)
     {
         u32StopBoundary = 255;
-    }    
-      
+    }
+
     /* Set the LXT clock frequency monitor fail/stop boundary value.*/
     RTC->CDBR = ((u32FailBoundary) << RTC_CDBR_FAILBD_Pos) | ((u32StopBoundary) << RTC_CDBR_STOPBD_Pos);
 
@@ -1234,7 +1234,7 @@ void RTC_EnableClockFrequencyDetector(uint32_t u32FailBoundary, uint32_t u32Stop
 
 /**
  * @brief Disable clock frequency fail detector function.
- * 
+ *
  * @details This API is used to disable the clock frequency detector.
  */
 void RTC_DisableClockFrequencyDetector(void)

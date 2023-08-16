@@ -3,7 +3,8 @@
  * @version  V1.00
  * @brief    Access a SD card formatted in FAT file system
  *
- * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *
+ * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -12,16 +13,11 @@
 #include "diskio.h"
 #include "ff.h"
 
+#define DEF_CARD_DETECT_SOURCE       CardDetect_From_GPIO
+//#define DEF_CARD_DETECT_SOURCE       CardDetect_From_DAT3
+
 #define BUFF_SIZE       (8*1024)
 
-/************************************
- * EXTERN faunctions
- ************************************/
-extern void SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc);
-
-/************************************
- * GLOBAL VARIABLES
- ************************************/
 static UINT blen = BUFF_SIZE;
 DWORD acc_size;                         /* Work register for fs command */
 WORD acc_files, acc_dirs;
@@ -38,11 +34,10 @@ char Line[256];                         /* Console input buffer */
 #else
     uint8_t Buff_Pool[BUFF_SIZE] __attribute__((aligned(4)));       /* Working buffer */
 #endif
-uint8_t *Buff;
+uint8_t  *Buff;
 uint32_t volatile gSec = 0;
 uint32_t volatile gSdInit = 0;
 
-//------------------------------------------------------------------------------
 NVT_ITCM void TIMER0_IRQHandler(void)
 {
     gSec++;
@@ -59,6 +54,7 @@ void timer_init()
     // Enable timer interrupt
     TIMER_EnableInt(TIMER0);
     NVIC_EnableIRQ(TIMER0_IRQn);
+
 
     // Start Timer 0
     TIMER_Start(TIMER0);
@@ -102,9 +98,10 @@ void  dump_buff_hex(uint8_t *pucBuff, int nBytes)
     printf("\n");
 }
 
+
 /*--------------------------------------------------------------------------*/
 /* Monitor                                                                  */
-/*--------------------------------------------------------------------------*/
+
 /*----------------------------------------------*/
 /* Get a value of the string                    */
 /*----------------------------------------------*/
@@ -116,6 +113,7 @@ void  dump_buff_hex(uint8_t *pucBuff, int nBytes)
                                ^    5th call returns 255 and next ptr
                                   ^ 6th call fails and returns 0
 */
+
 int xatoi(          /* 0:Failed, 1:Successful */
     TCHAR **str,    /* Pointer to pointer to the string */
     long *res       /* Pointer to a variable to store the value */
@@ -124,6 +122,7 @@ int xatoi(          /* 0:Failed, 1:Successful */
     unsigned long val;
     unsigned char r, s = 0;
     TCHAR c;
+
 
     *res = 0;
 
@@ -193,9 +192,10 @@ int xatoi(          /* 0:Failed, 1:Successful */
     return 1;
 }
 
+
 /*----------------------------------------------*/
 /* Dump a block of byte array                   */
-/*----------------------------------------------*/
+
 void put_dump(
     const unsigned char *buff,  /* Pointer to the byte array to be dumped */
     unsigned long addr,         /* Heading address value */
@@ -203,6 +203,7 @@ void put_dump(
 )
 {
     int i;
+
 
     printf("%08x ", (uint32_t)addr);
 
@@ -217,9 +218,11 @@ void put_dump(
     printf("\n");
 }
 
+
 /*--------------------------------------------------------------------------*/
 /* Monitor                                                                  */
 /*--------------------------------------------------------------------------*/
+
 static
 FRESULT scan_files(
     char *path      /* Pointer to the path name working buffer */
@@ -324,15 +327,18 @@ NVT_ITCM void SDH0_IRQHandler(void)
 
     //----- SD interrupt status
     isr = SDH0->INTSTS;
+    ier = SDH0->INTEN;
 
     if (isr & SDH_INTSTS_BLKDIF_Msk)
     {
         // block down
         SD0.DataReadyFlag = TRUE;
         SDH0->INTSTS = SDH_INTSTS_BLKDIF_Msk;
+        printf("SD block down\r\n");
     }
 
-    if (isr & SDH_INTSTS_CDIF_Msk)   // card detect
+    if ((ier & SDH_INTEN_CDIEN_Msk) &&
+            (isr & SDH_INTSTS_CDIF_Msk))    // card detect
     {
         //----- SD interrupt status
         // it is work to delay 50 times for SD_CLK = 200KHz
@@ -344,7 +350,12 @@ NVT_ITCM void SDH0_IRQHandler(void)
             isr = SDH0->INTSTS;
         }
 
+#if (DEF_CARD_DETECT_SOURCE == CardDetect_From_DAT3)
+
+        if (!(isr & SDH_INTSTS_CDSTS_Msk))
+#else
         if (isr & SDH_INTSTS_CDSTS_Msk)
+#endif
         {
             printf("\n***** card remove !\n");
             SD0.IsCardInsert = FALSE;   // SDISR_CD_Card = 1 means card remove for GPIO mode
@@ -353,9 +364,8 @@ NVT_ITCM void SDH0_IRQHandler(void)
         else
         {
             printf("***** card insert !\n");
-            gSdInit = 1;
-            //            SDH_Open(SDH0, CardDetect_From_GPIO);
-            //            SDH_Probe(SDH0);
+            //SDH_Open(SDH0, CardDetect_From_GPIO);
+            //SDH_Probe(SDH0);
         }
 
         SDH0->INTSTS = SDH_INTSTS_CDIF_Msk;
@@ -488,6 +498,7 @@ void SYS_Init(void)
     SET_SD0_DAT3_PE5();
 }
 
+
 /*---------------------------------------------------------*/
 /* User Provided RTC Function for FatFs module             */
 /*---------------------------------------------------------*/
@@ -495,6 +506,7 @@ void SYS_Init(void)
 /* FatFs module. Any valid time must be returned even if   */
 /* the system does not support an RTC.                     */
 /* This function is not required in read-only cfg.         */
+
 unsigned long get_fattime(void)
 {
     unsigned long tmr;
@@ -536,7 +548,7 @@ int32_t main(void)
         SD initial state needs 300KHz clock output, driver will use HIRC for SD initial clock source.
         And then switch back to the user's setting.
     */
-    SDH_Open_Disk(SDH0, CardDetect_From_GPIO);
+    gSdInit = (SDH_Open_Disk(SDH0, DEF_CARD_DETECT_SOURCE) == 0) ? 1 : 0;
 
     SYS_LockReg();
 
@@ -545,6 +557,12 @@ int32_t main(void)
     printf("          SDH Testing               \n");
     printf("====================================\n");
 
+#if (DEF_CARD_DETECT_SOURCE == CardDetect_From_DAT3)
+    printf("You enabled card detection source from DAT3 mode.\n");
+    printf("Please remove pull-up resistor of DAT3 pin and add a pull-down 100Kohm resistor on DAT3 pin.\n");
+    printf("Please also check your SD card is with an internal pull-up circuit on DAT3 pin.\n");
+#endif
+
     printf("\n\n SDH FATFS TEST!\n");
 
     f_chdrive(sd_path);          /* set default path */
@@ -552,12 +570,15 @@ int32_t main(void)
     for (;;)
     {
         if (!(SDH_CardDetection(SDH0)))
-            continue;
-
-        if (gSdInit)
         {
-            SDH_Open_Disk(SDH0, CardDetect_From_GPIO);
             gSdInit = 0;
+            printf("No card!!\n");
+            continue;
+        }
+
+        if (!gSdInit)
+        {
+            gSdInit = (SDH_Open_Disk(SDH0, DEF_CARD_DETECT_SOURCE) == 0) ? 1 : 0;
         }
 
         printf(_T(">"));
@@ -1085,4 +1106,4 @@ int32_t main(void)
 
 
 
-/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
+/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

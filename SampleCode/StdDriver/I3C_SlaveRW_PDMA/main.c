@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief    Demonstrate how to use I3C0 Slave to reveive and transmit the data through PDMA from a Master.
+ * @brief   Demonstrate how to use I3C0 Slave to receive and transmit the data through PDMA from a Master.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -320,7 +320,7 @@ static void SYS_Init(void)
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(1);
+    CLK_SET_PCLK3DIV(2);
     CLK_SET_PCLK4DIV(2);
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -331,6 +331,8 @@ static void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
+    /* Enable PLL1 100MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_100MHZ, CLK_APLL1_SELECT);
     /* Enable peripheral clock */
     CLK_EnableModuleClock(I3C0_MODULE);
     CLK_EnableModuleClock(PDMA0_MODULE);

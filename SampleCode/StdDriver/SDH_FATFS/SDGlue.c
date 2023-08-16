@@ -3,28 +3,28 @@
  * @version  V1.00
  * @brief    SD glue functions for FATFS
  *
- * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "NuMicro.h"
 #include "diskio.h"     /* FatFs lower layer API */
-#include "ff.h"         /* FatFs lower layer API */
+#include "ff.h"     /* FatFs lower layer API */
 
 FATFS  _FatfsVolSd0;
 FATFS  _FatfsVolSd1;
 
-static TCHAR _Path[3];
+static TCHAR  _Path[3];
 
-void SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc)
+int SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc)
 {
     SDH_Open(sdh, u32CardDetSrc);
 
     if (SDH_Probe(sdh))
     {
         printf("SD initial fail!!\n");
-        return;
+        return -1;
     }
 
     _Path[1] = ':';
@@ -40,6 +40,8 @@ void SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc)
         _Path[0] = '1';
         f_mount(&_FatfsVolSd1, _Path, 1);
     }
+
+    return 0;
 }
 
 void SDH_Close_Disk(SDH_T *sdh)
@@ -57,3 +59,4 @@ void SDH_Close_Disk(SDH_T *sdh)
         memset(&_FatfsVolSd1, 0, sizeof(FATFS));
     }
 }
+

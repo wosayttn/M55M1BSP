@@ -1,8 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief
- * @brief    Show how to set scan key board by KPI.
+ * @brief   Show how to set scan key board by KPI.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

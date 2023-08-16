@@ -11,7 +11,7 @@
 #define __RTC_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -346,13 +346,14 @@ typedef struct
      * |[31:0]  |SPARE     |Spare Register
      * |        |          |This field is used to store back-up information defined by user.
      * |        |          |This field will be cleared by hardware automatically once a tamper pin event is detected.
-     * |        |          |Before storing back-up information in to RTC_SPRx register,
-     * |        |          |user should check REWNF (RTC_RWEN[16]) is enabled.
      * @var RTC_T::LXTCTL
      * Offset: 0x100  RTC 32.768 KHz Oscillator Control Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
+     * |[0]     |LIRC32KEN |Enable LIRC32K Source
+     * |        |          |0 = LIRC32K Disabled.
+     * |        |          |1 = LIRC32K Enabled.
      * |[4:1]   |GAIN      |Oscillator Gain Option
      * |        |          |User can select oscillator gain according to crystal external loading and operating temperature range
      * |        |          |The larger gain value corresponding to stronger driving capability and higher power consumption.
@@ -372,6 +373,9 @@ typedef struct
      * |        |          |1101 = L13 mode.
      * |        |          |1110 = L14 mode.
      * |        |          |1111 = L15 mode.
+     * |[6]     |C32KSEL   |Clock 32K Source Selection
+     * |        |          |0 = Clock source from external low speed crystal oscillator (LXT).
+     * |        |          |1 = Clock source from internal low speed RC 32K oscillator (LIRC32K).
      * |[7]     |RTCCKSEL  |RTC Clock Source Selection
      * |        |          |0 = Clock source from external low speed crystal oscillator (LXT) or internal low speed RC 32K oscillator (LIRC32K) depended on C32KSEL value.
      * |        |          |1 = Clock source from internal low speed RC oscillator (LIRC).
@@ -381,7 +385,7 @@ typedef struct
      * |        |          |User can program IOCTLSEL to decide PF.4~11 I/O function is controlled by system power domain GPIO module or VBAT power domain RTC_GPIOCTL0/1 control register.
      * |        |          |0 = PF.4~11 pin I/O function is controlled by GPIO module.
      * |        |          |1 = PF.4~11 pin I/O function is controlled by VBAT power domain.
-     * |        |          |Note: IOCTLSEL will automatically be set by hardware to 1 when system power is off and any writable RTC registers has been written at RTCCKEN(CLK_APBCLK0[1]) enabled.     
+     * |        |          |Note: IOCTLSEL will automatically be set by hardware to 1 when system power is off and any writable RTC registers has been written at RTCCKEN(CLK_APBCLK0[1]) enabled.
      * @var RTC_T::GPIOCTL0
      * Offset: 0x104  RTC GPIO Control 0 Register
      * ---------------------------------------------------------------------------------------------------
@@ -746,7 +750,7 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[31:0]  |SEED      |Seed Value 
+     * |[31:0]  |SEED      |Seed Value
      * @var RTC_T::TAMPTIME
      * Offset: 0x130  RTC Tamper Time Register
      * ---------------------------------------------------------------------------------------------------
@@ -807,7 +811,7 @@ typedef struct
      * |        |          |Note: The boundary is defined as the minimum value of LXT among 256 LIRC32K clock time.
      */
     __IO uint32_t INIT;                  /*!< [0x0000] RTC Initiation Register                                          */
-    __IO uint32_t RESERVE0;            
+    __IO uint32_t RESERVE0;
     __IO uint32_t FREQADJ;               /*!< [0x0008] RTC Frequency Compensation Register                              */
     __IO uint32_t TIME;                  /*!< [0x000c] RTC Time Loading Register                                        */
     __IO uint32_t CAL;                   /*!< [0x0010] RTC Calendar Loading Register                                    */
@@ -823,7 +827,6 @@ typedef struct
     __IO uint32_t CAMSK;                 /*!< [0x0038] RTC Calendar Alarm Mask Register                                 */
     __IO uint32_t SPRCTL;                /*!< [0x003c] RTC Spare Functional Control Register                            */
     __IO uint32_t SPR[20];               /*!< [0x0040] ~ [0x008C] RTC Spare Register 0 ~ 19                             */
-    /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE1[28];
     __IO uint32_t LXTCTL;                /*!< [0x0100] RTC 32.768 KHz Oscillator Control Register                       */
     __IO uint32_t GPIOCTL0;              /*!< [0x0104] RTC GPIO Control 0 Register                                      */
@@ -840,12 +843,6 @@ typedef struct
     __I  uint32_t RESERVE6[2];
     __IO uint32_t CLKDCTL;               /*!< [0x0140] Clock Fail Detector Control Register                             */
     __IO uint32_t CDBR;                  /*!< [0x0144] Clock Frequency Detector Boundary Register                       */
-    __I  uint32_t RESERVE7[42];
-    __IO uint32_t TEST;
-    __I  uint32_t RESERVE8[3];    
-    __IO uint32_t ACCCTL;
-    __I  uint32_t RESERVE9[894];  
-    __I  uint32_t VERSION;
 } RTC_T;
 
 /**
@@ -906,9 +903,6 @@ typedef struct
 
 #define RTC_CLKFMT_24HEN_Pos             (0)                                               /*!< RTC_T::CLKFMT: 24HEN Position          */
 #define RTC_CLKFMT_24HEN_Msk             (0x1ul << RTC_CLKFMT_24HEN_Pos)                   /*!< RTC_T::CLKFMT: 24HEN Mask              */
-
-#define RTC_CLKFMT_HZCNTEN_Pos           (8)                                               /*!< RTC_T::CLKFMT: HZCNTEN Position          */
-#define RTC_CLKFMT_HZCNTEN_Msk           (0x1ul << RTC_CLKFMT_HZCNTEN_Pos)                 /*!< RTC_T::CLKFMT: HZCNTEN Mask              */
 
 #define RTC_CLKFMT_DCOMPEN_Pos           (16)                                              /*!< RTC_T::CLKFMT: DCOMPEN Position        */
 #define RTC_CLKFMT_DCOMPEN_Msk           (0x1ul << RTC_CLKFMT_DCOMPEN_Pos)                 /*!< RTC_T::CLKFMT: DCOMPEN Mask            */
@@ -1123,17 +1117,11 @@ typedef struct
 #define RTC_SPR19_SPARE_Pos              (0)                                               /*!< RTC_T::SPR19: SPARE Position           */
 #define RTC_SPR19_SPARE_Msk              (0xfffffffful << RTC_SPR19_SPARE_Pos)             /*!< RTC_T::SPR19: SPARE Mask               */
 
-#define RTC_LXTCTL_BYPASS_Pos            (5)                                               /*!< RTC_T::LXTCTL: BYPASS Position         */
-#define RTC_LXTCTL_BYPASS_Msk            (0x1ul << RTC_LXTCTL_BYPASS_Pos)                  /*!< RTC_T::LXTCTL: BYPASS Mask             */
-
 #define RTC_LXTCTL_LIRC32KEN_Pos         (0)                                               /*!< RTC_T::LXTCTL: LIRC32KEN Position      */
 #define RTC_LXTCTL_LIRC32KEN_Msk         (0x1ul << RTC_LXTCTL_LIRC32KEN_Pos)               /*!< RTC_T::LXTCTL: LIRC32KEN Mask          */
 
 #define RTC_LXTCTL_GAIN_Pos              (1)                                               /*!< RTC_T::LXTCTL: GAIN Position           */
 #define RTC_LXTCTL_GAIN_Msk              (0xful << RTC_LXTCTL_GAIN_Pos)                    /*!< RTC_T::LXTCTL: GAIN Mask               */
-
-#define RTC_LXTCTL_BYPASS_Pos            (5)                                               /*!< RTC_T::LXTCTL: BYPASS Position         */
-#define RTC_LXTCTL_BYPASS_Msk            (0x1ul << RTC_LXTCTL_BYPASS_Pos)                  /*!< RTC_T::LXTCTL: BYPASS Mask             */
 
 #define RTC_LXTCTL_C32KSEL_Pos           (6)                                               /*!< RTC_T::LXTCTL: C32KSEL Position        */
 #define RTC_LXTCTL_C32KSEL_Msk           (0x1ul << RTC_LXTCTL_C32KSEL_Pos)                 /*!< RTC_T::LXTCTL: C32KSEL Mask            */
@@ -1387,15 +1375,12 @@ typedef struct
 #define RTC_CDBR_FAILBD_Pos              (16)                                              /*!< RTC_T::CDBR: FAILBD Position           */
 #define RTC_CDBR_FAILBD_Msk              (0xfful << RTC_CDBR_FAILBD_Pos)                   /*!< RTC_T::CDBR: FAILBD Mask               */
 
-#define RTC_TEST_BATDETEN_Pos            (4)                                               /*!< RTC_T::TEST: BATDETEN Position         */
-#define RTC_TEST_BATDETEN_Msk            (0x1ul << RTC_TEST_BATDETEN_Pos)                  /*!< RTC_T::TEST: BATDETEN Mask             */
-
 /** @} RTC_CONST */
 /** @} end of RTC register group */
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __RTC_REG_H__ */

@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief    Demonstrate LPI2C LPPDMA mode and need two boards to connect LPI2C0(Master) and LPI2C0(Slave).
+ * @brief   Demonstrate LPI2C LPPDMA mode and need two boards to connect LPI2C0(Master) and LPI2C0(Slave).
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

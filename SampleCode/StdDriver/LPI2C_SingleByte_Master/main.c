@@ -2,8 +2,8 @@
  * @file    main.c
  * @version V1.00
  * @brief
- *           Show how to use LPI2C Single byte API Read and Write data to Slave
- *           Needs to work with LPI2C_Slave sample code.
+ *          Show how to use LPI2C Single byte API Read and Write data to Slave
+ *          Needs to work with LPI2C_Slave sample code.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
