@@ -99,9 +99,6 @@ int32_t main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    /* Init UART to 115200-8n1 for print message */
-    UART_Open(UART0, 115200);
-
     printf("NuMicro HSUSBD Mass Storage\n");
 
     /* Unlock protected registers */
