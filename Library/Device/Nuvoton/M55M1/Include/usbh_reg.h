@@ -538,12 +538,6 @@ typedef struct
      * |        |          |This bit controls the polarity of port power control to external power IC.
      * |        |          |0 = Port power control is high active.
      * |        |          |1 = Port power control is low active.
-     * |[16]    |DPRT1     |Disable Port 1
-     * |        |          |This bit controls if the connection between USB host controller and transceiver of port 1 is disabled
-     * |        |          |If the connection is disabled, the USB host controller will not recognize any event of USB bus.
-     * |        |          |Set this bit high, the transceiver of port 1 will also be forced into the standby mode no matter what USB host controller operation is.
-     * |        |          |0 = The connection between USB host controller and transceiver of port 1 Enabled.
-     * |        |          |1 = The connection between USB host controller and transceiver of port 1 Disabled and the transceiver of port 1 will also be forced into the standby mode.
      */
     __I  uint32_t HcRevision;            /*!< [0x0000] Host Controller Revision Register                                */
     __IO uint32_t HcControl;             /*!< [0x0004] Host Controller Control Register                                 */
@@ -797,9 +791,6 @@ typedef struct
 
 #define USBH_HcMiscControl_PPCAL_Pos     (4)                                               /*!< USBH_T::HcMiscControl: PPCAL Position  */
 #define USBH_HcMiscControl_PPCAL_Msk     (0x1ul << USBH_HcMiscControl_PPCAL_Pos)           /*!< USBH_T::HcMiscControl: PPCAL Mask      */
-
-#define USBH_HcMiscControl_DPRT1_Pos     (16)                                              /*!< USBH_T::HcMiscControl: DPRT1 Position  */
-#define USBH_HcMiscControl_DPRT1_Msk     (0x1ul << USBH_HcMiscControl_DPRT1_Pos)           /*!< USBH_T::HcMiscControl: DPRT1 Mask      */
 
 /** @} USBH_CONST */
 /** @} end of USBH register group */
