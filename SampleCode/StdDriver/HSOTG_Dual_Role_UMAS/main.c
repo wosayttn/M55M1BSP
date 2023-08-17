@@ -473,7 +473,6 @@ void SYS_Init(void)
     SET_USB_D_PLUS_PA14();
     SET_USB_OTG_ID_PA15();
 
-    SystemCoreClockUpdate();
     /* Lock protected registers */
     SYS_LockReg();
 }

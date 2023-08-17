@@ -18,7 +18,6 @@
 
 static uint8_t s_u8IsAdevice = 0;
 
-void USBOTG_IRQHandler(void);
 void SysTick_Handler(void);
 void enable_sys_tick(int ticks_per_second);
 void delay_us(int usec);
