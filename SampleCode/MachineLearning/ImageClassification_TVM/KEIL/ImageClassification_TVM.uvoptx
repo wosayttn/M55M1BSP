@@ -494,7 +494,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\codegen\host\src\default_lib0.c</PathWithFileName>
+      <PathWithFileName>..\codegen_H256\host\src\default_lib0.c</PathWithFileName>
       <FilenameWithoutPath>default_lib0.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -506,7 +506,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\codegen\host\src\default_lib1.c</PathWithFileName>
+      <PathWithFileName>..\codegen_H256\host\src\default_lib1.c</PathWithFileName>
       <FilenameWithoutPath>default_lib1.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -518,7 +518,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\codegen\host\src\default_lib2.c</PathWithFileName>
+      <PathWithFileName>..\codegen_H256\host\src\default_lib2.c</PathWithFileName>
       <FilenameWithoutPath>default_lib2.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -530,7 +530,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\codegen\host\src\default_lib3.c</PathWithFileName>
+      <PathWithFileName>..\codegen_H256\host\src\default_lib3.c</PathWithFileName>
       <FilenameWithoutPath>default_lib3.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>

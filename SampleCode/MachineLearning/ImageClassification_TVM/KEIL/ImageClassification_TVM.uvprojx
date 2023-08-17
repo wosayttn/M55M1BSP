@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>ARM_NPU, NVT_DCACHE_ON</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\CMSIS\DSP\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\StdDriver\inc\npu;..\codegen\host\include;..\runtime\include;..\microtvm\ethosu\include;..\..\..\..\Library\CMSIS\NN\Include;..\;..\NPU\include;..\Device\include</IncludePath>
+              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\CMSIS\DSP\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\StdDriver\inc\npu;..\codegen_H256\host\include;..\runtime\include;..\microtvm\ethosu\include;..\..\..\..\Library\CMSIS\NN\Include;..\;..\NPU\include;..\Device\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -526,22 +526,22 @@
             <File>
               <FileName>default_lib0.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\codegen\host\src\default_lib0.c</FilePath>
+              <FilePath>..\codegen_H256\host\src\default_lib0.c</FilePath>
             </File>
             <File>
               <FileName>default_lib1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\codegen\host\src\default_lib1.c</FilePath>
+              <FilePath>..\codegen_H256\host\src\default_lib1.c</FilePath>
             </File>
             <File>
               <FileName>default_lib2.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\codegen\host\src\default_lib2.c</FilePath>
+              <FilePath>..\codegen_H256\host\src\default_lib2.c</FilePath>
             </File>
             <File>
               <FileName>default_lib3.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\codegen\host\src\default_lib3.c</FilePath>
+              <FilePath>..\codegen_H256\host\src\default_lib3.c</FilePath>
             </File>
           </Files>
         </Group>
