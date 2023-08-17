@@ -261,9 +261,6 @@ void SpiFlash_NormalRead(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -315,9 +312,6 @@ void SYS_Init(void)
 
     /* Enable SPI0 I/O high slew rate */
     GPIO_SetSlewCtl(PA, 0x3F, GPIO_SLEWCTL_HIGH);
-
-    /* Lock protected registers */
-    SYS_LockReg();
 }
 
 /* Main */
@@ -335,6 +329,9 @@ int main(void)
 
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     /* Configure SPI_FLASH_PORT as a master, MSB first, 8-bit transaction, SPI Mode-0 timing, clock is 2MHz */
     SPI_Open(SPI_FLASH_PORT, SPI_MASTER, SPI_MODE_0, 8, 2000000);

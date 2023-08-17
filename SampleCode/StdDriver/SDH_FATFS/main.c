@@ -3,8 +3,7 @@
  * @version  V1.00
  * @brief    Access a SD card formatted in FAT file system
  *
- *
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -407,9 +406,6 @@ NVT_ITCM void SDH0_IRQHandler(void)
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -497,7 +493,6 @@ void SYS_Init(void)
     //SET_SD0_DAT3_PB5();
     SET_SD0_DAT3_PE5();
 }
-
 
 /*---------------------------------------------------------*/
 /* User Provided RTC Function for FatFs module             */
@@ -1104,6 +1099,4 @@ int32_t main(void)
 
 }
 
-
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

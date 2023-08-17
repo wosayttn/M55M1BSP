@@ -34,9 +34,6 @@ uint32_t gau32AESKey[8] =
 //------------------------------------------------------------------------------
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -349,9 +346,6 @@ int main()
     printf("|       HyperRAM read/write sample       |\n");
     printf("+----------------------------------------+\n");
 
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     HyperRAM_Init(SPIM0);
 
     /* Set Cipher Key and protection region */
@@ -370,6 +364,9 @@ int main()
 
     /* DMM mode read/write cipher enable */
     dmm_read_write(SPIM0, SPIM_HYPER_OP_ENABLE);
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     while (1);
 }

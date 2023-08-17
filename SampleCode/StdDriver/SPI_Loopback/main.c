@@ -25,9 +25,6 @@ static uint32_t g_au32DestinationData[DATA_COUNT] = {0};
 /* Function prototype declaration */
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -80,8 +77,6 @@ void SYS_Init(void)
     /* Enable SPI0 I/O high slew rate */
     GPIO_SetSlewCtl(PA, 0x3F, GPIO_SLEWCTL_HIGH);
 
-    /* Lock protected registers */
-    SYS_LockReg();
 }
 
 void SPI_Init(void)
@@ -111,12 +106,12 @@ int main(void)
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
 
-    /* Lock protected registers */
-    SYS_LockReg();
-
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
+    /* Lock protected registers */
+    SYS_LockReg();
+    
     /* Init SPI */
     SPI_Init();
 

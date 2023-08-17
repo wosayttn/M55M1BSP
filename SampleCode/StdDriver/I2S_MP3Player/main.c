@@ -151,9 +151,6 @@ void SD_Inits(void)
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -254,8 +251,8 @@ int32_t main(void)
     /* Init SD */
     SD_Inits();
 
-    /* Init UART to 115200-8n1 for print message */
-    UART_Open(UART0, 115200);
+    /* Init Debug UART to 115200-8N1 for print message */
+    InitDebugUart();
 
     printf("+-----------------------------------------------------------------------+\n");
     printf("|                   MP3 Player Sample with audio codec                  |\n");
@@ -271,6 +268,9 @@ int32_t main(void)
 
     /* Select source from HXT(12MHz) */
     CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_HXT, 0);
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     while (1)
     {

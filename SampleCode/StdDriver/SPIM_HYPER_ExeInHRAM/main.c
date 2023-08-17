@@ -44,9 +44,6 @@ void SPIM_SetDMMAddrNonCacheable(void)
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -147,8 +144,6 @@ int main()
     printf("|       SPIM DMM mode running program on HyperRAM       |\n");
     printf("+-------------------------------------------------------+\n");
 
-    SYS_UnlockReg();                        /* Unlock protected registers                      */
-
     HyperRAM_Init(SPIM0);
 
     SPIM_HYPER_EnterDirectMapMode(SPIM0);
@@ -162,6 +157,9 @@ int main()
 
         spim_routine();
     }
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     while (1);
 }

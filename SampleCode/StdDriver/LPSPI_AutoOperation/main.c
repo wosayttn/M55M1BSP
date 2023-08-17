@@ -39,21 +39,17 @@ volatile uint32_t g_u32Ifr = 0;
 
 NVT_ITCM void LPSPI0_IRQHandler(void)
 {
-    volatile uint32_t u32Delay = 0;
+    // TESTCHIP_ONLY
+    CLK_WaitModuleClockReady(LPSPI0_MODULE);
 
     /* for Auto Operation mode test */
     g_u32Ifr = LPSPI0->AUTOSTS;
 
     LPSPI0->AUTOSTS = LPSPI0->AUTOSTS;
-
-    for (u32Delay = 0; u32Delay < 0x80; u32Delay++) {}
 }
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -123,9 +119,6 @@ void SYS_Init(void)
     SYS->GPB_MFP3 = (SYS->GPB_MFP3 & ~(SYS_GPB_MFP3_PB14MFP_Msk)) |
                     (SYS_GPB_MFP3_PB14MFP_CLKO);
     CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_HIRC, 0, CLK_CLKOCTL_DIV1EN_DIV_1);
-
-    /* Lock protected registers */
-    SYS_LockReg();
 }
 
 void LPTMR0_Init(void)
@@ -326,6 +319,9 @@ void AutoOperation_FunctionTest()
 
 int32_t main(void)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
 
@@ -351,6 +347,9 @@ int32_t main(void)
     getchar();
 
     AutoOperation_FunctionTest();
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     printf("Exit LPSPI Auto-operation sample code\n");
 

@@ -35,10 +35,9 @@ int main(void)
 {
     /* Unlock protected registers */
     SYS_UnlockReg();
+
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
-    /* Lock protected registers */
-    SYS_LockReg();
 
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
@@ -61,6 +60,9 @@ int main(void)
 
     SpiLoopTest_WithPDMA();
 
+    /* Lock protected registers */
+    SYS_LockReg();
+
     printf("\n\nExit SPI driver sample code.\n");
 
     /* Close SPI0 */
@@ -71,24 +73,18 @@ int main(void)
 
 void SYS_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-    /* Enable Internal RC 32KHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_LIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-    /* Waiting for Low speed Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
 
     /* Enable PLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
-    /* Switch SCLK clock source to PLL0 */
+    /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
+
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
 
@@ -100,10 +96,10 @@ void SYS_Init(void)
     CLK_SET_PCLK4DIV(2);
 
     /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
-    /* Select PCLK1 as the clock source of SPI0 */
+    /* Select PCLK0 as the clock source of SPI0 */
     CLK_SetModuleClock(SPI0_MODULE, CLK_SPISEL_SPI0SEL_PCLK0, MODULE_NoMsk);
 
     /* Enable SPI0 peripheral clock */

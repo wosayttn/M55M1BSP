@@ -28,6 +28,9 @@ int main()
 {
     uint32_t u32DataCount, u32TestCount, u32Err;
 
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
 
@@ -36,6 +39,9 @@ int main()
 
     /* Init USCI_SPI0 */
     USCI_SPI_Init();
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     printf("\n\n");
     printf("+------------------------------------------------------------------+\n");
@@ -115,9 +121,6 @@ int main()
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -162,9 +165,6 @@ void SYS_Init(void)
 
     /* USCI_SPI clock pin enable schmitt trigger */
     PA->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
-
-    /* Lock protected registers */
-    SYS_LockReg();
 }
 
 void USCI_SPI_Init(void)

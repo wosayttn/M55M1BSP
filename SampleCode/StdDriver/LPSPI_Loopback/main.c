@@ -30,6 +30,9 @@ int main(void)
     uint32_t u32DataCount, u32TestCycle, u32Err;
     uint32_t u32TimeOutCount;
 
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
 
@@ -38,6 +41,9 @@ int main(void)
 
     /* Init LPSPI0 */
     LPSPI_Init();
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     printf("\n\n");
     printf("+--------------------------------------------------------------------+\n");
@@ -176,9 +182,6 @@ void SYS_Init(void)
                      SYS_GPA_MFP0_PA2MFP_LPSPI0_CLK |
                      SYS_GPA_MFP0_PA1MFP_LPSPI0_MISO |
                      SYS_GPA_MFP0_PA0MFP_LPSPI0_MOSI);
-
-    /* Lock protected registers */
-    SYS_LockReg();
 }
 
 void LPSPI_Init(void)

@@ -41,9 +41,6 @@ extern SPIM_PHASE_T gsWbEChRdCMD;
 //------------------------------------------------------------------------------
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -120,8 +117,6 @@ int main()
     printf("+-------------------------------------------+\n");
     printf("|      SPIM I/O mode read/write sample      |\n");
     printf("+-------------------------------------------+\n");
-
-    SYS_UnlockReg();                        /* Unlock register lock protect */
 
     SPIM_SET_CLOCK_DIVIDER(SPIM0, 1);       /* Set SPIM clock as HCLK divided by 2 */
 
@@ -360,7 +355,8 @@ int main()
 
 lexit:
 
-    SYS_LockReg();                     /* Lock protected registers */
+    /* Lock protected registers */
+    SYS_LockReg();
 
     while (1);
 }

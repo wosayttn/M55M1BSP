@@ -51,9 +51,6 @@ extern SPIM_PHASE_T gsWbEChRdCMD;
 //------------------------------------------------------------------------------
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -278,9 +275,6 @@ int main()
     printf("|        SPIM DMA Cipher mode sample        |\n");
     printf("+-------------------------------------------+\n");
 
-    /* Unlock register lock protect */
-    SYS_UnlockReg();
-
     if (KS_Open() != 0)
     {
         printf("KS init failed !\n");
@@ -385,7 +379,8 @@ int main()
 
 lexit:
 
-    SYS_LockReg();                     /* Lock protected registers */
+    /* Lock protected registers */
+    SYS_LockReg();
 
     while (1);
 }

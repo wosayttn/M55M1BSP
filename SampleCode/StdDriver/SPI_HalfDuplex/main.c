@@ -22,9 +22,6 @@ void SPI_Init(void);
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -115,6 +112,9 @@ int main(void)
 
     /* Init SPI */
     SPI_Init();
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     printf("\n\n");
     printf("+----------------------------------------------------------------------+\n");
