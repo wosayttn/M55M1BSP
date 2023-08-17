@@ -233,40 +233,4 @@ void HyperRAM_PinConfig(SPIM_T *spim)
         GPIO_SetPullCtl(PG, BIT7, GPIO_PUSEL_DISABLE);
         PG7 = 0;
     }
-    else if (spim == SPIM1)
-    {
-     	//SPIM and OTFC clock was enabled on secure-domain code
-        /* Enable SPIM1 module clock */
-        CLK_EnableModuleClock(SPIM1_MODULE);
-        /* Enable OTFC1 module clock */
-        CLK_EnableModuleClock(OTFC1_MODULE);
-
-        /* Init SPIM1 multi-function pins */
-        SPIM1_CLK_PIN_INIT();
-        SPIM1_CLKN_PIN_INIT();
-        SPIM1_D2_PIN_INIT();
-        SPIM1_D3_PIN_INIT();
-        SPIM1_D4_PIN_INIT();
-        SPIM1_D5_PIN_INIT();
-        SPIM1_D6_PIN_INIT();
-        SPIM1_D7_PIN_INIT();
-        SPIM1_MISO_PIN_INIT();
-        SPIM1_MOSI_PIN_INIT();
-        SPIM1_SS_PIN_INIT();
-        SPIM1_RWDS_PIN_INIT();
-
-        /* Set SPIM1 I/O pins as high slew rate up to 80 MHz. */
-        SPIM1_PIN_HIGH_SLEW();
-
-        //SPIM1 PSC, PSC_n
-        SET_GPIO_PH11();
-        GPIO_SetMode(PH, BIT11, GPIO_MODE_OUTPUT);
-        GPIO_SetPullCtl(PH, BIT11, GPIO_PUSEL_DISABLE);
-        PH11 = 1;
-
-        SET_GPIO_PH10();
-        GPIO_SetMode(PH, BIT10, GPIO_MODE_OUTPUT);
-        GPIO_SetPullCtl(PH, BIT11, GPIO_PUSEL_DISABLE);
-        PH10 = 0;
-    }
 }

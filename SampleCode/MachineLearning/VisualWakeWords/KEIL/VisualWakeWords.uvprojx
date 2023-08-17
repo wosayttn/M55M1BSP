@@ -494,9 +494,9 @@
               <FilePath>..\Model\VisualWakeWordModel.cpp</FilePath>
             </File>
             <File>
-              <FileName>vww_96_int8_vela.tflite.cpp</FileName>
+              <FileName>vww_96_int8_vela_H256.tflite.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\Model\vww_96_int8_vela.tflite.cpp</FilePath>
+              <FilePath>..\Model\vww_96_int8_vela_H256.tflite.cpp</FilePath>
             </File>
             <File>
               <FileName>Labels.cpp</FileName>

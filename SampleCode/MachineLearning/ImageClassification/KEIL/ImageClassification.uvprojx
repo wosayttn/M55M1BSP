@@ -509,9 +509,9 @@
               <FilePath>..\Model\MobileNetModel.cpp</FilePath>
             </File>
             <File>
-              <FileName>mobilenet_v2_224_035_int8quant_vela.tflite.cc</FileName>
+              <FileName>mobilenet_v2_224_035_int8quant_vela_H256.tflite.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\Model\mobilenet_v2_224_035_int8quant_vela.tflite.cc</FilePath>
+              <FilePath>..\Model\mobilenet_v2_224_035_int8quant_vela_H256.tflite.cpp</FilePath>
             </File>
           </Files>
         </Group>

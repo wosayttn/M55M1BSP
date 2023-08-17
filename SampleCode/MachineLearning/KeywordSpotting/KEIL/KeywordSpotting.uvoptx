@@ -418,8 +418,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Model\ds_cnn_m_quantized_vela.tflite.cpp</PathWithFileName>
-      <FilenameWithoutPath>ds_cnn_m_quantized_vela.tflite.cpp</FilenameWithoutPath>
+      <PathWithFileName>..\Model\KwsModel.cpp</PathWithFileName>
+      <FilenameWithoutPath>KwsModel.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -430,8 +430,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Model\KwsModel.cpp</PathWithFileName>
-      <FilenameWithoutPath>KwsModel.cpp</FilenameWithoutPath>
+      <PathWithFileName>..\Model\Labels.cpp</PathWithFileName>
+      <FilenameWithoutPath>Labels.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -442,8 +442,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Model\Labels.cpp</PathWithFileName>
-      <FilenameWithoutPath>Labels.cpp</FilenameWithoutPath>
+      <PathWithFileName>..\Model\ds_cnn_m_quantized_vela_H256.tflite.cpp</PathWithFileName>
+      <FilenameWithoutPath>ds_cnn_m_quantized_vela_H256.tflite.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

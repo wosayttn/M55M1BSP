@@ -466,8 +466,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Model\mobilenet_v2_224_035_int8quant_vela.tflite.cc</PathWithFileName>
-      <FilenameWithoutPath>mobilenet_v2_224_035_int8quant_vela.tflite.cc</FilenameWithoutPath>
+      <PathWithFileName>..\Model\mobilenet_v2_224_035_int8quant_vela_H256.tflite.cpp</PathWithFileName>
+      <FilenameWithoutPath>mobilenet_v2_224_035_int8quant_vela_H256.tflite.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
