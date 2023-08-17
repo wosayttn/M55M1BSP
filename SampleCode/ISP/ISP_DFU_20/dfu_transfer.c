@@ -71,6 +71,7 @@ void USBD20_IRQHandler(void)
                 /* USB Un-plug */
                 HSUSBD_DISABLE_USB();
             }
+
             HSUSBD_CLR_BUS_INT_FLAG(HSUSBD_BUSINTSTS_VBUSDETIF_Msk);
         }
     }
@@ -101,6 +102,7 @@ void USBD20_IRQHandler(void)
                 HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_TXPKIF_Msk);
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_TXPKIEN_Msk | HSUSBD_CEPINTEN_STSDONEIEN_Msk);
             }
+
             return;
         }
 
@@ -120,6 +122,7 @@ void USBD20_IRQHandler(void)
                 {
                     HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_ZEROLEN);
                 }
+
                 HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_SETUPPKIEN_Msk | HSUSBD_CEPINTEN_STSDONEIEN_Msk);
             }
@@ -187,98 +190,104 @@ void DFU_ClassRequest(void)
         // Device to host
         switch (gUsbCmd.bRequest)
         {
-        case DFU_GETSTATUS:
-        {
-            if (dfu_status.bState == STATE_dfuDNLOAD_SYNC)
+            case DFU_GETSTATUS:
             {
-                s_u32CommandCount++;
-
-                if (s_u32CommandCount == 5)
+                if (dfu_status.bState == STATE_dfuDNLOAD_SYNC)
                 {
-                    dfu_status.bState = STATE_dfuDNLOAD_IDLE;
+                    s_u32CommandCount++;
 
-                    WriteData(prog_struct.block_num * TRANSFER_SIZE, (prog_struct.block_num * TRANSFER_SIZE) + prog_struct.data_len, (uint32_t *)prog_struct.buf);
-                    //dfu_status.bStatus = STATUS_errWRITE;
-                    s_u32CommandCount = 0;
-                }
-            }
-
-            if (dfu_status.bState == STATE_dfuDNLOAD_IDLE)
-            {
-                s_u32CommandCount++;
-
-                if (s_u32CommandCount == 5)
-                {
-                    dfu_status.bState = STATE_dfuMANIFEST_SYNC;
-                    s_u32CommandCount = 0;
-                }
-            }
-
-            if (dfu_status.bState == STATE_dfuMANIFEST_SYNC)
-            {
-                s_u32CommandCount++;
-
-                if (s_u32CommandCount == 5)
-                {
-                    dfu_status.bState = STATE_dfuIDLE;
-                    s_u32CommandCount = 0;
-                }
-            }
-            HSUSBD_PrepareCtrlIn((uint8_t *)&dfu_status.bStatus, 6);
-            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
-            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
-            break;
-        }
-        case DFU_GETSTATE:
-        {
-            HSUSBD_PrepareCtrlIn((uint8_t *)&dfu_status.bState, 1);
-            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
-            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
-            break;
-        }
-        case DFU_UPLOAD:
-        {
-            if (dfu_status.bState == STATE_dfuIDLE || dfu_status.bState == STATE_dfuUPLOAD_IDLE)
-            {
-                if (gUsbCmd.wLength <= 0)
-                {
-                    dfu_status.bState = STATE_dfuIDLE;
-                    return;
-                }
-                else
-                {
-                    if (dfu_status.bState == STATE_dfuIDLE)
+                    if (s_u32CommandCount == 5)
                     {
-                        dfu_status.bState = STATE_dfuUPLOAD_IDLE;
-                    }
+                        dfu_status.bState = STATE_dfuDNLOAD_IDLE;
 
-                    if (gUsbCmd.wValue > APROM_BLOCK_NUM)
+                        WriteData(prog_struct.block_num * TRANSFER_SIZE, (prog_struct.block_num * TRANSFER_SIZE) + prog_struct.data_len, (uint32_t *)prog_struct.buf);
+                        //dfu_status.bStatus = STATUS_errWRITE;
+                        s_u32CommandCount = 0;
+                    }
+                }
+
+                if (dfu_status.bState == STATE_dfuDNLOAD_IDLE)
+                {
+                    s_u32CommandCount++;
+
+                    if (s_u32CommandCount == 5)
+                    {
+                        dfu_status.bState = STATE_dfuMANIFEST_SYNC;
+                        s_u32CommandCount = 0;
+                    }
+                }
+
+                if (dfu_status.bState == STATE_dfuMANIFEST_SYNC)
+                {
+                    s_u32CommandCount++;
+
+                    if (s_u32CommandCount == 5)
                     {
                         dfu_status.bState = STATE_dfuIDLE;
-                        HSUSBD->CEPCTL |= HSUSBD_CEPCTL_ZEROLEN_Msk;
-                        while (HSUSBD->CEPCTL & HSUSBD_CEPCTL_ZEROLEN_Msk);
-                        /* Status stage */
-                        HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-                        HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-                        HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-                        break;
+                        s_u32CommandCount = 0;
                     }
-
-                    ReadData(gUsbCmd.wValue * TRANSFER_SIZE, (gUsbCmd.wValue * TRANSFER_SIZE) + gUsbCmd.wLength, (uint32_t *)prog_struct.buf);
-                    HSUSBD_PrepareCtrlIn((uint8_t *)prog_struct.buf, gUsbCmd.wLength);
-                    HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
-                    HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
                 }
-            }
-            break;
-        }
 
-        default:
-        {
-            /* Setup error, stall the device */
-            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-            break;
-        }
+                HSUSBD_PrepareCtrlIn((uint8_t *)&dfu_status.bStatus, 6);
+                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
+                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
+                break;
+            }
+
+            case DFU_GETSTATE:
+            {
+                HSUSBD_PrepareCtrlIn((uint8_t *)&dfu_status.bState, 1);
+                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
+                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
+                break;
+            }
+
+            case DFU_UPLOAD:
+            {
+                if (dfu_status.bState == STATE_dfuIDLE || dfu_status.bState == STATE_dfuUPLOAD_IDLE)
+                {
+                    if (gUsbCmd.wLength <= 0)
+                    {
+                        dfu_status.bState = STATE_dfuIDLE;
+                        return;
+                    }
+                    else
+                    {
+                        if (dfu_status.bState == STATE_dfuIDLE)
+                        {
+                            dfu_status.bState = STATE_dfuUPLOAD_IDLE;
+                        }
+
+                        if (gUsbCmd.wValue > APROM_BLOCK_NUM)
+                        {
+                            dfu_status.bState = STATE_dfuIDLE;
+                            HSUSBD->CEPCTL |= HSUSBD_CEPCTL_ZEROLEN_Msk;
+
+                            while (HSUSBD->CEPCTL & HSUSBD_CEPCTL_ZEROLEN_Msk);
+
+                            /* Status stage */
+                            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+                            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+                            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+                            break;
+                        }
+
+                        ReadData(gUsbCmd.wValue * TRANSFER_SIZE, (gUsbCmd.wValue * TRANSFER_SIZE) + gUsbCmd.wLength, (uint32_t *)prog_struct.buf);
+                        HSUSBD_PrepareCtrlIn((uint8_t *)prog_struct.buf, gUsbCmd.wLength);
+                        HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
+                        HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
+                    }
+                }
+
+                break;
+            }
+
+            default:
+            {
+                /* Setup error, stall the device */
+                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+                break;
+            }
         }
     }
     else
@@ -286,113 +295,116 @@ void DFU_ClassRequest(void)
         // Host to device
         switch (gUsbCmd.bRequest)
         {
-        case DFU_DETACH:
-        {
-            switch (dfu_status.bState)
+            case DFU_DETACH:
             {
-            case STATE_dfuIDLE:
-            case STATE_dfuDNLOAD_SYNC:
-            case STATE_dfuDNLOAD_IDLE:
-            case STATE_dfuMANIFEST_SYNC:
-            case STATE_dfuUPLOAD_IDLE:
-                dfu_status.bStatus = STATUS_OK;
-                dfu_status.bState = STATE_dfuIDLE;
-                dfu_status.iString = 0; /* iString */
-                prog_struct.block_num = 0;
-                prog_struct.data_len = 0;
-                break;
+                switch (dfu_status.bState)
+                {
+                    case STATE_dfuIDLE:
+                    case STATE_dfuDNLOAD_SYNC:
+                    case STATE_dfuDNLOAD_IDLE:
+                    case STATE_dfuMANIFEST_SYNC:
+                    case STATE_dfuUPLOAD_IDLE:
+                        dfu_status.bStatus = STATUS_OK;
+                        dfu_status.bState = STATE_dfuIDLE;
+                        dfu_status.iString = 0; /* iString */
+                        prog_struct.block_num = 0;
+                        prog_struct.data_len = 0;
+                        break;
 
-            default:
+                    default:
+                        break;
+                }
+            }
+
+            case DFU_DNLOAD:
+            {
+                switch (dfu_status.bState)
+                {
+                    case STATE_dfuIDLE:
+                    case STATE_dfuDNLOAD_IDLE:
+                        if (gUsbCmd.wLength > 0)
+                        {
+                            /* update the global length and block number */
+                            prog_struct.block_num = gUsbCmd.wValue;
+                            prog_struct.data_len = gUsbCmd.wLength;
+                            dfu_status.bState = STATE_dfuDNLOAD_SYNC;
+                        }
+                        else
+                        {
+                            dfu_status.bState = STATE_dfuMANIFEST_SYNC;
+                        }
+
+                        /* enable EP0 prepare receive the buffer */
+                        u32Len = gUsbCmd.wLength;
+                        address = prog_struct.buf;
+
+                        while (u32Len)
+                        {
+                            if (u32Len > 64)
+                            {
+                                HSUSBD_CtrlOut((uint8_t *)address, 64);
+                                address += 64;
+                                u32Len -= 64;
+                            }
+                            else
+                            {
+                                HSUSBD_CtrlOut((uint8_t *)address, u32Len);
+                                u32Len = 0;
+                            }
+                        }
+
+                        /* Status stage */
+                        HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+                        HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+                        HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_SETUPPKIEN_Msk | HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+                        break;
+                }
+
                 break;
             }
-        }
 
-        case DFU_DNLOAD:
-        {
-            switch (dfu_status.bState)
+            case DFU_CLRSTATUS:
             {
-            case STATE_dfuIDLE:
-            case STATE_dfuDNLOAD_IDLE:
-                if (gUsbCmd.wLength > 0)
-                {
-                    /* update the global length and block number */
-                    prog_struct.block_num = gUsbCmd.wValue;
-                    prog_struct.data_len = gUsbCmd.wLength;
-                    dfu_status.bState = STATE_dfuDNLOAD_SYNC;
-                }
-                else
-                {
-                    dfu_status.bState = STATE_dfuMANIFEST_SYNC;
-                }
-
-                /* enable EP0 prepare receive the buffer */
-                u32Len = gUsbCmd.wLength;
-                address = prog_struct.buf;
-                while (u32Len)
-                {
-                    if (u32Len > 64)
-                    {
-                        HSUSBD_CtrlOut((uint8_t *)address, 64);
-                        address += 64;
-                        u32Len -= 64;
-                    }
-                    else
-                    {
-                        HSUSBD_CtrlOut((uint8_t *)address, u32Len);
-                        u32Len = 0;
-                    }
-                }
-                /* Status stage */
-                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_SETUPPKIEN_Msk | HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-                break;
-            }
-            break;
-        }
-
-        case DFU_CLRSTATUS:
-        {
-            //  if (STATE_dfuERROR == dfu_status.bState) {
-            dfu_status.bStatus = STATUS_OK;
-            dfu_status.bState = STATE_dfuIDLE;
-            // } //else {
-            /* state Error */
-            // dfu_status.bStatus = STATUS_errUNKNOWN;
-            // dfu_status.bState = STATE_dfuERROR;
-            // }
-            dfu_status.iString = 0; /* iString: index = 0 */
-            break;
-        }
-
-        case DFU_ABORT:
-        {
-            switch (dfu_status.bState)
-            {
-            case STATE_dfuIDLE:
-            case STATE_dfuDNLOAD_SYNC:
-            case STATE_dfuDNLOAD_IDLE:
-            case STATE_dfuMANIFEST_SYNC:
-            case STATE_dfuUPLOAD_IDLE:
+                //  if (STATE_dfuERROR == dfu_status.bState) {
                 dfu_status.bStatus = STATUS_OK;
                 dfu_status.bState = STATE_dfuIDLE;
+                // } //else {
+                /* state Error */
+                // dfu_status.bStatus = STATUS_errUNKNOWN;
+                // dfu_status.bState = STATE_dfuERROR;
+                // }
                 dfu_status.iString = 0; /* iString: index = 0 */
-
-                prog_struct.block_num = 0;
-                prog_struct.data_len = 0;
-                break;
-
-            default:
                 break;
             }
-        }
 
-        default:
-        {
-            /* Setup error, stall the device */
-            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-            break;
-        }
+            case DFU_ABORT:
+            {
+                switch (dfu_status.bState)
+                {
+                    case STATE_dfuIDLE:
+                    case STATE_dfuDNLOAD_SYNC:
+                    case STATE_dfuDNLOAD_IDLE:
+                    case STATE_dfuMANIFEST_SYNC:
+                    case STATE_dfuUPLOAD_IDLE:
+                        dfu_status.bStatus = STATUS_OK;
+                        dfu_status.bState = STATE_dfuIDLE;
+                        dfu_status.iString = 0; /* iString: index = 0 */
+
+                        prog_struct.block_num = 0;
+                        prog_struct.data_len = 0;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            default:
+            {
+                /* Setup error, stall the device */
+                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+                break;
+            }
         }
     }
 }

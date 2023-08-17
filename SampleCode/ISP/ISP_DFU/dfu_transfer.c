@@ -20,9 +20,7 @@ static uint32_t s_u32CommandCount = 0;
 static dfu_status_struct dfu_status;
 static s_prog_struct prog_struct __attribute__((aligned(4))) = {{0}, 0, 0, APP_LOADED_ADDR};
 
-void USBD_IRQHandler(void);
-
-void USBD_IRQHandler(void)
+NVT_ITCM void USBD_IRQHandler(void)
 {
     uint32_t u32IntSts = USBD_GET_INT_FLAG();
     uint32_t u32State = USBD_GET_BUS_STATE();
@@ -165,193 +163,196 @@ void DFU_ClassRequest(void)
     {
         switch (buf[1])
         {
-        case DFU_GETSTATUS:
-        {
-            if (dfu_status.bState == STATE_dfuDNLOAD_SYNC)
+            case DFU_GETSTATUS:
             {
-                s_u32CommandCount++;
-
-                if (s_u32CommandCount == 5)
+                if (dfu_status.bState == STATE_dfuDNLOAD_SYNC)
                 {
-                    dfu_status.bState = STATE_dfuDNLOAD_IDLE;
+                    s_u32CommandCount++;
 
-                    WriteData(prog_struct.block_num * TRANSFER_SIZE, (prog_struct.block_num * TRANSFER_SIZE) + prog_struct.data_len, (uint32_t *)(uint32_t)prog_struct.buf);
-                    //dfu_status.bStatus = STATUS_errWRITE;
-
-                    s_u32CommandCount = 0;
-                }
-            }
-
-            if (dfu_status.bState == STATE_dfuDNLOAD_IDLE)
-            {
-                s_u32CommandCount++;
-
-                if (s_u32CommandCount == 5)
-                {
-                    dfu_status.bState = STATE_dfuMANIFEST_SYNC;
-                    s_u32CommandCount = 0;
-                }
-            }
-
-            if (dfu_status.bState == STATE_dfuMANIFEST_SYNC)
-            {
-                s_u32CommandCount++;
-
-                if (s_u32CommandCount == 5)
-                {
-                    dfu_status.bState = STATE_dfuIDLE;
-                    s_u32CommandCount = 0;
-                }
-            }
-
-            USBD_PrepareCtrlIn((uint8_t *)&dfu_status.bStatus, 6);
-            USBD_PrepareCtrlOut(0, 0);
-            break;
-        }
-
-        case DFU_GETSTATE:
-        {
-            USBD_PrepareCtrlIn((uint8_t *)&dfu_status.bState, 1);
-            USBD_PrepareCtrlOut(0, 0);
-            break;
-        }
-
-        case DFU_UPLOAD:
-        {
-            if (dfu_status.bState == STATE_dfuIDLE || dfu_status.bState == STATE_dfuUPLOAD_IDLE)
-            {
-                if (wLength <= 0)
-                {
-                    dfu_status.bState = STATE_dfuIDLE;
-                    return;
-                }
-                else
-                {
-                    if (dfu_status.bState == STATE_dfuIDLE)
+                    if (s_u32CommandCount == 5)
                     {
-                        dfu_status.bState = STATE_dfuUPLOAD_IDLE;
-                    }
+                        dfu_status.bState = STATE_dfuDNLOAD_IDLE;
 
-                    if (wValue > APROM_BLOCK_NUM)
+                        WriteData(prog_struct.block_num * TRANSFER_SIZE, (prog_struct.block_num * TRANSFER_SIZE) + prog_struct.data_len, (uint32_t *)(uint32_t)prog_struct.buf);
+                        //dfu_status.bStatus = STATUS_errWRITE;
+
+                        s_u32CommandCount = 0;
+                    }
+                }
+
+                if (dfu_status.bState == STATE_dfuDNLOAD_IDLE)
+                {
+                    s_u32CommandCount++;
+
+                    if (s_u32CommandCount == 5)
+                    {
+                        dfu_status.bState = STATE_dfuMANIFEST_SYNC;
+                        s_u32CommandCount = 0;
+                    }
+                }
+
+                if (dfu_status.bState == STATE_dfuMANIFEST_SYNC)
+                {
+                    s_u32CommandCount++;
+
+                    if (s_u32CommandCount == 5)
                     {
                         dfu_status.bState = STATE_dfuIDLE;
-                        USBD_PrepareCtrlIn(0, 0);
-                        USBD_PrepareCtrlOut(0, 0);
-                        break;
+                        s_u32CommandCount = 0;
+                    }
+                }
+
+                USBD_PrepareCtrlIn((uint8_t *)&dfu_status.bStatus, 6);
+                USBD_PrepareCtrlOut(0, 0);
+                break;
+            }
+
+            case DFU_GETSTATE:
+            {
+                USBD_PrepareCtrlIn((uint8_t *)&dfu_status.bState, 1);
+                USBD_PrepareCtrlOut(0, 0);
+                break;
+            }
+
+            case DFU_UPLOAD:
+            {
+                if (dfu_status.bState == STATE_dfuIDLE || dfu_status.bState == STATE_dfuUPLOAD_IDLE)
+                {
+                    if (wLength <= 0)
+                    {
+                        dfu_status.bState = STATE_dfuIDLE;
+                        return;
+                    }
+                    else
+                    {
+                        if (dfu_status.bState == STATE_dfuIDLE)
+                        {
+                            dfu_status.bState = STATE_dfuUPLOAD_IDLE;
+                        }
+
+                        if (wValue > APROM_BLOCK_NUM)
+                        {
+                            dfu_status.bState = STATE_dfuIDLE;
+                            USBD_PrepareCtrlIn(0, 0);
+                            USBD_PrepareCtrlOut(0, 0);
+                            break;
+                        }
+
+                        ReadData(wValue * TRANSFER_SIZE, (wValue * TRANSFER_SIZE) + wLength, (uint32_t *)(uint32_t)prog_struct.buf);
+                        USBD_PrepareCtrlIn((uint8_t *)prog_struct.buf, wLength);
                     }
 
-                    ReadData(wValue * TRANSFER_SIZE, (wValue * TRANSFER_SIZE) + wLength, (uint32_t *)(uint32_t)prog_struct.buf);
-                    USBD_PrepareCtrlIn((uint8_t *)prog_struct.buf, wLength);
+                    USBD_PrepareCtrlOut(0, 0);
                 }
-                USBD_PrepareCtrlOut(0, 0);
-            }
-            break;
-        }
 
-        default:
-        {
-            // Stall
-            /* Setup error, stall the device */
-            USBD_SetStall(0);
-            break;
-        }
+                break;
+            }
+
+            default:
+            {
+                // Stall
+                /* Setup error, stall the device */
+                USBD_SetStall(0);
+                break;
+            }
         }
     }
     else
     {
         switch (buf[1])
         {
-        case DFU_DETACH:
-        {
-            switch (dfu_status.bState)
+            case DFU_DETACH:
             {
-            case STATE_dfuIDLE:
-            case STATE_dfuDNLOAD_SYNC:
-            case STATE_dfuDNLOAD_IDLE:
-            case STATE_dfuMANIFEST_SYNC:
-            case STATE_dfuUPLOAD_IDLE:
-                dfu_status.bStatus = STATUS_OK;
-                dfu_status.bState = STATE_dfuIDLE;
-                dfu_status.iString = 0; /* iString */
-                prog_struct.block_num = 0;
-                prog_struct.data_len = 0;
-                break;
+                switch (dfu_status.bState)
+                {
+                    case STATE_dfuIDLE:
+                    case STATE_dfuDNLOAD_SYNC:
+                    case STATE_dfuDNLOAD_IDLE:
+                    case STATE_dfuMANIFEST_SYNC:
+                    case STATE_dfuUPLOAD_IDLE:
+                        dfu_status.bStatus = STATUS_OK;
+                        dfu_status.bState = STATE_dfuIDLE;
+                        dfu_status.iString = 0; /* iString */
+                        prog_struct.block_num = 0;
+                        prog_struct.data_len = 0;
+                        break;
 
-            default:
+                    default:
+                        break;
+                }
+
+            }
+
+            case DFU_DNLOAD:
+            {
+                switch (dfu_status.bState)
+                {
+                    case STATE_dfuIDLE:
+                    case STATE_dfuDNLOAD_IDLE:
+                        if (wLength > 0)
+                        {
+                            /* update the global length and block number */
+                            prog_struct.block_num = (uint16_t)wValue;
+                            prog_struct.data_len = (uint16_t)wLength;
+                            dfu_status.bState = STATE_dfuDNLOAD_SYNC;
+                        }
+                        else
+                        {
+                            dfu_status.bState = STATE_dfuMANIFEST_SYNC;
+                        }
+
+                        /* enable EP0 prepare receive the buffer */
+                        USBD_PrepareCtrlOut((uint8_t *)prog_struct.buf, wLength);
+                        USBD_PrepareCtrlIn(0, 0);
+                        break;
+                }
+
                 break;
             }
 
-        }
-
-        case DFU_DNLOAD:
-        {
-            switch (dfu_status.bState)
+            case DFU_CLRSTATUS:
             {
-            case STATE_dfuIDLE:
-            case STATE_dfuDNLOAD_IDLE:
-                if (wLength > 0)
-                {
-                    /* update the global length and block number */
-                    prog_struct.block_num = (uint16_t)wValue;
-                    prog_struct.data_len = (uint16_t)wLength;
-                    dfu_status.bState = STATE_dfuDNLOAD_SYNC;
-                }
-                else
-                {
-                    dfu_status.bState = STATE_dfuMANIFEST_SYNC;
-                }
-
-                /* enable EP0 prepare receive the buffer */
-                USBD_PrepareCtrlOut((uint8_t *)prog_struct.buf, wLength);
-                USBD_PrepareCtrlIn(0, 0);
-                break;
-            }
-            break;
-        }
-
-        case DFU_CLRSTATUS:
-        {
-            //  if (STATE_dfuERROR == dfu_status.bState) {
-            dfu_status.bStatus = STATUS_OK;
-            dfu_status.bState = STATE_dfuIDLE;
-            // } //else {
-            /* state Error */
-            // dfu_status.bStatus = STATUS_errUNKNOWN;
-            // dfu_status.bState = STATE_dfuERROR;
-            // }
-
-            dfu_status.iString = 0; /* iString: index = 0 */
-            break;
-        }
-
-        case DFU_ABORT:
-        {
-            switch (dfu_status.bState)
-            {
-            case STATE_dfuIDLE:
-            case STATE_dfuDNLOAD_SYNC:
-            case STATE_dfuDNLOAD_IDLE:
-            case STATE_dfuMANIFEST_SYNC:
-            case STATE_dfuUPLOAD_IDLE:
+                //  if (STATE_dfuERROR == dfu_status.bState) {
                 dfu_status.bStatus = STATUS_OK;
                 dfu_status.bState = STATE_dfuIDLE;
+                // } //else {
+                /* state Error */
+                // dfu_status.bStatus = STATUS_errUNKNOWN;
+                // dfu_status.bState = STATE_dfuERROR;
+                // }
+
                 dfu_status.iString = 0; /* iString: index = 0 */
-
-                prog_struct.block_num = 0;
-                prog_struct.data_len = 0;
-                break;
-
-            default:
                 break;
             }
-        }
 
-        default:
-        {
-            /* Setup error, stall the device */
-            USBD_SetStall(0);
-            break;
-        }
+            case DFU_ABORT:
+            {
+                switch (dfu_status.bState)
+                {
+                    case STATE_dfuIDLE:
+                    case STATE_dfuDNLOAD_SYNC:
+                    case STATE_dfuDNLOAD_IDLE:
+                    case STATE_dfuMANIFEST_SYNC:
+                    case STATE_dfuUPLOAD_IDLE:
+                        dfu_status.bStatus = STATUS_OK;
+                        dfu_status.bState = STATE_dfuIDLE;
+                        dfu_status.iString = 0; /* iString: index = 0 */
+
+                        prog_struct.block_num = 0;
+                        prog_struct.data_len = 0;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            default:
+            {
+                /* Setup error, stall the device */
+                USBD_SetStall(0);
+                break;
+            }
 
         }
 

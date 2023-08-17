@@ -17,14 +17,12 @@ __attribute__((aligned(4))) uint8_t g_au8uart_rcvbuf[MAX_PKT_SIZE] = {0};
 uint8_t volatile g_u8bUartDataReady = 0;
 uint8_t volatile g_u8bufhead = 0;
 
-void UART1_IRQHandler(void);
-
 /* please check "targetdev.h" for chip specific define option */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* INTSTS to handle UART Channel 1 interrupt event                                                         */
 /*---------------------------------------------------------------------------------------------------------*/
-void UART1_IRQHandler(void)
+NVT_ITCM void UART1_IRQHandler(void)
 {
     /*----- Determine interrupt source -----*/
     uint32_t u32IntSrc = UART1->INTSTS;

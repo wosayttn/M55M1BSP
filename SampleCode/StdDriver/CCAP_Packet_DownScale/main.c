@@ -11,44 +11,30 @@
 #include "NuMicro.h"
 #include "sensor.h"
 
-#define SENSOR_IN_WIDTH             640
-#define SENSOR_IN_HEIGHT            480
-#define SYSTEM_WIDTH                160
-#define SYSTEM_HEIGHT               120
-uint8_t g_au8FrameBuffer[DCACHE_ALIGN_LINE_SIZE(SYSTEM_WIDTH * SYSTEM_HEIGHT * 2)] __ALIGNED(DCACHE_LINE_SIZE);
-
-void CCAPInterruptHandler(void);
-void CCAP_IRQHandler(void);
-void CCAPSetFreq(uint32_t u32ModFreqKHz, uint32_t u32SensorFreq);
-void PacketFormatDownScale(void);
-void UART0_Init(void);
-void SYS_Init(void);
+#define CCAP_OUTPUT_WIDTH       160
+#define CCAP_OUTPUT_HEIGHT      120
+uint8_t g_au8FrameBuffer[DCACHE_ALIGN_LINE_SIZE(CCAP_OUTPUT_WIDTH * CCAP_OUTPUT_HEIGHT * 2)] __ALIGNED(DCACHE_LINE_SIZE);
 
 /*------------------------------------------------------------------------------------------*/
 /* To run CCAPInterruptHandler, when CCAP frame end interrupt                               */
 /*------------------------------------------------------------------------------------------*/
 volatile uint32_t g_u32FramePass = 0;
-static uint32_t g_u32EscapeFrame = 0;
-
-void CCAPInterruptHandler(void)
-{
-    g_u32FramePass++;
-}
 
 /*------------------------------------------------------------------------------------------*/
 /*  CCAP_IRQHandler                                                                         */
 /*------------------------------------------------------------------------------------------*/
-void CCAP_IRQHandler(void)
+NVT_ITCM void CCAP_IRQHandler(void)
 {
     uint32_t u32IntStatus = CCAP_GET_INT_STS();
 
     if (CCAP_IsIntEnabled(CCAP_INTEN_VIEN_Msk) && (u32IntStatus & CCAP_INTSTS_VINTF_Msk) == CCAP_INTSTS_VINTF_Msk)
     {
-        CCAPInterruptHandler();
-        CCAP_CLR_INT_FLAG(CCAP_INTSTS_VINTF_Msk);   /* Clear Frame end interrupt */
-        g_u32EscapeFrame = g_u32EscapeFrame + 1;
+#ifdef NVT_DCACHE_ON
         /* Invalidate data cache of received frame buffer.  */
         SCB_InvalidateDCache_by_Addr(g_au8FrameBuffer, sizeof(g_au8FrameBuffer));
+#endif
+        g_u32FramePass++;
+        CCAP_CLR_INT_FLAG(CCAP_INTSTS_VINTF_Msk);   /* Clear Frame end interrupt */
     }
 
     if (CCAP_IsIntEnabled(CCAP_INTEN_ADDRMIEN_Msk) && (u32IntStatus & CCAP_INTSTS_ADDRMINTF_Msk) == CCAP_INTSTS_ADDRMINTF_Msk)
@@ -64,7 +50,7 @@ void CCAP_IRQHandler(void)
     CCAP_EnableUpdate();
 }
 
-void CCAPSetFreq(uint32_t u32ModFreqKHz, uint32_t u32SensorFreq)
+void CCAP_SetFreq(uint32_t u32ModFreqKHz, uint32_t u32SensorFreq)
 {
     int32_t i32Div;
 
@@ -78,8 +64,8 @@ void CCAPSetFreq(uint32_t u32ModFreqKHz, uint32_t u32SensorFreq)
     SYS_ResetModule(SYS_CCAP0RST);
 
     /* Specified sensor clock */
+    CLK_SetModuleClock(CCAP0_MODULE, CLK_CCAPSEL_CCAP0SEL_HIRC, 0);
     /* Not support in TESTCHIP_ONLY
-        CLK_SetModuleClock(CCAP0_MODULE, CLK_CCAPSEL_CCAP0SEL_HIRC, 0);
         i32Div= (CLK_GetHCLK2Freq() / u32SensorFreq) - 1;
         if(i32Div < 0)
             i32Div = 0;
@@ -90,12 +76,12 @@ void CCAPSetFreq(uint32_t u32ModFreqKHz, uint32_t u32SensorFreq)
     SYS_LockReg();
 }
 
-void PacketFormatDownScale(void)
+int32_t PacketFormatDownScale(S_SENSOR_INFO *psSensorInfo)
 {
     uint32_t u32Frame;
 
-    /* Initialize NT99141 sensor and set NT99141 output YUV422 format */
-    if (InitNT99141_VGA_YUV422() == FALSE) return;
+    /* Initialize sensor and set output format as YUV422 */
+    if (psSensorInfo->pfnInitSensor(0) == FALSE) return -1;
 
     /* Enable External CCAP Interrupt */
     NVIC_EnableIRQ(CCAP_IRQn);
@@ -104,19 +90,19 @@ void PacketFormatDownScale(void)
     CCAP_EnableInt(CCAP_INTEN_VIEN_Msk);
 
     /* Set Vsync polarity, Hsync polarity, pixel clock polarity, Sensor Format and Order */
-    CCAP_Open(NT99141SensorPolarity, (CCAP_PAR_INDATORD_YUYV | CCAP_PAR_INFMT_YUV422), CCAP_PAR_OUTFMT_YUV422);
+    CCAP_Open(psSensorInfo->m_u32Polarity, psSensorInfo->m_u32InputFormat, CCAP_PAR_OUTFMT_YUV422);
 
     /* Set Cropping Window Vertical/Horizontal Starting Address and Cropping Window Size */
-    CCAP_SetCroppingWindow(0, 0, SENSOR_IN_HEIGHT, SENSOR_IN_WIDTH);
+    CCAP_SetCroppingWindow(0, 0, psSensorInfo->m_u16Height, psSensorInfo->m_u16Width);
 
     /* Set System Memory Packet Base Address Register */
     CCAP_SetPacketBuf((uint32_t)g_au8FrameBuffer);
 
     /* Set Packet Scaling Vertical/Horizontal Factor Register */
-    CCAP_SetPacketScaling(SYSTEM_HEIGHT, SENSOR_IN_HEIGHT, SYSTEM_WIDTH, SENSOR_IN_WIDTH);
+    CCAP_SetPacketScaling(CCAP_OUTPUT_HEIGHT, psSensorInfo->m_u16Height, CCAP_OUTPUT_WIDTH, psSensorInfo->m_u16Width);
 
     /* Set Packet Frame Output Pixel Stride Width */
-    CCAP_SetPacketStride(SYSTEM_WIDTH);
+    CCAP_SetPacketStride(CCAP_OUTPUT_WIDTH);
 
     /* Start Image Capture Interface */
     CCAP_Start();
@@ -131,7 +117,6 @@ void PacketFormatDownScale(void)
             printf("Get frame %d\n", u32Frame);
         }
     }
-
 }
 
 void SYS_Init(void)
@@ -142,27 +127,8 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -204,11 +170,15 @@ int32_t main(void)
     /* Init Debug UART for print message */
     InitDebugUart();
 
+    printf("+--------------------------------------------+\n");
+    printf("|  M55M1 CCAP Packet Down Scale Sample Code  |\n");
+    printf("+--------------------------------------------+\n");
+
     /* Init CCAP clock and Sensor clock */
-    CCAPSetFreq(12000000, 12000000);
+    CCAP_SetFreq(12000000, 12000000);
 
     /* Using Packet format to Image down scale */
-    PacketFormatDownScale();
+    PacketFormatDownScale(&g_sSensorNT99141);
 
     while (1);
 }

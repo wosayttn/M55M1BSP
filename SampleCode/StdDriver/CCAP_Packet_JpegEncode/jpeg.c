@@ -79,7 +79,7 @@ void JpegEncode(unsigned char *image, unsigned char *jBuf, unsigned long *jSize,
 {
 
     // Encode image
-    encode_jpeg_to_memory(image, width, height, 85, "Nuvoton!", jSize, &jBuf);
+    encode_jpeg_to_memory(image, width, height, 85, "Nuvoton", jSize, &jBuf);
 
     printf("Jpeg image range: 0x%08x to 0x%08x, JPEG size (bytes): %ld",
            (unsigned int)jBuf,

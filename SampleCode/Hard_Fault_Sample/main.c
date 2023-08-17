@@ -115,8 +115,7 @@ static void SYS_Init(void)
   * @details    This function is an example to show how to implement user's process hard fault handler
   *
   */
-//void ProcessHardFault(uint32_t u32LR, uint32_t u32MSP, uint32_t u32PSP)
-void ProcessHardFault(uint32_t *pu32StackFrame)
+NVT_ITCM void ProcessHardFault(uint32_t *pu32StackFrame)
 {
     uint32_t u32ExceptionNum;
     uint32_t u32R0, u32R1, u32R2, u32R3, u32R12, u32LR, u32PC, u32PSR;
@@ -135,6 +134,7 @@ void ProcessHardFault(uint32_t *pu32StackFrame)
     if ((u32PSR & (1 << 24)) == 0)
     {
         printf("PSR T bit is 0.\nHard fault caused by changing to ARM mode!\n");
+
         while (1);
     }
 
@@ -165,6 +165,7 @@ void ProcessHardFault(uint32_t *pu32StackFrame)
         */
 
         printf("Hard fault is caused in IRQ #%u\n", u32ExceptionNum - 16);
+
         while (1);
     }
 
@@ -192,13 +193,12 @@ void ProcessHardFault(uint32_t *pu32StackFrame)
 }
 #endif  // USE_MY_HARDFAULT
 
-void TIMER1_IRQHandler(void)
+NVT_ITCM void TIMER1_IRQHandler(void)
 {
     printf("This is exception n = %d\n", TIMER1_IRQn);
     M32(0xFFFFFFFF) = 0;
     TIMER_ClearIntFlag(TIMER1);
 }
-
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* MAIN function                                                                                           */
@@ -227,26 +227,26 @@ int main(void)
 
         switch (i8ch)
         {
-        case '0':
-            /* Write invalid address will cause hard fault exception. (Memory access hard fault) */
-            M32(0xFFFFFFFF) = 0;
-            break;
+            case '0':
+                /* Write invalid address will cause hard fault exception. (Memory access hard fault) */
+                M32(0xFFFFFFFF) = 0;
+                break;
 
-        case '1':
-            /* Call function with bit0 = 0 will cause hard fault. (Change to ARM mode hard fault) */
-            func();
-            break;
+            case '1':
+                /* Call function with bit0 = 0 will cause hard fault. (Change to ARM mode hard fault) */
+                func();
+                break;
 
-        case '2':
-            /* Generate Timer Interrupt to test hard fault in ISR */
-            TIMER_Open(TIMER1, TIMER_ONESHOT_MODE, 1000);
-            TIMER_EnableInt(TIMER1);
-            NVIC_EnableIRQ(TIMER1_IRQn);
-            TIMER_Start(TIMER1);
-            break;
+            case '2':
+                /* Generate Timer Interrupt to test hard fault in ISR */
+                TIMER_Open(TIMER1, TIMER_ONESHOT_MODE, 1000);
+                TIMER_EnableInt(TIMER1);
+                NVIC_EnableIRQ(TIMER1_IRQn);
+                TIMER_Start(TIMER1);
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
 
     }

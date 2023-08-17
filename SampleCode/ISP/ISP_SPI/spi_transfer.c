@@ -20,8 +20,6 @@ static volatile uint32_t s_u32RxDataCount;
 
 volatile uint8_t bSpiDataReady = 0;
 
-void SPI1_IRQHandler(void);
-
 void SPI_Init(void)
 {
     /* Configure as a slave, clock idle low, 32-bit transaction, drive output on falling clock edge and latch input on rising edge. */
@@ -47,7 +45,7 @@ void SPI_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  SPI1 IRQ Handler                                                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
-void SPI1_IRQHandler(void)
+NVT_ITCM void SPI1_IRQHandler(void)
 {
     uint32_t *_response_buff;
 

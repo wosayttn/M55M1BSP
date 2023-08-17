@@ -21,7 +21,7 @@ uint32_t g_au32CachedBuf_WT[DCACHE_ALIGN_LINE_SIZE(TEST_BUF_SIZE / 4)] __ALIGNED
 uint32_t g_au32CachedBuf_WB[DCACHE_ALIGN_LINE_SIZE(TEST_BUF_SIZE / 4)] __ALIGNED(DCACHE_LINE_SIZE);
 uint32_t g_au32PDMA_DstBuf [DCACHE_ALIGN_LINE_SIZE(TEST_BUF_SIZE / 4)] __ALIGNED(DCACHE_LINE_SIZE);
 
-void MemManage_Handler(void)
+NVT_ITCM void MemManage_Handler(void)
 {
     uint32_t u32LR = 0;
     uint32_t *pu32SP;
@@ -53,6 +53,7 @@ void MemManage_Handler(void)
     if (SCB->CFSR & SCB_CFSR_DACCVIOL_Msk)
     {
         printf("  Data access violation flag is raised.");
+
         if (SCB->CFSR & SCB_CFSR_MMARVALID_Msk)
             printf("  Fault address: 0x%08X\n", SCB->MMFAR);
     }
@@ -69,27 +70,8 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -162,6 +144,7 @@ int32_t TestCacheWrite(uint32_t *pu32BaseAddr, uint32_t u32ByteSize, uint32_t bW
          * Write through mode: data is write to cache and memory
          */
         printf("CPU write (addr + 0x%02X)\n", au8TestPattern[i]);
+
         for (u32Offset = 0; u32Offset < u32ByteSize; u32Offset += 4)
         {
             pu32BaseAddr[u32Offset / 4] = (u32Offset + au8TestPattern[i]);
@@ -169,6 +152,7 @@ int32_t TestCacheWrite(uint32_t *pu32BaseAddr, uint32_t u32ByteSize, uint32_t bW
 
         /* Check with CPU */
         printf("CPU check ");
+
         for (u32Offset = 0; u32Offset < u32ByteSize; u32Offset += 4)
         {
             if (pu32BaseAddr[u32Offset / 4] != (u32Offset + au8TestPattern[i]))
@@ -177,6 +161,7 @@ int32_t TestCacheWrite(uint32_t *pu32BaseAddr, uint32_t u32ByteSize, uint32_t bW
                 return -1;
             }
         }
+
         printf("Pass\n");
 
         if (bClean)
@@ -187,6 +172,7 @@ int32_t TestCacheWrite(uint32_t *pu32BaseAddr, uint32_t u32ByteSize, uint32_t bW
 
         /* Check with PDMA */
         printf("PDMA transfer\n");
+
         if (PDMA_Transfer(0, pu32BaseAddr, u32ByteSize) != 0)
         {
             printf("[Error] Failed to do PDMA transfer !\n");
@@ -194,12 +180,14 @@ int32_t TestCacheWrite(uint32_t *pu32BaseAddr, uint32_t u32ByteSize, uint32_t bW
         }
 
         u32DataErrCnt = 0;
+
         for (u32Offset = 0; u32Offset < u32ByteSize; u32Offset += 4)
         {
             if (g_au32PDMA_DstBuf[u32Offset / 4] != pu32BaseAddr[u32Offset / 4])
             {
                 if (u32DataErrCnt == 0)
                     printf("  Check (0x%08X != 0x%08X).\n", g_au32PDMA_DstBuf[u32Offset / 4], pu32BaseAddr[u32Offset / 4]);
+
                 u32DataErrCnt++;
             }
         }
@@ -211,6 +199,7 @@ int32_t TestCacheWrite(uint32_t *pu32BaseAddr, uint32_t u32ByteSize, uint32_t bW
              *   data in memory is inconsistent with data in cache and PDMA copied old data.
              */
             printf("  [Write Back] Data error count: %d\n", u32DataErrCnt);
+
             if (u32DataErrCnt == 0)
                 printf("  [Error] Check PDMA copied old data - Failed !\n");
             else
@@ -302,6 +291,7 @@ void MPU_TestWB_WT(void)
 
     printf("Press any key to test write through with memory region 0.\n");
     getchar();
+
     if (TestCacheWrite(g_au32CachedBuf_WT, TEST_BUF_SIZE, FALSE, FALSE) != 0)
         printf("[Error] !\n");
 
@@ -316,12 +306,14 @@ void MPU_TestWB_WT(void)
 
     printf("Press any key to test write back with memory region 1.\n");
     getchar();
+
     if (TestCacheWrite(g_au32CachedBuf_WB, TEST_BUF_SIZE, TRUE, FALSE) != 0)
         printf("[Error] !\n");
 
     printf("\n----------------------------------------------\n");
     printf(" CleanDCache after PDMA transfer\n");
     printf("----------------------------------------------\n");
+
     if (TestCacheWrite(g_au32CachedBuf_WB, TEST_BUF_SIZE, TRUE, TRUE) != 0)
         printf("[Error] !\n");
 }
@@ -341,6 +333,7 @@ int main()
     MPU_TestWB_WT();
 
     printf("\nDone\n");
+
     while (1);
 }
 

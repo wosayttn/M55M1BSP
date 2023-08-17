@@ -32,7 +32,7 @@ static volatile uint32_t  db_length;                /* dual bank program remaini
 static volatile uint32_t  db_addr;                  /* dual bank program current flash address  */
 static volatile uint32_t  g_tick_cnt;               /* timer ticks - 100 ticks per second       */
 
-void SysTick_Handler(void)
+NVT_ITCM void SysTick_Handler(void)
 {
     g_tick_cnt++;                                /* increase timer tick                      */
 
@@ -55,56 +55,56 @@ void SysTick_Handler(void)
      */
     switch (db_state)
     {
-    case DB_STATE_START:
-        if (db_addr & ~FMC_PAGE_ADDR_MASK)
-        {
-            printf("Warning - dual bank start address is not page aligned!\n");
-            db_state = DB_STATE_FAIL;
+        case DB_STATE_START:
+            if (db_addr & ~FMC_PAGE_ADDR_MASK)
+            {
+                printf("Warning - dual bank start address is not page aligned!\n");
+                db_state = DB_STATE_FAIL;
+                break;
+            }
+
+            if (db_length & ~FMC_PAGE_ADDR_MASK)
+            {
+                printf("Warning - dual bank length is not page aligned!\n");
+                db_state = DB_STATE_FAIL;
+                break;
+            }
+
+            db_state = DB_STATE_ERASE;              /* Next state is to erase flash            */
             break;
-        }
 
-        if (db_length & ~FMC_PAGE_ADDR_MASK)
-        {
-            printf("Warning - dual bank length is not page aligned!\n");
-            db_state = DB_STATE_FAIL;
+        case DB_STATE_ERASE:
+            printf("Erase 0x%x [%d]\n", db_addr, g_tick_cnt);
+            FMC->ISPCMD  = FMC_ISPCMD_PAGE_ERASE;   /* ISP page erase command                   */
+            FMC->ISPADDR = db_addr;                 /* page address                             */
+            FMC->ISPTRG  = FMC_ISPTRG_ISPGO_Msk;    /* trigger ISP page erase and no wait       */
+
+            db_state = DB_STATE_PROGRAM;            /* Next state is to program flash           */
             break;
-        }
 
-        db_state = DB_STATE_ERASE;              /* Next state is to erase flash            */
-        break;
+        case DB_STATE_PROGRAM:
+            if ((db_addr & ~FMC_PAGE_ADDR_MASK) == 0)
+                printf("Erase done [%d]\n", g_tick_cnt);
 
-    case DB_STATE_ERASE:
-        printf("Erase 0x%x [%d]\n", db_addr, g_tick_cnt);
-        FMC->ISPCMD  = FMC_ISPCMD_PAGE_ERASE;   /* ISP page erase command                   */
-        FMC->ISPADDR = db_addr;                 /* page address                             */
-        FMC->ISPTRG  = FMC_ISPTRG_ISPGO_Msk;    /* trigger ISP page erase and no wait       */
+            FMC->ISPCMD  = FMC_ISPCMD_PROGRAM;      /* ISP word program command                 */
+            FMC->ISPADDR = db_addr;                 /* word program address                     */
+            FMC->ISPDAT  = db_addr;                 /* 32-bits data to be programmed            */
+            FMC->ISPTRG  = FMC_ISPTRG_ISPGO_Msk;    /* trigger ISP program and no wait          */
 
-        db_state = DB_STATE_PROGRAM;            /* Next state is to program flash           */
-        break;
+            db_addr += 4;                           /* advance to next word                     */
+            db_length -= 4;
 
-    case DB_STATE_PROGRAM:
-        if ((db_addr & ~FMC_PAGE_ADDR_MASK) == 0)
-            printf("Erase done [%d]\n", g_tick_cnt);
+            if ((db_addr & ~FMC_PAGE_ADDR_MASK) == 0)
+            {
+                /* have reached start of next page          */
+                db_state = DB_STATE_ERASE;          /* next state, erase page                   */
+            }
 
-        FMC->ISPCMD  = FMC_ISPCMD_PROGRAM;      /* ISP word program command                 */
-        FMC->ISPADDR = db_addr;                 /* word program address                     */
-        FMC->ISPDAT  = db_addr;                 /* 32-bits data to be programmed            */
-        FMC->ISPTRG  = FMC_ISPTRG_ISPGO_Msk;    /* trigger ISP program and no wait          */
+            break;
 
-        db_addr += 4;                           /* advance to next word                     */
-        db_length -= 4;
-
-        if ((db_addr & ~FMC_PAGE_ADDR_MASK) == 0)
-        {
-            /* have reached start of next page          */
-            db_state = DB_STATE_ERASE;          /* next state, erase page                   */
-        }
-
-        break;
-
-    default:
-        printf("Unknown db_state state!\n");
-        break;
+        default:
+            printf("Unknown db_state state!\n");
+            break;
     }
 }
 
@@ -116,27 +116,8 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
