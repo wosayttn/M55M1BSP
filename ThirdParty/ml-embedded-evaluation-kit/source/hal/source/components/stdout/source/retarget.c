@@ -23,39 +23,39 @@
 #include <time.h>
 
 #if defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6100100)
-/* Arm compiler re-targeting */
+    /* Arm compiler re-targeting */
 
-#include <rt_misc.h>
-#include <rt_sys.h>
+    #include <rt_misc.h>
+    #include <rt_sys.h>
 
 
-/* Standard IO device handles. */
-#define STDIN  0x8001
-#define STDOUT 0x8002
-#define STDERR 0x8003
+    /* Standard IO device handles. */
+    #define STDIN  0x8001
+    #define STDOUT 0x8002
+    #define STDERR 0x8003
 
-#define RETARGET(fun) _sys##fun
+    #define RETARGET(fun) _sys##fun
 
 #else
-/* GNU compiler re-targeting */
+    /* GNU compiler re-targeting */
 
-/*
- * This type is used by the _ I/O functions to denote an open
- * file.
- */
-typedef int FILEHANDLE;
+    /*
+    * This type is used by the _ I/O functions to denote an open
+    * file.
+    */
+    typedef int FILEHANDLE;
 
-/*
- * Open a file. May return -1 if the file failed to open.
- */
-extern FILEHANDLE _open(const char * /*name*/, int /*openmode*/);
+    /*
+    * Open a file. May return -1 if the file failed to open.
+    */
+    extern FILEHANDLE _open(const char * /*name*/, int /*openmode*/);
 
-/* Standard IO device handles. */
-#define STDIN  0x00
-#define STDOUT 0x01
-#define STDERR 0x02
+    /* Standard IO device handles. */
+    #define STDIN  0x00
+    #define STDOUT 0x01
+    #define STDERR 0x02
 
-#define RETARGET(fun) fun
+    #define RETARGET(fun) fun
 
 #endif
 
@@ -68,10 +68,12 @@ __attribute__((noreturn)) static void UartEndSimulation(int code)
 {
     UartPutc((char) 0x4);  // End of simulation
     UartPutc((char) code); // Exit code
-    while(1);
+
+    while (1);
 }
 
-void _ttywrch(int ch) {
+void _ttywrch(int ch)
+{
     (void)fputc(ch, stdout);
 }
 
@@ -79,15 +81,18 @@ FILEHANDLE RETARGET(_open)(const char *name, int openmode)
 {
     (void)(openmode);
 
-    if (strcmp(name, __stdin_name) == 0) {
+    if (strcmp(name, __stdin_name) == 0)
+    {
         return (STDIN);
     }
 
-    if (strcmp(name, __stdout_name) == 0) {
+    if (strcmp(name, __stdout_name) == 0)
+    {
         return (STDOUT);
     }
 
-    if (strcmp(name, __stderr_name) == 0) {
+    if (strcmp(name, __stderr_name) == 0)
+    {
         return (STDERR);
     }
 
@@ -98,22 +103,28 @@ int RETARGET(_write)(FILEHANDLE fh, const unsigned char *buf, unsigned int len, 
 {
     (void)(mode);
 
-    switch (fh) {
-    case STDOUT:
-    case STDERR: {
-        int c;
+    switch (fh)
+    {
+        case STDOUT:
+        case STDERR:
+        {
+            int c;
 
-        while (len-- > 0) {
-            c = fputc(*buf++, stdout);
-            if (c == EOF) {
-                return EOF;
+            while (len-- > 0)
+            {
+                c = fputc(*buf++, stdout);
+
+                if (c == EOF)
+                {
+                    return EOF;
+                }
             }
+
+            return 0;
         }
 
-        return 0;
-    }
-    default:
-        return EOF;
+        default:
+            return EOF;
     }
 }
 
@@ -121,41 +132,50 @@ int RETARGET(_read)(FILEHANDLE fh, unsigned char *buf, unsigned int len, int mod
 {
     (void)(mode);
 
-    switch (fh) {
-    case STDIN: {
-        int c;
+    switch (fh)
+    {
+        case STDIN:
+        {
+            int c;
 
-        while (len-- > 0) {
-            c = fgetc(stdin);
-            if (c == EOF) {
-                return EOF;
+            while (len-- > 0)
+            {
+                c = fgetc(stdin);
+
+                if (c == EOF)
+                {
+                    return EOF;
+                }
+
+                *buf++ = (unsigned char)c;
             }
 
-            *buf++ = (unsigned char)c;
+            return 0;
         }
 
-        return 0;
-    }
-    default:
-        return EOF;
+        default:
+            return EOF;
     }
 }
 
 int RETARGET(_istty)(FILEHANDLE fh)
 {
-    switch (fh) {
-    case STDIN:
-    case STDOUT:
-    case STDERR:
-        return 1;
-    default:
-        return 0;
+    switch (fh)
+    {
+        case STDIN:
+        case STDOUT:
+        case STDERR:
+            return 1;
+
+        default:
+            return 0;
     }
 }
 
 int RETARGET(_close)(FILEHANDLE fh)
 {
-    if (RETARGET(_istty(fh))) {
+    if (RETARGET(_istty(fh)))
+    {
         return 0;
     }
 
@@ -179,21 +199,31 @@ int RETARGET(_ensure)(FILEHANDLE fh)
 
 long RETARGET(_flen)(FILEHANDLE fh)
 {
-    if (RETARGET(_istty)(fh)) {
+    if (RETARGET(_istty)(fh))
+    {
         return 0;
     }
 
     return -1;
 }
 
-int RETARGET(_tmpnam)(char *name, int sig, unsigned int maxlen)
+#if __ARMCC_VERSION >= 6190000
+void RETARGET(_tmpnam)(char *name, int sig, unsigned maxlen)
 {
-    (void)(name);
-    (void)(sig);
-    (void)(maxlen);
+    (void)name;
+    (void)sig;
+    (void)maxlen;
+}
+#else   /* __ARMCC_VERSION < 6190000 */
+int RETARGET(_tmpnam)(char *name, int sig, unsigned maxlen)
+{
+    (void)name;
+    (void)sig;
+    (void)maxlen;
 
     return 1;
 }
+#endif
 
 char *RETARGET(_command_string)(char *cmd, int len)
 {
@@ -205,7 +235,8 @@ char *RETARGET(_command_string)(char *cmd, int len)
 void RETARGET(_exit)(int return_code)
 {
     UartEndSimulation(return_code);
-    while(1);
+
+    while (1);
 }
 
 int system(const char *cmd)
@@ -221,7 +252,8 @@ time_t time(time_t *timer)
 
     current = 0; // To Do !! No RTC implemented
 
-    if (timer != NULL) {
+    if (timer != NULL)
+    {
         *timer = current;
     }
 
@@ -232,10 +264,11 @@ void _clock_init(void) {}
 
 clock_t clock(void)
 {
-    return (clock_t)-1;
+    return (clock_t) -1;
 }
 
-int remove(const char *arg) {
+int remove(const char *arg)
+{
     (void)(arg);
 
     return 0;
