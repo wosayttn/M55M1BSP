@@ -40,9 +40,6 @@ static void SYS_Init(void)
 	/* Enable PLL0 200MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
 
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
     /* Set HCLK0 divide 1 */
     CLK_SET_HCLK0DIV(1);
     
@@ -57,6 +54,9 @@ static void SYS_Init(void)
     CLK_PCLKDIV_PCLK2DIV(2);
     CLK_PCLKDIV_PCLK3DIV(2);
     CLK_PCLKDIV_PCLK4DIV(2);
+
+    /* Switch SCLK clock source to PLL0 and divide 1 */
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
