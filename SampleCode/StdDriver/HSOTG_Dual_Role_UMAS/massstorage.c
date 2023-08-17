@@ -439,8 +439,8 @@ void MSC_Init(void)
     /* when doing FDBENCH, the disk size should >= 5MB */
     //g_TotalSectors = 10240;
     g_TotalSectors = 60;
-    g_u32MassBase = 0x20001000;
-    g_u32StorageBase = 0x20002000;
+    g_u32MassBase = 0x20128000;
+    g_u32StorageBase = 0x20129000;
 }
 
 void MSC_ClassRequest(void)
