@@ -92,17 +92,6 @@ typedef struct
      * |        |          |Set this bit to 1 to Clear DMIC internal state, but all DMIC registers are kept unchanged.
      * |        |          |0 = Normal operation
      * |        |          |1 = Internal DMIC State Reset
-     * |[25]    |DSPFIFOT  |DSP FIFO Test
-     * |        |          |Set this bit to 1 to Enable the MCU accessing of DSP FIFO
-     * |        |          |Read/Write pointer will be incremented by u201C1u201D for each read/write operation.
-     * |        |          |0 = Normal operation
-     * |        |          |1 = DSP FIFO test Enabled.
-     * |[26]    |DSPMEMT   |DSP Memory Test
-     * |        |          |Set this bit to 1 to Enable the MCU accessing of DSP RAM and ROM
-     * |        |          |The read/write pointer of RAM will be incremented by u201C1u201D automatically after each RAM read or write
-     * |        |          |u201C0u201D to u201C1u201D state change of this bit will clear the read/write pointer automatically.
-     * |        |          |0 = Normal operation
-     * |        |          |1 = DSP Memory test Enabled.
      * |[28:27] |GAINSTEP  |Volume Control Gain Adjust Step for Decimal Point.
      * |        |          |00 = 0.5dB (1/2)
      * |        |          |01 = 0.25dB (1/4)
@@ -248,7 +237,6 @@ typedef struct
     __IO uint32_t GAINCTL0;              /*!< [0x0014] DMIC Channel 0 and 1 Volume Control Register                     */
     __IO uint32_t GAINCTL1;              /*!< [0x0018] DMIC Channel 2 and 3 Volume Control Register                     */
     __I  uint32_t RESERVE0[6];
-    __IO uint32_t DLYCTL;                /*!< [0x0034] DMIC DSP0 Samplig Clock Delay Control Register                                 */
 } DMIC_T;
 
 
@@ -270,14 +258,6 @@ typedef struct
      * |        |          |The value in this field is the frequency divider for generating the DMIC working main clock. The frequency is obtained according to the following equation.
      * |        |          |F_DMIC_MCLK = (F_VAD_CLK_SRC)/(1 + VADMCLKDIV).
      * |        |          |where F_VAD_CLK_SRC is the frequency of DMIC module clock source, which is defined in the clock control register DMICSEL VAD0SEL (CLK_DMICSEL [5:4]) and   F_DMIC_MCLK depends on the cycle of DMIC DSP processor needed.
-     * |[28]    |DATAOFF   |VAD Sending Data to SRAM Control
-     * |        |          |When the ACTIVE (VAD_STATUS0[31]) goes high, the data will be transferred to SRAM to store which can be used for keyword detection later
-     * |        |          |After some time, if user needs to stop sending data to SRAM, write this bit to 1.
-     * |[29]    |SW        |VAD Path Switch Control
-     * |        |          |After the ACTIVE(VAD_STATUS0[31]) goes high, it will automatically switch to the DMIC path
-     * |        |          |When the CPU is entering idle mode, write 1 to switch back to the VAD path.
-     * |        |          |Note 1: After switch back VAD path, user need to set this bit to 0.
-     * |        |          |Note 2: User need to set DMIC_CTL[3:0] to 1 and clear ACTIVE (VAD_STATUS0[31]) before set this bit 1.
      * |[30]    |ACTCL     |VAD Active Flag Clear
      * |        |          |0 = No effect.
      * |        |          |1 = Clear ACTIVE(VAD_STATUS0[31]).
@@ -329,7 +309,6 @@ typedef struct
      * |[19:16] |LTAT      |Long Term Power Attack Time
      * |        |          |Slow attack (e.g., 0x5): less sensitive to environment change.
      * |        |          |Fast attack (e.g., 0x8): more sensitive to environment change.
-     * |[20]    |TESTMODE  |Set this to be 1, can data out the BIQ, SINC data through the DMIC FIFO
      * @var VAD_T::CTL1
      * Offset: 0x14  VAD Control Register 1
      * ---------------------------------------------------------------------------------------------------
@@ -486,29 +465,11 @@ typedef struct
 #define DMIC_GAINCTL1_CHxxRVOL_Pos        (16)                                              /*!< DMIC_T::GAINCTL1: CHxxRVOL Position     */
 #define DMIC_GAINCTL1_CHxxRVOL_Msk        (0xfffful << DMIC_GAINCTL1_CHxxRVOL_Pos)           /*!< DMIC_T::GAINCTL1: CHxxRVOL Mask         */
 
-#define DMIC_DLYCTL_DSP0CLKTYP_Pos      (0)                                               /*!< DMIC_T::DLYCTL: DSP0CLKTYP Position   */
-#define DMIC_DLYCTL_DSP0CLKTYP_Msk      (0x1ul << DMIC_DLYCTL_DSP0CLKTYP_Pos)     /*!< DMIC_T::DLYCTL: DSP0CLKTYP Mask       */
-
-#define DMIC_DLYCTL_DSP1CLKTYP_Pos      (1)                                               /*!< DMIC_T::DLYCTL: DSP1CLKTYP Position   */
-#define DMIC_DLYCTL_DSP1CLKTYP_Msk      (0x1ul << DMIC_DLYCTL_DSP1CLKTYP_Pos)     /*!< DMIC_T::DLYCTL: DSP1CLKTYP Mask       */
-
-#define DMIC_DLYCTL_DSP0DLY_Pos      (8)                                               /*!< DMIC_T::DLYCTL: DSP0DLY Position   */
-#define DMIC_DLYCTL_DSP0DLY_Msk      (0x7ul << DMIC_DLYCTL_DSP0DLY_Pos)     /*!< DMIC_T::DLYCTL: DSP0DLY Mask       */
-
-#define DMIC_DLYCTL_DSP1DLY_Pos      (12)                                               /*!< DMIC_T::DLYCTL: DSP1DLY Position   */
-#define DMIC_DLYCTL_DSP1DLY_Msk      (0x7ul << DMIC_DLYCTL_DSP1DLY_Pos)     /*!< DMIC_T::DLYCTL: DSP1DLY Mask       */
-
 #define VAD_SINCCTL_SINCOSR_Pos          (8)                                               /*!< VAD_T::SINCCTL: SINCOSR Position       */
 #define VAD_SINCCTL_SINCOSR_Msk          (0xful << VAD_SINCCTL_SINCOSR_Pos)                /*!< VAD_T::SINCCTL: SINCOSR Mask           */
 
 #define VAD_SINCCTL_VADMCLKDIV_Pos       (16)                                              /*!< VAD_T::SINCCTL: VADMCLKDIV Position      */
 #define VAD_SINCCTL_VADMCLKDIV_Msk       (0xfful << VAD_SINCCTL_VADMCLKDIV_Pos)               /*!< VAD_T::SINCCTL: VADMCLKDIV Mask          */
-
-#define VAD_SINCCTL_DATAOFF_Pos          (28)                                              /*!< VAD_T::SINCCTL: DATAOFF Position       */
-#define VAD_SINCCTL_DATAOFF_Msk          (0x1ul << VAD_SINCCTL_DATAOFF_Pos)                /*!< VAD_T::SINCCTL: DATAOFF Mask           */
-
-#define VAD_SINCCTL_SW_Pos               (29)                                              /*!< VAD_T::SINCCTL: SW Position            */
-#define VAD_SINCCTL_SW_Msk               (0x1ul << VAD_SINCCTL_SW_Pos)                     /*!< VAD_T::SINCCTL: SW Mask                */
 
 #define VAD_SINCCTL_ACTCL_Pos            (30)                                              /*!< VAD_T::SINCCTL: ACTCL Position         */
 #define VAD_SINCCTL_ACTCL_Msk            (0x1ul << VAD_SINCCTL_ACTCL_Pos)                  /*!< VAD_T::SINCCTL: ACTCL Mask             */

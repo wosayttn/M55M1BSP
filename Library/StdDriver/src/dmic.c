@@ -98,7 +98,7 @@ void DMIC_ClearFIFO(DMIC_T *dmic)
 uint32_t DMIC_GetSampleRate(DMIC_T *dmic)
 {
     uint16_t const au16OSRTable[] = {64, 128, 256, 100, 64, 64, 64, 50};
-    uint32_t u32SourceClock, u32OSR;
+    uint32_t u32SourceClock, u32OSR, u32MDiv;
 
     // Get DMIC clock source.
     switch (CLK->DMICSEL & CLK_DMICSEL_DMIC0SEL_Msk)
@@ -146,7 +146,8 @@ uint32_t DMIC_GetSampleRate(DMIC_T *dmic)
             break;
     }
 
-    return ((u32SourceClock / (CLK->DMICDIV + 1)) / (((dmic->DIV & DMIC_DIV_DMCLKDIV_Msk) >> DMIC_DIV_DMCLKDIV_Pos) + 1)) / u32OSR;
+    u32MDiv = (((dmic->DIV & DMIC_DIV_DMCLKDIV_Msk) >> DMIC_DIV_DMCLKDIV_Pos) + 1);
+    return ((u32SourceClock / (CLK->DMICDIV + 1)) / u32MDiv) / u32OSR;
 }
 
 /**
