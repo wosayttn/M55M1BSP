@@ -359,6 +359,9 @@ void SYS_Init(void)
     /* Enable QSPI0 peripheral clock */
     CLK_EnableModuleClock(QSPI0_MODULE);
 
+    /* Enable GPIO Module clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
+
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 

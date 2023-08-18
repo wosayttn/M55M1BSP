@@ -92,6 +92,10 @@ void SYS_Init(void)
     /* Enable Key store module clock */
     CLK_EnableModuleClock(KS0_MODULE);
 
+    /* Enable GPIO Module clock */
+    CLK_EnableModuleClock(GPIOC_MODULE);
+    CLK_EnableModuleClock(GPIOG_MODULE);
+    
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 

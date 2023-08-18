@@ -73,19 +73,12 @@ void SYS_Init(void)
     /* Enable SPIM module clock */
     CLK_EnableModuleClock(SPIM0_MODULE);
 
+    /* Enable GPIO Module clock */
+    CLK_EnableModuleClock(GPIOC_MODULE);
+    CLK_EnableModuleClock(GPIOG_MODULE);
+    
     /* Enable UART0 module clock */
     SetDebugUartCLK();
-
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    CLK_EnableModuleClock(GPIOB_MODULE);
-    CLK_EnableModuleClock(GPIOC_MODULE);
-    CLK_EnableModuleClock(GPIOD_MODULE);
-    CLK_EnableModuleClock(GPIOE_MODULE);
-    CLK_EnableModuleClock(GPIOF_MODULE);
-    CLK_EnableModuleClock(GPIOG_MODULE);
-    CLK_EnableModuleClock(GPIOH_MODULE);
-    CLK_EnableModuleClock(GPIOI_MODULE);
-    CLK_EnableModuleClock(GPIOJ_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */

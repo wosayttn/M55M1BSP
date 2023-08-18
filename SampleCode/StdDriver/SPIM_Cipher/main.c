@@ -89,6 +89,10 @@ void SYS_Init(void)
     /* Enable TRNG module clock */
     CLK_EnableModuleClock(TRNG0_MODULE);
 
+    /* Enable GPIO Module clock */
+    CLK_EnableModuleClock(GPIOC_MODULE);
+    CLK_EnableModuleClock(GPIOG_MODULE);
+
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 

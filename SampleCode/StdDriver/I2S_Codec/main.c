@@ -297,6 +297,10 @@ void SYS_Init(void)
     /* Enable I2C2 module clock */
     CLK_EnableModuleClock(I2C2_MODULE);
 
+    /* Enable GPIO module clock */
+    CLK_EnableModuleClock(GPIOD_MODULE);
+    CLK_EnableModuleClock(GPIOI_MODULE);
+
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 
