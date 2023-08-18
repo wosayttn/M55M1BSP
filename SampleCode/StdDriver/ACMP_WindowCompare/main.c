@@ -47,24 +47,9 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
-    /* Switch SCLK clock source to HIRC before PLL setting */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
-
-    /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to APLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
     /* Set PCLK1 divide 4 */
     CLK_SET_PCLK1DIV(4);
 
@@ -84,9 +69,6 @@ void SYS_Init(void)
 
     /* Set PB.2 and PB.4 to input mode */
     PB->MODE &= ~(GPIO_MODE_MODE2_Msk | GPIO_MODE_MODE4_Msk);
-
-
-
 
     /* Set PB2 multi-function pin for ACMP0 positive input pin */
     SET_ACMP0_P1_PB2();
@@ -111,8 +93,6 @@ int32_t main(void)
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
-    /* Lock protected registers */
-    SYS_LockReg();
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     initialise_monitor_handles();
@@ -121,13 +101,15 @@ int32_t main(void)
     /* Init Debug UART for printf */
     InitDebugUart();
 
+    /* Lock protected registers */
+    SYS_LockReg();
+
     printf("\nThis sample code demonstrates ACMP window compare function\n");
     printf("Connect the specific analog voltage source to the positive inputs\n");
     printf("of both comparators, PB2 and PB4. This sample code will monitor if the\n");
     printf("input is between the range of VDDA * 40 / 63 and bandgap.\n");
     printf("Press any key to continue ...\n");
     getchar();
-
 
     /* Select VDDA as CRV source */
     ACMP_SELECT_CRV1_SRC(ACMP01, ACMP_VREF_CRV1SSEL_VDDA);

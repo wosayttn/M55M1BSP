@@ -118,24 +118,9 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
-    /* Switch SCLK clock source to HIRC before PLL setting */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
-
-    /* Enable APLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to APLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
     /* Set PCLK1 divide 4 */
     CLK_SET_PCLK1DIV(4);
 
@@ -161,7 +146,6 @@ void SYS_Init(void)
     SET_ACMP1_P1_PB4();
     SET_ACMP1_O_PC0();
 
-
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
@@ -184,8 +168,6 @@ int32_t main(void)
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
-    /* Lock protected registers */
-    SYS_LockReg();
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     initialise_monitor_handles();
@@ -193,6 +175,9 @@ int32_t main(void)
 
     /* Init Debug UART for printf */
     InitDebugUart();
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     printf("\nThis sample code demonstrates ACMP1 function. Using ACMP1_P1 (PB4) as ACMP1\n");
     printf("positive input and using internal CRV as the negative input.\n");
