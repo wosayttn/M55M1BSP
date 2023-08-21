@@ -20,9 +20,6 @@ static volatile uint32_t g_u32RxDataCount = 0;
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -55,6 +52,7 @@ void SYS_Init(void)
     /* Enable QSPI0 peripheral clock */
     CLK_EnableModuleClock(QSPI0_MODULE);
 
+    /* Enable GPIO Module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
 
     /* Enable UART0 module clock */
@@ -72,9 +70,6 @@ void SYS_Init(void)
 
     /* Enable QSPI0 clock pin (PA2) schmitt trigger */
     PA->SMTEN |= GPIO_SMTEN_SMTEN2_Msk;
-
-    /* Lock protected registers */
-    SYS_LockReg();
 }
 
 void QSPI_Init(void)
@@ -92,6 +87,9 @@ int main(void)
 {
     uint32_t u32TxDataCount = 0, u32RxDataCount = 0;
 
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
 
@@ -100,6 +98,9 @@ int main(void)
 
     /* Init QSPI */
     QSPI_Init();
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     printf("\n\n");
     printf("+----------------------------------------------------------------------+\n");

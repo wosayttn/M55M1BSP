@@ -10,14 +10,8 @@
 #include "NuMicro.h"
 #include "NEC_IR_driver.h"
 
-void SYS_Init(void);
-void UART0_Init(void);
-
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -66,7 +60,6 @@ void SYS_Init(void)
 
     /* Set PSIO multi-function pin CH0(PB.15) */
     SET_PSIO0_CH0_PB15();
-
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -83,11 +76,11 @@ int32_t main(void)
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
-    /* Lock protected registers */
-    SYS_LockReg();
-
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+------------------------------------------------------+ \n");

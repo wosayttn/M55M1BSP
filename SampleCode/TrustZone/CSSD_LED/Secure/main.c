@@ -33,7 +33,6 @@ __NONSECURE_ENTRY
 uint32_t GetSystemCoreClock(void);
 int32_t LED_On(void);
 int32_t LED_Off(void);
-void SysTick_Handler(void);
 
 /*---------------------------------------------------------------------------
  * Secure functions exported to Non-secure application
@@ -128,57 +127,69 @@ int32_t LED_Off(void)
 /*---------------------------------------------------------------------------
  * SysTick IRQ Handler
  *---------------------------------------------------------------------------*/
-void SysTick_Handler(void)
+NVT_ITCM void SysTick_Handler(void)
 {
     static uint32_t u32Ticks;
 
     switch (u32Ticks++)
     {
-    case   0:
-        LED_On();
-        break;
-    case  50:
-        LED_Off();
-        break;
-    case 100:
-        LED_On();
-        break;
-    case 150:
-        LED_Off();
-        break;
-    case 200:
-        LED_On();
-        break;
-    case 250:
-        LED_Off();
-        break;
-    case 300:
-        LED_On();
-        break;
-    case 350:
-        LED_Off();
-        break;
-    case 400:
-        LED_On();
-        break;
-    case 450:
-        LED_Off();
-        break;
-    case 500:
-        LED_On();
-        break;
-    case 550:
-        LED_Off();
-        break;
-    case 600:
-        u32Ticks = 0;
-        break;
+        case   0:
+            LED_On();
+            break;
 
-    default:
-        if (u32Ticks > 600)
-        {
+        case  50:
+            LED_Off();
+            break;
+
+        case 100:
+            LED_On();
+            break;
+
+        case 150:
+            LED_Off();
+            break;
+
+        case 200:
+            LED_On();
+            break;
+
+        case 250:
+            LED_Off();
+            break;
+
+        case 300:
+            LED_On();
+            break;
+
+        case 350:
+            LED_Off();
+            break;
+
+        case 400:
+            LED_On();
+            break;
+
+        case 450:
+            LED_Off();
+            break;
+
+        case 500:
+            LED_On();
+            break;
+
+        case 550:
+            LED_Off();
+            break;
+
+        case 600:
             u32Ticks = 0;
-        }
+            break;
+
+        default:
+            if (u32Ticks > 600)
+            {
+                u32Ticks = 0;
+            }
     }
 }
 
@@ -225,8 +236,7 @@ int main(void)
     do
     {
         __WFI();
-    }
-    while (1);
+    } while (1);
 }
 
 /*---------------------------------------------------------------------------
@@ -281,27 +291,8 @@ void SYS_Init(void)
     /*-----------------------------------------------------------------------
      * Init System Clock
      *-----------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */

@@ -8,7 +8,20 @@
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
+#include "sensor.h"
 #include "i2c_gpio.h"
+
+int32_t InitNT99141_VGA_YUV422(uint32_t u32Param);
+
+S_SENSOR_INFO g_sSensorNT99141 =
+{
+    .m_strName        = "NT99141",
+    .m_u32Polarity    = (CCAP_PAR_VSP_LOW | CCAP_PAR_HSP_LOW | CCAP_PAR_PCLKP_HIGH),
+    .m_u32InputFormat = (CCAP_PAR_INFMT_YUV422 | CCAP_PAR_INDATORD_YUYV),
+    .m_u16Width       = 640,
+    .m_u16Height      = 480,
+    .pfnInitSensor    = InitNT99141_VGA_YUV422
+};
 
 struct NT_RegValue
 {
@@ -74,11 +87,12 @@ static struct NT_RegValue g_sNT99141_VGA_RegValue[] =
 static void Delay(uint32_t nCount)
 {
     volatile uint32_t i;
+
     for (; nCount != 0; nCount--)
         for (i = 0; i < 100; i++);
 }
 
-int InitNT99141_VGA_YUV422(void)
+int32_t InitNT99141_VGA_YUV422(uint32_t u32Param)
 {
     uint32_t i;
     uint8_t u8DeviceID = 0x54;
@@ -94,17 +108,21 @@ int InitNT99141_VGA_YUV422(void)
     /* switch I2C pin function, to do... */
     SWI2C_Open(eDRVGPIO_GPIOH, eDRVGPIO_PIN2, eDRVGPIO_GPIOH, eDRVGPIO_PIN3, Delay);
     printf("NT_RegNum=%d\n", sizeof(g_sNT99141_VGA_RegValue) / sizeof(struct NT_RegValue));
+
     for (i = 0; i < sizeof(g_sNT99141_VGA_RegValue) / sizeof(struct NT_RegValue); i++)
     {
         SWI2C_Write_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID, g_sNT99141_VGA_RegValue[i].u16RegAddr, g_sNT99141_VGA_RegValue[i].u8Value);
     }
+
     u8ID[0] = SWI2C_Read_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID, 0x3000); /* Chip_Version_H 0x14 */
     u8ID[1] = SWI2C_Read_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID, 0x3001); /* Chip_Version_L 0x10 */
     printf("Sensor Chip_Version_H = 0x%02x(0x14) Chip_Version_L = 0x%02x(0x10)\n", u8ID[0], u8ID[1]);
+
     if (u8ID[0] != 0x14 || u8ID[1] != 0x10)
     {
         printf("NT99141 init failed!!\n");
-        return 0;
+        return FALSE;
     }
-    return 1;
+
+    return TRUE;
 }

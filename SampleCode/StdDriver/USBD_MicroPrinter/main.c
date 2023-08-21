@@ -28,22 +28,11 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
-    /* Switch SCLK clock source to APLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
-
+    /* Update System Core Clock */
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
     /* Enable GPA ~ GPJ peripheral clock */
@@ -64,8 +53,8 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL1_SELECT);
+    /* Enable APLL1 192MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_192MHZ, CLK_APLL1_SELECT);
 
     /* Select USB clock source as PLL/2 and USB clock divider as 2 */
     CLK_SetModuleClock(USBD_MODULE, CLK_USBSEL_USBSEL_APLL1_DIV2, CLK_USBDIV_USBDIV(2));
@@ -142,6 +131,9 @@ int32_t main(void)
 
     /* Init UART to 115200-8n1 for print message */
     InitDebugUart();
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     printf("\n");
     printf("+-------------------------------------------------------+\n");

@@ -39,7 +39,6 @@ typedef struct
 static volatile CANFD_FD_MSG_T g_sRxMsgFrame;
 static volatile uint8_t s_u8CANPackageFlag = 0, s_u8CANAckFlag = 0;
 
-void CANFD00_IRQHandler(void);
 int32_t SYS_Init(void);
 void CAN_Package_ACK(CANFD_T *psCanfd);
 void CAN_Init(void);
@@ -51,7 +50,7 @@ uint32_t CAN_Parsing_MSG(uint8_t *u8pMsg);
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle CAN FD0 Line0 interrupt event                                                             */
 /*---------------------------------------------------------------------------------------------------------*/
-void CANFD00_IRQHandler(void)
+NVT_ITCM void CANFD00_IRQHandler(void)
 {
     uint32_t u32IIDRstatus;
 
@@ -99,6 +98,7 @@ int32_t SYS_Init(void)
 
     /* Wait for PLL clock ready */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (!(CLK->STATUS & CLK_STATUS_APLL0STB_Msk))
     {
         if (--u32TimeOutCnt == 0)
@@ -282,6 +282,7 @@ int main(void)
             else
             {
                 PD2 = 0;
+
                 if ((psISPCanMsg->Address % FMC_FLASH_PAGE_SIZE) == 0)
                 {
                     FMC_Erase(psISPCanMsg->Address);

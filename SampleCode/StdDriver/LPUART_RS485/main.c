@@ -51,27 +51,12 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to APLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
-    /* Set PCLK1 divide 2 */
-    CLK_SET_PCLK1DIV(2);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-
 
     /* Select LPUART0 clock source is HIRC and Low Power UART module clock divider as 1*/
     CLK_SetModuleClock(LPUART0_MODULE, CLK_LPUARTSEL_LPUART0SEL_HIRC, CLK_LPUARTDIV_LPUART0DIV(1));

@@ -15,13 +15,12 @@ if exist %filepath%\* (
     echo dir
     xcopy %filepath% %outpath%\%filename% /E /Y /F /I
     del %outpath%\%filename%\*.dat
-    for %%f in (%outpath%\%filename%\*) do (
+    for %%f in (%outpath%\%filename%\SPIM.bin) do (
         "bin2ascii.exe" %outpath%\SPIM.bin 
         move main16.dat %outpath%\SPIM.bin
     )
 ) else (
     echo file
-    copy %filepath% %outpath%
     "bin2ascii.exe" %outpath%\SPIM.bin 
     move main16.dat %outpath%\SPIM.bin 
     C:\Keil_v5\ARM\ARMCLANG\bin\fromelf.exe --text -c "%dirname%%basename%.axf" --output "%dirname%%basename%.txt"

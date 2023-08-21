@@ -37,9 +37,6 @@ extern SPIM_PHASE_T gsWbEChRdCMD;
 //------------------------------------------------------------------------------
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -69,6 +66,10 @@ void SYS_Init(void)
     /* Enable SPIM module clock */
     CLK_EnableModuleClock(SPIM0_MODULE);
 
+    /* Enable GPIO Module clock */
+    CLK_EnableModuleClock(GPIOC_MODULE);
+    CLK_EnableModuleClock(GPIOG_MODULE);
+    
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 
@@ -202,8 +203,6 @@ int main()
     printf("|      SPIM DMA mode read/write sample      |\n");
     printf("+-------------------------------------------+\n");
 
-    SYS_UnlockReg();                            /* Unlock register lock protect */
-
     SPIM_SET_CLOCK_DIVIDER(SPIM0, 1);           /* Set SPIM clock as HCLK divided by 4 */
 
     SPIM_SET_RXCLKDLY_RDDLYSEL(SPIM0, 0);       /* Insert 0 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
@@ -285,7 +284,8 @@ int main()
 
 lexit:
 
-    SYS_LockReg();                     /* Lock protected registers */
+    /* Lock protected registers */
+    SYS_LockReg();
 
     while (1);
 }

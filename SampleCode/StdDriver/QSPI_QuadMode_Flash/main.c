@@ -432,9 +432,6 @@ void SpiFlash_QuadFastRead(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -467,6 +464,9 @@ void SYS_Init(void)
     /* Enable QSPI0 peripheral clock */
     CLK_EnableModuleClock(QSPI0_MODULE);
 
+    /* Enable GPIO Module clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 
@@ -488,9 +488,6 @@ void SYS_Init(void)
 
     /* Enable QSPI0 I/O high slew rate */
     GPIO_SetSlewCtl(PA, 0x3F, GPIO_SLEWCTL_HIGH);
-
-    /* Lock protected registers */
-    SYS_LockReg();
 }
 
 /* Main */
@@ -500,13 +497,19 @@ int main(void)
     uint32_t u32Error = 0;
     uint16_t u16ID;
 
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
 
-    D2D3_SwitchToNormalMode();
-
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
+
+    /* Lock protected registers */
+    SYS_LockReg();
+
+    D2D3_SwitchToNormalMode();
 
     /* Configure SPI_FLASH_PORT as a master, MSB first, 8-bit transaction, QSPI Mode-0 timing, clock is 20MHz */
     QSPI_Open(SPI_FLASH_PORT, QSPI_MASTER, QSPI_MODE_0, 8, 20000000);

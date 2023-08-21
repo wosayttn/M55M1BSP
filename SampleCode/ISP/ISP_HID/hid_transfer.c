@@ -17,12 +17,12 @@ __attribute__((aligned(4))) uint8_t g_u8UsbRcvBuff[64];
 
 uint8_t volatile g_u8UsbDataReady = 0;
 
-void USBD_IRQHandler(void)
+NVT_ITCM void USBD_IRQHandler(void)
 {
     uint32_t u32IntSts = USBD_GET_INT_FLAG();
     uint32_t u32State = USBD_GET_BUS_STATE();
 
-//------------------------------------------------------------------
+    //------------------------------------------------------------------
     if (u32IntSts & USBD_INTSTS_FLDET)
     {
         // Floating detect
@@ -40,7 +40,7 @@ void USBD_IRQHandler(void)
         }
     }
 
-//------------------------------------------------------------------
+    //------------------------------------------------------------------
     if (u32IntSts & USBD_INTSTS_BUS)
     {
         /* Clear event flag */
@@ -66,7 +66,7 @@ void USBD_IRQHandler(void)
         }
     }
 
-//------------------------------------------------------------------
+    //------------------------------------------------------------------
     if (u32IntSts & USBD_INTSTS_WAKEUP)
     {
         /* Clear event flag */
@@ -109,7 +109,7 @@ void USBD_IRQHandler(void)
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP2);
             // Interrupt IN
-//          EP2_Handler();
+            //          EP2_Handler();
         }
 
         if (u32IntSts & USBD_INTSTS_EP3)
@@ -147,7 +147,7 @@ void USBD_IRQHandler(void)
 }
 
 extern __attribute__((aligned(4))) uint8_t g_au8ResponseBuff[64];
-void EP2_Handler(void)  /* Interrupt IN handler */
+NVT_ITCM void EP2_Handler(void)  /* Interrupt IN handler */
 {
     uint8_t *ptr;
     ptr = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
@@ -156,7 +156,7 @@ void EP2_Handler(void)  /* Interrupt IN handler */
     USBD_SET_PAYLOAD_LEN(EP2, EP2_MAX_PKT_SIZE);
 }
 
-void EP3_Handler(void)  /* Interrupt OUT handler */
+NVT_ITCM void EP3_Handler(void)  /* Interrupt OUT handler */
 {
     uint8_t *ptr;
     /* Interrupt OUT */
@@ -209,27 +209,27 @@ void HID_ClassRequest(void)
         // Device to host
         switch (buf[1])
         {
-        case GET_REPORT:
+            case GET_REPORT:
 
-//             {
-//                 break;
-//             }
-        case GET_IDLE:
+            //             {
+            //                 break;
+            //             }
+            case GET_IDLE:
 
-//             {
-//                 break;
-//             }
-        case GET_PROTOCOL:
+            //             {
+            //                 break;
+            //             }
+            case GET_PROTOCOL:
 
-//            {
-//                break;
-//            }
-        default:
-        {
-            /* Setup error, stall the device */
-            USBD_SetStall(0);
-            break;
-        }
+            //            {
+            //                break;
+            //            }
+            default:
+            {
+                /* Setup error, stall the device */
+                USBD_SetStall(0);
+                break;
+            }
         }
     }
     else
@@ -237,38 +237,38 @@ void HID_ClassRequest(void)
         // Host to device
         switch (buf[1])
         {
-        case SET_REPORT:
-        {
-            if (buf[3] == 3)
+            case SET_REPORT:
             {
-                /* Request Type = Feature */
-                USBD_SET_DATA1(EP1);
-                USBD_SET_PAYLOAD_LEN(EP1, 0);
+                if (buf[3] == 3)
+                {
+                    /* Request Type = Feature */
+                    USBD_SET_DATA1(EP1);
+                    USBD_SET_PAYLOAD_LEN(EP1, 0);
+                }
+
+                break;
             }
 
-            break;
-        }
+            case SET_IDLE:
+            {
+                /* Status stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+                break;
+            }
 
-        case SET_IDLE:
-        {
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-            break;
-        }
+            case SET_PROTOCOL:
 
-        case SET_PROTOCOL:
-
-//             {
-//                 break;
-//             }
-        default:
-        {
-            // Stall
-            /* Setup error, stall the device */
-            USBD_SetStall(0);
-            break;
-        }
+            //             {
+            //                 break;
+            //             }
+            default:
+            {
+                // Stall
+                /* Setup error, stall the device */
+                USBD_SetStall(0);
+                break;
+            }
         }
     }
 }

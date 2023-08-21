@@ -44,9 +44,6 @@ void SPIM_SetDMMAddrNonCacheable(void)
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -76,19 +73,12 @@ void SYS_Init(void)
     /* Enable SPIM module clock */
     CLK_EnableModuleClock(SPIM0_MODULE);
 
+    /* Enable GPIO Module clock */
+    CLK_EnableModuleClock(GPIOC_MODULE);
+    CLK_EnableModuleClock(GPIOG_MODULE);
+    
     /* Enable UART0 module clock */
     SetDebugUartCLK();
-
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    CLK_EnableModuleClock(GPIOB_MODULE);
-    CLK_EnableModuleClock(GPIOC_MODULE);
-    CLK_EnableModuleClock(GPIOD_MODULE);
-    CLK_EnableModuleClock(GPIOE_MODULE);
-    CLK_EnableModuleClock(GPIOF_MODULE);
-    CLK_EnableModuleClock(GPIOG_MODULE);
-    CLK_EnableModuleClock(GPIOH_MODULE);
-    CLK_EnableModuleClock(GPIOI_MODULE);
-    CLK_EnableModuleClock(GPIOJ_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -147,8 +137,6 @@ int main()
     printf("|       SPIM DMM mode running program on HyperRAM       |\n");
     printf("+-------------------------------------------------------+\n");
 
-    SYS_UnlockReg();                        /* Unlock protected registers                      */
-
     HyperRAM_Init(SPIM0);
 
     SPIM_HYPER_EnterDirectMapMode(SPIM0);
@@ -162,6 +150,9 @@ int main()
 
         spim_routine();
     }
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     while (1);
 }

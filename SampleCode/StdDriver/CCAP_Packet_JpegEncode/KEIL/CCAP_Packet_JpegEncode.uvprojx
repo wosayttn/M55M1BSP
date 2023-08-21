@@ -10,7 +10,7 @@
       <TargetName>CCAP_Packet_JpegEncode</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
+      <pCCUsed>6190000::V6.19::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -138,7 +138,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2V8M.DLL</Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3></Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -194,7 +194,7 @@
             <EndSel>1</EndSel>
             <uLtcg>0</uLtcg>
             <nSecure>0</nSecure>
-            <RoSelD>3</RoSelD>
+            <RoSelD>4</RoSelD>
             <RwSelD>4</RwSelD>
             <CodeSel>0</CodeSel>
             <OptFeed>0</OptFeed>
@@ -314,7 +314,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>3</Optim>
+            <Optim>2</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -371,7 +371,7 @@
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\ARM\M55M1.scatter</ScatterFile>
+            <ScatterFile>.\CCAP_Packet_JpegEncode.scatter</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -460,6 +460,11 @@
           <GroupName>libjpeg</GroupName>
           <Files>
             <File>
+              <FileName>jdapimin.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\libjpeg\jdapimin.c</FilePath>
+            </File>
+            <File>
               <FileName>jaricom.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\ThirdParty\libjpeg\jaricom.c</FilePath>
@@ -543,11 +548,6 @@
               <FileName>jctrans.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\ThirdParty\libjpeg\jctrans.c</FilePath>
-            </File>
-            <File>
-              <FileName>jdapimin.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\libjpeg\jdapimin.c</FilePath>
             </File>
             <File>
               <FileName>jdapistd.c</FileName>

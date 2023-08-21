@@ -70,11 +70,11 @@ int32_t main(void)
     /* Init system, peripheral clock and multi-function I/O */
     SYS_Init();
 
-    /* Lock protected registers */
-    SYS_LockReg();
-
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     printf("\n");
     printf("+----------------------------------------------+\n");
@@ -193,9 +193,6 @@ int32_t main(void)
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -255,10 +252,6 @@ void SYS_Init(void)
     /* PA.4 is SPI0_I2SMCLK */
     SYS->GPA_MFP1 &= ~SYS_GPA_MFP1_PA4MFP_Msk;
     SYS->GPA_MFP1 |= SYS_GPA_MFP1_PA4MFP_SPI0_I2SMCLK;
-
-    /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and CyclesPerUs automatically. */
-    SystemCoreClockUpdate();
 }
 
 NVT_ITCM void PDMA0_IRQHandler(void)

@@ -47,9 +47,6 @@ void SPIM_SetDMMAddrNonCacheable(void)
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -82,16 +79,9 @@ void SYS_Init(void)
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    CLK_EnableModuleClock(GPIOB_MODULE);
+    /* Enable GPIO Module clock */
     CLK_EnableModuleClock(GPIOC_MODULE);
-    CLK_EnableModuleClock(GPIOD_MODULE);
-    CLK_EnableModuleClock(GPIOE_MODULE);
-    CLK_EnableModuleClock(GPIOF_MODULE);
     CLK_EnableModuleClock(GPIOG_MODULE);
-    CLK_EnableModuleClock(GPIOH_MODULE);
-    CLK_EnableModuleClock(GPIOI_MODULE);
-    CLK_EnableModuleClock(GPIOJ_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -148,8 +138,6 @@ int main()
     printf("|      SPIM DMM mode running program on flash      |\n");
     printf("+--------------------------------------------------+\n");
 
-    SYS_UnlockReg();                        /* Unlock protected registers                      */
-
     SPIM_SET_CLOCK_DIVIDER(SPIM0, 2);       /* Set SPIM clock as HCLK divided by 4 */
 
     SPIM_SET_RXCLKDLY_RDDLYSEL(SPIM0, 0);   /* Insert 0 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
@@ -185,6 +173,9 @@ int main()
     }
 
 lexit:
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     while (1);
 }

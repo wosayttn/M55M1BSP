@@ -117,9 +117,6 @@ void NAU8822_Setup()
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -187,9 +184,6 @@ void SYS_Init(void)
 
     /* Set PB multi-function pins for I2C1 */
     SYS->GPB_MFP0 = SYS_GPB_MFP0_PB1MFP_I2C1_SCL | SYS_GPB_MFP0_PB0MFP_I2C1_SDA ;
-
-    /* Lock protected registers */
-    SYS_LockReg();
 }
 
 // Configure PDMA to Scatter Gather mode */
@@ -260,11 +254,17 @@ void I2C1_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
 
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     printf("+------------------------------------------------------------------------+\n");
     printf("|                   SPI Driver Sample Code with NAU8822                  |\n");

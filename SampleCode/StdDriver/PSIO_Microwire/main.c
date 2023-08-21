@@ -15,9 +15,6 @@ volatile uint32_t *pu32ChipSelectPin, *pu32InputPin;
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -91,12 +88,12 @@ int main(void)
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
 
+    /* Init Debug UART to 115200-8N1 for print message */
+    InitDebugUart();
+
     /* Lock protected registers */
     /* If user want to write protected register, please issue SYS_UnlockReg() to unlock protected register. */
     SYS_LockReg();
-
-    /* Init Debug UART to 115200-8N1 for print message */
-    InitDebugUart();
 
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+------------------------------------------------------+ \n");

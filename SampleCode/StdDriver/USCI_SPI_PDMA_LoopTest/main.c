@@ -33,6 +33,9 @@ void SpiLoopTest_WithPDMA(void);
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
@@ -41,6 +44,9 @@ int main(void)
 
     /* Init USCI_SPI */
     USCI_SPI_Init();
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     printf("\n\n");
     printf("+------------------------------------------------------------------+\n");
@@ -65,9 +71,6 @@ int main(void)
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -99,6 +102,9 @@ void SYS_Init(void)
 
     CLK_EnableModuleClock(PDMA0_MODULE);
 
+    /* Enable GPIO Module Clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
+
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 
@@ -115,9 +121,6 @@ void SYS_Init(void)
 
     /* USCI_SPI clock pin enable schmitt trigger */
     PA->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
-
-    /* Lock protected registers */
-    SYS_LockReg();
 }
 
 void USCI_SPI_Init(void)

@@ -104,9 +104,6 @@ NVT_ITCM void PSIO_IRQHandler(void)
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -176,11 +173,11 @@ int32_t main(void)
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
-    /* Lock protected registers */
-    SYS_LockReg();
-
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     printf("******************************************************\n");
     printf("|               PS/2 Slave Sample Code               |\n");

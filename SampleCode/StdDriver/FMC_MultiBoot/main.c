@@ -24,27 +24,8 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -110,29 +91,29 @@ int main(void)
 
     switch (u8Char)
     {
-    case '0':
-        FMC_SetVectorPageAddr(0x160000);
-        break;
+        case '0':
+            FMC_SetVectorPageAddr(0x160000);
+            break;
 
-    case '1':
-        FMC_SetVectorPageAddr(0x1C0000);
-        break;
+        case '1':
+            FMC_SetVectorPageAddr(0x1C0000);
+            break;
 
-    case '2':
-        FMC_SetVectorPageAddr(0x220000);
-        break;
+        case '2':
+            FMC_SetVectorPageAddr(0x220000);
+            break;
 
-    case '3':
-        FMC_SetVectorPageAddr(0x280000);
-        break;
+        case '3':
+            FMC_SetVectorPageAddr(0x280000);
+            break;
 
-    case '4':
-        FMC_SetVectorPageAddr(0xF100000);
-        break;
+        case '4':
+            FMC_SetVectorPageAddr(0xF100000);
+            break;
 
-    default:
-        FMC_SetVectorPageAddr(0x100000);
-        break;
+        default:
+            FMC_SetVectorPageAddr(0x100000);
+            break;
     }
 
     if (g_FMC_i32ErrCode != 0)
@@ -154,6 +135,7 @@ int main(void)
 #endif
 
 lexit:
+
     while (1);
 }
 

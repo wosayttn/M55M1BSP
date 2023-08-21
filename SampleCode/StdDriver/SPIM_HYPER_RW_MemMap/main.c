@@ -34,9 +34,6 @@ uint32_t gau32AESKey[8] =
 //------------------------------------------------------------------------------
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -69,19 +66,12 @@ void SYS_Init(void)
     /* Enable SPIM module clock */
     CLK_EnableModuleClock(OTFC0_MODULE);
 
+    /* Enable GPIO Module clock */
+    CLK_EnableModuleClock(GPIOC_MODULE);
+    CLK_EnableModuleClock(GPIOG_MODULE);
+    
     /* Enable UART0 module clock */
     SetDebugUartCLK();
-
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    CLK_EnableModuleClock(GPIOB_MODULE);
-    CLK_EnableModuleClock(GPIOC_MODULE);
-    CLK_EnableModuleClock(GPIOD_MODULE);
-    CLK_EnableModuleClock(GPIOE_MODULE);
-    CLK_EnableModuleClock(GPIOF_MODULE);
-    CLK_EnableModuleClock(GPIOG_MODULE);
-    CLK_EnableModuleClock(GPIOH_MODULE);
-    CLK_EnableModuleClock(GPIOI_MODULE);
-    CLK_EnableModuleClock(GPIOJ_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -349,9 +339,6 @@ int main()
     printf("|       HyperRAM read/write sample       |\n");
     printf("+----------------------------------------+\n");
 
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     HyperRAM_Init(SPIM0);
 
     /* Set Cipher Key and protection region */
@@ -370,6 +357,9 @@ int main()
 
     /* DMM mode read/write cipher enable */
     dmm_read_write(SPIM0, SPIM_HYPER_OP_ENABLE);
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     while (1);
 }

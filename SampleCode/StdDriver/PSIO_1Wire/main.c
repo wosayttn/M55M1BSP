@@ -10,14 +10,8 @@
 #include "NuMicro.h"
 #include "DS18B20_driver_thermometer.h"
 
-void SYS_Init(void);
-void UART0_Init(void);
-
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -78,9 +72,6 @@ int32_t main(void)
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
-    /* Lock protected registers */
-    SYS_LockReg();
-
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
@@ -96,6 +87,9 @@ int32_t main(void)
 
     /* Reset PSIO */
     SYS_ResetModule(SYS_PSIO0RST);
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     /* Initialize PSIO setting for DS18B20 */
     PSIO_DS18B20_Open(&sConfig);

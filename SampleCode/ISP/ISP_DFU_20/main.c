@@ -15,8 +15,6 @@
 #include "dfu_transfer.h"
 
 #define PLL_CLOCK       FREQ_180MHZ
-#define SYS_USBPHY_HSUSBACT_Pos     25
-#define SYS_USBPHY_HSUSBACT_Msk     (1 << SYS_USBPHY_HSUSBACT_Pos)
 
 int32_t g_FMC_i32ErrCode = 0;
 
@@ -50,6 +48,7 @@ int32_t SYS_Init(void)
 
     /* Wait for PLL clock ready */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (!(CLK->STATUS & CLK_STATUS_APLL0STB_Msk))
     {
         if (--u32TimeOutCnt == 0)

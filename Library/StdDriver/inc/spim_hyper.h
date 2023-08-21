@@ -153,18 +153,6 @@ extern "C"
 /*  Define Macros and functions                                               */
 /*----------------------------------------------------------------------------*/
 /**
- * @brief   Enable cipher balance.
- * \hideinitializer
- */
-#define SPIM_HYPER_ENABLE_BALEN(spim)     (spim->CTL0 |= SPIM_CTL0_BALEN_Msk)
-
-/**
- * @brief   Disable cipher balance.
- * \hideinitializer
- */
-#define SPIM_HYPER_DISABLE_BALEN(spim)    (spim->CTL0 &= ~(SPIM_CTL0_BALEN_Msk))
-
-/**
  * @brief       Enable Hyper Device Mode.
  * \hideinitializer
  */
@@ -565,7 +553,7 @@ __STATIC_INLINE uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim);
  */
 __STATIC_INLINE void SPIM_HYPER_DISABLE_CIPHER(SPIM_T *spim)
 {
-    spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_BALEN_Msk)) | (SPIM_CTL0_CIPHOFF_Msk);
+    spim->CTL0 |= (SPIM_CTL0_CIPHOFF_Msk);
 
     SPIM_HYPER_SET_DMM_DESELTIM(spim, 0x08);
 }
@@ -579,7 +567,7 @@ __STATIC_INLINE void SPIM_HYPER_DISABLE_CIPHER(SPIM_T *spim)
  */
 __STATIC_INLINE void SPIM_HYPER_ENABLE_CIPHER(SPIM_T *spim)
 {
-    spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_CIPHOFF_Msk)) | SPIM_CTL0_BALEN_Msk;
+    spim->CTL0 &= ~(SPIM_CTL0_CIPHOFF_Msk);
 
     SPIM_HYPER_SET_DMM_DESELTIM(spim, 0x12);
 }

@@ -94,27 +94,14 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Enable APLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to APLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
     /* Set PCLK1 divide 4 */
     CLK_SET_PCLK1DIV(4);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-
 
     /* Enable ACMP01 peripheral clock */
     CLK_EnableModuleClock(ACMP01_MODULE);
@@ -158,8 +145,6 @@ int32_t main(void)
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
-    /* Lock protected registers */
-    SYS_LockReg();
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     initialise_monitor_handles();
@@ -170,13 +155,14 @@ int32_t main(void)
     InitDebugUart();
 #endif
 
-    printf("\n\nCPU @ %dHz\n", SystemCoreClock);
+    /* Lock protected registers */
+    SYS_LockReg();
 
+    printf("\n\nCPU @ %dHz\n", SystemCoreClock);
 
     printf("\nThis sample code demonstrates ACMP1 function. Using ACMP1_P1 (PB4) as ACMP1\n");
     printf("positive input and using DAC output as the negative input.\n");
     printf("Please connect the ACMP1_P1(PB4) to 1.5v .\n");
-
 
     printf("The compare result reflects on ACMP1_O (PC0).\n");
     printf("Press any key to start ...\n");
@@ -215,7 +201,6 @@ int32_t main(void)
 
     /* Enable ACMP01 interrupt */
     NVIC_EnableIRQ(ACMP01_IRQn);
-
 
     while (1);
 

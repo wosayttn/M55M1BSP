@@ -23,27 +23,8 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -104,6 +85,7 @@ int main()
     {
         printf("XOM0 region erased. No program code in XOM0.\n");
         printf("Demo completed. Please re-program flash if you want to run again.\n");
+
         while (1);
     }
 
@@ -117,6 +99,7 @@ int main()
         if (FMC_GetXOMState(XOMR0) == 0)
         {
             u32Status = FMC_ConfigXOM(XOMR0, XOMR0_Base, 1);
+
             if (u32Status)
                 printf("XOMR0 Config fail...\n");
             else
@@ -128,6 +111,7 @@ int main()
 
         /* Reset chip to enable XOM region. */
         SYS_ResetChip();
+
         while (1) {};
     }
 
@@ -150,5 +134,6 @@ int main()
 
     printf("Done.\n");
     printf("Please press reset to check if XOM0 empty.\n");
+
     while (1);
 }

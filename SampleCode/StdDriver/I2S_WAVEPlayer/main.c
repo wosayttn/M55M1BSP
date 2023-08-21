@@ -505,9 +505,6 @@ void SD_Inits(void)
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -542,6 +539,10 @@ void SYS_Init(void)
 
     /* Enable PDMA0 module clock */
     CLK_EnableModuleClock(PDMA0_MODULE);
+
+    /* Enable GPIO module clock */
+    CLK_EnableModuleClock(GPIOD_MODULE);
+    CLK_EnableModuleClock(GPIOI_MODULE);
 
     /* Enable UART0 module clock */
     SetDebugUartCLK();

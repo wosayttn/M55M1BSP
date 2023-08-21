@@ -1,27 +1,11 @@
 /******************************************************************************
 * @file    main.c
 * @version V1.00
-* @brief   Template for M55M1 series MCU
+* @brief   IAP boot from LDROM sample code
 *
 * SPDX-License-Identifier: Apache-2.0
 * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
-/*
- * This is a template project for M55M1 series MCU.
- * Users can create their own application based on this project.
- *
- * This template uses internal RC as APLL0 clock source and UART0 to print messages.
- * Users may need to do extra system configuration according to their system design.
- *
- * I/D-Cache
- *   I/D-Cache are enabled by default for better performance,
- *   users can define NVT_ICACHE_OFF/NVT_DCACHE_OFF in project setting to disable cache.
- * Debug UART
- *   Default is DEBUG_PORT=UART0 in project setting
- *   system_M55M1.c has three weak functions as below to configure debug UART port.
- *     SetDebugUartMFP, SetDebugUartCLK and InitDebugUart
- *   Users can re-implement these functions according to system design.
- */
 #include <stdio.h>
 #include <stdlib.h>
 #include "NuMicro.h"
@@ -36,27 +20,8 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -102,6 +67,7 @@ int main()
 
     printf("\n\nChange VECMAP and branch to APROM...\n");
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTY_Msk))        /* wait until UART0 TX FIFO is empty */
         if (--u32TimeOutCnt == 0) break;
 
@@ -109,6 +75,7 @@ int main()
      *     Before change VECMAP, user MUST disable all interrupts.
      */
     FMC_SetVectorPageAddr(FMC_APROM_BASE);        /* Vector remap APROM page 0 to address 0. */
+
     if (g_FMC_i32ErrCode != 0)
     {
         printf("FMC_SetVectorPageAddr(FMC_APROM_BASE) failed!\n");

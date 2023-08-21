@@ -93,7 +93,6 @@ static uint8_t s_au8ModePage_1C[8] =
     0x1C, 0x06, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00
 };
 
-void USBD_IRQHandler(void);
 
 NVT_ITCM void USBD_IRQHandler(void)
 {
