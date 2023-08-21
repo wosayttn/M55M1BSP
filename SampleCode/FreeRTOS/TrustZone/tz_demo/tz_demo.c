@@ -134,7 +134,8 @@ static void prvSecureCallingTask( void * pvParameters )
         ulLastNonSecureCounter = ulNonSecureCounter[ i32TaskNo ];
 
         /* Wait for a second. */
-        vTaskDelay( pdMS_TO_TICKS( 1000 ) );
+//        vTaskDelay( pdMS_TO_TICKS( 1000 ) );
+        vTaskDelay( pdMS_TO_TICKS( 10 ) );
     }
 }
 /*-----------------------------------------------------------*/

@@ -1,89 +1,38 @@
-/*
- * FreeRTOS V202112.00
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+/**************************************************************************//**
+ * @file    main_ns.c
+ * @version V1.00
+ * @brief   Non-secure sample code for Collaborative Secure Software Development
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * https://www.FreeRTOS.org
- * https://aws.amazon.com/freertos
- *
- */
-
-#include <stdio.h>
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
+#include <arm_cmse.h>
+#include "NuMicro.h"        /* Device header */
 
 /* FreeRTOS includes. */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "nsc_functions.h"
 
 /* Demo includes. */
 #include "tz_demo.h"
-
-/* Non-Secure callable functions. */
-#include "nsc_functions.h"
-
-#include "NuMicro.h"
-
-#if 0
-void SystemInit() {
-    /* secure world is doing the neccessary setup, since it has
-     * the privilege to do so, and non-secure doesn't
-     */
-}
-
-void DEBUG_PORT_Init(void)
-{
-    /* Init UART to 115200-8n1 for print message */
-    UART_Open(UART1, 115200);
-}
-
-#endif
 
 /**
  * @brief Create all demo tasks.
  */
 static void prvCreateTasks( void );
 
-/*-----------------------------------------------------------*/
-
-/*
- *	Instructions to Build and Run:
- *	 - The Keil multi-project workspace FreeRTOSDemo.uvmpw contains projects for
- *	   both the secure project, and non secure project.
- *	 - Set the FreeRTOSDemo_s project as Active - Right click on
- *	   "Project: FreeRTOSDemo_s" and select "Set as Active Project".
- *	 - Build the FreeRTOSDemo_s project using "Project --> Build" or by pressing
- *	   "F7".
- *	 - Set the FreeRTOSDemo_ns project as Active - Right click on
- *	   "Project: FreeRTOSDemo_ns" and select "Set as Active Project".
- *	 - Build the FreeRTOSDemo_ns project using "Project --> Build" or by
- *	   pressing "F7".
- *	 - Start Debug Session using "Debug -> Start/Stop Debug Session" or by
- *	   pressing "Ctrl+F5".
- */
-
-/* Non-Secure main. */
-int main( void )
+/*---------------------------------------------------------------------------
+ * Main function
+ *---------------------------------------------------------------------------*/
+int main(void)
 {
-//	DEBUG_PORT_Init();
+    printf("+-----------------------------------------+\n");
+    printf("|       Non-secure code is running        |\n");
+    printf("+-----------------------------------------+\n");
 
-	printf("NonSecure main \n");
-	while(1){}
-
+    /* Init GPIO Port C Pin 0 for Non-secure LED control */
+    GPIO_SetMode(PC_NS, BIT0, GPIO_MODE_OUTPUT);
 
 	/* Create tasks. */
 	prvCreateTasks();
@@ -91,11 +40,10 @@ int main( void )
 	/* Start scheduler. */
 	vTaskStartScheduler();
 
-	/* Should not reach here as the scheduler is already started. */
-	for( ; ; )
-	{
-	}
+    /* Waiting for Secure/Non-secure SysTick interrupt */
+    while (1);
 }
+
 /*-----------------------------------------------------------*/
 
 static void prvCreateTasks( void )
@@ -104,68 +52,7 @@ static void prvCreateTasks( void )
 	vStartTZDemo();
 
 }
-/*-----------------------------------------------------------*/
 
-/* Stack overflow hook. */
-void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName )
-{
-	/* Force an assert. */
-	configASSERT( pcTaskName == 0 );
-}
-/*-----------------------------------------------------------*/
-
-/* configUSE_STATIC_ALLOCATION is set to 1, so the application must provide an
- * implementation of vApplicationGetIdleTaskMemory() to provide the memory that
- * is used by the Idle task. */
-void vApplicationGetIdleTaskMemory(	StaticTask_t ** ppxIdleTaskTCBBuffer,
-									StackType_t ** ppxIdleTaskStackBuffer,
-									uint32_t * pulIdleTaskStackSize )
-{
-	/* If the buffers to be provided to the Idle task are declared inside this
-	 * function then they must be declared static - otherwise they will be
-	 * allocated on the stack and so not exists after this function exits. */
-	static StaticTask_t xIdleTaskTCB;
-	static StackType_t uxIdleTaskStack[ configMINIMAL_STACK_SIZE ] __attribute__((aligned(32)));
-
-	/* Pass out a pointer to the StaticTask_t structure in which the Idle
-	 * task's state will be stored. */
-	*ppxIdleTaskTCBBuffer = &xIdleTaskTCB;
-
-	/* Pass out the array that will be used as the Idle task's stack. */
-	*ppxIdleTaskStackBuffer = uxIdleTaskStack;
-
-	/* Pass out the size of the array pointed to by *ppxIdleTaskStackBuffer.
-	 * Note that, as the array is necessarily of type StackType_t,
-	 * configMINIMAL_STACK_SIZE is specified in words, not bytes. */
-	*pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
-}
-/*-----------------------------------------------------------*/
-
-/* configUSE_STATIC_ALLOCATION and configUSE_TIMERS are both set to 1, so the
- * application must provide an implementation of vApplicationGetTimerTaskMemory()
- * to provide the memory that is used by the Timer service task. */
-void vApplicationGetTimerTaskMemory( StaticTask_t ** ppxTimerTaskTCBBuffer,
-									 StackType_t ** ppxTimerTaskStackBuffer,
-									 uint32_t * pulTimerTaskStackSize )
-{
-	/* If the buffers to be provided to the Timer task are declared inside this
-	 * function then they must be declared static - otherwise they will be
-	 * allocated on the stack and so not exists after this function exits. */
-	static StaticTask_t xTimerTaskTCB;
-	static StackType_t uxTimerTaskStack[ configTIMER_TASK_STACK_DEPTH ] __attribute__((aligned(32)));
-
-	/* Pass out a pointer to the StaticTask_t structure in which the Timer
-	 * task's state will be stored. */
-	*ppxTimerTaskTCBBuffer = &xTimerTaskTCB;
-
-	/* Pass out the array that will be used as the Timer task's stack. */
-	*ppxTimerTaskStackBuffer = uxTimerTaskStack;
-
-	/* Pass out the size of the array pointed to by *ppxTimerTaskStackBuffer.
-	 * Note that, as the array is necessarily of type StackType_t,
-	 * configTIMER_TASK_STACK_DEPTH is specified in words, not bytes. */
-	*pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
-}
 /*-----------------------------------------------------------*/
 
 void vApplicationTickHook( void )
@@ -180,7 +67,6 @@ void vApplicationTickHook( void )
 	task that then toggles an LED.  Additionally, the call to
 	vQueueSetAccessQueueSetFromISR() is part of the "standard demo tasks"
 	functionality. */
-
 }
 
 /*-----------------------------------------------------------*/
@@ -197,8 +83,9 @@ void vApplicationMallocFailedHook( void )
 	FreeRTOSConfig.h, and the xPortGetFreeHeapSize() API function can be used
 	to query the size of free heap space that remains (although it does not
 	provide information on how the remaining heap might be fragmented). */
+	printf("vApplicationMallocFailedHook \n");
 	taskDISABLE_INTERRUPTS();
 	for( ;; );
 }
-/*-----------------------------------------------------------*/
 
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
