@@ -4,7 +4,7 @@
  * @brief    Demonstrate how to implement HDQ protocol by PSIO.
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2019 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
 #include <stdio.h>
@@ -14,13 +14,12 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-
 PSIO_BQ2028_CFG_T g_Config;
 
 typedef void (*PSIO_FUNC)(PSIO_BQ2028_CFG_T *pConfig);
 PSIO_FUNC s_pfnPSIOHandler = NULL;
 
-
+//------------------------------------------------------------------------------
 NVT_ITCM void PSIO_IRQHandler(void)
 {
     /* Get slot controller done interrupt flag */
@@ -39,7 +38,6 @@ NVT_ITCM void PSIO_IRQHandler(void)
         printf("Invalid interrupt occur \n");
     }
 }
-
 
 void SYS_Init(void)
 {
@@ -425,4 +423,4 @@ int main()
 }
 
 
-/*** (C) COPYRIGHT 2019 Nuvoton Technology Corp. ***/
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

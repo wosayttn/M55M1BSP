@@ -4,7 +4,7 @@
  * @brief       BQ2028 device driver
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2019 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #ifndef __BQ2028_DRIVER_EEPROM_H__
@@ -58,6 +58,6 @@ void PSIO_BQ2028_Read_OneByte(PSIO_BQ2028_CFG_T *pConfig, uint8_t u8CMD, uint8_t
 uint8_t PSIO_BQ2028_CRC8(uint8_t u8Data);
 bool PSIO_BQ2028_BUSY(void);
 
-#endif  //__BQ2028_DRIVER_EEPROM_H__
+#endif  /* __BQ2028_DRIVER_EEPROM_H__ */
 
-/*** (C) COPYRIGHT 2019 Nuvoton Technology Corp. ***/
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
