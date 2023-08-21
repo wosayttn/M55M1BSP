@@ -74,9 +74,6 @@ int32_t main(void)
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
-    /* Lock protected registers */
-    SYS_LockReg();
-
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+------------------------------------------------------+ \n");
     printf("|          HZ1050 WIEGAND26 RFID Test Code             | \n");
@@ -91,6 +88,9 @@ int32_t main(void)
 
     /* Reset PSIO */
     SYS_ResetModule(SYS_PSIO0RST);
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     /* Initialize PSIO setting for HZ1050 */
     PSIO_HZ1050_Init(&sConfig);

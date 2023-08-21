@@ -75,9 +75,6 @@ int32_t main(void)
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
-    /* Lock protected registers */
-    SYS_LockReg();
-
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+--------------------------------------------------------+ \n");
     printf("|   DMX512 Protocol Test Code                            | \n");
@@ -86,6 +83,9 @@ int32_t main(void)
 
     /* Reset PSIO */
     SYS_ResetModule(SYS_PSIO0RST);
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     /* Use slot controller 0 and pin 0  for TX */
     /* Use slot controller 1 and pin 1  for RX */
