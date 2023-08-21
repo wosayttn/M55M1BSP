@@ -189,7 +189,7 @@ struct ethosu_driver ethosu0_driver;
 extern "C" {
 #endif
 
-void NPU_IRQHandler(void)
+NVT_ITCM void NPU_IRQHandler(void)
 {
     //    printf("NPU_IRQHandler \n");
     ethosu_irq_handler(&ethosu0_driver);
@@ -286,7 +286,7 @@ static uint64_t cpu_cycle_count = 0;    /* 64-bit cpu cycle counter */
 extern "C" {
 #endif
 
-void SysTick_Handler(void)
+NVT_ITCM void SysTick_Handler(void)
 {
     /* Increment the cycle counter based on load value. */
     cpu_cycle_count += SysTick->LOAD + 1;
