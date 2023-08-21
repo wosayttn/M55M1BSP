@@ -26,7 +26,6 @@ typedef struct
 {
     uint8_t     u8SlotCtrl;
     uint8_t     u8DataPin;
-    uint8_t     u8PDMAChannel;
 } S_PSIO_DS18B20_CFG;
 
 void PSIO_DS18B20_Open(S_PSIO_DS18B20_CFG *psConfig);
