@@ -165,7 +165,7 @@ int32_t TTMR_Delay(TTMR_T *ttmr, uint32_t u32Usec)
         /* Bailed out if timer stop counting e.g. Some interrupt handler close timer clock source. */
         if (u32Cntr == ttmr->CNT)
         {
-            if(i++ > u32Delay)
+            if (i++ > u32Delay)
             {
                 return TTMR_ERR_TIMEOUT;
             }

@@ -546,7 +546,7 @@ __STATIC_INLINE void LPTPWM_DisablePDCLK(LPTMR_T *lptmr)
 __STATIC_INLINE void LPTPWM_EnableAcc(LPTMR_T *lptmr, uint32_t u32IntFlagCnt, uint32_t u32IntAccSrc)
 {
     lptmr->PWMIFA = (((lptmr)->PWMIFA & ~(LPTMR_PWMIFA_IFACNT_Msk | LPTMR_PWMIFA_IFASEL_Msk | LPTMR_PWMIFA_STPMOD_Msk))
-                        | (LPTMR_PWMIFA_IFAEN_Msk | (u32IntFlagCnt << LPTMR_PWMIFA_IFACNT_Pos) | (u32IntAccSrc << LPTMR_PWMIFA_IFASEL_Pos)));
+                     | (LPTMR_PWMIFA_IFAEN_Msk | (u32IntFlagCnt << LPTMR_PWMIFA_IFACNT_Pos) | (u32IntAccSrc << LPTMR_PWMIFA_IFASEL_Pos)));
 }
 
 /**
@@ -602,7 +602,7 @@ __STATIC_INLINE void LPTPWM_ClearAccInt(LPTMR_T *lptmr)
   */
 __STATIC_INLINE uint32_t LPTPWM_GetAccInt(LPTMR_T *lptmr)
 {
-    return (((lptmr)->PWMAINTSTS & LPTMR_PWMAINTSTS_IFAIF_Msk)? 1UL : 0UL);
+    return (((lptmr)->PWMAINTSTS & LPTMR_PWMAINTSTS_IFAIF_Msk) ? 1UL : 0UL);
 }
 
 /**

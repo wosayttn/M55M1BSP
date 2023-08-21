@@ -75,9 +75,6 @@ int32_t main(void)
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
-    /* Lock protected registers */
-    SYS_LockReg();
-
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+------------------------------------------------------+ \n");
     printf("|      DS18B20 ONE WIRE Thermometer  Test Code         | \n");
@@ -90,6 +87,9 @@ int32_t main(void)
 
     /* Reset PSIO */
     SYS_ResetModule(SYS_PSIO0RST);
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     /* Initialize PSIO setting for DS18B20 */
     PSIO_DS18B20_Open(&sConfig);

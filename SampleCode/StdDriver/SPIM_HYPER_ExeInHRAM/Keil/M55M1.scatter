@@ -200,3 +200,11 @@ STACKSEAL +0 EMPTY __STACKSEAL_SIZE {
     }
 #endif
 }
+
+LOAD_ROM_2  0x80000000
+{
+	SPIM.bin  0x80000000
+	{
+		spim_code.o (+RO)
+	}
+}

@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>SPIM_HYPER_ExeInHRAM</TargetName>
+      <TargetName>PSIO_HDQ</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\obj\</OutputDirectory>
-          <OutputName>SPIM_HYPER_ExeInHRAM</OutputName>
+          <OutputName>PSIO_HDQ</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -338,9 +338,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>DEBUG_PORT=UART0</Define>
+              <Define>DEBUG_PORT=UART0, STDIN_ECHO=1</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc;..\..\common\inc</IncludePath>
+              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc;..\..\common\inc;..\</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -371,7 +371,7 @@
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>.\M55M1.scatter</ScatterFile>
+            <ScatterFile>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\ARM\M55M1.scatter</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -424,11 +424,6 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\gpio.c</FilePath>
             </File>
-            <File>
-              <FileName>spim_hyper.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\spim_hyper.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -440,21 +435,16 @@
               <FilePath>..\main.c</FilePath>
             </File>
             <File>
-              <FileName>hyperram_code.c</FileName>
+              <FileName>BQ2028_driver_EEPROM.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\hyperram_code.c</FilePath>
-            </File>
-            <File>
-              <FileName>spim_code.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\spim_code.c</FilePath>
+              <FilePath>..\BQ2028_driver_EEPROM.c</FilePath>
             </File>
           </Files>
         </Group>
       </Groups>
     </Target>
     <Target>
-      <TargetName>SPIM_HYPER_ExeInHRAM_SRAM</TargetName>
+      <TargetName>PSIO_HDQ_SRAM</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
@@ -496,7 +486,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\obj\</OutputDirectory>
-          <OutputName>SPIM_HYPER_ExeInHRAM_SRAM</OutputName>
+          <OutputName>PSIO_HDQ_SRAM</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -529,8 +519,8 @@
           <AfterMake>
             <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>1</RunUserProg2>
-            <UserProg1Name>fromelf --bin ".\obj\@L.axf" --output ".\bin"</UserProg1Name>
-            <UserProg2Name>.\binToAscii.bat ".\Obj\@L.bin"</UserProg2Name>
+            <UserProg1Name>fromelf --bin ".\obj\@L.axf" --output ".\obj\@L.bin"</UserProg1Name>
+            <UserProg2Name>fromelf --text -c ".\obj\@L.axf" --output ".\obj\@L.txt"</UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
             <nStopA1X>0</nStopA1X>
@@ -761,7 +751,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>3</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -818,7 +808,7 @@
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>.\M55M1-SRAM.scatter</ScatterFile>
+            <ScatterFile>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\ARM\M55M1-SRAM.scatter</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -871,11 +861,6 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\gpio.c</FilePath>
             </File>
-            <File>
-              <FileName>spim_hyper.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\spim_hyper.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -887,14 +872,9 @@
               <FilePath>..\main.c</FilePath>
             </File>
             <File>
-              <FileName>hyperram_code.c</FileName>
+              <FileName>BQ2028_driver_EEPROM.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\hyperram_code.c</FilePath>
-            </File>
-            <File>
-              <FileName>spim_code.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\spim_code.c</FilePath>
+              <FilePath>..\BQ2028_driver_EEPROM.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -911,7 +891,7 @@
   <LayerInfo>
     <Layers>
       <Layer>
-        <LayName>SPIM_HYPER_ExeInHRAM</LayName>
+        <LayName>PSIO_HDQ</LayName>
         <LayPrjMark>1</LayPrjMark>
       </Layer>
     </Layers>

@@ -297,13 +297,16 @@ extern "C"
  */
 __STATIC_INLINE void EPWM_DISABLE_TIMER_SYNC(EPWM_T *epwm, uint32_t u32ChannelMask)
 {
-    do{
+    do
+    {
         int i;
-        for(i = 0; i < 6; i++) {
-            if((u32ChannelMask) & (1 << i))
+
+        for (i = 0; i < 6; i++)
+        {
+            if ((u32ChannelMask) & (1 << i))
                 (epwm)->SSCTL &= ~(1UL << i);
         }
-    }while(0);
+    } while (0);
 }
 
 /**
@@ -461,13 +464,16 @@ __STATIC_INLINE void EPWM_DISABLE_TIMER_SYNC(EPWM_T *epwm, uint32_t u32ChannelMa
  */
 __STATIC_INLINE void EPWM_SET_ALIGNED_TYPE(EPWM_T *epwm, uint32_t u32ChannelMask, uint32_t u32AlignedType)
 {
-    do{
+    do
+    {
         int i;
-        for(i = 0; i < 6; i++) {
-            if((u32ChannelMask) & (1 << i))
+
+        for (i = 0; i < 6; i++)
+        {
+            if ((u32ChannelMask) & (1 << i))
                 (epwm)->CTL1 = (((epwm)->CTL1 & ~(3UL << (i << 1))) | ((u32AlignedType) << (i << 1)));
         }
-    }while(0);
+    } while (0);
 }
 
 /**
@@ -534,17 +540,21 @@ __STATIC_INLINE void EPWM_SET_ALIGNED_TYPE(EPWM_T *epwm, uint32_t u32ChannelMask
  */
 __STATIC_INLINE void EPWM_SET_OUTPUT_LEVEL(EPWM_T *epwm, uint32_t u32ChannelMask, uint32_t u32ZeroLevel, uint32_t u32CmpUpLevel, uint32_t u32PeriodLevel, uint32_t u32CmpDownLevel)
 {
-    do{
+    do
+    {
         int i;
-        for(i = 0; i < 6; i++) {
-            if((u32ChannelMask) & (1 << i)) {
+
+        for (i = 0; i < 6; i++)
+        {
+            if ((u32ChannelMask) & (1 << i))
+            {
                 (epwm)->WGCTL0 = (((epwm)->WGCTL0 & ~(3UL << (i << 1))) | ((u32ZeroLevel) << (i << 1)));
                 (epwm)->WGCTL0 = (((epwm)->WGCTL0 & ~(3UL << (EPWM_WGCTL0_PRDPCTL0_Pos + (i << 1)))) | ((u32PeriodLevel) << (EPWM_WGCTL0_PRDPCTL0_Pos + (i << 1))));
                 (epwm)->WGCTL1 = (((epwm)->WGCTL1 & ~(3UL << (i << 1))) | ((u32CmpUpLevel) << (i << 1)));
                 (epwm)->WGCTL1 = (((epwm)->WGCTL1 & ~(3UL << (EPWM_WGCTL1_CMPDCTL0_Pos + (i << 1)))) | ((u32CmpDownLevel) << (EPWM_WGCTL1_CMPDCTL0_Pos + (i << 1))));
             }
         }
-    }while(0);
+    } while (0);
 }
 
 /**
@@ -573,7 +583,7 @@ __STATIC_INLINE void EPWM_SET_OUTPUT_LEVEL(EPWM_T *epwm, uint32_t u32ChannelMask
  */
 __STATIC_INLINE void EPWM_SET_DEADZONE_CLK_SRC(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32AfterPrescaler)
 {
-	  uint32_t u32DTCLKSrc = ((u32AfterPrescaler) << EPWM_DTCTL_DTCKSEL0_Pos)<<(u32ChannelNum >> 1U);
+    uint32_t u32DTCLKSrc = ((u32AfterPrescaler) << EPWM_DTCTL_DTCKSEL0_Pos) << (u32ChannelNum >> 1U);
     epwm->DTCTL = ((epwm->DTCTL & ~(EPWM_DTCTL_DTCKSEL0_Msk << (u32ChannelNum >> 1U))) | u32DTCLKSrc);
 }
 
