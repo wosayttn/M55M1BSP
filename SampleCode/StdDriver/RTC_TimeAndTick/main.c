@@ -61,7 +61,7 @@ void SYS_Init(void)
     /* Waiting for LXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
@@ -134,24 +134,12 @@ int main(void)
     sInitTime.u32DayOfWeek  = RTC_MONDAY;
     sInitTime.u32TimeScale  = RTC_CLOCK_24;
 
-    /* check rtc reset status */
-    sptrInitTime = (RTC->INIT & RTC_INIT_ACTIVE_Msk) ? NULL : &sInitTime;
-
-    if (RTC_Open(sptrInitTime) != 0)
+    if (RTC_Open(&sInitTime) != 0)
     {
         printf("\n RTC initial fail!!");
         printf("\n Please check h/w setting!!");
-        return -1;
-    }
 
-    if (sptrInitTime == NULL)
-    {
-        RTC_GetDateAndTime(&sCurTime);
-        sInitTime.u32Second = ((sCurTime.u32Second + T_5SEC) > T_60SEC) ? (sCurTime.u32Second + T_5SEC) - T_60SEC : sCurTime.u32Second + T_5SEC;
-    }
-    else
-    {
-        sInitTime.u32Second = sInitTime.u32Second + T_5SEC;
+        while (1);
     }
 
     /* Enable RTC tick interrupt, one RTC tick is 1 second */
@@ -182,15 +170,16 @@ int main(void)
 
             if (u32Sec == sCurTime.u32Second)
             {
-                printf("\nRTC time is incorrect.\n");
-                return -1;
+                printf("\nRTC tick period time is incorrect.\n");
+
+                while (1);
             }
 
             u32Sec = sCurTime.u32Second;
 
             if (u8IsNewDateTime == 0)
             {
-                if (u32Sec == sInitTime.u32Second)
+                if (u32Sec == sInitTime.u32Second + T_5SEC)
                 {
                     printf("\n");
                     printf("3.) Update new date/time to 2023/6/9 13:12:11.\n");

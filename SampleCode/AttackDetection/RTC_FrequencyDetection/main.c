@@ -77,7 +77,7 @@ void SYS_Init(void)
     /* Waiting for LXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
@@ -220,10 +220,7 @@ int32_t main(void)
     printf("| User can switch RTC clock source from LXT to LIRC32.        |\n");
     printf("+-------------------------------------------------------------+\n");
 
-    //GetActiveLXTandLIRC32Freq(&u32LXTFreq, &u32LIRC32Freq);
-    u32LXTFreq = 27000;
-    u32LIRC32Freq = 32000;
-    getchar();
+    GetActiveLXTandLIRC32Freq(&u32LXTFreq, &u32LIRC32Freq);
 
     /* calculation the LXT clock source detector boundary*/
     /** if usr wnet detector LXT clock soucre fail is 31000Hz (define LXT_Fail_HZ),
