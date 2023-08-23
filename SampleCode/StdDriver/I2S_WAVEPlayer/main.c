@@ -39,7 +39,7 @@ void SYS_Init(void);
 void I2C2_Init(void);
 void PDMA_Init(void);
 
-extern void SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc);
+//extern void SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc);
 
 /*---------------------------------------------------------*/
 /* User Provided RTC Function for FatFs module             */

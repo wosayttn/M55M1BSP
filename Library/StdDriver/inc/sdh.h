@@ -226,7 +226,7 @@ uint32_t SDH_SDCmdAndRsp2(SDH_T *sdh, uint32_t ucCmd, uint32_t uArg, uint32_t pu
 uint32_t SDH_SDCommand(SDH_T *sdh, uint32_t ucCmd, uint32_t uArg);
 uint32_t SDH_SelectCardType(SDH_T *sdh);
 
-int SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc);
+int32_t SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc);
 void SDH_Close_Disk(SDH_T *sdh);
 
 /** @} end of group SDH_EXPORTED_FUNCTIONS */

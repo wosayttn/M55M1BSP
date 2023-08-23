@@ -352,9 +352,6 @@ int32_t main(void)
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
-    /* Lock protected registers */
-    SYS_LockReg();
-
     printf("+-----------------------------------------------------------------------+\n");
     printf("|                I2S Driver Sample Code with audio codec                |\n");
     printf("+-----------------------------------------------------------------------+\n");
