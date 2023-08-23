@@ -24,7 +24,7 @@ void UART_Init(void);
  *
  * @return      None
  *
- * @details     The RTCTAMPER_IRQHandler is default IRQ of RTC TAMPER, declared in startup_M55M1.s.
+ * @details     The RTCTAMPER_IRQHandler is default IRQ of RTC TAMPER.
  */
 NVT_ITCM void RTCTAMPER_IRQHandler(void)
 {
