@@ -1348,6 +1348,38 @@ extern "C"
  */
 #define GPIO_TOGGLE(u32Pin) ((u32Pin) ^= 1)
 
+/**
+ * @brief       Disable Schmitt Trigger
+ *
+ * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
+ * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
+ *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT11 for PF GPIO port.
+ *                          It could be BIT6 ~ BIT15 for PI GPIO port.
+ *
+ * @details     Disable Schmitt Trigger of specified GPIO pin.
+ * \hideinitializer
+ */
+#define GPIO_DISABLE_SCHMITT_TRIGGER(port, u32PinMask)    ((port)->SMTEN &= ~(u32PinMask))
+
+/**
+ * @brief       Enable Schmitt Trigger
+ *
+ * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
+ * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
+ *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT11 for PF GPIO port.
+ *                          It could be BIT6 ~ BIT15 for PI GPIO port.
+ *
+ * @details     Enable Schmitt Trigger of specified GPIO pin.
+ * \hideinitializer
+ */
+#define GPIO_ENABLE_SCHMITT_TRIGGER(port, u32PinMask) ((port)->SMTEN |= (u32PinMask))
+
 
 void GPIO_SetMode(GPIO_T *port, uint32_t u32PinMask, uint32_t u32Mode);
 void GPIO_EnableInt(GPIO_T *port, uint32_t u32Pin, uint32_t u32IntAttribs);
