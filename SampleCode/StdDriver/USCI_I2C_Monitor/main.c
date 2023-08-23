@@ -217,8 +217,6 @@ static void SYS_Init(void)
     /* Set multi-function pins for UI2C0 SDA and SCL */
     SET_USCI0_CLK_PA11();
     SET_USCI0_DAT0_PA10();
-    /* USCI_I2C pins enable schmitt trigger */
-    PA->SMTEN |= GPIO_SMTEN_SMTEN10_Msk | GPIO_SMTEN_SMTEN11_Msk;
     /* Enable I2C0 module clock */
     CLK_EnableModuleClock(I2C0_MODULE);
     /* Enable I2C1 module clock */
@@ -228,8 +226,11 @@ static void SYS_Init(void)
     SET_I2C0_SCL_PA5();
     SET_I2C1_SDA_PA6();
     SET_I2C1_SCL_PA7();
-    /* I2C pins enable schmitt trigger */
-    PA->SMTEN |= GPIO_SMTEN_SMTEN4_Msk | GPIO_SMTEN_SMTEN5_Msk | GPIO_SMTEN_SMTEN6_Msk | GPIO_SMTEN_SMTEN7_Msk;
+    /* USCI_I2C/I2C pins enable schmitt trigger */
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT4 | BIT5 | BIT6 | BIT7 | BIT10 | BIT11));
+    /* Lock protected registers */
+    SYS_LockReg();
 }
 
 void UI2C0_Init(uint32_t u32ClkSpeed)

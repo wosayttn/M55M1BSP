@@ -277,7 +277,10 @@ static void SYS_Init(void)
     SET_I2C1_SDA_PA6();
     SET_I2C1_SCL_PA7();
     /* I2C pins enable schmitt trigger */
-    PA->SMTEN |= GPIO_SMTEN_SMTEN4_Msk | GPIO_SMTEN_SMTEN5_Msk | GPIO_SMTEN_SMTEN6_Msk | GPIO_SMTEN_SMTEN7_Msk;
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT4 | BIT5 | BIT6 | BIT7));
+    /* Lock protected registers */
+    SYS_LockReg();
 }
 
 void I2C0_Init(void)
@@ -287,10 +290,10 @@ void I2C0_Init(void)
     /* Get I2C0 Bus Clock */
     printf("I2C0 clock %d Hz\n", I2C_GetBusClockFreq(I2C0));
     /* Set I2C0 4 Slave Addresses */
-    I2C_SetSlaveAddr(I2C0, 0, 0x15, 0);   /* Slave Address : 0x15 */
-    I2C_SetSlaveAddr(I2C0, 1, 0x35, 0);   /* Slave Address : 0x35 */
-    I2C_SetSlaveAddr(I2C0, 2, 0x55, 0);   /* Slave Address : 0x55 */
-    I2C_SetSlaveAddr(I2C0, 3, 0x75, 0);   /* Slave Address : 0x75 */
+    I2C_SetSlaveAddr(I2C0, 0, 0x15, I2C_GCMODE_DISABLE);   /* Slave Address : 0x15 */
+    I2C_SetSlaveAddr(I2C0, 1, 0x35, I2C_GCMODE_DISABLE);   /* Slave Address : 0x35 */
+    I2C_SetSlaveAddr(I2C0, 2, 0x55, I2C_GCMODE_DISABLE);   /* Slave Address : 0x55 */
+    I2C_SetSlaveAddr(I2C0, 3, 0x75, I2C_GCMODE_DISABLE);   /* Slave Address : 0x75 */
     /* Set I2C0 4 Slave Addresses Mask */
     I2C_SetSlaveAddrMask(I2C0, 0, 0x01);
     I2C_SetSlaveAddrMask(I2C0, 1, 0x04);
@@ -308,10 +311,10 @@ void I2C1_Init(void)
     /* Get I2C1 Bus Clock */
     printf("I2C1 clock %d Hz\n", I2C_GetBusClockFreq(I2C1));
     /* Set I2C1 4 Slave Addresses */
-    I2C_SetSlaveAddr(I2C1, 0, 0x16, 0);   /* Slave Address : 0x16 */
-    I2C_SetSlaveAddr(I2C1, 1, 0x36, 0);   /* Slave Address : 0x36 */
-    I2C_SetSlaveAddr(I2C1, 2, 0x56, 0);   /* Slave Address : 0x56 */
-    I2C_SetSlaveAddr(I2C1, 3, 0x76, 0);   /* Slave Address : 0x76 */
+    I2C_SetSlaveAddr(I2C1, 0, 0x16, I2C_GCMODE_DISABLE);   /* Slave Address : 0x16 */
+    I2C_SetSlaveAddr(I2C1, 1, 0x36, I2C_GCMODE_DISABLE);   /* Slave Address : 0x36 */
+    I2C_SetSlaveAddr(I2C1, 2, 0x56, I2C_GCMODE_DISABLE);   /* Slave Address : 0x56 */
+    I2C_SetSlaveAddr(I2C1, 3, 0x76, I2C_GCMODE_DISABLE);   /* Slave Address : 0x76 */
     /* Set I2C1 4 Slave Addresses Mask */
     I2C_SetSlaveAddrMask(I2C1, 0, 0x04);
     I2C_SetSlaveAddrMask(I2C1, 1, 0x02);

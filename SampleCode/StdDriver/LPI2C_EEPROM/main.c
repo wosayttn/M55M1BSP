@@ -180,7 +180,8 @@ static void SYS_Init(void)
     SET_LPI2C0_SDA_PA4();
     SET_LPI2C0_SCL_PA5();
     /* LPI2C pins enable schmitt trigger */
-    PA->SMTEN |= GPIO_SMTEN_SMTEN4_Msk | GPIO_SMTEN_SMTEN5_Msk;
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT4 | BIT5));
     /* Lock protected registers */
     SYS_LockReg();
 }

@@ -187,13 +187,14 @@ static void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-    /* Enable I2C0 module clock */
+    /* Enable LPI2C0 module clock */
     CLK_EnableModuleClock(LPI2C0_MODULE);
     /* Set multi-function pins for LPI2C0 SDA and SCL */
     SET_LPI2C0_SDA_PA4();
     SET_LPI2C0_SCL_PA5();
     /* LPI2C pins enable schmitt trigger */
-    PA->SMTEN |= GPIO_SMTEN_SMTEN4_Msk | GPIO_SMTEN_SMTEN5_Msk;
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT4 | BIT5));
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -205,10 +206,10 @@ void LPI2C0_Init(void)
     /* Get LPI2C0 Bus Clock */
     printf("LPI2C clock %d Hz\n", LPI2C_GetBusClockFreq(LPI2C0));
     /* Set LPI2C 4 Slave Addresses */
-    LPI2C_SetSlaveAddr(LPI2C0, 0, 0x15, 0);   /* Slave Address : 0x15 */
-    LPI2C_SetSlaveAddr(LPI2C0, 1, 0x35, 0);   /* Slave Address : 0x35 */
-    LPI2C_SetSlaveAddr(LPI2C0, 2, 0x55, 0);   /* Slave Address : 0x55 */
-    LPI2C_SetSlaveAddr(LPI2C0, 3, 0x75, 0);   /* Slave Address : 0x75 */
+    LPI2C_SetSlaveAddr(LPI2C0, 0, 0x15, LPI2C_GCMODE_DISABLE);   /* Slave Address : 0x15 */
+    LPI2C_SetSlaveAddr(LPI2C0, 1, 0x35, LPI2C_GCMODE_DISABLE);   /* Slave Address : 0x35 */
+    LPI2C_SetSlaveAddr(LPI2C0, 2, 0x55, LPI2C_GCMODE_DISABLE);   /* Slave Address : 0x55 */
+    LPI2C_SetSlaveAddr(LPI2C0, 3, 0x75, LPI2C_GCMODE_DISABLE);   /* Slave Address : 0x75 */
     /* Set LPI2C 4 Slave Addresses Mask */
     LPI2C_SetSlaveAddrMask(LPI2C0, 0, 0x01);
     LPI2C_SetSlaveAddrMask(LPI2C0, 1, 0x04);

@@ -20,14 +20,13 @@ volatile uint8_t g_u8EndFlagM = 0;
 volatile enum UI2C_MASTER_EVENT m_Event;
 
 typedef void (*UI2C_FUNC)(uint32_t u32Status);
-
 volatile static UI2C_FUNC s_UI2C0HandlerFn = NULL;
 
 
 NVT_ITCM void USCI0_IRQHandler(void)
 {
     uint32_t u32Status;
-    u32Status = (UI2C0->PROTSTS);
+    u32Status = UI2C_GET_PROT_STATUS(UI2C0);
 
     if (s_UI2C0HandlerFn != NULL)
     {
@@ -218,7 +217,8 @@ static void SYS_Init(void)
     SET_USCI0_CLK_PA11();
     SET_USCI0_DAT0_PA10();
     /* USCI_I2C pins enable schmitt trigger */
-    PA->SMTEN |= GPIO_SMTEN_SMTEN10_Msk | GPIO_SMTEN_SMTEN11_Msk;
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT10 | BIT11));
     /* Lock protected registers */
     SYS_LockReg();
 }

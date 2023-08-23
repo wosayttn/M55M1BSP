@@ -376,8 +376,8 @@ static void SYS_Init(void)
     SET_I2C1_SCL_PA7();
     SET_I2C1_SDA_PA6();
     /* I2C pins enable schmitt trigger */
-    PA->SMTEN |= GPIO_SMTEN_SMTEN4_Msk | GPIO_SMTEN_SMTEN5_Msk;
-    PA->SMTEN |= GPIO_SMTEN_SMTEN6_Msk | GPIO_SMTEN_SMTEN7_Msk;
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT4 | BIT5 | BIT6 | BIT7));
     /* Lock protected registers */
     SYS_LockReg();
 }

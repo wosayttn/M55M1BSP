@@ -560,7 +560,10 @@ static void SYS_Init(void)
     SET_I2C1_SMBAL_PB9();
     SET_I2C1_SMBSUS_PB8();
     /* I2C pins enable schmitt trigger */
-    PA->SMTEN |= GPIO_SMTEN_SMTEN4_Msk | GPIO_SMTEN_SMTEN5_Msk | GPIO_SMTEN_SMTEN6_Msk | GPIO_SMTEN_SMTEN7_Msk;
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT4 | BIT5 | BIT6 | BIT7));
+    /* Lock protected registers */
+    SYS_LockReg();
 }
 
 void I2C0_Init(void)

@@ -174,7 +174,8 @@ static void SYS_Init(void)
     SET_USCI0_CLK_PA11();
     SET_USCI0_DAT0_PA10();
     /* USCI_I2C pins enable schmitt trigger */
-    PA->SMTEN |= GPIO_SMTEN_SMTEN10_Msk | GPIO_SMTEN_SMTEN11_Msk;
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT10 | BIT11));
     /* Lock protected registers */
     SYS_LockReg();
 }
