@@ -77,6 +77,10 @@ static void SYS_Init(void)
     SET_INT0_PB5();
     SET_INT1_PB4();
     SET_INT2_PB3();
+    /* Enable Internal low speed RC clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_LIRCEN_Msk);
+    /* Waiting for Internal low speed RC clock ready */
+    CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
     /* Lock protected registers */
     SYS_LockReg();
 }

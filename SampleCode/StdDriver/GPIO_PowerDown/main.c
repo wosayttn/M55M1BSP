@@ -79,6 +79,10 @@ static void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
+    /* Enable Internal low speed RC clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_LIRCEN_Msk);
+    /* Waiting for Internal low speed RC clock ready */
+    CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
     /* Lock protected registers */
     SYS_LockReg();
 }
