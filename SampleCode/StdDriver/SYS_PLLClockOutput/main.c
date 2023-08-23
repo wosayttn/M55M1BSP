@@ -107,9 +107,9 @@ void SYS_PLL_Test(void)
 
     for(u32Idx = 0; u32Idx < sizeof(g_au32PllSetting) / sizeof(g_au32PllSetting[0]) ; u32Idx++)
     {
-        /* Select HCLK clock source from PLL */
-        CLK_SetCoreClock(g_au32PllSetting[u32Idx]);
-
+        /* Select SCLK clock source from PLL */
+        CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, g_au32PllSetting[u32Idx]);
+        
         printf("  Change system clock to %d Hz ...................... ", SystemCoreClock);
 
         /* Output selected clock to CKO, CKO Clock = SCLK / 2^(1 + 1) */
@@ -151,10 +151,11 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
+    
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
-    /* Waiting for Internal RC clock ready */
+    /* Waiting for Internal RC 12MHz clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
     /* Enable Internal low speed RC clock */
@@ -166,21 +167,8 @@ void SYS_Init(void)
     /* Switch SCLK clock source to HIRC */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
 
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock and set all bus clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */

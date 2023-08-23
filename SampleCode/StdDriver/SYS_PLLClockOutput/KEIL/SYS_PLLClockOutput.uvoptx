@@ -22,7 +22,7 @@
   </DaveTm>
 
   <Target>
-    <TargetName>Project</TargetName>
+    <TargetName>SYS_PLLClockOutput</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>

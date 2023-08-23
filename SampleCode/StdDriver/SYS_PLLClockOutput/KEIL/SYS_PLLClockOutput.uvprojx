@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>Project</TargetName>
+      <TargetName>SYS_PLLClockOutput</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>

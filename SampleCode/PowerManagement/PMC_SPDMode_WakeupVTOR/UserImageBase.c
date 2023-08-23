@@ -516,10 +516,10 @@ const unsigned char UserImageBase[] =
 };
 const unsigned long UserImageBase_termination = 0x00000000;
 const unsigned long UserImageBase_start       = 0x00000000;
-const unsigned long UserImageBase_finish      = 0x000017F8;
-const unsigned long UserImageBase_length      = 0x000017F8;
+const unsigned long UserImageBase_finish      = sizeof(UserImageBase);
+const unsigned long UserImageBase_length      = sizeof(UserImageBase);
 
 #define USERIMAGEBASE_TERMINATION 0x00000000
 #define USERIMAGEBASE_START       0x00000000
-#define USERIMAGEBASE_FINISH      0x000017F8
-#define USERIMAGEBASE_LENGTH      0x000017F8
+#define USERIMAGEBASE_FINISH      sizeof(UserImageBase)
+#define USERIMAGEBASE_LENGTH      sizeof(UserImageBase)

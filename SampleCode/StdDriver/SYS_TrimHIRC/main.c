@@ -83,7 +83,7 @@ void SYS_Init(void)
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
-    /* Waiting for Internal RC clock ready */
+    /* Waiting for Internal RC 12MHz clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
     /* Enable Internal RC 48MHz clock */
@@ -98,14 +98,14 @@ void SYS_Init(void)
     /* Waiting for external high speed clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Enable Internal external low speed clock */
+    /* Enable external low speed clock */
     CLK_EnableXtalRC(CLK_SRCCTL_LXTEN_Msk);
 
     /* Waiting for external low speed clock ready */
     CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
     /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
@@ -157,9 +157,12 @@ int32_t main(void)
     /* Trim HIRC48M to 48MHz */
     TrimHIRC48M();
 
-    /* Disable IRC Trim */
-    SYS->TISTS12M = 0;
-
+    /* Disable HIRC auto Trim */
+    SYS->TCTL12M = SYS->TCTL12M & ~SYS_TCTL12M_FREQSEL_Msk;
+    
+    /* Disable HIRC48M auto Trim */
+    SYS->TCTL48M = SYS->TCTL48M & ~SYS_TCTL48M_FREQSEL_Msk;
+    
     printf("Disable IRC Trim\n");
 
     while (1);

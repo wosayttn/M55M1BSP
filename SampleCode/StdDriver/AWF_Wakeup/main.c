@@ -124,10 +124,10 @@ static void SYS_Init(void)
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
-    /* Waiting for Internal RC clock ready */
+    /* Waiting for Internal RC 12MHz clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Set SCLK  */
+    /* Set HIRC for SCLK clock source*/
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
 
     /* Update System Core Clock */

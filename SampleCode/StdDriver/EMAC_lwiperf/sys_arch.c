@@ -13,7 +13,7 @@
 
 static volatile uint32_t u32Jiffies = 0;
 
-void TMR0_IRQHandler(void)
+void NVT_ITCM TMR0_IRQHandler(void)
 {
     u32Jiffies += 10;
     TIMER_ClearIntFlag(TIMER0);

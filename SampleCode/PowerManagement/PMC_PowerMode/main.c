@@ -10,7 +10,7 @@
 #include "NuMicro.h"
 
 
-static volatile uint8_t s_u8IsINTEvent;
+static volatile uint8_t s_u8IsINTEvent = 0;
 
 void WDT0_IRQHandler(void);
 void PowerDownFunction(void);
@@ -140,27 +140,15 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
+    
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
-    /* Waiting for Internal RC clock ready */
+    /* Waiting for Internal RC 12MHz clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock and set all bus clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -217,14 +205,14 @@ int32_t main(void)
     printf("Set power level to 1.15V ");
     PMC_SetPowerLevel(PMC_PLCTL_PLSEL_PL0);
 
-    /* Set core clock as 240MHz from PLL */
-    CLK_SetCoreClock(24000000);
+    /* Set core clock as 200MHz from PLL */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_200MHZ);
 
     /* Check system work */
     CheckSystemWork();
 
-    /* Set core clock as 200MHz from PLL */
-    CLK_SetCoreClock(20000000);
+    /* Set core clock as 180MHz from PLL */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Set power level to 1.1V */
     printf("Set power level to 1.1V ");
@@ -233,20 +221,10 @@ int32_t main(void)
     /* Check system work */
     CheckSystemWork();
 
-    /* Set core clock as 100MHz from PLL */
-    CLK_SetCoreClock(10000000);
-
-    /* Set power level to 1.0V */
-    printf("Set power level to 1.0V ");
-    PMC_SetPowerLevel(PMC_PLCTL_PLSEL_PL2);
-
-    /* Check system work */
-    CheckSystemWork();
-
     /* Set main voltage regulator type to DCDC mode */
     printf("Set main voltage regulator type to DCDC mode ");
 
-    if(PMC_SetPowerRegulator(PMC_VRCTL_MVRS_DCDC) == 0)
+    if(PMC_SetPowerRegulator(PMC_VRCTL_MVRS_DCDC) != PMC_OK)
         printf("[no inductor connect]\n");
     else
         CheckSystemWork();      /* Check system work */

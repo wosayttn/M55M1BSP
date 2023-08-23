@@ -77,7 +77,7 @@ void CheckPowerSource(void)
     uint32_t u32RegRstsrc;
     u32RegRstsrc = PMC_GetPMCWKSrc();
 
-    printf("Power manager Power Manager Status 0x%x\n", u32RegRstsrc);
+    printf("Wake-up source 0x%x\n", u32RegRstsrc);
 
     if ((u32RegRstsrc & PMC_INTSTS_PIN0WKIF_Msk) != 0)
         printf("Wake-up source is Wake-up Pin.\n");
@@ -108,11 +108,12 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
+    
+    /* Waiting for Internal RC 12MHz clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
+
+    /* Enable Internal RC 48MHz clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
 
     /* Enable Internal low speed RC clock */
     CLK_EnableXtalRC(CLK_SRCCTL_LIRCEN_Msk);
@@ -123,21 +124,8 @@ void SYS_Init(void)
     /* Switch SCLK clock source to HIRC */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
 
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock and set all bus clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
