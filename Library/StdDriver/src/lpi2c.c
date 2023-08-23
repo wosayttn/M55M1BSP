@@ -61,12 +61,25 @@ uint32_t LPI2C_Open(LPI2C_T *i2c, uint32_t u32BusClock)
 
 void LPI2C_Close(LPI2C_T *i2c)
 {
+    uint32_t u32IsRegLocked;
+    u32IsRegLocked = SYS_IsRegLocked();
+
+    if(u32IsRegLocked)
+    {
+        SYS_UnlockReg();
+    }
+
     /* Reset I2C Controller */
     SYS->LPI2CRST |= SYS_LPI2CRST_LPI2C0RST_Msk;
     SYS->LPI2CRST &= ~SYS_LPI2CRST_LPI2C0RST_Msk;
 
     /* Disable I2C */
     i2c->CTL0 &= ~LPI2C_CTL0_LPI2CEN_Msk;
+
+    if(u32IsRegLocked)
+    {
+        SYS_LockReg();
+    }
 }
 
 /**
