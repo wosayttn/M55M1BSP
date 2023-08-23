@@ -18,7 +18,7 @@
 uint8_t volatile g_u8SdInitFlag = 0;
 
 /*--------------------------------------------------------------------------*/
-void SDH0_IRQHandler(void);
+NVT_ITCM void SDH0_IRQHandler(void);
 void SYS_Init(void);
 void PowerDown(void);
 
