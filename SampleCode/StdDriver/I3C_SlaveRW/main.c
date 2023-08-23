@@ -25,18 +25,18 @@ volatile uint32_t   g_RxBuf[I3C_DEVICE_RX_BUF_CNT], g_TxBuf[I3C_DEVICE_RX_BUF_CN
 volatile uint32_t   g_u32IntSelMask = 0, g_u32IntOccurredMask = 0;
 volatile uint32_t   g_u32RespStatus = I3C_STS_NO_ERR;
 
-int32_t I3C_ProcessNoneRespInt(I3C_T *i3cs, uint32_t i32IntMask);
-int32_t I3C_ProcessRespError(I3C_T *i3cs, uint32_t u32RespStatus);
+int32_t I3C_ProcessNoneRespInt(I3C_T *i3c, uint32_t i32IntMask);
+int32_t I3C_ProcessRespError(I3C_T *i3c, uint32_t u32RespStatus);
 void I3C0_IRQHandler(void);
 
 /**
   * @brief  Process interrupt events except Response Ready interrupt.
   */
-int32_t I3C_ProcessNoneRespInt(I3C_T *i3cs, uint32_t u32IntMask)
+int32_t I3C_ProcessNoneRespInt(I3C_T *i3c, uint32_t u32IntMask)
 {
     if (u32IntMask & I3C_INTEN_DA_ASSIGNED)
     {
-        printf("[ Set I3C Dynamic Address 0x%02x ]\n\n", (uint32_t)I3C_GET_I3C_DA(i3cs));
+        printf("[ Set I3C Dynamic Address 0x%02x ]\n\n", (uint32_t)I3C_GET_I3C_DA(i3c));
     }
 
     if (u32IntMask & I3C_INTEN_TRANSFER_ERR)
@@ -53,23 +53,23 @@ int32_t I3C_ProcessNoneRespInt(I3C_T *i3cs, uint32_t u32IntMask)
     {
         printf("[ CCC Updated event ]\n");
 
-        if (i3cs->SLVEVNTS & I3C_SLVEVNTS_MWLUPD_Msk)
+        if (i3c->SLVEVNTS & I3C_SLVEVNTS_MWLUPD_Msk)
         {
-            i3cs->SLVEVNTS = I3C_SLVEVNTS_MWLUPD_Msk;
-            printf("\t* Updated MWL to 0x%x\n\n", (uint32_t)((i3cs->SLVMXLEN & I3C_SLVMXLEN_MWL_Msk) >> I3C_SLVMXLEN_MWL_Pos));
+            i3c->SLVEVNTS = I3C_SLVEVNTS_MWLUPD_Msk;
+            printf("\t* Updated MWL to 0x%x\n\n", (uint32_t)((i3c->SLVMXLEN & I3C_SLVMXLEN_MWL_Msk) >> I3C_SLVMXLEN_MWL_Pos));
         }
-        else if (i3cs->SLVEVNTS & I3C_SLVEVNTS_MRLUPD_Msk)
+        else if (i3c->SLVEVNTS & I3C_SLVEVNTS_MRLUPD_Msk)
         {
-            i3cs->SLVEVNTS = I3C_SLVEVNTS_MRLUPD_Msk;
-            printf("\t* Updated MRL to 0x%x\n\n", (uint32_t)((i3cs->SLVMXLEN & I3C_SLVMXLEN_MRL_Msk) >> I3C_SLVMXLEN_MRL_Pos));
+            i3c->SLVEVNTS = I3C_SLVEVNTS_MRLUPD_Msk;
+            printf("\t* Updated MRL to 0x%x\n\n", (uint32_t)((i3c->SLVMXLEN & I3C_SLVMXLEN_MRL_Msk) >> I3C_SLVMXLEN_MRL_Pos));
             /* Reset TX FIFO and CMDQ FIFO -> apply resume */
-            I3C_ResetAndResume(i3cs, (I3C_RESET_TX_BUF | I3C_RESET_CMD_QUEUE), TRUE);
+            I3C_ResetAndResume(i3c, (I3C_RESET_TX_BUF | I3C_RESET_CMD_QUEUE), TRUE);
         }
         else
         {
-            printf("\t* Updated - ENTAS%d\n", (uint32_t)((i3cs->SLVEVNTS & I3C_SLVEVNTS_ACTSTATE_Msk) >> I3C_SLVEVNTS_ACTSTATE_Pos));
-            printf("\t* Updated - HJEN %d\n", (uint32_t)((i3cs->SLVEVNTS & I3C_SLVEVNTS_HJEN_Msk) >> I3C_SLVEVNTS_HJEN_Pos));
-            printf("\t* Updated - SIREN %d\n", (uint32_t)((i3cs->SLVEVNTS & I3C_SLVEVNTS_SIREN_Msk) >> I3C_SLVEVNTS_SIREN_Pos));
+            printf("\t* Updated - ENTAS%d\n", (uint32_t)((i3c->SLVEVNTS & I3C_SLVEVNTS_ACTSTATE_Msk) >> I3C_SLVEVNTS_ACTSTATE_Pos));
+            printf("\t* Updated - HJEN %d\n", (uint32_t)((i3c->SLVEVNTS & I3C_SLVEVNTS_HJEN_Msk) >> I3C_SLVEVNTS_HJEN_Pos));
+            printf("\t* Updated - SIREN %d\n", (uint32_t)((i3c->SLVEVNTS & I3C_SLVEVNTS_SIREN_Msk) >> I3C_SLVEVNTS_SIREN_Pos));
         }
     }
 
@@ -79,7 +79,7 @@ int32_t I3C_ProcessNoneRespInt(I3C_T *i3cs, uint32_t u32IntMask)
 /**
   * @brief  Process response error event.
   */
-int32_t I3C_ProcessRespError(I3C_T *i3cs, uint32_t u32RespStatus)
+int32_t I3C_ProcessRespError(I3C_T *i3c, uint32_t u32RespStatus)
 {
     printf("[ Resp Error 0x%x] ", (u32RespStatus >> I3C_RESPQUE_ERRSTS_Pos));
 
@@ -108,41 +108,41 @@ int32_t I3C_ProcessRespError(I3C_T *i3cs, uint32_t u32RespStatus)
         printf("Unknow error\n");
     }
 
-    if (I3C_IS_PROTOCOL_ERR(i3cs))
+    if (I3C_IS_PROTOCOL_ERR(i3c))
     {
-        printf("[ Device Protocol Error ] (0x%04x)\n\n", I3C_GET_DEVICE_STATUS(i3cs));
+        printf("[ Device Protocol Error ] (0x%04x)\n\n", I3C_GET_DEVICE_STATUS(i3c));
     }
 
-    if (I3C_IS_UNDERFLOW_ERR(i3cs))
+    if (I3C_IS_UNDERFLOW_ERR(i3c))
     {
-        printf("[ Device Underflow Error ] (0x%04x)\n\n", I3C_GET_DEVICE_STATUS(i3cs));
+        printf("[ Device Underflow Error ] (0x%04x)\n\n", I3C_GET_DEVICE_STATUS(i3c));
     }
 
-    if (I3C_IS_OVERFLOW_ERR(i3cs))
+    if (I3C_IS_OVERFLOW_ERR(i3c))
     {
-        printf("[ Device Overflow Error ] (0x%04x)\n\n", I3C_GET_DEVICE_STATUS(i3cs));
+        printf("[ Device Overflow Error ] (0x%04x)\n\n", I3C_GET_DEVICE_STATUS(i3c));
     }
 
-    if (I3C_IS_DATA_NOT_READY(i3cs))
+    if (I3C_IS_DATA_NOT_READY(i3c))
     {
-        printf("[ Device Data Not Ready Status ] (0x%04x)\n\n", I3C_GET_DEVICE_STATUS(i3cs));
+        printf("[ Device Data Not Ready Status ] (0x%04x)\n\n", I3C_GET_DEVICE_STATUS(i3c));
     }
 
-    if (I3C_IS_BUFFER_NOT_AVAIL(i3cs))
+    if (I3C_IS_BUFFER_NOT_AVAIL(i3c))
     {
-        printf("[ Device Buffer Not Available Status ] (0x%04x)\n\n", I3C_GET_DEVICE_STATUS(i3cs));
+        printf("[ Device Buffer Not Available Status ] (0x%04x)\n\n", I3C_GET_DEVICE_STATUS(i3c));
     }
 
-    if (I3C_IS_FRAME_ERR(i3cs))
+    if (I3C_IS_FRAME_ERR(i3c))
     {
-        printf("[ Device Frame Error ] (0x%04x)\n\n", I3C_GET_DEVICE_STATUS(i3cs));
+        printf("[ Device Frame Error ] (0x%04x)\n\n", I3C_GET_DEVICE_STATUS(i3c));
     }
 
-    if (I3C_IS_SLAVE_BUSY(i3cs))
+    if (I3C_IS_SLAVE_BUSY(i3c))
     {
-        printf("[ Device Slave Busy Status ] (0x%04x)\n\n", I3C_GET_DEVICE_STATUS(i3cs));
+        printf("[ Device Slave Busy Status ] (0x%04x)\n\n", I3C_GET_DEVICE_STATUS(i3c));
         printf("\tPerform FIFO/Queue reset then wait RESUME complete ... ");
-        I3C_RespErrorRecovery(I3C0, g_u32RespStatus);
+        I3C_RespErrorRecovery(i3c, g_u32RespStatus);
         printf("done.\n\n");
     }
 
@@ -152,7 +152,7 @@ int32_t I3C_ProcessRespError(I3C_T *i3cs, uint32_t u32RespStatus)
 /**
   * @brief  The I3C0 default IRQ, declared in startup_NUC1263.s.
   */
-void I3C0_IRQHandler(void)
+NVT_ITCM void I3C0_IRQHandler(void)
 {
     DGBINT("\n");
 
@@ -287,6 +287,7 @@ static void SYS_Init(void)
     /* Set multi-function pins for I3C0 SDA and SCL */
     SET_I3C0_SCL_PB1();
     SET_I3C0_SDA_PB0();
+    SYS_ResetModule(SYS_I3C0RST);
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -311,8 +312,6 @@ int32_t main(void)
     printf("+----------------------------------------+\n");
     printf("|    I3C0 Slave Read/Write Sample Code   |\n");
     printf("+----------------------------------------+\n\n");
-    /* Reset I3C0 module */
-    SYS_ResetModule(SYS_I3C0RST);
     /* Initial I3C0 default settings */
     I3C0->SLVMID = I3C0_MID;
     I3C0->SLVPID = I3C0_PID;
@@ -414,3 +413,5 @@ int32_t main(void)
         }
     }
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

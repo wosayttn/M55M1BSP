@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief   Demonstrate how to use I3C0 Master to reveive and transmit the data through PDMA to a Slave.
+ * @brief   Demonstrate how to use I3C0 Master to receive and transmit the data through PDMA to a Slave.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -10,13 +10,9 @@
 #include <string.h>
 #include "NuMicro.h"
 
-#define DGBINT          printf
-//#define DGBINT(...)
-
 /*---------------------------------------------------------------------------------------------------------*/
 /* Functions and variables declaration                                                                     */
 /*---------------------------------------------------------------------------------------------------------*/
-
 volatile uint32_t   g_RxBuf[I3C_DEVICE_RX_BUF_CNT], g_TxBuf[I3C_DEVICE_RX_BUF_CNT];
 
 int32_t I3C_EnableRxPDMA(I3C_T *i3c, uint32_t u32Src, uint32_t u32Dest, uint32_t u32ByteCnts);
@@ -290,8 +286,9 @@ static void SYS_Init(void)
     /* Set multi-function pins for I3C0 SDA and SCL */
     SET_I3C0_SCL_PB1();
     SET_I3C0_SDA_PB0();
+    SYS_ResetModule(SYS_I3C0RST);
     /* Lock protected registers */
-    // SYS_LockReg();
+    SYS_LockReg();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -313,8 +310,6 @@ int32_t main(void)
     printf("+------------------------------------------------------+\n");
     printf("|    I3C0 Master Read/Write through PDMA Sample Code   |\n");
     printf("+------------------------------------------------------+\n\n");
-    /* Reset I3C0 module */
-    SYS_ResetModule(SYS_I3C0RST);
     /* Initial I3C0 default settings */
     I3C_Open(I3C0, I3C_MASTER, 0, 0);
     /* Dynamic Address for Enter Dynamic Address Assignment (ENTDAA) */

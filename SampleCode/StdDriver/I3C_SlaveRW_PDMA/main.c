@@ -339,6 +339,7 @@ static void SYS_Init(void)
     /* Set multi-function pins for I3C0 SDA and SCL */
     SET_I3C0_SCL_PB1();
     SET_I3C0_SDA_PB0();
+    SYS_ResetModule(SYS_I3C0RST);
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -363,8 +364,6 @@ int32_t main(void)
     printf("+------------------------------------------------------+\n");
     printf("|    I3C0 Slave Read/Write through PDMA Sample Code    |\n");
     printf("+------------------------------------------------------+\n\n");
-    /* Reset I3C0 module */
-    SYS_ResetModule(SYS_I3C0RST);
     /* Initial I3C0 default settings */
     I3C0->SLVMID = I3C0_MID;
     I3C0->SLVPID = I3C0_PID;
