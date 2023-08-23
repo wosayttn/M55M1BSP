@@ -124,6 +124,7 @@ int32_t PacketFormatDownScale(S_SENSOR_INFO *psSensorInfo)
 
     /* Stop capturing images */
     CCAP_Stop(TRUE);
+
     return 0;
 }
 
@@ -188,7 +189,9 @@ int32_t main(void)
     CCAP_SetFreq(12000000, 12000000);
 
     /* Using Packet format to Image down scale */
-    if (PacketFormatDownScale(&g_sSensorNT99141) >= 0)
+    if (PacketFormatDownScale(&g_sSensorNT99141) != 0)
+        printf("Init sensor failed !\n");
+    else
     {
         /* jpeg encode */
         JpegEncode(g_au8FrameBuffer, g_au8JpegBuffer, &u32JpegSize, CCAP_OUTPUT_WIDTH, CCAP_OUTPUT_HEIGHT);

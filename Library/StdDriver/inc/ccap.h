@@ -226,7 +226,7 @@ extern "C"
     (CCAP->MDTRG_WK = (CCAP->MDTRG_WK & ~(CCAP_MDTRG_WK_WKEN_Msk | CCAP_MDTRG_WK_TRGSEL_Msk)) | ((u32TrigSrc) | ((bWakeUp) << CCAP_MDTRG_WK_WKEN_Pos)))
 
 /**
- * @brief     Set CCAP Motion Detection Total Threshold sensitivity level of all windows
+ * @brief     Set CCAP Motion Detection Total Threshold (Summary of all windows)
  *
  * @param[in] u32TotalThreshold     Motion Detection Total Threshold
  *                                  It could be 0 (Most sensitive) ~ 0x12AD40 (Mode 1 interrupt is disabled).
@@ -238,6 +238,11 @@ extern "C"
  *
  */
 #define CCAP_MD_SET_TOTAL_THRESHOLD(u32TotalThreshold) (CCAP->MDTTH = (u32TotalThreshold))
+
+/**
+ * @brief     Get CCAP Motion Detection Total Sum of Absolute Differences (Summary of all windows)
+ */
+#define CCAP_MD_GET_TOTAL_SAD()         (CCAP->MDTSAD)
 
 /**
  * @brief     Set CCAP Motion Detection Window Overflow Count Threshold
@@ -254,15 +259,43 @@ extern "C"
 #define CCAP_MD_SET_OVERFLOW_WIN_THRESHOLD(u32WinOverflowCnt) (CCAP->MDWOCTH = (u32WinOverflowCnt))
 
 /**
- * @brief     Set CCAP Motion Detection Window Threshold for sensitivity level of single window
+ * @brief     Get CCAP Motion Detection Window Overflow Count
+ */
+#define CCAP_MD_GET_OVERFLOW_WIN_CNT()  (CCAP->MDWOC)
+
+/**
+ * @brief     Set CCAP Motion Detection Window Threshold (Sensitivity level of single window)
  *
- * @param[in] u32WinIdx:           Motion Detection Window Index. It could be 0x0 ~ 0xF.
- * @param[in] u32Threshold:        Motion Detection Window Threshold
- *                                 It could be 0 (Most sensitive) ~ 0x12AD4 (This window is disabled).
+ * @param[in] u32WinIdx:        Motion Detection Window Index. It could be 0x0 ~ 0xF.
+ * @param[in] u32Threshold:     Motion Detection Window Threshold
+ *                              It could be 0 (Most sensitive) ~ 0x12AD4 (This window is disabled).
  *
  * @details   Set Camera Capture Interface motion detection total threshold
  */
 #define CCAP_MD_SET_WIN_THRESHOLD(u32WinIdx, u32Threshold) (CCAP->MDWTH[u32WinIdx] = (u32Threshold))
+
+/**
+ * @brief     Get CCAP Motion Detection Sum of Absolute Differences of sigle window
+ *
+ * @param[in] u32WinIdx:           Motion Detection Window Index. It could be 0x0 ~ 0xF.
+ */
+#define CCAP_MD_GET_WIN_SAD(u32WinIdx)  (CCAP->MDWSAD[u32WinIdx])
+
+/**
+ * @brief     Set Camera Capture Interface Frame Rate Scale Down Divider
+ *
+ * @param[in] u8Div:            Scale down divider.   It could be 0x1 ~ 0x63
+ *                              0x1:  Output frame rate = Input frame rate
+ *                              0x2:  Output frame rate = 1/2 Input frame rate
+ *                              ...
+ *                              0x63: Output frame rate = 1/63 Input frame rate
+ */
+#define CCAP_FR_SET_SCALEDOWN_DIV(u8Div)    (CCAP->FRCTL = (0x1 << CCAP_FRCTL_FRN_Pos) | (((u8Div) & 0x3F) << CCAP_FRCTL_FRM_Pos))
+
+/**
+ * @brief     Get Camera Capture Interface Frame Rate Scale Down Divider
+ */
+#define CCAP_FR_GET_SCALEDOWN_DIV()         (((CCAP->FRCTL >> CCAP_FRCTL_FRM_Pos) & 0x3F) / ((CCAP->FRCTL >> CCAP_FRCTL_FRN_Pos) & 0x3F))
 
 /**
  * @brief      Set System Memory Packet Base Address

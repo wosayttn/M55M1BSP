@@ -80,6 +80,9 @@ __WEAK void SetDebugUartCLK(void)
 
     /* Enable UART clock */
     CLK_EnableModuleClock(UART0_MODULE);
+
+    /* Reset UART module */
+    SYS_ResetModule(SYS_UART0RST);
 #endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
 }
 
@@ -93,8 +96,6 @@ __WEAK void SetDebugUartCLK(void)
 __WEAK void InitDebugUart(void)
 {
 #if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
-    /* Reset UART module */
-    SYS_ResetModule(SYS_UART0RST);
     /* Init UART to 115200-8n1 for print message */
     //UART_Open(UART0, 115200);
     UART0->LINE = (UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1);
@@ -762,7 +763,7 @@ void SCU_Setup(void)
     NVIC_EnableIRQ(SCU_IRQn);
 }
 
-__WEAK void SCU_IRQHandler(void)
+NVT_ITCM __WEAK void SCU_IRQHandler(void)
 {
 
 }

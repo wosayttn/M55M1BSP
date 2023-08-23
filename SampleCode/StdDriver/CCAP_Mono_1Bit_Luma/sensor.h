@@ -3,24 +3,28 @@
  * @version  V3.00
  * @brief    Sensor driver
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
-#ifndef __CCAP_SENSOR_H_
-#define __CCAP_SENSOR_H_
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
+#ifndef __SENSOR_H__
+#define __SENSOR_H__
 
 #include "NuMicro.h"
 
-int InitOV7725_VGA_YUV422(void);
-#define OV7725SensorPolarity         (CCAP_PAR_VSP_HIGH | CCAP_PAR_HSP_LOW  | CCAP_PAR_PCLKP_HIGH)
-#define OV7725DataFormatAndOrder (CCAP_PAR_INDATORD_UYVY | CCAP_PAR_INFMT_YUV422 | CCAP_PAR_OUTFMT_YUV422)
+/* @return TRUE: Init ok, FALSE: Init failed */
+typedef int32_t (*PFN_INIT_SENSOR_FUNC)(uint32_t u32Param);
 
-int InitNT99141_VGA_YUV422(void);
-#define NT99141SensorPolarity         (CCAP_PAR_VSP_LOW | CCAP_PAR_HSP_LOW  | CCAP_PAR_PCLKP_HIGH)
-#define NT99141DataFormatAndOrder (CCAP_PAR_INDATORD_YUYV | CCAP_PAR_INFMT_YUV422 | CCAP_PAR_OUTFMT_YUV422)
+typedef struct s_sensor_info
+{
+    char        m_strName[16];
+    uint32_t    m_u32Polarity;
+    uint32_t    m_u32InputFormat;
+    uint16_t    m_u16Width;
+    uint16_t    m_u16Height;
+    PFN_INIT_SENSOR_FUNC    pfnInitSensor;
+} S_SENSOR_INFO;
 
-int InitHM01B0_4BIT_YUV422(void);
-#define HM01B0SensorPolarity         (CCAP_PAR_VSP_LOW | CCAP_PAR_HSP_LOW  | CCAP_PAR_PCLKP_HIGH)
-#define HM01B0DataFormatAndOrder (CCAP_PAR_INDATORD_VYUY | CCAP_PAR_INFMT_YUV422 | CCAP_PAR_OUTFMT_ONLY_Y)
+extern S_SENSOR_INFO g_sSensorHM01B0;
+extern S_SENSOR_INFO g_sSensorNT99141;
 
-#endif
+#endif  // __SENSOR_H__

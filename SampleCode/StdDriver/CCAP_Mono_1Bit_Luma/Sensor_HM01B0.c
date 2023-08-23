@@ -8,7 +8,20 @@
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
+#include "sensor.h"
 #include "i2c_gpio.h"
+
+int32_t InitHM01B0_4BIT_YUV422(uint32_t u32Param);
+
+S_SENSOR_INFO g_sSensorHM01B0 =
+{
+    .m_strName        = "HM01B0",
+    .m_u32Polarity    = (CCAP_PAR_VSP_LOW | CCAP_PAR_HSP_LOW | CCAP_PAR_PCLKP_HIGH),
+    .m_u32InputFormat = (CCAP_PAR_INFMT_YUV422 | CCAP_PAR_INDATORD_YUYV),
+    .m_u16Width       = 320,
+    .m_u16Height      = 240,
+    .pfnInitSensor    = InitHM01B0_4BIT_YUV422
+};
 
 struct NT_RegValue
 {
@@ -115,7 +128,7 @@ static void Delay(uint32_t nCount)
         for (i = 0; i < 100; i++);
 }
 
-int InitHM01B0_4BIT_YUV422(void)
+int32_t InitHM01B0_4BIT_YUV422(uint32_t u32Param)
 {
     uint32_t i;
     uint8_t HM01B0_Addr0 = 0x24;
@@ -143,8 +156,8 @@ int InitHM01B0_4BIT_YUV422(void)
     if (u8ID[0] != 0x01 || u8ID[1] != 0xB0)
     {
         printf("HM01B0 init failed!!\n");
-        return 0;
+        return FALSE;
     }
 
-    return 1;
+    return TRUE;
 }

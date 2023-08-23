@@ -117,6 +117,8 @@ int32_t PacketFormatDownScale(S_SENSOR_INFO *psSensorInfo)
             printf("Get frame %d\n", u32Frame);
         }
     }
+
+    return 0;
 }
 
 void SYS_Init(void)
@@ -178,7 +180,8 @@ int32_t main(void)
     CCAP_SetFreq(12000000, 12000000);
 
     /* Using Packet format to Image down scale */
-    PacketFormatDownScale(&g_sSensorNT99141);
+    if (PacketFormatDownScale(&g_sSensorNT99141) != 0)
+        printf("Init sensor failed !\n");
 
     while (1);
 }
