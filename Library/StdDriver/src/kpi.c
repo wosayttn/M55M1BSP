@@ -51,7 +51,7 @@ __WEAK void KPI_KeyHandler(KPI_KEY_T key)
     s_u32LastKey = u32Next;
 }
 
-void KPI_IRQHandler()
+NVT_ITCM void KPI_IRQHandler()
 {
     int32_t i, j, idx, r;
     uint32_t u32KeyPress[2], u32KeyRelease[2], status;
