@@ -32,6 +32,7 @@ int32_t SYS_Init(void)
 
     /* Wait for HIRC clock ready */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
     {
         if (--u32TimeOutCnt == 0)
@@ -72,6 +73,7 @@ int32_t SYS_Init(void)
             return -1;
         }
     }
+
     /* Enable I2C1 clock */
     CLK->I2CCTL |= CLK_I2CCTL_I2C1CKEN_Msk;
 
@@ -140,9 +142,9 @@ _ISP:
     }
 
 _APROM:
-    SYS->RSTSTS = (SYS_RSTSTS_PORF_Msk | SYS_RSTSTS_PINRF_Msk);
-    FMC->ISPCTL &= ~(FMC_ISPCTL_ISPEN_Msk | FMC_ISPCTL_BS_Msk);
-    SCB->AIRCR = (V6M_AIRCR_VECTKEY_DATA | V6M_AIRCR_SYSRESETREQ);
+    /* Reset system and boot from APROM */
+    FMC_SetVectorPageAddr(FMC_APROM_BASE);
+    NVIC_SystemReset();
 
     /* Trap the CPU */
     while (1);

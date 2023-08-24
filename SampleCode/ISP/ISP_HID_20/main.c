@@ -54,6 +54,7 @@ int32_t SYS_Init(void)
 
     /* Wait for PLL clock ready */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (!(CLK->STATUS & CLK_STATUS_APLL0STB_Msk))
     {
         if (--u32TimeOutCnt == 0)
@@ -153,8 +154,9 @@ int32_t main(void)
     /* Endpoint configuration */
     HID_Init();
 
+    /* M55M1 has 8 KB LDROM, changed to use IRQ mode */
     /* Enable HSUSBD interrupt */
-    // NVIC_EnableIRQ(USBD20_IRQn);
+    NVIC_EnableIRQ(HSUSBD_IRQn);
 
     /* Start transaction */
     HSUSBD->OPER = HSUSBD_OPER_HISPDEN_Msk;   /* high-speed */
@@ -162,9 +164,6 @@ int32_t main(void)
 
     while (DETECT_PIN == 0)
     {
-        /* Polling HSUSBD interrupt flag */
-        USBD20_IRQHandler();
-
         if (g_u8UsbDataReady == TRUE)
         {
             ParseCmd((uint8_t *)g_u8UsbRcvBuff, 64);

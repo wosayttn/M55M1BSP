@@ -297,7 +297,7 @@ void MSC_ReadCapacity1(uint32_t u32Offset, uint8_t u8OPCode)
 
     pu8Desc = (uint8_t *)MassCMD_BUF;
 
-    USBD_MemReset(pu8Desc, 36);
+    memset(pu8Desc, 0x0, 36);
 
     if (u8OPCode)
     {

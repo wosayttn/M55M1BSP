@@ -19,7 +19,7 @@ uint32_t g_u32EpBMaxPacketSize;
 __attribute__((aligned(4))) uint8_t g_u8UsbRcvBuff[64];
 uint8_t volatile g_u8UsbDataReady = 0;
 
-void USBD20_IRQHandler(void)
+NVT_ITCM void HSUSBD_IRQHandler(void)
 {
     __IO uint32_t IrqStL, IrqSt;
     IrqStL = HSUSBD->GINTSTS & HSUSBD->GINTEN;    /* get interrupt status */
@@ -153,8 +153,8 @@ void USBD20_IRQHandler(void)
     if (IrqStL & HSUSBD_GINTSTS_EPAIF_Msk)
     {
         IrqSt = HSUSBD->EP[EPA].EPINTSTS & HSUSBD->EP[EPA].EPINTEN;
-//        if (HSUSBD->EP[EPA].EPINTSTS & 0x02)
-//            EPA_Handler();
+        //        if (HSUSBD->EP[EPA].EPINTSTS & 0x02)
+        //            EPA_Handler();
         HSUSBD_CLR_EP_INT_FLAG(EPA, IrqSt);
     }
 
@@ -251,34 +251,34 @@ void HID_ClassRequest(void)
         // Host to device
         switch (gUsbCmd.bRequest)
         {
-        case SET_REPORT:
-        {
-            if (((gUsbCmd.wValue >> 8) & 0xff) == 3)
+            case SET_REPORT:
             {
-                /* Request Type = Feature */
+                if (((gUsbCmd.wValue >> 8) & 0xff) == 3)
+                {
+                    /* Request Type = Feature */
+                    HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+                    HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+                    HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+                }
+
+                break;
+            }
+
+            case SET_IDLE:
+            {
+                /* Status stage */
                 HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
                 HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+                break;
             }
 
-            break;
-        }
-
-        case SET_IDLE:
-        {
-            /* Status stage */
-            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-            break;
-        }
-
-        case SET_PROTOCOL:
-        default:
-            // Stall
-            /* Setup error, stall the device */
-            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-            break;
+            case SET_PROTOCOL:
+            default:
+                // Stall
+                /* Setup error, stall the device */
+                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+                break;
         }
     }
 }

@@ -10,7 +10,7 @@
       <TargetName>ISP_HID</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
+      <pCCUsed>6190000::V6.19::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -409,6 +409,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\sys.c</FilePath>
             </File>
+            <File>
+              <FileName>usbd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\usbd.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -423,11 +428,6 @@
               <FileName>descriptors.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\descriptors.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_User.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\usbd_User.c</FilePath>
             </File>
             <File>
               <FileName>fmc_user.c</FileName>

@@ -16,11 +16,11 @@
 
 #define GPIO_SETMODE(port, pin, u32Mode) ((port)->MODE = ((port)->MODE & ~(0x3ul << ((pin) << 1))) | ((u32Mode) << ((pin) << 1)))
 
-#define CAN_BAUD_RATE                     500000
+#define CANFD_BAUD_RATE                     500000
 #define Master_ISP_ID                     0x487
 #define Device0_ISP_ID                    0x784
-#define CAN_ISP_DtatLength                0x08
-#define CAN_RETRY_COUNTS                  0x1fffffff
+#define CANFD_ISP_DtatLength                0x08
+#define CANFD_RETRY_COUNTS                  0x1fffffff
 
 #define CMD_READ_CONFIG                   0xA2000000
 #define CMD_RUN_APROM                     0xAB000000
@@ -40,12 +40,11 @@ static volatile CANFD_FD_MSG_T g_sRxMsgFrame;
 static volatile uint8_t s_u8CANPackageFlag = 0, s_u8CANAckFlag = 0;
 
 int32_t SYS_Init(void);
-void CAN_Package_ACK(CANFD_T *psCanfd);
-void CAN_Init(void);
+void CANFD_Package_ACK(CANFD_T *psCanfd);
+void CANFD_Init(void);
 void ProcessHardFault(void);
 void SH_Return(void);
 void SendChar_ToUART(int ch);
-uint32_t CAN_Parsing_MSG(uint8_t *u8pMsg);
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle CAN FD0 Line0 interrupt event                                                             */
@@ -165,7 +164,7 @@ int32_t SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Tx Msg by Normal Mode Function (With Message RAM)                                                      */
 /*---------------------------------------------------------------------------------------------------------*/
-void CAN_Package_ACK(CANFD_T *psCanfd)
+void CANFD_Package_ACK(CANFD_T *psCanfd)
 {
     CANFD_FD_MSG_T  sTxMsgFrame;
     s_u8CANAckFlag = 1;
@@ -173,7 +172,7 @@ void CAN_Package_ACK(CANFD_T *psCanfd)
     sTxMsgFrame.eFrmType = eCANFD_DATA_FRM;
     sTxMsgFrame.eIdType  = eCANFD_SID;
     sTxMsgFrame.u32Id    = Device0_ISP_ID;
-    sTxMsgFrame.u32DLC   = CAN_ISP_DtatLength;
+    sTxMsgFrame.u32DLC   = CANFD_ISP_DtatLength;
 
     sTxMsgFrame.au32Data[0] = g_sRxMsgFrame.au32Data[0];
     sTxMsgFrame.au32Data[1] = g_sRxMsgFrame.au32Data[1];
@@ -184,7 +183,7 @@ void CAN_Package_ACK(CANFD_T *psCanfd)
     }
 }
 
-void CAN_Init(void)
+void CANFD_Init(void)
 {
     CANFD_FD_T sCANFD_Config;
 
@@ -194,7 +193,7 @@ void CAN_Init(void)
 
     /* Get the CAN configuration value */
     CANFD_GetDefaultConfig(&sCANFD_Config, CANFD_OP_CAN_MODE);
-    sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate = CAN_BAUD_RATE;
+    sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate = CANFD_BAUD_RATE;
     sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate = 0;
 
     /* Open the CAN feature */
@@ -214,15 +213,6 @@ void CAN_Init(void)
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*                                    Fini CAN FD0                                                         */
-/*---------------------------------------------------------------------------------------------------------*/
-void CANFD_Fini(void)
-{
-    NVIC_DisableIRQ(CANFD00_IRQn);
-    CANFD_Close(CANFD0);
-}
-
-/*---------------------------------------------------------------------------------------------------------*/
 /* MAIN function                                                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
@@ -232,7 +222,7 @@ int main(void)
 
     /* Init System, peripheral clock and multi-function I/O */
     if (SYS_Init() < 0)
-        goto lexit;
+        goto _APROM;
 
     /* Enable ISP */
     FMC_Open();
@@ -240,7 +230,7 @@ int main(void)
 
     SCB->VTOR = FMC_LDROM_BASE;
     /* Init CAN port */
-    CAN_Init();
+    CANFD_Init();
 
     SysTick->LOAD = 300000 * CyclesPerUs;
     SysTick->VAL  = (0x00);
@@ -255,7 +245,7 @@ int main(void)
 
         if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
         {
-            goto lexit;
+            goto _APROM;
         }
     }
 
@@ -281,8 +271,6 @@ int main(void)
             }
             else
             {
-                PD2 = 0;
-
                 if ((psISPCanMsg->Address % FMC_FLASH_PAGE_SIZE) == 0)
                 {
                     FMC_Erase(psISPCanMsg->Address);
@@ -290,18 +278,21 @@ int main(void)
 
                 FMC_Write(psISPCanMsg->Address, psISPCanMsg->Data);
                 psISPCanMsg->Data = FMC_Read(psISPCanMsg->Address);
-                PD2 = 1;
             }
 
             /* send CAN FD ISP Package (ACK) */
-            CAN_Package_ACK(CANFD0);
+            CANFD_Package_ACK(CANFD0);
         }
     }
 
-lexit:
-
+_APROM:
     /* CAN FD interface finalization */
-    CANFD_Fini();
+    NVIC_DisableIRQ(CANFD00_IRQn);
+    CANFD_Close(CANFD0);
+
+    /* Reset system and boot from APROM */
+    FMC_SetVectorPageAddr(FMC_APROM_BASE);
+    NVIC_SystemReset();
 
     /* Trap the CPU */
     while (1);

@@ -54,7 +54,7 @@ uint8_t u8RootDirData[92] =
 
 void DataFlashRead(uint32_t u32Addr, uint32_t *u32Buf)
 {
-    USBD_MemReset((uint8_t *)u32Buf, STORAGE_BUFFER_SIZE);
+    memset((uint8_t *)u32Buf, 0x0, STORAGE_BUFFER_SIZE);
 
     if (u32Addr == 0x00000000)
     {

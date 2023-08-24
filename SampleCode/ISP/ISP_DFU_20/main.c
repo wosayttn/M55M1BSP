@@ -116,7 +116,7 @@ int32_t SYS_Init(void)
     return 0;
 }
 
-void USBD20_IRQHandler(void);
+void HSUSBD_IRQHandler(void);
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -152,10 +152,13 @@ int32_t main(void)
     HSUSBD->OPER = HSUSBD_OPER_HISPDEN_Msk;   /* high-speed */
     HSUSBD_CLR_SE0();
 
-    /* Polling HSUSBD interrupt flag */
+    /* M55M1 has 8 KB LDROM, changed to use IRQ mode */
+    /* Enable HSUSBD interrupt */
+    NVIC_EnableIRQ(HSUSBD_IRQn);
+
     while (DETECT_PIN == 0)
     {
-        USBD20_IRQHandler();
+
     }
 
 _APROM:

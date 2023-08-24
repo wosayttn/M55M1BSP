@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "fmc_user.h"
 
+int32_t g_FMC_i32ErrCode = 0;
 
 int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end, unsigned int *data)
 {

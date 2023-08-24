@@ -21,7 +21,7 @@ static uint32_t s_u32CommandCount = 0;
 static dfu_status_struct dfu_status;
 static s_prog_struct prog_struct __attribute__((aligned(4))) = {{0}, 0, 0, APP_LOADED_ADDR};
 
-void USBD20_IRQHandler(void)
+NVT_ITCM void HSUSBD_IRQHandler(void)
 {
     __IO uint32_t IrqStL, IrqSt;
     IrqStL = HSUSBD->GINTSTS & HSUSBD->GINTEN;    /* get interrupt status */

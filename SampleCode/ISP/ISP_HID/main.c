@@ -63,6 +63,7 @@ int32_t SYS_Init(void)
 
     /* Wait for PLL clock ready */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (!(CLK->STATUS & CLK_STATUS_APLL0STB_Msk))
     {
         if (--u32TimeOutCnt == 0)
@@ -171,10 +172,9 @@ int32_t main(void)
         /* Clear SOF */
         USBD->INTSTS = USBD_INTSTS_SOFIF_Msk;
 
-        /* Using polling mode and Removed Interrupt Table to reduce code size */
-
-        /* DO NOT Enable USB device interrupt */
-        // NVIC_EnableIRQ(USBD_IRQn);
+        /* M55M1 has 8 KB LDROM, changed to use IRQ mode */
+        /* Enable USBD interrupt */
+        NVIC_EnableIRQ(USBD_IRQn);
 
         while (DETECT_PIN == 0)
         {
@@ -212,9 +212,6 @@ int32_t main(void)
                 /* Clear SOF */
                 USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
             }
-
-            /* Polling USBD interrupt flag */
-            USBD_IRQHandler();
 
             if (g_u8UsbDataReady == TRUE)
             {

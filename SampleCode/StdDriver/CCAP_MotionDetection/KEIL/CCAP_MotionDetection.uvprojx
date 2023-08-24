@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>ISP_DFU</TargetName>
+      <TargetName>CCAP_MotionDetection</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6190000::V6.19::ARMCLANG</pCCUsed>
@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>ISP_DFU</OutputName>
+          <OutputName>CCAP_MotionDetection</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -314,7 +314,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>7</Optim>
+            <Optim>3</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -338,9 +338,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>DEBUG_PORT=UART0</Define>
+              <Define>DEBUG_PORT=UART0, NVT_DCACHE_ON</Define>
               <Undefine></Undefine>
-              <IncludePath>..;..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc</IncludePath>
+              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\ThirdParty\libjpeg;..</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -371,7 +371,7 @@
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\ARM\M55M1-LDROM.scatter</ScatterFile>
+            <ScatterFile>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\ARM\M55M1.scatter</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -385,20 +385,25 @@
           <GroupName>CMSIS</GroupName>
           <Files>
             <File>
-              <FileName>ISP_startup_M55M1.c</FileName>
+              <FileName>startup_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\ISP_startup_M55M1.c</FilePath>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</FilePath>
             </File>
             <File>
-              <FileName>ISP_system_M55M1.c</FileName>
+              <FileName>system_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\ISP_system_M55M1.c</FilePath>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Library</GroupName>
           <Files>
+            <File>
+              <FileName>retarget.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\retarget.c</FilePath>
+            </File>
             <File>
               <FileName>clk.c</FileName>
               <FileType>1</FileType>
@@ -410,9 +415,29 @@
               <FilePath>..\..\..\..\Library\StdDriver\src\sys.c</FilePath>
             </File>
             <File>
-              <FileName>usbd.c</FileName>
+              <FileName>uart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\usbd.c</FilePath>
+              <FilePath>..\..\..\..\Library\StdDriver\src\uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>ccap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\ccap.c</FilePath>
+            </File>
+            <File>
+              <FileName>gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>lptmr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\lptmr.c</FilePath>
+            </File>
+            <File>
+              <FileName>pmc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\pmc.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -425,19 +450,14 @@
               <FilePath>..\main.c</FilePath>
             </File>
             <File>
-              <FileName>descriptors.c</FileName>
+              <FileName>Sensor_nt99141.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\descriptors.c</FilePath>
+              <FilePath>..\Sensor_nt99141.c</FilePath>
             </File>
             <File>
-              <FileName>dfu_transfer.c</FileName>
+              <FileName>i2c_gpio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\dfu_transfer.c</FilePath>
-            </File>
-            <File>
-              <FileName>fmc_user.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\fmc_user.c</FilePath>
+              <FilePath>..\i2c_gpio.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -454,7 +474,7 @@
   <LayerInfo>
     <Layers>
       <Layer>
-        <LayName>ISP_DFU</LayName>
+        <LayName>CCAP_MotionDetection</LayName>
         <LayPrjMark>1</LayPrjMark>
       </Layer>
     </Layers>

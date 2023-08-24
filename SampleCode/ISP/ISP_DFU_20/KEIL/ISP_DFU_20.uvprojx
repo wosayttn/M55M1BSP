@@ -10,7 +10,7 @@
       <TargetName>ISP_DFU_20</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
+      <pCCUsed>6190000::V6.19::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -409,6 +409,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\sys.c</FilePath>
             </File>
+            <File>
+              <FileName>hsusbd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\hsusbd.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -438,11 +443,6 @@
               <FileName>dfu_transfer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\dfu_transfer.c</FilePath>
-            </File>
-            <File>
-              <FileName>hsusbd_user.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hsusbd_user.c</FilePath>
             </File>
             <File>
               <FileName>isp_user.c</FileName>
