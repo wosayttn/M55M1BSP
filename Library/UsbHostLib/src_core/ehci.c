@@ -1198,7 +1198,7 @@ NVT_ITCM void EHCI_IRQHandler(void)
 
     if (intsts & HSUSBH_USTSR_UERRINT_Msk)
     {
-        // USB_error("Transfer error!\n");
+        USB_error("Transfer error!\n");
     }
 
     if (intsts & HSUSBH_USTSR_USBINT_Msk)
