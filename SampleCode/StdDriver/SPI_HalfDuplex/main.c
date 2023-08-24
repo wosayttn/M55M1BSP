@@ -54,10 +54,10 @@ void SYS_Init(void)
     /* Enable SPI1 module clock */
     CLK_EnableModuleClock(SPI1_MODULE);
 
-    /* Select SPI0 module clock source as PCLK1 */
+    /* Select SPI0 module clock source as PCLK0 */
     CLK_SetModuleClock(SPI0_MODULE, CLK_SPISEL_SPI0SEL_PCLK0, MODULE_NoMsk);
 
-    /* Select SPI1 module clock source as PCLK0 */
+    /* Select SPI1 module clock source as PCLK2 */
     CLK_SetModuleClock(SPI1_MODULE, CLK_SPISEL_SPI1SEL_PCLK2, MODULE_NoMsk);
 
     /* Enable UART0 module clock */

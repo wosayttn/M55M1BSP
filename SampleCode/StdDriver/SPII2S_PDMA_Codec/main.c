@@ -143,7 +143,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
-    /* Select PCLK1 as the clock source of SPI0 */
+    /* Select PCLK0 as the clock source of SPI0 */
     CLK_SetModuleClock(SPI0_MODULE, CLK_SPISEL_SPI0SEL_PCLK0, MODULE_NoMsk);
 
     /* Enable SPI0 peripheral clock */
@@ -289,9 +289,6 @@ int32_t main(void)
     SPII2S_Open(SPI0, SPII2S_MODE_MASTER, 16000, SPII2S_DATABIT_16, SPII2S_MONO, SPII2S_FORMAT_I2S);
 #endif
 #endif  // OPT_I2S_SLAVE_MODE
-
-    // select source from HXT(12MHz)
-    CLK_SetModuleClock(SPI0_MODULE, CLK_SPISEL_SPI0SEL_PCLK0, MODULE_NoMsk);
 
     /* Initialize NAU8822 codec */
     NAU8822_Setup();

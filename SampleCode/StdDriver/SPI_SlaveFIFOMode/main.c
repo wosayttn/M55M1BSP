@@ -12,20 +12,79 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-
 #define DATA_COUNT      16
 #define TEST_PATTERN    0x00AA0000
 #define SPI_CLK_FREQ    2000000
-
 
 uint32_t g_au32SourceData[DATA_COUNT] = {0};
 uint32_t g_au32DestinationData[DATA_COUNT] = {0};
 uint32_t g_u32TxDataCount = 0;
 uint32_t g_u32RxDataCount = 0;
 
-/* Function prototype declaration */
-void SYS_Init(void);
-void SPI_Init(void);
+void SYS_Init(void)
+{
+    /* Enable Internal RC 12MHz clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
+
+    /* Waiting for Internal RC clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
+
+    /* Enable PLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
+
+    /* Switch SCLK clock source to PLL0 and divide 1 */
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
+
+    /* Set HCLK2 divide 2 */
+    CLK_SET_HCLK2DIV(2);
+
+    /* Set PCLKx divide 2 */
+    CLK_SET_PCLK0DIV(2);
+    CLK_SET_PCLK1DIV(2);
+    CLK_SET_PCLK2DIV(2);
+    CLK_SET_PCLK3DIV(2);
+    CLK_SET_PCLK4DIV(2);
+
+    /* Update System Core Clock */
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
+    SystemCoreClockUpdate();
+
+    /* Select PCLK0 as the clock source of SPI0 */
+    CLK_SetModuleClock(SPI0_MODULE, CLK_SPISEL_SPI0SEL_PCLK0, MODULE_NoMsk);
+
+    /* Enable SPI0 peripheral clock */
+    CLK_EnableModuleClock(SPI0_MODULE);
+
+    /* Enable UART0 module clock */
+    SetDebugUartCLK();
+
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init I/O Multi-function                                                                                 */
+    /*---------------------------------------------------------------------------------------------------------*/
+    SetDebugUartMFP();
+
+    /* Setup SPI0 multi-function pins */
+    /* PA.3 is SPI0_SS,   PA.2 is SPI0_CLK,
+       PA.1 is SPI0_MISO, PA.0 is SPI0_MOSI*/
+    SYS->GPA_MFP0 = (SYS->GPA_MFP0 & ~(SYS_GPA_MFP0_PA3MFP_Msk |
+                                       SYS_GPA_MFP0_PA2MFP_Msk |
+                                       SYS_GPA_MFP0_PA1MFP_Msk |
+                                       SYS_GPA_MFP0_PA0MFP_Msk)) |
+                    (SYS_GPA_MFP0_PA3MFP_SPI0_SS |
+                     SYS_GPA_MFP0_PA2MFP_SPI0_CLK |
+                     SYS_GPA_MFP0_PA1MFP_SPI0_MISO |
+                     SYS_GPA_MFP0_PA0MFP_SPI0_MOSI);
+}
+
+void SPI_Init(void)
+{
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init SPI                                                                                                */
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Configure as a slave, clock idle low, 32-bit transaction, drive output on falling clock edge and latch input on rising edge. */
+    /* Configure SPI0 as a low level active device. */
+    SPI_Open(SPI0, SPI_SLAVE, SPI_MODE_0, 32, (uint32_t) NULL);
+}
 
 /* ------------- */
 /* Main function */
@@ -121,71 +180,6 @@ int main(void)
     SPI_Close(SPI0);
 
     while (1);
-}
-
-void SYS_Init(void)
-{
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
-
-    /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
-    SystemCoreClockUpdate();
-
-    /* Select PCLK0 as the clock source of SPI0 */
-    CLK_SetModuleClock(SPI0_MODULE, CLK_SPISEL_SPI0SEL_PCLK0, MODULE_NoMsk);
-
-    /* Enable SPI0 peripheral clock */
-    CLK_EnableModuleClock(SPI0_MODULE);
-
-    /* Enable UART0 module clock */
-    SetDebugUartCLK();
-
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init I/O Multi-function                                                                                 */
-    /*---------------------------------------------------------------------------------------------------------*/
-    SetDebugUartMFP();
-
-    /* Setup SPI0 multi-function pins */
-    /* PA.3 is SPI0_SS,   PA.2 is SPI0_CLK,
-       PA.1 is SPI0_MISO, PA.0 is SPI0_MOSI*/
-    SYS->GPA_MFP0 = (SYS->GPA_MFP0 & ~(SYS_GPA_MFP0_PA3MFP_Msk |
-                                       SYS_GPA_MFP0_PA2MFP_Msk |
-                                       SYS_GPA_MFP0_PA1MFP_Msk |
-                                       SYS_GPA_MFP0_PA0MFP_Msk)) |
-                    (SYS_GPA_MFP0_PA3MFP_SPI0_SS |
-                     SYS_GPA_MFP0_PA2MFP_SPI0_CLK |
-                     SYS_GPA_MFP0_PA1MFP_SPI0_MISO |
-                     SYS_GPA_MFP0_PA0MFP_SPI0_MOSI);
-}
-
-void SPI_Init(void)
-{
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init SPI                                                                                                */
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Configure as a slave, clock idle low, 32-bit transaction, drive output on falling clock edge and latch input on rising edge. */
-    /* Configure SPI0 as a low level active device. */
-    SPI_Open(SPI0, SPI_SLAVE, SPI_MODE_0, 32, (uint32_t) NULL);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

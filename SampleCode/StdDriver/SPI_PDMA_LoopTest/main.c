@@ -22,54 +22,9 @@
 #define TEST_PATTERN    0x55000000
 #define SPI_CLK_FREQ    2000000
 
-/* Function prototype declaration */
-void SYS_Init(void);
-void SPI_Init(void);
-void SpiLoopTest_WithPDMA(void);
-
 /* Global variable declaration */
 uint32_t g_au32MasterToSlaveTestPattern[DATA_COUNT];
 uint32_t g_au32MasterRxBuffer[DATA_COUNT];
-
-int main(void)
-{
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
-    /* Init System, IP clock and multi-function I/O. */
-    SYS_Init();
-
-    /* Init Debug UART to 115200-8N1 for print message */
-    InitDebugUart();
-
-    /* Init SPI */
-    SPI_Init();
-
-    printf("\n\n");
-    printf("+--------------------------------------------------------------+\n");
-    printf("|                  SPI + PDMA Sample Code                      |\n");
-    printf("+--------------------------------------------------------------+\n");
-    printf("\n");
-    printf("Configure SPI0 as a master.\n");
-    printf("Bit length of a transaction: 32\n");
-    printf("The I/O connection for loopback test:\n");
-    printf("    SPI0_MISO(PA.1) <--> SPI0_MOSI(PA.0)\n\n");
-    printf("Please press any key to start transmission ...\n");
-    getchar();
-    printf("\n");
-
-    SpiLoopTest_WithPDMA();
-
-    /* Lock protected registers */
-    SYS_LockReg();
-
-    printf("\n\nExit SPI driver sample code.\n");
-
-    /* Close SPI0 */
-    SPI_Close(SPI0);
-
-    while (1);
-}
 
 void SYS_Init(void)
 {
@@ -324,6 +279,46 @@ void SpiLoopTest_WithPDMA(void)
     }
 
     return;
+}
+
+int main(void)
+{
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    /* Init System, IP clock and multi-function I/O. */
+    SYS_Init();
+
+    /* Init Debug UART to 115200-8N1 for print message */
+    InitDebugUart();
+
+    /* Init SPI */
+    SPI_Init();
+
+    printf("\n\n");
+    printf("+--------------------------------------------------------------+\n");
+    printf("|                  SPI + PDMA Sample Code                      |\n");
+    printf("+--------------------------------------------------------------+\n");
+    printf("\n");
+    printf("Configure SPI0 as a master.\n");
+    printf("Bit length of a transaction: 32\n");
+    printf("The I/O connection for loopback test:\n");
+    printf("    SPI0_MISO(PA.1) <--> SPI0_MOSI(PA.0)\n\n");
+    printf("Please press any key to start transmission ...\n");
+    getchar();
+    printf("\n");
+
+    SpiLoopTest_WithPDMA();
+
+    /* Lock protected registers */
+    SYS_LockReg();
+
+    printf("\n\nExit SPI driver sample code.\n");
+
+    /* Close SPI0 */
+    SPI_Close(SPI0);
+
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

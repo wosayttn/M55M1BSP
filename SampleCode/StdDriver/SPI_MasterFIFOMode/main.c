@@ -21,9 +21,101 @@ uint32_t g_au32DestinationData[DATA_COUNT] = {0};
 uint32_t g_u32TxDataCount;
 uint32_t g_u32RxDataCount;
 
-/* Function prototype declaration */
-void SYS_Init(void);
-void SPI_Init(void);
+NVT_ITCM void SPI0_IRQHandler(void)
+{
+    /* Check RX EMPTY flag */
+    while (SPI_GET_RX_FIFO_EMPTY_FLAG(SPI0) == 0)
+    {
+        /* Read RX FIFO */
+        g_au32DestinationData[g_u32RxDataCount++] = SPI_READ_RX(SPI0);
+    }
+
+    /* Check TX FULL flag and TX data count */
+    while ((SPI_GET_TX_FIFO_FULL_FLAG(SPI0) == 0) && (g_u32TxDataCount < DATA_COUNT))
+    {
+        /* Write to TX FIFO */
+        SPI_WRITE_TX(SPI0, g_au32SourceData[g_u32TxDataCount++]);
+    }
+
+    if (g_u32TxDataCount >= DATA_COUNT)
+        SPI_DisableInt(SPI0, SPI_FIFO_TXTH_INT_MASK); /* Disable TX FIFO threshold interrupt */
+
+    /* Check the RX FIFO time-out interrupt flag */
+    if (SPI_GetIntFlag(SPI0, SPI_FIFO_RXTO_INT_MASK))
+    {
+        /* If RX FIFO is not empty, read RX FIFO. */
+        while (SPI_GET_RX_FIFO_EMPTY_FLAG(SPI0) == 0)
+            g_au32DestinationData[g_u32RxDataCount++] = SPI_READ_RX(SPI0);
+    }
+}
+
+void SYS_Init(void)
+{
+    /* Enable Internal RC 12MHz clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
+
+    /* Waiting for Internal RC clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
+
+    /* Enable PLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
+
+    /* Switch SCLK clock source to PLL0 and divide 1 */
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
+
+    /* Set HCLK2 divide 2 */
+    CLK_SET_HCLK2DIV(2);
+
+    /* Set PCLKx divide 2 */
+    CLK_SET_PCLK0DIV(2);
+    CLK_SET_PCLK1DIV(2);
+    CLK_SET_PCLK2DIV(2);
+    CLK_SET_PCLK3DIV(2);
+    CLK_SET_PCLK4DIV(2);
+
+    /* Update System Core Clock */
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
+    SystemCoreClockUpdate();
+
+    /* Select PCLK0 as the clock source of SPI0 */
+    CLK_SetModuleClock(SPI0_MODULE, CLK_SPISEL_SPI0SEL_PCLK0, MODULE_NoMsk);
+
+    /* Enable SPI0 peripheral clock */
+    CLK_EnableModuleClock(SPI0_MODULE);
+
+    /* Enable UART0 module clock */
+    SetDebugUartCLK();
+
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init I/O Multi-function                                                                                 */
+    /*---------------------------------------------------------------------------------------------------------*/
+    SetDebugUartMFP();
+
+    /* Setup SPI0 multi-function pins */
+    /* PA.3 is SPI0_SS,   PA.2 is SPI0_CLK,
+       PA.1 is SPI0_MISO, PA.0 is SPI0_MOSI*/
+    SYS->GPA_MFP0 = (SYS->GPA_MFP0 & ~(SYS_GPA_MFP0_PA3MFP_Msk |
+                                       SYS_GPA_MFP0_PA2MFP_Msk |
+                                       SYS_GPA_MFP0_PA1MFP_Msk |
+                                       SYS_GPA_MFP0_PA0MFP_Msk)) |
+                    (SYS_GPA_MFP0_PA3MFP_SPI0_SS |
+                     SYS_GPA_MFP0_PA2MFP_SPI0_CLK |
+                     SYS_GPA_MFP0_PA1MFP_SPI0_MISO |
+                     SYS_GPA_MFP0_PA0MFP_SPI0_MOSI);
+}
+
+void SPI_Init(void)
+{
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init SPI                                                                                                */
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Configure as a master, clock idle low, 32-bit transaction, drive output on falling clock edge and latch input on rising edge. */
+    /* Set IP clock divider. SPI clock rate = 2 MHz */
+    SPI_Open(SPI0, SPI_MASTER, SPI_MODE_0, 32, SPI_CLK_FREQ);
+
+    /* Enable the automatic hardware slave select function. Select the SS pin and configure as low-active. */
+    SPI_EnableAutoSS(SPI0, SPI_SS, SPI_SS_ACTIVE_LOW);
+}
 
 /* ------------- */
 /* Main function */
@@ -119,103 +211,6 @@ int main(void)
 
     while (1);
 }
-
-void SYS_Init(void)
-{
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
-
-    /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
-    SystemCoreClockUpdate();
-
-    /* Select PCLK0 as the clock source of SPI0 */
-    CLK_SetModuleClock(SPI0_MODULE, CLK_SPISEL_SPI0SEL_PCLK0, MODULE_NoMsk);
-
-    /* Enable SPI0 peripheral clock */
-    CLK_EnableModuleClock(SPI0_MODULE);
-
-    /* Enable UART0 module clock */
-    SetDebugUartCLK();
-
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init I/O Multi-function                                                                                 */
-    /*---------------------------------------------------------------------------------------------------------*/
-    SetDebugUartMFP();
-
-    /* Setup SPI0 multi-function pins */
-    /* PA.3 is SPI0_SS,   PA.2 is SPI0_CLK,
-       PA.1 is SPI0_MISO, PA.0 is SPI0_MOSI*/
-    SYS->GPA_MFP0 = (SYS->GPA_MFP0 & ~(SYS_GPA_MFP0_PA3MFP_Msk |
-                                       SYS_GPA_MFP0_PA2MFP_Msk |
-                                       SYS_GPA_MFP0_PA1MFP_Msk |
-                                       SYS_GPA_MFP0_PA0MFP_Msk)) |
-                    (SYS_GPA_MFP0_PA3MFP_SPI0_SS |
-                     SYS_GPA_MFP0_PA2MFP_SPI0_CLK |
-                     SYS_GPA_MFP0_PA1MFP_SPI0_MISO |
-                     SYS_GPA_MFP0_PA0MFP_SPI0_MOSI);
-}
-
-void SPI_Init(void)
-{
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init SPI                                                                                                */
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Configure as a master, clock idle low, 32-bit transaction, drive output on falling clock edge and latch input on rising edge. */
-    /* Set IP clock divider. SPI clock rate = 2 MHz */
-    SPI_Open(SPI0, SPI_MASTER, SPI_MODE_0, 32, SPI_CLK_FREQ);
-
-    /* Enable the automatic hardware slave select function. Select the SS pin and configure as low-active. */
-    SPI_EnableAutoSS(SPI0, SPI_SS, SPI_SS_ACTIVE_LOW);
-}
-
-NVT_ITCM void SPI0_IRQHandler(void)
-{
-    /* Check RX EMPTY flag */
-    while (SPI_GET_RX_FIFO_EMPTY_FLAG(SPI0) == 0)
-    {
-        /* Read RX FIFO */
-        g_au32DestinationData[g_u32RxDataCount++] = SPI_READ_RX(SPI0);
-    }
-
-    /* Check TX FULL flag and TX data count */
-    while ((SPI_GET_TX_FIFO_FULL_FLAG(SPI0) == 0) && (g_u32TxDataCount < DATA_COUNT))
-    {
-        /* Write to TX FIFO */
-        SPI_WRITE_TX(SPI0, g_au32SourceData[g_u32TxDataCount++]);
-    }
-
-    if (g_u32TxDataCount >= DATA_COUNT)
-        SPI_DisableInt(SPI0, SPI_FIFO_TXTH_INT_MASK); /* Disable TX FIFO threshold interrupt */
-
-    /* Check the RX FIFO time-out interrupt flag */
-    if (SPI_GetIntFlag(SPI0, SPI_FIFO_RXTO_INT_MASK))
-    {
-        /* If RX FIFO is not empty, read RX FIFO. */
-        while (SPI_GET_RX_FIFO_EMPTY_FLAG(SPI0) == 0)
-            g_au32DestinationData[g_u32RxDataCount++] = SPI_READ_RX(SPI0);
-    }
-}
-
 
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/
 
