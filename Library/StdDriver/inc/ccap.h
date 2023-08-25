@@ -277,25 +277,23 @@ extern "C"
 /**
  * @brief     Get CCAP Motion Detection Sum of Absolute Differences of sigle window
  *
- * @param[in] u32WinIdx:           Motion Detection Window Index. It could be 0x0 ~ 0xF.
+ * @param[in] u32WinIdx:        Motion Detection Window Index. It could be 0x0 ~ 0xF.
  */
 #define CCAP_MD_GET_WIN_SAD(u32WinIdx)  (CCAP->MDWSAD[u32WinIdx])
 
 /**
  * @brief     Set Camera Capture Interface Frame Rate Scale Down Divider
  *
- * @param[in] u8Div:            Scale down divider.   It could be 0x1 ~ 0x63
- *                              0x1:  Output frame rate = Input frame rate
- *                              0x2:  Output frame rate = 1/2 Input frame rate
- *                              ...
- *                              0x63: Output frame rate = 1/63 Input frame rate
+ * @param[in] u8Num:            Scale down numerator.   It could be 0x1 ~ 0x63.
+ * @param[in] u8Den:            Scale down denominator. It could be 0x1 ~ 0x63 and u8Num must <= u8Den.
+ * @details   The output image frame rate will be equal to input image frame rate * (u8Num/u8Den)
  */
-#define CCAP_FR_SET_SCALEDOWN_DIV(u8Div)    (CCAP->FRCTL = (0x1 << CCAP_FRCTL_FRN_Pos) | (((u8Div) & 0x3F) << CCAP_FRCTL_FRM_Pos))
+#define CCAP_FR_SET_SCALEDOWN_RATE(u8Num, u8Den)     (CCAP->FRCTL = (((u8Num) & 0x3F) << CCAP_FRCTL_FRN_Pos) | (((u8Den) & 0x3F) << CCAP_FRCTL_FRM_Pos))
 
 /**
- * @brief     Get Camera Capture Interface Frame Rate Scale Down Divider
+ * @brief     Get Camera Capture Interface Frame Rate Scale Down Rate (1 ~ 100 %)
  */
-#define CCAP_FR_GET_SCALEDOWN_DIV()         (((CCAP->FRCTL >> CCAP_FRCTL_FRM_Pos) & 0x3F) / ((CCAP->FRCTL >> CCAP_FRCTL_FRN_Pos) & 0x3F))
+#define CCAP_FR_GET_SCALEDOWN_RATE()                (((((CCAP->FRCTL >> CCAP_FRCTL_FRN_Pos) & 0x3F) * 100) / ((CCAP->FRCTL >> CCAP_FRCTL_FRM_Pos) & 0x3F)))
 
 /**
  * @brief      Set System Memory Packet Base Address
