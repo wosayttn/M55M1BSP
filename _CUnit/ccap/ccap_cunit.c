@@ -213,6 +213,7 @@ void TestFunc_CCAP_Function()
             CU_ASSERT((CCAP->CTL & CCAP_CTL_MONO_Msk) == (1 << CCAP_CTL_MONO_Pos));
             CU_ASSERT((CCAP->CTL & (CCAP_CTL_MY8_MY4_Msk | CCAP_CTL_MY4_SWAP_Msk)) == au32Interface[i]);
         }
+
         CCAP_DisableMono();
         CU_ASSERT((CCAP->CTL & CCAP_CTL_MONO_Msk) == 0);
     }   // CCAP_EnableMono/CCAP_DisableMono END
@@ -326,6 +327,18 @@ void TestFunc_CCAP_Macro()
             CU_ASSERT_EQUAL((uint32_t)CCAP->MDTTH, i);
         }
     }   // CCAP_MD_SET_TOTAL_THRESHOLD END
+
+    {
+        // CCAP_FR_SET_SCALEDOWN_RATE/CCAP_FR_GET_SCALEDOWN_RATE
+        for (i = 0; i <= 63; i++)
+        {
+            for (j = i; j <= 63; j++)
+            {
+                CCAP_FR_SET_SCALEDOWN_RATE(i, j);
+                CU_ASSERT_EQUAL(CCAP_FR_GET_SCALEDOWN_RATE(), ((i * 100) / j));
+            }
+        }
+    }
 }
 
 uint32_t u32Freq[]      = { 0, 1, 2, 3  };

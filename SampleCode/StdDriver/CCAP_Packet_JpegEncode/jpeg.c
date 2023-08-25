@@ -41,7 +41,7 @@ void encode_jpeg_to_memory(unsigned char *image, int width, int height, int qual
 
     // Input is greyscale, 1 byte per pixel
     cinfo.input_components = 1;
-    cinfo.in_color_space = JCS_GRAYSCALE;
+    cinfo.in_color_space   = JCS_GRAYSCALE;
 
     jpeg_set_defaults(&cinfo);
     jpeg_set_quality(&cinfo, quality, (boolean)TRUE);
@@ -61,8 +61,8 @@ void encode_jpeg_to_memory(unsigned char *image, int width, int height, int qual
         jpeg_write_marker(&cinfo, JPEG_COM, (const JOCTET *)comment, strlen(comment));
     }
 
-    // 1 BPP
-    row_stride = width;
+    // raw stride = width * byte per pixel
+    row_stride = width * cinfo.input_components;
 
     // Encode
     while (cinfo.next_scanline < cinfo.image_height)
