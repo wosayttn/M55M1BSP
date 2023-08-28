@@ -112,9 +112,6 @@
 //   <o1.01>  KDF            <0=> Secure <1=> Non-secure
 //   <o1.02>  CANFD0         <0=> Secure <1=> Non-secure
 //   <o1.04>  CANFD1         <0=> Secure <1=> Non-secure
-//   <o1.06>  ETMC           <0=> Secure <1=> Non-secure
-//   <o1.07>  SWDH           <0=> Secure <1=> Non-secure
-//   <o1.08>  SWODEC         <0=> Secure <1=> Non-secure
 //   <o1.16>  EBI            <0=> Secure <1=> Non-secure
 //   <o2.00>  WWDT0          <0=> Secure <1=> Non-secure
 //   <o3.00>  WWDT1          <0=> Secure <1=> Non-secure

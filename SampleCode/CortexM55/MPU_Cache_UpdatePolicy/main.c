@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief   To configure memory region as write-back or write-through region
+ * @brief   Configure memory region as write-back or write-through region
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -15,7 +15,7 @@
  * Reference: https://www.keil.com/pack/doc/CMSIS/Core/html/group__mpu8__functions.html
  */
 
-/* Base address and size of cacheable buffer must be 32 byte aligned */
+/* Base address and size of cacheable buffer must be 32-byte aligned */
 #define TEST_BUF_SIZE       (1024)
 uint32_t g_au32CachedBuf_WT[DCACHE_ALIGN_LINE_SIZE(TEST_BUF_SIZE / 4)] __ALIGNED(DCACHE_LINE_SIZE);
 uint32_t g_au32CachedBuf_WB[DCACHE_ALIGN_LINE_SIZE(TEST_BUF_SIZE / 4)] __ALIGNED(DCACHE_LINE_SIZE);
@@ -127,6 +127,8 @@ int32_t PDMA_Transfer(uint32_t u32Chan, uint32_t *pu32SrcBuf, uint32_t u32TranBy
     return 0;
 }
 
+#define CLEAN_DCACHE(set)   (set)
+
 int32_t TestCacheWrite(uint32_t *pu32BaseAddr, uint32_t u32ByteSize, uint32_t bWriteBack, uint32_t bClean)
 {
     uint8_t  au8TestPattern[] = { 0x55, 0xAA };
@@ -230,48 +232,66 @@ int32_t TestCacheWrite(uint32_t *pu32BaseAddr, uint32_t u32ByteSize, uint32_t bW
     return 0;
 }
 
+#define NT(set)     (set)   /* Non-Transient: Set to 1 for non-transient data.                      */
+#define WB(set)     (set)   /* Write-Back: Set to 1 to use write-back update policy.                */
+#define RA(set)     (set)   /* Read Allocation: Set to 1 to use cache allocation on read miss.      */
+#define WA(set)     (set)   /* Write Allocation: Set to 1 to use cache allocation on write miss.    */
+
+#define RO(set)     (set)   /* Read-Only: Set to 1 for a read-only memory region.                   */
+#define NP(set)     (set)   /* Non-Privileged: Set to 1 for a non-privileged memory region.         */
+#define XN(set)     (set)   /* eXecute Never: Set to 1 for a non-executable memory region.          */
+
 void MPU_TestWB_WT(void)
 {
-    /* Disable I-Cache and D-Cache */
+    uint8_t     u8AttrIdxWT = 1,
+                u8AttrIdxWB = 2;
+    uint32_t    u32RegionWT = 1,
+                u32RegionWB = 2;
+
+    /* Disable I-Cache and D-Cache before config MPU */
     SCB_DisableICache();
     SCB_DisableDCache();
 
     /* Configure MPU memory attribute */
-    /* Attribute 1
+    /* Attribute Write-Through
      * Memory Type = Normal
      * Attribute   = Innre NT, WT, RA, WA
      */
-    ARM_MPU_SetMemAttr(1UL, ARM_MPU_ATTR(ARM_MPU_ATTR_MEMORY_(1, 0, 1, 1), ARM_MPU_ATTR_MEMORY_(1, 0, 1, 1)));
+    ARM_MPU_SetMemAttr(u8AttrIdxWT, ARM_MPU_ATTR(ARM_MPU_ATTR_MEMORY_(NT(TRUE), WB(FALSE), RA(TRUE), WA(TRUE)), ARM_MPU_ATTR_MEMORY_(NT(TRUE), WB(FALSE), RA(TRUE), WA(TRUE))));
     /*
-     * Attribute 2
+     * Attribute Write-Back
      * Memory Type = Normal
      * Attribute   = Innre NT, WB, RA, WA
      */
-    ARM_MPU_SetMemAttr(2UL, ARM_MPU_ATTR(ARM_MPU_ATTR_MEMORY_(1, 1, 1, 1), ARM_MPU_ATTR_MEMORY_(1, 1, 1, 1)));
+    ARM_MPU_SetMemAttr(u8AttrIdxWB, ARM_MPU_ATTR(ARM_MPU_ATTR_MEMORY_(NT(TRUE), WB(TRUE), RA(TRUE), WA(TRUE)), ARM_MPU_ATTR_MEMORY_(NT(TRUE), WB(TRUE), RA(TRUE), WA(TRUE))));
 
     /* Configure MPU memory regions */
     /*
-     * Region 1 (SRAM Memory Space)
+     * Region Write-Through (SRAM Memory Space)
      * Start address = g_au32CachedBuf_WT
      * Shareablity   = Non-shareable
      * Size          = TEST_BUF_SIZE
-     * Permission    = Cacheable with Write Through
+     * Permission    = Cacheable with Write-Through
      */
-    ARM_MPU_SetRegion(1UL,                                                       /* Region 0 */
-                      ARM_MPU_RBAR((uint32_t)g_au32CachedBuf_WT, ARM_MPU_SH_NON, 0, 0, 1),     /* Non-shareable, read/write, privileged, non-executable */
-                      ARM_MPU_RLAR((uint32_t)g_au32CachedBuf_WT + TEST_BUF_SIZE - 1, 1)        /* Use Attr 1 */
+    ARM_MPU_SetRegion(u32RegionWT,
+                      /*           Base address                  Non-shareable,  read/write, privileged, non-executable */
+                      ARM_MPU_RBAR((uint32_t)g_au32CachedBuf_WT, ARM_MPU_SH_NON, RO(FALSE),  NP(FALSE),  XN(TRUE)),
+                      /*           Limit address                                     Attribute index */
+                      ARM_MPU_RLAR((uint32_t)g_au32CachedBuf_WT + TEST_BUF_SIZE - 1, u8AttrIdxWT)
                      );
 
     /*
-     * Region 2 (SRAM Memory Space)
+     * Region Write-Back (SRAM Memory Space)
      * Start address = g_au32CachedBuf_WB
      * Shareablity   = Non-shareable
      * Size          = TEST_BUF_SIZE
-     * Permission    = Cacheable with Write Back
+     * Permission    = Cacheable with Write-Back
      */
-    ARM_MPU_SetRegion(2UL,                                                       /* Region 1 */
-                      ARM_MPU_RBAR((uint32_t)g_au32CachedBuf_WB, ARM_MPU_SH_NON, 0, 0, 1),     /* Non-shareable, read/write, privileged, non-executable */
-                      ARM_MPU_RLAR((uint32_t)g_au32CachedBuf_WB + TEST_BUF_SIZE - 1, 2)        /* Use Attr 2 */
+    ARM_MPU_SetRegion(u32RegionWB,
+                      /*           Base address                  Non-shareable,  read/write, privileged, non-executable */
+                      ARM_MPU_RBAR((uint32_t)g_au32CachedBuf_WB, ARM_MPU_SH_NON, RO(FALSE),  NP(FALSE),  XN(TRUE)),
+                      /*           Limit address                                     Attribute index */
+                      ARM_MPU_RLAR((uint32_t)g_au32CachedBuf_WB + TEST_BUF_SIZE - 1, u8AttrIdxWB)
                      );
 
     /* Enable MPU */
@@ -281,40 +301,40 @@ void MPU_TestWB_WT(void)
     SCB_EnableICache();
 
     printf("\n==============================================\n");
-    printf(" Memory Region 1 (SRAM Memory) configuration:\n");
+    printf(" Memory Region %d (SRAM Memory) configuration:\n", u32RegionWT);
     printf("==============================================\n");
     printf(" Start address: 0x%08X\n", (uint32_t)g_au32CachedBuf_WT);
     printf(" Size         : %d KB\n", (uint32_t)(TEST_BUF_SIZE / 1024));
     printf(" Memory Type  : Normal\n");
-    printf(" Permission   : Cacheable with Write Through\n");
+    printf(" Permission   : Cacheable with Write-Through\n");
     printf("----------------------------------------------\n");
 
-    printf("Press any key to test write through with memory region 0.\n");
+    printf("Press any key to test Write-Through with memory region %d.\n", u32RegionWT);
     getchar();
 
-    if (TestCacheWrite(g_au32CachedBuf_WT, TEST_BUF_SIZE, FALSE, FALSE) != 0)
+    if (TestCacheWrite(g_au32CachedBuf_WT, TEST_BUF_SIZE, WB(FALSE), CLEAN_DCACHE(FALSE)) != 0)
         printf("[Error] !\n");
 
     printf("\n==============================================\n");
-    printf(" Memory Region 2 (SRAM Memory) configuration:\n");
+    printf(" Memory Region %d (SRAM Memory) configuration:\n", u32RegionWB);
     printf("==============================================\n");
     printf(" Start address: 0x%08X\n", (uint32_t)g_au32CachedBuf_WB);
     printf(" Size         : %d KB\n", (uint32_t)(TEST_BUF_SIZE / 1024));
     printf(" Memory Type  : Normal\n");
-    printf(" Permission   : Cacheable with Write Back\n");
+    printf(" Permission   : Cacheable with Write-Back\n");
     printf("----------------------------------------------\n");
 
-    printf("Press any key to test write back with memory region 1.\n");
+    printf("Press any key to test Write-Back with memory region %d.\n", u32RegionWB);
     getchar();
 
-    if (TestCacheWrite(g_au32CachedBuf_WB, TEST_BUF_SIZE, TRUE, FALSE) != 0)
+    if (TestCacheWrite(g_au32CachedBuf_WB, TEST_BUF_SIZE, WB(TRUE), CLEAN_DCACHE(FALSE)) != 0)
         printf("[Error] !\n");
 
     printf("\n----------------------------------------------\n");
     printf(" CleanDCache after PDMA transfer\n");
     printf("----------------------------------------------\n");
 
-    if (TestCacheWrite(g_au32CachedBuf_WB, TEST_BUF_SIZE, TRUE, TRUE) != 0)
+    if (TestCacheWrite(g_au32CachedBuf_WB, TEST_BUF_SIZE, WB(TRUE), CLEAN_DCACHE(TRUE)) != 0)
         printf("[Error] !\n");
 }
 

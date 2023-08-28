@@ -151,10 +151,8 @@
  *----------------------------------------------------------------------------*/
 LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
     ER_ROM __RO_BASE __RO_SIZE  {                   ; load address = execution address
-        *.o (RESET, +First)
+        *.o (RESET, +First)                         ; Make sure reset_handler ends up in root segment
         * (InRoot$$Sections)
-        ; Make sure reset_handler ends up in root segment
-        startup_M55M1.o
         .ANY (+RO)
     }
 
@@ -181,13 +179,13 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
 
     DTCM_VTOR DTCM_START
     {
-        * (DTCM.VTOR)
+        .ANY (DTCM.VTOR)
     }
 
     DTCM AlignExpr(+0, 8)
     {
         .ANY (DTCM.Init)
-		.ANY (.bss.DTCM.ZeroInit)
+        .ANY (.bss.DTCM.ZeroInit)
     }
 
     ScatterAssert((ImageLength(DTCM_VTOR) + ImageLength(DTCM)) < (DTCM_SIZE - STACK_SIZE - __STACKSEAL_SIZE))	; ImageLength is uncompressed size
