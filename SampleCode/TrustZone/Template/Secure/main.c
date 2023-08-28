@@ -163,7 +163,8 @@ void Boot_NonSecure(uint32_t u32NonSecureBase)
         printf("No code in Non-secure region !\n");
         printf("CPU will halted at Non-secure state.\n");
 
-        /* Set a temporary Non-secure MSP in Non-secure region */
+        /* Set a temporary Non-secure MSP in Non-secure region here.
+           Normally it should set to  1st entry in the vector table of Non-secure fw. */
         __TZ_set_MSP_NS(NON_SECURE_SRAM_BASE + 512);
 
         /* Try to halted in Non-secure state (SRAM) */
