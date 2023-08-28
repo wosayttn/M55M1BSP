@@ -640,7 +640,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>GDMA_MemCopyINT.bin</state>
+                    <state>GDMA_TemplateTransfer.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -687,7 +687,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>Project.out</state>
+                    <state>GDMA_TemplateTransfer.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -984,7 +984,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>Project_import_lib.o</state>
+                    <state>GDMA_TemplateTransfer_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>

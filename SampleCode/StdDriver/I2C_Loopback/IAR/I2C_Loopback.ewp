@@ -686,7 +686,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>Project.out</state>
+                    <state>I2C_Loopback.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -983,7 +983,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>Project_import_lib.o</state>
+                    <state>I2C_Loopback_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>

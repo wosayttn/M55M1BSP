@@ -687,7 +687,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>Project.out</state>
+                    <state>GDMA_MemCopyINT.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -984,7 +984,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>Project_import_lib.o</state>
+                    <state>GDMA_MemCopyINT_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>

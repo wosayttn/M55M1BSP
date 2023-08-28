@@ -639,7 +639,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>I2C_Master.bin</state>
+                    <state>LPI2C_Master.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -686,7 +686,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>Project.out</state>
+                    <state>LPI2C_Master.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -983,7 +983,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>Project_import_lib.o</state>
+                    <state>LPI2C_Master_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
