@@ -1,28 +1,19 @@
-/****************************************************************************//**
+/**************************************************************************//**
  * @file    main.c
- * @version V1.0
- * @brief   Implement a code and execute in SRAM to program embedded Flash.
+ * @version V1.00
+ * @brief   Demonstrate how to initial SecureISP function in secure code.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <stdio.h>
-#include <string.h>
 #include "NuMicro.h"
+#include "hid_transfer.h"
 
-/* Vector table has been placed in DTCM by default. */
-extern int32_t FlashAccess_OnSRAM(void);
+extern int32_t ExecuteSecureISP(void);
 
-volatile uint32_t g_u32Ticks = 0;
-
-/* Declared NVT_ITCM to place SysTick_Handler in ITCM */
-NVT_ITCM void SysTick_Handler(void)
-{
-    if ((g_u32Ticks++ % 1000) == 0)
-    {
-        printf("[%s@0x%08X] Time elapsed: %d\n", __func__, __PC(), (g_u32Ticks / 1000));
-    }
-}
+void SYS_Init(void);
+void UART0_Init(void);
 
 void SYS_Init(void)
 {
@@ -32,6 +23,12 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
+    /* Enable internal RC 48MHz clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
+
+    /* Waiting for internal RC 48MHz clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
+
     /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
@@ -51,41 +48,23 @@ void SYS_Init(void)
     SYS_LockReg();
 }
 
+/*---------------------------------------------------------------------------------------------------------*/
+/*  Main Function                                                                                          */
+/*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t  i;
-    uint32_t *pu32Vectors = (uint32_t *)FMC_APROM_BASE;
 
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-    /* Init Debug UART for print message */
+    /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
-    printf("+--------------------------------------------+\n");
-    printf("| M55M1 FMC Code Execute in SRAM Sample Code |\n");
-    printf("+--------------------------------------------+\n");
+    printf("\nCPU @ %d Hz\n\n", SystemCoreClock);
+    printf("[ SecureISP Demo (VECMAP: 0x%x) ]\n\n", FMC_GetVECMAP());
 
-    /* SysTick used for test interrupts in SRAM */
-    SysTick_Config(SystemCoreClock / 1000);
+    ExecuteSecureISP();
 
-    /*
-       This sample code demonstrates how to make a sub-routine code executed in SRAM.
-    */
-
-    printf("Will branch to SRAM address: 0x%08X\n", (uint32_t)FlashAccess_OnSRAM);
-
-    if (FlashAccess_OnSRAM())
-    {
-        printf("Flash access return error !\n");
-    }
-    else
-    {
-        printf("Flash access return ok.\n");
-    }
-
-    printf("\nEnd of FMC Sample Code\n");
-
-    while (1);
+    while (1) {}
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
