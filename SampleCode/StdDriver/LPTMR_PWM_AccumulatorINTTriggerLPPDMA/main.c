@@ -150,15 +150,9 @@ int main(void)
     /* Change Timer to PWM counter mode */
     LPTPWM_ENABLE_PWM_MODE(LPTMR0);
 
-    /* Set Low Power Timer0 PWM mode as independent mode */
-    //LPTPWM_ENABLE_INDEPENDENT_MODE(LPTMR0);
-
     /* Set Low Power Timer0 PWM output frequency is 18000 Hz, duty 50% in up count type */
     LPTPWM_ConfigOutputFreqAndDuty(LPTMR0, 18000, 50);
     u32InitPeriod = LPTPWM_GET_PERIOD(LPTMR0);
-
-    /* Set Timer0 PWM down count type */
-    //LPTPWM_SET_COUNTER_TYPE(LPTMR0, LPTPWM_DOWN_COUNT);
 
     /* Enable output of Low Power Timer0 PWM_CH0 */
     LPTPWM_ENABLE_OUTPUT(LPTMR0, LPTPWM_CH0);

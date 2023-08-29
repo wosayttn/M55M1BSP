@@ -124,7 +124,7 @@ int main(void)
     u32DeadTime = u32CMP/2;
 
     printf("# Timer0 PWM output frequency is 600 Hz and duty 40%%.\n");
-    printf("    - Counter clock source:    PCLK0 \n");
+    printf("    - Counter clock source:    PCLK \n");
     printf("    - Counter clock prescaler: %d \n", u32Prescaler);
     printf("    - Counter type:            Up count type \n");
     printf("    - Operation mode:          Complementary in auto-reload mode \n");
@@ -135,7 +135,7 @@ int main(void)
 
     /* Configure Timer1 PWM */
     printf("# Timer1 PWM output frequency is 600 Hz and duty 20%% with dead-time insertion.\n");
-    printf("    - Counter clock source:    PCLK0 \n");
+    printf("    - Counter clock source:    PCLK \n");
     printf("    - Counter clock prescaler: %d \n", u32Prescaler);
     printf("    - Counter type:            Up count type \n");
     printf("    - Operation mode:          Complementary in auto-reload mode \n");

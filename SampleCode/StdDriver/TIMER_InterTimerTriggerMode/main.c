@@ -2,7 +2,7 @@
  * @file    main.c
  * @version V1.00
  * @brief   Use the timer pin PB.5 to demonstrate inter timer trigger mode function.
- *           Also display the measured input frequency to UART console.
+ *          Also display the measured input frequency to UART console.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -32,7 +32,7 @@ static volatile int complete = 0;
 // capture value from Timer 1, not timer 0.
 NVT_ITCM void TIMER1_IRQHandler(void)
 {
-    // Timer clock is 100MHz, counter value records the duration for 100 event counts.
+    // Timer counter value records the duration for 100 event counts.
     printf("Event frequency is %d Hz\n", 100000000 / TIMER_GetCounter(TIMER1) * 100);
     TIMER_ClearCaptureIntFlag(TIMER1);
     
@@ -121,11 +121,11 @@ int main(void)
     // Give a dummy target frequency here. Will over write prescale and compare value with macro
     TIMER_Open(TIMER0, TIMER_ONESHOT_MODE, 100);
 
-    // Update prescale and compare value. Calculate average frequency every 1000 events
+    // Update prescale and compare value. Calculate average frequency every 100 events
     TIMER_SET_PRESCALE_VALUE(TIMER0, 0);
     TIMER_SET_CMP_VALUE(TIMER0, 100);
 
-    // Update Timer 1 prescale value. So Timer 0 clock is 96MHz
+    // Update Timer 1 prescale value.
     TIMER_SET_PRESCALE_VALUE(TIMER1, 0);
 
     // We need capture interrupt

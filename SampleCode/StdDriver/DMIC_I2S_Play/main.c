@@ -1,9 +1,9 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief   This sample uses DMIC as audio input(MIC) and I2S as audio output(SPK) .
- *              User can process audio data before output.
- *              Data have been transfered via PDMA/LPPDMA.
+ * @brief   This sample uses DMIC as audio input(MIC) and I2S as audio output(SPK).
+ *          User can process audio data before output.
+ *          Data have been transfered via PDMA/LPPDMA.
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
@@ -56,12 +56,16 @@ LPDSCT_T     sLPPDMA_DMIC[2];               // Provide LPPDMA description for pi
 
 void DMIC_Init(S_BUFCTRL *psInBufCtrl)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
     // Select DMIC CLK source from PLL.
     CLK_SetModuleClock(DMIC0_MODULE, CLK_DMICSEL_DMIC0SEL_APLL1_DIV2, MODULE_NoMsk);
     // Enable DMIC clock.
     CLK_EnableModuleClock(DMIC0_MODULE);
     // DPWM IPReset.
     SYS_ResetModule(SYS_DMIC0RST);
+    /* Lock protected registers */
+    SYS_LockReg();
     // Set down sample rate 100 for quilty.(Suggest 96M used DMIC_CTL_DOWNSAMPLE_100_50 )
     DMIC_SET_DOWNSAMPLE(DMIC0, DMIC_DOWNSAMPLE_100);
     // Set DMIC sample rate.
@@ -139,12 +143,16 @@ DSCT_T     sPDMA_I2STX[2];                    // Provide PDMA description for pi
 
 void I2STX_Init(S_BUFCTRL *psOutBufCtrl)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
     // Select I2S CLK source from PCLK.
     CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_PCLK1, MODULE_NoMsk);
     // Enable I2S clock.
     CLK_EnableModuleClock(I2S0_MODULE);
     // I2S IPReset.
     SYS_ResetModule(SYS_I2S0RST);
+    /* Lock protected registers */
+    SYS_LockReg();
     // Open I2S0 hardware IP
     I2S_Open(I2S0, I2S_MODE_SLAVE, SAMPLE_RATE, I2S_DATABIT_16, I2S_STEREO, I2S_FORMAT_I2S);
     // I2S0 Configuration
@@ -268,6 +276,13 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
+    // PDMA/LPPDMA Initial.
+    // Enable PDMA clock.
+    CLK_EnableModuleClock(PDMA0_MODULE);
+    CLK_EnableModuleClock(LPPDMA0_MODULE);
+    // Reset PDMA module
+    SYS_ResetModule(SYS_PDMA0RST);
+    SYS_ResetModule(SYS_LPPDMA0RST);
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -287,13 +302,6 @@ int main(void)
     printf("System core clock = %d\n", SystemCoreClock);
     printf("DMIC as audio input(MIC) and I2S as audio output(SPK).\n");
 
-    // PDMA/LPPDMA Initial.
-    // Enable PDMA clock.
-    CLK_EnableModuleClock(PDMA0_MODULE);
-    CLK_EnableModuleClock(LPPDMA0_MODULE);
-    // Reset PDMA module
-    SYS_ResetModule(SYS_PDMA0RST);
-    SYS_ResetModule(SYS_LPPDMA0RST);
     // Enable PDMA's NVIC
     NVIC_EnableIRQ(PDMA0_IRQn);
     NVIC_EnableIRQ(LPPDMA_IRQn);

@@ -73,6 +73,8 @@ static void SYS_Init(void)
     /* Enable LPTMR module clock */
     CLK_EnableModuleClock(LPTMR0_MODULE);
 
+    /* Enable GPIO clock */
+    CLK_EnableModuleClock(GPIOB_MODULE);
     /* Set LPTMR toggle out pin */
     SET_LPTM0_PB5();
 

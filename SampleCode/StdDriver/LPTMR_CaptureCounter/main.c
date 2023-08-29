@@ -87,6 +87,8 @@ static void SYS_Init(void)
     CLK_EnableModuleClock(LPTMR0_MODULE);
     CLK_EnableModuleClock(LPTMR1_MODULE);
     CLK_EnableModuleClock(TMR3_MODULE);
+    /* Enable GPIO clock */
+    CLK_EnableModuleClock(GPIOB_MODULE);
     /* Set PB multi-function pin for LPTMR1 external capture pin */
     SET_LPTM1_EXT_PB14();
     /* Set multi-function pins for LPTMR0 toggle-output pin and LPTMR1 event counter pin */

@@ -2,8 +2,8 @@
  * @file    main.c
  * @version V1.00
  * @brief   Use LPTMR to wake up system from Power-down mode periodically.
- *           Please refer to the sample code PMC_PowerDown_MinCurrent to set
- *           the minimum current of the system in Power-down mode.
+ *          Please refer to the sample code PMC_PowerDown_MinCurrent to set
+ *          the minimum current of the system in Power-down mode.
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/

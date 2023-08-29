@@ -124,7 +124,7 @@ int main(void)
     /* Set compare value as large as possible, so don't need to worry about counter overrun too frequently. */
     LPTMR_SET_CMP_VALUE(LPTMR0, 0xFFFFFF);
 
-    /* Configure LPTMR0 free counting mode */
+    /* Configure LPTMR0 counter reset mode */
     LPTMR_EnableCapture(LPTMR0, LPTMR_CAPTURE_COUNTER_RESET_MODE, LPTMR_CAPTURE_EVENT_RISING);
 
     /* Set capture source from Internal event ACMP1 */

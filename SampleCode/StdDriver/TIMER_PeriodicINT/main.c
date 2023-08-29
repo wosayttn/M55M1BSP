@@ -155,7 +155,7 @@ int main(void)
     printf("    - Periodic mode             \n");
     printf("    - Interrupt enable          \n");
     printf("# Timer1 Settings:\n");
-    printf("    - Clock source is HCLK      \n");
+    printf("    - Clock source is PCLK      \n");
     printf("    - Time-out frequency is 2 Hz\n");
     printf("    - Periodic mode             \n");
     printf("    - Interrupt enable          \n");

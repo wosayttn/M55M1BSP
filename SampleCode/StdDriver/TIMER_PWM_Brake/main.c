@@ -32,7 +32,6 @@ NVT_ITCM void TIMER0_IRQHandler(void)
     // Clear brake interrupt flag
     SYS_UnlockReg();
     TPWM_ClearFaultBrakeIntFlag(TIMER0, TPWM_BRAKE_EDGE);
-    //TIMER0->PWMINTSTS1 = TIMER_PWMINTSTS1_BRKEIF0_Msk | TIMER_PWMINTSTS1_BRKEIF1_Msk | TIMER_PWMINTSTS1_BRKESTS0_Msk | TIMER_PWMINTSTS1_BRKESTS1_Msk;
     SYS_LockReg();
 }
 

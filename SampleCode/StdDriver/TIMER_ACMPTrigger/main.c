@@ -124,7 +124,7 @@ int main(void)
     // Set compare value as large as possible, so don't need to worry about counter overrun too frequently.
     TIMER_SET_CMP_VALUE(TIMER0, 0xFFFFFF);
 
-    // Configure Timer 0 free counting mode
+    // Configure Timer 0 counter reset mode
     TIMER_EnableCapture(TIMER0, TIMER_CAPTURE_COUNTER_RESET_MODE, TIMER_CAPTURE_EVENT_RISING);
 
     // Set capture source from ACMP1

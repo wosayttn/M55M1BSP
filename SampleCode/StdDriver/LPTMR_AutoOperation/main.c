@@ -85,10 +85,10 @@ void LPTMR_Trigger_Init(void)
 
 void LPPDMA_Init(void)
 {
-    /* Reset PDMA module */
+    /* Reset LPPDMA module */
     SYS_ResetModule(SYS_LPPDMA0RST);
 
-    /* Enable PDMA channels */
+    /* Enable LPPDMA channels */
     LPPDMA_Open(LPPDMA, 1<<LPTMR_LPPDMA_CH);
 
     /*=======================================================================
@@ -108,7 +108,7 @@ void LPPDMA_Init(void)
     LPPDMA_SetTransferAddr(LPPDMA, LPTMR_LPPDMA_CH, (uint32_t)&LPTMR0->CNT, LPPDMA_SAR_FIX, (uint32_t)s_au32CAPValue, LPPDMA_DAR_INC);
     /* Set request source; set basic mode. */
     LPPDMA_SetTransferMode(LPPDMA, LPTMR_LPPDMA_CH, LPPDMA_LPTMR0, FALSE, 0);
-    /* Single request type. SPI only support PDMA single request type. */
+    /* Single request type. LPTMR only support LPPDMA single request type. */
     LPPDMA_SetBurstType(LPPDMA, LPTMR_LPPDMA_CH, LPPDMA_REQ_SINGLE, 0);
     /* Enable Channel Transfer done interrupt */
     LPPDMA_EnableInt(LPPDMA, LPTMR_LPPDMA_CH, LPPDMA_INT_TRANS_DONE);
@@ -208,7 +208,7 @@ int main(void)
     printf("+-------------------------------------------------------------+\n");
     printf("\n");
     printf(" 1. Initialize LPTMR0 and LPPDMA. \n");
-    printf(" 2. Let system enter Powerr Mode. \n");
+    printf(" 2. Let system enter power-down Mode. \n");
     printf(" 3. LPTMR0 will trigger LPPDMA to do CNT data transfer. After finishing data transfer, \n");
     printf("    system will be woken up and the received data can be checked. \n");
 
