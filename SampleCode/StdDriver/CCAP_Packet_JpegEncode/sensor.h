@@ -3,7 +3,7 @@
  * @version  V3.00
  * @brief    Sensor driver
  *
- * SPDX-License-Identifier: Apache-2.0
+ * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #ifndef __SENSOR_H__

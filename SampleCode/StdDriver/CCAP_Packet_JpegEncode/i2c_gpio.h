@@ -4,7 +4,7 @@
  * @brief    Software I2C driver
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #ifndef _I2C_GPIO_H_
 #define _I2C_GPIO_H_
@@ -15,17 +15,15 @@ extern "C"
 {
 #endif
 
-#define     REG_GPIOA_OMD        0x40004000
-#define     REG_GPIOA_DOUT       0x40004008
-#define     REG_GPIOA_PIN        0x40004010
-#define     REG_GPIOA_PUEN       0x40004014
+#define REG_GPIOA_DOUT              (GPIOA_BASE + 0x8 )
+#define REG_GPIOA_PIN               (GPIOA_BASE + 0x10)
 
-#define E_SWI2C_WRITE_FAIL             0xFFFF0001
-#define E_SWI2C_PIN_UNAVAILABLE        0xFFFF0002
+#define E_SWI2C_WRITE_FAIL          0xFFFF0001
+#define E_SWI2C_PIN_UNAVAILABLE     0xFFFF0002
 
 // Acknowledgment type
-#define DrvI2C_Ack_No        0
-#define DrvI2C_Ack_Have        1
+#define DrvI2C_Ack_No               0
+#define DrvI2C_Ack_Have             1
 
 #define _SWI2C_SCK_SETHIGH(PortIndex, PinMask)       outp32(REG_GPIOA_DOUT+(PortIndex),inp32(REG_GPIOA_DOUT+(PortIndex))|PinMask)
 #define _SWI2C_SCK_SETLOW(PortIndex, PinMask)        outp32(REG_GPIOA_DOUT+(PortIndex),inp32(REG_GPIOA_DOUT+(PortIndex))&(~PinMask))
@@ -106,12 +104,3 @@ uint8_t SWI2C_Read_8bitSlaveAddr_16bitReg_8bitData(uint8_t uAddr, uint16_t uRegA
 #endif
 
 #endif
-
-
-
-
-
-
-
-
-

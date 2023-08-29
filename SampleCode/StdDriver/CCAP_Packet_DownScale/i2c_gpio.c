@@ -1,15 +1,14 @@
 /**************************************************************************//**
  * @file     i2c_gpio.c
- * @version  V3.00
+ * @version  V1.00
  * @brief    Software I2C driver
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdlib.h>
-#include "i2c_gpio.h"
 #include "NuMicro.h"
-
+#include "i2c_gpio.h"
 
 //-------------------
 // I2C functions
@@ -38,6 +37,7 @@ static void _SWI2C_Delay(
 )
 {
     volatile uint32_t i;
+
     if (pfntimedelay != NULL)
     {
         pfntimedelay(nCount);
@@ -57,20 +57,14 @@ int SWI2C_Open(
     PFN_SWI2C_TIMEDELY pfn_SWI2C_Delay
 )
 {
-    // switch pin function
+    // GPIO module clock should be enabled in SYS_Init()
+    // Set SCK and SDA pin
     s_sChannel.u32SCKPortIndex = u32SCKPortIndex;
     s_sChannel.u32SCKPinMask   = u32SCKPinMask;
     s_sChannel.u32SDAPortIndex = u32SDAPortIndex;
     s_sChannel.u32SDAPinMask   = u32SDAPinMask;
 
-    // 1.Check I/O pins. If I/O pins are used by other IPs, return error code.
-    // 2.Enable IP clock
-    // 3.Reset IP
-    // 4.Configure IP according to inputted arguments.
-    // 5.Enable IP I/O pins
-    // eq:GPIOB pin1, pin2 as output mode ( DRVGPIO_PIN1 | DRVGPIO_PIN2)
-    // eq:Let clock pin and data pin to be high
-
+    // Set output mode and output high and ouput one dummy pulse to check pin output
     _SWI2C_SCK_SETOUT(s_sChannel.u32SCKPortIndex, s_sChannel.u32SCKPinMask);
     _SWI2C_SDA_SETOUT(s_sChannel.u32SDAPortIndex, s_sChannel.u32SDAPinMask);
     _SWI2C_SCK_SETHIGH(s_sChannel.u32SCKPortIndex, s_sChannel.u32SCKPinMask);
@@ -83,15 +77,13 @@ int SWI2C_Open(
     _SWI2C_SDA_SETHIGH(s_sChannel.u32SDAPortIndex, s_sChannel.u32SDAPinMask);
 
     pfntimedelay = pfn_SWI2C_Delay;
-    // 6.Return 0 to present success
-    return 0;
 
+    return 0;
 }    //DrvI2C_Open()
 
 void SWI2C_Close(void)
 {
-    // 1.Disable IP I/O pins
-    // 2.Disable IP clock
+    // Disable IP I/O pins or IP clock if necessary
 }
 
 void SWI2C_SendStart(void)
@@ -137,8 +129,9 @@ int SWI2C_WriteByte(
 )
 {
     uint8_t   u8DataCount;
-    uint32_t     i32HoldPinValue;
+    uint32_t  u32HoldPinValue;
     _SWI2C_SDA_SETOUT(s_sChannel.u32SDAPortIndex, s_sChannel.u32SDAPinMask);
+
     // Write data to device and the most signification bit(MSB) first
     for (u8DataCount = 0; u8DataCount < u8Length; u8DataCount++)
     {
@@ -146,6 +139,7 @@ int SWI2C_WriteByte(
             _SWI2C_SDA_SETHIGH(s_sChannel.u32SDAPortIndex, s_sChannel.u32SDAPinMask);
         else
             _SWI2C_SDA_SETLOW(s_sChannel.u32SDAPortIndex, s_sChannel.u32SDAPinMask);
+
         _SWI2C_Delay(3);
         _SWI2C_SCK_SETHIGH(s_sChannel.u32SCKPortIndex, s_sChannel.u32SCKPinMask);
         u8Data <<= 1;
@@ -165,10 +159,10 @@ int SWI2C_WriteByte(
     _SWI2C_Delay(3);
     _SWI2C_SCK_SETHIGH(s_sChannel.u32SCKPortIndex, s_sChannel.u32SCKPinMask);
     _SWI2C_Delay(2);
-    i32HoldPinValue = _SWI2C_SDA_GETVALUE(s_sChannel.u32SDAPortIndex, s_sChannel.u32SDAPinMask);
+    u32HoldPinValue = _SWI2C_SDA_GETVALUE(s_sChannel.u32SDAPortIndex, s_sChannel.u32SDAPinMask);
     _SWI2C_SCK_SETLOW(s_sChannel.u32SCKPortIndex, s_sChannel.u32SCKPinMask);
     _SWI2C_Delay(2);
-    return (i32HoldPinValue == 0 ? E_SWI2C_WRITE_FAIL : 0);
+    return (u32HoldPinValue == 0 ? E_SWI2C_WRITE_FAIL : 0);
 }
 
 //-------------------------------
@@ -182,18 +176,22 @@ uint32_t SWI2C_ReadByte(
     uint8_t    u8DataCount;
 
     _SWI2C_SDA_SETIN(s_sChannel.u32SDAPortIndex, s_sChannel.u32SDAPinMask);
+
     // Read data from slave device and the most signification bit(MSB) first
     for (u8DataCount = 0; u8DataCount < u8Length; u8DataCount++)
     {
         u32Data = u32Data << 1;
         _SWI2C_Delay(3);
         _SWI2C_SCK_SETHIGH(s_sChannel.u32SCKPortIndex, s_sChannel.u32SCKPinMask);
+
         if (_SWI2C_SDA_GETVALUE(s_sChannel.u32SDAPortIndex, s_sChannel.u32SDAPinMask) == s_sChannel.u32SDAPinMask)
             u32Data = u32Data | 0x01;
+
         _SWI2C_Delay(2);
         _SWI2C_SCK_SETLOW(s_sChannel.u32SCKPortIndex, s_sChannel.u32SCKPinMask);
         _SWI2C_Delay(2);
     }
+
     // No write Ack
     if (u8AckType == DrvI2C_Ack_No)
         return u32Data;
@@ -219,6 +217,7 @@ uint8_t SWI2C_Slave_ReadByte(
 {
     uint8_t u8Data, u8DataCount;
     u8Data = 0;
+
     // Read data from device and the most signification bit(MSB) first
     for (u8DataCount = 0; u8DataCount < 8;)
     {
@@ -230,6 +229,7 @@ uint8_t SWI2C_Slave_ReadByte(
             {
 
                 u8Data = u8Data << 1;
+
                 if (_SWI2C_SDA_GETVALUE(s_sChannel.u32SDAPortIndex, s_sChannel.u32SDAPinMask) == s_sChannel.u32SDAPinMask)
                     u8Data = u8Data | 0x01;
 
@@ -237,9 +237,11 @@ uint8_t SWI2C_Slave_ReadByte(
             }
         }
     }
+
     //  No Ack
     if (u8AckType == DrvI2C_Ack_No)
         return u8Data;
+
     // Assert ACK bit
 
     _SWI2C_Delay(2);
@@ -255,6 +257,7 @@ uint8_t SWI2C_Slave_ReadByte(
 static void Delay(uint32_t nCount)
 {
     volatile uint32_t i;
+
     for (; nCount != 0; nCount--)
         for (i = 0; i < 100; i++);
 }
@@ -263,9 +266,11 @@ static void Delay(uint32_t nCount)
 uint8_t SWI2C_Write_8bitSlaveAddr_8bitReg_8bitData(uint8_t uAddr, uint8_t uRegAddr, uint8_t uData)
 {
     // 3-Phase(ID address, register address, data(8bits)) write transmission
-    volatile uint8_t u32Delay = 0x50;
+    volatile uint32_t u32Delay = 0x50;
     SWI2C_SendStart();
+
     while (u32Delay--);
+
     if ((SWI2C_WriteByte(uAddr, DrvI2C_Ack_Have, 8) == FALSE) ||         // Write ID address to sensor
             (SWI2C_WriteByte(uRegAddr, DrvI2C_Ack_Have, 8) == FALSE) || // Write register address to sensor
             (SWI2C_WriteByte(uData, DrvI2C_Ack_Have, 8) == FALSE))     // Write data to sensor
@@ -273,12 +278,14 @@ uint8_t SWI2C_Write_8bitSlaveAddr_8bitReg_8bitData(uint8_t uAddr, uint8_t uRegAd
         SWI2C_SendStop();
         return FALSE;
     }
+
     SWI2C_SendStop();
 
     if (uRegAddr == 0x12 && (uData & 0x80) != 0)
     {
         Delay(1000);
     }
+
     return TRUE;
 }
 
@@ -329,7 +336,9 @@ uint8_t SWI2C_Write_8bitSlaveAddr_16bitReg_8bitData(uint8_t uAddr, uint16_t uReg
     // 3-Phase(ID address, register address, data(8bits)) write transmission
     volatile uint8_t u32Delay = 0x50;
     SWI2C_SendStart();
+
     while (u32Delay--);
+
     if ((SWI2C_WriteByte(uAddr, DrvI2C_Ack_Have, 8) == FALSE) ||       // Write ID address to sensor
             (SWI2C_WriteByte(uRegAddr >> 8, DrvI2C_Ack_Have, 8) == FALSE) || // Write register addressH to sensor
             (SWI2C_WriteByte(uRegAddr & 0xff, DrvI2C_Ack_Have, 8) == FALSE) || // Write register addressL to sensor
@@ -338,11 +347,15 @@ uint8_t SWI2C_Write_8bitSlaveAddr_16bitReg_8bitData(uint8_t uAddr, uint16_t uReg
         SWI2C_SendStop();
         return FALSE;
     }
+
     SWI2C_SendStop();
 
     if (uRegAddr == 0x12 && (uData & 0x80) != 0)
     {
         Delay(1000);
     }
+
     return TRUE;
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

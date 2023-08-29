@@ -5,7 +5,7 @@
  *           store captured image from NT99141 sensor to SRAM and
  *           encode the image to jpeg.
  *
- * SPDX-License-Identifier: Apache-2.0
+ * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <stdio.h>
@@ -28,7 +28,7 @@ NVT_ITCM void CCAP_IRQHandler(void)
 {
     uint32_t u32IntStatus = CCAP_GET_INT_STS();
 
-    if (CCAP_IsIntEnabled(CCAP_INTEN_VIEN_Msk) && (u32IntStatus & CCAP_INTSTS_VINTF_Msk) == CCAP_INTSTS_VINTF_Msk)
+    if (CCAP_IsIntEnabled(CCAP_INT_VIEN_ENABLE) && (u32IntStatus & CCAP_INTSTS_VINTF_Msk) == CCAP_INTSTS_VINTF_Msk)
     {
 #ifdef NVT_DCACHE_ON
         /* Invalidate data cache of received frame buffer.  */
@@ -38,12 +38,12 @@ NVT_ITCM void CCAP_IRQHandler(void)
         CCAP_CLR_INT_FLAG(CCAP_INTSTS_VINTF_Msk);   /* Clear Frame end interrupt */
     }
 
-    if (CCAP_IsIntEnabled(CCAP_INTEN_ADDRMIEN_Msk) && (u32IntStatus & CCAP_INTSTS_ADDRMINTF_Msk) == CCAP_INTSTS_ADDRMINTF_Msk)
+    if (CCAP_IsIntEnabled(CCAP_INT_ADDRMIEN_ENABLE) && (u32IntStatus & CCAP_INTSTS_ADDRMINTF_Msk) == CCAP_INTSTS_ADDRMINTF_Msk)
     {
         CCAP_CLR_INT_FLAG(CCAP_INTSTS_ADDRMINTF_Msk);   /* Clear Address match interrupt */
     }
 
-    if (CCAP_IsIntEnabled(CCAP_INTEN_VIEN_Msk) && (u32IntStatus & CCAP_INTSTS_MEINTF_Msk) == CCAP_INTSTS_MEINTF_Msk)
+    if (CCAP_IsIntEnabled(CCAP_INT_MEIEN_ENABLE) && (u32IntStatus & CCAP_INTSTS_MEINTF_Msk) == CCAP_INTSTS_MEINTF_Msk)
     {
         CCAP_CLR_INT_FLAG(CCAP_INTSTS_MEINTF_Msk);     /* Clear Memory error interrupt */
     }
@@ -87,8 +87,8 @@ int32_t PacketFormatDownScale(S_SENSOR_INFO *psSensorInfo)
     /* Enable External CCAP Interrupt */
     NVIC_EnableIRQ(CCAP_IRQn);
 
-    /* Enable External CCAP Interrupt */
-    CCAP_EnableInt(CCAP_INTEN_VIEN_Msk);
+    /* Enable CCAP Frame End Interrupt */
+    CCAP_EnableInt(CCAP_INT_VIEN_ENABLE);
 
     /* Set Vsync polarity, Hsync polarity, pixel clock polarity, Sensor Format and Order */
     CCAP_Open(psSensorInfo->m_u32Polarity, psSensorInfo->m_u32InputFormat, CCAP_PAR_OUTFMT_ONLY_Y);
@@ -145,6 +145,9 @@ void SYS_Init(void)
 
     /* Enable UART0 module clock */
     SetDebugUartCLK();
+
+    /* Enable module clock */
+    CLK_EnableModuleClock(GPIOH_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -206,3 +209,5 @@ int32_t main(void)
 
     while (1);
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

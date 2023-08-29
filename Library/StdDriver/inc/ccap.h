@@ -157,18 +157,45 @@ extern "C"
  *
  * @details   Clear Camera Capture Interface interrupt flag
  */
-#define CCAP_CLR_INT_FLAG(u32IntMask) (CCAP->INTSTS |= (u32IntMask))
+#define CCAP_CLR_INT_FLAG(u32IntMask) (CCAP->INTSTS = (u32IntMask))
 
 /**
- * @brief     Get CCAP Interrupt status
- *
- * @param     None
+ * @brief     Get CCAP Interrupt Flag
  *
  * @return    CCAP interrupt flag
- *
- * @details   Get Camera Capture Interface interrupt status.
  */
 #define CCAP_GET_INT_STS() (CCAP->INTSTS)
+
+/**
+ * @brief     Get CCAP Wake-up Flag
+ *
+ * @return    CCAP Wake-up flag
+ */
+#define CCAP_GET_WAKEUP_FLAG()  ((CCAP->MDTRG_WK >> CCAP_MDTRG_WK_WKF_Pos) & CCAP_MDTRG_WK_WKF_Msk)
+
+/**
+ * @brief     Clear CCAP Wake-up Flag
+ */
+#define CCAP_CLR_WAKEUP_FLAG()  (CCAP->MDTRG_WK = CCAP_MDTRG_WK_WKF_Msk)
+
+/**
+ * @brief     Get CCAP Wake-up Source
+ *
+ * @return    CCAP Wake-up Source
+ *            0: LPTMR0
+ *            1: LPTMR1
+ *            2: TTMR0
+ *            3: TTMR1
+ */
+#define CCAP_GET_WAKEUP_SRC()   ((CCAP->MDTRG_WK >> CCAP_MDTRG_WK_TRGSEL_Pos) & CCAP_MDTRG_WK_TRGSEL_Msk)
+
+/**
+ * @brief     Get CCAP Wake-up Function
+ *
+ * @return    CCAP Wake-up Function Enable State
+ *            0: Disabled, 1: Enabled
+ */
+#define CCAP_GET_WAKEUP_FUNC()  ((CCAP->MDTRG_WK >> CCAP_MDTRG_WK_WKEN_Pos) & CCAP_MDTRG_WK_WKEN_Msk)
 
 /**
  * @brief     Enable CCAP Motion Detection Window
@@ -327,7 +354,8 @@ __STATIC_INLINE void CCAP_Close(void)
  *                         - \ref CCAP_INT_MDIEN_MODE2_ENABLE
  *
  * @details    This function is used to enable Video Frame End Interrupt,
- *             Bus Master Transfer Error Interrupt and Memory Address Match Interrupt.
+ *             Bus Master Transfer Error Interrupt, Memory Address Match Interrupt
+ *             and Motion Detection Modes Interrupt.
  */
 __STATIC_INLINE void CCAP_EnableInt(uint32_t u32IntMask)
 {
@@ -339,13 +367,15 @@ __STATIC_INLINE void CCAP_EnableInt(uint32_t u32IntMask)
  * @brief      Disable CCAP Interrupt
  *
  * @param[in]  u32IntMask  Interrupt settings. It could be
- *                         - \ref CCAP_INTEN_VIEN_Msk
- *                         - \ref CCAP_INTEN_MEIEN_Msk
- *                         - \ref CCAP_INTEN_ADDRMIEN_Msk
- *                         - \ref CCAP_INTEN_MDIEN_Msk
+ *                         - \ref CCAP_INT_VIEN_ENABLE
+ *                         - \ref CCAP_INT_MEIEN_ENABLE
+ *                         - \ref CCAP_INT_ADDRMIEN_ENABLE
+ *                         - \ref CCAP_INT_MDIEN_MODE1_ENABLE
+ *                         - \ref CCAP_INT_MDIEN_MODE2_ENABLE
  *
  * @details    This function is used to disable Video Frame End Interrupt,
- *             Bus Master Transfer Error Interrupt and Memory Address Match Interrupt.
+ *             Bus Master Transfer Error Interrupt, Memory Address Match Interrupt
+ *             and Motion Detection Modes Interrupt.
  */
 __STATIC_INLINE void CCAP_DisableInt(uint32_t u32IntMask)
 {
@@ -353,20 +383,20 @@ __STATIC_INLINE void CCAP_DisableInt(uint32_t u32IntMask)
 }
 
 /**
- * @brief      Disable CCAP Interrupt
+ * @brief      Get CCAP Interrupt Enable State
  *
  * @param[in]  u32IntMask  Interrupt settings. It could be
- *                         - \ref CCAP_INTEN_VIEN_Msk
- *                         - \ref CCAP_INTEN_MEIEN_Msk
- *                         - \ref CCAP_INTEN_ADDRMIEN_Msk
- *                         - \ref CCAP_INTEN_MDIEN_Msk
+ *                         - \ref CCAP_INT_VIEN_ENABLE
+ *                         - \ref CCAP_INT_MEIEN_ENABLE
+ *                         - \ref CCAP_INT_ADDRMIEN_ENABLE
+ *                         - \ref CCAP_INT_MDIEN_MODE1_ENABLE
+ *                         - \ref CCAP_INT_MDIEN_MODE2_ENABLE
  *
- * @details    This function is used to disable Video Frame End Interrupt,
- *             Bus Master Transfer Error Interrupt and Memory Address Match Interrupt.
+ * @details    This function is used to get CCAP interrupt is enabled or not.
  */
 __STATIC_INLINE uint32_t CCAP_IsIntEnabled(uint32_t u32IntMask)
 {
-    return CCAP->INTEN;
+    return (CCAP->INTEN & u32IntMask);
 }
 
 /**

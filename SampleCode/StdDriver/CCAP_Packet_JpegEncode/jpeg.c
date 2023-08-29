@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     jepg.c
- * @version  V3.00
+ * @version  V1.00
  * @brief    JPEG driver
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -86,3 +86,5 @@ void JpegEncode(unsigned char *image, unsigned char *jBuf, unsigned long *jSize,
            (unsigned int)jBuf + (unsigned int)*jSize,
            *jSize);
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

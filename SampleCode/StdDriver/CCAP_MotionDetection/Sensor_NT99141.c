@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     Sensor_nt99141.c
- * @version  V3.00
+ * @version  V1.00
  * @brief    NT99141 sensor driver
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -125,3 +125,5 @@ int32_t InitNT99141_VGA_YUV422(uint32_t u32Param)
 
     return TRUE;
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

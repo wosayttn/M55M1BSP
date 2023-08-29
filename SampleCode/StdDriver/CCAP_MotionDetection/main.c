@@ -4,7 +4,7 @@
  * @brief    Demo how to setup CCAP motion detection function to wakeup system
  *           when motion is detected in specified regions under power down mode
  *
- * SPDX-License-Identifier: Apache-2.0
+ * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <stdio.h>
@@ -24,14 +24,14 @@ volatile uint32_t g_u32FramePass = 0;
 /*------------------------------------------------------------------------------------------*/
 /*  CCAP_IRQHandler                                                                         */
 /*------------------------------------------------------------------------------------------*/
-void CCAP_IRQHandler(void)
+NVT_ITCM void CCAP_IRQHandler(void)
 {
     uint32_t u32IntStatus;
 
     CLK_WaitModuleClockReady(CCAP0_MODULE);         /* TESTCHIP_ONLY */
     u32IntStatus = CCAP_GET_INT_STS();
 
-    if (CCAP_IsIntEnabled(CCAP_INTEN_VIEN_Msk) && (u32IntStatus & CCAP_INTSTS_VINTF_Msk) == CCAP_INTSTS_VINTF_Msk)
+    if (CCAP_IsIntEnabled(CCAP_INT_VIEN_ENABLE) && (u32IntStatus & CCAP_INTSTS_VINTF_Msk) == CCAP_INTSTS_VINTF_Msk)
     {
 #ifdef NVT_DCACHE_ON
         /* Invalidate data cache of received frame buffer.  */
@@ -41,23 +41,23 @@ void CCAP_IRQHandler(void)
         CCAP_CLR_INT_FLAG(CCAP_INTSTS_VINTF_Msk);   /* Clear Frame end interrupt */
     }
 
-    if (CCAP_IsIntEnabled(CCAP_INTEN_ADDRMIEN_Msk) && (u32IntStatus & CCAP_INTSTS_ADDRMINTF_Msk) == CCAP_INTSTS_ADDRMINTF_Msk)
+    if (CCAP_IsIntEnabled(CCAP_INT_ADDRMIEN_ENABLE) && (u32IntStatus & CCAP_INTSTS_ADDRMINTF_Msk) == CCAP_INTSTS_ADDRMINTF_Msk)
     {
         CCAP_CLR_INT_FLAG(CCAP_INTSTS_ADDRMINTF_Msk);   /* Clear Address match interrupt */
     }
 
-    if (CCAP_IsIntEnabled(CCAP_INTEN_VIEN_Msk) && (u32IntStatus & CCAP_INTSTS_MEINTF_Msk) == CCAP_INTSTS_MEINTF_Msk)
+    if (CCAP_IsIntEnabled(CCAP_INT_MEIEN_ENABLE) && (u32IntStatus & CCAP_INTSTS_MEINTF_Msk) == CCAP_INTSTS_MEINTF_Msk)
     {
         CCAP_CLR_INT_FLAG(CCAP_INTSTS_MEINTF_Msk);     /* Clear Memory error interrupt */
     }
 
-    if (CCAP_IsIntEnabled(CCAP_INTEN_MDIEN_Msk) && (u32IntStatus & CCAP_INTSTS_MDINTF_Msk))
+    if (CCAP_IsIntEnabled(CCAP_INT_MDIEN_MODE1_ENABLE | CCAP_INT_MDIEN_MODE2_ENABLE) && (u32IntStatus & CCAP_INTSTS_MDINTF_Msk))
     {
-        CCAP->INTSTS |= CCAP_INTSTS_MDINTF_Msk;
+        CCAP_CLR_INT_FLAG(CCAP_INTSTS_MDINTF_Msk);
 
-        if ((CCAP->MDTRG_WK & CCAP_MDTRG_WK_WKEN_Msk) && (CCAP->MDTRG_WK & CCAP_MDTRG_WK_WKF_Msk))
+        if (CCAP_GET_WAKEUP_FUNC() && CCAP_GET_WAKEUP_FLAG())
         {
-            CCAP->MDTRG_WK |= CCAP_MDTRG_WK_WKF_Msk;
+            CCAP_CLR_WAKEUP_FLAG();
             printf("Wakeup by CCAP motion detection.\n");
         }
     }
@@ -67,15 +67,15 @@ void CCAP_IRQHandler(void)
 
 NVT_ITCM void LPTMR0_IRQHandler(void)
 {
-    if (LPTMR0->INTSTS & LPTMR_INTSTS_TWKF_Msk)
+    if (LPTMR_GetWakeupFlag(LPTMR0))
     {
-        printf("LPTMR wk %x ", PMC->INTSTS);
+        printf("LPTMR TWKF ");
     }
 
     /* Clear wake up flag */
     LPTMR_ClearWakeupFlag(LPTMR0);
 
-    if (LPTMR0->INTSTS & LPTMR_INTSTS_TIF_Msk)
+    if (LPTMR_GetIntFlag(LPTMR0))
     {
         printf("LPTMR TIF\n");
     }
@@ -119,10 +119,7 @@ void SYS_Init(void)
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Enable internal medium speed RC clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_MIRCEN_Msk);
-
-    /* Waiting for internal medium speed clock ready */
-    CLK_WaitClockReady(CLK_STATUS_MIRCSTB_Msk);
+    CLK_EnableMIRC(CLK_MIRCCTL_MIRCFSEL_4MHZ);
 
     /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
@@ -133,6 +130,9 @@ void SYS_Init(void)
 
     /* Enable UART0 module clock */
     SetDebugUartCLK();
+
+    /* Enable module clock */
+    CLK_EnableModuleClock(GPIOH_MODULE);
     CLK_EnableModuleClock(LPTMR0_MODULE);
     CLK_SetModuleClock(LPTMR0_MODULE, CLK_LPTMRSEL_LPTMR0SEL_HIRC, 0);
 
@@ -237,6 +237,8 @@ int32_t PacketFormatDownScale(S_SENSOR_INFO *psSensorInfo)
 
     /* Enable External CCAP Interrupt */
     CCAP_EnableInt(CCAP_INTEN_VIEN_Msk);
+    /* Enable CCAP Frame End Interrupt */
+    CCAP_EnableInt(CCAP_INT_VIEN_ENABLE);
 
     /* Set Vsync polarity, Hsync polarity, pixel clock polarity, Sensor Format and Order */
     CCAP_Open(psSensorInfo->m_u32Polarity, psSensorInfo->m_u32InputFormat, CCAP_PAR_OUTFMT_YUV422);

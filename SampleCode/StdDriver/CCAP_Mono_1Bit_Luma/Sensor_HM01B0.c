@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     Sensor_HM01B0.c
- * @version  V3.00
+ * @version  V1.00
  * @brief    HM01B0 sensor driver
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -161,3 +161,5 @@ int32_t InitHM01B0_4BIT_YUV422(uint32_t u32Param)
 
     return TRUE;
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
