@@ -12,7 +12,8 @@
 #include "NuMicro.h"                    /* Device header */
 #include "partition_M55M1.h"
 
-#define LOOP_HERE       0xE7FEE7FF      /* Instruction Code of "B ." */
+#define LOOP_HERE               0xE7FEE7FF      /* Instruction Code of "B ." */
+#define INVALID_NON_SECURE_ENTERY_MSP   (NON_SECURE_SRAM_BASE + 512)    /* Temporary NS MSP for invalid NS entry */
 
 /* typedef for Non-secure callback functions */
 typedef __NONSECURE_CALL int32_t (*PFN_NON_SECURE_FUNC)(uint32_t);
@@ -102,7 +103,7 @@ void Boot_NonSecure(uint32_t u32NonSecureBase)
         printf("CPU will halted at Non-secure state.\n");
 
         /* Set Non-secure MSP in Non-secure region */
-        __TZ_set_MSP_NS(NON_SECURE_SRAM_BASE + 512);
+        __TZ_set_MSP_NS(INVALID_NON_SECURE_ENTERY_MSP);
 
         /* Try to halted in Non-secure state (SRAM) */
         M32(NON_SECURE_SRAM_BASE) = LOOP_HERE;
@@ -127,21 +128,8 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */

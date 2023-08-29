@@ -27,34 +27,8 @@ static void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-//    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-//    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-
-    /* Switch SCLK clock source to HIRC before PLL setting */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
-
-	/* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
-
-    /* Set HCLK0 divide 1 */
-    CLK_SET_HCLK0DIV(1);
-    
-    /* Set HCLK1 divide 1 */
-    CLK_SET_HCLK1DIV(1);
-    
-    /* Set HCLK2 divide 1 */
-    CLK_SET_HCLK2DIV(2);
-
-    CLK_PCLKDIV_PCLK0DIV(2);
-    CLK_PCLKDIV_PCLK1DIV(2);
-    CLK_PCLKDIV_PCLK2DIV(2);
-    CLK_PCLKDIV_PCLK3DIV(2);
-    CLK_PCLKDIV_PCLK4DIV(2);
-
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
