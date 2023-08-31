@@ -4,15 +4,14 @@
  * @brief    General UART ISP slave Sample file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
-
-/*!<Includes */
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <string.h>
+#include "NuMicro.h"
 #include "targetdev.h"
 #include "uart_transfer.h"
 
-__attribute__((aligned(4))) uint8_t g_au8uart_rcvbuf[MAX_PKT_SIZE] = {0};
+__ALIGNED(4) uint8_t g_au8uart_rcvbuf[MAX_PKT_SIZE] = {0};
 
 uint8_t volatile g_u8bUartDataReady = 0;
 uint8_t volatile g_u8bufhead = 0;
@@ -90,3 +89,5 @@ void UART_Init()
     /* Enable tim-out counter, Rx tim-out interrupt and Rx ready interrupt */
     UART0->INTEN = (UART_INTEN_TOCNTEN_Msk | UART_INTEN_RXTOIEN_Msk | UART_INTEN_RDAIEN_Msk);
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

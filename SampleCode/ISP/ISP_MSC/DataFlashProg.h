@@ -1,11 +1,11 @@
 /******************************************************************************
  * @file     DataFlashProg.h
- * @brief    M252 series data flash programming driver header
+ * @version  V1.00
+ * @brief    Flash programming driver header
  *
- * @note
- * SPDX-License-Identifier: Apache-2.0
- * Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #ifndef __DATA_FLASH_PROG_H__
 #define __DATA_FLASH_PROG_H__
 
@@ -22,5 +22,3 @@
 #define DATA_SEC_ADDR       ((RSVD_SEC_CNT + FAT_SZ * NUM_FAT + ROOT_ENT_CNT) * BYTE_PER_SEC)
 
 #endif  /* __DATA_FLASH_PROG_H__ */
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

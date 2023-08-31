@@ -1,11 +1,11 @@
 /******************************************************************************//**
  * @file     MassStorage.c
  * @version  V1.00
- * @brief    M252 series USBD driver Sample file
+ * @brief    USB mass storage source file
  *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 
 /*!<Includes */
 #include "M55M1_User.h"
@@ -24,7 +24,7 @@
 /*--------------------------------------------------------------------------*/
 /* Global variables for Control Pipe */
 uint32_t g_TotalSectors;
-uint32_t g_u32u32StorageSize;
+uint32_t g_u32StorageSize;
 uint8_t volatile g_u8EP3Ready = 0;
 
 /* USB flow control variables */
@@ -218,9 +218,9 @@ void MSC_Init(void)
     g_u32BulkBuf1 = EP2_BUF_BASE;
 
     g_sCSW.dCSWSignature = CSW_SIGNATURE;
-    g_u32u32StorageSize = FMC_Init();
-    g_u32u32StorageSize += DATA_SEC_ADDR;
-    g_TotalSectors = g_u32u32StorageSize / UDC_SECTOR_SIZE;
+    g_u32StorageSize = FMC_Init();
+    g_u32StorageSize += DATA_SEC_ADDR;
+    g_TotalSectors = g_u32StorageSize / UDC_SECTOR_SIZE;
 }
 
 void MSC_ClassRequest(void)
@@ -627,7 +627,7 @@ void MSC_ProcessCmd(void)
                     DBG_PRINTF("Read addr=0x%x, len=0x%x\n", g_u32LbaAddress, g_u32Length);
 
                     /* Error check  */
-                    if ((g_u32LbaAddress > g_u32u32StorageSize) || ((g_u32LbaAddress + g_u32Length) > g_u32u32StorageSize))
+                    if ((g_u32LbaAddress > g_u32StorageSize) || ((g_u32LbaAddress + g_u32Length) > g_u32StorageSize))
                     {
                         USBD_MSC_Stall();
 
@@ -854,3 +854,4 @@ void MSC_SetConfig(void)
     DBG_PRINTF("Set config\n");
 }
 
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

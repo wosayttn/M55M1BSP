@@ -3,9 +3,9 @@
  * @version  V1.00
  * @brief    HSUSBD driver source file
  *
- * SPDX-License-Identifier: Apache-2.0
+ * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ *****************************************************************************/
 #include "NuMicro.h"
 #include "dfu_transfer.h"
 

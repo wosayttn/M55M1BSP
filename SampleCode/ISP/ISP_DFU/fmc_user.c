@@ -1,11 +1,11 @@
 /***************************************************************************//**
  * @file     fmc_user.c
- * @brief    FMC driver source file
- * @version  2.0.0
+ * @version  V1.00
+ * @brief    Simplified FMC driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include "fmc_user.h"
 
@@ -26,6 +26,7 @@ int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end
             FMC->ISPTRG = 0x1;
 
             u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+
             while (FMC->ISPTRG & 0x1)
             {
                 if (--u32TimeOutCount == 0)
@@ -45,6 +46,7 @@ int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end
 
         /* Wait ISP cmd complete */
         u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+
         while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)
         {
             if (--u32TimeOutCount == 0)
@@ -97,3 +99,5 @@ void WriteData(unsigned int addr_start, unsigned int addr_end, unsigned int *dat
     FMC_Proc(FMC_ISPCMD_PROGRAM, addr_start, addr_end, data);
     return;
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

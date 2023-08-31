@@ -1,12 +1,11 @@
 /***************************************************************************//**
  * @file     i2c_transfer.c
+ * @version  V1.00
  * @brief    ISP support function source file
- * @version  0x32
- * @date     14, June, 2017
  *
- * @note
- * Copyright (C) 2017-2018 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include "targetdev.h"
 
@@ -143,4 +142,4 @@ void I2C_SlaveTRx(I2C_T *i2c, uint32_t u32Status)
     }
 }
 
-
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

@@ -3,9 +3,9 @@
  * @version  V1.00
  * @brief    Use embedded data flash as storage to implement a USB Mass-Storage device.
  *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include "M55M1_User.h"
 #include "massstorage.h"
 
@@ -51,6 +51,7 @@ int32_t SYS_Init(void)
 
     /* Wait for PLL clock ready */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (!(CLK->STATUS & CLK_STATUS_APLL0STB_Msk))
     {
         if (--u32TimeOutCnt == 0)
@@ -134,7 +135,7 @@ int32_t main(void)
     SYS_UnlockReg();
 
     /* Init System, peripheral clock and multi-function I/O */
-    if (SYS_Init() < 0)
+    if ((SYS_Init() < 0) || (DETECT_PIN != 0))
         goto _APROM;
 
     /* Enable ISP */

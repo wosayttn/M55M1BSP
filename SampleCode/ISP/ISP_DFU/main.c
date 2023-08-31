@@ -6,14 +6,14 @@
  *           WindowsDriver and WindowsTool are also included in this sample code
  *           to connect with USB device.
  *
- * SPDX-License-Identifier: Apache-2.0
+ * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ *****************************************************************************/
 #include <stdio.h>
 #include "fmc_user.h"
 #include "dfu_transfer.h"
 
-#define TRIM_INIT       (SYS_BASE+0x10C)
+#define TRIM_INIT       (SYS_BASE + 0x10C)
 #define PLL_CLOCK       FREQ_180MHZ
 #define DETECT_PIN      PB12
 
@@ -28,31 +28,26 @@ int32_t SYS_Init(void);
 void ProcessHardFault(void) {}
 void SH_Return(void) {}
 
-/* Supports maximum 1M (APROM) */
+/* Supports maximum 2MB (APROM) */
 uint32_t GetApromSize()
 {
-    /* The smallest of APROM size is 2K. */
-    uint32_t size = 0x800, data;
+    /* The smallest of APROM u32Size is FMC_FLASH_PAGE_SIZE. */
+    uint32_t u32Size = FMC_FLASH_PAGE_SIZE, u32Data;
     int result;
 
     do
     {
-        result = FMC_Read_User(size, &data);
+        result = FMC_Read_User(FMC_APROM_BASE + u32Size, &u32Data);
 
         if (result < 0)
         {
-            return size;
+            return u32Size;
         }
         else
         {
-            size *= 2;
+            u32Size *= 2;
         }
     } while (1);
-}
-
-uint32_t CLK_GetPLLClockFreq(void)
-{
-    return PLL_CLOCK;
 }
 
 int32_t SYS_Init(void)
@@ -170,7 +165,7 @@ int32_t main(void)
     SYS_UnlockReg();
 
     /* Init System, peripheral clock and multi-function I/O */
-    if (SYS_Init() < 0)
+    if ((SYS_Init() < 0) || (DETECT_PIN != 0))
         goto _APROM;
 
     /* Enable ISP */

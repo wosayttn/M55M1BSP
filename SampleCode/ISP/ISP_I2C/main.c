@@ -6,9 +6,9 @@
  *           sample code to connect with chip I2C and assign update file
  *           of Flash.
  *
- * SPDX-License-Identifier: Apache-2.0
+ * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "targetdev.h"
@@ -109,8 +109,8 @@ int main(void)
     FMC_Open();
     FMC_ENABLE_AP_UPDATE();
 
-    g_apromSize = GetApromSize();
-    GetDataFlashInfo(&g_dataFlashAddr, &g_dataFlashSize);
+    g_u32ApromSize = GetApromSize();
+
     I2C_Init();
     SysTick->LOAD = 300000 * CyclesPerUs;
     SysTick->VAL   = (0x00);

@@ -7,15 +7,15 @@
  *           sample code to connect with chip USB device and assign update file
  *           of Flash.
  *
- * SPDX-License-Identifier: Apache-2.0
+ * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ *****************************************************************************/
 #include <stdio.h>
 #include "targetdev.h"
 #include "hid_transfer.h"
 
 #define PLL_CLOCK       FREQ_180MHZ
-#define TRIM_INIT       (SYS_BASE+0x10C)
+#define TRIM_INIT       (SYS_BASE + 0x10C)
 
 int32_t g_FMC_i32ErrCode = 0;
 
@@ -147,7 +147,7 @@ int32_t main(void)
     SYS_UnlockReg();
 
     /* Init System, peripheral clock and multi-function I/O */
-    if (SYS_Init() < 0)
+    if ((SYS_Init() < 0) || (DETECT_PIN != 0))
         goto _APROM;
 
     /* Enable ISP */
@@ -156,7 +156,6 @@ int32_t main(void)
 
     /* Get APROM and Data Flash size */
     g_u32ApromSize = GetApromSize();
-    GetDataFlashInfo(&g_u32DataFlashAddr, &g_u32DataFlashSize);
 
     while (DETECT_PIN == 0)
     {

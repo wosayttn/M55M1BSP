@@ -1,10 +1,11 @@
 /******************************************************************************//**
  * @file     dfu_transfer.c
+ * @version  V1.00
  * @brief    USBD DFU transfer sample file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 
 /*!<Includes */
 #include <stdio.h>
@@ -358,3 +359,5 @@ void DFU_ClassRequest(void)
 
     }
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

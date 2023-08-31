@@ -1,11 +1,11 @@
 /**************************************************************************//**
  * @file     hid_transfer.h
+ * @version  V1.00
  * @brief    HSUSBD driver header file
- * @version  2.0.0
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #ifndef __USBD_HID_H__
 #define __USBD_HID_H__
 

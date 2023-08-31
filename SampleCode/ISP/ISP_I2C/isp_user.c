@@ -1,12 +1,11 @@
 /**************************************************************************//**
  * @file     isp_user.c
+ * @version  V1.00
  * @brief    ISP Command source file
- * @version  0x32
- * @date     14, June, 2017
  *
- * @note
- * Copyright (C) 2017-2018 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include "string.h"
 #include "isp_user.h"
@@ -14,7 +13,7 @@
 static uint8_t aprom_buf[FMC_FLASH_PAGE_SIZE] __ALIGNED(4);
 uint8_t response_buff[64] __ALIGNED(4);
 uint32_t bUpdateApromCmd;
-uint32_t g_apromSize, g_dataFlashAddr, g_dataFlashSize;
+uint32_t g_u32ApromSize = 0, g_u32DataFlashAddr = 0, g_u32DataFlashSize = 0;
 
 static uint16_t Checksum(unsigned char *buf, int len)
 {
@@ -121,11 +120,11 @@ int ParseCmd(unsigned char *buffer, uint8_t len)
     }
     else if ((lcmd == CMD_UPDATE_APROM) || (lcmd == CMD_ERASE_ALL))
     {
-        EraseAP(FMC_APROM_BASE, (g_apromSize < g_dataFlashAddr) ? g_apromSize : g_dataFlashAddr); // erase APROM // g_dataFlashAddr, g_apromSize
+        EraseAP(FMC_APROM_BASE, (g_u32ApromSize < g_u32DataFlashAddr) ? g_u32ApromSize : g_u32DataFlashAddr); // erase APROM // g_u32DataFlashAddr, g_u32ApromSize
 
         if (lcmd == CMD_ERASE_ALL)   //erase data flash
         {
-            EraseAP(g_dataFlashAddr, g_dataFlashSize);
+            EraseAP(g_u32DataFlashAddr, g_u32DataFlashSize);
             *(uint32_t *)(response + 8) = regcnf0 | 0x02;
             UpdateConfig((uint32_t *)(response + 8), NULL);
         }
@@ -142,11 +141,11 @@ int ParseCmd(unsigned char *buffer, uint8_t len)
     {
         if (lcmd == CMD_UPDATE_DATAFLASH)
         {
-            StartAddress = g_dataFlashAddr;
+            StartAddress = g_u32DataFlashAddr;
 
-            if (g_dataFlashSize)   //g_dataFlashAddr
+            if (g_u32DataFlashSize)   //g_u32DataFlashAddr
             {
-                EraseAP(g_dataFlashAddr, g_dataFlashSize);
+                EraseAP(g_u32DataFlashAddr, g_u32DataFlashSize);
             }
             else
             {
@@ -173,7 +172,7 @@ int ParseCmd(unsigned char *buffer, uint8_t len)
         }
 
         UpdateConfig((uint32_t *)(pSrc), (uint32_t *)(response + 8));
-        GetDataFlashInfo(&g_dataFlashAddr, &g_dataFlashSize);
+        GetDataFlashInfo(&g_u32DataFlashAddr, &g_u32DataFlashSize);
         goto out;
     }
     else if (lcmd == CMD_RESEND_PACKET)     //for APROM&Data flash only
@@ -230,3 +229,4 @@ out:
     return 0;
 }
 
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

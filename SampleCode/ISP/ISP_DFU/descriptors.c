@@ -1,11 +1,11 @@
 /***************************************************************************//**
  * @file     descriptors.c
+ * @version  V1.00
  * @brief    USBD driver source file
- * @version  2.0.0
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 /*!<Includes */
 #include "NuMicro.h"
 #include "dfu_transfer.h"
@@ -123,3 +123,5 @@ const S_USBD_INFO_T gsInfo =
     NULL,
     NULL
 };
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

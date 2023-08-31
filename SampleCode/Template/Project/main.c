@@ -3,7 +3,7 @@
  * @version V1.00
  * @brief   Template for M55M1 series MCU
  *
- * SPDX-License-Identifier: Apache-2.0
+ * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 /*

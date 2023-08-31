@@ -1,12 +1,11 @@
 /**************************************************************************//**
  * @file     isp_user.h
+ * @version  V1.00
  * @brief    ISP Command header file
- * @version  0x32
- * @date     14, June, 2017
  *
- * @note
- * Copyright (C) 2017-2018 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #ifndef ISP_USER_H
 #define ISP_USER_H
 
@@ -40,9 +39,10 @@
 extern void GetDataFlashInfo(uint32_t *addr, uint32_t *size);
 extern uint32_t GetApromSize(void);
 extern int ParseCmd(unsigned char *buffer, uint8_t len);
-extern uint32_t g_apromSize, g_dataFlashAddr, g_dataFlashSize;
+extern uint32_t g_u32ApromSize, g_u32DataFlashAddr, g_u32DataFlashSize;
 
 extern __ALIGNED(4) uint8_t usb_rcvbuf[];
 extern __ALIGNED(4) uint8_t usb_sendbuf[];
 extern __ALIGNED(4) uint8_t response_buff[64];
-#endif  // #ifndef ISP_USER_H
+
+#endif  // ISP_USER_H

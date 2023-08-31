@@ -3,34 +3,32 @@
  * @version  V1.00
  * @brief    ISP support function source file
  *
- * SPDX-License-Identifier: Apache-2.0
+ * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ *****************************************************************************/
 #include "targetdev.h"
 #include "isp_user.h"
 
-
-/* Supports maximum 2M (APROM) */
+/* Supports maximum 2MB (APROM) */
 uint32_t GetApromSize()
 {
-    /* The smallest of APROM size is 2K. */
-    uint32_t size = 0x800, data;
+    /* The smallest of APROM u32Size is FMC_FLASH_PAGE_SIZE. */
+    uint32_t u32Size = FMC_FLASH_PAGE_SIZE, u32Data;
     int result;
 
     do
     {
-        result = FMC_Read_User(size, &data);
+        result = FMC_Read_User(FMC_APROM_BASE + u32Size, &u32Data);
 
         if (result < 0)
         {
-            return size;
+            return u32Size;
         }
         else
         {
-            size *= 2;
+            u32Size *= 2;
         }
-    }
-    while (1);
+    } while (1);
 }
 
 /* Data Flash is shared with APROM.

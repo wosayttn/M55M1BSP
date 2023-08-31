@@ -1,11 +1,11 @@
 /******************************************************************************
  * @file     usbd_user.h
- * @brief    M252 series USB driver header file
+ * @version  V1.00
+ * @brief    USB driver header file
  *
- * @note
- * SPDX-License-Identifier: Apache-2.0
- * Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #ifndef __USBD_H__
 #define __USBD_H__
 

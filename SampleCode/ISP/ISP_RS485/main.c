@@ -7,9 +7,9 @@
  *           sample code to connect with chip RS485 and assign update file
  *           of Flash.
  *
- * SPDX-License-Identifier: Apache-2.0
+ * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 #include "targetdev.h"
@@ -17,7 +17,7 @@
 
 #define PLL_CLOCK       FREQ_180MHZ
 #define nRTSPin         (PA0)
-#define REVEIVE_MODE    (0)
+#define RECEIVE_MODE    (0)
 #define TRANSMIT_MODE   (1)
 
 int32_t g_FMC_i32ErrCode = 0;
@@ -86,7 +86,7 @@ int32_t SYS_Init(void)
     SET_UART0_RXD_PB12();
     SET_UART0_TXD_PB13();
     PA->MODE = (PA->MODE & (~GPIO_MODE_MODE0_Msk)) | (GPIO_MODE_OUTPUT << GPIO_MODE_MODE0_Pos);
-    nRTSPin = REVEIVE_MODE;
+    nRTSPin = RECEIVE_MODE;
     SET_UART1_RXD_PA2();
     SET_UART1_TXD_PA3();
 
@@ -117,7 +117,6 @@ int32_t main(void)
 
     /* Get APROM and Data Flash size */
     g_u32ApromSize = GetApromSize();
-    GetDataFlashInfo(&g_u32DataFlashAddr, &g_u32DataFlashSize);
 
     /* Set Systick time-out for 300ms */
     SysTick->LOAD = 300000 * CyclesPerUs;
@@ -167,7 +166,7 @@ _ISP:
             /* Wait for data transmission is finished */
             while ((UART1->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0);
 
-            nRTSPin = REVEIVE_MODE;             /* Control RTS in reveive mode */
+            nRTSPin = RECEIVE_MODE;             /* Control RTS in receive mode */
             NVIC_EnableIRQ(UART1_IRQn);         /* Enable NVIC */
         }
     }

@@ -6,9 +6,9 @@
  *           WindowsDriver and WindowsTool are also included in this sample code
  *           to connect with USB device.
  *
- * SPDX-License-Identifier: Apache-2.0
+ * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 #include "fmc_user.h"
@@ -126,7 +126,7 @@ int32_t main(void)
     SYS_UnlockReg();
 
     /* Init System, peripheral clock and multi-function I/O */
-    if (SYS_Init() < 0)
+    if ((SYS_Init() < 0) || (DETECT_PIN != 0))
         goto _APROM;
 
     /* Enable ISP */
@@ -135,12 +135,6 @@ int32_t main(void)
 
     /* Get APROM and Data Flash size */
     g_u32ApromSize = GetApromSize();
-    GetDataFlashInfo(&g_u32DataFlashAddr, &g_u32DataFlashSize);
-
-    if (DETECT_PIN != 0)
-    {
-        goto _APROM;
-    }
 
     /* Open HSUSBD controller */
     HSUSBD_Open(NULL, DFU_ClassRequest, NULL);

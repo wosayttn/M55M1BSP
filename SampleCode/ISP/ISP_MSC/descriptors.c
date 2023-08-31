@@ -1,13 +1,11 @@
 /******************************************************************************//**
  * @file     descriptors.c
  * @version  V1.00
- * @brief    M252 series USBD driver source file
+ * @brief    USBD driver source file
  *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
-
-/*!<Includes */
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include "M55M1_User.h"
 #include "massstorage.h"
 
@@ -106,3 +104,4 @@ const S_USBD_INFO_T gsInfo =
     gpu8UsbString,
 };
 
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

@@ -1,11 +1,11 @@
 /******************************************************************************//**
  * @file     usbd_user.c
  * @version  V1.00
- * @brief    M252 series USBD driver source file
+ * @brief    USBD driver source file
  *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 
 #include <string.h>
 #include "M55M1_User.h"
@@ -145,24 +145,24 @@ void USBD_ProcessSetupPacket(void)
     /* Check the request type */
     switch (g_usbd_SetupPacket[0] & 0x60)
     {
-    case REQ_STANDARD:   // Standard
-    {
-        USBD_StandardRequest();
-        break;
-    }
+        case REQ_STANDARD:   // Standard
+        {
+            USBD_StandardRequest();
+            break;
+        }
 
-    case REQ_CLASS:   // Class
-    {
-        MSC_ClassRequest();
-        break;
-    }
+        case REQ_CLASS:   // Class
+        {
+            MSC_ClassRequest();
+            break;
+        }
 
-        //        default:   // reserved
-        //        {
-        //            /* Setup error, stall the device */
-        //            USBD_Ctrl_Stall();
-        //            break;
-        //        }
+            //        default:   // reserved
+            //        {
+            //            /* Setup error, stall the device */
+            //            USBD_Ctrl_Stall();
+            //            break;
+            //        }
     }
 }
 
@@ -185,60 +185,60 @@ void USBD_GetDescriptor(void)
 
     switch (g_usbd_SetupPacket[3])
     {
-    // Get Device Descriptor
-    case DESC_DEVICE:
-    {
-        u32Len = Minimum(u32Len, LEN_DEVICE);
-        DBG_PRINTF("Get device desc, %d\n", u32Len);
-
-        USBD_PrepareCtrlIn((uint8_t *)g_usbd_sInfo->gu8DevDesc, u32Len);
-        break;
-    }
-
-    // Get Configuration Descriptor
-    case DESC_CONFIG:
-    {
-        uint32_t u32TotalLen;
-
-        u32TotalLen = g_usbd_sInfo->gu8ConfigDesc[3];
-        u32TotalLen = g_usbd_sInfo->gu8ConfigDesc[2] + (u32TotalLen << 8);
-
-        DBG_PRINTF("Get config desc len %d, acture len %d\n", u32Len, u32TotalLen);
-        u32Len = Minimum(u32Len, u32TotalLen);
-
-        DBG_PRINTF("Minimum len %d\n", u32Len);
-
-        USBD_PrepareCtrlIn((uint8_t *)g_usbd_sInfo->gu8ConfigDesc, u32Len);
-        break;
-    }
-
-    // Get String Descriptor
-    case DESC_STRING:
-    {
-        // Get String Descriptor
-        if (g_usbd_SetupPacket[2] < 2)
+        // Get Device Descriptor
+        case DESC_DEVICE:
         {
-            u32Len = Minimum(u32Len, g_usbd_sInfo->gu8StringDesc[g_usbd_SetupPacket[2]][0]);
+            u32Len = Minimum(u32Len, LEN_DEVICE);
+            DBG_PRINTF("Get device desc, %d\n", u32Len);
 
-            DBG_PRINTF("Get string desc %d\n", u32Len);
-
-            USBD_PrepareCtrlIn((uint8_t *)g_usbd_sInfo->gu8StringDesc[g_usbd_SetupPacket[2]], u32Len);
+            USBD_PrepareCtrlIn((uint8_t *)g_usbd_sInfo->gu8DevDesc, u32Len);
+            break;
         }
-        else
+
+        // Get Configuration Descriptor
+        case DESC_CONFIG:
         {
+            uint32_t u32TotalLen;
+
+            u32TotalLen = g_usbd_sInfo->gu8ConfigDesc[3];
+            u32TotalLen = g_usbd_sInfo->gu8ConfigDesc[2] + (u32TotalLen << 8);
+
+            DBG_PRINTF("Get config desc len %d, acture len %d\n", u32Len, u32TotalLen);
+            u32Len = Minimum(u32Len, u32TotalLen);
+
+            DBG_PRINTF("Minimum len %d\n", u32Len);
+
+            USBD_PrepareCtrlIn((uint8_t *)g_usbd_sInfo->gu8ConfigDesc, u32Len);
+            break;
+        }
+
+        // Get String Descriptor
+        case DESC_STRING:
+        {
+            // Get String Descriptor
+            if (g_usbd_SetupPacket[2] < 2)
+            {
+                u32Len = Minimum(u32Len, g_usbd_sInfo->gu8StringDesc[g_usbd_SetupPacket[2]][0]);
+
+                DBG_PRINTF("Get string desc %d\n", u32Len);
+
+                USBD_PrepareCtrlIn((uint8_t *)g_usbd_sInfo->gu8StringDesc[g_usbd_SetupPacket[2]], u32Len);
+            }
+            else
+            {
+                // Not support. Reply STALL.
+                USBD_Ctrl_Stall();
+                DBG_PRINTF("Unsupported string desc (%d). Stall ctrl pipe.\n", g_usbd_SetupPacket[2]);
+            }
+
+            break;
+        }
+
+        default:
             // Not support. Reply STALL.
             USBD_Ctrl_Stall();
-            DBG_PRINTF("Unsupported string desc (%d). Stall ctrl pipe.\n", g_usbd_SetupPacket[2]);
-        }
-
-        break;
-    }
-
-    default:
-        // Not support. Reply STALL.
-        USBD_Ctrl_Stall();
-        DBG_PRINTF("Unsupported get desc type. stall ctrl pipe\n");
-        break;
+            DBG_PRINTF("Unsupported get desc type. stall ctrl pipe\n");
+            break;
     }
 }
 
@@ -265,125 +265,125 @@ void USBD_StandardRequest(void)
 
     switch (g_usbd_SetupPacket[1])
     {
-    // Device to host
-    case GET_CONFIGURATION:
-    {
-        // Return current configuration setting
-        /* Data stage */
-        M8(u32Addr) = g_usbd_UsbConfig;
-        USBD_SET_DATA1(EP1);
-        USBD_SET_PAYLOAD_LEN(EP1, 0);
-        u32Len0 = 1;
-
-        DBG_PRINTF("Get configuration\n");
-
-        break;
-    }
-
-    case GET_DESCRIPTOR:
-    {
-        USBD_GetDescriptor();
-        break;
-    }
-
-    case GET_INTERFACE:
-    {
-        // Return current interface setting
-        /* Data stage */
-        M8(u32Addr) = g_usbd_UsbAltInterface;
-
-        u32Len0 = 1;
-
-        /* Status stage */
-        USBD_SET_PAYLOAD_LEN(EP1, EP0_MAX_PKT_SIZE);
-
-        DBG_PRINTF("Get interface\n");
-
-        break;
-    }
-
-    case GET_STATUS:
-    {
-        uint8_t u8data = 0;
-
-        // Device
-        if (g_usbd_SetupPacket[0] == 0x80)
-            u8data = 1;
-        // Interface
-        else if (g_usbd_SetupPacket[0] == 0x81)
-            u8data = 0;
-        // Endpoint
-        else if (g_usbd_SetupPacket[0] == 0x82)
+        // Device to host
+        case GET_CONFIGURATION:
         {
-            uint32_t u32CfgAddr;
+            // Return current configuration setting
+            /* Data stage */
+            M8(u32Addr) = g_usbd_UsbConfig;
+            USBD_SET_DATA1(EP1);
+            USBD_SET_PAYLOAD_LEN(EP1, 0);
+            u32Len0 = 1;
 
-            uint8_t ep = g_usbd_SetupPacket[4] & 0xF;
-            //                M8(u32Addr) = USBD_GetStall(ep) ? 1 : 0;
+            DBG_PRINTF("Get configuration\n");
 
-            u32CfgAddr = (uint32_t)(ep << 4) + (uint32_t)&USBD->EP[0].CFG;
-            u8data = ((*((__IO uint32_t *)(u32CfgAddr))) >> 1) & 0x01;
+            break;
         }
 
-        M8(u32Addr) = u8data;
-        M8(u32Addr + 1) = 0;
-        /* Data stage */
-        u32Len0 = 2;
+        case GET_DESCRIPTOR:
+        {
+            USBD_GetDescriptor();
+            break;
+        }
 
-        /* Status stage */
-        USBD_SET_PAYLOAD_LEN(EP1, EP0_MAX_PKT_SIZE);
+        case GET_INTERFACE:
+        {
+            // Return current interface setting
+            /* Data stage */
+            M8(u32Addr) = g_usbd_UsbAltInterface;
 
-        DBG_PRINTF("Get status\n");
+            u32Len0 = 1;
 
-        break;
-    }
+            /* Status stage */
+            USBD_SET_PAYLOAD_LEN(EP1, EP0_MAX_PKT_SIZE);
 
-    // Host to device
-    case SET_ADDRESS:
-    {
-        g_usbd_UsbAddr = g_usbd_SetupPacket[2];
+            DBG_PRINTF("Get interface\n");
 
-        DBG_PRINTF("Set addr to %d\n", g_usbd_UsbAddr);
+            break;
+        }
 
-        // DATA IN for end of setup
-        /* Status Stage */
+        case GET_STATUS:
+        {
+            uint8_t u8data = 0;
 
-        break;
-    }
+            // Device
+            if (g_usbd_SetupPacket[0] == 0x80)
+                u8data = 1;
+            // Interface
+            else if (g_usbd_SetupPacket[0] == 0x81)
+                u8data = 0;
+            // Endpoint
+            else if (g_usbd_SetupPacket[0] == 0x82)
+            {
+                uint32_t u32CfgAddr;
 
-    case SET_CONFIGURATION:
-    {
-        g_usbd_UsbConfig = g_usbd_SetupPacket[2];
+                uint8_t ep = g_usbd_SetupPacket[4] & 0xF;
+                //                M8(u32Addr) = USBD_GetStall(ep) ? 1 : 0;
 
-        MSC_SetConfig();
+                u32CfgAddr = (uint32_t)(ep << 4) + (uint32_t)&USBD->EP[0].CFG;
+                u8data = ((*((__IO uint32_t *)(u32CfgAddr))) >> 1) & 0x01;
+            }
 
-        // DATA IN for end of setup
-        /* Status stage */
+            M8(u32Addr) = u8data;
+            M8(u32Addr + 1) = 0;
+            /* Data stage */
+            u32Len0 = 2;
 
-        DBG_PRINTF("Set config to %d\n", g_usbd_UsbConfig);
-        break;
-    }
+            /* Status stage */
+            USBD_SET_PAYLOAD_LEN(EP1, EP0_MAX_PKT_SIZE);
 
-    case SET_INTERFACE:
-    {
-        g_usbd_UsbAltInterface = g_usbd_SetupPacket[2];
+            DBG_PRINTF("Get status\n");
 
-        /* Status stage */
-        break;
-    }
+            break;
+        }
 
-    case CLEAR_FEATURE:
-    case SET_FEATURE:
-    {
-        DBG_PRINTF("Clear feature op %d\n", g_usbd_SetupPacket[2]);
-        break;
-    }
+        // Host to device
+        case SET_ADDRESS:
+        {
+            g_usbd_UsbAddr = g_usbd_SetupPacket[2];
 
-    default:
-    {
-        /* Setup error, stall the device */
-        USBD_Ctrl_Stall();
-        return;
-    }
+            DBG_PRINTF("Set addr to %d\n", g_usbd_UsbAddr);
+
+            // DATA IN for end of setup
+            /* Status Stage */
+
+            break;
+        }
+
+        case SET_CONFIGURATION:
+        {
+            g_usbd_UsbConfig = g_usbd_SetupPacket[2];
+
+            MSC_SetConfig();
+
+            // DATA IN for end of setup
+            /* Status stage */
+
+            DBG_PRINTF("Set config to %d\n", g_usbd_UsbConfig);
+            break;
+        }
+
+        case SET_INTERFACE:
+        {
+            g_usbd_UsbAltInterface = g_usbd_SetupPacket[2];
+
+            /* Status stage */
+            break;
+        }
+
+        case CLEAR_FEATURE:
+        case SET_FEATURE:
+        {
+            DBG_PRINTF("Clear feature op %d\n", g_usbd_SetupPacket[2]);
+            break;
+        }
+
+        default:
+        {
+            /* Setup error, stall the device */
+            USBD_Ctrl_Stall();
+            return;
+        }
     }
 
     if (!(g_usbd_SetupPacket[0] & 0x80) || u32Len0)
@@ -509,3 +509,5 @@ void USBD_SwReset(void)
 #ifdef __cplusplus
 }
 #endif
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

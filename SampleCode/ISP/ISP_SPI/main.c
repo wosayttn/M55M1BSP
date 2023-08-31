@@ -6,9 +6,9 @@
  *           sample code to connect with chip SPI and assign update file
  *           of Flash.
  *
- * SPDX-License-Identifier: Apache-2.0
+ * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
@@ -78,6 +78,7 @@ int32_t SYS_Init(void)
 
     /* Wait for HIRC clock ready */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
     {
         if (--u32TimeOutCnt == 0)
@@ -150,7 +151,6 @@ int32_t main(void)
 
     /* Get APROM and Data Flash size */
     g_u32ApromSize = GetApromSize();
-    GetDataFlashInfo(&g_u32DataFlashAddr, &g_u32DataFlashSize);
 
     while (1)
     {
@@ -166,6 +166,7 @@ int32_t main(void)
     }
 
 _ISP:
+
     while (1)
     {
         if (bSpiDataReady == 1)

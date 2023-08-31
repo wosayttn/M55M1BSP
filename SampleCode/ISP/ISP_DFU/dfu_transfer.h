@@ -1,10 +1,11 @@
 /******************************************************************************
  * @file     dfu_transfer.h
+ * @version  V1.00
  * @brief    USBD DFU transfer header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #ifndef __USBD_DFU_H__
 #define __USBD_DFU_H__
 
@@ -53,8 +54,8 @@
 #define _BYTE3(x)                      (uint8_t)(((x) & 0xFF0000) >> 16)   /*!< addressing cycle 3rd byte */
 
 #define SET_POLLING_TIMEOUT(x)         dfu_status.bwPollTimeout0 = _BYTE1(x);\
-                                       dfu_status.bwPollTimeout1 = _BYTE2(x);\
-                                       dfu_status.bwPollTimeout2 = _BYTE3(x);
+    dfu_status.bwPollTimeout1 = _BYTE2(x);\
+    dfu_status.bwPollTimeout2 = _BYTE3(x);
 
 #define FLASH_ERASE_TIMEOUT            60
 #define FLASH_WRITE_TIMEOUT            80

@@ -80,7 +80,7 @@ int main()
     /* Read User Configuration */
     printf("  User Config 0 ......................... [0x%08x]\n", FMC_Read(FMC_USER_CONFIG_0));
 
-    if (((FMC->XOMSTS & 0x1) == 0) &&
+    if ((FMC_GetXOMState(XOMR0) == 0) &&
             (CheckAllOne(XOMR0_Base, FMC_FLASH_PAGE_SIZE) == READ_ALLONE_YES))
     {
         printf("XOM0 region erased. No program code in XOM0.\n");
@@ -93,18 +93,15 @@ int main()
     printf("Any key to continue...\n");
     getchar();
 
-    if ((FMC->XOMSTS & 0x1) != 0x1)
+    /* Config XOMR0 */
+    if (FMC_GetXOMState(XOMR0) == 0)
     {
-        /* Config XOMR0 */
-        if (FMC_GetXOMState(XOMR0) == 0)
-        {
-            u32Status = FMC_ConfigXOM(XOMR0, XOMR0_Base, 1);
+        u32Status = FMC_ConfigXOM(XOMR0, XOMR0_Base, 1);
 
-            if (u32Status)
-                printf("XOMR0 Config fail...\n");
-            else
-                printf("XOMR0 Config OK...\n");
-        }
+        if (u32Status)
+            printf("XOMR0 Config fail...\n");
+        else
+            printf("XOMR0 Config OK...\n");
 
         printf("\nAny key to reset chip to enable XOM regions...\n");
         getchar();
@@ -123,7 +120,7 @@ int main()
     printf("\nAny key to Erase XOM...\n");
     getchar();
 
-    if ((FMC->XOMSTS & 0x1) == 0x1)
+    if (FMC_GetXOMState(XOMR0) == 1)
     {
         /* Erase XOMR0 region */
         if (FMC_EraseXOM(XOMR0) == 0)

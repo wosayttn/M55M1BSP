@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     system_M55M1.c
  * @version  V1.00
- * @brief    CMSIS Device System Source File for NuMicro M55M1
+ * @brief    Simplified CMSIS Device System Source File for NuMicro M55M1
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 
 #if defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)       // ARM Compiler 6
@@ -17,6 +17,7 @@
   Exception / Interrupt Vector table
  *----------------------------------------------------------------------------*/
 extern const VECTOR_TABLE_Type __VECTOR_TABLE[];
+extern const VECTOR_TABLE_Type DTCM_VECTOR_TABLE[];
 
 /*----------------------------------------------------------------------------
   System Core Clock Variable
@@ -45,11 +46,6 @@ void SystemCoreClockUpdate(void)
     SystemCoreClock = u32Freq;
 
     CyclesPerUs = (SystemCoreClock + 500000UL) / 1000000UL;
-}
-
-uint32_t GetSystemCoreClock(void)
-{
-    return SystemCoreClock;
 }
 
 #ifndef NVT_DBG_UART_OFF
@@ -84,6 +80,9 @@ __WEAK void SetDebugUartCLK(void)
 
     /* Enable UART clock */
     CLK_EnableModuleClock(UART0_MODULE);
+
+    /* Reset UART module */
+    SYS_ResetModule(SYS_UART0RST);
 #endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
 }
 
@@ -97,52 +96,25 @@ __WEAK void SetDebugUartCLK(void)
 __WEAK void InitDebugUart(void)
 {
 #if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
-    /* Reset UART module */
-    SYS_ResetModule(SYS_UART0RST);
     /* Init UART to 115200-8n1 for print message */
-//    UART_Open(DEBUG_PORT, 115200);
-    DEBUG_PORT->LINE = (UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1);
-    DEBUG_PORT->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400));
+    //UART_Open(UART0, 115200);
+    UART0->LINE = (UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1);
+    UART0->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400));
 #endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
 }
 #endif /* NVT_DBG_UART_OFF */
-
 
 /*----------------------------------------------------------------------------
   System initialization function
  *----------------------------------------------------------------------------*/
 __attribute__((constructor)) void SystemInit(void)
 {
-    int32_t i;
-
-#if defined (__ICCARM__)
-    __WEAK extern uint32_t _region_NonCacheable_start__, _region_NonCacheable_end__;
-
-    if (((uint32_t)&_region_NonCacheable_start__) && ((uint32_t)&_region_NonCacheable_end__))
-    {
-        g_u32NonCacheableBase  = (uint32_t)&_region_NonCacheable_start__;
-        g_u32NonCacheableLimit = (uint32_t)&_region_NonCacheable_end__;
-    }
-#elif defined(__ARMCC_VERSION)
-    __WEAK extern uint32_t Image$$SRAM_NONCACHEABLE$$Base, Image$$SRAM_NONCACHEABLE_END$$Base;
-
-    if (((uint32_t)&Image$$SRAM_NONCACHEABLE$$Base) && ((uint32_t)&Image$$SRAM_NONCACHEABLE_END$$Base))
-    {
-        g_u32NonCacheableBase  = (uint32_t)&Image$$SRAM_NONCACHEABLE$$Base;
-        g_u32NonCacheableLimit = DCACHE_ALIGN_LINE_SIZE((uint32_t)&Image$$SRAM_NONCACHEABLE_END$$Base) - 1;
-    }
-#else
-    __WEAK extern uint32_t __SRAM_NONCACHEABLE_start, __SRAM_NONCACHEABLE_end;
-
-    if (((uint32_t)&__SRAM_NONCACHEABLE_start) && ((uint32_t)&__SRAM_NONCACHEABLE_end))
-    {
-        g_u32NonCacheableBase  = (uint32_t)&__SRAM_NONCACHEABLE_start;
-        g_u32NonCacheableLimit = DCACHE_ALIGN_LINE_SIZE((uint32_t)&__SRAM_NONCACHEABLE_end) - 1;
-    }
-#endif
-
 #if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
+#ifdef NVT_VECTOR_ON_FLASH
     SCB->VTOR = (uint32_t)(&__VECTOR_TABLE[0]);
+#else
+    SCB->VTOR = (uint32_t)(&DTCM_VECTOR_TABLE[0]);
+#endif
 #endif
 
 #if (defined (__FPU_USED) && (__FPU_USED == 1U)) || \
@@ -173,30 +145,6 @@ __attribute__((constructor)) void SystemInit(void)
     __DSB();
     __ISB();
 
-#ifdef NVT_DCACHE_ON
-    if (g_u32NonCacheableLimit > g_u32NonCacheableBase)
-    {
-        /* Disable D-Cache */
-        SCB_DisableDCache();
-        /* Configure MPU memory attribute */
-        /*
-         * Attribute 0
-         * Memory Type = Normal
-         * Attribute   = Outer Non-cacheable, Inner Non-cacheable
-         */
-        ARM_MPU_SetMemAttr(0UL, ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
-
-        /* Configure MPU memory regions */
-        ARM_MPU_SetRegion(0UL,                                                       /* Region 0 */
-                          ARM_MPU_RBAR((uint32_t)g_u32NonCacheableBase, ARM_MPU_SH_NON, 0, 0, 1),  /* Non-shareable, read/write, privileged, non-executable */
-                          ARM_MPU_RLAR((uint32_t)g_u32NonCacheableLimit, 0)                        /* Use Attr 0 */
-                         );
-        /* Enable MPU */
-        ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
-        /* Enable D-Cache */
-        SCB_EnableDCache();
-    }
-#endif  // NVT_DCACHE_ON
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
     TZ_SAU_Setup();
@@ -223,10 +171,6 @@ void FMC_NSCBA_Setup(void)
     {
         /* Unlock Protected Register */
         SYS_UnlockReg();
-
-        /* Switch power level to PL1 to update NSCBA */
-        if (PMC->PLCTL != PMC_PLCTL_PLSEL_PL1)
-            PMC_SetPowerLevel(PMC_PLCTL_PLSEL_PL1);
 
         /* Enable FMC ISP and config update */
         FMC->ISPCTL = FMC_ISPCTL_ISPEN_Msk | FMC_ISPCTL_CFGUEN_Msk;
@@ -275,9 +219,9 @@ void FMC_NSCBA_Setup(void)
  * @param    u32MemBaseAddr     Memory base address
  * @param    u32MemByteSize     Length (in bytes) of memory
  * @param    u32MemBaseAddr_S   Secure base address
- * @param    u32MemByteSize_S   Length (in bytes) of secure region
+ * @param    u32MemByteSize_S   Length (in bytes) of Secure region
  * @param    u32MemBaseAddr_NS  Non-secure base address
- * @param    u32MemByteSize_NS  Length (in bytes) of non-secure region
+ * @param    u32MemByteSize_NS  Length (in bytes) of Non-secure region
  */
 int32_t SetupMPC(
     const uint32_t u32MPCBaseAddr,
@@ -338,7 +282,7 @@ int32_t SetupMPC(
         return eRetCode;
     }
 
-    /* Configure non-secure region */
+    /* Configure Non-secure region */
     if (u32MemByteSize_NS > 0)
     {
         if ((eRetCode = mpc_sie_config_region(&mpc_dev, u32MemBaseAddr_NS, u32MemBaseAddr_NS + u32MemByteSize_NS - 1, MPC_SIE_SEC_ATTR_NONSECURE)) != MPC_SIE_ERR_NONE)
@@ -347,7 +291,7 @@ int32_t SetupMPC(
         }
     }
 
-    /* Configure secure region */
+    /* Configure Secure region */
     if (u32MemByteSize_S > 0)
     {
         if ((eRetCode = mpc_sie_config_region(&mpc_dev, u32MemBaseAddr_S, u32MemBaseAddr_S + u32MemByteSize_S - 1, MPC_SIE_SEC_ATTR_SECURE)) != MPC_SIE_ERR_NONE)
@@ -439,7 +383,7 @@ void SCU_Setup(void)
                  NON_SECURE_SRAM_BASE, u32SRAMx_NonSecureSize);
     }
 
-    /* Set interrupt to non-secure according to DxPNSy settings */
+    /* Set interrupt to Non-secure according to DxPNSy settings */
     /* SCU_D0PNS0 */
     if (SCU_INIT_D0PNS0_VAL & SCU_D0PNS0_NPU_Msk)
         NVIC_ITNS_CONF(NPU_IRQn);
@@ -447,9 +391,6 @@ void SCU_Setup(void)
     /* SCU_D0PNS2 */
     if (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM0_Msk)
         NVIC_ITNS_CONF(SPIM0_IRQn);
-
-    if (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM1_Msk)
-        NVIC_ITNS_CONF(SPIM1_IRQn);
 
     if (SCU_INIT_D1PNS0_VAL & SCU_D1PNS0_PDMA0_Msk)
         NVIC_ITNS_CONF(PDMA0_IRQn);
@@ -597,14 +538,6 @@ void SCU_Setup(void)
     if (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_WWDT1_Msk)
         NVIC_ITNS_CONF(WWDT1_IRQn);
 
-    if (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_EADC1_Msk)
-    {
-        NVIC_ITNS_CONF(EADC10_IRQn);
-        NVIC_ITNS_CONF(EADC11_IRQn);
-        NVIC_ITNS_CONF(EADC12_IRQn);
-        NVIC_ITNS_CONF(EADC13_IRQn);
-    }
-
     if (SCU_INIT_D1PNS4_VAL & SCU_D1PNS4_EPWM1_Msk)
     {
         NVIC_ITNS_CONF(BRAKE1_IRQn);
@@ -732,7 +665,7 @@ void SCU_Setup(void)
     if (SCU_INIT_D2PNS2_VAL & SCU_D2PNS2_AWF_Msk)
         NVIC_ITNS_CONF(AWF_IRQn);
 
-    /* Set interrupt to non-secure according to SCU_INIT_IO_ITNS_VAL settings */
+    /* Set interrupt to Non-secure according to SCU_INIT_IO_ITNS_VAL settings */
     if (SCU_INIT_IO_ITNS_VAL & BIT0) NVIC_ITNS_CONF(GPA_IRQn);
 
     if (SCU_INIT_IO_ITNS_VAL & BIT1) NVIC_ITNS_CONF(GPB_IRQn);
@@ -775,7 +708,7 @@ void SCU_Setup(void)
     NVIC_EnableIRQ(SCU_IRQn);
 }
 
-__WEAK void SCU_IRQHandler(void)
+NVT_ITCM __WEAK void SCU_IRQHandler(void)
 {
 
 }
@@ -871,7 +804,7 @@ void TZ_SAU_Setup(void)
     SCB->SCR   = (SCB->SCR   & ~(SCB_SCR_SLEEPDEEPS_Msk)) |
                  ((SCB_CSR_DEEPSLEEPS_VAL     << SCB_SCR_SLEEPDEEPS_Pos)     & SCB_SCR_SLEEPDEEPS_Msk);
 
-    SCB->AIRCR = (0x05FA << 16) |
+    SCB->AIRCR = (0x05FA << SCB_AIRCR_VECTKEY_Pos) |
                  ((SCB_AIRCR_SYSRESETREQS_VAL << SCB_AIRCR_SYSRESETREQS_Pos) & SCB_AIRCR_SYSRESETREQS_Msk) |
                  ((SCB_AIRCR_BFHFNMINS_VAL    << SCB_AIRCR_BFHFNMINS_Pos)    & SCB_AIRCR_BFHFNMINS_Msk)    |
                  ((SCB_AIRCR_PRIS_VAL         << SCB_AIRCR_PRIS_Pos)         & SCB_AIRCR_PRIS_Msk);
@@ -903,3 +836,5 @@ void TZ_SAU_Setup(void)
 }
 
 #endif /* defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

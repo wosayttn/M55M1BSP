@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>ISP_HID_20</TargetName>
+      <TargetName>KS_AESKey</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>ISP_HID_20</OutputName>
+          <OutputName>KS_AESKey</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -314,7 +314,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>7</Optim>
+            <Optim>3</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>DEBUG_PORT=UART0</Define>
               <Undefine></Undefine>
-              <IncludePath>..;..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc</IncludePath>
+              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -371,7 +371,7 @@
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\ARM\M55M1-LDROM.scatter</ScatterFile>
+            <ScatterFile>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\ARM\M55M1.scatter</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -385,20 +385,25 @@
           <GroupName>CMSIS</GroupName>
           <Files>
             <File>
-              <FileName>ISP_startup_M55M1.c</FileName>
+              <FileName>startup_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\ISP_startup_M55M1.c</FilePath>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</FilePath>
             </File>
             <File>
-              <FileName>ISP_system_M55M1.c</FileName>
+              <FileName>system_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\ISP_system_M55M1.c</FilePath>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Library</GroupName>
           <Files>
+            <File>
+              <FileName>retarget.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\retarget.c</FilePath>
+            </File>
             <File>
               <FileName>clk.c</FileName>
               <FileType>1</FileType>
@@ -410,9 +415,24 @@
               <FilePath>..\..\..\..\Library\StdDriver\src\sys.c</FilePath>
             </File>
             <File>
-              <FileName>hsusbd.c</FileName>
+              <FileName>uart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\hsusbd.c</FilePath>
+              <FilePath>..\..\..\..\Library\StdDriver\src\uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>fmc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\fmc.c</FilePath>
+            </File>
+            <File>
+              <FileName>ks.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\ks.c</FilePath>
+            </File>
+            <File>
+              <FileName>crypto.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\crypto.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -423,31 +443,6 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>descriptors.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\descriptors.c</FilePath>
-            </File>
-            <File>
-              <FileName>fmc_user.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\fmc_user.c</FilePath>
-            </File>
-            <File>
-              <FileName>hid_transfer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hid_transfer.c</FilePath>
-            </File>
-            <File>
-              <FileName>isp_user.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\isp_user.c</FilePath>
-            </File>
-            <File>
-              <FileName>targetdev.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\targetdev.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -464,7 +459,7 @@
   <LayerInfo>
     <Layers>
       <Layer>
-        <LayName>ISP_HID_20</LayName>
+        <LayName>KS_AESKey</LayName>
         <LayPrjMark>1</LayPrjMark>
       </Layer>
     </Layers>

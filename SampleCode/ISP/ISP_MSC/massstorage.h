@@ -1,11 +1,11 @@
 /******************************************************************************
- * @file     massstorage.h
- * @brief    M252 series USB mass storage header file
+ * @file     MassStorage.h
+ * @version  V1.00
+ * @brief    USB mass storage header file
  *
- * @note
- * SPDX-License-Identifier: Apache-2.0
- * Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 
 #ifndef __USBD_MASS_H__
 #define __USBD_MASS_H__
@@ -158,5 +158,3 @@ void EP2_Handler(void);
 void EP3_Handler(void);
 
 #endif  /* __USBD_MASS_H_ */
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

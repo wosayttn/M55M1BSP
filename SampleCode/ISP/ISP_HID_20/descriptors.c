@@ -4,8 +4,8 @@
  * @brief    HSUSBD driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 /*!<Includes */
 #include "NuMicro.h"
 #include "hid_transfer.h"
@@ -138,3 +138,5 @@ uint8_t gu8ProductStringDesc[] =
     'W', 0, 'P', 0, 'M', 0, ' ', 0, 'U', 0, 'S', 0, 'B', 0
 
 };
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

@@ -122,6 +122,7 @@ int main(void)
         goto lexit;
     }
 
+    /* Use reset CPU only or reset system to reset to new vector page */
 #if 0
     printf("SYS_ResetCPU\n");
     UART_WAIT_TX_EMPTY(DEBUG_PORT);

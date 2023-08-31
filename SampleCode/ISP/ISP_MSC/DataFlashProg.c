@@ -1,11 +1,11 @@
 /******************************************************************************//**
  * @file     DataFlashProg.c
  * @version  V1.00
- * @brief    M252 Series Data Flash Access API
+ * @brief    Flash Access API
  *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Includes of system headers                                                                              */
@@ -17,7 +17,7 @@
 
 static uint8_t g_u8LockBit = 1;
 
-extern uint32_t g_u32u32StorageSize;
+extern uint32_t g_u32StorageSize;
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */
@@ -58,7 +58,7 @@ void DataFlashRead(uint32_t u32Addr, uint32_t *u32Buf)
 
     if (u32Addr == 0x00000000)
     {
-        uint32_t u32Sectors = g_u32u32StorageSize / UDC_SECTOR_SIZE;
+        uint32_t u32Sectors = g_u32StorageSize / UDC_SECTOR_SIZE;
 
         u8FormatData[19] = u32Sectors & 0xFF;
         u8FormatData[20] = (uint8_t)(u32Sectors >> 8);
@@ -112,7 +112,7 @@ uint32_t FMC_Init(void)
         u32APSize += 0x2000;
 
 #endif
-    u32APSize = SIZE_APROM * 1024;
+    u32APSize = FMC_APROM_SIZE;
     FMC_ISP(FMC_ISPCMD_READ, FMC_CONFIG_BASE, 0);
 
     g_u8LockBit = (FMC->ISPDAT & 0x02);
@@ -135,7 +135,7 @@ void DataFlashProgramPage(uint32_t u32StartAddr, uint32_t *u32Buf)
 void DataFlashWrite(uint32_t u32Addr, uint32_t *u32Buf)
 {
     /* This is low level write function of USB Mass Storage */
-    if ((u32Addr >= DATA_SEC_ADDR) && (u32Addr < g_u32u32StorageSize))
+    if ((u32Addr >= DATA_SEC_ADDR) && (u32Addr < g_u32StorageSize))
     {
         u32Addr -= DATA_SEC_ADDR;
 
@@ -149,7 +149,7 @@ void DataFlashWrite(uint32_t u32Addr, uint32_t *u32Buf)
         {
             uint32_t i;
 
-            for (i = 0; i < (g_u32u32StorageSize - DATA_SEC_ADDR); i += FMC_FLASH_PAGE_SIZE)
+            for (i = 0; i < (g_u32StorageSize - DATA_SEC_ADDR); i += FMC_FLASH_PAGE_SIZE)
             {
                 FMC_ISP(FMC_ISPCMD_PAGE_ERASE, i, 0);
             }
@@ -159,4 +159,4 @@ void DataFlashWrite(uint32_t u32Addr, uint32_t *u32Buf)
     }
 }
 
-
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

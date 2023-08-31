@@ -1,36 +1,34 @@
 /***************************************************************************//**
  * @file     targetdev.c
+ * @version  V1.00
  * @brief    ISP support function source file
- * @version  0x32
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include "targetdev.h"
 #include "isp_user.h"
 
-
-/* Supports maximum 1M (APROM) */
+/* Supports maximum 2MB (APROM) */
 uint32_t GetApromSize()
 {
-    /* The smallest of APROM size is 2K. */
-    uint32_t size = 0x800, data;
+    /* The smallest of APROM u32Size is FMC_FLASH_PAGE_SIZE. */
+    uint32_t u32Size = FMC_FLASH_PAGE_SIZE, u32Data;
     int result;
 
     do
     {
-        result = FMC_Read_User(size, &data);
+        result = FMC_Read_User(FMC_APROM_BASE + u32Size, &u32Data);
 
         if (result < 0)
         {
-            return size;
+            return u32Size;
         }
         else
         {
-            size *= 2;
+            u32Size *= 2;
         }
-    }
-    while (1);
+    } while (1);
 }
 
 /* Data Flash is shared with APROM.
@@ -62,3 +60,5 @@ void GetDataFlashInfo(uint32_t *pu32Addr, uint32_t *pu32Size)
         *pu32Size = 0;
     }
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

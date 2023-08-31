@@ -1,11 +1,11 @@
 /***************************************************************************//**
  * @file     fmc_user.c
- * @brief    FMC driver source file
- * @version  2.0.0
+ * @version  V1.00
+ * @brief    Simplified FMC driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include "fmc_user.h"
 
@@ -193,3 +193,5 @@ void UpdateConfig(unsigned int *data, unsigned int *res)
 
     FMC_DISABLE_CFG_UPDATE();
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

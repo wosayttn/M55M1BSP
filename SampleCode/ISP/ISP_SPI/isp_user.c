@@ -1,11 +1,11 @@
 /***************************************************************************//**
  * @file     isp_user.c
+ * @version  V1.00
  * @brief    ISP Command source file
- * @version  0x32
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "isp_user.h"
@@ -13,7 +13,7 @@
 __attribute__((aligned(4))) uint8_t g_au8ResponseBuff[64];
 __attribute__((aligned(4))) static uint8_t g_au8ApromBuf[FMC_FLASH_PAGE_SIZE];
 uint32_t g_u32UpdateApromCmd;
-uint32_t g_u32ApromSize, g_u32DataFlashAddr, g_u32DataFlashSize;
+uint32_t g_u32ApromSize = 0, g_u32DataFlashAddr = 0, g_u32DataFlashSize = 0;
 
 static uint16_t Checksum(unsigned char *buf, int len)
 {
@@ -229,3 +229,5 @@ out:
     u32PackNo++;
     return 0;
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

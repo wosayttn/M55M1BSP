@@ -1,11 +1,11 @@
 /**************************************************************************//**
  * @file     startup_M55M1.c
  * @version  V1.00
- * @brief    CMSIS Device Startup File for NuMicro M55M1
+ * @brief    Simplified CMSIS Device Startup File for NuMicro M55M1
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
-*****************************************************************************/
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 
 #include <inttypes.h>
 #include <stdio.h>
@@ -179,7 +179,6 @@ void WDT1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void WWDT0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void WWDT1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 
-
 /*----------------------------------------------------------------------------
   Exception / Interrupt Vector table
  *----------------------------------------------------------------------------*/
@@ -188,7 +187,30 @@ void WWDT1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
     #pragma GCC diagnostic ignored "-Wpedantic"
 #endif
 
+/* Static vector table
+ * For performance, M55M1 places vector table in DTCM by default.
+ * User can define NVT_VECTOR_ON_FLASH to place vector table in Flash.
+ *
+ * If NVT_VECTOR_ON_FLASH is defined and use IAR,
+ *   IRQ handlers referenced in __VECTOR_TABLE (__vector_table) are protected and
+ *   not affected by 'initialize by copy'. It means IRQ handler must placed in Flash.
+ */
 const VECTOR_TABLE_Type __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
+#ifndef NVT_VECTOR_ON_FLASH
+{
+    (VECTOR_TABLE_Type)(&__INITIAL_SP),       /*       Initial Stack Pointer                            */
+    Reset_Handler,                            /*       Reset Handler                                    */
+    NMI_Handler,                              /*   -14 NMI Handler                                      */
+    HardFault_Handler,                        /*   -13 Hard Fault Handler                               */
+    MemManage_Handler,                        /*   -12 MPU Fault Handler                                */
+    BusFault_Handler,                         /*   -11 Bus Fault Handler                                */
+    UsageFault_Handler,                       /*   -10 Usage Fault Handler                              */
+    SecureFault_Handler,                      /*    -9 Secure Fault Handler                             */
+};
+
+/* Declare new vector table placed in DTCM */
+const VECTOR_TABLE_Type DTCM_VECTOR_TABLE[] NVT_DTCM_VTOR =
+#endif
 {
     (VECTOR_TABLE_Type)(&__INITIAL_SP),       /*       Initial Stack Pointer                            */
     Reset_Handler,                            /*       Reset Handler                                    */
@@ -359,12 +381,47 @@ __NO_RETURN void Reset_Handler(void)
     __ASM volatile("MSR psplim, %0" : : "r"((uint32_t)(&__STACK_LIMIT)));
 
     // Move other code to Reset_Handler_Main to prevent compiler generate stack access code.
-    // Move stack pointer before setting MSPLIM might cuase hard fault due to MSPLIM violation.
+    // Move stack pointer before setting MSPLIM might cause hard fault due to MSPLIM violation.
     Reset_Handler_Main();
 }
 
 __NO_RETURN void Reset_Handler_Main(void)
 {
+    if ((__PC() & NS_OFFSET) == 0)
+    {
+        // Unlock protected registers
+        do
+        {
+            SYS->REGLCTL = 0x59UL;
+            SYS->REGLCTL = 0x16UL;
+            SYS->REGLCTL = 0x88UL;
+        } while (SYS->REGLCTL == 0UL);
+
+        // Switch SRAM0 to normal power mode
+        if (PMC->SYSRB0PC != 0)
+        {
+            PMC->SYSRB0PC = 0;
+
+            while (PMC->SYSRB0PC & PMC_SYSRB0PC_PCBUSY_Msk)
+                ;
+        }
+
+        // Enable SRAM0 clock
+        CLK->SRAMCTL |= CLK_SRAMCTL_SRAM0CKEN_Msk;
+
+        // Switch SRAM1 to normal power mode
+        if (PMC->SYSRB1PC != 0)
+        {
+            PMC->SYSRB1PC = 0;
+
+            while (PMC->SYSRB1PC & PMC_SYSRB1PC_PCBUSY_Msk)
+                ;
+        }
+
+        // Enable SRAM1 clock
+        CLK->SRAMCTL |= CLK_SRAMCTL_SRAM1CKEN_Msk;
+    }
+
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
     __TZ_set_STACKSEAL_S((uint32_t *)(&__STACK_SEAL));
 #endif
@@ -391,8 +448,7 @@ __NO_RETURN void Reset_Handler_Main(void)
  *----------------------------------------------------------------------------*/
 void HardFault_Handler(void)
 {
-    while (1)
-        ;
+    while (1) ;
 }
 
 /*----------------------------------------------------------------------------
@@ -400,10 +456,11 @@ void HardFault_Handler(void)
  *----------------------------------------------------------------------------*/
 void Default_Handler(void)
 {
-    while (1)
-        ;
+    while (1) ;
 }
 
 #if defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
     #pragma clang diagnostic pop
 #endif
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

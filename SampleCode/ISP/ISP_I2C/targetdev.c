@@ -1,35 +1,34 @@
 /***************************************************************************//**
  * @file     targetdev.c
+ * @version  V1.00
  * @brief    ISP support function source file
- * @version  0x32
- * @date     14, June, 2017
  *
- * @note
- * Copyright (C) 2017-2018 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include "targetdev.h"
 #include "isp_user.h"
 
+/* Supports maximum 2MB (APROM) */
 uint32_t GetApromSize()
 {
-    //the smallest of APROM size is 2K
-    uint32_t size = 0x1000, data;
+    /* The smallest of APROM u32Size is FMC_FLASH_PAGE_SIZE. */
+    uint32_t u32Size = FMC_FLASH_PAGE_SIZE, u32Data;
     int result;
 
     do
     {
-        result = FMC_Read_User(size, &data);
+        result = FMC_Read_User(FMC_APROM_BASE + u32Size, &u32Data);
 
         if (result < 0)
         {
-            return size;
+            return u32Size;
         }
         else
         {
-            size *= 2;
+            u32Size *= 2;
         }
-    }
-    while (1);
+    } while (1);
 }
 
 // Data Flash is shared with APROM.
@@ -46,17 +45,19 @@ void GetDataFlashInfo(uint32_t *addr, uint32_t *size)
 
         uData &= 0x000FFFFF;
 
-        if (uData > g_apromSize || uData & (FMC_FLASH_PAGE_SIZE - 1))   //avoid config1 value from error
+        if (uData > g_u32ApromSize || uData & (FMC_FLASH_PAGE_SIZE - 1))   //avoid config1 value from error
         {
-            uData = g_apromSize;
+            uData = g_u32ApromSize;
         }
 
         *addr = uData;
-        *size = g_apromSize - uData;
+        *size = g_u32ApromSize - uData;
     }
     else
     {
-        *addr = g_apromSize;
+        *addr = g_u32ApromSize;
         *size = 0;
     }
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
