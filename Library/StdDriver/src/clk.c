@@ -718,7 +718,7 @@ void CLK_SetSCLK(uint32_t u32ClkSrc)
   * |\ref TMR3_MODULE    |\ref CLK_TMRSEL_TMR3SEL_LIRC              | x                              |
   * |\ref TMR3_MODULE    |\ref CLK_TMRSEL_TMR3SEL_HIRC              | x                              |
   * |\ref TMR3_MODULE    |\ref CLK_TMRSEL_TMR3SEL_HIRC48M_DIV4      | x                              |
-  * |\ref TTMR0_MODULE   |\ref CLK_TTMRSEL_TTMR0SEL_PCLK2           | x                              |
+  * |\ref TTMR0_MODULE   |\ref CLK_TTMRSEL_TTMR0SEL_PCLK4           | x                              |
   * |\ref TTMR0_MODULE   |\ref CLK_TTMRSEL_TTMR0SEL_LXT             | x                              |
   * |\ref TTMR0_MODULE   |\ref CLK_TTMRSEL_TTMR0SEL_LIRC            | x                              |
   * |\ref TTMR0_MODULE   |\ref CLK_TTMRSEL_TTMR0SEL_MIRC            | x                              |

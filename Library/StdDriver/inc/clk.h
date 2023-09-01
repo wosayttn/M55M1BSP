@@ -305,7 +305,7 @@ extern "C"
 #define CLK_TMRSEL_TMR3SEL_HIRC             (0x5UL << CLK_TMRSEL_TMR3SEL_Pos)           /*!< Select TMR3 clock source from HIRC \hideinitializer */
 #define CLK_TMRSEL_TMR3SEL_HIRC48M_DIV4     (0x6UL << CLK_TMRSEL_TMR3SEL_Pos)           /*!< Select TMR3 clock source from HIRC48M/4 \hideinitializer */
 
-#define CLK_TTMRSEL_TTMR0SEL_PCLK2          (0x0UL << CLK_TTMRSEL_TTMR0SEL_Pos)         /*!< Select TTMR0 clock source from PCLK2 \hideinitializer */
+#define CLK_TTMRSEL_TTMR0SEL_PCLK4          (0x0UL << CLK_TTMRSEL_TTMR0SEL_Pos)         /*!< Select TTMR0 clock source from PCLK4 \hideinitializer */
 #define CLK_TTMRSEL_TTMR0SEL_LXT            (0x1UL << CLK_TTMRSEL_TTMR0SEL_Pos)         /*!< Select TTMR0 clock source from LXT \hideinitializer */
 #define CLK_TTMRSEL_TTMR0SEL_LIRC           (0x2UL << CLK_TTMRSEL_TTMR0SEL_Pos)         /*!< Select TTMR0 clock source from LIRC \hideinitializer */
 #define CLK_TTMRSEL_TTMR0SEL_MIRC           (0x3UL << CLK_TTMRSEL_TTMR0SEL_Pos)         /*!< Select TTMR0 clock source from MIRC \hideinitializer */
