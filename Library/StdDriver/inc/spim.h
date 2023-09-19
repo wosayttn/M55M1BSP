@@ -36,13 +36,15 @@ extern "C"
   @{
 */
 
-#define SPIM_DMM0_SADDR                     (0x80000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
-#define SPIM_DMM0_NSADDR                    (0x90000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
+//#define SPIM_DMM0_SADDR                     (0x80000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
+//#define SPIM_DMM0_NSADDR                    (0x90000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
+#define SPIM_DMM0_SADDR                     (0x82000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
+#define SPIM_DMM0_NSADDR                    (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
 
 // TESTCHIP_ONLY
-#define SPIM_DMM1_SADDR                     (0x82000000UL)  /*!< SPIM1 DMM mode memory map base secure address    \hideinitializer */
+#define SPIM_DMM1_SADDR                     0//(0x82000000UL)  /*!< SPIM1 DMM mode memory map base secure address    \hideinitializer */
 // TESTCHIP_ONLY
-#define SPIM_DMM1_NSADDR                    (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
+#define SPIM_DMM1_NSADDR                    0//(0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
 
 #if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM0_Msk)
 #define SPIM_DMM0_ADDR                      SPIM_DMM0_NSADDR
@@ -57,7 +59,7 @@ extern "C"
 #define SPIM_DMM1_ADDR                      SPIM_DMM1_SADDR
 #endif
 
-#define SPIM_DMM_SIZE                       (0x2000000UL)       /*!< DMM mode memory mapping size        \hideinitializer */
+#define SPIM_DMM_SIZE                       (0x2000000UL - 1)       /*!< DMM mode memory mapping size        \hideinitializer */
 
 #define SPIM_MAX_DLL_LATENCY                (0x05)              /*!< Maximum DLL training number        \hideinitializer */
 
@@ -271,6 +273,18 @@ typedef enum
 /*----------------------------------------------------------------------------*/
 /*  Define Macros and functions                                               */
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief   Enable cipher balance.
+ * \hideinitializer
+ */
+//#define SPIM_ENABLE_BALEN(spim)     (spim->CTL0 |= SPIM_CTL0_BALEN_Msk)
+
+/**
+ * @brief   Disable cipher balance.
+ * \hideinitializer
+ */
+//#define SPIM_DISABLE_BALEN(spim)    (spim->CTL0 &= ~(SPIM_CTL0_BALEN_Msk))
+
 /**
  * @brief       Enable Hyper Device Mode.
 * \hideinitializer
@@ -577,25 +591,37 @@ typedef enum
  * @brief   Cache Write Through Enable.
  * \hideinitializer
  */
-#define SPIM_ENABLE_CAWRTHEN(spim)    (spim->CTL1 |= SPIM_CTL1_CAWRTHEN_Msk)
+//#define SPIM_ENABLE_CAWRTHEN(spim)    (spim->CTL1 |= SPIM_CTL1_CAWRTHEN_Msk)
 
 /**
  * @brief   Cache Write Through Disable.
  * \hideinitializer
  */
-#define SPIM_DISABLE_CAWRTHEN(spim)    (spim->CTL1 &= ~SPIM_CTL1_CAWRTHEN_Msk)
+//#define SPIM_DISABLE_CAWRTHEN(spim)    (spim->CTL1 &= ~SPIM_CTL1_CAWRTHEN_Msk)
 
 /**
  * @brief   Cache Auto Selection Updated Cache Line Number Enable.
  * \hideinitializer
  */
-#define SPIM_ENABLE_AUTOSCLN(spim)    (spim->CTL1 |= SPIM_CTL1_AUTOSCLN_Msk)
+//#define SPIM_ENABLE_AUTOSCLN(spim)    (spim->CTL1 |= SPIM_CTL1_AUTOSCLN_Msk)
 
 /**
  * @brief   Cache Auto Selection Updated Cache Line Number Disable.
  * \hideinitializer
  */
-#define SPIM_DISABLE_AUTOSCLN(spim)    (spim->CTL1 &= ~SPIM_CTL1_AUTOSCLN_Msk)
+//#define SPIM_DISABLE_AUTOSCLN(spim)    (spim->CTL1 &= ~SPIM_CTL1_AUTOSCLN_Msk)
+
+/**
+ * @brief   Set Updated Cache Line Number per Cache Miss.
+ * @param[in]   x   SPI Function Operation Mode
+ *                  - \ref 0x01 : Update one cache line per cache miss. (default)
+ *                  - \ref 0x02 : Update two cache line per cache miss.
+ *                  - \ref 0x03 : Update three cache line per cache miss.
+ *                  - \ref 0x04 : Update four cache line per cache miss.
+ * \hideinitializer
+ */
+#define SPIM_SET_UPDCLNUM(spim, x)    \
+    (spim->CTL1 = (spim->CTL1 & ~(SPIM_CTL1_UPDCLNUM_Msk)) | (x) << SPIM_CTL1_UPDCLNUM_Pos)
 
 /**
  * @brief   Reset Updated Cache Line Number per Cache Miss.
@@ -1454,7 +1480,7 @@ __STATIC_INLINE uint32_t SPIM_GetDMMAddress(SPIM_T *spim);
  */
 __STATIC_INLINE void SPIM_ENABLE_CIPHER(SPIM_T *spim)
 {
-    spim->CTL0 &= ~(SPIM_CTL0_CIPHOFF_Msk);
+    spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_CIPHOFF_Msk)) /*| SPIM_CTL0_BALEN_Msk*/;
 
     SPIM_SET_DMM_DESELTIM(spim, 0x12);
 }
@@ -1468,7 +1494,7 @@ __STATIC_INLINE void SPIM_ENABLE_CIPHER(SPIM_T *spim)
  */
 __STATIC_INLINE void SPIM_DISABLE_CIPHER(SPIM_T *spim)
 {
-    spim->CTL0 |= SPIM_CTL0_CIPHOFF_Msk;
+    spim->CTL0 |= /*(spim->CTL0 & ~(SPIM_CTL0_BALEN_Msk)) |*/ (SPIM_CTL0_CIPHOFF_Msk);
 
     SPIM_SET_DMM_DESELTIM(spim, 0x08);
 }
@@ -1482,10 +1508,10 @@ __STATIC_INLINE void SPIM_DISABLE_CIPHER(SPIM_T *spim)
  */
 __STATIC_INLINE void SPIM_DISABLE_CACHE(SPIM_T *spim)
 {
-#if (SPIM_REG_CACHE == 1) //TESTCHIP_ONLY not support
+    #if (SPIM_REG_CACHE == 1) //TESTCHIP_ONLY not support
     (spim->CTL1 |= SPIM_CTL1_CACHEOFF_Msk);
-#endif
-
+#endif 
+    
     /* Cipher Disabled Set Deselect Time 0x01 */
     if (((spim->CTL0 & SPIM_CTL0_CIPHOFF_Msk) >> SPIM_CTL0_CIPHOFF_Pos) != SPIM_OP_DISABLE)
     {
@@ -1505,34 +1531,12 @@ __STATIC_INLINE void SPIM_ENABLE_CACHE(SPIM_T *spim)
 {
     (spim->CTL1 &= ~(SPIM_CTL1_CACHEOFF_Msk));
 
-    SPIM_ENABLE_AUTOSCLN(spim);
-    SPIM_ENABLE_CAWRTHEN(spim);
-
     /* Cipher Disabled Set Deselect Time 0x04 */
     if (((spim->CTL0 & SPIM_CTL0_CIPHOFF_Msk) >> SPIM_CTL0_CIPHOFF_Pos) != SPIM_OP_DISABLE)
     {
         SPIM_SET_DMM_DESELTIM(spim, 0x4);
     }
 }
-
-/**
- * @brief   Set Updated Cache Line Number per Cache Miss.
- * @param[in]   x   SPI Function Operation Mode
- *                  - \ref 0x01 : Update one cache line per cache miss. (default)
- *                  - \ref 0x02 : Update two cache line per cache miss.
- *                  - \ref 0x03 : Update three cache line per cache miss.
- *                  - \ref 0x04 : Update four cache line per cache miss.
- * \hideinitializer
- */
-__STATIC_INLINE void SPIM_SET_UPDCLNUM(SPIM_T *spim, uint32_t x)
-{
-    SPIM_DISABLE_AUTOSCLN(spim);
-    SPIM_DISABLE_CAWRTHEN(spim);
-
-    spim->CTL1 = (spim->CTL1 & ~(SPIM_CTL1_UPDCLNUM_Msk)) |
-                 ((x) << SPIM_CTL1_UPDCLNUM_Pos);
-}
-
 #endif
 
 /**
@@ -1548,7 +1552,6 @@ __STATIC_INLINE uint32_t SPIM_GetDMMAddress(SPIM_T *spim)
     {
         u32DMMAddr = SPIM_DMM0_ADDR;
     }
-
     //else if (spim == SPIM1) // TESTCHIP_ONLY
     //{
     //    u32DMMAddr = SPIM_DMM1_ADDR;
@@ -1612,6 +1615,7 @@ int32_t SPIM_Is4ByteModeEnable(SPIM_T *spim, uint32_t u32NBit);
 int32_t SPIM_SetWrapAroundEnable(SPIM_T *spim, int isEn);
 void SPIM_SetWriteEnable(SPIM_T *spim, int isEn, uint32_t u32NBit);
 
+void SPIM_ReadStatusRegister(SPIM_T *spim, uint8_t dataBuf[],uint32_t u32NRx, uint32_t u32NBit);
 void SPIM_ReadConfigRegister(SPIM_T *spim, uint8_t u8RdCMD, uint32_t u32Addr, uint8_t *pu8DataBuf, uint32_t u32NRx, uint32_t u32NBit);
 void SPIM_WriteConfigRegister(SPIM_T *spim, uint8_t u8CMD, uint32_t u32Addr, uint8_t u8Data, uint32_t u32NBit);
 
