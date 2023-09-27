@@ -305,12 +305,7 @@ void HyperFlash_SetReadLatency(SPIM_T *spim, uint32_t u32Latency)
 void HyperFlash_Init(SPIM_T *spim)
 {
     /* Enable SPIM Hyper Bus Mode */
-    SPIM_HYPER_Init(spim, 2);
-
-#if 0 //(SPIM_REG_CACHE == 1)
-    /* Enable SPIM Cache */
-    SPIM_ENABLE_CACHE(spim);
-#endif //SPIM_CACHE_EN
+    SPIM_HYPER_Init(spim, 1);
 
     /* SPIM Def. Enable Cipher, First Disable the test. */
     SPIM_DISABLE_CIPHER(spim);
@@ -322,6 +317,14 @@ void HyperFlash_Init(SPIM_T *spim)
 //    SPIM_TrainingDLLDelayTime(spim);
     SPIM_HYPER_SetDLLDelayNum(spim, 1);
 
+#if (SPIM_REG_CACHE == 1)
+    {
+		printf("Enable SPIM cache \n");
+        SPIM_ENABLE_CACHE(spim);
+		SPIM_SET_UPDCLNUM(spim, 4);
+    }
+#endif
+	
 }
 
 void HyperFlash_PinConfig(SPIM_T *spim)

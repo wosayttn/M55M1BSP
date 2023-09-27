@@ -663,7 +663,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>176</hasPrio>
+                <hasPrio>1</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -2132,16 +2132,19 @@
             <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\clk.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\scu\mpc.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\fmc.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\gpio.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\scu\mpc_sie_drv.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\pmc.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\retarget.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\scu\scu.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\sys.c</name>

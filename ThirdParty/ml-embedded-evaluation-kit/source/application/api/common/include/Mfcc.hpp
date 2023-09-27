@@ -24,6 +24,7 @@
 #include <cmath>
 #include <limits>
 #include <string>
+#include <algorithm>
 
 namespace arm {
 namespace app {

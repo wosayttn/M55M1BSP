@@ -184,12 +184,12 @@
                 </option>
                 <option>
                     <name>TrustZone</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>TrustZoneModes</name>
                     <version>0</version>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>OGAarch64Abi</name>
@@ -214,7 +214,10 @@
                 <debug>1</debug>
                 <option>
                     <name>CCDefines</name>
-                    <state>SYSTEM_CORE_CLOCK=25000000</state>
+                    <state>NVT_VECTOR_ON_FLASH</state>
+                    <state>NVT_DCACHE_ON</state>
+                    <state>ARM_NPU</state>
+                    <state>USE_CCAP</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -335,14 +338,18 @@
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
-                    <state>$PROJ_DIR$\..\..\..\..\..\Library\CMSIS\Core\Include</state>
-                    <state>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\inc</state>
-                    <state>$PROJ_DIR$\..\..\..\..\..\ThirdParty\FreeRTOS\Source\include</state>
-                    <state>$PROJ_DIR$\..\..\tz_demo</state>
-                    <state>$PROJ_DIR$\..\..\..\..\..\Library\Device\Nuvoton\M55M1\Include</state>
-                    <state>$PROJ_DIR$\..\..</state>
-                    <state>$PROJ_DIR$\..\..\..\..\..\ThirdParty\FreeRTOS\Source\portable\IAR\ARM_CM55\non_secure</state>
-                    <state>$PROJ_DIR$\..\..\..\..\..\ThirdParty\FreeRTOS\Source\portable\IAR\ARM_CM55\secure</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Core\Include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\DSP\Include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc\npu</state>
+                    <state>$PROJ_DIR$\..\Device\include</state>
+                    <state>$PROJ_DIR$\..\NPU\include</state>
+                    <state>$PROJ_DIR$\..\codegen_H256\host\include</state>
+                    <state>$PROJ_DIR$\..\runtime\include</state>
+                    <state>$PROJ_DIR$\..\microtvm\ethosu\include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\NN\Include</state>
+                    <state>$PROJ_DIR$\..</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -444,7 +451,7 @@
                 </option>
                 <option>
                     <name>IccExceptions2</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IccRTTI2</name>
@@ -590,7 +597,7 @@
                 </option>
                 <option>
                     <name>AOutputFile</name>
-                    <state>$FILE_BNAME$.o</state>
+                    <state></state>
                 </option>
                 <option>
                     <name>ALimitErrorsCheck</name>
@@ -606,7 +613,7 @@
                 </option>
                 <option>
                     <name>AUserIncludes</name>
-                    <state>$PROJ_DIR$\..\..</state>
+                    <state></state>
                 </option>
                 <option>
                     <name>AExtraOptionsCheckV2</name>
@@ -644,7 +651,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>NonSecure.srec</state>
+                    <state>FaceRecognition.srec</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -691,7 +698,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>NonSecure.out</state>
+                    <state>ImageClassification.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -755,7 +762,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\M55M1_ns.icf</state>
+                    <state>$PROJ_DIR$\M55M1.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -988,7 +995,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>nsclib_iar.o</state>
+                    <state>ImageClassification_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -2117,66 +2124,120 @@
         </settings>
     </configuration>
     <group>
-        <name>CMSELib</name>
-        <file>
-            <name>$PROJ_DIR$\..\..\CMSELib\nsclib_iar.o</name>
-        </file>
-    </group>
-    <group>
         <name>CMSIS</name>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</name>
         </file>
     </group>
     <group>
-        <name>Demos</name>
+        <name>codegen</name>
         <file>
-            <name>$PROJ_DIR$\..\..\tz_demo\tz_demo.c</name>
+            <name>$PROJ_DIR$\..\codegen_H256\host\src\default_lib0.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\codegen_H256\host\src\default_lib1.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\codegen_H256\host\src\default_lib2.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\codegen_H256\host\src\default_lib3.c</name>
+        </file>
+    </group>
+    <group>
+        <name>Device</name>
+        <file>
+            <name>$PROJ_DIR$\..\Device\HyperFlash\hyperflash_code.c</name>
         </file>
     </group>
     <group>
         <name>Driver</name>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\gpio.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\ccap.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\retarget.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\clk.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\gpio.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\spim_hyper.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sys.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\uart.c</name>
         </file>
     </group>
     <group>
-        <name>FreeRTOS</name>
+        <name>ethosu</name>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\ThirdParty\FreeRTOS\Source\event_groups.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\npu\ethosu_device_u55_u65.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\ThirdParty\FreeRTOS\Source\portable\MemMang\heap_3.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\npu\ethosu_driver.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\ThirdParty\FreeRTOS\Source\list.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\npu\ethosu_pmu.c</name>
+        </file>
+    </group>
+    <group>
+        <name>Lib</name>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Lib\IAR\CMSIS_DSP.a</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\ThirdParty\FreeRTOS\Source\portable\IAR\ARM_CM55\non_secure\port.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Lib\IAR\CMSIS_NN.a</name>
+        </file>
+    </group>
+    <group>
+        <name>microtvm</name>
+        <file>
+            <name>$PROJ_DIR$\..\microtvm\ethosu\src\tvm_ethosu_runtime.c</name>
+        </file>
+    </group>
+    <group>
+        <name>NPU</name>
+        <file>
+            <name>$PROJ_DIR$\..\NPU\ethosu_cpu_cache.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\ThirdParty\FreeRTOS\Source\portable\IAR\ARM_CM55\non_secure\portasm.s</name>
+            <name>$PROJ_DIR$\..\NPU\ethosu_npu_init.c</name>
+        </file>
+    </group>
+    <group>
+        <name>runtime</name>
+        <file>
+            <name>$PROJ_DIR$\..\runtime\src\runtime\crt\common\crt_backend_api.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\ThirdParty\FreeRTOS\Source\queue.c</name>
+            <name>$PROJ_DIR$\..\runtime\src\runtime\crt\common\crt_runtime_api.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\ThirdParty\FreeRTOS\Source\stream_buffer.c</name>
+            <name>$PROJ_DIR$\..\runtime\src\runtime\crt\common\func_registry.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\ThirdParty\FreeRTOS\Source\tasks.c</name>
+            <name>$PROJ_DIR$\..\runtime\src\runtime\crt\common\ndarray.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\ThirdParty\FreeRTOS\Source\timers.c</name>
+            <name>$PROJ_DIR$\..\runtime\src\runtime\crt\memory\stack_allocator.c</name>
         </file>
     </group>
     <group>
         <name>User</name>
         <file>
-            <name>$PROJ_DIR$\..\main_ns.c</name>
+            <name>$PROJ_DIR$\..\BoardInit.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\main.c</name>
         </file>
     </group>
 </project>

@@ -19,6 +19,9 @@
 #define RTC_TIME_HZCNT_Pos               (24)                                              /*!< RTC_T::TIME: HZCNT Position            */
 #define RTC_TIME_HZCNT_Msk               (0x7ful << RTC_TIME_HZCNT_Pos)                    /*!< RTC_T::TIME: HZCNT Mask                */
 
+#define RTC_CLKFMT_HZCNTEN_Pos           (8)                                               /*!< RTC_T::CLKFMT: 24HEN Position          */
+#define RTC_CLKFMT_HZCNTEN_Msk           (0x1ul << RTC_CLKFMT_HZCNTEN_Pos)                   /*!< RTC_T::CLKFMT: 24HEN Mask              */
+
 /**
  * @brief    Check if debug message finished
  *

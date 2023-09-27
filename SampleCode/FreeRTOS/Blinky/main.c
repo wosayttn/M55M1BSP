@@ -69,7 +69,6 @@ int main( void )
 
     printf("\nThis sample code test FreeRTOS function.\n");
 
-#if 1
 	/* Prepare the hardware to run this demo. */
 	prvSetupHardware();
 
@@ -84,7 +83,7 @@ int main( void )
 		main_full();
 	}
 	#endif
-#endif
+
 	return 0;
 }
 /*-----------------------------------------------------------*/

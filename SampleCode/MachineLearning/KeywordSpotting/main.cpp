@@ -120,7 +120,7 @@ int main()
         const uint32_t numMfccFeatures = 10;
         const uint32_t numMfccFrames = 49;
 #else
-        const uint32_t numMfccFeatures = inputShape->data[KwsModel::ms_inputColsIdx];
+        const uint32_t numMfccFeatures = inputShape->data[arm::app::KwsModel::ms_inputColsIdx];
         const uint32_t numMfccFrames = inputShape->data[arm::app::KwsModel::ms_inputRowsIdx];
 #endif
 
