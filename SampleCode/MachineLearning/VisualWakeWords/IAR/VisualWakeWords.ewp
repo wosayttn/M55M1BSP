@@ -220,7 +220,6 @@
                     <state>ARM_MATH_DSP</state>
                     <state>ARM_NPU</state>
                     <state>ACTIVATION_BUF_SZ=0x00100000</state>
-                    <state>USE_CCAP</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -362,6 +361,7 @@
                     <state>$PROJ_DIR$\..\NPU\include</state>
                     <state>$PROJ_DIR$\..\Pattern\include</state>
                     <state>$PROJ_DIR$\..\ProfilerCounter\include</state>
+                    <state>$PROJ_DIR$\..\Device\include</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -2171,7 +2171,9 @@
                     <debug>1</debug>
                     <option>
                         <name>CCDefines</name>
-                        <state></state>
+                        <state>TF_LITE_STATIC_MEMORY</state>
+                        <state>ARM_MATH_DSP</state>
+                        <state>ARM_NPU</state>
                     </option>
                     <option>
                         <name>CCPreprocFile</name>
@@ -2419,6 +2421,18 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</name>
+        </file>
+    </group>
+    <group>
+        <name>Device</name>
+        <file>
+            <name>$PROJ_DIR$\..\Device\ImageSensor\ImageSensor.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\ImageSensor\Sensor\Sensor_HM1055.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\ImageSensor\Sensor\SWI2C.c</name>
         </file>
     </group>
     <group>

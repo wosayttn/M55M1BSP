@@ -81,8 +81,7 @@
 									<listOptionValue builtIn="false" value="TF_LITE_STATIC_MEMORY"/>
 									<listOptionValue builtIn="false" value="ARM_MATH_DSP"/>
 									<listOptionValue builtIn="false" value="ARM_NPU"/>
-									<listOptionValue builtIn="false" value="ACTIVATION_BUF_SZ=0x00100000"/>
-									<listOptionValue builtIn="false" value="USE_CCAP"/>
+									<listOptionValue builtIn="false" value="ACTIVATION_BUF_SZ=0x00140000"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.std.1502069371" name="Language standard" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.std" useByScannerDiscovery="true" value="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.std.c11" valueType="enumerated"/>
 								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.633324230" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>
@@ -125,9 +124,8 @@
 									<listOptionValue builtIn="false" value="NVT_DCACHE_ON"/>
 									<listOptionValue builtIn="false" value="TF_LITE_STATIC_MEMORY"/>
 									<listOptionValue builtIn="false" value="ARM_MATH_DSP"/>
-									<listOptionValue builtIn="false" value="ACTIVATION_BUF_SZ=0x00100000"/>
+									<listOptionValue builtIn="false" value="ACTIVATION_BUF_SZ=0x00140000"/>
 									<listOptionValue builtIn="false" value="ARM_NPU"/>
-									<listOptionValue builtIn="false" value="USE_CCAP"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.nothreadsafestatics.1327373370" name="Do not use thread-safe statics (-fno-threadsafe-statics)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.nothreadsafestatics" useByScannerDiscovery="true" value="true" valueType="boolean"/>
 								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input.527180168" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input"/>

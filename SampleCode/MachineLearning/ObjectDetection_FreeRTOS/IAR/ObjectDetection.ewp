@@ -220,7 +220,6 @@
                     <state>ARM_MATH_DSP</state>
                     <state>ARM_NPU</state>
                     <state>ACTIVATION_BUF_SZ=0x00140000</state>
-                    <state>USE_CCAP</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -666,7 +665,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>FaceRecognition.srec</state>
+                    <state>ObjectDetection.srec</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -2183,7 +2182,9 @@
                     <debug>1</debug>
                     <option>
                         <name>CCDefines</name>
-                        <state></state>
+                        <state>TF_LITE_STATIC_MEMORY</state>
+                        <state>ARM_MATH_DSP</state>
+                        <state>ARM_NPU</state>
                     </option>
                     <option>
                         <name>CCPreprocFile</name>
@@ -2437,6 +2438,15 @@
         <name>Device</name>
         <file>
             <name>$PROJ_DIR$\..\Device\HyperRAM\hyperram_code.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\ImageSensor\ImageSensor.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\ImageSensor\Sensor\Sensor_HM1055.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\ImageSensor\Sensor\SWI2C.c</name>
         </file>
     </group>
     <group>

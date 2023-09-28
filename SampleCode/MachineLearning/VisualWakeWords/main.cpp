@@ -24,9 +24,14 @@
 #include "NuMicro.h"
 
 #define __PROFILE__
+#define __USE_CCAP__
 
 #if defined(__PROFILE__)
 #include "Profiler.hpp"
+#endif
+
+#if defined (__USE_CCAP__)
+#include "ImageSensor.h"
 #endif
 
 using ViusalWakeWordClassifier = arm::app::Classifier;
@@ -183,6 +188,12 @@ int main()
 	arm::app::Profiler profiler;
 #endif
 
+#if defined (__USE_CCAP__)
+	//Setup image senosr
+	ImageSensor_Init();
+	ImageSensor_Config(eIMAGE_FMT_RGB565, frameBuffer.w, frameBuffer.h);
+#endif
+
 #if 0
 	while((chStdIn = getchar()))
 	{
@@ -194,6 +205,11 @@ int main()
 	while(1)
 	{
 #endif
+
+#if defined (__USE_CCAP__)
+		//Capture new image
+		ImageSensor_Capture((uint32_t)frameBuffer.data);
+#else
 		const uint8_t* pu8ImgSrc = get_img_array(u8ImgIdx);
 		
 		if (nullptr == pu8ImgSrc) {
@@ -215,6 +231,7 @@ int main()
 		roi.w = IMAGE_WIDTH;
 		roi.h = IMAGE_HEIGHT;
 		imlib_nvt_scale(&srcImg, &frameBuffer, &roi);
+#endif
 
 		//TODO: display image on LCD
 		//resize framebuffer image to model input

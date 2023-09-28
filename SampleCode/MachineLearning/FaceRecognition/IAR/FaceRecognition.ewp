@@ -220,7 +220,6 @@
                     <state>ARM_MATH_DSP</state>
                     <state>ARM_NPU</state>
                     <state>ACTIVATION_BUF_SZ=0x00080000</state>
-                    <state>USE_CCAP</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -2180,7 +2179,9 @@
                     <debug>1</debug>
                     <option>
                         <name>CCDefines</name>
-                        <state></state>
+                        <state>TF_LITE_STATIC_MEMORY</state>
+                        <state>ARM_MATH_DSP</state>
+                        <state>ARM_NPU</state>
                     </option>
                     <option>
                         <name>CCPreprocFile</name>

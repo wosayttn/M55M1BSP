@@ -23,6 +23,12 @@
 #include "imlib.h"			/* Image processing */
 #include "framebuffer.h"
 
+#define __USE_CCAP__
+
+#if defined (__USE_CCAP__)
+#include "ImageSensor.h"
+#endif
+
 #undef PI /* PI macro conflict with CMSIS/DSP */
 #include "NuMicro.h"
 
@@ -306,6 +312,12 @@ static void main_task(void *pvParameters)
 
 	struct xInferenceJob* inferenceJob = new(struct xInferenceJob);
 
+#if defined (__USE_CCAP__)
+	//Setup image senosr
+	ImageSensor_Init();
+	ImageSensor_Config(eIMAGE_FMT_RGB565, frameBuffer.w, frameBuffer.h);
+#endif
+
 #if 0
 	while((chStdIn = getchar()))
 	{
@@ -398,6 +410,10 @@ static void main_task(void *pvParameters)
 		if(emptyFramebuf)
 		{
 
+#if defined (__USE_CCAP__)
+			//capture frame from CCAP
+			ImageSensor_Capture((uint32_t)(emptyFramebuf->frameImage.data));    
+#else
 			//copy source image to frame buffer
 			image_t srcImg;				
 
@@ -412,7 +428,7 @@ static void main_task(void *pvParameters)
 			roi.h = IMAGE_HEIGHT;
 
 			imlib_nvt_scale(&srcImg, &emptyFramebuf->frameImage, &roi);
-			
+#endif			
 			emptyFramebuf->results.clear();
 			emptyFramebuf->eState = eFRAMEBUF_FULL;
 		}
