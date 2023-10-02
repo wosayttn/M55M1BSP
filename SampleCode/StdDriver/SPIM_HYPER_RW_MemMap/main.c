@@ -67,9 +67,10 @@ void SYS_Init(void)
     CLK_EnableModuleClock(OTFC0_MODULE);
 
     /* Enable GPIO Module clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOC_MODULE);
     CLK_EnableModuleClock(GPIOG_MODULE);
-    
+
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 
@@ -334,6 +335,10 @@ int main()
 
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
+
+    SET_GPIO_PB7();
+    GPIO_SetMode(PB, BIT7, GPIO_MODE_OUTPUT);
+    GPIO_SetPullCtl(PB, BIT7, GPIO_PUSEL_DISABLE);
 
     printf("+----------------------------------------+\n");
     printf("|       HyperRAM read/write sample       |\n");
