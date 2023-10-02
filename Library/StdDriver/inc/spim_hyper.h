@@ -33,10 +33,10 @@ extern "C"
   @{
 */
 
-//#define SPIM_HYPER_DMM0_SADDR               (0x80000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
-//#define SPIM_HYPER_DMM0_NSADDR              (0x90000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
-#define SPIM_HYPER_DMM0_SADDR               (0x82000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
-#define SPIM_HYPER_DMM0_NSADDR              (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
+#define SPIM_HYPER_DMM0_SADDR               (0x80000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
+#define SPIM_HYPER_DMM0_NSADDR              (0x90000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
+//#define SPIM_HYPER_DMM0_SADDR               (0x82000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
+//#define SPIM_HYPER_DMM0_NSADDR              (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
 
 // TESTCHIP_ONLY
 #define SPIM_HYPER_DMM1_SADDR               0//(0x82000000UL)  /*!< SPIM1 DMM mode memory map base secure address    \hideinitializer */
