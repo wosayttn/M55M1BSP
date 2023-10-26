@@ -183,8 +183,8 @@
 
 #define SCU_INIT_D1PNS0_VAL         0x0
 #define SCU_INIT_D1PNS1_VAL         0x0
-#define SCU_INIT_D1PNS2_VAL         0x2000
-#define SCU_INIT_D1PNS4_VAL         0x0000
+#define SCU_INIT_D1PNS2_VAL         0x0000
+#define SCU_INIT_D1PNS4_VAL         0x2000
 
 /*
 // </h>

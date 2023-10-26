@@ -27,6 +27,12 @@ static void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
+    /* Enable HXT clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
+
+    /* Waiting for HXT clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
+
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
@@ -55,22 +61,40 @@ static void SYS_Init(void)
     /* Enable NPU module clock */
     CLK_EnableModuleClock(NPU0_MODULE);
 
-    /* Enable NPU module clock */
-    CLK_EnableModuleClock(CCAP0_MODULE);
-
 	/* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HXT, CLK_UARTDIV0_UART0DIV(1));
 
 	/* Enable SRAM2 module clock */
 	CLK_EnableModuleClock(SRAM2_MODULE);
+
+    // Select DMIC CLK source from PLL.
+    CLK_SetModuleClock(DMIC0_MODULE, CLK_DMICSEL_DMIC0SEL_APLL1_DIV2, MODULE_NoMsk);
+    // Enable DMIC clock.
+    CLK_EnableModuleClock(DMIC0_MODULE);
+    // DPWM IPReset.
+    SYS_ResetModule(SYS_DMIC0RST);
+
+    // LPPDMA Initial.
+    CLK_EnableModuleClock(LPPDMA0_MODULE);
+    CLK_EnableModuleClock(LPSRAM0_MODULE);
+    SYS_ResetModule(SYS_LPPDMA0RST);
 
 	/*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    //SET_UART0_RXD_PB12();
+    //SET_UART0_TXD_PB13();
+    SET_UART0_RXD_PA0();
+    SET_UART0_TXD_PA1();
+
+    /* Set multi-function pins for DMIC */
+    SET_DMIC0_CLK_PE9();
+    SET_DMIC0_DAT_PE8();
+    SET_DMIC1_CLK_PE12();
+    SET_DMIC1_DAT_PE11();
+
 }
 
 static void UART0_Init(void)

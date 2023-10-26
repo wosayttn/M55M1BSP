@@ -22,8 +22,8 @@
 /****************************************************************************
  * autogen section: Output tensor data
  ****************************************************************************/
-__attribute__((aligned(16), section(".bss.noinit.tvm"))) static uint8_t s_StatefulPartitionedCall_0_buffer[TVMGEN_DEFAULT_STATEFULPARTITIONEDCALL_0_SIZE];
-__attribute__((aligned(16), section(".bss.noinit.tvm"))) static uint8_t s_Input_buffer[150528];
+__attribute__((aligned(16), section(".bss.noinit.tvm"))) static int8_t s_StatefulPartitionedCall_0_buffer[TVMGEN_DEFAULT_STATEFULPARTITIONEDCALL_0_SIZE];
+__attribute__((aligned(16), section(".bss.noinit.tvm"))) static int8_t s_Input_buffer[150528];
 
 /****************************************************************************
  * autogen section: TVM platform function 

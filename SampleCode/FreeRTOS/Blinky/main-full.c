@@ -224,6 +224,7 @@ const size_t xRegTestStackSize = 25U;
 	/* Create the standard demo tasks */
 
 	vCreateBlockTimeTasks();
+
 	vStartDynamicPriorityTasks();
 	vStartCountingSemaphoreTasks();
 	vStartRecursiveMutexTasks();
@@ -242,7 +243,6 @@ const size_t xRegTestStackSize = 25U;
 					NULL );						/* Don't receive a handle back, it is not needed. */
 
 
-
 	/* Create the register test tasks as described at the top of this file.
 	These are naked functions that don't use any stack.  A stack still has
 	to be allocated to hold the task context. */
@@ -259,7 +259,6 @@ const size_t xRegTestStackSize = 25U;
 					NULL, 					/* The task parameter is not used. */
 					tskIDLE_PRIORITY, 		/* The priority to assign to the task. */
 					NULL );					/* Don't receive a handle back, it is not needed. */
-
 
 
 

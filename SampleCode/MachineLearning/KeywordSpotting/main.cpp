@@ -24,6 +24,8 @@
 #undef PI /* PI macro conflict with CMSIS/DSP */
 #include "NuMicro.h"
 
+#define USE_DMIC
+#include "DMICRecord.h"
 
 namespace arm {
 namespace app {
@@ -63,6 +65,8 @@ static void loadAndEnableConfig(ARM_MPU_Region_t const *table, uint32_t cnt) {
 
 int main()
 {
+    char chStdIn;
+
     /* Initialise the UART module to allow printf related functions (if using retarget) */
     BoardInit();
 
@@ -139,14 +143,40 @@ int main()
 
 	uint8_t u8ClipIdx = 0;
 
-#if 0
+#if defined(USE_DMIC)
+	#define AUDIO_SAMPLE_BLOCK	4
+	#define AUDIO_SAMPLE_RATE	16000
+	#define AUDIO_CHANNEL		1
+	
+
+	const auto audioSlidingSamples = (numMfccFrames + 1) * mfccFrameStride; //(49+1)*320 = 16000 = 1 sec
+	const auto audioStrideSamples = audioSlidingSamples / 2;
+
+	int16_t audioSlidingBuf[audioSlidingSamples];
+	int32_t ret;
+
+	ret = DMICRecord_Init(AUDIO_SAMPLE_RATE, AUDIO_CHANNEL, audioSlidingSamples, AUDIO_SAMPLE_BLOCK);
+
+	if(ret) {
+        printf_err("Unable init DMIC record error(%d)\n", ret);
+        return 4;
+	}
+
+#endif
+
+#if !defined(USE_DMIC)
+	info("Press 'n' to run next audio clip inference \n");
+	info("Press 'q' to exit program \n");
+
 	while((chStdIn = getchar()))
 	{
-		if(chStdIn == 'Q')
+		if(chStdIn == 'q')
 			break;
-		else if(chStdIn != 'R')
+		else if(chStdIn != 'n')
 			continue;
 #else
+	DMICRecord_StartRec();
+
 	while(1)
 	{
 #endif
@@ -169,7 +199,24 @@ int main()
         arm::app::KwsPostProcess postProcess =
             arm::app::KwsPostProcess(outputTensor, classifier, labels, singleInfResult, true);
 #endif
-				
+
+#if defined(USE_DMIC)
+		while(DMICRecord_AvailSamples() < audioSlidingSamples)
+		{
+			__NOP();
+		}
+
+		DMICRecord_ReadSamples(audioSlidingBuf, audioSlidingSamples);
+		
+		DMICRecord_UpdateReadSampleIndex(audioStrideSamples);
+
+		/* Creating a sliding window through the whole audio clip. */
+		auto audioDataSlider = arm::app::audio::SlidingWindow<const int16_t>(
+				audioSlidingBuf,
+				audioSlidingSamples,
+				preProcess.m_audioDataWindowSize, preProcess.m_audioDataStride);
+		
+#else
 		/* Creating a sliding window through the whole audio clip. */
 		auto audioDataSlider = arm::app::audio::SlidingWindow<const int16_t>(
 				get_audio_array(u8ClipIdx),
@@ -177,7 +224,8 @@ int main()
 				preProcess.m_audioDataWindowSize, preProcess.m_audioDataStride);
 
 		info("Using audio data from %s\n", get_filename(u8ClipIdx));
-		
+#endif
+
 		/* Start sliding through audio clip. */
 		while (audioDataSlider.HasNext()) 
 		{
@@ -245,5 +293,11 @@ int main()
 			u8ClipIdx = 0;
 
 	}
+
+#if defined(USE_DMIC)
+	DMICRecord_UnInit();
+	
+#endif
+
 	return 0;
 }

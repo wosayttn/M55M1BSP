@@ -16,8 +16,8 @@
 #include "partest.h"
 #include "NuMicro.h"
 
-//#define TIME_DELAY_SLEEP  500
-#define TIME_DELAY_SLEEP  30
+#define TIME_DELAY_SLEEP  500
+//#define TIME_DELAY_SLEEP  30
 #define tickless_task_PRIORITY  (configMAX_PRIORITIES - 2)
 
 #define LED     PH4

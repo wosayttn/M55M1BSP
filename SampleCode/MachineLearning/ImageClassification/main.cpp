@@ -20,7 +20,7 @@
 #include "imlib.h"			/* Image processing */
 #include "framebuffer.h"
 
-#define __USE_CCAP__
+//#define __USE_CCAP__
 
 #if defined (__USE_CCAP__)
 #include "ImageSensor.h"
@@ -196,12 +196,15 @@ int main()
 	ImageSensor_Config(eIMAGE_FMT_RGB565, frameBuffer.w, frameBuffer.h);
 #endif
 
-#if 0
+#if 1
+	info("Press 'n' to run next image inference \n");
+	info("Press 'q' to exit program \n");
+
 	while((chStdIn = getchar()))
 	{
-		if(chStdIn == 'Q')
+		if(chStdIn == 'q')
 			break;
-		else if(chStdIn != 'R')
+		else if(chStdIn != 'n')
 			continue;
 #else
 	while(1)

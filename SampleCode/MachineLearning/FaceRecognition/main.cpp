@@ -189,12 +189,17 @@ int main()
 	arm::app::Profiler profiler;
 #endif
 
-#if 0
+#if 1
+    char chStdIn;
+
+	info("Press 'n' to run next image inference \n");
+	info("Press 'q' to exit program \n");
+
 	while((chStdIn = getchar()))
 	{
-		if(chStdIn == 'Q')
+		if(chStdIn == 'q')
 			break;
-		else if(chStdIn != 'R')
+		else if(chStdIn != 'n')
 			continue;
 #else
 	while(1)

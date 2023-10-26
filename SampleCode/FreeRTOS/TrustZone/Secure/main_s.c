@@ -30,6 +30,22 @@ uint32_t GetSystemCoreClock(void)
 void SYS_Init(void);
 void Boot_NonSecure(uint32_t u32NonSecureBase);
 
+void InitDebugUart(void)
+{
+#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
+    /* Init UART to 115200-8n1 for print message */
+    UART_Open(UART0, 115200);
+#endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
+}
+
+void InitNSDebugUart(void)
+{
+#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
+    /* Init UART to 115200-8n1 for print message */
+    UART_Open(UART1, 115200);
+#endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
+}
+
 /*---------------------------------------------------------------------------
  * Main function
  *---------------------------------------------------------------------------*/
@@ -39,6 +55,7 @@ int main(void)
     SYS_Init();
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
+	InitNSDebugUart();
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     initialise_monitor_handles();
@@ -114,6 +131,32 @@ void Boot_NonSecure(uint32_t u32NonSecureBase)
     }
 }
 
+void SetDebugUartCLK(void)
+{
+#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
+    /* Select UART clock source from HXT */
+    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HXT, CLK_UARTDIV0_UART0DIV(1));
+
+    /* Enable UART clock */
+    CLK_EnableModuleClock(UART0_MODULE);
+
+    /* Reset UART module */
+    SYS_ResetModule(SYS_UART0RST);
+#endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
+}
+
+void SetDebugUartMFP(void)
+{
+#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
+    /* Set GPB12 as UART0 RXD and GPB13 as UART0 TXD */
+//    SET_UART0_RXD_PB12();
+//    SET_UART0_TXD_PB13();
+    SET_UART0_RXD_PA0();
+    SET_UART0_TXD_PA1();
+#endif /* !defined(DEBUG_ENABLE_SEMIHOST) || !defined(OS_USE_SEMIHOSTING) */
+}
+
+
 void SYS_Init(void)
 {
     /* Unlock protected registers */
@@ -127,6 +170,12 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
+
+    /* Enable HXT clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
+
+    /* Waiting for HXT clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);    
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
@@ -147,6 +196,20 @@ void SYS_Init(void)
      * Init I/O Multi-function
      *-----------------------------------------------------------------------*/
     SetDebugUartMFP();
+
+    /*----------------------------------------------------------------------*/
+    /* Enable Non-Secure IP/GPIO clock                                      */
+    /* (Config UART1 to Non-Secure in partition_TC8263.h)          */
+    /*----------------------------------------------------------------------*/
+	/* Enable UART1 module clock */
+	CLK_EnableModuleClock(UART1_MODULE);
+
+    /* Select UART clock source from HXT */
+	CLK_SetModuleClock(UART1_MODULE, CLK_UARTSEL0_UART1SEL_HXT, CLK_UARTDIV0_UART1DIV(1));
+    //SET_UART1_RXD_PA2();
+    //SET_UART1_TXD_PA3();
+    SET_UART1_RXD_PB2();
+    SET_UART1_TXD_PB3();
 
     /* Lock protected registers */
     SYS_LockReg();
