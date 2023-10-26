@@ -117,7 +117,7 @@ __attribute__((constructor)) void SystemInit(void)
 #endif
 #endif
 
-#if (defined (__FPU_USED) && (__FPU_USED == 1U)) || \
+#if 0 //(defined (__FPU_USED) && (__FPU_USED == 1U)) || \
     (defined (__ARM_FEATURE_MVE) && (__ARM_FEATURE_MVE > 0U))
     SCB->CPACR |= ((3U << 10U * 2U) |         /* Enable CP10 Full Access */
                    (3U << 11U * 2U));         /* Enable CP11 Full Access */
