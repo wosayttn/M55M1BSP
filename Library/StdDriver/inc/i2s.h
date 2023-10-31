@@ -294,7 +294,7 @@ __STATIC_INLINE void I2S_SET_MONO_RX_CHANNEL(I2S_T *i2s, uint32_t u32Ch)
   * \hideinitializer
   */
 #define I2S_GET_TX_FIFO_LEVEL(i2s)  \
-    (((i2s->STATUS1 & I2S_STATUS1_TXCNT_Msk) >> I2S_STATUS1_TXCNT_Pos) & 0xF)
+    (((i2s->STATUS1 & I2S_STATUS1_TXCNT_Msk) >> I2S_STATUS1_TXCNT_Pos) & 0x1F)
 
 /**
   * @brief  Get receive FIFO level
@@ -303,7 +303,7 @@ __STATIC_INLINE void I2S_SET_MONO_RX_CHANNEL(I2S_T *i2s, uint32_t u32Ch)
   * \hideinitializer
   */
 #define I2S_GET_RX_FIFO_LEVEL(i2s)  \
-    (((i2s->STATUS1 & I2S_STATUS1_RXCNT_Msk) >> I2S_STATUS1_RXCNT_Pos) & 0xF)
+    (((i2s->STATUS1 & I2S_STATUS1_RXCNT_Msk) >> I2S_STATUS1_RXCNT_Pos) & 0x1F)
 
 /** @} end of group I2S_EXPORTED_CONSTANTS */
 
