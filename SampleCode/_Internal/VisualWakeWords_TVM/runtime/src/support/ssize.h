@@ -26,11 +26,11 @@
 #define TVM_SUPPORT_SSIZE_H_
 
 #if defined(_MSC_VER)
-#if defined(_WIN32)
-using ssize_t = int32_t;
-#else
-using ssize_t = int64_t;
-#endif
+    #if defined(_WIN32)
+        using ssize_t = int32_t;
+    #else
+        using ssize_t = int64_t;
+    #endif
 #endif
 
 #endif  // TVM_SUPPORT_SSIZE_H_

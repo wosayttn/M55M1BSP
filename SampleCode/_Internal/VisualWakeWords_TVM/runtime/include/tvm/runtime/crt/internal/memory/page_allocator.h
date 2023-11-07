@@ -37,72 +37,79 @@ extern "C" {
 #endif
 
 /*! \brief A page in the DRAM */
-typedef struct Page {
-  /*! \brief Start location in page table */
-  tvm_index_t ptable_begin;
-  /*! \brief The total number of pages */
-  tvm_index_t num_pages;
-  /*! \brief Data */
-  uint8_t* data;
+typedef struct Page
+{
+    /*! \brief Start location in page table */
+    tvm_index_t ptable_begin;
+    /*! \brief The total number of pages */
+    tvm_index_t num_pages;
+    /*! \brief Data */
+    uint8_t *data;
 } Page;
 
 // construct a new page
-Page PageCreate(uint8_t* memory_pool, size_t page_size_bytes, tvm_index_t ptable_begin,
+Page PageCreate(uint8_t *memory_pool, size_t page_size_bytes, tvm_index_t ptable_begin,
                 tvm_index_t num_pages);
 
-typedef struct PageTable {
-  // Pointer to beginning of memory pool.
-  uint8_t* memory_pool;
-  // Size of one page.
-  size_t page_size_bytes;
+typedef struct PageTable
+{
+    // Pointer to beginning of memory pool.
+    uint8_t *memory_pool;
+    // Size of one page.
+    size_t page_size_bytes;
 
-  Page* page;
-  size_t max_pages;
-  size_t num_pages;
-  void (*resize)(struct PageTable* ptable, size_t size, Page* page);
+    Page *page;
+    size_t max_pages;
+    size_t num_pages;
+    void (*resize)(struct PageTable *ptable, size_t size, Page *page);
 } PageTable;
 
-typedef struct PageEntry {
-  uint8_t* addr;
-  Page page;
+typedef struct PageEntry
+{
+    uint8_t *addr;
+    Page page;
 } PageEntry;
 
-typedef struct TLB {
-  PageEntry* entries;
-  size_t max_pages;
-  uint32_t num_pages;
-  void (*set)(struct TLB* tlb, uint8_t* data, Page* page);
-  PageEntry* (*find)(struct TLB* tlb, uint8_t* data);
+typedef struct TLB
+{
+    PageEntry *entries;
+    size_t max_pages;
+    uint32_t num_pages;
+    void (*set)(struct TLB *tlb, uint8_t *data, Page *page);
+    PageEntry *(*find)(struct TLB *tlb, uint8_t *data);
 } TLB;
 
-typedef struct IndexedEntry {
-  tvm_index_t index;
-  Page page;
+typedef struct IndexedEntry
+{
+    tvm_index_t index;
+    Page page;
 } IndexedEntry;
 
-typedef struct MultiMap {
-  IndexedEntry* entries;
-  size_t max_entries;
-  size_t num_entries;
-  IndexedEntry* (*lower_bound)(struct MultiMap* map, uint32_t npage);
-  IndexedEntry* (*end)(struct MultiMap* map);
-  void (*erase)(struct MultiMap* map, IndexedEntry* entry);
-  void (*insert)(struct MultiMap* map, uint32_t npage, Page* p);
+typedef struct MultiMap
+{
+    IndexedEntry *entries;
+    size_t max_entries;
+    size_t num_entries;
+    IndexedEntry *(*lower_bound)(struct MultiMap *map, uint32_t npage);
+    IndexedEntry *(*end)(struct MultiMap *map);
+    void (*erase)(struct MultiMap *map, IndexedEntry *entry);
+    void (*insert)(struct MultiMap *map, uint32_t npage, Page *p);
 } MultiMap;
 
 /*!
  * \brief DRAM memory manager
  *  Implements simple paging to allow physical address translation.
  */
-typedef struct MemoryManager {
-  // Public interface for this object.
-  MemoryManagerInterface interface;
-  // Physical address -> page
-  PageTable ptable;
-  // Virtual address -> page
-  TLB pmap;
-  // Free map
-  MultiMap free_map;
+typedef struct MemoryManager
+{
+    // Public interface for this object.
+    MemoryManagerInterface interface;
+    // Physical address -> page
+    PageTable ptable;
+    // Virtual address -> page
+    TLB pmap;
+    // Free map
+    MultiMap free_map;
 } MemoryManager;
 
 #ifdef __cplusplus

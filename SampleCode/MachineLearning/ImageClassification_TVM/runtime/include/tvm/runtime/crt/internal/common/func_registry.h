@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-int strcmp_cursor(const char** cursor, const char* name);
+int strcmp_cursor(const char **cursor, const char *name);
 
 #ifdef __cplusplus
 }  // extern "C"

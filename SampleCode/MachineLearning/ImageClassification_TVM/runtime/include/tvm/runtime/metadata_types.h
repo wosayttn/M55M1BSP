@@ -37,37 +37,38 @@ extern "C" {
 /*!
  * \brief Top-level metadata structure. Holds all other metadata types.
  */
-struct TVMMetadata {
-  /*! \brief Version identifier for this metadata. */
-  int64_t version;
-  /*! \brief Inputs to the AOT run_model function.
-   * The order of the elements is the same as in the arguments to run_model. That is to say,
-   * this array specifies the first `num_inputs` arguments to run_model.
-   */
-  const struct TVMTensorInfo* inputs;
-  /*! \brief Number of elements in `inputs` array. */
-  int64_t num_inputs;
-  /*! \brief Outputs of the AOT run_model function.
-   * The order of the elements is the same as in the arguments to run_model. That is to say,
-   * this array specifies the last `num_outputs` arguments to run_model.
-   */
-  const struct TVMTensorInfo* outputs;
-  /*! \brief Number of elements in `outputs` array. */
-  int64_t num_outputs;
-  /*! \brief Workspace Memory Pools needed by the AOT main function.
-   * The order of the elements is the same as in the arguments to run_model. That is to say,
-   * this array specifies the last `num_workspace_pools` arguments to run_model.
-   */
-  const struct TVMTensorInfo* workspace_pools;
-  /*! \brief Number of elements in `workspace_pools` array. */
-  int64_t num_workspace_pools;
-  /*! \brief Constant pools needed by the AOT main function.
-   */
-  const struct TVMConstantInfo* constant_pools;
-  /*! \brief Number of elements in `constant_pools` array. */
-  int64_t num_constant_pools;
-  /*! \brief Name of the model, as passed to tvm.relay.build. */
-  const char* mod_name;
+struct TVMMetadata
+{
+    /*! \brief Version identifier for this metadata. */
+    int64_t version;
+    /*! \brief Inputs to the AOT run_model function.
+     * The order of the elements is the same as in the arguments to run_model. That is to say,
+     * this array specifies the first `num_inputs` arguments to run_model.
+     */
+    const struct TVMTensorInfo *inputs;
+    /*! \brief Number of elements in `inputs` array. */
+    int64_t num_inputs;
+    /*! \brief Outputs of the AOT run_model function.
+     * The order of the elements is the same as in the arguments to run_model. That is to say,
+     * this array specifies the last `num_outputs` arguments to run_model.
+     */
+    const struct TVMTensorInfo *outputs;
+    /*! \brief Number of elements in `outputs` array. */
+    int64_t num_outputs;
+    /*! \brief Workspace Memory Pools needed by the AOT main function.
+     * The order of the elements is the same as in the arguments to run_model. That is to say,
+     * this array specifies the last `num_workspace_pools` arguments to run_model.
+     */
+    const struct TVMTensorInfo *workspace_pools;
+    /*! \brief Number of elements in `workspace_pools` array. */
+    int64_t num_workspace_pools;
+    /*! \brief Constant pools needed by the AOT main function.
+     */
+    const struct TVMConstantInfo *constant_pools;
+    /*! \brief Number of elements in `constant_pools` array. */
+    int64_t num_constant_pools;
+    /*! \brief Name of the model, as passed to tvm.relay.build. */
+    const char *mod_name;
 };
 
 /*!
@@ -76,30 +77,32 @@ struct TVMMetadata {
  * function does not currently accept these. Therefore it's not possible to express those
  * in this metadata. A future patch may modify this.
  */
-struct TVMTensorInfo {
-  /*! \brief Name of the tensor, as specified in the Relay program. */
-  const char* name;
-  /*! \brief Shape of the tensor. */
-  const int64_t* shape;
-  /*! \brief Rank of this tensor. */
-  int64_t num_shape;
-  /*! \brief Data type of one element of this tensor. */
-  DLDataType dtype;
+struct TVMTensorInfo
+{
+    /*! \brief Name of the tensor, as specified in the Relay program. */
+    const char *name;
+    /*! \brief Shape of the tensor. */
+    const int64_t *shape;
+    /*! \brief Rank of this tensor. */
+    int64_t num_shape;
+    /*! \brief Data type of one element of this tensor. */
+    DLDataType dtype;
 };
 
 /*!
  * \brief Describes one constant argument to `run_model`.
  *
  */
-struct TVMConstantInfo {
-  /*! \brief Name of the constant */
-  const char* name_hint;
-  /*! \brief Offset in bytes of the constant */
-  int64_t byte_offset;
-  /*! \brief length of the data_bytes field */
-  int64_t data_len;
-  /*! \brief data bytes of serialized NDArray */
-  const void* data_bytes;
+struct TVMConstantInfo
+{
+    /*! \brief Name of the constant */
+    const char *name_hint;
+    /*! \brief Offset in bytes of the constant */
+    int64_t byte_offset;
+    /*! \brief length of the data_bytes field */
+    int64_t data_len;
+    /*! \brief data bytes of serialized NDArray */
+    const void *data_bytes;
 };
 
 #ifdef __cplusplus

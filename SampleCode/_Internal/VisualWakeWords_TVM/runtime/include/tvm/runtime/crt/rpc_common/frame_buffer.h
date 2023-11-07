@@ -28,41 +28,51 @@
 #include <inttypes.h>
 #include <stdlib.h>
 
-namespace tvm {
-namespace runtime {
-namespace micro_rpc {
+namespace tvm
+{
+namespace runtime
+{
+namespace micro_rpc
+{
 
-class FrameBuffer {
- public:
-  FrameBuffer(uint8_t* data, size_t data_size_bytes)
-      : data_{data}, capacity_{data_size_bytes}, num_valid_bytes_{0}, read_cursor_{0} {}
+class FrameBuffer
+{
+public:
+    FrameBuffer(uint8_t *data, size_t data_size_bytes)
+        : data_{data}, capacity_{data_size_bytes}, num_valid_bytes_{0}, read_cursor_{0} {}
 
-  size_t Write(const uint8_t* data, size_t data_size_bytes);
+    size_t Write(const uint8_t *data, size_t data_size_bytes);
 
-  size_t Read(uint8_t* data, size_t data_size_bytes);
+    size_t Read(uint8_t *data, size_t data_size_bytes);
 
-  size_t Peek(uint8_t* data, size_t data_size_bytes);
+    size_t Peek(uint8_t *data, size_t data_size_bytes);
 
-  void Clear();
+    void Clear();
 
-  size_t ReadAvailable() const { return num_valid_bytes_ - read_cursor_; }
+    size_t ReadAvailable() const
+    {
+        return num_valid_bytes_ - read_cursor_;
+    }
 
-  size_t Size() const { return num_valid_bytes_; }
+    size_t Size() const
+    {
+        return num_valid_bytes_;
+    }
 
- private:
-  /*! \brief pointer to data buffer. */
-  uint8_t* data_;
+private:
+    /*! \brief pointer to data buffer. */
+    uint8_t *data_;
 
-  /*! \brief The total number of bytes available in data_. Always a power of 2. */
-  size_t capacity_;
+    /*! \brief The total number of bytes available in data_. Always a power of 2. */
+    size_t capacity_;
 
-  /*! \brief index into data_ of the next potentially-available byte in the buffer.
-   * The byte is available when tail_ != data_ + capacity_.
-   */
-  size_t num_valid_bytes_;
+    /*! \brief index into data_ of the next potentially-available byte in the buffer.
+     * The byte is available when tail_ != data_ + capacity_.
+     */
+    size_t num_valid_bytes_;
 
-  /*! \brief Read cursor position. */
-  size_t read_cursor_;
+    /*! \brief Read cursor position. */
+    size_t read_cursor_;
 };
 
 }  // namespace micro_rpc

@@ -34,16 +34,17 @@ extern "C" {
 
 typedef struct TVMMetadata TVMMetadata;
 
-typedef struct TVMAotExecutor {
-  /*! \brief The top-level metadata structure supplied by the generated code */
-  const TVMMetadata* metadata;
-  /*! \brief The code module that contains the compiled model */
-  TVMModuleHandle module_handle;
-  /*! \brief The device type */
-  DLDevice device;
-  /*! \brief List of allocated arguments, input(s), output(s), and pool(s)*/
-  TVMNDArray* args;
-  int64_t num_args;
+typedef struct TVMAotExecutor
+{
+    /*! \brief The top-level metadata structure supplied by the generated code */
+    const TVMMetadata *metadata;
+    /*! \brief The code module that contains the compiled model */
+    TVMModuleHandle module_handle;
+    /*! \brief The device type */
+    DLDevice device;
+    /*! \brief List of allocated arguments, input(s), output(s), and pool(s)*/
+    TVMNDArray *args;
+    int64_t num_args;
 } TVMAotExecutor;
 
 /*!
@@ -56,7 +57,7 @@ typedef struct TVMAotExecutor {
  * \return 0 if successful.
  */
 int TVMAotExecutor_Create(TVMModuleHandle module_handle, const DLDevice device,
-                          TVMAotExecutor** executor, const char* module_name);
+                          TVMAotExecutor **executor, const char *module_name);
 
 /*!
  * \brief Release the AoT executor created by TVMAotExecutor_Create().
@@ -65,7 +66,7 @@ int TVMAotExecutor_Create(TVMModuleHandle module_handle, const DLDevice device,
  * \param device Runtime execution device, only supports device type kDLCPU, index 0.
  * \return 0 if successful.
  */
-int TVMAotExecutor_Release(TVMAotExecutor* executor, const DLDevice device);
+int TVMAotExecutor_Release(TVMAotExecutor *executor, const DLDevice device);
 
 /*!
  * \brief Return the number of inputs.
@@ -73,7 +74,7 @@ int TVMAotExecutor_Release(TVMAotExecutor* executor, const DLDevice device);
  * \param executor Pointer to executor instance, created by TVMAotExecutor_Create().
  * \return Number of inputs.
  */
-int TVMAotExecutor_GetNumInputs(TVMAotExecutor* executor);
+int TVMAotExecutor_GetNumInputs(TVMAotExecutor *executor);
 
 /*!
  * \brief Return the number of outputs.
@@ -81,7 +82,7 @@ int TVMAotExecutor_GetNumInputs(TVMAotExecutor* executor);
  * \param executor Pointer to executor instance, created by TVMAotExecutor_Create().
  * \return Number of outputs.
  */
-int TVMAotExecutor_GetNumOutputs(TVMAotExecutor* executor);
+int TVMAotExecutor_GetNumOutputs(TVMAotExecutor *executor);
 
 /*!
  * \brief Return the input index of the specified input name
@@ -90,7 +91,7 @@ int TVMAotExecutor_GetNumOutputs(TVMAotExecutor* executor);
  * \param name Input name for retrieving index.
  * \return Input index.
  */
-int TVMAotExecutor_GetInputIndex(TVMAotExecutor* executor, const char* name);
+int TVMAotExecutor_GetInputIndex(TVMAotExecutor *executor, const char *name);
 
 /*!
  * \brief Return a pointer to name of input with the specified input index
@@ -100,7 +101,7 @@ int TVMAotExecutor_GetInputIndex(TVMAotExecutor* executor, const char* name);
  * \param name Output for retrieving name.
  * \return Pointer to input name in `name`.
  */
-int TVMAotExecutor_GetInputName(TVMAotExecutor* executor, int index, char** name);
+int TVMAotExecutor_GetInputName(TVMAotExecutor *executor, int index, char **name);
 
 /*!
  * \brief Run the generated program.
@@ -108,7 +109,7 @@ int TVMAotExecutor_GetInputName(TVMAotExecutor* executor, int index, char** name
  * \param executor Pointer to executor instance, created by TVMAotExecutor_Create().
  * \return 0 if successful.
  */
-int TVMAotExecutor_Run(TVMAotExecutor* executor);
+int TVMAotExecutor_Run(TVMAotExecutor *executor);
 
 #ifdef __cplusplus
 }  // extern "C"

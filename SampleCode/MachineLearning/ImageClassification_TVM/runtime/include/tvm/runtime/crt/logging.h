@@ -38,15 +38,15 @@ extern "C" {
 #endif
 
 #if defined(_MSC_VER)
-void TVMLogf(const char* fmt, ...);
+void TVMLogf(const char *fmt, ...);
 #else
-void __attribute__((format(printf, 1, 2))) TVMLogf(const char* fmt, ...);
+void __attribute__((format(printf, 1, 2))) TVMLogf(const char *fmt, ...);
 #endif
 
 #define LOG(level, x, ...)          \
-  if (TVM_CRT_LOG_LEVEL >= level) { \
-    TVMLogf(x, ##__VA_ARGS__);      \
-  }
+    if (TVM_CRT_LOG_LEVEL >= level) { \
+        TVMLogf(x, ##__VA_ARGS__);      \
+    }
 
 #define LOG_ERROR(x, ...) LOG(TVM_CRT_LOG_LEVEL_ERROR, x, ##__VA_ARGS__)
 #define LOG_WARN(x, ...) LOG(TVM_CRT_LOG_LEVEL_WARN, x, ##__VA_ARGS__)
@@ -55,23 +55,23 @@ void __attribute__((format(printf, 1, 2))) TVMLogf(const char* fmt, ...);
 
 #ifndef CHECK
 #define CHECK(x)                                                   \
-  do {                                                             \
-    if (!(x)) {                                                    \
-      LOG_ERROR(__FILE__ ":%d: Check failed: %s\n", __LINE__, #x); \
-      TVMPlatformAbort(kTvmErrorPlatformCheckFailure);             \
-    }                                                              \
-  } while (0)
+    do {                                                             \
+        if (!(x)) {                                                    \
+            LOG_ERROR(__FILE__ ":%d: Check failed: %s\n", __LINE__, #x); \
+            TVMPlatformAbort(kTvmErrorPlatformCheckFailure);             \
+        }                                                              \
+    } while (0)
 #endif
 
 #ifndef CHECK_BINARY_OP
 #define CHECK_BINARY_OP(op, x, y, fmt, ...)                                               \
-  do {                                                                                    \
-    if (!(x op y)) {                                                                      \
-      LOG_ERROR(__FILE__ ":%d: Check failed: %s %s %s: " fmt "\n", __LINE__, #x, #op, #y, \
-                ##__VA_ARGS__);                                                           \
-      TVMPlatformAbort(kTvmErrorPlatformCheckFailure);                                    \
-    }                                                                                     \
-  } while (0)
+    do {                                                                                    \
+        if (!(x op y)) {                                                                      \
+            LOG_ERROR(__FILE__ ":%d: Check failed: %s %s %s: " fmt "\n", __LINE__, #x, #op, #y, \
+                      ##__VA_ARGS__);                                                           \
+            TVMPlatformAbort(kTvmErrorPlatformCheckFailure);                                    \
+        }                                                                                     \
+    } while (0)
 #endif
 
 #ifndef CHECK_LT

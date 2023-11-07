@@ -7,7 +7,8 @@
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 
-const char * labels[] = {
+const char *labels[] =
+{
     "Person detected: No",
     "Person detected: Yes",
 };

@@ -70,7 +70,7 @@
  */
 
 __STACK_SIZE = 0x00008000;
-__HEAP_SIZE  = 0x00008000;
+__HEAP_SIZE  = 0x00060000;
 
 /* System memory brief */
 MEMORY
@@ -261,7 +261,7 @@ SECTIONS
     . = . + __HEAP_SIZE;
     . = ALIGN(8);
     __HeapLimit = .;
-  } > DTCM
+  } > SRAM012
 
   .stack (ORIGIN(DTCM) + LENGTH(DTCM) - __STACK_SIZE) (COPY) :
   {
@@ -274,6 +274,6 @@ SECTIONS
   PROVIDE(__stack = __StackTop);
 
   /* Check if data + heap + stack exceeds DTCM limit */
-  ASSERT(__StackLimit >= __HeapLimit, "region DTCM overflowed with stack")
+  /*ASSERT(__StackLimit >= __HeapLimit, "region DTCM overflowed with stack")*/
 
 }

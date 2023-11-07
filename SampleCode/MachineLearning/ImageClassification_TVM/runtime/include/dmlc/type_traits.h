@@ -8,23 +8,25 @@
 
 #include "./base.h"
 #if DMLC_USE_CXX11
-#include <type_traits>
+    #include <type_traits>
 #endif
 #include <string>
 
-namespace dmlc {
+namespace dmlc
+{
 /*!
  * \brief whether a type is pod type
  * \tparam T the type to query
  */
 template<typename T>
-struct is_pod {
+struct is_pod
+{
 #if DMLC_USE_CXX11
-  /*! \brief the value of the traits */
-  static const bool value = std::is_pod<T>::value;
+    /*! \brief the value of the traits */
+    static const bool value = std::is_pod<T>::value;
 #else
-  /*! \brief the value of the traits */
-  static const bool value = false;
+    /*! \brief the value of the traits */
+    static const bool value = false;
 #endif
 };
 
@@ -34,13 +36,14 @@ struct is_pod {
  * \tparam T the type to query
  */
 template<typename T>
-struct is_integral {
+struct is_integral
+{
 #if DMLC_USE_CXX11
-  /*! \brief the value of the traits */
-  static const bool value = std::is_integral<T>::value;
+    /*! \brief the value of the traits */
+    static const bool value = std::is_integral<T>::value;
 #else
-  /*! \brief the value of the traits */
-  static const bool value = false;
+    /*! \brief the value of the traits */
+    static const bool value = false;
 #endif
 };
 
@@ -49,13 +52,14 @@ struct is_integral {
  * \tparam T the type to query
  */
 template<typename T>
-struct is_floating_point {
+struct is_floating_point
+{
 #if DMLC_USE_CXX11
-  /*! \brief the value of the traits */
-  static const bool value = std::is_floating_point<T>::value;
+    /*! \brief the value of the traits */
+    static const bool value = std::is_floating_point<T>::value;
 #else
-  /*! \brief the value of the traits */
-  static const bool value = false;
+    /*! \brief the value of the traits */
+    static const bool value = false;
 #endif
 };
 
@@ -64,14 +68,15 @@ struct is_floating_point {
  * \tparam T the type to query
  */
 template<typename T>
-struct is_arithmetic {
+struct is_arithmetic
+{
 #if DMLC_USE_CXX11
-  /*! \brief the value of the traits */
-  static const bool value = std::is_arithmetic<T>::value;
+    /*! \brief the value of the traits */
+    static const bool value = std::is_arithmetic<T>::value;
 #else
-  /*! \brief the value of the traits */
-  static const bool value = (dmlc::is_integral<T>::value ||
-                             dmlc::is_floating_point<T>::value);
+    /*! \brief the value of the traits */
+    static const bool value = (dmlc::is_integral<T>::value ||
+                               dmlc::is_floating_point<T>::value);
 #endif
 };
 
@@ -83,13 +88,15 @@ struct is_arithmetic {
  * \tparam T the type to query
  */
 template<typename T>
-struct type_name_helper {
-  /*!
-   * \return a string of typename.
-   */
-  static inline std::string value() {
-    return "";
-  }
+struct type_name_helper
+{
+    /*!
+     * \return a string of typename.
+     */
+    static inline std::string value()
+    {
+        return "";
+    }
 };
 
 /*!
@@ -98,8 +105,9 @@ struct type_name_helper {
  * \return a const string of typename.
  */
 template<typename T>
-inline std::string type_name() {
-  return type_name_helper<T>::value();
+inline std::string type_name()
+{
+    return type_name_helper<T>::value();
 }
 
 /*!
@@ -107,9 +115,10 @@ inline std::string type_name() {
  * \tparam T the type to query
  */
 template<typename T>
-struct has_saveload {
-  /*! \brief the value of the traits */
-  static const bool value = false;
+struct has_saveload
+{
+    /*! \brief the value of the traits */
+    static const bool value = false;
 };
 
 /*!
@@ -124,47 +133,47 @@ struct IfThenElseType;
 
 /*! \brief macro to quickly declare traits information */
 #define DMLC_DECLARE_TRAITS(Trait, Type, Value)       \
-  template<>                                          \
-  struct Trait<Type> {                                \
-    static const bool value = Value;                  \
-  }
+    template<>                                          \
+    struct Trait<Type> {                                \
+        static const bool value = Value;                  \
+    }
 
 /*! \brief macro to quickly declare traits information */
 #define DMLC_DECLARE_TYPE_NAME(Type, Name)            \
-  template<>                                          \
-  struct type_name_helper<Type> {                     \
-    static inline std::string value() {               \
-      return Name;                                    \
-    }                                                 \
-  }
+    template<>                                          \
+    struct type_name_helper<Type> {                     \
+        static inline std::string value() {               \
+            return Name;                                    \
+        }                                                 \
+    }
 
 //! \cond Doxygen_Suppress
 // declare special traits when C++11 is not available
 #if DMLC_USE_CXX11 == 0
-DMLC_DECLARE_TRAITS(is_pod, char, true);
-DMLC_DECLARE_TRAITS(is_pod, int8_t, true);
-DMLC_DECLARE_TRAITS(is_pod, int16_t, true);
-DMLC_DECLARE_TRAITS(is_pod, int32_t, true);
-DMLC_DECLARE_TRAITS(is_pod, int64_t, true);
-DMLC_DECLARE_TRAITS(is_pod, uint8_t, true);
-DMLC_DECLARE_TRAITS(is_pod, uint16_t, true);
-DMLC_DECLARE_TRAITS(is_pod, uint32_t, true);
-DMLC_DECLARE_TRAITS(is_pod, uint64_t, true);
-DMLC_DECLARE_TRAITS(is_pod, float, true);
-DMLC_DECLARE_TRAITS(is_pod, double, true);
+    DMLC_DECLARE_TRAITS(is_pod, char, true);
+    DMLC_DECLARE_TRAITS(is_pod, int8_t, true);
+    DMLC_DECLARE_TRAITS(is_pod, int16_t, true);
+    DMLC_DECLARE_TRAITS(is_pod, int32_t, true);
+    DMLC_DECLARE_TRAITS(is_pod, int64_t, true);
+    DMLC_DECLARE_TRAITS(is_pod, uint8_t, true);
+    DMLC_DECLARE_TRAITS(is_pod, uint16_t, true);
+    DMLC_DECLARE_TRAITS(is_pod, uint32_t, true);
+    DMLC_DECLARE_TRAITS(is_pod, uint64_t, true);
+    DMLC_DECLARE_TRAITS(is_pod, float, true);
+    DMLC_DECLARE_TRAITS(is_pod, double, true);
 
-DMLC_DECLARE_TRAITS(is_integral, char, true);
-DMLC_DECLARE_TRAITS(is_integral, int8_t, true);
-DMLC_DECLARE_TRAITS(is_integral, int16_t, true);
-DMLC_DECLARE_TRAITS(is_integral, int32_t, true);
-DMLC_DECLARE_TRAITS(is_integral, int64_t, true);
-DMLC_DECLARE_TRAITS(is_integral, uint8_t, true);
-DMLC_DECLARE_TRAITS(is_integral, uint16_t, true);
-DMLC_DECLARE_TRAITS(is_integral, uint32_t, true);
-DMLC_DECLARE_TRAITS(is_integral, uint64_t, true);
+    DMLC_DECLARE_TRAITS(is_integral, char, true);
+    DMLC_DECLARE_TRAITS(is_integral, int8_t, true);
+    DMLC_DECLARE_TRAITS(is_integral, int16_t, true);
+    DMLC_DECLARE_TRAITS(is_integral, int32_t, true);
+    DMLC_DECLARE_TRAITS(is_integral, int64_t, true);
+    DMLC_DECLARE_TRAITS(is_integral, uint8_t, true);
+    DMLC_DECLARE_TRAITS(is_integral, uint16_t, true);
+    DMLC_DECLARE_TRAITS(is_integral, uint32_t, true);
+    DMLC_DECLARE_TRAITS(is_integral, uint64_t, true);
 
-DMLC_DECLARE_TRAITS(is_floating_point, float, true);
-DMLC_DECLARE_TRAITS(is_floating_point, double, true);
+    DMLC_DECLARE_TRAITS(is_floating_point, float, true);
+    DMLC_DECLARE_TRAITS(is_floating_point, double, true);
 
 #endif
 
@@ -176,16 +185,18 @@ DMLC_DECLARE_TYPE_NAME(uint32_t, "int (non-negative)");
 DMLC_DECLARE_TYPE_NAME(uint64_t, "long (non-negative)");
 DMLC_DECLARE_TYPE_NAME(std::string, "string");
 DMLC_DECLARE_TYPE_NAME(bool, "boolean");
-DMLC_DECLARE_TYPE_NAME(void*, "ptr");
+DMLC_DECLARE_TYPE_NAME(void *, "ptr");
 
 template<typename Then, typename Else>
-struct IfThenElseType<true, Then, Else> {
-  typedef Then Type;
+struct IfThenElseType<true, Then, Else>
+{
+    typedef Then Type;
 };
 
 template<typename Then, typename Else>
-struct IfThenElseType<false, Then, Else> {
-  typedef Else Type;
+struct IfThenElseType<false, Then, Else>
+{
+    typedef Else Type;
 };
 //! \endcond
 }  // namespace dmlc

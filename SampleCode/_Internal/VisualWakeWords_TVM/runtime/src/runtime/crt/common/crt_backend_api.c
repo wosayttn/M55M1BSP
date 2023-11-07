@@ -32,33 +32,37 @@
 
 #include "crt_config.h"
 
-void* TVMBackendAllocWorkspace(int device_type, int device_id, uint64_t nbytes, int dtype_code_hint,
-                               int dtype_bits_hint) {
-  tvm_crt_error_t err = kTvmErrorNoError;
-  void* ptr = 0;
-  DLDevice dev = {device_type, device_id};
-  assert(nbytes > 0);
-  err = TVMPlatformMemoryAllocate(nbytes, dev, &ptr);
-  CHECK_EQ(err, kTvmErrorNoError,
-           "TVMBackendAllocWorkspace(%d, %d, %" PRIu64 ", %d, %d) -> %" PRId32, device_type,
-           device_id, nbytes, dtype_code_hint, dtype_bits_hint, err);
-  return ptr;
+void *TVMBackendAllocWorkspace(int device_type, int device_id, uint64_t nbytes, int dtype_code_hint,
+                               int dtype_bits_hint)
+{
+    tvm_crt_error_t err = kTvmErrorNoError;
+    void *ptr = 0;
+    DLDevice dev = {device_type, device_id};
+    assert(nbytes > 0);
+    err = TVMPlatformMemoryAllocate(nbytes, dev, &ptr);
+    CHECK_EQ(err, kTvmErrorNoError,
+             "TVMBackendAllocWorkspace(%d, %d, %" PRIu64 ", %d, %d) -> %" PRId32, device_type,
+             device_id, nbytes, dtype_code_hint, dtype_bits_hint, err);
+    return ptr;
 }
 
-int TVMBackendFreeWorkspace(int device_type, int device_id, void* ptr) {
-  tvm_crt_error_t err = kTvmErrorNoError;
-  DLDevice dev = {device_type, device_id};
-  err = TVMPlatformMemoryFree(ptr, dev);
-  return err;
+int TVMBackendFreeWorkspace(int device_type, int device_id, void *ptr)
+{
+    tvm_crt_error_t err = kTvmErrorNoError;
+    DLDevice dev = {device_type, device_id};
+    err = TVMPlatformMemoryFree(ptr, dev);
+    return err;
 }
 
-int TVMBackendParallelLaunch(FTVMParallelLambda flambda, void* cdata, int num_task) {
-  TVMParallelGroupEnv env;
-  env.num_task = 1;
-  flambda(0, &env, cdata);
-  return 0;
+int TVMBackendParallelLaunch(FTVMParallelLambda flambda, void *cdata, int num_task)
+{
+    TVMParallelGroupEnv env;
+    env.num_task = 1;
+    flambda(0, &env, cdata);
+    return 0;
 }
 
-int TVMBackendRegisterSystemLibSymbol(const char* name, void* ptr) {
-  return TVMFuncRegisterGlobal(name, ptr, 0);
+int TVMBackendRegisterSystemLibSymbol(const char *name, void *ptr)
+{
+    return TVMFuncRegisterGlobal(name, ptr, 0);
 }

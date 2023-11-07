@@ -37,30 +37,31 @@ extern int vleak_size;
 
 typedef struct MemoryManagerInterface MemoryManagerInterface;
 
-struct MemoryManagerInterface {
-  /*!
-   * \brief Allocate a chunk of memory.
-   * \param interface Pointer to this structure.
-   * \param num_bytes Number of bytes requested.
-   * \param dev Execution device that will be used with the allocated memory. Must be {kDLCPU, 0}.
-   * \param out_ptr A pointer to which is written a pointer to the newly-allocated memory.
-   * \return kTvmErrorNoError if successful; a descriptive error code otherwise.
-   */
-  tvm_crt_error_t (*Allocate)(MemoryManagerInterface* interface, size_t num_bytes, DLDevice dev,
-                              void** out_ptr);
+struct MemoryManagerInterface
+{
+    /*!
+     * \brief Allocate a chunk of memory.
+     * \param interface Pointer to this structure.
+     * \param num_bytes Number of bytes requested.
+     * \param dev Execution device that will be used with the allocated memory. Must be {kDLCPU, 0}.
+     * \param out_ptr A pointer to which is written a pointer to the newly-allocated memory.
+     * \return kTvmErrorNoError if successful; a descriptive error code otherwise.
+     */
+    tvm_crt_error_t (*Allocate)(MemoryManagerInterface *interface, size_t num_bytes, DLDevice dev,
+                                void **out_ptr);
 
-  /*!
-   * \brief Free a chunk of previously-used memory.
-   *
-   * \param interface Pointer to this structure.
-   * \param ptr A pointer returned from TVMPlatformMemoryAllocate which should be free'd.
-   * \param dev Execution device passed to TVMPlatformMemoryAllocate. Fixed to {kDLCPU, 0}.
-   * \return kTvmErrorNoError if successful; a descriptive error code otherwise.
-   */
-  tvm_crt_error_t (*Free)(MemoryManagerInterface* interface, void* ptr, DLDevice dev);
+    /*!
+     * \brief Free a chunk of previously-used memory.
+     *
+     * \param interface Pointer to this structure.
+     * \param ptr A pointer returned from TVMPlatformMemoryAllocate which should be free'd.
+     * \param dev Execution device passed to TVMPlatformMemoryAllocate. Fixed to {kDLCPU, 0}.
+     * \return kTvmErrorNoError if successful; a descriptive error code otherwise.
+     */
+    tvm_crt_error_t (*Free)(MemoryManagerInterface *interface, void *ptr, DLDevice dev);
 
-  /*! \brief Used in testing; the number of allocated objects. */
-  int vleak_size;
+    /*! \brief Used in testing; the number of allocated objects. */
+    int vleak_size;
 };
 
 /*!
@@ -72,7 +73,7 @@ struct MemoryManagerInterface {
  * \param page_size_bytes_log2 log2 of the page size, in bytes.
  * \return kTvmErrorNoError on success.
  */
-tvm_crt_error_t PageMemoryManagerCreate(MemoryManagerInterface** manager, uint8_t* memory_pool,
+tvm_crt_error_t PageMemoryManagerCreate(MemoryManagerInterface **manager, uint8_t *memory_pool,
                                         size_t memory_pool_size_bytes, size_t page_size_bytes_log2);
 
 #ifdef __cplusplus

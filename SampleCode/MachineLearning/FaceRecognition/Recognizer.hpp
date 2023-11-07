@@ -15,45 +15,48 @@
 
 #include <vector>
 
-namespace arm {
-namespace app {
+namespace arm
+{
+namespace app
+{
+
+/**
+ * @brief   Classifier - a helper class to get certain number of top
+ *          results from the output vector from a classification NN.
+ **/
+class Recognizer
+{
+public:
+    /** @brief Constructor. */
+    Recognizer();
 
     /**
-     * @brief   Classifier - a helper class to get certain number of top
-     *          results from the output vector from a classification NN.
+     * @brief       Gets the recognition results from the
+     *              output vector.
+     * @param[in]   outputTensor   Inference output tensor from an NN model.
+     * @param[out]  vecResults     A vector of classification results.
+     *                             populated by this function.
+     * @param[in]   labels         Labels vector to match classified classes.
+     * @param[in]   topNCount      Number of top classifications to pick. Default is 1.
+     * @param[in]   useSoftmax     Whether Softmax normalisation should be applied to output. Default is false.
+     * @return      true if successful, false otherwise.
      **/
-    class Recognizer{
-    public:
-        /** @brief Constructor. */
-        Recognizer();
 
-        /**
-         * @brief       Gets the recognition results from the
-         *              output vector.
-         * @param[in]   outputTensor   Inference output tensor from an NN model.
-         * @param[out]  vecResults     A vector of classification results.
-         *                             populated by this function.
-         * @param[in]   labels         Labels vector to match classified classes.
-         * @param[in]   topNCount      Number of top classifications to pick. Default is 1.
-         * @param[in]   useSoftmax     Whether Softmax normalisation should be applied to output. Default is false.
-         * @return      true if successful, false otherwise.
-         **/
+    virtual bool GetRecognitionResults(
+        TfLiteTensor *outputTensor,
+        RecognitionResult &predResults,
+        const std::vector <S_LABEL_INFO> &labels);
 
-        virtual bool GetRecognitionResults(
-            TfLiteTensor* outputTensor,
-            RecognitionResult &predResults,
-            const std::vector <S_LABEL_INFO>& labels);
+    /**
+    * @brief       Set predict threshold
+    * @param[in]   threshold value.
+    **/
 
-        /**
-        * @brief       Set predict threshold
-        * @param[in]   threshold value.
-        **/
+    void SetThreshold(double threshold);
 
-        void SetThreshold(double threshold);
-
-    private:
-		double m_threshold;
-    };
+private:
+    double m_threshold;
+};
 
 } /* namespace app */
 } /* namespace arm */

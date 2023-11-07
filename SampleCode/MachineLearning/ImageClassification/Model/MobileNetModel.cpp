@@ -17,7 +17,7 @@
 #include "MobileNetModel.hpp"
 #include "log_macros.h"
 
-const tflite::MicroOpResolver& arm::app::MobileNetModel::GetOpResolver()
+const tflite::MicroOpResolver &arm::app::MobileNetModel::GetOpResolver()
 {
     return this->m_opResolver;
 }
@@ -32,25 +32,35 @@ bool arm::app::MobileNetModel::EnlistOperations()
     this->m_opResolver.AddSoftmax();
 
 #if defined(ARM_NPU)
-    if (kTfLiteOk == this->m_opResolver.AddEthosU()) {
+
+    if (kTfLiteOk == this->m_opResolver.AddEthosU())
+    {
         info("Added %s support to op resolver\n",
-            tflite::GetString_ETHOSU());
-    } else {
+             tflite::GetString_ETHOSU());
+    }
+    else
+    {
         printf_err("Failed to add Arm NPU support to op resolver.");
         return false;
     }
+
 #endif /* ARM_NPU */
     return true;
 }
 
-namespace arm {
-namespace app {
-namespace mobilenet {
-    extern const uint8_t * GetModelPointer();
-	extern size_t GetModelLen();
-}}} /* namespace mobilenet */
+namespace arm
+{
+namespace app
+{
+namespace mobilenet
+{
+extern const uint8_t *GetModelPointer();
+extern size_t GetModelLen();
+}
+}
+} /* namespace mobilenet */
 
-const uint8_t* arm::app::MobileNetModel::ModelPointer()
+const uint8_t *arm::app::MobileNetModel::ModelPointer()
 {
     return arm::app::mobilenet::GetModelPointer();
 }

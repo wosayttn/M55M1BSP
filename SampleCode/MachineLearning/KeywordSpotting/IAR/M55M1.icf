@@ -14,8 +14,8 @@ define symbol __ICFEDIT_region_DTCM_start__   = 0x20000000;
 define symbol __ICFEDIT_region_DTCM_end__     = 0x2001FFFF;
 
 /*-Sizes-*/
-define symbol __ICFEDIT_size_cstack__ = 0x00008000;
-define symbol __ICFEDIT_size_heap__   = 0x00008000;
+define symbol __ICFEDIT_size_cstack__ = 0x0000a000;
+define symbol __ICFEDIT_size_heap__   = 0x00060000;
 /**** End of ICF editor section. ###ICF###*/
 
 
@@ -38,6 +38,6 @@ place in FLASH_region   { readonly }
                         except {section itcm};
 place in ITCM_region   { section itcm };
 place in DTCM_region   { readwrite,
-                        block CSTACK, block HEAP };
-place in SRAM012_region   { section .bss.sram.data, section .bss.NoInit.activation_buf_sram };
+                        block CSTACK };
+place in SRAM012_region   { section .bss.sram.data, section .bss.NoInit.activation_buf_sram, block HEAP};
 

@@ -21,45 +21,49 @@
 #include "Model.hpp"
 #include "Classifier.hpp"
 
-namespace arm {
-namespace app {
+namespace arm
+{
+namespace app
+{
 
-    /**
-     * @brief   Pre-processing class for Image Classification use case.
-     *          Implements methods declared by BasePreProcess and anything else needed
-     *          to populate input tensors ready for inference.
-     */
-    class ImgClassPreProcess : public BasePreProcess {
+/**
+ * @brief   Pre-processing class for Image Classification use case.
+ *          Implements methods declared by BasePreProcess and anything else needed
+ *          to populate input tensors ready for inference.
+ */
+class ImgClassPreProcess : public BasePreProcess
+{
 
-    public:
-        explicit ImgClassPreProcess(Model* model);
+public:
+    explicit ImgClassPreProcess(Model *model);
 
-        bool DoPreProcess(const void* input, size_t inputSize) override;
-    protected:
-        Model* m_model = nullptr;
-    };
+    bool DoPreProcess(const void *input, size_t inputSize) override;
+protected:
+    Model *m_model = nullptr;
+};
 
-    /**
-     * @brief   Post-processing class for Image Classification use case.
-     *          Implements methods declared by BasePostProcess and anything else needed
-     *          to populate result vector.
-     */
-    class ImgClassPostProcess : public BasePostProcess {
+/**
+ * @brief   Post-processing class for Image Classification use case.
+ *          Implements methods declared by BasePostProcess and anything else needed
+ *          to populate result vector.
+ */
+class ImgClassPostProcess : public BasePostProcess
+{
 
-    private:
-        Classifier& m_imgClassifier;
-        const std::vector<std::string>& m_labels;
-        std::vector<ClassificationResult>& m_results;
+private:
+    Classifier &m_imgClassifier;
+    const std::vector<std::string> &m_labels;
+    std::vector<ClassificationResult> &m_results;
 
-    public:
-        ImgClassPostProcess(Classifier& classifier, Model* model,
-                            const std::vector<std::string>& labels,
-                            std::vector<ClassificationResult>& results);
+public:
+    ImgClassPostProcess(Classifier &classifier, Model *model,
+                        const std::vector<std::string> &labels,
+                        std::vector<ClassificationResult> &results);
 
-        bool DoPostProcess() override;
-    protected:
-        Model* m_model = nullptr;
-    };
+    bool DoPostProcess() override;
+protected:
+    Model *m_model = nullptr;
+};
 
 } /* namespace app */
 } /* namespace arm */

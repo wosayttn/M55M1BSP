@@ -26,7 +26,8 @@
 #include <string>
 
 
-static const char * labelsVec[] LABELS_ATTRIBUTE = {
+static const char *labelsVec[] LABELS_ATTRIBUTE =
+{
 #if defined (MODEL_DS_CNN)
     "_silence_",
     "_unknown_",
@@ -56,18 +57,20 @@ static const char * labelsVec[] LABELS_ATTRIBUTE = {
 #endif
 };
 
-bool GetLabelsVector(std::vector<std::string>& labels)
+bool GetLabelsVector(std::vector<std::string> &labels)
 {
     constexpr size_t labelsSz = 12;
     labels.clear();
 
-    if (!labelsSz) {
+    if (!labelsSz)
+    {
         return false;
     }
 
     labels.reserve(labelsSz);
 
-    for (size_t i = 0; i < labelsSz; ++i) {
+    for (size_t i = 0; i < labelsSz; ++i)
+    {
         labels.emplace_back(labelsVec[i]);
     }
 

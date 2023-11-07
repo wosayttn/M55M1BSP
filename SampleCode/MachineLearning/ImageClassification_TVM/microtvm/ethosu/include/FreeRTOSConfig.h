@@ -59,11 +59,11 @@
 /* Debug features */
 #define configCHECK_FOR_STACK_OVERFLOW 0
 #define configASSERT(x)       \
-  if ((x) == 0) {             \
-    taskDISABLE_INTERRUPTS(); \
-    for (;;)                  \
-      ;                       \
-  }
+    if ((x) == 0) {             \
+        taskDISABLE_INTERRUPTS(); \
+        for (;;)                  \
+            ;                       \
+    }
 #define configQUEUE_REGISTRY_SIZE 0
 /* Timers and queues */
 #define configUSE_TIMERS 1
@@ -89,22 +89,22 @@
 #define configUSE_STATS_FORMATTING_FUNCTIONS 1
 #define configCOMMAND_INT_MAX_OUTPUT_SIZE 2048
 #ifdef __NVIC_PRIO_BITS
-#define configPRIO_BITS __NVIC_PRIO_BITS
+    #define configPRIO_BITS __NVIC_PRIO_BITS
 #else
-#define configPRIO_BITS 3
+    #define configPRIO_BITS 3
 #endif
 /* Interrupt settings */
 #define configLIBRARY_LOWEST_INTERRUPT_PRIORITY 0x07
 #define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 5
 #define configKERNEL_INTERRUPT_PRIORITY \
-  (configLIBRARY_LOWEST_INTERRUPT_PRIORITY << (8 - configPRIO_BITS))
+    (configLIBRARY_LOWEST_INTERRUPT_PRIORITY << (8 - configPRIO_BITS))
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY \
-  (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS))
+    (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS))
 #ifndef __IASMARM__
-#define configGENERATE_RUN_TIME_STATS 0
-#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()
-#define portGET_RUN_TIME_COUNTER_VALUE() 0
-#define configTICK_RATE_HZ (TickType_t)1000
+    #define configGENERATE_RUN_TIME_STATS 0
+    #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()
+    #define portGET_RUN_TIME_COUNTER_VALUE() 0
+    #define configTICK_RATE_HZ (TickType_t)1000
 #endif /* __IASMARM__ */
 #define xPortPendSVHandler PendSV_Handler
 #define vPortSVCHandler SVC_Handler

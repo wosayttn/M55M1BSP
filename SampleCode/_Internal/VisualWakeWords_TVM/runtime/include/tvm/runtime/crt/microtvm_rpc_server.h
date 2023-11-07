@@ -42,11 +42,11 @@ extern "C" {
  * \param num_bytes Number of bytes avaiable in data.
  * \return The number of bytes written.
  */
-typedef ssize_t (*microtvm_rpc_channel_write_t)(void* context, const uint8_t* data,
+typedef ssize_t (*microtvm_rpc_channel_write_t)(void *context, const uint8_t *data,
                                                 size_t num_bytes);
 
 /*! \brief Opaque pointer type to TVM RPC Server. */
-typedef void* microtvm_rpc_server_t;
+typedef void *microtvm_rpc_server_t;
 
 /*! \brief Initialize the TVM RPC Server.
  *
@@ -60,7 +60,7 @@ typedef void* microtvm_rpc_server_t;
  *         the TVM workspace.
  */
 microtvm_rpc_server_t MicroTVMRpcServerInit(microtvm_rpc_channel_write_t write_func,
-                                            void* write_func_ctx);
+                                            void *write_func_ctx);
 
 /*! \brief Do any tasks suitable for the main thread, and maybe process new incoming data.
  *
@@ -71,8 +71,8 @@ microtvm_rpc_server_t MicroTVMRpcServerInit(microtvm_rpc_channel_write_t write_f
  *     updated to the number of unprocessed bytes remaining in `new_data` (usually 0).
  * \return An error code indicating the outcome of the server main loop iteration.
  */
-tvm_crt_error_t MicroTVMRpcServerLoop(microtvm_rpc_server_t server, uint8_t** new_data,
-                                      size_t* new_data_size_bytes);
+tvm_crt_error_t MicroTVMRpcServerLoop(microtvm_rpc_server_t server, uint8_t **new_data,
+                                      size_t *new_data_size_bytes);
 
 #ifdef __cplusplus
 }

@@ -43,33 +43,33 @@
 
 // Macros to do weak linking
 #ifdef _MSC_VER
-#define TVM_WEAK __declspec(selectany)
+    #define TVM_WEAK __declspec(selectany)
 #else
-#define TVM_WEAK __attribute__((weak))
+    #define TVM_WEAK __attribute__((weak))
 #endif
 
 #ifdef __EMSCRIPTEN__
-#include <emscripten/emscripten.h>
-#define TVM_DLL EMSCRIPTEN_KEEPALIVE
+    #include <emscripten/emscripten.h>
+    #define TVM_DLL EMSCRIPTEN_KEEPALIVE
 #endif
 
 // helper macro to suppress unused warning
 #if defined(__GNUC__)
-#define TVM_ATTRIBUTE_UNUSED __attribute__((unused))
+    #define TVM_ATTRIBUTE_UNUSED __attribute__((unused))
 #else
-#define TVM_ATTRIBUTE_UNUSED
+    #define TVM_ATTRIBUTE_UNUSED
 #endif
 
 #ifndef TVM_DLL
-#ifdef _WIN32
-#ifdef TVM_EXPORTS
-#define TVM_DLL __declspec(dllexport)
-#else
-#define TVM_DLL __declspec(dllimport)
-#endif
-#else
-#define TVM_DLL __attribute__((visibility("default")))
-#endif
+    #ifdef _WIN32
+        #ifdef TVM_EXPORTS
+            #define TVM_DLL __declspec(dllexport)
+        #else
+            #define TVM_DLL __declspec(dllimport)
+        #endif
+    #else
+        #define TVM_DLL __attribute__((visibility("default")))
+    #endif
 #endif
 
 // TVM version
@@ -111,18 +111,20 @@ typedef int64_t tvm_index_t;
  * could be a latent bug when compiled as C.
  */
 #ifdef __cplusplus
-typedef enum : int32_t {
+typedef enum : int32_t
+{
 #else
-typedef enum {
+typedef enum
+{
 #endif
-  // To help avoid accidental conflicts between `DLDeviceType`
-  // and this enumeration, start numbering the new enumerators
-  // a little higher than (currently) seems necessary.
-  kDLAOCL = 32,
-  kDLSDAccel,
-  kOpenGL,
-  kDLMicroDev,
-  TVMDeviceExtType_End,  // sentinel value
+    // To help avoid accidental conflicts between `DLDeviceType`
+    // and this enumeration, start numbering the new enumerators
+    // a little higher than (currently) seems necessary.
+    kDLAOCL = 32,
+    kDLSDAccel,
+    kOpenGL,
+    kDLMicroDev,
+    TVMDeviceExtType_End,  // sentinel value
 } TVMDeviceExtType;
 
 #ifdef __cplusplus
@@ -131,8 +133,8 @@ typedef enum {
 // enumerator.   E.g., `2` rather than `kDLCUDA`.
 // These asserts should alert us when that mapping breaks.
 #define TVM_HARCODED_INTEGER_CHANGED_MSG                                                          \
-  "Change in compile-time integer.  Make sure hardcoded uses of this integer throughout TVM are " \
-  "updated."
+    "Change in compile-time integer.  Make sure hardcoded uses of this integer throughout TVM are " \
+    "updated."
 static_assert(kDLCPU == 1, TVM_HARCODED_INTEGER_CHANGED_MSG);
 static_assert(kDLCUDA == 2, TVM_HARCODED_INTEGER_CHANGED_MSG);
 static_assert(kDLCUDAHost == 3, TVM_HARCODED_INTEGER_CHANGED_MSG);
@@ -171,78 +173,81 @@ static_assert(kDLMicroDev == 35, TVM_HARCODED_INTEGER_CHANGED_MSG);
  *
  * \sa tvm::runtime::DataType::TypeCode
  */
-typedef enum {
-  kTVMArgInt = kDLInt,
-  kTVMArgFloat = kDLFloat,
-  kTVMOpaqueHandle = 3U,
-  kTVMNullptr = 4U,
-  kTVMDataType = 5U,
-  kDLDevice = 6U,
-  kTVMDLTensorHandle = 7U,
-  kTVMObjectHandle = 8U,
-  kTVMModuleHandle = 9U,
-  kTVMPackedFuncHandle = 10U,
-  kTVMStr = 11U,
-  kTVMBytes = 12U,
-  kTVMNDArrayHandle = 13U,
-  kTVMObjectRValueRefArg = 14U,
-  // Extension codes for other frameworks to integrate TVM PackedFunc.
-  // To make sure each framework's id do not conflict, use first and
-  // last sections to mark ranges.
-  // Open an issue at the repo if you need a section of code.
-  kTVMExtBegin = 15U,
-  kTVMNNVMFirst = 16U,
-  kTVMNNVMLast = 20U,
-  // The following section of code is used for non-reserved types.
-  kTVMExtReserveEnd = 64U,
-  kTVMExtEnd = 128U,
+typedef enum
+{
+    kTVMArgInt = kDLInt,
+    kTVMArgFloat = kDLFloat,
+    kTVMOpaqueHandle = 3U,
+    kTVMNullptr = 4U,
+    kTVMDataType = 5U,
+    kDLDevice = 6U,
+    kTVMDLTensorHandle = 7U,
+    kTVMObjectHandle = 8U,
+    kTVMModuleHandle = 9U,
+    kTVMPackedFuncHandle = 10U,
+    kTVMStr = 11U,
+    kTVMBytes = 12U,
+    kTVMNDArrayHandle = 13U,
+    kTVMObjectRValueRefArg = 14U,
+    // Extension codes for other frameworks to integrate TVM PackedFunc.
+    // To make sure each framework's id do not conflict, use first and
+    // last sections to mark ranges.
+    // Open an issue at the repo if you need a section of code.
+    kTVMExtBegin = 15U,
+    kTVMNNVMFirst = 16U,
+    kTVMNNVMLast = 20U,
+    // The following section of code is used for non-reserved types.
+    kTVMExtReserveEnd = 64U,
+    kTVMExtEnd = 128U,
 } TVMArgTypeCode;
 
 /*! \brief the array handle */
-typedef DLTensor* TVMArrayHandle;
+typedef DLTensor *TVMArrayHandle;
 
 /*!
  * \brief Union type of values
  *  being passed through API and function calls.
  */
-typedef union {
-  int64_t v_int64;
-  double v_float64;
-  void* v_handle;
-  const char* v_str;
-  DLDataType v_type;
-  DLDevice v_device;
+typedef union
+{
+    int64_t v_int64;
+    double v_float64;
+    void *v_handle;
+    const char *v_str;
+    DLDataType v_type;
+    DLDevice v_device;
 } TVMValue;
 
 /*!
  * \brief Byte array type used to pass in byte array
  *  When kTVMBytes is used as data type.
  */
-typedef struct {
-  const char* data;
-  size_t size;
+typedef struct
+{
+    const char *data;
+    size_t size;
 } TVMByteArray;
 
 /*! \brief Handle to TVM runtime modules. */
-typedef void* TVMModuleHandle;
+typedef void *TVMModuleHandle;
 /*! \brief Handle to packed function handle. */
-typedef void* TVMFunctionHandle;
+typedef void *TVMFunctionHandle;
 /*! \brief Handle to hold return value. */
-typedef void* TVMRetValueHandle;
+typedef void *TVMRetValueHandle;
 /*!
  * \brief The stream that is specific to device
  * can be NULL, which indicates the default one.
  */
-typedef void* TVMStreamHandle;
+typedef void *TVMStreamHandle;
 /*! \brief Handle to Object. */
-typedef void* TVMObjectHandle;
+typedef void *TVMObjectHandle;
 
 /*!
  * \brief Used for implementing C API function.
  *  Set last error message before return.
  * \param msg The error message to be set.
  */
-TVM_DLL void TVMAPISetLastError(const char* msg);
+TVM_DLL void TVMAPISetLastError(const char *msg);
 
 /*!
  * \brief return str message of the last error
@@ -253,7 +258,7 @@ TVM_DLL void TVMAPISetLastError(const char* msg);
  *  this function is threadsafe and can be called by different thread
  *  \return error info
  */
-TVM_DLL const char* TVMGetLastError(void);
+TVM_DLL const char *TVMGetLastError(void);
 /*!
  * \brief Load module from file.
  * \param file_name The file name to load the module from.
@@ -264,7 +269,7 @@ TVM_DLL const char* TVMGetLastError(void);
  * \note The resulting module do not contain import relation.
  *  It can be reconstructed by TVMModImport.
  */
-TVM_DLL int TVMModLoadFromFile(const char* file_name, const char* format, TVMModuleHandle* out);
+TVM_DLL int TVMModLoadFromFile(const char *file_name, const char *format, TVMModuleHandle *out);
 
 /*!
  * \brief Add dep to mod's dependency.
@@ -284,8 +289,8 @@ TVM_DLL int TVMModImport(TVMModuleHandle mod, TVMModuleHandle dep);
  * \param out The result function, can be NULL if it is not available.
  * \return 0 when no error is thrown, nonzero when failure happens
  */
-TVM_DLL int TVMModGetFunction(TVMModuleHandle mod, const char* func_name, int query_imports,
-                              TVMFunctionHandle* out);
+TVM_DLL int TVMModGetFunction(TVMModuleHandle mod, const char *func_name, int query_imports,
+                              TVMFunctionHandle *out);
 
 /*!
  * \brief Free the Module
@@ -327,8 +332,8 @@ TVM_DLL int TVMFuncFree(TVMFunctionHandle func);
  *   The front-end need to call free function (e.g. TVMFuncFree)
  *   to free these handles.
  */
-TVM_DLL int TVMFuncCall(TVMFunctionHandle func, TVMValue* arg_values, int* type_codes, int num_args,
-                        TVMValue* ret_val, int* ret_type_code);
+TVM_DLL int TVMFuncCall(TVMFunctionHandle func, TVMValue *arg_values, int *type_codes, int num_args,
+                        TVMValue *ret_val, int *ret_type_code);
 
 /*!
  * \brief Set the return value of TVMPackedCFunc.
@@ -341,7 +346,7 @@ TVM_DLL int TVMFuncCall(TVMFunctionHandle func, TVMValue* arg_values, int* type_
  * \param type_code The type of the value to be returned.
  * \param num_ret Number of return values, for now only 1 is supported.
  */
-TVM_DLL int TVMCFuncSetReturn(TVMRetValueHandle ret, TVMValue* value, int* type_code, int num_ret);
+TVM_DLL int TVMCFuncSetReturn(TVMRetValueHandle ret, TVMValue *value, int *type_code, int num_ret);
 
 /*!
  * \brief Inplace translate callback argument value to return value.
@@ -353,7 +358,7 @@ TVM_DLL int TVMCFuncSetReturn(TVMRetValueHandle ret, TVMValue* value, int* type_
  *
  * \return 0 when success, nonzero when failure happens.
  */
-TVM_DLL int TVMCbArgToReturn(TVMValue* value, int* code);
+TVM_DLL int TVMCbArgToReturn(TVMValue *value, int *code);
 
 /*!
  * \brief C type of packed function.
@@ -366,14 +371,14 @@ TVM_DLL int TVMCbArgToReturn(TVMValue* value, int* code);
  * \return 0 if success, -1 if failure happens, set error via TVMAPISetLastError.
  * \sa TVMCFuncSetReturn
  */
-typedef int (*TVMPackedCFunc)(TVMValue* args, int* type_codes, int num_args, TVMRetValueHandle ret,
-                              void* resource_handle);
+typedef int (*TVMPackedCFunc)(TVMValue *args, int *type_codes, int num_args, TVMRetValueHandle ret,
+                              void *resource_handle);
 
 /*!
  * \brief C callback to free the resource handle in C packed function.
  * \param resource_handle The handle additional resouce handle from front-end.
  */
-typedef void (*TVMPackedCFuncFinalizer)(void* resource_handle);
+typedef void (*TVMPackedCFuncFinalizer)(void *resource_handle);
 
 /*!
  * \brief Signature for extension function declarer.
@@ -397,8 +402,8 @@ typedef int (*TVMExtensionFuncDeclarer)(TVMFunctionHandle register_func_handle);
  * \param out the result function handle.
  * \return 0 when success, nonzero when failure happens
  */
-TVM_DLL int TVMFuncCreateFromCFunc(TVMPackedCFunc func, void* resource_handle,
-                                   TVMPackedCFuncFinalizer fin, TVMFunctionHandle* out);
+TVM_DLL int TVMFuncCreateFromCFunc(TVMPackedCFunc func, void *resource_handle,
+                                   TVMPackedCFuncFinalizer fin, TVMFunctionHandle *out);
 
 /*!
  * \brief Register the function to runtime's global table.
@@ -409,7 +414,7 @@ TVM_DLL int TVMFuncCreateFromCFunc(TVMPackedCFunc func, void* resource_handle,
  * \param f The function to be registered.
  * \param override Whether allow override already registered function.
  */
-TVM_DLL int TVMFuncRegisterGlobal(const char* name, TVMFunctionHandle f, int override);
+TVM_DLL int TVMFuncRegisterGlobal(const char *name, TVMFunctionHandle f, int override);
 
 /*!
  * \brief Get a global function.
@@ -420,7 +425,7 @@ TVM_DLL int TVMFuncRegisterGlobal(const char* name, TVMFunctionHandle f, int ove
  * \note The function handle of global function is managed by TVM runtime,
  *  So TVMFuncFree is should not be called when it get deleted.
  */
-TVM_DLL int TVMFuncGetGlobal(const char* name, TVMFunctionHandle* out);
+TVM_DLL int TVMFuncGetGlobal(const char *name, TVMFunctionHandle *out);
 
 /*!
  * \brief List all the globally registered function name
@@ -428,13 +433,13 @@ TVM_DLL int TVMFuncGetGlobal(const char* name, TVMFunctionHandle* out);
  * \param out_array The array of function names.
  * \return 0 when success, nonzero when failure happens
  */
-TVM_DLL int TVMFuncListGlobalNames(int* out_size, const char*** out_array);
+TVM_DLL int TVMFuncListGlobalNames(int *out_size, const char ***out_array);
 
 /*!
  * \brief Remove a global function.
  * \param name The name of the function.
  */
-TVM_DLL int TVMFuncRemoveGlobal(const char* name);
+TVM_DLL int TVMFuncRemoveGlobal(const char *name);
 
 // Array related apis for quick proptyping
 /*!
@@ -451,8 +456,8 @@ TVM_DLL int TVMFuncRemoveGlobal(const char* name);
  * \param out The output handle.
  * \return 0 when success, nonzero when failure happens
  */
-TVM_DLL int TVMArrayAlloc(const tvm_index_t* shape, int ndim, int dtype_code, int dtype_bits,
-                          int dtype_lanes, int device_type, int device_id, TVMArrayHandle* out);
+TVM_DLL int TVMArrayAlloc(const tvm_index_t *shape, int ndim, int dtype_code, int dtype_bits,
+                          int dtype_lanes, int device_type, int device_id, TVMArrayHandle *out);
 
 /*!
  * \brief Free the TVM Array.
@@ -468,7 +473,7 @@ TVM_DLL int TVMArrayFree(TVMArrayHandle handle);
  * \param nbytes The number of bytes to copy.
  * \return 0 when success, nonzero when failure happens
  */
-TVM_DLL int TVMArrayCopyFromBytes(TVMArrayHandle handle, void* data, size_t nbytes);
+TVM_DLL int TVMArrayCopyFromBytes(TVMArrayHandle handle, void *data, size_t nbytes);
 
 /*!
  * \brief Copy array data to CPU byte array.
@@ -477,7 +482,7 @@ TVM_DLL int TVMArrayCopyFromBytes(TVMArrayHandle handle, void* data, size_t nbyt
  * \param nbytes The number of bytes to copy.
  * \return 0 when success, nonzero when failure happens
  */
-TVM_DLL int TVMArrayCopyToBytes(TVMArrayHandle handle, void* data, size_t nbytes);
+TVM_DLL int TVMArrayCopyToBytes(TVMArrayHandle handle, void *data, size_t nbytes);
 
 /*!
  * \brief Copy the array, both from and to must be valid during the copy.
@@ -495,7 +500,7 @@ TVM_DLL int TVMArrayCopyFromTo(TVMArrayHandle from, TVMArrayHandle to, TVMStream
  * \param out The output array handle.
  * \return 0 when success, nonzero when failure happens
  */
-TVM_DLL int TVMArrayFromDLPack(DLManagedTensor* from, TVMArrayHandle* out);
+TVM_DLL int TVMArrayFromDLPack(DLManagedTensor *from, TVMArrayHandle *out);
 
 /*!
  * \brief Produce a DLMangedTensor from the array that shares data memory with
@@ -504,13 +509,13 @@ TVM_DLL int TVMArrayFromDLPack(DLManagedTensor* from, TVMArrayHandle* out);
  * \param out The DLManagedTensor handle.
  * \return 0 when success, nonzero when failure happens
  */
-TVM_DLL int TVMArrayToDLPack(TVMArrayHandle from, DLManagedTensor** out);
+TVM_DLL int TVMArrayToDLPack(TVMArrayHandle from, DLManagedTensor **out);
 
 /*!
  * \brief Delete (free) a DLManagedTensor's data.
  * \param dltensor Pointer to the DLManagedTensor.
  */
-TVM_DLL void TVMDLManagedTensorCallDeleter(DLManagedTensor* dltensor);
+TVM_DLL void TVMDLManagedTensorCallDeleter(DLManagedTensor *dltensor);
 
 /*!
  * \brief Create a new runtime stream.
@@ -520,7 +525,7 @@ TVM_DLL void TVMDLManagedTensorCallDeleter(DLManagedTensor* dltensor);
  * \param out The new stream handle.
  * \return 0 when success, nonzero when failure happens
  */
-TVM_DLL int TVMStreamCreate(int device_type, int device_id, TVMStreamHandle* out);
+TVM_DLL int TVMStreamCreate(int device_type, int device_id, TVMStreamHandle *out);
 
 /*!
  * \brief Free a created stream handle.
@@ -574,7 +579,7 @@ TVM_DLL int TVMStreamStreamSynchronize(int device_type, int device_id, TVMStream
  * \param out_tindex the output type index.
  * \return 0 when success, nonzero when failure happens
  */
-TVM_DLL int TVMObjectGetTypeIndex(TVMObjectHandle obj, unsigned* out_tindex);
+TVM_DLL int TVMObjectGetTypeIndex(TVMObjectHandle obj, unsigned *out_tindex);
 
 /*!
  * \brief Convert type key to type index.
@@ -582,7 +587,7 @@ TVM_DLL int TVMObjectGetTypeIndex(TVMObjectHandle obj, unsigned* out_tindex);
  * \param out_tindex the corresponding type index.
  * \return 0 when success, nonzero when failure happens
  */
-TVM_DLL int TVMObjectTypeKey2Index(const char* type_key, unsigned* out_tindex);
+TVM_DLL int TVMObjectTypeKey2Index(const char *type_key, unsigned *out_tindex);
 
 /*!
  * \brief Convert type index to type key.
@@ -590,7 +595,7 @@ TVM_DLL int TVMObjectTypeKey2Index(const char* type_key, unsigned* out_tindex);
  * \param out_type_key The output type key.
  * \return 0 when success, nonzero when failure happens
  */
-TVM_DLL int TVMObjectTypeIndex2Key(unsigned tindex, char** out_type_key);
+TVM_DLL int TVMObjectTypeIndex2Key(unsigned tindex, char **out_type_key);
 
 /*!
  * \brief Increase the reference count of an object.
@@ -616,7 +621,7 @@ TVM_DLL int TVMObjectFree(TVMObjectHandle obj);
  * \param arr The TVMByteArray instance.
  * \return 0 on success, -1 on failure.
  */
-TVM_DLL int TVMByteArrayFree(TVMByteArray* arr);
+TVM_DLL int TVMByteArrayFree(TVMByteArray *arr);
 
 /*!
  * \brief Allocate a data space on device.
@@ -629,7 +634,7 @@ TVM_DLL int TVMByteArrayFree(TVMByteArray* arr);
  * \return 0 when success, nonzero when failure happens
  */
 TVM_DLL int TVMDeviceAllocDataSpace(DLDevice dev, size_t nbytes, size_t alignment,
-                                    DLDataType type_hint, void** out_data);
+                                    DLDataType type_hint, void **out_data);
 
 /*!
  * \brief Allocate a data space on device with special memory scope.
@@ -644,9 +649,9 @@ TVM_DLL int TVMDeviceAllocDataSpace(DLDevice dev, size_t nbytes, size_t alignmen
  * \param out_data The allocated device pointer.
  * \return 0 when success, nonzero when failure happens
  */
-TVM_DLL int TVMDeviceAllocDataSpaceWithScope(DLDevice dev, int ndim, const int64_t* shape,
-                                             DLDataType dtype, const char* mem_scope,
-                                             void** out_data);
+TVM_DLL int TVMDeviceAllocDataSpaceWithScope(DLDevice dev, int ndim, const int64_t *shape,
+                                             DLDataType dtype, const char *mem_scope,
+                                             void **out_data);
 
 /*!
  * \brief Free a data space on device.
@@ -654,7 +659,7 @@ TVM_DLL int TVMDeviceAllocDataSpaceWithScope(DLDevice dev, int ndim, const int64
  * \param ptr The data space.
  * \return 0 when success, nonzero when failure happens
  */
-TVM_DLL int TVMDeviceFreeDataSpace(DLDevice dev, void* ptr);
+TVM_DLL int TVMDeviceFreeDataSpace(DLDevice dev, void *ptr);
 
 /*!
  * \brief Copy data from one place to another.
@@ -665,7 +670,7 @@ TVM_DLL int TVMDeviceFreeDataSpace(DLDevice dev, void* ptr);
  * \param stream Optional stream object.
  * \return 0 when success, nonzero when failure happens.
  */
-TVM_DLL int TVMDeviceCopyDataFromTo(DLTensor* from, DLTensor* to, TVMStreamHandle stream);
+TVM_DLL int TVMDeviceCopyDataFromTo(DLTensor *from, DLTensor *to, TVMStreamHandle stream);
 
 /*!
  * \brief Check that an object is derived from another.
@@ -675,7 +680,7 @@ TVM_DLL int TVMDeviceCopyDataFromTo(DLTensor* from, DLTensor* to, TVMStreamHandl
  * \return 0 when success, nonzero when failure happens.
  */
 TVM_DLL int TVMObjectDerivedFrom(uint32_t child_type_index, uint32_t parent_type_index,
-                                 int* is_derived);
+                                 int *is_derived);
 
 #ifdef __cplusplus
 }  // TVM_EXTERN_C

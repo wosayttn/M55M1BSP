@@ -32,17 +32,21 @@
 
 #include "../../../../../src/support/ssize.h"
 
-namespace tvm {
-namespace runtime {
-namespace micro_rpc {
+namespace tvm
+{
+namespace runtime
+{
+namespace micro_rpc
+{
 
-class WriteStream {
- public:
-  virtual ~WriteStream();
-  virtual ssize_t Write(const uint8_t* data, size_t data_size_bytes) = 0;
-  virtual void PacketDone(bool is_valid) = 0;
+class WriteStream
+{
+public:
+    virtual ~WriteStream();
+    virtual ssize_t Write(const uint8_t *data, size_t data_size_bytes) = 0;
+    virtual void PacketDone(bool is_valid) = 0;
 
-  tvm_crt_error_t WriteAll(uint8_t* data, size_t data_size_bytes, size_t* bytes_consumed);
+    tvm_crt_error_t WriteAll(uint8_t *data, size_t data_size_bytes, size_t *bytes_consumed);
 };
 
 }  // namespace micro_rpc

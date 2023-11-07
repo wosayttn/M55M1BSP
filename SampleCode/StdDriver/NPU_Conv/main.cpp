@@ -191,7 +191,6 @@ extern "C" {
 
 NVT_ITCM void NPU_IRQHandler(void)
 {
-    //    printf("NPU_IRQHandler \n");
     ethosu_irq_handler(&ethosu0_driver);
 }
 
@@ -211,14 +210,14 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Enable HXT clock */	
+    /* Enable HXT clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for HXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);	
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -405,7 +404,7 @@ int main(void)
     printf("cycleCount=%llu, sysTickCount=%llu, cycleCountPerJob=%llu\n",
            cycleCount,
            (u64SysTickTotalCnt -  u64SysTickCnt),
-           cycleCount / repeat);
+           cycleCount / (uint64_t)repeat);
 
     // Compare outut with expected data
     if (outputPointer != expectedPointer)

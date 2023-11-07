@@ -34,9 +34,10 @@ extern "C" {
 /*!
  * \brief Module container of TVM.
  */
-typedef struct TVMModule {
-  /*! \brief The function registry associated with this module. */
-  const TVMFuncRegistry* registry;
+typedef struct TVMModule
+{
+    /*! \brief The function registry associated with this module. */
+    const TVMFuncRegistry *registry;
 } TVMModule;
 
 /*!
@@ -45,10 +46,10 @@ typedef struct TVMModule {
  * \param out_handle Pointer to receive the newly-minted handle for this module.
  * \return 0 on success, non-zero on error.
  */
-int TVMModCreateFromCModule(const TVMModule* mod, TVMModuleHandle* out_handle);
+int TVMModCreateFromCModule(const TVMModule *mod, TVMModuleHandle *out_handle);
 
 /*! \brief Entry point for the system lib module. */
-const TVMModule* TVMSystemLibEntryPoint(void);
+const TVMModule *TVMSystemLibEntryPoint(void);
 
 #ifdef __cplusplus
 }

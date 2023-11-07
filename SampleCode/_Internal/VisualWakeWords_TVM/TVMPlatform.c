@@ -10,14 +10,19 @@
 #include "tvm/runtime/crt/module.h"
 
 // Called to start system timer.
-tvm_crt_error_t TVMPlatformTimerStart() {
-  return kTvmErrorNoError;
+tvm_crt_error_t TVMPlatformTimerStart()
+{
+    return kTvmErrorNoError;
 }
 
 // Called to stop system timer.
-tvm_crt_error_t TVMPlatformTimerStop(double* elapsed_time_seconds) {
-  return kTvmErrorNoError;
+tvm_crt_error_t TVMPlatformTimerStop(double *elapsed_time_seconds)
+{
+    return kTvmErrorNoError;
 }
 
 
-const TVMModule* TVMSystemLibEntryPoint(void) { return NULL; }
+const TVMModule *TVMSystemLibEntryPoint(void)
+{
+    return NULL;
+}

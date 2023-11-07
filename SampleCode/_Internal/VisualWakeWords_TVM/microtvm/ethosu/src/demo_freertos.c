@@ -31,8 +31,8 @@
 #include "labels.h"
 #include "outputs.h"
 
-static void prvInferenceTask(void* pvParameters);
-static void prvDataCollectionTask(void* pvParameters);
+static void prvInferenceTask(void *pvParameters);
+static void prvDataCollectionTask(void *pvParameters);
 
 #define mainQUEUE_INFERENCE_TASK_PRIORITY (tskIDLE_PRIORITY + 3)
 #define mainQUEUE_INFERENCE_TASK_STACK_SIZE 4096
@@ -44,86 +44,97 @@ static void prvDataCollectionTask(void* pvParameters);
 /* The queue used to pass data to run through our model */
 static QueueHandle_t xQueue = NULL;
 
-int main(void) {
-  // Platform UART
-  UartStdOutInit();
-  // NPU
-  EthosuInit();
+int main(void)
+{
+    // Platform UART
+    UartStdOutInit();
+    // NPU
+    EthosuInit();
 
-  // Queue for inferences
-  xQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint8_t*));
+    // Queue for inferences
+    xQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint8_t *));
 
-  if (xQueue != NULL) {
-    // Inference task
-    xTaskCreate(prvInferenceTask, "Inference", mainQUEUE_INFERENCE_TASK_STACK_SIZE, NULL,
-                mainQUEUE_INFERENCE_TASK_PRIORITY, NULL);
+    if (xQueue != NULL)
+    {
+        // Inference task
+        xTaskCreate(prvInferenceTask, "Inference", mainQUEUE_INFERENCE_TASK_STACK_SIZE, NULL,
+                    mainQUEUE_INFERENCE_TASK_PRIORITY, NULL);
 
-    // Data collector task
-    xTaskCreate(prvDataCollectionTask, "Data", mainQUEUE_DATA_TASK_STACK_SIZE, NULL,
-                mainQUEUE_DATA_TASK_PRIORITY, NULL);
+        // Data collector task
+        xTaskCreate(prvDataCollectionTask, "Data", mainQUEUE_DATA_TASK_STACK_SIZE, NULL,
+                    mainQUEUE_DATA_TASK_PRIORITY, NULL);
 
-    // Start the task scheduling
-    vTaskStartScheduler();
-  }
+        // Start the task scheduling
+        vTaskStartScheduler();
+    }
 
-  // The task scheduler should take over before this is reached
-  printf("Unreachable code reached!\n");
+    // The task scheduler should take over before this is reached
+    printf("Unreachable code reached!\n");
 }
 
 /*
  * This task emulates collection of data and sending it to another inference task
  * for processing
  */
-static void prvDataCollectionTask(void* pvParameters) {
-  // Unused
-  (void)pvParameters;
+static void prvDataCollectionTask(void *pvParameters)
+{
+    // Unused
+    (void)pvParameters;
 
-  // Working
-  vTaskDelay(mainQUEUE_SEND_FREQUENCY_MS);
+    // Working
+    vTaskDelay(mainQUEUE_SEND_FREQUENCY_MS);
 
-  // Construct pointer to copy to queue
-  uint8_t** pucInputData = &input;
-  xQueueSend(xQueue, &pucInputData, 0U);
+    // Construct pointer to copy to queue
+    uint8_t **pucInputData = &input;
+    xQueueSend(xQueue, &pucInputData, 0U);
 }
 
 /*
  * This task emulates the inference of data sent by the collector task
  */
-static void prvInferenceTask(void* pvParameters) {
-  uint8_t* pucReceivedData;
+static void prvInferenceTask(void *pvParameters)
+{
+    uint8_t *pucReceivedData;
 
-  // Unused
-  (void)pvParameters;
+    // Unused
+    (void)pvParameters;
 
-  // Wait for data collection
-  xQueueReceive(xQueue, &pucReceivedData, portMAX_DELAY);
+    // Wait for data collection
+    xQueueReceive(xQueue, &pucReceivedData, portMAX_DELAY);
 
-  // Print output of inference and exit task
-  printf("Running inference\n");
-  struct tvmgen_default_inputs xInputs = {
-      .tfl_quantize = pucReceivedData,
-  };
-  struct tvmgen_default_outputs xOutputs = {
-      .MobilenetV2_Predictions_Reshape_11 = output,
-  };
-  struct ethosu_driver* xDriver = ethosu_reserve_driver();
-  struct tvmgen_default_devices xDevices = {
-      .ethos_u = xDriver,
-  };
-  tvmgen_default_run(&xInputs, &xOutputs, &xDevices);
-  ethosu_release_driver(xDriver);
+    // Print output of inference and exit task
+    printf("Running inference\n");
+    struct tvmgen_default_inputs xInputs =
+    {
+        .tfl_quantize = pucReceivedData,
+    };
+    struct tvmgen_default_outputs xOutputs =
+    {
+        .MobilenetV2_Predictions_Reshape_11 = output,
+    };
+    struct ethosu_driver *xDriver = ethosu_reserve_driver();
+    struct tvmgen_default_devices xDevices =
+    {
+        .ethos_u = xDriver,
+    };
+    tvmgen_default_run(&xInputs, &xOutputs, &xDevices);
+    ethosu_release_driver(xDriver);
 
-  // Calculate index of max value
-  int8_t ucMaxValue = -128;
-  int32_t lMaxIndex = -1;
-  for (unsigned int i = 0; i < output_len; ++i) {
-    if (output[i] > ucMaxValue) {
-      ucMaxValue = output[i];
-      lMaxIndex = i;
+    // Calculate index of max value
+    int8_t ucMaxValue = -128;
+    int32_t lMaxIndex = -1;
+
+    for (unsigned int i = 0; i < output_len; ++i)
+    {
+        if (output[i] > ucMaxValue)
+        {
+            ucMaxValue = output[i];
+            lMaxIndex = i;
+        }
     }
-  }
-  printf("The image has been classified as '%s'\n", labels[lMaxIndex]);
 
-  // The FVP will shut down when it receives "EXITTHESIM" on the UART
-  printf("EXITTHESIM\n");
+    printf("The image has been classified as '%s'\n", labels[lMaxIndex]);
+
+    // The FVP will shut down when it receives "EXITTHESIM" on the UART
+    printf("EXITTHESIM\n");
 }

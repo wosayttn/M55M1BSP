@@ -26,7 +26,7 @@
 #define configENABLE_FPU                                1
 #define configENABLE_TRUSTZONE                          1
 #define configENABLE_MVE                                1
-#define configTOTAL_MPU_REGIONS       					( 16UL )
+#define configTOTAL_MPU_REGIONS                         ( 16UL )
 
 /* Scheduling */
 #define configCPU_CLOCK_HZ                              SYSTEM_CORE_CLOCK
@@ -85,9 +85,9 @@
 #define configUSE_STATS_FORMATTING_FUNCTIONS            1
 #define configCOMMAND_INT_MAX_OUTPUT_SIZE               2048
 #ifdef __NVIC_PRIO_BITS
-#define configPRIO_BITS                                 __NVIC_PRIO_BITS
+    #define configPRIO_BITS                                 __NVIC_PRIO_BITS
 #else
-#define configPRIO_BITS                                 3
+    #define configPRIO_BITS                                 3
 #endif
 /* Interrupt settings */
 #define configLIBRARY_LOWEST_INTERRUPT_PRIORITY         0x07
@@ -101,8 +101,8 @@
     #define configTICK_RATE_HZ                          (TickType_t)1000
 #endif /* __IASMARM__ */
 #if defined(CPU_CORTEX_M3) || defined(CPU_CORTEX_M4) || defined(CPU_CORTEX_M7)
-#define xPortPendSVHandler                              PendSV_Handler
-#define vPortSVCHandler                                 SVC_Handler
-#define xPortSysTickHandler                             SysTick_Handler
+    #define xPortPendSVHandler                              PendSV_Handler
+    #define vPortSVCHandler                                 SVC_Handler
+    #define xPortSysTickHandler                             SysTick_Handler
 #endif
 #endif /* FREERTOS_CONFIG_H */

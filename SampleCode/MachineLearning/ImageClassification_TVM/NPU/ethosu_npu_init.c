@@ -25,9 +25,9 @@
 struct ethosu_driver ethosu_drv; /* Default Ethos-U device driver */
 
 #if defined(ETHOS_U_CACHE_BUF_SZ) && (ETHOS_U_CACHE_BUF_SZ > 0)
-static uint8_t cache_arena[ETHOS_U_CACHE_BUF_SZ] CACHE_BUF_ATTRIBUTE;
+    static uint8_t cache_arena[ETHOS_U_CACHE_BUF_SZ] CACHE_BUF_ATTRIBUTE;
 #else  /* defined (ETHOS_U_CACHE_BUF_SZ) && (ETHOS_U_CACHE_BUF_SZ > 0) */
-static uint8_t *cache_arena = NULL;
+    static uint8_t *cache_arena = NULL;
 #endif /* defined (ETHOS_U_CACHE_BUF_SZ) && (ETHOS_U_CACHE_BUF_SZ > 0) */
 
 static uint8_t *get_cache_arena()
@@ -46,7 +46,7 @@ static size_t get_cache_arena_size()
 
 void NPU_IRQHandler(void)
 {
-	ethosu_irq_handler(&ethosu_drv);
+    ethosu_irq_handler(&ethosu_drv);
 }
 
 /**
@@ -60,7 +60,7 @@ static void arm_ethosu_npu_irq_init(void)
     NVIC_EnableIRQ(ethosu_irqnum);
 
     printf("EthosU IRQ#: %u, Handler: 0x%p\n",
-          ethosu_irqnum, NPU_IRQHandler);
+           ethosu_irqnum, NPU_IRQHandler);
 }
 
 int arm_ethosu_npu_init(void)
@@ -74,12 +74,12 @@ int arm_ethosu_npu_init(void)
     const void *ethosu_base_address = (void *)(NPU_BASE);
 
     if (0 != (err = ethosu_init(
-                  &ethosu_drv,            /* Ethos-U driver device pointer */
-                  ethosu_base_address,    /* Ethos-U NPU's base address. */
-                  get_cache_arena(),      /* Pointer to fast mem area - NULL for U55. */
-                  get_cache_arena_size(), /* Fast mem region size. */
-                  ETHOS_U_SEC_ENABLED,    /* Security enable. */
-                  ETHOS_U_PRIV_ENABLED))) /* Privilege enable. */
+                        &ethosu_drv,            /* Ethos-U driver device pointer */
+                        ethosu_base_address,    /* Ethos-U NPU's base address. */
+                        get_cache_arena(),      /* Pointer to fast mem area - NULL for U55. */
+                        get_cache_arena_size(), /* Fast mem region size. */
+                        ETHOS_U_SEC_ENABLED,    /* Security enable. */
+                        ETHOS_U_PRIV_ENABLED))) /* Privilege enable. */
     {
         printf("failed to initialise Ethos-U device\n");
         return err;
@@ -96,13 +96,13 @@ int arm_ethosu_npu_init(void)
 
     printf("Ethos-U version info:\n");
     printf("\tArch:       v%" PRIu32 ".%" PRIu32 ".%" PRIu32 "\n",
-         hw_info.version.arch_major_rev,
-         hw_info.version.arch_minor_rev,
-         hw_info.version.arch_patch_rev);
+           hw_info.version.arch_major_rev,
+           hw_info.version.arch_minor_rev,
+           hw_info.version.arch_patch_rev);
     printf("\tDriver:     v%" PRIu8 ".%" PRIu8 ".%" PRIu8 "\n",
-         driver_version.major,
-         driver_version.minor,
-         driver_version.patch);
+           driver_version.major,
+           driver_version.minor,
+           driver_version.patch);
     printf("\tMACs/cc:    %" PRIu32 "\n", (uint32_t)(1 << hw_info.cfg.macs_per_cc));
     printf("\tCmd stream: v%" PRIu32 "\n", hw_info.cfg.cmd_stream_version);
 

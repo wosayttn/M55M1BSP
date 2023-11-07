@@ -29,11 +29,13 @@ typedef enum
     eIMAGE_FMT_BGRA888_U8,
     eIMAGE_FMT_ARGB888_I8,
     eIMAGE_FMT_BGRA888_I8,
-}E_IMAGE_FMT;
+} E_IMAGE_FMT;
 
 int ImageSensor_Init(void);
 int ImageSensor_Capture(uint32_t u32FrameBufAddr);
 int ImageSensor_Config(E_IMAGE_FMT eImgFmt, uint32_t u32ImgWidth, uint32_t u32ImgHeight);
+int ImageSensor_TriggerCapture(uint32_t u32FrameBufAddr);
+int ImageSensor_WaitCaptureDone(void);
 
 #ifdef __cplusplus
 }

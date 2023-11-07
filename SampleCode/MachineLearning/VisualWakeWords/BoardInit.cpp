@@ -33,7 +33,7 @@ static void SYS_Init(void)
     /* Waiting for HXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
@@ -56,21 +56,18 @@ static void SYS_Init(void)
     CLK_EnableModuleClock(GPIOJ_MODULE);
 
     /* Enable FMC0 module clock to keep FMC clock when CPU idle but NPU running*/
-	CLK_EnableModuleClock(FMC0_MODULE);
+    CLK_EnableModuleClock(FMC0_MODULE);
 
     /* Enable NPU module clock */
     CLK_EnableModuleClock(NPU0_MODULE);
 
-    /* Enable NPU module clock */
-    CLK_EnableModuleClock(CCAP0_MODULE);
-
-	/* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
+    /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
     CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HXT, CLK_UARTDIV0_UART0DIV(1));
 
-	/* Enable SRAM2 module clock */
-	CLK_EnableModuleClock(SRAM2_MODULE);
+    /* Enable SRAM2 module clock */
+    CLK_EnableModuleClock(SRAM2_MODULE);
 
-	/*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -90,12 +87,12 @@ static void UART0_Init(void)
 /**
   * @brief Initiate the hardware resources of board
   * @return 0: Success, <0: Fail
-  * @details Initiate clock, UART, NPU, hyperflash/hyperRAM 
+  * @details Initiate clock, UART, NPU, hyperflash/hyperRAM
   * \hideinitializer
   */
 int BoardInit(void)
 {
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
 
     SYS_Init();
@@ -112,7 +109,8 @@ int BoardInit(void)
     int state;
 
     /* If Arm Ethos-U NPU is to be used, we initialise it here */
-    if (0 != (state = arm_ethosu_npu_init())) {
+    if (0 != (state = arm_ethosu_npu_init()))
+    {
         return state;
     }
 

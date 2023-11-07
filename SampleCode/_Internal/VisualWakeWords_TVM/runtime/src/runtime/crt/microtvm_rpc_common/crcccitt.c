@@ -38,7 +38,7 @@
 #include "../tab/gentab_ccitt.inc"
 #include "checksum.h"
 
-static uint16_t crc_ccitt_generic(const unsigned char* input_str, size_t num_bytes,
+static uint16_t crc_ccitt_generic(const unsigned char *input_str, size_t num_bytes,
                                   uint16_t start_value);
 
 /*
@@ -48,8 +48,9 @@ static uint16_t crc_ccitt_generic(const unsigned char* input_str, size_t num_byt
  * for a byte string that has been passed as a parameter.
  */
 
-uint16_t crc_xmodem(const unsigned char* input_str, size_t num_bytes) {
-  return crc_ccitt_generic(input_str, num_bytes, CRC_START_XMODEM);
+uint16_t crc_xmodem(const unsigned char *input_str, size_t num_bytes)
+{
+    return crc_ccitt_generic(input_str, num_bytes, CRC_START_XMODEM);
 
 } /* crc_xmodem */
 
@@ -61,8 +62,9 @@ uint16_t crc_xmodem(const unsigned char* input_str, size_t num_bytes) {
  * 0x1d0f is used for the CRC.
  */
 
-uint16_t crc_ccitt_1d0f(const unsigned char* input_str, size_t num_bytes) {
-  return crc_ccitt_generic(input_str, num_bytes, CRC_START_CCITT_1D0F);
+uint16_t crc_ccitt_1d0f(const unsigned char *input_str, size_t num_bytes)
+{
+    return crc_ccitt_generic(input_str, num_bytes, CRC_START_CCITT_1D0F);
 
 } /* crc_ccitt_1d0f */
 
@@ -74,8 +76,9 @@ uint16_t crc_ccitt_1d0f(const unsigned char* input_str, size_t num_bytes) {
  * 0xffff is used for the CRC.
  */
 
-uint16_t crc_ccitt_ffff(const unsigned char* input_str, size_t num_bytes) {
-  return crc_ccitt_generic(input_str, num_bytes, CRC_START_CCITT_FFFF);
+uint16_t crc_ccitt_ffff(const unsigned char *input_str, size_t num_bytes)
+{
+    return crc_ccitt_generic(input_str, num_bytes, CRC_START_CCITT_FFFF);
 
 } /* crc_ccitt_ffff */
 
@@ -88,21 +91,23 @@ uint16_t crc_ccitt_ffff(const unsigned char* input_str, size_t num_bytes) {
  * function accepts an initial start value for the crc.
  */
 
-static uint16_t crc_ccitt_generic(const unsigned char* input_str, size_t num_bytes,
-                                  uint16_t start_value) {
-  uint16_t crc;
-  const unsigned char* ptr;
-  size_t a;
+static uint16_t crc_ccitt_generic(const unsigned char *input_str, size_t num_bytes,
+                                  uint16_t start_value)
+{
+    uint16_t crc;
+    const unsigned char *ptr;
+    size_t a;
 
-  crc = start_value;
-  ptr = input_str;
+    crc = start_value;
+    ptr = input_str;
 
-  if (ptr != NULL)
-    for (a = 0; a < num_bytes; a++) {
-      crc = (crc << 8) ^ crc_tabccitt[((crc >> 8) ^ (uint16_t)*ptr++) & 0x00FF];
-    }
+    if (ptr != NULL)
+        for (a = 0; a < num_bytes; a++)
+        {
+            crc = (crc << 8) ^ crc_tabccitt[((crc >> 8) ^ (uint16_t) * ptr++) & 0x00FF];
+        }
 
-  return crc;
+    return crc;
 
 } /* crc_ccitt_generic */
 
@@ -113,7 +118,8 @@ static uint16_t crc_ccitt_generic(const unsigned char* input_str, size_t num_byt
  * the previous value of the CRC and the next byte of the data to be checked.
  */
 
-uint16_t update_crc_ccitt(uint16_t crc, unsigned char c) {
-  return (crc << 8) ^ crc_tabccitt[((crc >> 8) ^ (uint16_t)c) & 0x00FF];
+uint16_t update_crc_ccitt(uint16_t crc, unsigned char c)
+{
+    return (crc << 8) ^ crc_tabccitt[((crc >> 8) ^ (uint16_t)c) & 0x00FF];
 
 } /* update_crc_ccitt */

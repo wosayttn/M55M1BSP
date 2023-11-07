@@ -58,7 +58,7 @@ void __attribute__((noreturn)) TVMPlatformAbort(tvm_crt_error_t code);
  * \param args extra arguments to be formatted.
  * \return number of bytes written.
  */
-size_t TVMPlatformFormatMessage(char* out_buf, size_t out_buf_size_bytes, const char* fmt,
+size_t TVMPlatformFormatMessage(char *out_buf, size_t out_buf_size_bytes, const char *fmt,
                                 va_list args);
 
 /*!
@@ -72,7 +72,7 @@ size_t TVMPlatformFormatMessage(char* out_buf, size_t out_buf_size_bytes, const 
  * \param out_ptr A pointer to which is written a pointer to the newly-allocated memory.
  * \return kTvmErrorNoError if successful; a descriptive error code otherwise.
  */
-tvm_crt_error_t TVMPlatformMemoryAllocate(size_t num_bytes, DLDevice dev, void** out_ptr);
+tvm_crt_error_t TVMPlatformMemoryAllocate(size_t num_bytes, DLDevice dev, void **out_ptr);
 
 /*!
  * \brief Free memory used by TVM.
@@ -81,7 +81,7 @@ tvm_crt_error_t TVMPlatformMemoryAllocate(size_t num_bytes, DLDevice dev, void**
  * \param dev Execution device passed to TVMPlatformMemoryAllocate. Fixed to {kDLCPU, 0}.
  * \return kTvmErrorNoError if successful; a descriptive error code otherwise.
  */
-tvm_crt_error_t TVMPlatformMemoryFree(void* ptr, DLDevice dev);
+tvm_crt_error_t TVMPlatformMemoryFree(void *ptr, DLDevice dev);
 
 /*! \brief Start a device timer.
  *
@@ -99,7 +99,7 @@ tvm_crt_error_t TVMPlatformTimerStart();
  *
  * \return kTvmErrorNoError if successful; a descriptive error code otherwise.
  */
-tvm_crt_error_t TVMPlatformTimerStop(double* elapsed_time_seconds);
+tvm_crt_error_t TVMPlatformTimerStop(double *elapsed_time_seconds);
 
 /*! \brief Platform-specific before measurement call.
  *
@@ -137,7 +137,7 @@ tvm_crt_error_t TVMPlatformAfterMeasurement();
  * \param num_bytes Number of bytes to write.
  * \return kTvmErrorNoError if successful; a descriptive error code otherwise.
  */
-tvm_crt_error_t TVMPlatformGenerateRandom(uint8_t* buffer, size_t num_bytes);
+tvm_crt_error_t TVMPlatformGenerateRandom(uint8_t *buffer, size_t num_bytes);
 
 /*! \brief Initialize TVM inference.
  *

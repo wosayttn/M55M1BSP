@@ -14,25 +14,28 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	
-typedef enum{
-	eCOLOR_RGB888,
-	eCOLOR_RGB565
-}E_COLOR_FORMAT;
 
-typedef struct {
-	E_COLOR_FORMAT eColorFormat;
-	uint32_t u32Width;
-	uint32_t u32Height;
-	uint8_t *pu8Data;
-}S_FACE_IMAGE;
+typedef enum
+{
+    eCOLOR_RGB888,
+    eCOLOR_RGB565
+} E_COLOR_FORMAT;
 
-typedef struct {
-	uint32_t u32X;
-	uint32_t u32Y;
-	uint32_t u32Width;
-	uint32_t u32Height;
-}S_FACE_BOX;
+typedef struct
+{
+    E_COLOR_FORMAT eColorFormat;
+    uint32_t u32Width;
+    uint32_t u32Height;
+    uint8_t *pu8Data;
+} S_FACE_IMAGE;
+
+typedef struct
+{
+    uint32_t u32X;
+    uint32_t u32Y;
+    uint32_t u32Width;
+    uint32_t u32Height;
+} S_FACE_BOX;
 
 int FaceDetect_Init();
 int FaceDetect_Detect(S_FACE_IMAGE *psFaceImage, S_FACE_BOX *psFaceBox);

@@ -28,41 +28,54 @@
 #include "labels.h"
 #include "outputs.h"
 
-int abs(int v) { return v * ((v > 0) - (v < 0)); }
+int abs(int v)
+{
+    return v * ((v > 0) - (v < 0));
+}
 
-int main(int argc, char** argv) {
-  UartStdOutInit();
-  printf("Starting Demo\n");
-  EthosuInit();
+int main(int argc, char **argv)
+{
+    UartStdOutInit();
+    printf("Starting Demo\n");
+    EthosuInit();
 
-  printf("Running inference\n");
-  struct tvmgen_default_outputs outputs = {
-      .MobilenetV2_Predictions_Reshape_11 = output,
-  };
-  struct tvmgen_default_inputs inputs = {
-      .tfl_quantize = input,
-  };
-  struct ethosu_driver* driver = ethosu_reserve_driver();
-  struct tvmgen_default_devices devices = {
-      .ethos_u = driver,
-  };
-  tvmgen_default_run(&inputs, &outputs, &devices);
-  ethosu_release_driver(driver);
+    printf("Running inference\n");
+    struct tvmgen_default_outputs outputs =
+    {
+        .MobilenetV2_Predictions_Reshape_11 = output,
+    };
+    struct tvmgen_default_inputs inputs =
+    {
+        .tfl_quantize = input,
+    };
+    struct ethosu_driver *driver = ethosu_reserve_driver();
+    struct tvmgen_default_devices devices =
+    {
+        .ethos_u = driver,
+    };
+    tvmgen_default_run(&inputs, &outputs, &devices);
+    ethosu_release_driver(driver);
 
-  // Calculate index of max value
-  int8_t max_value = -128;
-  int32_t max_index = -1;
-  for (unsigned int i = 0; i < output_len; ++i) {
-    if (output[i] > max_value) {
-      max_value = output[i];
-      max_index = i;
+    // Calculate index of max value
+    int8_t max_value = -128;
+    int32_t max_index = -1;
+
+    for (unsigned int i = 0; i < output_len; ++i)
+    {
+        if (output[i] > max_value)
+        {
+            max_value = output[i];
+            max_index = i;
+        }
     }
-  }
-  printf("The image has been classified as '%s'\n", labels[max_index]);
 
-  // The FVP will shut down when it receives "EXITTHESIM" on the UART
-  printf("EXITTHESIM\n");
-  while (1 == 1)
-    ;
-  return 0;
+    printf("The image has been classified as '%s'\n", labels[max_index]);
+
+    // The FVP will shut down when it receives "EXITTHESIM" on the UART
+    printf("EXITTHESIM\n");
+
+    while (1 == 1)
+        ;
+
+    return 0;
 }

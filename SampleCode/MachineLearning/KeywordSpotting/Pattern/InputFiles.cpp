@@ -22,51 +22,60 @@
 
 #include "InputFiles.hpp"
 
-static const char *audio_clip_filenames[] = {
+static const char *audio_clip_filenames[] =
+{
     "down.wav",
     "right_left_up.wav",
     "yes.wav",
     "yes_no_go_stop.wav",
 };
 
-static const int16_t *audio_clip_arrays[] = {
-    audio0,
-	audio1,
-	audio2,
-	audio3
-};
-
-
-static const size_t audio_clip_sizes[NUMBER_OF_FILES] = {
-    16000,
-	48000,
-	16000,
-	64000
-};
-
-
-const char* get_filename(const uint32_t idx)
+static const int16_t *audio_clip_arrays[] =
 {
-    if (idx < NUMBER_OF_FILES) {
+    audio0,
+    audio1,
+    audio2,
+    audio3
+};
+
+
+static const size_t audio_clip_sizes[NUMBER_OF_FILES] =
+{
+    16000,
+    48000,
+    16000,
+    64000
+};
+
+
+const char *get_filename(const uint32_t idx)
+{
+    if (idx < NUMBER_OF_FILES)
+    {
         return audio_clip_filenames[idx];
     }
+
     return nullptr;
 }
 
 
-const int16_t* get_audio_array(const uint32_t idx)
+const int16_t *get_audio_array(const uint32_t idx)
 {
-    if (idx < NUMBER_OF_FILES) {
+    if (idx < NUMBER_OF_FILES)
+    {
         return audio_clip_arrays[idx];
     }
+
     return nullptr;
 }
 
 
 uint32_t get_audio_array_size(const uint32_t idx)
 {
-    if (idx < NUMBER_OF_FILES) {
+    if (idx < NUMBER_OF_FILES)
+    {
         return audio_clip_sizes[idx];
     }
+
     return 0;
 }

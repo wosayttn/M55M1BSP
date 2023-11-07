@@ -214,12 +214,13 @@
                 <debug>1</debug>
                 <option>
                     <name>CCDefines</name>
+                    <state>DEBUG_PORT=UART0</state>
                     <state>NVT_VECTOR_ON_FLASH</state>
                     <state>NVT_DCACHE_ON</state>
                     <state>TF_LITE_STATIC_MEMORY</state>
                     <state>ARM_MATH_DSP</state>
                     <state>ARM_NPU</state>
-                    <state>ACTIVATION_BUF_SZ=0x00100000</state>
+                    <state>ACTIVATION_BUF_SZ=0x00040000</state>
                     <state>MODEL_DS_CNN</state>
                 </option>
                 <option>

@@ -12,6 +12,8 @@
 
 int32_t InitHM1055_VGA_YUV422(uint32_t u32Param);
 
+#define CONFIG_FLICKER_60HZ_DEV1
+
 S_SENSOR_INFO g_sSensorHM1055_VGA_YUV422 =
 {
     .m_strName        = "HM1055",
@@ -30,12 +32,12 @@ struct NT_RegValue
 
 static struct NT_RegValue s_shm1055_setting_YUV_VGA[] =
 {
-    {0x0022, 0x00}, {0x0023, 0xCF}, {0x0020, 0x08}, {0x0027, 0x30},
+   {0x0022, 0x00}, {0x0023, 0xCF}, {0x0020, 0x08}, {0x0027, 0x30},
     {0x0004, 0x10}, {0x0006, 0x03}, {0x0012, 0x0F},
     /* {0x0026, 0x77}, */ /*48Mhz */
     {0x0026, 0x37}, /*68Mhz */
     {0x0029, 0x00}, // 0x80 for CCIR656
-    {0x002A, 0x44}, {0x002B, 0x01}, {0x002C, 0x00}, /* {0x0025, 0x00}, */
+    {0x002A, 0x44}, {0x002B, 0x01}, {0x002C, 0x00}, {0x0025, 0x00},
     {0x004A, 0x0A}, {0x004B, 0x72}, {0x0070, 0x2A}, {0x0071, 0x46},
     {0x0072, 0x55}, {0x0080, 0xC2}, {0x0082, 0xA2}, {0x0083, 0xF0},
     {0x0085, 0x10}, {0x0086, 0x22}, {0x0087, 0x08}, {0x0088, 0x6D},
@@ -181,6 +183,7 @@ static struct NT_RegValue s_shm1055_setting_YUV_VGA[] =
 static void Delay(uint32_t nCount)
 {
     volatile uint32_t i;
+
     for (; nCount != 0; nCount--)
         for (i = 0; i < 100; i++);
 }
@@ -190,21 +193,48 @@ int32_t InitHM1055_VGA_YUV422(uint32_t u32Param)
     uint32_t i;
     uint8_t u8DeviceID = 0x48;
     uint8_t u8ID[2] = {0};
-    SYS->GPH_MFP0 &= ~SYS_GPH_MFP0_PH2MFP_Msk;        /* PH2 for GPIO to act as SCL */
-    SYS->GPH_MFP0 &= ~SYS_GPH_MFP0_PH3MFP_Msk;        /* PH3 for GPIO to act as SDA */
 
-    GPIO_SetMode(PG, 1 << 11, GPIO_MODE_OUTPUT);        /* Set #RST pin to high */
-    PG11 = 1;
-    GPIO_SetMode(PD, 1 << 12, GPIO_MODE_OUTPUT);        /* Set #PD pin to low */
-    PD12 = 0;
+#if 0
+	// for TC8263 EBI board
+    /* PI8 for GPIO to act as PD */
+    /* PI9 for GPIO to act as RST */
+    /* PI10 for GPIO to act as SCL */
+    /* PI11 for GPIO to act as SDA */
+    SET_GPIO_PI8();
+    SET_GPIO_PI9();
+    SET_GPIO_PI10();
+    SET_GPIO_PI11();
 
-    /* switch I2C pin function, to do... */
+    GPIO_SetMode(PI, BIT9, GPIO_MODE_OUTPUT);        /* Set #RST pin to high */
+    PI9 = 1;
+    GPIO_SetMode(PI, BIT8, GPIO_MODE_OUTPUT);        /* Set #PD pin to low */
+    PI8 = 0;
+	
+    /* switch I2C pin function */
+    SWI2C_Open(eDRVGPIO_GPIOI, eDRVGPIO_PIN10, eDRVGPIO_GPIOI, eDRVGPIO_PIN11, Delay);
+#else
+	// for TC8263 ETM board
+    SET_GPIO_PI7();
+    SET_GPIO_PI9();
+    SET_GPIO_PH2();
+    SET_GPIO_PH3();
+
+    GPIO_SetMode(PI, BIT9, GPIO_MODE_OUTPUT);        /* Set #RST pin to high */
+    PI9 = 1;
+
+    GPIO_SetMode(PI, BIT7, GPIO_MODE_OUTPUT);        /* Set #PD pin to low */
+    PI7 = 0;
+
+    /* switch I2C pin function */
     SWI2C_Open(eDRVGPIO_GPIOH, eDRVGPIO_PIN2, eDRVGPIO_GPIOH, eDRVGPIO_PIN3, Delay);
+#endif
+
     //printf("NT_RegNum=%3d\n",sizeof(s_shm1055_setting_YUV_VGA)/sizeof(struct NT_RegValue));
     for (i = 0; i < sizeof(s_shm1055_setting_YUV_VGA) / sizeof(struct NT_RegValue); i++)
     {
         SWI2C_Write_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID, s_shm1055_setting_YUV_VGA[i].u16RegAddr, s_shm1055_setting_YUV_VGA[i].u8Value);
     }
+
     u8ID[0] = SWI2C_Read_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID, 0x0001); /* Chip_Version_H 0x09 */
     u8ID[1] = SWI2C_Read_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID, 0x0002); /* Chip_Version_L 0x55 */
     printf("Sensor Chip_Version_H = 0x%02x(0x14) Chip_Version_L = 0x%02x(0x10)\n", u8ID[0], u8ID[1]);

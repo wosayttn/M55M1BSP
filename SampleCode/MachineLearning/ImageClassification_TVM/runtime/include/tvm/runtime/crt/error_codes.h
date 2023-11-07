@@ -34,73 +34,75 @@ extern "C" {
 #define TVM_CRT_ERROR_CODE_Msk (0xff << TVM_CRT_ERROR_CODE_Pos)
 
 #define DEFINE_TVM_CRT_ERROR(category, code) \
-  (((category) << TVM_CRT_ERROR_CATEGORY_Pos) | ((code) << TVM_CRT_ERROR_CODE_Pos))
-typedef enum {
-  kTvmErrorCategoryFunctionRegistry = 1,
-  kTvmErrorCategoryFraming = 2,
-  kTvmErrorCategoryWriteStream = 3,
-  kTvmErrorCategorySession = 4,
-  kTvmErrorCategoryPlatform = 5,
-  kTvmErrorCategoryGenerated = 6,
-  kTvmErrorCategoryExecutor = 7,
-  kTvmErrorCategoryFunctionCall = 8,
-  kTvmErrorCategoryTimeEvaluator = 9,
+    (((category) << TVM_CRT_ERROR_CATEGORY_Pos) | ((code) << TVM_CRT_ERROR_CODE_Pos))
+typedef enum
+{
+    kTvmErrorCategoryFunctionRegistry = 1,
+    kTvmErrorCategoryFraming = 2,
+    kTvmErrorCategoryWriteStream = 3,
+    kTvmErrorCategorySession = 4,
+    kTvmErrorCategoryPlatform = 5,
+    kTvmErrorCategoryGenerated = 6,
+    kTvmErrorCategoryExecutor = 7,
+    kTvmErrorCategoryFunctionCall = 8,
+    kTvmErrorCategoryTimeEvaluator = 9,
 } tvm_crt_error_category_t;
 
-typedef enum {
-  kTvmErrorNoError = 0,
+typedef enum
+{
+    kTvmErrorNoError = 0,
 
-  // Function Registry
-  kTvmErrorFunctionNameNotFound = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionRegistry, 0),
-  kTvmErrorFunctionIndexInvalid = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionRegistry, 1),
-  kTvmErrorFunctionRegistryFull = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionRegistry, 2),
-  kTvmErrorFunctionAlreadyDefined = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionRegistry, 3),
-  kTvmErrorBufferTooSmall = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionRegistry, 4),
+    // Function Registry
+    kTvmErrorFunctionNameNotFound = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionRegistry, 0),
+    kTvmErrorFunctionIndexInvalid = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionRegistry, 1),
+    kTvmErrorFunctionRegistryFull = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionRegistry, 2),
+    kTvmErrorFunctionAlreadyDefined = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionRegistry, 3),
+    kTvmErrorBufferTooSmall = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionRegistry, 4),
 
-  // Framing
-  kTvmErrorFramingInvalidState = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFraming, 0),
-  kTvmErrorFramingShortPacket = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFraming, 1),
-  kTvmErrorFramingInvalidEscape = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFraming, 2),
-  kTvmErrorFramingPayloadOverflow = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFraming, 3),
-  kTvmErrorFramingPayloadIncomplete = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFraming, 4),
+    // Framing
+    kTvmErrorFramingInvalidState = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFraming, 0),
+    kTvmErrorFramingShortPacket = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFraming, 1),
+    kTvmErrorFramingInvalidEscape = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFraming, 2),
+    kTvmErrorFramingPayloadOverflow = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFraming, 3),
+    kTvmErrorFramingPayloadIncomplete = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFraming, 4),
 
-  // Write stream
-  kTvmErrorWriteStreamShortWrite = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryWriteStream, 0),
-  kTvmErrorWriteStreamLongWrite = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryWriteStream, 1),
+    // Write stream
+    kTvmErrorWriteStreamShortWrite = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryWriteStream, 0),
+    kTvmErrorWriteStreamLongWrite = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryWriteStream, 1),
 
-  // Session
-  kTvmErrorSessionInvalidState = DEFINE_TVM_CRT_ERROR(kTvmErrorCategorySession, 0),
-  kTvmErrorSessionReceiveBufferBusy = DEFINE_TVM_CRT_ERROR(kTvmErrorCategorySession, 1),
-  kTvmErrorSessionReceiveBufferShortWrite = DEFINE_TVM_CRT_ERROR(kTvmErrorCategorySession, 2),
+    // Session
+    kTvmErrorSessionInvalidState = DEFINE_TVM_CRT_ERROR(kTvmErrorCategorySession, 0),
+    kTvmErrorSessionReceiveBufferBusy = DEFINE_TVM_CRT_ERROR(kTvmErrorCategorySession, 1),
+    kTvmErrorSessionReceiveBufferShortWrite = DEFINE_TVM_CRT_ERROR(kTvmErrorCategorySession, 2),
 
-  // Platform
-  kTvmErrorPlatformCheckFailure = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryPlatform, 0),
-  kTvmErrorPlatformMemoryManagerInitialized = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryPlatform, 1),
-  kTvmErrorPlatformShutdown = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryPlatform, 2),
-  kTvmErrorPlatformNoMemory = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryPlatform, 3),
-  kTvmErrorPlatformTimerBadState = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryPlatform, 4),
-  kTvmErrorPlatformStackAllocBadFree = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryPlatform, 5),
+    // Platform
+    kTvmErrorPlatformCheckFailure = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryPlatform, 0),
+    kTvmErrorPlatformMemoryManagerInitialized = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryPlatform, 1),
+    kTvmErrorPlatformShutdown = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryPlatform, 2),
+    kTvmErrorPlatformNoMemory = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryPlatform, 3),
+    kTvmErrorPlatformTimerBadState = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryPlatform, 4),
+    kTvmErrorPlatformStackAllocBadFree = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryPlatform, 5),
 
-  // Common error codes returned from generated functions.
-  kTvmErrorGeneratedInvalidStorageId = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryGenerated, 0),
+    // Common error codes returned from generated functions.
+    kTvmErrorGeneratedInvalidStorageId = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryGenerated, 0),
 
-  // Graph or AoT executor
-  kTvmErrorExecutorModuleAlreadyCreated = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryExecutor, 0),
-  kTvmErrorExecutorModuleBadContext = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryExecutor, 1),
-  kTvmErrorExecutorModuleNoSuchInput = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryExecutor, 2),
+    // Graph or AoT executor
+    kTvmErrorExecutorModuleAlreadyCreated = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryExecutor, 0),
+    kTvmErrorExecutorModuleBadContext = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryExecutor, 1),
+    kTvmErrorExecutorModuleNoSuchInput = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryExecutor, 2),
 
-  // Function Calls - common problems encountered calling functions.
-  kTvmErrorFunctionCallNumArguments = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionCall, 0),
-  kTvmErrorFunctionCallWrongArgType = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionCall, 1),
-  kTvmErrorFunctionCallNotImplemented = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionCall, 2),
-  kTvmErrorFunctionCallInvalidArg = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionCall, 3),
+    // Function Calls - common problems encountered calling functions.
+    kTvmErrorFunctionCallNumArguments = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionCall, 0),
+    kTvmErrorFunctionCallWrongArgType = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionCall, 1),
+    kTvmErrorFunctionCallNotImplemented = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionCall, 2),
+    kTvmErrorFunctionCallInvalidArg = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryFunctionCall, 3),
 
-  // Time Evaluator - times functions for use with debug runtime.
-  kTvmErrorTimeEvaluatorBadHandle = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryTimeEvaluator, 0),
+    // Time Evaluator - times functions for use with debug runtime.
+    kTvmErrorTimeEvaluatorBadHandle = DEFINE_TVM_CRT_ERROR(kTvmErrorCategoryTimeEvaluator, 0),
 
-  // System errors are always negative integers; this mask indicates presence of a system error.
-  // Cast tvm_crt_error_t to a signed integer to interpret the negative error code.
-  kTvmErrorSystemErrorMask = (1 << (sizeof(int) * 8 - 1)),
+    // System errors are always negative integers; this mask indicates presence of a system error.
+    // Cast tvm_crt_error_t to a signed integer to interpret the negative error code.
+    kTvmErrorSystemErrorMask = (1 << (sizeof(int) * 8 - 1)),
 } tvm_crt_error_t;
 
 #ifdef __cplusplus

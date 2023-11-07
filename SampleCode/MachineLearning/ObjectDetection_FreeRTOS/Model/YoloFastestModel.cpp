@@ -18,7 +18,7 @@
 
 #include "log_macros.h"
 
-const tflite::MicroOpResolver& arm::app::YoloFastestModel::GetOpResolver()
+const tflite::MicroOpResolver &arm::app::YoloFastestModel::GetOpResolver()
 {
     return this->m_opResolver;
 }
@@ -35,25 +35,35 @@ bool arm::app::YoloFastestModel::EnlistOperations()
     this->m_opResolver.AddConcatenation();
 
 #if defined(ARM_NPU)
-    if (kTfLiteOk == this->m_opResolver.AddEthosU()) {
+
+    if (kTfLiteOk == this->m_opResolver.AddEthosU())
+    {
         info("Added %s support to op resolver\n",
-            tflite::GetString_ETHOSU());
-    } else {
+             tflite::GetString_ETHOSU());
+    }
+    else
+    {
         printf_err("Failed to add Arm NPU support to op resolver.");
         return false;
     }
+
 #endif /* ARM_NPU */
     return true;
 }
 
-namespace arm {
-namespace app {
-namespace yolofastest {
-    extern const uint8_t * GetModelPointer();
-	extern size_t GetModelLen();
-}}} /* namespace yolofastest */
+namespace arm
+{
+namespace app
+{
+namespace yolofastest
+{
+extern const uint8_t *GetModelPointer();
+extern size_t GetModelLen();
+}
+}
+} /* namespace yolofastest */
 
-const uint8_t* arm::app::YoloFastestModel::ModelPointer()
+const uint8_t *arm::app::YoloFastestModel::ModelPointer()
 {
     return arm::app::yolofastest::GetModelPointer();
 }

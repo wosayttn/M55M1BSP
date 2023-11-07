@@ -21,24 +21,39 @@
 
 #include <ethosu_driver.h>
 
-int32_t TVMEthosULaunch(tvm_device_ethos_u_t* context, void* cms_data, size_t cms_data_size,
-                        uint64_t* base_addrs, size_t* base_addrs_size, int num_tensors) {
-//  struct ethosu_driver* driver = (struct ethosu_driver*)context;
-   struct ethosu_driver *driver = ethosu_reserve_driver();
+int32_t TVMEthosULaunch(tvm_device_ethos_u_t *context, void *cms_data, size_t cms_data_size,
+                        uint64_t *base_addrs, size_t *base_addrs_size, int num_tensors)
+{
+    //  struct ethosu_driver* driver = (struct ethosu_driver*)context;
+    struct ethosu_driver *driver = ethosu_reserve_driver();
 
-   int32_t result =
-      ethosu_invoke(driver, cms_data, cms_data_size, base_addrs, base_addrs_size, num_tensors);
+    int32_t result =
+        ethosu_invoke(driver, cms_data, cms_data_size, base_addrs, base_addrs_size, num_tensors);
 
-	ethosu_release_driver(driver);
+    ethosu_release_driver(driver);
 
-  // Map errors in invoke to TVM errors
-  if (result != 0) {
-    return -1;
-  }
-  return 0;
+    // Map errors in invoke to TVM errors
+    if (result != 0)
+    {
+        return -1;
+    }
+
+    return 0;
 }
 
-int32_t TVMDeviceEthosUActivate(tvm_device_ethos_u_t* context) { return 0; }
-int32_t TVMDeviceEthosUOpen(tvm_device_ethos_u_t* context) { return 0; }
-int32_t TVMDeviceEthosUClose(tvm_device_ethos_u_t* context) { return 0; }
-int32_t TVMDeviceEthosUDeactivate(tvm_device_ethos_u_t* context) { return 0; }
+int32_t TVMDeviceEthosUActivate(tvm_device_ethos_u_t *context)
+{
+    return 0;
+}
+int32_t TVMDeviceEthosUOpen(tvm_device_ethos_u_t *context)
+{
+    return 0;
+}
+int32_t TVMDeviceEthosUClose(tvm_device_ethos_u_t *context)
+{
+    return 0;
+}
+int32_t TVMDeviceEthosUDeactivate(tvm_device_ethos_u_t *context)
+{
+    return 0;
+}

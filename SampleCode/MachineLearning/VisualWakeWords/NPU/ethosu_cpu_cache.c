@@ -30,10 +30,14 @@ void ethosu_flush_dcache(uint32_t *p, size_t bytes)
 
 void ethosu_invalidate_dcache(uint32_t *p, size_t bytes)
 {
-    if (SCB->CCR & SCB_CCR_DC_Msk) {
-        if (p) {
+    if (SCB->CCR & SCB_CCR_DC_Msk)
+    {
+        if (p)
+        {
             SCB_InvalidateDCache_by_Addr((void *) p, (int32_t) bytes);
-        } else {
+        }
+        else
+        {
             SCB_InvalidateDCache();
         }
     }

@@ -19,42 +19,46 @@
 
 #include "Model.hpp"
 
-namespace arm {
-namespace app {
-namespace kws {
-    extern const int g_FrameLength;
-    extern const int g_FrameStride;
-    extern const float g_ScoreThreshold;
-    extern const uint32_t g_NumMfcc;
-    extern const uint32_t g_NumAudioWins;
+namespace arm
+{
+namespace app
+{
+namespace kws
+{
+extern const int g_FrameLength;
+extern const int g_FrameStride;
+extern const float g_ScoreThreshold;
+extern const uint32_t g_NumMfcc;
+extern const uint32_t g_NumAudioWins;
 } /* namespace kws */
 
-    class KwsModel : public Model {
-    public:
-        /* Indices for the expected model - based on input and output tensor shapes */
-        static constexpr uint32_t ms_inputRowsIdx = 1;
-        static constexpr uint32_t ms_inputColsIdx = 2;
-        static constexpr uint32_t ms_outputRowsIdx = 2;
-        static constexpr uint32_t ms_outputColsIdx = 3;
+class KwsModel : public Model
+{
+public:
+    /* Indices for the expected model - based on input and output tensor shapes */
+    static constexpr uint32_t ms_inputRowsIdx = 1;
+    static constexpr uint32_t ms_inputColsIdx = 2;
+    static constexpr uint32_t ms_outputRowsIdx = 2;
+    static constexpr uint32_t ms_outputColsIdx = 3;
 
-    protected:
-        /** @brief   Gets the reference to op resolver interface class. */
-        const tflite::MicroOpResolver& GetOpResolver() override;
+protected:
+    /** @brief   Gets the reference to op resolver interface class. */
+    const tflite::MicroOpResolver &GetOpResolver() override;
 
-        /** @brief   Adds operations to the op resolver instance. */
-        bool EnlistOperations() override;
+    /** @brief   Adds operations to the op resolver instance. */
+    bool EnlistOperations() override;
 
-        const uint8_t* ModelPointer();
+    const uint8_t *ModelPointer();
 
-        size_t ModelSize();
-	
-    private:
-        /* Maximum number of individual operations that can be enlisted. */
-        static constexpr int ms_maxOpCnt = 7;
+    size_t ModelSize();
 
-        /* A mutable op resolver instance. */
-        tflite::MicroMutableOpResolver<ms_maxOpCnt> m_opResolver;
-    };
+private:
+    /* Maximum number of individual operations that can be enlisted. */
+    static constexpr int ms_maxOpCnt = 7;
+
+    /* A mutable op resolver instance. */
+    tflite::MicroMutableOpResolver<ms_maxOpCnt> m_opResolver;
+};
 
 } /* namespace app */
 } /* namespace arm */

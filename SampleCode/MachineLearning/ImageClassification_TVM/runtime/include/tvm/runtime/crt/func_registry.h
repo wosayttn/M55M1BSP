@@ -38,16 +38,17 @@ typedef uint16_t tvm_module_index_t;
 /*!
  * \brief A data structure that facilitates function lookup by C-string name.
  */
-typedef struct TVMFuncRegistry {
-  /*! \brief Names of registered functions, concatenated together and separated by \0.
-   * An additional \0 is present at the end of the concatenated blob to mark the end.
-   *
-   * Byte 0 and 1 are the number of functions in `funcs`.
-   */
-  const char* names;
+typedef struct TVMFuncRegistry
+{
+    /*! \brief Names of registered functions, concatenated together and separated by \0.
+     * An additional \0 is present at the end of the concatenated blob to mark the end.
+     *
+     * Byte 0 and 1 are the number of functions in `funcs`.
+     */
+    const char *names;
 
-  /*! \brief Function pointers, in the same order as their names in `names`. */
-  const TVMBackendPackedCFunc* funcs;
+    /*! \brief Function pointers, in the same order as their names in `names`. */
+    const TVMBackendPackedCFunc *funcs;
 } TVMFuncRegistry;
 
 /*!
@@ -56,7 +57,7 @@ typedef struct TVMFuncRegistry {
  * \param reg TVMFunctionRegistry instance that contains the function.
  * \return The number of functions from registry.
  */
-uint16_t TVMFuncRegistry_GetNumFuncs(const TVMFuncRegistry* reg);
+uint16_t TVMFuncRegistry_GetNumFuncs(const TVMFuncRegistry *reg);
 
 /*!
  * \brief Set the number of functions to registry.
@@ -65,7 +66,7 @@ uint16_t TVMFuncRegistry_GetNumFuncs(const TVMFuncRegistry* reg);
  * \param num_funcs The number of functions
  * \return 0 when successful.
  */
-int TVMFuncRegistry_SetNumFuncs(const TVMFuncRegistry* reg, const uint16_t num_funcs);
+int TVMFuncRegistry_SetNumFuncs(const TVMFuncRegistry *reg, const uint16_t num_funcs);
 
 /*!
  * \brief Get the address of 0th function from registry.
@@ -73,7 +74,7 @@ int TVMFuncRegistry_SetNumFuncs(const TVMFuncRegistry* reg, const uint16_t num_f
  * \param reg TVMFunctionRegistry instance that contains the function.
  * \return the address of 0th function from registry
  */
-const char* TVMFuncRegistry_Get0thFunctionName(const TVMFuncRegistry* reg);
+const char *TVMFuncRegistry_Get0thFunctionName(const TVMFuncRegistry *reg);
 
 /*!
  * \brief Get packed function from registry by name.
@@ -85,8 +86,8 @@ const char* TVMFuncRegistry_Get0thFunctionName(const TVMFuncRegistry* reg);
  * \return kTvmErrorNoError when successful. kTvmErrorFunctionNameNotFound when no function matched
 `name`.
  */
-tvm_crt_error_t TVMFuncRegistry_Lookup(const TVMFuncRegistry* reg, const char* name,
-                                       tvm_function_index_t* function_index);
+tvm_crt_error_t TVMFuncRegistry_Lookup(const TVMFuncRegistry *reg, const char *name,
+                                       tvm_function_index_t *function_index);
 
 /*!
  * \brief Fetch TVMBackendPackedCFunc given a function index
@@ -98,17 +99,18 @@ tvm_crt_error_t TVMFuncRegistry_Lookup(const TVMFuncRegistry* reg, const char* n
  * \return kTvmErrorNoError when successful. kTvmErrorFunctionIndexInvalid when index was out of
  * range.
  */
-tvm_crt_error_t TVMFuncRegistry_GetByIndex(const TVMFuncRegistry* reg, tvm_function_index_t index,
-                                           TVMBackendPackedCFunc* out_func);
+tvm_crt_error_t TVMFuncRegistry_GetByIndex(const TVMFuncRegistry *reg, tvm_function_index_t index,
+                                           TVMBackendPackedCFunc *out_func);
 
 /*!
  * \brief A TVMFuncRegistry that supports adding and changing the functions.
  */
-typedef struct TVMMutableFuncRegistry {
-  TVMFuncRegistry registry;
+typedef struct TVMMutableFuncRegistry
+{
+    TVMFuncRegistry registry;
 
-  /*! \brief maximum number of functions in this registry. */
-  size_t max_functions;
+    /*! \brief maximum number of functions in this registry. */
+    size_t max_functions;
 } TVMMutableFuncRegistry;
 
 // Defined to work around compiler limitations.
@@ -127,7 +129,7 @@ static const size_t kTvmAverageFunctionNameStrlenBytes = TVM_AVERAGE_FUNCTION_NA
  * Assumes a constant average function name length.
  */
 static const size_t kTvmAverageFuncEntrySizeBytes =
-    TVM_AVERAGE_FUNCTION_NAME_STRLEN_BYTES + 1 + sizeof(void*);
+    TVM_AVERAGE_FUNCTION_NAME_STRLEN_BYTES + 1 + sizeof(void *);
 
 /*!
  * \brief Create a new mutable function registry from a block of memory.
@@ -138,7 +140,7 @@ static const size_t kTvmAverageFuncEntrySizeBytes =
  * \return kTvmErrorNoError when successful. kTvmErrorBufferTooSmall when buffer_size_bytes is so
  *      small that a single function cannot be registered.
  */
-tvm_crt_error_t TVMMutableFuncRegistry_Create(TVMMutableFuncRegistry* reg, uint8_t* buffer,
+tvm_crt_error_t TVMMutableFuncRegistry_Create(TVMMutableFuncRegistry *reg, uint8_t *buffer,
                                               size_t buffer_size_bytes);
 
 /*!
@@ -152,7 +154,7 @@ tvm_crt_error_t TVMMutableFuncRegistry_Create(TVMMutableFuncRegistry* reg, uint8
  *     `max_functions` entries. kTvmErrorFunctionAlreadyDefined when a function named `name` is
  * already present in the registry, and `override` == 0.
  */
-tvm_crt_error_t TVMMutableFuncRegistry_Set(TVMMutableFuncRegistry* reg, const char* name,
+tvm_crt_error_t TVMMutableFuncRegistry_Set(TVMMutableFuncRegistry *reg, const char *name,
                                            TVMBackendPackedCFunc func, int override);
 
 #ifdef __cplusplus

@@ -37,33 +37,34 @@ static const uint64_t kTVMNDArrayMagic = 0xDD5E40F096B4A13F;
 /*! \brief Magic number for NDArray list file  */
 static const uint64_t kTVMNDArrayListMagic = 0xF7E58D4F05049CB7;
 
-typedef struct TVMNDArray {
-  /*! \brief the actual tensor in DLPack format. NOTE: this must be first element in struct */
-  DLTensor dl_tensor;
+typedef struct TVMNDArray
+{
+    /*! \brief the actual tensor in DLPack format. NOTE: this must be first element in struct */
+    DLTensor dl_tensor;
 
-  /*! \brief count of references to TVMNDArray to avoid early freeing by host */
-  uint32_t reference_count;
+    /*! \brief count of references to TVMNDArray to avoid early freeing by host */
+    uint32_t reference_count;
 } TVMNDArray;
 
-int TVMNDArray_Create(int32_t ndim, const tvm_index_t* shape, DLDataType dtype, DLDevice dev,
-                      TVMNDArray* array);
+int TVMNDArray_Create(int32_t ndim, const tvm_index_t *shape, DLDataType dtype, DLDevice dev,
+                      TVMNDArray *array);
 
-int64_t TVMNDArray_DataSizeBytes(TVMNDArray* array);
+int64_t TVMNDArray_DataSizeBytes(TVMNDArray *array);
 
-int TVMNDArray_RandomFill(TVMNDArray* array);
+int TVMNDArray_RandomFill(TVMNDArray *array);
 
-int TVMNDArray_Empty(int32_t ndim, const tvm_index_t* shape, DLDataType dtype, DLDevice dev,
-                     TVMNDArray* array);
+int TVMNDArray_Empty(int32_t ndim, const tvm_index_t *shape, DLDataType dtype, DLDevice dev,
+                     TVMNDArray *array);
 
-int TVMNDArray_Load(TVMNDArray* ret, const char** strm);
+int TVMNDArray_Load(TVMNDArray *ret, const char **strm);
 
-int TVMNDArray_CreateView(TVMNDArray* arr, const tvm_index_t* shape, int32_t ndim, DLDataType dtype,
-                          TVMNDArray* array_view);
+int TVMNDArray_CreateView(TVMNDArray *arr, const tvm_index_t *shape, int32_t ndim, DLDataType dtype,
+                          TVMNDArray *array_view);
 
-void TVMNDArray_IncrementReference(TVMNDArray* arr);
+void TVMNDArray_IncrementReference(TVMNDArray *arr);
 
-uint32_t TVMNDArray_DecrementReference(TVMNDArray* arr);
+uint32_t TVMNDArray_DecrementReference(TVMNDArray *arr);
 
-int TVMNDArray_Release(TVMNDArray* arr);
+int TVMNDArray_Release(TVMNDArray *arr);
 
 #endif  // TVM_RUNTIME_CRT_INCLUDE_TVM_RUNTIME_CRT_INTERNAL_COMMON_NDARRAY_H_
