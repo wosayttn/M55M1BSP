@@ -30,6 +30,8 @@ static UDEV_DRV_T   *_drivers[MAX_UDEV_DRIVER];
 
 static CONN_FUNC  *g_conn_func, *g_disconn_func;
 
+static int _ovc_active_high = 0;
+
 /// @endcond HIDDEN_SYMBOLS
 /**
   * @brief       Initialize USB Host controller and USB stack.
@@ -69,7 +71,12 @@ void  usbh_core_init()
 
     usbh_memory_init();
 #ifdef ENABLE_OHCI0
-    //_ohci0->HcMiscControl |= USBH_HcMiscControl_OCAL_Msk; /* Over-current active low */
+
+    if (_ovc_active_high)
+        _ohci0->HcMiscControl &= ~USBH_HcMiscControl_OCAL_Msk; /* Over-current active high */
+    else
+        _ohci0->HcMiscControl |= USBH_HcMiscControl_OCAL_Msk; /* Over-current active Low */
+
 #endif
 
 #ifdef ENABLE_OHCI1
@@ -96,6 +103,20 @@ void  usbh_core_init()
     USB_debug("EHCI init done.\n");
     ENABLE_EHCI_IRQ();
 #endif
+}
+
+/**
+ * @brief       Initialize USB Host controller and USB stack.
+ *
+ * @param[in]   ovc_alv   Over-current active level setting
+ *                        0: active low
+ *                        1: active high
+ * @return      None.
+ */
+void  usbh_core_init_ex(int ovc_alv)
+{
+    _ovc_active_high = ovc_alv;
+    usbh_core_init();
 }
 
 /**

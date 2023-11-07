@@ -213,6 +213,7 @@ extern int  usbh_umas_reset_disk(int drv_no);
 /*                                                                  */
 /*------------------------------------------------------------------*/
 extern void usbh_uac_init(void);
+extern void usbh_core_init_ex(int ovc_alv);
 extern int usbh_uac_open(struct uac_dev_t *audev);
 extern struct uac_dev_t *usbh_uac_get_device_list(void);
 extern int usbh_uac_get_channel_number(struct uac_dev_t *audev, uint8_t target);
