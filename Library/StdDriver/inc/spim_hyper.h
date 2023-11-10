@@ -394,7 +394,7 @@ extern "C"
  * \hideinitializer
  */
 #define SPIM_HYPER_SET_DLLDIV(spim, x)    \
-    (spim->DLL1 = (spim->DLL1 & ~(SPIM_DLL1_DLLDIVER_Msk)) | ((x & 0x03) << SPIM_DLL1_DLLDIVER_Pos))
+    (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLDIVER_Msk)) | ((x & 0x03) << SPIM_DLL0_DLLDIVER_Pos))
 
 
 /**
