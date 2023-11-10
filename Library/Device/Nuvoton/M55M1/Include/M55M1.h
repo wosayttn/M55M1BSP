@@ -163,8 +163,10 @@ typedef enum IRQn
     LPSPI0_IRQn                   =  71,      /*!< Low Power SPI 0 Interrupt                */
                                               /*!< Reserved                                 */
     SPIM0_IRQn                    =  73,      /*!< SPIM0 Interrupt                          */
-                                              /*!< Reserved                                 */
-    UART0_IRQn                    =  75,      /*!< UART0 Interrupt                          */
+#if defined(TESTCHIP_ONLY)
+	SPIM1_IRQn                    =  74,      /*!< SPIM0 Interrupt                          */
+#endif
+	UART0_IRQn                    =  75,      /*!< UART0 Interrupt                          */
     UART1_IRQn                    =  76,      /*!< UART1 Interrupt                          */
     UART2_IRQn                    =  77,      /*!< UART2 Interrupt                          */
     UART3_IRQn                    =  78,      /*!< UART3 Interrupt                          */
@@ -429,6 +431,9 @@ typedef enum IRQn
 #define SRAM2MPC_BASE             (AXIPERIPH_BASE + 0x0A000UL)
 #define SRAM3MPC_BASE             (AXIPERIPH_BASE + 0x0B000UL)
 #define SPIM0MPC_BASE             (AXIPERIPH_BASE + 0x0D000UL)
+#if defined(TESTCHIP_ONLY)
+#define SPIM1MPC_BASE             (AXIPERIPH_BASE + 0x0E000UL)
+#endif
 #define FMC_BASE                  (AXIPERIPH_BASE + 0x44000UL)  /*!< ACLK clock domain         */
 
 /* AHB0 peripheral (HCLK0 clock domain) */
@@ -465,7 +470,9 @@ typedef enum IRQn
 /* AHB1 peripheral (HCLK1 clock domain) */
 #define OTFC0_BASE                (AHB1PERIPH_BASE + 0x00000UL)
 #define SPIM0_BASE                (AHB1PERIPH_BASE + 0x02000UL)
-
+#if defined(TESTCHIP_ONLY)
+#define SPIM1_BASE                (AHB1PERIPH_BASE + 0x03000UL)
+#endif
 /* AHB2 peripheral (HCLK2 clock domain) */
 #define LPPDMA_BASE               (AHB2PERIPH_BASE + 0x00000UL)
 #define CCAP_BASE                 (AHB2PERIPH_BASE + 0x01000UL)
@@ -670,6 +677,9 @@ typedef enum IRQn
 #define SPI2_S                    ((SPI_T *)      SPI2_BASE)
 #define SPI3_S                    ((SPI_T *)      SPI3_BASE)
 #define SPIM0_S                   ((SPIM_T *)     SPIM0_BASE)
+#if defined(TESTCHIP_ONLY)
+#define SPIM1_S                   ((SPIM_T *)     SPIM1_BASE)
+#endif
 #define SYS_S                     ((SYS_T *)      SYS_BASE)
 #define TIMER0_S                  ((TIMER_T *)    TIMER0_BASE)
 #define TIMER1_S                  ((TIMER_T *)    TIMER1_BASE)
@@ -789,6 +799,9 @@ typedef enum IRQn
 #define SPI2_NS                   ((SPI_T *)      (SPI2_BASE      + NS_OFFSET))
 #define SPI3_NS                   ((SPI_T *)      (SPI3_BASE      + NS_OFFSET))
 #define SPIM0_NS                  ((SPIM_T *)     (SPIM0_BASE     + NS_OFFSET))
+#if defined(TESTCHIP_ONLY)
+#define SPIM1_NS                  ((SPIM_T *)     (SPIM1_BASE     + NS_OFFSET))
+#endif
 #define SYS_NS                    ((SYS_T *)      (SYS_BASE       + NS_OFFSET))
 #define TIMER0_NS                 ((TIMER_T *)    (TIMER0_BASE    + NS_OFFSET))
 #define TIMER1_NS                 ((TIMER_T *)    (TIMER1_BASE    + NS_OFFSET))
@@ -867,6 +880,14 @@ typedef enum IRQn
 #define SPIM0        SPIM0_NS
 #else
 #define SPIM0        SPIM0_S
+#endif
+
+#if defined(TESTCHIP_ONLY)
+#if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM1_Msk)
+    #define SPIM1        SPIM1_NS
+#else
+    #define SPIM1        SPIM1_S
+#endif
 #endif
 
 /* SCU_D1PNS0 */
