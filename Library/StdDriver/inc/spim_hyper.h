@@ -280,6 +280,13 @@ extern "C"
     (spim->CTL1 = (spim->CTL1 & ~(SPIM_CTL1_DIVIDER_Msk)) | ((x) << SPIM_CTL1_DIVIDER_Pos))
 
 /**
+ * @brief       Get SPIM clock divider.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_GET_CLKDIV(spim) \
+    ((spim->CTL1 & SPIM_CTL1_DIVIDER_Msk) >> SPIM_CTL1_DIVIDER_Pos)
+
+/**
  * @brief   Set DMM mode SPI flash deselect time. It could be 0 ~ 0xFF.
  * \hideinitializer
  */
