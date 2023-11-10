@@ -47,12 +47,12 @@ int32_t SPIM_HYPER_SetDLLDelayNum(SPIM_T *spim, uint32_t u32DelayNum)
     /* SPIM starts to send DLL reference clock to DLL circuit
        that the frequency is the same as the SPIM output bus clock. */
     SPIM_HYPER_ENABLE_DLLOLDO(SPIM0, SPIM_HYPER_OP_ENABLE);
-    SPIM_HYPER_ENABLE_DLLOLDO(SPIM1, SPIM_HYPER_OP_ENABLE);
+    SPIM_HYPER_ENABLE_DLLOLDO(SPIM1, SPIM_HYPER_OP_ENABLE); //TESTCHIP_ONLY not support
 
     /* User asserts this control register to 0x1,
        the DLL circuit begins searching for lock with DLL reference clock. */
     SPIM_HYPER_ENABLE_DLLOVRST(SPIM0, SPIM_HYPER_OP_ENABLE);
-    SPIM_HYPER_ENABLE_DLLOVRST(SPIM1, SPIM_HYPER_OP_ENABLE);
+    SPIM_HYPER_ENABLE_DLLOVRST(SPIM1, SPIM_HYPER_OP_ENABLE); //TESTCHIP_ONLY not support
 
     u32SPIMDiv = SPIM_HYPER_GET_CLKDIV(spim);
 

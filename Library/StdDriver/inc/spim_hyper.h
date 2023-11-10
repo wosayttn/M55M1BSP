@@ -374,6 +374,23 @@ extern "C"
     (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLL_DNUM_Msk)) | ((x) << SPIM_DLL0_DLL_DNUM_Pos))
 
 /**
+ * @brief   Set Divider Number Selection of DLL Internal Clock Divder.
+ * @param[in]  x   Divider Number.
+ *                 - \ref 0 : DLL internal clock divdier equals to input frequency
+ *                            of DLL internal clock divdier.
+ *                 - \ref 1 : DLL internal clock divdier equals to input frequency
+ *                            of DLL internal clock divdier / 2.
+ *                 - \ref 2 : DLL internal clock divdier equals to input frequency
+ *                            of DLL internal clock divdier / 4.
+ *                 - \ref 3 : DLL internal clock divdier equals to input frequency
+ *                            of DLL internal clock divdier / 8.
+ * \hideinitializer
+ */
+#define SPIM_HYPER_SET_DLLDIV(spim, x)    \
+    (spim->DLL1 = (spim->DLL1 & ~(SPIM_DLL1_DLLDIVER_Msk)) | ((x & 0x03) << SPIM_DLL1_DLLDIVER_Pos))
+
+
+/**
  * @brief   Set Cycle Number of between DLL Lock and DLL Output Valid.
  *          It could be 0 ~ 0xFFFF.
  * \hideinitializer
@@ -657,6 +674,7 @@ __STATIC_INLINE uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim)
     {
         u32DMMAddr = SPIM_HYPER_DMM0_ADDR;
     }
+
     //else if (spim == SPIM1) // TESTCHIP_ONLY
     //{
     //    u32DMMAddr = SPIM_HYPER_DMM1_ADDR;
