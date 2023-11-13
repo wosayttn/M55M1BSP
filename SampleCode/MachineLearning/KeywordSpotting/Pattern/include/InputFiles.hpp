@@ -33,8 +33,8 @@ extern const int16_t audio1[48000];
 extern const int16_t audio2[16000];
 extern const int16_t audio3[64000];
 
-const char* get_filename(const uint32_t idx);
-const int16_t* get_audio_array(const uint32_t idx);
+const char *get_filename(const uint32_t idx);
+const int16_t *get_audio_array(const uint32_t idx);
 uint32_t get_audio_array_size(const uint32_t idx);
 
 #endif /* GENERATED_AUDIOCLIPS_H */

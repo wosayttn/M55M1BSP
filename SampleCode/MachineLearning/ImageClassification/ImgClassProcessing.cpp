@@ -18,49 +18,53 @@
 #include "ImageUtils.hpp"
 #include "log_macros.h"
 
-namespace arm {
-namespace app {
+namespace arm
+{
+namespace app
+{
 
-    ImgClassPreProcess::ImgClassPreProcess(Model* model)
+ImgClassPreProcess::ImgClassPreProcess(Model *model)
+{
+    this->m_model = model;
+}
+
+bool ImgClassPreProcess::DoPreProcess(const void *data, size_t inputSize)
+{
+    if (data == nullptr)
     {
-        this->m_model = model;
+        printf_err("Data pointer is null");
     }
 
-    bool ImgClassPreProcess::DoPreProcess(const void* data, size_t inputSize)
+    auto input = static_cast<const uint8_t *>(data);
+    TfLiteTensor *inputTensor = this->m_model->GetInputTensor(0);
+
+    memcpy(inputTensor->data.data, input, inputSize);
+    debug("Input tensor populated \n");
+
+    if (this->m_model->IsDataSigned())
     {
-        if (data == nullptr) {
-            printf_err("Data pointer is null");
-        }
-
-        auto input = static_cast<const uint8_t*>(data);
-        TfLiteTensor* inputTensor = this->m_model->GetInputTensor(0);
-
-        memcpy(inputTensor->data.data, input, inputSize);
-        debug("Input tensor populated \n");
-
-        if (this->m_model->IsDataSigned()) {
-            image::ConvertImgToInt8(inputTensor->data.data, inputTensor->bytes);
-        }
-
-        return true;
+        image::ConvertImgToInt8(inputTensor->data.data, inputTensor->bytes);
     }
 
-    ImgClassPostProcess::ImgClassPostProcess(Classifier& classifier, Model* model,
-                                             const std::vector<std::string>& labels,
-                                             std::vector<ClassificationResult>& results)
-            :m_imgClassifier{classifier},
-             m_labels{labels},
-             m_results{results}
-    {
-        this->m_model = model;
-    }
+    return true;
+}
 
-    bool ImgClassPostProcess::DoPostProcess()
-    {
-        return this->m_imgClassifier.GetClassificationResults(
-                this->m_model->GetOutputTensor(0), this->m_results,
-                this->m_labels, 5, false);
-    }
+ImgClassPostProcess::ImgClassPostProcess(Classifier &classifier, Model *model,
+                                         const std::vector<std::string> &labels,
+                                         std::vector<ClassificationResult> &results)
+    : m_imgClassifier{classifier},
+      m_labels{labels},
+      m_results{results}
+{
+    this->m_model = model;
+}
+
+bool ImgClassPostProcess::DoPostProcess()
+{
+    return this->m_imgClassifier.GetClassificationResults(
+               this->m_model->GetOutputTensor(0), this->m_results,
+               this->m_labels, 5, false);
+}
 
 } /* namespace app */
 } /* namespace arm */

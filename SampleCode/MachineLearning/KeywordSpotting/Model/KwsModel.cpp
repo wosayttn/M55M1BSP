@@ -17,7 +17,7 @@
 #include "KwsModel.hpp"
 #include "log_macros.h"
 
-const tflite::MicroOpResolver& arm::app::KwsModel::GetOpResolver()
+const tflite::MicroOpResolver &arm::app::KwsModel::GetOpResolver()
 {
     return this->m_opResolver;
 }
@@ -31,25 +31,34 @@ bool arm::app::KwsModel::EnlistOperations()
     this->m_opResolver.AddFullyConnected();
     this->m_opResolver.AddRelu();
 
-    if (kTfLiteOk == this->m_opResolver.AddEthosU()) {
+    if (kTfLiteOk == this->m_opResolver.AddEthosU())
+    {
         info("Added %s support to op resolver\n",
-            tflite::GetString_ETHOSU());
-    } else {
+             tflite::GetString_ETHOSU());
+    }
+    else
+    {
         printf_err("Failed to add Arm NPU support to op resolver.");
         return false;
     }
+
     return true;
 }
 
-namespace arm {
-namespace app {
-namespace kws {
-    extern const uint8_t * GetModelPointer();
-	extern size_t GetModelLen();
-}}} /* namespace kws */
+namespace arm
+{
+namespace app
+{
+namespace kws
+{
+extern const uint8_t *GetModelPointer();
+extern size_t GetModelLen();
+}
+}
+} /* namespace kws */
 
 
-const uint8_t* arm::app::KwsModel::ModelPointer()
+const uint8_t *arm::app::KwsModel::ModelPointer()
 {
     return arm::app::kws::GetModelPointer();
 }

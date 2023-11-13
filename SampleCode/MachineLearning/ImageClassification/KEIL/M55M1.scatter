@@ -66,8 +66,8 @@
  * | LPSRAM                | 0x3031_0000 | 0x0008_0000 | NS | Non-Secure alias for LPSRAM                    |
  * | EBI                   | 0x6000_0000 | 0x0030_0000 | S  | 3 MiB                                          |
  * | EBI                   | 0x7000_0000 | 0x0030_0000 | NS | Non-Secure alias for EBI                       |
- * | SPIM0                 | 0x8000_0000 | 0x0200_0000 | S  | 32 MiB                                         |
- * | SPIM0                 | 0x9000_0000 | 0x0200_0000 | NS | Non-Secure alias for SPIM0                     |
+ * | SPIM0                 | 0x8200_0000 | 0x0200_0000 | S  | 32 MiB                                         |
+ * | SPIM0                 | 0x9200_0000 | 0x0200_0000 | NS | Non-Secure alias for SPIM0                     |
  * +-----------------------+-------------+-------------+----+------------------------------------------------+
  *
  *  Note: Ethos-U55 can access Flash, internal SRAM 0,1 => activation buffers and
@@ -102,8 +102,6 @@
 
 #define SPIM0_START      0x80000000
 #define SPIM0_SIZE       0x02000000
-#define SPIM1_START      0x82000000
-#define SPIM1_SIZE       0x02000000
 
 
 //#define STACK_HEAP       0x20180000
@@ -200,7 +198,7 @@ APP_IMAGE FLASH_START FLASH_SIZE
     }
 #endif
 }
-	
+
 HYPER_FLASH SPIM0_START SPIM0_SIZE
 {
     SPIM0 SPIM0_START

@@ -18,6 +18,7 @@
 #include "log_macros.h"
 
 #include <cstring>
+#include <algorithm>
 
 namespace arm {
 namespace app {

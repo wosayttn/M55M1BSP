@@ -26,23 +26,26 @@
 #include <string>
 
 
-static const char * labelsVec[] LABELS_ATTRIBUTE = {
+static const char *labelsVec[] LABELS_ATTRIBUTE =
+{
     "Person detected: No",
     "Person detected: Yes",
 };
 
-bool GetLabelsVector(std::vector<std::string>& labels)
+bool GetLabelsVector(std::vector<std::string> &labels)
 {
     constexpr size_t labelsSz = 2;
     labels.clear();
 
-    if (!labelsSz) {
+    if (!labelsSz)
+    {
         return false;
     }
 
     labels.reserve(labelsSz);
 
-    for (size_t i = 0; i < labelsSz; ++i) {
+    for (size_t i = 0; i < labelsSz; ++i)
+    {
         labels.emplace_back(labelsVec[i]);
     }
 

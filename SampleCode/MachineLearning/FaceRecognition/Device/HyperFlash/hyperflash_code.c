@@ -319,7 +319,7 @@ void HyperFlash_Init(SPIM_T *spim)
 
     HyperFlash_SetReadLatency(spim, 9);
 
-//    SPIM_TrainingDLLDelayTime(spim);
+    //    SPIM_TrainingDLLDelayTime(spim);
     SPIM_HYPER_SetDLLDelayNum(spim, 1);
 
 }
@@ -328,7 +328,7 @@ void HyperFlash_PinConfig(SPIM_T *spim)
 {
     if (spim == SPIM0)
     {
-		//SPIM and OTFC clock was enabled on secure-domain code
+        //SPIM and OTFC clock was enabled on secure-domain code
         /* Enable SPIM0 module clock */
         CLK_EnableModuleClock(SPIM0_MODULE);
         /* Enable OTFC0 module clock */

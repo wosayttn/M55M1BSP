@@ -28,7 +28,7 @@ FATFS FatFs[FF_VOLUMES];               /* File system object for logical drive *
 uint8_t bAudioPlaying = 0;
 extern signed int aPCMBuffer[2][PCM_BUFFER_SIZE];
 extern uint32_t volatile sd_init_ok;
-extern void SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc);
+extern int32_t SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc);
 
 /*---------------------------------------------------------*/
 /* User Provided RTC Function for FatFs module             */
@@ -185,7 +185,7 @@ void SYS_Init(void)
 
     /* Enable PDMA0 module clock */
     CLK_EnableModuleClock(PDMA0_MODULE);
-    
+
     /* Enable GPIO module clock */
     CLK_EnableModuleClock(GPIOD_MODULE);
     CLK_EnableModuleClock(GPIOI_MODULE);

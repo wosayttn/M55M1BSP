@@ -26,8 +26,9 @@
 #include <string>
 
 
-static const char * labelsVec[] LABELS_ATTRIBUTE = {
-//    "background",
+static const char *labelsVec[] LABELS_ATTRIBUTE =
+{
+    //    "background",
     "tench, Tinca tinca",
     "goldfish, Carassius auratus",
     "great white shark, white shark, man-eater, man-eating shark, Carcharodon carcharias",
@@ -1030,18 +1031,20 @@ static const char * labelsVec[] LABELS_ATTRIBUTE = {
     "toilet tissue, toilet paper, bathroom tissue",
 };
 
-bool GetLabelsVector(std::vector<std::string>& labels)
+bool GetLabelsVector(std::vector<std::string> &labels)
 {
     constexpr size_t labelsSz = 1000;
     labels.clear();
 
-    if (!labelsSz) {
+    if (!labelsSz)
+    {
         return false;
     }
 
     labels.reserve(labelsSz);
 
-    for (size_t i = 0; i < labelsSz; ++i) {
+    for (size_t i = 0; i < labelsSz; ++i)
+    {
         labels.emplace_back(labelsVec[i]);
     }
 

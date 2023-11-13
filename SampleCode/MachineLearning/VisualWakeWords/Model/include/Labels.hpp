@@ -32,7 +32,7 @@
  * @param[out]  labels   Vector of strings.
  * @return      true if successful, false otherwise.
  */
-extern bool GetLabelsVector(std::vector<std::string>& labels);
+extern bool GetLabelsVector(std::vector<std::string> &labels);
 
 
 

@@ -17,30 +17,38 @@
 #include "VisualWakeWordModel.hpp"       /* Model API */
 #include "Labels.hpp"
 
-#include "imlib.h"			/* Image processing */
+#include "imlib.h"          /* Image processing */
 #include "framebuffer.h"
 
 #undef PI /* PI macro conflict with CMSIS/DSP */
 #include "NuMicro.h"
 
 #define __PROFILE__
+#define __USE_CCAP__
 
 #if defined(__PROFILE__)
-#include "Profiler.hpp"
+    #include "Profiler.hpp"
+#endif
+
+#if defined (__USE_CCAP__)
+    #include "ImageSensor.h"
 #endif
 
 using ViusalWakeWordClassifier = arm::app::Classifier;
 
-namespace arm {
-namespace app {
-    /* Tensor arena buffer */
-    static uint8_t tensorArena[ACTIVATION_BUF_SZ] ACTIVATION_BUF_ATTRIBUTE;
+namespace arm
+{
+namespace app
+{
+/* Tensor arena buffer */
+static uint8_t tensorArena[ACTIVATION_BUF_SZ] ACTIVATION_BUF_ATTRIBUTE;
 
-    /* Optional getter function for the model pointer and its size. */
-    namespace vww {
-        extern uint8_t* GetModelPointer();
-        extern size_t GetModelLen();
-    } /* namespace vww */
+/* Optional getter function for the model pointer and its size. */
+namespace vww
+{
+extern uint8_t *GetModelPointer();
+extern size_t GetModelLen();
+} /* namespace vww */
 } /* namespace app */
 } /* namespace arm */
 
@@ -48,7 +56,8 @@ namespace app {
 /* Cache policy function */
 enum { NonCache_index, WTRA_index, WBWARA_index };
 
-static void initializeAttributes() {
+static void initializeAttributes()
+{
     /* Initialize attributes corresponding to the enums defined in mpu.hpp */
     const uint8_t WTRA =
         ARM_MPU_ATTR_MEMORY_(1, 0, 1, 0); // Non-transient, Write-Through, Read-allocate, Not Write-allocate
@@ -59,7 +68,8 @@ static void initializeAttributes() {
     ARM_MPU_SetMemAttr(WBWARA_index, ARM_MPU_ATTR(WBWARA, WBWARA));
 }
 
-static void loadAndEnableConfig(ARM_MPU_Region_t const *table, uint32_t cnt) {
+static void loadAndEnableConfig(ARM_MPU_Region_t const *table, uint32_t cnt)
+{
     initializeAttributes();
 
     ARM_MPU_Load(0, table, cnt);
@@ -87,22 +97,22 @@ char *_fballoc = NULL;
 
 static void omv_init()
 {
-	image_t frameBuffer;
+    image_t frameBuffer;
 
-	frameBuffer.w = GLCD_WIDTH;
-	frameBuffer.h = GLCD_HEIGHT;
-	frameBuffer.size = GLCD_WIDTH * GLCD_HEIGHT * 2;
-	frameBuffer.pixfmt = PIXFORMAT_RGB565;
+    frameBuffer.w = GLCD_WIDTH;
+    frameBuffer.h = GLCD_HEIGHT;
+    frameBuffer.size = GLCD_WIDTH * GLCD_HEIGHT * 2;
+    frameBuffer.pixfmt = PIXFORMAT_RGB565;
 
-	_fb_base = fb_array;
-	_fb_end =  fb_array + OMV_FB_SIZE - 1;
-	_fballoc = _fb_base + OMV_FB_SIZE + OMV_FB_ALLOC_SIZE; 
-	_jpeg_buf = jpeg_array;
+    _fb_base = fb_array;
+    _fb_end =  fb_array + OMV_FB_SIZE - 1;
+    _fballoc = _fb_base + OMV_FB_SIZE + OMV_FB_ALLOC_SIZE;
+    _jpeg_buf = jpeg_array;
 
-	fb_alloc_init0();
+    fb_alloc_init0();
 
-	framebuffer_init0();
-	framebuffer_init_from_image(&frameBuffer);
+    framebuffer_init0();
+    framebuffer_init_from_image(&frameBuffer);
 }
 
 int main()
@@ -114,17 +124,20 @@ int main()
 
     /* Model object creation and initialisation. */
     arm::app::VisualWakeWordModel model;
+
     if (!model.Init(arm::app::tensorArena,
                     sizeof(arm::app::tensorArena),
                     arm::app::vww::GetModelPointer(),
-                    arm::app::vww::GetModelLen())) {
+                    arm::app::vww::GetModelLen()))
+    {
         printf_err("Failed to initialise model\n");
         return 1;
     }
 
-	/* Setup cache poicy of tensor arean buffer */ 
-	info("Set tesnor arena cache policy to WTRA \n");
-    const std::vector<ARM_MPU_Region_t> mpuConfig = {
+    /* Setup cache poicy of tensor arean buffer */
+    info("Set tesnor arena cache policy to WTRA \n");
+    const std::vector<ARM_MPU_Region_t> mpuConfig =
+    {
         {
             // SRAM for tensor arena
             ARM_MPU_RBAR(((unsigned int)arm::app::tensorArena),        // Base
@@ -134,156 +147,217 @@ int main()
                          1),                // eXecute Never enabled
             ARM_MPU_RLAR((((unsigned int)arm::app::tensorArena) + ACTIVATION_BUF_SZ - 1),        // Limit
                          WTRA_index) // Attribute index - Write-Through, Read-allocate
-	     }
-	};
+        }
+    };
 
     // Setup MPU configuration
     loadAndEnableConfig(&mpuConfig[0], mpuConfig.size());
 
 
     ViusalWakeWordClassifier classifier;  /* Classifier object. */
-	
+
     uint8_t u8ImgIdx = 0;
 
-    TfLiteTensor* inputTensor   = model.GetInputTensor(0);
-    TfLiteTensor* outputTensor = model.GetOutputTensor(0);
+    TfLiteTensor *inputTensor   = model.GetInputTensor(0);
+    TfLiteTensor *outputTensor = model.GetOutputTensor(0);
 
-    if (!inputTensor->dims) {
+    if (!inputTensor->dims)
+    {
         printf_err("Invalid input tensor dims\n");
         return 2;
-	}
-	else if (inputTensor->dims->size < 3) {
-		printf_err("Input tensor dimension should be >= 3\n");
-		return 3;
-	}		
+    }
+    else if (inputTensor->dims->size < 3)
+    {
+        printf_err("Input tensor dimension should be >= 3\n");
+        return 3;
+    }
 
-    TfLiteIntArray* inputShape = model.GetInputShape(0);
+    TfLiteIntArray *inputShape = model.GetInputShape(0);
 
     const int inputImgCols = inputShape->data[arm::app::VisualWakeWordModel::ms_inputColsIdx];
     const int inputImgRows = inputShape->data[arm::app::VisualWakeWordModel::ms_inputRowsIdx];
     const uint32_t nChannels = inputShape->data[arm::app::VisualWakeWordModel::ms_inputChannelsIdx];
 
-	/* VWW model preprocessing is image conversion from uint8 to [0,1] float values,
-	 * then quantize them with input quantization info. */
-	arm::app::QuantParams inQuantParams = arm::app::GetTensorQuantParams(inputTensor);
+    /* VWW model preprocessing is image conversion from uint8 to [0,1] float values,
+     * then quantize them with input quantization info. */
+    arm::app::QuantParams inQuantParams = arm::app::GetTensorQuantParams(inputTensor);
 
-	//label information
+    //label information
     std::vector <std::string> labels;
     GetLabelsVector(labels);
 
-	//display framebuffer
-	image_t frameBuffer;
-	rectangle_t roi;
+    //display framebuffer
+    image_t frameBuffer;
+    rectangle_t roi;
 
-	//omv library init
-	omv_init();
-	framebuffer_init_image(&frameBuffer);
+    //omv library init
+    omv_init();
+    framebuffer_init_image(&frameBuffer);
 
 #if defined(__PROFILE__)
-	arm::app::Profiler profiler;
+    arm::app::Profiler profiler;
+	uint64_t u64StartCycle;
+	uint64_t u64EndCycle;	
+	uint64_t u64CCAPStartCycle;
+	uint64_t u64CCAPEndCycle;	
 #endif
 
-#if 0
-	while((chStdIn = getchar()))
-	{
-		if(chStdIn == 'Q')
-			break;
-		else if(chStdIn != 'R')
-			continue;
+#if defined (__USE_CCAP__)
+    //Setup image senosr
+    ImageSensor_Init();
+    ImageSensor_Config(eIMAGE_FMT_RGB565, frameBuffer.w, frameBuffer.h);
+#endif
+
+#if !defined (__USE_CCAP__)
+    info("Press 'n' to run next image inference \n");
+    info("Press 'q' to exit program \n");
+
+    while ((chStdIn = getchar()))
+    {
+        if (chStdIn == 'q')
+            break;
+        else if (chStdIn != 'n')
+            continue;
+
 #else
-	while(1)
-	{
+
+    while (1)
+    {
 #endif
-		const uint8_t* pu8ImgSrc = get_img_array(u8ImgIdx);
-		
-		if (nullptr == pu8ImgSrc) {
-			printf_err("Failed to get image index %" PRIu32 " (max: %u)\n", u8ImgIdx,
-					   NUMBER_OF_FILES - 1);
-			return 4;
-		}		
 
-		//resize source image to framebuffer
-		image_t srcImg;
+#if !defined (__USE_CCAP__)
+        const uint8_t *pu8ImgSrc = get_img_array(u8ImgIdx);
 
-		srcImg.w = IMAGE_WIDTH;
-		srcImg.h = IMAGE_HEIGHT;
-		srcImg.data = (uint8_t *)pu8ImgSrc;
-		srcImg.pixfmt = PIXFORMAT_RGB888;
+        if (nullptr == pu8ImgSrc)
+        {
+            printf_err("Failed to get image index %" PRIu32 " (max: %u)\n", u8ImgIdx,
+                       NUMBER_OF_FILES - 1);
+            return 4;
+        }
 
-		roi.x = 0;
-		roi.y = 0;
-		roi.w = IMAGE_WIDTH;
-		roi.h = IMAGE_HEIGHT;
-		imlib_nvt_scale(&srcImg, &frameBuffer, &roi);
+        //resize source image to framebuffer
+        image_t srcImg;
 
-		//TODO: display image on LCD
-		//resize framebuffer image to model input
-		image_t resizeImg;
+        srcImg.w = IMAGE_WIDTH;
+        srcImg.h = IMAGE_HEIGHT;
+        srcImg.data = (uint8_t *)pu8ImgSrc;
+        srcImg.pixfmt = PIXFORMAT_RGB888;
 
-		roi.x = 0;
-		roi.y = 0;
-		roi.w = frameBuffer.w;
-		roi.h = frameBuffer.h;
+        roi.x = 0;
+        roi.y = 0;
+        roi.w = IMAGE_WIDTH;
+        roi.h = IMAGE_HEIGHT;
+        imlib_nvt_scale(&srcImg, &frameBuffer, &roi);
+#endif
 
-		resizeImg.w = inputImgCols;
-		resizeImg.h = inputImgRows;
-		resizeImg.data = (uint8_t *)inputTensor->data.data; //direct resize to input tensor buffer
-	
-		if (1 == nChannels)
-			resizeImg.pixfmt =  PIXFORMAT_GRAYSCALE;
-		else
-			resizeImg.pixfmt = PIXFORMAT_RGB888;
+        //TODO: display image on LCD
+        //resize framebuffer image to model input
+        image_t resizeImg;
 
-		imlib_nvt_scale(&frameBuffer, &resizeImg, &roi);
-		
-		//Quantize input tensor data
-		auto* req_data = static_cast<uint8_t *>(inputTensor->data.data);
-		auto* signed_req_data = static_cast<int8_t *>(inputTensor->data.data);
-		for (size_t i = 0; i < inputTensor->bytes; i++) {
-			auto i_data_int8 = static_cast<int8_t>(((static_cast<float>(req_data[i]) / 255.0f) / inQuantParams.scale) + inQuantParams.offset);
-			signed_req_data[i] = std::min<int8_t>(INT8_MAX, std::max<int8_t>(i_data_int8, INT8_MIN));
-		}
-		
+        roi.x = 0;
+        roi.y = 0;
+        roi.w = frameBuffer.w;
+        roi.h = frameBuffer.h;
+
+        resizeImg.w = inputImgCols;
+        resizeImg.h = inputImgRows;
+        resizeImg.data = (uint8_t *)inputTensor->data.data; //direct resize to input tensor buffer
+
+        if (1 == nChannels)
+            resizeImg.pixfmt =  PIXFORMAT_GRAYSCALE;
+        else
+            resizeImg.pixfmt = PIXFORMAT_RGB888;
+
+#if defined(__PROFILE__)
+		u64StartCycle = pmu_get_systick_Count();
+#endif
+        imlib_nvt_scale(&frameBuffer, &resizeImg, &roi);
+#if defined(__PROFILE__)
+		u64EndCycle = pmu_get_systick_Count();
+		info("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
+
+#if defined (__USE_CCAP__)
+        //Capture new image
+#if defined(__PROFILE__)
+		u64CCAPStartCycle = pmu_get_systick_Count();
+#endif
+        ImageSensor_TriggerCapture((uint32_t)frameBuffer.data);
+#endif		
+
+#if defined(__PROFILE__)
+		u64StartCycle = pmu_get_systick_Count();
+#endif
+        //Quantize input tensor data
+        auto *req_data = static_cast<uint8_t *>(inputTensor->data.data);
+        auto *signed_req_data = static_cast<int8_t *>(inputTensor->data.data);
+
+        for (size_t i = 0; i < inputTensor->bytes; i++)
+        {
+            auto i_data_int8 = static_cast<int8_t>(((static_cast<float>(req_data[i]) / 255.0f) / inQuantParams.scale) + inQuantParams.offset);
+            signed_req_data[i] = std::min<int8_t>(INT8_MAX, std::max<int8_t>(i_data_int8, INT8_MIN));
+        }
+
+#if defined(__PROFILE__)
+		u64EndCycle = pmu_get_systick_Count();
+		info("quantize cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
+
+#if !defined (__USE_CCAP__)
         /* Run inference over this image. */
         info("Running inference on image %" PRIu32 " => %s\n", u8ImgIdx, get_filename(u8ImgIdx));
-
+#endif
+		
 #if defined(__PROFILE__)
-		profiler.StartProfiling("Inference");
+        profiler.StartProfiling("Inference");
 #endif
 
-        if (!model.RunInference()) {
+        if (!model.RunInference())
+        {
             printf_err("Inference failed.");
             return 5;
         }
 
 #if defined(__PROFILE__)
-		profiler.StopProfiling();
+        profiler.StopProfiling();
 #endif
-		
-		std::vector<arm::app::ClassificationResult> results;
 
-		classifier.GetClassificationResults(outputTensor, results,
-											labels, 1,
-											false);
+#if defined (__USE_CCAP__)
+        //Capture new image
+
+        ImageSensor_WaitCaptureDone();
+#if defined(__PROFILE__)
+		u64CCAPEndCycle = pmu_get_systick_Count();
+		info("ccap capture cycles %llu \n", (u64CCAPEndCycle - u64CCAPStartCycle));
+#endif
+#endif		
 		
-		//show result
-		info("Final results:\n");
-		info("Total number of inferences: 1\n");
-		for(int i =0; i < results.size(); i ++)
-		{
-			info("%" PRIu32 ") %" PRIu32 " (%f) -> %s\n", i,
-				results[i].m_labelIdx, results[i].m_normalisedVal,
-				results[i].m_label.c_str());
-		}
-		
+        std::vector<arm::app::ClassificationResult> results;
+
+        classifier.GetClassificationResults(outputTensor, results,
+                                            labels, 1,
+                                            false);
+
+        //show result
+        info("Final results:\n");
+        info("Total number of inferences: 1\n");
+
+        for (int i = 0; i < results.size(); i ++)
+        {
+            info("%" PRIu32 ") %" PRIu32 " (%f) -> %s\n", i,
+                 results[i].m_labelIdx, results[i].m_normalisedVal,
+                 results[i].m_label.c_str());
+        }
+
 #if defined(__PROFILE__)
         profiler.PrintProfilingResult();
 #endif
 
-		u8ImgIdx ++;
-		if(u8ImgIdx >= NUMBER_OF_FILES)
-			u8ImgIdx = 0;
-	}
+        u8ImgIdx ++;
 
-	return 0;
+        if (u8ImgIdx >= NUMBER_OF_FILES)
+            u8ImgIdx = 0;
+    }
+
+    return 0;
 }

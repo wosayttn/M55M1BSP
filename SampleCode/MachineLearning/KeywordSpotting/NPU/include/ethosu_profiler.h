@@ -21,25 +21,28 @@
 
 #define ETHOSU_DERIVED_NCOUNTERS     1      /**< Number of counters derived from event counters */
 #define ETHOSU_PROFILER_NUM_COUNTERS ( \
-            ETHOSU_DERIVED_NCOUNTERS + \
-            ETHOSU_PMU_NCOUNTERS +     \
-            1 /* total CCNT */)
+                                       ETHOSU_DERIVED_NCOUNTERS + \
+                                       ETHOSU_PMU_NCOUNTERS +     \
+                                       1 /* total CCNT */)
 
-typedef struct npu_event_counter_ {
+typedef struct npu_event_counter_
+{
     enum ethosu_pmu_event_type event_type;
     uint32_t event_mask;
     uint32_t counter_value;
-    char* unit;
-    char* name;
+    char *unit;
+    char *name;
 } npu_evt_counter;
 
-typedef struct npu_derived_counter_ {
+typedef struct npu_derived_counter_
+{
     uint32_t counter_value;
-    char* unit;
-    char* name;
+    char *unit;
+    char *name;
 } npu_derived_counter;
 
-typedef struct ethosu_pmu_counters_ {
+typedef struct ethosu_pmu_counters_
+{
     uint64_t                npu_total_ccnt;     /**< Total NPU cycles */
     npu_evt_counter         npu_evt_counters[ETHOSU_PMU_NCOUNTERS];
     npu_derived_counter     npu_derived_counters[ETHOSU_DERIVED_NCOUNTERS];

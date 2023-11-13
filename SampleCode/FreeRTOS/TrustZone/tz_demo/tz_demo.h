@@ -39,6 +39,6 @@
  * After the secure function call finishes, it verifies that both the counters
  * are incremented.
  */
-void vStartTZDemo( void );
+void vStartTZDemo(void);
 
 #endif /* __TZ_DEMO_H__ */

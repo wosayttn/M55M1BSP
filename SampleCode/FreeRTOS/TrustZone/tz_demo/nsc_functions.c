@@ -37,17 +37,17 @@
 /**
  * @brief typedef for non-secure callback.
  */
-typedef void ( *NonSecureCallback_t )( void * ) __attribute__( ( cmse_nonsecure_call ) );
+typedef void (*NonSecureCallback_t)(void *) __attribute__((cmse_nonsecure_call));
 /*-----------------------------------------------------------*/
 
-secureportNON_SECURE_CALLABLE uint32_t NSCFunction( Callback_t pxCallback, void * pvParameters )
+secureportNON_SECURE_CALLABLE uint32_t NSCFunction(Callback_t pxCallback, void *pvParameters)
 {
-	S_NSCFUN_PARAMETER *psFunParam = (S_NSCFUN_PARAMETER *)pvParameters;
-	
+    S_NSCFUN_PARAMETER *psFunParam = (S_NSCFUN_PARAMETER *)pvParameters;
+
     NonSecureCallback_t pxNonSecureCallback;
 
     /* Return function pointer with cleared LSB. */
-    pxNonSecureCallback = ( NonSecureCallback_t ) cmse_nsfptr_create( pxCallback );
+    pxNonSecureCallback = (NonSecureCallback_t) cmse_nsfptr_create(pxCallback);
 
     /* Invoke the supplied callback. */
     pxNonSecureCallback((void *)psFunParam->i32TaskNo);
@@ -60,7 +60,7 @@ secureportNON_SECURE_CALLABLE uint32_t NSCFunction( Callback_t pxCallback, void 
 }
 /*-----------------------------------------------------------*/
 
-secureportNON_SECURE_CALLABLE void NSCPrintf( char *pString )
+secureportNON_SECURE_CALLABLE void NSCPrintf(char *pString)
 {
     // Printing from non-secure, create RED ouput
     //printf("string %p \n", pString);

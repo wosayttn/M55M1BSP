@@ -198,7 +198,7 @@ void HyperRAM_PinConfig(SPIM_T *spim)
 {
     if (spim == SPIM0)
     {
-		//SPIM and OTFC clock was enabled on secure-domain code
+        //SPIM and OTFC clock was enabled on secure-domain code
         /* Enable SPIM0 module clock */
         CLK_EnableModuleClock(SPIM0_MODULE);
         /* Enable OTFC0 module clock */

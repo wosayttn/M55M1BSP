@@ -2137,6 +2137,9 @@
     <group>
         <name>Driver</name>
         <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\gpio.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\retarget.c</name>
         </file>
     </group>

@@ -18,15 +18,14 @@ FATFS  _FatfsVolSd1;
 
 static TCHAR  _Path[3];
 
-void SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc)
+int32_t SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc)
 {
     SDH_Open(sdh, u32CardDetSrc);
-    SDH_Enable_Int(sdh);
 
     if (SDH_Probe(sdh))
     {
         printf("SD initial fail!!\n");
-        return;
+        return SDH_ERR_FAIL;
     }
 
     _Path[1] = ':';
@@ -42,6 +41,8 @@ void SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc)
         _Path[0] = '1';
         f_mount(&_FatfsVolSd1, _Path, 1);
     }
+
+    return SDH_OK;
 }
 
 void SDH_Close_Disk(SDH_T *sdh)

@@ -69,7 +69,7 @@ using PmuEvents = std::array<ethosu_pmu_event_type, ETHOSU_PMU_NCOUNTERS>;
 class Pmu
 {
 public:
-    Pmu(ethosu_driver *_drv, const PmuEvents &_config = {});
+    explicit Pmu(ethosu_driver *_drv, const PmuEvents &_config = {});
 
     void clear();
     void print();
@@ -91,9 +91,9 @@ using BasePointers = std::array<DataPointer, ETHOSU_BASEP_INDEXES>;
 class CommandStream
 {
 public:
-    CommandStream(const DataPointer &_commandStream,
-                  const BasePointers &_pointers = {},
-                  const PmuEvents &_pmuEvents   = {});
+    explicit CommandStream(const DataPointer &_commandStream,
+                           const BasePointers &_pointers = {},
+                           const PmuEvents &_pmuEvents   = {});
     virtual ~CommandStream();
 
     int run(size_t repeat = 1);

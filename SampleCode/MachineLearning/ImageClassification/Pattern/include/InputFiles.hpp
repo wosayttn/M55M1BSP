@@ -35,7 +35,7 @@ extern const uint8_t im1[IMAGE_DATA_SIZE];
 extern const uint8_t im2[IMAGE_DATA_SIZE];
 extern const uint8_t im3[IMAGE_DATA_SIZE];
 
-const char* get_filename(const uint32_t idx);
-const uint8_t* get_img_array(const uint32_t idx);
+const char *get_filename(const uint32_t idx);
+const uint8_t *get_img_array(const uint32_t idx);
 
 #endif /* GENERATED_IMAGES_H */

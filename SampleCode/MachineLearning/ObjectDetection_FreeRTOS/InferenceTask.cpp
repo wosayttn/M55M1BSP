@@ -9,50 +9,51 @@
 #include "InferenceTask.hpp"
 #include "log_macros.h"      /* Logging macros */
 
-namespace InferenceProcess {
+namespace InferenceProcess
+{
 
-	InferenceProcess::InferenceProcess(
+InferenceProcess::InferenceProcess(
     Model *model)
     :   m_model(model)
-	{}
+{}
 
-	bool InferenceProcess::RunJob(
-		object_detection::DetectorPostprocessing *pPostProc,
-		int modelCols,
-		int mode1Rows,
-		int srcImgWidth,
-		int srcImgHeight,
-		std::vector<object_detection::DetectionResult> *results
-	)
-	{
-		info("Inference process task run job...\n");
-
-#if defined(__PROFILE__)
-		profiler.StartProfiling("Inference");
-#endif
-
-		bool runInf = m_model->RunInference();		
+bool InferenceProcess::RunJob(
+    object_detection::DetectorPostprocessing *pPostProc,
+    int modelCols,
+    int mode1Rows,
+    int srcImgWidth,
+    int srcImgHeight,
+    std::vector<object_detection::DetectionResult> *results
+)
+{
+    info("Inference process task run job...\n");
 
 #if defined(__PROFILE__)
-		profiler.StopProfiling();
-        profiler.PrintProfilingResult();
+    profiler.StartProfiling("Inference");
 #endif
 
-		TfLiteTensor* modelOutput0 = m_model->GetOutputTensor(0);
-        TfLiteTensor* modelOutput1 = m_model->GetOutputTensor(1);
-		
-		pPostProc->RunPostProcessing(
-			mode1Rows,
-            modelCols,
-			srcImgHeight,
-			srcImgWidth,
-            modelOutput0,
-            modelOutput1,
-            *results);
-		
-		return runInf;
-	}
-		
+    bool runInf = m_model->RunInference();
+
+#if defined(__PROFILE__)
+    profiler.StopProfiling();
+    profiler.PrintProfilingResult();
+#endif
+
+    TfLiteTensor *modelOutput0 = m_model->GetOutputTensor(0);
+    TfLiteTensor *modelOutput1 = m_model->GetOutputTensor(1);
+
+    pPostProc->RunPostProcessing(
+        mode1Rows,
+        modelCols,
+        srcImgHeight,
+        srcImgWidth,
+        modelOutput0,
+        modelOutput1,
+        *results);
+
+    return runInf;
+}
+
 }// namespace InferenceProcess
 
 /****************************************************************************
@@ -62,37 +63,43 @@ namespace InferenceProcess {
 
 extern "C" {
 
-void *ethosu_mutex_create(void) {
-    return xSemaphoreCreateMutex();
-}
+    void *ethosu_mutex_create(void)
+    {
+        return xSemaphoreCreateMutex();
+    }
 
-int ethosu_mutex_lock(void *mutex) {
-    SemaphoreHandle_t handle = reinterpret_cast<SemaphoreHandle_t>(mutex);
-    xSemaphoreTake(handle, portMAX_DELAY);
-	return 0;
-}
+    int ethosu_mutex_lock(void *mutex)
+    {
+        SemaphoreHandle_t handle = reinterpret_cast<SemaphoreHandle_t>(mutex);
+        xSemaphoreTake(handle, portMAX_DELAY);
+        return 0;
+    }
 
-int ethosu_mutex_unlock(void *mutex) {
-    SemaphoreHandle_t handle = reinterpret_cast<SemaphoreHandle_t>(mutex);
-    xSemaphoreGive(handle);
-	return 0;
-}
+    int ethosu_mutex_unlock(void *mutex)
+    {
+        SemaphoreHandle_t handle = reinterpret_cast<SemaphoreHandle_t>(mutex);
+        xSemaphoreGive(handle);
+        return 0;
+    }
 
-void *ethosu_semaphore_create(void) {
-    return xSemaphoreCreateBinary();
-}
+    void *ethosu_semaphore_create(void)
+    {
+        return xSemaphoreCreateBinary();
+    }
 
-int ethosu_semaphore_take(void *sem) {
-    SemaphoreHandle_t handle = reinterpret_cast<SemaphoreHandle_t>(sem);
-    xSemaphoreTake(handle, portMAX_DELAY);
-	return 0;
-}
+    int ethosu_semaphore_take(void *sem)
+    {
+        SemaphoreHandle_t handle = reinterpret_cast<SemaphoreHandle_t>(sem);
+        xSemaphoreTake(handle, portMAX_DELAY);
+        return 0;
+    }
 
-int ethosu_semaphore_give(void *sem) {
-    SemaphoreHandle_t handle = reinterpret_cast<SemaphoreHandle_t>(sem);
-    xSemaphoreGive(handle);
-	return 0;
-}
+    int ethosu_semaphore_give(void *sem)
+    {
+        SemaphoreHandle_t handle = reinterpret_cast<SemaphoreHandle_t>(sem);
+        xSemaphoreGive(handle);
+        return 0;
+    }
 }
 
 
@@ -100,24 +107,26 @@ void inferenceProcessTask(void *pvParameters)
 {
     struct ProcessTaskParams params = *reinterpret_cast<struct ProcessTaskParams *>(pvParameters);
 
-	InferenceProcess::InferenceProcess inferenceProcess(params.model);
+    InferenceProcess::InferenceProcess inferenceProcess(params.model);
 
-    for (;;) {
+    for (;;)
+    {
         xInferenceJob *xJob;
 
         xQueueReceive(params.queueHandle, &xJob, portMAX_DELAY);
 
-		inferenceProcess.RunJob(
-			xJob->pPostProc,
-			xJob->modelCols,
-			xJob->mode1Rows,
-			xJob->srcImgWidth,
-			xJob->srcImgHeight,
-			xJob->results
-		);
+        inferenceProcess.RunJob(
+            xJob->pPostProc,
+            xJob->modelCols,
+            xJob->mode1Rows,
+            xJob->srcImgWidth,
+            xJob->srcImgHeight,
+            xJob->results
+        );
 
         xQueueSend(xJob->responseQueue, &xJob, portMAX_DELAY);
     }
+
     vTaskDelete(nullptr);
 }
 

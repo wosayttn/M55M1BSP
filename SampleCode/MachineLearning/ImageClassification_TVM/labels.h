@@ -4,7 +4,8 @@
  ***************************************************************************/
 
 //const char * labels[] __attribute__((aligned(16), section("labels"))) = {
-const char * labels[] = {
+const char *labels[] =
+{
     "tench, Tinca tinca",
     "goldfish, Carassius auratus",
     "great white shark, white shark, man-eater, man-eating shark, Carcharodon carcharias",

@@ -21,16 +21,18 @@ extern "C" {
 /**
  * @brief   Container for a single unit for a PMU counter.
  */
-typedef struct _pmu_counter_unit {
+typedef struct _pmu_counter_unit
+{
     uint64_t value;     /**< Value of the counter expressed as 64 bits unsigned integer. */
-    const char* name;   /**< Name for the counter. */
-    const char* unit;   /**< Unit that the counter value represents (like cycles, beats, or milliseconds). */
+    const char *name;   /**< Name for the counter. */
+    const char *unit;   /**< Unit that the counter value represents (like cycles, beats, or milliseconds). */
 } pmu_counter_unit;
 
 /**
  * @brief   Container for a an array of counters
  */
-typedef struct _pmu_counters {
+typedef struct _pmu_counters
+{
     pmu_counter_unit counters[NUM_PMU_COUNTERS]; /**< Counter array. */
     uint32_t num_counters;                       /**< Number of valid counters. */
     bool initialised;                            /**< Initialised or not. */
@@ -45,7 +47,7 @@ void pmu_reset_counters(void);
  * @brief       Gets the current counter values.
  * @param[out]  Pointer to a pmu_counters object.
  **/
-void pmu_get_counters(pmu_counters* counters);
+void pmu_get_counters(pmu_counters *counters);
 
 /**
  * @brief       Gets the systick counter value.

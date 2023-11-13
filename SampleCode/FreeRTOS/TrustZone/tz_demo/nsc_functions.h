@@ -31,14 +31,14 @@
 
 typedef struct
 {
-	int32_t i32TaskNo;
-	uint32_t ulSecureCounter;
-}S_NSCFUN_PARAMETER;
+    int32_t i32TaskNo;
+    uint32_t ulSecureCounter;
+} S_NSCFUN_PARAMETER;
 
 /**
  * @brief Callback function pointer definition.
  */
-typedef void ( * Callback_t ) ( void *);
+typedef void (* Callback_t)(void *);
 
 /**
  * @brief Invokes the supplied callback which is on the non-secure side.
@@ -52,9 +52,9 @@ typedef void ( * Callback_t ) ( void *);
  * @return A number which is one more than the value returned in previous
  * invocation of this function.
  */
-uint32_t NSCFunction( Callback_t pxCallback, void * pvParameters);
+uint32_t NSCFunction(Callback_t pxCallback, void *pvParameters);
 
 /* output a string on secure side stdio */
-void NSCPrintf( char *pString );
+void NSCPrintf(char *pString);
 
 #endif /* __NSC_FUNCTIONS_H__ */

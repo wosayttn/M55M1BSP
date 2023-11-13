@@ -19,49 +19,51 @@
 #define __PROFILE__
 
 #if defined(__PROFILE__)
-#include "Profiler.hpp"
+    #include "Profiler.hpp"
 #endif
 
 using namespace arm::app;
 
-namespace InferenceProcess {
+namespace InferenceProcess
+{
 
-class InferenceProcess {
+class InferenceProcess
+{
 public:
-	InferenceProcess(Model *model);
-	bool RunJob(
-		object_detection::DetectorPostprocessing *pPostProc,
-		int modelCols,
-		int mode1Rows,
-		int srcImgWidth,
-		int srcImgHeight,
-		std::vector<object_detection::DetectionResult> *results);
+    InferenceProcess(Model *model);
+    bool RunJob(
+        object_detection::DetectorPostprocessing *pPostProc,
+        int modelCols,
+        int mode1Rows,
+        int srcImgWidth,
+        int srcImgHeight,
+        std::vector<object_detection::DetectionResult> *results);
 protected:
 
 #if defined(__PROFILE__)
-	arm::app::Profiler profiler;
+    arm::app::Profiler profiler;
 #endif
 
-	Model* m_model = nullptr;
+    Model *m_model = nullptr;
 };
 }// namespace InferenceProcess
 
 struct ProcessTaskParams
 {
-	Model* model;
-	QueueHandle_t queueHandle;
+    Model *model;
+    QueueHandle_t queueHandle;
 };
 
 struct xInferenceJob
 {
-	QueueHandle_t responseQueue;
-	object_detection::DetectorPostprocessing *pPostProc;
-	int modelCols;
-	int mode1Rows;
-	int srcImgWidth;
-	int srcImgHeight;
-	
-	std::vector<object_detection::DetectionResult> *results;
+    QueueHandle_t responseQueue;
+    object_detection::DetectorPostprocessing *pPostProc;
+    int modelCols;
+    int mode1Rows;
+    int srcImgWidth;
+    int srcImgHeight;
+
+    std::vector<object_detection::DetectionResult> *results;
 };
 
 void inferenceProcessTask(void *pvParameters);

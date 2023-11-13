@@ -19,29 +19,33 @@
 
 #include "Mfcc.hpp"
 
-namespace arm {
-namespace app {
-namespace audio {
+namespace arm
+{
+namespace app
+{
+namespace audio
+{
 
-    /* Class to provide MicroNet specific MFCC calculation requirements. */
-    class KwsMFCC : public MFCC {
+/* Class to provide MicroNet specific MFCC calculation requirements. */
+class KwsMFCC : public MFCC
+{
 
-    public:
-        static constexpr uint32_t  ms_defaultSamplingFreq = 16000;
-        static constexpr uint32_t  ms_defaultNumFbankBins =    40;
-        static constexpr uint32_t  ms_defaultMelLoFreq    =    20;
-        static constexpr uint32_t  ms_defaultMelHiFreq    =  4000;
-        static constexpr bool      ms_defaultUseHtkMethod =  true;
+public:
+    static constexpr uint32_t  ms_defaultSamplingFreq = 16000;
+    static constexpr uint32_t  ms_defaultNumFbankBins =    40;
+    static constexpr uint32_t  ms_defaultMelLoFreq    =    20;
+    static constexpr uint32_t  ms_defaultMelHiFreq    =  4000;
+    static constexpr bool      ms_defaultUseHtkMethod =  true;
 
-        explicit KwsMFCC(const size_t numFeats, const size_t frameLen)
-            :  MFCC(MfccParams(
-                        ms_defaultSamplingFreq, ms_defaultNumFbankBins,
-                        ms_defaultMelLoFreq, ms_defaultMelHiFreq,
-                        numFeats, frameLen, ms_defaultUseHtkMethod))
-        {}
-        KwsMFCC()  = delete;
-        ~KwsMFCC() = default;
-    };
+    explicit KwsMFCC(const size_t numFeats, const size_t frameLen)
+        :  MFCC(MfccParams(
+                    ms_defaultSamplingFreq, ms_defaultNumFbankBins,
+                    ms_defaultMelLoFreq, ms_defaultMelHiFreq,
+                    numFeats, frameLen, ms_defaultUseHtkMethod))
+    {}
+    KwsMFCC()  = delete;
+    ~KwsMFCC() = default;
+};
 
 } /* namespace audio */
 } /* namespace app */

@@ -22,29 +22,35 @@
 
 #include "InputFiles.hpp"
 
-static const char *img_filenames[] = {
+static const char *img_filenames[] =
+{
     "car.jpg",
     "dinner.jpg",
 };
 
-static const uint8_t *img_arrays[] = {
+static const uint8_t *img_arrays[] =
+{
     im0,
-	im1
+    im1
 };
 
-const char* get_filename(const uint32_t idx)
+const char *get_filename(const uint32_t idx)
 {
-    if (idx < NUMBER_OF_FILES) {
+    if (idx < NUMBER_OF_FILES)
+    {
         return img_filenames[idx];
     }
+
     return nullptr;
 }
 
 
-const uint8_t* get_img_array(const uint32_t idx)
+const uint8_t *get_img_array(const uint32_t idx)
 {
-    if (idx < NUMBER_OF_FILES) {
+    if (idx < NUMBER_OF_FILES)
+    {
         return img_arrays[idx];
     }
+
     return nullptr;
 }

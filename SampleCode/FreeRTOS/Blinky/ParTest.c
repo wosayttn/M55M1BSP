@@ -86,12 +86,12 @@
 
 /* Shift the LED bit into the correct position within the POW register to
 perform the desired operation. */
-#define partstON_SHIFT	( 16UL )
-#define partstOFF_SHIFT	( 0UL )
+#define partstON_SHIFT  ( 16UL )
+#define partstOFF_SHIFT ( 0UL )
 
 /*-----------------------------------------------------------*/
 
-void vParTestInitialise( void )
+void vParTestInitialise(void)
 {
 
     SYS_UnlockReg();
@@ -101,8 +101,14 @@ void vParTestInitialise( void )
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-	
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
+
+    /* Enable HXT clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
+
+    /* Waiting for HXT clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
+
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
@@ -112,64 +118,49 @@ void vParTestInitialise( void )
     /* Enable UART0 module clock */
     CLK_EnableModuleClock(UART0_MODULE);
 
-	/* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+    /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
+    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HXT, CLK_UARTDIV0_UART0DIV(1));
 
-	/*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
-    
+    //SET_UART0_RXD_PB12();
+    //SET_UART0_TXD_PB13();
+    SET_UART0_RXD_PA0();
+    SET_UART0_TXD_PA1();
+
     /* Configure Debug port */
     UART_Open(UART0, 115200);
 
     /* LED IO PA11*/
-    PA->MODE = (PA->MODE & (~(3ul << 11*2))) | GPIO_MODE_OUTPUT << 11*2;
+    PA->MODE = (PA->MODE & (~(3ul << 11 * 2))) | GPIO_MODE_OUTPUT << 11 * 2;
 
 
 #if 0 // ETM MFP
-	SET_ETMC_TRACE_CLK_PB11();
-	SET_ETMC_TRACE_DATA0_PB10();
-	SET_ETMC_TRACE_DATA1_PB9();
-	SET_ETMC_TRACE_DATA2_PB8();
-	SET_ETMC_TRACE_DATA3_PB7();
+    SET_ETMC_TRACE_CLK_PB11();
+    SET_ETMC_TRACE_DATA0_PB10();
+    SET_ETMC_TRACE_DATA1_PB9();
+    SET_ETMC_TRACE_DATA2_PB8();
+    SET_ETMC_TRACE_DATA3_PB7();
 #endif
 
 #if 0 //Enable CLK output
-	CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_HCLK0, 2, CLK_CLKOCTL_DIV1EN_DIV_FREQSEL);
+    CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_HCLK0, 2, CLK_CLKOCTL_DIV1EN_DIV_FREQSEL);
     SET_CLKO_PC13();
 #endif
 
-    
+
     printf("\b\b\b\b\b\b\n\nFreeRTOS ...\n");
-    
+
 }
 /*-----------------------------------------------------------*/
 
-void vParTestSetLED( unsigned long ulLED, signed portBASE_TYPE xValue )
+void vParTestToggleLED(unsigned long ulLED)
 {
     (void)ulLED;
-
-    if( xValue == pdTRUE )
-    {
-        /* Turn the LED on. */			
-        PA11 = 0;
-    }
-    else
-    {
-        /* Turn the LED off. */			
-        PA11 = 1;
-    }
-}
-/*-----------------------------------------------------------*/
-
-void vParTestToggleLED( unsigned long ulLED )
-{
-    (void)ulLED;
-	printf("vParTestToggleLED \n");
+    printf("vParTestToggleLED \n");
     PA11 ^= 1;
 }
 /*-----------------------------------------------------------*/

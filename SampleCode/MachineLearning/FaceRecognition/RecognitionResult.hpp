@@ -11,20 +11,23 @@
 
 #include <string>
 
-namespace arm {
-namespace app {
+namespace arm
+{
+namespace app
+{
 
-    /**
-     * @brief   Class representing a single recognition result.
-     */
-    class RecognitionResult {
-    public:
-        double          m_predict = 0.0;
-        std::string     m_label;
+/**
+ * @brief   Class representing a single recognition result.
+ */
+class RecognitionResult
+{
+public:
+    double          m_predict = 0.0;
+    std::string     m_label;
 
-        RecognitionResult() = default;
-        ~RecognitionResult() = default;
-    };
+    RecognitionResult() = default;
+    ~RecognitionResult() = default;
+};
 
 } /* namespace app */
 } /* namespace arm */

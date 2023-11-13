@@ -27,13 +27,13 @@
 
 #define NUMBER_OF_FILES  (2U)
 #define IMAGE_DATA_SIZE  (230400U)
-#define IMAGE_WIDTH		320
-#define IMAGE_HEIGHT 	240
+#define IMAGE_WIDTH     320
+#define IMAGE_HEIGHT    240
 
 extern const uint8_t im0[IMAGE_DATA_SIZE];
 extern const uint8_t im1[IMAGE_DATA_SIZE];
 
-const char* get_filename(const uint32_t idx);
-const uint8_t* get_img_array(const uint32_t idx);
+const char *get_filename(const uint32_t idx);
+const uint8_t *get_img_array(const uint32_t idx);
 
 #endif /* GENERATED_IMAGES_H */

@@ -42,14 +42,41 @@
 int32_t SPIM_HYPER_SetDLLDelayNum(SPIM_T *spim, uint32_t u32DelayNum)
 {
     volatile int i32Timeout = SPIM_HYPER_TIMEOUT;
+    uint32_t u32SPIMDiv = 0;
 
     /* SPIM starts to send DLL reference clock to DLL circuit
        that the frequency is the same as the SPIM output bus clock. */
-    SPIM_HYPER_ENABLE_DLLOLDO(spim, SPIM_HYPER_OP_ENABLE);
+    SPIM_HYPER_ENABLE_DLLOLDO(SPIM0, SPIM_HYPER_OP_ENABLE);
+    SPIM_HYPER_ENABLE_DLLOLDO(SPIM1, SPIM_HYPER_OP_ENABLE); //TESTCHIP_ONLY not support
 
     /* User asserts this control register to 0x1,
        the DLL circuit begins searching for lock with DLL reference clock. */
-    SPIM_HYPER_ENABLE_DLLOVRST(spim, SPIM_HYPER_OP_ENABLE);
+    SPIM_HYPER_ENABLE_DLLOVRST(SPIM0, SPIM_HYPER_OP_ENABLE);
+    SPIM_HYPER_ENABLE_DLLOVRST(SPIM1, SPIM_HYPER_OP_ENABLE); //TESTCHIP_ONLY not support
+
+    u32SPIMDiv = SPIM_HYPER_GET_CLKDIV(spim);
+
+    switch (u32SPIMDiv)
+    {
+        case 0:
+            u32SPIMDiv = 0;
+            break;
+
+        case 1:
+        case 2:
+            u32SPIMDiv = 1;
+            break;
+
+        case 3:
+            u32SPIMDiv = 2;
+            break;
+
+        default:
+            u32SPIMDiv = 3;
+            break;
+    }
+
+    SPIM_HYPER_SET_DLLDIV(spim, u32SPIMDiv);
 
     i32Timeout = SPIM_HYPER_TIMEOUT;
 
@@ -120,11 +147,24 @@ int32_t SPIM_HYPER_WaitSPIMENDone(SPIM_T *spim, uint32_t u32IsSync)
 
     if (u32IsSync)
     {
-        while (SPIM_HYPER_IS_BUSY(spim))
+        if (SPIM_HYPER_GET_INT(spim))
         {
-            if (--i32TimeOutCount <= 0)
+            while (SPIM_HYPER_GET_INTSTS(spim))
             {
-                return SPIM_HYPER_ERR_TIMEOUT;
+                if (--i32TimeOutCount <= 0)
+                {
+                    return SPIM_HYPER_ERR_TIMEOUT;
+                }
+            }
+        }
+        else
+        {
+            while (SPIM_HYPER_IS_BUSY(spim))
+            {
+                if (--i32TimeOutCount <= 0)
+                {
+                    return SPIM_HYPER_ERR_TIMEOUT;
+                }
             }
         }
     }

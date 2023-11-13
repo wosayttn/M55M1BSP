@@ -53,7 +53,7 @@
     1 tab == 4 spaces!
 */
 
-/* 
+/*
     "Reg test" tasks - These fill the registers with known values, then check
     that each register maintains its expected value for the lifetime of the
     task.  Each task uses a different set of values.  The reg test tasks execute
@@ -68,166 +68,166 @@
 /* Counters used to ensure the tasks are still running. */
 extern volatile unsigned long ulRegTest1LoopCounter, ulRegTest2LoopCounter;
 
-void vRegTest1Task( void *pvParameters )
+void vRegTest1Task(void *pvParameters)
 {
-	__asm volatile
-	(
-		/* Fill the core registers with known values.  This is only done once. */
-		"movs r1, #101	\n"
-		"movs r2, #102	\n"
-		"movs r3, #103	\n"
-		"movs r4, #104	\n"
-		"movs r5, #105	\n"
-		"movs r6, #106	\n"
-		"movs r7, #107	\n"
-		"movs r0, #108	\n"
-		"mov  r8, r0	\n"
-		"movs r0, #109	\n"
-		"mov  r9, r0	\n"
-		"movs r0, #110	\n"
-		"mov  r10, r0	\n"
-		"movs r0, #111	\n"
-		"mov  r11, r0	\n"
-		"movs r0, #112	\n"
-		"mov  r12, r0	\n"
-		"movs r0, #100	\n"
+    __asm volatile
+    (
+        /* Fill the core registers with known values.  This is only done once. */
+        "movs r1, #101	\n"
+        "movs r2, #102	\n"
+        "movs r3, #103	\n"
+        "movs r4, #104	\n"
+        "movs r5, #105	\n"
+        "movs r6, #106	\n"
+        "movs r7, #107	\n"
+        "movs r0, #108	\n"
+        "mov  r8, r0	\n"
+        "movs r0, #109	\n"
+        "mov  r9, r0	\n"
+        "movs r0, #110	\n"
+        "mov  r10, r0	\n"
+        "movs r0, #111	\n"
+        "mov  r11, r0	\n"
+        "movs r0, #112	\n"
+        "mov  r12, r0	\n"
+        "movs r0, #100	\n"
 
-		"reg1_loop:		\n"
-		/* Repeatedly check that each register still contains the value written to it when the task started. */
-		"cmp  r0, #100	\n"
-		"bne  reg1_error_loop	\n"
-		"cmp  r1, #101	\n"
-		"bne  reg1_error_loop	\n"
-		"cmp  r2, #102	\n"
-		"bne  reg1_error_loop	\n"
-		"cmp  r3, #103	\n"
-		"bne  reg1_error_loop	\n"
-		"cmp  r4, #104	\n"
-		"bne  reg1_error_loop	\n"
-		"cmp  r5, #105	\n"
-		"bne  reg1_error_loop	\n"
-		"cmp  r6, #106	\n"
-		"bne  reg1_error_loop	\n"
-		"cmp  r7, #107	\n"
-		"bne  reg1_error_loop	\n"
-		"movs r0, #108	\n"
-		"cmp  r8, r0	\n"
-		"bne  reg1_error_loop	\n"
-		"movs r0, #109	\n"
-		"cmp  r9, r0	\n"
-		"bne  reg1_error_loop	\n"
-		"movs r0, #110	\n"
-		"cmp  r10, r0	\n"
-		"bne  reg1_error_loop	\n"
-		"movs r0, #111	\n"
-		"cmp  r11, r0	\n"
-		"bne  reg1_error_loop	\n"
-		"movs r0, #112	\n"
-		"cmp  r12, r0	\n"
-		"bne  reg1_error_loop	\n"
+        "reg1_loop:		\n"
+        /* Repeatedly check that each register still contains the value written to it when the task started. */
+        "cmp  r0, #100	\n"
+        "bne  reg1_error_loop	\n"
+        "cmp  r1, #101	\n"
+        "bne  reg1_error_loop	\n"
+        "cmp  r2, #102	\n"
+        "bne  reg1_error_loop	\n"
+        "cmp  r3, #103	\n"
+        "bne  reg1_error_loop	\n"
+        "cmp  r4, #104	\n"
+        "bne  reg1_error_loop	\n"
+        "cmp  r5, #105	\n"
+        "bne  reg1_error_loop	\n"
+        "cmp  r6, #106	\n"
+        "bne  reg1_error_loop	\n"
+        "cmp  r7, #107	\n"
+        "bne  reg1_error_loop	\n"
+        "movs r0, #108	\n"
+        "cmp  r8, r0	\n"
+        "bne  reg1_error_loop	\n"
+        "movs r0, #109	\n"
+        "cmp  r9, r0	\n"
+        "bne  reg1_error_loop	\n"
+        "movs r0, #110	\n"
+        "cmp  r10, r0	\n"
+        "bne  reg1_error_loop	\n"
+        "movs r0, #111	\n"
+        "cmp  r11, r0	\n"
+        "bne  reg1_error_loop	\n"
+        "movs r0, #112	\n"
+        "cmp  r12, r0	\n"
+        "bne  reg1_error_loop	\n"
 
-		/* Everything passed, increment the loop counter. */
-		"push { r1 }	\n"
-		"ldr  r0, =ulRegTest1LoopCounter	\n"
-		"ldr  r1, [r0]	\n"
-		"adds r1, r1, #1	\n"
-		"str  r1, [r0]	\n"
+        /* Everything passed, increment the loop counter. */
+        "push { r1 }	\n"
+        "ldr  r0, =ulRegTest1LoopCounter	\n"
+        "ldr  r1, [r0]	\n"
+        "adds r1, r1, #1	\n"
+        "str  r1, [r0]	\n"
 
-		/* Yield to increase test coverage. */
-		"movs r0, #0x01	\n"
-		/*NVIC_INT_CTRL*/
-		"ldr  r1, =0xe000ed04	\n"
-		/*Shift to PendSV bit*/
-		"lsls r0 ,r0, #28	\n"
-		"str  r0, [r1]	\n"
-		"dsb	\n"
-		"pop  { r1 }	\n"
-		/* Start again. */
-		"movs r0, #100	\n"
-		"b    reg1_loop	\n"
-		
-		/* If this line is hit then there was an error in a core register value. The loop ensures the loop counter stops incrementing. */
-		"reg1_error_loop:	\n"
-		"b    reg1_error_loop	\n"
-		"nop	\n"
-	);
+        /* Yield to increase test coverage. */
+        "movs r0, #0x01	\n"
+        /*NVIC_INT_CTRL*/
+        "ldr  r1, =0xe000ed04	\n"
+        /*Shift to PendSV bit*/
+        "lsls r0 ,r0, #28	\n"
+        "str  r0, [r1]	\n"
+        "dsb	\n"
+        "pop  { r1 }	\n"
+        /* Start again. */
+        "movs r0, #100	\n"
+        "b    reg1_loop	\n"
+
+        /* If this line is hit then there was an error in a core register value. The loop ensures the loop counter stops incrementing. */
+        "reg1_error_loop:	\n"
+        "b    reg1_error_loop	\n"
+        "nop	\n"
+    );
 }
 
 
-void vRegTest2Task( void *pvParameters )
+void vRegTest2Task(void *pvParameters)
 {
-	__asm volatile
-	(
-		/* Repeatedly check that each register still contains the value written to it when the task started. */
-		"movs r1, #1	\n"
-		"movs r2, #2	\n"
-		"movs r3, #3	\n"
-		"movs r4, #4	\n"
-		"movs r5, #5	\n"
-		"movs r6, #6	\n"
-		"movs r7, #7	\n"
-		"movs r0, #8	\n"
-		"mov  r8, r0	\n"
-		"movs r0, #9	\n"
-		"mov  r9, r0	\n"
-		"movs r0, #10	\n"
-		"mov  r10, r0	\n"
-		"movs r0, #11	\n"
-		"mov  r11, r0	\n"
-		"movs r0, #12	\n"
-		"mov  r12, r0	\n"
-		"movs r0, #10	\n"
+    __asm volatile
+    (
+        /* Repeatedly check that each register still contains the value written to it when the task started. */
+        "movs r1, #1	\n"
+        "movs r2, #2	\n"
+        "movs r3, #3	\n"
+        "movs r4, #4	\n"
+        "movs r5, #5	\n"
+        "movs r6, #6	\n"
+        "movs r7, #7	\n"
+        "movs r0, #8	\n"
+        "mov  r8, r0	\n"
+        "movs r0, #9	\n"
+        "mov  r9, r0	\n"
+        "movs r0, #10	\n"
+        "mov  r10, r0	\n"
+        "movs r0, #11	\n"
+        "mov  r11, r0	\n"
+        "movs r0, #12	\n"
+        "mov  r12, r0	\n"
+        "movs r0, #10	\n"
 
-		"reg2_loop:	\n"
-		/* Repeatedly check that each register still contains the value written to it when the task started. */
-		"cmp  r0, #10	\n"
-		"bne  reg2_error_loop	\n"
-		"cmp  r1, #1	\n"
-		"bne  reg2_error_loop	\n"
-		"cmp  r2, #2	\n"
-		"bne  reg2_error_loop	\n"
-		"cmp  r3, #3	\n"
-		"bne  reg2_error_loop	\n"
-		"cmp  r4, #4	\n"
-		"bne  reg2_error_loop	\n"
-		"cmp  r5, #5	\n"
-		"bne  reg2_error_loop	\n"
-		"cmp  r6, #6	\n"
-		"bne  reg2_error_loop	\n"
-		"cmp  r7, #7	\n"
-		"bne  reg2_error_loop	\n"
-		"movs r0, #8	\n"
-		"cmp  r8, r0	\n"
-		"bne  reg2_error_loop	\n"
-		"movs r0, #9	\n"
-		"cmp  r9, r0	\n"
-		"bne  reg2_error_loop	\n"
-		"movs r0, #10	\n"
-		"cmp  r10, r0	\n"
-		"bne  reg2_error_loop	\n"
-		"movs r0, #11	\n"
-		"cmp  r11, r0	\n"
-		"bne  reg2_error_loop	\n"
-		"movs r0, #12	\n"
-		"cmp  r12, r0	\n"
-		"bne  reg2_error_loop	\n"
+        "reg2_loop:	\n"
+        /* Repeatedly check that each register still contains the value written to it when the task started. */
+        "cmp  r0, #10	\n"
+        "bne  reg2_error_loop	\n"
+        "cmp  r1, #1	\n"
+        "bne  reg2_error_loop	\n"
+        "cmp  r2, #2	\n"
+        "bne  reg2_error_loop	\n"
+        "cmp  r3, #3	\n"
+        "bne  reg2_error_loop	\n"
+        "cmp  r4, #4	\n"
+        "bne  reg2_error_loop	\n"
+        "cmp  r5, #5	\n"
+        "bne  reg2_error_loop	\n"
+        "cmp  r6, #6	\n"
+        "bne  reg2_error_loop	\n"
+        "cmp  r7, #7	\n"
+        "bne  reg2_error_loop	\n"
+        "movs r0, #8	\n"
+        "cmp  r8, r0	\n"
+        "bne  reg2_error_loop	\n"
+        "movs r0, #9	\n"
+        "cmp  r9, r0	\n"
+        "bne  reg2_error_loop	\n"
+        "movs r0, #10	\n"
+        "cmp  r10, r0	\n"
+        "bne  reg2_error_loop	\n"
+        "movs r0, #11	\n"
+        "cmp  r11, r0	\n"
+        "bne  reg2_error_loop	\n"
+        "movs r0, #12	\n"
+        "cmp  r12, r0	\n"
+        "bne  reg2_error_loop	\n"
 
-		/* Everything passed, increment the loop counter. */
-		"push { r1 }	\n"
-		"ldr  r0, =ulRegTest2LoopCounter	\n"
-		"ldr  r1, [r0]	\n"
-		"adds r1, r1, #1	\n"
-		"str  r1, [r0]	\n"
-		"pop  { r1 }	\n"
+        /* Everything passed, increment the loop counter. */
+        "push { r1 }	\n"
+        "ldr  r0, =ulRegTest2LoopCounter	\n"
+        "ldr  r1, [r0]	\n"
+        "adds r1, r1, #1	\n"
+        "str  r1, [r0]	\n"
+        "pop  { r1 }	\n"
 
-		/* Start again. */
-		"movs r0, #10	\n"
-		"b    reg2_loop	\n"
+        /* Start again. */
+        "movs r0, #10	\n"
+        "b    reg2_loop	\n"
 
-		"reg2_error_loop: \n"
-		/* If this line is hit then there was an error in a core register value. The loop ensures the loop counter stops incrementing. */
-		"b    reg2_error_loop \n"
-		"nop	\n"
-	);
+        "reg2_error_loop: \n"
+        /* If this line is hit then there was an error in a core register value. The loop ensures the loop counter stops incrementing. */
+        "b    reg2_error_loop \n"
+        "nop	\n"
+    );
 
 }

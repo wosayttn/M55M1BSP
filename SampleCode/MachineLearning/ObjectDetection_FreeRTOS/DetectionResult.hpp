@@ -18,44 +18,48 @@
 #define DETECTION_RESULT_HPP
 
 
-namespace arm {
-namespace app {
-namespace object_detection {
+namespace arm
+{
+namespace app
+{
+namespace object_detection
+{
 
+/**
+ * @brief   Class representing a single detection result.
+ */
+class DetectionResult
+{
+public:
     /**
-     * @brief   Class representing a single detection result.
-     */
-    class DetectionResult {
-    public:
-        /**
-         * @brief       Constructor
-         * @param[in]   normalisedVal   Result normalized value
-         * @param[in]   x0              Top corner x starting point
-         * @param[in]   y0              Top corner y starting point
-         * @param[in]   w               Detection result width
-         * @param[in]   h               Detection result height
-         * @param[in]   cls             Detection class number
-         **/
-        DetectionResult(double normalisedVal,int x0,int y0, int w,int h, int cls) :
-                m_normalisedVal(normalisedVal),
-                m_x0(x0),
-                m_y0(y0),
-                m_w(w),
-                m_h(h),
-		        m_cls(cls)
-            {
-            }
+     * @brief       Constructor
+     * @param[in]   normalisedVal   Result normalized value
+     * @param[in]   x0              Top corner x starting point
+     * @param[in]   y0              Top corner y starting point
+     * @param[in]   w               Detection result width
+     * @param[in]   h               Detection result height
+     * @param[in]   cls             Detection class number
+     **/
+    DetectionResult(double normalisedVal, int x0, int y0, int w, int h, int cls) :
+        m_normalisedVal(normalisedVal),
+        m_x0(x0),
+        m_y0(y0),
+        m_w(w),
+        m_h(h),
+        m_cls(cls)
+    {
+    }
 
-        DetectionResult() = default;
-        ~DetectionResult() = default;
+    DetectionResult() = default;
+    ~DetectionResult() = default;
 
-        double  m_normalisedVal{0.0};
-        int     m_x0{0};
-        int     m_y0{0};
-        int     m_w{0};
-        int     m_h{0};
-		int     m_cls{0};
-    };
+    double  m_normalisedVal{0.0};
+    int     m_x0{0};
+    int     m_y0{0};
+    int     m_w{0};
+    int     m_h{0};
+    int     m_cls{0};
+};
 
 } /* namespace object_detection */
 } /* namespace app */

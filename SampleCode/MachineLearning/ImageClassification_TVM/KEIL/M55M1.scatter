@@ -81,11 +81,11 @@
 #endif
 
 #ifndef STACK_SIZE
-#define STACK_SIZE 0xa000
+#define STACK_SIZE 0x0a000
 #endif
 
 #ifndef HEAP_SIZE
-#define HEAP_SIZE 0x10000
+#define HEAP_SIZE 0x0a000
 #endif
 
 #define ITCM_START      0x00000000
@@ -109,8 +109,6 @@
 //#define STACK_HEAP       0x20180000
 
 
-#define __RO_BASE           ( FLASH_START )
-#define __RO_SIZE           ( FLASH_SIZE - TZ_NSC_SIZE )
 
 #define __RW_BASE           ( DTCM_START )
 #define __RW_SIZE           ( DTCM_SIZE - STACK_SIZE - HEAP_SIZE )
@@ -187,7 +185,8 @@ APP_IMAGE FLASH_START FLASH_SIZE
     }
 #endif
 }
-	
+
+#if 0
 HYPER_FLASH SPIM0_START SPIM0_SIZE
 {
     SPIM0 SPIM0_START
@@ -195,3 +194,4 @@ HYPER_FLASH SPIM0_START SPIM0_SIZE
 		*(.rodata.tvm)
 	}
 }
+#endif

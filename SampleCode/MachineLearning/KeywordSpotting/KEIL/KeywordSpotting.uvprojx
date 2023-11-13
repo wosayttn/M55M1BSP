@@ -337,7 +337,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>NVT_DCACHE_ON, TF_LITE_STATIC_MEMORY, ARM_MATH_DSP, ARM_NPU, ACTIVATION_BUF_SZ=0x00100000, MODEL_DS_CNN</Define>
+              <Define>DEBUG_PORT=UART0, NVT_VECTOR_ON_FLASH, NVT_DCACHE_ON, TF_LITE_STATIC_MEMORY, ARM_MATH_DSP, ARM_NPU, ACTIVATION_BUF_SZ=0x00040000</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\CMSIS\DSP\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\StdDriver\inc\npu;..\..\..\..\ThirdParty\openmv\omv\imlib;..\..\..\..\ThirdParty\openmv\omv\alloc;..\..\..\..\ThirdParty\openmv\omv\common;..\..\..\..\ThirdParty\openmv\omv\Lib;..\..\..\..\ThirdParty\tflite_micro;..\..\..\..\ThirdParty\tflite_micro\_deps\tensorflow-flatbuffers-src\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\use_case\kws\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\main\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\log\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\math\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\include;..\Device\include;..\Model\include;..\NPU\include;..\Pattern\include;..\ProfilerCounter\include</IncludePath>
             </VariousControls>
@@ -409,11 +409,6 @@
               <FilePath>..\..\..\..\Library\StdDriver\src\retarget.c</FilePath>
             </File>
             <File>
-              <FileName>ccap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\ccap.c</FilePath>
-            </File>
-            <File>
               <FileName>clk.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\clk.c</FilePath>
@@ -442,6 +437,16 @@
               <FileName>ethosu_pmu.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\npu\ethosu_pmu.c</FilePath>
+            </File>
+            <File>
+              <FileName>dmic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\dmic.c</FilePath>
+            </File>
+            <File>
+              <FileName>lppdma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\lppdma.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -478,11 +483,6 @@
               <FileType>4</FileType>
               <FilePath>C:\NuMicro Projects\M55M1_PRJ\bsp\Library\CMSIS\Lib\KEIL\cmsis_nn.lib</FilePath>
             </File>
-            <File>
-              <FileName>omv.lib</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\..\..\..\ThirdParty\openmv\omv\Lib\omv.lib</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -502,6 +502,11 @@
               <FileName>ds_cnn_m_quantized_vela_H256.tflite.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Model\ds_cnn_m_quantized_vela_H256.tflite.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>kws_micronet_m_vela_H256.tflite.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Model\kws_micronet_m_vela_H256.tflite.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -602,6 +607,16 @@
               <FileName>pmu_counter.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\ProfilerCounter\pmu_counter.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device</GroupName>
+          <Files>
+            <File>
+              <FileName>DMICRecord.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Device\DMICRecord\DMICRecord.c</FilePath>
             </File>
           </Files>
         </Group>

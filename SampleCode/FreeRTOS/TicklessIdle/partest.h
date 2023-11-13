@@ -29,6 +29,6 @@
 
 #define partstDEFAULT_PORT_ADDRESS    ( ( uint16_t ) 0x378 )
 
-void vParTestInitialise( void );
+void vParTestInitialise(void);
 
 #endif

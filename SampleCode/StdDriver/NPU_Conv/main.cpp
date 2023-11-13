@@ -191,7 +191,6 @@ extern "C" {
 
 NVT_ITCM void NPU_IRQHandler(void)
 {
-    //    printf("NPU_IRQHandler \n");
     ethosu_irq_handler(&ethosu0_driver);
 }
 
@@ -211,29 +210,14 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Switch SCLK clock source to HIRC before PLL setting */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
+    /* Enable HXT clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
-    /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
+    /* Waiting for HXT clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK0 divide 1 */
-    CLK_SET_HCLK0DIV(1);
-
-    /* Set HCLK1 divide 1 */
-    CLK_SET_HCLK1DIV(1);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    CLK_PCLKDIV_PCLK0DIV(2);
-    CLK_PCLKDIV_PCLK1DIV(2);
-    CLK_PCLKDIV_PCLK2DIV(2);
-    CLK_PCLKDIV_PCLK3DIV(2);
-    CLK_PCLKDIV_PCLK4DIV(2);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -261,15 +245,17 @@ void SYS_Init(void)
     CLK_EnableModuleClock(NPU0_MODULE);
 
     /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HXT, CLK_UARTDIV0_UART0DIV(1));
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    //SET_UART0_RXD_PB12();
+    //SET_UART0_TXD_PB13();
+    SET_UART0_RXD_PA0();
+    SET_UART0_TXD_PA1();
 
 }
 
@@ -418,7 +404,7 @@ int main(void)
     printf("cycleCount=%llu, sysTickCount=%llu, cycleCountPerJob=%llu\n",
            cycleCount,
            (u64SysTickTotalCnt -  u64SysTickCnt),
-           cycleCount / repeat);
+           cycleCount / (uint64_t)repeat);
 
     // Compare outut with expected data
     if (outputPointer != expectedPointer)
