@@ -91,10 +91,10 @@ static int CCAP_SetFreq(uint32_t u32ModFreqKHz, uint32_t u32SensorFreq)
     }
     else
     {
-        //CLK_SetModuleClock(CCAP0_MODULE, CLK_CCAPSEL_CCAP0SEL_HCLK2, 0);
-        //i32Div = (CLK_GetHCLK2Freq() / u32SensorFreq) - 1;
-        CLK_SetModuleClock(CCAP0_MODULE, CLK_CCAPSEL_CCAP0SEL_HIRC, 0);
-        i32Div = (__HIRC / u32SensorFreq) - 1;
+        CLK_SetModuleClock(CCAP0_MODULE, CLK_CCAPSEL_CCAP0SEL_HXT, 0);
+        i32Div = (CLK_GetHCLK2Freq() / u32SensorFreq) - 1;
+        //CLK_SetModuleClock(CCAP0_MODULE, CLK_CCAPSEL_CCAP0SEL_HIRC, 0);
+        //i32Div = (__HIRC / u32SensorFreq) - 1;
     }
 
     if (i32Div < 0)
@@ -121,14 +121,23 @@ static void MFP_ConfigCCAP(uint32_t bConfigCCAP)
         SET_GPIO_PF9();
         SET_GPIO_PF8();
         SET_GPIO_PF7();
+
+#if 1
+        // NuMaker-M55M1 Sensor 0
+        SET_GPIO_PG9();
+        SET_GPIO_PG10();
+        SET_GPIO_PG12();
+        SET_GPIO_PG13();		
+#else
+        // ETM Adapater Board Sensor 0
         SET_GPIO_PB13();
         SET_GPIO_PB12();
         SET_GPIO_PB10();
         SET_GPIO_PB9();
-    }
+#endif
+	}
     else
     {
-        // EBI Adapater Board Sensor 0
 
         /* Set multi-function pins for CCAP in DataFlow */
         SET_CCAP_DATA7_PG2();
@@ -139,11 +148,21 @@ static void MFP_ConfigCCAP(uint32_t bConfigCCAP)
         SET_CCAP_DATA2_PF9();
         SET_CCAP_DATA1_PF8();
         SET_CCAP_DATA0_PF7();
+
+#if 1
+        // NuMaker-M55M1 Sensor 0
+		SET_CCAP_PIXCLK_PG9();
+		SET_CCAP_SCLK_PG10();
+		SET_CCAP_VSYNC_PG12();
+		SET_CCAP_HSYNC_PG13();	
+#else
+        // ETM Adapater Board Sensor 0
         SET_CCAP_PIXCLK_PB13();
         SET_CCAP_SCLK_PB12();
         SET_CCAP_VSYNC_PB10();
         SET_CCAP_HSYNC_PB9();
-    }
+#endif
+	}
 }
 
 static S_SENSOR_INFO *s_psSensorInfo = NULL;
@@ -151,7 +170,7 @@ static S_SENSOR_INFO *s_psSensorInfo = NULL;
 int ImageSensor_Init(void)
 {
     /* Init Engine clock and Sensor clock */
-    CCAP_SetFreq(12000000, 12000000);
+    CCAP_SetFreq(24000000, 24000000);
     MFP_ConfigCCAP(TRUE);
 
     /* Init sensor */

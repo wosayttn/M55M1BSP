@@ -61,7 +61,7 @@ extern "C"
 
 #define SPIM_DMM_SIZE                       (0x2000000UL - 1)       /*!< DMM mode memory mapping size        \hideinitializer */
 
-#define SPIM_MAX_DLL_LATENCY                (0x05)              /*!< Maximum DLL training number        \hideinitializer */
+#define SPIM_MAX_DLL_LATENCY                (0x1F)              /*!< Maximum DLL training number        \hideinitializer */
 
 #define SPIM_DTR_ON                         (0x01)              /* Double data rate mode enable */
 #define SPIM_DTR_OFF                        (0x00)              /* Double data rate mode disable */

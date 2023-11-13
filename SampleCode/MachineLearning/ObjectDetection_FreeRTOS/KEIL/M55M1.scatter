@@ -179,18 +179,27 @@ APP_IMAGE FLASH_START FLASH_SIZE
     ARM_LIB_HEAP  __HEAP_BASE EMPTY  HEAP_SIZE {}		; Reserve empty region for heap
 #endif
 
-    SRAM012 SRAM012_START UNINIT SRAM012_SIZE
+    SRAM012 SRAM012_START SRAM012_SIZE
     {
         .ANY1 (.bss.sram.data)
         ; Place tensor arena in SRAM if we do not have a fast memory area
         .ANY (.bss.NoInit.activation_buf_sram)
     }
 
+#if 0
     HYPERRAM SPIM0_START UNINIT SPIM0_SIZE
     {
         ; Place tensor arena in SRAM if we do not have a fast memory area
         .ANY (.bss.NoInit.activation_buf_sram)
     }
+#endif
+
+    HYPERRAM SPIM1_START UNINIT SPIM1_SIZE
+    {
+        ; Place tensor arena in SRAM if we do not have a fast memory area
+        .ANY (.bss.NoInit.activation_buf_sram)
+    }
+
 
     ARM_LIB_STACK __STACK_TOP EMPTY - STACK_SIZE {}     ; Reserve empty region for stack
 

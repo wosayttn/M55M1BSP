@@ -20,19 +20,20 @@
 #include "imlib.h"          /* Image processing */
 #include "framebuffer.h"
 
+#undef PI /* PI macro conflict with CMSIS/DSP */
+#include "NuMicro.h"
+
+//#define __PROFILE__
 #define __USE_CCAP__
+#define __USE_DISPLAY__
+
+#include "Profiler.hpp"
 
 #if defined (__USE_CCAP__)
     #include "ImageSensor.h"
 #endif
-
-#undef PI /* PI macro conflict with CMSIS/DSP */
-#include "NuMicro.h"
-
-#define __PROFILE__
-
-#if defined(__PROFILE__)
-    #include "Profiler.hpp"
+#if defined (__USE_DISPLAY__)
+    #include "Display.h"
 #endif
 
 using ImageClassifier = arm::app::Classifier;
@@ -54,7 +55,7 @@ extern size_t GetModelLen();
 } /* namespace arm */
 
 /* Cache policy function */
-enum { NonCache_index, WTRA_index, WBWARA_index };
+enum { NonCache_index, WTRA_index, WBWARA_index, Device_index };
 
 static void initializeAttributes()
 {
@@ -63,9 +64,12 @@ static void initializeAttributes()
         ARM_MPU_ATTR_MEMORY_(1, 0, 1, 0); // Non-transient, Write-Through, Read-allocate, Not Write-allocate
     const uint8_t WBWARA = ARM_MPU_ATTR_MEMORY_(1, 1, 1, 1); // Non-transient, Write-Back, Read-allocate, Write-allocate
 
+	const uint8_t DEVICE_nGnRnE = ARM_MPU_ATTR_DEVICE_nGnRnE;
+
     ARM_MPU_SetMemAttr(NonCache_index, ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
     ARM_MPU_SetMemAttr(WTRA_index, ARM_MPU_ATTR(WTRA, WTRA));
     ARM_MPU_SetMemAttr(WBWARA_index, ARM_MPU_ATTR(WBWARA, WBWARA));
+    ARM_MPU_SetMemAttr(Device_index, ARM_MPU_ATTR(DEVICE_nGnRnE, DEVICE_nGnRnE));
 }
 
 static void loadAndEnableConfig(ARM_MPU_Region_t const *table, uint32_t cnt)
@@ -146,7 +150,31 @@ int main()
                          1),                // eXecute Never enabled
             ARM_MPU_RLAR((((unsigned int)arm::app::tensorArena) + ACTIVATION_BUF_SZ - 1),        // Limit
                          WTRA_index) // Attribute index - Write-Through, Read-allocate
+        },
+#if defined (__USE_CCAP__)
+		{
+            // Image data from CCAP DMA, so must set frame buffer to Non-cache attribute
+            ARM_MPU_RBAR(((unsigned int)fb_array),        // Base
+                         ARM_MPU_SH_NON,    // Non-shareable
+                         0,                 // Read-only
+                         1,                 // Non-Privileged
+                         1),                // eXecute Never enabled
+            ARM_MPU_RLAR((((unsigned int)fb_array) + OMV_FB_SIZE - 1),        // Limit
+                         NonCache_index) // NonCache
+        },
+#endif
+#if defined (__USE_DISPLAY__)
+        {
+            // EBI for LCD
+            ARM_MPU_RBAR((unsigned int)CONFIG_LCD_EBI_ADDR,        // Base
+                         ARM_MPU_SH_NON,    // Non-shareable
+                         0,                 // Read-only
+                         1,                 // Non-Privileged
+                         1),                // eXecute Never enabled
+            ARM_MPU_RLAR((((unsigned int)CONFIG_LCD_EBI_ADDR) + EBI_MAX_SIZE - 1),        // Limit
+                         Device_index) // Attribute index - Write-Through, Read-allocate
         }
+#endif
     };
 
     // Setup MPU configuration
@@ -202,12 +230,28 @@ int main()
 	uint64_t u64EndCycle;	
 	uint64_t u64CCAPStartCycle;
 	uint64_t u64CCAPEndCycle;	
+#else
+	pmu_reset_counters();
 #endif
+
+#define EACH_PERF_SEC 5
+	uint64_t u64PerfCycle;
+	uint64_t u64PerfFrames = 0;
+	
+	u64PerfCycle = pmu_get_systick_Count();
+	u64PerfCycle += SystemCoreClock * EACH_PERF_SEC;
 
 #if defined (__USE_CCAP__)
     //Setup image senosr
     ImageSensor_Init();
     ImageSensor_Config(eIMAGE_FMT_RGB565, frameBuffer.w, frameBuffer.h);
+#endif
+
+#if defined (__USE_DISPLAY__)
+	char szDisplayText[160];
+
+	Display_Init();
+	Display_ClearLCD(C_WHITE);
 #endif
 
 #if !defined (__USE_CCAP__)
@@ -253,8 +297,29 @@ int main()
         imlib_nvt_scale(&srcImg, &frameBuffer, &roi);
 #endif
 
-        //TODO: display image on LCD
-        //resize framebuffer image to model input
+#if defined (__USE_DISPLAY__)
+        //Display image on LCD
+		S_DISP_RECT sDispRect;
+		
+		sDispRect.u32TopLeftX = 0;
+		sDispRect.u32TopLeftY = 0;
+		sDispRect.u32BottonRightX = (frameBuffer.w - 1);
+		sDispRect.u32BottonRightY = (frameBuffer.h - 1);
+
+#if defined(__PROFILE__)
+		u64StartCycle = pmu_get_systick_Count();
+#endif
+
+		Display_FillRect((uint16_t *)frameBuffer.data ,&sDispRect);
+
+#if defined(__PROFILE__)
+		u64EndCycle = pmu_get_systick_Count();
+		info("display image cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
+
+#endif
+
+		//resize framebuffer image to model input
         image_t resizeImg;
 
         roi.x = 0;
@@ -298,7 +363,12 @@ int main()
 		u64EndCycle = pmu_get_systick_Count();
 		info("quantize cycles %llu \n", (u64EndCycle - u64StartCycle));
 #endif
-		
+
+#if !defined (__USE_CCAP__)
+        /* Run inference over this image. */
+        info("Running inference on image %" PRIu32 " => %s\n", u8ImgIdx, get_filename(u8ImgIdx));
+#endif
+
 #if defined(__PROFILE__)
         profiler.StartProfiling("Inference");
 #endif
@@ -326,6 +396,10 @@ int main()
         //results.clear(); not necessary ???
         predictLabelInfo.clear();
 
+#if defined(__PROFILE__)
+		u64StartCycle = pmu_get_systick_Count();
+#endif
+
         if (postProcess.DoPostProcess())
         {
             predictLabelInfo =  results[0].m_label + std::string(":") + std::to_string(results[0].m_normalisedVal);
@@ -335,14 +409,68 @@ int main()
             predictLabelInfo = std::string("???") + std::string(":") + std::to_string(results[0].m_normalisedVal);
         }
 
+#if defined(__PROFILE__)
+		u64EndCycle = pmu_get_systick_Count();
+		info("post processing cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
+
         //show result
         info("Final results:\n");
         info("%s\n", predictLabelInfo.c_str());
+
+#if defined (__USE_DISPLAY__)
+		sprintf(szDisplayText,"%s", predictLabelInfo.c_str());
+
+		sDispRect.u32TopLeftX = 0;
+		sDispRect.u32TopLeftY = frameBuffer.h;
+		sDispRect.u32BottonRightX = (Disaplay_GetLCDWidth() -1);
+		sDispRect.u32BottonRightY = (frameBuffer.h + FONT_HTIGHT - 1);
+
+		Display_ClearRect(C_WHITE, &sDispRect);
+		Display_PutText(
+			szDisplayText,
+			strlen(szDisplayText),
+			0,
+			frameBuffer.h,
+			C_BLUE,
+			C_WHITE,		
+			false
+		);
+#endif
 
 #if defined(__PROFILE__)
         profiler.PrintProfilingResult();
 #endif
 
+		u64PerfFrames ++;
+		if(pmu_get_systick_Count() > u64PerfCycle)
+		{
+			info("Total inference rate: %llu\n", u64PerfFrames / EACH_PERF_SEC);
+
+#if defined (__USE_DISPLAY__)
+			sprintf(szDisplayText,"Frame Rate %llu",u64PerfFrames / EACH_PERF_SEC);
+
+			sDispRect.u32TopLeftX = 0;
+			sDispRect.u32TopLeftY = frameBuffer.h + FONT_HTIGHT;
+			sDispRect.u32BottonRightX = (frameBuffer.w );
+			sDispRect.u32BottonRightY = (frameBuffer.h + (2 * FONT_HTIGHT) - 1);
+
+			Display_ClearRect(C_WHITE, &sDispRect);
+			Display_PutText(
+				szDisplayText,
+				strlen(szDisplayText),
+				0,
+				frameBuffer.h + FONT_HTIGHT,
+				C_BLUE,
+				C_WHITE,		
+				false
+			);
+#endif
+
+			u64PerfCycle = pmu_get_systick_Count();
+			u64PerfCycle += SystemCoreClock * EACH_PERF_SEC;
+			u64PerfFrames = 0;
+		}
 
 round_done:
         u8ImgIdx ++;

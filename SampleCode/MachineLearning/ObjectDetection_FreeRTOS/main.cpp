@@ -23,7 +23,7 @@
 #include "imlib.h"          /* Image processing */
 #include "framebuffer.h"
 
-#define __USE_CCAP__
+//#define __USE_CCAP__
 
 #if defined (__USE_CCAP__)
     #include "ImageSensor.h"
@@ -234,7 +234,7 @@ static void main_task(void *pvParameters)
     int32_t i32Err = 0;
     char chStdIn;
 
-    info("main task running...\n");
+    info("main task running --- 1\n");
     /* Model object creation and initialisation. */
     arm::app::YoloFastestModel model;
 
@@ -335,34 +335,8 @@ static void main_task(void *pvParameters)
     ImageSensor_Config(eIMAGE_FMT_RGB565, frameBuffer.w, frameBuffer.h);
 #endif
 
-#if !defined (__USE_CCAP__)
-    info("Press 'n' to run next image inference \n");
-    info("Press 'q' to exit program \n");
-
-    while ((chStdIn = getchar()))
-    {
-        if (chStdIn == 'q')
-            break;
-        else if (chStdIn != 'n')
-            continue;
-
-#else
-
     while (1)
     {
-#endif
-
-#if !defined (__USE_CCAP__)
-        const uint8_t *pu8ImgSrc = get_img_array(u8ImgIdx);
-
-        if (nullptr == pu8ImgSrc)
-        {
-            printf_err("Failed to get image index %" PRIu32 " (max: %u)\n", u8ImgIdx,
-                       NUMBER_OF_FILES - 1);
-            vTaskDelete(nullptr);
-            return;
-        }
-#endif
 		
         infFramebuf = get_inf_framebuf();
 
@@ -435,7 +409,41 @@ static void main_task(void *pvParameters)
 
         if (emptyFramebuf)
         {
+#if !defined (__USE_CCAP__)
 
+#if 1
+			info("Press 'n' to run next image inference \n");
+			info("Press 'q' to exit program \n");
+
+			while ((chStdIn = getchar()))
+			{
+				if (chStdIn == 'q')
+				{
+					vTaskDelete(nullptr);
+					return;
+				}
+				else if (chStdIn != 'n')
+				{
+					break;
+				}
+			}
+#endif
+			const uint8_t *pu8ImgSrc = get_img_array(u8ImgIdx);
+
+			if (nullptr == pu8ImgSrc)
+			{
+				printf_err("Failed to get image index %" PRIu32 " (max: %u)\n", u8ImgIdx,
+						   NUMBER_OF_FILES - 1);
+				vTaskDelete(nullptr);
+				return;
+			}
+
+			u8ImgIdx ++;
+
+			if (u8ImgIdx >= NUMBER_OF_FILES)
+				u8ImgIdx = 0;
+#endif
+			
 #if defined (__USE_CCAP__)
             //capture frame from CCAP
             ImageSensor_Capture((uint32_t)(emptyFramebuf->frameImage.data));
@@ -459,11 +467,7 @@ static void main_task(void *pvParameters)
             emptyFramebuf->eState = eFRAMEBUF_FULL;
         }
 
-        u8ImgIdx ++;
-
-        if (u8ImgIdx >= NUMBER_OF_FILES)
-            u8ImgIdx = 0;
-
+		vTaskDelay(1);
     }
 
     vTaskDelete(nullptr);

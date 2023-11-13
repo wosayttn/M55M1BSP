@@ -86,13 +86,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     HyperRAM_Erase(spim, u32SrcAddr, u32TestSize);
 
     /* Write Data to HyperRAM */
-    for (u32i = u32SrcAddr; u32i < u32TestSize; u32i++)
-    {
-        g_au8SrcArray[u32i] = (u32i + 0x01);
-        SPIM_HYPER_Write1Byte(spim, u32i, g_au8SrcArray[u32i]);
-    }
-
-    //SPIM_HYPER_EnterDirectMapMode(spim);
+    SPIM_HYPER_DMAWrite(spim, u32SrcAddr, g_au8SrcArray, u32TestSize);	
 
     for (u8RdDelay = 0; u8RdDelay <= SPIM_MAX_DLL_LATENCY; u8RdDelay++)
     {
@@ -174,8 +168,12 @@ void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32Ac
 void HyperRAM_Init(SPIM_T *spim)
 {
     /* Enable SPIM Hyper Bus Mode */
+#if defined(TESTCHIP_ONLY)
     SPIM_HYPER_Init(spim, 1);
-
+#else
+    SPIM_HYPER_Init(spim, 1);	
+#endif
+	
 #if (SPIM_REG_CACHE == 1)
     /* Enable SPIM Cache */
     SPIM_ENABLE_CACHE(spim);
@@ -190,8 +188,13 @@ void HyperRAM_Init(SPIM_T *spim)
     /* Set R/W Latency Number */
     SPIM_Hyper_DefaultConfig(spim, 780, 7, 7);
 
+#if 0 //Set DLL directly
+	/* Set the number of intermediate delay steps */
+    SPIM_HYPER_SetDLLDelayNum(spim, 12);
+#else
     /* Training DLL component delay stop number */
     HyperRAM_TrainingDelayNumber(spim);
+#endif
 }
 
 void HyperRAM_PinConfig(SPIM_T *spim)
@@ -201,6 +204,10 @@ void HyperRAM_PinConfig(SPIM_T *spim)
         //SPIM and OTFC clock was enabled on secure-domain code
         /* Enable SPIM0 module clock */
         CLK_EnableModuleClock(SPIM0_MODULE);
+#if defined (TESTCHIP_ONLY)
+        CLK_EnableModuleClock(SPIM1_MODULE);		
+#endif
+
         /* Enable OTFC0 module clock */
         CLK_EnableModuleClock(OTFC0_MODULE);
         //printf("OTFCCTL = %d, addr = 0x%08X\r\n", CLK->OTFCCTL, &CLK->OTFCCTL);
@@ -218,19 +225,39 @@ void HyperRAM_PinConfig(SPIM_T *spim)
         SPIM0_MOSI_PIN_INIT();
         SPIM0_SS_PIN_INIT();
         SPIM0_RWDS_PIN_INIT();
+		SPIM0_RST_PIN_INIT();
 
         /* Set SPIM0 I/O pins as high slew rate up to 80 MHz. */
         SPIM0_PIN_HIGH_SLEW();
 
-        //SPIM0 PSC, PSC_n
-        SET_GPIO_PG8();
-        GPIO_SetMode(PG, BIT8, GPIO_MODE_OUTPUT);
-        GPIO_SetPullCtl(PG, BIT8, GPIO_PUSEL_DISABLE);
-        PG8 = 1;
+	}
+#if defined (TESTCHIP_ONLY)
+	else if (spim == SPIM1)
+	{
+     	//SPIM and OTFC clock was enabled on secure-domain code
+        /* Enable SPIM1 module clock */
+        CLK_EnableModuleClock(SPIM0_MODULE);
+        CLK_EnableModuleClock(SPIM1_MODULE);
+        /* Enable OTFC1 module clock */
+        CLK_EnableModuleClock(OTFC1_MODULE);
 
-        SET_GPIO_PG7();
-        GPIO_SetMode(PG, BIT7, GPIO_MODE_OUTPUT);
-        GPIO_SetPullCtl(PG, BIT7, GPIO_PUSEL_DISABLE);
-        PG7 = 0;
-    }
+        /* Init SPIM1 multi-function pins */
+        SPIM1_CLK_PIN_INIT();
+        SPIM1_CLKN_PIN_INIT();
+        SPIM1_D2_PIN_INIT();
+        SPIM1_D3_PIN_INIT();
+        SPIM1_D4_PIN_INIT();
+        SPIM1_D5_PIN_INIT();
+        SPIM1_D6_PIN_INIT();
+        SPIM1_D7_PIN_INIT();
+        SPIM1_MISO_PIN_INIT();
+        SPIM1_MOSI_PIN_INIT();
+        SPIM1_SS_PIN_INIT();
+        SPIM1_RWDS_PIN_INIT();
+		SPIM1_RST_PIN_INIT();
+
+        /* Set SPIM1 I/O pins as high slew rate up to 80 MHz. */
+        SPIM1_PIN_HIGH_SLEW();
+	}
+#endif
 }

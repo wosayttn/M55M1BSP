@@ -194,24 +194,24 @@ int32_t InitHM1055_VGA_YUV422(uint32_t u32Param)
     uint8_t u8DeviceID = 0x48;
     uint8_t u8ID[2] = {0};
 
-#if 0
-	// for TC8263 EBI board
-    /* PI8 for GPIO to act as PD */
-    /* PI9 for GPIO to act as RST */
-    /* PI10 for GPIO to act as SCL */
-    /* PI11 for GPIO to act as SDA */
-    SET_GPIO_PI8();
-    SET_GPIO_PI9();
-    SET_GPIO_PI10();
-    SET_GPIO_PI11();
+#if 1
+	// for TC8263 NuMaker-M55M1 board
+    /* PD12 for GPIO to act as PD */
+    /* PG11 for GPIO to act as RST */
+    /* PH2 for GPIO to act as SCL */
+    /* PH3 for GPIO to act as SDA */
+    SET_GPIO_PD12();
+    SET_GPIO_PG11();
+    SET_GPIO_PH2();
+    SET_GPIO_PH3();
 
-    GPIO_SetMode(PI, BIT9, GPIO_MODE_OUTPUT);        /* Set #RST pin to high */
-    PI9 = 1;
-    GPIO_SetMode(PI, BIT8, GPIO_MODE_OUTPUT);        /* Set #PD pin to low */
-    PI8 = 0;
+    GPIO_SetMode(PG, BIT11, GPIO_MODE_OUTPUT);        /* Set #RST pin to high */
+    PG11 = 1;
+    GPIO_SetMode(PD, BIT12, GPIO_MODE_OUTPUT);        /* Set #PD pin to low */
+    PD12 = 0;
 	
     /* switch I2C pin function */
-    SWI2C_Open(eDRVGPIO_GPIOI, eDRVGPIO_PIN10, eDRVGPIO_GPIOI, eDRVGPIO_PIN11, Delay);
+    SWI2C_Open(eDRVGPIO_GPIOH, eDRVGPIO_PIN2, eDRVGPIO_GPIOH, eDRVGPIO_PIN3, Delay);
 #else
 	// for TC8263 ETM board
     SET_GPIO_PI7();
