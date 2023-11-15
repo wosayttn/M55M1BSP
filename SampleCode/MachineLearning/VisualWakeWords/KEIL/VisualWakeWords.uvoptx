@@ -148,7 +148,24 @@
           <Name>UL2V8M(-S0 -C0 -P0 -FD30000000 -FC1000)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint/>
+      <Breakpoint>
+        <Bp>
+          <Number>0</Number>
+          <Type>0</Type>
+          <LineNumber>453</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>1173592</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\main.cpp</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\VisualWakeWords\../main.cpp\453</Expression>
+        </Bp>
+      </Breakpoint>
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>

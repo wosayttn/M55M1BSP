@@ -16,8 +16,6 @@
 #include "DetectorPostProcessing.hpp" /* Post-processing class. */
 #include "Model.hpp"
 
-#define __PROFILE__
-
 #if defined(__PROFILE__)
     #include "Profiler.hpp"
 #endif

@@ -32,7 +32,7 @@
 
 #include "NuMicro.h"
 
-#define HAS_FREERTOS
+//#define HAS_FREERTOS
 #define CPU_PROFILE_ENABLED
 
 static uint64_t s_u64CPUCycleCount = 0;    /* 64-bit cpu cycle counter */
@@ -117,7 +117,7 @@ void SysTick_Handler(void)
 
 void FreeRTOS_TickHook(uint32_t u32CurrentTickCnt)
 {
-    s_u64CPUCycleCount = u32CurrentTickCnt * (SysTick->LOAD + 1);
+    s_u64CPUCycleCount = (uint64_t)u32CurrentTickCnt * (SysTick->LOAD + 1);
 }
 
 
