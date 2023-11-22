@@ -117,25 +117,6 @@ __attribute__((constructor)) void SystemInit(void)
 #endif
 #endif
 
-#if 0 //(defined (__FPU_USED) && (__FPU_USED == 1U)) || \
-    (defined (__ARM_FEATURE_MVE) && (__ARM_FEATURE_MVE > 0U))
-    SCB->CPACR |= ((3U << 10U * 2U) |         /* Enable CP10 Full Access */
-                   (3U << 11U * 2U));         /* Enable CP11 Full Access */
-
-    /* Set low-power state for PDEPU                */
-    /*  0b00  | ON, PDEPU is not in low-power state */
-    /*  0b01  | ON, but the clock is off            */
-    /*  0b10  | RET(ention)                         */
-    /*  0b11  | OFF                                 */
-
-    /* Clear ELPSTATE, value is 0b11 on Cold reset */
-    PWRMODCTL->CPDLPSTATE &= ~(PWRMODCTL_CPDLPSTATE_ELPSTATE_Msk << PWRMODCTL_CPDLPSTATE_ELPSTATE_Pos);
-
-    /* Favor best FP/MVE performance by default, avoid EPU switch-ON delays */
-    /* PDEPU ON, Clock OFF */
-    PWRMODCTL->CPDLPSTATE |= 0x1 << PWRMODCTL_CPDLPSTATE_ELPSTATE_Pos;
-#endif
-
 #ifdef UNALIGNED_SUPPORT_DISABLE
     SCB->CCR |= SCB_CCR_UNALIGN_TRP_Msk;
 #endif

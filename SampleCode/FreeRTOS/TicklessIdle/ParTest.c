@@ -207,10 +207,8 @@ void vParTestInitialise(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set multi-function pins for UART0 RXD and TXD */
-    //SET_UART0_RXD_PB12();
-    //SET_UART0_TXD_PB13();
-    SET_UART0_RXD_PA0();
-    SET_UART0_TXD_PA1();
+    SET_UART0_RXD_PB12();
+    SET_UART0_TXD_PB13();
 
     /* Set PD multi-function pins for CLKO(PD.12) */
     SET_CLKO_PD12();

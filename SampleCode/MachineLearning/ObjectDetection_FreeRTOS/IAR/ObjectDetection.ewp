@@ -214,6 +214,8 @@
                 <debug>1</debug>
                 <option>
                     <name>CCDefines</name>
+                    <state>TESTCHIP_ONLY</state>
+                    <state>__HXT=24000000UL</state>
                     <state>NVT_VECTOR_ON_FLASH</state>
                     <state>NVT_DCACHE_ON</state>
                     <state>TF_LITE_STATIC_MEMORY</state>
@@ -259,7 +261,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state></state>
+                    <state>Pe550, Pe997</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
@@ -2224,7 +2226,7 @@
                     </option>
                     <option>
                         <name>CCDiagSuppress</name>
-                        <state></state>
+                        <state>Pe550, Pe997</state>
                     </option>
                     <option>
                         <name>CCDiagRemark</name>
@@ -2437,10 +2439,19 @@
     <group>
         <name>Device</name>
         <file>
+            <name>$PROJ_DIR$\..\Device\Display\Display.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\Display\Font8_16.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\Device\HyperRAM\hyperram_code.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\Device\ImageSensor\ImageSensor.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\Display\LCD\LCD_FSA506.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\Device\ImageSensor\Sensor\Sensor_HM1055.c</name>
@@ -2456,6 +2467,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\clk.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\ebi.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\npu\ethosu_device_u55_u65.c</name>

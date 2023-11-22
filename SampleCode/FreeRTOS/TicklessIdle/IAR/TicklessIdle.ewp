@@ -218,6 +218,7 @@
                 </option>
                 <option>
                     <name>CCDefines</name>
+                    <state>__HXT=24000000UL</state>
                     <state>SYSTEM_CORE_CLOCK=180000000</state>
                 </option>
                 <option>

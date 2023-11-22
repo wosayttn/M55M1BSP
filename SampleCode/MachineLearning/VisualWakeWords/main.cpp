@@ -122,8 +122,6 @@ static void omv_init()
 
 int main()
 {
-    char chStdIn;
-
     /* Initialise the UART module to allow printf related functions (if using retarget) */
     BoardInit();
 
@@ -255,6 +253,8 @@ int main()
 #endif
 
 #if !defined (__USE_CCAP__)
+    char chStdIn;
+
     info("Press 'n' to run next image inference \n");
     info("Press 'q' to exit program \n");
 

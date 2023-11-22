@@ -214,6 +214,8 @@
                 <debug>1</debug>
                 <option>
                     <name>CCDefines</name>
+                    <state>TESTCHIP_ONLY</state>
+                    <state>__HXT=24000000UL</state>
                     <state>NVT_VECTOR_ON_FLASH</state>
                     <state>NVT_DCACHE_ON</state>
                     <state>ARM_NPU</state>
@@ -257,7 +259,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state></state>
+                    <state>Pe1097</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>

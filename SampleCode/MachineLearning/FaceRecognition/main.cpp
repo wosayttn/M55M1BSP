@@ -27,7 +27,7 @@
 #undef PI /* PI macro conflict with CMSIS/DSP */
 #include "NuMicro.h"
 
-#define __PROFILE__
+//#define __PROFILE__
 #define __USE_CCAP__
 #define __USE_DISPLAY__
 

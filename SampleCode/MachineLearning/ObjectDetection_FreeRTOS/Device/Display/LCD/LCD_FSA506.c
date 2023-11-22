@@ -50,7 +50,7 @@ static void fsa506_set_page(uint16_t StartPage, uint16_t EndPage)
     fsa506_write_reg(0x7, EndPage & 0xFF);
 }
 
-static void fsa506_send_pixels(uint16_t *pixels,uint32_t fixed_color, int byte_len)
+static void fsa506_send_pixels(uint16_t *pixels,uint32_t fixed_color, int32_t byte_len)
 {
     int count = byte_len / sizeof(uint16_t);
 
@@ -118,7 +118,7 @@ void fsa506_put_char8x16(uint16_t x, uint16_t y, uint8_t c, uint32_t fColor, uin
 }
 
 
-static int fsa506_init(void)
+static int32_t fsa506_init(void)
 {
     SET_RST;
     SET_BACKLIGHT_OFF;
