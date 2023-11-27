@@ -41,7 +41,7 @@
 #define MAINLOOP_TASK_PRIO  3
 #define INFERENCE_TASK_PRIO 4
 
-#define NUM_FRAMEBUF 2
+#define NUM_FRAMEBUF 1	//1 or 2
 
 typedef enum
 {
@@ -96,7 +96,8 @@ static void initializeAttributes()
         ARM_MPU_ATTR_MEMORY_(1, 0, 1, 0); // Non-transient, Write-Through, Read-allocate, Not Write-allocate
     const uint8_t WBWARA = ARM_MPU_ATTR_MEMORY_(1, 1, 1, 1); // Non-transient, Write-Back, Read-allocate, Write-allocate
 
-	const uint8_t DEVICE_nGnRnE = ARM_MPU_ATTR_DEVICE_nGnRnE;
+//	const uint8_t DEVICE_nGnRnE = ARM_MPU_ATTR_DEVICE_nGnRnE;
+	const uint8_t DEVICE_nGnRnE = ARM_MPU_ATTR_DEVICE;
 
     ARM_MPU_SetMemAttr(NonCache_index, ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
     ARM_MPU_SetMemAttr(WTRA_index, ARM_MPU_ATTR(WTRA, WTRA));
@@ -163,9 +164,12 @@ static S_FRAMEBUF *get_inf_framebuf()
 #undef OMV_FB_SIZE
 #define OMV_FB_SIZE ((GLCD_WIDTH * GLCD_HEIGHT * 2) + 1024)
 
-__attribute__((section(".bss.sram.data"), aligned(16))) static char fb_array[OMV_FB_SIZE + OMV_FB_ALLOC_SIZE];
-__attribute__((section(".bss.sram.data"), aligned(16))) static char jpeg_array[OMV_JPEG_BUF_SIZE];
-__attribute__((section(".bss.sram.data"), aligned(16))) static char frame_buf1[OMV_FB_SIZE];
+__attribute__((section(".bss.sram.data"), aligned(32))) static char fb_array[OMV_FB_SIZE + OMV_FB_ALLOC_SIZE];
+__attribute__((section(".bss.sram.data"), aligned(32))) static char jpeg_array[OMV_JPEG_BUF_SIZE];
+
+#if (NUM_FRAMEBUF == 2)
+__attribute__((section(".bss.sram.data"), aligned(32))) static char frame_buf1[OMV_FB_SIZE];
+#endif
 
 char *_fb_base = NULL;
 char *_fb_end = NULL;
@@ -198,11 +202,14 @@ static void omv_init()
     }
 
     framebuffer_init_image(&s_asFramebuf[0].frameImage);
+
+#if (NUM_FRAMEBUF == 2)
     s_asFramebuf[1].frameImage.w = GLCD_WIDTH;
     s_asFramebuf[1].frameImage.h = GLCD_HEIGHT;
     s_asFramebuf[1].frameImage.size = GLCD_WIDTH * GLCD_HEIGHT * 2;
     s_asFramebuf[1].frameImage.pixfmt = PIXFORMAT_RGB565;
     s_asFramebuf[1].frameImage.data = (uint8_t *)frame_buf1;
+#endif
 }
 
 static bool PresentInferenceResult(const std::vector<arm::app::object_detection::DetectionResult> &results,
@@ -281,6 +288,7 @@ static void main_task(void *pvParameters)
             ARM_MPU_RLAR((((unsigned int)fb_array) + OMV_FB_SIZE - 1),        // Limit
                          NonCache_index) // NonCache
         },
+#if (NUM_FRAMEBUF == 2)
 		{
             // Image data from CCAP DMA, so must set frame buffer to Non-cache attribute
             ARM_MPU_RBAR(((unsigned int)frame_buf1),        // Base
@@ -291,6 +299,7 @@ static void main_task(void *pvParameters)
             ARM_MPU_RLAR((((unsigned int)frame_buf1) + OMV_FB_SIZE - 1),        // Limit
                          NonCache_index) // NonCache
         },
+#endif
 #endif
 #if defined (__USE_DISPLAY__)
         {
@@ -507,7 +516,8 @@ static void main_task(void *pvParameters)
 			{
 				info("Total inference rate: %llu\n", u64PerfFrames / EACH_PERF_SEC);
 #if defined (__USE_DISPLAY__)
-				sprintf(szDisplayText,"Frame Rate %llu",u64PerfFrames / EACH_PERF_SEC);
+//				sprintf(szDisplayText,"Frame Rate %llu",u64PerfFrames / EACH_PERF_SEC);
+				sprintf(szDisplayText,"Time %llu",(uint64_t) pmu_get_systick_Count() / (uint64_t)SystemCoreClock);
 
 				sDispRect.u32TopLeftX = 0;
 				sDispRect.u32TopLeftY = frameBuffer.h + FONT_HTIGHT;
