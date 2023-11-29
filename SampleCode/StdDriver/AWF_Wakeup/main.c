@@ -67,7 +67,7 @@ void AWF_Wakeup_Test(void)
     LPPDMA_Init();
 
     /* Select power-down mode and power level */
-    PMC_SetPowerDownMode(PMC_NPD3, PMC_PLCTL_PLSEL_PL0);
+    PMC_SetPowerDownMode(PMC_NPD2, PMC_PLCTL_PLSEL_PL0);
 
     printf("Enter Power-down...\n");
 
