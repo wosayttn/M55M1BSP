@@ -69,7 +69,7 @@ void SYS_Init(void)
     /* Enable GPIO Module clock */
     CLK_EnableModuleClock(GPIOC_MODULE);
     CLK_EnableModuleClock(GPIOG_MODULE);
-    
+
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 
@@ -276,7 +276,7 @@ int main()
 
     SPIM_DISABLE_CIPHER(SPIM0);
 
-    SPIM_DISABLE_CACHE(pSPIMx);
+    SPIM_DISABLE_CACHE(SPIM0);
 
     if (SPIM_InitFlash(SPIM0, 1) != 0)          /* Initialized SPI flash */
     {

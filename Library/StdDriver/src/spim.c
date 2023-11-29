@@ -1893,6 +1893,8 @@ static void SPIM_WriteInPageDataByPhaseIO(SPIM_T *spim, SPIM_PHASE_T *psPhaseTab
                           u32RdSize,
                           psPhaseTable->u32DataPhase,
                           psPhaseTable->u32DataDTR);
+
+    spim_wait_writedone(spim, SPIM_PhaseModeToNBit(psPhaseTable->u32CMDCode));
 }
 
 void SPIM_IO_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
