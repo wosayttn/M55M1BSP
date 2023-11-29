@@ -785,7 +785,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>DEBUG_PORT=UART0, TESTCHIP_ONLY</Define>
+              <Define>DEBUG_PORT=UART0</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc;..\..\common\inc</IncludePath>
             </VariousControls>

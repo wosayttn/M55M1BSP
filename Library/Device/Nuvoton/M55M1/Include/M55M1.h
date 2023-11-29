@@ -56,6 +56,10 @@
 extern "C" {
 #endif
 
+#if !defined(TESTCHIP_ONLY)
+    /* Notice: The BSP is for M55M1 engineering sample version. */
+    #define TESTCHIP_ONLY
+#endif
 
 /******************************************************************************/
 /*                Processor and Core peripheral                              */
