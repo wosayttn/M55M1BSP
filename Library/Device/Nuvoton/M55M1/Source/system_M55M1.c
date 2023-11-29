@@ -97,9 +97,9 @@ __WEAK void InitDebugUart(void)
 {
 #if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
     /* Init UART to 115200-8n1 for print message */
-    //UART_Open(UART0, 115200);
-    UART0->LINE = (UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1);
-    UART0->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400));
+    UART_Open(UART0, 115200);
+    //UART0->LINE = (UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1);
+    //UART0->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400));
 #endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
 }
 #endif /* NVT_DBG_UART_OFF */
@@ -115,25 +115,6 @@ __attribute__((constructor)) void SystemInit(void)
 #else
     SCB->VTOR = (uint32_t)(&DTCM_VECTOR_TABLE[0]);
 #endif
-#endif
-
-#if 0 //(defined (__FPU_USED) && (__FPU_USED == 1U)) || \
-    (defined (__ARM_FEATURE_MVE) && (__ARM_FEATURE_MVE > 0U))
-    SCB->CPACR |= ((3U << 10U * 2U) |         /* Enable CP10 Full Access */
-                   (3U << 11U * 2U));         /* Enable CP11 Full Access */
-
-    /* Set low-power state for PDEPU                */
-    /*  0b00  | ON, PDEPU is not in low-power state */
-    /*  0b01  | ON, but the clock is off            */
-    /*  0b10  | RET(ention)                         */
-    /*  0b11  | OFF                                 */
-
-    /* Clear ELPSTATE, value is 0b11 on Cold reset */
-    PWRMODCTL->CPDLPSTATE &= ~(PWRMODCTL_CPDLPSTATE_ELPSTATE_Msk << PWRMODCTL_CPDLPSTATE_ELPSTATE_Pos);
-
-    /* Favor best FP/MVE performance by default, avoid EPU switch-ON delays */
-    /* PDEPU ON, Clock OFF */
-    PWRMODCTL->CPDLPSTATE |= 0x1 << PWRMODCTL_CPDLPSTATE_ELPSTATE_Pos;
 #endif
 
 #ifdef UNALIGNED_SUPPORT_DISABLE

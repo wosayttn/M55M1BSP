@@ -85,6 +85,8 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     /* Erase HyperRAM */
     HyperRAM_Erase(spim, u32SrcAddr, u32TestSize);
 
+	SCB_CleanDCache_by_Addr(g_au8SrcArray, u32TestSize);
+
     /* Write Data to HyperRAM */
     SPIM_HYPER_DMAWrite(spim, u32SrcAddr, g_au8SrcArray, u32TestSize);	
 
@@ -99,7 +101,9 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
         SPIM_HYPER_DMARead(spim, u32SrcAddr, g_au8DestArray, u32TestSize);
         //memcpy(g_au8DestArray, pi32SrcAddr, u32TestSize);
 
-        /* Verify the data and save the number of successful delay steps */
+        SCB_InvalidateDCache_by_Addr(g_au8DestArray, u32TestSize);
+
+		/* Verify the data and save the number of successful delay steps */
         if (memcmp(g_au8SrcArray, g_au8DestArray, u32TestSize))
         {
             printf("!!!\tData compare failed at block 0x%x\n", u32SrcAddr);
@@ -129,6 +133,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
         }
     }
 
+    printf("Set HyperRAM DLL number %d\r\n", u8RdDelayRes[u8RdDelayIdx]);
     /* Set the number of intermediate delay steps */
     SPIM_HYPER_SetDLLDelayNum(spim, u8RdDelayRes[u8RdDelayIdx]);
 }
@@ -190,7 +195,7 @@ void HyperRAM_Init(SPIM_T *spim)
 
 #if 0 //Set DLL directly
 	/* Set the number of intermediate delay steps */
-    SPIM_HYPER_SetDLLDelayNum(spim, 12);
+    SPIM_HYPER_SetDLLDelayNum(spim, 14);
 #else
     /* Training DLL component delay stop number */
     HyperRAM_TrainingDelayNumber(spim);

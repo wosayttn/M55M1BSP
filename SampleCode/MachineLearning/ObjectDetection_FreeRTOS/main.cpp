@@ -23,19 +23,25 @@
 #include "imlib.h"          /* Image processing */
 #include "framebuffer.h"
 
-//#define __USE_CCAP__
+#undef PI /* PI macro conflict with CMSIS/DSP */
+#include "NuMicro.h"
+
+#define __USE_CCAP__
+#define __USE_DISPLAY__
+
+#include "Profiler.hpp"
 
 #if defined (__USE_CCAP__)
     #include "ImageSensor.h"
 #endif
-
-#undef PI /* PI macro conflict with CMSIS/DSP */
-#include "NuMicro.h"
+#if defined (__USE_DISPLAY__)
+    #include "Display.h"
+#endif
 
 #define MAINLOOP_TASK_PRIO  3
 #define INFERENCE_TASK_PRIO 4
 
-#define NUM_FRAMEBUF 2
+#define NUM_FRAMEBUF 1	//1 or 2
 
 typedef enum
 {
@@ -81,7 +87,7 @@ extern size_t GetModelLen();
 } /* namespace arm */
 
 /* Cache policy function */
-enum { NonCache_index, WTRA_index, WBWARA_index };
+enum { NonCache_index, WTRA_index, WBWARA_index, Device_index };
 
 static void initializeAttributes()
 {
@@ -90,9 +96,13 @@ static void initializeAttributes()
         ARM_MPU_ATTR_MEMORY_(1, 0, 1, 0); // Non-transient, Write-Through, Read-allocate, Not Write-allocate
     const uint8_t WBWARA = ARM_MPU_ATTR_MEMORY_(1, 1, 1, 1); // Non-transient, Write-Back, Read-allocate, Write-allocate
 
+//	const uint8_t DEVICE_nGnRnE = ARM_MPU_ATTR_DEVICE_nGnRnE;
+	const uint8_t DEVICE_nGnRnE = ARM_MPU_ATTR_DEVICE;
+
     ARM_MPU_SetMemAttr(NonCache_index, ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
     ARM_MPU_SetMemAttr(WTRA_index, ARM_MPU_ATTR(WTRA, WTRA));
     ARM_MPU_SetMemAttr(WBWARA_index, ARM_MPU_ATTR(WBWARA, WBWARA));
+    ARM_MPU_SetMemAttr(Device_index, ARM_MPU_ATTR(DEVICE_nGnRnE, DEVICE_nGnRnE));
 }
 
 static void loadAndEnableConfig(ARM_MPU_Region_t const *table, uint32_t cnt)
@@ -154,9 +164,12 @@ static S_FRAMEBUF *get_inf_framebuf()
 #undef OMV_FB_SIZE
 #define OMV_FB_SIZE ((GLCD_WIDTH * GLCD_HEIGHT * 2) + 1024)
 
-__attribute__((section(".bss.sram.data"), aligned(16))) static char fb_array[OMV_FB_SIZE + OMV_FB_ALLOC_SIZE];
-__attribute__((section(".bss.sram.data"), aligned(16))) static char jpeg_array[OMV_JPEG_BUF_SIZE];
-__attribute__((section(".bss.sram.data"), aligned(16))) static char frame_buf1[OMV_FB_SIZE];
+__attribute__((section(".bss.sram.data"), aligned(32))) static char fb_array[OMV_FB_SIZE + OMV_FB_ALLOC_SIZE];
+__attribute__((section(".bss.sram.data"), aligned(32))) static char jpeg_array[OMV_JPEG_BUF_SIZE];
+
+#if (NUM_FRAMEBUF == 2)
+__attribute__((section(".bss.sram.data"), aligned(32))) static char frame_buf1[OMV_FB_SIZE];
+#endif
 
 char *_fb_base = NULL;
 char *_fb_end = NULL;
@@ -189,11 +202,14 @@ static void omv_init()
     }
 
     framebuffer_init_image(&s_asFramebuf[0].frameImage);
+
+#if (NUM_FRAMEBUF == 2)
     s_asFramebuf[1].frameImage.w = GLCD_WIDTH;
     s_asFramebuf[1].frameImage.h = GLCD_HEIGHT;
     s_asFramebuf[1].frameImage.size = GLCD_WIDTH * GLCD_HEIGHT * 2;
     s_asFramebuf[1].frameImage.pixfmt = PIXFORMAT_RGB565;
     s_asFramebuf[1].frameImage.data = (uint8_t *)frame_buf1;
+#endif
 }
 
 static bool PresentInferenceResult(const std::vector<arm::app::object_detection::DetectionResult> &results,
@@ -201,7 +217,6 @@ static bool PresentInferenceResult(const std::vector<arm::app::object_detection:
 {
     /* If profiling is enabled, and the time is valid. */
     info("Final results:\n");
-    info("Total number of inferences: 1\n");
 
     for (uint32_t i = 0; i < results.size(); ++i)
     {
@@ -261,7 +276,43 @@ static void main_task(void *pvParameters)
                          1),                // eXecute Never enabled
             ARM_MPU_RLAR((((unsigned int)arm::app::tensorArena) + ACTIVATION_BUF_SZ - 1),        // Limit
                          WTRA_index) // Attribute index - Write-Through, Read-allocate
+        },
+#if defined (__USE_CCAP__)
+		{
+            // Image data from CCAP DMA, so must set frame buffer to Non-cache attribute
+            ARM_MPU_RBAR(((unsigned int)fb_array),        // Base
+                         ARM_MPU_SH_NON,    // Non-shareable
+                         0,                 // Read-only
+                         1,                 // Non-Privileged
+                         1),                // eXecute Never enabled
+            ARM_MPU_RLAR((((unsigned int)fb_array) + OMV_FB_SIZE - 1),        // Limit
+                         NonCache_index) // NonCache
+        },
+#if (NUM_FRAMEBUF == 2)
+		{
+            // Image data from CCAP DMA, so must set frame buffer to Non-cache attribute
+            ARM_MPU_RBAR(((unsigned int)frame_buf1),        // Base
+                         ARM_MPU_SH_NON,    // Non-shareable
+                         0,                 // Read-only
+                         1,                 // Non-Privileged
+                         1),                // eXecute Never enabled
+            ARM_MPU_RLAR((((unsigned int)frame_buf1) + OMV_FB_SIZE - 1),        // Limit
+                         NonCache_index) // NonCache
+        },
+#endif
+#endif
+#if defined (__USE_DISPLAY__)
+        {
+            // EBI for LCD
+            ARM_MPU_RBAR((unsigned int)CONFIG_LCD_EBI_ADDR,        // Base
+                         ARM_MPU_SH_NON,    // Non-shareable
+                         0,                 // Read-only
+                         1,                 // Non-Privileged
+                         1),                // eXecute Never enabled
+            ARM_MPU_RLAR((((unsigned int)CONFIG_LCD_EBI_ADDR) + EBI_MAX_SIZE - 1),        // Limit
+                         Device_index) // Attribute index - Write-Through, Read-allocate
         }
+#endif
     };
 
     // Setup MPU configuration
@@ -323,6 +374,23 @@ static void main_task(void *pvParameters)
     omv_init();
     framebuffer_init_image(&frameBuffer);
 
+#if defined(__PROFILE__)
+    arm::app::Profiler profiler;
+	uint64_t u64StartCycle;
+	uint64_t u64EndCycle;	
+	uint64_t u64CCAPStartCycle;
+	uint64_t u64CCAPEndCycle;	
+#else
+	pmu_reset_counters();
+#endif
+
+#define EACH_PERF_SEC 5
+	uint64_t u64PerfCycle = 0;
+	uint64_t u64PerfFrames = 0;
+	
+	u64PerfCycle = (uint64_t)pmu_get_systick_Count() + (uint64_t)(SystemCoreClock * EACH_PERF_SEC);
+	info("init perfcycles %llu \n", u64PerfCycle);
+
     S_FRAMEBUF *infFramebuf;
     S_FRAMEBUF *fullFramebuf;
     S_FRAMEBUF *emptyFramebuf;
@@ -333,6 +401,14 @@ static void main_task(void *pvParameters)
     //Setup image senosr
     ImageSensor_Init();
     ImageSensor_Config(eIMAGE_FMT_RGB565, frameBuffer.w, frameBuffer.h);
+#endif
+
+#if defined (__USE_DISPLAY__)
+	char szDisplayText[160];
+	S_DISP_RECT sDispRect;
+
+	Display_Init();
+	Display_ClearLCD(C_WHITE);
 #endif
 
     while (1)
@@ -372,14 +448,29 @@ static void main_task(void *pvParameters)
             resizeImg.data = (uint8_t *)inputTensor->data.data; //direct resize to input tensor buffer
             resizeImg.pixfmt = PIXFORMAT_RGB888;
 
+#if defined(__PROFILE__)
+		u64StartCycle = pmu_get_systick_Count();
+#endif
             imlib_nvt_scale(&fullFramebuf->frameImage, &resizeImg, &roi);
 
+#if defined(__PROFILE__)
+		u64EndCycle = pmu_get_systick_Count();
+		info("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
+
+#if defined(__PROFILE__)
+		u64StartCycle = pmu_get_systick_Count();
+#endif
             /* If the data is signed. */
             if (model.IsDataSigned())
             {
                 arm::app::image::ConvertImgToInt8(inputTensor->data.data, inputTensor->bytes);
             }
 
+#if defined(__PROFILE__)
+			u64EndCycle = pmu_get_systick_Count();
+			info("quantize cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
             //trigger inference
             inferenceJob->responseQueue = inferenceResponseQueue;
             inferenceJob->pPostProc = &postProcess;
@@ -399,8 +490,54 @@ static void main_task(void *pvParameters)
             /* Draw boxes. */
             DrawImageDetectionBoxes(infFramebuf->results, &infFramebuf->frameImage, labels);
 
-            //TODO: display result image
+            //display result image
+#if defined (__USE_DISPLAY__)
+			//Display image on LCD			
+			sDispRect.u32TopLeftX = 0;
+			sDispRect.u32TopLeftY = 0;
+			sDispRect.u32BottonRightX = (infFramebuf->frameImage.w - 1);
+			sDispRect.u32BottonRightY = (infFramebuf->frameImage.h - 1);
 
+#if defined(__PROFILE__)
+			u64StartCycle = pmu_get_systick_Count();
+#endif
+
+			Display_FillRect((uint16_t *)infFramebuf->frameImage.data ,&sDispRect);
+
+#if defined(__PROFILE__)
+			u64EndCycle = pmu_get_systick_Count();
+			info("display image cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
+
+#endif
+
+			u64PerfFrames ++;
+			if((uint64_t) pmu_get_systick_Count() > u64PerfCycle)
+			{
+				info("Total inference rate: %llu\n", u64PerfFrames / EACH_PERF_SEC);
+#if defined (__USE_DISPLAY__)
+//				sprintf(szDisplayText,"Frame Rate %llu",u64PerfFrames / EACH_PERF_SEC);
+				sprintf(szDisplayText,"Time %llu",(uint64_t) pmu_get_systick_Count() / (uint64_t)SystemCoreClock);
+
+				sDispRect.u32TopLeftX = 0;
+				sDispRect.u32TopLeftY = frameBuffer.h + FONT_HTIGHT;
+				sDispRect.u32BottonRightX = (frameBuffer.w );
+				sDispRect.u32BottonRightY = (frameBuffer.h + (2 * FONT_HTIGHT) - 1);
+
+				Display_ClearRect(C_WHITE, &sDispRect);
+				Display_PutText(
+					szDisplayText,
+					strlen(szDisplayText),
+					0,
+					frameBuffer.h + FONT_HTIGHT,
+					C_BLUE,
+					C_WHITE,		
+					false
+				);
+#endif
+				u64PerfCycle = (uint64_t)pmu_get_systick_Count() + (uint64_t)(SystemCoreClock * EACH_PERF_SEC);
+				u64PerfFrames = 0;
+			}
             PresentInferenceResult(infFramebuf->results, labels);
             infFramebuf->eState = eFRAMEBUF_EMPTY;
         }
@@ -411,7 +548,6 @@ static void main_task(void *pvParameters)
         {
 #if !defined (__USE_CCAP__)
 
-#if 1
 			info("Press 'n' to run next image inference \n");
 			info("Press 'q' to exit program \n");
 
@@ -427,7 +563,7 @@ static void main_task(void *pvParameters)
 					break;
 				}
 			}
-#endif
+
 			const uint8_t *pu8ImgSrc = get_img_array(u8ImgIdx);
 
 			if (nullptr == pu8ImgSrc)
@@ -446,7 +582,17 @@ static void main_task(void *pvParameters)
 			
 #if defined (__USE_CCAP__)
             //capture frame from CCAP
-            ImageSensor_Capture((uint32_t)(emptyFramebuf->frameImage.data));
+#if defined(__PROFILE__)
+		u64CCAPStartCycle = pmu_get_systick_Count();
+#endif
+
+		ImageSensor_Capture((uint32_t)(emptyFramebuf->frameImage.data));
+
+#if defined(__PROFILE__)
+		u64CCAPEndCycle = pmu_get_systick_Count();
+		info("ccap capture cycles %llu \n", (u64CCAPEndCycle - u64CCAPStartCycle));
+#endif
+
 #else
             //copy source image to frame buffer
             image_t srcImg;

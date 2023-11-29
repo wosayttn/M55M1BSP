@@ -114,7 +114,7 @@
         <tDlgDll></tDlgDll>
         <tDlgPa></tDlgPa>
         <tIfile></tIfile>
-        <pMon>BIN\CMSIS_AGDI_V8M.DLL</pMon>
+        <pMon>Bin\Nu_Link.dll</pMon>
       </DebugOpt>
       <TargetDriverDllRegistry>
         <SetRegEntry>
@@ -148,24 +148,7 @@
           <Name>UL2V8M(-S0 -C0 -P0 -FD30000000 -FC1000)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint>
-        <Bp>
-          <Number>0</Number>
-          <Type>0</Type>
-          <LineNumber>49</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>1054466</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\BoardInit.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\ImageClass_TVM\../BoardInit.c\49</Expression>
-        </Bp>
-      </Breakpoint>
+      <Breakpoint/>
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>

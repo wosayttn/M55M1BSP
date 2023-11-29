@@ -25,7 +25,7 @@
 #include "NuMicro.h"
 
 #define __PROFILE__
-//#define USE_DMIC
+#define USE_DMIC
 #include "DMICRecord.h"
 
 #if defined(__PROFILE__)
@@ -118,7 +118,7 @@ int main()
 
     const auto mfccFrameLength = 640;
     const auto mfccFrameStride = 320;
-    const auto scoreThreshold  = 0.7;
+    const auto scoreThreshold  = 0.6;
 
     /* Get Input and Output tensors for pre/post processing. */
     TfLiteTensor *inputTensor  = model.GetInputTensor(0);
@@ -295,11 +295,20 @@ int main()
 			profiler.StopProfiling();
 #endif
 
+#if defined(__PROFILE__)
+			u64StartCycle = pmu_get_systick_Count();
+#endif	
+
             if (!postProcess.DoPostProcess())
             {
                 printf_err("Post-processing failed.");
                 break;
             }
+
+#if defined(__PROFILE__)
+			u64EndCycle = pmu_get_systick_Count();
+			info("Post process cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
 
             /* Add results from this window to our final results vector. */
             finalResults.emplace_back(arm::app::kws::KwsResult(singleInfResult,
@@ -322,12 +331,14 @@ int main()
 
             if (result.m_resultVec.empty())
             {
+#if 0
                 info("For timestamp: %f (inference #: %" PRIu32 "); label: %s; threshold: %f\n",
                      result.m_timeStamp,
                      result.m_inferenceNumber,
                      topKeyword.c_str(),
                      result.m_threshold);
-            }
+#endif
+			}
             else
             {
                 for (uint32_t j = 0; j < result.m_resultVec.size(); ++j)

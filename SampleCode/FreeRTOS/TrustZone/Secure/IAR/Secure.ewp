@@ -214,7 +214,9 @@
                 <debug>1</debug>
                 <option>
                     <name>CCDefines</name>
-                    <state></state>
+                    <state>__HXT=24000000UL</state>
+                    <state>DEBUG_PORT=UART0</state>
+                    <state>NVT_VECTOR_ON_FLASH</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>

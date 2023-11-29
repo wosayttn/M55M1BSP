@@ -17,6 +17,14 @@
 #include "dma.h"
 #endif
 
+__STATIC_FORCEINLINE int32_t __USAT_ASR(int32_t op1, int32_t op2, int32_t op3)
+{
+  int32_t result;
+
+  __ASM ("usat %0, %1, %2, asr %3" : "=r" (result) : "i" (op2), "r" (op1), "i" (op3));
+  return result;
+}
+
 void* imlib_compute_row_ptr(const image_t *img, int y) {
     switch (img->pixfmt) {
         case PIXFORMAT_BINARY: {

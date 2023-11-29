@@ -78,10 +78,8 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for UART0 RXD and TXD */
-    //SET_UART0_RXD_PB12();
-    //SET_UART0_TXD_PB13();
-    SET_UART0_RXD_PA0();
-    SET_UART0_TXD_PA1();
+    SET_UART0_RXD_PB12();
+    SET_UART0_TXD_PB13();
 
     HyperRAM_PinConfig(HYPERRAM_SPIM_PORT);
 }

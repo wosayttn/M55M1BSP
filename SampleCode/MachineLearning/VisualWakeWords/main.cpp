@@ -122,8 +122,6 @@ static void omv_init()
 
 int main()
 {
-    char chStdIn;
-
     /* Initialise the UART module to allow printf related functions (if using retarget) */
     BoardInit();
 
@@ -239,7 +237,7 @@ int main()
 	uint64_t u64PerfFrames = 0;
 	
 	u64PerfCycle = pmu_get_systick_Count();
-	u64PerfCycle += SystemCoreClock * EACH_PERF_SEC;
+	u64PerfCycle += (SystemCoreClock * EACH_PERF_SEC);
 
 #if defined (__USE_CCAP__)
     //Setup image senosr
@@ -255,6 +253,8 @@ int main()
 #endif
 
 #if !defined (__USE_CCAP__)
+    char chStdIn;
+
     info("Press 'n' to run next image inference \n");
     info("Press 'q' to exit program \n");
 
@@ -309,7 +309,6 @@ int main()
 		u64StartCycle = pmu_get_systick_Count();
 #endif
 
-//        SCB_InvalidateDCache_by_Addr((void *) frameBuffer.data, (int32_t) 320*240*2);
 		Display_FillRect((uint16_t *)frameBuffer.data ,&sDispRect);
 
 #if defined(__PROFILE__)
@@ -473,7 +472,7 @@ int main()
 #endif
 
 			u64PerfCycle = pmu_get_systick_Count();
-			u64PerfCycle += SystemCoreClock * EACH_PERF_SEC;
+			u64PerfCycle += (SystemCoreClock * EACH_PERF_SEC);
 			u64PerfFrames = 0;
 		}
 

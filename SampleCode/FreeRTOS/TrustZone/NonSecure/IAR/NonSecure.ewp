@@ -214,7 +214,11 @@
                 <debug>1</debug>
                 <option>
                     <name>CCDefines</name>
-                    <state>SYSTEM_CORE_CLOCK=25000000</state>
+                    <state>__HXT=24000000UL</state>
+                    <state>NVT_VECTOR_ON_FLASH</state>
+                    <state>DEBUG_PORT=UART1_NS</state>
+                    <state>NVT_DBG_UART_OFF</state>
+                    <state>SYSTEM_CORE_CLOCK=18000000</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>

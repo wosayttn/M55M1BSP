@@ -2776,8 +2776,6 @@ typedef struct
  * |        |          |Note: These bits are lose when D2 power is turned off.
  * |[12:8]  |PC13MFP   |PC.13 Multi-function Pin Selection
  * |        |          |Note: These bits are lose when D2 power is turned off.
- * |[20:16] |PC14MFP   |PC.14 Multi-function Pin Selection
- * |        |          |Note: These bits are lose when D2 power is turned off.
  * @var SYS_T::GPD_MFP0
  * Offset: 0x330  GPIOD Multiple Function Control Register 0
  * ---------------------------------------------------------------------------------------------------
@@ -7442,9 +7440,6 @@ typedef struct
 
 #define SYS_GPC_MFP3_PC13MFP_Pos         (8)                                               /*!< SYS_T::GPC_MFP3: PC13MFP Position      */
 #define SYS_GPC_MFP3_PC13MFP_Msk         (0x1ful << SYS_GPC_MFP3_PC13MFP_Pos)              /*!< SYS_T::GPC_MFP3: PC13MFP Mask          */
-
-#define SYS_GPC_MFP3_PC14MFP_Pos         (16)                                              /*!< SYS_T::GPC_MFP3: PC14MFP Position      */
-#define SYS_GPC_MFP3_PC14MFP_Msk         (0x1ful << SYS_GPC_MFP3_PC14MFP_Pos)              /*!< SYS_T::GPC_MFP3: PC14MFP Mask          */
 
 #define SYS_GPD_MFP0_PD0MFP_Pos          (0)                                               /*!< SYS_T::GPD_MFP0: PD0MFP Position       */
 #define SYS_GPD_MFP0_PD0MFP_Msk          (0x1ful << SYS_GPD_MFP0_PD0MFP_Pos)               /*!< SYS_T::GPD_MFP0: PD0MFP Mask           */

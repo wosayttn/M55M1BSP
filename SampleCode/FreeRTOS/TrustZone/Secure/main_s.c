@@ -139,10 +139,8 @@ void SetDebugUartMFP(void)
 {
 #if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
     /* Set GPB12 as UART0 RXD and GPB13 as UART0 TXD */
-    //    SET_UART0_RXD_PB12();
-    //    SET_UART0_TXD_PB13();
-    SET_UART0_RXD_PA0();
-    SET_UART0_TXD_PA1();
+    SET_UART0_RXD_PB12();
+    SET_UART0_TXD_PB13();
 #endif /* !defined(DEBUG_ENABLE_SEMIHOST) || !defined(OS_USE_SEMIHOSTING) */
 }
 

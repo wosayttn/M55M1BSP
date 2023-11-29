@@ -112,12 +112,6 @@ __STATIC_FORCEINLINE uint32_t __UXTB(uint32_t op1)
   return(result);
 }
 
-__STATIC_FORCEINLINE int32_t __USAT_ASR(int32_t op1, int32_t op2, int32_t op3)
-{
-  register int32_t result;
-  __ASM ("usat %0, %1, %2, asr %3" : "=r" (result) : "i" (op2), "r" (op1), "i" (op3));
-  return result;
-}
 
 #ifndef __UXTB_RORn
 #define __UXTB_RORn(ARG1, ARG2)        __UXTB(__ROR(ARG1, ARG2))
@@ -1780,8 +1774,8 @@ array_t *imlib_selective_search(image_t *src, float t, int min_size, float a1, f
 
 //Added by chchen59
 //Nuvoton image processing function
-void imlib_nvt_RGB888toRGB565(image_t *src, image_t *dst);
-void imlib_nvt_RGB565toRGB888(image_t *src, image_t *dst);
+void imlib_nvt_RGB888toRGB565_SIMD(image_t *src, image_t *dst);
+void imlib_nvt_RGB565toRGB888_SIMD(image_t *src, image_t *dst);
 void imlib_nvt_scale(image_t *src, image_t *dst, rectangle_t *roi);
 
 #ifdef __cplusplus

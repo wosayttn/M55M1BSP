@@ -12,6 +12,7 @@
 #include "DMICRecord.h"
 
 #define DMIC_LPPDMA_CH       (2)
+#define LPPDMA_BUF_ALIGH     (32)
 
 typedef struct
 {
@@ -25,7 +26,9 @@ typedef struct
 
 static LPDSCT_T s_sLPPDMA_DMIC_SCT[2];       // Provide LPPDMA description for ping-pong.
 static int16_t *s_pi16PDMAPingPoneBuf[2];
+static uint32_t s_u32PDMAPingPoneBuf_Aligned[2];
 static S_BUF_CTRL s_sAudioBufCtrl;
+
 
 // Push audio data to ring buffer
 static int AudioInBuf_Push(S_BUF_CTRL *psBufCtrl, int16_t *pi16Data)
@@ -43,7 +46,7 @@ static int AudioInBuf_Push(S_BUF_CTRL *psBufCtrl, int16_t *pi16Data)
     if (((i32WriteIndex + i32PDMASamples) % i32TotalSamples) == i32ReadIndex)
         return -1;
 
-    if (i32WriteIndex > i32ReadIndex)
+    if (i32WriteIndex >= i32ReadIndex)
     {
         i32FreeSampleSpace = i32TotalSamples - (i32WriteIndex - i32ReadIndex);
     }
@@ -56,6 +59,8 @@ static int AudioInBuf_Push(S_BUF_CTRL *psBufCtrl, int16_t *pi16Data)
         return -2;
 
     i32NextWriteIndex = i32WriteIndex + i32PDMASamples;
+
+    SCB_InvalidateDCache_by_Addr(pi16Data, i32PDMASamples * u32Channels * sizeof(int16_t));
 
     if (i32NextWriteIndex >= i32TotalSamples)
     {
@@ -108,7 +113,7 @@ static int AudioInBuf_Read(S_BUF_CTRL *psBufCtrl, int16_t *pi16Data, int32_t i32
         return -2;
 
     i32NextReadIndex = i32ReadIndex + i32Samples;
-
+	
     if (i32NextReadIndex >= i32TotalSamples)
     {
         int32_t i32CopySamples = i32TotalSamples - i32ReadIndex;
@@ -192,6 +197,12 @@ static int AudioInBuf_AvailSamples(S_BUF_CTRL *psBufCtrl)
     return i32AvailSampleSpace;
 }
 
+//#define LPPDMA_PINGPONG_CHECK
+
+#if defined(LPPDMA_PINGPONG_CHECK)
+static int s_IRQIn_index = 1;
+#endif
+
 void LPPDMA_IRQHandler(void)
 {
     uint32_t u32TDStatus = LPPDMA_GET_TD_STS(LPPDMA);
@@ -202,11 +213,29 @@ void LPPDMA_IRQHandler(void)
 
         if (LPPDMA->CURSCAT[DMIC_LPPDMA_CH] == (uint32_t)&s_sLPPDMA_DMIC_SCT[0])
         {
-            AudioInBuf_Push(&s_sAudioBufCtrl, s_pi16PDMAPingPoneBuf[0]);
+            AudioInBuf_Push(&s_sAudioBufCtrl, (int16_t *)s_u32PDMAPingPoneBuf_Aligned[0]);
+
+#if defined(LPPDMA_PINGPONG_CHECK)
+			if(s_IRQIn_index != 1)
+			{
+				printf("Warning: Maybe loss some audio data \n");
+			}
+			
+			s_IRQIn_index = 0;
+#endif
         }
         else
         {
-            AudioInBuf_Push(&s_sAudioBufCtrl, s_pi16PDMAPingPoneBuf[1]);
+            AudioInBuf_Push(&s_sAudioBufCtrl, (int16_t *)s_u32PDMAPingPoneBuf_Aligned[1]);
+
+#if defined(LPPDMA_PINGPONG_CHECK)
+			if(s_IRQIn_index != 0)
+			{
+				printf("Warning: Maybe loss some audio data \n");
+			}
+			
+			s_IRQIn_index = 1;
+#endif
         }
     }
 }
@@ -222,11 +251,20 @@ int32_t DMICRecord_Init(
     int i32Ret = 0;
     int16_t *pi16LPPDMAPingPoneBuf0 = NULL;
     int16_t *pi16LPPDMAPingPoneBuf1 = NULL;
+    uint32_t u32LPPDMAPingPoneBuf0_Aligned;
+    uint32_t u32LPPDMAPingPoneBuf1_Aligned;
     int16_t *pi16AudioInBuf = NULL;
 
     //Allocate audio-in buffers
-    pi16LPPDMAPingPoneBuf0 = malloc(u32BlockSamples * u32Channels * sizeof(int16_t));
-    pi16LPPDMAPingPoneBuf1 = malloc(u32BlockSamples * u32Channels * sizeof(int16_t));
+    pi16LPPDMAPingPoneBuf0 = malloc((u32BlockSamples * u32Channels * sizeof(int16_t)) + (LPPDMA_BUF_ALIGH - 1));
+    pi16LPPDMAPingPoneBuf1 = malloc((u32BlockSamples * u32Channels * sizeof(int16_t)) + (LPPDMA_BUF_ALIGH - 1));
+
+	//Aligned LPPDMA bufffer address
+	u32LPPDMAPingPoneBuf0_Aligned = (uint32_t)pi16LPPDMAPingPoneBuf0 + (LPPDMA_BUF_ALIGH - 1);
+	u32LPPDMAPingPoneBuf0_Aligned &= ~(LPPDMA_BUF_ALIGH - 1);
+	u32LPPDMAPingPoneBuf1_Aligned = (uint32_t)pi16LPPDMAPingPoneBuf1 + (LPPDMA_BUF_ALIGH - 1);
+	u32LPPDMAPingPoneBuf1_Aligned &= ~(LPPDMA_BUF_ALIGH - 1);
+
     pi16AudioInBuf = malloc(u32BlockSamples * u32BlockCounts * u32Channels * sizeof(int16_t));
 
     if (!pi16LPPDMAPingPoneBuf0 || !pi16LPPDMAPingPoneBuf1 || !pi16AudioInBuf)
@@ -284,15 +322,20 @@ int32_t DMICRecord_Init(
     // Enable interrupt
     LPPDMA_EnableInt(LPPDMA, DMIC_LPPDMA_CH, LPPDMA_INT_TRANS_DONE);
 
+    /* Enable the LPPDMA IRQ */
+    NVIC_EnableIRQ(LPPDMA_IRQn);
 
     s_pi16PDMAPingPoneBuf[0] = pi16LPPDMAPingPoneBuf0;
     s_pi16PDMAPingPoneBuf[1] = pi16LPPDMAPingPoneBuf1;
+	s_u32PDMAPingPoneBuf_Aligned[0] = u32LPPDMAPingPoneBuf0_Aligned;
+	s_u32PDMAPingPoneBuf_Aligned[1] = u32LPPDMAPingPoneBuf1_Aligned;
+
     s_sAudioBufCtrl.i32ReadSampleIndex = 0;
     s_sAudioBufCtrl.i32WriteSampleIndex = 0;
     s_sAudioBufCtrl.i32TotalSamples = u32BlockSamples * u32BlockCounts;
     s_sAudioBufCtrl.u32Channels = u32Channels;
     s_sAudioBufCtrl.pi16AudioInBuf = pi16AudioInBuf;
-    s_sAudioBufCtrl.u32PDMABlockSamples = u32BlockCounts;
+    s_sAudioBufCtrl.u32PDMABlockSamples = u32BlockSamples;
 
     return 0;
 

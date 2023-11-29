@@ -41,6 +41,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>Device</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>Driver</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -121,9 +126,19 @@
 			<locationURI>$%7BPARENT-4-PROJECT_LOC%7D/Library/Device/Nuvoton/M55M1/Source/system_M55M1.c</locationURI>
 		</link>
 		<link>
+			<name>Device/DMICRecord.c</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Device/DMICRecord/DMICRecord.c</locationURI>
+		</link>
+		<link>
 			<name>Driver/clk.c</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-4-PROJECT_LOC%7D/Library/StdDriver/src/clk.c</locationURI>
+		</link>
+		<link>
+			<name>Driver/dmic.c</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-4-PROJECT_LOC%7D/Library/StdDriver/src/dmic.c</locationURI>
 		</link>
 		<link>
 			<name>Driver/ethosu_device_u55_u65.c</name>
@@ -144,6 +159,11 @@
 			<name>Driver/gpio.c</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-4-PROJECT_LOC%7D/Library/StdDriver/src/gpio.c</locationURI>
+		</link>
+		<link>
+			<name>Driver/lppdma.c</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-4-PROJECT_LOC%7D/Library/StdDriver/src/lppdma.c</locationURI>
 		</link>
 		<link>
 			<name>Driver/retarget.c</name>

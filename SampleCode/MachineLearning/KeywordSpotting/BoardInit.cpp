@@ -84,16 +84,17 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for UART0 RXD and TXD */
-    //SET_UART0_RXD_PB12();
-    //SET_UART0_TXD_PB13();
-    SET_UART0_RXD_PA0();
-    SET_UART0_TXD_PA1();
+    SET_UART0_RXD_PB12();
+    SET_UART0_TXD_PB13();
 
     /* Set multi-function pins for DMIC */
-    SET_DMIC0_CLK_PE9();
-    SET_DMIC0_DAT_PE8();
-    SET_DMIC1_CLK_PE12();
-    SET_DMIC1_DAT_PE11();
+    //SET_DMIC0_CLK_PE9();
+    //SET_DMIC0_DAT_PE8();
+    SET_DMIC0_CLK_PA4();
+    SET_DMIC0_DAT_PA5();
+	SYS->GPA_MFOS = BIT5;
+    //SET_DMIC1_CLK_PE12();
+    //SET_DMIC1_DAT_PE11();
 
 }
 

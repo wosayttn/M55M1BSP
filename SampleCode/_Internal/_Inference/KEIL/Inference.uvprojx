@@ -81,7 +81,7 @@
           </BeforeMake>
           <AfterMake>
             <RunUserProg1>1</RunUserProg1>
-            <RunUserProg2>1</RunUserProg2>
+            <RunUserProg2>0</RunUserProg2>
             <UserProg1Name>fromelf --bin --output=release\ "$L@L.axf"</UserProg1Name>
             <UserProg2Name>..\..\..\binToDat.bat ".\Objects\@L.axf"</UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
@@ -192,7 +192,7 @@
             <useUlib>0</useUlib>
             <EndSel>1</EndSel>
             <uLtcg>0</uLtcg>
-            <nSecure>0</nSecure>
+            <nSecure>2</nSecure>
             <RoSelD>0</RoSelD>
             <RwSelD>5</RwSelD>
             <CodeSel>0</CodeSel>

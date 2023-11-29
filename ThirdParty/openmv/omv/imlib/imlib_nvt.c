@@ -13,16 +13,112 @@
 
 #include <arm_mve.h>
 
-
-void imlib_nvt_RGB888toRGB565(image_t *src, image_t *dst)
-{
 	#define PIXELS_LOOP	16
+
+	#define OFFSET_G3B5_LOW		0x0E0C0A0806040200
+	#define OFFSET_G3B5_HIGH	0x1E1C1A1816141210
+	#define OFFSET_R5G3_LOW		0x0F0D0B0907050301
+	#define OFFSET_R5G3_HIGH	0x1F1D1B1917151311
+
 	#define OFFSET_R_LOW	0x15120F0C09060300
 	#define OFFSET_R_HIGH	0x2D2A2724211E1B18
 	#define OFFSET_G_LOW	0x1613100D0A070401
 	#define OFFSET_G_HIGH	0x2E2B2825221F1C19
 	#define OFFSET_B_LOW	0x1714110E0B080502
 	#define OFFSET_B_HIGH	0x2F2C292623201D1A
+
+
+void imlib_nvt_RGB565toRGB888_SIMD(image_t *src, image_t *dst)
+{
+
+	uint8_t *pu8SrcData = src->data;
+	uint8_t *pu8DestData = dst->data;
+	
+	if((src->pixfmt != PIXFORMAT_RGB565) || (dst->pixfmt != PIXFORMAT_RGB888))
+		return;
+
+	//for helium intrinsics
+	int pixels = src->h * src->w;
+	uint8x16_t offset_8_16_r5g3;
+	uint8x16_t offset_8_16_g3b5;
+	uint8x16_t offset_8_16_r;
+	uint8x16_t offset_8_16_g;
+	uint8x16_t offset_8_16_b;
+
+	//create offset Q
+#if defined (__GNUC__) && !defined(__ARMCC_VERSION)
+	offset_8_16_r5g3 = vcreateq_u8(OFFSET_R5G3_HIGH, OFFSET_R5G3_LOW);
+	offset_8_16_g3b5 = vcreateq_u8(OFFSET_G3B5_HIGH, OFFSET_G3B5_LOW);
+#else
+	offset_8_16_r5g3 = vcreateq_u8(OFFSET_R5G3_LOW, OFFSET_R5G3_HIGH);
+	offset_8_16_g3b5 = vcreateq_u8(OFFSET_G3B5_LOW, OFFSET_G3B5_HIGH);
+#endif
+
+#if defined (__GNUC__) && !defined(__ARMCC_VERSION)
+	offset_8_16_r = vcreateq_u8(OFFSET_R_HIGH, OFFSET_R_LOW);
+	offset_8_16_g = vcreateq_u8(OFFSET_G_HIGH, OFFSET_G_LOW);
+	offset_8_16_b = vcreateq_u8(OFFSET_B_HIGH, OFFSET_B_LOW);
+#else
+	offset_8_16_r = vcreateq_u8(OFFSET_R_LOW, OFFSET_R_HIGH);
+	offset_8_16_g = vcreateq_u8(OFFSET_G_LOW, OFFSET_G_HIGH);
+	offset_8_16_b = vcreateq_u8(OFFSET_B_LOW, OFFSET_B_HIGH);
+#endif
+
+	while(pixels >= PIXELS_LOOP)
+	{
+		uint8x16_t vsrc_8_16_r5g3;
+		uint8x16_t vsrc_8_16_g3b5;
+
+		uint8x16_t vdst_8_16_r;
+		uint8x16_t vdst_8_16_g;
+		uint8x16_t vdst_8_16_b;
+		uint8x16_t vdst_8_16_temp;
+
+		//Load RGB565 data from source buffer. Using vector scale-gater load
+		vsrc_8_16_r5g3 = vldrbq_gather_offset(pu8SrcData, offset_8_16_r5g3);
+		vsrc_8_16_g3b5 = vldrbq_gather_offset(pu8SrcData, offset_8_16_g3b5);
+
+		vdst_8_16_r = vsrc_8_16_r5g3;
+		vdst_8_16_temp = vshrq(vdst_8_16_r, 5);
+		vdst_8_16_r = vorrq(vdst_8_16_r, vdst_8_16_temp);
+
+		vdst_8_16_g = vshlq_n(vsrc_8_16_r5g3, 5);
+		vdst_8_16_temp = vshrq(vsrc_8_16_g3b5, 5);
+		vdst_8_16_temp = vshlq_n(vdst_8_16_temp, 2);
+		vdst_8_16_g = vorrq(vdst_8_16_g, vdst_8_16_temp);
+		vdst_8_16_temp = vshrq(vdst_8_16_g, 6);
+		vdst_8_16_g = vorrq(vdst_8_16_g, vdst_8_16_temp);
+
+		vdst_8_16_b = vshlq_n(vsrc_8_16_g3b5, 3);
+		vdst_8_16_temp = vshrq(vdst_8_16_b, 5);
+		vdst_8_16_b = vorrq(vdst_8_16_b, vdst_8_16_temp);
+
+
+		vstrbq_scatter_offset(pu8DestData, offset_8_16_r, vdst_8_16_r);
+		vstrbq_scatter_offset(pu8DestData, offset_8_16_g, vdst_8_16_g);
+		vstrbq_scatter_offset(pu8DestData, offset_8_16_b, vdst_8_16_b);
+
+		pu8DestData += PIXELS_LOOP*3;
+		pu8SrcData += PIXELS_LOOP*2;
+		pixels -= PIXELS_LOOP;
+	}
+
+	uint16_t u16PixelData; 
+	uint16_t *pu16SrcData = (uint16_t *)pu8SrcData;
+
+	for(int i = 0; i < pixels; i ++)
+	{
+		u16PixelData = *pu16SrcData;
+		*(pu8DestData ++) = COLOR_RGB565_TO_R8(u16PixelData);
+		*(pu8DestData ++) = COLOR_RGB565_TO_G8(u16PixelData);
+		*(pu8DestData ++) = COLOR_RGB565_TO_B8(u16PixelData);
+		pu16SrcData ++;
+	}
+}
+
+
+void imlib_nvt_RGB888toRGB565_SIMD(image_t *src, image_t *dst)
+{
 
 	uint8_t *pu8SrcData = src->data;
 	uint8_t *pu8DestData = dst->data;
@@ -113,7 +209,7 @@ void imlib_nvt_RGB888toRGB565(image_t *src, image_t *dst)
 	}	
 }
 
-void imlib_nvt_RGB565toRGB888(image_t *src, image_t *dst)
+void imlib_nvt_RGB565toRGB888_SW(image_t *src, image_t *dst)
 {
 	uint16_t *pu16SrcData = (uint16_t *)src->data;
 	uint8_t *pu8DestData = dst->data;
@@ -147,8 +243,104 @@ static int gcd(int n1, int n2) {
                                                       { ReptCnt++; Delta -= FactorN; } \
                                                     }
 
+
+static void RGB565toRGB888_16Pixels_SIMD(
+	image_t *src,
+	image_t *dst,
+	uint8_t *pu8SrcData,
+	uint8_t *pu8DstData,
+	uint16_t au16RepeatePos[],
+	uint32_t u32YRepeateCnt
+)
+{
+	uint64_t u64Offset_R5G3_Lo = 0;
+	uint64_t u64Offset_R5G3_Hi = 0;
+	uint64_t u64Offset_G3B5_Lo = 0;
+	uint64_t u64Offset_G3B5_Hi = 0;
+	uint8x16_t offset_8_16_r5g3;
+	uint8x16_t offset_8_16_g3b5;
+	uint8x16_t offset_8_16_r;
+	uint8x16_t offset_8_16_g;
+	uint8x16_t offset_8_16_b;
+
+	int i;
+	
+	uint64_t u64Temp;
+
+	for(i = 0; i < 8 ; i ++)
+	{
+		u64Temp = au16RepeatePos[i] * src->bpp;
+		u64Offset_G3B5_Lo |= u64Temp << (i * 8);
+		u64Offset_R5G3_Lo |= (u64Temp + 1) << (i * 8);
+	}
+
+	for( i = 0; i < 8 ; i ++)
+	{
+		u64Temp = au16RepeatePos[i + 8] * src->bpp;
+		u64Offset_G3B5_Hi |= u64Temp << (i * 8);
+		u64Offset_R5G3_Hi |= (u64Temp + 1) << (i * 8);
+	}
+
+	//create offset Q
+#if defined (__GNUC__) && !defined(__ARMCC_VERSION)
+	offset_8_16_r5g3 = vcreateq_u8(u64Offset_R5G3_Hi, u64Offset_R5G3_Lo);
+	offset_8_16_g3b5 = vcreateq_u8(u64Offset_G3B5_Hi, u64Offset_G3B5_Lo);
+#else
+	offset_8_16_r5g3 = vcreateq_u8(u64Offset_R5G3_Lo, u64Offset_R5G3_Hi);
+	offset_8_16_g3b5 = vcreateq_u8(u64Offset_G3B5_Lo, u64Offset_G3B5_Hi);
+#endif
+
+#if defined (__GNUC__) && !defined(__ARMCC_VERSION)
+	offset_8_16_r = vcreateq_u8(OFFSET_R_HIGH, OFFSET_R_LOW);
+	offset_8_16_g = vcreateq_u8(OFFSET_G_HIGH, OFFSET_G_LOW);
+	offset_8_16_b = vcreateq_u8(OFFSET_B_HIGH, OFFSET_B_LOW);
+#else
+	offset_8_16_r = vcreateq_u8(OFFSET_R_LOW, OFFSET_R_HIGH);
+	offset_8_16_g = vcreateq_u8(OFFSET_G_LOW, OFFSET_G_HIGH);
+	offset_8_16_b = vcreateq_u8(OFFSET_B_LOW, OFFSET_B_HIGH);
+#endif
+	
+	
+	uint8x16_t vsrc_8_16_r5g3;
+	uint8x16_t vsrc_8_16_g3b5;
+
+	uint8x16_t vdst_8_16_r;
+	uint8x16_t vdst_8_16_g;
+	uint8x16_t vdst_8_16_b;
+	uint8x16_t vdst_8_16_temp;
+	
+	//Load RGB565 data from source buffer. Using vector scale-gater load
+	vsrc_8_16_r5g3 = vldrbq_gather_offset(pu8SrcData, offset_8_16_r5g3);
+	vsrc_8_16_g3b5 = vldrbq_gather_offset(pu8SrcData, offset_8_16_g3b5);
+
+	vdst_8_16_r = vsrc_8_16_r5g3;
+	vdst_8_16_temp = vshrq(vdst_8_16_r, 5);
+	vdst_8_16_r = vorrq(vdst_8_16_r, vdst_8_16_temp);
+
+	vdst_8_16_g = vshlq_n(vsrc_8_16_r5g3, 5);
+	vdst_8_16_temp = vshrq(vsrc_8_16_g3b5, 5);
+	vdst_8_16_temp = vshlq_n(vdst_8_16_temp, 2);
+	vdst_8_16_g = vorrq(vdst_8_16_g, vdst_8_16_temp);
+	vdst_8_16_temp = vshrq(vdst_8_16_g, 6);
+	vdst_8_16_g = vorrq(vdst_8_16_g, vdst_8_16_temp);
+
+	vdst_8_16_b = vshlq_n(vsrc_8_16_g3b5, 3);
+	vdst_8_16_temp = vshrq(vdst_8_16_b, 5);
+	vdst_8_16_b = vorrq(vdst_8_16_b, vdst_8_16_temp);
+
+	while(u32YRepeateCnt)
+	{
+		//Store RGB888 16 pixel data. 
+		vstrbq_scatter_offset(pu8DstData, offset_8_16_r, vdst_8_16_r);
+		vstrbq_scatter_offset(pu8DstData, offset_8_16_g, vdst_8_16_g);
+		vstrbq_scatter_offset(pu8DstData, offset_8_16_b, vdst_8_16_b);
+
+		pu8DstData += dst->w * dst->bpp;
+		u32YRepeateCnt --;
+	}
+}
 													
-static void RGB888toRGB565_16Pixels(
+static void RGB888toRGB565_16Pixels_SIMD(
 	image_t *src,
 	image_t *dst,
 	uint8_t *pu8SrcData,
@@ -462,7 +654,7 @@ void imlib_nvt_scale(image_t *src, image_t *dst, rectangle_t *roi)
 					if((src->pixfmt == PIXFORMAT_RGB888) && (dst->pixfmt == PIXFORMAT_RGB565))
 					{
 
-						RGB888toRGB565_16Pixels(
+						RGB888toRGB565_16Pixels_SIMD(
 							src,
 							dst,
 							pu8CurSrcRowPos + (u16RepeatPosX * src->bpp),
@@ -472,6 +664,15 @@ void imlib_nvt_scale(image_t *src, image_t *dst, rectangle_t *roi)
 					}
 					else if((src->pixfmt == PIXFORMAT_RGB565) && (dst->pixfmt == PIXFORMAT_RGB888))
 					{
+#if 0
+						RGB565toRGB888_16Pixels_SIMD(
+							src,
+							dst,
+							pu8CurSrcRowPos + (u16RepeatPosX * src->bpp),
+							pu8CurDstRowPos + (u16DestWinXPos * dst->bpp),
+							au16RepeatPosOffset,
+							u32RepeatCntY);						
+#else
 						RGB565toRGB888_SW(
 							src,
 							dst,
@@ -480,6 +681,8 @@ void imlib_nvt_scale(image_t *src, image_t *dst, rectangle_t *roi)
 							au16RepeatPosOffset,
 							PIXELS_LOOP,
 							u32RepeatCntY);						
+
+#endif
 						
 					}
 					else if((src->pixfmt == PIXFORMAT_RGB888) && (dst->pixfmt == PIXFORMAT_RGB888))

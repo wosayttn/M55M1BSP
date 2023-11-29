@@ -57,7 +57,7 @@ int FaceDetect_Detect(S_FACE_IMAGE *psFaceImage, S_FACE_BOX *psFaceBox)
         sDstImage.pixfmt = PIXFORMAT_RGB565;
         sDstImage.data = pu8RGB565Buf;
 
-        imlib_nvt_RGB888toRGB565(&sSrcImage, &sDstImage);
+        imlib_nvt_RGB888toRGB565_SIMD(&sSrcImage, &sDstImage);
 
         sSrcImage.pixfmt = PIXFORMAT_RGB565;
         sSrcImage.data = pu8RGB565Buf;

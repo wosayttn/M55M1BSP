@@ -2,7 +2,7 @@
 <project>
     <fileVersion>3</fileVersion>
     <configuration>
-        <name>Debug</name>
+        <name>Release</name>
         <toolchain>
             <name>ARM</name>
         </toolchain>
@@ -16,19 +16,19 @@
                 <debug>1</debug>
                 <option>
                     <name>ExePath</name>
-                    <state>Debug\Exe</state>
+                    <state>Release\Exe</state>
                 </option>
                 <option>
                     <name>ObjPath</name>
-                    <state>Debug\Obj</state>
+                    <state>Release\Obj</state>
                 </option>
                 <option>
                     <name>ListPath</name>
-                    <state>Debug\List</state>
+                    <state>Release\List</state>
                 </option>
                 <option>
                     <name>BrowseInfoPath</name>
-                    <state>Debug\BrowseInfo</state>
+                    <state>Release\BrowseInfo</state>
                 </option>
                 <option>
                     <name>GEndianMode</name>
@@ -201,7 +201,7 @@
                 </option>
                 <option>
                     <name>BuildFilesPath</name>
-                    <state>Debug\</state>
+                    <state>Release\</state>
                 </option>
             </data>
         </settings>
@@ -214,6 +214,8 @@
                 <debug>1</debug>
                 <option>
                     <name>CCDefines</name>
+                    <state>TESTCHIP_ONLY</state>
+                    <state>__HXT=24000000UL</state>
                     <state>NVT_VECTOR_ON_FLASH</state>
                     <state>NVT_DCACHE_ON</state>
                     <state>TF_LITE_STATIC_MEMORY</state>
@@ -259,7 +261,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state></state>
+                    <state>Pe550, Pe997</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
@@ -2170,7 +2172,7 @@
             <name>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\source\TensorFlowLiteMicro.cc</name>
         </file>
         <configuration>
-            <name>Debug</name>
+            <name>Release</name>
             <settings>
                 <name>ICCARM</name>
                 <data>
@@ -2221,7 +2223,7 @@
                     </option>
                     <option>
                         <name>CCDiagSuppress</name>
-                        <state></state>
+                        <state>Pe550, Pe997</state>
                     </option>
                     <option>
                         <name>CCDiagRemark</name>
@@ -2434,7 +2436,25 @@
     <group>
         <name>Device</name>
         <file>
+            <name>$PROJ_DIR$\..\Device\Display\Display.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\Display\Font8_16.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\Device\HyperFlash\hyperflash_code.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\ImageSensor\ImageSensor.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\Display\LCD\LCD_FSA506.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\ImageSensor\Sensor\Sensor_HM1055.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\ImageSensor\Sensor\SWI2C.c</name>
         </file>
     </group>
     <group>
@@ -2444,6 +2464,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\clk.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\ebi.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\npu\ethosu_device_u55_u65.c</name>

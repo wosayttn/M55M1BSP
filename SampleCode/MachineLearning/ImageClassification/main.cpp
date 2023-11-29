@@ -239,7 +239,7 @@ int main()
 	uint64_t u64PerfFrames = 0;
 	
 	u64PerfCycle = pmu_get_systick_Count();
-	u64PerfCycle += SystemCoreClock * EACH_PERF_SEC;
+	u64PerfCycle += (SystemCoreClock * EACH_PERF_SEC);
 
 #if defined (__USE_CCAP__)
     //Setup image senosr
@@ -468,7 +468,7 @@ int main()
 #endif
 
 			u64PerfCycle = pmu_get_systick_Count();
-			u64PerfCycle += SystemCoreClock * EACH_PERF_SEC;
+			u64PerfCycle += (SystemCoreClock * EACH_PERF_SEC);
 			u64PerfFrames = 0;
 		}
 

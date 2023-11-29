@@ -482,7 +482,7 @@ void CLK_SetSCLK(uint32_t u32ClkSrc)
     }
 
     /* Set Flash Access Cycle to 8 for safe */
-    FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (8);
+    FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (7);
 
     /* Switch SCLK to new SCLK source */
     CLK->SCLKSEL = (CLK->SCLKSEL & (~CLK_SCLKSEL_SCLKSEL_Msk)) | u32ClkSrc;
@@ -504,27 +504,31 @@ void CLK_SetSCLK(uint32_t u32ClkSrc)
     }
 
     /* Switch flash access cycle to suitable value base on SCLK */
-    if (SystemCoreClock > FREQ_200MHZ)
+    if (SystemCoreClock > 157000000)
+    {
+        FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (7);
+    }
+    else if (SystemCoreClock >= 133000000)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (6);
     }
-    else if (SystemCoreClock > FREQ_160MHZ)
+    else if (SystemCoreClock >= 103000000)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (5);
     }
-    else if (SystemCoreClock > FREQ_120MHZ)
+    else if (SystemCoreClock > 79000000)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (4);
     }
-    else if (SystemCoreClock > FREQ_80MHZ)
+    else if (SystemCoreClock > 53000000)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (3);
     }
-    else if (SystemCoreClock > FREQ_40MHZ)
+    else if (SystemCoreClock > 26000000)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (2);
-    }
-    else /* SystemCoreClock <= FREQ_40MHZ */
+    }    
+    else /* SystemCoreClock <= FREQ_26MHZ */
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (1);
     }
