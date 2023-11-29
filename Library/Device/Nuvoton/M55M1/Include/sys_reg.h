@@ -359,7 +359,7 @@ typedef struct
  * |        |          |Note 2: This bit is not retained when D4 power is turned off.
  * |[10:8]  |PD0VBDSS  |UTCPD0 VBUS Detect Source Select
  * |        |          |UTCPD0 controller need a VBUS detect result to note if VBUS is connected
- * |        |          |For SPD0~2/NPD3/NPD4/NPD5 usage, ACMP can be another voltage detect method to detect VBUS pulg in or out
+ * |        |          |For SPD0~2 usage, ACMP can be another voltage detect method to detect VBUS pulg in or out
  * |        |          |This bit field is used to select UTCPD0 VBUS detect source
  * |        |          |And the selected result is VBDETSW0
  * |        |          |000 = UTCPD0 VBUS detect source from UTCPD0 PHY.
@@ -2626,15 +2626,11 @@ typedef struct
  * |        |          |Note: These bits are not retained when D2 power is turned off.
  * |[20:16] |PG6MFP    |PG.6 Multi-function Pin Selection
  * |        |          |Note: These bits are not retained when D2 power is turned off.
- * |[28:24] |PG7MFP    |PG.7 Multi-function Pin Selection
- * |        |          |Note: These bits are not retained when D2 power is turned off.
  * @var SYS_T::GPG_MFP2
  * Offset: 0x368  GPIOG Multiple Function Control Register 2
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[4:0]   |PG8MFP    |PG.8 Multi-function Pin Selection
- * |        |          |Note: These bits are not retained when D2 power is turned off.
  * |[12:8]  |PG9MFP    |PG.9 Multi-function Pin Selection
  * |        |          |Note: These bits are not retained when D2 power is turned off.
  * |[20:16] |PG10MFP   |PG.10 Multi-function Pin Selection
@@ -4320,12 +4316,6 @@ typedef struct
 
 #define SYS_GPG_MFP1_PG6MFP_Pos          (16)                                              /*!< SYS_T::GPG_MFP1: PG6MFP Position       */
 #define SYS_GPG_MFP1_PG6MFP_Msk          (0x1ful << SYS_GPG_MFP1_PG6MFP_Pos)               /*!< SYS_T::GPG_MFP1: PG6MFP Mask           */
-
-#define SYS_GPG_MFP1_PG7MFP_Pos          (24)                                              /*!< SYS_T::GPG_MFP1: PG7MFP Position       */
-#define SYS_GPG_MFP1_PG7MFP_Msk          (0x1ful << SYS_GPG_MFP1_PG7MFP_Pos)               /*!< SYS_T::GPG_MFP1: PG7MFP Mask           */
-
-#define SYS_GPG_MFP2_PG8MFP_Pos          (0)                                               /*!< SYS_T::GPG_MFP2: PG8MFP Position       */
-#define SYS_GPG_MFP2_PG8MFP_Msk          (0x1ful << SYS_GPG_MFP2_PG8MFP_Pos)               /*!< SYS_T::GPG_MFP2: PG8MFP Mask           */
 
 #define SYS_GPG_MFP2_PG9MFP_Pos          (8)                                               /*!< SYS_T::GPG_MFP2: PG9MFP Position       */
 #define SYS_GPG_MFP2_PG9MFP_Msk          (0x1ful << SYS_GPG_MFP2_PG9MFP_Pos)               /*!< SYS_T::GPG_MFP2: PG9MFP Mask           */

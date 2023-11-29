@@ -367,8 +367,6 @@
 //   <o.4 >  PG4       <0=> Secure <1=> Non-secure
 //   <o.5 >  PG5       <0=> Secure <1=> Non-secure
 //   <o.6 >  PG6       <0=> Secure <1=> Non-secure
-//   <o.7 >  PG7       <0=> Secure <1=> Non-secure
-//   <o.8 >  PG8       <0=> Secure <1=> Non-secure
 //   <o.9 >  PG9       <0=> Secure <1=> Non-secure
 //   <o.10>  PG10      <0=> Secure <1=> Non-secure
 //   <o.11>  PG11      <0=> Secure <1=> Non-secure

@@ -597,16 +597,6 @@ extern "C"
 #else
 #define PG6              PG6_S        /*!< Specify PG.6 Pin Data Input/Output */
 #endif
-#if defined (SCU_INIT_IONS6_VAL) && (SCU_INIT_IONS6_VAL & BIT7 )
-#define PG7              PG7_NS       /*!< Specify PG.7 Pin Data Input/Output */
-#else
-#define PG7              PG7_S        /*!< Specify PG.7 Pin Data Input/Output */
-#endif
-#if defined (SCU_INIT_IONS6_VAL) && (SCU_INIT_IONS6_VAL & BIT8 )
-#define PG8              PG8_NS       /*!< Specify PG.8 Pin Data Input/Output */
-#else
-#define PG8              PG8_S        /*!< Specify PG.8 Pin Data Input/Output */
-#endif
 #if defined (SCU_INIT_IONS6_VAL) && (SCU_INIT_IONS6_VAL & BIT9 )
 #define PG9              PG9_NS       /*!< Specify PG.9 Pin Data Input/Output */
 #else
@@ -941,8 +931,6 @@ extern "C"
 #define PG4_S            GPIO_PIN_DATA_S (6, 4  ) /*!< Specify PG.4  Pin Data Input/Output */
 #define PG5_S            GPIO_PIN_DATA_S (6, 5  ) /*!< Specify PG.5  Pin Data Input/Output */
 #define PG6_S            GPIO_PIN_DATA_S (6, 6  ) /*!< Specify PG.6  Pin Data Input/Output */
-#define PG7_S            GPIO_PIN_DATA_S (6, 7  ) /*!< Specify PG.7  Pin Data Input/Output */
-#define PG8_S            GPIO_PIN_DATA_S (6, 8  ) /*!< Specify PG.8  Pin Data Input/Output */
 #define PG9_S            GPIO_PIN_DATA_S (6, 9  ) /*!< Specify PG.9  Pin Data Input/Output */
 #define PG10_S           GPIO_PIN_DATA_S (6, 10 ) /*!< Specify PG.10 Pin Data Input/Output */
 #define PG11_S           GPIO_PIN_DATA_S (6, 11 ) /*!< Specify PG.11 Pin Data Input/Output */
@@ -1089,8 +1077,6 @@ extern "C"
 #define PG4_NS           GPIO_PIN_DATA_NS(6, 4  ) /*!< Specify PG.4  Pin Data Input/Output */
 #define PG5_NS           GPIO_PIN_DATA_NS(6, 5  ) /*!< Specify PG.5  Pin Data Input/Output */
 #define PG6_NS           GPIO_PIN_DATA_NS(6, 6  ) /*!< Specify PG.6  Pin Data Input/Output */
-#define PG7_NS           GPIO_PIN_DATA_NS(6, 7  ) /*!< Specify PG.7  Pin Data Input/Output */
-#define PG8_NS           GPIO_PIN_DATA_NS(6, 8  ) /*!< Specify PG.8  Pin Data Input/Output */
 #define PG9_NS           GPIO_PIN_DATA_NS(6, 9  ) /*!< Specify PG.9  Pin Data Input/Output */
 #define PG10_NS          GPIO_PIN_DATA_NS(6, 10 ) /*!< Specify PG.10 Pin Data Input/Output */
 #define PG11_NS          GPIO_PIN_DATA_NS(6, 11 ) /*!< Specify PG.11 Pin Data Input/Output */

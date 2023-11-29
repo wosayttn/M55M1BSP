@@ -26,8 +26,6 @@
   * @param[in]  u32PowerLevel is power level setting. Including :
   *             - \ref PMC_PLCTL_PLSEL_PL0  : Supports system clock up to 240MHz.
   *             - \ref PMC_PLCTL_PLSEL_PL1  : Supports system clock up to 200MHz.
-  *             - \ref PMC_PLCTL_PLSEL_PL2  : Supports system clock up to 100MHz.
-  *             - \ref PMC_PLCTL_PLSEL_PL3  : Supports system clock up to 12MHz.
   * @retval     PMC_OK          PMC operation OK.
   * @retval     PMC_ERR_TIMEOUT PMC operation abort due to timeout error.
   * @details    This function select power level.
@@ -277,17 +275,15 @@ void PMC_Idle(void)
   *             - \ref PMC_NPD0
   *             - \ref PMC_NPD1
   *             - \ref PMC_NPD2
-  *             - \ref PMC_NPD3
-  *             - \ref PMC_NPD4
+  *             - \ref PMC_NPD3 // TESTCHIP_ONLY not support
+  *             - \ref PMC_NPD4 // TESTCHIP_ONLY not support
   *             - \ref PMC_SPD0
   *             - \ref PMC_SPD1
   *             - \ref PMC_DPD0
-  *             - \ref PMC_DPD1
+  *             - \ref PMC_DPD1 // TESTCHIP_ONLY not support
   * @param[in]  u32PowerLevel is power level setting. Including :
   *             - \ref PMC_PLCTL_PLSEL_PL0  : Supports system clock up to 240MHz.
   *             - \ref PMC_PLCTL_PLSEL_PL1  : Supports system clock up to 200MHz.
-  *             - \ref PMC_PLCTL_PLSEL_PL2  : Supports system clock up to 100MHz.
-  *             - \ref PMC_PLCTL_PLSEL_PL3  : Supports system clock up to 12MHz.
   *             Power level set value is ignored in PMC_NPD2/PMC_NPD4/PMC_SPD1/PMC_DPD0/PMC_DPD1 power-down mode.
   * @retval     PMC_OK          PMC operation OK.
   * @retval     PMC_ERR_TIMEOUT PMC operation abort due to timeout error.
@@ -321,7 +317,8 @@ int32_t PMC_SetPowerDownMode(uint32_t u32PowerDownMode, uint32_t u32PowerLevel)
 
             PMC->PWRCTL |= PMC_PWRCTL_VDROPEN_Msk;
             break;
-
+        
+#if 0   // TESTCHIP_ONLY not support
         case PMC_NPD3:
             if (PMC_SetPowerLevel(u32PowerLevel) != 0) return PMC_ERR_TIMEOUT;
 
@@ -335,7 +332,7 @@ int32_t PMC_SetPowerDownMode(uint32_t u32PowerDownMode, uint32_t u32PowerLevel)
 
             PMC->PWRCTL |= (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_VDROPEN_Msk);
             break;
-
+#endif
         case PMC_SPD0:
             if (PMC_SetPowerLevel(u32PowerLevel) != 0) return PMC_ERR_TIMEOUT;
 
@@ -355,12 +352,13 @@ int32_t PMC_SetPowerDownMode(uint32_t u32PowerDownMode, uint32_t u32PowerLevel)
 
             PMC->PWRCTL |= (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_D2PGEN_Msk | PMC_PWRCTL_D3PGEN_Msk | PMC_PWRCTL_FWEN_Msk);
             break;
-
+#if 0   // TESTCHIP_ONLY not support
         case PMC_DPD1:
             if (PMC_Wait_BusyFlag(PMC_PWRCTL_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
 
             PMC->PWRCTL |= (PMC_PWRCTL_D0PGEN_Msk | PMC_PWRCTL_D1PGEN_Msk | PMC_PWRCTL_D2PGEN_Msk | PMC_PWRCTL_D3PGEN_Msk);
             break;
+#endif
     }
 
     return PMC_OK;
