@@ -63,7 +63,7 @@ extern "C" {
 
 #define __HIRC      (12000000UL)          /*!< Internal 12 MHz RC Oscillator Frequency */
 #define __HIRC48M   (48000000UL)          /*!< Internal 48 MHz RC Oscillator Frequency */
-#define __MIRC      (4000000UL)           /*!< Internal 4 MHz RC Oscillator Frequency */
+#define __MIRC      (1000000UL)           /*!< Internal 1 MHz RC Oscillator Frequency */
 #define __LIRC      (32000UL)             /*!< Internal 32 KHz RC Oscillator Frequency */
 
 #define __SYS_OSC_CLK     (    ___HSI)    /*!< Main oscillator frequency */

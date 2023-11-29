@@ -197,13 +197,13 @@ int32_t PMC_SetSRAMPowerMode(uint32_t u32SRAMSel, uint32_t u32PowerMode)
 
             PMC->SYSRB2PC = (PMC->SYSRB2PC & (~u32SRAMSel)) | (u32PowerMode << u32SRAMSelPos);
             break;
-
+#if 0   // TESTCHIP_ONLY not support
         case SRAMNum3:
             if (PMC_Wait_BusyFlag(PMC_SYSRB3PC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
 
             PMC->SYSRB3PC = (PMC->SYSRB3PC & (~u32SRAMSel)) | (u32PowerMode << u32SRAMSelPos);
             break;
-
+#endif
         case SRAMNum4:
             if (PMC_Wait_BusyFlag(PMC_LPSYSRPC_BUSY_FLAG) != 0) return PMC_ERR_TIMEOUT;
 
