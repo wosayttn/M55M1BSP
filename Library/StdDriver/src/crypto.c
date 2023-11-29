@@ -206,6 +206,25 @@ void AES_SetKey(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t au32Keys[], uint
 }
 
 /**
+  * @brief  Set AES keys index of Key Store
+  * @param[in]  crpt        The pointer of CRYPTO module
+  * @param[in]  mem         Memory type of Key Store key. it could be:
+  *                              - \ref KS_SRAM
+  *                              - \ref KS_FLASH
+  *                              - \ref KS_OTP
+  * @param[in]  i32KeyIdx   Index of the key in Key Store.
+  * @details    AES could use the key in Key Store. This function is used to set the key index of Key Store.
+  */
+void AES_SetKey_KS(CRYPTO_T *crypto, KS_MEM_Type mem, int32_t i32KeyIdx)
+{
+    /* Use key in key store */
+    crypto->AES_KSCTL = CRYPTO_AES_KSCTL_RSRC_Msk /* use KS */  |
+                      (uint32_t)((int)mem << CRYPTO_AES_KSCTL_RSSRC_Pos) /* KS Memory type */ |
+                      (uint32_t)i32KeyIdx /* key num */ ;
+
+}
+
+/**
   * @brief  Set AES initial vectors
   * @param[in]  crypto        Reference to Crypto module.
   * @param[in]  u32Channel    AES channel. Must be 0~3.
