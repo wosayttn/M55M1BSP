@@ -162,7 +162,7 @@ int32_t main(void)
     printf("+---------------------------------------+\n");
 
     NVIC_EnableIRQ(CRYPTO_IRQn);
-    AES_ENABLE_INT(CRYPTO);
+    ECC_ENABLE_INT(CRYPTO);
 
     nbits = KEY_LENGTH;
 
