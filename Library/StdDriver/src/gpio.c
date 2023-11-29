@@ -27,8 +27,8 @@
  * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
  *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
- *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
- *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PC and PJ GPIO port.
  *                          It could be BIT0 ~ BIT11 for PF GPIO port.
  *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  * @param[in]   u32Mode     Operation mode.  It could be \n
@@ -55,8 +55,8 @@ void GPIO_SetMode(GPIO_T *port, uint32_t u32PinMask, uint32_t u32Mode)
  * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32Pin      The single or multiple pins of specified GPIO port.
  *                          It could be 0 ~ 15 for PA, PB, PE, PG and PH GPIO port.
- *                          It could be 0 ~ 14 for PC and PD GPIO port.
- *                          It could be 0 ~ 13 for PJ GPIO port.
+ *                          It could be 0 ~ 14 for PD GPIO port.
+ *                          It could be 0 ~ 13 for PC and PJ GPIO port.
  *                          It could be 0 ~ 11 for PF GPIO port.
  *                          It could be 6 ~ 15 for PI GPIO port.
  * @param[in]   u32IntAttribs   The interrupt attribute of specified GPIO pin. It could be \n
@@ -77,8 +77,8 @@ void GPIO_EnableInt(GPIO_T *port, uint32_t u32Pin, uint32_t u32IntAttribs)
  * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32Pin      The pin of specified GPIO port.
  *                          It could be 0 ~ 15 for PA, PB, PE, PG and PH GPIO port.
- *                          It could be 0 ~ 14 for PC and PD GPIO port.
- *                          It could be 0 ~ 13 for PJ GPIO port.
+ *                          It could be 0 ~ 14 for PD GPIO port.
+ *                          It could be 0 ~ 13 for PC and PJ GPIO port.
  *                          It could be 0 ~ 11 for PF GPIO port.
  *                          It could be 6 ~ 15 for PI GPIO port.
  *
@@ -96,8 +96,8 @@ void GPIO_DisableInt(GPIO_T *port, uint32_t u32Pin)
  * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
  *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
- *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
- *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PC and PJ GPIO port.
  *                          It could be BIT0 ~ BIT11 for PF GPIO port.
  *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  * @param[in]   u32Mode     Slew rate mode. \ref GPIO_SLEWCTL_NORMAL (maximum 40 MHz at 2.7V)
@@ -124,8 +124,8 @@ void GPIO_SetSlewCtl(GPIO_T *port, uint32_t u32PinMask, uint32_t u32Mode)
  * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
  *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
- *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
- *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PC and PJ GPIO port.
  *                          It could be BIT0 ~ BIT11 for PF GPIO port.
  *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  * @param[in]   u32Mode     The pin mode of specified GPIO pin. It could be

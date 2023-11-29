@@ -1168,8 +1168,8 @@ extern "C"
  * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
  *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
- *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
- *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PC and PJ GPIO port.
  *                          It could be BIT0 ~ BIT11 for PF GPIO port.
  *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
@@ -1184,8 +1184,8 @@ extern "C"
  * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
  *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
- *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
- *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PC and PJ GPIO port.
  *                          It could be BIT0 ~ BIT11 for PF GPIO port.
  *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
@@ -1200,8 +1200,8 @@ extern "C"
  * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
  *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
- *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
- *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PC and PJ GPIO port.
  *                          It could be BIT0 ~ BIT11 for PF GPIO port.
  *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
@@ -1216,8 +1216,8 @@ extern "C"
  * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
  *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
- *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
- *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PC and PJ GPIO port.
  *                          It could be BIT0 ~ BIT11 for PF GPIO port.
  *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
@@ -1232,8 +1232,8 @@ extern "C"
  * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
  *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
- *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
- *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PC and PJ GPIO port.
  *                          It could be BIT0 ~ BIT11 for PF GPIO port.
  *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
@@ -1248,8 +1248,8 @@ extern "C"
  * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
  *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
- *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
- *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PC and PJ GPIO port.
  *                          It could be BIT0 ~ BIT11 for PF GPIO port.
  *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
@@ -1264,8 +1264,8 @@ extern "C"
  * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
  *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
- *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
- *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PC and PJ GPIO port.
  *                          It could be BIT0 ~ BIT11 for PF GPIO port.
  *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
@@ -1347,8 +1347,8 @@ extern "C"
  * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
  *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
- *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
- *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PC and PJ GPIO port.
  *                          It could be BIT0 ~ BIT11 for PF GPIO port.
  *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
@@ -1363,8 +1363,8 @@ extern "C"
  * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE, PF, PG, PH, PI or PJ.
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port.
  *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port.
- *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port.
- *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
+ *                          It could be BIT0 ~ BIT14 for PD GPIO port.
+ *                          It could be BIT0 ~ BIT13 for PC and PJ GPIO port.
  *                          It could be BIT0 ~ BIT11 for PF GPIO port.
  *                          It could be BIT6 ~ BIT15 for PI GPIO port.
  *
