@@ -124,6 +124,7 @@ uint32_t CLK_GetMIRCFreq(void)
 {
     uint32_t u32Freq;
 #if 0   // TESTCHIP_ONLY not support
+
     if ((CLK->SRCCTL & CLK_SRCCTL_MIRCEN_Msk) == CLK_SRCCTL_MIRCEN_Msk)
     {
         switch (CLK->MIRCCTL & CLK_MIRCCTL_MIRCFSEL_Msk)
@@ -153,9 +154,10 @@ uint32_t CLK_GetMIRCFreq(void)
     {
         u32Freq = 0UL;
     }
+
 #endif
     u32Freq = __MIRC;
-    
+
     return u32Freq;
 }
 
@@ -186,12 +188,12 @@ uint32_t CLK_EnableMIRC(uint32_t u32MircFreq)
 {
     /* Disable MIRC first to avoid unstable when setting MIRC */
     CLK_DisableMIRC();
-    
+
 #if 0   // TESTCHIP_ONLY not support
     /* Select MIRC frequency */
     CLK->MIRCCTL = (CLK->MIRCCTL & ~CLK_MIRCCTL_MIRCFSEL_Msk) | u32MircFreq;
 #endif
-    
+
     /* Enable and apply new MIRC setting. */
     CLK->SRCCTL |= CLK_SRCCTL_MIRCEN_Msk;
 
@@ -519,7 +521,7 @@ void CLK_SetSCLK(uint32_t u32ClkSrc)
     else if (SystemCoreClock > 26000000)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (2);
-    }    
+    }
     else /* SystemCoreClock <= FREQ_26MHZ */
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (1);
@@ -592,7 +594,7 @@ void CLK_SetSCLK(uint32_t u32ClkSrc)
   * |\ref I2S1_MODULE    |\ref CLK_I2SSEL_I2S1SEL_HIRC              |\ref CLK_I2SDIV_I2S1DIV(x)      |
   * |\ref I2S1_MODULE    |\ref CLK_I2SSEL_I2S1SEL_HIRC48M           |\ref CLK_I2SDIV_I2S1DIV(x)      |
   * |\ref I3C0_MODULE    |\ref CLK_I3CSEL_I3C0SEL_HCLK0             | x                              |
-  * |\ref I3C0_MODULE    |\ref CLK_I3CSEL_I3C0SEL_APLL1             | x                              |    
+  * |\ref I3C0_MODULE    |\ref CLK_I3CSEL_I3C0SEL_APLL1             | x                              |
   * |\ref KPI0_MODULE    |\ref CLK_KPISEL_KPI0SEL_HIRC48M_DIV4      |\ref CLK_KPIDIV_KPI0DIV(x)      |
   * |\ref KPI0_MODULE    |\ref CLK_KPISEL_KPI0SEL_HIRC              |\ref CLK_KPIDIV_KPI0DIV(x)      |
   * |\ref KPI0_MODULE    |\ref CLK_KPISEL_KPI0SEL_LIRC              |\ref CLK_KPIDIV_KPI0DIV(x)      |
@@ -862,6 +864,13 @@ void CLK_SetSysTickClockSrc(uint32_t u32ClkSrc)
   */
 void CLK_EnableXtalRC(uint32_t u32ClkMask)
 {
+    /* TESTCHIP_ONLY start */
+    if (u32ClkMask == CLK_SRCCTL_LXTEN_Msk)
+    {
+        RTC->LXTCTL = (RTC->LXTCTL & ~RTC_LXTCTL_GAIN_Msk) | (0x7 << RTC_LXTCTL_GAIN_Pos);
+    }
+
+    /* TESTCHIP_ONLY end */
     CLK->SRCCTL |= u32ClkMask;
 }
 
@@ -1974,7 +1983,7 @@ uint32_t CLK_GetModuleClockDivider(uint64_t u64ModuleIdx)
   *             - \ref CLK_SCLKSEL_SCLKSEL_APLL0
   * @param[in]  u32PllFreq is PLL frequency. The range of u32PllFreq is 50 MHz ~ 500 MHz.
   *             u32PllFreq is ignored when u32SCLKSrc is not CLK_SCLKSEL_SCLKSEL_APLL0.
-   *            APLL clock source is fixed HIRC in this function. 
+   *            APLL clock source is fixed HIRC in this function.
   * @return     Current SCLK frequency
   * @details    This function is used to set the SCLK/HCLK/PCLK with clock limitations. \n
   *             The clock limitation as following below :
