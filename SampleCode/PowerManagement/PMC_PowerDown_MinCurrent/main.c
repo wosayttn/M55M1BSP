@@ -90,7 +90,7 @@ void PowerDownFunction(void)
     if (--u32TimeOutCnt == 0) break;
 
     /* Select Power-down mode */
-    PMC_SetPowerDownMode(SET_PDMSEL, PMC_PLCTL_PLSEL_PL3);
+    PMC_SetPowerDownMode(SET_PDMSEL, PMC_PLCTL_PLSEL_PL1);
 
     /* Enter to Power-down mode */
     PMC_PowerDown();
@@ -469,7 +469,7 @@ int32_t main(void)
     PMC->SYSRB0PC = 0x00000000;
     PMC->SYSRB1PC = 0x0000AAAA;
     PMC->SYSRB2PC = 0x00000000;
-    PMC->SYSRB3PC = 0x00000002;
+
 
     /* Wake-up source configuration */
     if (
