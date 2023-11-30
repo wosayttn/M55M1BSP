@@ -118,6 +118,9 @@ void vParTestInitialise(void)
     /* Enable UART0 module clock */
     CLK_EnableModuleClock(UART0_MODULE);
 
+    /* Enable GPIO I module clock */
+    CLK_EnableModuleClock(GPIOI_MODULE);
+
     /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
     CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HXT, CLK_UARTDIV0_UART0DIV(1));
 
@@ -132,9 +135,8 @@ void vParTestInitialise(void)
     /* Configure Debug port */
     UART_Open(UART0, 115200);
 
-    /* LED IO PA11*/
-    PA->MODE = (PA->MODE & (~(3ul << 11 * 2))) | GPIO_MODE_OUTPUT << 11 * 2;
-
+    /* LED IO PI12 */
+    GPIO_SetMode(PI, BIT12, GPIO_MODE_OUTPUT);
 
 #if 0 // ETM MFP
     SET_ETMC_TRACE_CLK_PB11();
@@ -159,7 +161,7 @@ void vParTestToggleLED(unsigned long ulLED)
 {
     (void)ulLED;
     printf("vParTestToggleLED \n");
-    PA11 ^= 1;
+    PI12 ^= 1;
 }
 /*-----------------------------------------------------------*/
 
