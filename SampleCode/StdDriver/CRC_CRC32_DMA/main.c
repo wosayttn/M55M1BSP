@@ -101,15 +101,6 @@ void SYS_Init(void)
 
 }
 
-uint32_t GetRMCChecksum(uint32_t u32Address, uint32_t u32Size)
-{
-    uint32_t u32CHKS;
-
-    FMC_ENABLE_ISP();
-    u32CHKS = FMC_GetChkSum(u32Address, u32Size);
-
-    return u32CHKS;
-}
 
 uint32_t GetDMAMasterChecksum(uint32_t u32Address, uint32_t u32Size)
 {
@@ -134,7 +125,7 @@ uint32_t GetDMAMasterChecksum(uint32_t u32Address, uint32_t u32Size)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
-    volatile uint32_t addr, size, u32RMCChecksum, u32CRC32Checksum, u32PDMAChecksum;
+    volatile uint32_t addr, size, u32CRC32Checksum, u32PDMAChecksum;
 
 	/* Unlock protected registers */
     SYS_UnlockReg();
@@ -152,23 +143,13 @@ int main(void)
 
     printf("\n\nCPU @ %d Hz\n", SystemCoreClock);
     printf("+-----------------------------------------------------+\n");
-    printf("|    CRC32 with PDMA Sample Code                      |\n");
+    printf("|    CRC32 with DMA Sample Code                      |\n");
     printf("|       - Get APROM first %d bytes CRC result by    |\n", size);
-    printf("|          a.) FMC checksum command                   |\n");
-    printf("|          b.) CPU write CRC data register directly   |\n");
-    printf("|          c.) DMA Master write CRC data register           |\n");
+    printf("|          a.) CPU write CRC data register directly   |\n");
+    printf("|          b.) DMA Master write CRC data register           |\n");
     printf("+-----------------------------------------------------+\n\n");
 
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /*  Case a. */
-    u32RMCChecksum = GetRMCChecksum(0x0, size);
-
-    /* Lock protected registers */
-    SYS_LockReg();
-
-    /*  Case b. */
     /* Configure CRC controller for CRC-CRC32 mode */
     CRC_Open(CRC_32, (CRC_WDATA_RVS | CRC_CHECKSUM_RVS | CRC_CHECKSUM_COM), 0xFFFFFFFF, CRC_CPU_WDATA_32);
     /* Start to execute CRC-CRC32 operation */
@@ -178,19 +159,18 @@ int main(void)
     }
     u32CRC32Checksum = CRC_GetChecksum();
 
-    /*  Case c. */
+    /*  Case b. */
     /* Configure CRC controller for CRC-CRC32 mode */
     CRC_Open(CRC_32, (CRC_WDATA_RVS | CRC_CHECKSUM_RVS | CRC_CHECKSUM_COM), 0xFFFFFFFF, CRC_CPU_WDATA_32);
     u32PDMAChecksum = GetDMAMasterChecksum(0x0, size);
 
     printf("APROM first %d bytes checksum:\n", size);
-    printf("   - by RMC command: 0x%x\n", u32RMCChecksum);
     printf("   - by CPU write:   0x%x\n", u32CRC32Checksum);
     printf("   - by DMA write:  0x%x\n", u32PDMAChecksum);
 
-    if((u32RMCChecksum == u32CRC32Checksum) && (u32CRC32Checksum == u32PDMAChecksum))
+    if((u32CRC32Checksum == u32PDMAChecksum))
     {
-        if((u32RMCChecksum == 0) || (u32RMCChecksum == 0xFFFFFFFF))
+        if((u32CRC32Checksum == 0) || (u32CRC32Checksum == 0xFFFFFFFF))
         {
             printf("\n[Get checksum ... WRONG]");
         }

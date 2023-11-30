@@ -101,8 +101,6 @@ int main(void)
     printf("    - Write data reverse disable     \n");
     printf("    - Checksum should be 0x%x        \n\n", u32TargetChecksum);
 		
-		 while(1);
-
     /* Configure CRC controller for CRC-8 CPU mode */
     CRC_Open(CRC_8, 0, 0x5A, CRC_CPU_WDATA_8);
 
