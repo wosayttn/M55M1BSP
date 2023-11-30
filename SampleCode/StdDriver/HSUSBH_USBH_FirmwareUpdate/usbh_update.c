@@ -18,7 +18,8 @@
 #define USBH_DRIVE          3               /* Assigned USBH drive number in FATFS        */
 
 #define APROM_FILE_NAME     "AP.BIN"        /* pre-defined APROM firmware update image    */
-#define DATA_FILE_NAME      "DATA.BIN"      /* pre-defined Data Flash update image        */
+
+#define FALSH_BASE_ADDRESS  0x100000
 
 TCHAR   usbh_path[] = { '3', ':', 0 };      /* USB drive started from 3                   */
 
@@ -135,7 +136,7 @@ void usbh_firmware_update()
         printf("APROM image [%s] found, start update APROM firmware...\n", APROM_FILE_NAME);
         FMC_ENABLE_AP_UPDATE();             /* enable APROM update                        */
 
-        for (addr = 0; ; addr += FMC_FLASH_PAGE_SIZE)
+        for (addr = FALSH_BASE_ADDRESS; ; addr += FMC_FLASH_PAGE_SIZE)
         {
             cnt = FMC_FLASH_PAGE_SIZE;      /* read a flash page size data from file      */
             res = f_read(&file1, _Buff, cnt, &cnt);   /* read file                        */

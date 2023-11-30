@@ -210,9 +210,9 @@ void  int_read_callback(HID_DEV_T *hdev, uint16_t ep_addr, int status, uint8_t *
         return;
     }
 
-    //    printf("Device [0x%x,0x%x] ep 0x%x, %d bytes received =>\n",
-    //           hdev->idVendor, hdev->idProduct, ep_addr, data_len);
-    //    dump_buff_hex(rdata, data_len);
+    printf("Device [0x%x,0x%x] ep 0x%x, %d bytes received =>\n",
+           hdev->idVendor, hdev->idProduct, ep_addr, data_len);
+    dump_buff_hex(rdata, data_len);
 
     intcount++;
 }
@@ -263,7 +263,7 @@ int  init_hid_device(HID_DEV_T *hdev)
         printf("\n");
     }
 
-    gStartHNP = 1;
+    //gStartHNP = 1;
 
     printf("\nUSBH_HidStartIntReadPipe...\n");
     ret = usbh_hid_start_int_read(hdev, 0, int_read_callback);
@@ -337,25 +337,12 @@ void SYS_Init(void)
     /* Set multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
-    /* USB_VBUS_EN (USB 1.1 VBUS power enable pin) multi-function pin - PB.15     */
-    SET_USB_VBUS_EN_PB15();
-
-    /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PC.14   */
-    SET_USB_VBUS_ST_PC14();
-
     /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PJ.13   */
-    //SET_HSUSB_VBUS_EN_PB10();
     SET_HSUSB_VBUS_EN_PJ13();
 
     /* HSUSB_VBUS_ST (USB 2.0 over-current detect pin) multi-function pin - PJ.12 */
-    //SET_HSUSB_VBUS_ST_PB11();
     SET_HSUSB_VBUS_ST_PJ12();
 
-    /* USB 1.1 port multi-function pin VBUS, D+, D-, and ID pins */
-    SET_USB_VBUS_PA12();
-    SET_USB_D_MINUS_PA13();
-    SET_USB_D_PLUS_PA14();
-    SET_USB_OTG_ID_PA15();
 
     SystemCoreClockUpdate();
     /* Lock protected registers */
@@ -495,13 +482,14 @@ int32_t main(void)
     enable_sys_tick(100);
 
     printf("\n\n");
-    printf("system clock :%uMHz\r\n", SystemCoreClock);
+    printf("system clock :%uHz\r\n", SystemCoreClock);
     printf("+------------------------------+\n");
     printf("|                              |\n");
     printf("|     USB HSOTG HNP sample     |\n");
     printf("|                              |\n");
     printf("+------------------------------+\n");
 
+    HSOTG_SET_VBUS_STS_POL(HSOTG_VBUS_ST_VALID_LOW);
     HSOTG_ENABLE_PHY();
     HSOTG_ENABLE_ID_DETECT();
     HSOTG->PHYCTL |= 0x4;
@@ -577,7 +565,7 @@ int32_t main(void)
 
                 if (intcount > 3)
                 {
-                    usbh_hid_stop_int_read(hdev, 0);
+                    usbh_hid_stop_int_read(hdev_list, 0);
                     delay_us(2000);
                     intcount = 0;
                     gStartHNP = 1;
@@ -643,7 +631,7 @@ int32_t main(void)
 
                 if (intcount > 5)
                 {
-                    usbh_hid_stop_int_read(hdev, 0);
+                    usbh_hid_stop_int_read(hdev_list, 0);
                     gStartHNP = 1;
                     intcount = 0;
                 }

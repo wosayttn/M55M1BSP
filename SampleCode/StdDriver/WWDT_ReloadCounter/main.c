@@ -10,7 +10,7 @@
 #include "NuMicro.h"
 
 #define RELOAD_CONDITION  3
-#define DELAY_100MS       100
+
 #define WWDT_PORT   (0)
 #if (WWDT_PORT != 0)
     #define WWDT            WWDT1
@@ -212,11 +212,11 @@ int main(void)
     printf("Timeline (ms) 0                     %.2f                  %.2f\n", dCompareMatchPeriodTime, dTimeOutPeriodTime);
     printf("              |   Reset When Reload    |   WWDT Window Region   |  WWDT Time-Out Reset\n\n");
 
-#if RELOAD_CONDITION == 1
+#if (RELOAD_CONDITION == 1)
     printf("Test Condition 1 - Reload before the WWDT window region \n");
-#elif RELOAD_CONDITION == 2
+#elif (RELOAD_CONDITION == 2)
     printf("Test Condition 2 - Reload after the WWDT window region  \n");
-#elif RELOAD_CONDITION == 3
+#elif (RELOAD_CONDITION == 3)
     printf("Test Condition 3 - Reload inside the WWDT window region \n");
 #endif
 
@@ -232,17 +232,17 @@ int main(void)
 
     while (1)
     {
-#if RELOAD_CONDITION == 1
+#if (RELOAD_CONDITION == 1)
         /* Reload before the WWDT window region */
         /* CNTDAT > CMPDAT, Write RLDCNT 0x5AA5 to reload WWWDT counter will reset system */
         /* Delay_ms < 1024 ms */
         Delay_ms((uint32_t) dCompareMatchPeriodTime / 2);
-#elif RELOAD_CONDITION == 2
+#elif (RELOAD_CONDITION == 2)
         /* Reload after the WWDT window region */
         /* Wait CNTDAT count to 0, System reset immediately */
         /* Delay_ms > 2048 ms */
         Delay_ms((uint32_t) dTimeOutPeriodTime + 1);
-#elif RELOAD_CONDITION == 3
+#elif (RELOAD_CONDITION == 3)
 
         if (g_u32WWDTINTCounts > 10)
         {
@@ -255,7 +255,7 @@ int main(void)
             /* Reload inside the WWDT window region */
             /* CNTDAT <= CMPDAT, Write RLDCNT 0x5AA5 will reload CNTDAT to 0x3F */
             /* 2048 ms > Delay_ms > 1024 ms */
-            Delay_ms((uint32_t) dCompareMatchPeriodTime + DELAY_100MS);
+            Delay_ms((uint32_t) dCompareMatchPeriodTime);
         }
 
 #endif

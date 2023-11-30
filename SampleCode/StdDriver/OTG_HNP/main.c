@@ -310,12 +310,8 @@ void SYS_Init(void)
     CLK_SetModuleClock(USBH0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
     /* Enable USBH module clock */
     CLK_EnableModuleClock(USBH0_MODULE);
-
-    /* Select USBD module clock source */
-    CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
     /* Enable USBD module clock */
     CLK_EnableModuleClock(USBD0_MODULE);
-
     /* Enable OTG module clock */
     CLK_EnableModuleClock(OTG0_MODULE);
 
@@ -341,15 +337,8 @@ void SYS_Init(void)
     SET_USB_VBUS_EN_PB15();
 
     /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PC.14   */
-    SET_USB_VBUS_ST_PC14();
-
-    /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PB.10   */
-    //SET_HSUSB_VBUS_EN_PB10();
-    SET_HSUSB_VBUS_EN_PJ13();
-
-    /* HSUSB_VBUS_ST (USB 2.0 over-current detect pin) multi-function pin - PB.11 */
-    //SET_HSUSB_VBUS_ST_PB11();
-    SET_HSUSB_VBUS_ST_PJ12();
+    SET_USB_VBUS_ST_PB14();
+    
 
     /* USB 1.1 port multi-function pin VBUS, D+, D-, and ID pins */
     SET_USB_VBUS_PA12();
@@ -495,7 +484,7 @@ int32_t main(void)
 
     enable_sys_tick(100);
     printf("\n\n");
-    printf("system clock :%uMHz\r\n", SystemCoreClock);
+    printf("system clock :%uHz\r\n", SystemCoreClock);
     printf("+------------------------------+\n");
     printf("|                              |\n");
     printf("|      USB OTG HNP sample      |\n");
@@ -577,7 +566,9 @@ int32_t main(void)
 
                 if (intcount > 5)
                 {
-                    usbh_hid_stop_int_read(hdev, 0);
+                    usbh_hid_stop_int_read(hdev_list, 0);
+                    delay_us(2000);
+                    intcount = 0;                    
                     gStartHNP = 1;
                 }
 
@@ -631,7 +622,8 @@ int32_t main(void)
 
                 if (intcount > 5)
                 {
-                    usbh_hid_stop_int_read(hdev, 0);
+                    usbh_hid_stop_int_read(hdev_list, 0);
+                    intcount = 0; 
                     gStartHNP = 1;
                 }
 

@@ -69,13 +69,14 @@ void SYS_Init(void)
     /* Waiting for Low speed Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
 
+           
     /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-
+    
     /* Set module clock*/
     CLK_SetModuleClock(WDT0_MODULE, CLK_WDTSEL_WDT0SEL_LIRC, 0);
 
@@ -94,6 +95,7 @@ void SYS_Init(void)
 
     /* Set PC multi-function pins for GPIO*/
     SET_GPIO_PA0();
+
 }
 
 /*---------------------------------------------------------------------------------------------------------*/

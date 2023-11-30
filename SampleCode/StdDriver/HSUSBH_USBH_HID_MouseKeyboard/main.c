@@ -259,6 +259,8 @@ void SYS_Init(void)
 
     /* Enable USBH module clock */
     CLK_EnableModuleClock(USBH0_MODULE);
+    CLK_EnableModuleClock(USBD0_MODULE);
+    CLK_EnableModuleClock(OTG0_MODULE);
     /* Enable HSUSBH module clock */
     CLK_EnableModuleClock(HSUSBH0_MODULE);
 
@@ -266,8 +268,7 @@ void SYS_Init(void)
     SYS->USBPHY = (0x1ul << (SYS_USBPHY_HSOTGPHYEN_Pos)) | (0x1ul << (SYS_USBPHY_HSUSBROLE_Pos)) | (0x1ul << (SYS_USBPHY_OTGPHYEN_Pos)) | (0x1 << SYS_USBPHY_USBROLE_Pos);
     delay_us(20);
     SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
-    //delay_us(20);
-
+    
     /* Set Debug Uart CLK*/
     SetDebugUartCLK();
     /* Update System Core Clock */
@@ -283,7 +284,7 @@ void SYS_Init(void)
     SET_USB_VBUS_EN_PB15();
 
     /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PC.14   */
-    SET_USB_VBUS_ST_PC14();
+    SET_USB_VBUS_ST_PB14();
 
     /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PJ.13   */
     SET_HSUSB_VBUS_EN_PJ13();
