@@ -659,7 +659,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>160</hasPrio>
+                <hasPrio>1</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -1054,7 +1054,7 @@
                 </option>
                 <option>
                     <name>IarchiveOutput</name>
-                    <state>C:\NuMicro Projects\M55M1_PRJ\M55M1_M55M1\NuTest\Library\CMSIS\Lib\IAR\CMSIS_DSP.a</state>
+                    <state>C:\NuMicro Projects\M55M1_PRJ\bsp\Library\CMSIS\Lib\IAR\CMSIS_DSP.a</state>
                 </option>
             </data>
         </settings>
