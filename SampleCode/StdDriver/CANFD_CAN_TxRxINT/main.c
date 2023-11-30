@@ -74,6 +74,7 @@ void SYS_Init(void)
 
     /* Select CAN FD0 clock source is APLL0/2 */
     CLK_SetModuleClock(CANFD0_MODULE, CLK_CANFDSEL_CANFD0SEL_APLL0_DIV2, CLK_CANFDDIV_CANFD0DIV(1));
+
     /* Enable CAN FD0 peripheral clock */
     CLK_EnableModuleClock(CANFD0_MODULE);
 
@@ -86,9 +87,9 @@ void SYS_Init(void)
     /* Set PB multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
-    /* Set PC multi-function pins for CAN RXD and TXD */
-    SET_CAN0_RXD_PC4();
-    SET_CAN0_TXD_PC5();
+    /* Set PJ multi-function pins for CAN RXD and TXD */
+    SET_CAN0_RXD_PJ11();
+    SET_CAN0_TXD_PJ10();
 }
 
 
@@ -128,41 +129,42 @@ void CAN_TxTest(void)
 
         switch (u8Item)
         {
-            case '1':
-                /*Standard ID =0x111,Data lenght 8 bytes*/
-                CAN_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x111, 8);
-                break;
+        case '1':
+            /*Standard ID =0x111,Data lenght 8 bytes*/
+            CAN_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x111, 8);
+            break;
 
-            case '2':
-                /*Standard ID =0x22F,Data lenght 8 bytes*/
-                CAN_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x22F, 8);
-                break;
+        case '2':
+            /*Standard ID =0x22F,Data lenght 8 bytes*/
+            CAN_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x22F, 8);
+            break;
 
-            case '3':
-                /*Standard ID =0x333,Data lenght 8 bytes*/
-                CAN_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x333, 8);
-                break;
+        case '3':
+            /*Standard ID =0x333,Data lenght 8 bytes*/
+            CAN_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x333, 8);
+            break;
 
-            case '4':
-                /*Extend ID =0x111,Data lenght 8 bytes*/
-                CAN_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x221, 8);
-                break;
+        case '4':
+            /*Extend ID =0x111,Data lenght 8 bytes*/
+            CAN_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x221, 8);
+            break;
 
-            case '5':
-                /*Extend ID =0x3333,Data lenght 8 bytes*/
-                CAN_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x3333, 8);
-                break;
+        case '5':
+            /*Extend ID =0x3333,Data lenght 8 bytes*/
+            CAN_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x3333, 8);
+            break;
 
-            case '6':
-                /*Extend ID =0x44444,Data lenght 8 bytes*/
-                CAN_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x44444, 8);
-                break;
+        case '6':
+            /*Extend ID =0x44444,Data lenght 8 bytes*/
+            CAN_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x44444, 8);
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
 
-    } while (u8Item != 27);
+    }
+    while (u8Item != 27);
 }
 
 
@@ -212,7 +214,8 @@ void CAN_RxTest(void)
         g_u8RxFifO0CompleteFlag = 0;
         memset(&g_sRxMsgFrame, 0, sizeof(g_sRxMsgFrame));
         u8Cnt++;
-    } while (u8Cnt < 6);
+    }
+    while (u8Cnt < 6);
 }
 
 
@@ -249,8 +252,8 @@ void CAN_Init(void)
     printf("+---------------------------------------------------------------+\n");
     printf("|     Pin Configure                                             |\n");
     printf("+---------------------------------------------------------------+\n");
-    printf("|  CAN0_TXD(PA5)                         CAN_TXD(Any board)     |\n");
-    printf("|  CAN0_RXD(PA4)                         CAN_RXD(Any board)     |\n");
+    printf("|  CAN0_TXD(PJ10)                        CAN_TXD(Any board)     |\n");
+    printf("|  CAN0_RXD(PJ11)                        CAN_RXD(Any board)     |\n");
     printf("|          |-----------| CANBUS  |-----------|                  |\n");
     printf("|  ------> |           |<------->|           |<------           |\n");
     printf("|   CAN0_TX|   CAN     |  CAN_H  |    CAN    |CAN_TX            |\n");
