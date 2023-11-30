@@ -179,7 +179,7 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 160MHz clock */    
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 160MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_160MHZ);
 
     /* Update System Core Clock */
@@ -200,9 +200,9 @@ void SYS_Init(void)
     /* Set PB multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
-    /* Set PC multi-function pins for CAN RXD and TXD */
-    SET_CAN0_RXD_PC4();
-    SET_CAN0_TXD_PC5();
+    /* Set PJ multi-function pins for CAN RXD and TXD */
+    SET_CAN0_RXD_PJ11();
+    SET_CAN0_TXD_PJ10();
 }
 
 
@@ -280,8 +280,8 @@ int32_t main(void)
     printf("|                                   ||    CAN_H   |-----------|               |\n");
     printf("|                                   || <--------->|           |<------        |\n");
     printf("|                                   ||            |    CAN    |CAN_TX         |\n");
-    printf("|  CAN0_TXD(PC5)                    ||    CAN_L   |Transceiver|               |\n");
-    printf("|  CAN0_RXD(PC4)                    || <--------->|           |------>        |\n");
+    printf("|  CAN0_TXD(PJ10)                   ||    CAN_L   |Transceiver|               |\n");
+    printf("|  CAN0_RXD(PJ11)                   || <--------->|           |------>        |\n");
     printf("|          |-----------|   CAN_H    ||            |           |CAN_RX         |\n");
     printf("|  ------> |           |<---------> ||            |-----------|               |\n");
     printf("|  CAN0_TX |   CAN     |            ||                                        |\n");

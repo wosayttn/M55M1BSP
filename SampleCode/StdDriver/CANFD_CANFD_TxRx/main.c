@@ -66,9 +66,9 @@ void SYS_Init(void)
     /* Set PB multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
-    /* Set PC multi-function pins for CAN RXD and TXD */
-    SET_CAN0_RXD_PC4();
-    SET_CAN0_TXD_PC5();
+    /* Set PJ multi-function pins for CAN RXD and TXD */
+    SET_CAN0_RXD_PJ11();
+    SET_CAN0_TXD_PJ10();
 }
 
 
@@ -82,8 +82,8 @@ void CANFD_Init(void)
     printf("+---------------------------------------------------------------+\n");
     printf("|     Pin Configure                                             |\n");
     printf("+---------------------------------------------------------------+\n");
-    printf("|  CAN0_TXD(PC5)                         CAN_TXD(Any board)     |\n");
-    printf("|  CAN0_RXD(PC4)                         CAN_RXD(Any board      |\n");
+    printf("|  CAN0_TXD(PJ10)                        CAN_TXD(Any board)     |\n");
+    printf("|  CAN0_RXD(PJ11)                        CAN_RXD(Any board      |\n");
     printf("|          |-----------| CANBUS  |-----------|                  |\n");
     printf("|  ------> |           |<------->|           |<------           |\n");
     printf("|   CAN0_TX|   CANFD   |  CAN_H  |   CANFD   |CAN_TX            |\n");
@@ -305,7 +305,8 @@ void CANFD_TxRxTest(void)
                 u8RxTestNum++;
 
             }
-        } while (u8RxTestNum < 6);
+        }
+        while (u8RxTestNum < 6);
 
         printf("\n Receive OK & Check OK\n");
     }
