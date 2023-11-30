@@ -143,9 +143,9 @@ int32_t PMC_SetPowerRegulator(uint32_t u32PowerRegulator)
   *             - \ref PMC_SYSRB2PC_SRAM_NORMAL
   *             - \ref PMC_SYSRB2PC_SRAM_RETENTION
   *             - \ref PMC_SYSRB2PC_SRAM_POWER_SHUT_DOWN
-  *             - \ref PMC_SYSRB3PC_SRAM_NORMAL
-  *             - \ref PMC_SYSRB3PC_SRAM_RETENTION
-  *             - \ref PMC_SYSRB3PC_SRAM_POWER_SHUT_DOWN
+  *             - \ref PMC_SYSRB3PC_SRAM_NORMAL             // TESTCHIP_ONLY not support
+  *             - \ref PMC_SYSRB3PC_SRAM_RETENTION          // TESTCHIP_ONLY not support
+  *             - \ref PMC_SYSRB3PC_SRAM_POWER_SHUT_DOWN    // TESTCHIP_ONLY not support    
   *             - \ref PMC_LPSYSRPC_SRAM_NORMAL
   *             - \ref PMC_LPSYSRPC_SRAM_RETENTION
   *             - \ref PMC_LPSYSRPC_SRAM_POWER_SHUT_DOWN

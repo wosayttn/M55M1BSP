@@ -62,10 +62,11 @@ extern "C"
 /*  MIRC constant definitions.                                                                             */
 /*---------------------------------------------------------------------------------------------------------*/
 #define CLK_MIRCCTL_MIRCFSEL_1MHZ    (0x0UL << CLK_MIRCCTL_MIRCFSEL_Pos)          /*!< Select MIRC clock to 1 MHz \hideinitializer */
+#if 0   // TESTCHIP_ONLY not support
 #define CLK_MIRCCTL_MIRCFSEL_2MHZ    (0x1UL << CLK_MIRCCTL_MIRCFSEL_Pos)          /*!< Select MIRC clock to 1 MHz \hideinitializer */
 #define CLK_MIRCCTL_MIRCFSEL_4MHZ    (0x2UL << CLK_MIRCCTL_MIRCFSEL_Pos)          /*!< Select MIRC clock to 1 MHz \hideinitializer */
 #define CLK_MIRCCTL_MIRCFSEL_8MHZ    (0x3UL << CLK_MIRCCTL_MIRCFSEL_Pos)          /*!< Select MIRC clock to 1 MHz \hideinitializer */
-
+#endif
 /*---------------------------------------------------------------------------------------------------------*/
 /*  CLKSEL constant definitions.  (Write-protection)                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
