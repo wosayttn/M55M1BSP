@@ -3807,6 +3807,9 @@ typedef struct
 #define SYS_DMICRST_DMIC0RST_Pos         (0)                                               /*!< SYS_T::DMICRST: DMIC0RST Position      */
 #define SYS_DMICRST_DMIC0RST_Msk         (0x1ul << SYS_DMICRST_DMIC0RST_Pos)               /*!< SYS_T::DMICRST: DMIC0RST Mask          */
 
+#define SYS_EADCRST_EADC0RST_Pos         (0)                                               /*!< SYS_T::EADCRST: EADC0RST Position      */
+#define SYS_EADCRST_EADC0RST_Msk         (0x1ul << SYS_EADCRST_EADC0RST_Pos)               /*!< SYS_T::EADCRST: EADC0RST Mask          */
+
 #define SYS_EBIRST_EBI0RST_Pos           (0)                                               /*!< SYS_T::EBIRST: EBI0RST Position        */
 #define SYS_EBIRST_EBI0RST_Msk           (0x1ul << SYS_EBIRST_EBI0RST_Pos)                 /*!< SYS_T::EBIRST: EBI0RST Mask            */
 
@@ -3965,6 +3968,12 @@ typedef struct
 
 #define SYS_SPIRST_SPI3RST_Pos           (3)                                               /*!< SYS_T::SPIRST: SPI3RST Position        */
 #define SYS_SPIRST_SPI3RST_Msk           (0x1ul << SYS_SPIRST_SPI3RST_Pos)                 /*!< SYS_T::SPIRST: SPI3RST Mask            */
+
+#define SYS_SPIMRST_SPIM0RST_Pos         (0)                                               /*!< SYS_T::SPIMRST: SPIM0RST Position      */
+#define SYS_SPIMRST_SPIM0RST_Msk         (0x1ul << SYS_SPIMRST_SPIM0RST_Pos)               /*!< SYS_T::SPIMRST: SPIM0RST Mask          */
+
+#define SYS_SPIMRST_SPIM1RST_Pos         (1)                                               /*!< SYS_T::SPIMRST: SPIM1RST Position      */
+#define SYS_SPIMRST_SPIM1RST_Msk         (0x1ul << SYS_SPIMRST_SPIM1RST_Pos)               /*!< SYS_T::SPIMRST: SPIM1RST Mask          */
 
 #define SYS_TMRRST_TMR0RST_Pos           (0)                                               /*!< SYS_T::TMRRST: TMR0RST Position        */
 #define SYS_TMRRST_TMR0RST_Msk           (0x1ul << SYS_TMRRST_TMR0RST_Pos)                 /*!< SYS_T::TMRRST: TMR0RST Mask            */
