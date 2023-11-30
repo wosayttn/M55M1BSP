@@ -186,7 +186,7 @@ void vParTestInitialise(void)
 
     /* Enable GPIO module clock */
     CLK_EnableModuleClock(GPIOB_MODULE);
-    CLK_EnableModuleClock(GPIOH_MODULE);
+    CLK_EnableModuleClock(GPIOI_MODULE);
 
     /* Enable UART module clock */
     CLK_EnableModuleClock(UART0_MODULE);
@@ -267,7 +267,7 @@ void vParTestInitialise(void)
     NVIC_EnableIRQ(GPB_IRQn);
 
     /* LED control */
-    GPIO_SetMode(PH, (BIT4), GPIO_MODE_OUTPUT);
+    GPIO_SetMode(PI, (BIT12), GPIO_MODE_OUTPUT);
 
     /* Enable interrupt de-bounce function and select de-bounce sampling cycle time is 1024 clocks of LIRC clock */
     GPIO_SET_DEBOUNCE_TIME(PB, GPIO_DBCTL_DBCLKSRC_LIRC, GPIO_DBCTL_DBCLKSEL_1024);

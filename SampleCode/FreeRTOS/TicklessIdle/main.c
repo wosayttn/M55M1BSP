@@ -20,7 +20,7 @@
 //#define TIME_DELAY_SLEEP  30
 #define tickless_task_PRIORITY  (configMAX_PRIORITIES - 2)
 
-#define LED     PH4
+#define LED     PI12
 
 static void Tickless_task(void *pvParameters);
 
