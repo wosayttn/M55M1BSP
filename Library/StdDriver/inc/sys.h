@@ -1783,24 +1783,6 @@ extern "C"
 #define SYS_GPG_MFP1_PG6MFP_I2S1_DI           (0xAUL<<SYS_GPG_MFP1_PG6MFP_Pos)    /*!< GPG_MFP1 PG6 setting for I2S1_DI            */
 #define SYS_GPG_MFP1_PG6MFP_EPWM0_CH2         (0xBUL<<SYS_GPG_MFP1_PG6MFP_Pos)    /*!< GPG_MFP1 PG6 setting for EPWM0_CH2          */
 
-/* PG.7 MFP */
-#define SYS_GPG_MFP1_PG7MFP_GPIO              (0x0UL<<SYS_GPG_MFP1_PG7MFP_Pos)    /*!< GPG_MFP1 PG7 setting for GPIO               */
-#define SYS_GPG_MFP1_PG7MFP_EBI_nWRL          (0x2UL<<SYS_GPG_MFP1_PG7MFP_Pos)    /*!< GPG_MFP1 PG7 setting for EBI_nWRL           */
-#define SYS_GPG_MFP1_PG7MFP_SPI3_MISO         (0x3UL<<SYS_GPG_MFP1_PG7MFP_Pos)    /*!< GPG_MFP1 PG7 setting for SPI3_MISO          */
-#define SYS_GPG_MFP1_PG7MFP_SC1_DAT           (0x4UL<<SYS_GPG_MFP1_PG7MFP_Pos)    /*!< GPG_MFP1 PG7 setting for SC1_DAT            */
-#define SYS_GPG_MFP1_PG7MFP_I2C3_SCL          (0x8UL<<SYS_GPG_MFP1_PG7MFP_Pos)    /*!< GPG_MFP1 PG7 setting for I2C3_SCL           */
-#define SYS_GPG_MFP1_PG7MFP_I2S1_DO           (0xAUL<<SYS_GPG_MFP1_PG7MFP_Pos)    /*!< GPG_MFP1 PG7 setting for I2S1_DO            */
-#define SYS_GPG_MFP1_PG7MFP_EPWM0_CH1         (0xBUL<<SYS_GPG_MFP1_PG7MFP_Pos)    /*!< GPG_MFP1 PG7 setting for EPWM0_CH1          */
-
-/* PG.8 MFP */
-#define SYS_GPG_MFP2_PG8MFP_GPIO              (0x0UL<<SYS_GPG_MFP2_PG8MFP_Pos)    /*!< GPG_MFP2 PG8 setting for GPIO               */
-#define SYS_GPG_MFP2_PG8MFP_EBI_nWRH          (0x2UL<<SYS_GPG_MFP2_PG8MFP_Pos)    /*!< GPG_MFP2 PG8 setting for EBI_nWRH           */
-#define SYS_GPG_MFP2_PG8MFP_SPI3_MOSI         (0x3UL<<SYS_GPG_MFP2_PG8MFP_Pos)    /*!< GPG_MFP2 PG8 setting for SPI3_MOSI          */
-#define SYS_GPG_MFP2_PG8MFP_SC1_CLK           (0x4UL<<SYS_GPG_MFP2_PG8MFP_Pos)    /*!< GPG_MFP2 PG8 setting for SC1_CLK            */
-#define SYS_GPG_MFP2_PG8MFP_I2C3_SDA          (0x8UL<<SYS_GPG_MFP2_PG8MFP_Pos)    /*!< GPG_MFP2 PG8 setting for I2C3_SDA           */
-#define SYS_GPG_MFP2_PG8MFP_I2S1_LRCK         (0xAUL<<SYS_GPG_MFP2_PG8MFP_Pos)    /*!< GPG_MFP2 PG8 setting for I2S1_LRCK          */
-#define SYS_GPG_MFP2_PG8MFP_EPWM0_CH0         (0xBUL<<SYS_GPG_MFP2_PG8MFP_Pos)    /*!< GPG_MFP2 PG8 setting for EPWM0_CH0          */
-
 /* PG.9 MFP */
 #define SYS_GPG_MFP2_PG9MFP_GPIO              (0x0UL<<SYS_GPG_MFP2_PG9MFP_Pos)    /*!< GPG_MFP2 PG9 setting for GPIO               */
 #define SYS_GPG_MFP2_PG9MFP_EBI_AD0           (0x2UL<<SYS_GPG_MFP2_PG9MFP_Pos)    /*!< GPG_MFP2 PG9 setting for EBI_AD0            */
@@ -2600,10 +2582,8 @@ extern "C"
 #define SET_EBI_nRD_PJ8()           SYS->GPJ_MFP2 = ((SYS->GPJ_MFP2 & (~SYS_GPJ_MFP2_PJ8MFP_Msk)) | SYS_GPJ_MFP2_PJ8MFP_EBI_nRD)                       /*!< Set PJ8 function to EBI_nRD             */
 #define SET_EBI_nWRH_PB6()          SYS->GPB_MFP1 = ((SYS->GPB_MFP1 & (~SYS_GPB_MFP1_PB6MFP_Msk)) | SYS_GPB_MFP1_PB6MFP_EBI_nWRH)                      /*!< Set PB6 function to EBI_nWRH            */
 #define SET_EBI_nWRH_PG6()          SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (~SYS_GPG_MFP1_PG6MFP_Msk)) | SYS_GPG_MFP1_PG6MFP_EBI_nWRH)                      /*!< Set PG6 function to EBI_nWRH            */
-#define SET_EBI_nWRH_PG8()          SYS->GPG_MFP2 = ((SYS->GPG_MFP2 & (~SYS_GPG_MFP2_PG8MFP_Msk)) | SYS_GPG_MFP2_PG8MFP_EBI_nWRH)                      /*!< Set PG8 function to EBI_nWRH            */
 #define SET_EBI_nWRL_PB7()          SYS->GPB_MFP1 = ((SYS->GPB_MFP1 & (~SYS_GPB_MFP1_PB7MFP_Msk)) | SYS_GPB_MFP1_PB7MFP_EBI_nWRL)                      /*!< Set PB7 function to EBI_nWRL            */
 #define SET_EBI_nWRL_PG5()          SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (~SYS_GPG_MFP1_PG5MFP_Msk)) | SYS_GPG_MFP1_PG5MFP_EBI_nWRL)                      /*!< Set PG5 function to EBI_nWRL            */
-#define SET_EBI_nWRL_PG7()          SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (~SYS_GPG_MFP1_PG7MFP_Msk)) | SYS_GPG_MFP1_PG7MFP_EBI_nWRL)                      /*!< Set PG7 function to EBI_nWRL            */
 #define SET_EBI_nWR_PA10()          SYS->GPA_MFP2 = ((SYS->GPA_MFP2 & (~SYS_GPA_MFP2_PA10MFP_Msk)) | SYS_GPA_MFP2_PA10MFP_EBI_nWR)                     /*!< Set PA10 function to EBI_nWR            */
 #define SET_EBI_nWR_PE4()           SYS->GPE_MFP1 = ((SYS->GPE_MFP1 & (~SYS_GPE_MFP1_PE4MFP_Msk)) | SYS_GPE_MFP1_PE4MFP_EBI_nWR)                       /*!< Set PE4 function to EBI_nWR             */
 #define SET_EBI_nWR_PJ9()           SYS->GPJ_MFP2 = ((SYS->GPJ_MFP2 & (~SYS_GPJ_MFP2_PJ9MFP_Msk)) | SYS_GPJ_MFP2_PJ9MFP_EBI_nWR)                       /*!< Set PJ9 function to EBI_nWR             */
@@ -2671,14 +2651,12 @@ extern "C"
 #define SET_EPWM0_CH0_PE8()         SYS->GPE_MFP2 = ((SYS->GPE_MFP2 & (~SYS_GPE_MFP2_PE8MFP_Msk)) | SYS_GPE_MFP2_PE8MFP_EPWM0_CH0)                     /*!< Set PE8 function to EPWM0_CH0           */
 #define SET_EPWM0_CH0_PF5()         SYS->GPF_MFP1 = ((SYS->GPF_MFP1 & (~SYS_GPF_MFP1_PF5MFP_Msk)) | SYS_GPF_MFP1_PF5MFP_EPWM0_CH0)                     /*!< Set PF5 function to EPWM0_CH0           */
 #define SET_EPWM0_CH0_PG1()         SYS->GPG_MFP0 = ((SYS->GPG_MFP0 & (~SYS_GPG_MFP0_PG1MFP_Msk)) | SYS_GPG_MFP0_PG1MFP_EPWM0_CH0)                     /*!< Set PG1 function to EPWM0_CH0           */
-#define SET_EPWM0_CH0_PG8()         SYS->GPG_MFP2 = ((SYS->GPG_MFP2 & (~SYS_GPG_MFP2_PG8MFP_Msk)) | SYS_GPG_MFP2_PG8MFP_EPWM0_CH0)                     /*!< Set PG8 function to EPWM0_CH0           */
 #define SET_EPWM0_CH1_PA4()         SYS->GPA_MFP1 = ((SYS->GPA_MFP1 & (~SYS_GPA_MFP1_PA4MFP_Msk)) | SYS_GPA_MFP1_PA4MFP_EPWM0_CH1)                     /*!< Set PA4 function to EPWM0_CH1           */
 #define SET_EPWM0_CH1_PB4()         SYS->GPB_MFP1 = ((SYS->GPB_MFP1 & (~SYS_GPB_MFP1_PB4MFP_Msk)) | SYS_GPB_MFP1_PB4MFP_EPWM0_CH1)                     /*!< Set PB4 function to EPWM0_CH1           */
 #define SET_EPWM0_CH1_PE6()         SYS->GPE_MFP1 = ((SYS->GPE_MFP1 & (~SYS_GPE_MFP1_PE6MFP_Msk)) | SYS_GPE_MFP1_PE6MFP_EPWM0_CH1)                     /*!< Set PE6 function to EPWM0_CH1           */
 #define SET_EPWM0_CH1_PE9()         SYS->GPE_MFP2 = ((SYS->GPE_MFP2 & (~SYS_GPE_MFP2_PE9MFP_Msk)) | SYS_GPE_MFP2_PE9MFP_EPWM0_CH1)                     /*!< Set PE9 function to EPWM0_CH1           */
 #define SET_EPWM0_CH1_PF4()         SYS->GPF_MFP1 = ((SYS->GPF_MFP1 & (~SYS_GPF_MFP1_PF4MFP_Msk)) | SYS_GPF_MFP1_PF4MFP_EPWM0_CH1)                     /*!< Set PF4 function to EPWM0_CH1           */
 #define SET_EPWM0_CH1_PG0()         SYS->GPG_MFP0 = ((SYS->GPG_MFP0 & (~SYS_GPG_MFP0_PG0MFP_Msk)) | SYS_GPG_MFP0_PG0MFP_EPWM0_CH1)                     /*!< Set PG0 function to EPWM0_CH1           */
-#define SET_EPWM0_CH1_PG7()         SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (~SYS_GPG_MFP1_PG7MFP_Msk)) | SYS_GPG_MFP1_PG7MFP_EPWM0_CH1)                     /*!< Set PG7 function to EPWM0_CH1           */
 #define SET_EPWM0_CH2_PA3()         SYS->GPA_MFP0 = ((SYS->GPA_MFP0 & (~SYS_GPA_MFP0_PA3MFP_Msk)) | SYS_GPA_MFP0_PA3MFP_EPWM0_CH2)                     /*!< Set PA3 function to EPWM0_CH2           */
 #define SET_EPWM0_CH2_PB3()         SYS->GPB_MFP0 = ((SYS->GPB_MFP0 & (~SYS_GPB_MFP0_PB3MFP_Msk)) | SYS_GPB_MFP0_PB3MFP_EPWM0_CH2)                     /*!< Set PB3 function to EPWM0_CH2           */
 #define SET_EPWM0_CH2_PE10()        SYS->GPE_MFP2 = ((SYS->GPE_MFP2 & (~SYS_GPE_MFP2_PE10MFP_Msk)) | SYS_GPE_MFP2_PE10MFP_EPWM0_CH2)                   /*!< Set PE10 function to EPWM0_CH2          */
@@ -2888,8 +2866,6 @@ extern "C"
 #define SET_GPIO_PG4()              SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (~SYS_GPG_MFP1_PG4MFP_Msk)) | SYS_GPG_MFP1_PG4MFP_GPIO)                          /*!< Set PG4 function to GPIO                */
 #define SET_GPIO_PG5()              SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (~SYS_GPG_MFP1_PG5MFP_Msk)) | SYS_GPG_MFP1_PG5MFP_GPIO)                          /*!< Set PG5 function to GPIO                */
 #define SET_GPIO_PG6()              SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (~SYS_GPG_MFP1_PG6MFP_Msk)) | SYS_GPG_MFP1_PG6MFP_GPIO)                          /*!< Set PG6 function to GPIO                */
-#define SET_GPIO_PG7()              SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (~SYS_GPG_MFP1_PG7MFP_Msk)) | SYS_GPG_MFP1_PG7MFP_GPIO)                          /*!< Set PG7 function to GPIO                */
-#define SET_GPIO_PG8()              SYS->GPG_MFP2 = ((SYS->GPG_MFP2 & (~SYS_GPG_MFP2_PG8MFP_Msk)) | SYS_GPG_MFP2_PG8MFP_GPIO)                          /*!< Set PG8 function to GPIO                */
 #define SET_GPIO_PG9()              SYS->GPG_MFP2 = ((SYS->GPG_MFP2 & (~SYS_GPG_MFP2_PG9MFP_Msk)) | SYS_GPG_MFP2_PG9MFP_GPIO)                          /*!< Set PG9 function to GPIO                */
 #define SET_GPIO_PH0()              SYS->GPH_MFP0 = ((SYS->GPH_MFP0 & (~SYS_GPH_MFP0_PH0MFP_Msk)) | SYS_GPH_MFP0_PH0MFP_GPIO)                          /*!< Set PH0 function to GPIO                */
 #define SET_GPIO_PH1()              SYS->GPH_MFP0 = ((SYS->GPH_MFP0 & (~SYS_GPH_MFP0_PH1MFP_Msk)) | SYS_GPH_MFP0_PH1MFP_GPIO)                          /*!< Set PH1 function to GPIO                */
@@ -3025,12 +3001,10 @@ extern "C"
 #define SET_I2C2_SMBSUS_PF2()       SYS->GPF_MFP0 = ((SYS->GPF_MFP0 & (~SYS_GPF_MFP0_PF2MFP_Msk)) | SYS_GPF_MFP0_PF2MFP_I2C2_SMBSUS)                   /*!< Set PF2 function to I2C2_SMBSUS         */
 #define SET_I2C3_SCL_PC3()          SYS->GPC_MFP0 = ((SYS->GPC_MFP0 & (~SYS_GPC_MFP0_PC3MFP_Msk)) | SYS_GPC_MFP0_PC3MFP_I2C3_SCL)                      /*!< Set PC3 function to I2C3_SCL            */
 #define SET_I2C3_SCL_PG0()          SYS->GPG_MFP0 = ((SYS->GPG_MFP0 & (~SYS_GPG_MFP0_PG0MFP_Msk)) | SYS_GPG_MFP0_PG0MFP_I2C3_SCL)                      /*!< Set PG0 function to I2C3_SCL            */
-#define SET_I2C3_SCL_PG7()          SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (~SYS_GPG_MFP1_PG7MFP_Msk)) | SYS_GPG_MFP1_PG7MFP_I2C3_SCL)                      /*!< Set PG7 function to I2C3_SCL            */
 #define SET_I2C3_SCL_PH0()          SYS->GPH_MFP0 = ((SYS->GPH_MFP0 & (~SYS_GPH_MFP0_PH0MFP_Msk)) | SYS_GPH_MFP0_PH0MFP_I2C3_SCL)                      /*!< Set PH0 function to I2C3_SCL            */
 #define SET_I2C3_SCL_PI14()         SYS->GPI_MFP3 = ((SYS->GPI_MFP3 & (~SYS_GPI_MFP3_PI14MFP_Msk)) | SYS_GPI_MFP3_PI14MFP_I2C3_SCL)                    /*!< Set PI14 function to I2C3_SCL           */
 #define SET_I2C3_SDA_PC2()          SYS->GPC_MFP0 = ((SYS->GPC_MFP0 & (~SYS_GPC_MFP0_PC2MFP_Msk)) | SYS_GPC_MFP0_PC2MFP_I2C3_SDA)                      /*!< Set PC2 function to I2C3_SDA            */
 #define SET_I2C3_SDA_PG1()          SYS->GPG_MFP0 = ((SYS->GPG_MFP0 & (~SYS_GPG_MFP0_PG1MFP_Msk)) | SYS_GPG_MFP0_PG1MFP_I2C3_SDA)                      /*!< Set PG1 function to I2C3_SDA            */
-#define SET_I2C3_SDA_PG8()          SYS->GPG_MFP2 = ((SYS->GPG_MFP2 & (~SYS_GPG_MFP2_PG8MFP_Msk)) | SYS_GPG_MFP2_PG8MFP_I2C3_SDA)                      /*!< Set PG8 function to I2C3_SDA            */
 #define SET_I2C3_SDA_PH1()          SYS->GPH_MFP0 = ((SYS->GPH_MFP0 & (~SYS_GPH_MFP0_PH1MFP_Msk)) | SYS_GPH_MFP0_PH1MFP_I2C3_SDA)                      /*!< Set PH1 function to I2C3_SDA            */
 #define SET_I2C3_SDA_PI15()         SYS->GPI_MFP3 = ((SYS->GPI_MFP3 & (~SYS_GPI_MFP3_PI15MFP_Msk)) | SYS_GPI_MFP3_PI15MFP_I2C3_SDA)                    /*!< Set PI15 function to I2C3_SDA           */
 #define SET_I2C3_SMBAL_PC5()        SYS->GPC_MFP1 = ((SYS->GPC_MFP1 & (~SYS_GPC_MFP1_PC5MFP_Msk)) | SYS_GPC_MFP1_PC5MFP_I2C3_SMBAL)                    /*!< Set PC5 function to I2C3_SMBAL          */
@@ -3089,11 +3063,9 @@ extern "C"
 #define SET_I2S1_DO_PA8()           SYS->GPA_MFP2 = ((SYS->GPA_MFP2 & (~SYS_GPA_MFP2_PA8MFP_Msk)) | SYS_GPA_MFP2_PA8MFP_I2S1_DO)                       /*!< Set PA8 function to I2S1_DO             */
 #define SET_I2S1_DO_PD0()           SYS->GPD_MFP0 = ((SYS->GPD_MFP0 & (~SYS_GPD_MFP0_PD0MFP_Msk)) | SYS_GPD_MFP0_PD0MFP_I2S1_DO)                       /*!< Set PD0 function to I2S1_DO             */
 #define SET_I2S1_DO_PG0()           SYS->GPG_MFP0 = ((SYS->GPG_MFP0 & (~SYS_GPG_MFP0_PG0MFP_Msk)) | SYS_GPG_MFP0_PG0MFP_I2S1_DO)                       /*!< Set PG0 function to I2S1_DO             */
-#define SET_I2S1_DO_PG7()           SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (~SYS_GPG_MFP1_PG7MFP_Msk)) | SYS_GPG_MFP1_PG7MFP_I2S1_DO)                       /*!< Set PG7 function to I2S1_DO             */
 #define SET_I2S1_LRCK_PB0()         SYS->GPB_MFP0 = ((SYS->GPB_MFP0 & (~SYS_GPB_MFP0_PB0MFP_Msk)) | SYS_GPB_MFP0_PB0MFP_I2S1_LRCK)                     /*!< Set PB0 function to I2S1_LRCK           */
 #define SET_I2S1_LRCK_PD13()        SYS->GPD_MFP3 = ((SYS->GPD_MFP3 & (~SYS_GPD_MFP3_PD13MFP_Msk)) | SYS_GPD_MFP3_PD13MFP_I2S1_LRCK)                   /*!< Set PD13 function to I2S1_LRCK          */
 #define SET_I2S1_LRCK_PG1()         SYS->GPG_MFP0 = ((SYS->GPG_MFP0 & (~SYS_GPG_MFP0_PG1MFP_Msk)) | SYS_GPG_MFP0_PG1MFP_I2S1_LRCK)                     /*!< Set PG1 function to I2S1_LRCK           */
-#define SET_I2S1_LRCK_PG8()         SYS->GPG_MFP2 = ((SYS->GPG_MFP2 & (~SYS_GPG_MFP2_PG8MFP_Msk)) | SYS_GPG_MFP2_PG8MFP_I2S1_LRCK)                     /*!< Set PG8 function to I2S1_LRCK           */
 #define SET_I2S1_MCLK_PA10()        SYS->GPA_MFP2 = ((SYS->GPA_MFP2 & (~SYS_GPA_MFP2_PA10MFP_Msk)) | SYS_GPA_MFP2_PA10MFP_I2S1_MCLK)                   /*!< Set PA10 function to I2S1_MCLK          */
 #define SET_I2S1_MCLK_PD2()         SYS->GPD_MFP0 = ((SYS->GPD_MFP0 & (~SYS_GPD_MFP0_PD2MFP_Msk)) | SYS_GPD_MFP0_PD2MFP_I2S1_MCLK)                     /*!< Set PD2 function to I2S1_MCLK           */
 #define SET_I2S1_MCLK_PG5()         SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (~SYS_GPG_MFP1_PG5MFP_Msk)) | SYS_GPG_MFP1_PG5MFP_I2S1_MCLK)                     /*!< Set PG5 function to I2S1_MCLK           */
@@ -3393,14 +3365,12 @@ extern "C"
 #define SET_SC1_CLK_PC0()           SYS->GPC_MFP0 = ((SYS->GPC_MFP0 & (~SYS_GPC_MFP0_PC0MFP_Msk)) | SYS_GPC_MFP0_PC0MFP_SC1_CLK)                       /*!< Set PC0 function to SC1_CLK             */
 #define SET_SC1_CLK_PD4()           SYS->GPD_MFP1 = ((SYS->GPD_MFP1 & (~SYS_GPD_MFP1_PD4MFP_Msk)) | SYS_GPD_MFP1_PD4MFP_SC1_CLK)                       /*!< Set PD4 function to SC1_CLK             */
 #define SET_SC1_CLK_PF1()           SYS->GPF_MFP0 = ((SYS->GPF_MFP0 & (~SYS_GPF_MFP0_PF1MFP_Msk)) | SYS_GPF_MFP0_PF1MFP_SC1_CLK)                       /*!< Set PF1 function to SC1_CLK             */
-#define SET_SC1_CLK_PG8()           SYS->GPG_MFP2 = ((SYS->GPG_MFP2 & (~SYS_GPG_MFP2_PG8MFP_Msk)) | SYS_GPG_MFP2_PG8MFP_SC1_CLK)                       /*!< Set PG8 function to SC1_CLK             */
 #define SET_SC1_CLK_PH1()           SYS->GPH_MFP0 = ((SYS->GPH_MFP0 & (~SYS_GPH_MFP0_PH1MFP_Msk)) | SYS_GPH_MFP0_PH1MFP_SC1_CLK)                       /*!< Set PH1 function to SC1_CLK             */
 #define SET_SC1_CLK_PI10()          SYS->GPI_MFP2 = ((SYS->GPI_MFP2 & (~SYS_GPI_MFP2_PI10MFP_Msk)) | SYS_GPI_MFP2_PI10MFP_SC1_CLK)                     /*!< Set PI10 function to SC1_CLK            */
 #define SET_SC1_DAT_PB13()          SYS->GPB_MFP3 = ((SYS->GPB_MFP3 & (~SYS_GPB_MFP3_PB13MFP_Msk)) | SYS_GPB_MFP3_PB13MFP_SC1_DAT)                     /*!< Set PB13 function to SC1_DAT            */
 #define SET_SC1_DAT_PC1()           SYS->GPC_MFP0 = ((SYS->GPC_MFP0 & (~SYS_GPC_MFP0_PC1MFP_Msk)) | SYS_GPC_MFP0_PC1MFP_SC1_DAT)                       /*!< Set PC1 function to SC1_DAT             */
 #define SET_SC1_DAT_PD5()           SYS->GPD_MFP1 = ((SYS->GPD_MFP1 & (~SYS_GPD_MFP1_PD5MFP_Msk)) | SYS_GPD_MFP1_PD5MFP_SC1_DAT)                       /*!< Set PD5 function to SC1_DAT             */
 #define SET_SC1_DAT_PF0()           SYS->GPF_MFP0 = ((SYS->GPF_MFP0 & (~SYS_GPF_MFP0_PF0MFP_Msk)) | SYS_GPF_MFP0_PF0MFP_SC1_DAT)                       /*!< Set PF0 function to SC1_DAT             */
-#define SET_SC1_DAT_PG7()           SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (~SYS_GPG_MFP1_PG7MFP_Msk)) | SYS_GPG_MFP1_PG7MFP_SC1_DAT)                       /*!< Set PG7 function to SC1_DAT             */
 #define SET_SC1_DAT_PH0()           SYS->GPH_MFP0 = ((SYS->GPH_MFP0 & (~SYS_GPH_MFP0_PH0MFP_Msk)) | SYS_GPH_MFP0_PH0MFP_SC1_DAT)                       /*!< Set PH0 function to SC1_DAT             */
 #define SET_SC1_DAT_PI9()           SYS->GPI_MFP2 = ((SYS->GPI_MFP2 & (~SYS_GPI_MFP2_PI9MFP_Msk)) | SYS_GPI_MFP2_PI9MFP_SC1_DAT)                       /*!< Set PI9 function to SC1_DAT             */
 #define SET_SC1_PWR_PB15()          SYS->GPB_MFP3 = ((SYS->GPB_MFP3 & (~SYS_GPB_MFP3_PB15MFP_Msk)) | SYS_GPB_MFP3_PB15MFP_SC1_PWR)                     /*!< Set PB15 function to SC1_PWR            */
@@ -3585,12 +3555,10 @@ extern "C"
 #define SET_SPI3_MISO_PB9()         SYS->GPB_MFP2 = ((SYS->GPB_MFP2 & (~SYS_GPB_MFP2_PB9MFP_Msk)) | SYS_GPB_MFP2_PB9MFP_SPI3_MISO)                     /*!< Set PB9 function to SPI3_MISO           */
 #define SET_SPI3_MISO_PC12()        SYS->GPC_MFP3 = ((SYS->GPC_MFP3 & (~SYS_GPC_MFP3_PC12MFP_Msk)) | SYS_GPC_MFP3_PC12MFP_SPI3_MISO)                   /*!< Set PC12 function to SPI3_MISO          */
 #define SET_SPI3_MISO_PE3()         SYS->GPE_MFP0 = ((SYS->GPE_MFP0 & (~SYS_GPE_MFP0_PE3MFP_Msk)) | SYS_GPE_MFP0_PE3MFP_SPI3_MISO)                     /*!< Set PE3 function to SPI3_MISO           */
-#define SET_SPI3_MISO_PG7()         SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (~SYS_GPG_MFP1_PG7MFP_Msk)) | SYS_GPG_MFP1_PG7MFP_SPI3_MISO)                     /*!< Set PG7 function to SPI3_MISO           */
 #define SET_SPI3_MISO_PH0()         SYS->GPH_MFP0 = ((SYS->GPH_MFP0 & (~SYS_GPH_MFP0_PH0MFP_Msk)) | SYS_GPH_MFP0_PH0MFP_SPI3_MISO)                     /*!< Set PH0 function to SPI3_MISO           */
 #define SET_SPI3_MOSI_PB8()         SYS->GPB_MFP2 = ((SYS->GPB_MFP2 & (~SYS_GPB_MFP2_PB8MFP_Msk)) | SYS_GPB_MFP2_PB8MFP_SPI3_MOSI)                     /*!< Set PB8 function to SPI3_MOSI           */
 #define SET_SPI3_MOSI_PC11()        SYS->GPC_MFP2 = ((SYS->GPC_MFP2 & (~SYS_GPC_MFP2_PC11MFP_Msk)) | SYS_GPC_MFP2_PC11MFP_SPI3_MOSI)                   /*!< Set PC11 function to SPI3_MOSI          */
 #define SET_SPI3_MOSI_PE2()         SYS->GPE_MFP0 = ((SYS->GPE_MFP0 & (~SYS_GPE_MFP0_PE2MFP_Msk)) | SYS_GPE_MFP0_PE2MFP_SPI3_MOSI)                     /*!< Set PE2 function to SPI3_MOSI           */
-#define SET_SPI3_MOSI_PG8()         SYS->GPG_MFP2 = ((SYS->GPG_MFP2 & (~SYS_GPG_MFP2_PG8MFP_Msk)) | SYS_GPG_MFP2_PG8MFP_SPI3_MOSI)                     /*!< Set PG8 function to SPI3_MOSI           */
 #define SET_SPI3_MOSI_PH1()         SYS->GPH_MFP0 = ((SYS->GPH_MFP0 & (~SYS_GPH_MFP0_PH1MFP_Msk)) | SYS_GPH_MFP0_PH1MFP_SPI3_MOSI)                     /*!< Set PH1 function to SPI3_MOSI           */
 #define SET_SPI3_SS_PB10()          SYS->GPB_MFP2 = ((SYS->GPB_MFP2 & (~SYS_GPB_MFP2_PB10MFP_Msk)) | SYS_GPB_MFP2_PB10MFP_SPI3_SS)                     /*!< Set PB10 function to SPI3_SS            */
 #define SET_SPI3_SS_PC9()           SYS->GPC_MFP2 = ((SYS->GPC_MFP2 & (~SYS_GPC_MFP2_PC9MFP_Msk)) | SYS_GPC_MFP2_PC9MFP_SPI3_SS)                       /*!< Set PC9 function to SPI3_SS             */

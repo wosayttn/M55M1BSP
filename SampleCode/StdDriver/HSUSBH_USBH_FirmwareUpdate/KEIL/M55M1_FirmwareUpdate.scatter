@@ -169,7 +169,13 @@ LR_ROM_1 __LDRO_BASE __LDRO_SIZE {
         startup_M55M1.o
         main.o (+RO)
     }
+}
 
+LR_ROM_2 __APRO_ISP_BASE __APRO_ISP_SIZE  {                       ; load region size_region
+    APROM_ISP.bin __APRO_ISP_BASE __APRO_ISP_SIZE  {                   ; load address = execution address
+        .ANY (+RO)
+    }
+	
     ITCM ITCM_START ITCM_SIZE
     {
         .ANY (ITCM)
@@ -210,11 +216,6 @@ LR_ROM_1 __LDRO_BASE __LDRO_SIZE {
 STACKSEAL +0 EMPTY __STACKSEAL_SIZE {
         ; Reserve empty region for stack seal immediately after stack
     }
-#endif
-}
-
-LR_ROM_2 __APRO_ISP_BASE __APRO_ISP_SIZE  {                       ; load region size_region
-    APROM_ISP.bin __APRO_ISP_BASE __APRO_ISP_SIZE  {                   ; load address = execution address
-        .ANY (+RO)
-    }
+#endif	
+	
 }

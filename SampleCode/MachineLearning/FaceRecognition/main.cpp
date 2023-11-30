@@ -28,7 +28,7 @@
 #include "NuMicro.h"
 
 //#define __PROFILE__
-#define __USE_CCAP__
+//#define __USE_CCAP__
 #define __USE_DISPLAY__
 
 #include "Profiler.hpp"

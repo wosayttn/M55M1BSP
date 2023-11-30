@@ -46,7 +46,7 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
@@ -55,6 +55,7 @@ void SYS_Init(void)
 
     /* Select CAN FD0 clock source is APLL0/2 */
     CLK_SetModuleClock(CANFD0_MODULE, CLK_CANFDSEL_CANFD0SEL_APLL0_DIV2, CLK_CANFDDIV_CANFD0DIV(1));
+
     /* Enable CAN FD0 peripheral clock */
     CLK_EnableModuleClock(CANFD0_MODULE);
 
@@ -67,12 +68,10 @@ void SYS_Init(void)
     /* Set PB multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
-    /* Set PC multi-function pins for CAN RXD and TXD */
-    SET_CAN0_RXD_PC4();
-    SET_CAN0_TXD_PC5();
-
+    /* Set PJ multi-function pins for CAN RXD and TXD */
+    SET_CAN0_RXD_PJ11();
+    SET_CAN0_TXD_PJ10();
 }
-
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*                                    Init CAN                                                             */
@@ -84,8 +83,8 @@ void CAN_Init(void)
     printf("+---------------------------------------------------------------+\n");
     printf("|     Pin Configure                                             |\n");
     printf("+---------------------------------------------------------------+\n");
-    printf("|  CAN0_TXD(PC5)                         CAN_TXD(Any board)     |\n");
-    printf("|  CAN0_RXD(PC4)                         CAN_RXD(Any board)     |\n");
+    printf("|  CAN0_TXD(PJ10)                        CAN_TXD(Any board)     |\n");
+    printf("|  CAN0_RXD(PJ11)                        CAN_RXD(Any board)     |\n");
     printf("|          |-----------| CANBUS  |-----------|                  |\n");
     printf("|  ------> |           |<------->|           |<------           |\n");
     printf("|  CAN0_TX |   CAN     |  CAN_H  |    CAN    |CAN_TX            |\n");
@@ -295,7 +294,8 @@ void CAN_TxRxTest(void)
                 u8RxTestNum++;
 
             }
-        } while (u8RxTestNum < 6);
+        }
+        while (u8RxTestNum < 6);
 
         printf("\n Receive OK & Check OK\n");
     }

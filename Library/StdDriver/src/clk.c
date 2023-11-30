@@ -123,7 +123,7 @@ uint32_t CLK_GetLXTFreq(void)
 uint32_t CLK_GetMIRCFreq(void)
 {
     uint32_t u32Freq;
-
+#if 0   // TESTCHIP_ONLY not support
     if ((CLK->SRCCTL & CLK_SRCCTL_MIRCEN_Msk) == CLK_SRCCTL_MIRCEN_Msk)
     {
         switch (CLK->MIRCCTL & CLK_MIRCCTL_MIRCFSEL_Msk)
@@ -153,7 +153,9 @@ uint32_t CLK_GetMIRCFreq(void)
     {
         u32Freq = 0UL;
     }
-
+#endif
+    u32Freq = __MIRC;
+    
     return u32Freq;
 }
 
@@ -184,10 +186,12 @@ uint32_t CLK_EnableMIRC(uint32_t u32MircFreq)
 {
     /* Disable MIRC first to avoid unstable when setting MIRC */
     CLK_DisableMIRC();
-
+    
+#if 0   // TESTCHIP_ONLY not support
     /* Select MIRC frequency */
     CLK->MIRCCTL = (CLK->MIRCCTL & ~CLK_MIRCCTL_MIRCFSEL_Msk) | u32MircFreq;
-
+#endif
+    
     /* Enable and apply new MIRC setting. */
     CLK->SRCCTL |= CLK_SRCCTL_MIRCEN_Msk;
 
@@ -332,15 +336,9 @@ uint32_t CLK_GetACLKFreq(void)
   */
 uint32_t CLK_GetHCLK0Freq(void)
 {
-    uint32_t u32SclkFreq, u32Hclk0;
-    uint32_t u32Hclk0Div;
+    uint32_t u32Hclk0;
 
-    u32SclkFreq = CLK_SystemClockUpdate();
-
-    u32Hclk0Div = ((CLK->HCLKDIV & CLK_HCLKDIV_HCLK0DIV_Msk) >> CLK_HCLKDIV_HCLK0DIV_Pos) + 1UL;
-
-    /* Update System Core Clock */
-    u32Hclk0 = u32SclkFreq / u32Hclk0Div;
+    u32Hclk0 = CLK_SystemClockUpdate();
 
     return u32Hclk0;
 }
@@ -353,15 +351,9 @@ uint32_t CLK_GetHCLK0Freq(void)
   */
 uint32_t CLK_GetHCLK1Freq(void)
 {
-    uint32_t u32SclkFreq, u32Hclk1;
-    uint32_t u32Hclk1Div;
+    uint32_t u32Hclk1;
 
-    u32SclkFreq = CLK_SystemClockUpdate();
-
-    u32Hclk1Div = ((CLK->HCLKDIV & CLK_HCLKDIV_HCLK1DIV_Msk) >> CLK_HCLKDIV_HCLK1DIV_Pos) + 1UL;
-
-    /* Update System Core Clock */
-    u32Hclk1 = u32SclkFreq / u32Hclk1Div;
+    u32Hclk1 = CLK_SystemClockUpdate();
 
     return u32Hclk1;
 }

@@ -179,18 +179,13 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
     ARM_LIB_HEAP  __HEAP_BASE EMPTY  HEAP_SIZE {}       ; Reserve empty region for heap
 #endif
 
-    DTCM_VTOR DTCM_START
-    {
-        * (DTCM.VTOR)
-    }
-
     DTCM AlignExpr(+0, 8)
     {
         .ANY (DTCM.Init)
 		.ANY (.bss.DTCM.ZeroInit)
     }
 
-    ScatterAssert((ImageLength(DTCM_VTOR) + ImageLength(DTCM)) < (DTCM_SIZE - STACK_SIZE - __STACKSEAL_SIZE))	; ImageLength is uncompressed size
+    ScatterAssert((ImageLength(DTCM)) < (DTCM_SIZE - STACK_SIZE - __STACKSEAL_SIZE))	; ImageLength is uncompressed size
 
     ARM_LIB_STACK __STACK_TOP EMPTY - STACK_SIZE {}     ; Reserve empty region for stack
 

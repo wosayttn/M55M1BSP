@@ -166,10 +166,11 @@ void SYS_Init(void)
 
     /* USB Host desired input clock is 48 MHz. Set as HIRC48M divided by 1 (48/1 = 48) */
     CLK_SetModuleClock(USBH0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
-    CLK_SetModuleClock(HSUSBH0_MODULE, 0, 0);
 
     /* Enable USBH module clock */
     CLK_EnableModuleClock(USBH0_MODULE);
+    CLK_EnableModuleClock(USBD0_MODULE);
+    CLK_EnableModuleClock(OTG0_MODULE);
     /* Enable HSUSBH module clock */
     CLK_EnableModuleClock(HSUSBH0_MODULE);
 
@@ -215,7 +216,7 @@ void SYS_Init(void)
     SET_USB_VBUS_EN_PB15();
 
     /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PC.14   */
-    SET_USB_VBUS_ST_PC14();
+    SET_USB_VBUS_ST_PB14();
 
     /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PJ.13   */
     SET_HSUSB_VBUS_EN_PJ13();
@@ -743,11 +744,11 @@ int  go_to_flash(char *cmdline)
     SPIM_ReadJedecId(SPIM0, idBuf, sizeof(idBuf), 1, 0);
     printf("Flash ID=0x%02X, 0x%02X, 0x%02X\n", idBuf[0], idBuf[1], idBuf[2]);
     //TestOnly
-#ifdef TESTCHIP_ONLY
+#ifndef TESTCHIP_ONLY
     SPIM_ENABLE_CACHE(SPIM0);
 #endif
     SPIM_Enable_4Bytes_Mode(SPIM0, IS_4BYTES_ADDR, 1);  /* Enable 4-bytes address mode?          */
-#ifdef TESTCHIP_ONLY
+#ifndef TESTCHIP_ONLY
     SPIM0->CTL1 |= SPIM_CTL1_CDINVAL_Msk;    /* invalid cache                              */
 #endif
     /* Enable DMM mode                            */

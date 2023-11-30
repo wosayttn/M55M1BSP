@@ -195,8 +195,8 @@ int32_t main(void)
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_MIRC);
     
     /* Set power level to 0.9V */
-    printf("Set power level to 0.9V ");
-    PMC_SetPowerLevel(PMC_PLCTL_PLSEL_PL3);
+    printf("Set power level to 1.1V ");
+    PMC_SetPowerLevel(PMC_PLCTL_PLSEL_PL1);
 
     /* Check system work */
     CheckSystemWork();

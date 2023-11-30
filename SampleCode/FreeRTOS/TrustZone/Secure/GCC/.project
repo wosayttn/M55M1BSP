@@ -41,9 +41,19 @@
 			<locationURI>$%7BPARENT-5-PROJECT_LOC%7D/Library/StdDriver/src/clk.c</locationURI>
 		</link>
 		<link>
-			<name>Driver/mpc.c</name>
+			<name>Driver/fmc.c</name>
 			<type>1</type>
-			<locationURI>$%7BPARENT-5-PROJECT_LOC%7D/Library/StdDriver/src/scu/mpc.c</locationURI>
+			<locationURI>$%7BPARENT-5-PROJECT_LOC%7D/Library/StdDriver/src/fmc.c</locationURI>
+		</link>
+		<link>
+			<name>Driver/gpio.c</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-5-PROJECT_LOC%7D/Library/StdDriver/src/gpio.c</locationURI>
+		</link>
+		<link>
+			<name>Driver/mpc_sie_drv.c</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-5-PROJECT_LOC%7D/Library/StdDriver/src/scu/mpc_sie_drv.c</locationURI>
 		</link>
 		<link>
 			<name>Driver/pmc.c</name>
@@ -54,11 +64,6 @@
 			<name>Driver/retarget.c</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-5-PROJECT_LOC%7D/Library/StdDriver/src/retarget.c</locationURI>
-		</link>
-		<link>
-			<name>Driver/scu.c</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-5-PROJECT_LOC%7D/Library/StdDriver/src/scu/scu.c</locationURI>
 		</link>
 		<link>
 			<name>Driver/sys.c</name>

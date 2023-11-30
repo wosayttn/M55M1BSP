@@ -134,8 +134,10 @@ int32_t main(void)
         printf("|[1] NPD0 Wake-up by BOD Interrupt.                               |\n");
         printf("|[2] NPD1 Wake-up by BOD Interrupt.                               |\n");
         printf("|[3] NPD2 Wake-up by BOD Interrupt.                               |\n");
+#if 0   // TESTCHIP_ONLY not support         
         printf("|[4] NPD3 Wake-up by BOD Interrupt.                               |\n");
         printf("|[5] NPD4 Wake-up by BOD Interrupt.                               |\n");
+#endif
         printf("+-----------------------------------------------------------------+\n");
         u8Item = (uint8_t)getchar();
 
@@ -165,7 +167,7 @@ int32_t main(void)
                 printf("Enter to NPD2 Power-down mode......\n");
                 WakeUpBODFunction(PMC_NPD2);
                 break;
-
+#if 0   // TESTCHIP_ONLY not support 
             case '4':
                 printf("Enter to NPD3 Power-down mode......\n");
                 WakeUpBODFunction(PMC_NPD3);
@@ -175,7 +177,7 @@ int32_t main(void)
                 printf("Enter to NPD4 Power-down mode......\n");
                 WakeUpBODFunction(PMC_NPD4);
                 break;
-
+#endif
             default:
                 break;
         }

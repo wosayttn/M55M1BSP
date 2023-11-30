@@ -111,16 +111,6 @@ void RTC_Init(void)
     RTC_SetClockSource(RTC_CLOCK_SOURCE_LXT);
 }
 /*---------------------------------------------------------------------------------------------------------*/
-/* Init UART                                                                                               */
-/*---------------------------------------------------------------------------------------------------------*/
-void UART0_Init(void)
-{
-    /* Configure UART0 and set UART0 Baudrate */
-    //UART_Open(UART0, 115200);
-    DEBUG_PORT->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400));
-    DEBUG_PORT->LINE = (UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1);
-}
-/*---------------------------------------------------------------------------------------------------------*/
 /* Get LXT and LIRC Frequency                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
 void GetActiveLXTandLIRC32Freq(uint32_t *u32LXTFreq, uint32_t *LIRC32Freq)
@@ -208,8 +198,8 @@ int32_t main(void)
     /* Init RTC */
     RTC_Init();
 
-    /* Init UART0 for printf */
-    UART0_Init();
+    /* Init Debug UART to 115200-8N1 for print message */
+    InitDebugUart();
 
     printf("\n\nCPU @ %uHz\n", SystemCoreClock);
     printf("+-------------------------------------------------------------+\n");

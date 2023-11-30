@@ -24,7 +24,7 @@
 #undef PI /* PI macro conflict with CMSIS/DSP */
 #include "NuMicro.h"
 
-#define __PROFILE__
+//#define __PROFILE__
 #define USE_DMIC
 #include "DMICRecord.h"
 

@@ -438,8 +438,6 @@ void SYS_Init(void)
     /* Enable USBH module clock */
     CLK_EnableModuleClock(USBH0_MODULE);
 
-    /* Select USBD module clock source */
-    CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
     /* Enable USBD module clock */
     CLK_EnableModuleClock(USBD0_MODULE);
 
@@ -450,7 +448,7 @@ void SYS_Init(void)
     SetDebugUartCLK();
 
     /* Set OTG as USB Host role */
-    SYS->USBPHY = (0x1ul << (SYS_USBPHY_HSOTGPHYEN_Pos)) | (0x3ul << (SYS_USBPHY_HSUSBROLE_Pos)) | (0x1ul << (SYS_USBPHY_OTGPHYEN_Pos)) | (0x3 << SYS_USBPHY_USBROLE_Pos);
+    SYS->USBPHY = (0x1ul << (SYS_USBPHY_HSOTGPHYEN_Pos)) | (0x2ul << (SYS_USBPHY_HSUSBROLE_Pos)) | (0x1ul << (SYS_USBPHY_OTGPHYEN_Pos)) | (0x2 << SYS_USBPHY_USBROLE_Pos);
     delay_us(20);
     SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;//Set HSUSB PHY Active.
 
@@ -468,15 +466,7 @@ void SYS_Init(void)
     SET_USB_VBUS_EN_PB15();
 
     /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PC.14   */
-    SET_USB_VBUS_ST_PC14();
-
-    /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PB.10   */
-    //SET_HSUSB_VBUS_EN_PB10();
-    SET_HSUSB_VBUS_EN_PJ13();
-
-    /* HSUSB_VBUS_ST (USB 2.0 over-current detect pin) multi-function pin - PB.11 */
-    //SET_HSUSB_VBUS_ST_PB11();
-    SET_HSUSB_VBUS_ST_PJ12();
+    SET_USB_VBUS_ST_PB14();
 
     /* USB 1.1 port multi-function pin VBUS, D+, D-, and ID pins */
     SET_USB_VBUS_PA12();

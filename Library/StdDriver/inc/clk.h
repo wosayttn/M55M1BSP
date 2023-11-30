@@ -62,10 +62,11 @@ extern "C"
 /*  MIRC constant definitions.                                                                             */
 /*---------------------------------------------------------------------------------------------------------*/
 #define CLK_MIRCCTL_MIRCFSEL_1MHZ    (0x0UL << CLK_MIRCCTL_MIRCFSEL_Pos)          /*!< Select MIRC clock to 1 MHz \hideinitializer */
+#if 0   // TESTCHIP_ONLY not support
 #define CLK_MIRCCTL_MIRCFSEL_2MHZ    (0x1UL << CLK_MIRCCTL_MIRCFSEL_Pos)          /*!< Select MIRC clock to 1 MHz \hideinitializer */
 #define CLK_MIRCCTL_MIRCFSEL_4MHZ    (0x2UL << CLK_MIRCCTL_MIRCFSEL_Pos)          /*!< Select MIRC clock to 1 MHz \hideinitializer */
 #define CLK_MIRCCTL_MIRCFSEL_8MHZ    (0x3UL << CLK_MIRCCTL_MIRCFSEL_Pos)          /*!< Select MIRC clock to 1 MHz \hideinitializer */
-
+#endif
 /*---------------------------------------------------------------------------------------------------------*/
 /*  CLKSEL constant definitions.  (Write-protection)                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -403,8 +404,6 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /*  CLKDIV constant definitions.                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-#define CLK_HCLKDIV_HCLK0DIV(x)             (((x) - 1UL) << CLK_HCLKDIV_HCLK0DIV_Pos)       /*!< HCLKDIV Setting for HCLK0 clock divider. It could be 1~16 \hideinitializer */
-#define CLK_HCLKDIV_HCLK1DIV(x)             (((x) - 1UL) << CLK_HCLKDIV_HCLK1DIV_Pos)       /*!< HCLKDIV Setting for HCLK1 clock divider. It could be 1~16 \hideinitializer */
 #define CLK_HCLKDIV_HCLK2DIV(x)             (((x) - 1UL) << CLK_HCLKDIV_HCLK2DIV_Pos)       /*!< HCLKDIV Setting for HCLK2 clock divider. It could be 1~16 \hideinitializer */
 
 #define CLK_PCLKDIV_PCLK0DIV(x)             (((x) - 1UL) << CLK_PCLKDIV_PCLK0DIV_Pos)       /*!< PCLKDIV Setting for PCLK0 clock divider. It could be 1~16 \hideinitializer */
@@ -997,21 +996,6 @@ extern "C"
   @{
 */
 
-/**
-  * @brief      Set HCLK0 Divider
-  * @param      u32Hclk0Div is HCLK0 clock divider.  It could be 1~16
-  * @return     None
-  * @details    This macro set HCLK0 clock divider
-  */
-#define CLK_SET_HCLK0DIV(u32Hclk0Div)        (CLK->HCLKDIV = (CLK->HCLKDIV & (~CLK_HCLKDIV_HCLK0DIV_Msk)) | CLK_HCLKDIV_HCLK0DIV(u32Hclk0Div))
-
-/**
-  * @brief      Set HCLK1 Divider
-  * @param      u32Hclk1Div is HCLK1 clock divider.  It could be 1~16
-  * @return     None
-  * @details    This macro set HCLK1 clock divider
-  */
-#define CLK_SET_HCLK1DIV(u32Hclk1Div)        (CLK->HCLKDIV = (CLK->HCLKDIV & (~CLK_HCLKDIV_HCLK1DIV_Msk)) | CLK_HCLKDIV_HCLK1DIV(u32Hclk1Div))
 
 /**
   * @brief      Set HCLK2 Divider

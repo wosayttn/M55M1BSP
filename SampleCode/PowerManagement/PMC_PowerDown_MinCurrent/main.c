@@ -90,7 +90,7 @@ void PowerDownFunction(void)
     if (--u32TimeOutCnt == 0) break;
 
     /* Select Power-down mode */
-    PMC_SetPowerDownMode(SET_PDMSEL, PMC_PLCTL_PLSEL_PL3);
+    PMC_SetPowerDownMode(SET_PDMSEL, PMC_PLCTL_PLSEL_PL1);
 
     /* Enter to Power-down mode */
     PMC_PowerDown();
@@ -469,12 +469,16 @@ int32_t main(void)
     PMC->SYSRB0PC = 0x00000000;
     PMC->SYSRB1PC = 0x0000AAAA;
     PMC->SYSRB2PC = 0x00000000;
-    PMC->SYSRB3PC = 0x00000002;
+
 
     /* Wake-up source configuration */
-    if ((SET_PDMSEL == PMC_NPD0) ||
-            (SET_PDMSEL == PMC_NPD1) ||
-            (SET_PDMSEL == PMC_NPD2))
+    if (
+            (SET_PDMSEL == PMC_NPD0) 
+            ||
+            (SET_PDMSEL == PMC_NPD1) 
+            ||
+            (SET_PDMSEL == PMC_NPD2)
+    )
     {
         /* Configure PC.0 as Quasi mode and enable interrupt by falling edge trigger */
         CLK_EnableModuleClock(GPIOC_MODULE);
@@ -482,16 +486,28 @@ int32_t main(void)
         GPIO_EnableInt(PC, 0, GPIO_INT_FALLING);
         NVIC_EnableIRQ(GPC_IRQn);
     }
-    else if ((SET_PDMSEL == PMC_NPD3) ||
-             (SET_PDMSEL == PMC_NPD4) ||
-             (SET_PDMSEL == PMC_SPD0) ||
-             (SET_PDMSEL == PMC_SPD1))
+    else if (
+#if 0   // TESTCHIP_ONLY not support     
+                (SET_PDMSEL == PMC_NPD3) 
+                ||
+                (SET_PDMSEL == PMC_NPD4) 
+                ||
+#endif                
+                (SET_PDMSEL == PMC_SPD0) 
+                ||
+                (SET_PDMSEL == PMC_SPD1)
+    )
     {
         /* Enable wake-up pin PC.0 falling edge wake-up at SPD mode */
         PMC_EnableTGPin(PMC_TGPIN_PC, 0, PMC_TGPIN_FALLING, PMC_TGPIN_DEBOUNCEDIS, PMC_TGPIN_WAKEUP_ENABLE);
     }
-    else if ((SET_PDMSEL == PMC_DPD0) ||
-             (SET_PDMSEL == PMC_DPD1))
+    else if (
+                (SET_PDMSEL == PMC_DPD0) 
+#if 0   // TESTCHIP_ONLY not support                
+                ||
+                (SET_PDMSEL == PMC_DPD1)
+#endif                
+    )
     {
         /* Enable wake-up pin PC.0 falling edge wake-up at DPD mode. PC.0 would be input mode floating at DPD mode. */
         PMC_EnableWKPIN(PMC_WKPIN0_FALLING);
@@ -506,13 +522,16 @@ int32_t main(void)
     if (SET_PDMSEL == PMC_NPD0)            printf("Enter to NPD0 Power-Down ......\n");
     else if (SET_PDMSEL == PMC_NPD1)       printf("Enter to NPD1 Power-Down ......\n");
     else if (SET_PDMSEL == PMC_NPD2)       printf("Enter to NPD2 Power-Down ......\n");
+#if 0   // TESTCHIP_ONLY not support     
     else if (SET_PDMSEL == PMC_NPD3)       printf("Enter to NPD3 Power-Down ......\n");
     else if (SET_PDMSEL == PMC_NPD4)       printf("Enter to NPD4 Power-Down ......\n");
+#endif    
     else if (SET_PDMSEL == PMC_SPD0)       printf("Enter to SPD0 Power-Down ......\n");
     else if (SET_PDMSEL == PMC_SPD1)       printf("Enter to SPD1 Power-Down ......\n");
     else if (SET_PDMSEL == PMC_DPD0)       printf("Enter to DPD0 Power-Down ......\n");
+#if 0   // TESTCHIP_ONLY not support     
     else if (SET_PDMSEL == PMC_DPD1)       printf("Enter to DPD1 Power-Down ......\n");
-
+#endif
     PowerDownFunction();
 
     /* Waiting for PC.0 falling-edge interrupt event */

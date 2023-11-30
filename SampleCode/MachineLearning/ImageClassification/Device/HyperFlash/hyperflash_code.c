@@ -354,17 +354,6 @@ void HyperFlash_PinConfig(SPIM_T *spim)
 
         /* Set SPIM0 I/O pins as high slew rate up to 80 MHz. */
         SPIM0_PIN_HIGH_SLEW();
-
-        //SPIM0 PSC, PSC_n
-        SET_GPIO_PG8();
-        GPIO_SetMode(PG, BIT8, GPIO_MODE_OUTPUT);
-        GPIO_SetPullCtl(PG, BIT8, GPIO_PUSEL_DISABLE);
-        PG8 = 1;
-
-        SET_GPIO_PG7();
-        GPIO_SetMode(PG, BIT7, GPIO_MODE_OUTPUT);
-        GPIO_SetPullCtl(PG, BIT7, GPIO_PUSEL_DISABLE);
-        PG7 = 0;
     }
 }
 

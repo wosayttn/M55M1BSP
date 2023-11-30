@@ -29,7 +29,7 @@ extern "C"
 #endif
 
 #define CDC_STATUS_BUFF_SIZE    64
-#define CDC_RX_BUFF_SIZE        64
+#define CDC_RX_BUFF_SIZE        1024
 
 /* Interface Class Codes (defined in usbh.h) */
 //#define USB_CLASS_COMM        0x02
