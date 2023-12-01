@@ -381,9 +381,9 @@ void SYS_Init(void)
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
-    /* Set PA multi-function pins forUART1 TXD and RXD */
-    SET_UART1_RXD_PA2();
-    SET_UART1_TXD_PA3();
+    /* Set PB multi-function pins forUART1 TXD and RXD */
+    SET_UART1_RXD_PB2();
+    SET_UART1_TXD_PB3();
 
 }
 
