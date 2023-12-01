@@ -128,7 +128,7 @@ extern void Timer0_ResetrCounter(void);
 volatile uint8_t gu8IntFlag, gu8WakeupFlag;
 volatile uint32_t gu32TDRTicks;
 volatile uint32_t gu32RegWDTCTL;
-void WDT_IRQHandler(void)
+NVT_ITCM void WDT_IRQHandler(void)
 {
     static uint8_t u8Cnt = 0;
 #if _WDT0

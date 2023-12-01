@@ -116,7 +116,7 @@ extern void Timer0_ResetrCounter(void);
 
 volatile uint8_t gu8IntFlag;
 volatile uint32_t gu32TDRTicks, gu32WWDTCnt;
-void WWDT_IRQHandler(void)
+NVT_ITCM void WWDT_IRQHandler(void)
 {
 #if _WWDT0
     CLK_WaitModuleClockReady(WWDT0_MODULE);
