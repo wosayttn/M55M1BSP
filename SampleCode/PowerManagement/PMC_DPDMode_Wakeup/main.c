@@ -177,7 +177,7 @@ int32_t main(void)
     printf("|    DPD Power-down Mode and Wake-up Sample Code.                |\n");
     printf("|    Please Select Wake up source.                               |\n");
     printf("+----------------------------------------------------------------+\n");
-    printf("|[1] DPD Wake-up Pin(PF.6) trigger type is falling edge.         |\n");
+    printf("|[1] DPD Wake-up Pin(PF.6) trigger type is rising edge.          |\n");
     printf("|[2] DPD Wake-up TIMER time-out interval is 4096 LIRC clocks.    |\n");
     printf("+----------------------------------------------------------------+\n");
     u8Item = (uint8_t)getchar();
