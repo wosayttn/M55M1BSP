@@ -119,7 +119,9 @@ void SYS_Init(void)
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Enable internal medium speed RC clock */
-    CLK_EnableMIRC(CLK_MIRCCTL_MIRCFSEL_4MHZ);
+    CLK_EnableXtalRC(CLK_SRCCTL_MIRCEN_Msk);
+    /* Waiting for clock ready */
+    CLK_WaitClockReady(CLK_STATUS_MIRCSTB_Msk);
 
     /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);

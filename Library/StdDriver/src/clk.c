@@ -161,6 +161,7 @@ uint32_t CLK_GetMIRCFreq(void)
     return u32Freq;
 }
 
+#if 0   // TESTCHIP_ONLY not support
 /**
   * @brief      Disable MIRC
   * @param      None
@@ -189,10 +190,10 @@ uint32_t CLK_EnableMIRC(uint32_t u32MircFreq)
     /* Disable MIRC first to avoid unstable when setting MIRC */
     CLK_DisableMIRC();
 
-#if 0   // TESTCHIP_ONLY not support
+
     /* Select MIRC frequency */
     CLK->MIRCCTL = (CLK->MIRCCTL & ~CLK_MIRCCTL_MIRCFSEL_Msk) | u32MircFreq;
-#endif
+
 
     /* Enable and apply new MIRC setting. */
     CLK->SRCCTL |= CLK_SRCCTL_MIRCEN_Msk;
@@ -203,7 +204,7 @@ uint32_t CLK_EnableMIRC(uint32_t u32MircFreq)
     /* Return actual MIRC output clock frequency */
     return CLK_GetMIRCFreq();
 }
-
+#endif
 /**
   * @brief      Get PCLK0 frequency
   * @param      None
@@ -855,6 +856,7 @@ void CLK_SetSysTickClockSrc(uint32_t u32ClkSrc)
   * @param[in]  u32ClkMask is clock source mask. Including :
   *             - \ref CLK_SRCCTL_HXTEN_Msk
   *             - \ref CLK_SRCCTL_LXTEN_Msk
+  *             - \ref CLK_SRCCTL_MIRCEN_Msk
   *             - \ref CLK_SRCCTL_HIRCEN_Msk
   *             - \ref CLK_SRCCTL_LIRCEN_Msk
   *             - \ref CLK_SRCCTL_HIRC48MEN_Msk
@@ -879,6 +881,7 @@ void CLK_EnableXtalRC(uint32_t u32ClkMask)
   * @param[in]  u32ClkMask is clock source mask. Including :
   *             - \ref CLK_SRCCTL_HXTEN_Msk
   *             - \ref CLK_SRCCTL_LXTEN_Msk
+  *             - \ref CLK_SRCCTL_MIRCEN_Msk
   *             - \ref CLK_SRCCTL_HIRCEN_Msk
   *             - \ref CLK_SRCCTL_LIRCEN_Msk
   *             - \ref CLK_SRCCTL_HIRC48MEN_Msk
