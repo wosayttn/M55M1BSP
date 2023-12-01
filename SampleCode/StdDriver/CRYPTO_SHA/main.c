@@ -20,6 +20,7 @@ extern int  GetNextPattern(void);
 static int32_t  g_i32DigestLength = 0;
 
 static volatile int g_SHA_done;
+static volatile int g_SHA_error;
 
 static volatile int g_RSA_done;
 static volatile int g_RSA_error;
@@ -32,23 +33,16 @@ void DEBUG_PORT_Init(void);
 
 void CRYPTO_IRQHandler(void)
 {
-    if(PRNG_GET_INT_FLAG(CRYPTO))
-    {
-        PRNG_CLR_INT_FLAG(CRYPTO);
-    }
+
     if(SHA_GET_INT_FLAG(CRYPTO))
     {
-        SHA_CLR_INT_FLAG(CRYPTO);
-    }
-    if(RSA_GET_INT_FLAG(CRYPTO))
-    {
-        g_RSA_done = 1;
-        if(RSA_GET_INT_FLAG(CRYPTO)&CRYPTO_INTSTS_RSAEIF_Msk)
+        g_SHA_done = 1;
+        if(SHA_GET_INT_FLAG(CRYPTO)&CRYPTO_INTSTS_HMACEIF_Msk)
         {
-            g_RSA_error = 1;
-            printf("RSA error flag is set!!\n");
+            g_SHA_error = 1;
+            printf("SHA error flag is set!!\n");
         }
-        RSA_CLR_INT_FLAG(CRYPTO);
+			  SHA_CLR_INT_FLAG(CRYPTO);
     }
 }
 
