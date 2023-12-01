@@ -181,12 +181,8 @@ void jsimd_fdct_islow_helium(int16_t *data)
     int16x8_t z2 = vaddq_s16(tmp5, tmp6);
     int16x8_t z3 = vaddq_s16(tmp4, tmp6);
     int16x8_t z4 = vaddq_s16(tmp5, tmp7);
-//  /* sqrt(2) * c3 */
-//  int32x4_t z5_l = vmull_lane_s16(vget_low_s16(z3), consts.val[1], 1);
-//  int32x4_t z5_h = vmull_lane_s16(vget_high_s16(z3), consts.val[1], 1);
-//  z5_l = vmlal_lane_s16(z5_l, vget_low_s16(z4), consts.val[1], 1);
-//  z5_h = vmlal_lane_s16(z5_h, vget_high_s16(z4), consts.val[1], 1);
-
+    
+    /* sqrt(2) * c3 */
     int32x4_t z5_l = vqdmullbq_s16(z3, consts_v1_1);
     int32x4_t z5_h = vqdmulltq_s16(z3, consts_v1_1);
 
@@ -243,9 +239,6 @@ void jsimd_fdct_islow_helium(int16_t *data)
     col5 = vrshrnbq_n_s32(col5, tmp5_l, DESCALE_P1),
     col5 = vrshrntq_n_s32(col5, tmp5_h, DESCALE_P1);
 
-//  col5 = vcombine_s16(vrshrn_n_s32(tmp5_l, DESCALE_P1),
-//                      vrshrn_n_s32(tmp5_h, DESCALE_P1));
-
     tmp6_l = vaddq_s32(tmp6_l, z2_l);
     tmp6_h = vaddq_s32(tmp6_h, z2_h);
     tmp6_l = vaddq_s32(tmp6_l, z3_l);
@@ -260,9 +253,6 @@ void jsimd_fdct_islow_helium(int16_t *data)
     col1 = vrshrnbq_n_s32(col1, tmp7_l, DESCALE_P1),
     col1 = vrshrntq_n_s32(col1, tmp7_h, DESCALE_P1);
 
-
-    /* Transpose to work on columns in pass 2. ---------------------------------------------*/
-    /* Transpose to work on columns in pass 2. */
     /* Transpose to work on columns in pass 2. */
     vst1q_s16((int16_t*)(data), col0);
     vst1q_s16((int16_t*)(data+8), col1);
