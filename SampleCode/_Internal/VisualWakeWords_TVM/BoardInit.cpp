@@ -101,10 +101,6 @@ int BoardInit(void)
 
     SYS_LockReg();                   /* Unlock register lock protect */
 
-    PA0 = 0;
-    GPIO_SetMode(PA, BIT0, GPIO_MODE_OUTPUT);
-    GPIO_SetPullCtl(PA, BIT0, GPIO_PUSEL_DISABLE);
-
     printf("%s: complete\n", __FUNCTION__);
 
 #if defined(ARM_NPU)

@@ -97,7 +97,8 @@ int main(void)
             printf("Config XOM3 base %x \n", u32XOMR3Base);
             printf("Config XOM3 pages %x \n", u32XOMR3Pages);
 
-            //config XOMR3CTRL and XOMR3DRBOUNDARY
+            ////config XOMR3CTRL and XOMR3DRBOUNDARY
+			//FMC_ConfigNPUXOM() not support by TC8263
             u32Status = FMC_ConfigNPUXOM(u32XOMR3Base, u32XOMR3Pages, (uint32_t)weightAddr);
 
             if (u32Status)

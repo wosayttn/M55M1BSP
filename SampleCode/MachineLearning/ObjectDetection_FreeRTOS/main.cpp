@@ -41,7 +41,7 @@
 #define MAINLOOP_TASK_PRIO  3
 #define INFERENCE_TASK_PRIO 4
 
-#define NUM_FRAMEBUF 1	//1 or 2
+#define NUM_FRAMEBUF 2	//1 or 2
 
 typedef enum
 {
@@ -275,7 +275,7 @@ static void main_task(void *pvParameters)
                          1,                 // Non-Privileged
                          1),                // eXecute Never enabled
             ARM_MPU_RLAR((((unsigned int)arm::app::tensorArena) + ACTIVATION_BUF_SZ - 1),        // Limit
-                         WTRA_index) // Attribute index - Write-Through, Read-allocate
+                         Device_index) // Attribute index - Write-Through, Read-allocate
         },
 #if defined (__USE_CCAP__)
 		{
@@ -286,7 +286,7 @@ static void main_task(void *pvParameters)
                          1,                 // Non-Privileged
                          1),                // eXecute Never enabled
             ARM_MPU_RLAR((((unsigned int)fb_array) + OMV_FB_SIZE - 1),        // Limit
-                         NonCache_index) // NonCache
+                         Device_index) // NonCache
         },
 #if (NUM_FRAMEBUF == 2)
 		{
@@ -297,7 +297,7 @@ static void main_task(void *pvParameters)
                          1,                 // Non-Privileged
                          1),                // eXecute Never enabled
             ARM_MPU_RLAR((((unsigned int)frame_buf1) + OMV_FB_SIZE - 1),        // Limit
-                         NonCache_index) // NonCache
+                         Device_index) // NonCache
         },
 #endif
 #endif
