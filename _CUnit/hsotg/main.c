@@ -15,7 +15,7 @@
 #include "Console.h"
 #include "NuMicro.h"
 #include "hsotg_cunit.h"
-#include "../pldm_emu.h"
+//#include "../pldm_emu.h"
 
 #ifndef DEBUG_PORT
     #define DEBUG_PORT UART0
@@ -45,22 +45,9 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
-
+    /* Enable SYS clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    
     /* Enable UART module clock */
     CLK_EnableModuleClock(UART0_MODULE);
     SYS_ResetModule(SYS_UART0RST);

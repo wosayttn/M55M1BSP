@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * @brief    Show how to wake up system from DPD Power-down mode by Wake-up pin(PC.0),Wake-up Timer.
+ * @brief    Show how to wake up system from DPD Power-down mode by Wake-up pin(PF.6),Wake-up Timer.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -41,9 +41,6 @@ void WakeUpPinFunction(uint32_t u32PDMode, uint32_t u32EdgeType)
 
     /* Select Power-down mode */
     PMC_SetPowerDownMode(u32PDMode, PMC_PLCTL_PLSEL_PL0);
-
-    /* Configure GPIO as input mode */
-    GPIO_SetMode(PC, BIT0, GPIO_MODE_INPUT);
 
     /* Set Wake-up pin trigger type at Deep Power down mode */
     PMC_EnableWKPIN(u32EdgeType);
@@ -108,7 +105,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    
+
     /* Waiting for Internal RC 12MHz clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
@@ -142,6 +139,16 @@ void SYS_Init(void)
     /* Set PC multi-function pin for CLKO(PC.13) */
     SET_CLKO_PC13();
 
+    /* Enable GPIO F module clock */
+    CLK_EnableModuleClock(GPIOF_MODULE);
+
+    /* Configure GPIO as input mode */
+    GPIO_SetMode(PF, BIT6, GPIO_MODE_INPUT);
+
+    /* Due to PF.6 is used as the PIN wake up source. */
+    CLK_EnableModuleClock(RTC0_MODULE);
+    RTC->LXTCTL = (RTC->LXTCTL & ~RTC_GPIOCTL0_OPMODE1_Msk) | (1 << RTC_GPIOCTL0_OPMODE1_Pos);
+
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -163,13 +170,14 @@ int32_t main(void)
     CheckPowerSource();
 
     printf("\n\nCPU @ %d Hz\n", SystemCoreClock);
+
     CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_SYSCLK, 3, CLK_CLKOCTL_DIV1EN_DIV_FREQSEL);
 
     printf("+----------------------------------------------------------------+\n");
     printf("|    DPD Power-down Mode and Wake-up Sample Code.                |\n");
     printf("|    Please Select Wake up source.                               |\n");
     printf("+----------------------------------------------------------------+\n");
-    printf("|[1] DPD Wake-up Pin(PC.0) trigger type is falling edge.         |\n");
+    printf("|[1] DPD Wake-up Pin(PF.6) trigger type is rising edge.          |\n");
     printf("|[2] DPD Wake-up TIMER time-out interval is 4096 LIRC clocks.    |\n");
     printf("+----------------------------------------------------------------+\n");
     u8Item = (uint8_t)getchar();
@@ -182,18 +190,18 @@ int32_t main(void)
 
     switch (u8Item)
     {
-        case '1':
-            printf("[1]\n");
-            WakeUpPinFunction(PMC_DPD0, PMC_WKPIN0_FALLING);
-            break;
+    case '1':
+        printf("[1]\n");
+        WakeUpPinFunction(PMC_DPD0, PMC_WKPIN4_RISING);
+        break;
 
-        case '2':
-            printf("[2]\n");
-            WakeUpTimerFunction(PMC_DPD0, PMC_STMRWKCTL_STMRIS_4096);
-            break;
+    case '2':
+        printf("[2]\n");
+        WakeUpTimerFunction(PMC_DPD0, PMC_STMRWKCTL_STMRIS_4096);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     /* Lock protected registers */

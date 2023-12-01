@@ -15,7 +15,7 @@
 #include "Console.h"
 #include "NuMicro.h"
 #include "eqei_cunit.h"
-#include "../pldm_emu.h"
+//#include "../pldm_emu.h"
 
 #ifndef DEBUG_PORT
     #define DEBUG_PORT UART0
@@ -44,22 +44,9 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
-
+    /* Enable SYS clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    
     /* Enable UART module clock */
     CLK_EnableModuleClock(UART0_MODULE);
     CLK_EnableModuleClock(EQEI0_MODULE);
@@ -73,7 +60,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOD_MODULE);
     CLK_EnableModuleClock(GPIOE_MODULE);
     CLK_EnableModuleClock(GPIOF_MODULE);
-
+    
     SYS_ResetModule(SYS_UART0RST);
     SYS_ResetModule(SYS_EQEI0RST);
     SYS_ResetModule(SYS_EQEI1RST);
@@ -82,7 +69,8 @@ void SYS_Init(void)
 
     /* Select UART module clock source as HXT and UART module clock divider as 1 */
     CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
-
+    
+    CLK_EnableModuleClock(UART0_MODULE);
 
     SystemCoreClockUpdate();
     /*---------------------------------------------------------------------------------------------------------*/
@@ -107,8 +95,8 @@ void Enable_SelfTest(void)
 {
     SYS_UnlockReg();
     /* Enable global self test mode */
-    //outp32(0x40000014, inp32(0x40000014) | 1);
-    SYS->ALTCTL0 |= BIT0;
+    outp32(0x40000E00, inp32(0x40000E00) | 1);
+    //SYS->ALTCTL0 |= BIT0;
 
     GPIO_SetMode(PA, BIT4, GPIO_MODE_OUTPUT);
     GPIO_SetMode(PA, BIT3, GPIO_MODE_OUTPUT);
@@ -135,8 +123,8 @@ void Disable_SelfTest(void)
 {
     SYS_UnlockReg();
     /* Enable global self test mode */
-    //outp32(0x40000014, inp32(0x40000014) & ~1);
-    SYS->ALTCTL0 &= ~(BIT0);
+    outp32(0x40000E00, inp32(0x40000E00) & ~1);
+    //SYS->ALTCTL0 &= ~(BIT0);
 }
 
 int main(int argc, char *argv[])

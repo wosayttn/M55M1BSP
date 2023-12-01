@@ -76,10 +76,14 @@ void Timer0_Init(uint32_t u32ClkSrc)
         //CLK->CLKSEL1 = (CLK->CLKSEL1&~CLK_CLKSEL1_TMR0SEL_Msk) | u32ClkSrc;
         CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_LIRC, 0);
     }
-    else
+    else if(u32ClkSrc == CLK_TMRSEL_TMR0SEL_HIRC)
     {
         //CLK->CLKSEL1 = (CLK->CLKSEL1&~CLK_CLKSEL1_TMR0SEL_Msk) | CLK_CLKSEL1_TMR0SEL_HXT;
         CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_HIRC, 0);
+    }
+    else
+    {
+        CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_HXT, 0);
     }
 
     /* Enable Clock Timer 0 module plck */
@@ -97,9 +101,13 @@ void Timer0_Init(uint32_t u32ClkSrc)
         CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
         TIMER0->CTL = TIMER_PERIODIC_MODE | TIMER_CTL_CNTEN_Msk;
     }
-    else
+    else if (u32ClkSrc == CLK_TMRSEL_TMR0SEL_HIRC)
     {
         TIMER0->CTL = TIMER_PERIODIC_MODE | TIMER_CTL_CNTEN_Msk | (12 - 1);
+    }
+    else
+    {
+        TIMER0->CTL = TIMER_PERIODIC_MODE | TIMER_CTL_CNTEN_Msk | (24 - 1);
     }
 }
 #else
@@ -162,7 +170,7 @@ int32_t RTC_InitClock(void)
 {
     volatile uint32_t u32Timeout = SystemCoreClock / 10;
 
-    Timer0_Init(CLK_TMRSEL_TMR0SEL_HIRC);
+    Timer0_Init(CLK_TMRSEL_TMR0SEL_HXT);
 
     /* Enable LXT */
     CLK_EnableXtalRC(CLK_SRCCTL_LXTEN_Msk);
@@ -179,25 +187,19 @@ extern int32_t RTC_InitClock(void);
 #endif
 
 volatile uint32_t gu32TickINT = 0;
-void RTC_IRQHandler(void)
+NVT_ITCM void RTC_IRQHandler(void)
 {
-    RTC_T *pRTC;
-
-    //    if((__PC()&NS_OFFSET) == NS_OFFSET)
-    //        pRTC = RTC_NS;
-    //    else
-    pRTC = RTC;
-
     /* To check if RTC TICK interrupt occurred */
-    if (RTC_GET_TICK_INT_FLAG(pRTC) == 1)
+    if (RTC_GET_TICK_INT_FLAG(RTC) == 1)
     {
         /* Clear RTC TICK interrupt flag */
-        RTC_CLEAR_TICK_INT_FLAG(pRTC);
+        RTC_CLEAR_TICK_INT_FLAG(RTC);
+        D_msg("TICK\n");
         gu32TickINT = 1;
     }
 }
 
-void RTCTAMPER_IRQHandler(void)
+NVT_ITCM void RTCTAMPER_IRQHandler(void)
 {
     RTC_T *pRTC;
 
@@ -1038,7 +1040,8 @@ void API_RTC_DataTime_Func(void)
     CU_ASSERT_EQUAL(sReadRTC.u32Minute, 5);
     CU_ASSERT_EQUAL(sReadRTC.u32Second, 6);
     CU_ASSERT_EQUAL(sReadRTC.u32TimeScale, RTC_CLOCK_24);
-
+    
+    
     /* Check RTC_32KCalibration() */
     RTC_WaitAccessEnable();
     RTC_32KCalibration(327736500);
@@ -1054,15 +1057,22 @@ void API_RTC_DataTime_Func(void)
     CU_ASSERT_EQUAL(pRTC->FREQADJ, 0x1000);
     RTC_WaitAccessEnable();
 
-    /*
+     /*
     TAMPER_IRQn
     NVIC_EnableIRQ(TAMPER_IRQn);
     */
     /* Check RTC Interrupt behavior */
-    NSC_NVIC_EnableIRQ(RTC_IRQn);
-    RTC_WaitAccessEnable();
-    RTC_EnableInt(RTC_INTEN_TICKIEN_Msk);
+    D_msg("===>P0\n");
     pRTC->TICK = RTC_TICK_1_128_SEC;
+    RTC_CLEAR_TICK_INT_FLAG(RTC);
+    D_msg("===>P0\n");
+    RTC_EnableInt(RTC_INTEN_TICKIEN_Msk);
+    D_msg("===>P0\n");
+    NVIC_EnableIRQ(RTC_IRQn);
+    D_msg("===>P0\n");
+    //RTC_WaitAccessEnable();
+    
+    
     u32Timeout = SystemCoreClock / 100;
 
     while (gu32TickINT == 0)
@@ -1074,10 +1084,13 @@ void API_RTC_DataTime_Func(void)
             return ;
         }
     }
+    
+    D_msg("===>P1\n");
 
     RTC_DisableInt(RTC_INTEN_TICKIEN_Msk);
     /* Disable RTC NVIC */
-    NSC_NVIC_DisableIRQ(RTC_IRQn);
+    NVIC_DisableIRQ(RTC_IRQn);
+
 
     /* Check RTC_SetAlarmDateMask API */
     RTC_SetAlarmDateMask(1, 1, 1, 1, 1, 1);
@@ -1104,6 +1117,8 @@ void API_RTC_DataTime_Func(void)
     pRTC->INTSTS |= pRTC->INTSTS;
 
     RTC_Close();
+    
+    D_msg("===>P2\n");
 }
 
 const uint32_t au32IOMode[] =
@@ -1367,6 +1382,8 @@ void API_RTC_ClockDetector_Func(void)
     {
         if (RTC_GET_CLKFAIL_INT_FLAG(pRTC) == 1)
         {
+            printf("CLKDCTL:%x\r\n", pRTC->CLKDCTL);
+            printf("INTSTS:0x%x\r\n",pRTC->INTSTS);
             CU_ASSERT_EQUAL((pRTC->CLKDCTL & RTC_CLKDCTL_SWLIRCF_Msk), RTC_CLKDCTL_SWLIRCF_Msk);
             CU_ASSERT_EQUAL((pRTC->CLKDCTL & RTC_CLKDCTL_LXTSLOWF_Msk), RTC_CLKDCTL_LXTSLOWF_Msk);
 
@@ -1399,7 +1416,7 @@ void API_RTC_ClockDetector_Func(void)
             return ;
         }
     }
-
+    
     CU_ASSERT_EQUAL(RTC_GET_CLKSTOP_INT_FLAG(pRTC), 0);
 
     RTC_DisableClockFrequencyDetector();

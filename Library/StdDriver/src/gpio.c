@@ -104,8 +104,10 @@ void GPIO_DisableInt(GPIO_T *port, uint32_t u32Pin)
  *                          It could be BIT0 ~ BIT13 for PC and PJ GPIO port.
  *                          It could be BIT0 ~ BIT11 for PF GPIO port.
  *                          It could be BIT6 ~ BIT15 for PI GPIO port.
- * @param[in]   u32Mode     Slew rate mode. \ref GPIO_SLEWCTL_NORMAL (maximum 40 MHz at 2.7V)
- *                                          \ref GPIO_SLEWCTL_HIGH (maximum 72 MHz at 2.7V)
+ * @param[in]   u32Mode     Slew rate mode. \ref GPIO_SLEWCTL_NORMAL (maximum 20 MHz at 2.7V)
+ *                                          \ref GPIO_SLEWCTL_HIGH (maximum 40 MHz at 2.7V)
+ *                                          \ref GPIO_SLEWCTL_FAST0 (maximum 80 MHz at 2.7V)
+ *                                          \ref GPIO_SLEWCTL_FAST1 (maximum 100 MHz cloud at 35pF / maximum 120 MHz cloud at 25pF at 2.7V)
  *
  * @details     This function is used to set specified GPIO operation mode.
  */
