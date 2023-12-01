@@ -59,6 +59,8 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 #define GPIO_SLEWCTL_NORMAL         0x0UL           /*!< GPIO slew setting for normal Mode \hideinitializer */
 #define GPIO_SLEWCTL_HIGH           0x1UL           /*!< GPIO slew setting for high Mode \hideinitializer */
+#define GPIO_SLEWCTL_FAST0          0x2UL           /*!< GPIO slew setting for fast Mode0 \hideinitializer */
+#define GPIO_SLEWCTL_FAST1          0x3UL           /*!< GPIO slew setting for fast Mode1 \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  GPIO Pull-up And Pull-down Type Constant Definitions                                                   */
