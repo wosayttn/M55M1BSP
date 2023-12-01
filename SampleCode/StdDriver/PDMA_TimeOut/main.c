@@ -119,7 +119,7 @@ static void SYS_Init(void)
     /* Enable UART1 module clock */
     CLK_EnableModuleClock(UART1_MODULE);
     /* Select UART1 module clock source as HIRC and UART1 module clock divider as 1 */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART1SEL_HIRC, CLK_UARTDIV0_UART1DIV(1));
+    CLK_SetModuleClock(UART1_MODULE, CLK_UARTSEL0_UART1SEL_HIRC, CLK_UARTDIV0_UART1DIV(1));
     /* Enable PDMA0 clock source */
     CLK_EnableModuleClock(PDMA0_MODULE);
     /*---------------------------------------------------------------------------------------------------------*/

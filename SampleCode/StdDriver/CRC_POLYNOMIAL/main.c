@@ -16,31 +16,31 @@ uint32_t CRC_SWResult(uint32_t mode, uint32_t polynom, uint32_t seed, uint8_t *s
 void SYS_Init(void)
 {
 
-      /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-   /* Enable Internal RC 12MHz clock */
+    /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable PLL0 200MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -52,19 +52,16 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Enable CRC0 module clock */
     CLK_EnableModuleClock(CRC0_MODULE);
 
-		 /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-     /* Set PB multi-function pins for UART0 RXD and TXD */
+    /* Set PB multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
 }
@@ -84,8 +81,18 @@ int main(void)
     uint32_t i, u32HWChecksum = 0, u32SWChecksum = 0;
     uint32_t u32Attribute = 0;
 
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
+
+    /* Init Debug UART for printf */
+    InitDebugUart();
+
+    /* Lock protected registers */
+    SYS_LockReg();
+
 
     printf("\n\nCPU @ %d Hz\n", SystemCoreClock);
     printf("+-------------------------------------------+\n");
@@ -93,25 +100,25 @@ int main(void)
     printf("+-------------------------------------------+\n\n");
 
     printf("# Calculate [0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38] CRC16 checksum value.\n");
-    printf("    - Seed value is 0x%x             \n",seed);
-    printf("    - Polynomial value is 0x%x       \n",polynom);
+    printf("    - Seed value is 0x%x             \n", seed);
+    printf("    - Polynomial value is 0x%x       \n", polynom);
     printf("    - CPU write data length is 16-bit \n");
-    printf("    - Checksum complement %s    \n", IsWrite1sCOM?"Enable":"Disable");
-    printf("    - Checksum reverse %s       \n", IsWriteRVS?"Enable":"Disable");
-    printf("    - Write data complement %s  \n", IsCRC1sCOM?"Enable":"Disable");
-    printf("    - Write data reverse %s     \n", IsCRCRVS?"Enable":"Disable");
+    printf("    - Checksum complement %s    \n", IsWrite1sCOM ? "Enable" : "Disable");
+    printf("    - Checksum reverse %s       \n", IsWriteRVS ? "Enable" : "Disable");
+    printf("    - Write data complement %s  \n", IsCRC1sCOM ? "Enable" : "Disable");
+    printf("    - Write data reverse %s     \n", IsCRCRVS ? "Enable" : "Disable");
 
-   u32SWChecksum = CRC_SWResult(CRC_16, polynom, seed, (uint8_t *)u16CRCSrcPattern, sizeof(u16CRCSrcPattern), IsWrite1sCOM, IsWriteRVS, IsCRC1sCOM, IsCRCRVS);
+    u32SWChecksum = CRC_SWResult(CRC_16, polynom, seed, (uint8_t *)u16CRCSrcPattern, sizeof(u16CRCSrcPattern), IsWrite1sCOM, IsWriteRVS, IsCRC1sCOM, IsCRCRVS);
 
     printf("    - Checksum should be 0x%x        \n\n", u32SWChecksum);
 
-    if(IsWrite1sCOM)
+    if (IsWrite1sCOM)
         u32Attribute |= CRC_WDATA_COM;
-    if(IsWriteRVS)
+    if (IsWriteRVS)
         u32Attribute |= CRC_WDATA_RVS;
-    if(IsCRC1sCOM)
+    if (IsCRC1sCOM)
         u32Attribute |= CRC_CHECKSUM_COM;
-    if(IsCRCRVS)
+    if (IsCRCRVS)
         u32Attribute |= CRC_CHECKSUM_RVS;
 
     /* Configure CRC controller for CRC-CCITT CPU mode */
@@ -120,7 +127,7 @@ int main(void)
     CRC_SET_POLYNOMIAL(polynom);
 
     /* Start to execute CRC-CCITT operation */
-    for(i = 0; i < sizeof(u16CRCSrcPattern) / sizeof(u16CRCSrcPattern[0]); i++)
+    for (i = 0; i < sizeof(u16CRCSrcPattern) / sizeof(u16CRCSrcPattern[0]); i++)
     {
         CRC_WRITE_DATA((u16CRCSrcPattern[i]));
     }
@@ -133,7 +140,7 @@ int main(void)
     /* Disable CRC function */
     CLK_DisableModuleClock(CRC0_MODULE);
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
