@@ -418,11 +418,6 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\uart.c</FilePath>
             </File>
-            <File>
-              <FileName>cmsis_dsp.lib</FileName>
-              <FileType>4</FileType>
-              <FilePath>C:\WORK\IC Verification\Full Design Package\M55M1_BSP\bsp\Library\CMSIS\Lib\KEIL\cmsis_dsp.lib</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
