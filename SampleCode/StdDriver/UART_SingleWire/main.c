@@ -84,11 +84,17 @@ void SYS_Init(void)
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
+    /* Enable GPIOB module clock */
+    CLK_EnableModuleClock(GPIOB_MODULE);
+
+    /* Anti-floating on there RX pin. */
+    GPIO_SetPullCtl(PB, BIT0, GPIO_PUSEL_PULL_UP);
+
     /* Set PA multi-function pins for UART1 RXD */
     SET_UART1_RXD_PA2();
+
     /* Set PB multi-function pins for UART2 RXD */
     SET_UART2_RXD_PB0();
-
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -98,6 +104,7 @@ void SYS_Init(void)
 void UART1_Init()
 {
     /* Configure Single Wire(UART1) and set Single Wire(UART1) baud rate */
+    SYS_ResetModule(SYS_UART1RST);
     UART_Open(UART1, 115200);
     UART_SelectSingleWireMode(UART1);
 }
@@ -110,6 +117,7 @@ void UART1_Init()
 void UART2_Init()
 {
     /* Configure Single Wire(UART2) and set Single Wire(UART2) baud rate */
+    SYS_ResetModule(SYS_UART2RST);
     UART_Open(UART2, 115200);
     UART_SelectSingleWireMode(UART2);
 
@@ -339,50 +347,50 @@ void UART_FunctionTest()
 
         switch (cmmd)
         {
-            case '1':
-            {
-                printf("SW1(UART1) --> SW2(UART2)Test :");
-                g_i32RecOK  = FALSE;
-                Build_Src_Pattern((uint32_t)g_u8TxData, UART_WORD_LEN_8, BUFSIZE);
+        case '1':
+        {
+            printf("SW1(UART1) --> SW2(UART2)Test :");
+            g_i32RecOK  = FALSE;
+            Build_Src_Pattern((uint32_t)g_u8TxData, UART_WORD_LEN_8, BUFSIZE);
 
-                /* Check the Rx status is Idel */
-                while (!UART_RX_IDLE(UART1)) {};
+            /* Check the Rx status is Idel */
+            while (!UART_RX_IDLE(UART1)) {};
 
-                UART_Write(UART1, g_u8TxData, BUFSIZE);
+            UART_Write(UART1, g_u8TxData, BUFSIZE);
 
-                while (g_i32RecOK != TRUE) {}
+            while (g_i32RecOK != TRUE) {}
 
-                Check_Pattern((uint32_t)g_u8TxData, (uint32_t)g_u8RecData, BUFSIZE) ? printf(" Pass\n") : printf(" Fail\n");
-                /* Clear the Tx and Rx data buffer */
-                memset((uint8_t *)g_u8TxData, 0, BUFSIZE);
-                memset((uint8_t *)g_u8RecData, 0, BUFSIZE);
-            }
+            Check_Pattern((uint32_t)g_u8TxData, (uint32_t)g_u8RecData, BUFSIZE) ? printf(" Pass\n") : printf(" Fail\n");
+            /* Clear the Tx and Rx data buffer */
+            memset((uint8_t *)g_u8TxData, 0, BUFSIZE);
+            memset((uint8_t *)g_u8RecData, 0, BUFSIZE);
+        }
+        break;
+
+        case '2':
+        {
+            printf("SW2(UART2) --> SW1(UART1)Test :");
+            g_i32RecOK  = FALSE;
+            Build_Src_Pattern((uint32_t)g_u8TxData, UART_WORD_LEN_8, BUFSIZE);
+
+            /* Check the Rx status is Idel */
+            while (!UART_RX_IDLE(UART2)) {};
+
+            UART_Write(UART2, g_u8TxData, BUFSIZE);
+
+            while (g_i32RecOK != TRUE) {};
+
+            Check_Pattern((uint32_t)g_u8TxData, (uint32_t)g_u8RecData, BUFSIZE) ? printf(" Pass\n") :   printf(" Fail\n");
+
+            /* Clear the Tx and Rx data buffer */
+            memset((uint8_t *)g_u8TxData, 0, BUFSIZE);
+
+            memset((uint8_t *)g_u8RecData, 0, BUFSIZE);
+        }
+        break;
+
+        default:
             break;
-
-            case '2':
-            {
-                printf("SW2(UART2) --> SW1(UART1)Test :");
-                g_i32RecOK  = FALSE;
-                Build_Src_Pattern((uint32_t)g_u8TxData, UART_WORD_LEN_8, BUFSIZE);
-
-                /* Check the Rx status is Idel */
-                while (!UART_RX_IDLE(UART2)) {};
-
-                UART_Write(UART2, g_u8TxData, BUFSIZE);
-
-                while (g_i32RecOK != TRUE) {};
-
-                Check_Pattern((uint32_t)g_u8TxData, (uint32_t)g_u8RecData, BUFSIZE) ? printf(" Pass\n") :   printf(" Fail\n");
-
-                /* Clear the Tx and Rx data buffer */
-                memset((uint8_t *)g_u8TxData, 0, BUFSIZE);
-
-                memset((uint8_t *)g_u8RecData, 0, BUFSIZE);
-            }
-            break;
-
-            default:
-                break;
         }
 
     } while ((cmmd != 'E') && (cmmd != 'e'));
