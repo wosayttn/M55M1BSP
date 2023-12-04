@@ -14,7 +14,7 @@
 #include "hyperflash_code.h"
 
 #define DESIGN_NAME "M55M1"
-#define HYPERFLASH_SPIM_PORT SPIM0
+#define HYPERFLASH_SPIM_PORT SPIM1
 
 static void SYS_Init(void)
 {
@@ -106,10 +106,12 @@ int BoardInit(void)
 
     SYS_LockReg();                   /* Unlock register lock protect */
 
+#if 0
     HyperFlash_Init(HYPERFLASH_SPIM_PORT);
     /* Enter direct-mapped mode to run new applications */
     SPIM_HYPER_EnterDirectMapMode(HYPERFLASH_SPIM_PORT);
-
+#endif
+	
     printf("%s: complete\n", __FUNCTION__);
 
 #if defined(ARM_NPU)
