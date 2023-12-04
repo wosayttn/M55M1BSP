@@ -67,10 +67,13 @@ void AWF_Wakeup_Test(void)
     LPPDMA_Init();
 
     /* Select power-down mode and power level */
-    PMC_SetPowerDownMode(PMC_NPD2, PMC_PLCTL_PLSEL_PL0);
+    PMC_SetPowerDownMode(PMC_NPD0, PMC_PLCTL_PLSEL_PL1);
 
     printf("Enter Power-down...\n");
 
+    /* Wait uart tx empty */
+    UART_WAIT_TX_EMPTY(UART0);
+    
     /* Start LPTMR */
     LPTMR_Start(LPTMR0);
 
@@ -87,29 +90,27 @@ void AWF_Wakeup_Test(void)
 
 NVT_ITCM void AWF_IRQHandler(void)
 {
-    uint32_t u32HTH_Flag, u32LTH_Flag, u32AccumulationValue;
-
-    u32HTH_Flag = AWF_GET_HTH_INTFLAG();
-    u32LTH_Flag = AWF_GET_LTH_INTFLAG();
-    u32AccumulationValue = AWF_GET_ACUVAL();
+    uint32_t u32AccumulationValue;
 
     /* Enable AWF0 module clock */
     CLK_EnableModuleClock(AWF0_MODULE); //TESTCHIP_ONLY
-
+    
+    u32AccumulationValue = AWF_GET_ACUVAL();
+    
     if (AWF_GET_HTH_INTFLAG())
     {
-        printf("AWF HTH Interrupt occured!!!, HTH_INT = %d, LTH_INT = %d\n", u32HTH_Flag, u32LTH_Flag);
+        printf("AWF HTH Interrupt occured!!!, HTH_INT = %d, LTH_INT = %d\n", (uint32_t)AWF_GET_HTH_INTFLAG(), (uint32_t)AWF_GET_LTH_INTFLAG());
         printf("AWFHTH = %d, ACUVAL = %d\n", (uint32_t)((AWF->HTH & AWF_HTH_AWFHTH_Msk) >> AWF_HTH_AWFHTH_Pos), u32AccumulationValue);
         AWF_Close();
-        printf("HTH Flag clear!, HTH_INT = %d, LTH_INT = %d\n", u32HTH_Flag, u32LTH_Flag);
+        printf("HTH Flag clear!, HTH_INT = %d, LTH_INT = %d\n", (uint32_t)AWF_GET_HTH_INTFLAG(), (uint32_t)AWF_GET_LTH_INTFLAG());
     }
 
     if (AWF_GET_LTH_INTFLAG())
     {
-        printf("AWF LTH Interrupt occured!!!, HTH_INT = %d, LTH_INT = %d\n", u32HTH_Flag, u32LTH_Flag);
+        printf("AWF LTH Interrupt occured!!!, HTH_INT = %d, LTH_INT = %d\n", (uint32_t)AWF_GET_HTH_INTFLAG(), (uint32_t)AWF_GET_LTH_INTFLAG());
         printf("AWFLTH = %d, ACUVAL = %d\n", (uint32_t)((AWF->LTH & AWF_LTH_AWFLTH_Msk) >> AWF_LTH_AWFLTH_Pos), u32AccumulationValue);
         AWF_Close();
-        printf("LTH Flag clear!, HTH_INT = %d, LTH_INT = %d\n", u32HTH_Flag, u32LTH_Flag);
+        printf("LTH Flag clear!, HTH_INT = %d, LTH_INT = %d\n", (uint32_t)AWF_GET_HTH_INTFLAG(), (uint32_t)AWF_GET_LTH_INTFLAG());
     }
 }
 
@@ -177,6 +178,13 @@ int main(void)
     initialise_monitor_handles();
 #endif
 
+    printf("\n\nCPU @ %d Hz\n", SystemCoreClock);
+    printf("+-------------------------------------------------------------+\n");
+    printf("|                   AWF Wake-up Sample Code                   |\n");
+    printf("+-------------------------------------------------------------+\n");
+    printf("\nPress any key to entering power-down.\n\n");
+    getchar();
+    
     /* Unlock protected registers */
     SYS_UnlockReg();
 
