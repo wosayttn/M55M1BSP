@@ -40,7 +40,10 @@ NVT_ITCM void LPSPI0_IRQHandler(void)
     /* for Auto Operation mode test */
     g_u32Ifr = LPSPI0->AUTOSTS;
 
-    LPSPI0->AUTOSTS = LPSPI0->AUTOSTS;
+    while (LPSPI0->AUTOSTS != 0)
+    {
+        LPSPI0->AUTOSTS = LPSPI0->AUTOSTS;
+    }
 }
 
 void SYS_Init(void)
@@ -119,7 +122,7 @@ void SYS_Init(void)
 void LPTMR0_Init(void)
 {
     /* Open LPTMR */
-    LPTMR_Open(LPTMR0, LPTMR_PERIODIC_MODE, LPTMR0_FREQ);
+    LPTMR_Open(LPTMR0, LPTMR_ONESHOT_MODE, LPTMR0_FREQ);
 
     /* Set LPTMR trigger source by time out event */
     LPTMR_SetTriggerSource(LPTMR0, LPTMR_TRGSRC_TIMEOUT_EVENT);
@@ -240,7 +243,6 @@ void AutoOperation_FunctionTest()
 
     /* Init LPTMR */
     LPTMR0_Init();
-    LPTMR_Start(LPTMR0);
 
     while (1)
     {
@@ -260,7 +262,10 @@ void AutoOperation_FunctionTest()
         //CLK->PMUSTS = CLK_PMUSTS_CLRWK_Msk;
         g_u32LPPdmaIntFlag = 0;
 
+        LPTMR_Start(LPTMR0);
+
         SYS_UnlockReg();
+
         /* Switch SCLK clock source to HIRC and divide 1 */
         CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
 
@@ -276,6 +281,8 @@ void AutoOperation_FunctionTest()
 
         /* g_u32Ifr is set in LPSPI0 interrupt service routine */
         while (g_u32Ifr == 0);
+
+        LPSPI0->AUTOSTS = LPSPI0->AUTOSTS;
 
         if ((g_u32Ifr & (LPSPI_AUTOSTS_CNTIF_Msk | LPSPI_AUTOSTS_CNTWKF_Msk))
                 != (LPSPI_AUTOSTS_CNTIF_Msk | LPSPI_AUTOSTS_CNTWKF_Msk))

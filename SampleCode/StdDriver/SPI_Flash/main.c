@@ -28,7 +28,7 @@ void SYS_Init(void);
 
 __STATIC_INLINE void wait_SPI_IS_BUSY(SPI_T *spi)
 {
-    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    volatile uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
     while (SPI_IS_BUSY(spi))
     {
