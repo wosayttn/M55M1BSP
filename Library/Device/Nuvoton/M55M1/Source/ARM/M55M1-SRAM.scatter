@@ -195,7 +195,7 @@ LR_ROM __RW_BASE __RW_SIZE  {                       ; load region size_region
 
     LPSRAM LPSRAM_START LPSRAM_SIZE
     {
-        .ANY (lpSram)
+        .ANY (.lpSram)
     }
 
     ARM_LIB_STACK __STACK_TOP EMPTY - STACK_SIZE {}     ; Reserve empty region for stack
