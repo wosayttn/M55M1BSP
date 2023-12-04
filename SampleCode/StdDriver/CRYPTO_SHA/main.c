@@ -1,11 +1,11 @@
-/**************************************************************************//**
- * @file     main.c
- * @version  V3.00
- * @brief    Show Crypto IP SHA function
+ /**************************************************************************//**
+ * @file    main.c
+ * @version V1.00
+ * @brief   CRYPTO_SHA code for M55M1 series MCU
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -196,3 +196,5 @@ int main(void)
 
     while(1);
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

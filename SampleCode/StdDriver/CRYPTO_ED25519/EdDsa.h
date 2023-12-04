@@ -3,7 +3,7 @@
  * @version  V1.00
  * @brief    Cryptographic Accelerator EdDSA header file
  *
- * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #ifndef __EDDSA_H__
 #define __EDDSA_H__
@@ -35,5 +35,5 @@ int32_t	 ECC_ED25519_Verify(enum ed_type eddsa_type,
 void  dump_buff_hex(uint8_t *pucBuff, int nBytes);
 #endif  /* __EDDSA_H__ */
 
-/*** (C) COPYRIGHT 2022 Nuvoton Technology Corp. ***/
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
 

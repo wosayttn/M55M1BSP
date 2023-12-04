@@ -1,10 +1,11 @@
-/*************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    A project template	for M480 MCU.
+/**************************************************************************//**
+ * @file    eddsa_ed25519_example.c
+ * @version V1.00
+ * @brief   ED25519 example code for M55M1 series MCU
  *
- * @copyright (C) 2016 Nuvoton Technology Corp.	All rights reserved.
-*****************************************************************************/
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
@@ -244,4 +245,4 @@ int ed25519_test()
     while (1);
 }
 
-/*** (C) COPYRIGHT 2016	Nuvoton	Technology Corp. ***/
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

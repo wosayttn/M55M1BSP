@@ -1,3 +1,11 @@
+/**************************************************************************//**
+ * @file    main.c
+ * @version V1.00
+ * @brief   CRYPTO_ED25519 code for M55M1 series MCU
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 #include "EdDsa.h"
@@ -230,3 +238,5 @@ void SysTick_Handler(void)
     g_tick_cnt++;
     //SendChar_ToUART('#');
 }
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
+

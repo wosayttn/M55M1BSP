@@ -1,10 +1,10 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.10
- * @brief    Demonstrate how to encrypt/decrypt data by AES CCM.
+ * @file    main.c
+ * @version V1.00
+ * @brief   CRYPTO_AES_CCM code for M55M1 series MCU
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -594,3 +594,4 @@ int main(void)
 
 
 }
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

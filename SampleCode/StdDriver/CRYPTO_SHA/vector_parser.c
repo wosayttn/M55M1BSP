@@ -236,6 +236,6 @@ int GetNextPattern(void)
     return -1;
 }
 
-
+/*** (C) COPYRIGHT 2020 Nuvoton Technology Corp. ***/
 
 
