@@ -23,11 +23,7 @@ volatile uint32_t g_u32WakeupCount = 0;
 /* M55M1: Because LPPDMA only can access LPSRAM,
    the g_i32ConversionData[] MUST be allocated at LPSRAM area 0x20310000 ~ 0x20311FFF (8 KB).
  */
-#if (defined(__GNUC__) && !defined(__ARMCC_VERSION))
-    volatile uint32_t g_i32ConversionData[10] __attribute__((section(".lpSram")));
-#else
-    volatile uint32_t g_i32ConversionData[10] __attribute__((section(".ARM.__at_0x20310000")));
-#endif
+volatile uint32_t g_i32ConversionData[10] __attribute__((section(".lpSram")));
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* LPPDMA interrupt handler                                                                                  */
@@ -77,7 +73,7 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */

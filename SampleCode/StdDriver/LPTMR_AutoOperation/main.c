@@ -26,11 +26,7 @@
 #define LPTMR_LPPDMA_CH      1
 #define DATA_COUNT          10
 
-#if (defined(__GNUC__) && !defined(__ARMCC_VERSION))
-    static uint32_t s_au32CAPValue[DATA_COUNT] __attribute__((section(".lpSram")));
-#else
-    static uint32_t s_au32CAPValue[DATA_COUNT] __attribute__((section(".ARM.__at_0x20310100")));
-#endif
+static uint32_t s_au32CAPValue[DATA_COUNT] __attribute__((section(".lpSram")));
 
 static volatile uint32_t s_u32IsTestOver = 0;
 
@@ -43,20 +39,20 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
     if (status & LPPDMA_INTSTS_ABTIF_Msk)   /* abort */
     {
         /* Check if channel 1 has abort error */
-        if (LPPDMA_GET_ABORT_STS(LPPDMA) & (LPPDMA_ABTSTS_ABTIF0_Msk<<LPTMR_LPPDMA_CH))
+        if (LPPDMA_GET_ABORT_STS(LPPDMA) & (LPPDMA_ABTSTS_ABTIF0_Msk << LPTMR_LPPDMA_CH))
             s_u32IsTestOver = 2;
 
         /* Clear abort flag of channel 1 */
-        LPPDMA_CLR_ABORT_FLAG(LPPDMA, (LPPDMA_ABTSTS_ABTIF0_Msk<<LPTMR_LPPDMA_CH));
+        LPPDMA_CLR_ABORT_FLAG(LPPDMA, (LPPDMA_ABTSTS_ABTIF0_Msk << LPTMR_LPPDMA_CH));
     }
     else if (status & LPPDMA_INTSTS_TDIF_Msk)     /* done */
     {
         /* Check transmission of channel 1 has been transfer done */
-        if (LPPDMA_GET_TD_STS(LPPDMA) & (LPPDMA_TDSTS_TDIF0_Msk<<LPTMR_LPPDMA_CH))
+        if (LPPDMA_GET_TD_STS(LPPDMA) & (LPPDMA_TDSTS_TDIF0_Msk << LPTMR_LPPDMA_CH))
             s_u32IsTestOver = 1;
 
         /* Clear transfer done flag of channel 1 */
-        LPPDMA_CLR_TD_FLAG(LPPDMA, (LPPDMA_TDSTS_TDIF0_Msk<<LPTMR_LPPDMA_CH));
+        LPPDMA_CLR_TD_FLAG(LPPDMA, (LPPDMA_TDSTS_TDIF0_Msk << LPTMR_LPPDMA_CH));
     }
     else
         printf("unknown interrupt !!\n");
@@ -89,7 +85,7 @@ void LPPDMA_Init(void)
     SYS_ResetModule(SYS_LPPDMA0RST);
 
     /* Enable LPPDMA channels */
-    LPPDMA_Open(LPPDMA, 1<<LPTMR_LPPDMA_CH);
+    LPPDMA_Open(LPPDMA, 1 << LPTMR_LPPDMA_CH);
 
     /*=======================================================================
       LPPDMA channel configuration:
@@ -228,7 +224,7 @@ int main(void)
         printf("LPPDMA trasnfer LPTMR done.\n");
     else if (s_u32IsTestOver == 2)
         printf("LPPDMA trasnfer LPTMR abort...\n");
-    if(s_au32CAPValue[9]==LPTMR0->CMP)
+    if (s_au32CAPValue[9] == LPTMR0->CMP)
         printf("LPTMR Auto Operation PASS.\n");
     else
         printf("LPTMR Auto Operation FAIL.\n");

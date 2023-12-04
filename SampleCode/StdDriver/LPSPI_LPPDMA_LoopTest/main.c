@@ -28,13 +28,8 @@ void LPSPI_Init(void);
 void LPSPILoopTest_WithLPPDMA(void);
 
 /* Global variable declaration */
-#if (defined(__GNUC__) && !defined(__ARMCC_VERSION))
-    uint32_t g_au32MasterToSlaveTestPattern[DATA_COUNT] __attribute__((section(".lpSram")));
-    uint32_t g_au32MasterRxBuffer[DATA_COUNT] __attribute__((section(".lpSram")));
-#else
-    uint32_t g_au32MasterToSlaveTestPattern[DATA_COUNT] __attribute__((section(".ARM.__at_0x20310000")));
-    uint32_t g_au32MasterRxBuffer[DATA_COUNT] __attribute__((section(".ARM.__at_0x20310100")));
-#endif
+uint32_t g_au32MasterToSlaveTestPattern[DATA_COUNT] __attribute__((section(".lpSram")));
+uint32_t g_au32MasterRxBuffer[DATA_COUNT] __attribute__((section(".lpSram")));
 
 int main(void)
 {
