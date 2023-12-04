@@ -209,8 +209,8 @@ int main(void)
         switch (i8ch)
         {
             case '0':
-                /* Write invalid address will cause hard fault exception. (Memory access hard fault) */
-                M32(0xFFFFFFFF) = 0;
+                /* Write APROM will cause hard fault exception. (Memory access hard fault) */
+                M32(FMC_APROM_BASE) = 0;
                 break;
 
             case '1':
