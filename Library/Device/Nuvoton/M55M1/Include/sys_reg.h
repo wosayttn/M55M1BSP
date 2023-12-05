@@ -2406,13 +2406,6 @@ typedef struct
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
  * |[4:0]   |PB12MFP   |PB.12 Multi-function Pin Selection
- * |        |          |Note: These bits are not retained when D2 power is turned off.
- * |[12:8]  |PB13MFP   |PB.13 Multi-function Pin Selection
- * |        |          |Note: These bits are not retained when D2 power is turned off.
- * |[20:16] |PB14MFP   |PB.14 Multi-function Pin Selection
- * |        |          |Note: These bits are not retained when D2 power is turned off.
- * |[28:24] |PB15MFP   |PB.15 Multi-function Pin Selection
- * |        |          |Note: These bits are not retained when D2 power is turned off.
  * @var SYS_T::GPC_MFP0
  * Offset: 0x320  GPIOC Multiple Function Control Register 0
  * ---------------------------------------------------------------------------------------------------
@@ -2467,20 +2460,11 @@ typedef struct
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
  * |[4:0]   |PD0MFP    |PD.0 Multi-function Pin Selection
- * |        |          |Note: These bits are not retained when D2 power is turned off.
- * |[12:8]  |PD1MFP    |PD.1 Multi-function Pin Selection
- * |        |          |Note: These bits are not retained when D2 power is turned off.
- * |[20:16] |PD2MFP    |PD.2 Multi-function Pin Selection
- * |        |          |Note: These bits are not retained when D2 power is turned off.
- * |[28:24] |PD3MFP    |PD.3 Multi-function Pin Selection
- * |        |          |Note: These bits are not retained when D2 power is turned off.
  * @var SYS_T::GPD_MFP1
  * Offset: 0x334  GPIOD Multiple Function Control Register 1
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[4:0]   |PD4MFP    |PD.4 Multi-function Pin Selection
- * |        |          |Note: These bits are not retained when D2 power is turned off.
  * |[12:8]  |PD5MFP    |PD.5 Multi-function Pin Selection
  * |        |          |Note: These bits are not retained when D2 power is turned off.
  * |[20:16] |PD6MFP    |PD.6 Multi-function Pin Selection
@@ -4125,15 +4109,6 @@ typedef struct
 #define SYS_GPB_MFP3_PB12MFP_Pos         (0)                                               /*!< SYS_T::GPB_MFP3: PB12MFP Position      */
 #define SYS_GPB_MFP3_PB12MFP_Msk         (0x1ful << SYS_GPB_MFP3_PB12MFP_Pos)              /*!< SYS_T::GPB_MFP3: PB12MFP Mask          */
 
-#define SYS_GPB_MFP3_PB13MFP_Pos         (8)                                               /*!< SYS_T::GPB_MFP3: PB13MFP Position      */
-#define SYS_GPB_MFP3_PB13MFP_Msk         (0x1ful << SYS_GPB_MFP3_PB13MFP_Pos)              /*!< SYS_T::GPB_MFP3: PB13MFP Mask          */
-
-#define SYS_GPB_MFP3_PB14MFP_Pos         (16)                                              /*!< SYS_T::GPB_MFP3: PB14MFP Position      */
-#define SYS_GPB_MFP3_PB14MFP_Msk         (0x1ful << SYS_GPB_MFP3_PB14MFP_Pos)              /*!< SYS_T::GPB_MFP3: PB14MFP Mask          */
-
-#define SYS_GPB_MFP3_PB15MFP_Pos         (24)                                              /*!< SYS_T::GPB_MFP3: PB15MFP Position      */
-#define SYS_GPB_MFP3_PB15MFP_Msk         (0x1ful << SYS_GPB_MFP3_PB15MFP_Pos)              /*!< SYS_T::GPB_MFP3: PB15MFP Mask          */
-
 #define SYS_GPC_MFP0_PC0MFP_Pos          (0)                                               /*!< SYS_T::GPC_MFP0: PC0MFP Position       */
 #define SYS_GPC_MFP0_PC0MFP_Msk          (0x1ful << SYS_GPC_MFP0_PC0MFP_Pos)               /*!< SYS_T::GPC_MFP0: PC0MFP Mask           */
 
@@ -4178,18 +4153,6 @@ typedef struct
 
 #define SYS_GPD_MFP0_PD0MFP_Pos          (0)                                               /*!< SYS_T::GPD_MFP0: PD0MFP Position       */
 #define SYS_GPD_MFP0_PD0MFP_Msk          (0x1ful << SYS_GPD_MFP0_PD0MFP_Pos)               /*!< SYS_T::GPD_MFP0: PD0MFP Mask           */
-
-#define SYS_GPD_MFP0_PD1MFP_Pos          (8)                                               /*!< SYS_T::GPD_MFP0: PD1MFP Position       */
-#define SYS_GPD_MFP0_PD1MFP_Msk          (0x1ful << SYS_GPD_MFP0_PD1MFP_Pos)               /*!< SYS_T::GPD_MFP0: PD1MFP Mask           */
-
-#define SYS_GPD_MFP0_PD2MFP_Pos          (16)                                              /*!< SYS_T::GPD_MFP0: PD2MFP Position       */
-#define SYS_GPD_MFP0_PD2MFP_Msk          (0x1ful << SYS_GPD_MFP0_PD2MFP_Pos)               /*!< SYS_T::GPD_MFP0: PD2MFP Mask           */
-
-#define SYS_GPD_MFP0_PD3MFP_Pos          (24)                                              /*!< SYS_T::GPD_MFP0: PD3MFP Position       */
-#define SYS_GPD_MFP0_PD3MFP_Msk          (0x1ful << SYS_GPD_MFP0_PD3MFP_Pos)               /*!< SYS_T::GPD_MFP0: PD3MFP Mask           */
-
-#define SYS_GPD_MFP1_PD4MFP_Pos          (0)                                               /*!< SYS_T::GPD_MFP1: PD4MFP Position       */
-#define SYS_GPD_MFP1_PD4MFP_Msk          (0x1ful << SYS_GPD_MFP1_PD4MFP_Pos)               /*!< SYS_T::GPD_MFP1: PD4MFP Mask           */
 
 #define SYS_GPD_MFP1_PD5MFP_Pos          (8)                                               /*!< SYS_T::GPD_MFP1: PD5MFP Position       */
 #define SYS_GPD_MFP1_PD5MFP_Msk          (0x1ful << SYS_GPD_MFP1_PD5MFP_Pos)               /*!< SYS_T::GPD_MFP1: PD5MFP Mask           */
