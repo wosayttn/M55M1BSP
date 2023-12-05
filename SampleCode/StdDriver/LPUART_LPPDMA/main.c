@@ -22,13 +22,9 @@
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t LPUART_TEST_LENGTH = 64;
-#if (defined(__GNUC__) && !defined(__ARMCC_VERSION))
-    uint8_t SrcArray[64] __attribute__((section(".lpSram")));
-    uint8_t DestArray[64] __attribute__((section(".lpSram")));
-#else
-    uint8_t SrcArray[64] __attribute__((section(".ARM.__at_0x20310000")));
-    uint8_t DestArray[64] __attribute__((section(".ARM.__at_0x20310100")));
-#endif
+static uint8_t SrcArray[64] __attribute__((section(".lpSram")));
+static uint8_t DestArray[64] __attribute__((section(".lpSram")));
+
 volatile int32_t IntCnt;
 volatile int32_t IsTestOver;
 volatile uint32_t g_u32TwoChannelLpPdmaTest = 0;

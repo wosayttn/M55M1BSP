@@ -20,7 +20,6 @@
  *   I/D-Cache are enabled by default for better performance,
  *   users can define NVT_ICACHE_OFF/NVT_DCACHE_OFF in project setting to disable cache.
  * Debug UART
- *   Default is DEBUG_PORT=UART0 in project setting
  *   system_M55M1.c has three weak functions as below to configure debug UART port.
  *     SetDebugUartMFP, SetDebugUartCLK and InitDebugUart
  *   Users can re-implement these functions according to system design.
@@ -90,7 +89,7 @@ int main(void)
 {
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-    
+
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 

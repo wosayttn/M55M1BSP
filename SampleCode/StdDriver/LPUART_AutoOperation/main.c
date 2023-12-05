@@ -31,15 +31,9 @@ typedef struct dma_desc_t
 #define SG_TX_LENGTH            32      /* Each Scater gather transfer length */
 #define SG_BASE_ADDR            0x20310800
 
-#if (defined(__GNUC__) && !defined(__ARMCC_VERSION))
 uint8_t SrcArray[MAX_SG_TAB_NUM * SG_TX_LENGTH] __attribute__((section(".lpSram")));
 uint8_t DestArray[MAX_SG_TAB_NUM * SG_TX_LENGTH] __attribute__((section(".lpSram")));
 DMA_DESC_T DMA_DESC_SC[MAX_SG_TAB_NUM] __attribute__((section(".lpSram"))) = {0};
-#else
-uint8_t SrcArray[MAX_SG_TAB_NUM * SG_TX_LENGTH] __attribute__((section(".ARM.__at_0x20310000")));
-uint8_t DestArray[MAX_SG_TAB_NUM * SG_TX_LENGTH] __attribute__((section(".ARM.__at_0x20310100")));
-DMA_DESC_T DMA_DESC_SC[MAX_SG_TAB_NUM] __attribute__((section(".ARM.__at_0x20310800"))) = {0};
-#endif
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Data Compare function                                                                                   */
@@ -99,7 +93,8 @@ void BuildSrcPattern(uint32_t u32Addr, uint32_t u32Length)
             *pAddr++ = (uint8_t)(j + i);
 
         i++;
-    } while ((loop != 0) || (u32Length != 0));
+    }
+    while ((loop != 0) || (u32Length != 0));
 
 }
 
@@ -288,7 +283,7 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */   
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */

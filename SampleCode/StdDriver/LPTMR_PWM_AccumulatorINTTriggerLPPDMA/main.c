@@ -14,7 +14,6 @@
  *   I/D-Cache are enabled by default for better performance,
  *   users can define NVT_ICACHE_OFF/NVT_DCACHE_OFF in project setting to disable cache.
  * Debug UART
- *   Default is DEBUG_PORT=UART0 in project setting
  *   system_M55M1.c has three weak functions as below to configure debug UART port.
  *     SetDebugUartMFP, SetDebugUartCLK and InitDebugUart
  *   Users can re-implement these functions according to system design.
@@ -27,11 +26,7 @@
 /* Global Interface Variables Declarations                                                                 */
 /*---------------------------------------------------------------------------------------------------------*/
 static volatile uint32_t g_u32IsTestOver = 0;
-#if (defined(__GNUC__) && !defined(__ARMCC_VERSION))
 static uint32_t u32UpdatedPeriod __attribute__((section(".lpSram")));
-#else
-static uint32_t u32UpdatedPeriod __attribute__((section(".ARM.__at_0x20310010")));
-#endif
 
 /**
  * @brief       LPPDMA IRQ Handler
@@ -43,15 +38,15 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
 {
     uint32_t u32Status = LPPDMA_GET_INT_STATUS(LPPDMA);
 
-    if(u32Status & LPPDMA_INTSTS_ABTIF_Msk)        /* abort */
+    if (u32Status & LPPDMA_INTSTS_ABTIF_Msk)       /* abort */
     {
-        if(LPPDMA_GET_ABORT_STS(LPPDMA) & LPPDMA_ABTSTS_ABTIF0_Msk)
+        if (LPPDMA_GET_ABORT_STS(LPPDMA) & LPPDMA_ABTSTS_ABTIF0_Msk)
             g_u32IsTestOver = 2;
         LPPDMA_CLR_ABORT_FLAG(LPPDMA, LPPDMA_ABTSTS_ABTIF0_Msk);
     }
-    else if(u32Status & LPPDMA_INTSTS_TDIF_Msk)   /* done */
+    else if (u32Status & LPPDMA_INTSTS_TDIF_Msk)  /* done */
     {
-        if(LPPDMA_GET_TD_STS(LPPDMA) & LPPDMA_TDSTS_TDIF0_Msk)
+        if (LPPDMA_GET_TD_STS(LPPDMA) & LPPDMA_TDSTS_TDIF0_Msk)
             g_u32IsTestOver = 1;
         LPPDMA_CLR_TD_FLAG(LPPDMA, LPPDMA_TDSTS_TDIF0_Msk);
     }
@@ -107,12 +102,12 @@ static void SYS_Init(void)
     CLK_SetModuleClock(TMR0_MODULE, CLK_LPTMRSEL_LPTMR0SEL_HIRC, 0);
     /* Enable Low Power TIMER module clock */
     CLK_EnableModuleClock(LPTMR0_MODULE);
-    
+
     /* Enable LPPDMA module clock */
     CLK_EnableModuleClock(LPPDMA0_MODULE);
     /* Enable LPSRAM module clock */
     CLK_EnableModuleClock(LPSRAM0_MODULE);
-    
+
     /* Set Low Power Timer0 PWM CH0(TM0) pin */
     CLK_EnableModuleClock(GPIOB_MODULE);
     SET_LPTM0_PB5();
@@ -174,9 +169,9 @@ int main(void)
 
     /* Set updated period vaule */
     u32UpdatedPeriod = ((u32InitPeriod + 1) * 2) - 1;
-    
+
     /* Set source address as u32UpdatedPeriod(no increment) and destination address as Low Power Timer0 PWM period register(no increment) */
-    LPPDMA_SetTransferAddr(LPPDMA, 0, (uint32_t)&u32UpdatedPeriod, LPPDMA_SAR_FIX, (uint32_t)&(LPTMR0->PWMPERIOD), LPPDMA_DAR_FIX);
+    LPPDMA_SetTransferAddr(LPPDMA, 0, (uint32_t)&u32UpdatedPeriod, LPPDMA_SAR_FIX, (uint32_t) & (LPTMR0->PWMPERIOD), LPPDMA_DAR_FIX);
 
     /* Select LPPDMA request source as LPPDMA_TMR0(Low Power Timer0 PWM accumulator interrupt) */
     LPPDMA_SetTransferMode(LPPDMA, 0, LPPDMA_LPTMR0, FALSE, 0);
@@ -197,7 +192,7 @@ int main(void)
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while (g_u32IsTestOver != 1)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for LPPDMA transfer done time-out!\n");
             return -1;
@@ -218,11 +213,11 @@ int main(void)
 
     /* Wait until Low Power Timer0 PWM Stop */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while((LPTMR0->PWMCNT & LPTMR_PWMCNT_CNT_Msk) != 0)
-        if(--u32TimeOutCnt == 0) break;
+    while ((LPTMR0->PWMCNT & LPTMR_PWMCNT_CNT_Msk) != 0)
+        if (--u32TimeOutCnt == 0) break;
 
-    if(u32TimeOutCnt == 0)
-        printf("Wait for Low Power Timer PWM stop time-out!\n");        
+    if (u32TimeOutCnt == 0)
+        printf("Wait for Low Power Timer PWM stop time-out!\n");
     else
         printf("Low Power Timer0 PWM has STOP.\n");
 

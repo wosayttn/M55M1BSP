@@ -14,7 +14,6 @@
  *   I-Cache are enabled by default for better performance,
  *   users can define NVT_DCACHE_ON in project setting to enable D-Cache.
  * Debug UART
- *   Default is DEBUG_PORT=UART0 in project setting
  *   system_M55M1.c has three weak functions as below to configure UART0 debug port.
  *     SetDebugUartMFP, SetDebugUartCLK and InitDebugUart
  *   Users can re-implement these functions according to system design.

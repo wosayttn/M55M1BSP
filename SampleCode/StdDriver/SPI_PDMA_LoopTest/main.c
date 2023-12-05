@@ -18,7 +18,7 @@
 #define SPI_OPENED_CH   ((1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH))
 
 #define DATA_COUNT      32
-#define TEST_CYCLE      1000
+#define TEST_CYCLE      10000
 #define TEST_PATTERN    0x55000000
 #define SPI_CLK_FREQ    2000000
 
