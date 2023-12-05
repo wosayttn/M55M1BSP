@@ -111,11 +111,11 @@ int main(void)
     /* Unlock protected registers */
     SYS_UnlockReg();
 
-    /* Init Debug UART for printf */
-    InitDebugUart();
-
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
+	
+	 /* Init Debug UART for printf */
+    InitDebugUart();
 
     /* Lock protected registers */
     SYS_LockReg();

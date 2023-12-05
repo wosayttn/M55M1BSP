@@ -19,15 +19,14 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-
-/**************************************************************************//**
-* @file     jquanti-helium.c
-* @version  V1.00
-* @brief    Porting from jpegturbo ARM32 simd jquanti file.
-*
-* @copyright SPDX-License-Identifier: Apache-2.0
-* @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
-*****************************************************************************/
+ /**************************************************************************//**
+ * @file     jquanti-helium.c
+ * @version  V1.00
+ * @brief    Porting from jpegturbo ARM32 simd jquanti file.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <arm_mve.h>
 #include "nvt_jpeg.h"
 
@@ -205,3 +204,4 @@ void jsimd_quantize_helium(JCOEFPTR coef_block, DCTELEM *divisors,
     }
 }
 
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
