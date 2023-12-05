@@ -41,7 +41,7 @@ static SPI_T *g_apSPIModule[] =
     SPI3,
 };
 
-static uint32_t gu32SPIModuleIdx = 0;
+static volatile uint32_t gu32SPIModuleIdx = 0;
 
 //------------------------------------------------------------------------------
 void SetSPIModuleIdx(uint32_t u32SetValue)
@@ -61,6 +61,8 @@ void *GetSPIxModule(uint32_t u32SetValue)
 
 int SPI_I2S_Tests_Init(void)
 {
+    printf("Unit Test %s Module\r\n", GetTestSPIName(GetSPIModuleIdx()));
+
     SPI_CLK_Sel(GetSPIModuleIdx(), eSPI_CLK_HIRC48M);
 
     return 0;
@@ -78,7 +80,8 @@ void SPI_DisableSelfTest(uint32_t u32SpiModule)
     /* Unlock protected registers */
     SYS_UnlockReg();
 
-    SYS->ALTCTL0 &= ~(SYS_ALTCTL0_SELFTEST_Msk);
+    //SYS->ALTCTL0 &= ~(SYS_ALTCTL0_SELFTEST_Msk);
+    outp32(SYS_BASE + 0xE00, 0x0);
 
     switch (u32SpiModule)
     {
@@ -108,7 +111,8 @@ void SPI_EnableSelfTest(uint32_t u32SpiModule)
     /* Unlock protected registers */
     SYS_UnlockReg();
 
-    SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
+    //SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
+    outp32(SYS_BASE + 0xE00, 0x1);
 
     switch (u32SpiModule)
     {
@@ -762,7 +766,7 @@ void API_SPI_Open()
     CU_ASSERT(SPIModule->CTL == 0x00041037);
     CU_ASSERT(SPIModule->CLKDIV == 0x00000000);
     CU_ASSERT(SPIModule->SSCTL == 0x0);
-    CU_ASSERT(u32ReturnValue == 100000000);
+    CU_ASSERT(u32ReturnValue == 24000000);
 
     /* Reset SPI1 */
     ResetSPI(GetSPIModuleIdx());
@@ -1893,7 +1897,7 @@ void API_I2S_Open()
     CU_ASSERT(SPIModule->FIFOCTL == 0x21000000);
     CU_ASSERT(SPIModule->I2SCLK == 0x00000000);
     //printf("1890 u32ReturnValue = %d\r\n", u32ReturnValue);
-    CU_ASSERT(u32ReturnValue == 100000000);
+    CU_ASSERT(u32ReturnValue == 24000000);
 
     /* Reset SPI */
     ResetSPI(GetSPIModuleIdx());

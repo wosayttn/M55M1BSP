@@ -475,6 +475,7 @@ typedef enum IRQn
 #define OTFC0_BASE                (AHB1PERIPH_BASE + 0x00000UL)
 #define SPIM0_BASE                (AHB1PERIPH_BASE + 0x02000UL)
 #if defined(TESTCHIP_ONLY)
+#define OTFC1_BASE                (AHB1PERIPH_BASE + 0x01000UL)
 #define SPIM1_BASE                (AHB1PERIPH_BASE + 0x03000UL)
 #endif
 /* AHB2 peripheral (HCLK2 clock domain) */
@@ -650,6 +651,7 @@ typedef enum IRQn
 
 #define NPU_S                                    (NPU_BASE)
 #define OTFC0_S                   ((OTFC_T *)     OTFC0_BASE)
+#define OTFC1_S                   ((OTFC_T *)     OTFC1_BASE)
 #define OTG_S                     ((OTG_T *)      OTG_BASE)
 #define PA_S                      ((GPIO_T *)     GPIOA_BASE)
 #define PB_S                      ((GPIO_T *)     GPIOB_BASE)
@@ -862,6 +864,7 @@ typedef enum IRQn
 #define GPIO      GPIO_S
 #define KS        KS_S
 #define OTFC0     OTFC0_S
+#define OTFC1     OTFC1_S
 #define PLM       PLM_S
 #define PMC       PMC_S
 #define SCU       SCU_S

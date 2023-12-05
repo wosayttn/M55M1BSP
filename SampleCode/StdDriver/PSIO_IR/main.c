@@ -50,6 +50,9 @@ void SYS_Init(void)
     /* Select PSIO module clock source as LXT and PSIO module clock divider as 2 */
     CLK_SetModuleClock(PSIO0_MODULE, CLK_PSIOSEL_PSIO0SEL_LXT, CLK_PSIODIV_PSIO0DIV(2));
 
+    /* Enable GPIO Module clock */
+    CLK_EnableModuleClock(GPIOE_MODULE);
+
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 
@@ -58,8 +61,8 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
-    /* Set PSIO multi-function pin CH0(PB.15) */
-    SET_PSIO0_CH0_PB15();
+    /* Set PSIO multi-function pin CH0(PE.14) */
+    SET_PSIO0_CH0_PE14();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -85,7 +88,7 @@ int32_t main(void)
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+------------------------------------------------------+ \n");
     printf("|               NEC IR sample code                     | \n");
-    printf("|      Please check waveform on PSIO_CH0(PB.15)        | \n");
+    printf("|      Please check waveform on PSIO_CH0(PE.14)        | \n");
     printf("+------------------------------------------------------+ \n");
 
     /* Use slot controller 0 and pin 0 */

@@ -290,7 +290,8 @@ void QSPI_DisableSelfTest(uint32_t u32QSPIModuleIdx)
         outp32(QSPI1_BASE + INTERNAL_REG_BASE, ~SPI_INTERNAL_SELFTEST_Msk);
     }
 
-    SYS->ALTCTL0 &= ~SYS_ALTCTL0_SELFTEST_Msk;
+    //SYS->ALTCTL0 &= ~SYS_ALTCTL0_SELFTEST_Msk;
+    outpw(SYS_BASE + 0xE00, 0x00);
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -310,7 +311,8 @@ void QSPI_EnableSelfTest(uint32_t u32QSPIModuleIdx)
         outp32(QSPI1_BASE + INTERNAL_REG_BASE, SPI_INTERNAL_SELFTEST_Msk);
     }
 
-    SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
+    //SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
+    outpw(SYS_BASE + 0xE00, 0x01);
 
     /* Lock protected registers */
     SYS_LockReg();

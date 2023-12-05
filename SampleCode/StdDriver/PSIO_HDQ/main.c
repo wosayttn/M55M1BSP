@@ -58,6 +58,7 @@ void SYS_Init(void)
 
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
+    CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK2DIV(2);
     CLK_SET_PCLK3DIV(2);
     CLK_SET_PCLK4DIV(2);
@@ -73,7 +74,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(PSIO0_MODULE);
 
     /* Select PSIO module clock source as HIRC and PSIO module clock divider as 0x7Du */
-    CLK_SetModuleClock(PSIO0_MODULE, CLK_PSIOSEL_PSIO0SEL_PCLK1, CLK_PSIODIV_PSIO0DIV(0x7Du));
+    CLK_SetModuleClock(PSIO0_MODULE, CLK_PSIOSEL_PSIO0SEL_HIRC, CLK_PSIODIV_PSIO0DIV(0x7Du));
 
     /* Enable UART0 module clock */
     SetDebugUartCLK();
@@ -83,8 +84,8 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
-    /* Set PSIO multi-function pin CH0(PB.15) and CH1(PC.4) */
-    SET_PSIO0_CH0_PB15();
+    /* Set PSIO multi-function pin CH0(PE.14) */
+    SET_PSIO0_CH0_PE14();
 }
 
 int main()
@@ -107,7 +108,7 @@ int main()
 
     printf("******************************************************\n");
     printf("|           HDQ TI BQ2028 EEPROM Test Code           |\n");
-    printf("|      Please connected PSIO_CH0(PB.15) to device    |\n");
+    printf("|      Please connected PSIO_CH0(PE.14) to device    |\n");
     printf("******************************************************\n");
 
     /* Use slot controller 0 and pin 0 */

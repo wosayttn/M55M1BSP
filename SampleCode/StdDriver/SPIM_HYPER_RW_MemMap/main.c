@@ -15,6 +15,9 @@
 #define TEST_BLOCK_ADDR             0x10000         /* Test block address on SPI flash. */
 #define BUFFER_SIZE                 2048
 
+#define SPIM_PORT                   SPIM1
+#define OTFC_PORT                   OTFC1
+
 //------------------------------------------------------------------------------
 __attribute__((aligned(32))) uint8_t g_buff[BUFFER_SIZE] = {0};
 
@@ -60,17 +63,6 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
-    /* Enable SPIM module clock */
-    CLK_EnableModuleClock(SPIM0_MODULE);
-
-    /* Enable SPIM module clock */
-    CLK_EnableModuleClock(OTFC0_MODULE);
-
-    /* Enable GPIO Module clock */
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    CLK_EnableModuleClock(GPIOC_MODULE);
-    CLK_EnableModuleClock(GPIOG_MODULE);
-
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 
@@ -78,40 +70,6 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-
-    /* Init SPIM multi-function pins */
-    SET_SPIM0_CLKN_PC5();
-    SET_SPIM0_CLK_PC4();
-    SET_SPIM0_D2_PC0();
-    SET_SPIM0_D3_PG10();
-    SET_SPIM0_D4_PG9();
-    SET_SPIM0_D5_PG13();
-    SET_SPIM0_D6_PG14();
-    SET_SPIM0_D7_PG15();
-    SET_SPIM0_MISO_PG12();
-    SET_SPIM0_MOSI_PG11();
-    SET_SPIM0_RESETN_PC2();
-    SET_SPIM0_RWDS_PC1();
-    SET_SPIM0_SS_PC3();
-
-    PC->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
-    PG->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
-
-    /* Set SPIM I/O pins as high slew rate up to 80 MHz. */
-    GPIO_SetSlewCtl(PC, BIT0, GPIO_SLEWCTL_HIGH);
-    GPIO_SetSlewCtl(PC, BIT1, GPIO_SLEWCTL_HIGH);
-    GPIO_SetSlewCtl(PC, BIT2, GPIO_SLEWCTL_HIGH);
-    GPIO_SetSlewCtl(PC, BIT3, GPIO_SLEWCTL_HIGH);
-    GPIO_SetSlewCtl(PC, BIT4, GPIO_SLEWCTL_HIGH);
-    GPIO_SetSlewCtl(PC, BIT5, GPIO_SLEWCTL_HIGH);
-
-    GPIO_SetSlewCtl(PG, BIT9, GPIO_SLEWCTL_HIGH);
-    GPIO_SetSlewCtl(PG, BIT10, GPIO_SLEWCTL_HIGH);
-    GPIO_SetSlewCtl(PG, BIT11, GPIO_SLEWCTL_HIGH);
-    GPIO_SetSlewCtl(PG, BIT12, GPIO_SLEWCTL_HIGH);
-    GPIO_SetSlewCtl(PG, BIT13, GPIO_SLEWCTL_HIGH);
-    GPIO_SetSlewCtl(PG, BIT14, GPIO_SLEWCTL_HIGH);
-    GPIO_SetSlewCtl(PG, BIT15, GPIO_SLEWCTL_HIGH);
 }
 
 void DumpBufferHex(uint8_t *pucBuff, int nSize)
@@ -336,35 +294,33 @@ int main()
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
-    SET_GPIO_PB7();
-    GPIO_SetMode(PB, BIT7, GPIO_MODE_OUTPUT);
-    GPIO_SetPullCtl(PB, BIT7, GPIO_PUSEL_DISABLE);
-
     printf("+----------------------------------------+\n");
     printf("|       HyperRAM read/write sample       |\n");
     printf("+----------------------------------------+\n");
 
-    HyperRAM_Init(SPIM0);
+    HyperRAM_Init(SPIM_PORT);
 
     /* Set Cipher Key and protection region */
-    OTFC_SetKeyFromKeyReg(OTFC0, gau32AESKey, OTFC_PR_0,
+    OTFC_SetKeyFromKeyReg(OTFC_PORT, gau32AESKey, OTFC_PR_0,
                           TEST_BLOCK_ADDR, BUFFER_SIZE);
-    OTFC_ENABLE_PR(OTFC0, OTFC_PR_0);
+    OTFC_ENABLE_PR(OTFC_PORT, OTFC_PR_0);
 
     /* DMA mode read/write cipher disable */
-    dma_read_write(SPIM0, SPIM_HYPER_OP_DISABLE);
+    dma_read_write(SPIM_PORT, SPIM_HYPER_OP_DISABLE);
 
     /* DMM mode read/write cipher disable */
-    dmm_read_write(SPIM0, SPIM_HYPER_OP_DISABLE);
+    dmm_read_write(SPIM_PORT, SPIM_HYPER_OP_DISABLE);
 
     /* DMA mode read/write cipher enable */
-    dma_read_write(SPIM0, SPIM_HYPER_OP_ENABLE);
+    dma_read_write(SPIM_PORT, SPIM_HYPER_OP_ENABLE);
 
     /* DMM mode read/write cipher enable */
-    dmm_read_write(SPIM0, SPIM_HYPER_OP_ENABLE);
+    dmm_read_write(SPIM_PORT, SPIM_HYPER_OP_ENABLE);
 
     /* Lock protected registers */
     SYS_LockReg();
+
+    printf("HyperRAM DMA/DMM Mode R/W Sample Done\r\n");
 
     while (1);
 }

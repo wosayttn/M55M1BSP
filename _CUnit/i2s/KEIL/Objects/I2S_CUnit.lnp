@@ -10,7 +10,7 @@
 ".\objects\i2s_cunit.o"
 "..\..\common\CUnitTestM55.lib"
 ".\objects\common.o"
---library_type=microlib --strict --scatter ".\M55M1-SRAM.scatter"
+--library_type=microlib --strict --scatter ".\M55M1.scatter"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
---list ".\Listings\I2S_CUnit.map" -o .\Objects\I2S_CUnit.axf
+--list ".\Listings\I2S_Cunit.map" -o .\Objects\I2S_Cunit.axf
