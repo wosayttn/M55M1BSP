@@ -1081,6 +1081,9 @@ uint32_t RTC_SetClockSource(uint32_t u32ClkSrc)
         RTC->LXTCTL &= ~RTC_LXTCTL_RTCCKSEL_Msk;
         RTC->LXTCTL &= ~RTC_LXTCTL_C32KSEL_Msk;
 
+        // TESTCHIP_ONLY
+        RTC->LXTCTL = (RTC->LXTCTL & ~RTC_LXTCTL_GAIN_Msk) | (0x7 << RTC_LXTCTL_GAIN_Pos);
+        
         return RTC_CLOCK_SOURCE_LXT;
     }
     else if (u32ClkSrc == RTC_CLOCK_SOURCE_LIRC32K)
