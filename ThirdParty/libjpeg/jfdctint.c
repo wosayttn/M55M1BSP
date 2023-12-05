@@ -163,6 +163,11 @@ jpeg_fdct_islow (DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
   DCTELEM *dataptr;
   JSAMPROW elemptr;
   int ctr;
+#ifdef NVT_JPEG
+  DCTELEM *dctelemptr;
+  int16_t i16simdbuf[DCTSIZE2+8];
+#endif
+  
   SHIFT_TEMPS
 
   /* Pass 1: process rows.
@@ -170,8 +175,29 @@ jpeg_fdct_islow (DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
    * furthermore, we scale the results by 2**PASS1_BITS.
    * cK represents sqrt(2) * cos(K*pi/16).
    */
-
   dataptr = data;
+
+#ifdef NVT_JPEG
+  
+  for (ctr = 0; ctr < DCTSIZE; ctr++) 
+  {
+    elemptr = sample_data[ctr] + start_col;
+	
+	for(int ii=0; ii<8;ii++) 
+    {
+		i16simdbuf[DCTSIZE*ctr+ii] = elemptr[ii]&0x00FF;
+	}
+  }
+#ifdef DBG_NVT_JPEG
+  for (ctr = 0; ctr < DCTSIZE2; ctr++) 
+	   printf("u16simdbuf[%d] = %d\r\n", ctr, (int16_t)(i16simdbuf[ctr]));
+ 
+  jsimd_fdct_islow_helium((int16_t*)(i16simdbuf));
+  
+  for (ctr = 0; ctr < DCTSIZE2; ctr++) 
+  	   printf("simd fdct coeff[%d] = %d\r\n", ctr, (int16_t)(i16simdbuf[ctr]));
+#endif//DBG_NVT_JPEG	
+#else
   for (ctr = 0; ctr < DCTSIZE; ctr++) {
     elemptr = sample_data[ctr] + start_col;
 
@@ -322,6 +348,8 @@ jpeg_fdct_islow (DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
 
     dataptr++;			/* advance pointer to next column */
   }
+
+#endif//NVT_JPEG
 }
 
 #ifdef DCT_SCALING_SUPPORTED

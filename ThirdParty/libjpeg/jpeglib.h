@@ -103,6 +103,19 @@ typedef struct {
   boolean sent_table;		/* TRUE when table has been output */
 } JQUANT_TBL;
 
+#ifdef NVT_JPEG
+
+/* DCT coefficient quantization tables(reciprocal multiplication form). */
+typedef struct {
+  /* Will do the quantization with reciprocal multiplication. 
+	 * Additional space are required for : reciprocal,  corr, scale and shift.
+	 * So the size should be 4 times to original quant table.
+   */
+  UINT16 quantval[DCTSIZE2*4];	
+	
+  boolean sent_table;		/* TRUE when table has been output */
+} JQUANT_RECP_TBL;
+#endif
 
 /* Huffman coding tables. */
 
@@ -190,6 +203,11 @@ typedef struct {
 
   /* Private per-component storage for DCT or IDCT subsystem. */
   void * dct_table;
+  
+#ifdef NVT_JPEG	
+  /* Private per-component storage for DCT or IDCT subsystem(reciprocal multiplication form). */
+  void * dct_recp_table;
+#endif
 } jpeg_component_info;
 
 
@@ -332,6 +350,13 @@ struct jpeg_compress_struct {
 
   jpeg_component_info * comp_info;
   /* comp_info[i] describes component that appears i'th in SOF */
+
+#ifdef NVT_JPEG
+  JQUANT_RECP_TBL * quant_recp_tbl_ptrs[NUM_QUANT_TBLS];
+  /* ptrs to coefficient quantization tables(reciprocal multiplication form), 
+   *  or NULL if not defined
+   */
+#endif
 
   JQUANT_TBL * quant_tbl_ptrs[NUM_QUANT_TBLS];
   int q_scale_factor[NUM_QUANT_TBLS];
@@ -1003,6 +1028,11 @@ EXTERN(int) jpeg_quality_scaling JPP((int quality));
 EXTERN(void) jpeg_simple_progression JPP((j_compress_ptr cinfo));
 EXTERN(void) jpeg_suppress_tables JPP((j_compress_ptr cinfo,
 				       boolean suppress));
+                       
+#ifdef NVT_JPEG
+EXTERN(JQUANT_RECP_TBL *) jpeg_alloc_quant_recp_table JPP((j_common_ptr cinfo));
+/* For reciprocal quantization table allocation */
+#endif
 EXTERN(JQUANT_TBL *) jpeg_alloc_quant_table JPP((j_common_ptr cinfo));
 EXTERN(JHUFF_TBL *) jpeg_alloc_huff_table JPP((j_common_ptr cinfo));
 

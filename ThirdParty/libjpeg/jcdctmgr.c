@@ -49,6 +49,12 @@ typedef union {
 #endif
 } divisor_table;
 
+#ifdef NVT_JPEG
+typedef union {
+  /*This is the type define for reciprocal table*/
+  DCTELEM int_array[DCTSIZE2*4];
+} divisor_recp_table;
+#endif
 
 /* The current scaled-DCT routines require ISLOW-style divisor tables,
  * so be sure to compile that code if either ISLOW or SCALING is requested.
@@ -81,6 +87,14 @@ forward_DCT (j_compress_ptr cinfo, jpeg_component_info * compptr,
   my_fdct_ptr fdct = (my_fdct_ptr) cinfo->fdct;
   forward_DCT_method_ptr do_dct = fdct->do_dct[compptr->component_index];
   DCTELEM * divisors = (DCTELEM *) compptr->dct_table;
+  
+#ifdef NVT_JPEG	
+  /*To fit the simd int16x8 format, allocation space for int16 data*/
+  DCTELEM * divisors_recp = (DCTELEM *) compptr->dct_recp_table;
+  int16_t i16workspace[DCTSIZE2];
+  int16_t i16divisors_recp[DCTSIZE2*4];
+#endif	  
+  
   DCTELEM workspace[DCTSIZE2];	/* work area for FDCT subroutine */
   JDIMENSION bi;
 
@@ -94,6 +108,22 @@ forward_DCT (j_compress_ptr cinfo, jpeg_component_info * compptr,
     { register DCTELEM temp, qval;
       register int i;
       register JCOEFPTR output_ptr = coef_blocks[bi];
+      
+#ifdef NVT_JPEG
+	    /*Do coeffcient quantization in the following loop*/
+	    for (i = 0; i < DCTSIZE2; i++) 
+            i16workspace[i] = (int16_t)(workspace[i]);
+		
+        for (i = 0; i < DCTSIZE2*4; i++) 
+            i16divisors_recp[i] = (int16_t)(divisors_recp[i]);
+			
+		jsimd_quantize_helium(output_ptr, i16divisors_recp,i16workspace);
+#ifdef DBG_NVT_JPEG        
+       	for (i = 0; i < DCTSIZE2; i++) 
+            printf("simd_output_ptr[%d]=%d \r\n",i, output_ptr[i]);			
+#endif//DBG_NVT_JPEG        
+
+#else	
 
       for (i = 0; i < DCTSIZE2; i++) {
 	qval = divisors[i];
@@ -125,7 +155,8 @@ forward_DCT (j_compress_ptr cinfo, jpeg_component_info * compptr,
 	  DIVIDE_BY(temp, qval);
 	}
 	output_ptr[i] = (JCOEF) temp;
-      }
+      }//for (i = 0; i < DCTSIZE2; i++)
+#endif          
     }
   }
 }
@@ -362,6 +393,12 @@ start_pass_fdctmgr (j_compress_ptr cinfo)
       ERREXIT1(cinfo, JERR_NO_QUANT_TABLE, qtblno);
     qtbl = cinfo->quant_tbl_ptrs[qtblno];
     /* Create divisor table from quant table */
+    
+#ifdef NVT_JPEG	
+    /* Create reciprocal divisor table from same quant table */
+	qtrecptbl = cinfo->quant_recp_tbl_ptrs[qtblno];
+#endif		    
+    
     switch (method) {
 #ifdef PROVIDE_ISLOW_TABLES
     case JDCT_ISLOW:
@@ -408,6 +445,18 @@ start_pass_fdctmgr (j_compress_ptr cinfo)
 	}
       }
       fdct->pub.forward_DCT[ci] = forward_DCT;
+      
+#ifdef NVT_JPEG
+    /*Cpoy dct_table from j_compress_ptr to jpeg_component_info */
+	dtbl_recp = (DCTELEM *) compptr->dct_recp_table;
+			
+    for (i = 0; i < DCTSIZE2*4; i++) {
+	dtbl_recp[i] =
+	    ((DCTELEM) qtrecptbl->quantval[i]);
+	    printf("qtrecptbl->quantval[%d] = %d\n", i, qtrecptbl->quantval[i]);  
+    }
+#endif	  
+  
       break;
 #endif
 #ifdef DCT_FLOAT_SUPPORTED
@@ -473,5 +522,11 @@ jinit_forward_dct (j_compress_ptr cinfo)
     compptr->dct_table =
       (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				  SIZEOF(divisor_table));
+#ifdef NVT_JPEG	
+	compptr->dct_recp_table =
+      (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
+				  SIZEOF(divisor_recp_table));
+#endif		                  
+                  
   }
 }
