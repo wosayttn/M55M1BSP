@@ -215,7 +215,7 @@
                 <option>
                     <name>CCDefines</name>
                     <state>__HXT=24000000UL</state>
-                    <state>DEBUG_PORT=UART0</state>
+                    <state></state>
                     <state>NVT_VECTOR_ON_FLASH</state>
                 </option>
                 <option>

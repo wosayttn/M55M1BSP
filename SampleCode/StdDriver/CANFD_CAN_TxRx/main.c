@@ -65,7 +65,6 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set PB multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
     /* Set PJ multi-function pins for CAN RXD and TXD */
