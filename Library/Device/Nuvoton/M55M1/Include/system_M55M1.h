@@ -22,7 +22,7 @@ extern "C" {
 /* Macro Definition                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 #ifndef DEBUG_PORT
-#define DEBUG_PORT      UART0             /*!< Set default Debug UART Port used for retarget.c to output debug message */
+#define DEBUG_PORT      UART6             /*!< Set default Debug UART Port used for retarget.c to output debug message */
 #endif
 
 #define ICACHE_LINE_SIZE                        (__SCB_ICACHE_LINE_SIZE)    /*!< ICache line byte size              */
@@ -39,11 +39,11 @@ extern "C" {
 #define NVT_DTCM_VTOR                           __attribute__((section("DTCM.VTOR")))
 
 #define __PC()                                              \
-  __extension__({                                           \
-    register unsigned int current_pc;                       \
-    __asm volatile("mov %0, pc" : "=r"(current_pc) : : );   \
-    current_pc;                                             \
-  })    /*!< Current program counter            */
+    __extension__({                                           \
+        register unsigned int current_pc;                       \
+        __asm volatile("mov %0, pc" : "=r"(current_pc) : : );   \
+        current_pc;                                             \
+    })    /*!< Current program counter            */
 
 /*----------------------------------------------------------------------------
   Define clocks
