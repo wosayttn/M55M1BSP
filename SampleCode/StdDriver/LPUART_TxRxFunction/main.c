@@ -106,6 +106,8 @@ int32_t main(void)
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
+    InitDebugUart();
+
     /* Lock protected registers */
     SYS_LockReg();
 
