@@ -168,7 +168,7 @@ typedef enum IRQn
                                               /*!< Reserved                                 */
     SPIM0_IRQn                    =  73,      /*!< SPIM0 Interrupt                          */
 #if defined(TESTCHIP_ONLY)
-	SPIM1_IRQn                    =  74,      /*!< SPIM0 Interrupt                          */
+	SPIM1_IRQn                    =  74,      /*!< SPIM1 Interrupt                          */
 #endif
 	UART0_IRQn                    =  75,      /*!< UART0 Interrupt                          */
     UART1_IRQn                    =  76,      /*!< UART1 Interrupt                          */
@@ -210,6 +210,9 @@ typedef enum IRQn
                                               /*!< Reserved                                 */
 
     OTFC0_IRQn                    = 110,      /*!< OTFC0 Interrupt                          */
+#if defined(TESTCHIP_ONLY)
+	OTFC1_IRQn                    = 111,      /*!< OTFC1 Interrupt                          */
+#endif
                                               /*!< Reserved                                 */
     KPI_IRQn                      = 112,      /*!< KPI Interrupt                            */
     SDH0_IRQn                     = 113,      /*!< SD Host 0 Interrupt                      */
@@ -473,6 +476,9 @@ typedef enum IRQn
 
 /* AHB1 peripheral (HCLK1 clock domain) */
 #define OTFC0_BASE                (AHB1PERIPH_BASE + 0x00000UL)
+#if defined(TESTCHIP_ONLY)
+#define OTFC1_BASE                (AHB1PERIPH_BASE + 0x01000UL)
+#endif
 #define SPIM0_BASE                (AHB1PERIPH_BASE + 0x02000UL)
 #if defined(TESTCHIP_ONLY)
 #define SPIM1_BASE                (AHB1PERIPH_BASE + 0x03000UL)
@@ -650,6 +656,9 @@ typedef enum IRQn
 
 #define NPU_S                                    (NPU_BASE)
 #define OTFC0_S                   ((OTFC_T *)     OTFC0_BASE)
+#if defined(TESTCHIP_ONLY)
+#define OTFC1_S                   ((OTFC_T *)     OTFC1_BASE)
+#endif
 #define OTG_S                     ((OTG_T *)      OTG_BASE)
 #define PA_S                      ((GPIO_T *)     GPIOA_BASE)
 #define PB_S                      ((GPIO_T *)     GPIOB_BASE)
@@ -862,6 +871,9 @@ typedef enum IRQn
 #define GPIO      GPIO_S
 #define KS        KS_S
 #define OTFC0     OTFC0_S
+#if defined(TESTCHIP_ONLY)
+#define OTFC1     OTFC1_S
+#endif
 #define PLM       PLM_S
 #define PMC       PMC_S
 #define SCU       SCU_S
