@@ -1,10 +1,12 @@
-/****************************************************************
- *                                                              *
- * Copyright (c) Nuvoton Technology Corp.  All rights reserved. *
- *                                                              *
- ****************************************************************/
+/**************************************************************************//**
+ * @file     nvt_jpeg.h
+ * @version  V1.00
+ * @brief    Libjpeg simd porting related header
+ *
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ ******************************************************************************/
 #ifndef  __NVT_DCT_H__
-#define __NVT_DCT_H__
+#define  __NVT_DCT_H__
 #include <stdlib.h>
 #include <inttypes.h>
 #include "jpeglib.h"
@@ -116,7 +118,6 @@ boolean encode_one_block_simd(working_state_simd *state, JCOEFPTR block, int las
 #ifdef  __cplusplus
 }
 #endif
-
-
-
 #endif
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

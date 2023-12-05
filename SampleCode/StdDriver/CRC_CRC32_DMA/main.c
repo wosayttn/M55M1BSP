@@ -1,13 +1,11 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * $Revision: 1 $
- * $Date: 23/02/24 9:33a $
- * @brief    Implement CRC in CRC-32 mode with PDMA transfer.
+ * @file    main.c
+ * @version V1.00
+ * @brief   CRC_CRC32_DMA code for M55M1 series MCU
  *
  * SPDX-License-Identifier: Apache-2.0
- * Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 

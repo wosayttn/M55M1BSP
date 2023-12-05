@@ -1,11 +1,11 @@
-/**************************************************************************//**
- * @file     main.c
- * @version  V3.00
- * @brief    Demo How to use TRNG to Generate Random Number(by entropy).
+ /**************************************************************************//**
+ * @file    main.c
+ * @version V1.00
+ * @brief   RNG_Random code for M55M1 series MCU
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
@@ -110,11 +110,11 @@ int main(void)
     /* Unlock protected registers */
     SYS_UnlockReg();
 
-    /* Init Debug UART for printf */
-    InitDebugUart();
-
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
+	
+	 /* Init Debug UART for printf */
+    InitDebugUart();
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -145,3 +145,4 @@ int main(void)
 
 }
 
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

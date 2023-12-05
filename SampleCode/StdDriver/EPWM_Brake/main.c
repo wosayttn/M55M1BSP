@@ -115,11 +115,11 @@ int main(void)
 #endif
 
     printf("System core clock = %d\n", SystemCoreClock);
-    printf("\nConnet PE.8 (EPWM0 brake pin 0) to PD.3.\n");
+    printf("\nConnet PE.8 (EPWM0 brake pin 0) to PD.5.\n");
     printf("It will generate brake interrupt and EPWM0 channel 0 output stop toggling.\n");
 
-    GPIO_SetMode(PD, BIT3, GPIO_MODE_OUTPUT);
-    PD3 = 0;
+    GPIO_SetMode(PD, BIT5, GPIO_MODE_OUTPUT);
+    PD5 = 0;
 
     /* EPWM0 frequency is 100Hz, duty 30%, */
     EPWM_ConfigOutputChannel(EPWM0, 0, 100, 30);
@@ -144,7 +144,7 @@ int main(void)
 
     printf("\nPress any key to generate a brake event\n");
     getchar();
-    PD3 = 1;
+    PD5 = 1;
 
     /* Got no where to go, just loop forever */
     while (1) ;

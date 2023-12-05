@@ -1,9 +1,9 @@
 /*************************************************************************//**
- * @file     crypto_eddsa.c
+ * @file     eddsa_ed25519.c
  * @version  V1.00
- * @brief    MA35S1 Crypto EdDSA Ed25519 driver
+ * @brief    ED25519 core code for M55M1 series MCU
  *
- * @copyright (C) 2022 Nuvoton Technology Corp.	All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp.	All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -1563,3 +1563,5 @@ int32_t	 ECC_ED25519_Verify(enum ed_type eddsa_type,
     }
     return 0;
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

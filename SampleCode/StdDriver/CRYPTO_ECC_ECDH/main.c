@@ -1,11 +1,11 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.10
- * @brief    Show Crypto IP ECC CDH secret Z generation.
+ * @file    main.c
+ * @version V1.00
+ * @brief   CRYPTO_ECC_ECDH code for M55M1 series MCU
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
-*****************************************************************************/
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
@@ -308,5 +308,5 @@ int32_t main(void)
     while(1);
 }
 
-
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
 

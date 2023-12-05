@@ -1,11 +1,11 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V3.00
- * @brief    Shows how to use Crypto RSA engine accesses key from key store
- *            to sign and verify signatures.
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
-*****************************************************************************/
+ * @file    main.c
+ * @version V1.00
+ * @brief   CRYPTO_RSA_AccessKeyStore code for M55M1 series MCU
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
@@ -305,3 +305,5 @@ lexit:
 
     while(1);
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

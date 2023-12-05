@@ -24,15 +24,14 @@
  */
 
 
-/**************************************************************************//**
-* @file     jchuff-helium.c
-* @version  V1.00
-* @brief    Porting from jpegturbo ARM32 simd jchuff file.
-*
-* @copyright SPDX-License-Identifier: Apache-2.0
-* @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
-*****************************************************************************/
-
+ /**************************************************************************//**
+ * @file     jchuff-helium.c
+ * @version  V1.00
+ * @brief    Porting from jpegturbo ARM32 simd jchuff file.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdlib.h>
 #include <inttypes.h>
 #include <arm_mve.h>
@@ -522,3 +521,5 @@ boolean encode_one_block_simd(working_state_simd *state, JCOEFPTR block, int las
 
     return TRUE;
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

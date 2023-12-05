@@ -1,11 +1,11 @@
-/******************************************************************************
+/**************************************************************************//**
  * @file     nvt_jpeg.cpp
  * @version  V1.00
- * @brief    Demonstrate run Jpeg Encode
+ * @brief    Libjpeg simd porting related code
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- *****************************************************************************/
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ ******************************************************************************/
+ 
 #include <stdio.h>
 #include <arm_mve.h>
 #include "nvt_jpeg.h"
@@ -162,3 +162,4 @@ int compute_reciprocal(uint16_t divisor, DCTELEM *dtbl)
     else return 1;
 }
 
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

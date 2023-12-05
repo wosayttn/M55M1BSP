@@ -1,11 +1,11 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V3.00
- * @brief    Shows how to use Crypto HMAC engine to sign.
- *       
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
-*****************************************************************************/
+ * @file    main.c
+ * @version V1.00
+ * @brief   CRYPTO_HMAC code for M55M1 series MCU
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
@@ -168,7 +168,7 @@ int  main(void)
     int32_t i;
     uint8_t *pu8;
     uint32_t u32KeyLen, u32KeyLenAlign, u32MacLen, u32MsgLen;
-#if 1
+#ifdef TEST_HMAC_SHA256
     char *keyStr = "6f35628d65813435534b5d67fbdb54cb33403d04e843103e6399f806cb5df95febbdd61236f33245";
     char *msg    = "752cff52e4b90768558e5369e75d97c69643509a5e5904e0a386cbe4d0970ef73f918f675945a9aefe26daea27587e8dc909dd56fd0468805f834039b345f855cfe19c44b55af241fff3ffcd8045cd5c288e6c4e284c3720570b58e4d47b8feeedc52fd1401f698a209fccfa3b4c0d9a797b046a2759f82a54c41ccd7b5f592b";
     char *hmac   = "05d1243e6465ed9620c9aec1c351a186"; // The golden pattern
@@ -247,3 +247,5 @@ int  main(void)
     printf("\nHMAC Demo Done\n");
     while(1) {}
 }
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
