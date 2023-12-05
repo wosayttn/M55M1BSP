@@ -212,11 +212,11 @@ void SYS_Init(void)
     GPIO_SetSlewCtl(PG, BIT11, GPIO_SLEWCTL_HIGH);
     GPIO_SetSlewCtl(PG, BIT12, GPIO_SLEWCTL_HIGH);
 
-    /* USB_VBUS_EN (USB 1.1 VBUS power enable pin) multi-function pin - PB.15     */
-    SET_USB_VBUS_EN_PB15();
+    /* USB_VBUS_EN (USB 1.1 VBUS power enable pin) multi-function pin - PB.8     */
+    SET_USB_VBUS_EN_PB8();
 
-    /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PC.14   */
-    SET_USB_VBUS_ST_PB14();
+    /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PB.9   */
+    SET_USB_VBUS_ST_PB9();
 
     /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PJ.13   */
     SET_HSUSB_VBUS_EN_PJ13();

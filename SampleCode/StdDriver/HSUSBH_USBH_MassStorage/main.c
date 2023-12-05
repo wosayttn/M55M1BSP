@@ -467,7 +467,6 @@ void SYS_Init(void)
 
     /* USB Host desired input clock is 48 MHz. Set as HIRC48M divided by 1 (48/1 = 48) */
     CLK_SetModuleClock(USBH0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
-    CLK_SetModuleClock(HSUSBH0_MODULE, 0, 0);
 
     /* Enable USBH module clock */
     CLK_EnableModuleClock(USBH0_MODULE);
@@ -493,11 +492,11 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
-    /* USB_VBUS_EN (USB 1.1 VBUS power enable pin) multi-function pin - PB.15     */
-    SET_USB_VBUS_EN_PB15();
+    /* USB_VBUS_EN (USB 1.1 VBUS power enable pin) multi-function pin - PB.8     */
+    SET_USB_VBUS_EN_PB8();
 
-    /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PC.14   */
-    SET_USB_VBUS_ST_PB14();
+    /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PB.9   */
+    SET_USB_VBUS_ST_PB9();
 
     /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PJ.13   */
     SET_HSUSB_VBUS_EN_PJ13();
