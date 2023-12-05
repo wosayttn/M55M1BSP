@@ -13,6 +13,9 @@
 #include "hyperram_code.h"
 
 //------------------------------------------------------------------------------
+#define DMM_MODE_TRIM
+
+//------------------------------------------------------------------------------
 __attribute__((aligned(32))) uint8_t g_au8SrcArray[BUFF_SIZE] = {0};
 __attribute__((aligned(32))) uint8_t g_au8DestArray[BUFF_SIZE] = {0};
 
@@ -68,16 +71,17 @@ void HyperRAM_Erase(SPIM_T *spim, uint32_t u32StartAddr, uint32_t u32EraseSize)
  */
 void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
 {
-    uint8_t u8RdDelay = 0;
-    uint8_t u8Temp;
+    volatile uint8_t u8RdDelay = 0;
     uint8_t u8RdDelayIdx = 0;
     uint8_t u8RdDelayRes[SPIM_MAX_DLL_LATENCY] = {0};
-    uint32_t u32i = 0;
-    uint32_t u32j;
+    volatile uint32_t u32i = 0;
     uint32_t u32SrcAddr = 0;
     uint32_t u32TestSize = 32;
+#ifdef DMM_MODE_TRIM
     uint32_t u32DMMAddr = SPIM_HYPER_GetDMMAddress(spim);
-    int *pi32SrcAddr = (int *)(u32DMMAddr + u32SrcAddr);
+    uint32_t *pu32RdBuf = NULL;
+    uint32_t u32RdDataCnt = 0;
+#endif
 
     /* Erase HyperRAM */
     HyperRAM_Erase(spim, u32SrcAddr, u32TestSize);
@@ -89,18 +93,33 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
         SPIM_HYPER_Write1Byte(spim, u32i, g_au8SrcArray[u32i]);
     }
 
-    //SPIM_HYPER_EnterDirectMapMode(spim);
+    //SPIM_HYPER_DMAWrite(spim, u32SrcAddr, g_au8SrcArray, u32TestSize);
 
-    for (u8RdDelay = 0; u8RdDelay <= SPIM_MAX_DLL_LATENCY; u8RdDelay++)
+#ifdef DMM_MODE_TRIM
+    SPIM_HYPER_EnterDirectMapMode(spim);
+#endif
+
+    for (u8RdDelay = 0; u8RdDelay <= SPIM_HYPER_MAX_LATENCY; u8RdDelay++)
     {
         memset(g_au8DestArray, 0, sizeof(g_au8DestArray));
 
         /* Set DLL calibration to select the valid delay step number */
         SPIM_HYPER_SetDLLDelayNum(spim, u8RdDelay);
 
+#ifndef DMM_MODE_TRIM
         /* Read Data from HyperRAM */
         SPIM_HYPER_DMARead(spim, u32SrcAddr, g_au8DestArray, u32TestSize);
-        //memcpy(g_au8DestArray, pi32SrcAddr, u32TestSize);
+#else
+        pu32RdBuf = (uint32_t *)&g_au8DestArray[0];
+
+        u32RdDataCnt = 0;
+
+        for (u32i = u32SrcAddr; u32i < (u32SrcAddr + u32TestSize); u32i += 4)
+        {
+            pu32RdBuf[u32RdDataCnt++] = inpw(u32DMMAddr + u32i);
+        }
+
+#endif
 
         /* Verify the data and save the number of successful delay steps */
         if (memcmp(g_au8SrcArray, g_au8DestArray, u32TestSize))
@@ -132,6 +151,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
         }
     }
 
+    printf("final Set Delay Step Num : %d\r\n", u8RdDelayRes[u8RdDelayIdx]);
     /* Set the number of intermediate delay steps */
     SPIM_HYPER_SetDLLDelayNum(spim, u8RdDelayRes[u8RdDelayIdx]);
 }

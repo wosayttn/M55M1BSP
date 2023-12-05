@@ -13,9 +13,9 @@
 #include "NuMicro.h"
 
 //------------------------------------------------------------------------------
-#define TEST_CYCLE          0x10
+#define TEST_CYCLE          0x1000
 #define DATA_COUNT          64
-#define LPSPI_CLK_FREQ      2000000
+#define LPSPI_CLK_FREQ      20000000
 
 //------------------------------------------------------------------------------
 uint32_t g_au32SourceData[DATA_COUNT];
@@ -158,11 +158,15 @@ void SYS_Init(void)
     SystemCoreClockUpdate();
 
     /* Select HIRC as the clock source of LPSPI0 */
-    CLK_SetModuleClock(LPSPI0_MODULE, CLK_LPSPISEL_LPSPI0SEL_HIRC, MODULE_NoMsk);
+    CLK_SetModuleClock(LPSPI0_MODULE, CLK_LPSPISEL_LPSPI0SEL_PCLK4, MODULE_NoMsk);
 
     /* Enable LPSPI0 peripheral clock */
     CLK_EnableModuleClock(LPSPI0_MODULE);
 
+    /* Enable GPIO Module clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
+	CLK_EnableModuleClock(GPIOB_MODULE);
+	
     /* Enable UART0 module clock */
     SetDebugUartCLK();
 

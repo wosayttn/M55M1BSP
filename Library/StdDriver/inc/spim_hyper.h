@@ -39,8 +39,8 @@ extern "C"
 //#define SPIM_HYPER_DMM0_NSADDR              (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
 
 // TESTCHIP_ONLY
-#define SPIM_HYPER_DMM1_SADDR               0//(0x82000000UL)  /*!< SPIM1 DMM mode memory map base secure address    \hideinitializer */
-#define SPIM_HYPER_DMM1_NSADDR              0//(0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
+#define SPIM_HYPER_DMM1_SADDR               (0x82000000UL)  /*!< SPIM1 DMM mode memory map base secure address    \hideinitializer */
+#define SPIM_HYPER_DMM1_NSADDR              (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
 
 #if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM0_Msk)
 #define SPIM_HYPER_DMM0_ADDR                SPIM_HYPER_DMM0_NSADDR
@@ -56,7 +56,7 @@ extern "C"
 
 #define SPIM_HYPER_DMM_SIZE                 (0x2000000UL)       /*!< DMM mode memory mapping size        \hideinitializer */
 
-#define SPIM_HYPER_MAX_LATENCY              (0x05)              /*!< Maximum DLL training number        \hideinitializer */
+#define SPIM_HYPER_MAX_LATENCY              (0x1F)              /*!< Maximum DLL training number        \hideinitializer */
 
 #define SPIM_HYPER_OP_ENABLE                (0x01UL)            /* SPIM_HYPER Operation Enable */
 #define SPIM_HYPER_OP_DISABLE               (0x00UL)            /* SPIM_HYPER Operation Disable */
@@ -680,12 +680,10 @@ __STATIC_INLINE uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim)
     if (spim == SPIM0)
     {
         u32DMMAddr = SPIM_HYPER_DMM0_ADDR;
-    }
-
-    //else if (spim == SPIM1) // TESTCHIP_ONLY
-    //{
-    //    u32DMMAddr = SPIM_HYPER_DMM1_ADDR;
-    //}
+    }else if (spim == SPIM1) // TESTCHIP_ONLY
+ {
+     u32DMMAddr = SPIM_HYPER_DMM1_ADDR;
+ }
 
     return u32DMMAddr;
 }
