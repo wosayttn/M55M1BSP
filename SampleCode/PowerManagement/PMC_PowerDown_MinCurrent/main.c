@@ -395,7 +395,7 @@ int32_t main(void)
     SYS->GPB_MFP0 = 0;
     SYS->GPB_MFP1 = 0;
     SYS->GPB_MFP2 = 0;
-    SYS->GPB_MFP3 = SYS_GPB_MFP3_PB12MFP_UART0_RXD | SYS_GPB_MFP3_PB13MFP_UART0_TXD;
+    SYS->GPB_MFP3 = 0;
     SYS->GPC_MFP0 = 0;
     SYS->GPC_MFP1 = 0;
     SYS->GPC_MFP2 = 0;
@@ -416,7 +416,7 @@ int32_t main(void)
     SYS->GPG_MFP2 = 0;
     SYS->GPG_MFP3 = 0;
     SYS->GPH_MFP0 = 0;
-    SYS->GPH_MFP1 = 0;
+    SYS->GPH_MFP1 = SYS_GPH_MFP1_PH5MFP_UART6_RXD | SYS_GPH_MFP1_PH4MFP_UART6_TXD;
     SYS->GPH_MFP2 = 0;
     SYS->GPH_MFP3 = 0;
     SYS->GPI_MFP1 = 0;
