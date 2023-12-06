@@ -189,7 +189,7 @@ struct ethosu_driver ethosu0_driver;
 extern "C" {
 #endif
 
-NVT_ITCM void NPU_IRQHandler(void)
+void NPU_IRQHandler(void)
 {
     ethosu_irq_handler(&ethosu0_driver);
 }
@@ -223,46 +223,21 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
-    /* Enable GPIOA module clock */
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    CLK_EnableModuleClock(GPIOB_MODULE);
-    CLK_EnableModuleClock(GPIOC_MODULE);
-    CLK_EnableModuleClock(GPIOD_MODULE);
-    CLK_EnableModuleClock(GPIOE_MODULE);
-    CLK_EnableModuleClock(GPIOF_MODULE);
-    CLK_EnableModuleClock(GPIOG_MODULE);
-    CLK_EnableModuleClock(GPIOH_MODULE);
-    CLK_EnableModuleClock(GPIOI_MODULE);
-    CLK_EnableModuleClock(GPIOJ_MODULE);
-
     /* Enable FMC0 module clock to keep FMC clock when CPU idle but NPU running*/
     CLK_EnableModuleClock(FMC0_MODULE);
 
     /* Enable NPU module clock */
     CLK_EnableModuleClock(NPU0_MODULE);
 
-    /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HXT, CLK_UARTDIV0_UART0DIV(1));
+    /* Select UART module clock source as HIRC and UART module clock divider as 1 */
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for UART0 RXD and TXD */
-    //SET_UART0_RXD_PB12();
-    //SET_UART0_TXD_PB13();
-    SET_UART0_RXD_PA0();
-    SET_UART0_TXD_PA1();
-
-}
-
-void UART0_Init(void)
-{
-    /* Init UART0 to 115200-8n1 for print message */
-    UART_Open(UART0, 115200);
+    SetDebugUartMFP();
 }
 
 
@@ -272,7 +247,7 @@ static uint64_t cpu_cycle_count = 0;    /* 64-bit cpu cycle counter */
 extern "C" {
 #endif
 
-NVT_ITCM void SysTick_Handler(void)
+void SysTick_Handler(void)
 {
     /* Increment the cycle counter based on load value. */
     cpu_cycle_count += SysTick->LOAD + 1;
@@ -337,7 +312,7 @@ int main(void)
     SYS_Init(); /* Init System, IP clock and multi-function I/O */
 
     /* Init UART to 115200-8n1 for print message */
-    UART0_Init();
+    InitDebugUart();
 
     printf("+-------------------------------------------+\n");
     printf("|    NPU 2D convolution sample code         |\n");

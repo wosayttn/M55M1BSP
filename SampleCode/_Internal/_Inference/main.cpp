@@ -280,45 +280,24 @@ static void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
-    /* Enable GPIOA module clock */
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    CLK_EnableModuleClock(GPIOB_MODULE);
-    CLK_EnableModuleClock(GPIOC_MODULE);
-    CLK_EnableModuleClock(GPIOD_MODULE);
-    CLK_EnableModuleClock(GPIOE_MODULE);
-    CLK_EnableModuleClock(GPIOF_MODULE);
-    CLK_EnableModuleClock(GPIOG_MODULE);
-    CLK_EnableModuleClock(GPIOH_MODULE);
-    CLK_EnableModuleClock(GPIOI_MODULE);
-    CLK_EnableModuleClock(GPIOJ_MODULE);
-
     /* Enable FMC0 module clock to keep FMC clock when CPU idle but NPU running*/
 	CLK_EnableModuleClock(FMC0_MODULE);
 
     /* Enable NPU module clock */
     CLK_EnableModuleClock(NPU0_MODULE);
 
-	/* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
-    CLK_SetModuleClock(UART0_MODULE, CLK_DMICSEL_DMIC0SEL_HXT, CLK_UARTDIV0_UART0DIV(1));
+	/* Select UART module clock source as HIRC and UART module clock divider as 1 */
+	SetDebugUartCLK();
 
 	/*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    /* Set multi-function pins for UART RXD and TXD */
+	SetDebugUartMFP();
 
 }
 
-static void UART0_Init(void)
-{
-    /* Configure UART0 and set UART0 baud rate */
-    UART_Open(UART0, 115200);
-}
 
 // FreeRTOS application. NOTE: Additional tasks may require increased heap size.
 int main() {
@@ -329,7 +308,7 @@ int main() {
     SYS_Init(); /* Init System, IP clock and multi-function I/O */
 
     /* Init UART to 115200-8n1 for print message */
-    UART0_Init();
+    InitDebugUart();
 
     SYS_LockReg();                   /* Unlock register lock protect */
 
