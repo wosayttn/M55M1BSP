@@ -183,11 +183,11 @@ void SYS_Init(void)
     /* Set OTG as USB Host role */
     SYS->USBPHY = (0x1ul << (SYS_USBPHY_HSOTGPHYEN_Pos)) | (0x1ul << (SYS_USBPHY_HSUSBROLE_Pos)) | (0x1ul << (SYS_USBPHY_OTGPHYEN_Pos)) | (0x1 << SYS_USBPHY_USBROLE_Pos);
 
-    /* USB_VBUS_EN (USB 1.1 VBUS power enable pin) multi-function pin - PB.15     */
-    SET_USB_VBUS_EN_PB15();
+    /* USB_VBUS_EN (USB 1.1 VBUS power enable pin) multi-function pin - PB.8     */
+    SET_USB_VBUS_EN_PB8();
 
-    /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PB.14   */
-    SET_USB_VBUS_ST_PB14();
+    /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PB.9   */
+    SET_USB_VBUS_ST_PB9();
 
     /* USB 1.1 port multi-function pin VBUS, D+, D-, and ID pins */
     SET_USB_VBUS_PA12();
