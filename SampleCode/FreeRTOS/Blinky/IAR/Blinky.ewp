@@ -74,7 +74,7 @@
                 </option>
                 <option>
                     <name>OGChipSelectEditMenu</name>
-                    <state>Default	None</state>
+                    <state>M55M1 series	Nuvoton M55M1 series</state>
                 </option>
                 <option>
                     <name>GenLowLevelInterface</name>
@@ -120,7 +120,7 @@
                 </option>
                 <option>
                     <name>GFPUDeviceSlave</name>
-                    <state>Default	None</state>
+                    <state>M55M1 series	Nuvoton M55M1 series</state>
                 </option>
                 <option>
                     <name>FPU2</name>
@@ -189,7 +189,7 @@
                 <option>
                     <name>TrustZoneModes</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OGAarch64Abi</name>
@@ -218,8 +218,9 @@
                 </option>
                 <option>
                     <name>CCDefines</name>
-                    <state>__HXT=24000000UL</state>
                     <state>SYSTEM_CORE_CLOCK=180000000</state>
+                    <state>NVT_VECTOR_ON_FLASH</state>
+                    <state>NVT_DCACHE_ON</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -1120,6 +1121,9 @@
         <name>Library</name>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\clk.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\gpio.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
