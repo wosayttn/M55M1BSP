@@ -73,8 +73,8 @@ void SYS_Init(void)
     /* Enable I2S0 module clock */
     CLK_EnableModuleClock(I2S0_MODULE);
 
-    /* Enable I2C2 module clock */
-    CLK_EnableModuleClock(I2C2_MODULE);
+    /* Enable I2C3 module clock */
+    CLK_EnableModuleClock(I2C3_MODULE);
 
     /* Enable PDMA0 module clock */
     CLK_EnableModuleClock(PDMA0_MODULE);
@@ -93,22 +93,22 @@ void SYS_Init(void)
     SET_I2S0_DO_PI9();
     SET_I2S0_LRCK_PI10();
 
-    /* Set I2C2 multi-function pins */
-    SET_I2C2_SDA_PD0();
-    SET_I2C2_SCL_PD1();
+    /* Set I2C3 multi-function pins */
+    SET_I2C3_SDA_PG1();
+    SET_I2C3_SCL_PG0();
 
     PI->SMTEN |= GPIO_SMTEN_SMTEN6_Msk;
-    PD->SMTEN |= GPIO_SMTEN_SMTEN1_Msk;
+    PG->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
 }
 
 /* Init I2C interface */
-void I2C2_Init(void)
+void I2C3_Init(void)
 {
-    /* Open I2C2 and set clock to 400k */
-    I2C_Open(I2C2, 400000);
+    /* Open I2C3 and set clock to 400k */
+    I2C_Open(I2C3, 400000);
 
-    /* Get I2C2 Bus Clock */
-    printf("I2C clock %d Hz\n", I2C_GetBusClockFreq(I2C2));
+    /* Get I2C3 Bus Clock */
+    printf("I2C clock %d Hz\n", I2C_GetBusClockFreq(I2C3));
 }
 
 
@@ -136,8 +136,8 @@ int32_t main(void)
     printf("HXT clock %d Hz\n", CLK_GetHXTFreq());
     printf("CPU clock %d Hz\n", CLK_GetSCLKFreq());
 
-    /* Init I2C2 to access codec */
-    I2C2_Init();
+    /* Init I2C3 to access codec */
+    I2C3_Init();
 
     /* Select source from APLL0/2 */
     CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_APLL0_DIV2, 0);
@@ -147,10 +147,10 @@ int32_t main(void)
     /* Open I2S0 interface and set to slave mode, stereo channel, I2S format */
     I2S_Open(I2S0, I2S_MODE_SLAVE, 192000, I2S_DATABIT_16, I2S_STEREO, I2S_FORMAT_I2S);
 
-    /* Set PD3 low to enable phone jack on NuMaker board. */
-    SYS->GPD_MFP0 &= ~(SYS_GPD_MFP0_PD3MFP_Msk);
-    GPIO_SetMode(PD, BIT3, GPIO_MODE_OUTPUT);
-    PD3 = 0;
+    /* Set JK-EN low to enable phone jack on NuMaker board. */
+    SET_GPIO_PB12();
+    GPIO_SetMode(PB, BIT12, GPIO_MODE_OUTPUT);
+    PB12 = 0;
 
     /* Set MCLK and enable MCLK */
     I2S_EnableMCLK(I2S0, 12000000);
