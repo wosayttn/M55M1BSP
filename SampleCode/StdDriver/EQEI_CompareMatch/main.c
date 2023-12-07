@@ -76,15 +76,6 @@ void SYS_Init(void)
     SET_EQEI0_B_PA3();
 }
 /*---------------------------------------------------------------------------------------------------------*/
-/* Init UART                                                                                               */
-/*---------------------------------------------------------------------------------------------------------*/
-void UART0_Init()
-{
-    /* Configure UART0 and set UART0 Baudrate */
-    UART_Open(UART0, 115200);
-
-}
-/*---------------------------------------------------------------------------------------------------------*/
 /*  MAIN function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
@@ -97,8 +88,8 @@ int32_t main(void)
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
-    /* Init UART0 for printf */
-    UART0_Init();
+    /* Init DeubgUART for printf */
+    InitDebugUart();
 
     printf("\n\nCPU @ %uHz\n", SystemCoreClock);
 

@@ -151,8 +151,8 @@ int main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    /* Init UART0 to 115200-8n1 for print message */
-    UART_Open(UART0, 115200);
+    /* Init DeubgUART for printf */
+    InitDebugUart();
 
     printf("\n\nCPU @ %u Hz\n", SystemCoreClock);
     printf("+------------------------------------------------+\n");

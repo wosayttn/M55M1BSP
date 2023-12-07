@@ -99,7 +99,6 @@ void  usbh_core_init()
 #ifdef ENABLE_EHCI
     int ret = 0;
     ret = ehci_driver.init();
-    USB_debug("ret %d.\n", ret);
     USB_debug("EHCI init done.\n");
     ENABLE_EHCI_IRQ();
 #endif
@@ -185,9 +184,9 @@ void usbh_suspend()
 #ifdef ENABLE_OHCI1
 
     /* port is Synopsys */
-    /* set port suspend if connected */
-    if (_ohci1->HcRhPortStatus[0] & USBH_HcRhPortStatus_CCS_Msk)
-        _ohci1->HcRhPortStatus[0] = USBH_HcRhPortStatus_PSS_Msk;    /* set port suspend    */
+    /* set port suspend if deivce has been not connected */
+    //    if (_ohci1->HcRhPortStatus[0] & USBH_HcRhPortStatus_CCS_Msk)
+    //        _ohci1->HcRhPortStatus[0] = USBH_HcRhPortStatus_PSS_Msk;    /* set port suspend    */
 
     //    /* for Enhanced using */
     //    if (_ohci1->HcRhPortStatus[1] & USBH_HcRhPortStatus_CCS_Msk)
@@ -261,8 +260,8 @@ void usbh_resume(void)
     /*Synopsys*/
     _ohci1->HcControl = (_ohci1->HcControl & ~USBH_HcControl_HCFS_Msk) | (1 << USBH_HcControl_HCFS_Pos);
 
-    if (_ohci1->HcRhPortStatus[0] & USBH_HcRhPortStatus_PSS_Msk)
-        _ohci1->HcRhPortStatus[0] = USBH_HcRhPortStatus_POCI_Msk;   /* clear suspend status */
+    //    if (_ohci1->HcRhPortStatus[0] & USBH_HcRhPortStatus_PSS_Msk)
+    //        _ohci1->HcRhPortStatus[0] = USBH_HcRhPortStatus_POCI_Msk;   /* clear suspend status */
 
     /* for Enhanced using */
     //    if (_ohci1->HcRhPortStatus[1] & USBH_HcRhPortStatus_PSS_Msk)

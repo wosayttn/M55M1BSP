@@ -185,12 +185,6 @@ void SYS_Init(void)
     SYS_LockReg();
 }
 
-void UART0_Init(void)
-{
-    /* Configure UART0 and set UART0 baud rate */
-    UART_Open(UART0, 115200);
-}
-
 /**
  *  @brief  Audio-in data callback function.
  *          UAC driver notify user that audio-in data has been moved into user audio-in buffer,
@@ -565,7 +559,8 @@ int32_t main(void)
 
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
 
-    UART0_Init();                      /* Initialize UART0 */
+    /* Init DeubgUART for printf */
+    InitDebugUart();
 
     printf("\n\n");
     printf("+--------------------------------------------+\n");

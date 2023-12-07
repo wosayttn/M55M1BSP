@@ -202,12 +202,6 @@ void SYS_Init(void)
     SYS_LockReg();
 }
 
-void UART0_Init(void)
-{
-    /* Configure UART0 and set UART0 baud rate */
-    UART_Open(UART0, 115200);
-}
-
 void dump_buff_hex(uint8_t *pu8Buff, int i8Bytes)
 {
     int i8Idx, i8Cnt;
@@ -682,7 +676,7 @@ int32_t main(void)
 
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
 
-    UART0_Init();                      /* Initialize UART0 */
+    InitDebugUart();                   /* Init DeubgUART for printf */
 
     printf("\n\n");
     printf("+--------------------------------------------+\n");

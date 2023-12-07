@@ -191,12 +191,6 @@ void SYS_Init(void)
     SYS_LockReg();
 }
 
-void UART0_Init(void)
-{
-    /* Configure UART0 and set UART0 baud rate */
-    UART_Open(UART0, 115200);
-}
-
 /*
  *  USB device connect callback function.
  *  User invokes usbh_pooling_hubs() to let USB core able to scan and handle events of
@@ -555,7 +549,7 @@ int32_t main(void)
 {
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
 
-    UART0_Init();                      /* Initialize UART0 */
+    InitDebugUart();                   /* Init DeubgUART for printf */
 
     enable_sys_tick(100);
 

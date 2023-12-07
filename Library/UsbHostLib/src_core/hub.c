@@ -680,7 +680,7 @@ int  usbh_pooling_hubs(void)
     int   ret, change = 0;
 
 #ifdef ENABLE_EHCI
-    _ehci->UPSCR[1] = HSUSBH_UPSCR_PP_Msk | HSUSBH_UPSCR_PO_Msk;     /* set port 2 owner to OHCI              */
+    //_ehci->UPSCR[1] = HSUSBH_UPSCR_PP_Msk | HSUSBH_UPSCR_PO_Msk;     /* set port 2 owner to OHCI              */
 
     do
     {

@@ -537,8 +537,7 @@ int32_t main(void)
 
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
 
-    /* Configure UART0 and set UART0 baud rate */
-    UART_Open(UART0, 115200);
+    InitDebugUart();                   /* Init DeubgUART for printf */
 
     enable_sys_tick(100);
 
