@@ -24,7 +24,7 @@ void USCI_AutoFlow_FunctionTest(void);
 void USCI_AutoFlow_FunctionTxTest(void);
 void USCI_AutoFlow_FunctionRxTest(void);
 void SYS_Init(void);
-void UART0_Init(void);
+void DEBUG_PORT_Init(void);
 void USCI0_Init(void);
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
@@ -86,7 +86,7 @@ void USCI0_Init(void)
     SYS_ResetModule(SYS_USCI0RST);
 
     /* Configure USCI0 as UART mode */
-    UUART_Open(UUART0, 115200);
+    UUART_Open(UDEBUG_PORT, 115200);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -175,16 +175,16 @@ void USCI_AutoFlow_FunctionTxTest(void)
     uint32_t u32Idx;
 
     /* Enable CTS and RTS autoflow control */
-    UUART_EnableFlowCtrl(UUART0);
+    UUART_EnableFlowCtrl(UDEBUG_PORT);
 
     /* Send 1k bytes data */
     for (u32Idx = 0; u32Idx < RXBUFSIZE; u32Idx++)
     {
         /* Send 1 byte data */
-        UUART_WRITE(UUART0, (u32Idx & 0xFF));
+        UUART_WRITE(UDEBUG_PORT, (u32Idx & 0xFF));
 
         /* Wait if Tx FIFO is full */
-        while (UUART_GET_TX_FULL(UUART0));
+        while (UUART_GET_TX_FULL(UDEBUG_PORT));
     }
 
     printf("\n Transmit Done\n");
@@ -198,10 +198,10 @@ void USCI_AutoFlow_FunctionRxTest(void)
     uint32_t u32Idx, u32Err = 0;
 
     /* Enable CTS and RTS autoflow control */
-    UUART_EnableFlowCtrl(UUART0);
+    UUART_EnableFlowCtrl(UDEBUG_PORT);
 
     /* Enable USCI receive end and receive buffer over-run error Interrupt */
-    UUART_EnableInt(UUART0, UUART_RXEND_INT_MASK | UUART_BUF_RXOV_INT_MASK);
+    UUART_EnableInt(UDEBUG_PORT, UUART_RXEND_INT_MASK | UUART_BUF_RXOV_INT_MASK);
     NVIC_EnableIRQ(USCI0_IRQn);
 
     printf("\n Starting to receive data...\n");
@@ -225,7 +225,7 @@ void USCI_AutoFlow_FunctionRxTest(void)
         printf("\n Receive OK & Check OK\n");
 
     /* Disable USCI interrupt */
-    UUART_DisableInt(UUART0, UUART_RXEND_INT_MASK | UUART_BUF_RXOV_INT_MASK);
+    UUART_DisableInt(UDEBUG_PORT, UUART_RXEND_INT_MASK | UUART_BUF_RXOV_INT_MASK);
     NVIC_DisableIRQ(USCI0_IRQn);
 }
 
@@ -235,20 +235,20 @@ void USCI_AutoFlow_FunctionRxTest(void)
 NVT_ITCM void USCI0_IRQHandler(void)
 {
 
-    volatile uint32_t u32ProtSts = UUART_GET_PROT_STATUS(UUART0);
-    volatile uint32_t u32BufSts = UUART_GET_BUF_STATUS(UUART0);
+    volatile uint32_t u32ProtSts = UUART_GET_PROT_STATUS(UDEBUG_PORT);
+    volatile uint32_t u32BufSts = UUART_GET_BUF_STATUS(UDEBUG_PORT);
     uint8_t u8InChar = 0xFF;
 
     if (u32ProtSts & UUART_PROTSTS_RXENDIF_Msk)     /* Receive end interrupt */
     {
         /* Handle received data */
-        UUART_CLR_PROT_INT_FLAG(UUART0, UUART_PROTSTS_RXENDIF_Msk);
-        u8InChar = (uint8_t)UUART_READ(UUART0);
+        UUART_CLR_PROT_INT_FLAG(UDEBUG_PORT, UUART_PROTSTS_RXENDIF_Msk);
+        u8InChar = (uint8_t)UUART_READ(UDEBUG_PORT);
         g_u8RecData[g_i32Pointer++] = u8InChar;
     }
     else if (u32BufSts & UUART_BUFSTS_RXOVIF_Msk)     /* Receive buffer over-run error interrupt */
     {
-        UUART_CLR_BUF_INT_FLAG(UUART0, UUART_BUFSTS_RXOVIF_Msk);
+        UUART_CLR_BUF_INT_FLAG(UDEBUG_PORT, UUART_BUFSTS_RXOVIF_Msk);
         printf("\nRx buffer is over-run.");
     }
 }

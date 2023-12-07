@@ -249,7 +249,7 @@ int32_t LPUART_AutoOP(uint32_t u32PDMode)
 
     printf("     System enter to Power-down mode NPD%d.\n", (int)(u32PDMode));
 
-    UART_WAIT_TX_EMPTY(UART0);
+    UART_WAIT_TX_EMPTY(DEBUG_PORT);
     PMC_PowerDown();
     printf("     Wakeup\n");
 

@@ -155,7 +155,7 @@ void SYS_Init(void)
     /* Enable LPSPI0 peripheral clock */
     CLK_EnableModuleClock(LPSPI0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

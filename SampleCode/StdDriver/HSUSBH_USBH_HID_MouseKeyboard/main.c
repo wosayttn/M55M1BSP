@@ -33,7 +33,7 @@ int init_hid_device(HID_DEV_T *hdev);
 void mouse_callback(struct usbhid_dev *hdev, MOUSE_EVENT_T *mouse);
 void keyboard_callback(struct usbhid_dev *hdev, KEYBOARD_EVENT_T *kbd);
 void SYS_Init(void);
-void UART0_Init(void);
+
 /**
  * @brief    Check any char input from UART
  *
@@ -238,7 +238,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Enable GPIOA module clock */
@@ -267,7 +267,7 @@ void SYS_Init(void)
     SYS->USBPHY = (0x1ul << (SYS_USBPHY_HSOTGPHYEN_Pos)) | (0x1ul << (SYS_USBPHY_HSUSBROLE_Pos)) | (0x1ul << (SYS_USBPHY_OTGPHYEN_Pos)) | (0x1 << SYS_USBPHY_USBROLE_Pos);
     delay_us(20);
     SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
-    
+
     /* Set Debug Uart CLK*/
     SetDebugUartCLK();
     /* Update System Core Clock */

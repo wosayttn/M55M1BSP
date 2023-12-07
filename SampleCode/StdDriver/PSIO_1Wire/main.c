@@ -46,7 +46,7 @@ void SYS_Init(void)
     /* Select PSIO module clock source as PCLK1 and PSIO module clock divider as 250 */
     CLK_SetModuleClock(PSIO0_MODULE, CLK_PSIOSEL_PSIO0SEL_PCLK1, CLK_PSIODIV_PSIO0DIV(250));
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

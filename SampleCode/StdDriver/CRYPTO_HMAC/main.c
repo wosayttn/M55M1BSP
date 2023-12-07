@@ -23,7 +23,7 @@ void DEBUG_PORT_Init(void);
 
 void CRYPTO_IRQHandler()
 {
-    if(CRYPTO->INTSTS & (CRYPTO_INTSTS_HMACIF_Msk | CRYPTO_INTSTS_HMACEIF_Msk))
+    if (CRYPTO->INTSTS & (CRYPTO_INTSTS_HMACIF_Msk | CRYPTO_INTSTS_HMACEIF_Msk))
     {
         g_HMAC_done = 1;
         CRYPTO->INTSTS = CRYPTO_INTSTS_HMACIF_Msk | CRYPTO_INTSTS_HMACEIF_Msk;
@@ -32,11 +32,11 @@ void CRYPTO_IRQHandler()
 
 int IsHexChar(char c)
 {
-    if((c >= '0') && (c <= '9'))
+    if ((c >= '0') && (c <= '9'))
         return 1;
-    if((c >= 'a') && (c <= 'f'))
+    if ((c >= 'a') && (c <= 'f'))
         return 1;
-    if((c >= 'A') && (c <= 'F'))
+    if ((c >= 'A') && (c <= 'F'))
         return 1;
     return 0;
 }
@@ -44,11 +44,11 @@ int IsHexChar(char c)
 
 uint8_t Char2Hex(uint8_t c)
 {
-    if((c >= '0') && (c <= '9'))
+    if ((c >= '0') && (c <= '9'))
         return c - '0';
-    if((c >= 'a') && (c <= 'f'))
+    if ((c >= 'a') && (c <= 'f'))
         return c - 'a' + 10;
-    if((c >= 'A') && (c <= 'F'))
+    if ((c >= 'A') && (c <= 'F'))
         return c - 'A' + 10;
     return 0;
 }
@@ -59,9 +59,9 @@ uint32_t Str2Hex(char *str, uint8_t *hex, int swap)
     uint32_t i, count = 0, actual_len;
     uint8_t val8;
 
-    while(*str)
+    while (*str)
     {
-        if(!IsHexChar(*str))
+        if (!IsHexChar(*str))
         {
             return count;
         }
@@ -69,7 +69,7 @@ uint32_t Str2Hex(char *str, uint8_t *hex, int swap)
         val8 = Char2Hex(*str);
         str++;
 
-        if(!IsHexChar(*str))
+        if (!IsHexChar(*str))
         {
             return count;
         }
@@ -83,14 +83,14 @@ uint32_t Str2Hex(char *str, uint8_t *hex, int swap)
 
     actual_len = count;
 
-    for(; count % 4 ; count++)
+    for (; count % 4 ; count++)
         hex[count] = 0;
 
-    if(!swap)
+    if (!swap)
         return actual_len;
 
     // SWAP
-    for(i = 0; i < count; i += 4)
+    for (i = 0; i < count; i += 4)
     {
         val8 = hex[i];
         hex[i] = hex[i + 3];
@@ -107,16 +107,16 @@ uint32_t Str2Hex(char *str, uint8_t *hex, int swap)
 void SYS_Init(void)
 {
 
-      /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-   /* Enable Internal RC 12MHz clock */
+    /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
@@ -124,15 +124,15 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
 
-   /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable PLL0 200MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -144,14 +144,11 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Enable CRYPTO module clock */
     CLK_EnableModuleClock(CRYPTO0_MODULE);
 
-		 /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -186,9 +183,10 @@ int  main(void)
     SYS_UnlockReg();
 
     SYS_Init();
-		
-		/* Init Debug UART for printf */
+
+    /* Init Debug UART for printf */
     InitDebugUart();
+
     /* Lock protected registers */
     SYS_LockReg();
 
@@ -220,9 +218,9 @@ int  main(void)
     g_HMAC_done = 0;
     CRYPTO->HMAC_CTL |= CRYPTO_HMAC_CTL_START_Msk | CRYPTO_HMAC_CTL_DMAEN_Msk | CRYPTO_HMAC_CTL_DMALAST_Msk;
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(!g_HMAC_done)
+    while (!g_HMAC_done)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for HMAC time-out!\n");
             return -1;
@@ -232,20 +230,20 @@ int  main(void)
     printf("\nHMAC Output:\n");
 
     pu8 = (uint8_t *)&CRYPTO->HMAC_DGST[0];
-    for(i = 0; i < 32; i++)
+    for (i = 0; i < 32; i++)
     {
         printf("%02x", pu8[i]);
     }
     printf("\n");
 
 
-    if(memcmp((const void *)CRYPTO->HMAC_DGST, (const void *)gau8HMAC, u32MacLen) != 0)
+    if (memcmp((const void *)CRYPTO->HMAC_DGST, (const void *)gau8HMAC, u32MacLen) != 0)
     {
         printf("\n  !!Output is wrong!!\n");
     }
 
     printf("\nHMAC Demo Done\n");
-    while(1) {}
+    while (1) {}
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

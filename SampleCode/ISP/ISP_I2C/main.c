@@ -60,7 +60,7 @@ int32_t SYS_Init(void)
     SystemCoreClock = PllClock;
     CyclesPerUs = SystemCoreClock / 1000000UL;
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     CLK->UARTSEL0 = (CLK->UARTSEL0 & ~CLK_UARTSEL0_UART0SEL_Msk) | CLK_UARTSEL0_UART0SEL_HIRC;
     CLK->UARTCTL |= CLK_UARTCTL_UART0CKEN_Msk;
     /* Check clock stable */

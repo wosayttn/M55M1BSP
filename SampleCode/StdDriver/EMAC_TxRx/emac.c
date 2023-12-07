@@ -58,9 +58,7 @@ void EMAC_Open(uint8_t *macaddr)
         synopGMAC_set_mdc_clk_div(&GMACdev, GmiiCsrClk3);
     else
         synopGMAC_set_mdc_clk_div(&GMACdev, GmiiCsrClk2);
-    
-    GMACdev.ClockDivMdc = synopGMAC_get_mdc_clk_div(&GMACdev);
-    
+    GMACdev.ClockDivMdc = synopGMAC_get_mdc_clk_div(&GMACdev);    
     if(mii_check_phy_init(&GMACdev) < 0)
     {
         printf("emac:: Init PHY FAIL.\n");
@@ -108,10 +106,9 @@ void EMAC_Open(uint8_t *macaddr)
 
     synopGMAC_set_mac_addr(&GMACdev, GmacAddr0High, GmacAddr0Low, &GMACdev.mac_addr[0]);
 
-    if(GMACdev.Speed == SPEED10)
-        synopGMAC_set_mode(&GMACdev, 2); // 1: 100Mbps, 2: 10Mbps
-    else
-        synopGMAC_set_mode(&GMACdev, 1); // 1: 100Mbps, 2: 10Mbps
+		printf("Link speed......%d\n", GMACdev.Speed);
+
+    synopGMAC_set_mode(&GMACdev, GMACdev.Speed);
 
     NVIC_EnableIRQ(EMAC0_IRQn);
 }

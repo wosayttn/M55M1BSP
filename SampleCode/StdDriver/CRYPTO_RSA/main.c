@@ -29,18 +29,18 @@ void DEBUG_PORT_Init(void);
 
 void CRYPTO_IRQHandler(void)
 {
-    if(PRNG_GET_INT_FLAG(CRYPTO))
+    if (PRNG_GET_INT_FLAG(CRYPTO))
     {
         PRNG_CLR_INT_FLAG(CRYPTO);
     }
-    if(SHA_GET_INT_FLAG(CRYPTO))
+    if (SHA_GET_INT_FLAG(CRYPTO))
     {
         SHA_CLR_INT_FLAG(CRYPTO);
     }
-    if(RSA_GET_INT_FLAG(CRYPTO))
+    if (RSA_GET_INT_FLAG(CRYPTO))
     {
         g_RSA_done = 1;
-        if(RSA_GET_INT_FLAG(CRYPTO)&CRYPTO_INTSTS_RSAEIF_Msk)
+        if (RSA_GET_INT_FLAG(CRYPTO)&CRYPTO_INTSTS_RSAEIF_Msk)
         {
             g_RSA_error = 1;
             printf("RSA error flag is set!!\n");
@@ -52,16 +52,16 @@ void CRYPTO_IRQHandler(void)
 void SYS_Init(void)
 {
 
-      /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-   /* Enable Internal RC 12MHz clock */
+    /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
@@ -69,15 +69,15 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
 
-   /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable PLL0 200MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -89,14 +89,11 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Enable CRYPTO module clock */
     CLK_EnableModuleClock(CRYPTO0_MODULE);
 
-		 /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -112,10 +109,8 @@ int32_t main(void)
 {
     char    OutputResult[RSA_KBUF_HLEN];
     uint32_t u32TimeOutCnt;
-  
-    SYS_UnlockReg();
 
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
 
     /* Init System, IP clock and multi-function I/O. */
@@ -147,7 +142,7 @@ int32_t main(void)
      *  RSA sign
      *---------------------------------------*/
     /* Configure RSA operation mode and key length */
-    if(RSA_Open(CRYPTO, RSA_MODE_NORMAL, RSA_KEY_SIZE_2048, &s_sRSABuf, sizeof(s_sRSABuf), 0) != 0)
+    if (RSA_Open(CRYPTO, RSA_MODE_NORMAL, RSA_KEY_SIZE_2048, &s_sRSABuf, sizeof(s_sRSABuf), 0) != 0)
     {
         printf("\nRSA buffer size is incorrect!!\n");
         return -1;
@@ -159,9 +154,9 @@ int32_t main(void)
 
     /* Waiting for RSA operation done */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(!g_RSA_done)
+    while (!g_RSA_done)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for RSA operation done time-out!\n");
             return -1;
@@ -169,7 +164,7 @@ int32_t main(void)
     }
 
     /* Check error flag */
-    if(g_RSA_error)
+    if (g_RSA_error)
     {
         printf("\nRSA has error!!\n");
         return -1;
@@ -186,7 +181,7 @@ int32_t main(void)
     g_RSA_error = 0;
 
     /* Configure RSA operation mode and key length */
-    if(RSA_Open(CRYPTO, RSA_MODE_NORMAL, RSA_KEY_SIZE_2048, &s_sRSABuf, sizeof(s_sRSABuf), 0))
+    if (RSA_Open(CRYPTO, RSA_MODE_NORMAL, RSA_KEY_SIZE_2048, &s_sRSABuf, sizeof(s_sRSABuf), 0))
     {
         printf("\nRSA buffer size is incorrect!!\n");
         return -1;
@@ -198,9 +193,9 @@ int32_t main(void)
 
     /* Waiting for RSA operation done */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(!g_RSA_done)
+    while (!g_RSA_done)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for RSA operation done time-out!\n");
             return -1;
@@ -208,7 +203,7 @@ int32_t main(void)
     }
 
     /* Check error flag */
-    if(g_RSA_error)
+    if (g_RSA_error)
     {
         printf("\nRSA has error!!\n");
         return -1;
@@ -219,7 +214,7 @@ int32_t main(void)
     printf("\nRSA Output: %s\n", OutputResult);
 
     /* Verify the message */
-    if(strcasecmp(OutputResult, Msg) == 0)
+    if (strcasecmp(OutputResult, Msg) == 0)
         printf("\nRSA signature verify OK.\n");
     else
     {
@@ -227,7 +222,7 @@ int32_t main(void)
         //return -1;
     }
     printf("\nDone.\n");
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

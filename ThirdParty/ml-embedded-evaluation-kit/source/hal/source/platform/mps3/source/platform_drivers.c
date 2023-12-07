@@ -58,7 +58,7 @@ int platform_init(void)
     SystemCoreClockUpdate();    /* From start up code */
 
     /* UART init - will enable valid use of printf (stdout
-     * re-directed at this UART (UART0) */
+     * re-directed at this UART (DEBUG_PORT) */
     UartStdOutInit();
 
     if (0 != (err = verify_platform())) {

@@ -21,7 +21,6 @@ static volatile uint32_t g_u32AdcIntFlag;
 int32_t main(void);
 void EADC_FunctionTest(void);
 void SYS_Init(void);
-void UART0_Init(void);
 NVT_ITCM void EADC00_IRQHandler(void);
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
@@ -57,7 +56,7 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
@@ -73,7 +72,7 @@ void SYS_Init(void)
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
-    /* Set PB multi-function pins for Debug UART RXD and TXD */
+    /* Set debug uart multi-function pins. */
     SetDebugUartMFP();
 
     /* Enable VBAT unity gain buffer */

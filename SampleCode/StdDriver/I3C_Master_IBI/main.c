@@ -42,7 +42,7 @@ static void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -133,9 +133,9 @@ int32_t main(void)
             Press any key to to write and read I3C Slave.
             The write data should be equal to the received data.
         */
-        if ((UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0U)
+        if ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0U)
         {
-            chTrgIO = (char)UART0->DAT;
+            chTrgIO = (char)DEBUG_PORT->DAT;
 
             printf("press any key to Write I3C Target \n");
             getchar();

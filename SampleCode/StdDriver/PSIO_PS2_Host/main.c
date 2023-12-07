@@ -171,7 +171,7 @@ void SYS_Init(void)
     /* Select PSIO module clock source as HIRC and PSIO module clock divider as 1 */
     CLK_SetModuleClock(PSIO0_MODULE, CLK_PSIOSEL_PSIO0SEL_HIRC, CLK_PSIODIV_PSIO0DIV(1));
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     CLK_EnableModuleClock(GPIOA_MODULE);
@@ -252,11 +252,11 @@ int32_t main(void)
         }
 
         /* Send data */
-        if (!(UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk))
+        if (!(DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk))
         {
             uint32_t u32Data;
 
-            u32Data = UART0->DAT;
+            u32Data = DEBUG_PORT->DAT;
             g_u32TxData = PSIO_Encode_TxData(&u32Data);
             printf("[Host send to device]0x%x, 0x%x\n", u32Data, g_u32TxData);
 

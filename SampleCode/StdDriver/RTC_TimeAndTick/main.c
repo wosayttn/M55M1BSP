@@ -72,7 +72,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(RTC0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -137,7 +137,7 @@ int main(void)
     RTC_EnableInt(RTC_INTEN_TICKIEN_Msk);
     RTC_SetTickPeriod(RTC_TICK_1_4_SEC);
 
-    printf("# Showing RTC date/time on UART0.\n\n");
+    printf("# Showing RTC date/time on DEBUG_PORT.\n\n");
     printf("1.) Use PA.2 to check tick period time is 1/4 or not.\n");
     printf("2.) Show RTC date/time and change date/time after 5 seconds:\n");
 

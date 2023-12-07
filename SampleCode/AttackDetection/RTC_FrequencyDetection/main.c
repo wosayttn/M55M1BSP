@@ -19,7 +19,6 @@
 
 void SYS_Init(void);
 void RTC_Init(void);
-void UART0_Init(void);
 void TIMER0_Init(void);
 void GetActiveLXTandLIRC32Freq(uint32_t *u32LXTFreq, uint32_t *LIRC32Freq);
 
@@ -88,7 +87,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOC_MODULE);
     CLK_EnableModuleClock(RTC0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

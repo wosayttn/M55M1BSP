@@ -72,8 +72,8 @@ void AWF_Wakeup_Test(void)
     printf("Enter Power-down...\n");
 
     /* Wait uart tx empty */
-    UART_WAIT_TX_EMPTY(UART0);
-    
+    UART_WAIT_TX_EMPTY(DEBUG_PORT);
+
     /* Start LPTMR */
     LPTMR_Start(LPTMR0);
 
@@ -94,9 +94,9 @@ NVT_ITCM void AWF_IRQHandler(void)
 
     /* Enable AWF0 module clock */
     CLK_EnableModuleClock(AWF0_MODULE); //TESTCHIP_ONLY
-    
+
     u32AccumulationValue = AWF_GET_ACUVAL();
-    
+
     if (AWF_GET_HTH_INTFLAG())
     {
         printf("AWF HTH Interrupt occured!!!, HTH_INT = %d, LTH_INT = %d\n", (uint32_t)AWF_GET_HTH_INTFLAG(), (uint32_t)AWF_GET_LTH_INTFLAG());
@@ -135,7 +135,7 @@ static void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Enable LPSRAM0 module clock */
@@ -184,7 +184,7 @@ int main(void)
     printf("+-------------------------------------------------------------+\n");
     printf("\nPress any key to entering power-down.\n\n");
     getchar();
-    
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 

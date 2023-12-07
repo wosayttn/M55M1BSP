@@ -136,11 +136,11 @@ void SYS_Init(void)
     /* Set PF multi-function pins for X32_OUT(PF.4) and X32_IN(PF.5) */
     SET_X32_OUT_PF4();
     SET_X32_IN_PF5();
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    
+
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -153,8 +153,8 @@ void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-    
-    /* Enable UART0 module clock */
+
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Enable WDT0 module clock */
@@ -179,7 +179,7 @@ int32_t main(void)
 
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-    
+
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
@@ -193,7 +193,7 @@ int32_t main(void)
 
     /* Set HCLK clock as MIRC */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_MIRC);
-    
+
     /* Set power level to 0.9V */
     printf("Set power level to 1.1V ");
     PMC_SetPowerLevel(PMC_PLCTL_PLSEL_PL1);

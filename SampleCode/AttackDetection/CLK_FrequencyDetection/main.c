@@ -39,7 +39,7 @@ NVT_ITCM void CKFAIL_IRQHandler(void)
     {
         /* RTC clock could be switched to LIRC if LXT clock fail interrupt is happened */
         RTC_SetClockSource(RTC_CLOCK_SOURCE_LIRC);
-        
+
         printf("LXT clock is stopped! RTC clock is switched to LIRC.\n");
 
         /* Disable LXT clock fail interrupt */
@@ -127,7 +127,7 @@ static void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Enable RTC peripheral clock */

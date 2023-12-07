@@ -30,7 +30,7 @@ void PowerDownFunction(void)
 
     /* Select power-down mode and power level */
     PMC_SetPowerDownMode(PMC_SPD1,PMC_PLCTL_PLSEL_PL0);
-    
+
     /* Enter to Power-down mode */
     PMC_PowerDown();
 
@@ -66,14 +66,14 @@ void SYS_Init(void)
 {
     /* Unlock protected registers */
     SYS_UnlockReg();
-    
+
     /* Release GPIO Status from power-down wake-up */
     PMC_RELEASE_GPIO();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    
+
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -87,7 +87,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Enable WDT0 module clock */

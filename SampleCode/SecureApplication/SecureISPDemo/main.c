@@ -12,9 +12,6 @@
 
 extern int32_t ExecuteSecureISP(void);
 
-void SYS_Init(void);
-void UART0_Init(void);
-
 void SYS_Init(void)
 {
     /* Unlock protected registers */
@@ -36,7 +33,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

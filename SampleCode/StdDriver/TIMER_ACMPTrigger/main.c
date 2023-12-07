@@ -7,7 +7,7 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 /*
- * This sample uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This sample uses internal RC as APLL0 clock source and UART to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
@@ -25,7 +25,7 @@
 NVT_ITCM void TIMER0_IRQHandler(void)
 {
     printf("ACMP triggered timer reset while counter is at %d\n", TIMER_GetCaptureData(TIMER0));
-    
+
     // Clear timer capture interrupt flag.
     TIMER_ClearCaptureIntFlag(TIMER0);
 }
@@ -64,7 +64,7 @@ static void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -81,7 +81,7 @@ static void SYS_Init(void)
 
     /* Enable ACMP module clock */
     CLK_EnableModuleClock(ACMP01_MODULE);
-    
+
     /* Enable GPIO clock */
     CLK_EnableModuleClock(GPIOB_MODULE);
 
@@ -109,7 +109,7 @@ int main(void)
     GPIO_SetMode(PB, BIT5, GPIO_MODE_OUTPUT);
     // Set PB.5 init state to high
     PB5 = 1;
-    
+
     printf("\nThis sample code demonstrate ACMP trigger timer counter reset mode.\n");
     printf("Please connect PB.5 with ACMP1 positive input pin PB.4, press any key to continue\n");
     getchar();
@@ -140,7 +140,7 @@ int main(void)
     ACMP_Open(ACMP01, 1, ACMP_CTL_NEGSEL_VBG, ACMP_CTL_HYSTERESIS_DISABLE);
     /* Select P1 as ACMP1 positive input channel */
     ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P1);
-    
+
     while(1)
     {
         PB5 = 0; // low

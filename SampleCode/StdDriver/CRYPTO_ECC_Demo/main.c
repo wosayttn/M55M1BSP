@@ -34,9 +34,9 @@ void DEBUG_PORT_Init(void);
 
 uint8_t Byte2Char(uint8_t c)
 {
-    if(c < 10)
+    if (c < 10)
         return (c + '0');
-    if(c < 16)
+    if (c < 16)
         return (c - 10 + 'a');
 
     return 0;
@@ -45,7 +45,7 @@ uint8_t Byte2Char(uint8_t c)
 
 void CRYPTO_IRQHandler()
 {
-   ECC_Complete(CRYPTO);
+    ECC_Complete(CRYPTO);
 }
 
 
@@ -54,15 +54,15 @@ void  dump_buff_hex(uint8_t *pucBuff, int nBytes)
     int     nIdx, i;
 
     nIdx = 0;
-    while(nBytes > 0)
+    while (nBytes > 0)
     {
         printf("0x%04X  ", nIdx);
-        for(i = 0; i < 16; i++)
+        for (i = 0; i < 16; i++)
             printf("%02x ", pucBuff[nIdx + i]);
         printf("  ");
-        for(i = 0; i < 16; i++)
+        for (i = 0; i < 16; i++)
         {
-            if((pucBuff[nIdx + i] >= 0x20) && (pucBuff[nIdx + i] < 127))
+            if ((pucBuff[nIdx + i] >= 0x20) && (pucBuff[nIdx + i] < 127))
                 printf("%c", pucBuff[nIdx + i]);
             else
                 printf(".");
@@ -78,16 +78,16 @@ void  dump_buff_hex(uint8_t *pucBuff, int nBytes)
 void SYS_Init(void)
 {
 
-      /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-   /* Enable Internal RC 12MHz clock */
+    /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
@@ -95,15 +95,15 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
 
-   /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable PLL0 200MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -115,14 +115,11 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Enable CRYPTO module clock */
     CLK_EnableModuleClock(CRYPTO0_MODULE);
 
-		 /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -144,7 +141,7 @@ int32_t main(void)
 
     SYS_UnlockReg();
 
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
 
     /* Init System, IP clock and multi-function I/O. */
@@ -170,7 +167,7 @@ int32_t main(void)
     /* Init Timer */
     SysTick->LOAD  = 0xfffffful;                                              /* set reload register */
     SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;    /* Enable SysTick IRQ and SysTick Timer */
-    
+
     au8r = (uint8_t *)&au32r[0];
     do
     {
@@ -178,7 +175,7 @@ int32_t main(void)
         /* Generate random number for private key */
         RNG_Random(au32r, (nbits + 31) / 32);
 
-        for(i = 0, j = 0; i < nbits / 8; i++)
+        for (i = 0, j = 0; i < nbits / 8; i++)
         {
             d[j++] = Byte2Char(au8r[i] & 0xf);
             d[j++] = Byte2Char(au8r[i] >> 4);
@@ -189,7 +186,7 @@ int32_t main(void)
         printf("Private key = %s\n", d);
 
         /* Check if the private key valid */
-        if(ECC_IsPrivateKeyValid(CRYPTO, CURVE_P_SIZE, d))
+        if (ECC_IsPrivateKeyValid(CRYPTO, CURVE_P_SIZE, d))
         {
             break;
         }
@@ -200,14 +197,14 @@ int32_t main(void)
         }
 
     }
-    while(1);
+    while (1);
 
     /* Reset SysTick to measure time */
     SysTick->VAL = 0;
-    if(ECC_GeneratePublicKey(CRYPTO, CURVE_P_SIZE, d, Qx, Qy) < 0)
+    if (ECC_GeneratePublicKey(CRYPTO, CURVE_P_SIZE, d, Qx, Qy) < 0)
     {
         printf("ECC key generation failed!!\n");
-        while(1);
+        while (1);
     }
     time = 0xffffff - SysTick->VAL;
 
@@ -220,14 +217,14 @@ int32_t main(void)
         public key.
 
     */
-    for(m = 0; m < 3; m++)
+    for (m = 0; m < 3; m++)
     {
         printf("//-------------------------------------------------------------------------//\n");
 
         /* Generate random number k */
         RNG_Random(au32r, (nbits + 31) / 32);
 
-        for(i = 0, j = 0; i < nbits / 8; i++)
+        for (i = 0, j = 0; i < nbits / 8; i++)
         {
             k[j++] = Byte2Char(au8r[i] & 0xf);
             k[j++] = Byte2Char(au8r[i] >> 4);
@@ -236,7 +233,7 @@ int32_t main(void)
 
         printf("  k = %s\n", k);
 
-        if(ECC_IsPrivateKeyValid(CRYPTO, CURVE_P_SIZE, k))
+        if (ECC_IsPrivateKeyValid(CRYPTO, CURVE_P_SIZE, k))
         {
             /* Private key check ok */
         }
@@ -249,7 +246,7 @@ int32_t main(void)
         }
 
         SysTick->VAL = 0;
-        if(ECC_GenerateSignature(CRYPTO, CURVE_P_SIZE, msg, d, k, R, S) < 0)
+        if (ECC_GenerateSignature(CRYPTO, CURVE_P_SIZE, msg, d, k, R, S) < 0)
         {
             printf("ECC signature generation failed!!\n");
             return -1;
@@ -264,7 +261,7 @@ int32_t main(void)
         SysTick->VAL = 0;
         err = ECC_VerifySignature(CRYPTO, CURVE_P_SIZE, msg, Qx, Qy, R, S);
         time = 0xffffff - SysTick->VAL;
-        if(err < 0)
+        if (err < 0)
         {
             printf("ECC signature verification failed!!\n");
             return -1;
@@ -278,7 +275,7 @@ int32_t main(void)
 
     printf("Demo Done.\n");
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

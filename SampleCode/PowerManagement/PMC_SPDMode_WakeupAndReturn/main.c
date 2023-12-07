@@ -17,13 +17,13 @@ void SYS_Init(void)
 {
     /* Unlock protected registers */
     SYS_UnlockReg();
-    
+
     /* Release GPIO hold status */
     PMC_RELEASE_GPIO();
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    
+
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -37,7 +37,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -55,7 +55,7 @@ void SPDMode_WakeupAndReturn(uint32_t bReturn)
     if (bReturn == FALSE)
     {
         uint32_t u32TimeOutCnt;
-        
+
         /* Save return address in g_u32ReturnAddr to return after reset */
         __ASM volatile ("mov %0, lr\n" : "=r"(g_u32ReturnAddr));
 
@@ -75,21 +75,21 @@ void SPDMode_WakeupAndReturn(uint32_t bReturn)
         UART_WAIT_TX_EMPTY(DEBUG_PORT)
 
         if (--u32TimeOutCnt == 0) break;
-        
+
         /* Clear all wake-up flag */
-        PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;        
-        
+        PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
+
         /* Enter to Power-down mode */
         PMC_PowerDown();
     }
     else
-    {   
+    {
         /* Init System, IP clock and multi-function I/O */
         SYS_Init();
-        
+
         /* Init Debug UART to 115200-8N1 for print message */
         InitDebugUart();
-        
+
         printf("[After Reset] Resotred LR: 0x%08X\n", g_u32ReturnAddr);
 
         /* Clear return address */
@@ -102,10 +102,10 @@ int main(void)
 {
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-    
+
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
-    
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -119,7 +119,7 @@ int main(void)
     if (getchar() == '0')
     {
         uint32_t u32TimeOutCnt;
-        
+
         g_u32ReturnAddr   = 0;
         g_bReturnToAddr = FALSE;
         printf("SYS_ResetChip\n");
@@ -135,10 +135,10 @@ int main(void)
         printf("SPDMode_WakeupAndReturn\n");
         SPDMode_WakeupAndReturn(FALSE);
     }
-    
+
     /* Clear all wake-up flag */
-    PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk; 
-    
+    PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
+
     printf("Done.\n");
     /* Got no where to go, just loop forever */
     while (1) ;

@@ -148,7 +148,7 @@ NVT_ITCM void USCI0_IRQHandler(void)
     // TESTCHIP_ONLY
     CLK_WaitModuleClockReady(USCI0_MODULE);
     // TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(UART0_MODULE);
+    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);
 
     uint32_t u32IntSts = UUART_GET_PROT_STATUS(UUART0);
     uint32_t u32WkSts = UUART_GET_WAKEUP_FLAG(UUART0);
@@ -311,7 +311,7 @@ void USCI_UART_PowerDownWakeUpTest(void)
     /* Wait the USCI0 peripheral clock  */
     CLK_WaitModuleClockReady(USCI0_MODULE);
     /* Wait the UART0 peripheral clock  */
-    CLK_WaitModuleClockReady(UART0_MODULE);
+    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);
     /* Lock protected registers */
     SYS_LockReg();
 

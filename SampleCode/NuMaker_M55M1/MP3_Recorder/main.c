@@ -209,13 +209,13 @@ void SYS_Init(void)
     /* Enable SPIM0 module clock */
     CLK_EnableModuleClock(SPIM0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                */
     /*------------------------------------------------------------------------*/
-    /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();
 
     /* Set multi-function pins for I2S0 */
@@ -345,14 +345,14 @@ int32_t main(void)
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
+    /* Init Debug UART for printf */
+    InitDebugUart();
+
     /* Init SD */
     SD_Init();
 
     /* Init HyperRAM and Entry DMM Mode */
     HyperRAM_Init(SPIM0);
-
-    /* Init UART to 115200-8n1 for print message */
-    UART_Open(UART0, 115200);
 
     printf("+-----------------------------------------------------------------------+\n");
     printf("|                  MP3 Recorder Sample with Audio Codec                 |\n");

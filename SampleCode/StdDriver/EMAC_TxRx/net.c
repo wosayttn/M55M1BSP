@@ -297,7 +297,7 @@ int dhcp_start(void)
 
 wait_offer:
     out = 0;
-    for (retry = 0; (retry < 16) && (!out); retry++)
+    for (retry = 0; (retry < 30) && (!out); retry++)
     {
         if (retry)
             printf("DHCP DISCOVER retry: %d\n", retry);

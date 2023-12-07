@@ -33,50 +33,50 @@
 #define B_571 14
 
 #if   (ECC_CURVE_SEL == P_192)
-#define ECC_CURVE_TYPE  CURVE_P_192
-#define ECC_KEY_SIZE    192
+    #define ECC_CURVE_TYPE  CURVE_P_192
+    #define ECC_KEY_SIZE    192
 #elif (ECC_CURVE_SEL == P_224)
-#define ECC_CURVE_TYPE  CURVE_P_224
-# define ECC_KEY_SIZE   224
+    #define ECC_CURVE_TYPE  CURVE_P_224
+    #define ECC_KEY_SIZE   224
 #elif (ECC_CURVE_SEL == P_256)
-#define ECC_CURVE_TYPE  CURVE_P_256
-#define ECC_KEY_SIZE    256
-#elif(ECC_CURVE_SEL == P_384)
-#define ECC_CURVE_TYPE  CURVE_P_384
-#define ECC_KEY_SIZE    384
-#elif(ECC_CURVE_SEL == P_521)
-#define ECC_CURVE_TYPE  CURVE_P_521
-#define ECC_KEY_SIZE    521
-#elif(ECC_CURVE_SEL == K_163)
-#define ECC_CURVE_TYPE  CURVE_K_163
-#define ECC_KEY_SIZE    163
-#elif(ECC_CURVE_SEL == K_233)
-#define ECC_CURVE_TYPE  CURVE_K_233
-#define ECC_KEY_SIZE    233
-#elif(ECC_CURVE_SEL == K_283)
-#define ECC_CURVE_TYPE  CURVE_K_283
-#define ECC_KEY_SIZE    283
-#elif(ECC_CURVE_SEL == K_409)
-#define ECC_CURVE_TYPE  CURVE_K_409
-#define ECC_KEY_SIZE    409
-#elif(ECC_CURVE_SEL == K_571)
-#define ECC_CURVE_TYPE  CURVE_K_571
-#define ECC_KEY_SIZE    571
-#elif(ECC_CURVE_SEL == B_163)
-#define ECC_CURVE_TYPE  CURVE_B_163
-#define ECC_KEY_SIZE    163
-#elif(ECC_CURVE_SEL == B_233)
-#define ECC_CURVE_TYPE  CURVE_B_233
-#define ECC_KEY_SIZE    233
-#elif(ECC_CURVE_SEL == B_283)
-#define ECC_CURVE_TYPE  CURVE_B_283
-#define ECC_KEY_SIZE    283
-#elif(ECC_CURVE_SEL == B_409)
-#define ECC_CURVE_TYPE  CURVE_B_409
-#define ECC_KEY_SIZE    409
-#elif(ECC_CURVE_SEL == B_571)
-#define ECC_CURVE_TYPE  CURVE_B_571
-#define ECC_KEY_SIZE    571
+    #define ECC_CURVE_TYPE  CURVE_P_256
+    #define ECC_KEY_SIZE    256
+    #elif(ECC_CURVE_SEL == P_384)
+    #define ECC_CURVE_TYPE  CURVE_P_384
+    #define ECC_KEY_SIZE    384
+    #elif(ECC_CURVE_SEL == P_521)
+    #define ECC_CURVE_TYPE  CURVE_P_521
+    #define ECC_KEY_SIZE    521
+    #elif(ECC_CURVE_SEL == K_163)
+    #define ECC_CURVE_TYPE  CURVE_K_163
+    #define ECC_KEY_SIZE    163
+    #elif(ECC_CURVE_SEL == K_233)
+    #define ECC_CURVE_TYPE  CURVE_K_233
+    #define ECC_KEY_SIZE    233
+    #elif(ECC_CURVE_SEL == K_283)
+    #define ECC_CURVE_TYPE  CURVE_K_283
+    #define ECC_KEY_SIZE    283
+    #elif(ECC_CURVE_SEL == K_409)
+    #define ECC_CURVE_TYPE  CURVE_K_409
+    #define ECC_KEY_SIZE    409
+    #elif(ECC_CURVE_SEL == K_571)
+    #define ECC_CURVE_TYPE  CURVE_K_571
+    #define ECC_KEY_SIZE    571
+    #elif(ECC_CURVE_SEL == B_163)
+    #define ECC_CURVE_TYPE  CURVE_B_163
+    #define ECC_KEY_SIZE    163
+    #elif(ECC_CURVE_SEL == B_233)
+    #define ECC_CURVE_TYPE  CURVE_B_233
+    #define ECC_KEY_SIZE    233
+    #elif(ECC_CURVE_SEL == B_283)
+    #define ECC_CURVE_TYPE  CURVE_B_283
+    #define ECC_KEY_SIZE    283
+    #elif(ECC_CURVE_SEL == B_409)
+    #define ECC_CURVE_TYPE  CURVE_B_409
+    #define ECC_KEY_SIZE    409
+    #elif(ECC_CURVE_SEL == B_571)
+    #define ECC_CURVE_TYPE  CURVE_B_571
+    #define ECC_KEY_SIZE    571
 #endif
 
 void CRYPTO_IRQHandler(void);
@@ -92,16 +92,16 @@ void CRYPTO_IRQHandler()
 void SYS_Init(void)
 {
 
-      /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-   /* Enable Internal RC 12MHz clock */
+    /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
@@ -109,15 +109,15 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
 
-   /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable PLL0 200MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -129,14 +129,11 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Enable CRYPTO module clock */
     CLK_EnableModuleClock(CRYPTO0_MODULE);
 
-		 /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -158,7 +155,7 @@ void GenPrivateKey(char *d, uint32_t u32NBits)
         /* Generate random number for private key */
         RNG_Random(au32r, (u32NBits + 31) / 32);
 
-        for(u32Idx = 0, j = 0; u32Idx < (u32NBits + 7) / 8; u32Idx++)
+        for (u32Idx = 0, j = 0; u32Idx < (u32NBits + 7) / 8; u32Idx++)
         {
             d[j++] = B2C(u8r[u32Idx] & 0xf);
             d[j++] = B2C(u8r[u32Idx] >> 4);
@@ -166,7 +163,7 @@ void GenPrivateKey(char *d, uint32_t u32NBits)
         d[(u32NBits + 3) / 4] = 0;
 
         /* Check if the private key valid */
-        if(ECC_IsPrivateKeyValid(CRYPTO, ECC_CURVE_TYPE, d))
+        if (ECC_IsPrivateKeyValid(CRYPTO, ECC_CURVE_TYPE, d))
         {
             break;
         }
@@ -174,13 +171,13 @@ void GenPrivateKey(char *d, uint32_t u32NBits)
         {
             /* Decrease 1 bit and try again */
             d[(u32NBits + 2) / 4] = 0;
-            if(ECC_IsPrivateKeyValid(CRYPTO, ECC_CURVE_TYPE, d))
+            if (ECC_IsPrivateKeyValid(CRYPTO, ECC_CURVE_TYPE, d))
             {
-                if(((u32NBits & 0x3) != 0) && (((u32NBits - 1) & 0x3) == 0))
+                if (((u32NBits & 0x3) != 0) && (((u32NBits - 1) & 0x3) == 0))
                 {
                     /* Need padding 1 nibble back */
                     j = (u32NBits + 2) / 4;
-                    for(i = j; i > 0; i--)
+                    for (i = j; i > 0; i--)
                         d[i] = d[i - 1];
                     d[i + 1] = 0;
                     d[0] = '0';
@@ -195,7 +192,7 @@ void GenPrivateKey(char *d, uint32_t u32NBits)
             }
         }
     }
-    while(1);
+    while (1);
 
 }
 
@@ -217,7 +214,7 @@ int32_t main(void)
 
     SYS_UnlockReg();
 
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
 
     /* Init System, IP clock and multi-function I/O. */
@@ -247,7 +244,7 @@ int32_t main(void)
     /* Generate public Key A */
     /* Reset SysTick to measure calculation time */
     SysTick->VAL = 0;
-    if(ECC_GeneratePublicKey(CRYPTO, ECC_CURVE_TYPE, d, Qx, Qy) < 0)
+    if (ECC_GeneratePublicKey(CRYPTO, ECC_CURVE_TYPE, d, Qx, Qy) < 0)
     {
         printf("ECC key generation failed!!\n");
         return -1;
@@ -267,7 +264,7 @@ int32_t main(void)
     /* Generate public Key B */
     /* Reset SysTick to measure calculation time */
     SysTick->VAL = 0;
-    if(ECC_GeneratePublicKey(CRYPTO, ECC_CURVE_TYPE, d2, Qx2, Qy2) < 0)
+    if (ECC_GeneratePublicKey(CRYPTO, ECC_CURVE_TYPE, d2, Qx2, Qy2) < 0)
     {
         printf("ECC key generation failed!!\n");
         return -1;
@@ -279,7 +276,7 @@ int32_t main(void)
     printf("Elapsed time: %d.%d ms\n", u32Time / CyclesPerUs / 1000, u32Time / CyclesPerUs % 1000);
 
     /* Calcualte Share Key by private key A and publick key B */
-    if(ECC_GenerateSecretZ(CRYPTO, ECC_CURVE_TYPE, d, Qx2, Qy2, k) < 0)
+    if (ECC_GenerateSecretZ(CRYPTO, ECC_CURVE_TYPE, d, Qx2, Qy2, k) < 0)
     {
         printf("ECC ECDH share key calculation fail\n");
         return -1;
@@ -288,7 +285,7 @@ int32_t main(void)
     printf("Share key calculated by A = %s\n", k);
 
     /* Calcualte Share Key by private key B and publick key A */
-    if(ECC_GenerateSecretZ(CRYPTO, ECC_CURVE_TYPE, d2, Qx, Qy, k2) < 0)
+    if (ECC_GenerateSecretZ(CRYPTO, ECC_CURVE_TYPE, d2, Qx, Qy, k2) < 0)
     {
         printf("ECC ECDH share key calculation fail\n");
         return -1;
@@ -296,7 +293,7 @@ int32_t main(void)
 
     printf("Share key calculated by B = %s\n", k2);
 
-    if(strcmp(k, k2) != 0)
+    if (strcmp(k, k2) != 0)
     {
         printf("Share key mismatch!!\n");
     }
@@ -305,7 +302,7 @@ int32_t main(void)
         printf("Share key match. Test OK\n");
     }
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

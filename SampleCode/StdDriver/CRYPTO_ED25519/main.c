@@ -10,7 +10,7 @@
 #include "NuMicro.h"
 #include "EdDsa.h"
 
-#define TXT_MAX_LEN		8192
+#define TXT_MAX_LEN     8192
 
 volatile uint32_t  g_tick_cnt;
 
@@ -20,8 +20,10 @@ int data_compare(uint8_t *answer, uint8_t *cmp_data, int len)
     int  i, err;
 
     err = 0;
-    for (i = 0; i < len; i++) {
-        if (answer[i] != cmp_data[i]) {
+    for (i = 0; i < len; i++)
+    {
+        if (answer[i] != cmp_data[i])
+        {
             if (err == 0)
                 printf("Data compare error dump:\n");
             printf("[%d]: Answer %02x ! %02x\n", i, answer[i], cmp_data[i]);
@@ -30,7 +32,8 @@ int data_compare(uint8_t *answer, uint8_t *cmp_data, int len)
 
         }
     }
-    if (err) {
+    if (err)
+    {
         printf("Answer dump ==>\n");
         dump_buff_hex(answer, len);
         printf("Wring data dump ==>\n");
@@ -49,15 +52,15 @@ void do_swap(uint8_t *buff, int len)
     int       i;
     uint8_t   val8;
 
-    len = (len+3) & 0xfffffffc;
-    for (i = 0; i < len; i+=4)
+    len = (len + 3) & 0xfffffffc;
+    for (i = 0; i < len; i += 4)
     {
         val8 = buff[i];
-        buff[i] = buff[i+3];
-        buff[i+3] = val8;
-        val8 = buff[i+1];
-        buff[i+1] = buff[i+2];
-        buff[i+2] = val8;
+        buff[i] = buff[i + 3];
+        buff[i + 3] = val8;
+        val8 = buff[i + 1];
+        buff[i + 1] = buff[i + 2];
+        buff[i + 2] = val8;
     }
 }
 
@@ -65,12 +68,12 @@ void do_swap_to(uint8_t *out, uint8_t *buff, int len)
 {
     int       i;
 
-    for (i = 0; i < len; i+=4)
+    for (i = 0; i < len; i += 4)
     {
-        out[i]   = buff[i+3];
-        out[i+1] = buff[i+2];
-        out[i+2] = buff[i+1];
-        out[i+3] = buff[i];
+        out[i]   = buff[i + 3];
+        out[i + 1] = buff[i + 2];
+        out[i + 2] = buff[i + 1];
+        out[i + 3] = buff[i];
     }
 }
 
@@ -86,10 +89,11 @@ extern volatile int  g_CHAPOLY_done;
 
 void random_gen_mass(uint8_t *buff, int count)
 {
-    uint32_t	*prng_data = (uint32_t *)((uint64_t)CRYPTO_BASE + 0x10);
+    uint32_t    *prng_data = (uint32_t *)((uint64_t)CRYPTO_BASE + 0x10);
     int   clen;
 
-    while (count > 0) {
+    while (count > 0)
+    {
 
         /* Trigger PRNG to generate 32 bytes random data */
         g_PRNG_done = 0;
@@ -112,8 +116,10 @@ int comapre_hex_dump_err(uint8_t *answer, uint8_t *compare, int len, int err_max
 {
     int  err = 0, k;
 
-    for (k = 0; k < len; k++) {
-        if (answer[k] != compare[k]) {
+    for (k = 0; k < len; k++)
+    {
+        if (answer[k] != compare[k])
+        {
             printf("%d: 0x%02x (Ans) - 0x%02x (Dat)\n", k, answer[k], compare[k]);
             if (err++ > err_max)
                 break;
@@ -162,9 +168,6 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Enable CRYPTO module clock */
     CLK_EnableModuleClock(CRYPTO0_MODULE);
 
@@ -178,13 +181,6 @@ void SYS_Init(void)
 
 }
 
-/*
- * This is a template project for NuMicro TC8263 series MCU. Users could based on this project to create their
- * own application without worry about the IAR/Keil project settings.
- *
- * This template application uses external crystal as HCLK source and configures UART0 to print out
- * "Hello World", users may need to do extra system configuration based on their system design.
- */
 int main()
 {
     int i;

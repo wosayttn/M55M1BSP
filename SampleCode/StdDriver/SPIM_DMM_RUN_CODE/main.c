@@ -76,7 +76,7 @@ void SYS_Init(void)
     /* Enable SPIM module clock */
     CLK_EnableModuleClock(SPIM0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Enable GPIO Module clock */

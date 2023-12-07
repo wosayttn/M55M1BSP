@@ -34,18 +34,18 @@ int32_t PrepareKeys(void);
 
 void CRYPTO_IRQHandler(void)
 {
-    if(PRNG_GET_INT_FLAG(CRYPTO))
+    if (PRNG_GET_INT_FLAG(CRYPTO))
     {
         PRNG_CLR_INT_FLAG(CRYPTO);
     }
-    if(SHA_GET_INT_FLAG(CRYPTO))
+    if (SHA_GET_INT_FLAG(CRYPTO))
     {
         SHA_CLR_INT_FLAG(CRYPTO);
     }
-    if(RSA_GET_INT_FLAG(CRYPTO))
+    if (RSA_GET_INT_FLAG(CRYPTO))
     {
         g_RSA_done = 1;
-        if(RSA_GET_INT_FLAG(CRYPTO)&CRYPTO_INTSTS_RSAEIF_Msk)
+        if (RSA_GET_INT_FLAG(CRYPTO)&CRYPTO_INTSTS_RSAEIF_Msk)
         {
             g_RSA_error = 1;
             printf("RSA error flag is set!!\n");
@@ -60,14 +60,14 @@ void RSA_Hex2Reg(char *input, uint32_t *reg)
     uint32_t  val32;
 
     si = (int)strlen(input) - 1;
-    while(si >= 0)
+    while (si >= 0)
     {
         val32 = 0;
-        for(i = 0; (i < 8) && (si >= 0); i++)
+        for (i = 0; (i < 8) && (si >= 0); i++)
         {
-            if(input[si] <= '9')
+            if (input[si] <= '9')
                 val32 |= (uint32_t)((input[si] - '0') << (i * 4));
-            else if((input[si] <= 'z') && (input[si] >= 'a'))
+            else if ((input[si] <= 'z') && (input[si] >= 'a'))
                 val32 |= (uint32_t)((input[si] - 'a' + 10) << (i * 4));
             else
                 val32 |= (uint32_t)((input[si] - 'A' + 10) << (i * 4));
@@ -80,16 +80,16 @@ void RSA_Hex2Reg(char *input, uint32_t *reg)
 void SYS_Init(void)
 {
 
-      /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-   /* Enable Internal RC 12MHz clock */
+    /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
@@ -97,15 +97,15 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
 
-   /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable PLL0 200MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -117,18 +117,14 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Enable CRYPTO module clock */
     CLK_EnableModuleClock(CRYPTO0_MODULE);
-		
-		/* Enable KS module clock */
+
+    /* Enable KS module clock */
     CLK_EnableModuleClock(KS0_MODULE);
 
-
-		 /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -145,7 +141,7 @@ void EraseAllFlashKey(void)
 
     /* Erase all keys in FLASH of key store */
     i32Ret = KS_EraseAll(KS_FLASH);
-    if(i32Ret == -1)
+    if (i32Ret == -1)
     {
         printf("\nErase all keys in FLASH of key store is failed!\n");
     }
@@ -157,13 +153,13 @@ int32_t PrepareKeys(void)
     /* Create and read the private key number */
     RSA_Hex2Reg(d, (uint32_t *)&g_au32TmpBuf[0]);
     g_i32PrivateKeyNum = KS_Write(KS_FLASH, KS_META_RSA_EXP | KS_META_2048 | KS_META_READABLE, (uint32_t *)&g_au32TmpBuf[0]);
-    if(g_i32PrivateKeyNum == -1)
+    if (g_i32PrivateKeyNum == -1)
         return -1;
 
     /* Create and read the public key number */
     RSA_Hex2Reg(E, (uint32_t *)&g_au32TmpBuf[0]);
     g_i32PublicKeyNum = KS_Write(KS_FLASH, KS_META_RSA_EXP | KS_META_2048 | KS_META_READABLE, (uint32_t *)&g_au32TmpBuf[0]);
-    if(g_i32PublicKeyNum == -1)
+    if (g_i32PublicKeyNum == -1)
         return -1;
 
     printf("\n[The number of created keys in FLASH of key store] \n");
@@ -182,7 +178,7 @@ int32_t main(void)
     char    OutputResult[RSA_KBUF_HLEN];
     uint32_t u32TimeOutCnt;
 
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
 
     /* Init System, IP clock and multi-function I/O. */
@@ -190,6 +186,7 @@ int32_t main(void)
 
     /* Init Debug UART for printf */
     InitDebugUart();
+
     /* Lock protected registers */
     SYS_LockReg();
 
@@ -201,7 +198,7 @@ int32_t main(void)
     KS_Open();
 
     /* Prepare the keys in key store */
-    if(PrepareKeys() == -1)
+    if (PrepareKeys() == -1)
     {
         printf("\nCreate keys is failed!!\n");
         goto lexit;
@@ -233,9 +230,9 @@ int32_t main(void)
 
     /* Waiting for RSA operation done */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(!g_RSA_done)
+    while (!g_RSA_done)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for RSA operation done time-out!\n");
             goto lexit;
@@ -243,7 +240,7 @@ int32_t main(void)
     }
 
     /* Check error flag */
-    if(g_RSA_error)
+    if (g_RSA_error)
     {
         printf("\nRSA has error!!\n");
         goto lexit;
@@ -268,9 +265,9 @@ int32_t main(void)
 
     /* Waiting for RSA operation done */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(!g_RSA_done)
+    while (!g_RSA_done)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for RSA operation done time-out!\n");
             goto lexit;
@@ -278,7 +275,7 @@ int32_t main(void)
     }
 
     /* Check error flag */
-    if(g_RSA_error)
+    if (g_RSA_error)
     {
         printf("\nRSA has error!!\n");
         goto lexit;
@@ -289,7 +286,7 @@ int32_t main(void)
     printf("\nRSA Output: %s\n", OutputResult);
 
     /* Verify the message */
-    if(strcasecmp(OutputResult, Msg) == 0)
+    if (strcasecmp(OutputResult, Msg) == 0)
         printf("\nRSA signature verify OK.\n");
     else
     {
@@ -303,7 +300,7 @@ lexit:
     /* Erase all keys in FLASH of key store */
     EraseAllFlashKey();
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

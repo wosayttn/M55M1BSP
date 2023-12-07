@@ -75,7 +75,7 @@ void SYS_Init(void)
     /* Select PSIO module clock source as HIRC and PSIO module clock divider as 0x7Du */
     CLK_SetModuleClock(PSIO0_MODULE, CLK_PSIOSEL_PSIO0SEL_PCLK1, CLK_PSIODIV_PSIO0DIV(0x7Du));
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

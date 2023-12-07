@@ -63,9 +63,9 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-    
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 72MHz clock */    
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_72MHZ);    
+
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 72MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_72MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -75,7 +75,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(EQEI0_MODULE);
     CLK_EnableModuleClock(EQEI1_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

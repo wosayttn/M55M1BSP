@@ -9,9 +9,6 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-
-
-
 #define SIGNATURE   0x125ab234
 #define FLAG_ADDR   0x20001FFC
 
@@ -19,7 +16,6 @@ int32_t pi(void);
 void Delay(uint32_t x);
 void SYS_PLL_Test(void);
 void SYS_Init(void);
-void UART0_Init(void);
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Simple calculation test function                                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -109,12 +105,12 @@ void SYS_PLL_Test(void)
     {
         /* Select SCLK clock source from PLL */
         CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, g_au32PllSetting[u32Idx]);
-        
+
         printf("  Change system clock to %d Hz ...................... ", SystemCoreClock);
 
         /* Output selected clock to CKO, CKO Clock = SCLK / 2^(1 + 1) */
         CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_SYSCLK, 1, CLK_CLKOCTL_DIV1EN_DIV_FREQSEL);
-        
+
         /* The delay loop is used to check if the CPU speed is increasing */
         Delay(0x40000);
 
@@ -151,7 +147,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    
+
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -174,7 +170,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

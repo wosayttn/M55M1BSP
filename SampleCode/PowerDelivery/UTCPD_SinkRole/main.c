@@ -328,8 +328,8 @@ int main()
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
-    /* Init UART0 to 115200-8n1 for print message */
-    UART_Open(UART0, 115200);
+    /* Init DEBUG_PORT to 115200-8n1 for print message */
+    UART_Open(DEBUG_PORT, 115200);
     printf("UART Initial\n");
 
     /* VBSRCEN */
@@ -343,9 +343,9 @@ int main()
 
 #if (CONFIG_COMMAND_SHELL == 1)
     /* Enable UART RDA interrupt for command */
-    NVIC_EnableIRQ(UART0_IRQn);
-    //UART_EnableInt(UART0, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk));
-    UART_EnableInt(UART0, UART_INTEN_RDAIEN_Msk);
+    NVIC_EnableIRQ(DEBUG_PORT_IRQn);
+    //UART_EnableInt(DEBUG_PORT, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk));
+    UART_EnableInt(DEBUG_PORT, UART_INTEN_RDAIEN_Msk);
 #endif
 
 

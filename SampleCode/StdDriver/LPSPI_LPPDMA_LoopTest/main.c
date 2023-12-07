@@ -108,7 +108,7 @@ void SYS_Init(void)
     /* Enable LPPDMA clock source */
     CLK_EnableModuleClock(LPPDMA0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

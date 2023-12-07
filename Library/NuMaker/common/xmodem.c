@@ -58,7 +58,7 @@ static int32_t XMD_Write(uint32_t u32Addr, uint32_t u32Data)
 
 static void XMD_putc(uint8_t c)
 {
-    UART_T *pUART = UART0;
+    UART_T *pUART = DEBUG_PORT;
 
     while (pUART->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
 
@@ -68,7 +68,7 @@ static void XMD_putc(uint8_t c)
 
 static int32_t XMD_getc()
 {
-    UART_T *pUART = UART0;
+    UART_T *pUART = DEBUG_PORT;
     uint32_t u32ms = 0;
 
     /* Wait for 100ms */

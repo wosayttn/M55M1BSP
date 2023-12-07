@@ -204,7 +204,7 @@ void AutoOperation_FunctionTest()
         LPPDMA_Init();
 
         printf("Power down and wait LPPDMA wake up CPU ...\n\n");
-        UART_WAIT_TX_EMPTY(UART0);
+        UART_WAIT_TX_EMPTY(DEBUG_PORT);
 
         /* Clear wake-up status flag */
         PMC->INTSTS = PMC_INTSTS_CLRWK_Msk;

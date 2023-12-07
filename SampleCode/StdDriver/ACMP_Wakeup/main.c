@@ -10,7 +10,7 @@
 #include "NuMicro.h"
 
 
-#define NPD0_MODE   0    // Power-down mode 0 
+#define NPD0_MODE   0    // Power-down mode 0
 #define NPD1_MODE   1    // Power-down mode 1
 #define NPD3_MODE   2    // Power-down mode 3
 #define SPD0_MODE   3    // Standby Power-down mode
@@ -50,7 +50,7 @@ NVT_ITCM void ACMP01_IRQHandler(void)
     // TESTCHIP_ONLY
     CLK_WaitModuleClockReady(ACMP01_MODULE);
     // TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(UART0_MODULE);
+    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);
     printf("\nACMP1 interrupt!\n");
     /* Clear ACMP 1 interrupt flag */
     ACMP_CLR_INT_FLAG(ACMP01, 1);
@@ -120,7 +120,7 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Set PCLK1 divide 4 */

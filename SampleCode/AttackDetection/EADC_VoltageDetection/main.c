@@ -21,7 +21,6 @@ static volatile uint8_t s_u8ADF;
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
 void SYS_Init(void);
-void UART0_Init(void);
 uint32_t GetAVDDVoltage(void);
 uint32_t GetAVDDCodeByADC(void);
 NVT_ITCM void EADC0_IRQHandler(void);
@@ -62,7 +61,7 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
