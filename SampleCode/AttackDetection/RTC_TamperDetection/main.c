@@ -117,15 +117,6 @@ void SYS_Init(void)
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* Init UART                                                                                               */
-/*---------------------------------------------------------------------------------------------------------*/
-void UART_Init(void)
-{
-    /* Configure UART0 and set UART0 Baudrate */
-    UART_Open(UART0, 115200);
-}
-
-/*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
@@ -140,8 +131,8 @@ int main(void)
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
-    /* Init UART for printf */
-    UART_Init();
+    /* Init DeubgUART for printf */
+    InitDebugUart();
 
     /* Lock protected registers */
     SYS_LockReg();

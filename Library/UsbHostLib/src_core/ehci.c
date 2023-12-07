@@ -298,7 +298,7 @@ static int  ehci_init(void)
     _H_qh->OL_Alt_Next_qTD = (uint32_t)_ghost_qtd;
     _H_qh->OL_Token        = QTD_STS_HALT;
     _ehci->UCALAR = (uint32_t)_H_qh;
-    USB_debug("_ehci->UCALAR - 0x%x \n", _ehci->UCALAR);
+    //USB_debug("_ehci->UCALAR - 0x%x \n", _ehci->UCALAR);
 
     /*------------------------------------------------------------------------------------*/
     /*  Initialize periodic list                                                          */
@@ -313,7 +313,7 @@ static int  ehci_init(void)
         return USBH_ERR_EHCI_INIT;               /* Invalid FL_SIZE setting!              */
 
     _ehci->UPFLBAR = (uint32_t)_PFList;
-    USB_debug("_ehci->UPFLBAR - 0x%x \n", _ehci->UPFLBAR);
+    //USB_debug("_ehci->UPFLBAR - 0x%x \n", _ehci->UPFLBAR);
     /*------------------------------------------------------------------------------------*/
     /*  start run                                                                         */
     /*------------------------------------------------------------------------------------*/

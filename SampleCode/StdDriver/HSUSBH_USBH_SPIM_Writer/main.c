@@ -777,7 +777,7 @@ int32_t main(void)
 
     SYS_Init();                             /* Init System, clock and I/O pins.           */
 
-    UART0_Init();                           /* Initialize UART0                           */
+    InitDebugUart();                        /* Init DeubgUART for printf */
 
     enable_sys_tick(100);
 

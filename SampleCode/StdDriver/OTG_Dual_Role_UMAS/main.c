@@ -1102,14 +1102,6 @@ void USBH_Process(void)
     }
 }
 /*---------------------------------------------------------------------------------------------------------*/
-/* Init UART                                                                                               */
-/*---------------------------------------------------------------------------------------------------------*/
-void UART_Init(void)
-{
-    /* Configure UART and set UART Baudrate */
-    UART_Open(DEBUG_PORT, 115200);
-}
-/*---------------------------------------------------------------------------------------------------------*/
 /*  MAIN function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
@@ -1119,15 +1111,14 @@ int32_t main(void)
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
 
-    /* Init UART for printf */
-    UART_Init();
+    InitDebugUart();                   /* Init DeubgUART for printf */
 
     /* Lock protected registers */
     SYS_LockReg();
 
     enable_sys_tick(100);
     printf("\n\n");
-    printf("system clock :%uMHz\r\n", SystemCoreClock);
+    printf("system clock :%uHz\r\n", SystemCoreClock);
     printf("+------------------------------------------------------+\n");
     printf("|                                                      |\n");
     printf("|     OTG ID dependent Mass Storage sample program     |\n");
