@@ -17,7 +17,6 @@ void USCI_AutoBaudRate_Test(void);
 void USCI_AutoBaudRate_TxTest(void);
 void USCI_AutoBaudRate_RxTest(void);
 void SYS_Init(void);
-void DEBUG_PORT_Init(void);
 void USCI0_Init(void);
 uint32_t GetUuartBaudrate(UUART_T *uuart);
 
@@ -78,7 +77,7 @@ void USCI0_Init(void)
     SYS_ResetModule(SYS_USCI0RST);
 
     /* Configure USCI0 as UART mode */
-    UUART_Open(UDEBUG_PORT, 115200);
+    UUART_Open(UUART0, 115200);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -190,21 +189,21 @@ void USCI_AutoBaudRate_TxTest(void)
         switch (u32Item)
         {
             case '1':
-                UUART_Open(UDEBUG_PORT, 38400);
+                UUART_Open(UUART0, 38400);
                 break;
 
             case '2':
-                UUART_Open(UDEBUG_PORT, 57600);
+                UUART_Open(UUART0, 57600);
                 break;
 
             default:
-                UUART_Open(UDEBUG_PORT, 115200);
+                UUART_Open(UUART0, 115200);
                 break;
         }
 
         /* Send input pattern 0x55 for auto baud rate detection */
         u8Char = 0x55;
-        UUART_Write(UDEBUG_PORT, &u8Char, 1);
+        UUART_Write(UUART0, &u8Char, 1);
 
     } while (u32Item != 27);
 
@@ -238,26 +237,26 @@ uint32_t GetUuartBaudrate(UUART_T *uuart)
 void USCI_AutoBaudRate_RxTest(void)
 {
     /* Set CLKDIV=DSCNT=0x5, Timing Measurement Counter Enable and Timing Measurement Counter Clock Source */
-    UDEBUG_PORT->BRGEN = ((0x5 << UUART_BRGEN_CLKDIV_Pos) | (0x5 << UUART_BRGEN_DSCNT_Pos) | (UUART_BRGEN_TMCNTEN_Msk) | (UUART_BRGEN_TMCNTSRC_Msk));
+    UUART0->BRGEN = ((0x5 << UUART_BRGEN_CLKDIV_Pos) | (0x5 << UUART_BRGEN_DSCNT_Pos) | (UUART_BRGEN_TMCNTEN_Msk) | (UUART_BRGEN_TMCNTSRC_Msk));
 
     /* Enable auto baud rate detect function */
-    UDEBUG_PORT->PROTCTL |= UUART_PROTCTL_ABREN_Msk;
+    UUART0->PROTCTL |= UUART_PROTCTL_ABREN_Msk;
 
     printf("\nreceiving input pattern... ");
 
     /* Wait until auto baud rate detect finished or time-out */
-    while (UDEBUG_PORT->PROTCTL & UUART_PROTCTL_ABREN_Msk);
+    while (UUART0->PROTCTL & UUART_PROTCTL_ABREN_Msk);
 
-    if (UUART_GET_PROT_STATUS(UDEBUG_PORT) & UUART_PROTSTS_ABRDETIF_Msk)
+    if (UUART_GET_PROT_STATUS(UUART0) & UUART_PROTSTS_ABRDETIF_Msk)
     {
         /* Clear auto baud rate detect finished flag */
-        UUART_CLR_PROT_INT_FLAG(UDEBUG_PORT, UUART_PROTSTS_ABRDETIF_Msk);
-        printf("Baud rate is %dbps.\n", GetUuartBaudrate(UDEBUG_PORT));
+        UUART_CLR_PROT_INT_FLAG(UUART0, UUART_PROTSTS_ABRDETIF_Msk);
+        printf("Baud rate is %dbps.\n", GetUuartBaudrate(UUART0));
     }
-    else if (UUART_GET_PROT_STATUS(UDEBUG_PORT) & UUART_PROTSTS_ABERRSTS_Msk)
+    else if (UUART_GET_PROT_STATUS(UUART0) & UUART_PROTSTS_ABERRSTS_Msk)
     {
         /* Clear auto baud rate detect time-out flag */
-        UUART_CLR_PROT_INT_FLAG(UDEBUG_PORT, UUART_PROTSTS_ABERRSTS_Msk);
+        UUART_CLR_PROT_INT_FLAG(UUART0, UUART_PROTSTS_ABERRSTS_Msk);
         printf("Error!\n");
     }
 
