@@ -103,14 +103,8 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set GPB multi-function pins for UART0 RXD and TXD */
-#if 0//TK_UTCPD_MOTOR
-    SET_UART0_RXD_PB8();
-    SET_UART0_TXD_PB9();
-#else
-    /* Set GPB multi-function pins for UART0 RXD and TXD */
+    /* Set debug uart pins*/
     SetDebugUartMFP();
-#endif
 
 
     printf("PLL 64MHz --> HCLK --> CLKO / 4 = 16MHz on PB.14\n");

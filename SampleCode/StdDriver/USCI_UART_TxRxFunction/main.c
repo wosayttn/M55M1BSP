@@ -28,7 +28,6 @@ int32_t main(void);
 void USCI_UART_TEST_HANDLE(void);
 void USCI_UART_FunctionTest(void);
 void SYS_Init(void);
-void UART0_Init(void);
 void USCI0_Init(void);
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)

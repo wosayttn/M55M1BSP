@@ -22,7 +22,6 @@ void USCI_UART_PowerDown_TestItem(void);
 void USCI_UART_PowerDownWakeUpTest(void);
 void PowerDownFunction(void);
 void SYS_Init(void);
-void UART0_Init(void);
 void USCI0_Init(void);
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
