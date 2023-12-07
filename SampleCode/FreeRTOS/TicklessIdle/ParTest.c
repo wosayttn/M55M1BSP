@@ -164,6 +164,7 @@ void vParTestInitialise(void)
 
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
+    CLK_EnableXtalRC(CLK_SRCCTL_LIRCEN_Msk);
     /* Enable External LXT clock */
     CLK_EnableXtalRC(CLK_SRCCTL_LXTEN_Msk);
 
@@ -174,6 +175,8 @@ void vParTestInitialise(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
+    /* Waiting for Internal RC clock ready */
+    CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
     /* Waiting for LXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
@@ -189,26 +192,19 @@ void vParTestInitialise(void)
     CLK_EnableModuleClock(GPIOI_MODULE);
 
     /* Enable UART module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
-    /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HXT, CLK_UARTDIV0_UART0DIV(1));
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init UART                                                                                               */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Reset UART module */
-    SYS_ResetModule(SYS_UART0RST);
-
     /* Configure UART and set UART Baudrate */
-    UART_Open(DEBUG_PORT, 115200);
+    InitDebugUart();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    SetDebugUartMFP();
 
     /* Set PD multi-function pins for CLKO(PD.12) */
     SET_CLKO_PD12();

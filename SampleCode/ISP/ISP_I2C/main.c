@@ -80,10 +80,6 @@ int32_t SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
-
     /* Set I2C1 multi-function pins */
     SET_I2C1_SDA_PA2();
     SET_I2C1_SCL_PA3();

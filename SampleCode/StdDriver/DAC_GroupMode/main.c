@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
+#if !defined(ALIGN_AF_PINS)
 static const uint16_t g_au16Sine[] = {2047, 2251, 2453, 2651, 2844, 3028, 3202, 3365, 3515, 3650, 3769, 3871, 3954,
                                       4019, 4064, 4088, 4095, 4076, 4040, 3984, 3908, 3813, 3701, 3573, 3429, 3272,
                                       3102, 2921, 2732, 2536, 2335, 2132, 1927, 1724, 1523, 1328, 1141,  962,  794,
@@ -79,7 +80,7 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
     /* Set PCLK1 divide 4 */
     CLK_SET_PCLK1DIV(4);
@@ -162,5 +163,11 @@ int32_t main(void)
     while (1) {};
 
 }
-
+#else
+int main()
+{
+    // Not support on M55M1 TEST CHIP.
+    while (1) {};
+}
+#endif
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
