@@ -109,7 +109,7 @@ int32_t main(void)
     printf("MBEDTLS AES self test ...\n");
 
 #ifdef MBEDTLS_AES_ALT
-    printf("Hardware Accellerator Enabled.\n");
+    printf("Hardware Accelerator Enabled.\n");
 #else
     printf("Pure software crypto running.\n");
 #endif

@@ -108,7 +108,7 @@ int32_t main(void)
     printf("MBEDTLS SHA256 self test ...\n");
 
 #ifdef MBEDTLS_SHA256_ALT
-    printf("Hardware Accellerator Enabled.\n");
+    printf("Hardware Accelerator Enabled.\n");
 #else
     printf("Pure software crypto running.\n");
 #endif

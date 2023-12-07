@@ -2095,7 +2095,7 @@ int main()
     }
 
 #if (defined(MBEDTLS_ECDSA_VERIFY_ALT) || defined(MBEDTLS_ECDSA_SIGN_ALT))
-    printf("Hardware Accellerator Enabled.\n");
+    printf("Hardware Accelerator Enabled.\n");
 #else
     printf("Pure software crypto running.\n");
 #endif
