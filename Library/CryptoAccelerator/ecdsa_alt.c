@@ -58,15 +58,15 @@
 //#if defined( MBEDTLS_ECDSA_SIGN_ALT || MBEDTLS_ECDSA_VERIFY_ALT )
 #if( defined(MBEDTLS_ECDSA_SIGN_ALT) || defined(MBEDTLS_ECDSA_VERIFY_ALT) )
 
-#define ECCOP_POINT_MUL     (0x0UL << CRPT_ECC_CTL_ECCOP_Pos)
-#define ECCOP_MODULE        (0x1UL << CRPT_ECC_CTL_ECCOP_Pos)
-#define ECCOP_POINT_ADD     (0x2UL << CRPT_ECC_CTL_ECCOP_Pos)
-#define ECCOP_POINT_DOUBLE  (0x3UL << CRPT_ECC_CTL_ECCOP_Pos)
+#define ECCOP_POINT_MUL     (0x0UL << CRYPTO_ECC_CTL_ECCOP_Pos)
+#define ECCOP_MODULE        (0x1UL << CRYPTO_ECC_CTL_ECCOP_Pos)
+#define ECCOP_POINT_ADD     (0x2UL << CRYPTO_ECC_CTL_ECCOP_Pos)
+#define ECCOP_POINT_DOUBLE  (0x3UL << CRYPTO_ECC_CTL_ECCOP_Pos)
 
-#define MODOP_DIV           (0x0UL << CRPT_ECC_CTL_MODOP_Pos)
-#define MODOP_MUL           (0x1UL << CRPT_ECC_CTL_MODOP_Pos)
-#define MODOP_ADD           (0x2UL << CRPT_ECC_CTL_MODOP_Pos)
-#define MODOP_SUB           (0x3UL << CRPT_ECC_CTL_MODOP_Pos)
+#define MODOP_DIV           (0x0UL << CRYPTO_ECC_CTL_MODOP_Pos)
+#define MODOP_MUL           (0x1UL << CRYPTO_ECC_CTL_MODOP_Pos)
+#define MODOP_ADD           (0x2UL << CRYPTO_ECC_CTL_MODOP_Pos)
+#define MODOP_SUB           (0x3UL << CRYPTO_ECC_CTL_MODOP_Pos)
 
 
 /*
@@ -134,10 +134,11 @@ static void ECC_Copy(uint32_t *dest, uint32_t *src, uint32_t size)
 
 static void ECC_InitCurve(mbedtls_ecp_group* grp)
 {
-    CRPT_T* crpt = CRPT;
+    CRYPTO_T* crpt = CRYPTO;
 
-    SYS->IPRST0 |= SYS_IPRST0_CRPTRST_Msk;
-    SYS->IPRST0 = 0;
+    /* Reset Crypto */
+   	SYS->CRYPTORST |= SYS_CRYPTORST_CRYPTO0RST_Msk;
+    SYS->CRYPTORST = 0;
     ECC_ENABLE_INT(crpt);
 
     ECC_Copy((uint32_t *)crpt->ECC_A, grp->A.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->A));
@@ -202,24 +203,26 @@ static int ECC_FixCurve(mbedtls_ecp_group* grp)
 
 static int run_ecc_codec(mbedtls_ecp_group* grp, uint32_t mode)
 {
-    CRPT_T* crpt = CRPT;
+    CRYPTO_T* crpt = CRYPTO;
     uint32_t eccop;
     uint32_t timeout = 200000000;
 
-    eccop = mode & CRPT_ECC_CTL_ECCOP_Msk;
+	//CRYPTO_ECC_CTL_CURVEM_Pos) | ECCOP_POINT_MUL | CRYPTO_ECC_CTL_SCAP_Msk | CRYPTO_ECC_CTL_START_Msk;
+	
+    eccop = mode & CRYPTO_ECC_CTL_ECCOP_Msk;
     if(eccop == ECCOP_MODULE)
     {
-        crpt->ECC_CTL = CRPT_ECC_CTL_FSEL_Msk;
+        crpt->ECC_CTL = CRYPTO_ECC_CTL_FSEL_Msk;
     }
     else
     {
         /* CURVE_GF_P */
-        crpt->ECC_CTL = CRPT_ECC_CTL_FSEL_Msk;
+        crpt->ECC_CTL = CRYPTO_ECC_CTL_FSEL_Msk;
 
         if(eccop == ECCOP_POINT_MUL)
         {
             /* Enable side-channel protection in some operation */
-            crpt->ECC_CTL |= CRPT_ECC_CTL_SCAP_Msk;
+            crpt->ECC_CTL |= CRYPTO_ECC_CTL_SCAP_Msk;
             /* If SCAP enabled, the curve order must be written to ECC_X2 */
             //Hex2Reg(pCurve->Eorder, crpt->ECC_X2);
             ECC_Copy((uint32_t*)crpt->ECC_X2, grp->N.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->N));
@@ -227,13 +230,13 @@ static int run_ecc_codec(mbedtls_ecp_group* grp, uint32_t mode)
     }
 
     /* Clear ECC flag */
-    crpt->INTSTS = CRPT_INTSTS_ECCIF_Msk;
+    crpt->INTSTS = CRYPTO_INTSTS_ECCIF_Msk;
 
     /* Start calculation */
-    crpt->ECC_CTL |= (grp->pbits << CRPT_ECC_CTL_CURVEM_Pos) | mode | CRPT_ECC_CTL_START_Msk;
+    crpt->ECC_CTL |= (grp->pbits << CRYPTO_ECC_CTL_CURVEM_Pos) | mode | CRYPTO_ECC_CTL_START_Msk;
 
     /* Waiting for calculation */
-    while((crpt->INTSTS & CRPT_INTSTS_ECCIF_Msk) == 0)
+    while((crpt->INTSTS & CRYPTO_INTSTS_ECCIF_Msk) == 0)
     {
         if(timeout-- <= 0)
             return MBEDTLS_ERR_ECP_HW_ACCEL_FAILED;
@@ -266,7 +269,7 @@ int32_t  ECC_Sign(mbedtls_ecp_group* grp, mbedtls_mpi* r, mbedtls_mpi* s,
     int (*f_rng)(void*, unsigned char*, size_t), void* p_rng)
 {
     uint32_t volatile temp_result1[18], temp_result2[18];
-    CRPT_T* crpt = CRPT;
+    CRYPTO_T* crpt = CRYPTO;
     size_t len, nblimbs;
     mbedtls_mpi e;
     mbedtls_mpi k, *pk;
@@ -289,9 +292,9 @@ int32_t  ECC_Sign(mbedtls_ecp_group* grp, mbedtls_mpi* r, mbedtls_mpi* s,
     /* Generate a random k. It will use CRYPTO SHA*/
     mbedtls_ecp_gen_privkey(grp, pk, f_rng, p_rng);
 
-    /* Reset crypto */
-    SYS->IPRST0 |= SYS_IPRST0_CRPTRST_Msk;
-    SYS->IPRST0 = 0;
+   /* Reset Crypto */
+   	SYS->CRYPTORST |= SYS_CRYPTORST_CRYPTO0RST_Msk;
+    SYS->CRYPTORST = 0;
 
     ECC_InitCurve(grp);
 
@@ -480,18 +483,18 @@ int  ECC_Verify(mbedtls_ecp_group * grp,
     const mbedtls_mpi * r,
     const mbedtls_mpi * s)
 {
-    CRPT_T* crpt;
+    CRYPTO_T* crpt;
     uint32_t  temp_result1[18], temp_result2[18];
     uint32_t  temp_x[18], temp_y[18];
     int32_t   i, ret = 0;
     mbedtls_mpi e;
     int32_t u1_zero_flag = 0;
 
-    /* Reset crypto */
-    SYS->IPRST0 |= SYS_IPRST0_CRPTRST_Msk;
-    SYS->IPRST0 = 0;
+    /* Reset Crypto */
+   	SYS->CRYPTORST |= SYS_CRYPTORST_CRYPTO0RST_Msk;
+    SYS->CRYPTORST = 0;
 
-    crpt = CRPT;
+    crpt = CRYPTO;
     ECC_FixCurve(grp);
     ECC_InitCurve(grp);
 
