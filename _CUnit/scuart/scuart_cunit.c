@@ -115,7 +115,7 @@ int32_t SCUART_InitClock(void)
 
     CLK_SetModuleClock(SC0_MODULE, CLK_SCSEL_SC0SEL_HIRC, 0);
     CLK_SetModuleClock(SC1_MODULE, CLK_SCSEL_SC1SEL_HIRC, 0);
-    CLK_SetModuleClock(SC2_MODULE, CLK_SCSEL_SC1SEL_HIRC, 0);
+    CLK_SetModuleClock(SC2_MODULE, CLK_SCSEL_SC2SEL_HIRC, 0);
 
     CLK_EnableModuleClock(SC0_MODULE);
     CLK_EnableModuleClock(SC1_MODULE);
@@ -333,7 +333,7 @@ void API_SCUART_Test(void)
 
         CU_ASSERT_EQUAL(pSC[port]->UARTCTL,  0x41);
 
-        CU_ASSERT_EQUAL(pSC[port]->ETUCTL, (__HXT / 115200) - 1);
+        CU_ASSERT_EQUAL(pSC[port]->ETUCTL, (__HIRC / 115200) - 1);
 
         /* Check SCUART_Write(), SCUART_Read(), SCUART_GET_TX_FULL() and SCUART_GET_RX_EMPTY() */
         pSC[port]->PINCTL |= BIT31; /* Enable INTERNAL Loop Back Test */
