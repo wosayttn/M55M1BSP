@@ -96,7 +96,6 @@ static void initializeAttributes()
         ARM_MPU_ATTR_MEMORY_(1, 0, 1, 0); // Non-transient, Write-Through, Read-allocate, Not Write-allocate
     const uint8_t WBWARA = ARM_MPU_ATTR_MEMORY_(1, 1, 1, 1); // Non-transient, Write-Back, Read-allocate, Write-allocate
 
-//	const uint8_t DEVICE_nGnRnE = ARM_MPU_ATTR_DEVICE_nGnRnE;
 	const uint8_t DEVICE_nGnRnE = ARM_MPU_ATTR_DEVICE;
 
     ARM_MPU_SetMemAttr(NonCache_index, ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
@@ -249,7 +248,7 @@ static void main_task(void *pvParameters)
     int32_t i32Err = 0;
     char chStdIn;
 
-    info("main task running --- 1\n");
+    info("main task running \n");
     /* Model object creation and initialisation. */
     arm::app::YoloFastestModel model;
 
@@ -275,7 +274,7 @@ static void main_task(void *pvParameters)
                          1,                 // Non-Privileged
                          1),                // eXecute Never enabled
             ARM_MPU_RLAR((((unsigned int)arm::app::tensorArena) + ACTIVATION_BUF_SZ - 1),        // Limit
-                         Device_index) // Attribute index - Write-Through, Read-allocate
+                         Device_index) // Attribute index - Device
         },
 #if defined (__USE_CCAP__)
 		{
@@ -286,7 +285,7 @@ static void main_task(void *pvParameters)
                          1,                 // Non-Privileged
                          1),                // eXecute Never enabled
             ARM_MPU_RLAR((((unsigned int)fb_array) + OMV_FB_SIZE - 1),        // Limit
-                         Device_index) // NonCache
+                         NonCache_index) // NonCache
         },
 #if (NUM_FRAMEBUF == 2)
 		{
@@ -297,7 +296,7 @@ static void main_task(void *pvParameters)
                          1,                 // Non-Privileged
                          1),                // eXecute Never enabled
             ARM_MPU_RLAR((((unsigned int)frame_buf1) + OMV_FB_SIZE - 1),        // Limit
-                         Device_index) // NonCache
+                         NonCache_index) // NonCache
         },
 #endif
 #endif
@@ -310,7 +309,7 @@ static void main_task(void *pvParameters)
                          1,                 // Non-Privileged
                          1),                // eXecute Never enabled
             ARM_MPU_RLAR((((unsigned int)CONFIG_LCD_EBI_ADDR) + EBI_MAX_SIZE - 1),        // Limit
-                         Device_index) // Attribute index - Write-Through, Read-allocate
+                         Device_index) // Attribute index - Device
         }
 #endif
     };

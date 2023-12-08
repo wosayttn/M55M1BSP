@@ -8,14 +8,13 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 /*
- * This sample uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This sample uses internal RC as APLL0 clock source and UART to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
  *   I/D-Cache are enabled by default for better performance,
  *   users can define NVT_ICACHE_OFF/NVT_DCACHE_OFF in project setting to disable cache.
  * Debug UART
- *   Default is DEBUG_PORT=UART0 in project setting
  *   system_M55M1.c has three weak functions as below to configure debug UART port.
  *     SetDebugUartMFP, SetDebugUartCLK and InitDebugUart
  *   Users can re-implement these functions according to system design.
@@ -35,7 +34,7 @@ NVT_ITCM void TIMER1_IRQHandler(void)
     // Timer counter value records the duration for 100 event counts.
     printf("Event frequency is %d Hz\n", 100000000 / TIMER_GetCounter(TIMER1) * 100);
     TIMER_ClearCaptureIntFlag(TIMER1);
-    
+
     complete = 1;
 }
 
@@ -73,7 +72,7 @@ static void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

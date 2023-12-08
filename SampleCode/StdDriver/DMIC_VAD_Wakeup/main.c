@@ -7,14 +7,13 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 /*
- * This sample uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This sample uses internal RC as APLL0 clock source and UART to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
  *   I/D-Cache are enabled by default for better performance,
  *   users can define NVT_ICACHE_OFF/NVT_DCACHE_OFF in project setting to disable cache.
  * Debug UART
- *   Default is DEBUG_PORT=UART0 in project setting
  *   system_M55M1.c has three weak functions as below to configure debug UART port.
  *     SetDebugUartMFP, SetDebugUartCLK and InitDebugUart
  *   Users can re-implement these functions according to system design.
@@ -84,7 +83,7 @@ void VAD_Stop(void)
 NVT_ITCM void DMIC0VAD_IRQHandler()
 {
     CLK_WaitModuleClockReady(DMIC0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(UART0_MODULE);//TESTCHIP_ONLY
+    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
     printf("VAD_IS_ACTIVE? %lx\n", DMIC_VAD_IS_ACTIVE(VAD0));
     DMIC_VAD_CLR_ACTIVE(VAD0);
     VAD_Stop();
@@ -159,7 +158,7 @@ static void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -175,6 +174,7 @@ int main(void)
 {
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
+
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 

@@ -11,9 +11,6 @@
 #include "NuMicro.h"
 #include "nsclib.h"
 
-#ifndef DEBUG_PORT
-    #define DEBUG_PORT UART0
-#endif
 
 #define LOOP_HERE       0xE7FEE7FF      /* Instruction Code of "B ." */
 
@@ -194,7 +191,7 @@ static void SYS_Init(void)
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*-----------------------------------------------------------------------

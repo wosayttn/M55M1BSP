@@ -7,14 +7,13 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 /*
- * This sample uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This sample uses internal RC as APLL0 clock source and UART to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
  *   I/D-Cache are enabled by default for better performance,
  *   users can define NVT_ICACHE_OFF/NVT_DCACHE_OFF in project setting to disable cache.
  * Debug UART
- *   Default is DEBUG_PORT=UART0 in project setting
  *   system_M55M1.c has three weak functions as below to configure debug UART port.
  *     SetDebugUartMFP, SetDebugUartCLK and InitDebugUart
  *   Users can re-implement these functions according to system design.
@@ -53,9 +52,9 @@ int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
 
     /* Wait for Capture Falling Indicator  */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while((EPWM1->CAPIF & EPWM_CAPIF_CFLIF2_Msk) == 0)
+    while ((EPWM1->CAPIF & EPWM_CAPIF_CFLIF2_Msk) == 0)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for EPWM Capture Falling Indicator time-out!\n");
             return (-1);
@@ -67,13 +66,13 @@ int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
 
     u32i = 0;
 
-    while(u32i < 4)
+    while (u32i < 4)
     {
         /* Wait for Capture Falling Indicator */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while(EPWM_GetCaptureIntFlag(EPWM, u32Ch) < 2)
+        while (EPWM_GetCaptureIntFlag(EPWM, u32Ch) < 2)
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for EPWM Capture Falling Indicator time-out!\n");
                 return (-1);
@@ -88,9 +87,9 @@ int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
 
         /* Wait for Capture Rising Indicator */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while(EPWM_GetCaptureIntFlag(EPWM, u32Ch) < 2)
+        while (EPWM_GetCaptureIntFlag(EPWM, u32Ch) < 2)
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for EPWM Capture Rising Indicator time-out!\n");
                 return (-1);
@@ -117,7 +116,7 @@ int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
     printf("\nEPWM generate: \nHigh Period=17141 ~ 17143, Low Period=39999 ~ 40001, Total Period=57141 ~ 57143\n");
     printf("\nCapture Result: Rising Time = %d, Falling Time = %d \nHigh Period = %d, Low Period = %d, Total Period = %d.\n\n",
            u16RisingTime, u16FallingTime, u16HighPeriod, u16LowPeriod, u16TotalPeriod);
-    if((u16HighPeriod < 17141) || (u16HighPeriod > 17143) || (u16LowPeriod < 39999) || (u16LowPeriod > 40001) || (u16TotalPeriod < 57141) || (u16TotalPeriod > 57143))
+    if ((u16HighPeriod < 17141) || (u16HighPeriod > 17143) || (u16LowPeriod < 39999) || (u16LowPeriod > 40001) || (u16TotalPeriod < 57141) || (u16TotalPeriod > 57143))
     {
         printf("Capture Test Fail!!\n");
         return (-1);
@@ -163,7 +162,7 @@ static void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -210,7 +209,7 @@ int main(void)
     printf("    EPWM1 channel 2(PC.3) <--> EPWM1 channel 0(PC.5)\n\n");
     printf("Use EPWM1 Channel 2(PC.3) to capture the EPWM1 Channel 0(PC.5) Waveform\n");
 
-    while(1)
+    while (1)
     {
         printf("\n\nPress any key to start EPWM Capture Test\n");
         getchar();
@@ -272,9 +271,9 @@ int main(void)
 
         /* Wait until EPWM1 channel 2 Timer start to count */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while((EPWM1->CNT[2]) == 0)
+        while ((EPWM1->CNT[2]) == 0)
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for EPWM timer start to count time-out!\n");
                 goto lexit;
@@ -282,7 +281,7 @@ int main(void)
         }
 
         /* Capture the Input Waveform Data */
-        if( CalPeriodTime(EPWM1, 2) < 0 )
+        if (CalPeriodTime(EPWM1, 2) < 0)
             goto lexit;
         /*------------------------------------------------------------------------------------------------------------*/
         /* Stop EPWM1 channel 0 (Recommended procedure method 1)                                                      */
@@ -294,9 +293,9 @@ int main(void)
 
         /* Wait until EPWM1 channel 0 Timer Stop */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while((EPWM1->CNT[0] & EPWM_CNT0_CNT_Msk) != 0)
+        while ((EPWM1->CNT[0] & EPWM_CNT0_CNT_Msk) != 0)
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for EPWM timer stop time-out!\n");
                 goto lexit;
@@ -319,9 +318,9 @@ int main(void)
 
         /* Wait until EPWM1 channel 2 current counter reach to 0 */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while((EPWM1->CNT[2] & EPWM_CNT2_CNT_Msk) != 0)
+        while ((EPWM1->CNT[2] & EPWM_CNT2_CNT_Msk) != 0)
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for EPWM current counter reach to 0 time-out!\n");
                 goto lexit;

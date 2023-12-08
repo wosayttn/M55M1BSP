@@ -47,7 +47,7 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
@@ -60,7 +60,7 @@ void SYS_Init(void)
     /* Enable module clock */
     CLK_EnableModuleClock(SC0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -73,16 +73,6 @@ void SYS_Init(void)
     SET_SC0_CLK_PB5();
 }
 /*---------------------------------------------------------------------------------------------------------*/
-/* Init UART                                                                                               */
-/*---------------------------------------------------------------------------------------------------------*/
-void UART_Init(void)
-{
-
-    /* Configure UART0 and set UART0 baud rate */
-    UART_Open(DEBUG_PORT, 115200);
-}
-
-/*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
@@ -93,8 +83,8 @@ int main(void)
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
-    /* Init UART for printf */
-    UART_Init();
+    /* Init DeubgUART for printf */
+    InitDebugUart();
 
     /* Lock protected registers */
     SYS_LockReg();

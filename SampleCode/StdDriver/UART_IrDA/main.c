@@ -156,8 +156,8 @@ void IrDA_FunctionTest(void)
         UART5 is set to debug port and connect with PC firstly.
         The IrDA sample code needs two module board to execute.
         Set the master board is IrDA TX Mode and the other is IrDA Rx mode.
-        Inputting char on terminal will be sent to the UART0 of master.
-        After the master receiving, the inputting char will send to UART0 again.
+        Inputting char on terminal will be sent to the DEBUG_PORT of master.
+        After the master receiving, the inputting char will send to DEBUG_PORT again.
         At the same time, it also sends to UART1 TX pin by IrDA mode.
         Slave will print received char after UART1 send out.
         Note that IrDA mode is ONLY used when baud rate equation is selected mode 0.
@@ -198,7 +198,7 @@ void IrDA_FunctionTxTest(void)
     printf("+-----------------------------------------------------------+\n");
     printf("|     IrDA Function Tx Mode Test                            |\n");
     printf("+-----------------------------------------------------------+\n");
-    printf("| 1). Input char by UART0 terminal.                         |\n");
+    printf("| 1). Input char by DEBUG_PORT terminal.                    |\n");
     printf("| 2). UART1 will send a char according to step 1.           |\n");
     printf("| 3). Return step 1. (Press '0' to exit)                    |\n");
     printf("+-----------------------------------------------------------+\n\n");

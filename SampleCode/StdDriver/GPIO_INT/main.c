@@ -74,7 +74,7 @@ static void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
     /* Enable GPIO Port B clock */
     CLK_EnableModuleClock(GPIOB_MODULE);

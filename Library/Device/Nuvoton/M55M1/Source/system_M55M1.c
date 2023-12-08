@@ -76,13 +76,13 @@ __WEAK void SetDebugUartCLK(void)
 {
 #if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
     /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART6_MODULE, CLK_UARTSEL0_UART6SEL_HIRC, CLK_UARTDIV0_UART6DIV(1));
+    CLK_SetModuleClock(DEBUG_PORT_MODULE, CLK_UARTSEL0_UART6SEL_HIRC, CLK_UARTDIV0_UART6DIV(1));
 
     /* Enable UART clock */
-    CLK_EnableModuleClock(UART6_MODULE);
+    CLK_EnableModuleClock(DEBUG_PORT_MODULE);
 
     /* Reset UART module */
-    SYS_ResetModule(SYS_UART6RST);
+    SYS_ResetModule(DEBUG_PORT_RST);
 #endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
 }
 

@@ -86,7 +86,7 @@ static void SYS_Init(void)
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
-    /* Waiting for Internal RC clock ready */
+    /* Waiting for Internal RC 12MHz clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
     /* Enable Internal RC 48MHz clock */
@@ -101,7 +101,7 @@ static void SYS_Init(void)
     /* Waiting for external high speed clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Enable Internal external low speed clock */
+    /* Enable external low speed clock */
     CLK_EnableXtalRC(CLK_SRCCTL_LXTEN_Msk);
 
     /* Waiting for external low speed clock ready */

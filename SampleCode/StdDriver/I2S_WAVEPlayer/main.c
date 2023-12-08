@@ -36,7 +36,7 @@ void delay_us(int usec);
 NVT_ITCM void SDH0_IRQHandler(void);
 void SD_Inits(void);
 void SYS_Init(void);
-void I2C2_Init(void);
+void I2C3_Init(void);
 void PDMA_Init(void);
 
 //extern void SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc);
@@ -107,26 +107,26 @@ void delay_us(int usec)
 #if NAU8822
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  Write 9-bit data to 7-bit address register of NAU8822 with I2C2                                        */
+/*  Write 9-bit data to 7-bit address register of NAU8822 with I2C3                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_WriteNAU8822(uint8_t u8Addr, uint16_t u16Data)
 {
-    I2C_START(I2C2);
-    I2C_WAIT_READY(I2C2);
+    I2C_START(I2C3);
+    I2C_WAIT_READY(I2C3);
 
-    I2C_SET_DATA(I2C2, 0x1A << 1);
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C3, 0x1A << 1);
+    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C3);
 
-    I2C_SET_DATA(I2C2, (uint8_t)((u8Addr << 1) | (u16Data >> 8)));
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C3, (uint8_t)((u8Addr << 1) | (u16Data >> 8)));
+    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C3);
 
-    I2C_SET_DATA(I2C2, (uint8_t)(u16Data & 0x00FF));
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C3, (uint8_t)(u16Data & 0x00FF));
+    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C3);
 
-    I2C_STOP(I2C2);
+    I2C_STOP(I2C3);
 }
 
 /* Config play sampling rate */
@@ -211,36 +211,36 @@ uint8_t I2C_WriteMultiByteforNAU88L25(uint8_t u8ChipAddr, uint16_t u16SubAddr, c
     (void)u32Len;
 
     /* Send START */
-    I2C_START(I2C2);
-    I2C_WAIT_READY(I2C2);
+    I2C_START(I2C3);
+    I2C_WAIT_READY(I2C3);
 
     /* Send device address */
-    I2C_SET_DATA(I2C2, u8ChipAddr);
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C3, u8ChipAddr);
+    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C3);
 
     /* Send register number and MSB of data */
-    I2C_SET_DATA(I2C2, (uint8_t)(u16SubAddr >> 8));
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C3, (uint8_t)(u16SubAddr >> 8));
+    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C3);
 
     /* Send register number and MSB of data */
-    I2C_SET_DATA(I2C2, (uint8_t)(u16SubAddr & 0x00FF));
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C3, (uint8_t)(u16SubAddr & 0x00FF));
+    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C3);
 
     /* Send data */
-    I2C_SET_DATA(I2C2, p[0]);
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C3, p[0]);
+    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C3);
 
     /* Send data */
-    I2C_SET_DATA(I2C2, p[1]);
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C3, p[1]);
+    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C3);
 
     /* Send STOP */
-    I2C_STOP(I2C2);
+    I2C_STOP(I2C3);
 
     return  0;
 }
@@ -534,8 +534,8 @@ void SYS_Init(void)
     /* Enable I2S0 module clock */
     CLK_EnableModuleClock(I2S0_MODULE);
 
-    /* Enable I2C2 module clock */
-    CLK_EnableModuleClock(I2C2_MODULE);
+    /* Enable I2C3 module clock */
+    CLK_EnableModuleClock(I2C3_MODULE);
 
     /* Enable PDMA0 module clock */
     CLK_EnableModuleClock(PDMA0_MODULE);
@@ -544,7 +544,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOD_MODULE);
     CLK_EnableModuleClock(GPIOI_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -562,21 +562,21 @@ void SYS_Init(void)
     /* Enable I2S0 clock pin (PI6) schmitt trigger */
     PI->SMTEN |= GPIO_SMTEN_SMTEN6_Msk;
 
-    /* Set I2C2 multi-function pins */
-    SET_I2C2_SDA_PD0();
-    SET_I2C2_SCL_PD1();
+    /* Set I2C3 multi-function pins */
+    SET_I2C3_SDA_PG1();
+    SET_I2C3_SCL_PG0();
 
-    /* Enable I2C2 clock pin (PD1) schmitt trigger */
-    PD->SMTEN |= GPIO_SMTEN_SMTEN1_Msk;
+    /* Enable I2C3 clock pin (PD1) schmitt trigger */
+    PG->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
 }
 
-void I2C2_Init(void)
+void I2C3_Init(void)
 {
-    /* Open I2C2 and set clock to 100k */
-    I2C_Open(I2C2, 100000);
+    /* Open I2C3 and set clock to 100k */
+    I2C_Open(I2C3, 100000);
 
-    /* Get I2C2 Bus Clock */
-    printf("I2C clock %d Hz\n", I2C_GetBusClockFreq(I2C2));
+    /* Get I2C3 Bus Clock */
+    printf("I2C clock %d Hz\n", I2C_GetBusClockFreq(I2C3));
 }
 
 void PDMA_Init(void)
@@ -626,8 +626,8 @@ int32_t main(void)
     SDH_Open_Disk(SDH0, CardDetect_From_GPIO);
     f_chdrive(sd_path);          /* set default path */
 
-    /* Init I2C2 to access codec */
-    I2C2_Init();
+    /* Init I2C3 to access codec */
+    I2C3_Init();
 
     /* Select source from HXT(12MHz) */
     CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_HXT, 0);
@@ -640,10 +640,10 @@ int32_t main(void)
     /* Configure as I2S slave */
     I2S_Open(I2S0, I2S_MODE_SLAVE, 16000, I2S_DATABIT_16, I2S_STEREO, I2S_FORMAT_I2S);
 
-    /* Set PD3 low to enable phone jack on NuMaker board. */
-    SYS->GPD_MFP0 &= ~(SYS_GPD_MFP0_PD3MFP_Msk);
-    GPIO_SetMode(PD, BIT3, GPIO_MODE_OUTPUT);
-    PD3 = 0;
+    /* Set JK-EN low to enable phone jack on NuMaker board. */
+    SET_GPIO_PB12();
+    GPIO_SetMode(PB, BIT12, GPIO_MODE_OUTPUT);
+    PB12 = 0;
 
 #if NAU8822
     /* Initialize NAU8822 codec */

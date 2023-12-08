@@ -29,7 +29,7 @@ uint16_t g_u16CtrlSignal1 = 0;     /* BIT0: DTR(Data Terminal Ready) , BIT1: RTS
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-/* UART0 */
+/* DEBUG_PORT */
 static volatile uint8_t s_au8ComRbuf0[RXBUFSIZE];
 volatile uint16_t g_u16ComRbytes0 = 0;
 volatile uint16_t g_u16ComRhead0 = 0;
@@ -66,7 +66,7 @@ uint32_t g_u32TxSize1 = 0;
 volatile int8_t g_i8BulkOutReady1 = 0;
 
 void SYS_Init(void);
-void UART0_Init(void);
+void DEBUG_PORT_Init(void);
 void UART1_Init(void);
 void PowerDown(void);
 /*---------------------------------------------------------------------------------------------------------*/
@@ -150,7 +150,7 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();
 
     /* Set multi-function pins for UART1 RXD and TXD */
@@ -165,19 +165,10 @@ void SYS_Init(void)
 
 }
 
-void UART0_Init(void)
+void DEBUG_PORT_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init UART                                                                                               */
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Reset UART */
-    SYS_ResetModule(SYS_UART0RST);
-
-    /* Configure UART and set UART Baudrate */
-    UART_Open(UART0, 115200);
-
     /* Enable Interrupt and install the call back function */
-    UART_ENABLE_INT(UART0, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk | UART_INTEN_RXTOIEN_Msk));
+    UART_ENABLE_INT(DEBUG_PORT, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk | UART_INTEN_RXTOIEN_Msk));
 }
 
 void UART1_Init(void)
@@ -198,23 +189,23 @@ void UART1_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /* UART Callback function                                                                                  */
 /*---------------------------------------------------------------------------------------------------------*/
-NVT_ITCM void UART0_IRQHandler(void)
+NVT_ITCM void DEBUG_PORT_IRQHandler(void)
 {
     uint8_t u8InChar;
     int32_t i32Size;
     uint32_t u32IntStatus;
 
-    u32IntStatus = UART0->INTSTS;
+    u32IntStatus = DEBUG_PORT->INTSTS;
 
     if ((u32IntStatus & UART_INTSTS_RDAIF_Msk) || (u32IntStatus & UART_INTSTS_RXTOIF_Msk))
     {
         /* Receiver FIFO threshold level is reached or Rx time out */
 
         /* Get all the input characters */
-        while (!(UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk))
+        while (!(DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk))
         {
             /* Get the character from UART Buffer */
-            u8InChar = (uint8_t)UART0->DAT;
+            u8InChar = (uint8_t)DEBUG_PORT->DAT;
 
             /* Check if buffer full */
             if (g_u16ComRbytes0 < RXBUFSIZE)
@@ -237,20 +228,20 @@ NVT_ITCM void UART0_IRQHandler(void)
     if (u32IntStatus & UART_INTSTS_THREIF_Msk)
     {
 
-        if (g_u16ComTbytes0 && (UART0->INTEN & UART_INTEN_THREIEN_Msk))
+        if (g_u16ComTbytes0 && (DEBUG_PORT->INTEN & UART_INTEN_THREIEN_Msk))
         {
             /* Fill the Tx FIFO */
             i32Size = g_u16ComTbytes0;
 
-            if (i32Size >= UART0_FIFO_SIZE)
+            if (i32Size >= DEBUG_PORT_FIFO_SIZE)
             {
-                i32Size = UART0_FIFO_SIZE;
+                i32Size = DEBUG_PORT_FIFO_SIZE;
             }
 
             while (i32Size)
             {
                 u8InChar = s_au8ComTbuf0[g_u16ComThead0++];
-                UART0->DAT = u8InChar;
+                DEBUG_PORT->DAT = u8InChar;
 
                 if (g_u16ComThead0 >= TXBUFSIZE)
                     g_u16ComThead0 = 0;
@@ -262,7 +253,7 @@ NVT_ITCM void UART0_IRQHandler(void)
         else
         {
             /* No more data, just stop Tx (Stop work) */
-            UART0->INTEN &= ~UART_INTEN_THREIEN_Msk;
+            DEBUG_PORT->INTEN &= ~UART_INTEN_THREIEN_Msk;
         }
     }
 }
@@ -462,10 +453,10 @@ void VCOM_TransferData(void)
     if (g_u16ComTbytes0)
     {
         /* Check if Tx is working */
-        if ((UART0->INTEN & UART_INTEN_THREIEN_Msk) == 0)
+        if ((DEBUG_PORT->INTEN & UART_INTEN_THREIEN_Msk) == 0)
         {
             /* Send one bytes out */
-            UART0->DAT = s_au8ComTbuf0[g_u16ComThead0++];
+            DEBUG_PORT->DAT = s_au8ComTbuf0[g_u16ComThead0++];
 
             if (g_u16ComThead0 >= TXBUFSIZE)
                 g_u16ComThead0 = 0;
@@ -473,7 +464,7 @@ void VCOM_TransferData(void)
             g_u16ComTbytes0--;
 
             /* Enable Tx Empty Interrupt. (Trigger first one) */
-            UART0->INTEN |= UART_INTEN_THREIEN_Msk;
+            DEBUG_PORT->INTEN |= UART_INTEN_THREIEN_Msk;
         }
     }
 
@@ -530,9 +521,9 @@ int32_t main(void)
     SYS_Init();
 
     /* Init UART */
-    UART0_Init();
+    DEBUG_PORT_Init();
     UART1_Init();
-  
+
     /* Lock protected registers */
     SYS_LockReg();
 
@@ -547,7 +538,7 @@ int32_t main(void)
     VCOM_Init();
     USBD_Start();
 
-    NVIC_EnableIRQ(UART0_IRQn);
+    NVIC_EnableIRQ(DEBUG_PORT_IRQn);
     NVIC_EnableIRQ(UART1_IRQn);
     NVIC_EnableIRQ(USBD_IRQn);
 

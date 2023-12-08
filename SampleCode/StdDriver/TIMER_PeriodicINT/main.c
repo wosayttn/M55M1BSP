@@ -7,14 +7,13 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 /*
- * This sample uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This sample uses internal RC as APLL0 clock source and UART to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
  *   I/D-Cache are enabled by default for better performance,
  *   users can define NVT_ICACHE_OFF/NVT_DCACHE_OFF in project setting to disable cache.
  * Debug UART
- *   Default is DEBUG_PORT=UART0 in project setting
  *   system_M55M1.c has three weak functions as below to configure debug UART port.
  *     SetDebugUartMFP, SetDebugUartCLK and InitDebugUart
  *   Users can re-implement these functions according to system design.
@@ -105,7 +104,7 @@ static void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -118,7 +117,7 @@ static void SYS_Init(void)
     /* Enable HXT clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
     CLK_WaitClockReady( CLK_STATUS_HXTSTB_Msk);
-    
+
     /* Enable TIMER module clock */
     CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_HXT, 0);
     CLK_SetModuleClock(TMR1_MODULE, CLK_TMRSEL_TMR1SEL_PCLK1, 0);

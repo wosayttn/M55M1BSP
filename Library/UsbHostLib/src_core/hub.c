@@ -680,23 +680,11 @@ int  usbh_pooling_hubs(void)
     int   ret, change = 0;
 
 #ifdef ENABLE_EHCI
-    _ehci->UPSCR[1] = HSUSBH_UPSCR_PP_Msk | HSUSBH_UPSCR_PO_Msk;     /* set port 2 owner to OHCI              */
+    //_ehci->UPSCR[1] = HSUSBH_UPSCR_PP_Msk | HSUSBH_UPSCR_PO_Msk;     /* set port 2 owner to OHCI              */
 
     do
     {
         ret = ehci_driver.rthub_polling();
-
-        if (ret)
-            change = 1;
-    } while (ret == 1);
-
-#endif
-
-#ifdef ENABLE_OHCI0
-
-    do
-    {
-        ret = ohci0_driver.rthub_polling();
 
         if (ret)
             change = 1;
@@ -709,6 +697,18 @@ int  usbh_pooling_hubs(void)
     do
     {
         ret = ohci1_driver.rthub_polling();
+
+        if (ret)
+            change = 1;
+    } while (ret == 1);
+
+#endif
+
+#ifdef ENABLE_OHCI0
+
+    do
+    {
+        ret = ohci0_driver.rthub_polling();
 
         if (ret)
             change = 1;

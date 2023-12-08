@@ -17,7 +17,6 @@ void USCI_AutoBaudRate_Test(void);
 void USCI_AutoBaudRate_TxTest(void);
 void USCI_AutoBaudRate_RxTest(void);
 void SYS_Init(void);
-void UART0_Init(void);
 void USCI0_Init(void);
 uint32_t GetUuartBaudrate(UUART_T *uuart);
 

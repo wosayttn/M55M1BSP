@@ -63,9 +63,9 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-    
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 72MHz clock */    
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_72MHZ);    
+
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 72MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_72MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -75,22 +75,13 @@ void SYS_Init(void)
     CLK_EnableModuleClock(EQEI0_MODULE);
     CLK_EnableModuleClock(EQEI1_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-}
-/*---------------------------------------------------------------------------------------------------------*/
-/* Init UART                                                                                               */
-/*---------------------------------------------------------------------------------------------------------*/
-void UART0_Init()
-{
-
-    /* Configure UART0 and set UART0 Baudrate */
-    UART_Open(UART0, 115200);
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* MAIN function                                                                                           */
@@ -105,8 +96,8 @@ int32_t main(void)
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
-    /* Init UART0 for printf */
-    UART0_Init();
+    /* Init DeubgUART for printf */
+    InitDebugUart();
 
     printf("CPU @ %uHz\n", SystemCoreClock);
     printf("PLCK0 @ %uHz\n", CLK_GetPCLK0Freq());

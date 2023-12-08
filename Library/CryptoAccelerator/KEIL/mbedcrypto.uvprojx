@@ -313,7 +313,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>0</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -394,16 +394,6 @@
               <FilePath>..\ccm_alt.c</FilePath>
             </File>
             <File>
-              <FileName>chacha20_alt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\chacha20_alt.c</FilePath>
-            </File>
-            <File>
-              <FileName>chachapoly_alt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\chachapoly_alt.c</FilePath>
-            </File>
-            <File>
               <FileName>ecdh_alt.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\ecdh_alt.c</FilePath>
@@ -432,11 +422,6 @@
               <FileName>platform_alt.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\platform_alt.c</FilePath>
-            </File>
-            <File>
-              <FileName>poly1305_alt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\poly1305_alt.c</FilePath>
             </File>
             <File>
               <FileName>rsa_alt.c</FileName>
@@ -797,66 +782,6 @@
               <FileName>sha512.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\ThirdParty\mbedtls\library\sha512.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_cache.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\ThirdParty\mbedtls\library\ssl_cache.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_ciphersuites.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\ThirdParty\mbedtls\library\ssl_ciphersuites.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_cli.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\ThirdParty\mbedtls\library\ssl_cli.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_cookie.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\ThirdParty\mbedtls\library\ssl_cookie.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_msg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\ThirdParty\mbedtls\library\ssl_msg.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_srv.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\ThirdParty\mbedtls\library\ssl_srv.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_ticket.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\ThirdParty\mbedtls\library\ssl_ticket.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_tls.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\ThirdParty\mbedtls\library\ssl_tls.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_tls13_client.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\ThirdParty\mbedtls\library\ssl_tls13_client.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_tls13_generic.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\ThirdParty\mbedtls\library\ssl_tls13_generic.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_tls13_keys.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\ThirdParty\mbedtls\library\ssl_tls13_keys.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_tls13_server.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\ThirdParty\mbedtls\library\ssl_tls13_server.c</FilePath>
             </File>
             <File>
               <FileName>threading.c</FileName>

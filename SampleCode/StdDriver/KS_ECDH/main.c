@@ -81,7 +81,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(KS0_MODULE);
     CLK_EnableModuleClock(CRYPTO0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

@@ -33,7 +33,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(TRNG0_MODULE);
     CLK_EnableModuleClock(KS0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

@@ -189,7 +189,7 @@ void Configure_EBI_16BIT_Pins(void)
     SET_EBI_nCS0_PD12();
 
     /* EBI ALE pin on PA.8 */
-    SET_EBI_ALE_PA8();             
+    SET_EBI_ALE_PA8();
 }
 
 void SYS_Init(void)
@@ -229,7 +229,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Enable EBI clock */

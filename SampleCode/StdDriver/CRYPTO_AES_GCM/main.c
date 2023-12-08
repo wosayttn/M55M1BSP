@@ -1,10 +1,10 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.11
- * @brief    Demonstrate how to encrypt/decrypt data by AES GCM.
+ * @file    main.c
+ * @version V1.00
+ * @brief   CRYPTO_AES_GCM code for M55M1 series MCU
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -601,21 +601,21 @@ void DumpBuffHex(uint8_t *pucBuff, int nBytes)
 
 
     i32Idx = 0;
-    while(nBytes > 0)
+    while (nBytes > 0)
     {
         printf("0x%04X  ", i32Idx);
 
         len = (nBytes < 16) ? nBytes : 16;
-        for(i = 0; i < len; i++)
+        for (i = 0; i < len; i++)
             printf("%02x ", pucBuff[i32Idx + i]);
-        for(; i < 16; i++)
+        for (; i < 16; i++)
         {
             printf("   ");
         }
         printf("  ");
-        for(i = 0; i < len; i++)
+        for (i = 0; i < len; i++)
         {
-            if((pucBuff[i32Idx + i] >= 0x20) && (pucBuff[i32Idx + i] < 127))
+            if ((pucBuff[i32Idx + i] >= 0x20) && (pucBuff[i32Idx + i] < 127))
                 printf("%c", pucBuff[i32Idx + i]);
             else
                 printf(".");
@@ -632,7 +632,7 @@ volatile int  g_Crypto_Int_done = 0;
 
 void CRYPTO_IRQHandler()
 {
-    if(AES_GET_INT_FLAG(CRYPTO))
+    if (AES_GET_INT_FLAG(CRYPTO))
     {
         g_Crypto_Int_done = 1;
         AES_CLR_INT_FLAG(CRYPTO);
@@ -644,16 +644,16 @@ void CRYPTO_IRQHandler()
 void SYS_Init(void)
 {
 
-      /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-   /* Enable Internal RC 12MHz clock */
+    /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
@@ -661,15 +661,15 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
 
-   /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable PLL0 200MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -681,19 +681,15 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Enable CRYPTO module clock */
     CLK_EnableModuleClock(CRYPTO0_MODULE);
 
-		 /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-     /* Set PB multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
 }
@@ -705,32 +701,32 @@ void str2bin(const char *pstr, uint8_t *buf, uint32_t size)
     uint8_t u8Ch;
     char c;
 
-    for(i = 0; i < size; i++)
+    for (i = 0; i < size; i++)
     {
         c = *pstr++;
-        if(c == NULL)
+        if (c == NULL)
             break;
 
-        if((c >= 'a') && (c <= 'f'))
+        if ((c >= 'a') && (c <= 'f'))
             c -= ('a' - 10);
-        else if((c >= 'A') && (c <= 'F'))
+        else if ((c >= 'A') && (c <= 'F'))
             c -= ('A' - 10);
-        else if((c >= '0') && (c <= '9'))
+        else if ((c >= '0') && (c <= '9'))
             c -= '0';
         u8Ch = (uint8_t)c << 4;
 
         c = *pstr++;
-        if(c == NULL)
+        if (c == NULL)
         {
             buf[i] = u8Ch;
             break;
         }
 
-        if((c >= 'a') && (c <= 'f'))
+        if ((c >= 'a') && (c <= 'f'))
             c -= ('a' - 10);
-        else if((c >= 'A') && (c <= 'F'))
+        else if ((c >= 'A') && (c <= 'F'))
             c -= ('A' - 10);
-        else if((c >= '0') && (c <= '9'))
+        else if ((c >= '0') && (c <= '9'))
             c -= '0';
         u8Ch += (uint8_t)c;
 
@@ -745,7 +741,7 @@ void bin2str(uint8_t *buf, uint32_t size, char *pstr)
     int32_t i;
     uint8_t c;
 
-    for(i = size - 1; i >= 0; i--)
+    for (i = size - 1; i >= 0; i--)
     {
         c = buf[i] >> 4;
         *pstr++ = (c >= 10) ? c - 10 + 'a' : c + '0';
@@ -765,13 +761,13 @@ int32_t ToBigEndian(uint8_t *pbuf, uint32_t u32Size)
     uint32_t u32Tmp;
 
     /* pbuf must be word alignment */
-    if((uint32_t)pbuf & 0x3)
+    if ((uint32_t)pbuf & 0x3)
     {
         printf("The buffer must be 32-bit alignment.");
         return -1;
     }
 
-    while(u32Size >= 4)
+    while (u32Size >= 4)
     {
         u8Tmp = *pbuf;
         *(pbuf) = *(pbuf + 3);
@@ -785,10 +781,10 @@ int32_t ToBigEndian(uint8_t *pbuf, uint32_t u32Size)
         pbuf += 4;
     }
 
-    if(u32Size > 0)
+    if (u32Size > 0)
     {
         u32Tmp = 0;
-        for(i = 0; i < u32Size; i++)
+        for (i = 0; i < u32Size; i++)
         {
             u32Tmp |= *(pbuf + i) << (24 - i * 8);
         }
@@ -808,13 +804,13 @@ int32_t ToLittleEndian(uint8_t *pbuf, uint32_t u32Size)
     uint32_t u32Tmp;
 
     /* pbuf must be word alignment */
-    if((uint32_t)pbuf & 0x3)
+    if ((uint32_t)pbuf & 0x3)
     {
         printf("The buffer must be 32-bit alignment.");
         return -1;
     }
 
-    while(u32Size >= 4)
+    while (u32Size >= 4)
     {
         u8Tmp = *pbuf;
         *(pbuf) = *(pbuf + 3);
@@ -828,10 +824,10 @@ int32_t ToLittleEndian(uint8_t *pbuf, uint32_t u32Size)
         pbuf += 4;
     }
 
-    if(u32Size > 0)
+    if (u32Size > 0)
     {
         u32Tmp = 0;
-        for(i = 0; i < u32Size; i++)
+        for (i = 0; i < u32Size; i++)
         {
             u32Tmp |= *(pbuf + i) << (24 - i * 8);
         }
@@ -848,7 +844,7 @@ static void swap64(uint8_t *p)
     uint8_t tmp;
     int32_t i;
 
-    for(i = 0; i < 4; i++)
+    for (i = 0; i < 4; i++)
     {
         tmp = p[i];
         p[i] = p[7 - i];
@@ -881,23 +877,23 @@ int32_t AES_GCMPacker(uint8_t *iv, uint32_t iv_len, uint8_t *A, uint32_t A_len, 
        if bitlen(IV) != 96
          IV section = 128'align(IV) || 64'bit 0 || 64'bitlen(IV)
     */
-    if(iv_len > 0)
+    if (iv_len > 0)
     {
         iv_len_aligned = iv_len;
-        if(iv_len & 0xful)
+        if (iv_len & 0xful)
             iv_len_aligned = ((iv_len + 16) >> 4) << 4;
 
         /* fill iv to output */
-        for(i = 0; i < iv_len_aligned; i++)
+        for (i = 0; i < iv_len_aligned; i++)
         {
-            if(i < iv_len)
+            if (i < iv_len)
                 pbuf[i] = iv[i];
             else
                 pbuf[i] = 0; // padding zero
         }
 
         /* fill iv len to putput */
-        if(iv_len == 12)
+        if (iv_len == 12)
         {
             pbuf[15] = 1;
             u32Offset += iv_len_aligned;
@@ -917,15 +913,15 @@ int32_t AES_GCMPacker(uint8_t *iv, uint32_t iv_len, uint8_t *A, uint32_t A_len, 
 
 
     /* A Section = 128'align(A) */
-    if(A_len > 0)
+    if (A_len > 0)
     {
         A_len_aligned = A_len;
-        if(A_len & 0xful)
+        if (A_len & 0xful)
             A_len_aligned = ((A_len + 16) >> 4) << 4;
 
-        for(i = 0; i < A_len_aligned; i++)
+        for (i = 0; i < A_len_aligned; i++)
         {
-            if(i < A_len)
+            if (i < A_len)
                 pbuf[u32Offset + i] = A[i];
             else
                 pbuf[u32Offset + i] = 0; // padding zero
@@ -935,15 +931,15 @@ int32_t AES_GCMPacker(uint8_t *iv, uint32_t iv_len, uint8_t *A, uint32_t A_len, 
     }
 
     /* P/C Section = 128'align(P/C) */
-    if(P_len > 0)
+    if (P_len > 0)
     {
         P_len_aligned = P_len;
-        if(P_len & 0xful)
+        if (P_len & 0xful)
             P_len_aligned = ((P_len + 16) >> 4) << 4;
 
-        for(i = 0; i < P_len_aligned; i++)
+        for (i = 0; i < P_len_aligned; i++)
         {
-            if(i < P_len)
+            if (i < P_len)
                 pbuf[u32Offset + i] = P[i];
             else
                 pbuf[u32Offset + i] = 0; // padding zero
@@ -964,9 +960,9 @@ void AES_Run(uint32_t u32Option)
     CRYPTO->AES_CTL = u32Option | START;
     /* Waiting for AES calculation */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(!g_Crypto_Int_done)
+    while (!g_Crypto_Int_done)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for AES calculation done time-out!\n");
             break;
@@ -1001,7 +997,7 @@ int32_t AES_GCMEnc(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
     /* Prepare the key */
     memcpy(g_au8Buf, key, klen);
     ToBigEndian(g_au8Buf, klen);
-    for(i = 0; i < klen / 4; i++)
+    for (i = 0; i < klen / 4; i++)
     {
         CRYPTO->AES_KEY[i] = *((uint32_t *)&g_au8Buf[i * 4]);
     }
@@ -1026,7 +1022,7 @@ int32_t AES_GCMEnc(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
     CRYPTO->AES_GCM_PCNT[1] = 0;
 
     *plen_aligned = (plen & 0xful) ? ((plen + 16) / 16) * 16 : plen;
-    if(plen <= GCM_PBLOCK_SIZE)
+    if (plen <= GCM_PBLOCK_SIZE)
     {
         /* Just one shot */
 
@@ -1068,10 +1064,10 @@ int32_t AES_GCMEnc(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
         plen_cur = plen;
         pin = P;
         pout = buf;
-        while(plen_cur)
+        while (plen_cur)
         {
             len = plen_cur;
-            if(len > GCM_PBLOCK_SIZE)
+            if (len > GCM_PBLOCK_SIZE)
             {
                 len = GCM_PBLOCK_SIZE;
             }
@@ -1080,7 +1076,7 @@ int32_t AES_GCMEnc(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
             /* Prepare the blocked buffer for GCM */
             memcpy(g_au8Buf, pin, len);
             /* padding 0 if necessary */
-            if(len & 0xf)
+            if (len & 0xf)
             {
                 memset(&g_au8Buf[len], 0, 16 - (len & 0xf));
                 len = ((len + 16) >> 4) << 4;
@@ -1093,7 +1089,7 @@ int32_t AES_GCMEnc(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
 
 
 
-            if(plen_cur)
+            if (plen_cur)
             {
                 /* casecade n */
                 AES_Run(u32OptBasic | GCM_MODE | FBIN | FBOUT | DMAEN | DMACC);
@@ -1146,9 +1142,9 @@ int32_t AES_GCMDec(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
     /* Set AES Key */
     memcpy(g_au8Buf, key, klen);
     ToBigEndian(g_au8Buf, klen);
-    for(i = 0; i < klen / 4; i++)
+    for (i = 0; i < klen / 4; i++)
     {
-       CRYPTO->AES_KEY[i] = *((uint32_t *)&g_au8Buf[i * 4]);
+        CRYPTO->AES_KEY[i] = *((uint32_t *)&g_au8Buf[i * 4]);
     }
 
     /* Set byte count of IV */
@@ -1165,7 +1161,7 @@ int32_t AES_GCMDec(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
 
 
     *plen_aligned = (plen & 0xful) ? ((plen + 16) >> 4) << 4 : plen;
-    if(plen < GCM_PBLOCK_SIZE)
+    if (plen < GCM_PBLOCK_SIZE)
     {
         /* Small P/C size, just use DMA one shot */
 
@@ -1205,10 +1201,10 @@ int32_t AES_GCMDec(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
         plen_cur = plen;
         pin = P;
         pout = buf;
-        while(plen_cur)
+        while (plen_cur)
         {
             len = plen_cur;
-            if(len > GCM_PBLOCK_SIZE)
+            if (len > GCM_PBLOCK_SIZE)
             {
                 len = GCM_PBLOCK_SIZE;
             }
@@ -1217,7 +1213,7 @@ int32_t AES_GCMDec(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
             /* Prepare the blocked buffer for GCM */
             memcpy(g_au8Buf, pin, len);
             /* padding 0 if necessary */
-            if(len & 0xf)
+            if (len & 0xf)
             {
                 memset(&g_au8Buf[len], 0, 16 - (len & 0xf));
                 len = ((len + 16) >> 4) << 4;
@@ -1228,7 +1224,7 @@ int32_t AES_GCMDec(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
 
             AES_SetDMATransfer(CRYPTO, 0, (uint32_t)g_au8Buf, (uint32_t)pout, len);
 
-            if(plen_cur)
+            if (plen_cur)
             {
                 /* casecade n */
                 AES_Run(u32OptBasic | GCM_MODE | FBIN | FBOUT | DMAEN | DMACC);
@@ -1266,7 +1262,7 @@ int main(void)
     SET_TRACE_DATA3_PE8();
 
 
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
 
     /* Init System, IP clock and multi-function I/O. */
@@ -1284,13 +1280,13 @@ int main(void)
     NVIC_EnableIRQ(CRYPTO_IRQn);
 
     n = sizeof(sElements) / sizeof(GCM_TEST_T);
-    for(i = 0; i < n; i++)
+    for (i = 0; i < n; i++)
     {
 
         printf("\n============================================================================\n");
         printf("Test iter %d/%d\n\n", i + 1, n);
 
-			/* Reset CRYPTO module clock */
+        /* Reset CRYPTO module clock */
         SYS_ResetModule(SYS_CRYPTO0RST);
 
         AES_ENABLE_INT(CRYPTO);
@@ -1307,26 +1303,26 @@ int main(void)
         tlen = strlen(sElements[i].pchTag) / 2;
 
         /* Rule check */
-        if((klen != 16) && (klen != 24) && (klen != 32))
+        if ((klen != 16) && (klen != 24) && (klen != 32))
         {
             printf("klen = %d\n", klen);
             printf("Key size should 128, 192 or 256 bits\n");
             return -1;
         }
 
-        if(alen > GCM_PBLOCK_SIZE)
+        if (alen > GCM_PBLOCK_SIZE)
         {
             printf("alen = %d\n", alen);
             printf("length of A should not larger than defined block size.\n");
             return -1;
         }
-        if(GCM_PBLOCK_SIZE & 0xf)
+        if (GCM_PBLOCK_SIZE & 0xf)
         {
             printf("block size = %d\n", GCM_PBLOCK_SIZE);
             printf("Defined block size should be 16 bytes alignment.\n");
             return -1;
         }
-        if(ivlen == 0)
+        if (ivlen == 0)
         {
             printf("ivlen = %d\n", ivlen);
             printf("IV length should not be 0\n");
@@ -1347,13 +1343,13 @@ int main(void)
         str2bin(sElements[i].pchC, g_C, plen);
         str2bin(sElements[i].pchTag, g_T, tlen);
 
-        if(memcmp(g_C, g_au8Out, plen))
+        if (memcmp(g_C, g_au8Out, plen))
         {
             printf("ERR: Encrypted data fail!\n");
             return -1;
         }
 
-        if(memcmp(g_T, &g_au8Out[plen_aligned], tlen))
+        if (memcmp(g_T, &g_au8Out[plen_aligned], tlen))
         {
 
             printf("ERR: Tag fail!\n");
@@ -1365,13 +1361,13 @@ int main(void)
 
         AES_GCMDec(g_key, klen, g_iv, ivlen, g_A, alen, g_au8Out, plen, g_au8Out2, &size, &plen_aligned);
 
-        if(memcmp(g_P, g_au8Out2, plen))
+        if (memcmp(g_P, g_au8Out2, plen))
         {
             printf("ERR: Encrypted data fail!\n");
             return -1;
         }
 
-        if(memcmp(g_T, &g_au8Out2[plen_aligned], tlen))
+        if (memcmp(g_T, &g_au8Out2[plen_aligned], tlen))
         {
             printf("ERR: Tag fail!");
             return -1;
@@ -1381,6 +1377,7 @@ int main(void)
 
     }
 
-    while(1) {}
+    while (1) {}
 
 }
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

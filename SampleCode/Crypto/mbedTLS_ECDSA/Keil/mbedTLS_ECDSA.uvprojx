@@ -337,7 +337,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>DEBUG_PORT=UART0,MBEDTLS_CONFIG_FILE</Define>
+              <Define>MBEDTLS_CONFIG_FILE</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\CryptoAccelerator;..\..\..\..\ThirdParty\mbedtls\include;..\..\..\..\ThirdParty\mbedtls\library;..\..\..\..\ThirdParty\mbedtls\tests\include;..\</IncludePath>
             </VariousControls>
@@ -370,7 +370,7 @@
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\ARM\M55M1.scatter</ScatterFile>
+            <ScatterFile>.\M55M1.scatter</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -457,11 +457,6 @@
               <FileName>random.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\ThirdParty\mbedtls\tests\src\random.c</FilePath>
-            </File>
-            <File>
-              <FileName>mbedtls_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\Library\CryptoAccelerator\mbedtls_config.h</FilePath>
             </File>
           </Files>
         </Group>

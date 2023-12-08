@@ -7,14 +7,13 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 /*
- * This sample uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This sample uses internal RC as APLL0 clock source and UART to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
  *   I/D-Cache are enabled by default for better performance,
  *   users can define NVT_ICACHE_OFF/NVT_DCACHE_OFF in project setting to disable cache.
  * Debug UART
- *   Default is DEBUG_PORT=UART0 in project setting
  *   system_M55M1.c has three weak functions as below to configure debug UART port.
  *     SetDebugUartMFP, SetDebugUartCLK and InitDebugUart
  *   Users can re-implement these functions according to system design.
@@ -28,10 +27,10 @@ static volatile uint32_t g_u32PDWK;
 NVT_ITCM void TIMER0_IRQHandler(void)
 {
     CLK_WaitModuleClockReady(TMR0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(UART0_MODULE);//TESTCHIP_ONLY
+    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
     // Clear wake up flag
     TIMER_ClearWakeupFlag(TIMER0);
-    
+
     // Clear interrupt flag
     TIMER_ClearIntFlag(TIMER0);
 }
@@ -96,7 +95,7 @@ static void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -137,7 +136,7 @@ int main(void)
 
     printf("System core clock = %d\n", SystemCoreClock);
     printf("Timer power down/wake up sample code\n");
-    while(!UART_IS_TX_EMPTY(UART0));
+    while(!UART_IS_TX_EMPTY(DEBUG_PORT));
 
     /* Output selected clock to CKO*/
     CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_SYSCLK, 3, CLK_CLKOCTL_DIV1EN_DIV_FREQSEL);
@@ -166,7 +165,7 @@ int main(void)
     {
         printf("Enter Power-down !\n");
         g_u32PDWK = 0;
-        while(!UART_IS_TX_EMPTY(UART0));
+        while(!UART_IS_TX_EMPTY(DEBUG_PORT));
         PMC_PowerDown();
         while(!g_u32PDWK);
         printf("Wake %d\n", i++);

@@ -200,8 +200,8 @@ void SYS_Init(void)
     /* Enable I2S0 module clock */
     CLK_EnableModuleClock(I2S0_MODULE);
 
-    /* Enable I2C2 module clock */
-    CLK_EnableModuleClock(I2C2_MODULE);
+    /* Enable I2C3 module clock */
+    CLK_EnableModuleClock(I2C3_MODULE);
 
     /* Enable PDMA0 module clock */
     CLK_EnableModuleClock(PDMA0_MODULE);
@@ -209,13 +209,13 @@ void SYS_Init(void)
     /* Enable SPIM0 module clock */
     CLK_EnableModuleClock(SPIM0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                */
     /*------------------------------------------------------------------------*/
-    /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();
 
     /* Set multi-function pins for I2S0 */
@@ -228,12 +228,12 @@ void SYS_Init(void)
     /* Enable I2S0 clock pin (PI6) schmitt trigger */
     PI->SMTEN |= GPIO_SMTEN_SMTEN6_Msk;
 
-    /* Set I2C2 multi-function pins */
-    SET_I2C2_SDA_PD0();
-    SET_I2C2_SCL_PD1();
+    /* Set I2C3 multi-function pins */
+    SET_I2C3_SDA_PG1();
+    SET_I2C3_SCL_PG0();
 
-    /* Enable I2C2 clock pin (PD1) schmitt trigger */
-    PD->SMTEN |= GPIO_SMTEN_SMTEN1_Msk;
+    /* Enable I2C3 clock pin (PD1) schmitt trigger */
+    PG->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
 
     /* Set multi-function pins for SPIM0 */
     SET_SPIM0_CLKN_PC5();
@@ -251,10 +251,10 @@ void SYS_Init(void)
     SET_SPIM0_SS_PC3();
 }
 
-void I2C2_Init(void)
+void I2C3_Init(void)
 {
-    /* Open I2C2 and set clock to 100k */
-    I2C_Open(I2C2, 100000);
+    /* Open I2C3 and set clock to 100k */
+    I2C_Open(I2C3, 100000);
 }
 
 /* Configure PDMA to Scatter Gather mode */
@@ -345,14 +345,14 @@ int32_t main(void)
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
+    /* Init Debug UART for printf */
+    InitDebugUart();
+
     /* Init SD */
     SD_Init();
 
     /* Init HyperRAM and Entry DMM Mode */
     HyperRAM_Init(SPIM0);
-
-    /* Init UART to 115200-8n1 for print message */
-    UART_Open(UART0, 115200);
 
     printf("+-----------------------------------------------------------------------+\n");
     printf("|                  MP3 Recorder Sample with Audio Codec                 |\n");
@@ -374,8 +374,8 @@ int32_t main(void)
     SDH_Open_Disk(SDH0, CardDetect_From_GPIO);
     f_chdrive(sd_path);          /* Set default path */
 
-    /* Init I2C2 to access audio codec */
-    I2C2_Init();
+    /* Init I2C3 to access audio codec */
+    I2C3_Init();
 
     /* Select source from HXT(12MHz) */
     CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_HXT, 0);

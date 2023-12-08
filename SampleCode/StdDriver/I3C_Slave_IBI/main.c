@@ -38,9 +38,9 @@ static void PollingToSendIBIRequest(void)
     uint8_t     IBI_MDB, IBI_PLLen;
     uint32_t    IBI_PL;
 
-    if ((UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0U)
+    if ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0U)
     {
-        chTrgIBI = (char)UART0->DAT;
+        chTrgIBI = (char)DEBUG_PORT->DAT;
 
         do
         {
@@ -355,7 +355,7 @@ static void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */

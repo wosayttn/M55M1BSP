@@ -185,6 +185,7 @@ static void prvSetupHardware( void )
     SetDebugUartCLK();
 
     CLK_EnableModuleClock(EMAC0_MODULE);
+    CLK_EnableModuleClock(GPIOE_MODULE);
 
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
@@ -199,7 +200,10 @@ static void prvSetupHardware( void )
     SET_EMAC0_RMII_RXD1_PC6();
     SET_EMAC0_RMII_CRSDV_PA7();
     SET_EMAC0_RMII_RXERR_PA6();
-    SET_EMAC0_PPS_PB6();
+
+    /* PE.13 Set high */
+    GPIO_SetMode(PE, BIT13, GPIO_MODE_OUTPUT);
+    PE13=1;
 
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();

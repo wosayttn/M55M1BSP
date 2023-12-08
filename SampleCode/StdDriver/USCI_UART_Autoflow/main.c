@@ -24,7 +24,6 @@ void USCI_AutoFlow_FunctionTest(void);
 void USCI_AutoFlow_FunctionTxTest(void);
 void USCI_AutoFlow_FunctionRxTest(void);
 void SYS_Init(void);
-void UART0_Init(void);
 void USCI0_Init(void);
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)

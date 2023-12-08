@@ -170,13 +170,13 @@ static int32_t ECC_GenPubKey(mbedtls_ecp_group* grp, mbedtls_mpi* d, mbedtls_ecp
     uint32_t timeout = 200000000;
     int32_t len;
 
-    /* Reset Crypto */
+	/* Reset Crypto */
    	SYS->CRYPTORST |= SYS_CRYPTORST_CRYPTO0RST_Msk;
     SYS->CRYPTORST = 0;
 
     crpt = CRYPTO;
 
-    crpt->ECC_KSCTL = 0;
+    //crpt->ECC_KSCTL = 0;
     ECC_ENABLE_INT(crpt);
 
     /* Curve relative init */
@@ -185,6 +185,7 @@ static int32_t ECC_GenPubKey(mbedtls_ecp_group* grp, mbedtls_mpi* d, mbedtls_ecp
     memset((void *)crpt->ECC_X1, 0, 72);
     memset((void *)crpt->ECC_Y1, 0, 72);
     memset((void *)crpt->ECC_N, 0, 72);
+	memset((void *)crpt->ECC_X2, 0, 72);
 
     ECC_FixCurve(grp);
 
@@ -205,12 +206,16 @@ static int32_t ECC_GenPubKey(mbedtls_ecp_group* grp, mbedtls_mpi* d, mbedtls_ecp
 
     // for CURVE_GF_P
     crpt->ECC_CTL = CRYPTO_ECC_CTL_FSEL_Msk;
+		
+	/* enable side-channel attack protection */
+    crpt->ECC_CTL |= CRYPTO_ECC_CTL_SCAP_Msk | CRYPTO_ECC_CTL_ASCAP_Msk;
 
     /* Clear ECC flag */
     crpt->INTSTS = CRYPTO_INTSTS_ECCIF_Msk;
 
     /* Start calculation */
-    crpt->ECC_CTL |= (grp->pbits << CRYPTO_ECC_CTL_CURVEM_Pos) | ECCOP_POINT_MUL | CRYPTO_ECC_CTL_SCAP_Msk | CRYPTO_ECC_CTL_START_Msk;
+    crpt->ECC_CTL |= (grp->pbits << CRYPTO_ECC_CTL_CURVEM_Pos) | 
+		                            ECCOP_POINT_MUL | CRYPTO_ECC_CTL_PFA2C_Msk | CRYPTO_ECC_CTL_START_Msk;
 
     /* Waiting for calculation */
     while((crpt->INTSTS & CRYPTO_INTSTS_ECCIF_Msk) == 0)
@@ -289,7 +294,7 @@ int32_t  ECC_ComputeShared(mbedtls_ecp_group* grp, mbedtls_mpi* z, const mbedtls
 
     crpt = CRYPTO;
 
-    crpt->ECC_KSCTL = 0;
+    //crpt->ECC_KSCTL = 0;
     ECC_ENABLE_INT(crpt);
 
     /* Curve relative init */

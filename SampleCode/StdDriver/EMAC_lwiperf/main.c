@@ -10,14 +10,13 @@
  * This is a template project for M55M1 series MCU.
  * Users can create their own application based on this project.
  *
- * This template uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This template uses internal RC as APLL0 clock source and UART to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
  *   I/D-Cache are enabled by default for better performance,
  *   users can define NVT_ICACHE_OFF/NVT_DCACHE_OFF in project setting to disable cache.
  * Debug UART
- *   Default is DEBUG_PORT=UART0 in project setting
  *   system_M55M1.c has three weak functions as below to configure debug UART port.
  *     SetDebugUartMFP, SetDebugUartCLK and InitDebugUart
  *   Users can re-implement these functions according to system design.
@@ -191,17 +190,17 @@ int main(void)
     ip_addr_t netmask;
     ip_addr_t gw;
     uint8_t u8DHCPInit = 0;
-    
+
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-    
+
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     initialise_monitor_handles();
 #endif
-    
+
     /* Timer0 interrupt interval is 10ms */
     TIMER0_Init();
 

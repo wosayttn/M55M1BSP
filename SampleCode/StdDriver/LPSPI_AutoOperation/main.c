@@ -93,7 +93,7 @@ void SYS_Init(void)
     /* LPPDMA only can access LPSRAM and cannot access normal SRAM. */
     CLK_EnableModuleClock(LPSRAM0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -256,7 +256,7 @@ void AutoOperation_FunctionTest()
         LPPDMA_Init();
 
         printf("\nPower down and wait LPPDMA to wake up CPU ...\n\n");
-        UART_WAIT_TX_EMPTY(UART0);
+        UART_WAIT_TX_EMPTY(DEBUG_PORT);
 
         /* Clear all wake-up status flags */
         //CLK->PMUSTS = CLK_PMUSTS_CLRWK_Msk;

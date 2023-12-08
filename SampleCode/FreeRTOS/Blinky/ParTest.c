@@ -115,25 +115,21 @@ void vParTestInitialise(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Enable GPIO I module clock */
     CLK_EnableModuleClock(GPIOI_MODULE);
 
-    /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HXT, CLK_UARTDIV0_UART0DIV(1));
+    /* Set debug uart module clock */
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    /* Set multi-function pins for debug UART MFP */
+    SetDebugUartMFP();
 
     /* Configure Debug port */
-    UART_Open(UART0, 115200);
+    InitDebugUart();
 
     /* LED IO PI12 */
     GPIO_SetMode(PI, BIT12, GPIO_MODE_OUTPUT);

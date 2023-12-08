@@ -293,7 +293,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Enable GPIOA module clock */
@@ -318,7 +318,7 @@ void SYS_Init(void)
     /* Enable HSOTG module clock */
     CLK_EnableModuleClock(HSOTG0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Set OTG as USB Host role */
@@ -334,7 +334,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();
 
     /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PJ.13   */
@@ -454,14 +454,6 @@ NVT_ITCM void HSOTG_IRQHandler(void)
     }
 }
 /*---------------------------------------------------------------------------------------------------------*/
-/* Init UART                                                                                               */
-/*---------------------------------------------------------------------------------------------------------*/
-void UART_Init(void)
-{
-    /* Configure UART and set UART Baudrate */
-    UART_Open(DEBUG_PORT, 115200);
-}
-/*---------------------------------------------------------------------------------------------------------*/
 /*  MAIN function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
@@ -473,8 +465,8 @@ int32_t main(void)
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
 
-    /* Init UART for printf */
-    UART_Init();
+    /* Init DeubgUART for printf */
+    InitDebugUart();
 
     /* Lock protected registers */
     SYS_LockReg();

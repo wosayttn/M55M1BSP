@@ -66,7 +66,7 @@ static int __nvt_hkdf(const mbedtls_md_info_t *md, const unsigned char *salt,
     
     KDF_SetContext(info, (uint32_t)(info_len));
     
-    i32Ret = KDF_DeriveKey(eKDF_MODE_HKDF, u32DeriveKeyParam, (uint32_t)(okm_len), okm);
+    i32Ret = KDF_DeriveKey(eKDF_MODE_HKDF, u32DeriveKeyParam, (uint32_t)(okm_len), (uint32_t*)(okm));
     
     return i32Ret;
 }

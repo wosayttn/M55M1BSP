@@ -19,7 +19,6 @@ void TrimHIRC(void);
 void TrimHIRC48M(void);
 void IRC_IRQHandler(void);
 void SYS_Init(void);
-void UART0_Init(void);
 
 /*--------------------------------------------------------------------------------------------------------*/
 /*  IRCTrim IRQ Handler                                                                                   */
@@ -120,7 +119,7 @@ void SYS_Init(void)
     CLK_SET_PCLK3DIV(2);
     CLK_SET_PCLK4DIV(2);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -159,10 +158,10 @@ int32_t main(void)
 
     /* Disable HIRC auto Trim */
     SYS->TCTL12M = SYS->TCTL12M & ~SYS_TCTL12M_FREQSEL_Msk;
-    
+
     /* Disable HIRC48M auto Trim */
     SYS->TCTL48M = SYS->TCTL48M & ~SYS_TCTL48M_FREQSEL_Msk;
-    
+
     printf("Disable IRC Trim\n");
 
     while (1);

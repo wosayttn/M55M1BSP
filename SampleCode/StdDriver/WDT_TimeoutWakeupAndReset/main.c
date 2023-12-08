@@ -32,8 +32,8 @@ int IsDebugFifoEmpty(void)
 NVT_ITCM void WDT0_IRQHandler(void)
 {
     // TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(WDT0_MODULE);    
-    
+    CLK_WaitModuleClockReady(WDT0_MODULE);
+
     if (g_u32WDTINTCounts < 10)
         WDT_RESET_COUNTER(WDT0);
 
@@ -69,14 +69,14 @@ void SYS_Init(void)
     /* Waiting for Low speed Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
 
-           
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
+
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-    
+
     /* Set module clock*/
     CLK_SetModuleClock(WDT0_MODULE, CLK_WDTSEL_WDT0SEL_LIRC, 0);
 
@@ -85,7 +85,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOB_MODULE);
     CLK_EnableModuleClock(WDT0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -112,8 +112,8 @@ int main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    /* Init UART0 for printf */
-    UART_Open(DEBUG_PORT, 115200);
+    /* Init DeubgUART for printf */
+    InitDebugUart();
 
     printf("\n\nCPU @ %u Hz\n", SystemCoreClock);
     printf("+----------------------------------------+\n");

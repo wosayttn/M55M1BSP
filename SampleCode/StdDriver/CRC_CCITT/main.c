@@ -1,29 +1,27 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * $Revision: 1 $
- * $Date: 23/02/24 4:40p $
- * @brief    Implement CRC in CRC-CCITT mode and get the CRC checksum result.
- *
- * SPDX-License-Identifier: Apache-2.0
- * Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+* @file    main.c
+* @version V1.00
+* @brief   CRC_CCITT code for M55M1 series MCU
+*
+* SPDX-License-Identifier: Apache-2.0
+* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 
 void SYS_Init(void)
 {
 
-      /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-   /* Enable Internal RC 12MHz clock */
+    /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
@@ -31,15 +29,15 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
 
-   /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable PLL0 200MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -51,19 +49,15 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Enable CRC0 module clock */
     CLK_EnableModuleClock(CRC0_MODULE);
 
-		 /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-     /* Set PB multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
 }
@@ -78,7 +72,7 @@ int main(void)
 
     /* Unlock protected registers */
     SYS_UnlockReg();
-    
+
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
@@ -105,7 +99,7 @@ int main(void)
     CRC_Open(CRC_CCITT, 0, 0xFFFF, CRC_CPU_WDATA_16);
 
     /* Start to execute CRC-CCITT operation */
-    for(i = 0; i < sizeof(u16CRCSrcPattern) / sizeof(u16CRCSrcPattern[0]); i++)
+    for (i = 0; i < sizeof(u16CRCSrcPattern) / sizeof(u16CRCSrcPattern[0]); i++)
     {
         CRC_WRITE_DATA((u16CRCSrcPattern[i]));
     }
@@ -117,7 +111,7 @@ int main(void)
     /* Disable CRC function */
     CLK_DisableModuleClock(CRC0_MODULE);
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

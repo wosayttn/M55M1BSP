@@ -65,7 +65,7 @@ int32_t SYS_Init(void)
     SystemCoreClock = PllClock;
     CyclesPerUs = SystemCoreClock / 1000000UL;
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     CLK->UARTSEL0 = (CLK->UARTSEL0 & ~CLK_UARTSEL0_UART1SEL_Msk) | CLK_UARTSEL0_UART1SEL_HIRC;
     CLK->UARTCTL |= CLK_UARTCTL_UART1CKEN_Msk;
     /* Check clock stable */
@@ -82,9 +82,7 @@ int32_t SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    /* Set multi-function pins for UART1 RXD and TXD */
     PA->MODE = (PA->MODE & (~GPIO_MODE_MODE0_Msk)) | (GPIO_MODE_OUTPUT << GPIO_MODE_MODE0_Pos);
     nRTSPin = RECEIVE_MODE;
     SET_UART1_RXD_PA2();

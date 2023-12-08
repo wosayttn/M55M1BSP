@@ -57,8 +57,13 @@ extern "C" {
 #endif
 
 #if !defined(TESTCHIP_ONLY)
-    /* Notice: The BSP is for M55M1 engineering sample version. */
+/* Notice: The BSP is for M55M1 engineering sample version. */
     #define TESTCHIP_ONLY
+#endif
+
+#if defined(TESTCHIP_ONLY)
+/* Notice: The BSP release is aligned to AF part number by default. */
+    #define ALIGN_AF_PINS
 #endif
 
 /******************************************************************************/
@@ -97,7 +102,7 @@ typedef enum IRQn
     WDT0_IRQn                     =   8,      /*!< Watchdog Timer 0 Interrupt               */
     WWDT0_IRQn                    =   9,      /*!< Window Watchdog Timer 0 Interrupt        */
 
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
     WDT1_IRQn                     =  11,      /*!< Watchdog Timer 1 Interrupt               */
     WWDT1_IRQn                    =  12,      /*!< Window Watchdog Timer 1 Interrupt        */
     NPU_IRQn                      =  13,      /*!< Neural Network Processor Interrupt       */
@@ -130,12 +135,12 @@ typedef enum IRQn
     BPWM0_IRQn                    =  38,      /*!< BPWM0 Interrupt                          */
     BPWM1_IRQn                    =  39,      /*!< BPWM1 Interrupt                          */
 
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
     PDMA0_IRQn                    =  41,      /*!< PDMA0 Interrupt                          */
     PDMA1_IRQn                    =  42,      /*!< PDMA1 Interrupt                          */
     LPPDMA_IRQn                   =  43,      /*!< Low Power PDMA Interrupt                 */
     SCU_IRQn                      =  44,      /*!< SCU Interrupt                            */
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
     KS_IRQn                       =  46,      /*!< Key Store Interrupt                      */
     TIMER0_IRQn                   =  47,      /*!< Timer0 Interrupt                         */
     TIMER1_IRQn                   =  48,      /*!< Timer1 Interrupt                         */
@@ -144,7 +149,7 @@ typedef enum IRQn
     TIMER3_IRQn                   =  50,      /*!< Timer3 Interrupt                         */
     LPTMR0_IRQn                   =  51,      /*!< Low Power Timer 0 Interrupt              */
     LPTMR1_IRQn                   =  52,      /*!< Low Power Timer 1 Interrupt              */
-                                              /*!< Reserved                                 */
+    /*!< Reserved                                 */
     TTMR0_IRQn                    =  54,      /*!< Tick Timer 0 Interrupt                   */
     TTMR1_IRQn                    =  55,      /*!< Tick Timer 1 Interrupt                   */
     USBH0_IRQn                    =  56,      /*!< USB Host 0 Interrupt                     */
@@ -168,9 +173,9 @@ typedef enum IRQn
                                               /*!< Reserved                                 */
     SPIM0_IRQn                    =  73,      /*!< SPIM0 Interrupt                          */
 #if defined(TESTCHIP_ONLY)
-	SPIM1_IRQn                    =  74,      /*!< SPIM0 Interrupt                          */
+    SPIM1_IRQn                    =  74,      /*!< SPIM1 Interrupt                          */
 #endif
-	UART0_IRQn                    =  75,      /*!< UART0 Interrupt                          */
+    UART0_IRQn                    =  75,      /*!< UART0 Interrupt                          */
     UART1_IRQn                    =  76,      /*!< UART1 Interrupt                          */
     UART2_IRQn                    =  77,      /*!< UART2 Interrupt                          */
     UART3_IRQn                    =  78,      /*!< UART3 Interrupt                          */
@@ -210,6 +215,9 @@ typedef enum IRQn
                                               /*!< Reserved                                 */
 
     OTFC0_IRQn                    = 110,      /*!< OTFC0 Interrupt                          */
+#if defined(TESTCHIP_ONLY)
+    OTFC1_IRQn                    = 111,      /*!< OTFC1 Interrupt                          */
+#endif
                                               /*!< Reserved                                 */
     KPI_IRQn                      = 112,      /*!< KPI Interrupt                            */
     SDH0_IRQn                     = 113,      /*!< SD Host 0 Interrupt                      */
@@ -473,6 +481,9 @@ typedef enum IRQn
 
 /* AHB1 peripheral (HCLK1 clock domain) */
 #define OTFC0_BASE                (AHB1PERIPH_BASE + 0x00000UL)
+#if defined(TESTCHIP_ONLY)
+#define OTFC1_BASE                (AHB1PERIPH_BASE + 0x01000UL)
+#endif
 #define SPIM0_BASE                (AHB1PERIPH_BASE + 0x02000UL)
 #if defined(TESTCHIP_ONLY)
 #define OTFC1_BASE                (AHB1PERIPH_BASE + 0x01000UL)
@@ -651,7 +662,9 @@ typedef enum IRQn
 
 #define NPU_S                                    (NPU_BASE)
 #define OTFC0_S                   ((OTFC_T *)     OTFC0_BASE)
+#if defined(TESTCHIP_ONLY)
 #define OTFC1_S                   ((OTFC_T *)     OTFC1_BASE)
+#endif
 #define OTG_S                     ((OTG_T *)      OTG_BASE)
 #define PA_S                      ((GPIO_T *)     GPIOA_BASE)
 #define PB_S                      ((GPIO_T *)     GPIOB_BASE)
@@ -864,7 +877,9 @@ typedef enum IRQn
 #define GPIO      GPIO_S
 #define KS        KS_S
 #define OTFC0     OTFC0_S
+#if defined(TESTCHIP_ONLY)
 #define OTFC1     OTFC1_S
+#endif
 #define PLM       PLM_S
 #define PMC       PMC_S
 #define SCU       SCU_S
@@ -891,9 +906,9 @@ typedef enum IRQn
 
 #if defined(TESTCHIP_ONLY)
 #if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM1_Msk)
-    #define SPIM1        SPIM1_NS
+#define SPIM1        SPIM1_NS
 #else
-    #define SPIM1        SPIM1_S
+#define SPIM1        SPIM1_S
 #endif
 #endif
 

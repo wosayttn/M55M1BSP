@@ -1,30 +1,29 @@
-/*************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    A project template	for M480 MCU.
+/**************************************************************************//**
+ * @file    eddsa_ed25519_example.c
+ * @version V1.00
+ * @brief   ED25519 example code for M55M1 series MCU
  *
- * @copyright (C) 2016 Nuvoton Technology Corp.	All rights reserved.
-*****************************************************************************/
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
 #include "EdDsa.h"
 
-
-#define	MAX_KEY_LEN		512
-
+#define MAX_KEY_LEN     512
 
 struct test_vec
 {
     enum ed_type  type;
-    char	ed_name[16];
-    int	keylen;
-    int	msglen;
-    char	message[8192];
-    char	d[MAX_KEY_LEN];	  /* secret key	*/
-    char	p[MAX_KEY_LEN];	  /* public key	*/
-    char	sig[MAX_KEY_LEN	* 2];	/* signature */
-    char	context[8192];
+    char    ed_name[16];
+    int keylen;
+    int msglen;
+    char    message[8192];
+    char    d[MAX_KEY_LEN];   /* secret key */
+    char    p[MAX_KEY_LEN];   /* public key */
+    char    sig[MAX_KEY_LEN * 2];   /* signature */
+    char    context[8192];
 };
 
 uint8_t _msg[8192];
@@ -35,7 +34,7 @@ extern volatile uint32_t g_ECC_done, g_ECCERR_done;
 * More patterns can be found:
  * https://datatracker.ietf.org/doc/html/rfc8032
  */
-struct test_vec	ed25519_test_vector __attribute__((aligned(16))) =
+struct test_vec ed25519_test_vector __attribute__((aligned(16))) =
 {
     //DO_ED25519_TEST
 
@@ -48,11 +47,11 @@ struct test_vec	ed25519_test_vector __attribute__((aligned(16))) =
 
 };
 
-#define	assert(a) if( !( a ) )				\
-{							\
-    printf("Assertion Failed at	%s:%d -	%s\n",		\
-			     __FILE__, __LINE__, #a );	\
-    while (1);						\
+#define assert(a) if( !( a ) )              \
+{                           \
+    printf("Assertion Failed at	%s:%d -	%s\n",      \
+                 __FILE__, __LINE__, #a );  \
+    while (1);                      \
 }
 
 static inline uint8_t read8(const void *addr)
@@ -60,60 +59,55 @@ static inline uint8_t read8(const void *addr)
     return *(volatile uint8_t *)addr;
 }
 
-static volatile	int g_HMAC_error;
-static volatile	int g_HMAC_done;
+static volatile int g_HMAC_error;
+static volatile int g_HMAC_done;
 
-static volatile	uint64_t  _start_time =	0;
+static volatile uint64_t  _start_time = 0;
 
 
 void CRYPTO_IRQHandler()
 {
-    if (CRYPTO->INTSTS & CRYPTO_INTSTS_HMACEIF_Msk) {
+    if (CRYPTO->INTSTS & CRYPTO_INTSTS_HMACEIF_Msk)
+    {
         printf("SHAERRIF is set!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
         g_HMAC_error = 1;
         CRYPTO->INTSTS = CRYPTO_INTSTS_HMACEIF_Msk;
     }
-    if (CRYPTO->INTSTS & CRYPTO_INTSTS_HMACIF_Msk) {
+    if (CRYPTO->INTSTS & CRYPTO_INTSTS_HMACIF_Msk)
+    {
         g_HMAC_done = 1;
         CRYPTO->INTSTS = CRYPTO_INTSTS_HMACIF_Msk;
     }
     ECC_Complete(CRYPTO);
 }
 
-
-/*
- * This	is a template project for M480 series MCU. Users could based on	this project to	create their
- * own application without worry about the IAR/Keil project settings.
- *
- * This	template application uses external crystal as HCLK source and configures UART0 to print	out
- * "Hello World", users	may need to do extra system configuration based	on their system	design.
- */
-
 void  dump_buff_hex(uint8_t *pucBuff, int nBytes)
 {
-    uint32_t  addr,	end_addr;
-    int	  nIdx,	i;
+    uint32_t  addr, end_addr;
+    int   nIdx, i;
 
     addr = ptr_to_u32(pucBuff);
-    end_addr = addr	+ nBytes - 1;
+    end_addr = addr + nBytes - 1;
 
-    if ((addr % 16)	!= 0) {
-        printf("0x%04x_%04x  ",	(addr>>16)&0xffff, addr	& 0xffff);
-        for (i = 0; i <	addr % 16; i++)
+    if ((addr % 16) != 0)
+    {
+        printf("0x%04x_%04x  ", (addr >> 16) & 0xffff, addr & 0xffff);
+        for (i = 0; i < addr % 16; i++)
             printf(".. ");
 
-        for ( ;	(addr %	16) != 0; addr++)
-            printf("%02x ",	readb(u32_to_ptr8(addr)) & 0xff);
+        for (; (addr % 16) != 0; addr++)
+            printf("%02x ", readb(u32_to_ptr8(addr)) & 0xff);
         printf("\n");
     }
 
-    for ( ;	addr <=	end_addr; ) {
-        printf("0x%04x_%04x  ",	(addr>>16)&0xffff, addr	& 0xffff);
-        for (i = 0; i <	16; i++, addr++)
+    for (;  addr <= end_addr;)
+    {
+        printf("0x%04x_%04x  ", (addr >> 16) & 0xffff, addr & 0xffff);
+        for (i = 0; i < 16; i++, addr++)
         {
             if (addr > end_addr)
                 break;
-            printf("%02x ",	readb(u32_to_ptr8(addr)) & 0xff);
+            printf("%02x ", readb(u32_to_ptr8(addr)) & 0xff);
         }
         printf("\n");
     }
@@ -121,58 +115,58 @@ void  dump_buff_hex(uint8_t *pucBuff, int nBytes)
 }
 
 
-int unhexify( unsigned char *obuf, const char *ibuf )
+int unhexify(unsigned char *obuf, const char *ibuf)
 {
     unsigned char c, c2;
-    int len	= strlen( ibuf ) / 2;
+    int len = strlen(ibuf) / 2;
 
-    assert(	strlen(	ibuf ) % 2 == 0	); /* must be even number of bytes */
+    assert(strlen(ibuf) % 2 == 0);       /* must be even number of bytes */
 
-    while( *ibuf !=	0 )
+    while (*ibuf !=  0)
     {
         c = *ibuf++;
-        if( c >= '0' &&	c <= '9' )
+        if (c >= '0' &&  c <= '9')
             c -= '0';
-        else if( c >= 'a' && c <= 'f' )
+        else if (c >= 'a' && c <= 'f')
             c -= 'a' - 10;
-        else if( c >= 'A' && c <= 'F' )
+        else if (c >= 'A' && c <= 'F')
             c -= 'A' - 10;
         else
-            assert(	0 );
+            assert(0);
 
         c2 = *ibuf++;
-        if( c2 >= '0' && c2 <= '9' )
+        if (c2 >= '0' && c2 <= '9')
             c2 -= '0';
-        else if( c2 >= 'a' && c2 <= 'f'	)
+        else if (c2 >= 'a' && c2 <= 'f')
             c2 -= 'a' - 10;
-        else if( c2 >= 'A' && c2 <= 'F'	)
+        else if (c2 >= 'A' && c2 <= 'F')
             c2 -= 'A' - 10;
         else
-            assert(	0 );
+            assert(0);
 
-        *obuf++	= ( c << 4 ) | c2;
+        *obuf++ = (c << 4) | c2;
     }
     return len;
 }
 
-void hexify(char *obuf,	const unsigned char *ibuf, int len)
+void hexify(char *obuf, const unsigned char *ibuf, int len)
 {
     unsigned char l, h;
 
-    while( len != 0	)
+    while (len != 0)
     {
         h = *ibuf / 16;
         l = *ibuf % 16;
 
-        if( h <	10 )
-            *obuf++	= '0' +	h;
+        if (h <  10)
+            *obuf++ = '0' + h;
         else
-            *obuf++	= 'a' +	h - 10;
+            *obuf++ = 'a' + h - 10;
 
-        if( l <	10 )
-            *obuf++	= '0' +	l;
+        if (l <  10)
+            *obuf++ = '0' + l;
         else
-            *obuf++	= 'a' +	l - 10;
+            *obuf++ = 'a' + l - 10;
 
         ++ibuf;
         len--;
@@ -183,7 +177,7 @@ void hexify(char *obuf,	const unsigned char *ibuf, int len)
 int ed25519_test()
 {
     int i;
-    struct test_vec	*sg_tv;
+    struct test_vec *sg_tv;
     uint8_t priv_key[128];
     uint8_t pub_key[128];
     uint8_t u8tmp[128];
@@ -204,16 +198,16 @@ int ed25519_test()
     msg_len = unhexify(_msg, sg_tv->message);
     ctx_len = unhexify(_ctx, sg_tv->context);
 
-
-
-    if (ECC_ED25519_SigGen(sg_tv->type, priv_key, _msg, msg_len, _ctx, ctx_len, R, S) != 0) {
+    if (ECC_ED25519_SigGen(sg_tv->type, priv_key, _msg, msg_len, _ctx, ctx_len, R, S) != 0)
+    {
         printf("ECC signature generation failed!!\n");
         while (1);
     }
 
     unhexify(u8tmp, sg_tv->sig);
 
-    if (memcmp(u8tmp, R, 32) != 0) {
+    if (memcmp(u8tmp, R, 32) != 0)
+    {
         printf("!!! Ed25519 sig_gen type %d test failed. R ==>\n", sg_tv->type);
         dump_buff_hex((uint8_t *)R, 32);
         printf("Expect =>\n");
@@ -222,8 +216,9 @@ int ed25519_test()
     }
     printf("!!! Ed25519 sig_gen type %d test pass R !!\n", sg_tv->type);
 
-    if (memcmp(&u8tmp[32], S, 32) != 0) {
-        printf("!!! Ed25519 sig_gen type %d test failed. S ==>\n",sg_tv->type);
+    if (memcmp(&u8tmp[32], S, 32) != 0)
+    {
+        printf("!!! Ed25519 sig_gen type %d test failed. S ==>\n", sg_tv->type);
         dump_buff_hex((uint8_t *)S, 32);
         printf("Expect =>\n");
         dump_buff_hex(&u8tmp[32], 32);
@@ -234,7 +229,8 @@ int ed25519_test()
     printf("Ed25519 signature generation test passed.\n");
     printf("\n");
 
-    if (ECC_ED25519_Verify(sg_tv->type, _msg, msg_len, _ctx, ctx_len, pub_key, R, S) != 0) {
+    if (ECC_ED25519_Verify(sg_tv->type, _msg, msg_len, _ctx, ctx_len, pub_key, R, S) != 0)
+    {
         printf("Ed25519 sig_verify test failed!\n");
         while (1);
     }
@@ -244,4 +240,4 @@ int ed25519_test()
     while (1);
 }
 
-/*** (C) COPYRIGHT 2016	Nuvoton	Technology Corp. ***/
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

@@ -97,7 +97,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
@@ -121,7 +121,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(WWDT0_MODULE);
 #endif
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -151,8 +151,8 @@ int main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    /* Init UART0 to 115200-8n1 for print message */
-    UART_Open(UART0, 115200);
+    /* Init DeubgUART for printf */
+    InitDebugUart();
 
     printf("\n\nCPU @ %u Hz\n", SystemCoreClock);
     printf("+------------------------------------------------+\n");

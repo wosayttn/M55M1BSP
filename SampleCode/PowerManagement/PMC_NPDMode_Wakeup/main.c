@@ -72,7 +72,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    
+
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -86,7 +86,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -104,7 +104,7 @@ void SYS_Init(void)
 NVT_ITCM void PMC_IRQHandler(void)
 {
     printf("Wake-up!!!\n");
-    
+
     /* Clear PMC interrupt flag */
     PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
 }
@@ -134,7 +134,7 @@ int32_t main(void)
         printf("|[1] NPD0 Wake-up by BOD Interrupt.                               |\n");
         printf("|[2] NPD1 Wake-up by BOD Interrupt.                               |\n");
         printf("|[3] NPD2 Wake-up by BOD Interrupt.                               |\n");
-#if 0   // TESTCHIP_ONLY not support         
+#if 0   // TESTCHIP_ONLY not support
         printf("|[4] NPD3 Wake-up by BOD Interrupt.                               |\n");
         printf("|[5] NPD4 Wake-up by BOD Interrupt.                               |\n");
 #endif
@@ -167,7 +167,7 @@ int32_t main(void)
                 printf("Enter to NPD2 Power-down mode......\n");
                 WakeUpBODFunction(PMC_NPD2);
                 break;
-#if 0   // TESTCHIP_ONLY not support 
+#if 0   // TESTCHIP_ONLY not support
             case '4':
                 printf("Enter to NPD3 Power-down mode......\n");
                 WakeUpBODFunction(PMC_NPD3);

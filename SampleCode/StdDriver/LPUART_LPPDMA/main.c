@@ -228,11 +228,11 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle UART Channel 0 interrupt event                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
-NVT_ITCM void UART0_IRQHandler(void)
+NVT_ITCM void DEBUG_PORT_IRQHandler(void)
 {
     /* Get UART0 Rx data and send the data to LPUART0 Tx */
-    if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAIF_Msk))
-        LPUART_WRITE(LPUART0, UART_READ(UART0));
+    if (UART_GET_INT_FLAG(DEBUG_PORT, UART_INTSTS_RDAIF_Msk))
+        LPUART_WRITE(LPUART0, UART_READ(DEBUG_PORT));
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -308,7 +308,7 @@ void LPPDMA_LPUART(int32_t i32option)
     if (g_u32TwoChannelLpPdmaTest == 0)
     {
         NVIC_EnableIRQ(UART0_IRQn);
-        UART_EnableInt(UART0, UART_INTEN_RDAIEN_Msk);
+        UART_EnableInt(DEBUG_PORT, UART_INTEN_RDAIEN_Msk);
     }
 
     /* Enable LPUART Tx and Rx LPPDMA function */
@@ -338,7 +338,7 @@ void LPPDMA_LPUART(int32_t i32option)
     NVIC_DisableIRQ(LPPDMA_IRQn);
 
     /* Disable UART0 RDA interrupt */
-    UART_DisableInt(UART0, UART_INTEN_RDAIEN_Msk);
+    UART_DisableInt(DEBUG_PORT, UART_INTEN_RDAIEN_Msk);
 }
 
 void SYS_Init(void)

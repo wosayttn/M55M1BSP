@@ -60,9 +60,9 @@ int32_t SYS_Init(void)
     SystemCoreClock = PllClock;
     CyclesPerUs = SystemCoreClock / 1000000UL;
 
-    /* Enable UART0 module clock */
-    CLK->UARTSEL0 = (CLK->UARTSEL0 & ~CLK_UARTSEL0_UART0SEL_Msk) | CLK_UARTSEL0_UART0SEL_HIRC;
-    CLK->UARTCTL |= CLK_UARTCTL_UART0CKEN_Msk;
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
+
     /* Check clock stable */
     u32TimeOutCnt = SystemCoreClock >> 1;
 
@@ -80,10 +80,6 @@ int32_t SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
-
     /* Set I2C1 multi-function pins */
     SET_I2C1_SDA_PA2();
     SET_I2C1_SCL_PA3();

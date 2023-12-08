@@ -190,9 +190,8 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
 
     /* USBD multi-function pins for VBUS, D+, D-, and ID pins */
     SET_USB_VBUS_PA12();
@@ -208,6 +207,9 @@ void SYS_Init(void)
     SET_SD0_CLK_PE6();
     SET_SD0_CMD_PE7();
     SET_SD0_nCD_PD13();
+
+    /* Set multi-function pins for UART RXD and TXD */
+    SetDebugUartMFP();
 }
 
 void PowerDown(void)
@@ -243,8 +245,8 @@ int32_t main(void)
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
-    /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
-    UART_Open(UART0, 115200);
+    /* Init UART to 115200-8n1 for print message */
+    InitDebugUart();
 
     printf("+-------------------------------------------------------+\n");
     printf("|          NuMicro USB MassStorage Sample Code          |\n");

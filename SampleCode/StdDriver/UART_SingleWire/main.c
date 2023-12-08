@@ -317,7 +317,7 @@ void UART_FunctionTest()
     printf("+-----------------------------------------------------------+\n");
 
     /*
-        Using a RS232 cable to connect UART0 and PC.UART0 is set to debug port.
+        Using a RS232 cable to connect DEBUG_PORT and PC.DEBUG_PORT is set to debug port.
           UART1 and UART2 is enable RDA and RLS interrupt.
           The user can use URT0 to control the transmission or reception of UART1(Single Wire mode)
         When UART1(Single Wire 1)transfers data to UART2(Single Wire 2), if data is valid,

@@ -450,7 +450,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Enable GPIOA module clock */
@@ -518,7 +518,7 @@ void SYS_Init(void)
  * This is a template project for NuMicro TC8263 series MCU. Users could based on this project to create their
  * own application without worry about the IAR/Keil project settings.
  *
- * This template application uses external crystal as HCLK source and configures UART0 to print out
+ * This template application uses external crystal as HCLK source and configures DEBUG_PORT to print out
  * "Hello World", users may need to do extra system configuration based on their system design.
  */
 int32_t main(void)
@@ -537,8 +537,7 @@ int32_t main(void)
 
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
 
-    /* Configure UART0 and set UART0 baud rate */
-    UART_Open(UART0, 115200);
+    InitDebugUart();                   /* Init DeubgUART for printf */
 
     enable_sys_tick(100);
 

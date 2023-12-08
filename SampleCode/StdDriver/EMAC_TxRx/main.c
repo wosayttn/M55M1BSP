@@ -13,14 +13,13 @@
  * This is a EMAC_TxRx project for M55M1 series MCU.
  * Users can create their own application based on this project.
  *
- * This project uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This project uses internal RC as APLL0 clock source and UART to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
  *   I/D-Cache are enabled by default for better performance,
  *   users can define NVT_ICACHE_OFF/NVT_DCACHE_OFF in project setting to disable cache.
  * Debug UART
- *   Default is DEBUG_PORT=UART0 in project setting
  *   system_M55M1.c has three weak functions as below to configure debug UART port.
  *     SetDebugUartMFP, SetDebugUartCLK and InitDebugUart
  *   Users can re-implement these functions according to system design.
@@ -58,12 +57,9 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
-    CLK_EnableModuleClock(EMAC0_MODULE);
-
-    /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
     SET_EMAC0_RMII_MDC_PE8();
@@ -76,10 +72,15 @@ void SYS_Init(void)
     SET_EMAC0_RMII_RXD1_PC6();
     SET_EMAC0_RMII_CRSDV_PA7();
     SET_EMAC0_RMII_RXERR_PA6();
-    SET_EMAC0_PPS_PB6();
 
-    /* Lock protected registers */
-    SYS_LockReg();
+    CLK_EnableModuleClock(GPIOE_MODULE);
+    CLK_EnableModuleClock(EMAC0_MODULE);
+    SYS_ResetModule(SYS_EMAC0RST);
+
+    /* PE.13 Set high */
+    GPIO_SetMode(PE, BIT13, GPIO_MODE_OUTPUT);
+    PE13=1;
+
 }
 
 
@@ -90,7 +91,7 @@ int main(void)
 {
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-    
+
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
@@ -105,6 +106,8 @@ int main(void)
     printf("+-----------------------------------+\n\n");
 
     EMAC_Open(&g_au8MacAddr[0]);
+    /* Lock protected registers */
+    SYS_LockReg();
 
     if (dhcp_start() < 0)
     {

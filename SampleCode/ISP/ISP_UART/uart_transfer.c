@@ -21,18 +21,18 @@ uint8_t volatile g_u8bufhead = 0;
 /*---------------------------------------------------------------------------------------------------------*/
 /* INTSTS to handle UART Channel 0 interrupt event                                                         */
 /*---------------------------------------------------------------------------------------------------------*/
-NVT_ITCM void UART0_IRQHandler(void)
+NVT_ITCM void UART6_IRQHandler(void)
 {
     /*----- Determine interrupt source -----*/
-    uint32_t u32IntSrc = UART0->INTSTS;
+    uint32_t u32IntSrc = UART6->INTSTS;
 
     /* RDA FIFO interrupt and RDA timeout interrupt */
     if (u32IntSrc & (UART_INTSTS_RXTOIF_Msk | UART_INTSTS_RDAIF_Msk))
     {
         /* Read data until RX FIFO is empty or data is over maximum packet size */
-        while (((UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0) && (g_u8bufhead < MAX_PKT_SIZE))
+        while (((UART6->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0) && (g_u8bufhead < MAX_PKT_SIZE))
         {
-            g_au8uart_rcvbuf[g_u8bufhead++] = (uint8_t)UART0->DAT;
+            g_au8uart_rcvbuf[g_u8bufhead++] = (uint8_t)UART6->DAT;
         }
     }
 
@@ -58,13 +58,13 @@ void PutString(void)
     for (i = 0; i < MAX_PKT_SIZE; i++)
     {
         /* Wait for TX not full */
-        while ((UART0->FIFOSTS & UART_FIFOSTS_TXFULL_Msk))
+        while ((UART6->FIFOSTS & UART_FIFOSTS_TXFULL_Msk))
         {
             if (--u32TimeOutCount == 0) break; /* 1 second time-out */
         }
 
         /* UART send data */
-        UART0->DAT = g_au8ResponseBuff[i];
+        UART6->DAT = g_au8ResponseBuff[i];
     }
 }
 
@@ -74,20 +74,20 @@ void UART_Init()
     /* Init UART                                                                                               */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Select UART function */
-    UART0->FUNCSEL = UART_FUNCSEL_UART;
+    UART6->FUNCSEL = UART_FUNCSEL_UART;
     /* Set UART line configuration */
-    UART0->LINE = UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1;
+    UART6->LINE = UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1;
     /* Set UART Rx and RTS trigger level */
-    UART0->FIFO = UART_FIFO_RFITL_14BYTES | UART_FIFO_RTSTRGLV_14BYTES;
+    UART6->FIFO = UART_FIFO_RFITL_14BYTES | UART_FIFO_RTSTRGLV_14BYTES;
     /* Set UART baud rate */
-    //UART0->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(__HIRC, 115200));
-    UART0->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400));
+    //UART6->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(__HIRC, 115200));
+    UART6->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400));
     /* Set time-out interrupt comparator */
-    UART0->TOUT = (UART0->TOUT & ~UART_TOUT_TOIC_Msk) | (0x40);
-    NVIC_SetPriority(UART0_IRQn, 2);
-    NVIC_EnableIRQ(UART0_IRQn);
+    UART6->TOUT = (UART6->TOUT & ~UART_TOUT_TOIC_Msk) | (0x40);
+    NVIC_SetPriority(UART6_IRQn, 2);
+    NVIC_EnableIRQ(UART6_IRQn);
     /* Enable tim-out counter, Rx tim-out interrupt and Rx ready interrupt */
-    UART0->INTEN = (UART_INTEN_TOCNTEN_Msk | UART_INTEN_RXTOIEN_Msk | UART_INTEN_RDAIEN_Msk);
+    UART6->INTEN = (UART_INTEN_TOCNTEN_Msk | UART_INTEN_RXTOIEN_Msk | UART_INTEN_RDAIEN_Msk);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

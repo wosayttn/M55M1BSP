@@ -102,15 +102,8 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set GPB multi-function pins for UART0 RXD and TXD */
-#if 0//TK_UTCPD_MOTOR
-    SYS->GPB_MFP2 = (SYS->GPB_MFP2 & ~(SYS_GPB_MFP2_PB8MFP_Msk | SYS_GPB_MFP2_PB9MFP_Msk)) |
-                    (SYS_GPB_MFP2_PB8MFP_UART0_RXD | SYS_GPB_MFP2_PB9MFP_UART0_TXD);
-#else
-    /* Set GPB multi-function pins for UART0 RXD and TXD */
-    SYS->GPB_MFP3 = (SYS->GPB_MFP3 & ~(SYS_GPB_MFP3_PB12MFP_Msk | SYS_GPB_MFP3_PB13MFP_Msk)) |
-                    (SYS_GPB_MFP3_PB12MFP_UART0_RXD | SYS_GPB_MFP3_PB13MFP_UART0_TXD);
-#endif
+    /* Set multi-function pins for UART RXD and TXD */
+    SetDebugUartMFP();
 
 
     printf("PLL 64MHz --> HCLK --> CLKO / 4 = 16MHz on PB.14\n");
@@ -323,8 +316,8 @@ int main()
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
-    /* Init UART0 to 115200-8n1 for print message */
-    UART_Open(UART0, 115200);
+    /* Init DEBUG_PORT to 115200-8n1 for print message */
+    UART_Open(DEBUG_PORT, 115200);
     printf("UART Initial\n");
 
     /* VBSRCEN */
@@ -338,9 +331,9 @@ int main()
 
 #if (CONFIG_COMMAND_SHELL == 1)
     /* Enable UART RDA interrupt for command */
-    NVIC_EnableIRQ(UART0_IRQn);
-    //UART_EnableInt(UART0, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk));
-    UART_EnableInt(UART0, UART_INTEN_RDAIEN_Msk);
+    NVIC_EnableIRQ(DEBUG_PORT_IRQn);
+    //UART_EnableInt(DEBUG_PORT, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk));
+    UART_EnableInt(DEBUG_PORT, UART_INTEN_RDAIEN_Msk);
 #endif
 
 

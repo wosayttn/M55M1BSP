@@ -41,7 +41,6 @@ void update_hid_device_list(HID_DEV_T *hdev);
 void int_read_callback(HID_DEV_T *hdev, uint16_t u16EpAddr, int i8Status, uint8_t *pu8RData, uint32_t u32DataLen);
 int init_hid_device(HID_DEV_T *hdev);
 void SYS_Init(void);
-void UART0_Init(void);
 
 /**
  * @brief    Check any char input from UART
@@ -223,7 +222,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Enable GPIOA module clock */
@@ -287,19 +286,13 @@ void SYS_Init(void)
     SYS_LockReg();
 }
 
-void UART0_Init(void)
-{
-    /* Configure UART0 and set UART0 baud rate */
-    UART_Open(UART0, 115200);
-}
-
 int32_t main(void)
 {
     HID_DEV_T *hdev, *hdev_list;
 
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
 
-    UART0_Init();                      /* Initialize UART0 */
+    InitDebugUart();                   /* Init DeubgUART for printf */
 
     enable_sys_tick(100);
 

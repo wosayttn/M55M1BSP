@@ -335,7 +335,7 @@ void VCOM_LineCoding(uint8_t u8Port)
 
     if (u8Port == 0)
     {
-        NVIC_DisableIRQ(UART0_IRQn);
+        NVIC_DisableIRQ(DEBUG_PORT_IRQn);
         // Reset software FIFO
         g_u16ComRbytes = 0;
         g_u16ComRhead = 0;
@@ -346,15 +346,15 @@ void VCOM_LineCoding(uint8_t u8Port)
         g_u16ComTtail = 0;
 
         // Reset hardware FIFO
-        UART0->FIFO = (UART_FIFO_TXRST_Msk | UART_FIFO_RXRST_Msk);
+        DEBUG_PORT->FIFO = (UART_FIFO_TXRST_Msk | UART_FIFO_RXRST_Msk);
 
         // Set baudrate
         u32Baud_Div = UART_BAUD_MODE2_DIVIDER(__HIRC, g_LineCoding.u32DTERate);
 
         if (u32Baud_Div > 0xFFFF)
-            UART0->BAUD = (UART_BAUD_MODE0 | UART_BAUD_MODE0_DIVIDER(__HIRC, g_LineCoding.u32DTERate));
+            DEBUG_PORT->BAUD = (UART_BAUD_MODE0 | UART_BAUD_MODE0_DIVIDER(__HIRC, g_LineCoding.u32DTERate));
         else
-            UART0->BAUD = (UART_BAUD_MODE2 | u32Baud_Div);
+            DEBUG_PORT->BAUD = (UART_BAUD_MODE2 | u32Baud_Div);
 
         // Set parity
         if (g_LineCoding.u8ParityType == 0)
@@ -393,9 +393,9 @@ void VCOM_LineCoding(uint8_t u8Port)
         if (g_LineCoding.u8CharFormat > 0)
             u32Reg |= 0x4; // 2 or 1.5 bits
 
-        UART0->LINE = u32Reg;
+        DEBUG_PORT->LINE = u32Reg;
 
         // Re-enable UART interrupt
-        NVIC_EnableIRQ(UART0_IRQn);
+        NVIC_EnableIRQ(DEBUG_PORT_IRQn);
     }
 }

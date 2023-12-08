@@ -33,7 +33,7 @@ void UART_PowerDownWakeUpTest(void);
 void PowerDownFunction(void)
 {
     /* Check if all the debug messages are finished */
-    UART_WAIT_TX_EMPTY(UART0);
+    UART_WAIT_TX_EMPTY(DEBUG_PORT);
 
     /* Set Power-down mode */
     PMC_SetPowerDownMode(TEST_POWER_DOWN_MODE, PMC_PLCTL_PLSEL_PL0);
@@ -154,13 +154,13 @@ NVT_ITCM void UART1_IRQHandler(void)
     // TESTCHIP_ONLY
     CLK_WaitModuleClockReady(UART1_MODULE);
     // TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(UART0_MODULE);
+    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);
 
     if (UART_GET_INT_FLAG(UART1, UART_INTSTS_WKINT_Msk))    /* UART wake-up interrupt flag */
     {
         UART_ClearIntFlag(UART1, UART_INTSTS_WKINT_Msk);
         printf("UART wake-up.\n");
-        UART_WAIT_TX_EMPTY(UART0);
+        UART_WAIT_TX_EMPTY(DEBUG_PORT);
     }
     else if (UART_GET_INT_FLAG(UART1, UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk))    /* UART receive data available flag */
     {
@@ -216,9 +216,9 @@ void UART_DataWakeUp(void)
 void UART_RxThresholdWakeUp(void)
 {
     /* Wait data transmission is finished and select UART clock source as LXT */
-    while ((UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0);
+    while ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0);
 
-    while ((UART0->FIFOSTS & UART_FIFOSTS_RXIDLE_Msk) == 0);
+    while ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXIDLE_Msk) == 0);
 
     CLK_SetModuleClock(UART1_MODULE, CLK_UARTSEL0_UART1SEL_HIRC, CLK_UARTDIV0_UART1DIV(1));
 
@@ -245,9 +245,9 @@ void UART_RxThresholdWakeUp(void)
 void UART_RS485WakeUp(void)
 {
     /* Wait data transmission is finished and select UART clock source as LXT */
-    while ((UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0);
+    while ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0);
 
-    while ((UART0->FIFOSTS & UART_FIFOSTS_RXIDLE_Msk) == 0);
+    while ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXIDLE_Msk) == 0);
 
     CLK_SetModuleClock(UART1_MODULE, CLK_UARTSEL0_UART1SEL_HIRC, CLK_UARTDIV0_UART1DIV(1));
 

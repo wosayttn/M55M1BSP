@@ -41,7 +41,6 @@ NVT_ITCM void SysTick_Handler(void)
 void enable_sys_tick(int ticks_per_second)
 {
     g_tick_cnt = 0;
-    SystemCoreClock = 12000000UL;
 
     if (SysTick_Config(SystemCoreClock / ticks_per_second))
     {
@@ -291,7 +290,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Enable GPIOA module clock */
@@ -315,7 +314,7 @@ void SYS_Init(void)
     /* Enable OTG module clock */
     CLK_EnableModuleClock(OTG0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Set OTG as USB Host role */
@@ -330,7 +329,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();
 
     /* USB_VBUS_EN (USB 1.1 VBUS power enable pin) multi-function pin - PB.8     */
@@ -338,7 +337,7 @@ void SYS_Init(void)
 
     /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PB.9   */
     SET_USB_VBUS_ST_PB9();
-    
+
 
     /* USB 1.1 port multi-function pin VBUS, D+, D-, and ID pins */
     SET_USB_VBUS_PA12();
@@ -457,14 +456,6 @@ NVT_ITCM void USBOTG_IRQHandler(void)
     }
 }
 /*---------------------------------------------------------------------------------------------------------*/
-/* Init UART                                                                                               */
-/*---------------------------------------------------------------------------------------------------------*/
-void UART_Init(void)
-{
-    /* Configure UART and set UART Baudrate */
-    UART_Open(DEBUG_PORT, 115200);
-}
-/*---------------------------------------------------------------------------------------------------------*/
 /*  MAIN function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
@@ -476,8 +467,8 @@ int32_t main(void)
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
 
-    /* Init UART for printf */
-    UART_Init();
+    /* Init DeubgUART for printf */
+    InitDebugUart();
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -568,7 +559,7 @@ int32_t main(void)
                 {
                     usbh_hid_stop_int_read(hdev_list, 0);
                     delay_us(2000);
-                    intcount = 0;                    
+                    intcount = 0;
                     gStartHNP = 1;
                 }
 
@@ -623,7 +614,7 @@ int32_t main(void)
                 if (intcount > 5)
                 {
                     usbh_hid_stop_int_read(hdev_list, 0);
-                    intcount = 0; 
+                    intcount = 0;
                     gStartHNP = 1;
                 }
 

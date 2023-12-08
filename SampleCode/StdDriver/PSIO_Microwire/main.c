@@ -49,7 +49,7 @@ void SYS_Init(void)
 
     CLK_EnableModuleClock(GPIOE_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

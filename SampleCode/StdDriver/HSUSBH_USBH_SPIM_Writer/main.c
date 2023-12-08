@@ -148,7 +148,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Enable GPIOA module clock */
@@ -232,13 +232,6 @@ void SYS_Init(void)
 
     /* Lock protected registers */
     SYS_LockReg();
-}
-
-void UART0_Init(void)
-{
-
-    /* Configure UART0 and set UART0 baud rate */
-    UART_Open(UART0, 115200);
 }
 
 /*----------------------------------------------*/
@@ -777,7 +770,7 @@ int32_t main(void)
 
     SYS_Init();                             /* Init System, clock and I/O pins.           */
 
-    UART0_Init();                           /* Initialize UART0                           */
+    InitDebugUart();                        /* Init DeubgUART for printf */
 
     enable_sys_tick(100);
 

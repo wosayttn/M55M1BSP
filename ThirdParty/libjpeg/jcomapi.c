@@ -93,6 +93,19 @@ jpeg_alloc_quant_table (j_common_ptr cinfo)
   return tbl;
 }
 
+#ifdef NVT_JPEG
+/*For reciprocal quant tbl*/
+GLOBAL(JQUANT_RECP_TBL *)
+jpeg_alloc_quant_recp_table (j_common_ptr cinfo)
+{
+  JQUANT_RECP_TBL *tbl;
+
+  tbl = (JQUANT_RECP_TBL *)
+    (*cinfo->mem->alloc_small) (cinfo, JPOOL_PERMANENT, SIZEOF(JQUANT_RECP_TBL));
+  tbl->sent_table = FALSE;	/* make sure this is false in any new table */
+  return tbl;
+}
+#endif
 
 GLOBAL(JHUFF_TBL *)
 jpeg_alloc_huff_table (j_common_ptr cinfo)

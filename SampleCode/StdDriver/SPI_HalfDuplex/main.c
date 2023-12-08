@@ -60,7 +60,7 @@ void SYS_Init(void)
     /* Select SPI1 module clock source as PCLK2 */
     CLK_SetModuleClock(SPI1_MODULE, CLK_SPISEL_SPI1SEL_PCLK2, MODULE_NoMsk);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -107,7 +107,7 @@ int main(void)
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
 
-    /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
+    /* Configure debug uart: 115200, 8-bit word, no parity bit, 1 stop bit. */
     InitDebugUart();
 
     /* Init SPI */

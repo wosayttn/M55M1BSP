@@ -124,13 +124,12 @@ void SYS_Init(void)
     /* Enable PDMA peripheral clock */
     CLK_EnableModuleClock(PDMA0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set PB multi-function pins for UART0 RXD=PB.12 and TXD=PB.13 */
     SetDebugUartMFP();
 
     /* Setup SPI0 multi-function pins */

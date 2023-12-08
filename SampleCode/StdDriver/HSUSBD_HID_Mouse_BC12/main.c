@@ -51,8 +51,6 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOG_MODULE);
     CLK_EnableModuleClock(GPIOH_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
 
     /* Debug UART clock setting*/
     SetDebugUartCLK();
@@ -64,7 +62,6 @@ void SYS_Init(void)
     SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
 
     for (i = 0; i < 0x1000; i++);  // delay > 10 us
-
 
     /* Enable HSUSBD module clock */
     CLK_EnableModuleClock(HSUSBD0_MODULE);
@@ -79,7 +76,7 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();
 
 }

@@ -161,13 +161,21 @@ int main(void)
     /* Output selected clock to CKO, CKO Clock = SCLK / 2^(1 + 1) */
     CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_SYSCLK, 1, CLK_CLKOCTL_DIV1EN_DIV_FREQSEL);
 
+#if (__HXT <= __HIRC48M)
+
     /* Set the HXT clock frequency monitor upper and lower boundary value.
-       The upper boundary value should be more than 512*(HXT/HIRC48M).
-       The low boundary value should be less than 512*(HXT/HIRC48M).
+       The upper boundary value should be more than 512*(HXT/HIRC48M) with 3% tolerance.
+       The low boundary value should be less than 512*(HXT/HIRC48M) with -3% tolerance.
     */
-    /* Suppose HXT is 12MHz */
-    CLK->CDUPB = 132;
-    CLK->CDLOWB = 124;
+
+    CLK->CDLOWB = 512 * ((float)1 / ((float)__HIRC48M / __HXT)) * 0.97;
+    CLK->CDUPB  = 512 * ((float)1 / ((float)__HIRC48M / __HXT)) * 1.03;
+
+#else
+
+#error "__HIRC48M > __HIRC48M is over spec."
+
+#endif
 
     /* Set clock fail detector function enabled and interrupt enabled */
     CLK->CLKDCTL = CLK_CLKDCTL_HXTFDEN_Msk |

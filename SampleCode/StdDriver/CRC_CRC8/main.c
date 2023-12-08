@@ -1,13 +1,11 @@
-/**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * $Revision: 1 $
- * $Date: 23/02/24 4:41p $
- * @brief    Implement CRC in CRC-8 mode and get the CRC checksum result.
+ /**************************************************************************//**
+ * @file    main.c
+ * @version V1.00
+ * @brief   CRC_CRC8 code for M55M1 series MCU
  *
  * SPDX-License-Identifier: Apache-2.0
- * Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 
@@ -59,7 +57,6 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set PB multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
 }

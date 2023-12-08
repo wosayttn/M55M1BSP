@@ -21,20 +21,10 @@ typedef __NONSECURE_CALL int32_t (*PFN_NON_SECURE_FUNC)(uint32_t);
 void SYS_Init(void);
 void Boot_NonSecure(uint32_t u32NonSecureBase);
 
-void InitDebugUart(void)
-{
-#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
-    /* Init UART to 115200-8n1 for print message */
-    UART_Open(UART0, 115200);
-#endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
-}
-
 void InitNSDebugUart(void)
 {
-#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
     /* Init UART to 115200-8n1 for print message */
     UART_Open(UART1, 115200);
-#endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
 }
 
 /*---------------------------------------------------------------------------
@@ -121,29 +111,6 @@ void Boot_NonSecure(uint32_t u32NonSecureBase)
     }
 }
 
-void SetDebugUartCLK(void)
-{
-#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
-    /* Select UART clock source from HXT */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HXT, CLK_UARTDIV0_UART0DIV(1));
-
-    /* Enable UART clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
-    /* Reset UART module */
-    SYS_ResetModule(SYS_UART0RST);
-#endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
-}
-
-void SetDebugUartMFP(void)
-{
-#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
-    /* Set GPB12 as UART0 RXD and GPB13 as UART0 TXD */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
-#endif /* !defined(DEBUG_ENABLE_SEMIHOST) || !defined(OS_USE_SEMIHOSTING) */
-}
-
 
 void SYS_Init(void)
 {
@@ -172,7 +139,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Enable module clock */
@@ -194,8 +161,6 @@ void SYS_Init(void)
 
     /* Select UART clock source from HXT */
     CLK_SetModuleClock(UART1_MODULE, CLK_UARTSEL0_UART1SEL_HXT, CLK_UARTDIV0_UART1DIV(1));
-    //SET_UART1_RXD_PA2();
-    //SET_UART1_TXD_PA3();
     SET_UART1_RXD_PB2();
     SET_UART1_TXD_PB3();
 

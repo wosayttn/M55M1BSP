@@ -64,7 +64,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -89,12 +89,12 @@ int32_t main(void)
 
     /* Generate interrupt each 1 s */
     CLK_EnableSysTick(CLK_STSEL_ST0SEL_HIRC_DIV2, CLK_STSEL_ST0SEL_HIRC_DIV2 >> 2);
-    
+
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+-------------------------------------+\n");
     printf("|   SYS Reset Detection Sample Code   |\n");
     printf("+-------------------------------------+\n\n");
-    
+
     printf("Check UART message to confirm if any reset abnormalities have occurred.\n\n");
 
     while(1)

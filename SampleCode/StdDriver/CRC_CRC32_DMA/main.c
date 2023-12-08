@@ -1,13 +1,11 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * $Revision: 1 $
- * $Date: 23/02/24 9:33a $
- * @brief    Implement CRC in CRC-32 mode with PDMA transfer.
+ * @file    main.c
+ * @version V1.00
+ * @brief   CRC_CRC32_DMA code for M55M1 series MCU
  *
  * SPDX-License-Identifier: Apache-2.0
- * Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 
@@ -19,25 +17,25 @@ void CRC_IRQHandler(void)
     volatile uint32_t reg;
 
     reg = CRC->DMASTS;
-    if ((reg & CRC_DMASTS_ABORTED_Msk) == CRC_DMASTS_ABORTED_Msk)	/* target abort */
+    if ((reg & CRC_DMASTS_ABORTED_Msk) == CRC_DMASTS_ABORTED_Msk)   /* target abort */
     {
         g_u8CRCDoneFlag = 0x2;
         printf("abort flag 0x%x\n", reg);
         CRC->DMASTS |= CRC_DMASTS_ABORTED_Msk;
     }
-    if ((reg & CRC_DMASTS_CFGERR_Msk) == CRC_DMASTS_CFGERR_Msk)	/* config error */
+    if ((reg & CRC_DMASTS_CFGERR_Msk) == CRC_DMASTS_CFGERR_Msk) /* config error */
     {
         g_u8CRCDoneFlag = 0x4;
         printf("config error 0x%x\n", reg);
         CRC->DMASTS |= CRC_DMASTS_CFGERR_Msk;
     }
-    if ((reg & CRC_DMASTS_ACCERR_Msk) == CRC_DMASTS_ACCERR_Msk)	/* access error */
+    if ((reg & CRC_DMASTS_ACCERR_Msk) == CRC_DMASTS_ACCERR_Msk) /* access error */
     {
         g_u8CRCDoneFlag = 0x8;
         printf("access error 0x%x\n", reg);
         CRC->DMASTS |= CRC_DMASTS_ACCERR_Msk;
     }
-    if ((reg & CRC_DMASTS_FINISH_Msk) == CRC_DMASTS_FINISH_Msk)	/* transfer done */
+    if ((reg & CRC_DMASTS_FINISH_Msk) == CRC_DMASTS_FINISH_Msk) /* transfer done */
     {
         g_u8CRCDoneFlag = 0x1;
         printf("*transfer done 0x%x\n", reg);
@@ -48,31 +46,31 @@ void CRC_IRQHandler(void)
 void SYS_Init(void)
 {
 
-      /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-   /* Enable Internal RC 12MHz clock */
+    /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-   /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable PLL0 200MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -84,19 +82,15 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Enable CRC0 module clock */
     CLK_EnableModuleClock(CRC0_MODULE);
 
-		 /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-     /* Set PB multi-function pins for UART0 RXD and TXD */
     SetDebugUartMFP();
 
 }
@@ -104,20 +98,20 @@ void SYS_Init(void)
 
 uint32_t GetDMAMasterChecksum(uint32_t u32Address, uint32_t u32Size)
 {
-        /*Set input data address for CRC DMA Master*/
-        CRC_SET_DMA_SADDR(CRC, (uint32_t)u32Address);
-	
-        CRC_SET_DMACNT_WORD(CRC, u32Size/4);
-  
-        CRC_ENABLE_DMA_INT(CRC);
+    /*Set input data address for CRC DMA Master*/
+    CRC_SET_DMA_SADDR(CRC, (uint32_t)u32Address);
 
-        CRC_DMA_START(CRC);
-	
-        while(CRC->DMACTL & CRC_DMACTL_START_Msk){};        
-					
-        CRC_IRQHandler();
+    CRC_SET_DMACNT_WORD(CRC, u32Size / 4);
 
-				return CRC->CHECKSUM;
+    CRC_ENABLE_DMA_INT(CRC);
+
+    CRC_DMA_START(CRC);
+
+    while (CRC->DMACTL & CRC_DMACTL_START_Msk) {};
+
+    CRC_IRQHandler();
+
+    return CRC->CHECKSUM;
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -127,7 +121,7 @@ int main(void)
 {
     volatile uint32_t addr, size, u32CRC32Checksum, u32PDMAChecksum;
 
-	/* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
 
     /* Init System, peripheral clock and multi-function I/O */
@@ -135,7 +129,7 @@ int main(void)
 
     /* Init Debug UART for printf */
     InitDebugUart();
-	
+
     /* Lock protected registers */
     SYS_LockReg();
 
@@ -153,7 +147,7 @@ int main(void)
     /* Configure CRC controller for CRC-CRC32 mode */
     CRC_Open(CRC_32, (CRC_WDATA_RVS | CRC_CHECKSUM_RVS | CRC_CHECKSUM_COM), 0xFFFFFFFF, CRC_CPU_WDATA_32);
     /* Start to execute CRC-CRC32 operation */
-    for(addr = 0; addr < size; addr += 4)
+    for (addr = 0; addr < size; addr += 4)
     {
         CRC_WRITE_DATA(inpw(addr));
     }
@@ -168,9 +162,9 @@ int main(void)
     printf("   - by CPU write:   0x%x\n", u32CRC32Checksum);
     printf("   - by DMA write:  0x%x\n", u32PDMAChecksum);
 
-    if((u32CRC32Checksum == u32PDMAChecksum))
+    if ((u32CRC32Checksum == u32PDMAChecksum))
     {
-        if((u32CRC32Checksum == 0) || (u32CRC32Checksum == 0xFFFFFFFF))
+        if ((u32CRC32Checksum == 0) || (u32CRC32Checksum == 0xFFFFFFFF))
         {
             printf("\n[Get checksum ... WRONG]");
         }
@@ -187,7 +181,7 @@ int main(void)
     /* Disable CRC function */
     CLK_DisableModuleClock(CRC0_MODULE);
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

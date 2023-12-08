@@ -14,7 +14,10 @@
 #define JPEG_INTERNALS
 #include "jinclude.h"
 #include "jpeglib.h"
-
+/*Include header file to get required struct and simd function declaration*/
+#ifdef NVT_JPEG
+#include "nvt_jpeg.h"
+#endif	
 
 /*
  * Quantization table setup routines
@@ -33,6 +36,12 @@ jpeg_add_quant_table (j_compress_ptr cinfo, int which_tbl,
   JQUANT_TBL ** qtblptr;
   int i;
   long temp;
+  
+#ifdef NVT_JPEG
+  JQUANT_RECP_TBL ** qrecptblptr;
+  UINT16 u16temp;
+  int res;
+#endif	
 
   /* Safety check to ensure start_compress not called yet. */
   if (cinfo->global_state != CSTATE_START)
@@ -58,6 +67,23 @@ jpeg_add_quant_table (j_compress_ptr cinfo, int which_tbl,
 
   /* Initialize sent_table FALSE so table will be written to JPEG file. */
   (*qtblptr)->sent_table = FALSE;
+  
+
+#ifdef NVT_JPEG
+	/*Allocate for recirpcal tbl space*/
+	qrecptblptr = & cinfo->quant_recp_tbl_ptrs[which_tbl];
+	
+	if (*qrecptblptr == NULL)
+        *qrecptblptr = jpeg_alloc_quant_recp_table((j_common_ptr) cinfo);
+
+	/*Compute the reciprocal of each value in quat tbl*/
+	for (i = 0; i < DCTSIZE2; i++) {
+        u16temp = (*qtblptr)->quantval[i];
+		res =  compute_reciprocal(u16temp, (DCTELEM *)(&((*qrecptblptr)->quantval[i])));
+  }
+  (*qrecptblptr)->sent_table = FALSE;
+	
+#endif	
 }
 
 
