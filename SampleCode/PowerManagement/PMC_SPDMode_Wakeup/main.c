@@ -24,7 +24,7 @@ void SYS_Init(void);
 void PowerDownFunction(void)
 {
     uint32_t u32TimeOutCnt;
-
+    
     /* Check if all the debug messages are finished */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     UART_WAIT_TX_EMPTY(DEBUG_PORT)
@@ -40,7 +40,7 @@ void PowerDownFunction(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void WakeUpPinFunction(uint32_t u32PDMode)
 {
-    printf("Enter to DPD Power-down mode......\n");
+    printf("Enter to SPD Power-down mode......\n");
 
     /* Select Power-down mode */
     PMC_SetPowerDownMode(u32PDMode, PMC_PLCTL_PLSEL_PL0);
@@ -61,7 +61,7 @@ void WakeUpPinFunction(uint32_t u32PDMode)
 void WakeUpTimerFunction(uint32_t u32PDMode, uint32_t u32Interval)
 {
 
-    printf("Enter to DPD Power-down mode......\n");
+    printf("Enter to SPD Power-down mode......\n");
 
     /* Select Power-down mode */
     PMC_SetPowerDownMode(u32PDMode, PMC_PLCTL_PLSEL_PL0);

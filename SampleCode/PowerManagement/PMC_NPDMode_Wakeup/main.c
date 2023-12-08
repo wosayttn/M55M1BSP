@@ -43,7 +43,7 @@ void WakeUpBODFunction(uint32_t u32PDMode)
     /* Enable Brown-out detector function */
     SYS_ENABLE_BOD();
 
-    /* Set Brown-out detector voltage level as 3.0V */
+    /* Set Brown-out detector voltage level to 3.0V */
     SYS_SET_BOD_LEVEL(SYS_BODCTL_BODVL_3_0V);
 
     /* Enable Brown-out detector reset function */
@@ -107,6 +107,8 @@ NVT_ITCM void PMC_IRQHandler(void)
 
     /* Clear PMC interrupt flag */
     PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
+    
+    while(PMC->INTSTS){};
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
