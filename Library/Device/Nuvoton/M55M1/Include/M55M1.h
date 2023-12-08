@@ -486,6 +486,7 @@ typedef enum IRQn
 #endif
 #define SPIM0_BASE                (AHB1PERIPH_BASE + 0x02000UL)
 #if defined(TESTCHIP_ONLY)
+#define OTFC1_BASE                (AHB1PERIPH_BASE + 0x01000UL)
 #define SPIM1_BASE                (AHB1PERIPH_BASE + 0x03000UL)
 #endif
 /* AHB2 peripheral (HCLK2 clock domain) */

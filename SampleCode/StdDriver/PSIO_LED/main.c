@@ -58,6 +58,8 @@ void SYS_Init(void)
     /* Select PSIO module clock source as HIRC and PSIO module clock divider as 1 */
     CLK_SetModuleClock(PSIO0_MODULE, CLK_PSIOSEL_PSIO0SEL_HIRC, CLK_PSIODIV_PSIO0DIV(1));
 
+    CLK_EnableModuleClock(GPIOE_MODULE);
+
     /* Enable UART module clock */
     SetDebugUartCLK();
 
@@ -66,10 +68,9 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
-    /* Set PSIO multi-function pin CH0(PB.15) and CH1(PC.4) */
-    SET_PSIO0_CH0_PB15();
-    SET_PSIO0_CH1_PC4();
-
+    /* Set PSIO multi-function pin CH0(PE.14) and CH1(PE.15) */
+    SET_PSIO0_CH0_PE14();
+    SET_PSIO0_CH1_PE15();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -101,8 +102,8 @@ int32_t main(void)
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+------------------------------------------------------+ \n");
     printf("|         Worldsemi WS2812B LED sample code            | \n");
-    printf("|          Please connected PSIO_CH0(PB.15)            | \n");
-    printf("|           and PSIO_CH1(PC.4) to device               | \n");
+    printf("|          Please connected PSIO_CH0(PE.14)            | \n");
+    printf("|           and PSIO_CH1(PE.15) to device              | \n");
     printf("+------------------------------------------------------+ \n");
 
     /* Set Led configuration */

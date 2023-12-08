@@ -44,8 +44,10 @@ void SYS_Init(void)
     /* Enable PSIO module clock */
     CLK_EnableModuleClock(PSIO0_MODULE);
 
-    /* Select PSIO module clock source as HIRC and PSIO module clock divider as 12 */
-    CLK_SetModuleClock(PSIO0_MODULE, CLK_PSIOSEL_PSIO0SEL_HIRC, CLK_PSIODIV_PSIO0DIV(12));
+    /* Select PSIO module clock source as HIRC and PSIO module clock divider as 6 */
+    CLK_SetModuleClock(PSIO0_MODULE, CLK_PSIOSEL_PSIO0SEL_HIRC, CLK_PSIODIV_PSIO0DIV(6));
+
+    CLK_EnableModuleClock(GPIOE_MODULE);
 
     /* Enable UART module clock */
     SetDebugUartCLK();
@@ -55,21 +57,21 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
-    /* PSIO multi-function pin CH0(PB.15), CH1(PC.4), CH2(PC.3) and CH3(PC.2) */
-    SET_PSIO0_CH0_PB15();
-    SET_PSIO0_CH1_PC4();
-    SET_PSIO0_CH2_PC3();
-    SET_PSIO0_CH3_PC2();
+    /* PSIO multi-function pin CH0(PE.14), CH1(PE.15), CH2(PE.5) and CH3(PE.4) */
+    SET_PSIO0_CH0_PE14();
+    SET_PSIO0_CH1_PE15();
+    SET_PSIO0_CH2_PE5();
+    SET_PSIO0_CH3_PE4();
 }
 
 void SetCSPinToPSIO(void)
 {
-    SET_PSIO0_CH0_PB15();
+    SET_PSIO0_CH0_PE14();
 }
 
 void SetCSPinToGPIO(void)
 {
-    SET_GPIO_PB15();
+    SET_GPIO_PE14();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -98,8 +100,8 @@ int main(void)
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+------------------------------------------------------+ \n");
     printf("|      AT93C46D Microwire EEPROM  Test Code            | \n");
-    printf("| Please connected PSIO_CH0(PB.15), PSIO_CH1(PC.4)     | \n");
-    printf("| ,PSIO_CH2(PC.3), PSIO_CH4(PC.2)to device.            | \n");
+    printf("| Please connected PSIO_CH0(PE.14), PSIO_CH1(PE.15)    | \n");
+    printf("| ,PSIO_CH2(PE.5), PSIO_CH4(PE.4)to device.            | \n");
     printf("+------------------------------------------------------+ \n");
 
     /* Use slot controller 0, pin 0, pin1, pin 2, pin 3 */
@@ -110,11 +112,11 @@ int main(void)
     sConfig.u8DI            = PSIO_PIN3;
 
     /* Initialize PIN config */
-    pu32ChipSelectPin   = &PB15;
-    pu32InputPin        = &PC3;
+    pu32ChipSelectPin   = &PE14;
+    pu32InputPin        = &PE5;
 
     /* Set CS pin output mode when GPIO function */
-    GPIO_SetMode(PB, BIT15, GPIO_MODE_OUTPUT);
+    GPIO_SetMode(PE, BIT14, GPIO_MODE_OUTPUT);
 
     /* Initialize PSIO setting for AT93C46D */
     PSIO_AT93C46D_Init(&sConfig);

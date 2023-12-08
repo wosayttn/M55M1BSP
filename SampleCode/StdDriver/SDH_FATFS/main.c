@@ -333,7 +333,7 @@ NVT_ITCM void SDH0_IRQHandler(void)
         // block down
         SD0.DataReadyFlag = TRUE;
         SDH0->INTSTS = SDH_INTSTS_BLKDIF_Msk;
-        printf("SD block down\r\n");
+        //printf("SD block down\r\n");
     }
 
     if ((ier & SDH_INTEN_CDIEN_Msk) &&

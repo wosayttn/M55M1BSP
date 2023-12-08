@@ -52,9 +52,9 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
-    /* Set PSIO multi-function pin CH0(PB.15) and CH1(PC.4) */
-    SET_PSIO0_CH0_PB15();
-    SET_PSIO0_CH1_PC4();
+    /* Set PSIO multi-function pin CH0(PE.14) and CH1(PE.15) */
+    SET_PSIO0_CH0_PE14();
+    SET_PSIO0_CH1_PE15();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -78,7 +78,7 @@ int32_t main(void)
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+--------------------------------------------------------+ \n");
     printf("|   DMX512 Protocol Test Code                            | \n");
-    printf("|   Please connected PSIO_CH0(PB.15) to PSIO_CH1(PC.4)   | \n");
+    printf("|   Please connected PSIO_CH0(PE.14) to PSIO_CH1(PE.15)   | \n");
     printf("+--------------------------------------------------------+ \n");
 
     /* Reset PSIO */

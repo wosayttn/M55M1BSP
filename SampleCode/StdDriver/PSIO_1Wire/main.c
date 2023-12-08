@@ -29,12 +29,10 @@ void SYS_Init(void)
 
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
+    CLK_SET_PCLK1DIV(8);
     CLK_SET_PCLK2DIV(2);
     CLK_SET_PCLK3DIV(2);
     CLK_SET_PCLK4DIV(2);
-
-    /* Set PCLK1 to HCLK/8 */
-    CLK_SET_PCLK1DIV(8);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
@@ -43,8 +41,13 @@ void SYS_Init(void)
     /* Enable PSIO module clock */
     CLK_EnableModuleClock(PSIO0_MODULE);
 
-    /* Select PSIO module clock source as PCLK1 and PSIO module clock divider as 250 */
+    /* Select PSIO module clock source as PCLK1 and PSIO module clock divider as 15 */
     CLK_SetModuleClock(PSIO0_MODULE, CLK_PSIOSEL_PSIO0SEL_PCLK1, CLK_PSIODIV_PSIO0DIV(250));
+
+    /*Enable GPIO Clock*/
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    CLK_EnableModuleClock(GPIOB_MODULE);
+    CLK_EnableModuleClock(GPIOC_MODULE);
 
     /* Enable UART module clock */
     SetDebugUartCLK();
@@ -54,8 +57,10 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
-    /* Set PSIO multi-function pin CH0(PB.15) */
-    SET_PSIO0_CH0_PB15();
+    /* PSIO multi-function pin CH0(PB.15) */
+    //SET_PSIO0_CH0_PC5();
+    SET_PSIO0_CH0_PE14();
+
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -78,7 +83,7 @@ int32_t main(void)
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+------------------------------------------------------+ \n");
     printf("|      DS18B20 ONE WIRE Thermometer  Test Code         | \n");
-    printf("|      Please connected PSIO_CH0(PB.15) to device      | \n");
+    printf("|      Please connected PSIO_CH0(PC.5) to device       | \n");
     printf("+------------------------------------------------------+ \n");
 
     /* Use slot controller 0 and pin 0 */
