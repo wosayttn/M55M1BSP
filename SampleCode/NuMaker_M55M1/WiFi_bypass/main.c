@@ -31,6 +31,8 @@ static void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
+    CLK_EnableModuleClock(GPIOI_MODULE);
+
     /* Enable UART module clock */
     SetDebugUartCLK();
 
