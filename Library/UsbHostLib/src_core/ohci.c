@@ -887,7 +887,7 @@ static int ohci_rh_port_reset(int port)
 
     for (retry = 0; retry < PORT_RESET_RETRY; retry++)
     {
-        _ohci->HcRhPortStatus[port] = USBH_HcRhPortStatus_PRS_Msk;
+        _ohci->HcRhPortStatus[0] = USBH_HcRhPortStatus_PRS_Msk;
 
         t0 = get_ticks();
 
@@ -896,8 +896,8 @@ static int ohci_rh_port_reset(int port)
             /*
              *  If device is disconnected or port enabled, we can stop port reset.
              */
-            if (((_ohci->HcRhPortStatus[port] & USBH_HcRhPortStatus_CCS_Msk) == 0) ||
-                    ((_ohci->HcRhPortStatus[port] & (USBH_HcRhPortStatus_PES_Msk | USBH_HcRhPortStatus_CCS_Msk)) == (USBH_HcRhPortStatus_PES_Msk | USBH_HcRhPortStatus_CCS_Msk)))
+            if (((_ohci->HcRhPortStatus[0] & USBH_HcRhPortStatus_CCS_Msk) == 0) ||
+                    ((_ohci->HcRhPortStatus[0] & (USBH_HcRhPortStatus_PES_Msk | USBH_HcRhPortStatus_CCS_Msk)) == (USBH_HcRhPortStatus_PES_Msk | USBH_HcRhPortStatus_CCS_Msk)))
                 goto port_reset_done;
         }
 
@@ -909,9 +909,9 @@ static int ohci_rh_port_reset(int port)
 
 port_reset_done:
 
-    if ((_ohci->HcRhPortStatus[port] & USBH_HcRhPortStatus_CCS_Msk) == 0)  /* check again if device disconnected */
+    if ((_ohci->HcRhPortStatus[0] & USBH_HcRhPortStatus_CCS_Msk) == 0)  /* check again if device disconnected */
     {
-        _ohci->HcRhPortStatus[port] = USBH_HcRhPortStatus_CSC_Msk;         /* clear CSC */
+        _ohci->HcRhPortStatus[0] = USBH_HcRhPortStatus_CSC_Msk;         /* clear CSC */
         return USBH_ERR_DISCONNECTED;
     }
 
@@ -924,32 +924,32 @@ static int ohci_rh_polling(void)
     UDEV_T    *udev;
     int       ret;
 
-    for (i = 0; i < 2; i++)
+    for (i = 0; i < 1; i++)
     {
         if (!(port_mask & (0x1 << i)))
             continue;
 
         /* clear unwanted port change status */
-        _ohci->HcRhPortStatus[i] = USBH_HcRhPortStatus_OCIC_Msk | USBH_HcRhPortStatus_PRSC_Msk |
+        _ohci->HcRhPortStatus[0] = USBH_HcRhPortStatus_OCIC_Msk | USBH_HcRhPortStatus_PRSC_Msk |
                                    USBH_HcRhPortStatus_PSSC_Msk | USBH_HcRhPortStatus_PESC_Msk;
 
-        if ((_ohci->HcRhPortStatus[i] & USBH_HcRhPortStatus_CSC_Msk) == 0)
+        if ((_ohci->HcRhPortStatus[0] & USBH_HcRhPortStatus_CSC_Msk) == 0)
             continue;
 
         /*--------------------------------------------------------------------------------*/
         /*  connect status change                                                         */
         /*--------------------------------------------------------------------------------*/
 
-        _ohci->HcRhPortStatus[i] = USBH_HcRhPortStatus_CSC_Msk;     /* clear CSC          */
+        _ohci->HcRhPortStatus[0] = USBH_HcRhPortStatus_CSC_Msk;     /* clear CSC          */
 
-        if (_ohci->HcRhPortStatus[i] & USBH_HcRhPortStatus_CCS_Msk)
+        if (_ohci->HcRhPortStatus[0] & USBH_HcRhPortStatus_CCS_Msk)
         {
             /*----------------------------------------------------------------------------*/
             /*  First of all, check if there's any previously connected device.           */
             /*----------------------------------------------------------------------------*/
             while (1)
             {
-                udev = ohci_find_device_by_port(i + 1);
+                udev = ohci_find_device_by_port(_ohci_port);
 
                 if (udev == NULL)
                     break;
@@ -969,9 +969,13 @@ static int ohci_rh_polling(void)
                 continue;
 
             udev->parent = NULL;
-            udev->port_num = i + 1;
+#if (_ohci_port == 0UL)
+            udev->port_num = _ohci_port;
+#else
+            udev->port_num = _ohci_port;
+#endif
 
-            if (_ohci->HcRhPortStatus[i] & USBH_HcRhPortStatus_LSDA_Msk)
+            if (_ohci->HcRhPortStatus[0] & USBH_HcRhPortStatus_LSDA_Msk)
                 udev->speed = SPEED_LOW;
             else
                 udev->speed = SPEED_FULL;
@@ -995,7 +999,7 @@ static int ohci_rh_polling(void)
              */
             while (1)
             {
-                udev = ohci_find_device_by_port(i + 1);
+                udev = ohci_find_device_by_port(_ohci_port);
 
                 if (udev == NULL)
                     break;
