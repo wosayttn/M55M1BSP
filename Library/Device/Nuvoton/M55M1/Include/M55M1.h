@@ -58,7 +58,7 @@ extern "C" {
 
 #if !defined(TESTCHIP_ONLY)
 /* Notice: The BSP is for M55M1 engineering sample version. */
-#define TESTCHIP_ONLY
+    #define TESTCHIP_ONLY
 #endif
 
 #if defined(TESTCHIP_ONLY)
@@ -384,11 +384,7 @@ typedef enum IRQn
 #include "sdh_reg.h"
 #include "spi_reg.h"
 #include "spim_reg.h"
-#if defined(ALIGN_AF_PINS)
-#include "sys_reg_NC.h"
-#else
 #include "sys_reg.h"
-#endif
 #include "timer_reg.h"
 #include "trng_reg.h"
 #include "ttmr_reg.h"
@@ -1693,13 +1689,7 @@ typedef volatile uint64_t vu64;   ///< Define 64-bit unsigned volatile data type
 #include "fmc.h"
 #include "gdma/dma350_lib.h"
 #include "gdma/dma350_drv.h"
-
-#if defined(ALIGN_AF_PINS)
-#include "gpio_NC.h"
-#else
 #include "gpio.h"
-#endif
-
 #include "hsotg.h"
 #include "hsusbd.h"
 #include "i2c.h"
@@ -1736,13 +1726,7 @@ typedef volatile uint64_t vu64;   ///< Define 64-bit unsigned volatile data type
 #include "spi.h"
 #include "spim.h"
 #include "spim_hyper.h"
-
-#if defined(ALIGN_AF_PINS)
-#include "sys_NC.h"
-#else
 #include "sys.h"
-#endif
-
 #include "timer.h"
 #include "timer_pwm.h"
 #include "trng.h"

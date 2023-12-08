@@ -141,7 +141,7 @@ void DEBUG_PORT_Init(void)
     /* Init UART                                                                                               */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Reset UART */
-    SYS_ResetModule(SYS_DEBUG_PORTRST);
+    SYS_ResetModule(DEBUG_PORT_RST);
 
     /* Configure UART and set UART Baudrate */
     UART_Open(DEBUG_PORT, 115200);

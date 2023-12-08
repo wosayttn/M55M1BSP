@@ -193,9 +193,9 @@ NVT_ITCM void DEBUG_PORT_IRQHandler(void)
             /* Fill the Tx FIFO */
             i32Size = g_u16ComTbytes;
 
-            if (i32Size >= UART0_FIFO_SIZE)
+            if (i32Size >= DEBUG_PORT_FIFO_SIZE)
             {
-                i32Size = UART0_FIFO_SIZE;
+                i32Size = DEBUG_PORT_FIFO_SIZE;
             }
 
             while (i32Size)
