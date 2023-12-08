@@ -4,7 +4,7 @@
  * @brief   A simple WiFi demo for NuMaker board.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2024 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include "NuMicro.h"
 
@@ -63,8 +63,6 @@ int main()
     int32_t i;
     uint8_t au8AT_VER[] = "AT+GMR\r\n";
 
-    SYS_UnlockReg();
-
     SYS_Init();
 
     /* Init Debug UART to 115200-8N1 for print message */
@@ -78,7 +76,7 @@ int main()
 
     /*
         The ESP8266 WiFi module is connected to UART8 of M55M1.
-        In this demo code, COM and UART4(WiFi module) are connected to
+        In this demo code, COM and UART8(WiFi module) are connected to
         pass through all AT commands from debug port to UART.
 
         Therefore, user may control ESP8266 WiFi module on the Terminal or by PC tool e.g.
@@ -130,4 +128,4 @@ int main()
     }
 }
 
-/*** (C) COPYRIGHT 2020 Nuvoton Technology Corp. ***/
+/*** (C) COPYRIGHT 2024 Nuvoton Technology Corp. ***/
