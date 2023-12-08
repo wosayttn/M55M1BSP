@@ -35,17 +35,16 @@
 #define OFFSET_565HIGHBYTE_HIGH    0x1E1C1A1816141210
 #define OFFSET_565LOWBYTE_LOW    0x0F0D0B0907050301
 #define OFFSET_565LOWBYTE_HIGH   0x1F1D1B1917151311
-#define BYTENUMBER_RGB565      2
-#define BYTENUMBER_RGB888      3
-#define PIXELS_LOOP           16
-#define PIXELS_CONVERT_EACHLOOP   16
+#define BYTENUMBER_RGB565  2
+#define BYTENUMBER_RGB888  3
+#define PIXELS_LOOP       16
+#define PIXELS_CONVERT_EACHLOOP       16
 
+#define SRC_IMAGE_LEN            20
+#define SRC_IMAGE_WIDTH           5
+#define SRC_IMAGE_HEIGHT          4
 
-#define SRC_IMAGE_LEN          20
-#define SRC_IMAGE_WIDTH         5
-#define SRC_IMAGE_HEIGHT        4
-
-#define DST_IMAGE_LEN          30
+#define DST_IMAGE_LEN            (SRC_IMAGE_LEN*BYTENUMBER_RGB888)
 
 #define CHECK_888RESULT
 #define SW_SCALEUP_TEST
@@ -153,6 +152,9 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
+    /* Enable UART0 module clock */
+    CLK_EnableModuleClock(UART0_MODULE);
+
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
@@ -171,6 +173,8 @@ int32_t main(void)
 {
     uint32_t u32TimeVal;
 
+    uint32_t u32TimeVal_Vec;
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -179,7 +183,6 @@ int32_t main(void)
 
     /* Init Debug UART for printf */
     InitDebugUart();
-
     /* Lock protected registers */
     SYS_LockReg();
 
@@ -188,6 +191,8 @@ int32_t main(void)
     printf("+-----------------------------------------+\n");
 
     /* Use systick to measure inference time */
+
+
     while (1)
     {
         printf("\n Execute RGB565to888\n");
@@ -199,15 +204,28 @@ int32_t main(void)
         printf("\n Execute VRGB565to888_TP\n");
         Init_SysTick_Export();
         VRGB565to888_TP((uint8_t *)(image_rgb565_src), vimage_dst, SRC_IMAGE_HEIGHT, SRC_IMAGE_WIDTH);
-        u32TimeVal = Get_SysTick_Cycle_Count();
-        printf("\n Tick Counters are:%d!\n", u32TimeVal);
+        u32TimeVal_Vec = Get_SysTick_Cycle_Count();
+        printf("\n Tick Counters are:%d!\n", u32TimeVal_Vec);
+
+        printf("\n Compare RGB565 Results \n");
+        for (int ii = 0; ii < DST_IMAGE_LEN; ii++)
+        {
+            if (image_dst[ii] == vimage_dst[ii])
+            {
+                printf("\n Match: image_dst[%d] = 0x%02x \n", ii, image_dst[ii]);
+            }
+            else
+            {
+                printf("\n Error: image_dst[%d] = 0x%02x, vimage_dst[%d] = 0x%02x \n", ii, image_dst[ii], ii, vimage_dst[ii]);
+            }
+        }
+        printf("\n RGB565 Speedup %1.2f X\n", (float)(u32TimeVal) / (float)(u32TimeVal_Vec));
 
         printf("\n Test Done\n");
         while (1);
     }
 
 }
-
 
 
 void RGB565to888(uint8_t *src, uint8_t *dst, uint8_t len)
@@ -218,7 +236,6 @@ void RGB565to888(uint8_t *src, uint8_t *dst, uint8_t len)
 
     while (count >= 0)
     {
-
         //RGB565_IN_UINT8
         buf888_high = *src;
         buf888_low = *(src + 1);
@@ -252,20 +269,14 @@ void RGB565to888(uint8_t *src, uint8_t *dst, uint8_t len)
 void VRGB565to888_TP(uint8_t *src, uint8_t *dst, uint16_t size_h, uint16_t size_w)
 {
     int8_t count;
-    uint32_t TimeVal;
-
     uint8x16_t vsrc_8_16_lo;
     uint8x16_t vsrc_8_16_hi;
     uint8x16_t vdst_8_16_r;
     uint8x16_t vdst_8_16_g;
     uint8x16_t vdst_8_16_b;
     uint8x16_t offset_8_16;
-    uint8x16_t mask_8_16_r;
 
     count = size_h * size_w;
-
-    mask_8_16_r = vdupq_n_u8(0xF8);
-
     while (count > 0)
     {
         //RGB565_IN_UINT8
@@ -282,15 +293,22 @@ void VRGB565to888_TP(uint8_t *src, uint8_t *dst, uint16_t size_h, uint16_t size_
         vsrc_8_16_hi = vldrbq_gather_offset_z_u8(src, offset_8_16, p);
 
         //Separate RGB//
-        vdst_8_16_r  =  vandq_u8(vsrc_8_16_hi, mask_8_16_r);
+        vdst_8_16_r  =  vrshlq(vshrq(vsrc_8_16_hi, 3), 3);
 
         //[2022-07-12] :Note vrshrq vs vshrq. vrshrq results in round. That is 0x07 rounds to 0x08.
-
         vdst_8_16_g =  vorrq_u8(vrshlq(vsrc_8_16_hi, 5), vrshlq(vshrq(vsrc_8_16_lo, 5), 2));
-
 
         vdst_8_16_b =  vrshlq(vsrc_8_16_lo, 3);
 
+#ifdef PADDING_RGB888_LSB
+        //Padding LSB with MSB
+
+        vdst_8_16_r  =  vorrq_u8(vrshlq(vshrq(vsrc_8_16_hi, 3), 3), vshrq(vsrc_8_16_hi, 5));
+
+        vdst_8_16_g =  vorrq_u8(vorrq_u8(vrshlq(vsrc_8_16_hi, 5), vrshlq(vshrq(vsrc_8_16_lo, 5), 2)),  vshrq(vrshlq(vsrc_8_16_hi, 5), 6));
+
+        vdst_8_16_b =  vorrq_u8(vrshlq(vsrc_8_16_lo, 3), vshrq(vrshlq(vsrc_8_16_lo, 3), 5));
+#endif
         //Scatter Store//
         offset_8_16 = vcreateq_u8(OFFSET_R_LOW, OFFSET_R_HIGH);
 
@@ -304,7 +322,6 @@ void VRGB565to888_TP(uint8_t *src, uint8_t *dst, uint16_t size_h, uint16_t size_
 
         vstrbq_scatter_offset_p(dst, offset_8_16, vdst_8_16_b, p);
 
-
         //Update data source and destination pointer
 
         //Source: shift one RGB566 pixel size(2 byte)
@@ -317,4 +334,3 @@ void VRGB565to888_TP(uint8_t *src, uint8_t *dst, uint16_t size_h, uint16_t size_
 
     }
 }
-
