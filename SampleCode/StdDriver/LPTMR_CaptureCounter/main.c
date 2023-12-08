@@ -26,7 +26,7 @@ static volatile uint32_t g_au32LPTMR1INTCount = 0;
 
 NVT_ITCM void LPTMR1_IRQHandler(void)
 {
-    if(LPTMR_GetCaptureIntFlag(LPTMR1) == 1)
+    if (LPTMR_GetCaptureIntFlag(LPTMR1) == 1)
     {
         /* Clear LPTMR1 capture trigger interrupt flag */
         LPTMR_ClearCaptureIntFlag(LPTMR1);
@@ -87,9 +87,10 @@ static void SYS_Init(void)
     CLK_EnableModuleClock(LPTMR1_MODULE);
     CLK_EnableModuleClock(TMR3_MODULE);
     /* Enable GPIO clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
     /* Set PB multi-function pin for LPTMR1 external capture pin */
-    SET_LPTM1_EXT_PB14();
+    SET_LPTM1_EXT_PA10();
     /* Set multi-function pins for LPTMR0 toggle-output pin and LPTMR1 event counter pin */
     SET_LPTM1_PB4();
     SET_LPTM0_PB5();
@@ -136,7 +137,7 @@ int main(void)
     printf("    - External capture mode enable      \n");
     printf("    - Capture trigger interrupt enable  \n");
     printf("# Connect LPTM0(PB.5) toggle-output pin to LPTM1(PB.4) event counter pin.\n");
-    printf("# Connect TM3(PB.2)   toggle-output pin to LPTM1_EXT(PB.14) external capture pin.\n\n");
+    printf("# Connect TM3(PB.2)   toggle-output pin to LPTM1_EXT(PA.10) external capture pin.\n\n");
 
     /* Enable LPTMR1 NVIC */
     NVIC_EnableIRQ(LPTMR1_IRQn);
@@ -168,12 +169,13 @@ int main(void)
     LPTMR_Start(LPTMR1);
 
     /* Check LPTMR1 capture trigger interrupt counts */
-    while(g_au32LPTMR1INTCount <= 10)
+    while (g_au32LPTMR1INTCount <= 10)
     {
-        if(g_au32LPTMR1INTCount != u32InitCount)
+        if (g_au32LPTMR1INTCount != u32InitCount)
         {
             au32CAPValue[u32InitCount] = LPTMR_GetCaptureData(LPTMR1);
-            if(u32InitCount ==  0)
+
+            if (u32InitCount ==  0)
             {
                 printf("    [%2d]: %4d. (1st captured value)\n", g_au32LPTMR1INTCount, au32CAPValue[u32InitCount]);
             }
@@ -181,21 +183,27 @@ int main(void)
             {
                 u32CAPDiff = au32CAPValue[u32InitCount] - au32CAPValue[u32InitCount - 1];
                 printf("    [%2d]: %4d. Diff: %d.\n", g_au32LPTMR1INTCount, au32CAPValue[u32InitCount], u32CAPDiff);
-                if(u32CAPDiff != 500)
+
+                if (u32CAPDiff != 500)
                 {
                     printf("*** FAIL ***\n");
-                    while(1);
+
+                    while (1);
                 }
             }
+
             u32InitCount = g_au32LPTMR1INTCount;
         }
     }
+
     printf("*** PASS ***\n\n");
 
     /* case 2. */
     LPTMR_DisableCapture(LPTMR1);
     LPTMR_Stop(LPTMR1);
-    while(LPTMR_IS_ACTIVE(LPTMR1));
+
+    while (LPTMR_IS_ACTIVE(LPTMR1));
+
     LPTMR_ClearIntFlag(LPTMR1);
     LPTMR_ClearCaptureIntFlag(LPTMR1);
 
@@ -217,10 +225,11 @@ int main(void)
     /* Check LPTMR1 capture trigger interrupt counts */
     while ((g_au32LPTMR1INTCount <= 10) && (u32InitCount < 10))
     {
-        if(g_au32LPTMR1INTCount != u32InitCount)
+        if (g_au32LPTMR1INTCount != u32InitCount)
         {
             au32CAPValue[u32InitCount] = LPTMR_GetCaptureData(LPTMR1);
-            if(u32InitCount ==  0)
+
+            if (u32InitCount ==  0)
             {
                 printf("    [%2d]: %4d. (1st captured value)\n", g_au32LPTMR1INTCount, au32CAPValue[u32InitCount]);
             }
@@ -228,12 +237,15 @@ int main(void)
             {
                 u32CAPDiff = au32CAPValue[u32InitCount] - au32CAPValue[u32InitCount - 1];
                 printf("    [%2d]: %4d. Diff: %d.\n", g_au32LPTMR1INTCount, au32CAPValue[u32InitCount], u32CAPDiff);
-                if(u32CAPDiff != 500)
+
+                if (u32CAPDiff != 500)
                 {
                     printf("*** FAIL ***\n");
-                    while(1);
+
+                    while (1);
                 }
             }
+
             u32InitCount = g_au32LPTMR1INTCount;
         }
     }

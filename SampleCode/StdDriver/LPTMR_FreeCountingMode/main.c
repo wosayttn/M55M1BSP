@@ -30,16 +30,17 @@ NVT_ITCM void LPTMR0_IRQHandler(void)
 
     LPTMR_ClearCaptureIntFlag(LPTMR0);
 
-    if(cnt == 0)
+    if (cnt == 0)
     {
         t0 = LPTMR_GetCaptureData(LPTMR0);
         cnt++;
     }
-    else if(cnt == 1)
+    else if (cnt == 1)
     {
         t1 = LPTMR_GetCaptureData(LPTMR0);
         cnt++;
-        if(t0 >= t1)
+
+        if (t0 >= t1)
         {
             /* over run, drop this data and do nothing */
         }
@@ -105,8 +106,8 @@ static void SYS_Init(void)
     /* Enable LPTMR0 clock */
     CLK_EnableModuleClock(LPTMR0_MODULE);
     /* Set LPTMR0 capture pin */
-    CLK_EnableModuleClock(GPIOB_MODULE);
-    SET_LPTM0_EXT_PB15();
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    SET_LPTM0_EXT_PA11();
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -125,7 +126,7 @@ int main(void)
 
     printf("System core clock = %d\n", SystemCoreClock);
     printf("\nThis sample code demonstrate LPTMR0 free counting mode.\n");
-    printf("Please connect input source with LPTMR0 capture pin PB.15, press any key to continue\n");
+    printf("Please connect input source with LPTMR0 capture pin PA.11, press any key to continue\n");
     getchar();
 
     /* Give a dummy target frequency here. Will over write capture resolution with macro */
