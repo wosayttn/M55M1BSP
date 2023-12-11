@@ -75,6 +75,12 @@ __WEAK void SetDebugUartMFP(void)
 __WEAK void SetDebugUartCLK(void)
 {
 #if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
+    /* Enable External HXT clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
+
+    /* Waiting for HXT clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
+	
     /* Select UART clock source from HXT */
     CLK_SetModuleClock(DEBUG_PORT_MODULE, CLK_UARTSEL0_UART6SEL_HXT, CLK_UARTDIV0_UART6DIV(1));
 
