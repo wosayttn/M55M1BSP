@@ -114,7 +114,13 @@ int main(void)
 #endif
 
     printf("System core clock = %d\n", SystemCoreClock);
-    printf("[0] SYS_ResetChip [Others] SPDMode_WakeupAndReturn\n");
+
+    printf("+-----------------------------------------------------------------+\n");
+    printf("|         SPD power-down wake-up and return sample code           |\n");
+    printf("+-----------------------------------------------------------------+\n");
+    printf("|[0]        SYS_ResetChip.                                        |\n");
+    printf("|[Others]   SPDMode_WakeupAndReturn.                              |\n");
+    printf("+-----------------------------------------------------------------+\n");
 
     if (getchar() == '0')
     {

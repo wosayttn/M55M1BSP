@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief   Show how to continue executing code after wake-up from SPD Power-down mode.
+ * @brief   Show how to continue executing code after wake-up from SPD power-down mode.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -30,7 +30,7 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC 12MHz clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
+    
     /* Enable PLL0 180MHz clock and set all bus clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
@@ -66,9 +66,14 @@ int main(void)
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     initialise_monitor_handles();
 #endif
-
     printf("\nSystem core clock = %d\n", SystemCoreClock);
-    printf("[0] Noraml SPDMode_Wakeup [Others] SPDMode_WakeupVTOR\n");
+
+    printf("+-----------------------------------------------------------------+\n");
+    printf("|         SPD power-down wake-up and return sample code           |\n");
+    printf("+-----------------------------------------------------------------+\n");
+    printf("|[0]      Noraml SPD mode wake-up.                                |\n");
+    printf("|[Others] SPD mode wake-up from VTOR                              |\n");
+    printf("+-----------------------------------------------------------------+\n");
 
     if (getchar() == '0')
     {
@@ -76,18 +81,18 @@ int main(void)
     }
     else
     {
-        /* Load user image to ITCM */
+        /* Load user image to FLASH */
         SRAM_LoadCodeAndRun();
 
-        /* Set VTOR to wake-up form ITCM */
-        SYS->VTORSET = 0x00000400;
+        /* Set VTOR to wake-up form FLASH */
+        SYS->VTORSET = 0x00180000;
     }
 
     /* Select power-down mode and power level */
-    PMC_SetPowerDownMode(PMC_SPD0, PMC_PLCTL_PLSEL_PL0);
+    PMC_SetPowerDownMode(PMC_SPD0, PMC_PLCTL_PLSEL_PL1);
 
     /* Enable wake-up timer and set wake-up Time-out Interval */
-    PMC_EnableSTMR(PMC_STMRWKCTL_STMRIS_4096);
+    PMC_EnableSTMR(PMC_STMRWKCTL_STMRIS_65536);
 
     printf("Enter to SPD Power-down mode...\n");
 

@@ -25,6 +25,8 @@ NVT_ITCM void WDT0_IRQHandler(void)
 
     if (WDT_GET_TIMEOUT_INT_FLAG(WDT0))
     {
+        printf("WDT time-out!\n");
+
         /* Clear WDT time-out interrupt flag */
         WDT_CLEAR_TIMEOUT_INT_FLAG(WDT0);
     }
@@ -47,9 +49,12 @@ void PowerDownFunction(void)
 
     /* Check if all the debug messages are finished */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     UART_WAIT_TX_EMPTY(DEBUG_PORT)
 
     if (--u32TimeOutCnt == 0) break;
+
+    PMC_SetPowerDownMode(PMC_NPD0, PMC_PLCTL_PLSEL_PL1);
 
     /* Enter to Power-down mode */
     PMC_PowerDown();
@@ -74,6 +79,12 @@ void SYS_Init(void)
     /* Waiting for Internal RC 12MHz clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
+    /* Enable Internal RC 12MHz clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_LXTEN_Msk);
+
+    /* Waiting for Internal RC 12MHz clock ready */
+    CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
+
     /* Enable PLL0 180MHz clock and set all bus clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
@@ -86,6 +97,9 @@ void SYS_Init(void)
 
     /* Enable CRC0 module clock */
     CLK_EnableModuleClock(CRC0_MODULE);
+
+    /* Select WDT0 clock source from LXT */
+    CLK_SetModuleClock(WDT0_MODULE, CLK_WDTSEL_WDT0SEL_LXT, NA);
 
     /* Enable WDT0 module clock */
     CLK_EnableModuleClock(WDT0_MODULE);
@@ -120,6 +134,10 @@ int32_t main(void)
     printf("|       SRAM Power Mode Sample Code     |\n");
     printf("+---------------------------------------+\n\n");
 
+    printf("Press any key to start test\n");
+
+    getchar();
+
     /*
         SRAM power mode can select as normal mode, retention mode and power shut down mode.
         SRAM is able to access only in normal mode and SRAM clock have to be enabled.
@@ -136,7 +154,6 @@ int32_t main(void)
        SRAM bank1 is in normal mode.
        SRAM bank2 is in normal mode.
     */
-
     PMC_SetSRAMPowerMode(PMC_SYSRB1PC_SRAM0PMS_Msk, PMC_SYSRB1PC_SRAM_NORMAL);
     PMC_SetSRAMPowerMode(PMC_SYSRB1PC_SRAM1PMS_Msk, PMC_SYSRB1PC_SRAM_NORMAL);
     PMC_SetSRAMPowerMode(PMC_SYSRB1PC_SRAM2PMS_Msk, PMC_SYSRB1PC_SRAM_NORMAL);
@@ -155,7 +172,7 @@ int32_t main(void)
     printf("Calculate SRAM checksum before Power-down:\n\n");
 
     /* Specify SRAM region start address */
-    u32SRAMStartAddr = 0x2018000;
+    u32SRAMStartAddr = 0x20180000;
 
     /* Calculate SRAM checksum */
     for (u32Idx = 0; u32Idx < 13; u32Idx++)
@@ -184,14 +201,14 @@ int32_t main(void)
     printf("SRAM Bank1 Region 5 Checksum [0x%08X]\n",   au32SRAMCheckSum[5]);
     printf("SRAM Bank1 Region 6 Checksum [0x%08X]\n",   au32SRAMCheckSum[6]);
     printf("SRAM Bank1 Region 7 Checksum [0x%08X]\n\n", au32SRAMCheckSum[7]);
-    printf("SRAM Bank2 Region 0 Checksum [0x%08X]\n",   au32SRAMCheckSum[9]);
+    printf("SRAM Bank2 Region 0 Checksum [0x%08X]\n",   au32SRAMCheckSum[8]);
     printf("SRAM Bank2 Region 1 Checksum [0x%08X]\n",   au32SRAMCheckSum[9]);
     printf("SRAM Bank2 Region 2 Checksum [0x%08X]\n",   au32SRAMCheckSum[10]);
     printf("SRAM Bank2 Region 3 Checksum [0x%08X]\n",   au32SRAMCheckSum[11]);
     printf("SRAM Bank2 Region 4 Checksum [0x%08X]\n\n", au32SRAMCheckSum[12]);
 
     /* Select SRAM power mode:
-       SRAM bank2 is in power shut down mode mode.
+       SRAM bank2 is in power shut down mode.
     */
     PMC_SetSRAMPowerMode(PMC_SYSRB2PC_SRAM0PMS_Msk, PMC_SYSRB2PC_SRAM_POWER_SHUT_DOWN);
     PMC_SetSRAMPowerMode(PMC_SYSRB2PC_SRAM1PMS_Msk, PMC_SYSRB2PC_SRAM_POWER_SHUT_DOWN);
@@ -200,7 +217,10 @@ int32_t main(void)
     PMC_SetSRAMPowerMode(PMC_SYSRB2PC_SRAM4PMS_Msk, PMC_SYSRB2PC_SRAM_POWER_SHUT_DOWN);
 
     /* Enter to Power-down mode and wake-up by WDT interrupt */
-    printf("Enter to Power-down mode ... ");
+    printf("Enter to Power-down mode ...\n");
+
+    /* Unlock protected registers before entering Power-down mode */
+    SYS_UnlockReg();
 
     /* Enable WDT NVIC */
     NVIC_EnableIRQ(WDT0_IRQn);
@@ -210,9 +230,6 @@ int32_t main(void)
 
     /* Enable WDT interrupt function */
     WDT_EnableInt(WDT0);
-
-    /* Unlock protected registers before entering Power-down mode */
-    SYS_UnlockReg();
 
     /* Enter to Power-down mode */
     PowerDownFunction();
@@ -244,7 +261,7 @@ int32_t main(void)
     printf("Calculate SRAM CheckSum after wake-up:\n\n");
 
     /* Specify SRAM region start address */
-    u32SRAMStartAddr = 0x2018000;
+    u32SRAMStartAddr = 0x20180000;
 
     /* Calculate SRAM checksum */
     for (u32Idx = 0; u32Idx < 13; u32Idx++)
@@ -273,11 +290,20 @@ int32_t main(void)
     printf("SRAM Bank1 Region 5 Checksum [0x%08X]\n",   au32SRAMCheckSum[5]);
     printf("SRAM Bank1 Region 6 Checksum [0x%08X]\n",   au32SRAMCheckSum[6]);
     printf("SRAM Bank1 Region 7 Checksum [0x%08X]\n\n", au32SRAMCheckSum[7]);
-    printf("SRAM Bank2 Region 0 Checksum [0x%08X]\n",   au32SRAMCheckSum[9]);
+    printf("SRAM Bank2 Region 0 Checksum [0x%08X]\n",   au32SRAMCheckSum[8]);
     printf("SRAM Bank2 Region 1 Checksum [0x%08X]\n",   au32SRAMCheckSum[9]);
     printf("SRAM Bank2 Region 2 Checksum [0x%08X]\n",   au32SRAMCheckSum[10]);
     printf("SRAM Bank2 Region 3 Checksum [0x%08X]\n",   au32SRAMCheckSum[11]);
     printf("SRAM Bank2 Region 4 Checksum [0x%08X]\n\n", au32SRAMCheckSum[12]);
+
+    /* Disable WDT NVIC */
+    NVIC_DisableIRQ(WDT0_IRQn);
+
+    /* Configure WDT settings and start WDT counting */
+    WDT_Close(WDT0);
+
+    /* Disable WDT interrupt function */
+    WDT_DisableInt(WDT0);
 
     while (1);
 }
