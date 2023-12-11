@@ -75,7 +75,8 @@ void USPI_DisableSelfTest(void)
     SYS_UnlockReg();
 
     /* Disable self-test function */
-    SYS->ALTCTL0 &= ~(SYS_ALTCTL0_SELFTEST_Msk);
+    //SYS->ALTCTL0 &= ~(SYS_ALTCTL0_SELFTEST_Msk);
+    outpw(SYS_BASE + 0xE00, 0x00);
 
     outpw(USCI0_BASE + 0x84, ~(1 << 30));
 
@@ -90,7 +91,8 @@ void USPI_EnableSelfTest(void)
     SYS_UnlockReg();
 
     /* Enable self-test function */
-    SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
+    //SYS->ALTCTL0 |= SYS_ALTCTL0_SELFTEST_Msk;
+    outpw(SYS_BASE + 0xE00, 0x01);
 
     outpw(USCI0_BASE + 0x84, (1 << 30));
 
@@ -1528,7 +1530,7 @@ CU_TestInfo USCI_SPI_MacroTests[] =
     {"Set USCI_SPI transfer sequence with LSB/MSB first", MACRO_USCI_SPI_SET_LSB_MSB_FIRST},
     {"Set USCI_SPI data width", MACRO_USCI_SPI_SET_DATA_WIDTH},
     {"Get USCI_SPI busy flag", MACRO_USCI_SPI_IS_BUSY},
-    {"Get/Clear USCI_SPI Protocol/Buffer interrupt flag", MACRO_USCI_SPI_GetIntFlag_ClearIntFlag},
+    {"Get/Clear USCI_SPI Protocol/Buffer interrupt flag", MACRO_USCI_SPI_GetIntFlag_ClearIntFlag}, //Independence test
     {"Enable/Disable USCI_SPI Protocol Interrupt", MACRO_USCI_SPI_EnableProtocolInt_DisableProtocolInt},
     {"Enable/Disable USCI_SPI Buffer Interrupt", MACRO_USCI_SPI_EnableBufferInt_DisableBufferInt},
     {"Enable/Disable USCI_SPI Transfer Interrupt", MACRO_USCI_SPI_EnableTransferInt_DisableTransferInt},
@@ -1540,13 +1542,13 @@ CU_TestInfo USCI_SPI_ApiTests[] =
 {
     {"USCI_SPI Open", API_USCI_SPI_Open},
     {"USCI_SPI Close", API_USCI_SPI_Close},
-    //{"Clear USCI_SPI RX buffer", API_USCI_SPI_ClearRxBuf},
-    //{"Clear USCI_SPI TX buffer", API_USCI_SPI_ClearTxBuf},
-    //{"Enable/Disable USCI_SPI automatic slave selection function", API_USCI_SPI_EnableAutoSS_DisableAutoSS},
-    //{"Set/Get USCI_SPI bus clock rate", API_USCI_SPI_SetBusClock_GetBusClock},
-    //{"Enable/Disable USCI_SPI interrupt function", API_USCI_SPI_EnableInt_DisableInt},
+    {"Clear USCI_SPI RX buffer", API_USCI_SPI_ClearRxBuf},
+    {"Clear USCI_SPI TX buffer", API_USCI_SPI_ClearTxBuf},
+    {"Enable/Disable USCI_SPI automatic slave selection function", API_USCI_SPI_EnableAutoSS_DisableAutoSS},
+    {"Set/Get USCI_SPI bus clock rate", API_USCI_SPI_SetBusClock_GetBusClock},
+    {"Enable/Disable USCI_SPI interrupt function", API_USCI_SPI_EnableInt_DisableInt},
     {"Get/Clear USCI_SPI interrupt flag", API_USCI_SPI_GetIntFlag_ClearIntFlag},
-    //{"Get USCI_SPI status", API_USCI_SPI_GetStatus},
+    {"Get USCI_SPI status", API_USCI_SPI_GetStatus},
     CU_TEST_INFO_NULL,
 };
 

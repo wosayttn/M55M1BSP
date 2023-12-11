@@ -124,7 +124,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_MIRCSTB_Msk);
 
     /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -322,7 +322,7 @@ int32_t main(void)
         PMC_PowerDown();
 
         /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
-        CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+        CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
         printf("\nWakeup\n");
         printf("MDTSAD:   0x%08X, MDWOC:    0x%08X\n", CCAP->MDTSAD, CCAP_MD_GET_OVERFLOW_WIN_CNT());
 

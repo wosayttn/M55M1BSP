@@ -230,7 +230,7 @@ void inferenceSenderTask(void *pvParameters) {
         printf("Sending inference job: job=%p, name=%s\n", job, job->name.c_str());
         xQueueSend(inferenceProcessQueue, &job, portMAX_DELAY);
     }
-	
+
     // Listen for completion status
     do {
         xInferenceJob *pSendJob;
@@ -272,9 +272,9 @@ static void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-	
+
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -324,10 +324,10 @@ int main() {
         printf("Failed to initialize NPU.\n");
         return -1;
     }
-					
-	// Enable Ethos-U interrupt
+
+    // Enable Ethos-U interrupt
     NVIC_EnableIRQ(static_cast<IRQn_Type>(NPU_IRQn));
-	
+
     inferenceProcessQueue = xQueueCreate(NUM_JOBS_PER_TASK, sizeof(xInferenceJob *));
 
     // inferenceSender tasks to create and queue the jobs
@@ -405,14 +405,14 @@ void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
 	taskDISABLE_INTERRUPTS();
 
   //__BKPT();
-	
+
     //printf("Stack overflow task name=%s\n", pcTaskName);
-    
-	
+
+
 	for( ;; );
-    
-    
-    
+
+
+
 }
 /*-----------------------------------------------------------*/
 
