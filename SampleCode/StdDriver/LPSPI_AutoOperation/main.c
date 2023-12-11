@@ -113,9 +113,9 @@ void SYS_Init(void)
                      SYS_GPA_MFP0_PA1MFP_LPSPI0_MISO |
                      SYS_GPA_MFP0_PA0MFP_LPSPI0_MOSI);
 
-    /* Clock output HCLK to PB14 */
-    SYS->GPB_MFP3 = (SYS->GPB_MFP3 & ~(SYS_GPB_MFP3_PB14MFP_Msk)) |
-                    (SYS_GPB_MFP3_PB14MFP_CLKO);
+    /* Clock output HCLK to PD.13 */
+    SYS->GPD_MFP3 = (SYS->GPD_MFP3 & ~(SYS_GPD_MFP3_PD13MFP_Msk)) |
+                    (SYS_GPD_MFP3_PD13MFP_CLKO);
     CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_HIRC, 0, CLK_CLKOCTL_DIV1EN_DIV_1);
 }
 
