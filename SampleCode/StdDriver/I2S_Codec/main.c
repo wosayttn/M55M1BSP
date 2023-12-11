@@ -323,7 +323,7 @@ void SYS_Init(void)
     SET_I2C3_SDA_PG1();
     SET_I2C3_SCL_PG0();
 
-    /* Enable I2C3 clock pin (PD1) schmitt trigger */
+    /* Enable I2C3 clock pin (PG0) schmitt trigger */
     PG->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
 }
 

@@ -121,8 +121,8 @@ void SYS_Init(void)
     /* Set LPTMR0 PWM mode output pins */
     SET_LPTM0_PB5();
 
-    /* Clock output HCLK to PB14 */
-    SET_CLKO_PB14();
+    /* Clock output HCLK to PC13 */
+    SET_CLKO_PC13();
 
     CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_HIRC, 0, 1);
 
