@@ -1984,9 +1984,14 @@ uint32_t CLK_GetModuleClockDivider(uint64_t u64ModuleIdx)
   *             - \ref CLK_SCLKSEL_SCLKSEL_HIRC48M
   *             - \ref CLK_SCLKSEL_SCLKSEL_HXT
   *             - \ref CLK_SCLKSEL_SCLKSEL_APLL0
+  * @brief      Set PLL frequency
+  * @param[in]  u32PllClkSrc is PLL clock source. Including :
+  *             - \ref CLK_APLLCTL_APLLSRC_HXT
+  *             - \ref CLK_APLLCTL_APLLSRC_HIRC
+  *             - \ref CLK_APLLCTL_APLLSRC_HIRC48_DIV4
+  *             u32PllClkSrc is ignored when u32SCLKSrc is not CLK_SCLKSEL_SCLKSEL_APLL0.
   * @param[in]  u32PllFreq is PLL frequency. The range of u32PllFreq is 50 MHz ~ 500 MHz.
   *             u32PllFreq is ignored when u32SCLKSrc is not CLK_SCLKSEL_SCLKSEL_APLL0.
-   *            APLL clock source is fixed HIRC in this function.
   * @return     Current SCLK frequency
   * @details    This function is used to set the SCLK/HCLK/PCLK with clock limitations. \n
   *             The clock limitation as following below :
@@ -1997,7 +2002,7 @@ uint32_t CLK_GetModuleClockDivider(uint64_t u64ModuleIdx)
   *             PCLK4 is 50MHz
   *             The register write-protection function should be disabled before using this function.
   */
-uint32_t CLK_SetBusClock(uint32_t u32SCLKSrc, uint32_t u32PllFreq)
+uint32_t CLK_SetBusClock(uint32_t u32SCLKSrc, uint32_t u32PllClkSrc, uint32_t u32PllFreq)
 {
     uint32_t u32PllClk;
 
@@ -2007,7 +2012,7 @@ uint32_t CLK_SetBusClock(uint32_t u32SCLKSrc, uint32_t u32PllFreq)
         CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
 
         /* Enable APLL0 clock */
-        u32PllClk = CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, u32PllFreq, CLK_APLL0_SELECT);
+        u32PllClk = CLK_EnableAPLL(u32PllClkSrc, u32PllFreq, CLK_APLL0_SELECT);
 
         /* Set clock with limitations */
         if (u32PllClk > FREQ_200MHZ)
