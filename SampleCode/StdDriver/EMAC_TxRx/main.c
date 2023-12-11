@@ -77,6 +77,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(EMAC0_MODULE);
     SYS_ResetModule(SYS_EMAC0RST);
 
+    GPIO_SetSlewCtl(PE, (BIT10|BIT11|BIT12), GPIO_SLEWCTL_FAST0);
     /* PE.13 Set high */
     GPIO_SetMode(PE, BIT13, GPIO_MODE_OUTPUT);
     PE13=1;
