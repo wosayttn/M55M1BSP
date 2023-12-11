@@ -24,7 +24,7 @@ void SYS_Init(void);
 void PowerDownFunction(void)
 {
     uint32_t u32TimeOutCnt;
-    
+
     /* Check if all the debug messages are finished */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     UART_WAIT_TX_EMPTY(DEBUG_PORT)
@@ -172,7 +172,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
 
     /* Enable PLL0 180MHz clock and set all bus clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
