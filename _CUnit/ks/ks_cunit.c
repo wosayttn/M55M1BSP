@@ -694,6 +694,12 @@ void Func_OTP_ReadWriteErase(void)
     // Skip first two OTP key or chip will enter secure boot check fail loop
     for (i = 2; i <= KS_MAX_OTPKEY_CNT; i++)
     {
+        if (KS_GET_OTPKEY_STS(i))
+        {
+            printf("OTP %d is not empty - Skip\n", i);
+            continue ;
+        }
+
         memset(au32Key, i + 0x5A, sizeof(au32Key));
         memset(au32ReadKey, 0, sizeof(au32ReadKey));
 
@@ -712,17 +718,29 @@ void Func_OTP_ReadWriteErase(void)
         }
 
         CU_ASSERT(KS_GET_OTPKEY_STS(i32KeyIdx) == TRUE);
-        CU_ASSERT(KS_LockOTPKey(i) == 0);
-        CU_ASSERT(KS_EraseOTPKey(i) != 0);
 
-        if (i == KS_KDF_ROOT_OTPKEY)
+        if (i % 2 > 0)
         {
-            CU_ASSERT(KS_Read(KS_OTP, i32KeyIdx, au32ReadKey, u32WordCnt) != 0);
+            // Test lock OTP
+            CU_ASSERT(KS_LockOTPKey(i) == 0);
+            CU_ASSERT(KS_EraseOTPKey(i) != 0);
+
+
+            if (i == KS_KDF_ROOT_OTPKEY)
+            {
+                CU_ASSERT(KS_Read(KS_OTP, i32KeyIdx, au32ReadKey, u32WordCnt) != 0);
+            }
+            else
+            {
+                CU_ASSERT(KS_Read(KS_OTP, i32KeyIdx, au32ReadKey, u32WordCnt) == 0);
+                CU_ASSERT(strncmp((void *)au32Key, (void *)au32ReadKey, u32WordCnt * 4) <= 0);
+            }
         }
         else
         {
-            CU_ASSERT(KS_Read(KS_OTP, i32KeyIdx, au32ReadKey, u32WordCnt) == 0);
-            CU_ASSERT(strncmp((void *)au32Key, (void *)au32ReadKey, u32WordCnt * 4) <= 0);
+            // Test erase OTP
+            CU_ASSERT(KS_EraseOTPKey(i) == 0);
+            CU_ASSERT(KS_Read(KS_OTP, i32KeyIdx, au32ReadKey, u32WordCnt) != 0);
         }
 
         bSecure ^= 1;

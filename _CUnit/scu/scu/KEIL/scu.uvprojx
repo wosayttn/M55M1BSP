@@ -338,7 +338,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>DEBUG_PORT=UART0, STDIN_ECHO=1</Define>
+              <Define>STDIN_ECHO=1</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\common\inc</IncludePath>
             </VariousControls>
@@ -418,11 +418,6 @@
               <FileName>uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\uart.c</FilePath>
-            </File>
-            <File>
-              <FileName>scu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\scu\scu.c</FilePath>
             </File>
             <File>
               <FileName>CUnitTestM55.lib</FileName>
@@ -860,11 +855,6 @@
               <FileName>uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\uart.c</FilePath>
-            </File>
-            <File>
-              <FileName>scu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\scu\scu.c</FilePath>
             </File>
             <File>
               <FileName>CUnitTestM55.lib</FileName>

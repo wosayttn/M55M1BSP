@@ -13,11 +13,24 @@
 #include "CUnit.h"
 #include "Console.h"
 #include "fmc_cunit.h"
-#include "../pldm_emu.h"
 
 #ifndef DEBUG_PORT
     #define DEBUG_PORT UART0
 #endif
+
+void SetDebugUartCLK(void)
+{
+#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
+    /* Select UART clock source from HIRC */
+    CLK_SetModuleClock(DEBUG_PORT_MODULE, CLK_UARTSEL0_UART6SEL_HXT, CLK_UARTDIV0_UART6DIV(1));
+
+    /* Enable UART clock */
+    CLK_EnableModuleClock(DEBUG_PORT_MODULE);
+
+    /* Reset UART module */
+    SYS_ResetModule(DEBUG_PORT_RST);
+#endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
+}
 
 void SYS_Init(void)
 {
@@ -32,6 +45,12 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
+
+    /* Enable HXT clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
+
+    /* Waiting for HXT clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Enable PLL0 200MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
@@ -102,8 +121,13 @@ int main(int argc, char *argv[])
     printf("+--------------------------------------+\n");
     printf("|         M55M1 FMC CUnit Test         |\n");
     printf("+--------------------------------------+\n");
-    if (__PC() < FMC_APROM_BANK0_END)
-        printf("Please test in SRAM !\n");
+
+    if ((__PC() < 0x20200000) || (__PC() >= 0x20250000))
+    {
+        printf("Please test in SRAM2 !\n");
+
+        while (1) ;
+    }
 
     /* Unlock protected registers */
     SYS_UnlockReg();
