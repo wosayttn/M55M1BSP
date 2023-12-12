@@ -12,6 +12,8 @@
 #include "NuMicro.h"
 
 //------------------------------------------------------------------------------
+#define SPIM_PORT                   SPIM0
+
 #define USE_4_BYTES_MODE            0     /* W25Q20 does not support 4-bytes address mode. */
 #define MFP_SELECT                  0     /* Multi-function pin select                     */
 
@@ -67,12 +69,11 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
-    /* Enable SPIM module clock */
-    CLK_EnableModuleClock(SPIM0_MODULE);
-
     /* Enable GPIO Module clock */
     CLK_EnableModuleClock(GPIOC_MODULE);
     CLK_EnableModuleClock(GPIOG_MODULE);
+    CLK_EnableModuleClock(GPIOH_MODULE);
+    CLK_EnableModuleClock(GPIOJ_MODULE);
 
     /* Enable UART module clock */
     SetDebugUartCLK();
@@ -82,25 +83,66 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
-    /* Init SPIM multi-function pins */
-    SET_SPIM0_CLK_PC4();
-    SET_SPIM0_SS_PC3();
-    SET_SPIM0_MISO_PG12();
-    SET_SPIM0_MOSI_PG11();
-    SET_SPIM0_D2_PC0();
-    SET_SPIM0_D3_PG10();
+    if (SPIM_PORT == SPIM0)
+    {
+        /* Enable SPIM module clock */
+        CLK_EnableModuleClock(SPIM0_MODULE);
 
-    PC->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
-    PG->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
+        /* Init SPIM multi-function pins */
+        SET_SPIM0_CLK_PC4();
+        SET_SPIM0_MISO_PG12();
+        SET_SPIM0_MOSI_PG11();
+        SET_SPIM0_D2_PC0();
+        SET_SPIM0_D3_PG10();
+        SET_SPIM0_SS_PC3();
 
-    /* Set SPIM I/O pins as high slew rate up to 80 MHz. */
-    GPIO_SetSlewCtl(PC, BIT0, GPIO_SLEWCTL_HIGH);
-    GPIO_SetSlewCtl(PC, BIT3, GPIO_SLEWCTL_HIGH);
-    GPIO_SetSlewCtl(PC, BIT4, GPIO_SLEWCTL_HIGH);
+        PC->SMTEN |= (GPIO_SMTEN_SMTEN0_Msk |
+                      GPIO_SMTEN_SMTEN3_Msk |
+                      GPIO_SMTEN_SMTEN4_Msk);
 
-    GPIO_SetSlewCtl(PG, BIT10, GPIO_SLEWCTL_HIGH);
-    GPIO_SetSlewCtl(PG, BIT11, GPIO_SLEWCTL_HIGH);
-    GPIO_SetSlewCtl(PG, BIT12, GPIO_SLEWCTL_HIGH);
+        PG->SMTEN |= (GPIO_SMTEN_SMTEN10_Msk |
+                      GPIO_SMTEN_SMTEN11_Msk |
+                      GPIO_SMTEN_SMTEN12_Msk);
+
+        /* Set SPIM I/O pins as high slew rate up to 80 MHz. */
+        GPIO_SetSlewCtl(PC, BIT0, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PC, BIT3, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PC, BIT4, GPIO_SLEWCTL_HIGH);
+
+        GPIO_SetSlewCtl(PG, BIT10, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PG, BIT11, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PG, BIT12, GPIO_SLEWCTL_HIGH);
+    }
+    else if (SPIM_PORT == SPIM1)
+    {
+        /* Enable SPIM module clock */
+        CLK_EnableModuleClock(SPIM1_MODULE);
+
+        /* Init SPIM multi-function pins */
+        SET_SPIM1_CLK_PH13();
+        SET_SPIM1_MISO_PJ5();
+        SET_SPIM1_MOSI_PJ6();
+        SET_SPIM1_D2_PJ4();
+        SET_SPIM1_D3_PJ3();
+        SET_SPIM1_SS_PJ7();
+
+        PH->SMTEN |= (GPIO_SMTEN_SMTEN13_Msk);
+
+        PJ->SMTEN |= (GPIO_SMTEN_SMTEN3_Msk |
+                      GPIO_SMTEN_SMTEN4_Msk |
+                      GPIO_SMTEN_SMTEN5_Msk |
+                      GPIO_SMTEN_SMTEN6_Msk |
+                      GPIO_SMTEN_SMTEN7_Msk);
+
+        /* Set SPIM I/O pins as high slew rate up to 80 MHz. */
+        GPIO_SetSlewCtl(PH, BIT13, GPIO_SLEWCTL_HIGH);
+
+        GPIO_SetSlewCtl(PJ, BIT3, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PJ, BIT4, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PJ, BIT5, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PJ, BIT6, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PJ, BIT7, GPIO_SLEWCTL_HIGH);
+    }
 }
 
 int main()
@@ -122,24 +164,24 @@ int main()
     printf("|      SPIM I/O mode read/write sample      |\n");
     printf("+-------------------------------------------+\n");
 
-    SPIM_SET_CLOCK_DIVIDER(SPIM0, 1);       /* Set SPIM clock as HCLK divided by 2 */
+    SPIM_SET_CLOCK_DIVIDER(SPIM_PORT, 2);       /* Set SPIM clock as HCLK divided by 2 */
 
-    SPIM_SET_RXCLKDLY_RDDLYSEL(SPIM0, 0);   /* Insert 0 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
+    SPIM_SET_RXCLKDLY_RDDLYSEL(SPIM_PORT, 1);   /* Insert 1 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
 
-    if (SPIM_InitFlash(SPIM0, 1) != 0)      /* Initialized SPI flash */
+    if (SPIM_InitFlash(SPIM_PORT, 1) != 0)      /* Initialized SPI flash */
     {
         printf("SPIM flash initialize failed!\n");
         goto lexit;
     }
 
-    SPIM_DISABLE_CIPHER(SPIM0);
+    SPIM_DISABLE_CIPHER(SPIM_PORT);
 
-    SPIM_ReadJedecId(SPIM0, idBuf, sizeof(idBuf), 1, 0);
+    SPIM_ReadJedecId(SPIM_PORT, idBuf, sizeof(idBuf), 1, 0);
     printf("SPIM get JEDEC ID=0x%02X, 0x%02X, 0x%02X\n", idBuf[0], idBuf[1], idBuf[2]);
 
-    SPIM_WinbondUnlock(SPIM0, 1);
+    SPIM_WinbondUnlock(SPIM_PORT, 1);
 
-    if (SPIM_Enable_4Bytes_Mode(SPIM0, USE_4_BYTES_MODE, 1) != 0)
+    if (SPIM_Enable_4Bytes_Mode(SPIM_PORT, USE_4_BYTES_MODE, 1) != 0)
     {
         printf("SPIM_Enable_4Bytes_Mode failed!\n");
         goto lexit;
@@ -149,7 +191,7 @@ int main()
      *  Erase flash page
      */
     printf("\r\nErase SPI flash block 0x%x...", TEST_BLOCK_ADDR);
-    SPIM_EraseBlock(SPIM0, TEST_BLOCK_ADDR, USE_4_BYTES_MODE, OPCODE_BE_64K, 1, 1);
+    SPIM_EraseBlock(SPIM_PORT, TEST_BLOCK_ADDR, USE_4_BYTES_MODE, OPCODE_BE_64K, 1, 1);
     printf("done.\n");
 
     /*
@@ -160,7 +202,7 @@ int main()
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
         memset(g_buff, 0, BUFFER_SIZE);
-        SPIM_IO_Read(SPIM0, TEST_BLOCK_ADDR + offset, USE_4_BYTES_MODE,
+        SPIM_IO_Read(SPIM_PORT, TEST_BLOCK_ADDR + offset, USE_4_BYTES_MODE,
                      BUFFER_SIZE, g_buff, OPCODE_FAST_READ, 1, 1, 1, 1);
 
         pData = (uint32_t *)g_buff;
@@ -192,7 +234,7 @@ int main()
             (*pData) = (i << 16) | (TEST_BLOCK_ADDR + offset + i);
         }
 
-        SPIM_IO_Write(SPIM0, TEST_BLOCK_ADDR + offset, USE_4_BYTES_MODE,
+        SPIM_IO_Write(SPIM_PORT, TEST_BLOCK_ADDR + offset, USE_4_BYTES_MODE,
                       BUFFER_SIZE, g_buff, OPCODE_PP, 1, 1, 1);
     }
 
@@ -206,7 +248,7 @@ int main()
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
         memset(g_buff, 0, BUFFER_SIZE);
-        SPIM_IO_Read(SPIM0, TEST_BLOCK_ADDR + offset, USE_4_BYTES_MODE,
+        SPIM_IO_Read(SPIM_PORT, TEST_BLOCK_ADDR + offset, USE_4_BYTES_MODE,
                      BUFFER_SIZE, g_buff, OPCODE_FAST_READ, 1, 1, 1, 1);
 
         pData = (uint32_t *)g_buff;
@@ -233,7 +275,7 @@ int main()
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
         memset(g_buff, 0, BUFFER_SIZE);
-        SPIM_IO_Read(SPIM0, TEST_BLOCK_ADDR + offset, USE_4_BYTES_MODE,
+        SPIM_IO_Read(SPIM_PORT, TEST_BLOCK_ADDR + offset, USE_4_BYTES_MODE,
                      BUFFER_SIZE, g_buff, OPCODE_FAST_DUAL_READ, 1, 1, 2, 1);
 
         pData = (uint32_t *)g_buff;
@@ -256,12 +298,12 @@ int main()
      */
     printf("Verify SPI flash block 0x%x data with Fast Quad Read Output command...", TEST_BLOCK_ADDR);
 
-    SPIM_SetQuadEnable(SPIM0, 1, 1);    /* Enable SPI flash quad mode */
+    SPIM_SetQuadEnable(SPIM_PORT, 1, 1);    /* Enable SPI flash quad mode */
 
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
         memset(g_buff, 0, BUFFER_SIZE);
-        SPIM_IO_Read(SPIM0, TEST_BLOCK_ADDR + offset, USE_4_BYTES_MODE,
+        SPIM_IO_Read(SPIM_PORT, TEST_BLOCK_ADDR + offset, USE_4_BYTES_MODE,
                      BUFFER_SIZE, g_buff, CMD_DMA_FAST_READ_QUAD_OUTPUT, 1, 1, 4, 1);
 
         pData = (uint32_t *)g_buff;
@@ -277,7 +319,7 @@ int main()
         }
     }
 
-    SPIM_SetQuadEnable(SPIM0, 0, 1);
+    SPIM_SetQuadEnable(SPIM_PORT, 0, 1);
 
     printf("done.\n");
 
@@ -286,7 +328,7 @@ int main()
      *  Erase flash page
      */
     printf("\r\nErase SPI flash block 0x%x...", TEST_BLOCK_ADDR);
-    SPIM_EraseBlock(SPIM0, TEST_BLOCK_ADDR, USE_4_BYTES_MODE, OPCODE_BE_64K, 1, 1);
+    SPIM_EraseBlock(SPIM_PORT, TEST_BLOCK_ADDR, USE_4_BYTES_MODE, OPCODE_BE_64K, 1, 1);
     printf("done.\n");
 
     /*
@@ -303,7 +345,7 @@ int main()
             (*pData) = (i << 16) | (TEST_BLOCK_ADDR + offset + i);
         }
 
-        SPIM_IO_WritePhase(SPIM0, &gsWb02hWrCMD, TEST_BLOCK_ADDR + offset,
+        SPIM_IO_WritePhase(SPIM_PORT, &gsWb02hWrCMD, TEST_BLOCK_ADDR + offset,
                            g_buff, BUFFER_SIZE);
     }
 
@@ -315,7 +357,7 @@ int main()
     {
         memset(g_buff, 0, BUFFER_SIZE);
 
-        SPIM_IO_ReadPhase(SPIM0, &gsWbBBhRdCMD, TEST_BLOCK_ADDR + offset, g_buff, BUFFER_SIZE);
+        SPIM_IO_ReadPhase(SPIM_PORT, &gsWbBBhRdCMD, TEST_BLOCK_ADDR + offset, g_buff, BUFFER_SIZE);
 
         pData = (uint32_t *)g_buff;
 
@@ -338,7 +380,7 @@ int main()
     {
         memset(g_buff, 0, BUFFER_SIZE);
 
-        SPIM_IO_ReadPhase(SPIM0, &gsWbEBhRdCMD, TEST_BLOCK_ADDR + offset, g_buff, BUFFER_SIZE);
+        SPIM_IO_ReadPhase(SPIM_PORT, &gsWbEBhRdCMD, TEST_BLOCK_ADDR + offset, g_buff, BUFFER_SIZE);
 
         pData = (uint32_t *)g_buff;
 

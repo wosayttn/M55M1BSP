@@ -364,10 +364,10 @@ void SPIM_DMM_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, int is4ByteAdd
 void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR)
 {
     /* Chip Select Setup Time 2.5 */
-    SPIM_HYPER_SET_CSST(spim, SPIM_HYPER_CONFIG1_CSST_2_5_HCLK);
+    SPIM_HYPER_SET_CSST(spim, SPIM_HYPER_CSST_2_5_HCLK);
 
     /* Chip Select Hold Time 3.5 HCLK */
-    SPIM_HYPER_SET_CSH(spim, SPIM_HYPER_CONFIG1_CSH_3_5_HCLK);
+    SPIM_HYPER_SET_CSH(spim, SPIM_HYPER_CSH_3_5_HCLK);
 
     /* Chip Select High between Transaction as 2 HCLK cycles */
     SPIM_HYPER_SET_CSHI(spim, 2);
@@ -421,14 +421,14 @@ uint32_t GetSPIMClkDivNum(void)
     SystemCoreClockUpdate();
 
     printf("CPU Freq = %dMhz\r\n", (CLK_GetSCLKFreq() / 1000000));
-    printf("System Core Clock = %dMhz\r\n", GetSystemCoreClock() / 1000000);
+    //printf("System Core Clock = %dMhz\r\n", SystemCoreClock / 1000000);
 #if 1
 
-    if (SystemCoreClock >= 192000000UL)
+    if (CLK_GetSCLKFreq() >= 180000000UL)
     {
-        u32DivStart = 2;
+        u32DivStart = 8;
     }
-    else if (SystemCoreClock == 12000000UL)
+    else if (CLK_GetSCLKFreq() == 12000000UL)
     {
         u32DivStart = 0;
     }
@@ -480,16 +480,18 @@ void SPIMx_SysReset(uint32_t u32SPIMModule)
             SYS->SPIMRST |= SYS_SPIMRST_SPIM0RST_Msk;
             SYS->SPIMRST &= ~SYS_SPIMRST_SPIM0RST_Msk;
 
-            SYS->OTFCRST |= SYS_OTFCRST_OTFC0RST_Msk;
-            SYS->OTFCRST &= ~SYS_OTFCRST_OTFC0RST_Msk;
+            //SYS->OTFCRST |= SYS_OTFCRST_OTFC0RST_Msk;
+            //SYS->OTFCRST &= ~SYS_OTFCRST_OTFC0RST_Msk;
+            SYS_ResetModule(SYS_OTFC0RST);
             break;
 
         case C_SPIM1:
             SYS->SPIMRST |= SYS_SPIMRST_SPIM1RST_Msk;
             SYS->SPIMRST &= ~SYS_SPIMRST_SPIM1RST_Msk;
 
-            SYS->OTFCRST |= SYS_OTFCRST_OTFC1RST_Msk;
-            SYS->OTFCRST &= ~SYS_OTFCRST_OTFC1RST_Msk;
+            //SYS->OTFCRST |= SYS_OTFCRST_OTFC1RST_Msk;
+            //SYS->OTFCRST &= ~SYS_OTFCRST_OTFC1RST_Msk;
+            SYS_ResetModule(SYS_OTFC0RST);
             break;
     }
 

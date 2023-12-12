@@ -86,7 +86,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
     /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_160MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
@@ -166,6 +166,7 @@ int main()
     /* Init UART0 for printf */
     DebugPort_Init();
 
+#if 0
     //SPIM0 PSC, PSC_n
     SET_GPIO_PG8();
     GPIO_SetMode(PG, BIT8, GPIO_MODE_OUTPUT);
@@ -192,6 +193,7 @@ int main()
     GPIO_SetMode(PB, BIT7, GPIO_MODE_OUTPUT);
     GPIO_SetPullCtl(PB, BIT7, GPIO_PUSEL_DISABLE);
     PH10 = 0;
+#endif //
 
     SPIM_NVIC_Disable(C_SPIM0);
     SPIM_NVIC_Disable(C_SPIM1);

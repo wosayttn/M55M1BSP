@@ -313,7 +313,7 @@ void KS_ReadKeyFromKeyStoreOTP(int i32KeyIdx, uint32_t *pu32DestBuf)
 
     if (i32RetCode < 0)
     {
-        if (i32KeyIdx != KS_KDF_ROOT_OTP_KEY)
+        if (i32KeyIdx != KS_KDF_ROOT_OTPKEY)
         {
             printf("[Error]\n");
             printf("  Read OTP key fail!\n");
@@ -375,7 +375,7 @@ int32_t KS_SetAESToKeyStoreOTP(int i32KeyIdx, uint32_t *pu32AESKey)
 
     if (i32RetCode < 0)
     {
-        if (i32KeyIdx != KS_KDF_ROOT_OTP_KEY)
+        if (i32KeyIdx != KS_KDF_ROOT_OTPKEY)
         {
             printf("[Error]\n");
             printf("  Read OTP key fail!\n");
@@ -383,7 +383,7 @@ int32_t KS_SetAESToKeyStoreOTP(int i32KeyIdx, uint32_t *pu32AESKey)
         }
     }
 
-    if (i32KeyIdx == KS_KDF_ROOT_OTP_KEY)
+    if (i32KeyIdx == KS_KDF_ROOT_OTPKEY)
     {
         if ((KS->STS & KS_STS_EIF_Msk) == 0)
         {

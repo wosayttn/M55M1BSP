@@ -261,7 +261,7 @@ typedef enum
 #define SCUR_4BYTE              (0x04U) /* 4-byte u32Address mode */
 
 /* SPIM Wait State Timeout Counter. */
-#define SPIM_TIMEOUT            SystemCoreClock /*!< SPIM time-out counter (1 second time-out) */
+#define SPIM_TIMEOUT            0xFFFF //SystemCoreClock /*!< SPIM time-out counter (1 second time-out) */
 
 /** @endcond HIDDEN_SYMBOLS */
 
@@ -1480,7 +1480,7 @@ __STATIC_INLINE uint32_t SPIM_GetDMMAddress(SPIM_T *spim);
  */
 __STATIC_INLINE void SPIM_ENABLE_CIPHER(SPIM_T *spim)
 {
-    spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_CIPHOFF_Msk)) /*| SPIM_CTL0_BALEN_Msk*/;
+    spim->CTL0 &= ~(SPIM_CTL0_CIPHOFF_Msk | SPIM_CTL0_BALEN_Msk);
 
     SPIM_SET_DMM_DESELTIM(spim, 0x12);
 }
@@ -1494,7 +1494,7 @@ __STATIC_INLINE void SPIM_ENABLE_CIPHER(SPIM_T *spim)
  */
 __STATIC_INLINE void SPIM_DISABLE_CIPHER(SPIM_T *spim)
 {
-    spim->CTL0 |= /*(spim->CTL0 & ~(SPIM_CTL0_BALEN_Msk)) |*/ (SPIM_CTL0_CIPHOFF_Msk);
+    spim->CTL0 |= (SPIM_CTL0_BALEN_Msk | SPIM_CTL0_CIPHOFF_Msk);
 
     SPIM_SET_DMM_DESELTIM(spim, 0x08);
 }
@@ -1519,7 +1519,6 @@ __STATIC_INLINE void SPIM_DISABLE_CACHE(SPIM_T *spim)
     }
 }
 
-#if (SPIM_REG_CACHE == 1) // TESTCHIP_ONLY not support
 /**
  * @brief   Enable cache.
  *
@@ -1529,6 +1528,7 @@ __STATIC_INLINE void SPIM_DISABLE_CACHE(SPIM_T *spim)
  */
 __STATIC_INLINE void SPIM_ENABLE_CACHE(SPIM_T *spim)
 {
+#if (SPIM_REG_CACHE == 1) // TESTCHIP_ONLY not support
     (spim->CTL1 &= ~(SPIM_CTL1_CACHEOFF_Msk));
 
     /* Cipher Disabled Set Deselect Time 0x04 */
@@ -1536,8 +1536,9 @@ __STATIC_INLINE void SPIM_ENABLE_CACHE(SPIM_T *spim)
     {
         SPIM_SET_DMM_DESELTIM(spim, 0x4);
     }
-}
+
 #endif
+}
 
 /**
   * @brief      Get Direct Map Address.
@@ -1578,6 +1579,7 @@ typedef struct
     uint32_t u32DataPhase;      /*!< Data phase mode */
     uint32_t u32ByteOrder;      /*!< Data Byte Order */
     uint32_t u32DataDTR;        /*!< Data use DTR mode */
+    //uint32_t u32RDQS;           /*!< Receive data from SPI Flash when read DQS*/
 
     uint32_t u32DcNum;          /*!< Dummy `cycle count */
 
@@ -1589,7 +1591,6 @@ typedef struct
     uint32_t u32RdModeDTR;      /*!< Read mode use DTR mode */
 
 } SPIM_PHASE_T;  /*!< Structure holds SPIM IO phase info */
-
 
 /** @addtogroup SPIM HYPER_EXPORTED_CONSTANTS HYPER Exported Constants
   @{

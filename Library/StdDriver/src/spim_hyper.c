@@ -42,41 +42,48 @@
 int32_t SPIM_HYPER_SetDLLDelayNum(SPIM_T *spim, uint32_t u32DelayNum)
 {
     volatile int i32Timeout = SPIM_HYPER_TIMEOUT;
-    uint32_t u32SPIMDiv = 0;
+    uint32_t u32Div = 0;
+
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    /* Enable SPIM0/1 Module Clock */
+    CLK_EnableModuleClock(SPIM0_MODULE);
+    CLK_EnableModuleClock(SPIM1_MODULE);
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     /* SPIM starts to send DLL reference clock to DLL circuit
        that the frequency is the same as the SPIM output bus clock. */
     SPIM_HYPER_ENABLE_DLLOLDO(SPIM0, SPIM_HYPER_OP_ENABLE);
-    SPIM_HYPER_ENABLE_DLLOLDO(SPIM1, SPIM_HYPER_OP_ENABLE); //TESTCHIP_ONLY not support
+    SPIM_HYPER_ENABLE_DLLOLDO(SPIM1, SPIM_HYPER_OP_ENABLE);
 
     /* User asserts this control register to 0x1,
        the DLL circuit begins searching for lock with DLL reference clock. */
     SPIM_HYPER_ENABLE_DLLOVRST(SPIM0, SPIM_HYPER_OP_ENABLE);
-    SPIM_HYPER_ENABLE_DLLOVRST(SPIM1, SPIM_HYPER_OP_ENABLE); //TESTCHIP_ONLY not support
+    SPIM_HYPER_ENABLE_DLLOVRST(SPIM1, SPIM_HYPER_OP_ENABLE);
 
-    u32SPIMDiv = SPIM_HYPER_GET_CLKDIV(spim);
+    u32Div = SPIM_HYPER_GET_CLKDIV(spim);
 
-    switch (u32SPIMDiv)
+    if (u32Div == 0)
     {
-        case 0:
-            u32SPIMDiv = 0;
-            break;
-
-        case 1:
-        case 2:
-            u32SPIMDiv = 1;
-            break;
-
-        case 3:
-            u32SPIMDiv = 2;
-            break;
-
-        default:
-            u32SPIMDiv = 3;
-            break;
+        u32Div = 0;
+    }
+    else if (u32Div == 1)
+    {
+        u32Div = 1;
+    }
+    else if (u32Div == 2)
+    {
+        u32Div = 2;
+    }
+    else
+    {
+        u32Div = 3;
     }
 
-    SPIM_HYPER_SET_DLLDIV(spim, u32SPIMDiv);
+    SPIM_HYPER_SET_DLLDIV(spim, u32Div);
 
     i32Timeout = SPIM_HYPER_TIMEOUT;
 
@@ -102,11 +109,25 @@ int32_t SPIM_HYPER_SetDLLDelayNum(SPIM_T *spim, uint32_t u32DelayNum)
         }
     }
 
+    SPIM_HYPER_SET_AUTO_TRIM_DLL(spim, SPIM_HYPER_OP_ENABLE);
+
     i32Timeout = SPIM_HYPER_TIMEOUT;
 
     /* Polling the DLL status register DLLREADY to 0x1,
        and the value 0x1 indicates that output of DLL circuit is ready. */
     while (SPIM_HYPER_GET_DLLREADY(spim) != SPIM_HYPER_OP_ENABLE)
+    {
+        if (--i32Timeout <= 0)
+        {
+            return SPIM_HYPER_ERR_TIMEOUT;
+        }
+    }
+
+    i32Timeout = SPIM_HYPER_TIMEOUT;
+
+    /* Polling the DLL status register DLLREADY to 0x1,
+       and the value 0x1 indicates that output of DLL circuit is ready. */
+    while (SPIM_HYPER_GET_DLLATRDY(spim) != SPIM_HYPER_OP_ENABLE)
     {
         if (--i32Timeout <= 0)
         {
@@ -252,10 +273,10 @@ int32_t SPIM_HYPER_ExitHSAndDPD(SPIM_T *spim)
   * @brief      Read hyper chip register space
   * @param      spim
   * @param[in]  u32Addr  Address of hyper chip register space
-  *                 - \ref HYPER_RAM_ID_REG0       : 0x0000_0000 = Identification Register 0
-  *                 - \ref HYPER_RAM_ID_REG1       : 0x0000_0002 = Identification Register 1
-  *                 - \ref HYPER_RAM_CONFIG_REG0   : 0x0000_1000 = Configuration Register 0
-  *                 - \ref HYPER_RAM_CONFIG_REG1   : 0x0000_1002 = Configuration Register 1
+  *                 - \ref HYPERRAM_ID_REG0       : 0x0000_0000 = Identification Register 0
+  *                 - \ref HYPERRAM_ID_REG1       : 0x0000_0002 = Identification Register 1
+  *                 - \ref HYPERRAM_CONFIG_REG0   : 0x0000_1000 = Configuration Register 0
+  *                 - \ref HYPERRAM_CONFIG_REG1   : 0x0000_1002 = Configuration Register 1
   * @return     SPIM_HYPER_OK      SPIM operation OK.
   *             SPIM_HYPER_ERR_FAIL    SPIM operation Fail.
   *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
@@ -377,7 +398,7 @@ int32_t SPIM_HYPER_Write1Byte(SPIM_T *spim, uint32_t u32Addr, uint8_t u8Data)
     SPIM_HYPER_CLEAR_WDATA(spim);
 
     spim->HYPER_ADR = u32Addr;
-    spim->HYPER_WDATA = u8Data;
+    spim->HYPER_WDATA = (uint8_t)(u8Data & 0xFF);
 
     spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_1_BYTE;
 
@@ -403,7 +424,7 @@ int32_t SPIM_HYPER_Write2Byte(SPIM_T *spim, uint32_t u32Addr, uint16_t u16Data)
     SPIM_HYPER_CLEAR_WDATA(spim);
 
     spim->HYPER_ADR = u32Addr;
-    spim->HYPER_WDATA = u16Data;
+    spim->HYPER_WDATA = (uint16_t)(u16Data & 0xFFFF);
 
     spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_2_BYTE;
 
@@ -429,7 +450,7 @@ int32_t SPIM_HYPER_Write3Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data)
     SPIM_HYPER_CLEAR_WDATA(spim);
 
     spim->HYPER_ADR = u32Addr;
-    spim->HYPER_WDATA = u32Data;
+    spim->HYPER_WDATA = (u32Data & 0xFFFFFF);
 
     spim->HYPER_CMD = SPIM_HYPER_CMD_WRITE_3_BYTE;
 
