@@ -442,6 +442,13 @@ __NO_RETURN void Reset_Handler_Main(void)
             SYS->REGLCTL = 0x88UL;
         } while (SYS->REGLCTL == 0UL);
 
+#ifdef TESTCHIP_ONLY
+        if (!(SYS->RSTSTS & SYS_RSTSTS_PORF_Msk))
+        {
+            SYS_ResetChip();
+        }
+#endif
+
         // Switch SRAM0 to normal power mode
         if (PMC->SYSRB0PC != 0)
         {
@@ -485,7 +492,7 @@ __NO_RETURN void Reset_Handler_Main(void)
     /* PDEPU ON, Clock OFF */
     PWRMODCTL->CPDLPSTATE |= 0x1 << PWRMODCTL_CPDLPSTATE_ELPSTATE_Pos;
 #endif
-	
+
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
     __TZ_set_STACKSEAL_S((uint32_t *)(&__STACK_SEAL));
 #endif
