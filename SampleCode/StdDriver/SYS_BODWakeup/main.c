@@ -31,7 +31,7 @@ void PowerDownFunction(void)
     PMC_ENABLE_INT();
 
     /* Select power-down mode and power level */
-    PMC_SetPowerDownMode(PMC_SPD1, PMC_PLCTL_PLSEL_PL1);
+    PMC_SetPowerDownMode(PMC_SPD0, PMC_PLCTL_PLSEL_PL1);
 
     /* Enter to Power-down mode */
     PMC_PowerDown();
