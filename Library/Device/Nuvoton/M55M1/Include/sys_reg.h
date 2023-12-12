@@ -3918,6 +3918,12 @@ typedef struct
 #define SYS_LPUARTRST_LPUART0RST_Pos     (0)                                               /*!< SYS_T::LPUARTRST: LPUART0RST Position  */
 #define SYS_LPUARTRST_LPUART0RST_Msk     (0x1ul << SYS_LPUARTRST_LPUART0RST_Pos)           /*!< SYS_T::LPUARTRST: LPUART0RST Mask      */
 
+#define SYS_OTFCRST_OTFC0RST_Pos         (0)                                               /*!< SYS_T::OTFCRST: OTFC0RST Position      */
+#define SYS_OTFCRST_OTFC0RST_Msk         (0x1ul << SYS_OTFCRST_OTFC0RST_Pos)               /*!< SYS_T::OTFCRST: OTFC0RST Mask          */
+
+#define SYS_OTFCRST_OTFC1RST_Pos         (1)                                               /*!< SYS_T::OTFCRST: OTFC1RST Position      */
+#define SYS_OTFCRST_OTFC1RST_Msk         (0x1ul << SYS_OTFCRST_OTFC1RST_Pos)               /*!< SYS_T::OTFCRST: OTFC1RST Mask          */
+
 #define SYS_OTGRST_OTG0RST_Pos           (0)                                               /*!< SYS_T::OTGRST: OTG0RST Position        */
 #define SYS_OTGRST_OTG0RST_Msk           (0x1ul << SYS_OTGRST_OTG0RST_Pos)                 /*!< SYS_T::OTGRST: OTG0RST Mask            */
 
