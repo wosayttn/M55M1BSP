@@ -305,5 +305,7 @@ int32_t main(void)
     /* Disable WDT interrupt function */
     WDT_DisableInt(WDT0);
 
+    printf("Test Done.\n");
+    
     while (1);
 }
