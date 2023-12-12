@@ -51,21 +51,24 @@ int32_t pi(void)
     int32_t i, i32Err;
     int32_t a = 10000, b = 0, c = PI_NUM, d = 0, e = 0, g = 0;
 
-    for(; b - c;)
+    for (; b - c;)
         g_ai32f[b++] = a / 5;
 
     i = 0;
-    for(; (void)(d = 0), g = c * 2; c -= 14, g_ai32piResult[i++] = e + d / a, e = d % a)
+
+    for (; (void)(d = 0), g = c * 2; c -= 14, g_ai32piResult[i++] = e + d / a, e = d % a)
     {
-        if(i == 19)
+        if (i == 19)
             break;
 
-        for(b = c; (void)(d += g_ai32f[b] * a), (void)(g_ai32f[b] = d % --g), (void)(d /= g--), --b; d *= b);
+        for (b = c; (void)(d += g_ai32f[b] * a), (void)(g_ai32f[b] = d % --g), (void)(d /= g--), --b; d *= b);
     }
+
     i32Err = 0;
-    for(i = 0; i < 19; i++)
+
+    for (i = 0; i < 19; i++)
     {
-        if(g_au32piTbl[i] != (uint32_t)g_ai32piResult[i])
+        if (g_au32piTbl[i] != (uint32_t)g_ai32piResult[i])
             i32Err = -1;
     }
 
@@ -76,7 +79,7 @@ void Delay(uint32_t x)
 {
     uint32_t i;
 
-    for(i = 0; i < x; i++)
+    for (i = 0; i < x; i++)
     {
         __NOP();
         __NOP();
@@ -101,20 +104,20 @@ void SYS_PLL_Test(void)
 
     printf("\n-------------------------[ Test PLL ]-----------------------------\n");
 
-    for(u32Idx = 0; u32Idx < sizeof(g_au32PllSetting) / sizeof(g_au32PllSetting[0]) ; u32Idx++)
+    for (u32Idx = 0; u32Idx < sizeof(g_au32PllSetting) / sizeof(g_au32PllSetting[0]) ; u32Idx++)
     {
         /* Select SCLK clock source from PLL */
         CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, g_au32PllSetting[u32Idx]);
 
-        printf("  Change system clock to %d Hz ...................... ", SystemCoreClock);
+        printf("Change system clock to %d Hz ...", SystemCoreClock);
 
-        /* Output selected clock to CKO, CKO Clock = SCLK / 2^(1 + 1) */
-        CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_SYSCLK, 1, CLK_CLKOCTL_DIV1EN_DIV_FREQSEL);
+        /* Output selected clock to CKO, CKO Clock = SCLK / 2^(2 + 1) */
+        CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_SYSCLK, 3, CLK_CLKOCTL_DIV1EN_DIV_FREQSEL);
 
         /* The delay loop is used to check if the CPU speed is increasing */
         Delay(0x40000);
 
-        if(pi())
+        if (pi())
         {
             printf("[FAIL]\n");
         }
@@ -122,6 +125,10 @@ void SYS_PLL_Test(void)
         {
             printf("[OK]\n");
         }
+
+        printf("Press any key to next frequency\n");
+
+        getchar();
 
         /* Disable CLKO clock */
         CLK_DisableCKO();
@@ -200,10 +207,10 @@ int32_t main(void)
 
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+---------------------------------------+\n");
-    printf("|       System Driver Sample Code       |\n");
+    printf("|     PLL Clock Output Sample Code      |\n");
     printf("+---------------------------------------+\n");
 
-    if(M32(FLAG_ADDR) == SIGNATURE)
+    if (M32(FLAG_ADDR) == SIGNATURE)
     {
         printf("  CPU Reset success!\n");
         M32(FLAG_ADDR) = 0;
@@ -225,11 +232,11 @@ int32_t main(void)
     /* Clear reset source */
     SYS_ClearResetSrc(u32data);
 
-    /* Unlock protected registers for HCLK clock source settings */
+    /* Unlock protected registers for SCLK clock source settings */
     SYS_UnlockReg();
 
     /* Check if the write-protected registers are unlocked before HCLK clock source setting and CPU Reset */
-    if(SYS_IsRegLocked() == 0)
+    if (SYS_IsRegLocked() == 0)
     {
         printf("Protected Address is Unlocked\n");
     }
@@ -244,9 +251,10 @@ int32_t main(void)
     /* Wait for message send out */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     UART_WAIT_TX_EMPTY(DEBUG_PORT)
-        if(--u32TimeOutCnt == 0) break;
 
-    /* Select HCLK clock source as HIRC and HCLK source divider as 1 */
+    if (--u32TimeOutCnt == 0) break;
+
+    /* Select SCLK clock source as HIRC */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
 
     /* Set PLL to Power down mode and HW will also clear PLLSTB bit in CLK_STATUS register */

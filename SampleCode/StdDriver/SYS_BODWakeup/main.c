@@ -19,6 +19,8 @@ void PowerDownFunction(void)
 {
     uint32_t u32TimeOutCnt;
 
+    printf("Entering power-down mode...\n");
+
     /* Check if all the debug messages are finished */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     UART_WAIT_TX_EMPTY(DEBUG_PORT)
@@ -29,11 +31,10 @@ void PowerDownFunction(void)
     PMC_ENABLE_INT();
 
     /* Select power-down mode and power level */
-    PMC_SetPowerDownMode(PMC_SPD1,PMC_PLCTL_PLSEL_PL0);
+    PMC_SetPowerDownMode(PMC_SPD1, PMC_PLCTL_PLSEL_PL1);
 
     /* Enter to Power-down mode */
     PMC_PowerDown();
-
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -100,7 +101,6 @@ void SYS_Init(void)
 
     /* Lock protected registers */
     SYS_LockReg();
-
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -137,6 +137,8 @@ int32_t main(void)
 
     printf("System enter to Power-down mode.\n");
     printf("System wake-up if VDD voltage is lower than 3.0V.\n\n");
+    printf("Press any key to start test\n");
+    getchar();
 
     /* Enter to Power-down mode */
     PowerDownFunction();

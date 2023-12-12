@@ -10,8 +10,6 @@
 #include "NuMicro.h"
 
 
-
-
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -62,7 +60,6 @@ NVT_ITCM void IRC_IRQHandler(void)
     }
 }
 
-
 void SYS_Init(void)
 {
     /* Unlock protected registers */
@@ -75,6 +72,7 @@ void SYS_Init(void)
     /* Set PF multi-function pins for X32_OUT(PF.4) and X32_IN(PF.5) */
     SET_X32_OUT_PF4();
     SET_X32_IN_PF5();
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -103,21 +101,8 @@ void SYS_Init(void)
     /* Waiting for external low speed clock ready */
     CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock and set all bus clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Enable UART module clock */
     SetDebugUartCLK();
@@ -150,8 +135,16 @@ int32_t main(void)
     /* Enable Interrupt */
     NVIC_EnableIRQ(IRC_IRQn);
 
+    printf("Press any key to start HIRC trim\n");
+
+    getchar();
+
     /* Trim HIRC to 12MHz */
     TrimHIRC();
+
+    printf("Press any key to start HIRC48M trim\n");
+
+    getchar();
 
     /* Trim HIRC48M to 48MHz */
     TrimHIRC48M();
@@ -162,7 +155,7 @@ int32_t main(void)
     /* Disable HIRC48M auto Trim */
     SYS->TCTL48M = SYS->TCTL48M & ~SYS_TCTL48M_FREQSEL_Msk;
 
-    printf("Disable IRC Trim\n");
+    printf("Test done, disable IRC trim.\n");
 
     while (1);
 }
@@ -170,6 +163,9 @@ int32_t main(void)
 void TrimHIRC(void)
 {
     uint32_t u32TimeOutCnt;
+
+    /* Unlock protected registers */
+    SYS_UnlockReg();
 
     /* Enable IRC Trim, set HIRC clock and enable interrupt */
     SYS->TIEN12M |= (SYS_TIEN12M_CLKEIEN_Msk | SYS_TIEN12M_TFAILIEN_Msk);
@@ -184,23 +180,29 @@ void TrimHIRC(void)
     {
         if (--u32TimeOutCnt == 0)
         {
-            printf("HIRC Trim failed\n");
+            printf("HIRC Trim failed!\n");
             return;
         }
     }
 
-    printf("HIRC Frequency Lock\n");
+    printf("HIRC Frequency Lock!\n");
 
     /* Clear Trim Lock */
     SYS->TISTS12M = SYS_TISTS12M_FREQLOCK_Msk;
 
     /* Enable CLKO and output frequency = HIRC */
-    CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_HIRC, 1, CLK_CLKOCTL_DIV1EN_DIV_FREQSEL);
+    CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_HIRC, 1, CLK_CLKOCTL_DIV1EN_DIV_1);
+
+    /* Lock protected registers */
+    SYS_LockReg();
 }
 
 void TrimHIRC48M(void)
 {
     uint32_t u32TimeOutCnt;
+
+    /* Unlock protected registers */
+    SYS_UnlockReg();
 
     /* Enable IRC Trim, set HIRC48M clock and enable interrupt */
     SYS->TIEN48M |= (SYS_TIEN48M_CLKEIEN_Msk | SYS_TIEN48M_TFAILIEN_Msk);
@@ -215,16 +217,19 @@ void TrimHIRC48M(void)
     {
         if (--u32TimeOutCnt == 0)
         {
-            printf("HIRC48M Trim failed\n");
+            printf("HIRC48M Trim failed!\n");
             return;
         }
     }
 
-    printf("HIRC48M Frequency Lock\n");
+    printf("HIRC48M Frequency Lock!\n");
 
     /* Clear Trim Lock */
     SYS->TISTS48M = SYS_TISTS48M_FREQLOCK_Msk;
 
     /* Enable CLKO and output frequency = HIRC48M */
-    CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_HIRC48M, 1, CLK_CLKOCTL_DIV1EN_DIV_FREQSEL);
+    CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_HIRC48M, 1, CLK_CLKOCTL_DIV1EN_DIV_1);
+
+    /* Lock protected registers */
+    SYS_LockReg();
 }
