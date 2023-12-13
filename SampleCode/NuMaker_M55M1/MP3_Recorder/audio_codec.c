@@ -15,26 +15,26 @@
 /* Functions                                                                 */
 /*---------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------------------*/
-/*  Write 9-bit data to 7-bit address register of NAU8822 with I2C2                                        */
+/*  Write 9-bit data to 7-bit address register of NAU8822 with I2C                                         */
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_WriteNAU8822(uint8_t u8Addr, uint16_t u16Data)
 {
-    I2C_START(I2C2);
-    I2C_WAIT_READY(I2C2);
+    I2C_START(I2C_PORT);
+    I2C_WAIT_READY(I2C_PORT);
 
-    I2C_SET_DATA(I2C2, 0x1A << 1);
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C_PORT, 0x1A << 1);
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
-    I2C_SET_DATA(I2C2, (uint8_t)((u8Addr << 1) | (u16Data >> 8)));
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C_PORT, (uint8_t)((u8Addr << 1) | (u16Data >> 8)));
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
-    I2C_SET_DATA(I2C2, (uint8_t)(u16Data & 0x00FF));
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C_PORT, (uint8_t)(u16Data & 0x00FF));
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
-    I2C_STOP(I2C2);
+    I2C_STOP(I2C_PORT);
 }
 
 /* Config play sampling rate */

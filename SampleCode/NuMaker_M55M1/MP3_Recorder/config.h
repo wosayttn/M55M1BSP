@@ -12,6 +12,9 @@
 /*---------------------------------------------------------------------------*/
 /* Define                                                                    */
 /*---------------------------------------------------------------------------*/
+#define I2C_PORT                I2C3
+#define SPIM_PORT               SPIM1
+
 /* Defined when online recording; undefined when offline recording. */
 #define REC_IN_RT
 

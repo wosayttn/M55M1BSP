@@ -338,7 +338,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>DEBUG_PORT=UART0 __PLDM_EMU__</Define>
+              <Define>__PLDM_EMU__</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\Library\CMSIS\Core\Include;..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\Library\StdDriver\inc;..\..\common\inc;..\..\sdh;..\PinConfig</IncludePath>
             </VariousControls>
@@ -371,7 +371,7 @@
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>.\M55M1.scatter</ScatterFile>
+            <ScatterFile>..\..\..\Library\Device\Nuvoton\M55M1\Source\ARM\M55M1.scatter</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>

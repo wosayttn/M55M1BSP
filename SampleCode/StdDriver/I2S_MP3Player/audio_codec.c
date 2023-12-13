@@ -24,26 +24,26 @@
 #if NAU8822
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  Write 9-bit data to 7-bit address register of NAU8822 with I2C2                                        */
+/*  Write 9-bit data to 7-bit address register of NAU8822 with I2C                                         */
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_WriteNAU8822(uint8_t u8Addr, uint16_t u16Data)
 {
-    I2C_START(I2C2);
-    I2C_WAIT_READY(I2C2);
+    I2C_START(I2C_PORT);
+    I2C_WAIT_READY(I2C_PORT);
 
-    I2C_SET_DATA(I2C2, 0x1A << 1);
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C_PORT, 0x1A << 1);
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
-    I2C_SET_DATA(I2C2, (uint8_t)((u8Addr << 1) | (u16Data >> 8)));
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C_PORT, (uint8_t)((u8Addr << 1) | (u16Data >> 8)));
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
-    I2C_SET_DATA(I2C2, (uint8_t)(u16Data & 0x00FF));
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C_PORT, (uint8_t)(u16Data & 0x00FF));
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
-    I2C_STOP(I2C2);
+    I2C_STOP(I2C_PORT);
 }
 
 /* Config play sampling rate */
@@ -123,36 +123,36 @@ uint8_t I2C_WriteMultiByteforNAU88L25(uint8_t u8ChipAddr, uint16_t u16SubAddr, c
     (void)u32Len;
 
     /* Send START */
-    I2C_START(I2C2);
-    I2C_WAIT_READY(I2C2);
+    I2C_START(I2C_PORT);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send device address */
-    I2C_SET_DATA(I2C2, u8ChipAddr);
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C_PORT, u8ChipAddr);
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send register number and MSB of data */
-    I2C_SET_DATA(I2C2, (uint8_t)(u16SubAddr >> 8));
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C_PORT, (uint8_t)(u16SubAddr >> 8));
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send register number and MSB of data */
-    I2C_SET_DATA(I2C2, (uint8_t)(u16SubAddr & 0x00FF));
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C_PORT, (uint8_t)(u16SubAddr & 0x00FF));
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send data */
-    I2C_SET_DATA(I2C2, p[0]);
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C_PORT, p[0]);
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send data */
-    I2C_SET_DATA(I2C2, p[1]);
-    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C2);
+    I2C_SET_DATA(I2C_PORT, p[1]);
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send STOP */
-    I2C_STOP(I2C2);
+    I2C_STOP(I2C_PORT);
 
     return  0;
 }
