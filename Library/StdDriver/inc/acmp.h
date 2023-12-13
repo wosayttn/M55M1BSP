@@ -437,7 +437,7 @@ extern int32_t g_ACMP_i32ErrCode;
 /* Function prototype declaration */
 void ACMP_Open(ACMP_T *acmp, uint32_t u32ChNum, uint32_t u32NegSrc, uint32_t u32HysSel);
 void ACMP_Close(ACMP_T *acmp, uint32_t u32ChNum);
-
+void ACMP_Calibration(ACMP_T *acmp);
 /** @} end of group ACMP_EXPORTED_FUNCTIONS */
 
 /** @} end of group ACMP_Driver */

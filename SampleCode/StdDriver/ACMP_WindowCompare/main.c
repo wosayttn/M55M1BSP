@@ -48,7 +48,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
     /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
     /* Set PCLK1 divide 4 */
     CLK_SET_PCLK1DIV(4);
@@ -59,6 +59,8 @@ void SYS_Init(void)
 
     /* Enable ACMP01 peripheral clock */
     CLK_EnableModuleClock(ACMP01_MODULE);
+    /* Enable GPA peripheral clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
     /* Enable GPB peripheral clock */
     CLK_EnableModuleClock(GPIOB_MODULE);
     /* Enable GPC peripheral clock */
@@ -67,11 +69,13 @@ void SYS_Init(void)
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
-    /* Set PB.2 and PB.4 to input mode */
-    PB->MODE &= ~(GPIO_MODE_MODE2_Msk | GPIO_MODE_MODE4_Msk);
+    /* Set PB.4 to input mode */
+    GPIO_SetMode(PB,BIT4,GPIO_MODE_INPUT);
+      /* Set PA.11 to input mode */
+    GPIO_SetMode(PA,BIT11,GPIO_MODE_INPUT); 
 
-    /* Set PB2 multi-function pin for ACMP0 positive input pin */
-    SET_ACMP0_P1_PB2();
+    /* Set PA multi-function pin for ACMP0 positive input pin */
+    SET_ACMP0_P0_PA11();
 
     /* Set PB4 multi-function pin for ACMP1 positive input pin */
     SET_ACMP1_P1_PB4();
@@ -80,7 +84,7 @@ void SYS_Init(void)
     SetDebugUartMFP();
 
     /* Disable digital input path of analog pin ACMP0_P0 and ACMP1_P1 to prevent leakage */
-    GPIO_DISABLE_DIGITAL_PATH(PB, (1ul << 2));
+    GPIO_DISABLE_DIGITAL_PATH(PA, (1ul << 11));
     GPIO_DISABLE_DIGITAL_PATH(PB, (1ul << 4));
 }
 
@@ -111,16 +115,16 @@ int32_t main(void)
     printf("Press any key to continue ...\n");
     getchar();
 
-    /* Select VDDA as CRV source */
-    ACMP_SELECT_CRV1_SRC(ACMP01, ACMP_VREF_CRV1SSEL_VDDA);
-    /* Select CRV1 level: VDDA * 40 / 63 */
-    ACMP_CRV1_SEL(ACMP01, 40);
     /* Configure ACMP0. Enable ACMP0 and select VBG as the source of ACMP negative input. */
     ACMP_Open(ACMP01, 0, ACMP_CTL_NEGSEL_VBG, ACMP_CTL_HYSTERESIS_DISABLE);
     /* Configure ACMP1. Enable ACMP1 and select CRV as the source of ACMP negative input. */
     ACMP_Open(ACMP01, 1, ACMP_CTL_NEGSEL_CRV, ACMP_CTL_HYSTERESIS_DISABLE);
-    /* Select P1 as ACMP0 positive input channel */
-    ACMP_SELECT_P(ACMP01, 0, ACMP_CTL_POSSEL_P1);
+    /* Select VDDA as CRV source */
+    ACMP_SELECT_CRV1_SRC(ACMP01, ACMP_VREF_CRV1SSEL_VDDA);
+    /* Select CRV1 level: VDDA * 40 / 63 */
+    ACMP_CRV1_SEL(ACMP01, 50);
+    /* Select P0 as ACMP0 positive input channel */
+    ACMP_SELECT_P(ACMP01, 0, ACMP_CTL_POSSEL_P0);
     /* Select P1 as ACMP1 positive input channel */
     ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P1);
     /* Enable window compare mode */

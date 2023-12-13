@@ -121,7 +121,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
     /* Set PCLK1 divide 4 */
     CLK_SET_PCLK1DIV(4);
@@ -178,6 +178,8 @@ int32_t main(void)
     /* Init Debug UART for printf */
     InitDebugUart();
 
+    /* Select SCLK to HIRC before APLL setting*/
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
     /* Lock protected registers */
     SYS_LockReg();
 
@@ -187,12 +189,13 @@ int32_t main(void)
     printf("Press any key to enter power down mode ...\n");
     getchar();
 
+    /* Configure ACMP1. Enable ACMP1 and select CRV as the source of ACMP negative input. */
+    ACMP_Open(ACMP01, 1, ACMP_CTL_NEGSEL_CRV, ACMP_CTL_HYSTERESIS_DISABLE);
+
     /* Select VDDA as CRV source */
     ACMP_SELECT_CRV1_SRC(ACMP01, ACMP_VREF_CRV1SSEL_VDDA);
     /* Select CRV1 level: VDDA * 31 / 63 */
     ACMP_CRV1_SEL(ACMP01, 31);
-    /* Configure ACMP1. Enable ACMP1 and select CRV as the source of ACMP negative input. */
-    ACMP_Open(ACMP01, 1, ACMP_CTL_NEGSEL_CRV, ACMP_CTL_HYSTERESIS_DISABLE);
 
     /* Select P1 as ACMP positive input channel */
     ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P1);
