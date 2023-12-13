@@ -7,15 +7,28 @@
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
-#include "sw_i2c.h"
+#include "sensor.h"
+#include "i2c_gpio.h"
+
+int32_t InitHM1055_VGA_YUV422(uint32_t u32Param);
+
+S_SENSOR_INFO g_sSensorHM1055 =
+{
+    .m_strName        = "HM1055",
+    .m_u32Polarity    = (CCAP_PAR_VSP_LOW | CCAP_PAR_HSP_LOW | CCAP_PAR_PCLKP_HIGH),
+    .m_u32InputFormat = (CCAP_PAR_INFMT_YUV422 | CCAP_PAR_INDATORD_YUYV),
+    .m_u16Width       = 640,
+    .m_u16Height      = 480,
+    .pfnInitSensor    = InitHM1055_VGA_YUV422
+};
 
 struct NT_RegValue
 {
-    uint16_t    u16RegAddr;            /* Sensor Register Address */
-    uint8_t        u8Value;            /* Sensor Register Data */
+    uint16_t    u16RegAddr;         /* Sensor Register Address */
+    uint8_t     u8Value;            /* Sensor Register Data */
 };
 
-static struct NT_RegValue s_shm1055_setting_YUV_VGA[] =
+static struct NT_RegValue s_sHM1055_VGA_YUV422[] =
 {
     {0x0022, 0x00}, {0x0023, 0xCF}, {0x0020, 0x08}, {0x0027, 0x30},
     {0x0004, 0x10}, {0x0006, 0x03}, {0x0012, 0x0F},
@@ -168,38 +181,40 @@ static struct NT_RegValue s_shm1055_setting_YUV_VGA[] =
 static void Delay(uint32_t nCount)
 {
     volatile uint32_t i;
+
     for (; nCount != 0; nCount--)
         for (i = 0; i < 100; i++);
 }
 
-//int InitHM1055_VGA_YUV422(void)
-int InitNT99141_VGA_YUV422(void)
+int InitHM1055_VGA_YUV422(uint32_t u32Param)
 {
     uint32_t i;
     uint8_t u8DeviceID = 0x48;
     uint8_t u8ID[2] = {0};
-    SYS->GPH_MFP0 &= ~SYS_GPH_MFP0_PH2MFP_Msk;        /* PH2 for GPIO to act as SCL */
-    SYS->GPH_MFP0 &= ~SYS_GPH_MFP0_PH3MFP_Msk;        /* PH3 for GPIO to act as SDA */
+    SET_GPIO_PH2();        /* PH2 for GPIO to act as SCL */
+    SET_GPIO_PH3();        /* PH3 for GPIO to act as SDA */
 
-    GPIO_SetMode(PG, 1 << 11, GPIO_MODE_OUTPUT);        /* Set #RST pin to high */
+    SET_GPIO_PG11();
+    SET_GPIO_PD12();
+    GPIO_SetMode(PG, BIT11, GPIO_MODE_OUTPUT);        /* Set #RST pin to high */
     PG11 = 1;
-    GPIO_SetMode(PD, 1 << 12, GPIO_MODE_OUTPUT);        /* Set #PD pin to low */
+    GPIO_SetMode(PD, BIT12, GPIO_MODE_OUTPUT);        /* Set #PD pin to low */
     PD12 = 0;
 
-    /* switch I2C pin function, to do... */
-    SW_I2C_Open(GPIOH_BASE, BIT2, GPIOH_BASE, BIT3, Delay);
-    //printf("NT_RegNum=%3d\n",sizeof(s_shm1055_setting_YUV_VGA)/sizeof(struct NT_RegValue));
-    for (i = 0; i < sizeof(s_shm1055_setting_YUV_VGA) / sizeof(struct NT_RegValue); i++)
+    SWI2C_Open(eDRVGPIO_GPIOH, eDRVGPIO_PIN2, eDRVGPIO_GPIOH, eDRVGPIO_PIN3, Delay);
+
+    for (i = 0; i < sizeof(s_sHM1055_VGA_YUV422) / sizeof(struct NT_RegValue); i++)
     {
-        SW_I2C_Write_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID, s_shm1055_setting_YUV_VGA[i].u16RegAddr, s_shm1055_setting_YUV_VGA[i].u8Value);
+        SWI2C_Write_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID, s_sHM1055_VGA_YUV422[i].u16RegAddr, s_sHM1055_VGA_YUV422[i].u8Value);
     }
-    u8ID[0] = SW_I2C_Read_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID, 0x0001); /* Chip_Version_H 0x09 */
-    u8ID[1] = SW_I2C_Read_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID, 0x0002); /* Chip_Version_L 0x55 */
-    printf("Sensor Chip_Version_H = 0x%02x(0x14) Chip_Version_L = 0x%02x(0x10)\n", u8ID[0], u8ID[1]);
+
+    u8ID[0] = SWI2C_Read_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID, 0x0001); /* Chip_Version_H 0x09 */
+    u8ID[1] = SWI2C_Read_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID, 0x0002); /* Chip_Version_L 0x55 */
+    printf("Sensor Chip_Version_H = 0x%02x (0x09) Chip_Version_L = 0x%02x (0x55)\n", u8ID[0], u8ID[1]);
 
     if (u8ID[0] != 0x09 || u8ID[1] != 0x55)
     {
-        printf("NT99141 init failed!!\n");
+        printf("HM1055 init failed!!\n");
         return 0;
     }
 

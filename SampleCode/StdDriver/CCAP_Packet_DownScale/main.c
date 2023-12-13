@@ -2,7 +2,7 @@
  * @file     main.c
  * @version  V1.00
  * @brief    Use packet format (all the luma and chroma data interleaved) to
- *           store captured image from NT99141 sensor to SRAM.
+ *           store captured image from sensor to SRAM.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -81,7 +81,11 @@ int32_t PacketFormatDownScale(S_SENSOR_INFO *psSensorInfo)
     uint32_t u32Frame;
 
     /* Initialize sensor and set output format as YUV422 */
-    if (psSensorInfo->pfnInitSensor(0) == FALSE) return -1;
+    if (psSensorInfo->pfnInitSensor(0) == FALSE)
+    {
+        printf("Init sensor failed !\n");
+        return -1;
+    }
 
     /* Enable External CCAP Interrupt */
     NVIC_EnableIRQ(CCAP_IRQn);
@@ -140,6 +144,8 @@ void SYS_Init(void)
     SetDebugUartCLK();
 
     /* Enable module clock */
+    CLK_EnableModuleClock(GPIOD_MODULE);
+    CLK_EnableModuleClock(GPIOG_MODULE);
     CLK_EnableModuleClock(GPIOH_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -183,8 +189,8 @@ int32_t main(void)
     CCAP_SetFreq(12000000, 12000000);
 
     /* Using Packet format to Image down scale */
-    if (PacketFormatDownScale(&g_sSensorNT99141) != 0)
-        printf("Init sensor failed !\n");
+    if (PacketFormatDownScale(&g_sSensorHM1055) != 0)
+        printf("Capture frame failed !\n");
 
     while (1);
 }
