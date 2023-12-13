@@ -179,8 +179,7 @@ void MP3Player(void)
 #endif
 
     /* Open I2S0 interface and set to slave mode, stereo channel, I2S format */
-    I2S_Open(I2S0, I2S_MODE_SLAVE, 16000, I2S_DATABIT_16, I2S_DISABLE_MONO, I2S_FORMAT_I2S);
-    NVIC_EnableIRQ(I2S0_IRQn);
+    I2S_Open(I2S0, I2S_MODE_SLAVE, 48000, I2S_DATABIT_16, I2S_DISABLE_MONO, I2S_FORMAT_I2S);
 
     /* Set JK-EN low to enable phone jack on NuMaker board. */
     SET_GPIO_PB12();

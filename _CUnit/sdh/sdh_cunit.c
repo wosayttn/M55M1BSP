@@ -36,8 +36,8 @@
 #define D_msg(...)
 
 //#define TEST_UNKNOWN 1
-//#define TEST_SDHC  1
-#define TEST_SD    1
+#define TEST_SDHC  1
+//#define TEST_SD    1
 //#define TEST_eMMC  1
 //#define TEST_MMC   1
 
