@@ -33,7 +33,7 @@ int32_t g_ACMP_i32ErrCode = 0;  /*!< ACMP global error code */
   *                  - \ref ACMP_CTL_NEGSEL_CRV
   *                  - \ref ACMP_CTL_NEGSEL_VBG
   *                  - \ref ACMP_CTL_NEGSEL_DAC0
-  *                  - \ref ACMP_CTL_NEGSEL_DAC1
+  *                  - \ref ACMP_CTL_NEGSEL_DAC1    (DAC1 is not support in TESTCHIP_ONLY)
   * @param[in]  u32HysSel The hysteresis function option. Including:
   *                  - \ref ACMP_CTL_HYSTERESIS_40MV
   *                  - \ref ACMP_CTL_HYSTERESIS_20MV
@@ -75,7 +75,7 @@ void ACMP_Close(ACMP_T *acmp, uint32_t u32ChNum)
   * @details    The comparators have its own trim bits which can be used to calibrate the offset voltage..
   * @note       The ACMP calibration function must be completed before configuring ACMP..
   */
- void ACMP_Calibration(ACMP_T *acmp)
+void ACMP_Calibration(ACMP_T *acmp)
 {
     g_ACMP_i32ErrCode = 0;
 
@@ -100,7 +100,7 @@ void ACMP_Close(ACMP_T *acmp, uint32_t u32ChNum)
         /* Lock protected registers */
         SYS_LockReg();
 
-    
+
         /* Calibration ACMP0/ACMP2*/
         acmp->CTL[0] |= ACMP_CTL_ACMPEN_Msk;
 
@@ -138,7 +138,7 @@ void ACMP_Close(ACMP_T *acmp, uint32_t u32ChNum)
                 break;
             }
         }
-        
+
     }
 
 }

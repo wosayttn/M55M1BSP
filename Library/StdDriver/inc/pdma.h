@@ -141,7 +141,9 @@ extern "C"
 #define PDMA_EADC0_RX          64UL /*!<DMA Connect to EADC0_RX \hideinitializer */
 #define PDMA_EADC1_RX          65UL /*!<DMA Connect to EADC1_RX \hideinitializer */
 #define PDMA_DAC0_TX           66UL /*!<DMA Connect to DAC0_TX \hideinitializer */
+#if ! defined (TESTCHIP_ONLY)
 #define PDMA_DAC1_TX           67UL /*!<DMA Connect to DAC1_TX \hideinitializer */
+#endif
 #define PDMA_EPWM0_CH0_TX      68UL /*!<DMA Connect to EPWM0_CH0_TX \hideinitializer */
 #define PDMA_EPWM0_CH1_TX      69UL /*!<DMA Connect to EPWM0_CH1_TX \hideinitializer */
 #define PDMA_EPWM0_CH2_TX      70UL /*!<DMA Connect to EPWM0_CH2_TX \hideinitializer */
@@ -364,18 +366,18 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define PDMA functions prototype                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-void PDMA_Open(PDMA_T * pdma,uint32_t u32Mask);
-void PDMA_Close(PDMA_T * pdma);
-void PDMA_SetTransferCnt(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32Width, uint32_t u32TransCount);
-void PDMA_SetTransferAddr(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32SrcAddr, uint32_t u32SrcCtrl, uint32_t u32DstAddr, uint32_t u32DstCtrl);
-void PDMA_SetTransferMode(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32Peripheral, uint32_t u32ScatterEn, uint32_t u32DescAddr);
-void PDMA_SetBurstType(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32BurstType, uint32_t u32BurstSize);
-void PDMA_EnableTimeout(PDMA_T * pdma,uint32_t u32Mask);
-void PDMA_DisableTimeout(PDMA_T * pdma,uint32_t u32Mask);
-void PDMA_SetTimeOut(PDMA_T * pdma, uint32_t u32Ch, uint32_t u32OnOff, uint32_t u32TimeOutCnt);
-void PDMA_Trigger(PDMA_T * pdma,uint32_t u32Ch);
-void PDMA_EnableInt(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32Mask);
-void PDMA_DisableInt(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32Mask);
+void PDMA_Open(PDMA_T *pdma, uint32_t u32Mask);
+void PDMA_Close(PDMA_T *pdma);
+void PDMA_SetTransferCnt(PDMA_T *pdma, uint32_t u32Ch, uint32_t u32Width, uint32_t u32TransCount);
+void PDMA_SetTransferAddr(PDMA_T *pdma, uint32_t u32Ch, uint32_t u32SrcAddr, uint32_t u32SrcCtrl, uint32_t u32DstAddr, uint32_t u32DstCtrl);
+void PDMA_SetTransferMode(PDMA_T *pdma, uint32_t u32Ch, uint32_t u32Peripheral, uint32_t u32ScatterEn, uint32_t u32DescAddr);
+void PDMA_SetBurstType(PDMA_T *pdma, uint32_t u32Ch, uint32_t u32BurstType, uint32_t u32BurstSize);
+void PDMA_EnableTimeout(PDMA_T *pdma, uint32_t u32Mask);
+void PDMA_DisableTimeout(PDMA_T *pdma, uint32_t u32Mask);
+void PDMA_SetTimeOut(PDMA_T *pdma, uint32_t u32Ch, uint32_t u32OnOff, uint32_t u32TimeOutCnt);
+void PDMA_Trigger(PDMA_T *pdma, uint32_t u32Ch);
+void PDMA_EnableInt(PDMA_T *pdma, uint32_t u32Ch, uint32_t u32Mask);
+void PDMA_DisableInt(PDMA_T *pdma, uint32_t u32Ch, uint32_t u32Mask);
 
 /** @} end of group PDMA_EXPORTED_FUNCTIONS */
 /** @} end of group PDMA_Driver */

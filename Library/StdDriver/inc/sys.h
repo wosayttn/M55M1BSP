@@ -198,7 +198,9 @@ extern "C"
 #define SYS_GPA_MFP0_PA1MFP_BPWM0_CH1         (0xCUL<<SYS_GPA_MFP0_PA1MFP_Pos)    /*!< GPA_MFP0 PA1 setting for BPWM0_CH1          */
 #define SYS_GPA_MFP0_PA1MFP_EPWM0_CH4         (0xDUL<<SYS_GPA_MFP0_PA1MFP_Pos)    /*!< GPA_MFP0 PA1 setting for EPWM0_CH4          */
 #define SYS_GPA_MFP0_PA1MFP_EQEI3_A           (0xEUL<<SYS_GPA_MFP0_PA1MFP_Pos)    /*!< GPA_MFP0 PA1 setting for EQEI3_A            */
+#if ! defined(TESTCHIP_ONLY)
 #define SYS_GPA_MFP0_PA1MFP_DAC1_ST           (0xFUL<<SYS_GPA_MFP0_PA1MFP_Pos)    /*!< GPA_MFP0 PA1 setting for DAC1_ST            */
+#endif
 #define SYS_GPA_MFP0_PA1MFP_DMIC1_CLK         (0x10UL<<SYS_GPA_MFP0_PA1MFP_Pos)   /*!< GPA_MFP0 PA1 setting for DMIC1_CLK          */
 #define SYS_GPA_MFP0_PA1MFP_PSIO0_CH6         (0x11UL<<SYS_GPA_MFP0_PA1MFP_Pos)   /*!< GPA_MFP0 PA1 setting for PSIO0_CH6          */
 #define SYS_GPA_MFP0_PA1MFP_UTCPD0_DISCHG     (0x12UL<<SYS_GPA_MFP0_PA1MFP_Pos)   /*!< GPA_MFP0 PA1 setting for UTCPD0_DISCHG      */
@@ -407,7 +409,9 @@ extern "C"
 #define SYS_GPA_MFP2_PA11MFP_EPWM0_BRAKE1     (0xBUL<<SYS_GPA_MFP2_PA11MFP_Pos)   /*!< GPA_MFP2 PA11 setting for EPWM0_BRAKE1      */
 #define SYS_GPA_MFP2_PA11MFP_I2S1_BCLK        (0xCUL<<SYS_GPA_MFP2_PA11MFP_Pos)   /*!< GPA_MFP2 PA11 setting for I2S1_BCLK         */
 #define SYS_GPA_MFP2_PA11MFP_TM0_EXT          (0xDUL<<SYS_GPA_MFP2_PA11MFP_Pos)   /*!< GPA_MFP2 PA11 setting for TM0_EXT           */
+#if ! defined(TESTCHIP_ONLY)
 #define SYS_GPA_MFP2_PA11MFP_DAC1_ST          (0xEUL<<SYS_GPA_MFP2_PA11MFP_Pos)   /*!< GPA_MFP2 PA11 setting for DAC1_ST           */
+#endif
 #define SYS_GPA_MFP2_PA11MFP_KPI_ROW4         (0x12UL<<SYS_GPA_MFP2_PA11MFP_Pos)  /*!< GPA_MFP2 PA11 setting for KPI_ROW4          */
 #define SYS_GPA_MFP2_PA11MFP_LPTM0_EXT        (0x17UL<<SYS_GPA_MFP2_PA11MFP_Pos)  /*!< GPA_MFP2 PA11 setting for LPTM0_EXT         */
 
@@ -778,7 +782,9 @@ extern "C"
 #define SYS_GPB_MFP3_PB13MFP_GPIO             (0x0UL<<SYS_GPB_MFP3_PB13MFP_Pos)   /*!< GPB_MFP3 PB13 setting for GPIO              */
 #define SYS_GPB_MFP3_PB13MFP_ACMP0_P3         (0x1UL<<SYS_GPB_MFP3_PB13MFP_Pos)   /*!< GPB_MFP3 PB13 setting for ACMP0_P3          */
 #define SYS_GPB_MFP3_PB13MFP_ACMP1_P3         (0x1UL<<SYS_GPB_MFP3_PB13MFP_Pos)   /*!< GPB_MFP3 PB13 setting for ACMP1_P3          */
+#if ! defined(TESTCHIP_ONLY)
 #define SYS_GPB_MFP3_PB13MFP_DAC1_OUT         (0x1UL<<SYS_GPB_MFP3_PB13MFP_Pos)   /*!< GPB_MFP3 PB13 setting for DAC1_OUT          */
+#endif
 #define SYS_GPB_MFP3_PB13MFP_EADC0_CH13       (0x1UL<<SYS_GPB_MFP3_PB13MFP_Pos)   /*!< GPB_MFP3 PB13 setting for EADC0_CH13        */
 #define SYS_GPB_MFP3_PB13MFP_EADC1_CH13       (0x1UL<<SYS_GPB_MFP3_PB13MFP_Pos)   /*!< GPB_MFP3 PB13 setting for EADC1_CH13        */
 #define SYS_GPB_MFP3_PB13MFP_LPADC0_CH13      (0x1UL<<SYS_GPB_MFP3_PB13MFP_Pos)   /*!< GPB_MFP3 PB13 setting for LPADC0_CH13       */
@@ -2403,8 +2409,10 @@ extern "C"
 #if !defined(ALIGN_AF_PINS)
 #define SET_DAC1_OUT_PB13()         SYS->GPB_MFP3 = ((SYS->GPB_MFP3 & (~SYS_GPB_MFP3_PB13MFP_Msk)) | SYS_GPB_MFP3_PB13MFP_DAC1_OUT)                    /*!< Set PB13 function to DAC1_OUT           */
 #endif
+#if ! defined(TESTCHIP_ONLY)
 #define SET_DAC1_ST_PA1()           SYS->GPA_MFP0 = ((SYS->GPA_MFP0 & (~SYS_GPA_MFP0_PA1MFP_Msk)) | SYS_GPA_MFP0_PA1MFP_DAC1_ST)                       /*!< Set PA1 function to DAC1_ST             */
 #define SET_DAC1_ST_PA11()          SYS->GPA_MFP2 = ((SYS->GPA_MFP2 & (~SYS_GPA_MFP2_PA11MFP_Msk)) | SYS_GPA_MFP2_PA11MFP_DAC1_ST)                     /*!< Set PA11 function to DAC1_ST            */
+#endif
 #define SET_DMIC0_CLKLP_PA3()       SYS->GPA_MFP0 = ((SYS->GPA_MFP0 & (~SYS_GPA_MFP0_PA3MFP_Msk)) | SYS_GPA_MFP0_PA3MFP_DMIC0_CLKLP)                   /*!< Set PA3 function to DMIC0_CLKLP         */
 #define SET_DMIC0_CLKLP_PB6()       SYS->GPB_MFP1 = ((SYS->GPB_MFP1 & (~SYS_GPB_MFP1_PB6MFP_Msk)) | SYS_GPB_MFP1_PB6MFP_DMIC0_CLKLP)                   /*!< Set PB6 function to DMIC0_CLKLP         */
 #define SET_DMIC0_CLKLP_PE10()      SYS->GPE_MFP2 = ((SYS->GPE_MFP2 & (~SYS_GPE_MFP2_PE10MFP_Msk)) | SYS_GPE_MFP2_PE10MFP_DMIC0_CLKLP)                 /*!< Set PE10 function to DMIC0_CLKLP        */
