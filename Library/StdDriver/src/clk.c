@@ -869,10 +869,15 @@ void CLK_EnableXtalRC(uint32_t u32ClkMask)
     /* TESTCHIP_ONLY start */
     if (u32ClkMask == CLK_SRCCTL_LXTEN_Msk)
     {
+        CLK_EnableModuleClock(RTC0_MODULE);
+
         RTC->LXTCTL = (RTC->LXTCTL & ~RTC_LXTCTL_GAIN_Msk) | (0x7 << RTC_LXTCTL_GAIN_Pos);
+
+        CLK_DisableModuleClock(RTC0_MODULE);
     }
 
     /* TESTCHIP_ONLY end */
+
     CLK->SRCCTL |= u32ClkMask;
 }
 
