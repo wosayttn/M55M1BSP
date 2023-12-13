@@ -60,12 +60,12 @@ void SYS_Init(void)
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
-    /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
-    SystemCoreClockUpdate();
-
+    /* Workaround(TESTCHIP_ONLY)  */
+    /* If the ADC clock is divided, the conversion result value will deviate, so only the PCLK0 clock can be divided. */
+    /* PCLK0 clock divider 15 */
+    CLK_SET_PCLK0DIV(15);
     /* Enable EADC peripheral clock */
-    CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(15));
+    CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(1));
 
     /* Enable EADC module clock */
     CLK_EnableModuleClock(EADC0_MODULE);
@@ -73,21 +73,22 @@ void SYS_Init(void)
     /* Enable GPIOB module clock */
     CLK_EnableModuleClock(GPIOB_MODULE);
 
+    /* Update System Core Clock */
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
+    SystemCoreClockUpdate();
+
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
-    /* Set PB.0 - PB.3 to input mode */
-    GPIO_SetMode(PB, BIT0 | BIT1 | BIT2 | BIT3, GPIO_MODE_INPUT);
-    /* Configure the PB.0 - PB.3 ADC analog input pins. */
-    SET_EADC0_CH0_PB0();
+    /* Set PB.1 to input mode */
+    GPIO_SetMode(PB, BIT1 , GPIO_MODE_INPUT);
+    /* Configure the PB.1 ADC analog input pins. */
     SET_EADC0_CH1_PB1();
-    SET_EADC0_CH2_PB2();
-    SET_EADC0_CH3_PB3();
-    /* Disable the PB.0 - PB.3 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0 | BIT1 | BIT2 | BIT3);
+    /* Disable the PB.1 digital input path to avoid the leakage current. */
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT1);
 
 }
 
@@ -102,15 +103,15 @@ void EADC_FunctionTest()
     /* Set input mode as single-end and enable the A/D converter */
     EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
 
-    /* Configure the sample module 0 for analog input channel 2 and ADINT0 trigger source */
-    EADC_ConfigSampleModule(EADC0, 0, EADC_ADINT0_TRIGGER, 2);
+    /* Configure the sample module 0 for analog input channel 1 and ADINT0 trigger source */
+    EADC_ConfigSampleModule(EADC0, 0, EADC_ADINT0_TRIGGER, 1);
 
     /* Enable EADC comparator 0. Compare condition: conversion result < 0x800; match Count=5 */
-    printf("   Set the compare condition of comparator 0 : channel 2 is less than 0x800; match count is 5.\n");
+    printf("   Set the compare condition of comparator 0 : channel 1 is less than 0x800; match count is 5.\n");
     EADC_ENABLE_CMP0(EADC0, 0, EADC_CMP_CMPCOND_LESS_THAN, 0x800, 5);
 
     /* Enable EADC comparator 1. Compare condition: conversion result >= 0x800; match Count=5 */
-    printf("   Set the compare condition of comparator 1 : channel 2 is greater than or equal to 0x800; match count is 5.\n");
+    printf("   Set the compare condition of comparator 1 : channel 1 is greater than or equal to 0x800; match count is 5.\n");
     EADC_ENABLE_CMP1(EADC0, 0, EADC_CMP_CMPCOND_GREATER_OR_EQUAL, 0x800, 5);
 
     /* Enable sample module 0 for ADINT0 */
@@ -156,11 +157,11 @@ void EADC_FunctionTest()
 
     if (g_u32AdcCmp0IntFlag == 1)
     {
-        printf("Comparator 0 interrupt occurs.\nThe conversion result of channel 2 is less than 0x800\n");
+        printf("Comparator 0 interrupt occurs.\nThe conversion result of channel 1 is less than 0x800\n");
     }
     else
     {
-        printf("Comparator 1 interrupt occurs.\nThe conversion result of channel 2 is greater than or equal to 0x800\n");
+        printf("Comparator 1 interrupt occurs.\nThe conversion result of channel 1 is greater than or equal to 0x800\n");
     }
 }
 
