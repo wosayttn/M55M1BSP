@@ -316,7 +316,7 @@ int32_t main(void)
         /* Check if all the debug messages are finished */
         UART_WAIT_TX_EMPTY(DEBUG_PORT);
         /* Switch SCLK to HIRC when power down */
-        CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_HIRC, 0);
+        CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_HIRC, CLK_APLLCTL_APLLSRC_HIRC, 0);
 
         /* Enter to Power-down mode */
         PMC_PowerDown();
