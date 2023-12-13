@@ -438,8 +438,10 @@ int32_t main(void)
         (SET_PDMSEL == PMC_NPD0)
         ||
         (SET_PDMSEL == PMC_NPD1)
+#if 0   // TESTCHIP_ONLY not support    
         ||
         (SET_PDMSEL == PMC_NPD2)
+#endif
     )
     {
         /* Configure PC.0 as Quasi mode and enable interrupt by falling edge trigger */
@@ -485,22 +487,25 @@ int32_t main(void)
     /* Enter to Power-down mode */
     if (SET_PDMSEL == PMC_NPD0)            printf("Enter to NPD0 Power-Down ......\n");
     else if (SET_PDMSEL == PMC_NPD1)       printf("Enter to NPD1 Power-Down ......\n");
-    
+
 #if 0   // TESTCHIP_ONLY not support    
     else if (SET_PDMSEL == PMC_NPD2)       printf("Enter to NPD2 Power-Down ......\n");
     else if (SET_PDMSEL == PMC_NPD3)       printf("Enter to NPD3 Power-Down ......\n");
     else if (SET_PDMSEL == PMC_NPD4)       printf("Enter to NPD4 Power-Down ......\n");
+
 #endif
     else if (SET_PDMSEL == PMC_SPD0)       printf("Enter to SPD0 Power-Down ......\n");
 
 #if 0   // TESTCHIP_ONLY not support    
     else if (SET_PDMSEL == PMC_SPD1)       printf("Enter to SPD1 Power-Down ......\n");
+
 #endif
-    
+
     else if (SET_PDMSEL == PMC_DPD0)       printf("Enter to DPD0 Power-Down ......\n");
 
 #if 0   // TESTCHIP_ONLY not support
     else if (SET_PDMSEL == PMC_DPD1)       printf("Enter to DPD1 Power-Down ......\n");
+
 #endif
     printf("Press any key to start test\n");
 
