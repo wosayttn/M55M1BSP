@@ -65,6 +65,8 @@ void CCAP_IRQHandler(void)
     }
 
     CCAP->CTL = CCAP->CTL | CCAP_CTL_UPDATE;
+	__DSB();
+	__ISB();	
 }
 
 #define CLK_CCAPSEL_CCAP0SEL_HCLK2           (0x1UL << CLK_CCAPSEL_CCAP0SEL_Pos)         /*!< Select CCAP sensor clock source from HIRC \hideinitializer */

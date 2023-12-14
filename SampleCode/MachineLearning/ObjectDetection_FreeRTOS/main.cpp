@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.cpp
  * @version  V1.00
- * @brief    Object detection with FreeRTOS sample code
+ * @brief    Yolo fastest network sample. Demonstrate object detection.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -515,8 +515,8 @@ static void main_task(void *pvParameters)
 			{
 				info("Total inference rate: %llu\n", u64PerfFrames / EACH_PERF_SEC);
 #if defined (__USE_DISPLAY__)
-//				sprintf(szDisplayText,"Frame Rate %llu",u64PerfFrames / EACH_PERF_SEC);
-				sprintf(szDisplayText,"Time %llu",(uint64_t) pmu_get_systick_Count() / (uint64_t)SystemCoreClock);
+				sprintf(szDisplayText,"Frame Rate %llu",u64PerfFrames / EACH_PERF_SEC);
+//				sprintf(szDisplayText,"Time %llu",(uint64_t) pmu_get_systick_Count() / (uint64_t)SystemCoreClock);
 
 				sDispRect.u32TopLeftX = 0;
 				sDispRect.u32TopLeftY = frameBuffer.h + FONT_HTIGHT;

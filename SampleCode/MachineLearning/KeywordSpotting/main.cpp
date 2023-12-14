@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.cpp
  * @version  V1.00
- * @brief    Keyword spotting sample code
+ * @brief    DS-CNN network sample. Demonstrate keyword spotting
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

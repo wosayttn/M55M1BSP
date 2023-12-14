@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.cpp
  * @version  V1.00
- * @brief    main function
+ * @brief    MobileNetV2 network sample. Demonstrate image classification.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
