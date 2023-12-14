@@ -41,6 +41,10 @@ NVT_ITCM void RTC_IRQHandler(void)
 
         PA2 ^= 1;
     }
+    /* make sure that interrupt flag has been cleared. */
+    __DSB();
+    __ISB();
+
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */

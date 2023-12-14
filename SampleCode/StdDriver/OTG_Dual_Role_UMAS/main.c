@@ -65,6 +65,10 @@ NVT_ITCM void USBOTG_IRQHandler(void)
 
     /* Clear all interrupt flags */
     OTG->INTSTS = u32INTSTS;
+    /* make sure that interrupt flag has been cleared. */
+    __DSB();
+    __ISB();
+    
 }
 
 #define BUFF_SIZE       (2048)

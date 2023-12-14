@@ -56,6 +56,10 @@ NVT_ITCM void RTCTAMPER_IRQHandler(void)
         /* Write 1 to clear LXT Clock frequency monitor stop interrupt */
         RTC_CLEAR_CLKSTOP_INT_FLAG(RTC);
     }
+    
+    /* make sure that interrupt flag has been cleared. */
+    __DSB();
+    __ISB();    
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */

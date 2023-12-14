@@ -454,6 +454,10 @@ NVT_ITCM void USBOTG_IRQHandler(void)
                 otg_role_change = 3;
         }
     }
+    /* make sure that interrupt flag has been cleared. */
+    __DSB();
+    __ISB();
+    
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /*  MAIN function                                                                                          */

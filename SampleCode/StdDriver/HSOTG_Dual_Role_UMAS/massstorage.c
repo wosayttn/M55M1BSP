@@ -191,6 +191,10 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
         if (IrqSt & HSUSBD_CEPINTSTS_SETUPTKIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_SETUPTKIF_Msk);
+            /* make sure that interrupt flag has been cleared. */
+            __DSB();
+            __ISB();
+
             return;
         }
 
@@ -198,6 +202,10 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_SETUPPKIF_Msk);
             HSUSBD_ProcessSetupPacket();
+            /* make sure that interrupt flag has been cleared. */
+            __DSB();
+            __ISB();
+
             return;
         }
 
@@ -205,6 +213,10 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_OUTTKIF_Msk);
             HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+            /* make sure that interrupt flag has been cleared. */
+            __DSB();
+            __ISB();
+
             return;
         }
 
@@ -223,13 +235,20 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
                 HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_TXPKIF_Msk);
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_TXPKIEN_Msk | HSUSBD_CEPINTEN_STSDONEIEN_Msk);
             }
-
+            /* make sure that interrupt flag has been cleared. */
+            __DSB();
+            __ISB();
+            
             return;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_PINGIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_PINGIF_Msk);
+            /* make sure that interrupt flag has been cleared. */
+            __DSB();
+            __ISB();
+
             return;
         }
 
@@ -253,6 +272,10 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
             }
 
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_TXPKIF_Msk);
+            /* make sure that interrupt flag has been cleared. */
+            __DSB();
+            __ISB();
+
             return;
         }
 
@@ -261,24 +284,40 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_RXPKIF_Msk);
             HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
             HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_SETUPPKIEN_Msk | HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+            /* make sure that interrupt flag has been cleared. */
+            __DSB();
+            __ISB();
+
             return;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_NAKIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_NAKIF_Msk);
+            /* make sure that interrupt flag has been cleared. */
+            __DSB();
+            __ISB();
+
             return;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_STALLIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STALLIF_Msk);
+            /* make sure that interrupt flag has been cleared. */
+            __DSB();
+            __ISB();
+
             return;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_ERRIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_ERRIF_Msk);
+            /* make sure that interrupt flag has been cleared. */
+            __DSB();
+            __ISB();
+
             return;
         }
 
@@ -287,18 +326,30 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
             HSUSBD_UpdateDeviceState();
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
             HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_SETUPPKIEN_Msk);
+            /* make sure that interrupt flag has been cleared. */
+            __DSB();
+            __ISB();
+
             return;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_BUFFULLIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_BUFFULLIF_Msk);
+            /* make sure that interrupt flag has been cleared. */
+            __DSB();
+            __ISB();
+
             return;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_BUFEMPTYIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_BUFEMPTYIF_Msk);
+            /* make sure that interrupt flag has been cleared. */  
+            __DSB();
+            __ISB();
+            
             return;
         }
     }
@@ -379,6 +430,9 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
         IrqSt = HSUSBD->EP[EPL].EPINTSTS & HSUSBD->EP[EPL].EPINTEN;
         HSUSBD_CLR_EP_INT_FLAG(EPL, IrqSt);
     }
+    /* make sure that interrupt flag has been cleared. */
+    __DSB();
+    __ISB();
 }
 
 void MSC_InitForHighSpeed(void)

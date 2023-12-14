@@ -32,6 +32,9 @@ NVT_ITCM void EQEI0_IRQHandler(void)
         printf("Unit TImer0 INT!\n\n");
         g_au32TMRINTCount[0]++;
     }
+    /* make sure that interrupt flag has been cleared. */
+    __DSB();
+    __ISB();
 
 }
 /**
@@ -52,6 +55,8 @@ NVT_ITCM void EQEI1_IRQHandler(void)
         g_au32TMRINTCount[1]++;
     }
 
+    __DSB();
+    __ISB();    
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */

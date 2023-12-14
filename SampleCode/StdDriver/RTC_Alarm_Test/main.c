@@ -57,6 +57,10 @@ NVT_ITCM void RTC_IRQHandler(void)
         /* Clear RTC tick interrupt flag */
         RTC_CLEAR_TICK_INT_FLAG(RTC);
     }
+    /* make sure that interrupt flag has been cleared. */
+    __DSB();
+    __ISB();
+    
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */

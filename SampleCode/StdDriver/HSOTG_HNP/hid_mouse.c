@@ -114,6 +114,10 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
         if (IrqSt & HSUSBD_CEPINTSTS_SETUPTKIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_SETUPTKIF_Msk);
+
+            __DSB();
+            __ISB();
+            
             return;
         }
 
@@ -121,6 +125,10 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_SETUPPKIF_Msk);
             HSUSBD_ProcessSetupPacket();
+
+            __DSB();
+            __ISB();
+
             return;
         }
 
@@ -128,6 +136,10 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_OUTTKIF_Msk);
             HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+
+            __DSB();
+            __ISB();
+
             return;
         }
 
@@ -147,12 +159,19 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_TXPKIEN_Msk | HSUSBD_CEPINTEN_STSDONEIEN_Msk);
             }
 
+            __DSB();
+            __ISB();
+
             return;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_PINGIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_PINGIF_Msk);
+
+            __DSB();
+            __ISB();
+
             return;
         }
 
@@ -176,6 +195,10 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
             }
 
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_TXPKIF_Msk);
+
+            __DSB();
+            __ISB();
+
             return;
         }
 
@@ -184,24 +207,40 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_RXPKIF_Msk);
             HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
             HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_SETUPPKIEN_Msk | HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+
+            __DSB();
+            __ISB();
+
             return;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_NAKIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_NAKIF_Msk);
+
+            __DSB();
+            __ISB();
+
             return;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_STALLIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STALLIF_Msk);
+
+            __DSB();
+            __ISB();
+
             return;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_ERRIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_ERRIF_Msk);
+
+            __DSB();
+            __ISB();
+
             return;
         }
 
@@ -210,18 +249,30 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
             HSUSBD_UpdateDeviceState();
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
             HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_SETUPPKIEN_Msk);
+
+            __DSB();
+            __ISB();
+
             return;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_BUFFULLIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_BUFFULLIF_Msk);
+
+            __DSB();
+            __ISB();
+
             return;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_BUFEMPTYIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_BUFEMPTYIF_Msk);
+
+            __DSB();
+            __ISB();
+
             return;
         }
     }
@@ -302,6 +353,10 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
         IrqSt = HSUSBD->EP[EPL].EPINTSTS & HSUSBD->EP[EPL].EPINTEN;
         HSUSBD_CLR_EP_INT_FLAG(EPL, IrqSt);
     }
+
+    __DSB();
+    __ISB();
+
 }
 
 void EPA_Handler(void)  /* Interrupt IN handler */

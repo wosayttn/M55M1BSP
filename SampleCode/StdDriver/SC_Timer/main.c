@@ -31,6 +31,10 @@ NVT_ITCM void SC0_IRQHandler(void)
         SC_CLEAR_INTSTS(SC0, SC_INTSTS_TMR0IF_Msk);
         printf("%u sec\n", u32Sec++);
     }
+    /* make sure that interrupt flag has been cleared. */
+    __DSB();
+    __ISB();
+    
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */

@@ -62,6 +62,10 @@ NVT_ITCM void RTCTAMPER_IRQHandler(void)
         RTC_CLEAR_TAMPER_INT_FLAG(RTC, u32FlagStatus);
         s_u32IsTamper = TRUE;
     }
+    /* make sure that interrupt flag has been cleared. */
+    __DSB();
+    __ISB();
+    
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */

@@ -52,6 +52,10 @@ NVT_ITCM void WDT0_IRQHandler(void)
 
         g_u8IsWDTWakeupINT = 1;
     }
+    
+    /* make sure that interrupt flag has been cleared. */
+    __DSB();
+    __ISB();    
 }
 
 void SYS_Init(void)

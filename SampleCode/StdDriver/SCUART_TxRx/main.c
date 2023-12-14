@@ -35,6 +35,10 @@ NVT_ITCM void SC0_IRQHandler(void)
     // RDA is the only interrupt enabled in this sample, this status bit
     // automatically cleared after Rx FIFO empty. So no need to clear interrupt
     // status here.
+    /* make sure that interrupt flag has been cleared. */
+    __DSB();
+    __ISB();
+
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */

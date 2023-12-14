@@ -67,6 +67,10 @@ NVT_ITCM void RTCTAMPER_IRQHandler(void)
         s_u32SpareData = RTC_READ_SPARE_REGISTER(RTC, 0);
         printf(" SPARE_REGISTER[%d] = 0x%x.\n\n", 0, s_u32SpareData);
     }
+    
+    /* make sure that interrupt flag has been cleared. */
+    __DSB();
+    __ISB();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/

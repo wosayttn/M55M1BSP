@@ -35,6 +35,9 @@ NVT_ITCM void EQEI0_IRQHandler(void)
         printf("Overflow INT!\n\n");
         EQEI_CLR_INT_FLAG(EQEI0, EQEI_STATUS_OVUNF_Msk);
     }
+    /* make sure that interrupt flag has been cleared. */
+    __DSB();
+    __ISB();
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */
@@ -72,7 +75,7 @@ void SYS_Init(void)
     SET_GPIO_PC3();
     SET_GPIO_PC4();
     /* Set PA multi-function pins for EQEI0_A, EQEI0_B*/
-    SET_EQEI0_A_PA4();
+    SET_EQEI0_A_PD11();
     SET_EQEI0_B_PA3();
 }
 /*---------------------------------------------------------------------------------------------------------*/
@@ -96,8 +99,8 @@ int32_t main(void)
     printf("+--------------------------------------+\n");
     printf("|     EQEI Driver Sample Code          |\n");
     printf("+--------------------------------------+\n\n");
-    printf("  >> Please connect PC.3 and PA.4 << \n");
-    printf("  >> Please connect PC.4 and PA.3 << \n");
+    printf("  >> Please connect PC.3 and PD.11 << \n");
+    printf("  >> Please connect PC.4 and PA.3  << \n");
     printf("     Press any key to start test\n\n");
     u8op = getchar();
     printf("     start test......\n\n");

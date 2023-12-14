@@ -252,6 +252,10 @@ NVT_ITCM void USBD_IRQHandler(void)
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP11);
         }
     }
+    /* make sure that interrupt flag has been cleared. */
+    __DSB();
+    __ISB();
+
 }
 
 
