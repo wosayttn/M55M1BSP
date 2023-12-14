@@ -163,9 +163,14 @@ void SYS_Init(void)
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
+    /* Enable module clock */
+    CLK_EnableModuleClock(GPIOE_MODULE);
     CLK_EnableModuleClock(EMAC0_MODULE);
-
-    /* Set PB multi-function pins for Debug UART RXD and TXD */
+    SYS_ResetModule(SYS_EMAC0RST);
+    
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init I/O Multi-function                                                                                 */
+    /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
     SET_EMAC0_RMII_MDC_PE8();
@@ -178,7 +183,12 @@ void SYS_Init(void)
     SET_EMAC0_RMII_RXD1_PC6();
     SET_EMAC0_RMII_CRSDV_PA7();
     SET_EMAC0_RMII_RXERR_PA6();
-    SET_EMAC0_PPS_PB6();
+
+    GPIO_SetSlewCtl(PE, (BIT10 | BIT11 | BIT12), GPIO_SLEWCTL_FAST0);
+
+    /* PE.13 Set high */
+    GPIO_SetMode(PE, BIT13, GPIO_MODE_OUTPUT);
+    PE13 = 1;
 
     /* Lock protected registers */
     SYS_LockReg();

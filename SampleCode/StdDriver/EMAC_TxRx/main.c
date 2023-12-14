@@ -60,6 +60,14 @@ void SYS_Init(void)
     /* Enable UART module clock */
     SetDebugUartCLK();
 
+    /* Enable module clock */
+    CLK_EnableModuleClock(GPIOE_MODULE);
+    CLK_EnableModuleClock(EMAC0_MODULE);
+    SYS_ResetModule(SYS_EMAC0RST);
+    
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init I/O Multi-function                                                                                 */
+    /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
     SET_EMAC0_RMII_MDC_PE8();
@@ -73,15 +81,11 @@ void SYS_Init(void)
     SET_EMAC0_RMII_CRSDV_PA7();
     SET_EMAC0_RMII_RXERR_PA6();
 
-    CLK_EnableModuleClock(GPIOE_MODULE);
-    CLK_EnableModuleClock(EMAC0_MODULE);
-    SYS_ResetModule(SYS_EMAC0RST);
+    GPIO_SetSlewCtl(PE, (BIT10 | BIT11 | BIT12), GPIO_SLEWCTL_FAST0);
 
-    GPIO_SetSlewCtl(PE, (BIT10|BIT11|BIT12), GPIO_SLEWCTL_FAST0);
     /* PE.13 Set high */
     GPIO_SetMode(PE, BIT13, GPIO_MODE_OUTPUT);
-    PE13=1;
-
+    PE13 = 1;
 }
 
 
