@@ -192,6 +192,8 @@ extern "C" {
 void NPU_IRQHandler(void)
 {
     ethosu_irq_handler(&ethosu0_driver);
+	__DSB();
+	__ISB();
 }
 
 #ifdef __cplusplus
@@ -251,6 +253,8 @@ void SysTick_Handler(void)
 {
     /* Increment the cycle counter based on load value. */
     cpu_cycle_count += SysTick->LOAD + 1;
+	__DSB();
+	__ISB();
 }
 
 #ifdef __cplusplus
