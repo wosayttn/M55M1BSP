@@ -126,6 +126,10 @@ void LPI2C0_IRQHandler(void)
             s_LPI2C0HandlerFn(u32Status);
         }
     }
+
+    /* make sure that interrupt flag has been cleared. */
+    __DSB();
+    __ISB();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -191,16 +195,16 @@ void Test_API_LPI2C_Open_Close()
 
     /* API LPI2C_Open Test*/
     u32BusClock = 100000; //standard mode
-    CU_ASSERT_EQUAL(LPI2C_Open(i2c, u32BusClock), u32BusClock);
+    CU_ASSERT_EQUAL(LPI2C_Open(i2c, u32BusClock), LPI2C_GetBusClockFreq(i2c));
     CU_ASSERT((i2c->CTL0 & LPI2C_CTL0_LPI2CEN_Msk) == LPI2C_CTL0_LPI2CEN_Msk);
     u32BusClock = 200000;
-    CU_ASSERT_EQUAL(LPI2C_Open(i2c, u32BusClock), u32BusClock);
+    CU_ASSERT_EQUAL(LPI2C_Open(i2c, u32BusClock), LPI2C_GetBusClockFreq(i2c));
     CU_ASSERT((i2c->CTL0 & LPI2C_CTL0_LPI2CEN_Msk) == LPI2C_CTL0_LPI2CEN_Msk);
 //    u32BusClock = 400000;  //Fast mode, PCLK=12MHz cannot be Divisible for 400KHz case
 //    CU_ASSERT_EQUAL(LPI2C_Open(i2c, u32BusClock), u32BusClock);
 //    CU_ASSERT((i2c->CTL0 & LPI2C_CTL0_LPI2CEN_Msk) == LPI2C_CTL0_LPI2CEN_Msk);
     u32BusClock = 1000000; //Fast plus mode
-    CU_ASSERT_EQUAL(LPI2C_Open(i2c, u32BusClock), u32BusClock);
+    CU_ASSERT_EQUAL(LPI2C_Open(i2c, u32BusClock), LPI2C_GetBusClockFreq(i2c));
     CU_ASSERT((i2c->CTL0 & LPI2C_CTL0_LPI2CEN_Msk) == LPI2C_CTL0_LPI2CEN_Msk);
     /* API LPI2C_Close Test*/
     LPI2C_Close(i2c);
@@ -220,6 +224,7 @@ void Test_API_LPI2C_BusClockFreq()
     u32BusClock = 100000;
     LPI2C_Open(i2c, u32BusClock);
     CU_ASSERT_EQUAL(LPI2C_GetBusClockFreq(i2c), LPI2C_Open(i2c, u32BusClock));
+    u32BusClock = LPI2C_GetBusClockFreq(i2c);
     CU_ASSERT_EQUAL(LPI2C_SetBusClockFreq(i2c, u32BusClock), LPI2C_Open(i2c, u32BusClock));
     LPI2C_Close(i2c);
 }
@@ -498,14 +503,12 @@ void Test_API_LPI2C_ReadWriteRelatedTest(void)
     g_u32Idx = 0; //reset index for destination buffer I2C0 IRQHandler
     u32RceLen = 0;
     /*LPI2C0 as master, I2C0 as slave*/
-    LPI2C0->CTL0 |= LPI2C_CTL0_LPI2CEN_Msk;
-    LPI2C0->CLKDIV = 10;
+    LPI2C_Open(LPI2C0, 400000);
     //
-    I2C0->CTL0 |= I2C_CTL0_I2CEN_Msk;
+    I2C_Open(I2C0, 400000);
     /* Enable I2C0 interrupt */
     I2C_EnableInt(I2C0);
     NVIC_EnableIRQ(I2C0_IRQn);
-    I2C0->CLKDIV = 10;
 
     /*Set I2C0 slave address*/
     for (i = 0; i < 4; i++) {
