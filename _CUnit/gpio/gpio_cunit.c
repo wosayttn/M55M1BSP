@@ -12,7 +12,11 @@
 #include "CUnit.h"
 #include "Console.h"
 
+#if 0 // test all port @ Palladium
 #define GPIO_PORT_MAX           10UL /*!< Specify Maximum Ports for TC8263 */
+#else
+#define GPIO_PORT_MAX           1    /*!< Specify Maximum Ports for TC8263 */
+#endif
 
 #ifndef GPIO_PIN_DATA
 #define GPIO_PIN_DATA GPIO_PIN_DATA_S
@@ -75,25 +79,36 @@ GPIO_T *GpioPort[GPIO_PORT_MAX] = {
     Max. n=11 for port F.
     n=6~15 for port I.
 */
-
+/*
+    remove AF NC pin: PD1~4, PB13~15 from GPIO
+    PG.7/8 pin is replaced by DCDC
+    remove PC14
+*/
+#if (GPIO_PORT_MAX == 1)
 volatile uint32_t  *au32GpioPortPin[GPIO_PORT_MAX * GPIO_PIN_MAX] = {
     &PA0, &PA1, &PA2, &PA3, &PA4, &PA5, &PA6, &PA7, &PA8, &PA9, &PA10, &PA11, &PA12, &PA13, &PA14, &PA15,
-    &PB0, &PB1, &PB2, &PB3, &PB4, &PB5, &PB6, &PB7, &PB8, &PB9, &PB10, &PB11, &PB12, &PB13, &PB14, &PB15,
-    &PC0, &PC1, &PC2, &PC3, &PC4, &PC5, &PC6, &PC7, &PC8, &PC9, &PC10, &PC11, &PC12, &PC13, &PC14,     0,
-    &PD0, &PD1, &PD2, &PD3, &PD4, &PD5, &PD6, &PD7, &PD8, &PD9, &PD10, &PD11, &PD12, &PD13, &PD14,     0,
+};
+
+#else
+volatile uint32_t  *au32GpioPortPin[GPIO_PORT_MAX * GPIO_PIN_MAX] = {
+    &PA0, &PA1, &PA2, &PA3, &PA4, &PA5, &PA6, &PA7, &PA8, &PA9, &PA10, &PA11, &PA12, &PA13, &PA14, &PA15,
+    &PB0, &PB1, &PB2, &PB3, &PB4, &PB5, &PB6, &PB7, &PB8, &PB9, &PB10, &PB11, &PB12,     0,     0,     0,
+    &PC0, &PC1, &PC2, &PC3, &PC4, &PC5, &PC6, &PC7, &PC8, &PC9, &PC10, &PC11, &PC12, &PC13,     0,     0,
+    &PD0,    0,    0,    0,    0, &PD5, &PD6, &PD7, &PD8, &PD9, &PD10, &PD11, &PD12, &PD13, &PD14,     0,
     &PE0, &PE1, &PE2, &PE3, &PE4, &PE5, &PE6, &PE7, &PE8, &PE9, &PE10, &PE11, &PE12, &PE13, &PE14, &PE15,
     &PF0, &PF1, &PF2, &PF3, &PF4, &PF5, &PF6, &PF7, &PF8, &PF9, &PF10, &PF11,     0,     0,     0,     0,
-    &PG0, &PG1, &PG2, &PG3, &PG4, &PG5, &PG6, &PG7, &PG8, &PG9, &PG10, &PG11, &PG12, &PG13, &PG14, &PG15,
+    &PG0, &PG1, &PG2, &PG3, &PG4, &PG5, &PG6,    0,    0, &PG9, &PG10, &PG11, &PG12, &PG13, &PG14, &PG15,
     &PH0, &PH1, &PH2, &PH3, &PH4, &PH5, &PH6, &PH7, &PH8, &PH9, &PH10, &PH11, &PH12, &PH13, &PH14, &PH15,
-    0,    0,    0,    0,    0,    0,    &PI6, &PI7, &PI8, &PI9, &PI10, &PI11, &PI12, &PI13, &PI14, &PI15,
+    0,    0,    0,    0,    0,    0, &PI6, &PI7, &PI8, &PI9, &PI10, &PI11, &PI12, &PI13, &PI14, &PI15,
     &PJ0, &PJ1, &PJ2, &PJ3, &PJ4, &PJ5, &PJ6, &PJ7, &PJ8, &PJ9, &PJ10, &PJ11, &PJ12, &PJ13,     0,     0,
 };
+#endif
 
 uint32_t CheckPortPinReserved(uint32_t u32GpioPort, uint32_t u32GpioPin)
 {
-    // PB12, PB13 are reserved for UART0
-    if (u32GpioPort == 1) { // PORT B
-        if ((u32GpioPin == 12) || (u32GpioPin == 13)) {
+    // PH4, PH5 are reserved for UART6
+    if (u32GpioPort == 7) { // PORT H
+        if ((u32GpioPin == 4) || (u32GpioPin == 5)) {
             return 1;
         }
     } else if (u32GpioPort == 5) { // PORT F

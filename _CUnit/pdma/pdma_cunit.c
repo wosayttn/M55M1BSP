@@ -83,6 +83,11 @@ CU_SuiteInfo suites[] = {
     CU_SUITE_INFO_NULL
 };
 
+#ifndef PDMA_DAC1_TX
+// TESTCHIP_ONLY compiler option or comment for DAC1
+#define PDMA_DAC1_TX           67UL /*!<DMA Connect to DAC1_TX \hideinitializer */
+#endif
+
 
 void Func_PDMA_Open()
 {
