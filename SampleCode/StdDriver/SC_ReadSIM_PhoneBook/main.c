@@ -51,21 +51,12 @@ NVT_ITCM void SC0_IRQHandler(void)
 {
     // Please don't remove any of the function calls below
     if (SCLIB_CheckCDEvent(SC_INTF))
-    {
-        /* make sure that interrupt flag has been cleared. */
-        __DSB();
-        __ISB();
-
         return; // Card insert/remove event occurred, no need to check other event...
-    }
 
     SCLIB_CheckTimeOutEvent(SC_INTF);
     SCLIB_CheckTxRxEvent(SC_INTF);
     SCLIB_CheckErrorEvent(SC_INTF);
-    /* make sure that interrupt flag has been cleared. */
-    __DSB();
-    __ISB();
-    
+
     return;
 }
 

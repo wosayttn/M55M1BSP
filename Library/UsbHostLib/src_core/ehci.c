@@ -1214,9 +1214,6 @@ NVT_ITCM void EHCI_IRQHandler(void)
     {
         iaad_remove_qh();
     }
-    /* make sure that interrupt flag has been cleared. */
-    __DSB();
-    __ISB();    
 }
 
 static UDEV_T *ehci_find_device_by_port(int port)

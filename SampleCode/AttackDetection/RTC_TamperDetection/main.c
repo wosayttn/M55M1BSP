@@ -61,16 +61,14 @@ NVT_ITCM void RTCTAMPER_IRQHandler(void)
                (uint32_t)((u32TAMPTIME & RTC_TAMPTIME_SEC_Msk) >> RTC_TAMPTIME_SEC_Pos));
 
         RTC_CLEAR_TAMPER_INT_FLAG(RTC, u32FlagStatus);
+        /* make sure that interrupt flag has been cleared. */
+        u32FlagStatus = RTC_GET_TAMPER_INT_STATUS(RTC);
         s_i32IsTamper = TRUE;
 
         /* Check spare register data */
         s_u32SpareData = RTC_READ_SPARE_REGISTER(RTC, 0);
         printf(" SPARE_REGISTER[%d] = 0x%x.\n\n", 0, s_u32SpareData);
     }
-    
-    /* make sure that interrupt flag has been cleared. */
-    __DSB();
-    __ISB();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/

@@ -30,13 +30,7 @@ NVT_ITCM void SC0_IRQHandler(void)
 
     // Card insert/remove event occurred, no need to check other event...
     if (SCLIB_CheckCDEvent(SC_INTF))
-    {
-        /* make sure that interrupt flag has been cleared. */
-        __DSB();
-        __ISB();
-
         return;
-    }
 
     // Check if there's any timeout event occurs. If so, it usually indicates an error
     SCLIB_CheckTimeOutEvent(SC_INTF);
@@ -49,10 +43,6 @@ NVT_ITCM void SC0_IRQHandler(void)
         These errors will induce SCLIB to deactivation smartcard eventually.
     */
     SCLIB_CheckErrorEvent(SC_INTF);
-    
-    /* make sure that interrupt flag has been cleared. */
-    __DSB();
-    __ISB();
 
     return;
 }

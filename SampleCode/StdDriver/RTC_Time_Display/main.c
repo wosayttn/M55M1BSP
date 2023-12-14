@@ -32,6 +32,8 @@ void UART_Init(void);
  */
 NVT_ITCM void RTC_IRQHandler(void)
 {
+    uint32_t intflag;
+    
     if (RTC_GET_TICK_INT_FLAG(RTC) == 1)
     {
         /* Clear RTC tick interrupt flag */
@@ -42,9 +44,7 @@ NVT_ITCM void RTC_IRQHandler(void)
         PA2 ^= 1;
     }
     /* make sure that interrupt flag has been cleared. */
-    __DSB();
-    __ISB();
-
+    intflag = RTC->INTSTS;
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */

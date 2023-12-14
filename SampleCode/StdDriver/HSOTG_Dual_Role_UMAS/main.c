@@ -54,8 +54,7 @@ NVT_ITCM void HSOTG_IRQHandler(void)
     /* Clear all interrupt flags */
     HSOTG->INTSTS = u32INTSTS;
     /* make sure that interrupt flag has been cleared. */
-    __DSB();
-    __ISB();    
+    u32INTSTS = HSOTG->INTSTS;
 }
 
 

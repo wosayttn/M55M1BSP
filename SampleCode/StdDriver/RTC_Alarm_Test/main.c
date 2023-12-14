@@ -43,6 +43,7 @@ void RTC_AlarmHandle(void)
  */
 NVT_ITCM void RTC_IRQHandler(void)
 {
+    uint32_t intflag;
     /* To check if RTC alarm interrupt occurred */
     if (RTC_GET_ALARM_INT_FLAG(RTC) == 1)
     {
@@ -58,9 +59,7 @@ NVT_ITCM void RTC_IRQHandler(void)
         RTC_CLEAR_TICK_INT_FLAG(RTC);
     }
     /* make sure that interrupt flag has been cleared. */
-    __DSB();
-    __ISB();
-    
+    intflag = RTC->INTSTS;
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */

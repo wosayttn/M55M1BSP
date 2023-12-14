@@ -82,10 +82,6 @@ NVT_ITCM void WWDT_IRQHandler(void)
 
         printf("\nWWDT compare match interrupt occurred. (Interrupt Count %u)\n", g_u32WWDTINTCounts);
     }
-    
-    /* make sure that interrupt flag has been cleared. */
-    __DSB();
-    __ISB();
 }
 
 void SYS_Init(void)

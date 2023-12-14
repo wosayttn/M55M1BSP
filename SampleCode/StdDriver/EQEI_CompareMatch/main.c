@@ -24,6 +24,7 @@
  */
 NVT_ITCM void EQEI0_IRQHandler(void)
 {
+    uint32_t intflag;
     if (EQEI_GET_INT_FLAG(EQEI0, EQEI_STATUS_CMPF_Msk))    /* Compare-match flag */
     {
         printf("Compare-match INT!\n\n");
@@ -36,8 +37,7 @@ NVT_ITCM void EQEI0_IRQHandler(void)
         EQEI_CLR_INT_FLAG(EQEI0, EQEI_STATUS_OVUNF_Msk);
     }
     /* make sure that interrupt flag has been cleared. */
-    __DSB();
-    __ISB();
+    intflag = EQEI0->STATUS;
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */

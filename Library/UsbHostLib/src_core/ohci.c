@@ -1303,8 +1303,7 @@ NVT_ITCM void OHCI_IRQHandler(void)
 
     _ohci->HcInterruptStatus = int_sts;
     /* make sure that interrupt flag has been cleared. */
-    __DSB();
-    __ISB();
+    int_sts = _ohci->HcInterruptStatus;
 }
 
 #ifdef ENABLE_DEBUG_MSG

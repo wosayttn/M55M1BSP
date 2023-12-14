@@ -26,6 +26,8 @@ volatile uint32_t g_au32TMRINTCount[2] = {0};
  */
 NVT_ITCM void EQEI0_IRQHandler(void)
 {
+    uint32_t intflag;
+    
     if (EQEI_GET_INT_FLAG(EQEI0, EQEI_STATUS_UTIEF_Msk))    /* EQEI Unit Timer Event flag */
     {
         EQEI_CLR_INT_FLAG(EQEI0, EQEI_STATUS_UTIEF_Msk);
@@ -33,8 +35,7 @@ NVT_ITCM void EQEI0_IRQHandler(void)
         g_au32TMRINTCount[0]++;
     }
     /* make sure that interrupt flag has been cleared. */
-    __DSB();
-    __ISB();
+    intflag = EQEI0->STATUS;
 
 }
 /**
@@ -48,15 +49,17 @@ NVT_ITCM void EQEI0_IRQHandler(void)
  */
 NVT_ITCM void EQEI1_IRQHandler(void)
 {
+    uint32_t intflag;
+    
     if (EQEI_GET_INT_FLAG(EQEI1, EQEI_STATUS_UTIEF_Msk))    /* EQEI Unit Timer Event flag */
     {
         EQEI_CLR_INT_FLAG(EQEI1, EQEI_STATUS_UTIEF_Msk);
         printf("Unit TImer1 INT!\n\n");
         g_au32TMRINTCount[1]++;
     }
+    /* make sure that interrupt flag has been cleared. */
+    intflag = EQEI1->STATUS;
 
-    __DSB();
-    __ISB();    
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */

@@ -45,6 +45,7 @@ int IsDebugFifoEmpty(void)
  */
 NVT_ITCM void RTC_IRQHandler(void)
 {
+    uint32_t intflag;
     // TESTCHIP_ONLY
     CLK_WaitModuleClockReady(RTC0_MODULE);
 
@@ -62,10 +63,9 @@ NVT_ITCM void RTC_IRQHandler(void)
         /* Clear RTC tick interrupt flag */
         RTC_CLEAR_TICK_INT_FLAG(RTC);
     }
-    /* make sure that interrupt flag has been cleared. */
-    __DSB();
-    __ISB();
     
+    /* make sure that interrupt flag has been cleared. */
+    intflag = RTC->INTSTS;
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */

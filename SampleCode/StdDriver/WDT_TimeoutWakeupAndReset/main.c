@@ -31,6 +31,8 @@ int IsDebugFifoEmpty(void)
  */
 NVT_ITCM void WDT0_IRQHandler(void)
 {
+    uint32_t intflag;
+    
     // TESTCHIP_ONLY
     CLK_WaitModuleClockReady(WDT0_MODULE);
 
@@ -54,8 +56,7 @@ NVT_ITCM void WDT0_IRQHandler(void)
     }
     
     /* make sure that interrupt flag has been cleared. */
-    __DSB();
-    __ISB();    
+    intflag = WDT0->STATUS;
 }
 
 void SYS_Init(void)

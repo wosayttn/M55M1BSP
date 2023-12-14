@@ -453,8 +453,7 @@ NVT_ITCM void HSOTG_IRQHandler(void)
         }
     }
     /* make sure that interrupt flag has been cleared. */
-    __DSB();
-    __ISB();
+    reg = HSOTG->INTSTS;
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /*  MAIN function                                                                                          */
