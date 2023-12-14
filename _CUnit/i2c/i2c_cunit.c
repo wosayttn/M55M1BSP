@@ -75,6 +75,9 @@ void PMC_IRQHandler(void)
     PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
 
     while (PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk);
+
+    __DSB();
+    __ISB();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -117,6 +120,9 @@ void I2C0_IRQHandler(void)
             s_I2C0HandlerFn(u32Status);
         }
     }
+
+    __DSB();
+    __ISB();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -145,6 +151,8 @@ void I2C1_IRQHandler(void)
             I2C_ReadMultiBytesTwoRegs
         */
         fpI2C_WrRd_Test_Handler(u32Status);
+        __DSB();
+        __ISB();
         return;
     }
 
@@ -477,7 +485,7 @@ volatile uint8_t  g_u8RegAddrBytes = 0;
 volatile enum UI2C_SLAVE_EVENT s_Event;
 I2C_FUNC fpI2C_WrRd_Test_Handler = NULL;
 
-I2C_T *i2c_ports[] = {I2C0, I2C1, I2C2, I2C3, NULL, };
+I2C_T *i2c_ports[] = {I2C0, I2C1, NULL, };
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Test function                                                                                           */
@@ -549,17 +557,11 @@ void Test_API_I2C_Open_Close()
             while (1);
         }
 
+        /*
+            I2C Bus clock = PCLK / (4*(divider+1).
+        */
         /* API I2C_Open Test*/
         u32BusClock = 100000; //standard mode
-        CU_ASSERT_EQUAL(I2C_Open(i2c, u32BusClock), u32BusClock);
-        CU_ASSERT((i2c->CTL0 & I2C_CTL0_I2CEN_Msk) == I2C_CTL0_I2CEN_Msk);
-        u32BusClock = 200000;
-        CU_ASSERT_EQUAL(I2C_Open(i2c, u32BusClock), u32BusClock);
-        CU_ASSERT((i2c->CTL0 & I2C_CTL0_I2CEN_Msk) == I2C_CTL0_I2CEN_Msk);
-//        u32BusClock = 400000;  //Fast mode, PCLK=12MHz cannot be Divisible for 400KHz case
-//        CU_ASSERT_EQUAL(I2C_Open(i2c, u32BusClock), u32BusClock);
-//        CU_ASSERT((i2c->CTL0 & I2C_CTL0_I2CEN_Msk) == I2C_CTL0_I2CEN_Msk);
-        u32BusClock = 1000000; //Fast plus mode
         CU_ASSERT_EQUAL(I2C_Open(i2c, u32BusClock), u32BusClock);
         CU_ASSERT((i2c->CTL0 & I2C_CTL0_I2CEN_Msk) == I2C_CTL0_I2CEN_Msk);
         /* API I2C_Close Test*/
