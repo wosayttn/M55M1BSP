@@ -310,7 +310,8 @@ int main()
     printf("|      SPIM DMA mode read/write sample      |\n");
     printf("+-------------------------------------------+\n");
 
-    SPIM_SET_CLOCK_DIVIDER(SPIM_PORT, 2);           /* Set SPIM clock as HCLK divided by 4 */
+    /* Set SPIM clock as HCLK divided by 8 */
+    SPIM_SET_CLOCK_DIVIDER(SPIM_PORT, 8);
 
     SPIM_DISABLE_CIPHER(SPIM_PORT);
 

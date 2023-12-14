@@ -180,8 +180,8 @@ int main()
     printf("|      SPIM DMM mode running program on flash      |\n");
     printf("+--------------------------------------------------+\n");
 
-    /* Set SPIM clock as HCLK divided by 4 */
-    SPIM_SET_CLOCK_DIVIDER(SPIM_PORT, 2);
+    /* Set SPIM clock as HCLK divided by 8 */
+    SPIM_SET_CLOCK_DIVIDER(SPIM_PORT, 8);
 
     SPIM_SET_RXCLKDLY_RDDLYSEL(SPIM_PORT, 1);   /* Insert 1 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
 
