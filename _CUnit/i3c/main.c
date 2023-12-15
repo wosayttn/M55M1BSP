@@ -14,16 +14,6 @@
 #include "Console.h"
 #include "i3c_cunit.h"
 
-#ifndef DEBUG_PORT
-    #define DEBUG_PORT UART0
-#endif
-
-void InitDebugUart(void)
-{
-    DEBUG_PORT->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400));
-    DEBUG_PORT->LINE = (UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1);
-}
-
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -52,16 +42,14 @@ void SYS_Init(void)
     SystemCoreClockUpdate();
     /* Enable UART0 module clock */
     SetDebugUartCLK();
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
     //
     /*
-               SCL    SDA    SMBAL    SMBSUS
-        I2C0   PA5    PA4    PC3      PC2
+               SCL    SDA
+        I2C0   PA5    PA4
         I3C    PB1    PB0
     */
     CLK->I3CCTL |= CLK_I3CCTL_I3C0CKEN_Msk;
@@ -92,8 +80,7 @@ void AddTests(void)
     assert((NULL != CU_get_registry()));
     assert(!CU_is_test_running());
 
-    if (CUE_SUCCESS != CU_register_suites(suites))
-    {
+    if (CUE_SUCCESS != CU_register_suites(suites)) {
         fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
         exit(EXIT_FAILURE);
     }
@@ -110,13 +97,10 @@ int main(int argc, char *argv[])
     printf("|       M55M1 I3C CUnit Test           |\n");
     printf("+--------------------------------------+\n");
 
-    if (CU_initialize_registry())
-    {
+    if (CU_initialize_registry()) {
         fprintf(stderr, " Initialization of Test Registry failed. ");
         exit(EXIT_FAILURE);
-    }
-    else
-    {
+    } else {
         AddTests();
         CU_console_run_tests();
         CU_cleanup_registry();
