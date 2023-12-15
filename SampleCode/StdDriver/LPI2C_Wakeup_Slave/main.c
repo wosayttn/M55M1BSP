@@ -11,8 +11,7 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-/* LPI2C can support NPD0 ~ NDP4 power-down mode */
-#define TEST_POWER_DOWN_MODE    PMC_NPD2
+#define TEST_POWER_DOWN_MODE    PMC_NPD0
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -46,6 +45,8 @@ NVT_ITCM void LPI2C0_IRQHandler(void)
         LPI2C0->WKSTS = LPI2C_WKSTS_WKAKDONE_Msk;
         /* Clear LPI2C Wake-up interrupt flag */
         LPI2C_CLEAR_WAKEUP_FLAG(LPI2C0);
+        // CPU read interrupt flag register to wait write(clear) instruction completement.
+        LPI2C_GET_WAKEUP_FLAG(LPI2C0);
         return;
     }
 
@@ -63,6 +64,9 @@ NVT_ITCM void LPI2C0_IRQHandler(void)
             s_LPI2C0HandlerFn(u32Status);
         }
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = LPI2C_GET_STATUS(LPI2C0);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -70,13 +74,15 @@ NVT_ITCM void LPI2C0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void PMC_IRQHandler(void)
 {
+    uint32_t u32Status;
+
     /* check power down wakeup flag */
     if ((PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk) == PMC_INTSTS_PDWKIF_Msk)
     {
         g_u8SlvPWRDNWK = PMC->INTSTS;
         PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
-
-        while (PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk);
+        // CPU read interrupt flag register to wait write(clear) instruction completement.
+        u32Status = PMC->INTSTS;
     }
 }
 
