@@ -20,59 +20,59 @@ static volatile uint8_t bIsI2CIdle = TRUE;
 
 void RecoveryFromArbLost(void)
 {
-    I2C3->CTL0 &= ~I2C_CTL0_I2CEN_Msk;
-    I2C3->CTL0 |= I2C_CTL0_I2CEN_Msk;
+    I2C_PORT->CTL0 &= ~I2C_CTL0_I2CEN_Msk;
+    I2C_PORT->CTL0 |= I2C_CTL0_I2CEN_Msk;
 }
 /*---------------------------------------------------------------------------------------------------------*/
-/*  Write 9-bit data to 7-bit address register of NAU8822 with I2C3                                        */
+/*  Write 9-bit data to 7-bit address register of NAU8822 with I2C_PORT                                    */
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_WriteNAU8822(uint8_t u8addr, uint16_t u16data)
 {
     bIsI2CIdle = FALSE;
 restart:
-    I2C_START(I2C3);
-    I2C_WAIT_READY(I2C3);
+    I2C_START(I2C_PORT);
+    I2C_WAIT_READY(I2C_PORT);
 
-    I2C_SET_DATA(I2C3, 0x1A << 1);
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, 0x1A << 1);
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
-    if (I2C_GET_STATUS(I2C3) == 0x38)
+    if (I2C_GET_STATUS(I2C_PORT) == 0x38)
     {
         RecoveryFromArbLost();
         goto restart;
     }
-    else if (I2C_GET_STATUS(I2C3) != 0x18)
+    else if (I2C_GET_STATUS(I2C_PORT) != 0x18)
         goto stop;
 
-    I2C_SET_DATA(I2C3, (uint8_t)((u8addr << 1) | (u16data >> 8)));
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, (uint8_t)((u8addr << 1) | (u16data >> 8)));
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
-    if (I2C_GET_STATUS(I2C3) == 0x38)
+    if (I2C_GET_STATUS(I2C_PORT) == 0x38)
     {
         RecoveryFromArbLost();
         goto restart;
     }
-    else if (I2C_GET_STATUS(I2C3) != 0x28)
+    else if (I2C_GET_STATUS(I2C_PORT) != 0x28)
         goto stop;
 
-    I2C_SET_DATA(I2C3, (uint8_t)(u16data & 0x00FF));
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, (uint8_t)(u16data & 0x00FF));
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
-    if (I2C_GET_STATUS(I2C3) == 0x38)
+    if (I2C_GET_STATUS(I2C_PORT) == 0x38)
     {
         RecoveryFromArbLost();
         goto restart;
     }
-    else if (I2C_GET_STATUS(I2C3) != 0x28)
+    else if (I2C_GET_STATUS(I2C_PORT) != 0x28)
         goto stop;
 
 stop:
-    I2C_STOP(I2C3);
+    I2C_STOP(I2C_PORT);
 
-    while (I2C3->CTL0 & I2C_CTL0_STO_Msk);
+    while (I2C_PORT->CTL0 & I2C_CTL0_STO_Msk);
 
     bIsI2CIdle = TRUE;
     EndFlag0 = 1;
@@ -232,36 +232,36 @@ void AdjustCodecPll(RESAMPLE_STATE_T r)
 uint8_t I2cWrite_MultiByteforNAU88L25(uint8_t chipadd, uint16_t subaddr, const uint8_t *p, uint32_t len)
 {
     /* Send START */
-    I2C_START(I2C3);
-    I2C_WAIT_READY(I2C3);
+    I2C_START(I2C_PORT);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send device address */
-    I2C_SET_DATA(I2C3, chipadd);
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, chipadd);
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send register number and MSB of data */
-    I2C_SET_DATA(I2C3, (uint8_t)(subaddr >> 8));
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, (uint8_t)(subaddr >> 8));
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send register number and MSB of data */
-    I2C_SET_DATA(I2C3, (uint8_t)(subaddr));
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, (uint8_t)(subaddr));
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send data */
-    I2C_SET_DATA(I2C3, p[0]);
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, p[0]);
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send data */
-    I2C_SET_DATA(I2C3, p[1]);
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, p[1]);
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send STOP */
-    I2C_STOP(I2C3);
+    I2C_STOP(I2C_PORT);
 
     return  0;
 }
