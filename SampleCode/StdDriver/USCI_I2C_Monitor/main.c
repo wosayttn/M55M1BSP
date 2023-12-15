@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-#if 1
+#if 0
     #define DbgPrintf  printf
 #else
     #define DbgPrintf(...)
@@ -83,6 +83,9 @@ NVT_ITCM void USCI0_IRQHandler(void)
     {
         s_UI2C0HandlerFn(u32Status);
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = UI2C_GET_PROT_STATUS(UI2C0);
 }
 
 NVT_ITCM void I2C0_IRQHandler(void)
@@ -102,6 +105,9 @@ NVT_ITCM void I2C0_IRQHandler(void)
             s_I2C0HandlerFn(u32Status);
         }
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = I2C_GET_STATUS(I2C0);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -124,6 +130,9 @@ NVT_ITCM void I2C1_IRQHandler(void)
             s_I2C1HandlerFn(u32Status);
         }
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = I2C_GET_STATUS(I2C1);
 }
 
 void I2C0_Init(void)
@@ -224,11 +233,8 @@ static void SYS_Init(void)
     /* Set multi-function pins for I2C0/I2C1 SDA and SCL */
     SET_I2C0_SDA_PA4();
     SET_I2C0_SCL_PA5();
-    SET_I2C1_SDA_PA6();
-    SET_I2C1_SCL_PA7();
-    /* USCI_I2C/I2C pins enable schmitt trigger */
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT4 | BIT5 | BIT6 | BIT7 | BIT10 | BIT11));
+    SET_I2C1_SCL_PB1();
+    SET_I2C1_SDA_PB0();
     /* Lock protected registers */
     SYS_LockReg();
 }

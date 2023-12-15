@@ -36,6 +36,9 @@ NVT_ITCM void USCI0_IRQHandler(void)
     {
         s_UI2C0HandlerFn(u32Status);
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = UI2C_GET_PROT_STATUS(UI2C0);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
