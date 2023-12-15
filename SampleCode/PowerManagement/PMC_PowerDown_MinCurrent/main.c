@@ -18,13 +18,8 @@
 // <o0> Power-down Mode
 //      <0=> NPD0
 //      <1=> NPD1
-//      <2=> NPD2
-//      <3=> NPD3
-//      <4=> NPD4
 //      <5=> SPD0
-//      <6=> SPD1
 //      <7=> DPD0
-//      <8=> DPD1
 */
 #define SET_PDMSEL    0
 
@@ -34,13 +29,6 @@
 //      <1=> DCDC
 */
 #define SET_MVR       0
-
-/*
-// <o0> LVR
-//      <0=> Disable
-//      <1=> Enable
-*/
-#define SET_LVR       0
 
 /*
 // <o0> POR
@@ -69,7 +57,6 @@
 
 void PowerDownFunction(void);
 void GPC_IRQHandler(void);
-int32_t LvrSetting(void);
 void PorSetting(void);
 int32_t LircSetting(void);
 int32_t LxtSetting(void);
@@ -128,22 +115,6 @@ NVT_ITCM void GPC_IRQHandler(void)
 
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
     u32Status = PC->INTSRC;
-}
-
-int32_t LvrSetting(void)
-{
-    if (SET_LVR == 0)
-    {
-        /* Disable LVR and wait for LVR stable */
-        SYS_DISABLE_LVR();
-    }
-    else
-    {
-        /* Enable LVR and wait for LVR stable */
-        SYS_ENABLE_LVR();
-    }
-
-    return 0;
 }
 
 void PorSetting(void)
@@ -421,9 +392,6 @@ int32_t main(void)
 
     /* Unlock protected registers for Power-down and wake-up setting */
     SYS_UnlockReg();
-
-    /* LVR setting */
-    if (LvrSetting() < 0) goto lexit;
 
     /* POR setting */
     PorSetting();
