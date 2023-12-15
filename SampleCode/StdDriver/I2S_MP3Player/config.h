@@ -9,7 +9,10 @@
 #ifndef PROJECT_CONFIG_H
 #define PROJECT_CONFIG_H
 
-#define NAU8822     1
+//------------------------------------------------------------------------------
+#define I2C_PORT                I2C3
+
+#define NAU8822                 1
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -17,8 +20,8 @@
 #define USE_SDH
 //#define USE_USBH
 
-#define PCM_BUFFER_SIZE        2304
-#define FILE_IO_BUFFER_SIZE    4096
+#define PCM_BUFFER_SIZE         2304
+#define FILE_IO_BUFFER_SIZE     4096
 
 struct mp3Header
 {

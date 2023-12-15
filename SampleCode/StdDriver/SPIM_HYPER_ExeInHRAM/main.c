@@ -73,7 +73,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

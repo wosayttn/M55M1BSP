@@ -30,7 +30,7 @@ static void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Enable HXT clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
@@ -71,7 +71,7 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for UART RXD and TXD */
-    SetDebugUartMFP(); 
+    SetDebugUartMFP();
 
     HyperFlash_PinConfig(HYPERFLASH_SPIM_PORT);
 }

@@ -71,7 +71,7 @@ void SYS_Init(void)
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -80,7 +80,7 @@ void SYS_Init(void)
     /* Enable module clock */
     CLK_EnableModuleClock(PDMA0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

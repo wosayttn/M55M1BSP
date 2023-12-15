@@ -30,13 +30,13 @@
 
 #if defined(MBEDTLS_PLATFORM_EXIT_ALT)
 #if defined(MBEDTLS_PLATFORM_STD_EXIT)
- /*
-  * Make dummy function to prevent NULL pointer dereferences
-  */
+/*
+ * Make dummy function to prevent NULL pointer dereferences
+ */
 static void platform_exit_uninit(int status)
 {
     ((void)status);
-    for(;;) {}
+    for (;;) {}
 }
 
 
@@ -47,7 +47,7 @@ void (*mbedtls_exit)(int status) = MBEDTLS_PLATFORM_STD_EXIT;
 int mbedtls_platform_set_exit(void (*exit_func)(int status))
 {
     mbedtls_exit = exit_func;
-    return(0);
+    return (0);
 }
 #endif /* MBEDTLS_PLATFORM_EXIT_ALT */
 
@@ -55,7 +55,7 @@ int mbedtls_platform_set_exit(void (*exit_func)(int status))
 /*
  * Placeholder platform setup that does nothing by default
  */
-int mbedtls_platform_setup( mbedtls_platform_context *ctx )
+int mbedtls_platform_setup(mbedtls_platform_context *ctx)
 {
     (void)ctx;
 
@@ -96,7 +96,7 @@ int mbedtls_platform_setup( mbedtls_platform_context *ctx )
 //    /* Init I/O Multi-function                                                                                 */
 //    /*---------------------------------------------------------------------------------------------------------*/
 
-//    /* Set multi-function pins for UART0 RXD and TXD */
+//    /* Set multi-function pins for UART RXD and TXD */
 //    SET_UART0_RXD_PB12();
 //    SET_UART0_TXD_PB13();
 
@@ -104,13 +104,13 @@ int mbedtls_platform_setup( mbedtls_platform_context *ctx )
 //    SYS_ResetModule(UART0_RST);
 //    UART_Open(UART0, 115200);
 
-    return( 0 );
+    return (0);
 }
 
 /*
  * Placeholder platform teardown that does nothing by default
  */
-void mbedtls_platform_teardown( mbedtls_platform_context *ctx )
+void mbedtls_platform_teardown(mbedtls_platform_context *ctx)
 {
     (void)ctx;
 }

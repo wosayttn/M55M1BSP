@@ -59,7 +59,7 @@ void SystemCoreClockUpdate(void)
 __WEAK void SetDebugUartMFP(void)
 {
 #if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
-    /* Set GPB12 as UART0 RXD and GPB13 as UART0 TXD */
+    /* Set PH5 as UART6 RXD and PH4 as UART6 TXD */
     SET_UART6_RXD_PH5();
     SET_UART6_TXD_PH4();
 #endif /* !defined(DEBUG_ENABLE_SEMIHOST) || !defined(OS_USE_SEMIHOSTING) */

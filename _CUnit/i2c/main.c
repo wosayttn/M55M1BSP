@@ -14,16 +14,6 @@
 #include "Console.h"
 #include "i2c_cunit.h"
 
-#ifndef DEBUG_PORT
-#define DEBUG_PORT UART0
-#endif
-
-void InitDebugUart(void)
-{
-    DEBUG_PORT->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400));
-    DEBUG_PORT->LINE = (UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1);
-}
-
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -52,8 +42,6 @@ void SYS_Init(void)
     SystemCoreClockUpdate();
     /* Enable UART0 module clock */
     SetDebugUartCLK();
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -62,12 +50,7 @@ void SYS_Init(void)
     /*
                SCL    SDA	 SMBAL    SMBSUS
         I2C0   PA5    PA4	 PC3	  PC2
-        I2C1   PA7    PA6	 PB9	  PB8
-        I2C2   PA1    PA0	 PB15     PB14
-        I2C3   PG0    PG1	 PG2	  PG3
-        UI2C   PA11   PA10
-        LPI2C  PB5    PB4
-        I3C    PB1    PB0
+        I2C1   PB1    PB0	 PB9	  PB8
     */
     CLK->I2CCTL = (CLK_I2CCTL_I2C0CKEN_Msk | CLK_I2CCTL_I2C1CKEN_Msk
                    | CLK_I2CCTL_I2C2CKEN_Msk | CLK_I2CCTL_I2C3CKEN_Msk);
@@ -77,25 +60,13 @@ void SYS_Init(void)
     SET_I2C0_SMBAL_PC3();
     SET_I2C0_SMBSUS_PC2();
     //
-    SET_I2C1_SCL_PA7();
-    SET_I2C1_SDA_PA6();
+    SET_I2C1_SCL_PB1();
+    SET_I2C1_SDA_PB0();
     SET_I2C1_SMBAL_PB9();
     SET_I2C1_SMBSUS_PB8();
     //
-    SET_I2C2_SCL_PA1();
-    SET_I2C2_SDA_PA0();
-    SET_I2C2_SMBAL_PB15();
-    SET_I2C2_SMBSUS_PB14();
-    //
-    SET_I2C3_SCL_PG0();
-    SET_I2C3_SDA_PG1();
-    SET_I2C3_SMBAL_PG2();
-    SET_I2C3_SMBSUS_PG3();
-    //
     SYS_ResetModule(SYS_I2C0RST);
     SYS_ResetModule(SYS_I2C1RST);
-    SYS_ResetModule(SYS_I2C2RST);
-    SYS_ResetModule(SYS_I2C3RST);
     //
     SYS_LockReg();
 }
@@ -129,6 +100,7 @@ int main(int argc, char *argv[])
     printf("+--------------------------------------+\n");
     printf("|       M55M1 I2C CUnit Test           |\n");
     printf("+--------------------------------------+\n");
+    printf("__DATE__, __TEIM__ = %s, %s\n", __DATE__, __TIME__);
 
     if (CU_initialize_registry()) {
         fprintf(stderr, " Initialization of Test Registry failed. ");

@@ -13,6 +13,7 @@
 #include "diskio.h"
 #include "ff.h"
 
+//------------------------------------------------------------------------------
 uint32_t volatile u32BuffPos = 0;
 FATFS FatFs[FF_VOLUMES];               /* File system object for logical drive */
 
@@ -61,15 +62,18 @@ NVT_ITCM void SDH0_IRQHandler(void)
 
     //----- SD interrupt status
     isr = SDH0->INTSTS;
+    ier = SDH0->INTEN;
 
     if (isr & SDH_INTSTS_BLKDIF_Msk)
     {
         // block down
         SD0.DataReadyFlag = TRUE;
         SDH0->INTSTS = SDH_INTSTS_BLKDIF_Msk;
+        //printf("SD block down\r\n");
     }
 
-    if (isr & SDH_INTSTS_CDIF_Msk)   // port 0 card detect
+    if ((ier & SDH_INTEN_CDIEN_Msk) &&
+            (isr & SDH_INTSTS_CDIF_Msk))    // card detect
     {
         //----- SD interrupt status
         // it is work to delay 50 times for SD_CLK = 200KHz
@@ -81,7 +85,12 @@ NVT_ITCM void SDH0_IRQHandler(void)
             isr = SDH0->INTSTS;
         }
 
+#if (DEF_CARD_DETECT_SOURCE == CardDetect_From_DAT3)
+
+        if (!(isr & SDH_INTSTS_CDSTS_Msk))
+#else
         if (isr & SDH_INTSTS_CDSTS_Msk)
+#endif
         {
             printf("\n***** card remove !\n");
             SD0.IsCardInsert = FALSE;   // SDISR_CD_Card = 1 means card remove for GPIO mode
@@ -90,8 +99,8 @@ NVT_ITCM void SDH0_IRQHandler(void)
         else
         {
             printf("***** card insert !\n");
-            SDH_Open(SDH0, CardDetect_From_GPIO);
-            SDH_Probe(SDH0);
+            //SDH_Open(SDH0, CardDetect_From_GPIO);
+            //SDH_Probe(SDH0);
         }
 
         SDH0->INTSTS = SDH_INTSTS_CDIF_Msk;
@@ -152,6 +161,12 @@ void SD_Inits(void)
 void SYS_Init(void)
 {
     /* Enable Internal RC 12MHz clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
+
+    /* Waiting for Internal RC clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
+
+    /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
@@ -159,6 +174,7 @@ void SYS_Init(void)
 
     /* Enable PLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL1_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
@@ -187,10 +203,10 @@ void SYS_Init(void)
     CLK_EnableModuleClock(PDMA0_MODULE);
 
     /* Enable GPIO module clock */
-    CLK_EnableModuleClock(GPIOD_MODULE);
+    CLK_EnableModuleClock(GPIOG_MODULE);
     CLK_EnableModuleClock(GPIOI_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -216,10 +232,10 @@ void SYS_Init(void)
     PG->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
 }
 
-void I2C3_Init(void)
+void I2C_Init(void)
 {
-    /* Open I2C3 and set clock to 100k */
-    I2C_Open(I2C3, 100000);
+    /* Open I2C and set clock to 100k */
+    I2C_Open(I2C_PORT, 100000);
 }
 
 /* Configure PDMA to Scatter Gather mode */
@@ -267,11 +283,11 @@ int32_t main(void)
     SDH_Open_Disk(SDH0, CardDetect_From_GPIO);
     f_chdrive(sd_path);          /* Set default path */
 
-    /* Init I2C3 to access codec */
-    I2C3_Init();
+    /* Init I2C to access codec */
+    I2C_Init();
 
-    /* Select source from HXT(12MHz) */
-    CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_HXT, 0);
+    /* Select source from HIRC(12MHz) */
+    CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_HIRC, CLK_I2SDIV_I2S0DIV(1));
 
     /* Lock protected registers */
     SYS_LockReg();

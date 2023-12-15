@@ -113,6 +113,8 @@ void  connect_func(struct udev_t *udev, int param)
  */
 void  disconnect_func(struct udev_t *udev, int param)
 {
+    gOTG_Dev_pet = NULL;
+    
     printf("Device [0x%x,0x%x] was disconnected.\n",
            udev->descriptor.idVendor, udev->descriptor.idProduct);
 }
@@ -290,8 +292,8 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Enable GPIOA module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
@@ -314,11 +316,11 @@ void SYS_Init(void)
     /* Enable OTG module clock */
     CLK_EnableModuleClock(OTG0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Set OTG as USB Host role */
-    SYS->USBPHY = (0x1ul << (SYS_USBPHY_HSOTGPHYEN_Pos)) | (0x3ul << (SYS_USBPHY_HSUSBROLE_Pos)) | (0x1ul << (SYS_USBPHY_OTGPHYEN_Pos)) | (0x3 << SYS_USBPHY_USBROLE_Pos);
+    SYS->USBPHY = (0x1ul << (SYS_USBPHY_HSOTGPHYEN_Pos)) | (0x1ul << (SYS_USBPHY_HSUSBROLE_Pos)) | (0x1ul << (SYS_USBPHY_OTGPHYEN_Pos)) | (0x3 << SYS_USBPHY_USBROLE_Pos);
     delay_us(20);
     SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;//Set HSUSB PHY Active.
 
@@ -329,7 +331,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();
 
     /* USB_VBUS_EN (USB 1.1 VBUS power enable pin) multi-function pin - PB.8     */
@@ -337,7 +339,7 @@ void SYS_Init(void)
 
     /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PB.9   */
     SET_USB_VBUS_ST_PB9();
-    
+
 
     /* USB 1.1 port multi-function pin VBUS, D+, D-, and ID pins */
     SET_USB_VBUS_PA12();
@@ -357,6 +359,9 @@ void OTG_SetFeature(uint32_t value)
     uint32_t  read_len;
     /* 0x3 - b_hnp_enable, 0x4 - a_hnp_support */
     /* set feature */
+    if (gOTG_Dev_pet == NULL)
+        return;
+    
     usbh_ctrl_xfer(gOTG_Dev_pet, REQ_TYPE_OUT | REQ_TYPE_STD_DEV | REQ_TYPE_TO_DEV,
                    USB_REQ_SET_FEATURE, value, 0, 0,
                    NULL, &read_len, 300);
@@ -454,6 +459,9 @@ NVT_ITCM void USBOTG_IRQHandler(void)
                 otg_role_change = 3;
         }
     }
+    
+    /* make sure that interrupt flag has been cleared. */
+    reg = OTG->INTSTS;
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /*  MAIN function                                                                                          */
@@ -484,7 +492,7 @@ int32_t main(void)
 
     OTG_ENABLE_PHY();
     OTG_ENABLE_ID_DETECT();
-    OTG->PHYCTL |= 0x4;
+    //OTG->PHYCTL |= 0x4;
     NVIC_EnableIRQ(USBOTG_IRQn);
     delay_us(1000);
 
@@ -559,7 +567,7 @@ int32_t main(void)
                 {
                     usbh_hid_stop_int_read(hdev_list, 0);
                     delay_us(2000);
-                    intcount = 0;                    
+                    intcount = 0;
                     gStartHNP = 1;
                 }
 
@@ -574,6 +582,8 @@ int32_t main(void)
                     OTG->CTL &= ~OTG_CTL_BUSREQ_Msk;
                     usbh_suspend();
                     printf("A suspend\n");
+                    
+                    gStartHNP = 0;
                 }
 
                 if (otg_role_change)
@@ -614,12 +624,13 @@ int32_t main(void)
                 if (intcount > 5)
                 {
                     usbh_hid_stop_int_read(hdev_list, 0);
-                    intcount = 0; 
+                    intcount = 0;
                     gStartHNP = 1;
                 }
 
                 if (gStartHNP)
                 {
+                    gStartHNP = 0;
                     printf("\n\nwaiting...\n\n");
                     OTG->CTL &= ~OTG_CTL_BUSREQ_Msk;
                     delay_us(5000);

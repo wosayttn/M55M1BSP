@@ -26,12 +26,16 @@ volatile uint32_t g_au32TMRINTCount[2] = {0};
  */
 NVT_ITCM void EQEI0_IRQHandler(void)
 {
+    uint32_t intflag;
+    
     if (EQEI_GET_INT_FLAG(EQEI0, EQEI_STATUS_UTIEF_Msk))    /* EQEI Unit Timer Event flag */
     {
         EQEI_CLR_INT_FLAG(EQEI0, EQEI_STATUS_UTIEF_Msk);
         printf("Unit TImer0 INT!\n\n");
         g_au32TMRINTCount[0]++;
     }
+    /* make sure that interrupt flag has been cleared. */
+    intflag = EQEI0->STATUS;
 
 }
 /**
@@ -45,12 +49,16 @@ NVT_ITCM void EQEI0_IRQHandler(void)
  */
 NVT_ITCM void EQEI1_IRQHandler(void)
 {
+    uint32_t intflag;
+    
     if (EQEI_GET_INT_FLAG(EQEI1, EQEI_STATUS_UTIEF_Msk))    /* EQEI Unit Timer Event flag */
     {
         EQEI_CLR_INT_FLAG(EQEI1, EQEI_STATUS_UTIEF_Msk);
         printf("Unit TImer1 INT!\n\n");
         g_au32TMRINTCount[1]++;
     }
+    /* make sure that interrupt flag has been cleared. */
+    intflag = EQEI1->STATUS;
 
 }
 /*---------------------------------------------------------------------------------------------------------*/
@@ -63,9 +71,9 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-    
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 72MHz clock */    
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_72MHZ);    
+
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 72MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_72MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -75,7 +83,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(EQEI0_MODULE);
     CLK_EnableModuleClock(EQEI1_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

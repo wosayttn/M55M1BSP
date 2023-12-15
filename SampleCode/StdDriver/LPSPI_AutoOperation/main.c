@@ -34,13 +34,15 @@ uint32_t g_au32MasterRxBuffer[DATA_COUNT] __attribute__((section(".lpSram")));
 
 NVT_ITCM void LPSPI0_IRQHandler(void)
 {
+    volatile int32_t i32Timeout = 0xFFFF;
+
     // TESTCHIP_ONLY
     CLK_WaitModuleClockReady(LPSPI0_MODULE);
 
     /* for Auto Operation mode test */
     g_u32Ifr = LPSPI0->AUTOSTS;
 
-    while (LPSPI0->AUTOSTS != 0)
+    while ((LPSPI0->AUTOSTS != 0) && (--i32Timeout >= 0))
     {
         LPSPI0->AUTOSTS = LPSPI0->AUTOSTS;
     }
@@ -93,7 +95,7 @@ void SYS_Init(void)
     /* LPPDMA only can access LPSRAM and cannot access normal SRAM. */
     CLK_EnableModuleClock(LPSRAM0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -113,9 +115,9 @@ void SYS_Init(void)
                      SYS_GPA_MFP0_PA1MFP_LPSPI0_MISO |
                      SYS_GPA_MFP0_PA0MFP_LPSPI0_MOSI);
 
-    /* Clock output HCLK to PB14 */
-    SYS->GPB_MFP3 = (SYS->GPB_MFP3 & ~(SYS_GPB_MFP3_PB14MFP_Msk)) |
-                    (SYS_GPB_MFP3_PB14MFP_CLKO);
+    /* Clock output HCLK to PD.13 */
+    SYS->GPD_MFP3 = (SYS->GPD_MFP3 & ~(SYS_GPD_MFP3_PD13MFP_Msk)) |
+                    (SYS_GPD_MFP3_PD13MFP_CLKO);
     CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_HIRC, 0, CLK_CLKOCTL_DIV1EN_DIV_1);
 }
 
@@ -256,7 +258,7 @@ void AutoOperation_FunctionTest()
         LPPDMA_Init();
 
         printf("\nPower down and wait LPPDMA to wake up CPU ...\n\n");
-        UART_WAIT_TX_EMPTY(UART0);
+        UART_WAIT_TX_EMPTY(DEBUG_PORT);
 
         /* Clear all wake-up status flags */
         //CLK->PMUSTS = CLK_PMUSTS_CLRWK_Msk;

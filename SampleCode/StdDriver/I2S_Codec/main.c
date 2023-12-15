@@ -12,12 +12,16 @@
 #include "NuMicro.h"
 #include "config.h"
 
+//------------------------------------------------------------------------------
 #define NAU8822     1
 
+#define I2C_PORT                        I2C3
+//------------------------------------------------------------------------------
 uint32_t volatile g_u32BuffPos = 0;
 
+//------------------------------------------------------------------------------
 void SYS_Init(void);
-void I2C3_Init(void);
+void I2C_Init(void);
 
 #if NAU8822
     void I2C_WriteNAU8822(uint8_t u8Addr, uint16_t u16Data);
@@ -32,26 +36,26 @@ void I2C3_Init(void);
 #if NAU8822
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  Write 9-bit data to 7-bit address register of NAU8822 with I2C3                                        */
+/*  Write 9-bit data to 7-bit address register of NAU8822 with I2C                                         */
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_WriteNAU8822(uint8_t u8Addr, uint16_t u16Data)
 {
-    I2C_START(I2C3);
-    I2C_WAIT_READY(I2C3);
+    I2C_START(I2C_PORT);
+    I2C_WAIT_READY(I2C_PORT);
 
-    I2C_SET_DATA(I2C3, 0x1A << 1);
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, 0x1A << 1);
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
-    I2C_SET_DATA(I2C3, (uint8_t)((u8Addr << 1) | (u16Data >> 8)));
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, (uint8_t)((u8Addr << 1) | (u16Data >> 8)));
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
-    I2C_SET_DATA(I2C3, (uint8_t)(u16Data & 0x00FF));
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, (uint8_t)(u16Data & 0x00FF));
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
-    I2C_STOP(I2C3);
+    I2C_STOP(I2C_PORT);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -110,36 +114,36 @@ uint8_t I2C_WriteMultiByteforNAU88L25(uint8_t u8ChipAddr, uint16_t u16SubAddr, c
     (void)u32Len;
 
     /* Send START */
-    I2C_START(I2C3);
-    I2C_WAIT_READY(I2C3);
+    I2C_START(I2C_PORT);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send device address */
-    I2C_SET_DATA(I2C3, u8ChipAddr);
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, u8ChipAddr);
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send register number and MSB of data */
-    I2C_SET_DATA(I2C3, (uint8_t)(u16SubAddr >> 8));
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, (uint8_t)(u16SubAddr >> 8));
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send register number and MSB of data */
-    I2C_SET_DATA(I2C3, (uint8_t)(u16SubAddr & 0x00FF));
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, (uint8_t)(u16SubAddr & 0x00FF));
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send data */
-    I2C_SET_DATA(I2C3, p[0]);
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, p[0]);
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send data */
-    I2C_SET_DATA(I2C3, p[1]);
-    I2C_SET_CONTROL_REG(I2C3, I2C_CTL_SI);
-    I2C_WAIT_READY(I2C3);
+    I2C_SET_DATA(I2C_PORT, p[1]);
+    I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C_PORT);
 
     /* Send STOP */
-    I2C_STOP(I2C3);
+    I2C_STOP(I2C_PORT);
 
     return  0;
 }
@@ -298,10 +302,10 @@ void SYS_Init(void)
     CLK_EnableModuleClock(I2C3_MODULE);
 
     /* Enable GPIO module clock */
-    CLK_EnableModuleClock(GPIOD_MODULE);
+    CLK_EnableModuleClock(GPIOG_MODULE);
     CLK_EnableModuleClock(GPIOI_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -323,17 +327,17 @@ void SYS_Init(void)
     SET_I2C3_SDA_PG1();
     SET_I2C3_SCL_PG0();
 
-    /* Enable I2C3 clock pin (PD1) schmitt trigger */
+    /* Enable I2C3 clock pin (PG0) schmitt trigger */
     PG->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
 }
 
-void I2C3_Init(void)
+void I2C_Init(void)
 {
-    /* Open I2C3 and set clock to 100k */
-    I2C_Open(I2C3, 100000);
+    /* Open I2C and set clock to 100k */
+    I2C_Open(I2C_PORT, 100000);
 
-    /* Get I2C3 Bus Clock */
-    printf("I2C clock %d Hz\n", I2C_GetBusClockFreq(I2C3));
+    /* Get I2C Bus Clock */
+    printf("I2C clock %d Hz\n", I2C_GetBusClockFreq(I2C_PORT));
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -357,8 +361,8 @@ int32_t main(void)
     printf("+-----------------------------------------------------------------------+\n");
     printf("  NOTE: This sample code needs to work with audio codec.\n");
 
-    /* Init I2C3 to access codec */
-    I2C3_Init();
+    /* Init I2C to access codec */
+    I2C_Init();
 
 #if (!NAU8822)
     /* Reset NAU88L25 codec */

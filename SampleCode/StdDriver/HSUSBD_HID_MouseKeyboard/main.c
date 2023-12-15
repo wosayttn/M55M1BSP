@@ -31,7 +31,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -47,8 +47,6 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOG_MODULE);
     CLK_EnableModuleClock(GPIOH_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
 
     /* Debug UART clock setting*/
     SetDebugUartCLK();
@@ -75,7 +73,7 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();
 }
 

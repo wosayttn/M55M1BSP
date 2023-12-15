@@ -99,12 +99,14 @@ void CCAP_SetFreq(uint32_t u32ModFreqKHz, uint32_t u32SensorFreq)
 
     /* Specified sensor clock */
     CLK_SetModuleClock(CCAP0_MODULE, CLK_CCAPSEL_CCAP0SEL_HIRC, 0);
-    /* Not support in TESTCHIP_ONLY
-        i32Div= (CLK_GetHCLK2Freq() / u32SensorFreq) - 1;
-        if(i32Div < 0)
-            i32Div = 0;
-        CLK->VSENSEDIV = (CLK->VSENSEDIV & ~CLK_VSENSEDIV_VSENSEDIV_Msk) | (i32Div << CLK_VSENSEDIV_VSENSEDIV_Pos);
-     * Not support in TESTCHIP_ONLY */
+#if !defined(TESTCHIP_ONLY)
+    i32Div = (CLK_GetHCLK2Freq() / u32SensorFreq) - 1;
+
+    if (i32Div < 0)
+        i32Div = 0;
+
+    CLK->VSENSEDIV = (CLK->VSENSEDIV & ~CLK_VSENSEDIV_VSENSEDIV_Msk) | (i32Div << CLK_VSENSEDIV_VSENSEDIV_Pos);
+#endif
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -124,16 +126,18 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_MIRCSTB_Msk);
 
     /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Enable module clock */
+    CLK_EnableModuleClock(GPIOD_MODULE);
+    CLK_EnableModuleClock(GPIOG_MODULE);
     CLK_EnableModuleClock(GPIOH_MODULE);
     CLK_EnableModuleClock(LPTMR0_MODULE);
     CLK_SetModuleClock(LPTMR0_MODULE, CLK_LPTMRSEL_LPTMR0SEL_HIRC, 0);
@@ -179,8 +183,12 @@ int32_t PacketMotionDetection(S_SENSOR_INFO *psSensorInfo)
     int32_t  i32RetCode = 0;
     int32_t  i;
 
-    /* Initialize NT99141 sensor and set NT99141 output YUV422 format */
-    if (psSensorInfo->pfnInitSensor(0) == FALSE) return -1;
+    /* Initialize sensor and set sensor output YUV422 format */
+    if (psSensorInfo->pfnInitSensor(0) == FALSE)
+    {
+        printf("Init sensor failed !\n");
+        return -1;
+    }
 
     /* Set Cropping Window Vertical/Horizontal Starting Address and Cropping Window Size */
     CCAP_SetCroppingWindow(0, 0, psSensorInfo->m_u16Height, psSensorInfo->m_u16Width);
@@ -203,19 +211,19 @@ int32_t PacketMotionDetection(S_SENSOR_INFO *psSensorInfo)
      *   If (sum of all windows diff of two frame) > (global motion detection threshold),
          CCAP will trigger MD1 interrupt (CCAP_INTSTS_MDINTF_MODE1_Msk).
      */
-    CCAP_MD_SET_TOTAL_THRESHOLD(0x1000);
+    CCAP_MD_SET_TOTAL_THRESHOLD(0xA000);
 
     /* Set window motion detection threshold, maximum value is 0x12AD4
      *   If (window diff of two frame) > (window motion detection threshold), overflow window count is increment by 1.
      */
     for (i = 0; i < 16; i++)
-        CCAP_MD_SET_WIN_THRESHOLD(i, 0x100);
+        CCAP_MD_SET_WIN_THRESHOLD(i, 0x1000);
 
     /* Set overflow window count threshold, maximum value is 15.
      *   If overflow window count > overflow window count threshold,
      *   CCAP will trigger MD2 interrupt (CCAP_INTSTS_MDINTF_MODE2_Msk).
      */
-    CCAP_MD_SET_OVERFLOW_WIN_THRESHOLD(1);
+    CCAP_MD_SET_OVERFLOW_WIN_THRESHOLD(8);
     /* Configure CCAPEN(CCAP_CTL[0]) to disable the capture interface. */
     CCAP_Close();
 
@@ -232,13 +240,15 @@ int32_t PacketFormatDownScale(S_SENSOR_INFO *psSensorInfo)
     uint32_t u32Frame;
 
     /* Initialize sensor and set output format as YUV422 */
-    if (psSensorInfo->pfnInitSensor(0) == FALSE) return -1;
+    if (psSensorInfo->pfnInitSensor(0) == FALSE)
+    {
+        printf("Init sensor failed !\n");
+        return -1;
+    }
 
     /* Enable External CCAP Interrupt */
     NVIC_EnableIRQ(CCAP_IRQn);
 
-    /* Enable External CCAP Interrupt */
-    CCAP_EnableInt(CCAP_INTEN_VIEN_Msk);
     /* Enable CCAP Frame End Interrupt */
     CCAP_EnableInt(CCAP_INT_VIEN_ENABLE);
 
@@ -257,10 +267,10 @@ int32_t PacketFormatDownScale(S_SENSOR_INFO *psSensorInfo)
     /* Set Packet Frame Output Pixel Stride Width */
     CCAP_SetPacketStride(CCAP_OUTPUT_WIDTH);
 
+    u32Frame = g_u32FramePass;
+    printf("u32Frame: %d, g_u32FramePass: %d\n", u32Frame, g_u32FramePass);
     /* Stop Capture Interface after one frame captured */
     CCAP_Stop(TRUE);
-
-    u32Frame = g_u32FramePass;
 
     while (1)
     {
@@ -301,9 +311,9 @@ int32_t main(void)
         CCAP_SetFreq(12000000, 12000000);
 
         /* Config CCAP motion detection */
-        if (PacketMotionDetection(&g_sSensorNT99141) != 0)
+        if (PacketMotionDetection(&g_sSensorHM1055) != 0)
         {
-            printf("Init sensor failed !\n");
+            printf("Test motion detection failed !\n");
             break;
         }
 
@@ -316,22 +326,22 @@ int32_t main(void)
         /* Check if all the debug messages are finished */
         UART_WAIT_TX_EMPTY(DEBUG_PORT);
         /* Switch SCLK to HIRC when power down */
-        CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_HIRC, 0);
+        CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_HIRC, CLK_APLLCTL_APLLSRC_HIRC, 0);
 
         /* Enter to Power-down mode */
         PMC_PowerDown();
 
         /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
-        CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+        CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
         printf("\nWakeup\n");
         printf("MDTSAD:   0x%08X, MDWOC:    0x%08X\n", CCAP->MDTSAD, CCAP_MD_GET_OVERFLOW_WIN_CNT());
 
-        for (i = 0; i < 16; i++)
+        for (i = 0; i < CCAP_MD_WINDOW_CNT; i++)
             printf("Window[%d] SAD: 0x%08X\n", i, CCAP_MD_GET_WIN_SAD(i));
 
         // Capture 1 frame after wakeup
-        if (PacketFormatDownScale(&g_sSensorNT99141) != 0)
-            printf("Init sensir failed !\n");
+        if (PacketFormatDownScale(&g_sSensorHM1055) != 0)
+            printf("Capture frame failed !\n");
     }
 
     while (1);

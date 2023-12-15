@@ -103,17 +103,17 @@ int main(void)
     {
         if (SCB->AIRCR & SCB_AIRCR_BFHFNMINS_Msk)
         {
-            printf("Non-secure Hard Fault is handled by Non-secure code.\n");
+            printf(" * Non-secure Hard Fault is handled by \"Non-secure code\".\n");
         }
         else
         {
-            printf("Non-secure Hard Fault is handled by Secure code.\n");
+            printf(" * Non-secure Hard Fault is handled by \"Secure code\".\n");
         }
 
         printf("+------------------------------------------------------+\n");
         printf("| [0] Go Non-secure code                               |\n");
-        printf("| [1] Write FMC_APROM_BASE to generate Hard Fault      |\n");
-        printf("| [2] Write FMC_NON_SECURE_BASE to generate Hard Fault |\n");
+        printf("| [1] Write 0x%08X to generate Hard Fault          |\n", (uint32_t)FMC_APROM_BASE);
+        printf("| [2] Write 0x%08X to generate Hard Fault          |\n", (uint32_t)FMC_NON_SECURE_BASE);
         printf("| [3] Write 0 to 0x20050000 to generate Hard Fault     |\n");
         printf("+------------------------------------------------------+\n");
         ch = (char)getchar();
@@ -166,7 +166,7 @@ void Boot_NonSecure(uint32_t u32NonSecureBase)
     pfnNonSecureEntry = cmse_nsfptr_create(pfnNonSecureEntry);
 
     /* Check if the Reset_Handler address is in Non-secure space */
-    if (cmse_is_nsfptr(pfnNonSecureEntry) && (((uint32_t)pfnNonSecureEntry & NS_OFFSET) == NS_OFFSET))
+    if (cmse_is_nsfptr(pfnNonSecureEntry) && (((uint32_t)pfnNonSecureEntry & 0xF0000000) == NS_OFFSET))
     {
         printf("Execute Non-secure code ...\n");
         pfnNonSecureEntry(0);   /* Non-secure function entry */
@@ -199,13 +199,13 @@ void SYS_Init(void)
      * Init System Clock
      *-----------------------------------------------------------------------*/
     /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Enable module clock */

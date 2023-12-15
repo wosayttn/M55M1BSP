@@ -34,6 +34,8 @@ NVT_ITCM void EADC00_IRQHandler(void)
 
     /* Save the interrupt sequence about ADINT0 */
     g_u32IntSequence[0] = g_u32IntSequenceIndex++;
+    /*Confirm that the Flag has been cleared. */
+    EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);
 }
 
 NVT_ITCM void EADC01_IRQHandler(void)
@@ -44,6 +46,8 @@ NVT_ITCM void EADC01_IRQHandler(void)
 
     /* Save the interrupt sequence about ADINT1 */
     g_u32IntSequence[1] = g_u32IntSequenceIndex++;
+    /*Confirm that the Flag has been cleared. */
+    EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADIF1_Msk);
 }
 
 NVT_ITCM void EADC02_IRQHandler(void)
@@ -54,6 +58,8 @@ NVT_ITCM void EADC02_IRQHandler(void)
 
     /* Save the interrupt sequence about ADINT2 */
     g_u32IntSequence[2] = g_u32IntSequenceIndex++;
+    /*Confirm that the Flag has been cleared. */
+    EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADIF2_Msk);
 }
 
 NVT_ITCM void EADC03_IRQHandler(void)
@@ -64,6 +70,8 @@ NVT_ITCM void EADC03_IRQHandler(void)
 
     /* Save the interrupt sequence about ADINT3 */
     g_u32IntSequence[3] = g_u32IntSequenceIndex++;
+    /*Confirm that the Flag has been cleared. */
+    EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADIF3_Msk);
 }
 
 void SYS_Init(void)
@@ -84,15 +92,15 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
-    /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
-    SystemCoreClockUpdate();
-
+    /* Workaround(Test Chip Only)  */
+    /* If the ADC clock is divided, the conversion result value will deviate, so only the PCLK0 clock can be divided. */
+    /* PCLK0 clock divider 15 */
+    CLK_SET_PCLK0DIV(15);
     /* Enable EADC peripheral clock */
-    CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(15));
+    CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(1));
 
     /* Enable EADC module clock */
     CLK_EnableModuleClock(EADC0_MODULE);
@@ -100,21 +108,24 @@ void SYS_Init(void)
     /* Enable GPIOB module clock */
     CLK_EnableModuleClock(GPIOB_MODULE);
 
+    /* Update System Core Clock */
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
+    SystemCoreClockUpdate();
+    
     /* Debug UART clock setting*/
     SetDebugUartCLK();
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
     /* Set PB.0, PB.6 ~ PB.9 to input mode */
-    GPIO_SetMode(PB, BIT9 | BIT8 | BIT7 | BIT6 | BIT0, GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT9 | BIT8 | BIT7 | BIT6 , GPIO_MODE_INPUT);
     /* Configure the EADC analog input pins.  */
-    SET_EADC0_CH0_PB0();
     SET_EADC0_CH6_PB6();
     SET_EADC0_CH7_PB7();
     SET_EADC0_CH8_PB8();
     SET_EADC0_CH9_PB9();
     /* Disable the GPB0, GPB6~9 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT9 | BIT8 | BIT7 | BIT6 | BIT0);
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT9 | BIT8 | BIT7 | BIT6);
 
 }
 

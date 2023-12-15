@@ -33,7 +33,7 @@ void LPUART_PowerDownWakeUpTest(void);
 void PowerDownFunction(void)
 {
     /* Check if all the debug messages are finished */
-    UART_WAIT_TX_EMPTY(UART0);
+    UART_WAIT_TX_EMPTY(DEBUG_PORT);
 
     /* Set Power-down mode */
     PMC_SetPowerDownMode(TEST_POWER_DOWN_MODE, PMC_PLCTL_PLSEL_PL0);
@@ -62,7 +62,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -80,7 +80,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set PB multi-function pins for Debug UART RXD and TXD */
+    /* Set debug uart multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
     /* Set PA multi-function pins for LPUART0 TXD and RXD */
@@ -156,13 +156,13 @@ NVT_ITCM void LPUART0_IRQHandler(void)
     // TESTCHIP_ONLY
     CLK_WaitModuleClockReady(LPUART0_MODULE);
     // TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(UART0_MODULE);
+    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);
 
     if (LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_WKINT_Msk))    /* LPUART wake-up interrupt flag */
     {
         LPUART_ClearIntFlag(LPUART0, LPUART_INTSTS_WKINT_Msk);
         printf("LPUART wake-up.\n");
-        UART_WAIT_TX_EMPTY(UART0);
+        UART_WAIT_TX_EMPTY(DEBUG_PORT);
     }
     else if (LPUART_GET_INT_FLAG(LPUART0, LPUART_INTSTS_RDAINT_Msk | LPUART_INTSTS_RXTOINT_Msk))    /* LPUART receive data available flag */
     {
@@ -312,24 +312,24 @@ void LPUART_PowerDownWakeUpTest(void)
 
     switch (u32Item)
     {
-        case '1':
-            LPUART_CTSWakeUp();
-            break;
+    case '1':
+        LPUART_CTSWakeUp();
+        break;
 
-        case '2':
-            LPUART_DataWakeUp();
-            break;
+    case '2':
+        LPUART_DataWakeUp();
+        break;
 
-        case '3':
-            LPUART_RxThresholdWakeUp();
-            break;
+    case '3':
+        LPUART_RxThresholdWakeUp();
+        break;
 
-        case '4':
-            LPUART_RS485WakeUp();
-            break;
+    case '4':
+        LPUART_RS485WakeUp();
+        break;
 
-        default:
-            return;
+    default:
+        return;
     }
 
     /* Unlock protected registers before entering Power-down mode */

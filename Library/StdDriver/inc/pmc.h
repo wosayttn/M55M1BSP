@@ -84,13 +84,15 @@ enum
 /*---------------------------------------------------------------------------------------------------------*/
 #define PMC_NPD0        0x0UL   /*!< Select NPD0 as power down mode */
 #define PMC_NPD1        0x1UL   /*!< Select NPD1 as power down mode */
-#define PMC_NPD2        0x2UL   /*!< Select NPD2 as power down mode */
 #if 0   // TESTCHIP_ONLY not support
+#define PMC_NPD2        0x2UL   /*!< Select NPD2 as power down mode */
 #define PMC_NPD3        0x3UL   /*!< Select NPD3 as power down mode */
 #define PMC_NPD4        0x4UL   /*!< Select NPD4 as power down mode */
 #endif
 #define PMC_SPD0        0x5UL   /*!< Select SPD0 as power down mode */
+#if 0   // TESTCHIP_ONLY not support
 #define PMC_SPD1        0x6UL   /*!< Select SPD1 as power down mode */
+#endif
 #define PMC_DPD0        0x7UL   /*!< Select DPD0 as power down mode */
 #if 0   // TESTCHIP_ONLY not support
 #define PMC_DPD1        0x8UL   /*!< Select DPD1 as power down mode */

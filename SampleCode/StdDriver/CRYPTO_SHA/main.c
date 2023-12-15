@@ -1,11 +1,11 @@
- /**************************************************************************//**
- * @file    main.c
- * @version V1.00
- * @brief   CRYPTO_SHA code for M55M1 series MCU
- *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- *****************************************************************************/
+/**************************************************************************//**
+* @file    main.c
+* @version V1.00
+* @brief   CRYPTO_SHA code for M55M1 series MCU
+*
+* SPDX-License-Identifier: Apache-2.0
+* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,31 +34,31 @@ void DEBUG_PORT_Init(void);
 void CRYPTO_IRQHandler(void)
 {
 
-    if(SHA_GET_INT_FLAG(CRYPTO))
+    if (SHA_GET_INT_FLAG(CRYPTO))
     {
         g_SHA_done = 1;
-        if(SHA_GET_INT_FLAG(CRYPTO)&CRYPTO_INTSTS_HMACEIF_Msk)
+        if (SHA_GET_INT_FLAG(CRYPTO)&CRYPTO_INTSTS_HMACEIF_Msk)
         {
             g_SHA_error = 1;
             printf("SHA error flag is set!!\n");
         }
-			  SHA_CLR_INT_FLAG(CRYPTO);
+        SHA_CLR_INT_FLAG(CRYPTO);
     }
 }
 
 void SYS_Init(void)
 {
 
-      /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-   /* Enable Internal RC 12MHz clock */
+    /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
@@ -66,15 +66,15 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
 
-   /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable PLL0 200MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -86,14 +86,11 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Enable CRYPTO module clock */
     CLK_EnableModuleClock(CRYPTO0_MODULE);
 
-		 /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -106,10 +103,10 @@ int  do_compare(uint8_t *output, uint8_t *expect, int cmp_len)
 {
     int   i;
 
-    if(memcmp(expect, output, (size_t)cmp_len))
+    if (memcmp(expect, output, (size_t)cmp_len))
     {
         printf("\nMismatch!! - %d\n", cmp_len);
-        for(i = 0; i < cmp_len; i++)
+        for (i = 0; i < cmp_len; i++)
             printf("0x%02x    0x%02x\n", expect[i], output[i]);
         return -1;
     }
@@ -134,9 +131,9 @@ int32_t RunSHA(void)
 
     /* Waiting for SHA calcuation done */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(!g_SHA_done)
+    while (!g_SHA_done)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for SHA calcuation done time-out!\n");
             return (-1);
@@ -147,7 +144,7 @@ int32_t RunSHA(void)
     SHA_Read(CRYPTO, au32OutputDigest);
 
     /* Compare calculation result with golden pattern */
-    if(do_compare((uint8_t *)&au32OutputDigest[0], &g_au8ShaDigest[0], g_i32DigestLength) < 0)
+    if (do_compare((uint8_t *)&au32OutputDigest[0], &g_au8ShaDigest[0], g_i32DigestLength) < 0)
     {
         printf("Compare error!\n");
         return (-1);
@@ -159,7 +156,7 @@ int32_t RunSHA(void)
 int main(void)
 {
 
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
 
     /* Init System, IP clock and multi-function I/O. */
@@ -180,20 +177,20 @@ int main(void)
     /* Load test vector data base */
     OpenTestVector();
 
-    while(1)
+    while (1)
     {
         /* Get data from test vector to calcualte and
            compre the result with golden pattern */
-        if(GetNextPattern() < 0)
+        if (GetNextPattern() < 0)
             break;
 
-        if(RunSHA() < 0)
+        if (RunSHA() < 0)
             break;
     }
 
     printf("SHA test done.\n");
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

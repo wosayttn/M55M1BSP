@@ -43,7 +43,6 @@ static volatile uint32_t s_u32TickCnt;
 void SysTick_Handler(void);
 void enable_sys_tick(int ticks_per_second);
 void SYS_Init(void);
-void UART0_Init(void);
 void dump_buff_hex(uint8_t *pu8Buff, int i8Bytes);
 int is_a_new_hid_device(HID_DEV_T *hdev);
 void update_hid_device_list(HID_DEV_T *hdev);
@@ -138,8 +137,8 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Enable GPIOA module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);

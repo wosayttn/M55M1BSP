@@ -171,7 +171,7 @@ void SYS_Init(void)
     /* Select PSIO module clock source as HIRC and PSIO module clock divider as 1 */
     CLK_SetModuleClock(PSIO0_MODULE, CLK_PSIOSEL_PSIO0SEL_HIRC, CLK_PSIODIV_PSIO0DIV(1));
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     CLK_EnableModuleClock(GPIOA_MODULE);
@@ -190,9 +190,9 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
-    /* Set PSIO multi-function pin CH0(PB.15) and CH1(PC.4) */
-    SET_PSIO0_CH0_PB15();
-    SET_PSIO0_CH1_PC4();
+    /* Set PSIO multi-function pin CH0(PE.14) and CH1(PE.15) */
+    SET_PSIO0_CH0_PE14();
+    SET_PSIO0_CH1_PE15();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -211,13 +211,10 @@ int32_t main(void)
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
-    /* Lock protected registers */
-    SYS_LockReg();
-
     printf("******************************************************\n");
     printf("|               PS/2 Host Sample Code                |\n");
-    printf("|      Please connected PSIO_CH0(PB.15)(Clock)       |\n");
-    printf("|      and PSIO_CH1(PC.4)(Data).                     |\n");
+    printf("|      Please connected PSIO_CH0(PE.14)(Clock)       |\n");
+    printf("|      and PSIO_CH1(PE.15)(Data).                     |\n");
     printf("******************************************************\n");
 
     /* Use slot controller 0/1 and pin 0/1 */
@@ -225,11 +222,14 @@ int32_t main(void)
     g_sConfig.u8DataSC         = PSIO_SC1;
     g_sConfig.u8ClockPin       = PSIO_PIN0;
     g_sConfig.u8DataPin        = PSIO_PIN1;
-    g_sConfig.p32ClockMFP      = &PB15;
-    g_sConfig.p32DataMFP       = &PC4;
+    g_sConfig.p32ClockMFP      = &PE14;
+    g_sConfig.p32DataMFP       = &PE15;
 
     /* Initialize PSIO setting for PS/2 host protocol */
     PSIO_PS2_Open(&g_sConfig);
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     while (1)
     {
@@ -252,11 +252,11 @@ int32_t main(void)
         }
 
         /* Send data */
-        if (!(UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk))
+        if (!(DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk))
         {
             uint32_t u32Data;
 
-            u32Data = UART0->DAT;
+            u32Data = DEBUG_PORT->DAT;
             g_u32TxData = PSIO_Encode_TxData(&u32Data);
             printf("[Host send to device]0x%x, 0x%x\n", u32Data, g_u32TxData);
 

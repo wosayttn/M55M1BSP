@@ -3918,6 +3918,12 @@ typedef struct
 #define SYS_LPUARTRST_LPUART0RST_Pos     (0)                                               /*!< SYS_T::LPUARTRST: LPUART0RST Position  */
 #define SYS_LPUARTRST_LPUART0RST_Msk     (0x1ul << SYS_LPUARTRST_LPUART0RST_Pos)           /*!< SYS_T::LPUARTRST: LPUART0RST Mask      */
 
+#define SYS_OTFCRST_OTFC0RST_Pos         (0)                                               /*!< SYS_T::OTFCRST: OTFC0RST Position      */
+#define SYS_OTFCRST_OTFC0RST_Msk         (0x1ul << SYS_OTFCRST_OTFC0RST_Pos)               /*!< SYS_T::OTFCRST: OTFC0RST Mask          */
+
+#define SYS_OTFCRST_OTFC1RST_Pos         (1)                                               /*!< SYS_T::OTFCRST: OTFC1RST Position      */
+#define SYS_OTFCRST_OTFC1RST_Msk         (0x1ul << SYS_OTFCRST_OTFC1RST_Pos)               /*!< SYS_T::OTFCRST: OTFC1RST Mask          */
+
 #define SYS_OTGRST_OTG0RST_Pos           (0)                                               /*!< SYS_T::OTGRST: OTG0RST Position        */
 #define SYS_OTGRST_OTG0RST_Msk           (0x1ul << SYS_OTGRST_OTG0RST_Pos)                 /*!< SYS_T::OTGRST: OTG0RST Mask            */
 
@@ -4125,6 +4131,7 @@ typedef struct
 #define SYS_GPB_MFP3_PB12MFP_Pos         (0)                                               /*!< SYS_T::GPB_MFP3: PB12MFP Position      */
 #define SYS_GPB_MFP3_PB12MFP_Msk         (0x1ful << SYS_GPB_MFP3_PB12MFP_Pos)              /*!< SYS_T::GPB_MFP3: PB12MFP Mask          */
 
+#if !defined(ALIGN_AF_PINS)
 #define SYS_GPB_MFP3_PB13MFP_Pos         (8)                                               /*!< SYS_T::GPB_MFP3: PB13MFP Position      */
 #define SYS_GPB_MFP3_PB13MFP_Msk         (0x1ful << SYS_GPB_MFP3_PB13MFP_Pos)              /*!< SYS_T::GPB_MFP3: PB13MFP Mask          */
 
@@ -4133,6 +4140,7 @@ typedef struct
 
 #define SYS_GPB_MFP3_PB15MFP_Pos         (24)                                              /*!< SYS_T::GPB_MFP3: PB15MFP Position      */
 #define SYS_GPB_MFP3_PB15MFP_Msk         (0x1ful << SYS_GPB_MFP3_PB15MFP_Pos)              /*!< SYS_T::GPB_MFP3: PB15MFP Mask          */
+#endif
 
 #define SYS_GPC_MFP0_PC0MFP_Pos          (0)                                               /*!< SYS_T::GPC_MFP0: PC0MFP Position       */
 #define SYS_GPC_MFP0_PC0MFP_Msk          (0x1ful << SYS_GPC_MFP0_PC0MFP_Pos)               /*!< SYS_T::GPC_MFP0: PC0MFP Mask           */
@@ -4179,6 +4187,7 @@ typedef struct
 #define SYS_GPD_MFP0_PD0MFP_Pos          (0)                                               /*!< SYS_T::GPD_MFP0: PD0MFP Position       */
 #define SYS_GPD_MFP0_PD0MFP_Msk          (0x1ful << SYS_GPD_MFP0_PD0MFP_Pos)               /*!< SYS_T::GPD_MFP0: PD0MFP Mask           */
 
+#if !defined(ALIGN_AF_PINS)
 #define SYS_GPD_MFP0_PD1MFP_Pos          (8)                                               /*!< SYS_T::GPD_MFP0: PD1MFP Position       */
 #define SYS_GPD_MFP0_PD1MFP_Msk          (0x1ful << SYS_GPD_MFP0_PD1MFP_Pos)               /*!< SYS_T::GPD_MFP0: PD1MFP Mask           */
 
@@ -4190,6 +4199,7 @@ typedef struct
 
 #define SYS_GPD_MFP1_PD4MFP_Pos          (0)                                               /*!< SYS_T::GPD_MFP1: PD4MFP Position       */
 #define SYS_GPD_MFP1_PD4MFP_Msk          (0x1ful << SYS_GPD_MFP1_PD4MFP_Pos)               /*!< SYS_T::GPD_MFP1: PD4MFP Mask           */
+#endif
 
 #define SYS_GPD_MFP1_PD5MFP_Pos          (8)                                               /*!< SYS_T::GPD_MFP1: PD5MFP Position       */
 #define SYS_GPD_MFP1_PD5MFP_Msk          (0x1ful << SYS_GPD_MFP1_PD5MFP_Pos)               /*!< SYS_T::GPD_MFP1: PD5MFP Mask           */

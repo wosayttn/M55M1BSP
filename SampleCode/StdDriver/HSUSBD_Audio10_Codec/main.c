@@ -33,7 +33,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -53,17 +53,18 @@ void SYS_Init(void)
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
-    /* Select HSUSBD */
-    SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;
-
+   /* Enable HSOTG0_ module clock */
+    CLK_EnableModuleClock(HSOTG0_MODULE);
+    
+    SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;    /* select HSUSBD */
     /* Enable USB PHY */
-    SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
+    SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk | SYS_USBPHY_HSUSBACT_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
+    for (i=0; i<0x1000; i++);      // delay > 10 us
+    SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
 
-    for (i = 0; i < 0x1000; i++);  // delay > 10 us
-
-
-    /* Enable HSUSBD module clock */
+    /* Enable IP clock */
     CLK_EnableModuleClock(HSUSBD0_MODULE);
+
 
     /* Enable TIMER0 module clock */
     CLK_EnableModuleClock(TMR0_MODULE);
@@ -84,7 +85,7 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();
 
     /* Set multi-function pins for I2S0 */

@@ -692,11 +692,11 @@ int  usbh_pooling_hubs(void)
 
 #endif
 
-#ifdef ENABLE_OHCI0
+#ifdef ENABLE_OHCI1
 
     do
     {
-        ret = ohci0_driver.rthub_polling();
+        ret = ohci1_driver.rthub_polling();
 
         if (ret)
             change = 1;
@@ -704,11 +704,11 @@ int  usbh_pooling_hubs(void)
 
 #endif
 
-#ifdef ENABLE_OHCI1
+#ifdef ENABLE_OHCI0
 
     do
     {
-        ret = ohci1_driver.rthub_polling();
+        ret = ohci0_driver.rthub_polling();
 
         if (ret)
             change = 1;

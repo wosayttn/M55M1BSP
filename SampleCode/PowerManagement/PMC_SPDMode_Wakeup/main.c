@@ -40,7 +40,7 @@ void PowerDownFunction(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void WakeUpPinFunction(uint32_t u32PDMode)
 {
-    printf("Enter to DPD Power-down mode......\n");
+    printf("Enter to SPD Power-down mode......\n");
 
     /* Select Power-down mode */
     PMC_SetPowerDownMode(u32PDMode, PMC_PLCTL_PLSEL_PL0);
@@ -61,7 +61,7 @@ void WakeUpPinFunction(uint32_t u32PDMode)
 void WakeUpTimerFunction(uint32_t u32PDMode, uint32_t u32Interval)
 {
 
-    printf("Enter to DPD Power-down mode......\n");
+    printf("Enter to SPD Power-down mode......\n");
 
     /* Select Power-down mode */
     PMC_SetPowerDownMode(u32PDMode, PMC_PLCTL_PLSEL_PL0);
@@ -158,7 +158,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    
+
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
@@ -172,13 +172,13 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
 
     /* Enable PLL0 180MHz clock and set all bus clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

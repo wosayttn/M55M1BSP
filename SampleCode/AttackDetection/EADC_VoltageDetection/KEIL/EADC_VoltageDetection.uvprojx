@@ -429,6 +429,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\eadc.c</FilePath>
             </File>
+            <File>
+              <FileName>acmp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\acmp.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

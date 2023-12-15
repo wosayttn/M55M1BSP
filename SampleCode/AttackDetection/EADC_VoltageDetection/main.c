@@ -21,7 +21,6 @@ static volatile uint8_t s_u8ADF;
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
 void SYS_Init(void);
-void UART0_Init(void);
 uint32_t GetAVDDVoltage(void);
 uint32_t GetAVDDCodeByADC(void);
 NVT_ITCM void EADC0_IRQHandler(void);
@@ -62,18 +61,27 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+
+    /* Workaround(TESTCHIP_ONLY)  */
+    /*If the ADC clock is divided, the conversion result value will deviate, so only the PCLK0 clock can be divided. */
+    /* PCLK0 clock divider 15 */
+    CLK_SET_PCLK0DIV(15);
+    /* Enable EADC peripheral clock */
+    CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(1));
+
+    /* Enable EADC module clock */
+    CLK_EnableModuleClock(EADC0_MODULE);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable EADC peripheral clock */
-    CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(15));
-
-    /* Enable EADC module clock */
-    CLK_EnableModuleClock(EADC0_MODULE);
+    /*Workaround(Test Chip Only)  */
+    /*To measure the VBG voltage in TC8263, ACMP_N must be set through ACMP to turn on VBG.*/
+    CLK_EnableModuleClock(ACMP01_MODULE);
+    ACMP_Open(ACMP01,0,ACMP_CTL_NEGSEL_VBG,ACMP_CTL_HYSTERESIS_DISABLE);
 
     /* Debug UART clock setting*/
     SetDebugUartCLK();

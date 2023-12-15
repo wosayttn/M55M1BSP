@@ -57,7 +57,8 @@ unsigned long get_fattime(void)
 
 void SDH0_IRQHandler(void)
 {
-    uint32_t volatile u32Isr;
+    unsigned int volatile isr;
+    unsigned int volatile ier;
 
     // FMI data abort interrupt
     if (SDH0->GINTSTS & SDH_GINTSTS_DTAIF_Msk)
@@ -67,16 +68,19 @@ void SDH0_IRQHandler(void)
     }
 
     //----- SD interrupt status
-    u32Isr = SDH0->INTSTS;
+    isr = SDH0->INTSTS;
+    ier = SDH0->INTEN;
 
-    if (u32Isr & SDH_INTSTS_BLKDIF_Msk)
+    if (isr & SDH_INTSTS_BLKDIF_Msk)
     {
         // block down
         SD0.DataReadyFlag = TRUE;
         SDH0->INTSTS = SDH_INTSTS_BLKDIF_Msk;
+        //printf("SD block down\r\n");
     }
 
-    if (u32Isr & SDH_INTSTS_CDIF_Msk)   // port 0 card detect
+    if ((ier & SDH_INTEN_CDIEN_Msk) &&
+            (isr & SDH_INTSTS_CDIF_Msk))    // card detect
     {
         //----- SD interrupt status
         // it is work to delay 50 times for SD_CLK = 200KHz
@@ -85,10 +89,15 @@ void SDH0_IRQHandler(void)
 
             for (i = 0; i < 0x500; i++); // delay to make sure got updated value from REG_SDISR.
 
-            u32Isr = SDH0->INTSTS;
+            isr = SDH0->INTSTS;
         }
 
-        if (u32Isr & SDH_INTSTS_CDSTS_Msk)
+#if (DEF_CARD_DETECT_SOURCE == CardDetect_From_DAT3)
+
+        if (!(isr & SDH_INTSTS_CDSTS_Msk))
+#else
+        if (isr & SDH_INTSTS_CDSTS_Msk)
+#endif
         {
             printf("\n***** card remove !\n");
             SD0.IsCardInsert = FALSE;   // SDISR_CD_Card = 1 means card remove for GPIO mode
@@ -97,22 +106,22 @@ void SDH0_IRQHandler(void)
         else
         {
             printf("***** card insert !\n");
-            SDH_Open(SDH0, CardDetect_From_GPIO);
-            SDH_Probe(SDH0);
+            //SDH_Open(SDH0, CardDetect_From_GPIO);
+            //SDH_Probe(SDH0);
         }
 
         SDH0->INTSTS = SDH_INTSTS_CDIF_Msk;
     }
 
     // CRC error interrupt
-    if (u32Isr & SDH_INTSTS_CRCIF_Msk)
+    if (isr & SDH_INTSTS_CRCIF_Msk)
     {
-        if (!(u32Isr & SDH_INTSTS_CRC16_Msk))
+        if (!(isr & SDH_INTSTS_CRC16_Msk))
         {
             //printf("***** ISR sdioIntHandler(): CRC_16 error !\n");
             // handle CRC error
         }
-        else if (!(u32Isr & SDH_INTSTS_CRC7_Msk))
+        else if (!(isr & SDH_INTSTS_CRC7_Msk))
         {
             if (!SD0.R3Flag)
             {
@@ -124,14 +133,14 @@ void SDH0_IRQHandler(void)
         SDH0->INTSTS = SDH_INTSTS_CRCIF_Msk;      // clear interrupt flag
     }
 
-    if (u32Isr & SDH_INTSTS_DITOIF_Msk)
+    if (isr & SDH_INTSTS_DITOIF_Msk)
     {
         printf("***** ISR: data in timeout !\n");
         SDH0->INTSTS |= SDH_INTSTS_DITOIF_Msk;
     }
 
     // Response in timeout interrupt
-    if (u32Isr & SDH_INTSTS_RTOIF_Msk)
+    if (isr & SDH_INTSTS_RTOIF_Msk)
     {
         printf("***** ISR: response in timeout !\n");
         SDH0->INTSTS |= SDH_INTSTS_RTOIF_Msk;
@@ -165,8 +174,9 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Enable PLL0 180MHz clock */
+    /* Enable PLL0/1 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL1_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
@@ -206,16 +216,13 @@ void SYS_Init(void)
     /* Enable PDMA0 module clock */
     CLK_EnableModuleClock(PDMA0_MODULE);
 
-    /* Enable SPIM0 module clock */
-    CLK_EnableModuleClock(SPIM0_MODULE);
-
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                */
     /*------------------------------------------------------------------------*/
-    /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();
 
     /* Set multi-function pins for I2S0 */
@@ -232,29 +239,120 @@ void SYS_Init(void)
     SET_I2C3_SDA_PG1();
     SET_I2C3_SCL_PG0();
 
-    /* Enable I2C3 clock pin (PD1) schmitt trigger */
+    /* Enable I2C3 clock pin (PG0) schmitt trigger */
     PG->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
 
-    /* Set multi-function pins for SPIM0 */
-    SET_SPIM0_CLKN_PC5();
-    SET_SPIM0_CLK_PC4();
-    SET_SPIM0_D2_PC0();
-    SET_SPIM0_D3_PG10();
-    SET_SPIM0_D4_PG9();
-    SET_SPIM0_D5_PG13();
-    SET_SPIM0_D6_PG14();
-    SET_SPIM0_D7_PG15();
-    SET_SPIM0_MISO_PG12();
-    SET_SPIM0_MOSI_PG11();
-    SET_SPIM0_RESETN_PC2();
-    SET_SPIM0_RWDS_PC1();
-    SET_SPIM0_SS_PC3();
+#ifndef REC_IN_RT
+
+    if (SPIM_PORT == SPIM0)
+    {
+        /* Enable SPIM module clock */
+        CLK_EnableModuleClock(SPIM0_MODULE);
+
+        /* Init SPIM multi-function pins */
+        SET_SPIM0_CLKN_PC5();
+        SET_SPIM0_CLK_PC4();
+        SET_SPIM0_D2_PC0();
+        SET_SPIM0_D3_PG10();
+        SET_SPIM0_D4_PG9();
+        SET_SPIM0_D5_PG13();
+        SET_SPIM0_D6_PG14();
+        SET_SPIM0_D7_PG15();
+        SET_SPIM0_MISO_PG12();
+        SET_SPIM0_MOSI_PG11();
+        SET_SPIM0_RESETN_PC2();
+        SET_SPIM0_RWDS_PC1();
+        SET_SPIM0_SS_PC3();
+
+        PC->SMTEN |= (GPIO_SMTEN_SMTEN0_Msk |
+                      GPIO_SMTEN_SMTEN1_Msk |
+                      GPIO_SMTEN_SMTEN2_Msk |
+                      GPIO_SMTEN_SMTEN3_Msk |
+                      GPIO_SMTEN_SMTEN4_Msk |
+                      GPIO_SMTEN_SMTEN5_Msk);
+        PG->SMTEN |= (GPIO_SMTEN_SMTEN9_Msk  |
+                      GPIO_SMTEN_SMTEN10_Msk |
+                      GPIO_SMTEN_SMTEN11_Msk |
+                      GPIO_SMTEN_SMTEN12_Msk |
+                      GPIO_SMTEN_SMTEN13_Msk |
+                      GPIO_SMTEN_SMTEN14_Msk |
+                      GPIO_SMTEN_SMTEN15_Msk);
+
+        /* Set SPIM I/O pins as high slew rate up to 80 MHz. */
+        GPIO_SetSlewCtl(PC, BIT0, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PC, BIT1, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PC, BIT2, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PC, BIT3, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PC, BIT4, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PC, BIT5, GPIO_SLEWCTL_HIGH);
+
+        GPIO_SetSlewCtl(PG, BIT9, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PG, BIT10, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PG, BIT11, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PG, BIT12, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PG, BIT13, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PG, BIT14, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PG, BIT15, GPIO_SLEWCTL_HIGH);
+    }
+    else if (SPIM_PORT == SPIM1)
+    {
+        /* Enable SPIM module clock */
+        CLK_EnableModuleClock(SPIM1_MODULE);
+
+        /* Init SPIM multi-function pins */
+        SET_SPIM1_CLKN_PH12();
+        SET_SPIM1_CLK_PH13();
+        SET_SPIM1_D2_PJ4();
+        SET_SPIM1_D3_PJ3();
+        SET_SPIM1_D4_PH15();
+        SET_SPIM1_D5_PD7();
+        SET_SPIM1_D6_PD6();
+        SET_SPIM1_D7_PD5();
+        SET_SPIM1_MISO_PJ5();
+        SET_SPIM1_MOSI_PJ6();
+        SET_SPIM1_RESETN_PJ2();
+        SET_SPIM1_RWDS_PH14();
+        SET_SPIM1_SS_PJ7();
+
+        PD->SMTEN |= (GPIO_SMTEN_SMTEN5_Msk |
+                      GPIO_SMTEN_SMTEN6_Msk |
+                      GPIO_SMTEN_SMTEN7_Msk);
+        PH->SMTEN |= (GPIO_SMTEN_SMTEN12_Msk |
+                      GPIO_SMTEN_SMTEN13_Msk |
+                      GPIO_SMTEN_SMTEN14_Msk |
+                      GPIO_SMTEN_SMTEN15_Msk);
+        PJ->SMTEN |= (GPIO_SMTEN_SMTEN2_Msk |
+                      GPIO_SMTEN_SMTEN3_Msk |
+                      GPIO_SMTEN_SMTEN4_Msk |
+                      GPIO_SMTEN_SMTEN5_Msk |
+                      GPIO_SMTEN_SMTEN6_Msk |
+                      GPIO_SMTEN_SMTEN7_Msk);
+
+        /* Set SPIM I/O pins as high slew rate up to 80 MHz. */
+        GPIO_SetSlewCtl(PD, BIT5, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PD, BIT6, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PD, BIT7, GPIO_SLEWCTL_HIGH);
+
+        GPIO_SetSlewCtl(PH, BIT12, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PH, BIT13, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PH, BIT14, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PH, BIT15, GPIO_SLEWCTL_HIGH);
+
+        GPIO_SetSlewCtl(PJ, BIT2, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PJ, BIT3, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PJ, BIT4, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PJ, BIT5, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PJ, BIT6, GPIO_SLEWCTL_HIGH);
+        GPIO_SetSlewCtl(PJ, BIT7, GPIO_SLEWCTL_HIGH);
+    }
+
+#endif
 }
 
-void I2C3_Init(void)
+void I2C_Init(void)
 {
-    /* Open I2C3 and set clock to 100k */
-    I2C_Open(I2C3, 100000);
+    /* Open I2C and set clock to 100k */
+    I2C_Open(I2C_PORT, 100000);
 }
 
 /* Configure PDMA to Scatter Gather mode */
@@ -345,14 +443,16 @@ int32_t main(void)
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
+    /* Init Debug UART for printf */
+    InitDebugUart();
+
     /* Init SD */
     SD_Init();
 
+#ifndef REC_IN_RT
     /* Init HyperRAM and Entry DMM Mode */
-    HyperRAM_Init(SPIM0);
-
-    /* Init UART to 115200-8n1 for print message */
-    UART_Open(UART0, 115200);
+    HyperRAM_Init(SPIM_PORT);
+#endif
 
     printf("+-----------------------------------------------------------------------+\n");
     printf("|                  MP3 Recorder Sample with Audio Codec                 |\n");
@@ -361,8 +461,8 @@ int32_t main(void)
     printf(" Press BTN0 button to start recording and press BTN1 button to stop recording\n");
     printf(" Press BTN1 button can also play MP3 file from microSD card\n");
 
-    /* Configure PH.0 and PH.1 as Output mode */
-    GPIO_SetMode(PH, BIT0, GPIO_MODE_OUTPUT);
+    /* Configure PI.11 and PH.1 as Output mode */
+    GPIO_SetMode(PI, BIT11, GPIO_MODE_OUTPUT);
     GPIO_SetMode(PH, BIT1, GPIO_MODE_OUTPUT);
 
     /* Enable PH.1 interrupt by falling edge trigger */
@@ -374,16 +474,16 @@ int32_t main(void)
     SDH_Open_Disk(SDH0, CardDetect_From_GPIO);
     f_chdrive(sd_path);          /* Set default path */
 
-    /* Init I2C3 to access audio codec */
-    I2C3_Init();
+    /* Init I2C to access audio codec */
+    I2C_Init();
 
-    /* Select source from HXT(12MHz) */
-    CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_HXT, 0);
+    /* Select source from HIRC(12MHz) */
+    CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_HIRC, 0);
 
     while (1)
     {
         /* Read pin state of PH.0 and PH.1 */
-        u32BTN0 = (PH->PIN & (1 << 0)) ? 0 : 1;
+        u32BTN0 = (PI->PIN & (1 << 11)) ? 0 : 1;
         u32BTN1 = (PH->PIN & (1 << 1)) ? 0 : 1;
 
         if (SD0.IsCardInsert == TRUE)

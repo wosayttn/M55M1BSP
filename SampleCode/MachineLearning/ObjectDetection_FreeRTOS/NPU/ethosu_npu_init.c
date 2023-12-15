@@ -47,6 +47,8 @@ static size_t get_cache_arena_size()
 void NPU_IRQHandler(void)
 {
     ethosu_irq_handler(&ethosu_drv);
+	__DSB();
+	__ISB();	
 }
 
 /**

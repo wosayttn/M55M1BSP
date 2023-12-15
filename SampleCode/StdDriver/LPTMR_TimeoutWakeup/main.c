@@ -8,7 +8,7 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 /*
- * This sample uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This sample uses internal RC as APLL0 clock source and UART to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
@@ -28,7 +28,7 @@ static volatile uint32_t g_u32PDWK;
 NVT_ITCM void LPTMR0_IRQHandler(void)
 {
     CLK_WaitModuleClockReady(LPTMR0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(UART0_MODULE);//TESTCHIP_ONLY
+    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
     /* Clear wake up flag */
     LPTMR_ClearWakeupFlag(LPTMR0);
     /* Clear interrupt flag */
@@ -95,7 +95,7 @@ static void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -134,7 +134,7 @@ int main(void)
 
     printf("System core clock = %d\n", SystemCoreClock);
     printf("LPTMR power down/wake up sample code\n");
-    while(!UART_IS_TX_EMPTY(UART0));
+    while(!UART_IS_TX_EMPTY(DEBUG_PORT));
 
     /* Output selected clock to CKO*/
     CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_SYSCLK, 3, CLK_CLKOCTL_DIV1EN_DIV_FREQSEL);
@@ -163,7 +163,7 @@ int main(void)
     {
         printf("Enter Power-down !\n");
         g_u32PDWK = 0;
-        while(!UART_IS_TX_EMPTY(UART0));
+        while(!UART_IS_TX_EMPTY(DEBUG_PORT));
         PMC_PowerDown();
         while(!g_u32PDWK);
         printf("Wake %d\n", i++);

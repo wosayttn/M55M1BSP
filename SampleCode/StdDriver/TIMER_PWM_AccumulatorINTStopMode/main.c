@@ -7,7 +7,7 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 /*
- * This sample uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This sample uses internal RC as APLL0 clock source and UART to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
@@ -29,7 +29,7 @@ static volatile uint32_t gu32Period;
 NVT_ITCM void TIMER0_IRQHandler(void)
 {
     TPWM_ClearAccInt(TIMER0);
-    
+
     printf("\nCheck if output toggles 11 times then stop toggles.\n");
 }
 
@@ -67,7 +67,7 @@ static void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -81,7 +81,7 @@ static void SYS_Init(void)
     CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_PCLK1, 0);
     /* Enable TIMER module clock */
     CLK_EnableModuleClock(TMR0_MODULE);
-    
+
     /* Enable GPIO clock */
     CLK_EnableModuleClock(GPIOB_MODULE);
     /* Set Timer0 PWM CH0(TM0) pin */

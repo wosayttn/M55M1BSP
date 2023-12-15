@@ -40,22 +40,9 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_ACLKDIV_ACLKDIV(1));
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-    
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
-
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+	
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
@@ -70,14 +57,14 @@ void SYS_Init(void)
     /* Enable NPU module clock */
     CLK_EnableModuleClock(NPU0_MODULE);
 
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+    /* Select UART6 module clock source as HIRC and UART6 module clock divider as 1 */
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    /* Set multi-function pins for UART RXD and TXD */
+    SetDebugUartMFP();
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -110,8 +97,10 @@ int main(int argc, char *argv[])
 {
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-    /* Init DEBUG_PORT to 115200-8N1 for printf */
-    DEBUG_PORT_Init(DEBUG_PORT, 115200);
+
+    /* UART init - will enable valid use of printf (stdout
+     * re-directed at this UART (UART6) */
+    InitDebugUart();
     
     printf("\n\n");
     printf("+--------------------------------------+\n");

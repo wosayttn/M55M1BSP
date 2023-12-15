@@ -24,8 +24,11 @@ volatile uint32_t g_u32AdcIntFlag, g_u32COVNUMFlag = 0;
 NVT_ITCM void EADC00_IRQHandler(void)
 {
     EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);/* Clear the A/D ADINT0 interrupt flag */
+    /*Confirm that the Flag has been cleared.*/
+    EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk); 
     g_u32AdcIntFlag = 1;
     g_u32COVNUMFlag++;
+
 }
 
 void SYS_Init(void)
@@ -46,18 +49,22 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+
+    /* Workaround(TESTCHIP_ONLY)  */
+    /*If the ADC clock is divided, the conversion result value will deviate, so only the PCLK0 clock can be divided. */
+    /* PCLK0 clock divider 15 */
+    CLK_SET_PCLK0DIV(15);
+    /* Enable EADC peripheral clock */
+    CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(1));
+
+    /* Enable EADC module clock */
+    CLK_EnableModuleClock(EADC0_MODULE);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-
-    /* Enable EADC peripheral clock */
-    CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(15));
-
-    /* Enable EADC module clock */
-    CLK_EnableModuleClock(EADC0_MODULE);
 
     /* Enable GPIOB module clock */
     CLK_EnableModuleClock(GPIOB_MODULE);
@@ -74,16 +81,14 @@ void SYS_Init(void)
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
-    /* Set PB.0 - PB.3 to input mode */
-    GPIO_SetMode(PB, BIT0 | BIT1 | BIT2 | BIT3, GPIO_MODE_INPUT);
-    /* Configure the PB.0 - PB.3 ADC analog input pins. */
-    SET_EADC0_CH0_PB0();
+    /* Set PB.1 to input mode */
+    GPIO_SetMode(PB, BIT1, GPIO_MODE_INPUT);
+    /* Configure the PB.1 ADC analog input pins. */
     SET_EADC0_CH1_PB1();
-    SET_EADC0_CH2_PB2();
-    SET_EADC0_CH3_PB3();
-    /* Disable the PB.0 - PB.3 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0 | BIT1 | BIT2 | BIT3);
+    /* Disable the PB.1 digital input path to avoid the leakage current. */
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT1 );
 
+#if !defined(ALIGN_AF_PINS)
     /* Set PB.14 - PB.15 to input mode */
     GPIO_SetMode(PB, BIT14 | BIT15, GPIO_MODE_INPUT);
     /* Configure the PB.14 - PB.15 ADC analog input pins. */
@@ -91,7 +96,15 @@ void SYS_Init(void)
     SET_EADC0_CH15_PB15();
     /* Disable the PB.14 - PB.15 digital input path to avoid the leakage current. */
     GPIO_DISABLE_DIGITAL_PATH(PB, BIT14 | BIT15);
-
+#else
+    /* Set PB.8 - PB.9 to input mode */
+    GPIO_SetMode(PB, BIT8 | BIT9, GPIO_MODE_INPUT);
+    /* Configure the PB.8 - PB.9 ADC analog input pins. */
+    SET_EADC0_CH8_PB8();
+    SET_EADC0_CH9_PB9();
+    /* Disable the PB.8 - PB.9 digital input path to avoid the leakage current. */
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT8 | BIT9);
+#endif
 
 }
 
@@ -119,8 +132,12 @@ void EADC_FunctionTest()
     while (1)
     {
         printf("Select input mode:\n");
-        printf("  [1] Single end input (channel 2 only)\n");
+        printf("  [1] Single end input (channel 1 only)\n");
+#if !defined(ALIGN_AF_PINS)
         printf("  [2] Differential input (channel pair 7: channel 14 and 15)\n");
+#else
+        printf("  [2] Differential input (channel pair 4: channel 8 and 9)\n");
+#endif
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
 
@@ -130,7 +147,7 @@ void EADC_FunctionTest()
             EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
 
             /* Configure the sample module 0 for analog input channel 2 and enable Timer0 trigger source */
-            EADC_ConfigSampleModule(EADC0, 0, EADC_TIMER0_TRIGGER, 2);
+            EADC_ConfigSampleModule(EADC0, 0, EADC_TIMER0_TRIGGER, 1);
 
             /* Clear the A/D ADINT0 interrupt flag for safe */
             EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);
@@ -161,7 +178,7 @@ void EADC_FunctionTest()
                 i32ConversionData[u32COVNUMFlag] = EADC_GET_CONV_DATA(EADC0, 0);
                 printf("    0x%X (%d)\n", i32ConversionData[u32COVNUMFlag], i32ConversionData[u32COVNUMFlag]);
 
-                if (g_u32COVNUMFlag > 6)
+                if (g_u32COVNUMFlag > 5)
                     break;
             }
 
@@ -176,8 +193,13 @@ void EADC_FunctionTest()
             /* Set input mode as differential and enable the A/D converter */
             EADC_Open(EADC0, EADC_CTL_DIFFEN_DIFFERENTIAL);
 
+#if !defined(ALIGN_AF_PINS)
             /* Configure the sample module 0 for analog input channel 14 and enable Timer0 trigger source */
             EADC_ConfigSampleModule(EADC0, 0, EADC_TIMER0_TRIGGER, 14);
+#else
+            /* Configure the sample module 0 for analog input channel 8 and enable Timer0 trigger source */
+            EADC_ConfigSampleModule(EADC0, 0, EADC_TIMER0_TRIGGER, 8);
+#endif
 
             /* Clear the A/D ADINT0 interrupt flag for safe */
             EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);
@@ -187,7 +209,11 @@ void EADC_FunctionTest()
             EADC_ENABLE_SAMPLE_MODULE_INT(EADC0, 0, BIT0);
             NVIC_EnableIRQ(EADC00_IRQn);
 
+#if !defined(ALIGN_AF_PINS)
             printf("Conversion result of channel pair 7 (channel 14/15):\n");
+#else
+            printf("Conversion result of channel pair 4 (channel 8/9):\n");
+#endif
 
             /* Reset the EADC indicator and enable Timer0 counter */
             g_u32AdcIntFlag = 0;
@@ -207,7 +233,7 @@ void EADC_FunctionTest()
                 i32ConversionData[u32COVNUMFlag] = EADC_GET_CONV_DATA(EADC0, 0);
                 printf("    0x%X (%d)\n", i32ConversionData[u32COVNUMFlag], i32ConversionData[u32COVNUMFlag]);
 
-                if (g_u32COVNUMFlag > 6)
+                if (g_u32COVNUMFlag > 5)
                     break;
             }
 

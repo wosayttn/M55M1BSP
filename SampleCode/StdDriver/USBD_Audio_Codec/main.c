@@ -31,7 +31,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -103,7 +103,7 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();
 
     /* USBD multi-function pins for VBUS, D+, D-, and ID pins */
@@ -170,7 +170,7 @@ int32_t main(void)
     CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_HIRC, 0);
 
     /* Set JK-EN low to enable phone jack on NuMaker board. */
-    SET_GPIO_PB12();		
+    SET_GPIO_PB12();
     GPIO_SetMode(PB, BIT12, GPIO_MODE_OUTPUT);
     PB12 = 0;
 

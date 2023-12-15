@@ -75,6 +75,10 @@ void RTC_IRQHandler(void)
         /* Clear RTC tick interrupt flag */
         RTC_CLEAR_TICK_INT_FLAG(RTC);
     }
+
+	__DSB();
+	__ISB();
+	
 }
 
 /**
@@ -122,6 +126,9 @@ void GPB_IRQHandler(void)
         PB->INTSRC = PB->INTSRC;
         printf("Un-expected interrupts.\n");
     }
+
+	__DSB();
+	__ISB();
 
     /* Read current RTC date/time */
     RTC_GetDateAndTime(&sReadRTC);
@@ -181,7 +188,7 @@ void vParTestInitialise(void)
     CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -203,7 +210,7 @@ void vParTestInitialise(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();
 
     /* Set PD multi-function pins for CLKO(PD.12) */

@@ -11,9 +11,6 @@
 #include "NuMicro.h"
 #include "nsclib.h"
 
-#ifndef DEBUG_PORT
-    #define DEBUG_PORT UART0
-#endif
 
 #define LOOP_HERE       0xE7FEE7FF      /* Instruction Code of "B ." */
 
@@ -152,7 +149,7 @@ void Boot_NonSecure(uint32_t u32NonSecureBase)
     pfnNonSecureEntry = cmse_nsfptr_create(pfnNonSecureEntry);
 
     /* Check if the Reset_Handler address is in Non-secure space */
-    if (cmse_is_nsfptr(pfnNonSecureEntry) && (((uint32_t)pfnNonSecureEntry & NS_OFFSET) == NS_OFFSET))
+    if (cmse_is_nsfptr(pfnNonSecureEntry) && (((uint32_t)pfnNonSecureEntry & 0xF0000000) == NS_OFFSET))
     {
         printf("Execute Non-secure code ...\n");
         pfnNonSecureEntry(0);   /* Non-secure function entry */
@@ -185,7 +182,7 @@ static void SYS_Init(void)
      * Init System Clock
      *-----------------------------------------------------------------------*/
     /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -194,7 +191,7 @@ static void SYS_Init(void)
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*-----------------------------------------------------------------------

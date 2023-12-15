@@ -35,10 +35,10 @@ __attribute__((aligned(4))) static uint8_t au8InputData[] =
 };
 
 #ifdef __ICCARM__
-#pragma data_alignment=4
-uint8_t au8OutputData[1024];
+    #pragma data_alignment=4
+    uint8_t au8OutputData[1024];
 #else
-__attribute__((aligned(4))) static uint8_t au8OutputData[1024];
+    __attribute__((aligned(4))) static uint8_t au8OutputData[1024];
 #endif
 
 static volatile int32_t  g_AES_done;
@@ -51,7 +51,7 @@ void DEBUG_PORT_Init(void);
 
 void CRYPTO_IRQHandler(void)
 {
-    if(AES_GET_INT_FLAG(CRYPTO))
+    if (AES_GET_INT_FLAG(CRYPTO))
     {
         g_AES_done = 1;
         AES_CLR_INT_FLAG(CRYPTO);
@@ -64,15 +64,15 @@ void DumpBuffHex(uint8_t *pucBuff, int nBytes)
     int32_t i32Idx, i;
 
     i32Idx = 0;
-    while(nBytes > 0)
+    while (nBytes > 0)
     {
         printf("0x%04X  ", i32Idx);
-        for(i = 0; i < 16; i++)
+        for (i = 0; i < 16; i++)
             printf("%02x ", pucBuff[i32Idx + i]);
         printf("  ");
-        for(i = 0; i < 16; i++)
+        for (i = 0; i < 16; i++)
         {
-            if((pucBuff[i32Idx + i] >= 0x20) && (pucBuff[i32Idx + i] < 127))
+            if ((pucBuff[i32Idx + i] >= 0x20) && (pucBuff[i32Idx + i] < 127))
                 printf("%c", pucBuff[i32Idx + i]);
             else
                 printf(".");
@@ -89,16 +89,16 @@ void DumpBuffHex(uint8_t *pucBuff, int nBytes)
 void SYS_Init(void)
 {
 
-      /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-   /* Enable Internal RC 12MHz clock */
+    /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
@@ -106,15 +106,15 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
 
-   /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable PLL0 200MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -126,14 +126,11 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Enable CRYPTO module clock */
     CLK_EnableModuleClock(CRYPTO0_MODULE);
 
-		 /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -152,7 +149,7 @@ int32_t main(void)
 
     SYS_UnlockReg();
 
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
 
     /* Init System, IP clock and multi-function I/O. */
@@ -184,9 +181,9 @@ int32_t main(void)
 
     /* Waiting for AES calculation */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(!g_AES_done)
+    while (!g_AES_done)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for AES encrypt done time-out!\n");
             return -1;
@@ -210,9 +207,9 @@ int32_t main(void)
 
     /* Waiting for AES calculation */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(!g_AES_done)
+    while (!g_AES_done)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for AES decrypt done time-out!\n");
             return -1;
@@ -222,5 +219,5 @@ int32_t main(void)
     printf("AES decrypt done.\n\n");
     DumpBuffHex(au8InputData, sizeof(au8InputData));
 
-    while(1);
+    while (1);
 }

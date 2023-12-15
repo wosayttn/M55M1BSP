@@ -15,18 +15,6 @@
 #include "Console.h"
 #include "NuMicro.h"
 #include "hsotg_cunit.h"
-//#include "../pldm_emu.h"
-
-#ifndef DEBUG_PORT
-    #define DEBUG_PORT UART0
-#endif
-
-#ifndef DEBUG_PORT_Init
-void DEBUG_PORT_Init(UART_T *psUART, uint32_t u32Baudrate)
-{
-    UART_Open(psUART, u32Baudrate);
-}
-#endif
 
 // Internal funcfion definition
 void AddTests(void);
@@ -47,24 +35,20 @@ void SYS_Init(void)
 
     /* Enable SYS clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
-    
-    /* Enable UART module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-    SYS_ResetModule(SYS_UART0RST);
+
+    /* Enable HSOTG module clock */
     CLK_EnableModuleClock(HSOTG0_MODULE);
     SYS_ResetModule(SYS_HSOTG0RST);
 
-    /* Select UART module clock source as HXT and UART module clock divider as 1 */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+    /* Enable UART module clock */
+    SetDebugUartCLK();
 
     SystemCoreClockUpdate();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set PD multi-function pins for UART0 RXD(PB.12) and TXD(PB.13) */
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    SetDebugUartMFP();
 }
 
 void exit(int32_t code)
@@ -83,11 +67,11 @@ int main(int argc, char *argv[])
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
+    /* Init DeubgUART for printf */
+    InitDebugUart();
+
     /* Lock protected registers */
     SYS_LockReg();
-
-    /* Init DEBUG_PORT to 115200-8N1 for printf */
-    DEBUG_PORT_Init(DEBUG_PORT, 115200);
 
     if (CU_initialize_registry())
     {

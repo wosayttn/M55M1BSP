@@ -109,31 +109,27 @@ void vParTestInitialise(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Enable GPIO I module clock */
     CLK_EnableModuleClock(GPIOI_MODULE);
 
-
-	SetDebugUartCLK();
+    /* Set debug uart module clock */
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for debug UART MFP */
-	SetDebugUartMFP();
-
+    SetDebugUartMFP();
 
     /* Configure Debug port */
-	InitDebugUart();
+    InitDebugUart();
 
     /* LED IO PI12 */
     GPIO_SetMode(PI, BIT12, GPIO_MODE_OUTPUT);

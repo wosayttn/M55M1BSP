@@ -869,10 +869,15 @@ void CLK_EnableXtalRC(uint32_t u32ClkMask)
     /* TESTCHIP_ONLY start */
     if (u32ClkMask == CLK_SRCCTL_LXTEN_Msk)
     {
+        CLK_EnableModuleClock(RTC0_MODULE);
+
         RTC->LXTCTL = (RTC->LXTCTL & ~RTC_LXTCTL_GAIN_Msk) | (0x7 << RTC_LXTCTL_GAIN_Pos);
+
+        CLK_DisableModuleClock(RTC0_MODULE);
     }
 
     /* TESTCHIP_ONLY end */
+
     CLK->SRCCTL |= u32ClkMask;
 }
 
@@ -1404,10 +1409,10 @@ uint32_t CLK_EnableAPLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq, uint32_t u32
 
     /* Check PLL frequency range */
     /* Constraint 1: 50MHz < FOUT < 500MHz */
-    if ((u32PllFreq <= FREQ_500MHZ) && (u32PllFreq >= FREQ_50MHZ))
+    if ((u32PllFreq <= FREQ_500MHZ) && (u32PllFreq >= FREQ_25MHZ))
     {
         /* Select "NO" according to request frequency */
-        if ((u32PllFreq < FREQ_100MHZ) && (u32PllFreq >= FREQ_50MHZ))
+        if ((u32PllFreq < FREQ_100MHZ) && (u32PllFreq >= FREQ_25MHZ))
         {
             u32NO = 3UL;
             u32PllFreq = u32PllFreq << 2;
@@ -1432,15 +1437,21 @@ uint32_t CLK_EnableAPLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq, uint32_t u32
 
         for (; u32NR <= 32UL; u32NR++)  /* max NR = 32 since NR = INDIV+1 and INDIV = 0~31 */
         {
-            u32Tmp = u32PllSrcClk / u32NR;                      /* FREF = FIN/NR */
+            u32Tmp = u32PllSrcClk / u32NR;  /* FREF = FIN/NR */
+
+            /* Break when get good results */
+            if (u32Min == 0UL)
+            {
+                break;
+            }
 
             if ((u32Tmp >= FREQ_4MHZ) && (u32Tmp <= FREQ_8MHZ)) /* Constraint 2: 4MHz < FREF < 8MHz. */
             {
-                for (u32NF = 2UL; u32NF <= 513UL; u32NF++)      /* NF = 2~513 since NF = FBDIV+2 and FBDIV = 0~511 */
+                for (u32NF = 12UL; u32NF <= 255UL; u32NF++)      /* NF = 12~255 since NF = FBDIV+2 and FBDIV = 10~253 */
                 {
                     u32Tmp2 = (u32Tmp * u32NF) << 1;                            /* FVCO = FREF*2*NF */
 
-                    if ((u32Tmp2 >= FREQ_200MHZ) && (u32Tmp2 <= FREQ_500MHZ))   /* Constraint 3: 200MHz < FVCO < 500MHz */
+                    if ((u32Tmp2 >= FREQ_100MHZ) && (u32Tmp2 <= FREQ_500MHZ))   /* Constraint 3: 100MHz < FVCO < 500MHz */
                     {
                         u32Tmp3 = (u32Tmp2 > u32PllFreq) ? u32Tmp2 - u32PllFreq : u32PllFreq - u32Tmp2;
 
@@ -1700,11 +1711,12 @@ void CLK_DisableSysTick(void)
   */
 uint32_t CLK_GetAPLL0ClockFreq(void)
 {
-    uint32_t u32PllFreq = 0UL, u32PllReg;
+    uint32_t u32PllFreq = 0UL, u32PllReg, u32PllReg1;
     uint32_t u32FIN, u32NF, u32NR, u32NO;
     uint8_t au8NoTbl[4] = {1U, 2U, 2U, 4U};
 
     u32PllReg = CLK->APLL0CTL;
+    u32PllReg1 = CLK->APLL0SEL;
 
     if (!(CLK->SRCCTL & CLK_SRCCTL_APLL0EN_Msk))
     {
@@ -1713,11 +1725,11 @@ uint32_t CLK_GetAPLL0ClockFreq(void)
     else                        /* PLL is in normal mode */
     {
         /* PLL0 source clock */
-        if ((u32PllReg & CLK_APLL0SEL_APLLSRC_Msk) == CLK_APLLCTL_APLLSRC_HIRC)
+        if ((u32PllReg1 & CLK_APLL0SEL_APLLSRC_Msk) == CLK_APLLCTL_APLLSRC_HIRC)
         {
             u32FIN = __HIRC;        /* PLL0 source clock from HIRC */
         }
-        else if ((u32PllReg & CLK_APLL0SEL_APLLSRC_Msk) == CLK_APLLCTL_APLLSRC_HXT)
+        else if ((u32PllReg1 & CLK_APLL0SEL_APLLSRC_Msk) == CLK_APLLCTL_APLLSRC_HXT)
         {
             u32FIN = __HXT;         /* PLL0 source clock from HXT */
         }
@@ -1984,9 +1996,14 @@ uint32_t CLK_GetModuleClockDivider(uint64_t u64ModuleIdx)
   *             - \ref CLK_SCLKSEL_SCLKSEL_HIRC48M
   *             - \ref CLK_SCLKSEL_SCLKSEL_HXT
   *             - \ref CLK_SCLKSEL_SCLKSEL_APLL0
+  * @brief      Set PLL frequency
+  * @param[in]  u32PllClkSrc is PLL clock source. Including :
+  *             - \ref CLK_APLLCTL_APLLSRC_HXT
+  *             - \ref CLK_APLLCTL_APLLSRC_HIRC
+  *             - \ref CLK_APLLCTL_APLLSRC_HIRC48_DIV4
+  *             u32PllClkSrc is ignored when u32SCLKSrc is not CLK_SCLKSEL_SCLKSEL_APLL0.
   * @param[in]  u32PllFreq is PLL frequency. The range of u32PllFreq is 50 MHz ~ 500 MHz.
   *             u32PllFreq is ignored when u32SCLKSrc is not CLK_SCLKSEL_SCLKSEL_APLL0.
-   *            APLL clock source is fixed HIRC in this function.
   * @return     Current SCLK frequency
   * @details    This function is used to set the SCLK/HCLK/PCLK with clock limitations. \n
   *             The clock limitation as following below :
@@ -1997,7 +2014,7 @@ uint32_t CLK_GetModuleClockDivider(uint64_t u64ModuleIdx)
   *             PCLK4 is 50MHz
   *             The register write-protection function should be disabled before using this function.
   */
-uint32_t CLK_SetBusClock(uint32_t u32SCLKSrc, uint32_t u32PllFreq)
+uint32_t CLK_SetBusClock(uint32_t u32SCLKSrc, uint32_t u32PllClkSrc, uint32_t u32PllFreq)
 {
     uint32_t u32PllClk;
 
@@ -2007,7 +2024,7 @@ uint32_t CLK_SetBusClock(uint32_t u32SCLKSrc, uint32_t u32PllFreq)
         CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
 
         /* Enable APLL0 clock */
-        u32PllClk = CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, u32PllFreq, CLK_APLL0_SELECT);
+        u32PllClk = CLK_EnableAPLL(u32PllClkSrc, u32PllFreq, CLK_APLL0_SELECT);
 
         /* Set clock with limitations */
         if (u32PllClk > FREQ_200MHZ)

@@ -249,7 +249,7 @@ int32_t LPUART_AutoOP(uint32_t u32PDMode)
 
     printf("     System enter to Power-down mode NPD%d.\n", (int)(u32PDMode));
 
-    UART_WAIT_TX_EMPTY(UART0);
+    UART_WAIT_TX_EMPTY(DEBUG_PORT);
     PMC_PowerDown();
     printf("     Wakeup\n");
 
@@ -284,7 +284,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */

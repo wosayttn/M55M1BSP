@@ -37,7 +37,6 @@ void enable_sys_tick(int ticks_per_second);
 void dump_buff_hex(uint8_t *pu8Buff, int i8Bytes);
 void uac_control_example(UAC_DEV_T *uac_dev);
 void SYS_Init(void);
-void UART0_Init(void);
 
 /**
  * @brief    Check any char input from UART
@@ -470,8 +469,8 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Enable GPIOA module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
@@ -532,12 +531,6 @@ void SYS_Init(void)
 
     /* Lock protected registers */
     SYS_LockReg();
-}
-
-void UART0_Init(void)
-{
-    /* Configure UART0 and set UART0 baud rate */
-    UART_Open(UART0, 115200);
 }
 
 int32_t main(void)

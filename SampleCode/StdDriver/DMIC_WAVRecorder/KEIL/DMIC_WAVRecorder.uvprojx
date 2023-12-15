@@ -415,14 +415,14 @@
               <FilePath>..\..\..\..\Library\StdDriver\src\sys.c</FilePath>
             </File>
             <File>
-              <FileName>uart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\uart.c</FilePath>
-            </File>
-            <File>
               <FileName>dmic.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\dmic.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\uart.c</FilePath>
             </File>
             <File>
               <FileName>lppdma.c</FileName>

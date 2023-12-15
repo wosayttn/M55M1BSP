@@ -59,7 +59,9 @@ void SYS_Init(void)
     /* Enable SPI0 peripheral clock */
     CLK_EnableModuleClock(SPI0_MODULE);
 
-    /* Enable UART0 module clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
+
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -79,10 +81,12 @@ void SYS_Init(void)
                      SYS_GPA_MFP0_PA1MFP_SPI0_MISO |
                      SYS_GPA_MFP0_PA0MFP_SPI0_MOSI);
 
-
     /* PA.4 is SPI0_I2SMCLK */
     SYS->GPA_MFP1 &= ~SYS_GPA_MFP1_PA4MFP_Msk;
     SYS->GPA_MFP1 |= SYS_GPA_MFP1_PA4MFP_SPI0_I2SMCLK;
+
+    /* Enable SPI0 clock pin (PA2) schmitt trigger */
+    PA->SMTEN |= GPIO_SMTEN_SMTEN2_Msk;
 }
 
 /*---------------------------------------------------------------------------------------------------------*/

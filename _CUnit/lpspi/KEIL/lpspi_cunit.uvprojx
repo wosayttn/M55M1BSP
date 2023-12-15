@@ -338,7 +338,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>DEBUG_PORT=UART0 __PLDM_EMU__</Define>
+              <Define>DEBUG_PORT=UART6 __PLDM_EMU__</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\Library\CMSIS\Core\Include;..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\Library\StdDriver\inc;..\..\common\inc;..\PinConfig;..\..\spi</IncludePath>
             </VariousControls>

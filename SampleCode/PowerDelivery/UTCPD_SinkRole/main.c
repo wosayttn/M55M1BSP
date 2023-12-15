@@ -103,14 +103,8 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set GPB multi-function pins for UART0 RXD and TXD */
-#if 0//TK_UTCPD_MOTOR
-    SET_UART0_RXD_PB8();
-    SET_UART0_TXD_PB9();
-#else
-    /* Set GPB multi-function pins for UART0 RXD and TXD */
+    /* Set debug uart pins*/
     SetDebugUartMFP();
-#endif
 
 
     printf("PLL 64MHz --> HCLK --> CLKO / 4 = 16MHz on PB.14\n");
@@ -328,8 +322,8 @@ int main()
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
-    /* Init UART0 to 115200-8n1 for print message */
-    UART_Open(UART0, 115200);
+    /* Init DEBUG_PORT to 115200-8n1 for print message */
+    UART_Open(DEBUG_PORT, 115200);
     printf("UART Initial\n");
 
     /* VBSRCEN */
@@ -343,9 +337,9 @@ int main()
 
 #if (CONFIG_COMMAND_SHELL == 1)
     /* Enable UART RDA interrupt for command */
-    NVIC_EnableIRQ(UART0_IRQn);
-    //UART_EnableInt(UART0, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk));
-    UART_EnableInt(UART0, UART_INTEN_RDAIEN_Msk);
+    NVIC_EnableIRQ(DEBUG_PORT_IRQn);
+    //UART_EnableInt(DEBUG_PORT, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk));
+    UART_EnableInt(DEBUG_PORT, UART_INTEN_RDAIEN_Msk);
 #endif
 
 

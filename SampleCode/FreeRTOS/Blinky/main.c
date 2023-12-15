@@ -64,13 +64,10 @@ void vApplicationTickHook(void);
 
 int main(void)
 {
-    /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
-    UART_Open(UART0, 115200);
-
-    printf("\nThis sample code test FreeRTOS function.\n");
-
     /* Prepare the hardware to run this demo. */
     prvSetupHardware();
+
+    printf("\nThis sample code test FreeRTOS function.\n");
 
     /* The mainCREATE_SIMPLE_BLINKY_DEMO_ONLY setting is described at the top
     of this file. */

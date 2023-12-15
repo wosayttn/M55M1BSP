@@ -24,5 +24,6 @@ typedef struct s_sensor_info
 } S_SENSOR_INFO;
 
 extern S_SENSOR_INFO g_sSensorNT99141;
+extern S_SENSOR_INFO g_sSensorHM1055;
 
 #endif  // __SENSOR_H__

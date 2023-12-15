@@ -12,14 +12,14 @@
 #include "NuMicro.h"
 
 // use LIN as source, undefine it if MIC is used
-#define INPUT_IS_LIN
+//#define INPUT_IS_LIN
 #define I2S_TX_DMA_CH 0
 #define I2S_RX_DMA_CH 1
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-#define BUFF_LEN        256
+#define BUFF_LEN        512
 #define BUFF_HALF_LEN   (BUFF_LEN/2)
 
 typedef struct
@@ -31,7 +31,7 @@ typedef struct
 } DESC_TABLE_T;
 
 #define NAU8822_ADDR    0x1A                /* NAU8822 Device ID */
-uint8_t u8TxIdx = 0, u8RxIdx = 0;
+volatile uint8_t u8TxIdx = 0, u8RxIdx = 0;
 uint32_t PcmRxBuff[2][BUFF_LEN] = {0};
 uint32_t PcmTxBuff[2][BUFF_LEN] = {0};
 uint32_t volatile u32BuffPos = 0;
@@ -143,8 +143,8 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
-    /* Select PCLK0 as the clock source of SPI0 */
-    CLK_SetModuleClock(SPI0_MODULE, CLK_SPISEL_SPI0SEL_PCLK0, MODULE_NoMsk);
+    /* Select HIRC as the clock source of SPI0 */
+    CLK_SetModuleClock(SPI0_MODULE, CLK_SPISEL_SPI0SEL_HIRC, MODULE_NoMsk);
 
     /* Enable SPI0 peripheral clock */
     CLK_EnableModuleClock(SPI0_MODULE);
@@ -158,7 +158,11 @@ void SYS_Init(void)
     /* Enable I2C0 clock */
     CLK_EnableModuleClock(I2C1_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable GPIO Module clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    CLK_EnableModuleClock(GPIOB_MODULE);
+
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -177,6 +181,9 @@ void SYS_Init(void)
                      SYS_GPA_MFP0_PA2MFP_SPI0_CLK |
                      SYS_GPA_MFP0_PA1MFP_SPI0_MISO |
                      SYS_GPA_MFP0_PA0MFP_SPI0_MOSI);
+
+    /* Enable SPII2S0 clock pin (PA.2) schmitt trigger */
+    PA->SMTEN |= GPIO_SMTEN_SMTEN2_Msk;
 
     /* PA.4 is SPI0_I2SMCLK */
     SYS->GPA_MFP1 &= ~SYS_GPA_MFP1_PA4MFP_Msk;
@@ -219,8 +226,8 @@ void PDMA_Init(void)
     PDMA_SetTransferMode(PDMA0, I2S_RX_DMA_CH, PDMA_SPI0_RX, 1, (uint32_t)&g_asDescTable_RX[0]);
 
     /* Enable PDMA channel 0&1 interrupt */
-    PDMA_EnableInt(PDMA0, I2S_TX_DMA_CH, 0);
-    PDMA_EnableInt(PDMA0, I2S_RX_DMA_CH, 0);
+    PDMA_EnableInt(PDMA0, I2S_TX_DMA_CH, PDMA_INT_TRANS_DONE);
+    PDMA_EnableInt(PDMA0, I2S_RX_DMA_CH, PDMA_INT_TRANS_DONE);
 
     NVIC_EnableIRQ(PDMA0_IRQn);
 }
@@ -313,7 +320,7 @@ int32_t main(void)
     while (1);
 }
 
-NVT_ITCM void PDMA_IRQHandler(void)
+NVT_ITCM void PDMA0_IRQHandler(void)
 {
     uint32_t u32Status = PDMA_GET_INT_STATUS(PDMA0);
 

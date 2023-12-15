@@ -10,7 +10,7 @@
 #include "NuMicro.h"
 
 
-#define NPD0_MODE   0    // Power-down mode 0 
+#define NPD0_MODE   0    // Power-down mode 0
 #define NPD1_MODE   1    // Power-down mode 1
 #define NPD3_MODE   2    // Power-down mode 3
 #define SPD0_MODE   3    // Standby Power-down mode
@@ -50,7 +50,7 @@ NVT_ITCM void ACMP01_IRQHandler(void)
     // TESTCHIP_ONLY
     CLK_WaitModuleClockReady(ACMP01_MODULE);
     // TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(UART0_MODULE);
+    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);
     printf("\nACMP1 interrupt!\n");
     /* Clear ACMP 1 interrupt flag */
     ACMP_CLR_INT_FLAG(ACMP01, 1);
@@ -120,8 +120,8 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Set PCLK1 divide 4 */
     CLK_SET_PCLK1DIV(4);
@@ -178,6 +178,8 @@ int32_t main(void)
     /* Init Debug UART for printf */
     InitDebugUart();
 
+    /* Select SCLK to HIRC before APLL setting*/
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
     /* Lock protected registers */
     SYS_LockReg();
 
@@ -187,12 +189,13 @@ int32_t main(void)
     printf("Press any key to enter power down mode ...\n");
     getchar();
 
+    /* Configure ACMP1. Enable ACMP1 and select CRV as the source of ACMP negative input. */
+    ACMP_Open(ACMP01, 1, ACMP_CTL_NEGSEL_CRV, ACMP_CTL_HYSTERESIS_DISABLE);
+
     /* Select VDDA as CRV source */
     ACMP_SELECT_CRV1_SRC(ACMP01, ACMP_VREF_CRV1SSEL_VDDA);
     /* Select CRV1 level: VDDA * 31 / 63 */
     ACMP_CRV1_SEL(ACMP01, 31);
-    /* Configure ACMP1. Enable ACMP1 and select CRV as the source of ACMP negative input. */
-    ACMP_Open(ACMP01, 1, ACMP_CTL_NEGSEL_CRV, ACMP_CTL_HYSTERESIS_DISABLE);
 
     /* Select P1 as ACMP positive input channel */
     ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P1);

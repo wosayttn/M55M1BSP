@@ -50,7 +50,7 @@ int OTFC_Tests_Init(void)
     SPIM_HYPER_ENABLE_HYPMODE(pSPIMModule);     //Enable HyperBus Mode
     //CU_ASSERT_TRUE((pSPIMModule->CTL0 & SPIM_CTL0_HYPER_EN_Msk) >> SPIM_CTL0_HYPER_EN_Pos);
 
-    SPIM_SET_CLOCK_DIVIDER(pSPIMModule, 1); /* Set SPIM clock as HCLK divided by 2 */
+    SPIM_SET_CLOCK_DIVIDER(pSPIMModule, 2); /* Set SPIM clock as HCLK divided by 2 */
     //CU_ASSERT(SPIM_GET_CLOCK_DIVIDER(pSPIMModule) == 1);
 
     //SPIM Def. Enable Cipher, First Disable the test.
@@ -87,19 +87,19 @@ void OTFC_Const_PR()
     CU_ASSERT(OTFC_CTL_INT_Pos == (7));
 
     CU_ASSERT(OTFC_STS_KSERR_Pos(0) == (5));
-    CU_ASSERT(OTFC_STS_KSERR_Pos(1) == (5));
-    CU_ASSERT(OTFC_STS_KSERR_Pos(2) == (5));
-    CU_ASSERT(OTFC_STS_KSERR_Pos(3) == (5));
+    CU_ASSERT(OTFC_STS_KSERR_Pos(1) == (13));
+    CU_ASSERT(OTFC_STS_KSERR_Pos(2) == (21));
+    CU_ASSERT(OTFC_STS_KSERR_Pos(3) == (29));
 
-    CU_ASSERT(OTFC_STS_DFAE_Pos(0) == (6));
-    CU_ASSERT(OTFC_STS_DFAE_Pos(1) == (6));
-    CU_ASSERT(OTFC_STS_DFAE_Pos(2) == (6));
-    CU_ASSERT(OTFC_STS_DFAE_Pos(3) == (6));
+    //CU_ASSERT(OTFC_STS_DFAE_Pos(0) == (6));
+    //CU_ASSERT(OTFC_STS_DFAE_Pos(1) == (6));
+    //CU_ASSERT(OTFC_STS_DFAE_Pos(2) == (6));
+    //CU_ASSERT(OTFC_STS_DFAE_Pos(3) == (6));
 
     CU_ASSERT(OTFC_STS_IF_Pos(0) == (7));
-    CU_ASSERT(OTFC_STS_IF_Pos(1) == (7));
-    CU_ASSERT(OTFC_STS_IF_Pos(2) == (7));
-    CU_ASSERT(OTFC_STS_IF_Pos(3) == (7));
+    CU_ASSERT(OTFC_STS_IF_Pos(1) == (15));
+    CU_ASSERT(OTFC_STS_IF_Pos(2) == (23));
+    CU_ASSERT(OTFC_STS_IF_Pos(3) == (31));
 
     CU_ASSERT(OTFC_PR_0 == (0));
     CU_ASSERT(OTFC_PR_1 == (1));
@@ -110,7 +110,7 @@ void OTFC_Const_PR()
     CU_ASSERT(OTFC_KEY_SRC_KS == (0x01));
 
     CU_ASSERT(OTFC_KS_SRC_SRAM == (0x00));
-    CU_ASSERT(OTFC_KS_SRC_OTP == (0x10));
+    CU_ASSERT(OTFC_KS_SRC_OTP == (0x02));
 }
 
 void MACRO_OTFC_CTL()

@@ -60,7 +60,7 @@ void SYS_Init(void)
     /* Select SPI1 module clock source as PCLK2 */
     CLK_SetModuleClock(SPI1_MODULE, CLK_SPISEL_SPI1SEL_PCLK2, MODULE_NoMsk);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -68,15 +68,15 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
-    /* Configure SPI0 related multi-function pins. GPA[3,2,0] : SPI0_SS, SPI0_CLK, SPI0_MOSI. */
+    /* Configure SPI0 related multi-function pins. GPA[3:0] : SPI0_SS, SPI0_CLK, SPI0_MOSI. */
     SET_SPI0_MOSI_PA0();
     SET_SPI0_CLK_PA2();
     SET_SPI0_SS_PA3();
 
-    /* Configure SPI1 related multi-function pins. GPH[7:5] : SPI1_SS, SPI1_CLK, SPI1_MOSI. */
-    SET_SPI1_MOSI_PH5();
-    SET_SPI1_CLK_PH6();
-    SET_SPI1_SS_PH7();
+    /* Configure SPI1 related multi-function pins. GPB[4:2] : SPI1_SS, SPI1_CLK, SPI1_MOSI. */
+    SET_SPI1_MOSI_PB4();
+    SET_SPI1_CLK_PB3();
+    SET_SPI1_SS_PB2();
 }
 
 void SPI_Init(void)
@@ -107,7 +107,7 @@ int main(void)
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
 
-    /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
+    /* Configure debug uart: 115200, 8-bit word, no parity bit, 1 stop bit. */
     InitDebugUart();
 
     /* Init SPI */
@@ -125,9 +125,9 @@ int main(void)
     printf("Set both SPI0 and SPI1 to half-duplex.\n");
     printf("Bit length of a transaction: 32\n");
     printf("Please connect below I/O connections for SPI0 and SPI1:\n");
-    printf("    SPI0_SS(PA3)   <->   SPI1_SS(PH7)\n");
-    printf("    SPI0_CLK(PA2)  <->   SPI1_CLK(PH6)\n");
-    printf("    SPI0_MOSI(PA0) <->   SPI1_MOSI(PH5)\n\n");
+    printf("    SPI0_SS(PA3)   <->   SPI1_SS(PB2)\n");
+    printf("    SPI0_CLK(PA2)  <->   SPI1_CLK(PB3)\n");
+    printf("    SPI0_MOSI(PA0) <->   SPI1_MOSI(PB4)\n\n");
     printf("After the transfer is done, the received data will be printed out.\n");
 
     /* Set slave SPI1 to half-duplex mode */

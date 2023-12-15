@@ -13,7 +13,7 @@
  * This is a EMAC_TxRx project for M55M1 series MCU.
  * Users can create their own application based on this project.
  *
- * This project uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This project uses internal RC as APLL0 clock source and UART to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
@@ -51,18 +51,23 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
     /* Enable PLL0 180MHz clock and set all bus clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
+    /* Enable module clock */
+    CLK_EnableModuleClock(GPIOE_MODULE);
     CLK_EnableModuleClock(EMAC0_MODULE);
-
-    /* Set PB multi-function pins for Debug UART RXD and TXD */
+    SYS_ResetModule(SYS_EMAC0RST);
+    
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init I/O Multi-function                                                                                 */
+    /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
     SET_EMAC0_RMII_MDC_PE8();
@@ -75,10 +80,12 @@ void SYS_Init(void)
     SET_EMAC0_RMII_RXD1_PC6();
     SET_EMAC0_RMII_CRSDV_PA7();
     SET_EMAC0_RMII_RXERR_PA6();
-    SET_EMAC0_PPS_PB6();
 
-    /* Lock protected registers */
-    SYS_LockReg();
+    GPIO_SetSlewCtl(PE, (BIT10 | BIT11 | BIT12), GPIO_SLEWCTL_FAST0);
+
+    /* PE.13 Set high */
+    GPIO_SetMode(PE, BIT13, GPIO_MODE_OUTPUT);
+    PE13 = 1;
 }
 
 
@@ -104,6 +111,8 @@ int main(void)
     printf("+-----------------------------------+\n\n");
 
     EMAC_Open(&g_au8MacAddr[0]);
+    /* Lock protected registers */
+    SYS_LockReg();
 
     if (dhcp_start() < 0)
     {

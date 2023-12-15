@@ -4,7 +4,7 @@
 ;	(c) Copyright 2008 Recursion Co., Ltd.
 ;
 
-[Version] 
+[Version]
 Signature	= "$Windows NT$"
 Provider	= %COMPANY%
 DriverVer	= 01/05/2015,1.0.0.1
@@ -14,7 +14,7 @@ ClassGuid	= {4D36E978-E325-11CE-BFC1-08002BE10318}
 
 CatalogFile	= nuvoton_daul_cdc0.cat
 
-[Manufacturer] 
+[Manufacturer]
 %MFGNAME%	= Devices,NT,NTamd64
 
 ;--------------------------------------------------------------------------
@@ -50,7 +50,7 @@ DisplayName	= %SERVICE%
 ServiceType	= 1
 StartType	= 3
 ErrorControl	= 1
-ServiceBinary	= %12%\usbser.sys 
+ServiceBinary	= %12%\usbser.sys
 
 ;--------------------------------------------------------------------------
 ; Devices
@@ -68,8 +68,8 @@ ServiceBinary	= %12%\usbser.sys
 ; Strings
 ;--------------------------------------------------------------------------
 
-[Strings] 
+[Strings]
 COMPANY	= "Nuvoton Co., Ltd."
 MFGNAME	= "www.nuvoton.com"
-DESCRIPTION	= "Nuvoton Virtual Com Port UART0"
+DESCRIPTION	= "Nuvoton Virtual Com Port DEBUG_PORT"
 SERVICE	= "USB RS-232 Emulation Driver"

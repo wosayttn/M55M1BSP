@@ -74,7 +74,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -121,8 +121,8 @@ void SYS_Init(void)
     /* Set LPTMR0 PWM mode output pins */
     SET_LPTM0_PB5();
 
-    /* Clock output HCLK to PB14 */
-    SET_CLKO_PB14();
+    /* Clock output HCLK to PC13 */
+    SET_CLKO_PC13();
 
     CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_HIRC, 0, 1);
 
@@ -204,7 +204,7 @@ void AutoOperation_FunctionTest()
         LPPDMA_Init();
 
         printf("Power down and wait LPPDMA wake up CPU ...\n\n");
-        UART_WAIT_TX_EMPTY(UART0);
+        UART_WAIT_TX_EMPTY(DEBUG_PORT);
 
         /* Clear wake-up status flag */
         PMC->INTSTS = PMC_INTSTS_CLRWK_Msk;

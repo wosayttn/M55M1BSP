@@ -28,6 +28,7 @@ static BOOL WavFileUtil_Write_WriteHeader(
     if (4 != ReturnSize)
         return FALSE;
 
+    psInfo->u32RiffDataLenFilePos = 4;
     UINT32 u32Len = 0;
 
     f_write(&wavFileObject, &u32Len, 4, &ReturnSize);
@@ -82,6 +83,7 @@ static BOOL WavFileUtil_Write_SetFormatInternal(
     if (4 != ReturnSize)
         return FALSE;
 
+    psInfo->u32DataChunkLenFilePos = 42;
     UINT32 u32ChunkLen = 0;
 
     f_write(&wavFileObject, &u32ChunkLen, 4, &ReturnSize);
@@ -219,7 +221,7 @@ BOOL WavFileUtil_Write_Initialize(
     if (NULL == psInfo)
         return FALSE;
 
-    res = f_open(&wavFileObject, (const TCHAR *)pszOutFileName, FA_CREATE_NEW | FA_WRITE);      //USBH:0 , SD0: 1
+    res = f_open(&wavFileObject, (const TCHAR *)pszOutFileName, FA_CREATE_ALWAYS | FA_WRITE);      //USBH:0 , SD0: 1
 
     if (res != FR_OK)
     {
@@ -331,9 +333,19 @@ BOOL WavFileUtil_Write_Finish(
     if (0 != f_close(&wavFileObject))
         return FALSE;
 
-    f_stat("0:\\DMIC_WAVRecorder.wav", &finfo);
+    f_stat("0:\\DMIC.wav", &finfo);
 
     UINT32 u32Pos = finfo.fsize;
+
+    FRESULT res;
+
+    res = f_open(&wavFileObject, (const TCHAR *)"0:\\DMIC.wav", FA_OPEN_EXISTING | FA_WRITE);      //USBH:0 , SD0: 1
+
+    if (res != FR_OK)
+    {
+        printf("!!!Open file error!\n");
+        return FALSE;
+    }
 
     if ((u32Pos > psInfo->u32RiffDataLenFilePos) &&
             (u32Pos > psInfo->u32DataChunkLenFilePos))
@@ -360,6 +372,9 @@ BOOL WavFileUtil_Write_Finish(
         if (4 != ReturnSize)
             return FALSE;
     }
+
+    if (0 != f_close(&wavFileObject))
+        return FALSE;
 
     psInfo->i32FileHandle = -1;
     return TRUE;

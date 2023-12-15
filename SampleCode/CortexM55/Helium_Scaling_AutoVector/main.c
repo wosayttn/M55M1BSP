@@ -112,9 +112,6 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 

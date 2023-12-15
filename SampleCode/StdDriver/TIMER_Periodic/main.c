@@ -7,7 +7,7 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 /*
- * This sample uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This sample uses internal RC as APLL0 clock source and UART to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
@@ -25,7 +25,7 @@
 NVT_ITCM void TIMER0_IRQHandler(void)
 {
     static uint32_t sec = 1;
-    
+
     printf("%d sec\n", sec++);
 
     // clear timer interrupt flag
@@ -66,7 +66,7 @@ static void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

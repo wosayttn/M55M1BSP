@@ -124,7 +124,10 @@ void SYS_Init(void)
     /* Enable PDMA peripheral clock */
     CLK_EnableModuleClock(PDMA0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable GPIO clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
+
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

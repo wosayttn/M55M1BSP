@@ -27,16 +27,16 @@ volatile uint32_t g_u32Ticks = 0;
 void SYS_Init(void)
 {
 
-         /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-   /* Enable Internal RC 12MHz clock */
+    /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-  
+
     /* Enable External RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
@@ -44,15 +44,15 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
 
-   /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
+    /* Enable PLL0 200MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -64,14 +64,11 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
     /* Enable CRYPTO module clock */
     CLK_EnableModuleClock(CRYPTO0_MODULE);
 
-		 /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    /* Debug debug uart clock setting*/
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -97,7 +94,7 @@ int32_t main(void)
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
 
-   /* Init Debug UART for printf */
+    /* Init Debug UART for printf */
     InitDebugUart();
     /* Lock protected registers */
     SYS_LockReg();
@@ -116,30 +113,30 @@ int32_t main(void)
     i32Ret = mbedtls_sha256_self_test(1);
     printf("Total elapsed time is %d ms\n", g_u32Ticks);
 
-    if(i32Ret < 0)
+    if (i32Ret < 0)
     {
         printf("Test fail!\n");
     }
     printf("Test Done!\n");
-    while(1);
+    while (1);
 
 }
 
 
 void show(void)
 {
-    int i,j;
+    int i, j;
     int n = 128;
     uint8_t *pu8;
 
     printf("\n");
-    for(i=0;i<3;i++)
+    for (i = 0; i < 3; i++)
     {
         printf("SADDR[%d]", i);
         pu8 = (uint8_t *)CRYPTO->RSA_SADDR[i];
-        for(j=0;j<n;j++)
+        for (j = 0; j < n; j++)
         {
-            if((j & 0xf) == 0)
+            if ((j & 0xf) == 0)
                 printf("\n");
             printf("%02x ", pu8[j]);
         }
@@ -148,9 +145,9 @@ void show(void)
 
     printf("DADDR");
     pu8 = (uint8_t *)CRYPTO->RSA_DADDR;
-    for(j=0;j<n;j++)
+    for (j = 0; j < n; j++)
     {
-        if((j & 0xf) == 0)
+        if ((j & 0xf) == 0)
             printf("\n");
         printf("%02x ", pu8[j]);
     }
@@ -162,9 +159,9 @@ void dump(uint8_t *p, uint32_t size)
 {
     int i;
 
-    for(i=0;i<size;i++)
+    for (i = 0; i < size; i++)
     {
-        if((i & 0xf) == 0)
+        if ((i & 0xf) == 0)
             printf("\n");
         printf("%02x ", p[i]);
     }
@@ -175,8 +172,8 @@ void dump(uint8_t *p, uint32_t size)
 
 
 
-int mbedtls_platform_entropy_poll( void *data,
-                           unsigned char *output, size_t len, size_t *olen )
+int mbedtls_platform_entropy_poll(void *data,
+                                  unsigned char *output, size_t len, size_t *olen)
 {
     return 0;
 }

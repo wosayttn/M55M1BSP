@@ -46,7 +46,7 @@ void UART_FunctionTest(void);
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle UART Channel 0 interrupt event                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
-NVT_ITCM void UART0_IRQHandler(void)
+NVT_ITCM void DEBUG_PORT_IRQHandler(void)
 {
     UART_TEST_HANDLE();
 }
@@ -58,20 +58,20 @@ void UART_TEST_HANDLE()
 {
     uint8_t u8InChar = 0xFF;
 
-    if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAINT_Msk))
+    if (UART_GET_INT_FLAG(DEBUG_PORT, UART_INTSTS_RDAINT_Msk))
     {
         //printf("\nInput:");
 
         /* Get all the input characters */
-        while (UART_IS_RX_READY(UART0))
+        while (UART_IS_RX_READY(DEBUG_PORT))
         {
             /* Push char to buffer with "g_u32comRtail" pointer */
             /* Get the character from UART Buffer */
-            u8InChar = UART_READ(UART0);
+            u8InChar = UART_READ(DEBUG_PORT);
 
             printf("%c", u8InChar);
 
-            while (UART_GET_TX_EMPTY(UART0) == 0);
+            while (UART_GET_TX_EMPTY(DEBUG_PORT) == 0);
 
             if (u8InChar == 0x0D)
             {
@@ -109,7 +109,7 @@ void UART_TEST_HANDLE()
 
 #if 0
 
-    if (UART_GET_INT_FLAG(UART0, UART_INTSTS_THREINT_Msk))
+    if (UART_GET_INT_FLAG(DEBUG_PORT, UART_INTSTS_THREINT_Msk))
     {
         /* pop char from buffer with "g_u32comRhead" pointer */
         uint32_t tmp;
@@ -119,9 +119,9 @@ void UART_TEST_HANDLE()
         {
             u8InChar = g_u8RecData[g_u32comRhead];
 
-            while (UART_IS_TX_FULL(UART0)); /* Wait Tx is not full to transmit data */
+            while (UART_IS_TX_FULL(DEBUG_PORT)); /* Wait Tx is not full to transmit data */
 
-            UART_WRITE(UART0, u8InChar);
+            UART_WRITE(DEBUG_PORT, u8InChar);
 
             //g_u32comRhead = (g_u32comRhead == (RXBUFSIZE - 1)) ? 0 : (g_u32comRhead + 1);
             //g_u32comRbytes--;
@@ -130,9 +130,9 @@ void UART_TEST_HANDLE()
 
 #endif
 
-    if (UART0->FIFOSTS & (UART_FIFOSTS_BIF_Msk | UART_FIFOSTS_FEF_Msk | UART_FIFOSTS_PEF_Msk | UART_FIFOSTS_RXOVIF_Msk))
+    if (DEBUG_PORT->FIFOSTS & (UART_FIFOSTS_BIF_Msk | UART_FIFOSTS_FEF_Msk | UART_FIFOSTS_PEF_Msk | UART_FIFOSTS_RXOVIF_Msk))
     {
-        UART_ClearIntFlag(UART0, (UART_INTSTS_RLSINT_Msk | UART_INTSTS_BUFERRINT_Msk));
+        UART_ClearIntFlag(DEBUG_PORT, (UART_INTSTS_RLSINT_Msk | UART_INTSTS_BUFERRINT_Msk));
     }
 }
 
@@ -208,9 +208,9 @@ int32_t ParsingCommand(void)
         szCmd[nIdx] = u8InChar;
         nIdx = nIdx + 1;
 
-        while (UART_IS_TX_FULL(UART0)); /* Wait Tx is not full to transmit data */
+        while (UART_IS_TX_FULL(DEBUG_PORT)); /* Wait Tx is not full to transmit data */
 
-        UART_WRITE(UART0, u8InChar);
+        UART_WRITE(DEBUG_PORT, u8InChar);
         g_u32comRhead = (g_u32comRhead == (RXBUFSIZE - 1)) ? 0 : (g_u32comRhead + 1);
         g_u32comRbytes--;
     }
@@ -248,10 +248,10 @@ extern int pd_snk_pdo_cnt;
 void UART_Commandshell(int port)
 {
     /*
-            Using a RS232 cable to connect UART0 and PC.
-            UART0 is set to debug port. UART0 is enable RDA and RLS interrupt.
+            Using a RS232 cable to connect DEBUG_PORT and PC.
+            DEBUG_PORT is set to debug port. DEBUG_PORT is enable RDA and RLS interrupt.
             When inputting char to terminal screen, RDA interrupt will happen and
-            UART0 will print the received char on screen.
+            DEBUG_PORT will print the received char on screen.
     */
     do
     {

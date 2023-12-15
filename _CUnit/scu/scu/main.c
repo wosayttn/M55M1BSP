@@ -38,36 +38,28 @@ void SYS_Init(void)
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
-    /* Set HCLK0 divide 1 */
-    CLK_SET_HCLK0DIV(1);
-    /* Set HCLK1 divide 1 */
-    CLK_SET_HCLK1DIV(1);
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
 
-    /* Set PCLK0/1/2/3/4 divide 2 */
+    /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK2DIV(2);
     CLK_SET_PCLK3DIV(2);
+    CLK_SET_PCLK4DIV(2);
     CLK_SET_PCLK4DIV(2);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-    SYS_ResetModule(SYS_UART0RST);
-
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
+    /* Enable UART0 module clock */
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    SET_UART0_RXD_PB12();
-    SET_UART0_TXD_PB13();
+    SetDebugUartMFP();
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -97,8 +89,8 @@ int main(int argc, char *argv[])
 {
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-    /* Init DEBUG_PORT to 115200-8N1 for printf */
-    UART_Open(DEBUG_PORT, 115200);
+    /* Init Debug UART to 115200-8N1 for print message */
+    InitDebugUart();
 
     printf("\n\n");
     printf("+--------------------------------------+\n");

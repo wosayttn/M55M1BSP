@@ -192,6 +192,8 @@ extern "C" {
 void NPU_IRQHandler(void)
 {
     ethosu_irq_handler(&ethosu0_driver);
+	__DSB();
+	__ISB();
 }
 
 #ifdef __cplusplus
@@ -217,7 +219,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -236,7 +238,7 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();
 }
 
@@ -251,6 +253,8 @@ void SysTick_Handler(void)
 {
     /* Increment the cycle counter based on load value. */
     cpu_cycle_count += SysTick->LOAD + 1;
+	__DSB();
+	__ISB();
 }
 
 #ifdef __cplusplus

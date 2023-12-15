@@ -14,16 +14,6 @@
 #include "Console.h"
 #include "lppdma_cunit.h"
 
-#ifndef DEBUG_PORT
-#define DEBUG_PORT UART0
-#endif
-
-void InitDebugUart(void)
-{
-    DEBUG_PORT->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400));
-    DEBUG_PORT->LINE = (UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1);
-}
-
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -52,8 +42,6 @@ void SYS_Init(void)
     SystemCoreClockUpdate();
     /* Enable UART0 module clock */
     SetDebugUartCLK();
-    /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HIRC, CLK_UARTDIV0_UART0DIV(1));
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/

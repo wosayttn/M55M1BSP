@@ -45,18 +45,22 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+
+    /* Workaround(TESTCHIP_ONLY)  */
+    /*If the ADC clock is divided, the conversion result value will deviate, so only the PCLK0 clock can be divided. */
+    /* PCLK0 clock divider 15 */
+    CLK_SET_PCLK0DIV(15);
+    /* Enable EADC peripheral clock */
+    CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(1));
+
+    /* Enable EADC module clock */
+    CLK_EnableModuleClock(EADC0_MODULE);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-
-    /* Enable EADC peripheral clock */
-    CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(15));
-
-    /* Enable EADC module clock */
-    CLK_EnableModuleClock(EADC0_MODULE);
 
     /* Debug UART clock setting*/
     SetDebugUartCLK();
@@ -83,8 +87,8 @@ void EADC_FunctionTest()
     /* Set input mode as single-end and enable the A/D converter */
     EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
 
-    /* Set sample module 25 external sampling time to 0x3F */
-    EADC_SetExtendSampleTime(EADC0, 25, 0x3F);
+    /* Set sample module 25 external sampling time to 0xFF */
+    EADC_SetExtendSampleTime(EADC0, 25, 0xFF);
 
     /* Clear the A/D ADINT0 interrupt flag for safe */
     EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);

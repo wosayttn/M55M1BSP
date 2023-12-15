@@ -15,22 +15,9 @@
 #include "Console.h"
 #include "NuMicro.h"
 #include "wdt_cunit.h"
-//#include "../pldm_emu.h"
-
-#ifndef DEBUG_PORT
-    #define DEBUG_PORT UART0
-#endif
-
-#ifndef DEBUG_PORT_Init
-void DEBUG_PORT_Init(UART_T *psUART, uint32_t u32Baudrate)
-{
-    UART_Open(psUART, u32Baudrate);
-}
-#endif
 
 // Internal funcfion definition
 void AddTests(void);
-
 
 void SYS_Init(void)
 {
@@ -83,7 +70,7 @@ int main(int argc, char *argv[])
     SYS_Init();
 
     /* Init DEBUG_PORT to 115200-8N1 for printf */
-    DEBUG_PORT_Init(DEBUG_PORT, 115200);
+    UART_Open(DEBUG_PORT, 115200);
 
     if (CU_initialize_registry())
     {

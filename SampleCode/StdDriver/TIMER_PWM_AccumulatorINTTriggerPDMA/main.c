@@ -7,7 +7,7 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 /*
- * This sample uses internal RC as APLL0 clock source and UART0 to print messages.
+ * This sample uses internal RC as APLL0 clock source and UART to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
@@ -86,7 +86,7 @@ static void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -100,7 +100,7 @@ static void SYS_Init(void)
     CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_PCLK1, 0);
     /* Enable TIMER module clock */
     CLK_EnableModuleClock(TMR0_MODULE);
-    
+
     /* Enable PDMA module clock */
     CLK_EnableModuleClock(PDMA0_MODULE);
 
@@ -174,7 +174,7 @@ int main(void)
 
     /* Set updated period vaule */
     u32UpdatedPeriod = ((u32InitPeriod + 1) * 2) - 1;
-    
+
     /* Set source address as u32UpdatedPeriod(no increment) and destination address as Timer0 PWM period register(no increment) */
     PDMA_SetTransferAddr(PDMA0, 0, (uint32_t)&u32UpdatedPeriod, PDMA_SAR_FIX, (uint32_t)&(TIMER0->PWMPERIOD), PDMA_DAR_FIX);
 
@@ -222,7 +222,7 @@ int main(void)
         if(--u32TimeOutCnt == 0) break;
 
     if(u32TimeOutCnt == 0)
-        printf("Wait for Timer PWM stop time-out!\n");        
+        printf("Wait for Timer PWM stop time-out!\n");
     else
         printf("Timer0 PWM has STOP.\n");
 

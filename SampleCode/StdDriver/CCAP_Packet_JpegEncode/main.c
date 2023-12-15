@@ -2,8 +2,7 @@
  * @file     main.c
  * @version  V1.00
  * @brief    Use packet format (all the luma and chroma data interleaved) to
- *           store captured image from NT99141 sensor to SRAM and
- *           encode the image to jpeg.
+ *           store captured image from sensor to SRAM and encode image to jpeg.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -81,8 +80,12 @@ int32_t PacketFormatDownScale(S_SENSOR_INFO *psSensorInfo)
 {
     uint32_t u32Frame;
 
-    /* Initialize NT99141 sensor and set NT99141 output YUV422 format */
-    if (psSensorInfo->pfnInitSensor(0) == FALSE) return -1;
+    /* Initialize sensor and set sensor output YUV422 format */
+    if (psSensorInfo->pfnInitSensor(0) == FALSE)
+    {
+        printf("Init sensor failed !\n");
+        return -1;
+    }
 
     /* Enable External CCAP Interrupt */
     NVIC_EnableIRQ(CCAP_IRQn);
@@ -137,16 +140,18 @@ void SYS_Init(void)
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Enable module clock */
+    CLK_EnableModuleClock(GPIOD_MODULE);
+    CLK_EnableModuleClock(GPIOG_MODULE);
     CLK_EnableModuleClock(GPIOH_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -192,8 +197,8 @@ int32_t main(void)
     CCAP_SetFreq(12000000, 12000000);
 
     /* Using Packet format to Image down scale */
-    if (PacketFormatDownScale(&g_sSensorNT99141) != 0)
-        printf("Init sensor failed !\n");
+    if (PacketFormatDownScale(&g_sSensorHM1055) != 0)
+        printf("Capture frame failed !\n");
     else
     {
         /* jpeg encode */

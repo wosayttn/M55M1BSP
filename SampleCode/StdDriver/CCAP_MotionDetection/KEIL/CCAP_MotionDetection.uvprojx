@@ -450,9 +450,9 @@
               <FilePath>..\main.c</FilePath>
             </File>
             <File>
-              <FileName>Sensor_nt99141.c</FileName>
+              <FileName>Sensor_HM1055.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Sensor_nt99141.c</FilePath>
+              <FilePath>..\Sensor_HM1055.c</FilePath>
             </File>
             <File>
               <FileName>i2c_gpio.c</FileName>

@@ -63,9 +63,6 @@ void SYS_Init(void)
     CLK_SET_PCLK4DIV(2);
 
     /* Enable UART module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
-
-    /* Enable UART0 module clock */
     SetDebugUartCLK();
 
     /* Enable TIMER module clock */

@@ -22,7 +22,6 @@ void USCI_UART_PowerDown_TestItem(void);
 void USCI_UART_PowerDownWakeUpTest(void);
 void PowerDownFunction(void);
 void SYS_Init(void);
-void UART0_Init(void);
 void USCI0_Init(void);
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
@@ -63,7 +62,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -148,7 +147,7 @@ NVT_ITCM void USCI0_IRQHandler(void)
     // TESTCHIP_ONLY
     CLK_WaitModuleClockReady(USCI0_MODULE);
     // TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(UART0_MODULE);
+    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);
 
     uint32_t u32IntSts = UUART_GET_PROT_STATUS(UUART0);
     uint32_t u32WkSts = UUART_GET_WAKEUP_FLAG(UUART0);
@@ -311,7 +310,7 @@ void USCI_UART_PowerDownWakeUpTest(void)
     /* Wait the USCI0 peripheral clock  */
     CLK_WaitModuleClockReady(USCI0_MODULE);
     /* Wait the UART0 peripheral clock  */
-    CLK_WaitModuleClockReady(UART0_MODULE);
+    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);
     /* Lock protected registers */
     SYS_LockReg();
 

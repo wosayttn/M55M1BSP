@@ -21,13 +21,13 @@ static void SYS_Init(void)
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -63,12 +63,12 @@ int main()
     FMC_Open();         /* Enable FMC ISP function */
 
     printf("\n\nPress any key to branch to APROM...\n");
-    getchar();                         /* block on waiting for any one character input from UART0 */
+    getchar();                         /* block on waiting for any one character input from UART */
 
     printf("\n\nChange VECMAP and branch to APROM...\n");
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
-    while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTY_Msk))        /* wait until UART0 TX FIFO is empty */
+    while (!(DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXEMPTY_Msk))        /* wait until UART TX FIFO is empty */
         if (--u32TimeOutCnt == 0) break;
 
     /*  NOTE!

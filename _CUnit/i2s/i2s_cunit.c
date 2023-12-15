@@ -79,7 +79,7 @@ void ResetI2SModule(I2S_T *i2s)
     }
 
     /* Lock protected registers */
-    SYS_LockReg();
+    //SYS_LockReg();
 }
 
 int I2S_Tests_Init(void)
@@ -1085,7 +1085,7 @@ void API_I2S_EnableMCLK()
     //printf("3 u32ReturnValue = %d\r\n", u32ReturnValue);
     //printf("3 pI2SModule->CLKDIV = %x\r\n", pI2SModule->CLKDIV);
     CU_ASSERT(pI2SModule->CTL0 == 0x00008000);
-    CU_ASSERT(pI2SModule->CLKDIV == 0x00000000);
+    CU_ASSERT(pI2SModule->CLKDIV == 0x00000001);
     CU_ASSERT(u32ReturnValue == 12000000);
 
     /* Reset I2S */

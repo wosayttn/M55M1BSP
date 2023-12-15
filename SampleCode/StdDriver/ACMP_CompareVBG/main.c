@@ -49,8 +49,8 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */    
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Set PCLK1 divide 4 */
     CLK_SET_PCLK1DIV(4);
@@ -116,10 +116,10 @@ int32_t main(void)
     printf("Press any key to start ...\n");
     getchar();
 
-    /* Select P1 as ACMP positive input channel */
-    ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P1);
     /* Configure ACMP1. Enable ACMP1 and select VBG output as the source of ACMP negative input. */
     ACMP_Open(ACMP01, 1, ACMP_CTL_NEGSEL_VBG, ACMP_CTL_HYSTERESIS_DISABLE);
+    /* Select P1 as ACMP positive input channel */
+    ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P1);
 
     /* Clear ACMP 1 interrupt flag */
     ACMP_CLR_INT_FLAG(ACMP01, 1);

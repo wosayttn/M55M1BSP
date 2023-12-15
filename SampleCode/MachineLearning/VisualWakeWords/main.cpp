@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.cpp
  * @version  V1.00
- * @brief    main function
+ * @brief    VWW network sample. Demonstrate person detect. 
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

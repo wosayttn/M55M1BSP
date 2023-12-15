@@ -27,6 +27,7 @@ void HardFault_Handler(void)
 {
     PA10_NS = 0;
     printf("Non-secure Hard Fault Handler\n");
+
     while (1);
 }
 
@@ -48,54 +49,59 @@ int main(void)
     do
     {
         printf("+-------------------------------------------------------+\n");
-        printf("| [0] Write address 0x10180000 to generate Hard Fault   |\n");
+        printf("| [0] Write address 0x%08X to generate Hard Fault   |\n", (uint32_t)FMC_NON_SECURE_BASE);
         printf("| [1] Write Secure I/O port to generate Hard Fault      |\n");
-        printf("| [2] Read Secure SRAM address to generate Hard Fault   |\n");
+        printf("| [2] Read Secure SRAM 0x%08X to generate Hard Fault|\n", (uint32_t)SRAM_BASE);
         printf("| [3] Toggle Non-secure I/O                             |\n");
         printf("+-------------------------------------------------------+\n");
         ch = (char)getchar();
 
         switch (ch)
         {
-        case '0':
-            /*
-                If Non-secure code access Non-secure region and cause bus error,
-                it would cause Non-secure or Secure Hard Fault
-                depends on the setting of AIRCR.BFHFNMINS[13]. (AIRCR is Secure register)
-            */
-            M32(0x10180000) = 0;
-            break;
-        case '1':
-            /*
-                GPIO Port B is configured as Secure port. Access it in Non-secure code
-                will cause Secure Hard Fault.
-            */
-            PB0 = 0;
-            PB1 = 0;
-            break;
-        case '2':
-            /*
-                SRAM_BASE is configured as Secure SRAM. Access it in Non-secure code
-                will cause Secure Hard Fault.
-            */
-            M32(SRAM_BASE);
-            break;
-        case '3':
-            printf("LED blinking...\n");
-            PA10_NS = 0;
-            PA11_NS = 1;
+            case '0':
+                /*
+                    If Non-secure code access Non-secure region and cause bus error,
+                    it would cause Non-secure or Secure Hard Fault
+                    depends on the setting of AIRCR.BFHFNMINS[13]. (AIRCR is Secure register)
+                */
+                M32(FMC_NON_SECURE_BASE) = 0;
+                break;
 
-            while (1)
-            {
-                PA10_NS ^= 1;
-                PA11_NS ^= 1;
-                i = 0x100000;
-                while (i-- > 0);
+            case '1':
+                /*
+                    GPIO Port B is configured as Secure port. Access it in Non-secure code
+                    will cause Secure Hard Fault.
+                */
+                PB0 = 0;
+                PB1 = 0;
+                break;
 
-            }
-        //break;
-        default:
-            break;
+            case '2':
+                /*
+                    SRAM_BASE is configured as Secure SRAM. Access it in Non-secure code
+                    will cause Secure Hard Fault.
+                */
+                M32(SRAM_BASE);
+                break;
+
+            case '3':
+                printf("LED blinking...\n");
+                PA10_NS = 0;
+                PA11_NS = 1;
+
+                while (1)
+                {
+                    PA10_NS ^= 1;
+                    PA11_NS ^= 1;
+                    i = 0x100000;
+
+                    while (i-- > 0);
+
+                }
+
+            //break;
+            default:
+                break;
         }
     }
 

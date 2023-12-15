@@ -36,7 +36,7 @@ static void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
     /* Enable LPGPIO module clock */
     CLK_EnableModuleClock(LPGPIO0_MODULE);

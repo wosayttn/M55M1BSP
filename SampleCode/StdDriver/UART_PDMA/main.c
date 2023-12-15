@@ -225,11 +225,11 @@ NVT_ITCM void PDMA0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle UART Channel 0 interrupt event                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
-NVT_ITCM void UART0_IRQHandler(void)
+NVT_ITCM void DEBUG_PORT_IRQHandler(void)
 {
-    /* Get UART0 Rx data and send the data to UART1 Tx */
-    if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAIF_Msk))
-        UART_WRITE(UART1, UART_READ(UART0));
+    /* Get DEBUG_PORT Rx data and send the data to UART1 Tx */
+    if (UART_GET_INT_FLAG(DEBUG_PORT, UART_INTSTS_RDAIF_Msk))
+        UART_WRITE(UART1, UART_READ(DEBUG_PORT));
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -300,11 +300,11 @@ void PDMA_UART(int32_t i32option)
     IsTestOver = FALSE;
     NVIC_EnableIRQ(PDMA0_IRQn);
 
-    /* Enable UART0 RDA interrupt */
+    /* Enable DEBUG_PORT RDA interrupt */
     if (g_u32TwoChannelPdmaTest == 0)
     {
-        NVIC_EnableIRQ(UART0_IRQn);
-        UART_EnableInt(UART0, UART_INTEN_RDAIEN_Msk);
+        NVIC_EnableIRQ(DEBUG_PORT_IRQn);
+        UART_EnableInt(DEBUG_PORT, UART_INTEN_RDAIEN_Msk);
     }
 
     /* Enable UART Tx and Rx PDMA0 function */
@@ -333,8 +333,8 @@ void PDMA_UART(int32_t i32option)
     PDMA_DisableInt(PDMA0, UART_TX_DMA_CH, PDMA_INT_TRANS_DONE);
     NVIC_DisableIRQ(PDMA0_IRQn);
 
-    /* Disable UART0 RDA interrupt */
-    UART_DisableInt(UART0, UART_INTEN_RDAIEN_Msk);
+    /* Disable DEBUG_PORT RDA interrupt */
+    UART_DisableInt(DEBUG_PORT, UART_INTEN_RDAIEN_Msk);
 }
 
 void SYS_Init(void)
@@ -357,7 +357,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */

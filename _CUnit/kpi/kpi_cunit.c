@@ -17,9 +17,9 @@
 #include "Console.h"
 
 #if 0
-    #define DBG_MSG printf
+#define DBG_MSG printf
 #else
-    #define DBG_MSG(...)
+#define DBG_MSG(...)
 #endif
 
 
@@ -56,8 +56,7 @@ int suite_success_clean(void)
 /*               description                                                                               */
 /*---------------------------------------------------------------------------------------------------------*/
 
-CU_SuiteInfo suites[] =
-{
+CU_SuiteInfo suites[] = {
     {"KPI API", suite_success_init, suite_success_clean, NULL, NULL, KPI_ApiTests},
     CU_SUITE_INFO_NULL
 };
@@ -77,10 +76,8 @@ void Test_API_KPI_OPEN()
     uint32_t u32Rows, u32Columns;
     /* KPI_Open */
 
-    for (u32Rows = 2; u32Rows <= 6; u32Rows++)
-    {
-        for (u32Columns = 1; u32Columns <= 8; u32Columns++)
-        {
+    for (u32Rows = 2; u32Rows <= 6; u32Rows++) {
+        for (u32Columns = 1; u32Columns <= 8; u32Columns++) {
             CU_ASSERT(0 == KPI_Open(u32Rows, u32Columns, queue, 512));
             CU_ASSERT_EQUAL(KPI->CTL & KPI_CTL_KROW_Msk, (u32Rows - 1) << KPI_CTL_KROW_Pos);
             CU_ASSERT_EQUAL(KPI->CTL & KPI_CTL_KCOL_Msk, (u32Columns - 1) << KPI_CTL_KCOL_Pos);
@@ -90,8 +87,7 @@ void Test_API_KPI_OPEN()
     }
 }
 
-const uint32_t au32DBCLKSEL[] =
-{
+const uint32_t au32DBCLKSEL[] = {
     KPI_COL_SAMPLE_8CLK,
     KPI_COL_SAMPLE_16CLK,
     KPI_COL_SAMPLE_32CLK,
@@ -105,8 +101,7 @@ const uint32_t au32DBCLKSEL[] =
     KPI_COL_SAMPLE_8192CLK,
 };
 
-const uint32_t au32ROWDLY[] =
-{
+const uint32_t au32ROWDLY[] = {
     KPI_ROW_SCAN_DELAY4CLK,
     KPI_ROW_SCAN_DELAY8CLK,
     KPI_ROW_SCAN_DELAY16CLK,
@@ -127,20 +122,17 @@ void Test_API_KPI_CONFIG()
     CU_ASSERT_EQUAL(KPI->CTL & KPI_CTL_KCOL_Msk, (2 - 1) << KPI_CTL_KCOL_Pos);
     u32RegVal = KPI->CTL;
 
-    for (i = 0; i < 0x100; i++)
-    {
+    for (i = 0; i < 0x100; i++) {
         KPI_ConfigKeyScanTiming(i + 1, KPI_COL_SAMPLE_8CLK, KPI_ROW_SCAN_DELAY4CLK);
         CU_ASSERT_EQUAL(KPI->CTL & KPI_CTL_PSC_Msk, i << KPI_CTL_PSC_Pos);
     }
 
-    for (i = 0x3; i <= 0xD; i++)
-    {
+    for (i = 0x3; i <= 0xD; i++) {
         KPI_ConfigKeyScanTiming(0x40, i << KPI_CTL_DBCLKSEL_Pos, KPI_ROW_SCAN_DELAY4CLK);
         CU_ASSERT_EQUAL(KPI->CTL & KPI_CTL_DBCLKSEL_Msk, au32DBCLKSEL[i - 0x03]);
     }
 
-    for (i = 0; i < 4; i++)
-    {
+    for (i = 0; i < 4; i++) {
         KPI_ConfigKeyScanTiming(0x40, KPI_COL_SAMPLE_8CLK, i << KPI_CTL_ROWDLY_Pos);
         CU_ASSERT_EQUAL(KPI->CTL & KPI_CTL_ROWDLY_Msk, au32ROWDLY[i]);
     }
@@ -169,17 +161,14 @@ void Test_API_KPI_PRESS()
     NVIC_EnableIRQ(KPI_IRQn);
 
     // 6 row x 2 col, there should be 12 press events.
-    while (pressCnt < (6 * 2))
-    {
-        if (KPI_kbhit())
-        {
+    while (pressCnt < (6 * 2)) {
+        if (KPI_kbhit()) {
             key = KPI_GetKey();
             printf("\n\t %d, %d, %s", key.x, key.y, (key.st == KPI_PRESS) ? "PRESS" : "RELEASE");
             pressCnt++;
         }
 
-        if (--u32TimeOutCount == 0)
-        {
+        if (--u32TimeOutCount == 0) {
             break;
         }
     }
@@ -193,8 +182,7 @@ void Test_API_KPI_PRESS()
     CU_ASSERT_EQUAL(pressCnt, 6 * 2);
 }
 
-CU_TestInfo KPI_ApiTests[] =
-{
+CU_TestInfo KPI_ApiTests[] = {
     {" 1: API KPI_Open_Close.", Test_API_KPI_OPEN},
     {" 2: API KPI_CONFIG.", Test_API_KPI_CONFIG},
     {" 3: API KPI_PRESS.", Test_API_KPI_PRESS},

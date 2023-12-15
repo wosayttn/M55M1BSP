@@ -26,7 +26,6 @@ void PDMA0_IRQHandler(void);
 void Configure_EBI_16BIT_Pins(void);
 void SYS_Init(void);
 
-
 /**
  * @brief       DMA IRQ
  * @param       None
@@ -37,20 +36,25 @@ NVT_ITCM void PDMA0_IRQHandler(void)
 {
     uint32_t u32Status = PDMA_GET_INT_STATUS(PDMA0);
 
-    if(u32Status & PDMA_INTSTS_ABTIF_Msk)        /* abort */
+    if (u32Status & PDMA_INTSTS_ABTIF_Msk)       /* abort */
     {
-        if(PDMA_GET_ABORT_STS(PDMA0) & PDMA_ABTSTS_ABTIF2_Msk)
+        if (PDMA_GET_ABORT_STS(PDMA0) & PDMA_ABTSTS_ABTIF2_Msk)
             g_u32IsTestOver = 2;
+
         PDMA_CLR_ABORT_FLAG(PDMA0, PDMA_ABTSTS_ABTIF2_Msk);
     }
-    else if(u32Status & PDMA_INTSTS_TDIF_Msk)   /* done */
+    else if (u32Status & PDMA_INTSTS_TDIF_Msk)  /* done */
     {
-        if(PDMA_GET_TD_STS(PDMA0) & PDMA_TDSTS_TDIF2_Msk)
+        if (PDMA_GET_TD_STS(PDMA0) & PDMA_TDSTS_TDIF2_Msk)
             g_u32IsTestOver = 1;
+
         PDMA_CLR_TD_FLAG(PDMA0, PDMA_TDSTS_TDIF2_Msk);
     }
     else
-        printf("unknown interrupt !!\n");
+        printf("unknown interrupt!!\n");
+
+    __DSB();
+    __ISB();
 }
 
 int32_t AccessEBIWithPDMA(void)
@@ -67,7 +71,7 @@ int32_t AccessEBIWithPDMA(void)
     /* Reset PDMA module */
     SYS_ResetModule(SYS_PDMA0RST);
 
-    for(i = 0; i < 64; i++)
+    for (i = 0; i < 64; i++)
     {
         g_au32SrcArray[i] = 0x76570000 + i;
         u32Result0 += g_au32SrcArray[i];
@@ -90,18 +94,20 @@ int32_t AccessEBIWithPDMA(void)
     g_u32IsTestOver = 0;
     PDMA_Trigger(PDMA0, 2);
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(g_u32IsTestOver == 0)
+
+    while (g_u32IsTestOver == 0)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for PDMA time-out!\n");
             return (-1);
         }
     }
+
     /* Transfer internal SRAM to EBI SRAM done */
 
     /* Clear internal SRAM data */
-    for(i = 0; i < 64; i++)
+    for (i = 0; i < 64; i++)
     {
         g_au32SrcArray[i] = 0x0;
     }
@@ -114,23 +120,25 @@ int32_t AccessEBIWithPDMA(void)
     g_u32IsTestOver = 0;
     PDMA_Trigger(PDMA0, 2);
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(g_u32IsTestOver == 0)
+
+    while (g_u32IsTestOver == 0)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for PDMA time-out!\n");
             return (-1);
         }
     }
+
     /* Transfer EBI SRAM to internal SRAM done */
-    for(i = 0; i < 64; i++)
+    for (i = 0; i < 64; i++)
     {
         u32Result1 += g_au32SrcArray[i];
     }
 
-    if(g_u32IsTestOver == 1)
+    if (g_u32IsTestOver == 1)
     {
-        if((u32Result0 == u32Result1) && (u32Result0 != 0x5A5A))
+        if ((u32Result0 == u32Result1) && (u32Result0 != 0x5A5A))
         {
             printf("        PASS (0x%X)\n\n", u32Result0);
         }
@@ -189,7 +197,7 @@ void Configure_EBI_16BIT_Pins(void)
     SET_EBI_nCS0_PD12();
 
     /* EBI ALE pin on PA.8 */
-    SET_EBI_ALE_PA8();             
+    SET_EBI_ALE_PA8();
 }
 
 void SYS_Init(void)
@@ -212,24 +220,14 @@ void SYS_Init(void)
     /* Enable PLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock and set all bus clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Enable EBI clock */
@@ -261,22 +259,22 @@ int main(void)
     printf("|    EBI SRAM Sample Code on Bank0 with PDMA transfer    |\n");
     printf("+--------------------------------------------------------+\n\n");
 
-    printf("*********************************************************************\n");
-    printf("* Please connect BS62LV1600EC SRAM to EBI bank0 before accessing !! *\n");
-    printf("* EBI pins settings:                                                *\n");
-    printf("*   - AD0 ~ AD5 on PC.0~5                                           *\n");
-    printf("*   - AD6 ~ AD7 on PD.8 and PD.9                                    *\n");
-    printf("*   - AD8 ~ AD9 on PE.14 and PE.15                                  *\n");
-    printf("*   - AD10 ~ AD11 on PE.1 and PE.0                                  *\n");
-    printf("*   - AD12 ~ AD15 on PH.8~11                                        *\n");
-    printf("*   - ADR16 ~ ADR19 on PF.9~6                                       *\n");
-    printf("*   - nWR on PA.10                                                  *\n");
-    printf("*   - nRD on PA.11                                                  *\n");
-    printf("*   - nWRL on PB.7                                                  *\n");
-    printf("*   - nWRH on PB.6                                                  *\n");
-    printf("*   - nCS0 on PD.12                                                 *\n");
-    printf("*   - ALE on PA.8                                                   *\n");
-    printf("*********************************************************************\n\n");
+    printf("************************************************************************\n");
+    printf("* Please connect IS61WV102416BLL SRAM to EBI bank0 before accessing !! *\n");
+    printf("* EBI pins settings:                                                   *\n");
+    printf("*   - AD0 ~ AD5 on PC.0~5                                              *\n");
+    printf("*   - AD6 ~ AD7 on PD.8 and PD.9                                       *\n");
+    printf("*   - AD8 ~ AD9 on PE.14 and PE.15                                     *\n");
+    printf("*   - AD10 ~ AD11 on PE.1 and PE.0                                     *\n");
+    printf("*   - AD12 ~ AD15 on PH.8~11                                           *\n");
+    printf("*   - ADR16 ~ ADR19 on PF.9~6                                          *\n");
+    printf("*   - nWR on PA.10                                                     *\n");
+    printf("*   - nRD on PA.11                                                     *\n");
+    printf("*   - nWRL on PB.7                                                     *\n");
+    printf("*   - nWRH on PB.6                                                     *\n");
+    printf("*   - nCS0 on PD.12                                                    *\n");
+    printf("*   - ALE on PA.8                                                      *\n");
+    printf("************************************************************************\n\n");
 
     /* Configure multi-function pins for EBI 16-bit application */
     Configure_EBI_16BIT_Pins();
@@ -285,10 +283,10 @@ int main(void)
     EBI_Open(EBI_BANK0, EBI_BUSWIDTH_16BIT, EBI_TIMING_NORMAL, 0, EBI_CS_ACTIVE_LOW);
 
     /* Start to test EBI SRAM */
-    if( SRAM_BS616LV4017(512 * 1024) < 0 ) goto lexit;
+    if (SRAM_BS616LV4017(512 * 1024) < 0) goto lexit;
 
     /* EBI SRAM with PDMA test */
-    if( AccessEBIWithPDMA() < 0 ) goto lexit;
+    if (AccessEBIWithPDMA() < 0) goto lexit;
 
     printf("*** SRAM Test OK ***\n");
 
@@ -300,5 +298,5 @@ lexit:
     /* Disable EBI clock */
     CLK_DisableModuleClock(EBI0_MODULE);
 
-    while(1) {}
+    while (1) {}
 }

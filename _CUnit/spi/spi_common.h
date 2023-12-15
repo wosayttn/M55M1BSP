@@ -57,5 +57,5 @@ void SPI_ClkDisable(uint32_t u32SPIModule);
 void SPI_ClkEnable(uint32_t u32SPIModule);
 
 void SPI_CLK_Sel(uint32_t u32SPIModule, uint32_t ClkSrc);
-
+char *GetTestSPIName(uint32_t u32Index);
 #endif /* _SPI_COMMON_H_ */

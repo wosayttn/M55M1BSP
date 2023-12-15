@@ -19,7 +19,6 @@
 
 void SYS_Init(void);
 void RTC_Init(void);
-void UART0_Init(void);
 void TIMER0_Init(void);
 void GetActiveLXTandLIRC32Freq(uint32_t *u32LXTFreq, uint32_t *LIRC32Freq);
 
@@ -34,6 +33,8 @@ void GetActiveLXTandLIRC32Freq(uint32_t *u32LXTFreq, uint32_t *LIRC32Freq);
  */
 NVT_ITCM void RTCTAMPER_IRQHandler(void)
 {
+    uint32_t intflag;
+    
     if (RTC_GET_CLKFAIL_INT_FLAG(RTC))
     {
         printf("LXT clock frequency monitor fail interrupt is happened!\n");
@@ -57,6 +58,9 @@ NVT_ITCM void RTCTAMPER_IRQHandler(void)
         /* Write 1 to clear LXT Clock frequency monitor stop interrupt */
         RTC_CLEAR_CLKSTOP_INT_FLAG(RTC);
     }
+    
+    /* make sure that interrupt flag has been cleared. */
+    intflag = RTC->INTSTS;
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */
@@ -78,7 +82,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
     /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -88,7 +92,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOC_MODULE);
     CLK_EnableModuleClock(RTC0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

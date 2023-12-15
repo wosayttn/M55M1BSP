@@ -20,6 +20,23 @@ extern int32_t NOR_MX29LV320T_EraseChip(uint32_t u32Bank, uint32_t u32IsCheckBla
 void Configure_EBI_16BIT_Pins(void);
 void SYS_Init(void);
 
+enum { NonCache_index, WTRA_index, WBWARA_index, Device_index };
+
+static void initializeAttributes()
+{
+	const uint8_t DEVICE_nGnRnE = ARM_MPU_ATTR_DEVICE_nGnRnE;
+    ARM_MPU_SetMemAttr(Device_index, ARM_MPU_ATTR(DEVICE_nGnRnE, DEVICE_nGnRnE));
+}
+
+static void loadAndEnableConfig(ARM_MPU_Region_t const *table, uint32_t cnt)
+{
+    initializeAttributes();
+
+    ARM_MPU_Load(0, table, cnt);
+
+    // Enable MPU with default priv access to all other regions
+    ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
+}
 
 void Configure_EBI_16BIT_Pins(void)
 {
@@ -35,15 +52,15 @@ void Configure_EBI_16BIT_Pins(void)
     SET_EBI_AD8_PE14();
     SET_EBI_AD9_PE15();
     SET_EBI_AD10_PE1();
-    SET_EBI_AD11_PE0();
+    SET_EBI_AD11_PE0();  
     SET_EBI_AD12_PH8();
-    SET_EBI_AD13_PH9();
+    SET_EBI_AD13_PH9();    
     SET_EBI_AD14_PH10();
     SET_EBI_AD15_PH11();
 
     /* ADDR16 ~ ADDR19; */
     SET_EBI_ADR16_PF9();
-    SET_EBI_ADR17_PF8();
+    SET_EBI_ADR17_PF8();  
     SET_EBI_ADR18_PF7();
     SET_EBI_ADR19_PF6();
 
@@ -79,27 +96,14 @@ void SYS_Init(void)
     /* Switch SCLK clock source to HIRC */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
 
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock and set all bus clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Enable EBI clock */
@@ -110,6 +114,20 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
+    const ARM_MPU_Region_t mpuConfig =
+    {
+            ARM_MPU_RBAR((unsigned int)EBI_BANK0_BASE_ADDR,        // Base
+                         ARM_MPU_SH_NON,    // Non-shareable
+                         0,                 // Read-only
+                         1,                 // Non-Privileged
+                         0),                // eXecute Never enabled
+            ARM_MPU_RLAR((((unsigned int)EBI_BANK0_BASE_ADDR) + 0x00300000UL - 1),        // Limit
+                         Device_index) // Device
+    };
+
+    // Setup MPU configuration
+    loadAndEnableConfig(&mpuConfig, sizeof(mpuConfig));
+    
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -171,7 +189,6 @@ int main(void)
     {
         printf("PASS !!!\n\n");
     }
-
 
     /* Step 2, erase chip */
     if (NOR_MX29LV320T_EraseChip(EBI_BANK1, TRUE) < 0)

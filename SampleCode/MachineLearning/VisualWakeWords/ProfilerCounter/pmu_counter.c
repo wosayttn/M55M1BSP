@@ -112,6 +112,8 @@ void SysTick_Handler(void)
 {
     /* Increment the cycle counter based on load value. */
     s_u64CPUCycleCount += SysTick->LOAD + 1;
+	__DSB();
+	__ISB();
 }
 #endif
 

@@ -439,6 +439,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\emac\synopGMAC_plat.c</FilePath>
             </File>
+            <File>
+              <FileName>gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\gpio.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -620,15 +625,5 @@
     <components/>
     <files/>
   </RTE>
-
-  <LayerInfo>
-    <Layers>
-      <Layer>
-        <LayName>Project</LayName>
-        <LayPrjMark>1</LayPrjMark>
-        <LayTitle>EMAC_lwiperf</LayTitle>
-      </Layer>
-    </Layers>
-  </LayerInfo>
 
 </Project>

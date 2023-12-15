@@ -33,7 +33,7 @@
 //      <0=> LDO
 //      <1=> DCDC
 */
-#define SET_MVR       1
+#define SET_MVR       0
 
 /*
 // <o0> LVR
@@ -83,16 +83,18 @@ void PowerDownFunction(void)
 {
     uint32_t u32TimeOutCnt;
 
+    /* Select power-down mode */
+    PMC_SetPowerDownMode(SET_PDMSEL, PMC_PLCTL_PLSEL_PL1);
+
+    printf("Entering power-down mode...\n");
+
     /* Check if all the debug messages are finished */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     UART_WAIT_TX_EMPTY(DEBUG_PORT)
 
     if (--u32TimeOutCnt == 0) break;
 
-    /* Select Power-down mode */
-    PMC_SetPowerDownMode(SET_PDMSEL, PMC_PLCTL_PLSEL_PL1);
-
-    /* Enter to Power-down mode */
+    /* Enter to power-down mode */
     PMC_PowerDown();
 }
 
@@ -227,7 +229,7 @@ int32_t VoltageRegulatorSetting(void)
     if (SET_MVR == 0)
     {
         /* Set voltage regulator to LDO mode */
-        if (PMC_SetPowerRegulator(PMC_VRCTL_MVRS_LDO) == 0)
+        if (PMC_SetPowerRegulator(PMC_VRCTL_MVRS_LDO) != 0)
         {
             printf("Set voltage regulator to LDO mode not finished!\n");
             return -1;
@@ -236,7 +238,7 @@ int32_t VoltageRegulatorSetting(void)
     else
     {
         /* Set voltage regulator to DCDC mode */
-        if (PMC_SetPowerRegulator(PMC_VRCTL_MVRS_DCDC) == 0)
+        if (PMC_SetPowerRegulator(PMC_VRCTL_MVRS_DCDC) != 0)
         {
             printf("Set voltage regulator to DCDC mode not finished!\n");
             return -1;
@@ -279,7 +281,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -301,31 +303,6 @@ int32_t main(void)
 
     /* Unlock protected registers */
     SYS_UnlockReg();
-
-    /* Disable Tamper function from Config3 */
-    FMC_Open();
-    FMC_ENABLE_CFG_UPDATE();
-
-    u32Config[0] = FMC_Read(FMC_USER_CONFIG_0);
-    u32Config[1] = FMC_Read(FMC_USER_CONFIG_1);
-    u32Config[2] = FMC_Read(FMC_USER_CONFIG_2);
-    u32Config[3] = FMC_Read(FMC_USER_CONFIG_3);
-
-    if (((u32Config[3] & 0xFFFF0000) != 0x5AA50000))
-    {
-        u32Config[3] = ((u32Config[3] & (~0xFFFF0000)) | 0x5AA50000);
-
-        FMC_Erase(FMC_USER_CONFIG_0);
-
-        FMC_Write(FMC_USER_CONFIG_0, u32Config[0]);
-        FMC_Write(FMC_USER_CONFIG_1, u32Config[1]);
-        FMC_Write(FMC_USER_CONFIG_2, u32Config[2]);
-        FMC_Write(FMC_USER_CONFIG_3, u32Config[3]);
-
-        SYS_ResetChip();
-
-        while (1);
-    }
 
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
@@ -374,17 +351,12 @@ int32_t main(void)
 
     printf("+-------------------------------------------------------------------+\n");
     printf("| Operating sequence                                                |\n");
-    printf("|  1. Remove all continuous load, e.g. LED.                         |\n");
-    printf("|  2. Disable Tamper function from config3                          |\n");
-    printf("|  3. Configure all GPIO as Quasi-bidirectional Mode                |\n");
-    printf("|  4. Disable LVR                                                   |\n");
-    printf("|  5. Disable analog function, e.g. POR module                      |\n");
-    printf("|  6. Disable unused clock, e.g. LIRC                               |\n");
-    printf("|  7. Set main voltage regulator to DCDC mode                       |\n");
-    printf("|  8. Disable unused crypto power switch                            |\n");
-    printf("|  9. Disable unused SRAM                                           |\n");
-    printf("| 10. Enter to Power-Down                                           |\n");
-    printf("| 11. Wait for PC.0 falling-edge interrupt event to wake-up the MCU |\n");
+    printf("| 1. Remove all continuous load, e.g. LED.                          |\n");
+    printf("| 2. Configure all GPIO as Quasi-bidirectional Mode                 |\n");
+    printf("| 3. Disable analog function, e.g. POR module                       |\n");
+    printf("| 4. Disable unused clock, e.g. LIRC                                |\n");
+    printf("| 5. Enter to Power-Down                                            |\n");
+    printf("| 6. Wait for PC.0 falling-edge interrupt event to wake-up the MCU  |\n");
     printf("+-------------------------------------------------------------------+\n\n");
 
     /* Set function pin to GPIO mode except UART pin to print message */
@@ -461,23 +433,15 @@ int32_t main(void)
     /* Voltage regulator setting */
     if (VoltageRegulatorSetting() < 0) goto lexit;
 
-    /*
-        Disable unused SRAM power except SRAM bank0. SRAM bank0 is used to execute and download code.
-        Set SRAM power mode:
-        TBD.
-    */
-    PMC->SYSRB0PC = 0x00000000;
-    PMC->SYSRB1PC = 0x0000AAAA;
-    PMC->SYSRB2PC = 0x00000000;
-
-
     /* Wake-up source configuration */
     if (
-            (SET_PDMSEL == PMC_NPD0) 
-            ||
-            (SET_PDMSEL == PMC_NPD1) 
-            ||
-            (SET_PDMSEL == PMC_NPD2)
+        (SET_PDMSEL == PMC_NPD0)
+        ||
+        (SET_PDMSEL == PMC_NPD1)
+#if 0   // TESTCHIP_ONLY not support    
+        ||
+        (SET_PDMSEL == PMC_NPD2)
+#endif
     )
     {
         /* Configure PC.0 as Quasi mode and enable interrupt by falling edge trigger */
@@ -487,26 +451,28 @@ int32_t main(void)
         NVIC_EnableIRQ(GPC_IRQn);
     }
     else if (
-#if 0   // TESTCHIP_ONLY not support     
-                (SET_PDMSEL == PMC_NPD3) 
-                ||
-                (SET_PDMSEL == PMC_NPD4) 
-                ||
-#endif                
-                (SET_PDMSEL == PMC_SPD0) 
-                ||
-                (SET_PDMSEL == PMC_SPD1)
+#if 0   // TESTCHIP_ONLY not support
+        (SET_PDMSEL == PMC_NPD3)
+        ||
+        (SET_PDMSEL == PMC_NPD4)
+        ||
+#endif
+        (SET_PDMSEL == PMC_SPD0)
+#if 0   // TESTCHIP_ONLY not support        
+        ||
+        (SET_PDMSEL == PMC_SPD1)
+#endif
     )
     {
         /* Enable wake-up pin PC.0 falling edge wake-up at SPD mode */
         PMC_EnableTGPin(PMC_TGPIN_PC, 0, PMC_TGPIN_FALLING, PMC_TGPIN_DEBOUNCEDIS, PMC_TGPIN_WAKEUP_ENABLE);
     }
     else if (
-                (SET_PDMSEL == PMC_DPD0) 
-#if 0   // TESTCHIP_ONLY not support                
-                ||
-                (SET_PDMSEL == PMC_DPD1)
-#endif                
+        (SET_PDMSEL == PMC_DPD0)
+#if 0   // TESTCHIP_ONLY not support
+        ||
+        (SET_PDMSEL == PMC_DPD1)
+#endif
     )
     {
         /* Enable wake-up pin PC.0 falling edge wake-up at DPD mode. PC.0 would be input mode floating at DPD mode. */
@@ -521,17 +487,30 @@ int32_t main(void)
     /* Enter to Power-down mode */
     if (SET_PDMSEL == PMC_NPD0)            printf("Enter to NPD0 Power-Down ......\n");
     else if (SET_PDMSEL == PMC_NPD1)       printf("Enter to NPD1 Power-Down ......\n");
+
+#if 0   // TESTCHIP_ONLY not support    
     else if (SET_PDMSEL == PMC_NPD2)       printf("Enter to NPD2 Power-Down ......\n");
-#if 0   // TESTCHIP_ONLY not support     
     else if (SET_PDMSEL == PMC_NPD3)       printf("Enter to NPD3 Power-Down ......\n");
     else if (SET_PDMSEL == PMC_NPD4)       printf("Enter to NPD4 Power-Down ......\n");
-#endif    
-    else if (SET_PDMSEL == PMC_SPD0)       printf("Enter to SPD0 Power-Down ......\n");
-    else if (SET_PDMSEL == PMC_SPD1)       printf("Enter to SPD1 Power-Down ......\n");
-    else if (SET_PDMSEL == PMC_DPD0)       printf("Enter to DPD0 Power-Down ......\n");
-#if 0   // TESTCHIP_ONLY not support     
-    else if (SET_PDMSEL == PMC_DPD1)       printf("Enter to DPD1 Power-Down ......\n");
+
 #endif
+    else if (SET_PDMSEL == PMC_SPD0)       printf("Enter to SPD0 Power-Down ......\n");
+
+#if 0   // TESTCHIP_ONLY not support    
+    else if (SET_PDMSEL == PMC_SPD1)       printf("Enter to SPD1 Power-Down ......\n");
+
+#endif
+
+    else if (SET_PDMSEL == PMC_DPD0)       printf("Enter to DPD0 Power-Down ......\n");
+
+#if 0   // TESTCHIP_ONLY not support
+    else if (SET_PDMSEL == PMC_DPD1)       printf("Enter to DPD1 Power-Down ......\n");
+
+#endif
+    printf("Press any key to start test\n");
+
+    getchar();
+
     PowerDownFunction();
 
     /* Waiting for PC.0 falling-edge interrupt event */

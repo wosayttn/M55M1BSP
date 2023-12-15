@@ -60,6 +60,8 @@ NVT_ITCM void RTCTAMPER_IRQHandler(void)
                (uint32_t)((u32TAMPTIME & RTC_TAMPTIME_SEC_Msk) >> RTC_TAMPTIME_SEC_Pos));
 
         RTC_CLEAR_TAMPER_INT_FLAG(RTC, u32FlagStatus);
+        /* make sure that interrupt flag has been cleared. */
+        u32FlagStatus = RTC_GET_TAMPER_INT_STATUS(RTC);
         s_u32IsTamper = TRUE;
     }
 }
@@ -82,8 +84,8 @@ void SYS_Init(void)
     /* Waiting for LXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */    
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -92,7 +94,7 @@ void SYS_Init(void)
     /* Enable module clock */
     CLK_EnableModuleClock(RTC0_MODULE);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/

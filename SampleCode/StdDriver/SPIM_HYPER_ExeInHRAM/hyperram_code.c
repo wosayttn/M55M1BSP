@@ -77,6 +77,13 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     volatile uint32_t u32i = 0;
     uint32_t u32SrcAddr = 0;
     uint32_t u32TestSize = 32;
+    uint8_t au8TrimPatten[32] =
+    {
+        0xff, 0x0F, 0xFF, 0x00, 0xFF, 0xCC, 0xC3, 0x3C,
+        0xCC, 0xFF, 0xFE, 0xFF, 0xFE, 0xEF, 0xFF, 0xDF,
+        0xFF, 0xDD, 0xFF, 0xFB, 0xFF, 0xFB, 0xBF, 0xFF,
+        0x7F, 0xFF, 0x77, 0xF7, 0xBD, 0xEF,
+    };
 #ifdef DMM_MODE_TRIM
     uint32_t u32DMMAddr = SPIM_HYPER_GetDMMAddress(spim);
     uint32_t *pu32RdBuf = NULL;
@@ -87,13 +94,13 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     HyperRAM_Erase(spim, u32SrcAddr, u32TestSize);
 
     /* Write Data to HyperRAM */
-    for (u32i = u32SrcAddr; u32i < u32TestSize; u32i++)
-    {
-        g_au8SrcArray[u32i] = (u32i + 0x01);
-        SPIM_HYPER_Write1Byte(spim, u32i, g_au8SrcArray[u32i]);
-    }
+    //for (u32i = u32SrcAddr; u32i < u32TestSize; u32i++)
+    //{
+    //    g_au8SrcArray[u32i] = (u32i + 0x01);
+    //    SPIM_HYPER_Write1Byte(spim, u32i, g_au8SrcArray[u32i]);
+    //}
 
-    //SPIM_HYPER_DMAWrite(spim, u32SrcAddr, g_au8SrcArray, u32TestSize);
+    SPIM_HYPER_DMAWrite(spim, u32SrcAddr, au8TrimPatten, u32TestSize);
 
 #ifdef DMM_MODE_TRIM
     SPIM_HYPER_EnterDirectMapMode(spim);
@@ -122,7 +129,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
 #endif
 
         /* Verify the data and save the number of successful delay steps */
-        if (memcmp(g_au8SrcArray, g_au8DestArray, u32TestSize))
+        if (memcmp(au8TrimPatten, g_au8DestArray, u32TestSize))
         {
             printf("!!!\tData compare failed at block 0x%x\n", u32SrcAddr);
         }

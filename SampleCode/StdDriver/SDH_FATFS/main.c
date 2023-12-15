@@ -333,7 +333,7 @@ NVT_ITCM void SDH0_IRQHandler(void)
         // block down
         SD0.DataReadyFlag = TRUE;
         SDH0->INTSTS = SDH_INTSTS_BLKDIF_Msk;
-        printf("SD block down\r\n");
+        //printf("SD block down\r\n");
     }
 
     if ((ier & SDH_INTEN_CDIEN_Msk) &&
@@ -442,7 +442,7 @@ void SYS_Init(void)
     /* Select Timer 0 module clock source as HXT */
     CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_HXT, 0);
 
-    /* Enable UART0 module clock */
+    /* Enable UART module clock */
     SetDebugUartCLK();
 
     /* Enable all GPIO clock */
@@ -461,7 +461,7 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Set multi-function pins for UART0 RXD and TXD */
+    /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();
 
     /* Set multi-function pin for SDH */
