@@ -36,10 +36,12 @@ NVT_ITCM void DAC01_IRQHandler(void)
             g_u32Index = 0;
         else
         {
-            DAC_WRITE_DATA(DAC0, 0, g_au16Sine[g_u32Index++]);
-            DAC_START_CONV(DAC0);
             /* Clear the DAC conversion complete finish flag */
             DAC_CLR_INT_FLAG(DAC0, 0);
+
+            DAC_WRITE_DATA(DAC0, 0, g_au16Sine[g_u32Index++]);
+            DAC_START_CONV(DAC0);
+
 
         }
     }
