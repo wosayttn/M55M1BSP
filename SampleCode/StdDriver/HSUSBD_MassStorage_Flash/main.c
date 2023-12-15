@@ -53,18 +53,26 @@ void SYS_Init(void)
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
-    /* Select HSUSBD */
-    SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;
-
+   /* Enable HSOTG0_ module clock */
+    CLK_EnableModuleClock(HSOTG0_MODULE);
+    
+    SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;    /* select HSUSBD */
     /* Enable USB PHY */
-    SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
+    SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk | SYS_USBPHY_HSUSBACT_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
+    for (i=0; i<0x1000; i++);      // delay > 10 us
+    SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
 
-    for (i = 0; i < 0x1000; i++);  // delay > 10 us
-
-
-    /* Enable HSUSBD module clock */
+    /* Enable IP clock */
     CLK_EnableModuleClock(HSUSBD0_MODULE);
 
+    /* Enable ISP0_ module clock */
+    CLK_EnableModuleClock(ISP0_MODULE);
+     
+    /* Enable FMC0 module clock */
+    CLK_EnableModuleClock(FMC0_MODULE);
+        /* Select UART clock source from HIRC */
+    CLK_SetModuleClock(FMC0_MODULE, CLK_FMCSEL_FMC0SEL_HIRC,0);
+    
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/

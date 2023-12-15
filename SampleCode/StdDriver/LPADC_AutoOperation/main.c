@@ -53,6 +53,8 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
     }
     else
         printf("LPPDMA_IRQHandler: unknown LPPDMA interrupt !!\n");
+        /*Confirm that the Flag has been cleared.*/
+        LPPDMA_GET_INT_STATUS(LPPDMA);
 }
 
 void SYS_Init(void)
@@ -108,15 +110,15 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                              */
     /*----------------------------------------------------------------------*/
 
-    /* Set PB multi-function pins for Debug UART RXD and TXD */
+    /* Set PH multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();;
 
-    /* Set PB.2 to input mode */
-    GPIO_SetMode(PB, BIT2, GPIO_MODE_INPUT);
-    /* Configure the PB.2 LPADC analog input pins.  */
-    SET_LPADC0_CH2_PB2();
-    /* Disable the PB.2 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT2);
+    /* Set PB.1 to input mode */
+    GPIO_SetMode(PB, BIT1, GPIO_MODE_INPUT);
+    /* Configure the PB.1 LPADC analog input pins.  */
+    SET_LPADC0_CH1_PB1();
+    /* Disable the PB.1 digital input path to avoid the leakage current. */
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT1);
 
     /* Set LPTMR0 PWM mode output pins */
     SET_LPTM0_PB5();
@@ -158,8 +160,8 @@ void LPPDMA_Init()
     /* Open Channel 1 */
     LPPDMA_Open(LPPDMA, BIT0 << lppdma_ch);
 
-    /* Transfer count is 5, transfer width is 32 bits */
-    LPPDMA_SetTransferCnt(LPPDMA, lppdma_ch, LPPDMA_WIDTH_32, 5);
+    /* Transfer count is 10, transfer width is 32 bits */
+    LPPDMA_SetTransferCnt(LPPDMA, lppdma_ch, LPPDMA_WIDTH_32, 10);
 
     /* Set source address is LPADC0->ADPDMA, destination address is g_i32ConversionData[] on LPSRAM */
     LPPDMA_SetTransferAddr(LPPDMA, lppdma_ch, (uint32_t) & (LPADC0->ADPDMA), LPPDMA_SAR_FIX, (uint32_t)g_i32ConversionData, LPPDMA_DAR_INC);
@@ -177,11 +179,11 @@ void LPPDMA_Init()
 
 void LPADC_Init(void)
 {
-    /* Enable LPADC converter */
-    LPADC_POWER_ON(LPADC0);
+    /* LPADC Calibration */
+    LPADC_Calibration(LPADC0);
 
-    /* Set input mode as single-end, Single-cycle scan mode, and select channel 2 */
-    LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT2);
+    /* Set input mode as single-end, Single-cycle scan mode, and select channel 1 */
+    LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT1);
 
     /* Enable LPADC Auto-operation and set it can be triggered by LPTMR0 */
     LPADC_SelectAutoOperationMode(LPADC0, LPADC_AUTOCTL_TRIGSEL_LPTMR0);
@@ -196,6 +198,11 @@ void AutoOperation_FunctionTest()
 
     g_u32WakeupCount = 0;
 
+    SYS_UnlockReg();
+    /* Switch SCLK clock source to PLL0 and divide 1 */
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
+    SYS_LockReg();
+  
     /* Start LPTMR counting */
     LPTPWM_START_COUNTER(LPTMR0);
 
@@ -210,8 +217,8 @@ void AutoOperation_FunctionTest()
         PMC->INTSTS = PMC_INTSTS_CLRWK_Msk;
         g_u32LPPdmaIntFlag = 0;
 
-        SYS_UnlockReg();
-        PMC_SetPowerDownMode(PMC_NPD2, PMC_PLCTL_PLSEL_PL0);
+         SYS_UnlockReg();
+        PMC_SetPowerDownMode(PMC_NPD0, PMC_PLCTL_PLSEL_PL0);
         PMC_PowerDown();
         SYS_LockReg();
 
@@ -226,7 +233,7 @@ void AutoOperation_FunctionTest()
         else if (g_u32LPPdmaIntFlag == 2)
             printf("LPPDMA trasnfer LPADC register abort...\n");
 
-        printf("Only the first 5 values are valid LPADC conversion results.\n");
+        printf("Only the first 10 values are valid LPADC conversion results.\n");
 
         for (i = 0; i < 10; i++)
         {
@@ -259,11 +266,11 @@ int32_t main(void)
     printf("    * Initial LPTMR0, LPPDMA, and LPADC to Auto-operation mode.\n");
     printf("    * CPU enter power-down mode.\n");
     printf("    * LPTMR0 PWM mode output 1 Hz 50%% duty to LPTM0 (PB5).\n");
-    printf("          and trigger LPADC0 channel 2 (PB2) at period point.\n");
+    printf("          and trigger LPADC0 channel 1 (PB1) at period point.\n");
     printf("    * LPADC0 trigger LPPDMA to move data from LPADC0 to LPSRAM.\n");
-    printf("    * LPPDMA wakeup CPU after 5 data be moved.\n");
-    printf("    * CPU can access LPSRAM to get 5 LPADC conversion result.\n");
-    printf("    *** Check the HCLK output on PB14 can monitor power-down period.\n");
+    printf("    * LPPDMA wakeup CPU after 10 data be moved.\n");
+    printf("    * CPU can access LPSRAM to get 10 LPADC conversion result.\n");
+    printf("    *** Check the HCLK output on PC13 can monitor power-down period.\n");
 
     LPTPWM_Init();
 

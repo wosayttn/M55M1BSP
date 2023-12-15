@@ -60,6 +60,12 @@ void SYS_Init(void)
     /* Enable LPADC module clock */
     CLK_EnableModuleClock(LPADC0_MODULE);
 
+
+    /* Workaround(TESTCHIP_ONLY)  */
+    /* To measure the VBG voltage in TC8263, ACMP_N must be set through ACMP to turn on VBG.*/
+    CLK_EnableModuleClock(ACMP01_MODULE);
+    ACMP_Open(ACMP01,0,ACMP_CTL_NEGSEL_VBG,ACMP_CTL_HYSTERESIS_DISABLE);
+
     /* Debug UART clock setting*/
     SetDebugUartCLK();
     /*----------------------------------------------------------------------*/
@@ -89,11 +95,11 @@ void LPADC_FunctionTest()
     printf("|   LPADC conversion rate = 12 MHz / 40 = 300 kSPS                     |\n");
     printf("+----------------------------------------------------------------------+\n");
 
-    /* Enable LPADC converter */
-    LPADC_POWER_ON(LPADC0);
+    /* LPADC Calibration */
+    LPADC_Calibration(LPADC0);
 
-    /* Set input mode as single-end, Single mode, and select channel 29 (band-gap voltage) */
-    LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT29);
+    /* Set input mode as single-end, Single mode, and select channel 31 (band-gap voltage) */
+    LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT31);
 
     /* The maximum sampling rate will be 300 kSPS for Band-gap. */
     /* Set sample module extended sampling time to 20. */
@@ -116,8 +122,8 @@ void LPADC_FunctionTest()
     /* Disable the A/D interrupt */
     LPADC_DisableInt(LPADC0, LPADC_ADF_INT);
 
-    /* Get the conversion result of the channel 29 */
-    i32ConversionData = LPADC_GET_CONVERSION_DATA(LPADC0, 29);
+    /* Get the conversion result of the channel 31 */
+    i32ConversionData = LPADC_GET_CONVERSION_DATA(LPADC0, 31);
     printf("LPADC Conversion result of Band-gap: 0x%X (%d)\n", i32ConversionData, i32ConversionData);
     printf("Band-gap voltage is %dmV if Reference voltage is 3.3V\n", (3300 * i32ConversionData) / 4095);
 }
