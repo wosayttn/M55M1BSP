@@ -66,19 +66,7 @@ int32_t SPIM_HYPER_SetDLLDelayNum(SPIM_T *spim, uint32_t u32DelayNum)
 
     u32Div = SPIM_HYPER_GET_CLKDIV(spim);
 
-    if (u32Div == 0)
-    {
-        u32Div = 0;
-    }
-    else if (u32Div == 1)
-    {
-        u32Div = 1;
-    }
-    else if (u32Div == 2)
-    {
-        u32Div = 2;
-    }
-    else
+    if (u32Div >= 3)
     {
         u32Div = 3;
     }
@@ -109,25 +97,11 @@ int32_t SPIM_HYPER_SetDLLDelayNum(SPIM_T *spim, uint32_t u32DelayNum)
         }
     }
 
-    SPIM_HYPER_SET_AUTO_TRIM_DLL(spim, SPIM_HYPER_OP_ENABLE);
-
     i32Timeout = SPIM_HYPER_TIMEOUT;
 
     /* Polling the DLL status register DLLREADY to 0x1,
        and the value 0x1 indicates that output of DLL circuit is ready. */
     while (SPIM_HYPER_GET_DLLREADY(spim) != SPIM_HYPER_OP_ENABLE)
-    {
-        if (--i32Timeout <= 0)
-        {
-            return SPIM_HYPER_ERR_TIMEOUT;
-        }
-    }
-
-    i32Timeout = SPIM_HYPER_TIMEOUT;
-
-    /* Polling the DLL status register DLLREADY to 0x1,
-       and the value 0x1 indicates that output of DLL circuit is ready. */
-    while (SPIM_HYPER_GET_DLLATRDY(spim) != SPIM_HYPER_OP_ENABLE)
     {
         if (--i32Timeout <= 0)
         {
