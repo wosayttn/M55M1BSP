@@ -20,26 +20,18 @@ void SYS_Init(void)
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init System Clock                                                                                       */
+    /*---------------------------------------------------------------------------------------------------------*/
+#if defined(TESTCHIP_ONLY)
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 144MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_144MHZ);
+#else
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 192MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_192MHZ);
+#endif
 
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable External RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
-
-    /* Waiting for External RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
-
-    /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
-    SystemCoreClockUpdate();
-
-    /* Enable GPA ~ GPJ peripheral clock */
+    /* Enable all GPIO clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
     CLK_EnableModuleClock(GPIOC_MODULE);
@@ -48,6 +40,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOF_MODULE);
     CLK_EnableModuleClock(GPIOG_MODULE);
     CLK_EnableModuleClock(GPIOH_MODULE);
+    CLK_EnableModuleClock(GPIOI_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
 
     /* Debug UART clock setting*/
@@ -72,14 +65,19 @@ void SYS_Init(void)
     /* Select TIMER0 module clock source as HIRC */
     CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_HIRC, 0);
 
+    /* Enable PDMA0 module clock */
+    CLK_EnableModuleClock(PDMA0_MODULE);
+
     /* Enable I2S0 module clock */
     CLK_EnableModuleClock(I2S0_MODULE);
 
+#if defined(ALIGN_AF_PINS)
     /* Enable I2C3 module clock */
     CLK_EnableModuleClock(I2C3_MODULE);
-
-    /* Enable PDMA0 module clock */
-    CLK_EnableModuleClock(PDMA0_MODULE);
+#else
+    /* Enable I2C2 module clock */
+    CLK_EnableModuleClock(I2C2_MODULE);
+#endif
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -95,23 +93,35 @@ void SYS_Init(void)
     SET_I2S0_DO_PI9();
     SET_I2S0_LRCK_PI10();
 
+    /* Enable I2S0 clock pin (PI6) schmitt trigger */
+    PI->SMTEN |= GPIO_SMTEN_SMTEN6_Msk;
+
+#if defined(ALIGN_AF_PINS)
     /* Set I2C3 multi-function pins */
     SET_I2C3_SDA_PG1();
     SET_I2C3_SCL_PG0();
 
-    PI->SMTEN |= GPIO_SMTEN_SMTEN6_Msk;
+    /* Enable I2C3 clock pin (PG0) schmitt trigger */
     PG->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
+#else
+    /* Set I2C3 multi-function pins */
+    SET_I2C2_SDA_PD0();
+    SET_I2C2_SCL_PD1();
+
+    /* Enable I2C2 clock pin (PD1) schmitt trigger */
+    PD->SMTEN |= GPIO_SMTEN_SMTEN1_Msk;
+#endif
 
 }
 
 /* Init I2C interface */
-void I2C3_Init(void)
+void I2C_Init(void)
 {
-    /* Open I2C3 and set clock to 400k */
-    I2C_Open(I2C3, 400000);
+    /* Open I2C_PORT and set clock to 100k */
+    I2C_Open(I2C_PORT, 100000);
 
-    /* Get I2C3 Bus Clock */
-    printf("I2C clock %d Hz\n", I2C_GetBusClockFreq(I2C3));
+    /* Get I2C Bus Clock */
+    printf("I2C clock %d Hz\n", I2C_GetBusClockFreq(I2C_PORT));
 }
 
 int32_t main(void)
@@ -120,6 +130,7 @@ int32_t main(void)
 
     /* Unlock protected registers */
     SYS_UnlockReg();
+
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
@@ -133,25 +144,31 @@ int32_t main(void)
     printf("HXT clock %d Hz\n", CLK_GetHXTFreq());
     printf("CPU clock %d Hz\n", CLK_GetSCLKFreq());
 
-    /* Init I2C3 to access codec */
-    I2C3_Init();
+    /* Init I2C to access codec */
+    I2C_Init();
+
+    /* Select source from HIRC(12MHz) */
+    CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_HIRC, MODULE_NoMsk);
 
     /* Open I2S0 interface and set to slave mode, stereo channel, I2S format */
     I2S_Open(I2S0, I2S_MODE_SLAVE, 48000, I2S_DATABIT_16, I2S_STEREO, I2S_FORMAT_I2S);
 
-    /* Select source from HXT(12MHz) */
-    CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_HXT, 0);
+    /* Set MCLK and enable MCLK */
+    I2S_EnableMCLK(I2S0, 12000000);
 
     /* Lock protected registers */
     SYS_LockReg();
 
     /* Set JK-EN low to enable phone jack on NuMaker board. */
+#if defined(ALIGN_AF_PINS)
     SET_GPIO_PB12();
     GPIO_SetMode(PB, BIT12, GPIO_MODE_OUTPUT);
     PB12 = 0;
-
-    /* Set MCLK and enable MCLK */
-    I2S_EnableMCLK(I2S0, 12000000);
+#else
+    SET_GPIO_PD4();
+    GPIO_SetMode(PD, BIT4, GPIO_MODE_OUTPUT);
+    PD4 = 0;
+#endif
 
 #if NAU8822
     NAU8822_Setup();
