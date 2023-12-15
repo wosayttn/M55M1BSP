@@ -345,14 +345,14 @@ typedef enum { FALSE = 0, TRUE = 1 } boolean;
 
 #define DCT_ISLOW_SUPPORTED	/* slow but accurate integer algorithm */
 #define DCT_IFAST_SUPPORTED	/* faster, less accurate integer method */
-#define DCT_FLOAT_SUPPORTED	/* floating-point: accurate, fast on fast HW */
+//#define DCT_FLOAT_SUPPORTED	/* floating-point: accurate, fast on fast HW */
 
 /* Encoder capability options: */
 
 #define C_ARITH_CODING_SUPPORTED    /* Arithmetic coding back end? */
 #define C_MULTISCAN_FILES_SUPPORTED /* Multiple-scan JPEG files? */
 #define C_PROGRESSIVE_SUPPORTED	    /* Progressive JPEG? (Requires MULTISCAN)*/
-#define DCT_SCALING_SUPPORTED	    /* Input rescaling via DCT? (Requires DCT_ISLOW)*/
+//#define DCT_SCALING_SUPPORTED	    /* Input rescaling via DCT? (Requires DCT_ISLOW)*/
 #define ENTROPY_OPT_SUPPORTED	    /* Optimization of entropy coding parms? */
 /* Note: if you selected more than 8-bit data precision, it is dangerous to
  * turn off ENTROPY_OPT_SUPPORTED.  The standard Huffman tables are only

@@ -195,9 +195,20 @@ jpeg_fdct_islow (DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
 #ifdef DBG_NVT_JPEG
   for (ctr = 0; ctr < DCTSIZE2; ctr++) 
 	   printf("u16simdbuf[%d] = %d\r\n", ctr, (int16_t)(i16simdbuf[ctr]));
- 
+#endif//DBG_NVT_JPEG	
+	
   jsimd_fdct_islow_helium((int16_t*)(i16simdbuf));
+  for (ctr = 0; ctr < DCTSIZE2-DCTSIZE; ctr++) 
+  {
+	dataptr[ctr] = (int)(i16simdbuf[ctr+DCTSIZE]);
+  }
   
+  for (ctr = 3*DCTSIZE; ctr < DCTSIZE2; ctr++) 
+  {
+	dataptr[ctr] = 0;
+  }
+
+#ifdef DBG_NVT_JPEG  
   for (ctr = 0; ctr < DCTSIZE2; ctr++) 
   	   printf("simd fdct coeff[%d] = %d\r\n", ctr, (int16_t)(i16simdbuf[ctr]));
 #endif//DBG_NVT_JPEG	
