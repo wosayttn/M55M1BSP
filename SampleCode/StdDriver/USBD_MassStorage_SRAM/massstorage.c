@@ -12,7 +12,7 @@
 #include "NuMicro.h"
 #include "massstorage.h"
 
-#if 0
+#if 1
     #define DBG_PRINTF      printf
 #else
     #define DBG_PRINTF(...)
@@ -266,6 +266,8 @@ NVT_ITCM void USBD_IRQHandler(void)
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP11);
         }
     }
+     __DSB( );
+     __ISB( );
 }
 
 void EP2_Handler(void)
@@ -1414,11 +1416,11 @@ void MSC_SetConfig(void)
 void DataFlashRead(uint32_t u32Addr, uint32_t u32Size, uint32_t u32Buffer)
 {
     //DataFlashRead(u32Addr, u32Size, (uint32_t)u32Buffer);
-    USBD_MemCopy((uint8_t *)u32Buffer, (uint8_t *)(u32Addr + 0x20004000), u32Size);
+    USBD_MemCopy((uint8_t *)u32Buffer, (uint8_t *)(u32Addr + 0x20104000), u32Size);
 }
 
 
 void DataFlashWrite(uint32_t u32Addr, uint32_t u32Size, uint32_t u32Buffer)
 {
-    USBD_MemCopy((uint8_t *)(u32Addr + 0x20004000), (uint8_t *)u32Buffer, u32Size);
+    USBD_MemCopy((uint8_t *)(u32Addr + 0x20104000), (uint8_t *)u32Buffer, u32Size);
 }

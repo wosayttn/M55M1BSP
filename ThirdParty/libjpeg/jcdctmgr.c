@@ -17,6 +17,9 @@
 #include "jpeglib.h"
 #include "jdct.h"		/* Private declarations for DCT subsystem */
 
+#ifdef NVT_JPEG
+#include <arm_mve.h>
+#endif
 
 /* Private subobject for this module */
 
@@ -225,6 +228,11 @@ start_pass_fdctmgr (j_compress_ptr cinfo)
   int method = 0;
   JQUANT_TBL * qtbl;
   DCTELEM * dtbl;
+
+#ifdef NVT_JPEG
+  JQUANT_RECP_TBL * qtrecptbl;
+	DCTELEM * dtbl_recp;
+#endif	
 
   for (ci = 0, compptr = cinfo->comp_info; ci < cinfo->num_components;
        ci++, compptr++) {

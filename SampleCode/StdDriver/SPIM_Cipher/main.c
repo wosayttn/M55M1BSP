@@ -378,8 +378,8 @@ int main()
     printf("|        SPIM DMA Cipher mode sample        |\n");
     printf("+-------------------------------------------+\n");
 
-    /* Set SPIM clock as HCLK divided by 4 */
-    SPIM_SET_CLOCK_DIVIDER(SPIM_PORT, 2);
+    /* Set SPIM clock as HCLK divided by 8 */
+    SPIM_SET_CLOCK_DIVIDER(SPIM_PORT, 8);
 
     /* Set Cipher Key and protection region */
     if (SPIM_PORT == SPIM0)

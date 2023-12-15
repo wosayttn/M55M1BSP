@@ -34,13 +34,15 @@ uint32_t g_au32MasterRxBuffer[DATA_COUNT] __attribute__((section(".lpSram")));
 
 NVT_ITCM void LPSPI0_IRQHandler(void)
 {
+    volatile int32_t i32Timeout = 0xFFFF;
+
     // TESTCHIP_ONLY
     CLK_WaitModuleClockReady(LPSPI0_MODULE);
 
     /* for Auto Operation mode test */
     g_u32Ifr = LPSPI0->AUTOSTS;
 
-    while (LPSPI0->AUTOSTS != 0)
+    while ((LPSPI0->AUTOSTS != 0) && (--i32Timeout >= 0))
     {
         LPSPI0->AUTOSTS = LPSPI0->AUTOSTS;
     }

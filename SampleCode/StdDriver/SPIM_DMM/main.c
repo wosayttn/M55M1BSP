@@ -329,8 +329,8 @@ int main()
     printf("|         SPIM DMM mode read sample         |\n");
     printf("+-------------------------------------------+\n");
 
-    /* Set SPIM clock as HCLK divided by 4 */
-    SPIM_SET_CLOCK_DIVIDER(SPIM_PORT, 2);
+    /* Set SPIM clock as HCLK divided by 8 */
+    SPIM_SET_CLOCK_DIVIDER(SPIM_PORT, 8);
 
     if (SPIM_InitFlash(SPIM_PORT, 1) != 0)      /* Initialized SPI flash */
     {

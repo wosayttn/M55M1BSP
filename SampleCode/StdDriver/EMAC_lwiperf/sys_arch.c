@@ -15,8 +15,13 @@ static volatile uint32_t u32Jiffies = 0;
 
 void NVT_ITCM TIMER0_IRQHandler(void)
 {
+    uint32_t u32Status;
+
     u32Jiffies += 10;
     TIMER_ClearIntFlag(TIMER0);
+
+    /* CPU read interrupt flag register to wait write(clear) instruction completement */
+    u32Status = TIMER0->INTSTS;
 }
 
 u32_t sys_now(void)

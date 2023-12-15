@@ -164,9 +164,11 @@ int main()
     printf("|      SPIM I/O mode read/write sample      |\n");
     printf("+-------------------------------------------+\n");
 
-    SPIM_SET_CLOCK_DIVIDER(SPIM_PORT, 2);       /* Set SPIM clock as HCLK divided by 2 */
+    /* Set SPIM clock as HCLK divided by 8 */
+    SPIM_SET_CLOCK_DIVIDER(SPIM_PORT, 8);
 
-    SPIM_SET_RXCLKDLY_RDDLYSEL(SPIM_PORT, 1);   /* Insert 1 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
+    /* Insert 0 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
+    SPIM_SET_RXCLKDLY_RDDLYSEL(SPIM_PORT, 0);
 
     if (SPIM_InitFlash(SPIM_PORT, 1) != 0)      /* Initialized SPI flash */
     {
