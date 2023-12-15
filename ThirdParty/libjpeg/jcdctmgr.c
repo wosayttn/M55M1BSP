@@ -112,7 +112,7 @@ forward_DCT (j_compress_ptr cinfo, jpeg_component_info * compptr,
       register int i;
       register JCOEFPTR output_ptr = coef_blocks[bi];
       
-#ifdef NVT_JPEG
+#if 0//def NVT_JPEG
 	    /*Do coeffcient quantization in the following loop*/
 	    for (i = 0; i < DCTSIZE2; i++) 
             i16workspace[i] = (int16_t)(workspace[i]);
@@ -120,8 +120,13 @@ forward_DCT (j_compress_ptr cinfo, jpeg_component_info * compptr,
         for (i = 0; i < DCTSIZE2*4; i++) 
             i16divisors_recp[i] = (int16_t)(divisors_recp[i]);
 			
+		for (i = 0; i < DCTSIZE2*4; i++) 
+		     printf("i16divisors_recp[%d]=%d \r\n",i, divisors_recp[i]);	
+			
 		jsimd_quantize_helium(output_ptr, i16divisors_recp,i16workspace);
-#ifdef DBG_NVT_JPEG        
+#ifdef DBG_NVT_JPEG
+		for (i = 0; i < DCTSIZE2; i++) 
+            printf("i16workspace[%d]=%d \r\n",i, i16workspace[i]);	
        	for (i = 0; i < DCTSIZE2; i++) 
             printf("simd_output_ptr[%d]=%d \r\n",i, output_ptr[i]);			
 #endif//DBG_NVT_JPEG        
