@@ -12,8 +12,61 @@
 #include "NuMicro.h"
 #include "NuBL2.h"
 
+typedef __NO_RETURN void (*PFN_FUNC)(void);
+
 void SYS_Init(void);
 void UART_Init(void);
+
+/*
+ * Secure Conceal is used to hide user boot code from CPU data access and instruction fetch.
+ *
+ * After all coding and testing are finished, follow __RO_BASE and __RO_SIZE in NuBL2.scatter and
+ * use ICP Programming Tool to set Base address, Page count and Enable of Secure Conceal Function.
+ * Call ActiveSecureConceal when exit NuBL2 if user want to hide NuBL2.
+ *
+ * [Note] If Secure Conceal Function is enabled, Secure Conceal region cannot be updated again.
+ *        It needs whole chip erase to disable secure Conceal Function.
+ */
+NVT_ITCM void ActiveSecureConceal(uint32_t u32NuBL32Base)
+{
+    PFN_FUNC pfnNuBL32Entry;
+
+    SYS_UnlockReg();
+    FMC_Open();
+
+    if (FMC_Read(FMC_USER_CONFIG_6) != 0xFFFFFFFF)
+    {
+        printf("\nSecure conceal function is active.\nSecure conceal region cannot be access until chip reset.\n");
+        FMC->SCACT = 1;
+    }
+    else
+    {
+        printf("\nSecure conceal function is not set or enabled.\nPlease read comment about ActiveSecureConceal function.\n");
+    }
+
+    UART_WAIT_TX_EMPTY(DEBUG_PORT);
+
+    if (u32NuBL32Base == (uint32_t) -1)
+    {
+        printf("Halt here\n");
+
+        while (1) ;
+    }
+
+    /* Disable all interrupt */
+    __set_PRIMASK(1);
+
+    /* SCB.VTOR points to the NuBL32 vector table base address. */
+    SCB->VTOR = u32NuBL32Base;
+
+    /* 1st entry in the vector table is the Main Stack Pointer. */
+    __set_MSP(*((uint32_t *)SCB->VTOR));      /* Set up MSP */
+
+    /* 2nd entry contains the address of the Reset_Handler (CMSIS-CORE) function */
+    pfnNuBL32Entry = ((PFN_FUNC)(*(((uint32_t *)SCB->VTOR) + 1)));
+    /* execute NuBL32 FW */
+    pfnNuBL32Entry();
+}
 
 static int32_t CheckROTPKStatus(void)
 {
@@ -96,7 +149,8 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART module clock */
+    /* Enable module clock */
+    CLK_EnableModuleClock(ISP0_MODULE);
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -146,24 +200,12 @@ int main(void)
     printf("\nNuBL2 verified NuBL33 FW PASS.\n");
 
     /* Jump to execute NuBL32 FW */
-    printf("\nJump to execute NuBL32...\n");
-    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    UART_WAIT_TX_EMPTY((UART_T *)DEBUG_PORT)
-
-    if (--u32TimeOutCnt == 0) break;
-
-    /* Disable all interrupt */
-    __set_PRIMASK(1);
-
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-    FMC_Open();
-    FMC_SetVectorPageAddr(u32NuBL32Base);
-
-    /* Reset to execute NuBL32 FW */
-    NVIC_SystemReset();
+    printf("\nPress any key to execute NuBL32@0x%08X ...\n", u32NuBL32Base);
+    getchar();
+    ActiveSecureConceal(u32NuBL32Base);
 
 ErrorExit:
+    ActiveSecureConceal(-1);
 
     while (1) {}
 }
