@@ -103,12 +103,15 @@ void SYS_Init(void)
 
 NVT_ITCM void PMC_IRQHandler(void)
 {
+    uint32_t u32Status;
+
     printf("Wake-up!!!\n");
 
     /* Clear PMC interrupt flag */
     PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
 
-    while(PMC->INTSTS){};
+    /* CPU read interrupt flag register to wait write(clear) instruction completement */
+    u32Status = PMC->INTSTS;
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -165,6 +168,7 @@ int32_t main(void)
                 WakeUpBODFunction(PMC_NPD1);
                 break;
 #if 0   // TESTCHIP_ONLY not support
+
             case '3':
                 printf("Enter to NPD2 Power-down mode......\n");
                 WakeUpBODFunction(PMC_NPD2);
@@ -180,6 +184,7 @@ int32_t main(void)
                 WakeUpBODFunction(PMC_NPD4);
                 break;
 #endif
+
             default:
                 break;
         }

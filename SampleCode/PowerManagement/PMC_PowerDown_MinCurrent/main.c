@@ -110,6 +110,7 @@ void PowerDownFunction(void)
 NVT_ITCM void GPC_IRQHandler(void)
 {
     volatile uint32_t u32temp;
+    uint32_t u32Status;
 
     /* To check if PC.0 interrupt occurred */
     if (GPIO_GET_INT_FLAG(PC, BIT0))
@@ -124,6 +125,9 @@ NVT_ITCM void GPC_IRQHandler(void)
         PC->INTSRC = u32temp;
         printf("Un-expected interrupts.\n");
     }
+
+    /* CPU read interrupt flag register to wait write(clear) instruction completement */
+    u32Status = PC->INTSRC;
 }
 
 int32_t LvrSetting(void)

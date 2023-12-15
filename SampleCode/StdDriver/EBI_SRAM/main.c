@@ -53,8 +53,8 @@ NVT_ITCM void PDMA0_IRQHandler(void)
     else
         printf("unknown interrupt!!\n");
 
-    __DSB();
-    __ISB();
+    /* CPU read interrupt flag register to wait write(clear) instruction completement */
+    u32Status = PDMA_GET_INT_STATUS(PDMA0);
 }
 
 int32_t AccessEBIWithPDMA(void)

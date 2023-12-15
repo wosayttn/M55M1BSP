@@ -134,6 +134,8 @@ void EMAC_Open(uint8_t *macaddr)
  *----------------------------------------------------------------------------*/
 NVT_ITCM void EMAC0_IRQHandler(void)
 {
+    uint32_t u32Status;
+    
     portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 
     u32 interrupt, dma_status_reg;
@@ -267,6 +269,9 @@ NVT_ITCM void EMAC0_IRQHandler(void)
     synopGMAC_enable_interrupt(&GMACdev, u32GmacDmaIE);
 		
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    
+    /* CPU read interrupt flag register to wait write(clear) instruction completement */
+    u32Status = synopGMACReadReg(GMACdev.MacBase, GmacInterruptStatus);
 }
 
 void nu_emac_pbuf_free(struct pbuf *p)
