@@ -317,7 +317,6 @@ int32_t main(void)
     printf("[A] Initiate a Hot-Join request when a 7'h7E header on the bus.\n");
     printf("Select: ");
     ch =  getchar();
-
     /* Initial I3C0 default settings */
     I3C0->SLVMID = I3C0_MID;
     I3C0->SLVPID = I3C0_PID;
@@ -350,7 +349,6 @@ int32_t main(void)
     printf("  then perform a read request to receive the N-bytes data from Slave.\n");
     printf("    - The write data should be equal to the received data\n");
     printf("\n");
-
     /* Enable I3C0 controller */
     I3C_Enable(I3C0);
     printf("[ Wait for the I3C Slave to issue a Hot-Join request ]\n\n");

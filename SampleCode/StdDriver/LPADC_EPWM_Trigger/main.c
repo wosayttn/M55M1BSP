@@ -27,6 +27,9 @@ NVT_ITCM void LPADC0_IRQHandler(void)
     LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT); /* Clear the A/D interrupt flag */
     g_u32AdcIntFlag = 1;
     g_u32COVNUMFlag++;
+    /*Confirm that the Flag has been cleared.*/
+    LPADC_GET_INT_FLAG(LPADC0, LPADC_ADF_INT);
+  
 }
 
 void SYS_Init(void)
@@ -77,15 +80,15 @@ void SYS_Init(void)
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
-    /* Set PB.2 - PB.3 to input mode */
-    GPIO_SetMode(PB, BIT2 | BIT3, GPIO_MODE_INPUT);
+    /* Set PB.0 - PB.1 to input mode */
+    GPIO_SetMode(PB, BIT0 | BIT1, GPIO_MODE_INPUT);
 
-    /* Configure the PB.2 - PB.3 LPADC analog input pins.  */
-    SET_EADC0_CH2_PB2();
-    SET_EADC0_CH3_PB3();
+    /* Configure the PB.0 - PB.1 LPADC analog input pins.  */
+    SET_EADC0_CH0_PB0();
+    SET_EADC0_CH1_PB1();
 
-    /* Disable the PB.2 - PB.3 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT2 | BIT3);
+    /* Disable the PB.0 - PB.1 digital input path to avoid the leakage current. */
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0 | BIT1);
 
 
 }
@@ -129,21 +132,21 @@ void LPADC_FunctionTest()
 
     printf("\nIn this test, software will get 6 conversion result from the specified channel.\n");
 
-    /* Enable LPADC converter */
-    LPADC_POWER_ON(LPADC0);
+    /* LPADC Calibration */
+    LPADC_Calibration(LPADC0);
 
     while (1)
     {
         printf("Select input mode:\n");
-        printf("  [1] Single end input (channel 2 only)\n");
+        printf("  [1] Single end input (channel 1 only)\n");
         printf("  [2] Differential input (channel pair 1 only)\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
 
         if (u8Option == '1')
         {
-            /* Set input mode as single-end, Single mode, and select channel 2 */
-            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT2);
+            /* Set input mode as single-end, Single mode, and select channel 0 */
+            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT1);
 
             /* Configure the sample module and enable EPWM0 trigger source */
             LPADC_EnableHWTrigger(LPADC0, LPADC_EPWM_TRIGGER, 0);
@@ -155,7 +158,7 @@ void LPADC_FunctionTest()
             LPADC_EnableInt(LPADC0, LPADC_ADF_INT);
             NVIC_EnableIRQ(LPADC0_IRQn);
 
-            printf("Conversion result of channel 2:\n");
+            printf("Conversion result of channel 1:\n");
 
             /* Reset the LPADC indicator and enable EPWM0 channel 0 counter */
             g_u32AdcIntFlag = 0;
@@ -172,9 +175,9 @@ void LPADC_FunctionTest()
                 /* Reset the LPADC interrupt indicator */
                 g_u32AdcIntFlag = 0;
 
-                /* Get the conversion result of the LPADC channel 2 */
+                /* Get the conversion result of the LPADC channel 1 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
-                ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 2);
+                ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 1);
 
                 if (g_u32COVNUMFlag >= 6)
                     break;
@@ -188,8 +191,8 @@ void LPADC_FunctionTest()
         }
         else if (u8Option == '2')
         {
-            /* Set input mode as differential, Single mode, and select channel 2 */
-            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_DIFFERENTIAL, LPADC_ADCR_ADMD_SINGLE, BIT2);
+            /* Set input mode as differential, Single mode, and select channel 0 */
+            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_DIFFERENTIAL, LPADC_ADCR_ADMD_SINGLE, BIT0);
 
             /* Configure the sample module and enable EPWM0 trigger source */
             LPADC_EnableHWTrigger(LPADC0, LPADC_EPWM_TRIGGER, 0);
@@ -201,7 +204,7 @@ void LPADC_FunctionTest()
             LPADC_EnableInt(LPADC0, LPADC_ADF_INT);
             NVIC_EnableIRQ(LPADC0_IRQn);
 
-            printf("Conversion result of channel 2:\n");
+            printf("Conversion result of channel 0:\n");
 
             /* Reset the LPADC indicator and enable EPWM0 channel 0 counter */
             g_u32AdcIntFlag = 0;
@@ -220,7 +223,7 @@ void LPADC_FunctionTest()
 
                 /* Get the conversion result of the LPADC channel 2 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
-                ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 2);
+                ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
 
                 if (g_u32COVNUMFlag >= 6)
                     break;

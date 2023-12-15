@@ -140,6 +140,7 @@ void EMAC_Open(uint8_t *macaddr)
  *----------------------------------------------------------------------------*/
 NVT_ITCM void EMAC0_IRQHandler(void)
 {
+    uint32_t u32Status;    
     u32 interrupt, dma_status_reg;
     s32 status;
     u32 u32GmacIntSts;
@@ -274,6 +275,9 @@ NVT_ITCM void EMAC0_IRQHandler(void)
         /* Enable the interrrupt before returning from ISR */
         synopGMAC_enable_interrupt(&GMACdev, u32GmacDmaIE);
     }
+    
+    /* CPU read interrupt flag register to wait write(clear) instruction completement */    
+    u32Status = synopGMACReadReg(GMACdev.MacBase, GmacInterruptStatus);
 }
 
 uint32_t EMAC_ReceivePkt(void)

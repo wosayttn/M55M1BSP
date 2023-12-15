@@ -51,9 +51,8 @@ static void SYS_Init(void)
     /* Enable peripheral clock */
     CLK_EnableModuleClock(I3C0_MODULE);
     /* Set multi-function pins for I3C0 SDA and SCL */
-    SET_I3C0_SCL_PA5();
-    SET_I3C0_SDA_PA4();
-    SET_I3C0_PUPEN_PH10();
+    SET_I3C0_SCL_PB1();
+    SET_I3C0_SDA_PB0();
     SYS_ResetModule(SYS_I3C0RST);
     /* Lock protected registers */
     SYS_LockReg();
@@ -100,10 +99,7 @@ int32_t main(void)
         }
     }
 
-
     I3C0->DEV1ADR |= I3C_DEVADR_IBIWDAT_Msk;
-
-
     I3C0->QUETHCTL = ((I3C0->QUETHCTL & I3C_QUETHCTL_IBIDATTH_Msk)
                       | (1 << I3C_QUETHCTL_IBIDATTH_Pos));
     pu8Data = (uint8_t *)g_TxBuf;
@@ -136,7 +132,6 @@ int32_t main(void)
         if ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0U)
         {
             chTrgIO = (char)DEBUG_PORT->DAT;
-
             printf("press any key to Write I3C Target \n");
             getchar();
             ret = I3C_Write(I3C0, 0, I3C_DEVI3C_SPEED_SDR0, (uint32_t *)g_TxBuf, 16);
@@ -171,11 +166,7 @@ int32_t main(void)
 
             printf("Compare Data Pass\n\n");
             pu8Data[0] += 1;
-
         }
-
-
-
     }
 }
 

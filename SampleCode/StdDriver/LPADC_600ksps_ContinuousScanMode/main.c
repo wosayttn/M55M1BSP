@@ -104,8 +104,8 @@ void LPADC_FunctionTest()
     printf("|   LPADC conversion rate = 12 MHz / 20 = 600 kSPS                     |\n");
     printf("+----------------------------------------------------------------------+\n");
 
-    /* Enable LPADC converter */
-    LPADC_POWER_ON(LPADC0);
+    /* LPADC Calibration */
+    LPADC_Calibration(LPADC0);
 
     while (1)
     {

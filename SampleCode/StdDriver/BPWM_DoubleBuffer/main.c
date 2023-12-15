@@ -33,21 +33,32 @@
 NVT_ITCM void BPWM0_IRQHandler(void)
 {
     static uint32_t u32Toggle = 0;
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
+    // Clear channel 0 period interrupt flag
+    BPWM_ClearPeriodIntFlag(BPWM0, 0);
 
     // Update BPWM0 channel 0 period and duty
     if(u32Toggle == 0)
     {
-        BPWM_SET_CNR(BPWM0, 0, 99);
-        BPWM_SET_CMR(BPWM0, 0, 40);
+        BPWM_SET_CNR(BPWM0, 0, 399);
+        BPWM_SET_CMR(BPWM0, 0, 300);
     }
     else
     {
-        BPWM_SET_CNR(BPWM0, 0, 399);
-        BPWM_SET_CMR(BPWM0, 0, 200);
+        BPWM_SET_CNR(BPWM0, 0, 599);
+        BPWM_SET_CMR(BPWM0, 0, 100);
     }
     u32Toggle ^= 1;
-    // Clear channel 0 period interrupt flag
-    BPWM_ClearPeriodIntFlag(BPWM0, 0);
+    __DSB();
+    __ISB();
+    while(BPWM_GetPeriodIntFlag(BPWM0, 0))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for BPWM0 IntFlag time-out!\n");
+        }
+    }
 }
 
 static void SYS_Init(void)
@@ -58,27 +69,8 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -129,16 +121,13 @@ int main(void)
     /*
         BPWM0 channel 0 waveform of this sample shown below(up counter type):
 
-        |<-        CNR + 1  clk     ->|  CNR + 1 = 399 + 1 CLKs
-        |<-  CMR clk ->|                 CMR = 200 CLKs
-                                      |<-   CNR + 1  ->|  CNR + 1 = 99 + 1 CLKs
-                                      |<-CMR->|           CMR = 40 CLKs
-
-         ______________                _______          ____
-        |      200     |_____200______|   40  |____60__|     BPWM waveform
-
+        |<-        CNR + 1  clk     ->|  CNR + 1 = 599 + 1 CLKs
+        |<-  CMR clk ->|                 CMR = 100 CLKs
+                                      |<-   CNR + 1  ->|  CNR + 1 = 399 + 1 CLKs
+                                      |<-CMR->|           CMR = 300 CLKs
+         _____                ___________
+        | 100 |_____500______|   300     |_100_|     BPWM waveform
     */
-
     /*
       Configure BPWM0 channel 0 init period and duty.(up counter type)
       Period is PCLK / (prescaler * clock divider * (CNR + 1))
@@ -147,7 +136,7 @@ int main(void)
       Duty ratio = (312) / (624 + 1) = 50%
     */
     /* BPWM0 channel 0 frequency is 160000Hz, duty 50% */
-    BPWM_ConfigOutputChannel(BPWM0, 0, 160000, 50);
+    printf("\nSet 160000Hz frequency.real is %d\n",BPWM_ConfigOutputChannel(BPWM0, 0, 160000, 50));
 
     /* Enable output of BPWM0 channel 0 */
     BPWM_EnableOutput(BPWM0, BPWM_CH_0_MASK);

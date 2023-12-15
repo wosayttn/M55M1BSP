@@ -703,7 +703,7 @@ uint8_t gu8ConfigDescriptor[] =
     /* wMaxPacketSize */
     EPD_MAX_PKT_SIZE & 0x00FF,
     (EPD_MAX_PKT_SIZE & 0xFF00) >> 8,
-                                10                                /* bInterval */
+    10                                /* bInterval */
 #endif
 };
 

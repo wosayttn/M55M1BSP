@@ -51,9 +51,8 @@ static void SYS_Init(void)
     /* Enable peripheral clock */
     CLK_EnableModuleClock(I3C0_MODULE);
     /* Set multi-function pins for I3C0 SDA and SCL */
-    SET_I3C0_SCL_PA5();
-    SET_I3C0_SDA_PA4();
-    SET_I3C0_PUPEN_PH10();
+    SET_I3C0_SCL_PB1();
+    SET_I3C0_SDA_PB0();
     SYS_ResetModule(SYS_I3C0RST);
     /* Lock protected registers */
     SYS_LockReg();
@@ -134,6 +133,8 @@ int32_t main(void)
             if (g_RxBuf[i] != g_TxBuf[i])
             {
                 printf("Compare Data Fail\n");
+                printf("g_RxBuf = 0x%08X, 0x%08X, 0x%08X, 0x%08X\n", g_RxBuf[0], g_RxBuf[1], g_RxBuf[2], g_RxBuf[3]);
+                printf("g_TxBuf = 0x%08X, 0x%08X, 0x%08X, 0x%08X\n", g_TxBuf[0], g_TxBuf[1], g_TxBuf[2], g_TxBuf[3]);
 
                 while (1);
             }

@@ -32,6 +32,10 @@ NVT_ITCM void EPWM0P0_IRQHandler(void)
 {
     static uint32_t cnt;
     static uint32_t out;
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
+    /* Clear channel 0 period interrupt flag */
+    EPWM_ClearPeriodIntFlag(EPWM0, 0);
 
     /* Channel 0 frequency is 100Hz, every 1 second enter this IRQ handler 100 times. */
     if(++cnt == 100)
@@ -43,8 +47,15 @@ NVT_ITCM void EPWM0P0_IRQHandler(void)
         out ^= 1;
         cnt = 0;
     }
-    /* Clear channel 0 period interrupt flag */
-    EPWM_ClearPeriodIntFlag(EPWM0, 0);
+    __DSB();
+    __ISB();
+    while(EPWM_GetPeriodIntFlag(EPWM0, 0))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for EPWM PeriodIntFlag time-out!\n");
+        }
+    }
 }
 
 static void SYS_Init(void)
@@ -55,27 +66,8 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */

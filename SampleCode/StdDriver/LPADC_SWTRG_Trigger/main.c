@@ -60,6 +60,7 @@ void SYS_Init(void)
 
     /* Enable GPB peripheral clock */
     CLK_EnableModuleClock(GPIOB_MODULE);
+
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
@@ -69,15 +70,15 @@ void SYS_Init(void)
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
-    /* Set PB.2 - PB.3 to input mode */
-    GPIO_SetMode(PB, BIT2 | BIT3, GPIO_MODE_INPUT);
+    /* Set PB.0 - PB.1 to input mode */
+    GPIO_SetMode(PB, BIT0 | BIT1, GPIO_MODE_INPUT);
 
     /* Configure the PB.2 - PB.3 LPADC analog input pins. */
-    SET_LPADC0_CH2_PB2();
-    SET_LPADC0_CH3_PB3();
+    SET_LPADC0_CH0_PB0();
+    SET_LPADC0_CH1_PB1();
 
-    /* Disable the PB.2 - PB.3 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT2 | BIT3);
+    /* Disable the PB.0 - PB.1 digital input path to avoid the leakage current. */
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0 | BIT1);
 
 }
 
@@ -91,21 +92,21 @@ void LPADC_FunctionTest()
     printf("|                 LPADC Software trigger mode test                     |\n");
     printf("+----------------------------------------------------------------------+\n");
 
-    /* Enable LPADC converter */
-    LPADC_POWER_ON(LPADC0);
+    /* LPADC Calibration */
+    LPADC_Calibration(LPADC0);
 
     while (1)
     {
         printf("Select input mode:\n");
-        printf("  [1] Single end input (channel 2 only)\n");
+        printf("  [1] Single end input (channel 1 only)\n");
         printf("  [2] Differential input (channel pair 1 only)\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
 
         if (u8Option == '1')
         {
-            /* Set input mode as single-end, Single-cycle scan mode, and select channel 2 */
-            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE_CYCLE, BIT2);
+            /* Set input mode as single-end, Single-cycle scan mode, and select channel 1 */
+            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE_CYCLE, BIT1);
 
             /* Clear the A/D interrupt flag for safe */
             LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT);
@@ -124,14 +125,14 @@ void LPADC_FunctionTest()
             /* Disable the sample module interrupt */
             LPADC_DisableInt(LPADC0, LPADC_ADF_INT);
 
-            /* Get the conversion result of LPADC channel 2 */
-            i32ConversionData = LPADC_GET_CONVERSION_DATA(LPADC0, 2);
-            printf("Conversion result of channel 2: 0x%X (%d)\n\n", i32ConversionData, i32ConversionData);
+            /* Get the conversion result of LPADC channel 1 */
+            i32ConversionData = LPADC_GET_CONVERSION_DATA(LPADC0, 1);
+            printf("Conversion result of channel 1: 0x%X (%d)\n\n", i32ConversionData, i32ConversionData);
         }
         else if (u8Option == '2')
         {
-            /* Set input mode as differential, Single-cycle scan mode, and select channel 2 */
-            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_DIFFERENTIAL, LPADC_ADCR_ADMD_SINGLE_CYCLE, BIT2);
+            /* Set input mode as differential, Single-cycle scan mode, and select channel 0 */
+            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_DIFFERENTIAL, LPADC_ADCR_ADMD_SINGLE_CYCLE, BIT0);
 
             /* Clear the A/D interrupt flag for safe */
             LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT);
@@ -150,9 +151,9 @@ void LPADC_FunctionTest()
             /* Disable the sample module interrupt */
             LPADC_DisableInt(LPADC0, LPADC_ADF_INT);
 
-            /* Get the conversion result of channel 2 */
-            i32ConversionData = LPADC_GET_CONVERSION_DATA(LPADC0, 2);
-            printf("Conversion result of channel pair 1: 0x%X (%d)\n\n", i32ConversionData, i32ConversionData);
+            /* Get the conversion result of channel 0 */
+            i32ConversionData = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
+            printf("Conversion result of channel pair 0: 0x%X (%d)\n\n", i32ConversionData, i32ConversionData);
         }
         else
             return ;

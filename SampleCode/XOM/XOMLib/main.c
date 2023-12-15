@@ -84,7 +84,8 @@ int32_t main(void)
         example flow:
         1. Build XOMLib_Code
         2. Download XOMLib_Code by press key "F8" in Keil MDK.
-        3. Open "NuMicro ICP Programming Tool" to enable XOM region and according to xom_scatter.scf/xom.icf settings.
+        3. Use defined XOM_START and XOM_SIZE in xom.scatter or xom.icf and
+           open "NuMicro ICP Programming Tool" to set and enable XOM region.
         4. Build XOMLib to generate library (xomlib.lib in Keil or xomlib.a in IAR) located at lib directory.
         5. Pass xomlib.lib(Keil)/xomlib.a(IAR) & xomlib.h to the people who will call the funcitons in XOM.
     */

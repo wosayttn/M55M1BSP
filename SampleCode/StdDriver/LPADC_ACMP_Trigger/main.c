@@ -26,6 +26,8 @@ NVT_ITCM void LPADC0_IRQHandler(void)
     LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT); /* Clear the A/D interrupt flag */
     g_u32LpadcIntFlag = 1;
     g_u32COVNUMFlag++;
+    /*Confirm that the Flag has been cleared.*/
+    LPADC_GET_INT_FLAG(LPADC0, LPADC_ADF_INT); 
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* ACMP interrupt handler                                                                                 */
@@ -35,6 +37,9 @@ NVT_ITCM void ACMP01_IRQHandler(void)
     /* Clear ACMP 1 interrupt flag */
     ACMP_CLR_INT_FLAG(ACMP01, 1);
     g_u32ACMP1IntFlag = 1;
+    
+    /*Confirm that the Flag has been cleared.*/
+    ACMP_GET_INT_FLAG(ACMP01, 1);
 }
 
 void SYS_Init(void)
@@ -80,16 +85,16 @@ void SYS_Init(void)
     SetDebugUartMFP();
 
     /* Set PB.2 - PB.4 to input mode */
-    GPIO_SetMode(PB, BIT2 | BIT3 | BIT4, GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT0 | BIT1 | BIT4, GPIO_MODE_INPUT);
 
-    /* Configure the PB.2 - PB.3 LPADC analog input pins. */
-    SET_LPADC0_CH2_PB2();
-    SET_LPADC0_CH3_PB3();
+    /* Configure the PB.0 - PB.1 LPADC analog input pins. */
+    SET_LPADC0_CH0_PB0();
+    SET_LPADC0_CH1_PB1();
 
     /* Set PB4 multi-function pin for ACMP1 positive input pin */
     SET_ACMP1_P1_PB4();
     /* Disable the PB.2 - PB.3 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT2 | BIT3 | BIT4);
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0 | BIT1 | BIT4);
 
 }
 
@@ -115,21 +120,21 @@ void LPADC_FunctionTest(void)
 
     printf("\nIn this test, software will get 6 conversion result from the specified channel within 1 second.\n");
 
-    /* Enable LPADC converter */
-    LPADC_POWER_ON(LPADC0);
+    /* LPADC Calibration */
+    LPADC_Calibration(LPADC0);
 
     while (1)
     {
         printf("Select input mode:\n");
-        printf("  [1] Single end input (channel 2 only)\n");
-        printf("  [2] Differential input (channel pair 1 only)\n");
+        printf("  [1] Single end input (channel 0 only)\n");
+        printf("  [2] Differential input (channel pair 0 only)\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
 
         if (u8Option == '1')
         {
             /* Set input mode as single-end, Single mode, and select channel 2 */
-            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT2);
+            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT0);
 
             /* Configure the sample module and enable ACMP1 trigger source */
             LPADC_EnableHWTrigger(LPADC0, LPADC_ACMP1_TRIGGER, 0);
@@ -148,7 +153,7 @@ void LPADC_FunctionTest(void)
             NVIC_EnableIRQ(ACMP01_IRQn);
             /* Enable LPADC0 interrupt */
             NVIC_EnableIRQ(LPADC0_IRQn);
-            printf("Conversion result of channel 2:\n");
+            printf("Conversion result of channel 0:\n");
 
             /* Reset the LPADC and ACMP indicator counter */
             g_u32LpadcIntFlag = 0;
@@ -170,7 +175,7 @@ void LPADC_FunctionTest(void)
                 /* Get the conversion result of LPADC channel 2 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
 
-                ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 2);
+                ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
 
                 if (g_u32COVNUMFlag >= 6)
                     break;
@@ -186,8 +191,8 @@ void LPADC_FunctionTest(void)
         }
         else if (u8Option == '2')
         {
-            /* Set input mode as differential, Single mode, and select channel 2 */
-            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_DIFFERENTIAL, LPADC_ADCR_ADMD_SINGLE, BIT2);
+            /* Set input mode as differential, Single mode, and select channel 0 */
+            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_DIFFERENTIAL, LPADC_ADCR_ADMD_SINGLE, BIT0);
 
             /* Configure the sample module and enable ACMP1 trigger source */
             LPADC_EnableHWTrigger(LPADC0, LPADC_ACMP1_TRIGGER, 0);
@@ -207,7 +212,7 @@ void LPADC_FunctionTest(void)
             /* Enable LPADC0 interrupt */
             NVIC_EnableIRQ(LPADC0_IRQn);
 
-            printf("Conversion result of channel pair 1:\n");
+            printf("Conversion result of channel pair 0:\n");
 
             /* Reset the LPADC and ACMP indicator counter */
             g_u32LpadcIntFlag = 0;
@@ -229,7 +234,7 @@ void LPADC_FunctionTest(void)
                 /* Get the conversion result of the sample module 0 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
 
-                ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 2);
+                ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
 
                 if (g_u32COVNUMFlag >= 6)
                     break;

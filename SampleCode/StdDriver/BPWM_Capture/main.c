@@ -107,14 +107,14 @@ int32_t CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
 
     u16HighPeriod = au32Count[1] - au32Count[2];
 
-    u16LowPeriod = (uint16_t)(0x10000 - (uint32_t)au32Count[1]);
+    u16LowPeriod = (uint16_t)(0x10000 - au32Count[3]);
 
-    u16TotalPeriod = (uint16_t)(0x10000 - (uint32_t)au32Count[2]);
+    u16TotalPeriod = (uint16_t)(0x10000 - au32Count[2]);
 
-    printf("\nBPWM generate: \nHigh Period=17141 ~ 17143, Low Period=39999 ~ 40001, Total Period=57141 ~ 57143\n");
+    printf("\nBPWM generate: \nHigh Period=17999 ~ 18001, Low Period=41999 ~ 42001, Total Period=59999 ~ 60001\n");
     printf("\nCapture Result: Rising Time = %d, Falling Time = %d \nHigh Period = %d, Low Period = %d, Total Period = %d.\n\n",
            u16RisingTime, u16FallingTime, u16HighPeriod, u16LowPeriod, u16TotalPeriod);
-    if((u16HighPeriod < 17141) || (u16HighPeriod > 17143) || (u16LowPeriod < 39999) || (u16LowPeriod > 40001) || (u16TotalPeriod < 57141) || (u16TotalPeriod > 57143))
+    if((u16HighPeriod < 17999) || (u16HighPeriod > 18001) || (u16LowPeriod < 41999) || (u16LowPeriod > 42001) || (u16TotalPeriod < 59999) || (u16TotalPeriod > 60001))
     {
         printf("Capture Test Fail!!\n");
         return -1;
@@ -134,27 +134,8 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -219,18 +200,18 @@ int main(void)
            duty ratio = (CMR)/(CNR+1)
            cycle time = CNR+1
            High level = CMR
-           BPWM clock source frequency = PLL/2 = 100000000
+           BPWM clock source frequency = PLL/2 = 90000000
            (CNR+1) = PWM clock source frequency/prescaler/BPWM output frequency
-                   = 100000000/7/250 = 57142
+                   = 90000000/6/250 = 60000
            (Note: CNR is 16 bits, so if calculated value is larger than 65536, user should increase prescale value.)
-           CNR = 57141
+           CNR = 59999
            duty ratio = 30% ==> (CMR)/(CNR+1) = 30%
-           CMR = 17142
-           Prescale value is 6 : prescaler= 7
+           CMR = 18000
+           Prescale value is 5 : prescaler= 6
         */
 
         /* Set BPWM1 channel 0 output configuration */
-        BPWM_ConfigOutputChannel(BPWM1, 0, 250, 30);
+        printf("Set 250Hz, real is %d\n",BPWM_ConfigOutputChannel(BPWM1, 0, 250, 30));
 
         /* Enable BPWM Output path for BPWM1 channel 0 */
         BPWM_EnableOutput(BPWM1, BPWM_CH_0_MASK);
@@ -256,6 +237,7 @@ int main(void)
 
         /* Set BPWM0 channel 0 capture configuration */
         BPWM_ConfigCaptureChannel(BPWM0, 0, 70, 0);
+        BPWM_SET_PRESCALER(BPWM0, 0, (BPWM1)->CLKPSC);//PRESCALER same with BPWM1
 
         /* Enable Timer for BPWM0 channel 0 */
         BPWM_Start(BPWM0, BPWM_CH_0_MASK);

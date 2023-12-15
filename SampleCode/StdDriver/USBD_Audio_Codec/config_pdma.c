@@ -95,9 +95,9 @@ void PDMA_WriteTxSGTable(void)
         uint32_t u32ScTbAddr = inp32(((uint32_t)PDMA0) + 0x43C);
 
         if (u16Cnt != PDMA_TXBUFFER_CNT - 1)
-            DMA_TXDESC[u16Cnt].offset = (uint32_t)&DMA_TXDESC[u16Cnt + 1] - (u32ScTbAddr);
+            DMA_TXDESC[u16Cnt].offset = (uint32_t)&DMA_TXDESC[u16Cnt + 1];
         else
-            DMA_TXDESC[u16Cnt].offset = (uint32_t)&DMA_TXDESC[0] - (u32ScTbAddr);
+            DMA_TXDESC[u16Cnt].offset = (uint32_t)&DMA_TXDESC[0];
     }
 }
 
@@ -116,8 +116,8 @@ void PDMA_WriteRxSGTable(void)
         uint32_t u32ScTbAddr = inp32(((uint32_t)PDMA0) + 0x43C);
 
         if (u16Cnt != (PDMA_RXBUFFER_CNT - 1))
-            DMA_RXDESC[u16Cnt].offset = (uint32_t)&DMA_RXDESC[u16Cnt + 1] - (u32ScTbAddr);
+            DMA_RXDESC[u16Cnt].offset = (uint32_t)&DMA_RXDESC[u16Cnt + 1];
         else
-            DMA_RXDESC[u16Cnt].offset = (uint32_t)&DMA_RXDESC[0] - (u32ScTbAddr);
+            DMA_RXDESC[u16Cnt].offset = (uint32_t)&DMA_RXDESC[0];
     }
 }

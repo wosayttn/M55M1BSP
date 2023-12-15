@@ -63,6 +63,8 @@ NVT_ITCM void CCAP_IRQHandler(void)
     }
 
     CCAP_EnableUpdate();
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32IntStatus = CCAP_GET_INT_STS();
 }
 
 NVT_ITCM void LPTMR0_IRQHandler(void)
@@ -82,6 +84,8 @@ NVT_ITCM void LPTMR0_IRQHandler(void)
 
     /* Clear interrupt flag */
     LPTMR_ClearIntFlag(LPTMR0);
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    LPTMR_GetIntFlag(LPTMR0);
 }
 
 void CCAP_SetFreq(uint32_t u32ModFreqKHz, uint32_t u32SensorFreq)

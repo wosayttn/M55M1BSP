@@ -53,16 +53,16 @@ void SYS_Init(void)
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
-    /* Select HSUSBD */
-    SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;
-
+   /* Enable HSOTG0_ module clock */
+    CLK_EnableModuleClock(HSOTG0_MODULE);
+    
+    SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;    /* select HSUSBD */
     /* Enable USB PHY */
-    SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
+    SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk | SYS_USBPHY_HSUSBACT_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
+    for (i=0; i<0x1000; i++);      // delay > 10 us
+    SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
 
-    for (i = 0; i < 0x1000; i++);  // delay > 10 us
-
-
-    /* Enable HSUSBD module clock */
+    /* Enable IP clock */
     CLK_EnableModuleClock(HSUSBD0_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -76,19 +76,23 @@ void SYS_Init(void)
 
 void GPIO_Init(void)
 {
-    /* Enable PH0 interrupt for wakeup */
 
-    PH->MODE = 0x3; /* PH0 be Quasi mode */
-    PH->INTSRC |= 0x1;
-    PH->INTEN |= 0x1 | (0x1 << 16);
-    PH->DBEN |= 0x1;      // Enable key debounce
-    PH->DBCTL = 0x16; // Debounce time is about 6ms
+    // GPH.1 Input for button. Active low.
+    SET_GPIO_PH1();
+    /* Enable PH0 interrupt for wakeup */
+    GPIO_SetMode(PH,BIT1,GPIO_MODE_QUASI);
+    GPIO_EnableInt(PH,1,GPIO_INT_FALLING);
+    PH->DBEN |= (1<<1);            // eanble debounce
+    PH->DBCTL = GPIO_DBCTL_DBCLKSEL_32768;  // Debounce time is about 3.6 ms
+
     NVIC_EnableIRQ(GPH_IRQn);
 }
+
 /* GPH Interrupt handler */
 NVT_ITCM void GPH_IRQHandler(void)
 {
-    PH->INTSRC = 0x1;
+    /* Clear PH1 interrupt flag */ 
+    GPIO_CLR_INT_FLAG(PH,BIT1);
     s_u8RemouteWakeup = 1;
 }
 
@@ -168,11 +172,11 @@ int32_t main(void)
             PowerDown();
 
             /* Waiting for key release */
-            while ((GPIO_GET_IN_DATA(PH) & 0x1) != 0x1);
+            while ((GPIO_GET_IN_DATA(PH) & 0x2) != 0x2);
         }
 
         /* Move mouse when Key pressed */
-        if ((GPIO_GET_IN_DATA(PH) & 0x1) == 0x0)
+        if ((GPIO_GET_IN_DATA(PH) & 0x2) == 0x0)
             HID_UpdateMouseData();
     }
 }

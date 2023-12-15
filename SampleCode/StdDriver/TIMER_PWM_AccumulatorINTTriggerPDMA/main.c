@@ -34,6 +34,7 @@ static volatile uint32_t g_u32IsTestOver = 0;
  */
 NVT_ITCM void PDMA0_IRQHandler(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     uint32_t u32Status = PDMA_GET_INT_STATUS(PDMA0);
 
     if(u32Status & PDMA_INTSTS_ABTIF_Msk)        /* abort */
@@ -49,7 +50,16 @@ NVT_ITCM void PDMA0_IRQHandler(void)
         PDMA_CLR_TD_FLAG(PDMA0, PDMA_TDSTS_TDIF0_Msk);
     }
     else
-        printf("unknown interrupt !!\n");
+        printf("unknown interrupt %x !!\n", u32Status);
+    __DSB();
+    __ISB();
+    while(PDMA_GET_INT_STATUS(PDMA0))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for PDMA0 IntFlag time-out!\n");
+        }
+    }
 }
 
 static void SYS_Init(void)
@@ -60,27 +70,8 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -155,7 +146,7 @@ int main(void)
     TPWM_ENABLE_OUTPUT(TIMER0, TPWM_CH0);
 
     /* Enable Timer0 PWM accumulator function, interrupt count 10, accumulator source select to zero point */
-    TPWM_EnableAcc(TIMER0, 10, TPWM_IFA_ZERO_POINT);
+    TPWM_EnableAcc(TIMER0, 100, TPWM_IFA_ZERO_POINT);
 
     /* Enable Timer0 PWM accumulator interrupt trigger PDMA */
     TPWM_EnableAccPDMA(TIMER0);

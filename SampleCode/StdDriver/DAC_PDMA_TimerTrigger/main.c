@@ -79,7 +79,7 @@ void SYS_Init(void)
     SET_DAC0_OUT_PB12();
 
     /* Disable digital input path of analog pin DAC0_OUT to prevent leakage */
-    GPIO_DISABLE_DIGITAL_PATH(PB, (1ul << 12));
+    GPIO_DISABLE_DIGITAL_PATH(PB,BIT12);
 
 }
 

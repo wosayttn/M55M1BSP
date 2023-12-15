@@ -30,12 +30,28 @@
  */
 NVT_ITCM void BRAKE0_IRQHandler(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     printf("\nFault brake!\n");
     printf("Press any key to unlock brake state. (EPWM0 channel 0 output will toggle again)\n");
     getchar();
 
+    SYS_UnlockReg();
+    /* Enable brake and interrupt */
+    (EPWM0)->BRKCTL[0] = 0;
+    EPWM_DisableFaultBrakeInt(EPWM0, EPWM_FB_EDGE);
     /* Clear brake interrupt flag */
     EPWM_ClearFaultBrakeIntFlag(EPWM0, EPWM_FB_EDGE);
+    __DSB();
+    __ISB();
+    while(EPWM_GetFaultBrakeIntFlag(EPWM0, EPWM_FB_EDGE))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for EPWM0 IntFlag time-out!\n");
+        }
+    }
+    SYS_LockReg();
 }
 
 static void SYS_Init(void)
@@ -46,27 +62,8 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -93,9 +90,6 @@ static void SYS_Init(void)
     CLK_EnableModuleClock(GPIOD_MODULE);
     /* Set multi-function pin for EPWM */
     SET_EPWM0_CH0_PE7();
-    SET_EPWM0_CH1_PE6();
-    SET_EPWM0_CH2_PE5();
-    SET_EPWM0_CH3_PE4();
 
     /* Set multi-function pin for EPWM brake pin */
     SET_EPWM0_BRAKE0_PE8();
@@ -131,16 +125,17 @@ int main(void)
     SYS_UnlockReg();
     /* Enable brake and interrupt */
     EPWM_EnableFaultBrake(EPWM0, EPWM_CH_0_MASK, 1, EPWM_FB_EDGE_BKP0);
-    EPWM_EnableFaultBrakeInt(EPWM0, 0);
+    EPWM_EnableFaultBrakeInt(EPWM0, EPWM_FB_EDGE);
     /* Enable brake noise filter : brake pin 0, filter count=7, filter clock=HCLK/128 */
     EPWM_EnableBrakeNoiseFilter(EPWM0, 0, 7, EPWM_NF_CLK_DIV_128);
     /* Clear brake interrupt flag */
     EPWM_ClearFaultBrakeIntFlag(EPWM0, EPWM_FB_EDGE);
+    SYS_LockReg();
 
     NVIC_EnableIRQ(BRAKE0_IRQn);
 
     /* Start */
-    EPWM_Start(EPWM0, 1);
+    EPWM_Start(EPWM0, EPWM_CH_0_MASK);
 
     printf("\nPress any key to generate a brake event\n");
     getchar();

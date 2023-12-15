@@ -28,6 +28,8 @@ static volatile uint32_t g_au32TMRINTCount[4] = {0};
 
 NVT_ITCM void TIMER0_IRQHandler(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     if(TIMER_GetIntFlag(TIMER0) == 1)
     {
         /* Clear Timer0 time-out interrupt flag */
@@ -35,10 +37,21 @@ NVT_ITCM void TIMER0_IRQHandler(void)
 
         g_au32TMRINTCount[0]++;
     }
+    __DSB();
+    __ISB();
+    while(TIMER_GetIntFlag(TIMER0))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for TIMER0 IntFlag time-out!\n");
+        }
+    }
 }
 
 NVT_ITCM void TIMER1_IRQHandler(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     if(TIMER_GetIntFlag(TIMER1) == 1)
     {
         /* Clear Timer1 time-out interrupt flag */
@@ -46,10 +59,21 @@ NVT_ITCM void TIMER1_IRQHandler(void)
 
         g_au32TMRINTCount[1]++;
     }
+    __DSB();
+    __ISB();
+    while(TIMER_GetIntFlag(TIMER1))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for TIMER1 IntFlag time-out!\n");
+        }
+    }
 }
 
 NVT_ITCM void TIMER2_IRQHandler(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     if(TIMER_GetIntFlag(TIMER2) == 1)
     {
         /* Clear Timer2 time-out interrupt flag */
@@ -57,16 +81,36 @@ NVT_ITCM void TIMER2_IRQHandler(void)
 
         g_au32TMRINTCount[2]++;
     }
+    __DSB();
+    __ISB();
+    while(TIMER_GetIntFlag(TIMER2))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for TIMER2 IntFlag time-out!\n");
+        }
+    }
 }
 
 NVT_ITCM void TIMER3_IRQHandler(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     if(TIMER_GetIntFlag(TIMER3) == 1)
     {
         /* Clear Timer3 time-out interrupt flag */
         TIMER_ClearIntFlag(TIMER3);
 
         g_au32TMRINTCount[3]++;
+    }
+    __DSB();
+    __ISB();
+    while(TIMER_GetIntFlag(TIMER3))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for TIMER3 IntFlag time-out!\n");
+        }
     }
 }
 
@@ -78,27 +122,8 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -122,7 +147,7 @@ static void SYS_Init(void)
     CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_HXT, 0);
     CLK_SetModuleClock(TMR1_MODULE, CLK_TMRSEL_TMR1SEL_PCLK1, 0);
     CLK_SetModuleClock(TMR2_MODULE, CLK_TMRSEL_TMR2SEL_HIRC, 0);
-    CLK_SetModuleClock(TMR3_MODULE, CLK_TMRSEL_TMR3SEL_HXT, 0);
+    CLK_SetModuleClock(TMR3_MODULE, CLK_TMRSEL_TMR3SEL_PCLK3, 0);
     CLK_EnableModuleClock(TMR0_MODULE);
     CLK_EnableModuleClock(TMR1_MODULE);
     CLK_EnableModuleClock(TMR2_MODULE);
@@ -164,7 +189,7 @@ int main(void)
     printf("    - Periodic mode             \n");
     printf("    - Interrupt enable          \n");
     printf("# Timer3 Settings:\n");
-    printf("    - Clock source is HXT       \n");
+    printf("    - Clock source is PCLK      \n");
     printf("    - Time-out frequency is 8 Hz\n");
     printf("    - Periodic mode             \n");
     printf("    - Interrupt enable          \n");

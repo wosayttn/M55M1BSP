@@ -43,6 +43,9 @@ NVT_ITCM void LPI2C0_IRQHandler(void)
             s_LPI2C0HandlerFn(u32Status);
         }
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = LPI2C_GET_STATUS(LPI2C0);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/

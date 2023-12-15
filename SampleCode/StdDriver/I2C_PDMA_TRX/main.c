@@ -68,6 +68,9 @@ NVT_ITCM void PDMA0_IRQHandler(void)
         printf("\n I2C1 Tx done  ");
         PDMA0->TDSTS = 0x1 << I2C1_PDMA_TX_CH;
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = PDMA0->TDSTS;
 }
 
 
@@ -88,6 +91,9 @@ NVT_ITCM void I2C0_IRQHandler(void)
             s_I2C0HandlerFn(u32Status);
         }
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = I2C_GET_STATUS(I2C0);
 }
 
 
@@ -108,6 +114,9 @@ NVT_ITCM void I2C1_IRQHandler(void)
             s_I2C1HandlerFn(u32Status);
         }
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = I2C_GET_STATUS(I2C1);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -373,11 +382,8 @@ static void SYS_Init(void)
     SET_I2C0_SDA_PA4();
     SET_I2C0_SCL_PA5();
     /* Set multi-function pins for I2C1 SDA and SCL */
-    SET_I2C1_SCL_PA7();
-    SET_I2C1_SDA_PA6();
-    /* I2C pins enable schmitt trigger */
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT4 | BIT5 | BIT6 | BIT7));
+    SET_I2C1_SCL_PB1();
+    SET_I2C1_SDA_PB0();
     /* Lock protected registers */
     SYS_LockReg();
 }

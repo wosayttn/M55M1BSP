@@ -28,12 +28,23 @@ static volatile uint32_t g_u32PDWK;
 
 NVT_ITCM void TTMR0_IRQHandler(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     CLK_WaitModuleClockReady(TTMR0_MODULE);//TESTCHIP_ONLY
     CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     /* Clear wake up flag */
     TTMR_ClearWakeupFlag(TTMR0);
     /* Clear interrupt flag */
     TTMR_ClearIntFlag(TTMR0);
+    __DSB();
+    __ISB();
+    while(TTMR_GetWakeupFlag(TTMR0) || TTMR_GetIntFlag(TTMR0))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for TTMR0 IntFlag time-out!\n");
+        }
+    }
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -41,13 +52,24 @@ NVT_ITCM void TTMR0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void PMC_IRQHandler(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     g_u32PDWK = PMC_GetPMCWKSrc();
+    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     /* check power down wakeup flag */
     if (g_u32PDWK & PMC_INTSTS_PDWKIF_Msk)
     {
         PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
 
-        while (PMC_GetPMCWKSrc() & PMC_INTSTS_PDWKIF_Msk);
+        __DSB();
+        __ISB();
+        while (PMC_GetPMCWKSrc() & PMC_INTSTS_PDWKIF_Msk)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for PMC IntFlag time-out!\n");
+            }
+        }
     }
 }
 
@@ -70,27 +92,8 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -151,7 +154,6 @@ int main(void)
     CLK_SysTickDelay(50);
     /* Enable TTMR0 interrupt */
     TTMR_EnableInt(TTMR0);
-    PMC_ENABLE_INT();
     CLK_SysTickDelay(50);
     NVIC_EnableIRQ(TTMR0_IRQn);
     NVIC_EnableIRQ(PMC_IRQn);
@@ -160,6 +162,7 @@ int main(void)
     CLK_SysTickDelay(50);
     /* Unlock protected registers */
     SYS_UnlockReg();
+    PMC_ENABLE_INT();
     while(1)
     {
         printf("Enter Power-down !\n");

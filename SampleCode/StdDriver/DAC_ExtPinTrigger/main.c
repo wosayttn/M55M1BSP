@@ -35,10 +35,13 @@ NVT_ITCM void DAC01_IRQHandler(void)
             g_u32Index = 0;
         else
         {
-            DAC_WRITE_DATA(DAC0, 0, g_au16Sine[g_u32Index++]);
+          /* Clear the DAC conversion complete finish flag */
+          DAC_CLR_INT_FLAG(DAC0, 0) ;
 
-            /* Clear the DAC conversion complete finish flag */
-            DAC_CLR_INT_FLAG(DAC0, 0);
+          DAC_WRITE_DATA(DAC0, 0, g_au16Sine[g_u32Index++]);
+
+          /*Confirm that the Flag has been cleared.*/
+          DAC_GET_INT_FLAG(DAC0, 0);
         }
     }
 
@@ -94,7 +97,7 @@ void SYS_Init(void)
     SET_DAC0_OUT_PB12();
 
     /* Disable digital input path of analog pin DAC0_OUT to prevent leakage */
-    GPIO_DISABLE_DIGITAL_PATH(PB, (1ul << 12));
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT12);
 
     /* Set multi-function pin for DAC conversion trigger */
     SET_DAC0_ST_PA10();
