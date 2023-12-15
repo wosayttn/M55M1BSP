@@ -99,6 +99,11 @@ void SYS_Init(void)
     SET_USB_D_MINUS_PA13();
     SET_USB_D_PLUS_PA14();
     SET_USB_OTG_ID_PA15();
+    
+    /*Setting the BNT1(Button)(PH1) */
+    SET_GPIO_PH1();
+
+    GPIO_SetMode(PH,BIT1,GPIO_MODE_QUASI);
 }
 
 void PowerDown(void)
