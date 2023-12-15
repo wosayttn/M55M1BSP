@@ -29,6 +29,8 @@ static volatile uint32_t u32IC0Hold;
 
 NVT_ITCM void TIMER0_IRQHandler(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     if(TIMER_GetIntFlag(TIMER0) == 1)
     {
         /* Clear Timer0 time-out interrupt flag */
@@ -37,10 +39,21 @@ NVT_ITCM void TIMER0_IRQHandler(void)
         /*PA.0 gpio toggle */
         PA0 ^= 1;
     }
+    __DSB();
+    __ISB();
+    while(TIMER_GetIntFlag(TIMER0))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for TIMER0 IntFlag time-out!\n");
+        }
+    }
 }
 
 NVT_ITCM void ECAP0_IRQHandler(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     /* Get input Capture status */
     u32Status = ECAP_GET_INT_STATUS(ECAP0);
 
@@ -81,6 +94,15 @@ NVT_ITCM void ECAP0_IRQHandler(void)
         /* Clear input capture overflow flag */
         ECAP_CLR_CAPTURE_FLAG(ECAP0,ECAP_STATUS_CAPOVF_Msk);
     }
+    __DSB();
+    __ISB();
+    while(ECAP_GET_INT_STATUS(ECAP0) & 0xFF)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for ECAP0 IntFlag time-out!\n");
+        }
+    }
 }
 
 static void SYS_Init(void)
@@ -91,27 +113,8 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -168,6 +171,7 @@ void ECAP0_Init(void)
 
     /* Input Channel 0 interrupt enabled */
     ECAP_EnableINT(ECAP0, ECAP_CTL0_CAPIEN0_Msk);
+    NVIC_EnableIRQ(ECAP0_IRQn);
 }
 
 void EQEI0_Init(void)
@@ -178,8 +182,8 @@ void EQEI0_Init(void)
 
 void Timer0_Init(void)
 {
-    /* Open Timer0 in periodic mode, enable interrupt and 1 interrupt tick per second */
-    TIMER_Open(TIMER0,TIMER_PERIODIC_MODE,10000);
+    /* Open Timer0 in periodic mode, enable interrupt and 1000 interrupt tick per second */
+    TIMER_Open(TIMER0,TIMER_PERIODIC_MODE,1000);
     TIMER_EnableInt(TIMER0);
 
     /* Enable Timer0 NVIC */
