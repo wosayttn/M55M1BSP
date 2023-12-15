@@ -182,9 +182,15 @@ void MP3Player(void)
     I2S_Open(I2S0, I2S_MODE_SLAVE, 48000, I2S_DATABIT_16, I2S_DISABLE_MONO, I2S_FORMAT_I2S);
 
     /* Set JK-EN low to enable phone jack on NuMaker board. */
+#if defined(ALIGN_AF_PINS)
     SET_GPIO_PB12();
     GPIO_SetMode(PB, BIT12, GPIO_MODE_OUTPUT);
     PB12 = 0;
+#else
+    SET_GPIO_PD4();
+    GPIO_SetMode(PD, BIT4, GPIO_MODE_OUTPUT);
+    PD4 = 0;
+#endif
 
     /* Set MCLK and enable MCLK */
     I2S_EnableMCLK(I2S0, 12000000);

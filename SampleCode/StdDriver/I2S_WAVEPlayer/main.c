@@ -15,7 +15,11 @@
 #include "ff.h"
 
 //------------------------------------------------------------------------------
-#define I2C_PORT                I2C3
+#if defined(ALIGN_AF_PINS)
+    #define I2C_PORT                        I2C3
+#else
+    #define I2C_PORT                        I2C2
+#endif
 
 //------------------------------------------------------------------------------
 static DMA_DESC_T DMA_DESC[2];
@@ -155,25 +159,25 @@ void NAU8822_ConfigSampleRate(uint32_t u32SampleRate)
 
     switch (u32SampleRate)
     {
-        case 16000:
-            I2C_WriteNAU8822(6, 0x1AD);    /* Divide by 6, 16K */
-            I2C_WriteNAU8822(7, 0x006);    /* 16K for internal filter coefficients */
-            break;
+    case 16000:
+        I2C_WriteNAU8822(6, 0x1AD);    /* Divide by 6, 16K */
+        I2C_WriteNAU8822(7, 0x006);    /* 16K for internal filter coefficients */
+        break;
 
-        case 44100:
-            I2C_WriteNAU8822(6, 0x14D);    /* Divide by 2, 48K */
-            I2C_WriteNAU8822(7, 0x000);    /* 48K for internal filter coefficients */
-            break;
+    case 44100:
+        I2C_WriteNAU8822(6, 0x14D);    /* Divide by 2, 48K */
+        I2C_WriteNAU8822(7, 0x000);    /* 48K for internal filter coefficients */
+        break;
 
-        case 48000:
-            I2C_WriteNAU8822(6, 0x14D);    /* Divide by 2, 48K */
-            I2C_WriteNAU8822(7, 0x000);    /* 48K for internal filter coefficients */
-            break;
+    case 48000:
+        I2C_WriteNAU8822(6, 0x14D);    /* Divide by 2, 48K */
+        I2C_WriteNAU8822(7, 0x000);    /* 48K for internal filter coefficients */
+        break;
 
-        case 96000:
-            I2C_WriteNAU8822(6, 0x109);    /* Divide by 1, 96K */
-            I2C_WriteNAU8822(72, 0x013);
-            break;
+    case 96000:
+        I2C_WriteNAU8822(6, 0x109);    /* Divide by 1, 96K */
+        I2C_WriteNAU8822(72, 0x013);
+        break;
     }
 }
 
@@ -277,37 +281,37 @@ void NAU88L25_ConfigSampleRate(uint32_t u32SampleRate)
 
     switch (u32SampleRate)
     {
-        case 16000:
-            I2C_WriteNAU88L25(0x0003,  0x801B); /* MCLK = SYSCLK_SRC/12 */
-            I2C_WriteNAU88L25(0x0004,  0x0001);
-            I2C_WriteNAU88L25(0x0005,  0x3126); /* MCLK = 4.096MHz */
-            I2C_WriteNAU88L25(0x0006,  0x0008);
-            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=MCLK/8=512K, LRC_DIV=512K/32=16K */
-            I2C_WriteNAU88L25(0x002B,  0x0002);
-            I2C_WriteNAU88L25(0x002C,  0x0082);
-            break;
+    case 16000:
+        I2C_WriteNAU88L25(0x0003,  0x801B); /* MCLK = SYSCLK_SRC/12 */
+        I2C_WriteNAU88L25(0x0004,  0x0001);
+        I2C_WriteNAU88L25(0x0005,  0x3126); /* MCLK = 4.096MHz */
+        I2C_WriteNAU88L25(0x0006,  0x0008);
+        I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=MCLK/8=512K, LRC_DIV=512K/32=16K */
+        I2C_WriteNAU88L25(0x002B,  0x0002);
+        I2C_WriteNAU88L25(0x002C,  0x0082);
+        break;
 
-        case 44100:
-            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=11.2896M/8=1.4112M, LRC_DIV=1.4112M/32=44.1K */
-            I2C_WriteNAU88L25(0x002B,  0x0012);
-            I2C_WriteNAU88L25(0x002C,  0x0082);
-            break;
+    case 44100:
+        I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=11.2896M/8=1.4112M, LRC_DIV=1.4112M/32=44.1K */
+        I2C_WriteNAU88L25(0x002B,  0x0012);
+        I2C_WriteNAU88L25(0x002C,  0x0082);
+        break;
 
-        case 48000:
-            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=12.288M/8=1.536M, LRC_DIV=1.536M/32=48K */
-            I2C_WriteNAU88L25(0x002B,  0x0012);
-            I2C_WriteNAU88L25(0x002C,  0x0082);
-            break;
+    case 48000:
+        I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=12.288M/8=1.536M, LRC_DIV=1.536M/32=48K */
+        I2C_WriteNAU88L25(0x002B,  0x0012);
+        I2C_WriteNAU88L25(0x002C,  0x0082);
+        break;
 
-        case 96000:
-            I2C_WriteNAU88L25(0x0003,  0x80A2); /* MCLK = SYSCLK_SRC/2 */
-            I2C_WriteNAU88L25(0x0004,  0x1801);
-            I2C_WriteNAU88L25(0x0005,  0x3126); /* MCLK = 24.576MHz */
-            I2C_WriteNAU88L25(0x0006,  0xF008);
-            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=MCLK/8=3.072M, LRC_DIV=3.072M/32=96K */
-            I2C_WriteNAU88L25(0x002B,  0x0001);
-            I2C_WriteNAU88L25(0x002C,  0x0080);
-            break;
+    case 96000:
+        I2C_WriteNAU88L25(0x0003,  0x80A2); /* MCLK = SYSCLK_SRC/2 */
+        I2C_WriteNAU88L25(0x0004,  0x1801);
+        I2C_WriteNAU88L25(0x0005,  0x3126); /* MCLK = 24.576MHz */
+        I2C_WriteNAU88L25(0x0006,  0xF008);
+        I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=MCLK/8=3.072M, LRC_DIV=3.072M/32=96K */
+        I2C_WriteNAU88L25(0x002B,  0x0001);
+        I2C_WriteNAU88L25(0x002C,  0x0080);
+        break;
     }
 }
 
@@ -519,51 +523,37 @@ void SD_Inits(void)
 
 void SYS_Init(void)
 {
-    /* Enable HXT clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
-    /* Waiting for HXT clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL1_SELECT);
-
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
-
-    /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
-    SystemCoreClockUpdate();
+    /* Enable APLL1 clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL1_SELECT);
 
     /* Enable I2S0 module clock */
     CLK_EnableModuleClock(I2S0_MODULE);
 
+#if defined(ALIGN_AF_PINS)
     /* Enable I2C3 module clock */
     CLK_EnableModuleClock(I2C3_MODULE);
+#else
+    /* Enable I2C2 module clock */
+    CLK_EnableModuleClock(I2C2_MODULE);
+#endif
 
     /* Enable PDMA0 module clock */
     CLK_EnableModuleClock(PDMA0_MODULE);
 
-    /* Enable GPIO module clock */
+    /* Enable all GPIO clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    CLK_EnableModuleClock(GPIOB_MODULE);
+    CLK_EnableModuleClock(GPIOC_MODULE);
     CLK_EnableModuleClock(GPIOD_MODULE);
+    CLK_EnableModuleClock(GPIOE_MODULE);
+    CLK_EnableModuleClock(GPIOF_MODULE);
+    CLK_EnableModuleClock(GPIOG_MODULE);
+    CLK_EnableModuleClock(GPIOH_MODULE);
     CLK_EnableModuleClock(GPIOI_MODULE);
+    CLK_EnableModuleClock(GPIOJ_MODULE);
 
     /* Enable UART module clock */
     SetDebugUartCLK();
@@ -583,12 +573,21 @@ void SYS_Init(void)
     /* Enable I2S0 clock pin (PI6) schmitt trigger */
     PI->SMTEN |= GPIO_SMTEN_SMTEN6_Msk;
 
-    /* Set I2C multi-function pins */
+#if defined(ALIGN_AF_PINS)
+    /* Set I2C3 multi-function pins */
     SET_I2C3_SDA_PG1();
     SET_I2C3_SCL_PG0();
 
-    /* Enable I2C clock pin (PG0) schmitt trigger */
+    /* Enable I2C3 clock pin (PG0) schmitt trigger */
     PG->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
+#else
+    /* Set I2C3 multi-function pins */
+    SET_I2C2_SDA_PD0();
+    SET_I2C2_SCL_PD1();
+
+    /* Enable I2C2 clock pin (PD1) schmitt trigger */
+    PD->SMTEN |= GPIO_SMTEN_SMTEN1_Msk;
+#endif
 }
 
 void I2C_Init(void)
@@ -662,9 +661,16 @@ int32_t main(void)
     I2S_Open(I2S0, I2S_MODE_SLAVE, 48000, I2S_DATABIT_16, I2S_STEREO, I2S_FORMAT_I2S);
 
     /* Set JK-EN low to enable phone jack on NuMaker board. */
+#if defined(ALIGN_AF_PINS)
     SET_GPIO_PB12();
     GPIO_SetMode(PB, BIT12, GPIO_MODE_OUTPUT);
     PB12 = 0;
+#else
+    SET_GPIO_PD4();
+    GPIO_SetMode(PD, BIT4, GPIO_MODE_OUTPUT);
+    PD4 = 0;
+#endif
+
 
 #if NAU8822
     /* Initialize NAU8822 codec */
