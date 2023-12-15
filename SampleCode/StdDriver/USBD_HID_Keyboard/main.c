@@ -100,6 +100,11 @@ void SYS_Init(void)
     SET_USB_D_MINUS_PA13();
     SET_USB_D_PLUS_PA14();
     SET_USB_OTG_ID_PA15();
+    
+    /*Setting the BNT1(Button)(PH1) */
+    SET_GPIO_PH1();
+    GPIO_SetMode(PH,BIT1,GPIO_MODE_QUASI);
+    
 }
 
 
@@ -116,7 +121,7 @@ void HID_UpdateKbData(void)
         pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
 
         /* If PH.0 = 0, just report it is key 'a' */
-        u32Key = (PH->PIN & (1 << 0)) ? 0 : 1;
+        u32Key = (PH->PIN & BIT1) ? 0 : 1;
 
         if (u32Key == 0)
         {
