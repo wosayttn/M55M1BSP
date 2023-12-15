@@ -1467,7 +1467,7 @@ int execute_tests(int argc, const char **argv)
 
                 function_id = strtoul(params[0], NULL, 10);
                 if ((ret = check_test(function_id)) == DISPATCH_TEST_SUCCESS) {
-                    ret = convert_params(cnt - 1, params + 1, int_params);
+									ret = convert_params(cnt - 1, params + 1, (mbedtls_test_argument_t *)int_params/*Wayne: Just for pass the building.*/);
                     if (DISPATCH_TEST_SUCCESS == ret) {
                         ret = dispatch_test(function_id, (void **) (params + 1));
                     }
