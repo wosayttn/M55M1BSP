@@ -139,11 +139,14 @@ NVT_ITCM void SDH0_IRQHandler(void)
         printf("***** ISR: response in timeout !\n");
         SDH0->INTSTS |= SDH_INTSTS_RTOIF_Msk;
     }
+    __DSB();
+    __ISB();
 }
 
 // LPPMDA =========================================================================================================
 NVT_ITCM void LPPDMA_IRQHandler(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     uint32_t u32TDStatus = LPPDMA_GET_TD_STS(LPPDMA);
 
     if (u32TDStatus & (1 << DMIC_LPPDMA_CH))
@@ -153,6 +156,15 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
 
         if ((psDMIC_BufCtrl->u16WriteIdx += (psDMIC_BufCtrl->u16BufCount / 2)) >= psDMIC_BufCtrl->u16BufCount)
             psDMIC_BufCtrl->u16WriteIdx = 0;
+    }
+    __DSB();
+    __ISB();
+    while(LPPDMA_GET_TD_STS(LPPDMA))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for LPPDMA IntFlag time-out!\n");
+        }
     }
 }
 
@@ -195,8 +207,7 @@ void DMIC_Init(S_BUFCTRL *psInBufCtrl)
     DMIC_ResetDSP(DMIC0);  //SWRST
 
     //DMIC Gain Setting
-    DMIC_SetDSPGainVolume(DMIC0, DMIC_CTL_CHEN0_Msk, 48);//+48dB
-    DMIC_SetDSPGainVolume(DMIC0, DMIC_CTL_CHEN1_Msk, 48);//+48dB
+    DMIC_SetDSPGainVolume(DMIC0, DMIC_CTL_CHEN0_Msk, 40);//+40dB
 
     // MIC(RX) buffer description
     sLPPDMA_DMIC[0].CTL = ((psInBufCtrl->u16BufCount - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_16 | PDMA_SAR_FIX | PDMA_DAR_INC | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
@@ -322,7 +333,7 @@ static void SYS_Init(void)
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */

@@ -31,6 +31,7 @@ NVT_ITCM void TTMR0_IRQHandler(void)
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     CLK_WaitModuleClockReady(TTMR0_MODULE);//TESTCHIP_ONLY
     CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     /* Clear wake up flag */
     TTMR_ClearWakeupFlag(TTMR0);
     /* Clear interrupt flag */
@@ -53,6 +54,8 @@ NVT_ITCM void PMC_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     g_u32PDWK = PMC_GetPMCWKSrc();
+    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     /* check power down wakeup flag */
     if (g_u32PDWK & PMC_INTSTS_PDWKIF_Msk)
     {

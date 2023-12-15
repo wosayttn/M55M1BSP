@@ -30,8 +30,7 @@ static volatile uint32_t g_au32LPTMRINTCount[2] = {0};
 NVT_ITCM void LPTMR0_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(LPTMR0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     if(LPTMR_GetIntFlag(LPTMR0) == 1)
     {
         /* Clear LPTMR0 time-out interrupt flag */
@@ -53,8 +52,7 @@ NVT_ITCM void LPTMR0_IRQHandler(void)
 NVT_ITCM void LPTMR1_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(LPTMR1_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     if(LPTMR_GetIntFlag(LPTMR1) == 1)
     {
         /* Clear LPTMR1 time-out interrupt flag */

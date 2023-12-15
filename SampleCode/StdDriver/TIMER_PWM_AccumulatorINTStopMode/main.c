@@ -29,8 +29,7 @@ static volatile uint32_t gu32Period;
 NVT_ITCM void TIMER0_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(TMR0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     TPWM_ClearAccInt(TIMER0);
 
     printf("\nCheck if output toggles 11 times then stop toggles.\n");

@@ -32,8 +32,7 @@ NVT_ITCM void EPWM0P0_IRQHandler(void)
 {
     static int32_t i32Toggle = 0;
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(EPWM0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     /* Clear channel 0 period interrupt flag */
     EPWM_ClearPeriodIntFlag(EPWM0, 0);
 

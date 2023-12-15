@@ -25,8 +25,7 @@
 NVT_ITCM void LPTMR0_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(LPTMR0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     /* Clear LPTMR capture interrupt flag. */
     LPTMR_ClearCaptureIntFlag(LPTMR0);
     printf("ACMP triggered LPTMR0 reset while counter is at %d\n", LPTMR_GetCaptureData(LPTMR0));

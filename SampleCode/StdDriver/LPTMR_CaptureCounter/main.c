@@ -27,8 +27,7 @@ static volatile uint32_t g_au32LPTMR1INTCount = 0;
 NVT_ITCM void LPTMR1_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(LPTMR1_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     if (LPTMR_GetCaptureIntFlag(LPTMR1) == 1)
     {
         /* Clear LPTMR1 capture trigger interrupt flag */

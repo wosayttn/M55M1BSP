@@ -24,13 +24,20 @@
 
 NVT_ITCM void TIMER0_IRQHandler(void)
 {
-    CLK_WaitModuleClockReady(TMR0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     // Clear timer capture interrupt flag.
     TIMER_ClearCaptureIntFlag(TIMER0);
     printf("ACMP triggered timer reset while counter is at %d\n", TIMER_GetCaptureData(TIMER0));
     __DSB();
     __ISB();
+    while(TIMER_GetCaptureIntFlag(TIMER0))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for TIMER0 IntFlag time-out!\n");
+        }
+    }
 }
 
 static void SYS_Init(void)
