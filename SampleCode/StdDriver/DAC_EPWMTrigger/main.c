@@ -37,11 +37,11 @@ NVT_ITCM void DAC01_IRQHandler(void)
             g_u32Index = 0;
         else
         {
-            DAC_WRITE_DATA(DAC0, 0, g_au16Sine[g_u32Index++]);
 
             /* Clear the DAC conversion complete finish flag */
             DAC_CLR_INT_FLAG(DAC0, 0);
-
+            DAC_WRITE_DATA(DAC0, 0, g_au16Sine[g_u32Index++]);
+            DAC_GET_INT_FLAG(DAC0, 0);
         }
     }
 
@@ -101,7 +101,7 @@ void SYS_Init(void)
     SET_DAC0_OUT_PB12();
 
     /* Disable digital input path of analog pin DAC0_OUT to prevent leakage */
-    GPIO_DISABLE_DIGITAL_PATH(PB, (1ul << 12));
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT12);
 
     /* Set multi-function pins for EPWM */
     SET_EPWM0_CH0_PE7();
@@ -113,7 +113,7 @@ void EPWM0_Init(void)
 {
 
     /* Set EPWM0 Timer clock prescaler */
-    EPWM_SET_PRESCALER(EPWM0, 0, 0);
+    EPWM_SET_PRESCALER(EPWM0, 0, 10);
 
     /* Set up counter type */
     EPWM0->CTL1 &= ~EPWM_CTL1_CNTTYPE0_Msk;
