@@ -217,9 +217,11 @@ void AutoOperation_FunctionTest()
         PMC->INTSTS = PMC_INTSTS_CLRWK_Msk;
         g_u32LPPdmaIntFlag = 0;
 
-         SYS_UnlockReg();
+        SYS_UnlockReg();
+        
         PMC_SetPowerDownMode(PMC_NPD0, PMC_PLCTL_PLSEL_PL0);
         PMC_PowerDown();
+        
         SYS_LockReg();
 
         printf("Wakeup %d times !!\n", ++g_u32WakeupCount);
