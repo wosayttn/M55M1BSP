@@ -37,7 +37,7 @@ int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch);
 /*      ____|   |_|   |_|   |_|   |_|   |_|   |_|   |_|   |_____                        */
 /* index              0 1   2 3                                                         */
 /*                                                                                      */
-/* The capture internal counter down count from 0x10000, and reload to 0x10000 after    */
+/* The capture internal counter up count from 0, and reload to 0 after                  */
 /* input signal falling happens (Time B/C/D)                                            */
 /*--------------------------------------------------------------------------------------*/
 int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
@@ -107,16 +107,16 @@ int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
 
     u16FallingTime = au16Count[0];
 
-    u16HighPeriod = au16Count[1] - au16Count[2];
+    u16HighPeriod = au16Count[2] - au16Count[1];
 
-    u16LowPeriod = (uint16_t)(0x10000 - au16Count[1]);
+    u16LowPeriod = (uint16_t)(au16Count[3]);
 
-    u16TotalPeriod = (uint16_t)(0x10000 - au16Count[2]);
+    u16TotalPeriod = (uint16_t)(au16Count[2]);
 
-    printf("\nEPWM generate: \nHigh Period=17141 ~ 17143, Low Period=39999 ~ 40001, Total Period=57141 ~ 57143\n");
+    printf("\nEPWM generate: \nHigh Period=17999 ~ 18001, Low Period=41999 ~ 42001, Total Period=59999 ~ 60001\n");
     printf("\nCapture Result: Rising Time = %d, Falling Time = %d \nHigh Period = %d, Low Period = %d, Total Period = %d.\n\n",
            u16RisingTime, u16FallingTime, u16HighPeriod, u16LowPeriod, u16TotalPeriod);
-    if ((u16HighPeriod < 17141) || (u16HighPeriod > 17143) || (u16LowPeriod < 39999) || (u16LowPeriod > 40001) || (u16TotalPeriod < 57141) || (u16TotalPeriod > 57143))
+    if ((u16HighPeriod < 17999) || (u16HighPeriod > 18001) || (u16LowPeriod < 41999) || (u16LowPeriod > 42001) || (u16TotalPeriod < 59999) || (u16TotalPeriod > 60001))
     {
         printf("Capture Test Fail!!\n");
         return (-1);
@@ -136,27 +136,8 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -222,14 +203,14 @@ int main(void)
            duty ratio = (CMR)/(CNR+1)
            cycle time = CNR+1
            High level = CMR
-           EPWM clock source frequency = PLL/2 = 100000000
+           EPWM clock source frequency = PLL/2 = 90000000
            (CNR+1) = EPWM clock source frequency/prescaler/EPWM output frequency
-                   = 100000000/7/250 = 57142
+                   = 90000000/6/250 = 60000
            (Note: CNR is 16 bits, so if calculated value is larger than 65536, user should increase prescale value.)
-           CNR = 57141
+           CNR = 59999
            duty ratio = 30% ==> (CMR)/(CNR+1) = 30%
-           CMR = 17142
-           Prescale value is 6 : prescaler= 7
+           CMR = 18000
+           Prescale value is 5 : prescaler= 6
         */
 
         /* Set EPWM1 channel 0 output configuration */
@@ -259,6 +240,7 @@ int main(void)
 
         /* Set EPWM1 channel 2 capture configuration */
         EPWM_ConfigCaptureChannel(EPWM1, 2, 70, 0);
+        EPWM_SET_PRESCALER(EPWM1, 2, (EPWM1)->CLKPSC[0]);
 
         /* Enable Timer for EPWM1 channel 2 */
         EPWM_Start(EPWM1, EPWM_CH_2_MASK);

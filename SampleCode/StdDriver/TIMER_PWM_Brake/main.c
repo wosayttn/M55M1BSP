@@ -24,13 +24,27 @@
 
 NVT_ITCM void TIMER0_IRQHandler(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    CLK_WaitModuleClockReady(TMR0_MODULE);//TESTCHIP_ONLY
+    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
     printf("\nFault brake!\n");
     printf("Press any key to unlock brake state. (TIMER0 PWM output will toggle again)\n");
     getchar();
 
     // Clear brake interrupt flag
     SYS_UnlockReg();
+    TIMER0->PWMBRKCTL = 0;
+    TPWM_DisableFaultBrakeInt(TIMER0, TPWM_BRAKE_EDGE);
     TPWM_ClearFaultBrakeIntFlag(TIMER0, TPWM_BRAKE_EDGE);
+    __DSB();
+    __ISB();
+    while(TPWM_GetFaultBrakeIntFlag(TIMER0, TPWM_BRAKE_EDGE))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for TPWM0 IntFlag time-out!\n");
+        }
+    }
     SYS_LockReg();
 }
 
@@ -42,27 +56,8 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -129,8 +124,10 @@ int main(void)
     /* Enable brake and interrupt, PWM output stays at low after brake event */
     SYS_UnlockReg();
     TPWM_SET_BRAKE_PIN_SOURCE(TIMER0, TPWM_TM_BRAKE2);
+    TPWM_EnableBrakePinDebounce(TIMER0, TPWM_TM_BRAKE2, 7, EPWM_NF_CLK_DIV_128);
     TPWM_EnableFaultBrake(TIMER0, TPWM_OUTPUT_LOW, TPWM_OUTPUT_LOW, TPWM_BRAKE_SOURCE_EDGE_BKPIN);
     TPWM_EnableFaultBrakeInt(TIMER0, TPWM_BRAKE_EDGE);
+    TPWM_ClearFaultBrakeIntFlag(TIMER0, TPWM_BRAKE_EDGE);
     SYS_LockReg();
 
     NVIC_EnableIRQ(TIMER0_IRQn);
