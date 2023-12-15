@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include "NuMicro.h"
 #include "usbd_audio.h"
+ 
 
 /*--------------------------------------------------------------------------*/
 void SYS_Init(void)
@@ -49,19 +50,16 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOH_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
 
-    /* Debug UART clock setting*/
-    SetDebugUartCLK();
-
-    /* Select HSUSBD */
-    SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;
-
+   /* Enable HSOTG0_ module clock */
+    CLK_EnableModuleClock(HSOTG0_MODULE);
+    
+    SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;    /* select HSUSBD */
     /* Enable USB PHY */
-    SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
+    SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk | SYS_USBPHY_HSUSBACT_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
+    for (i=0; i<0x1000; i++);      // delay > 10 us
+    SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
 
-    for (i = 0; i < 0x1000; i++);  // delay > 10 us
-
-
-    /* Enable HSUSBD module clock */
+    /* Enable IP clock */
     CLK_EnableModuleClock(HSUSBD0_MODULE);
 
     /* Enable TIMER0 module clock */
@@ -142,7 +140,7 @@ int32_t main(void)
     I2S_Open(I2S0, I2S_MODE_SLAVE, 48000, I2S_DATABIT_16, I2S_STEREO, I2S_FORMAT_I2S);
 
     /* Select source from HXT(12MHz) */
-    CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_HXT, 0);
+    CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_HXT, CLK_I2SDIV_I2S0DIV(2));
 
     /* Lock protected registers */
     SYS_LockReg();

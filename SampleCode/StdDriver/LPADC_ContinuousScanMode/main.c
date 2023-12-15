@@ -24,8 +24,11 @@ volatile uint32_t g_u32LpadcIntFlag;
 /*---------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void LPADC0_IRQHandler(void)
 {
-    g_u32LpadcIntFlag = 1;
+
     LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT); /* Clear the A/D interrupt flag */
+      g_u32LpadcIntFlag = 1;
+    /*Confirm that the Flag has been cleared.*/
+    LPADC_GET_INT_FLAG(LPADC0, LPADC_ADF_INT); 
 }
 
 void SYS_Init(void)
@@ -96,8 +99,8 @@ void LPADC_FunctionTest()
     printf("|               LPADC continuous scan mode sample code                 |\n");
     printf("+----------------------------------------------------------------------+\n");
 
-    /* Enable LPADC converter */
-    LPADC_POWER_ON(LPADC0);
+    /* LPADC Calibration */
+    LPADC_Calibration(LPADC0);
 
     while (1)
     {

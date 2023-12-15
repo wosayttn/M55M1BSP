@@ -17,7 +17,7 @@ volatile uint32_t g_u32IsTestOver = 0;
 /* M55M1: Because LPPDMA only can access LPSRAM,
    the g_i32ConversionData[] MUST be allocated at LPSRAM area 0x20310000 ~ 0x20311FFF (8 KB).
  */
-volatile uint32_t g_i32ConversionData[6] __attribute__((section(".lpSram")));
+volatile uint32_t g_i32ConversionData[7] __attribute__((section(".lpSram")));
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION) && defined(OS_USE_SEMIHOSTING)
     extern void initialise_monitor_handles(void);
@@ -40,12 +40,17 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
     else if (status & LPPDMA_INTSTS_TDIF_Msk)     /* done */
     {
         if (LPPDMA_GET_TD_STS(LPPDMA) & LPPDMA_TDSTS_TDIF1_Msk)
+        {
+            /* Disable EPWM0 channel 0 counter */
+            EPWM_ForceStop(EPWM0, BIT0); /* EPWM0 counter stop running. */
             g_u32IsTestOver = 1;
-
+        }
         LPPDMA_CLR_TD_FLAG(LPPDMA, LPPDMA_TDSTS_TDIF1_Msk);
     }
     else
         printf("unknown LPPDMA interrupt !!\n");
+    /*Confirm that the Flag has been cleared.*/
+    LPPDMA_GET_INT_STATUS(LPPDMA); 
 }
 
 void SYS_Init(void)
@@ -104,22 +109,22 @@ void SYS_Init(void)
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
-    /* Set PB.2 - PB.3 to input mode */
-    GPIO_SetMode(PB, BIT2 | BIT3, GPIO_MODE_INPUT);
+    /* Set PB.0 - PB.1 to input mode */
+    GPIO_SetMode(PB, BIT0 | BIT1, GPIO_MODE_INPUT);
 
-    /* Configure the PB.2 - PB.3 LPADC analog input pins.  */
-    SET_EADC0_CH2_PB2();
-    SET_EADC0_CH3_PB3();
+    /* Configure the PB.0 - PB.1 LPADC analog input pins.  */
+    SET_EADC0_CH0_PB0();
+    SET_EADC0_CH1_PB1();
 
-    /* Disable the PB.2 - PB.3 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT2 | BIT3);
+    /* Disable the PB.0 - PB.1 digital input path to avoid the leakage current. */
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0 | BIT1);
 
 }
 
 void EPWM0_Init()
 {
     /* Set EPWM0 timer clock prescaler */
-    EPWM_SET_PRESCALER(EPWM0, 0, 0);
+    EPWM_SET_PRESCALER(EPWM0, 0, 10);
 
     /* Set up counter type */
     EPWM0->CTL1 &= ~EPWM_CTL1_CNTTYPE0_Msk;
@@ -179,24 +184,24 @@ void LPADC_FunctionTest()
 
     printf("\nIn this test, software will get 6 conversion result from the specified channel.\n");
 
-    /* Enable LPADC converter */
-    LPADC_POWER_ON(LPADC0);
-
+    /* Calibration LPADC */
+    LPADC_Calibration(LPADC0);
+  
     while (1)
     {
         /* reload LPPDMA configuration for next transmission */
         ReloadLPPDMA();
 
         printf("Select input mode:\n");
-        printf("  [1] Single end input (channel 2 only)\n");
-        printf("  [2] Differential input (channel pair 1 only (channel 2 and 3))\n");
+        printf("  [1] Single end input (channel 1 only)\n");
+        printf("  [2] Differential input (channel pair 0 only (channel 0 and 1))\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
 
         if (u8Option == '1')
         {
-            /* Set input mode as single-end, Single mode, and select channel 2 */
-            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT2);
+            /* Set input mode as single-end, Single mode, and select channel 1 */
+            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT1);
 
             /* Configure the sample module and enable EPWM0 trigger source */
             LPADC_EnableHWTrigger(LPADC0, LPADC_EPWM_TRIGGER, 0);
@@ -204,7 +209,7 @@ void LPADC_FunctionTest()
             /* LPADC enable LPPDMA transfer */
             LPADC_ENABLE_LPPDMA(LPADC0);
 
-            printf("Conversion result of channel 2:\n");
+            printf("Conversion result of channel 1:\n");
 
             /* Enable EPWM0 channel 0 counter */
             EPWM_Start(EPWM0, BIT0); /* EPWM0 channel 0 counter start running. */
@@ -214,19 +219,16 @@ void LPADC_FunctionTest()
 
             g_u32IsTestOver = 0;
 
-            /* Disable EPWM0 channel 0 counter */
-            EPWM_ForceStop(EPWM0, BIT0); /* EPWM0 counter stop running. */
-
             for (i = 0; (i) < 6; i++)
             {
-                printf("                                0x%X\n", g_i32ConversionData[i]);
+                printf("                                0x%X,", g_i32ConversionData[i]);
                 printf("(%d)\n", (g_i32ConversionData[i] & 0xFFF));
             }
         }
         else if (u8Option == '2')
         {
-            /* Set input mode as differential, Single mode, and select channel 2 */
-            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_DIFFERENTIAL, LPADC_ADCR_ADMD_SINGLE, BIT2);
+            /* Set input mode as differential, Single mode, and select channel 0 */
+            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_DIFFERENTIAL, LPADC_ADCR_ADMD_SINGLE, BIT0);
 
             /* Configure the sample module and enable EPWM0 trigger source */
             LPADC_EnableHWTrigger(LPADC0, LPADC_EPWM_TRIGGER, 0);
@@ -234,7 +236,7 @@ void LPADC_FunctionTest()
             /* LPADC enable LPPDMA transfer */
             LPADC_ENABLE_LPPDMA(LPADC0);
 
-            printf("Conversion result of channel 2:\n");
+            printf("Conversion result of channel 0:\n");
 
             /* Enable EPWM0 channel 0 counter */
             EPWM_Start(EPWM0, BIT0); /* EPWM0 channel 0 counter start running. */
@@ -249,7 +251,7 @@ void LPADC_FunctionTest()
 
             for (i = 0; (i) < 6; i++)
             {
-                printf("                                0x%X\n", g_i32ConversionData[i]);
+                printf("                                0x%X,", g_i32ConversionData[i]);
                 printf("(%d)\n", (g_i32ConversionData[i] & 0xFFF));
             }
         }

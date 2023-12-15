@@ -16,6 +16,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void CKFAIL_IRQHandler(void)
 {
+    uint32_t u32Status;
     uint32_t u32Reg;
 
     /* Unlock protected registers */
@@ -39,7 +40,7 @@ NVT_ITCM void CKFAIL_IRQHandler(void)
     {
         /* RTC clock could be switched to LIRC if LXT clock fail interrupt is happened */
         RTC_SetClockSource(RTC_CLOCK_SOURCE_LIRC);
-        
+
         printf("LXT clock is stopped! RTC clock is switched to LIRC.\n");
 
         /* Disable LXT clock fail interrupt */
@@ -65,6 +66,8 @@ NVT_ITCM void CKFAIL_IRQHandler(void)
     /* Lock protected registers */
     SYS_LockReg();
 
+    /* CPU read interrupt flag register to wait write(clear) instruction completement */
+    u32Status = CLK->CLKDSTS;
 }
 
 static void SYS_Init(void)
@@ -107,21 +110,8 @@ static void SYS_Init(void)
     /* Waiting for external low speed clock ready */
     CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock and set all bus clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */

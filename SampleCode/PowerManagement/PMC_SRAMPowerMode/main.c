@@ -22,6 +22,7 @@ void SYS_Init(void);
 /*---------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void WDT0_IRQHandler(void)
 {
+    uint32_t u32Status;
 
     if (WDT_GET_TIMEOUT_INT_FLAG(WDT0))
     {
@@ -38,6 +39,9 @@ NVT_ITCM void WDT0_IRQHandler(void)
     }
 
     s_u8IsINTEvent = 1;
+
+    /* CPU read interrupt flag register to wait write(clear) instruction completement */
+    u32Status = WDT0->STATUS;
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -306,6 +310,6 @@ int32_t main(void)
     WDT_DisableInt(WDT0);
 
     printf("Test Done.\n");
-    
+
     while (1);
 }

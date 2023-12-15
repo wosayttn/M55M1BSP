@@ -456,8 +456,8 @@ void MSC_Init(void)
 
     g_sCSW.dCSWSignature = CSW_SIGNATURE;
     g_TotalSectors = 128;
-    g_u32MassBase = 0x20101000;
-    g_u32StorageBase = 0x20102000;
+    g_u32MassBase = 0x20106000;
+    g_u32StorageBase = 0x20107000;
 
     for (i = 0; i < 8; i++)
         scater_gather_array[7 - i].ADDRESS = (uint32_t)SCATTER_DATA_BUFFER + i * 2048;

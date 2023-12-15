@@ -27,8 +27,6 @@
 /****************************************************************************
  * Global Variables
  ****************************************************************************/
-int iPMU_TickInit;
-uint64_t sPMU_TickCounter;
 uint8_t image_src[SRC_IMG_WIDTH * SRC_IMG_HEIGHT * RGB_BYTES] = {0};
 uint8_t image_dst[SCALED_IMG_WIDTH * SCALED_IMG_HEIGHT * RGB_BYTES] = {0};
 volatile uint32_t g_u32Ticks = 0;
@@ -107,22 +105,8 @@ void SYS_Init(void)
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-
-    /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(4);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -160,7 +144,7 @@ int32_t main(void)
 
     printf("+---------------------------------------+\n");
     printf("|     Helium Bilinear Scaling           |\n");
-	  printf("|     [%d x %d] to [%d x %d]        |\n", SRC_IMG_WIDTH, SRC_IMG_HEIGHT, SCALED_IMG_WIDTH, SCALED_IMG_HEIGHT);
+    printf("|     [%d x %d] to [%d x %d]        |\n", SRC_IMG_WIDTH, SRC_IMG_HEIGHT, SCALED_IMG_WIDTH, SCALED_IMG_HEIGHT);
     printf("+---------------------------------------+\n");
 
     /* Use systick to measure inference time */

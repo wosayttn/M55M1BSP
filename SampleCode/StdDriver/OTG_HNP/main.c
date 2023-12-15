@@ -113,6 +113,8 @@ void  connect_func(struct udev_t *udev, int param)
  */
 void  disconnect_func(struct udev_t *udev, int param)
 {
+    gOTG_Dev_pet = NULL;
+    
     printf("Device [0x%x,0x%x] was disconnected.\n",
            udev->descriptor.idVendor, udev->descriptor.idProduct);
 }
@@ -318,7 +320,7 @@ void SYS_Init(void)
     SetDebugUartCLK();
 
     /* Set OTG as USB Host role */
-    SYS->USBPHY = (0x1ul << (SYS_USBPHY_HSOTGPHYEN_Pos)) | (0x3ul << (SYS_USBPHY_HSUSBROLE_Pos)) | (0x1ul << (SYS_USBPHY_OTGPHYEN_Pos)) | (0x3 << SYS_USBPHY_USBROLE_Pos);
+    SYS->USBPHY = (0x1ul << (SYS_USBPHY_HSOTGPHYEN_Pos)) | (0x1ul << (SYS_USBPHY_HSUSBROLE_Pos)) | (0x1ul << (SYS_USBPHY_OTGPHYEN_Pos)) | (0x3 << SYS_USBPHY_USBROLE_Pos);
     delay_us(20);
     SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;//Set HSUSB PHY Active.
 
@@ -357,6 +359,9 @@ void OTG_SetFeature(uint32_t value)
     uint32_t  read_len;
     /* 0x3 - b_hnp_enable, 0x4 - a_hnp_support */
     /* set feature */
+    if (gOTG_Dev_pet == NULL)
+        return;
+    
     usbh_ctrl_xfer(gOTG_Dev_pet, REQ_TYPE_OUT | REQ_TYPE_STD_DEV | REQ_TYPE_TO_DEV,
                    USB_REQ_SET_FEATURE, value, 0, 0,
                    NULL, &read_len, 300);
@@ -487,7 +492,7 @@ int32_t main(void)
 
     OTG_ENABLE_PHY();
     OTG_ENABLE_ID_DETECT();
-    OTG->PHYCTL |= 0x4;
+    //OTG->PHYCTL |= 0x4;
     NVIC_EnableIRQ(USBOTG_IRQn);
     delay_us(1000);
 
@@ -577,6 +582,8 @@ int32_t main(void)
                     OTG->CTL &= ~OTG_CTL_BUSREQ_Msk;
                     usbh_suspend();
                     printf("A suspend\n");
+                    
+                    gStartHNP = 0;
                 }
 
                 if (otg_role_change)
@@ -623,6 +630,7 @@ int32_t main(void)
 
                 if (gStartHNP)
                 {
+                    gStartHNP = 0;
                     printf("\n\nwaiting...\n\n");
                     OTG->CTL &= ~OTG_CTL_BUSREQ_Msk;
                     delay_us(5000);

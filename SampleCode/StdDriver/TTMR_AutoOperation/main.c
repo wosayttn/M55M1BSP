@@ -31,6 +31,7 @@ static volatile uint32_t s_u32IsTestOver = 0;
 
 NVT_ITCM void LPPDMA_IRQHandler(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     CLK_WaitModuleClockReady(LPPDMA0_MODULE);//TESTCHIP_ONLY
     CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
     uint32_t status = LPPDMA_GET_INT_STATUS(LPPDMA);
@@ -54,13 +55,22 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
         LPPDMA_CLR_TD_FLAG(LPPDMA, (LPPDMA_TDSTS_TDIF0_Msk << TTMR_LPPDMA_CH));
     }
     else
-        printf("unknown interrupt !!\n");
+        printf("unknown interrupt %x !!\n",status);
     if (status & LPPDMA_INTSTS_WKF_Msk)     /* wake up */
     {
         printf("wake up !!\n");
 
         /* Clear wake up flag */
         LPPDMA->INTSTS = status;
+    }
+    __DSB();
+    __ISB();
+    while(LPPDMA_GET_INT_STATUS(LPPDMA))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for LPPDMA IntFlag time-out!\n");
+        }
     }
 }
 
@@ -99,7 +109,7 @@ void LPPDMA_Init(void)
     /* Set transfer width (32 bits) and transfer count */
     LPPDMA_SetTransferCnt(LPPDMA, TTMR_LPPDMA_CH, LPPDMA_WIDTH_32, DATA_COUNT);
     /* Set source/destination address and attributes */
-    LPPDMA_SetTransferAddr(LPPDMA, TTMR_LPPDMA_CH, (uint32_t)&TTMR0->CNT, LPPDMA_SAR_FIX, (uint32_t)s_au32CAPValue, LPPDMA_DAR_INC);
+    LPPDMA_SetTransferAddr(LPPDMA, TTMR_LPPDMA_CH, (uint32_t)&TTMR0->CMP, LPPDMA_SAR_FIX, (uint32_t)s_au32CAPValue, LPPDMA_DAR_INC);
     /* Set request source; set basic mode. */
     LPPDMA_SetTransferMode(LPPDMA, TTMR_LPPDMA_CH, LPPDMA_TTMR0, FALSE, 0);
     /* Single request type. TTMR only support LPPDMA single request type. */
@@ -136,27 +146,8 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */

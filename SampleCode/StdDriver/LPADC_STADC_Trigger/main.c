@@ -27,6 +27,7 @@ NVT_ITCM void LPADC0_IRQHandler(void)
     g_u32LpadcIntFlag = 1;
     g_u32COVNUMFlag++;
     printf("[#%d] LPADC conversion done.\n", g_u32COVNUMFlag);
+    LPADC_GET_INT_FLAG(LPADC0, LPADC_ADF_INT); /* Clear the A/D interrupt flag */
 }
 
 void SYS_Init(void)
@@ -64,24 +65,25 @@ void SYS_Init(void)
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
+    /* Enable GPB peripheral clock */
+    CLK_EnableModuleClock(GPIOB_MODULE);
+
     /*----------------------------------------------------------------------*/
     /* Init I/O Multi-function                                              */
     /*----------------------------------------------------------------------*/
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
-    /* Set PB.2 - PB.3 to input mode */
-    GPIO_SetMode(PB, BIT2 | BIT3, GPIO_MODE_INPUT);
+    /* Set PB.0 - PB.1 to input mode */
+    GPIO_SetMode(PB, BIT0 | BIT1, GPIO_MODE_INPUT);
 
-    /* Configure the PB.2 - PB.3 ADC analog input pins.  */
-    SET_LPADC0_CH2_PB2();
-    SET_LPADC0_CH3_PB3();
+    /* Configure the PB.0 - PB.1 ADC analog input pins.  */
+    SET_LPADC0_CH0_PB0();
+    SET_LPADC0_CH1_PB1();
 
-    /* Disable the PB.2 - PB.3 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT2 | BIT3);
+    /* Disable the PB.0 - PB.1 digital input path to avoid the leakage current. */
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0 | BIT1);
 
-    /* Set PC.13 to input mode */
-    GPIO_SetMode(PC, BIT13, GPIO_MODE_INPUT);
     /* Configure the PC.13 LPADC trigger pins. */
     SET_LPADC0_ST_PC13();
 
@@ -102,21 +104,21 @@ void LPADC_FunctionTest()
     printf("\nIn this test, software will get 6 conversion result from the specified channel\n");
     printf("   that triggered by STADC pin (PC.13).\n");
 
-    /* Enable LPADC converter */
-    LPADC_POWER_ON(LPADC0);
+    /* LPADC Calibration */
+    LPADC_Calibration(LPADC0);
 
     while (1)
     {
         printf("Select input mode:\n");
-        printf("  [1] Single end input (channel 2 only)\n");
-        printf("  [2] Differential input (channel pair 1 only)\n");
+        printf("  [1] Single end input (channel 1 only)\n");
+        printf("  [2] Differential input (channel pair 0 only)\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
 
         if (u8Option == '1')
         {
-            /* Set input mode as single-end, Single mode, and select channel 2 */
-            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT2);
+            /* Set input mode as single-end, Single mode, and select channel 1 */
+            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT1);
 
             /* Configure the sample module and enable STADC pin trigger source */
             LPADC_EnableHWTrigger(LPADC0, LPADC_STADC_TRIGGER, LPADC_ADCR_TRGCOND_FALLING_EDGE);
@@ -144,7 +146,7 @@ void LPADC_FunctionTest()
 
                 /* Get the conversion result of LPADC channel 2 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
-                i32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 2);
+                i32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 1);
 
                 if (g_u32COVNUMFlag >= 6)
                     break;
@@ -153,15 +155,15 @@ void LPADC_FunctionTest()
             /* Disable the sample module interrupt */
             LPADC_DisableInt(LPADC0, LPADC_ADF_INT);
 
-            printf("Conversion result of channel pair 1:\n");
+            printf("Conversion result of channel 1:\n");
 
             for (u8Index = 0; (u8Index) < 6; u8Index++)
                 printf("                                0x%X (%d)\n", i32ConversionData[u8Index], i32ConversionData[u8Index]);
         }
         else if (u8Option == '2')
         {
-            /* Set input mode as differential, Single mode, and select channel 2 */
-            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_DIFFERENTIAL, LPADC_ADCR_ADMD_SINGLE, BIT2);
+            /* Set input mode as differential, Single mode, and select channel 0 */
+            LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_DIFFERENTIAL, LPADC_ADCR_ADMD_SINGLE, BIT0);
 
             /* Configure the sample module and enable STADC pin trigger source */
             LPADC_EnableHWTrigger(LPADC0, LPADC_STADC_TRIGGER, LPADC_ADCR_TRGCOND_FALLING_EDGE);
@@ -189,7 +191,7 @@ void LPADC_FunctionTest()
 
                 /* Get the conversion result of the sample module 0 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
-                i32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 2);
+                i32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
 
                 if (g_u32COVNUMFlag >= 6)
                     break;
@@ -198,7 +200,7 @@ void LPADC_FunctionTest()
             /* Disable the sample module interrupt */
             LPADC_DisableInt(LPADC0, LPADC_ADF_INT);
 
-            printf("Conversion result of channel pair 1:\n");
+            printf("Conversion result of channel pair 0:\n");
 
             for (u8Index = 0; (u8Index) < 6; u8Index++)
                 printf("                                0x%X (%d)\n", i32ConversionData[u8Index], i32ConversionData[u8Index]);

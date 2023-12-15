@@ -80,14 +80,14 @@ void SYS_Init(void)
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
-    /* Set PB.2 to input mode */
-    GPIO_SetMode(PB, BIT2, GPIO_MODE_INPUT);
+    /* Set PB.1 to input mode */
+    GPIO_SetMode(PB, BIT1, GPIO_MODE_INPUT);
 
-    /* Configure the PB.2 LPADC analog input pins.  */
-    SET_EADC0_CH2_PB2();
+    /* Configure the PB.1 LPADC analog input pins.  */
+    SET_EADC0_CH1_PB1();
 
-    /* Disable the PB.2 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT2);
+    /* Disable the PB.1 digital input path to avoid the leakage current. */
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT1);
 
 }
 
@@ -99,21 +99,21 @@ void LPADC_FunctionTest()
     printf("+----------------------------------------------------------------------+\n");
     printf("|          LPADC compare function (result monitor) sample code         |\n");
     printf("+----------------------------------------------------------------------+\n");
-    printf("\nIn this test, software will compare the conversion result of channel 2.\n");
+    printf("\nIn this test, software will compare the conversion result of channel 1.\n");
 
-    /* Enable LPADC converter */
-    LPADC_POWER_ON(LPADC0);
+    /* LPADC Calibration */
+    LPADC_Calibration(LPADC0);
 
-    /* Set input mode as single-end, Single mode, and select channel 2 */
-    LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT2);
+    /* Set input mode as single-end, Single mode, and select channel 1 */
+    LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT1);
 
     /* Enable LPADC comparator 0. Compare condition: conversion result < 0x800; match Count=5 */
-    printf("   Set the compare condition of comparator 0: channel 2 is less than 0x800; match count is 5.\n");
-    LPADC_ENABLE_CMP0(LPADC0, 2, LPADC_ADCMPR_CMPCOND_LESS_THAN, 0x800, 5);
+    printf("   Set the compare condition of comparator 0: channel 1 is less than 0x800; match count is 5.\n");
+    LPADC_ENABLE_CMP0(LPADC0, 1, LPADC_ADCMPR_CMPCOND_LESS_THAN, 0x800, 5);
 
     /* Enable LPADC comparator 1. Compare condition: conversion result >= 0x800; match Count=5 */
-    printf("   Set the compare condition of comparator 1: channel 2 is greater than or equal to 0x800; match count is 5.\n");
-    LPADC_ENABLE_CMP1(LPADC0, 2, LPADC_ADCMPR_CMPCOND_GREATER_OR_EQUAL, 0x800, 5);
+    printf("   Set the compare condition of comparator 1: channel 1 is greater than or equal to 0x800; match count is 5.\n");
+    LPADC_ENABLE_CMP1(LPADC0, 1, LPADC_ADCMPR_CMPCOND_GREATER_OR_EQUAL, 0x800, 5);
 
     /* Clear the A/D interrupt flag for safe */
     LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT);
@@ -143,8 +143,8 @@ void LPADC_FunctionTest()
     {
         if (g_u32LpadcIntFlag == 1)
         {
-            u32ConversionData = LPADC_GET_CONVERSION_DATA(LPADC0, 2);
-            printf("Conversion result of channel 2: 0x%03X (%d)\n", u32ConversionData, u32ConversionData);
+            u32ConversionData = LPADC_GET_CONVERSION_DATA(LPADC0, 1);
+            printf("Conversion result of channel 1: 0x%03X (%d)\n", u32ConversionData, u32ConversionData);
 
             if ((g_u32LpadcCmp0IntFlag == 1) || (g_u32LpadcCmp1IntFlag == 1))
                 break;
@@ -163,11 +163,11 @@ void LPADC_FunctionTest()
 
     if (g_u32LpadcCmp0IntFlag == 1)
     {
-        printf("Comparator 0 interrupt occurs.\nThe conversion result of channel 2 is less than 0x800\n");
+        printf("Comparator 0 interrupt occurs.\nThe conversion result of channel 1 is less than 0x800\n");
     }
     else
     {
-        printf("Comparator 1 interrupt occurs.\nThe conversion result of channel 2 is greater than or equal to 0x800\n");
+        printf("Comparator 1 interrupt occurs.\nThe conversion result of channel 1 is greater than or equal to 0x800\n");
     }
 }
 

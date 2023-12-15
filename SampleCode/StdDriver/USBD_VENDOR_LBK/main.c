@@ -58,10 +58,10 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Enable APLL1 192MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_192MHZ, CLK_APLL1_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);
 
     /* Select USB clock source as PLL/2 and USB clock divider as 2 */
-    CLK_SetModuleClock(USBD_MODULE, CLK_USBSEL_USBSEL_APLL1_DIV2, CLK_USBDIV_USBDIV(2));
+    CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_APLL1_DIV2, CLK_USBDIV_USBDIV(1));
 #else
     /* Enable HIRC48M clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
@@ -69,15 +69,15 @@ void SYS_Init(void)
     /* Waiting for HIRC48M clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
-    /* Set core clock to 1800MHz */
-    CLK_SetCoreClock(FREQ_180MHZ);
-
     /* Select USB clock source as HIRC48M and USB clock divider as 1 */
     CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
 #endif
 
     /* Debug UART clock setting*/
     SetDebugUartCLK();
+
+    /* Enable OTG0_ module clock */
+    CLK_EnableModuleClock(OTG0_MODULE); 
 
     /* Select USBD */
     SYS->USBPHY = (SYS->USBPHY & ~SYS_USBPHY_USBROLE_Msk) | SYS_USBPHY_OTGPHYEN_Msk ;
@@ -89,9 +89,6 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init I/O Multi-function                                                                                 */
-    /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();

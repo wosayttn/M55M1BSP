@@ -46,6 +46,10 @@
 #include "jpeglib.h"
 #include "jdct.h"		/* Private declarations for DCT subsystem */
 
+
+#ifdef NVT_JPEG
+#include <arm_mve.h>
+#endif
 #ifdef DCT_ISLOW_SUPPORTED
 
 
