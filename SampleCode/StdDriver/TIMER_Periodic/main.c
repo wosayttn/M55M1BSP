@@ -26,8 +26,7 @@ NVT_ITCM void TIMER0_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     static uint32_t sec = 1;
-    CLK_WaitModuleClockReady(TMR0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     // clear timer interrupt flag
     TIMER_ClearIntFlag(TIMER0);
 

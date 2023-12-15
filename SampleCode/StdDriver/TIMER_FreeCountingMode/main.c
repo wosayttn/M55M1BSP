@@ -25,8 +25,6 @@
 
 NVT_ITCM void TIMER0_IRQHandler(void)
 {
-    CLK_WaitModuleClockReady(TMR0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
     static int cnt = 0;
     static uint32_t t0, t1;
 

@@ -392,10 +392,7 @@ int32_t main(void)
     {
         while (g_u32IntOccurredMask != 0)
         {
-
             printf("g_u32IntOccurredMask = 0x%08X\n", g_u32IntOccurredMask);
-
-
             /* Get active interrupt occurred events */
             u32ActiveIntMask = g_u32IntOccurredMask;
             g_u32IntOccurredMask = 0;

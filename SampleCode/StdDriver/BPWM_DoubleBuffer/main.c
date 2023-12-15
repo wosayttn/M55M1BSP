@@ -34,8 +34,7 @@ NVT_ITCM void BPWM0_IRQHandler(void)
 {
     static uint32_t u32Toggle = 0;
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(BPWM0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     // Clear channel 0 period interrupt flag
     BPWM_ClearPeriodIntFlag(BPWM0, 0);
 

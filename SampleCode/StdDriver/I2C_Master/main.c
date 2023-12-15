@@ -44,6 +44,9 @@ NVT_ITCM void I2C0_IRQHandler(void)
             s_I2C0HandlerFn(u32Status);
         }
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = I2C_GET_STATUS(I2C0);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/

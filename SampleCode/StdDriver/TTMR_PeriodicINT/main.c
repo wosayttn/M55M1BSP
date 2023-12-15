@@ -29,8 +29,7 @@ static volatile uint32_t g_au32TTMRINTCount[2] = {0};
 NVT_ITCM void TTMR0_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(TTMR0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     if(TTMR_GetIntFlag(TTMR0) == 1)
     {
         /* Clear TTMR0 time-out interrupt flag */
@@ -52,8 +51,7 @@ NVT_ITCM void TTMR0_IRQHandler(void)
 NVT_ITCM void TTMR1_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(TTMR1_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     if(TTMR_GetIntFlag(TTMR1) == 1)
     {
         /* Clear TTMR1 time-out interrupt flag */

@@ -29,8 +29,7 @@ static volatile uint32_t g_au32TMRINTCount[4] = {0};
 NVT_ITCM void TIMER0_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(TMR0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     if(TIMER_GetIntFlag(TIMER0) == 1)
     {
         /* Clear Timer0 time-out interrupt flag */
@@ -52,8 +51,7 @@ NVT_ITCM void TIMER0_IRQHandler(void)
 NVT_ITCM void TIMER1_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(TMR1_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     if(TIMER_GetIntFlag(TIMER1) == 1)
     {
         /* Clear Timer1 time-out interrupt flag */
@@ -75,8 +73,7 @@ NVT_ITCM void TIMER1_IRQHandler(void)
 NVT_ITCM void TIMER2_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(TMR2_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     if(TIMER_GetIntFlag(TIMER2) == 1)
     {
         /* Clear Timer2 time-out interrupt flag */
@@ -98,8 +95,7 @@ NVT_ITCM void TIMER2_IRQHandler(void)
 NVT_ITCM void TIMER3_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(TMR3_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     if(TIMER_GetIntFlag(TIMER3) == 1)
     {
         /* Clear Timer3 time-out interrupt flag */

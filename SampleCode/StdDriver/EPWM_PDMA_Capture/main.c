@@ -36,8 +36,6 @@ static volatile uint32_t g_u32IsTestOver = 0;
 NVT_ITCM void PDMA0_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(PDMA0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
     uint32_t u32Status = PDMA_GET_INT_STATUS(PDMA0);
 
     if(u32Status & 0x1)    /* abort */
@@ -75,7 +73,7 @@ NVT_ITCM void PDMA0_IRQHandler(void)
 /*      ____|   |_|   |_|   |_|   |_|   |_|   |_|   |_|   |_____                        */
 /* index              0 1   2 3                                                         */
 /*                                                                                      */
-/* The capture internal counter up count from 0, and reload to 0 after                  */
+/* The capture internal counter down count from 0x10000, and reload to 0x10000 after    */
 /* input signal falling happens (Time B/C/D)                                            */
 /*--------------------------------------------------------------------------------------*/
 int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
@@ -102,11 +100,11 @@ int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
 
     u16FallingTime = g_au16Count[2];
 
-    u16HighPeriod = g_au16Count[2] - g_au16Count[1];
+    u16HighPeriod = g_au16Count[1] - g_au16Count[2];
 
-    u16LowPeriod = (uint16_t)(g_au16Count[3]);
+    u16LowPeriod = (uint16_t)(0x10000 - g_au16Count[3]);
 
-    u16TotalPeriod = (uint16_t)(g_au16Count[2]);
+    u16TotalPeriod = (uint16_t)(0x10000 - g_au16Count[2]);
 
     printf("\nEPWM generate: \nHigh Period=17999 ~ 18001, Low Period=41999 ~ 42001, Total Period=59999 ~ 60001\n");
     printf("\nCapture Result: Rising Time = %d, Falling Time = %d \nHigh Period = %d, Low Period = %d, Total Period = %d.\n\n",

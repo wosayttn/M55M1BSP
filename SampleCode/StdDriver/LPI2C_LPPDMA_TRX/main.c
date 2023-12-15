@@ -70,6 +70,9 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
         printf(" LPI2C0 Tx done\n");
         LPPDMA->TDSTS = 0x1 << LPI2C0_LPPDMA_TX_CH_SLAVE;
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = LPPDMA->TDSTS;
 }
 
 
@@ -90,6 +93,9 @@ NVT_ITCM void LPI2C0_IRQHandler(void)
             s_LPI2C0HandlerFn(u32Status);
         }
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = LPI2C_GET_STATUS(LPI2C0);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -353,9 +359,6 @@ static void SYS_Init(void)
     /* Set multi-function pins for LPI2C0 SDA and SCL */
     SET_LPI2C0_SDA_PA4();
     SET_LPI2C0_SCL_PA5();
-    /* LPI2C pins enable schmitt trigger */
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT4 | BIT5));
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -449,7 +452,6 @@ void LPI2C_LPPDMA_Master(void)
     g_u8MasterTx_Buffer[0] = ((g_u8DeviceAddr << 1) | 0x00);   //1 byte SLV + W
     g_u8MasterTx_Buffer[1] = 0x00;                             //2 bytes Data address
     g_u8MasterTx_Buffer[2] = 0x00;
-
     LPPDMA_Master_Init();
     /* Enable I2C TX */
     LPI2C0->CTL1 = LPI2C_CTL1_TXPDMAEN_Msk;
@@ -502,7 +504,6 @@ void LPI2C_LPPDMA_Slave(void)
     g_u8MasterTx_Buffer[0] = ((g_u8DeviceAddr << 1) | 0x00);   //1 byte SLV + W
     g_u8MasterTx_Buffer[1] = 0x00;                             //2 bytes Data address
     g_u8MasterTx_Buffer[2] = 0x00;
-
     LPPDMA_DONE = 0;
     LPPDMA_Slave_Init();
     /* LPI2C enter no address SLV mode */
@@ -517,7 +518,6 @@ void LPI2C_LPPDMA_Slave(void)
     printf("LPI2C slave receive data done.\n\n");
     /* Disable LPI2C0 LPPDMA RX mode */
     LPI2C0->CTL1 &= ~LPI2C_CTL1_RXPDMAEN_Msk;
-
 
     for (i = 0; i < LPPDMA_TEST_LENGTH; i++)
     {

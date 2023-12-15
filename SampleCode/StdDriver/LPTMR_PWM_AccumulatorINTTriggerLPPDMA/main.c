@@ -37,8 +37,6 @@ static uint32_t u32UpdatedPeriod __attribute__((section(".lpSram")));
 NVT_ITCM void LPPDMA_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(LPPDMA0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
     uint32_t u32Status = LPPDMA_GET_INT_STATUS(LPPDMA);
 
     if (u32Status & LPPDMA_INTSTS_ABTIF_Msk)       /* abort */

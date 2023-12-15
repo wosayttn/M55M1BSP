@@ -32,8 +32,7 @@
 NVT_ITCM void EPWM1P0_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(EPWM1_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     EPWM_ClearAccInt(EPWM1, 0);
     printf("Check if output toggles 11 times then stop toggles.\n");
     __DSB();

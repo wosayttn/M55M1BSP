@@ -42,6 +42,9 @@ NVT_ITCM void LPI2C0_IRQHandler(void)
             s_LPI2C0HandlerFn(u32Status);
         }
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = LPI2C_GET_STATUS(LPI2C0);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -179,9 +182,6 @@ static void SYS_Init(void)
     /* Set multi-function pins for LPI2C0 SDA and SCL */
     SET_LPI2C0_SDA_PA4();
     SET_LPI2C0_SCL_PA5();
-    /* LPI2C pins enable schmitt trigger */
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT4 | BIT5));
     /* Lock protected registers */
     SYS_LockReg();
 }

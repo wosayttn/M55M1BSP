@@ -49,6 +49,9 @@ NVT_ITCM void I2C0_IRQHandler(void)
             s_I2C0HandlerFn(u32Status);
         }
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = I2C_GET_STATUS(I2C0);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -71,6 +74,9 @@ NVT_ITCM void I2C1_IRQHandler(void)
             s_I2C1HandlerFn(u32Status);
         }
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = I2C_GET_STATUS(I2C1);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -274,11 +280,8 @@ static void SYS_Init(void)
     /* Set multi-function pins for I2C0/I2C1 SDA and SCL */
     SET_I2C0_SDA_PA4();
     SET_I2C0_SCL_PA5();
-    SET_I2C1_SDA_PA6();
-    SET_I2C1_SCL_PA7();
-    /* I2C pins enable schmitt trigger */
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT4 | BIT5 | BIT6 | BIT7));
+    SET_I2C1_SCL_PB1();
+    SET_I2C1_SDA_PB0();
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -433,7 +436,7 @@ int32_t main(void)
     printf("Configure I2C0 as Master, and I2C1 as a slave.\n");
     printf("The I/O connection I2C0 to I2C1:\n");
     printf("I2C0_SDA(PA.4), I2C0_SCL(PA.5)\n");
-    printf("I2C1_SDA(PA.6), I2C1_SCL(PA.7)\n\n");
+    printf("I2C1_SDA(PB.0), I2C1_SCL(PB.1)\n\n");
     /* Init I2C0 */
     I2C0_Init();
     /* Init I2C1 */

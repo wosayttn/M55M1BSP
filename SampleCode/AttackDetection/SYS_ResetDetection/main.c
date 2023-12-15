@@ -22,10 +22,18 @@ void SYS_Init(void);
 /*--------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void SysTick_Handler(void)
 {
-    if(s_u32ResetFlagCount >= 5)
+    if (s_u32ResetFlagCount > 0)
     {
-        printf("Reset abnormalities happened! The same reset event occurs repeatedly for a fixed period of time.\n");
+        if (s_u32ResetFlagCount >= 5)
+        {
+            printf("Reset Flag Count = %d\n", s_u32ResetFlagCount);
+            printf("Reset abnormalities happened!!! The same reset event occurs repeatedly for a fixed period of time.\n");
+        }
 
+        /* Clear spare reigster 0 */
+        RTC_WRITE_SPARE_REGISTER(RTC, 0, 0);
+
+        /* Clear reset flag count */
         s_u32ResetFlagCount = 0;
     }
 }
@@ -54,13 +62,13 @@ void SYS_Init(void)
     /* Enable UART module clock */
     SetDebugUartCLK();
 
+    /* Enable RTC module clock */
+    CLK_EnableModuleClock(RTC0_MODULE);
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-
-    /* Lock protected registers */
-    SYS_LockReg();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -68,6 +76,8 @@ void SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
+    uint32_t u32SPRData;
+
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
 
@@ -75,7 +85,15 @@ int32_t main(void)
     InitDebugUart();
 
     /* Generate interrupt each 1 s */
-    CLK_EnableSysTick(CLK_STSEL_ST0SEL_HIRC_DIV2, CLK_STSEL_ST0SEL_HIRC_DIV2 >> 2);
+    CLK_EnableSysTick(CLK_STSEL_ST0SEL_HIRC_DIV2, __HIRC >> 1);
+
+    /* Enable spare register */
+    RTC_EnableSpareAccess();
+
+    /* Restore spare register data */
+    u32SPRData = RTC_READ_SPARE_REGISTER(RTC, 0);
+
+    s_u32ResetFlagCount = u32SPRData;
 
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+-------------------------------------+\n");
@@ -84,19 +102,21 @@ int32_t main(void)
 
     printf("Check UART message to confirm if any reset abnormalities have occurred.\n\n");
 
-    while(1)
+    while (1)
     {
         /* Get reset source is from reset pin reset */
-        if(SYS_IS_RSTPIN_RST())
+        if (SYS_IS_RSTPIN_RST())
         {
             /* Clear reset source flag */
             SYS_ClearResetSrc(SYS_RSTSTS_PINRF_Msk);
 
             s_u32ResetFlagCount++;
+
+            RTC_WRITE_SPARE_REGISTER(RTC, 0, s_u32ResetFlagCount);
         }
 
         /* Get reset sources are from Chip reset and CPU reset */
-        while(SYS_IS_POR_RST() && SYS_IS_CPU_RST())
+        while (SYS_IS_POR_RST() && SYS_IS_CPU_RST())
         {
             printf("Reset abnormalities happened! Different reset events occur at the same time.\n");
         }

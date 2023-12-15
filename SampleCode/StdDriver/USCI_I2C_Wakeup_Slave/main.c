@@ -10,8 +10,7 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-/* UI2C can support NPD0 ~ NDP2 power-down mode */
-#define TEST_POWER_DOWN_MODE    PMC_NPD2
+#define TEST_POWER_DOWN_MODE    PMC_NPD0
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -35,13 +34,14 @@ volatile static UI2C_FUNC s_UI2C0HandlerFn = NULL;
 /*---------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void PMC_IRQHandler(void)
 {
+    uint32_t u32Status;
     /* check power down wakeup flag */
     if ((PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk) == PMC_INTSTS_PDWKIF_Msk)
     {
         g_u8SlvPWRDNWK = PMC->INTSTS;
         PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
-
-        while (PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk);
+        // CPU read interrupt flag register to wait write(clear) instruction completement.
+        u32Status = PMC->INTSTS;
     }
 }
 
@@ -55,6 +55,9 @@ NVT_ITCM void USCI0_IRQHandler(void)
     {
         s_UI2C0HandlerFn(u32Status);
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = UI2C_GET_PROT_STATUS(UI2C0);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/

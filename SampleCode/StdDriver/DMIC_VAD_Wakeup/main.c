@@ -71,15 +71,23 @@ void VAD_Init(void)
     DMIC_VAD_SET_DEVTHRE(VAD0, DMIC_VAD_POWERTHRE_10DB);
 }
 
-
-
 NVT_ITCM void DMIC0VAD_IRQHandler()
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     CLK_WaitModuleClockReady(DMIC0_MODULE);//TESTCHIP_ONLY
     CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
     printf("VAD_IS_ACTIVE? %lx\n", DMIC_VAD_IS_ACTIVE(VAD0));
     DMIC_VAD_CLR_ACTIVE(VAD0);
     VAD_Stop();
+    __DSB();
+    __ISB();
+    while(DMIC_VAD_IS_ACTIVE(VAD0))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for VAD0 IntFlag time-out!\n");
+        }
+    }
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -87,14 +95,24 @@ NVT_ITCM void DMIC0VAD_IRQHandler()
 /*---------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void PMC_IRQHandler(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     g_u32PDWK = PMC_GetPMCWKSrc();
+    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
 
     /* check power down wakeup flag */
     if (g_u32PDWK & PMC_INTSTS_PDWKIF_Msk)
     {
         PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
 
-        while (PMC_GetPMCWKSrc() & PMC_INTSTS_PDWKIF_Msk);
+        __DSB();
+        __ISB();
+        while (PMC_GetPMCWKSrc() & PMC_INTSTS_PDWKIF_Msk)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for PMC IntFlag time-out!\n");
+            }
+        }
     }
 }
 
@@ -128,7 +146,7 @@ static void SYS_Init(void)
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */

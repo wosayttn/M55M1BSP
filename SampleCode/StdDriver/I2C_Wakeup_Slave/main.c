@@ -11,8 +11,7 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-/* I2C can support NPD0 ~ NDP2 power-down mode */
-#define TEST_POWER_DOWN_MODE    PMC_NPD2
+#define TEST_POWER_DOWN_MODE    PMC_NPD0
 
 volatile uint32_t slave_buff_addr;
 volatile uint8_t g_au8SlvData[256];
@@ -70,13 +69,15 @@ NVT_ITCM void I2C0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void PMC_IRQHandler(void)
 {
+    uint32_t u32Status;
+
     /* check power down wakeup flag */
     if ((PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk) == PMC_INTSTS_PDWKIF_Msk)
     {
         g_u8SlvPWRDNWK = PMC->INTSTS;
         PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
-
-        while (PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk);
+        // CPU read interrupt flag register to wait write(clear) instruction completement.
+        u32Status = PMC->INTSTS;
     }
 }
 

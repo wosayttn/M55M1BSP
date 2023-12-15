@@ -31,8 +31,7 @@
 NVT_ITCM void BRAKE0_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(EPWM0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     printf("\nFault brake!\n");
     printf("Press any key to unlock brake state. (EPWM0 channel 0 output will toggle again)\n");
     getchar();

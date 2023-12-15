@@ -27,8 +27,6 @@ NVT_ITCM void LPTMR0_IRQHandler(void)
 {
     static int cnt = 0;
     static uint32_t t0, t1;
-    CLK_WaitModuleClockReady(LPTMR0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
 
     LPTMR_ClearCaptureIntFlag(LPTMR0);
 

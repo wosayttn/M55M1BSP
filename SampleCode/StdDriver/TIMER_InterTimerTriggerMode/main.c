@@ -32,8 +32,7 @@ static volatile int complete = 0;
 NVT_ITCM void TIMER1_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(TMR1_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     TIMER_ClearCaptureIntFlag(TIMER1);
     // Timer counter value records the duration for 100 event counts.
     printf("Event frequency is %d Hz\n", 100000000 / TIMER_GetCounter(TIMER1) * 100);
