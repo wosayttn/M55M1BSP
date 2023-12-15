@@ -44,6 +44,8 @@ static DMA_DESC_T DMA_DESC[2]; /* Descriptor table */
  */
 NVT_ITCM void PDMA0_IRQHandler(void)
 {
+    uint32_t u32Status;
+
     /* Check channel transfer done status */
     if (PDMA_GET_TD_STS(PDMA0) == PDMA_TDSTS_TDIF4_Msk)
     {
@@ -62,6 +64,9 @@ NVT_ITCM void PDMA0_IRQHandler(void)
         /* Clear transfer done flag of channel 4 */
         PDMA_CLR_TD_FLAG(PDMA0, PDMA_TDSTS_TDIF4_Msk);
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = PDMA_GET_INT_STATUS(PDMA0);
 }
 
 static void SYS_Init(void)

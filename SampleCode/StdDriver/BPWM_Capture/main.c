@@ -105,11 +105,11 @@ int32_t CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
 
     u16FallingTime = au32Count[0];
 
-    u16HighPeriod = au32Count[2] - au32Count[1];
+    u16HighPeriod = au32Count[1] - au32Count[2];
 
-    u16LowPeriod = (uint16_t)(au32Count[3]);
+    u16LowPeriod = (uint16_t)(0x10000 - au32Count[3]);
 
-    u16TotalPeriod = (uint16_t)(au32Count[2]);
+    u16TotalPeriod = (uint16_t)(0x10000 - au32Count[2]);
 
     printf("\nBPWM generate: \nHigh Period=17999 ~ 18001, Low Period=41999 ~ 42001, Total Period=59999 ~ 60001\n");
     printf("\nCapture Result: Rising Time = %d, Falling Time = %d \nHigh Period = %d, Low Period = %d, Total Period = %d.\n\n",

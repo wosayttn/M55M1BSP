@@ -35,13 +35,16 @@ int32_t I3C_ProcessRespError(I3C_T *i3c, uint32_t u32RespStatus);
 /*---------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void PMC_IRQHandler(void)
 {
+    uint32_t u32Status;
+
     /* check power down wakeup flag */
     if ((PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk) == PMC_INTSTS_PDWKIF_Msk)
     {
         g_u8SlvPWRDNWK = PMC->INTSTS;
         PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
 
-        while (PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk);
+        // CPU read interrupt flag register to wait write(clear) instruction completement.
+        u32Status = PMC->INTSTS;
     }
 }
 

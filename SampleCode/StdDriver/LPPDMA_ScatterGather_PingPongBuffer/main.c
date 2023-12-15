@@ -43,6 +43,8 @@ static DMA_DESC_T DMA_DESC[2]; /* Descriptor table */
  */
 NVT_ITCM void LPPDMA_IRQHandler(void)
 {
+    uint32_t u32Status;
+
     /* Check channel transfer done status */
     if (LPPDMA_GET_TD_STS(LPPDMA) == LPPDMA_TDSTS_TDIF2_Msk)
     {
@@ -61,6 +63,9 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
         /* Clear transfer done flag of channel 2 */
         LPPDMA_CLR_TD_FLAG(LPPDMA, LPPDMA_TDSTS_TDIF2_Msk);
     }
+
+	// CPU read interrupt flag register to wait write(clear) instruction completement.
+	u32Status = LPPDMA_GET_INT_STATUS(LPPDMA);
 }
 
 static void SYS_Init(void)

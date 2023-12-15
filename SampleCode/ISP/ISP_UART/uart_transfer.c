@@ -80,8 +80,7 @@ void UART_Init()
     /* Set UART Rx and RTS trigger level */
     UART6->FIFO = UART_FIFO_RFITL_14BYTES | UART_FIFO_RTSTRGLV_14BYTES;
     /* Set UART baud rate */
-    //UART6->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(__HIRC, 115200));
-    UART6->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400));
+    UART6->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(__HIRC, 115200));
     /* Set time-out interrupt comparator */
     UART6->TOUT = (UART6->TOUT & ~UART_TOUT_TOIC_Msk) | (0x40);
     NVIC_SetPriority(UART6_IRQn, 2);
