@@ -31,11 +31,11 @@ int32_t SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC clock */
-    CLK->SRCCTL |= (CLK_SRCCTL_HIRCEN_Msk | CLK_SRCCTL_HIRC48MEN_Msk);
+    /* Enable Internal RC 12MHz and HXT clock */
+    CLK->SRCCTL |= (CLK_SRCCTL_HIRCEN_Msk | CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for Internal RC clock ready */
-    while ((CLK->STATUS & (CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HIRC48MSTB_Msk)) != (CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HIRC48MSTB_Msk))
+    while ((CLK->STATUS & (CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HXTSTB_Msk)) != (CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HXTSTB_Msk))
     {
         if (--u32TimeOutCnt == 0)
         {
@@ -43,75 +43,25 @@ int32_t SYS_Init(void)
         }
     }
 
-    /* Set SCLK clock source as HIRC first */
-    CLK->SCLKSEL = (CLK->SCLKSEL & (~CLK_SCLKSEL_SCLKSEL_Msk)) | CLK_SCLKSEL_SCLKSEL_HIRC;
-
-    /* Disable PLL clock before setting PLL frequency */
-    CLK->SRCCTL &= ~CLK_SRCCTL_APLL0EN_Msk;
-
-    /* Set PLL clock as 180MHz from HIRC */
-    CLK->APLL0CTL = CLK_APLLCTL_180MHz;
-
-    /* Wait for PLL clock ready */
-    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-
-    while (!(CLK->STATUS & CLK_STATUS_APLL0STB_Msk))
-    {
-        if (--u32TimeOutCnt == 0)
-            return -1;
-    }
-
-    /* Switch to power level 0 for safe */
-    PMC->PLCTL = (PMC->PLCTL & (~PMC_PLCTL_PLSEL_Msk)) | PMC_PLCTL_PLSEL_PL0;
-
-    /* Set Flash Access Cycle to 8 for safe */
-    FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (8);
-
-    /* Switch SCLK to new SCLK source */
-    CLK->SCLKSEL = (CLK->SCLKSEL & (~CLK_SCLKSEL_SCLKSEL_Msk)) | CLK_SCLKSEL_SCLKSEL_APLL0;
-
-    /* Set power level according to new SCLK */
-    PMC->PLCTL = (PMC->PLCTL & (~PMC_PLCTL_PLSEL_Msk)) | PMC_PLCTL_PLSEL_PL1;
-
-    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-
-    while (PMC->PLSTS & PMC_PLSTS_PLCBUSY_Msk)
-    {
-        if (u32TimeOutCnt-- == 0) break;
-    }
-
-    /* Switch flash access cycle to suitable value base on SCLK */
-    FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (6);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
-    PllClock        = PLL_CLOCK;
-    SystemCoreClock = PllClock;
-    CyclesPerUs = SystemCoreClock / 1000000UL;
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
+    SystemCoreClockUpdate();
 
     /* Select HSUSBD */
     SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;
 
     /* Enable USB PHY */
-    SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk | SYS_USBPHY_HSUSBACT_Msk)) | SYS_USBPHY_OTGPHYEN_Msk;
+    SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk | SYS_USBPHY_HSUSBACT_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
     CLK_SysTickDelay(20);   // delay > 10 us
-
     SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
 
-    /* Enable HSUSBD module clock */
-    CLK->HSUSBDCTL |= CLK_HSUSBDCTL_HSUSBD0CKEN_Msk;
-
-    /* Enable GPIO B clock */
-    CLK->GPIOCTL |= CLK_GPIOCTL_GPIOBCKEN_Msk;
+    /* Enable module clock */
+    CLK_EnableModuleClock(HSUSBD0_MODULE);
+    CLK_EnableModuleClock(GPIOB_MODULE);
+    CLK_EnableModuleClock(ISP0_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */

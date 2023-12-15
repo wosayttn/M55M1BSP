@@ -60,7 +60,8 @@ int32_t SYS_Init(void)
     SystemCoreClock = PllClock;
     CyclesPerUs = SystemCoreClock / 1000000UL;
 
-    /* Enable UART6 module clock */
+    /* Enable module clock */
+    CLK->FMCCTL |= CLK_FMCCTL_ISP0CKEN_Msk;
     CLK->UARTSEL0 = (CLK->UARTSEL0 & ~CLK_UARTSEL0_UART6SEL_Msk) | CLK_UARTSEL0_UART6SEL_HIRC;
     CLK->UARTCTL |= CLK_UARTCTL_UART6CKEN_Msk;
     /* Check clock stable */
@@ -92,13 +93,12 @@ int32_t SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /* Init System, peripheral clock and multi-function I/O */
     if (SYS_Init() < 0)
         goto _APROM;
 
+    /* Unlock protected registers */
+    SYS_UnlockReg();
     /* Init UART */
     UART_Init();
 
@@ -108,7 +108,6 @@ int32_t main(void)
 
     /* Get APROM and Data Flash size */
     g_u32ApromSize = GetApromSize();
-    GetDataFlashInfo(&g_u32DataFlashAddr, &g_u32DataFlashSize);
 
     /* Set Systick time-out for 300ms */
     SysTick->LOAD = 300000 * CyclesPerUs;
