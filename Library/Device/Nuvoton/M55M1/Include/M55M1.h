@@ -63,7 +63,7 @@ extern "C" {
 
 #if defined(TESTCHIP_ONLY)
 /* Notice: The BSP release is aligned to AF part number by default. */
-#define ALIGN_AF_PINS
+//#define ALIGN_AF_PINS
 #endif
 
 /******************************************************************************/

@@ -118,6 +118,9 @@ int main(void)
 
     printf("System is executing in NuBL32.\n\n");
 
+    /* Jump to execute NuBL33 FW */
+    printf("\nPress any key to execute NuBL33 ...\n");
+    getchar();
     /* Init and jump to Non-secure code */
     Boot_NonSecure(FMC_NON_SECURE_BASE + psImgHdr->ih_hdr_size);
 
