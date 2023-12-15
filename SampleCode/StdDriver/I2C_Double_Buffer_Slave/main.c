@@ -87,6 +87,9 @@ NVT_ITCM void I2C0_IRQHandler(void)
         /* TO DO */
         printf("Status 0x%x is NOT processed\n", u32Status);
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = I2C_GET_STATUS(I2C0);
 }
 
 static void SYS_Init(void)

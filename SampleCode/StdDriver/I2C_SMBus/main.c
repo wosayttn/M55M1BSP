@@ -56,28 +56,22 @@ NVT_ITCM void I2C0_IRQHandler(void)
     {
         I2C_SMBusClearInterruptFlag(I2C0, I2C_BUSSTS_BCDONE_Msk);
         //printf("I2C0 Byte Transmit Byte Done Interrupt !\n");
-        return;
     }
-
     /* Occur receive PEC packet error */
-    if ((I2C_SMBusGetStatus(I2C0) & I2C_BUSSTS_PECERR_Msk) == I2C_BUSSTS_PECERR_Msk)
+    else if ((I2C_SMBusGetStatus(I2C0) & I2C_BUSSTS_PECERR_Msk) == I2C_BUSSTS_PECERR_Msk)
     {
         I2C_SMBusClearInterruptFlag(I2C0, I2C_BUSSTS_PECERR_Msk);
         //printf("I2C0 PEC Error Interrupt !\n");
-        return;
     }
-
     /* Check Alert Interrupt when I2C0 is Host */
-    if (((I2C_SMBusGetStatus(I2C0) & I2C_BUSSTS_ALERT_Msk) == I2C_BUSSTS_ALERT_Msk) &
-            ((I2C0->BUSCTL & I2C_BUSCTL_BMHEN_Msk) == I2C_BUSCTL_BMHEN_Msk))
+    else if (((I2C_SMBusGetStatus(I2C0) & I2C_BUSSTS_ALERT_Msk) == I2C_BUSSTS_ALERT_Msk) &
+             ((I2C0->BUSCTL & I2C_BUSCTL_BMHEN_Msk) == I2C_BUSCTL_BMHEN_Msk))
     {
         I2C_SMBusClearInterruptFlag(I2C0, I2C_BUSSTS_ALERT_Msk);
         //printf("I2C0 Alert Interrupt !\n");
         g_u8AlertInt0 = 1;
-        return ;
     }
-
-    if (I2C_GET_TIMEOUT_FLAG(I2C0))
+    else if (I2C_GET_TIMEOUT_FLAG(I2C0))
     {
         /* Clear I2C0 Timeout Flag */
         I2C_ClearTimeoutFlag(I2C0);
@@ -89,6 +83,9 @@ NVT_ITCM void I2C0_IRQHandler(void)
             s_I2C0HandlerFn(u32Status);
         }
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = I2C_GET_STATUS(I2C0);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -104,28 +101,22 @@ NVT_ITCM void I2C1_IRQHandler(void)
     {
         I2C_SMBusClearInterruptFlag(I2C1, I2C_BUSSTS_BCDONE_Msk);
         //printf("I2C1 Byte Receive Byte Done Interrupt !\n");
-        return;
     }
-
     /* Occur receive PEC packet error */
-    if ((I2C_SMBusGetStatus(I2C1) & I2C_BUSSTS_PECERR_Msk) == I2C_BUSSTS_PECERR_Msk)
+    else if ((I2C_SMBusGetStatus(I2C1) & I2C_BUSSTS_PECERR_Msk) == I2C_BUSSTS_PECERR_Msk)
     {
         I2C_SMBusClearInterruptFlag(I2C1, I2C_BUSSTS_PECERR_Msk);
         //printf("I2C1 PEC Error Interrupt !\n");
-        return;
     }
-
     /* Check Alert Interrupt when I2C1 is Host */
-    if (((I2C_SMBusGetStatus(I2C1) & I2C_BUSSTS_ALERT_Msk) == I2C_BUSSTS_ALERT_Msk) &
-            ((I2C1->BUSCTL & I2C_BUSCTL_BMHEN_Msk) == I2C_BUSCTL_BMHEN_Msk))
+    else if (((I2C_SMBusGetStatus(I2C1) & I2C_BUSSTS_ALERT_Msk) == I2C_BUSSTS_ALERT_Msk) &
+             ((I2C1->BUSCTL & I2C_BUSCTL_BMHEN_Msk) == I2C_BUSCTL_BMHEN_Msk))
     {
         I2C_SMBusClearInterruptFlag(I2C1, I2C_BUSSTS_ALERT_Msk);
         //printf("I2C1 Alert Interrupt !\n");
         g_u8AlertInt1 = 1;
-        return ;
     }
-
-    if (I2C_GET_TIMEOUT_FLAG(I2C1))
+    else if (I2C_GET_TIMEOUT_FLAG(I2C1))
     {
         /* Clear I2C1 Timeout Flag */
         I2C_ClearTimeoutFlag(I2C1);
@@ -137,6 +128,9 @@ NVT_ITCM void I2C1_IRQHandler(void)
             s_I2C1HandlerFn(u32Status);
         }
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = I2C_GET_STATUS(I2C1);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -555,8 +549,8 @@ static void SYS_Init(void)
     SET_I2C0_SCL_PA5();
     SET_I2C0_SMBAL_PC3();
     SET_I2C0_SMBSUS_PC2();
-    SET_I2C1_SDA_PA6();
-    SET_I2C1_SCL_PA7();
+    SET_I2C1_SCL_PB1();
+    SET_I2C1_SDA_PB0();
     SET_I2C1_SMBAL_PB9();
     SET_I2C1_SMBSUS_PB8();
     /* I2C pins enable schmitt trigger */
