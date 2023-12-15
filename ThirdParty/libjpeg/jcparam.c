@@ -82,6 +82,15 @@ jpeg_add_quant_table (j_compress_ptr cinfo, int which_tbl,
 		res =  compute_reciprocal(u16temp, (DCTELEM *)(&((*qrecptblptr)->quantval[i])));
   }
   (*qrecptblptr)->sent_table = FALSE;
+
+#ifdef DBG_NVT_JPEG	
+	for (i = 0; i < DCTSIZE2; i++) {
+	  printf("recp_quantval[%d] = 0x08%x\r\n", DCTSIZE2*0+i, (*qrecptblptr)->quantval[DCTSIZE2*0+i]);
+		printf("recp_quantval[%d] = %d\r\n", DCTSIZE2*1+i, (*qrecptblptr)->quantval[DCTSIZE2*1+i]);
+		printf("recp_quantval[%d] = %d\r\n", DCTSIZE2*2+i, (*qrecptblptr)->quantval[DCTSIZE2*2+i]);
+		printf("recp_quantval[%d] = %d\r\n", DCTSIZE2*3+i, (*qrecptblptr)->quantval[DCTSIZE2*3+i]);
+	}	
+#endif//DBG_NVT_JPEG
 	
 #endif	
 }
