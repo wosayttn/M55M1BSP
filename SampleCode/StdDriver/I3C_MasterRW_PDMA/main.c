@@ -145,7 +145,6 @@ int32_t I3C_WritePDMA(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_
                        | ((u8DevIndex & 0x1F) << I3C_CMDQUE_DEVINDX_Pos)
                        | (I3C_TX_TID << I3C_CMDQUE_TID_Pos)
                        | I3C_CMDATTR_TRANSFER_CMD);
-
         /* Enable I3C PDMA transmit function */
         I3C_EnableTxPDMA(i3c, (uint32_t)(pu32TxBuf), (uint32_t)(&i3c->TXRXDAT), u16WriteBytes);
     }
@@ -153,7 +152,6 @@ int32_t I3C_WritePDMA(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_
     while ((i3c->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
 
     I3C_DisableDMA(i3c);
-
     response = i3c->RESPQUE;
 
     if (response & I3C_RESPQUE_ERRSTS_Msk)
@@ -224,7 +222,6 @@ int32_t I3C_ReadPDMA(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_t
                    | ((u8DevIndex & 0x1F) << I3C_CMDQUE_DEVINDX_Pos)
                    | (I3C_RX_TID << I3C_CMDQUE_TID_Pos)
                    | I3C_CMDATTR_TRANSFER_CMD);
-
     /* Enable I3C PDMA receive function */
     I3C_EnableRxPDMA(i3c, (uint32_t)(&i3c->TXRXDAT), (uint32_t)(pu32RxBuf), (I3C_DEVICE_RX_BUF_CNT * 4));
 
