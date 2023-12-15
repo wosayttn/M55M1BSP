@@ -35,8 +35,6 @@ static volatile uint32_t g_u32IsTestOver = 0;
 NVT_ITCM void PDMA0_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(PDMA0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
     uint32_t u32Status = PDMA_GET_INT_STATUS(PDMA0);
 
     if(u32Status & PDMA_INTSTS_ABTIF_Msk)        /* abort */

@@ -30,8 +30,7 @@ static volatile uint32_t gu32Period;
 NVT_ITCM void LPTMR0_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(LPTMR0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     LPTPWM_ClearAccInt(LPTMR0);
 
     printf("\nCheck if output toggles 11 times then stop toggles.\n");

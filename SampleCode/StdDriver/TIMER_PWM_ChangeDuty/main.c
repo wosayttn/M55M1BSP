@@ -30,8 +30,6 @@ NVT_ITCM void TIMER0_IRQHandler(void)
 {
     static uint32_t u32Toggle = 0;
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(TMR0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
 
     if(TPWM_GET_PERIOD_INT_FLAG(TIMER0))
     {

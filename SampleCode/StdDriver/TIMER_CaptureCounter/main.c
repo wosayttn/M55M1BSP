@@ -29,8 +29,7 @@ static volatile uint32_t g_au32TMRINTCount = 0;
 NVT_ITCM void TIMER2_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(TMR2_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     if(TIMER_GetCaptureIntFlag(TIMER2) == 1)
     {
         /* Clear Timer2 capture trigger interrupt flag */

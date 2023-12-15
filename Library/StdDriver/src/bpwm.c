@@ -106,6 +106,9 @@ uint32_t BPWM_ConfigCaptureChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_
     u32Prescale -= 1UL;
     BPWM_SET_PRESCALER(bpwm, u32ChannelNum, u32Prescale);
 
+    /* set BPWM to down count type(edge aligned) */
+    (bpwm)->CTL1 = BPWM_DOWN_COUNTER;
+
     BPWM_SET_CNR(bpwm, u32ChannelNum, u32CNR);
 
     return (u32NearestUnitTimeNsec);

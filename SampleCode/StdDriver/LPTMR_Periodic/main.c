@@ -26,8 +26,7 @@ NVT_ITCM void LPTMR0_IRQHandler(void)
 {
     static uint32_t sec = 1;
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    CLK_WaitModuleClockReady(LPTMR0_MODULE);//TESTCHIP_ONLY
-    CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
+
     /* clear LPTMR interrupt flag */
     LPTMR_ClearIntFlag(LPTMR0);
     printf("%d sec\n", sec++);
