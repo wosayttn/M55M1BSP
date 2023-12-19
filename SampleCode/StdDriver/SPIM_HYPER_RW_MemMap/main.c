@@ -305,40 +305,6 @@ int main()
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
-	#if 0
-    CLK_EnableModuleClock(GPIOB_MODULE);
-		GPIO_SetMode(PB, BIT6, GPIO_MODE_OUTPUT);
-	
-	  while(1)
-		{
-		    PB6 = 0;
-			  for(volatile int i=0; i< 0x100000; i++)
-			  {
-			  }
-				PB6 = 1;
-			  for(volatile int i=0; i< 0x100000; i++)
-			  {
-			  }
-		}
-		#else
-    CLK_EnableModuleClock(GPIOH_MODULE);
-		GPIO_SetMode(PH, BIT13, GPIO_MODE_OUTPUT);
-	
-	  while(1)
-		{
-		    PH13 = 0;
-			  for(volatile int i=0; i< 0x100000; i++)
-			  {
-			  }
-				PH13 = 1;
-			  for(volatile int i=0; i< 0x100000; i++)
-			  {
-			  }
-		}
-		#endif
-		
-	
-
     printf("+----------------------------------------+\n");
     printf("|       HyperRAM read/write sample       |\n");
     printf("+----------------------------------------+\n");
