@@ -47,7 +47,7 @@
 #include "jdct.h"		/* Private declarations for DCT subsystem */
 
 
-#ifdef NVT_JPEG
+#ifdef NVT_JPEG_SIMD
 #include <arm_mve.h>
 #endif
 #ifdef DCT_ISLOW_SUPPORTED
@@ -167,7 +167,7 @@ jpeg_fdct_islow (DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
   DCTELEM *dataptr;
   JSAMPROW elemptr;
   int ctr;
-#ifdef NVT_JPEG
+#ifdef NVT_JPEG_SIMD
   DCTELEM *dctelemptr;
   int16_t i16simdbuf[DCTSIZE2+8];
 #endif
@@ -181,7 +181,7 @@ jpeg_fdct_islow (DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
    */
   dataptr = data;
 
-#ifdef NVT_JPEG
+#if 0//def NVT_JPEG_SIMD
   
   for (ctr = 0; ctr < DCTSIZE; ctr++) 
   {
@@ -364,7 +364,7 @@ jpeg_fdct_islow (DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
     dataptr++;			/* advance pointer to next column */
   }
 
-#endif//NVT_JPEG
+#endif//NVT_JPEG_SIMD
 }
 
 #ifdef DCT_SCALING_SUPPORTED

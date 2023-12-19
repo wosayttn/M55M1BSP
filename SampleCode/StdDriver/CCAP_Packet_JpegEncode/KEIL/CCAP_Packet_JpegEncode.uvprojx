@@ -337,7 +337,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>NVT_DCACHE_ON, NVT_JPEG, BITS_IN_JSAMPLE=8</Define>
+              <Define>NVT_DCACHE_ON, NVT_JPEG_SIMD, BITS_IN_JSAMPLE=8</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\ThirdParty\libjpeg;..;..\..\..\..\ThirdParty\libjpeg\simd_helium</IncludePath>
             </VariousControls>

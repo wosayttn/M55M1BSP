@@ -5,8 +5,8 @@
  *
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
-#ifndef  __NVT_DCT_H__
-#define  __NVT_DCT_H__
+#ifndef  __NVT_JPEG_H__
+#define  __NVT_JPEG_H__
 #include <stdlib.h>
 #include <inttypes.h>
 #include "jpeglib.h"
