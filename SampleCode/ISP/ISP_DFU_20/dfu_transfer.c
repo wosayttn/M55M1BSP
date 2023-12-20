@@ -19,7 +19,7 @@
 static uint32_t s_u32CommandCount = 0;
 
 static dfu_status_struct dfu_status;
-static s_prog_struct prog_struct __attribute__((aligned(4))) = {{0}, 0, 0, APP_LOADED_ADDR};
+static s_prog_struct prog_struct __attribute__((aligned(4))) = { {0}, 0, 0, FMC_APROM_BASE };
 
 NVT_ITCM void HSUSBD_IRQHandler(void)
 {
@@ -175,7 +175,7 @@ void DFU_Init(void)
     dfu_status.bState = STATE_dfuIDLE;
 
     prog_struct.block_num = 0;
-    prog_struct.data_len = 0;
+    prog_struct.data_len  = 0;
 
 }
 
@@ -200,7 +200,10 @@ void DFU_ClassRequest(void)
                     {
                         dfu_status.bState = STATE_dfuDNLOAD_IDLE;
 
-                        WriteData(prog_struct.block_num * TRANSFER_SIZE, (prog_struct.block_num * TRANSFER_SIZE) + prog_struct.data_len, (uint32_t *)prog_struct.buf);
+                        WriteData(
+                            (prog_struct.base_addr + (prog_struct.block_num * TRANSFER_SIZE)),
+                            (prog_struct.base_addr + (prog_struct.block_num * TRANSFER_SIZE) + prog_struct.data_len),
+                            (uint32_t *)prog_struct.buf);
                         //dfu_status.bStatus = STATUS_errWRITE;
                         s_u32CommandCount = 0;
                     }
@@ -272,7 +275,10 @@ void DFU_ClassRequest(void)
                             break;
                         }
 
-                        ReadData(gUsbCmd.wValue * TRANSFER_SIZE, (gUsbCmd.wValue * TRANSFER_SIZE) + gUsbCmd.wLength, (uint32_t *)prog_struct.buf);
+                        ReadData(
+                            (prog_struct.base_addr + (gUsbCmd.wValue * TRANSFER_SIZE)),
+                            (prog_struct.base_addr + (gUsbCmd.wValue * TRANSFER_SIZE) + gUsbCmd.wLength),
+                            (uint32_t *)prog_struct.buf);
                         HSUSBD_PrepareCtrlIn((uint8_t *)prog_struct.buf, gUsbCmd.wLength);
                         HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
                         HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);

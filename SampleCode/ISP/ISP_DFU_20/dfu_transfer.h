@@ -128,8 +128,6 @@ typedef enum
 #define DFU_GETSTATE                      5
 #define DFU_ABORT                         6
 
-
-#define APP_LOADED_ADDR 0x1000000
 typedef struct
 {
     uint8_t buf[TRANSFER_SIZE];

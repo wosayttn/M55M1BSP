@@ -9,14 +9,14 @@
 #include <stdio.h>
 #include "fmc_user.h"
 
-int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end, unsigned int *data);
+int FMC_Proc(unsigned int u32Cmd, unsigned int u32StartAddr, unsigned int u32EndAddr, unsigned int *pu32DataBuf);
 
-int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end, unsigned int *data)
+int FMC_Proc(unsigned int u32Cmd, unsigned int u32StartAddr, unsigned int u32EndAddr, unsigned int *pu32DataBuf)
 {
     unsigned int u32Addr, Reg;
     uint32_t u32TimeOutCount;
 
-    for (u32Addr = addr_start; u32Addr < addr_end; data++, u32Addr += 4)
+    for (u32Addr = u32StartAddr; u32Addr < u32EndAddr; pu32DataBuf++, u32Addr += 4)
     {
         FMC->ISPADDR = u32Addr;
 
@@ -38,7 +38,7 @@ int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end
 
         if (u32Cmd == FMC_ISPCMD_PROGRAM)
         {
-            FMC->ISPDAT = *data;
+            FMC->ISPDAT = *pu32DataBuf;
         }
 
         FMC->ISPTRG = 0x1;
@@ -63,7 +63,7 @@ int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end
 
         if (u32Cmd == FMC_ISPCMD_READ)
         {
-            *data = FMC->ISPDAT;
+            *pu32DataBuf = FMC->ISPDAT;
         }
     }
 
@@ -75,28 +75,28 @@ int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end
  *
  * @param[in]   u32addr  Flash address include APROM, LDROM, Data Flash, and CONFIG
  *
- * @return      The data of specified address
+ * @return      The pu32DataBuf of specified address
  *
- * @details     To read word data from Flash include APROM, LDROM, Data Flash, and CONFIG.
+ * @details     To read word pu32DataBuf from Flash include APROM, LDROM, Data Flash, and CONFIG.
  *
  * @note
  *              Please make sure that Register Write-Protection Function has been disabled
  *              before using this function.
  */
-int FMC_Read_User(unsigned int u32Addr, unsigned int *data)
+int FMC_Read_User(unsigned int u32Addr, unsigned int *pu32DataBuf)
 {
-    return FMC_Proc(FMC_ISPCMD_READ, u32Addr, u32Addr + 4, data);
+    return FMC_Proc(FMC_ISPCMD_READ, u32Addr, u32Addr + 4, pu32DataBuf);
 }
 
-void ReadData(unsigned int addr_start, unsigned int addr_end, unsigned int *data)    // Read data from flash
+void ReadData(unsigned int u32StartAddr, unsigned int u32EndAddr, unsigned int *pu32DataBuf)    // Read pu32DataBuf from flash
 {
-    FMC_Proc(FMC_ISPCMD_READ, addr_start, addr_end, data);
+    FMC_Proc(FMC_ISPCMD_READ, u32StartAddr, u32EndAddr, pu32DataBuf);
     return;
 }
 
-void WriteData(unsigned int addr_start, unsigned int addr_end, unsigned int *data)  // Write data into flash
+void WriteData(unsigned int u32StartAddr, unsigned int u32EndAddr, unsigned int *pu32DataBuf)  // Write pu32DataBuf into flash
 {
-    FMC_Proc(FMC_ISPCMD_PROGRAM, addr_start, addr_end, data);
+    FMC_Proc(FMC_ISPCMD_PROGRAM, u32StartAddr, u32EndAddr, pu32DataBuf);
     return;
 }
 
