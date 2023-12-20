@@ -93,7 +93,6 @@ void SYS_Init(void)
 int main(void)
 {
     S_RTC_TIME_DATA_T sInitTime, sCurTime;
-    S_RTC_TIME_DATA_T *sptrInitTime;
     uint32_t u32Sec;
     uint8_t u8IsNewDateTime = 0;
 

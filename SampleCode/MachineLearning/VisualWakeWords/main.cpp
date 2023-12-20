@@ -483,6 +483,7 @@ int main()
             u8ImgIdx = 0;
     }
 
-   
- return 0;
+#if !defined (__USE_CCAP__)
+    return 0;
+#endif
 }

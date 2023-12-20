@@ -139,7 +139,6 @@ void inferenceProcessTask(void *pvParameters)
         xQueueSend(xJob->responseQueue, &xJob, portMAX_DELAY);
     }
 
-    vTaskDelete(nullptr);
 }
 
 

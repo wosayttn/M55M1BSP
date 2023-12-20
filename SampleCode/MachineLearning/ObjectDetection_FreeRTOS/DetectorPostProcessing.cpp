@@ -142,16 +142,15 @@ void DetectorPostprocessing::RunPostProcessing(
 
         for (int j = 0; j < net.numClasses; ++j)
         {
-            //TODO: check it for class id //chchen59
             if (it.prob[j] > 0)
             {
 
                 DetectionResult tmpResult = {};
                 tmpResult.m_normalisedVal = it.prob[j];
-                tmpResult.m_x0 = boxX;
-                tmpResult.m_y0 = boxY;
-                tmpResult.m_w = boxWidth;
-                tmpResult.m_h = boxHeight;
+                tmpResult.m_x0 = (int)boxX;
+                tmpResult.m_y0 = (int)boxY;
+                tmpResult.m_w = (int)boxWidth;
+                tmpResult.m_h = (int)boxHeight;
                 tmpResult.m_cls = j;
 
                 resultsOut.push_back(tmpResult);

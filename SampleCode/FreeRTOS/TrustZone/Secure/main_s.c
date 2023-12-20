@@ -50,7 +50,9 @@ int main(void)
     FMC_Open();
     /* Check Secure/Non-secure base address configuration */
     printf("SCU->FNSADDR: 0x%08X, NSCBA:        0x%08X\n", SCU->FNSADDR, FMC_Read(FMC_NSCBA_BASE));
-    printf("SRAM0MPCLUT0: 0x%08X, SRAM1MPCLUT0: 0x%08X\n", SCU->SRAM0MPCLUT0, SCU->SRAM1MPCLUT0);
+    //printf("SRAM0MPCLUT0: 0x%08X, SRAM1MPCLUT0: 0x%08X\n", SCU->SRAM0MPCLUT0, SCU->SRAM1MPCLUT0);
+    printf("SRAM0MPCLUT0: 0x%08X\n", SCU->SRAM0MPCLUT0);
+    printf("SRAM1MPCLUT0: 0x%08X\n", SCU->SRAM1MPCLUT0);
     printf("SRAM2MPCLUT0: 0x%08X\n", SCU->SRAM2MPCLUT0);
 
     /* Init GPIO Port A Pin 10 ~ 13 for Secure LED control */
