@@ -254,7 +254,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state></state>
+                    <state>Pa082,Pe177,Pe550</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
@@ -661,7 +661,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>112</hasPrio>
+                <hasPrio>160</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -1314,7 +1314,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state></state>
+                    <state>Pa082,Pe177,Pe550</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
