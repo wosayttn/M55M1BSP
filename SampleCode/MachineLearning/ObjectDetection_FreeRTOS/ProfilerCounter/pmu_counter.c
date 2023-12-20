@@ -36,7 +36,9 @@
 #define CPU_PROFILE_ENABLED
 
 static uint64_t s_u64CPUCycleCount = 0;    /* 64-bit cpu cycle counter */
+#if !defined(HAS_FREERTOS)
 static bool s_bSysTickInit = false;
+#endif
 extern uint32_t SystemCoreClock;        /* Expected to come from the cmsis-device lib */
 
 

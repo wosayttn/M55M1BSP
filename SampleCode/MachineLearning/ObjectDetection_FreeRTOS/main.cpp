@@ -245,8 +245,6 @@ static void DrawImageDetectionBoxes(
 static void main_task(void *pvParameters)
 {
     BaseType_t ret;
-    int32_t i32Err = 0;
-    char chStdIn;
 
     info("main task running \n");
     /* Model object creation and initialisation. */
@@ -334,7 +332,10 @@ static void main_task(void *pvParameters)
         return;
     }
 
+#if !defined (__USE_CCAP__)
     uint8_t u8ImgIdx = 0;
+    char chStdIn;
+#endif
 
     TfLiteTensor *inputTensor   = model.GetInputTensor(0);
     TfLiteTensor *outputTensor = model.GetOutputTensor(0);
@@ -356,7 +357,6 @@ static void main_task(void *pvParameters)
 
     const int inputImgCols = inputShape->data[arm::app::YoloFastestModel::ms_inputColsIdx];
     const int inputImgRows = inputShape->data[arm::app::YoloFastestModel::ms_inputRowsIdx];
-    const uint32_t inputChannels = inputShape->data[arm::app::YoloFastestModel::ms_inputChannelsIdx];
 
     // postProcess
     arm::app::object_detection::DetectorPostprocessing postProcess(0.5, 0.45, numClasses, 0);
@@ -546,37 +546,36 @@ static void main_task(void *pvParameters)
         if (emptyFramebuf)
         {
 #if !defined (__USE_CCAP__)
+            info("Press 'n' to run next image inference \n");
+            info("Press 'q' to exit program \n");
 
-			info("Press 'n' to run next image inference \n");
-			info("Press 'q' to exit program \n");
+            while ((chStdIn = getchar()))
+            {
+                    if (chStdIn == 'q')
+                    {
+                            vTaskDelete(nullptr);
+                            return;
+                    }
+                    else if (chStdIn != 'n')
+                    {
+                            break;
+                    }
+            }
 
-			while ((chStdIn = getchar()))
-			{
-				if (chStdIn == 'q')
-				{
-					vTaskDelete(nullptr);
-					return;
-				}
-				else if (chStdIn != 'n')
-				{
-					break;
-				}
-			}
+            const uint8_t *pu8ImgSrc = get_img_array(u8ImgIdx);
 
-			const uint8_t *pu8ImgSrc = get_img_array(u8ImgIdx);
+            if (nullptr == pu8ImgSrc)
+            {
+                    printf_err("Failed to get image index %" PRIu32 " (max: %u)\n", u8ImgIdx,
+                                       NUMBER_OF_FILES - 1);
+                    vTaskDelete(nullptr);
+                    return;
+            }
 
-			if (nullptr == pu8ImgSrc)
-			{
-				printf_err("Failed to get image index %" PRIu32 " (max: %u)\n", u8ImgIdx,
-						   NUMBER_OF_FILES - 1);
-				vTaskDelete(nullptr);
-				return;
-			}
+            u8ImgIdx ++;
 
-			u8ImgIdx ++;
-
-			if (u8ImgIdx >= NUMBER_OF_FILES)
-				u8ImgIdx = 0;
+            if (u8ImgIdx >= NUMBER_OF_FILES)
+                    u8ImgIdx = 0;
 #endif
 			
 #if defined (__USE_CCAP__)
@@ -615,7 +614,6 @@ static void main_task(void *pvParameters)
 		vTaskDelay(1);
     }
 
-    vTaskDelete(nullptr);
 }
 
 int main()

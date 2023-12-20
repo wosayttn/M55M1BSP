@@ -142,7 +142,6 @@ static int AudioInBuf_Pop(S_BUF_CTRL *psBufCtrl, int32_t i32Samples)
     int32_t i32ReadIndex = psBufCtrl->i32ReadSampleIndex;
     int32_t i32WriteIndex = psBufCtrl->i32WriteSampleIndex;
     int32_t i32TotalSamples = psBufCtrl->i32TotalSamples;
-    uint32_t u32Channels = psBufCtrl->u32Channels;
     int32_t i32AvailSampleSpace;
 
     //empty

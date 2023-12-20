@@ -72,15 +72,11 @@ void HyperRAM_Erase(SPIM_T *spim, uint32_t u32StartAddr, uint32_t u32EraseSize)
 void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
 {
     uint8_t u8RdDelay = 0;
-    uint8_t u8Temp;
     uint8_t u8RdDelayIdx = 0;
     uint8_t u8RdDelayRes[SPIM_MAX_DLL_LATENCY] = {0};
-    uint32_t u32i = 0;
-    uint32_t u32j;
     uint32_t u32SrcAddr = 0;
     uint32_t u32TestSize = 32;
     uint32_t u32DMMAddr = SPIM_HYPER_GetDMMAddress(spim);
-    int *pi32SrcAddr = (int *)(u32DMMAddr + u32SrcAddr);
 
     /* Erase HyperRAM */
     HyperRAM_Erase(spim, u32SrcAddr, u32TestSize);

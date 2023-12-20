@@ -75,7 +75,6 @@ static void loadAndEnableConfig(ARM_MPU_Region_t const *table, uint32_t cnt)
 
 int main()
 {
-    char chStdIn;
 
     /* Initialise the UART module to allow printf related functions (if using retarget) */
     BoardInit();
@@ -191,6 +190,8 @@ int main()
 
 	
 #if !defined(USE_DMIC)
+    char chStdIn;
+
     info("Press 'n' to run next audio clip inference \n");
     info("Press 'q' to exit program \n");
 
@@ -365,10 +366,7 @@ int main()
 
     }
 
-#if defined(USE_DMIC)
-    DMICRecord_UnInit();
-
-#endif
-
+#if !defined(USE_DMIC)
     return 0;
+#endif
 }
