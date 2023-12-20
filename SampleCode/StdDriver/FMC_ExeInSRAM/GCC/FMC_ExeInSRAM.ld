@@ -114,6 +114,7 @@ SECTIONS
   {
     KEEP(*(.vectors))
     *(.text*)
+    *(EXCLUDE_FILE(./User/exeinsram.o) .text*)
 
     KEEP(*(.init))
     KEEP(*(.fini))
@@ -133,6 +134,7 @@ SECTIONS
     *(.dtors)
 
     *(.rodata*)
+    *(EXCLUDE_FILE(./User/exeinsram.o) .rodata*)
 
     KEEP(*(.eh_frame*))
   } > FLASH
@@ -195,6 +197,11 @@ SECTIONS
   .data : AT(__eitcm)
   {
     __data_start__ = .;
+    
+    ./User/exeinsram.o (.text*) 
+    *(.fastcode) 
+    ./User/exeinsram.o (.rodata*)
+    
     *(vtable)
     *(.data)
     *(.data.*)

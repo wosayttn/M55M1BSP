@@ -75,6 +75,11 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/uart.c</locationURI>
 		</link>
 		<link>
+			<name>User/exeinsram.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/exeinsram.c</locationURI>
+		</link>
+		<link>
 			<name>User/main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/main.c</locationURI>
