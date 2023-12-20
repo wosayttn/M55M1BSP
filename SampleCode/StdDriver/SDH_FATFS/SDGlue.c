@@ -17,7 +17,7 @@ FATFS  _FatfsVolSd1;
 
 static TCHAR  _Path[3];
 
-int SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc)
+int32_t SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc)
 {
     SDH_Open(sdh, u32CardDetSrc);
 

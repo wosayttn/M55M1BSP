@@ -55,9 +55,24 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/clk.c</locationURI>
 		</link>
 		<link>
+			<name>Library/gpio.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/gpio.c</locationURI>
+		</link>
+		<link>
+			<name>Library/otfc.c</name>
+			<type>1</type>
+			<location>PARENT-4-PROJECT_LOC/Library/StdDriver/src/otfc.c</location>
+		</link>
+		<link>
 			<name>Library/retarget.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/retarget.c</locationURI>
+		</link>
+		<link>
+			<name>Library/spim.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/spim_hyper.c</locationURI>
 		</link>
 		<link>
 			<name>Library/sys.c</name>
@@ -70,24 +85,14 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/uart.c</locationURI>
 		</link>
 		<link>
-			<name>Library/spim.c</name>
+			<name>User/hyperram_code.c</name>
 			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/spim_hyper.c</locationURI>
-		</link>
-		<link>
-			<name>Library/gpio.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/gpio.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/hyperram_code.c</locationURI>
 		</link>
 		<link>
 			<name>User/main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/main.c</locationURI>
-		</link>
-		<link>
-			<name>User/hyperram_code.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/hyperram_code.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
