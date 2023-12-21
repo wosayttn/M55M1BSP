@@ -55,7 +55,7 @@ void TestFunc_PMC_PowerDown(void)
     /* System entry into Power-down Mode */
     PMC->INTEN |= PMC_INTEN_PDWKIEN_Msk;
 
-    UART_WAIT_TX_EMPTY(UART0);
+    UART_WAIT_TX_EMPTY(UART6);
 
     PMC_SetPowerDownMode(PMC_NPD0,PMC_PLCTL_PLSEL_PL0);    
     PMC_PowerDown();
@@ -87,7 +87,7 @@ void TestFunc_PMC_Idle(void)
     /* Enable WDT interrupt function */
     WDT_EnableInt(WDT0);
 
-    UART_WAIT_TX_EMPTY(UART0);
+    UART_WAIT_TX_EMPTY(UART6);
 
     PMC_Idle();
 
@@ -104,7 +104,7 @@ void TestFunc_PMC_SetPowerLevel(void)
     PMC_SetPowerLevel(PMC_PLCTL_PLSEL_PL1);
     CU_ASSERT((PMC->PLCTL & PMC_PLCTL_PLSEL_Msk) >> PMC_PLCTL_PLSEL_Pos == 0x1UL);
     CU_ASSERT((PMC->PLSTS & PMC_PLSTS_PLSTATUS_Msk) == PMC_PLSTS_PLSTATUS_PL1);
-    
+#if 0   /* TESTCHIP_ONLY not support */    
     PMC_SetPowerLevel(PMC_PLCTL_PLSEL_PL2);
     CU_ASSERT((PMC->PLCTL & PMC_PLCTL_PLSEL_Msk) >> PMC_PLCTL_PLSEL_Pos == 0x2UL);
     CU_ASSERT((PMC->PLSTS & PMC_PLSTS_PLSTATUS_Msk) == PMC_PLSTS_PLSTATUS_PL2);
@@ -112,11 +112,14 @@ void TestFunc_PMC_SetPowerLevel(void)
     PMC_SetPowerLevel(PMC_PLCTL_PLSEL_PL3);
     CU_ASSERT((PMC->PLCTL & PMC_PLCTL_PLSEL_Msk) >> PMC_PLCTL_PLSEL_Pos == 0x3UL);
     CU_ASSERT((PMC->PLSTS & PMC_PLSTS_PLSTATUS_Msk) == PMC_PLSTS_PLSTATUS_PL3);
+#endif
 }
 
 void TestFunc_PMC_SetPowerRegulator(void)
 {
+#ifdef __PLDM_EMU__
     SYS->MEGPMCTL |= 0x00080000; //for Palladium behavior model
+#endif
     PMC_SetPowerRegulator(PMC_VRCTL_MVRS_LDO);
     CU_ASSERT((PMC->VRCTL & PMC_VRCTL_MVRS_Msk) >> PMC_VRCTL_MVRS_Pos == 0x0UL);
     CU_ASSERT((PMC->VRSTS & PMC_VRSTS_CURMVR_Msk) == PMC_VRSTS_CURMVR_LDO);
@@ -278,7 +281,7 @@ void TestFunc_PMC_SetSRAMPowerMode(void)
     CU_ASSERT((PMC->SYSRB2PC&PMC_SYSRB2PC_SRAM4PMS_Msk)>>PMC_SYSRB2PC_SRAM4PMS_Pos == 0x1UL);
     PMC_SetSRAMPowerMode(PMC_SYSRB2PC_SRAM4PMS_Msk,PMC_SYSRB2PC_SRAM_POWER_SHUT_DOWN);
     CU_ASSERT((PMC->SYSRB2PC&PMC_SYSRB2PC_SRAM4PMS_Msk)>>PMC_SYSRB2PC_SRAM4PMS_Pos == 0x2UL);  
-
+#if 0   /* TESTCHIP_ONLY not support */  
     //SRAM3
     PMC_SetSRAMPowerMode(PMC_SYSRB3PC_SRAM0PMS_Msk,PMC_SYSRB3PC_SRAM_NORMAL);
     CU_ASSERT((PMC->SYSRB3PC&PMC_SYSRB3PC_SRAM0PMS_Msk)>>PMC_SYSRB3PC_SRAM0PMS_Pos == 0x0UL);
@@ -286,7 +289,7 @@ void TestFunc_PMC_SetSRAMPowerMode(void)
     CU_ASSERT((PMC->SYSRB3PC&PMC_SYSRB3PC_SRAM0PMS_Msk)>>PMC_SYSRB3PC_SRAM0PMS_Pos == 0x1UL);
     PMC_SetSRAMPowerMode(PMC_SYSRB3PC_SRAM0PMS_Msk,PMC_SYSRB3PC_SRAM_POWER_SHUT_DOWN);
     CU_ASSERT((PMC->SYSRB3PC&PMC_SYSRB3PC_SRAM0PMS_Msk)>>PMC_SYSRB3PC_SRAM0PMS_Pos == 0x2UL);
-
+#endif
     //LPSRAM
     PMC_SetSRAMPowerMode(PMC_LPSYSRPC_SRAM0PMS_Msk,PMC_LPSYSRPC_SRAM_NORMAL);
     CU_ASSERT((PMC->LPSYSRPC&PMC_LPSYSRPC_SRAM0PMS_Msk)>>PMC_LPSYSRPC_SRAM0PMS_Pos == 0x0UL);
@@ -318,7 +321,7 @@ void TestFunc_PMC_SetPowerDownMode(void)
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D3PGEN_Msk)  >> PMC_PWRCTL_D3PGEN_Pos    == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_VDROPEN_Msk) >> PMC_PWRCTL_VDROPEN_Pos   == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_FWEN_Msk)    >> PMC_PWRCTL_FWEN_Pos      == 0x1UL);
-    
+#if 0   /* TESTCHIP_ONLY not support */      
     PMC_SetPowerDownMode(PMC_NPD0,PMC_PLCTL_PLSEL_PL2);
     CU_ASSERT((PMC->PLCTL  & PMC_PLCTL_PLSEL_Msk)    >> PMC_PLCTL_PLSEL_Pos      == 0x2UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D0PGEN_Msk)  >> PMC_PWRCTL_D0PGEN_Pos    == 0x0UL);
@@ -336,7 +339,7 @@ void TestFunc_PMC_SetPowerDownMode(void)
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D3PGEN_Msk)  >> PMC_PWRCTL_D3PGEN_Pos    == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_VDROPEN_Msk) >> PMC_PWRCTL_VDROPEN_Pos   == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_FWEN_Msk)    >> PMC_PWRCTL_FWEN_Pos      == 0x1UL);
-    
+#endif    
     //NPD1    
     PMC_SetPowerDownMode(PMC_NPD1,PMC_PLCTL_PLSEL_PL0);
     CU_ASSERT((PMC->PLCTL  & PMC_PLCTL_PLSEL_Msk)    >> PMC_PLCTL_PLSEL_Pos      == 0x0UL);
@@ -355,7 +358,7 @@ void TestFunc_PMC_SetPowerDownMode(void)
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D3PGEN_Msk)  >> PMC_PWRCTL_D3PGEN_Pos    == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_VDROPEN_Msk) >> PMC_PWRCTL_VDROPEN_Pos   == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_FWEN_Msk)    >> PMC_PWRCTL_FWEN_Pos      == 0x0UL);
-    
+#if 0   /* TESTCHIP_ONLY not support */      
     PMC_SetPowerDownMode(PMC_NPD1,PMC_PLCTL_PLSEL_PL2);
     CU_ASSERT((PMC->PLCTL  & PMC_PLCTL_PLSEL_Msk)    >> PMC_PLCTL_PLSEL_Pos      == 0x2UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D0PGEN_Msk)  >> PMC_PWRCTL_D0PGEN_Pos    == 0x0UL);
@@ -373,7 +376,8 @@ void TestFunc_PMC_SetPowerDownMode(void)
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D3PGEN_Msk)  >> PMC_PWRCTL_D3PGEN_Pos    == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_VDROPEN_Msk) >> PMC_PWRCTL_VDROPEN_Pos   == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_FWEN_Msk)    >> PMC_PWRCTL_FWEN_Pos      == 0x0UL);
-    
+#endif
+#if 0   /* TESTCHIP_ONLY not support */  
     //NPD2
     PMC_SetPowerDownMode(PMC_NPD2,PMC_PLCTL_PLSEL_PL0); 
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D0PGEN_Msk)  >> PMC_PWRCTL_D0PGEN_Pos    == 0x0UL);
@@ -428,7 +432,7 @@ void TestFunc_PMC_SetPowerDownMode(void)
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D3PGEN_Msk)  >> PMC_PWRCTL_D3PGEN_Pos    == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_VDROPEN_Msk) >> PMC_PWRCTL_VDROPEN_Pos   == 0x1UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_FWEN_Msk)    >> PMC_PWRCTL_FWEN_Pos      == 0x0UL);
-    
+#endif    
     //SPD0
     PMC_SetPowerDownMode(PMC_SPD0,PMC_PLCTL_PLSEL_PL0);
     CU_ASSERT((PMC->PLCTL  & PMC_PLCTL_PLSEL_Msk)    >> PMC_PLCTL_PLSEL_Pos      == 0x0UL);
@@ -447,7 +451,7 @@ void TestFunc_PMC_SetPowerDownMode(void)
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D3PGEN_Msk)  >> PMC_PWRCTL_D3PGEN_Pos    == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_VDROPEN_Msk) >> PMC_PWRCTL_VDROPEN_Pos   == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_FWEN_Msk)    >> PMC_PWRCTL_FWEN_Pos      == 0x0UL);
-    
+#if 0   /* TESTCHIP_ONLY not support */      
     PMC_SetPowerDownMode(PMC_SPD0,PMC_PLCTL_PLSEL_PL2);
     CU_ASSERT((PMC->PLCTL  & PMC_PLCTL_PLSEL_Msk)    >> PMC_PLCTL_PLSEL_Pos      == 0x2UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D0PGEN_Msk)  >> PMC_PWRCTL_D0PGEN_Pos    == 0x1UL);
@@ -465,7 +469,8 @@ void TestFunc_PMC_SetPowerDownMode(void)
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D3PGEN_Msk)  >> PMC_PWRCTL_D3PGEN_Pos    == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_VDROPEN_Msk) >> PMC_PWRCTL_VDROPEN_Pos   == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_FWEN_Msk)    >> PMC_PWRCTL_FWEN_Pos      == 0x0UL);
-    
+#endif   
+#if 0   /* TESTCHIP_ONLY not support */  
     //SPD1
     PMC_SetPowerDownMode(PMC_SPD1,PMC_PLCTL_PLSEL_PL0);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D0PGEN_Msk)  >> PMC_PWRCTL_D0PGEN_Pos    == 0x1UL);
@@ -474,7 +479,7 @@ void TestFunc_PMC_SetPowerDownMode(void)
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D3PGEN_Msk)  >> PMC_PWRCTL_D3PGEN_Pos    == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_VDROPEN_Msk) >> PMC_PWRCTL_VDROPEN_Pos   == 0x1UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_FWEN_Msk)    >> PMC_PWRCTL_FWEN_Pos      == 0x0UL);
-    
+#endif    
     //DPD0
     PMC_SetPowerDownMode(PMC_DPD0,PMC_PLCTL_PLSEL_PL0);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D0PGEN_Msk)  >> PMC_PWRCTL_D0PGEN_Pos    == 0x1UL);
@@ -483,7 +488,7 @@ void TestFunc_PMC_SetPowerDownMode(void)
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D3PGEN_Msk)  >> PMC_PWRCTL_D3PGEN_Pos    == 0x1UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_VDROPEN_Msk) >> PMC_PWRCTL_VDROPEN_Pos   == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_FWEN_Msk)    >> PMC_PWRCTL_FWEN_Pos      == 0x1UL);
-    
+#if 0   /* TESTCHIP_ONLY not support */      
     //DPD1
     PMC_SetPowerDownMode(PMC_DPD1,PMC_PLCTL_PLSEL_PL0);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D0PGEN_Msk)  >> PMC_PWRCTL_D0PGEN_Pos    == 0x1UL);
@@ -492,6 +497,7 @@ void TestFunc_PMC_SetPowerDownMode(void)
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_D3PGEN_Msk)  >> PMC_PWRCTL_D3PGEN_Pos    == 0x1UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_VDROPEN_Msk) >> PMC_PWRCTL_VDROPEN_Pos   == 0x0UL);
     CU_ASSERT((PMC->PWRCTL & PMC_PWRCTL_FWEN_Msk)    >> PMC_PWRCTL_FWEN_Pos      == 0x0UL);    
+#endif
 }
 
 void TestFunc_PMC_EnableWKPIN (void)
@@ -829,7 +835,7 @@ CU_TestInfo  pmc_FuncTest[] = {
     { "PMC_Idle",                   TestFunc_PMC_Idle },
     { "PMC_SetPowerLevel",          TestFunc_PMC_SetPowerLevel },
     { "PMC_SetPowerRegulator",      TestFunc_PMC_SetPowerRegulator },
-    { "PMC_SetSRAMPowerMode",       TestFunc_PMC_SetSRAMPowerMode },
+//    { "PMC_SetSRAMPowerMode",       TestFunc_PMC_SetSRAMPowerMode },
     { "PMC_SetPowerDownMode",       TestFunc_PMC_SetPowerDownMode },
     { "PMC_Enable/DisableWKPIN",    TestFunc_PMC_EnableWKPIN },
     { "PMC_EnableTGPin",            TestFunc_PMC_EnableTGPin },

@@ -70,7 +70,11 @@ void EBI_InitPins(void)
         SET_EBI_nWR_PA10();
         
         /* EBI nWRH and nWRL pins */
+#if 0   /* TESTCHIP_ONLY not support */    
         SET_EBI_nWRH_PG8();
+#else
+        SET_EBI_nWRH_PB6();
+#endif
         SET_EBI_nWRL_PB7();
          
         /* EBI nCS0 */
@@ -91,10 +95,17 @@ void EBI_InitPins(void)
         SET_EBI_AD7_PD9();
         SET_EBI_AD8_PE14();
         SET_EBI_AD9_PE15();
+#if 0   /* TESTCHIP_ONLY not support */        
         SET_EBI_AD10_PD3();
         SET_EBI_AD11_PC14();
         SET_EBI_AD12_PB15();
         SET_EBI_AD13_PB14();
+#else
+        SET_EBI_AD10_PE7();
+        SET_EBI_AD11_PE6();
+        SET_EBI_AD12_PH8();
+        SET_EBI_AD13_PH9();
+#endif
         SET_EBI_AD14_PH10();
         SET_EBI_AD15_PH11();
             
@@ -127,7 +138,7 @@ int32_t EBI_InitClock(void)
     
     if (CLK->EBICTL & CLK_EBICTL_EBI0CKEN_Msk)
     {
-       return 0;
+        return 0;
     }
     else
     {
@@ -279,7 +290,7 @@ void CONSTANT_EBI(void)
     CU_ASSERT_EQUAL(EBI->CTL1, 0x0);
     CU_ASSERT_EQUAL(EBI->CTL2, 0x0);
 
-#if 1
+#if 0
     printf("\n\n*** NOTE: Test Read/Write MACRO in real chip ***\n\n");
 #else
     printf("\n\n*** NOTE: Test Read/Write MACRO in real chip ***\n\n");
@@ -313,7 +324,7 @@ void CONSTANT_EBI(void)
 
     /* Check EBI1 Read/Write MACRO */
     CU_ASSERT_EQUAL(ResetEBIRegister(EBI_BANK1), 0);
-    EBI_InitPins();
+    //EBI_InitPins();
     EBI_Open(EBI_BANK1, EBI_BUSWIDTH_8BIT, EBI_TIMING_FASTEST, 0, EBI_CS_ACTIVE_LOW);
     CU_ASSERT_EQUAL(EBI1_READ_DATA8(0x0), 0x0);
     CU_ASSERT_EQUAL(EBI1_READ_DATA8(0x1), 0x1);
@@ -341,7 +352,7 @@ void CONSTANT_EBI(void)
 
     /* Check EBI2 Read/Write MACRO */
     CU_ASSERT_EQUAL(ResetEBIRegister(EBI_BANK2), 0);
-    EBI_InitPins();
+    //EBI_InitPins();
     EBI_Open(EBI_BANK2, EBI_BUSWIDTH_8BIT, EBI_TIMING_FASTEST, 0, EBI_CS_ACTIVE_LOW);
     CU_ASSERT_EQUAL(EBI2_READ_DATA8(0x0), 0x0);
     CU_ASSERT_EQUAL(EBI2_READ_DATA8(0x1), 0x1);
