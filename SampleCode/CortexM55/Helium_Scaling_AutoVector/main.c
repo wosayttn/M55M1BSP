@@ -9,28 +9,19 @@
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
-
-//Use Helium
-#include <arm_mve.h>
+#include "scaling.h"
 
 
 /****************************************************************************
  * User Define Macro
  ****************************************************************************/
-#define CHECK_888RESULT
-#define SW_SCALEUP_TEST
-#define SRC_IMG_WIDTH    320
-#define SRC_IMG_HEIGHT   240
-#define SCALED_IMG_WIDTH    128
-#define SCALED_IMG_HEIGHT   128
-#define RGB_BYTES      3
+
 /****************************************************************************
  * Global Variables
  ****************************************************************************/
+volatile uint32_t g_u32Ticks = 0;
 uint8_t image_src[SRC_IMG_WIDTH * SRC_IMG_HEIGHT * RGB_BYTES] = {0};
 uint8_t image_dst[SCALED_IMG_WIDTH * SCALED_IMG_HEIGHT * RGB_BYTES] = {0};
-volatile uint32_t g_u32Ticks = 0;
-
 
 /****************************************************************************
  * Function Proto Type
@@ -106,7 +97,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, FREQ_180MHZ);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -128,7 +119,7 @@ void SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t u32TimeVal;
+    uint32_t u32TimeVal1, u32TimeVal2;
     uint32_t ii;
 
     /* Unlock protected registers */
@@ -160,7 +151,6 @@ int32_t main(void)
     {
         printf("\n Execute Resize Function\n");
         Init_SysTick_Export();
-
         /*
            The bilinear scaling source code is originating from Edge Impulse inferencing library.
            https://edgeimpulse.com/
@@ -236,8 +226,16 @@ int32_t main(void)
 
         //End of resize function----
 
-        u32TimeVal = Get_SysTick_Cycle_Count();
-        printf("\n Tick Counters are:%d!\n", u32TimeVal);
-				while(1);
+        u32TimeVal1 = Get_SysTick_Cycle_Count();
+        printf("\n With -o2  optimize, use %d Tick Counters.\n", u32TimeVal1);
+
+        /* Run an identical code with different optimization level, not vectorized flow*/
+        Init_SysTick_Export();
+        scaling_nonvectorize();
+        u32TimeVal2 = Get_SysTick_Cycle_Count();
+        printf("\n With -o0  optimize, use %d Tick Counters. \n", u32TimeVal2);
+
+        printf("\n Helium Scaling Speed up %.2f times.\n", (float)(u32TimeVal2)/(float)(u32TimeVal1));
+        while(1);
     }
 }
