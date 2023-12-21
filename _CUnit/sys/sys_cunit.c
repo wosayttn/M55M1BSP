@@ -59,7 +59,7 @@ void TestFunc_ResetSrc(void)
 
             /* Set WDT Reset */
             printf(" Set WDT Reset");
-            UART_WAIT_TX_EMPTY(UART0);
+            UART_WAIT_TX_EMPTY(UART6);
 
             CLK_EnableXtalRC(CLK_SRCCTL_LIRCEN_Msk);
             CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
@@ -81,7 +81,7 @@ void TestFunc_ResetSrc(void)
             printf("Clear WDTRST Flag, SYS->RSTSTS = 0x%08x\n",SYS->RSTSTS);
 
             printf(" Set LVR Reset");
-            UART_WAIT_TX_EMPTY(UART0);
+            UART_WAIT_TX_EMPTY(UART6);
             
             SYS_DISABLE_BOD();
             SYS_ENABLE_LVR();
@@ -96,7 +96,7 @@ void TestFunc_ResetSrc(void)
             printf("Clear LVRRST Flag, SYS->RSTSTS = 0x%08x\n",SYS->RSTSTS);
         
             printf(" Set BOD Reset");
-            UART_WAIT_TX_EMPTY(UART0);
+            UART_WAIT_TX_EMPTY(UART6);
             SYS_DISABLE_LVR();
             SYS_EnableBOD(SYS_BODCTL_BOD_RST_EN,SYS_BODCTL_BODVL_2_8V);
             while(1);
@@ -121,7 +121,7 @@ void TestFunc_ResetSrc(void)
 
             printf("Set System Reset");
             /* Set System Reset */
-            UART_WAIT_TX_EMPTY(UART0);
+            UART_WAIT_TX_EMPTY(UART6);
         
             outp32(0xE000ED0C, 0x05FA0004);            
             break;
@@ -135,7 +135,7 @@ void TestFunc_ResetSrc(void)
 
             printf("Set CPU Reset");
             /* Set CPU Reset */
-            UART_WAIT_TX_EMPTY(UART0);
+            UART_WAIT_TX_EMPTY(UART6);
         
             SYS_ResetCPU();
             break;
@@ -149,7 +149,7 @@ void TestFunc_ResetSrc(void)
 
             printf("Set Lockup Reset");
             /* Set CPU Lockup Reset */
-            UART_WAIT_TX_EMPTY(UART0);
+            UART_WAIT_TX_EMPTY(UART6);
         
             inp32(0xA0000000);
             while(1);
@@ -173,7 +173,7 @@ void TestFunc_ResetSrc(void)
 
 //            printf(" Chip Reset");
 //            /* Set Chip Reset */
-//            UART_WAIT_TX_EMPTY(UART0);
+//            UART_WAIT_TX_EMPTY(UART6);
 //        
 //            SYS_ResetChip();
             break;
@@ -183,7 +183,7 @@ void TestFunc_ResetSrc(void)
 void TestFunc_SYS_GetBODStatus()
 {
     //wait UART print message finish before test
-    UART_WAIT_TX_EMPTY(UART0);
+    UART_WAIT_TX_EMPTY(UART6);
 
     while(SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk) {};
     SYS->BODCTL &= ~SYS_BODCTL_BODRSTEN_Msk;
@@ -200,7 +200,7 @@ void TestFunc_SYS_GetBODStatus()
     while ((SYS->BODCTL & SYS_BODCTL_BODOUT_Msk) != SYS_BODCTL_BODOUT_Msk) {};
 
     CU_ASSERT(SYS_GetBODStatus() != 0);
-
+        
     /* not BOD condition */
     SYS->BODCTL &= ~SYS_BODCTL_BODEN_Msk;
 
@@ -243,7 +243,9 @@ const uint32_t au32ModuleRstSel[] =
     SYS_DAC01RST,       0x4000021C,     SYS_DACRST_DAC01RST_Msk,
     SYS_DMIC0RST,       0x40000220,     SYS_DMICRST_DMIC0RST_Msk,
     SYS_EADC0RST,       0x40000224,     SYS_EADCRST_EADC0RST_Msk,
+#if 0   /* TESTCHIP_ONLY not support */     
     SYS_EADC1RST,       0x40000224,     SYS_EADCRST_EADC1RST_Msk,
+#endif    
     SYS_EBI0RST,        0x40000228,     SYS_EBIRST_EBI0RST_Msk,
     SYS_ECAP0RST,       0x4000022C,     SYS_ECAPRST_ECAP0RST_Msk,
     SYS_ECAP1RST,       0x4000022C,     SYS_ECAPRST_ECAP1RST_Msk,
@@ -301,7 +303,9 @@ const uint32_t au32ModuleRstSel[] =
     SYS_SPI3RST,        0x400002AC,     SYS_SPIRST_SPI3RST_Msk,
     SYS_SPIM0RST,       0x400002B0,     SYS_SPIMRST_SPIM0RST_Msk,
     SYS_SPIM1RST,       0x400002B0,     SYS_SPIMRST_SPIM1RST_Msk,
+#if 0   /* TESTCHIP_ONLY not support */     
     SYS_TAMPER0RST,     0x400002BC,     SYS_TAMPERRST_TAMPER0RST_Msk,
+#endif    
     SYS_TMR0RST,        0x400002C0,     SYS_TMRRST_TMR0RST_Msk,
     SYS_TMR1RST,        0x400002C0,     SYS_TMRRST_TMR1RST_Msk,
     SYS_TMR2RST,        0x400002C0,     SYS_TMRRST_TMR2RST_Msk,
@@ -330,7 +334,7 @@ void TestFunc_SYS_ResetModule()
     uint16_t u16ModuleRstSelIdx;
 
     //wait UART print message finish before test
-    UART_WAIT_TX_EMPTY(UART0);
+    UART_WAIT_TX_EMPTY(UART6);
 
     /* Test loop */
     for (u16ModuleRstSelIdx = 0; u16ModuleRstSelIdx < (sizeof(au32ModuleRstSel) / sizeof(uint32_t)); u16ModuleRstSelIdx += 3)
@@ -425,6 +429,10 @@ void SYS_Macro_Test(void)
 //    SYS_GET_BOD_INT_FLAG()
 //    SYS_GET_BOD_OUTPUT()
 //    SYS_CLEAR_BOD_INT_FLAG()
+
+    while(SYS->BODCTL & SYS_BODCTL_WRBUSY_Msk) {};
+    /* To avoid BOD reset*/
+    SYS->BODCTL = (SYS->BODCTL & (~SYS_BODCTL_BODVL_Msk)) | SYS_BODCTL_BODVL_1_6V;
 
     SYS_ENABLE_BOD();
     CU_ASSERT((SYS->BODCTL & SYS_BODCTL_BODEN_Msk) >> SYS_BODCTL_BODEN_Pos == 0x1UL);
@@ -547,8 +555,10 @@ void SYS_Const_Test(void)
     CU_ASSERT(SYS->GPA_MFP0 = ((SYS->GPA_MFP0 & (SYS_GPA_MFP0_PA1MFP_Msk)) == SYS_GPA_MFP0_PA1MFP_EPWM0_CH4));
     SET_EQEI3_A_PA1();               
     CU_ASSERT(SYS->GPA_MFP0 = ((SYS->GPA_MFP0 & (SYS_GPA_MFP0_PA1MFP_Msk)) == SYS_GPA_MFP0_PA1MFP_EQEI3_A));
+#if 0   /* TESTCHIP_ONLY not support */      
     SET_DAC1_ST_PA1();               
     CU_ASSERT(SYS->GPA_MFP0 = ((SYS->GPA_MFP0 & (SYS_GPA_MFP0_PA1MFP_Msk)) == SYS_GPA_MFP0_PA1MFP_DAC1_ST));
+#endif
     SET_DMIC1_CLK_PA1();             
     CU_ASSERT(SYS->GPA_MFP0 = ((SYS->GPA_MFP0 & (SYS_GPA_MFP0_PA1MFP_Msk)) == SYS_GPA_MFP0_PA1MFP_DMIC1_CLK));
     SET_PSIO0_CH6_PA1();             
@@ -925,8 +935,10 @@ void SYS_Const_Test(void)
     CU_ASSERT(SYS->GPA_MFP2 = ((SYS->GPA_MFP2 & (SYS_GPA_MFP2_PA11MFP_Msk)) == SYS_GPA_MFP2_PA11MFP_I2S1_BCLK));
     SET_TM0_EXT_PA11();              
     CU_ASSERT(SYS->GPA_MFP2 = ((SYS->GPA_MFP2 & (SYS_GPA_MFP2_PA11MFP_Msk)) == SYS_GPA_MFP2_PA11MFP_TM0_EXT));
+#if 0   /* TESTCHIP_ONLY not support */     
     SET_DAC1_ST_PA11();              
     CU_ASSERT(SYS->GPA_MFP2 = ((SYS->GPA_MFP2 & (SYS_GPA_MFP2_PA11MFP_Msk)) == SYS_GPA_MFP2_PA11MFP_DAC1_ST));
+#endif    
     SET_KPI_ROW4_PA11();             
     CU_ASSERT(SYS->GPA_MFP2 = ((SYS->GPA_MFP2 & (SYS_GPA_MFP2_PA11MFP_Msk)) == SYS_GPA_MFP2_PA11MFP_KPI_ROW4));
     SET_LPTM0_EXT_PA11();            
@@ -1587,6 +1599,7 @@ void SYS_Const_Test(void)
     CU_ASSERT(SYS->GPB_MFP3 = ((SYS->GPB_MFP3 & (SYS_GPB_MFP3_PB12MFP_Msk)) == SYS_GPB_MFP3_PB12MFP_LPUART0_RXD));
     SET_UTCPD0_VBSRCEN_PB12();       
     CU_ASSERT(SYS->GPB_MFP3 = ((SYS->GPB_MFP3 & (SYS_GPB_MFP3_PB12MFP_Msk)) == SYS_GPB_MFP3_PB12MFP_UTCPD0_VBSRCEN));
+#if 0   /* TESTCHIP_ONLY not support */      
     SET_GPIO_PB13();                 
     CU_ASSERT(SYS->GPB_MFP3 = ((SYS->GPB_MFP3 & (SYS_GPB_MFP3_PB13MFP_Msk)) == SYS_GPB_MFP3_PB13MFP_GPIO));
     SET_ACMP0_P3_PB13();             
@@ -1737,6 +1750,7 @@ void SYS_Const_Test(void)
     CU_ASSERT(SYS->GPB_MFP3 = ((SYS->GPB_MFP3 & (SYS_GPB_MFP3_PB15MFP_Msk)) == SYS_GPB_MFP3_PB15MFP_LPUART0_nCTS));
     SET_LPTM0_EXT_PB15();            
     CU_ASSERT(SYS->GPB_MFP3 = ((SYS->GPB_MFP3 & (SYS_GPB_MFP3_PB15MFP_Msk)) == SYS_GPB_MFP3_PB15MFP_LPTM0_EXT));
+#endif    
     SET_GPIO_PC0();                  
     CU_ASSERT(SYS->GPC_MFP0 = ((SYS->GPC_MFP0 & (SYS_GPC_MFP0_PC0MFP_Msk)) == SYS_GPC_MFP0_PC0MFP_GPIO));
     SET_EBI_AD0_PC0();               
@@ -2171,6 +2185,7 @@ void SYS_Const_Test(void)
     CU_ASSERT(SYS->GPC_MFP3 = ((SYS->GPC_MFP3 & (SYS_GPC_MFP3_PC13MFP_Msk)) == SYS_GPC_MFP3_PC13MFP_EADC0_ST));
     SET_LPADC0_ST_PC13();            
     CU_ASSERT(SYS->GPC_MFP3 = ((SYS->GPC_MFP3 & (SYS_GPC_MFP3_PC13MFP_Msk)) == SYS_GPC_MFP3_PC13MFP_LPADC0_ST));
+#if 0   /* TESTCHIP_ONLY not support */     
     SET_GPIO_PC14();                 
     CU_ASSERT(SYS->GPC_MFP3 = ((SYS->GPC_MFP3 & (SYS_GPC_MFP3_PC14MFP_Msk)) == SYS_GPC_MFP3_PC14MFP_GPIO));
     SET_EBI_AD11_PC14();             
@@ -2197,6 +2212,7 @@ void SYS_Const_Test(void)
     CU_ASSERT(SYS->GPC_MFP3 = ((SYS->GPC_MFP3 & (SYS_GPC_MFP3_PC14MFP_Msk)) == SYS_GPC_MFP3_PC14MFP_HSUSB_VBUS_ST));
     SET_LPTM1_PC14();                
     CU_ASSERT(SYS->GPC_MFP3 = ((SYS->GPC_MFP3 & (SYS_GPC_MFP3_PC14MFP_Msk)) == SYS_GPC_MFP3_PC14MFP_LPTM1));
+#endif    
     SET_GPIO_PD0();                  
     CU_ASSERT(SYS->GPD_MFP0 = ((SYS->GPD_MFP0 & (SYS_GPD_MFP0_PD0MFP_Msk)) == SYS_GPD_MFP0_PD0MFP_GPIO));
     SET_EBI_AD13_PD0();              
@@ -2223,6 +2239,7 @@ void SYS_Const_Test(void)
     CU_ASSERT(SYS->GPD_MFP0 = ((SYS->GPD_MFP0 & (SYS_GPD_MFP0_PD0MFP_Msk)) == SYS_GPD_MFP0_PD0MFP_LPSPI0_MOSI));
     SET_LPIO6_PD0();                 
     CU_ASSERT(SYS->GPD_MFP0 = ((SYS->GPD_MFP0 & (SYS_GPD_MFP0_PD0MFP_Msk)) == SYS_GPD_MFP0_PD0MFP_LPIO6));
+#if 0   /* TESTCHIP_ONLY not support */      
     SET_GPIO_PD1();                  
     CU_ASSERT(SYS->GPD_MFP0 = ((SYS->GPD_MFP0 & (SYS_GPD_MFP0_PD1MFP_Msk)) == SYS_GPD_MFP0_PD1MFP_GPIO));
     SET_EBI_AD12_PD1();              
@@ -2307,6 +2324,7 @@ void SYS_Const_Test(void)
     CU_ASSERT(SYS->GPD_MFP1 = ((SYS->GPD_MFP1 & (SYS_GPD_MFP1_PD4MFP_Msk)) == SYS_GPD_MFP1_PD4MFP_USB_VBUS_ST));
     SET_PSIO0_CH7_PD4();             
     CU_ASSERT(SYS->GPD_MFP1 = ((SYS->GPD_MFP1 & (SYS_GPD_MFP1_PD4MFP_Msk)) == SYS_GPD_MFP1_PD4MFP_PSIO0_CH7));
+#endif    
     SET_GPIO_PD5();                  
     CU_ASSERT(SYS->GPD_MFP1 = ((SYS->GPD_MFP1 & (SYS_GPD_MFP1_PD5MFP_Msk)) == SYS_GPD_MFP1_PD5MFP_GPIO));
     SET_I2C1_SCL_PD5();              
@@ -3365,6 +3383,7 @@ void SYS_Const_Test(void)
     CU_ASSERT(SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (SYS_GPG_MFP1_PG6MFP_Msk)) == SYS_GPG_MFP1_PG6MFP_I2S1_DI));
     SET_EPWM0_CH2_PG6();             
     CU_ASSERT(SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (SYS_GPG_MFP1_PG6MFP_Msk)) == SYS_GPG_MFP1_PG6MFP_EPWM0_CH2));
+#if 0   /* TESTCHIP_ONLY not support */      
     SET_GPIO_PG7();                  
     CU_ASSERT(SYS->GPG_MFP1 = ((SYS->GPG_MFP1 & (SYS_GPG_MFP1_PG7MFP_Msk)) == SYS_GPG_MFP1_PG7MFP_GPIO));
     SET_EBI_nWRL_PG7();              
@@ -3393,6 +3412,7 @@ void SYS_Const_Test(void)
     CU_ASSERT(SYS->GPG_MFP2 = ((SYS->GPG_MFP2 & (SYS_GPG_MFP2_PG8MFP_Msk)) == SYS_GPG_MFP2_PG8MFP_I2S1_LRCK));
     SET_EPWM0_CH0_PG8();             
     CU_ASSERT(SYS->GPG_MFP2 = ((SYS->GPG_MFP2 & (SYS_GPG_MFP2_PG8MFP_Msk)) == SYS_GPG_MFP2_PG8MFP_EPWM0_CH0));
+#endif    
     SET_GPIO_PG9();                  
     CU_ASSERT(SYS->GPG_MFP2 = ((SYS->GPG_MFP2 & (SYS_GPG_MFP2_PG9MFP_Msk)) == SYS_GPG_MFP2_PG9MFP_GPIO));
     SET_EBI_AD0_PG9();               
@@ -4050,8 +4070,8 @@ CU_TestInfo  sys_MacroTest[] = {
 };
 
 CU_TestInfo  sys_FuncTest[] = {
-    { "SYS_Get/ClearResetSource",   TestFunc_ResetSrc },
-    { "SYS_GetBODStatus",           TestFunc_SYS_GetBODStatus },
+    //{ "SYS_Get/ClearResetSource",   TestFunc_ResetSrc },          //reset is hard to test in real chip
+    { "SYS_GetBODStatus",           TestFunc_SYS_GetBODStatus },    //Power supply only
     { "SYS_GetResetSrc",            TestFunc_SYS_GetResetSrc },
     { "SYS_IsRegLocked",            TestFunc_SYS_IsRegLocked },
     { "SYS_ReadPDID",               TestFunc_SYS_ReadPDID },

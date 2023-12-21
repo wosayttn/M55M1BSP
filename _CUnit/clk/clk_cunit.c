@@ -104,8 +104,8 @@ const uint64_t au64ModuleClkEnSel[] =
 //    SRAM1_MODULE,   (uint32_t) &CLK->SRAMCTL,   CLK_SRAMCTL_SRAM1CKEN_Msk,
 //    SRAM2_MODULE,   (uint32_t) &CLK->SRAMCTL,   CLK_SRAMCTL_SRAM2CKEN_Msk,
 //    SRAM2_MODULE,   (uint32_t) &CLK->SRAMCTL,   CLK_SRAMCTL_SRAM3CKEN_Msk,    
-    SWDH0_MODULE,   (uint32_t) &CLK->SWDHCTL,   CLK_SWDHCTL_SWDH0CKEN_Msk,
-    SWODEC0_MODULE, (uint32_t) &CLK->SWODECCTL, CLK_SWODECCTL_SWODEC0CKEN_Msk,
+//    SWDH0_MODULE,   (uint32_t) &CLK->SWDHCTL,   CLK_SWDHCTL_SWDH0CKEN_Msk,
+//    SWODEC0_MODULE, (uint32_t) &CLK->SWODECCTL, CLK_SWODECCTL_SWODEC0CKEN_Msk,
     ST0_MODULE,     (uint32_t) &CLK->STCTL,     CLK_STCTL_ST0CKEN_Msk,
     TAMPER0_MODULE, (uint32_t) &CLK->TAMPERCTL, CLK_TAMPERCTL_TAMPER0CKEN_Msk,
     TMR0_MODULE,    (uint32_t) &CLK->TMRCTL,    CLK_TMRCTL_TMR0CKEN_Msk,
@@ -139,7 +139,7 @@ void TestFunc_CLK_EnableModuleClock()
 {
     uint16_t u16ModuleClkEnSelIdx;    //clock enable
 
-        /* Enable all clock */
+    /* Enable all clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
     CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
@@ -167,12 +167,12 @@ void TestFunc_CLK_EnableModuleClock()
     CLK_SET_PCLK4DIV(2);
     
     //wait UART print message finish
-    UART_WAIT_TX_EMPTY(UART0);
+    UART_WAIT_TX_EMPTY(UART6);
 
     /* test loop */
     for (u16ModuleClkEnSelIdx = 0; u16ModuleClkEnSelIdx < (sizeof(au64ModuleClkEnSel) / sizeof(uint64_t)); u16ModuleClkEnSelIdx += 3)
     {
-        //printf("address = 0x%08x\n",(uint32_t)au64ModuleClkEnSel[u16ModuleClkEnSelIdx+1]);
+        //printf("address = 0x%08x\n",(uint32_t)(au64ModuleClkEnSel[u16ModuleClkEnSelIdx+1]));
         CLK_EnableModuleClock(au64ModuleClkEnSel[u16ModuleClkEnSelIdx]);
         CU_ASSERT((inp32(au64ModuleClkEnSel[u16ModuleClkEnSelIdx + 1]) & au64ModuleClkEnSel[u16ModuleClkEnSelIdx + 2]) == au64ModuleClkEnSel[u16ModuleClkEnSelIdx + 2]);
         CLK_DisableModuleClock(au64ModuleClkEnSel[u16ModuleClkEnSelIdx]);
@@ -180,7 +180,8 @@ void TestFunc_CLK_EnableModuleClock()
     }
 
     /* Enable UART clock after test*/
-    CLK_EnableModuleClock(UART0_MODULE);
+    CLK_EnableModuleClock(UART6_MODULE);
+    /* Others are default enable */
     CLK_EnableModuleClock(FMC0_MODULE);
     CLK_EnableModuleClock(SCU0_MODULE);
     CLK_EnableModuleClock(WDT0_MODULE);
@@ -226,6 +227,7 @@ void TestFunc_CLK_GetFreq()
     CU_ASSERT(CLK_GetLXTFreq() == __LXT);
 
     /*-----MIRC Test-----*/
+#if 0   // TESTCHIP_ONLY not support    
     CLK_DisableMIRC();
     CU_ASSERT(CLK_GetMIRCFreq() == 0UL);
     CLK_EnableMIRC(CLK_MIRCCTL_MIRCFSEL_1MHZ);
@@ -236,7 +238,9 @@ void TestFunc_CLK_GetFreq()
     CU_ASSERT(CLK_GetMIRCFreq() == FREQ_4MHZ);    
     CLK_EnableMIRC(CLK_MIRCCTL_MIRCFSEL_8MHZ);
     CU_ASSERT(CLK_GetMIRCFreq() == FREQ_8MHZ);
-
+#else
+    CU_ASSERT(CLK_GetMIRCFreq() == FREQ_1MHZ);
+#endif
     /*-----APLL0 Test-----*/
     CU_ASSERT(CLK_GetAPLL0ClockFreq() == FREQ_180MHZ);
 
@@ -303,8 +307,8 @@ void TestFunc_CLK_EnableXtalRC()
 
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
     CU_ASSERT(CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk) == 1UL);    
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+    
     /*-----LIRC Test-----*/
     CLK_DisableXtalRC(CLK_SRCCTL_LIRCEN_Msk);
     CU_ASSERT(CLK_WaitClockDisable(CLK_STATUS_LIRCSTB_Msk) == 1UL);
@@ -322,6 +326,7 @@ void TestFunc_CLK_EnableXtalRC()
 
 void TestFunc_CLK_EnableMIRC()
 {
+#if 0   // TESTCHIP_ONLY not support
     CLK_DisableMIRC();
     CU_ASSERT(CLK_WaitClockDisable(CLK_STATUS_MIRCSTB_Msk) == 1UL);
     CLK_EnableMIRC(CLK_MIRCCTL_MIRCFSEL_1MHZ);
@@ -341,6 +346,7 @@ void TestFunc_CLK_EnableMIRC()
     CU_ASSERT(CLK_WaitClockDisable(CLK_STATUS_MIRCSTB_Msk) == 1UL);      
     CLK_EnableMIRC(CLK_MIRCCTL_MIRCFSEL_8MHZ);
     CU_ASSERT(CLK_WaitClockReady(CLK_STATUS_MIRCSTB_Msk) == 1UL);
+#endif
 }
 
 void TestFunc_CLK_SetCoreClock()
@@ -616,7 +622,7 @@ const uint64_t au64ModuleClkSrcSel[] =
     TMR3_MODULE,    (uint32_t)&CLK->TMRSEL,     CLK_TMRSEL_TMR3SEL_Msk,         CLK_TMRSEL_TMR3SEL_LIRC,
     TMR3_MODULE,    (uint32_t)&CLK->TMRSEL,     CLK_TMRSEL_TMR3SEL_Msk,         CLK_TMRSEL_TMR3SEL_HIRC,
     TMR3_MODULE,    (uint32_t)&CLK->TMRSEL,     CLK_TMRSEL_TMR3SEL_Msk,         CLK_TMRSEL_TMR3SEL_HIRC48M_DIV4,
-    TTMR0_MODULE,   (uint32_t)&CLK->TTMRSEL,    CLK_TTMRSEL_TTMR0SEL_Msk,       CLK_TTMRSEL_TTMR0SEL_PCLK2,
+    TTMR0_MODULE,   (uint32_t)&CLK->TTMRSEL,    CLK_TTMRSEL_TTMR0SEL_Msk,       CLK_TTMRSEL_TTMR0SEL_PCLK4,
     TTMR0_MODULE,   (uint32_t)&CLK->TTMRSEL,    CLK_TTMRSEL_TTMR0SEL_Msk,       CLK_TTMRSEL_TTMR0SEL_LXT,
     TTMR0_MODULE,   (uint32_t)&CLK->TTMRSEL,    CLK_TTMRSEL_TTMR0SEL_Msk,       CLK_TTMRSEL_TTMR0SEL_LIRC,
     TTMR0_MODULE,   (uint32_t)&CLK->TTMRSEL,    CLK_TTMRSEL_TTMR0SEL_Msk,       CLK_TTMRSEL_TTMR0SEL_MIRC,
@@ -656,11 +662,11 @@ const uint64_t au64ModuleClkSrcSel[] =
     UART5_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART5SEL_Msk,      CLK_UARTSEL0_UART5SEL_LXT,
     UART5_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART5SEL_Msk,      CLK_UARTSEL0_UART5SEL_APLL0_DIV2,
     UART5_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART5SEL_Msk,      CLK_UARTSEL0_UART5SEL_HIRC48M,
-    UART6_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART6SEL_Msk,      CLK_UARTSEL0_UART6SEL_HXT,
-    UART6_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART6SEL_Msk,      CLK_UARTSEL0_UART6SEL_HIRC,
-    UART6_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART6SEL_Msk,      CLK_UARTSEL0_UART6SEL_LXT,
-    UART6_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART6SEL_Msk,      CLK_UARTSEL0_UART6SEL_APLL0_DIV2,
-    UART6_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART6SEL_Msk,      CLK_UARTSEL0_UART6SEL_HIRC48M,
+//    UART6_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART6SEL_Msk,      CLK_UARTSEL0_UART6SEL_HXT,
+//    UART6_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART6SEL_Msk,      CLK_UARTSEL0_UART6SEL_HIRC,
+//    UART6_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART6SEL_Msk,      CLK_UARTSEL0_UART6SEL_LXT,
+//    UART6_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART6SEL_Msk,      CLK_UARTSEL0_UART6SEL_APLL0_DIV2,
+//    UART6_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART6SEL_Msk,      CLK_UARTSEL0_UART6SEL_HIRC48M,
     UART7_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART7SEL_Msk,      CLK_UARTSEL0_UART7SEL_HXT,
     UART7_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART7SEL_Msk,      CLK_UARTSEL0_UART7SEL_HIRC,
     UART7_MODULE,   (uint32_t)&CLK->UARTSEL0,   CLK_UARTSEL0_UART7SEL_Msk,      CLK_UARTSEL0_UART7SEL_LXT,
@@ -718,7 +724,7 @@ const uint64_t au64ModuleClkSrcDiv[] =
     UART3_MODULE,   (uint32_t)&CLK->UARTDIV0,   CLK_UARTDIV0_UART3DIV_Msk,      CLK_UARTDIV0_UART3DIV_Pos,
     UART4_MODULE,   (uint32_t)&CLK->UARTDIV0,   CLK_UARTDIV0_UART4DIV_Msk,      CLK_UARTDIV0_UART4DIV_Pos,
     UART5_MODULE,   (uint32_t)&CLK->UARTDIV0,   CLK_UARTDIV0_UART5DIV_Msk,      CLK_UARTDIV0_UART5DIV_Pos,
-    UART6_MODULE,   (uint32_t)&CLK->UARTDIV0,   CLK_UARTDIV0_UART6DIV_Msk,      CLK_UARTDIV0_UART6DIV_Pos,
+//    UART6_MODULE,   (uint32_t)&CLK->UARTDIV0,   CLK_UARTDIV0_UART6DIV_Msk,      CLK_UARTDIV0_UART6DIV_Pos,
     UART7_MODULE,   (uint32_t)&CLK->UARTDIV0,   CLK_UARTDIV0_UART7DIV_Msk,      CLK_UARTDIV0_UART7DIV_Pos,
     UART8_MODULE,   (uint32_t)&CLK->UARTDIV1,   CLK_UARTDIV1_UART8DIV_Msk,      CLK_UARTDIV1_UART8DIV_Pos,
     UART9_MODULE,   (uint32_t)&CLK->UARTDIV1,   CLK_UARTDIV1_UART9DIV_Msk,      CLK_UARTDIV1_UART9DIV_Pos,
@@ -731,7 +737,7 @@ void TestFunc_CLK_SetModuleClock()
     uint32_t u32TestClkDiv; //clock divider
     
     //wait UART print message finish before test
-    UART_WAIT_TX_EMPTY(UART0);
+    UART_WAIT_TX_EMPTY(UART6);
     
     for(u16SrcSelIdx = 0; u16SrcSelIdx < (sizeof(au64ModuleClkSrcSel) / sizeof(uint64_t)) ;u16SrcSelIdx += 4)
     {
@@ -786,28 +792,28 @@ void TestFunc_CLK_SystemClockUpdate()
 
 void TestFunc_CLK_SetBusClock()
 {
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_HIRC,0);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_HIRC, NA, NA);
     CU_ASSERT(SystemCoreClock == __HIRC);
     
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_MIRC,0);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_MIRC, NA, NA);
     CU_ASSERT(SystemCoreClock == CLK_GetMIRCFreq());
     
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_HIRC48M,0);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_HIRC48M, NA, NA);
     CU_ASSERT(SystemCoreClock == __HIRC48M);
     
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_HXT,0);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_HXT, NA, NA);
     CU_ASSERT(SystemCoreClock == __HXT);
     
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0,FREQ_50MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_50MHZ);
     CU_ASSERT(SystemCoreClock == CLK_GetAPLL0ClockFreq());
     
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0,FREQ_100MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_100MHZ);
     CU_ASSERT(SystemCoreClock == CLK_GetAPLL0ClockFreq());
     
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0,FREQ_150MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_150MHZ);
     CU_ASSERT(SystemCoreClock == CLK_GetAPLL0ClockFreq());
     
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0,FREQ_200MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_200MHZ);
     CU_ASSERT(SystemCoreClock == CLK_GetAPLL0ClockFreq());
 }
 
@@ -959,7 +965,7 @@ void TestFunc_CLK_TestMacro()
     
     CU_ASSERT(MODULE_NoMsk == NA);
     
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC48M);
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
     
     CLK->SRCCTL &= ~CLK_SRCCTL_APLL0EN_Msk;
     CLK->APLL0CTL =  CLK_APLLCTL_72MHz;

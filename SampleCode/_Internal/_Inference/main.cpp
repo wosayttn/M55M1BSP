@@ -204,7 +204,6 @@ void inferenceProcessTask(void *pvParameters) {
         xJob->status = status;
         xQueueSend(xJob->responseQueue, &xJob, portMAX_DELAY);
     }
-    vTaskDelete(nullptr);
 }
 
 //  inferenceSenderTask - Creates NUM_INFERNECE_JOBS jobs, queues them, and then listens for completion status
@@ -354,8 +353,6 @@ int main() {
 
     printf("FreeRTOS application failed to initialise \n");
     exit(1);
-
-    return 0;
 }
 
 
