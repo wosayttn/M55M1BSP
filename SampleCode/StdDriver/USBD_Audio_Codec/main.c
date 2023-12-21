@@ -29,7 +29,7 @@ void SYS_Init(void)
     /* Switch SCLK clock source to APLL0 and Enable APLL0 192MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
-    /* Enable APLL1 192MHz clock */
+    /* Enable APLL1 96MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);
 
     /* Select USB clock source as APLL1/2 and USB clock divider as 2 */
