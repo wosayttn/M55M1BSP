@@ -242,7 +242,6 @@ void main_full(void)
                 configMAX_PRIORITIES - 2,   /* The priority of the task. */
                 NULL);                      /* Don't receive a handle back, it is not needed. */
 
-
     /* Create the register test tasks as described at the top of this file.
     These are naked functions that don't use any stack.  A stack still has
     to be allocated to hold the task context. */
@@ -259,7 +258,6 @@ void main_full(void)
                 NULL,                   /* The task parameter is not used. */
                 tskIDLE_PRIORITY,       /* The priority to assign to the task. */
                 NULL);                  /* Don't receive a handle back, it is not needed. */
-
 
 
     /* Create the three flash timers. */

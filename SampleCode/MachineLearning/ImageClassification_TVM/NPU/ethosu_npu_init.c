@@ -62,7 +62,7 @@ static void arm_ethosu_npu_irq_init(void)
     NVIC_EnableIRQ(ethosu_irqnum);
 
     printf("EthosU IRQ#: %u, Handler: 0x%x\n",
-           ethosu_irqnum, NPU_IRQHandler);
+           ethosu_irqnum, (uint32_t)NPU_IRQHandler);
 }
 
 int arm_ethosu_npu_init(void)
