@@ -304,9 +304,14 @@ void CANFD_Init(void)
     /*Get the CAN FD configuration value*/
     CANFD_GetDefaultConfig(&sCANFD_Config, CANFD_OP_CAN_FD_MODE);
     sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate = 1000000;
-    sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate = 4000000;
+    sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate = 2000000;
     /*Open the CAN FD feature*/
     CANFD_Open(CANFD0, &sCANFD_Config);
+
+    /* Note: About TLE9351VSJ High speed CAN FD transceiver  */
+    /* Due to TX/RX propagation delay, user should adjust the 'Transmitter Delay Compensation' setting. */
+    //CANFD0->DBTP |= CANFD_DBTP_TDC_Msk;
+    //CANFD0->TDCR = 0x300;
 
     /* receive 0x110~0x11F in CAN FD0 rx fifo1 buffer by setting mask 0 */
     CANFD_SetSIDFltr(CANFD0, 0, CANFD_RX_FIFO1_STD_MASK(0x110, 0x7F0));
