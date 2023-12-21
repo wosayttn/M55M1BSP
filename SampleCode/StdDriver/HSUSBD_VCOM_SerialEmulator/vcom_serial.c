@@ -395,22 +395,22 @@ void VCOM_ClassRequest(void)
         // Device to host
         switch (gUsbCmd.bRequest)
         {
-            case GET_LINE_CODE:
-            {
-                if ((gUsbCmd.wIndex & 0xff) == 0)  /* VCOM-1 */
-                    HSUSBD_PrepareCtrlIn((uint8_t *)&gLineCoding, 7);
+        case GET_LINE_CODE:
+        {
+            if ((gUsbCmd.wIndex & 0xff) == 0)  /* VCOM-1 */
+                HSUSBD_PrepareCtrlIn((uint8_t *)&gLineCoding, 7);
 
-                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
-                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
-                break;
-            }
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
+            break;
+        }
 
-            default:
-            {
-                /* Setup error, stall the device */
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-                break;
-            }
+        default:
+        {
+            /* Setup error, stall the device */
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+            break;
+        }
         }
     }
     else
@@ -418,45 +418,45 @@ void VCOM_ClassRequest(void)
         // Host to device
         switch (gUsbCmd.bRequest)
         {
-            case SET_CONTROL_LINE_STATE:
+        case SET_CONTROL_LINE_STATE:
+        {
+            if ((gUsbCmd.wIndex & 0xff) == 0)   /* VCOM-1 */
             {
-                if ((gUsbCmd.wIndex & 0xff) == 0)   /* VCOM-1 */
-                {
-                    gCtrlSignal = gUsbCmd.wValue;
-                    //printf("RTS=%d  DTR=%d\n", (gCtrlSignal0 >> 1) & 1, gCtrlSignal0 & 1);
-                }
-
-                // DATA IN for end of setup
-                /* Status stage */
-                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-                break;
+                gCtrlSignal = gUsbCmd.wValue;
+                //printf("RTS=%d  DTR=%d\n", (gCtrlSignal0 >> 1) & 1, gCtrlSignal0 & 1);
             }
 
-            case SET_LINE_CODE:
-            {
-                if ((gUsbCmd.wIndex & 0xff) == 0) /* VCOM-1 */
-                    HSUSBD_CtrlOut((uint8_t *)&gLineCoding, 7);
+            // DATA IN for end of setup
+            /* Status stage */
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+            break;
+        }
 
-                /* Status stage */
-                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+        case SET_LINE_CODE:
+        {
+            if ((gUsbCmd.wIndex & 0xff) == 0) /* VCOM-1 */
+                HSUSBD_CtrlOut((uint8_t *)&gLineCoding, 7);
 
-                /* UART setting */
-                if ((gUsbCmd.wIndex & 0xff) == 0) /* VCOM-1 */
-                    VCOM_LineCoding(0);
+            /* Status stage */
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
 
-                break;
-            }
+            /* UART setting */
+            if ((gUsbCmd.wIndex & 0xff) == 0) /* VCOM-1 */
+                VCOM_LineCoding(0);
 
-            default:
-            {
-                /* Setup error, stall the device */
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-                break;
-            }
+            break;
+        }
+
+        default:
+        {
+            /* Setup error, stall the device */
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+            break;
+        }
         }
     }
 }
@@ -479,55 +479,15 @@ void VCOM_LineCoding(uint8_t port)
         comThead = 0;
         comTtail = 0;
 
-        // Reset hardware fifo
-        DEBUG_PORT->FIFO = 0x3;
-
-        // Set baudrate
-        u32Baud_Div = UART_BAUD_MODE2_DIVIDER(__HIRC, gLineCoding.u32DTERate);
-
-        if (u32Baud_Div > 0xFFFF)
-            DEBUG_PORT->BAUD = (UART_BAUD_MODE0 | UART_BAUD_MODE0_DIVIDER(__HIRC, gLineCoding.u32DTERate));
-        else
-            DEBUG_PORT->BAUD = (UART_BAUD_MODE2 | u32Baud_Div);
-
-        // Set parity
-        if (gLineCoding.u8ParityType == 0)
-            u32Reg = 0; // none parity
-        else if (gLineCoding.u8ParityType == 1)
-            u32Reg = 0x08; // odd parity
-        else if (gLineCoding.u8ParityType == 2)
-            u32Reg = 0x18; // even parity
-        else
-            u32Reg = 0;
-
-        // bit width
-        switch (gLineCoding.u8DataBits)
-        {
-            case 5:
-                u32Reg |= 0;
-                break;
-
-            case 6:
-                u32Reg |= 1;
-                break;
-
-            case 7:
-                u32Reg |= 2;
-                break;
-
-            case 8:
-                u32Reg |= 3;
-                break;
-
-            default:
-                break;
-        }
-
-        // stop bit
-        if (gLineCoding.u8CharFormat > 0)
-            u32Reg |= 0x4; // 2 or 1.5 bits
-
-        DEBUG_PORT->LINE = u32Reg;
+        UART_Close(DEBUG_PORT);
+        UART_SetLineConfig(DEBUG_PORT,
+                           (g_LineCoding.u32DTERate),
+                           (g_LineCoding.u8DataBits - 5),
+                           (g_LineCoding.u8ParityType == 0) ? UART_PARITY_NONE :
+                           (g_LineCoding.u8ParityType == 1) ? UART_PARITY_ODD :
+                           (g_LineCoding.u8ParityType == 2) ? UART_PARITY_EVEN :
+                           UART_PARITY_NONE,
+                           (g_LineCoding.u8CharFormat == 0) ? UART_STOP_BIT_1 : UART_STOP_BIT_2);
 
         // Re-enable UART interrupt
         NVIC_EnableIRQ(DEBUG_PORT_IRQn);
