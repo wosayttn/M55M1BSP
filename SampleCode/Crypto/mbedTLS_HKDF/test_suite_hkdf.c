@@ -53,16 +53,53 @@
 #if defined(MBEDTLS_ERROR_C)
 #include "mbedtls/error.h"
 #endif
-#include "mbedtls/platform.h"
-
+//Porting by nvt
+#if defined(MBEDTLS_PLATFORM_C)
+    #include "mbedtls/platform.h"
+#else
+    #include <stdio.h>
+    #define mbedtls_fprintf    fprintf
+    #define mbedtls_snprintf   snprintf
+    #define mbedtls_calloc     calloc
+    #define mbedtls_free       free
+    #define mbedtls_exit       exit
+    #define mbedtls_time       time
+    #define mbedtls_time_t     time_t
+    #define MBEDTLS_EXIT_SUCCESS EXIT_SUCCESS
+    #define MBEDTLS_EXIT_FAILURE EXIT_FAILURE
+#endif
+//End Porting by nvt
 #if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C)
 #include "mbedtls/memory_buffer_alloc.h"
 #endif
 
+//Porting by nvt
+#ifdef _MSC_VER
+    #include <basetsd.h>
+    typedef UINT8 uint8_t;
+    typedef INT32 int32_t;
+    typedef UINT32 uint32_t;
+    #define strncasecmp _strnicmp
+    #define strcasecmp _stricmp
+#else
+    #include <stdint.h>
+#endif
+//End Porting by nvt
+#include <string.h>
+
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
-#include <unistd.h>
+    #include <unistd.h>
+    #include <strings.h>
 #endif
 
+//Porting by nvt
+/* Type for Hex parameters */
+typedef struct data_tag
+{
+    uint8_t *   x;
+    uint32_t    len;
+} data_t;
+//End Porting by nvt
 #if defined(MBEDTLS_MD_SOME_PSA)
 #define MD_PSA_INIT()   PSA_INIT()
 #define MD_PSA_DONE()   PSA_DONE()
@@ -127,12 +164,6 @@ typedef union {
     intmax_t sint;
 } mbedtls_test_argument_t;
 
-/* Type for Hex parameters */
-typedef struct data_tag
-{
-    uint8_t *   x;
-    uint32_t    len;
-} data_t;
 
 /*----------------------------------------------------------------------------*/
 /* Status and error constants */
@@ -389,11 +420,11 @@ exit:
 
 void test_test_hkdf_extract_wrapper( void ** params )
 {
-    data_t data1 = {(uint8_t *) params[1], *((uint32_t *) (params[2])) };
-    data_t data3 = {(uint8_t *) params[3], *((uint32_t *) (params[4]))};
-    data_t data5 = {(uint8_t *) params[5], *((uint32_t *) (params[6]))};
+    data_t data1 = {(uint8_t *) params[1], ((mbedtls_test_argument_t *) params[2])->len};
+    data_t data3 = {(uint8_t *) params[3], ((mbedtls_test_argument_t *) params[4])->len};
+    data_t data5 = {(uint8_t *) params[5], ((mbedtls_test_argument_t *) params[6])->len};
 
-    test_test_hkdf_extract( *((uint32_t *) (params[0])), &data1, &data3, &data5 );
+    test_test_hkdf_extract( ((mbedtls_test_argument_t *) params[0])->sint, &data1, &data3, &data5 );
 }
 
 void test_test_hkdf_expand(int md_alg,
@@ -803,7 +834,7 @@ int verify_string(char **str)
  *
  * \return      0 if success else 1
  */
-int verify_int( char *str, uint32_t *value )
+int verify_int( char *str, int32_t *value )
 {
     size_t i;
     int minus = 0;
@@ -882,7 +913,7 @@ int get_line(FILE *f, char *buf, size_t len)
 
     /* Read until we get a valid line */
     do {
-        ret = fgets(buf, len, f);
+        ret = myfgets(buf, len, f);
         if (ret == NULL) {
             return -1;
         }
@@ -926,6 +957,59 @@ int get_line(FILE *f, char *buf, size_t len)
  *
  * \return      Count of strings found.
  */
+//static int parse_arguments(char *buf, size_t len, char **params,
+//                           size_t params_len)
+//{
+//    size_t cnt = 0, i;
+//    char *cur = buf;
+//    char *p = buf, *q;
+//    
+//	  printf("\r\n parse_arguments, raw string: %s\r\n", buf);
+//    params[cnt++] = cur;
+
+//    while (*p != '\0' && p < (buf + len)) {
+//        if (*p == '\\') {
+//            p++;
+//            p++;
+//            continue;
+//        }
+//        if (*p == ':') {
+//            if (p + 1 < buf + len) {
+//                cur = p + 1;
+//                TEST_HELPER_ASSERT(cnt < params_len);
+//                params[cnt++] = cur;
+//            }
+//            *p = '\0';
+//        }
+
+//        p++;
+//    }
+
+//    /* Replace backslash escapes in strings */
+//    for (i = 0; i < cnt; i++) {
+//        p = params[i];
+//        q = params[i];
+
+//        while (*p != '\0') {
+//            if (*p == '\\') {
+//                ++p;
+//                switch (*p) {
+//                    case 'n':
+//                        *p = '\n';
+//                        break;
+//                    default:
+//                        // Fall through to copying *p
+//                        break;
+//                }
+//            }
+//            *(q++) = *(p++);
+//        }
+//        *q = '\0';
+//    }
+//    printf("\r\n parse_arguments, ret len=%d, %s\r\n", cnt, params[0]);
+//    return cnt;
+//}
+
 static int parse_arguments(char *buf, size_t len, char **params,
                            size_t params_len)
 {
@@ -977,7 +1061,6 @@ static int parse_arguments(char *buf, size_t len, char **params,
 
     return cnt;
 }
-
 /**
  * \brief       Converts parameters into test function consumable parameters.
  *              Example: Input:  {"int", "0", "char*", "Hello",
@@ -1015,7 +1098,7 @@ static int convert_params(size_t cnt, char **params,
                 break;
             }
         } else if (strcmp(type, "int") == 0) {
-            if (verify_int(val, (uint32_t*)(&(int_params_store->sint)))== 0) {
+            if (verify_int(val, (int32_t*)(&(int_params_store->sint)))== 0) {
                 *out++ = (char *) int_params_store++;
             } else {
                 ret = (DISPATCH_INVALID_TEST_DATA);
@@ -1301,7 +1384,7 @@ int execute_tests(int argc, const char **argv)
     char buf[5000];
     char *params[50];
     /* Store for processed integer params. */
-    int32_t int_params[50];
+    mbedtls_test_argument_t int_params[50];
     void *pointer;
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
     int stdout_fd = -1;
@@ -1339,7 +1422,7 @@ int execute_tests(int argc, const char **argv)
     }
 
     if (outcome_file_name != NULL && *outcome_file_name != '\0') {
-        outcome_file = fopen(outcome_file_name, "a");
+        outcome_file = myfopen(outcome_file_name, "a");
         if (outcome_file == NULL) {
             mbedtls_fprintf(stderr, "Unable to open outcome file. Continuing anyway.\n");
         }
@@ -1391,12 +1474,12 @@ int execute_tests(int argc, const char **argv)
             mbedtls_fprintf(stderr, "Failed to open test file: %s\n",
                             test_filename);
             if (outcome_file != NULL) {
-                fclose(outcome_file);
+                myfclose(outcome_file);
             }
             return 1;
         }
 
-        while (!feof(file)) {
+        while (!myfeof(file)) {
             if (unmet_dep_count > 0) {
                 mbedtls_fprintf(stderr,
                                 "FATAL: Dep count larger than zero at start of loop\n");
@@ -1539,21 +1622,21 @@ int execute_tests(int argc, const char **argv)
                 fflush(stdout);
             } else if (ret == DISPATCH_INVALID_TEST_DATA) {
                 mbedtls_fprintf(stderr, "FAILED: FATAL PARSE ERROR\n");
-                fclose(file);
+                myfclose(file);
                 mbedtls_exit(2);
             } else if (ret == DISPATCH_TEST_FN_NOT_FOUND) {
                 mbedtls_fprintf(stderr, "FAILED: FATAL TEST FUNCTION NOT FOUND\n");
-                fclose(file);
+                myfclose(file);
                 mbedtls_exit(2);
             } else {
                 total_errors++;
             }
         }
-        fclose(file);
+        myfclose(file);
     }
 
     if (outcome_file != NULL) {
-        fclose(outcome_file);
+        myfclose(outcome_file);
     }
 
     mbedtls_fprintf(stdout,
@@ -1564,7 +1647,7 @@ int execute_tests(int argc, const char **argv)
         mbedtls_fprintf(stdout, "FAILED");
     }
 
-    mbedtls_fprintf(stdout, " (%u / %u tests (%u skipped))\n",
+    mbedtls_fprintf(stdout, " (%u passed/ %u tests (%u skipped))\n",
                     total_tests - total_errors, total_tests, total_skipped);
 
 #if defined(MBEDTLS_TEST_MUTEX_USAGE)
@@ -1583,7 +1666,6 @@ int execute_tests(int argc, const char **argv)
 }
 
 
-#line 217 "suites/main_test.function"
 
 /*----------------------------------------------------------------------------*/
 /* Main Test code */
@@ -1683,7 +1765,7 @@ int main()
 
     SysTick_Config(SystemCoreClock / 1000);
 
-    printf("MBEDTLS ECDH self test ...\n");
+    printf("MBEDTLS HKDF self test ...\n");
 
 #if defined(MBEDTLS_TEST_HOOKS)
     extern void (*mbedtls_test_hook_test_fail)( const char * test, int line, const char * file );
