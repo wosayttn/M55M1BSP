@@ -159,24 +159,11 @@ static void prvSetupHardware( void )
     /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
-    /* Waiting for Internal RC clock ready */
+    /* Waiting for Internal RC 12MHz clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0*/
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
+    /* Enable PLL0 180MHz clock and set all bus clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -185,9 +172,14 @@ static void prvSetupHardware( void )
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
+    /* Enable module clock */
+    CLK_EnableModuleClock(GPIOE_MODULE);
     CLK_EnableModuleClock(EMAC0_MODULE);
-
-    /* Set PB multi-function pins for Debug UART RXD and TXD */
+    SYS_ResetModule(SYS_EMAC0RST);
+    
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init I/O Multi-function                                                                                 */
+    /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
     SET_EMAC0_RMII_MDC_PE8();
@@ -200,7 +192,12 @@ static void prvSetupHardware( void )
     SET_EMAC0_RMII_RXD1_PC6();
     SET_EMAC0_RMII_CRSDV_PA7();
     SET_EMAC0_RMII_RXERR_PA6();
-    SET_EMAC0_PPS_PB6();
+
+    GPIO_SetSlewCtl(PE, (BIT10 | BIT11 | BIT12), GPIO_SLEWCTL_FAST0);
+
+    /* PE.13 Set high */
+    GPIO_SetMode(PE, BIT13, GPIO_MODE_OUTPUT);
+    PE13 = 1;
 
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
@@ -208,6 +205,7 @@ static void prvSetupHardware( void )
     /* Lock protected registers */
     SYS_LockReg();
 }
+
 
 /*-----------------------------------------------------------*/
 

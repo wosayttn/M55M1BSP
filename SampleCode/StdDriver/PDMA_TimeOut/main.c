@@ -86,6 +86,9 @@ NVT_ITCM void PDMA0_IRQHandler(void)
     {
         printf("unknown interrupt !!\n");
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    status = PDMA_GET_INT_STATUS(PDMA0);
 }
 
 static void SYS_Init(void)

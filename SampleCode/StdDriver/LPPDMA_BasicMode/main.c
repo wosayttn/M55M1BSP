@@ -52,13 +52,14 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
 
         /* Clear transfer done flag of channel 2 */
         LPPDMA_CLR_TD_FLAG(LPPDMA, LPPDMA_TDSTS_TDIF2_Msk);
-
-        while (LPPDMA_GET_TD_STS(LPPDMA) & LPPDMA_TDSTS_TDIF2_Msk);
     }
     else
     {
         printf("unknown interrupt 0x%08X!!\n", u32Status);
     }
+
+	// CPU read interrupt flag register to wait write(clear) instruction completement.
+	u32Status = LPPDMA_GET_INT_STATUS(LPPDMA);
 }
 
 static void SYS_Init(void)

@@ -41,7 +41,7 @@ namespace audio {
                         m_frameLen(frameLen),
 
                         /* Smallest power of 2 >= frame length. */
-                        m_frameLenPadded(pow(2, ceil((log(frameLen)/log(2))))),
+                        m_frameLenPadded((uint32_t)pow(2, ceil((log(frameLen)/log(2))))),
                         m_useHtkMethod(useHtkMethod)
     {}
 

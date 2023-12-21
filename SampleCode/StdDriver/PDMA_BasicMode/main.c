@@ -58,6 +58,9 @@ NVT_ITCM void PDMA0_IRQHandler(void)
         /* Clear transfer done flag of channel 2 */
         PDMA_CLR_TD_FLAG(PDMA0, PDMA_TDSTS_TDIF2_Msk);
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = PDMA_GET_INT_STATUS(PDMA0);
 }
 
 static void SYS_Init(void)

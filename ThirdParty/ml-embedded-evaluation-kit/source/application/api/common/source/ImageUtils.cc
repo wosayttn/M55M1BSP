@@ -113,9 +113,9 @@ namespace image {
         const float G = 0.587;
         const float B = 0.114;
         for (size_t i = 0; i < dstImgSz; ++i, srcPtr += 3) {
-            uint32_t  int_gray = R * (*srcPtr) +
+            uint32_t  int_gray = (uint32_t)(R * (*srcPtr) +
                                  G * (*(srcPtr + 1)) +
-                                 B * (*(srcPtr + 2));
+                                 B * (*(srcPtr + 2)));
             *dstPtr++ = int_gray <= std::numeric_limits<uint8_t>::max() ?
                         int_gray : std::numeric_limits<uint8_t>::max();
         }

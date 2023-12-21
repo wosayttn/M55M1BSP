@@ -254,7 +254,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state></state>
+                    <state>Pa082,Pe550,Pe177</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
@@ -1313,7 +1313,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state></state>
+                    <state>Pa082,Pe550,Pe177</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>

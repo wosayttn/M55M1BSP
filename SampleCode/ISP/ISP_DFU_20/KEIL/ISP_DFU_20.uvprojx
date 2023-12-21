@@ -409,11 +409,6 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\sys.c</FilePath>
             </File>
-            <File>
-              <FileName>hsusbd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\hsusbd.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -445,9 +440,9 @@
               <FilePath>..\dfu_transfer.c</FilePath>
             </File>
             <File>
-              <FileName>isp_user.c</FileName>
+              <FileName>hsusbd_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\isp_user.c</FilePath>
+              <FilePath>..\hsusbd_user.c</FilePath>
             </File>
           </Files>
         </Group>
