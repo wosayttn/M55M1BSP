@@ -9,6 +9,8 @@
 #ifndef __USBD_MASS_H__
 #define __USBD_MASS_H__
 
+#include "dataflashprog.h"
+
 /* Define the vendor id and product id */
 // #define USBD_VID        0x0416
 // #define USBD_PID        0x501E
@@ -102,7 +104,6 @@ struct CSW
 #endif
 
 /*-------------------------------------------------------------*/
-#define DATA_FLASH_STORAGE_SIZE    (64*1024)   /* Configure the DATA FLASH storage size */
 #define MASS_BUFFER_SIZE           256         /* Mass Storage command buffer size */
 #define STORAGE_BUFFER_SIZE        512         /* Data transfer buffer size in 512 bytes alignment */
 #define UDC_SECTOR_SIZE            512         /* logic sector size */
