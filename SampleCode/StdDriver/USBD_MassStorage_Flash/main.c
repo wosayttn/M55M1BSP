@@ -100,7 +100,8 @@ void SYS_Init(void)
 
     /* Enable FMC0 module clock */
     CLK_EnableModuleClock(FMC0_MODULE);
-        /* Select UART clock source from HIRC */
+
+    /* Select FMC clock source from HIRC */
     CLK_SetModuleClock(FMC0_MODULE, CLK_FMCSEL_FMC0SEL_HIRC,0);
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
