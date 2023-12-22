@@ -64,7 +64,8 @@ static void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART module clock */
+    /* Enable module clock */
+    CLK_EnableModuleClock(ISP0_MODULE);
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -124,9 +125,7 @@ int main()
 
         u32ExecBank = (uint32_t)((FMC->ISPSTS & FMC_ISPSTS_FBS_Msk) >> FMC_ISPSTS_FBS_Pos);
         printf("\n BANK%d APP processing \n", u32ExecBank);
-
-
-        printf("\n Download new FW? [y/n]\n");
+        printf("\n Download new FW ? [y/n]\n");
         u32ch = (uint32_t)getchar();
 
         if (u32ch == 'y')
@@ -154,17 +153,18 @@ int main()
             }
             else
             {
-                printf("Xomdem transfer done !\n");
+                printf("Xomdem transfer done.\n");
                 printf("Total trnasfer size is %d\n", i32Err);
             }
 
-            printf("\n Firmware download completed !\n");
+            printf("\n Firmware download completed.\n");
         }
         else
         {
             printf("\n Reset from BANK%d Loader \n", u32ExecBank);
             /* Remap to Loader */
             FMC_SetVectorPageAddr(FMC_APROM_BASE);
+            UART_WAIT_TX_EMPTY(DEBUG_PORT);
             SYS_ResetCPU();
         }
     }

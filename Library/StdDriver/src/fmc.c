@@ -1196,7 +1196,7 @@ int32_t  FMC_ConfigSecureConceal(uint32_t u32Base, uint32_t u32PageCnt, uint32_t
   *           FMC_ERR_TIMEOUT        Run/Read check sum time-out failed
   *           FMC_ERR_INVALID_PARAM  u32Addr or u32count must be aligned with 8 KB page alignment
   */
-#if 0   // TESTCHIP_ONLY not support
+#ifndef TESTCHIP_ONLY   // TESTCHIP_ONLY not support
 uint32_t  FMC_GetChkSum(uint32_t u32Addr, uint32_t u32count)
 {
     int32_t i32RetCode;
@@ -1260,7 +1260,7 @@ uint32_t  FMC_GetChkSum(uint32_t u32Addr, uint32_t u32count)
   * @note     Global error code g_FMC_i32ErrCode
   *           -1  RUN_ALL_ONE or CHECK_ALL_ONE commands time-out
   */
-#if 0   // TESTCHIP_ONLY not support
+#ifndef TESTCHIP_ONLY   // TESTCHIP_ONLY not support
 uint32_t  FMC_CheckAllOne(uint32_t u32Addr, uint32_t u32count)
 {
     int32_t i32RetCode = READ_ALLONE_CMD_FAIL;

@@ -63,6 +63,9 @@ void SYS_Init(void)
     /* Enable UART module clock */
     SetDebugUartCLK();
 
+    /* Enable module clock */
+    CLK_EnableModuleClock(ISP0_MODULE);
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -74,21 +77,20 @@ void SYS_Init(void)
 
 int32_t  SelfTest(void)
 {
-    printf("\n Self test pass!!! \n");
+    printf("\n Self test pass. \n");
     return 0;
 }
 
 int main()
 {
     uint32_t i;
-    int32_t ret;
+    int32_t i32RetCode;
 
     /* Initial clocks and multi-functions */
     SYS_Init();
 
     /* Init Debug UART for print message */
     InitDebugUart();
-    UART_Open(UART1, 115200);
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -114,21 +116,20 @@ int main()
         s_u32ExecBank = (uint32_t)((FMC->ISPSTS & FMC_ISPSTS_FBS_Msk) >> FMC_ISPSTS_FBS_Pos);
         printf("\n Bank%d APP processing (Backup firmware)\n", s_u32ExecBank);
 
-        ret = SelfTest();
+        i32RetCode = SelfTest();
 
-        if (ret == 0)
+        if (i32RetCode == 0)
         {
             for (i = 0; i < 1000; i++)
             {
-                printf(" Firmware processing....  cnt[%d]\r", i);
+                printf(" Firmware processing ... Count [%d]\r", i);
                 s_u32GetSum = FuncCrc32(APP_BASE, APP_SIZE);
             }
         }
         else
         {
-            printf("\n Enter power down...\n");
-
-            CLK_SysTickDelay(2000);
+            printf("\n Enter power down ...\n");
+            UART_WAIT_TX_EMPTY(DEBUG_PORT);
             PMC_PowerDown();
         }
     }

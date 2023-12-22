@@ -434,6 +434,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\Library\StdDriver\src\pmc.c</FilePath>
             </File>
+            <File>
+              <FileName>crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Library\StdDriver\src\crc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
