@@ -43,6 +43,7 @@ extern "C" {
 #define NVT_DTCM                                __attribute__((section(".bss.DTCM.ZeroInit")))          /*!< Placed declaration data in DTCM region */
 #define NVT_NONCACHEABLE                        __attribute__((section(".bss.NonCacheable.ZeroInit")))  /*!< Placed declaration data in NonCacheable region */
 #define NVT_DTCM_VTOR                           __attribute__((section("DTCM.VTOR")))
+#define NVT_UNUSED(x)                           (void)(x)
 
 #define __PC()                                              \
     __extension__({                                           \
@@ -150,6 +151,16 @@ extern void SetDebugUartCLK(void);
  * @details  Initialize debug UART to 115200-8n1
  */
 extern void InitDebugUart(void);
+
+/**
+ * @brief    Init MPU Region
+ *
+ * @param    psMPURegion        User defined MPU region configuration table
+ * @return   u32RegionCnt       Region count of psMPURegion
+ *
+ * @details  Initialize MPU Region according to mpu_config_M55M1.h
+ */
+extern int32_t InitPreDefMPURegion(const ARM_MPU_Region_t *psMPURegion, uint32_t u32RegionCnt);
 
 /**
  * @brief    Setup MPC configuration

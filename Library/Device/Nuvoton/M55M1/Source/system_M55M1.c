@@ -80,7 +80,7 @@ __WEAK void SetDebugUartCLK(void)
 
     /* Waiting for HXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-	
+
     /* Select UART clock source from HXT */
     CLK_SetModuleClock(DEBUG_PORT_MODULE, CLK_UARTSEL0_UART6SEL_HXT, CLK_UARTDIV0_UART6DIV(1));
 
@@ -108,27 +108,113 @@ __WEAK void InitDebugUart(void)
 }
 #endif /* NVT_DBG_UART_OFF */
 
-/*----------------------------------------------------------------------------
-  System initialization function
- *----------------------------------------------------------------------------*/
-__attribute__((constructor)) void SystemInit(void)
+/**
+ * @brief    Init MPU Region
+ *
+ * @param    psMPURegion        User defined MPU region configuration table
+ * @return   u32RegionCnt       Region count of psMPURegion
+ *
+ * @details  Initialize MPU Region according to mpu_config_M55M1.h
+ */
+__WEAK int32_t InitPreDefMPURegion(const ARM_MPU_Region_t *psMPURegion, uint32_t u32RegionCnt)
 {
-#if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
-#ifdef NVT_VECTOR_ON_FLASH
-    SCB->VTOR = (uint32_t)(&__VECTOR_TABLE[0]);
-#else
-    SCB->VTOR = (uint32_t)(&DTCM_VECTOR_TABLE[0]);
-#endif
+    int32_t i32RetCode = 0;
+
+#if (MPU_INIT_REGIONS != 0)
+    int32_t i32RegionIdx = 0;
+    const uint8_t WTRA   = ARM_MPU_ATTR_MEMORY_(1, 0, 1, 0); // Non-transient, Write-Through, Read-allocate, Not Write-allocate
+    const uint8_t WBWARA = ARM_MPU_ATTR_MEMORY_(1, 1, 1, 1); // Non-transient, Write-Back, Read-allocate, Write-allocate
+
+#if (MPU_INIT_MEM_ATTRS & BIT0)
+    ARM_MPU_SetMemAttr(eMPU_ATTR_DEV_nGnRnE,        ARM_MPU_ATTR(ARM_MPU_ATTR_DEVICE_nGnRnE, ARM_MPU_ATTR_DEVICE_nGnRnE));
 #endif
 
-#ifdef UNALIGNED_SUPPORT_DISABLE
-    SCB->CCR |= SCB_CCR_UNALIGN_TRP_Msk;
+#if (MPU_INIT_MEM_ATTRS & BIT1)
+    ARM_MPU_SetMemAttr(eMPU_ATTR_DEV_nGnRE,         ARM_MPU_ATTR(ARM_MPU_ATTR_DEVICE_nGnRE,  ARM_MPU_ATTR_DEVICE_nGnRnE));
 #endif
 
-    /* Enable Loop and branch info cache */
-    SCB->CCR |= SCB_CCR_LOB_Msk;
-    __DSB();
-    __ISB();
+#if (MPU_INIT_MEM_ATTRS & BIT2)
+    ARM_MPU_SetMemAttr(eMPU_ATTR_DEV_nGRE,          ARM_MPU_ATTR(ARM_MPU_ATTR_DEVICE_nGRE,   ARM_MPU_ATTR_DEVICE_nGRE));
+#endif
+
+#if (MPU_INIT_MEM_ATTRS & BIT3)
+    ARM_MPU_SetMemAttr(eMPU_ATTR_DEV_GRE,           ARM_MPU_ATTR(ARM_MPU_ATTR_DEVICE_GRE,    ARM_MPU_ATTR_DEVICE_GRE));
+#endif
+
+#if (MPU_INIT_MEM_ATTRS & BIT4)
+    ARM_MPU_SetMemAttr(eMPU_ATTR_NON_CACHEABLE,     ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
+#endif
+
+#if (MPU_INIT_MEM_ATTRS & BIT5)
+    ARM_MPU_SetMemAttr(eMPU_ATTR_CACHEABLE_WTRA,    ARM_MPU_ATTR(WTRA, WTRA));
+#endif
+
+#if (MPU_INIT_MEM_ATTRS & BIT6)
+    ARM_MPU_SetMemAttr(eMPU_ATTR_CACHEABLE_WBWARA,  ARM_MPU_ATTR(WBWARA, WBWARA));
+#endif
+
+    i32RegionIdx = 0;
+
+    if (MPU_INIT_REGION(0) != 0)
+    {
+        printf("[0] Base: 0x%08X, Limit: 0x%08X\n", MPU_INIT_BASE(0), MPU_INIT_LIMIT(0));
+        ARM_MPU_SetRegion(i32RegionIdx, MPU_INIT_RBAR(0, MPU_INIT_BASE(0)), ARM_MPU_RLAR(MPU_INIT_LIMIT(0), MPU_MEM_ATTR(0)));
+        i32RegionIdx++;
+    }
+
+    if (MPU_INIT_REGION(1) != 0)
+    {
+        printf("[1] Base: 0x%08X, Limit: 0x%08X\n", MPU_INIT_BASE(1), MPU_INIT_LIMIT(1));
+        ARM_MPU_SetRegion(i32RegionIdx, MPU_INIT_RBAR(1, MPU_INIT_BASE(1)), ARM_MPU_RLAR(MPU_INIT_LIMIT(1), MPU_MEM_ATTR(1)));
+        i32RegionIdx++;
+    }
+
+    if (MPU_INIT_REGION(2) != 0)
+    {
+        printf("[2] Base: 0x%08X, Limit: 0x%08X\n", MPU_INIT_BASE(2), MPU_INIT_LIMIT(2));
+        ARM_MPU_SetRegion(i32RegionIdx, MPU_INIT_RBAR(2, MPU_INIT_BASE(2)), ARM_MPU_RLAR(MPU_INIT_LIMIT(2), MPU_MEM_ATTR(2)));
+        i32RegionIdx++;
+    }
+
+    if (MPU_INIT_REGION(3) != 0)
+    {
+        printf("[3] Base: 0x%08X, Limit: 0x%08X\n", MPU_INIT_BASE(3), MPU_INIT_LIMIT(3));
+        ARM_MPU_SetRegion(i32RegionIdx, MPU_INIT_RBAR(3, MPU_INIT_BASE(3)), ARM_MPU_RLAR(MPU_INIT_LIMIT(3), MPU_MEM_ATTR(3)));
+        i32RegionIdx++;
+    }
+
+    if (MPU_INIT_REGION(4) != 0)
+    {
+        printf("[4] Base: 0x%08X, Limit: 0x%08X\n", MPU_INIT_BASE(4), MPU_INIT_LIMIT(4));
+        ARM_MPU_SetRegion(i32RegionIdx, MPU_INIT_RBAR(4, MPU_INIT_BASE(4)), ARM_MPU_RLAR(MPU_INIT_LIMIT(4), MPU_MEM_ATTR(4)));
+        i32RegionIdx++;
+    }
+
+    if (MPU_INIT_REGION(5) != 0)
+    {
+        printf("[5] Base: 0x%08X, Limit: 0x%08X\n", MPU_INIT_BASE(5), MPU_INIT_LIMIT(5));
+        ARM_MPU_SetRegion(i32RegionIdx, MPU_INIT_RBAR(5, MPU_INIT_BASE(5)), ARM_MPU_RLAR(MPU_INIT_LIMIT(5), MPU_MEM_ATTR(5)));
+        i32RegionIdx++;
+    }
+
+    if (MPU_INIT_REGION(6) != 0)
+    {
+        printf("[6] Base: 0x%08X, Limit: 0x%08X\n", MPU_INIT_BASE(6), MPU_INIT_LIMIT(6));
+        ARM_MPU_SetRegion(i32RegionIdx, MPU_INIT_RBAR(6, MPU_INIT_BASE(6)), ARM_MPU_RLAR(MPU_INIT_LIMIT(6), MPU_MEM_ATTR(6)));
+        i32RegionIdx++;
+    }
+
+    if (psMPURegion != NULL)
+    {
+        if (u32RegionCnt < (MPU_REGIONS_MAX - i32RegionIdx))
+            i32RetCode = -1;
+        else
+            ARM_MPU_Load(i32RegionIdx, psMPURegion, u32RegionCnt);
+    }
+
+    // Enable MPU with default priv access to all other regions
+    ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
+#endif  // (MPU_INIT_REGIONS != 0)
 
 #ifdef NVT_DCACHE_ON
 
@@ -171,10 +257,10 @@ __attribute__((constructor)) void SystemInit(void)
          * Memory Type = Normal
          * Attribute   = Outer Non-cacheable, Inner Non-cacheable
          */
-        ARM_MPU_SetMemAttr(0UL, ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
+        ARM_MPU_SetMemAttr(eMPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
 
         /* Configure MPU memory regions */
-        ARM_MPU_SetRegion(0UL,                                                       /* Region 0 */
+        ARM_MPU_SetRegion((MPU_REGIONS_MAX - 1),                                                   /* Region 7 */
                           ARM_MPU_RBAR((uint32_t)g_u32NonCacheableBase, ARM_MPU_SH_NON, 0, 0, 1),  /* Non-shareable, read/write, privileged, non-executable */
                           ARM_MPU_RLAR((uint32_t)g_u32NonCacheableLimit, 0)                        /* Use Attr 0 */
                          );
@@ -185,6 +271,31 @@ __attribute__((constructor)) void SystemInit(void)
     }
 
 #endif  // NVT_DCACHE_ON
+
+    return i32RetCode;
+}
+
+/*----------------------------------------------------------------------------
+  System initialization function
+ *----------------------------------------------------------------------------*/
+__attribute__((constructor)) void SystemInit(void)
+{
+#if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
+#ifdef NVT_VECTOR_ON_FLASH
+    SCB->VTOR = (uint32_t)(&__VECTOR_TABLE[0]);
+#else
+    SCB->VTOR = (uint32_t)(&DTCM_VECTOR_TABLE[0]);
+#endif
+#endif
+
+#ifdef UNALIGNED_SUPPORT_DISABLE
+    SCB->CCR |= SCB_CCR_UNALIGN_TRP_Msk;
+#endif
+
+    /* Enable Loop and branch info cache */
+    SCB->CCR |= SCB_CCR_LOB_Msk;
+    __DSB();
+    __ISB();
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
     TZ_SAU_Setup();
