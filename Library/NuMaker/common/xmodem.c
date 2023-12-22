@@ -11,8 +11,7 @@
 #include "NuMicro.h"
 #include "xmodem.h"
 
-
-#define XMD_MAX_TRANS_SIZE      (1024*1024)
+#define XMD_MAX_TRANS_SIZE      (1024 * 1024)
 
 
 /* 1024 for XModem 1k + 3 head chars + 2 crc + nul */
@@ -58,7 +57,7 @@ static int32_t XMD_Write(uint32_t u32Addr, uint32_t u32Data)
 
 static void XMD_putc(uint8_t c)
 {
-    UART_T *pUART = DEBUG_PORT;
+    UART_T *pUART = XMD_UART_PORT;
 
     while (pUART->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
 
@@ -68,7 +67,7 @@ static void XMD_putc(uint8_t c)
 
 static int32_t XMD_getc()
 {
-    UART_T *pUART = DEBUG_PORT;
+    UART_T *pUART = XMD_UART_PORT;
     uint32_t u32ms = 0;
 
     /* Wait for 100ms */

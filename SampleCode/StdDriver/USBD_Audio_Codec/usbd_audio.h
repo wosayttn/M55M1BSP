@@ -11,6 +11,13 @@
 
 #define NAU8822     1
 
+#if defined(ALIGN_AF_PINS)
+    #define I2C_PORT                        I2C3
+#else
+    #define I2C_PORT                        I2C2
+#endif
+
+
 /* Use LIN as source, undefine it if MIC is used */
 //#define INPUT_IS_LIN
 

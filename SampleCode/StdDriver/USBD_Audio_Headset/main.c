@@ -12,30 +12,68 @@
 #include "NuMicro.h"
 #include "usbd_audio.h"
 
-#define CRYSTAL_LESS        1
+#define CRYSTAL_LESS        0
 #define TRIM_INIT           (SYS_BASE+0xF40)
+
+void SetDebugUartCLK(void)
+{
+#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
+
+#if (CRYSTAL_LESS)
+
+    /* Select UART clock source from HIRC */
+    CLK_SetModuleClock(DEBUG_PORT_MODULE, CLK_UARTSEL0_UART6SEL_HIRC, CLK_UARTDIV0_UART6DIV(1));
+
+#else
+
+    /* Select UART clock source from HXT */
+    CLK_SetModuleClock(DEBUG_PORT_MODULE, CLK_UARTSEL0_UART6SEL_HXT, CLK_UARTDIV0_UART6DIV(1));
+
+#endif
+
+    /* Enable UART clock */
+    CLK_EnableModuleClock(DEBUG_PORT_MODULE);
+
+    /* Reset UART module */
+    SYS_ResetModule(DEBUG_PORT_RST);
+
+#endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
+}
 
 void SYS_Init(void)
 {
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
+#if (!CRYSTAL_LESS)
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
-    /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
-    SystemCoreClockUpdate();
+    /* Enable APLL1 96MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);
 
-    /* Enable GPA ~ GPJ peripheral clock */
+    /* Select USB clock source as APLL1/2 and USB clock divider as 2 */
+    CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_APLL1_DIV2, CLK_USBDIV_USBDIV(1));
+
+#else
+
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
+
+    /* Enable HIRC48M clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
+
+    /* Waiting for HIRC48M clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
+
+    /* Select USB clock source as HIRC48M and USB clock divider as 1 */
+    CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
+
+#endif
+
+    /* Enable all GPIO module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
     CLK_EnableModuleClock(GPIOC_MODULE);
@@ -44,37 +82,14 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOF_MODULE);
     CLK_EnableModuleClock(GPIOG_MODULE);
     CLK_EnableModuleClock(GPIOH_MODULE);
+    CLK_EnableModuleClock(GPIOI_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
-
-#if (!CRYSTAL_LESS)
-    /* Enable External RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
-
-    /* Waiting for External RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-
-    /* Enable APLL1 96MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);
-
-    /* Select USB clock source as PLL/2 and USB clock divider as 2 */
-    CLK_SetModuleClock(USBD_MODULE, CLK_USBSEL_USBSEL_APLL1_DIV2, CLK_USBDIV_USBDIV(1));
-#else
-    /* Enable HIRC48M clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
-
-    /* Waiting for HIRC48M clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
-
-
-    /* Select USB clock source as HIRC48M and USB clock divider as 1 */
-    CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
-#endif
 
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
     /* Enable OTG0_ module clock */
-    CLK_EnableModuleClock(OTG0_MODULE); 
+    CLK_EnableModuleClock(OTG0_MODULE);
 
     /* Select USBD */
     SYS->USBPHY = (SYS->USBPHY & ~SYS_USBPHY_USBROLE_Msk) | SYS_USBPHY_OTGPHYEN_Msk ;
@@ -86,16 +101,21 @@ void SYS_Init(void)
     CLK_EnableModuleClock(TMR0_MODULE);
 
     /* Select TIMER0 module clock source as HIRC */
-    CLK_SetModuleClock(TMR0_MODULE, CLK_TTMRSEL_TTMR0SEL_HIRC, 0);
+    CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_HIRC, 0);
+
+    /* Enable PDMA0 module clock */
+    CLK_EnableModuleClock(PDMA0_MODULE);
 
     /* Enable I2S0 module clock */
     CLK_EnableModuleClock(I2S0_MODULE);
 
+#if defined(ALIGN_AF_PINS)
     /* Enable I2C3 module clock */
     CLK_EnableModuleClock(I2C3_MODULE);
-
-    /* Enable PDMA0 module clock */
-    CLK_EnableModuleClock(PDMA0_MODULE);
+#else
+    /* Enable I2C2 module clock */
+    CLK_EnableModuleClock(I2C2_MODULE);
+#endif
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -117,22 +137,35 @@ void SYS_Init(void)
     SET_I2S0_DO_PI9();
     SET_I2S0_LRCK_PI10();
 
+    /* Enable I2S0 clock pin (PI6) schmitt trigger */
+    PI->SMTEN |= GPIO_SMTEN_SMTEN6_Msk;
+
+#if defined(ALIGN_AF_PINS)
     /* Set I2C3 multi-function pins */
     SET_I2C3_SDA_PG1();
     SET_I2C3_SCL_PG0();
 
-    PI->SMTEN |= GPIO_SMTEN_SMTEN6_Msk;
+    /* Enable I2C3 clock pin (PG0) schmitt trigger */
     PG->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
+#else
+    /* Set I2C3 multi-function pins */
+    SET_I2C2_SDA_PD0();
+    SET_I2C2_SCL_PD1();
+
+    /* Enable I2C2 clock pin (PD1) schmitt trigger */
+    PD->SMTEN |= GPIO_SMTEN_SMTEN1_Msk;
+#endif
+
 }
 
 /* Init I2C interface */
-void I2C3_Init(void)
+void I2C_Init(void)
 {
-    /* Open I2C3 and set clock to 400k */
-    I2C_Open(I2C3, 400000);
+    /* Open I2C_PORT and set clock to 100k */
+    I2C_Open(I2C_PORT, 100000);
 
-    /* Get I2C3 Bus Clock */
-    printf("I2C clock %d Hz\n", I2C_GetBusClockFreq(I2C3));
+    /* Get I2C Bus Clock */
+    printf("I2C clock %d Hz\n", I2C_GetBusClockFreq(I2C_PORT));
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -162,22 +195,31 @@ int32_t main(void)
     printf("|          NuMicro USB Audio CODEC Sample Code          |\n");
     printf("+-------------------------------------------------------+\n");
 
-    /* Init I2C3 to access codec */
-    I2C3_Init();
+    /* Init I2C to access codec */
+    I2C_Init();
+
+    /* Select source from HIRC(12MHz) */
+    CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_HIRC, MODULE_NoMsk);
 
     /* Open I2S0 interface and set to slave mode, stereo channel, I2S format */
     I2S_Open(I2S0, I2S_MODE_SLAVE, 48000, I2S_DATABIT_16, I2S_STEREO, I2S_FORMAT_I2S);
 
-    /* Select source from HIRC(12MHz) */
-    CLK_SetModuleClock(I2S0_MODULE, CLK_I2SSEL_I2S0SEL_HIRC, 0);
+    /* Set MCLK and enable MCLK */
+    I2S_EnableMCLK(I2S0, 12000000);
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
     /* Set JK-EN low to enable phone jack on NuMaker board. */
+#if defined(ALIGN_AF_PINS)
     SET_GPIO_PB12();
     GPIO_SetMode(PB, BIT12, GPIO_MODE_OUTPUT);
     PB12 = 0;
-
-    /* Set MCLK and enable MCLK */
-    I2S_EnableMCLK(I2S0, 12000000);
+#else
+    SET_GPIO_PD4();
+    GPIO_SetMode(PD, BIT4, GPIO_MODE_OUTPUT);
+    PD4 = 0;
+#endif
 
 #if NAU8822
     NAU8822_Setup();
@@ -193,9 +235,6 @@ int32_t main(void)
 
     /* Configure PDMA */
     PDMA_Init();
-
-    /* Lock protected registers */
-    SYS_LockReg();
 
 #ifndef __FEEDBACK__
     /* Configure TIMER0 for adjusting codec's PLL */
@@ -258,7 +297,6 @@ int32_t main(void)
 
             /* Clear SOF */
             USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
-
         }
 
 #endif
@@ -266,3 +304,4 @@ int32_t main(void)
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
+

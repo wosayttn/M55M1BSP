@@ -11,7 +11,7 @@
 #include "NuDB_common.h"
 #include "xmodem.h"
 
-#define CREATE_BANK1_APP   0
+#define CREATE_BANK1_APP   1
 #define PLL_CLOCK          FREQ_180MHZ
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -114,17 +114,13 @@ void SYS_Init(void)
     SetDebugUartCLK();
 
     /* Enable module clock */
-    CLK_EnableModuleClock(UART1_MODULE);
-    SYS_ResetModule(SYS_UART1RST);
-    CLK_SetModuleClock(UART1_MODULE, CLK_UARTSEL0_UART1SEL_HIRC, CLK_UARTDIV0_UART1DIV(1));
     CLK_EnableModuleClock(CRC0_MODULE);
+    CLK_EnableModuleClock(ISP0_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-    SET_UART1_RXD_PA2();
-    SET_UART1_TXD_PA3();
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -156,20 +152,36 @@ void Download(void)
 
     if (i32Err < 0)
     {
-        printf("\nXmodem transfer fail!\n");
+        printf("\n[Error] Xmodem transfer fail !\n");
 
         while (1);
     }
     else
     {
-        printf("\nXomdem transfer done!\n");
+        printf("\nXomdem transfer done.\n");
         printf("Total trnasfer size is %d\n", i32Err);
     }
 
-    printf("\n Firmware download completed!!\n");
+    printf("\n Firmware download completed.\n");
 }
 
+#ifdef TESTCHIP_ONLY
 // [Begin] TESTCHIP_ONLY - This function should be removed in M55M1.
+uint32_t FMC_CheckAllOne(uint32_t u32StartAddr, uint32_t u32ByteSize)
+{
+    uint32_t u32Addr;
+
+    for (u32Addr = u32StartAddr; u32Addr < (u32StartAddr + u32ByteSize); u32Addr += 4)
+    {
+        if (FMC_Read(u32Addr) != 0xFFFFFFFF)
+        {
+            return READ_ALLONE_NOT;
+        }
+    }
+
+    return READ_ALLONE_YES;
+}
+
 uint32_t FMC_GetChkSum(uint32_t u32StartAddr, uint32_t u32ByteSize)
 {
     uint32_t u32CRC32Checksum = 0xFFFFFFFF;
@@ -190,6 +202,7 @@ uint32_t FMC_GetChkSum(uint32_t u32StartAddr, uint32_t u32ByteSize)
     return u32CRC32Checksum;
 }
 // [End] TESTCHIP_ONLY - This function should be removed in real chip.
+#endif
 
 int main()
 {
@@ -203,8 +216,6 @@ int main()
 
     /* Init Debug UART for print message */
     InitDebugUart();
-    DEBUG_PORT->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400));
-    DEBUG_PORT->LINE = UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -238,7 +249,6 @@ int main()
 
         if (FMC_Read(FW_CRC_BASE) == 0xFFFFFFFF)
         {
-
             FMC_Write(FW_CRC_BASE, u32App0ChkSum);
             printf("\n Update Firmware CRC in [0x%08X] is [0x%08X]\n", (uint32_t)FW_CRC_BASE, FMC_Read(FW_CRC_BASE));
         }
@@ -256,7 +266,7 @@ int main()
         /* Create the other bank loader for executing bank remap */
         if ((s_u32ExecBank == 0) && (u32Loader0ChkSum != u32Loader1ChkSum))
         {
-            printf("\n Create Bank%d Loader... \n",  s_u32ExecBank ^ 1);
+            printf("\n Create Bank%d Loader ... \n",  s_u32ExecBank ^ 1);
 
             /* Erase loader region */
             for (i = LOADER_BASE; i < (LOADER_BASE + LOADER_SIZE); i += FMC_FLASH_PAGE_SIZE)
@@ -270,14 +280,14 @@ int main()
                 FMC_Write(FMC_APROM_BANK_SIZE * (s_u32ExecBank ^ 1) + i, FMC_Read((FMC_BANK_SIZE * s_u32ExecBank) + i));
             }
 
-            printf(" Create Bank%d Loader completed! \n", (s_u32ExecBank ^ 1));
+            printf(" Create Bank%d Loader completed. \n", (s_u32ExecBank ^ 1));
         }
 
 #if CREATE_BANK1_APP
 
-        if ((s_u32ExecBank == 0) && ((FMC_CheckAllOne((FMC_APROM_BANK0_END + APP_BASE), APP_SIZE)) == READ_ALLONE_YES))
+        if ((s_u32ExecBank == 0) && ((FMC_CheckAllOne((APP_BASE + FMC_APROM_BANK_SIZE), APP_SIZE)) == READ_ALLONE_YES))
         {
-            printf("\n Create Bank%d App... \n", s_u32ExecBank ^ 1);
+            printf("\n Create Bank%d App ... \n", s_u32ExecBank ^ 1);
 
             /* Erase app region */
             for (i = APP_BASE; i < (APP_BASE + APP_SIZE); i += FMC_FLASH_PAGE_SIZE)
@@ -285,7 +295,7 @@ int main()
                 FMC_Erase(FMC_BANK_SIZE * (s_u32ExecBank ^ 1) + i);
             }
 
-            /* Create app in the other bank(just for test)*/
+            /* Create app in the other bank (just for test) */
             for (i = APP_BASE; i < (APP_BASE + APP_SIZE); i += 4)
             {
                 FMC_Write(FMC_BANK_SIZE * (s_u32ExecBank ^ 1) + i, FMC_Read((FMC_BANK_SIZE * s_u32ExecBank) + i));
@@ -301,7 +311,7 @@ int main()
         {
             WDT_CLEAR_RESET_FLAG(WDT0);
             printf("\n === System reset by WDT time-out event === \n");
-            printf(" Any key to remap back to backup FW\n");
+            printf(" Press any key to remap back to backup FW\n");
             getchar();
 
             /* Remap to Bank1 to execute backup firmware */
@@ -309,6 +319,7 @@ int main()
             s_u32ExecBank = (uint32_t)((FMC->ISPSTS & FMC_ISPSTS_FBS_Msk) >> FMC_ISPSTS_FBS_Pos);
             printf("\n Bank%d Loader after remap  \n\n", s_u32ExecBank);
 
+            UART_WAIT_TX_EMPTY(DEBUG_PORT);
             /* Remap to App */
             FMC_SetVectorPageAddr(APP_BASE);
             SYS_ResetCPU();
@@ -320,6 +331,7 @@ int main()
 
         if (u8GetCh == 'y')
         {
+            UART_WAIT_TX_EMPTY(DEBUG_PORT);
             /* Remap to App */
             FMC_SetVectorPageAddr(APP_BASE);
             SYS_ResetCPU();

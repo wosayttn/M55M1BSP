@@ -76,3 +76,10 @@ long __lseek(int handle, long offset, int whence)
 {
     return -1;
 }
+
+void __exit(int x)
+{
+    while (1)
+    {
+    }
+}

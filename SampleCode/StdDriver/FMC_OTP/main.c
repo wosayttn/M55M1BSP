@@ -73,8 +73,12 @@ int main()
 
         if ((u32OtpLw == 0xFFFFFFFF) && (u32OtpHw == 0xFFFFFFFF))
         {
-            printf("OTP%d is 0xFFFFFFFF-0xFFFFFFFF. It should be a free entry.\n", u32i);
+            printf("\nOTP%d is 0xFFFFFFFF-0xFFFFFFFF. It should be a free entry.\n", u32i);
             break;
+        }
+        else
+        {
+            printf("Read OTP%d: 0x%x-0x%x (%s).\n", u32i, u32OtpLw, u32OtpHw, FMC_IsOTPLocked(u32i) ? "Lock" : "Unlock");
         }
     }
 

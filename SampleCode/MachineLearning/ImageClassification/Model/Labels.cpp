@@ -1045,7 +1045,7 @@ bool GetLabelsVector(std::vector<std::string> &labels)
 
     for (size_t i = 0; i < labelsSz; ++i)
     {
-        labels.emplace_back(labelsVec[i]);
+      labels.emplace_back(labelsVec[i]);
     }
 
     return true;

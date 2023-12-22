@@ -45,6 +45,30 @@ NVT_ITCM void WDT0_IRQHandler(void)
     }
 }
 
+#ifdef TESTCHIP_ONLY
+// [Begin] TESTCHIP_ONLY - This function should be removed in M55M1.
+uint32_t FMC_GetChkSum(uint32_t u32StartAddr, uint32_t u32ByteSize)
+{
+    uint32_t u32CRC32Checksum = 0xFFFFFFFF;
+    uint32_t u32Addr;
+
+    /* Configure CRC controller for CRC-CRC32 mode */
+    CRC_Open(CRC_32, (CRC_WDATA_RVS | CRC_CHECKSUM_RVS | CRC_CHECKSUM_COM), 0xFFFFFFFFul, CRC_CPU_WDATA_32);
+    CRC_SET_DMA_SADDR(CRC, u32StartAddr);
+    CRC_SET_DMACNT_WORD(CRC, u32ByteSize / 4);
+    CRC_DMA_START(CRC);
+
+    while ((CRC_GET_STATUS(CRC) & CRC_DMASTS_FINISH_Msk) == 0)
+        ;
+
+    CRC->DMASTS = CRC_DMASTS_FINISH_Msk;
+    u32CRC32Checksum = CRC_GetChecksum();
+
+    return u32CRC32Checksum;
+}
+// [End] TESTCHIP_ONLY - This function should be removed in real chip.
+#endif
+
 void SYS_Init(void)
 {
     /* Unlock protected registers */
@@ -63,6 +87,10 @@ void SYS_Init(void)
     /* Enable UART module clock */
     SetDebugUartCLK();
 
+    /* Enable module clock */
+    CLK_EnableModuleClock(CRC0_MODULE);
+    CLK_EnableModuleClock(ISP0_MODULE);
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -77,19 +105,19 @@ int32_t  SelfTest(void)
 #if TEST_MODE
     uint8_t u8GetCh;
 
-    printf("\n Self test pass? y/n \n");
+    printf("\n Self test pass ? [y/n] \n");
     u8GetCh = (uint8_t)getchar();
     printf("\n User select [%c] \n", u8GetCh);
 
     /* Let user select to test pass or fail condition*/
     if (u8GetCh == 'y')
     {
-        printf("\n Self test pass!!! \n\n");
+        printf("\n Self test pass. \n\n");
         return 0;
     }
     else
     {
-        printf("\n Self test fail!!! \n\n");
+        printf("\n Self test fail ! \n\n");
         return -1;
     }
 
@@ -100,7 +128,7 @@ int32_t  SelfTest(void)
 
     if (s_u32GetSum == g_u32KeepSum)
     {
-        printf("\n Self test pass!!! \n");
+        printf("\n Self test pass. \n");
         return 0;
     }
     else
@@ -160,7 +188,7 @@ int main()
             /* Normal test condition*/
             for (i = 0; i < 1000; i++)
             {
-                printf(" Firmware processing....  cnt[%d]\r", i);
+                printf(" Firmware processing ... Count [%d]\r", i);
                 s_u32GetSum = FuncCrc32(APP_BASE, APP_SIZE);
             }
         }
@@ -171,7 +199,6 @@ int main()
             CLK_SysTickDelay(2000);
             PMC_PowerDown();
         }
-
     }
 
     while (1);

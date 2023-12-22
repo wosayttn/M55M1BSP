@@ -332,6 +332,12 @@ typedef enum IRQn
 #include "partition_M55M1_template.h"         /* Default setup for Secure/Non-Secure Zones */
 #endif
 
+#if __has_include("mpu_config_M55M1.h")
+#include "mpu_config_M55M1.h"                  /* User defined setup for MPU regions */
+#else
+#include "mpu_config_M55M1_template.h"         /* Default setup for MPU regions */
+#endif
+
 /******************************************************************************/
 /*                        Peripheral Register Structures                      */
 /******************************************************************************/

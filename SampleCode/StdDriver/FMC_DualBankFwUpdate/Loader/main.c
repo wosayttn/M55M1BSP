@@ -29,7 +29,8 @@ static void SYS_Init(void)
     /* Enable UART module clock */
     SetDebugUartCLK();
 
-    /* Enable CRC module clock */
+    /* Enable module clock */
+    CLK_EnableModuleClock(ISP0_MODULE);
     CLK_EnableModuleClock(CRC0_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -137,7 +138,7 @@ int main()
                 FMC_Write(FMC_APROM_BANK_SIZE * u32UpdateBank + u32Addr, FMC_Read((FMC_APROM_BANK_SIZE * u32ExecBank) + u32Addr));
             }
 
-            printf(" Create Bank%d Loader completed! \n", (u32ExecBank ^ 1));
+            printf(" Create Bank%d Loader completed. \n", (u32ExecBank ^ 1));
         }
 
         if ((u32ExecBank == 0) && ((CheckAllOne((FMC_APROM_BANK_SIZE + APP_BASE), APP_SIZE)) == READ_ALLONE_YES))
@@ -156,10 +157,10 @@ int main()
                 FMC_Write(FMC_APROM_BANK_SIZE * u32UpdateBank + u32Addr, FMC_Read((FMC_APROM_BANK_SIZE * u32ExecBank) + u32Addr));
             }
 
-            printf(" Create Bank%d App completed! \n", u32UpdateBank);
+            printf(" Create Bank%d App completed. \n", u32UpdateBank);
         }
 
-        printf("\n Execute BANK%d APP? [y/n] \n", u32ExecBank);
+        printf("\n Execute BANK%d APP ? [y/n]\n", u32ExecBank);
         u8GetCh = (uint8_t)getchar();
 
         if (u8GetCh == 'y')
@@ -170,7 +171,7 @@ int main()
         }
         else
         {
-            printf("\n Remap to BANK%d Loader? [y/n] \n", u32UpdateBank);
+            printf("\n Remap to BANK%d Loader ? [y/n]\n", u32UpdateBank);
             u8GetCh = (uint8_t)getchar();
 
             if (u8GetCh == 'y')
@@ -178,11 +179,11 @@ int main()
                 /* Remap Bank */
                 printf("\n BANK%d Loader before remap \n", u32ExecBank);
                 FMC_RemapBank(u32ExecBank ^ 1);
-                printf("\n Remap completed!\n");
+                printf("\n Remap completed.\n");
             }
             else
             {
-                printf("\n Continue to execute BANK%d Loader? \n ", u32ExecBank);
+                printf("\n Continue to execute BANK%d Loader ? [y/n]\n ", u32ExecBank);
             }
         }
     }

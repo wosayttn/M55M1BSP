@@ -14,8 +14,30 @@
 #define CRYSTAL_LESS        1
 #define TRIM_INIT           (SYS_BASE+0xF40)
 
-void SYS_Init(void);
-void PowerDown(void);
+void SetDebugUartCLK(void)
+{
+#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
+
+#if (CRYSTAL_LESS)
+
+    /* Select UART clock source from HIRC */
+    CLK_SetModuleClock(DEBUG_PORT_MODULE, CLK_UARTSEL0_UART6SEL_HIRC, CLK_UARTDIV0_UART6DIV(1));
+
+#else
+
+    /* Select UART clock source from HXT */
+    CLK_SetModuleClock(DEBUG_PORT_MODULE, CLK_UARTSEL0_UART6SEL_HXT, CLK_UARTDIV0_UART6DIV(1));
+
+#endif
+
+    /* Enable UART clock */
+    CLK_EnableModuleClock(DEBUG_PORT_MODULE);
+
+    /* Reset UART module */
+    SYS_ResetModule(DEBUG_PORT_RST);
+
+#endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
+}
 
 void SYS_Init(void)
 {
@@ -23,43 +45,22 @@ void SYS_Init(void)
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
-
-    /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
-    SystemCoreClockUpdate();
-
-    /* Enable GPA ~ GPJ peripheral clock */
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    CLK_EnableModuleClock(GPIOB_MODULE);
-    CLK_EnableModuleClock(GPIOC_MODULE);
-    CLK_EnableModuleClock(GPIOD_MODULE);
-    CLK_EnableModuleClock(GPIOE_MODULE);
-    CLK_EnableModuleClock(GPIOF_MODULE);
-    CLK_EnableModuleClock(GPIOG_MODULE);
-    CLK_EnableModuleClock(GPIOH_MODULE);
-    CLK_EnableModuleClock(GPIOJ_MODULE);
-
 #if (!CRYSTAL_LESS)
-    /* Enable External RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
-    /* Waiting for External RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
     /* Enable APLL1 96MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);
 
-    /* Select USB clock source as PLL/2 and USB clock divider as 2 */
+    /* Select USB clock source as APLL1/2 and USB clock divider as 2 */
     CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_APLL1_DIV2, CLK_USBDIV_USBDIV(1));
+
 #else
+
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
+
     /* Enable HIRC48M clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
 
@@ -68,13 +69,26 @@ void SYS_Init(void)
 
     /* Select USB clock source as HIRC48M and USB clock divider as 1 */
     CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
+
 #endif
+
+    /* Enable all GPIO module clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    CLK_EnableModuleClock(GPIOB_MODULE);
+    CLK_EnableModuleClock(GPIOC_MODULE);
+    CLK_EnableModuleClock(GPIOD_MODULE);
+    CLK_EnableModuleClock(GPIOE_MODULE);
+    CLK_EnableModuleClock(GPIOF_MODULE);
+    CLK_EnableModuleClock(GPIOG_MODULE);
+    CLK_EnableModuleClock(GPIOH_MODULE);
+    CLK_EnableModuleClock(GPIOI_MODULE);
+    CLK_EnableModuleClock(GPIOJ_MODULE);
 
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
     /* Enable OTG0_ module clock */
-    CLK_EnableModuleClock(OTG0_MODULE); 
+    CLK_EnableModuleClock(OTG0_MODULE);
 
     /* Select USBD */
     SYS->USBPHY = (SYS->USBPHY & ~SYS_USBPHY_USBROLE_Msk) | SYS_USBPHY_OTGPHYEN_Msk ;
