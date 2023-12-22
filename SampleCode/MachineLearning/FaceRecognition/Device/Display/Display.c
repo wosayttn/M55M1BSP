@@ -125,7 +125,6 @@ int Display_PutText(
     if (u32PosX + x_span > s_psLCD->m_u16Width || u32PosY + y_span > s_psLCD->m_u16Height) {
         return 1;
     } else {
-        const unsigned char font_idx = 0; /* We are using the custom font = 0 */
 
         const uint32_t col = u32PosX/x_span;
         const uint32_t max_cols = s_psLCD->m_u16Width/x_span - 1;

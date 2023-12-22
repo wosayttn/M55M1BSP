@@ -20,7 +20,7 @@
 // https://en.wikipedia.org/wiki/Cosine_similarity
 static float cosine_similarity(std::vector<float> embedArray1, std::vector<float> embedArray2)
 {
-    int i, numElem;
+    int numElem;
     float ret = 0, mod1 = 0, mod2 = 0;
 
     if (embedArray1.size() != embedArray2.size())

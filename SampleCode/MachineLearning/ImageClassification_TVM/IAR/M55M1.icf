@@ -12,8 +12,8 @@ define symbol __ICFEDIT_region_SRAM012_start__ = 0x20100000;
 define symbol __ICFEDIT_region_SRAM012_end__   = 0x2024FFFF;
 define symbol __ICFEDIT_region_DTCM_start__   = 0x20000000;
 define symbol __ICFEDIT_region_DTCM_end__     = 0x2001FFFF;
-define symbol __ICFEDIT_region_HYPERFLASH_start__   = 0x80000000;
-define symbol __ICFEDIT_region_HYPERFLASH_end__     = 0x81FFFFFF;
+define symbol __ICFEDIT_region_HYPERFLASH_start__   = 0x82000000;
+define symbol __ICFEDIT_region_HYPERFLASH_end__     = 0x83FFFFFF;
 
 /*-Sizes-*/
 define symbol __ICFEDIT_size_cstack__ = 0x00008000;
@@ -43,5 +43,5 @@ place in ITCM_region   { section itcm };
 place in DTCM_region   { readwrite,
                         block CSTACK, block HEAP };
 place in SRAM012_region   { section .bss.sram.data, section .bss.noinit.tvm };
-place in HYPERFLASH_region   { section .rodata.tvm };
+/*place in HYPERFLASH_region   { section .rodata.tvm };*/
 

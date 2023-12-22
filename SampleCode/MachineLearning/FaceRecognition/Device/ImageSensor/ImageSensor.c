@@ -236,7 +236,6 @@ int ImageSensor_Capture(uint32_t u32FrameBufAddr)
 
 int ImageSensor_TriggerCapture(uint32_t u32FrameBufAddr)
 {
-    int i32Ret = CCAP_OK;
     /* Set System Memory Packet Base Address Register */
     //printf("sensor capture address %x \n", u32FrameBufAddr);
     CCAP_SetPacketBuf((uint32_t)u32FrameBufAddr);

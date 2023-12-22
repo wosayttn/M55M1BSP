@@ -163,11 +163,8 @@ void HyperFlash_DMARead(SPIM_T *pSPIMx, uint32_t u32SAddr, uint8_t *pu8RdBuf, ui
 void SPIM_TrainingDLLDelayTime(SPIM_T *spim)
 {
     uint8_t u8RdDelay = 0;
-    uint8_t u8Temp;
     uint8_t u8RdDelayIdx = 0;
     uint8_t u8RdDelayRes[SPIM_MAX_DLL_LATENCY] = {0};
-    uint32_t u32i = 0;
-    uint32_t u32j;
     uint32_t u32SrcAddr = 0;
     uint32_t u32TestSize = 32;
     uint8_t u32SrcArray[32] = {0};
