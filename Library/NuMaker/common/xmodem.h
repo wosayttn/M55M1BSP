@@ -8,16 +8,17 @@
 #ifndef _XMODEM_H
 #define _XMODEM_H
 
+#define XMD_UART_PORT           DEBUG_PORT
 
 /* Xmodem Standard Commands */
-#define XMD_SOH             0x01
-#define XMD_STX             0x02
-#define XMD_EOT             0x04
-#define XMD_ACK             0x06
-#define XMD_NAK             0x15
-#define XMD_CAN             0x18
-#define XMD_CTRLZ           0x1A
-#define XMD_MAX_TIMEOUT     0x600
+#define XMD_SOH                 0x01
+#define XMD_STX                 0x02
+#define XMD_EOT                 0x04
+#define XMD_ACK                 0x06
+#define XMD_NAK                 0x15
+#define XMD_CAN                 0x18
+#define XMD_CTRLZ               0x1A
+#define XMD_MAX_TIMEOUT         0x600
 
 /* Xmodem Status */
 #define XMD_STS_SUCCESS         0
@@ -27,7 +28,7 @@
 #define XMD_STS_PACKET_NUM_ERR  -4
 #define XMD_STS_WRITE_FAIL      -5
 
-#define MAXRETRANS  25
+#define MAXRETRANS              25
 
 int32_t Xmodem(uint32_t u32DestAddr);
 int32_t XmodemSend(uint8_t *pu8Src, int32_t srcsz);
