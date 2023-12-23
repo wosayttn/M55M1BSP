@@ -48,7 +48,7 @@
                 </option>
                 <option>
                     <name>OGCoreOrChip</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>GRuntimeLibSelect</name>
@@ -74,7 +74,7 @@
                 </option>
                 <option>
                     <name>OGChipSelectEditMenu</name>
-                    <state>Default	None</state>
+                    <state>M55M1 series	Nuvoton M55M1 series</state>
                 </option>
                 <option>
                     <name>GenLowLevelInterface</name>
@@ -120,7 +120,7 @@
                 </option>
                 <option>
                     <name>GFPUDeviceSlave</name>
-                    <state>Default	None</state>
+                    <state>M55M1 series	Nuvoton M55M1 series</state>
                 </option>
                 <option>
                     <name>FPU2</name>
@@ -256,7 +256,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state></state>
+                    <state>Pa082, Pe188, Pe177, Pe068</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
@@ -281,7 +281,7 @@
                 </option>
                 <option>
                     <name>CCDebugInfo</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IEndianMode</name>
@@ -1072,18 +1072,18 @@
         </file>
     </group>
     <group>
+        <name>FATFS</name>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\FatFs\source\ff.c</name>
+        </file>
+    </group>
+    <group>
         <name>Library</name>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\clk.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sys.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\uart.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\gpio.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\i2c.c</name>
@@ -1092,58 +1092,58 @@
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\i2s.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\gpio.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\pdma.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sdh.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\pdma.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sys.c</name>
         </file>
-    </group>
-    <group>
-        <name>FATFS</name>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\FatFs\source\ff.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\uart.c</name>
         </file>
     </group>
     <group>
         <name>MP3</name>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\LibMAD\src\bit.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libmad\src\bit.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\LibMAD\src\decoder.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libmad\src\decoder.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\LibMAD\src\fixed.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libmad\src\fixed.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\LibMAD\src\frame.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libmad\src\frame.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\LibMAD\src\huffman.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libmad\src\huffman.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\LibMAD\src\layer12.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libmad\src\layer12.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\LibMAD\src\layer3.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libmad\src\layer3.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\LibMAD\src\MP3Func.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libmad\src\MP3Func.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\LibMAD\src\stream.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libmad\src\stream.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\LibMAD\src\synth.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libmad\src\synth.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\LibMAD\src\timer.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libmad\src\timer.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\LibMAD\src\version.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libmad\src\version.c</name>
         </file>
     </group>
     <group>
