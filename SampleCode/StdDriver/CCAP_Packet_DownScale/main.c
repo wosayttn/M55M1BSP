@@ -123,8 +123,6 @@ int32_t PacketFormatDownScale(S_SENSOR_INFO *psSensorInfo)
             printf("Get frame %d\n", u32Frame);
         }
     }
-
-    return 0;
 }
 
 void SYS_Init(void)

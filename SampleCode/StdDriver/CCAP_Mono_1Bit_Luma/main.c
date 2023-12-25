@@ -84,7 +84,8 @@ int32_t PacketFormatDownScale(S_SENSOR_INFO *psSensorInfo)
     uint32_t u32Frame;
 
     /* Initialize HM01B0 sensor and set HM01B0 output YUV422 format */
-    if (psSensorInfo->pfnInitSensor(0) == FALSE) return -1;
+    if (psSensorInfo->pfnInitSensor(0) == FALSE)
+        return -1;
 
     /* Enable External CCAP Interrupt */
     NVIC_EnableIRQ(CCAP_IRQn);
@@ -126,8 +127,6 @@ int32_t PacketFormatDownScale(S_SENSOR_INFO *psSensorInfo)
             printf("Get frame %d\n", u32Frame);
         }
     }
-
-    return 0;
 }
 
 void SYS_Init(void)
