@@ -228,6 +228,7 @@
                 <option>
                     <name>CCDefines</name>
                     <state>NDEBUG</state>
+                    <state>NVT_DCACHE_ON</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -267,7 +268,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state></state>
+                    <state>Pe177</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
@@ -664,7 +665,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>FMC_OTP.bin</state>
+                    <state>CCAP_MotionDetection.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -703,7 +704,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>FMC_OTP.out</state>
+                    <state>CCAP_MotionDetection.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -1000,7 +1001,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>FMC_OTP_import_lib.o</state>
+                    <state>CCAP_MotionDetection_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1099,10 +1100,19 @@
     <group>
         <name>Library</name>
         <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\ccap.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\clk.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\fmc.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\gpio.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\lptmr.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\pmc.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
@@ -1117,7 +1127,13 @@
     <group>
         <name>User</name>
         <file>
+            <name>$PROJ_DIR$\..\i2c_gpio.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\main.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Sensor_HM1055.c</name>
         </file>
     </group>
 </project>
