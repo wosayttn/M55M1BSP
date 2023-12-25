@@ -69,7 +69,7 @@ typedef struct
 
 /*-------------------------------------------------------------*/
 extern volatile int8_t gi8BulkOutReady;
-extern STR_VCOM_LINE_CODING gLineCoding;
+extern STR_VCOM_LINE_CODING g_LineCoding;
 extern uint16_t gCtrlSignal;
 extern volatile uint16_t comRbytes;
 extern volatile uint16_t comRhead;
