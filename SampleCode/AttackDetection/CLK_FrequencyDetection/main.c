@@ -16,7 +16,6 @@
 /*---------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void CKFAIL_IRQHandler(void)
 {
-    uint32_t u32Status;
     uint32_t u32Reg;
 
     /* Unlock protected registers */
@@ -67,7 +66,7 @@ NVT_ITCM void CKFAIL_IRQHandler(void)
     SYS_LockReg();
 
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
-    u32Status = CLK->CLKDSTS;
+    inp32(CLK->CLKDSTS);
 }
 
 static void SYS_Init(void)
@@ -181,8 +180,8 @@ int main(void)
        The low boundary value should be less than 512*(HXT/HIRC48M) with -3% tolerance.
     */
 
-    CLK->CDLOWB = 512 * ((float)1 / ((float)__HIRC48M / __HXT)) * 0.97;
-    CLK->CDUPB  = 512 * ((float)1 / ((float)__HIRC48M / __HXT)) * 1.03;
+    CLK->CDLOWB = (uint32_t)(512 * ((float)1 / ((float)__HIRC48M / __HXT)) * 0.97);
+    CLK->CDUPB  = (uint32_t)(512 * ((float)1 / ((float)__HIRC48M / __HXT)) * 1.03);
 
 #else
 
