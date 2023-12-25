@@ -71,11 +71,13 @@ void DumpKeyFromKS(int32_t i32KeyIdx, uint32_t u32WordCnt)
 int main(void)
 {
     int32_t  i32RetCode = 0;
-    int32_t  i32KeyCnt, i32KeyIdx;
+    int32_t  i32KeyIdx;
     uint8_t  au8KeyIn[32]   = "user secret key input",
                               au8Salt[32]    = "user secret salt",
                                                au8Label[12]   = "user label",
                                                                 au8Context[16] = "user conext";
+
+    NVT_UNUSED(i32RetCode);
 
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
