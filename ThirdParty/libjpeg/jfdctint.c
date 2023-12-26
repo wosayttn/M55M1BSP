@@ -157,6 +157,26 @@
 /*
  * Perform the forward DCT on one block of samples.
  */
+unsigned char ucdata_array[64]  =           
+	                                           { 52, 55, 61, 66, 71, 61, 64, 73, 
+	                                             63, 59, 66, 90,109,185,69,72,
+		                                           62, 59, 68, 113,144,104,66,73,
+		                                           63, 58, 71, 122,154,106,70,69,
+		                                           67, 61, 68, 104,126,88,68,70,
+		                                           79, 65, 60, 70,77, 68, 58, 75,
+		                                           85, 71, 64, 59, 55, 61, 65, 83,
+		                                           87, 79, 69, 58, 65, 76, 78, 94	};
+																						 
+unsigned char ucdata_array2d[8][8]  =           
+	                                           { {52, 55, 61, 66, 71, 61, 64, 73}, 
+	                                             {63, 59, 66, 90,109,185,69,72},
+		                                           {62, 59, 68, 113,144,104,66,73},
+		                                           {63, 58, 71, 122,154,106,70,69},
+		                                           {67, 61, 68, 104,126,88,68,70},
+		                                           {79, 65, 60, 70,77, 68, 58, 75},
+		                                           {85, 71, 64, 59, 55, 61, 65, 83},
+		                                           {87, 79, 69, 58, 65, 76, 78, 94}	};
+																						 
 
 GLOBAL(void)
 jpeg_fdct_islow (DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
@@ -181,40 +201,45 @@ jpeg_fdct_islow (DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
    */
   dataptr = data;
 
-#if 0//def NVT_JPEG_SIMD
+#ifdef NVT_JPEG_SIMD
   
   for (ctr = 0; ctr < DCTSIZE; ctr++) 
   {
-    elemptr = sample_data[ctr] + start_col;
-	
-	for(int ii=0; ii<8;ii++) 
+    //elemptr = sample_data[ctr] + start_col;
+		elemptr = ucdata_array2d[ctr];
+	  for(int ii=0; ii<8;ii++) 
     {
-		i16simdbuf[DCTSIZE*ctr+ii] = elemptr[ii]&0x00FF;
-	}
-  }
+		    i16simdbuf[DCTSIZE*ctr+ii] = elemptr[ii];
+	  }
+   }
 #ifdef DBG_NVT_JPEG
   for (ctr = 0; ctr < DCTSIZE2; ctr++) 
 	   printf("u16simdbuf[%d] = %d\r\n", ctr, (int16_t)(i16simdbuf[ctr]));
 #endif//DBG_NVT_JPEG	
 	
   jsimd_fdct_islow_helium((int16_t*)(i16simdbuf));
-  for (ctr = 0; ctr < DCTSIZE2-DCTSIZE; ctr++) 
-  {
-	dataptr[ctr] = (int)(i16simdbuf[ctr+DCTSIZE]);
-  }
-  
-  for (ctr = 3*DCTSIZE; ctr < DCTSIZE2; ctr++) 
-  {
-	dataptr[ctr] = 0;
-  }
-
-#ifdef DBG_NVT_JPEG  
   for (ctr = 0; ctr < DCTSIZE2; ctr++) 
-  	   printf("simd fdct coeff[%d] = %d\r\n", ctr, (int16_t)(i16simdbuf[ctr]));
+  {
+	    dataptr[ctr] = (int)(i16simdbuf[ctr]);
+  }
+//  
+//  for (ctr = 3*DCTSIZE; ctr < DCTSIZE2; ctr++) 
+//  {
+//	dataptr[ctr] = 0;
+//  }
+  printf("--------------------------simd fdct done--------------------\r\n");
+#if 1//def DBG_NVT_JPEG  
+  for (ctr = 0; ctr < DCTSIZE2; ctr++) 
+  	   printf("simd fdct[%d] = %d\r\n", ctr, (int16_t)(i16simdbuf[ctr]));
 #endif//DBG_NVT_JPEG	
-#else
+#else///////////////////////////////////////
   for (ctr = 0; ctr < DCTSIZE; ctr++) {
-    elemptr = sample_data[ctr] + start_col;
+    //elemptr = sample_data[ctr] + start_col;
+		elemptr = &ucdata_array2d[ctr];
+		
+//		for(int ii=0; ii<8;ii++) 
+//    		printf("elemptr[%d] = %d \r\n", ii, elemptr[ii]);
+	
 
     /* Even part per LL&M figure 1 --- note that published figure is faulty;
      * rotator "c1" should be "c6".
@@ -285,6 +310,7 @@ jpeg_fdct_islow (DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
 
     dataptr += DCTSIZE;		/* advance pointer to next row */
   }
+  
 
   /* Pass 2: process columns.
    * We remove the PASS1_BITS scaling, but leave the results scaled up
@@ -293,16 +319,22 @@ jpeg_fdct_islow (DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
    */
 
   dataptr = data;
+	
+  printf("Pass1 process rows\r\n");
+//	for (int ii=0; ii<DCTSIZE2; ii++)
+//	    printf("element[%d]:%d \r\n", ii, dataptr[ii]);
   for (ctr = DCTSIZE-1; ctr >= 0; ctr--) {
     /* Even part per LL&M figure 1 --- note that published figure is faulty;
      * rotator "c1" should be "c6".
      */
-
-    tmp0 = dataptr[DCTSIZE*0] + dataptr[DCTSIZE*7];
+////////	for (int ii=0; ii<DCTSIZE; ii++)
+	  tmp0 = dataptr[DCTSIZE*0] + dataptr[DCTSIZE*7];
     tmp1 = dataptr[DCTSIZE*1] + dataptr[DCTSIZE*6];
     tmp2 = dataptr[DCTSIZE*2] + dataptr[DCTSIZE*5];
     tmp3 = dataptr[DCTSIZE*3] + dataptr[DCTSIZE*4];
-
+//		printf("dataptr=%d,%d,%d,%d,%d,%d,%d,%d \r\n",  dataptr[DCTSIZE*0], dataptr[DCTSIZE*1], dataptr[DCTSIZE*2], dataptr[DCTSIZE*3],\
+//		                                                                            dataptr[DCTSIZE*4], dataptr[DCTSIZE*5], dataptr[DCTSIZE*6], dataptr[DCTSIZE*7]);
+    
     /* Add fudge factor here for final descale. */
     tmp10 = tmp0 + tmp3 + (ONE << (PASS1_BITS-1));
     tmp12 = tmp0 - tmp3;
@@ -360,10 +392,13 @@ jpeg_fdct_islow (DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
     dataptr[DCTSIZE*3] = (DCTELEM) RIGHT_SHIFT(tmp1, CONST_BITS+PASS1_BITS);
     dataptr[DCTSIZE*5] = (DCTELEM) RIGHT_SHIFT(tmp2, CONST_BITS+PASS1_BITS);
     dataptr[DCTSIZE*7] = (DCTELEM) RIGHT_SHIFT(tmp3, CONST_BITS+PASS1_BITS);
-
+//    	for (int ii=0; ii<DCTSIZE; ii++)
+//	    printf("Pass1 dataptr[%d]:%d \r\n", ii, dataptr[ii]);
     dataptr++;			/* advance pointer to next column */
   }
-
+	dataptr = data;
+  for (int ii=0; ii<DCTSIZE2; ii++)
+	    printf("Pass1 element[%d]:%d \r\n", ii, dataptr[ii]);
 #endif//NVT_JPEG_SIMD
 }
 
