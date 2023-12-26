@@ -27,7 +27,7 @@ NVT_ITCM void LPADC0_IRQHandler(void)
     g_u32LpadcIntFlag = 1;
     g_u32COVNUMFlag++;
     /*Confirm that the Flag has been cleared.*/
-    LPADC_GET_INT_FLAG(LPADC0, LPADC_ADF_INT); 
+    LPADC_GET_INT_FLAG(LPADC0, LPADC_ADF_INT);
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* ACMP interrupt handler                                                                                 */
@@ -37,7 +37,7 @@ NVT_ITCM void ACMP01_IRQHandler(void)
     /* Clear ACMP 1 interrupt flag */
     ACMP_CLR_INT_FLAG(ACMP01, 1);
     g_u32ACMP1IntFlag = 1;
-    
+
     /*Confirm that the Flag has been cleared.*/
     ACMP_GET_INT_FLAG(ACMP01, 1);
 }
@@ -160,7 +160,7 @@ void LPADC_FunctionTest(void)
             g_u32COVNUMFlag = 0;
             g_u32ACMP1IntFlag = 0;
 
-            while (1)
+            while (g_u32COVNUMFlag < 6)
             {
                 /* Wait LPADC interrupt (g_u32LpadcIntFlag will be set at IRQ_Handler function) */
                 /* Wait ACMP interrupt (g_u32ACMP1IntFlag will be set at IRQ_Handler function) */
@@ -175,10 +175,11 @@ void LPADC_FunctionTest(void)
                 /* Get the conversion result of LPADC channel 2 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
 
-                ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
+                if ((g_u32COVNUMFlag >= 0) && (g_u32COVNUMFlag < 6))
+                {
+                    ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
+                }
 
-                if (g_u32COVNUMFlag >= 6)
-                    break;
             }
 
             /* Disable the  ACMP1 interrupt */
@@ -218,7 +219,7 @@ void LPADC_FunctionTest(void)
             g_u32LpadcIntFlag = 0;
             g_u32COVNUMFlag = 0;
 
-            while (1)
+            while (g_u32COVNUMFlag < 6)
             {
 
                 /* Wait LPADC interrupt (g_u32LpadcIntFlag will be set at IRQ_Handler function) */
@@ -234,10 +235,10 @@ void LPADC_FunctionTest(void)
                 /* Get the conversion result of the sample module 0 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
 
-                ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
-
-                if (g_u32COVNUMFlag >= 6)
-                    break;
+                if ((g_u32COVNUMFlag >= 0) && (g_u32COVNUMFlag < 6))
+                {
+                    ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
+                }
             }
 
 

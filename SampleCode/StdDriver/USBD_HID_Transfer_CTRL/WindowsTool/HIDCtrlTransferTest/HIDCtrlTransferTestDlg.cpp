@@ -54,14 +54,14 @@ END_MESSAGE_MAP()
 CHIDCtrlTransferTestDlg::CHIDCtrlTransferTestDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CHIDCtrlTransferTestDlg::IDD, pParent)
 {
-	
+
 	m_ProductIDString = _T("0520");
 	m_VendorIDString = _T("0416");
 
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
-//Application global variables 
+//Application global variables
 
 
 HIDP_CAPS							Capabilities;
@@ -75,7 +75,7 @@ OVERLAPPED							HIDOverlapped;
 char								InputReport[256];
 ULONG								Length;
 LPOVERLAPPED						lpOverLap;
-bool								MyDeviceDetected = FALSE; 
+bool								MyDeviceDetected = FALSE;
 CString								MyDevicePathName;
 DWORD								NumberOfBytesRead;
 char								OutputReport[256];
@@ -218,28 +218,28 @@ void CHIDCtrlTransferTestDlg::DisplayData(CString cstrDataToDisplay)
 BOOL CHIDCtrlTransferTestDlg::DeviceNameMatch(LPARAM lParam)
 {
 
-	// Compare the device path name of a device recently attached or removed 
+	// Compare the device path name of a device recently attached or removed
 	// with the device path name of the device we want to communicate with.
-	
+
 	PDEV_BROADCAST_HDR lpdb = (PDEV_BROADCAST_HDR)lParam;
 
 	DisplayData(_T("MyDevicePathName = ") + MyDevicePathName);
 
-	if (lpdb->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE) 
+	if (lpdb->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
 	{
-		
+
 		PDEV_BROADCAST_DEVICEINTERFACE lpdbi = (PDEV_BROADCAST_DEVICEINTERFACE)lParam;
 
-		
+
 		CString DeviceNameString;
 
 		//The dbch_devicetype parameter indicates that the event applies to a device interface.
-		//So the structure in LParam is actually a DEV_BROADCAST_INTERFACE structure, 
+		//So the structure in LParam is actually a DEV_BROADCAST_INTERFACE structure,
 		//which begins with a DEV_BROADCAST_HDR.
 
-		//The dbcc_name parameter of DevBroadcastDeviceInterface contains the device name. 
- 
-		//Compare the name of the newly attached device with the name of the device 
+		//The dbcc_name parameter of DevBroadcastDeviceInterface contains the device name.
+
+		//Compare the name of the newly attached device with the name of the device
 		//the application is accessing (myDevicePathName).
 
 		DeviceNameString = lpdbi->dbcc_name;
@@ -260,12 +260,12 @@ BOOL CHIDCtrlTransferTestDlg::DeviceNameMatch(LPARAM lParam)
 
             return false;
     	}
-		
+
 	}
 	else
 	{
 		return false;
-	}	
+	}
 }
 
 void CHIDCtrlTransferTestDlg::CloseHandles()
@@ -288,14 +288,14 @@ void CHIDCtrlTransferTestDlg::CloseHandles()
 	}
 }
 
-LRESULT CHIDCtrlTransferTestDlg::Main_OnDeviceChange(WPARAM wParam, LPARAM lParam)  
+LRESULT CHIDCtrlTransferTestDlg::Main_OnDeviceChange(WPARAM wParam, LPARAM lParam)
 {
-  
+
 	//DisplayData("Device change detected.");
 
 	PDEV_BROADCAST_HDR lpdb = (PDEV_BROADCAST_HDR)lParam;
 
-	switch(wParam) 
+	switch(wParam)
 	{
 		// Find out if a device has been attached or removed.
 		// If yes, see if the name matches the device path name of the device we want to access.
@@ -307,9 +307,9 @@ LRESULT CHIDCtrlTransferTestDlg::Main_OnDeviceChange(WPARAM wParam, LPARAM lPara
 			{
 				DisplayData(_T("Device has been attached."));
 			}
-		
-			return TRUE; 
-	
+
+			return TRUE;
+
 		case DBT_DEVICEREMOVECOMPLETE:
 			DisplayData(_T("Device has been removed."));
 
@@ -321,11 +321,11 @@ LRESULT CHIDCtrlTransferTestDlg::Main_OnDeviceChange(WPARAM wParam, LPARAM lPara
 
 				MyDeviceDetected = false;
 			}
-			return TRUE; 
-	
+			return TRUE;
+
 		default:
-			return TRUE; 
-	} 
+			return TRUE;
+	}
 }
 
 void CHIDCtrlTransferTestDlg::GetDeviceCapabilities()
@@ -353,8 +353,8 @@ void CHIDCtrlTransferTestDlg::GetDeviceCapabilities()
 	Requires: the pointer to the buffer returned by HidD_GetPreparsedData.
 	Returns: a Capabilities structure containing the information.
 	*/
-	
-	HidP_GetCaps(PreparsedData, &Capabilities);	
+
+	HidP_GetCaps(PreparsedData, &Capabilities);
 	HidD_FreePreparsedData(PreparsedData);
 }
 
@@ -391,7 +391,7 @@ void CHIDCtrlTransferTestDlg::DisplayReceivedData(char ReceivedByte)
 	//Convert the value to a 2-character Cstring.
 
 	strByteRead.Format(_T("%02X"), ReceivedByte);
-	strByteRead = strByteRead.Right(2); 
+	strByteRead = strByteRead.Right(2);
 
 	//Display the value in the Bytes Received List Box.
 	m_ResultsList.InsertString(-1, strByteRead);
@@ -412,7 +412,7 @@ bool CHIDCtrlTransferTestDlg::ConnectHID()
 	SP_DEVICE_INTERFACE_DATA			devInfoData;
 	bool								LastDevice = FALSE;
 	int									MemberIndex = 0;
-	LONG								Result;	
+	LONG								Result;
 	CString								UsageDescription;
 	CString								DebugStr;
 
@@ -426,23 +426,23 @@ bool CHIDCtrlTransferTestDlg::ConnectHID()
 	Returns: the GUID in HidGuid.
 	*/
 
-	HidD_GetHidGuid(&HidGuid);	
-	
+	HidD_GetHidGuid(&HidGuid);
+
 	/*
 	API function: SetupDiGetClassDevs
 	Returns: a handle to a device information set for all installed devices.
 	Requires: the GUID returned by GetHidGuid.
 	*/
-	
-	hDevInfo=SetupDiGetClassDevs 
-		(&HidGuid, 
-		NULL, 
-		NULL, 
+
+	hDevInfo=SetupDiGetClassDevs
+		(&HidGuid,
+		NULL,
+		NULL,
 		DIGCF_PRESENT|DIGCF_INTERFACEDEVICE);
-		
+
 	devInfoData.cbSize = sizeof(devInfoData);
 
-	//Step through the available devices looking for the one we want. 
+	//Step through the available devices looking for the one we want.
 	//Quit on detecting the desired device or checking all available devices without success.
 
 	MemberIndex = 0;
@@ -460,11 +460,11 @@ bool CHIDCtrlTransferTestDlg::ConnectHID()
 		An index to specify a device.
 		*/
 
-		Result=SetupDiEnumDeviceInterfaces 
-			(hDevInfo, 
-			0, 
-			&HidGuid, 
-			MemberIndex, 
+		Result=SetupDiEnumDeviceInterfaces
+			(hDevInfo,
+			0,
+			&HidGuid,
+			MemberIndex,
 			&devInfoData);
 
 		if (Result != 0)
@@ -481,41 +481,41 @@ bool CHIDCtrlTransferTestDlg::ConnectHID()
 			Requires:
 			A DeviceInfoSet returned by SetupDiGetClassDevs
 			The SP_DEVICE_INTERFACE_DATA structure returned by SetupDiEnumDeviceInterfaces.
-			
+
 			The final parameter is an optional pointer to an SP_DEV_INFO_DATA structure.
-			This application doesn't retrieve or use the structure.			
-			If retrieving the structure, set 
+			This application doesn't retrieve or use the structure.
+			If retrieving the structure, set
 			MyDeviceInfoData.cbSize = length of MyDeviceInfoData.
 			and pass the structure's address.
 			*/
-			
+
 			//Get the Length value.
 			//The call will return with a "buffer too small" error which can be ignored.
 
-			Result = SetupDiGetDeviceInterfaceDetail 
-				(hDevInfo, 
-				&devInfoData, 
-				NULL, 
-				0, 
-				&Length, 
+			Result = SetupDiGetDeviceInterfaceDetail
+				(hDevInfo,
+				&devInfoData,
+				NULL,
+				0,
+				&Length,
 				NULL);
 
 			//Allocate memory for the hDevInfo structure, using the returned Length.
 
 			detailData = (PSP_DEVICE_INTERFACE_DETAIL_DATA)malloc(Length);
-			
+
 			//Set cbSize in the detailData structure.
 
 			detailData -> cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
 
 			//Call the function again, this time passing it the returned buffer size.
 
-			Result = SetupDiGetDeviceInterfaceDetail 
-				(hDevInfo, 
-				&devInfoData, 
-				detailData, 
-				Length, 
-				&Required, 
+			Result = SetupDiGetDeviceInterfaceDetail
+				(hDevInfo,
+				&devInfoData,
+				detailData,
+				Length,
+				&Required,
 				NULL);
 
 			// Open a handle to the device.
@@ -530,13 +530,13 @@ bool CHIDCtrlTransferTestDlg::ConnectHID()
 			returned by SetupDiGetDeviceInterfaceDetail.
 			*/
 
-			DeviceHandle=CreateFile 
-				(detailData->DevicePath, 
-				0, 
-				FILE_SHARE_READ|FILE_SHARE_WRITE, 
+			DeviceHandle=CreateFile
+				(detailData->DevicePath,
+				0,
+				FILE_SHARE_READ|FILE_SHARE_WRITE,
 				(LPSECURITY_ATTRIBUTES)NULL,
-				OPEN_EXISTING, 
-				0, 
+				OPEN_EXISTING,
+				0,
 				NULL);
 
 			/*
@@ -553,14 +553,14 @@ bool CHIDCtrlTransferTestDlg::ConnectHID()
 
 			Attributes.Size = sizeof(Attributes);
 
-			Result = HidD_GetAttributes 
-				(DeviceHandle, 
+			Result = HidD_GetAttributes
+				(DeviceHandle,
 				&Attributes);
 
 			//Is it the desired device?
 
 			MyDeviceDetected = FALSE;
-					
+
 			if (Attributes.VendorID == VendorID)
 			{
 				if (Attributes.ProductID == ProductID)
@@ -578,20 +578,20 @@ bool CHIDCtrlTransferTestDlg::ConnectHID()
 					//Get the device's capablities.
 					GetDeviceCapabilities();
 
-					// 利用HID Report Descriptor來辨識HID Transfer裝置   
-					DeviceUsage = (Capabilities.UsagePage * 256) + Capabilities.Usage;   
+					// 利用HID Report Descriptor來辨識HID Transfer裝置
+					DeviceUsage = (Capabilities.UsagePage * 256) + Capabilities.Usage;
 
 					if (DeviceUsage != 0xFF0001)   // Report Descriptor
 						continue;
 
 					// Get a handle for writing Output reports.
-					WriteHandle=CreateFile 
-						(detailData->DevicePath, 
-						GENERIC_WRITE, 
-						FILE_SHARE_READ|FILE_SHARE_WRITE, 
+					WriteHandle=CreateFile
+						(detailData->DevicePath,
+						GENERIC_WRITE,
+						FILE_SHARE_READ|FILE_SHARE_WRITE,
 						(LPSECURITY_ATTRIBUTES)NULL,
-						OPEN_EXISTING, 
-						0, 
+						OPEN_EXISTING,
+						0,
 						NULL);
 
 					// Prepare to read reports using Overlapped I/O.
@@ -651,10 +651,10 @@ void CHIDCtrlTransferTestDlg::OnEnChangeEdit2()
 
 	// TODO:  Add your control notification handler code here
 	CString ProductIDtext;
-    
+
 	// Get the text in the edit box.
 	CEdit* m_ProductID1 = (CEdit*) GetDlgItem(IDC_EDIT2);
-	m_ProductID1->GetWindowText(ProductIDtext); 
+	m_ProductID1->GetWindowText(ProductIDtext);
 
 	// Convert the hex string in the edit box to an integer.
 	ProductID = wcstoul(ProductIDtext, 0, 16);
@@ -682,11 +682,11 @@ void CHIDCtrlTransferTestDlg::RegisterForDeviceNotifications()
 
 void CHIDCtrlTransferTestDlg::ScrollToBottomOfListBox(USHORT Index)
 {
-	/* 
-	Scroll to the bottom of the list box. 
+	/*
+	Scroll to the bottom of the list box.
 	To do so, add a line and set it as the current selection,
 	possibly scrolling the window.
-	Then deselect the line, 
+	Then deselect the line,
 	leaving the list box scrolled to the bottom with nothing selected.
 	*/
 
@@ -698,13 +698,13 @@ void CHIDCtrlTransferTestDlg::PrepareForOverlappedTransfer()
 {
 	//Get a handle to the device for the overlapped ReadFiles.
 
-	ReadHandle=CreateFile 
-		(detailData->DevicePath, 
-		GENERIC_READ, 
+	ReadHandle=CreateFile
+		(detailData->DevicePath,
+		GENERIC_READ,
 		FILE_SHARE_READ|FILE_SHARE_WRITE,
-		(LPSECURITY_ATTRIBUTES)NULL, 
-		OPEN_EXISTING, 
-		FILE_FLAG_OVERLAPPED, 
+		(LPSECURITY_ATTRIBUTES)NULL,
+		OPEN_EXISTING,
+		FILE_FLAG_OVERLAPPED,
 		NULL);
 
 
@@ -714,17 +714,17 @@ void CHIDCtrlTransferTestDlg::PrepareForOverlappedTransfer()
 	Requires:
 	  Security attributes or Null
 	  Manual reset (true). Use ResetEvent to set the event object's state to non-signaled.
-	  Initial state (true = signaled) 
+	  Initial state (true = signaled)
 	  Event object name (optional)
 	Returns: a handle to the event object
 	*/
 
 	if (hEventObject == 0)
 	{
-		hEventObject = CreateEvent 
-						(NULL, 
-						TRUE, 
-						TRUE, 
+		hEventObject = CreateEvent
+						(NULL,
+						TRUE,
+						TRUE,
 						_T(""));
 
 		//Set the members of the overlapped structure.
@@ -741,7 +741,7 @@ void CHIDCtrlTransferTestDlg::OnBnClickedButton3()
 
 	CString Caption;
 
-	//Find out whether Continuous is currently selected 
+	//Find out whether Continuous is currently selected
 	//and take appropriate action.
 
 	m_SendAndReceive.GetWindowText(Caption);
@@ -799,7 +799,7 @@ void CHIDCtrlTransferTestDlg::ReadAndWriteToDevice()
 		WriteOutputReport();
 
 		//Read a report from the device.
-		ReadInputReport();	
+		ReadInputReport();
 	}
 }
 
@@ -810,7 +810,7 @@ void CHIDCtrlTransferTestDlg::WriteOutputReport()
 
 	DWORD	BytesWritten = 0;
 	INT		Index =0;
-	ULONG	Result;
+	ULONG	Result =0;
 	CString	strBytesWritten = _T("");
 	INT BufSize = 0;
 
@@ -844,7 +844,7 @@ void CHIDCtrlTransferTestDlg::WriteOutputReport()
 	{
 		DisplayData(_T("An Output report was written to the device."));
 	}
-	else
+	else if (WriteHandle != INVALID_HANDLE_VALUE)
 	{
 		//The write attempt failed, so close the handles, display a message,
 		//and set MyDeviceDetected to FALSE so the next attempt will look for the device.
@@ -868,17 +868,17 @@ void CHIDCtrlTransferTestDlg::ReadInputReport()
 	UpdateData(true);
 
 	//Read a report from the device using a control transfer.
-	
+
 	/*
 	HidD_GetInputReport
 	Returns:
 	True on success
-	Requires: 
+	Requires:
 	A device handle returned by CreateFile.
 	A buffer to hold the report.
 	The report length returned by HidP_GetCaps in Capabilities.InputReportByteLength.
 	*/
-	
+
 	if (ReadHandle != INVALID_HANDLE_VALUE)
 	{
 		Result = HidD_GetInputReport
@@ -902,9 +902,9 @@ void CHIDCtrlTransferTestDlg::ReadInputReport()
 	else
 	{
 		DisplayData(_T("Received Input report: "));
-		
+
 		//Display the report data.
 		DisplayInputReport();
-	
+
 	}
 }
