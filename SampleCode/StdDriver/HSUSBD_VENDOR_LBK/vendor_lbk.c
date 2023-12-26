@@ -22,11 +22,10 @@ volatile uint8_t  g_BulkInDataEmpty = 0;
 volatile uint8_t  g_BulkOutDataReady = 0;
 volatile uint32_t g_DMA_RunMsk = 0;
 
-
-__attribute__((aligned(DCACHE_LINE_SIZE))) volatile uint8_t g_Ctrl_Buff[DCACHE_ALIGN_LINE_SIZE(512)];
-__attribute__((aligned(DCACHE_LINE_SIZE))) volatile uint8_t g_Int_Buff[DCACHE_ALIGN_LINE_SIZE(1024)];
-__attribute__((aligned(DCACHE_LINE_SIZE))) volatile uint8_t g_Bulk_Buff[DCACHE_ALIGN_LINE_SIZE(512)];
-__attribute__((aligned(DCACHE_LINE_SIZE))) volatile uint8_t g_Iso_Buff[DCACHE_ALIGN_LINE_SIZE(1024)];
+__attribute__((aligned(4))) volatile uint8_t g_Ctrl_Buff[512];
+__attribute__((aligned(4))) volatile uint8_t g_Int_Buff[1024];
+__attribute__((aligned(4))) volatile uint8_t g_Bulk_Buff[512];
+__attribute__((aligned(4))) volatile uint8_t g_Iso_Buff[1024];
 
 uint32_t g_u32EpAMaxPacketSize;
 uint32_t g_u32EpBMaxPacketSize;
