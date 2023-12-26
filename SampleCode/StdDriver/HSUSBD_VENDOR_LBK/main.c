@@ -80,7 +80,7 @@ void SYS_Init(void)
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
-   /* Enable HSOTG0_ module clock */
+    /* Enable HSOTG0_ module clock */
     CLK_EnableModuleClock(HSOTG0_MODULE);
     
     SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;    /* select HSUSBD */
