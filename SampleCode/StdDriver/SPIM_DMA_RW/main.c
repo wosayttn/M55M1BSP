@@ -287,6 +287,7 @@ int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
     }
 
     printf("done.\n");
+
     return 0;
 }
 

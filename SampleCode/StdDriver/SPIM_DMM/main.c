@@ -309,7 +309,7 @@ int dmm_read(SPIM_T *spim, int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
 
     SPIM_SetQuadEnable(spim, 0, 1);
 
-    return 0;
+    return SPIM_OK;
 }
 
 int main()
