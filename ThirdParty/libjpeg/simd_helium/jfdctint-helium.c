@@ -20,14 +20,14 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
- /**************************************************************************//**
- * @file     jfdctinit-helium.c
- * @version  V1.00
- * @brief    Porting from jpegturbo ARM32 simd jfdctinit file.
- *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- *****************************************************************************/
+/**************************************************************************//**
+* @file     jfdctinit-helium.c
+* @version  V1.00
+* @brief    Porting from jpegturbo ARM32 simd jfdctinit file.
+*
+* SPDX-License-Identifier: Apache-2.0
+* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
 #include <arm_mve.h>
 #include "nvt_jpeg.h"
 
@@ -113,9 +113,9 @@ void jsimd_fdct_islow_helium(int16_t *data)
     const int16x8_t consts_v2_1 = vdupq_n_s16(jsimd_fdct_islow_helium_consts[9]);
     const int16x8_t consts_v2_2 = vdupq_n_s16(jsimd_fdct_islow_helium_consts[10]);
     const int16x8_t consts_v2_3 = vdupq_n_s16(jsimd_fdct_islow_helium_consts[11]);
-		
-		/* Load DCT unsigned->signed conversion constants. */
-		const int16x8_t consts_us2s = vdupq_n_s16(8 * CENTERJSAMPLE);
+
+    /* Load DCT unsigned->signed conversion constants. */
+    const int16x8_t consts_us2s = vdupq_n_s16(8 * CENTERJSAMPLE);
 
 
     //Create Offset
@@ -146,13 +146,11 @@ void jsimd_fdct_islow_helium(int16_t *data)
     int16x8_t tmp13 = vsubq_s16(tmp0, tmp3);
     int16x8_t tmp11 = vaddq_s16(tmp1, tmp2);
     int16x8_t tmp12 = vsubq_s16(tmp1, tmp2);
-		
-		/* Apply unsigned->signed conversion. */
-   col0 = vshlq_n_s16(vsubq_s16(vaddq_s16(tmp10, tmp11), consts_us2s), PASS1_BITS);
-		
-		//col0 = vshlq_n_s16(vaddq_s16(tmp10, tmp11), PASS1_BITS);
-		
-		col4 = vshlq_n_s16(vsubq_s16(tmp10, tmp11), PASS1_BITS);
+
+    /* Apply unsigned->signed conversion. */
+    col0 = vshlq_n_s16(vsubq_s16(vaddq_s16(tmp10, tmp11), consts_us2s), PASS1_BITS);
+
+    col4 = vshlq_n_s16(vsubq_s16(tmp10, tmp11), PASS1_BITS);
 
     int16x8_t tmp12_add_tmp13 = vaddq_s16(tmp12, tmp13);
 
@@ -186,7 +184,7 @@ void jsimd_fdct_islow_helium(int16_t *data)
     int16x8_t z2 = vaddq_s16(tmp5, tmp6);
     int16x8_t z3 = vaddq_s16(tmp4, tmp6);
     int16x8_t z4 = vaddq_s16(tmp5, tmp7);
-    
+
     /* sqrt(2) * c3 */
     int32x4_t z5_l = vqdmullbq_s16(z3, consts_v1_1);
     int32x4_t z5_h = vqdmulltq_s16(z3, consts_v1_1);
@@ -257,15 +255,6 @@ void jsimd_fdct_islow_helium(int16_t *data)
     tmp7_h = vaddq_s32(tmp7_h, z4_h);
     col1 = vrshrnbq_n_s32(col1, tmp7_l, DESCALE_P1),
     col1 = vrshrntq_n_s32(col1, tmp7_h, DESCALE_P1);
-		
-//  	printf("1st element in each column: %d, %d, %d, %d, %d, %d, %d, %d \r\n", col0[0], col1[0], col2[0], col3[0], col4[0], col5[0], col6[0], col7[0]);
-//		printf("2nd element in each column: %d, %d, %d, %d, %d, %d, %d, %d \r\n",col0[1], col1[1], col2[1], col3[1], col4[1], col5[1], col6[1], col7[1]);
-//		printf("3rd element in each column: %d, %d, %d, %d, %d, %d, %d, %d \r\n", col0[2], col1[2], col2[2], col3[2], col4[2], col5[2], col6[2], col7[2]);
-//		printf("4th element in each column: %d, %d, %d, %d, %d, %d, %d, %d \r\n", col0[3], col1[3], col2[3], col3[3], col4[3], col5[3], col6[3], col7[3]);
-//		printf("5th element in each column: %d, %d, %d, %d, %d, %d, %d, %d \r\n", col0[4], col1[4], col2[4], col3[4], col4[4], col5[4], col6[4], col7[4]);
-//		printf("6th element in each column: %d, %d, %d, %d, %d, %d, %d, %d \r\n", col0[5], col1[5], col2[5], col3[5], col4[5], col5[5], col6[5], col7[5]);
-//		printf("7th element in each column: %d, %d, %d, %d, %d, %d, %d, %d \r\n", col0[6], col1[6], col2[6], col3[6], col4[6], col5[6], col6[6], col7[6]);
-//		printf("8th element in each column: %d, %d, %d, %d, %d, %d, %d, %d \r\n", col0[7], col1[7], col2[7], col3[7], col4[7], col5[7], col6[7], col7[7]);
 
     /* Transpose to work on columns in pass 2. */
     vst1q_s16((int16_t*)(data), col0);
@@ -290,25 +279,7 @@ void jsimd_fdct_islow_helium(int16_t *data)
     int16x8_t row7 =  vldrhq_gather_offset_s16((int16_t*)(data+7), index);
 
     /* Pass 2: process columns. */
-//	 printf("1st element in each row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row0[0], row1[0], row2[0], row3[0], row4[0], row5[0], row6[0], row7[0]);
-//   printf("2st element in each row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row0[1], row1[1], row2[1], row3[1], row4[1], row5[1], row6[1], row7[1]);
-//	 printf("3st element in each row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row0[2], row1[2], row2[2], row3[2], row4[2], row5[2], row6[2], row7[2]);
-//	 printf("4st element in each row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row0[3], row1[3], row2[3], row3[3], row4[3], row5[3], row6[3], row7[3]);
-//	 printf("5st element in each row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row0[4], row1[4], row2[4], row3[4], row4[4], row5[4], row6[4], row7[4]);
-//	 printf("6st element in each row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row0[5], row1[5], row2[5], row3[5], row4[5], row5[5], row6[5], row7[5]);
-//	 printf("7st element in each row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row0[6], row1[6], row2[6], row3[6], row4[6], row5[6], row6[6], row7[6]);
-//	 printf("8st element in each row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row0[7], row1[7], row2[7], row3[7], row4[7], row5[7], row6[7], row7[7]);
-	 
-//    printf("1st row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row0[0], row0[1], row0[2], row0[3], row0[4], row0[5], row0[6], row0[7]);
-//		printf("2st row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row1[0], row1[1], row1[2], row1[3], row1[4], row1[5], row1[6], row1[7]);
-//		printf("3st row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row2[0], row2[1], row2[2], row2[3], row2[4], row2[5], row2[6], row2[7]);
-//		printf("4st row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row3[0], row3[1], row3[2], row3[3], row3[4], row3[5], row3[6], row3[7]);
-//		printf("5st row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row4[0], row4[1], row4[2], row4[3], row4[4], row4[5], row4[6], row4[7]);
-//		printf("6st row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row5[0], row5[1], row5[2], row5[3], row5[4], row5[5], row5[6], row5[7]);
-//		printf("7st row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row6[0], row6[1], row6[2], row6[3], row6[4], row6[5], row6[6], row6[7]);
-//		printf("8th row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row7[0], row7[1], row7[2], row7[3], row7[4], row7[5], row7[6], row7[7]);
-		
-		tmp0 = vaddq_s16(row0, row7);
+    tmp0 = vaddq_s16(row0, row7);
     tmp7 = vsubq_s16(row0, row7);
     tmp1 = vaddq_s16(row1, row6);
     tmp6 = vsubq_s16(row1, row6);
@@ -324,7 +295,6 @@ void jsimd_fdct_islow_helium(int16_t *data)
     tmp12 = vsubq_s16(tmp1, tmp2);
 
     row0 = vrshrq_n_s16(vaddq_s16(tmp10, tmp11), PASS1_BITS);
-		//printf("1st row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row0[0], row0[1], row0[2], row0[3], row0[4], row0[5], row0[6], row0[7]);
     row4 = vrshrq_n_s16(vsubq_s16(tmp10, tmp11), PASS1_BITS);
 
     tmp12_add_tmp13 = vaddq_s16(tmp12, tmp13);
@@ -447,17 +417,6 @@ void jsimd_fdct_islow_helium(int16_t *data)
     row5 = vrshrq_n_s16(row5, HELIUM_CORR_BITS);
     row6 = vrshrq_n_s16(row6, HELIUM_CORR_BITS);
     row7 = vrshrq_n_s16(row7, HELIUM_CORR_BITS);
-		
-		
-//    printf("1st row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row0[0], row0[1], row0[2], row0[3], row0[4], row0[5], row0[6], row0[7]);
-//		printf("2st row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row1[0], row1[1], row1[2], row1[3], row1[4], row1[5], row1[6], row1[7]);
-//		printf("3st row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row2[0], row2[1], row2[2], row2[3], row2[4], row2[5], row2[6], row2[7]);
-//		printf("4st row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row3[0], row3[1], row3[2], row3[3], row3[4], row3[5], row3[6], row3[7]);
-//		printf("5st row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row4[0], row4[1], row4[2], row4[3], row4[4], row4[5], row4[6], row4[7]);
-//		printf("6st row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row5[0], row5[1], row5[2], row5[3], row5[4], row5[5], row5[6], row5[7]);
-//		printf("7st row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row6[0], row6[1], row6[2], row6[3], row6[4], row6[5], row6[6], row6[7]);
-//		printf("8th row: %d, %d, %d, %d, %d, %d, %d, %d \r\n", row7[0], row7[1], row7[2], row7[3], row7[4], row7[5], row7[6], row7[7]);
-		
 
     vst1q_s16(data + 0 * DCTSIZE, row0);
     vst1q_s16(data + 1 * DCTSIZE, row1);
