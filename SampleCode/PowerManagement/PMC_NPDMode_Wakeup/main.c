@@ -103,15 +103,13 @@ void SYS_Init(void)
 
 NVT_ITCM void PMC_IRQHandler(void)
 {
-    uint32_t u32Status;
-
     printf("Wake-up!!!\n");
 
     /* Clear PMC interrupt flag */
     PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
 
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
-    u32Status = PMC->INTSTS;
+    inp32(PMC->INTSTS);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
