@@ -12,9 +12,7 @@
 #include "NuMicro.h"
 #include "vendor_lbk.h"
 
-#if defined(TESTCHIP_ONLY)
-    #define USE_CPU
-#endif
+//#define USE_CPU
 
 volatile uint8_t  g_IsHighSpeedMode = 1;
 volatile uint8_t  g_IntInDataEmpty = 0;
@@ -24,10 +22,11 @@ volatile uint8_t  g_BulkInDataEmpty = 0;
 volatile uint8_t  g_BulkOutDataReady = 0;
 volatile uint32_t g_DMA_RunMsk = 0;
 
-volatile uint8_t  g_Ctrl_Buff[512];
-volatile uint8_t  g_Int_Buff[1024];
-volatile uint8_t  g_Bulk_Buff[512];
-volatile uint8_t  g_Iso_Buff[1024];
+
+__attribute__((aligned(DCACHE_LINE_SIZE))) volatile uint8_t g_Ctrl_Buff[DCACHE_ALIGN_LINE_SIZE(512)];
+__attribute__((aligned(DCACHE_LINE_SIZE))) volatile uint8_t g_Int_Buff[DCACHE_ALIGN_LINE_SIZE(1024)];
+__attribute__((aligned(DCACHE_LINE_SIZE))) volatile uint8_t g_Bulk_Buff[DCACHE_ALIGN_LINE_SIZE(512)];
+__attribute__((aligned(DCACHE_LINE_SIZE))) volatile uint8_t g_Iso_Buff[DCACHE_ALIGN_LINE_SIZE(1024)];
 
 uint32_t g_u32EpAMaxPacketSize;
 uint32_t g_u32EpBMaxPacketSize;
@@ -329,7 +328,7 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
 
     if (IrqStL & HSUSBD_GINTSTS_EPDIF_Msk)
     {
-        printf("D: 0x%x, 0x%x\n", HSUSBD->EP[EPD].EPINTSTS, HSUSBD->EP[EPD].EPINTEN);
+        //printf("D: 0x%x, 0x%x\n", HSUSBD->EP[EPD].EPINTSTS, HSUSBD->EP[EPD].EPINTEN);
         IrqSt = HSUSBD->EP[EPD].EPINTSTS & HSUSBD->EP[EPD].EPINTEN;
         HSUSBD_CLR_EP_INT_FLAG(EPD, IrqSt);
         g_IsoOutDataReady = 1;
