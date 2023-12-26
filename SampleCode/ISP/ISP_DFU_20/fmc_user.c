@@ -174,7 +174,8 @@ int EraseAP(unsigned int u32StartAddr, unsigned int u32ByteSize)
 
 void UpdateConfig(unsigned int *pu32DataBuf, unsigned int *res)
 {
-    unsigned int u32Size = 16;
+    unsigned int u32Size = (FMC_CONFIG_CNT * 4);
+
     FMC_ENABLE_CFG_UPDATE();
     FMC_Proc(FMC_ISPCMD_CFG_ERASE, Config0, Config0 + 8, 0);
     FMC_Proc(FMC_ISPCMD_PROGRAM, Config0, Config0 + u32Size, pu32DataBuf);

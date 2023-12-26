@@ -11,11 +11,9 @@
 
 #include "targetdev.h"
 
-// #define FMC_CONFIG0_ADDR        (FMC_CONFIG_BASE)       /*!< CONFIG 0 Address */
-// #define FMC_CONFIG1_ADDR        (FMC_CONFIG_BASE + 4)   /*!< CONFIG 1 Address */
-
-#define Config0         FMC_CONFIG_BASE
-#define Config1         (FMC_CONFIG_BASE+4)
+#define Config0         FMC_USER_CONFIG_0
+#define Config1         FMC_USER_CONFIG_1
+#define FMC_CONFIG_CNT  14
 
 #define ISPGO           0x01
 
@@ -29,6 +27,9 @@
 #define _FMC_ENABLE_CFG_UPDATE()   (FMC->ISPCTL |=  FMC_ISPCTL_CFGUEN_Msk) /*!< Enable CONFIG Update Function  */
 #define _FMC_DISABLE_CFG_UPDATE()  (FMC->ISPCTL &= ~FMC_ISPCTL_CFGUEN_Msk) /*!< Disable CONFIG Update Function */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 int FMC_Write_User(unsigned int u32Addr, unsigned int u32Data);
 int FMC_Read_User(unsigned int u32Addr, unsigned int *data);
@@ -38,5 +39,9 @@ void WriteData(unsigned int addr_start, unsigned int addr_end, unsigned int *dat
 int EraseAP(unsigned int addr_start, unsigned int size);
 void UpdateConfig(unsigned int *data, unsigned int *res);
 
+#ifdef __cplusplus
+}
+#endif
 
-#endif  // FMC_USER_H
+#endif
+

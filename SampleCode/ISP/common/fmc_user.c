@@ -9,9 +9,8 @@
 #include <stdio.h>
 #include "fmc_user.h"
 
+int32_t g_FMC_i32ErrCode = 0;
 #define FMC_BLOCK_SIZE           (FMC_FLASH_PAGE_SIZE * 4UL)
-
-int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end, unsigned int *data);
 
 int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end, unsigned int *data)
 {
@@ -77,7 +76,8 @@ int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end
  *
  * @note
  *             Please make sure that Register Write-Protection Function has been disabled
- *             before using this function.
+ *             before using this function. User can check the status of
+ *             Register Write-Protection Function with SYS_IsRegLocked().
  */
 int FMC_Write_User(unsigned int u32Addr, unsigned int u32Data)
 {
@@ -95,7 +95,8 @@ int FMC_Write_User(unsigned int u32Addr, unsigned int u32Data)
  *
  * @note
  *              Please make sure that Register Write-Protection Function has been disabled
- *              before using this function.
+ *              before using this function. User can check the status of
+ *              Register Write-Protection Function with SYS_IsRegLocked().
  */
 int FMC_Read_User(unsigned int u32Addr, unsigned int *data)
 {
@@ -112,7 +113,8 @@ int FMC_Read_User(unsigned int u32Addr, unsigned int *data)
  *
  * @note
  *             Please make sure that Register Write-Protection Function has been disabled
- *             before using this function.
+ *             before using this function. User can check the status of
+ *             Register Write-Protection Function with SYS_IsRegLocked().
  */
 int FMC_Erase_User(unsigned int u32Addr)
 {
@@ -135,28 +137,25 @@ void WriteData(unsigned int addr_start, unsigned int addr_end, unsigned int *dat
 int EraseAP(unsigned int addr_start, unsigned int size)
 {
     unsigned int u32Addr, u32Cmd, u32Size;
-    int32_t i32Size;
     uint32_t u32TimeOutCount = FMC_TIMEOUT_ERASE;
-
     u32Addr = addr_start;
-    i32Size = (int32_t)size;
 
-    while (i32Size > 0)
+    while (size > 0)
     {
         if ((size >= FMC_APROM_BANK_SIZE) && !(u32Addr & (FMC_APROM_BANK_SIZE - 1)))
         {
-            u32Cmd  = FMC_ISPCMD_BANK_ERASE;
+            u32Cmd = FMC_ISPCMD_BANK_ERASE;
             u32Size = FMC_APROM_BANK_SIZE;
         }
         else
         {
-            u32Cmd  = FMC_ISPCMD_PAGE_ERASE;
+            u32Cmd = FMC_ISPCMD_PAGE_ERASE;
             u32Size = FMC_FLASH_PAGE_SIZE;
         }
 
-        FMC->ISPCMD  = u32Cmd;
+        FMC->ISPCMD = u32Cmd;
         FMC->ISPADDR = u32Addr;
-        FMC->ISPTRG  = FMC_ISPTRG_ISPGO_Msk;
+        FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;
         __ISB();
 
         while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)   /* Wait for ISP command done. */
@@ -173,7 +172,6 @@ int EraseAP(unsigned int addr_start, unsigned int size)
 
         u32Addr += u32Size;
         size -= u32Size;
-        i32Size = (int32_t)size;
     }
 
     return 0;
@@ -181,7 +179,8 @@ int EraseAP(unsigned int addr_start, unsigned int size)
 
 void UpdateConfig(unsigned int *data, unsigned int *res)
 {
-    unsigned int u32Size = 16;
+    unsigned int u32Size = (FMC_CONFIG_CNT * 4);
+
     FMC_ENABLE_CFG_UPDATE();
     FMC_Proc(FMC_ISPCMD_CFG_ERASE, Config0, Config0 + 8, 0);
     FMC_Proc(FMC_ISPCMD_PROGRAM, Config0, Config0 + u32Size, data);

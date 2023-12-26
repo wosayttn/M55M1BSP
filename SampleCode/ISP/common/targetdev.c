@@ -10,7 +10,7 @@
 #include "isp_user.h"
 
 /* Supports maximum 2MB (APROM) */
-uint32_t GetApromSize()
+uint32_t GetApromSize(void)
 {
     /* The smallest of APROM u32Size is FMC_FLASH_PAGE_SIZE. */
     uint32_t u32Size = FMC_FLASH_PAGE_SIZE, u32Data;
@@ -31,32 +31,33 @@ uint32_t GetApromSize()
     } while (1);
 }
 
-// Data Flash is shared with APROM.
-// The size and start address are defined in CONFIG1.
-void GetDataFlashInfo(uint32_t *addr, uint32_t *size)
+/* Data Flash is shared with APROM.
+   The size and start address are defined in CONFIG1. */
+void GetDataFlashInfo(uint32_t *pu32Addr, uint32_t *pu32Size)
 {
-    uint32_t uData;
-    *size = 0;
-    FMC_Read_User(Config0, &uData);
+    uint32_t u32Data;
+    *pu32Size = 0;
+    FMC_Read_User(Config0, &u32Data);
 
-    if ((uData & 0x01) == 0)   //DFEN enable
+    if ((u32Data & 0x01) == 0)   /* DFEN enable */
     {
-        FMC_Read_User(Config1, &uData);
+        FMC_Read_User(Config1, &u32Data);
 
-        uData &= 0x000FFFFF;
+        /* Filter the reserved bits in CONFIG1 */
+        u32Data &= 0x000FFFFF;
 
-        if (uData > g_u32ApromSize || uData & (FMC_FLASH_PAGE_SIZE - 1))   //avoid config1 value from error
+        if (u32Data > g_u32ApromSize || u32Data & (FMC_FLASH_PAGE_SIZE - 1))   /* Avoid config1 value from error */
         {
-            uData = g_u32ApromSize;
+            u32Data = g_u32ApromSize;
         }
 
-        *addr = uData;
-        *size = g_u32ApromSize - uData;
+        *pu32Addr = u32Data;
+        *pu32Size = g_u32ApromSize - u32Data;
     }
     else
     {
-        *addr = g_u32ApromSize;
-        *size = 0;
+        *pu32Addr = g_u32ApromSize;
+        *pu32Size = 0;
     }
 }
 

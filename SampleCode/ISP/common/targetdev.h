@@ -9,16 +9,20 @@
 #ifndef __TARGET_H__
 #define __TARGET_H__
 
+#include "NuMicro.h"
+#include "isp_user.h"
+
+#define PLL_CLOCK       FREQ_180MHZ
+#define I2C_ADDR        0x60
+#define DETECT_PIN      PB12
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-// Nuvoton MCU Peripheral Access Layer Header File
-#include "NuMicro.h"
-#include "isp_user.h"
-
-#define I2C_ADDR 0x60
+void GetDataFlashInfo(uint32_t *addr, uint32_t *size);
+uint32_t GetApromSize(void);
 
 #ifdef __cplusplus
 }

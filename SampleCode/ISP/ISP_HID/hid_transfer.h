@@ -63,7 +63,12 @@
 
 /*-------------------------------------------------------------*/
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern volatile uint8_t g_u8UsbDataReady;
+extern __ALIGNED(4) uint8_t g_u8UsbRcvBuff[64];
 
 /*-------------------------------------------------------------*/
 void USBD_IRQHandler(void);
@@ -75,5 +80,9 @@ void EP2_Handler(void);
 void EP3_Handler(void);
 void HID_SetInReport(void);
 void HID_GetOutReport(uint8_t *pu8EpBuf, uint32_t u32Size);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  /* __USBD_HID_H_ */

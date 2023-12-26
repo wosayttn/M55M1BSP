@@ -8,7 +8,6 @@
  *****************************************************************************/
 #include <string.h>
 #include "NuMicro.h"
-#include "targetdev.h"
 #include "uart_transfer.h"
 
 __ALIGNED(4) uint8_t g_au8uart_rcvbuf[MAX_PKT_SIZE] = {0};
@@ -48,7 +47,7 @@ NVT_ITCM void UART6_IRQHandler(void)
     }
 }
 
-extern __attribute__((aligned(4))) uint8_t g_au8ResponseBuff[64];
+extern __attribute__((aligned(4))) uint8_t g_au8ResponseBuff[128];
 void PutString(void)
 {
     uint32_t i;
@@ -80,7 +79,7 @@ void UART_Init()
     /* Set UART Rx and RTS trigger level */
     UART6->FIFO = UART_FIFO_RFITL_14BYTES | UART_FIFO_RTSTRGLV_14BYTES;
     /* Set UART baud rate */
-    UART6->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(__HIRC, 115200));
+    UART6->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(__HXT, 115200));
     /* Set time-out interrupt comparator */
     UART6->TOUT = (UART6->TOUT & ~UART_TOUT_TOIC_Msk) | (0x40);
     NVIC_SetPriority(UART6_IRQn, 2);

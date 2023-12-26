@@ -15,35 +15,15 @@
 #include "targetdev.h"
 #include "uart_transfer.h"
 
-#define PLL_CLOCK       FREQ_180MHZ
-#define nRTSPin         (PA0)
+#define nRTSPin         (PB8)
 #define RECEIVE_MODE    (0)
 #define TRANSMIT_MODE   (1)
 
-int32_t g_FMC_i32ErrCode = 0;
-
 int32_t SYS_Init(void)
 {
-    uint32_t u32TimeOutCnt = SystemCoreClock >> 1; /* 500ms time-out */
-
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK->SRCCTL |= CLK_SRCCTL_HIRCEN_Msk;
-
-    /* Waiting for Internal RC clock ready */
-    while ((CLK->STATUS & CLK_STATUS_HIRCSTB_Msk) != CLK_STATUS_HIRCSTB_Msk)
-    {
-        if (--u32TimeOutCnt == 0)
-        {
-            return -1;
-        }
-    }
-
     /* Enable PLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
@@ -67,29 +47,19 @@ int32_t SYS_Init(void)
 
     /* Enable UART module clock */
     CLK->UARTSEL0 = (CLK->UARTSEL0 & ~CLK_UARTSEL0_UART1SEL_Msk) | CLK_UARTSEL0_UART1SEL_HIRC;
-    CLK->UARTCTL |= CLK_UARTCTL_UART1CKEN_Msk;
-    /* Check clock stable */
-    u32TimeOutCnt = SystemCoreClock >> 1;
-
-    while ((CLK->UARTCTL & BIT31) == 0UL)
-    {
-        if (--u32TimeOutCnt == 0)
-        {
-            return -1;
-        }
-    }
+    CLK_EnableModuleClock(UART1_MODULE);
+    CLK_EnableModuleClock(GPIOB_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set multi-function pins for UART1 RXD and TXD */
-    PA->MODE = (PA->MODE & (~GPIO_MODE_MODE0_Msk)) | (GPIO_MODE_OUTPUT << GPIO_MODE_MODE0_Pos);
-    nRTSPin = RECEIVE_MODE;
-    SET_UART1_RXD_PA2();
-    SET_UART1_TXD_PA3();
+    SET_UART1_RXD_PB2();
+    SET_UART1_TXD_PB3();
 
-    /* Lock protected registers */
-    SYS_LockReg();
+    PB->MODE = (PB->MODE & (~GPIO_MODE_MODE8_Msk)) | (GPIO_MODE_OUTPUT << GPIO_MODE_MODE8_Pos);
+    nRTSPin = RECEIVE_MODE;
+    SET_GPIO_PB8();
 
     return 0;
 }
@@ -99,6 +69,8 @@ int32_t SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
+    uint32_t u32TimeoutInMS = 300;
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -116,13 +88,8 @@ int32_t main(void)
     /* Get APROM and Data Flash size */
     g_u32ApromSize = GetApromSize();
 
-    /* Set Systick time-out for 300ms */
-    SysTick->LOAD = 300000 * CyclesPerUs;
-    SysTick->VAL  = (0x00);
-    SysTick->CTRL = SysTick->CTRL | SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;   /* Use CPU clock */
-
     /* Wait for CMD_CONNECT command until Systick time-out */
-    while (1)
+    while (u32TimeoutInMS > 0)
     {
         /* Wait for CMD_CONNECT command */
         if ((g_u8bufhead >= 4) || (g_u8bUartDataReady == TRUE))
@@ -141,12 +108,13 @@ int32_t main(void)
             }
         }
 
-        /* Systick time-out, then go to APROM */
-        if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
-        {
-            goto _APROM;
-        }
+        CLK_SysTickDelay(1000);
+        u32TimeoutInMS--;
     }
+
+    /* Timeout and go to APROM */
+    if (u32TimeoutInMS == 0)
+        goto _APROM;
 
 _ISP:
 
@@ -170,7 +138,6 @@ _ISP:
     }
 
 _APROM:
-
     /* Reset system and boot from APROM */
     FMC_SetVectorPageAddr(FMC_APROM_BASE);
     NVIC_SystemReset();

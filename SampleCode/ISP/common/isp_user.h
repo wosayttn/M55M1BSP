@@ -36,12 +36,20 @@
 #define V6M_AIRCR_VECTKEY_DATA      0x05FA0000UL
 #define V6M_AIRCR_SYSRESETREQ       0x00000004UL
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern uint32_t g_u32ApromSize, g_u32DataFlashAddr, g_u32DataFlashSize;
+extern __ALIGNED(4) uint8_t g_au8ResponseBuff[128];
+
+
 extern void GetDataFlashInfo(uint32_t *pu32Addr, uint32_t *pu32Size);
 extern uint32_t GetApromSize(void);
 extern int ParseCmd(uint8_t *pu8Buffer, uint8_t u8len);
-extern uint32_t g_u32ApromSize, g_u32DataFlashAddr, g_u32DataFlashSize;
 
-extern __attribute__((aligned(4))) uint8_t g_u8UsbRcvBuff[];
-extern __attribute__((aligned(4))) uint8_t g_au8ResponseBuff[64];
+#ifdef __cplusplus
+}
+#endif
 
 #endif  /* ISP_USER_H */

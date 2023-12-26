@@ -11,7 +11,7 @@
 #include "NuMicro.h"
 #include "isp_user.h"
 
-__ALIGNED(4) uint8_t g_au8ResponseBuff[64];
+__ALIGNED(4) uint8_t g_au8ResponseBuff[128];
 __ALIGNED(4) static uint8_t g_au8ApromBuf[FMC_FLASH_PAGE_SIZE];
 uint32_t g_u32UpdateApromCmd;
 uint32_t g_u32ApromSize = 0, g_u32DataFlashAddr = 0, g_u32DataFlashSize = 0;
@@ -67,7 +67,8 @@ int ParseCmd(uint8_t *pu8Buffer, uint8_t u8len)
     outpw((uint32_t)(pu8Response + 4), 0);
     pu8Src += 8;
     u32srclen -= 8;
-    ReadData(Config0, Config0 + 16, (uint32_t *)(uint32_t)(pu8Response + 8)); /* Read config */
+    //ReadData(Config0, Config0 + 16, (uint32_t *)(uint32_t)(pu8Response + 8)); /* Read config */
+    ReadData(Config0, Config0 + (FMC_CONFIG_CNT * 4), (uint32_t *)(uint32_t)(pu8Response + 8)); /* Read config */
     u32regcnf0 = *(uint32_t *)(pu8Response + 8);
     u32security = u32regcnf0 & 0x2;
 
@@ -93,8 +94,7 @@ int ParseCmd(uint8_t *pu8Buffer, uint8_t u8len)
     else if (u32Lcmd == CMD_RUN_APROM || u32Lcmd == CMD_RUN_LDROM || u32Lcmd == CMD_RESET)
     {
         /* Clear POR and Reset Pin reset flag */
-        SYS_ClearResetSrc(SYS_RSTSTS_PORF_Msk);
-        SYS_ClearResetSrc(SYS_RSTSTS_PINRF_Msk);
+        SYS_ClearResetSrc(SYS_RSTSTS_PORF_Msk | SYS_RSTSTS_PINRF_Msk);
 
         /* Set BS */
         if (u32Lcmd == CMD_RUN_APROM)
@@ -124,7 +124,8 @@ int ParseCmd(uint8_t *pu8Buffer, uint8_t u8len)
     }
     else if ((u32Lcmd == CMD_UPDATE_APROM) || (u32Lcmd == CMD_ERASE_ALL))
     {
-        EraseAP(FMC_APROM_BASE, (g_u32ApromSize < g_u32DataFlashAddr) ? g_u32ApromSize : g_u32DataFlashAddr);
+        //EraseAP(FMC_APROM_BASE, (g_u32ApromSize < g_u32DataFlashAddr) ? g_u32ApromSize : g_u32DataFlashAddr);
+        EraseAP(FMC_APROM_BASE, g_u32ApromSize);
 
         if (u32Lcmd == CMD_ERASE_ALL)   /* Erase data flash */
         {
@@ -175,7 +176,7 @@ int ParseCmd(uint8_t *pu8Buffer, uint8_t u8len)
         }
 
         UpdateConfig((uint32_t *)(uint32_t)pu8Src, (uint32_t *)(uint32_t)(pu8Response + 8));
-        GetDataFlashInfo(&g_u32DataFlashAddr, &g_u32DataFlashSize);
+        //GetDataFlashInfo(&g_u32DataFlashAddr, &g_u32DataFlashSize);
         goto out;
     }
     else if (u32Lcmd == CMD_RESEND_PACKET)     /* for APROM and Data flash only */
@@ -209,15 +210,15 @@ int ParseCmd(uint8_t *pu8Buffer, uint8_t u8len)
         }
 
         u32TotalLen -= u32srclen;
-        WriteData(u32StartAddress, u32StartAddress + u32srclen, (uint32_t *)(uint32_t)pu8Src);
+        WriteData(FMC_APROM_BASE + u32StartAddress, FMC_APROM_BASE + u32StartAddress + u32srclen, (uint32_t *)(uint32_t)pu8Src);
         memset(pu8Src, 0, u32srclen);
-        ReadData(u32StartAddress, u32StartAddress + u32srclen, (uint32_t *)(uint32_t)pu8Src);
+        ReadData(FMC_APROM_BASE + u32StartAddress, FMC_APROM_BASE + u32StartAddress + u32srclen, (uint32_t *)(uint32_t)pu8Src);
         u32StartAddress += u32srclen;
         u32LastDataLen = u32srclen;
 
         if (u32TotalLen == 0)
         {
-            u16Lcksum = CalCheckSum(u32StartAddress_bak, u32TotalLen_bak);
+            u16Lcksum = CalCheckSum(FMC_APROM_BASE + u32StartAddress_bak, u32TotalLen_bak);
             outps(pu8Response + 8, u16Lcksum);
         }
     }

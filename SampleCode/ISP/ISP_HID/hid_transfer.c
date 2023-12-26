@@ -13,7 +13,7 @@
 #include "NuMicro.h"
 #include "hid_transfer.h"
 
-__attribute__((aligned(4))) uint8_t g_u8UsbRcvBuff[64];
+__ALIGNED(4) uint8_t g_u8UsbRcvBuff[64];
 
 uint8_t volatile g_u8UsbDataReady = 0;
 
