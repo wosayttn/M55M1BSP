@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc</IncludePath>
+              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc;..\..\common</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -387,12 +387,12 @@
             <File>
               <FileName>ISP_startup_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\ISP_startup_M55M1.c</FilePath>
+              <FilePath>..\..\common\ISP_startup_M55M1.c</FilePath>
             </File>
             <File>
               <FileName>ISP_system_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\ISP_system_M55M1.c</FilePath>
+              <FilePath>..\..\common\ISP_system_M55M1.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -420,24 +420,24 @@
               <FilePath>..\main.c</FilePath>
             </File>
             <File>
-              <FileName>isp_user.c</FileName>
+              <FileName>i2c_transfer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\isp_user.c</FilePath>
+              <FilePath>..\i2c_transfer.c</FilePath>
             </File>
             <File>
               <FileName>fmc_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\fmc_user.c</FilePath>
+              <FilePath>..\..\common\fmc_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>isp_user.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\common\isp_user.c</FilePath>
             </File>
             <File>
               <FileName>targetdev.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\targetdev.c</FilePath>
-            </File>
-            <File>
-              <FileName>i2c_transfer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\i2c_transfer.c</FilePath>
+              <FilePath>..\..\common\targetdev.c</FilePath>
             </File>
           </Files>
         </Group>

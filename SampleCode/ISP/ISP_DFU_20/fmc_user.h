@@ -11,11 +11,9 @@
 
 #include "targetdev.h"
 
-// #define FMC_CONFIG0_ADDR        (FMC_CONFIG_BASE)       /*!< CONFIG 0 Address */
-// #define FMC_CONFIG1_ADDR        (FMC_CONFIG_BASE + 4)   /*!< CONFIG 1 Address */
-
-#define Config0         FMC_CONFIG_BASE
-#define Config1         (FMC_CONFIG_BASE+4)
+#define Config0         FMC_USER_CONFIG_0
+#define Config1         FMC_USER_CONFIG_1
+#define FMC_CONFIG_CNT  14
 
 #define ISPGO           0x01
 

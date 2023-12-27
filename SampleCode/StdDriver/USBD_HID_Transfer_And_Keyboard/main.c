@@ -109,6 +109,9 @@ void SYS_Init(void)
     SET_USB_D_MINUS_PA13();
     SET_USB_D_PLUS_PA14();
     SET_USB_OTG_ID_PA15();
+
+    /* Set BTN0 to input mode */
+    GPIO_SetMode(PI, BIT11, GPIO_MODE_INPUT);
 }
 
 
@@ -156,7 +159,7 @@ int32_t main(void)
     printf("|        NuMicro USB Composite Device Sample Code        |\n");
     printf("|             (USB HID Transfer + Keyboard)              |\n");
     printf("+--------------------------------------------------------+\n");
-    printf("If PH.0 = 0 or press BTN0 button, just report it is key 'a'.\n");
+    printf("If PI.11 = 0 or press BTN0 button, just report it is key 'a'.\n");
 
     USBD_Open(&gsInfo, HID_ClassRequest, NULL);
 

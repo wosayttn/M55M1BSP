@@ -42,15 +42,17 @@ void PowerDownFunction(void)
 /*---------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void BODOUT_IRQHandler(void)
 {
-    uint32_t u32Status;
-
     /* Clear BOD Interrupt Flag */
     SYS_CLEAR_BOD_INT_FLAG();
 
     printf("Brown Out is Detected.\n");
 
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
-    u32Status = SYS->BODCTL | SYS_BODCTL_BODIF_Msk;
+#if 1   /* TESTCHIP_ONLY */
+    inp32(SYS->BODCTL);
+#else
+    inp32(SYS->BODSTS);
+#endif
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -58,8 +60,6 @@ NVT_ITCM void BODOUT_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void PMC_IRQHandler(void)
 {
-    uint32_t u32Status;
-
     /* Check system power down mode wake-up interrupt status flag */
     if (PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk)
     {
@@ -70,7 +70,7 @@ NVT_ITCM void PMC_IRQHandler(void)
     }
 
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
-    u32Status = PMC->INTSTS;
+    inp32(PMC->INTSTS);
 }
 
 void SYS_Init(void)

@@ -23,8 +23,6 @@ void SYS_Init(void);
 /*---------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void WDT0_IRQHandler(void)
 {
-    uint32_t u32Status;
-
     if (WDT_GET_TIMEOUT_INT_FLAG(WDT0))
     {
         /* Clear WDT time-out interrupt flag */
@@ -42,7 +40,7 @@ NVT_ITCM void WDT0_IRQHandler(void)
     s_u8IsINTEvent = 1;
 
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
-    u32Status = WDT0->STATUS;
+    inp32(WDT0->STATUS);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/

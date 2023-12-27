@@ -7,6 +7,7 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <stdio.h>
+#include "NuMicro.h"
 #include "targetdev.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -19,8 +20,7 @@ volatile uint8_t g_u8SlvDataLen;
 
 __STATIC_INLINE void I2C_SlaveTRx(I2C_T *i2c, uint32_t u32Status);
 
-extern uint32_t Pclk0;
-extern uint32_t Pclk1;
+extern uint32_t u32PCLK2;
 
 void I2C_Init(void)
 {
@@ -28,7 +28,7 @@ void I2C_Init(void)
     SYS->I2CRST |=  SYS_I2CRST_I2C1RST_Msk;
     SYS->I2CRST &= ~SYS_I2CRST_I2C1RST_Msk;
     /* Open I2C1 and set clock to 100k */
-    I2C1->CLKDIV = (uint32_t)(((Pclk1 * 10U) / (100000 * 4U) + 5U) / 10U - 1U); /* Compute proper divider for I2C clock */;
+    I2C1->CLKDIV = (uint32_t)(((CLK_GetPCLK1Freq() * 10U) / (100000 * 4U) + 5U) / 10U - 1U); /* Compute proper divider for I2C clock */;
     I2C1->CTL0 |= I2C_CTL0_I2CEN_Msk;
     /* Set I2C1 ADDR0 Slave Addresses */
     I2C1->ADDR0  = (I2C_ADDR << 1U) | I2C_GCMODE_DISABLE;
@@ -90,14 +90,14 @@ void I2C_SlaveTRx(I2C_T *i2c, uint32_t u32Status)
     else if (u32Status == 0xA8)                 /* Own SLA+R has been receive; ACK has been return */
     {
         g_u8SlvDataLen = 0;
-        u8data = response_buff[g_u8SlvDataLen];
+        u8data = g_au8ResponseBuff[g_u8SlvDataLen];
         I2C_SET_DATA(i2c, u8data);
         g_u8SlvDataLen++;
         I2C_SET_CONTROL_REG(i2c, I2C_CTL_SI_AA);
     }
     else if (u32Status == 0xB8)
     {
-        u8data = response_buff[g_u8SlvDataLen];
+        u8data = g_au8ResponseBuff[g_u8SlvDataLen];
         I2C_SET_DATA(i2c, u8data);
         g_u8SlvDataLen++;
         g_u8SlvDataLen &= 0x3F;

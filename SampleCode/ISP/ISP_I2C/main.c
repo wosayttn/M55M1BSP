@@ -14,11 +14,6 @@
 #include "targetdev.h"
 #include "i2c_transfer.h"
 
-#define PLL_CLOCK       FREQ_180MHZ
-
-uint32_t Pclk0;
-uint32_t Pclk1;
-
 int32_t SYS_Init(void)
 {
     uint32_t u32TimeOutCnt;
@@ -26,19 +21,6 @@ int32_t SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-
-    /* Enable HIRC clock */
-    CLK->SRCCTL |= CLK_SRCCTL_HIRCEN_Msk;
-
-    /* Wait for HIRC clock ready */
-    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
-    {
-        if (--u32TimeOutCnt == 0)
-            return -1;
-    }
-
     /* Enable PLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
@@ -58,7 +40,7 @@ int32_t SYS_Init(void)
     /* Update System Core Clock */
     PllClock        = PLL_CLOCK;
     SystemCoreClock = PllClock;
-    CyclesPerUs = SystemCoreClock / 1000000UL;
+    CyclesPerUs     = SystemCoreClock / 1000000UL;
 
     /* Debug UART clock setting*/
     SetDebugUartCLK();
@@ -92,7 +74,7 @@ int32_t SYS_Init(void)
 
 int main(void)
 {
-    uint32_t cmd_buff[16];
+    uint32_t au32CmdBuff[16], u32TimeoutInMS = 300;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -108,22 +90,21 @@ int main(void)
     g_u32ApromSize = GetApromSize();
 
     I2C_Init();
-    SysTick->LOAD = 300000 * CyclesPerUs;
-    SysTick->VAL   = (0x00);
-    SysTick->CTRL = SysTick->CTRL | SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
 
-    while (1)
+    while (u32TimeoutInMS > 0)
     {
         if (bI2cDataReady == 1)
         {
             goto _ISP;
         }
 
-        if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
-        {
-            goto _APROM;
-        }
+        CLK_SysTickDelay(1000);
+        u32TimeoutInMS--;
     }
+
+    /* Timeout then go to APROM */
+    if (u32TimeoutInMS == 0)
+        goto _APROM;
 
 _ISP:
 
@@ -131,9 +112,9 @@ _ISP:
     {
         if (bI2cDataReady == 1)
         {
-            memcpy(cmd_buff, i2c_rcvbuf, 64);
+            memcpy(au32CmdBuff, i2c_rcvbuf, 64);
             bI2cDataReady = 0;
-            ParseCmd((unsigned char *)cmd_buff, 64);
+            ParseCmd((unsigned char *)au32CmdBuff, 64);
         }
     }
 

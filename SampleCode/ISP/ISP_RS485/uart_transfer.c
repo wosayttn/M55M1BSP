@@ -49,7 +49,6 @@ NVT_ITCM void UART1_IRQHandler(void)
     }
 }
 
-extern __attribute__((aligned(4))) uint8_t g_au8ResponseBuff[64];
 void PutString(void)
 {
     uint32_t i;

@@ -83,3 +83,13 @@ void __exit(int x)
     {
     }
 }
+
+int __close(int handle)
+{
+  return 0;
+}
+
+int remove(const char * filename)
+{
+  return 0;
+}

@@ -15,8 +15,6 @@
 #include "targetdev.h"
 #include "uart_transfer.h"
 
-#define PLL_CLOCK       FREQ_180MHZ
-
 int32_t SYS_Init(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock >> 1; /* 500ms time-out */
@@ -27,18 +25,10 @@ int32_t SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC 12MHz clock */
-    CLK->SRCCTL |= CLK_SRCCTL_HIRCEN_Msk;
-
-    /* Waiting for Internal RC clock ready */
-    while ((CLK->STATUS & CLK_STATUS_HIRCSTB_Msk) != CLK_STATUS_HIRCSTB_Msk)
-    {
-        if (--u32TimeOutCnt == 0)
-        {
-            return -1;
-        }
-    }
-
+    /* Enable external high speed crystal clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
+    /* Waiting for external high speed crystal clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
     /* Enable PLL0 180MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
@@ -62,7 +52,7 @@ int32_t SYS_Init(void)
 
     /* Enable module clock */
     CLK->FMCCTL |= CLK_FMCCTL_ISP0CKEN_Msk;
-    CLK->UARTSEL0 = (CLK->UARTSEL0 & ~CLK_UARTSEL0_UART6SEL_Msk) | CLK_UARTSEL0_UART6SEL_HIRC;
+    CLK->UARTSEL0 = (CLK->UARTSEL0 & ~CLK_UARTSEL0_UART6SEL_Msk) | CLK_UARTSEL0_UART6SEL_HXT;
     CLK->UARTCTL |= CLK_UARTCTL_UART6CKEN_Msk;
     /* Check clock stable */
     u32TimeOutCnt = SystemCoreClock >> 1;
@@ -74,6 +64,8 @@ int32_t SYS_Init(void)
             return -1;
         }
     }
+
+    CLK_EnableModuleClock(ISP0_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -93,6 +85,8 @@ int32_t SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
+    uint32_t u32TimeoutInMS = 300;
+
     /* Init System, peripheral clock and multi-function I/O */
     if (SYS_Init() < 0)
         goto _APROM;
@@ -109,13 +103,8 @@ int32_t main(void)
     /* Get APROM and Data Flash size */
     g_u32ApromSize = GetApromSize();
 
-    /* Set Systick time-out for 300ms */
-    SysTick->LOAD = 300000 * CyclesPerUs;
-    SysTick->VAL  = (0x00);
-    SysTick->CTRL = SysTick->CTRL | SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;   /* Use CPU clock */
-
     /* Wait for CMD_CONNECT command until Systick time-out */
-    while (1)
+    while (u32TimeoutInMS > 0)
     {
         /* Wait for CMD_CONNECT command */
         if ((g_u8bufhead >= 4) || (g_u8bUartDataReady == TRUE))
@@ -134,12 +123,13 @@ int32_t main(void)
             }
         }
 
-        /* Systick time-out, then go to APROM */
-        if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
-        {
-            goto _APROM;
-        }
+        CLK_SysTickDelay(1000);
+        u32TimeoutInMS--;
     }
+
+    /* Timeout then go to APROM */
+    if (u32TimeoutInMS == 0)
+        goto _APROM;
 
 _ISP:
 

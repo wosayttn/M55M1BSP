@@ -23,8 +23,6 @@ void SYS_Init(void);
 /*--------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void IRC_IRQHandler(void)
 {
-    uint32_t u32Status;
-
     if (SYS->TISTS12M & SYS_TISTS12M_TFAILIF_Msk)  /* Get Trim Failure Interrupt */
     {
         /* Display HIRC trim status */
@@ -62,8 +60,8 @@ NVT_ITCM void IRC_IRQHandler(void)
     }
 
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
-    u32Status = SYS->TISTS12M;
-    u32Status = SYS->TISTS48M;
+    inp32(SYS->TISTS12M);
+    inp32(SYS->TISTS48M);
 }
 
 void SYS_Init(void)

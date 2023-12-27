@@ -56,6 +56,10 @@
 
 /*-------------------------------------------------------------*/
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern uint8_t g_u8OutBuff[];
 extern uint8_t HID_DeviceReportDescriptor[];
 extern uint8_t gu8DeviceDescriptor[];
@@ -65,6 +69,7 @@ extern uint8_t gu8VendorStringDesc[];
 extern uint8_t gu8ProductStringDesc[];
 
 extern volatile uint8_t g_u8UsbDataReady;
+extern __ALIGNED(4) uint8_t g_u8UsbRcvBuff[64];
 
 /*-------------------------------------------------------------*/
 void USBD20_IRQHandler(void);
@@ -80,5 +85,9 @@ void EPB_Handler(void);
 void HID_SetInReport(void);
 void HID_GetOutReport(uint8_t *pu8EpBuf, uint32_t u32Size);
 void HID_ActiveDMA(uint32_t u32In, uint32_t u32Addr, uint32_t u32Len);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  /* __USBD_HID_H_ */

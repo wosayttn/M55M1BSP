@@ -91,27 +91,31 @@ void AWF_Wakeup_Test(void)
 NVT_ITCM void AWF_IRQHandler(void)
 {
     uint32_t u32AccumulationValue;
-
+    uint32_t u32HTH_Flag,u32LTH_Flag;
     /* Enable AWF0 module clock */
     CLK_EnableModuleClock(AWF0_MODULE); //TESTCHIP_ONLY
 
     u32AccumulationValue = AWF_GET_ACUVAL();
-
-    if (AWF_GET_HTH_INTFLAG())
+    u32HTH_Flag = AWF_GET_HTH_INTFLAG();
+    u32LTH_Flag = AWF_GET_LTH_INTFLAG();
+    if (u32HTH_Flag)
     {
-        printf("AWF HTH Interrupt occured!!!, HTH_INT = %d, LTH_INT = %d\n", (uint32_t)AWF_GET_HTH_INTFLAG(), (uint32_t)AWF_GET_LTH_INTFLAG());
+        printf("AWF HTH Interrupt occured!!!, HTH_INT = %d, LTH_INT = %d\n", u32HTH_Flag, u32LTH_Flag);
         printf("AWFHTH = %d, ACUVAL = %d\n", (uint32_t)((AWF->HTH & AWF_HTH_AWFHTH_Msk) >> AWF_HTH_AWFHTH_Pos), u32AccumulationValue);
         AWF_Close();
-        printf("HTH Flag clear!, HTH_INT = %d, LTH_INT = %d\n", (uint32_t)AWF_GET_HTH_INTFLAG(), (uint32_t)AWF_GET_LTH_INTFLAG());
+        printf("HTH Flag clear!, HTH_INT = %d, LTH_INT = %d\n", u32HTH_Flag, u32LTH_Flag);
     }
 
-    if (AWF_GET_LTH_INTFLAG())
+    if (u32LTH_Flag)
     {
-        printf("AWF LTH Interrupt occured!!!, HTH_INT = %d, LTH_INT = %d\n", (uint32_t)AWF_GET_HTH_INTFLAG(), (uint32_t)AWF_GET_LTH_INTFLAG());
+        printf("AWF LTH Interrupt occured!!!, HTH_INT = %d, LTH_INT = %d\n", u32HTH_Flag, u32LTH_Flag);
         printf("AWFLTH = %d, ACUVAL = %d\n", (uint32_t)((AWF->LTH & AWF_LTH_AWFLTH_Msk) >> AWF_LTH_AWFLTH_Pos), u32AccumulationValue);
         AWF_Close();
-        printf("LTH Flag clear!, HTH_INT = %d, LTH_INT = %d\n", (uint32_t)AWF_GET_HTH_INTFLAG(), (uint32_t)AWF_GET_LTH_INTFLAG());
+        printf("LTH Flag clear!, HTH_INT = %d, LTH_INT = %d\n", u32HTH_Flag, u32LTH_Flag);
     }
+
+    /* CPU read interrupt flag register to wait write(clear) instruction completement */
+    inp32(AWF->STATUS);    
 }
 
 static void SYS_Init(void)

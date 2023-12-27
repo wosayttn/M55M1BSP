@@ -52,13 +52,13 @@ void SYS_Init(void)
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
-   /* Enable HSOTG0_ module clock */
+    /* Enable HSOTG0_ module clock */
     CLK_EnableModuleClock(HSOTG0_MODULE);
-    
+
     SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;    /* select HSUSBD */
     /* Enable USB PHY */
     SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk | SYS_USBPHY_HSUSBACT_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
-    for (i=0; i<0x1000; i++);      // delay > 10 us
+    for (i = 0; i < 0x1000; i++);  // delay > 10 us
     SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
 
     /* Enable IP clock */
@@ -115,7 +115,7 @@ extern uint32_t volatile u32AdjSample;
 
 int32_t main(void)
 {
-    uint32_t volatile i;
+    uint32_t volatile i = 0;
 
     /* Unlock protected registers */
     SYS_UnlockReg();

@@ -398,7 +398,7 @@ void VCOM_ClassRequest(void)
         case GET_LINE_CODE:
         {
             if ((gUsbCmd.wIndex & 0xff) == 0)  /* VCOM-1 */
-                HSUSBD_PrepareCtrlIn((uint8_t *)&gLineCoding, 7);
+                HSUSBD_PrepareCtrlIn((uint8_t *)&g_LineCoding, 7);
 
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
             HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
@@ -437,7 +437,7 @@ void VCOM_ClassRequest(void)
         case SET_LINE_CODE:
         {
             if ((gUsbCmd.wIndex & 0xff) == 0) /* VCOM-1 */
-                HSUSBD_CtrlOut((uint8_t *)&gLineCoding, 7);
+                HSUSBD_CtrlOut((uint8_t *)&g_LineCoding, 7);
 
             /* Status stage */
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);

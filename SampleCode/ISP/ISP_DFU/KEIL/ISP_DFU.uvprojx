@@ -387,12 +387,12 @@
             <File>
               <FileName>ISP_startup_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\ISP_startup_M55M1.c</FilePath>
+              <FilePath>..\..\common\ISP_startup_M55M1.c</FilePath>
             </File>
             <File>
               <FileName>ISP_system_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\ISP_system_M55M1.c</FilePath>
+              <FilePath>..\..\common\ISP_system_M55M1.c</FilePath>
             </File>
           </Files>
         </Group>

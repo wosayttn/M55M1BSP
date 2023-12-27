@@ -53,9 +53,6 @@ void SYS_Init(void)
 
 int32_t main(void)
 {
-    uint32_t  i;
-    uint32_t *pu32Vectors = (uint32_t *)FMC_APROM_BASE;
-
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
     /* Init Debug UART for print message */

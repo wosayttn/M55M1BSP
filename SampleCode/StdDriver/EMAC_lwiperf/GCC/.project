@@ -75,6 +75,11 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/uart.c</locationURI>
 		</link>
 		<link>
+			<name>Library/gpio.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/gpio.c</locationURI>
+		</link>
+		<link>
 			<name>Library/timer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/timer.c</locationURI>

@@ -15,10 +15,6 @@
 #include "hid_transfer.h"
 #include "targetdev.h"
 
-#define PLL_CLOCK       FREQ_180MHZ
-
-int32_t g_FMC_i32ErrCode = 0;
-
 uint32_t CLK_GetPLLClockFreq(void)
 {
     return PLL_CLOCK;

@@ -66,6 +66,13 @@ void DataFlashWrite(uint32_t u32Addr, uint32_t u32Size, uint32_t u32Buffer)
 
     u32Len = u32Size;
 
+    SYS_UnlockReg();
+    /* Enable FMC ISP function */
+    FMC_Open();
+
+    /* Enable Read/Write flash function */
+    FMC_ENABLE_AP_UPDATE();
+
     do
     {
         /* Get address base on page size alignment */
@@ -115,4 +122,8 @@ void DataFlashWrite(uint32_t u32Addr, uint32_t u32Size, uint32_t u32Buffer)
         u32Addr += u32Len;
         u32Buffer += u32Len;
     } while (u32Size > 0);
+
+    /* Disable FMC ISP function */
+    FMC_Close();
+    SYS_LockReg();
 }

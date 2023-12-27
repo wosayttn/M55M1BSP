@@ -338,7 +338,8 @@ int32_t main(void)
         /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
         CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
         printf("\nWakeup\n");
-        printf("MDTSAD:   0x%08X, MDWOC:    0x%08X\n", CCAP->MDTSAD, CCAP_MD_GET_OVERFLOW_WIN_CNT());
+        printf("MDTSAD:   0x%08X\n", CCAP->MDTSAD);
+        printf("MDWOC:    0x%08X\n", CCAP_MD_GET_OVERFLOW_WIN_CNT());
 
         for (i = 0; i < CCAP_MD_WINDOW_CNT; i++)
             printf("Window[%d] SAD: 0x%08X\n", i, CCAP_MD_GET_WIN_SAD(i));

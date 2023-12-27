@@ -11,7 +11,7 @@
 #include "vcom_serial.h"
 
 /*--------------------------------------------------------------------------*/
-STR_VCOM_LINE_CODING gLineCoding = {115200, 0, 0, 8};   /* Baud rate : 115200    */
+STR_VCOM_LINE_CODING g_LineCoding = {115200, 0, 0, 8};   /* Baud rate : 115200    */
 /* Stop bit     */
 /* parity       */
 /* data bits    */

@@ -66,6 +66,11 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/lpadc.c</locationURI>
 		</link>
 		<link>
+			<name>Driver/acmp.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/acmp.c</locationURI>
+		</link>
+		<link>
 			<name>Driver/gpio.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/gpio.c</locationURI>

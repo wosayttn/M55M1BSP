@@ -97,7 +97,6 @@ void PowerDownFunction(void)
 NVT_ITCM void GPC_IRQHandler(void)
 {
     volatile uint32_t u32temp;
-    uint32_t u32Status;
 
     /* To check if PC.0 interrupt occurred */
     if (GPIO_GET_INT_FLAG(PC, BIT0))
@@ -114,7 +113,7 @@ NVT_ITCM void GPC_IRQHandler(void)
     }
 
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
-    u32Status = PC->INTSRC;
+    inp32(PC->INTSRC);
 }
 
 void PorSetting(void)
@@ -274,7 +273,7 @@ void SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t u32TimeOutCnt, u32PMUSTS, u32Config[4];
+    uint32_t u32TimeOutCnt, u32PMUSTS;
 
     /* Unlock protected registers */
     SYS_UnlockReg();

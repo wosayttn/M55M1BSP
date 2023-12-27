@@ -12,6 +12,7 @@
 #include "NuMicro.h"
 #include "vendor_lbk.h"
 
+//#define USE_CPU
 
 volatile uint8_t  g_IsHighSpeedMode = 1;
 volatile uint8_t  g_IntInDataEmpty = 0;
@@ -21,10 +22,10 @@ volatile uint8_t  g_BulkInDataEmpty = 0;
 volatile uint8_t  g_BulkOutDataReady = 0;
 volatile uint32_t g_DMA_RunMsk = 0;
 
-volatile uint8_t  g_Ctrl_Buff[512];
-volatile uint8_t  g_Int_Buff[1024];
-volatile uint8_t  g_Bulk_Buff[512];
-volatile uint8_t  g_Iso_Buff[1024];
+__attribute__((aligned(4))) volatile uint8_t g_Ctrl_Buff[512];
+__attribute__((aligned(4))) volatile uint8_t g_Int_Buff[1024];
+__attribute__((aligned(4))) volatile uint8_t g_Bulk_Buff[512];
+__attribute__((aligned(4))) volatile uint8_t g_Iso_Buff[1024];
 
 uint32_t g_u32EpAMaxPacketSize;
 uint32_t g_u32EpBMaxPacketSize;
@@ -182,21 +183,21 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
         if (IrqSt & HSUSBD_CEPINTSTS_SETUPTKIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_SETUPTKIF_Msk);
-            return;
+            goto EXIT_HSUSBD_IRQHandler;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_SETUPPKIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_SETUPPKIF_Msk);
             HSUSBD_ProcessSetupPacket();
-            return;
+            goto EXIT_HSUSBD_IRQHandler;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_OUTTKIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_OUTTKIF_Msk);
             HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-            return;
+            goto EXIT_HSUSBD_IRQHandler;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_INTKIF_Msk)
@@ -215,13 +216,13 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_TXPKIEN_Msk | HSUSBD_CEPINTEN_STSDONEIEN_Msk);
             }
 
-            return;
+            goto EXIT_HSUSBD_IRQHandler;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_PINGIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_PINGIF_Msk);
-            return;
+            goto EXIT_HSUSBD_IRQHandler;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_TXPKIF_Msk)
@@ -244,7 +245,7 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
             }
 
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_TXPKIF_Msk);
-            return;
+            goto EXIT_HSUSBD_IRQHandler;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_RXPKIF_Msk)
@@ -252,25 +253,25 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_RXPKIF_Msk);
             HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
             HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_SETUPPKIEN_Msk | HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-            return;
+            goto EXIT_HSUSBD_IRQHandler;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_NAKIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_NAKIF_Msk);
-            return;
+            goto EXIT_HSUSBD_IRQHandler;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_STALLIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STALLIF_Msk);
-            return;
+            goto EXIT_HSUSBD_IRQHandler;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_ERRIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_ERRIF_Msk);
-            return;
+            goto EXIT_HSUSBD_IRQHandler;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_STSDONEIF_Msk)
@@ -278,19 +279,19 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
             HSUSBD_UpdateDeviceState();
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
             HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_SETUPPKIEN_Msk);
-            return;
+            goto EXIT_HSUSBD_IRQHandler;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_BUFFULLIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_BUFFULLIF_Msk);
-            return;
+            goto EXIT_HSUSBD_IRQHandler;
         }
 
         if (IrqSt & HSUSBD_CEPINTSTS_BUFEMPTYIF_Msk)
         {
             HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_BUFEMPTYIF_Msk);
-            return;
+            goto EXIT_HSUSBD_IRQHandler;
         }
     }
 
@@ -326,7 +327,7 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
 
     if (IrqStL & HSUSBD_GINTSTS_EPDIF_Msk)
     {
-        printf("D: 0x%x, 0x%x\n", HSUSBD->EP[EPD].EPINTSTS, HSUSBD->EP[EPD].EPINTEN);
+        //printf("D: 0x%x, 0x%x\n", HSUSBD->EP[EPD].EPINTSTS, HSUSBD->EP[EPD].EPINTEN);
         IrqSt = HSUSBD->EP[EPD].EPINTSTS & HSUSBD->EP[EPD].EPINTEN;
         HSUSBD_CLR_EP_INT_FLAG(EPD, IrqSt);
         g_IsoOutDataReady = 1;
@@ -345,6 +346,11 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
         HSUSBD_CLR_EP_INT_FLAG(EPF, IrqSt);
         g_BulkOutDataReady = 1;
     }
+
+EXIT_HSUSBD_IRQHandler:
+    __ISB();
+    __DSB();
+
 }
 
 /*
@@ -501,24 +507,24 @@ void VendorLBK_ClassRequest(void)
         // Device to host
         switch (gUsbCmd.bRequest)
         {
-            case REQ_GET_DATA:
-                if (g_IsHighSpeedMode)
-                    data_len = CEP_MAX_PKT_SIZE;
-                else
-                    data_len = CEP_OTHER_MAX_PKT_SIZE;
+        case REQ_GET_DATA:
+            if (g_IsHighSpeedMode)
+                data_len = CEP_MAX_PKT_SIZE;
+            else
+                data_len = CEP_OTHER_MAX_PKT_SIZE;
 
-                if (gUsbCmd.wLength < data_len)
-                    data_len = gUsbCmd.wLength;
+            if (gUsbCmd.wLength < data_len)
+                data_len = gUsbCmd.wLength;
 
-                HSUSBD_PrepareCtrlIn((uint8_t *)&g_Ctrl_Buff, data_len);
-                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
-                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
-                break;
+            HSUSBD_PrepareCtrlIn((uint8_t *)&g_Ctrl_Buff, data_len);
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
+            break;
 
-            default:
-                /* Setup error, stall the device */
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-                break;
+        default:
+            /* Setup error, stall the device */
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+            break;
         }
     }
     else
@@ -526,22 +532,22 @@ void VendorLBK_ClassRequest(void)
         // Host to device
         switch (gUsbCmd.bRequest)
         {
-            case REQ_SET_DATA:
-                if (gUsbCmd.wLength < data_len)
-                    data_len = gUsbCmd.wLength;
+        case REQ_SET_DATA:
+            if (gUsbCmd.wLength < data_len)
+                data_len = gUsbCmd.wLength;
 
-                HSUSBD_CtrlOut((uint8_t *)&g_Ctrl_Buff, data_len);
+            HSUSBD_CtrlOut((uint8_t *)&g_Ctrl_Buff, data_len);
 
-                /* Status stage */
-                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-                break;
+            /* Status stage */
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+            break;
 
-            default:
-                /* Setup error, stall the device */
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-                break;
+        default:
+            /* Setup error, stall the device */
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+            break;
         }
     }
 }
@@ -584,6 +590,7 @@ static void LBK_PrepareBulkInData(void)
 {
     uint32_t  t0;
 
+#if !defined(USE_CPU)
     /* bulk in, dma read */
     HSUSBD_SET_DMA_READ(BULK_IN_EP_NUM);
     HSUSBD_ENABLE_EP_INT(EPE, HSUSBD_EPINTEN_TXPKIEN_Msk);
@@ -612,6 +619,17 @@ static void LBK_PrepareBulkInData(void)
             break;
         }
     }
+#else
+    /* Prepare the data for next bulk-in transfer */
+    int i;
+    for (i = 0; i < g_u32EpEMaxPacketSize; i++)
+    {
+        HSUSBD->EP[EPE].EPDAT_BYTE = g_Bulk_Buff[i];
+        __DSB();
+		}
+    HSUSBD->EP[EPE].EPTXCNT = g_u32EpEMaxPacketSize;
+    HSUSBD_ENABLE_EP_INT(EPE, HSUSBD_EPINTEN_INTKIEN_Msk);
+#endif
 }
 
 static void LBK_GetIsoOutData(void)
@@ -650,6 +668,7 @@ static void LBK_GetIsoOutData(void)
 
 static void LBK_PrepareIsoInData(void)
 {
+#if !defined(USE_CPU)
     uint32_t  t0;
 
     HSUSBD_SET_DMA_READ(ISO_IN_EP_NUM);
@@ -678,6 +697,18 @@ static void LBK_PrepareIsoInData(void)
             break;
         }
     }
+#else
+    /* Prepare the data for next bulk-in transfer */
+    int i;
+    for (i = 0; i < g_u32EpCMaxPacketSize; i++)
+    {
+        HSUSBD->EP[EPC].EPDAT_BYTE = g_Iso_Buff[i];
+        __DSB();
+    }
+
+    HSUSBD->EP[EPC].EPTXCNT = g_u32EpCMaxPacketSize;
+    HSUSBD_ENABLE_EP_INT(EPC, HSUSBD_EPINTEN_INTKIEN_Msk);
+#endif
 }
 
 void VendorLBK_ProcessData(void)
