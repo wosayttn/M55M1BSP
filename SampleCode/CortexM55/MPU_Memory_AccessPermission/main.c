@@ -15,17 +15,17 @@
  */
 
 /* Base address and size must be 32-byte aligned */
-#define REGION_FLASH_RW_BASE_ADDR   (FMC_APROM_BASE + 0x10000)
-#define REGION_FLASH_RW_SIZE        (0x20000)
-#define REGION_FLASH_RW_END_ADDR    (REGION_FLASH_RW_BASE_ADDR + REGION_FLASH_RW_SIZE - 1)
+#define REGION_FLASH_RW_BASE_ADDR   (MPU_INIT_BASE(0))
+#define REGION_FLASH_RW_SIZE        (MPU_INIT_SIZE(0))
+#define REGION_FLASH_RW_END_ADDR    (MPU_INIT_LIMIT(0))
 
-#define REGION_SRAM_RW_BASE_ADDR    (SRAM0_BASE)
-#define REGION_SRAM_RW_SIZE         (0x4000)
-#define REGION_SRAM_RW_END_ADDR     (REGION_SRAM_RW_BASE_ADDR + REGION_SRAM_RW_SIZE - 1)
+#define REGION_SRAM_RW_BASE_ADDR    (MPU_INIT_BASE(1))
+#define REGION_SRAM_RW_SIZE         (MPU_INIT_SIZE(1))
+#define REGION_SRAM_RW_END_ADDR     (MPU_INIT_LIMIT(1))
 
-#define REGION_SRAM_RO_BASE_ADDR    (REGION_SRAM_RW_BASE_ADDR + REGION_SRAM_RW_SIZE)
-#define REGION_SRAM_RO_SIZE         (0x400)
-#define REGION_SRAM_RO_END_ADDR     (REGION_SRAM_RO_BASE_ADDR + REGION_SRAM_RO_SIZE - 1)
+#define REGION_SRAM_RO_BASE_ADDR    (MPU_INIT_BASE(2))
+#define REGION_SRAM_RO_SIZE         (MPU_INIT_SIZE(2))
+#define REGION_SRAM_RO_END_ADDR     (MPU_INIT_LIMIT(2))
 
 NVT_ITCM void MemManage_Handler(void)
 {
@@ -103,74 +103,19 @@ void SYS_Init(void)
 
 void MPU_TestAccess(void)
 {
-    uint8_t     u8AttrIdxNonCache = 1;
-    uint32_t    u32RegionFlash_RW = 1,
-                u32RegionSRAM_RW  = 2,
-                u32RegionSRAM_RO  = 3;
-
     /* Disable I-Cache and D-Cache before config MPU */
     SCB_DisableICache();
     SCB_DisableDCache();
 
-    /* Configure MPU memory attribute */
-    /*
-     * Attribute Non-cacheable
-     * Memory Type = Normal
-     * Attribute   = Outer Non-cacheable, Inner Non-cacheable
-     */
-    ARM_MPU_SetMemAttr(u8AttrIdxNonCache, ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
+    /* Configure MPU memory region defined in mpu_config_M55M1.h */
+    InitPreDefMPURegion(NULL, 0);
 
-    /* Configure MPU memory regions */
-    /*
-     * Region RW (Flash Memory Space)
-     * Start address = REGION_FLASH_RW_BASE_ADDR
-     * Shareablity   = Non-shareable
-     * Size          = REGION_FLASH_RW_SIZE
-     * Permission    = Full access
-     */
-    ARM_MPU_SetRegion(u32RegionFlash_RW,
-                      /*           Base address               Non-shareable,  read/write, privileged, executable  */
-                      ARM_MPU_RBAR(REGION_FLASH_RW_BASE_ADDR, ARM_MPU_SH_NON, RO(FALSE),  NP(FALSE),  XN(FALSE)),
-                      /*           Limit address             Attribute index */
-                      ARM_MPU_RLAR(REGION_FLASH_RW_END_ADDR, u8AttrIdxNonCache)
-                     );
-
-    /*
-     * Region RW (SRAM Memory Space)
-     * Start address = REGION_SRAM_RW_BASE_ADDR
-     * Shareablity   = Non-shareable
-     * Size          = REGION_SRAM_RW_SIZE
-     * Permission    = Full access
-     */
-    ARM_MPU_SetRegion(u32RegionSRAM_RW,
-                      /*           Base address              Non-shareable,  read/write, privileged, executable  */
-                      ARM_MPU_RBAR(REGION_SRAM_RW_BASE_ADDR, ARM_MPU_SH_NON, RO(FALSE),  NP(FALSE),  XN(FALSE)),
-                      /*           Limit address            Attribute index */
-                      ARM_MPU_RLAR(REGION_SRAM_RW_END_ADDR, u8AttrIdxNonCache)
-                     );
-
-    /*
-     * Region RO (SRAM Memory Space)
-     * Start address = REGION_SRAM_RO_BASE_ADDR
-     * Shareablity   = Non-shareable
-     * Size          = REGION_SRAM_RO_SIZE
-     * Permission    = No write access
-     */
-    ARM_MPU_SetRegion(u32RegionSRAM_RO,
-                      /*           Base address              Non-shareable,  read-only, privileged, executable   */
-                      ARM_MPU_RBAR(REGION_SRAM_RO_BASE_ADDR, ARM_MPU_SH_NON, RO(TRUE),  NP(FALSE),  XN(FALSE)),
-                      /*           Limit address            Attribute index */
-                      ARM_MPU_RLAR(REGION_SRAM_RO_END_ADDR, u8AttrIdxNonCache)
-                     );
-
-    /* Enable MPU */
-    ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
     /* Enable I-Cache and D-Cache */
     SCB_EnableDCache();
     SCB_EnableICache();
 
     printf("\n==============================================\n");
-    printf(" Memory Region %d (Flash Memory) configuration:\n", u32RegionFlash_RW);
+    printf("RW Memory Region (Flash Memory) configuration:\n");
     printf("==============================================\n");
     printf(" Start address: 0x%08X\n", (uint32_t)REGION_FLASH_RW_BASE_ADDR);
     printf(" End address  : 0x%08X\n", (uint32_t)REGION_FLASH_RW_END_ADDR);
@@ -179,12 +124,12 @@ void MPU_TestAccess(void)
     printf(" Permission   : Full access\n");
     printf("----------------------------------------------\n");
 
-    printf("Press any key to test read access from memory region %d (Flash Memory).\n", u32RegionFlash_RW);
+    printf("Press any key to test read access from RW memory region (Flash Memory).\n");
     getchar();
     printf("\nRead value from 0x%08X is 0x%08X.\n", (uint32_t)REGION_FLASH_RW_BASE_ADDR, M32(REGION_FLASH_RW_BASE_ADDR));
 
     printf("\n==============================================\n");
-    printf(" Memory Region %d (SRAM Memory) configuration:\n", u32RegionSRAM_RW);
+    printf("RW Memory Region (SRAM Memory) configuration:\n");
     printf("==============================================\n");
     printf(" Start address: 0x%08X\n", (uint32_t)REGION_SRAM_RW_BASE_ADDR);
     printf(" End address  : 0x%08X\n", (uint32_t)REGION_SRAM_RW_END_ADDR);
@@ -193,12 +138,12 @@ void MPU_TestAccess(void)
     printf(" Permission   : Full access\n");
     printf("----------------------------------------------\n");
 
-    printf("Press any key to test read access from memory region %d (SRAM Memory).\n", u32RegionSRAM_RW);
+    printf("Press any key to test read access from RW memory region (SRAM Memory).\n");
     getchar();
     printf("\nRead value from 0x%08X is 0x%08X.\n", REGION_SRAM_RW_BASE_ADDR, M32(REGION_SRAM_RW_BASE_ADDR));
 
     printf("\n==============================================\n");
-    printf(" Memory Region %d (SRAM Memory) configuration:\n", u32RegionSRAM_RO);
+    printf("RO Memory Region (SRAM Memory) configuration:\n");
     printf("==============================================\n");
     printf(" Start address: 0x%08X\n", (uint32_t)REGION_SRAM_RO_BASE_ADDR);
     printf(" End address  : 0x%08X\n", (uint32_t)REGION_SRAM_RO_END_ADDR);
@@ -207,7 +152,7 @@ void MPU_TestAccess(void)
     printf(" Permission   : No write access\n");
     printf("----------------------------------------------\n");
 
-    printf("Press any key to test read/write access from memory region %d (SRAM Memory).\n", u32RegionSRAM_RO);
+    printf("Press any key to test read/write access from RO memory region (SRAM Memory).\n");
     printf("(It should trigger a memory fault exception.)\n");
     getchar();
     printf("\nRead value from 0x%08X is 0x%08X.\n", REGION_SRAM_RO_BASE_ADDR, M32(REGION_SRAM_RO_BASE_ADDR));

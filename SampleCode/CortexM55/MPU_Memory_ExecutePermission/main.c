@@ -15,17 +15,17 @@
  */
 
 /* Base address and size must be 32-byte aligned */
-#define REGION_FLASH_XN_BASE_ADDR     (FMC_APROM_BASE + 0x10000)
-#define REGION_FLASH_XN_SIZE          (0x10000)
-#define REGION_FLASH_XN_END_ADDR      (REGION_FLASH_XN_BASE_ADDR + REGION_FLASH_XN_SIZE - 1)
+#define REGION_FLASH_XN_BASE_ADDR   (MPU_INIT_BASE(0))
+#define REGION_FLASH_XN_SIZE        (MPU_INIT_SIZE(0))
+#define REGION_FLASH_XN_END_ADDR    (MPU_INIT_LIMIT(0))
 
-#define REGION_SRAM_nXN_BASE_ADDR     (SRAM0_BASE)
-#define REGION_SRAM_nXN_SIZE          (0x10000)
-#define REGION_SRAM_nXN_END_ADDR      (REGION_SRAM_nXN_BASE_ADDR + REGION_SRAM_nXN_SIZE - 1)
+#define REGION_SRAM_nXN_BASE_ADDR   (MPU_INIT_BASE(1))
+#define REGION_SRAM_nXN_SIZE        (MPU_INIT_SIZE(1))
+#define REGION_SRAM_nXN_END_ADDR    (MPU_INIT_LIMIT(1))
 
-#define REGION_SRAM_XN_BASE_ADDR     (SRAM0_BASE + 0x20000)
-#define REGION_SRAM_XN_SIZE          (0x10000)
-#define REGION_SRAM_XN_END_ADDR      (REGION_SRAM_XN_BASE_ADDR + REGION_SRAM_XN_SIZE - 1)
+#define REGION_SRAM_XN_BASE_ADDR    (MPU_INIT_BASE(2))
+#define REGION_SRAM_XN_SIZE         (MPU_INIT_SIZE(2))
+#define REGION_SRAM_XN_END_ADDR     (MPU_INIT_LIMIT(2))
 
 /* ExeInRegion1 located in REGION_FLASH_XN */
 uint32_t ExeInRegion1(void) __attribute__((section(".ARM.__at_0x110000")));
@@ -110,53 +110,19 @@ void SYS_Init(void)
 
 void MPU_TestExecutable(void)
 {
-    uint8_t     u8AttrIdxNonCache = 1;
-    uint32_t    u32RegionFlash_XN = 1,
-                u32RegionSRAM_nXN = 2,
-                u32RegionSRAM_XN  = 3;
-
     /* Disable I-Cache and D-Cache before config MPU */
     SCB_DisableICache();
     SCB_DisableDCache();
 
-    /* Configure MPU memory attribute */
-    /*
-     * Attribute Non-cacheable
-     * Memory Type = Normal
-     * Attribute = Outer Non-cacheable, Inner Non-cacheable
-     */
-    ARM_MPU_SetMemAttr(1UL, ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
+    /* Configure MPU memory region defined in mpu_config_M55M1.h */
+    InitPreDefMPURegion(NULL, 0);
 
-    /* Configure MPU memory regions */
-    ARM_MPU_SetRegion(u32RegionFlash_XN,
-                      /*           Base address               Non-shareable,  read-only, privileged, non-executable   */
-                      ARM_MPU_RBAR(REGION_FLASH_XN_BASE_ADDR, ARM_MPU_SH_NON, RO(TRUE),  NP(FALSE),  XN(TRUE)),
-                      /*           Limit address             Attribute index */
-                      ARM_MPU_RLAR(REGION_FLASH_XN_END_ADDR, u8AttrIdxNonCache)
-                     );
-
-    ARM_MPU_SetRegion(u32RegionSRAM_nXN,
-                      /*           Base address               Non-shareable,  read-only, privileged, executable        */
-                      ARM_MPU_RBAR(REGION_SRAM_nXN_BASE_ADDR, ARM_MPU_SH_NON, RO(TRUE),  NP(FALSE),  XN(FALSE)),
-                      /*           Limit address             Attribute index */
-                      ARM_MPU_RLAR(REGION_SRAM_nXN_END_ADDR, u8AttrIdxNonCache)
-                     );
-
-    ARM_MPU_SetRegion(u32RegionSRAM_XN,
-                      /*           Base address              Non-shareable,  read-only, privileged, non-executable   */
-                      ARM_MPU_RBAR(REGION_SRAM_XN_BASE_ADDR, ARM_MPU_SH_NON, RO(TRUE),  NP(FALSE),  XN(TRUE)),
-                      /*           Limit address            Attribute index */
-                      ARM_MPU_RLAR(REGION_SRAM_XN_END_ADDR, u8AttrIdxNonCache)
-                     );
-
-    /* Enable MPU */
-    ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
     /* Enable I-Cache and D-Cache */
     SCB_EnableDCache();
     SCB_EnableICache();
 
     printf("\n==============================================\n");
-    printf(" Memory Region %d (Flash Memory) configuration:\n", u32RegionFlash_XN);
+    printf("XN Memory Region (Flash Memory) configuration:\n");
     printf("==============================================\n");
     printf(" Start address: 0x%08X\n", (uint32_t)REGION_FLASH_XN_BASE_ADDR);
     printf(" End address  : 0x%08X\n", (uint32_t)REGION_FLASH_XN_END_ADDR);
@@ -164,8 +130,7 @@ void MPU_TestExecutable(void)
     printf(" Memory Type  : Normal\n");
     printf(" Permission   : Non-executable\n");
     printf("----------------------------------------------\n");
-    printf("Press any key to test execute code from memory region %d (Flash Memory).\n", u32RegionFlash_XN);
-
+    printf("Press any key to test execute code from XN memory region (Flash Memory).\n");
     printf("(It should trigger a memory fault exception.)\n");
     getchar();
     ExeInRegion1();
@@ -173,7 +138,7 @@ void MPU_TestExecutable(void)
     ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
 
     printf("\n==============================================\n");
-    printf("Memory Region %d (SRAM Memory) configuration:\n", u32RegionSRAM_nXN);
+    printf("nXN Memory Region (SRAM Memory) configuration:\n");
     printf("==============================================\n");
     printf(" Start address: 0x%08X\n", (uint32_t)REGION_SRAM_nXN_BASE_ADDR);
     printf(" End address  : 0x%08X\n", (uint32_t)REGION_SRAM_nXN_END_ADDR);
@@ -182,12 +147,12 @@ void MPU_TestExecutable(void)
     printf(" Permission   : Executable\n");
     printf("----------------------------------------------\n");
 
-    printf("Press any key to test execute code from memory region %d (SRAM Memory).\n", u32RegionSRAM_nXN);
+    printf("Press any key to test execute code from nXN memory region (SRAM Memory).\n");
     getchar();
     ExeInRegion2();
 
     printf("\n==============================================\n");
-    printf("Memory Region %d (SRAM Memory) configuration:\n", u32RegionSRAM_XN);
+    printf("XN Memory Region (SRAM Memory) configuration:\n");
     printf("==============================================\n");
     printf(" Start address: 0x%08X\n", (uint32_t)REGION_SRAM_XN_BASE_ADDR);
     printf(" End address  : 0x%08X\n", (uint32_t)REGION_SRAM_XN_END_ADDR);
@@ -196,10 +161,12 @@ void MPU_TestExecutable(void)
     printf(" Permission   : Non-executable\n");
     printf("----------------------------------------------\n");
 
-    printf("Press any key to test execute code from memory region %d (SRAM Memory).\n", u32RegionSRAM_XN);
+    printf("Press any key to test execute code from XN memory region (SRAM Memory).\n");
     printf("(It should trigger a memory fault exception.)\n");
     getchar();
     ExeInRegion3();
+    /* Becuase MPU is disabled in MemManage_Handler, enable MPU again here */
+    ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
 }
 
 int main()
