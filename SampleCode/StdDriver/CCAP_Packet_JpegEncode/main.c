@@ -192,7 +192,12 @@ int32_t main(void)
     InitDebugUart();
 
     printf("+---------------------------------------------+\n");
-    printf("|  M55M1 CCAP Packet JPEG Encode Sample Code  |\n");
+    
+#ifdef NVT_JPEG_SIMD
+    printf("|  M55M1 CCAP Packet JPEG Encode SIMD Sample   |\n");
+#else
+	printf("|  M55M1 CCAP Packet JPEG Encode Sample Code  |\n");
+#endif	
     printf("+---------------------------------------------+\n");
 
     /* Init CCAP clock and Sensor clock */
@@ -204,6 +209,7 @@ int32_t main(void)
     else
     {
         /* jpeg encode */
+			  
         JpegEncode(g_au8FrameBuffer, g_au8JpegBuffer, &u32JpegSize, CCAP_OUTPUT_WIDTH, CCAP_OUTPUT_HEIGHT);
 #ifdef NVT_DCACHE_ON
         /* Clean jpeg buffer to dump memory with debugger */
