@@ -120,7 +120,6 @@ __WEAK int32_t InitPreDefMPURegion(const ARM_MPU_Region_t *psMPURegion, uint32_t
 {
     int32_t i32RetCode = 0;
 
-#if (MPU_INIT_REGIONS != 0)
     int32_t i32RegionIdx = 0;
     const uint8_t WTRA   = ARM_MPU_ATTR_MEMORY_(1, 0, 1, 0); // Non-transient, Write-Through, Read-allocate, Not Write-allocate
     const uint8_t WBWARA = ARM_MPU_ATTR_MEMORY_(1, 1, 1, 1); // Non-transient, Write-Back, Read-allocate, Write-allocate
@@ -157,6 +156,8 @@ __WEAK int32_t InitPreDefMPURegion(const ARM_MPU_Region_t *psMPURegion, uint32_t
 #endif
 
     i32RegionIdx = 0;
+
+#if (MPU_INIT_REGIONS != 0)
 
     if (MPU_INIT_REGION(0) != 0)
     {
@@ -207,17 +208,20 @@ __WEAK int32_t InitPreDefMPURegion(const ARM_MPU_Region_t *psMPURegion, uint32_t
         i32RegionIdx++;
     }
 
+#endif  // (MPU_INIT_REGIONS != 0)
+
     if (psMPURegion != NULL)
     {
-        if (u32RegionCnt < (MPU_REGIONS_MAX - i32RegionIdx))
-            i32RetCode = -1;
-        else
+        printf("u32RegionCnt: %d, (MPU_REGIONS_MAX - i32RegionIdx): %d\n", u32RegionCnt, (MPU_REGIONS_MAX - i32RegionIdx));
+
+        if (u32RegionCnt < (MPU_REGIONS_MAX - i32RegionIdx - 1))
             ARM_MPU_Load(i32RegionIdx, psMPURegion, u32RegionCnt);
+        else
+            return -1;
     }
 
     // Enable MPU with default priv access to all other regions
     ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
-#endif  // (MPU_INIT_REGIONS != 0)
 
 #ifdef NVT_DCACHE_ON
 

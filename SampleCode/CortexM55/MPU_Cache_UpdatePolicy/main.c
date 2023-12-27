@@ -243,65 +243,48 @@ int32_t TestCacheWrite(uint32_t *pu32BaseAddr, uint32_t u32ByteSize, uint32_t bW
 
 void MPU_TestWB_WT(void)
 {
-    uint8_t     u8AttrIdxWT = 1,
-                u8AttrIdxWB = 2;
-    uint32_t    u32RegionWT = 1,
-                u32RegionWB = 2;
-
+    const ARM_MPU_Region_t asMPUConfig[] =
+    {
+        {
+            /*
+             * Region Write-Through (SRAM Memory Space)
+             * Start address = g_au32CachedBuf_WT
+             * Shareablity   = Non-shareable
+             * Size          = TEST_BUF_SIZE
+             * Permission    = Cacheable with Write-Through
+             */
+            ARM_MPU_RBAR((uint32_t)g_au32CachedBuf_WT,
+                         ARM_MPU_SH_NON, RO(FALSE), NP(FALSE), XN(TRUE)),
+            ARM_MPU_RLAR(((uint32_t)g_au32CachedBuf_WT + TEST_BUF_SIZE - 1),
+                         eMPU_ATTR_CACHEABLE_WTRA)
+        },
+        {
+            /*
+             * Region Write-Back (SRAM Memory Space)
+             * Start address = g_au32CachedBuf_WB
+             * Shareablity   = Non-shareable
+             * Size          = TEST_BUF_SIZE
+             * Permission    = Cacheable with Write-Back
+             */
+            ARM_MPU_RBAR((uint32_t)g_au32CachedBuf_WB,
+                         ARM_MPU_SH_NON, RO(FALSE), NP(FALSE), XN(TRUE)),
+            ARM_MPU_RLAR(((uint32_t)g_au32CachedBuf_WB + TEST_BUF_SIZE - 1),
+                         eMPU_ATTR_CACHEABLE_WBWARA)
+        },
+    };
     /* Disable I-Cache and D-Cache before config MPU */
     SCB_DisableICache();
     SCB_DisableDCache();
 
-    /* Configure MPU memory attribute */
-    /* Attribute Write-Through
-     * Memory Type = Normal
-     * Attribute   = Innre NT, WT, RA, WA
-     */
-    ARM_MPU_SetMemAttr(u8AttrIdxWT, ARM_MPU_ATTR(ARM_MPU_ATTR_MEMORY_(NT(TRUE), WB(FALSE), RA(TRUE), WA(TRUE)), ARM_MPU_ATTR_MEMORY_(NT(TRUE), WB(FALSE), RA(TRUE), WA(TRUE))));
-    /*
-     * Attribute Write-Back
-     * Memory Type = Normal
-     * Attribute   = Innre NT, WB, RA, WA
-     */
-    ARM_MPU_SetMemAttr(u8AttrIdxWB, ARM_MPU_ATTR(ARM_MPU_ATTR_MEMORY_(NT(TRUE), WB(TRUE), RA(TRUE), WA(TRUE)), ARM_MPU_ATTR_MEMORY_(NT(TRUE), WB(TRUE), RA(TRUE), WA(TRUE))));
+    /* Configure MPU memory region defined in mpu_config_M55M1.h */
+    InitPreDefMPURegion(asMPUConfig, (sizeof(asMPUConfig) / sizeof(asMPUConfig[0])));
 
-    /* Configure MPU memory regions */
-    /*
-     * Region Write-Through (SRAM Memory Space)
-     * Start address = g_au32CachedBuf_WT
-     * Shareablity   = Non-shareable
-     * Size          = TEST_BUF_SIZE
-     * Permission    = Cacheable with Write-Through
-     */
-    ARM_MPU_SetRegion(u32RegionWT,
-                      /*           Base address                  Non-shareable,  read/write, privileged, non-executable */
-                      ARM_MPU_RBAR((uint32_t)g_au32CachedBuf_WT, ARM_MPU_SH_NON, RO(FALSE),  NP(FALSE),  XN(TRUE)),
-                      /*           Limit address                                     Attribute index */
-                      ARM_MPU_RLAR((uint32_t)g_au32CachedBuf_WT + TEST_BUF_SIZE - 1, u8AttrIdxWT)
-                     );
-
-    /*
-     * Region Write-Back (SRAM Memory Space)
-     * Start address = g_au32CachedBuf_WB
-     * Shareablity   = Non-shareable
-     * Size          = TEST_BUF_SIZE
-     * Permission    = Cacheable with Write-Back
-     */
-    ARM_MPU_SetRegion(u32RegionWB,
-                      /*           Base address                  Non-shareable,  read/write, privileged, non-executable */
-                      ARM_MPU_RBAR((uint32_t)g_au32CachedBuf_WB, ARM_MPU_SH_NON, RO(FALSE),  NP(FALSE),  XN(TRUE)),
-                      /*           Limit address                                     Attribute index */
-                      ARM_MPU_RLAR((uint32_t)g_au32CachedBuf_WB + TEST_BUF_SIZE - 1, u8AttrIdxWB)
-                     );
-
-    /* Enable MPU */
-    ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
     /* Enable I-Cache and D-Cache */
     SCB_EnableDCache();
     SCB_EnableICache();
 
     printf("\n==============================================\n");
-    printf(" Memory Region %d (SRAM Memory) configuration:\n", u32RegionWT);
+    printf(" WT Memory Region (SRAM Memory) configuration:\n");
     printf("==============================================\n");
     printf(" Start address: 0x%08X\n", (uint32_t)g_au32CachedBuf_WT);
     printf(" Size         : %d KB\n", (uint32_t)(TEST_BUF_SIZE / 1024));
@@ -309,14 +292,14 @@ void MPU_TestWB_WT(void)
     printf(" Permission   : Cacheable with Write-Through\n");
     printf("----------------------------------------------\n");
 
-    printf("Press any key to test Write-Through with memory region %d.\n", u32RegionWT);
+    printf("Press any key to test Write-Through memory region.\n");
     getchar();
 
     if (TestCacheWrite(g_au32CachedBuf_WT, TEST_BUF_SIZE, WB(FALSE), CLEAN_DCACHE(FALSE)) != 0)
         printf("[Error] !\n");
 
     printf("\n==============================================\n");
-    printf(" Memory Region %d (SRAM Memory) configuration:\n", u32RegionWB);
+    printf(" WB Memory Region (SRAM Memory) configuration:\n");
     printf("==============================================\n");
     printf(" Start address: 0x%08X\n", (uint32_t)g_au32CachedBuf_WB);
     printf(" Size         : %d KB\n", (uint32_t)(TEST_BUF_SIZE / 1024));
@@ -324,7 +307,8 @@ void MPU_TestWB_WT(void)
     printf(" Permission   : Cacheable with Write-Back\n");
     printf("----------------------------------------------\n");
 
-    printf("Press any key to test Write-Back with memory region %d.\n", u32RegionWB);
+    printf("Press any key to test Write-Back memory region.\n");
+    printf("(PDMA should read old data before clean cache.)\n");
     getchar();
 
     if (TestCacheWrite(g_au32CachedBuf_WB, TEST_BUF_SIZE, WB(TRUE), CLEAN_DCACHE(FALSE)) != 0)

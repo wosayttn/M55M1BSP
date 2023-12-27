@@ -10,7 +10,7 @@
       <TargetName>MPU_Cache_UpdatePolicy</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6190000::V6.19::ARMCLANG</pCCUsed>
+      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -338,9 +338,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define> NVT_DCACHE_ON</Define>
+              <Define>NVT_DCACHE_ON</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc</IncludePath>
+              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc;..</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -438,6 +438,11 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>mpu_config_M55M1.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\mpu_config_M55M1.h</FilePath>
             </File>
           </Files>
         </Group>
