@@ -58,8 +58,8 @@
  * | FLASH                 | 0x1010_0000 | 0x0020_0000 | NS | Non-Secure alias for Flash                     |
  * | EBI                   | 0x6000_0000 | 0x0030_0000 | S  | 3 MiB                                          |
  * | EBI                   | 0x7000_0000 | 0x0030_0000 | NS | Non-Secure alias for EBI                       |
- * | SPIM0                 | 0x8000_0000 | 0x0200_0000 | S  | 32 MiB                                         |
- * | SPIM0                 | 0x9000_0000 | 0x0200_0000 | NS | Non-Secure alias for SPIM0                     |
+ * | SPIM0                 | 0x8200_0000 | 0x0200_0000 | S  | 32 MiB                                         |
+ * | SPIM0                 | 0x9200_0000 | 0x0200_0000 | NS | Non-Secure alias for SPIM0                     |
  * +-----------------------+-------------+-------------+----+------------------------------------------------+
  *
  *  Note: Ethos-U55 can access FLASH, internal SRAM 0,1 => activation buffers and
@@ -69,7 +69,7 @@
  *        memory banks.
  */
 
-__STACK_SIZE = 0x00008000;
+__STACK_SIZE = 0x00010000;
 __HEAP_SIZE  = 0x00060000;
 
 /* System memory brief */
@@ -140,6 +140,11 @@ SECTIONS
     *(.dtors)
 
     *(.rodata*)
+    . = ALIGN(16);
+
+    *(ifm)
+    *(nn_model)
+    *(labels)
 
     KEEP(*(.eh_frame*))
   } > FLASH
@@ -161,7 +166,7 @@ SECTIONS
     . = ALIGN(4);
     __zero_table_start__ = .;
     LONG (__bss_start__)
-    LONG (__bss_end__ - __bss_start__)
+    LONG ((__bss_end__ - __bss_start__) / 4)
     __zero_table_end__ = .;
 
   } > FLASH
@@ -174,12 +179,12 @@ SECTIONS
     /* Section to be copied - part 1: RW data for for DTCM */
     LONG (__eitcm)
     LONG (__data_start__)
-    LONG (__data_end__ - __data_start__)
+    LONG ((__data_end__ - __data_start__) / 4)
 
     /* Section to be copied - part 2: RO code for for ITCM */
     LONG (__etext)
     LONG (__itcm_text_start__)
-    LONG (__itcm_text_end__ - __itcm_text_start__ )
+    LONG ((__itcm_text_end__ - __itcm_text_start__ ) / 4)
 
     __copy_table_end__ = .;
   } > FLASH

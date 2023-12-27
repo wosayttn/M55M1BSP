@@ -44,28 +44,37 @@ void DetectorPostprocessing::RunPostProcessing(
     uint32_t imgSrcCols,
     TfLiteTensor *modelOutput0,
     TfLiteTensor *modelOutput1,
-    std::vector<DetectionResult> &resultsOut)
+    std::vector<DetectionResult> &resultsOut    /* init postprocessing */
+)
 {
-    /* init postprocessing */
 #if defined (__ICCARM__)
     Network net;
     net.inputWidth = static_cast<int>(imgNetCols);
     net.inputHeight = static_cast<int>(imgNetRows);
     net.numClasses = m_numClasses;
-    net.branches[0].resolution = modelOutput0->dims->data[1];
-    net.branches[0].numBox = 3;
-    net.branches[0].anchor = anchor1;
-    net.branches[0].modelOutput = modelOutput0->data.int8;
-    net.branches[0].scale = ((TfLiteAffineQuantization *)(modelOutput0->quantization.params))->scale->data[0];
-    net.branches[0].zeroPoint = ((TfLiteAffineQuantization *)(modelOutput0->quantization.params))->zero_point->data[0];
-    net.branches[0].size = modelOutput0->bytes;
-    net.branches[1].resolution = modelOutput1->dims->data[1];
-    net.branches[1].numBox = 3;
-    net.branches[1].anchor = anchor2;
-    net.branches[1].modelOutput = modelOutput1->data.int8;
-    net.branches[1].scale = ((TfLiteAffineQuantization *)(modelOutput1->quantization.params))->scale->data[0];
-    net.branches[1].zeroPoint = ((TfLiteAffineQuantization *)(modelOutput1->quantization.params))->zero_point->data[0];
-    net.branches[1].size = modelOutput1->bytes;
+	
+
+    Branch branches0;
+    Branch branches1;
+    branches0.resolution = modelOutput0->dims->data[1];
+    branches0.numBox = 3;
+    branches0.anchor = anchor1;
+    branches0.modelOutput = modelOutput0->data.int8;
+    branches0.scale = ((TfLiteAffineQuantization *)(modelOutput0->quantization.params))->scale->data[0];
+    branches0.zeroPoint = ((TfLiteAffineQuantization *)(modelOutput0->quantization.params))->zero_point->data[0];
+    branches0.size = modelOutput0->bytes;
+
+    net.branches.push_back(branches0);
+
+    branches1.resolution = modelOutput1->dims->data[1];
+    branches1.numBox = 3;
+    branches1.anchor = anchor2;
+    branches1.modelOutput = modelOutput1->data.int8;
+    branches1.scale = ((TfLiteAffineQuantization *)(modelOutput1->quantization.params))->scale->data[0];
+    branches1.zeroPoint = ((TfLiteAffineQuantization *)(modelOutput1->quantization.params))->zero_point->data[0];
+    branches1.size = modelOutput1->bytes;
+
+    net.branches.push_back(branches1);
     net.topN = m_topN;
 #else
     Network net
@@ -157,6 +166,10 @@ void DetectorPostprocessing::RunPostProcessing(
             }
         }
     }
+
+#if defined (__ICCARM__)
+    net.branches.erase(net.branches.begin(), net.branches.end());
+#endif    
 }
 
 
