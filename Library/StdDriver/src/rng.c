@@ -29,10 +29,7 @@
  */
 static void RNG_BasicConfig()
 {
-    int32_t i;
-    int32_t timeout = 0x1000000;
     uint32_t retry_count;
-	
 
     /* TRNG & PRNG clock enable and module reset*/
     CLK_EnableModuleClock(CRYPTO0_MODULE);
