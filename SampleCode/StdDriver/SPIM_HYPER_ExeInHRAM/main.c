@@ -199,6 +199,8 @@ int main()
     printf("|       SPIM DMM mode running program on HyperRAM       |\n");
     printf("+-------------------------------------------------------+\n");
 
+    InitPreDefMPURegion(NULL, 0);
+
     HyperRAM_Init(SPIM_PORT);
 
     SPIM_HYPER_EnterDirectMapMode(SPIM_PORT);

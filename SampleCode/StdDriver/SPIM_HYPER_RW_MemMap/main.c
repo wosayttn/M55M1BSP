@@ -309,6 +309,8 @@ int main()
     printf("|       HyperRAM read/write sample       |\n");
     printf("+----------------------------------------+\n");
 
+    InitPreDefMPURegion(NULL, 0);
+
     HyperRAM_Init(SPIM_PORT);
 
     /* Set Cipher Key and protection region */
