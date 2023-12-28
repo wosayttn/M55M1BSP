@@ -86,34 +86,6 @@ extern size_t GetModelLen();
 } /* namespace app */
 } /* namespace arm */
 
-/* Cache policy function */
-enum { NonCache_index, WTRA_index, WBWARA_index, Device_index };
-
-static void initializeAttributes()
-{
-    /* Initialize attributes corresponding to the enums defined in mpu.hpp */
-    const uint8_t WTRA =
-        ARM_MPU_ATTR_MEMORY_(1, 0, 1, 0); // Non-transient, Write-Through, Read-allocate, Not Write-allocate
-    const uint8_t WBWARA = ARM_MPU_ATTR_MEMORY_(1, 1, 1, 1); // Non-transient, Write-Back, Read-allocate, Write-allocate
-
-	const uint8_t DEVICE_nGnRnE = ARM_MPU_ATTR_DEVICE;
-
-    ARM_MPU_SetMemAttr(NonCache_index, ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
-    ARM_MPU_SetMemAttr(WTRA_index, ARM_MPU_ATTR(WTRA, WTRA));
-    ARM_MPU_SetMemAttr(WBWARA_index, ARM_MPU_ATTR(WBWARA, WBWARA));
-    ARM_MPU_SetMemAttr(Device_index, ARM_MPU_ATTR(DEVICE_nGnRnE, DEVICE_nGnRnE));
-}
-
-static void loadAndEnableConfig(ARM_MPU_Region_t const *table, uint32_t cnt)
-{
-    initializeAttributes();
-
-    ARM_MPU_Load(0, table, cnt);
-
-    // Enable MPU with default priv access to all other regions
-    ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
-}
-
 //frame buffer managemnet function
 static S_FRAMEBUF *get_empty_framebuf()
 {
@@ -272,7 +244,7 @@ static void main_task(void *pvParameters)
                          1,                 // Non-Privileged
                          1),                // eXecute Never enabled
             ARM_MPU_RLAR((((unsigned int)arm::app::tensorArena) + ACTIVATION_BUF_SZ - 1),        // Limit
-                         Device_index) // Attribute index - Device
+                         eMPU_ATTR_DEV_nGnRnE) // Attribute index - Device
         },
 #if defined (__USE_CCAP__)
 		{
@@ -283,7 +255,7 @@ static void main_task(void *pvParameters)
                          1,                 // Non-Privileged
                          1),                // eXecute Never enabled
             ARM_MPU_RLAR((((unsigned int)fb_array) + OMV_FB_SIZE - 1),        // Limit
-                         NonCache_index) // NonCache
+                         eMPU_ATTR_NON_CACHEABLE) // NonCache
         },
 #if (NUM_FRAMEBUF == 2)
 		{
@@ -294,26 +266,14 @@ static void main_task(void *pvParameters)
                          1,                 // Non-Privileged
                          1),                // eXecute Never enabled
             ARM_MPU_RLAR((((unsigned int)frame_buf1) + OMV_FB_SIZE - 1),        // Limit
-                         NonCache_index) // NonCache
+                         eMPU_ATTR_NON_CACHEABLE) // NonCache
         },
 #endif
-#endif
-#if defined (__USE_DISPLAY__)
-        {
-            // EBI for LCD
-            ARM_MPU_RBAR((unsigned int)CONFIG_LCD_EBI_ADDR,        // Base
-                         ARM_MPU_SH_NON,    // Non-shareable
-                         0,                 // Read-only
-                         1,                 // Non-Privileged
-                         1),                // eXecute Never enabled
-            ARM_MPU_RLAR((((unsigned int)CONFIG_LCD_EBI_ADDR) + EBI_MAX_SIZE - 1),        // Limit
-                         Device_index) // Attribute index - Device
-        }
 #endif
     };
 
     // Setup MPU configuration
-    loadAndEnableConfig(&mpuConfig[0], mpuConfig.size());
+    InitPreDefMPURegion(&mpuConfig[0], mpuConfig.size());
 
     // Setup inference resource and create task
     struct ProcessTaskParams taskParam;

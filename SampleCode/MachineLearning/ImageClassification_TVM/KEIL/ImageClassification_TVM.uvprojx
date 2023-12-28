@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>NVT_VECTOR_ON_FLASH, ARM_NPU, NVT_DCACHE_ON</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\CMSIS\DSP\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\StdDriver\inc\npu;..\codegen_H256\host\include;..\runtime\include;..\microtvm\ethosu\include;..\..\..\..\Library\CMSIS\NN\Include;..\;..\NPU\include;..\Device\include</IncludePath>
+              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\CMSIS\DSP\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\StdDriver\inc\npu;..\codegen_H256\host\include;..\runtime\include;..\microtvm\ethosu\include;..\..\..\..\Library\CMSIS\NN\Include;..\;..\NPU\include;..\Device\include;..\..\ImageClassification_TVM</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -487,6 +487,11 @@
               <FileName>BoardInit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\BoardInit.c</FilePath>
+            </File>
+            <File>
+              <FileName>mpu_config_M55M1.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\mpu_config_M55M1.h</FilePath>
             </File>
           </Files>
         </Group>
