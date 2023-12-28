@@ -72,6 +72,7 @@
 									<listOptionValue builtIn="false" value="&quot;../../NPU/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../Pattern/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../ProfilerCounter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../&quot;"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.otheroptimizations.1607979263" name="Other optimization flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.otheroptimizations" useByScannerDiscovery="true" value="" valueType="string"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.other.1551635963" name="Other compiler flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.other" useByScannerDiscovery="true" value="" valueType="string"/>
@@ -111,6 +112,7 @@
 									<listOptionValue builtIn="false" value="&quot;../../NPU/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../Pattern/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../ProfilerCounter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../&quot;"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.std.447381270" name="Language standard" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.std" useByScannerDiscovery="true" value="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.std.cpp11" valueType="enumerated"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.other.1146743837" name="Other compiler flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.other" useByScannerDiscovery="true" value="" valueType="string"/>

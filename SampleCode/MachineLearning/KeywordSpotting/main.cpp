@@ -48,30 +48,6 @@ extern size_t GetModelLen();
 } /* namespace app */
 } /* namespace arm */
 
-/* Cache policy function */
-enum { NonCache_index, WTRA_index, WBWARA_index };
-
-static void initializeAttributes()
-{
-    /* Initialize attributes corresponding to the enums defined in mpu.hpp */
-    const uint8_t WTRA =
-        ARM_MPU_ATTR_MEMORY_(1, 0, 1, 0); // Non-transient, Write-Through, Read-allocate, Not Write-allocate
-    const uint8_t WBWARA = ARM_MPU_ATTR_MEMORY_(1, 1, 1, 1); // Non-transient, Write-Back, Read-allocate, Write-allocate
-
-    ARM_MPU_SetMemAttr(NonCache_index, ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
-    ARM_MPU_SetMemAttr(WTRA_index, ARM_MPU_ATTR(WTRA, WTRA));
-    ARM_MPU_SetMemAttr(WBWARA_index, ARM_MPU_ATTR(WBWARA, WBWARA));
-}
-
-static void loadAndEnableConfig(ARM_MPU_Region_t const *table, uint32_t cnt)
-{
-    initializeAttributes();
-
-    ARM_MPU_Load(0, table, cnt);
-
-    // Enable MPU with default priv access to all other regions
-    ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
-}
 
 int main()
 {
@@ -103,12 +79,12 @@ int main()
                          1,                 // Non-Privileged
                          1),                // eXecute Never enabled
             ARM_MPU_RLAR((((unsigned int)arm::app::tensorArena) + ACTIVATION_BUF_SZ - 1),        // Limit
-                         WTRA_index) // Attribute index - Write-Through, Read-allocate
+                         eMPU_ATTR_CACHEABLE_WTRA) // Attribute index - Write-Through, Read-allocate
         }
     };
 
     // Setup MPU configuration
-    loadAndEnableConfig(&mpuConfig[0], mpuConfig.size());
+    InitPreDefMPURegion(&mpuConfig[0], mpuConfig.size());
 
     constexpr int minTensorDims = static_cast<int>(
                                       (arm::app::KwsModel::ms_inputRowsIdx > arm::app::KwsModel::ms_inputColsIdx)
