@@ -91,7 +91,7 @@
         <tLdApp>1</tLdApp>
         <tGomain>1</tGomain>
         <tRbreak>1</tRbreak>
-        <tRwatch>1</tRwatch>
+        <tRwatch>0</tRwatch>
         <tRmem>1</tRmem>
         <tRfunc>0</tRfunc>
         <tRbox>1</tRbox>
@@ -142,9 +142,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>1801</LineNumber>
+          <LineNumber>1772</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>1062912</Address>
+          <Address>1063074</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -153,48 +153,17 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>..\test_suite_hkdf.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\mbedTLS_ECDH\../test_suite_hkdf.c\1801</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>1533</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>1060968</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\test_suite_hkdf.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\mbedTLS_ECDH\../test_suite_hkdf.c\1533</Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
-          <Type>0</Type>
-          <LineNumber>1513</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>1060434</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\test_suite_hkdf.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\mbedTLS_ECDH\../test_suite_hkdf.c\1513</Expression>
+          <Expression>\\mbedTLS_ECDH\../test_suite_hkdf.c\1772</Expression>
         </Bp>
       </Breakpoint>
-      <WatchWindow1>
-        <Ww>
-          <count>0</count>
+      <MemoryWindow1>
+        <Mm>
           <WinNumber>1</WinNumber>
-          <ItemText>mbedtls_test_info.result</ItemText>
-        </Ww>
-      </WatchWindow1>
+          <SubType>0</SubType>
+          <ItemText>0x2010005a</ItemText>
+          <AccSizeX>0</AccSizeX>
+        </Mm>
+      </MemoryWindow1>
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>
@@ -354,7 +323,7 @@
 
   <Group>
     <GroupName>User</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -374,7 +343,7 @@
 
   <Group>
     <GroupName>mbedtls</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
