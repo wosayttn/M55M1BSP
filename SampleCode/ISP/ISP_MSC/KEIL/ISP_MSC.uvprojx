@@ -387,12 +387,12 @@
             <File>
               <FileName>ISP_startup_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\ISP_startup_M55M1.c</FilePath>
+              <FilePath>..\..\common\ISP_startup_M55M1.c</FilePath>
             </File>
             <File>
               <FileName>ISP_system_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\ISP_system_M55M1.c</FilePath>
+              <FilePath>..\..\common\ISP_system_M55M1.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -408,11 +408,6 @@
               <FileName>sys.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\sys.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\usbd.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -438,6 +433,11 @@
               <FileName>MassStorage.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\MassStorage.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_User.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\usbd_User.c</FilePath>
             </File>
           </Files>
         </Group>

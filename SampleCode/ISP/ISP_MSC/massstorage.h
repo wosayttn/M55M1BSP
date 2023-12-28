@@ -125,13 +125,17 @@ struct CSW
 #define STORAGE_BUFFER_SIZE 512               /* Data transfer buffer size in 512 bytes alignment */
 #define UDC_SECTOR_SIZE     512               /* logic sector size */
 
-extern uint32_t MassBlock[];
-extern uint32_t Storage_Block[];
-
 #define MassCMD_BUF        ((uint32_t)&MassBlock[0])
 #define STORAGE_DATA_BUF   ((uint32_t)&Storage_Block[0])
 
 /*-------------------------------------------------------------*/
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern uint32_t MassBlock[];
+extern uint32_t Storage_Block[];
 
 /*-------------------------------------------------------------*/
 uint32_t FMC_Init(void);
@@ -156,5 +160,9 @@ void MSC_AckCmd(void);
 void MSC_ProcessCmd(void);
 void EP2_Handler(void);
 void EP3_Handler(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  /* __USBD_MASS_H_ */
