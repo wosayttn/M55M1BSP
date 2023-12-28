@@ -15,7 +15,10 @@
 #include "massstorage.h"
 #include "DataFlashProg.h"
 
+#define SECTOR_PER_FLASH_PAGE     (FMC_FLASH_PAGE_SIZE / BYTE_PER_SEC)
+
 static uint8_t g_u8LockBit = 1;
+int32_t g_FMC_i32ErrCode = 0;
 
 extern uint32_t g_u32StorageSize;
 
@@ -79,20 +82,20 @@ void DataFlashRead(uint32_t u32Addr, uint32_t *u32Buf)
 
 void FMC_ISP(uint32_t u32Cmd, uint32_t u32Addr, uint32_t u32Data)
 {
-    FMC->ISPCMD = u32Cmd;
+    FMC->ISPCMD  = u32Cmd;
     FMC->ISPADDR = u32Addr;
-    FMC->ISPDAT = u32Data;
-    FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;
+    FMC->ISPDAT  = u32Data;
+    FMC->ISPTRG  = FMC_ISPTRG_ISPGO_Msk;
 
-    //__ISB();
-    //while(FMC->ISPTRG);
-    while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk) { }
+    __ISB();
 
-    if (FMC->ISPCTL & FMC_ISPCTL_ISPFF_Msk)
+    while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk) ;
+
+    if (FMC_GET_FAIL_FLAG())
     {
-        FMC->ISPCTL |= FMC_ISPCTL_ISPFF_Msk;
+        FMC_CLR_FAIL_FLAG();
 
-        while (1);
+        while (1) ;
     }
 }
 
@@ -113,9 +116,9 @@ uint32_t FMC_Init(void)
 
 #endif
     u32APSize = FMC_APROM_SIZE;
-    FMC_ISP(FMC_ISPCMD_READ, FMC_CONFIG_BASE, 0);
+    FMC_ISP(FMC_ISPCMD_READ, FMC_ARLOCK_BASE, 0);
 
-    g_u8LockBit = (FMC->ISPDAT & 0x02);
+    //g_u8LockBit = ((FMC->ISPDAT & 0xFF) == 0x5A);
 
     return u32APSize;
 }
@@ -127,7 +130,7 @@ void DataFlashProgramPage(uint32_t u32StartAddr, uint32_t *u32Buf)
 
     for (i = 0; i < STORAGE_BUFFER_SIZE / 4; i++)
     {
-        FMC_ISP(FMC_ISPCMD_PROGRAM, u32StartAddr + i * 4, u32Buf[i]);
+        FMC_ISP(FMC_ISPCMD_PROGRAM, (u32StartAddr + (i * 4)), u32Buf[i]);
     }
 }
 
@@ -137,12 +140,12 @@ void DataFlashWrite(uint32_t u32Addr, uint32_t *u32Buf)
     /* This is low level write function of USB Mass Storage */
     if ((u32Addr >= DATA_SEC_ADDR) && (u32Addr < g_u32StorageSize))
     {
-        u32Addr -= DATA_SEC_ADDR;
+        u32Addr = u32Addr - DATA_SEC_ADDR;
 
         if (g_u8LockBit)
         {
-            if ((u32Addr & (FMC_FLASH_PAGE_SIZE - 1)) == 0)
-                FMC_ISP(FMC_ISPCMD_PAGE_ERASE, u32Addr, 0);
+            if (((FMC_APROM_BASE + u32Addr) & (FMC_FLASH_PAGE_SIZE - 1)) == 0)
+                FMC_ISP(FMC_ISPCMD_PAGE_ERASE, (FMC_APROM_BASE + u32Addr), 0);
         }
         /* For Security Lock */
         else if (u32Addr == 0)
@@ -151,11 +154,11 @@ void DataFlashWrite(uint32_t u32Addr, uint32_t *u32Buf)
 
             for (i = 0; i < (g_u32StorageSize - DATA_SEC_ADDR); i += FMC_FLASH_PAGE_SIZE)
             {
-                FMC_ISP(FMC_ISPCMD_PAGE_ERASE, i, 0);
+                FMC_ISP(FMC_ISPCMD_PAGE_ERASE, FMC_APROM_BASE + i, 0);
             }
         }
 
-        DataFlashProgramPage(u32Addr, u32Buf);
+        DataFlashProgramPage(FMC_APROM_BASE + u32Addr, u32Buf);
     }
 }
 

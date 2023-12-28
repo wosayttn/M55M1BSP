@@ -25,7 +25,7 @@
 /* Global variables for Control Pipe */
 uint32_t g_TotalSectors;
 uint32_t g_u32StorageSize;
-uint8_t volatile g_u8EP3Ready = 0;
+volatile uint8_t g_u8EP3Ready = 0;
 
 /* USB flow control variables */
 uint8_t g_u8BulkState;

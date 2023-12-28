@@ -1,14 +1,21 @@
-/******************************************************************************
- * @file     usbd_user.h
+/**************************************************************************//**
+ * @file     usbd_User.h
  * @version  V1.00
- * @brief    USB driver header file
+ * @brief    Simplified M55M1 series USBD driver header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- *****************************************************************************/
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ ****************************************************************************/
+
 #ifndef __USBD_H__
 #define __USBD_H__
 
+//#define SUPPORT_LPM     // define to support LPM
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 /** @addtogroup Standard_Driver Standard Driver
   @{
@@ -18,7 +25,7 @@
   @{
 */
 
-/** @addtogroup USBD_EXPORTED_STRUCTS USBD Exported Structs
+/** @addtogroup USBD_EXPORTED_STRUCT USBD Exported Struct
   @{
 */
 typedef struct s_usbd_info
@@ -30,19 +37,17 @@ typedef struct s_usbd_info
     //    const uint32_t *gu32HidReportSize;    /*!< Pointer for HID Report descriptor Size */
     //    const uint32_t *gu32ConfigHidDescIdx; /*!< Pointer for HID Descriptor start index */
 
-} S_USBD_INFO_T;
+} S_USBD_INFO_T;  /*!< Device description structure */
 
 extern const S_USBD_INFO_T gsInfo;
 
-/*@}*/ /* end of group USBD_EXPORTED_STRUCTS */
-
-
+/*@}*/ /* end of group USBD_EXPORTED_STRUCT */
 
 
 /** @addtogroup USBD_EXPORTED_CONSTANTS USBD Exported Constants
   @{
 */
-#define USBD_BUF_BASE   (USBD_BASE+0x100)
+#define USBD_BUF_BASE   (USBD_BASE + 0x800ul)
 #define USBD_MAX_EP     12
 
 #define EP0     0       /*!< Endpoint 0 */
@@ -166,32 +171,6 @@ extern const S_USBD_INFO_T gsInfo;
 /** @addtogroup USBD_EXPORTED_FUNCTIONS USBD Exported Functions
   @{
 */
-
-/**
-  * @brief      Compare two input numbers and return maximum one.
-  *
-  * @param[in]  a   First number to be compared.
-  * @param[in]  b   Second number to be compared.
-  *
-  * @return     Maximum value between a and b.
-  *
-  * @details    If a > b, then return a. Otherwise, return b.
-  */
-#define Maximum(a,b)        ((a)>(b) ? (a) : (b))
-
-
-/**
-  * @brief      Compare two input numbers and return minimum one
-  *
-  * @param[in]  a   First number to be compared
-  * @param[in]  b   Second number to be compared
-  *
-  * @return     Minimum value between a and b
-  *
-  * @details    If a < b, then return a. Otherwise, return b.
-  */
-#define Minimum(a,b)        ((a)<(b) ? (a) : (b))
-
 
 /**
   * @brief    Enable USB
@@ -375,7 +354,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief      Stop USB transaction of the specified endpoint ID
   *
-  * @param[in]  ep The USB endpoint ID. M252 Series supports 8 hardware endpoint ID. This parameter could be 0 ~ 7.
+  * @param[in]  ep The USB endpoint ID. M55M1 Series supports 25 hardware endpoint ID. This parameter could be 0 ~ 7.
   *
   * @return     None
   *
@@ -387,7 +366,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief      Set USB DATA1 PID for the specified endpoint ID
   *
-  * @param[in]  ep The USB endpoint ID. M252 Series supports 8 hardware endpoint ID. This parameter could be 0 ~ 7.
+  * @param[in]  ep The USB endpoint ID. M55M1 Series supports 25 hardware endpoint ID. This parameter could be 0 ~ 7.
   *
   * @return     None
   *
@@ -400,7 +379,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief      Set USB DATA0 PID for the specified endpoint ID
   *
-  * @param[in]  ep The USB endpoint ID. M252 Series supports 8 hardware endpoint ID. This parameter could be 0 ~ 7.
+  * @param[in]  ep The USB endpoint ID. M55M1 Series supports 25 hardware endpoint ID. This parameter could be 0 ~ 7.
   *
   * @return     None
   *
@@ -413,7 +392,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief      Set USB payload size (IN data)
   *
-  * @param[in]  ep The USB endpoint ID. M252 Series supports 8 hardware endpoint ID. This parameter could be 0 ~ 7.
+  * @param[in]  ep The USB endpoint ID. M55M1 Series supports 25 hardware endpoint ID. This parameter could be 0 ~ 7.
   *
   * @param[in]  size The transfer length.
   *
@@ -427,7 +406,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief      Get USB payload size (OUT data)
   *
-  * @param[in]  ep The USB endpoint ID. M252 Series supports 8 endpoint ID. This parameter could be 0 ~ 7.
+  * @param[in]  ep The USB endpoint ID. M55M1 Series supports 25 endpoint ID. This parameter could be 0 ~ 7.
   *
   * @return     The value of USB_MXPLDx register.
   *
@@ -439,7 +418,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief      Configure endpoint
   *
-  * @param[in]  ep The USB endpoint ID. M252 Series supports 8 hardware endpoint ID. This parameter could be 0 ~ 7.
+  * @param[in]  ep The USB endpoint ID. M55M1 Series supports 25 hardware endpoint ID. This parameter could be 0 ~ 7.
   *
   * @param[in]  config The USB configuration.
   *
@@ -453,7 +432,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief      Set USB endpoint buffer
   *
-  * @param[in]  ep The USB endpoint ID. M252 Series supports 8 hardware endpoint ID. This parameter could be 0 ~ 7.
+  * @param[in]  ep The USB endpoint ID. M55M1 Series supports 25 hardware endpoint ID. This parameter could be 0 ~ 7.
   *
   * @param[in]  offset The SRAM offset.
   *
@@ -467,7 +446,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief      Get the offset of the specified USB endpoint buffer
   *
-  * @param[in]  ep The USB endpoint ID. M252 Series supports 8 hardware endpoint ID. This parameter could be 0 ~ 7.
+  * @param[in]  ep The USB endpoint ID. M55M1 Series supports 25 hardware endpoint ID. This parameter could be 0 ~ 7.
   *
   * @return     The offset of the specified endpoint buffer.
   *
@@ -479,7 +458,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief       Set USB endpoint stall state
   *
-  * @param[in]   ep  The USB endpoint ID. M252 Series supports 8 hardware endpoint ID. This parameter could be 0 ~ 7.
+  * @param[in]   ep  The USB endpoint ID. M55M1 Series supports 25 hardware endpoint ID. This parameter could be 0 ~ 7.
   *
   * @return      None
   *
@@ -491,7 +470,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief       Clear USB endpoint stall state
   *
-  * @param[in]   ep  The USB endpoint ID. M252 Series supports 8 hardware endpoint ID. This parameter could be 0 ~ 7.
+  * @param[in]   ep  The USB endpoint ID. M55M1 Series supports 25 hardware endpoint ID. This parameter could be 0 ~ 7.
   *
   * @return      None
   *
@@ -502,7 +481,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief       Get USB endpoint stall state
   *
-  * @param[in]   ep  The USB endpoint ID. M252 Series supports 8 hardware endpoint ID. This parameter could be 0 ~ 7.
+  * @param[in]   ep  The USB endpoint ID. M55M1 Series supports 25 hardware endpoint ID. This parameter could be 0 ~ 7.
   *
   * @retval      0      USB endpoint is not stalled.
   * @retval      Others USB endpoint is stalled.
@@ -573,7 +552,7 @@ static __INLINE void USBD_SetStall(uint8_t epnum)
   *
   * @details     Clear USB endpoint stall state. Endpoint will respond ACK/NAK token.
   */
-static __INLINE void USBD_ClearStall(uint8_t epnum)
+__STATIC_INLINE void USBD_ClearStall(uint8_t epnum)
 {
     uint32_t u32CfgAddr;
     uint32_t u32Cfg;
@@ -654,11 +633,14 @@ void USBD_SwReset(void);
 void USBD_SetConfigCallback(SET_CONFIG_CB pfnSetConfigCallback);
 //void USBD_LockEpStall(uint32_t u32EpBitmap);
 
-/*@}*/ /* end of group M252_USBD_EXPORTED_FUNCTIONS */
+/*@}*/ /* end of group USBD_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group M252_USBD_Driver */
+/*@}*/ /* end of group USBD_Driver */
 
-/*@}*/ /* end of group M252_Device_Driver */
+/*@}*/ /* end of group Standard_Driver */
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif //__USBD_H__
