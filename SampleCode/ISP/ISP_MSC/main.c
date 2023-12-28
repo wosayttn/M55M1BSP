@@ -10,16 +10,8 @@
 #include "massstorage.h"
 
 #define PLL_CLOCK       FREQ_180MHZ
-#define TRIM_INIT       (SYS_BASE + 0x118)
+
 #define DETECT_PIN      PB12
-
-int32_t g_FMC_i32ErrCode = 0;
-
-/* This is a dummy implementation to replace the same function in clk.c for size limitation. */
-uint32_t CLK_GetPLLClockFreq(void)
-{
-    return PLL_CLOCK;
-}
 
 int32_t SYS_Init(void)
 {
@@ -28,85 +20,26 @@ int32_t SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC clock */
-    CLK->SRCCTL |= (CLK_SRCCTL_HIRCEN_Msk | CLK_SRCCTL_HIRC48MEN_Msk);
+    /* Enable HIRC48M clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
+    /* Waiting for HIRC48M clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
 
-    /* Waiting for Internal RC clock ready */
-    while ((CLK->STATUS & (CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HIRC48MSTB_Msk)) != (CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HIRC48MSTB_Msk))
-    {
-        if (--u32TimeOutCnt == 0)
-        {
-            return -1;
-        }
-    }
+    /* Select USB clock source as HIRC48M and USB clock divider as 1 */
+    CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
 
-    /* Set SCLK clock source as HIRC first */
-    CLK->SCLKSEL = (CLK->SCLKSEL & (~CLK_SCLKSEL_SCLKSEL_Msk)) | CLK_SCLKSEL_SCLKSEL_HIRC;
-
-    /* Disable PLL clock before setting PLL frequency */
-    CLK->SRCCTL &= ~CLK_SRCCTL_APLL0EN_Msk;
-
-    /* Set PLL clock as 180MHz from HIRC */
-    CLK->APLL0CTL = CLK_APLLCTL_180MHz;
-
-    /* Wait for PLL clock ready */
-    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-
-    while (!(CLK->STATUS & CLK_STATUS_APLL0STB_Msk))
-    {
-        if (--u32TimeOutCnt == 0)
-            return -1;
-    }
-
-    /* Switch to power level 0 for safe */
-    PMC->PLCTL = (PMC->PLCTL & (~PMC_PLCTL_PLSEL_Msk)) | PMC_PLCTL_PLSEL_PL0;
-
-    /* Set Flash Access Cycle to 8 for safe */
-    FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (8);
-
-    /* Switch SCLK to new SCLK source */
-    CLK->SCLKSEL = (CLK->SCLKSEL & (~CLK_SCLKSEL_SCLKSEL_Msk)) | CLK_SCLKSEL_SCLKSEL_APLL0;
-
-    /* Set power level according to new SCLK */
-    PMC->PLCTL = (PMC->PLCTL & (~PMC_PLCTL_PLSEL_Msk)) | PMC_PLCTL_PLSEL_PL1;
-
-    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-
-    while (PMC->PLSTS & PMC_PLSTS_PLCBUSY_Msk)
-    {
-        if (u32TimeOutCnt-- == 0) break;
-    }
-
-    /* Switch flash access cycle to suitable value base on SCLK */
-    FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (6);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
-
-    /* Update System Core Clock */
-    PllClock        = PLL_CLOCK;
-    SystemCoreClock = PllClock;
-    CyclesPerUs = SystemCoreClock / 1000000UL;
-
+    /* Enable module clock */
+    CLK_EnableModuleClock(ISP0_MODULE);
+    CLK_EnableModuleClock(GPIOB_MODULE);
+    /* Enable OTG0 module clock */
+    CLK_EnableModuleClock(OTG0_MODULE);
     /* Select USBD */
-    SYS->USBPHY = (SYS->USBPHY & ~SYS_USBPHY_USBROLE_Msk) | SYS_USBPHY_OTGPHYEN_Msk;
+    SYS->USBPHY = (SYS->USBPHY & ~SYS_USBPHY_USBROLE_Msk) | SYS_USBPHY_OTGPHYEN_Msk ;
 
     /* Enable USBD module clock */
-    CLK->USBDCTL |= CLK_USBDCTL_USBD0CKEN_Msk;
-
-    /* Select USB module clock source as HIRC48M and USB clock divider as 1 */
-    CLK->USBSEL = (CLK->USBSEL & (~CLK_USBSEL_USBSEL_Msk)) | CLK_USBSEL_USBSEL_HIRC48M;
-    CLK->USBDIV = (CLK->USBDIV & (~CLK_USBDIV_USBDIV_Msk)) | CLK_USBDIV_USBDIV(1);
-
-    /* Enable GPIO B clock */
-    CLK->GPIOCTL |= CLK_GPIOCTL_GPIOBCKEN_Msk;
+    CLK_EnableModuleClock(USBD0_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -154,16 +87,16 @@ int32_t main(void)
     USBD->SE0 = 0;
 
     /* Clear USB-related interrupts before enable interrupt */
-    USBD->INTSTS = (USBD_INT_BUS | USBD_INT_USB | USBD_INT_FLDET | USBD_INT_WAKEUP);
+    USBD_CLR_INT_FLAG(USBD_INT_BUS | USBD_INT_USB | USBD_INT_FLDET | USBD_INT_WAKEUP);
 
     /* Enable USB-related interrupts. */
-    USBD->INTEN = (USBD_INT_BUS | USBD_INT_USB | USBD_INT_FLDET | USBD_INT_WAKEUP);
+    USBD_ENABLE_INT(USBD_INT_BUS | USBD_INT_USB | USBD_INT_FLDET | USBD_INT_WAKEUP);
     /* End of USBD_Start() */
 
     NVIC_EnableIRQ(USBD_IRQn);
 
     /* Backup default trim value */
-    u32TrimInit = M32(TRIM_INIT);
+    u32TrimInit = SYS->TISTS48M;
 
     /* Clear SOF */
     USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
@@ -194,7 +127,7 @@ int32_t main(void)
         if (SYS->TISTS48M & (SYS_TISTS48M_CLKERRIF_Msk | SYS_TISTS48M_TFAILIF_Msk))
         {
             /* Init TRIM */
-            M32(TRIM_INIT) = u32TrimInit;
+            SYS->TISTS48M = u32TrimInit;
 
             /* Disable USB clock trim function */
             SYS->TCTL48M = 0;

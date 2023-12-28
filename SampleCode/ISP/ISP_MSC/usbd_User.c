@@ -1,11 +1,11 @@
-/******************************************************************************//**
- * @file     usbd_user.c
+/**************************************************************************//**
+ * @file     usbd_User.c
  * @version  V1.00
- * @brief    USBD driver source file
+ * @brief    Simplified M55M1 series USBD driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- *****************************************************************************/
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
 
 #include <string.h>
 #include "M55M1_User.h"

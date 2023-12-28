@@ -109,8 +109,6 @@ void PDMA_SetTransferAddr(PDMA_T *pdma, uint32_t u32Ch, uint32_t u32SrcAddr, uin
  * @param[in]   u32Ch           The selected channel
  * @param[in]   u32Peripheral   The selected peripheral. Valid values are
  *                - \ref PDMA_MEM
- *                - \ref PDMA_USB_TX
- *                - \ref PDMA_USB_RX
  *                - \ref PDMA_UART0_TX
  *                - \ref PDMA_UART0_RX
  *                - \ref PDMA_UART1_TX
@@ -197,9 +195,8 @@ void PDMA_SetTransferAddr(PDMA_T *pdma, uint32_t u32Ch, uint32_t u32SrcAddr, uin
  *                - \ref PDMA_EINT7
  *                - \ref PDMA_PSIO_TX
  *                - \ref PDMA_PSIO_RX
- *                - \ref PDMA_I3C0
- *                - \ref PDMA_ETMC
- *                - \ref PDMA_SWODEC
+ *                - \ref PDMA_I3C0_TX
+ *                - \ref PDMA_I3C0_RX
  * @param[in]   u32ScatterEn    Scatter-gather mode enable
  * @param[in]   u32DescAddr     Scatter-gather descriptor address
  *

@@ -12,19 +12,15 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define PLL_CLOCK       FREQ_180MHZ
+#define CANFD_BAUD_RATE         500000
+#define Master_ISP_ID           0x487
+#define Device0_ISP_ID          0x784
+#define CANFD_ISP_DataLength    0x08
+#define CANFD_RETRY_COUNTS      0x1fffffff
 
-#define GPIO_SETMODE(port, pin, u32Mode) ((port)->MODE = ((port)->MODE & ~(0x3ul << ((pin) << 1))) | ((u32Mode) << ((pin) << 1)))
-
-#define CANFD_BAUD_RATE                     500000
-#define Master_ISP_ID                     0x487
-#define Device0_ISP_ID                    0x784
-#define CANFD_ISP_DtatLength                0x08
-#define CANFD_RETRY_COUNTS                  0x1fffffff
-
-#define CMD_READ_CONFIG                   0xA2000000
-#define CMD_RUN_APROM                     0xAB000000
-#define CMD_GET_DEVICEID                  0xB1000000
+#define CMD_READ_CONFIG         0xA2000000
+#define CMD_RUN_APROM           0xAB000000
+#define CMD_GET_DEVICEID        0xB1000000
 
 /*---------------------------------------------------------------------------*/
 /*  Function Declare                                                         */
@@ -56,107 +52,42 @@ NVT_ITCM void CANFD00_IRQHandler(void)
     u32IIDRstatus = CANFD0->IR;
 
     /**************************/
-    /* Status Change interrupt*/
+    /* Status changed interrupt*/
     /**************************/
     if ((u32IIDRstatus & CANFD_IR_RF0N_Msk) == CANFD_IR_RF0N_Msk)
     {
-        /*Clear the Interrupt flag */
+        /* Clear interrupt flag */
         CANFD_ClearStatusFlag(CANFD0, CANFD_IR_TOO_Msk | CANFD_IR_RF0N_Msk);
         CANFD_ReadRxFifoMsg(CANFD0, 0, (CANFD_FD_MSG_T *)&g_sRxMsgFrame);
         s_u8CANPackageFlag = 1;
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32IIDRstatus = CANFD0->IR;
 }
 
 int32_t SYS_Init(void)
 {
-    uint32_t u32TimeOutCnt = SystemCoreClock >> 1; /* 500ms time-out */
-
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init System Clock                                                                                       */
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable Internal RC clock */
-    CLK->SRCCTL |= (CLK_SRCCTL_HIRCEN_Msk | CLK_SRCCTL_HIRC48MEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    while ((CLK->STATUS & (CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HIRC48MSTB_Msk)) != (CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HIRC48MSTB_Msk))
-    {
-        if (--u32TimeOutCnt == 0)
-        {
-            return -1;
-        }
-    }
-
-    /* Set SCLK clock source as HIRC first */
-    CLK->SCLKSEL = (CLK->SCLKSEL & (~CLK_SCLKSEL_SCLKSEL_Msk)) | CLK_SCLKSEL_SCLKSEL_HIRC;
-
-    /* Disable PLL clock before setting PLL frequency */
-    CLK->SRCCTL &= ~CLK_SRCCTL_APLL0EN_Msk;
-
-    /* Set PLL clock as 180MHz from HIRC */
-    CLK->APLL0CTL = CLK_APLLCTL_180MHz;
-
-    /* Wait for PLL clock ready */
-    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-
-    while (!(CLK->STATUS & CLK_STATUS_APLL0STB_Msk))
-    {
-        if (--u32TimeOutCnt == 0)
-            return -1;
-    }
-
-    /* Switch to power level 0 for safe */
-    PMC->PLCTL = (PMC->PLCTL & (~PMC_PLCTL_PLSEL_Msk)) | PMC_PLCTL_PLSEL_PL0;
-
-    /* Set Flash Access Cycle to 8 for safe */
-    FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (8);
-
-    /* Switch SCLK to new SCLK source */
-    CLK->SCLKSEL = (CLK->SCLKSEL & (~CLK_SCLKSEL_SCLKSEL_Msk)) | CLK_SCLKSEL_SCLKSEL_APLL0;
-
-    /* Set power level according to new SCLK */
-    PMC->PLCTL = (PMC->PLCTL & (~PMC_PLCTL_PLSEL_Msk)) | PMC_PLCTL_PLSEL_PL1;
-
-    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-
-    while (PMC->PLSTS & PMC_PLSTS_PLCBUSY_Msk)
-    {
-        if (u32TimeOutCnt-- == 0) break;
-    }
-
-    /* Switch flash access cycle to suitable value base on SCLK */
-    FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (6);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
-
-    /* Update System Core Clock */
-    PllClock        = PLL_CLOCK;
-    SystemCoreClock = PllClock;
-    CyclesPerUs = SystemCoreClock / 1000000UL;  /* For CLK_SysTickDelay() */
-
+    /* Enable External HXT clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
+    /* Waiting for HXT clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
+    /* Switch SCLK clock source to PLL0 and Enable PLL0 160MHz clock */
+    //CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_HXT, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
     /* Select CAN FD0 clock source is HCLK */
-    CLK->CANFDDIV = (CLK->CANFDDIV & (~CLK_CANFDDIV_CANFD0DIV_Msk)) | CLK_CANFDDIV_CANFD0DIV(1);
-    CLK->CANFDSEL = (CLK->CANFDSEL & (~CLK_CANFDSEL_CANFD0SEL_Msk)) | CLK_CANFDSEL_CANFD0SEL_HCLK0;
-
+    CLK_SetModuleClock(CANFD0_MODULE, CLK_CANFDSEL_CANFD0SEL_HXT, CLK_CANFDDIV_CANFD0DIV(1));
+    /* Enable module clock */
+    CLK_EnableModuleClock(ISP0_MODULE);
     /* Enable CAN FD0 peripheral clock */
-    CLK->CANFDCTL |= CLK_CANFDCTL_CANFD0CKEN_Msk;
-
-    /* Enable GPIO B clock */
-    CLK->GPIOCTL |= CLK_GPIOCTL_GPIOCCKEN_Msk;
+    CLK_EnableModuleClock(CANFD0_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set PC multi-function pins for CAN FD0 RXD and TXD */
-    SET_CAN0_RXD_PC4();
-    SET_CAN0_TXD_PC5();
+    SET_CAN0_RXD_PJ11();
+    SET_CAN0_TXD_PJ10();
 
     return 0;
 }
@@ -167,12 +98,13 @@ int32_t SYS_Init(void)
 void CANFD_Package_ACK(CANFD_T *psCanfd)
 {
     CANFD_FD_MSG_T  sTxMsgFrame;
+
     s_u8CANAckFlag = 1;
     /* Send a 11-bit Standard Identifier message */
     sTxMsgFrame.eFrmType = eCANFD_DATA_FRM;
     sTxMsgFrame.eIdType  = eCANFD_SID;
     sTxMsgFrame.u32Id    = Device0_ISP_ID;
-    sTxMsgFrame.u32DLC   = CANFD_ISP_DtatLength;
+    sTxMsgFrame.u32DLC   = CANFD_ISP_DataLength;
 
     sTxMsgFrame.au32Data[0] = g_sRxMsgFrame.au32Data[0];
     sTxMsgFrame.au32Data[1] = g_sRxMsgFrame.au32Data[1];
@@ -187,10 +119,8 @@ void CANFD_Init(void)
 {
     CANFD_FD_T sCANFD_Config;
 
-    /* Set CAN transceiver to high speed mode */
-    GPIO_SETMODE(PC, 11, GPIO_MODE_OUTPUT);
-    PC11 = 0;
-
+    /*Use defined configuration */
+    sCANFD_Config.sElemSize.u32UserDef = 0;
     /* Get the CAN configuration value */
     CANFD_GetDefaultConfig(&sCANFD_Config, CANFD_OP_CAN_MODE);
     sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate = CANFD_BAUD_RATE;
@@ -198,16 +128,17 @@ void CANFD_Init(void)
 
     /* Open the CAN feature */
     CANFD_Open(CANFD0, &sCANFD_Config);
-    NVIC_EnableIRQ(CANFD00_IRQn);
-
     /* Set CAN reveive message */
     CANFD_SetSIDFltr(CANFD0, 0, CANFD_RX_FIFO0_STD_MASK(Master_ISP_ID, 0x7FF));
-
+    /* receive 0x220~0x22f (29-bit id) in CAN FD0 rx fifo1 buffer by setting mask 0 */
+    //CANFD_SetXIDFltr(CANFD0, 0, CANFD_RX_FIFO1_EXT_MASK_LOW(0x220), CANFD_RX_FIFO1_EXT_MASK_HIGH(0x1FFFFFF0));
     /* Enable Standard ID and  Extended ID Filter as RX FOFI0*/
     CANFD_SetGFC(CANFD0, eCANFD_ACC_NON_MATCH_FRM_RX_FIFO0, eCANFD_ACC_NON_MATCH_FRM_RX_FIFO0, 1, 1);
     /* Enable RX fifo0 new message interrupt using interrupt line 0. */
     CANFD_EnableInt(CANFD0, (CANFD_IE_TOOE_Msk | CANFD_IE_RF0NE_Msk | CANFD_IE_TCE_Msk), 0, 0, 0);
 
+    /* Enable CANFD0 IRQ */
+    NVIC_EnableIRQ(CANFD00_IRQn);
     /* CAN FD0 Run to Normal mode  */
     CANFD_RunToNormal(CANFD0, TRUE);
 }
@@ -217,6 +148,8 @@ void CANFD_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
+    uint32_t u32TimeoutInMS = 300;
+
     /* Unlock write-protected registers */
     SYS_UnlockReg();
 
@@ -224,30 +157,30 @@ int main(void)
     if (SYS_Init() < 0)
         goto _APROM;
 
+    /* Init CAN port */
+    CANFD_Init();
+    /* Unlock write-protected registers */
+    SYS_UnlockReg();
     /* Enable ISP */
     FMC_Open();
     FMC_ENABLE_AP_UPDATE();
 
-    SCB->VTOR = FMC_LDROM_BASE;
-    /* Init CAN port */
-    CANFD_Init();
-
-    SysTick->LOAD = 300000 * CyclesPerUs;
-    SysTick->VAL  = (0x00);
-    SysTick->CTRL = SysTick->CTRL | SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
-
-    while (1)
+    while (u32TimeoutInMS > 0)
     {
         if (s_u8CANPackageFlag == 1)
         {
-            break;
+            goto _ISP;
         }
 
-        if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
-        {
-            goto _APROM;
-        }
+        CLK_SysTickDelay(1000);
+        u32TimeoutInMS--;
     }
+
+    /* Timeout then go to APROM */
+    if (u32TimeoutInMS == 0)
+        goto _APROM;
+
+_ISP:
 
     /* state of update program */
     while (1)
@@ -255,6 +188,7 @@ int main(void)
         if (s_u8CANPackageFlag)
         {
             volatile STR_CANMSG_ISP_T *psISPCanMsg = (STR_CANMSG_ISP_T *)&g_sRxMsgFrame.au32Data[0];
+
             s_u8CANPackageFlag = 0;
 
             if (psISPCanMsg->Address == CMD_GET_DEVICEID)
@@ -263,24 +197,35 @@ int main(void)
             }
             else if (psISPCanMsg->Address == CMD_READ_CONFIG)
             {
-                psISPCanMsg->Data = FMC_Read(psISPCanMsg->Data);
+                uint32_t u32Data = psISPCanMsg->Data;
+                psISPCanMsg->Data = FMC_Read(u32Data);
             }
             else if (psISPCanMsg->Address == CMD_RUN_APROM)
             {
                 break;
             }
-            else
+            else    // Update user config or APROM
             {
-                if ((psISPCanMsg->Address % FMC_FLASH_PAGE_SIZE) == 0)
+                if ((psISPCanMsg->Address & FMC_CONFIG_BASE) == FMC_CONFIG_BASE)
                 {
-                    FMC_Erase(psISPCanMsg->Address);
-                }
+                    if (psISPCanMsg->Data != FMC_Read(psISPCanMsg->Address))
+                        FMC_WriteConfig(psISPCanMsg->Address, psISPCanMsg->Data);
 
-                FMC_Write(psISPCanMsg->Address, psISPCanMsg->Data);
-                psISPCanMsg->Data = FMC_Read(psISPCanMsg->Address);
+                    psISPCanMsg->Data = FMC_Read(psISPCanMsg->Address);
+                }
+                else if (psISPCanMsg->Address < FMC_APROM_SIZE)
+                {
+                    if ((psISPCanMsg->Address % FMC_FLASH_PAGE_SIZE) == 0)
+                    {
+                        FMC_Erase(FMC_APROM_BASE + psISPCanMsg->Address);
+                    }
+
+                    FMC_Write(FMC_APROM_BASE + psISPCanMsg->Address, psISPCanMsg->Data);
+                    psISPCanMsg->Data = FMC_Read(FMC_APROM_BASE + psISPCanMsg->Address);
+                }
             }
 
-            /* send CAN FD ISP Package (ACK) */
+            /* Send CAN FD ISP Package (ACK) */
             CANFD_Package_ACK(CANFD0);
         }
     }
