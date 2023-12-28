@@ -58,8 +58,8 @@
  * | FLASH                 | 0x1010_0000 | 0x0020_0000 | NS | Non-Secure alias for Flash                     |
  * | EBI                   | 0x6000_0000 | 0x0030_0000 | S  | 3 MiB                                          |
  * | EBI                   | 0x7000_0000 | 0x0030_0000 | NS | Non-Secure alias for EBI                       |
- * | SPIM0                 | 0x8000_0000 | 0x0200_0000 | S  | 32 MiB                                         |
- * | SPIM0                 | 0x9000_0000 | 0x0200_0000 | NS | Non-Secure alias for SPIM0                     |
+ * | SPIM0                 | 0x8200_0000 | 0x0200_0000 | S  | 32 MiB                                         |
+ * | SPIM0                 | 0x9200_0000 | 0x0200_0000 | NS | Non-Secure alias for SPIM0                     |
  * +-----------------------+-------------+-------------+----+------------------------------------------------+
  *  Note: Ethos-U55 can access FLASH, internal SRAM 0,1 => activation buffers and
  *        the model should only be placed in those regions.
@@ -78,7 +78,7 @@ MEMORY
   FLASH  (rx)  : ORIGIN = 0x00100000, LENGTH = 0x00200000
   SRAM012 (rw) : ORIGIN = 0x20100000, LENGTH = 0x00150000
   DTCM   (rw) : ORIGIN = 0x20000000, LENGTH = 0x00020000
-  HYPERFLASH (rwx) : ORIGIN = 0x80000000, LENGTH = 0x02000000
+  HYPERFLASH (rwx) : ORIGIN = 0x82000000, LENGTH = 0x02000000
 }
 
 
@@ -158,7 +158,7 @@ SECTIONS
     . = ALIGN(4);
     __zero_table_start__ = .;
     LONG (__bss_start__)
-    LONG (__bss_end__ - __bss_start__)
+    LONG ((__bss_end__ - __bss_start__) / 4)
     __zero_table_end__ = .;
 
   } > FLASH
@@ -176,7 +176,7 @@ SECTIONS
     /* Section to be copied - part 2: RO code for for ITCM */
     LONG (__etext)
     LONG (__itcm_text_start__)
-    LONG (__itcm_text_end__ - __itcm_text_start__ )
+    LONG ((__itcm_text_end__ - __itcm_text_start__ ) / 4)
 
     __copy_table_end__ = .;
   } > FLASH
@@ -273,9 +273,11 @@ SECTIONS
   /* Check if data + heap + stack exceeds DTCM limit */
   ASSERT(__StackLimit >= __HeapLimit, "region DTCM overflowed with stack")
 
+/*
   .hyperflash :
   {
     . = ALIGN(16);
     *(.rodata.tvm)
   } > HYPERFLASH AT > HYPERFLASH
+*/
 }

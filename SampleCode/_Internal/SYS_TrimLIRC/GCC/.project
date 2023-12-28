@@ -70,7 +70,7 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/uart.c</locationURI>
 		</link>
 		<link>
-			<name>Library/uart.c</name>
+			<name>Library/timer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/timer.c</locationURI>
 		</link>		

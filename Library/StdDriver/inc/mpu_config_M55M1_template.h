@@ -41,7 +41,7 @@
 // <q.6> 6: eMPU_ATTR_CACHEABLE_WBWARA
 // <i> Cacheable-WBWARA
 */
-#define MPU_INIT_MEM_ATTRS  0x11
+#define MPU_INIT_MEM_ATTRS  0x7F
 /*
 // </h>
 */

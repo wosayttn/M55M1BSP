@@ -154,7 +154,7 @@ SECTIONS
     . = ALIGN(4);
     __zero_table_start__ = .;
     LONG (__bss_start__)
-    LONG (__bss_end__ - __bss_start__)
+    LONG ((__bss_end__ - __bss_start__) / 4)
     __zero_table_end__ = .;
   } > FLASH
 
@@ -166,12 +166,12 @@ SECTIONS
     /* Section to be copied - part 1: RW data for for DTCM */
     LONG (__eitcm)
     LONG (__data_start__)
-    LONG (__data_end__ - __data_start__)
+    LONG ((__data_end__ - __data_start__) / 4)
 
     /* Section to be copied - part 2: RO code for for ITCM */
     LONG (__etext)
     LONG (__itcm_text_start__)
-    LONG (__itcm_text_end__ - __itcm_text_start__ )
+    LONG ((__itcm_text_end__ - __itcm_text_start__ ) / 4)
 
     __copy_table_end__ = .;
   } > FLASH
