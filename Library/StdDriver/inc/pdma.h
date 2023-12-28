@@ -76,8 +76,6 @@ extern "C"
 /*  Peripheral Transfer Mode Constant Definitions                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
 #define PDMA_MEM                0UL /*!<DMA Connect to Memory \hideinitializer */
-#define PDMA_USB_TX             2UL /*!<DMA Connect to USB_TX \hideinitializer */
-#define PDMA_USB_RX             3UL /*!<DMA Connect to USB_RX \hideinitializer */
 #define PDMA_UART0_TX           4UL /*!<DMA Connect to UART0_TX \hideinitializer */
 #define PDMA_UART0_RX           5UL /*!<DMA Connect to UART0_RX \hideinitializer */
 #define PDMA_UART1_TX           6UL /*!<DMA Connect to UART1_TX \hideinitializer */
@@ -168,8 +166,6 @@ extern "C"
 #define PDMA_PSIO_RX           91UL /*!<DMA Connect to PSIO_RX \hideinitializer */
 #define PDMA_I3C0_TX           92UL /*!<DMA Connect to I3C0_TX \hideinitializer */
 #define PDMA_I3C0_RX           93UL /*!<DMA Connect to I3C0_RX \hideinitializer */
-#define PDMA_ETMC              94UL /*!<DMA Connect to ETMC \hideinitializer */
-#define PDMA_SWODEC            95UL /*!<DMA Connect to SWODEC \hideinitializer */
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Interrupt Type Constant Definitions                                                                    */
 /*---------------------------------------------------------------------------------------------------------*/

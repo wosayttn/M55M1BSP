@@ -202,7 +202,7 @@ void Func_PDMA_SetTransferMode()
     uint32_t u32PatternIdx = 0;
     uint32_t au32TransferMode[] = {
         //
-        PDMA_MEM, PDMA_USB_TX, PDMA_USB_RX,
+        PDMA_MEM,
         //
         PDMA_UART0_TX, PDMA_UART0_RX, PDMA_UART1_TX, PDMA_UART1_RX,
         PDMA_UART2_TX, PDMA_UART2_RX, PDMA_UART3_TX, PDMA_UART3_RX,
@@ -241,11 +241,10 @@ void Func_PDMA_SetTransferMode()
         //
         PDMA_PSIO_TX, PDMA_PSIO_RX,
         PDMA_I3C0_TX, PDMA_I3C0_RX,
-        PDMA_ETMC, PDMA_SWODEC,
     };
     uint32_t au32ReqSelRegCheck[] = {
-        // MEM, USB TX, RX
-        0, 2, 3,
+        // MEM
+        0,
         // UART0 ~ UART9
         4, 5, 6, 7,
         8, 9, 10, 11,
@@ -277,8 +276,6 @@ void Func_PDMA_SetTransferMode()
         80, 81, 82, 83, 84, 85, 86, 87,
         // PSIO, I3C
         90, 91, 92, 93,
-        // ETMC, SWODEC
-        94, 95,
     };
 test_main:
 
