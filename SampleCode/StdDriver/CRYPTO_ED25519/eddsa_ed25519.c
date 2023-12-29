@@ -167,8 +167,9 @@ static void ECC_Start_And_Wait(uint32_t ecc_ctl)
     g_ECC_done = g_ECCERR_done = 0UL;
     printf("ECC_Start_And_Wait - 0x%x\n", ecc_ctl);
     CRYPTO->ECC_CTL = ecc_ctl | ECC_SCAP_CONFIG;
-    while ((g_ECC_done | g_ECCERR_done) == 0UL) {
-        ;  // printf("ECC_start - CTL = 0x%x, STS = 0x%x\n",  CRYPTO->ECC_CTL, CRYPTO->ECC_STS);
+    while ((g_ECC_done== 0UL) && (g_ECCERR_done== 0UL))
+    {
+        // printf("ECC_start - CTL = 0x%x, STS = 0x%x\n",  CRYPTO->ECC_CTL, CRYPTO->ECC_STS);
     }
 }
 
@@ -201,8 +202,7 @@ static void ECC_PA(void) //ECC point addition
 static void ECC_MODOP(uint32_t *x1, uint32_t *y1,
                       uint32_t *n, uint32_t op)   //ECC modular operation
 {
-    int i;
-    uint32_t prdata;
+
     uint32_t ecc_ctl;
 
     // point x1
@@ -495,7 +495,6 @@ static int  ed25519_get_scalar(enum ed_type eddsa_type,
                                uint32_t *scalar, uint32_t *prefix)
 {
     int i;
-    uint32_t skey[18];
 
     do_SHA512(priv_key, 32, 1);
 

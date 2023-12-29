@@ -183,9 +183,6 @@ void SYS_Init(void)
 
 int main()
 {
-    int i;
-    uint32_t u32Time;
-
     SYS_UnlockReg();
 
     /* Unlock protected registers */

@@ -84,7 +84,7 @@ void CRYPTO_IRQHandler()
 void  dump_buff_hex(uint8_t *pucBuff, int nBytes)
 {
     uint32_t  addr, end_addr;
-    int   nIdx, i;
+    int   i;
 
     addr = ptr_to_u32(pucBuff);
     end_addr = addr + nBytes - 1;
@@ -176,7 +176,7 @@ void hexify(char *obuf, const unsigned char *ibuf, int len)
 
 int ed25519_test()
 {
-    int i;
+
     struct test_vec *sg_tv;
     uint8_t priv_key[128];
     uint8_t pub_key[128];
