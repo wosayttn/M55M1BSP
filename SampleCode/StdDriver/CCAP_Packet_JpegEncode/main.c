@@ -11,9 +11,9 @@
 #include "NuMicro.h"
 #include "sensor.h"
 
-#define CCAP_OUTPUT_WIDTH                160
-#define CCAP_OUTPUT_HEIGHT               120
-uint8_t g_au8FrameBuffer[DCACHE_ALIGN_LINE_SIZE(CCAP_OUTPUT_WIDTH * CCAP_OUTPUT_HEIGHT * 2)] __ALIGNED(DCACHE_LINE_SIZE);
+#define CCAP_OUTPUT_WIDTH                320
+#define CCAP_OUTPUT_HEIGHT               240
+uint8_t g_au8FrameBuffer[DCACHE_ALIGN_LINE_SIZE(CCAP_OUTPUT_WIDTH * CCAP_OUTPUT_HEIGHT * 3)] __ALIGNED(DCACHE_LINE_SIZE);
 uint8_t g_au8JpegBuffer [DCACHE_ALIGN_LINE_SIZE(CCAP_OUTPUT_WIDTH * CCAP_OUTPUT_HEIGHT)]     __ALIGNED(DCACHE_LINE_SIZE);
 
 extern void JpegEncode(unsigned char *image, unsigned char *jBuf, unsigned long *jSize, int width, int height);
@@ -96,7 +96,11 @@ int32_t PacketFormatDownScale(S_SENSOR_INFO *psSensorInfo)
     CCAP_EnableInt(CCAP_INT_VIEN_ENABLE);
 
     /* Set Vsync polarity, Hsync polarity, pixel clock polarity, Sensor Format and Order */
+#if (TEST_GRAYSCALE == 1)
     CCAP_Open(psSensorInfo->m_u32Polarity, psSensorInfo->m_u32InputFormat, CCAP_PAR_OUTFMT_ONLY_Y);
+#else
+    CCAP_Open(psSensorInfo->m_u32Polarity, psSensorInfo->m_u32InputFormat, CCAP_PAR_OUTFMT_RGB888_U8);
+#endif
 
     /* Set Cropping Window Vertical/Horizontal Starting Address and Cropping Window Size */
     CCAP_SetCroppingWindow(0, 0, psSensorInfo->m_u16Height, psSensorInfo->m_u16Width);
@@ -113,6 +117,7 @@ int32_t PacketFormatDownScale(S_SENSOR_INFO *psSensorInfo)
     /* Start Image Capture Interface */
     CCAP_Start();
 
+    g_u32FramePass = 0;
     u32Frame = g_u32FramePass;
 
     while (1)
@@ -184,7 +189,7 @@ void SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    unsigned long u32JpegSize = sizeof(g_au8JpegBuffer);
+    unsigned long u32JpegSize;
 
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
@@ -192,29 +197,34 @@ int32_t main(void)
     InitDebugUart();
 
     printf("+---------------------------------------------+\n");
-    
+
 #ifdef NVT_JPEG_SIMD
-    printf("|  M55M1 CCAP Packet JPEG Encode SIMD Sample   |\n");
+    printf("|  M55M1 CCAP Packet SIMD JPEG Encode Sample  |\n");
 #else
-	printf("|  M55M1 CCAP Packet JPEG Encode Sample Code  |\n");
-#endif	
+    printf("|   M55M1 CCAP Packet SW JPEG Encode Sample   |\n");
+#endif
     printf("+---------------------------------------------+\n");
 
     /* Init CCAP clock and Sensor clock */
     CCAP_SetFreq(12000000, 12000000);
 
-    /* Using Packet format to Image down scale */
-    if (PacketFormatDownScale(&g_sSensorHM1055) != 0)
-        printf("Capture frame failed !\n");
-    else
+    while (1)
     {
-        /* jpeg encode */
-			  
-        JpegEncode(g_au8FrameBuffer, g_au8JpegBuffer, &u32JpegSize, CCAP_OUTPUT_WIDTH, CCAP_OUTPUT_HEIGHT);
+        /* Using Packet format to Image down scale */
+        if (PacketFormatDownScale(&g_sSensorHM1055) != 0)
+            printf("Capture frame failed !\n");
+        else
+        {
+            /* Encode JPEG */
+            u32JpegSize = sizeof(g_au8JpegBuffer);
+            JpegEncode(g_au8FrameBuffer, g_au8JpegBuffer, &u32JpegSize, CCAP_OUTPUT_WIDTH, CCAP_OUTPUT_HEIGHT);
 #ifdef NVT_DCACHE_ON
-        /* Clean jpeg buffer to dump memory with debugger */
-        SCB_CleanDCache_by_Addr(g_au8JpegBuffer, sizeof(g_au8JpegBuffer));
+            /* Clean jpeg buffer to dump memory with debugger */
+            SCB_CleanDCache_by_Addr(g_au8JpegBuffer, sizeof(g_au8JpegBuffer));
 #endif
+            printf("\nPress any key to restart\n");
+            getchar();
+        }
     }
 
     /* Forces a write of all user-space buffered data for the given output */
