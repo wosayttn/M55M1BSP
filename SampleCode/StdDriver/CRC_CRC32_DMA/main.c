@@ -119,8 +119,9 @@ uint32_t GetDMAMasterChecksum(uint32_t u32Address, uint32_t u32Size)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
-    volatile uint32_t addr, size, u32CRC32Checksum, u32PDMAChecksum;
-
+    
+    uint32_t u32CRC32Checksum, u32PDMAChecksum;//remove volatile prefix
+    uint32_t addr, size;
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -162,7 +163,7 @@ int main(void)
     printf("   - by CPU write:   0x%x\n", u32CRC32Checksum);
     printf("   - by DMA write:  0x%x\n", u32PDMAChecksum);
 
-    if ((u32CRC32Checksum == u32PDMAChecksum))
+    if ((u32CRC32Checksum) == (u32PDMAChecksum))
     {
         if ((u32CRC32Checksum == 0) || (u32CRC32Checksum == 0xFFFFFFFF))
         {
