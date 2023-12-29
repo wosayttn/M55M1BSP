@@ -5,7 +5,7 @@
  *
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
- 
+
 #include <stdio.h>
 #include <arm_mve.h>
 #include "nvt_jpeg.h"
@@ -34,19 +34,26 @@ int flss(uint16_t val)
     if (!val)
         return 0;
 
-    if (!(val & 0xff00)) {
+    if (!(val & 0xff00))
+    {
         bit -= 8;
         val <<= 8;
     }
-    if (!(val & 0xf000)) {
+
+    if (!(val & 0xf000))
+    {
         bit -= 4;
         val <<= 4;
     }
-    if (!(val & 0xc000)) {
+
+    if (!(val & 0xc000))
+    {
         bit -= 2;
         val <<= 2;
     }
-    if (!(val & 0x8000)) {
+
+    if (!(val & 0x8000))
+    {
         bit -= 1;
         val <<= 1;
     }
@@ -118,7 +125,8 @@ int compute_reciprocal(uint16_t divisor, DCTELEM *dtbl)
     UDCTELEM c;
     int b, r;
 
-    if (divisor == 1) {
+    if (divisor == 1)
+    {
         /* divisor == 1 means unquantized, so these reciprocal/correction/shift
          * values will cause the C quantization algorithm to act like the
          * identity function.  Since only the C quantization algorithm is used in
@@ -139,13 +147,18 @@ int compute_reciprocal(uint16_t divisor, DCTELEM *dtbl)
 
     c = divisor / 2;                      /* for rounding */
 
-    if (fr == 0) {                        /* divisor is power of two */
+    if (fr == 0)                          /* divisor is power of two */
+    {
         /* fq will be one bit too large to fit in DCTELEM, so adjust */
         fq >>= 1;
         r--;
-    } else if (fr <= (divisor / 2U)) {    /* fractional part is < 0.5 */
+    }
+    else if (fr <= (divisor / 2U))        /* fractional part is < 0.5 */
+    {
         c++;
-    } else {                              /* fractional part is > 0.5 */
+    }
+    else                                  /* fractional part is > 0.5 */
+    {
         fq++;
     }
 

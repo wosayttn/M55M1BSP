@@ -39,18 +39,21 @@ void encode_jpeg_to_memory(unsigned char *image, int width, int height, int qual
     cinfo.image_width = width;
     cinfo.image_height = height;
 
-    // Input is greyscale, 1 byte per pixel
+#if (TEST_GRAYSCALE == 1)
+    // Input is GRAYSCALE, 1 byte per pixel
     cinfo.input_components = 1;
     cinfo.in_color_space   = JCS_GRAYSCALE;
+#else
+    // Input is RGB888, 3 byte per pixel
+    cinfo.input_components = 3;
+    cinfo.in_color_space   = JCS_RGB;
+#endif
 
     jpeg_set_defaults(&cinfo);
     jpeg_set_quality(&cinfo, quality, (boolean)TRUE);
 
-    //
-    //
-    // Tell libJpeg to encode to memory, this is the bit that's different!
-    // Lib will alloc buffer.
-    //
+    // jpegBuf in this sample is declared in main.c
+    // Config libjpeg to encode to specified memory buffer and its buffer size
     jpeg_mem_dest(&cinfo, jpegBuf, jpegSize);
 
     jpeg_start_compress(&cinfo, (boolean)TRUE);
