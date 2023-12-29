@@ -32,9 +32,10 @@ extern "C"
 /** @addtogroup SPI_HYPER_EXPORTED_CONSTANTS SPI_HYPER Exported Constants
   @{
 */
-
+// TESTCHIP_ONLY
 #define SPIM_HYPER_DMM0_SADDR               (0x80000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
 #define SPIM_HYPER_DMM0_NSADDR              (0x90000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
+
 //#define SPIM_HYPER_DMM0_SADDR               (0x82000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
 //#define SPIM_HYPER_DMM0_NSADDR              (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
 
@@ -98,14 +99,10 @@ extern "C"
 
 /*----------------------------------------------------------------------------*/
 /* SPIM_HYPER_CONFIG1: Chip Select Setup Time to Next CK Rising Edge
-    00 = 1.5 HCLK cycles.
-    01 = 2.5 HCLK cycles.
     10 = 3.5 HCLK cycles.
     11 = 4.5 HCLK cycles.
 */
 /*----------------------------------------------------------------------------*/
-#define SPIM_HYPER_CSST_1_5_HCLK    (0x0)
-#define SPIM_HYPER_CSST_2_5_HCLK    (0x1)
 #define SPIM_HYPER_CSST_3_5_HCLK    (0x2)
 #define SPIM_HYPER_CSST_4_5_HCLK    (0x3)
 
@@ -375,7 +372,7 @@ extern "C"
  */
 #define SPIM_HYPER_GET_DLLATRDY(spim)  \
     ((spim->DLL0 & SPIM_DLL0_DLLATRDY_Msk) >> SPIM_DLL0_DLLATRDY_Pos)
-	
+
 /**
  * @brief   Get DLL0 Refresh Status Bit.
  * \hideinitializer
@@ -396,17 +393,17 @@ extern "C"
  */
 #define SPIM_HYPER_GET_DLLDLY_NUM(spim)    \
     ((spim->DLL0 & SPIM_DLL0_DLL_DNUM_Msk) >> SPIM_DLL0_DLL_DNUM_Pos)
-	
+
 /**
  * @brief   Set DLL Auto Trim.
- * @param 	x is starts to count from 0x0 to DLLOVNUM
+ * @param   x is starts to count from 0x0 to DLLOVNUM
  *          - \ref SPIM_HYPER_OP_ENABLE
  *          - \ref SPIM_HYPER_OP_DISABLE
  * \hideinitializer
  */
-#define SPIM_HYPER_SET_AUTO_TRIM_DLL(spim, x)	\
+#define SPIM_HYPER_SET_AUTO_TRIM_DLL(spim, x)   \
     (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLATEN_Msk)) | ((x) << SPIM_DLL0_DLLATEN_Pos))
-	
+
 /**
  * @brief   Set DLL0 Delay Step Number. It could be 0 ~ 0x1F.
  * \hideinitializer
@@ -463,8 +460,6 @@ extern "C"
 /**
   * @brief      Set Hyper Chip Select Setup Time to Next CK Rising Edge.
   * @param[in]  x   Chip Select Setup Time to Next CK Rising Edge.
-  *                 - \ref SPIM_HYPER_CSST_1_5_HCLK : 1.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CSST_2_5_HCLK : 2.5 HCLK cycles
   *                 - \ref SPIM_HYPER_CSST_3_5_HCLK : 3.5 HCLK cycles
   *                 - \ref SPIM_HYPER_CSST_4_5_HCLK : 4.5 HCLK cycles
   * \hideinitializer
@@ -626,7 +621,7 @@ __STATIC_INLINE uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim);
 __STATIC_INLINE void SPIM_HYPER_DISABLE_CIPHER(SPIM_T *spim)
 {
     spim->CTL0 |= (SPIM_CTL0_BALEN_Msk | SPIM_CTL0_CIPHOFF_Msk);
-	//spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_BALEN_Msk)) | SPIM_CTL0_CIPHOFF_Msk;
+    //spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_BALEN_Msk)) | SPIM_CTL0_CIPHOFF_Msk;
 
     SPIM_HYPER_SET_DMM_DESELTIM(spim, 0x08);
 }
@@ -641,7 +636,7 @@ __STATIC_INLINE void SPIM_HYPER_DISABLE_CIPHER(SPIM_T *spim)
 __STATIC_INLINE void SPIM_HYPER_ENABLE_CIPHER(SPIM_T *spim)
 {
     spim->CTL0 &= ~(SPIM_CTL0_CIPHOFF_Msk | SPIM_CTL0_BALEN_Msk);
-	//spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_CIPHOFF_Msk)) | SPIM_CTL0_BALEN_Msk;
+    //spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_CIPHOFF_Msk)) | SPIM_CTL0_BALEN_Msk;
 
     SPIM_HYPER_SET_DMM_DESELTIM(spim, 0x12);
 }
