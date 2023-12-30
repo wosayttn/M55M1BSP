@@ -1330,7 +1330,7 @@ uint32_t CLK_WaitModuleClockReady(uint64_t u64ModuleIdx)
   *             - \ref CLK_APLLCTL_APLLSRC_HXT
   *             - \ref CLK_APLLCTL_APLLSRC_HIRC
   *             - \ref CLK_APLLCTL_APLLSRC_HIRC48_DIV4
-  * @param[in]  u32PllFreq is PLL frequency. The range of u32PllFreq is 50 MHz ~ 500 MHz.
+  * @param[in]  u32PllFreq is PLL frequency. The range of u32PllFreq is 25 MHz ~ 500 MHz.
   * @param[in]  u32PllSelect is PLL selection. Including :
   *             - \ref CLK_APLL0_SELECT
   *             - \ref CLK_APLL1_SELECT
@@ -1408,7 +1408,7 @@ uint32_t CLK_EnableAPLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq, uint32_t u32
     }
 
     /* Check PLL frequency range */
-    /* Constraint 1: 50MHz < FOUT < 500MHz */
+    /* Constraint 1: 25MHz < FOUT < 500MHz */
     if ((u32PllFreq <= FREQ_500MHZ) && (u32PllFreq >= FREQ_25MHZ))
     {
         /* Select "NO" according to request frequency */
@@ -1766,12 +1766,12 @@ uint32_t CLK_GetAPLL0ClockFreq(void)
   */
 uint32_t CLK_GetAPLL1ClockFreq(void)
 {
-    uint32_t u32PllFreq = 0UL, u32PllReg;
+    uint32_t u32PllFreq = 0UL, u32PllReg, u32PllReg1;
     uint32_t u32FIN, u32NF, u32NR, u32NO;
     uint8_t au8NoTbl[4] = {1U, 2U, 2U, 4U};
 
     u32PllReg = CLK->APLL1CTL;
-
+    u32PllReg1 = CLK->APLL1SEL;
     if (!(CLK->SRCCTL & CLK_SRCCTL_APLL1EN_Msk))
     {
         u32PllFreq = 0UL;           /* PLL1 is in power down mode or fix low */
@@ -1779,11 +1779,11 @@ uint32_t CLK_GetAPLL1ClockFreq(void)
     else /* PLL1 is in normal mode */
     {
         /* PLL source clock */
-        if ((u32PllReg & CLK_APLL1SEL_APLLSRC_Msk) == CLK_APLLCTL_APLLSRC_HIRC)
+        if ((u32PllReg1 & CLK_APLL1SEL_APLLSRC_Msk) == CLK_APLLCTL_APLLSRC_HIRC)
         {
             u32FIN = __HIRC;        /* PLL1 source clock from HIRC */
         }
-        else if ((u32PllReg & CLK_APLL1SEL_APLLSRC_Msk) == CLK_APLLCTL_APLLSRC_HXT)
+        else if ((u32PllReg1 & CLK_APLL1SEL_APLLSRC_Msk) == CLK_APLLCTL_APLLSRC_HXT)
         {
             u32FIN = __HXT;         /* PLL1 source clock from HXT */
         }
