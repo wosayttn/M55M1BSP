@@ -715,7 +715,7 @@
                 </option>
                 <option>
                     <name>IlinkRawBinaryFile</name>
-                    <state>C:\WORK\IC Verification\Full Design Package\M55M1_BSP\yy\bsp\SampleCode\StdDriver\CRYPTO_SHA\sha_test_vector</state>
+                    <state>$PROJ_DIR$\..\sha_test_vector</state>
                 </option>
                 <option>
                     <name>IlinkRawBinarySymbol</name>
