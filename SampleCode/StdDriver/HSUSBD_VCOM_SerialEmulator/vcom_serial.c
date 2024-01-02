@@ -464,9 +464,6 @@ void VCOM_ClassRequest(void)
 
 void VCOM_LineCoding(uint8_t port)
 {
-    uint32_t u32Reg;
-    uint32_t u32Baud_Div;
-
     if (port == 0)
     {
         NVIC_DisableIRQ(DEBUG_PORT_IRQn);

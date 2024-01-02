@@ -41,7 +41,9 @@ NVT_ITCM void DAC01_IRQHandler(void)
             /* Clear the DAC conversion complete finish flag */
             DAC_CLR_INT_FLAG(DAC0, 0);
             DAC_WRITE_DATA(DAC0, 0, g_au16Sine[g_u32Index++]);
-            DAC_GET_INT_FLAG(DAC0, 0);
+
+            /* Sync-up STATUS register of DAC. */
+            M32(&DAC0->STATUS);
         }
     }
 

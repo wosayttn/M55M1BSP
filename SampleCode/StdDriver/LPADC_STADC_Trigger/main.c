@@ -24,10 +24,13 @@ volatile uint32_t g_u32LpadcIntFlag, g_u32COVNUMFlag = 0;
 NVT_ITCM void LPADC0_IRQHandler(void)
 {
     LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT); /* Clear the A/D interrupt flag */
+
     g_u32LpadcIntFlag = 1;
     g_u32COVNUMFlag++;
     printf("[#%d] LPADC conversion done.\n", g_u32COVNUMFlag);
-    LPADC_GET_INT_FLAG(LPADC0, LPADC_ADF_INT); /* Clear the A/D interrupt flag */
+
+    /* Sync register of LPADC. */
+    M32(&LPADC0->ADSR0);
 }
 
 void SYS_Init(void)

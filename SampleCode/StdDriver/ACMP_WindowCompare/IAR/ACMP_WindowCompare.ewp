@@ -1113,6 +1113,9 @@
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\uart.c</name>
         </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\gpio.c</name>
+        </file>
     </group>
     <group>
         <name>User</name>

@@ -25,8 +25,9 @@ NVT_ITCM void EADC00_IRQHandler(void)
 {
     g_u32AdcIntFlag = 1;
     EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);      /* Clear the A/D ADINT0 interrupt flag */
+
     /*Confirm that the Flag has been cleared.*/
-    EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk); 
+    M32(&EADC0->STATUS2);
 }
 
 void SYS_Init(void)
@@ -50,7 +51,7 @@ void SYS_Init(void)
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
-     /* Workaround(TESTCHIP_ONLY)  */
+    /* Workaround(TESTCHIP_ONLY)  */
     /* If the ADC clock is divided, the conversion result value will deviate, so only the PCLK0 clock can be divided. */
     /* PCLK0 clock divider 15 */
     CLK_SET_PCLK0DIV(15);
@@ -66,15 +67,15 @@ void SYS_Init(void)
 
     /* Enable GPIOB module clock */
     CLK_EnableModuleClock(GPIOB_MODULE);
-    
+
     /* Debug UART clock setting*/
     SetDebugUartCLK();
-    
+
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
     /* Set PB.1 to input mode */
-    GPIO_SetMode(PB, BIT1 , GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT1, GPIO_MODE_INPUT);
     /* Configure the PB.1 ADC analog input pins. */
     SET_EADC0_CH1_PB1();
     /* Disable the PB.1 digital input path to avoid the leakage current. */
