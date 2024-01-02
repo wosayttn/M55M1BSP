@@ -222,8 +222,10 @@ int32_t main(void)
             /* Clean jpeg buffer to dump memory with debugger */
             SCB_CleanDCache_by_Addr(g_au8JpegBuffer, sizeof(g_au8JpegBuffer));
 #endif
-            printf("\nPress any key to restart\n");
-            getchar();
+            printf("\nPress 'q' to quit\n");
+
+            if (getchar() == 'q')
+                break;
         }
     }
 
