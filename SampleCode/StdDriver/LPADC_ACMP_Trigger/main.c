@@ -177,7 +177,7 @@ void LPADC_FunctionTest(void)
                 /* Get the conversion result of LPADC channel 2 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
 
-                if ((g_u32COVNUMFlag >= 0) && (g_u32COVNUMFlag < 6))
+                if ((g_u32COVNUMFlag > 0) && (g_u32COVNUMFlag < 6))
                 {
                     ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
                 }
@@ -237,7 +237,7 @@ void LPADC_FunctionTest(void)
                 /* Get the conversion result of the sample module 0 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
 
-                if ((g_u32COVNUMFlag >= 0) && (g_u32COVNUMFlag < 6))
+                if ((g_u32COVNUMFlag > 0) && (g_u32COVNUMFlag < 6))
                 {
                     ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
                 }

@@ -344,7 +344,6 @@ void PowerDown(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t au32Config[2];
 #if CRYSTAL_LESS
     uint32_t u32TrimInit;
 #endif
