@@ -49,9 +49,9 @@ NVT_ITCM void BODOUT_IRQHandler(void)
 
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
 #if 1   /* TESTCHIP_ONLY */
-    inp32(SYS->BODCTL);
+    inp32(&SYS->BODCTL);
 #else
-    inp32(SYS->BODSTS);
+    inp32(&SYS->BODSTS);
 #endif
 }
 

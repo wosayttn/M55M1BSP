@@ -60,8 +60,8 @@ NVT_ITCM void IRC_IRQHandler(void)
     }
 
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
-    inp32(SYS->TISTS12M);
-    inp32(SYS->TISTS48M);
+    inp32(&SYS->TISTS12M);
+    inp32(&SYS->TISTS48M);
 }
 
 void SYS_Init(void)

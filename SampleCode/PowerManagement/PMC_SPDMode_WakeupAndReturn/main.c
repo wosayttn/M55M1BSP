@@ -12,6 +12,7 @@
 #include "NuMicro.h"
 
 extern uint32_t g_u32ReturnAddr, g_bReturnToAddr;
+void SPDMode_WakeupAndReturn(uint32_t bReturn);
 
 void SYS_Init(void)
 {
@@ -49,54 +50,7 @@ void SYS_Init(void)
     SYS_LockReg();
 }
 
-__attribute__ ((noinline))
-void SPDMode_WakeupAndReturn(uint32_t bReturn)
-{
-    if (bReturn == FALSE)
-    {
-        uint32_t u32TimeOutCnt;
 
-        /* Save return address in g_u32ReturnAddr to return after reset */
-        __ASM volatile ("mov %0, lr\n" : "=r"(g_u32ReturnAddr));
-
-        printf("[Before Power-down] LR: 0x%08X\n", g_u32ReturnAddr);
-        g_bReturnToAddr = TRUE;
-
-        printf("Enter to SPD Power-down mode...\n");
-
-        /* Select Power-down mode */
-        PMC_SetPowerDownMode(PMC_SPD0, PMC_PLCTL_PLSEL_PL0);
-
-        /* Enable wake-up timer and set wake-up Time-out Interval */
-        PMC_EnableSTMR(PMC_STMRWKCTL_STMRIS_4096);
-
-        /* Check if all the debug messages are finished */
-        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        UART_WAIT_TX_EMPTY(DEBUG_PORT)
-
-        if (--u32TimeOutCnt == 0) break;
-
-        /* Clear all wake-up flag */
-        PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
-
-        /* Enter to Power-down mode */
-        PMC_PowerDown();
-    }
-    else
-    {
-        /* Init System, IP clock and multi-function I/O */
-        SYS_Init();
-
-        /* Init Debug UART to 115200-8N1 for print message */
-        InitDebugUart();
-
-        printf("[After Reset] Resotred LR: 0x%08X\n", g_u32ReturnAddr);
-
-        /* Clear return address */
-        g_u32ReturnAddr = 0;
-        printf("Continue execution ...\n");
-    }
-}
 
 int main(void)
 {
@@ -134,6 +88,7 @@ int main(void)
         UART_WAIT_TX_EMPTY(DEBUG_PORT)
 
         if (--u32TimeOutCnt == 0) break;
+
         SYS_ResetChip();
     }
     else
@@ -146,6 +101,7 @@ int main(void)
     PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
 
     printf("Done.\n");
+
     /* Got no where to go, just loop forever */
     while (1) ;
 }

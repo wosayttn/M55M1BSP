@@ -115,7 +115,7 @@ NVT_ITCM void AWF_IRQHandler(void)
     }
 
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
-    inp32(AWF->STATUS);    
+    inp32(&AWF->STATUS);
 }
 
 static void SYS_Init(void)
