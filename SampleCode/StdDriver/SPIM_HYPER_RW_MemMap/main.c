@@ -84,7 +84,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
-    if (spim == SPIM0)
+    if (SPIM_PORT == SPIM0)
     {
         /* Enable SPIM module clock */
         CLK_EnableModuleClock(SPIM0_MODULE);
@@ -137,7 +137,7 @@ void SYS_Init(void)
         GPIO_SetSlewCtl(PG, BIT14, GPIO_SLEWCTL_HIGH);
         GPIO_SetSlewCtl(PG, BIT15, GPIO_SLEWCTL_HIGH);
     }
-    else if (spim == SPIM1)
+    else if (SPIM_PORT == SPIM1)
     {
         /* Enable SPIM module clock */
         CLK_EnableModuleClock(SPIM1_MODULE);
