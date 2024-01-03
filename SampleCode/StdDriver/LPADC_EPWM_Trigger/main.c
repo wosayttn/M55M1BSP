@@ -25,11 +25,12 @@ volatile uint32_t g_u32AdcIntFlag, g_u32COVNUMFlag = 0;
 NVT_ITCM void LPADC0_IRQHandler(void)
 {
     LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT); /* Clear the A/D interrupt flag */
+
     g_u32AdcIntFlag = 1;
     g_u32COVNUMFlag++;
+
     /*Confirm that the Flag has been cleared.*/
-    LPADC_GET_INT_FLAG(LPADC0, LPADC_ADF_INT);
-  
+    M32(&LPADC0->ADSR0);
 }
 
 void SYS_Init(void)

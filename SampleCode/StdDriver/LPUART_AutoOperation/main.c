@@ -33,7 +33,7 @@ typedef struct dma_desc_t
 
 uint8_t SrcArray[MAX_SG_TAB_NUM * SG_TX_LENGTH] __attribute__((section(".lpSram")));
 uint8_t DestArray[MAX_SG_TAB_NUM * SG_TX_LENGTH] __attribute__((section(".lpSram")));
-DMA_DESC_T DMA_DESC_SC[MAX_SG_TAB_NUM] __attribute__((section(".lpSram"))) = {0};
+DMA_DESC_T DMA_DESC_SC[MAX_SG_TAB_NUM] __attribute__((section(".lpSram")));
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Data Compare function                                                                                   */

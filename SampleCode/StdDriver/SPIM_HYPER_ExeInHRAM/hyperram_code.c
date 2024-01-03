@@ -77,7 +77,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     volatile uint32_t u32i = 0;
     uint32_t u32SrcAddr = 0;
     uint32_t u32TestSize = 32;
-    uint8_t au8TrimPatten[32] =
+    __attribute__((aligned(32))) uint8_t au8TrimPatten[32] =
     {
         0xff, 0x0F, 0xFF, 0x00, 0xFF, 0xCC, 0xC3, 0x3C,
         0xCC, 0xFF, 0xFE, 0xFF, 0xFE, 0xEF, 0xFF, 0xDF,
@@ -92,13 +92,6 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
 
     /* Erase HyperRAM */
     HyperRAM_Erase(spim, u32SrcAddr, u32TestSize);
-
-    /* Write Data to HyperRAM */
-    //for (u32i = u32SrcAddr; u32i < u32TestSize; u32i++)
-    //{
-    //    g_au8SrcArray[u32i] = (u32i + 0x01);
-    //    SPIM_HYPER_Write1Byte(spim, u32i, g_au8SrcArray[u32i]);
-    //}
 
     SPIM_HYPER_DMAWrite(spim, u32SrcAddr, au8TrimPatten, u32TestSize);
 
@@ -150,7 +143,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     {
         if (u8RdDelayIdx >= 2)
         {
-            u8RdDelayIdx = (u8RdDelayIdx / 2);
+            u8RdDelayIdx = (u8RdDelayIdx / 2) - 1;
         }
         else
         {
@@ -174,7 +167,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
 void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR)
 {
     /* Chip Select Setup Time 2.5 */
-    SPIM_HYPER_SET_CSST(spim, SPIM_HYPER_CSST_2_5_HCLK);
+    SPIM_HYPER_SET_CSST(spim, SPIM_HYPER_CSST_3_5_HCLK);
 
     /* Chip Select Hold Time 3.5 HCLK */
     SPIM_HYPER_SET_CSH(spim, SPIM_HYPER_CSH_3_5_HCLK);

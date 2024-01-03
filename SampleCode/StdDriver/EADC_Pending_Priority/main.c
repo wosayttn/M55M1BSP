@@ -34,8 +34,9 @@ NVT_ITCM void EADC00_IRQHandler(void)
 
     /* Save the interrupt sequence about ADINT0 */
     g_u32IntSequence[0] = g_u32IntSequenceIndex++;
+
     /*Confirm that the Flag has been cleared. */
-    EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);
+    M32(&EADC0->STATUS2);
 }
 
 NVT_ITCM void EADC01_IRQHandler(void)
@@ -46,8 +47,9 @@ NVT_ITCM void EADC01_IRQHandler(void)
 
     /* Save the interrupt sequence about ADINT1 */
     g_u32IntSequence[1] = g_u32IntSequenceIndex++;
+
     /*Confirm that the Flag has been cleared. */
-    EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADIF1_Msk);
+    M32(&EADC0->STATUS2);
 }
 
 NVT_ITCM void EADC02_IRQHandler(void)
@@ -58,8 +60,9 @@ NVT_ITCM void EADC02_IRQHandler(void)
 
     /* Save the interrupt sequence about ADINT2 */
     g_u32IntSequence[2] = g_u32IntSequenceIndex++;
+
     /*Confirm that the Flag has been cleared. */
-    EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADIF2_Msk);
+    M32(&EADC0->STATUS2);
 }
 
 NVT_ITCM void EADC03_IRQHandler(void)
@@ -70,8 +73,9 @@ NVT_ITCM void EADC03_IRQHandler(void)
 
     /* Save the interrupt sequence about ADINT3 */
     g_u32IntSequence[3] = g_u32IntSequenceIndex++;
+
     /*Confirm that the Flag has been cleared. */
-    EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADIF3_Msk);
+    M32(&EADC0->STATUS2);
 }
 
 void SYS_Init(void)
@@ -111,14 +115,14 @@ void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-    
+
     /* Debug UART clock setting*/
     SetDebugUartCLK();
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
     /* Set PB.0, PB.6 ~ PB.9 to input mode */
-    GPIO_SetMode(PB, BIT9 | BIT8 | BIT7 | BIT6 , GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT9 | BIT8 | BIT7 | BIT6, GPIO_MODE_INPUT);
     /* Configure the EADC analog input pins.  */
     SET_EADC0_CH6_PB6();
     SET_EADC0_CH7_PB7();

@@ -180,6 +180,8 @@ int main()
     printf("|      SPIM DMM mode running program on flash      |\n");
     printf("+--------------------------------------------------+\n");
 
+    InitPreDefMPURegion(NULL, 0);
+
     /* Set SPIM clock as HCLK divided by 8 */
     SPIM_SET_CLOCK_DIVIDER(SPIM_PORT, 8);
 

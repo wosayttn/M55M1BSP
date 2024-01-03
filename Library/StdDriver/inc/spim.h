@@ -1579,7 +1579,7 @@ typedef struct
     uint32_t u32DataPhase;      /*!< Data phase mode */
     uint32_t u32ByteOrder;      /*!< Data Byte Order */
     uint32_t u32DataDTR;        /*!< Data use DTR mode */
-    //uint32_t u32RDQS;           /*!< Receive data from SPI Flash when read DQS*/
+    uint32_t u32RDQS;           /*!< Receive data from SPI Flash when read DQS*/
 
     uint32_t u32DcNum;          /*!< Dummy `cycle count */
 

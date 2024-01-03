@@ -39,7 +39,7 @@ NVT_ITCM void WDT0_IRQHandler(void)
     s_u8IsINTEvent = 1;
 
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
-    inp32(WDT0->STATUS);
+    inp32(&WDT0->STATUS);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/

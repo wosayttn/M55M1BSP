@@ -143,7 +143,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     {
         if (u8RdDelayIdx >= 2)
         {
-            u8RdDelayIdx = (u8RdDelayIdx / 2);
+            u8RdDelayIdx = (u8RdDelayIdx / 2) - 1;
         }
         else
         {
@@ -166,8 +166,8 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
   */
 void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR)
 {
-    /* Chip Select Setup Time 2.5 */
-    SPIM_HYPER_SET_CSST(spim, SPIM_HYPER_CSST_2_5_HCLK);
+    /* Chip Select Setup Time 3.5 HCLK */
+    SPIM_HYPER_SET_CSST(spim, SPIM_HYPER_CSST_3_5_HCLK);
 
     /* Chip Select Hold Time 3.5 HCLK */
     SPIM_HYPER_SET_CSH(spim, SPIM_HYPER_CSH_3_5_HCLK);
@@ -188,126 +188,8 @@ void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32Ac
     SPIM_HYPER_SET_ACCTWR(spim, u32AcctWR);
 }
 
-void SPIM_ModuleInit(SPIM_T *spim)
-{
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
-    if (spim == SPIM0)
-    {
-        /* Enable SPIM module clock */
-        CLK_EnableModuleClock(SPIM0_MODULE);
-
-        /* Enable SPIM module clock */
-        CLK_EnableModuleClock(OTFC0_MODULE);
-
-        /* Enable GPIO Module clock */
-        CLK_EnableModuleClock(GPIOC_MODULE);
-        CLK_EnableModuleClock(GPIOG_MODULE);
-
-        /* Init SPIM multi-function pins */
-        SET_SPIM0_CLKN_PC5();
-        SET_SPIM0_CLK_PC4();
-        SET_SPIM0_D2_PC0();
-        SET_SPIM0_D3_PG10();
-        SET_SPIM0_D4_PG9();
-        SET_SPIM0_D5_PG13();
-        SET_SPIM0_D6_PG14();
-        SET_SPIM0_D7_PG15();
-        SET_SPIM0_MISO_PG12();
-        SET_SPIM0_MOSI_PG11();
-        SET_SPIM0_RESETN_PC2();
-        SET_SPIM0_RWDS_PC1();
-        SET_SPIM0_SS_PC3();
-
-        PC->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
-        PG->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
-
-        /* Set SPIM I/O pins as high slew rate up to 80 MHz. */
-        GPIO_SetSlewCtl(PC, BIT0, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PC, BIT1, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PC, BIT2, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PC, BIT3, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PC, BIT4, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PC, BIT5, GPIO_SLEWCTL_HIGH);
-
-        GPIO_SetSlewCtl(PG, BIT9, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PG, BIT10, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PG, BIT11, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PG, BIT12, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PG, BIT13, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PG, BIT14, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PG, BIT15, GPIO_SLEWCTL_HIGH);
-    }
-    else if (spim == SPIM1)
-    {
-        /* Enable SPIM module clock */
-        CLK_EnableModuleClock(SPIM1_MODULE);
-
-        /* Enable SPIM module clock */
-        CLK_EnableModuleClock(OTFC1_MODULE);
-
-        /* Enable GPIO Module clock */
-        CLK_EnableModuleClock(GPIOD_MODULE);
-        CLK_EnableModuleClock(GPIOH_MODULE);
-        CLK_EnableModuleClock(GPIOJ_MODULE);
-
-        /* Init SPIM multi-function pins */
-        SET_SPIM1_CLKN_PH12();
-        SET_SPIM1_CLK_PH13();
-        SET_SPIM1_D2_PJ4();
-        SET_SPIM1_D3_PJ3();
-        SET_SPIM1_D4_PH15();
-        SET_SPIM1_D5_PD7();
-        SET_SPIM1_D6_PD6();
-        SET_SPIM1_D7_PD5();
-        SET_SPIM1_MISO_PJ5();
-        SET_SPIM1_MOSI_PJ6();
-        SET_SPIM1_RESETN_PJ2();
-        SET_SPIM1_RWDS_PH14();
-        SET_SPIM1_SS_PJ7();
-
-        PD->SMTEN |= (GPIO_SMTEN_SMTEN5_Msk |
-                      GPIO_SMTEN_SMTEN6_Msk |
-                      GPIO_SMTEN_SMTEN7_Msk);
-        PH->SMTEN |= (GPIO_SMTEN_SMTEN12_Msk |
-                      GPIO_SMTEN_SMTEN13_Msk |
-                      GPIO_SMTEN_SMTEN14_Msk |
-                      GPIO_SMTEN_SMTEN15_Msk);
-        PJ->SMTEN |= (GPIO_SMTEN_SMTEN2_Msk |
-                      GPIO_SMTEN_SMTEN3_Msk |
-                      GPIO_SMTEN_SMTEN4_Msk |
-                      GPIO_SMTEN_SMTEN5_Msk |
-                      GPIO_SMTEN_SMTEN6_Msk |
-                      GPIO_SMTEN_SMTEN7_Msk);
-
-        /* Set SPIM I/O pins as high slew rate up to 80 MHz. */
-        GPIO_SetSlewCtl(PD, BIT5, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PD, BIT6, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PD, BIT7, GPIO_SLEWCTL_HIGH);
-
-        GPIO_SetSlewCtl(PH, BIT12, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PH, BIT13, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PH, BIT14, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PH, BIT15, GPIO_SLEWCTL_HIGH);
-
-        GPIO_SetSlewCtl(PJ, BIT2, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PJ, BIT3, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PJ, BIT4, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PJ, BIT5, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PJ, BIT6, GPIO_SLEWCTL_HIGH);
-        GPIO_SetSlewCtl(PJ, BIT7, GPIO_SLEWCTL_HIGH);
-    }
-
-    /* Lock protected registers */
-    SYS_LockReg();
-
-}
-
 void HyperRAM_Init(SPIM_T *spim)
 {
-    SPIM_ModuleInit(spim);
-
     /* Enable SPIM Hyper Bus Mode */
     SPIM_HYPER_Init(spim, 1);
 

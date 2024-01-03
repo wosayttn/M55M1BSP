@@ -57,7 +57,7 @@
 /*
 //     <o>Region Size <0x20-0xFFFFFFFF:0x20>
 */
-#define MPU_INIT_SIZE0     0x00100000       /* Size of MPU region 0 */
+#define MPU_INIT_SIZE0     0x00300000       /* Size of MPU region 0 */
 #define MPU_INIT_LIMIT0    (MPU_INIT_BASE0 + MPU_INIT_SIZE0 - 1)
 /*
 //    <o>  Memory attribute

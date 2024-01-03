@@ -25,6 +25,9 @@ NVT_ITCM void LPADC0_IRQHandler(void)
 {
     g_u32LpadcIntFlag = 1;
     LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT); /* Clear the A/D interrupt flag */
+
+    /* Sync register of LPADC. */
+    M32(&LPADC0->ADSR0);
 }
 
 void SYS_Init(void)

@@ -109,7 +109,7 @@ NVT_ITCM void PMC_IRQHandler(void)
     PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
 
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
-    inp32(PMC->INTSTS);
+    inp32(&PMC->INTSTS);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/

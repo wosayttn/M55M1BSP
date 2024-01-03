@@ -26,9 +26,9 @@ NVT_ITCM void EADC00_IRQHandler(void)
     EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);      /* Clear the A/D ADINT0 interrupt flag */
     g_u32AdcIntFlag = 1;
     g_u32COVNUMFlag++;
-  
+
     /*Confirm that the Flag has been cleared.*/
-    EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk); 
+    M32(&EADC0->STATUS2);
 }
 
 void SYS_Init(void)
@@ -59,8 +59,8 @@ void SYS_Init(void)
     /* Enable EADC peripheral clock */
     CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(1));
     /* Enable EADC module clock */
-     CLK_EnableModuleClock(EADC0_MODULE);
- 
+    CLK_EnableModuleClock(EADC0_MODULE);
+
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
@@ -81,7 +81,7 @@ void SYS_Init(void)
     SetDebugUartMFP();
 
     /* Set PB.1 to input mode */
-    GPIO_SetMode(PB,BIT1, GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT1, GPIO_MODE_INPUT);
     /* Configure the PB.1 ADC analog input pins. */
     SET_EADC0_CH1_PB1();
     /* Disable the PB.1 digital input path to avoid the leakage current. */

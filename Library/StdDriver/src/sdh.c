@@ -1127,7 +1127,6 @@ static uint32_t SDH_ResetCard(SDH_T *sdh)
     uint32_t volatile i;
     SDH_INFO_T *pSD;
     uint32_t u32TimeOutCount;
-    uint32_t ret = 0;
 
     sdh->GINTEN = 0ul;
     sdh->CTL &= ~SDH_CTL_SDNWR_Msk;

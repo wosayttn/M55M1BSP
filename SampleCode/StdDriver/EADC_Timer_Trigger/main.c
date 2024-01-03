@@ -24,11 +24,12 @@ volatile uint32_t g_u32AdcIntFlag, g_u32COVNUMFlag = 0;
 NVT_ITCM void EADC00_IRQHandler(void)
 {
     EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);/* Clear the A/D ADINT0 interrupt flag */
+
     /*Confirm that the Flag has been cleared.*/
-    EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk); 
+    M32(&EADC0->STATUS2);
+
     g_u32AdcIntFlag = 1;
     g_u32COVNUMFlag++;
-
 }
 
 void SYS_Init(void)
@@ -86,7 +87,7 @@ void SYS_Init(void)
     /* Configure the PB.1 ADC analog input pins. */
     SET_EADC0_CH1_PB1();
     /* Disable the PB.1 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT1 );
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT1);
 
 #if !defined(ALIGN_AF_PINS)
     /* Set PB.14 - PB.15 to input mode */

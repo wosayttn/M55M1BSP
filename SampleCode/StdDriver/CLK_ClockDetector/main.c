@@ -64,7 +64,7 @@ NVT_ITCM void CKFAIL_IRQHandler(void)
     SYS_LockReg();
 
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
-    inp32(CLK->CLKDSTS);
+    inp32(&CLK->CLKDSTS);
 }
 
 static void SYS_Init(void)

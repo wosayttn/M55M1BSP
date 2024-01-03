@@ -238,6 +238,9 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
+    /* Initialize MPU Region */
+    InitPreDefMPURegion(NULL, 0);
+
     /* Lock protected registers */
     SYS_LockReg();
 }
