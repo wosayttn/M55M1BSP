@@ -87,6 +87,12 @@
  *----------------------------------------------------------------------------*/
 #define SRAM_START      0x20100000
 #define SRAM_SIZE       0x00150000
+#define LPSRAM_START    0x20310000
+#define LPSRAM_SIZE     0x00002000
+#define SPIM0_START     0x80000000
+#define SPIM0_SIZE      0x00100000
+#define SPIM1_START     0x82000000
+#define SPIM1_SIZE      0x00100000
 
 /*--------------------- Stack / Heap Configuration ---------------------------
 ; <h> Stack / Heap Configuration
@@ -192,6 +198,16 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
 
     ScatterAssert((ImageLength(DTCM_VTOR) + ImageLength(DTCM)) < (DTCM_SIZE - STACK_SIZE - __STACKSEAL_SIZE))	; ImageLength is uncompressed size
 
+    LPSRAM LPSRAM_START LPSRAM_SIZE
+    {
+        .ANY (.lpSram)
+    }
+    
+    SPIM0_Flash SPIM0_START SPIM0_SIZE
+    {
+        spim_code.o
+    }
+
     ARM_LIB_STACK __STACK_TOP EMPTY - STACK_SIZE {}     ; Reserve empty region for stack
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
@@ -201,10 +217,3 @@ STACKSEAL +0 EMPTY __STACKSEAL_SIZE {
 #endif
 }
 
-LOAD_ROM_2  0x80000000
-{
-	SPIM.bin  0x80000000
-	{
-		spim_code.o (+RO)
-	}
-}
