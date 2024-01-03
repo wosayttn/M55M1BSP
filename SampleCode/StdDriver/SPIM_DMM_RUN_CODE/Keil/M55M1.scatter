@@ -203,10 +203,10 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
         .ANY (.lpSram)
     }
     
-    SPIM0_Flash SPIM0_START SPIM0_SIZE
-    {
-        spim_code.o
-    }
+    ;SPIM0_Flash SPIM0_START SPIM0_SIZE
+    ;{
+    ;    spim_code.o
+    ;}
 
     ARM_LIB_STACK __STACK_TOP EMPTY - STACK_SIZE {}     ; Reserve empty region for stack
 
@@ -217,3 +217,10 @@ STACKSEAL +0 EMPTY __STACKSEAL_SIZE {
 #endif
 }
 
+SPIM0_SPI_FLASH SPIM0_START
+{
+	spim_code.bin SPIM0_START
+	{
+		spim_code.o (+RO)
+	}
+}
