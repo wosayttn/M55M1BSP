@@ -15,10 +15,6 @@ int mbedtls_hardware_poll(void* data, unsigned char* output, size_t len, size_t*
 
 int mbedtls_hardware_poll( void *data, unsigned char *output, size_t len, size_t *olen )
 {
-    int32_t i;
-    int32_t timeout = 0x1000;
-    uint32_t u32Reg;
-
     ARG_UNUSED(data);
 
     if(NULL == output)
