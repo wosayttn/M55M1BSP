@@ -354,7 +354,7 @@ int32_t main(void)
     SYS->GPE_MFP1 = 0;
     SYS->GPE_MFP2 = 0;
     SYS->GPE_MFP3 = 0;
-    SYS->GPF_MFP0 = 0;
+    SYS->GPF_MFP0 = SYS_GPF_MFP0_PF1MFP_ICE_CLK | SYS_GPF_MFP0_PF0MFP_ICE_DAT;
     SYS->GPF_MFP1 = 0;
     SYS->GPF_MFP2 = 0;
     SYS->GPG_MFP0 = 0;
