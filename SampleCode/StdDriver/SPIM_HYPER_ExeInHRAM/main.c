@@ -17,6 +17,82 @@
 //------------------------------------------------------------------------------
 void spim_routine(void);
 
+void Reset_Handler_PreInit(void)
+{
+    SYS_UnlockReg();
+    /* Enable PLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_160MHZ, CLK_APLL0_SELECT);
+
+    /* Switch SCLK clock source to PLL0 and divide 1 */
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
+
+    /* Set HCLK2 divide 2 */
+    CLK_SET_HCLK2DIV(2);
+
+    /* Set PCLKx divide 2 */
+    CLK_SET_PCLK0DIV(2);
+    CLK_SET_PCLK1DIV(2);
+    CLK_SET_PCLK2DIV(2);
+    CLK_SET_PCLK3DIV(2);
+    CLK_SET_PCLK4DIV(2);
+    /* Enable SPIM module clock */
+    CLK_EnableModuleClock(SPIM1_MODULE);
+
+    /* Enable GPIO Module clock */
+    CLK_EnableModuleClock(GPIOD_MODULE);
+    CLK_EnableModuleClock(GPIOH_MODULE);
+    CLK_EnableModuleClock(GPIOJ_MODULE);
+
+    /* Init SPIM multi-function pins */
+    SET_SPIM1_CLKN_PH12();
+    SET_SPIM1_CLK_PH13();
+    SET_SPIM1_D2_PJ4();
+    SET_SPIM1_D3_PJ3();
+    SET_SPIM1_D4_PH15();
+    SET_SPIM1_D5_PD7();
+    SET_SPIM1_D6_PD6();
+    SET_SPIM1_D7_PD5();
+    SET_SPIM1_MISO_PJ5();
+    SET_SPIM1_MOSI_PJ6();
+    SET_SPIM1_RESETN_PJ2();
+    SET_SPIM1_RWDS_PH14();
+    SET_SPIM1_SS_PJ7();
+
+    PD->SMTEN |= (GPIO_SMTEN_SMTEN5_Msk |
+                  GPIO_SMTEN_SMTEN6_Msk |
+                  GPIO_SMTEN_SMTEN7_Msk);
+    PH->SMTEN |= (GPIO_SMTEN_SMTEN12_Msk |
+                  GPIO_SMTEN_SMTEN13_Msk |
+                  GPIO_SMTEN_SMTEN14_Msk |
+                  GPIO_SMTEN_SMTEN15_Msk);
+    PJ->SMTEN |= (GPIO_SMTEN_SMTEN2_Msk |
+                  GPIO_SMTEN_SMTEN3_Msk |
+                  GPIO_SMTEN_SMTEN4_Msk |
+                  GPIO_SMTEN_SMTEN5_Msk |
+                  GPIO_SMTEN_SMTEN6_Msk |
+                  GPIO_SMTEN_SMTEN7_Msk);
+
+    /* Set SPIM I/O pins as high slew rate up to 80 MHz. */
+    GPIO_SetSlewCtl(PD, BIT5, GPIO_SLEWCTL_HIGH);
+    GPIO_SetSlewCtl(PD, BIT6, GPIO_SLEWCTL_HIGH);
+    GPIO_SetSlewCtl(PD, BIT7, GPIO_SLEWCTL_HIGH);
+
+    GPIO_SetSlewCtl(PH, BIT12, GPIO_SLEWCTL_HIGH);
+    GPIO_SetSlewCtl(PH, BIT13, GPIO_SLEWCTL_HIGH);
+    GPIO_SetSlewCtl(PH, BIT14, GPIO_SLEWCTL_HIGH);
+    GPIO_SetSlewCtl(PH, BIT15, GPIO_SLEWCTL_HIGH);
+
+    GPIO_SetSlewCtl(PJ, BIT2, GPIO_SLEWCTL_HIGH);
+    GPIO_SetSlewCtl(PJ, BIT3, GPIO_SLEWCTL_HIGH);
+    GPIO_SetSlewCtl(PJ, BIT4, GPIO_SLEWCTL_HIGH);
+    GPIO_SetSlewCtl(PJ, BIT5, GPIO_SLEWCTL_HIGH);
+    GPIO_SetSlewCtl(PJ, BIT6, GPIO_SLEWCTL_HIGH);
+    GPIO_SetSlewCtl(PJ, BIT7, GPIO_SLEWCTL_HIGH);
+
+    HyperRAM_Init(SPIM1);
+    SPIM_HYPER_EnterDirectMapMode(SPIM1);
+}
+
 //------------------------------------------------------------------------------
 void SPIM_SetDMMAddrNonCacheable(void)
 {
@@ -73,13 +149,14 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
     SystemCoreClockUpdate();
 
-    /* Enable UART module clock */
+    /* Enable UART0 module clock */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
+#if 0
 
     if (SPIM_PORT == SPIM0)
     {
@@ -180,6 +257,8 @@ void SYS_Init(void)
         GPIO_SetSlewCtl(PJ, BIT6, GPIO_SLEWCTL_HIGH);
         GPIO_SetSlewCtl(PJ, BIT7, GPIO_SLEWCTL_HIGH);
     }
+
+#endif
 }
 
 int main()
@@ -199,11 +278,9 @@ int main()
     printf("|       SPIM DMM mode running program on HyperRAM       |\n");
     printf("+-------------------------------------------------------+\n");
 
-    InitPreDefMPURegion(NULL, 0);
+    //    HyperRAM_Init(SPIM_PORT);
 
-    HyperRAM_Init(SPIM_PORT);
-
-    SPIM_HYPER_EnterDirectMapMode(SPIM_PORT);
+    //    SPIM_HYPER_EnterDirectMapMode(SPIM_PORT);
 
     while (1)
     {
