@@ -13,7 +13,7 @@ import serial
 import threading
 import time
 
-COMX='COM25'
+COMX='COM6'
 IP_LIST=[  'ACMP',
             'CANFD',
             'DAC',
