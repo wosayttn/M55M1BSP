@@ -292,7 +292,7 @@
                 </option>
                 <option>
                     <name>CCDebugInfo</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IEndianMode</name>
@@ -606,7 +606,7 @@
                 </option>
                 <option>
                     <name>AOutputFile</name>
-                    <state></state>
+                    <state>$FILE_BNAME$.o</state>
                 </option>
                 <option>
                     <name>ALimitErrorsCheck</name>
@@ -682,7 +682,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>0</hasPrio>
+                <hasPrio>96</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -1103,6 +1103,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\crypto.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\ks.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
