@@ -664,7 +664,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>Project.bin</state>
+                    <state>HSUSBD_MassStorage_CDROM.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -703,7 +703,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>Project.out</state>
+                    <state>HSUSBD_MassStorage_CDROM.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>

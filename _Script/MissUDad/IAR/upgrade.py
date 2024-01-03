@@ -8,6 +8,7 @@ import tempfile
 import glob
 import copy
 import xml.etree.ElementTree as ET
+import fileinput
 
 IP_LIST=[  'ACMP',
             'CANFD',
@@ -42,6 +43,18 @@ def ewp_group_copy(PRJ_EWP):
 
     blank_ewp_tree.write(PRJ_EWP, encoding='UTF-8',  xml_declaration=True)
 
+def ewp_outfile_rename(PRJ_EWP, prjName):
+    # Find Project.bin and Project.out
+    with fileinput.FileInput(PRJ_EWP, inplace = True) as f:
+        for line in f:
+            if line.find('<state>Project.bin</state>') >= 0:
+                print('                    <state>'+prjName+'.bin</state>',end ='\n')
+            elif line.find('<state>Project.out</state>') >= 0:
+                print('                    <state>'+prjName+'.out</state>',end ='\n')
+            else:
+                print(line, end ='')
+        f.close()
+
 def ewd_copy(PRJ_EWD):
     global BLANK_EWD_PATH
 
@@ -61,9 +74,10 @@ if __name__ == "__main__":
 
                 if file.find(ip) == 0 :
 
-                    curName = os.path.splitext(file)[0] 
-                    print(os.getcwd() + "\\" + file +  " upgrading ...")
+                    curName = os.path.splitext(file)[0]
+                    print(dirPath + '/' +file + 'upgrading ...')
                     os.chdir(dirPath)
                     ewp_group_copy(file)
+                    ewp_outfile_rename(file, curName)
                     ewd_copy(curName+'.ewd')
                     os.chdir(root)
