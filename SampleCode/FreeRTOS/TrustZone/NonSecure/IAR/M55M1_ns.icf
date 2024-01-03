@@ -8,14 +8,14 @@ define symbol __ICFEDIT_region_ITCM_start__   = 0x10008000;
 define symbol __ICFEDIT_region_ITCM_end__     = 0x1000FFFF;
 define symbol __ICFEDIT_region_FLASH_start__  = 0x10200000;
 define symbol __ICFEDIT_region_FLASH_end__    = 0x102FFFFF;
-define symbol __ICFEDIT_region_SRAM01_start__ = 0x30120000;
-define symbol __ICFEDIT_region_SRAM01_end__   = 0x301FFFFF;
+define symbol __ICFEDIT_region_SRAM01_start__ = 0x30200000;
+define symbol __ICFEDIT_region_SRAM01_end__   = 0x3024FFFF;
 define symbol __ICFEDIT_region_DTCM_start__   = 0x30010000;
 define symbol __ICFEDIT_region_DTCM_end__     = 0x3001FFFF;
 
 /*-Sizes-*/
 define symbol __ICFEDIT_size_cstack__ = 0x00008000;
-define symbol __ICFEDIT_size_heap__   = 0x00008000;
+define symbol __ICFEDIT_size_heap__   = 0x00010000;
 /**** End of ICF editor section. ###ICF###*/
 
 
@@ -32,11 +32,11 @@ initialize by copy { readwrite, section itcm };
 
 do not initialize  { section .noinit, section .bss.tensor_arena, section .bss.NoInit.activation_buf_sram };
 
-place at address mem:__ICFEDIT_intvec_start__ { readonly section .intvec };
+place at address mem:__ICFEDIT_intvec_start__ { section .intvec };
 
 place in FLASH_region   { readonly}
                         except {section itcm};
 place in ITCM_region   { section itcm };
-place in DTCM_region   { block CSTACK, block HEAP };
-place in SRAM01_region   { readwrite, section .bss.tensor_arena, section .bss.NoInit.activation_buf_sram};
+/*place in DTCM_region   { block CSTACK, block HEAP };*/
+place in SRAM01_region   { readwrite, block HEAP, block CSTACK };
 

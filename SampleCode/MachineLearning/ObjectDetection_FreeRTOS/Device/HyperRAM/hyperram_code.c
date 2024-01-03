@@ -64,6 +64,8 @@ void HyperRAM_Erase(SPIM_T *spim, uint32_t u32StartAddr, uint32_t u32EraseSize)
     }
 }
 
+#define DMM_MODE_TRIM
+
 /**
  * @brief Training DLL component delay stop number
  *
@@ -75,16 +77,31 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     uint8_t u8RdDelayIdx = 0;
     uint8_t u8RdDelayRes[SPIM_MAX_DLL_LATENCY] = {0};
     uint32_t u32SrcAddr = 0;
-    uint32_t u32TestSize = 32;
+    __attribute__((aligned(32))) uint8_t au8TrimPatten[32] =
+    {
+        0xff, 0x0F, 0xFF, 0x00, 0xFF, 0xCC, 0xC3, 0xCC,
+        0xC3, 0x3C, 0xCC, 0xFF, 0xFE, 0xFF, 0xFE, 0xEF,
+        0xFF, 0xDF, 0xFF, 0xDD, 0xFF, 0xFB, 0xFF, 0xFB,
+        0xBF, 0xFF, 0x7F, 0xFF, 0x77, 0xF7, 0xBD, 0xEF,
+    };
+#ifdef DMM_MODE_TRIM
     uint32_t u32DMMAddr = SPIM_HYPER_GetDMMAddress(spim);
+    uint32_t *pu32RdBuf = NULL;
+    uint32_t u32RdDataCnt = 0;
+    volatile uint32_t u32i = 0;
+#endif
 
     /* Erase HyperRAM */
-    HyperRAM_Erase(spim, u32SrcAddr, u32TestSize);
+    HyperRAM_Erase(spim, u32SrcAddr, sizeof(au8TrimPatten));
 
-	SCB_CleanDCache_by_Addr(g_au8SrcArray, u32TestSize);
+    SCB_CleanDCache_by_Addr(au8TrimPatten, sizeof(au8TrimPatten));
 
     /* Write Data to HyperRAM */
-    SPIM_HYPER_DMAWrite(spim, u32SrcAddr, g_au8SrcArray, u32TestSize);	
+    SPIM_HYPER_DMAWrite(spim, u32SrcAddr, au8TrimPatten, sizeof(au8TrimPatten));
+
+#ifdef DMM_MODE_TRIM
+    //SPIM_HYPER_EnterDirectMapMode(spim);
+#endif
 
     for (u8RdDelay = 0; u8RdDelay <= SPIM_MAX_DLL_LATENCY; u8RdDelay++)
     {
@@ -94,13 +111,24 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
         SPIM_HYPER_SetDLLDelayNum(spim, u8RdDelay);
 
         /* Read Data from HyperRAM */
+#ifndef DMM_MODE_TRIM
         SPIM_HYPER_DMARead(spim, u32SrcAddr, g_au8DestArray, u32TestSize);
-        //memcpy(g_au8DestArray, pi32SrcAddr, u32TestSize);
+#else
+        u32RdDataCnt = 0;
+        pu32RdBuf = (uint32_t *)g_au8DestArray;
 
-        SCB_InvalidateDCache_by_Addr(g_au8DestArray, u32TestSize);
+        for (u32i = u32SrcAddr; u32i < (u32SrcAddr + sizeof(au8TrimPatten)); u32i += 4)
+        {
+            //pu32RdBuf[u32RdDataCnt++] = inpw(u32DMMAddr + u32i);
+            pu32RdBuf[u32RdDataCnt++] = SPIM_HYPER_Read2Word(spim, u32DMMAddr + u32i);
+        }
 
-		/* Verify the data and save the number of successful delay steps */
-        if (memcmp(g_au8SrcArray, g_au8DestArray, u32TestSize))
+#endif
+
+        SCB_InvalidateDCache_by_Addr(g_au8DestArray, sizeof(au8TrimPatten));
+
+        /* Verify the data and save the number of successful delay steps */
+        if (memcmp(au8TrimPatten, g_au8DestArray, sizeof(au8TrimPatten)))
         {
             printf("!!!\tData compare failed at block 0x%x\n", u32SrcAddr);
         }
@@ -121,7 +149,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     {
         if (u8RdDelayIdx >= 2)
         {
-            u8RdDelayIdx = (u8RdDelayIdx / 2);
+            u8RdDelayIdx = (u8RdDelayIdx / 2) - 1;
         }
         else
         {
@@ -145,7 +173,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
 void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32AcctRD, uint32_t u32AcctWR)
 {
     /* Chip Select Setup Time 2.5 */
-    SPIM_HYPER_SET_CSST(spim, SPIM_HYPER_CSST_2_5_HCLK);
+    SPIM_HYPER_SET_CSST(spim, SPIM_HYPER_CSST_3_5_HCLK);
 
     /* Chip Select Hold Time 3.5 HCLK */
     SPIM_HYPER_SET_CSH(spim, SPIM_HYPER_CSH_3_5_HCLK);
@@ -172,9 +200,9 @@ void HyperRAM_Init(SPIM_T *spim)
 #if defined(TESTCHIP_ONLY)
     SPIM_HYPER_Init(spim, 1);
 #else
-    SPIM_HYPER_Init(spim, 1);	
+    SPIM_HYPER_Init(spim, 1);
 #endif
-	
+
 #if (SPIM_REG_CACHE == 1)
     /* Enable SPIM Cache */
     SPIM_ENABLE_CACHE(spim);
@@ -190,7 +218,7 @@ void HyperRAM_Init(SPIM_T *spim)
     SPIM_Hyper_DefaultConfig(spim, 780, 7, 7);
 
 #if 0 //Set DLL directly
-	/* Set the number of intermediate delay steps */
+    /* Set the number of intermediate delay steps */
     SPIM_HYPER_SetDLLDelayNum(spim, 14);
 #else
     /* Training DLL component delay stop number */
@@ -206,7 +234,7 @@ void HyperRAM_PinConfig(SPIM_T *spim)
         /* Enable SPIM0 module clock */
         CLK_EnableModuleClock(SPIM0_MODULE);
 #if defined (TESTCHIP_ONLY)
-        CLK_EnableModuleClock(SPIM1_MODULE);		
+        CLK_EnableModuleClock(SPIM1_MODULE);
 #endif
 
         /* Enable OTFC0 module clock */
@@ -226,16 +254,16 @@ void HyperRAM_PinConfig(SPIM_T *spim)
         SPIM0_MOSI_PIN_INIT();
         SPIM0_SS_PIN_INIT();
         SPIM0_RWDS_PIN_INIT();
-		SPIM0_RST_PIN_INIT();
+        SPIM0_RST_PIN_INIT();
 
         /* Set SPIM0 I/O pins as high slew rate up to 80 MHz. */
         SPIM0_PIN_HIGH_SLEW();
+    }
 
-	}
 #if defined (TESTCHIP_ONLY)
-	else if (spim == SPIM1)
-	{
-     	//SPIM and OTFC clock was enabled on secure-domain code
+    else if (spim == SPIM1)
+    {
+        //SPIM and OTFC clock was enabled on secure-domain code
         /* Enable SPIM1 module clock */
         CLK_EnableModuleClock(SPIM0_MODULE);
         CLK_EnableModuleClock(SPIM1_MODULE);
@@ -255,10 +283,11 @@ void HyperRAM_PinConfig(SPIM_T *spim)
         SPIM1_MOSI_PIN_INIT();
         SPIM1_SS_PIN_INIT();
         SPIM1_RWDS_PIN_INIT();
-		SPIM1_RST_PIN_INIT();
+        SPIM1_RST_PIN_INIT();
 
         /* Set SPIM1 I/O pins as high slew rate up to 80 MHz. */
         SPIM1_PIN_HIGH_SLEW();
-	}
+    }
+
 #endif
 }
