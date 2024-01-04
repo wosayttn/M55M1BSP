@@ -62,7 +62,7 @@
                 </option>
                 <option>
                     <name>RTDescription</name>
-                    <state>Use the full configuration of the C/C++ runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
+                    <state>A complete configuration of the C/C++14 runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
                 </option>
                 <option>
                     <name>OGProductVersion</name>
@@ -229,8 +229,10 @@
                     <name>CCDefines</name>
                     <state>NVT_VECTOR_ON_FLASH</state>
                     <state>NVT_DCACHE_ON</state>
+                    <state>TF_LITE_STATIC_MEMORY</state>
+                    <state>ARM_MATH_DSP</state>
                     <state>ARM_NPU</state>
-                    <state>USE_CCAP</state>
+                    <state>ACTIVATION_BUF_SZ=0x00130000</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -270,7 +272,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state>Pe1097, Pe550, Pe188, Pe546, Pe301</state>
+                    <state>Pe550, Pe997</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
@@ -291,7 +293,7 @@
                 <option>
                     <name>CCAllowList</name>
                     <version>1</version>
-                    <state>00000000</state>
+                    <state>11111110</state>
                 </option>
                 <option>
                     <name>CCDebugInfo</name>
@@ -307,7 +309,7 @@
                 </option>
                 <option>
                     <name>IExtraOptionsCheck</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IExtraOptions</name>
@@ -356,12 +358,25 @@
                     <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\DSP\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc\npu</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\openmv\omv\imlib</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\openmv\omv\alloc</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\openmv\omv\common</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\openmv\omv\Lib</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\tflite_micro</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\tflite_micro\_deps\tensorflow-flatbuffers-src\include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\log\include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\math\include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\main\include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\include</state>
                     <state>$PROJ_DIR$\..\Device\include</state>
+                    <state>$PROJ_DIR$\..\Model\include</state>
                     <state>$PROJ_DIR$\..\NPU\include</state>
-                    <state>$PROJ_DIR$\..\codegen_H256\host\include</state>
-                    <state>$PROJ_DIR$\..\runtime\include</state>
-                    <state>$PROJ_DIR$\..\microtvm\ethosu\include</state>
-                    <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\NN\Include</state>
+                    <state>$PROJ_DIR$\..\Pattern\include</state>
+                    <state>$PROJ_DIR$\..\ProfilerCounter\include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\FreeRTOS\Source\include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\FreeRTOS\Lib</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\FreeRTOS\Source\portable\IAR\ARM_CM55_NTZ\non_secure</state>
                     <state>$PROJ_DIR$\..</state>
                 </option>
                 <option>
@@ -378,7 +393,7 @@
                 </option>
                 <option>
                     <name>CCOptLevel</name>
-                    <state>1</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>CCOptStrategy</name>
@@ -387,7 +402,7 @@
                 </option>
                 <option>
                     <name>CCOptLevelSlave</name>
-                    <state>1</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>CCPosIndRopi</name>
@@ -676,7 +691,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>ImageClassification.srec</state>
+                    <state>ObjectDetection_FreeRTOS.srec</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -715,7 +730,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>ImageClassification.out</state>
+                    <state>ObjectDetection_FreeRTOS.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -1100,6 +1115,302 @@
         </settings>
     </configuration>
     <group>
+        <name>Application</name>
+        <file>
+            <name>$PROJ_DIR$\..\BoardInit.cpp</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\DetectorPostProcessing.cpp</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\InferenceTask.cpp</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\main.cpp</name>
+        </file>
+    </group>
+    <group>
+        <name>ArmMLApi</name>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\source\Classifier.cc</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\source\ImageUtils.cc</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\source\Model.cc</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\math\PlatformMath.cc</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\Profiler.cc</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\source\TensorFlowLiteMicro.cc</name>
+        </file>
+        <configuration>
+            <name>Release</name>
+            <settings>
+                <name>ICCARM</name>
+                <data>
+                    <version>38</version>
+                    <wantNonLocal>0</wantNonLocal>
+                    <debug>1</debug>
+                    <option>
+                        <name>CCDefines</name>
+                        <state>TF_LITE_STATIC_MEMORY</state>
+                        <state>ARM_MATH_DSP</state>
+                        <state>ARM_NPU</state>
+                    </option>
+                    <option>
+                        <name>CCPreprocFile</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCPreprocComments</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCPreprocLine</name>
+                        <state>1</state>
+                    </option>
+                    <option>
+                        <name>CCListCFile</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCListCMnemonics</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCListCMessages</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCListAssFile</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCListAssSource</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCEnableRemarks</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCDiagSuppress</name>
+                        <state>Pe550, Pe997</state>
+                    </option>
+                    <option>
+                        <name>CCDiagRemark</name>
+                        <state></state>
+                    </option>
+                    <option>
+                        <name>CCDiagWarning</name>
+                        <state></state>
+                    </option>
+                    <option>
+                        <name>CCDiagError</name>
+                        <state></state>
+                    </option>
+                    <option>
+                        <name>CCObjPrefix</name>
+                        <state>1</state>
+                    </option>
+                    <option>
+                        <name>CCAllowList</name>
+                        <version>1</version>
+                        <state>11111110</state>
+                    </option>
+                    <option>
+                        <name>CCDebugInfo</name>
+                        <state>1</state>
+                    </option>
+                    <option>
+                        <name>IEndianMode</name>
+                        <state>1</state>
+                    </option>
+                    <option>
+                        <name>IProcessor</name>
+                        <state>1</state>
+                    </option>
+                    <option>
+                        <name>IExtraOptionsCheck</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>IExtraOptions</name>
+                        <state></state>
+                    </option>
+                    <option>
+                        <name>CCLangConformance</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCSignedPlainChar</name>
+                        <state>1</state>
+                    </option>
+                    <option>
+                        <name>CCRequirePrototypes</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCDiagWarnAreErr</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCCompilerRuntimeInfo</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>IFpuProcessor</name>
+                        <state>1</state>
+                    </option>
+                    <option>
+                        <name>OutputFile</name>
+                        <state>$FILE_BNAME$.o</state>
+                    </option>
+                    <option>
+                        <name>CCLibConfigHeader</name>
+                        <state>1</state>
+                    </option>
+                    <option>
+                        <name>PreInclude</name>
+                        <state></state>
+                    </option>
+                    <option>
+                        <name>CCIncludePath2</name>
+                        <state>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\include</state>
+                        <state>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\include</state>
+                        <state>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\math\include</state>
+                        <state>$PROJ_DIR$\..\..\..\..\ThirdParty\tflite_micro</state>
+                        <state>$PROJ_DIR$\..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\log\include</state>
+                        <state>$PROJ_DIR$\..\..\..\..\ThirdParty\tflite_micro\_deps\tensorflow-flatbuffers-src\include</state>
+                        <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\DSP\Include</state>
+                        <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Core\Include</state>
+                        <state>$PROJ_DIR$\..\ProfilerCounter\include</state>
+                    </option>
+                    <option>
+                        <name>CCStdIncCheck</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCCodeSection</name>
+                        <state>.text</state>
+                    </option>
+                    <option>
+                        <name>IProcessorMode2</name>
+                        <state>1</state>
+                    </option>
+                    <option>
+                        <name>CCOptLevel</name>
+                        <state>3</state>
+                    </option>
+                    <option>
+                        <name>CCOptStrategy</name>
+                        <version>0</version>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCOptLevelSlave</name>
+                        <state>3</state>
+                    </option>
+                    <option>
+                        <name>CCPosIndRopi</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCPosIndRwpi</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCPosIndNoDynInit</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>IccLang</name>
+                        <state>1</state>
+                    </option>
+                    <option>
+                        <name>IccCDialect</name>
+                        <state>1</state>
+                    </option>
+                    <option>
+                        <name>IccAllowVLA</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>IccStaticDestr</name>
+                        <state>1</state>
+                    </option>
+                    <option>
+                        <name>IccCppInlineSemantics</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>IccCmsis</name>
+                        <state>1</state>
+                    </option>
+                    <option>
+                        <name>IccFloatSemantics</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCOptimizationNoSizeConstraints</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCNoLiteralPool</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCOptStrategySlave</name>
+                        <version>0</version>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCEncSource</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCEncOutput</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCEncOutputBom</name>
+                        <state>1</state>
+                    </option>
+                    <option>
+                        <name>CCEncInput</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>IccExceptions2</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>IccRTTI2</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCStackProtection</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCPointerAutentiction</name>
+                        <state>0</state>
+                    </option>
+                    <option>
+                        <name>CCBranchTargetIdentification</name>
+                        <state>0</state>
+                    </option>
+                </data>
+            </settings>
+        </configuration>
+    </group>
+    <group>
         <name>CMSIS</name>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</name>
@@ -1109,24 +1420,27 @@
         </file>
     </group>
     <group>
-        <name>codegen</name>
-        <file>
-            <name>$PROJ_DIR$\..\codegen_H256\host\src\default_lib0.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\codegen_H256\host\src\default_lib1.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\codegen_H256\host\src\default_lib2.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\codegen_H256\host\src\default_lib3.c</name>
-        </file>
-    </group>
-    <group>
         <name>Device</name>
         <file>
-            <name>$PROJ_DIR$\..\Device\HyperFlash\hyperflash_code.c</name>
+            <name>$PROJ_DIR$\..\Device\Display\Display.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\Display\Font8_16.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\HyperRAM\hyperram_code.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\ImageSensor\ImageSensor.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\Display\LCD\LCD_FSA506.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\ImageSensor\Sensor\Sensor_HM1055.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Device\ImageSensor\Sensor\SWI2C.c</name>
         </file>
     </group>
     <group>
@@ -1136,6 +1450,18 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\clk.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\ebi.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\npu\ethosu_device_u55_u65.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\npu\ethosu_driver.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\npu\ethosu_pmu.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\gpio.c</name>
@@ -1154,18 +1480,6 @@
         </file>
     </group>
     <group>
-        <name>ethosu</name>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\npu\ethosu_device_u55_u65.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\npu\ethosu_driver.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\npu\ethosu_pmu.c</name>
-        </file>
-    </group>
-    <group>
         <name>Lib</name>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Lib\IAR\CMSIS_DSP.a</name>
@@ -1173,11 +1487,26 @@
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Lib\IAR\CMSIS_NN.a</name>
         </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\FreeRTOS\Lib\FreeRTOS.a</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\openmv\omv\Lib\omv.a</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\tflite_micro\Lib\tflu.a</name>
+        </file>
     </group>
     <group>
-        <name>microtvm</name>
+        <name>Model</name>
         <file>
-            <name>$PROJ_DIR$\..\microtvm\ethosu\src\tvm_ethosu_runtime.c</name>
+            <name>$PROJ_DIR$\..\Model\Labels.cpp</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Model\yolo-fastest_int8_vela_H256.tflite.cpp</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Model\YoloFastestModel.cpp</name>
         </file>
     </group>
     <group>
@@ -1188,32 +1517,26 @@
         <file>
             <name>$PROJ_DIR$\..\NPU\ethosu_npu_init.c</name>
         </file>
-    </group>
-    <group>
-        <name>runtime</name>
         <file>
-            <name>$PROJ_DIR$\..\runtime\src\runtime\crt\common\crt_backend_api.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\runtime\src\runtime\crt\common\crt_runtime_api.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\runtime\src\runtime\crt\common\func_registry.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\runtime\src\runtime\crt\common\ndarray.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\runtime\src\runtime\crt\memory\stack_allocator.c</name>
+            <name>$PROJ_DIR$\..\NPU\ethosu_profiler.c</name>
         </file>
     </group>
     <group>
-        <name>User</name>
+        <name>Pattern</name>
         <file>
-            <name>$PROJ_DIR$\..\BoardInit.c</name>
+            <name>$PROJ_DIR$\..\Pattern\car.cpp</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\main.c</name>
+            <name>$PROJ_DIR$\..\Pattern\dinner.cpp</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Pattern\InputFiles.cpp</name>
+        </file>
+    </group>
+    <group>
+        <name>ProfilerCounter</name>
+        <file>
+            <name>$PROJ_DIR$\..\ProfilerCounter\pmu_counter.c</name>
         </file>
     </group>
 </project>
