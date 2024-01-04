@@ -203,11 +203,11 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
         .ANY (.lpSram)
     }
     
-    SPIM1_HyperRAM SPIM1_START SPIM1_SIZE
+	SPIM1_HyperRAM SPIM1_START SPIM1_SIZE
     {
         spim_code.o
     }
-
+	
     ARM_LIB_STACK __STACK_TOP EMPTY - STACK_SIZE {}     ; Reserve empty region for stack
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
@@ -216,4 +216,3 @@ STACKSEAL +0 EMPTY __STACKSEAL_SIZE {
     }
 #endif
 }
-
