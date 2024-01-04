@@ -28,11 +28,11 @@ if __name__ == "__main__":
     si = subprocess.STARTUPINFO()
     si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     err = 0
-    root = os.getcwd()    
+    root = os.getcwd()
     f = open('keil.txt', "w+")
 
     os.chdir(root)
-    
+
     prj_count = 1
 
     for dirPath, dirNames, fileNames in os.walk(PROJ_FOLDER_NAME):
@@ -52,19 +52,19 @@ if __name__ == "__main__":
 
                         # https://www.keil.com/support/man/docs/uv4cl/uv4cl_commandline.htm
                         # -j0   Hides the µVision GUI. Messages are suppressed. Use this option for batch testing.
-                        # -z    Re-builds all targets of a project or multiple-project. 
+                        # -z    Re-builds all targets of a project or multiple-project.
                         #       Ensure that each target has another object output folder.
                         #       Use the menu Projects - Options for Target - Output - Select Folder for Objects.
                         # -b    Builds the last current target of a project and exits after the build process finished.
-                        #       Refer to option -t to change the target. 
+                        #       Refer to option -t to change the target.
                         #       For multi-projects, the command builds the targets as defined in the dialog Project - Batch Build.
                         # -o outputfile
                         #f.write("[" + str(prj_count) + "] Build " + os.path.abspath(file) +  "\n")
 
-                        print("[" + str(prj_count) + "] "+ os.getcwd() + "\\" + file +  " cleaning.\n")                
+                        print("[" + str(prj_count) + "] "+ os.getcwd() + "\\" + file +  " cleaning.\n")
                         subprocess.call(cleancommnd, startupinfo=si, stdout=f, stderr=f)
 
-                        print("[" + str(prj_count) + "] "+ os.getcwd() + "\\" + file +  " building.\n")                
+                        print("[" + str(prj_count) + "] "+ os.getcwd() + "\\" + file +  " building.\n")
                         subprocess.call(buildcommnd, startupinfo=si, stdout=f, stderr=f)
 
                         # It's a bit strange keil report error code as 0 even build failed. so parse k.log
@@ -87,7 +87,7 @@ if __name__ == "__main__":
                     except Exception as e:
                         f.write("[" + str(prj_count) + "] "+ "Build " + file +  " has error or warning.\n")
                         print("[" + str(prj_count) + "] "+ "Build" + file +  "has error or warning.\n")
-                        err += 1                
+                        err += 1
                     except OSError:
                         #f.write("[" + str(prj_count) + "] " + os.path.abspath(file) + "Ooops\n") ##
                         pass #Silently ignore
