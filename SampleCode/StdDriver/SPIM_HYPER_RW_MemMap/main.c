@@ -16,23 +16,6 @@
 #define BUFFER_SIZE                 2048
 
 #define SPIM_PORT                   SPIM1
-#define OTFC_PORT                   OTFC1
-
-//------------------------------------------------------------------------------
-__attribute__((aligned(32))) uint8_t g_buff[BUFFER_SIZE] = {0};
-
-/* SPIM cipher key User defined. */
-uint32_t gau32AESKey[8] =
-{
-    0x93484D6F, //Key0
-    0x2F7A7F2A, //Key1
-    0x063FF08A, //Key2
-    0x7A29E38E, //Key3
-    0x7A29E38E, //Scramble
-    0x063FF08A, //NONCE0
-    0x2F7A7F2A, //NONCE1
-    0x93484D6F, //NONCE2
-};
 
 //------------------------------------------------------------------------------
 void SYS_Init(void)
@@ -65,9 +48,6 @@ void SYS_Init(void)
 
     /* Enable SPIM module clock */
     CLK_EnableModuleClock(SPIM0_MODULE);
-
-    /* Enable SPIM module clock */
-    CLK_EnableModuleClock(OTFC0_MODULE);
 
     /* Enable GPIO Module clock */
     CLK_EnableModuleClock(GPIOC_MODULE);
