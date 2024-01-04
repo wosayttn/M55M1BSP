@@ -370,6 +370,7 @@ int main(void) {
 
             Init_SysTick_Export();
             mainclassify.QuantizeInputData();
+            mainclassify.FillInTensorData();
             mainclassify.Classify();  // Classify the extracted features
             g_u32Ticks_end = Get_SysTick_Cycle_Count_Export();
 
@@ -389,9 +390,11 @@ int main(void) {
 
             }
             err_mae/=IMU_DATAIN_SIZE;
-            printf("mae = %f\r\n",err_mae);
+            //printf("mae = %f\r\n",err_mae);
             if(mainclassify.GetAnomalyDetectResult(err_mae))
                 printf("ANOMAL! Please put the boad still and face up. \r\n");
+			else
+			    printf(".\r\n");
             s_u8CopygsensorData = 0;
         }
 

@@ -74,8 +74,7 @@ void MainClassify::FillInTensorData()
 
     // Copy image into the TfLite tensor.
     int8_t* inTensorData = tflite::GetTensorData<int8_t>(model->GetInputTensor());
-
-
+	
     // Copy -sensor data into the TfLite tensor.
     memcpy(inTensorData, gsensorBufferPtr, IMU_DATAIN_SIZE*1*sizeof(int8_t));
 }
@@ -101,8 +100,8 @@ uint8_t MainClassify::FillSensorData(uint8_t u8Img)
     if(gsensorBufferIdx < IMU_DATAIN_SIZE)
     {
         MPU6500_readXYZ_mg(fBuff);
-        this->gsensorBuffer[gsensorBufferIdx+1] = ((fBuff[0]) - VAL_NORMALIZE_MIN) / (VAL_NORMALIZE_MAX - VAL_NORMALIZE_MIN) ;
-        this->gsensorBuffer[gsensorBufferIdx] =  ((fBuff[1]) - VAL_NORMALIZE_MIN) / (VAL_NORMALIZE_MAX - VAL_NORMALIZE_MIN) ;
+        this->gsensorBuffer[gsensorBufferIdx] = ((fBuff[0]) - VAL_NORMALIZE_MIN) / (VAL_NORMALIZE_MAX - VAL_NORMALIZE_MIN) ;
+        this->gsensorBuffer[gsensorBufferIdx+1] =  ((fBuff[1]) - VAL_NORMALIZE_MIN) / (VAL_NORMALIZE_MAX - VAL_NORMALIZE_MIN) ;
         this->gsensorBuffer[gsensorBufferIdx+2] =  ((fBuff[2]) - VAL_NORMALIZE_MIN) / (VAL_NORMALIZE_MAX - VAL_NORMALIZE_MIN) ;
 
         gsensorBufferIdx+=3;
@@ -116,48 +115,22 @@ uint8_t MainClassify::FillSensorData(uint8_t u8Img)
     return ret;
 }
 
-
 uint8_t MainClassify::QuantizeInputData()
 {
     uint8_t ret = 0;
     float* fpImg = &this->gsensorBuffer[0];
-    int8_t i_data_int8;
     uint32_t ii;
-    float xx;
     for(ii=0; ii<IMU_DATAIN_SIZE; ii++)
     {
-        /*
-            QDRAW model preprocessing is image conversion from int8 to [-1,1] float values,
-            then quantize them with input quantization info.
-        */
-        xx = *fpImg;
-
-        i_data_int8 = (int8_t)(  (((float)(*fpImg++))) / inQuantParams.scale) + inQuantParams.offset;
-
-        this->gsensorBufferPtr[ii] = i_data_int8;
-
+        /*Quantize input data with input quantization param.*/
+        this->gsensorBufferPtr[ii] = (int8_t)(  (((float)(*fpImg++))) / inQuantParams.scale) + inQuantParams.offset;
     }
     return ret;
 }
 
-
-int MainClassify::GetInferenceResult(const std::vector<int8_t>& prediction)
-{
-    float cc[numOutClasses];
-    for (int i = 0; i < numOutClasses; i++)
-    {
-        cc[i]  = outQuantParams.scale *
-                 ((float)(prediction[i]) - outQuantParams.offset);
-
-    }
-    return 0;
-
-}
-
-
 QuantParams MainClassify::GetTensorQuantParams(TfLiteTensor* tensor)
 {
-    QuantParams params;
+    QuantParams params = {.scale=0, .offset=0};
     if (kTfLiteAffineQuantization == tensor->quantization.type)
     {
         auto* quantParams = (TfLiteAffineQuantization*) (tensor->quantization.params);
@@ -185,10 +158,10 @@ QuantParams MainClassify::GetTensorQuantParams(TfLiteTensor* tensor)
 int MainClassify::GetAnomalyDetectResult(float f_mae)
 {
     /*Check value range, mae must >=0*/
-    if(f_mae<00) return -1;
+    if(f_mae<0) return -1;
 
     if( f_mae > VAL_ANOMALY_IMU_00G_THRESHOLD) return 1;//Anomal
-    //else if( f_mae < (VAL_ANOMALY_IMU_00G_THRESHOLD-0.01)) return 1;//Anomal
+	  else if( f_mae < (VAL_ANOMALY_IMU_00G_THRESHOLD-0.01)) return 1;//Anomal
     else return 0; //Normal
 
 }

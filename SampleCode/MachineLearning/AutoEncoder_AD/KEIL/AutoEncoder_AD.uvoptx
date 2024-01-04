@@ -251,7 +251,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>C:\WORK\IC Verification\Full Design Package\M55M1_BSP\yy\bsp\Library\CMSIS\Lib\KEIL\cmsis_dsp.lib</PathWithFileName>
+      <PathWithFileName>..\..\..\..\Library\CMSIS\Lib\KEIL\cmsis_dsp.lib</PathWithFileName>
       <FilenameWithoutPath>cmsis_dsp.lib</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -263,7 +263,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>C:\WORK\IC Verification\Full Design Package\M55M1_BSP\yy\bsp\Library\CMSIS\Lib\KEIL\cmsis_nn.lib</PathWithFileName>
+      <PathWithFileName>..\..\..\..\Library\CMSIS\Lib\KEIL\cmsis_nn.lib</PathWithFileName>
       <FilenameWithoutPath>cmsis_nn.lib</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>

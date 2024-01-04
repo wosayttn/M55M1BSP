@@ -22,7 +22,7 @@
 #define AD_HEIGHT                AD_SIZE
 #define PREVIEW_WIDTH               (4* AD_SIZE)
 #define PREVIEW_HEIGHT              (4* AD_SIZE)
-#define   AD_ARENA                (0x20000)
+#define   AD_ARENA                (0x14000)
 
 #define IMU_DATAIN_LEN                 200
 #define IMU_DATAIN_AXES_NUM         3

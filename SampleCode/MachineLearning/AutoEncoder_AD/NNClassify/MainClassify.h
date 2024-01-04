@@ -20,7 +20,7 @@
 
 #define  VAL_NORMALIZE_MAX        (1572)
 #define  VAL_NORMALIZE_MIN         (-2048)
-#define  VAL_ANOMALY_IMU_00G_THRESHOLD         (0.382)
+#define  VAL_ANOMALY_IMU_00G_THRESHOLD         (0.39)
 
 typedef struct {
     float   scale;
@@ -44,7 +44,6 @@ public:
     uint8_t FillSensorData(uint8_t u8Img);
     uint8_t QuantizeInputData(void);
     void InitMainClassify();
-
     int FeedImgFiletoSensorBuffer(const uint8_t *p_src);
     int GetAnomalyDetectResult(float f_mae);
     int8_t* gsensorBufferPtr;
