@@ -492,6 +492,7 @@ int32_t SPIM_HYPER_DMAWrite(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8WrBuf, u
     return SPIM_HYPER_OK;
 }
 
+#if 0 //(TESTCHIP_ONLY)
 /**
   * @brief      Read data from HyperBus Module.
   * @param      u32Addr     Start address to read.
@@ -516,6 +517,7 @@ int32_t SPIM_HYPER_DMARead(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8RdBuf, ui
 
     return SPIM_HYPER_OK;
 }
+#endif
 
 /**
   * @brief      SPIM Hyper Mode Enter DMM Mode
