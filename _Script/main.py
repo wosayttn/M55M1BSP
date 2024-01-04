@@ -1,7 +1,7 @@
 # NOTE: This script supports Python 3.x only, and haven't been tested on Python 2.x
 
 __copyright__ = "Copyright (C) 2018 Nuvoton Technology Corp. All rights reserved"
-__version__ = "v2.12.14"
+__version__ = "v2.12.15"
 
 import os
 import sys
@@ -23,13 +23,13 @@ MAIN_HEADER_PATH = "Library\\Device\\Nuvoton\\M55M1\\Include\\"                 
 #Keyword for project check
 NULINK_CHIPNAME = "M55M1"                                                               # Chip name defined in Nu_Link_Driver.ini
 NULINK_RESET = "Autodetect"                                                             # Reset defined in Nu_Link_Driver.ini
-KEIL_DEVICE = { "M252KG6AE", "M256SD2AE", "M258KE3AE", "M258KG6AE" }                    # Device name defined in Keil project file
-KEIL_ICE = "NULink\\Nu_Link.dll"                                                        # ICE setting for debug and download in Keil project file
+KEIL_DEVICE = { "M55M1H2LJAE" }                                                         # Device name defined in Keil project file
+KEIL_ICE = "Bin\\Nu_Link.dll"                                                           # ICE setting for debug and download in Keil project file
 IAR_DRIVER = "$TOOLKIT_DIR$\\..\\..\\..\\Nuvoton Tools\\Nu-Link_IAR\\Nu-Link_IAR.dll"   # Use relative path for NuLink IAR driver
-IAR_DEVICE = "M55M1AE series\tNuvoton M55M1AE series"                                   # Device name in IAR project file
+IAR_DEVICE = "M55M1 series\tNuvoton M55M1 series"                                       # Device name in IAR project file
 IAR_RSTHANDLER = "Reset_Handler"                                                        # Replace default project handler
-GCC_CHIPSERIES = "NuMicro M23"                                                          # Chip series defined in preferences.ini
-GCC_TARGETCHIP = "M55M1"                                                                # Target chip defined in preferences.ini
+GCC_CHIPSERIES = "NuMicro M55"                                                          # Chip series defined in preferences.ini
+GCC_TARGETCHIP = "0x43"                                                                 # Target chip defined in preferences.ini
 
 # Execute Astyle prettifier, needs to take special care for *.c and *.h with assembly code inside, for example retarget.c
 def astyle():
@@ -493,15 +493,15 @@ def check_prj():
                     prj_cnt += 1
                 if prj_cnt == 0:
                     f.write("[Error] " + os.path.join(dirPath, 'Keil') + ": uvprojx file is missing.\n")
-                #if cnt > 1:
-                #    f.write(os.path.join(dirPath, 'Keil') + " more than one *.uvprojx\n")
+                elif prj_cnt > 1:
+                    f.write("[Warning] " + os.path.join(dirPath, 'Keil') + " more than one *.uvprojx\n")
                 cnt = 0
                 for file in glob.glob(dirPath + r"\\Keil" + r"\\*.uvoptx"):
                     cnt += 1
-                if cnt == 0:
+                if cnt == 0 or cnt < prj_cnt:
                     f.write("[Error] " + os.path.join(dirPath, 'Keil') + ": uvoptx file is missing.\n")
-                #if cnt > 1:
-                #    f.write(os.path.join(dirPath, 'Keil') + " more than one *.uvoptx\n")
+                elif cnt > 1:
+                    f.write("[Warning] " + os.path.join(dirPath, 'Keil') + " more than one *.uvoptx\n")
                 file = os.path.join(dirPath, 'Keil', 'Nu_Link_Driver.ini')
                 if os.path.isfile(file) == False:
                     f.write("[Error] " + os.path.join(dirPath, 'Keil') + ": Nu_Link_Driver.ini is missing.\n")
@@ -510,9 +510,9 @@ def check_prj():
                         print("Checking " + file)
                     config = configparser.ConfigParser()
                     config.read(file)
-                    #if config.get('ChipSelect', 'ChipName') != NULINK_CHIPNAME:
-                    #    f.write("[Error] " + file + ": ChipName (" + config.get('ChipSelect', 'ChipName') + ") is not " + NULINK_CHIPNAME + ".\n")
-                    if config.get(NULINK_CHIPNAME, 'Reset') != NULINK_RESET:
+                    if config.get('ChipSelect', 'ChipName') != NULINK_CHIPNAME:
+                        f.write("[Error] " + file + ": ChipName (" + config.get('ChipSelect', 'ChipName') + ") is not " + NULINK_CHIPNAME + ".\n")
+                    elif config.get(NULINK_CHIPNAME, 'Reset') != NULINK_RESET:
                         f.write("[Error] " + file + ": [" + NULINK_CHIPNAME + "] Reset (" + config.get(NULINK_CHIPNAME, 'Reset') + ") is not " + NULINK_RESET + ".\n")
 
         for file in fnmatch.filter(fileNames, '*.uvprojx'):
@@ -568,26 +568,6 @@ def check_prj():
                 otime = elem1.find('oTime')
                 if otime.text == '1':
                     f.write("[Warning] " + os.path.join(dirPath, file) + ": OTIME is enabled.\n")
-                # Check debug tool and download is select nulink (for .uvproj)
-                #elem2 = elem2.find('TargetDlls')
-                #if elem2 != None:
-                #    elem2 = elem2.find('Driver')
-                #    if elem2.text == None:
-                #        f.write("[Error] " + os.path.join(dirPath, file) + ": Debug ICE setting is missing.\n")
-                #    # Nuvoton Nu-Link Debugger from NuLink driver
-                #    elif elem2.text == "Bin\\Nu_Link.dll":
-                #        f.write("[Warning] " + os.path.join(dirPath, file) + ": Debug ICE setting (" + elem2.text + ") should select 'NULink Debugger'.\n")
-                #    elif elem2.text != KEIL_ICE:
-                #        f.write("[Error] " + os.path.join(dirPath, file) + ": Debug ICE setting (" + elem2.text + ") is incorrect.\n")
-                #elem = elem3.find('Flash1')
-                #elem = elem.find('UseTargetDll')
-                #if elem.text == '1' :
-                #    # download setting is not prefixed by debug setting
-                #    elem = elem3.find('Flash2')
-                #    if elem.text == None:
-                #        f.write("[Error] " + os.path.join(dirPath, file) + ": Debug ICE setting is missing.\n")
-                #    elif elem.text != KEIL_ICE:
-                #        f.write("[Error] " + os.path.join(dirPath, file) + " download ICE setting (" + elem.text + ") is incorrect\n")
             if file_modified:
                 tree.write(os.path.join(dirPath, file), "UTF-8", True)
 
@@ -603,8 +583,8 @@ def check_prj():
                 os.rename(os.path.join(dirPath, file), os.path.join(dirPath, dirname + ".uvoptx"))
                 file = dirname + ".uvoptx"
                 filename = dirname
-            #elif prj_cnt > 1 and filename.find(dirname) != 0:
-            #    f.write("[Error] " + os.path.join(dirPath, file) + ": uvoptx name is not prefixed by sample name (" + dirname + ").\n")
+            elif prj_cnt > 1 and filename.find(dirname) != 0:
+                f.write("[Warning] " + os.path.join(dirPath, file) + ": uvoptx name is not prefixed by sample name (" + dirname + ").\n")
             if debugLevel:
                 print("Checking " + os.path.join(dirPath, file))
             tree = ET.parse(os.path.join(dirPath, file))
@@ -623,9 +603,6 @@ def check_prj():
                 elem = elem.find('pMon')
                 if elem.text == None:
                     f.write("[Error] " + os.path.join(dirPath, file) + ": Download ICE setting is missing.\n")
-                # Nuvoton Nu-Link Debugger from NuLink driver
-                elif elem.text == "Bin\\Nu_Link.dll":
-                    f.write("[Warning] " + os.path.join(dirPath, file) + ": Download ICE setting (" + elem.text + ") should select 'NULink Debugger'.\n")
                 elif elem.text != KEIL_ICE:
                     f.write("[Error] " + os.path.join(dirPath, file) + ": Download ICE setting (" + elem.text + ") is incorrect.\n")
 
@@ -638,22 +615,22 @@ def check_prj():
                     cnt += 1
                 if cnt == 0:
                     f.write("[Error] " + os.path.join(dirPath, 'IAR') + ": eww file is missing.\n")
-                #if cnt > 1:
-                #    f.write("[Warning] " + os.path.join(dirPath, 'IAR') + " more than one *.eww\n")
+                elif cnt > 1:
+                    f.write("[Warning] " + os.path.join(dirPath, 'IAR') + " more than one *.eww\n")
                 prj_cnt = 0
                 for file in glob.glob(dirPath + r"\\IAR" + r"\\*.ewp"):
                     prj_cnt += 1
                 if prj_cnt == 0:
                     f.write("[Error] " + os.path.join(dirPath, 'IAR') + ": ewp file is missing.\n")
-                #if cnt > 1:
-                #    f.write("[Warning] " + os.path.join(dirPath, 'IAR') + " more than one *.ewp\n")
+                elif prj_cnt > 1:
+                    f.write("[Warning] " + os.path.join(dirPath, 'IAR') + " more than one *.ewp\n")
                 cnt = 0
                 for file in glob.glob(dirPath + r"\\IAR" + r"\\*.ewd"):
                     cnt += 1
                 if cnt == 0:
                     f.write("[Error] " + os.path.join(dirPath, 'IAR') + ": ewd file is missing.\n")
-                #if cnt > 1:
-                #    f.write("[Warning] " + os.path.join(dirPath, 'IAR') + " more than one *.ewd\n")
+                elif cnt > 1:
+                    f.write("[Warning] " + os.path.join(dirPath, 'IAR') + " more than one *.ewd\n")
 
         # Check ewp file setting
         for file in fnmatch.filter(fileNames, '*.ewp'):
@@ -675,9 +652,6 @@ def check_prj():
                 print("Checking " + os.path.join(dirPath, file))
             tree = ET.parse(os.path.join(dirPath, file))
             root = tree.getroot()
-            #for elem in root.findall('configuration'):
-            #    if elem.find('name').text != "Release":
-            #        f.write(file + " contains non-release configuration\n")
             # check each configuration
             for elem in root.findall('configuration'):
                 for setting in elem.findall('settings'):
@@ -708,8 +682,8 @@ def check_prj():
                             #    if opt.find('state').text != IAR_RSTHANDLER:
                             #        if opt.find('state').text != None:
                             #            f.write("[Error] " + os.path.join(dirPath, file) + ": Linker entry symbol setting (" + opt.find('state').text + ") is not " + IAR_RSTHANDLER + ".\n")
-                            #       else:
-                            #            f.write("[Warning] " + os.path.join(dirPath, file) + ": Linker entry symbol setting is missing.\n")
+                            #        else:
+                            #            f.write("[Warning] " + os.path.join(dirPath, file) + ": Linker entry symbol setting is miss.\n")
                             #if opt.find('name').text == "IlinkOverrideProgramEntryLabel":
                             #    if opt.find('state').text != "1":
                             #        f.write("[Warning] " + os.path.join(dirPath, file) + ": Linker setting does not override default program entry.\n")
@@ -776,9 +750,6 @@ def check_prj():
                 print("Checking " + os.path.join(dirPath, file))
             tree = ET.parse(os.path.join(dirPath, file))
             root = tree.getroot()
-            #for elem in root.findall('configuration'):
-            #    if elem.find('name').text != "Release":
-            #        f.write(file + " contains non-release configuration\n")
             # check each configuration
             for elem in root.findall('configuration'):
                 for setting in elem.findall('settings'):
