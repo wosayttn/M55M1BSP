@@ -2148,7 +2148,8 @@ void CLK_SysTickDelay(uint32_t us)
 
         if (u32TargetRem > SysTick->VAL)
         {
-            u32TargetValue = SysTick->LOAD - (u32TargetRem - SysTick->VAL);
+            u32TargetValue = SysTick->LOAD;
+            u32TargetValue = u32TargetValue - (u32TargetRem - SysTick->VAL);
             u32TargetInt++;
         }
         else
