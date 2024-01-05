@@ -11,7 +11,7 @@
 #include "NuMicro.h"
 #include "hid_kb.h"
 
-#define CRYSTAL_LESS        1
+#define CRYSTAL_LESS        0
 #define TRIM_INIT           (SYS_BASE+0xF40)
 
 /*--------------------------------------------------------------------------*/
@@ -119,7 +119,7 @@ void SYS_Init(void)
 
     /*Setting the BNT1(Button)(PH1) */
     SET_GPIO_PH1();
-    GPIO_SetMode(PH,BIT1,GPIO_MODE_QUASI);
+    GPIO_SetMode(PH, BIT1, GPIO_MODE_QUASI);
 
 }
 
