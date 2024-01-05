@@ -160,7 +160,7 @@ int main()
         CMD_DMA_FAST_QUAD_READ,                                                     // Command Code
         PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,                        // Command Phase
         PHASE_QUAD_MODE, PHASE_WIDTH_24, PHASE_DISABLE_DTR,                         // Address Phase
-        PHASE_QUAD_MODE, PHASE_ORDER_MODE0, PHASE_DISABLE_DTR,                      // Data Phase
+        PHASE_QUAD_MODE, PHASE_ORDER_MODE0, PHASE_DISABLE_DTR, SPIM_OP_DISABLE,     // Data Phase
         4,                                                                          // Dummy Cycle Phase
         PHASE_ENABLE_CONT_READ, PHASE_QUAD_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,  // Read Mode Phase
     };
