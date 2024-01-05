@@ -369,127 +369,127 @@ void HID_ClassRequest(void)
 
         switch (gUsbCmd.bRequest)
         {
-            case GET_REPORT:
-                HSUSBD_PrepareCtrlIn(&u8Report, 1ul);
+        case GET_REPORT:
+            HSUSBD_PrepareCtrlIn(&u8Report, 1ul);
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
+            break;
+
+        case GET_IDLE:
+            HSUSBD_PrepareCtrlIn(&u8Idle, 1ul);
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
+            break;
+
+        case GET_PROTOCOL:
+            if (gUsbCmd.wIndex == 0x00)     // interface 0
+            {
+                HSUSBD_PrepareCtrlIn((uint8_t *)&g_u8ReportProtocol, 1ul);
                 HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
                 break;
-
-            case GET_IDLE:
-                HSUSBD_PrepareCtrlIn(&u8Idle, 1ul);
+            }
+            else if (gUsbCmd.wIndex == 0x01)        //interface 1
+            {
+                HSUSBD_PrepareCtrlIn((uint8_t *)&g_u8ReportProtocol, 1ul);
                 HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
                 break;
-
-            case GET_PROTOCOL:
-                if (gUsbCmd.wIndex == 0x00)     // interface 0
-                {
-                    HSUSBD_PrepareCtrlIn((uint8_t *)&g_u8ReportProtocol, 1ul);
-                    HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
-                    HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
-                    break;
-                }
-                else if (gUsbCmd.wIndex == 0x01)        //interface 1
-                {
-                    HSUSBD_PrepareCtrlIn((uint8_t *)&g_u8ReportProtocol, 1ul);
-                    HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
-                    HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
-                    break;
-                }
-                else
-                {
-                    // Stall
-                    /* Setup error, stall the device */
-                    HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-                    break;
-                }
-
-            default:
+            }
+            else
+            {
                 // Stall
                 /* Setup error, stall the device */
                 HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
                 break;
+            }
+
+        default:
+            // Stall
+            /* Setup error, stall the device */
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+            break;
         }
     }
     else        // Host to device
     {
         switch (gUsbCmd.bRequest)
         {
-            case SET_REPORT:
-                if (((gUsbCmd.wValue >> 8) & 0xff) == 3)    /* Request Type = Feature */
-                {
-
-                    /* Status stage */
-                    HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-                    HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-                    HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-                }
-                else
-                {
-                    // Stall
-                    /* Setup error, stall the device */
-                    HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-                }
-
-                break;
-
-            case SET_IDLE:
-                u8Idle = (gUsbCmd.wValue >> 8) & 0xff;
+        case SET_REPORT:
+            if (((gUsbCmd.wValue >> 8) & 0xff) == 3)    /* Request Type = Feature */
+            {
 
                 /* Status stage */
                 HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
                 HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-                break;
+            }
+            else
+            {
+                // Stall
+                /* Setup error, stall the device */
+                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+            }
 
-            case SET_PROTOCOL:
-                if (gUsbCmd.wIndex == 0x00)     // interface 0
+            break;
+
+        case SET_IDLE:
+            u8Idle = (gUsbCmd.wValue >> 8) & 0xff;
+
+            /* Status stage */
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+            break;
+
+        case SET_PROTOCOL:
+            if (gUsbCmd.wIndex == 0x00)     // interface 0
+            {
+                if (gUsbCmd.wValue == HID_BOOT_PROTOCOL)
                 {
-                    if (gUsbCmd.wValue == HID_BOOT_PROTOCOL)
-                    {
-                        g_u8ReportProtocol = HID_BOOT_PROTOCOL;
-                    }
-                    else
-                    {
-                        g_u8ReportProtocol = HID_REPORT_PROTOCOL;
-                    }
-
-                    /* Status stage */
-                    HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-                    HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-                    HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-                }
-                else if (gUsbCmd.wIndex == 0x01)        // interface 1
-                {
-                    if (gUsbCmd.wValue == HID_BOOT_PROTOCOL)
-                    {
-                        g_u8ReportProtocol = HID_BOOT_PROTOCOL;
-                    }
-                    else
-                    {
-                        g_u8ReportProtocol = HID_REPORT_PROTOCOL;
-                    }
-
-                    /* Status stage */
-                    HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-                    HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-                    HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+                    g_u8ReportProtocol = HID_BOOT_PROTOCOL;
                 }
                 else
                 {
-                    // Stall
-                    /* Setup error, stall the device */
-                    HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-                    break;
+                    g_u8ReportProtocol = HID_REPORT_PROTOCOL;
                 }
 
-                break;
+                /* Status stage */
+                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+            }
+            else if (gUsbCmd.wIndex == 0x01)        // interface 1
+            {
+                if (gUsbCmd.wValue == HID_BOOT_PROTOCOL)
+                {
+                    g_u8ReportProtocol = HID_BOOT_PROTOCOL;
+                }
+                else
+                {
+                    g_u8ReportProtocol = HID_REPORT_PROTOCOL;
+                }
 
-            default:
+                /* Status stage */
+                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+            }
+            else
+            {
                 // Stall
                 /* Setup error, stall the device */
                 HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
                 break;
+            }
+
+            break;
+
+        default:
+            // Stall
+            /* Setup error, stall the device */
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+            break;
         }
     }
 }
@@ -501,12 +501,12 @@ void HID_VendorRequest(void)
         // Device to host
         switch (gUsbCmd.bRequest)
         {
-            default:
-            {
-                /* Setup error, stall the device */
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-                break;
-            }
+        default:
+        {
+            /* Setup error, stall the device */
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+            break;
+        }
         }
     }
     else
@@ -514,13 +514,13 @@ void HID_VendorRequest(void)
         // Host to device
         switch (gUsbCmd.bRequest)
         {
-            default:
-            {
-                // Stall
-                /* Setup error, stall the device */
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-                break;
-            }
+        default:
+        {
+            // Stall
+            /* Setup error, stall the device */
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+            break;
+        }
         }
     }
 }
@@ -532,18 +532,32 @@ void HID_UpdateMouseData(void)
 
     if (g_u8EPAReady)
     {
-        /* Update new report data */
-        buf[0] = 0x00;
-        buf[1] = 0x00;
-        buf[2] = 0x00;
-        buf[3] = 0x00;
-        g_u8EPAReady = 0;
+        mouse_mode ^= 1;
 
-        /* Set transfer length and trigger IN transfer */
-        for (i = 0; i < 4; i++)
-            HSUSBD->EP[EPA].EPDAT_BYTE = buf[i];
+        if (mouse_mode)
+        {
+            if (move_len > 8)
+            {
+                /* Update new report data */
+                buf[0] = 0x00;
+                buf[1] = mouse_table[mouse_idx & 0x07];
+                buf[2] = mouse_table[(mouse_idx + 2) & 0x07];
+                buf[3] = 0x00;
+                mouse_idx++;
+                move_len = 0;
+            }
+            else
+            {
+                buf[0] = buf[1] = buf[2] = buf[3] = 0;
+            }
 
+            /* Set transfer length and trigger IN transfer */
+            for (i = 0; i < 4; i++)
+                HSUSBD->EP[EPA].EPDAT_BYTE = buf[i];
+        }
+        move_len++;
         HSUSBD->EP[EPA].EPRSPCTL = HSUSBD_EP_RSPCTL_SHORTTXEN;
+        g_u8EPAReady = 0;
         HSUSBD_ENABLE_EP_INT(EPA, HSUSBD_EPINTEN_INTKIEN_Msk);
     }
 }
@@ -555,9 +569,15 @@ void HID_UpdateKeyboardData(void)
 
     if (g_u8EPBReady)
     {
+			  uint32_t u32Key;
         /* Update new report data */
         for (i = 0; i < 8; i++)
             buf[i] = 0;
+
+        /* If PH.1 = 0, just report it is key 'a' */
+        u32Key = (PH->PIN & (1 << 1)) ? 0 : 1;
+        if (u32Key != 0)
+            buf[2] = 0x04; /* Key a */
 
         g_u8EPBReady = 0;
 

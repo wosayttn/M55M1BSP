@@ -77,6 +77,17 @@ void SYS_Init(void)
     SetDebugUartMFP();
 }
 
+void GPIO_Init(void)
+{
+    /* GPH.1 Input for button. Active low. */
+    SET_GPIO_PH1();
+
+    /* Enable PH1 interrupt for wakeup */
+    GPIO_SetMode(PH,BIT1,GPIO_MODE_QUASI);
+    PH->DBEN |= (1<<1);
+    PH->DBCTL = GPIO_DBCTL_DBCLKSEL_32768;
+}
+
 int32_t main(void)
 {
 
@@ -87,6 +98,8 @@ int32_t main(void)
 
     /* Init UART to 115200-8n1 for print message */
     InitDebugUart();
+
+    GPIO_Init();
 
     /* Lock protected registers */
     SYS_LockReg();
