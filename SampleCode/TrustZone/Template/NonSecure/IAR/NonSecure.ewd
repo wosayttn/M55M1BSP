@@ -80,7 +80,7 @@
                 </option>
                 <option>
                     <name>OCProductVersion</name>
-                    <state>9.20.4.46976</state>
+                    <state>9.40.1.63870</state>
                 </option>
                 <option>
                     <name>OCDynDriverList</name>
@@ -1320,7 +1320,7 @@
                 </option>
                 <option>
                     <name>CCMSPFetTargetVoltage</name>
-                    <state>###Uninitialized###</state>
+                    <state>3.0</state>
                 </option>
                 <option>
                     <name>CCMSPFetVCCDefault</name>

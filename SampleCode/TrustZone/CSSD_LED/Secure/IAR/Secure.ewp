@@ -184,7 +184,7 @@
                 </option>
                 <option>
                     <name>TrustZone</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>TrustZoneModes</name>
@@ -228,6 +228,7 @@
                 <option>
                     <name>CCDefines</name>
                     <state>NDEBUG</state>
+                    <state>DEBUG_PORT=UART6_NS</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -243,23 +244,23 @@
                 </option>
                 <option>
                     <name>CCListCFile</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCListCMnemonics</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCListCMessages</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCListAssFile</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCListAssSource</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCEnableRemarks</name>
@@ -328,7 +329,7 @@
                 </option>
                 <option>
                     <name>CCCompilerRuntimeInfo</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IFpuProcessor</name>
@@ -348,9 +349,10 @@
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
-                    <state>$PROJ_DIR$\..\..\..\Library\CMSIS\Core\Include</state>
-                    <state>$PROJ_DIR$\..\..\..\Library\Device\Nuvoton\M55M1\Include</state>
-                    <state>$PROJ_DIR$\..\..\..\Library\StdDriver\inc</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Library\CMSIS\Core\Include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Library\Device\Nuvoton\M55M1\Include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\inc</state>
+                    <state>$PROJ_DIR$\..\..</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -660,11 +662,11 @@
                 </option>
                 <option>
                     <name>OCOutputOverride</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>Hard_Fault_Sample.bin</state>
+                    <state>CSSD_LED_Secure.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -682,7 +684,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>1</hasPrio>
+                <hasPrio>208</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -703,7 +705,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>Hard_Fault_Sample.out</state>
+                    <state>CSSD_LED_Secure.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -767,7 +769,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\..\..\..\Library\Device\Nuvoton\M55M1\Source\IAR\M55M1.icf</state>
+                    <state>$PROJ_DIR$\M55M1_s.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -1000,7 +1002,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>Hard_Fault_Sample_import_lib.o</state>
+                    <state>cssd_nsclib_IAR.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1084,43 +1086,62 @@
         <settings>
             <name>BUILDACTION</name>
             <archiveVersion>2</archiveVersion>
-            <data />
+            <data>
+                <buildActions>
+                    <buildAction>
+                        <cmdline>cmd.exe /c copy "$PROJ_DIR$\Release\Exe\cssd_nsclib_IAR.o" "$PROJ_DIR$\..\..\lib" &amp;&amp; echo &gt; "$BUILD_FILES_DIR$/.postbuild"</cmdline>
+                        <workingDirectory>$PROJ_DIR$</workingDirectory>
+                        <buildSequence>postLink</buildSequence>
+                        <outputs>
+                            <file>
+                                <name>$BUILD_FILES_DIR$/.postbuild</name>
+                            </file>
+                        </outputs>
+                    </buildAction>
+                </buildActions>
+            </data>
         </settings>
     </configuration>
     <group>
         <name>CMSIS</name>
         <file>
-            <name>$PROJ_DIR$\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</name>
         </file>
     </group>
     <group>
         <name>Library</name>
         <file>
-            <name>$PROJ_DIR$\..\..\..\Library\StdDriver\src\clk.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\clk.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\Library\StdDriver\src\fmc.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\fmc.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\Library\StdDriver\src\retarget.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\gpio.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\Library\StdDriver\src\sys.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\scu\mpc_sie_drv.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\Library\StdDriver\src\timer.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\retarget.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\Library\StdDriver\src\uart.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\sys.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\uart.c</name>
         </file>
     </group>
     <group>
         <name>User</name>
         <file>
             <name>$PROJ_DIR$\..\main.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\partition_M55M1.h</name>
         </file>
     </group>
 </project>

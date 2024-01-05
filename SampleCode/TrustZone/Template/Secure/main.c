@@ -9,10 +9,11 @@
 
 #include <arm_cmse.h>
 #include "NuMicro.h"
-#include "nsclib.h"
-
 
 #define LOOP_HERE       0xE7FEE7FF      /* Instruction Code of "B ." */
+
+/* typedef for Non-secure callback functions */
+typedef __NONSECURE_CALL int32_t (*PFN_NON_SECURE_FUNC)(uint32_t);
 
 /*---------------------------------------------------------------------------
  * Secure function exported to Non-secure application
@@ -205,7 +206,7 @@ static void SYS_Init(void)
      *-----------------------------------------------------------------------*/
     CLK_EnableModuleClock(GPIOC_MODULE);
     CLK_EnableModuleClock(UART1_MODULE);
-    CLK_SetModuleClock(UART1_MODULE, CLK_UARTSEL0_UART1SEL_HIRC, CLK_UARTDIV0_UART1DIV(1));
+    CLK_SetModuleClock(UART1_MODULE, CLK_UARTSEL0_UART1SEL_HXT, CLK_UARTDIV0_UART1DIV(1));
     SET_UART1_RXD_PA2();
     SET_UART1_TXD_PA3();
 
@@ -235,7 +236,8 @@ int main(void)
     FMC_Open();
     /* Check Secure/Non-secure base address configuration */
     printf("SCU->FNSADDR: 0x%08X, NSCBA:        0x%08X\n", SCU->FNSADDR, FMC_Read(FMC_NSCBA_BASE));
-    printf("SRAM0MPCLUT0: 0x%08X, SRAM1MPCLUT0: 0x%08X\n", SCU->SRAM0MPCLUT0, SCU->SRAM1MPCLUT0);
+    printf("SRAM0MPCLUT0: 0x%08X\n", SCU->SRAM0MPCLUT0);
+    printf("SRAM1MPCLUT0: 0x%08X\n", SCU->SRAM1MPCLUT0);
     printf("SRAM2MPCLUT0: 0x%08X\n", SCU->SRAM2MPCLUT0);
 
     /* Init GPIO Port A Pin 10 & 11 for Secure LED control */

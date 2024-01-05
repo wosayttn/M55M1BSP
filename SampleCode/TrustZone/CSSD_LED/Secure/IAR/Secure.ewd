@@ -48,7 +48,7 @@
                 </option>
                 <option>
                     <name>RunToEnable</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>RunToName</name>
@@ -56,7 +56,7 @@
                 </option>
                 <option>
                     <name>CExtraOptionsCheck</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CExtraOptions</name>
@@ -80,7 +80,7 @@
                 </option>
                 <option>
                     <name>OCProductVersion</name>
-                    <state>9.20.4.46976</state>
+                    <state>9.40.1.63870</state>
                 </option>
                 <option>
                     <name>OCDynDriverList</name>
@@ -120,7 +120,7 @@
                 </option>
                 <option>
                     <name>OCImagesPath1</name>
-                    <state></state>
+                    <state>C:\KL\git\m55m1\bsp\SampleCode\TrustZone\Template\NonSecure\IAR\Release\Exe\NonSecure.out</state>
                 </option>
                 <option>
                     <name>OCImagesSuppressCheck2</name>
@@ -144,7 +144,7 @@
                 </option>
                 <option>
                     <name>OCImagesOffset1</name>
-                    <state></state>
+                    <state>0x0</state>
                 </option>
                 <option>
                     <name>OCImagesOffset2</name>
@@ -156,7 +156,7 @@
                 </option>
                 <option>
                     <name>OCImagesUse1</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OCImagesUse2</name>
@@ -1320,7 +1320,7 @@
                 </option>
                 <option>
                     <name>CCMSPFetTargetVoltage</name>
-                    <state>###Uninitialized###</state>
+                    <state>3.0</state>
                 </option>
                 <option>
                     <name>CCMSPFetVCCDefault</name>

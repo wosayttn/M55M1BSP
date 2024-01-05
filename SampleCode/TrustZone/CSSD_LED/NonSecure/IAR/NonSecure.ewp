@@ -184,12 +184,12 @@
                 </option>
                 <option>
                     <name>TrustZone</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>TrustZoneModes</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OGAarch64Abi</name>
@@ -228,6 +228,8 @@
                 <option>
                     <name>CCDefines</name>
                     <state>NDEBUG</state>
+                    <state>DEBUG_PORT=UART6_NS</state>
+                    <state>NVT_VECTOR_ON_FLASH</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -243,23 +245,23 @@
                 </option>
                 <option>
                     <name>CCListCFile</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCListCMnemonics</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCListCMessages</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCListAssFile</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCListAssSource</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCEnableRemarks</name>
@@ -328,7 +330,7 @@
                 </option>
                 <option>
                     <name>CCCompilerRuntimeInfo</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IFpuProcessor</name>
@@ -348,9 +350,10 @@
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
-                    <state>$PROJ_DIR$\..\..\..\Library\CMSIS\Core\Include</state>
-                    <state>$PROJ_DIR$\..\..\..\Library\Device\Nuvoton\M55M1\Include</state>
-                    <state>$PROJ_DIR$\..\..\..\Library\StdDriver\inc</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Library\CMSIS\Core\Include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Library\Device\Nuvoton\M55M1\Include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\inc</state>
+                    <state>$PROJ_DIR$\..\..\lib</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -606,7 +609,7 @@
                 </option>
                 <option>
                     <name>AOutputFile</name>
-                    <state>$FILE_BNAME$.o</state>
+                    <state></state>
                 </option>
                 <option>
                     <name>ALimitErrorsCheck</name>
@@ -660,11 +663,11 @@
                 </option>
                 <option>
                     <name>OCOutputOverride</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>Hard_Fault_Sample.bin</state>
+                    <state>CSSD_LED_NonSecure.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -682,7 +685,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>1</hasPrio>
+                <hasPrio>0</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -703,7 +706,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>Hard_Fault_Sample.out</state>
+                    <state>CSSD_LED_NonSecure.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -767,7 +770,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\..\..\..\Library\Device\Nuvoton\M55M1\Source\IAR\M55M1.icf</state>
+                    <state>$PROJ_DIR$\M55M1_ns.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -1000,7 +1003,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>Hard_Fault_Sample_import_lib.o</state>
+                    <state>NonSecure_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1090,37 +1093,28 @@
     <group>
         <name>CMSIS</name>
         <file>
-            <name>$PROJ_DIR$\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</name>
         </file>
     </group>
     <group>
         <name>Library</name>
         <file>
-            <name>$PROJ_DIR$\..\..\..\Library\StdDriver\src\clk.c</name>
+            <name>$PROJ_DIR$\..\..\lib\cssd_nsclib_IAR.o</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\Library\StdDriver\src\fmc.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\gpio.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\Library\StdDriver\src\retarget.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\Library\StdDriver\src\sys.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\Library\StdDriver\src\timer.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\Library\StdDriver\src\uart.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\retarget.c</name>
         </file>
     </group>
     <group>
         <name>User</name>
         <file>
-            <name>$PROJ_DIR$\..\main.c</name>
+            <name>$PROJ_DIR$\..\main_ns.c</name>
         </file>
     </group>
 </project>

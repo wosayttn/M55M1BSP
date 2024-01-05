@@ -338,9 +338,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>DEBUG_PORT=UART6_NS, NVT_DBG_UART_OFF</Define>
+              <Define>DEBUG_PORT=UART6_NS, NVT_DBG_UART_OFF, NVT_VECTOR_ON_FLASH</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\..\Library\StdDriver\inc;..\..</IncludePath>
+              <IncludePath>..\..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\..\Library\StdDriver\inc;..\..\lib</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -412,7 +412,7 @@
             <File>
               <FileName>cssd_nsclib.o</FileName>
               <FileType>3</FileType>
-              <FilePath>..\..\cssd_nsclib.o</FilePath>
+              <FilePath>..\..\lib\cssd_nsclib.o</FilePath>
             </File>
           </Files>
         </Group>

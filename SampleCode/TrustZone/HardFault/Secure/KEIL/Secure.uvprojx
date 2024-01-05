@@ -374,7 +374,7 @@
             <ScatterFile>.\Secure.scatter</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
-            <Misc>--import-cmse-lib-out ..\..\nsclib.o</Misc>
+            <Misc>--import-cmse-lib-out ..\..\lib\nsclib.o</Misc>
             <LinkerInputFile></LinkerInputFile>
             <DisabledWarnings></DisabledWarnings>
           </LDads>
