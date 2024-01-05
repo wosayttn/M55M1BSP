@@ -24,7 +24,7 @@ void Boot_NonSecure(uint32_t u32NonSecureBase);
 void InitNSDebugUart(void)
 {
     /* Init UART to 115200-8n1 for print message */
-    UART_Open(UART1, 115200);
+    UART_Open(UART1_NS, 115200);
 }
 
 /*---------------------------------------------------------------------------
@@ -90,7 +90,7 @@ void Boot_NonSecure(uint32_t u32NonSecureBase)
     pfnNonSecureEntry = cmse_nsfptr_create(pfnNonSecureEntry);
 
     /* Check if the Reset_Handler address is in Non-secure space */
-    if (cmse_is_nsfptr(pfnNonSecureEntry) && (((uint32_t)pfnNonSecureEntry & NS_OFFSET) == NS_OFFSET))
+    if (cmse_is_nsfptr(pfnNonSecureEntry) && (((uint32_t)pfnNonSecureEntry & 0xF0000000) == NS_OFFSET))
     {
         printf("Execute Non-secure code ...\n");
         pfnNonSecureEntry(0);   /* Non-secure function entry */

@@ -27,7 +27,7 @@ static char R[168], S[168];                 /* temporary buffer used to keep dig
 #define ENDIAN(x)   ((((x)>>24)&0xff) | (((x)>>8)&0xff00) | (((x)<<8)&0xff0000) | ((x)<<24))
 
 uint8_t Byte2Char(uint8_t c);
-void CRPT_IRQHandler(void);
+void CRYPTO_IRQHandler(void);
 void  dump_buff_hex(uint8_t *pucBuff, int nBytes);
 void SYS_Init(void);
 void DEBUG_PORT_Init(void);

@@ -34,7 +34,8 @@ uint32_t g_au32MasterRxBuffer[DATA_COUNT] __attribute__((section(".lpSram")));
 
 NVT_ITCM void LPSPI0_IRQHandler(void)
 {
-    volatile int32_t i32Timeout = 0xFFFF;
+	volatile uint32_t u32Status = 0;
+	volatile int32_t i32Timeout = 0xFFFFFF;
 
     // TESTCHIP_ONLY
     CLK_WaitModuleClockReady(LPSPI0_MODULE);
@@ -42,9 +43,11 @@ NVT_ITCM void LPSPI0_IRQHandler(void)
     /* for Auto Operation mode test */
     g_u32Ifr = LPSPI0->AUTOSTS;
 
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
     while ((LPSPI0->AUTOSTS != 0) && (--i32Timeout >= 0))
     {
-        LPSPI0->AUTOSTS = LPSPI0->AUTOSTS;
+    	u32Status = LPSPI0->AUTOSTS;
+        LPSPI0->AUTOSTS = u32Status;
     }
 }
 
@@ -236,7 +239,7 @@ void LPSPI_Init(void)
 void AutoOperation_FunctionTest()
 {
     uint32_t i, u32DataCount, u32TotalRxCount, *ptr;
-    uint32_t u32PdmaDoneFlag;
+    uint32_t u32PdmaDoneFlag, u32Status;
 
     g_u32WakeupCount = 0;
 
@@ -284,7 +287,8 @@ void AutoOperation_FunctionTest()
         /* g_u32Ifr is set in LPSPI0 interrupt service routine */
         while (g_u32Ifr == 0);
 
-        LPSPI0->AUTOSTS = LPSPI0->AUTOSTS;
+        u32Status = LPSPI0->AUTOSTS;
+        LPSPI0->AUTOSTS = u32Status;
 
         if ((g_u32Ifr & (LPSPI_AUTOSTS_CNTIF_Msk | LPSPI_AUTOSTS_CNTWKF_Msk))
                 != (LPSPI_AUTOSTS_CNTIF_Msk | LPSPI_AUTOSTS_CNTWKF_Msk))
