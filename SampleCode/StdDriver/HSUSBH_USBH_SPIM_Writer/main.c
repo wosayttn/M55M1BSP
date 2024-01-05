@@ -194,14 +194,19 @@ void SYS_Init(void)
     /* Init SPIM multi-function pins, MOSI(PJ.1), MISO(PI.13), CLK(PJ.0), SS(PI.12), D3(PI.15), and D2(PI.14) */
     /* Init SPIM multi-function pins */
     SET_SPIM0_CLK_PC4();
-    SET_SPIM0_SS_PC3();
     SET_SPIM0_MISO_PG12();
     SET_SPIM0_MOSI_PG11();
     SET_SPIM0_D2_PC0();
     SET_SPIM0_D3_PG10();
+    SET_SPIM0_SS_PC3();
 
-    PC->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
-    PG->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
+    PC->SMTEN |= (GPIO_SMTEN_SMTEN0_Msk |
+                  GPIO_SMTEN_SMTEN3_Msk |
+                  GPIO_SMTEN_SMTEN4_Msk);
+ 
+    PG->SMTEN |= (GPIO_SMTEN_SMTEN10_Msk |
+                  GPIO_SMTEN_SMTEN11_Msk |
+                  GPIO_SMTEN_SMTEN12_Msk);
 
     /* Set SPIM I/O pins as high slew rate up to 80 MHz. */
     GPIO_SetSlewCtl(PC, BIT0, GPIO_SLEWCTL_HIGH);
@@ -781,7 +786,7 @@ int32_t main(void)
 
     SYS_UnlockReg();                             /* Unlock register lock protect               */
 
-    SPIM_SET_CLOCK_DIVIDER(SPIM0, 2);            /* Set SPIM clock as HCLK divided by 4        */
+    SPIM_SET_CLOCK_DIVIDER(SPIM0, 8);            /* Set SPIM clock as HCLK divided by 4        */
 
     SPIM_SET_RXCLKDLY_RDDLYSEL(SPIM0, 0);        /* Insert 0 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
 
@@ -789,7 +794,7 @@ int32_t main(void)
 
     SPIM_DISABLE_CACHE(SPIM0);
 
-    if (SPIM_InitFlash(SPIM0, 1) != 0)            /* Initialized SPI flash                      */
+    if (SPIM_InitFlash(SPIM0, SPIM_OP_ENABLE) != 0)            /* Initialized SPI flash                      */
     {
         printf("SPIM flash initialize failed!\n");
 
@@ -807,6 +812,13 @@ int32_t main(void)
 
     SPIM_DMADMM_InitPhase(SPIM0, &sWb03hRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
     SPIM_DMADMM_InitPhase(SPIM0, &sWb02hWrCMD, SPIM_CTL0_OPMODE_PAGEWRITE);
+    
+    /*
+     *  Erase flash page
+     */
+    printf("Erase SPI flash block 0x%x...", 0);
+    SPIM_EraseBlock(SPIM0, 0, 0, OPCODE_BE_64K, 1, 1);
+    printf("done.\n");    
 
     for (;;)
     {
