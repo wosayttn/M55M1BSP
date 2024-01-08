@@ -37,7 +37,6 @@
 #include <arm_mve.h>
 #include <stdio.h>
 #include <string.h>
-#include "timer_simple_platform.h"
 #include "jpeglib.h"
 #include "NuMicro.h"
 #include "nvt_jpeg.h"
@@ -171,7 +170,7 @@ typedef struct jpeg_common_struct *j_common_ptr;
     state->free_in_buffer -= (buffer - state->next_output_byte); \
     state->next_output_byte = buffer; \
   } \
-
+}
 
 //Copy from jchuff.c to solve include error
 typedef unsigned char JOCTET;
@@ -197,45 +196,47 @@ JOCTET *jsimd_huff_encode_one_block_helium(void *state, JOCTET *buffer,
     uint8_t block_nbits[DCTSIZE2];
     uint16_t block_diff[DCTSIZE2];
     uint64_t tick_cnt;
-    int16_t * ps16_block = (int16_t*)(block);
+	
+//		for (int ii = 0; ii < DCTSIZE2; ii++)
+//                printf("simd_block[%d]=%d \r\n",ii, block[ii]);
     /* Load rows of coefficients from DCT block in zig-zag order. */
 
     /* Compute DC coefficient difference value. (F.1.1.5.1) */
-    int16x8_t row0 = vdupq_n_s16(ps16_block[0] - last_dc_val);
-    row0 = vsetq_lane_s16(ps16_block[1], row0, 1);
-    row0 = vsetq_lane_s16(ps16_block[8], row0, 2);
-    row0 = vsetq_lane_s16(ps16_block[16], row0, 3);
-    row0 = vsetq_lane_s16(ps16_block[9], row0, 4);
-    row0 = vsetq_lane_s16(block[2], row0, 5);
-    row0 = vsetq_lane_s16(block[3], row0, 6);
-    row0 = vsetq_lane_s16(block[10], row0, 7);
+    int16x8_t row0 = vdupq_n_s16((int16_t)(block[0]) - last_dc_val);
+    row0 = vsetq_lane_s16((int16_t)(block[1]), row0, 1);
+    row0 = vsetq_lane_s16((int16_t)(block[8]), row0, 2);
+    row0 = vsetq_lane_s16((int16_t)(block[16]), row0, 3);
+    row0 = vsetq_lane_s16((int16_t)(block[9]), row0, 4);
+    row0 = vsetq_lane_s16((int16_t)(block[2]), row0, 5);
+    row0 = vsetq_lane_s16((int16_t)(block[3]), row0, 6);
+    row0 = vsetq_lane_s16((int16_t)(block[10]), row0, 7);
 
-    int16x8_t row1 = vdupq_n_s16(ps16_block[0] + 17);
-    row1 = vsetq_lane_s16(ps16_block[24], row1, 1);
-    row1 = vsetq_lane_s16(ps16_block[32], row1, 2);
-    row1 = vsetq_lane_s16(ps16_block[25], row1, 3);
-    row1 = vsetq_lane_s16(ps16_block[18], row1, 4);
-    row1 = vsetq_lane_s16(ps16_block[11], row1, 5);
-    row1 = vsetq_lane_s16(ps16_block[  4], row1, 6);
-    row1 = vsetq_lane_s16(ps16_block[  5], row1, 7);
+    int16x8_t row1 = vdupq_n_s16((int16_t)(block[17]));
+    row1 = vsetq_lane_s16((int16_t)(block[24]), row1, 1);
+    row1 = vsetq_lane_s16((int16_t)(block[32]), row1, 2);
+    row1 = vsetq_lane_s16((int16_t)(block[25]), row1, 3);
+    row1 = vsetq_lane_s16((int16_t)(block[18]), row1, 4);
+    row1 = vsetq_lane_s16((int16_t)(block[11]), row1, 5);
+    row1 = vsetq_lane_s16((int16_t)(block[  4]), row1, 6);
+    row1 = vsetq_lane_s16((int16_t)(block[  5]), row1, 7);
 
-    int16x8_t row2 = vdupq_n_s16(ps16_block[0] + 12);
-    row2 = vsetq_lane_s16(ps16_block[19], row2, 1);
-    row2 = vsetq_lane_s16(ps16_block[26], row2, 2);
-    row2 = vsetq_lane_s16(ps16_block[33], row2, 3);
-    row2 = vsetq_lane_s16(ps16_block[40], row2, 4);
-    row2 = vsetq_lane_s16(ps16_block[48], row2, 5);
-    row2 = vsetq_lane_s16(ps16_block[41], row2, 6);
-    row2 = vsetq_lane_s16(ps16_block[34], row2, 7);
+    int16x8_t row2 = vdupq_n_s16((int16_t)(block[12]));
+    row2 = vsetq_lane_s16((int16_t)(block[19]), row2, 1);
+    row2 = vsetq_lane_s16((int16_t)(block[26]), row2, 2);
+    row2 = vsetq_lane_s16((int16_t)(block[33]), row2, 3);
+    row2 = vsetq_lane_s16((int16_t)(block[40]), row2, 4);
+    row2 = vsetq_lane_s16((int16_t)(block[48]), row2, 5);
+    row2 = vsetq_lane_s16((int16_t)(block[41]), row2, 6);
+    row2 = vsetq_lane_s16((int16_t)(block[34]), row2, 7);
 
-    int16x8_t row3 = vdupq_n_s16(ps16_block[0] + 27);
-    row3 = vsetq_lane_s16(ps16_block[20], row3, 1);
-    row3 = vsetq_lane_s16(ps16_block[13], row3, 2);
-    row3 = vsetq_lane_s16(ps16_block[ 6], row3, 3);
-    row3 = vsetq_lane_s16(ps16_block[7], row3, 4);
-    row3 = vsetq_lane_s16(ps16_block[14], row3, 5);
-    row3 = vsetq_lane_s16(ps16_block[21], row3, 6);
-    row3 = vsetq_lane_s16(ps16_block[28], row3, 7);
+    int16x8_t row3 = vdupq_n_s16((int16_t)(block[27]));
+    row3 = vsetq_lane_s16((int16_t)(block[20]), row3, 1);
+    row3 = vsetq_lane_s16((int16_t)(block[13]), row3, 2);
+    row3 = vsetq_lane_s16((int16_t)(block[ 6]), row3, 3);
+    row3 = vsetq_lane_s16((int16_t)(block[7]), row3, 4);
+    row3 = vsetq_lane_s16((int16_t)(block[14]), row3, 5);
+    row3 = vsetq_lane_s16((int16_t)(block[21]), row3, 6);
+    row3 = vsetq_lane_s16((int16_t)(block[28]), row3, 7);
 
     int16x8_t abs_row0 = vabsq_s16(row0);
     int16x8_t abs_row1 = vabsq_s16(row1);
@@ -284,41 +285,41 @@ JOCTET *jsimd_huff_encode_one_block_helium(void *state, JOCTET *buffer,
 
 
     /* Load last four rows of coefficients from DCT block in zig-zag order. */
-    int16x8_t row4 = vdupq_n_s16(ps16_block[0] + 35);
-    row4 = vsetq_lane_s16(ps16_block[42], row4, 1);
-    row4 = vsetq_lane_s16(ps16_block[49], row4, 2);
-    row4 = vsetq_lane_s16(ps16_block[56], row4, 3);
-    row4 = vsetq_lane_s16(ps16_block[57], row4, 4);
-    row4 = vsetq_lane_s16(ps16_block[50], row4, 5);
-    row4 = vsetq_lane_s16(ps16_block[43], row4, 6);
-    row4 = vsetq_lane_s16(ps16_block[36], row4, 7);
+    int16x8_t row4 = vdupq_n_s16((int16_t)(block[35]) );
+    row4 = vsetq_lane_s16((int16_t)(block[42]), row4, 1);
+    row4 = vsetq_lane_s16((int16_t)(block[49]), row4, 2);
+    row4 = vsetq_lane_s16((int16_t)(block[56]), row4, 3);
+    row4 = vsetq_lane_s16((int16_t)(block[57]), row4, 4);
+    row4 = vsetq_lane_s16((int16_t)(block[50]), row4, 5);
+    row4 = vsetq_lane_s16((int16_t)(block[43]), row4, 6);
+    row4 = vsetq_lane_s16((int16_t)(block[36]), row4, 7);
 
-    int16x8_t row5 = vdupq_n_s16(ps16_block[29]);
-    row5 = vsetq_lane_s16(ps16_block[29], row5, 1);
-    row5 = vsetq_lane_s16(ps16_block[15], row5, 2);
-    row5 = vsetq_lane_s16(ps16_block[23], row5, 3);
-    row5 = vsetq_lane_s16(ps16_block[30], row5, 4);
-    row5 = vsetq_lane_s16(ps16_block[37], row5, 5);
-    row5 = vsetq_lane_s16(ps16_block[44], row5, 6);
-    row5 = vsetq_lane_s16(ps16_block[51], row5, 7);
+    int16x8_t row5 = vdupq_n_s16((int16_t)(block[29]));
+    row5 = vsetq_lane_s16((int16_t)(block[29]), row5, 1);
+    row5 = vsetq_lane_s16((int16_t)(block[15]), row5, 2);
+    row5 = vsetq_lane_s16((int16_t)(block[23]), row5, 3);
+    row5 = vsetq_lane_s16((int16_t)(block[30]), row5, 4);
+    row5 = vsetq_lane_s16((int16_t)(block[37]), row5, 5);
+    row5 = vsetq_lane_s16((int16_t)(block[44]), row5, 6);
+    row5 = vsetq_lane_s16((int16_t)(block[51]), row5, 7);
 
-    int16x8_t row6 = vdupq_n_s16(ps16_block[58]);
-    row6 = vsetq_lane_s16(ps16_block[59], row6, 1);
-    row6 = vsetq_lane_s16(ps16_block[52], row6, 2);
-    row6 = vsetq_lane_s16(ps16_block[45], row6, 3);
-    row6 = vsetq_lane_s16(ps16_block[38], row6, 4);
-    row6 = vsetq_lane_s16(ps16_block[31], row6, 5);
-    row6 = vsetq_lane_s16(ps16_block[39], row6, 6);
-    row6 = vsetq_lane_s16(ps16_block[46], row6, 7);
+    int16x8_t row6 = vdupq_n_s16((int16_t)(block[58]));
+    row6 = vsetq_lane_s16((int16_t)(block[59]), row6, 1);
+    row6 = vsetq_lane_s16((int16_t)(block[52]), row6, 2);
+    row6 = vsetq_lane_s16((int16_t)(block[45]), row6, 3);
+    row6 = vsetq_lane_s16((int16_t)(block[38]), row6, 4);
+    row6 = vsetq_lane_s16((int16_t)(block[31]), row6, 5);
+    row6 = vsetq_lane_s16((int16_t)(block[39]), row6, 6);
+    row6 = vsetq_lane_s16((int16_t)(block[46]), row6, 7);
 
-    int16x8_t row7 = vdupq_n_s16(ps16_block[53]);
-    row7 = vsetq_lane_s16(ps16_block[60], row7, 1);
-    row7 = vsetq_lane_s16(ps16_block[61], row7, 2);
-    row7 = vsetq_lane_s16(ps16_block[54], row7, 3);
-    row7 = vsetq_lane_s16(ps16_block[47], row7, 4);
-    row7 = vsetq_lane_s16(ps16_block[55], row7, 5);
-    row7 = vsetq_lane_s16(ps16_block[62], row7, 6);
-    row7 = vsetq_lane_s16(ps16_block[63], row7, 7);
+    int16x8_t row7 = vdupq_n_s16((int16_t)(block[53]));
+    row7 = vsetq_lane_s16((int16_t)(block[60]), row7, 1);
+    row7 = vsetq_lane_s16((int16_t)(block[61]), row7, 2);
+    row7 = vsetq_lane_s16((int16_t)(block[54]), row7, 3);
+    row7 = vsetq_lane_s16((int16_t)(block[47]), row7, 4);
+    row7 = vsetq_lane_s16((int16_t)(block[55]), row7, 5);
+    row7 = vsetq_lane_s16((int16_t)(block[62]), row7, 6);
+    row7 = vsetq_lane_s16((int16_t)(block[63]), row7, 7);
 
     int16x8_t abs_row4 = vabsq_s16(row4);
     int16x8_t abs_row5 = vabsq_s16(row5);
@@ -504,7 +505,7 @@ dump_buffer(working_state_simd *state)
     state->free_in_buffer = dest->free_in_buffer;
     return TRUE;
 }
-}
+
 
 boolean encode_one_block_simd(working_state_simd *state, JCOEFPTR block, int last_dc_val,
                               c_derived_tbl *dctbl, c_derived_tbl *actbl)
