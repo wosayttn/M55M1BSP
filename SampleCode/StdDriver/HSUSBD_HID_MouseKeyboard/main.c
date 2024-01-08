@@ -51,13 +51,13 @@ void SYS_Init(void)
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
-   /* Enable HSOTG0_ module clock */
+    /* Enable HSOTG0_ module clock */
     CLK_EnableModuleClock(HSOTG0_MODULE);
-    
+
     SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;    /* select HSUSBD */
     /* Enable USB PHY */
     SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk | SYS_USBPHY_HSUSBACT_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
-    for (i=0; i<0x1000; i++);      // delay > 10 us
+    for (i = 0; i < 0x1000; i++);  // delay > 10 us
     SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
 
     /* Enable IP clock */
@@ -79,13 +79,13 @@ void SYS_Init(void)
 
 void GPIO_Init(void)
 {
-    /* GPH.1 Input for button. Active low. */
-    SET_GPIO_PH1();
-
-    /* Enable PH1 interrupt for wakeup */
-    GPIO_SetMode(PH,BIT1,GPIO_MODE_QUASI);
-    PH->DBEN |= (1<<1);
-    PH->DBCTL = GPIO_DBCTL_DBCLKSEL_32768;
+    // GPI.11 Input for button. Active low.
+    SET_GPIO_PI11();
+    /* Enable PI11 interrupt for wakeup */
+    GPIO_SetMode(PI, BIT11, GPIO_MODE_QUASI);
+    GPIO_EnableInt(PI, 11, GPIO_INT_FALLING);
+    PI->DBEN |= BIT11;            // eanble debounce
+    PI->DBCTL = GPIO_DBCTL_DBCLKSEL_32768;  // Debounce time is about 3.6 ms
 }
 
 int32_t main(void)
@@ -99,6 +99,7 @@ int32_t main(void)
     /* Init UART to 115200-8n1 for print message */
     InitDebugUart();
 
+    /* Init BTN0 */
     GPIO_Init();
 
     /* Lock protected registers */

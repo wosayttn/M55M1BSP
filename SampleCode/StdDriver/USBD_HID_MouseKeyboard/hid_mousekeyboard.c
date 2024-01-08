@@ -254,37 +254,37 @@ void HID_ClassRequest(void)
         // Device to host
         switch (au8Buf[1])
         {
-            case GET_REPORT:
+        case GET_REPORT:
 
-            //            {
-            //                break;
-            //            }
-            case GET_IDLE:
-            {
-                USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
-                /* Data stage */
-                USBD_PrepareCtrlIn(&s_u8Idle, au8Buf[6]);
-                /* Status stage */
-                USBD_PrepareCtrlOut(0, 0);
-                break;
-            }
+        //            {
+        //                break;
+        //            }
+        case GET_IDLE:
+        {
+            USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
+            /* Data stage */
+            USBD_PrepareCtrlIn(&s_u8Idle, au8Buf[6]);
+            /* Status stage */
+            USBD_PrepareCtrlOut(0, 0);
+            break;
+        }
 
-            case GET_PROTOCOL:
-            {
-                USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
-                /* Data stage */
-                USBD_PrepareCtrlIn(&s_u8Protocol, au8Buf[6]);
-                /* Status stage */
-                USBD_PrepareCtrlOut(0, 0);
-                break;
-            }
+        case GET_PROTOCOL:
+        {
+            USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
+            /* Data stage */
+            USBD_PrepareCtrlIn(&s_u8Protocol, au8Buf[6]);
+            /* Status stage */
+            USBD_PrepareCtrlOut(0, 0);
+            break;
+        }
 
-            default:
-            {
-                /* Setup error, stall the device */
-                USBD_SetStall(0);
-                break;
-            }
+        default:
+        {
+            /* Setup error, stall the device */
+            USBD_SetStall(0);
+            break;
+        }
         }
     }
     else
@@ -292,52 +292,52 @@ void HID_ClassRequest(void)
         // Host to device
         switch (au8Buf[1])
         {
-            case SET_REPORT:
+        case SET_REPORT:
+        {
+            if (au8Buf[3] == 3)
             {
-                if (au8Buf[3] == 3)
-                {
-                    /* Request Type = Feature */
-                    USBD_SET_DATA1(EP1);
-                    USBD_SET_PAYLOAD_LEN(EP1, 0);
-                }
-                else if (au8Buf[3] == 2)
-                {
-                    /* Request Type = Output */
-                    USBD_SET_DATA1(EP1);
-                    USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
-
-                    /* Status stage */
-                    USBD_PrepareCtrlIn(0, 0);
-                }
-
-                break;
+                /* Request Type = Feature */
+                USBD_SET_DATA1(EP1);
+                USBD_SET_PAYLOAD_LEN(EP1, 0);
             }
-
-            case SET_IDLE:
+            else if (au8Buf[3] == 2)
             {
-                s_u8Idle = au8Buf[3];
+                /* Request Type = Output */
+                USBD_SET_DATA1(EP1);
+                USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
+
                 /* Status stage */
-                USBD_SET_DATA1(EP0);
-                USBD_SET_PAYLOAD_LEN(EP0, 0);
-                break;
+                USBD_PrepareCtrlIn(0, 0);
             }
 
-            case SET_PROTOCOL:
-            {
-                s_u8Protocol = au8Buf[2];
-                /* Status stage */
-                USBD_SET_DATA1(EP0);
-                USBD_SET_PAYLOAD_LEN(EP0, 0);
-                break;
-            }
+            break;
+        }
 
-            default:
-            {
-                // Stall
-                /* Setup error, stall the device */
-                USBD_SetStall(0);
-                break;
-            }
+        case SET_IDLE:
+        {
+            s_u8Idle = au8Buf[3];
+            /* Status stage */
+            USBD_SET_DATA1(EP0);
+            USBD_SET_PAYLOAD_LEN(EP0, 0);
+            break;
+        }
+
+        case SET_PROTOCOL:
+        {
+            s_u8Protocol = au8Buf[2];
+            /* Status stage */
+            USBD_SET_DATA1(EP0);
+            USBD_SET_PAYLOAD_LEN(EP0, 0);
+            break;
+        }
+
+        default:
+        {
+            // Stall
+            /* Setup error, stall the device */
+            USBD_SetStall(0);
+            break;
+        }
         }
     }
 }
@@ -387,8 +387,8 @@ void HID_UpdateKbData(void)
     {
         pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP3));
 
-        /* If PH.1 = 0, just report it is key 'a' */
-        u32Key = (PH->PIN & (1 << 1)) ? 0 : 1;
+        /* If PI.11 = 0, just report it is key 'a' */
+        u32Key = (PI->PIN & BIT11) ? 0 : 1;
 
         if (u32Key == 0)
         {

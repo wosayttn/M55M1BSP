@@ -569,13 +569,13 @@ void HID_UpdateKeyboardData(void)
 
     if (g_u8EPBReady)
     {
-			  uint32_t u32Key;
+        uint32_t u32Key;
         /* Update new report data */
         for (i = 0; i < 8; i++)
             buf[i] = 0;
 
-        /* If PH.1 = 0, just report it is key 'a' */
-        u32Key = (PH->PIN & (1 << 1)) ? 0 : 1;
+        /* If PI.11 = 0, just report it is key 'a' */
+        u32Key = (PI->PIN & BIT11) ? 0 : 1;
         if (u32Key != 0)
             buf[2] = 0x04; /* Key a */
 

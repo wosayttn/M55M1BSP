@@ -39,7 +39,6 @@ void RS485_FunctionTest(void);
 void RS485_SendAddressByte(uint8_t u8data);
 void RS485_SendDataByte(uint8_t *pu8TxBuf, uint32_t u32WriteBytes);
 void RS485_9bitModeMaster(void);
-void DEBUG_PORT_Init(void);
 void USCI0_Init(void);
 void SYS_Init(void);
 
