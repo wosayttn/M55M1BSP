@@ -73,7 +73,6 @@ if __name__ == "__main__":
                         if found == 1:
                             err += 1
                             f.write("[" + str(prj_count) + "] "+ dirPath +  " has error or warning.\n")
-                            LIST_MAIL_ATTACHMENT.append(str(os.path.abspath(BUILDLOG)))
                             #print("Build " + basename + " has error or warning...\n")
                         #else:
                             #f.write("[" + str(prj_count) + "] "+ os.path.abspath(file) +  " pass...\n")
@@ -81,7 +80,6 @@ if __name__ == "__main__":
                         pass
                     except Exception as e:
                         f.write("[" + str(prj_count) + "] "+ dirPath +  " has error or warning.\n")
-                        LIST_MAIL_ATTACHMENT.append((os.path.abspath(BUILDLOG)))
                         #print("Build" + file +  "has error or warning...\n")
                         err += 1
                     except OSError:
