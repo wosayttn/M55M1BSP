@@ -92,7 +92,7 @@ void PowerDownFunction(void)
  *
  * @return      None
  *
- * @details     The PC default IRQ, declared in startup_M2354.s.
+ * @details     The PC default IRQ
  */
 NVT_ITCM void GPC_IRQHandler(void)
 {

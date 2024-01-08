@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2016 Nuvoton Technology Corp.
- * Description:   M480 EMAC time stamp driver
+ * Description:   M55M1 EMAC time stamp driver
  */
 #include "lwip/opt.h"
 #include "lwip/def.h"

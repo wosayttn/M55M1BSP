@@ -1287,7 +1287,7 @@ extern void platform_alt_free(void *);
  *
  * The default implementation is meant to be a reasonnable compromise between
  * performance and size. This version optimizes more aggressively for size at
- * the expense of performance. Eg on Cortex-M4 it reduces the size of
+ * the expense of performance. Eg on Cortex-M55 it reduces the size of
  * mbedtls_sha256_process() from ~2KB to ~0.5KB for a performance hit of about
  * 30%.
  *
@@ -3335,7 +3335,7 @@ extern void platform_alt_free(void *);
 /* \} name SECTION: Customisation configuration options */
 
 /**
-* Configuration check for M460
+* Configuration check for M55M1
 *
 */
 
