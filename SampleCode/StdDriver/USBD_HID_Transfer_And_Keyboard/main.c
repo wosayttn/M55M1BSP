@@ -12,7 +12,7 @@
 #include "NuMicro.h"
 #include "hid_transfer_and_keyboard.h"
 
-#define CRYSTAL_LESS        1
+#define CRYSTAL_LESS        0
 #define TRIM_INIT           (SYS_BASE+0xF40)
 
 void SetDebugUartCLK(void)
@@ -109,11 +109,18 @@ void SYS_Init(void)
     SET_USB_D_MINUS_PA13();
     SET_USB_D_PLUS_PA14();
     SET_USB_OTG_ID_PA15();
-
-    /* Set BTN0 to input mode */
-    GPIO_SetMode(PI, BIT11, GPIO_MODE_INPUT);
 }
 
+void GPIO_Init(void)
+{
+    // GPI.11 Input for button. Active low.
+    SET_GPIO_PI11();
+    /* Enable PI11 interrupt for wakeup */
+    GPIO_SetMode(PI, BIT11, GPIO_MODE_QUASI);
+    GPIO_EnableInt(PI, 11, GPIO_INT_FALLING);
+    PI->DBEN |= BIT11;            // eanble debounce
+    PI->DBCTL = GPIO_DBCTL_DBCLKSEL_32768;  // Debounce time is about 3.6 ms
+}
 
 void PowerDown(void)
 {
@@ -148,6 +155,9 @@ int32_t main(void)
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
+    /* Init BTN0 */
+    GPIO_Init();
+
     /* Init UART to 115200-8n1 for print message */
     InitDebugUart();
 
@@ -159,7 +169,7 @@ int32_t main(void)
     printf("|        NuMicro USB Composite Device Sample Code        |\n");
     printf("|             (USB HID Transfer + Keyboard)              |\n");
     printf("+--------------------------------------------------------+\n");
-    printf("If PI.11 = 0 or press BTN0 button, just report it is key 'a'.\n");
+    printf("If press BTN0 button, just report it is key 'a'.\n");
 
     USBD_Open(&gsInfo, HID_ClassRequest, NULL);
 

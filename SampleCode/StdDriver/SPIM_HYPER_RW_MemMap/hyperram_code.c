@@ -76,7 +76,18 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     uint8_t u8RdDelayRes[SPIM_MAX_DLL_LATENCY] = {0};
     volatile uint32_t u32i = 0;
     uint32_t u32SrcAddr = 0;
-    uint32_t u32TestSize = 32;
+    uint8_t au8TrimPatten[128] =
+    {
+        0xFF, 0x0F, 0xFF, 0x00, 0xFF, 0xCC, 0xC3, 0xCC, 0xC3, 0x3C, 0xCC, 0xFF, 0xFE, 0xFF, 0xFE, 0xEF,
+        0xFF, 0xDF, 0xFF, 0xDD, 0xFF, 0xFB, 0xFF, 0xFB, 0xBF, 0xFF, 0x7F, 0xFF, 0x77, 0xF7, 0xBD, 0xEF,
+        0xFF, 0xF0, 0xFF, 0xF0, 0x0F, 0xFC, 0xCC, 0x3C, 0xCC, 0x33, 0xCC, 0xCF, 0xFE, 0xFF, 0xFF, 0xEE,
+        0xFF, 0xFD, 0xFF, 0xFD, 0xDF, 0xFF, 0xBF, 0xFF, 0xBB, 0xFF, 0xF7, 0xFF, 0xF7, 0x7F, 0x7B, 0xDE,
+        0xFF, 0x0F, 0xFF, 0x00, 0xFF, 0xCC, 0xC3, 0xCC, 0xC3, 0x3C, 0xCC, 0xFF, 0xFE, 0xFF, 0xFE, 0xEF,
+        0xFF, 0xDF, 0xFF, 0xDD, 0xFF, 0xFB, 0xFF, 0xFB, 0xBF, 0xFF, 0x7F, 0xFF, 0x77, 0xF7, 0xBD, 0xEF,
+        0xFF, 0xF0, 0xFF, 0xF0, 0x0F, 0xFC, 0xCC, 0x3C, 0xCC, 0x33, 0xCC, 0xCF, 0xFE, 0xFF, 0xFF, 0xEE,
+        0xFF, 0xFD, 0xFF, 0xFD, 0xDF, 0xFF, 0xBF, 0xFF, 0xBB, 0xFF, 0xF7, 0xFF, 0xF7, 0x7F, 0x7B, 0xDE,
+    };
+    uint8_t au8DestArray[128] = {0};
 #ifdef DMM_MODE_TRIM
     uint32_t u32DMMAddr = SPIM_HYPER_GetDMMAddress(spim);
     uint32_t *pu32RdBuf = NULL;
@@ -84,16 +95,15 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
 #endif
 
     /* Erase HyperRAM */
-    HyperRAM_Erase(spim, u32SrcAddr, u32TestSize);
+    HyperRAM_Erase(spim, u32SrcAddr, sizeof(au8TrimPatten));
 
     /* Write Data to HyperRAM */
-    for (u32i = u32SrcAddr; u32i < u32TestSize; u32i++)
+    for (u32i = u32SrcAddr; u32i < sizeof(au8TrimPatten); u32i++)
     {
-        g_au8SrcArray[u32i] = (u32i + 0x01);
-        SPIM_HYPER_Write1Byte(spim, u32i, g_au8SrcArray[u32i]);
+        SPIM_HYPER_Write1Byte(spim, u32i, au8TrimPatten[u32i]);
     }
 
-    //SPIM_HYPER_DMAWrite(spim, u32SrcAddr, g_au8SrcArray, u32TestSize);
+    //SPIM_HYPER_DMAWrite(spim, u32SrcAddr, au8TrimPatten, sizeof(au8TrimPatten));
 
 #ifdef DMM_MODE_TRIM
     SPIM_HYPER_EnterDirectMapMode(spim);
@@ -101,7 +111,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
 
     for (u8RdDelay = 0; u8RdDelay <= SPIM_HYPER_MAX_LATENCY; u8RdDelay++)
     {
-        memset(g_au8DestArray, 0, sizeof(g_au8DestArray));
+        memset(au8DestArray, 0, sizeof(au8DestArray));
 
         /* Set DLL calibration to select the valid delay step number */
         SPIM_HYPER_SetDLLDelayNum(spim, u8RdDelay);
@@ -110,11 +120,11 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
         /* Read Data from HyperRAM */
         SPIM_HYPER_DMARead(spim, u32SrcAddr, g_au8DestArray, u32TestSize);
 #else
-        pu32RdBuf = (uint32_t *)&g_au8DestArray[0];
+        pu32RdBuf = (uint32_t *)&au8DestArray[0];
 
         u32RdDataCnt = 0;
 
-        for (u32i = u32SrcAddr; u32i < (u32SrcAddr + u32TestSize); u32i += 4)
+        for (u32i = u32SrcAddr; u32i < (u32SrcAddr + sizeof(au8TrimPatten)); u32i += 4)
         {
             pu32RdBuf[u32RdDataCnt++] = inpw(u32DMMAddr + u32i);
         }
@@ -122,18 +132,16 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
 #endif
 
         /* Verify the data and save the number of successful delay steps */
-        if (memcmp(g_au8SrcArray, g_au8DestArray, u32TestSize))
+        if (memcmp(au8TrimPatten, au8DestArray, sizeof(au8TrimPatten)))
         {
-            printf("!!!\tData compare failed at block 0x%x\n", u32SrcAddr);
+            //printf("!!!\tData compare failed at block 0x%x\n", u32SrcAddr);
         }
         else
         {
-            printf("Delay Step Num : %d = Pass\r\n", u8RdDelay);
+            //printf("Delay Step Num : %d = Pass\r\n", u8RdDelay);
             u8RdDelayRes[u8RdDelayIdx++] = u8RdDelay;
         }
     }
-
-    SPIM_HYPER_ExitDirectMapMode(spim);
 
     if (u8RdDelayIdx <= 1)
     {
@@ -154,6 +162,8 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
     printf("Set DLL Delay Num : %d\r\n", u8RdDelayRes[u8RdDelayIdx]);
     /* Set the number of intermediate delay steps */
     SPIM_HYPER_SetDLLDelayNum(spim, u8RdDelayRes[u8RdDelayIdx]);
+
+    SPIM_HYPER_ExitDirectMapMode(spim);
 }
 
 /**
@@ -205,10 +215,10 @@ void HyperRAM_Init(SPIM_T *spim)
     /* Training DLL component delay stop number */
     HyperRAM_TrainingDelayNumber(spim);
 
-#if (SPIM_REG_CACHE == 1)
+#if (SPIM_REG_CACHE == 1) //TESTCHIP_ONLY not support
     /* Enable SPIM Cache */
     SPIM_HYPER_ENABLE_CACHE(spim);
-#endif //SPIM_REG_CACHE
+#endif
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

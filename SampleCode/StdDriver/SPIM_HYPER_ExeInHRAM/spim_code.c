@@ -10,7 +10,7 @@
 #include "NuMicro.h"
 
 /*
- *  Put a character to DEBUG_PORT transmitter
+ *  Put a character to UART0 transmitter
  */
 void spim_putc(int ch)
 {
@@ -27,7 +27,7 @@ void spim_putc(int ch)
 }
 
 /*
- *  Poll until received a character from DEBUG_PORT receiver
+ *  Poll until received a character from UART0 receiver
  */
 char spim_getc(void)
 {

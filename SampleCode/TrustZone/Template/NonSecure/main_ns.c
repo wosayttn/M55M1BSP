@@ -55,23 +55,27 @@ void SysTick_Handler(void)
 
     switch (u32Ticks++)
     {
-    case   0:
-        LED_On(u32Ticks);
-        break;
-    case 200:
-        Secure_LED_On(u32Ticks);
-        break;
-    case 300:
-        LED_Off(u32Ticks);
-        break;
-    case 500:
-        Secure_LED_Off(u32Ticks);
-        break;
-    default:
-        if (u32Ticks > 600)
-        {
-            u32Ticks = 0;
-        }
+        case   0:
+            LED_On(u32Ticks);
+            break;
+
+        case 200:
+            Secure_LED_On(u32Ticks);
+            break;
+
+        case 300:
+            LED_Off(u32Ticks);
+            break;
+
+        case 500:
+            Secure_LED_Off(u32Ticks);
+            break;
+
+        default:
+            if (u32Ticks > 600)
+            {
+                u32Ticks = 0;
+            }
     }
 }
 
@@ -79,7 +83,7 @@ void DEBUG_PORT_Init(void)
 {
     /* Init UART to 115200-8n1 for print message */
     DEBUG_PORT->LINE = (UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1);
-    DEBUG_PORT->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(__HIRC, 115200));
+    DEBUG_PORT->BAUD = (UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(__HXT, 115200));
 }
 
 /*---------------------------------------------------------------------------
@@ -102,9 +106,9 @@ int main(void)
     Secure_LED_On_Callback(NonSecure_LED_On);
     Secure_LED_Off_Callback(NonSecure_LED_Off);
 
-    /* Generate Systick interrupt each 10 ms */
+    /* Generate Systick interrupt each 20 ms */
     SystemCoreClockUpdate();
-    SysTick_Config(SystemCoreClock / 100);
+    SysTick_Config(SystemCoreClock / 50);
 
     while (1);
 }
@@ -125,6 +129,7 @@ void Boot_App(uint32_t u32AppBase)
 
     /* Check if the stack is in Secure SRAM space */
     u32StackBase = M32(u32AppBase);
+
     if ((u32StackBase >= NON_SECURE_SRAM_BASE) && (u32StackBase < ((NS_OFFSET + SRAM2_BASE + SRAM2_SIZE) - NON_SECURE_SRAM_BASE)))
     {
         printf("Execute App code ...\n");
@@ -134,6 +139,7 @@ void Boot_App(uint32_t u32AppBase)
     {
         /* Something went wrong */
         printf("No code in App region !\n");
+
         while (1);
     }
 }

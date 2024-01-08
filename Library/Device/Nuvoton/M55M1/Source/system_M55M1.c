@@ -12,6 +12,7 @@
 #endif
 
 #include "NuMicro.h"
+#include "scu/mpc_sie_drv.h"
 
 /*----------------------------------------------------------------------------
   Exception / Interrupt Vector table
@@ -32,6 +33,27 @@ void TZ_SAU_Setup(void);
 void FMC_NSCBA_Setup(void);
 void SCU_Setup(void);
 void NSC_Init(uint32_t u32RegionIdx);
+
+#if defined (__ARM_FEATURE_CMSE) &&  (__ARM_FEATURE_CMSE == 3U)
+const char *strMasterName[] =
+{
+    "CPU",   "PDMA0", "PDMA1",  "USBH0", NULL,   "HSUSBH", "HSUSBD", "SDH0",
+    "SDH1",  "EMAC",  "CRYPTO", "CRC",   "GDMA", "NPU",    "LPPDMA", "CCAP",
+    "SPIM0"
+};
+const char *strMasterVioName[] =
+{
+    "GDMA",  "PDMA0", "PDMA1",  "USBH0", NULL,     "HSUSBH", "HSUSBD", "SDH0",
+    "SDH1",  "EMAC",  "CRYPTO", "CRC",   "LPPDMA", "CCAP",   "NPU0",   "NPU1",
+    "SPIM0"
+};
+const char *strSlaveName[]  =
+{
+    "APB0",   "APB1",   "APB2",   "APB3",   "APB4", "APB5", NULL, NULL,
+    "D0PPC0", "D1PPC0", "D1PPC1", "D2PPC0", NULL,   NULL,   NULL, NULL,
+    "EBI",    "Flash"
+};
+#endif
 
 /*----------------------------------------------------------------------------
   System Core Clock update function
@@ -367,7 +389,7 @@ void FMC_NSCBA_Setup(void)
     }
 }
 
-#define NVIC_ITNS_CONF(IRQn)    (NVIC->ITNS[(IRQn / 32)] |= (1 << (IRQn % 32)))
+#define NVIC_ITNS_CONF(IRQn)    (NVIC->ITNS[(IRQn / 32)] |= (uint32_t)(1 << (IRQn % 32)))
 #define MPC_RANGE_LIST_LEN      (2)
 
 /**
@@ -493,7 +515,6 @@ int32_t SetupMPC(
  */
 void SCU_Setup(void)
 {
-    int32_t  i;
     uint32_t u32SRAMx_NonSecureSize = 0;
 
     SYS_ResetModule(SYS_SCU0RST);
@@ -866,10 +887,75 @@ void SCU_Setup(void)
     NVIC_EnableIRQ(SCU_IRQn);
 }
 
-NVT_ITCM __WEAK void SCU_IRQHandler(void)
+#if defined (__ARM_FEATURE_CMSE) &&  (__ARM_FEATURE_CMSE == 3U)
+NVT_ITCM void SCU_IRQHandler(void)
 {
+    uint32_t u32Reg, u32MPCBase;
+    uint32_t i;
+    struct mpc_sie_reg_map_t *pMPC;
+    uint32_t au32MPCInfo[][3] =
+    {
+        { SRAM0MPC_BASE,  SRAM0_BASE,     SRAM0_SIZE     },
+        { SRAM1MPC_BASE,  SRAM1_BASE,     SRAM1_SIZE     },
+        { SRAM2MPC_BASE,  SRAM2_BASE,     SRAM2_SIZE     },
+        { SRAM3MPC_BASE,  SRAM3_BASE,     SRAM3_SIZE     },
+        { LPSRAMMPC_BASE, LPSRAM_BASE,    LPSRAM_SIZE    },
+        { SPIM0MPC_BASE,  SPIM0_MEM_BASE, SPIM0_MEM_SIZE },
+    };
 
+    u32Reg = SCU->SVINTSTS2;
+
+    if (u32Reg)
+    {
+        /* Get violation address */
+        for (i = 0; i < (sizeof(au32MPCInfo) / sizeof(au32MPCInfo[0])); i++)
+        {
+            if (u32Reg & (1 << i))
+            {
+                u32MPCBase = au32MPCInfo[i][0];
+                pMPC = (struct mpc_sie_reg_map_t *)u32MPCBase;
+                //printf("MPC violation detected. int_info1: 0x%08X, int_info2: 0x%08X\n", pMPC->int_info1, pMPC->int_info2);
+                pMPC->int_clear = 1;
+                break;
+            }
+        }
+    }
+
+    /* Check slave peripherals security violation interrupt */
+    u32Reg = SCU->SVINTSTS0;
+
+    if (u32Reg)
+    {
+        /* Get violation address and source */
+        for (i = 0; i < (sizeof(strSlaveName) / sizeof(strSlaveName[0])); i++)
+        {
+            if (u32Reg & (1 << i))
+            {
+                //printf("Slave violation detected. %s access %s@0x%08X illegallly.\n", strMasterName[SCU->PVSRC[i]], strSlaveName[i], SCU->PVA[i]);
+                SCU->SVINTSTS0 = (1 << i);
+                break;
+            }
+        }
+    }
+
+    /* Check master peripherals (MSC) security violation interrupt */
+    u32Reg = SCU->SVINTSTS1;
+
+    if (u32Reg)
+    {
+        /* Get violation address */
+        for (i = 0; i < (sizeof(strMasterVioName) / sizeof(strMasterVioName[0])); i++)
+        {
+            if (u32Reg & (1 << i))
+            {
+                //printf("MSC violation detected. %s access 0x%08X illegally.\n", strMasterVioName[i], SCU->MVA[i]);
+                SCU->SVINTSTS1 = (1 << i);
+                break;
+            }
+        }
+    }
 }
+#endif
 
 /**
  * @brief   Setup a Nonsecure callable Region
@@ -883,9 +969,9 @@ void NSC_Init(uint32_t u32RegionIdx)
              u32Limit = 0;
 
 #if defined (__ICCARM__)
-# pragma section = "NSC"
-    u32Base  = (uint32_t)__section_begin("NSC");
-    u32Limit = (uint32_t)__section_end("NSC");
+# pragma section = "Veneer$$CMSE"
+    u32Base  = (uint32_t)__section_begin("Veneer$$CMSE");
+    u32Limit = (uint32_t)__section_end("Veneer$$CMSE");
 #elif defined(__ARMCC_VERSION)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"

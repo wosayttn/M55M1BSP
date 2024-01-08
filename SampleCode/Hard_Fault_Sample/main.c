@@ -96,7 +96,7 @@ static void SYS_Init(void)
   * @details    This function is an example to show how to implement user's process hard fault handler
   *
   */
-NVT_ITCM void ProcessHardFault(uint32_t *pu32StackFrame)
+void ProcessHardFault(uint32_t *pu32StackFrame)
 {
     uint32_t u32ExceptionNum;
     uint32_t u32R0, u32R1, u32R2, u32R3, u32R12, u32LR, u32PC, u32PSR;

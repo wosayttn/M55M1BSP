@@ -11,7 +11,7 @@
 #include "NuMicro.h"
 #include "vcom_serial.h"
 
-#define CRYSTAL_LESS        1
+#define CRYSTAL_LESS        0
 #define TRIM_INIT           (SYS_BASE+0xF40)
 
 /*--------------------------------------------------------------------------*/
@@ -144,14 +144,8 @@ void SYS_Init(void)
 
 void DEBUG_PORT_Init(void)
 {
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init UART                                                                                               */
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Reset UART */
-    SYS_ResetModule(DEBUG_PORT_RST);
-
-    /* Configure UART and set UART Baudrate */
-    UART_Open(DEBUG_PORT, 115200);
+    /* Init UART to 115200-8n1 for print message */
+    InitDebugUart();
 
     /* Enable Interrupt and install the call back function */
     UART_ENABLE_INT(DEBUG_PORT, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk | UART_INTEN_RXTOIEN_Msk));

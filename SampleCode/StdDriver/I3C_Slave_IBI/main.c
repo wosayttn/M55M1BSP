@@ -376,7 +376,7 @@ static void SYS_Init(void)
 int32_t main(void)
 {
     uint16_t    i, u16Len;
-    uint8_t     *pu8Data, u8TID;
+    uint8_t     *pu8Data, u8TID = 0;
     uint8_t     qn, u8RespQCnt;
     uint32_t    u32ActiveIntMask;
     int32_t     iErrCode = I3C_STS_NO_ERR;

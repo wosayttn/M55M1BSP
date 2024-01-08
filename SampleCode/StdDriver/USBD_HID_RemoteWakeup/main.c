@@ -12,7 +12,7 @@
 #include "NuMicro.h"
 #include "hid_mouse.h"
 
-#define CRYSTAL_LESS        1
+#define CRYSTAL_LESS        0
 #define TRIM_INIT           (SYS_BASE+0xF40)
 
 static uint8_t volatile s_u8RemouteWakeup = 0;

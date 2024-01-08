@@ -12,7 +12,7 @@
 #include "ccid_if.h"
 #include "sclib.h"
 
-#define CRYSTAL_LESS    1 /* CRYSTAL_LESS must be 1 if USB clock source is HIRC */
+#define CRYSTAL_LESS    0 /* CRYSTAL_LESS must be 1 if USB clock source is HIRC */
 #define TRIM_INIT           (SYS_BASE+0xF40)
 
 /*---------------------------------------------------------------------------------------------------------*/

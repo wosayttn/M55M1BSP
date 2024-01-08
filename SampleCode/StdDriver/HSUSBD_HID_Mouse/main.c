@@ -53,13 +53,13 @@ void SYS_Init(void)
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
-   /* Enable HSOTG0_ module clock */
+    /* Enable HSOTG0_ module clock */
     CLK_EnableModuleClock(HSOTG0_MODULE);
-    
+
     SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;    /* select HSUSBD */
     /* Enable USB PHY */
     SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk | SYS_USBPHY_HSUSBACT_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
-    for (i=0; i<0x1000; i++);      // delay > 10 us
+    for (i = 0; i < 0x1000; i++);  // delay > 10 us
     SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
 
     /* Enable IP clock */
@@ -76,23 +76,22 @@ void SYS_Init(void)
 
 void GPIO_Init(void)
 {
+    // GPI.11 Input for button. Active low.
+    SET_GPIO_PI11();
+    /* Enable PI11 interrupt for wakeup */
+    GPIO_SetMode(PI, BIT11, GPIO_MODE_QUASI);
+    GPIO_EnableInt(PI, 11, GPIO_INT_FALLING);
+    PI->DBEN |= BIT11;            // eanble debounce
+    PI->DBCTL = GPIO_DBCTL_DBCLKSEL_32768;  // Debounce time is about 3.6 ms
 
-    // GPH.1 Input for button. Active low.
-    SET_GPIO_PH1();
-    /* Enable PH0 interrupt for wakeup */
-    GPIO_SetMode(PH,BIT1,GPIO_MODE_QUASI);
-    GPIO_EnableInt(PH,1,GPIO_INT_FALLING);
-    PH->DBEN |= (1<<1);            // eanble debounce
-    PH->DBCTL = GPIO_DBCTL_DBCLKSEL_32768;  // Debounce time is about 3.6 ms
-
-    NVIC_EnableIRQ(GPH_IRQn);
+    NVIC_EnableIRQ(GPI_IRQn);
 }
 
-/* GPH Interrupt handler */
-NVT_ITCM void GPH_IRQHandler(void)
+/* GPI Interrupt handler */
+NVT_ITCM void GPI_IRQHandler(void)
 {
-    /* Clear PH1 interrupt flag */ 
-    GPIO_CLR_INT_FLAG(PH,BIT1);
+    /* Clear PI11 interrupt flag */
+    GPIO_CLR_INT_FLAG(PI, BIT11);
     s_u8RemouteWakeup = 1;
 }
 
@@ -172,11 +171,11 @@ int32_t main(void)
             PowerDown();
 
             /* Waiting for key release */
-            while ((GPIO_GET_IN_DATA(PH) & 0x2) != 0x2);
+            while ((GPIO_GET_IN_DATA(PI) & BIT11) != BIT11);
         }
 
         /* Move mouse when Key pressed */
-        if ((GPIO_GET_IN_DATA(PH) & 0x2) == 0x0)
+        if ((GPIO_GET_IN_DATA(PI) & BIT11) == 0x0)
             HID_UpdateMouseData();
     }
 }

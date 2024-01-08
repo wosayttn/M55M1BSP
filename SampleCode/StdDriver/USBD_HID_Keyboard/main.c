@@ -11,7 +11,7 @@
 #include "NuMicro.h"
 #include "hid_kb.h"
 
-#define CRYSTAL_LESS        1
+#define CRYSTAL_LESS        0
 #define TRIM_INIT           (SYS_BASE+0xF40)
 
 /*--------------------------------------------------------------------------*/
@@ -117,12 +117,18 @@ void SYS_Init(void)
     SET_USB_D_PLUS_PA14();
     SET_USB_OTG_ID_PA15();
 
-    /*Setting the BNT1(Button)(PH1) */
-    SET_GPIO_PH1();
-    GPIO_SetMode(PH,BIT1,GPIO_MODE_QUASI);
-
 }
 
+void GPIO_Init(void)
+{
+    // GPI.11 Input for button. Active low.
+    SET_GPIO_PI11();
+    /* Enable PI11 interrupt for wakeup */
+    GPIO_SetMode(PI, BIT11, GPIO_MODE_QUASI);
+    GPIO_EnableInt(PI, 11, GPIO_INT_FALLING);
+    PI->DBEN |= BIT11;            // eanble debounce
+    PI->DBCTL = GPIO_DBCTL_DBCLKSEL_32768;  // Debounce time is about 3.6 ms
+}
 
 
 void HID_UpdateKbData(void)
@@ -136,8 +142,8 @@ void HID_UpdateKbData(void)
     {
         pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
 
-        /* If PH.0 = 0, just report it is key 'a' */
-        u32Key = (PH->PIN & BIT1) ? 0 : 1;
+        /* If PI.11 = 0, just report it is key 'a' */
+        u32Key = (PI->PIN & BIT11) ? 0 : 1;
 
         if (u32Key == 0)
         {
@@ -197,6 +203,9 @@ int32_t main(void)
     /* Init UART to 115200-8n1 for print message */
     InitDebugUart();
 
+    /* Init BTN0 */
+    GPIO_Init();
+
     /* Lock protected registers */
     SYS_LockReg();
 
@@ -204,7 +213,7 @@ int32_t main(void)
     printf("+--------------------------------------------------------+\n");
     printf("|          NuMicro USB HID Keyboard Sample Code          |\n");
     printf("+--------------------------------------------------------+\n");
-    printf("If PH.0 = 0 or press BTN0 button, just report it is key 'a'.\n");
+    printf("If press BTN0 button, just report it is key 'a'.\n");
 
     USBD_Open(&gsInfo, HID_ClassRequest, NULL);
 
