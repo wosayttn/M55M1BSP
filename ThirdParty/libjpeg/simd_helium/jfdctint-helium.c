@@ -167,8 +167,8 @@ void jsimd_fdct_islow_helium(int16_t *data)
 
     col2_scaled_h = vaddq_s32(col2_scaled_h, z1_h);
 
-    col2 = vrshrnbq_n_s32(col2, col2_scaled_l, DESCALE_P1),
-    col2 = vrshrntq_n_s32(col2, col2_scaled_h, DESCALE_P1);
+    col2 = vqshrnbq_n_s32(col2, col2_scaled_l, DESCALE_P1),
+    col2 = vqshrntq_n_s32(col2, col2_scaled_h, DESCALE_P1);
 
     int32x4_t col6_scaled_l =  vqdmullbq_s16(tmp12,consts_v1_3);
     int32x4_t col6_scaled_h = vqdmulltq_s16(tmp12, consts_v1_3);
@@ -176,8 +176,8 @@ void jsimd_fdct_islow_helium(int16_t *data)
     col6_scaled_l = vaddq_s32(col6_scaled_l, z1_l);
     col6_scaled_h = vaddq_s32(col6_scaled_h, z1_h);
 
-    col6 = vrshrnbq_n_s32(col6, col6_scaled_l, DESCALE_P1),
-    col6 = vrshrntq_n_s32(col6, col6_scaled_h, DESCALE_P1);
+    col6 = vqshrnbq_n_s32(col6, col6_scaled_l, DESCALE_P1),
+    col6 = vqshrntq_n_s32(col6, col6_scaled_h, DESCALE_P1);
 
     /* Odd part */
     int16x8_t z1 = vaddq_s16(tmp4, tmp7);
@@ -232,29 +232,29 @@ void jsimd_fdct_islow_helium(int16_t *data)
     tmp4_l = vaddq_s32(tmp4_l, z3_l);
     tmp4_h = vaddq_s32(tmp4_h, z3_h);
 
-    col7 = vrshrnbq_n_s32(col7, tmp4_l, DESCALE_P1),
-    col7 = vrshrntq_n_s32(col7, tmp4_h, DESCALE_P1);
+    col7 = vqshrnbq_n_s32(col7, tmp4_l, DESCALE_P1),
+    col7 = vqshrntq_n_s32(col7, tmp4_h, DESCALE_P1);
 
     tmp5_l = vaddq_s32(tmp5_l, z2_l);
     tmp5_h = vaddq_s32(tmp5_h, z2_h);
     tmp5_l = vaddq_s32(tmp5_l, z4_l);
     tmp5_h = vaddq_s32(tmp5_h, z4_h);
-    col5 = vrshrnbq_n_s32(col5, tmp5_l, DESCALE_P1),
-    col5 = vrshrntq_n_s32(col5, tmp5_h, DESCALE_P1);
+    col5 = vqshrnbq_n_s32(col5, tmp5_l, DESCALE_P1),
+    col5 = vqshrntq_n_s32(col5, tmp5_h, DESCALE_P1);
 
     tmp6_l = vaddq_s32(tmp6_l, z2_l);
     tmp6_h = vaddq_s32(tmp6_h, z2_h);
     tmp6_l = vaddq_s32(tmp6_l, z3_l);
     tmp6_h = vaddq_s32(tmp6_h, z3_h);
-    col3 = vrshrnbq_n_s32(col3, tmp6_l, DESCALE_P1),
-    col3 = vrshrntq_n_s32(col3, tmp6_h, DESCALE_P1);
+    col3 = vqshrnbq_n_s32(col3, tmp6_l, DESCALE_P1),
+    col3 = vqshrntq_n_s32(col3, tmp6_h, DESCALE_P1);
 
     tmp7_l = vaddq_s32(tmp7_l, z1_l);
     tmp7_h = vaddq_s32(tmp7_h, z1_h);
     tmp7_l = vaddq_s32(tmp7_l, z4_l);
     tmp7_h = vaddq_s32(tmp7_h, z4_h);
-    col1 = vrshrnbq_n_s32(col1, tmp7_l, DESCALE_P1),
-    col1 = vrshrntq_n_s32(col1, tmp7_h, DESCALE_P1);
+    col1 = vqshrnbq_n_s32(col1, tmp7_l, DESCALE_P1),
+    col1 = vqshrntq_n_s32(col1, tmp7_h, DESCALE_P1);
 
     /* Transpose to work on columns in pass 2. */
     vst1q_s16((int16_t*)(data), col0);
@@ -313,8 +313,8 @@ void jsimd_fdct_islow_helium(int16_t *data)
 
     row2_scaled_h = vaddq_s32(row2_scaled_h, z1_h);
 
-    row2 = vrshrnbq_n_s32(row2, row2_scaled_l, DESCALE_P2),
-    row2 = vrshrntq_n_s32(row2, row2_scaled_h, DESCALE_P2);
+    row2 = vqshrnbq_n_s32(row2, row2_scaled_l, DESCALE_P2),
+    row2 = vqshrntq_n_s32(row2, row2_scaled_h, DESCALE_P2);
 
 
     //Migrate from Neon to Helium, code size will double.
@@ -328,8 +328,8 @@ void jsimd_fdct_islow_helium(int16_t *data)
 
     row6_scaled_h = vaddq_s32(row6_scaled_h, z1_h);
 
-    row6 = vrshrnbq_n_s32(row6, row6_scaled_l, DESCALE_P2),
-    row6 = vrshrntq_n_s32(row6, row6_scaled_h, DESCALE_P2);
+    row6 = vqshrnbq_n_s32(row6, row6_scaled_l, DESCALE_P2),
+    row6 = vqshrntq_n_s32(row6, row6_scaled_h, DESCALE_P2);
 
     /* Odd part */
     z1 = vaddq_s16(tmp4, tmp7);
@@ -383,8 +383,8 @@ void jsimd_fdct_islow_helium(int16_t *data)
     tmp4_l = vaddq_s32(tmp4_l, z3_l);
     tmp4_h = vaddq_s32(tmp4_h, z3_h);
 
-    row7 = vrshrnbq_n_s32(row7, tmp4_l, DESCALE_P2);
-    row7 = vrshrntq_n_s32(row7, tmp4_h, DESCALE_P2);
+    row7 = vqshrnbq_n_s32(row7, tmp4_l, DESCALE_P2);
+    row7 = vqshrntq_n_s32(row7, tmp4_h, DESCALE_P2);
 
 
     tmp5_l = vaddq_s32(tmp5_l, z2_l);
@@ -392,24 +392,24 @@ void jsimd_fdct_islow_helium(int16_t *data)
     tmp5_l = vaddq_s32(tmp5_l, z4_l);
     tmp5_h = vaddq_s32(tmp5_h, z4_h);
 
-    row5 = vrshrnbq_n_s32(row5, tmp5_l, DESCALE_P2);
-    row5 = vrshrntq_n_s32(row5, tmp5_h, DESCALE_P2);
+    row5 = vqshrnbq_n_s32(row5, tmp5_l, DESCALE_P2);
+    row5 = vqshrntq_n_s32(row5, tmp5_h, DESCALE_P2);
 
     tmp6_l = vaddq_s32(tmp6_l, z2_l);
     tmp6_h = vaddq_s32(tmp6_h, z2_h);
     tmp6_l = vaddq_s32(tmp6_l, z3_l);
     tmp6_h = vaddq_s32(tmp6_h, z3_h);
 
-    row3 = vrshrnbq_n_s32(row3, tmp6_l, DESCALE_P2);
-    row3 = vrshrntq_n_s32(row3, tmp6_h, DESCALE_P2);
+    row3 = vqshrnbq_n_s32(row3, tmp6_l, DESCALE_P2);
+    row3 = vqshrntq_n_s32(row3, tmp6_h, DESCALE_P2);
 
     tmp7_l = vaddq_s32(tmp7_l, z1_l);
     tmp7_h = vaddq_s32(tmp7_h, z1_h);
     tmp7_l = vaddq_s32(tmp7_l, z4_l);
     tmp7_h = vaddq_s32(tmp7_h, z4_h);
 
-    row1 = vrshrnbq_n_s32(row1, tmp7_l, DESCALE_P2);
-    row1 = vrshrntq_n_s32(row1, tmp7_h, DESCALE_P2);
+    row1 = vqshrnbq_n_s32(row1, tmp7_l, DESCALE_P2);
+    row1 = vqshrntq_n_s32(row1, tmp7_h, DESCALE_P2);
 
     row1 = vrshrq_n_s16(row1, HELIUM_CORR_BITS);
     row2 = vrshrq_n_s16(row2, HELIUM_CORR_BITS);
