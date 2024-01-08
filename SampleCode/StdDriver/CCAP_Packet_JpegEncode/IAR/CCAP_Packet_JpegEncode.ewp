@@ -48,7 +48,7 @@
                 </option>
                 <option>
                     <name>OGCoreOrChip</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>GRuntimeLibSelect</name>
@@ -74,7 +74,7 @@
                 </option>
                 <option>
                     <name>OGChipSelectEditMenu</name>
-                    <state>M55M1 series	Nuvoton M55M1 series</state>
+                    <state>Default	None</state>
                 </option>
                 <option>
                     <name>GenLowLevelInterface</name>
@@ -82,7 +82,7 @@
                 </option>
                 <option>
                     <name>GEndianModeBE</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>OGBufferedTerminalOutput</name>
@@ -99,11 +99,11 @@
                 <option>
                     <name>GBECoreSlave</name>
                     <version>33</version>
-                    <state>63</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>OGUseCmsis</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>OGUseCmsisDspLib</name>
@@ -120,7 +120,7 @@
                 </option>
                 <option>
                     <name>GFPUDeviceSlave</name>
-                    <state>M55M1 series	Nuvoton M55M1 series</state>
+                    <state>Default	None</state>
                 </option>
                 <option>
                     <name>FPU2</name>
@@ -1298,6 +1298,18 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\uart.c</name>
+        </file>
+    </group>
+    <group>
+        <name>simd_helium</name>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libjpeg\simd_helium\jfdctint-helium.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libjpeg\simd_helium\jquanti-helium.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libjpeg\simd_helium\nvt_jpeg.c</name>
         </file>
     </group>
     <group>
