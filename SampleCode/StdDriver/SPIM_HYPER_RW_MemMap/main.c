@@ -16,23 +16,6 @@
 #define BUFFER_SIZE                 2048
 
 #define SPIM_PORT                   SPIM1
-#define OTFC_PORT                   OTFC1
-
-//------------------------------------------------------------------------------
-__attribute__((aligned(32))) uint8_t g_buff[BUFFER_SIZE] = {0};
-
-/* SPIM cipher key User defined. */
-uint32_t gau32AESKey[8] =
-{
-    0x93484D6F, //Key0
-    0x2F7A7F2A, //Key1
-    0x063FF08A, //Key2
-    0x7A29E38E, //Key3
-    0x7A29E38E, //Scramble
-    0x063FF08A, //NONCE0
-    0x2F7A7F2A, //NONCE1
-    0x93484D6F, //NONCE2
-};
 
 //------------------------------------------------------------------------------
 void SYS_Init(void)
@@ -65,9 +48,6 @@ void SYS_Init(void)
 
     /* Enable SPIM module clock */
     CLK_EnableModuleClock(SPIM0_MODULE);
-
-    /* Enable SPIM module clock */
-    CLK_EnableModuleClock(OTFC0_MODULE);
 
     /* Enable GPIO Module clock */
     CLK_EnableModuleClock(GPIOC_MODULE);
@@ -193,219 +173,44 @@ void SYS_Init(void)
     }
 }
 
-void DumpBufferHex(uint8_t *pucBuff, int nSize)
+static int32_t Clear4Bytes(uint32_t u32StartAddr)
 {
-    int     nIdx, i;
-
-    nIdx = 0;
-
-    while (nSize > 0)
-    {
-        printf("0x%04X  ", nIdx);
-
-        for (i = 0; i < 16; i++)
-            printf("%02x ", pucBuff[nIdx + i]);
-
-        printf("  ");
-
-        for (i = 0; i < 16; i++)
-        {
-            if ((pucBuff[nIdx + i] >= 0x20) && (pucBuff[nIdx + i] < 127))
-                printf("%c", pucBuff[nIdx + i]);
-            else
-                printf(".");
-
-            nSize--;
-        }
-
-        nIdx += 16;
-        printf("\n");
-    }
-
-    printf("\n");
+    outp32(u32StartAddr, 0);
+    return 0;
 }
 
-int dmm_read_write(SPIM_T *spim, uint32_t u32CipherEn)
+static int32_t ClearHyperRAM(uint32_t u32StartAddr, uint32_t u32EndAddr)
 {
-    uint32_t i = 0, offset = 0;             /* variables */
-    uint32_t *pData = NULL;
-    uint32_t u32DMMAddr = SPIM_HYPER_GetDMMAddress(spim);
+    uint32_t u32Data, i;
 
-    if (u32CipherEn == SPIM_HYPER_OP_ENABLE)
+    for (i = u32StartAddr; i < u32EndAddr; i += 4)
     {
-        SPIM_HYPER_ENABLE_CIPHER(spim);
-    }
-
-    /*
-     *  Erase flash page
-     */
-    printf("\r\nErase and verify HyperRAM block 0x%x...", TEST_BLOCK_ADDR);
-    HyperRAM_Erase(spim, TEST_BLOCK_ADDR, FLASH_BLOCK_SIZE);
-    printf("done.\n");
-
-    SPIM_HYPER_EnterDirectMapMode(spim);
-
-    /*
-     *  Program data to flash block
-     */
-    printf("DMM mode program sequential data to HyperRAM block 0x%x...", TEST_BLOCK_ADDR);
-
-    for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
-    {
-        pData = (uint32_t *)g_buff;
-
-        for (i = 0; i < BUFFER_SIZE; i += 4, pData++)
-            (*pData) = (i << 16) | (TEST_BLOCK_ADDR + offset + i);
-
-        memcpy((uint8_t *)(u32DMMAddr + TEST_BLOCK_ADDR + offset), g_buff, BUFFER_SIZE);
-    }
-
-    printf("done.\n");
-
-    /*
-     *  Verify flash block data
-     */
-    printf("DMM mode verify HyperRAM block 0x%x data...", TEST_BLOCK_ADDR);
-
-    for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
-    {
-        memset(g_buff, 0, BUFFER_SIZE);
-        memcpy(g_buff, (uint8_t *)(u32DMMAddr + TEST_BLOCK_ADDR + offset), BUFFER_SIZE);
-
-        pData = (uint32_t *)g_buff;
-
-        for (i = 0; i < BUFFER_SIZE; i += 4, pData++)
+        if (Clear4Bytes(i) < 0)
         {
-            if ((*pData) != ((i << 16) | (TEST_BLOCK_ADDR + offset + i)))
-            {
-                printf("FAILED!\n");
-                printf("\tHyperRAM address 0x%x, read 0x%x, expect 0x%x!\n",
-                       TEST_BLOCK_ADDR + i, *pData, (i << 16) | (TEST_BLOCK_ADDR + offset + i));
-                return -1;
-            }
+            return -1;
         }
 
+        u32Data = inp32(i);
+
+        if (u32Data != 0)
+        {
+            printf("ClearHyperRAM fail!! Read address:0x%08x  data::0x%08x  expect: 0\n",  i, u32Data);
+            return -1;
+        }
     }
-
-    printf("done.\n");
-
-    if (u32CipherEn != SPIM_HYPER_OP_ENABLE)
-    {
-        return 0;
-    }
-
-    memset(g_buff, 0, 64);
-    printf("\n\nDump HyperRAM with command read. It's the SPIM cipher encrypted text.\n");
-
-    for (offset = 0; offset < 64; offset += 2)
-    {
-        g_buff[offset] = SPIM_HYPER_Read1Word(spim, TEST_BLOCK_ADDR + offset);
-    }
-
-    DumpBufferHex(g_buff, 64);
-
-    memset(g_buff, 0, 64);
-    printf("\n\nDump HyperRAM with DMM read. It's the plain text. "
-           "The cipher text was decrypted by SPIM while doing DMM read.\n");
-    memcpy(g_buff, (uint8_t *)(u32DMMAddr + TEST_BLOCK_ADDR + offset), BUFFER_SIZE);
-    DumpBufferHex(g_buff, 64);
-
-    SPIM_HYPER_DISABLE_CIPHER(spim);
-
-    SPIM_HYPER_ExitDirectMapMode(spim);
 
     return 0;
 }
 
-int dma_read_write(SPIM_T *spim, uint32_t u32CipherEn)
+int main(void)
 {
-    uint32_t i = 0, offset = 0;             /* variables */
-    uint32_t *pData = NULL;
+    uint32_t u32i, u32Data, u32PatCnt;
+    uint32_t u32StartAddr, u32EndAddr;
+    uint32_t u32BitPattern;
+    uint16_t u16BitPattern;
+    uint8_t u8BitPattern;
+    uint32_t au32Pat[5] = {0x12345678, 0x5a5a5a5a, 0xa5a5a5a5, 0xFFFFFFFF, 0x9abcdef1};
 
-    /*
-     *  Erase flash page
-     */
-    printf("\r\nErase and verify HyperRAM block 0x%x...", TEST_BLOCK_ADDR);
-    HyperRAM_Erase(spim, TEST_BLOCK_ADDR, FLASH_BLOCK_SIZE);
-    printf("done.\n");
-
-    if (u32CipherEn == SPIM_HYPER_OP_ENABLE)
-    {
-        SPIM_HYPER_ENABLE_CIPHER(spim);
-    }
-
-    /*
-     *  Program data to flash block
-     */
-    printf("DMA mode program sequential data to HyperRAM block 0x%x...", TEST_BLOCK_ADDR);
-
-    for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
-    {
-        pData = (uint32_t *)g_buff;
-
-        for (i = 0; i < BUFFER_SIZE; i += 4, pData++)
-            (*pData) = (i << 16) | (TEST_BLOCK_ADDR + offset + i);
-
-        SPIM_HYPER_DMAWrite(spim, TEST_BLOCK_ADDR + offset, g_buff, BUFFER_SIZE);
-    }
-
-    printf("done.\n");
-
-    /*
-     *  Verify flash block data
-     */
-    printf("DMA mode verify HyperRAM block 0x%x data...", TEST_BLOCK_ADDR);
-
-    for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
-    {
-        memset(g_buff, 0, BUFFER_SIZE);
-        SPIM_HYPER_DMARead(spim, TEST_BLOCK_ADDR + offset, g_buff, BUFFER_SIZE);
-
-        pData = (uint32_t *)g_buff;
-
-        for (i = 0; i < BUFFER_SIZE; i += 4, pData++)
-        {
-            if ((*pData) != ((i << 16) | (TEST_BLOCK_ADDR + offset + i)))
-            {
-                printf("FAILED!\n");
-                printf("\tHyperRAM address 0x%x, read 0x%x, expect 0x%x!\n",
-                       TEST_BLOCK_ADDR + i, *pData, (i << 16) | (TEST_BLOCK_ADDR + offset + i));
-                return -1;
-            }
-        }
-
-    }
-
-    printf("done.\n");
-
-    if (u32CipherEn != SPIM_HYPER_OP_ENABLE)
-    {
-        return 0;
-    }
-
-    memset(g_buff, 0, 64);
-    printf("\n\nDump HyperRAM with command read. It's the SPIM cipher encrypted text.\n");
-
-    for (offset = 0; offset < 64; offset += 2)
-    {
-        g_buff[offset] = SPIM_HYPER_Read1Word(spim, TEST_BLOCK_ADDR + offset);
-    }
-
-    DumpBufferHex(g_buff, 64);
-
-    memset(g_buff, 0, 64);
-    printf("\n\nDump HyperRAM with DMA read. It's the plain text. "
-           "The cipher text was decrypted by SPIM while doing DMA read.\n");
-    SPIM_HYPER_DMARead(spim, TEST_BLOCK_ADDR + offset, g_buff, BUFFER_SIZE);
-    DumpBufferHex(g_buff, 64);
-
-    SPIM_HYPER_DISABLE_CIPHER(spim);
-
-    return 0;
-}
-
-int main()
-{
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -423,27 +228,115 @@ int main()
 
     HyperRAM_Init(SPIM_PORT);
 
-    /* Set Cipher Key and protection region */
-    OTFC_SetKeyFromKeyReg(OTFC_PORT, gau32AESKey, OTFC_PR_0,
-                          TEST_BLOCK_ADDR, BUFFER_SIZE);
-    OTFC_ENABLE_PR(OTFC_PORT, OTFC_PR_0);
+    SPIM_HYPER_EnterDirectMapMode(SPIM_PORT);
 
-    /* DMA mode read/write cipher disable */
-    dma_read_write(SPIM_PORT, SPIM_HYPER_OP_DISABLE);
+    /* Memory max space 64MBits --> 8Mbytes --> 0x800000 */
+    u32StartAddr = SPIM_HYPER_GetDMMAddress(SPIM_PORT);
+    u32EndAddr   = u32StartAddr + 0x1000;
 
-    /* DMM mode read/write cipher disable */
-    dmm_read_write(SPIM_PORT, SPIM_HYPER_OP_DISABLE);
+    for (u32PatCnt = 0; u32PatCnt < 5; u32PatCnt++)
+    {
+        printf("======= Pattern Round[%d] Test Start! ======= \n", u32PatCnt);
+        u32BitPattern = au32Pat[u32PatCnt];
+        u16BitPattern = u32BitPattern >> 16;
+        u8BitPattern  = u16BitPattern >> 8;
 
-    /* DMA mode read/write cipher enable */
-    dma_read_write(SPIM_PORT, SPIM_HYPER_OP_ENABLE);
+        printf("Test Pattern 32 bits: 0x%08x\n", u32BitPattern);
+        printf("             16 bits: 0x%08x\n", u16BitPattern);
+        printf("              8 bits: 0x%08x\n", u8BitPattern);
 
-    /* DMM mode read/write cipher enable */
-    dmm_read_write(SPIM_PORT, SPIM_HYPER_OP_ENABLE);
+        /* Clear HyperRAM */
+        if (ClearHyperRAM(u32StartAddr, u32EndAddr) < 0)
+            goto lexit;
 
-    /* Lock protected registers */
-    SYS_LockReg();
+        /* Fill 4 Byte pattern to HyperRAM */
+        printf("4 Byte Write test .....\n");
 
-    printf("HyperRAM DMA/DMM Mode R/W Sample Done\r\n");
+        for (u32i = u32StartAddr; u32i < u32EndAddr; u32i += 4)
+        {
+            outp32(u32i, u32BitPattern);
+        }
+
+        /* Read 4 Byte pattern to check */
+        for (u32i = u32StartAddr; u32i < u32EndAddr; u32i += 4)
+        {
+            u32Data = inp32(u32i);
+
+            if (u32Data != u32BitPattern)
+            {
+                printf("line(%d) [FAIL] Read address:0x%08x  data::0x%08x  expect:0x%08x \n",
+                       __LINE__, u32i, u32Data, u32BitPattern);
+                goto lexit;
+            }
+        }
+
+        printf("4 Byte Write test Done!!\n");
+
+        /* Clear HyperRAM */
+        if (ClearHyperRAM(u32StartAddr, u32EndAddr) < 0)
+            goto lexit;
+
+        /* Fill 2 Byte pattern to HyperRAM */
+        printf("2 Byte Write test .....\n");
+
+        for (u32i = u32StartAddr; u32i < u32EndAddr; u32i += 2)
+        {
+            outp16(u32i, u16BitPattern);
+        }
+
+        /* Read 2 Byte pattern to check */
+        for (u32i = u32StartAddr; u32i < u32EndAddr; u32i += 2)
+        {
+            u32Data = inp16(u32i);
+
+            if (u32Data != u16BitPattern)
+            {
+                printf("line(%d) [FAIL] Read address:0x%08x  data::0x%08x  expect:0x%08x \n",
+                       __LINE__, u32i,  u32Data, u16BitPattern);
+                goto lexit;
+            }
+        }
+
+        printf("2 Byte Write test Done!!\n");
+
+        /* Clear HyperRAM */
+        if (ClearHyperRAM(u32StartAddr, u32EndAddr) < 0)
+            goto lexit;
+
+        /* Fill 1 Byte pattern to HyperRAM */
+        printf("1 Byte Write test .....\n");
+
+        for (u32i = u32StartAddr; u32i < u32EndAddr; u32i += 1)
+        {
+            outp8(u32i, u8BitPattern);
+        }
+
+        /* Read 1 Byte pattern to check */
+        for (u32i = u32StartAddr; u32i < u32EndAddr; u32i += 1)
+        {
+            u32Data = inp8(u32i);
+
+            if (u32Data != u8BitPattern)
+            {
+                printf("line(%d) [FAIL] Read address:0x%08x  data::0x%08x  expect:0x%08x \n",
+                       __LINE__, u32i,  u32Data, (u8BitPattern << 8 | u8BitPattern));
+                goto lexit;
+            }
+        }
+
+        printf("1 Byte Write test Done!!\n");
+
+        /* Clear HyperRAM */
+        if (ClearHyperRAM(u32StartAddr, u32EndAddr) < 0)
+            goto lexit;
+
+        printf("======= Pattern Round[%d] Test Pass! ======= \n\n", u32PatCnt);
+
+    }
+
+    printf("\nHyperBus Interface Sample Code Completed.\n");
+
+lexit:
 
     while (1);
 }

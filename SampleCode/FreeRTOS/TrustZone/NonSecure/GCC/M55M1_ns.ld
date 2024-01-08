@@ -63,14 +63,14 @@
  */
 
 __STACK_SIZE = 0x00008000;
-__HEAP_SIZE  = 0x00008000;
+__HEAP_SIZE  = 0x00010000;
 
 /* System memory brief */
 MEMORY
 {
   FLASH  (rx)  : ORIGIN = 0x10200000, LENGTH = 0x00100000
   DTCM   (rwx) : ORIGIN = 0x30010000, LENGTH = 0x00010000
-  SRAM01 (rwx) : ORIGIN = 0x30120000, LENGTH = 0x001E0000
+  SRAM01 (rwx) : ORIGIN = 0x30200000, LENGTH = 0x00050000
 }
 
 /* Linker script to place sections and symbol values. Should be used together
@@ -221,10 +221,7 @@ SECTIONS
     __bss_end__ = .;
   } > SRAM01
 
-  __sram_total = ALIGN(4);
-  ASSERT( __sram_total < (ORIGIN(SRAM01) + LENGTH(SRAM01)), "SRAM01 overflow")
-
-  .heap (COPY) :
+  .heap (NOLOAD) :
   {
     . = ALIGN(8);
     __end__ = .;
@@ -232,18 +229,18 @@ SECTIONS
     . = . + __HEAP_SIZE;
     . = ALIGN(8);
     __HeapLimit = .;
-  } > DTCM
+  } > SRAM01
 
-  .stack (ORIGIN(DTCM) + LENGTH(DTCM) - __STACK_SIZE) (COPY) :
+  .stack (NOLOAD) :
   {
     . = ALIGN(8);
     __StackLimit = .;
     . = . + __STACK_SIZE;
     . = ALIGN(8);
     __StackTop = .;
-  } > DTCM
+  } > SRAM01
   PROVIDE(__stack = __StackTop);
  
-  /* Check if data + heap + stack exceeds DTCM limit */
-  ASSERT(__StackLimit >= __HeapLimit, "region DTCM overflowed with stack")
+  /* Check if data + heap + stack exceeds SRAM limit */
+  ASSERT(__StackLimit >= __HeapLimit, "region SRAM overflowed with stack")
 }

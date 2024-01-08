@@ -35,6 +35,7 @@ volatile static UI2C_FUNC s_UI2C0HandlerFn = NULL;
 NVT_ITCM void PMC_IRQHandler(void)
 {
     uint32_t u32Status;
+
     /* check power down wakeup flag */
     if ((PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk) == PMC_INTSTS_PDWKIF_Msk)
     {
@@ -43,6 +44,8 @@ NVT_ITCM void PMC_IRQHandler(void)
         // CPU read interrupt flag register to wait write(clear) instruction completement.
         u32Status = PMC->INTSTS;
     }
+
+    NVT_UNUSED(u32Status);
 }
 
 NVT_ITCM void USCI0_IRQHandler(void)

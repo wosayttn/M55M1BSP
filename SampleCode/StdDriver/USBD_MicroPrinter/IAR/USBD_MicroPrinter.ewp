@@ -125,16 +125,16 @@
                 <option>
                     <name>FPU2</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>7</state>
                 </option>
                 <option>
                     <name>NrRegs</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>NEON</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
@@ -288,7 +288,7 @@
                 <option>
                     <name>CCAllowList</name>
                     <version>1</version>
-                    <state>11111110</state>
+                    <state>00000000</state>
                 </option>
                 <option>
                     <name>CCDebugInfo</name>
@@ -366,7 +366,7 @@
                 </option>
                 <option>
                     <name>CCOptLevel</name>
-                    <state>3</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCOptStrategy</name>
@@ -375,7 +375,7 @@
                 </option>
                 <option>
                     <name>CCOptLevelSlave</name>
-                    <state>3</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCPosIndRopi</name>
@@ -664,7 +664,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>Project.bin</state>
+                    <state>USBD_MicroPrinter.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -703,7 +703,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>Project.out</state>
+                    <state>USBD_MicroPrinter.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>

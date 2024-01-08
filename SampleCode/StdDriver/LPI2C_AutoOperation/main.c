@@ -33,8 +33,8 @@ typedef struct dma_desc_t
 #define SG_TX_LENGTH     4
 #define SG_RX_LENGTH     2
 
-uint8_t SrcArray[SG_TX_LENGTH * SG_TX_TAB_NUM] __attribute__((section(".lpSram")));
-uint8_t DestArray[SG_RX_LENGTH * SG_RX_TAB_NUM] __attribute__((section(".lpSram")));
+uint8_t SrcArray[SG_TX_LENGTH * SG_TX_TAB_NUM] __attribute__((section(".lpSram"))) = {0};
+uint8_t DestArray[SG_RX_LENGTH * SG_RX_TAB_NUM] __attribute__((section(".lpSram"))) = {0};
 DMA_DESC_T DMA_DESC_SC[SG_TX_TAB_NUM] __attribute__((section(".lpSram"))) = {0};
 
 volatile uint32_t LPPDMA_DONE = 0;

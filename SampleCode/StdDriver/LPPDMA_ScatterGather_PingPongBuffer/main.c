@@ -64,8 +64,9 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
         LPPDMA_CLR_TD_FLAG(LPPDMA, LPPDMA_TDSTS_TDIF2_Msk);
     }
 
-	// CPU read interrupt flag register to wait write(clear) instruction completement.
-	u32Status = LPPDMA_GET_INT_STATUS(LPPDMA);
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = LPPDMA_GET_INT_STATUS(LPPDMA);
+    NVT_UNUSED(u32Status);
 }
 
 static void SYS_Init(void)

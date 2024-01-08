@@ -96,7 +96,7 @@ int BoardInit(void)
     SYS_LockReg();                   /* Unlock register lock protect */
 
 #if 0
-    HyperFlash_Init(HYPERFLASH_SPIM_PORT);
+    HyperFlash_Init(HYPERFLASH_SPIM_PORT, 1);
     /* Enter direct-mapped mode to run new applications */
     SPIM_HYPER_EnterDirectMapMode(HYPERFLASH_SPIM_PORT);
 

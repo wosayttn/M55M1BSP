@@ -42,10 +42,11 @@ NVT_ITCM void PMC_IRQHandler(void)
     {
         g_u8SlvPWRDNWK = PMC->INTSTS;
         PMC->INTSTS |= PMC_INTSTS_CLRWK_Msk;
-
         // CPU read interrupt flag register to wait write(clear) instruction completement.
         u32Status = PMC->INTSTS;
     }
+
+    NVT_UNUSED(u32Status);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/

@@ -45,7 +45,7 @@ uint32_t GetSystemCoreClock(void)
     return SystemCoreClock;
 }
 
-NVT_ITCM void HardFault_Handler(void)
+void HardFault_Handler(void)
 {
     PB0 = 0;
     printf("Secure Hard Fault Handler\n");
@@ -80,7 +80,8 @@ int main(void)
     FMC_Open();
     /* Check Secure/Non-secure base address configuration */
     printf("SCU->FNSADDR: 0x%08X, NSCBA:        0x%08X\n", SCU->FNSADDR, FMC_Read(FMC_NSCBA_BASE));
-    printf("SRAM0MPCLUT0: 0x%08X, SRAM1MPCLUT0: 0x%08X\n", SCU->SRAM0MPCLUT0, SCU->SRAM1MPCLUT0);
+    printf("SRAM0MPCLUT0: 0x%08X\n", SCU->SRAM0MPCLUT0);
+    printf("SRAM1MPCLUT0: 0x%08X\n", SCU->SRAM1MPCLUT0);
     printf("SRAM2MPCLUT0: 0x%08X\n", SCU->SRAM2MPCLUT0);
 
     /* Init GPIO Port A Pin 10 & 11 for Non-secure LED control */
@@ -88,7 +89,8 @@ int main(void)
     PA10_NS = 0;
     PA11_NS = 1;
 
-#if 0   // Set Hard Fault to Non-secure
+#if 0
+    // Set Hard Fault to Non-secure
     SCB->AIRCR = (0x05FA << SCB_AIRCR_VECTKEY_Pos) | ((SCB->AIRCR & 0xFFFF) | SCB_AIRCR_BFHFNMINS_Msk);
 #else   // Set Hard Fault to Secure
     SCB->AIRCR = (0x05FA << SCB_AIRCR_VECTKEY_Pos) | ((SCB->AIRCR & 0xFFFF) & ~SCB_AIRCR_BFHFNMINS_Msk);
@@ -98,18 +100,17 @@ int main(void)
         Warning: It is not recommended to set Hard Fault handler to be Non-secure.
         By default, the Hard Fault handler should be Secure.
     */
+    if (SCB->AIRCR & SCB_AIRCR_BFHFNMINS_Msk)
+    {
+        printf(" * Non-secure Hard Fault is handled by \"Non-secure code\".\n");
+    }
+    else
+    {
+        printf(" * Non-secure Hard Fault is handled by \"Secure code\".\n");
+    }
 
     do
     {
-        if (SCB->AIRCR & SCB_AIRCR_BFHFNMINS_Msk)
-        {
-            printf(" * Non-secure Hard Fault is handled by \"Non-secure code\".\n");
-        }
-        else
-        {
-            printf(" * Non-secure Hard Fault is handled by \"Secure code\".\n");
-        }
-
         printf("+------------------------------------------------------+\n");
         printf("| [0] Go Non-secure code                               |\n");
         printf("| [1] Write 0x%08X to generate Hard Fault          |\n", (uint32_t)FMC_APROM_BASE);

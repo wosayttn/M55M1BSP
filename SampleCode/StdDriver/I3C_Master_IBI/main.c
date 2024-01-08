@@ -132,6 +132,7 @@ int32_t main(void)
         if ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0U)
         {
             chTrgIO = (char)DEBUG_PORT->DAT;
+            NVT_UNUSED(chTrgIO);
             printf("press any key to Write I3C Target \n");
             getchar();
             ret = I3C_Write(I3C0, 0, I3C_DEVI3C_SPEED_SDR0, (uint32_t *)g_TxBuf, 16);

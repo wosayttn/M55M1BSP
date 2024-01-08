@@ -31,7 +31,7 @@
 #include "NuMicro.h"
 #include "massstorage.h"
 
-#define CRYSTAL_LESS        1
+#define CRYSTAL_LESS        0
 #define TRIM_INIT           (SYS_BASE+0xF40)
 
 void SetDebugUartCLK(void)

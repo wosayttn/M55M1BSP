@@ -12,7 +12,7 @@
 #include "NuMicro.h"
 #include "hid_mousekeyboard.h"
 
-#define CRYSTAL_LESS        1
+#define CRYSTAL_LESS        0
 #define TRIM_INIT           (SYS_BASE+0xF40)
 
 void SetDebugUartCLK(void)
@@ -151,6 +151,7 @@ int32_t main(void)
 
     /* Init UART to 115200-8n1 for print message */
     InitDebugUart();
+
     /* Lock protected registers */
     SYS_LockReg();
 

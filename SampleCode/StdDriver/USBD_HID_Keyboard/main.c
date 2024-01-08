@@ -11,7 +11,7 @@
 #include "NuMicro.h"
 #include "hid_kb.h"
 
-#define CRYSTAL_LESS        1
+#define CRYSTAL_LESS        0
 #define TRIM_INIT           (SYS_BASE+0xF40)
 
 /*--------------------------------------------------------------------------*/
@@ -119,7 +119,7 @@ void SYS_Init(void)
 
     /*Setting the BNT1(Button)(PH1) */
     SET_GPIO_PH1();
-    GPIO_SetMode(PH,BIT1,GPIO_MODE_QUASI);
+    GPIO_SetMode(PH, BIT1, GPIO_MODE_QUASI);
 
 }
 
@@ -204,7 +204,7 @@ int32_t main(void)
     printf("+--------------------------------------------------------+\n");
     printf("|          NuMicro USB HID Keyboard Sample Code          |\n");
     printf("+--------------------------------------------------------+\n");
-    printf("If PH.0 = 0 or press BTN0 button, just report it is key 'a'.\n");
+    printf("If PH.1 = 0 or press BTN0 button, just report it is key 'a'.\n");
 
     USBD_Open(&gsInfo, HID_ClassRequest, NULL);
 

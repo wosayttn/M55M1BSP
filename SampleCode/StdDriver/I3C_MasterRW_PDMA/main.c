@@ -194,7 +194,6 @@ int32_t I3C_WritePDMA(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_
   */
 int32_t I3C_ReadPDMA(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_t *pu32RxBuf, uint16_t u16ReadBytes)
 {
-    uint32_t i;
     uint32_t u32TimeOutCount = (SystemCoreClock / 1000);
     uint32_t response;
 

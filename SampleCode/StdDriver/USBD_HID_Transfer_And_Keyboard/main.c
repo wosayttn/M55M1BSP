@@ -12,7 +12,7 @@
 #include "NuMicro.h"
 #include "hid_transfer_and_keyboard.h"
 
-#define CRYSTAL_LESS        1
+#define CRYSTAL_LESS        0
 #define TRIM_INIT           (SYS_BASE+0xF40)
 
 void SetDebugUartCLK(void)
