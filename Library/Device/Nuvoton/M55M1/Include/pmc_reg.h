@@ -1225,8 +1225,9 @@ typedef struct
 #define PMC_LPSYSRPC_PCBUSY_Pos          (31)                                              /*!< PMC_T::LPSYSRPC: PCBUSY Position       */
 #define PMC_LPSYSRPC_PCBUSY_Msk          (0x1ul << PMC_LPSYSRPC_PCBUSY_Pos)                /*!< PMC_T::LPSYSRPC: PCBUSY Mask           */
 
-/**@}*/ /* PMC_CONST */
-/**@}*/ /* end of PMC register group */
+/** @} PMC_CONST */
+/** @} end of PMC register group */
+/** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
     #pragma no_anon_unions

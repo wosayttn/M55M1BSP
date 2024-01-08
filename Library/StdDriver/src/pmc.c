@@ -131,7 +131,7 @@ int32_t PMC_SetPowerRegulator(uint32_t u32PowerRegulator)
   *             - \ref PMC_SYSRB2PC_SRAM2PMS_Msk       : 0x2022_0000 - 0x2022_FFFF
   *             - \ref PMC_SYSRB2PC_SRAM3PMS_Msk       : 0x2023_0000 - 0x2023_FFFF
   *             - \ref PMC_SYSRB2PC_SRAM4PMS_Msk       : 0x2024_0000 - 0x2024_FFFF
-  *             - \ref PMC_SYSRB3PC_SRAM0PMS_Msk       : 0x2030_0000 - 0x2030_1FFF
+  *             - \\ref PMC_SYSRB3PC_SRAM0PMS_Msk       : 0x2030_0000 - 0x2030_1FFF  // TESTCHIP_ONLY not support
   *             - \ref PMC_LPSYSRPC_SRAM0PMS_Msk       : 0x2031_0000 - 0x2031_0FFF
   * @param[in]  u32PowerMode is SRAM power mode. Including :
   *             - \ref PMC_SYSRB0PC_SRAM_NORMAL
@@ -143,9 +143,9 @@ int32_t PMC_SetPowerRegulator(uint32_t u32PowerRegulator)
   *             - \ref PMC_SYSRB2PC_SRAM_NORMAL
   *             - \ref PMC_SYSRB2PC_SRAM_RETENTION
   *             - \ref PMC_SYSRB2PC_SRAM_POWER_SHUT_DOWN
-  *             - \ref PMC_SYSRB3PC_SRAM_NORMAL             // TESTCHIP_ONLY not support
-  *             - \ref PMC_SYSRB3PC_SRAM_RETENTION          // TESTCHIP_ONLY not support
-  *             - \ref PMC_SYSRB3PC_SRAM_POWER_SHUT_DOWN    // TESTCHIP_ONLY not support
+  *             - \\ref PMC_SYSRB3PC_SRAM_NORMAL             // TESTCHIP_ONLY not support
+  *             - \\ref PMC_SYSRB3PC_SRAM_RETENTION          // TESTCHIP_ONLY not support
+  *             - \\ref PMC_SYSRB3PC_SRAM_POWER_SHUT_DOWN    // TESTCHIP_ONLY not support
   *             - \ref PMC_LPSYSRPC_SRAM_NORMAL
   *             - \ref PMC_LPSYSRPC_SRAM_RETENTION
   *             - \ref PMC_LPSYSRPC_SRAM_POWER_SHUT_DOWN
@@ -276,13 +276,13 @@ void PMC_Idle(void)
   * @param[in]  u32PowerDownMode is power down mode index. Including :
   *             - \ref PMC_NPD0
   *             - \ref PMC_NPD1
-  *             - \ref PMC_NPD2 // TESTCHIP_ONLY not support
-  *             - \ref PMC_NPD3 // TESTCHIP_ONLY not support
-  *             - \ref PMC_NPD4 // TESTCHIP_ONLY not support
+  *             - \\ref  PMC_NPD2 // TESTCHIP_ONLY not support
+  *             - \\ref  PMC_NPD3 // TESTCHIP_ONLY not support
+  *             - \\ref  PMC_NPD4 // TESTCHIP_ONLY not support
   *             - \ref PMC_SPD0
-  *             - \ref PMC_SPD1 // TESTCHIP_ONLY not support
+  *             - \\ref  PMC_SPD1 // TESTCHIP_ONLY not support
   *             - \ref PMC_DPD0
-  *             - \ref PMC_DPD1 // TESTCHIP_ONLY not support
+  *             - \\ref  PMC_DPD1 // TESTCHIP_ONLY not support
   * @param[in]  u32PowerLevel is power level setting. Including :
   *             - \ref PMC_PLCTL_PLSEL_PL0  : Supports system clock up to 240MHz.
   *             - \ref PMC_PLCTL_PLSEL_PL1  : Supports system clock up to 200MHz.
