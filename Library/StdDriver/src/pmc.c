@@ -240,8 +240,9 @@ void PMC_PowerDown(void)
 
     /* Disable SysTick interrupt and HIRC auto trim */
     SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
-    SYS->TCTL48M &= (~SYS_TCTL48M_FREQSEL_Msk);
-    SYS->TCTL12M &= (~SYS_TCTL12M_FREQSEL_Msk);
+    SYS->TCTL48M &= ~SYS_TCTL48M_FREQSEL_Msk;
+    SYS->TCTL12M &= ~SYS_TCTL12M_FREQSEL_Msk;
+    SYS->TCTLMIRC &= ~SYS_TCTLMIRC_FREQSEL_Msk;
 
     /* Chip enter Power-down mode after CPU run WFI instruction */
     __WFI();
