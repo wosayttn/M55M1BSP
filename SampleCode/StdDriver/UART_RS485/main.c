@@ -333,7 +333,7 @@ void RS485_FunctionTest()
     printf("|  ______                                 _______             |\n");
     printf("| |      |                               |       |            |\n");
     printf("| |Master|---TXD(PA.3) <===> RXD(PA.2)---| Slave |            |\n");
-    printf("| |      |---RTS(PA.0) <===> RTS(PA.0)---|       |            |\n");
+    printf("| |      |---CTS(PA.1) <===> RTS(PA.0)---|       |            |\n");
     printf("| |______|                               |_______|            |\n");
     printf("|                                                             |\n");
     printf("+-------------------------------------------------------------+\n\n");

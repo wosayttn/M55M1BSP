@@ -104,17 +104,11 @@ DESC_HUB_T;
 /*--------------------------------------------------------------------------*/
 /*   Port reset retry and time-out settings                                 */
 /*--------------------------------------------------------------------------*/
-#ifndef __PLDM_EMU__
-    #define HUB_DEBOUNCE_TIME              500      /* Hub connect/disconnect de-bounce time in ms     */
-    #define PORT_RESET_RETRY               1        /* port reset retry times                          */
-    #define PORT_RESET_TIME_MS             50       /* port reset time (ms)                            */
-    #define PORT_RESET_RETRY_INC_MS        250      /* increased reset time (ms) after reset failed    */
-#else
-    #define HUB_DEBOUNCE_TIME              1        /* Hub connect/disconnect de-bounce time in ms     */
-    #define PORT_RESET_RETRY               1        /* port reset retry times                          */
-    #define PORT_RESET_TIME_MS             20       /* port reset time (ms)                            */
-    #define PORT_RESET_RETRY_INC_MS        250      /* increased reset time (ms) after reset failed    */
-#endif
+#define HUB_DEBOUNCE_TIME              500      /* Hub connect/disconnect de-bounce time in ms     */
+#define PORT_RESET_RETRY               1        /* port reset retry times                          */
+#define PORT_RESET_TIME_MS             50       /* port reset time (ms)                            */
+#define PORT_RESET_RETRY_INC_MS        250      /* increased reset time (ms) after reset failed    */
+
 
 #define HUB_STATUS_MAX_BYTE            2        /* maximum number of interrupt-in status bytes     */
 /* 2 can support up to 16 port hubs                */
