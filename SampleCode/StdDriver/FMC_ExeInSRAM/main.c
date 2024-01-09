@@ -61,15 +61,12 @@ int32_t main(void)
     printf("+--------------------------------------------+\n");
     printf("| M55M1 FMC Code Execute in SRAM Sample Code |\n");
     printf("+--------------------------------------------+\n");
-
-    /* SysTick used for test interrupts in SRAM */
-    SysTick_Config(SystemCoreClock / 1000);
-
     /*
        This sample code demonstrates how to make a sub-routine code executed in SRAM.
     */
-
     printf("Will branch to SRAM address: 0x%08X\n", (uint32_t)FlashAccess_OnSRAM);
+    /* SysTick used for test interrupts in SRAM */
+    SysTick_Config(SystemCoreClock / 1000);
 
     if (FlashAccess_OnSRAM())
     {
