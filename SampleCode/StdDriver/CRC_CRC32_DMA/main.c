@@ -148,7 +148,7 @@ int main(void)
     /* Configure CRC controller for CRC-CRC32 mode */
     CRC_Open(CRC_32, (CRC_WDATA_RVS | CRC_CHECKSUM_RVS | CRC_CHECKSUM_COM), 0xFFFFFFFF, CRC_CPU_WDATA_32);
     /* Start to execute CRC-CRC32 operation */
-    for (addr = 0; addr < size; addr += 4)
+    for (addr = FMC_APROM_BASE; addr < (FMC_APROM_BASE + size); addr += 4)
     {
         CRC_WRITE_DATA(inpw(addr));
     }
@@ -157,11 +157,11 @@ int main(void)
     /*  Case b. */
     /* Configure CRC controller for CRC-CRC32 mode */
     CRC_Open(CRC_32, (CRC_WDATA_RVS | CRC_CHECKSUM_RVS | CRC_CHECKSUM_COM), 0xFFFFFFFF, CRC_CPU_WDATA_32);
-    u32PDMAChecksum = GetDMAMasterChecksum(0x0, size);
+    u32PDMAChecksum = GetDMAMasterChecksum(FMC_APROM_BASE, size);
 
     printf("APROM first %d bytes checksum:\n", size);
     printf("   - by CPU write:   0x%x\n", u32CRC32Checksum);
-    printf("   - by DMA write:  0x%x\n", u32PDMAChecksum);
+    printf("   - by DMA write:   0x%x\n", u32PDMAChecksum);
 
     if ((u32CRC32Checksum) == (u32PDMAChecksum))
     {

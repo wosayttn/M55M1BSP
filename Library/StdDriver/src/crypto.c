@@ -314,7 +314,7 @@ void SHA_Open(CRYPTO_T *crypto, uint32_t u32OpMode, uint32_t u32SwapType, uint32
 void SHA_Start(CRYPTO_T *crypto, uint32_t u32DMAMode)
 {
     crypto->HMAC_CTL &= ~(0x7UL << CRYPTO_HMAC_CTL_DMALAST_Pos);
-    crypto->HMAC_CTL |= CRYPTO_HMAC_CTL_START_Msk | (u32DMAMode << CRYPTO_HMAC_CTL_DMALAST_Pos);
+    crypto->HMAC_CTL |= CRYPTO_HMAC_CTL_START_Msk |  (u32DMAMode << CRYPTO_HMAC_CTL_DMALAST_Pos);
 }
 
 /**
@@ -367,7 +367,8 @@ void SHA_Read(CRYPTO_T *crypto, uint32_t u32Digest[])
 
     reg_addr = (void *)((uint32_t)&(crypto->HMAC_DGST[0]));
     
-    memcpy((void *)reg_addr, (void *)u32Digest, wcnt);
+    memcpy((void *)u32Digest, (void *)reg_addr, wcnt*8);
+
 }
 
 /** @cond HIDDEN_SYMBOLS */
