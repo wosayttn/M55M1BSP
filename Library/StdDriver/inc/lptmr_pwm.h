@@ -423,6 +423,24 @@ extern "C"
   */
 #define LPTPWM_SET_IFACNT(lptmr, cnt)         ((lptmr)->PWMIFA = (((lptmr)->PWMIFA&~LPTMR_PWMIFA_IFACNT_Msk) | ((cnt)<<LPTMR_PWMIFA_IFACNT_Pos)))
 
+#define LPTPWM_ENABLE_IFA(lptmr)              ((lptmr)->PWMIFA |= LPTMR_PWMIFA_IFAEN_Msk)
+#define LPTPWM_DISABLE_IFA(lptmr)             ((lptmr)->PWMIFA &= ~LPTMR_PWMIFA_IFAEN_Msk)
+#define LPTPWM_ENABLE_IFA_STOPCNT(lptmr)      ((lptmr)->PWMIFA |= LPTMR_PWMIFA_STPMOD_Msk)
+#define LPTPWM_DISABLE_IFA_STOPCNT(lptmr)     ((lptmr)->PWMIFA &= ~LPTMR_PWMIFA_STPMOD_Msk)
+#define LPTPWM_ENABLE_IFA_TRGLPPDMA(lptmr)      ((lptmr)->PWMAPDMACTL |= LPTMR_PWMAPDMACTL_APDMAEN_Msk)
+#define LPTPWM_DISABLE_IFA_TRGLPPDMA(lptmr)     ((lptmr)->PWMAPDMACTL &= ~LPTMR_PWMAPDMACTL_APDMAEN_Msk)
+
+#define LPTPWM_GET_IFA_INT_FLAG(lptmr)        (((lptmr)->PWMAINTSTS&LPTMR_PWMAINTSTS_IFAIF_Msk)? 1:0)
+#define LPTPWM_CLR_IFA_INT_FLAG(lptmr)        ((lptmr)->PWMAINTSTS = LPTMR_PWMAINTSTS_IFAIF_Msk)
+#define LPTPWM_ENABLE_IFA_INT(lptmr)          ((lptmr)->PWMAINTEN |= LPTMR_PWMAINTEN_IFAIEN_Msk)
+#define LPTPWM_DISABLE_IFA_INT(lptmr)         ((lptmr)->PWMAINTEN &= ~LPTMR_PWMAINTEN_IFAIEN_Msk)
+
+uint32_t LPTPWM_ConfigOutputFreqAndDuty(LPTMR_T *lptmr, uint32_t u32Frequency, uint32_t u32DutyCycle);
+void LPTPWM_EnableCounter(LPTMR_T *lptmr);
+void LPTPWM_DisableCounter(LPTMR_T *lptmr);
+void LPTPWM_EnableTrigger(LPTMR_T *lptmr, uint32_t u32TargetMask, uint32_t u32Condition);
+void LPTPWM_DisableTrigger(LPTMR_T *lptmr, uint32_t u32TargetMask);
+
 /* Declare these inline functions here to avoid MISRA C 2004 rule 8.1 error */
 __STATIC_INLINE void LPTPWM_EnableWakeup(LPTMR_T *lptmr);
 __STATIC_INLINE void LPTPWM_DisableWakeup(LPTMR_T *lptmr);
