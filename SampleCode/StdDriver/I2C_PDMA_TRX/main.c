@@ -379,8 +379,8 @@ static void SYS_Init(void)
     CLK_EnableModuleClock(I2C0_MODULE);
     CLK_EnableModuleClock(I2C1_MODULE);
     /* Set multi-function pins for I2C0 SDA and SCL */
-    SET_I2C0_SDA_PA4();
-    SET_I2C0_SCL_PA5();
+    SET_I2C0_SDA_PB4();
+    SET_I2C0_SCL_PB5();
     /* Set multi-function pins for I2C1 SDA and SCL */
     SET_I2C1_SCL_PB1();
     SET_I2C1_SDA_PB0();
@@ -456,7 +456,7 @@ void PDMA_Init(void)
 
 void I2C_PDMA(void)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     for (i = 0; i < PDMA_TEST_LENGTH; i++)
     {
@@ -480,8 +480,17 @@ void I2C_PDMA(void)
     s_I2C0HandlerFn = (I2C_FUNC)I2C_PDMA_MasterTx;
     /* Send START condition, start the PDMA data transmit */
     I2C_START(I2C0);
+    u32TimeOutCnt = I2C_TIMEOUT;
 
-    while (!PDMA_DONE);
+    while (!PDMA_DONE)
+    {
+        if (--u32TimeOutCnt == 0)
+        {
+            printf("Wait for I2C Tx finish time-out!\n");
+
+            while (1);
+        }
+    }
 
     /* Disable I2C0 PDMA TX mode */
     I2C0->CTL1 &= ~I2C_CTL1_TXPDMAEN_Msk;
@@ -513,8 +522,17 @@ void I2C_PDMA(void)
     PDMA_DONE = 0;
     /* Send START condition */
     I2C_START(I2C0);
+    u32TimeOutCnt = I2C_TIMEOUT;
 
-    while (!PDMA_DONE);
+    while (!PDMA_DONE)
+    {
+        if (--u32TimeOutCnt == 0)
+        {
+            printf("Wait for I2C Rx finish time-out!\n");
+
+            while (1);
+        }
+    }
 
     /* Disable I2C0 PDMA RX mode */
     I2C0->CTL1 &= ~I2C_CTL1_RXPDMAEN_Msk;
