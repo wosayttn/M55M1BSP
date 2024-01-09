@@ -134,8 +134,10 @@ __WEAK void InitDebugUart(void)
  * @brief    Init MPU Region
  *
  * @param    psMPURegion        User defined MPU region configuration table
- * @return   u32RegionCnt       Region count of psMPURegion
+ * @param    u32RegionCnt       Region count of psMPURegion
  *
+ * @return   0: Init success
+ *           < 0: Init failed
  * @details  Initialize MPU Region according to mpu_config_M55M1.h
  */
 __WEAK int32_t InitPreDefMPURegion(const ARM_MPU_Region_t *psMPURegion, uint32_t u32RegionCnt)
