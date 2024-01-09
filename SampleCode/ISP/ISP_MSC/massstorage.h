@@ -92,8 +92,8 @@ static __INLINE uint32_t get_be32(uint8_t *buf)
 /******************************************************************************/
 /*                USBD Mass Storage Structure                                 */
 /******************************************************************************/
-/** @addtogroup M252_USBD_Mass_Exported_Struct M252 USBD Mass Exported Struct
-  M252 USBD Mass Specific Struct
+/** @addtogroup USBD_Mass_Exported_Struct USBD Mass Exported Struct
+  USBD Mass Specific Struct
   @{
 */
 
