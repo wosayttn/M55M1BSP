@@ -201,10 +201,10 @@ void UART_DataWakeUp(void)
     /* Set UART data wake-up start bit compensation value.
        It indicates how many clock cycle selected by UART_CLK does the UART controller can get the first bit (start bit)
        when the device is wake-up from power-down mode.
-       If UART_CLK is selected as HIRC(12MHz) and the HIRC stable time is about 52.03us,
-       the data wake-up start bit compensation value can be set as 0x270. */
+       If UART_CLK is selected as HIRC(12MHz) and the HIRC stable time is about 2us,
+       the data wake-up start bit compensation value can be set as 0x20. */
     UART_Open(UART1, 9600);
-    UART1->DWKCOMP = 0x270;
+    UART1->DWKCOMP = 0x20;
 
     printf("System enter to Power-down mode NPD%d.\n", (int)(TEST_POWER_DOWN_MODE));
     printf("Send data with baud rate 9600bps to UART1 to wake-up system.\n\n");
