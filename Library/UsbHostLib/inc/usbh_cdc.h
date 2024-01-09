@@ -188,11 +188,8 @@ typedef struct cdc_dev_t
     struct cdc_dev_t    *next;
 }   CDC_DEV_T;
 
-/*@}*/ /* end of group USBH_EXPORTED_STRUCTURES */
+/** @} end of group USBH_EXPORTED_STRUCTURES */
 
-/*@}*/ /* end of group USBH_Library */
-
-/*@}*/ /* end of group Library */
 
 #ifdef __cplusplus
 }

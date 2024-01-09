@@ -96,7 +96,7 @@ extern "C"
   *
   *
   * @details    This macro clears WDT time-out wake-up system flag.
-  * \hideinitializerw
+  * \hideinitializer
   */
 #define WDT_CLEAR_TIMEOUT_WAKEUP_FLAG(wdt) (wdt->STATUS= (wdt->STATUS & ~(WDT_STATUS_RSTF_Msk | WDT_STATUS_IF_Msk)) | WDT_STATUS_WKF_Msk)
 

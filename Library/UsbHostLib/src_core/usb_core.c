@@ -1064,21 +1064,15 @@ int  connect_device(UDEV_T *udev)
 
     USB_debug("Connect device =>\n");
 
-#ifndef __PLDM_EMU__
     delay_us(100 * 1000);                   /* initially, give 100 ms delay               */
-#else
-    delay_us(12 * 1000);                   /* initially, give 100 ms delay               */
-#endif
+
     USB_debug("get device =>\n");
     usbh_get_device_descriptor(udev, &udev->descriptor);
 
     reset_device(udev);
     USB_debug("reset device =>\n");
-#ifndef __PLDM_EMU__
+
     delay_us(100 * 1000);                   /* initially, give 100 ms delay               */
-#else
-    delay_us(12 * 1000);                   /* initially, give 100 ms delay               */
-#endif
 
     ret = usbh_set_address(udev);
 
@@ -1088,12 +1082,7 @@ int  connect_device(UDEV_T *udev)
         return ret;
     }
 
-#ifndef __PLDM_EMU__
     delay_us(100 * 1000);                   /* initially, give 100 ms delay               */
-#else
-    delay_us(1 * 1000);                   /* initially, give 100 ms delay               */
-#endif
-
 
     USB_debug("New %s device address %d assigned.\n", (udev->speed == SPEED_HIGH) ? "high-speed" : ((udev->speed == SPEED_FULL) ? "full-speed" : "low-speed"), udev->dev_num);
 
@@ -1236,11 +1225,9 @@ int  usbh_reset_device(UDEV_T *udev)
     USB_debug("Port device =>\n");
     reset_device(udev);
 
-#ifndef __PLDM_EMU__
+
     delay_us(100 * 1000);                   /* initially, give 100 ms delay               */
-#else
-    delay_us(1 * 1000);                   /* initially, give 100 ms delay               */
-#endif
+
 
     /*------------------------------------------------------------------------------------*/
     /*  Set address (use current address)                                                 */
@@ -1257,11 +1244,7 @@ int  usbh_reset_device(UDEV_T *udev)
     if (ret < 0)
         return ret;
 
-#ifndef __PLDM_EMU__
     delay_us(100 * 1000);                   /* after set address, give 100 ms delay       */
-#else
-    delay_us(1 * 1000);                   /* after set address, give 100 ms delay       */
-#endif
 
     /*------------------------------------------------------------------------------------*/
     /*  Get device descriptor                                                             */
