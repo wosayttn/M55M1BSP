@@ -18,6 +18,8 @@
 #include "usbh_hid.h"
 #include "hid_mouse.h"
 
+#define USE_USB_APLL1_CLOCK         1
+
 #ifdef __ICCARM__
     #pragma data_alignment=32
     uint8_t  g_buff_pool[1024];
@@ -295,6 +297,11 @@ void SYS_Init(void)
     /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
 
+#if (USE_USB_APLL1_CLOCK)
+    /* Enable APLL1 96MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);    
+#endif
+    
     /* Enable GPIOA module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
@@ -307,8 +314,14 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOI_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
 
-    /* Select USBH module clock source */
+#if (USE_USB_APLL1_CLOCK)
+    /* USB Host desired input clock is 48 MHz. Set as APLL1 divided by 2 (96/2 = 48) */
+    CLK_SetModuleClock(USBH0_MODULE, CLK_USBSEL_USBSEL_APLL1_DIV2, CLK_USBDIV_USBDIV(1));
+#else
+    /* USB Host desired input clock is 48 MHz. Set as HIRC48M divided by 1 (48/1 = 48) */
     CLK_SetModuleClock(USBH0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
+#endif
+
     /* Enable USBH module clock */
     CLK_EnableModuleClock(USBH0_MODULE);
     /* Enable USBD module clock */
