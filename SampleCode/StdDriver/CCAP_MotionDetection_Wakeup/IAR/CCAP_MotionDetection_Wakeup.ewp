@@ -293,7 +293,7 @@
                 </option>
                 <option>
                     <name>CCDebugInfo</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IEndianMode</name>
@@ -665,7 +665,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>CCAP_MotionDetection.bin</state>
+                    <state>CCAP_MotionDetection_Wakeup.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -704,7 +704,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>CCAP_MotionDetection.out</state>
+                    <state>CCAP_MotionDetection_Wakeup.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -1001,7 +1001,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>CCAP_MotionDetection_import_lib.o</state>
+                    <state>CCAP_MotionDetection_Wakeup_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>

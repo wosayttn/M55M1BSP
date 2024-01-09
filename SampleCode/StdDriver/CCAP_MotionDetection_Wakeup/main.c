@@ -215,19 +215,19 @@ int32_t PacketMotionDetection(S_SENSOR_INFO *psSensorInfo)
      *   If (sum of all windows diff of two frame) > (global motion detection threshold),
          CCAP will trigger MD1 interrupt (CCAP_INTSTS_MDINTF_MODE1_Msk).
      */
-    CCAP_MD_SET_TOTAL_THRESHOLD(0xA000);
+    CCAP_MD_SET_TOTAL_THRESHOLD(0x8000 * CCAP_MD_WINDOW_CNT);
 
     /* Set window motion detection threshold, maximum value is 0x12AD4
      *   If (window diff of two frame) > (window motion detection threshold), overflow window count is increment by 1.
      */
-    for (i = 0; i < 16; i++)
-        CCAP_MD_SET_WIN_THRESHOLD(i, 0x1000);
+    for (i = 0; i < CCAP_MD_WINDOW_CNT; i++)
+        CCAP_MD_SET_WIN_THRESHOLD(i, 0x5000);
 
     /* Set overflow window count threshold, maximum value is 15.
      *   If overflow window count > overflow window count threshold,
      *   CCAP will trigger MD2 interrupt (CCAP_INTSTS_MDINTF_MODE2_Msk).
      */
-    CCAP_MD_SET_OVERFLOW_WIN_THRESHOLD(8);
+    CCAP_MD_SET_OVERFLOW_WIN_THRESHOLD(10);
     /* Configure CCAPEN(CCAP_CTL[0]) to disable the capture interface. */
     CCAP_Close();
 

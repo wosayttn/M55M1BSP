@@ -21,7 +21,7 @@ uint32_t g_au32CachedBuf_WT[DCACHE_ALIGN_LINE_SIZE(TEST_BUF_SIZE / 4)] __ALIGNED
 uint32_t g_au32CachedBuf_WB[DCACHE_ALIGN_LINE_SIZE(TEST_BUF_SIZE / 4)] __ALIGNED(DCACHE_LINE_SIZE);
 uint32_t g_au32PDMA_DstBuf [DCACHE_ALIGN_LINE_SIZE(TEST_BUF_SIZE / 4)] __ALIGNED(DCACHE_LINE_SIZE);
 
-NVT_ITCM void MemManage_Handler(void)
+void MemManage_Handler(void)
 {
     uint32_t u32LR = 0;
     uint32_t *pu32SP;
@@ -141,6 +141,17 @@ int32_t TestCacheWrite(uint32_t *pu32BaseAddr, uint32_t u32ByteSize, uint32_t bW
     for (i = 0; i < (sizeof(au8TestPattern) / sizeof(au8TestPattern[0])); i++)
     {
         memset(pu32BaseAddr, 0x0, u32ByteSize);
+
+        // Check buffer all 0
+        for (u32Offset = 0; u32Offset < u32ByteSize; u32Offset += 4)
+        {
+            if (pu32BaseAddr[u32Offset / 4] != 0)
+            {
+                printf("[Error] CPU read (0x%08X != 0) !\n", pu32BaseAddr[u32Offset / 4]);
+                return -1;
+            }
+        }
+
         /* Write data with CPU */
         /* Write back mode   : data is write to cache
          * Write through mode: data is write to cache and memory
@@ -153,7 +164,7 @@ int32_t TestCacheWrite(uint32_t *pu32BaseAddr, uint32_t u32ByteSize, uint32_t bW
         }
 
         /* Check with CPU */
-        printf("CPU check ");
+        printf("  CPU check - ");
 
         for (u32Offset = 0; u32Offset < u32ByteSize; u32Offset += 4)
         {
@@ -315,7 +326,7 @@ void MPU_TestWB_WT(void)
         printf("[Error] !\n");
 
     printf("\n----------------------------------------------\n");
-    printf(" CleanDCache after PDMA transfer\n");
+    printf(" CleanDCache before PDMA transfer\n");
     printf("----------------------------------------------\n");
 
     if (TestCacheWrite(g_au32CachedBuf_WB, TEST_BUF_SIZE, WB(TRUE), CLEAN_DCACHE(TRUE)) != 0)
@@ -332,8 +343,8 @@ int main()
     printf("+------------------------------------------+\n");
     printf("|    M55M1 MPU Cache Update Sample Code    |\n");
     printf("+------------------------------------------+\n");
-    printf("MPU region count: %d\n", (uint32_t)(MPU->TYPE & MPU_TYPE_DREGION_Msk) >> MPU_TYPE_DREGION_Pos);
-    printf("Address and size of cacheable buffer must be 32 byte alignment.\n");
+    printf("[Info] Total MPU region count: %d\n", (uint32_t)(MPU->TYPE & MPU_TYPE_DREGION_Msk) >> MPU_TYPE_DREGION_Pos);
+    printf("[Info] Address and size of cacheable buffer must be 32 byte alignment.\n");
     MPU_TestWB_WT();
 
     printf("\nDone\n");
