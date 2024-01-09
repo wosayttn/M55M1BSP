@@ -768,7 +768,7 @@ void QSPI_ClearIntFlag(QSPI_T *qspi, uint32_t u32Mask)
   *                       - \ref QSPI_TX_EMPTY_MASK
   *                       - \ref QSPI_TX_FULL_MASK
   *                       - \ref QSPI_TXRX_RESET_MASK
-  *                       - \ref QSPI_QSPIEN_STS_MASK
+  *                       - \ref QSPI_SPIEN_STS_MASK
   *                       - \ref QSPI_SSLINE_STS_MASK
   *
   * @return Flags of selected sources.

@@ -359,22 +359,33 @@ typedef enum
   * @param[in]  flag The combination of the specified interrupt flags.
   *             Each bit corresponds to a interrupt source.
   *             This parameter decides which interrupt flags will be cleared.
-  *             - \ref SCU_SVINTSTS0_APB0IF_Msk
-  *             - \ref SCU_SVINTSTS0_APB1IF_Msk
-  *             - \ref SCU_SVINTSTS0_GPIOIF_Msk
-  *             - \ref SCU_SVINTSTS0_EBIIF_Msk
-  *             - \ref SCU_SVINTSTS0_USBHIF_Msk
-  *             - \ref SCU_SVINTSTS0_CRCIF_Msk
-  *             - \ref SCU_SVINTSTS0_SDH0IF_Msk
-  *             - \ref SCU_SVINTSTS0_PDMA0IF_Msk
-  *             - \ref SCU_SVINTSTS0_PDMA1IF_Msk
-  *             - \ref SCU_SVINTSTS0_SRAM0IF_Msk
-  *             - \ref SCU_SVINTSTS0_SRAM1IF_Msk
-  *             - \ref SCU_SVINTSTS0_FMCIF_Msk
-  *             - \ref SCU_SVINTSTS0_FLASHIF_Msk
-  *             - \ref SCU_SVINTSTS0_SCUIF_Msk
-  *             - \ref SCU_SVINTSTS0_SYSIF_Msk
-  *             - \ref SCU_SVINTSTS0_CRPTIF_Msk
+  *             - \ref eSCU_INT_IDX_APB0  \ref eSCU_INT_IDX_APB1  \ref eSCU_INT_IDX_APB2
+  *             - \ref eSCU_INT_IDX_APB3  \ref eSCU_INT_IDX_APB4  \ref eSCU_INT_IDX_APB5
+  *             - \ref eSCU_INT_IDX_D0PPC0  \ref eSCU_INT_IDX_D1PPC0
+  *             - \ref eSCU_INT_IDX_D1PPC1  \ref eSCU_INT_IDX_D2PPC0
+  *             - \ref eSCU_INT_IDX_EBI
+  *             - \ref eSCU_INT_IDX_GDMA
+  *             - \ref eSCU_INT_IDX_PDMA0  \ref eSCU_INT_IDX_PDMA1
+  *             - \ref eSCU_INT_IDX_USBH0  \ref eSCU_INT_IDX_HSUSBH
+  *             - \ref eSCU_INT_IDX_HSUSBD
+  *             - \ref eSCU_INT_IDX_SDH0
+  *             - \ref eSCU_INT_IDX_SDH1
+  *             - \ref eSCU_INT_IDX_EMAC
+  *             - \ref eSCU_INT_IDX_CRYPTO
+  *             - \ref eSCU_INT_IDX_CRC
+  *             - \ref eSCU_INT_IDX_LPPDMA
+  *             - \ref eSCU_INT_IDX_CCAP
+  *             - \ref eSCU_INT_IDX_NPUIF1
+  *             - \ref eSCU_INT_IDX_NPUIF0
+  *             - \ref eSCU_INT_IDX_SPIM0
+  *             - \ref eSCU_INT_IDX_SPIM1
+  *             - \ref eSCU_INT_IDX_SRAM0_MPC
+  *             - \ref eSCU_INT_IDX_SRAM1_MPC
+  *             - \ref eSCU_INT_IDX_SRAM2_MPC
+  *             - \ref eSCU_INT_IDX_SRAM3_MPC
+  *             - \ref eSCU_INT_IDX_LPSRAM_MPC
+  *             - \ref eSCU_INT_IDX_SPIM0_MPC
+  *             - \ref eSCU_INT_IDX_SPIM1_MPC
   *
   * @return     None
   *

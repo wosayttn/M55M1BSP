@@ -13,11 +13,11 @@
   @{
 */
 
-/** @addtogroup KS_Driver Key Store Driver
+/** @addtogroup KS_Driver KS Driver
     @{
 */
 
-/** @addtogroup KS_EXPORTED_FUNCTIONS Key Store Exported Functions
+/** @addtogroup KS_EXPORTED_FUNCTIONS KS Exported Functions
     @{
 */
 
@@ -138,8 +138,7 @@ int32_t KS_Read(KS_MEM_Type eMemType, int32_t i32KeyIdx, uint32_t au32Key[], uin
         u32Cont = KS_CTL_CONT_Msk;
         i32Cnt -= 8;
         offset += 8;
-    }
-    while (i32Cnt > 0);
+    } while (i32Cnt > 0);
 
     /* Check error flag */
     if (KS->STS & KS_STS_EIF_Msk)
@@ -212,7 +211,7 @@ uint32_t KS_GetKeyWordCnt(uint32_t u32Meta)
                                 \ref KS_META_PRIV
                                 \ref KS_META_NONPRIV
                                 \ref KS_META_SECURE
-                                \ref KS_META_NONSECUR
+                                \ref KS_META_NONSECURE
 
   * @param[out] au32Key     The buffer to store the key
   * @param[in]  u32WordCnt  The word (32-bit) count of the key buffer size
@@ -284,8 +283,7 @@ int32_t KS_Write(KS_MEM_Type eMemType, uint32_t u32Meta, uint32_t au32Key[])
                 return KS_ERR_TIMEOUT;
         }
 
-    }
-    while (i32Cnt > 0);
+    } while (i32Cnt > 0);
 
     /* Check error flag */
     if (KS->STS & KS_STS_EIF_Msk)
@@ -418,7 +416,6 @@ int32_t KS_LockOTPKey(int32_t i32KeyIdx)
   * @param[in]  eMemType    The memory type. It could be:
                             \ref KS_SRAM
                             \ref KS_FLASH
-  * @param[in]  i32KeyIdx   The key index to read
   * @retval     0           Successful
   * @retval     -1          Fail
   * @details    This function is used to erase all keys in SRAM or Flash of key store.
@@ -559,10 +556,9 @@ uint32_t KS_GetRemainKeyCount(KS_MEM_Type eMemType)
                                 \ref KS_META_PRIV
                                 \ref KS_META_NONPRIV
                                 \ref KS_META_SECURE
-                                \ref KS_META_NONSECUR
+                                \ref KS_META_NONSECURE
 
   * @param[out] au32Key     The buffer to store the key
-  * @param[in]  u32WordCnt  The word (32-bit) count of the key buffer size
   * @retval     Index of OTP key. Failed when index < 0.
   * @details    This function is used to write a key to OTP key store.
   */

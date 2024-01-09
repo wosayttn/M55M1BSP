@@ -10,12 +10,6 @@
 #ifndef __SPIM_HYPER_H__
 #define __SPIM_HYPER_H__
 
-#include <stdint.h>
-
-/*----------------------------------------------------------------------------*/
-/* Include related headers                                                    */
-/*----------------------------------------------------------------------------*/
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -33,15 +27,15 @@ extern "C"
   @{
 */
 // TESTCHIP_ONLY
-#define SPIM_HYPER_DMM0_SADDR               (0x80000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
-#define SPIM_HYPER_DMM0_NSADDR              (0x90000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
+#define SPIM_HYPER_DMM0_SADDR               (0x80000000UL)  /*!< SPIM0 DMM mode memory map base secure address */
+#define SPIM_HYPER_DMM0_NSADDR              (0x90000000UL)  /*!< SPIM1 DMM mode memory map base non secure address */
 
-//#define SPIM_HYPER_DMM0_SADDR               (0x82000000UL)  /*!< SPIM0 DMM mode memory map base secure address    \hideinitializer */
-//#define SPIM_HYPER_DMM0_NSADDR              (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
+//#define SPIM_HYPER_DMM0_SADDR               (0x82000000UL)  /*!< SPIM0 DMM mode memory map base secure address */
+//#define SPIM_HYPER_DMM0_NSADDR              (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address */
 
 // TESTCHIP_ONLY
-#define SPIM_HYPER_DMM1_SADDR               (0x82000000UL)  /*!< SPIM1 DMM mode memory map base secure address    \hideinitializer */
-#define SPIM_HYPER_DMM1_NSADDR              (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address    \hideinitializer */
+#define SPIM_HYPER_DMM1_SADDR               (0x82000000UL)  /*!< SPIM1 DMM mode memory map base secure address */
+#define SPIM_HYPER_DMM1_NSADDR              (0x92000000UL)  /*!< SPIM1 DMM mode memory map base non secure address */
 
 #if defined (SCU_INIT_D0PNS2_VAL) && (SCU_INIT_D0PNS2_VAL & SCU_D0PNS2_SPIM0_Msk)
 #define SPIM_HYPER_DMM0_ADDR                SPIM_HYPER_DMM0_NSADDR
@@ -55,9 +49,9 @@ extern "C"
 #define SPIM_HYPER_DMM1_ADDR                SPIM_HYPER_DMM1_SADDR
 #endif
 
-#define SPIM_HYPER_DMM_SIZE                 (0x2000000UL)       /*!< DMM mode memory mapping size        \hideinitializer */
+#define SPIM_HYPER_DMM_SIZE                 (0x2000000UL)       /*!< DMM mode memory mapping size */
 
-#define SPIM_HYPER_MAX_LATENCY              (0x20)              /*!< Maximum DLL training number        \hideinitializer */
+#define SPIM_HYPER_MAX_LATENCY              (0x20)              /*!< Maximum DLL training number */
 
 #define SPIM_HYPER_OP_ENABLE                (0x01UL)            /* SPIM_HYPER Operation Enable */
 #define SPIM_HYPER_OP_DISABLE               (0x00UL)            /* SPIM_HYPER Operation Disable */
@@ -73,10 +67,10 @@ extern "C"
 #define SPIM_HYPER_ERR_TIMEOUT              (-2L)           /*!< SPIM_HYPER operation abort due to timeout error */
 
 /* SPIM Hyper Operation Mode */
-#define SPIM_HYPER_OPMODE_IO                (0UL)           /*!< SPIM_CTL0: I/O Mode \hideinitializer */
-#define SPIM_HYPER_OPMODE_PAGEWRITE         (1UL)           /*!< SPIM_CTL0: Page Write Mode \hideinitializer */
-#define SPIM_HYPER_OPMODE_PAGEREAD          (2UL)           /*!< SPIM_CTL0: Page Read Mode \hideinitializer */
-#define SPIM_HYPER_OPMODE_DIRECTMAP         (3UL)           /*!< SPIM_CTL0: Direct Map Mode \hideinitializer */
+#define SPIM_HYPER_OPMODE_IO                (0UL)           /*!< SPIM_CTL0: I/O Mode */
+#define SPIM_HYPER_OPMODE_PAGEWRITE         (1UL)           /*!< SPIM_CTL0: Page Write Mode */
+#define SPIM_HYPER_OPMODE_PAGEREAD          (2UL)           /*!< SPIM_CTL0: Page Read Mode */
+#define SPIM_HYPER_OPMODE_DIRECTMAP         (3UL)           /*!< SPIM_CTL0: Direct Map Mode */
 
 /* SPIM Hyper Mode Command */
 #define SPIM_HYPER_CMD_IDLE                 (0x00000000)    /* Hyper Bus interface is Idle. */

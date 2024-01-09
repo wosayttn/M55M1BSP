@@ -14,11 +14,11 @@
     @{
 */
 
-/** @addtogroup KDF_Driver Key Derivation Function Driver
+/** @addtogroup KDF_Driver KDF Driver
     @{
 */
 
-/** @addtogroup KDF_EXPORTED_FUNCTIONS Key Derivation Function Exported Functions
+/** @addtogroup KDF_EXPORTED_FUNCTIONS KDF Exported Functions
     @{
 */
 
@@ -27,19 +27,19 @@ int32_t  g_KDF_i32ErrCode = eKDF_ERRCODE_SUCCESS;   /*!< KDF global error code *
 /**
   * @brief      Get key bit size
   * @param[in]  u32KeySizeSel       Output key size selection. It could be:
-  *                                 \ref KDF_KS_KEY_SIZE_128
-  *                                 \ref KDF_KS_KEY_SIZE_163
-  *                                 \ref KDF_KS_KEY_SIZE_192
-  *                                 \ref KDF_KS_KEY_SIZE_224
-  *                                 \ref KDF_KS_KEY_SIZE_233
-  *                                 \ref KDF_KS_KEY_SIZE_255
-  *                                 \ref KDF_KS_KEY_SIZE_256
-  *                                 \ref KDF_KS_KEY_SIZE_283
-  *                                 \ref KDF_KS_KEY_SIZE_384
-  *                                 \ref KDF_KS_KEY_SIZE_409
-  *                                 \ref KDF_KS_KEY_SIZE_512
-  *                                 \ref KDF_KS_KEY_SIZE_521
-  *                                 \ref KDF_KS_KEY_SIZE_571
+  *                                 \ref KDF_KS_KEYSIZE_128
+  *                                 \ref KDF_KS_KEYSIZE_163
+  *                                 \ref KDF_KS_KEYSIZE_192
+  *                                 \ref KDF_KS_KEYSIZE_224
+  *                                 \ref KDF_KS_KEYSIZE_233
+  *                                 \ref KDF_KS_KEYSIZE_255
+  *                                 \ref KDF_KS_KEYSIZE_256
+  *                                 \ref KDF_KS_KEYSIZE_283
+  *                                 \ref KDF_KS_KEYSIZE_384
+  *                                 \ref KDF_KS_KEYSIZE_409
+  *                                 \ref KDF_KS_KEYSIZE_512
+  *                                 \ref KDF_KS_KEYSIZE_521
+  *                                 \ref KDF_KS_KEYSIZE_571
   * @return     eKDF_ERRCODE_INVALID_PARAM  Invalid key size selection
   *             key bit size
   * @details    This function is used to get key size selection.
@@ -215,19 +215,19 @@ int32_t KDF_DeriveKey(E_KDF_MODE eMode, uint32_t u32DeriveKeyParam, uint32_t u32
   *                                  \ref KDF_LABEL_FROM_REG   / \ref KDF_LABEL_FROM_RANDOM
   *                                  \ref KDF_CONTEXT_FROM_REG / \ref KDF_CONTEXT_FROM_RANDOM
   * @param[in]    u32KeySizeSel      Output key size selection. It could be:
-  *                                  \ref KDF_KS_KEY_SIZE_128
-  *                                  \ref KDF_KS_KEY_SIZE_163
-  *                                  \ref KDF_KS_KEY_SIZE_192
-  *                                  \ref KDF_KS_KEY_SIZE_224
-  *                                  \ref KDF_KS_KEY_SIZE_233
-  *                                  \ref KDF_KS_KEY_SIZE_255
-  *                                  \ref KDF_KS_KEY_SIZE_256
-  *                                  \ref KDF_KS_KEY_SIZE_283
-  *                                  \ref KDF_KS_KEY_SIZE_384
-  *                                  \ref KDF_KS_KEY_SIZE_409
-  *                                  \ref KDF_KS_KEY_SIZE_512
-  *                                  \ref KDF_KS_KEY_SIZE_521
-  *                                  \ref KDF_KS_KEY_SIZE_571
+  *                                  \ref KDF_KS_KEYSIZE_128
+  *                                  \ref KDF_KS_KEYSIZE_163
+  *                                  \ref KDF_KS_KEYSIZE_192
+  *                                  \ref KDF_KS_KEYSIZE_224
+  *                                  \ref KDF_KS_KEYSIZE_233
+  *                                  \ref KDF_KS_KEYSIZE_255
+  *                                  \ref KDF_KS_KEYSIZE_256
+  *                                  \ref KDF_KS_KEYSIZE_283
+  *                                  \ref KDF_KS_KEYSIZE_384
+  *                                  \ref KDF_KS_KEYSIZE_409
+  *                                  \ref KDF_KS_KEYSIZE_512
+  *                                  \ref KDF_KS_KEYSIZE_521
+  *                                  \ref KDF_KS_KEYSIZE_571
   * @param[in]    u32KeyMeta         The metadata of the key. It could be the combine of
   *                                  \ref KDF_KS_OWNER_AES / \ref KDF_KS_OWNER_HMAC / \ref KDF_KS_OWNER_ECC / \ref KDF_KS_OWNER_CPU / \ref KDF_KS_OWNER_CHACHA
   *                                  \ref KDF_KS_NON_PRIV   / \ref KDF_KS_PRIV

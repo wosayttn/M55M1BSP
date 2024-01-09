@@ -275,7 +275,7 @@ extern "C"
   *                     - \ref OTFC_PR_1
   *                     - \ref OTFC_PR_2
   *                     - \ref OTFC_PR_3
-  * @param[in] key_nun  key number of key store.
+  * @param[in] key_num  key number of key store.
   * \hideinitializer
   */
 #define OTFC_ENABLE_KS_SRAM(otfc, pr, key_num)                                    \
@@ -290,7 +290,7 @@ extern "C"
   *                     - \ref OTFC_PR_1
   *                     - \ref OTFC_PR_2
   *                     - \ref OTFC_PR_3
-  * @param[in] key_nun  key number of key store.
+  * @param[in] key_num  key number of key store.
   * \hideinitializer
   */
 #define OTFC_ENABLE_KS_OTP(otfc, pr, key_num)                                        \

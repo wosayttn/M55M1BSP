@@ -134,7 +134,7 @@ static void SwitchNBitInput(SPIM_T *spim, uint32_t u32NBit)
   * @brief      SPIM Start Transfer And Wait Busy Status.
   * @param      spim
   * @param      u32IsSync   Wait Busy Status
-  * @return     SPIM_OK          SPIM write done.
+  * @return     SPIM_OK     SPIM write done.
   *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
   */
 static int32_t spim_waitoperation(SPIM_T *spim, uint32_t u32IsSync)
@@ -159,10 +159,12 @@ static int32_t spim_waitoperation(SPIM_T *spim, uint32_t u32IsSync)
 
 /**
   * @brief      Write data to SPI slave.
+  * @param      spim
   * @param      pu8TxBuf    Transmit buffer.
   * @param      u32NTx      Number of bytes to transmit.
-  * @return     SPIM_OK          SPIM write done.
-  *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
+  * @param      u32NBit     N-bit transmit/receive.
+  * @return     SPIM_OK             SPIM write done.
+  *             SPIM_ERR_TIMEOUT    SPIM operation abort due to timeout error.
   */
 static int32_t spim_write_data(SPIM_T *spim, uint8_t pu8TxBuf[],
                                uint32_t u32NTx, uint32_t u32NBit)
@@ -245,8 +247,10 @@ static int32_t spim_write_data(SPIM_T *spim, uint8_t pu8TxBuf[],
 
 /**
   * @brief      Read data from SPI slave.
-  * @param      pu8TxBuf    Receive buffer.
+  * @param      spim
+  * @param      pu8RxBuf    Receive buffer.
   * @param      u32NRx      Size of receive buffer in bytes.
+  * @param      u32NBit     N-bit transmit/receive.
   * @return     SPIM_OK          SPIM write done.
   *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
   */
@@ -326,10 +330,10 @@ static int32_t spim_read_data(SPIM_T *spim, uint8_t pu8RxBuf[],
 
 /**
   * @brief      Issue Read Status Register #1 command.
+  * @param      spim
   * @param      dataBuf     Receive buffer.
   * @param      u32NRx      Size of receive buffer.
   * @param      u32NBit     N-bit transmit/receive.
-  * @param      u32DcNum    transmit dummy cycle.
   * @return     None.
   */
 void SPIM_ReadStatusRegister(SPIM_T *spim, uint8_t dataBuf[],
@@ -352,6 +356,7 @@ void SPIM_ReadStatusRegister(SPIM_T *spim, uint8_t dataBuf[],
 
 /**
   * @brief      Issue Write Status Register #1 command.
+  * @param      spim
   * @param      dataBuf     Transmit buffer.
   * @param      u32NTx      Size of transmit buffer.
   * @param      u32NBit     N-bit transmit/receive.
@@ -373,9 +378,10 @@ static void SPIM_WriteStatusRegister(SPIM_T *spim, uint8_t dataBuf[],
 
 /**
   * @brief      Issue Read Status Register #2 command.
+  * @param      spim
   * @param      dataBuf     Receive buffer.
   * @param      u32NRx      Size of receive buffer.
- * @param       u32NBit     N-bit transmit/receive.
+  * @param      u32NBit     N-bit transmit/receive.
   * @return     None.
   */
 static void SPIM_ReadStatusRegister2(SPIM_T *spim, uint8_t dataBuf[],
@@ -397,6 +403,7 @@ static void SPIM_ReadStatusRegister2(SPIM_T *spim, uint8_t dataBuf[],
 /**
   * @brief      Issue Winbond Write Status Register command. This command write both Status Register-1
   *             and Status Register-2.
+  * @param      spim
   * @param      dataBuf     Transmit buffer.
   * @param      u32NTx      Size of transmit buffer.
   * @param      u32NBit     N-bit transmit/receive.
@@ -419,6 +426,7 @@ static void SPIM_WriteStatusRegister2(SPIM_T *spim, uint8_t dataBuf[],
 
 /**
   * @brief      Issue Read Config Register #3 command.
+  * @param      spim
   * @param      dataBuf     Receive buffer.
   * @param      u32NRx      Size of receive buffer.
   * @param      u32NBit     N-bit transmit/receive.
@@ -463,8 +471,10 @@ static void SPIM_ReadMT35XFlagRegister(SPIM_T *spim, uint8_t dataBuf[],
 /**
   * @brief      Issue Winbond Write Config Register command. This command write both Status Register-1
   *             and Status Register-2.
-  * @param      dataBuf     Transmit buffer.
-  * @param      u32NTx      Size of transmit buffer.
+  * @param      spim
+  * @param      u8CMD       Configure Register Command
+  * @param      u32Addr     Configure Register Address
+  * @param      u8Data      Configure Data
   * @param      u32NBit     N-bit transmit/receive.
   * @return     None.
   */
@@ -500,6 +510,9 @@ void SPIM_WriteConfigRegister(SPIM_T *spim, uint8_t u8CMD, uint32_t u32Addr,
 
 /**
   * @brief      Issue Read Status Register #3 command.
+  * @param      spim
+  * @param      u8RdCMD     Configure Register Command
+  * @param      u32Addr     Configure Register Address
   * @param      pu8DataBuf  Receive buffer.
   * @param      u32NRx      Size of receive buffer.
   * @param      u32NBit     N-bit transmit/receive.
@@ -534,6 +547,7 @@ void SPIM_ReadConfigRegister(SPIM_T *spim, uint8_t u8RdCMD, uint32_t u32Addr,
 
 /**
   * @brief      Issue Read Security Register command.
+  * @param      spim
   * @param      dataBuf     Receive buffer.
   * @param      u32NRx      Size of receive buffer.
   * @param      u32NBit     N-bit transmit/receive.
@@ -555,7 +569,6 @@ static void SPIM_ReadSecurityRegister(SPIM_T *spim, uint8_t dataBuf[],
 
 /**
  * @brief Set SPI flash exit continue read mode.
- *
  * @param spim
  */
 int32_t SPIM_SetContReadDisable(SPIM_T *spim)
@@ -587,6 +600,8 @@ int32_t SPIM_SetContReadDisable(SPIM_T *spim)
 
 /**
   * @brief      Check if Erase/Write is done.
+  * @param      spim
+  * @param      u32NBit
   * @return     0: Not done. 1: Done.
   */
 static int spim_is_writedone(SPIM_T *spim, uint32_t u32NBit)
@@ -598,6 +613,7 @@ static int spim_is_writedone(SPIM_T *spim, uint32_t u32NBit)
 
 /**
   * @brief      Wait until Erase/Write done.
+  * @param      spim
   * @param      u32NBit     N-bit transmit/receive.
   * @return     SPIM_OK          SPIM write done.
   *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
@@ -626,6 +642,7 @@ static int32_t spim_wait_writedone(SPIM_T *spim, uint32_t u32NBit)
 
 /**
   * @brief      Issue Write Enable/disable command.
+  * @param      spim
   * @param      isEn        Enable/disable.
   * @param      u32NBit     N-bit transmit/receive.
   * @return     None.
@@ -654,6 +671,7 @@ void SPIM_SetWriteEnable(SPIM_T *spim, int isEn, uint32_t u32NBit)
 
 /**
   * @brief      Get SPIM serial clock.
+  * @param      spim
   * @return     SPI serial clock.
   * @details    This function calculates the serial clock of SPI in Hz.
   */
@@ -666,6 +684,7 @@ uint32_t SPIM_GetSClkFreq(SPIM_T *spim)
 
 /**
   * @brief      Initialize SPIM flash.
+  * @param      spim
   * @param      clrWP           Clear Write Protect or not.
   * @return     SPIM_OK         Success.
   *             SPIM_ERR_FAIL   Unrecognized manufacture ID or failed on reading manufacture ID.
@@ -743,13 +762,12 @@ int32_t SPIM_InitFlash(SPIM_T *spim, int clrWP)
 
 /**
  * @brief   Issue JEDEC ID command.
- *
- * @param spim
- * @param pu8IdBuf          ID buffer.
- * @param u32NRx            Size of ID buffer.
- * @param u32NBit           N-bit transmit/receive.
- * @param u32DummyCycle     Dummy cycle counter
- * @return                  none
+ * @param   spim
+ * @param   pu8IdBuf    ID buffer.
+ * @param   u32NRx      Size of ID buffer.
+ * @param   u32NBit     N-bit transmit/receive.
+ * @param   u32DcNum    Dummy cycle counter
+ * @return              none
  */
 void SPIM_ReadJedecId(SPIM_T *spim, uint8_t *pu8IdBuf, uint32_t u32NRx,
                       uint32_t u32NBit, uint32_t u32DcNum)
@@ -843,13 +861,13 @@ static void spim_enable_spansion_quad_mode(SPIM_T *spim, int isEn)
 /** @endcond HIDDEN_SYMBOLS */
 
 /**
-  * @brief      Set Wrap Around Enable/disable.
-  * @param      isEn    Wrap Mode.
- *                      - \ref SPIM_OP_ENABLE  : Enable
- *                      - \ref SPIM_OP_DISABLE : disable
-  * @param      u32NBit N-bit transmit/receive.
-  * @return     SPIM_OK          SPIM operation OK.
-  *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
+  * @brief  Set Wrap Around Enable/disable.
+  * @param  spim
+  * @param  isEn    Wrap Mode.
+  *                 - \ref SPIM_OP_ENABLE  : Enable
+  *                 - \ref SPIM_OP_DISABLE : disable
+  * @return SPIM_OK          SPIM operation OK.
+  *         SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
   */
 int32_t SPIM_SetWrapAroundEnable(SPIM_T *spim, int isEn)
 {
@@ -886,12 +904,13 @@ int32_t SPIM_SetWrapAroundEnable(SPIM_T *spim, int isEn)
 }
 
 /**
-  * @brief      Set Quad Enable/disable.
-  * @param      isEn    Quad Mode.
- *                      - \ref SPIM_OP_ENABLE
- *                      - \ref SPIM_OP_DISABLE
-  * @param      u32NBit N-bit transmit/receive.
-  * @return     None.
+  * @brief  Set Quad Enable/disable.
+  * @param  spim
+  * @param  isEn    Quad Mode.
+  *                 - \ref SPIM_OP_ENABLE
+  *                 - \ref SPIM_OP_DISABLE
+  * @param  u32NBit N-bit transmit/receive.
+  * @return None.
   */
 void SPIM_SetQuadEnable(SPIM_T *spim, int isEn, uint32_t u32NBit)
 {
@@ -983,9 +1002,11 @@ static void SPIM_SPANSION_4Bytes_Enable(SPIM_T *spim, int isEn, uint32_t u32NBit
 /** @cond HIDDEN_SYMBOLS */
 
 /**
-  * @brief      Query 4-byte address mode enabled or not.
-  * @param      u32NBit     N-bit transmit/receive.
-  * @return     0: 4-byte address mode disabled. 1: 4-byte address mode enabled.
+  * @brief  Query 4-byte address mode enabled or not.
+  * @param  spim
+  * @param  u32NBit     N-bit transmit/receive.
+  * @return 0: 4-byte address mode disabled.
+  *         1: 4-byte address mode enabled.
   */
 int32_t SPIM_Is4ByteModeEnable(SPIM_T *spim, uint32_t u32NBit)
 {
@@ -1040,13 +1061,14 @@ int32_t SPIM_Is4ByteModeEnable(SPIM_T *spim, uint32_t u32NBit)
 /** @endcond HIDDEN_SYMBOLS  */
 
 /**
-  * @brief      Enter/Exit 4-byte address mode.
-  * @param      isEn        Enable/disable.
-  *                         - \ref SPIM_OP_ENABLE
-  *                         - \ref SPIM_OP_DISABLE
-  * @param      u32NBit     N-bit transmit/receive.
-  * @return     SPIM_OK          SPIM operation OK.
-  *             SPIM_ERR_FAIL    SPIM operation Fail.
+  * @brief  Enter/Exit 4-byte address mode.
+  * @param  spim
+  * @param  isEn    Enable/disable.
+  *                 - \ref SPIM_OP_ENABLE
+  *                 - \ref SPIM_OP_DISABLE
+  * @param  u32NBit N-bit transmit/receive.
+  * @return SPIM_OK         SPIM operation OK.
+  *         SPIM_ERR_FAIL   SPIM operation Fail.
   */
 int32_t SPIM_Enable_4Bytes_Mode(SPIM_T *spim, int isEn, uint32_t u32NBit)
 {
@@ -1166,10 +1188,11 @@ void SPIM_WinbondUnlock(SPIM_T *spim, uint32_t u32NBit)
 }
 
 /**
-  * @brief      Erase whole chip.
-  * @param      u32NBit     N-bit transmit/receive.
-  * @param      isSync      Block or not.
-  * @return     None.
+  * @brief  Erase whole chip.
+  * @param  spim
+  * @param  u32NBit N-bit transmit/receive.
+  * @param  isSync  Block or not.
+  * @return None.
   */
 void SPIM_ChipErase(SPIM_T *spim, uint32_t u32NBit, int isSync)
 {
@@ -1190,16 +1213,17 @@ void SPIM_ChipErase(SPIM_T *spim, uint32_t u32NBit, int isSync)
 }
 
 /**
-  * @brief      Erase one block.
-  * @param      u32Addr         Block to erase which contains the u32Addr.
-  * @param      is4ByteAddr     4-byte u32Address or not.
-  * @param      u8ErsCmd        Erase command.
-  *                             - ref OPCODE_SE_4K
-  *                             - ref OPCODE_BE_32K
-  *                             - ref OPCODE_BE_64K
-  * @param      u32NBit         N-bit transmit/receive.
-  * @param      isSync          Block or not.
-  * @return     None.
+  * @brief  Erase one block.
+  * @param  spim
+  * @param  u32Addr     Block to erase which contains the u32Addr.
+  * @param  is4ByteAddr 4-byte u32Address or not.
+  * @param  u8ErsCmd    Erase command.
+  *                     - ref OPCODE_SE_4K
+  *                     - ref OPCODE_BE_32K
+  *                     - ref OPCODE_BE_64K
+  * @param  u32NBit     N-bit transmit/receive.
+  * @param  isSync      Block or not.
+  * @return None.
   */
 void SPIM_EraseBlock(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
                      uint8_t u8ErsCmd, uint32_t u32NBit, int isSync)
@@ -1239,13 +1263,13 @@ void SPIM_EraseBlock(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
 
 /** @cond HIDDEN_SYMBOLS */
 /**
- * @brief Swich DMA/DMM Phase Setting Register
- * @param      spim
- * @param u32OPMode SPI Function Operation Mode
- *                  - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
- *                  - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
- *                  - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
- * @return     PHDMAW/PHDMAR/PHDMM Register Address
+ * @brief   Swich DMA/DMM Phase Setting Register
+ * @param   spim
+ * @param   u32OPMode   SPI Function Operation Mode
+ *                      - \ref SPIM_CTL0_OPMODE_PAGEWRITE : DMA Write mode
+ *                      - \ref SPIM_CTL0_OPMODE_PAGEREAD  : DMA Read mode
+ *                      - \ref SPIM_CTL0_OPMODE_DIRECTMAP : Direct Memory Mapping mode
+ * @return  PHDMAW/PHDMAR/PHDMM Register Address
  */
 static void *SPIM_SwitchPhaseRegister(SPIM_T *spim, uint32_t u32OPMode)
 {
@@ -1271,17 +1295,18 @@ static void *SPIM_SwitchPhaseRegister(SPIM_T *spim, uint32_t u32OPMode)
 }
 
 /**
-  * @brief      Write data in the same page by I/O mode.
-  * @param      u32Addr     Start u32Address to write.
-  * @param      is4ByteAddr 4-byte u32Address or not.
-  * @param      u32NTx      Number of bytes to write.
-  * @param      pu8TxBuf    Transmit buffer.
-  * @param      wrCmd       Write command.
-  * @param      u32NBitCmd  N-bit transmit command.
-  * @param      u32NBitAddr N-bit transmit u32Address.
-  * @param      u32NBitDat  N-bit transmit/receive data.
-  * @param      isSync      Block or not.
-  * @return     None.
+  * @brief  Write data in the same page by I/O mode.
+  * @param  spim
+  * @param  u32Addr     Start u32Address to write.
+  * @param  is4ByteAddr 4-byte u32Address or not.
+  * @param  u32NTx      Number of bytes to write.
+  * @param  pu8TxBuf    Transmit buffer.
+  * @param  wrCmd       Write command.
+  * @param  u32NBitCmd  N-bit transmit command.
+  * @param  u32NBitAddr N-bit transmit u32Address.
+  * @param  u32NBitDat  N-bit transmit/receive data.
+  * @param  isSync      Block or not.
+  * @return None.
   */
 static void SPIM_WriteInPageDataByIO(SPIM_T *spim, uint32_t u32Addr,
                                      int is4ByteAddr, uint32_t u32NTx,
@@ -1335,15 +1360,16 @@ static void SPIM_WriteInPageDataByIO(SPIM_T *spim, uint32_t u32Addr,
 }
 
 /**
-  * @brief      Write data in the same page by Page Write mode.
-  * @param      u32Addr     Start u32Address to write.
-  * @param      is4ByteAddr 4-byte u32Address or not.
-  * @param      u32NTx      Number of bytes to write.
-  * @param      pu8TxBuf    Transmit buffer.
-  * @param      wrCmd       Write command.
-  * @param      isSync      Block or not.
-  * @return     SPIM_OK          SPIM operation OK.
-  *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
+  * @brief  Write data in the same page by Page Write mode.
+  * @param  spim
+  * @param  u32Addr     Start u32Address to write.
+  * @param  is4ByteAddr 4-byte u32Address or not.
+  * @param  u32NTx      Number of bytes to write.
+  * @param  pu8TxBuf    Transmit buffer.
+  * @param  wrCmd       Write command.
+  * @param  isSync      Block or not.
+  * @return SPIM_OK          SPIM operation OK.
+  *         SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.
   */
 static int32_t SPIM_WriteInPageDataByPageWrite(SPIM_T *spim, uint32_t u32Addr,
                                                int is4ByteAddr, uint32_t u32NTx,
@@ -1379,7 +1405,6 @@ static int32_t SPIM_WriteInPageDataByPageWrite(SPIM_T *spim, uint32_t u32Addr,
 
 /**
  * @brief Convert I/O phase bit mode size.
- *
  * @param u32Phase
  *          - \ref PHASE_NORMAL_MODE : 1 Bit Mode
  *          - \ref PHASE_DUAL_MODE   : 2 Bit Mode
@@ -1433,7 +1458,8 @@ uint32_t SPIM_PhaseModeToNBit(uint32_t u32Phase)
  *                  - \ref PHASE_WIDTH_32   : Set Command Width 32bit
  * @param u32DTREn  Set Enable/Disable DTR(Double Transfer Rate) Mode 0 or 1
  */
-static int32_t spim_set_cmdphase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn)
+static int32_t spim_set_cmdphase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit,
+                                 uint32_t u32Width, uint32_t u32DTREn)
 {
     uint32_t *pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
 
@@ -1473,7 +1499,8 @@ static int32_t spim_set_cmdphase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32N
  * @return     SPIM_OK          SPIM operation OK.
  *             SPIM_ERR_FAIL    SPIM operation Fail.
  */
-static int32_t spim_set_addrphase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32DTREn)
+static int32_t spim_set_addrphase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit,
+                                  uint32_t u32Width, uint32_t u32DTREn)
 {
     uint32_t *pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
 
@@ -1515,11 +1542,15 @@ static void spim_clr_contreadphase(SPIM_T *spim, uint32_t u32OPMode)
  *                  - \ref PHASE_WIDTH_16   : Set Command Width 16bit
  *                  - \ref PHASE_WIDTH_24   : Set Command Width 24bit
  *                  - \ref PHASE_WIDTH_32   : Set Command Width 32bit
+ * @param u32ContEn Enable Continue Read
+ *                  - \ref PHASE_ENABLE_CONT_READ   : Enable Continue Read
+ *                  - \ref PHASE_DISABLE_CONT_READM : Disable Continue Read
  * @param u32DTREn  Set Enable/Disable DTR(Double Transfer Rate) Mode 0 or 1
  * @return     SPIM_OK          SPIM operation OK.
  *             SPIM_ERR_FAIL    SPIM operation Fail.
  */
-static int32_t spim_set_contreadphase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit, uint32_t u32Width, uint32_t u32ContEn, uint32_t u32DTREn)
+static int32_t spim_set_contreadphase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32NBit,
+                                      uint32_t u32Width, uint32_t u32ContEn, uint32_t u32DTREn)
 {
     uint32_t *pu32PhaseReg = (uint32_t *)SPIM_SwitchPhaseRegister(spim, u32OPMode);
 
@@ -1597,7 +1628,6 @@ static int32_t spim_set_dataphase(SPIM_T *spim, uint32_t u32OPMode, uint32_t u32
 
 /**
  * @brief Set DMA read/DMM mode read DQS mode enable bit for data phase
- *
  * @param spim
  * @param u32OPMode SPI Function Operation Mode
  * @param u32RdDQS  Enable/Disable Read DQS
@@ -1691,7 +1721,6 @@ void SPIM_DMADMM_InitPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, uint32_t u3
 
 /**
  * @brief Normal I/O mode data phase.
- *
  * @param spim
  * @param u32OPMode     Normal I/O read or wirte mode.
  *                      - \ref SPIM_IO_WRITE_PHASE
@@ -1730,7 +1759,6 @@ void SPIM_IO_SendDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint8_t *pu8TRxBuf,
 
 /**
  * @brief Normal I/O mode send dummy cycle clocks.
- *
  * @param spim
  * @param u32NDummy dummy clocks, reference SPI flash command specification
  * @return int32_t
@@ -1770,16 +1798,15 @@ int32_t SPIM_IO_SendDummyCycle(SPIM_T *spim, int u32NDummy)
 
 /**
  * @brief   Normal I/O mode send address phase
- *
- * @param spim
- * @param u32Is4ByteAddr    SPI Flash 4 Bytes Address
- * @param u32Addr           Read/Write start addess
- * @param u32AddrPhase      Address Bit Mode
+ * @param   spim
+ * @param   u32Is4ByteAddr    SPI Flash 4 Bytes Address
+ * @param   u32Addr           Read/Write start addess
+ * @param   u32AddrPhase      Address Bit Mode
  *                          - \ref PHASE_NORMAL_MODE : Send address use standard mode.
  *                          - \ref PHASE_DUAL_MODE   : Send address use dual mode.
  *                          - \ref PHASE_QUAD_MODE   : Send address use quad mode.
  *                          - \ref PHASE_OCTAL_MODE  : Send address use octal mode.
- * @param u32DTREn          Double Data Rate
+ * @param   u32DTREn          Double Data Rate
  *                          - \ref SPIM_OP_ENABLE
  *                          - \ref SPIM_OP_DISABLE
  */
@@ -1954,31 +1981,13 @@ void SPIM_IO_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
 }
 
 /**
-  * @brief      Read data from SPI Flash by sending commands manually (I/O mode).
-  * @param      u32Addr     Start u32Address to read.
-  * @param      is4ByteAddr 4-byte u32Address or not.
-  * @param      u32RdSize   Number of bytes to read.
-  * @param      pu8RxBuf    Receive buffer.
-  * @param      rdCmd       Read command.
-  * @param      u32NBitCmd  N-bit transmit command.
-  * @param      u32NBitAddr N-bit transmit u32Address.
-  * @param      u32NBitDat  N-bit transmit/receive data.
-  * @param      u32NDummy   Number of dummy bytes following address.
-  * @param      u32DTREn    DTR mode
-  *                         - \ref SPIM_OP_ENABLE
-  *                         - \ref SPIM_OP_DISABLE
-  * @return     None.
-  */
-
-/**
- * @brief
- *
- * @param spim          Read data from SPI Flash by use phase table (I/O mode).
- * @param psPhaseTable  Check SPI Flash specifications for support command codes,
- *                      and create command phase table.
- * @param u32Addr       Read start address
- * @param pu8RxBuf      Data buffer
- * @param u32RdSize     Read data size
+ * @brief   Read data from SPI Flash by Phase Setting (I/O mode).
+ * @param   spim          Read data from SPI Flash by use phase table (I/O mode).
+ * @param   psPhaseTable  Check SPI Flash specifications for support command codes,
+ *                        and create command phase table.
+ * @param   u32Addr       Read start address
+ * @param   pu8RxBuf      Data buffer
+ * @param   u32RdSize     Read data size
  */
 void SPIM_IO_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
                        uint32_t u32Addr, uint8_t *pu8RxBuf, uint32_t u32RdSize)
@@ -2025,16 +2034,17 @@ void SPIM_IO_ReadPhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable,
 }
 
 /**
-  * @brief      Write data to SPI Flash by sending commands manually (I/O mode).
-  * @param      u32Addr     Start u32Address to write.
-  * @param      is4ByteAddr 4-byte u32Address or not.
-  * @param      u32NTx      Number of bytes to write.
-  * @param      pu8TxBuf    Transmit buffer.
-  * @param      wrCmd       Write command.
-  * @param      u32NBitCmd  N-bit transmit command.
-  * @param      u32NBitAddr N-bit transmit u32Address.
-  * @param      u32NBitDat  N-bit transmit/receive data.
-  * @return     None.
+  * @brief  Write data to SPI Flash by sending commands manually (I/O mode).
+  * @param  spim
+  * @param  u32Addr     Start u32Address to write.
+  * @param  is4ByteAddr 4-byte u32Address or not.
+  * @param  u32NTx      Number of bytes to write.
+  * @param  pu8TxBuf    Transmit buffer.
+  * @param  wrCmd       Write command.
+  * @param  u32NBitCmd  N-bit transmit command.
+  * @param  u32NBitAddr N-bit transmit u32Address.
+  * @param  u32NBitDat  N-bit transmit/receive data.
+  * @return None.
   */
 void SPIM_IO_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
                    uint32_t u32NTx, uint8_t *pu8TxBuf, uint8_t wrCmd,
@@ -2080,6 +2090,7 @@ void SPIM_IO_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
 
 /**
   * @brief      Read data from SPI Flash by sending commands manually (I/O mode).
+  * @param      spim
   * @param      u32Addr     Start u32Address to read.
   * @param      is4ByteAddr 4-byte u32Address or not.
   * @param      u32NRx      Number of bytes to read.
@@ -2144,6 +2155,7 @@ void SPIM_IO_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr, uint32_t u32N
 
 /**
   * @brief      Write data to SPI Flash by Page Write mode.
+  * @param      spim
   * @param      u32Addr     Start address to write.
   * @param      is4ByteAddr 4-byte address or not.
   * @param      u32NTx      Number of bytes to write.
@@ -2209,6 +2221,7 @@ void SPIM_DMA_Write(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
 
 /**
   * @brief      Read data from SPI Flash by Page Read mode.
+  * @param      spim
   * @param      u32Addr     Start address to read.
   * @param      is4ByteAddr 4-byte u32Address or not.
   * @param      u32NRx      Number of bytes to read.
@@ -2250,6 +2263,7 @@ int32_t SPIM_DMA_Read(SPIM_T *spim, uint32_t u32Addr, int is4ByteAddr,
 
 /**
   * @brief      Enter Direct Map mode.
+  * @param      spim
   * @param      is4ByteAddr     4-byte u32Address or not.
   * @param      u32RdCmd        Read command.
   * @param      u32IdleIntvl    Idle interval.
@@ -2294,10 +2308,6 @@ void SPIM_ExitDirectMapMode(SPIM_T *spim)
 /**
   * @brief      SPIM used to delay the read data strobe (DQS/RWDS) from Octal SPI Flash and Hyper bus device
   * @param      spim
-  * @param      u32ClkOnNum Clock Cycle Number between DLL OLDO Enable and DLL Clock Divider Enable
-  * @param      u32TrimNum  Clock Cycle Number between DLL Output Valid and DLL Auto Trim Enable
-  * @param      u32LKNum    Clock Cycle Number between DLL Clock Divider Enable and DLL Lock
-  * @param      u32OVNum    Clock Cycle Number between DLL Lock and DLL Output Valid
   * @param      u32DelayNum DLL Delay Step Number
   * @return     SPIM_OK          SPIM operation OK.
   *             SPIM_ERR_TIMEOUT SPIM operation abort due to timeout error.

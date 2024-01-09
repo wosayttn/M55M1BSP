@@ -28,7 +28,7 @@
 typedef struct
 {
     /**
-    * @var OTFC_T::PRx_SADDR
+    * @var OTFC_T::SADDR
     * Offset: 0x10 0x50 0x90 0xD0 OTFC Protection Region 0~3 Start Address Register
     * ---------------------------------------------------------------------------------------------------
     * |Bits    |Field     |Descriptions
@@ -38,7 +38,7 @@ typedef struct
     * |        |          |The start address should be located at word boundary
     * |        |          |In other words, bit 1 and 0 of SADDR are ignored
     * |        |          |SADDR can be read and written
-    * @var OTFC_T::PRx_EADDR
+    * @var OTFC_T::EADDR
     * Offset: 0x14 0x54 0x94 0xD4 OTFC Protection Region 0~3 End Address Register
     * ---------------------------------------------------------------------------------------------------
     * |Bits    |Field     |Descriptions
@@ -48,7 +48,7 @@ typedef struct
     * |        |          |The end address should be located at word boundary
     * |        |          |In other words, bit 1 and 0 of EADDR are ignored
     * |        |          |EADDR can be read and written
-    * @var OTFC_T::PRx_KSCTL
+    * @var OTFC_T::KSCTL
     * Offset: 0x18 0x58 0x98 0xD8 OTFC Protection Region 0~3 Key Control Register
     * ---------------------------------------------------------------------------------------------------
     * |Bits    |Field     |Descriptions
@@ -63,7 +63,7 @@ typedef struct
     * |        |          |00 = Key is read from the SRAM of Key Store.
     * |        |          |10 = Key is read from the OTP of Key Store.
     * |        |          |Others = reserved.
-    * @var OTFC_T::PRx_KEY0
+    * @var OTFC_T::KEY0
     * Offset: 0x20 0x60 0xA0 0xE0 OTFC Protection Region 0~3 KEY Word 0 Register
     * ---------------------------------------------------------------------------------------------------
     * |Bits    |Field     |Descriptions
@@ -73,7 +73,7 @@ typedef struct
     * |        |          |x = 0, 1, 2, 3.
     * |        |          |The security key for AES accelerator is 128 bits and four 32-bit registers are to store each security key.
     * |        |          |{OTFC_PRx_KEY3, OTFC_PRx_KEY2, OTFC_PRx_KEY1, OTFC_PRx_KEY0} stores the 128-bit security key for AES operation
-    * @var OTFC_T::PRx_KEY1
+    * @var OTFC_T::KEY1
     * Offset: 0x24 0x64 0xA4 0xE4 OTFC Protection Region 0~3 KEY Word 1 Register
     * ---------------------------------------------------------------------------------------------------
     * |Bits    |Field     |Descriptions
@@ -83,7 +83,7 @@ typedef struct
     * |        |          |x = 0, 1, 2, 3.
     * |        |          |The security key for AES accelerator is 128 bits and four 32-bit registers are to store each security key.
     * |        |          |{OTFC_PRx_KEY3, OTFC_PRx_KEY2, OTFC_PRx_KEY1, OTFC_PRx_KEY0} stores the 128-bit security key for AES operation
-    * @var OTFC_T::PRx_KEY2
+    * @var OTFC_T::KEY2
     * Offset: 0x28 0x68 0xA8 0xE8 OTFC Protection Region 0~3 KEY Word 2 Register
     * ---------------------------------------------------------------------------------------------------
     * |Bits    |Field     |Descriptions
@@ -93,7 +93,7 @@ typedef struct
     * |        |          |x = 0, 1, 2, 3.
     * |        |          |The security key for AES accelerator is 128 bits and four 32-bit registers are to store each security key.
     * |        |          |{OTFC_PRx_KEY3, OTFC_PRx_KEY2, OTFC_PRx_KEY1, OTFC_PRx_KEY0} stores the 128-bit security key for AES operation
-    * @var OTFC_T::PRx_KEY3
+    * @var OTFC_T::KEY3
     * Offset: 0x2C 0x6C 0xAC 0xEC OTFC Protection Region 0~3 KEY Word 3 Register
     * ---------------------------------------------------------------------------------------------------
     * |Bits    |Field     |Descriptions
@@ -103,14 +103,14 @@ typedef struct
     * |        |          |x = 0, 1, 2, 3.
     * |        |          |The security key for AES accelerator is 128 bits and four 32-bit registers are to store each security key.
     * |        |          |{OTFC_PRx_KEY3, OTFC_PRx_KEY2, OTFC_PRx_KEY1, OTFC_PRx_KEY0} stores the 128-bit security key for AES operation
-    * @var OTFC_T::PRx_SCRAMBLE
+    * @var OTFC_T::SCRAMBLE
     * Offset: 0x40 0x80 0xC0 0x100 OTFC Protection Region 0~3 Scramble key Register
     * ---------------------------------------------------------------------------------------------------
     * |Bits    |Field     |Descriptions
     * | :----: | :----:   | :---- |
     * |[31:0]  |SCRAMBLE  |Protection Region 0~3 Scramble key Register
     * |        |          |The scramble key for address cipher function in protection region 0~3.
-    * @var OTFC_T::PRx_NONCE0
+    * @var OTFC_T::NONCE0
     * Offset: 0x44 0x84 0xC4 0x104 OTFC Protection Region 0~3 Nonce Word 0 Register
     * ---------------------------------------------------------------------------------------------------
     * |Bits    |Field     |Descriptions
@@ -118,7 +118,7 @@ typedef struct
     * |[31:0]  |NONCE     |Protection Region 0~3 Nonce Word x Register
     * |        |          |x = 0, 1, 2.
     * |        |          |Three nonces (OTFC_PRx_NONCE0, OTFC_PRx_NONCE1, and OTFC_PRx_NONCE2) are for the address cipher function in OTFC.
-    * @var OTFC_T::PRx_NONCE1
+    * @var OTFC_T::NONCE1
     * Offset: 0x48 0x88 0xC8 0x108 OTFC Protection Region 0~3 Nonce Word 1 Register
     * ---------------------------------------------------------------------------------------------------
     * |Bits    |Field     |Descriptions
@@ -126,7 +126,7 @@ typedef struct
     * |[31:0]  |NONCE     |Protection Region 0~3 Nonce Word x Register
     * |        |          |x = 0, 1, 2.
     * |        |          |Three nonces (OTFC_PRx_NONCE0, OTFC_PRx_NONCE1, and OTFC_PRx_NONCE2) are for the address cipher function in OTFC.
-    * @var OTFC_T::PRx_NONCE2
+    * @var OTFC_T::NONCE2
     * Offset: 0x4C 0x8C 0xCC 0x10C OTFC Protection Region 0~3 Nonce Word 2 Register
     * ---------------------------------------------------------------------------------------------------
     * |Bits    |Field     |Descriptions

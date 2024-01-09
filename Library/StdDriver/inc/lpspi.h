@@ -27,39 +27,39 @@ extern "C"
   @{
 */
 
-#define LPSPI_MODE_0                        (LPSPI_CTL_TXNEG_Msk)                             /*!< CLKPOL=0; RXNEG=0; TXNEG=1 \hideinitializer */
-#define LPSPI_MODE_1                        (LPSPI_CTL_RXNEG_Msk)                             /*!< CLKPOL=0; RXNEG=1; TXNEG=0 \hideinitializer */
-#define LPSPI_MODE_2                        (LPSPI_CTL_CLKPOL_Msk | LPSPI_CTL_RXNEG_Msk)      /*!< CLKPOL=1; RXNEG=1; TXNEG=0 \hideinitializer */
-#define LPSPI_MODE_3                        (LPSPI_CTL_CLKPOL_Msk | LPSPI_CTL_TXNEG_Msk)      /*!< CLKPOL=1; RXNEG=0; TXNEG=1 \hideinitializer */
+#define LPSPI_MODE_0                        (LPSPI_CTL_TXNEG_Msk)                             /*!< CLKPOL=0; RXNEG=0; TXNEG=1 */
+#define LPSPI_MODE_1                        (LPSPI_CTL_RXNEG_Msk)                             /*!< CLKPOL=0; RXNEG=1; TXNEG=0 */
+#define LPSPI_MODE_2                        (LPSPI_CTL_CLKPOL_Msk | LPSPI_CTL_RXNEG_Msk)      /*!< CLKPOL=1; RXNEG=1; TXNEG=0 */
+#define LPSPI_MODE_3                        (LPSPI_CTL_CLKPOL_Msk | LPSPI_CTL_TXNEG_Msk)      /*!< CLKPOL=1; RXNEG=0; TXNEG=1 */
 
-#define LPSPI_SLAVE                         (LPSPI_CTL_SLAVE_Msk)             /*!< Set as slave \hideinitializer */
-#define LPSPI_MASTER                        (0x0U)                                            /*!< Set as master \hideinitializer */
+#define LPSPI_SLAVE                         (LPSPI_CTL_SLAVE_Msk)             /*!< Set as slave */
+#define LPSPI_MASTER                        (0x0U)                                            /*!< Set as master */
 
-#define LPSPI_SS                            (LPSPI_SSCTL_SS_Msk)              /*!< Set SS \hideinitializer */
-#define LPSPI_SS_ACTIVE_HIGH                (LPSPI_SSCTL_SSACTPOL_Msk)        /*!< SS active high \hideinitializer */
-#define LPSPI_SS_ACTIVE_LOW                 (0x0U)                            /*!< SS active low \hideinitializer */
+#define LPSPI_SS                            (LPSPI_SSCTL_SS_Msk)              /*!< Set SS */
+#define LPSPI_SS_ACTIVE_HIGH                (LPSPI_SSCTL_SSACTPOL_Msk)        /*!< SS active high */
+#define LPSPI_SS_ACTIVE_LOW                 (0x0U)                            /*!< SS active low */
 
 /* LPSPI Interrupt Mask */
-#define LPSPI_UNIT_INT_MASK                 (0x001U)                          /*!< Unit transfer interrupt mask \hideinitializer */
-#define LPSPI_SSACT_INT_MASK                (0x002U)                          /*!< Slave selection signal active interrupt mask \hideinitializer */
-#define LPSPI_SSINACT_INT_MASK              (0x004U)                          /*!< Slave selection signal inactive interrupt mask \hideinitializer */
-#define LPSPI_SLVUR_INT_MASK                (0x008U)                          /*!< Slave under run interrupt mask \hideinitializer */
-#define LPSPI_SLVBE_INT_MASK                (0x010U)                          /*!< Slave bit count error interrupt mask \hideinitializer */
-#define LPSPI_TXUF_INT_MASK                 (0x040U)                          /*!< Slave TX underflow interrupt mask \hideinitializer */
-#define LPSPI_FIFO_TXTH_INT_MASK            (0x080U)                          /*!< FIFO TX threshold interrupt mask \hideinitializer */
-#define LPSPI_FIFO_RXTH_INT_MASK            (0x100U)                          /*!< FIFO RX threshold interrupt mask \hideinitializer */
-#define LPSPI_FIFO_RXOV_INT_MASK            (0x200U)                          /*!< FIFO RX overrun interrupt mask \hideinitializer */
-#define LPSPI_FIFO_RXTO_INT_MASK            (0x400U)                          /*!< FIFO RX time-out interrupt mask \hideinitializer */
+#define LPSPI_UNIT_INT_MASK                 (0x001U)                          /*!< Unit transfer interrupt mask */
+#define LPSPI_SSACT_INT_MASK                (0x002U)                          /*!< Slave selection signal active interrupt mask */
+#define LPSPI_SSINACT_INT_MASK              (0x004U)                          /*!< Slave selection signal inactive interrupt mask */
+#define LPSPI_SLVUR_INT_MASK                (0x008U)                          /*!< Slave under run interrupt mask */
+#define LPSPI_SLVBE_INT_MASK                (0x010U)                          /*!< Slave bit count error interrupt mask */
+#define LPSPI_TXUF_INT_MASK                 (0x040U)                          /*!< Slave TX underflow interrupt mask */
+#define LPSPI_FIFO_TXTH_INT_MASK            (0x080U)                          /*!< FIFO TX threshold interrupt mask */
+#define LPSPI_FIFO_RXTH_INT_MASK            (0x100U)                          /*!< FIFO RX threshold interrupt mask */
+#define LPSPI_FIFO_RXOV_INT_MASK            (0x200U)                          /*!< FIFO RX overrun interrupt mask */
+#define LPSPI_FIFO_RXTO_INT_MASK            (0x400U)                          /*!< FIFO RX time-out interrupt mask */
 
 /* LPSPI Status Mask */
-#define LPSPI_BUSY_MASK                     (0x01U)                           /*!< Busy status mask \hideinitializer */
-#define LPSPI_RX_EMPTY_MASK                 (0x02U)                           /*!< RX empty status mask \hideinitializer */
-#define LPSPI_RX_FULL_MASK                  (0x04U)                           /*!< RX full status mask \hideinitializer */
-#define LPSPI_TX_EMPTY_MASK                 (0x08U)                           /*!< TX empty status mask \hideinitializer */
-#define LPSPI_TX_FULL_MASK                  (0x10U)                           /*!< TX full status mask \hideinitializer */
-#define LPSPI_TXRX_RESET_MASK               (0x20U)                           /*!< TX or RX reset status mask \hideinitializer */
-#define LPSPI_SPIEN_STS_MASK                (0x40U)                           /*!< LPSPIEN status mask \hideinitializer */
-#define LPSPI_SSLINE_STS_MASK               (0x80U)                           /*!< LPSPIx_SS line status mask \hideinitializer */
+#define LPSPI_BUSY_MASK                     (0x01U)                           /*!< Busy status mask */
+#define LPSPI_RX_EMPTY_MASK                 (0x02U)                           /*!< RX empty status mask */
+#define LPSPI_RX_FULL_MASK                  (0x04U)                           /*!< RX full status mask */
+#define LPSPI_TX_EMPTY_MASK                 (0x08U)                           /*!< TX empty status mask */
+#define LPSPI_TX_FULL_MASK                  (0x10U)                           /*!< TX full status mask */
+#define LPSPI_TXRX_RESET_MASK               (0x20U)                           /*!< TX or RX reset status mask */
+#define LPSPI_SPIEN_STS_MASK                (0x40U)                           /*!< LPSPIEN status mask */
+#define LPSPI_SSLINE_STS_MASK               (0x80U)                           /*!< LPSPIx_SS line status mask */
 
 /* LPSPI Auto Trigger Source */
 #define LPSPI_AUTOCTL_TRIGSEL_LPTMR0        (0x00UL)
@@ -479,10 +479,10 @@ extern "C"
   *                          - \ref LPSPI_AUTOCTL_TRIGSEL_LPTMR1
   *                          - \ref LPSPI_AUTOCTL_TRIGSEL_TTMR0
   *                          - \ref LPSPI_AUTOCTL_TRIGSEL_TTMR1
-  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOA0
-  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOB0
-  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOC0
-  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOD0
+  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOA
+  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOB
+  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOC
+  *                          - \ref LPSPI_AUTOCTL_TRIGSEL_WKIOD
   * @return     None.
   * @details    Set Trigger Souce Selection (LPSPI_AUTOCTL[3:0]).
   * \hideinitializer

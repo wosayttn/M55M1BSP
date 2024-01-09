@@ -13,7 +13,7 @@
   @{
 */
 
-/** @addtogroup OTFC_Driver SPI Driver
+/** @addtogroup OTFC_Driver OTFC Driver
   @{
 */
 
@@ -96,7 +96,6 @@ int32_t OTFC_SetNonceNum(OTFC_T *otfc, uint32_t u32PR,
 
 /**
  * @brief   Enable OTFC Protection Region 0 ~ 3 and Use Key Source From Key store.
- *
  * @param[in] otfc  is the base address of OTFC module.
  * @param[in] u32PR Protection Region.
  *                  - \ref OTFC_PR_0
@@ -106,7 +105,7 @@ int32_t OTFC_SetNonceNum(OTFC_T *otfc, uint32_t u32PR,
  * @param[in] u32SAddr  is the protection region start address
  * @param[in] u32PRSize is the protection region size
  * @param[in] u32KeyNum is the KEY Store of KEY number
- * @param[in] u8KeySrc  is the Key Source form Key Store SRAM or OTP
+ * @param[in] u32KeySrc is the Key Source form Key Store SRAM or OTP
  *                      - OTFC_KS_SRC_SRAM
  *                      - OTFC_KS_SRC_OTP
  * @note      Keystore key number only sets 128 bits to keys 0 ~ 3,
@@ -147,16 +146,15 @@ int32_t OTFC_SetKeyFromKeyStore(OTFC_T *otfc, uint32_t u32PR,
 
 /**
  * @brief Use Key table set OTFC protection Region 0 ~ 3 key Source to register.
- *
  * @param[in] otfc
- * @param[in] psKeyTable  OTFC key table.
- * @param[in] u32PR       Protection Region.
- *                        - \ref OTFC_PR_0
- *                        - \ref OTFC_PR_1
- *                        - \ref OTFC_PR_2
- *                        - \ref OTFC_PR_3
- * @param[in] u32SAddr    Protection region start address.
- * @param[in] u32PRSize   Protection region Size.
+ * @param[in] pau32KeyTable  OTFC key table.
+ * @param[in] u32PR          Protection Region.
+ *                           - \ref OTFC_PR_0
+ *                           - \ref OTFC_PR_1
+ *                           - \ref OTFC_PR_2
+ *                           - \ref OTFC_PR_3
+ * @param[in] u32SAddr       Protection region start address.
+ * @param[in] u32PRSize      Protection region Size.
  */
 int32_t OTFC_SetKeyFromKeyReg(OTFC_T *otfc, uint32_t *pau32KeyTable, uint32_t u32PR,
                               uint32_t u32SAddr, uint32_t u32PRSize)
