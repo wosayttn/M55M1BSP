@@ -24,11 +24,11 @@
 
 #define VAD_DETECT_SAMPLERATE      (8000)
 
-static volatile uint32_t g_u32PDWK;
+static volatile uint32_t g_u32PDWK, devmax,devmin,stmax,stmin,ltmax,ltmin,dev,st,lt;
 
 void VAD_Start(void)
 {
-    NVIC_EnableIRQ(DMIC0VAD_IRQn);
+//    NVIC_EnableIRQ(DMIC0VAD_IRQn);
     DMIC_VAD_ENABLE(VAD0);
 }
 
@@ -60,25 +60,28 @@ void VAD_Init(void)
     // Enable VAD BIQ filter.
     DMIC_VAD_ENABLE_BIQ(VAD0);
     // Set short term attack time.
-    DMIC_VAD_SET_STAT(VAD0, DMIC_VAD_STAT_8MS);
+    DMIC_VAD_SET_STAT(VAD0, DMIC_VAD_STAT_16MS);
     // Set long term attack time
-    DMIC_VAD_SET_LTAT(VAD0, DMIC_VAD_LTAT_64MS);
+    DMIC_VAD_SET_LTAT(VAD0, DMIC_VAD_LTAT_512MS);
     // Set short term power threshold.
-    DMIC_VAD_SET_STTHRE(VAD0, DMIC_VAD_POWERTHRE_80DB);
+    DMIC_VAD_SET_STTHRE(VAD0, DMIC_VAD_POWERTHRE_30DB);
     // Set long term power threshold.
-    DMIC_VAD_SET_LTTHRE(VAD0, DMIC_VAD_POWERTHRE_10DB);
+    DMIC_VAD_SET_LTTHRE(VAD0, DMIC_VAD_POWERTHRE_0DB);
     // Set deviation threshold.
-    DMIC_VAD_SET_DEVTHRE(VAD0, DMIC_VAD_POWERTHRE_10DB);
+    DMIC_VAD_SET_DEVTHRE(VAD0, DMIC_VAD_POWERTHRE_30DB);
+    NVIC_DisableIRQ(DMIC0VAD_IRQn);
 }
 
 NVT_ITCM void DMIC0VAD_IRQHandler()
 {
+	dev = VAD0->STATUS1;
+	st=VAD0->STATUS0;
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     CLK_WaitModuleClockReady(DMIC0_MODULE);//TESTCHIP_ONLY
     CLK_WaitModuleClockReady(DEBUG_PORT_MODULE);//TESTCHIP_ONLY
-    printf("VAD_IS_ACTIVE? %lx\n", DMIC_VAD_IS_ACTIVE(VAD0));
+    //printf(",VAD0->STATUS0 %x,VAD0->STATUS1 %x\n", st,dev);
     DMIC_VAD_CLR_ACTIVE(VAD0);
-    VAD_Stop();
+    //VAD_Stop();
     __DSB();
     __ISB();
     while(DMIC_VAD_IS_ACTIVE(VAD0))
@@ -131,7 +134,22 @@ void PowerDownFunction(void)
     /* Set Power-down mode */
     PMC_SetPowerDownMode(PMC_NPD0, PMC_PLCTL_PLSEL_PL1);
     /* Enter to Power-down mode */
-    PMC_PowerDown();
+		/* Set the processor uses deep sleep as its low power mode */
+    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+while((VAD0->STATUS1 & 0xFFFF) > DMIC_VAD_POWERTHRE_0DB||(VAD0->STATUS0 & 0xFFFF)> DMIC_VAD_POWERTHRE_20DB){};
+    while(DMIC_VAD_IS_ACTIVE(VAD0)){
+        DMIC_VAD_CLR_ACTIVE(VAD0);
+    }
+while((VAD0->STATUS1 & 0xFFFF) > DMIC_VAD_POWERTHRE_0DB||(VAD0->STATUS0 & 0xFFFF)> DMIC_VAD_POWERTHRE_20DB){};
+    while(DMIC_VAD_IS_ACTIVE(VAD0)){
+        DMIC_VAD_CLR_ACTIVE(VAD0);
+    }
+    NVIC_EnableIRQ(DMIC0VAD_IRQn);
+    /* Set system Power-down enabled */
+    PMC->PWRCTL |= (PMC_PWRCTL_PDEN_Msk);
+    /* Chip enter Power-down mode after CPU run WFI instruction */
+    __WFI();
+    //PMC_PowerDown();
     /* Switch SCLK clock source to PLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
     SYS_LockReg();
@@ -163,14 +181,24 @@ static void SYS_Init(void)
     CLK_EnableModuleClock(VAD0SEL_MODULE);
     // DMIC_VAD IPReset.
     SYS_ResetModule(SYS_DMIC0RST);
+    CLK_EnableModuleClock(GPIOB_MODULE);
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-    SET_DMIC0_DAT_PE8();
-    SET_DMIC0_CLK_PE9();
-    SET_DMIC0_CLKLP_PE10();
-    SYS->GPE_MFOS = BIT8;
+//    CLK_EnableModuleClock(GPIOE_MODULE);
+//    SET_DMIC0_DAT_PE8();
+//    SET_DMIC0_CLKLP_PE10();
+//    SYS->GPE_MFOS = BIT8;
+//		PE8 = 1;
+    CLK_EnableModuleClock(GPIOB_MODULE);
+    SET_DMIC0_DAT_PB5();
+    SET_DMIC0_CLKLP_PB6();
+    SYS->GPB_MFOS = BIT5;
+		PB5 = 1;//    
+		SET_CLKO_PG15();
+    CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_HXT, 0, 1);
+
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -189,15 +217,80 @@ int main(void)
 
     printf("System core clock = %d\n", SystemCoreClock);
     printf("DMIC_VAD power down/wake up sample code\n");
+    printf("  !! Connect PB.4 <--> PB.6 !!\n\n");
     VAD_Init();
     VAD_Start();
     g_u32PDWK = 0;
+
+//    printf("stmin %x!\n",stmin);
+//    printf("devmax %x!\n",devmax);
+//    printf("devmin %x!\n",devmin);
+//    printf("ltmax %x!\n",ltmax);
+//    printf("ltmin %x!\n",ltmin);
+//    printf("stmax %x!\n",stmax);
+//	while(1){
+		while((VAD0->STATUS1 & 0xFFFF) < DMIC_VAD_POWERTHRE_30DB &&(VAD0->STATUS1 >>16)< DMIC_VAD_POWERTHRE_30DB&&(VAD0->STATUS0 & 0xFFFF)< DMIC_VAD_POWERTHRE_30DB){
+//    printf("0VAD0->STATUS0 %x,VAD0->STATUS1 %x!\n",VAD0->STATUS0,VAD0->STATUS1);
+//	devmax = VAD0->STATUS1 & 0xFFFF;
+//	ltmax = VAD0->STATUS1 >>16;
+//	stmax = VAD0->STATUS0 & 0xFFFF;
+		}
+		while((VAD0->STATUS1 & 0xFFFF) > DMIC_VAD_POWERTHRE_20DB ||(VAD0->STATUS1 >>16)> (DMIC_VAD_POWERTHRE_20DB)||(VAD0->STATUS0 & 0xFFFF)> DMIC_VAD_POWERTHRE_20DB){
+//    printf("1VAD0->STATUS0 %x,VAD0->STATUS1 %x!\n",VAD0->STATUS0,VAD0->STATUS1);
+//	devmin = VAD0->STATUS1 & 0xFFFF;
+//	ltmin = VAD0->STATUS1 >>16;
+//	stmin = VAD0->STATUS0 & 0xFFFF;
+		}
+//	dev = VAD0->STATUS1 & 0xFFFF;
+//		if(dev>devmax){
+//			devmax = dev;
+//    printf("devmax %x!\n",devmax);
+//		}
+//		if(dev<devmin){
+//			devmin = dev;
+//    printf("devmin %x!\n",devmin);
+//		}
+//	lt = VAD0->STATUS1 >>16;
+//		if(lt>ltmax){
+//			ltmax = lt;
+//    printf("ltmax %x!\n",ltmax);
+//		}
+//		if(lt<ltmin){
+//			ltmin = lt;
+//    printf("ltmin %x!\n",ltmin);
+//		}
+//	st = VAD0->STATUS0 & 0xFFFF;
+//		if(st>stmax){
+//			stmax = st;
+//    printf("stmax %x!\n",stmax);
+//		}
+//		if(st<stmin){
+//			stmin = st;
+//    printf("stmin %x!\n",stmin);
+//		}
+    while(DMIC_VAD_IS_ACTIVE(VAD0)){
+        DMIC_VAD_CLR_ACTIVE(VAD0);
+    }
+while((VAD0->STATUS1 & 0xFFFF) > DMIC_VAD_POWERTHRE_0DB||(VAD0->STATUS0 & 0xFFFF)> DMIC_VAD_POWERTHRE_0DB){};
+    //printf("2VAD0->STATUS0 %x,VAD0->STATUS1 %x!\n",VAD0->STATUS0,VAD0->STATUS1);
+//	}
+    printf(" Press any key to Enter Power-down !\n");
+    getchar();
+while((VAD0->STATUS1 & 0xFFFF) > DMIC_VAD_POWERTHRE_0DB||(VAD0->STATUS0 & 0xFFFF)> DMIC_VAD_POWERTHRE_20DB){};
+    while(DMIC_VAD_IS_ACTIVE(VAD0)){
+        DMIC_VAD_CLR_ACTIVE(VAD0);
+    }
+while((VAD0->STATUS1 & 0xFFFF) > DMIC_VAD_POWERTHRE_0DB||(VAD0->STATUS0 & 0xFFFF)> DMIC_VAD_POWERTHRE_20DB){};
+    while(DMIC_VAD_IS_ACTIVE(VAD0)){
+        DMIC_VAD_CLR_ACTIVE(VAD0);
+    }
     printf("Enter Power-down !\n");
     PowerDownFunction();
 
     while (!g_u32PDWK) {};
 
     printf("Wake Up PASS\n");
+    VAD_Stop();
 
     /* Got no where to go, just loop forever */
     while (1) ;
