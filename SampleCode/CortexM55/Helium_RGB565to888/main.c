@@ -40,8 +40,8 @@
 #define PIXELS_LOOP       16
 #define PIXELS_CONVERT_EACHLOOP       16
 
-#define SRC_IMAGE_LEN            20
-#define SRC_IMAGE_WIDTH           5
+#define SRC_IMAGE_LEN            16
+#define SRC_IMAGE_WIDTH           4
 #define SRC_IMAGE_HEIGHT          4
 
 #define DST_IMAGE_LEN            (SRC_IMAGE_LEN*BYTENUMBER_RGB888)
@@ -53,7 +53,7 @@
  ****************************************************************************/
 int iPMU_TickInit;
 uint64_t sPMU_TickCounter;
-uint16_t image_rgb565_src[SRC_IMAGE_LEN] = { 0xDFF2, 0xB234, 0xA2A4, 0x923A, 0xC2C4, 0xA2A4, 0x62A4, 0xA234, 0xA235, 0x1C74, 0xF234, 0x3234, 0x4234, 0x5234, 0x6234, 0x7277, 0xA235, 0x1C74, 0xF234, 0x3234};
+uint16_t image_rgb565_src[SRC_IMAGE_LEN] = { 0xDFF2, 0xB234, 0xA2A4, 0x923A, 0xC2C4, 0xA2A4, 0x62A4, 0xA234, 0xA235, 0x1C74, 0xF234, 0x3234, 0x4234, 0x5234, 0x6234, 0x7277};
 uint8_t image_dst[DST_IMAGE_LEN] = {0};
 uint8_t vimage_dst[DST_IMAGE_LEN] = {0};
 volatile uint32_t g_u32Ticks = 0;
@@ -213,6 +213,95 @@ int32_t main(void)
 
 }
 
+#if defined (__GNUC__) && !defined(__ARMCC_VERSION)
+void RGB565to888(uint8_t *src, uint8_t *dst, uint8_t len)
+{
+    uint8_t buf888_high, buf888_low;
+    uint8_t dst888_r, dst888_g, dst888_b;
+    int count = len;
+
+    while (count >= 0)
+    {
+        //RGB565_IN_UINT8
+        buf888_high = *src;
+        buf888_low = *(src + 1);
+
+        //Separate RGB//
+        dst888_r  = (buf888_high & 0xF8) ;
+
+        dst888_g  = ((buf888_high & 0x07) << 5) | ((buf888_low & 0xE0) >> 3) ;
+
+        dst888_b  = (buf888_low << 3) ;
+
+        //Store to Memory
+        *(dst++) = dst888_r;
+        *(dst++) = dst888_g;
+        *(dst++) = dst888_b;
+
+        src += BYTENUMBER_RGB565;
+        count --;
+    }
+}
+
+void VRGB565to888_TP(uint8_t *src, uint8_t *dst, uint16_t size_h, uint16_t size_w)
+{
+    int8_t count;
+    uint8x16_t vsrc_8_16_lo;
+    uint8x16_t vsrc_8_16_hi;
+    uint8x16_t vdst_8_16_r;
+    uint8x16_t vdst_8_16_g;
+    uint8x16_t vdst_8_16_b;
+    uint8x16_t offset_8_16;
+
+    count = size_h * size_w;
+    while (count > 0)
+    {
+        //RGB565_IN_UINT8
+
+        //Include tail predication to handle improper tailing.
+        mve_pred16_t p = vctp8q(count);
+
+        offset_8_16 = vcreateq_u8(OFFSET_565LOWBYTE_LOW, OFFSET_565LOWBYTE_HIGH);
+
+        vsrc_8_16_lo = vldrbq_gather_offset_z_u8(src, offset_8_16, p);
+
+        offset_8_16 = vcreateq_u8(OFFSET_565HIGHBYTE_LOW, OFFSET_565HIGHBYTE_HIGH);
+
+        vsrc_8_16_hi = vldrbq_gather_offset_z_u8(src, offset_8_16, p);
+
+        //Separate RGB//
+        vdst_8_16_r  =  vshlq_n(vshrq(vsrc_8_16_hi, 3), 3);
+        
+        vdst_8_16_g =  vorrq_u8(vshlq_n(vsrc_8_16_hi, 5), vshlq_n(vshrq(vsrc_8_16_lo, 5), 2));
+
+        vdst_8_16_b =  vshlq_n(vsrc_8_16_lo, 3);
+
+        //Scatter Store//
+        offset_8_16 = vcreateq_u8(OFFSET_R_LOW, OFFSET_R_HIGH);
+
+        vstrbq_scatter_offset_p(dst, offset_8_16, vdst_8_16_r, p);
+
+        offset_8_16 = vcreateq_u8(OFFSET_G_LOW, OFFSET_G_HIGH);
+
+        vstrbq_scatter_offset_p(dst, offset_8_16, vdst_8_16_g, p);
+
+        offset_8_16 = vcreateq_u8(OFFSET_B_LOW, OFFSET_B_HIGH);
+
+        vstrbq_scatter_offset_p(dst, offset_8_16, vdst_8_16_b, p);
+
+        //Update data source and destination pointer
+
+        //Source: shift one RGB566 pixel size(2 byte)
+        src += BYTENUMBER_RGB565 * PIXELS_CONVERT_EACHLOOP;
+
+        //Destination: shift one RGB888 pixel size(3 byte)
+        dst += BYTENUMBER_RGB888 * PIXELS_CONVERT_EACHLOOP;
+
+        count -= PIXELS_CONVERT_EACHLOOP;
+
+    }// while (count > 0)
+}
+#else
 
 void RGB565to888(uint8_t *src, uint8_t *dst, uint8_t len)
 {
@@ -320,3 +409,4 @@ void VRGB565to888_TP(uint8_t *src, uint8_t *dst, uint16_t size_h, uint16_t size_
 
     }
 }
+#endif
