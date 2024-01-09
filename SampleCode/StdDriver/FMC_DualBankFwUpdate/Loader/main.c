@@ -46,7 +46,6 @@ static void SYS_Init(void)
 uint32_t FMC_GetChkSum(uint32_t u32StartAddr, uint32_t u32ByteSize)
 {
     uint32_t u32CRC32Checksum = 0xFFFFFFFF;
-    uint32_t u32Addr;
 
     /* Configure CRC controller for CRC-CRC32 mode */
     CRC_Open(CRC_32, (CRC_WDATA_RVS | CRC_CHECKSUM_RVS | CRC_CHECKSUM_COM), 0xFFFFFFFFul, CRC_CPU_WDATA_32);
@@ -187,10 +186,6 @@ int main()
             }
         }
     }
-
-    printf("Done\n");
-
-    while (1) ;
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
