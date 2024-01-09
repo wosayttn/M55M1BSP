@@ -433,7 +433,7 @@ typedef struct
 #define DMIC_DIV_FCLR_Msk                (0x3ul << DMIC_DIV_FCLR_Pos)                      /*!< DMIC_T::DIV: FCLR Mask                 */
 
 #define DMIC_DIV_OSR_Pos                 (24)                                              /*!< DMIC_T::DIV: OSR Position              */
-#define DMIC_DIV_OSR_Msk                 (0xful << DMIC_DIV_OSR_Pos)                       /*!< DMIC_T::DIV: OSR Mask                  */
+#define DMIC_DIV_OSR_Msk                 (0x7ul << DMIC_DIV_OSR_Pos)                       /*!< DMIC_T::DIV: OSR Mask                  */
 
 #define DMIC_STATUS_FULL_Pos             (0)                                               /*!< DMIC_T::STATUS: FULL Position          */
 #define DMIC_STATUS_FULL_Msk             (0x1ul << DMIC_STATUS_FULL_Pos)                   /*!< DMIC_T::STATUS: FULL Mask              */
