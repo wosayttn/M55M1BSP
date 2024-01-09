@@ -21,11 +21,11 @@
   @{
 */
 
-/** @addtogroup USBH_Library USB Host Library
+/** @addtogroup USBH_Library USBH Library
   @{
 */
 
-/** @addtogroup USBH_EXPORTED_FUNCTIONS USB Host Exported Functions
+/** @addtogroup USBH_EXPORTED_FUNCTIONS USBH Exported Functions
   @{
 */
 
@@ -1071,8 +1071,8 @@ int usbh_uac_open(UAC_DEV_T *uac)
     return 0;
 }
 
-/*@}*/ /* end of group USBH_EXPORTED_FUNCTIONS */
+/** @} end of group USBH_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group USBH_Library */
+/** @} end of group USBH_Library */
 
-/*@}*/ /* end of group LIBRARY */
+/** @} end of group LIBRARY */

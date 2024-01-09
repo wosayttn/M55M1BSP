@@ -40,11 +40,11 @@ extern "C"
   @{
 */
 
-/** @addtogroup USBH_Library USB Host Library
+/** @addtogroup USBH_Library USBH Library
   @{
 */
 
-/** @addtogroup USBH_EXPORTED_CONSTANTS USB Host Exported Constants
+/** @addtogroup USBH_EXPORTED_CONSTANTS USBH Exported Constants
   @{
 */
 
@@ -162,9 +162,9 @@ extern "C"
 #define RT_OUTPUT                   2      /*!< Report type: Output              \hideinitializer */
 #define RT_FEATURE                  3      /*!< Report type: Feature             \hideinitializer */
 
-/*@}*/ /* end of group USBH_EXPORTED_CONSTANTS */
+/** @} end of group USBH_EXPORTED_CONSTANTS */
 
-/** @addtogroup USBH_EXPORTED_STRUCTURES USB Host Exported Structures
+/** @addtogroup USBH_EXPORTED_STRUCTURES USBH Exported Structures
   @{
 */
 
@@ -312,9 +312,9 @@ typedef struct usbhid_mouse_event
 typedef void (HID_MOUSE_FUNC)(struct usbhid_dev *hdev, MOUSE_EVENT_T *mouse);      /*!< HID mouse event callback \hideinitializer */
 typedef void (HID_KEYBOARD_FUNC)(struct usbhid_dev *hdev, KEYBOARD_EVENT_T *kbd);  /*!< HID keyboard event callback \hideinitializer */
 
-/*@}*/ /* end of group USBH_EXPORTED_STRUCTURES */
+/** @} end of group USBH_EXPORTED_STRUCTURES */
 
-/** @addtogroup USBH_EXPORTED_FUNCTIONS USB Host Exported Functions
+/** @addtogroup USBH_EXPORTED_FUNCTIONS USBH Exported Functions
   @{
 */
 
@@ -328,11 +328,11 @@ int hid_parse_mouse_reports(HID_DEV_T *hdev, uint8_t *data, int data_len);
 int32_t  usbh_hid_set_report_non_blocking(HID_DEV_T *hdev, int rtp_typ, int rtp_id, uint8_t *data, int len);
 /// @endcond HIDDEN_SYMBOLS
 
-/*@}*/ /* end of group USBH_EXPORTED_FUNCTIONS */
-
-/*@}*/ /* end of group USBH_Library */
-
-/*@}*/ /* end of group Library */
+/** @} end of group USBH_EXPORTED_FUNCTIONS */
+       
+/** @} end of group USBH_Library */
+       
+/** @} end of group Library */
 
 #ifdef __cplusplus
 }

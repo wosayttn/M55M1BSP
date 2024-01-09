@@ -21,11 +21,11 @@
   @{
 */
 
-/** @addtogroup USBH_Library USB Host Library
+/** @addtogroup USBH_Library USBH Library
   @{
 */
 
-/** @addtogroup USBH_EXPORTED_FUNCTIONS USB Host Exported Functions
+/** @addtogroup USBH_EXPORTED_FUNCTIONS USBH Exported Functions
   @{
 */
 
@@ -468,8 +468,8 @@ int32_t usbh_cdc_send_data(CDC_DEV_T *cdev, uint8_t *buff, int buff_len)
     return 0;
 }
 
-/*@}*/ /* end of group USBH_EXPORTED_FUNCTIONS */
+/** @} end of group USBH_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group USBH_Library */
+/** @} end of group USBH_Library */
 
-/*@}*/ /* end of group Library */
+/** @} end of group Library */

@@ -107,7 +107,7 @@ extern "C"
 /**
   * @brief      Check Smartcard Interrupt Status Flag
   *
-  * @param[in]  psSC    The pointer of smartcard module.
+  * @param[in]  sc      The pointer of smartcard module.
   * @param[in]  u32Mask Interrupt mask to be disabled. A combination of
   *                         - \ref SC_INTSTS_ACERRIF_Msk
   *                         - \ref SC_INTSTS_RXTOIF_Msk
@@ -132,7 +132,7 @@ extern "C"
 /**
   * @brief      Clear Smartcard Interrupt Status Flag
   *
-  * @param[in]  psSC    The pointer of smartcard module.
+  * @param[in]  sc      The pointer of smartcard module.
   * @param[in]  u32Mask Interrupt mask to be disabled. A combination of
   *                         - \ref SC_INTSTS_ACERRIF_Msk
   *                         - \ref SC_INTSTS_RXTOIF_Msk

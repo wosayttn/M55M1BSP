@@ -22,11 +22,11 @@
   @{
 */
 
-/** @addtogroup USBH_Library USB Host Library
+/** @addtogroup USBH_Library USBH Library
   @{
 */
 
-/** @addtogroup USBH_EXPORTED_FUNCTIONS USB Host Exported Functions
+/** @addtogroup USBH_EXPORTED_FUNCTIONS USBH Exported Functions
   @{
 */
 
@@ -272,8 +272,8 @@ UAC_DEV_T *usbh_uac_get_device_list(void)
     return g_uac_list;
 }
 
-/*@}*/ /* end of group USBH_EXPORTED_FUNCTIONS */
-
-/*@}*/ /* end of group USBH_Library */
-
-/*@}*/ /* end of group LIBRARY */
+/** @} end of group USBH_EXPORTED_FUNCTIONS */
+       
+/** @} end of group USBH_Library */
+       
+/** @} end of group LIBRARY */

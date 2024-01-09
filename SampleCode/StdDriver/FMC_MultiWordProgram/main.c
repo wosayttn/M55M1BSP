@@ -45,7 +45,7 @@ void SYS_Init(void)
 
 int main(void)
 {
-    uint32_t u32Addr, u32WriteAddr, u32Data;            /* variables */
+    uint32_t u32Addr;
     int32_t  i;
 
     /* Init System, IP clock and multi-function I/O */

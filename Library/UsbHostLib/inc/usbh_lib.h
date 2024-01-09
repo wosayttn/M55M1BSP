@@ -20,11 +20,11 @@ extern "C"
   @{
 */
 
-/** @addtogroup USBH_Library USB Host Library
+/** @addtogroup USBH_Library USBH Library
   @{
 */
 
-/** @addtogroup USBH_EXPORTED_CONSTANTS USB Host Exported Constants
+/** @addtogroup USBH_EXPORTED_CONSTANTS USBH Exported Constants
   @{
 */
 
@@ -106,9 +106,9 @@ extern "C"
 #define UAC_RET_PARSER              -2013  /*!< Failed to parse UAC descriptor                  */
 #define UAC_RET_IS_STREAMING        -2015  /*!< Audio pipe is on streaming.                     */
 
-/*@}*/ /* end of group USBH_EXPORTED_CONSTANTS */
+/** @} end of group USBH_EXPORTED_CONSTANTS */
 
-/** @addtogroup USBH_EXPORTED_TYPEDEF USB Host Typedef
+/** @addtogroup USBH_EXPORTED_TYPEDEF USBH Exported Typedef
   @{
 */
 struct udev_t;
@@ -125,9 +125,9 @@ typedef void (HID_IW_FUNC)(struct usbhid_dev *hdev, uint16_t ep_addr, int status
 struct uac_dev_t;
 typedef int (UAC_CB_FUNC)(struct uac_dev_t *dev, uint8_t *data, int len);    /*!< audio in callback function \hideinitializer */
 
-/*@}*/ /* end of group USBH_EXPORTED_STRUCT */
+/** @} end of group USBH_EXPORTED_TYPEDEF */
 
-/** @addtogroup USBH_EXPORTED_FUNCTIONS USB Host Exported Functions
+/** @addtogroup USBH_EXPORTED_FUNCTIONS USBH Exported Functions
   @{
 */
 
@@ -238,11 +238,11 @@ extern uint32_t  usbh_memory_used(void);
 
 /// @endcond HIDDEN_SYMBOLS
 
-/*@}*/ /* end of group USBH_EXPORTED_FUNCTIONS */
-
-/*@}*/ /* end of group USBH_Library */
-
-/*@}*/ /* end of group LIBRARY */
+/** @} end of group USBH_EXPORTED_FUNCTIONS */
+       
+/** @} end of group USBH_Library */
+       
+/** @} end of group LIBRARY */
 
 #ifdef __cplusplus
 }

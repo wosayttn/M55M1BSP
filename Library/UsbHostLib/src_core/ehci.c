@@ -1396,4 +1396,5 @@ HC_DRV_T  ehci_driver =
     ehci_rh_polling          /* rthub_polling      */
 };
 #endif
+
 /// @endcond HIDDEN_SYMBOLS

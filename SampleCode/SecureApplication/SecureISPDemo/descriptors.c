@@ -1,6 +1,6 @@
 /******************************************************************************
  * @file     descriptors.c
- * @brief    M2354 series USBD driver source file
+ * @brief    M55M1 series USBD driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.

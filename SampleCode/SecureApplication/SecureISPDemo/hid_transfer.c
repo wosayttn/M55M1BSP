@@ -1,6 +1,6 @@
 /******************************************************************************
  * @file     hid_transder.c
- * @brief    M2354 series USBD driver Sample file
+ * @brief    M55M1 series USBD driver sample file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
@@ -18,10 +18,10 @@ void USBD_IRQHandler(void);
 void HID_Init(void);
 void HID_ClassRequest(void);
 
-void USBD_IRQHandler(void)
+NVT_ITCM void USBD_IRQHandler(void)
 {
     uint32_t u32IntSts = USBD_GET_INT_FLAG();
-    uint32_t u32State = USBD_GET_BUS_STATE();
+    uint32_t u32State  = USBD_GET_BUS_STATE();
 
     //------------------------------------------------------------------
     if (u32IntSts & USBD_INTSTS_FLDET)
@@ -172,6 +172,9 @@ void USBD_IRQHandler(void)
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP11);
         }
     }
+
+    // CPU read interrupt flag register to wait write(clear) instruction complete.
+    u32IntSts = USBD_GET_INT_FLAG();
 }
 
 /*--------------------------------------------------------------------------*/
@@ -209,7 +212,6 @@ void HID_Init(void)
     USBD_SET_EP_BUF_ADDR(EP3, EP3_BUF_BASE);
     /* trigger to receive OUT data */
     USBD_SET_PAYLOAD_LEN(EP3, EP3_MAX_PKT_SIZE);
-
 }
 
 void HID_ClassRequest(void)

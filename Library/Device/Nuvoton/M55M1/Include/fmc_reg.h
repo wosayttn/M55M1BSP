@@ -11,7 +11,7 @@
 #define __FMC_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -87,18 +87,18 @@ typedef struct
      * |        |          |0 = Booting from APROM or LDROM.
      * |        |          |1 = Booting from Boot Loader.
      * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-	 * |[24]    |INTEN     |Secure ISP INT Enable Bit (Write Protect)
+     * |[24]    |INTEN     |Secure ISP INT Enable Bit (Write Protect)
      * |        |          |0= ISP INT Disabled.
      * |        |          |1= ISP INT Enabled.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register. Before using INT, user needs to clear 
-	 * |        |          |the INTFLAG(FMC_ISPSTS[24]) make sure INT happen at correct time.
+     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register. Before using INT, user needs to clear
+     * |        |          |the INTFLAG(FMC_ISPSTS[24]) make sure INT happen at correct time.
      * @var FMC_T::ISPADDR
      * Offset: 0x04  ISP Address Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[31:0]  |ISPADDR   |ISP Address
-     * |        |          |The NuMicro M480 series is equipped with embedded flash
+     * |        |          |The M55 series is equipped with embedded flash
      * |        |          |ISPADDR[1:0] must be kept 00 for ISP 32-bit operation
      * |        |          |ISPADDR[2:0] must be kept 000 for ISP 64-bit operation.
      * |        |          |For CRC32 Checksum Calculation command, this field is the flash starting address for checksum calculation, 4 Kbytes alignment is necessary for CRC32 checksum calculation.
@@ -399,17 +399,17 @@ typedef struct
      * | :----: | :----:   | :---- |
      * |[n]     |APPROENn  |APROM Proect enable
      * | n=0,1..|          |This bit indicates which APROM region is protected.
-     * | ..31	|          |0 = APROM region n is not protected.
+     * | ..31   |          |0 = APROM region n is not protected.
      * |        |          |1 = APROM region n is protected.
      * |        |          |Note: APROM protect region is 0x0 + n*(0x8000) to 0x7fff + n*(0x8000)
-	 * @var FMC_T::APWPROT1
+     * @var FMC_T::APWPROT1
      * Offset: 0x110  APROM Write Protect Register1
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[n]     |APPROENn  |APROM Proect enable
      * | n=32,33|          |This bit indicates which APROM region is protected.
-     * | ..63	|          |0 = APROM region n is not protected.
+     * | ..63   |          |0 = APROM region n is not protected.
      * |        |          |1 = APROM region n is protected.
      * |        |          |Note: APROM protect region is 0x0 + n*(0x8000) to 0x7fff + n*(0x8000)
      */
@@ -419,9 +419,9 @@ typedef struct
     __IO uint32_t ISPDAT;                /*!< [0x0008] ISP Data Register                                                */
     __IO uint32_t ISPCMD;                /*!< [0x000c] ISP Command Register                                             */
     __IO uint32_t ISPTRG;                /*!< [0x0010] ISP Trigger Control Register                                     */
-	__I  uint32_t RESERVE;
-	__IO uint32_t FTCTL;				 /*!< [0x0018] Flash Access Time Control Register                               */
-    __IO uint32_t ICPCTL;				 /*!< [0x001C] ICP Enabled Control Register                                     */
+    __I  uint32_t RESERVE;
+    __IO uint32_t FTCTL;                 /*!< [0x0018] Flash Access Time Control Register                               */
+    __IO uint32_t ICPCTL;                /*!< [0x001C] ICP Enabled Control Register                                     */
     /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE0[8];
     /// @endcond //HIDDEN_SYMBOLS
@@ -452,8 +452,8 @@ typedef struct
     __I  uint32_t XOMSTS;                /*!< [0x00e0] XOM Status Register                                              */
     __I  uint32_t RESERVE5[11];
     __IO uint32_t APWPROT[2];            /*!< [0x0110-0x0114] APROM Write Protect Register 0-1                          */
-	__IO uint32_t APWPKEEP;              /*!< [0x0118] APROM Write Protect Keep Register                                */
-	__IO uint32_t SCACT;              	 /*!< [0x011C] APROM Secure Conceal Active Register                             */
+    __IO uint32_t APWPKEEP;              /*!< [0x0118] APROM Write Protect Keep Register                                */
+    __IO uint32_t SCACT;                 /*!< [0x011C] APROM Secure Conceal Active Register                             */
 } FMC_T;
 
 /**
@@ -815,7 +815,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __FMC_REG_H__ */
