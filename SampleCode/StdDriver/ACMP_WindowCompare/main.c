@@ -69,23 +69,23 @@ void SYS_Init(void)
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
-    /* Set PB.4 to input mode */
-    GPIO_SetMode(PB,BIT4,GPIO_MODE_INPUT);
-      /* Set PA.11 to input mode */
+    /* Set PA.10 to input mode */
+    GPIO_SetMode(PA,BIT10,GPIO_MODE_INPUT);
+    /* Set PA.11 to input mode */
     GPIO_SetMode(PA,BIT11,GPIO_MODE_INPUT); 
 
-    /* Set PA multi-function pin for ACMP0 positive input pin */
+    /* Set PA11 multi-function pin for ACMP0 positive input pin */
     SET_ACMP0_P0_PA11();
 
-    /* Set PB4 multi-function pin for ACMP1 positive input pin */
-    SET_ACMP1_P1_PB4();
+    /* Set PA10 multi-function pin for ACMP1 positive input pin */
+    SET_ACMP1_P0_PA10();
 
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
-    /* Disable digital input path of analog pin ACMP0_P0 and ACMP1_P1 to prevent leakage */
+    /* Disable digital input path of analog pin ACMP0_P0 and ACMP1_P0 to prevent leakage */
     GPIO_DISABLE_DIGITAL_PATH(PA, (1ul << 11));
-    GPIO_DISABLE_DIGITAL_PATH(PB, (1ul << 4));
+    GPIO_DISABLE_DIGITAL_PATH(PA, (1ul << 10));
 }
 
 
@@ -110,7 +110,7 @@ int32_t main(void)
 
     printf("\nThis sample code demonstrates ACMP window compare function\n");
     printf("Connect the specific analog voltage source to the positive inputs\n");
-    printf("of both comparators, PB2 and PB4. This sample code will monitor if the\n");
+    printf("of both comparators, PA10 and PA11. This sample code will monitor if the\n");
     printf("input is between the range of VDDA * 40 / 63 and bandgap.\n");
     printf("Press any key to continue ...\n");
     getchar();
@@ -122,11 +122,11 @@ int32_t main(void)
     /* Select VDDA as CRV source */
     ACMP_SELECT_CRV1_SRC(ACMP01, ACMP_VREF_CRV1SSEL_VDDA);
     /* Select CRV1 level: VDDA * 40 / 63 */
-    ACMP_CRV1_SEL(ACMP01, 50);
+    ACMP_CRV1_SEL(ACMP01, 40);
     /* Select P0 as ACMP0 positive input channel */
     ACMP_SELECT_P(ACMP01, 0, ACMP_CTL_POSSEL_P0);
     /* Select P1 as ACMP1 positive input channel */
-    ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P1);
+    ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P0);
     /* Enable window compare mode */
     ACMP_ENABLE_WINDOW_COMPARE(ACMP01, 0);
     ACMP_ENABLE_WINDOW_COMPARE(ACMP01, 1);

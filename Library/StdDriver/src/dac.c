@@ -55,7 +55,7 @@ void DAC_Open(DAC_T *dac,
 /**
   * @brief Disable DAC analog power.
   * @param[in] dac Base address of DAC module.
-  * @param[in] u32Ch Not used in M480 DAC.
+  * @param[in] u32Ch Not used in M55M1 DAC.
   * @return None
   * @details Disable DAC analog power for saving power consumption.
   */

@@ -130,7 +130,6 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
 
     __RW __RW_BASE __RW_SIZE              ; RW data
     {
-		* (DTCM.VTOR)
         .ANY (+RW +ZI)
     }
 

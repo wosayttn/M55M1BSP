@@ -243,7 +243,7 @@ void UI2C0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
     /* Init Debug UART to 115200-8N1 for print message */
@@ -274,9 +274,18 @@ int32_t main(void)
         /* USCI_I2C as master sends START signal */
         m_Event = MASTER_SEND_START;
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);
+        u32TimeOutCnt = UI2C_TIMEOUT;
 
         /* Wait USCI_I2C Tx Finish */
-        while (g_u8EndFlagM == 0);
+        while (g_u8EndFlagM == 0)
+        {
+            if (--u32TimeOutCnt == 0)
+            {
+                printf("Wait USCI_I2C Tx time-out!\n");
+
+                while (1);
+            }
+        }
 
         g_u8EndFlagM = 0;
         /* USCI_I2C function to read data from slave */
@@ -285,9 +294,18 @@ int32_t main(void)
         g_u8DeviceAddr = 0x50;
         m_Event = MASTER_SEND_START;
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);
+        u32TimeOutCnt = UI2C_TIMEOUT;
 
         /* Wait USCI_I2C Rx Finish */
-        while (g_u8EndFlagM == 0);
+        while (g_u8EndFlagM == 0)
+        {
+            if (--u32TimeOutCnt == 0)
+            {
+                printf("Wait USCI_I2C Rx time-out!\n");
+
+                while (1);
+            }
+        }
 
         g_u8EndFlagM = 0;
 
@@ -295,7 +313,8 @@ int32_t main(void)
         if (g_u8RxData != g_au8TxData[2])
         {
             printf("USCI_I2C Byte Write/Read Failed, Data 0x%x\n", g_u8RxData);
-            return -1;
+
+            while (1);
         }
     }
 
