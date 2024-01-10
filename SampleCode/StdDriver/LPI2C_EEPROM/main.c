@@ -180,8 +180,8 @@ static void SYS_Init(void)
     /* Enable I2C0 module clock */
     CLK_EnableModuleClock(LPI2C0_MODULE);
     /* Set multi-function pins for LPI2C0 SDA and SCL */
-    SET_LPI2C0_SDA_PA4();
-    SET_LPI2C0_SCL_PA5();
+    SET_LPI2C0_SDA_PB4();
+    SET_LPI2C0_SCL_PB5();
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -249,14 +249,24 @@ int32_t main(void)
             if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for LPI2C Tx finish time-out!\n");
-                goto lexit;
+
+                while (1);
             }
         }
 
         g_u8EndFlag = 0;
-
         /* Make sure LPI2C0 STOP already */
-        while (LPI2C0->CTL0 & LPI2C_CTL0_STO_Msk);
+        u32TimeOutCnt = LPI2C_TIMEOUT;
+
+        while (LPI2C0->CTL0 & LPI2C_CTL0_STO_Msk)
+        {
+            if (--u32TimeOutCnt == 0)
+            {
+                printf("Wait for LPI2C STOP time-out!\n");
+
+                while (1);
+            }
+        }
 
         /* Wait write operation complete */
         CLK_SysTickDelay(10000);
@@ -273,12 +283,23 @@ int32_t main(void)
             if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for LPI2C Rx finish time-out!\n");
-                goto lexit;
+
+                while (1);
             }
         }
 
         /* Make sure LPI2C0 STOP already */
-        while (LPI2C0->CTL0 & LPI2C_CTL0_STO_Msk);
+        u32TimeOutCnt = LPI2C_TIMEOUT;
+
+        while (LPI2C0->CTL0 & LPI2C_CTL0_STO_Msk)
+        {
+            if (--u32TimeOutCnt == 0)
+            {
+                printf("Wait for LPI2C STOP time-out!\n");
+
+                while (1);
+            }
+        }
 
         /* Compare data */
         if (g_u8RxData != g_au8TxData[2])

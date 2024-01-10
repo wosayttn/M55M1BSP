@@ -789,7 +789,7 @@ uint32_t LPI2C_WriteMultiBytesTwoRegs(LPI2C_T *i2c, uint8_t u8SlaveAddr, uint16_
     LPI2C_START(i2c);                                                         /* Send START */
     while(u8Xfering && (u8Err == 0u))
     {
-        u32TimeOutCount = I2C_TIMEOUT;
+        u32TimeOutCount = LPI2C_TIMEOUT;
         LPI2C_WAIT_READY(i2c)
         {
             if(--u32TimeOutCount == 0)
@@ -865,7 +865,7 @@ uint8_t LPI2C_ReadByte(LPI2C_T *i2c, uint8_t u8SlaveAddr)
     LPI2C_START(i2c);                                                /* Send START */
     while(u8Xfering && (u8Err == 0u))
     {
-        u32TimeOutCount = I2C_TIMEOUT;
+        u32TimeOutCount = LPI2C_TIMEOUT;
         LPI2C_WAIT_READY(i2c)
         {
             if(--u32TimeOutCount == 0)
@@ -1013,7 +1013,7 @@ uint8_t LPI2C_ReadByteOneReg(LPI2C_T *i2c, uint8_t u8SlaveAddr, uint8_t u8DataAd
     LPI2C_START(i2c);                                                /* Send START */
     while(u8Xfering && (u8Err == 0u))
     {
-        u32TimeOutCount = I2C_TIMEOUT;
+        u32TimeOutCount = LPI2C_TIMEOUT;
         LPI2C_WAIT_READY(i2c)
         {
             if(--u32TimeOutCount == 0)
@@ -1099,7 +1099,7 @@ uint32_t LPI2C_ReadMultiBytesOneReg(LPI2C_T *i2c, uint8_t u8SlaveAddr, uint8_t u
     LPI2C_START(i2c);                                                /* Send START */
     while(u8Xfering && (u8Err == 0u))
     {
-        u32TimeOutCount = I2C_TIMEOUT;
+        u32TimeOutCount = LPI2C_TIMEOUT;
         LPI2C_WAIT_READY(i2c)
         {
             if(--u32TimeOutCount == 0)
@@ -1190,7 +1190,7 @@ uint8_t LPI2C_ReadByteTwoRegs(LPI2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16Dat
     LPI2C_START(i2c);                                                         /* Send START */
     while(u8Xfering && (u8Err == 0u))
     {
-        u32TimeOutCount = I2C_TIMEOUT;
+        u32TimeOutCount = LPI2C_TIMEOUT;
         LPI2C_WAIT_READY(i2c)
         {
             if(--u32TimeOutCount == 0)

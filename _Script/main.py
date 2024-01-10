@@ -477,10 +477,10 @@ def check_prj():
                 else:
                     pos = mm.find(b'.usenewlibnano.')
                     if pos < 0:
-                        f.write("[Warning] " + dirPath + ": Not use newlib-nano.\n")
+                        f.write("[Warning] " + dirPath + ": Not use recommended newlib-nano.\n")
                     pos = mm.find(b'\\')
                     if pos >= 0:
-                        f.write("[Warning] " + file + ": Found backslash.\n")
+                        f.write("[Warning] " + file + ": Found backslash, invalid in Linux file path.\n")
                 mm.close()
                 cproject.close()
  
@@ -560,10 +560,10 @@ def check_prj():
                 if elem.text not in KEIL_DEVICE:
                     f.write("[Error] " + os.path.join(dirPath, file) + ": Device setting (" + elem.text + ") is not " + " or ".join(KEIL_DEVICE) + ".\n")
                 elem1 = elem1.find('Cads')
-                # Only accept O2 (optim.text == '3'), O3 (optim.text == '4'), default is O2
-                #optim = elem1.find('Optim')
-                #if (int(optim.text) < 3) and (int(optim.text) != 0):    
-                #    f.write(os.path.join(dirPath, file) + " C optimized level setting is incorrect\n")
+                # default O2 (optim.text == '3'), O3 (optim.text == '4')
+                optim = elem1.find('Optim')
+                if int(optim.text) < 3:
+                    f.write("[Warning] " + os.path.join(dirPath, file) + ": C optimized level setting (" + optim.text + ") is not at least -O2.\n")
                 # Check optimize for time is disabled
                 otime = elem1.find('oTime')
                 if otime.text == '1':
@@ -614,7 +614,8 @@ def check_prj():
                 for file in glob.glob(dirPath + r"\\IAR" + r"\\*.eww"):
                     cnt += 1
                 if cnt == 0:
-                    f.write("[Error] " + os.path.join(dirPath, 'IAR') + ": eww file is missing.\n")
+                    # Maybe multiple projects share one eww file
+                    f.write("[Warning] " + os.path.join(dirPath, 'IAR') + ": eww file is missing.\n")
                 elif cnt > 1:
                     f.write("[Warning] " + os.path.join(dirPath, 'IAR') + " more than one *.eww\n")
                 prj_cnt = 0
@@ -666,27 +667,27 @@ def check_prj():
                             #if opt.find('name').text == "FPU":
                             #    if opt.find('state').text != "5":
                             #        f.write(file + ": FPU not enabled.\n")
-                    #elif setting.find('name').text == "ICCARM":
-                    #    e = setting.find('data')
-                    #    for opt in e.findall('option'):
-                    #        if opt.find('name').text == "CCDiagSuppress":
-                    #            if opt.find('state').text != None:
-                    #                f.write("[Warning] " + os.path.join(dirPath, file) + ": ICCARM suppress setting: " + opt.find('state').text + "\n")
-                    #        if opt.find('name').text == "CCOptLevel":
-                    #            if int(opt.find('state').text) < 2:
-                    #                f.write(file + " C optimized level setting is incorrect\n")
+                    elif setting.find('name').text == "ICCARM":
+                        e = setting.find('data')
+                        for opt in e.findall('option'):
+                            if opt.find('name').text == "CCDiagSuppress":
+                                if opt.find('state').text != None:
+                                    f.write("[Warning] " + os.path.join(dirPath, file) + ": Found ICCARM suppress setting (" + opt.find('state').text + "), not recommended.\n")
+                            if opt.find('name').text == "CCOptLevel":
+                                if int(opt.find('state').text) < 3:
+                                    f.write("[Warning] " + os.path.join(dirPath, file) + ": C optimized level setting (" + opt.find('state').text + ") is not at least -O2.\n")
                     if setting.find('name').text == "ILINK":
                         e = setting.find('data')
                         for opt in e.findall('option'):
-                            #if opt.find('name').text == "IlinkProgramEntryLabel":
-                            #    if opt.find('state').text != IAR_RSTHANDLER:
-                            #        if opt.find('state').text != None:
-                            #            f.write("[Error] " + os.path.join(dirPath, file) + ": Linker entry symbol setting (" + opt.find('state').text + ") is not " + IAR_RSTHANDLER + ".\n")
-                            #        else:
-                            #            f.write("[Warning] " + os.path.join(dirPath, file) + ": Linker entry symbol setting is miss.\n")
-                            #if opt.find('name').text == "IlinkOverrideProgramEntryLabel":
-                            #    if opt.find('state').text != "1":
-                            #        f.write("[Warning] " + os.path.join(dirPath, file) + ": Linker setting does not override default program entry.\n")
+                            if opt.find('name').text == "IlinkProgramEntryLabel":
+                                if opt.find('state').text != IAR_RSTHANDLER:
+                                    if opt.find('state').text != None:
+                                        f.write("[Error] " + os.path.join(dirPath, file) + ": Linker entry symbol setting (" + opt.find('state').text + ") is not " + IAR_RSTHANDLER + ".\n")
+                                    else:
+                                        f.write("[Warning] " + os.path.join(dirPath, file) + ": Linker entry symbol setting is missing.\n")
+                            if opt.find('name').text == "IlinkOverrideProgramEntryLabel":
+                                if opt.find('state').text != "1":
+                                    f.write("[Warning] " + os.path.join(dirPath, file) + ": Linker setting does not override default program entry.\n")
                             if opt.find('name').text == "IlinkOutputFile":
                                 outname = opt.find('state').text
                                 namepos = outname.find(filename)
@@ -767,7 +768,7 @@ def check_prj():
 
 # Check source code
 def check_src():
-    ban_list = { "Uart0DefaultMPF" }
+    keyword_list = { "M25[1-3]", "M235[14]", "M2L31", "MAD02[56]", "M46[07]", "M48[0-7]", "MA35[DS]1", "Uart0DefaultMPF" }
     exclude_list = { "\\.git", "_CUnit", "\\Library\\CMSIS", "ThirdParty" }
     log = open('checksrc.txt', "w+")
 

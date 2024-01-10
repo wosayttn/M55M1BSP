@@ -644,7 +644,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>I2S_MP3PLAYER.bin</state>
+                    <state>I2S_MP3Player.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -691,7 +691,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>I2S_MP3PLAYER.out</state>
+                    <state>I2S_MP3Player.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -988,7 +988,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>I2S_MP3PLAYER_import_lib.o</state>
+                    <state>I2S_MP3Player_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>

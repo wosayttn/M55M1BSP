@@ -82,7 +82,7 @@
                 </option>
                 <option>
                     <name>GEndianModeBE</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OGBufferedTerminalOutput</name>
@@ -99,7 +99,7 @@
                 <option>
                     <name>GBECoreSlave</name>
                     <version>33</version>
-                    <state>0</state>
+                    <state>63</state>
                 </option>
                 <option>
                     <name>OGUseCmsis</name>
@@ -293,7 +293,7 @@
                 </option>
                 <option>
                     <name>CCDebugInfo</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IEndianMode</name>

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "NuMicro.h"
 
-uint32_t ExeInRegion2(void)
+__attribute__((section(".MPU_region2"))) uint32_t ExeInRegion2(void)
 {
     printf("\n+------------------------------------------+\n");
     printf("[%s] enter\n", __func__);

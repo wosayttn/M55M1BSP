@@ -545,8 +545,8 @@ static void SYS_Init(void)
     /* Enable I2C1 module clock */
     CLK_EnableModuleClock(I2C1_MODULE);
     /* Set multi-function pins for I2C0/I2C1 SDA, SCL, SMBAL and SMBSUS */
-    SET_I2C0_SDA_PA4();
-    SET_I2C0_SCL_PA5();
+    SET_I2C0_SDA_PB4();
+    SET_I2C0_SCL_PB5();
     SET_I2C0_SMBAL_PC3();
     SET_I2C0_SMBSUS_PC2();
     SET_I2C1_SCL_PB1();
@@ -554,8 +554,8 @@ static void SYS_Init(void)
     SET_I2C1_SMBAL_PB9();
     SET_I2C1_SMBSUS_PB8();
     /* I2C pins enable schmitt trigger */
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT4 | BIT5 | BIT6 | BIT7));
+    CLK_EnableModuleClock(GPIOB_MODULE);
+    GPIO_ENABLE_SCHMITT_TRIGGER(PB, (BIT0 | BIT1 | BIT4 | BIT5));
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -622,7 +622,7 @@ void I2C1_Close(void)
 
 int32_t SMBusSendByteTest(uint8_t slvaddr)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
     g_u8DeviceAddr = slvaddr;
 
     for (i = 0; i < 0x100; i++)
@@ -638,9 +638,18 @@ int32_t SMBusSendByteTest(uint8_t slvaddr)
         s_I2C0HandlerFn = (I2C_FUNC)I2C_MasterTx;
         /* I2C0 as master sends START signal */
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
+        u32TimeOutCnt = I2C_TIMEOUT;
 
         /* Wait I2C0 transmit finish */
-        while (g_u8EndFlag == 0);
+        while (g_u8EndFlag == 0)
+        {
+            if (--u32TimeOutCnt == 0)
+            {
+                printf("Wait for I2C Tx finish time-out!\n");
+
+                while (1);
+            }
+        }
 
         g_u8EndFlag = 0;
 
@@ -657,6 +666,7 @@ int32_t SMBusSendByteTest(uint8_t slvaddr)
 
 int32_t SMBusAlertTest(uint8_t slvaddr)
 {
+    uint32_t u32TimeOutCnt = I2C_TIMEOUT;
     g_u8DeviceAddr = slvaddr;
     /* I2C function to Send Alert Response Address to bus */
     s_I2C0HandlerFn = (I2C_FUNC)I2C_MasterAlert;
@@ -666,7 +676,15 @@ int32_t SMBusAlertTest(uint8_t slvaddr)
     g_u8DataLen0 = 0;
 
     /* Waiting for Get Alert Address*/
-    while (g_u8AlertAddrAck0 == 0);
+    while (g_u8AlertAddrAck0 == 0)
+    {
+        if (--u32TimeOutCnt == 0)
+        {
+            printf("Waiting for Get Alert Address time-out!\n");
+
+            while (1);
+        }
+    }
 
     g_u8AlertAddrAck0 = 0;
 
@@ -682,6 +700,7 @@ int32_t SMBusAlertTest(uint8_t slvaddr)
 
 int32_t SMBusDefaultAddressTest(uint8_t slvaddr)
 {
+    uint32_t u32TimeOutCnt = I2C_TIMEOUT;
     g_u8DeviceAddr = slvaddr;
     /* Set Transmission ARP command */
     g_au8TxData[0] = ARP_COMMAND;
@@ -695,7 +714,15 @@ int32_t SMBusDefaultAddressTest(uint8_t slvaddr)
     I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
 
     /* Wait I2C0 transmit finish */
-    while (g_u8EndFlag == 0);
+    while (g_u8EndFlag == 0)
+    {
+        if (--u32TimeOutCnt == 0)
+        {
+            printf("Wait for I2C Tx finish time-out!\n");
+
+            while (1);
+        }
+    }
 
     g_u8EndFlag = 0;
 
@@ -716,7 +743,7 @@ int32_t SMBusDefaultAddressTest(uint8_t slvaddr)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t i, ch = 0;
+    uint32_t i, u32TimeOutCnt, ch = 0;
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
     /* Init Debug UART to 115200-8N1 for print message */
@@ -818,9 +845,18 @@ int32_t main(void)
             I2C_SMBUS_ENABLE_ALERT(I2C1);
             printf("\n");
             printf("I2C1 has Alert Request and Alert Pin Pull Lo. \n");
+            u32TimeOutCnt = I2C_TIMEOUT;
 
             /* Wait I2C0 get Alert interrupt */
-            while (g_u8AlertInt0 == 0);
+            while (g_u8AlertInt0 == 0)
+            {
+                if (--u32TimeOutCnt == 0)
+                {
+                    printf("Wait I2C0 get Alert interrupt time-out!\n");
+
+                    while (1);
+                }
+            }
 
             /* I2C0 Get Alert Request */
             g_u8AlertInt0 = 0;
