@@ -335,11 +335,11 @@ static void SYS_Init(void)
     /* Enable LPI2C0 clock */
     CLK_EnableModuleClock(LPI2C0_MODULE);
     /* Set multi-function pins for LPI2C0 SDA and SCL */
-    SET_LPI2C0_SDA_PA4();
-    SET_LPI2C0_SCL_PA5();
+    SET_LPI2C0_SDA_PB4();
+    SET_LPI2C0_SCL_PB5();
     /* LPI2C pins enable schmitt trigger */
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT4 | BIT5));
+    CLK_EnableModuleClock(GPIOB_MODULE);
+    GPIO_ENABLE_SCHMITT_TRIGGER(PB, (BIT4 | BIT5));
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -357,7 +357,7 @@ void LPI2C_Init(void)
 
 void AutoOperation_FunctionTest(void)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
     uint8_t *pu8Tmp;
     LPI2C_Init();
     pu8Tmp = SrcArray;
@@ -383,8 +383,17 @@ void AutoOperation_FunctionTest(void)
     /* Start LPTMR */
     LPTMR_Start(LPTMR0);
     PowerDownFunction();
+    u32TimeOutCnt = LPI2C_TIMEOUT;
 
-    while (!LPPDMA_DONE);
+    while (!LPPDMA_DONE)
+    {
+        if (--u32TimeOutCnt == 0)
+        {
+            printf("Wait LPPDMA Transfer Done time-out!\n");
+
+            while (1);
+        }
+    }
 
     /* Disable Channel Transfer done interrupt */
     LPPDMA_DisableInt(LPPDMA, LPI2C0_LPPDMA_TX_CH, LPPDMA_INT_TRANS_DONE);
@@ -419,8 +428,17 @@ void AutoOperation_FunctionTest(void)
     /* Start LPTMR */
     LPTMR_Start(LPTMR0);
     PowerDownFunction();
+    u32TimeOutCnt = LPI2C_TIMEOUT;
 
-    while (!LPPDMA_DONE);
+    while (!LPPDMA_DONE)
+    {
+        if (--u32TimeOutCnt == 0)
+        {
+            printf("Wait LPPDMA Transfer Done time-out!\n");
+
+            while (1);
+        }
+    }
 
     /* Disable Channel Transfer done interrupt */
     LPPDMA_DisableInt(LPPDMA, LPI2C0_LPPDMA_RX_CH, LPPDMA_INT_TRANS_DONE);

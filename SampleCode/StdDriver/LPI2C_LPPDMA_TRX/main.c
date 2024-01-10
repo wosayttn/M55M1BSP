@@ -357,8 +357,8 @@ static void SYS_Init(void)
     /* Enable I2C0 module clock */
     CLK_EnableModuleClock(LPI2C0_MODULE);
     /* Set multi-function pins for LPI2C0 SDA and SCL */
-    SET_LPI2C0_SDA_PA4();
-    SET_LPI2C0_SCL_PA5();
+    SET_LPI2C0_SDA_PB4();
+    SET_LPI2C0_SCL_PB5();
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -441,7 +441,7 @@ void LPPDMA_Slave_Init(void)
 
 void LPI2C_LPPDMA_Master(void)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     for (i = 0; i < LPPDMA_TEST_LENGTH; i++)
     {
@@ -459,8 +459,17 @@ void LPI2C_LPPDMA_Master(void)
     LPPDMA_DONE = 0;
     /* Send START condition, start the LPPDMA data transmit */
     LPI2C_START(LPI2C0);
+    u32TimeOutCnt = LPI2C_TIMEOUT;
 
-    while (!LPPDMA_DONE);
+    while (!LPPDMA_DONE)
+    {
+        if (--u32TimeOutCnt == 0)
+        {
+            printf("Wait MasterTx done time-out!\n");
+
+            while (1);
+        }
+    }
 
     printf("Wait slave receive data done and then press any key to start master LPPDMA RX mode.\n\n");
     getchar();
@@ -472,8 +481,17 @@ void LPI2C_LPPDMA_Master(void)
     LPPDMA_DONE = 0;
     /* Send START condition */
     LPI2C_START(LPI2C0);
+    u32TimeOutCnt = LPI2C_TIMEOUT;
 
-    while (!LPPDMA_DONE);
+    while (!LPPDMA_DONE)
+    {
+        if (--u32TimeOutCnt == 0)
+        {
+            printf("Wait MasterRx done time-out!\n");
+
+            while (1);
+        }
+    }
 
     /* Disable LPI2C0 LPPDMA RX mode */
     LPI2C0->CTL1 &= ~LPI2C_CTL1_RXPDMAEN_Msk;
