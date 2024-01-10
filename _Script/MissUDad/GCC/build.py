@@ -1,28 +1,14 @@
 import os
 import sys
-import time
 import subprocess
 import shutil
 import fnmatch
-import tempfile
-import glob
-import re
-import sys
-import datetime
+sys.path.append(os.path.join(os.path.dirname(os.getcwd())))
+import missudad
 
-IP_LIST=[  'ACMP',
-            'CANFD',
-            'DAC',
-            'EADC',
-            'HSUSBD',
-            'LPADC',
-            'LPUART',
-            'UART',
-            'USBD',
-            'USCI_UART' ]
-
-PROJ_FOLDER_NAME='../../../SampleCode'
-PATH_ECLIPSE="C:\\Program Files (x86)\\Nuvoton Tools\\NuEclipse\\V1.02.025c\\NuEclipse\\eclipse\\eclipsec.exe"
+ECLIPSE_EXE=missudad.ECLIPSE_EXE
+PROJ_FOLDER_NAME = missudad.PROJ_FOLDER_NAME
+IP_LIST = missudad.IP_LIST
 
 if __name__ == "__main__":
     si = subprocess.STARTUPINFO()
@@ -30,7 +16,7 @@ if __name__ == "__main__":
     err = 0
     root = os.getcwd()
     f = open('gcc.txt', "w")
-   
+
     prj_count = 1
 
     for dirPath, dirNames, fileNames in os.walk(PROJ_FOLDER_NAME):
@@ -40,7 +26,7 @@ if __name__ == "__main__":
             basename = os.path.basename(os.path.dirname(dirPath))
 
             prjName = basename
-            
+
             for ip in IP_LIST:
 
                 if prjName.find(ip) == 0 :
@@ -49,7 +35,7 @@ if __name__ == "__main__":
                         shutil.rmtree('Temp')
 
                     os.mkdir('Temp')
-                    buildcommnd = PATH_ECLIPSE + " -nosplash --launcher.suppressErrors -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data Temp -import " + dirPath + " -build all"
+                    buildcommnd = ECLIPSE_EXE + " -nosplash --launcher.suppressErrors -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data Temp -import " + dirPath + " -build all"
 
                     BUILDLOG = os.path.join(dirPath, basename) + '.log'
 
@@ -64,6 +50,12 @@ if __name__ == "__main__":
                         fp = open(BUILDLOG, "r")
                         lines = fp.readlines()
                         fp.close()
+
+                        # Skip 3 lines at first
+                        # For ignore warning. OpenJDK 64-Bit Server VM warning: Options -Xverify:none and -noverify were deprecated in JDK 13 and will likely be removed in a future release.
+                        lines.pop(0)
+                        lines.pop(1)
+                        lines.pop(2)
 
                         found = 0
                         for line in lines:

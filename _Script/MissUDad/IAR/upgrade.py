@@ -1,27 +1,14 @@
 import os
 import sys
-import time
-import subprocess
-import shutil
 import fnmatch
-import tempfile
-import glob
-import copy
 import xml.etree.ElementTree as ET
 import fileinput
 
-IP_LIST=[  'ACMP',
-            'CANFD',
-            'DAC',
-            'EADC',
-            'HSUSBD',
-            'LPADC',
-            'LPUART',
-            'UART',
-            'USBD',
-            'USCI_UART' ]
+sys.path.append(os.path.join(os.path.dirname(os.getcwd())))
+import missudad
 
-PROJ_FOLDER_NAME='../../../SampleCode'
+PROJ_FOLDER_NAME = missudad.PROJ_FOLDER_NAME
+IP_LIST = missudad.IP_LIST
 
 PATH_SCRIPT = os.getcwd()
 BLANK_PRJ_NAME='blank'
@@ -31,6 +18,7 @@ BLANK_EWP_PATH=os.path.join(PATH_SCRIPT , BLANK_PRJ_NAME+'.ewp')
 def ewp_group_copy(PRJ_EWP):
     global BLANK_EWP_PATH
 
+    # Copy sources
     prj_ewp_tree = ET.parse(PRJ_EWP)
     prj_ewp_groups = prj_ewp_tree.findall('group')
 
@@ -38,9 +26,25 @@ def ewp_group_copy(PRJ_EWP):
     blank_ewp_root = blank_ewp_tree.getroot()
 
     for group in prj_ewp_groups:
-        dupe = copy.deepcopy(group)
-        blank_ewp_root.append(dupe)
+        #dupe = copy.deepcopy(group)
+        blank_ewp_root.append(group)
 
+    # Copy ICCARM/AARM/OBJCOPY in project to blank.
+    blank_ewp_settings = blank_ewp_tree.findall('./configuration/settings')
+    prj_ewp_settings = prj_ewp_tree.findall('./configuration/settings')
+
+    blank_ewp_configuration = blank_ewp_tree.find('./configuration')
+    for setting in blank_ewp_settings:
+        name = setting.find('name')
+        if name.text.find('ICCARM') >= 0 or name.text.find('AARM') >= 0 or name.text.find('OBJCOPY') >= 0:
+            blank_ewp_configuration.remove(setting)
+            for prj_setting in prj_ewp_settings:
+                prj_name = prj_setting.find('name')
+                if prj_name.text.find(name.text) == 0:
+                    #dupe = copy.deepcopy(prj_setting)
+                    blank_ewp_configuration.append(prj_setting)
+
+    # Restore blank to project.
     blank_ewp_tree.write(PRJ_EWP, encoding='UTF-8',  xml_declaration=True)
 
 def ewp_outfile_rename(PRJ_EWP, prjName):
