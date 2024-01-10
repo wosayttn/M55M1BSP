@@ -188,8 +188,7 @@ void SYS_Init(void)
 
 int SPIM_TrimRXCLKDLY(SPIM_T *spim)
 {
-    volatile uint32_t u32i = 0;
-    volatile uint8_t u8RdDelay = 0;
+    uint8_t u8RdDelay = 0;
     uint8_t u8RdDelayIdx = 0;
     uint8_t u8RdDelayRes[0xF] = {0};
     uint32_t u32SAddr = 0x100;
@@ -294,7 +293,7 @@ void OctalFlash_ExitDDRMode(SPIM_T *spim)
 
 int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd, uint32_t u32DDREn)
 {
-    volatile uint32_t i = 0, offset = 0;             /* variables */
+    uint32_t i = 0, offset = 0;             /* variables */
     uint32_t *pData = NULL;
     uint32_t u32EraseNBit = 1;
 

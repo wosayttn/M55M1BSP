@@ -197,8 +197,8 @@ void DumpBufferHex(uint8_t *pucBuff, int nSize)
 
 int SPIM_TrimRXCLKDLY(SPIM_T *spim)
 {
-    volatile uint32_t u32i = 0;
-    volatile uint8_t u8RdDelay = 0;
+    uint32_t u32i = 0;
+    uint8_t u8RdDelay = 0;
     uint8_t u8RdDelayIdx = 0;
     uint8_t u8RdDelayRes[0xF] = {0};
     uint32_t u32SAddr = 0x100;
@@ -261,7 +261,7 @@ int SPIM_TrimRXCLKDLY(SPIM_T *spim)
 
 int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
 {
-    volatile uint32_t i = 0, offset = 0;             /* variables */
+    uint32_t i = 0, offset = 0;             /* variables */
     uint32_t *pData = NULL;
 
     SPIM_ENABLE_CIPHER(SPIM_PORT);

@@ -246,12 +246,12 @@
               </Ocm6>
               <IRAM>
                 <Type>0</Type>
-                <StartAddress>0x30000000</StartAddress>
-                <Size>0x20000</Size>
+                <StartAddress>0x20100000</StartAddress>
+                <Size>0x150000</Size>
               </IRAM>
               <IROM>
                 <Type>1</Type>
-                <StartAddress>0x10000000</StartAddress>
+                <StartAddress>0x100000</StartAddress>
                 <Size>0x200000</Size>
               </IROM>
               <XRAM>
