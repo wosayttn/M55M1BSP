@@ -14,8 +14,10 @@
     #pragma anon_unions
 #endif
 
-typedef struct
-{
+/******************************************************************************/
+/*                Device Specific Peripheral registers structures             */
+/******************************************************************************/
+
 /**
    @addtogroup REGISTER Control Register
    @{
@@ -26,6 +28,10 @@ typedef struct
     Memory Mapped Structure for CANFD Controller
     @{
 */
+
+typedef struct
+{
+
 
     /**
     * @var CANFD_T::DBTP
