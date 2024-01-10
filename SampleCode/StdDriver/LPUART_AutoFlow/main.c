@@ -70,8 +70,8 @@ void SYS_Init(void)
     /* Set PA multi-function pins for LPUART0 TXD and RXD and CTS and RTS */
     SET_LPUART0_RXD_PA0();
     SET_LPUART0_TXD_PA1();
-    SET_LPUART0_nRTS_PA4();
-    SET_LPUART0_nCTS_PA5();
+    SET_LPUART0_nRTS_PB10();
+    SET_LPUART0_nCTS_PB11();
 
 
 }
@@ -144,7 +144,7 @@ void AutoFlow_FunctionTest(void)
     printf("|  ______                                                _____  |\n");
     printf("| |      |                                              |     | |\n");
     printf("| |Master|--LPUART0_TXD(PA.1)  <==> LPUART0_RXD(PA.0) --|Slave| |\n");
-    printf("| |      |--LPUART0_nCTS(PA.5) <==> LPUART0_nRTS(PA.4)--|     | |\n");
+    printf("| |      |--LPUART0_nCTS(PB.11)<==> LPUART0_nRTS(PB.10)-|     | |\n");
     printf("| |______|                                              |_____| |\n");
     printf("|                                                               |\n");
     printf("+---------------------------------------------------------------+\n");
