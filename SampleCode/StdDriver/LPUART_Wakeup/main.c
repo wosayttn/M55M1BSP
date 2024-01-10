@@ -86,8 +86,8 @@ void SYS_Init(void)
     /* Set PA multi-function pins for LPUART0 TXD and RXD */
     SET_LPUART0_RXD_PA0();
     SET_LPUART0_TXD_PA1();
-    SET_LPUART0_nRTS_PA4();
-    SET_LPUART0_nCTS_PA5();
+    SET_LPUART0_nRTS_PB10();
+    SET_LPUART0_nCTS_PB11();
 
 }
 

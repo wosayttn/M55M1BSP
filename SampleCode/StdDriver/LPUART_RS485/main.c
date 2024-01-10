@@ -76,8 +76,8 @@ void SYS_Init(void)
     /* Set PA multi-function pins for LPUART0 TXD and RXD and CTS and RTS */
     SET_LPUART0_RXD_PA0();
     SET_LPUART0_TXD_PA1();
-    SET_LPUART0_nRTS_PA4();
-    SET_LPUART0_nCTS_PA5();
+    SET_LPUART0_nRTS_PB10();
+    SET_LPUART0_nCTS_PB11();
 
 }
 
@@ -333,7 +333,7 @@ void RS485_FunctionTest()
     printf("|  ______                                 _______             |\n");
     printf("| |      |                               |       |            |\n");
     printf("| |Master|---TXD(PA.1) <===> RXD(PA.0)---| Slave |            |\n");
-    printf("| |      |---CTS(PA.5) <===> RTS(PA.4)---|       |            |\n");
+    printf("| |      |---CTS(PB.11)<===> RTS(PB.10)--|       |            |\n");
     printf("| |______|                               |_______|            |\n");
     printf("|                                                             |\n");
     printf("+-------------------------------------------------------------+\n\n");
