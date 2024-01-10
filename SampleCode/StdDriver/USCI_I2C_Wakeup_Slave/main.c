@@ -314,7 +314,7 @@ void UI2C0_Init(uint32_t u32ClkSpeed)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
     uint8_t  ch;
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
@@ -391,10 +391,18 @@ int32_t main(void)
     PMC_PowerDown();
     /* Lock protected registers after entering Power-down mode */
     SYS_LockReg();
+    u32TimeOutCnt = UI2C_TIMEOUT;
 
-    while (g_u8SlvPWRDNWK == 0);
+    /* Waiting for system wake-up and USCI_I2C wake-up finish */
+    while ((g_u8SlvPWRDNWK == 0) && (g_u8SlvI2CWK == 0))
+    {
+        if (--u32TimeOutCnt == 0)
+        {
+            printf("Wait USCI_I2C wake-up finish time-out!\n");
 
-    while (g_u8SlvI2CWK == 0);
+            while (1);
+        }
+    }
 
     if (g_u32WKfromAddr)
     {

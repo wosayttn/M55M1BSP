@@ -1,33 +1,20 @@
 import os
 import sys
-import time
 import subprocess
-import shutil
 import fnmatch
-import tempfile
-import glob
-import re
 import sys
-import datetime
+sys.path.append(os.path.join(os.path.dirname(os.getcwd())))
+import missudad
 
-IP_LIST=[  'ACMP',
-            'CANFD',
-            'DAC',
-            'EADC',
-            'HSUSBD',
-            'LPADC',
-            'LPUART',
-            'UART',
-            'USBD',
-            'USCI_UART' ]
+PROJ_FOLDER_NAME = missudad.PROJ_FOLDER_NAME
+IP_LIST = missudad.IP_LIST
+IARBUILD_EXE=missudad.IARBUILD_EXE
 
-PROJ_FOLDER_NAME='../../../SampleCode'
-PATH_IAREXE="C:\\Program Files\\IAR Systems\\Embedded Workbench 9.4\\common\\bin\\iarbuild.exe"
 if __name__ == "__main__":
     si = subprocess.STARTUPINFO()
     si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     err = 0
-    root = os.getcwd()    
+    root = os.getcwd()
     os.chdir(root)
 
     f = open('iar.txt', "w")
@@ -43,7 +30,7 @@ if __name__ == "__main__":
                         fp = open(BUILDLOG, "w")
 
                         prjName = os.path.splitext(file)[0]
-                        buildcommnd = PATH_IAREXE + " " + file + " -build * -log warnings"
+                        buildcommnd = IARBUILD_EXE + " " + file + " -build * -log warnings"
                         print(buildcommnd)
                         subprocess.call(buildcommnd, startupinfo=si, stdout=fp, stderr=fp)
                         fp.flush()

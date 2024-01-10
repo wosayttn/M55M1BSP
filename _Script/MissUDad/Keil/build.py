@@ -1,28 +1,14 @@
 import os
 import sys
-import time
 import subprocess
-import shutil
 import fnmatch
-import tempfile
-import glob
-import re
 import sys
-import datetime
+sys.path.append(os.path.join(os.path.dirname(os.getcwd())))
+import missudad
 
-IP_LIST=[  'ACMP',
-            'CANFD',
-            'DAC',
-            'EADC',
-            'HSUSBD',
-            'LPADC',
-            'LPUART',
-            'UART',
-            'USBD',
-            'USCI_UART' ]
-
-PROJ_FOLDER_NAME='../../../SampleCode'
-PATH_UV4="C:\\Keil_v537\\UV4\\Uv4.exe"
+PROJ_FOLDER_NAME = missudad.PROJ_FOLDER_NAME
+IP_LIST = missudad.IP_LIST
+UV4_EXE=missudad.UV4_EXE
 
 if __name__ == "__main__":
     si = subprocess.STARTUPINFO()
@@ -47,8 +33,8 @@ if __name__ == "__main__":
 
                     try:
                         BUILDLOG = file + ".log"
-                        buildcommnd = PATH_UV4 + " -b -j0 -z -o " + BUILDLOG + " " + file
-                        cleancommnd = PATH_UV4 + " -j0 -c " + file
+                        buildcommnd = UV4_EXE + " -b -j0 -z -o " + BUILDLOG + " " + file
+                        cleancommnd = UV4_EXE + " -j0 -c " + file
 
                         # https://www.keil.com/support/man/docs/uv4cl/uv4cl_commandline.htm
                         # -j0   Hides the µVision GUI. Messages are suppressed. Use this option for batch testing.

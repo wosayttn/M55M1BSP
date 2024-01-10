@@ -1,28 +1,15 @@
 import os
 import sys
-import time
-import subprocess
-import shutil
 import fnmatch
-import tempfile
-import glob
-import copy
 import xml.etree.ElementTree as ET
 import fileinput
 from shutil import copyfile
 
-IP_LIST=[   'ACMP',
-            'CANFD',
-            'DAC',
-            'EADC',
-            'HSUSBD',
-            'LPADC',
-            'LPUART',
-            'UART',
-            'USBD',
-            'USCI_UART' ]
+sys.path.append(os.path.join(os.path.dirname(os.getcwd())))
+import missudad
 
-PROJ_FOLDER_NAME='../../../SampleCode'
+PROJ_FOLDER_NAME = missudad.PROJ_FOLDER_NAME
+IP_LIST = missudad.IP_LIST
 
 PATH_SCRIPT = os.getcwd()
 BLANK_PRJ_NAME='blank'
@@ -99,7 +86,6 @@ def uvoptx_copy(PRJ_EWD):
     global BLANK_UVOPTX_PATH
 
     blank_uvoptx_tree = ET.parse(BLANK_UVOPTX_PATH)
-    blank_uvoptx_root = blank_uvoptx_tree.getroot()
     blank_uvoptx_tree.write(PRJ_EWD, encoding='UTF-8',  xml_declaration=True, default_namespace=None)
 
 if __name__ == "__main__":
