@@ -16,7 +16,7 @@
 #include "jpeglib.h"
 /*Include header file to get required struct and simd function declaration*/
 #ifdef NVT_JPEG_SIMD
-#include "nvt_jpeg.h"
+#include "../../Library/JpegAcceleratorLib/include/nvt_jpeg.h"
 #endif
 
 /*
