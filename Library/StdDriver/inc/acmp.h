@@ -156,11 +156,8 @@ extern int32_t g_ACMP_i32ErrCode;
   * @param[in] acmp The pointer of the specified ACMP module
   * @param[in] u32ChNum The ACMP number
   * @param[in] u32HysSel The hysteresis function option. Including:
-  *                  - \ref ACMP_CTL_HYSTERESIS_50MV
   *                  - \ref ACMP_CTL_HYSTERESIS_40MV
-  *                  - \ref ACMP_CTL_HYSTERESIS_30MV
   *                  - \ref ACMP_CTL_HYSTERESIS_20MV
-  *                  - \ref ACMP_CTL_HYSTERESIS_10MV
   *                  - \ref ACMP_CTL_HYSTERESIS_DISABLE
   * \hideinitializer
   * @return None
@@ -333,7 +330,7 @@ extern int32_t g_ACMP_i32ErrCode;
   * @details  When CRV0 is selected as ACMP negative input source, the CRV0 level is determined by CRV0SEL (ACMP_VREF[5:0]).
   * \hideinitializer
   */
-#define ACMP_CRV0_SEL(acmp, u32Level) ((acmp)->VREF = ((acmp)->VREF & ~ACMP_VREF_CRV0SEL_Msk) | ((u32Level)<<ACMP_VREF_CRV0SEL_Pos))
+#define ACMP_CRV0_SEL(acmp, u32Level) ((acmp)->VREF = ((acmp)->VREF & ~(ACMP_VREF_CRV0SEL_Msk | ACMP_VREF_CRV0EN_Msk)) | (((u32Level)<<ACMP_VREF_CRV0SEL_Pos)| ACMP_VREF_CRV0EN_Msk))
 
 /**
   * @brief This macro is used to select the source of CRV0
@@ -358,7 +355,7 @@ extern int32_t g_ACMP_i32ErrCode;
   * @details  When CRV1 is selected as ACMP negative input source, the CRV1 level is determined by CRV1SEL (ACMP_VREF[21:16]).
   * \hideinitializer
   */
-#define ACMP_CRV1_SEL(acmp, u32Level) ((acmp)->VREF = ((acmp)->VREF & ~ACMP_VREF_CRV1SEL_Msk) | ((u32Level)<<ACMP_VREF_CRV1SEL_Pos))
+#define ACMP_CRV1_SEL(acmp, u32Level) ((acmp)->VREF = ((acmp)->VREF & ~(ACMP_VREF_CRV1SEL_Msk | ACMP_VREF_CRV1EN_Msk)) | (((u32Level)<<ACMP_VREF_CRV1SEL_Pos) | ACMP_VREF_CRV1EN_Msk))
 
 /**
   * @brief This macro is used to select the source of CRV1

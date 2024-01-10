@@ -18,7 +18,7 @@
 #include "jdct.h"		/* Private declarations for DCT subsystem */
 
 #ifdef NVT_JPEG_SIMD
-#include "simd_helium.h"
+#include "../../Library/JpegAcceleratorLib/include/simd_helium.h"
 #endif
 
 /* Private subobject for this module */

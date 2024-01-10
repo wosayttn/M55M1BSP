@@ -51,14 +51,6 @@ static void RNG_BasicConfig()
     TRNG->CTL &= ~TRNG_CTL_NRST_Msk;
 	TRNG->CTL |= (TRNG_CTL_NRST_Msk);
 	TRNG->CTL |= (TRNG_CTL_TRNGEN_Msk);
-	
-    /* Wait DVIF */
-    retry_count=0;
-	while((TRNG->STS & TRNG_STS_DVIF_Msk) == 0)
-	{
-		retry_count++;
-	    if(retry_count>5) break;		
-	};
 
 }
 
@@ -79,20 +71,6 @@ int32_t RNG_Open()
     int32_t timeout = 0x1000000;
     
     RNG_BasicConfig();
-    
-    /* TRNG Start */
-    TRNG->CTL |= TRNG_CTL_START_Msk;      
-    /* Waiting for ready */
-    i = 0;
-    while((TRNG->CTL & TRNG_STS_TRNGRDY_Msk) == 0)
-    {
-        if(i++ > timeout)
-        {
-            /* TRNG ready timeout */
-            return -1;
-        }
-    }
-    
     
     /* Waiting for PRNG busy */
     i = 0;
@@ -149,7 +127,7 @@ int32_t RNG_Random(uint32_t *pu32Buf, int32_t nWords)
         nWords = 8;
 
     /* Trig to generate seed 256 bits random number */
-    CRYPTO->PRNG_CTL = (PRNG_KEY_SIZE_256 << CRYPTO_PRNG_CTL_KEYSZ_Pos) | CRYPTO_PRNG_CTL_START_Msk;
+    CRYPTO->PRNG_CTL = (PRNG_KEY_SIZE_256 << CRYPTO_PRNG_CTL_KEYSZ_Pos) | CRYPTO_PRNG_CTL_START_Msk | CRYPTO_PRNG_CTL_SEEDRLD_Msk | ( 0 << CRYPTO_PRNG_CTL_SEEDSRC_Pos);
 
     timeout = 0x10000;
     while(CRYPTO->PRNG_CTL & CRYPTO_PRNG_CTL_BUSY_Msk)

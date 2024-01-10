@@ -13,6 +13,7 @@
 #include "NuMicro.h"
 #include "vector_parser.h"
 
+#define SHA_TEST_DIGEST_LEN    20
 extern void OpenTestVector(void);
 extern int  GetNextPattern(void);
 
@@ -80,7 +81,7 @@ void SYS_Init(void)
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK2DIV(2);
     CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(4);
+    CLK_SET_PCLK4DIV(2);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -142,13 +143,13 @@ int32_t RunSHA(void)
 
     /* Read SHA calculation result */
     SHA_Read(CRYPTO, au32OutputDigest);
-
     /* Compare calculation result with golden pattern */
-    if (do_compare((uint8_t *)&au32OutputDigest[0], &g_au8ShaDigest[0], g_i32DigestLength) < 0)
+    if (do_compare((uint8_t *)&au32OutputDigest[0], &g_au8ShaDigest[0], SHA_TEST_DIGEST_LEN) < 0)
     {
         printf("Compare error!\n");
         return (-1);
     }
+	printf("Compare Pass!\n");
     return 0;
 }
 

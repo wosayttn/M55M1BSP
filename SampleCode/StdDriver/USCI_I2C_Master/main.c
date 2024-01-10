@@ -252,7 +252,7 @@ void UI2C0_Init(void)
 
 int32_t Read_Write_SLAVE(uint8_t slvaddr)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
     g_u8DeviceAddr = slvaddr;
 
     for (i = 0; i < 2; i++)
@@ -267,9 +267,18 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         /* USCI_I2C as master sends START signal */
         m_Event = MASTER_SEND_START;
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);
+        u32TimeOutCnt = UI2C_TIMEOUT;
 
         /* Wait USCI_I2C Tx Finish */
-        while (g_u8MstEndFlag == 0);
+        while (g_u8MstEndFlag == 0)
+        {
+            if (--u32TimeOutCnt == 0)
+            {
+                printf("Wait USCI_I2C Tx Finish time-out!\n");
+
+                while (1);
+            }
+        }
 
         g_u8MstEndFlag = 0;
         /* USCI_I2C function to read data from slave */
@@ -278,9 +287,18 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         g_u8DeviceAddr = slvaddr;
         m_Event = MASTER_SEND_START;
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);
+        u32TimeOutCnt = UI2C_TIMEOUT;
 
         /* Wait USCI_I2C Rx Finish */
-        while (g_u8MstEndFlag == 0);
+        while (g_u8MstEndFlag == 0)
+        {
+            if (--u32TimeOutCnt == 0)
+            {
+                printf("Wait USCI_I2C Rx Finish time-out!\n");
+
+                while (1);
+            }
+        }
 
         g_u8MstEndFlag = 0;
 
@@ -288,7 +306,8 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         if (g_u8MstRxData != g_au8MstTxData[2])
         {
             printf("USCI_I2C Byte Write/Read Failed, Data 0x%x\n", g_u8MstRxData);
-            return -1;
+
+            while (1);
         }
     }
 

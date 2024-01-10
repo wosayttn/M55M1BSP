@@ -48,7 +48,7 @@
 
 
 #ifdef NVT_JPEG_SIMD
-#include "simd_helium.h"
+#include "../../Library/JpegAcceleratorLib/include/simd_helium.h"
 #endif
 #ifdef DCT_ISLOW_SUPPORTED
 

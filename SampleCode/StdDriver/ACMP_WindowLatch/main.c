@@ -58,29 +58,29 @@ void SYS_Init(void)
 
     /* Enable ACMP01 peripheral clock */
     CLK_EnableModuleClock(ACMP01_MODULE);
-    /* Enable GPB peripheral clock */
-    CLK_EnableModuleClock(GPIOB_MODULE);
+    /* Enable GPA peripheral clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
     /* Enable GPC peripheral clock */
     CLK_EnableModuleClock(GPIOC_MODULE);
 
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
-    /* Set PB.4 and PC.0 to input mode */
-    PB->MODE &= ~(GPIO_MODE_MODE4_Msk);
+    /* Set PA.10 and PC.0 to input mode */
+    PA->MODE &= ~(GPIO_MODE_MODE10_Msk);
     PC->MODE &= ~(GPIO_MODE_MODE0_Msk);
 
     /* Set PA6 multi-function pin for ACMP1 window latch pin */
     SET_ACMP1_WLAT_PA6();
-    /* Set PB4 multi-function pin for ACMP1 positive input pin and PC0 multi-function pin for ACMP1 output pin*/
-    SET_ACMP1_P1_PB4();
+    /* Set PA10 multi-function pin for ACMP1 positive input pin and PC0 multi-function pin for ACMP1 output pin*/
+    SET_ACMP1_P0_PA10();
     SET_ACMP1_O_PC0();
 
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
-    /* Disable digital input path of analog pin ACMP1_P1 to prevent leakage */
-    GPIO_DISABLE_DIGITAL_PATH(PB, (1ul << 4));
+    /* Disable digital input path of analog pin ACMP1_P0 to prevent leakage */
+    GPIO_DISABLE_DIGITAL_PATH(PA, (1ul << 10));
 }
 
 /*
@@ -107,7 +107,7 @@ int32_t main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    printf("\nThis sample code demonstrates ACMP1 window latch function. Using ACMP1_P1 (PB4) as ACMP1\n");
+    printf("\nThis sample code demonstrates ACMP1 window latch function. Using ACMP1_P0 (PA10) as ACMP1\n");
     printf("positive input and using internal band-gap voltage as the negative input. ACMP1_WLAT is at\n");
     printf("PA6, when PA6 is low, compare result on ACMP1_O (PC0) does not change with ACMP1_P1. When PA6");
     printf("is high, ACMP1_O works as usual\n");
@@ -118,7 +118,7 @@ int32_t main(void)
     ACMP_Open(ACMP01, 1, ACMP_CTL_NEGSEL_VBG, ACMP_CTL_HYSTERESIS_DISABLE);
     //    ACMP_Open(ACMP01, 1, ACMP_CTL_NEGSEL_PIN, ACMP_CTL_HYSTERESIS_DISABLE);
     /* Select P1 as ACMP positive input channel */
-    ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P1);
+    ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P0);
     /* Enable interrupt */
     ACMP_ENABLE_INT(ACMP01, 1);
     /* Enable window latch mode */

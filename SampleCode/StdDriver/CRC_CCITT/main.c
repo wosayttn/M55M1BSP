@@ -86,7 +86,7 @@ int main(void)
     printf("|    CRC-CCITT Polynomial Mode Sample Code    |\n");
     printf("+---------------------------------------------+\n\n");
 
-    printf("# Calculate [0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38] CRC-CCITT checksum value.\n");
+    printf("# Calculate [0x3231, 0x3433, 0x3635, 0x3837] CRC-CCITT checksum value.\n");
     printf("    - Seed value is 0xFFFF             \n");
     printf("    - CPU write data length is 16-bit \n");
     printf("    - Checksum complement disable    \n");

@@ -96,7 +96,7 @@ int main(void)
     printf("|    CRC-16 Polynomial Mode Sample Code     |\n");
     printf("+-------------------------------------------+\n\n");
 
-    printf("# Calculate [0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38] CRC16 checksum value.\n");
+    printf("# Calculate [0x3231, 0x3433, 0x3635, 0x3837] CRC16 checksum value.\n");
     printf("    - Seed value is 0x%x             \n", seed);
     printf("    - Polynomial value is 0x%x       \n", polynom);
     printf("    - CPU write data length is 16-bit \n");
@@ -118,18 +118,18 @@ int main(void)
     if (IsCRCRVS)
         u32Attribute |= CRC_CHECKSUM_RVS;
 
-    /* Configure CRC controller for CRC-CCITT CPU mode */
+    /* Configure CRC controller for CRC-16 CPU mode */
     CRC_Open(CRC_16, u32Attribute, seed, CRC_CPU_WDATA_16);
 
     CRC_SET_POLYNOMIAL(polynom);
 
-    /* Start to execute CRC-CCITT operation */
+    /* Start to execute CRC-16 operation */
     for (i = 0; i < sizeof(u16CRCSrcPattern) / sizeof(u16CRCSrcPattern[0]); i++)
     {
         CRC_WRITE_DATA((u16CRCSrcPattern[i]));
     }
 
-    /* Get CRC-CCITT checksum value */
+    /* Get CRC-16 checksum value */
     u32HWChecksum = CRC_GetChecksum();
 
     printf("CRC H/W checksum is 0x%x ... %s.\n", u32HWChecksum, (u32HWChecksum == u32SWChecksum) ? "PASS" : "FAIL");

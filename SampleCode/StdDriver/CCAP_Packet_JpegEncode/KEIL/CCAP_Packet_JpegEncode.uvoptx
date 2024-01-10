@@ -124,9 +124,11 @@
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
-          <Key>Nu_Link</Key>
+          <Key>ARMDBGFLAGS</Key>
           <Name></Name>
         </SetRegEntry>
+<<<<<<< HEAD
+=======
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGTARM</Key>
@@ -137,6 +139,7 @@
           <Key>ARMDBGFLAGS</Key>
           <Name></Name>
         </SetRegEntry>
+>>>>>>> 1d853201fd917d50bfd91ae6cda5f5c8e0d548d6
       </TargetDriverDllRegistry>
       <Breakpoint/>
       <WatchWindow1>
@@ -266,7 +269,7 @@
 
   <Group>
     <GroupName>CMSIS</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -378,7 +381,7 @@
 
   <Group>
     <GroupName>User</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1149,44 +1152,20 @@
   </Group>
 
   <Group>
-    <GroupName>simd_helium</GroupName>
-    <tvExp>1</tvExp>
+    <GroupName>JpegAccelerator</GroupName>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>5</GroupNumber>
       <FileNumber>72</FileNumber>
-      <FileType>1</FileType>
+      <FileType>4</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\ThirdParty\libjpeg\simd_helium\jfdctint-helium.c</PathWithFileName>
-      <FilenameWithoutPath>jfdctint-helium.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>5</GroupNumber>
-      <FileNumber>73</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\ThirdParty\libjpeg\simd_helium\jquanti-helium.c</PathWithFileName>
-      <FilenameWithoutPath>jquanti-helium.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>5</GroupNumber>
-      <FileNumber>74</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\ThirdParty\libjpeg\simd_helium\nvt_jpeg.c</PathWithFileName>
-      <FilenameWithoutPath>nvt_jpeg.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\Library\_JpegAcceleratorLib\JpegAcceleratorLib_Keil.lib</PathWithFileName>
+      <FilenameWithoutPath>JpegAcceleratorLib_Keil.lib</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
