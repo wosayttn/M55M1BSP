@@ -9,26 +9,30 @@
 #include "M55M1_User.h"
 #include "massstorage.h"
 
+#define CRYSTAL_LESS    0
 #define PLL_CLOCK       FREQ_180MHZ
-
 #define DETECT_PIN      PB12
 
 int32_t SYS_Init(void)
 {
-    uint32_t u32TimeOutCnt = SystemCoreClock >> 1; /* 500ms time-out */
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable HIRC48M clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
-    /* Waiting for HIRC48M clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
+#if (!CRYSTAL_LESS)
+    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
+    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
-
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+    /* Enable APLL1 96MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);
+    /* Select USB clock source as HIRC48M and USB clock divider as 1 */
+    CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_APLL1_DIV2, CLK_USBDIV_USBDIV(1));
+#else
+    CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
+    CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
     /* Select USB clock source as HIRC48M and USB clock divider as 1 */
     CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
+#endif
 
     /* Enable module clock */
     CLK_EnableModuleClock(ISP0_MODULE);
@@ -62,7 +66,9 @@ int32_t SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
+#if CRYSTAL_LESS
     uint32_t u32TrimInit;
+#endif
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -84,7 +90,7 @@ int32_t main(void)
     CLK_SysTickDelay(100000);
 
     /* Disable software-disconnect function */
-    USBD->SE0 = 0;
+    USBD_CLR_SE0();
 
     /* Clear USB-related interrupts before enable interrupt */
     USBD_CLR_INT_FLAG(USBD_INT_BUS | USBD_INT_USB | USBD_INT_FLDET | USBD_INT_WAKEUP);
@@ -95,8 +101,10 @@ int32_t main(void)
 
     NVIC_EnableIRQ(USBD_IRQn);
 
+#if CRYSTAL_LESS
     /* Backup default trim value */
     u32TrimInit = SYS->TISTS48M;
+#endif
 
     /* Clear SOF */
     USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
@@ -104,6 +112,8 @@ int32_t main(void)
     /* Check if GPB.12 is low */
     while (DETECT_PIN == 0)
     {
+#if CRYSTAL_LESS
+
         /* Start USB trim function if it is not enabled. */
         if ((SYS->TCTL48M & SYS_TCTL48M_FREQSEL_Msk) != 0x1)
         {
@@ -139,6 +149,8 @@ int32_t main(void)
             USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
         }
 
+#endif
+
         MSC_ProcessCmd();
     }
 
@@ -147,8 +159,7 @@ _APROM:
     FMC_SetVectorPageAddr(FMC_APROM_BASE);
     NVIC_SystemReset();
 
-    /* Trap the CPU */
-    while (1);
+    /* Code should not reach here ! */
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

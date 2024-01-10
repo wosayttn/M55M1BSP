@@ -10,6 +10,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Includes of system headers                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
+#include <string.h>
 #include "M55M1_User.h"
 #include "usbd_User.h"
 #include "massstorage.h"
@@ -29,7 +30,7 @@ extern uint32_t g_u32StorageSize;
 uint8_t u8FormatData[62] =
 {
     0xEB, 0x3C, 0x90, 0x4D, 0x53, 0x44, 0x4F, 0x53,
-    0x35, 0x2E, 0x30, 0x00, 0x02, 0x01, 0x02, 0x00,
+    0x35, 0x2E, 0x30, 0x00, 0x02, 0x02, 0x02, 0x00,
     0x02, 0x00, 0x02, 0x80, 0x00, 0xF8, 0x07, 0x00,
     0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x29, 0xB9,
@@ -104,21 +105,9 @@ uint32_t FMC_Init(void)
 {
     uint32_t u32APSize;
 
-#if 0
-    FMC_ISP(FMC_ISPCMD_READ_DID, 0, 0);
-
-    u32ROMSEL = (FMC->ISPDAT >> 4) & 0x0F;
-
-    u32APSize = (1 << (u32ROMSEL + 9));
-
-    if (u32ROMSEL < 8)
-        u32APSize += 0x2000;
-
-#endif
     u32APSize = FMC_APROM_SIZE;
     FMC_ISP(FMC_ISPCMD_READ, FMC_ARLOCK_BASE, 0);
-
-    //g_u8LockBit = ((FMC->ISPDAT & 0xFF) == 0x5A);
+    g_u8LockBit = ((FMC->ISPDAT & 0xFF) == 0x5A);
 
     return u32APSize;
 }
