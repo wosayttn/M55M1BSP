@@ -124,11 +124,9 @@
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
-          <Key>ARMDBGFLAGS</Key>
+          <Key>Nu_Link</Key>
           <Name></Name>
         </SetRegEntry>
-<<<<<<< HEAD
-=======
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGTARM</Key>
@@ -139,7 +137,6 @@
           <Key>ARMDBGFLAGS</Key>
           <Name></Name>
         </SetRegEntry>
->>>>>>> 1d853201fd917d50bfd91ae6cda5f5c8e0d548d6
       </TargetDriverDllRegistry>
       <Breakpoint/>
       <WatchWindow1>
