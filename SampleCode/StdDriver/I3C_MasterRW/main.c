@@ -65,6 +65,7 @@ int32_t main(void)
 {
     uint16_t    i;
     uint8_t     *pu8Data;
+    uint32_t    u32Data;
     int32_t     ret;
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
@@ -106,6 +107,31 @@ int32_t main(void)
 
     while (1)
     {
+        /* Single Byte Write & Read Test */
+        u32Data = 0x55;
+        printf("press any key to Write I3C Target \n");
+        getchar();
+        ret = I3C_Write(I3C0, 0, I3C_DEVI3C_SPEED_SDR0, (uint32_t *)&u32Data, 1);
+
+        if (ret != I3C_STS_NO_ERR)
+        {
+            printf("I3C_Write Fail\n");
+
+            while (1);
+        }
+
+        printf("press any key to Read I3C Target \n");
+        getchar();
+        ret = I3C_Read(I3C0, 0, I3C_DEVI3C_SPEED_SDR0, (uint32_t *)&u32Data, 1);
+
+        if (ret != I3C_STS_NO_ERR)
+        {
+            printf("I3C_Read Fail\n");
+
+            while (1);
+        }
+
+        /* Multiple Bytes Write & Read Test */
         printf("press any key to Write I3C Target \n");
         getchar();
         ret = I3C_Write(I3C0, 0, I3C_DEVI3C_SPEED_SDR0, (uint32_t *)g_TxBuf, 16);
