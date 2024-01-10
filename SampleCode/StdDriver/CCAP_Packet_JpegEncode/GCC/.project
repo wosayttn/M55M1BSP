@@ -400,19 +400,9 @@
 			<locationURI>PARENT-4-PROJECT_LOC/ThirdParty/libjpeg/wrtarga.c</locationURI>
 		</link>
         <link>
-			<name>simd_helium/nvt_jpeg.c</name>
+			<name>JpegAccelerator/libJpegAcceleratorLib_GCC.a</name>
 			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/ThirdParty/libjpeg/simd_helium/nvt_jpeg.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/Library/JpegAcceleratorLib/libJpegAcceleratorLib_GCC.a</locationURI>
 		</link>
-        <link>
-			<name>simd_helium/jfdctint-helium.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/ThirdParty/libjpeg/simd_helium/jfdctint-helium.c</locationURI>
-		</link>
-        <link>
-			<name>simd_helium/jquanti-helium.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/ThirdParty/libjpeg/simd_helium/jquanti-helium.c</locationURI>
-		</link>
-	</linkedResources>
+        </linkedResources>
 </projectDescription>
