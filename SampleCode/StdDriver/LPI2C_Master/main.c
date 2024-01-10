@@ -182,8 +182,8 @@ static void SYS_Init(void)
     /* Enable LPI2C0 module clock */
     CLK_EnableModuleClock(LPI2C0_MODULE);
     /* Set multi-function pins for LPI2C0 SDA and SCL */
-    SET_LPI2C0_SDA_PA4();
-    SET_LPI2C0_SCL_PA5();
+    SET_LPI2C0_SDA_PB4();
+    SET_LPI2C0_SCL_PB5();
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -222,14 +222,24 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
             if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for LPI2C Tx finish time-out!\n");
-                return -1;
+
+                while (1);
             }
         }
 
         g_u8EndFlag = 0;
+        u32TimeOutCnt = LPI2C_TIMEOUT;
 
         /* Make sure LPI2C0 STOP already */
-        while (LPI2C0->CTL0 & LPI2C_CTL0_STO_Msk);
+        while (LPI2C0->CTL0 & LPI2C_CTL0_STO_Msk)
+        {
+            if (--u32TimeOutCnt == 0)
+            {
+                printf("Wait for LPI2C STOP time-out!\n");
+
+                while (1);
+            }
+        }
 
         /* LPI2C function to read data from slave */
         s_LPI2C0HandlerFn = (LPI2C_FUNC)LPI2C_MasterRx;
@@ -244,18 +254,30 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
             if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for LPI2C Rx finish time-out!\n");
-                return -1;
+
+                while (1);
             }
         }
 
+        u32TimeOutCnt = LPI2C_TIMEOUT;
+
         /* Make sure LPI2C0 STOP already */
-        while (LPI2C0->CTL0 & LPI2C_CTL0_STO_Msk);
+        while (LPI2C0->CTL0 & LPI2C_CTL0_STO_Msk)
+        {
+            if (--u32TimeOutCnt == 0)
+            {
+                printf("Wait for LPI2C STOP time-out!\n");
+
+                while (1);
+            }
+        }
 
         /* Compare data */
         if (g_u8RxData != g_au8TxData[2])
         {
             printf("LPI2C Byte Write/Read Failed, Data 0x%x\n", g_u8RxData);
-            return -1;
+
+            while (1);
         }
 
         printf(".");
