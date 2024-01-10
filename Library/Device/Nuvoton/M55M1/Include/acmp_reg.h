@@ -33,8 +33,8 @@
 typedef struct
 {
     /**
-     * @var ACMP_T::CTL0
-     * Offset: 0x00  Analog Comparator Control Register 0
+     * @var ACMP_T::CTL
+     * Offset: 0x00-0x04  Analog Comparator Control Register 0/1
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
@@ -103,80 +103,6 @@ typedef struct
      * |        |          |Note: Please refer to Analog comparator (ACMP) of Analog characteristics in the Datasheet.
      * |[31:30] |INTPOL    |Interrupt Condition Polarity Selection
      * |        |          |ACMPIF0 will be set to 1 when ACMP output edge condition is detected.
-     * |        |          |00 = Rising edge or falling edge.
-     * |        |          |01 = Rising edge.
-     * |        |          |10 = Falling edge.
-     * |        |          |11 = Reserved.
-     * @var ACMP_T::CTL1
-     * Offset: 0x04  Analog Comparator Control Register 1
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |ACMPEN    |ACMP Enable Bit
-     * |        |          |0 = ACMP1 or ACMP3 Disabled.
-     * |        |          |1 = ACMP1 or ACMP3 Enabled.
-     * |[1]     |ACMPIE    |ACMP Interrupt Enable Bit
-     * |        |          |0 = ACMP1 or ACMP3 interrupt Disabled.
-     * |        |          |1 = ACMP1 or ACMP3 interrupt Enabled.
-     * |        |          |Note:If WKEN (ACMP_CTL1[16]) is set to 1, the wake-up interrupt function will be enabled as well.
-     * |[3]     |ACMPOINV  |ACMP Output Inverse
-     * |        |          |0 = ACMP1 or ACMP3 output inverse Disabled.
-     * |        |          |1 = ACMP1 or ACMP3 output inverse Enabled.
-     * |[6:4]   |NEGSEL    |ACMP Negative Input Selection
-     * |        |          |000 = ACMP1_N or ACMP3_N pin.
-     * |        |          |001 = Internal comparator reference voltage (CRV1/3).
-     * |        |          |010 = Band-gap voltage.
-     * |        |          |011 = DAC0 output.
-     * |        |          |100 = DAC1 output.  (DAC1 is not support in TESTCHIP_ONLY)
-     * |        |          |Note: NEGSEL must select 0x1 in calibration mode.
-     * |[10:8]  |POSSEL    |ACMP Positive Input Selection
-     * |        |          |000 = ACMP1_P0 or ACMP3_P0 pin.
-     * |        |          |001 = ACMP1_P1 or ACMP3_P1 pin.
-     * |        |          |010 = ACMP1_P2 or ACMP3_P2 pin.
-     * |        |          |011 = ACMP1_P3 or ACMP3_P3 pin.
-     * |[12]    |OUTSEL    |ACMP Output Selection
-     * |        |          |0 = ACMP1 or ACMP3 output to ACMP1_O or ACMP3_O pin is unfiltered ACMP output.
-     * |        |          |1 = ACMP1 or ACMP3 output to ACMP1_O or ACMP3_O pin is from filter output.
-     * |[15:13] |FILTSEL   |ACMP Output Filter Count Selection
-     * |        |          |000 = Filter function is Disabled.
-     * |        |          |001 = ACMP1 or ACMP3 output is sampled 1 consecutive PCLK.
-     * |        |          |010 = ACMP1 or ACMP3 output is sampled 2 consecutive PCLKs.
-     * |        |          |011 = ACMP1 or ACMP3 output is sampled 4 consecutive PCLKs.
-     * |        |          |100 = ACMP1 or ACMP3 output is sampled 8 consecutive PCLKs.
-     * |        |          |101 = ACMP1 or ACMP3 output is sampled 16 consecutive PCLKs.
-     * |        |          |110 = ACMP1 or ACMP3 output is sampled 32 consecutive PCLKs.
-     * |        |          |111 = ACMP1 or ACMP3 output is sampled 64 consecutive PCLKs.
-     * |[16]    |WKEN      |Power-down Wake-up Enable Bit
-     * |        |          |0 = Wake-up function Disabled.
-     * |        |          |1 = Wake-up function Enabled.
-     * |[17]    |WLATEN    |Window Latch Mode Enable Bit
-     * |        |          |0 = Window Latch Mode Disabled.
-     * |        |          |1 = Window Latch Mode Enabled.
-     * |[18]    |WCMPSEL   |Window Compare Mode Selection
-     * |        |          |0 = Window Compare Mode Disabled.
-     * |        |          |1 = Window Compare Mode is Selected.
-     * |[21:20] |FCLKDIV   |ACMP Output Filter Clock Divider
-     * |        |          |00 = ACMP1 or ACMP3 output filter clock = PCLK.
-     * |        |          |01 = ACMP1 or ACMP3 output filter clock = PCLK/2.
-     * |        |          |10 = ACMP1 or ACMP3 output filter clock = PCLK/4.
-     * |        |          |11 = Reserved.
-     * |        |          |Note: Use FCLKDIV under the condition of FILTSEL = 3'h7, then set FCLKDIV to get the effect of filtering 128,256 consecutive PCLKs.
-     * |[26:24] |HYSSEL    |Hysteresis Mode Selection
-     * |        |          |000 = Hysteresis is 0mV.
-     * |        |          |001 = Hysteresis is 10mV.
-     * |        |          |010 = Hysteresis is 20mV.
-     * |        |          |011 = Hysteresis is 30mV.
-     * |        |          |100 = Hysteresis is 40mV.
-     * |        |          |Others = Reserved.
-     * |[29:28] |MODESEL   |ACMP Operating Mode Selection
-     * |        |          |The register affects analog characteristics as operating current, input offset voltage, setup time, propagation delay, etc.
-     * |        |          |00 = ACMP1 or ACMP3 operating mode0.
-     * |        |          |01 = ACMP1 or ACMP3 operating mode1.
-     * |        |          |10 = ACMP1 or ACMP3 operating mode2.
-     * |        |          |11 = ACMP1 or ACMP3 operating mode3.
-     * |        |          |Note: Please refer to Analog comparator (ACMP) of Analog characteristics in the Datasheet.
-     * |[31:30] |INTPOL    |Interrupt Condition Polarity Selection
-     * |        |          |ACMPIF1 will be set to 1 when ACMP output edge condition is detected.
      * |        |          |00 = Rising edge or falling edge.
      * |        |          |01 = Rising edge.
      * |        |          |10 = Falling edge.
