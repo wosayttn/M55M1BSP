@@ -110,7 +110,7 @@ int main(void)
 
     printf("System core clock = %d\n", SystemCoreClock);
     printf("\nConnet PE.8 (EPWM0 brake pin 0) to PD.5.\n");
-    printf("It will generate brake interrupt and EPWM0 channel 0 output stop toggling.\n");
+    printf("It will generate brake interrupt and EPWM0 channel 0 output PE.7 stop toggling.\n");
 
     GPIO_SetMode(PD, BIT5, GPIO_MODE_OUTPUT);
     PD5 = 0;

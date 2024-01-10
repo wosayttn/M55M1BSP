@@ -177,7 +177,7 @@ int32_t CalculateSHA256(uint32_t start, uint32_t end, uint32_t digest[], E_SHA_O
         Verify:
             Input:
                     String char -> "32107654" on PC tool
-                    HXE byte    -> "3332313037363534" on PC tool and {0x30313233,0x34353637} in M2351
+                    HEX byte    -> "3332313037363534" on PC tool and {0x30313233,0x34353637} in device
             Result:
                 6952CF8EACE972CD4F10567331B46D85104E9E57402364F205876D13F84F7E42
                 ==> Arraty {0x6952CF8E, 0xACE972CD, 0x4F105673....}
@@ -188,12 +188,12 @@ int32_t CalculateSHA256(uint32_t start, uint32_t end, uint32_t digest[], E_SHA_O
     * CCITT (0xFFFF)
     * mode: 0: calculate; 1: verify
 */
-static uint16_t PACKET_ExecCCITT(uint32_t *pu32buf, uint16_t len, uint8_t mode)
+static uint16_t PACKET_ExecCCITT(uint32_t *pu32buf, uint16_t u32ByteCnt, uint8_t u8Mode)
 {
-    volatile uint16_t   i;
-    uint16_t            *pu16buf, OrgSum, CalSum;
+    uint16_t   i;
+    uint16_t   *pu16buf, u16OrgSum, u16CalSum;
 
-    if (len > 56) // valid data byte count
+    if (u32ByteCnt > 56)   // Invalid data byte count
         return -1;
 
     pu16buf = (uint16_t *)pu32buf;
@@ -201,33 +201,36 @@ static uint16_t PACKET_ExecCCITT(uint32_t *pu32buf, uint16_t len, uint8_t mode)
     CLK_EnableModuleClock(CRC0_MODULE);
     CRC_Open(CRC_CCITT, 0, 0xFFFFul, CRC_CPU_WDATA_16);
 
-    for (i = 1; i < (len / 2); i++)
+    for (i = 1; i < (u32ByteCnt / 2); i++)
     {
 #if (0)
-        printf("idx-%d: 0x%04x. (CCITT)\n", i, *(pu16buf + i));
+        printf("idx-%d: 0x%04x (CCITT)\n", i, pu16buf[i]);
 #endif
         CRC->DAT = *(pu16buf + i);
     }
 
-    OrgSum = *(pu16buf + 0);
-    CalSum = (CRC->CHECKSUM & 0xFFFFul);
+    u16OrgSum = pu16buf[0];
+    u16CalSum = (CRC->CHECKSUM & 0xFFFFul);
 
     /* Clear CRC checksum */
     CRC->SEED = 0xFFFFul;
     CRC->CTL |= CRC_CTL_CHKSINIT_Msk;
 
-    if (mode == 0)
+    if (u8Mode == 0)
     {
-        *(pu16buf + 0) = CalSum;
-        return CalSum;
+        *(pu16buf + 0) = u16CalSum;
+        return u16CalSum;
     }
-    else if (mode == 1)
+    else if (u8Mode == 1)
     {
         /* Verify CCITT checksum */
-        if (OrgSum == CalSum)
+        if (u16OrgSum == u16CalSum)
             return 0;   /* Verify CCITT Pass */
         else
+        {
+            //printf("u16OrgSum: 0x%08X, u16CalSum: 0x%08X\n", u16OrgSum, u16CalSum);
             return -1;  /* Verify CCITT Fail */
+        }
     }
     else
     {
@@ -241,8 +244,8 @@ static uint16_t PACKET_ExecCCITT(uint32_t *pu32buf, uint16_t len, uint8_t mode)
 */
 static uint32_t PACKET_ExecCRC32(uint32_t *pu32buf, uint16_t len, uint8_t mode)
 {
-    volatile uint16_t   i;
-    uint32_t            OrgSum, CalSum;
+    uint16_t i;
+    uint32_t u32OrgSum, u32CalSum;
 
     if (len > 60) // valid data byte count
         return -1;
@@ -258,8 +261,8 @@ static uint32_t PACKET_ExecCRC32(uint32_t *pu32buf, uint16_t len, uint8_t mode)
         CRC->DAT = *(pu32buf + i);
     }
 
-    OrgSum = *(pu32buf + i);
-    CalSum = (CRC->CHECKSUM & 0xFFFFFFFFul);
+    u32OrgSum = *(pu32buf + i);
+    u32CalSum = (CRC->CHECKSUM & 0xFFFFFFFFul);
 
     /* Clear CRC checksum */
     CRC->SEED = 0xFFFFFFFFul;
@@ -267,13 +270,13 @@ static uint32_t PACKET_ExecCRC32(uint32_t *pu32buf, uint16_t len, uint8_t mode)
 
     if (mode == 0)
     {
-        *(pu32buf + i) = CalSum;
-        return CalSum;
+        *(pu32buf + i) = u32CalSum;
+        return u32CalSum;
     }
     else if (mode == 1)
     {
         /* Verify CRC32 checksum */
-        if (OrgSum == CalSum)
+        if (u32OrgSum == u32CalSum)
             return 0;   /* Verify CRC32 Pass */
         else
             return -1;  /* Verify CRC32 Fail */
@@ -502,11 +505,11 @@ int32_t CMD_ParseReqPacket(CMD_PACKET_T *pCMD, ISP_INFO_T *pISPInfo)
     /* verify CCITT */
     if (PACKET_ExecCCITT((uint32_t *)pCMD, sizeof(CMD_PACKET_T) - 8, 1) != 0)
     {
-        printf("\n\tPacket CCITT mismatch!\n");
+        printf("\n\tPacket CCITT mismatch !\n");
         return -1;
     }
 
-    printf("Parse cmd PASS!\n\n");
+    printf("Parse cmd Pass.\n\n");
     return 0;
 }
 

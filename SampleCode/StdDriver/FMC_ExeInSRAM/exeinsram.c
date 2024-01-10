@@ -22,7 +22,7 @@ int32_t FlashAccess_OnSRAM(void)
     FMC_Open();
     FMC_ENABLE_AP_UPDATE();
 
-    /* The ROM address for erase/write/read demo */
+    /* The APROM address for erase/write/read demo */
     u32Addr = APROM_TEST_BASE;
     FMC_Erase(u32Addr); /* Erase page */
 

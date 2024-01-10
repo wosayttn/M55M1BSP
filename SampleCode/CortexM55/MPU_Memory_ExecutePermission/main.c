@@ -28,13 +28,13 @@
 #define REGION_SRAM_XN_END_ADDR     (MPU_INIT_LIMIT(2))
 
 /* ExeInRegion1 located in REGION_FLASH_XN */
-uint32_t ExeInRegion1(void) __attribute__((section(".ARM.__at_0x110000")));
+uint32_t ExeInRegion1(void);
 /* ExeInRegion2 located in REGION_SRAM_nXN */
 uint32_t ExeInRegion2(void);
 /* ExeInRegion3 located in REGION_SRAM_XN */
 uint32_t ExeInRegion3(void);
 
-NVT_ITCM void MemManage_Handler(void)
+void MemManage_Handler(void)
 {
     uint32_t u32LR = 0;
     uint32_t *pu32SP;

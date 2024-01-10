@@ -39,7 +39,7 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable GPA ~ GPJ peripheral clock */
+    /* Enable all GPIO clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
     CLK_EnableModuleClock(GPIOC_MODULE);
@@ -48,6 +48,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOF_MODULE);
     CLK_EnableModuleClock(GPIOG_MODULE);
     CLK_EnableModuleClock(GPIOH_MODULE);
+    CLK_EnableModuleClock(GPIOI_MODULE);
     CLK_EnableModuleClock(GPIOJ_MODULE);
 
     /* Debug UART clock setting*/

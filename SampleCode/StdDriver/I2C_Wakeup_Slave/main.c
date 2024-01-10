@@ -193,11 +193,11 @@ static void SYS_Init(void)
     /* Enable I2C0 module clock */
     CLK_EnableModuleClock(I2C0_MODULE);
     /* Set multi-function pins for I2C0 SDA and SCL */
-    SET_I2C0_SDA_PA4();
-    SET_I2C0_SCL_PA5();
+    SET_I2C0_SDA_PB4();
+    SET_I2C0_SCL_PB5();
     /* I2C pins enable schmitt trigger */
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT4 | BIT5));
+    CLK_EnableModuleClock(GPIOB_MODULE);
+    GPIO_ENABLE_SCHMITT_TRIGGER(PB, (BIT4 | BIT5));
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -228,7 +228,7 @@ void I2C0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
     /* Init Debug UART to 115200-8N1 for print message */
@@ -280,9 +280,18 @@ int32_t main(void)
 
     /* Enter to Power-down mode */
     PowerDownFunction();
+    u32TimeOutCnt = I2C_TIMEOUT;
 
     /* Waiting for system wake-up and I2C wake-up finish */
-    while ((g_u8SlvPWRDNWK == 0) && (g_u8SlvI2CWK == 0));
+    while ((g_u8SlvPWRDNWK == 0) && (g_u8SlvI2CWK == 0))
+    {
+        if (--u32TimeOutCnt == 0)
+        {
+            printf("Wait for I2C wake-up time-out!\n");
+
+            while (1);
+        }
+    }
 
     /* Wake-up Interrupt Message */
     printf("Power-down Wake-up INT 0x%x\n", g_u8SlvPWRDNWK);

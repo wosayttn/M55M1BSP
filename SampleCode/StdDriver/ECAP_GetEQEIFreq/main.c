@@ -144,9 +144,9 @@ static void SYS_Init(void)
     SET_ECAP0_IC0_PA10();
 
     /* Set PA multi-function pins for EQEI0_A, EQEI0_B, EQEI0_INDEX */
-    SET_EQEI0_A_PA4();
-    SET_EQEI0_B_PA3();
-    SET_EQEI0_INDEX_PA5();
+    SET_EQEI0_A_PE3();
+    SET_EQEI0_B_PE2();
+    SET_EQEI0_INDEX_PE4();
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -209,7 +209,7 @@ int main(void)
     printf("+----------------------------------------+\n");
     printf("\n");
     printf("  !! GPIO PA.0 toggle periodically    !!\n");
-    printf("  !! Connect PA.0 --> PA.4(EQEI0_A) !!\n\n");
+    printf("  !! Connect PA.0 --> PE.3(EQEI0_A) !!\n\n");
     printf("     Press any key to start test\n\n");
     getchar();
 

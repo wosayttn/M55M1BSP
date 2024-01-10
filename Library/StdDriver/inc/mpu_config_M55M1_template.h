@@ -1,5 +1,5 @@
 /**************************************************************************//**
- * @file     mpu_config_M55M1.h
+ * @file     mpu_config_M55M1_template.h
  * @version  V1.00
  * @brief    Initial Setup for MPU region for M55M1
  *

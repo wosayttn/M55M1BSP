@@ -18,7 +18,7 @@
   @{
 */
 
-/** @addtogroup SPIM_HYPER_EXPORTED_FUNCTIONS SPIM_HYPER Exported Functions
+/** @addtogroup SPIM_HYPER_EXPORTED_FUNCTIONS SPIM Hyper Exported Functions
   @{
 */
 /**
@@ -168,12 +168,11 @@ int32_t SPIM_HYPER_WaitSPIMENDone(SPIM_T *spim, uint32_t u32IsSync)
 }
 
 /**
- * @brief Wait Hyper Bus interface is Idle
- *
- * @param spim
- * @return     SPIM_HYPER_OK          SPIM operation OK.
- *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
- * @note       This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
+ * @brief   Wait Hyper Bus interface is Idle
+ * @param   spim
+ * @return  SPIM_HYPER_OK          SPIM operation OK.
+ *          SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
+ * @note    This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
  */
 static int32_t SPIM_HYPER_IsCMDIdle(SPIM_T *spim)
 {
@@ -193,9 +192,9 @@ static int32_t SPIM_HYPER_IsCMDIdle(SPIM_T *spim)
 /**
  * @brief   Set Hyper Bus Mode
  *
- * @param spim
- * @param u32Div Hyper bus device the setting values of DIVIDER are only 1 and 2.
- * @return int
+ * @param   spim
+ * @param   u32Div Hyper bus device the setting values of DIVIDER are only 1 and 2.
+ * @return  int
  */
 void SPIM_HYPER_Init(SPIM_T *spim, uint32_t u32Div)
 {
@@ -206,11 +205,11 @@ void SPIM_HYPER_Init(SPIM_T *spim, uint32_t u32Div)
 }
 
 /**
-  * @brief      Reset hyper chip function
-  * @param      spim
-  * @return     SPIM_HYPER_OK          SPIM operation OK.
-  *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       if waiting Hyper Chip time-out.
+  * @brief  Reset hyper chip function
+  * @param  spim
+  * @return SPIM_HYPER_OK          SPIM operation OK.
+  *         SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
+  * @note   if waiting Hyper Chip time-out.
   */
 int32_t SPIM_HYPER_Reset(SPIM_T *spim)
 {
@@ -225,11 +224,11 @@ int32_t SPIM_HYPER_Reset(SPIM_T *spim)
 }
 
 /**
-  * @brief      Exit from Hybrid sleep and deep Power down function
-  * @param      spim
-  * @return     SPIM_HYPER_OK          SPIM operation OK.
-  *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
+  * @brief  Exit from Hybrid sleep and deep Power down function
+  * @param  spim
+  * @return SPIM_HYPER_OK          SPIM operation OK.
+  *         SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
+  * @note   This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
   */
 int32_t SPIM_HYPER_ExitHSAndDPD(SPIM_T *spim)
 {
@@ -244,17 +243,17 @@ int32_t SPIM_HYPER_ExitHSAndDPD(SPIM_T *spim)
 }
 
 /**
-  * @brief      Read hyper chip register space
-  * @param      spim
-  * @param[in]  u32Addr  Address of hyper chip register space
+  * @brief  Read hyper chip register space
+  * @param  spim
+  * @param  u32Addr Address of hyper chip register space
   *                 - \ref HYPERRAM_ID_REG0       : 0x0000_0000 = Identification Register 0
   *                 - \ref HYPERRAM_ID_REG1       : 0x0000_0002 = Identification Register 1
   *                 - \ref HYPERRAM_CONFIG_REG0   : 0x0000_1000 = Configuration Register 0
   *                 - \ref HYPERRAM_CONFIG_REG1   : 0x0000_1002 = Configuration Register 1
-  * @return     SPIM_HYPER_OK      SPIM operation OK.
-  *             SPIM_HYPER_ERR_FAIL    SPIM operation Fail.
-  *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
+  * @return SPIM_HYPER_OK          SPIM operation OK.
+  *         SPIM_HYPER_ERR_FAIL    SPIM operation Fail.
+  *         SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
+  * @note   This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
   */
 int32_t SPIM_HYPER_ReadHyperRAMReg(SPIM_T *spim, uint32_t u32Addr)
 {
@@ -279,18 +278,18 @@ int32_t SPIM_HYPER_ReadHyperRAMReg(SPIM_T *spim, uint32_t u32Addr)
 }
 
 /**
-  * @brief      Write Hyper Chip register space
-  * @param      spim
-  * @param[in]  u32Addr  Address of Hyper Chip register space
+  * @brief  Write Hyper Chip register space
+  * @param  spim
+  * @param  u32Addr Address of Hyper Chip register space
   *                 - \ref HYPER_RAM_ID_REG0       : 0x0000_0000 = Identification Register 0
   *                 - \ref HYPER_RAM_ID_REG1       : 0x0000_0002 = Identification Register 1
   *                 - \ref HYPER_RAM_CONFIG_REG0   : 0x0000_1000 = Configuration Register 0
   *                 - \ref HYPER_RAM_CONFIG_REG1   : 0x0000_1002 = Configuration Register 1
-  * @param[in]
-  * @return     SPIM_HYPER_OK      SPIM operation OK.
-  *             SPIM_HYPER_ERR_FAIL    SPIM operation Fail.
-  *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
+  * @param  u32Value Configure HyperRAM Register Value
+  * @return SPIM_HYPER_OK      SPIM operation OK.
+  *         SPIM_HYPER_ERR_FAIL    SPIM operation Fail.
+  *         SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
+  * @note   This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
   */
 int32_t SPIM_HYPER_WriteHyperRAMReg(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Value)
 {
@@ -318,11 +317,11 @@ int32_t SPIM_HYPER_WriteHyperRAMReg(SPIM_T *spim, uint32_t u32Addr, uint32_t u32
 }
 
 /**
-  * @brief      Read 1 word from hyper chip space
-  * @param      spim
-  * @param[in]  u32Addr  Address of hyper chip space
-  * @return     The 16 bit data of hyper chip space.
-  * @note       This function sets SPIM_HYPER_ERR_TIMEOUT if waiting Hyper Chip time-out.
+  * @brief  Read 1 word from hyper chip space
+  * @param  spim
+  * @param  u32Addr  Address of hyper chip space
+  * @return The 16 bit data of hyper chip space.
+  * @note   This function sets SPIM_HYPER_ERR_TIMEOUT if waiting Hyper Chip time-out.
   */
 int16_t SPIM_HYPER_Read1Word(SPIM_T *spim, uint32_t u32Addr)
 {
@@ -339,10 +338,10 @@ int16_t SPIM_HYPER_Read1Word(SPIM_T *spim, uint32_t u32Addr)
 }
 
 /**
-  * @brief      Read 2 word from hyper chip space
-  * @param      spim
-  * @param[in]  u32Addr  Address of hyper chip space
-  * @return     The 32bit data of hyper chip space.
+  * @brief  Read 2 word from hyper chip space
+  * @param  spim
+  * @param  u32Addr  Address of hyper chip space
+  * @return The 32bit data of hyper chip space.
   */
 int32_t SPIM_HYPER_Read2Word(SPIM_T *spim, uint32_t u32Addr)
 {
@@ -359,13 +358,13 @@ int32_t SPIM_HYPER_Read2Word(SPIM_T *spim, uint32_t u32Addr)
 }
 
 /**
-  * @brief      Write 1 byte to hyper chip space
-  * @param      spim
-  * @param[in]  u32Addr  Address of hyper chip space
-  * @param[in]  u8Data   8 bits data to be written to hyper chip space
-  * @return     SPIM_HYPER_OK      SPIM operation OK.
-  *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
+  * @brief  Write 1 byte to hyper chip space
+  * @param  spim
+  * @param  u32Addr  Address of hyper chip space
+  * @param  u8Data   8 bits data to be written to hyper chip space
+  * @return SPIM_HYPER_OK      SPIM operation OK.
+  *         SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
+  * @note   This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
   */
 int32_t SPIM_HYPER_Write1Byte(SPIM_T *spim, uint32_t u32Addr, uint8_t u8Data)
 {
@@ -385,13 +384,13 @@ int32_t SPIM_HYPER_Write1Byte(SPIM_T *spim, uint32_t u32Addr, uint8_t u8Data)
 }
 
 /**
-  * @brief      Write 2 bytes to Hyper Chip space
-  * @param      spim
-  * @param[in]  u32Addr  Address of Hyper Chip space
-  * @param[in]  u16Data  16 bits data to be written to Hyper Chip space
-  * @return     SPIM_HYPER_OK          SPIM operation OK.
-  *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
+  * @brief  Write 2 bytes to Hyper Chip space
+  * @param  spim
+  * @param  u32Addr  Address of Hyper Chip space
+  * @param  u16Data  16 bits data to be written to Hyper Chip space
+  * @return SPIM_HYPER_OK          SPIM operation OK.
+  *         SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
+  * @note   This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
   */
 int32_t SPIM_HYPER_Write2Byte(SPIM_T *spim, uint32_t u32Addr, uint16_t u16Data)
 {
@@ -411,13 +410,13 @@ int32_t SPIM_HYPER_Write2Byte(SPIM_T *spim, uint32_t u32Addr, uint16_t u16Data)
 }
 
 /**
-  * @brief      Write 3 bytes to Hyper Chip space
-  * @param      spim
-  * @param[in]  u32Addr  Address of Hyper Chip space
-  * @param[in]  u32Data  24 bits data to be written to Hyper Chip space
-  * @return     SPIM_HYPER_OK          SPIM operation OK.
-  *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
+  * @brief  Write 3 bytes to Hyper Chip space
+  * @param  spim
+  * @param  u32Addr  Address of Hyper Chip space
+  * @param  u32Data  24 bits data to be written to Hyper Chip space
+  * @return SPIM_HYPER_OK          SPIM operation OK.
+  *         SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
+  * @note   This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
   */
 int32_t SPIM_HYPER_Write3Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data)
 {
@@ -437,13 +436,13 @@ int32_t SPIM_HYPER_Write3Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data)
 }
 
 /**
-  * @brief      Write 4 byte to hyper chip space
-  * @param      spim
-  * @param[in]  u32Addr  Address of hyper chip space
-  * @param[in]  u32Data  32 bits data to be written to hyper chip space
-  * @return     SPIM_HYPER_OK          SPIM operation OK.
-  *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
+  * @brief  Write 4 byte to hyper chip space
+  * @param  spim
+  * @param  u32Addr  Address of hyper chip space
+  * @param  u32Data  32 bits data to be written to hyper chip space
+  * @return SPIM_HYPER_OK          SPIM operation OK.
+  *         SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
+  * @note   This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
   */
 int32_t SPIM_HYPER_Write4Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data)
 {
@@ -463,13 +462,14 @@ int32_t SPIM_HYPER_Write4Byte(SPIM_T *spim, uint32_t u32Addr, uint32_t u32Data)
 }
 
 /**
-  * @brief      Write data to HyperBus Module.
-  * @param      u32Addr     Start address to write.
-  * @param      pu8WrBuf    Transmit buffer.
-  * @param      u32NTx      Number of bytes to write.
-  * @return     SPIM_HYPER_OK          SPIM operation OK.
-  *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
+  * @brief  Write data to HyperBus Module.
+  * @param  spim
+  * @param  u32Addr     Start address to write.
+  * @param  pu8WrBuf    Transmit buffer.
+  * @param  u32NTx      Number of bytes to write.
+  * @return SPIM_HYPER_OK          SPIM operation OK.
+  *         SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
+  * @note   This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
   */
 int32_t SPIM_HYPER_DMAWrite(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8WrBuf, uint32_t u32NTx)
 {
@@ -494,13 +494,14 @@ int32_t SPIM_HYPER_DMAWrite(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8WrBuf, u
 
 #if 0 //(TESTCHIP_ONLY)
 /**
-  * @brief      Read data from HyperBus Module.
-  * @param      u32Addr     Start address to read.
-  * @param      pu8RdBuf    Receive buffer.
-  * @param      u32NRx      Number of bytes to read.
-  * @return     SPIM_HYPER_OK          SPIM operation OK.
-  *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
+  * @brief  Read data from HyperBus Module.
+  * @param  spim
+  * @param  u32Addr     Start address to read.
+  * @param  pu8RdBuf    Receive buffer.
+  * @param  u32NRx      Number of bytes to read.
+  * @return SPIM_HYPER_OK          SPIM operation OK.
+  *         SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
+  * @note   This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
   */
 int32_t SPIM_HYPER_DMARead(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8RdBuf, uint32_t u32NRx)
 {
@@ -520,10 +521,10 @@ int32_t SPIM_HYPER_DMARead(SPIM_T *spim, uint32_t u32Addr, uint8_t *pu8RdBuf, ui
 #endif
 
 /**
-  * @brief      SPIM Hyper Mode Enter DMM Mode
-  * @param      spim
-  * @return     None.
-  * @note       This function sets SPIM_HYPER_ERR_TIMEOUT if waiting Hyper Chip time-out.
+  * @brief  SPIM Hyper Mode Enter DMM Mode
+  * @param  spim
+  * @return None.
+  * @note   This function sets SPIM_HYPER_ERR_TIMEOUT if waiting Hyper Chip time-out.
   */
 void SPIM_HYPER_EnterDirectMapMode(SPIM_T *spim)
 {
@@ -531,10 +532,10 @@ void SPIM_HYPER_EnterDirectMapMode(SPIM_T *spim)
 }
 
 /**
-  * @brief      SPIM Hyper Mode Exit DMM Mode
-  * @param      spim
-  * @return     None.
-  * @note       This function sets SPIM_HYPER_ERR_TIMEOUT if waiting Hyper Chip time-out.
+  * @brief  SPIM Hyper Mode Exit DMM Mode
+  * @param  spim
+  * @return None.
+  * @note   This function sets SPIM_HYPER_ERR_TIMEOUT if waiting Hyper Chip time-out.
   */
 void SPIM_HYPER_ExitDirectMapMode(SPIM_T *spim)
 {
@@ -542,11 +543,11 @@ void SPIM_HYPER_ExitDirectMapMode(SPIM_T *spim)
 }
 
 /**
-  * @brief      Wait Hyper Direct Map Mode Read/Write Done.
-  * @param      spim
-  * @return     SPIM_HYPER_OK          SPIM operation OK.
-  *             SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
-  * @note       This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
+  * @brief  Wait Hyper Direct Map Mode Read/Write Done.
+  * @param  spim
+  * @return SPIM_HYPER_OK          SPIM operation OK.
+  *         SPIM_HYPER_ERR_TIMEOUT SPIM operation abort due to timeout error.
+  * @note   This function sets SPIM_HYPER_ERR_TIMEOUT, if waiting Hyper Chip time-out.
   */
 int32_t SPIM_HYPER_IsDMMDone(SPIM_T *spim)
 {

@@ -183,6 +183,8 @@ uint32_t BPWM_ConfigOutputChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t
     /* all channels share a prescaler */
     u32Prescale -= 1UL;
     BPWM_SET_PRESCALER(bpwm, u32ChannelNum, u32Prescale);
+    // set BPWM to up count type
+    (bpwm)->CTL1 = BPWM_UP_COUNTER;
 
     u32CNR -= 1UL;
     BPWM_SET_CNR(bpwm, u32ChannelNum, u32CNR);

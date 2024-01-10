@@ -129,8 +129,9 @@ void SYS_Init(void)
 void Download(void)
 {
     int32_t  i32Err;
+    uint32_t u32ExecBank = s_u32ExecBank;
 
-    printf("\n Bank%d processing, download data to Bank%d APP Base.\n\n\n", s_u32ExecBank, s_u32ExecBank);
+    printf("\n Bank%d processing, download data to Bank%d APP Base.\n\n\n", u32ExecBank, u32ExecBank);
 
     /* Dual bank background program address */
     s_u32DbAddr   = APP_BASE;
@@ -185,7 +186,6 @@ uint32_t FMC_CheckAllOne(uint32_t u32StartAddr, uint32_t u32ByteSize)
 uint32_t FMC_GetChkSum(uint32_t u32StartAddr, uint32_t u32ByteSize)
 {
     uint32_t u32CRC32Checksum = 0xFFFFFFFF;
-    uint32_t u32Addr;
 
     /* Configure CRC controller for CRC-CRC32 mode */
     CRC_Open(CRC_32, (CRC_WDATA_RVS | CRC_CHECKSUM_RVS | CRC_CHECKSUM_COM), 0xFFFFFFFFul, CRC_CPU_WDATA_32);
@@ -207,7 +207,7 @@ uint32_t FMC_GetChkSum(uint32_t u32StartAddr, uint32_t u32ByteSize)
 int main()
 {
     uint8_t u8GetCh;
-    uint32_t i;
+    uint32_t i, u32ExecBank;
     uint32_t u32Loader0ChkSum, u32Loader1ChkSum;
     uint32_t u32App0ChkSum, u32App1ChkSum;
 
@@ -277,7 +277,8 @@ int main()
             /* Create loader in the other bank */
             for (i = LOADER_BASE; i < (LOADER_BASE + LOADER_SIZE); i += 4)
             {
-                FMC_Write(FMC_APROM_BANK_SIZE * (s_u32ExecBank ^ 1) + i, FMC_Read((FMC_BANK_SIZE * s_u32ExecBank) + i));
+                u32ExecBank = s_u32ExecBank;
+                FMC_Write(FMC_APROM_BANK_SIZE * (u32ExecBank ^ 1) + i, FMC_Read((FMC_BANK_SIZE * u32ExecBank) + i));
             }
 
             printf(" Create Bank%d Loader completed. \n", (s_u32ExecBank ^ 1));
@@ -298,7 +299,8 @@ int main()
             /* Create app in the other bank (just for test) */
             for (i = APP_BASE; i < (APP_BASE + APP_SIZE); i += 4)
             {
-                FMC_Write(FMC_BANK_SIZE * (s_u32ExecBank ^ 1) + i, FMC_Read((FMC_BANK_SIZE * s_u32ExecBank) + i));
+                u32ExecBank = s_u32ExecBank;
+                FMC_Write(FMC_BANK_SIZE * (u32ExecBank ^ 1) + i, FMC_Read((FMC_BANK_SIZE * u32ExecBank) + i));
             }
 
             printf(" Create Bank%d App completed! \n", (s_u32ExecBank ^ 1));

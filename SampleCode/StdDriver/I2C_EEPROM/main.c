@@ -182,11 +182,11 @@ static void SYS_Init(void)
     /* Enable I2C0 module clock */
     CLK_EnableModuleClock(I2C0_MODULE);
     /* Set multi-function pins for I2C0 SDA and SCL */
-    SET_I2C0_SDA_PA4();
-    SET_I2C0_SCL_PA5();
+    SET_I2C0_SDA_PB4();
+    SET_I2C0_SCL_PB5();
     /* I2C pins enable schmitt trigger */
-    CLK_EnableModuleClock(GPIOA_MODULE);
-    GPIO_ENABLE_SCHMITT_TRIGGER(PA, (BIT4 | BIT5));
+    CLK_EnableModuleClock(GPIOB_MODULE);
+    GPIO_ENABLE_SCHMITT_TRIGGER(PB, (BIT4 | BIT5));
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -241,7 +241,7 @@ int32_t main(void)
     printf("+-------------------------------------------------------+\n");
     printf("Configure I2C0 as a master.\n");
     printf("The I/O connection for I2C0:\n");
-    printf("I2C0_SDA(PA.4), I2C0_SCL(PA.5)\n");
+    printf("I2C0_SDA(PB.4), I2C0_SCL(PB.5)\n");
     /* Init I2C0 to access EEPROM */
     I2C0_Init();
     g_u8DeviceAddr = 0x50;

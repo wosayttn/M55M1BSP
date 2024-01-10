@@ -207,7 +207,7 @@ void DMIC_Init(S_BUFCTRL *psInBufCtrl)
     DMIC_ResetDSP(DMIC0);  //SWRST
 
     //DMIC Gain Setting
-    DMIC_SetDSPGainVolume(DMIC0, DMIC_CTL_CHEN0_Msk, 40);//+40dB
+    DMIC_SetDSPGainVolume(DMIC0, DMIC_CTL_CHEN0_Msk, 36);//+36dB
 
     // MIC(RX) buffer description
     sLPPDMA_DMIC[0].CTL = ((psInBufCtrl->u16BufCount - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_16 | PDMA_SAR_FIX | PDMA_DAR_INC | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
@@ -225,12 +225,14 @@ void DMIC_Init(S_BUFCTRL *psInBufCtrl)
     // Enable interrupt
     LPPDMA_EnableInt(LPPDMA, DMIC_LPPDMA_CH, LPPDMA_INT_TRANS_DONE);
     // GPIO multi-function.
-    SET_DMIC0_DAT_PE8();
-    SET_DMIC0_CLK_PE9();
-    SYS->GPE_MFOS = BIT8;
-    PE8 = 1;
-    //    SET_DMIC1_CLK_PE12();
-    //    SET_DMIC1_DAT_PE11();
+    SET_DMIC0_DAT_PB5();
+    SET_DMIC0_CLK_PB4();
+    SYS->GPB_MFOS = BIT5;
+		PB5 = 1;
+//    SET_DMIC0_DAT_PE8();
+//    SET_DMIC0_CLK_PE9();
+//    SYS->GPE_MFOS = BIT8;
+//    PE8 = 1;
     // Config DMIC buffer control
     psDMIC_BufCtrl = psInBufCtrl;
 }
@@ -342,6 +344,7 @@ static void SYS_Init(void)
     /* Enable SDH0 module clock source as HCLK and SDH0 module clock divider as 4 */
     CLK_SetModuleClock(SDH0_MODULE, CLK_SDHSEL_SDH0SEL_HCLK0, CLK_SDHDIV_SDH0DIV(4));
     CLK_EnableModuleClock(SDH0_MODULE);
+    CLK_EnableModuleClock(GPIOB_MODULE);
     CLK_EnableModuleClock(GPIOD_MODULE);
     CLK_EnableModuleClock(GPIOE_MODULE);
 
@@ -421,8 +424,8 @@ int main(void)
         }
     };
 
+    DMIC_Stop();
     WAVWrite_Close();
-
     SDH_Close_Disk(SDH0);
 
     while (1);

@@ -15,6 +15,18 @@ extern "C"
 {
 #endif
 
+/** @addtogroup Standard_Driver Standard Driver
+  @{
+*/
+
+/** @addtogroup PMC_Driver PMC Driver
+  @{
+*/
+
+/** @addtogroup PMC_EXPORTED_CONSTANTS PMC Exported Constants
+  @{
+*/
+
 enum
 {
     SRAMNum0 = 0,

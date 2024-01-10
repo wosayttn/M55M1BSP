@@ -307,7 +307,7 @@ void LPPDMA_LPUART(int32_t i32option)
     /* Enable UART0 RDA interrupt */
     if (g_u32TwoChannelLpPdmaTest == 0)
     {
-        NVIC_EnableIRQ(UART0_IRQn);
+        NVIC_EnableIRQ(DEBUG_PORT_IRQn);
         UART_EnableInt(DEBUG_PORT, UART_INTEN_RDAIEN_Msk);
     }
 

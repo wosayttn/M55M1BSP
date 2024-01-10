@@ -560,9 +560,7 @@ void CLK_SetSCLK(uint32_t u32ClkSrc)
   * |\ref CANFD1_MODULE  |\ref CLK_CANFDSEL_CANFD1SEL_HIRC          |\ref CLK_CANFDDIV_CANFD1DIV(x)  |
   * |\ref CANFD1_MODULE  |\ref CLK_CANFDSEL_CANFD1SEL_HIRC48M_DIV4  |\ref CLK_CANFDDIV_CANFD1DIV(x)  |
   * |\ref CCAP0_MODULE   |\ref CLK_CCAPSEL_CCAP0SEL_MIRC            | x                              |
-  * |\ref CCAP0_MODULE   |\ref CLK_CCAPSEL_CCAP0SEL_HCLK2           | x                              |
   * |\ref CCAP0_MODULE   |\ref CLK_CCAPSEL_CCAP0SEL_HIRC            | x                              |
-  * |\ref CCAP0_MODULE   |\ref CLK_CCAPSEL_CCAP0SEL_APLL0_DIV2      | x                              |
   * |\ref CCAP0_MODULE   |\ref CLK_CCAPSEL_CCAP0SEL_HXT             | x                              |
   * |\ref DMIC0_MODULE   |\ref CLK_DMICSEL_DMIC0SEL_HXT             |\ref CLK_DMICDIV_DMIC0DIV(x)    |
   * |\ref DMIC0_MODULE   |\ref CLK_DMICSEL_DMIC0SEL_APLL1_DIV2      |\ref CLK_DMICDIV_DMIC0DIV(x)    |
@@ -981,7 +979,6 @@ void CLK_DisableXtalRC(uint32_t u32ClkMask)
   *             - \ref SCU0_MODULE
   *             - \ref SDH0_MODULE
   *             - \ref SDH1_MODULE
-  *             - \ref SENTH0_MODULE
   *             - \ref SPI0_MODULE
   *             - \ref SPI1_MODULE
   *             - \ref SPI2_MODULE
@@ -1127,7 +1124,6 @@ uint32_t CLK_EnableModuleClock(uint64_t u64ModuleIdx)
   *             - \ref SCU0_MODULE
   *             - \ref SDH0_MODULE
   *             - \ref SDH1_MODULE
-  *             - \ref SENTH0_MODULE
   *             - \ref SPI0_MODULE
   *             - \ref SPI1_MODULE
   *             - \ref SPI2_MODULE
@@ -1258,7 +1254,6 @@ void CLK_DisableModuleClock(uint64_t u64ModuleIdx)
   *             - \ref SCU0_MODULE
   *             - \ref SDH0_MODULE
   *             - \ref SDH1_MODULE
-  *             - \ref SENTH0_MODULE
   *             - \ref SPI0_MODULE
   *             - \ref SPI1_MODULE
   *             - \ref SPI2_MODULE

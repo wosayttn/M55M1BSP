@@ -14,6 +14,17 @@
 extern "C"
 {
 #endif
+/** @addtogroup Standard_Driver Standard Driver
+  @{
+*/
+
+/** @addtogroup AWF_Driver AWF Driver
+  @{
+*/
+
+/** @addtogroup AWF_EXPORTED_CONSTANTS AWF Exported Constants
+  @{
+*/
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  AWF constant definitions.                                                                              */

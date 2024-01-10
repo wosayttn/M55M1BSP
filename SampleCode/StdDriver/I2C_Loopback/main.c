@@ -278,8 +278,8 @@ static void SYS_Init(void)
     /* Enable I2C1 module clock */
     CLK_EnableModuleClock(I2C1_MODULE);
     /* Set multi-function pins for I2C0/I2C1 SDA and SCL */
-    SET_I2C0_SDA_PA4();
-    SET_I2C0_SCL_PA5();
+    SET_I2C0_SDA_PB4();
+    SET_I2C0_SCL_PB5();
     SET_I2C1_SCL_PB1();
     SET_I2C1_SDA_PB0();
     /* Lock protected registers */
@@ -435,7 +435,7 @@ int32_t main(void)
     printf("\n");
     printf("Configure I2C0 as Master, and I2C1 as a slave.\n");
     printf("The I/O connection I2C0 to I2C1:\n");
-    printf("I2C0_SDA(PA.4), I2C0_SCL(PA.5)\n");
+    printf("I2C0_SDA(PB.4), I2C0_SCL(PB.5)\n");
     printf("I2C1_SDA(PB.0), I2C1_SCL(PB.1)\n\n");
     /* Init I2C0 */
     I2C0_Init();

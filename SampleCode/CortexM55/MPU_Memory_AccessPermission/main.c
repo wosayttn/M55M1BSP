@@ -27,7 +27,7 @@
 #define REGION_SRAM_RO_SIZE         (MPU_INIT_SIZE(2))
 #define REGION_SRAM_RO_END_ADDR     (MPU_INIT_LIMIT(2))
 
-NVT_ITCM void MemManage_Handler(void)
+void MemManage_Handler(void)
 {
     uint32_t u32LR = 0;
     uint32_t *pu32SP;

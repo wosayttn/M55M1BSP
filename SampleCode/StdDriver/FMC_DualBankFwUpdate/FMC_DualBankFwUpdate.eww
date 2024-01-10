@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspace>
+    <project>
+        <path>$WS_DIR$\Loader\IAR\FMC_DualBankFwUpdate_Loader.ewp</path>
+    </project>
+    <project>
+        <path>$WS_DIR$\App\IAR\FMC_DualBankFwUpdate_App.ewp</path>
+    </project>
+    <batchBuild />
+</workspace>

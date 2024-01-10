@@ -1033,8 +1033,8 @@ void RTC_DynamicTamperDisable(uint32_t u32PairSel)
   *                                 1: reload new seed
   *
   * @param[in]  u32RefPattern       Reference pattern
-  *                                 - \ref REF_RANDOM_PATTERN
-  *                                 - \ref REF_SEED
+  *                                 - \ref RTC_REF_RANDOM_PATTERN
+  *                                 - \ref RTC_REF_SEED_VALUE
   *
   * @param[in]  u32Seed             Seed Value (0x0 ~ 0xFFFFFFFF)
   *
@@ -1120,7 +1120,7 @@ uint32_t RTC_SetClockSource(uint32_t u32ClkSrc)
 /**
  * @brief       Set RTC GPIO Operation Mode
  *
- * @param[in]   u32Pin          The single pin of GPIO-F port.
+ * @param[in]   u32PFPin        The single pin of GPIO-F port.
  *                              It could be 4~11, which means PF.4~PF.11.
  * @param[in]   u32Mode         Operation mode. It could be
  *                              - \ref RTC_IO_MODE_INPUT
@@ -1173,7 +1173,7 @@ void RTC_SetGPIOMode(uint32_t u32PFPin, uint32_t u32Mode, uint32_t u32DigitalCtl
 /**
  * @brief       Set RTC GPIO Output Level
  *
- * @param[in]   u32Pin          The single pin of GPIO-F port.
+ * @param[in]   u32PFPin        The single pin of GPIO-F port.
  *                              It could be 4~11, which means PF.4~PF.11.
  * @param[in]   u32OutputLevel  The I/O output level. 0: output low; 1: output high.
  *

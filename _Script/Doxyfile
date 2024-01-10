@@ -42,19 +42,19 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "M251/M252/M254/M256/M258 BSP"
+PROJECT_NAME           = "M55M1 BSP"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = v3.02.004
+PROJECT_NUMBER         = v3.00.001
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "The Board Support Package for M251/M252/M254/M256/M258 Series"
+PROJECT_BRIEF          = "The Board Support Package for M55M1 Series"
 
 # With the PROJECT_LOGO tag one can specify a logo or an icon that is included
 # in the documentation. The maximum height of the logo should not exceed 55
@@ -184,7 +184,7 @@ FULL_PATH_NAMES        = YES
 # will be relative from the directory where doxygen is started.
 # This tag requires that the tag FULL_PATH_NAMES is set to YES.
 
-STRIP_FROM_PATH        = C:/Cloud/Git/hcrdgit4/M251/bsp/
+STRIP_FROM_PATH        = C:/Cloud/Git/hcrdgit4/M55M1/bsp/
 
 # The STRIP_FROM_INC_PATH tag can be used to strip a user-defined part of the
 # path mentioned in the documentation of a class, which tells the reader which
@@ -917,11 +917,13 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = C:/Cloud/Git/hcrdgit4/M251/bsp/Library/Device \
-                         C:/Cloud/Git/hcrdgit4/M251/bsp/Library/LCDLib \
-                         C:/Cloud/Git/hcrdgit4/M251/bsp/Library/SmartcardLib \
-                         C:/Cloud/Git/hcrdgit4/M251/bsp/Library/StdDriver \
-                         C:/Cloud/Git/hcrdgit4/M251/bsp/Library/TKLib
+INPUT                  = C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/Device \
+                         C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/CryptoAccelerator \
+                         C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/NuMaker \
+                         C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/PowerDeliveryLib \
+                         C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/SmartcardLib \
+                         C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/StdDriver \
+                         C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/UsbHostLib
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1020,7 +1022,12 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                =
+EXCLUDE                = C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/StdDriver/inc/emac \
+                         C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/StdDriver/inc/gdma \
+                         C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/StdDriver/inc/npu \
+                         C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/StdDriver/src/emac \
+                         C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/StdDriver/src/gdma \
+                         C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/StdDriver/src/npu
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -1036,7 +1043,7 @@ EXCLUDE_SYMLINKS       = NO
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories for example use the pattern */test/*
 
-EXCLUDE_PATTERNS       =
+EXCLUDE_PATTERNS       = */_*
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the
@@ -1073,7 +1080,7 @@ EXAMPLE_RECURSIVE      = NO
 # that contain images that are to be included in the documentation (see the
 # \image command).
 
-IMAGE_PATH             = "C:/Cloud/Git/hcrdgit4/M251/bsp/_Script"
+IMAGE_PATH             = "C:/Cloud/Git/hcrdgit4/M55M1/bsp/_Script"
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
@@ -1548,7 +1555,7 @@ GENERATE_HTMLHELP      = YES
 # written to the html output directory.
 # This tag requires that the tag GENERATE_HTMLHELP is set to YES.
 
-CHM_FILE               = "../NuMicro M251_252_254_256_258 Series CMSIS BSP Driver Reference Guide.chm"
+CHM_FILE               = "../NuMicro M55M1 Series CMSIS BSP Driver Reference Guide.chm"
 
 # The HHC_LOCATION tag can be used to specify the location (absolute path
 # including file name) of the HTML help compiler (hhc.exe). If non-empty,
@@ -2736,7 +2743,7 @@ PLANTUML_INCLUDE_PATH  =
 # Minimum value: 0, maximum value: 10000, default value: 50.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-DOT_GRAPH_MAX_NODES    = 75
+DOT_GRAPH_MAX_NODES    = 150
 
 # The MAX_DOT_GRAPH_DEPTH tag can be used to set the maximum depth of the graphs
 # generated by dot. A depth value of 3 means that only nodes reachable from the

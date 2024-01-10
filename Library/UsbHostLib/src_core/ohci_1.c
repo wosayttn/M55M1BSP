@@ -44,3 +44,4 @@ HC_DRV_T  ohci1_driver =
     ohci_rh_port_reset,      /* rthub_port_reset   */
     ohci_rh_polling,         /* rthub_polling      */
 };
+/// @endcond HIDDEN_SYMBOLS
