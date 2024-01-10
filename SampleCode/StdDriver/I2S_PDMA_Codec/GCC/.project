@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>I2S_Codec_PDMA</name>
+	<name>I2S_PDMA_Codec</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -69,7 +69,7 @@
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/uart.c</locationURI>
 		</link>
-        <link>
+		<link>
 			<name>Library/i2c.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/i2c.c</locationURI>
@@ -84,7 +84,7 @@
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/gpio.c</locationURI>
 		</link>
-    	<link>
+		<link>
 			<name>Library/pdma.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/pdma.c</locationURI>

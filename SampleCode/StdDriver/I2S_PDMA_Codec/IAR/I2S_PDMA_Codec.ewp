@@ -254,7 +254,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state>Pe068, Pe177, Pa082</state>
+                    <state>Pa082</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
@@ -338,7 +338,6 @@
                     <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Core\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc</state>
-                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\FatFs\source</state>
                     <state>$PROJ_DIR$\</state>
                 </option>
                 <option>
@@ -641,7 +640,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>I2S_WAVPLAYER.bin</state>
+                    <state>I2S_PDMA_Codec.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -688,7 +687,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>I2S_WAVPLAYER.out</state>
+                    <state>I2S_PDMA_Codec.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -985,7 +984,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>I2S_WAVPLAYER_import_lib.o</state>
+                    <state>I2S_PDMA_Codec_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1069,12 +1068,6 @@
         </file>
     </group>
     <group>
-        <name>FATFS</name>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\FatFs\source\ff.c</name>
-        </file>
-    </group>
-    <group>
         <name>Library</name>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\clk.c</name>
@@ -1095,9 +1088,6 @@
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sdh.c</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sys.c</name>
         </file>
         <file>
@@ -1107,19 +1097,7 @@
     <group>
         <name>User</name>
         <file>
-            <name>$PROJ_DIR$\..\diskio.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\isr.c</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\..\main.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\sdglue.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\wavplayer.c</name>
         </file>
     </group>
 </project>

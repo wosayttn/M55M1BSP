@@ -639,7 +639,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>SPIM_HYPER_RW_MemMap.bin</state>
+                    <state>SPIM_OctalMode_Flash.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -686,7 +686,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>SPIM_HYPER_RW_MemMap.out</state>
+                    <state>SPIM_OctalMode_Flash.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -983,7 +983,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>SPIM_HYPER_RW_MemMap_import_lib.o</state>
+                    <state>SPIM_OctalMode_Flash_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1075,13 +1075,10 @@
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\gpio.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\otfc.c</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\spim_hyper.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\spim.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sys.c</name>
@@ -1093,7 +1090,7 @@
     <group>
         <name>User</name>
         <file>
-            <name>$PROJ_DIR$\..\hyperram_code.c</name>
+            <name>$PROJ_DIR$\..\cmdcode.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\main.c</name>
