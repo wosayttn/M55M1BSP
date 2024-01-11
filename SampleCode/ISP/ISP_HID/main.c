@@ -33,8 +33,6 @@ uint32_t CLK_GetPLLClockFreq(void)
 
 int32_t SYS_Init(void)
 {
-    uint32_t u32TimeOutCnt = SystemCoreClock >> 1; /* 500ms time-out */
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -165,8 +163,7 @@ _APROM:
     FMC_SetVectorPageAddr(FMC_APROM_BASE);
     NVIC_SystemReset();
 
-    /* Trap the CPU */
-    while (1);
+    /* Code should not reach here ! */
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

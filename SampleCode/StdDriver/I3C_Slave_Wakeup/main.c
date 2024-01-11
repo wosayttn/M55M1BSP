@@ -416,23 +416,20 @@ int32_t main(void)
                             if ((u16Len == 1) && (pu8Data[0] == 0x55))
                             {
                                 u8InPWD = 1;
-                                pu8Data[0] = 0;
+                            }
+
+                            /* Set CmdQ and response data for a Master read request */
+                            memcpy((uint8_t *)(&g_TxBuf[0]), (uint8_t *)(&g_RxBuf[0]), u16Len);
+                            u8TID = (pu8Data[0] % 8);
+                            iErrCode = I3C_SetCmdQueueAndData(I3C0, u8TID, (uint32_t *)&g_TxBuf[0], u16Len);
+
+                            if (iErrCode != I3C_STS_NO_ERR)
+                            {
+                                printf("\tSet TX data error, %d.\n\n", iErrCode);
                             }
                             else
                             {
-                                /* Set CmdQ and response data for a Master read request */
-                                memcpy((uint8_t *)(&g_TxBuf[0]), (uint8_t *)(&g_RxBuf[0]), u16Len);
-                                u8TID = (pu8Data[0] % 8);
-                                iErrCode = I3C_SetCmdQueueAndData(I3C0, u8TID, (uint32_t *)&g_TxBuf[0], u16Len);
-
-                                if (iErrCode != I3C_STS_NO_ERR)
-                                {
-                                    printf("\tSet TX data error, %d.\n\n", iErrCode);
-                                }
-                                else
-                                {
-                                    printf("[ Set TX %d-bytes and TID %d for Master read request ]\n\n", u16Len, u8TID);
-                                }
+                                printf("[ Set TX %d-bytes and TID %d for Master read request ]\n\n", u16Len, u8TID);
                             }
                         }
                         else

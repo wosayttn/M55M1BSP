@@ -7,7 +7,7 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 
-/*!<Includes */
+#include <string.h>
 #include "M55M1_User.h"
 #include "usbd_User.h"
 #include "massstorage.h"
@@ -64,7 +64,7 @@ uint8_t g_au8InquiryID[36] =
     '1', '.', '0', '0'
 };
 
-/* code = 5Ah, Mode Sense */
+/* Code = 5Ah, Mode Sense */
 static uint8_t g_au8ModePage_3F[64] =
 {
     0x01, 0x0A, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00,

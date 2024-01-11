@@ -109,8 +109,8 @@ void CCAP_SetCroppingWindow(uint32_t u32VStart, uint32_t u32HStart, uint32_t u32
  * @brief      Stop Camera Capture Interface
  *
  * @param[in]  u32FrameComplete:
- *             - \ref TRUE:  Capture module disables the CCAP module automatically after a frame has been captured.
- *             - \ref FALSE: Stop Capture module now.
+ *             - \\ref TRUE:  Capture module disables the CCAP module automatically after a frame has been captured.
+ *             - \\ref FALSE: Stop Capture module now.
  *
  * @retval     CCAP_OK          CCAP operation OK.
  * @retval     CCAP_ERR_TIMEOUT CCAP operation abort due to timeout error.

@@ -9,11 +9,6 @@
 #ifndef __DATA_FLASH_PROG_H__
 #define __DATA_FLASH_PROG_H__
 
-
-#define SIZE_APROM 64  /* unit: KBytes*/
-
-#define BUFFER_PAGE_SIZE    512
-
 #define BYTE_PER_SEC        512
 #define RSVD_SEC_CNT        2
 #define ROOT_ENT_CNT        32

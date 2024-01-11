@@ -144,8 +144,8 @@ void SYS_Init(void)
 
 int SPIM_TrimRXCLKDLY(SPIM_T *spim)
 {
-    volatile uint32_t u32i = 0;
-    volatile uint8_t u8RdDelay = 0;
+    uint32_t u32i = 0;
+    uint8_t u8RdDelay = 0;
     uint8_t u8RdDelayIdx = 0;
     uint8_t u8RdDelayRes[0xF] = {0};
     uint32_t u32SAddr = 0x100;

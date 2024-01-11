@@ -142,8 +142,7 @@ _APROM:
     FMC_SetVectorPageAddr(FMC_APROM_BASE);
     NVIC_SystemReset();
 
-    /* Trap the CPU */
-    while (1);
+    /* Code should not reach here ! */
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

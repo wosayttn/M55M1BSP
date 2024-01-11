@@ -150,15 +150,6 @@ typedef struct
      * |        |          |0 = ISP operation is finished.
      * |        |          |1 = ISP is progressed.
      * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * @var FMC_T::DFBA
-     * Offset: 0x14  Data Flash Base Address
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |DFBA      |Data Flash Base Address
-     * |        |          |This register indicates Data Flash start address. It is a read only register.
-     * |        |          |The Data Flash is shared with APROM. the content of this register is loaded from CONFIG1
-     * |        |          |This register is valid when DFEN (CONFIG0[0]) =0 .
      * @var FMC_T::ISPSTS
      * Offset: 0x40  ISP Status Register
      * ---------------------------------------------------------------------------------------------------
@@ -392,7 +383,7 @@ typedef struct
      * |        |          |XOM page erase function status. If XOMPEF is set to 1, user needs to erase XOM region again.
      * |        |          |0 = Success.
      * |        |          |1 = Fail.
-     * @var FMC_T::APWPROT0
+     * @var FMC_T::APWPROT[2]
      * Offset: 0x110  APROM Write Protect Register0
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -451,7 +442,15 @@ typedef struct
     __I  uint32_t XOMR3STS;              /*!< [0x00dc] XOM Region 3 Status Register                                     */
     __I  uint32_t XOMSTS;                /*!< [0x00e0] XOM Status Register                                              */
     __I  uint32_t RESERVE5[11];
-    __IO uint32_t APWPROT[2];            /*!< [0x0110-0x0114] APROM Write Protect Register 0-1                          */
+    union
+    {
+        __IO uint32_t APWPROT[2];       /*!< [0x0110-0x0114] APROM Write Protect Register 0-1                           */
+        struct
+        {
+            __IO uint32_t APWPROT0;     /*!< [0x0110] APROM Write Protect Register 0                                    */
+            __IO uint32_t APWPROT1;     /*!< [0x0114] APROM Write Protect Register 1                                    */
+        };
+    };
     __IO uint32_t APWPKEEP;              /*!< [0x0118] APROM Write Protect Keep Register                                */
     __IO uint32_t SCACT;                 /*!< [0x011C] APROM Secure Conceal Active Register                             */
 } FMC_T;

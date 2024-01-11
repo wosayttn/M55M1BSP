@@ -177,10 +177,10 @@ int32_t DPM_GetDebugLock(uint32_t u32DPM)
 
 /**
   * @brief      Update DPM Password
-  * @param[in]  u32DPM        Select DPM module. Valid values are:
+  * @param[in]  u32DPM   Select DPM module. Valid values are:
   *                           - \ref SECURE_DPM
   *                           - \ref NONSECURE_DPM
-  * @param[in]  au32Password  Password length is 256 bits.
+  * @param[in]  au32Pwd  Password with 256 bits length.
   * @retval     0   No password is updated. The password update count has reached the maximum value.
   * @retval     1   Password update is successful.
   * @retval     -1  DPM time-our error
@@ -287,6 +287,7 @@ int32_t DPM_SetPasswordUpdate(uint32_t u32DPM, uint32_t au32Pwd[])
   * @param[in]  u32DPM  Select DPM module. Valid values are:
   *                     - \ref SECURE_DPM
   *                     - \ref NONSECURE_DPM
+  * @param[in]  au32Pwd  Compared password with 256 bits length.
   * @retval     0   The password comparison can be proccessed.
   * @retval     1   No more password comparison can be proccessed. \n
   *                 The password comparison fail times has reached the maximum value.

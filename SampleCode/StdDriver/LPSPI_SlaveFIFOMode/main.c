@@ -30,7 +30,7 @@ void LPSPI_Init(void);
 /* ------------- */
 int main(void)
 {
-    volatile uint32_t u32TxDataCount, u32RxDataCount;
+    uint32_t u32TxDataCount, u32RxDataCount;
     uint32_t u32TimeOutCount;
 
     /* Unlock protected registers */

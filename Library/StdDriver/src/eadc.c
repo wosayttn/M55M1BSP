@@ -34,8 +34,6 @@
   */
 void EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
 {
-    /* Enable EADC Boost mode */
-//    outpw(((uint32_t)eadc) + 0xFF4, inpw(((uint32_t)eadc) + 0xFF4) | BIT1);
 
     eadc->CTL &= (~EADC_CTL_DIFFEN_Msk);
 

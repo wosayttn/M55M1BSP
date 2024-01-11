@@ -351,9 +351,7 @@ def fix_gcc_folder():
             if dir.upper() == 'GCC':
                 if os.path.isdir(os.path.join(dirPath, 'GCC', '.metadata')):
                     shutil.rmtree(dirPath + "\\GCC\\.metadata")
-                prj_cnt = 0
-                for file in glob.glob(dirPath + r"\\GCC\\*\\.project"):
-                    prj_cnt += 1
+                prj_cnt = len(glob.glob(dirPath + r"\\GCC\\*\\.project"))
                 idx = [m.start() for m in re.finditer(r"\\", dirPath)]
                 dirname = dirPath[idx[-1] + 1 :]
                 for subd in next(os.walk(os.path.join(dirPath, 'GCC')))[1]:  # check directory child only
@@ -488,20 +486,16 @@ def check_prj():
         # Check Nu_Link_Driver.ini exist and ChipName setting is correct
         for dir in dirNames:
             if dir.upper() == 'KEIL':
-                prj_cnt = 0
-                for file in glob.glob(dirPath + r"\\Keil" + r"\\*.uvprojx"):
-                    prj_cnt += 1
+                prj_cnt = len(glob.glob(dirPath + r"\\Keil" + r"\\*.uvprojx"))
                 if prj_cnt == 0:
                     f.write("[Error] " + os.path.join(dirPath, 'Keil') + ": uvprojx file is missing.\n")
                 elif prj_cnt > 1:
-                    f.write("[Warning] " + os.path.join(dirPath, 'Keil') + " more than one *.uvprojx\n")
-                cnt = 0
-                for file in glob.glob(dirPath + r"\\Keil" + r"\\*.uvoptx"):
-                    cnt += 1
+                    f.write("[Warning] " + os.path.join(dirPath, 'Keil') + ": More than one uvprojx file.\n")
+                cnt = len(glob.glob(dirPath + r"\\Keil" + r"\\*.uvoptx"))
                 if cnt == 0 or cnt < prj_cnt:
                     f.write("[Error] " + os.path.join(dirPath, 'Keil') + ": uvoptx file is missing.\n")
                 elif cnt > 1:
-                    f.write("[Warning] " + os.path.join(dirPath, 'Keil') + " more than one *.uvoptx\n")
+                    f.write("[Warning] " + os.path.join(dirPath, 'Keil') + ": More than one uvoptx file.\n")
                 file = os.path.join(dirPath, 'Keil', 'Nu_Link_Driver.ini')
                 if os.path.isfile(file) == False:
                     f.write("[Error] " + os.path.join(dirPath, 'Keil') + ": Nu_Link_Driver.ini is missing.\n")
@@ -610,28 +604,26 @@ def check_prj():
         # Check eww, ewp, ewd project files exist
         for dir in dirNames:
             if dir.upper() == 'IAR':
-                cnt = 0
-                for file in glob.glob(dirPath + r"\\IAR" + r"\\*.eww"):
-                    cnt += 1
+                cnt = len(glob.glob(dirPath + r"\\IAR" + r"\\*.eww"))
                 if cnt == 0:
-                    # Maybe multiple projects share one eww file
-                    f.write("[Warning] " + os.path.join(dirPath, 'IAR') + ": eww file is missing.\n")
+                    # search shared eww file in upper folder
+                    idx = [m.start() for m in re.finditer(r"\\", dirPath)]
+                    dirPath2 = dirPath[0 : idx[-1]]
+                    cnt += len(glob.glob(dirPath2 + r"\\*.eww"))
+                if cnt == 0:
+                    f.write("[Error] " + os.path.join(dirPath, 'IAR') + ": eww file is missing.\n")
                 elif cnt > 1:
-                    f.write("[Warning] " + os.path.join(dirPath, 'IAR') + " more than one *.eww\n")
-                prj_cnt = 0
-                for file in glob.glob(dirPath + r"\\IAR" + r"\\*.ewp"):
-                    prj_cnt += 1
+                    f.write("[Warning] " + os.path.join(dirPath, 'IAR') + ": More than one eww file.\n")
+                prj_cnt = len(glob.glob(dirPath + r"\\IAR" + r"\\*.ewp"))
                 if prj_cnt == 0:
                     f.write("[Error] " + os.path.join(dirPath, 'IAR') + ": ewp file is missing.\n")
                 elif prj_cnt > 1:
-                    f.write("[Warning] " + os.path.join(dirPath, 'IAR') + " more than one *.ewp\n")
-                cnt = 0
-                for file in glob.glob(dirPath + r"\\IAR" + r"\\*.ewd"):
-                    cnt += 1
+                    f.write("[Warning] " + os.path.join(dirPath, 'IAR') + ": More than one ewp file.\n")
+                cnt = len(glob.glob(dirPath + r"\\IAR" + r"\\*.ewd"))
                 if cnt == 0:
                     f.write("[Error] " + os.path.join(dirPath, 'IAR') + ": ewd file is missing.\n")
                 elif cnt > 1:
-                    f.write("[Warning] " + os.path.join(dirPath, 'IAR') + " more than one *.ewd\n")
+                    f.write("[Warning] " + os.path.join(dirPath, 'IAR') + ": More than one ewd file.\n")
 
         # Check ewp file setting
         for file in fnmatch.filter(fileNames, '*.ewp'):
@@ -672,7 +664,7 @@ def check_prj():
                         for opt in e.findall('option'):
                             if opt.find('name').text == "CCDiagSuppress":
                                 if opt.find('state').text != None:
-                                    f.write("[Warning] " + os.path.join(dirPath, file) + ": Found ICCARM suppress setting (" + opt.find('state').text + "), not recommended.\n")
+                                    f.write("[Warning] " + os.path.join(dirPath, file) + ": ICCARM suppress setting (" + opt.find('state').text + "), not recommended.\n")
                             if opt.find('name').text == "CCOptLevel":
                                 if int(opt.find('state').text) < 3:
                                     f.write("[Warning] " + os.path.join(dirPath, file) + ": C optimized level setting (" + opt.find('state').text + ") is not at least -O2.\n")
@@ -716,11 +708,16 @@ def check_prj():
             idx = [m.start() for m in re.finditer(r"\\", dirPath)]
             dirname = dirPath[idx[-2] + 1 : idx[-1]]
             if filename != dirname:
-                sys.stdout.write('.')
-                sys.stdout.flush()
-                f.write("[Auto-Fixed] " + os.path.join(dirPath, file) + ": eww name differs from sample name (" + dirname + ").\n")
-                os.rename(os.path.join(dirPath, file), os.path.join(dirPath, dirname + ".eww"))
-                file = dirname + ".eww"
+                dirname2 = dirPath[idx[-1] + 1 : ]
+                if len(glob.glob(dirPath + r"\\*\\IAR")) > 0:
+                    # suppose eww is shared
+                    dirname = dirname2
+                if filename != dirname:
+                    sys.stdout.write('.')
+                    sys.stdout.flush()
+                    f.write("[Auto-Fixed] " + os.path.join(dirPath, file) + ": eww name differs from sample name (" + dirname + ").\n")
+                    os.rename(os.path.join(dirPath, file), os.path.join(dirPath, dirname + ".eww"))
+                    file = dirname + ".eww"
             if debugLevel:
                 print("Checking " + os.path.join(dirPath, file))
             tree = ET.parse(os.path.join(dirPath, file))

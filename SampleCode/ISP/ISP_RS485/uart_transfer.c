@@ -26,6 +26,7 @@ NVT_ITCM void UART1_IRQHandler(void)
 {
     /*----- Determine interrupt source -----*/
     uint32_t u32IntSrc = UART1->INTSTS;
+    uint8_t  u8Data;
 
     /* RDA FIFO interrupt and RDA timeout interrupt */
     if (u32IntSrc & (UART_INTSTS_RXTOIF_Msk | UART_INTSTS_RDAIF_Msk))
@@ -33,7 +34,8 @@ NVT_ITCM void UART1_IRQHandler(void)
         /* Read data until RX FIFO is empty or data is over maximum packet size */
         while (((UART1->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0) && (g_u8bufhead < MAX_PKT_SIZE))
         {
-            g_au8uart_rcvbuf[g_u8bufhead++] = (uint8_t)UART1->DAT;
+            u8Data = (uint8_t)UART1->DAT;
+            g_au8uart_rcvbuf[g_u8bufhead++] = u8Data;
         }
     }
 

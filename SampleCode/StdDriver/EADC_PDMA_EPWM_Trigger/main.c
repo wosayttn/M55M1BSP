@@ -28,6 +28,7 @@ NVT_ITCM void EADC00_IRQHandler(void)
 {
     g_u32AdcIntFlag = 1;
     EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);      /* Clear the A/D ADINT0 interrupt flag */
+
 }
 
 NVT_ITCM void PDMA0_IRQHandler(void)
@@ -130,16 +131,16 @@ void SYS_Init(void)
 void EPWM0_Init()
 {
     /* Set EPWM0 timer clock prescaler */
-    EPWM_SET_PRESCALER(EPWM0, 0, 0);
+    EPWM_SET_PRESCALER(EPWM0, 0, 10);
 
     /* Set up counter type */
     EPWM0->CTL1 &= ~EPWM_CTL1_CNTTYPE0_Msk;
 
     /* Set EPWM0 timer duty */
-    EPWM_SET_CMR(EPWM0, 0, 108);
+    EPWM_SET_CMR(EPWM0, 0, 360);
 
     /* Set EPWM0 timer period */
-    EPWM_SET_CNR(EPWM0, 0, 216);
+    EPWM_SET_CNR(EPWM0, 0, 720);
 
     /* EPWM period point trigger ADC enable */
     EPWM_EnableADCTrigger(EPWM0, 0, EPWM_TRG_ADC_EVEN_PERIOD);
@@ -202,7 +203,7 @@ void EADC_FunctionTest()
 
         printf("Select input mode:\n");
         printf("  [1] Single end input (channel 1 only)\n");
-        printf("  [2] Differential input (channel pair 7: channel 14 and 15)\n");
+        printf("  [2] Differential input (channel pair 4: channel 8 and 9)\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
 

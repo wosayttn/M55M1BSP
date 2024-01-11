@@ -158,7 +158,7 @@ void EADC_FunctionTest()
             EADC_ENABLE_SAMPLE_MODULE_INT(EADC0, 0, BIT0);
             NVIC_EnableIRQ(EADC00_IRQn);
 
-            printf("Conversion result of channel 2:\n");
+            printf("Conversion result of channel 1:\n");
 
             /* Reset the ADC indicator and enable Timer0 counter */
             g_u32AdcIntFlag = 0;
