@@ -7,6 +7,7 @@
  ******************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "NuMicro.h"
 #include "DMICRecord.h"
@@ -298,10 +299,10 @@ int32_t DMICRecord_Init(
     DMIC_ResetDSP(DMIC0);  //SWRST
 
     //DMIC Gain Setting
-    DMIC_SetDSPGainVolume(DMIC0, DMIC_CTL_CHEN0_Msk, 48);//+48dB
-    DMIC_SetDSPGainVolume(DMIC0, DMIC_CTL_CHEN1_Msk, 48);//+48dB
-    DMIC_SetDSPGainVolume(DMIC0, DMIC_CTL_CHEN2_Msk, 48);//+48dB
-    DMIC_SetDSPGainVolume(DMIC0, DMIC_CTL_CHEN3_Msk, 48);//+48dB
+    DMIC_SetDSPGainVolume(DMIC0, DMIC_CTL_CHEN0_Msk, 24);//+36db
+    DMIC_SetDSPGainVolume(DMIC0, DMIC_CTL_CHEN1_Msk, 24);//+36dB
+    DMIC_SetDSPGainVolume(DMIC0, DMIC_CTL_CHEN2_Msk, 24);//+36dB
+    DMIC_SetDSPGainVolume(DMIC0, DMIC_CTL_CHEN3_Msk, 24);//+36dB
 
     // Setup MIC(RX) PDMA buffer description
     s_sLPPDMA_DMIC_SCT[0].CTL = (((u32BlockSamples * u32Channels) - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_16 | PDMA_SAR_FIX | PDMA_DAR_INC | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
