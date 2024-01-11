@@ -180,7 +180,7 @@ uint32_t KS_GetKeyWordCnt(uint32_t u32Meta)
 
 /**
   * @brief      Write key to key store
-* @param[in]    eMemType    The memory type. It could be:
+  * @param[in]  eMemType    The memory type. It could be:
                             \ref KS_SRAM
                             \ref KS_FLASH
   * @param[in]  u32Meta     The metadata of the key. It could be the combine of
@@ -214,7 +214,6 @@ uint32_t KS_GetKeyWordCnt(uint32_t u32Meta)
                                 \ref KS_META_NONSECURE
 
   * @param[out] au32Key     The buffer to store the key
-  * @param[in]  u32WordCnt  The word (32-bit) count of the key buffer size
   * @return     Index of the key. Failed when index < 0.
   * @details    This function is used to write a key to key store.
   */

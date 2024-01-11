@@ -24,365 +24,171 @@
     Memory Mapped Structure for KDF Controller
     @{
 */
- 
+
 typedef struct
 {
-/**
- * @var KDF_T::CTL
- * Offset: 0x00  KDF Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |START     |KDF Start
- * |        |          |0 = No operation.
- * |        |          |1 = Start the operation.
- * |[1]     |NEXT      |KDF Next Start
- * |        |          |0 = No effect.
- * |        |          |1 = Start KDF to generate the next partial key only when BUSY is 0. BUSY flag will be set.
- * |[2]     |FINISH    |KDF Next Finish
- * |        |          |0 = No effect.
- * |        |          |1 = Finish generating the next partial key.
- * |[4]     |MODE      |KDF Mode Selection
- * |        |          |0 = HKDF (RFC 5869).
- * |        |          |1 = KBKDF (NIST SP 800-108).
- * |[9:8]   |KEYINSEL  |KDF Input Key Source Selection
- * |        |          |00 = KEYIN from KDF_KEYIN register.
- * |        |          |01 = KEYIN from NVM (Flash/RRAM).
- * |        |          |1x = KEYIN from PUF.
- * |        |          |Others = reserved.
- * |[10]    |SALTSEL   |KDF Salt Selection
- * |        |          |0 = SALT from KDF_SALT register.
- * |        |          |1 = SALT from random value.
- * |[11]    |LBSEL     |KDF Label Selection
- * |        |          |0 = LABEL from KDF_LABEL register.
- * |        |          |1 = LABEL from random value.
- * |[12]    |CTXTSEL   |KDF Context Selection
- * |        |          |0 = CONTEXT from KDF_CONTEXT register.
- * |        |          |1 = CONTEXT from random value.
- * @var KDF_T::STS
- * Offset: 0x04  KDF Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |BUSY      |KDF Busy Flag
- * |        |          |0 = KDF is idle or finished.
- * |        |          |1 = KDF is busy.
- * |[1]     |HMACBUSY  |HMAC Busy Flag
- * |        |          |0 = HMAC engine is idle or finished.
- * |        |          |1 = HMAC engine is busy.
- * |[16]    |KSERR     |KDF Access Key Store Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Access Key Store failed.
- * |[17]    |NEXTERR   |KDF Next Generation Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = NEXT(KS_CTL[1]) times is larger than KLEN/256.
- * @var KDF_T::KLEN
- * Offset: 0x08  KDF Output Key Length Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |KLEN      |Output Key Length
- * |        |          |The maxinum is 0xFF00 (65280-bit).
- * |        |          |If KLEN is 0 or larger than maximum, KDF will not execute.
- * @var KDF_T::KEYIN0
- * Offset: 0x40  KDF Input Key Word 0 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYIN     |Input Key
- * |        |          |For RFC 5869, input keying material is to be filled in KEYIN.
- * |        |          |For NIST SP 800-108, KI is to be filled in KEYIN.
- * @var KDF_T::KEYIN1
- * Offset: 0x44  KDF Input Key Word 1 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYIN     |Input Key
- * |        |          |For RFC 5869, input keying material is to be filled in KEYIN.
- * |        |          |For NIST SP 800-108, KI is to be filled in KEYIN.
- * @var KDF_T::KEYIN2
- * Offset: 0x48  KDF Input Key Word 2 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYIN     |Input Key
- * |        |          |For RFC 5869, input keying material is to be filled in KEYIN.
- * |        |          |For NIST SP 800-108, KI is to be filled in KEYIN.
- * @var KDF_T::KEYIN3
- * Offset: 0x4C  KDF Input Key Word 3 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYIN     |Input Key
- * |        |          |For RFC 5869, input keying material is to be filled in KEYIN.
- * |        |          |For NIST SP 800-108, KI is to be filled in KEYIN.
- * @var KDF_T::KEYIN4
- * Offset: 0x50  KDF Input Key Word 4 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYIN     |Input Key
- * |        |          |For RFC 5869, input keying material is to be filled in KEYIN.
- * |        |          |For NIST SP 800-108, KI is to be filled in KEYIN.
- * @var KDF_T::KEYIN5
- * Offset: 0x54  KDF Input Key Word 5 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYIN     |Input Key
- * |        |          |For RFC 5869, input keying material is to be filled in KEYIN.
- * |        |          |For NIST SP 800-108, KI is to be filled in KEYIN.
- * @var KDF_T::KEYIN6
- * Offset: 0x58  KDF Input Key Word 6 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYIN     |Input Key
- * |        |          |For RFC 5869, input keying material is to be filled in KEYIN.
- * |        |          |For NIST SP 800-108, KI is to be filled in KEYIN.
- * @var KDF_T::KEYIN7
- * Offset: 0x5C  KDF Input Key Word 7 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYIN     |Input Key
- * |        |          |For RFC 5869, input keying material is to be filled in KEYIN.
- * |        |          |For NIST SP 800-108, KI is to be filled in KEYIN.
- * @var KDF_T::KEYOUT0
- * Offset: 0x80  KDF Output Key Word 0 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYOUT    |Output Key
- * |        |          |These registers will be cleared if CPU completes the reading key.
- * @var KDF_T::KEYOUT1
- * Offset: 0x84  KDF Output Key Word 1 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYOUT    |Output Key
- * |        |          |These registers will be cleared if CPU completes the reading key.
- * @var KDF_T::KEYOUT2
- * Offset: 0x88  KDF Output Key Word 2 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYOUT    |Output Key
- * |        |          |These registers will be cleared if CPU completes the reading key.
- * @var KDF_T::KEYOUT3
- * Offset: 0x8C  KDF Output Key Word 3 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYOUT    |Output Key
- * |        |          |These registers will be cleared if CPU completes the reading key.
- * @var KDF_T::KEYOUT4
- * Offset: 0x90  KDF Output Key Word 4 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYOUT    |Output Key
- * |        |          |These registers will be cleared if CPU completes the reading key.
- * @var KDF_T::KEYOUT5
- * Offset: 0x94  KDF Output Key Word 5 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYOUT    |Output Key
- * |        |          |These registers will be cleared if CPU completes the reading key.
- * @var KDF_T::KEYOUT6
- * Offset: 0x98  KDF Output Key Word 6 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYOUT    |Output Key
- * |        |          |These registers will be cleared if CPU completes the reading key.
- * @var KDF_T::KEYOUT7
- * Offset: 0x9C  KDF Output Key Word 7 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYOUT    |Output Key
- * |        |          |These registers will be cleared if CPU completes the reading key.
- * @var KDF_T::SALT0
- * Offset: 0x100  KDF Salt 0 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |SALT      |Salt
- * |        |          |These registers are for RFC 5869.
- * @var KDF_T::SALT1
- * Offset: 0x104  KDF Salt 1 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |SALT      |Salt
- * |        |          |These registers are for RFC 5869.
- * @var KDF_T::SALT2
- * Offset: 0x108  KDF Salt 2 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |SALT      |Salt
- * |        |          |These registers are for RFC 5869.
- * @var KDF_T::SALT3
- * Offset: 0x10C  KDF Salt 3 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |SALT      |Salt
- * |        |          |These registers are for RFC 5869.
- * @var KDF_T::SALT4
- * Offset: 0x110  KDF Salt 4 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |SALT      |Salt
- * |        |          |These registers are for RFC 5869.
- * @var KDF_T::SALT5
- * Offset: 0x114  KDF Salt 5 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |SALT      |Salt
- * |        |          |These registers are for RFC 5869.
- * @var KDF_T::SALT6
- * Offset: 0x118  KDF Salt 6 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |SALT      |Salt
- * |        |          |These registers are for RFC 5869.
- * @var KDF_T::SALT7
- * Offset: 0x11C  KDF Salt 7 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |SALT      |Salt
- * |        |          |These registers are for RFC 5869.
- * @var KDF_T::LABEL0
- * Offset: 0x200  KDF Label 0 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |LABEL     |Label
- * |        |          |For RFC 5869, partial info is to be filled in LABEL according to Figure 1.1-2.
- * |        |          |For NIST SP 800-108, Label is to be filled in LABEL.
- * @var KDF_T::LABEL1
- * Offset: 0x204  KDF Label 1 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |LABEL     |Label
- * |        |          |For RFC 5869, partial info is to be filled in LABEL according to Figure 1.1-2.
- * |        |          |For NIST SP 800-108, Label is to be filled in LABEL.
- * @var KDF_T::LABEL2
- * Offset: 0x208  KDF Label 2 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |LABEL     |Label
- * |        |          |For RFC 5869, partial info is to be filled in LABEL according to Figure 1.1-2.
- * |        |          |For NIST SP 800-108, Label is to be filled in LABEL.
- * @var KDF_T::CTXT0
- * Offset: 0x280  KDF Context 0 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |CTXT      |Context
- * |        |          |For RFC 5869, partial info is to be filled in CTXT according to Figure 1.1-2.
- * |        |          |For NIST SP 800-108, Context is to be filled in CTXT.
- * @var KDF_T::CTXT1
- * Offset: 0x284  KDF Context 1 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |CTXT      |Context
- * |        |          |For RFC 5869, partial info is to be filled in CTXT according to Figure 1.1-2.
- * |        |          |For NIST SP 800-108, Context is to be filled in CTXT.
- * @var KDF_T::CTXT2
- * Offset: 0x288  KDF Context 2 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |CTXT      |Context
- * |        |          |For RFC 5869, partial info is to be filled in CTXT according to Figure 1.1-2.
- * |        |          |For NIST SP 800-108, Context is to be filled in CTXT.
- * @var KDF_T::CTXT3
- * Offset: 0x28C  KDF Context 3 Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |CTXT      |Context
- * |        |          |For RFC 5869, partial info is to be filled in CTXT according to Figure 1.1-2.
- * |        |          |For NIST SP 800-108, Context is to be filled in CTXT.
- * @var KDF_T::KSCTL
- * Offset: 0xF00  KDF Output Key Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[16]    |TRUST     |Write Key Trust Selection Bit
- * |        |          |0 = Set written key as the non-secure key.
- * |        |          |1 = Set written key as the secure key.
- * |[17]    |PRIV      |Write Key Priviledge Selection Bit
- * |        |          |0 = Set written key as the non-priviledged key.
- * |        |          |1 = Set written key as the priviledged key.
- * |[21]    |WDST      |Write Key Destination
- * |        |          |0 = Key is written to KDF_KEYOUT register.
- * |        |          |1 = Key is written to Key Store.
- * |[23:22] |WSDST     |Write Key Store Destination
- * |        |          |00 = Key is written to the SRAM of Key Store.
- * |        |          |01 = Key is written to the Flash of Key Store.
- * |        |          |Others = reserved.
- * |[26:24] |OWNER     |Write Key Owner Selection Bits
- * |        |          |000 = Only for AES use.
- * |        |          |001 = Only for HMAC engine use.
- * |        |          |100 = Only for ECC engine use.
- * |        |          |101 = Only for CPU engine use.
- * |        |          |110 = Only for ChaCha engine use.
- * |        |          |Others = reserved.
- * @var KDF_T::KSSTS
- * Offset: 0xF04  KDF Output Key Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |NUM       |Key Number
- * |        |          |The key number is generated by Key Store
- * @var KDF_T::KSSIZE
- * Offset: 0xF08  KDF Output Key Size Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[3:0]   |SIZE      |Key Size Selection Bits
- * |        |          |0000 = 128 bits.
- * |        |          |0001 = 163 bits.
- * |        |          |0010 = 192 bits.
- * |        |          |0011 = 224 bits.
- * |        |          |0100 = 233 bits.
- * |        |          |0101 = 255 bits.
- * |        |          |0110 = 256 bits.
- * |        |          |0111 = 283 bits.
- * |        |          |1000 = 384 bits.
- * |        |          |1001 = 409 bits.
- * |        |          |1010 = 512 bits.
- * |        |          |1011 = 521 bits.
- * |        |          |1100 = 571 bits.
- * |        |          |Others = reserved.
- * @var KDF_T::VERSION
- * Offset: 0xFFC  KDF RTL Design Version Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |MINOR     |RTL Design Minor Version Number
- * |        |          |Minor version number is dependent on moduleu2019s ECO version control.
- * |        |          |0x0000 (Current Minor Version Number)
- * |[23:16] |SUB       |RTL Design Sub Version Number
- * |        |          |Sub version number is correlated to moduleu2019s key feature.
- * |        |          |0x01 (Current Sub Version Number)
- * |[31:24] |MAJOR     |RTL Design Major Version Number
- * |        |          |Major version number is correlated to Product Line.
- * |        |          |0x01 (Current Major Version Number)
- */
+    /**
+     * @var KDF_T::CTL
+     * Offset: 0x00  KDF Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |START     |KDF Start
+     * |        |          |0 = No operation.
+     * |        |          |1 = Start the operation.
+     * |[1]     |NEXT      |KDF Next Start
+     * |        |          |0 = No effect.
+     * |        |          |1 = Start KDF to generate the next partial key only when BUSY is 0. BUSY flag will be set.
+     * |[2]     |FINISH    |KDF Next Finish
+     * |        |          |0 = No effect.
+     * |        |          |1 = Finish generating the next partial key.
+     * |[4]     |MODE      |KDF Mode Selection
+     * |        |          |0 = HKDF (RFC 5869).
+     * |        |          |1 = KBKDF (NIST SP 800-108).
+     * |[9:8]   |KEYINSEL  |KDF Input Key Source Selection
+     * |        |          |00 = KEYIN from KDF_KEYIN register.
+     * |        |          |01 = KEYIN from NVM (Flash/RRAM).
+     * |        |          |1x = KEYIN from PUF.
+     * |        |          |Others = reserved.
+     * |[10]    |SALTSEL   |KDF Salt Selection
+     * |        |          |0 = SALT from KDF_SALT register.
+     * |        |          |1 = SALT from random value.
+     * |[11]    |LBSEL     |KDF Label Selection
+     * |        |          |0 = LABEL from KDF_LABEL register.
+     * |        |          |1 = LABEL from random value.
+     * |[12]    |CTXTSEL   |KDF Context Selection
+     * |        |          |0 = CONTEXT from KDF_CONTEXT register.
+     * |        |          |1 = CONTEXT from random value.
+     * @var KDF_T::STS
+     * Offset: 0x04  KDF Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |BUSY      |KDF Busy Flag
+     * |        |          |0 = KDF is idle or finished.
+     * |        |          |1 = KDF is busy.
+     * |[1]     |HMACBUSY  |HMAC Busy Flag
+     * |        |          |0 = HMAC engine is idle or finished.
+     * |        |          |1 = HMAC engine is busy.
+     * |[16]    |KSERR     |KDF Access Key Store Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Access Key Store failed.
+     * |[17]    |NEXTERR   |KDF Next Generation Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = NEXT(KS_CTL[1]) times is larger than KLEN/256.
+     * @var KDF_T::KLEN
+     * Offset: 0x08  KDF Output Key Length Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |KLEN      |Output Key Length
+     * |        |          |The maxinum is 0xFF00 (65280-bit).
+     * |        |          |If KLEN is 0 or larger than maximum, KDF will not execute.
+     * @var KDF_T::KEYIN[8]
+     * Offset: 0x40 ~ 0x5C  KDF Input Key Word 0 ~ 7 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |KEYIN     |Input Key
+     * |        |          |For RFC 5869, input keying material is to be filled in KEYIN.
+     * |        |          |For NIST SP 800-108, KI is to be filled in KEYIN.
+     * @var KDF_T::KEYOUT[8]
+     * Offset: 0x80 ~ 0x9C  KDF Output Key Word 0 ~ 7 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |KEYOUT    |Output Key
+     * |        |          |These registers will be cleared if CPU completes the reading key.
+     * @var KDF_T::SALT[8]
+     * Offset: 0x100 ~ 0x11C  KDF Salt 0 ~ 7 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |SALT      |Salt
+     * |        |          |These registers are for RFC 5869.
+     * @var KDF_T::LABEL[3]
+     * Offset: 0x200 ~ 0x208  KDF Label 0 ~ 2 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |LABEL     |Label
+     * |        |          |For RFC 5869, partial info is to be filled in LABEL according to Figure 1.1-2.
+     * |        |          |For NIST SP 800-108, Label is to be filled in LABEL.
+     * @var KDF_T::CTXT[4]
+     * Offset: 0x280 ~ 0x28C  KDF Context 0 ~ 3 Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |CTXT      |Context
+     * |        |          |For RFC 5869, partial info is to be filled in CTXT according to Figure 1.1-2.
+     * |        |          |For NIST SP 800-108, Context is to be filled in CTXT.
+     * @var KDF_T::KSCTL
+     * Offset: 0xF00  KDF Output Key Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[16]    |TRUST     |Write Key Trust Selection Bit
+     * |        |          |0 = Set written key as the non-secure key.
+     * |        |          |1 = Set written key as the secure key.
+     * |[17]    |PRIV      |Write Key Priviledge Selection Bit
+     * |        |          |0 = Set written key as the non-priviledged key.
+     * |        |          |1 = Set written key as the priviledged key.
+     * |[21]    |WDST      |Write Key Destination
+     * |        |          |0 = Key is written to KDF_KEYOUT register.
+     * |        |          |1 = Key is written to Key Store.
+     * |[23:22] |WSDST     |Write Key Store Destination
+     * |        |          |00 = Key is written to the SRAM of Key Store.
+     * |        |          |01 = Key is written to the Flash of Key Store.
+     * |        |          |Others = reserved.
+     * |[26:24] |OWNER     |Write Key Owner Selection Bits
+     * |        |          |000 = Only for AES use.
+     * |        |          |001 = Only for HMAC engine use.
+     * |        |          |100 = Only for ECC engine use.
+     * |        |          |101 = Only for CPU engine use.
+     * |        |          |110 = Only for ChaCha engine use.
+     * |        |          |Others = reserved.
+     * @var KDF_T::KSSTS
+     * Offset: 0xF04  KDF Output Key Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |NUM       |Key Number
+     * |        |          |The key number is generated by Key Store
+     * @var KDF_T::KSSIZE
+     * Offset: 0xF08  KDF Output Key Size Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[3:0]   |SIZE      |Key Size Selection Bits
+     * |        |          |0000 = 128 bits.
+     * |        |          |0001 = 163 bits.
+     * |        |          |0010 = 192 bits.
+     * |        |          |0011 = 224 bits.
+     * |        |          |0100 = 233 bits.
+     * |        |          |0101 = 255 bits.
+     * |        |          |0110 = 256 bits.
+     * |        |          |0111 = 283 bits.
+     * |        |          |1000 = 384 bits.
+     * |        |          |1001 = 409 bits.
+     * |        |          |1010 = 512 bits.
+     * |        |          |1011 = 521 bits.
+     * |        |          |1100 = 571 bits.
+     * |        |          |Others = reserved.
+     * @var KDF_T::VERSION
+     * Offset: 0xFFC  KDF RTL Design Version Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |MINOR     |RTL Design Minor Version Number
+     * |        |          |Minor version number is dependent on moduleu2019s ECO version control.
+     * |        |          |0x0000 (Current Minor Version Number)
+     * |[23:16] |SUB       |RTL Design Sub Version Number
+     * |        |          |Sub version number is correlated to moduleu2019s key feature.
+     * |        |          |0x01 (Current Sub Version Number)
+     * |[31:24] |MAJOR     |RTL Design Major Version Number
+     * |        |          |Major version number is correlated to Product Line.
+     * |        |          |0x01 (Current Major Version Number)
+     */
     __IO uint32_t CTL;                   /*!< [0x0000] KDF Control Register                                             */
     __I  uint32_t STS;                   /*!< [0x0004] KDF Status Register                                              */
     __IO uint32_t KLEN;                  /*!< [0x0008] KDF Output Key Length Register                                   */

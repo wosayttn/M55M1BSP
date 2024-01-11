@@ -255,7 +255,7 @@ typedef enum
  * @brief       Get peripheral secure/non-secure attribution
  *
  * @param[in]   ePeriIdx   The secure/non-secure attribution of specified module.
-                           The possible value could be refer to \ref NSATTR.
+                           The possible value could be refer to \ref E_SCU_PERI_IDX.
  *
  * @return      The secure/non-secure attribution of specified peripheral.
  * @retval      0 The peripheral is secure
@@ -344,19 +344,42 @@ typedef enum
 /**
   * @brief    Get secure violation interrupt status
   *
-  * @param    mask  The interrupt flag mask bit
-  *
-  * @return   The value of SCU_SVINTSTS0 register
-  *
-  * @details  Return interrupt flag of SCU_SVINTSTS0 register.
-  *
+  * @param    Available interrupt flag status
+  *           - \ref eSCU_INT_IDX_APB0  \ref eSCU_INT_IDX_APB1  \ref eSCU_INT_IDX_APB2
+  *           - \ref eSCU_INT_IDX_APB3  \ref eSCU_INT_IDX_APB4  \ref eSCU_INT_IDX_APB5
+  *           - \ref eSCU_INT_IDX_D0PPC0  \ref eSCU_INT_IDX_D1PPC0
+  *           - \ref eSCU_INT_IDX_D1PPC1  \ref eSCU_INT_IDX_D2PPC0
+  *           - \ref eSCU_INT_IDX_EBI
+  *           - \ref eSCU_INT_IDX_GDMA
+  *           - \ref eSCU_INT_IDX_PDMA0  \ref eSCU_INT_IDX_PDMA1
+  *           - \ref eSCU_INT_IDX_USBH0  \ref eSCU_INT_IDX_HSUSBH
+  *           - \ref eSCU_INT_IDX_HSUSBD
+  *           - \ref eSCU_INT_IDX_SDH0
+  *           - \ref eSCU_INT_IDX_SDH1
+  *           - \ref eSCU_INT_IDX_EMAC
+  *           - \ref eSCU_INT_IDX_CRYPTO
+  *           - \ref eSCU_INT_IDX_CRC
+  *           - \ref eSCU_INT_IDX_LPPDMA
+  *           - \ref eSCU_INT_IDX_CCAP
+  *           - \ref eSCU_INT_IDX_NPUIF1
+  *           - \ref eSCU_INT_IDX_NPUIF0
+  *           - \ref eSCU_INT_IDX_SPIM0
+  *           - \ref eSCU_INT_IDX_SPIM1
+  *           - \ref eSCU_INT_IDX_SRAM0_MPC
+  *           - \ref eSCU_INT_IDX_SRAM1_MPC
+  *           - \ref eSCU_INT_IDX_SRAM2_MPC
+  *           - \ref eSCU_INT_IDX_SRAM3_MPC
+  *           - \ref eSCU_INT_IDX_LPSRAM_MPC
+  *           - \ref eSCU_INT_IDX_SPIM0_MPC
+  *           - \ref eSCU_INT_IDX_SPIM1_MPC
+  * @return   The value of interrupt flag status
   */
 #define SCU_GET_INT_FLAG(eIntIdx)     ((SCU->SVINTSTS[(eIntIdx) / 32] >> ((eIntIdx) & 0x1Ful)) & 0x1ul)
 
 /**
   * @brief      Clear secure violation interrupt flag
   *
-  * @param[in]  flag The combination of the specified interrupt flags.
+  *             The combination of the specified interrupt flags.
   *             Each bit corresponds to a interrupt source.
   *             This parameter decides which interrupt flags will be cleared.
   *             - \ref eSCU_INT_IDX_APB0  \ref eSCU_INT_IDX_APB1  \ref eSCU_INT_IDX_APB2
