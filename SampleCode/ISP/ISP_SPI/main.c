@@ -17,8 +17,6 @@
 
 int32_t SYS_Init(void)
 {
-    uint32_t u32TimeOutCnt = SystemCoreClock >> 1; /* 500ms time-out */
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -45,23 +43,23 @@ int32_t SYS_Init(void)
 
     /* Enable module clock */
     CLK_EnableModuleClock(ISP0_MODULE);
-    CLK_EnableModuleClock(SPI1_MODULE);
+    CLK_EnableModuleClock(SPI2_MODULE);
 
-    /* Select SPI1 module clock source as PCLK0 */
-    CLK->SPISEL = (CLK->SPISEL & (~CLK_SPISEL_SPI1SEL_Msk)) | CLK_SPISEL_SPI1SEL_PCLK2;
+    /* Select SPI2 module clock source as PCLK0 */
+    CLK->SPISEL = (CLK->SPISEL & (~CLK_SPISEL_SPI2SEL_Msk)) | CLK_SPISEL_SPI2SEL_PCLK0;
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Setup SPI1 multi-function pins */
-    SET_SPI1_MISO_PH4();
-    SET_SPI1_MOSI_PH5();
-    SET_SPI1_CLK_PH6();
-    SET_SPI1_SS_PH7();
+    /* Setup SPI2 multi-function pins */
+    SET_SPI2_MISO_PA9();
+    SET_SPI2_MOSI_PA8();
+    SET_SPI2_CLK_PA10();
+    SET_SPI2_SS_PA11();
 
-    /* Enable SPI1 clock pin (PH6) schmitt trigger */
-    PH->SMTEN |= GPIO_SMTEN_SMTEN6_Msk;
+    /* Enable SPI2 clock pin schmitt trigger */
+    PA->SMTEN |= GPIO_SMTEN_SMTEN10_Msk;
 
     return 0;
 }
@@ -120,8 +118,7 @@ _APROM:
     FMC_SetVectorPageAddr(FMC_APROM_BASE);
     NVIC_SystemReset();
 
-    /* Trap the CPU */
-    while (1);
+    /* Code should not reach here ! */
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

@@ -58,19 +58,19 @@ const uint8_t gu8ConfigDescriptor[] =
     0x00,     // iInterface
 
     /* const BYTE cbyEndpointDescriptor1[LEN_ENDPOINT] = */
-    LEN_ENDPOINT,           // bLength
-    DESC_ENDPOINT,          // bDescriptorType
-    (BULK_IN_EP_NUM | EP_INPUT), // bEndpointAddress
-    EP_BULK,                // bmAttributes
-    EP2_MAX_PKT_SIZE, 0x00,  // wMaxPacketSize
-    0x00,                   // bInterval
+    LEN_ENDPOINT,                   // bLength
+    DESC_ENDPOINT,                  // bDescriptorType
+    (BULK_IN_EP_NUM | EP_INPUT),    // bEndpointAddress
+    EP_BULK,                        // bmAttributes
+    EP2_MAX_PKT_SIZE, 0x00,         // wMaxPacketSize
+    0x00,                           // bInterval
 
     /* const BYTE cbyEndpointDescriptor2[LEN_ENDPOINT] = */
     LEN_ENDPOINT,           // bLength
     DESC_ENDPOINT,          // bDescriptorType
-    BULK_OUT_EP_NUM,                   // bEndpointAddress
+    BULK_OUT_EP_NUM,        // bEndpointAddress
     EP_BULK,                // bmAttributes
-    EP3_MAX_PKT_SIZE, 0x00,  // wMaxPacketSize
+    EP3_MAX_PKT_SIZE, 0x00, // wMaxPacketSize
     0x00                    // bInterval
 };
 

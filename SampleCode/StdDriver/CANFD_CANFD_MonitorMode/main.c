@@ -297,7 +297,7 @@ int32_t main(void)
     printf("+-----------------------------------------------------------------------------+\n\n");
 
     /* CANFD interface initialization*/
-    CANFD_MonitorMode_Init(1000000, 4000000);
+    CANFD_MonitorMode_Init(1000000, 2000000);
 
     while (1)
     {

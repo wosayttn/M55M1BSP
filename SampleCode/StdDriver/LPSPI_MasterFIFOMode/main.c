@@ -187,11 +187,14 @@ void LPSPI_Init(void)
 
 NVT_ITCM void LPSPI0_IRQHandler(void)
 {
+    uint32_t u32RxDataCount = 0;
+
     /* Check RX EMPTY flag */
     while (LPSPI_GET_RX_FIFO_EMPTY_FLAG(LPSPI0) == 0)
     {
         /* Read RX FIFO */
-        g_au32DestinationData[g_u32RxDataCount++] = LPSPI_READ_RX(LPSPI0);
+        u32RxDataCount = g_u32RxDataCount++;
+        g_au32DestinationData[u32RxDataCount] = LPSPI_READ_RX(LPSPI0);
     }
 
     /* Check TX FULL flag and TX data count */
@@ -209,7 +212,10 @@ NVT_ITCM void LPSPI0_IRQHandler(void)
     {
         /* If RX FIFO is not empty, read RX FIFO. */
         while (LPSPI_GET_RX_FIFO_EMPTY_FLAG(LPSPI0) == 0)
-            g_au32DestinationData[g_u32RxDataCount++] = LPSPI_READ_RX(LPSPI0);
+        {
+            u32RxDataCount = g_u32RxDataCount++;
+            g_au32DestinationData[u32RxDataCount] = LPSPI_READ_RX(LPSPI0);
+        }
     }
 }
 

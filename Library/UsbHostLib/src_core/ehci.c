@@ -15,10 +15,11 @@
 
 #include "usb.h"
 #include "hub.h"
-#ifdef ENABLE_EHCI
-#define EHCI_IRQHandler     HSUSBH_IRQHandler
 
 /// @cond HIDDEN_SYMBOLS
+
+#ifdef ENABLE_EHCI
+#define EHCI_IRQHandler     HSUSBH_IRQHandler
 
 static QH_T   *_H_qh;                           /* head of reclamation list                   */
 static qTD_T  *_ghost_qtd;                      /* used as a terminator qTD                   */
@@ -1396,5 +1397,4 @@ HC_DRV_T  ehci_driver =
     ehci_rh_polling          /* rthub_polling      */
 };
 #endif
-
 /// @endcond HIDDEN_SYMBOLS

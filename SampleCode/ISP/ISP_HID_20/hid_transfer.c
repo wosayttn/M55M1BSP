@@ -19,8 +19,11 @@ uint8_t volatile g_u8UsbDataReady = 0;
 
 NVT_ITCM void HSUSBD_IRQHandler(void)
 {
-    __IO uint32_t IrqStL, IrqSt;
-    IrqStL = HSUSBD->GINTSTS & HSUSBD->GINTEN;    /* get interrupt status */
+    uint32_t IrqStL, IrqSt;
+
+    /* Get interrupt status */
+    IrqStL = HSUSBD->GINTSTS;
+    IrqStL = IrqStL & HSUSBD->GINTEN;
 
     if (!IrqStL)
     {
@@ -30,7 +33,8 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
     /* USB interrupt */
     if (IrqStL & HSUSBD_GINTSTS_USBIF_Msk)
     {
-        IrqSt = HSUSBD->BUSINTSTS & HSUSBD->BUSINTEN;
+        IrqSt = HSUSBD->BUSINTSTS;
+        IrqSt = IrqSt & HSUSBD->BUSINTEN;
 
         if (IrqSt & HSUSBD_BUSINTSTS_RSTIF_Msk)
         {
@@ -77,7 +81,8 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
 
     if (IrqStL & HSUSBD_GINTSTS_CEPIF_Msk)
     {
-        IrqSt = HSUSBD->CEPINTSTS & HSUSBD->CEPINTEN;
+        IrqSt = HSUSBD->CEPINTSTS;
+        IrqSt = IrqSt & HSUSBD->CEPINTEN;
 
         if (IrqSt & HSUSBD_CEPINTSTS_SETUPPKIF_Msk)
         {
@@ -150,7 +155,8 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
     /* interrupt in */
     if (IrqStL & HSUSBD_GINTSTS_EPAIF_Msk)
     {
-        IrqSt = HSUSBD->EP[EPA].EPINTSTS & HSUSBD->EP[EPA].EPINTEN;
+        IrqSt = HSUSBD->EP[EPA].EPINTSTS;
+        IrqSt = IrqSt & HSUSBD->EP[EPA].EPINTEN;
         //        if (HSUSBD->EP[EPA].EPINTSTS & 0x02)
         //            EPA_Handler();
         HSUSBD_CLR_EP_INT_FLAG(EPA, IrqSt);
@@ -159,7 +165,8 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
     /* interrupt out */
     if (IrqStL & HSUSBD_GINTSTS_EPBIF_Msk)
     {
-        IrqSt = HSUSBD->EP[EPB].EPINTSTS & HSUSBD->EP[EPB].EPINTEN;
+        IrqSt = HSUSBD->EP[EPB].EPINTSTS;
+        IrqSt = IrqSt & HSUSBD->EP[EPB].EPINTEN;
 
         if (HSUSBD->EP[EPB].EPINTSTS & 0x01)
         {

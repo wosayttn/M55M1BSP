@@ -57,6 +57,7 @@ NVT_ITCM void WDT0_IRQHandler(void)
     
     /* make sure that interrupt flag has been cleared. */
     intflag = WDT0->STATUS;
+	NVT_UNUSED(intflag);
 }
 
 void SYS_Init(void)

@@ -141,7 +141,7 @@ struct cdc_dev_t;
 
 /// @endcond HIDDEN_SYMBOLS
 
-/** @addtogroup USBH_EXPORTED_STRUCTURES USB Host Exported Structures
+/** @addtogroup USBH_EXPORTED_STRUCTURES USBH Exported Structures
   @{
 */
 

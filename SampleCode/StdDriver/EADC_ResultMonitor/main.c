@@ -98,7 +98,7 @@ void EADC_FunctionTest()
     printf("+-------------------------------------------------------+\n");
     printf("|   EADC compare function (result monitor) sample code  |\n");
     printf("+-------------------------------------------------------+\n");
-    printf("\nIn this test, software will compare the conversion result of channel 2.\n");
+    printf("\nIn this test, software will compare the conversion result of channel 1.\n");
 
     /* Set input mode as single-end and enable the A/D converter */
     EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);

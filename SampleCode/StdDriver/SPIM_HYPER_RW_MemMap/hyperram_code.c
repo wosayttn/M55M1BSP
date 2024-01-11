@@ -71,10 +71,10 @@ void HyperRAM_Erase(SPIM_T *spim, uint32_t u32StartAddr, uint32_t u32EraseSize)
  */
 void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
 {
-    volatile uint8_t u8RdDelay = 0;
+    uint8_t u8RdDelay = 0;
     uint8_t u8RdDelayIdx = 0;
     uint8_t u8RdDelayRes[SPIM_MAX_DLL_LATENCY] = {0};
-    volatile uint32_t u32i = 0;
+    uint32_t u32i = 0;
     uint32_t u32SrcAddr = 0;
     uint8_t au8TrimPatten[128] =
     {

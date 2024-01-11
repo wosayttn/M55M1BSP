@@ -62,7 +62,7 @@ NVT_ITCM void I2C1_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_SlaveTRx(I2C_T *i2c, uint32_t u32Status)
 {
-    uint8_t u8data;
+    uint8_t u8Data;
 
     if (u32Status == 0x60)                      /* Own SLA+W has been receive; ACK has been return */
     {
@@ -73,7 +73,8 @@ void I2C_SlaveTRx(I2C_T *i2c, uint32_t u32Status)
     else if (u32Status == 0x80)                 /* Previously address with own SLA address
                                                    Data has been received; ACK has been returned*/
     {
-        i2c_rcvbuf[g_u8SlvDataLen] = I2C_GET_DATA(i2c);
+        u8Data = I2C_GET_DATA(i2c);
+        i2c_rcvbuf[g_u8SlvDataLen] = u8Data;
         g_u8SlvDataLen++;
         g_u8SlvDataLen &= 0x3F;
         bI2cDataReady = (g_u8SlvDataLen == 0);
@@ -90,15 +91,15 @@ void I2C_SlaveTRx(I2C_T *i2c, uint32_t u32Status)
     else if (u32Status == 0xA8)                 /* Own SLA+R has been receive; ACK has been return */
     {
         g_u8SlvDataLen = 0;
-        u8data = g_au8ResponseBuff[g_u8SlvDataLen];
-        I2C_SET_DATA(i2c, u8data);
+        u8Data = g_au8ResponseBuff[g_u8SlvDataLen];
+        I2C_SET_DATA(i2c, u8Data);
         g_u8SlvDataLen++;
         I2C_SET_CONTROL_REG(i2c, I2C_CTL_SI_AA);
     }
     else if (u32Status == 0xB8)
     {
-        u8data = g_au8ResponseBuff[g_u8SlvDataLen];
-        I2C_SET_DATA(i2c, u8data);
+        u8Data = g_au8ResponseBuff[g_u8SlvDataLen];
+        I2C_SET_DATA(i2c, u8Data);
         g_u8SlvDataLen++;
         g_u8SlvDataLen &= 0x3F;
 
@@ -123,7 +124,8 @@ void I2C_SlaveTRx(I2C_T *i2c, uint32_t u32Status)
     else if (u32Status == 0x88)                 /* Previously addressed with own SLA address; NOT ACK has
                                                    been returned */
     {
-        i2c_rcvbuf[g_u8SlvDataLen] = I2C_GET_DATA(i2c);
+        u8Data = I2C_GET_DATA(i2c);
+        i2c_rcvbuf[g_u8SlvDataLen] = u8Data;
         g_u8SlvDataLen++;
         bI2cDataReady = (g_u8SlvDataLen == 64);
         g_u8SlvDataLen = 0;

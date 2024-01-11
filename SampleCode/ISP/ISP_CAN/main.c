@@ -73,8 +73,7 @@ int32_t SYS_Init(void)
     /* Waiting for HXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
     /* Switch SCLK clock source to PLL0 and Enable PLL0 160MHz clock */
-    //CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_HXT, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
     /* Select CAN FD0 clock source is HCLK */
     CLK_SetModuleClock(CANFD0_MODULE, CLK_CANFDSEL_CANFD0SEL_HXT, CLK_CANFDDIV_CANFD0DIV(1));
     /* Enable module clock */
@@ -125,13 +124,12 @@ void CANFD_Init(void)
     CANFD_GetDefaultConfig(&sCANFD_Config, CANFD_OP_CAN_MODE);
     sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate = CANFD_BAUD_RATE;
     sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate = 0;
-
     /* Open the CAN feature */
     CANFD_Open(CANFD0, &sCANFD_Config);
     /* Set CAN reveive message */
     CANFD_SetSIDFltr(CANFD0, 0, CANFD_RX_FIFO0_STD_MASK(Master_ISP_ID, 0x7FF));
     /* receive 0x220~0x22f (29-bit id) in CAN FD0 rx fifo1 buffer by setting mask 0 */
-    //CANFD_SetXIDFltr(CANFD0, 0, CANFD_RX_FIFO1_EXT_MASK_LOW(0x220), CANFD_RX_FIFO1_EXT_MASK_HIGH(0x1FFFFFF0));
+    CANFD_SetXIDFltr(CANFD0, 0, CANFD_RX_FIFO1_EXT_MASK_LOW(0x220), CANFD_RX_FIFO1_EXT_MASK_HIGH(0x1FFFFFF0));
     /* Enable Standard ID and  Extended ID Filter as RX FOFI0*/
     CANFD_SetGFC(CANFD0, eCANFD_ACC_NON_MATCH_FRM_RX_FIFO0, eCANFD_ACC_NON_MATCH_FRM_RX_FIFO0, 1, 1);
     /* Enable RX fifo0 new message interrupt using interrupt line 0. */
@@ -206,22 +204,24 @@ _ISP:
             }
             else    // Update user config or APROM
             {
-                if ((psISPCanMsg->Address & FMC_CONFIG_BASE) == FMC_CONFIG_BASE)
-                {
-                    if (psISPCanMsg->Data != FMC_Read(psISPCanMsg->Address))
-                        FMC_WriteConfig(psISPCanMsg->Address, psISPCanMsg->Data);
+                uint32_t u32Addr = psISPCanMsg->Address;
 
-                    psISPCanMsg->Data = FMC_Read(psISPCanMsg->Address);
-                }
-                else if (psISPCanMsg->Address < FMC_APROM_SIZE)
+                if ((u32Addr & FMC_CONFIG_BASE) == FMC_CONFIG_BASE)
                 {
-                    if ((psISPCanMsg->Address % FMC_FLASH_PAGE_SIZE) == 0)
+                    if (psISPCanMsg->Data != FMC_Read(u32Addr))
+                        FMC_WriteConfig(u32Addr, psISPCanMsg->Data);
+
+                    psISPCanMsg->Data = FMC_Read(u32Addr);
+                }
+                else if (u32Addr < FMC_APROM_SIZE)
+                {
+                    if ((u32Addr % FMC_FLASH_PAGE_SIZE) == 0)
                     {
-                        FMC_Erase(FMC_APROM_BASE + psISPCanMsg->Address);
+                        FMC_Erase(FMC_APROM_BASE + u32Addr);
                     }
 
-                    FMC_Write(FMC_APROM_BASE + psISPCanMsg->Address, psISPCanMsg->Data);
-                    psISPCanMsg->Data = FMC_Read(FMC_APROM_BASE + psISPCanMsg->Address);
+                    FMC_Write(FMC_APROM_BASE + u32Addr, psISPCanMsg->Data);
+                    psISPCanMsg->Data = FMC_Read(FMC_APROM_BASE + u32Addr);
                 }
             }
 
@@ -239,8 +239,7 @@ _APROM:
     FMC_SetVectorPageAddr(FMC_APROM_BASE);
     NVIC_SystemReset();
 
-    /* Trap the CPU */
-    while (1);
+    /* Code should not reach here ! */
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

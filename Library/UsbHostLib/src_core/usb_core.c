@@ -97,8 +97,7 @@ void  usbh_core_init()
 #endif
 
 #ifdef ENABLE_EHCI
-    int ret = 0;
-    ret = ehci_driver.init();
+    ehci_driver.init();
     USB_debug("EHCI init done.\n");
     ENABLE_EHCI_IRQ();
 #endif

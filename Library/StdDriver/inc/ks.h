@@ -132,7 +132,7 @@ typedef enum KSMEM
 
 /**
   * @brief      This function is used to get KS status.
-  * @param[in]  u32Status. Including :
+  *             Including :
   *             - \ref KS_STS_IF_Msk
   *             - \ref KS_STS_EIF_Msk
   *             - \ref KS_STS_BUSY_Msk
@@ -145,7 +145,7 @@ typedef enum KSMEM
 
 /**
   * @brief      This function is used to clear KS status.
-  * @param[in]  u32Status. Including :
+  *             Including :
   *             - \ref KS_STS_IF_Msk
   *             - \ref KS_STS_EIF_Msk
   */

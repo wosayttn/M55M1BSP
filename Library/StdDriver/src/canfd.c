@@ -1464,6 +1464,7 @@ uint32_t CANFD_ReadRxFifoMsg(CANFD_T *psCanfd, uint8_t u8FifoIdx, CANFD_FD_MSG_T
 /**
  * @brief       Copies a message from a dedicated Rx buffer into a message buffer.
  *
+ * @param[in]   psCanfd         The pointer to CANFD module base address.
  * @param[in]   psRxBuf         Buffer to read from.
  * @param[in]   psMsgBuf        Location to store read message.
  *
@@ -1569,6 +1570,7 @@ uint32_t CANFD_GetRxFifoWaterLvl(CANFD_T *psCanfd, uint32_t u32RxFifoNum)
 /**
  * @brief       Copies messages from FIFO into a message buffert.
  *
+ * @param[in]   psCanfd         The pointer to CANFD module base address.
  * @param[in]   psRxBuf         Buffer to read from.
  * @param[in]   psMsgBuf        Location to store read message.
  *
@@ -1671,9 +1673,9 @@ uint32_t CANFD_GetTxEvntFifoWaterLvl(CANFD_T *psCanfd)
 /**
  * @brief        Read the TX Event FIFO  Massage
  *
- * @param[in]   psCanfd          The pointer to CAN FD module base address.
- * @param[in]   u32TxEvntNum     Tx Event FIFO number
- * @param[in]   psTxEvntElem     Tx Event Message struct
+ * @param[in]   psCanfd               The pointer to CAN FD module base address.
+ * @param[in]   u8TxEvntIdx           Tx Event FIFO number
+ * @param[in]   psEventFifoMsgBuf     Tx Event Message struct
  *
  * @return      None.
  *

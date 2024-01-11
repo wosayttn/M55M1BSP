@@ -121,7 +121,7 @@ typedef struct
      * |        |          |This bit indicates the Secure DPM password has been checked and is correct.
      * |        |          |0 = The Secure DPM password has not been checked pass, yet.
      * |        |          |1 = The Secure DPM password has been checked pass since last cold reset.
-     * @var DPM_T::SPW0
+     * @var DPM_T::SPW[4]
      * Offset: 0x10  Secure DPM Password 0
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -129,7 +129,6 @@ typedef struct
      * |[31:0]  |PW        |Password
      * |        |          |Write password[31:0] to this register to update or compare Secure DPM password
      * |        |          |It is write-only and always read as 0xFFFFFFFF.
-     * @var DPM_T::SPW1
      * Offset: 0x14  Secure DPM Password 1
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -137,7 +136,6 @@ typedef struct
      * |[31:0]  |PW        |Password
      * |        |          |Write password[63:32] to this register to update or compare Secure DPM password
      * |        |          |It is write-only and always read as 0xFFFFFFFF.
-     * @var DPM_T::SPW2
      * Offset: 0x18  Secure DPM Password 2
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -145,7 +143,6 @@ typedef struct
      * |[31:0]  |PW        |Password
      * |        |          |Write password[95:64] to this register to update or compare Secure DPM password
      * |        |          |It is write-only and always read as 0xFFFFFFFF.
-     * @var DPM_T::SPW3
      * Offset: 0x1C  Secure DPM Password 3
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -233,7 +230,7 @@ typedef struct
      * |        |          |This bit indicates the Non-secure DPM password has been checked and is correct.
      * |        |          |0 = The Non-secure DPM password has not been checked pass, yet.
      * |        |          |1 = The Non-secure DPM password has been checked pass since last cold reset.
-     * @var DPM_T::NSPW0
+     * @var DPM_T::NSPW[4]
      * Offset: 0x60  Non-secure DPM Password 0
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -241,7 +238,6 @@ typedef struct
      * |[31:0]  |PW        |Password
      * |        |          |Write password[31:0] to this register to update or compare Non-secure DPM password
      * |        |          |It is write-only and always read as 0xFFFFFFFF.
-     * @var DPM_T::NSPW1
      * Offset: 0x64  Non-secure DPM Password 1
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -249,7 +245,6 @@ typedef struct
      * |[31:0]  |PW        |Password
      * |        |          |Write password[63:32] to this register to update or compare Non-secure DPM password
      * |        |          |It is write-only and always read as 0xFFFFFFFF.
-     * @var DPM_T::NSPW2
      * Offset: 0x68  Non-secure DPM Password 2
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -257,7 +252,6 @@ typedef struct
      * |[31:0]  |PW        |Password
      * |        |          |Write password[95:64] to this register to update or compare Non-secure DPM password
      * |        |          |It is write-only and always read as 0xFFFFFFFF.
-     * @var DPM_T::NSPW3
      * Offset: 0x6C  Non-secure DPM Password 3
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -981,7 +975,7 @@ typedef struct
      * |[7]     |EINT7     |Set EINT7 to Non-secure State
      * |        |          |0 = EINT7 is a secure module (default).
      * |        |          |1 = EINT7 is a non-secure module.
-     * @var SCU_T::IONS0
+     * @var SCU_T::IONS[10]
      * Offset: 0x70  I/O Non-secure Attribution Set Register0
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -990,7 +984,6 @@ typedef struct
      * |        |          |Write 1 to set PA to non-secure state. Each bit configures one pin in GPIO port A.
      * |        |          |0 = GPIO port A is secure (default).
      * |        |          |1 = GPIO port A is non-secure.
-     * @var SCU_T::IONS1
      * Offset: 0x74  I/O Non-secure Attribution Set Register1
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -999,7 +992,6 @@ typedef struct
      * |        |          |Write 1 to set PB to non-secure state. Each bit configures one pin in GPIO port B.
      * |        |          |0 = GPIO port B is secure (default).
      * |        |          |1 = GPIO port B is non-secure.
-     * @var SCU_T::IONS2
      * Offset: 0x78  I/O Non-secure Attribution Set Register2
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -1008,7 +1000,6 @@ typedef struct
      * |        |          |Write 1 to set PC to non-secure state. Each bit configures one pin in GPIO port C.
      * |        |          |0 = GPIO port C is secure (default).
      * |        |          |1 = GPIO port C is non-secure.
-     * @var SCU_T::IONS3
      * Offset: 0x7C  I/O Non-secure Attribution Set Register3
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -1017,7 +1008,6 @@ typedef struct
      * |        |          |Write 1 to set PD to non-secure state. Each bit configures one pin in GPIO port D.
      * |        |          |0 = GPIO port D is secure (default).
      * |        |          |1 = GPIO port D is non-secure.
-     * @var SCU_T::IONS4
      * Offset: 0x80  I/O Non-secure Attribution Set Register4
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -1026,7 +1016,6 @@ typedef struct
      * |        |          |Write 1 to set PE to non-secure state. Each bit configures one pin in GPIO port E.
      * |        |          |0 = GPIO port E is secure (default).
      * |        |          |1 = GPIO port E is non-secure.
-     * @var SCU_T::IONS5
      * Offset: 0x84  I/O Non-secure Attribution Set Register5
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -1035,7 +1024,6 @@ typedef struct
      * |        |          |Write 1 to set PF to non-secure state. Each bit configures one pin in GPIO port F.
      * |        |          |0 = GPIO port F is secure (default).
      * |        |          |1 = GPIO port F is non-secure.
-     * @var SCU_T::IONS6
      * Offset: 0x88  I/O Non-secure Attribution Set Register6
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -1044,7 +1032,6 @@ typedef struct
      * |        |          |Write 1 to set PG to non-secure state. Each bit configures one pin in GPIO port G.
      * |        |          |0 = GPIO port G is secure (default).
      * |        |          |1 = GPIO port G is non-secure.
-     * @var SCU_T::IONS7
      * Offset: 0x8C  I/O Non-secure Attribution Set Register7
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -1053,7 +1040,6 @@ typedef struct
      * |        |          |Write 1 to set PH to non-secure state. Each bit configures one pin in GPIO port H.
      * |        |          |0 = GPIO port H is secure (default).
      * |        |          |1 = GPIO port H is non-secure.
-     * @var SCU_T::IONS8
      * Offset: 0x90  I/O Non-secure Attribution Set Register8
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -1062,7 +1048,6 @@ typedef struct
      * |        |          |Write 1 to set PI to non-secure state. Each bit configures one pin in GPIO port I.
      * |        |          |0 = GPIO port I is secure (default).
      * |        |          |1 = GPIO port I is non-secure.
-     * @var SCU_T::IONS9
      * Offset: 0x94  I/O Non-secure Attribution Set Register9
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
@@ -2260,8 +2245,8 @@ typedef struct
      * |        |          |Each bit controls the Security state of a single block. When:
      * |        |          |l Bit[n] = 0, the block is in the Secure state.
      * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM0MPCLUT0
-     * Offset: 0x430  Security Attribute of memory blocks controlled by SPIM0MPC LUT0
+     * @var SCU_T::SPIM0MPCLUT[8]
+     * Offset: 0x430 ~ 0x44C  Security Attribute of memory blocks controlled by SPIM0MPC LUT0 ~ 7
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
@@ -2269,134 +2254,8 @@ typedef struct
      * |        |          |Each bit controls the Security state of a single block. When:
      * |        |          |l Bit[n] = 0, the block is in the Secure state.
      * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM0MPCLUT1
-     * Offset: 0x434  Security Attribute of memory blocks controlled by SPIM0MPC LUT1
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
-     * |        |          |Each bit controls the Security state of a single block. When:
-     * |        |          |l Bit[n] = 0, the block is in the Secure state.
-     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM0MPCLUT2
-     * Offset: 0x438  Security Attribute of memory blocks controlled by SPIM0MPC LUT2
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
-     * |        |          |Each bit controls the Security state of a single block. When:
-     * |        |          |l Bit[n] = 0, the block is in the Secure state.
-     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM0MPCLUT3
-     * Offset: 0x43C  Security Attribute of memory blocks controlled by SPIM0MPC LUT3
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
-     * |        |          |Each bit controls the Security state of a single block. When:
-     * |        |          |l Bit[n] = 0, the block is in the Secure state.
-     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM0MPCLUT4
-     * Offset: 0x440  Security Attribute of memory blocks controlled by SPIM0MPC LUT4
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
-     * |        |          |Each bit controls the Security state of a single block. When:
-     * |        |          |l Bit[n] = 0, the block is in the Secure state.
-     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM0MPCLUT5
-     * Offset: 0x444  Security Attribute of memory blocks controlled by SPIM0MPC LUT5
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
-     * |        |          |Each bit controls the Security state of a single block. When:
-     * |        |          |l Bit[n] = 0, the block is in the Secure state.
-     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM0MPCLUT6
-     * Offset: 0x448  Security Attribute of memory blocks controlled by SPIM0MPC LUT6
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
-     * |        |          |Each bit controls the Security state of a single block. When:
-     * |        |          |l Bit[n] = 0, the block is in the Secure state.
-     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM0MPCLUT7
-     * Offset: 0x44C  Security Attribute of memory blocks controlled by SPIM0MPC LUT7
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
-     * |        |          |Each bit controls the Security state of a single block. When:
-     * |        |          |l Bit[n] = 0, the block is in the Secure state.
-     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM1MPCLUT0
-     * Offset: 0x450  Security Attribute of memory blocks controlled by SPIM1MPC LUT0
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
-     * |        |          |Each bit controls the Security state of a single block. When:
-     * |        |          |l Bit[n] = 0, the block is in the Secure state.
-     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM1MPCLUT1
-     * Offset: 0x454  Security Attribute of memory blocks controlled by SPIM1MPC LUT1
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
-     * |        |          |Each bit controls the Security state of a single block. When:
-     * |        |          |l Bit[n] = 0, the block is in the Secure state.
-     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM1MPCLUT2
-     * Offset: 0x458  Security Attribute of memory blocks controlled by SPIM1MPC LUT2
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
-     * |        |          |Each bit controls the Security state of a single block. When:
-     * |        |          |l Bit[n] = 0, the block is in the Secure state.
-     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM1MPCLUT3
-     * Offset: 0x45C  Security Attribute of memory blocks controlled by SPIM1MPC LUT3
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
-     * |        |          |Each bit controls the Security state of a single block. When:
-     * |        |          |l Bit[n] = 0, the block is in the Secure state.
-     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM1MPCLUT4
-     * Offset: 0x460  Security Attribute of memory blocks controlled by SPIM1MPC LUT4
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
-     * |        |          |Each bit controls the Security state of a single block. When:
-     * |        |          |l Bit[n] = 0, the block is in the Secure state.
-     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM1MPCLUT5
-     * Offset: 0x464  Security Attribute of memory blocks controlled by SPIM1MPC LUT5
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
-     * |        |          |Each bit controls the Security state of a single block. When:
-     * |        |          |l Bit[n] = 0, the block is in the Secure state.
-     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM1MPCLUT6
-     * Offset: 0x468  Security Attribute of memory blocks controlled by SPIM1MPC LUT6
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |BLK_LUT   |Block-based gating Look Up Table
-     * |        |          |Each bit controls the Security state of a single block. When:
-     * |        |          |l Bit[n] = 0, the block is in the Secure state.
-     * |        |          |l Bit[n] = 1, the block is in the Non-secure state..
-     * @var SCU_T::SPIM1MPCLUT7
-     * Offset: 0x46C  Security Attribute of memory blocks controlled by SPIM1MPC LUT7
+     * @var SCU_T::SPIM1MPCLUT[8]
+     * Offset: 0x450 ~ 0x46C  Security Attribute of memory blocks controlled by SPIM1MPC LUT0 ~ 7
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |

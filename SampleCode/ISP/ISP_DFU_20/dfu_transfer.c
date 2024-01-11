@@ -23,8 +23,11 @@ static s_prog_struct prog_struct __attribute__((aligned(4))) = { {0}, 0, 0, FMC_
 
 NVT_ITCM void HSUSBD_IRQHandler(void)
 {
-    __IO uint32_t IrqStL, IrqSt;
-    IrqStL = HSUSBD->GINTSTS & HSUSBD->GINTEN;    /* get interrupt status */
+    uint32_t IrqStL, IrqSt;
+
+    /* Get interrupt status */
+    IrqStL = HSUSBD->GINTSTS;
+    IrqStL = IrqStL & HSUSBD->GINTEN;
 
     if (!IrqStL)
     {
@@ -34,7 +37,8 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
     /* USB interrupt */
     if (IrqStL & HSUSBD_GINTSTS_USBIF_Msk)
     {
-        IrqSt = HSUSBD->BUSINTSTS & HSUSBD->BUSINTEN;
+        IrqSt = HSUSBD->BUSINTSTS;
+        IrqSt = IrqSt & HSUSBD->BUSINTEN;
 
         if (IrqSt & HSUSBD_BUSINTSTS_RSTIF_Msk)
         {
@@ -78,7 +82,8 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
 
     if (IrqStL & HSUSBD_GINTSTS_CEPIF_Msk)
     {
-        IrqSt = HSUSBD->CEPINTSTS & HSUSBD->CEPINTEN;
+        IrqSt = HSUSBD->CEPINTSTS;
+        IrqSt = IrqSt & HSUSBD->CEPINTEN;
 
         if (IrqSt & HSUSBD_CEPINTSTS_SETUPPKIF_Msk)
         {

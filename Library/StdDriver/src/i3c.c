@@ -50,16 +50,16 @@ void I3C_Open(I3C_T *i3c,
     if (u32MasterSlave == I3C_MASTER)
     {
         // timing setting, offset = 0xb4, 0xb8, 0xbc, 0xc0
-        i3c->SCLOD = 0x00050019;
-        i3c->SCLPP = 0x00050005;
+        i3c->SCLOD = 0x003F007F;
+        i3c->SCLPP = 0x000A000A;
         //        i3c->SCLFM = 0x01360136;
-        i3c->SCLFM = 0x04000400;
-        i3c->SCLFMP = 0x0021003f;
+        i3c->SCLFM = 0x00FF00FF;
+        i3c->SCLFMP = 0x007F007F;
         // 0xd4, 0xd8
-        i3c->BUSFAT = 0x0000003f;
-        i3c->BUSIDLET = 0x00001fff;
+        i3c->BUSFAT = 0x00500050;
+        i3c->BUSIDLET = 0x00000050;
         // 0xd0 (New for IBI Test)
-        i3c->SDAHOLD = 0x00010000;
+        i3c->SDAHOLD = 0x00010101;
         // Threshold setting, 0x1c, 0x20
         i3c->QUETHCTL = 0x00000000;
         i3c->DBTHCTL = 0x00000003; // set rx/tx buffer size
@@ -648,13 +648,13 @@ int32_t I3C_Write(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_t *p
         }
     }
 
-    while ((I3C0->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
+    while ((i3c->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
 
-    response = I3C0->RESPQUE;
+    response = i3c->RESPQUE;
 
     if (response & I3C_RESPQUE_ERRSTS_Msk)
     {
-        I3C0->DEVCTL |= I3C_DEVCTL_RESUME_Msk;
+        i3c->DEVCTL |= I3C_DEVCTL_RESUME_Msk;
         return I3C_STS_INVALID_STATE;
     }
 
@@ -742,7 +742,7 @@ int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_t *pu
     {
         for (i = 0; i < response; i++)
         {
-            pu32RxBuf[i] = I3C0->TXRXDAT ;
+            pu32RxBuf[i] = i3c->TXRXDAT ;
         }
     }
 
@@ -763,18 +763,21 @@ int32_t I3C_Read(I3C_T *i3c, uint8_t u8DevIndex, uint32_t u32Speed, uint32_t *pu
 int32_t I3C_BroadcastRSTDAA(I3C_T *i3c)
 {
     uint32_t response;
-    I3C0->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_ROC_Msk
+
+    i3c->CMDQUE = ((0 << I3C_CMDQUE_DATLEN_Pos) | I3C_CMDATTR_TRANSFER_ARG);
+
+    i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_ROC_Msk
                     | I3C_CMDQUE_CP_Msk
                     | ((I3C_CCC_RSTDAA(TRUE) <<  I3C_CMDQUE_CMD_Pos) & I3C_CMDQUE_CMD_Msk)
                     | I3C_CMDATTR_TRANSFER_CMD);
 
-    while ((I3C0->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
+    while ((i3c->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
 
-    response = I3C0->RESPQUE;
+    response = i3c->RESPQUE;
 
     if (response & I3C_RESPQUE_ERRSTS_Msk)
     {
-        I3C0->DEVCTL |= I3C_DEVCTL_RESUME_Msk;
+        i3c->DEVCTL |= I3C_DEVCTL_RESUME_Msk;
         return I3C_STS_INVALID_STATE;
     }
 
@@ -804,10 +807,15 @@ int32_t I3C_BroadcastENTDAA(I3C_T *i3c, uint8_t u8DevCount)
                    | I3C_CMDATTR_ADDR_ASSGN_CMD);
 
 
-    while ((I3C0->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
+    while ((i3c->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
 
-    response = I3C0->RESPQUE;
+    response = i3c->RESPQUE;
     error = (response & I3C_RESPQUE_ERRSTS_Msk);
+
+    if (i3c->INTSTS & I3C_INTSTS_TFRERR_Msk)
+    {
+        i3c->INTSTS |= I3C_INTSTS_TFRERR_Msk;
+    }
 
     if (error == I3C_RESP_NO_ERR)
     {
@@ -815,7 +823,7 @@ int32_t I3C_BroadcastENTDAA(I3C_T *i3c, uint8_t u8DevCount)
     }
     else if (error == I3C_RESP_BROADCAST_ADDR_NACK_ERR)
     {
-        I3C0->DEVCTL |= I3C_DEVCTL_RESUME_Msk;
+        i3c->DEVCTL |= I3C_DEVCTL_RESUME_Msk;
         /*
             The controller writes the transfer complete status into the Command Response queue. The Data
             Length Field of Response Data Structure indicates remaining device count in case if the transfer is
@@ -825,7 +833,7 @@ int32_t I3C_BroadcastENTDAA(I3C_T *i3c, uint8_t u8DevCount)
     }
     else
     {
-        I3C0->DEVCTL |= I3C_DEVCTL_RESUME_Msk;
+        i3c->DEVCTL |= I3C_DEVCTL_RESUME_Msk;
         return I3C_STS_INVALID_STATE;
     }
 }
@@ -851,13 +859,13 @@ int32_t I3C_UnicastSETDASA(I3C_T *i3c, uint8_t u8DevIndex)
                    | (I3C_CCC_SETDASA <<  I3C_CMDQUE_CMD_Pos)
                    | I3C_CMDATTR_ADDR_ASSGN_CMD);
 
-    while ((I3C0->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
+    while ((i3c->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
 
-    response = I3C0->RESPQUE;
+    response = i3c->RESPQUE;
 
     if (response & I3C_RESPQUE_ERRSTS_Msk)
     {
-        I3C0->DEVCTL |= I3C_DEVCTL_RESUME_Msk;
+        i3c->DEVCTL |= I3C_DEVCTL_RESUME_Msk;
         return I3C_STS_INVALID_STATE;
     }
 
