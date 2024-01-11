@@ -38,6 +38,7 @@ NVT_ITCM void EQEI0_IRQHandler(void)
     }
     /* make sure that interrupt flag has been cleared. */
     intflag = EQEI0->STATUS;
+	NVT_UNUSED(intflag);
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */
@@ -83,8 +84,6 @@ void SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint8_t u8op;
-
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -102,7 +101,7 @@ int32_t main(void)
     printf("  >> Please connect PC.3 and PD.11 << \n");
     printf("  >> Please connect PC.4 and PA.3  << \n");
     printf("     Press any key to start test\n\n");
-    u8op = getchar();
+    getchar();
     printf("     start test......\n\n");
     /* Configure PC.3 and PC.4 as output mode */
     GPIO_SetMode(PC, BIT3, GPIO_MODE_OUTPUT);

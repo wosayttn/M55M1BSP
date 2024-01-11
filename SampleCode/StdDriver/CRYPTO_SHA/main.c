@@ -18,8 +18,6 @@ extern void OpenTestVector(void);
 extern int  GetNextPattern(void);
 
 
-static int32_t  g_i32DigestLength = 0;
-
 static volatile int g_SHA_done;
 static volatile int g_SHA_error;
 

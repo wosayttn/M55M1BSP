@@ -387,7 +387,7 @@ void OTG_SetFeature(uint32_t value)
   */
 NVT_ITCM void USBOTG_IRQHandler(void)
 {
-    __IO uint32_t reg, en, i;
+    __IO uint32_t reg, en, i, fb_reg;
 
     en = OTG->INTEN;
     reg = OTG->INTSTS;
@@ -474,7 +474,9 @@ NVT_ITCM void USBOTG_IRQHandler(void)
     }
     
     /* make sure that interrupt flag has been cleared. */
-    reg = OTG->INTSTS;
+    fb_reg = OTG->INTSTS;
+	NVT_UNUSED(fb_reg);
+	
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /*  MAIN function                                                                                          */

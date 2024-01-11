@@ -7,6 +7,7 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <stdio.h>
+#include <string.h>
 #include "NuMicro.h"
 #include "EdDsa.h"
 
