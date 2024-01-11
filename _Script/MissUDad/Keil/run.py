@@ -45,19 +45,18 @@ if __name__ == "__main__":
                 if file.find(ip) == 0 :
                     os.chdir(dirPath)
                     prjName = os.path.splitext(file)[0]
+                    print('#################################### '+prjName+' ####################################')
                     try:
                         RunCmd = UV4_EXE + ' -j0 -f ' + file
-                        print(RunCmd)
-                        print('#################################### '+prjName+' ####################################')
                         #p = subprocess.Popen(RunCmd, startupinfo=si, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
                         p = subprocess.Popen(RunCmd, startupinfo=si)
                         p.wait(missudad.RUNTIME)
-
+                        time.sleep(missudad.RUNTIME)
                     except subprocess.TimeoutExpired:
-                        print('************************************ ' + prjName+' ************************************')
                         p.kill()
                     except OSError:
                         pass    #Silently ignore
+                    print('************************************ ' + prjName+' ************************************')
                     os.chdir(root)
 
     print('Bye')
