@@ -61,6 +61,7 @@ NVT_ITCM void RTCTAMPER_IRQHandler(void)
     
     /* make sure that interrupt flag has been cleared. */
     intflag = RTC->INTSTS;
+	NVT_UNUSED(intflag);
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */

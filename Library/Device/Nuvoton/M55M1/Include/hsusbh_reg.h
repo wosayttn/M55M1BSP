@@ -436,7 +436,8 @@ typedef struct
 /**
     @addtogroup HSUSBH_CONST HSUSBH Bit Field Definition
     Constant Definitions for HSUSBH Controller
-@{ */
+    @{ 
+*/
 
 #define HSUSBH_EHCVNR_CRLEN_Pos          (0)                                               /*!< HSUSBH_T::EHCVNR: CRLEN Position       */
 #define HSUSBH_EHCVNR_CRLEN_Msk          (0xfful << HSUSBH_EHCVNR_CRLEN_Pos)               /*!< HSUSBH_T::EHCVNR: CRLEN Mask           */
@@ -592,7 +593,7 @@ typedef struct
 #define HSUSBH_UPSCR_PTC_Msk             (0xful << HSUSBH_UPSCR_PTC_Pos)                   /*!< HSUSBH_T::UPSCR: PTC Mask              */
 
 /**
-    @addtogroup USBH USB Host Controller (USBH)
+    @addtogroup USBH1 USB Host Controller (USBH)
     Memory Mapped Structure for USBH Controller
     @{
 */
@@ -1119,7 +1120,8 @@ typedef struct
 /**
     @addtogroup USBH1_CONST USBH1 Bit Field Definition
     Constant Definitions for USBH1 Controller
-@{ */
+    @{ 
+*/
 
 #define USBH1_HcRevision_REV_Pos         (0)                                               /*!< USBH1_T::HcRevision: REV Position      */
 #define USBH1_HcRevision_REV_Msk         (0xfful << USBH1_HcRevision_REV_Pos)              /*!< USBH1_T::HcRevision: REV Mask          */
@@ -1331,6 +1333,8 @@ typedef struct
 #define USBH1_HcRhPortStatus_PRSC_Pos    (20)                                              /*!< USBH1_T::HcRhPortStatus: PRSC Position */
 #define USBH1_HcRhPortStatus_PRSC_Msk    (0x1ul << USBH1_HcRhPortStatus_PRSC_Pos)          /*!< USBH1_T::HcRhPortStatus: PRSC Mask     */
 
+/** @} end of USBH1_CONST  */
+/** @} end of USBH1 register group */
 /** @} HSUSBH_CONST */
 /** @} end of HSUSBH register group */
 /** @} end of REGISTER group */

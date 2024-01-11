@@ -36,6 +36,7 @@ NVT_ITCM void EQEI0_IRQHandler(void)
     }
     /* make sure that interrupt flag has been cleared. */
     intflag = EQEI0->STATUS;
+	NVT_UNUSED(intflag);
 
 }
 /**
@@ -59,6 +60,7 @@ NVT_ITCM void EQEI1_IRQHandler(void)
     }
     /* make sure that interrupt flag has been cleared. */
     intflag = EQEI1->STATUS;
+	NVT_UNUSED(intflag);
 
 }
 /*---------------------------------------------------------------------------------------------------------*/
