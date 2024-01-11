@@ -60,7 +60,7 @@ void LPADC_Open(LPADC_T *lpadc, uint32_t u32InputMode, uint32_t u32OpMode, uint3
 /**
   * @brief  Calibration the specified LPADC module
   *
-  * @param[in]  acmp The pointer of the specified LPADC module
+  * @param[in]  lpadc The pointer of the specified LPADC module
   *
   * @return     None
   *
@@ -130,7 +130,9 @@ void LPADC_Calibration(LPADC_T *lpadc)
 
 /**
   * @brief Disable LPADC module
+  *
   * @param[in] lpadc The pointer of the specified LPADC module
+  *
   * @return None
   */
 void LPADC_Close(LPADC_T *lpadc)
@@ -294,9 +296,9 @@ void LPADC_SelectAutoOperationMode(LPADC_T *lpadc, uint32_t u32TrigSel)
     lpadc->AUTOCTL |= u32TrigSel;
 }
 
-/*@}*/ /* end of group LPADC_EXPORTED_FUNCTIONS */
+/** @} end of group LPADC_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group LPADC_Driver */
+/** @} end of group LPADC_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 

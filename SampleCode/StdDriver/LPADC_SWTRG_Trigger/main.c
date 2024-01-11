@@ -76,7 +76,7 @@ void SYS_Init(void)
     /* Set PB.0 - PB.1 to input mode */
     GPIO_SetMode(PB, BIT0 | BIT1, GPIO_MODE_INPUT);
 
-    /* Configure the PB.2 - PB.3 LPADC analog input pins. */
+    /* Configure the PB.0 - PB.1 LPADC analog input pins. */
     SET_LPADC0_CH0_PB0();
     SET_LPADC0_CH1_PB1();
 
@@ -102,7 +102,7 @@ void LPADC_FunctionTest()
     {
         printf("Select input mode:\n");
         printf("  [1] Single end input (channel 1 only)\n");
-        printf("  [2] Differential input (channel pair 1 only)\n");
+        printf("  [2] Differential input (channel pair 0 only)\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
 

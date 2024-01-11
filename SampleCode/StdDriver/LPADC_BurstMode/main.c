@@ -59,7 +59,7 @@ void SYS_Init(void)
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
-    /* Set PB.2 - PB.3 to input mode */
+    /* Set PB.0 - PB.1 to input mode */
     GPIO_SetMode(PB, BIT0 | BIT1, GPIO_MODE_INPUT);
 
     /* Configure the PB.0 - PB.1 LPADC analog input pins. */
@@ -133,6 +133,8 @@ void LPADC_FunctionTest()
 
             /* Stop A/D conversion */
             LPADC_STOP_CONV(LPADC0);
+            /* Set the LPADC0 to Single mode */
+            LPADC0->ADCR &= ~LPADC_ADCR_ADMD_Msk;
 
             /* Show the conversion result */
             for (u32ConvCount = 0; u32ConvCount < CONV_TOTAL_COUNT; u32ConvCount++)
@@ -145,6 +147,7 @@ void LPADC_FunctionTest()
             {
                 i32ConversionData[0] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
             }
+
         }
         else if (u8Option == '2')
         {
@@ -181,6 +184,9 @@ void LPADC_FunctionTest()
 
             /* Stop A/D conversion */
             LPADC_STOP_CONV(LPADC0);
+
+            /* Set the LPADC0 to Single mode */
+            LPADC0->ADCR &= ~LPADC_ADCR_ADMD_Msk;
 
             /* Show the conversion result */
             for (u32ConvCount = 0; u32ConvCount < CONV_TOTAL_COUNT; u32ConvCount++)

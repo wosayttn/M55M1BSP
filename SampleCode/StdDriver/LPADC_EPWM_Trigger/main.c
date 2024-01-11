@@ -140,7 +140,7 @@ void LPADC_FunctionTest()
     {
         printf("Select input mode:\n");
         printf("  [1] Single end input (channel 1 only)\n");
-        printf("  [2] Differential input (channel pair 1 only)\n");
+        printf("  [2] Differential input (channel pair 0 only)\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
 
