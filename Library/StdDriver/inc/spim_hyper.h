@@ -19,11 +19,11 @@ extern "C"
   @{
 */
 
-/** @addtogroup SPI_HYPER_Driver SPI_HYPER Driver
+/** @addtogroup SPIM_HYPER_Driver SPI_HYPER Driver
   @{
 */
 
-/** @addtogroup SPI_HYPER_EXPORTED_CONSTANTS SPI_HYPER Exported Constants
+/** @addtogroup SPIM_HYPER_EXPORTED_CONSTANTS SPI_HYPER Exported Constants
   @{
 */
 // TESTCHIP_ONLY
