@@ -409,11 +409,6 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\sys.c</FilePath>
             </File>
-            <File>
-              <FileName>usbd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\usbd.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -438,6 +433,11 @@
               <FileName>fmc_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\fmc_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_user.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\usbd_user.c</FilePath>
             </File>
           </Files>
         </Group>

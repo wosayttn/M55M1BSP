@@ -11,11 +11,11 @@
 
 #define FMC_BLOCK_SIZE           (FMC_FLASH_PAGE_SIZE * 4UL)
 
-int FMC_Proc(unsigned int u32Cmd, unsigned int u32StartAddr, unsigned int u32EndAddr, unsigned int *pu32DataBuf);
+int FMC_Proc(uint32_t u32Cmd, uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t *pu32DataBuf);
 
-int FMC_Proc(unsigned int u32Cmd, unsigned int u32StartAddr, unsigned int u32EndAddr, unsigned int *pu32DataBuf)
+int FMC_Proc(uint32_t u32Cmd, uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t *pu32DataBuf)
 {
-    unsigned int u32Addr, Reg;
+    uint32_t u32Addr, Reg;
     uint32_t u32TimeOutCount;
 
     for (u32Addr = u32StartAddr; u32Addr < u32EndAddr; u32Addr += 4)
@@ -90,7 +90,7 @@ int FMC_Proc(unsigned int u32Cmd, unsigned int u32StartAddr, unsigned int u32End
  *              Please make sure that Register Write-Protection Function has been disabled
  *              before using this function.
  */
-int FMC_Read_User(unsigned int u32Addr, unsigned int *pu32DataBuf)
+int FMC_Read_User(uint32_t u32Addr, uint32_t *pu32DataBuf)
 {
     return FMC_Proc(FMC_ISPCMD_READ, u32Addr, u32Addr + 4, pu32DataBuf);
 }
@@ -107,27 +107,27 @@ int FMC_Read_User(unsigned int u32Addr, unsigned int *pu32DataBuf)
  *             Please make sure that Register Write-Protection Function has been disabled
  *             before using this function.
  */
-int FMC_Erase_User(unsigned int u32Addr)
+int FMC_Erase_User(uint32_t u32Addr)
 {
     return FMC_Proc(FMC_ISPCMD_PAGE_ERASE, u32Addr, u32Addr + 4, 0);
 }
 
-void ReadData(unsigned int u32StartAddr, unsigned int u32EndAddr, unsigned int *pu32DataBuf)    // Read pu32DataBuf from flash
+void ReadData(uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t *pu32DataBuf)    // Read pu32DataBuf from flash
 {
     FMC_Proc(FMC_ISPCMD_READ, u32StartAddr, u32EndAddr, pu32DataBuf);
     return;
 }
 
-void WriteData(unsigned int u32StartAddr, unsigned int u32EndAddr, unsigned int *pu32DataBuf)  // Write pu32DataBuf into flash
+void WriteData(uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t *pu32DataBuf)  // Write pu32DataBuf into flash
 {
     FMC_Proc(FMC_ISPCMD_PROGRAM, u32StartAddr, u32EndAddr, pu32DataBuf);
     return;
 }
 
 
-int EraseAP(unsigned int u32StartAddr, unsigned int u32ByteSize)
+int EraseAP(uint32_t u32StartAddr, uint32_t u32ByteSize)
 {
-    unsigned int u32Addr, u32Cmd, u32Size;
+    uint32_t u32Addr, u32Cmd, u32Size;
     int32_t i32Size;
     uint32_t u32TimeOutCount = FMC_TIMEOUT_ERASE;
 
@@ -172,9 +172,9 @@ int EraseAP(unsigned int u32StartAddr, unsigned int u32ByteSize)
     return 0;
 }
 
-void UpdateConfig(unsigned int *pu32DataBuf, unsigned int *res)
+void UpdateConfig(uint32_t *pu32DataBuf, uint32_t *res)
 {
-    unsigned int u32Size = (FMC_CONFIG_CNT * 4);
+    uint32_t u32Size = (FMC_CONFIG_CNT * 4);
 
     FMC_ENABLE_CFG_UPDATE();
     FMC_Proc(FMC_ISPCMD_CFG_ERASE, Config0, Config0 + 8, 0);

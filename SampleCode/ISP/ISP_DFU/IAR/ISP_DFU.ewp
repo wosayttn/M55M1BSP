@@ -1108,9 +1108,6 @@
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sys.c</name>
         </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\usbd.c</name>
-        </file>
     </group>
     <group>
         <name>User</name>
@@ -1125,6 +1122,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\main.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\usbd_user.c</name>
         </file>
     </group>
 </project>
