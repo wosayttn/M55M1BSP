@@ -1,5 +1,5 @@
 /**
- * \file platform.h
+ * \file platform_alt.h
  *
  * \brief This file contains the definitions and functions of the
  *        Mbed TLS platform abstraction layer.

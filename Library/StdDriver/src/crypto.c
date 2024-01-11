@@ -3352,15 +3352,15 @@ int32_t RSA_SetDMATransfer_KS(CRYPTO_T *crpt, char *Src, char *n, uint32_t u32PN
     if((s_u32RsaOpMode & CRYPTO_RSA_CTL_CRT_Msk) || (s_u32RsaOpMode & CRYPTO_RSA_CTL_SCAP_Msk))
     {
         /* For RSA CRT/SCAP mode, two primes of private key */
-        crpt->RSA_KSSTS[0] = (crpt->RSA_KSSTS[0] & (~(CRYPTO_RSA_KSSTS0_NUM0_Msk | CRYPTO_RSA_KSSTS0_NUM1_Msk))) | \
+        crpt->RSA_KSSTS0 = (crpt->RSA_KSSTS0 & (~(CRYPTO_RSA_KSSTS0_NUM0_Msk | CRYPTO_RSA_KSSTS0_NUM1_Msk))) | \
                              (u32PNum << CRYPTO_RSA_KSSTS0_NUM0_Pos) | (u32QNum << CRYPTO_RSA_KSSTS0_NUM1_Pos);
     }
     if(s_u32RsaOpMode & CRYPTO_RSA_CTL_CRT_Msk)
     {
         /* For RSA CRT mode, Cp, Cq, Dp, Dq, Rp, Rq */
-        crpt->RSA_KSSTS[0] = (crpt->RSA_KSSTS[0] & (~(CRYPTO_RSA_KSSTS0_NUM2_Msk | CRYPTO_RSA_KSSTS0_NUM3_Msk))) | \
+        crpt->RSA_KSSTS0 = (crpt->RSA_KSSTS0 & (~(CRYPTO_RSA_KSSTS0_NUM2_Msk | CRYPTO_RSA_KSSTS0_NUM3_Msk))) | \
                              (u32CpNum << CRYPTO_RSA_KSSTS0_NUM2_Pos) | (u32CqNum << CRYPTO_RSA_KSSTS0_NUM3_Pos);
-        crpt->RSA_KSSTS[1] = (u32DpNum << CRYPTO_RSA_KSSTS1_NUM4_Pos) | (u32DqNum << CRYPTO_RSA_KSSTS1_NUM5_Pos) | \
+        crpt->RSA_KSSTS1 = (u32DpNum << CRYPTO_RSA_KSSTS1_NUM4_Pos) | (u32DqNum << CRYPTO_RSA_KSSTS1_NUM5_Pos) | \
                              (u32RpNum << CRYPTO_RSA_KSSTS1_NUM6_Pos) | (u32RqNum << CRYPTO_RSA_KSSTS1_NUM7_Pos);
     }
     return 0;

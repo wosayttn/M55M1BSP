@@ -1,5 +1,5 @@
 /**
- * \file poly1305.h
+ * \file poly1305_alt.h
  *
  * \brief   This file contains Poly1305 definitions and functions.
  *

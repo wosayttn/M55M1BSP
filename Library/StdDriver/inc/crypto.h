@@ -27,19 +27,19 @@ extern "C"
   @{
 */
 
-#define PRNG_KEY_SIZE_128       0UL
-#define PRNG_KEY_SIZE_163       1UL
-#define PRNG_KEY_SIZE_192       2UL
-#define PRNG_KEY_SIZE_224       3UL
-#define PRNG_KEY_SIZE_233       4UL
-#define PRNG_KEY_SIZE_255       5UL
-#define PRNG_KEY_SIZE_256       6UL
-#define PRNG_KEY_SIZE_283       7UL
-#define PRNG_KEY_SIZE_384       8UL
-#define PRNG_KEY_SIZE_409       9UL
-#define PRNG_KEY_SIZE_512       10UL
-#define PRNG_KEY_SIZE_521       11UL
-#define PRNG_KEY_SIZE_571       12UL
+#define PRNG_KEY_SIZE_128       0UL    /*!< PRNG select 128-bit key length           \hideinitializer */
+#define PRNG_KEY_SIZE_163       1UL    /*!< PRNG select 163-bit key length           \hideinitializer */
+#define PRNG_KEY_SIZE_192       2UL    /*!< PRNG select 192-bit key length           \hideinitializer */
+#define PRNG_KEY_SIZE_224       3UL    /*!< PRNG select 224-bit key length           \hideinitializer */
+#define PRNG_KEY_SIZE_233       4UL    /*!< PRNG select 233-bit key length           \hideinitializer */
+#define PRNG_KEY_SIZE_255       5UL    /*!< PRNG select 255-bit key length           \hideinitializer */
+#define PRNG_KEY_SIZE_256       6UL    /*!< PRNG select 256-bit key length           \hideinitializer */
+#define PRNG_KEY_SIZE_283       7UL    /*!< PRNG select 283-bit key length           \hideinitializer */
+#define PRNG_KEY_SIZE_384       8UL    /*!< PRNG select 384-bit key length           \hideinitializer */
+#define PRNG_KEY_SIZE_409       9UL    /*!< PRNG select 409-bit key length           \hideinitializer */
+#define PRNG_KEY_SIZE_512       10UL   /*!< PRNG select 512-bit key length           \hideinitializer */
+#define PRNG_KEY_SIZE_521       11UL   /*!< PRNG select 521-bit key length           \hideinitializer */
+#define PRNG_KEY_SIZE_571       12UL   /*!< PRNG select 571-bit key length           \hideinitializer */
 
 #define PRNG_SEED_CONT          0UL     /*!< PRNG using current seed                 \hideinitializer */
 #define PRNG_SEED_RELOAD        1UL     /*!< PRNG reload new seed                    \hideinitializer */
@@ -93,15 +93,15 @@ extern "C"
 #define SHA_IN_SWAP             2UL     /*!< SHA swap input data                     \hideinitializer */
 #define SHA_IN_OUT_SWAP         3UL     /*!< SHA swap both input and output data     \hideinitializer */
 
-#define CRYPTO_DMA_FIRST        0x4UL   /*!< Do first encrypt/decrypt in DMA cascade \hideinitializer */
-#define CRYPTO_DMA_ONE_SHOT     0x5UL   /*!< Do one shot encrypt/decrypt with DMA      \hideinitializer */
-#define CRYPTO_DMA_CONTINUE     0x6UL   /*!< Do continuous encrypt/decrypt in DMA cascade \hideinitializer */
+#define CRYPTO_DMA_FIRST        0x4UL   /*!< Do first encrypt/decrypt in DMA cascade         \hideinitializer */
+#define CRYPTO_DMA_ONE_SHOT     0x5UL   /*!< Do one shot encrypt/decrypt with DMA            \hideinitializer */
+#define CRYPTO_DMA_CONTINUE     0x6UL   /*!< Do continuous encrypt/decrypt in DMA cascade    \hideinitializer */
 #define CRYPTO_DMA_LAST         0x7UL   /*!< Do last encrypt/decrypt in DMA cascade          \hideinitializer */
 
 
-#define RSA_MAX_KLEN            (4096)
-#define RSA_KBUF_HLEN           (RSA_MAX_KLEN/4 + 8)
-#define RSA_KBUF_BLEN           (RSA_MAX_KLEN + 32)
+#define RSA_MAX_KLEN            (4096)                  /*!< RSA Max key length                        \hideinitializer */
+#define RSA_KBUF_HLEN           (RSA_MAX_KLEN/4 + 8)    /*!< RSA Max key length in halfword            \hideinitializer */
+#define RSA_KBUF_BLEN           (RSA_MAX_KLEN + 32)     /*!< RSA Max key length in byte                \hideinitializer */
 
 #define RSA_KEY_SIZE_1024       (0UL)     /*!< RSA select 1024-bit key length           \hideinitializer */
 #define RSA_KEY_SIZE_2048       (1UL)     /*!< RSA select 2048-bit key length           \hideinitializer */
@@ -114,9 +114,7 @@ extern "C"
 #define RSA_MODE_SCAP           (0x100UL)     /*!< RSA select SCAP mode                  \hideinitializer */
 #define RSA_MODE_CRT_SCAP       (0x104UL)     /*!< RSA select CRT SCAP mode              \hideinitializer */
 #define RSA_MODE_CRTBYPASS_SCAP (0x10CUL)     /*!< RSA select CRT bypass SCAP mode       \hideinitializer */
-
-/** @} end of CRYPTO_EXPORTED_CONSTANTS CRYPTO Exported Constants*/
-
+/** @} end of group CRYPTO_EXPORTED_CONSTANTS */
 
 typedef enum
 {
@@ -143,8 +141,8 @@ typedef enum
     CURVE_BP_384 = 0x42,                /*!< ECC Brainpool 256-bits curve   \hideinitializer */
     CURVE_BP_512 = 0x43,                /*!< ECC Brainpool 256-bits curve   \hideinitializer */
     CURVE_SM2_256 = 0x50,               /*!< ECC SM2 curve            \hideinitializer */
-    CURVE_25519  = 0x51,
-    CURVE_Ed448  = 0x52,
+    CURVE_25519  = 0x51,                /*!< ED25519 curve            \hideinitializer */
+    CURVE_Ed448  = 0x52,                /*!< ED448   curve            \hideinitializer */
     CURVE_UNDEF,                        /*!< Invalid curve            \hideinitializer */
 }
 E_ECC_CURVE;                            /*!< ECC curve                \hideinitializer */
@@ -179,10 +177,24 @@ enum
 /* RSA working buffer for normal mode */
 typedef struct
 {
-    uint32_t au32RsaOutput[128]; /* The RSA answer. */
-    uint32_t au32RsaN[128]; /* The base of modulus operation word. */
-    uint32_t au32RsaM[128]; /* The base of exponentiation words. */
-    uint32_t au32RsaE[128]; /* The exponent of exponentiation words. */
+ /**
+ * @var RSA_BUF_NORMAL_T::au32RsaOutput[128]
+ * The RSA answer.
+ * ---------------------------------------------------------------------------------------------------
+ * @var RSA_BUF_NORMAL_T::au32RsaN[128]
+ * The base of modulus operation word.
+ * ---------------------------------------------------------------------------------------------------
+ * @var RSA_BUF_NORMAL_T::au32RsaM[128]
+ * The base of exponentiation words.
+ * ---------------------------------------------------------------------------------------------------
+ * @var RSA_BUF_NORMAL_T::au32RsaE[128]
+ * The exponent of exponentiation words.
+ * ---------------------------------------------------------------------------------------------------
+ */
+    uint32_t au32RsaOutput[128]; 
+    uint32_t au32RsaN[128]; 
+    uint32_t au32RsaM[128]; 
+    uint32_t au32RsaE[128]; 
 } RSA_BUF_NORMAL_T;
 
 /* RSA working buffer for CRT ( + CRT bypass) mode */
@@ -240,14 +252,12 @@ typedef struct
     uint32_t au32RsaM[128]; /* The base of exponentiation words. */
 } RSA_BUF_KS_T;
 
-/** @} end of group CRYPTO_EXPORTED_CONSTANTS */
-
 /** @addtogroup CRYPTO_EXPORTED_MACROS
   @{
 */
 /**
   * @brief This macro enables PRNG interrupt.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -255,7 +265,7 @@ typedef struct
 
 /**
   * @brief This macro disables PRNG interrupt.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -263,7 +273,7 @@ typedef struct
 
 /**
   * @brief This macro gets PRNG interrupt flag.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return PRNG interrupt flag.
   * \hideinitializer
   */
@@ -271,7 +281,7 @@ typedef struct
 
 /**
   * @brief This macro clears PRNG interrupt flag.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -279,7 +289,7 @@ typedef struct
 
 /**
   * @brief This macro enables AES interrupt.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -287,7 +297,7 @@ typedef struct
 
 /**
   * @brief This macro disables AES interrupt.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -295,7 +305,7 @@ typedef struct
 
 /**
   * @brief This macro enables CHAPOLY interrupt.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -303,7 +313,7 @@ typedef struct
 
 /**
   * @brief This macro disables CHAPOLY interrupt.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -311,7 +321,7 @@ typedef struct
 
 /**
   * @brief This macro gets AES interrupt flag.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return AES interrupt flag.
   * \hideinitializer
   */
@@ -319,7 +329,7 @@ typedef struct
 
 /**
   * @brief This macro clears AES interrupt flag.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -327,7 +337,7 @@ typedef struct
 
 /**
   * @brief This macro gets CHAPOLY interrupt flag.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return CHAPOLY interrupt flag.
   * \hideinitializer
   */
@@ -335,7 +345,7 @@ typedef struct
 
 /**
   * @brief This macro clears CHAPOLY interrupt flag.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -343,7 +353,7 @@ typedef struct
 
 /**
   * @brief This macro enables AES key protection.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -351,7 +361,7 @@ typedef struct
 
 /**
   * @brief This macro disables AES key protection.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -360,7 +370,7 @@ typedef struct
 
 /**
   * @brief This macro enables SHA interrupt.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -368,7 +378,7 @@ typedef struct
 
 /**
   * @brief This macro disables SHA interrupt.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -376,7 +386,7 @@ typedef struct
 
 /**
   * @brief This macro gets SHA interrupt flag.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return SHA interrupt flag.
   * \hideinitializer
   */
@@ -384,7 +394,7 @@ typedef struct
 
 /**
   * @brief This macro clears SHA interrupt flag.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -392,22 +402,23 @@ typedef struct
 
 /**
   * @brief This macro enables ECC interrupt.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
 #define ECC_ENABLE_INT(crypto)        ((crypto)->INTEN |= (CRYPTO_INTEN_ECCIEN_Msk|CRYPTO_INTEN_ECCEIEN_Msk))
 
 /**
-  * @brief This macro disables ECC interrupt.CRYPTO
-  * @param crpt     Specified cripto module
+  * @brief This macro disables ECC interrupt.
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
 #define ECC_DISABLE_INT(crypto)       ((crypto)->INTEN &= ~(CRYPTO_INTEN_ECCIEN_Msk|CRYPTO_INTEN_ECCEIEN_Msk))
 
 /**CRYPTO
-  * @param crpt     Specified cripto module
+  * @brief This macro gets ECC interrupt flag.
+  * @param crypto     Specified crypto module
   * @return ECC interrupt flag.
   * \hideinitializer
   */
@@ -415,7 +426,7 @@ typedef struct
 
 /**
   * @brief This macro clears ECC interrupt flag.
-  * @param crpt     Specified cripto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -423,7 +434,7 @@ typedef struct
 
 /**
   * @brief This macro enables RSA interrupt.
-  * @param crpt     Specified crypto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -431,7 +442,7 @@ typedef struct
 
 /**
   * @brief This macro disables RSA interrupt.
-  * @param crpt     Specified crypto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -439,7 +450,7 @@ typedef struct
 
 /**
   * @brief This macro gets RSA interrupt flag.
-  * @param crpt     Specified crypto module
+  * @param crypto     Specified crypto module
   * @return ECC interrupt flag.
   * \hideinitializer
   */
@@ -447,7 +458,7 @@ typedef struct
 
 /**
   * @brief This macro clears RSA interrupt flag.
-  * @param crpt     Specified crypto module
+  * @param crypto     Specified crypto module
   * @return None
   * \hideinitializer
   */
@@ -507,17 +518,19 @@ void Hex2RegEx(char input[], uint32_t volatile reg[], int shift);
 int32_t ECC_GetCurve(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, ECC_CURVE *curve);
 int ecc_strcmp(char *s1, char *s2);
 int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message, int x_ksnum, int y_ksnum, char *R, char *S);
-int32_t RSA_Open(CRYPTO_T *crpt, uint32_t u32OpMode, uint32_t u32KeySize,void *psRSA_Buf, uint32_t u32BufSize, uint32_t u32UseKS);
-int32_t RSA_SetKey(CRYPTO_T *crpt, char *Key);
-int32_t RSA_SetDMATransfer(CRYPTO_T *crpt, char *Src, char *n, char *P, char *Q);
-void RSA_Start(CRYPTO_T *crpt);
-int32_t RSA_Read(CRYPTO_T *crpt, char *Output);
-int32_t RSA_SetKey_KS(CRYPTO_T *crpt, uint32_t u32KeyNum, uint32_t u32KSMemType, uint32_t u32BlindKeyNum);
-int32_t RSA_SetDMATransfer_KS(CRYPTO_T *crpt, char *Src, char *n, uint32_t u32PNum,
+int32_t RSA_Open(CRYPTO_T *crypto, uint32_t u32OpMode, uint32_t u32KeySize,void *psRSA_Buf, uint32_t u32BufSize, uint32_t u32UseKS);
+int32_t RSA_SetKey(CRYPTO_T *crypto, char *Key);
+int32_t RSA_SetDMATransfer(CRYPTO_T *crypto, char *Src, char *n, char *P, char *Q);
+void RSA_Start(CRYPTO_T *crypto);
+int32_t RSA_Read(CRYPTO_T *crypto, char *Output);
+int32_t RSA_SetKey_KS(CRYPTO_T *crypto, uint32_t u32KeyNum, uint32_t u32KSMemType, uint32_t u32BlindKeyNum);
+int32_t RSA_SetDMATransfer_KS(CRYPTO_T *crypto, char *Src, char *n, uint32_t u32PNum,
                               uint32_t u32QNum, uint32_t u32CpNum, uint32_t u32CqNum, uint32_t u32DpNum,
                               uint32_t u32DqNum, uint32_t u32RpNum, uint32_t u32RqNum);
 /** @} end of group CRYPTO_EXPORTED_FUNCTIONS */
+
 /** @} end of group CRYPTO_Driver */
+
 /** @} end of group Standard_Driver */
 
 #ifdef __cplusplus

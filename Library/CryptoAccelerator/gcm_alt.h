@@ -1,5 +1,5 @@
 /**
- * \file gcm.h
+ * \file gcm_alt.h
  *
  * \brief This file contains GCM definitions and functions.
  *

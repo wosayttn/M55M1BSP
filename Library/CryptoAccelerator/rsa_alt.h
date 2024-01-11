@@ -1,5 +1,5 @@
 /**
- * \file rsa.h
+ * \file rsa_alt.h
  *
  * \brief This file provides an API for the RSA public-key cryptosystem.
  *
