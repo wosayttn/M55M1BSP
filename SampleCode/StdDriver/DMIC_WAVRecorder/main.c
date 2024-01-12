@@ -95,7 +95,7 @@ NVT_ITCM void SDH0_IRQHandler(void)
         {
             printf("\n***** card remove !\n");
             SD0.IsCardInsert = FALSE;   // SDISR_CD_Card = 1 means card remove for GPIO mode
-            memset(&SD0, 0, sizeof(SDH_INFO_T));
+            //memset(&SD0, 0, sizeof(SDH_INFO_T));
         }
         else
         {
