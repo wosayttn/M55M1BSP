@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include "NuMicro.h"
 
-/* To enable/disable OTP to be programed (Note: OTP is one-time-program) */
+/* To enable/disable OTP to be programmed (Note: OTP is one-time-program) */
 #define PROGRAM_OTP     0
 
 #if PROGRAM_OTP

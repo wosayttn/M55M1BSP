@@ -116,9 +116,8 @@ SECTIONS
   .text :
   {
     KEEP(*(.vectors))
-    /* *(.text*)*/
-
-    *(EXCLUDE_FILE(./User/exeinsram.o) .text*)
+    /* *(.text*) */
+    *(EXCLUDE_FILE(*fmc.o) .text*)
 
     KEEP(*(.init))
     KEEP(*(.fini))
@@ -137,8 +136,7 @@ SECTIONS
     *(SORT(.dtors.*))
     *(.dtors)
 
-    /* *(.rodata*)*/
-    *(EXCLUDE_FILE(./User/exeinsram.o) .rodata*)                                                
+    *(.rodata*)
 
     KEEP(*(.eh_frame*))
   } > FLASH
@@ -215,8 +213,7 @@ SECTIONS
     *(.data.*)
 
 	. = ALIGN(4);
-	./User/exeinsram.o (.text*)
-    ./User/exeinsram.o (.rodata*)
+    *fmc.o(.text*)
 
     . = ALIGN(4);
     /* preinit data */
@@ -243,7 +240,6 @@ SECTIONS
     /* All data end */
     __data_end__ = .;
   } > SRAM
-                                                           
   
   .sram :
   {

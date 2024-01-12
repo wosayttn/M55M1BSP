@@ -70,11 +70,11 @@ __HEAP_SIZE  = 0x00000800;
 /* System memory brief */
 MEMORY
 {
-  ITCM   (rx)  : ORIGIN = 0x00000010, LENGTH = 0x00010000
-  FLASH  (rx)  : ORIGIN = 0x00100000, LENGTH = 0x00200000
-  DTCM   (rwx) : ORIGIN = 0x20000000, LENGTH = 0x00020000
-  SRAM   (rwx) : ORIGIN = 0x20100000, LENGTH = 0x00150000
-  LPSRAM (rwx) : ORIGIN = 0x20310000, LENGTH = 0x00002000
+  ITCM   (rx)  : ORIGIN = 0x00000010,  LENGTH = 0x00010000
+  FLASH  (rx)  : ORIGIN = VECMAP_BASE, LENGTH = 0x00200000
+  DTCM   (rwx) : ORIGIN = 0x20000000,  LENGTH = 0x00020000
+  SRAM   (rwx) : ORIGIN = 0x20100000,  LENGTH = 0x00150000
+  LPSRAM (rwx) : ORIGIN = 0x20310000,  LENGTH = 0x00002000
 }
 
 
@@ -116,9 +116,7 @@ SECTIONS
   .text :
   {
     KEEP(*(.vectors))
-    /* *(.text*)*/
-
-    *(EXCLUDE_FILE(./User/exeinsram.o) .text*)
+    *(.text*)
 
     KEEP(*(.init))
     KEEP(*(.fini))
@@ -137,8 +135,7 @@ SECTIONS
     *(SORT(.dtors.*))
     *(.dtors)
 
-    /* *(.rodata*)*/
-    *(EXCLUDE_FILE(./User/exeinsram.o) .rodata*)                                                
+    *(.rodata*)
 
     KEEP(*(.eh_frame*))
   } > FLASH
@@ -214,10 +211,6 @@ SECTIONS
     *(.data)
     *(.data.*)
 
-	. = ALIGN(4);
-	./User/exeinsram.o (.text*)
-    ./User/exeinsram.o (.rodata*)
-
     . = ALIGN(4);
     /* preinit data */
     PROVIDE_HIDDEN (__preinit_array_start = .);
@@ -243,7 +236,6 @@ SECTIONS
     /* All data end */
     __data_end__ = .;
   } > SRAM
-                                                           
   
   .sram :
   {

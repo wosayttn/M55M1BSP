@@ -9,6 +9,17 @@
 #include "targetdev.h"
 #include "isp_user.h"
 
+void UserMemCopy(uint8_t pu8Dest[], uint8_t pu8Src[], uint32_t u32Size)
+{
+    uint32_t i = 0ul;
+
+    while (u32Size--)
+    {
+        pu8Dest[i] = pu8Src[i];
+        i++;
+    }
+}
+
 /* Supports maximum 2MB (APROM) */
 uint32_t GetApromSize(void)
 {

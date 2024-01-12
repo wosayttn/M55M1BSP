@@ -351,7 +351,6 @@
                     <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Core\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc</state>
-                    <state>$PROJ_DIR$\..\..\common</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -607,7 +606,7 @@
                 </option>
                 <option>
                     <name>AOutputFile</name>
-                    <state>$FILE_BNAME$.o</state>
+                    <state></state>
                 </option>
                 <option>
                     <name>ALimitErrorsCheck</name>
@@ -665,7 +664,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>ISP_DFU.bin</state>
+                    <state>WiFi_bypass.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -704,7 +703,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>ISP_DFU.out</state>
+                    <state>WiFi_bypass.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -768,7 +767,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\IAR\M55M1-LDROM.icf</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\IAR\M55M1.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -1001,7 +1000,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>ISP_DFU_import_lib.o</state>
+                    <state>WiFi_bypass_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1091,10 +1090,10 @@
     <group>
         <name>CMSIS</name>
         <file>
-            <name>$PROJ_DIR$\..\..\common\ISP_startup_M55M1.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\common\ISP_system_M55M1.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</name>
         </file>
     </group>
     <group>
@@ -1103,31 +1102,22 @@
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\clk.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\gpio.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sys.c</name>
         </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\uart.c</name>
+        </file>
     </group>
     <group>
         <name>User</name>
         <file>
-            <name>$PROJ_DIR$\..\descriptors.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\dfu_transfer.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\fmc_user.c</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\..\main.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\common\targetdev.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\usbd_user.c</name>
         </file>
     </group>
 </project>
