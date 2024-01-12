@@ -451,14 +451,4 @@
     <files/>
   </RTE>
 
-  <LayerInfo>
-    <Layers>
-      <Layer>
-        <LayName>Project</LayName>
-        <LayPrjMark>1</LayPrjMark>
-        <LayTitle>PMC_SPDMode_Wakeup</LayTitle>
-      </Layer>
-    </Layers>
-  </LayerInfo>
-
 </Project>
