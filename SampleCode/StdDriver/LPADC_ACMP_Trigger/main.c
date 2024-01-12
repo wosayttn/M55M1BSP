@@ -74,6 +74,9 @@ void SYS_Init(void)
     /* Enable ACMP01 peripheral clock */
     CLK_EnableModuleClock(ACMP01_MODULE);
 
+    /* Enable GPA peripheral clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
+
     /* Enable GPB peripheral clock */
     CLK_EnableModuleClock(GPIOB_MODULE);
 
@@ -86,24 +89,28 @@ void SYS_Init(void)
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
 
-    /* Set PB.2 - PB.4 to input mode */
-    GPIO_SetMode(PB, BIT0 | BIT1 | BIT4, GPIO_MODE_INPUT);
+    /* Set PA.10 to input mode */
+    GPIO_SetMode(PA, BIT10 , GPIO_MODE_INPUT);
+    /* Set PB.0 - PB.1 to input mode */
+    GPIO_SetMode(PB, BIT0 | BIT1 , GPIO_MODE_INPUT);
 
     /* Configure the PB.0 - PB.1 LPADC analog input pins. */
     SET_LPADC0_CH0_PB0();
     SET_LPADC0_CH1_PB1();
 
-    /* Set PB4 multi-function pin for ACMP1 positive input pin */
-    SET_ACMP1_P1_PB4();
-    /* Disable the PB.2 - PB.3 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0 | BIT1 | BIT4);
+    /* Set PA10 multi-function pin for ACMP1 positive input pin */
+    SET_ACMP1_P0_PA10();
+    /* Disable the PA10 digital input path to avoid the leakage current. */
+    GPIO_DISABLE_DIGITAL_PATH(PA, BIT10 );
+    /* Disable the PB.0 - PB.1 digital input path to avoid the leakage current. */
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT0 | BIT1);
 
 }
 
 void ACMP1_Init(void)
 {
     /* Select P1 as ACMP positive input channel */
-    ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P1);
+    ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P0);
     /* Configure ACMP1. Enable ACMP1 and select VBG output as the source of ACMP negative input. */
     ACMP_Open(ACMP01, 1, ACMP_CTL_NEGSEL_VBG, ACMP_CTL_HYSTERESIS_DISABLE);
 }
@@ -162,7 +169,7 @@ void LPADC_FunctionTest(void)
             g_u32COVNUMFlag = 0;
             g_u32ACMP1IntFlag = 0;
 
-            while (g_u32COVNUMFlag < 6)
+            while (1)
             {
                 /* Wait LPADC interrupt (g_u32LpadcIntFlag will be set at IRQ_Handler function) */
                 /* Wait ACMP interrupt (g_u32ACMP1IntFlag will be set at IRQ_Handler function) */
@@ -177,10 +184,10 @@ void LPADC_FunctionTest(void)
                 /* Get the conversion result of LPADC channel 2 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
 
-                if ((g_u32COVNUMFlag > 0) && (g_u32COVNUMFlag < 6))
-                {
-                    ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
-                }
+                ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
+
+                if (g_u32COVNUMFlag >= 6)
+                    break;
 
             }
 
@@ -221,7 +228,7 @@ void LPADC_FunctionTest(void)
             g_u32LpadcIntFlag = 0;
             g_u32COVNUMFlag = 0;
 
-            while (g_u32COVNUMFlag < 6)
+            while (1)
             {
 
                 /* Wait LPADC interrupt (g_u32LpadcIntFlag will be set at IRQ_Handler function) */
@@ -237,10 +244,11 @@ void LPADC_FunctionTest(void)
                 /* Get the conversion result of the sample module 0 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
 
-                if ((g_u32COVNUMFlag > 0) && (g_u32COVNUMFlag < 6))
-                {
-                    ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
-                }
+                ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
+
+               if (g_u32COVNUMFlag >= 6)
+                    break;
+
             }
 
 

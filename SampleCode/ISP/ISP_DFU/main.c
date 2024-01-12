@@ -28,28 +28,6 @@ int32_t SYS_Init(void);
 void ProcessHardFault(void) {}
 void SH_Return(void) {}
 
-/* Supports maximum 2MB (APROM) */
-uint32_t GetApromSize()
-{
-    /* The smallest of APROM u32Size is FMC_FLASH_PAGE_SIZE. */
-    uint32_t u32Size = FMC_FLASH_PAGE_SIZE, u32Data;
-    int result;
-
-    do
-    {
-        result = FMC_Read_User(FMC_APROM_BASE + u32Size, &u32Data);
-
-        if (result < 0)
-        {
-            return u32Size;
-        }
-        else
-        {
-            u32Size *= 2;
-        }
-    } while (1);
-}
-
 int32_t SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/

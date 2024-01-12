@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * @brief    Convert Band-gap (channel 29) and print conversion result.
+ * @brief    Convert Band-gap (channel 31) and print conversion result.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -90,9 +90,9 @@ void LPADC_FunctionTest()
     printf("|   LPADC clock source -> HIRC  = 12 MHz                              |\n");
     printf("|   LPADC clock divider          = 1                                   |\n");
     printf("|   LPADC clock                  = 12 MHz / 1 = 12 MHz                 |\n");
-    printf("|   LPADC extended sampling time = 20                                  |\n");
+    printf("|   LPADC extended sampling time = 40                                  |\n");
     printf("|   LPADC conversion time = 20 + LPADC extended sampling time = 40     |\n");
-    printf("|   LPADC conversion rate = 12 MHz / 40 = 300 kSPS                     |\n");
+    printf("|   LPADC conversion rate = 12 MHz / 60 = 200 kSPS                     |\n");
     printf("+----------------------------------------------------------------------+\n");
 
     /* LPADC Calibration */
@@ -101,9 +101,9 @@ void LPADC_FunctionTest()
     /* Set input mode as single-end, Single mode, and select channel 31 (band-gap voltage) */
     LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT31);
 
-    /* The maximum sampling rate will be 300 kSPS for Band-gap. */
-    /* Set sample module extended sampling time to 20. */
-    LPADC_SetExtendSampleTime(LPADC0, 0, 20);
+    /* The maximum sampling rate will be 200 kSPS for Band-gap. */
+    /* Set sample module extended sampling time to 40. */
+    LPADC_SetExtendSampleTime(LPADC0, 0, 40);
 
     /* Clear the A/D interrupt flag for safe */
     LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT);
@@ -124,8 +124,11 @@ void LPADC_FunctionTest()
 
     /* Get the conversion result of the channel 31 */
     i32ConversionData = LPADC_GET_CONVERSION_DATA(LPADC0, 31);
+
     printf("LPADC Conversion result of Band-gap: 0x%X (%d)\n", i32ConversionData, i32ConversionData);
-    printf("Band-gap voltage is %dmV if Reference voltage is 3.3V\n", (3300 * i32ConversionData) / 4095);
+
+    printf("Band-gap voltage is %dmV if Reference voltage is %.2f V\n", (3300 * i32ConversionData) / 4095,((float)4095 / i32ConversionData) * (float)(1.2));
+
 }
 
 int32_t main(void)

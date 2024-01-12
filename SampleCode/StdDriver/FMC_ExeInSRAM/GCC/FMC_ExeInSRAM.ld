@@ -53,6 +53,8 @@
  * | DTCM                  | 0x3000_0000 | 0x0002_0000 | NS | Non-Secure alias for DTCM       |
  * | SRAM                  | 0x2010_0000 | 0x0015_0000 | S  | 1344 kiB                        |
  * | SRAM                  | 0x3010_0000 | 0x0015_0000 | NS | Non-Secure alias for SRAM0/1/2  |
+ * | LPSRAM                | 0x2031_0000 | 0x0000_2000 | S  | 8 kiB                           |
+ * | LPSRAM                | 0x3031_0000 | 0x0000_2000 | NS | Non-Secure alias for LPSRAM     |
  * +-----------------------+-------------+-------------+----+---------------------------------+
  *
  *  Note: Ethos-U55 can access FLASH, internal SRAM 0,1 => activation buffers and
@@ -68,10 +70,11 @@ __HEAP_SIZE  = 0x00000800;
 /* System memory brief */
 MEMORY
 {
-  ITCM   (rx)  : ORIGIN = 0x00000000, LENGTH = 0x00010000
+  ITCM   (rx)  : ORIGIN = 0x00000010, LENGTH = 0x00010000
   FLASH  (rx)  : ORIGIN = 0x00100000, LENGTH = 0x00200000
   DTCM   (rwx) : ORIGIN = 0x20000000, LENGTH = 0x00020000
   SRAM   (rwx) : ORIGIN = 0x20100000, LENGTH = 0x00150000
+  LPSRAM (rwx) : ORIGIN = 0x20310000, LENGTH = 0x00002000
 }
 
 
@@ -113,7 +116,8 @@ SECTIONS
   .text :
   {
     KEEP(*(.vectors))
-    *(.text*)
+    /* *(.text*)*/
+
     *(EXCLUDE_FILE(./User/exeinsram.o) .text*)
 
     KEEP(*(.init))
@@ -133,8 +137,8 @@ SECTIONS
     *(SORT(.dtors.*))
     *(.dtors)
 
-    *(.rodata*)
-    *(EXCLUDE_FILE(./User/exeinsram.o) .rodata*)
+    /* *(.rodata*)*/
+    *(EXCLUDE_FILE(./User/exeinsram.o) .rodata*)                                                
 
     KEEP(*(.eh_frame*))
   } > FLASH
@@ -156,7 +160,11 @@ SECTIONS
     . = ALIGN(4);
     __zero_table_start__ = .;
     LONG (__bss_start__)
-    LONG (__bss_end__ - __bss_start__)
+    LONG ((__bss_end__ - __bss_start__) / 4)
+    LONG (__dtcm_zi_start__)
+    LONG ((__dtcm_zi_end__ - __dtcm_zi_start__) / 4)
+    LONG (__lpsram_zi_start__)
+    LONG ((__lpsram_zi_end__ - __lpsram_zi_start__) / 4)
     __zero_table_end__ = .;
   } > FLASH
 
@@ -165,15 +173,20 @@ SECTIONS
     . = ALIGN(4);
     __copy_table_start__ = .;
 
-    /* Section to be copied - part 1: RW data for for DTCM */
+    /* Section to be copied - part 1: RW data for SRAM */
     LONG (__eitcm)
     LONG (__data_start__)
-    LONG (__data_end__ - __data_start__)
+    LONG ((__data_end__ - __data_start__) / 4)
 
-    /* Section to be copied - part 2: RO code for for ITCM */
+    /* Section to be copied - part 2: RO code for ITCM */
     LONG (__etext)
     LONG (__itcm_text_start__)
-    LONG (__itcm_text_end__ - __itcm_text_start__ )
+    LONG ((__itcm_text_end__ - __itcm_text_start__ ) / 4)
+    
+    /* Section to be copied - part 3: RW data for DTCM */
+    LONG (__esram_data)
+    LONG (__dtcm_init_start__)
+    LONG ((__dtcm_init_end__ - __dtcm_init_start__ ) / 4)
 
     __copy_table_end__ = .;
   } > FLASH
@@ -188,7 +201,7 @@ SECTIONS
   .itcm : AT (__etext)
   {
     __itcm_text_start__ = .;
-    *(itcm)
+    *(ITCM)
     __itcm_text_end__ = .;
   } > ITCM
 
@@ -197,14 +210,13 @@ SECTIONS
   .data : AT(__eitcm)
   {
     __data_start__ = .;
-    
-    ./User/exeinsram.o (.text*) 
-    *(.fastcode) 
-    ./User/exeinsram.o (.rodata*)
-    
     *(vtable)
     *(.data)
     *(.data.*)
+
+	. = ALIGN(4);
+	./User/exeinsram.o (.text*)
+    ./User/exeinsram.o (.rodata*)
 
     . = ALIGN(4);
     /* preinit data */
@@ -229,10 +241,10 @@ SECTIONS
     KEEP(*(.jcr*))
     . = ALIGN(4);
     /* All data end */
-  } > DTCM
-
-  __edtcm_data = __etext + (__data_end__ - __data_start__);
-
+    __data_end__ = .;
+  } > SRAM
+                                                           
+  
   .sram :
   {
     . = ALIGN(16);
@@ -241,7 +253,6 @@ SECTIONS
 
   .bss :
   {
-    __data_end__ = .;
     . = ALIGN(4);
     __bss_start__ = .;
     *(.bss)
@@ -249,9 +260,37 @@ SECTIONS
     *(COMMON)
     . = ALIGN(4);
     __bss_end__ = .;
+  } > SRAM AT > SRAM
+
+  __esram_data = __eitcm + (__data_end__ - __data_start__);
+  
+  .dtcm.init : AT (__esram_data)
+  {
+    __dtcm_init_start__ = .;
+    *(DTCM.VTOR)
+    *(DTCM.Init)
+    __dtcm_init_end__ = .;
+  } > DTCM
+
+  .dtcm.zi (NOLOAD) :
+  {
+    . = ALIGN(4);
+    __dtcm_zi_start__ = .;
+    *(.bss.DTCM.ZeroInit)
+    __dtcm_zi_end__ = .;
   } > DTCM AT > DTCM
 
-  .heap (COPY) :
+  __edtcm_init_data = __esram_data + (__dtcm_init_end__ - __dtcm_init_start__);
+  
+  .lpsram (NOLOAD) :
+  {
+    . = ALIGN(4);
+    __lpsram_zi_start__ = .;
+    *(.lpSram)
+    __lpsram_zi_end__ = .;
+  } > LPSRAM AT > LPSRAM
+
+  .heap (NOLOAD) :
   {
     . = ALIGN(8);
     __end__ = .;
@@ -259,9 +298,9 @@ SECTIONS
     . = . + __HEAP_SIZE;
     . = ALIGN(8);
     __HeapLimit = .;
-  } > DTCM
+  } > SRAM
 
-  .stack (ORIGIN(DTCM) + LENGTH(DTCM) - __STACK_SIZE) (COPY) :
+  .stack (ORIGIN(DTCM) + LENGTH(DTCM) - __STACK_SIZE) (NOLOAD) :
   {
     . = ALIGN(8);
     __StackLimit = .;
@@ -271,6 +310,6 @@ SECTIONS
   } > DTCM
   PROVIDE(__stack = __StackTop);
 
-  /* Check if data + heap + stack exceeds DTCM limit */
-  ASSERT(__StackLimit >= __HeapLimit, "region DTCM overflowed with stack")
+  /* Because stack placed in DTCM, cannot check if data + heap + stack exceeds SRAM limit */
+  /*ASSERT(__StackLimit >= __HeapLimit, "region SRAM overflowed with stack")*/
 }

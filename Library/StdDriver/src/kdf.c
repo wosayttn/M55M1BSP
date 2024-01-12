@@ -114,8 +114,9 @@ void KDF_SetContext(const uint8_t pu8Context[], uint32_t u32ByteCnt)
   * @brief        Derive key
   *
   * @param[in]    eMode                 The pointer of the specified UART module.
-  *                                     - \ref eKDF_MODE_HKDF : HKDF  (RFC 5869)
-  *                                     - \ref eKDF_MODE_KBKDF: KBKDF (NIST SP 800-108)
+  *                                     - \ref E_KDF_MODE
+  *                                            eKDF_MODE_HKDF : HKDF  (RFC 5869)
+  *                                            eKDF_MODE_KBKDF: KBKDF (NIST SP 800-108)
   * @param[in]    u32DeriveKeyParam     To specify keyin, salt, label and context selection.
   *                                     If KDF_xxx_FROM_REG is set, users can use these functions -
   *                                         KDF_SetKeyInput, KDF_SetSalt, KDF_SetLabel and KDF_SetCtxt

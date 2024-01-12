@@ -17,6 +17,8 @@ __ALIGNED(4) uint8_t g_u8UsbRcvBuff[64];
 
 uint8_t volatile g_u8UsbDataReady = 0;
 
+void UserMemCopy(uint8_t dest[], uint8_t src[], uint32_t size);
+
 NVT_ITCM void USBD_IRQHandler(void)
 {
     uint32_t u32IntSts = USBD_GET_INT_FLAG();
@@ -152,7 +154,7 @@ NVT_ITCM void EP2_Handler(void)  /* Interrupt IN handler */
     uint8_t *ptr;
     ptr = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
     /* Prepare the data for next HID IN transfer */
-    USBD_MemCopy(ptr, g_au8ResponseBuff, EP2_MAX_PKT_SIZE);
+    UserMemCopy(ptr, g_au8ResponseBuff, EP2_MAX_PKT_SIZE);
     USBD_SET_PAYLOAD_LEN(EP2, EP2_MAX_PKT_SIZE);
 }
 
@@ -161,7 +163,7 @@ NVT_ITCM void EP3_Handler(void)  /* Interrupt OUT handler */
     uint8_t *ptr;
     /* Interrupt OUT */
     ptr = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP3));
-    USBD_MemCopy(g_u8UsbRcvBuff, ptr, EP3_MAX_PKT_SIZE);
+    UserMemCopy(g_u8UsbRcvBuff, ptr, EP3_MAX_PKT_SIZE);
     g_u8UsbDataReady = TRUE;
     USBD_SET_PAYLOAD_LEN(EP3, EP3_MAX_PKT_SIZE);
 }

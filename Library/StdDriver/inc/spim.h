@@ -1615,9 +1615,7 @@ typedef struct
 
 } SPIM_PHASE_T;  /*!< Structure holds SPIM IO phase info */
 
-/** @addtogroup SPIM HYPER_EXPORTED_CONSTANTS HYPER Exported Constants
-  @{
-*/
+/** @} end of group SPIM_EXPORTED_TYPEDEF */
 
 /** @} end of group SPIM_EXPORTED_CONSTANTS */
 

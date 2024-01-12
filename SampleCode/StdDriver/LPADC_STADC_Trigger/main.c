@@ -139,7 +139,7 @@ void LPADC_FunctionTest()
             g_u32LpadcIntFlag = 0;
             g_u32COVNUMFlag = 0;
 
-            while (g_u32COVNUMFlag < 6)
+            while (1)
             {
                 /* Wait LPADC interrupt (g_u32LpadcIntFlag will be set at IRQ_Handler function) */
                 while (g_u32LpadcIntFlag == 0);
@@ -149,12 +149,10 @@ void LPADC_FunctionTest()
 
                 /* Get the conversion result of LPADC channel 2 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
-
-                if ((u32COVNUMFlag > 0) && u32COVNUMFlag < 6)
-                {
-                    i32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 1);
-                }
-
+                i32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 1);
+          
+                if (g_u32COVNUMFlag >= 6)
+                    break;
             }
 
             /* Disable the sample module interrupt */
@@ -186,7 +184,7 @@ void LPADC_FunctionTest()
             g_u32LpadcIntFlag = 0;
             g_u32COVNUMFlag = 0;
 
-            while (g_u32COVNUMFlag < 6)
+            while (1)
             {
                 /* Wait LPADC interrupt (g_u32LpadcIntFlag will be set at IRQ_Handler function) */
                 while (g_u32LpadcIntFlag == 0);
@@ -196,12 +194,11 @@ void LPADC_FunctionTest()
 
                 /* Get the conversion result of the sample module 0 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
+                i32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
 
-                if ((u32COVNUMFlag > 0) && u32COVNUMFlag < 6)
-                {
-                    i32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
-                }
-
+                if (g_u32COVNUMFlag >= 6)
+                    break;
+ 
             }
 
             /* Disable the sample module interrupt */

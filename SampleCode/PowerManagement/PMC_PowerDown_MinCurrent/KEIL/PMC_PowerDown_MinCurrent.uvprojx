@@ -456,14 +456,4 @@
     <files/>
   </RTE>
 
-  <LayerInfo>
-    <Layers>
-      <Layer>
-        <LayName>Project</LayName>
-        <LayPrjMark>1</LayPrjMark>
-        <LayTitle>PMC_PowerDown_MinCurrent</LayTitle>
-      </Layer>
-    </Layers>
-  </LayerInfo>
-
 </Project>

@@ -200,7 +200,7 @@ int main(void)
     TTMR_Trigger_Init();
     LPPDMA_Init();
     s_u32IsTestOver = 0;
-    memset(s_au32CAPValue, 0, sizeof(s_au32CAPValue));
+
     TTMR_Start(TTMR0);
     PowerDownFunction();
     NVIC_DisableIRQ(LPPDMA_IRQn);

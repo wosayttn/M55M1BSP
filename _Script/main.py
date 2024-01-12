@@ -554,10 +554,10 @@ def check_prj():
                 if elem.text not in KEIL_DEVICE:
                     f.write("[Error] " + os.path.join(dirPath, file) + ": Device setting (" + elem.text + ") is not " + " or ".join(KEIL_DEVICE) + ".\n")
                 elem1 = elem1.find('Cads')
-                # default O2 (optim.text == '3'), O3 (optim.text == '4')
+                # default O2 (Optim == 3), O3 (Optim == 4)
                 optim = elem1.find('Optim')
                 if int(optim.text) < 3:
-                    f.write("[Warning] " + os.path.join(dirPath, file) + ": C optimized level setting (" + optim.text + ") is not at least -O2.\n")
+                    f.write("[Warning] " + os.path.join(dirPath, file) + ": C optimized level setting (" + optim.text + ") is not at least O2.\n")
                 # Check optimize for time is disabled
                 otime = elem1.find('oTime')
                 if otime.text == '1':
@@ -665,16 +665,17 @@ def check_prj():
                             if opt.find('name').text == "CCDiagSuppress":
                                 if opt.find('state').text != None:
                                     f.write("[Warning] " + os.path.join(dirPath, file) + ": ICCARM suppress setting (" + opt.find('state').text + "), not recommended.\n")
+                            # default Medium (CCOptLevel == 2), High (CCOptLevel == 3)
                             if opt.find('name').text == "CCOptLevel":
-                                if int(opt.find('state').text) < 3:
-                                    f.write("[Warning] " + os.path.join(dirPath, file) + ": C optimized level setting (" + opt.find('state').text + ") is not at least -O2.\n")
+                                if int(opt.find('state').text) < 2:
+                                    f.write("[Warning] " + os.path.join(dirPath, file) + ": C optimized level setting (" + opt.find('state').text + ") is not at least Medium.\n")
                     if setting.find('name').text == "ILINK":
                         e = setting.find('data')
                         for opt in e.findall('option'):
                             if opt.find('name').text == "IlinkProgramEntryLabel":
                                 if opt.find('state').text != IAR_RSTHANDLER:
                                     if opt.find('state').text != None:
-                                        f.write("[Error] " + os.path.join(dirPath, file) + ": Linker entry symbol setting (" + opt.find('state').text + ") is not " + IAR_RSTHANDLER + ".\n")
+                                        f.write("[Warning] " + os.path.join(dirPath, file) + ": Linker entry symbol setting (" + opt.find('state').text + ") is not " + IAR_RSTHANDLER + ".\n")
                                     else:
                                         f.write("[Warning] " + os.path.join(dirPath, file) + ": Linker entry symbol setting is missing.\n")
                             if opt.find('name').text == "IlinkOverrideProgramEntryLabel":

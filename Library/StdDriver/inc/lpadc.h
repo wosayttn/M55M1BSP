@@ -132,7 +132,7 @@ extern "C"
 
 extern int32_t g_LPADC_i32ErrCode;
 
-/** @addtogroup LPADC_EXPORTED_FUNCTIONS ADC Exported Functions
+/** @addtogroup LPADC_EXPORTED_FUNCTIONS LPADC Exported Functions
   @{
 */
 
@@ -498,7 +498,7 @@ extern int32_t g_LPADC_i32ErrCode;
  *    @details      This macro get Conversion End Wake-up Status register value.
  *    \hideinitializer
  */
-#define LPADC_GET_CONVERSION_END_WAKEUP_FLAG(LPADC) (((lpadc)->AUTOSTS & LPADC_AUTOSTS_ADWKF_Msk )>> LPADC_AUTOSTS_ADWKF_Pos)
+#define LPADC_GET_CONVERSION_END_WAKEUP_FLAG(lpadc) (((lpadc)->AUTOSTS & LPADC_AUTOSTS_ADWKF_Msk )>> LPADC_AUTOSTS_ADWKF_Pos)
 /**
  *    @brief        Clear Conversion End Wake-up Flag
  *

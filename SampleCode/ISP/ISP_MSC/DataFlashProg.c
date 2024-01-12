@@ -18,7 +18,7 @@
 
 #define SECTOR_PER_FLASH_PAGE     (FMC_FLASH_PAGE_SIZE / BYTE_PER_SEC)
 
-static uint8_t g_u8LockBit = 1;
+static uint8_t g_u8Lock = 0;
 int32_t g_FMC_i32ErrCode = 0;
 
 extern uint32_t g_u32StorageSize;
@@ -26,7 +26,16 @@ extern uint32_t g_u32StorageSize;
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */
 /*---------------------------------------------------------------------------------------------------------*/
-
+/* Fisrt sector (Boot sector) of FAT12 (Maximum size is 16MB)
+ *   Bytes      Content (Default)
+ *   13         Number of sectors per cluster (1)
+ *              Must be one of 1, 2, 4, 8, 16, 32, 64, 128.
+ *              A cluster should have at most 32768 bytes. In rare cases 65536 is OK.
+ *   19-20      Total number of sectors in the filesystem (2880)
+ *              (in case the partition is not FAT32 and smaller than 32 MB)
+ *   510-511    Signature 55 aa
+ */
+/* Try to increase Number of sectors per cluster (Byte 13) for bigger disk size */
 uint8_t u8FormatData[62] =
 {
     0xEB, 0x3C, 0x90, 0x4D, 0x53, 0x44, 0x4F, 0x53,
@@ -107,7 +116,7 @@ uint32_t FMC_Init(void)
 
     u32APSize = FMC_APROM_SIZE;
     FMC_ISP(FMC_ISPCMD_READ, FMC_ARLOCK_BASE, 0);
-    g_u8LockBit = ((FMC->ISPDAT & 0xFF) == 0x5A);
+    g_u8Lock = ((FMC->ISPDAT & 0xFF) != 0x5A);
 
     return u32APSize;
 }
@@ -131,20 +140,14 @@ void DataFlashWrite(uint32_t u32Addr, uint32_t *u32Buf)
     {
         u32Addr = u32Addr - DATA_SEC_ADDR;
 
-        if (g_u8LockBit)
+        if (g_u8Lock)
         {
-            if (((FMC_APROM_BASE + u32Addr) & (FMC_FLASH_PAGE_SIZE - 1)) == 0)
-                FMC_ISP(FMC_ISPCMD_PAGE_ERASE, (FMC_APROM_BASE + u32Addr), 0);
+            // Try to report APROM is locked
         }
-        /* For Security Lock */
-        else if (u32Addr == 0)
+        else
         {
-            uint32_t i;
-
-            for (i = 0; i < (g_u32StorageSize - DATA_SEC_ADDR); i += FMC_FLASH_PAGE_SIZE)
-            {
-                FMC_ISP(FMC_ISPCMD_PAGE_ERASE, FMC_APROM_BASE + i, 0);
-            }
+            if ((u32Addr & (FMC_FLASH_PAGE_SIZE - 1)) == 0)
+                FMC_ISP(FMC_ISPCMD_PAGE_ERASE, (FMC_APROM_BASE + u32Addr), 0);
         }
 
         DataFlashProgramPage(FMC_APROM_BASE + u32Addr, u32Buf);

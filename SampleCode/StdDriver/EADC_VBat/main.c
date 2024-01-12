@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     main.c
- * @version  V3.00
- * @brief    Convert VBAT/4 (Sample module 18) and print conversion result.
+ * @version  V1.00
+ * @brief    Convert VBAT/4 (Sample module 26) and print conversion result.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -131,7 +131,7 @@ void EADC_FunctionTest(void)
     /* Disable the ADINT0 interrupt */
     EADC_DISABLE_INT(EADC0, BIT0);
 
-    /* Get the conversion result of the sample module 18 */
+    /* Get the conversion result of the sample module 26 */
     i32ConversionData = EADC_GET_CONV_DATA(EADC0, 26);
     printf("Conversion result of VBAT/4: 0x%X (%d)\n\n", i32ConversionData, i32ConversionData);
 }

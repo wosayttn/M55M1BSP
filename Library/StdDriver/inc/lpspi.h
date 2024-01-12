@@ -33,7 +33,7 @@ extern "C"
 #define LPSPI_MODE_3                        (LPSPI_CTL_CLKPOL_Msk | LPSPI_CTL_TXNEG_Msk)      /*!< CLKPOL=1; RXNEG=0; TXNEG=1 */
 
 #define LPSPI_SLAVE                         (LPSPI_CTL_SLAVE_Msk)             /*!< Set as slave */
-#define LPSPI_MASTER                        (0x0U)                                            /*!< Set as master */
+#define LPSPI_MASTER                        (0x0U)                            /*!< Set as master */
 
 #define LPSPI_SS                            (LPSPI_SSCTL_SS_Msk)              /*!< Set SS */
 #define LPSPI_SS_ACTIVE_HIGH                (LPSPI_SSCTL_SSACTPOL_Msk)        /*!< SS active high */
@@ -72,7 +72,7 @@ extern "C"
 #define LPSPI_AUTOCTL_TRIGSEL_WKIOD         (0x07UL)
 
 
-/*@}*/ /* end of group LPSPI_EXPORTED_CONSTANTS */
+/** @} end of group LPSPI_EXPORTED_CONSTANTS */
 
 
 /** @addtogroup LPSPI_EXPORTED_FUNCTIONS LPSPI Exported Functions
@@ -587,16 +587,14 @@ uint32_t LPSPI_GetIntFlag(LPSPI_T *lpspi, uint32_t u32Mask);
 void LPSPI_ClearIntFlag(LPSPI_T *lpspi, uint32_t u32Mask);
 uint32_t LPSPI_GetStatus(LPSPI_T *lpspi, uint32_t u32Mask);
 
-/*@}*/ /* end of group LPSPI_EXPORTED_FUNCTIONS */
+/** @} end of group LPSPI_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group LPSPI_Driver */
+/** @} end of group LPSPI_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif
-
-/*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/
+#endif /* __LPSPI_H__ */

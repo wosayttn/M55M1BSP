@@ -57,6 +57,8 @@ SET_INTERFACE_REQ g_usbd_pfnSetInterface = NULL;    /*!< USB Set Interface Funct
 SET_CONFIG_CB g_usbd_pfnSetConfigCallback = NULL;   /*!< USB Set configuration callback function pointer */
 uint32_t g_u32EpStallLock                = 0ul;     /*!< Bit map flag to lock specified EP when SET_FEATURE */
 
+void UserMemCopy(uint8_t dest[], uint8_t src[], uint32_t size);
+
 /**
   * @brief      This function makes USBD module to be ready to use
   *
@@ -120,7 +122,7 @@ void USBD_Start(void)
   */
 void USBD_GetSetupPacket(uint8_t *buf)
 {
-    USBD_MemCopy(buf, g_usbd_SetupPacket, 8ul);
+    UserMemCopy(buf, g_usbd_SetupPacket, 8ul);
 }
 
 /**
@@ -136,7 +138,7 @@ void USBD_GetSetupPacket(uint8_t *buf)
 void USBD_ProcessSetupPacket(void)
 {
     /* Get SETUP packet from USB buffer */
-    USBD_MemCopy(g_usbd_SetupPacket, (uint8_t *)USBD_BUF_BASE + USBD->STBUFSEG, 8ul);
+    UserMemCopy(g_usbd_SetupPacket, (uint8_t *)USBD_BUF_BASE + USBD->STBUFSEG, 8ul);
 
     /* Check the request type */
     switch (g_usbd_SetupPacket[0] & 0x60ul)
@@ -578,7 +580,7 @@ void USBD_PrepareCtrlIn(uint8_t pu8Buf[], uint32_t u32Size)
         g_usbd_CtrlInSize = u32Size - g_usbd_CtrlMaxPktSize;
         USBD_SET_DATA1(EP0);
         addr = USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0);
-        USBD_MemCopy((uint8_t *)addr, pu8Buf, g_usbd_CtrlMaxPktSize);
+        UserMemCopy((uint8_t *)addr, pu8Buf, g_usbd_CtrlMaxPktSize);
         USBD_SET_PAYLOAD_LEN(EP0, g_usbd_CtrlMaxPktSize);
     }
     else
@@ -588,7 +590,7 @@ void USBD_PrepareCtrlIn(uint8_t pu8Buf[], uint32_t u32Size)
         g_usbd_CtrlInSize = 0ul;
         USBD_SET_DATA1(EP0);
         addr = USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0);
-        USBD_MemCopy((uint8_t *)addr, pu8Buf, u32Size);
+        UserMemCopy((uint8_t *)addr, pu8Buf, u32Size);
         USBD_SET_PAYLOAD_LEN(EP0, u32Size);
     }
 }
@@ -615,7 +617,7 @@ void USBD_CtrlIn(void)
         {
             /* Data size > MXPLD */
             addr = USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0);
-            USBD_MemCopy((uint8_t *)addr, (uint8_t *)g_usbd_CtrlInPointer, u32CtrlMaxPktSize);
+            UserMemCopy((uint8_t *)addr, (uint8_t *)g_usbd_CtrlInPointer, u32CtrlMaxPktSize);
             USBD_SET_PAYLOAD_LEN(EP0, u32CtrlMaxPktSize);
             g_usbd_CtrlInPointer += u32CtrlMaxPktSize;
             g_usbd_CtrlInSize -= u32CtrlMaxPktSize;
@@ -624,7 +626,7 @@ void USBD_CtrlIn(void)
         {
             /* Data size <= MXPLD */
             addr = USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0);
-            USBD_MemCopy((uint8_t *)addr, (uint8_t *)g_usbd_CtrlInPointer, g_usbd_CtrlInSize);
+            UserMemCopy((uint8_t *)addr, (uint8_t *)g_usbd_CtrlInPointer, g_usbd_CtrlInSize);
             USBD_SET_PAYLOAD_LEN(EP0, g_usbd_CtrlInSize);
             g_usbd_CtrlInPointer = 0;
             g_usbd_CtrlInSize = 0ul;
@@ -690,7 +692,7 @@ void USBD_CtrlOut(void)
     {
         u32Size = USBD_GET_PAYLOAD_LEN(EP1);
         u32Addr = USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP1);
-        USBD_MemCopy((uint8_t *)g_usbd_CtrlOutPointer, (uint8_t *)u32Addr, u32Size);
+        UserMemCopy((uint8_t *)g_usbd_CtrlOutPointer, (uint8_t *)u32Addr, u32Size);
         g_usbd_CtrlOutPointer += u32Size;
         g_usbd_CtrlOutSize += u32Size;
 

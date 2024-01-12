@@ -461,14 +461,4 @@
     <files/>
   </RTE>
 
-  <LayerInfo>
-    <Layers>
-      <Layer>
-        <LayName>ResetAndReturn</LayName>
-        <LayPrjMark>1</LayPrjMark>
-        <LayTitle>PMC_SPDMode_WakeupVTOR</LayTitle>
-      </Layer>
-    </Layers>
-  </LayerInfo>
-
 </Project>

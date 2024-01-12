@@ -9,11 +9,11 @@
 #include <stdio.h>
 #include "fmc_user.h"
 
-int FMC_Proc(unsigned int u32Cmd, unsigned int u32StartAddr, unsigned int u32EndAddr, unsigned int *pu32DataBuf);
+int FMC_Proc(uint32_t u32Cmd, uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t *pu32DataBuf);
 
-int FMC_Proc(unsigned int u32Cmd, unsigned int u32StartAddr, unsigned int u32EndAddr, unsigned int *pu32DataBuf)
+int FMC_Proc(uint32_t u32Cmd, uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t *pu32DataBuf)
 {
-    unsigned int u32Addr, Reg;
+    uint32_t u32Addr, Reg;
     uint32_t u32TimeOutCount;
 
     for (u32Addr = u32StartAddr; u32Addr < u32EndAddr; pu32DataBuf++, u32Addr += 4)
@@ -83,18 +83,18 @@ int FMC_Proc(unsigned int u32Cmd, unsigned int u32StartAddr, unsigned int u32End
  *              Please make sure that Register Write-Protection Function has been disabled
  *              before using this function.
  */
-int FMC_Read_User(unsigned int u32Addr, unsigned int *pu32DataBuf)
+int FMC_Read_User(uint32_t u32Addr, uint32_t *pu32DataBuf)
 {
     return FMC_Proc(FMC_ISPCMD_READ, u32Addr, u32Addr + 4, pu32DataBuf);
 }
 
-void ReadData(unsigned int u32StartAddr, unsigned int u32EndAddr, unsigned int *pu32DataBuf)    // Read pu32DataBuf from flash
+void ReadData(uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t *pu32DataBuf)    // Read pu32DataBuf from flash
 {
     FMC_Proc(FMC_ISPCMD_READ, u32StartAddr, u32EndAddr, pu32DataBuf);
     return;
 }
 
-void WriteData(unsigned int u32StartAddr, unsigned int u32EndAddr, unsigned int *pu32DataBuf)  // Write pu32DataBuf into flash
+void WriteData(uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t *pu32DataBuf)  // Write pu32DataBuf into flash
 {
     FMC_Proc(FMC_ISPCMD_PROGRAM, u32StartAddr, u32EndAddr, pu32DataBuf);
     return;
