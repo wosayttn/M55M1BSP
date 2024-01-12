@@ -533,7 +533,7 @@ typedef enum IRQn
 #define TIMER0_BASE               (APB1PERIPH_BASE + 0x06000UL)
 #define TIMER1_BASE               (APB1PERIPH_BASE + 0x06100UL)
 #define DAC0_BASE                 (APB1PERIPH_BASE + 0x07000UL)
-#if ! defined(TESTCHIP_ONLY)
+#if ! defined(ALIGN_AF_PINS)
 #define DAC1_BASE                 (APB1PERIPH_BASE + 0x07040UL)
 #endif
 #define HSOTG_BASE                (APB1PERIPH_BASE + 0x09000UL)
@@ -760,7 +760,7 @@ typedef enum IRQn
 #define CRC_NS                    ((CRC_T *)      (CRC_BASE       + NS_OFFSET))
 #define CRYPTO_NS                 ((CRYPTO_T *)   (CRYPTO_BASE    + NS_OFFSET))
 #define DAC0_NS                   ((DAC_T *)      (DAC0_BASE      + NS_OFFSET))
-#if ! defined(TESTCHIP_ONLY)
+#if ! defined(ALIGN_AF_PINS)
 #define DAC1_NS                   ((DAC_T *)      (DAC1_BASE      + NS_OFFSET))
 #endif
 #define DMIC0_NS                  ((DMIC_T *)     (DMIC0_BASE     + NS_OFFSET))
