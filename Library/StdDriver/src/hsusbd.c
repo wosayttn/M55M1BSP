@@ -128,38 +128,38 @@ void HSUSBD_ProcessSetupPacket(void)
     /* USB device request in setup packet: offset 0, D[6..5]: 0=Standard, 1=Class, 2=Vendor, 3=Reserved */
     switch (gUsbCmd.bmRequestType & 0x60ul)
     {
-        case REQ_STANDARD:
+    case REQ_STANDARD:
+    {
+        HSUSBD_StandardRequest();
+        break;
+    }
+
+    case REQ_CLASS:
+    {
+        if (g_hsusbd_pfnClassRequest != NULL)
         {
-            HSUSBD_StandardRequest();
-            break;
+            g_hsusbd_pfnClassRequest();
         }
 
-        case REQ_CLASS:
-        {
-            if (g_hsusbd_pfnClassRequest != NULL)
-            {
-                g_hsusbd_pfnClassRequest();
-            }
+        break;
+    }
 
-            break;
+    case REQ_VENDOR:
+    {
+        if (g_hsusbd_pfnVendorRequest != NULL)
+        {
+            g_hsusbd_pfnVendorRequest();
         }
 
-        case REQ_VENDOR:
-        {
-            if (g_hsusbd_pfnVendorRequest != NULL)
-            {
-                g_hsusbd_pfnVendorRequest();
-            }
+        break;
+    }
 
-            break;
-        }
-
-        default:
-        {
-            /* Setup error, stall the device */
-            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-            break;
-        }
+    default:
+    {
+        /* Setup error, stall the device */
+        HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+        break;
+    }
     }
 }
 
@@ -182,144 +182,27 @@ int HSUSBD_GetDescriptor(void)
 
     switch ((gUsbCmd.wValue & 0xff00ul) >> 8)
     {
-        /* Get Device Descriptor */
-        case DESC_DEVICE:
+    /* Get Device Descriptor */
+    case DESC_DEVICE:
+    {
+        u32Len = Minimum(u32Len, LEN_DEVICE);
+        HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8DevDesc, u32Len);
+        break;
+    }
+
+    /* Get Configuration Descriptor */
+    case DESC_CONFIG:
+    {
+        uint32_t u32TotalLen;
+
+        if ((HSUSBD->OPER & 0x04ul) == 0x04ul)
         {
-            u32Len = Minimum(u32Len, LEN_DEVICE);
-            HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8DevDesc, u32Len);
-            break;
-        }
+            u32TotalLen = g_hsusbd_sInfo->gu8ConfigDesc[3];
+            u32TotalLen = g_hsusbd_sInfo->gu8ConfigDesc[2] + (u32TotalLen << 8);
 
-        /* Get Configuration Descriptor */
-        case DESC_CONFIG:
-        {
-            uint32_t u32TotalLen;
-
-            if ((HSUSBD->OPER & 0x04ul) == 0x04ul)
+            if (u32Len > u32TotalLen)
             {
-                u32TotalLen = g_hsusbd_sInfo->gu8ConfigDesc[3];
-                u32TotalLen = g_hsusbd_sInfo->gu8ConfigDesc[2] + (u32TotalLen << 8);
-
-                if (u32Len > u32TotalLen)
-                {
-                    u32Len = u32TotalLen;
-
-                    if ((u32Len % g_hsusbd_CtrlMaxPktSize) == 0ul)
-                    {
-                        g_hsusbd_CtrlZero = (uint8_t)1ul;
-                    }
-                }
-
-                HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8ConfigDesc, u32Len);
-            }
-            else
-            {
-                u32TotalLen = g_hsusbd_sInfo->gu8FullConfigDesc[3];
-                u32TotalLen = g_hsusbd_sInfo->gu8FullConfigDesc[2] + (u32TotalLen << 8);
-
-                if (u32Len > u32TotalLen)
-                {
-                    u32Len = u32TotalLen;
-
-                    if ((u32Len % g_hsusbd_CtrlMaxPktSize) == 0ul)
-                    {
-                        g_hsusbd_CtrlZero = (uint8_t)1ul;
-                    }
-                }
-
-                HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8FullConfigDesc, u32Len);
-            }
-
-            break;
-        }
-
-#ifdef SUPPORT_LPM
-
-        /* Get BOS Descriptor */
-        case DESC_BOS:
-        {
-            if (g_hsusbd_sInfo->gu8BosDesc == 0)
-            {
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-            }
-            else
-            {
-                u32Len = Minimum(u32Len, LEN_BOS + LEN_BOSCAP);
-                HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8BosDesc, u32Len);
-            }
-
-            break;
-        }
-
-#endif
-
-        /* Get Qualifier Descriptor */
-        case DESC_QUALIFIER:
-        {
-            u32Len = Minimum(u32Len, LEN_QUALIFIER);
-            HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8QualDesc, u32Len);
-            break;
-        }
-
-        /* Get Other Speed Descriptor - Full speed */
-        case DESC_OTHERSPEED:
-        {
-            uint32_t u32TotalLen;
-
-            if ((HSUSBD->OPER & 0x04ul) == 0x04ul)
-            {
-                u32TotalLen = g_hsusbd_sInfo->gu8HSOtherConfigDesc[3];
-                u32TotalLen = g_hsusbd_sInfo->gu8HSOtherConfigDesc[2] + (u32TotalLen << 8);
-
-                if (u32Len > u32TotalLen)
-                {
-                    u32Len = u32TotalLen;
-
-                    if ((u32Len % g_hsusbd_CtrlMaxPktSize) == 0ul)
-                    {
-                        g_hsusbd_CtrlZero = (uint8_t)1ul;
-                    }
-                }
-
-                HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8HSOtherConfigDesc, u32Len);
-            }
-            else
-            {
-                u32TotalLen = g_hsusbd_sInfo->gu8FSOtherConfigDesc[3];
-                u32TotalLen = g_hsusbd_sInfo->gu8FSOtherConfigDesc[2] + (u32TotalLen << 8);
-
-                if (u32Len > u32TotalLen)
-                {
-                    u32Len = u32TotalLen;
-
-                    if ((u32Len % g_hsusbd_CtrlMaxPktSize) == 0ul)
-                    {
-                        g_hsusbd_CtrlZero = (uint8_t)1ul;
-                    }
-                }
-
-                HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8FSOtherConfigDesc, u32Len);
-            }
-
-            break;
-        }
-
-        /* Get HID Descriptor */
-        case DESC_HID:
-        {
-            uint32_t u32ConfigDescOffset;   /* u32ConfigDescOffset is configuration descriptor offset (HID descriptor start index) */
-            u32Len = Minimum(u32Len, LEN_HID);
-            u32ConfigDescOffset = g_hsusbd_sInfo->gu32ConfigHidDescIdx[gUsbCmd.wIndex & 0xfful];
-            HSUSBD_PrepareCtrlIn((uint8_t *)&g_hsusbd_sInfo->gu8ConfigDesc[u32ConfigDescOffset], u32Len);
-            break;
-        }
-
-        /* Get Report Descriptor */
-        case DESC_HID_RPT:
-        {
-            if (u32Len > g_hsusbd_sInfo->gu32HidReportSize[gUsbCmd.wIndex & 0xfful])
-            {
-                u32Len = g_hsusbd_sInfo->gu32HidReportSize[gUsbCmd.wIndex & 0xfful];
+                u32Len = u32TotalLen;
 
                 if ((u32Len % g_hsusbd_CtrlMaxPktSize) == 0ul)
                 {
@@ -327,41 +210,158 @@ int HSUSBD_GetDescriptor(void)
                 }
             }
 
-            HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8HidReportDesc[gUsbCmd.wIndex & 0xfful], u32Len);
-            break;
+            HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8ConfigDesc, u32Len);
         }
-
-        /* Get String Descriptor */
-        case DESC_STRING:
+        else
         {
-            if ((gUsbCmd.wValue & 0xfful) < 8ul)
+            u32TotalLen = g_hsusbd_sInfo->gu8FullConfigDesc[3];
+            u32TotalLen = g_hsusbd_sInfo->gu8FullConfigDesc[2] + (u32TotalLen << 8);
+
+            if (u32Len > u32TotalLen)
             {
-                if (u32Len > g_hsusbd_sInfo->gu8StringDesc[gUsbCmd.wValue & 0xfful][0])
+                u32Len = u32TotalLen;
+
+                if ((u32Len % g_hsusbd_CtrlMaxPktSize) == 0ul)
                 {
-                    u32Len = g_hsusbd_sInfo->gu8StringDesc[gUsbCmd.wValue & 0xfful][0];
-
-                    if ((u32Len % g_hsusbd_CtrlMaxPktSize) == 0ul)
-                    {
-                        g_hsusbd_CtrlZero = (uint8_t)1ul;
-                    }
+                    g_hsusbd_CtrlZero = (uint8_t)1ul;
                 }
-
-                HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8StringDesc[gUsbCmd.wValue & 0xfful], u32Len);
-            }
-            else
-            {
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-                val = 1;
             }
 
-            break;
+            HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8FullConfigDesc, u32Len);
         }
 
-        default:
-            /* Not support. Reply STALL. */
+        break;
+    }
+
+#ifdef SUPPORT_LPM
+
+    /* Get BOS Descriptor */
+    case DESC_BOS:
+    {
+        if (g_hsusbd_sInfo->gu8BosDesc == 0)
+        {
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+        }
+        else
+        {
+            u32Len = Minimum(u32Len, LEN_BOS + LEN_BOSCAP);
+            HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8BosDesc, u32Len);
+        }
+
+        break;
+    }
+
+#endif
+
+    /* Get Qualifier Descriptor */
+    case DESC_QUALIFIER:
+    {
+        u32Len = Minimum(u32Len, LEN_QUALIFIER);
+        HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8QualDesc, u32Len);
+        break;
+    }
+
+    /* Get Other Speed Descriptor - Full speed */
+    case DESC_OTHERSPEED:
+    {
+        uint32_t u32TotalLen;
+
+        if ((HSUSBD->OPER & 0x04ul) == 0x04ul)
+        {
+            u32TotalLen = g_hsusbd_sInfo->gu8HSOtherConfigDesc[3];
+            u32TotalLen = g_hsusbd_sInfo->gu8HSOtherConfigDesc[2] + (u32TotalLen << 8);
+
+            if (u32Len > u32TotalLen)
+            {
+                u32Len = u32TotalLen;
+
+                if ((u32Len % g_hsusbd_CtrlMaxPktSize) == 0ul)
+                {
+                    g_hsusbd_CtrlZero = (uint8_t)1ul;
+                }
+            }
+
+            HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8HSOtherConfigDesc, u32Len);
+        }
+        else
+        {
+            u32TotalLen = g_hsusbd_sInfo->gu8FSOtherConfigDesc[3];
+            u32TotalLen = g_hsusbd_sInfo->gu8FSOtherConfigDesc[2] + (u32TotalLen << 8);
+
+            if (u32Len > u32TotalLen)
+            {
+                u32Len = u32TotalLen;
+
+                if ((u32Len % g_hsusbd_CtrlMaxPktSize) == 0ul)
+                {
+                    g_hsusbd_CtrlZero = (uint8_t)1ul;
+                }
+            }
+
+            HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8FSOtherConfigDesc, u32Len);
+        }
+
+        break;
+    }
+
+    /* Get HID Descriptor */
+    case DESC_HID:
+    {
+        uint32_t u32ConfigDescOffset;   /* u32ConfigDescOffset is configuration descriptor offset (HID descriptor start index) */
+        u32Len = Minimum(u32Len, LEN_HID);
+        u32ConfigDescOffset = g_hsusbd_sInfo->gu32ConfigHidDescIdx[gUsbCmd.wIndex & 0xfful];
+        HSUSBD_PrepareCtrlIn((uint8_t *)&g_hsusbd_sInfo->gu8ConfigDesc[u32ConfigDescOffset], u32Len);
+        break;
+    }
+
+    /* Get Report Descriptor */
+    case DESC_HID_RPT:
+    {
+        if (u32Len > g_hsusbd_sInfo->gu32HidReportSize[gUsbCmd.wIndex & 0xfful])
+        {
+            u32Len = g_hsusbd_sInfo->gu32HidReportSize[gUsbCmd.wIndex & 0xfful];
+
+            if ((u32Len % g_hsusbd_CtrlMaxPktSize) == 0ul)
+            {
+                g_hsusbd_CtrlZero = (uint8_t)1ul;
+            }
+        }
+
+        HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8HidReportDesc[gUsbCmd.wIndex & 0xfful], u32Len);
+        break;
+    }
+
+    /* Get String Descriptor */
+    case DESC_STRING:
+    {
+        if ((gUsbCmd.wValue & 0xfful) < 8ul)
+        {
+            if (u32Len > g_hsusbd_sInfo->gu8StringDesc[gUsbCmd.wValue & 0xfful][0])
+            {
+                u32Len = g_hsusbd_sInfo->gu8StringDesc[gUsbCmd.wValue & 0xfful][0];
+
+                if ((u32Len % g_hsusbd_CtrlMaxPktSize) == 0ul)
+                {
+                    g_hsusbd_CtrlZero = (uint8_t)1ul;
+                }
+            }
+
+            HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8StringDesc[gUsbCmd.wValue & 0xfful], u32Len);
+        }
+        else
+        {
             HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
             val = 1;
-            break;
+        }
+
+        break;
+    }
+
+    default:
+        /* Not support. Reply STALL. */
+        HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+        val = 1;
+        break;
     }
 
     return val;
@@ -388,83 +388,83 @@ void HSUSBD_StandardRequest(void)
         /* Device to host */
         switch (gUsbCmd.bRequest)
         {
-            case GET_CONFIGURATION:
-            {
-                /* Return current configuration setting */
-                HSUSBD_PrepareCtrlIn((uint8_t *)&g_hsusbd_UsbConfig, 1ul);
+        case GET_CONFIGURATION:
+        {
+            /* Return current configuration setting */
+            HSUSBD_PrepareCtrlIn((uint8_t *)&g_hsusbd_UsbConfig, 1ul);
 
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
+            break;
+        }
+
+        case GET_DESCRIPTOR:
+        {
+            if (!HSUSBD_GetDescriptor())
+            {
                 HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
-                break;
             }
 
-            case GET_DESCRIPTOR:
+            break;
+        }
+
+        case GET_INTERFACE:
+        {
+            /* Return current interface setting */
+            HSUSBD_PrepareCtrlIn((uint8_t *)&g_hsusbd_UsbAltInterface, 1ul);
+
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
+            break;
+        }
+
+        case GET_STATUS:
+        {
+            /* Device */
+            if (gUsbCmd.bmRequestType == 0x80ul)
             {
-                if (!HSUSBD_GetDescriptor())
+                uint8_t u8Tmp;
+
+                u8Tmp = (uint8_t)0ul;
+
+                if ((g_hsusbd_sInfo->gu8ConfigDesc[7] & 0x40ul) == 0x40ul)
                 {
-                    HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
-                    HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
+                    u8Tmp |= (uint8_t)1ul; /* Self-Powered/Bus-Powered */
                 }
 
-                break;
-            }
-
-            case GET_INTERFACE:
-            {
-                /* Return current interface setting */
-                HSUSBD_PrepareCtrlIn((uint8_t *)&g_hsusbd_UsbAltInterface, 1ul);
-
-                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
-                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
-                break;
-            }
-
-            case GET_STATUS:
-            {
-                /* Device */
-                if (gUsbCmd.bmRequestType == 0x80ul)
+                if ((g_hsusbd_sInfo->gu8ConfigDesc[7] & 0x20ul) == 0x20ul)
                 {
-                    uint8_t u8Tmp;
-
-                    u8Tmp = (uint8_t)0ul;
-
-                    if ((g_hsusbd_sInfo->gu8ConfigDesc[7] & 0x40ul) == 0x40ul)
-                    {
-                        u8Tmp |= (uint8_t)1ul; /* Self-Powered/Bus-Powered */
-                    }
-
-                    if ((g_hsusbd_sInfo->gu8ConfigDesc[7] & 0x20ul) == 0x20ul)
-                    {
-                        u8Tmp |= (uint8_t)(g_hsusbd_RemoteWakeupEn << 1ul); /* Remote wake up */
-                    }
-
-                    g_hsusbd_buf[0] = u8Tmp;
-                }
-                /* Interface */
-                else if (gUsbCmd.bmRequestType == 0x81ul)
-                {
-                    g_hsusbd_buf[0] = (uint8_t)0ul;
-                }
-                /* Endpoint */
-                else if (gUsbCmd.bmRequestType == 0x82ul)
-                {
-                    uint8_t ep = (uint8_t)(gUsbCmd.wIndex & 0xful);
-                    g_hsusbd_buf[0] = (uint8_t)HSUSBD_GetStall((uint32_t)ep) ? (uint8_t)1 : (uint8_t)0;
+                    u8Tmp |= (uint8_t)(g_hsusbd_RemoteWakeupEn << 1ul); /* Remote wake up */
                 }
 
-                g_hsusbd_buf[1] = (uint8_t)0ul;
-                HSUSBD_PrepareCtrlIn(g_hsusbd_buf, 2ul);
-                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
-                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
-                break;
+                g_hsusbd_buf[0] = u8Tmp;
+            }
+            /* Interface */
+            else if (gUsbCmd.bmRequestType == 0x81ul)
+            {
+                g_hsusbd_buf[0] = (uint8_t)0ul;
+            }
+            /* Endpoint */
+            else if (gUsbCmd.bmRequestType == 0x82ul)
+            {
+                uint8_t ep = (uint8_t)(gUsbCmd.wIndex & 0xful);
+                g_hsusbd_buf[0] = (uint8_t)HSUSBD_GetStall((uint32_t)ep) ? (uint8_t)1 : (uint8_t)0;
             }
 
-            default:
-            {
-                /* Setup error, stall the device */
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-                break;
-            }
+            g_hsusbd_buf[1] = (uint8_t)0ul;
+            HSUSBD_PrepareCtrlIn(g_hsusbd_buf, 2ul);
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
+            break;
+        }
+
+        default:
+        {
+            /* Setup error, stall the device */
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+            break;
+        }
         }
     }
     else
@@ -472,105 +472,105 @@ void HSUSBD_StandardRequest(void)
         /* Host to device */
         switch (gUsbCmd.bRequest)
         {
-            case CLEAR_FEATURE:
+        case CLEAR_FEATURE:
+        {
+            if ((gUsbCmd.wValue & 0xfful) == FEATURE_ENDPOINT_HALT)
             {
-                if ((gUsbCmd.wValue & 0xfful) == FEATURE_ENDPOINT_HALT)
+
+                uint32_t epNum, i;
+
+                /* EP number stall is not allow to be clear in MSC class "Error Recovery Test".
+                   a flag: g_u32HsEpStallLock is added to support it */
+                epNum = (uint32_t)(gUsbCmd.wIndex & 0xful);
+
+                for (i = 0ul; i < HSUSBD_MAX_EP; i++)
                 {
-
-                    uint32_t epNum, i;
-
-                    /* EP number stall is not allow to be clear in MSC class "Error Recovery Test".
-                       a flag: g_u32HsEpStallLock is added to support it */
-                    epNum = (uint32_t)(gUsbCmd.wIndex & 0xful);
-
-                    for (i = 0ul; i < HSUSBD_MAX_EP; i++)
+                    if ((((HSUSBD->EP[i].EPCFG & 0xf0ul) >> 4) == epNum) && ((g_u32HsEpStallLock & (1ul << i)) == 0ul))
                     {
-                        if ((((HSUSBD->EP[i].EPCFG & 0xf0ul) >> 4) == epNum) && ((g_u32HsEpStallLock & (1ul << i)) == 0ul))
-                        {
-                            HSUSBD->EP[i].EPRSPCTL = (HSUSBD->EP[i].EPRSPCTL & 0xeful) | HSUSBD_EP_RSPCTL_TOGGLE;
-                        }
+                        HSUSBD->EP[i].EPRSPCTL = (HSUSBD->EP[i].EPRSPCTL & 0xeful) | HSUSBD_EP_RSPCTL_TOGGLE;
                     }
                 }
-                else if ((gUsbCmd.wValue & 0xfful) == FEATURE_DEVICE_REMOTE_WAKEUP)
-                {
-                    g_hsusbd_RemoteWakeupEn = (uint8_t)0ul;
-                }
-
-                /* Status stage */
-                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-                break;
             }
-
-            case SET_ADDRESS:
+            else if ((gUsbCmd.wValue & 0xfful) == FEATURE_DEVICE_REMOTE_WAKEUP)
             {
-                g_hsusbd_UsbAddr = (uint8_t)gUsbCmd.wValue;
-                /* Status Stage */
-                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-                break;
+                g_hsusbd_RemoteWakeupEn = (uint8_t)0ul;
             }
 
-            case SET_CONFIGURATION:
+            /* Status stage */
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+            break;
+        }
+
+        case SET_ADDRESS:
+        {
+            g_hsusbd_UsbAddr = (uint8_t)gUsbCmd.wValue;
+            /* Status Stage */
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+            break;
+        }
+
+        case SET_CONFIGURATION:
+        {
+            g_hsusbd_UsbConfig = (uint8_t)gUsbCmd.wValue;
+            g_hsusbd_Configured = (uint8_t)1ul;
+            /* Status stage */
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+            break;
+        }
+
+        case SET_FEATURE:
+        {
+            if ((gUsbCmd.wValue & 0x3ul) == 2ul)    /* TEST_MODE */
             {
-                g_hsusbd_UsbConfig = (uint8_t)gUsbCmd.wValue;
-                g_hsusbd_Configured = (uint8_t)1ul;
-                /* Status stage */
-                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-                break;
+                g_hsusbd_EnableTestMode = (uint8_t)1ul;
+                g_hsusbd_TestSelector = (uint8_t)(gUsbCmd.wIndex >> 8);
             }
 
-            case SET_FEATURE:
+            if ((gUsbCmd.wValue & 0x3ul) == 3ul)    /* HNP ebable */
             {
-                if ((gUsbCmd.wValue & 0x3ul) == 2ul)    /* TEST_MODE */
-                {
-                    g_hsusbd_EnableTestMode = (uint8_t)1ul;
-                    g_hsusbd_TestSelector = (uint8_t)(gUsbCmd.wIndex >> 8);
-                }
-
-                if ((gUsbCmd.wValue & 0x3ul) == 3ul)    /* HNP ebable */
-                {
-                    HSOTG->CTL |= (HSOTG_CTL_HNPREQEN_Msk | HSOTG_CTL_BUSREQ_Msk);
-                }
-
-                if ((gUsbCmd.wValue & FEATURE_DEVICE_REMOTE_WAKEUP) == FEATURE_DEVICE_REMOTE_WAKEUP)   /* REMOTE_WAKEUP ebable */
-                {
-                    g_hsusbd_RemoteWakeupEn = (uint8_t)1ul;
-                }
-
-                /* Status stage */
-                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-                break;
+                HSOTG->CTL |= (HSOTG_CTL_HNPREQEN_Msk | HSOTG_CTL_BUSREQ_Msk);
             }
 
-            case SET_INTERFACE:
+            if ((gUsbCmd.wValue & FEATURE_DEVICE_REMOTE_WAKEUP) == FEATURE_DEVICE_REMOTE_WAKEUP)   /* REMOTE_WAKEUP ebable */
             {
-                g_hsusbd_UsbAltInterface = (uint8_t)gUsbCmd.wValue;
-
-                if (g_hsusbd_pfnSetInterface != NULL)
-                {
-                    g_hsusbd_pfnSetInterface((uint32_t)g_hsusbd_UsbAltInterface);
-                }
-
-                /* Status stage */
-                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-                break;
+                g_hsusbd_RemoteWakeupEn = (uint8_t)1ul;
             }
 
-            default:
+            /* Status stage */
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+            break;
+        }
+
+        case SET_INTERFACE:
+        {
+            g_hsusbd_UsbAltInterface = (uint8_t)gUsbCmd.wValue;
+
+            if (g_hsusbd_pfnSetInterface != NULL)
             {
-                /* Setup error, stall the device */
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-                break;
+                g_hsusbd_pfnSetInterface((uint32_t)g_hsusbd_UsbAltInterface);
             }
+
+            /* Status stage */
+            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+            break;
+        }
+
+        default:
+        {
+            /* Setup error, stall the device */
+            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+            break;
+        }
         }
     }
 }
@@ -596,91 +596,91 @@ void HSUSBD_UpdateDeviceState(void)
 {
     switch (gUsbCmd.bRequest)
     {
-        case SET_ADDRESS:
+    case SET_ADDRESS:
+    {
+        HSUSBD_SET_ADDR(g_hsusbd_UsbAddr);
+        break;
+    }
+
+    case SET_CONFIGURATION:
+    {
+        if (g_hsusbd_UsbConfig == 0ul)
         {
-            HSUSBD_SET_ADDR(g_hsusbd_UsbAddr);
-            break;
+            uint32_t volatile i;
+
+            /* Reset PID DATA0 */
+            for (i = 0ul; i < HSUSBD_MAX_EP; i++)
+            {
+                if ((HSUSBD->EP[i].EPCFG & 0x1ul) == 0x1ul)
+                {
+                    HSUSBD->EP[i].EPRSPCTL = HSUSBD_EP_RSPCTL_TOGGLE;
+                }
+            }
         }
 
-        case SET_CONFIGURATION:
+        break;
+    }
+
+    case SET_FEATURE:
+    {
+        if (gUsbCmd.wValue == FEATURE_ENDPOINT_HALT)
         {
-            if (g_hsusbd_UsbConfig == 0ul)
+            uint32_t idx;
+            idx = (uint32_t)(gUsbCmd.wIndex & 0xful);
+            HSUSBD_SetStall(idx);
+        }
+        else if (g_hsusbd_EnableTestMode)
+        {
+            g_hsusbd_EnableTestMode = (uint8_t)0ul;
+
+            if (g_hsusbd_TestSelector == TEST_J)
             {
-                uint32_t volatile i;
-
-                /* Reset PID DATA0 */
-                for (i = 0ul; i < HSUSBD_MAX_EP; i++)
-                {
-                    if ((HSUSBD->EP[i].EPCFG & 0x1ul) == 0x1ul)
-                    {
-                        HSUSBD->EP[i].EPRSPCTL = HSUSBD_EP_RSPCTL_TOGGLE;
-                    }
-                }
+                HSUSBD->TEST = TEST_J;
             }
-
-            break;
+            else if (g_hsusbd_TestSelector == TEST_K)
+            {
+                HSUSBD->TEST = TEST_K;
+            }
+            else if (g_hsusbd_TestSelector == TEST_SE0_NAK)
+            {
+                HSUSBD->TEST = TEST_SE0_NAK;
+            }
+            else if (g_hsusbd_TestSelector == TEST_PACKET)
+            {
+                HSUSBD->TEST = TEST_PACKET;
+            }
+            else if (g_hsusbd_TestSelector == TEST_FORCE_ENABLE)
+            {
+                HSUSBD->TEST = TEST_FORCE_ENABLE;
+            }
         }
 
-        case SET_FEATURE:
+        if ((gUsbCmd.wValue & FEATURE_DEVICE_REMOTE_WAKEUP) == FEATURE_DEVICE_REMOTE_WAKEUP)
         {
-            if (gUsbCmd.wValue == FEATURE_ENDPOINT_HALT)
-            {
-                uint32_t idx;
-                idx = (uint32_t)(gUsbCmd.wIndex & 0xful);
-                HSUSBD_SetStall(idx);
-            }
-            else if (g_hsusbd_EnableTestMode)
-            {
-                g_hsusbd_EnableTestMode = (uint8_t)0ul;
-
-                if (g_hsusbd_TestSelector == TEST_J)
-                {
-                    HSUSBD->TEST = TEST_J;
-                }
-                else if (g_hsusbd_TestSelector == TEST_K)
-                {
-                    HSUSBD->TEST = TEST_K;
-                }
-                else if (g_hsusbd_TestSelector == TEST_SE0_NAK)
-                {
-                    HSUSBD->TEST = TEST_SE0_NAK;
-                }
-                else if (g_hsusbd_TestSelector == TEST_PACKET)
-                {
-                    HSUSBD->TEST = TEST_PACKET;
-                }
-                else if (g_hsusbd_TestSelector == TEST_FORCE_ENABLE)
-                {
-                    HSUSBD->TEST = TEST_FORCE_ENABLE;
-                }
-            }
-
-            if ((gUsbCmd.wValue & FEATURE_DEVICE_REMOTE_WAKEUP) == FEATURE_DEVICE_REMOTE_WAKEUP)
-            {
-                g_hsusbd_RemoteWakeupEn = (uint8_t)1ul;
-            }
-
-            break;
+            g_hsusbd_RemoteWakeupEn = (uint8_t)1ul;
         }
 
-        case CLEAR_FEATURE:
-        {
-            if (gUsbCmd.wValue == FEATURE_ENDPOINT_HALT)
-            {
-                uint32_t idx;
-                idx = (uint32_t)(gUsbCmd.wIndex & 0xful);
-                HSUSBD_ClearStall(idx);
-            }
-            else if (gUsbCmd.wValue == FEATURE_DEVICE_REMOTE_WAKEUP)
-            {
-                g_hsusbd_RemoteWakeupEn = (uint8_t)0ul;
-            }
+        break;
+    }
 
-            break;
+    case CLEAR_FEATURE:
+    {
+        if (gUsbCmd.wValue == FEATURE_ENDPOINT_HALT)
+        {
+            uint32_t idx;
+            idx = (uint32_t)(gUsbCmd.wIndex & 0xful);
+            HSUSBD_ClearStall(idx);
+        }
+        else if (gUsbCmd.wValue == FEATURE_DEVICE_REMOTE_WAKEUP)
+        {
+            g_hsusbd_RemoteWakeupEn = (uint8_t)0ul;
         }
 
-        default:
-            break;
+        break;
+    }
+
+    default:
+        break;
     }
 }
 
@@ -714,7 +714,7 @@ void HSUSBD_PrepareCtrlIn(uint8_t pu8Buf[], uint32_t u32Size)
  */
 void HSUSBD_CtrlIn(void)
 {
-    uint32_t volatile i, cnt;
+    uint32_t i, cnt;
     uint8_t u8Value;
 
     if (g_hsusbd_CtrlInSize >= g_hsusbd_CtrlMaxPktSize)
@@ -761,7 +761,7 @@ void HSUSBD_CtrlIn(void)
  */
 int32_t HSUSBD_CtrlOut(uint8_t pu8Buf[], uint32_t u32Size)
 {
-    uint32_t volatile i;
+    uint32_t i;
     uint32_t u32TimeOutCnt = HSUSBD_TIMEOUT;
 
     while (1)

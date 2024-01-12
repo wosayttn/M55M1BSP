@@ -685,9 +685,9 @@ extern const S_USBD_INFO_T gsInfo;
   */
 __STATIC_INLINE void USBD_MemCopy(uint8_t dest[], uint8_t src[], uint32_t size)
 {
-    uint32_t volatile i = 0ul;
+    uint32_t i = 0ul;
 
-    while (size--)
+    while (i < size)
     {
         dest[i] = src[i];
         i++;
