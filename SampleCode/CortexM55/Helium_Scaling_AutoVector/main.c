@@ -27,7 +27,6 @@ uint8_t image_dst[SCALED_IMG_WIDTH * SCALED_IMG_HEIGHT * RGB_BYTES] = {0};
  * Function Proto Type
  ****************************************************************************/
 void SYS_Init(void);
-void ScaleParameter_Init(void);
 
 
 void SysTick_Handler(void)
