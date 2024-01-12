@@ -674,7 +674,7 @@ def check_prj():
                             if opt.find('name').text == "IlinkProgramEntryLabel":
                                 if opt.find('state').text != IAR_RSTHANDLER:
                                     if opt.find('state').text != None:
-                                        f.write("[Error] " + os.path.join(dirPath, file) + ": Linker entry symbol setting (" + opt.find('state').text + ") is not " + IAR_RSTHANDLER + ".\n")
+                                        f.write("[Warning] " + os.path.join(dirPath, file) + ": Linker entry symbol setting (" + opt.find('state').text + ") is not " + IAR_RSTHANDLER + ".\n")
                                     else:
                                         f.write("[Warning] " + os.path.join(dirPath, file) + ": Linker entry symbol setting is missing.\n")
                             if opt.find('name').text == "IlinkOverrideProgramEntryLabel":
