@@ -19,11 +19,11 @@ extern "C"
   @{
 */
 
-/** @addtogroup SPIM_HYPER_Driver SPI_HYPER Driver
+/** @addtogroup SPIM_HYPER_Driver SPIM_HYPER Driver
   @{
 */
 
-/** @addtogroup SPIM_HYPER_EXPORTED_CONSTANTS SPI_HYPER Exported Constants
+/** @addtogroup SPIM_HYPER_EXPORTED_CONSTANTS SPIM_HYPER Exported Constants
   @{
 */
 // TESTCHIP_ONLY
@@ -58,8 +58,6 @@ extern "C"
 
 /* SPIM_HYPER Wait State Timeout Counter. */
 #define SPIM_HYPER_TIMEOUT                  0xFFFF //SystemCoreClock     /*!< SPIM_HYPER time-out counter (1 second time-out) */
-
-/** @endcond HIDDEN_SYMBOLS */
 
 /* SPIM_HYPER Define Error Code */
 #define SPIM_HYPER_OK                       ( 0L)           /*!< SPIM_HYPER operation OK */
@@ -144,105 +142,119 @@ extern "C"
 /*  Define Macros and functions                                               */
 /*----------------------------------------------------------------------------*/
 /**
- * @brief   Enable cipher balance.
- * \hideinitializer
- */
+  * @brief   Enable cipher balance.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_ENABLE_BALEN(spim)     (spim->CTL0 |= SPIM_CTL0_BALEN_Msk)
 
 /**
- * @brief   Disable cipher balance.
- * \hideinitializer
- */
+  * @brief   Disable cipher balance.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_DISABLE_BALEN(spim)    (spim->CTL0 &= ~(SPIM_CTL0_BALEN_Msk))
 
 /**
- * @brief       Enable Hyper Device Mode.
- * \hideinitializer
- */
+  * @brief   Enable Hyper Device Mode.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_ENABLE_HYPMODE(spim) (spim->CTL0 |= (SPIM_CTL0_HYPER_EN_Msk))
 
 /**
- * @brief       Set operation mode.
- * @param[in]   x   SPI Function Operation Mode
- *                  - \ref SPIM_HYPER_OPMODE_IO
- *                  - \ref SPIM_HYPER_OPMODE_PAGEWRITE
- *                  - \ref SPIM_HYPER_OPMODE_PAGEREAD
- *                  - \ref SPIM_HYPER_OPMODE_DIRECTMAP
- * \hideinitializer
- */
+  * @brief   Set operation mode.
+  * @param[in]   spim
+  * @param[in]   x   SPI Function Operation Mode
+  *                  - \ref SPIM_HYPER_OPMODE_IO
+  *                  - \ref SPIM_HYPER_OPMODE_PAGEWRITE
+  *                  - \ref SPIM_HYPER_OPMODE_PAGEREAD
+  *                  - \ref SPIM_HYPER_OPMODE_DIRECTMAP
+  * \hideinitializer
+  */
 #define SPIM_HYPER_SET_OPMODE(spim, x)    \
     (spim->CTL0 = (spim->CTL0 & ~(SPIM_CTL0_OPMODE_Msk)) | ((x) << SPIM_CTL0_OPMODE_Pos))
 
 /**
- * @brief   Get operation mode.
- * \hideinitializer
- */
+  * @brief   Get operation mode.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_OPMODE(spim)   \
     ((spim->CTL0 & SPIM_CTL0_OPMODE_Msk) >> SPIM_CTL0_OPMODE_Pos)
 
 /**
- * @brief   Start operation.
- * \hideinitializer
- */
+  * @brief   Start operation.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_SET_GO(spim)   (spim->CTL1 |= SPIM_CTL1_SPIMEN_Msk)
 
 /**
- * @brief   Is engine busy.
- * \hideinitializer
- */
+  * @brief   Is engine busy.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_IS_BUSY(spim)  \
     ((spim->CTL1 & SPIM_CTL1_SPIMEN_Msk) >> SPIM_CTL1_SPIMEN_Pos)
 
 #if (SPIM_REG_CACHE == 1) // TESTCHIP_ONLY not support
 /**
- * @brief   Is cache enabled.
- * \hideinitializer
- */
+  * @brief   Is cache enabled.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_CACHE_EN(spim)    ((spim->CTL1 & SPIM_CTL1_CACHEOFF_Msk) >> SPIM_CTL1_CACHEOFF_Pos)
 
 /**
- * @brief   Invalidate cache.
- * \hideinitializer
- */
+  * @brief   Invalidate cache.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_INVALID_CACHE(spim)    (spim->CTL1 |= SPIM_CTL1_CDINVAL_Msk)
 
 /**
- * @brief   Cache Write Through Enable.
- * \hideinitializer
- */
+  * @brief   Cache Write Through Enable.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 //#define SPIM_HYPER_ENABLE_CAWRTHEN(spim)    (spim->CTL1 |= SPIM_CTL1_CAWRTHEN_Msk)
 
 /**
- * @brief   Cache Write Through Disable.
- * \hideinitializer
- */
+  * @brief   Cache Write Through Disable.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 //#define SPIM_HYPER_DISABLE_CAWRTHEN(spim)    (spim->CTL1 &= ~(SPIM_CTL1_CAWRTHEN_Msk))
 
 /**
- * @brief   Cache Auto Selection Updated Cache Line Number Enable.
- * \hideinitializer
- */
+  * @brief   Cache Auto Selection Updated Cache Line Number Enable.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 //#define SPIM_HYPER_ENABLE_AUTOSCLN(spim)    (spim->CTL1 |= SPIM_CTL1_AUTOSCLN_Msk)
 
 /**
- * @brief   Cache Auto Selection Updated Cache Line Number Disable.
- * \hideinitializer
- */
+  * @brief   Cache Auto Selection Updated Cache Line Number Disable.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 //#define SPIM_HYPER_DISABLE_AUTOSCLN(spim)    (spim->CTL1 &= ~(SPIM_CTL1_AUTOSCLN_Msk))
 
 /**
- * @brief   Set Updated Cache Line Number per Cache Miss.
- * @param[in]   x   SPI Function Operation Mode
- *                  - \ref 0x01 : Update one cache line per cache miss. (default)
- *                  - \ref 0x02 : Update two cache line per cache miss.
- *                  - \ref 0x03 : Update three cache line per cache miss.
- *                  - \ref 0x04 : Update four cache line per cache miss.
- *                  - \ref 0x05 : Update five cache line per cache miss.
- *                  - \ref 0x06 : Update siz cache line per cache miss.
- *                  - \ref 0x07 : Update seven cache line per cache miss.
- *                  - \ref 0x08 : Update eight cache line per cache miss.
- * \hideinitializer
- */
+  * @brief   Set Updated Cache Line Number per Cache Miss.
+  * @param[in]   spim
+  * @param[in]   x   SPI Function Operation Mode
+  *                  - \ref 0x01 : Update one cache line per cache miss. (default)
+  *                  - \ref 0x02 : Update two cache line per cache miss.
+  *                  - \ref 0x03 : Update three cache line per cache miss.
+  *                  - \ref 0x04 : Update four cache line per cache miss.
+  *                  - \ref 0x05 : Update five cache line per cache miss.
+  *                  - \ref 0x06 : Update siz cache line per cache miss.
+  *                  - \ref 0x07 : Update seven cache line per cache miss.
+  *                  - \ref 0x08 : Update eight cache line per cache miss.
+  * \hideinitializer
+  */
 #define SPIM_HYPER_SET_UPDCLNUM(spim, x)    \
     (spim->CTL1 = (spim->CTL1 & ~(SPIM_CTL1_UPDCLNUM_Msk)) | (x) << SPIM_CTL1_UPDCLNUM_Pos)
 
@@ -250,62 +262,62 @@ extern "C"
     ((spim->CTL1 & SPIM_CTL1_UPDCLNUM_Msk) >> SPIM_CTL1_UPDCLNUM_Pos)
 
 /**
- * @brief   Reset Updated Cache Line Number per Cache Miss.
- * \hideinitializer
- */
+  * @brief   Reset Updated Cache Line Number per Cache Miss.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_RESET_UPDCLNUM(spim) (spim->CTL1 &= ~(SPIM_CTL1_UPDCLNUM_Msk))
 
 #endif
 
 /**
- * @brief       Set SPIM clock divider.
- * @param[in]   x   Clock Divider Register
- *                  SPI Flash For DTR commands
- *                  - \ref only 1, 2, 4, 8, 16, 32,….
- *                  Hyper Device Mode
- *                  - \ref only support 1 or 2
- * \hideinitializer
- */
+  * @brief   Set SPIM clock divider.
+  * @param[in]   spim
+  * @param[in]   x   Clock Divider Register, only support 1 or 2
+  * \hideinitializer
+  */
 #define SPIM_HYPER_SET_CLKDIV(spim, x) \
     (spim->CTL1 = (spim->CTL1 & ~(SPIM_CTL1_DIVIDER_Msk)) | ((x) << SPIM_CTL1_DIVIDER_Pos))
 
 /**
- * @brief       Set SPIM clock divider.
- * @param[in]   x   Clock Divider Register
- *                  SPI Flash For DTR commands
- *                  - \ref only 1, 2, 4, 8, 16, 32,….
- *                  Hyper Device Mode
- *                  - \ref only support 1 or 2
- * \hideinitializer
- */
+  * @brief   Set SPIM clock divider.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_CLKDIV(spim) \
     ((spim->CTL1 & SPIM_CTL1_DIVIDER_Msk) >> SPIM_CTL1_DIVIDER_Pos)
 
 /**
- * @brief   Set DMM mode SPI flash deselect time. It could be 0 ~ 0xFF.
- * \hideinitializer
- */
+  * @brief   Set DMM mode SPI flash deselect time.
+  * @param[in]   spim
+  * @param[in]   x   DMM mode SPI flash deselect time.
+  *                  It could be 0 ~ 0xFF.
+  * \hideinitializer
+  */
 #define SPIM_HYPER_SET_DMM_DESELTIM(spim, x)  \
     (spim->DMMCTL = (spim->DMMCTL & ~SPIM_DMMCTL_DESELTIM_Msk) | \
                     (((x) & 0x1FUL) << SPIM_DMMCTL_DESELTIM_Pos))
 
 /**
- * @brief   Get current DMM mode SPI flash deselect time setting.
- * \hideinitializer
- */
+  * @brief   Get current DMM mode SPI flash deselect time setting.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_DMM_DESELTIM(spim) \
     ((spim->DMMCTL & SPIM_DMMCTL_DESELTIM_Msk) >> SPIM_DMMCTL_DESELTIM_Pos)
 
 /**
- * @brief   Stop DMM mode Transfer.
- * \hideinitializer
- */
+  * @brief   Stop DMM mode Transfer.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_ENABLE_DMMDONE(spim)   (spim->DMMCTL |= SPIM_DMMCTL_HYPDONE_Msk)
 
 /**
- * @brief   Get DMM mode complete to stop TX/RX.
- * \hideinitializer
- */
+  * @brief   Get DMM mode complete to stop TX/RX.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_DMMDONE(spim)  \
     ((spim->DMMCTL & SPIM_DMMCTL_HYPDONE_Msk) >> SPIM_DMMCTL_HYPDONE_Pos)
 
@@ -313,149 +325,175 @@ extern "C"
 /* SPIM_DLLx constant definitions                                            */
 /*----------------------------------------------------------------------------*/
 /**
- * @brief   Set DLL0 OLDO Enable Bit
- * @param x is DLL circuit power mode.
- *          - \ref SPIM_HYPER_OP_ENABLE
- *          - \ref SPIM_HYPER_OP_DISABLE
- * \hideinitializer
- */
+  * @brief   Set DLL0 OLDO Enable Bit
+  * @param[in]   spim
+  * @param[in]   x is DLL circuit power mode.
+  *              - \ref SPIM_HYPER_OP_ENABLE
+  *              - \ref SPIM_HYPER_OP_DISABLE
+  * \hideinitializer
+  */
 #define SPIM_HYPER_ENABLE_DLLOLDO(spim, x)  \
     (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLOLDO_Msk)) | ((x) << SPIM_DLL0_DLLOLDO_Pos))
 
 /**
- * @brief   Set DLL0 Output Valid Counter Reset.
- * @param x is starts to count from 0x0 to DLLOVNUM
- *          - \ref SPIM_HYPER_OP_ENABLE
- *          - \ref SPIM_HYPER_OP_DISABLE
- * \hideinitializer
- */
+  * @brief   Set DLL0 Output Valid Counter Reset.
+  * @param[in]   spim
+  * @param[in]   x is starts to count from 0x0 to DLLOVNUM
+  *              - \ref SPIM_HYPER_OP_ENABLE
+  *              - \ref SPIM_HYPER_OP_DISABLE
+  * \hideinitializer
+  */
 #define SPIM_HYPER_ENABLE_DLLOVRST(spim, x) \
     (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLOVRST_Msk)) | ((x) << SPIM_DLL0_DLLOVRST_Pos))
 
 /**
- * @brief   Get DLL0 Output Valid Counter Reset Done.
- * \hideinitializer
- */
+  * @brief   Get DLL0 Output Valid Counter Reset Done.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_DLLOVRST(spim)  \
     ((spim->DLL0 & SPIM_DLL0_DLLOVRST_Msk) >> SPIM_DLL0_DLLOVRST_Pos)
 
 /**
- * @brief   Get DLL0 Clock Divider Circuit Status Bit.
- * \hideinitializer
- */
+  * @brief   Get DLL0 Clock Divider Circuit Status Bit.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_DLLCLKON(spim)  \
     ((spim->DLL0 & SPIM_DLL0_DLLCLKON_Msk) >> SPIM_DLL0_DLLCLKON_Pos)
 
 /**
- * @brief   Get DLL0 Lock Status Bit.
- * \hideinitializer
- */
+  * @brief   Get DLL0 Lock Status Bit.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_DLLLOCK(spim)   \
     ((spim->DLL0 & SPIM_DLL0_DLLLOCK_Msk) >> SPIM_DLL0_DLLLOCK_Pos)
 
 /**
- * @brief   Get DLL0 Output Ready Status.
- * \hideinitializer
- */
+  * @brief   Get DLL0 Output Ready Status.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_DLLREADY(spim)  \
     ((spim->DLL0 & SPIM_DLL0_DLLREADY_Msk) >> SPIM_DLL0_DLLREADY_Pos)
 
 /**
- * @brief   Get DLL0 Auto Trim Ready Status.
- * \hideinitializer
- */
+  * @brief   Get DLL0 Auto Trim Ready Status.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_DLLATRDY(spim)  \
     ((spim->DLL0 & SPIM_DLL0_DLLATRDY_Msk) >> SPIM_DLL0_DLLATRDY_Pos)
 
 /**
- * @brief   Get DLL0 Refresh Status Bit.
- * \hideinitializer
- */
+  * @brief   Get DLL0 Refresh Status Bit.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_DLLREF(spim)    \
     ((spim->DLL0 & SPIM_DLL0_DLL_REF_Msk) >> SPIM_DLL0_DLL_REF_Pos)
 
 /**
- * @brief   Set DLL0 Delay Step Number. It could be 0 ~ 0x1F.
- * \hideinitializer
- */
+  * @brief   Set DLL0 Delay Step Number.
+  * @param[in]   spim
+  * @param[in]   x   DLL0 Delay Step Number. It could be 0 ~ 0x1F.
+  * \hideinitializer
+  */
 #define SPIM_HYPER_SET_DLLDLY_NUM(spim, x)    \
     (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLL_DNUM_Msk)) | ((x) << SPIM_DLL0_DLL_DNUM_Pos))
 
 /**
- * @brief   Get DLL0 Delay Step Number.
- * \hideinitializer
- */
+  * @brief   Get DLL0 Delay Step Number.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_DLLDLY_NUM(spim)    \
     ((spim->DLL0 & SPIM_DLL0_DLL_DNUM_Msk) >> SPIM_DLL0_DLL_DNUM_Pos)
 
 /**
- * @brief   Set DLL Auto Trim.
- * @param   x is starts to count from 0x0 to DLLOVNUM
- *          - \ref SPIM_HYPER_OP_ENABLE
- *          - \ref SPIM_HYPER_OP_DISABLE
- * \hideinitializer
- */
+  * @brief   Set DLL Auto Trim.
+  * @param[in]   spim
+  * @param[in]   x is starts to count from 0x0 to DLLOVNUM
+  *              - \ref SPIM_HYPER_OP_ENABLE
+  *              - \ref SPIM_HYPER_OP_DISABLE
+  * \hideinitializer
+  */
 #define SPIM_HYPER_SET_AUTO_TRIM_DLL(spim, x)   \
     (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLATEN_Msk)) | ((x) << SPIM_DLL0_DLLATEN_Pos))
 
 /**
- * @brief   Set DLL0 Delay Step Number. It could be 0 ~ 0x1F.
- * \hideinitializer
- */
+  * @brief   Set DLL0 Delay Step Number.
+  * @param[in]   spim
+  * @param[in]   x   DLL0 Delay Step Number.
+  *                  It could be 0 ~ 0x1F.
+  * \hideinitializer
+  */
 #define SPIM_HYPER_SET_DLLDIV(spim, x)    \
     (spim->DLL0 = (spim->DLL0 & ~(SPIM_DLL0_DLLDIVER_Msk)) | ((x) << SPIM_DLL0_DLLDIVER_Pos))
 
 /**
- * @brief   Set Cycle Number of between DLL Lock and DLL Output Valid.
- *          It could be 0 ~ 0xFFFF.
- * \hideinitializer
- */
+  * @brief   Set Cycle Number of between DLL Lock and DLL Output Valid.
+  * @param[in]   spim
+  * @param[in]   x   Cycle Number of between DLL Lock and DLL Output Valid.
+  *                  It could be 0 ~ 0xFFFF.
+  * \hideinitializer
+  */
 #define SPIM_HYPER_SET_DLLOV_NUM(spim, x)    \
     (spim->DLL1 = (spim->DLL1 & ~(SPIM_DLL1_DLLOVNUM_Msk)) | ((x) << SPIM_DLL1_DLLOVNUM_Pos))
 
 /**
- * @brief   Get Cycle Number of between DLL Lock and DLL Output Valid.
- * \hideinitializer
- */
+  * @brief   Get Cycle Number of between DLL Lock and DLL Output Valid.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_DLLOV_NUM(spim) \
     ((spim->DLL1 & SPIM_DLL1_DLLOVNUM_Msk) >> SPIM_DLL1_DLLOVNUM_Pos)
 
 /**
- * @brief   Set Cycle Number between DLL Clock Divider Enable and DLL Lock Valid.
- *          It could be 0 ~ 0xFFFF.
- * \hideinitializer
- */
+  * @brief   Set Cycle Number between DLL Clock Divider Enable and DLL Lock Valid.
+  * @param[in]   spim
+  * @param[in]   x   Cycle Number between DLL Clock Divider Enable and DLL Lock Valid.
+  *                  It could be 0 ~ 0xFFFF.
+  * \hideinitializer
+  */
 #define SPIM_HYPER_SET_DLLLOCK_NUM(spim, x)  \
     (spim->DLL1 = (spim->DLL1 & ~(SPIM_DLL1_DLLLKNUM_Msk)) | ((x) << SPIM_DLL1_DLLLKNUM_Pos))
 
 /**
- * @brief   Get Cycle Number between DLL Clock Divider Enable and DLL Lock Valid.
- * \hideinitializer
- */
+  * @brief   Get Cycle Number between DLL Clock Divider Enable and DLL Lock Valid.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_DLLLOCKNUM(spim) \
     ((spim->DLL1 & SPIM_DLL1_DLLLKNUM_Msk) >> SPIM_DLL1_DLLLKNUM_Pos)
 
 /**
- * @brief   Set Cycle Number of between DLL Output Valid and DLL Auto Trim Enable Time.
- *          It could be 0 ~ 0xFFFF.
- * \hideinitializer
- */
+  * @brief   Set Cycle Number of between DLL Output Valid and DLL Auto Trim Enable Time.
+  * @param[in]   spim
+  * @param[in]   x   Cycle Number of between DLL Output Valid and DLL Auto Trim Enable Time.
+  *                  It could be 0 ~ 0xFFFF.
+  * \hideinitializer
+  */
 #define SPIM_HYPER_SET_DLLTRIM_NUM(spim, x) \
     (spim->DLL2 = (spim->DLL2 & ~(SPIM_DLL2_TRIMNUM_Msk)) | ((x) << SPIM_DLL2_TRIMNUM_Pos))
 
 /**
- * @brief   Set Cycle Number of between DLL OLDO Enable and DLL Clock Divider Enable Time.
- *          It could be 0 ~ 0xFFFF.
- * \hideinitializer
- */
+  * @brief   Set Cycle Number of between DLL OLDO Enable and DLL Clock Divider Enable Time.
+  * @param[in]   spim
+  * @param[in]   x   Cycle Number of between DLL OLDO Enable and DLL Clock Divider Enable Time.
+  *                  It could be 0 ~ 0xFFFF.
+  * \hideinitializer
+  */
 #define SPIM_HYPER_SET_DLLCLKON_NUM(spim, x)    \
     (spim->DLL2 = (spim->DLL2 & ~(SPIM_DLL2_CLKONNUM_Msk)) | ((x) << SPIM_DLL2_CLKONNUM_Pos))
 
 /**
-  * @brief      Set Hyper Chip Select Setup Time to Next CK Rising Edge.
+  * @brief   Set Hyper Chip Select Setup Time to Next CK Rising Edge.
+  * @param[in]  spim
   * @param[in]  x   Chip Select Setup Time to Next CK Rising Edge.
-  *                 - \ref SPIM_HYPER_CSST_3_5_HCLK : 3.5 HCLK cycles
-  *                 - \ref SPIM_HYPER_CSST_4_5_HCLK : 4.5 HCLK cycles
+  *                  - \ref SPIM_HYPER_CSST_3_5_HCLK : 3.5 HCLK cycles
+  *                  - \ref SPIM_HYPER_CSST_4_5_HCLK : 4.5 HCLK cycles
   * \hideinitializer
   */
 #define SPIM_HYPER_SET_CSST(spim, x)    \
@@ -463,7 +501,8 @@ extern "C"
                            ((x) << SPIM_HYPER_CONFIG1_CSST_Pos))
 
 /**
-  * @brief      Set Hyper Chip Select Hold Time After CK Falling Edge.
+  * @brief   Set Hyper Chip Select Hold Time After CK Falling Edge.
+  * @param[in]  spim
   * @param[in]  x   Chip Select Hold Time After CK Falling Edge.
   *                 - \ref SPIM_HYPER_CSH_0_5_HCLK : 0.5 HCLK cycles
   *                 - \ref SPIM_HYPER_CSH_1_5_HCLK : 1.5 HCLK cycles
@@ -476,9 +515,10 @@ extern "C"
                            ((x) << SPIM_HYPER_CONFIG1_CSH_Pos))
 
 /**
-  * @brief      Set Hyper Chip Select High between Transaction.
+  * @brief   Set Hyper Chip Select High between Transaction.
+  * @param[in]  spim
   * @param[in]  x   Set Chip Select High between Transaction as u8Value HCLK cycles.
-                    It could be 2 ~ 16.
+  *                  It could be 2 ~ 16.
   *                 - \ref SPIM_HYPER_CSHI_2_HCLK  : 2 HCLK cycles
   *                 - \ref SPIM_HYPER_CSHI_3_HCLK  : 3 HCLK cycles
   *                 - \ref SPIM_HYPER_CSHI_4_HCLK  : 4 HCLK cycles
@@ -500,7 +540,8 @@ extern "C"
                            ((x) << SPIM_HYPER_CONFIG1_CSHI_Pos))
 
 /**
-  * @brief      Set Hyper Chip Select Maximum Low Time.
+  * @brief   Set Hyper Chip Select Maximum Low Time.
+  * @param[in]  spim
   * @param[in]  u32CsMaxLT  Set Hyper Chip Select Maximum Low Time as u32CsMaxLT HCLK cycles.
   *                         It could be 1 ~ 2048.
   * \hideinitializer
@@ -509,14 +550,16 @@ extern "C"
     (spim->HYPER_CONFIG1 = (spim->HYPER_CONFIG1 & ~(SPIM_HYPER_CONFIG1_CSMAXLT_Msk)) | \
                            (((u32CsMaxLT) - 1) << SPIM_HYPER_CONFIG1_CSMAXLT_Pos))
 /**
-  * @brief  Get Hyper Chip Select Maximum Low Time.
+  * @brief   Get Hyper Chip Select Maximum Low Time.
+  * @param[in]   spim
   * \hideinitializer
   */
 #define SPIM_HYPER_GET_CSMAXLT(spim)    \
     (((spim->HYPER_CONFIG1 & SPIM_HYPER_CONFIG1_CSMAXLT_Msk) >> SPIM_HYPER_CONFIG1_CSMAXLT_Pos) + 1UL)
 
 /**
-  * @brief  Set Hyper Chip Initial Read Access Time.
+  * @brief   Set Hyper Chip Initial Read Access Time.
+  * @param[in]  spim
   * @param[in]  x   Initial Access Time. It could be 1 ~ 31.
   * \hideinitializer
   */
@@ -525,30 +568,34 @@ extern "C"
                            ((x) << SPIM_HYPER_CONFIG2_ACCTWR_Pos))
 
 /**
-  * @brief  Get Hyper Chip Initial Read Access Time.
+  * @brief   Get Hyper Chip Initial Read Access Time.
+  * @param[in]   spim
   * \hideinitializer
   */
 #define SPIM_HYPER_GET_ACCTWR(spim) \
     ((spim->HYPER_CONFIG2 & SPIM_HYPER_CONFIG2_ACCTWR_Msk) >> SPIM_HYPER_CONFIG2_ACCTWR_Pos)
 
 /**
-  * @brief      Set Hyper Device RESETN Low Time.
-  * @param[in]  u8Value Initial Device RESETN Low Time. It could be 0 ~ 255.
+  * @brief   Set Hyper Device RESETN Low Time.
+  * @param[in]  spim
+  * @param[in]  x Initial Device RESETN Low Time. It could be 0 ~ 255.
   * \hideinitializer
   */
-#define SPIM_HYPER_SET_RSTNLT(spim, u8Value)    \
+#define SPIM_HYPER_SET_RSTNLT(spim, x)    \
     (spim->HYPER_CONFIG2 = (spim->HYPER_CONFIG2 & ~(SPIM_HYPER_CONFIG2_RSTNLT_Msk)) |\
-                           ((u8Value) << SPIM_HYPER_CONFIG2_RSTNLT_Pos))
+                           ((x) << SPIM_HYPER_CONFIG2_RSTNLT_Pos))
 
 /**
-  * @brief  Get Hyper Device RESETN Low Time.
+  * @brief   Get Hyper Device RESETN Low Time.
+  * @param[in]   spim
   * \hideinitializer
   */
 #define SPIM_HYPER_GET_RSTNLT(spim) \
     ((spim->HYPER_CONFIG2 & SPIM_HYPER_CONFIG2_RSTNLT_Msk) >> SPIM_HYPER_CONFIG2_RSTNLT_Pos)
 
 /**
-  * @brief      Set Hyper Chip Initial Read Access Time.
+  * @brief   Set Hyper Chip Initial Read Access Time.
+  * @param[in]  spim
   * @param[in]  x   Initial Access Time. It could be 1 ~ 31.
   * \hideinitializer
   */
@@ -557,41 +604,47 @@ extern "C"
                            ((x) << SPIM_HYPER_CONFIG2_ACCTRD_Pos))
 
 /**
-  * @brief  Get Hyper Chip Initial Read Access Time.
+  * @brief   Get Hyper Chip Initial Read Access Time.
+  * @param[in]   spim
   * \hideinitializer
   */
 #define SPIM_HYPER_GET_ACCTRD(spim) \
     ((spim->HYPER_CONFIG2 & SPIM_HYPER_CONFIG2_ACCTRD_Msk) >> SPIM_HYPER_CONFIG2_ACCTRD_Pos)
 
 /**
- * @brief Clear Hyper Bus Write DATA
- * \hideinitializer
- */
+  * @brief   Clear Hyper Bus Write DATA
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_CLEAR_WDATA(spim)    (spim->HYPER_WDATA &= ~(0xFFFFFFFF))
 
 /**
- * @brief   Enable Hyper Chip Operation Done Interrupt.
- * \hideinitializer
- */
+  * @brief   Enable Hyper Chip Operation Done Interrupt.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_ENABLE_INT(spim) (spim->HYPER_INTEN |= SPIM_HYPER_INTEN_OPINTEN_Msk)
 
 /**
- * @brief   Disable Hyper Chip Operation Done Interrupt.
- * \hideinitializer
- */
+  * @brief   Disable Hyper Chip Operation Done Interrupt.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_DISABLE_INT(spim)    (spim->HYPER_INTEN &= ~(SPIM_HYPER_INTEN_OPINTEN_Msk))
 
 /**
- * @brief   Get Hyper Bus Operation Done Interrupt.
- * \hideinitializer
- */
+  * @brief   Get Hyper Bus Operation Done Interrupt.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_INT(spim)    \
     ((spim->HYPER_INTEN & SPIM_HYPER_INTEN_OPINTEN_Msk) >> SPIM_HYPER_INTEN_OPINTEN_Pos)
 
 /**
- * @brief   Get Hyper Chip Operation Done Interrupt.
- * \hideinitializer
- */
+  * @brief   Get Hyper Chip Operation Done Interrupt.
+  * @param[in]   spim
+  * \hideinitializer
+  */
 #define SPIM_HYPER_GET_INTSTS(spim) \
     ((spim->HYPER_INTEN & SPIM_HYPER_INTEN_OPINTEN_Msk) >> SPIM_HYPER_INTEN_OPINTEN_Pos)
 
@@ -606,12 +659,11 @@ __STATIC_INLINE void SPIM_HYPER_ENABLE_CACHE(SPIM_T *spim);
 __STATIC_INLINE uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim);
 
 /**
- * @brief   Disable cipher.
- *
- * @param spim
- * @note    When encryption/decryption of SPIM is disabled,
- *          please set SPIM_HYPER_SET_DMM_DESELTIM >= 0x8.
- */
+  * @brief   Disable cipher.
+  * @param[in]   spim
+  * @note    When encryption/decryption of SPIM is disabled,
+  *          please set SPIM_HYPER_SET_DMM_DESELTIM >= 0x8.
+  */
 __STATIC_INLINE void SPIM_HYPER_DISABLE_CIPHER(SPIM_T *spim)
 {
     spim->CTL0 |= (SPIM_CTL0_BALEN_Msk | SPIM_CTL0_CIPHOFF_Msk);
@@ -621,12 +673,11 @@ __STATIC_INLINE void SPIM_HYPER_DISABLE_CIPHER(SPIM_T *spim)
 }
 
 /**
- * @brief   Enable cipher.
- *
- * @param spim
- * @note    When encryption/decryption of SPIM is enabled,
- *          please set SPIM_HYPER_SET_DMM_DESELTIM() >= 0x10.
- */
+  * @brief   Enable cipher.
+  * @param[in]   spim
+  * @note    When encryption/decryption of SPIM is enabled,
+  *          please set SPIM_HYPER_SET_DMM_DESELTIM() >= 0x10.
+  */
 __STATIC_INLINE void SPIM_HYPER_ENABLE_CIPHER(SPIM_T *spim)
 {
     spim->CTL0 &= ~(SPIM_CTL0_CIPHOFF_Msk | SPIM_CTL0_BALEN_Msk);
@@ -636,12 +687,11 @@ __STATIC_INLINE void SPIM_HYPER_ENABLE_CIPHER(SPIM_T *spim)
 }
 
 /**
- * @brief   Disable cache.
- *
- * @param spim
- * @note    Minimum time width of SPIM_SS
- *          deselect time = (DESELTIM + 1) * AHB clock cycle time.
- */
+  * @brief   Disable cache.
+  * @param[in]   spim
+  * @note    Minimum time width of SPIM_SS
+  *          deselect time = (DESELTIM + 1) * AHB clock cycle time.
+  */
 __STATIC_INLINE void SPIM_HYPER_DISABLE_CACHE(SPIM_T *spim)
 {
 #if (SPIM_REG_CACHE == 1) //TESTCHIP_ONLY not support
@@ -656,12 +706,11 @@ __STATIC_INLINE void SPIM_HYPER_DISABLE_CACHE(SPIM_T *spim)
 }
 
 /**
- * @brief   Enable cache.
- *
- * @param spim
- * @note    Minimum time width of SPIM_SS
- *          deselect time = (DESELTIM + 4) * AHB clock cycle time.
- */
+  * @brief   Enable cache.
+  * @param[in]   spim
+  * @note    Minimum time width of SPIM_SS
+  *          deselect time = (DESELTIM + 4) * AHB clock cycle time.
+  */
 __STATIC_INLINE void SPIM_HYPER_ENABLE_CACHE(SPIM_T *spim)
 {
 #if (SPIM_REG_CACHE == 1) // TESTCHIP_ONLY not support
@@ -677,9 +726,9 @@ __STATIC_INLINE void SPIM_HYPER_ENABLE_CACHE(SPIM_T *spim)
 }
 
 /**
-  * @brief      Get Direct Map Address.
-  * @param      spim
-  * @return     Direct Mapping Address
+  * @brief   Get Direct Map Address.
+  * @param[in]  spim
+  * @return Direct Mapping Address
   */
 __STATIC_INLINE uint32_t SPIM_HYPER_GetDMMAddress(SPIM_T *spim)
 {
