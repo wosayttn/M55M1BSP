@@ -19,7 +19,6 @@
  * Generated from gen_model_cpp.py tool and ad_imu_model_quant_vela.tflite file.
  * Date: 2023-12-29 16:51:38.623196
  ***************************************************************************/
-
 #include <cstdint>
 #include <cstddef>
 #include "BufAttributes.h"

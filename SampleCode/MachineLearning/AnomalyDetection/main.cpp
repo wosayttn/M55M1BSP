@@ -26,7 +26,6 @@ using namespace std;
 
 //Systick Related
 extern uint32_t SystemCoreClock;        /* Expected to come from the cmsis-device lib */
-static bool s_bSysTickInit = false;
 static uint64_t cpu_cycle_count = 0;            /* 64-bit cpu cycle counter */
 volatile int32_t g_u32Ticks = 0;
 
@@ -88,20 +87,6 @@ void SysTick_Handler(void)
     cpu_cycle_count += SysTick->LOAD + 1;
 }
 
-/**
- * Gets the current SysTick derived counter value
- */
-static uint64_t Get_SysTick_Cycle_Count(void)
-{
-    uint32_t systick_val;
-
-    NVIC_DisableIRQ(SysTick_IRQn);
-    systick_val = SysTick->VAL & SysTick_VAL_CURRENT_Msk;
-    NVIC_EnableIRQ(SysTick_IRQn);
-
-    return cpu_cycle_count + (SysTick->LOAD - systick_val);
-}
-
 uint64_t Get_SysTick_Cycle_Count_Export(void)
 {
     uint32_t systick_val;
@@ -112,37 +97,6 @@ uint64_t Get_SysTick_Cycle_Count_Export(void)
 
     return cpu_cycle_count + (SysTick->LOAD - systick_val);
 }
-
-
-/**
- * SysTick initialisation
- */
-static int Init_SysTick(void)
-{
-    const uint32_t ticks_10ms = SystemCoreClock/100 + 1;
-    int err = 0;
-
-    /* Reset CPU cycle count value. */
-    cpu_cycle_count = 0;
-
-    /* Changing configuration for sys tick => guard from being
-     * interrupted. */
-    NVIC_DisableIRQ(SysTick_IRQn);
-
-    /* SysTick init - this will enable interrupt too. */
-    err = SysTick_Config(ticks_10ms);
-
-    /* Enable interrupt again. */
-    NVIC_EnableIRQ(SysTick_IRQn);
-
-    /* Wait for SysTick to kick off */
-    while (!err && !SysTick->VAL) {
-        __NOP();
-    }
-
-    return err;
-}
-
 
 int Init_SysTick_Export(void)
 {
@@ -281,10 +235,6 @@ static void loadAndEnableConfig(ARM_MPU_Region_t const *table, uint32_t cnt)
 
 int main(void) {
 
-    uint32_t i, j, ii;
-    uint32_t dummy = 0;
-    int ret = 0;
-    uint16_t cc_index;
     float cc[IMU_DATAIN_SIZE];
     float err_mae, temp;
 
@@ -399,7 +349,6 @@ int main(void) {
         }
 
     }
-    return ret;
 
 }
 

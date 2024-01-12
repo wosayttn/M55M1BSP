@@ -12,11 +12,7 @@
 
 #include <vector>
 #include "Model.h"
-
-
-#define IMU_DATAIN_LEN                 200
-#define IMU_DATAIN_AXES_NUM         3
-#define IMU_DATAIN_SIZE                 IMU_DATAIN_LEN * IMU_DATAIN_AXES_NUM
+#include "board_m55M1.h"
 
 #define  VAL_NORMALIZE_MAX        (1572)
 #define  VAL_NORMALIZE_MIN         (-2048)
