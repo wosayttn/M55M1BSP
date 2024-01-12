@@ -2184,7 +2184,7 @@
             <name>$PROJ_DIR$\..\Source\jquanti-helium.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\Source\nvt_jpeg.c</name>
+            <name>$PROJ_DIR$\..\Source\jacclib.c</name>
         </file>
     </group>
 </project>

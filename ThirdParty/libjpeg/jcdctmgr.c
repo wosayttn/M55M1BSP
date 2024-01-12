@@ -17,8 +17,8 @@
 #include "jpeglib.h"
 #include "jdct.h"		/* Private declarations for DCT subsystem */
 
-#ifdef NVT_JPEG_SIMD
-#include "../../Library/JpegAcceleratorLib/include/simd_helium.h"
+#ifdef WITH_JPEGACC
+#include "../../Library/JpegAcceleratorLib/include/jpegaccelerator.h"
 #endif
 
 /* Private subobject for this module */
@@ -52,7 +52,7 @@ typedef union {
 #endif
 } divisor_table;
 
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
 typedef union {
     /*This is the type define for reciprocal table*/
     DCTELEM int_array[DCTSIZE2*4];
@@ -91,7 +91,7 @@ forward_DCT (j_compress_ptr cinfo, jpeg_component_info * compptr,
     forward_DCT_method_ptr do_dct = fdct->do_dct[compptr->component_index];
     DCTELEM * divisors = (DCTELEM *) compptr->dct_table;
 
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
     /*To fit the simd int16x8 format, allocation space for int16 data*/
     DCTELEM * divisors_recp = (DCTELEM *) compptr->dct_recp_table;
     int16_t i16workspace[DCTSIZE2];
@@ -113,7 +113,7 @@ forward_DCT (j_compress_ptr cinfo, jpeg_component_info * compptr,
             register int i;
             register JCOEFPTR output_ptr = coef_blocks[bi];
 
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
             /*Do coeffcient quantization in the following loop*/
             for (i = 0; i < DCTSIZE2; i++)
                 i16workspace[i] = (int16_t)(workspace[i]);
@@ -234,7 +234,7 @@ start_pass_fdctmgr (j_compress_ptr cinfo)
     JQUANT_TBL * qtbl;
     DCTELEM * dtbl;
 
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
     JQUANT_RECP_TBL * qtrecptbl;
     DCTELEM * dtbl_recp;
 #endif
@@ -407,7 +407,7 @@ start_pass_fdctmgr (j_compress_ptr cinfo)
         qtbl = cinfo->quant_tbl_ptrs[qtblno];
         /* Create divisor table from quant table */
 
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
         /* Create reciprocal divisor table from same quant table */
         qtrecptbl = cinfo->quant_recp_tbl_ptrs[qtblno];
 #endif
@@ -424,7 +424,7 @@ start_pass_fdctmgr (j_compress_ptr cinfo)
                     ((DCTELEM) qtbl->quantval[i]) << (compptr->component_needed ? 4 : 3);
             }
             fdct->pub.forward_DCT[ci] = forward_DCT;
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
             /*Cpoy dct_table from j_compress_ptr to jpeg_component_info */
             dtbl_recp = (DCTELEM *) compptr->dct_recp_table;
 
@@ -536,7 +536,7 @@ jinit_forward_dct (j_compress_ptr cinfo)
         compptr->dct_table =
             (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
                                         SIZEOF(divisor_table));
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
         compptr->dct_recp_table =
             (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
                                         SIZEOF(divisor_recp_table));

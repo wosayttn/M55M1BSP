@@ -103,7 +103,7 @@ typedef struct {
   boolean sent_table;		/* TRUE when table has been output */
 } JQUANT_TBL;
 
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
 
 /* DCT coefficient quantization tables(reciprocal multiplication form). */
 typedef struct {
@@ -204,7 +204,7 @@ typedef struct {
   /* Private per-component storage for DCT or IDCT subsystem. */
   void * dct_table;
   
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
   /* Private per-component storage for DCT or IDCT subsystem(reciprocal multiplication form). */
   void * dct_recp_table;
 #endif
@@ -351,7 +351,7 @@ struct jpeg_compress_struct {
   jpeg_component_info * comp_info;
   /* comp_info[i] describes component that appears i'th in SOF */
 
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
   JQUANT_RECP_TBL * quant_recp_tbl_ptrs[NUM_QUANT_TBLS];
   /* ptrs to coefficient quantization tables(reciprocal multiplication form), 
    *  or NULL if not defined
@@ -996,7 +996,7 @@ EXTERN(void) jpeg_destroy_decompress JPP((j_decompress_ptr cinfo));
 
 /* Standard data source and destination managers: stdio streams. */
 /* Caller is responsible for opening the file before and closing after. */
-#ifndef NVT_JPEG_SIMD
+#ifndef WITH_JPEGACC
 //EXTERN(void) jpeg_stdio_dest JPP((j_compress_ptr cinfo, FILE * outfile));
 //EXTERN(void) jpeg_stdio_src JPP((j_decompress_ptr cinfo, FILE * infile));
 #endif
@@ -1030,7 +1030,7 @@ EXTERN(void) jpeg_simple_progression JPP((j_compress_ptr cinfo));
 EXTERN(void) jpeg_suppress_tables JPP((j_compress_ptr cinfo,
 				       boolean suppress));
                        
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
 EXTERN(JQUANT_RECP_TBL *) jpeg_alloc_quant_recp_table JPP((j_common_ptr cinfo));
 /* For reciprocal quantization table allocation */
 #endif

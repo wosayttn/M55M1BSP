@@ -47,8 +47,8 @@
 #include "jdct.h"		/* Private declarations for DCT subsystem */
 
 
-#ifdef NVT_JPEG_SIMD
-#include "../../Library/JpegAcceleratorLib/include/simd_helium.h"
+#ifdef WITH_JPEGACC
+#include "../../Library/JpegAcceleratorLib/include/jpegaccelerator.h"
 #endif
 #ifdef DCT_ISLOW_SUPPORTED
 
@@ -166,7 +166,7 @@ jpeg_fdct_islow (DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
     DCTELEM *dataptr;
     JSAMPROW elemptr;
     int ctr;
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
     DCTELEM *dctelemptr;
     int16_t i16simdbuf[DCTSIZE2+8];
 #endif
@@ -180,7 +180,7 @@ jpeg_fdct_islow (DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
      */
     dataptr = data;
 
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
 
     for (ctr = 0; ctr < DCTSIZE; ctr++)
     {
@@ -364,7 +364,7 @@ jpeg_fdct_islow (DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
   for (int ii=0; ii<DCTSIZE2; ii++)
 	    printf(" Fdct(by CPU) coefficient[%d]:%d \r\n", ii, dataptr[ii]);
 #endif//DBG_CPU_JPEG		
-#endif//NVT_JPEG_SIMD
+#endif//WITH_JPEGACC
 }
 
 #ifdef DCT_SCALING_SUPPORTED

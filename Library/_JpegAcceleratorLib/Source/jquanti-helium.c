@@ -28,7 +28,7 @@
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <arm_mve.h>
-#include "nvt_jpeg.h"
+#include "jacclib.h"
 
 /* After downsampling, the resulting sample values are in the range [0, 255],
  * but the Discrete Cosine Transform (DCT) operates on values centered around

@@ -211,8 +211,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Source\nvt_jpeg.c</PathWithFileName>
-      <FilenameWithoutPath>nvt_jpeg.c</FilenameWithoutPath>
+      <PathWithFileName>..\Source\jacclib.c</PathWithFileName>
+      <FilenameWithoutPath>jacclib.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

@@ -198,7 +198,7 @@ int32_t main(void)
 
     printf("+---------------------------------------------+\n");
 
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
     printf("|  M55M1 CCAP Packet SIMD JPEG Encode Sample  |\n");
 #else
     printf("|   M55M1 CCAP Packet SW JPEG Encode Sample   |\n");

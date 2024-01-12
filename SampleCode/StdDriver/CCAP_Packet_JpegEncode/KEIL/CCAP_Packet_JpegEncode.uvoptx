@@ -1161,7 +1161,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\Library\_JpegAcceleratorLib\JpegAcceleratorLib_Keil.lib</PathWithFileName>
+      <PathWithFileName>..\..\..\..\Library\JpegAcceleratorLib\JpegAcceleratorLib_Keil.lib</PathWithFileName>
       <FilenameWithoutPath>JpegAcceleratorLib_Keil.lib</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>

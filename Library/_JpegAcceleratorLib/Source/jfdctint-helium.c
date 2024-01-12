@@ -29,7 +29,7 @@
 * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <arm_mve.h>
-#include "nvt_jpeg.h"
+#include "jacclib.h"
 
 /* jsimd_fdct_islow_neon() performs a slower but more accurate forward DCT
  * (Discrete Cosine Transform) on one block of samples.  It uses the same

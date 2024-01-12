@@ -15,8 +15,8 @@
 #include "jinclude.h"
 #include "jpeglib.h"
 /*Include header file to get required struct and simd function declaration*/
-#ifdef NVT_JPEG_SIMD
-#include "../../Library/JpegAcceleratorLib/include/nvt_jpeg.h"
+#ifdef WITH_JPEGACC
+#include "../../Library/JpegAcceleratorLib/include/jacclib.h"
 #endif
 
 /*
@@ -37,7 +37,7 @@ jpeg_add_quant_table (j_compress_ptr cinfo, int which_tbl,
     int i;
     long temp;
 
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
     JQUANT_RECP_TBL ** qrecptblptr;
     UINT16 u16temp;
     int res;
@@ -69,7 +69,7 @@ jpeg_add_quant_table (j_compress_ptr cinfo, int which_tbl,
     (*qtblptr)->sent_table = FALSE;
 
 
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
     /*Allocate for recirpcal tbl space*/
     qrecptblptr = & cinfo->quant_recp_tbl_ptrs[which_tbl];
 

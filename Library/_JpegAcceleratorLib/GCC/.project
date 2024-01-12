@@ -40,9 +40,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Source/jquanti-helium.c</locationURI>
 		</link>
 		<link>
-			<name>Source/nvt_jpeg.c</name>
+			<name>Source/jacclib.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Source/nvt_jpeg.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Source/jacclib.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

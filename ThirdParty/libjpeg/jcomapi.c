@@ -93,7 +93,7 @@ jpeg_alloc_quant_table (j_common_ptr cinfo)
   return tbl;
 }
 
-#ifdef NVT_JPEG_SIMD
+#ifdef WITH_JPEGACC
 /*For reciprocal quant tbl*/
 GLOBAL(JQUANT_RECP_TBL *)
 jpeg_alloc_quant_recp_table (j_common_ptr cinfo)
