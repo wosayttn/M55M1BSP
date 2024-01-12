@@ -1022,7 +1022,9 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                = C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/StdDriver/inc/emac \
+EXCLUDE                = C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/CryptoAccelerator/mbedtls_config.h \
+                         C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/PowerDeliveryLib \
+                         C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/StdDriver/inc/emac \
                          C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/StdDriver/inc/gdma \
                          C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/StdDriver/inc/npu \
                          C:/Cloud/Git/hcrdgit4/M55M1/bsp/Library/StdDriver/src/emac \
@@ -1043,7 +1045,8 @@ EXCLUDE_SYMLINKS       = NO
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories for example use the pattern */test/*
 
-EXCLUDE_PATTERNS       = */_*
+EXCLUDE_PATTERNS       = */_* \
+                         */retarget_*
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the
