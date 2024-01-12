@@ -731,14 +731,4 @@
     <files/>
   </RTE>
 
-  <LayerInfo>
-    <Layers>
-      <Layer>
-        <LayName>Project</LayName>
-        <LayPrjMark>1</LayPrjMark>
-        <LayTitle>LwIP_tftp_client</LayTitle>
-      </Layer>
-    </Layers>
-  </LayerInfo>
-
 </Project>

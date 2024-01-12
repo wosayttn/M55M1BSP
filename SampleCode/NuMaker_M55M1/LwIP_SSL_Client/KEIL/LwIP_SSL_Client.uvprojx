@@ -1293,14 +1293,4 @@
     <files/>
   </RTE>
 
-  <LayerInfo>
-    <Layers>
-      <Layer>
-        <LayName>LwIP_MQTT</LayName>
-        <LayPrjMark>1</LayPrjMark>
-        <LayTitle>LwIP_SSL_Client</LayTitle>
-      </Layer>
-    </Layers>
-  </LayerInfo>
-
 </Project>
