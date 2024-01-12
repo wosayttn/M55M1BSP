@@ -71,7 +71,7 @@ if __name__ == "__main__":
                     os.chdir(root)
 
     if err == 0:
-        f.write("Build " + str(prj_count) + " projects successfully.\n")
+        f.write("Build " + str(prj_count-1) + " projects successfully.\n")
 
     f.close()
 
