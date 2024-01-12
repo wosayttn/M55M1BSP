@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>M55M1</TargetName>
+      <TargetName>ImageClassification</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>

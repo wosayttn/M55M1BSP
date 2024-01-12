@@ -22,7 +22,7 @@
   </DaveTm>
 
   <Target>
-    <TargetName>M55M1</TargetName>
+    <TargetName>ObjectDetection_FreeRTOS</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>
