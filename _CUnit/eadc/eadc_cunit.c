@@ -47,7 +47,7 @@ int suite_success_init(void)
     /* Reset IP */
     SYS_ResetModule(SYS_EADC0RST);
     /* Reset IP */
-    SYS_ResetModule(SYS_EADC1RST);
+//    SYS_ResetModule(SYS_EADC1RST);
     
     /* Lock protected registers */
     SYS_LockReg();

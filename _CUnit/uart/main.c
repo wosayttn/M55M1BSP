@@ -6,7 +6,7 @@
 #include "CUnit.h"
 #include "Console.h"
 #include "uart_cunit.h"
-#include "../pldm_emu.h"
+//#include "../pldm_emu.h"
 
 #ifndef DEBUG_PORT
     #define DEBUG_PORT UART0
@@ -40,7 +40,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);	
 	
     /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_200MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
@@ -116,8 +116,10 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    SetDebugUartMFP();
-    /* Lock protected registers */
+//    SetDebugUartMFP();
+    SET_UART0_TXD_PA1();
+    SET_UART0_RXD_PA0(); 
+  /* Lock protected registers */
     SYS_LockReg();
 }
 
@@ -148,8 +150,8 @@ int main(int argc, char *argv[])
     SYS_Init();
     /* Init DEBUG_PORT to 115200-8N1 for printf */
 //    UART_Open(DEBUG_PORT, 115200);
-    DEBUG_PORT_Init(DEBUG_PORT, 115200);
- 
+//    DEBUG_PORT_Init(DEBUG_PORT, 115200);
+      InitDebugUart();
     printf("\n\n");
     printf("+--------------------------------------+\n");
     printf("|       M55M1 UART CUnit Test          |\n");

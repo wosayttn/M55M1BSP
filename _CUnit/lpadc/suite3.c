@@ -226,8 +226,13 @@ void CU_LPADC_API_Function_Test(LPADC_T *psLpadc)
         CU_ASSERT_EQUAL(psLpadc->ADCAL & LPADC_ADCR_ADEN_Msk, 0);
     }
     
-    
-
+    LPADC_Calibration(psLpadc);
+    CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_ADEN_Msk, LPADC_ADCR_ADEN_Msk);
+    CU_ASSERT_EQUAL(psLpadc->ADSR0 & LPADC_ADSR0_ADPRDY_Msk, LPADC_ADSR0_ADPRDY_Msk);
+    CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_RESET_Msk, 0);
+    CU_ASSERT_EQUAL(psLpadc->ADCAL & LPADC_ADCAL_CALEN_Msk, 0);
+    CU_ASSERT_EQUAL(psLpadc->ADCR & LPADC_ADCR_ADST_Msk, 0);
+    CU_ASSERT_EQUAL(psLpadc->ADCALSTS & LPADC_ADCALSTS_CALIF_Msk, 0);
     return;
 }
 

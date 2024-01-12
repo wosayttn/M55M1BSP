@@ -6,7 +6,7 @@
 #include "CUnit.h"
 #include "Console.h"
 #include "usci_uart_cunit.h"
-#include "../pldm_emu.h"
+//#include "../pldm_emu.h"
 
 #ifndef DEBUG_PORT
     #define DEBUG_PORT UART0
@@ -33,7 +33,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_200MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
@@ -46,7 +46,7 @@ void SYS_Init(void)
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK2DIV(2);
     CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(4);
+    CLK_SET_PCLK4DIV(2);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -109,9 +109,11 @@ int main(int argc, char *argv[])
 {
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
+    
+    InitDebugUart();
     /* Init DEBUG_PORT to 115200-8N1 for printf */
 //    UART_Open(DEBUG_PORT, 115200);
-    DEBUG_PORT_Init(DEBUG_PORT, 115200);
+//    DEBUG_PORT_Init(DEBUG_PORT, 115200);
  
     printf("\n\n");
     printf("+--------------------------------------+\n");

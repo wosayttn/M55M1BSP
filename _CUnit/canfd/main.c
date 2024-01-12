@@ -6,7 +6,7 @@
 #include "CUnit.h"
 #include "Console.h"
 #include "canfd_cunit.h"
-#include "../pldm_emu.h"
+//#include "../pldm_emu.h"
 
 #ifndef DEBUG_PORT
     #define DEBUG_PORT UART0
@@ -33,10 +33,13 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_200MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
+    
+     /* Set HCLK2 divide 2 */
+    CLK_SET_HCLK2DIV(2);
     
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
@@ -48,16 +51,16 @@ void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-	
+  
 
     /* Set the Debug UART port clock */
     SetDebugUartCLK();
 
-		 /* Select CAN FD0 clock source is HCLK */
+     /* Select CAN FD0 clock source is HCLK */
     CLK_SetModuleClock(CANFD0_MODULE, CLK_CANFDSEL_CANFD0SEL_HCLK0, CLK_CANFDDIV_CANFD0DIV(1));
     /* Enable ACMP module clock */
     CLK_EnableModuleClock(CANFD0_MODULE);
-				 /* Select CAN FD0 clock source is HCLK */
+         /* Select CAN FD0 clock source is HCLK */
     CLK_SetModuleClock(CANFD1_MODULE, CLK_CANFDSEL_CANFD1SEL_HCLK0, CLK_CANFDDIV_CANFD1DIV(1));
     /* Enable ACMP module clock */
     CLK_EnableModuleClock(CANFD1_MODULE);
@@ -113,8 +116,9 @@ int main(int argc, char *argv[])
     SYS_Init();
     /* Init DEBUG_PORT to 115200-8N1 for printf */
 //    UART_Open(DEBUG_PORT, 115200);
-    DEBUG_PORT_Init(DEBUG_PORT, 115200);
- 
+//    DEBUG_PORT_Init(DEBUG_PORT, 115200);
+    InitDebugUart();
+  
     printf("\n\n");
     printf("+--------------------------------------+\n");
     printf("|        M55M1 CAN-FD CUnit Test       |\n");

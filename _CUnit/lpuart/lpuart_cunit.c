@@ -594,7 +594,7 @@ void TestFunc_LPUART_TestMacroFIFO()
     uint8_t i;  //number control
 
     //wait UART send message finish
-    UART_WAIT_TX_EMPTY(UART0) {};
+    UART_WAIT_TX_EMPTY(DEBUG_PORT) {};
 
     /* Set UART1 internal loopback mode */
 //    for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
@@ -744,7 +744,7 @@ void TestFunc_LPUART_TestMacroINT()
     uint32_t i;
 
     //wait UART send message finish
-    UART_WAIT_TX_EMPTY(UART0) {};
+    UART_WAIT_TX_EMPTY(DEBUG_PORT) {};
 
     for (u8LpUartChIdx = 0; u8LpUartChIdx < LPUART_CH_NUM_MAX; u8LpUartChIdx++)
     {
@@ -990,7 +990,7 @@ void TestFunc_LPUART_TestConstant()
     uint32_t i;
 
     //wait UART send message finish
-    UART_WAIT_TX_EMPTY(UART0) {};
+    UART_WAIT_TX_EMPTY(DEBUG_PORT) {};
 
     // Only uart0/uart1 support LIN mode for TC8237
     // Only uart0 support LIN mode for M252

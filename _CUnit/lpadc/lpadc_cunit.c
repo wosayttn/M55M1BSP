@@ -37,7 +37,7 @@ int suite_success_init(void)
      /* Enable ADC module clock */
     CLK_EnableModuleClock(LPADC0_MODULE);
     /* Set ADC clock source to PCLK4/4=50MHz, set divider to 4, ADC clock will be 50/2 MHz */
-    CLK_SetModuleClock(LPADC0_MODULE, CLK_LPADCSEL_LPADC0SEL_PCLK4, CLK_LPADCDIV_LPADC0DIV(2));
+    CLK_SetModuleClock(LPADC0_MODULE, CLK_LPADCSEL_LPADC0SEL_PCLK4, CLK_LPADCDIV_LPADC0DIV(1));
 
     /* Reset IP */
     SYS_ResetModule(SYS_LPADC0RST);

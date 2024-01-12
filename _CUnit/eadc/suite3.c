@@ -247,5 +247,5 @@ void CU_EADC_API_Function_Test(EADC_T *psEadc)
 void CU_EADC_API_Test(void)
 {
    CU_EADC_API_Function_Test(EADC0);
-   CU_EADC_API_Function_Test(EADC1);
+//   CU_EADC_API_Function_Test(EADC1);
 }

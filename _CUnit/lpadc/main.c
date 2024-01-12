@@ -6,7 +6,7 @@
 #include "CUnit.h"
 #include "Console.h"
 #include "lpadc_cunit.h"
-#include "../pldm_emu.h"
+//#include "../pldm_emu.h"
 
 #ifndef DEBUG_PORT
     #define DEBUG_PORT UART0
@@ -33,7 +33,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_200MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
@@ -109,7 +109,8 @@ int main(int argc, char *argv[])
     SYS_Init();
     /* Init DEBUG_PORT to 115200-8N1 for printf */
 //    UART_Open(DEBUG_PORT, 115200);
-    DEBUG_PORT_Init(DEBUG_PORT, 115200);
+//    DEBUG_PORT_Init(DEBUG_PORT, 115200);
+      InitDebugUart();
 
     printf("\n\n");
     printf("+--------------------------------------+\n");

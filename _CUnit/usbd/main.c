@@ -36,7 +36,7 @@
 #include "Console.h"
 #include "NuMicro.h"
 #include "usbd_cunit.h"
-#include "../pldm_emu.h"
+//#include "../pldm_emu.h"
  
 // Internal funcfion definition
 void AddTests(void);
@@ -68,7 +68,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
     /* Enable PLL0 200MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_200MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
@@ -81,7 +81,7 @@ void SYS_Init(void)
     CLK_SET_PCLK1DIV(2);
     CLK_SET_PCLK2DIV(2);
     CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(4);
+    CLK_SET_PCLK4DIV(2);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -112,10 +112,18 @@ void SYS_Init(void)
     SetDebugUartMFP();
 //    /* Enable USBD module clock */
 //    CLK_EnableModuleClock(USBD0_MODULE);
-
+    /* Enable OTG0_ module clock */
+    CLK_EnableModuleClock(OTG0_MODULE);
+    
     CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
-    /* Enable IP clock */
+
+
+    /* Select USBD */
+    SYS->USBPHY = (SYS->USBPHY & ~SYS_USBPHY_USBROLE_Msk) | SYS_USBPHY_OTGPHYEN_Msk ;
+
+    /* Enable USBD module clock */
     CLK_EnableModuleClock(USBD0_MODULE);
+
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -146,8 +154,9 @@ int main(int argc, char *argv[])
 //    SYS_LockReg();
 
 //    UART_Open(DEBUG_PORT, 115200);
-    DEBUG_PORT_Init(DEBUG_PORT, 115200);
-
+//    DEBUG_PORT_Init(DEBUG_PORT, 115200);
+      InitDebugUart();
+  
     if(CU_initialize_registry())
     {
         fprintf(stderr, " Initialization of Test Registry failed. ");

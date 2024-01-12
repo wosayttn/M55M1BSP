@@ -498,7 +498,7 @@ void TestFunc_UUART_TestMacroBUF()
 void TestFunc_UUART_TestMacroINT()
 {
     uint8_t u8UUartChIdx;    //UART channel index
-
+   SYS_UnlockReg();
     /* Reset USCI */
     SYS_ResetModule(SYS_USCI0RST);
 
@@ -664,7 +664,7 @@ void TestFunc_UUART_TestMacroINT()
         CU_ASSERT_EQUAL(UUART_GET_BUF_STATUS(UUartCh[u8UUartChIdx]) & UUART_BUFSTS_RXOVIF_Msk, 0);
 
     }
-
+       SYS_LockReg();
 }
 
 void TestFunc_UUART_TestMacroPDMA()
@@ -688,10 +688,11 @@ void TestFunc_UUART_ReadWrite()
 {
     uint8_t u8UUartChIdx, i;        //UART channel index
     uint8_t u8TxData[2] = {1, 2}, u8RxData[2] = {0};
-
+       /* Unlock protected registers */
+    SYS_UnlockReg();
     /* Reset USCI */
-    //SYS_ResetModule(USCI1_RST);
-
+    SYS_ResetModule(SYS_USCI0RST);
+//     CLK_SET_PCLK1DIV(10);
     /* Test loop */
     for (u8UUartChIdx = 0; u8UUartChIdx < UUART_CH_NUM_MAX; u8UUartChIdx++)
     {
@@ -713,6 +714,9 @@ void TestFunc_UUART_ReadWrite()
 
     }
 
+    
+        /* Unlock protected registers */
+    SYS_LockReg();
 }
 
 

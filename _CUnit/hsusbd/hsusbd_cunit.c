@@ -87,10 +87,10 @@ void MACRO_HSUSBD_ENABLE_DISABLE_USB()
 {
     CU_ASSERT_FALSE(HSUSBD->PHYCTL & 0x300);
     HSUSBD_ENABLE_USB();
-#ifndef __PALLADIUM___ 	
+
     /* wait PHY clock ready */ 
    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk)){};
-#endif    
+  
     CU_ASSERT((HSUSBD->PHYCTL & 0x300) == (HSUSBD_PHYCTL_PHYEN_Msk | HSUSBD_PHYCTL_DPPUEN_Msk));
 
     HSUSBD_DISABLE_USB();
@@ -128,10 +128,10 @@ void MACRO_HSUSBD_SET_GET_ADDR()
 {
     int volatile i;
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 		
+
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif
+
 	for(i = 0; i < 0x1000; i++){};
    
     CU_ASSERT_FALSE(HSUSBD->FADDR);
@@ -151,11 +151,11 @@ void MACRO_HSUSBD_ENABLE_INT()
     uint32_t i;
 
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 	    
-	  /* wait PHY clock ready */
+  
+    /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif    
-	  for(i = 0; i < (HSUSBD_MAX_EP + 2); i++)
+  
+    for(i = 0; i < (HSUSBD_MAX_EP + 2); i++)
     {
         HSUSBD_ENABLE_USB_INT(1 << i);
         CU_ASSERT(HSUSBD->GINTEN & (1 << i));
@@ -186,10 +186,10 @@ void MACRO_HSUSBD_ENABLE_CEP_INT()
     uint32_t i;
 
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 	    
+  
   	/* wait PHY clock ready */
      while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif   
+  
 	   for(i = 0; i < 13; i++)
     {
         HSUSBD_ENABLE_CEP_INT(1 << i);
@@ -210,10 +210,10 @@ void MACRO_HSUSBD_CLR_CEP_INT_FLAG()
 void MACRO_HSUSBD_SET_CEP_STATE()
 {
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 		
+
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif    
+  
 	  HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
     CU_ASSERT((HSUSBD->CEPCTL & HSUSBD_CEPCTL_NAKCLR_Msk) == HSUSBD_CEPCTL_NAKCLR);
     HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALL);
@@ -231,9 +231,9 @@ void MACRO_HSUSBD_START_CEP_IN()
 {
     HSUSBD_ENABLE_PHY();
     /* wait PHY clock ready */
-#ifndef __PALLADIUM___ 		
+
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif    
+   
 	  HSUSBD_START_CEP_IN(0xff);
     CU_ASSERT(HSUSBD->CEPTXCNT == 0xff);
     /* Reset HSUSBD */
@@ -245,10 +245,10 @@ void MACRO_HSUSBD_SET_MAX_PAYLOAD()
     uint32_t volatile i;
 
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 	
+
   /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif	
+
     for(i = 0; i < HSUSBD_MAX_EP; i++)
     {
         CU_ASSERT(HSUSBD->EP[i].EPMPS == 0);
@@ -265,10 +265,10 @@ void MACRO_HSUSBD_ENABLE_EP_INT()
     uint32_t volatile i, j;
 
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 		
+
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif   
+ 
   	for(i = 0; i < HSUSBD_MAX_EP; i++)
     {
         for(j = 0; j < 13; j++)
@@ -286,10 +286,10 @@ void MACRO_HSUSBD_GET_CLR_EP_INT_FLAG()
     uint32_t volatile i;
 
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 		
+
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif    
+
 	  for(i = 0; i < HSUSBD_MAX_EP; i++)
     {
         CU_ASSERT(HSUSBD_GET_EP_INT_FLAG(i) == 0x3);
@@ -304,11 +304,11 @@ void MACRO_HSUSBD_GET_CLR_EP_INT_FLAG()
 void MACRO_HSUSBD_SET_DMA_LEN()
 {
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 		
+
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif    
-	 HSUSBD_SET_DMA_LEN(0xfffff);
+
+    HSUSBD_SET_DMA_LEN(0xfffff);
     CU_ASSERT(HSUSBD->DMACNT == 0xfffff);
     HSUSBD_ResetDMA();
     CU_ASSERT(HSUSBD->DMACNT == 0x0);
@@ -320,11 +320,11 @@ void MACRO_HSUSBD_SET_DMA_LEN()
 void MACRO_HSUSBD_SET_DMA_ADDR()
 {
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 	
-	/* wait PHY clock ready */
+
+  /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif    
-	  HSUSBD_SET_DMA_ADDR(0x20001000);
+  
+    HSUSBD_SET_DMA_ADDR(0x20001000);
     CU_ASSERT(HSUSBD->DMAADDR == 0x20001000);
     HSUSBD_ResetDMA();
     CU_ASSERT(HSUSBD->DMAADDR == 0x20001000);
@@ -338,10 +338,10 @@ void MACRO_HSUSBD_SET_DMA_READ()
     uint32_t volatile i;
 
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 		
+
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif    
+  
 	  for(i = 0; i < 0x1000; i++){};
     for(i = 0; i < 0x10; i++)
     {
@@ -359,10 +359,10 @@ void MACRO_HSUSBD_SET_DMA_WRITE()
     uint32_t volatile i;
 
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 		
+
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif    
+   
 	  for(i = 0; i < 0x1000; i++){};
     for(i = 0; i < 0x10; i++)
     {
@@ -378,10 +378,10 @@ void MACRO_HSUSBD_SET_DMA_WRITE()
 void MACRO_HSUSBD_ENABLE_DMA()
 {
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 		
+
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif
+    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk)){};
+
     CU_ASSERT_FALSE(HSUSBD->DMACTL == HSUSBD_DMACTL_DMAEN_Msk);
     HSUSBD_ENABLE_DMA();
     CU_ASSERT(HSUSBD->DMACTL & HSUSBD_DMACTL_DMAEN_Msk);
@@ -394,10 +394,10 @@ void MACRO_HSUSBD_ENABLE_DMA()
 void MACRO_HSUSBD_IS_ATTACHED()
 {
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 		
+
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk)){};
-#endif    
+  
     CU_ASSERT(HSUSBD_IS_ATTACHED() == (HSUSBD->PHYCTL & 0x80000000)); // Plug-in to test
     /* Reset HSUSBD */
 
@@ -419,10 +419,10 @@ void MACRO_HSUSBD_ENABLE_DISABLE_BCD()
 void MACRO_HSUSBD_ENABLE_DISABLE_LPM()
 {
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 		
+
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif    
+ 
 	  HSUSBD_DISABLE_LPM();
     CU_ASSERT_FALSE(HSUSBD->LPMCSR & 0x1000);
     HSUSBD_ENABLE_LPM();
@@ -457,10 +457,10 @@ void MACRO_HSUSBD_Set_Clear_Get_Ep_Stall()
     uint32_t u32EpCount;
 
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 		
+
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif    
+  
 	  HSUSBD_SetEpStall(0xff);
     CU_ASSERT(HSUSBD->CEPCTL & 0x2);
     CU_ASSERT(HSUSBD->CEPCTL == HSUSBD_CEPCTL_STALL);
@@ -482,10 +482,10 @@ void MACRO_HSUSBD_Set_Clear_Get_Ep_Stall()
 void MACRO_HSUSBD_SetStall_ClearStall_GetStall()
 {
     HSUSBD_ENABLE_PHY();
-#ifndef __PALLADIUM___ 		
+
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-#endif    
+  
 	  HSUSBD_SetStall(0x0);
     CU_ASSERT(HSUSBD->CEPCTL & 0x2);
     CU_ASSERT(HSUSBD->CEPCTL == HSUSBD_CEPCTL_STALL);
@@ -1223,29 +1223,29 @@ CU_TestInfo HSUSBD_MacroTests[] =
     {"Get maximum value", MACRO_Maximum},
     {"Get minimum value", MACRO_Minimum},
     {"Enable/Disable USB", MACRO_HSUSBD_ENABLE_DISABLE_USB},
-//    {"Enable/Disable USB PHY", MACRO_HSUSBD_ENABLE_DISABLE_PHY},
+    {"Enable/Disable USB PHY", MACRO_HSUSBD_ENABLE_DISABLE_PHY},
     {"Set/Clear USB DRVSE0 bit", MACRO_HSUSBD_SET_CLEAR_SE0},
-//    {"Set/Get USB device address", MACRO_HSUSBD_SET_GET_ADDR},
+    {"Set/Get USB device address", MACRO_HSUSBD_SET_GET_ADDR},
 //    {"Enable USBD interrupt function", MACRO_HSUSBD_ENABLE_INT},
 //    {"Get/Clear USB interrupt flag", MACRO_HSUSBD_GET_CLR_INT_FLAG},
-//    {"Enable CEP interrupt function", MACRO_HSUSBD_ENABLE_CEP_INT},
+    {"Enable CEP interrupt function", MACRO_HSUSBD_ENABLE_CEP_INT},
 //    {"Clear CEP interrupt flag", MACRO_HSUSBD_CLR_CEP_INT_FLAG},
 //    {"Set CEP state", MACRO_HSUSBD_SET_CEP_STATE},
 //    {"Start CEP in transfer", MACRO_HSUSBD_START_CEP_IN},
 //    {"Set EP maximum packet size", MACRO_HSUSBD_SET_MAX_PAYLOAD},
 //    {"Enable EP interrupt function", MACRO_HSUSBD_ENABLE_EP_INT},
 //    {"Get/Clear EP interrupt flag", MACRO_HSUSBD_GET_CLR_EP_INT_FLAG},
-    {"Set DMA length", MACRO_HSUSBD_SET_DMA_LEN},
+//    {"Set DMA length", MACRO_HSUSBD_SET_DMA_LEN},
     {"Set DMA address", MACRO_HSUSBD_SET_DMA_ADDR},
     {"Set DMA read", MACRO_HSUSBD_SET_DMA_READ},
     {"Set DMA write", MACRO_HSUSBD_SET_DMA_WRITE},
     {"Enable DMA", MACRO_HSUSBD_ENABLE_DMA},
-//    {"Get USB bus connection state", MACRO_HSUSBD_IS_ATTACHED},
+    {"Get USB bus connection state", MACRO_HSUSBD_IS_ATTACHED},
     {"Enable/Disable BCD", MACRO_HSUSBD_ENABLE_DISABLE_BCD},
     {"Enable/Disable LPM", MACRO_HSUSBD_ENABLE_DISABLE_LPM},
     {"Memory copy test", MACRO_HSUSBD_MemCopy},
-//    {"Set/Clear/Get STALL state of the specified endpoint ID", MACRO_HSUSBD_Set_Clear_Get_Ep_Stall},
-//    {"Set/Clear/Get STALL", MACRO_HSUSBD_SetStall_ClearStall_GetStall},
+    {"Set/Clear/Get STALL state of the specified endpoint ID", MACRO_HSUSBD_Set_Clear_Get_Ep_Stall},
+    {"Set/Clear/Get STALL", MACRO_HSUSBD_SetStall_ClearStall_GetStall},
 
     CU_TEST_INFO_NULL
 };

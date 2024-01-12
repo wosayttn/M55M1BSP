@@ -69,10 +69,10 @@ void LPADC_MACRO_BASIC_TEST(LPADC_T *psLpadc)
     CU_ASSERT_EQUAL(psLpadc->ADSR0 & LPADC_ADSR0_ADPRDY_Msk, 0x0);
   
         /*--- Run a  LPADC conversion sample ---*/
-     for (moduleNum = 9; moduleNum < 32; moduleNum++)    /* valid sample modules are 0 ~ 15 for MxCTL1  */
+     for (moduleNum = 0; moduleNum < 24; moduleNum++)    /* valid sample modules are 0 ~ 15 for MxCTL1  */
     {
        
-			  moduleMask = (BIT0 << moduleNum);
+         moduleMask = (BIT0 << moduleNum);
 
         LPADC_Open(psLpadc, LPADC_ADCR_DIFFEN_SINGLE_END,LPADC_ADCR_ADMD_SINGLE,moduleMask);
         /*Not suport the 24-27 LPADC Channel*/
@@ -87,11 +87,13 @@ void LPADC_MACRO_BASIC_TEST(LPADC_T *psLpadc)
           /* Don't test EADC_START_CONV() here for timing issue. Test it later. */
           while (LPADC_IS_BUSY(psLpadc) == 0){};
           unsigned int tmp_result;
-          tmp_result = LPADC_GET_CONVERSION_DATA(psLpadc,moduleNum);
+
           CU_ASSERT_EQUAL((psLpadc->ADSR0 & LPADC_ADSR0_BUSY_Msk) >> LPADC_ADSR0_BUSY_Pos, 1);
 
-//          while (LPADC_IS_BUSY(psLpadc));
-
+          while (LPADC_IS_BUSY(psLpadc));
+         
+        
+          tmp_result = LPADC_GET_CONVERSION_DATA(psLpadc,moduleNum);
         // Ignore EADC_GET_INT_FLAG() if run wrong FPGA code
 #ifndef WRONG_FPGA_CODE
 
@@ -108,6 +110,7 @@ void LPADC_MACRO_BASIC_TEST(LPADC_T *psLpadc)
 
 
         tmp_result = LPADC_IS_DATA_VALID(psLpadc, moduleMask);
+
         CU_ASSERT_EQUAL(((psLpadc->ADSR1 & moduleMask) ), tmp_result);
 
 
