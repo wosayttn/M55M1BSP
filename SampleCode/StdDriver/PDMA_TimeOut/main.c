@@ -250,11 +250,11 @@ int main(void)
         }
         else if (u32IsRxTestOver == 3)
         {
-            printf("UART1 RX timeout...\n");
+            printf("UART1 RX timeout...PDMA timeout test Pass\n");
         }
 
         UART_PDMA_DISABLE(UART1, UART_INTEN_TXPDMAEN_Msk | UART_INTEN_RXPDMAEN_Msk);
-        printf("PDMA timeout test Pass, Please press any key to next time. \n\n");
+        printf("Please press any key to test again. \n\n");
         getchar();
     }
 }
