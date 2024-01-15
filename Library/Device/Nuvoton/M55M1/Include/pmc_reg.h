@@ -11,18 +11,19 @@
 #define __PMC_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
-/** @addtogroup REGISTER Control Register
-  @{
+/**
+    @addtogroup REGISTER Control Register
+    @{
 */
 
 /**
     @addtogroup PMC Power Manager (PMC)
     Memory Mapped Structure for PMC Controller
     @{
-*/ 
+*/
 
 typedef struct
 {

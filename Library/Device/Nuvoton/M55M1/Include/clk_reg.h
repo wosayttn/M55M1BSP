@@ -14,23 +14,19 @@
     #pragma anon_unions
 #endif
 
-/** @addtogroup REGISTER Control Register
-
-  @{
-
+/**
+    @addtogroup REGISTER Control Register
+    @{
 */
 
-
-/*---------------------- System Clock Controller -------------------------*/
 /**
     @addtogroup CLK System Clock Controller(CLK)
     Memory Mapped Structure for CLK Controller
-@{ */
+    @{
+*/
 
 typedef struct
 {
-
-
     /**
      * @var CLK_T::SRCCTL
      * Offset: 0x00  Clock Source Control Register
@@ -3468,9 +3464,9 @@ typedef struct
 #define CLK_VSENSEDIV_VSENSEDIV_Pos      (0)                                               /*!< CLK_T::VSENSEDIV: VSENSEDIV Position   */
 #define CLK_VSENSEDIV_VSENSEDIV_Msk      (0xful << CLK_VSENSEDIV_VSENSEDIV_Pos)            /*!< CLK_T::VSENSEDIV: VSENSEDIV Mask       */
 
-/**@}*/ /* CLK_CONST */
-/**@}*/ /* end of CLK register group */
-/**@}*/ /* end of REGISTER group */
+/** @} CLK_CONST */
+/** @} end of CLK register group */
+/** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
     #pragma no_anon_unions

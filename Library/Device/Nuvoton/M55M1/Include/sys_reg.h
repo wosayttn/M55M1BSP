@@ -9,27 +9,23 @@
 #ifndef __SYS_REG_H__
 #define __SYS_REG_H__
 
-/******************************************************************************/
-/*                Device Specific Peripheral registers structures             */
-/******************************************************************************/
+#if defined ( __CC_ARM   )
+    #pragma anon_unions
+#endif
 
-/** @addtogroup REGISTER Control Register
-
-  @{
-
+/**
+    @addtogroup REGISTER Control Register
+    @{
 */
 
-
-/*---------------------- System Manger Controller -------------------------*/
 /**
     @addtogroup SYS System Manger Controller(SYS)
     Memory Mapped Structure for SYS Controller
-@{ */
- 
+    @{
+*/
+
 typedef struct
 {
-
-
 /**
  * @var SYS_T::PDID
  * Offset: 0x00  Part Device Identification Number Register
@@ -4579,8 +4575,12 @@ typedef struct
 #define SYS_NMISTS_UART1INT_Pos          (17)                                              /*!< SYS_T::NMISTS: UART1INT Position       */
 #define SYS_NMISTS_UART1INT_Msk          (0x1ul << SYS_NMISTS_UART1INT_Pos)                /*!< SYS_T::NMISTS: UART1INT Mask           */
 
-/**@}*/ /* SYS_CONST */
-/**@}*/ /* end of SYS register group */
-/**@}*/ /* end of REGISTER group */
+/** @} SYS_CONST */
+/** @} end of SYS register group */
+/** @} end of REGISTER group */
+
+#if defined ( __CC_ARM   )
+    #pragma no_anon_unions
+#endif
 
 #endif /* __SYS_REG_H__ */
