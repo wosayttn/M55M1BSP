@@ -55,6 +55,11 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Library/Device/Nuvoton/M55M1/Source/system_M55M1.c</locationURI>
 		</link>
 		<link>
+			<name>JpegAccelerator/libJpegAccelerator.a</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/Library/JpegAcceleratorLib/libJpegAccelerator.a</locationURI>
+		</link>
+		<link>
 			<name>Library/ccap.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/ccap.c</locationURI>
@@ -399,10 +404,5 @@
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/ThirdParty/libjpeg/wrtarga.c</locationURI>
 		</link>
-        <link>
-			<name>JpegAccelerator/libJpegAcceleratorLib_GCC.a</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Library/JpegAcceleratorLib/libJpegAcceleratorLib_GCC.a</locationURI>
-		</link>
-        </linkedResources>
+	</linkedResources>
 </projectDescription>

@@ -138,7 +138,7 @@ __WEAK void InitDebugUart(void)
  *
  * @return   0: Init success
  *           < 0: Init failed
- * @details  Initialize MPU Region according to mpu_config_M55M1.h
+ * @details  Initialize MPU Region according to mpu_config_M55M1.h and user defined table
  */
 __WEAK int32_t InitPreDefMPURegion(const ARM_MPU_Region_t *psMPURegion, uint32_t u32RegionCnt)
 {
@@ -404,6 +404,9 @@ void FMC_NSCBA_Setup(void)
  * @param    u32MemByteSize_S   Length (in bytes) of Secure region
  * @param    u32MemBaseAddr_NS  Non-secure base address
  * @param    u32MemByteSize_NS  Length (in bytes) of Non-secure region
+ *
+ * @return   0: Success
+ *           < 0: Failed
  */
 int32_t SetupMPC(
     const uint32_t u32MPCBaseAddr,

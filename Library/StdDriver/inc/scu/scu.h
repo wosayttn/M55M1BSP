@@ -342,9 +342,9 @@ typedef enum
 
 
 /**
-  * @brief    Get secure violation interrupt status
+  * @brief      Get secure violation interrupt status
   *
-  * @param    Available interrupt flag status
+  * @param[in]  eIntIdx     Available interrupt flag status
   *           - \ref eSCU_INT_IDX_APB0  \ref eSCU_INT_IDX_APB1  \ref eSCU_INT_IDX_APB2
   *           - \ref eSCU_INT_IDX_APB3  \ref eSCU_INT_IDX_APB4  \ref eSCU_INT_IDX_APB5
   *           - \ref eSCU_INT_IDX_D0PPC0  \ref eSCU_INT_IDX_D1PPC0

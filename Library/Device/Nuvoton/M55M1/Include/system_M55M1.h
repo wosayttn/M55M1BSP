@@ -123,55 +123,27 @@ extern void SystemCoreClockUpdate(void);
 
 #ifndef NVT_DBG_UART_OFF
 /**
- * Set debug UART multi-function pins
- *
- * @param  none
- * @return none
- *
- * @brief  Set debug UART multi-function pins
+ * \brief  Set debug UART multi-function pins
  */
 extern void SetDebugUartMFP(void);
 
 /**
- * Set debug UART clock
- *
- * @param    None
- * @return   None
- *
- * @brief  Set debug UART clock source and enable module clock.
+ * \brief  Set debug UART clock source and enable module clock.
  */
 extern void SetDebugUartCLK(void);
 
 /**
- * @brief    Init UART
- *
- * @param    None
- * @return   None
- *
- * @details  Initialize debug UART to 115200-8n1
+ * \brief  Initialize debug UART to 115200-8n1
  */
 extern void InitDebugUart(void);
 
 /**
- * @brief    Init MPU Region
- *
- * @param    psMPURegion        User defined MPU region configuration table
- * @return   u32RegionCnt       Region count of psMPURegion
- *
- * @details  Initialize MPU Region according to mpu_config_M55M1.h
+ * \brief  Initialize MPU Region according to mpu_config_M55M1.h and user defined table
  */
 extern int32_t InitPreDefMPURegion(const ARM_MPU_Region_t *psMPURegion, uint32_t u32RegionCnt);
 
 /**
- * @brief    Setup MPC configuration
- *
- * @param    u32MPCBaseAddr     Memory Protection Controller Secure base address
- * @param    u32MemBaseAddr     Memory base address
- * @param    u32MemByteSize     Length (in bytes) of memory
- * @param    u32MemBaseAddr_S   Secure base address
- * @param    u32MemByteSize_S   Length (in bytes) of secure region
- * @param    u32MemBaseAddr_NS  Non-secure base address
- * @param    u32MemByteSize_NS  Length (in bytes) of non-secure region
+ * \brief    Setup MPC configuration
  */
 extern int32_t SetupMPC(
     const uint32_t u32MPCBaseAddr,

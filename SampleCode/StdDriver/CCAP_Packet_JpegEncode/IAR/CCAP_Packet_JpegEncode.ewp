@@ -48,7 +48,7 @@
                 </option>
                 <option>
                     <name>OGCoreOrChip</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>GRuntimeLibSelect</name>
@@ -74,7 +74,7 @@
                 </option>
                 <option>
                     <name>OGChipSelectEditMenu</name>
-                    <state>Default	None</state>
+                    <state>M55M1 series	Nuvoton M55M1 series</state>
                 </option>
                 <option>
                     <name>GenLowLevelInterface</name>
@@ -82,7 +82,7 @@
                 </option>
                 <option>
                     <name>GEndianModeBE</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OGBufferedTerminalOutput</name>
@@ -99,7 +99,7 @@
                 <option>
                     <name>GBECoreSlave</name>
                     <version>33</version>
-                    <state>0</state>
+                    <state>63</state>
                 </option>
                 <option>
                     <name>OGUseCmsis</name>
@@ -120,7 +120,7 @@
                 </option>
                 <option>
                     <name>GFPUDeviceSlave</name>
-                    <state>Default	None</state>
+                    <state>M55M1 series	Nuvoton M55M1 series</state>
                 </option>
                 <option>
                     <name>FPU2</name>
@@ -229,6 +229,8 @@
                     <name>CCDefines</name>
                     <state>NDEBUG</state>
                     <state>NVT_DCACHE_ON</state>
+                    <state>WITH_JPEGACC</state>
+                    <state>TEST_GRAYSCALE=0</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -1301,15 +1303,9 @@
         </file>
     </group>
     <group>
-        <name>simd_helium</name>
+        <name>JpegAccelerator</name>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libjpeg\simd_helium\jfdctint-helium.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libjpeg\simd_helium\jquanti-helium.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libjpeg\simd_helium\nvt_jpeg.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\JpegAcceleratorLib\JpegAcceleratorLib.a</name>
         </file>
     </group>
     <group>
