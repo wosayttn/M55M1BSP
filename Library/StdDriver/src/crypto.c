@@ -9,8 +9,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
-#include "crypto.h"
-#include "crypto_reg.h"
 
 /** @cond HIDDEN_SYMBOLS */
 #if ENABLE_DEBUG

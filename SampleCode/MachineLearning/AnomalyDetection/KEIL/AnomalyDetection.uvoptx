@@ -73,7 +73,7 @@
         <LExpSel>0</LExpSel>
       </OPTXL>
       <OPTFL>
-        <tvExp>0</tvExp>
+        <tvExp>1</tvExp>
         <tvExpOptDlg>0</tvExpOptDlg>
         <IsCurrentTarget>1</IsCurrentTarget>
       </OPTFL>
@@ -203,7 +203,7 @@
 
   <Group>
     <GroupName>Generated</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -214,8 +214,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Generated\ad_imu_model_quant_vela.tflite.cc</PathWithFileName>
-      <FilenameWithoutPath>ad_imu_model_quant_vela.tflite.cc</FilenameWithoutPath>
+      <PathWithFileName>..\Generated\ad_imu_model_quant_vela_H256.tflite.cpp</PathWithFileName>
+      <FilenameWithoutPath>ad_imu_model_quant_vela_H256.tflite.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -267,7 +267,7 @@
 
   <Group>
     <GroupName>Classify</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -278,8 +278,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\NNClassify\MainClassify.cc</PathWithFileName>
-      <FilenameWithoutPath>MainClassify.cc</FilenameWithoutPath>
+      <PathWithFileName>..\NNClassify\MainClassify.cpp</PathWithFileName>
+      <FilenameWithoutPath>MainClassify.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -287,7 +287,7 @@
 
   <Group>
     <GroupName>NN</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -298,8 +298,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\NN\Model.cc</PathWithFileName>
-      <FilenameWithoutPath>Model.cc</FilenameWithoutPath>
+      <PathWithFileName>..\NN\Model.cpp</PathWithFileName>
+      <FilenameWithoutPath>Model.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -310,8 +310,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\NN\CNN\CnnModel.cc</PathWithFileName>
-      <FilenameWithoutPath>CnnModel.cc</FilenameWithoutPath>
+      <PathWithFileName>..\NN\CNN\CnnModel.cpp</PathWithFileName>
+      <FilenameWithoutPath>CnnModel.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -319,7 +319,7 @@
 
   <Group>
     <GroupName>NPU</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -363,7 +363,7 @@
 
   <Group>
     <GroupName>Driver</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -539,7 +539,7 @@
 
   <Group>
     <GroupName>User</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

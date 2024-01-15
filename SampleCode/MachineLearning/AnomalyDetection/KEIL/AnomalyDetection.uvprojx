@@ -399,9 +399,9 @@
           <GroupName>Generated</GroupName>
           <Files>
             <File>
-              <FileName>ad_imu_model_quant_vela.tflite.cc</FileName>
+              <FileName>ad_imu_model_quant_vela_H256.tflite.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\Generated\ad_imu_model_quant_vela.tflite.cc</FilePath>
+              <FilePath>..\Generated\ad_imu_model_quant_vela_H256.tflite.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -429,9 +429,9 @@
           <GroupName>Classify</GroupName>
           <Files>
             <File>
-              <FileName>MainClassify.cc</FileName>
+              <FileName>MainClassify.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\NNClassify\MainClassify.cc</FilePath>
+              <FilePath>..\NNClassify\MainClassify.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -439,14 +439,14 @@
           <GroupName>NN</GroupName>
           <Files>
             <File>
-              <FileName>Model.cc</FileName>
+              <FileName>Model.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\NN\Model.cc</FilePath>
+              <FilePath>..\NN\Model.cpp</FilePath>
             </File>
             <File>
-              <FileName>CnnModel.cc</FileName>
+              <FileName>CnnModel.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\NN\CNN\CnnModel.cc</FilePath>
+              <FilePath>..\NN\CNN\CnnModel.cpp</FilePath>
             </File>
           </Files>
         </Group>
