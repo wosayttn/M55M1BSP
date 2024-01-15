@@ -231,8 +231,8 @@ static void SYS_Init(void)
     /* Enable I2C1 module clock */
     CLK_EnableModuleClock(I2C1_MODULE);
     /* Set multi-function pins for I2C0/I2C1 SDA and SCL */
-    SET_I2C0_SDA_PA4();
-    SET_I2C0_SCL_PA5();
+    SET_I2C0_SDA_PB4();
+    SET_I2C0_SCL_PB5();
     SET_I2C1_SCL_PB1();
     SET_I2C1_SDA_PB0();
     /* Lock protected registers */

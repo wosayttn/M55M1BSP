@@ -80,11 +80,6 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/usci_i2c.c</locationURI>
 		</link>
 		<link>
-			<name>User/M55M1.ld</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Library/Device/Nuvoton/M55M1/Source/GCC/M55M1.ld</locationURI>
-		</link>
-		<link>
 			<name>User/main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/main.c</locationURI>
