@@ -65,6 +65,9 @@ int main(void)
 
     printf("System core clock = %d\n", SystemCoreClock);
     printf("Hello World\n");
+    printf("CLK_APLLCTL_180MHz: 0x%08X\n", (uint32_t)CLK_APLLCTL_180MHz);
+    printf("CLK_APLLCTL_160MHz: 0x%08X\n", (uint32_t)CLK_APLLCTL_160MHz);
+    printf("CLK_APLLCTL_144MHz: 0x%08X\n", (uint32_t)CLK_APLLCTL_144MHz);
 
     /* Got no where to go, just loop forever */
     while (1) ;

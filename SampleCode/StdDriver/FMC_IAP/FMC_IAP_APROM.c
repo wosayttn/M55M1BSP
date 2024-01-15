@@ -135,45 +135,44 @@ int main(void)
         printf("| [0] Load IAP code to LDROM          |\n");
         printf("| [1] Run IAP code in LDROM           |\n");
         printf("+-------------------------------------+\n");
-        printf("Please select...");
+        printf("Please select ...");
         u8Item = getchar();
         printf("%c\n", u8Item);
 
         switch (u8Item)
         {
-        case '0':
-            FMC_ENABLE_LD_UPDATE();
+            case '0':
+                FMC_ENABLE_LD_UPDATE();
 
-            if (LoadImage((uint32_t)&LDROM_IMAGE_BASE, (uint32_t)&LDROM_IMAGE_LIMIT,
-                          FMC_LDROM_BASE, FMC_LDROM_SIZE) != 0)
-            {
-                printf("Load image to LDROM failed !\n");
-                goto lexit;
-            }
+                if (LoadImage((uint32_t)&LDROM_IMAGE_BASE, (uint32_t)&LDROM_IMAGE_LIMIT,
+                              FMC_LDROM_BASE, FMC_LDROM_SIZE) != 0)
+                {
+                    printf("Load image to LDROM failed !\n");
+                    goto lexit;
+                }
 
-            FMC_DISABLE_LD_UPDATE();
-            break;
+                FMC_DISABLE_LD_UPDATE();
+                break;
 
-        case '1':
-            printf("\n\nChange VECMAP and branch to LDROM...\n");
-            UART_WAIT_TX_EMPTY(DEBUG_PORT); /* To make sure all message has been print out */
+            case '1':
+                printf("\n\nChange VECMAP and branch to LDROM...\n");
+                UART_WAIT_TX_EMPTY(DEBUG_PORT); /* To make sure all message has been print out */
 
-            /* Mask all interrupt before changing VECMAP to avoid wrong interrupt handler fetched */
-            __set_PRIMASK(1);
+                /* Mask all interrupt before changing VECMAP to avoid wrong interrupt handler fetched */
+                __set_PRIMASK(1);
 
-            /* Set VECMAP to LDROM for booting from LDROM */
-            FMC_SetVectorPageAddr(FMC_LDROM_BASE);
+                /* Set VECMAP to LDROM for booting from LDROM */
+                FMC_SetVectorPageAddr(FMC_LDROM_BASE);
 
-            /* Software reset to boot to LDROM */
-            NVIC_SystemReset();
+                /* Software reset to boot to LDROM */
+                NVIC_SystemReset();
 
-            break;
+                break;
 
-        default :
-            break;
+            default :
+                break;
         }
-    }
-    while (1);
+    } while (1);
 
 
 lexit:

@@ -88,7 +88,7 @@ int main(void)
     printf("[1] Boot from 0x1C0000\n");
     printf("[2] Boot from 0x220000\n");
     printf("[3] Boot from 0x280000\n");
-#if ! defined (__GNUC__) && !defined (__ARMCC_VERSION)
+#if defined (__ARMCC_VERSION) || defined (__ICCARM__)
     printf("[4] Boot from 0xF100000\n");
 #endif
     printf("[Others] Boot from 0x100000\n");
@@ -112,7 +112,7 @@ int main(void)
         case '3':
             FMC_SetVectorPageAddr(0x280000);
             break;
-#if ! defined (__GNUC__) && !defined (__ARMCC_VERSION)
+#if defined (__ARMCC_VERSION) || defined (__ICCARM__)
 
         case '4':
             FMC_SetVectorPageAddr(0xF100000);

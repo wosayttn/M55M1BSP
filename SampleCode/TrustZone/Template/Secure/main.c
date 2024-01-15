@@ -116,7 +116,10 @@ NVT_ITCM void SysTick_Handler(void)
         case 500:
             if (pfnNonSecure_LED_Off != NULL)
             {
+#if defined (__ARMCC_VERSION) || defined (__ICCARM__)
+                /* This func call caused GCC compiler internal error - Skip in GCC */
                 pfnNonSecure_LED_Off(u32Ticks);
+#endif
             }
 
             break;

@@ -116,6 +116,9 @@ SECTIONS
   .text :
   {
     KEEP(*(.vectors))
+    *startup_*.o(.text*)
+    
+    . = 0x400;	/* Prevent code located in VECMAP range */
     *(.text*)
 
     KEEP(*(.init))

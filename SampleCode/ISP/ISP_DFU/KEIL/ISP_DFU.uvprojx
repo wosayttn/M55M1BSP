@@ -439,6 +439,11 @@
               <FileType>1</FileType>
               <FilePath>..\usbd_user.c</FilePath>
             </File>
+            <File>
+              <FileName>targetdev.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\common\targetdev.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
