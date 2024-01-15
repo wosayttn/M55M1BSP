@@ -43,7 +43,7 @@ typedef struct s_usbd_info
 
 extern const S_USBD_INFO_T gsInfo;
 
-/*@}*/ /* end of group USBD_EXPORTED_STRUCT */
+/** @} end of group USBD_EXPORTED_STRUCT */
 
 
 /** @addtogroup USBD_EXPORTED_CONSTANTS USBD Exported Constants
@@ -814,11 +814,11 @@ void USBD_SetVendorRequest(VENDOR_REQ pfnVendorReq);
 void USBD_SetConfigCallback(SET_CONFIG_CB pfnSetConfigCallback);
 void USBD_LockEpStall(uint32_t u32EpBitmap);
 
-/*@}*/ /* end of group USBD_EXPORTED_FUNCTIONS */
+/** @} end of group USBD_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group USBD_Driver */
+/** @} end of group USBD_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }
