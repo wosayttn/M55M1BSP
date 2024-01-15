@@ -44,12 +44,6 @@
   */
 void AWF_Open(uint32_t u32IntEn, uint32_t u32WakeupEn, uint32_t u32HTH, uint32_t u32LTH, uint32_t u32WBINIT, uint32_t u32ACCCount)
 {
-    /* Set interrupt function*/
-    AWF->CTL = ((AWF->CTL & ~(AWF_CTL_HTIEN_Msk | AWF_CTL_LTIEN_Msk | AWF_CTL_HTWKEN_Msk | AWF_CTL_LTWKEN_Msk)) | u32IntEn | u32WakeupEn);
-
-    /* Set Wake-up Function*/
-    AWF->CTL = ((AWF->CTL & ~AWF_CTL_ACUCNT_Msk) | (u32ACCCount << AWF_CTL_ACUCNT_Pos));
-
     /* Set high threshold value*/
     AWF_SET_HTH(u32HTH);
 
@@ -58,6 +52,12 @@ void AWF_Open(uint32_t u32IntEn, uint32_t u32WakeupEn, uint32_t u32HTH, uint32_t
 
     /* Set word buffer initial value*/
     AWF_SET_WBINIT(u32WBINIT);
+    
+    /* Set interrupt function*/
+    AWF->CTL = ((AWF->CTL & ~(AWF_CTL_HTIEN_Msk | AWF_CTL_LTIEN_Msk | AWF_CTL_HTWKEN_Msk | AWF_CTL_LTWKEN_Msk)) | u32IntEn | u32WakeupEn);
+
+    /* Set Wake-up Function*/
+    AWF->CTL = ((AWF->CTL & ~AWF_CTL_ACUCNT_Msk) | (u32ACCCount << AWF_CTL_ACUCNT_Pos));    
 }
 
 /**
