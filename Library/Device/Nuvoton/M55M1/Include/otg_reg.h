@@ -258,7 +258,8 @@ typedef struct
 /**
     @addtogroup OTG_CONST OTG Bit Field Definition
     Constant Definitions for OTG Controller
-@{ */
+    @{ 
+*/
 
 #define OTG_CTL_VBUSDROP_Pos             (0)                                               /*!< OTG_T::CTL: VBUSDROP Position          */
 #define OTG_CTL_VBUSDROP_Msk             (0x1ul << OTG_CTL_VBUSDROP_Pos)                   /*!< OTG_T::CTL: VBUSDROP Mask              */

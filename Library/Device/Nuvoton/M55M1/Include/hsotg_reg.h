@@ -258,7 +258,8 @@ typedef struct
 /**
     @addtogroup HSOTG_CONST HSOTG Bit Field Definition
     Constant Definitions for HSOTG Controller
-@{ */
+    @{ 
+*/
 
 #define HSOTG_CTL_VBUSDROP_Pos           (0)                                               /*!< HSOTG_T::CTL: VBUSDROP Position        */
 #define HSOTG_CTL_VBUSDROP_Msk           (0x1ul << HSOTG_CTL_VBUSDROP_Pos)                 /*!< HSOTG_T::CTL: VBUSDROP Mask            */

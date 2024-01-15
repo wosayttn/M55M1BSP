@@ -11,7 +11,7 @@
 
 #include "NuMicro.h"
 
-/** @addtogroup Library Library
+/** @addtogroup LIBRARY Library
   @{
 */
 

@@ -11,15 +11,15 @@
 #include <string.h>
 #include "sclib_int.h"
 
-/** @addtogroup M55_Library
+/** @addtogroup LIBRARY Library
   @{
 */
 
-/** @addtogroup M55_SCLIB Smartcard Library
+/** @addtogroup SCLIB Smartcard Library
   @{
 */
 
-/** @addtogroup M55_SCLIB_PRIVATE_FUNCTIONS Smartcard Library Private Functions
+/** @addtogroup SCLIB_PRIVATE_FUNCTIONS Smartcard Library Private Functions
   @{
 */
 
@@ -342,10 +342,10 @@ int32_t _SCLIB_T0Transmit(uint32_t num, uint8_t *cmdBuf, uint32_t cmdLen, uint8_
     return (status);
 }
 
-/*@}*/ /* end of group M55_SCLIB_PRIVATE_FUNCTIONS */
+/** @} end of group SCLIB_PRIVATE_FUNCTIONS */
 
-/*@}*/ /* end of group M55_SC_Library */
+/** @} end of group SCLIB */
 
-/*@}*/ /* end of group M55_Library */
+/** @} end of group Library */
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/
