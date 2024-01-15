@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include "NuMicro.h"
 
+uint32_t g_u32ACCCount, g_u32HTHValue, g_u32LTHValue, g_u32WBINITValue;
+
 void LPTMR_Init(void)
 {
     /* Set LPTMR mode and frequency */
@@ -52,13 +54,8 @@ void LPPDMA_Init(void)
 
 void AWF_Wakeup_Test(void)
 {
-    uint32_t u32ACCCount = 8;
-    uint32_t u32HTHValue = 20;
-    uint32_t u32LTHValue = 0;
-    uint32_t u32WBINITValue = 0;
-
     /* Set AWF function */
-    AWF_Open(AWF_HTINT_ENABLE, AWF_HTWK_ENABLE, u32HTHValue, u32LTHValue, u32WBINITValue, u32ACCCount);
+    AWF_Open(AWF_BOTHINT_ENABLE, AWF_BOTHWK_ENABLE, g_u32HTHValue, g_u32LTHValue, g_u32WBINITValue, g_u32ACCCount);
 
     /* Low power timer initialize */
     LPTMR_Init();
@@ -91,28 +88,28 @@ void AWF_Wakeup_Test(void)
 NVT_ITCM void AWF_IRQHandler(void)
 {
     uint32_t u32AccumulationValue;
-    uint32_t u32HTH_Flag,u32LTH_Flag;
+    uint32_t u32HTH_Flag, u32LTH_Flag;
+
     /* Enable AWF0 module clock */
     CLK_EnableModuleClock(AWF0_MODULE); //TESTCHIP_ONLY
 
     u32AccumulationValue = AWF_GET_ACUVAL();
     u32HTH_Flag = AWF_GET_HTH_INTFLAG();
     u32LTH_Flag = AWF_GET_LTH_INTFLAG();
+
     if (u32HTH_Flag)
     {
         printf("AWF HTH Interrupt occured!!!, HTH_INT = %d, LTH_INT = %d\n", u32HTH_Flag, u32LTH_Flag);
         printf("AWFHTH = %d, ACUVAL = %d\n", (uint32_t)((AWF->HTH & AWF_HTH_AWFHTH_Msk) >> AWF_HTH_AWFHTH_Pos), u32AccumulationValue);
-        AWF_Close();
-        printf("HTH Flag clear!, HTH_INT = %d, LTH_INT = %d\n", u32HTH_Flag, u32LTH_Flag);
     }
 
     if (u32LTH_Flag)
     {
         printf("AWF LTH Interrupt occured!!!, HTH_INT = %d, LTH_INT = %d\n", u32HTH_Flag, u32LTH_Flag);
         printf("AWFLTH = %d, ACUVAL = %d\n", (uint32_t)((AWF->LTH & AWF_LTH_AWFLTH_Msk) >> AWF_LTH_AWFLTH_Pos), u32AccumulationValue);
-        AWF_Close();
-        printf("LTH Flag clear!, HTH_INT = %d, LTH_INT = %d\n", u32HTH_Flag, u32LTH_Flag);
     }
+
+    AWF_Close();
 
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
     inp32(&AWF->STATUS);
@@ -170,7 +167,8 @@ int main(void)
 {
     uint32_t u32AddrOffset = 0x0;
     uint32_t u32AddrOffsetEnd = 0x0e;
-    uint32_t u32WriteVlaue = 0;
+    uint32_t u32WriteVlaue = 10;
+    char TestCase;
 
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
@@ -186,22 +184,56 @@ int main(void)
     printf("+-------------------------------------------------------------+\n");
     printf("|                   AWF Wake-up Sample Code                   |\n");
     printf("+-------------------------------------------------------------+\n");
-    printf("\nPress any key to entering power-down.\n\n");
-    getchar();
+    printf("|[0] Test High Threshold.                                     |\n");
+    printf("|[1] Test Low Threshold.                                      |\n");
+
+    TestCase = getchar();
 
     /* Unlock protected registers */
     SYS_UnlockReg();
 
     NVIC_EnableIRQ(AWF_IRQn);
 
-    /* Pre-load data in LPSRAM */
-    for (u32AddrOffset = 0; u32AddrOffset <= u32AddrOffsetEnd; u32AddrOffset += 0x2)
+    /* Accumulation count */
+    g_u32ACCCount = 8;
+
+    /* High threshold value */
+    g_u32HTHValue = 107;
+
+    /* Low threshold value */
+    g_u32LTHValue = 53;
+
+    /* Word buffer initial value */
+    g_u32WBINITValue = 10;
+
+    if (TestCase == '0')
     {
-        u32WriteVlaue += 1;
-        outpw(LPSRAM_BASE + u32AddrOffset, u32WriteVlaue);
+        /* Pre-load data in LPSRAM, total accumulation value is 108 */
+        for (u32AddrOffset = 0; u32AddrOffset <= u32AddrOffsetEnd; u32AddrOffset += 0x2)
+        {
+            outpw(LPSRAM_BASE + u32AddrOffset, u32WriteVlaue);
+            u32WriteVlaue += 1;
+        }
+    }
+    else if (TestCase == '1')
+    {
+        /* Pre-load data in LPSRAM, total accumulation value is 52 */
+        for (u32AddrOffset = 0; u32AddrOffset <= u32AddrOffsetEnd; u32AddrOffset += 0x2)
+        {
+            outpw(LPSRAM_BASE + u32AddrOffset, u32WriteVlaue);
+            u32WriteVlaue -= 1;
+        }
+    }
+    else
+    {
+        printf("No select test case.\n");
+
+        while (1) ;
     }
 
     AWF_Wakeup_Test();
+
+    printf("Test End.\n");
 
     /* Got no where to go, just loop forever */
     while (1) ;
