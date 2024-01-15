@@ -818,8 +818,8 @@ void HSUSBD_SetVendorRequest(HSUSBD_VENDOR_REQ pfnVendorReq)
     g_hsusbd_pfnVendorRequest = pfnVendorReq;
 }
 
-/*@}*/ /* end of group HSUSBD_EXPORTED_FUNCTIONS */
+/** @} end of group HSUSBD_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group HSUSBD_Driver */
+/** @} end of group HSUSBD_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */

@@ -1,18 +1,24 @@
 /**************************************************************************//**
  * @file     descriptors.c
- * @version  V3.00
+ * @version  V1.00
  * @brief    HSUSBD descriptor.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 /*!<Includes */
 #include "NuMicro.h"
 #include "hid_mousekeyboard.h"
 
 /*!<USB HID Report Descriptor */
+#ifdef __ICCARM__
+#pragma data_alignment=4
 uint8_t HID_MouseReportDescriptor[] =
 {
+#else
+uint8_t HID_MouseReportDescriptor[] __attribute__((aligned(4))) =
+{
+#endif
     0x05, 0x01,     /* Usage Page(Generic Desktop Controls) */
     0x09, 0x02,     /* Usage(Mouse) */
     0xA1, 0x01,     /* Collection(Application) */
@@ -42,8 +48,14 @@ uint8_t HID_MouseReportDescriptor[] =
     0xC0            /* End Collection */
 };
 
+#ifdef __ICCARM__
+#pragma data_alignment=4
 uint8_t HID_KeyboardReportDescriptor[] =
 {
+#else
+uint8_t HID_KeyboardReportDescriptor[] __attribute__((aligned(4))) =
+{
+#endif
     0x05, 0x01,     /* Usage Page(Generic Desktop Controls) */
     0x09, 0x06,     /* Usage(Keyboard) */
     0xA1, 0x01,     /* Collection(Application) */
@@ -80,8 +92,14 @@ uint8_t HID_KeyboardReportDescriptor[] =
 
 /*----------------------------------------------------------------------------*/
 /*!<USB Device Descriptor */
+#ifdef __ICCARM__
+#pragma data_alignment=4
 uint8_t gu8DeviceDescriptor[] =
 {
+#else
+uint8_t gu8DeviceDescriptor[] __attribute__((aligned(4))) =
+{
+#endif
     LEN_DEVICE,     /* bLength */
     DESC_DEVICE,    /* bDescriptorType */
     0x00, 0x02,     /* bcdUSB */
@@ -103,8 +121,14 @@ uint8_t gu8DeviceDescriptor[] =
 };
 
 /*!<USB Qualifier Descriptor */
+#ifdef __ICCARM__
+#pragma data_alignment=4
 uint8_t gu8QualifierDescriptor[] =
 {
+#else
+uint8_t gu8QualifierDescriptor[] __attribute__((aligned(4))) =
+{
+#endif
     LEN_QUALIFIER,  /* bLength */
     DESC_QUALIFIER, /* bDescriptorType */
     0x00, 0x02,     /* bcdUSB */
@@ -117,8 +141,14 @@ uint8_t gu8QualifierDescriptor[] =
 };
 
 /*!<USB Configure Descriptor */
+#ifdef __ICCARM__
+#pragma data_alignment=4
 uint8_t gu8ConfigDescriptor[] =
 {
+#else
+uint8_t gu8ConfigDescriptor[] __attribute__((aligned(4))) =
+{
+#endif
     LEN_CONFIG,     /* bLength */
     DESC_CONFIG,    /* bDescriptorType */
     /* wTotalLength */
@@ -196,8 +226,14 @@ uint8_t gu8ConfigDescriptor[] =
 };
 
 /*!<USB Other Speed Configure Descriptor */
+#ifdef __ICCARM__
+#pragma data_alignment=4
 uint8_t gu8OtherConfigDescriptorHS[] =
 {
+#else
+uint8_t gu8OtherConfigDescriptorHS[] __attribute__((aligned(4))) =
+{
+#endif
     LEN_CONFIG,     /* bLength */
     DESC_OTHERSPEED,    /* bDescriptorType */
     /* wTotalLength */
@@ -275,8 +311,14 @@ uint8_t gu8OtherConfigDescriptorHS[] =
 };
 
 /*!<USB Configure Descriptor */
+#ifdef __ICCARM__
+#pragma data_alignment=4
 uint8_t gu8ConfigDescriptorFS[] =
 {
+#else
+uint8_t gu8ConfigDescriptorFS[] __attribute__((aligned(4))) =
+{
+#endif
     LEN_CONFIG,     /* bLength */
     DESC_CONFIG,    /* bDescriptorType */
     /* wTotalLength */
@@ -354,8 +396,14 @@ uint8_t gu8ConfigDescriptorFS[] =
 };
 
 /*!<USB Other Speed Configure Descriptor */
+#ifdef __ICCARM__
+#pragma data_alignment=4
 uint8_t gu8OtherConfigDescriptorFS[] =
 {
+#else
+uint8_t gu8OtherConfigDescriptorFS[] __attribute__((aligned(4))) =
+{
+#endif
     LEN_CONFIG,     /* bLength */
     DESC_OTHERSPEED,    /* bDescriptorType */
     /* wTotalLength */
@@ -433,24 +481,42 @@ uint8_t gu8OtherConfigDescriptorFS[] =
 };
 
 /*!<USB Language String Descriptor */
+#ifdef __ICCARM__
+#pragma data_alignment=4
 uint8_t gu8StringLang[4] =
 {
+#else
+uint8_t gu8StringLang[4] __attribute__((aligned(4))) =
+{
+#endif
     4,              /* bLength */
     DESC_STRING,    /* bDescriptorType */
     0x09, 0x04
 };
 
 /*!<USB Vendor String Descriptor */
+#ifdef __ICCARM__
+#pragma data_alignment=4
 uint8_t gu8VendorStringDesc[] =
 {
+#else
+uint8_t gu8VendorStringDesc[] __attribute__((aligned(4))) =
+{
+#endif
     16,
     DESC_STRING,
     'N', 0, 'u', 0, 'v', 0, 'o', 0, 't', 0, 'o', 0, 'n', 0
 };
 
 /*!<USB Product String Descriptor */
+#ifdef __ICCARM__
+#pragma data_alignment=4
 uint8_t gu8ProductStringDesc[] =
 {
+#else
+uint8_t gu8ProductStringDesc[] __attribute__((aligned(4))) =
+{
+#endif
     22,
     DESC_STRING,
     'H', 0, 'I', 0, 'D', 0, ' ', 0, 'D', 0, 'e', 0, 'v', 0, 'i', 0, 'c', 0, 'e', 0

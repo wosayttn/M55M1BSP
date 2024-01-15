@@ -15,6 +15,8 @@
 signed char mouse_table[] = { -16, -16, -16, 0, 16, 16, 16, 0};
 uint8_t mouse_idx = 0;
 uint8_t move_len, mouse_mode = 1;
+uint8_t au8LED_Status[8];
+uint32_t LED_STATUS = 0;
 
 uint8_t volatile g_u8EPAReady = 0;
 uint8_t volatile g_u8EPBReady = 0;
@@ -424,6 +426,16 @@ void HID_ClassRequest(void)
                 HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
                 HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
             }
+            else if(((gUsbCmd.wValue >> 8) & 0xff) == 2) {    /* Request Type = Output */
+                HSUSBD_CtrlOut(au8LED_Status, (gUsbCmd.wLength & 0xff));
+                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_RXPKIF_Msk);
+                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_RXPKIEN_Msk);
+
+                /* Status stage */
+                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+            }
             else
             {
                 // Stall
@@ -588,4 +600,42 @@ void HID_UpdateKeyboardData(void)
         HSUSBD->EP[EPB].EPRSPCTL = HSUSBD_EP_RSPCTL_SHORTTXEN;
         HSUSBD_ENABLE_EP_INT(EPB, HSUSBD_EPINTEN_INTKIEN_Msk);
     }
+    
+    if(au8LED_Status[0] != LED_STATUS)
+    {
+        if((au8LED_Status[0] & HID_LED_ALL) != (LED_STATUS & HID_LED_ALL))
+        {
+            if(au8LED_Status[0] & HID_LED_NumLock)
+               printf("NumLock ON, "); 
+                
+            else
+               printf("NumLock OFF, "); 
+
+            if(au8LED_Status[0] & HID_LED_CapsLock)
+               printf("CapsLock ON, "); 
+                
+            else
+               printf("CapsLock OFF, "); 
+            
+            if(au8LED_Status[0] & HID_LED_ScrollLock)
+               printf("ScrollLock ON, "); 
+                
+            else
+               printf("ScrollLock OFF, "); 
+
+            if(au8LED_Status[0] & HID_LED_Compose)
+               printf("Compose ON, "); 
+                
+            else
+               printf("Compose OFF, "); 
+
+            if(au8LED_Status[0] & HID_LED_Kana)
+               printf("Kana ON\n"); 
+                
+            else
+               printf("Kana OFF\n"); 
+        } 
+        LED_STATUS = au8LED_Status[0]; 
+    }
+    
 }
