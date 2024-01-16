@@ -22,14 +22,13 @@ static volatile uint32_t  s_u32TickCnt;              /* timer ticks - 100 ticks 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global Functions                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-uint32_t  FuncCrc32(uint32_t u32Start, uint32_t u32Len)
+NVT_ITCM uint32_t  FuncCrc32(uint32_t u32Start, uint32_t u32Len)
 {
     uint32_t  u32Idx, u32Data = 0UL;
 
-    /* WDTAT_RVS, CHECKSUM_RVS, CHECKSUM_COM */
     for (u32Idx = 0; u32Idx < u32Len; u32Idx += 4)
     {
-        u32Data += *(uint32_t *)(u32Start + u32Idx);
+        u32Data += M32(u32Start + u32Idx);
     }
 
     u32Data = 0xFFFFFFFF - u32Data + 1UL;
@@ -46,7 +45,7 @@ NVT_ITCM void SysTick_Handler(void)
     s_u32TickCnt++;
 
     /* Calculate CRC32 value, just to consume CPU time  */
-    FuncCrc32(0x10000, 0x100);
+    FuncCrc32(DTCM_BASE, 0x100);
 }
 
 static void SYS_Init(void)

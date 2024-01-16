@@ -8,13 +8,13 @@
   <WorkspaceName>WorkSpace</WorkspaceName>
 
   <project>
-    <PathAndName>.\Loader\KEIL\FMC_DualBankFwUpdate_Loader.uvprojx</PathAndName>
+    <PathAndName>.\Loader\KEIL\Loader.uvprojx</PathAndName>
     <NodeIsActive>1</NodeIsActive>
     <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
-    <PathAndName>.\App\KEIL\FMC_DualBankFwUpdate_App.uvprojx</PathAndName>
+    <PathAndName>.\App\KEIL\App.uvprojx</PathAndName>
     <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
