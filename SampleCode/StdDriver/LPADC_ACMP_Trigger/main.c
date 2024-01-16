@@ -26,10 +26,11 @@ NVT_ITCM void LPADC0_IRQHandler(void)
     LPADC_CLR_INT_FLAG(LPADC0, LPADC_ADF_INT); /* Clear the A/D interrupt flag */
 
     g_u32LpadcIntFlag = 1;
-    g_u32COVNUMFlag++;
 
+    g_u32COVNUMFlag++;
     /*Confirm that the Flag has been cleared.*/
     M32(&LPADC0->ADSR0);
+
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* ACMP interrupt handler                                                                                 */
@@ -162,12 +163,12 @@ void LPADC_FunctionTest(void)
             NVIC_EnableIRQ(ACMP01_IRQn);
             /* Enable LPADC0 interrupt */
             NVIC_EnableIRQ(LPADC0_IRQn);
-            printf("Conversion result of channel 0:\n");
-
             /* Reset the LPADC and ACMP indicator counter */
             g_u32LpadcIntFlag = 0;
             g_u32COVNUMFlag = 0;
             g_u32ACMP1IntFlag = 0;
+
+           printf("Conversion result of channel 0:\n");
 
             while (1)
             {
@@ -221,12 +222,12 @@ void LPADC_FunctionTest(void)
             NVIC_EnableIRQ(ACMP01_IRQn);
             /* Enable LPADC0 interrupt */
             NVIC_EnableIRQ(LPADC0_IRQn);
-
-            printf("Conversion result of channel pair 0:\n");
-
             /* Reset the LPADC and ACMP indicator counter */
             g_u32LpadcIntFlag = 0;
             g_u32COVNUMFlag = 0;
+
+            printf("Conversion result of channel pair 0:\n");
+
 
             while (1)
             {
