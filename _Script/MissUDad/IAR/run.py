@@ -52,7 +52,7 @@ if __name__ == "__main__":
                     try:
                         generalXclPath = os.path.abspath(os.path.join('settings', prjName + '.Release.general.xcl'))
                         driverXclPath  = os.path.abspath(os.path.join('settings', prjName + '.Release.driver.xcl'))
-                        cspybatCmd = CSPYBAT_EXE + ' -f ' + generalXclPath + ' --backend -f ' + driverXclPath
+                        cspybatCmd = CSPYBAT_EXE + ' -f \"' + generalXclPath + '\" --backend -f \"' + driverXclPath + '\"'
                         #print(cspybatCmd)
                         print('#################################### '+prjName+' ####################################')
                         #p = subprocess.Popen(cspybatCmd, startupinfo=si, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
