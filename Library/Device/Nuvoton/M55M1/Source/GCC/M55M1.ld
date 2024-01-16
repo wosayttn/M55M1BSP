@@ -116,6 +116,8 @@ SECTIONS
   .text :
   {
     KEEP(*(.vectors))
+    *startup_*.o(.text*)
+
     *(.text*)
 
     KEEP(*(.init))

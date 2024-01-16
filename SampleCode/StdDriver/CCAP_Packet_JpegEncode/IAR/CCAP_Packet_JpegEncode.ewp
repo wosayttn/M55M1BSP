@@ -1102,6 +1102,12 @@
         </file>
     </group>
     <group>
+        <name>JpegAccelerator</name>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\JpegAcceleratorLib\JpegAcceleratorLib.a</name>
+        </file>
+    </group>
+    <group>
         <name>libjpeg</name>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\ThirdParty\libjpeg\jaricom.c</name>
@@ -1300,12 +1306,6 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\uart.c</name>
-        </file>
-    </group>
-    <group>
-        <name>JpegAccelerator</name>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\JpegAcceleratorLib\JpegAcceleratorLib.a</name>
         </file>
     </group>
     <group>

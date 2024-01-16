@@ -68,21 +68,21 @@ int RETARGET(_write)(FILEHANDLE fh, const unsigned char *buf, unsigned int len, 
 
     switch (fh)
     {
-    case STDOUT:
-    case STDERR:
-    {
-        unsigned int i;
-
-        for (i = 0; i < len; i++)
+        case STDOUT:
+        case STDERR:
         {
-            SendChar(buf[i]);
+            unsigned int i;
+
+            for (i = 0; i < len; i++)
+            {
+                SendChar(buf[i]);
+            }
+
+            return IO_OUTPUT(len);
         }
 
-        return IO_OUTPUT(len);
-    }
-
-    default:
-        return EOF;
+        default:
+            return EOF;
     }
 }
 
@@ -94,38 +94,38 @@ int RETARGET(_read)(FILEHANDLE fh, unsigned char *buf, unsigned int len, int mod
 
     switch (fh)
     {
-    case STDIN:
-    {
-        int c;
-        unsigned int i;
-
-        for (i = 0; i < len; i++)
+        case STDIN:
         {
-            c = GetChar();
+            int c;
+            unsigned int i;
 
-            if (c == EOF)
+            for (i = 0; i < len; i++)
             {
-                return EOF;
-            }
+                c = GetChar();
 
-            buf[i] = (unsigned char)c;
+                if (c == EOF)
+                {
+                    return EOF;
+                }
+
+                buf[i] = (unsigned char)c;
 #if (STDIN_ECHO != 0)
-            SendChar(c);
+                SendChar(c);
 #endif
 
-            if (c == '\n')
-            {
-                i++;
-                break;
+                if ((c == '\n') || (c == '\r'))
+                {
+                    i++;
+                    break;
+                }
+
             }
 
+            return i;
         }
 
-        return i;
-    }
-
-    default:
-        return EOF;
+        default:
+            return EOF;
     }
 }
 
@@ -133,13 +133,13 @@ int RETARGET(_istty)(FILEHANDLE fh)
 {
     switch (fh)
     {
-    case STDIN:
-    case STDOUT:
-    case STDERR:
-        return 1;
+        case STDIN:
+        case STDOUT:
+        case STDERR:
+            return 1;
 
-    default:
-        return 0;
+        default:
+            return 0;
     }
 }
 
