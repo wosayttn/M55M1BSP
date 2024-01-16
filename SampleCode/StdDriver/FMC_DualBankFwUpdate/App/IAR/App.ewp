@@ -666,7 +666,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>FMC_DualBankFwUpdate_App.bin</state>
+                    <state>App.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -705,7 +705,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>FMC_DualBankFwUpdate_App.out</state>
+                    <state>App.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -1002,7 +1002,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>FMC_DualBankFwUpdate_App_import_lib.o</state>
+                    <state>App_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
