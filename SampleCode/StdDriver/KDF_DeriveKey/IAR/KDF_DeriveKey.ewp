@@ -292,7 +292,7 @@
                 </option>
                 <option>
                     <name>CCDebugInfo</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IEndianMode</name>
@@ -767,7 +767,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\M55M1.icf</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\IAR\M55M1.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -819,7 +819,7 @@
                 </option>
                 <option>
                     <name>IlinkOverrideProgramEntryLabel</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkProgramEntryLabelSelect</name>
@@ -827,7 +827,7 @@
                 </option>
                 <option>
                     <name>IlinkProgramEntryLabel</name>
-                    <state>__iar_program_start</state>
+                    <state>Reset_Handler</state>
                 </option>
                 <option>
                     <name>DoFill</name>

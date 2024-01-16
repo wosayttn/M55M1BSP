@@ -351,7 +351,6 @@
                     <state>$PROJ_DIR$\..\..\..\..\..\Library\CMSIS\Core\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\Library\Device\Nuvoton\M55M1\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\inc</state>
-                    <state>$PROJ_DIR$\..\..\..\..\..\Library\NuMaker\common</state>
                     <state>$PROJ_DIR$\..\..</state>
                 </option>
                 <option>
@@ -666,7 +665,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>FMC_DualBankFwUpdate_App.bin</state>
+                    <state>Loader.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -705,7 +704,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>FMC_DualBankFwUpdate_App.out</state>
+                    <state>Loader.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -769,7 +768,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\App.icf</state>
+                    <state>$PROJ_DIR$\Loader.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -1002,7 +1001,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>FMC_DualBankFwUpdate_App_import_lib.o</state>
+                    <state>Loader_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1104,6 +1103,9 @@
             <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\clk.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\crc.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\fmc.c</name>
         </file>
         <file>
@@ -1114,9 +1116,6 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\Library\StdDriver\src\uart.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\Library\NuMaker\common\xmodem.c</name>
         </file>
     </group>
     <group>

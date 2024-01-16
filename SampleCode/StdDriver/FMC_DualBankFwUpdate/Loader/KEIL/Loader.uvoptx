@@ -22,7 +22,7 @@
   </DaveTm>
 
   <Target>
-    <TargetName>FMC_DualBankFwUpdate_Loader</TargetName>
+    <TargetName>Loader</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>
