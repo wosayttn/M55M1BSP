@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <project>
     <fileVersion>4</fileVersion>
     <configuration>
@@ -48,7 +48,7 @@
                 </option>
                 <option>
                     <name>OGCoreOrChip</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>GRuntimeLibSelect</name>
@@ -74,7 +74,7 @@
                 </option>
                 <option>
                     <name>OGChipSelectEditMenu</name>
-                    <state>Default	None</state>
+                    <state>M55M1 series	Nuvoton M55M1 series</state>
                 </option>
                 <option>
                     <name>GenLowLevelInterface</name>
@@ -120,7 +120,7 @@
                 </option>
                 <option>
                     <name>GFPUDeviceSlave</name>
-                    <state>Default	None</state>
+                    <state>M55M1 series	Nuvoton M55M1 series</state>
                 </option>
                 <option>
                     <name>FPU2</name>
@@ -172,11 +172,11 @@
                 </option>
                 <option>
                     <name>GenLocaleTags</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>GenLocaleDisplayOnly</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>DSPExtension</name>
@@ -219,6 +219,416 @@
             </data>
         </settings>
         <settings>
+            <name>CUSTOM</name>
+            <archiveVersion>3</archiveVersion>
+            <data>
+                <extensions />
+                <cmdline />
+                <hasPrio>0</hasPrio>
+                <buildSequence>inputOutputBased</buildSequence>
+            </data>
+        </settings>
+        <settings>
+            <name>ILINK</name>
+            <archiveVersion>0</archiveVersion>
+            <data>
+                <version>27</version>
+                <wantNonLocal>1</wantNonLocal>
+                <debug>0</debug>
+                <option>
+                    <name>IlinkLibIOConfig</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkInputFileSlave</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkOutputFile</name>
+                    <state>CRYPTO_RSA_CRTBypass.out</state>
+                </option>
+                <option>
+                    <name>IlinkDebugInfoEnable</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkKeepSymbols</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkRawBinaryFile</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkRawBinarySymbol</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkRawBinarySegment</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkRawBinaryAlign</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkDefines</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkConfigDefines</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkMapFile</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkLogFile</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogInitialization</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogModule</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogSection</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogVeneer</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkIcfOverride</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkIcfFile</name>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\IAR\M55M1.icf</state>
+                </option>
+                <option>
+                    <name>IlinkIcfFileSlave</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkEnableRemarks</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkSuppressDiags</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkTreatAsRem</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkTreatAsWarn</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkTreatAsErr</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkWarningsAreErrors</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkUseExtraOptions</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkExtraOptions</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkLowLevelInterfaceSlave</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkAutoLibEnable</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkAdditionalLibs</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkOverrideProgramEntryLabel</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkProgramEntryLabelSelect</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkProgramEntryLabel</name>
+                    <state>Reset_Handler</state>
+                </option>
+                <option>
+                    <name>DoFill</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>FillerByte</name>
+                    <state>0xFF</state>
+                </option>
+                <option>
+                    <name>FillerStart</name>
+                    <state>0x0</state>
+                </option>
+                <option>
+                    <name>FillerEnd</name>
+                    <state>0x0</state>
+                </option>
+                <option>
+                    <name>CrcSize</name>
+                    <version>0</version>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>CrcAlign</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>CrcPoly</name>
+                    <state>0x11021</state>
+                </option>
+                <option>
+                    <name>CrcCompl</name>
+                    <version>0</version>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CrcBitOrder</name>
+                    <version>0</version>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CrcInitialValue</name>
+                    <state>0x0</state>
+                </option>
+                <option>
+                    <name>DoCrc</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkBE8Slave</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkBufferedTerminalOutput</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkStdoutInterfaceSlave</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>CrcFullSize</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkIElfToolPostProcess</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogAutoLibSelect</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogRedirSymbols</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogUnusedFragments</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkCrcReverseByteOrder</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkCrcUseAsInput</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkOptInline</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkOptExceptionsAllow</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkOptExceptionsForce</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkCmsis</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkOptMergeDuplSections</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkOptUseVfe</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkOptForceVfe</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkStackAnalysisEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkStackControlFile</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkStackCallGraphFile</name>
+                    <state />
+                </option>
+                <option>
+                    <name>CrcAlgorithm</name>
+                    <version>1</version>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>CrcUnitSize</name>
+                    <version>0</version>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkThreadsSlave</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkLogCallGraph</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkIcfFile_AltDefault</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkEncInput</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkEncOutput</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkEncOutputBom</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkHeapSelect</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkLocaleSelect</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkTrustzoneImportLibraryOut</name>
+                    <state>Project_import_lib.o</state>
+                </option>
+                <option>
+                    <name>OILinkExtraOption</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkRawBinaryFile2</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkRawBinarySymbol2</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkRawBinarySegment2</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkRawBinaryAlign2</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkLogCrtRoutineSelection</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogFragmentInfo</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogInlining</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogMerging</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkDemangle</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkWrapperFileEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkWrapperFile</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IlinkProcessor</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkFpuProcessor</name>
+                    <state>1</state>
+                </option>
+            </data>
+        </settings>
+        <settings>
+            <name>IARCHIVE</name>
+            <archiveVersion>0</archiveVersion>
+            <data>
+                <version>0</version>
+                <wantNonLocal>1</wantNonLocal>
+                <debug>0</debug>
+                <option>
+                    <name>IarchiveInputs</name>
+                    <state />
+                </option>
+                <option>
+                    <name>IarchiveOverride</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IarchiveOutput</name>
+                    <state>###Unitialized###</state>
+                </option>
+            </data>
+        </settings>
+        <settings>
+            <name>BUILDACTION</name>
+            <archiveVersion>2</archiveVersion>
+            <data />
+        </settings>
+    <settings>
             <name>ICCARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
@@ -267,19 +677,19 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>CCDiagWarning</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>CCDiagError</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>CCObjPrefix</name>
@@ -308,7 +718,7 @@
                 </option>
                 <option>
                     <name>IExtraOptions</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>CCLangConformance</name>
@@ -344,7 +754,7 @@
                 </option>
                 <option>
                     <name>PreInclude</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
@@ -510,15 +920,15 @@
                 </option>
                 <option>
                     <name>AWarnOne</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>AWarnRange1</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>AWarnRange2</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>ADebug</name>
@@ -530,7 +940,7 @@
                 </option>
                 <option>
                     <name>ADefines</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>AList</name>
@@ -606,7 +1016,7 @@
                 </option>
                 <option>
                     <name>AOutputFile</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>ALimitErrorsCheck</name>
@@ -622,7 +1032,7 @@
                 </option>
                 <option>
                     <name>AUserIncludes</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>AExtraOptionsCheckV2</name>
@@ -630,7 +1040,7 @@
                 </option>
                 <option>
                     <name>AExtraOptionsV2</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>AsmNoLiteralPool</name>
@@ -638,7 +1048,7 @@
                 </option>
                 <option>
                     <name>PreInclude</name>
-                    <state></state>
+                    <state />
                 </option>
                 <option>
                     <name>A_32_64Device</name>
@@ -676,418 +1086,8 @@
                 </option>
             </data>
         </settings>
-        <settings>
-            <name>CUSTOM</name>
-            <archiveVersion>3</archiveVersion>
-            <data>
-                <extensions></extensions>
-                <cmdline></cmdline>
-                <hasPrio>0</hasPrio>
-                <buildSequence>inputOutputBased</buildSequence>
-            </data>
-        </settings>
-        <settings>
-            <name>ILINK</name>
-            <archiveVersion>0</archiveVersion>
-            <data>
-                <version>27</version>
-                <wantNonLocal>1</wantNonLocal>
-                <debug>0</debug>
-                <option>
-                    <name>IlinkLibIOConfig</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkInputFileSlave</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkOutputFile</name>
-                    <state>CRYPTO_RSA_CRTBypass.out</state>
-                </option>
-                <option>
-                    <name>IlinkDebugInfoEnable</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkKeepSymbols</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkRawBinaryFile</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkRawBinarySymbol</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkRawBinarySegment</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkRawBinaryAlign</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkDefines</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkConfigDefines</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkMapFile</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkLogFile</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkLogInitialization</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkLogModule</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkLogSection</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkLogVeneer</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkIcfOverride</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\M55M1.icf</state>
-                </option>
-                <option>
-                    <name>IlinkIcfFileSlave</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkEnableRemarks</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkSuppressDiags</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkTreatAsRem</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkTreatAsWarn</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkTreatAsErr</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkWarningsAreErrors</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkUseExtraOptions</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkExtraOptions</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkLowLevelInterfaceSlave</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkAutoLibEnable</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkAdditionalLibs</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkOverrideProgramEntryLabel</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkProgramEntryLabelSelect</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkProgramEntryLabel</name>
-                    <state>__iar_program_start</state>
-                </option>
-                <option>
-                    <name>DoFill</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>FillerByte</name>
-                    <state>0xFF</state>
-                </option>
-                <option>
-                    <name>FillerStart</name>
-                    <state>0x0</state>
-                </option>
-                <option>
-                    <name>FillerEnd</name>
-                    <state>0x0</state>
-                </option>
-                <option>
-                    <name>CrcSize</name>
-                    <version>0</version>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>CrcAlign</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>CrcPoly</name>
-                    <state>0x11021</state>
-                </option>
-                <option>
-                    <name>CrcCompl</name>
-                    <version>0</version>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>CrcBitOrder</name>
-                    <version>0</version>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>CrcInitialValue</name>
-                    <state>0x0</state>
-                </option>
-                <option>
-                    <name>DoCrc</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkBE8Slave</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkBufferedTerminalOutput</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkStdoutInterfaceSlave</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>CrcFullSize</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkIElfToolPostProcess</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkLogAutoLibSelect</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkLogRedirSymbols</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkLogUnusedFragments</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkCrcReverseByteOrder</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkCrcUseAsInput</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkOptInline</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkOptExceptionsAllow</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkOptExceptionsForce</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkCmsis</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkOptMergeDuplSections</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkOptUseVfe</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkOptForceVfe</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkStackAnalysisEnable</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkStackControlFile</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkStackCallGraphFile</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>CrcAlgorithm</name>
-                    <version>1</version>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>CrcUnitSize</name>
-                    <version>0</version>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkThreadsSlave</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkLogCallGraph</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkIcfFile_AltDefault</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkEncInput</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkEncOutput</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkEncOutputBom</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkHeapSelect</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkLocaleSelect</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>CRYPTO_RSA_CRTBypass_import_lib.o</state>
-                </option>
-                <option>
-                    <name>OILinkExtraOption</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkRawBinaryFile2</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkRawBinarySymbol2</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkRawBinarySegment2</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkRawBinaryAlign2</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkLogCrtRoutineSelection</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkLogFragmentInfo</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkLogInlining</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkLogMerging</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkDemangle</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkWrapperFileEnable</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IlinkWrapperFile</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IlinkProcessor</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkFpuProcessor</name>
-                    <state>1</state>
-                </option>
-            </data>
-        </settings>
-        <settings>
-            <name>IARCHIVE</name>
-            <archiveVersion>0</archiveVersion>
-            <data>
-                <version>0</version>
-                <wantNonLocal>1</wantNonLocal>
-                <debug>0</debug>
-                <option>
-                    <name>IarchiveInputs</name>
-                    <state></state>
-                </option>
-                <option>
-                    <name>IarchiveOverride</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>IarchiveOutput</name>
-                    <state>###Unitialized###</state>
-                </option>
-            </data>
-        </settings>
-        <settings>
-            <name>BUILDACTION</name>
-            <archiveVersion>2</archiveVersion>
-            <data />
-        </settings>
-    </configuration>
-    <group>
+        </configuration>
+<group>
         <name>CMSIS</name>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</name>
