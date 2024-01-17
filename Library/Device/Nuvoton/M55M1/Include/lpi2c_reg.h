@@ -41,9 +41,8 @@ typedef struct
      * |        |          |If bit INTEN (LPI2C_CTL0 [7]) is set, the LPI2C interrupt is requested
      * |        |          |SI must be cleared by software
      * |        |          |Clear SI by writing 1 to this bit.
-     * |        |          |For ACKMEN is set in slave read mode, the SI flag is set in 8th clock period for user to confirm the acknowledge bit and 9th clock period for user to read the data in the data buffer.
      * |[4]     |STO       |LPI2C STOP Control
-     * |        |          |In Master mode, setting STO to transmit a STOP condition to bus then LPI2C controller will check the bus condition if a STOP condition is detected
+     * |        |          |In Master mode, setting STO to transmit a STOP condition to bus then LPI2C will check the bus condition if a STOP condition is detected
      * |        |          |This bit will be cleared by hardware automatically.
      * |[5]     |STA       |LPI2C START Control
      * |        |          |Setting STA to logic 1 to enter Master mode, the LPI2C hardware sends a START or repeat START condition to bus when the bus is free.
@@ -62,13 +61,13 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[0]     |GC        |General Call Function
-     * |        |          |0 = General Call Function Disabled.
-     * |        |          |1 = General Call Function Enabled.
-     * |[10:1]  |ADDR      |LPI2C Address
+     * |        |          |0 = General Call function Disabled.
+     * |        |          |1 = General Call function Enabled.
+     * |[7:1]   |ADDR      |LPI2C Address
      * |        |          |The content of this register is irrelevant when LPI2C is in Master mode
-     * |        |          |In the slave mode, the seven most significant bits must be loaded with the chipu2019s own address
+     * |        |          |In the slave mode, the seven most significant bits must be loaded with the chip's own address
      * |        |          |The LPI2C hardware will react if either of the address is matched.
-     * |        |          |Note: When software set 10u2019h000, the address cannot be used.
+     * |        |          |Note: When software set 7'h000, the address cannot be used.
      * @var LPI2C_T::DAT
      * Offset: 0x08  LPI2C Data Register
      * ---------------------------------------------------------------------------------------------------
@@ -97,14 +96,15 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[9:0]   |DIVIDER   |LPI2C Clock Divided
-     * |        |          |Indicates the LPI2C clock rate: Data Baud Rate of LPI2C = (system clock) / (4x (LPI2C_CLKDIV+1)).
-     * |        |          |Note: The minimum value of LPI2C_CLKDIV is 4.
+     * |[9:0]   |DIVIDER   |LPI2C Clock Divider
+     * |        |          |Indicates the LPI2C clock rate: Data Baud Rate of LPI2C = (system clock) / (4x (DIVDER+1)).
+     * |        |          |Note: The minimum value of DIVIDER is 4.
      * |[15:12] |NFCNT     |Noise Filter Count
      * |        |          |The register bits control the input filter width.
-     * |        |          |0 : filter width 3*PCLK
-     * |        |          |1 : filter width 4*PCLK
-     * |        |          |N : filter width (3+N)*PCKL
+     * |        |          |If the pulse width is narrower than the setting((3+N)*PCLK), it will be ignored.
+     * |        |          |0 = Filter width 3*PCLK
+     * |        |          |1 = Filter width 4*PCLK
+     * |        |          |N = Filter width (3+N)*PCKL
      * |        |          |Note: Filter width Min :3*PCLK, Max : 18*PCLK
      * @var LPI2C_T::TOCTL
      * Offset: 0x14  LPI2C Time-out Control Register
@@ -120,7 +120,7 @@ typedef struct
      * |        |          |1 = Time-out period is extend 4 times Enabled.
      * |[2]     |TOCEN     |Time-out Counter Enable Bit
      * |        |          |When enabled, the 14-bit time-out counter will start counting when SI is cleared
-     * |        |          |Setting flag SI to u20181u2019 will reset counter and re-start up counting after SI is cleared.
+     * |        |          |Setting flag SI to '1' will reset counter and re-start up counting after SI is cleared.
      * |        |          |0 = Time-out counter Disabled.
      * |        |          |1 = Time-out counter Enabled.
      * @var LPI2C_T::ADDR1
@@ -129,87 +129,83 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[0]     |GC        |General Call Function
-     * |        |          |0 = General Call Function Disabled.
-     * |        |          |1 = General Call Function Enabled.
-     * |[10:1]  |ADDR      |LPI2C Address
+     * |        |          |0 = General Call function Disabled.
+     * |        |          |1 = General Call function Enabled.
+     * |[7:1]   |ADDR      |LPI2C Address
      * |        |          |The content of this register is irrelevant when LPI2C is in Master mode
-     * |        |          |In the slave mode, the seven most significant bits must be loaded with the chipu2019s own address
+     * |        |          |In the slave mode, the seven most significant bits must be loaded with the chip's own address
      * |        |          |The LPI2C hardware will react if either of the address is matched.
-     * |        |          |Note: When software set 10u2019h000, the address cannot be used.
+     * |        |          |Note: When software set 7'h000, the address cannot be used.
      * @var LPI2C_T::ADDR2
      * Offset: 0x1C  LPI2C Slave Address Register2
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[0]     |GC        |General Call Function
-     * |        |          |0 = General Call Function Disabled.
-     * |        |          |1 = General Call Function Enabled.
-     * |[10:1]  |ADDR      |LPI2C Address
+     * |        |          |0 = General Call function Disabled.
+     * |        |          |1 = General Call function Enabled.
+     * |[7:1]   |ADDR      |LPI2C Address
      * |        |          |The content of this register is irrelevant when LPI2C is in Master mode
-     * |        |          |In the slave mode, the seven most significant bits must be loaded with the chipu2019s own address
+     * |        |          |In the slave mode, the seven most significant bits must be loaded with the chip's own address
      * |        |          |The LPI2C hardware will react if either of the address is matched.
-     * |        |          |Note: When software set 10u2019h000, the address cannot be used.
+     * |        |          |Note: When software set 7'h000, the address cannot be used.
      * @var LPI2C_T::ADDR3
      * Offset: 0x20  LPI2C Slave Address Register3
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[0]     |GC        |General Call Function
-     * |        |          |0 = General Call Function Disabled.
-     * |        |          |1 = General Call Function Enabled.
-     * |[10:1]  |ADDR      |LPI2C Address
+     * |        |          |0 = General Call function Disabled.
+     * |        |          |1 = General Call function Enabled.
+     * |[7:1]   |ADDR      |LPI2C Address
      * |        |          |The content of this register is irrelevant when LPI2C is in Master mode
-     * |        |          |In the slave mode, the seven most significant bits must be loaded with the chipu2019s own address
+     * |        |          |In the slave mode, the seven most significant bits must be loaded with the chip's own address
      * |        |          |The LPI2C hardware will react if either of the address is matched.
-     * |        |          |Note: When software set 10u2019h000, the address cannot be used.
+     * |        |          |Note: When software set 7'h000, the address cannot be used.
      * @var LPI2C_T::ADDRMSK0
      * Offset: 0x24  LPI2C Slave Address Mask Register0
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[10:1]  |ADDRMSK   |LPI2C Address Mask
+     * |[7:1]   |ADDRMSK   |LPI2C Address Mask
      * |        |          |0 = Mask Disabled (the received corresponding register bit should be exact the same as address register.).
-     * |        |          |1 = Mask Enabled (the received corresponding address bit is donu2019t care.).
+     * |        |          |1 = Mask Enabled (the received corresponding address bit is don't care.).
      * |        |          |LPI2C bus controllers support multiple address recognition with four address mask register
-     * |        |          |When the bit in the address mask register is set to one, it means the received corresponding address bit is donu2019t-care
+     * |        |          |When the bit in the address mask register is set to one, it means the received corresponding address bit is don't-care
      * |        |          |If the bit is set to zero, that means the received corresponding register bit should be exact the same as address register.
-     * |        |          |Note: The wake-up function cannot use address mask.
      * @var LPI2C_T::ADDRMSK1
      * Offset: 0x28  LPI2C Slave Address Mask Register1
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[10:1]  |ADDRMSK   |LPI2C Address Mask
+     * |[7:1]   |ADDRMSK   |LPI2C Address Mask
      * |        |          |0 = Mask Disabled (the received corresponding register bit should be exact the same as address register.).
-     * |        |          |1 = Mask Enabled (the received corresponding address bit is donu2019t care.).
+     * |        |          |1 = Mask Enabled (the received corresponding address bit is don't care.).
      * |        |          |LPI2C bus controllers support multiple address recognition with four address mask register
-     * |        |          |When the bit in the address mask register is set to one, it means the received corresponding address bit is donu2019t-care
+     * |        |          |When the bit in the address mask register is set to one, it means the received corresponding address bit is don't-care
      * |        |          |If the bit is set to zero, that means the received corresponding register bit should be exact the same as address register.
-     * |        |          |Note: The wake-up function cannot use address mask.
      * @var LPI2C_T::ADDRMSK2
      * Offset: 0x2C  LPI2C Slave Address Mask Register2
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[10:1]  |ADDRMSK   |LPI2C Address Mask
+     * |[7:1]   |ADDRMSK   |LPI2C Address Mask
      * |        |          |0 = Mask Disabled (the received corresponding register bit should be exact the same as address register.).
-     * |        |          |1 = Mask Enabled (the received corresponding address bit is donu2019t care.).
+     * |        |          |1 = Mask Enabled (the received corresponding address bit is don't care.).
      * |        |          |LPI2C bus controllers support multiple address recognition with four address mask register
-     * |        |          |When the bit in the address mask register is set to one, it means the received corresponding address bit is donu2019t-care
+     * |        |          |When the bit in the address mask register is set to one, it means the received corresponding address bit is don't-care
      * |        |          |If the bit is set to zero, that means the received corresponding register bit should be exact the same as address register.
-     * |        |          |Note: The wake-up function cannot use address mask.
      * @var LPI2C_T::ADDRMSK3
      * Offset: 0x30  LPI2C Slave Address Mask Register3
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[10:1]  |ADDRMSK   |LPI2C Address Mask
+     * |[7:1]   |ADDRMSK   |LPI2C Address Mask
      * |        |          |0 = Mask Disabled (the received corresponding register bit should be exact the same as address register.).
-     * |        |          |1 = Mask Enabled (the received corresponding address bit is donu2019t care.).
+     * |        |          |1 = Mask Enabled (the received corresponding address bit is don't care.).
      * |        |          |LPI2C bus controllers support multiple address recognition with four address mask register
-     * |        |          |When the bit in the address mask register is set to one, it means the received corresponding address bit is donu2019t-care
+     * |        |          |When the bit in the address mask register is set to one, it means the received corresponding address bit is don't-care
      * |        |          |If the bit is set to zero, that means the received corresponding register bit should be exact the same as address register.
-     * |        |          |Note: The wake-up function cannot use address mask.
      * @var LPI2C_T::WKCTL
      * Offset: 0x3C  LPI2C Wake-up Control Register
      * ---------------------------------------------------------------------------------------------------
@@ -221,8 +217,8 @@ typedef struct
      * |        |          |Note: This is for slave address match wakeup.
      * |[7]     |NHDBUSEN  |LPI2C No Hold BUS Enable Bit
      * |        |          |0 = LPI2C hold bus after wake-up.
-     * |        |          |1= LPI2C donu2019t hold bus after wake-up.
-     * |        |          |Note: The LPI2C controller could respond when WKIF event is not clear, it may cause error data transmitted or received
+     * |        |          |1= LPI2C don't hold bus after wake-up.
+     * |        |          |Note: LPI2C could respond when WKIF event is not clear, it may cause error data transmitted or received
      * |        |          |If data transmitted or received when WKIF event is not clear, user must reset LPI2C controller and execute the original operation again.
      * @var LPI2C_T::WKSTS
      * Offset: 0x40  LPI2C Wake-up Status Register
@@ -233,9 +229,9 @@ typedef struct
      * |        |          |When chip is woken up from Power-down mode by LPI2C, this bit is set to 1
      * |        |          |Software can write 1 to clear this bit.
      * |[1]     |WKAKDONE  |Wakeup Address Frame Acknowledge Bit Done
-     * |        |          |0 = The ACK bit cycle of address match frame isnu2019t done.
+     * |        |          |0 = The ACK bit cycle of address match frame isn't done.
      * |        |          |1 = The ACK bit cycle of address match frame is done in power-down.
-     * |        |          |Note: This bit canu2019t release WKIF. Software can write 1 to clear this bit.
+     * |        |          |Note: This bit cannot release WKIF. Software can write 1 to clear this bit.
      * |[2]     |WRSTSWK   |Read/Write Status Bit in Address Wakeup Frame
      * |        |          |0 = Write command be record on the address match wakeup frame.
      * |        |          |1 = Read command be record on the address match wakeup frame.
@@ -245,18 +241,18 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[0]     |TXPDMAEN  |PDMA Transmit Channel Available
-     * |        |          |0 = Transmit PDMA function Disabled.
-     * |        |          |1 = Transmit PDMA function Enabled.
-     * |[1]     |RXPDMAEN  |PDMA Receive Channel Available
-     * |        |          |0 = Receive PDMA function Disabled.
-     * |        |          |1 = Receive PDMA function Enabled.
-     * |[2]     |PDMARST   |PDMA Reset
+     * |[0]     |TXPDMAEN  |LPPDMA Transmit Channel Available
+     * |        |          |0 = Transmit LPPDMA function Disabled.
+     * |        |          |1 = Transmit LPPDMA function Enabled.
+     * |[1]     |RXPDMAEN  |LPPDMA Receive Channel Available
+     * |        |          |0 = Receive LPPDMA function Disabled.
+     * |        |          |1 = Receive LPPDMA function Enabled.
+     * |[2]     |PDMARST   |LPPDMA Reset
      * |        |          |0 = No effect.
-     * |        |          |1 = Reset the LPI2C request to PDMA.
-     * |[8]     |PDMASTR   |PDMA Stretch Bit
-     * |        |          |0 = LPI2C send STOP automatically after PDMA transfer done. (only master TX)
-     * |        |          |1 = LPI2C SCL bus is stretched by hardware after PDMA transfer done if the SI is not cleared
+     * |        |          |1 = Reset the LPI2C request to LPPDMA.
+     * |[8]     |PDMASTR   |LPPDMA Stretch Bit
+     * |        |          |0 = LPI2C send STOP automatically after LPPDMA transfer done. (only master TX)
+     * |        |          |1 = LPI2C SCL bus is stretched by hardware after LPPDMA transfer done if the SI is not cleared
      * |        |          |(only master TX)
      * |[10]    |SWITCHEN  |SCL And SDA Pin Switch Enable Bit
      * |        |          |0 = LPI&sup2;C use original pin configuration.
@@ -303,38 +299,39 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[3:0]   |TGSRCSEL  |Low Power Auto-operation Trigger Source Select
-     * |        |          |0000 = Low Power Auto-operation Trigger Source from LPTMR0
-     * |        |          |0001 = Low Power Auto-operation Trigger Source from LPTMR1
-     * |        |          |0010 = Low Power Auto-operation Trigger Source from TTMR0
-     * |        |          |0011 = Low Power Auto-operation Trigger Source from TTMR1
-     * |        |          |0100 = Low Power Auto-operation Trigger Source from LPGPIO0
-     * |        |          |0101 = Low Power Auto-operation Trigger Source from LPGPIO1
-     * |        |          |0110 = Low Power Auto-operation Trigger Source from LPGPIO2
-     * |        |          |0111 = Low Power Auto-operation Trigger Source from LPGPIO3
-     * |        |          |1000 = Low Power Auto-operation Trigger Source from LPGPIO4
-     * |        |          |1001 = Low Power Auto-operation Trigger Source from LPGPIO5
-     * |        |          |1010 = Low Power Auto-operation Trigger Source from LPGPIO6
-     * |        |          |1001 = Low Power Auto-operation Trigger Source from LPGPIO7
-     * |        |          |1010~1111 = Reserved
+     * |        |          |0000 = Low Power Auto-operation Trigger Source from LPTMR0.
+     * |        |          |0001 = Low Power Auto-operation Trigger Source from LPTMR1.
+     * |        |          |0010 = Low Power Auto-operation Trigger Source from TTMR0.
+     * |        |          |0011 = Low Power Auto-operation Trigger Source from TTMR1.
+     * |        |          |0100 = Low Power Auto-operation Trigger Source from WKIOA0(GPA0).
+     * |        |          |0101 = Low Power Auto-operation Trigger Source from WKIOB0(GPB0).
+     * |        |          |0110 = Low Power Auto-operation Trigger Source from WKIOC0(GPC0).
+     * |        |          |0111 = Low Power Auto-operation Trigger Source from WKIOD0(GPD0).
+     * |        |          |1000 = Low Power Auto-operation Trigger Source from Software setting SWTRG(LPI2C_AUTOCTL[31]) to 1.
+     * |        |          |1001~1111 = Reserved.
      * |[4]     |TRGEN     |Trigger Source Enable bit
-     * |        |          |0 = LPI&sup2;C trigger source disable.
-     * |        |          |1 = LPI&sup2;C trigger source enable.
+     * |        |          |0 = LPI2C trigger source disable.
+     * |        |          |1 = LPI2C trigger source enable.
      * |[5]     |TXWKEN    |TX Transfer Count Match Wakeup Enable bit
-     * |        |          |0 = Power off after TX transfer count matches TXCNT
-     * |        |          |1 = Wakeup after TX transfer count matches TXCNT
+     * |        |          |0 = Power off after TX transfer count matches TXCNT.
+     * |        |          |1 = Wakeup after TX transfer count matches TXCNT.
      * |[6]     |RXWKEN    |RX Transfer Count Match Wakeup Enable bit
-     * |        |          |0 = Power off after RX transfer count matches RXCNT
-     * |        |          |1 = Wakeup after RX transfer count matches RXCNT
+     * |        |          |0 = Power off after RX transfer count matches RXCNT.
+     * |        |          |1 = Wakeup after RX transfer count matches RXCNT.
      * |[7]     |NACKWKEN  |Receive Slave NACK Wakeup Enable bit
      * |        |          |0 = Stop after receiving NACK.
-     * |        |          |1 = Wakeup after receiving NACK
+     * |        |          |1 = Wakeup after receiving NACK.
      * |[10:8]  |AUTOMODE  |Auto-operation Mode Select
-     * |        |          |000 = No auto-operation
-     * |        |          |001 = Auto TXPDMA transfer mode
-     * |        |          |010 = Auto RXPDMA transfer mode
-     * |        |          |011 = Random Read mode, repeat start between TX/RX
-     * |        |          |100 = Random Read mode, stop and start between TX/RX
-     * |        |          |Others = Reserved
+     * |        |          |000 = No auto-operation.
+     * |        |          |001 = Auto TXPDMA transfer mode.
+     * |        |          |010 = Auto RXPDMA transfer mode.
+     * |        |          |011 = Random Read mode, repeat start between TX/RX.
+     * |        |          |100 = Random Read mode, stop and start between TX/RX.
+     * |        |          |Others = Reserved.
+     * |[31]    |SWTRG     |Auto-operation Mode Software Trigger Bit
+     * |        |          |0 = No operation.
+     * |        |          |1 = Software trigger auto-operattion.
+     * |        |          |Note: TGSRCSEL(LPI2C_AUTOCTL[3:0]) need to be set to 0x8 first
      * @var LPI2C_T::AUTOSTS
      * Offset: 0x74  LPI2C Automatic Operation Status Register
      * ---------------------------------------------------------------------------------------------------
@@ -346,12 +343,23 @@ typedef struct
      * |[1]     |RXWKF     |RX Transfer Count Match Wakeup Flag
      * |        |          |When chip is woken up from Power-down mode by LPI2C RX transfer count match, this bit is set to 1
      * |        |          |Software can write 1 to clear this bit.
-     * |[2]     |NACKWKF   |Receive Slave NACK Wakeup Flag
-     * |        |          |When chip is woken up from Power-down mode by LPI2C receiving NACK from slave, this bit is set to 1
+     * |[2]     |ERRORWKF  |Error Condition Wakeup Flag
+     * |        |          |When chip is woken up from Power-down mode by LPI2C receiving NACK from slave, running into bus error or arbitration lost, this bit is set to 1
+     * |        |          |Software can write 1 to clear this bit.
+     * |[8]     |TXFINISH  |Automatic Operation TX Finish Flag
+     * |        |          |AOFINISH is set when finishing one round of auto operation(Automode = 1), but it will not issue interrupt
+     * |        |          |Software can write 1 to clear this bit.
+     * |[9]     |RXFINISH  |Automatic Operation RX Finish Flag
+     * |        |          |RXFINISH is set when finishing one round of auto operation(Automode = 2/3/4), but it will not issue interrupt
+     * |        |          |Software can write 1 to clear this bit.
+     * |[10]    |ERRORIF   |ERROR Interrupt Flag
+     * |        |          |When LPI2C receiving NACK from slave, running into bus error or arbitration lost, this bit is set to 1
+     * |        |          |Software can write 1 to clear this bit.
+     * |[24]    |AOFINISH  |Automatic Operation Finish Flag
+     * |        |          |AOFINISH is set when finishing one round of auto operation, but it will not issue interrupt
      * |        |          |Software can write 1 to clear this bit.
      * |[31]    |BUSY      |Busy Flag
-     * |        |          |When chip is woken up and this bit is set to 1
-     * |        |          |It means that there were one or more requests from trigger source during transfer
+     * |        |          |When chip is woken up and this bit is set to 1, it means that there are one or more requests from trigger source during transfer
      * |        |          |Software can write 1 to clear this bit.
      * @var LPI2C_T::AUTOCNT
      * Offset: 0x78  LPI2C Automatic Operation Transfer Count Register
@@ -420,7 +428,7 @@ typedef struct
 #define LPI2C_ADDR0_GC_Msk               (0x1ul << LPI2C_ADDR0_GC_Pos)                     /*!< LPI2C_T::ADDR0: GC Mask                */
 
 #define LPI2C_ADDR0_ADDR_Pos             (1)                                               /*!< LPI2C_T::ADDR0: ADDR Position          */
-#define LPI2C_ADDR0_ADDR_Msk             (0x3fful << LPI2C_ADDR0_ADDR_Pos)                 /*!< LPI2C_T::ADDR0: ADDR Mask              */
+#define LPI2C_ADDR0_ADDR_Msk             (0x7ful << LPI2C_ADDR0_ADDR_Pos)                  /*!< LPI2C_T::ADDR0: ADDR Mask              */
 
 #define LPI2C_DAT_DAT_Pos                (0)                                               /*!< LPI2C_T::DAT: DAT Position             */
 #define LPI2C_DAT_DAT_Msk                (0xfful << LPI2C_DAT_DAT_Pos)                     /*!< LPI2C_T::DAT: DAT Mask                 */
@@ -447,31 +455,31 @@ typedef struct
 #define LPI2C_ADDR1_GC_Msk               (0x1ul << LPI2C_ADDR1_GC_Pos)                     /*!< LPI2C_T::ADDR1: GC Mask                */
 
 #define LPI2C_ADDR1_ADDR_Pos             (1)                                               /*!< LPI2C_T::ADDR1: ADDR Position          */
-#define LPI2C_ADDR1_ADDR_Msk             (0x3fful << LPI2C_ADDR1_ADDR_Pos)                 /*!< LPI2C_T::ADDR1: ADDR Mask              */
+#define LPI2C_ADDR1_ADDR_Msk             (0x7ful << LPI2C_ADDR1_ADDR_Pos)                  /*!< LPI2C_T::ADDR1: ADDR Mask              */
 
 #define LPI2C_ADDR2_GC_Pos               (0)                                               /*!< LPI2C_T::ADDR2: GC Position            */
 #define LPI2C_ADDR2_GC_Msk               (0x1ul << LPI2C_ADDR2_GC_Pos)                     /*!< LPI2C_T::ADDR2: GC Mask                */
 
 #define LPI2C_ADDR2_ADDR_Pos             (1)                                               /*!< LPI2C_T::ADDR2: ADDR Position          */
-#define LPI2C_ADDR2_ADDR_Msk             (0x3fful << LPI2C_ADDR2_ADDR_Pos)                 /*!< LPI2C_T::ADDR2: ADDR Mask              */
+#define LPI2C_ADDR2_ADDR_Msk             (0x7ful << LPI2C_ADDR2_ADDR_Pos)                  /*!< LPI2C_T::ADDR2: ADDR Mask              */
 
 #define LPI2C_ADDR3_GC_Pos               (0)                                               /*!< LPI2C_T::ADDR3: GC Position            */
 #define LPI2C_ADDR3_GC_Msk               (0x1ul << LPI2C_ADDR3_GC_Pos)                     /*!< LPI2C_T::ADDR3: GC Mask                */
 
 #define LPI2C_ADDR3_ADDR_Pos             (1)                                               /*!< LPI2C_T::ADDR3: ADDR Position          */
-#define LPI2C_ADDR3_ADDR_Msk             (0x3fful << LPI2C_ADDR3_ADDR_Pos)                 /*!< LPI2C_T::ADDR3: ADDR Mask              */
+#define LPI2C_ADDR3_ADDR_Msk             (0x7ful << LPI2C_ADDR3_ADDR_Pos)                  /*!< LPI2C_T::ADDR3: ADDR Mask              */
 
 #define LPI2C_ADDRMSK0_ADDRMSK_Pos       (1)                                               /*!< LPI2C_T::ADDRMSK0: ADDRMSK Position    */
-#define LPI2C_ADDRMSK0_ADDRMSK_Msk       (0x3fful << LPI2C_ADDRMSK0_ADDRMSK_Pos)           /*!< LPI2C_T::ADDRMSK0: ADDRMSK Mask        */
+#define LPI2C_ADDRMSK0_ADDRMSK_Msk       (0x7ful << LPI2C_ADDRMSK0_ADDRMSK_Pos)            /*!< LPI2C_T::ADDRMSK0: ADDRMSK Mask        */
 
 #define LPI2C_ADDRMSK1_ADDRMSK_Pos       (1)                                               /*!< LPI2C_T::ADDRMSK1: ADDRMSK Position    */
-#define LPI2C_ADDRMSK1_ADDRMSK_Msk       (0x3fful << LPI2C_ADDRMSK1_ADDRMSK_Pos)           /*!< LPI2C_T::ADDRMSK1: ADDRMSK Mask        */
+#define LPI2C_ADDRMSK1_ADDRMSK_Msk       (0x7ful << LPI2C_ADDRMSK1_ADDRMSK_Pos)            /*!< LPI2C_T::ADDRMSK1: ADDRMSK Mask        */
 
 #define LPI2C_ADDRMSK2_ADDRMSK_Pos       (1)                                               /*!< LPI2C_T::ADDRMSK2: ADDRMSK Position    */
-#define LPI2C_ADDRMSK2_ADDRMSK_Msk       (0x3fful << LPI2C_ADDRMSK2_ADDRMSK_Pos)           /*!< LPI2C_T::ADDRMSK2: ADDRMSK Mask        */
+#define LPI2C_ADDRMSK2_ADDRMSK_Msk       (0x7ful << LPI2C_ADDRMSK2_ADDRMSK_Pos)            /*!< LPI2C_T::ADDRMSK2: ADDRMSK Mask        */
 
 #define LPI2C_ADDRMSK3_ADDRMSK_Pos       (1)                                               /*!< LPI2C_T::ADDRMSK3: ADDRMSK Position    */
-#define LPI2C_ADDRMSK3_ADDRMSK_Msk       (0x3fful << LPI2C_ADDRMSK3_ADDRMSK_Pos)           /*!< LPI2C_T::ADDRMSK3: ADDRMSK Mask        */
+#define LPI2C_ADDRMSK3_ADDRMSK_Msk       (0x7ful << LPI2C_ADDRMSK3_ADDRMSK_Pos)            /*!< LPI2C_T::ADDRMSK3: ADDRMSK Mask        */
 
 #define LPI2C_WKCTL_WKEN_Pos             (0)                                               /*!< LPI2C_T::WKCTL: WKEN Position          */
 #define LPI2C_WKCTL_WKEN_Msk             (0x1ul << LPI2C_WKCTL_WKEN_Pos)                   /*!< LPI2C_T::WKCTL: WKEN Mask              */
@@ -543,7 +551,7 @@ typedef struct
 #define LPI2C_AUTOCTL_AUTOMODE_Msk       (0x7ul << LPI2C_AUTOCTL_AUTOMODE_Pos)             /*!< LPI2C_T::AUTOCTL: AUTOMODE Mask        */
 
 #define LPI2C_AUTOCTL_SWTRG_Pos          (31)                                              /*!< LPI2C_T::AUTOCTL: SWTRG Position       */
-#define LPI2C_AUTOCTL_SWTRG_Msk          (0x7ul << LPI2C_AUTOCTL_SWTRG_Pos)                /*!< LPI2C_T::AUTOCTL: SWTRG Mask           */
+#define LPI2C_AUTOCTL_SWTRG_Msk          (0x1ul << LPI2C_AUTOCTL_SWTRG_Pos)                /*!< LPI2C_T::AUTOCTL: SWTRG Mask           */
 
 #define LPI2C_AUTOSTS_TXWKF_Pos          (0)                                               /*!< LPI2C_T::AUTOSTS: TXWKF Position       */
 #define LPI2C_AUTOSTS_TXWKF_Msk          (0x1ul << LPI2C_AUTOSTS_TXWKF_Pos)                /*!< LPI2C_T::AUTOSTS: TXWKF Mask           */
@@ -551,8 +559,20 @@ typedef struct
 #define LPI2C_AUTOSTS_RXWKF_Pos          (1)                                               /*!< LPI2C_T::AUTOSTS: RXWKF Position       */
 #define LPI2C_AUTOSTS_RXWKF_Msk          (0x1ul << LPI2C_AUTOSTS_RXWKF_Pos)                /*!< LPI2C_T::AUTOSTS: RXWKF Mask           */
 
-#define LPI2C_AUTOSTS_NACKWKF_Pos        (2)                                               /*!< LPI2C_T::AUTOSTS: NACKWKF Position     */
-#define LPI2C_AUTOSTS_NACKWKF_Msk        (0x1ul << LPI2C_AUTOSTS_NACKWKF_Pos)              /*!< LPI2C_T::AUTOSTS: NACKWKF Mask         */
+#define LPI2C_AUTOSTS_ERRORWKF_Pos       (2)                                               /*!< LPI2C_T::AUTOSTS: ERRORWKF Position    */
+#define LPI2C_AUTOSTS_ERRORWKF_Msk       (0x1ul << LPI2C_AUTOSTS_ERRORWKF_Pos)             /*!< LPI2C_T::AUTOSTS: ERRORWKF Mask        */
+
+#define LPI2C_AUTOSTS_TXFINISH_Pos       (8)                                               /*!< LPI2C_T::AUTOSTS: TXFINISH Position    */
+#define LPI2C_AUTOSTS_TXFINISH_Msk       (0x1ul << LPI2C_AUTOSTS_TXFINISH_Pos)             /*!< LPI2C_T::AUTOSTS: TXFINISH Mask        */
+
+#define LPI2C_AUTOSTS_RXFINISH_Pos       (9)                                               /*!< LPI2C_T::AUTOSTS: RXFINISH Position    */
+#define LPI2C_AUTOSTS_RXFINISH_Msk       (0x1ul << LPI2C_AUTOSTS_RXFINISH_Pos)             /*!< LPI2C_T::AUTOSTS: RXFINISH Mask        */
+
+#define LPI2C_AUTOSTS_ERRORIF_Pos        (10)                                              /*!< LPI2C_T::AUTOSTS: ERRORIF Position     */
+#define LPI2C_AUTOSTS_ERRORIF_Msk        (0x1ul << LPI2C_AUTOSTS_ERRORIF_Pos)              /*!< LPI2C_T::AUTOSTS: ERRORIF Mask         */
+
+#define LPI2C_AUTOSTS_AOFINISH_Pos       (24)                                              /*!< LPI2C_T::AUTOSTS: AOFINISH Position    */
+#define LPI2C_AUTOSTS_AOFINISH_Msk       (0x1ul << LPI2C_AUTOSTS_AOFINISH_Pos)             /*!< LPI2C_T::AUTOSTS: AOFINISH Mask        */
 
 #define LPI2C_AUTOSTS_BUSY_Pos           (31)                                              /*!< LPI2C_T::AUTOSTS: BUSY Position        */
 #define LPI2C_AUTOSTS_BUSY_Msk           (0x1ul << LPI2C_AUTOSTS_BUSY_Pos)                 /*!< LPI2C_T::AUTOSTS: BUSY Mask            */
