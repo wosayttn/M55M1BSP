@@ -93,7 +93,6 @@ int main(void)
     uint8_t     u8Item;
     uint32_t    u32Data;
     char *ai8BootMode[] = { "APROM", "LDROM" };
-    uint32_t u32CBS;
 
     /* Init system clock and multi-function I/O */
     SYS_Init();
