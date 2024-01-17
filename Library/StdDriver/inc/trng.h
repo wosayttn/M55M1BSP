@@ -31,13 +31,13 @@ extern "C"
 /*----------------------------------------------------------------------------------------------*/
 /*  Macros                                                                                      */
 /*----------------------------------------------------------------------------------------------*/
-#define TRNG_CTL_KATSEL_INSTANTIATION_TESTING      0x0
-#define TRNG_CTL_KATSEL_RESEED_TESTING		             0x1
-#define TRNG_CTL_KATSEL_GENERATION_TESTING         0x2
+#define TRNG_CTL_KATSEL_INSTANTIATION_TESTING      0x0 /*!< TRNG CTR_DRBG Known Answer Test Selection: Instantiation*/
+#define TRNG_CTL_KATSEL_RESEED_TESTING		       0x1 /*!< TRNG CTR_DRBG Known Answer Test Selection: Reseed*/
+#define TRNG_CTL_KATSEL_GENERATION_TESTING         0x2 /*!< TRNG CTR_DRBG Known Answer Test Selection: Generation*/
 
-#define TRNG_CTL_MODE_OUTPUT_ENTROPY               0x00
-#define TRNG_CTL_MODE_OUTPUT_NRBG                  0x01
-#define TRNG_CTL_MODE_OUTPUT_DRBG                  0x02
+#define TRNG_CTL_MODE_OUTPUT_ENTROPY               0x00 /*!< TRNG Random Bit Generator Output Selection: entropy (32-bits)*/
+#define TRNG_CTL_MODE_OUTPUT_NRBG                  0x01 /*!< TRNG Random Bit Generator Output Selection: NRBG (128-bits)*/
+#define TRNG_CTL_MODE_OUTPUT_DRBG                  0x02 /*!< TRNG Random Bit Generator Output Selection: DRBG (128-bits)*/
 /** @} end of group TRNG_EXPORTED_CONSTANTS */
 
 
@@ -78,10 +78,29 @@ extern "C"
 /*----------------------------------------------------------------------------------------------*/
 /*  Functions                                                                                   */
 /*----------------------------------------------------------------------------------------------*/
-
+/**
+  * @brief   Enable TRNG.
+  */
 int32_t TRNG_Open(void);
+
+/**
+  * @brief   Generate TRNG.
+  * @param[in]   u32RndNum
+  */
 int32_t TRNG_GenWord(uint32_t *u32RndNum);
+
+/**
+  * @brief   Generate TRNG.
+  * @param[in]   u8BigNum
+  * @param[in]   i32Len
+  */
 int32_t TRNG_GenBignum(uint8_t u8BigNum[], int32_t i32Len);
+
+/**
+  * @brief   Generate TRNG in hexadecimal.
+  * @param[in]   cBigNumHex
+  * @param[in]   i32Len
+  */
 int32_t TRNG_GenBignumHex(char cBigNumHex[], int32_t i32Len);
 
 

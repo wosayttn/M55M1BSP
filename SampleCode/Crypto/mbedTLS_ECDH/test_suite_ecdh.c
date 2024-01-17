@@ -2059,7 +2059,7 @@ void SysTick_Handler()
  */
 int main()
 {
-    int argc;
+    int argc = 0;
     const char *argv[] = { 0 };
 
     /* Unlock protected registers */

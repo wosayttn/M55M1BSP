@@ -1,7 +1,7 @@
 /**************************************************************************//**
 * @file     main.c
 * @version  V1.00
-* @brief    Demonstrate run anormaly detection usig CNN-base autoencoder with NPU
+* @brief    Demonstrate run anomaly detection using CNN-base autoencoder with NPU
 *
 * @copyright SPDX-License-Identifier: Apache-2.0
 * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

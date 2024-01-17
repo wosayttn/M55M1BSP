@@ -12,16 +12,16 @@
 #if defined ( __CC_ARM   )
 #pragma anon_unions
 #endif
-/** @addtogroup REGISTER Control Register
-
-  @{
-
+/** 
+    @addtogroup REGISTER Control Register
+    @{
 */
 
 /**
     @addtogroup TRNG True Random Number Generator(TRNG)
     Memory Mapped Structure for TRNG Controller
-@{ */
+    @{ 
+*/
  
 typedef struct
 {
@@ -147,6 +147,8 @@ typedef struct
     @addtogroup TRNG_CONST TRNG Bit Field Definition
     Constant Definitions for TRNG Controller
 @{ */
+
+
 
 #define TRNG_CTL_LDOEN_Pos               (0)                                               /*!< TRNG_T::CTL: LDOEN Position            */
 #define TRNG_CTL_LDOEN_Msk               (0x1ul << TRNG_CTL_LDOEN_Pos)                     /*!< TRNG_T::CTL: LDOEN Mask                */

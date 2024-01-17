@@ -38,6 +38,7 @@ void Hex2RegEx(char input[], uint32_t volatile reg[], int shift);
 static char ch2hex(char ch);
 static int  get_nibble_value(char c);
 void  dump_buff_hex(uint8_t *pucBuff, int nBytes);
+volatile int  g_CHAPOLY_done = 0;
 /** @endcond HIDDEN_SYMBOLS */
 
 
@@ -49,10 +50,19 @@ void  dump_buff_hex(uint8_t *pucBuff, int nBytes);
   * @brief  Open PRNG function
   * @param[in]  crypto   Reference to Crypto module.
   * @param[in]  u32KeySize is PRNG key size, including:
-  *         - \ref PRNG_KEY_SIZE_64
   *         - \ref PRNG_KEY_SIZE_128
+  *         - \ref PRNG_KEY_SIZE_163
   *         - \ref PRNG_KEY_SIZE_192
+  *         - \ref PRNG_KEY_SIZE_224
+  *         - \ref PRNG_KEY_SIZE_233
+  *         - \ref PRNG_KEY_SIZE_255
   *         - \ref PRNG_KEY_SIZE_256
+  *         - \ref PRNG_KEY_SIZE_283
+  *         - \ref PRNG_KEY_SIZE_384
+  *         - \ref PRNG_KEY_SIZE_409
+  *         - \ref PRNG_KEY_SIZE_512
+  *         - \ref PRNG_KEY_SIZE_521
+  *         - \ref PRNG_KEY_SIZE_571
   * @param[in]  u32SeedReload is PRNG seed reload or not, including:
   *         - \ref PRNG_SEED_CONT
   *         - \ref PRNG_SEED_RELOAD
@@ -208,7 +218,7 @@ void AES_SetKey(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t au32Keys[], uint
 
 /**
   * @brief  Set AES keys index of Key Store
-  * @param[in]  crpt        The pointer of CRYPTO module
+  * @param[in]  crypto        The pointer of CRYPTO module
   * @param[in]  mem         Memory type of Key Store key. it could be:
   *                              - \ref KS_SRAM
   *                              - \ref KS_FLASH
@@ -1106,6 +1116,11 @@ void ECC_Complete(CRYPTO_T *crypto)
     }
 }
 
+/**
+  * @brief  ECC start execute function.
+  * @param[in]  ecc_ctl     Setting of ECC_CTL register.
+  * @return   none
+  */
 void ECC_Start(uint32_t ecc_ctl)
 {
     g_ECC_done = g_ECCERR_done = 0UL;
@@ -1374,15 +1389,15 @@ int32_t  ECC_Mutiply(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char x1[], char y1
 /**
   * @brief  Given a private key and curve to generate the public key pair.
   * @param[in]  crypto        Reference to Crypto module.
-  * @param[in]  x1_ksnum    -1:  do not use Key Store, instead, use <x1> as input point X
+  * @param[in]  x1_ksnum    -1:  do not use Key Store, instead, use x1 as input point X
   *                         x1_ksnum >= 0x80: Use Key Store OTP key number "x1_ksnum - 0x80" as input point X
   *                         x1_ksnum >= 0:    Use Key Store SRAM key number x1_ksnum as input point X
   * @param[out] x1          The input point X.
-  * @param[in]  y1_ksnum    -1:  do not use Key Store, instead, use <y1> as input point X
+  * @param[in]  y1_ksnum    -1:  do not use Key Store, instead, use y1 as input point X
   *                         y1_ksnum >= 0x80: Use Key Store OTP key number "y1_ksnum - 0x80" as input point Y
   *                         y1_ksnum >= 0:    Use Key Store SRAM key number y1_ksnum as input point Y
   * @param[out] y1          The input point Y.
-  * @param[in]  k_ksnum     -1:  do not use Key Store, instead, use <k> as input multiplier
+  * @param[in]  k_ksnum     -1:  do not use Key Store, instead, use k as input multiplier
   *                         k_ksnum >= 0x80: Use Key Store OTP key number "k_ksnum - 0x80" as input multiplier
   *                         k_ksnum >= 0:    Use Key Store SRAM key number k_ksnum as input multiplier
   * @param[in]  k           The multiplier
@@ -1559,7 +1574,7 @@ int32_t  ECC_GenerateSecretZ(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *priv
   * @brief  Given a curve parameter, the other party's public key, and one's own private key to generate the secret Z.
   * @param[in]  crypto        Reference to Crypto module.
   * @param[in]  ecc_curve   The pre-defined ECC curve.
-  * @param[in]  k_ksnum     -1:  do not use Key Store, instead, use <private_k> as input private key
+  * @param[in]  k_ksnum     -1:  do not use Key Store, instead, use private_k as input private key
   *                         k_ksnum >= 0x80: Use Key Store OTP key number "k_ksnum - 0x80" as input private key
   *                         k_ksnum >= 0:    Use Key Store SRAM key number k_ksnum as input private key
   * @param[in]  private_k   One's own private key.
@@ -1568,7 +1583,7 @@ int32_t  ECC_GenerateSecretZ(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *priv
   * @param[in]  z_to_ks     0: Do not write output secret to Key Store
   *                         1: Write output secret to Key Store OTP
   *                         2: Write output secret to Key Store SRAM
-  * @param[in]  z_owner     The owner of secret Z in Key Store. Only valid when <z_to_ks> is not 0.
+  * @param[in]  z_owner     The owner of secret Z in Key Store. Only valid when z_to_ks is not 0.
   *                         0: Owner is AES
   *                         1: Owner is HMAC
   *                         4: Owner is ECC
@@ -2690,10 +2705,10 @@ int32_t  ECC_VerifySignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *mess
   * @param[in]  crypto        Reference to Crypto module.
   * @param[in]  ecc_curve   The pre-defined ECC curve.
   * @param[in]  message     The hash value of source context.
-  * @param[in]  x_ksnum     -1:  do not use Key Store, instead, use <public_x> as input public key X
+  * @param[in]  x_ksnum     -1:  do not use Key Store, instead, use public_x>as input public key X
   *                         x_ksnum >= 0x80: Use Key Store OTP key number "x_ksnum - 0x80" as input public key X
   *                         x_ksnum >= 0:    Use Key Store SRAM key number x_ksnum as input public key X
-  * @param[in]  y_ksnum     -1:  do not use Key Store, instead, use <public_y> as input public key Y
+  * @param[in]  y_ksnum     -1:  do not use Key Store, instead, use public_y>as input public key Y
   *                         y_ksnum >= 0x80: Use Key Store OTP key number "y_ksnum - 0x80" as input public key Y
   *                         y_ksnum >= 0:    Use Key Store SRAM key number y_ksnum as input public key Y
   * @param[in]  R           R of the (R,S) pair digital signature
@@ -3134,7 +3149,7 @@ static int32_t CheckRsaBufferSize(uint32_t u32OpMode, uint32_t u32BufSize, uint3
 }
 /**
   * @brief  Open RSA encrypt/decrypt function.
-  * @param[in]  crpt         The pointer of CRYPTO module
+  * @param[in]  crypto         The pointer of CRYPTO module
   * @param[in]  u32OpMode    RSA operation mode, including:
   *         - \ref RSA_MODE_NORMAL
   *         - \ref RSA_MODE_CRT
@@ -3160,7 +3175,7 @@ static int32_t CheckRsaBufferSize(uint32_t u32OpMode, uint32_t u32BufSize, uint3
   * @return  0    Success.
   * @return  -1   The value of pointer of RSA buffer struct is null.
   */
-int32_t RSA_Open(CRYPTO_T *crpt, uint32_t u32OpMode, uint32_t u32KeySize, \
+int32_t RSA_Open(CRYPTO_T *crypto, uint32_t u32OpMode, uint32_t u32KeySize, \
                  void *psRSA_Buf, uint32_t u32BufSize, uint32_t u32UseKS)
 {
     if(psRSA_Buf == 0)
@@ -3173,29 +3188,29 @@ int32_t RSA_Open(CRYPTO_T *crpt, uint32_t u32OpMode, uint32_t u32KeySize, \
     }
     s_u32RsaOpMode = u32OpMode;
     s_pRSABuf = psRSA_Buf;
-    crpt->RSA_CTL = (u32OpMode) | (u32KeySize << CRYPTO_RSA_CTL_KEYLENG_Pos);
+    crypto->RSA_CTL = (u32OpMode) | (u32KeySize << CRYPTO_RSA_CTL_KEYLENG_Pos);
     return 0;
 }
 /**
   * @brief  Set the RSA key
-  * @param[in]  crpt        The pointer of CRYPTO module
+  * @param[in]  crypto        The pointer of CRYPTO module
   * @param[in]  Key         The private or public key.
   * @return  0    Success.
   * @return  -1   The value of pointer of RSA buffer struct is null.
   */
-int32_t RSA_SetKey(CRYPTO_T *crpt, char *Key)
+int32_t RSA_SetKey(CRYPTO_T *crypto, char *Key)
 {
     if(s_pRSABuf == 0)
     {
         return (-1);
     }
     Hex2Reg(Key, ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaE);
-    crpt->RSA_SADDR[2] = (uint32_t) & ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaE; /* the public key or private key */
+    crypto->RSA_SADDR[2] = (uint32_t) & ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaE; /* the public key or private key */
     return 0;
 }
 /**
   * @brief  Set RSA DMA transfer configuration.
-  * @param[in]  crpt         The pointer of CRYPTO module
+  * @param[in]  crypto         The pointer of CRYPTO module
   * @param[in]  Src   RSA DMA source data
   * @param[in]  n     The modulus for both the public and private keys
   * @param[in]  P     The factor of modulus operation(P) for CRT/SCAP mode
@@ -3203,7 +3218,7 @@ int32_t RSA_SetKey(CRYPTO_T *crpt, char *Key)
   * @return  0    Success.
   * @return  -1   The value of pointer of RSA buffer struct is null.
   */
-int32_t RSA_SetDMATransfer(CRYPTO_T *crpt, char *Src, char *n, char *P, char *Q)
+int32_t RSA_SetDMATransfer(CRYPTO_T *crypto, char *Src, char *n, char *P, char *Q)
 {
     if(s_pRSABuf == 0)
     {
@@ -3212,68 +3227,68 @@ int32_t RSA_SetDMATransfer(CRYPTO_T *crpt, char *Src, char *n, char *P, char *Q)
     Hex2Reg(Src, ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaM);
     Hex2Reg(n, ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaN);
     /* Assign the data to DMA */
-    crpt->RSA_SADDR[0] = (uint32_t) & ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaM; /* plaintext / encrypt data */
-    crpt->RSA_SADDR[1] = (uint32_t) & ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaN; /* the base of modulus operation */
-    crpt->RSA_DADDR    = (uint32_t) & ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaOutput; /* encrypt data / decrypt data */
+    crypto->RSA_SADDR[0] = (uint32_t) & ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaM; /* plaintext / encrypt data */
+    crypto->RSA_SADDR[1] = (uint32_t) & ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaN; /* the base of modulus operation */
+    crypto->RSA_DADDR    = (uint32_t) & ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaOutput; /* encrypt data / decrypt data */
     if((s_u32RsaOpMode & CRYPTO_RSA_CTL_CRT_Msk) && (s_u32RsaOpMode & CRYPTO_RSA_CTL_SCAP_Msk))
     {
         /* For RSA CRT/SCAP mode, two primes of private key */
         Hex2Reg(P, ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaP);
         Hex2Reg(Q, ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaQ);
-        crpt->RSA_SADDR[3] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaP; /* prime P */
-        crpt->RSA_SADDR[4] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaQ; /* prime Q */
-        crpt->RSA_MADDR[0] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaTmpCp; /* for storing the intermediate temporary value(Cp) */
-        crpt->RSA_MADDR[1] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaTmpCq; /* for storing the intermediate temporary value(Cq) */
-        crpt->RSA_MADDR[2] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaTmpDp; /* for storing the intermediate temporary value(Dp) */
-        crpt->RSA_MADDR[3] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaTmpDq; /* for storing the intermediate temporary value(Dq) */
-        crpt->RSA_MADDR[4] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaTmpRp; /* for storing the intermediate temporary value(Rp) */
-        crpt->RSA_MADDR[5] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaTmpRq; /* for storing the intermediate temporary value(Rq) */
+        crypto->RSA_SADDR[3] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaP; /* prime P */
+        crypto->RSA_SADDR[4] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaQ; /* prime Q */
+        crypto->RSA_MADDR[0] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaTmpCp; /* for storing the intermediate temporary value(Cp) */
+        crypto->RSA_MADDR[1] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaTmpCq; /* for storing the intermediate temporary value(Cq) */
+        crypto->RSA_MADDR[2] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaTmpDp; /* for storing the intermediate temporary value(Dp) */
+        crypto->RSA_MADDR[3] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaTmpDq; /* for storing the intermediate temporary value(Dq) */
+        crypto->RSA_MADDR[4] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaTmpRp; /* for storing the intermediate temporary value(Rp) */
+        crypto->RSA_MADDR[5] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaTmpRq; /* for storing the intermediate temporary value(Rq) */
         /* For SCAP mode to store the intermediate temporary value(blind key) */
-        crpt->RSA_MADDR[6] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaTmpBlindKey;
+        crypto->RSA_MADDR[6] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaTmpBlindKey;
     }
     else if(s_u32RsaOpMode & CRYPTO_RSA_CTL_CRT_Msk)
     {
         /* For RSA CRT/SCAP mode, two primes of private key */
         Hex2Reg(P, ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaP);
         Hex2Reg(Q, ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaQ);
-        crpt->RSA_SADDR[3] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaP; /* prime P */
-        crpt->RSA_SADDR[4] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaQ; /* prime Q */
-        crpt->RSA_MADDR[0] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaTmpCp; /* for storing the intermediate temporary value(Cp) */
-        crpt->RSA_MADDR[1] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaTmpCq; /* for storing the intermediate temporary value(Cq) */
-        crpt->RSA_MADDR[2] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaTmpDp; /* for storing the intermediate temporary value(Dp) */
-        crpt->RSA_MADDR[3] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaTmpDq; /* for storing the intermediate temporary value(Dq) */
-        crpt->RSA_MADDR[4] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaTmpRp; /* for storing the intermediate temporary value(Rp) */
-        crpt->RSA_MADDR[5] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaTmpRq; /* for storing the intermediate temporary value(Rq) */
+        crypto->RSA_SADDR[3] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaP; /* prime P */
+        crypto->RSA_SADDR[4] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaQ; /* prime Q */
+        crypto->RSA_MADDR[0] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaTmpCp; /* for storing the intermediate temporary value(Cp) */
+        crypto->RSA_MADDR[1] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaTmpCq; /* for storing the intermediate temporary value(Cq) */
+        crypto->RSA_MADDR[2] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaTmpDp; /* for storing the intermediate temporary value(Dp) */
+        crypto->RSA_MADDR[3] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaTmpDq; /* for storing the intermediate temporary value(Dq) */
+        crypto->RSA_MADDR[4] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaTmpRp; /* for storing the intermediate temporary value(Rp) */
+        crypto->RSA_MADDR[5] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaTmpRq; /* for storing the intermediate temporary value(Rq) */
     }
     else if(s_u32RsaOpMode & CRYPTO_RSA_CTL_SCAP_Msk)
     {
         /* For RSA CRT/SCAP mode, two primes of private key */
         Hex2Reg(P, ((RSA_BUF_SCAP_T *)s_pRSABuf)->au32RsaP);
         Hex2Reg(Q, ((RSA_BUF_SCAP_T *)s_pRSABuf)->au32RsaQ);
-        crpt->RSA_SADDR[3] = (uint32_t) & ((RSA_BUF_SCAP_T *)s_pRSABuf)->au32RsaP; /* prime P */
-        crpt->RSA_SADDR[4] = (uint32_t) & ((RSA_BUF_SCAP_T *)s_pRSABuf)->au32RsaQ; /* prime Q */
+        crypto->RSA_SADDR[3] = (uint32_t) & ((RSA_BUF_SCAP_T *)s_pRSABuf)->au32RsaP; /* prime P */
+        crypto->RSA_SADDR[4] = (uint32_t) & ((RSA_BUF_SCAP_T *)s_pRSABuf)->au32RsaQ; /* prime Q */
         /* For SCAP mode to store the intermediate temporary value(blind key) */
-        crpt->RSA_MADDR[6] = (uint32_t) & ((RSA_BUF_SCAP_T *)s_pRSABuf)->au32RsaTmpBlindKey;
+        crypto->RSA_MADDR[6] = (uint32_t) & ((RSA_BUF_SCAP_T *)s_pRSABuf)->au32RsaTmpBlindKey;
     }
     return 0;
 }
 /**
   * @brief  Start RSA encrypt/decrypt
-  * @param[in]  crpt        The pointer of CRYPTO module
+  * @param[in]  crypto        The pointer of CRYPTO module
   * @return None
   */
-void RSA_Start(CRYPTO_T *crpt)
+void RSA_Start(CRYPTO_T *crypto)
 {
-    crpt->RSA_CTL |= CRYPTO_RSA_CTL_START_Msk;
+    crypto->RSA_CTL |= CRYPTO_RSA_CTL_START_Msk;
 }
 /**
   * @brief  Read the RSA output.
-  * @param[in]   crpt       The pointer of CRYPTO module
+  * @param[in]   crypto       The pointer of CRYPTO module
   * @param[out]  Output     The RSA operation output data.
   * @return  0    Success.
   * @return  -1   The value of pointer of RSA buffer struct is null.
   */
-int32_t RSA_Read(CRYPTO_T *crpt, char *Output)
+int32_t RSA_Read(CRYPTO_T *crypto, char *Output)
 {
     if(s_pRSABuf == 0)
     {
@@ -3281,13 +3296,13 @@ int32_t RSA_Read(CRYPTO_T *crpt, char *Output)
     }
     uint32_t au32CntTbl[4] = {256, 512, 768, 1024}; /* count is key length divided by 4 */
     uint32_t u32CntIdx = 0;
-    u32CntIdx = (crpt->RSA_CTL & CRYPTO_RSA_CTL_KEYLENG_Msk) >> CRYPTO_RSA_CTL_KEYLENG_Pos;
+    u32CntIdx = (crypto->RSA_CTL & CRYPTO_RSA_CTL_KEYLENG_Msk) >> CRYPTO_RSA_CTL_KEYLENG_Pos;
     Reg2Hex((int32_t)au32CntTbl[u32CntIdx], ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaOutput, Output);
     return 0;
 }
 /**
   * @brief  Set the RSA key is read from key store
-  * @param[in]  crpt           The pointer of CRYPTO module
+  * @param[in]  crypto           The pointer of CRYPTO module
   * @param[in]  u32KeyNum      The number of private or public key in key store.
   * @param[in]  u32KSMemType   The key is read from selected memory type of key store. It could be:
                             \ref KS_SRAM
@@ -3297,21 +3312,21 @@ int32_t RSA_Read(CRYPTO_T *crpt, char *Output)
   * @return  0    Success.
   * @return  -1   The value of pointer of RSA buffer struct is null.
   */
-int32_t RSA_SetKey_KS(CRYPTO_T *crpt, uint32_t u32KeyNum, uint32_t u32KSMemType, uint32_t u32BlindKeyNum)
+int32_t RSA_SetKey_KS(CRYPTO_T *crypto, uint32_t u32KeyNum, uint32_t u32KSMemType, uint32_t u32BlindKeyNum)
 {
     if(s_u32RsaOpMode & CRYPTO_RSA_CTL_SCAP_Msk)
     {
-        crpt->RSA_KSCTL = (u32BlindKeyNum << 8) | (u32KSMemType << CRYPTO_RSA_KSCTL_RSSRC_Pos) | CRYPTO_RSA_KSCTL_RSRC_Msk | u32KeyNum;
+        crypto->RSA_KSCTL = (u32BlindKeyNum << 8) | (u32KSMemType << CRYPTO_RSA_KSCTL_RSSRC_Pos) | CRYPTO_RSA_KSCTL_RSRC_Msk | u32KeyNum;
     }
     else
     {
-        crpt->RSA_KSCTL = (u32KSMemType <<CRYPTO_RSA_KSCTL_RSSRC_Pos) | CRYPTO_RSA_KSCTL_RSRC_Msk | u32KeyNum;
+        crypto->RSA_KSCTL = (u32KSMemType <<CRYPTO_RSA_KSCTL_RSSRC_Pos) | CRYPTO_RSA_KSCTL_RSRC_Msk | u32KeyNum;
     }
     return 0;
 }
 /**
   * @brief  Set RSA DMA transfer configuration while using key store.
-  * @param[in]  crpt         The pointer of CRYPTO module
+  * @param[in]  crypto         The pointer of CRYPTO module
   * @param[in]  u32OpMode    RSA operation mode, including:
   *         - \ref RSA_MODE_NORMAL
   *         - \ref RSA_MODE_CRT
@@ -3333,7 +3348,7 @@ int32_t RSA_SetKey_KS(CRYPTO_T *crpt, uint32_t u32KeyNum, uint32_t u32KSMemType,
   * @return  -1   The value of pointer of RSA buffer struct is null.
   * @note P, Q, Dp, Dq are equal to half key length. Cp, Cq, Rp, Rq, Blind key are equal to key length.
   */
-int32_t RSA_SetDMATransfer_KS(CRYPTO_T *crpt, char *Src, char *n, uint32_t u32PNum,
+int32_t RSA_SetDMATransfer_KS(CRYPTO_T *crypto, char *Src, char *n, uint32_t u32PNum,
                               uint32_t u32QNum, uint32_t u32CpNum, uint32_t u32CqNum, uint32_t u32DpNum,
                               uint32_t u32DqNum, uint32_t u32RpNum, uint32_t u32RqNum)
 {
@@ -3344,28 +3359,26 @@ int32_t RSA_SetDMATransfer_KS(CRYPTO_T *crpt, char *Src, char *n, uint32_t u32PN
     Hex2Reg(Src, ((RSA_BUF_KS_T *)s_pRSABuf)->au32RsaM);
     Hex2Reg(n, ((RSA_BUF_KS_T *)s_pRSABuf)->au32RsaN);
     /* Assign the data to DMA */
-    crpt->RSA_SADDR[0] = (uint32_t) & ((RSA_BUF_KS_T *)s_pRSABuf)->au32RsaM; /* plaintext / encrypt data */
-    crpt->RSA_SADDR[1] = (uint32_t) & ((RSA_BUF_KS_T *)s_pRSABuf)->au32RsaN; /* the base of modulus operation */
-    crpt->RSA_DADDR    = (uint32_t) & ((RSA_BUF_KS_T *)s_pRSABuf)->au32RsaOutput; /* encrypt data / decrypt data */
+    crypto->RSA_SADDR[0] = (uint32_t) & ((RSA_BUF_KS_T *)s_pRSABuf)->au32RsaM; /* plaintext / encrypt data */
+    crypto->RSA_SADDR[1] = (uint32_t) & ((RSA_BUF_KS_T *)s_pRSABuf)->au32RsaN; /* the base of modulus operation */
+    crypto->RSA_DADDR    = (uint32_t) & ((RSA_BUF_KS_T *)s_pRSABuf)->au32RsaOutput; /* encrypt data / decrypt data */
     if((s_u32RsaOpMode & CRYPTO_RSA_CTL_CRT_Msk) || (s_u32RsaOpMode & CRYPTO_RSA_CTL_SCAP_Msk))
     {
         /* For RSA CRT/SCAP mode, two primes of private key */
-        crpt->RSA_KSSTS0 = (crpt->RSA_KSSTS0 & (~(CRYPTO_RSA_KSSTS0_NUM0_Msk | CRYPTO_RSA_KSSTS0_NUM1_Msk))) | \
+        crypto->RSA_KSSTS0 = (crypto->RSA_KSSTS0 & (~(CRYPTO_RSA_KSSTS0_NUM0_Msk | CRYPTO_RSA_KSSTS0_NUM1_Msk))) | \
                              (u32PNum << CRYPTO_RSA_KSSTS0_NUM0_Pos) | (u32QNum << CRYPTO_RSA_KSSTS0_NUM1_Pos);
     }
     if(s_u32RsaOpMode & CRYPTO_RSA_CTL_CRT_Msk)
     {
         /* For RSA CRT mode, Cp, Cq, Dp, Dq, Rp, Rq */
-        crpt->RSA_KSSTS0 = (crpt->RSA_KSSTS0 & (~(CRYPTO_RSA_KSSTS0_NUM2_Msk | CRYPTO_RSA_KSSTS0_NUM3_Msk))) | \
+        crypto->RSA_KSSTS0 = (crypto->RSA_KSSTS0 & (~(CRYPTO_RSA_KSSTS0_NUM2_Msk | CRYPTO_RSA_KSSTS0_NUM3_Msk))) | \
                              (u32CpNum << CRYPTO_RSA_KSSTS0_NUM2_Pos) | (u32CqNum << CRYPTO_RSA_KSSTS0_NUM3_Pos);
-        crpt->RSA_KSSTS1 = (u32DpNum << CRYPTO_RSA_KSSTS1_NUM4_Pos) | (u32DqNum << CRYPTO_RSA_KSSTS1_NUM5_Pos) | \
+        crypto->RSA_KSSTS1 = (u32DpNum << CRYPTO_RSA_KSSTS1_NUM4_Pos) | (u32DqNum << CRYPTO_RSA_KSSTS1_NUM5_Pos) | \
                              (u32RpNum << CRYPTO_RSA_KSSTS1_NUM6_Pos) | (u32RqNum << CRYPTO_RSA_KSSTS1_NUM7_Pos);
     }
     return 0;
 }
 
-
-volatile int  g_CHAPOLY_done = 0;
 /**
   * @brief  ECC interrupt service routine. User application
   *         must invoke this function in his CRYPTO_IRQHandler()
@@ -3505,7 +3518,6 @@ void POLY1305_SetDMATransfer(CRYPTO_T *crypto, uint8_t* u8pInputData,  uint8_t* 
 /**
   * @brief  Start Poly1305
   * @param[in]  crypto          The pointer of CRYPTO module
-  * @param[in]  u8pInputData    The pointer of input data
   * @return None
   */
 void POLY1305_Start(CRYPTO_T *crypto)
