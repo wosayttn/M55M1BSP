@@ -98,7 +98,7 @@ static uint32_t SPI_GetPCLKFreq(SPI_T *spi)
  * @param spi       The pointer of the specified SPI module.
  * @return uint32_t Clock Frequency
  */
-static uint32_t SPI_GetModuleClkkSrcFreq(SPI_T *spi)
+static uint32_t SPI_GetModuleClkSrcFreq(SPI_T *spi)
 {
     uint32_t u32SPIClkSrcSel = 0ul;
     uint32_t u32RetValue = 0ul;
@@ -213,7 +213,7 @@ uint32_t SPI_Open(SPI_T *spi, uint32_t u32MasterSlave, uint32_t u32SPIMode, uint
         }
 
         /* Check clock source of SPI */
-        u32ClkSrc = SPI_GetModuleClkkSrcFreq(spi);
+        u32ClkSrc = SPI_GetModuleClkSrcFreq(spi);
 
         if (u32BusClock >= u32HCLKFreq)
         {
@@ -380,7 +380,7 @@ uint32_t SPI_SetBusClock(SPI_T *spi, uint32_t u32BusClock)
     }
 
     /* Check clock source of SPI */
-    u32ClkSrc = SPI_GetModuleClkkSrcFreq(spi);
+    u32ClkSrc = SPI_GetModuleClkSrcFreq(spi);
 
     if (u32BusClock >= u32HCLKFreq)
     {
@@ -454,7 +454,7 @@ uint32_t SPI_GetBusClock(SPI_T *spi)
     u32Div = ((spi->CLKDIV & SPI_CLKDIV_DIVIDER_Msk) >> SPI_CLKDIV_DIVIDER_Pos);
 
     /* Check clock source of SPI */
-    u32ClkSrc = SPI_GetModuleClkkSrcFreq(spi);
+    u32ClkSrc = SPI_GetModuleClkSrcFreq(spi);
 
     /* Return SPI bus clock rate */
     return (u32ClkSrc / (u32Div + 1U));
@@ -917,7 +917,7 @@ static uint32_t SPII2S_GetSourceClockFreq(SPI_T *i2s)
 {
     uint32_t u32Freq = 0;
 
-    u32Freq = SPI_GetModuleClkkSrcFreq(i2s);
+    u32Freq = SPI_GetModuleClkSrcFreq(i2s);
 
     return u32Freq;
 }
