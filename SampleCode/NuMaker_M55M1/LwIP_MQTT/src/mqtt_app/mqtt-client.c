@@ -977,7 +977,7 @@ static void _mqtt_recv_process(void * pv)
                 tcp_info = info->ti;
                 if((info->session_present == 0) && (info->subs_info != 0))
                 {
-                    _E_MQTT_ERRORS mqtt_err;
+                    _E_MQTT_ERRORS mqtt_err = MQTT_ERROR_NONE;
                     MQTTString topic;
                     int32_t ret;
                     uint32_t retry = 2;
