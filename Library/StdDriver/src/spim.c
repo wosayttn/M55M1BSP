@@ -13,10 +13,6 @@
 /** @addtogroup Standard_Driver Standard Driver
   @{
 */
-#define PHASE_CLR_CMD_Pos               (0)
-#define PHASE_CLR_ADDR_Pos              (8)
-#define PHASE_CLR_READMODE_Pos          (16)
-#define PHASE_CLR_DATA_Pos              (24)
 
 /** @addtogroup SPIM_Driver SPIM Driver
   @{

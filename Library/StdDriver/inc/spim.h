@@ -191,6 +191,12 @@ extern "C"
 #define SPIM_IO_WRITE_PHASE                 (0x01)  /* SPIM IO write phase mode.  */
 #define SPIM_IO_READ_PHASE                  (0x00)  /* SPIM IO read phase mode.  */
 
+/* Clear SPIM_PHDMAR/SPIM_PHDMM Phase Configure. */
+#define PHASE_CLR_CMD_Pos                   (0)
+#define PHASE_CLR_ADDR_Pos                  (8)
+#define PHASE_CLR_READMODE_Pos              (16)
+#define PHASE_CLR_DATA_Pos                  (24)
+
 /** @cond HIDDEN_SYMBOLS */
 
 typedef enum
@@ -267,7 +273,7 @@ typedef enum
 #define SCUR_4BYTE              (0x04U) /* 4-byte u32Address mode */
 
 /* SPIM Wait State Timeout Counter. */
-#define SPIM_TIMEOUT            0xFFFF //SystemCoreClock /*!< SPIM time-out counter (1 second time-out) */
+#define SPIM_TIMEOUT            SystemCoreClock /*!< SPIM time-out counter (1 second time-out) */
 
 /** @endcond HIDDEN_SYMBOLS */
 

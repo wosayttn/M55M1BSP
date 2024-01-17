@@ -65,6 +65,13 @@ extern "C"
 /* QSPI Status2 Mask */
 #define QSPI_SLVBENUM_MASK              (0x01U)                           /*!< Effective bit number of uncompleted RX data status mask \hideinitializer */
 
+/* QSPI Clock Source */
+#define QSPI_CLKSEL_HXT                 (0x0UL)
+#define QSPI_CLKSEL_APLL0_DIV2          (0x1UL)
+#define QSPI_CLKSEL_PCLK                (0x2UL)
+#define QSPI_CLKSEL_HIRC                (0x3UL)
+#define QSPI_CLKSEL_HIRC48M_DIV4        (0x4UL)
+
 /** @} end of group QSPI_EXPORTED_CONSTANTS */
 
 

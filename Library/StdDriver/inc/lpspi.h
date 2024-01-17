@@ -71,6 +71,10 @@ extern "C"
 #define LPSPI_AUTOCTL_TRIGSEL_WKIOC         (0x06UL)
 #define LPSPI_AUTOCTL_TRIGSEL_WKIOD         (0x07UL)
 
+/* LPSPI Clock Source */
+#define LPSPI_CLKSEL_PCLK                   (0x0UL)
+#define LPSPI_CLKSEL_MIRC                   (0x1UL)
+#define LPSPI_CLKSEL_HIRC                   (0x2UL)
 
 /** @} end of group LPSPI_EXPORTED_CONSTANTS */
 
