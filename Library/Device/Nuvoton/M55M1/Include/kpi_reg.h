@@ -132,8 +132,8 @@ typedef struct
  * |        |          |0 = No key press.
  * |        |          |1 = At least one key press.
  * |        |          |Note: To clear KPIF, software must clear each pressing flag that are shown on KPI_KPF0/1 registers.
- * @var KPI_T::KST0
- * Offset: 0x10  Keypad State Register 0
+ * @var KPI_T::KST[2]
+ * Offset: 0x10 ~ 0x14  Keypad State Register 0 ~ 1
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
@@ -141,56 +141,23 @@ typedef struct
  * |        |          |m is row number, n is column number.
  * |        |          |0 = Key is pressing.
  * |        |          |1 = Key is releasing.
- * @var KPI_T::KST1
- * Offset: 0x14  Keypad State Register 1
+ * @var KPI_T::KPF[2]
+ * Offset: 0x18 ~0x1c  Key Press Flag Register 0 ~ 1
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[15:0]  |KSTmn     |Key State
- * |        |          |m is row number, n is column number.
- * |        |          |0 = Key is pressing.
- * |        |          |1 = Key is releasing.
- * @var KPI_T::KPF0
- * Offset: 0x18  Lower 32 Key Press Flag Register 0
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KPFmn     |Lower 32 Key Press Flag
+ * |[31:0]  |KPFmn     |Key Press Flag
  * |        |          |m is row number, n is column number.
  * |        |          |0 = No key event.
  * |        |          |1 = Corresponding key has a high to low event change.
  * |        |          |Note: This bit will be set by hardware, and should be cleared by software writing 1.
- * @var KPI_T::KPF1
- * Offset: 0x1C  Upper 32 Key Press Flag Register 1
+ * @var KPI_T::KRF[2]
+ * Offset: 0x20 ~ 0x24  Key Release Flag Register 0 ~ 1
  * ---------------------------------------------------------------------------------------------------
  * |Bits    |Field     |Descriptions
  * | :----: | :----:   | :---- |
- * |[15:0]  |KPEmn     |Upper 32 Key Press Event Change IndicatorFlag
- * |        |          |KPE mn[X] = 1, m =is row number, n =is column number.:.
- * |        |          |0 = No key event.
- * |        |          |1 = Corresponding key has a high to low event change.
- * |        |          |Note:
- * |        |          |Hardware will set this bit, and software should clear this bit by writing 1.
- * |        |          |Software can clear PKEYINT (KPISTATUS[4]) by writing 1 bit by bit to this register.
- * @var KPI_T::KRF0
- * Offset: 0x20  Lower 32 Key Release Flag Register 0
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KRFmn     |Lower 32 Key Release Event Change IndicatorFlag
+ * |[31:0]  |KRFmn     |Key Release Event Change IndicatorFlag
  * |        |          |KRE mn[X] = 1, m= is row number, n= is column number.:.
- * |        |          |0 = No key event.
- * |        |          |1 = Corresponding key has a low to high event change.
- * |        |          |Note:
- * |        |          |Hardware will set this bit, and software should clear this bit by writing 1.
- * |        |          |Software can clear RKEYINT (KPISTATUS[3]) by writing 1 bit by bit to this register.
- * @var KPI_T::KRF1
- * Offset: 0x24  Upper 32 Key Release Flag Register 1
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |KRFmn     |Upper 32 Key Release Event Change IndicatorFlag
- * |        |          |KRE mn[X] = 1, m =is row number, n =is column number.:.
  * |        |          |0 = No key event.
  * |        |          |1 = Corresponding key has a low to high event change.
  * |        |          |Note:
@@ -215,7 +182,7 @@ typedef struct
  * |        |          |When PRESCALEPSC (KPICONFKPI_CTL[15:8]) is determined, De-bounce sampling cycle should not exceed the half of (PRESCALEPSC x PrescaleDividerPSCDIV),
  * |        |          |in the above example, and if scan row delay cycle is 4 xclock
  * |        |          |The maximum DBCLKSEL(KPICONFKPI_CTL[19:16]) should be 1024 x clock, bouncing time is 1ms.
- * |[17:8]  |SCANDLY   |Key Array Scan Delay
+ * |[31:8]  |SCANDLY   |Key Array Scan Delay
  * |        |          |This value is used to insert delay cycle between each key array scan.
  * |        |          |The key array scan delay counter is clocked by the divided crystal clock, xCLOCK.
  * |        |          |Key array scan delay time = xCLOCK x KASDSCANDLY.
