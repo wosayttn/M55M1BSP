@@ -842,6 +842,8 @@ int32_t I3C_BroadcastENTDAA(I3C_T *i3c, uint8_t u8DevCount)
   * @brief      Unicast SETDASA command
   *
   * @param[in]  *i3c            Point to I3C peripheral
+  * @param[in]  u8DevIndex      the offset of Device Address Table.
+  *                             It could be 0 ~ 6 for DEV1ADR to DEV7ADR.
   *
   * @retval     I3C_STS_NO_ERR              No error
   * @retval     I3C_STS_INVALID_STATE       Invalid state
