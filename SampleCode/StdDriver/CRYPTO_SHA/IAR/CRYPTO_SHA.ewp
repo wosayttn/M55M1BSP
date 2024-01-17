@@ -271,7 +271,6 @@
                     <name>IlinkRawBinaryAlign</name>
                     <state>4</state>
                 </option>
-                </option>
                 <option>
                     <name>IlinkDefines</name>
                     <state />
