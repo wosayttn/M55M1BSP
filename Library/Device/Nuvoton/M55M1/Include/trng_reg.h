@@ -228,7 +228,7 @@ typedef struct
 #define TRNG_DATA3_DATA_Pos              (0)                                               /*!< TRNG_T::DATA3: DATA Position           */
 #define TRNG_DATA3_DATA_Msk              (0xfffffffful << TRNG_DATA3_DATA_Pos)             /*!< TRNG_T::DATA3: DATA Mask               */
 
-/**@}*/ /* TRNG_CONST */
-/**@}*/ /* end of TRNG register group */
-/**@}*/ /* end of REGISTER group */
+/** @} TRNG_CONST */
+/** @} end of TRNG register group */
+/** @} end of REGISTER group */
 #endif /* __TRNG_REG_H__ */
