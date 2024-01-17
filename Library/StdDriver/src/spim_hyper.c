@@ -18,7 +18,7 @@
   @{
 */
 
-/** @addtogroup SPIM_HYPER_EXPORTED_FUNCTIONS SPIM Hyper Exported Functions
+/** @addtogroup SPIM_HYPER_EXPORTED_FUNCTIONS SPIM_HYPER Exported Functions
   @{
 */
 /**
@@ -281,10 +281,10 @@ int32_t SPIM_HYPER_ReadHyperRAMReg(SPIM_T *spim, uint32_t u32Addr)
   * @brief  Write Hyper Chip register space
   * @param  spim
   * @param  u32Addr Address of Hyper Chip register space
-  *                 - \ref HYPER_RAM_ID_REG0       : 0x0000_0000 = Identification Register 0
-  *                 - \ref HYPER_RAM_ID_REG1       : 0x0000_0002 = Identification Register 1
-  *                 - \ref HYPER_RAM_CONFIG_REG0   : 0x0000_1000 = Configuration Register 0
-  *                 - \ref HYPER_RAM_CONFIG_REG1   : 0x0000_1002 = Configuration Register 1
+  *                 - \ref HYPERRAM_ID_REG0     : 0x0000_0000 = Identification Register 0
+  *                 - \ref HYPERRAM_ID_REG1     : 0x0000_0002 = Identification Register 1
+  *                 - \ref HYPERRAM_CONFIG_REG0 : 0x0000_1000 = Configuration Register 0
+  *                 - \ref HYPERRAM_CONFIG_REG1 : 0x0000_1002 = Configuration Register 1
   * @param  u32Value Configure HyperRAM Register Value
   * @return SPIM_HYPER_OK      SPIM operation OK.
   *         SPIM_HYPER_ERR_FAIL    SPIM operation Fail.

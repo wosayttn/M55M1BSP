@@ -64,6 +64,14 @@ extern "C"
 /* SPI Status2 Mask */
 #define SPI_SLVBENUM_MASK                 (0x01U)                           /*!< Effective bit number of uncompleted RX data status mask \hideinitializer */
 
+/* SPI Clock Source */
+#define SPI_CLKSEL_HXT                    (0x0UL)
+#define SPI_CLKSEL_APLL1_DIV2             (0x1UL)
+#define SPI_CLKSEL_APLL0_DIV2             (0x2UL)
+#define SPI_CLKSEL_PCLK2                  (0x3UL)
+#define SPI_CLKSEL_HIRC                   (0x4UL)
+#define SPI_CLKSEL_HIRC48M                (0x5UL)
+
 //------------------------------------------------------------------------------
 // I2S define
 //------------------------------------------------------------------------------

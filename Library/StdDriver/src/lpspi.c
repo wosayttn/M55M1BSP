@@ -12,10 +12,6 @@
 /** @addtogroup Standard_Driver Standard Driver
   @{
 */
-#define LPSPI_CLKSEL_PCLK         (0x0UL)
-#define LPSPI_CLKSEL_MIRC         (0x1UL)
-#define LPSPI_CLKSEL_HIRC         (0x2UL)
-
 
 /** @addtogroup LPSPI_Driver LPSPI Driver
   @{

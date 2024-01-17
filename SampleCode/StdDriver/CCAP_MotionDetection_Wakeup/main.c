@@ -215,7 +215,7 @@ int32_t PacketMotionDetection(S_SENSOR_INFO *psSensorInfo)
      *   If (sum of all windows diff of two frame) > (global motion detection threshold),
          CCAP will trigger MD1 interrupt (CCAP_INTSTS_MDINTF_MODE1_Msk).
      */
-    CCAP_MD_SET_TOTAL_THRESHOLD(0x8000 * CCAP_MD_WINDOW_CNT);
+    CCAP_MD_SET_TOTAL_THRESHOLD(0x6000 * CCAP_MD_WINDOW_CNT);
 
     /* Set window motion detection threshold, maximum value is 0x12AD4
      *   If (window diff of two frame) > (window motion detection threshold), overflow window count is increment by 1.
@@ -294,7 +294,8 @@ int32_t PacketFormatDownScale(S_SENSOR_INFO *psSensorInfo)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    int32_t i;
+    int32_t  i;
+    uint32_t u32Threshold;
 
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
@@ -338,11 +339,31 @@ int32_t main(void)
         /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
         CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
         printf("\nWakeup\n");
-        printf("MDTSAD:   0x%08X\n", CCAP->MDTSAD);
-        printf("MDWOC:    0x%08X\n", CCAP_MD_GET_OVERFLOW_WIN_CNT());
+        u32Threshold = CCAP->MDTTH;
+        printf("Detect diff: 0x%08X (Threshold: 0x%08X)\n", CCAP->MDTSAD, u32Threshold);
+        u32Threshold = CCAP->MDWOCTH;
+        printf("Diff window count: %d (Threshold: %d)\n", CCAP_MD_GET_OVERFLOW_WIN_CNT(), u32Threshold);
 
         for (i = 0; i < CCAP_MD_WINDOW_CNT; i++)
-            printf("Window[%d] SAD: 0x%08X\n", i, CCAP_MD_GET_WIN_SAD(i));
+        {
+            u32Threshold = CCAP->MDWTH[i];
+
+            if (i % 4 == 0)
+            {
+                printf("|-------------|-------------|-------------|-------------|\n");
+                printf("|");
+            }
+
+            if (CCAP_MD_GET_WIN_SAD(i) > u32Threshold)
+                printf(" * (0x%05X) |", CCAP_MD_GET_WIN_SAD(i));
+            else
+                printf("             |");
+
+            if ((i + 1) % 4 == 0)
+                printf("\n");
+        }
+
+        printf("|-------------|-------------|-------------|-------------|\n");
 
         // Capture 1 frame after wakeup
         if (PacketFormatDownScale(&g_sSensorHM1055) != 0)

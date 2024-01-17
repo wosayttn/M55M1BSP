@@ -637,7 +637,6 @@ typedef enum IRQn
 #define ECAP2_S                   ((ECAP_T *)     ECAP2_BASE)
 #define ECAP3_S                   ((ECAP_T *)     ECAP3_BASE)
 #define EBI_S                     ((EBI_T *)      EBI_BASE)
-#define EMAC0_S                   ((EMAC_T *)     EMAC0_BASE)
 #define EPWM0_S                   ((EPWM_T *)     EPWM0_BASE)
 #define EPWM1_S                   ((EPWM_T *)     EPWM1_BASE)
 #define EQEI0_S                   ((EQEI_T *)     EQEI0_BASE)
@@ -770,7 +769,6 @@ typedef enum IRQn
 #define ECAP2_NS                  ((ECAP_T *)     (ECAP2_BASE     + NS_OFFSET))
 #define ECAP3_NS                  ((ECAP_T *)     (ECAP3_BASE     + NS_OFFSET))
 #define EBI_NS                    ((EBI_T *)      (EBI_BASE       + NS_OFFSET))
-#define EMAC0_NS                  ((EMAC_T *)     (EMAC0_BASE     + NS_OFFSET))
 #define EPWM0_NS                  ((EPWM_T *)     (EPWM0_BASE     + NS_OFFSET))
 #define EPWM1_NS                  ((EPWM_T *)     (EPWM1_BASE     + NS_OFFSET))
 #define EQEI0_NS                  ((EQEI_T *)     (EQEI0_BASE     + NS_OFFSET))
@@ -972,12 +970,6 @@ typedef enum IRQn
 #define SDH1         SDH1_NS
 #else
 #define SDH1         SDH1_S
-#endif
-
-#if defined (SCU_INIT_D1PNS0_VAL) && (SCU_INIT_D1PNS0_VAL & SCU_D1PNS0_EMAC0_Msk)
-#define EMAC0        EMAC0_NS
-#else
-#define EMAC0        EMAC0_S
 #endif
 
 #if defined (SCU_INIT_D1PNS0_VAL) && (SCU_INIT_D1PNS0_VAL & SCU_D1PNS0_CRYPTO_Msk)

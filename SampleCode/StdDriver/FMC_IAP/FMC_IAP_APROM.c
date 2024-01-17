@@ -31,6 +31,9 @@ static void SYS_Init(void)
     /* Enable UART module clock */
     SetDebugUartCLK();
 
+    /* Enable ISP module clock */
+    CLK_EnableModuleClock(ISP0_MODULE);
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -90,7 +93,6 @@ int main(void)
     uint8_t     u8Item;
     uint32_t    u32Data;
     char *ai8BootMode[] = { "APROM", "LDROM" };
-    uint32_t u32CBS;
 
     /* Init system clock and multi-function I/O */
     SYS_Init();
@@ -135,7 +137,7 @@ int main(void)
         printf("| [0] Load IAP code to LDROM          |\n");
         printf("| [1] Run IAP code in LDROM           |\n");
         printf("+-------------------------------------+\n");
-        printf("Please select ...");
+        printf("Please select ... ");
         u8Item = getchar();
         printf("%c\n", u8Item);
 

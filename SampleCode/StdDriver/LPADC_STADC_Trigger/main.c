@@ -133,11 +133,11 @@ void LPADC_FunctionTest()
             LPADC_EnableInt(LPADC0, LPADC_ADF_INT);
             NVIC_EnableIRQ(LPADC0_IRQn);
 
-            printf("Wait falling edge from STADC pin (PC.13) ...\n");
-
             /* Reset the LPADC indicator and wait falling edge on STADC pin */
             g_u32LpadcIntFlag = 0;
             g_u32COVNUMFlag = 0;
+
+            printf("Wait falling edge from STADC pin (PC.13) ...\n");
 
             while (1)
             {
@@ -178,11 +178,11 @@ void LPADC_FunctionTest()
             LPADC_EnableInt(LPADC0, LPADC_ADF_INT);
             NVIC_EnableIRQ(LPADC0_IRQn);
 
-            printf("Wait falling edge from STADC pin (PC.13) ...\n");
-
             /* Reset the LPADC indicator and wait falling edge on STADC pin */
             g_u32LpadcIntFlag = 0;
             g_u32COVNUMFlag = 0;
+
+            printf("Wait falling edge from STADC pin (PC.13) ...\n");
 
             while (1)
             {

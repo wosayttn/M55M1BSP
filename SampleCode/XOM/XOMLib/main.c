@@ -12,6 +12,9 @@
 #include "NuMicro.h"
 #include "xomapi.h"
 
+#define XOM_START       0x00104000
+#define XOM_SIZE        0x00002000
+
 void SYS_Init(void)
 {
     /* Unlock protected registers */
@@ -48,6 +51,7 @@ void SYS_Init(void)
 
     /* Enable UART module clock */
     SetDebugUartCLK();
+    CLK_EnableModuleClock(ISP0_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -58,9 +62,11 @@ void SYS_Init(void)
     SYS_LockReg();
 }
 
-
 int32_t main(void)
 {
+    char cUserSel;
+    int32_t i, r;
+    int32_t ai32NumArray[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -78,45 +84,89 @@ int32_t main(void)
         The API header file is xomapi.h
         The XOM functions are implemented in xom.c
 
-        This project is only used to build code for XOM region and test its funcitons.
+        This project is only used to build code for XOM region and test its functions.
         To enable XOM region, please use "NuMicro ICP Programming Tool".
 
-        example flow:
-        1. Build XOMLib_Code
-        2. Download XOMLib_Code by press key "F8" in Keil MDK.
-        3. Use defined XOM_START and XOM_SIZE in xom.scatter or xom.icf and
+        Example flow:
+        1. Build XOMLib_Code and test XOM functions
+        2. Use defined XOM_START and XOM_SIZE in xom.scatter or xom.icf and
            open "NuMicro ICP Programming Tool" to set and enable XOM region.
-        4. Build XOMLib to generate library (xomlib.lib in Keil or xomlib.a in IAR) located at lib directory.
-        5. Pass xomlib.lib(Keil)/xomlib.a(IAR) & xomlib.h to the people who will call the funcitons in XOM.
+        3. Test XOM function with XOM enabled again.
+        4. Review xomlib.c and .\lib\xomlib.h to check all XOM function pointers are
+           included correctly (Check funtion address in .map file).
+        5. Build final XOMLib_Code. XOMAddr.exe will be executed to update
+           function pointer addresses after built.
+        6. Build XOMLib project to generate xomlib.lib(Keil)/xomlib.a(IAR).
+           It includes function pointers for XOM.
+           The library (xomlib.lib or xomlib.a) and header (xomlib.h) is located at lib directory.
+        7. Pass xomlib.lib(Keil)/xomlib.a(IAR) & xomlib.h to the users
+           who will call the funcitons in XOM.
     */
 
     printf("\n\n");
     printf("+----------------------------------------+\n");
-    printf("|      FMC XOM Libary Build Example      |\n");
+    printf("|      FMC XOM Library Build Example     |\n");
     printf("+----------------------------------------+\n");
 
-    /* Unlock protected registers to operate FMC ISP function */
+    /* Unlock protected registers */
     SYS_UnlockReg();
 
     /* Enable FMC ISP function and enable APROM active*/
     FMC_Open();
     FMC_ENABLE_AP_UPDATE();
+    FMC_ENABLE_CFG_UPDATE();
 
-    /* Read User Configuration */
-    printf("\n");
+    /* Read XOM Status */
     printf("XOM Status = 0x%X\n", FMC->XOMSTS);
+    printf("[0] Set  XOM\n");
+    printf("[1] Test XOM\n");
+
+    cUserSel = (char)getchar();
+
+    if (cUserSel == '0')
+    {
+        FMC_ConfigXOM(0, XOM_START, (XOM_SIZE / FMC_FLASH_PAGE_SIZE));
+        SYS_ResetChip();
+
+        while (1) ;
+    }
 
     /* Run XOM function */
     printf("\n");
-    printf(" 100 + 200 = %d\n", XOM_Add(100, 200));
-    printf(" 500 - 100 = %d\n", XOM_Sub(500, 100));
-    printf(" 200 * 100 = %d\n", XOM_Mul(200, 100));
-    printf("1000 / 250 = %d\n", XOM_Div(1000, 250));
-    XOM_Sum(0, 3);
+    printf("Check XOM execution\n");
+    printf("  [XOM_Add]  100 + 200 = %d\n", XOM_Add(100, 200));
+    printf("  [XOM_Sub]  500 - 100 = %d\n", XOM_Sub(500, 100));
+    printf("  [XOM_Mul]  200 * 100 = %d\n", XOM_Mul(200, 100));
+    printf("  [XOM_Div] 1000 / 250 = %d\n", XOM_Div(1000, 250));
+    printf("  [XOM_Sum] 1 + 2 +..+ 10 = %d\n", XOM_Sum(ai32NumArray, sizeof(ai32NumArray) / sizeof(ai32NumArray[0])));
 
+    for (i = 0; i < 1000; i++)
+    {
+        r = XOM_Add(500, 700);
+
+        if (r != 1200)
+        {
+            printf("XOM ADD fail. It should be 1200 but %d\n", r);
+            goto lexit;
+        }
+    }
+
+    printf("\n");
+
+    if (FMC->XOMSTS == 0x1)
+        printf("Check CPU access XOM region all 0xFFFFFFFF.\n");
+    else
+        printf("Check CPU access XOM region not 0xFFFFFFFF.\n");
+
+    for (i = 0; i < 16; i++)
+    {
+        printf("  [%04x] = 0x%08x\n", 0x00104000 + i * 4, M32(0x00104000 + i * 4));
+    }
+
+lexit:
+    printf("Done.\n");
 
     while (1);
 }
 
-
-/*** (C) COPYRIGHT 2019 Nuvoton Technology Corp. ***/
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

@@ -27,7 +27,7 @@
  */
 
 /* A simple HTTP server demonstrates LwIP under FreeRTOS.
-   The server¡¦s IP address could configure statically to
+   The server's IP address could configure statically to
    192.168.1.2, or assign by DHCP server. */
 
 #include <stdio.h>

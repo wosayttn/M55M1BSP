@@ -67,7 +67,6 @@ int32_t main(void)
     printf("|  Demo how to use XOM library Sample Code  |\n");
     printf("+-------------------------------------------+\n");
 
-
     XOM_CALL(XOM_Add, u32Data, 100, 200);
     printf(" 100 + 200 = %u\n", u32Data);
 
@@ -79,6 +78,7 @@ int32_t main(void)
 
     XOM_CALL(XOM_Div, u32Data, 1000, 250);
     printf("1000 / 250 = %u\n", u32Data);
+    printf("Done\n");
 
     while (1);
 }

@@ -56,6 +56,8 @@ void CCAP_SetFreq(uint32_t u32ModFreqKHz, uint32_t u32SensorFreq)
 {
     int32_t i32Div;
 
+    NVT_UNUSED(i32Div);
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
