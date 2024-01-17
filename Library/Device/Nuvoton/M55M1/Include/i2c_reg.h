@@ -37,8 +37,8 @@ typedef struct
      * |        |          |When AA =1 prior to address or data is received, an acknowledged (low level to SDA) will be returned during the acknowledge clock pulse on the SCL line when 1.) A slave is acknowledging the address sent from master, 2.) The receiver devices are acknowledging the data sent by transmitter
      * |        |          |When AA=0 prior to address or data received, a Not acknowledged (high level to SDA) will be returned during the acknowledge clock pulse on the SCL line
      * |[3]     |SI        |I2C Interrupt Flag
-     * |        |          |When a new I2C state is present in the I2C_STATUS register, the SI flag is set by hardware
-     * |        |          |If bit INTEN (I2C_CTL [7]) is set, the I2C interrupt is requested
+     * |        |          |When a new I2C state is present in the I2C_STATUS0 register, the SI flag is set by hardware
+     * |        |          |If bit INTEN (I2C_CTL0 [7]) is set, the I2C interrupt is requested
      * |        |          |SI must be cleared by software
      * |        |          |Clear SI by writing 1 to this bit.
      * |        |          |For ACKMEN is set in slave read mode, the SI flag is set in 8th clock period for user to confirm the acknowledge bit and 9th clock period for user to read the data in the data buffer.
@@ -85,10 +85,10 @@ typedef struct
      * |        |          |The three least significant bits are always 0
      * |        |          |The five most significant bits contain the status code
      * |        |          |There are 28 possible status codes
-     * |        |          |When the content of I2C_STATUS is F8H, no serial interrupt is requested
-     * |        |          |Others I2C_STATUS values correspond to defined I2C states
+     * |        |          |When the content of I2C_STATUS0 is F8H, no serial interrupt is requested
+     * |        |          |Others I2C_STATUS0 values correspond to defined I2C states
      * |        |          |When each of these states is entered, a status interrupt is requested (SI = 1)
-     * |        |          |A valid status code is present in I2C_STATUS one cycle after SI is set by hardware and is still present one cycle after SI has been reset by software
+     * |        |          |A valid status code is present in I2C_STATUS0 one cycle after SI is set by hardware and is still present one cycle after SI has been reset by software
      * |        |          |In addition, states 00H stands for a Bus Error
      * |        |          |A Bus Error occurs when a START or STOP condition is present at an illegal position in the formation frame
      * |        |          |Example of illegal position are during the serial transfer of an address byte, a data byte or an acknowledge bit.
@@ -98,13 +98,14 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[9:0]   |DIVIDER   |I2C Clock Divided
-     * |        |          |Indicates the I2C clock rate: Data Baud Rate of I2C = (system clock) / (4x (I2C_CLKDIV+1)).
-     * |        |          |Note: The minimum value of I2C_CLKDIV is 4.
+     * |        |          |Indicates the I2C clock rate: Data Baud Rate of I2C = (system clock) / (4x (DIVIDER+1)).
+     * |        |          |Note: The minimum value of DIVIDER is 4.
      * |[15:12]	|NFCNT	   |Noise Filter Count
      * |        |          |The register bits control the input filter width.
-     * |        |          |0 = filter width 3*PCLK
-     * |        |          |1 = filter width 4*PCLK
-     * |        |          |N = filter width (3+N)*PCKL
+     * |        |          |If the pulse width is narrower than the setting((3+N)*PCLK), it will be ignored.
+     * |        |          |0 : filter width 3*PCLK
+     * |        |          |1 : filter width 4*PCLK
+     * |        |          |N : filter width (3+N)*PCKL
      * |        |          |Note: Filter width Min :3*PCLK, Max : 18*PCLK
      * @var I2C_T::TOCTL
      * Offset: 0x14  I2C Time-out Control Register
@@ -115,11 +116,11 @@ typedef struct
      * |        |          |This bit is set by hardware when I2C time-out happened and it can interrupt CPU if I2C interrupt enable bit (INTEN) is set to 1.
      * |        |          |Note: Software can write 1 to clear this bit.
      * |[1]     |TOCDIV4   |Time-out Counter Input Clock Divided by 4
-     * |        |          |When Enabled, The time-out period is extend 4 times.
+     * |        |          |When enabled, the time-out period is extended 4 times.
      * |        |          |0 = Time-out period is extend 4 times Disabled.
      * |        |          |1 = Time-out period is extend 4 times Enabled.
      * |[2]     |TOCEN     |Time-out Counter Enable Bit
-     * |        |          |When Enabled, the 14-bit time-out counter will start counting when SI is clear
+     * |        |          |When enabled, the 14-bit time-out counter will start counting when SI is cleared
      * |        |          |Setting flag SI to '1' will reset counter and re-start up counting after SI is cleared.
      * |        |          |0 = Time-out counter Disabled.
      * |        |          |1 = Time-out counter Enabled.
@@ -173,7 +174,7 @@ typedef struct
      * |        |          |I2C bus controllers support multiple address recognition with four address mask register
      * |        |          |When the bit in the address mask register is set to one, it means the received corresponding address bit is don't-care
      * |        |          |If the bit is set to zero, that means the received corresponding register bit should be exact the same as address register.
-     * |        |          |Note: The wake-up function can not use address mask.
+     * |        |          |Note: The wake-up function cannot use address mask in 10-bit mode.
      * @var I2C_T::ADDRMSK1
      * Offset: 0x28  I2C Slave Address Mask Register1
      * ---------------------------------------------------------------------------------------------------
@@ -185,7 +186,7 @@ typedef struct
      * |        |          |I2C bus controllers support multiple address recognition with four address mask register
      * |        |          |When the bit in the address mask register is set to one, it means the received corresponding address bit is don't-care
      * |        |          |If the bit is set to zero, that means the received corresponding register bit should be exact the same as address register.
-     * |        |          |Note: The wake-up function can not use address mask.
+     * |        |          |Note: The wake-up function cannot use address mask in 10-bit mode.
      * @var I2C_T::ADDRMSK2
      * Offset: 0x2C  I2C Slave Address Mask Register2
      * ---------------------------------------------------------------------------------------------------
@@ -197,7 +198,7 @@ typedef struct
      * |        |          |I2C bus controllers support multiple address recognition with four address mask register
      * |        |          |When the bit in the address mask register is set to one, it means the received corresponding address bit is don't-care
      * |        |          |If the bit is set to zero, that means the received corresponding register bit should be exact the same as address register.
-     * |        |          |Note: The wake-up function can not use address mask.
+     * |        |          |Note: The wake-up function cannot use address mask in 10-bit mode.
      * @var I2C_T::ADDRMSK3
      * Offset: 0x30  I2C Slave Address Mask Register3
      * ---------------------------------------------------------------------------------------------------
@@ -209,7 +210,7 @@ typedef struct
      * |        |          |I2C bus controllers support multiple address recognition with four address mask register
      * |        |          |When the bit in the address mask register is set to one, it means the received corresponding address bit is don't-care
      * |        |          |If the bit is set to zero, that means the received corresponding register bit should be exact the same as address register.
-     * |        |          |Note: The wake-up function can not use address mask.
+     * |        |          |Note: The wake-up function cannot use address mask in 10-bit mode.
      * @var I2C_T::WKCTL
      * Offset: 0x3C  I2C Wake-up Control Register
      * ---------------------------------------------------------------------------------------------------
@@ -221,7 +222,7 @@ typedef struct
      * |[7]     |NHDBUSEN  |I2C No Hold BUS Enable Bit
      * |        |          |0 = I2C hold bus after wake-up.
      * |        |          |1 = I2C don't hold bus after wake-up.
-     * |        |          |Note: I2C controller could response when WKIF event is not clear, it may cause error data transmitted or received
+     * |        |          |Note: The I2C controller could respond when WKIF event is not clear, it may cause error data transmitted or received
      * |        |          |If data transmitted or received when WKIF event is not clear, user must reset I2C controller and execute the original operation again.
      * @var I2C_T::WKSTS
      * Offset: 0x40  I2C Wake-up Status Register
@@ -245,29 +246,30 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[0]     |TXPDMAEN  |PDMA Transmit Channel Available
-     * |        |          |0 = Transmit PDMA function disable.
-     * |        |          |1 = Transmit PDMA function enable.
+     * |        |          |0 = Transmit PDMA function Disabled.
+     * |        |          |1 = Transmit PDMA function Enabled.
      * |[1]     |RXPDMAEN  |PDMA Receive Channel Available
-     * |        |          |0 = Receive PDMA function disable.
-     * |        |          |1 = Receive PDMA function enable.
+     * |        |          |0 = Receive PDMA function Disabled.
+     * |        |          |1 = Receive PDMA function Enabled.
      * |[2]     |PDMARST   |PDMA Reset
      * |        |          |0 = No effect.
      * |        |          |1 = Reset the I2C request to PDMA.
      * |[3]	    |OVRIEN	   |I2C over Run Interrupt Control Bit
-     * |        |          |Setting OVRIEN to logic 1 will send a interrupt to system when the TWOFF bit is enabled and there is over run event in received buffer.
+     * |        |          |Setting OVRIEN to logic 1 will send a interrupt to system when the TWOBUFEN bit is enabled and there is over run event in received buffer.
      * |[4]	    |UDRIEN	   |I2C Under Run Interrupt Control Bit
-     * |        |          |Setting UDRIEN to logic 1 will send a interrupt to system when the TWOFF bit is enabled and there is under run event happened in transmitted buffer.
-     * |[5]   	|TWOBUFEN  |Two-level BUFFER Enable Bit
+     * |        |          |Setting UDRIEN to logic 1 will send a interrupt to system when the TWOBUFEN bit is enabled and there is under run event happened in transmitted buffer.
+     * |[5]     |TWOBUFEN  |Two-level Buffer Enable Bit
      * |        |          |0 = Two-level buffer Disabled.
      * |        |          |1 = Two-level buffer Enabled.
-     * |        |          |Set to enable the two-level buffer for I2C transmitted or received buffer. It is used to improve the performance of the I2C bus.
+     * |        |          |Set to enable the two-level buffer for I2C transmitted or received buffer
+     * |        |          |It is used to improve the performance of the I2C bus
      * |[8]     |PDMASTR   |PDMA Stretch Bit
      * |        |          |0 = I2C send STOP automatically after PDMA transfer done. (only master TX)
      * |        |          |1 = I2C SCL bus is stretched by hardware after PDMA transfer done if the SI is not cleared
      * |        |          |(only master TX)
-     * |[9]     |ADDR10EN  |Address 10-bit Function Enable
-     * |        |          |0 = Address match 10-bit function is disabled.
-     * |        |          |1 = Address match 10-bit function is enabled.
+     * |[9]     |ADDR10EN  |Address 10-bit Function Enable Bit
+     * |        |          |0 = Address match 10-bit function Disabled.
+     * |        |          |1 = Address match 10-bit function Enabled.
      * |[10]    |SWITCHEN  |SCL And SDA Pin Switch Enable Bit
      * |        |          |0 = I2C use original pin configuration.
      * |        |          |1 = I2C switch SCL and SDA pin configuration.
@@ -288,16 +290,16 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[0]     |ADMAT0    |I2C Address 0 Match Status Register
+     * |[0]     |ADMAT0    |I2C Address 0 Match Status
      * |        |          |When address 0 is matched, hardware will inform which address used
      * |        |          |This bit will set to 1, and software can write 1 to clear this bit.
-     * |[1]     |ADMAT1    |I2C Address 1 Match Status Register
+     * |[1]     |ADMAT1    |I2C Address 1 Match Status
      * |        |          |When address 1 is matched, hardware will inform which address used
      * |        |          |This bit will set to 1, and software can write 1 to clear this bit.
-     * |[2]     |ADMAT2    |I2C Address 2 Match Status Register
+     * |[2]     |ADMAT2    |I2C Address 2 Match Status
      * |        |          |When address 2 is matched, hardware will inform which address used
      * |        |          |This bit will set to 1, and software can write 1 to clear this bit.
-     * |[3]     |ADMAT3    |I2C Address 3 Match Status Register
+     * |[3]     |ADMAT3    |I2C Address 3 Match Status
      * |        |          |When address 3 is matched, hardware will inform which address used
      * |        |          |This bit will set to 1, and software can write 1 to clear this bit.
      * |[4]	    |FULL      |TWO-LEVEL BUFFER FULL
@@ -314,11 +316,11 @@ typedef struct
      * |[7]	    |UDR       |I2C Under Run Status Bit
      * |        |          |This bit indicates the transmitted two-level buffer TX or RX is under run when the TWOBUFEN = 1.
      * |        |          |Note: This bit is read only.
-     * |[8]     |ONBUSY    |On Bus Busy
+     * |[8]     |ONBUSY    |On Bus Busy (Read Only)
      * |        |          |Indicates that a communication is in progress on the bus
      * |        |          |It is set by hardware when a START condition is detected
      * |        |          |It is cleared by hardware when a STOP condition is detected.
-     * |        |          |0 = The bus is IDLE (both SCLK and SDA High).
+     * |        |          |0 = The bus is IDLE (both SCL and SDA High).
      * |        |          |1 = The bus is busy.
      * |        |          |Note:This bit is read only.
      * |[20]    |DPCIF     |Data Phase Count Interrupt Flag
@@ -332,11 +334,11 @@ typedef struct
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[8:0]   |STCTL     |Setup Time Configure Control Register
+     * |[8:0]   |STCTL     |Setup Time Configure Control
      * |        |          |This field is used to generate a delay timing between SDA falling edge and SCL rising edge in transmission mode.
      * |        |          |The delay setup time is numbers of peripheral clock = STCTL x PCLK.
      * |        |          |Note: Setup time setting should not make SCL output less than three PCLKs.
-     * |[24:16] |HTCTL     |Hold Time Configure Control Register
+     * |[24:16] |HTCTL     |Hold Time Configure Control
      * |        |          |This field is used to generate the delay timing between SCL falling edge and SDA rising edge in transmission mode.
      * |        |          |The delay hold time is numbers of peripheral clock = HTCTL x PCLK.
      * @var I2C_T::BUSCTL
@@ -349,17 +351,17 @@ typedef struct
      * |        |          |0 = Slave byte control Disabled.
      * |        |          |1 = Slave byte control Enabled
      * |        |          |The 9th bit can response the ACK or NACK according the received data by user
-     * |        |          |When the byte is received, stretching the SCLK signal low between the 8th and 9th SCLK pulse.
-     * |        |          |Note: If the BMDEN=1 and this bit is enabled, the information of I2C_STATUS will be fixed as 0xF0 in slave receive condition.
+     * |        |          |When the byte is received, stretching the SCL signal low between the 8th and 9th SCL pulse.
+     * |        |          |Note: If the BMDEN =1 and this bit is enabled, the information of I2C_STATUS0 will be fixed as 0xF0 in slave receive condition.
      * |[1]     |PECEN     |Packet Error Checking Calculation Enable Bit
      * |        |          |0 = Packet Error Checking Calculation Disabled.
      * |        |          |1 = Packet Error Checking Calculation Enabled.
-     * |        |          |Note: When I2C enter power down mode, the bit should be enabled after wake-up if needed PEC calculation.
+     * |        |          |Note: When I2C enter power-down mode, the bit should be enabled after wake-up if needed PEC calculation.
      * |[2]     |BMDEN     |Bus Management Device Default Address Enable Bit
      * |        |          |0 = Device default address Disable
-     * |        |          |When the address 0'b1100001x coming and the both of BMDEN and ACKMEN are enabled, the device responses NACKed
+     * |        |          |When the address 0'b1100001x comes and either BMDEN or ACKMEN is disabled, the device responses NACK.
      * |        |          |1 = Device default address Enabled
-     * |        |          |When the address 0'b1100001x coming and the both of BMDEN and ACKMEN are enabled, the device responses ACKed.
+     * |        |          |When the address 0'b1100001x comes and both BMDEN and ACKMEN are enabled, the device responses ACK.
      * |[3]     |BMHEN     |Bus Management Host Enable Bit
      * |        |          |0 = Host function Disabled.
      * |        |          |1 = Host function Enabled.
@@ -377,34 +379,34 @@ typedef struct
      * |        |          |0 = The SUSCON pin in input.
      * |        |          |1 = The output enable is active on the SUSCON pin.
      * |[7]     |BUSEN     |BUS Enable Bit
-     * |        |          |0 = The system management function is Disabled.
-     * |        |          |1 = The system management function is Enable.
+     * |        |          |0 = The system management function Disabled.
+     * |        |          |1 = The system management function Enabled.
      * |        |          |Note: When the bit is enabled, the internal 14-bit counter is used to calculate the time out event of clock low condition.
      * |[8]     |PECTXEN   |Packet Error Checking Byte Transmission/Reception
      * |        |          |0 = No PEC transfer.
      * |        |          |1 = PEC transmission is requested.
-     * |        |          |Note: This bit has no effect in slave mode when ACKMEN=0.
+     * |        |          |Note: 1.This bit has no effect in slave mode when ACKMEN =0.
      * |[9]     |TIDLE     |Timer Check in Idle State
      * |        |          |The BUSTOUT is used to calculate the time-out of clock low in bus active and the idle period in bus Idle
      * |        |          |This bit is used to define which condition is enabled.
-     * |        |          |0 = The BUSTOUT is used to calculate the clock low period in bus active.
-     * |        |          |1 = The BUSTOUT is used to calculate the IDLE period in bus Idle.
+     * |        |          |0 = BUSTOUT is used to calculate the clock low period in bus active.
+     * |        |          |1 = BUSTOUT is used to calculate the IDLE period in bus Idle.
      * |        |          |Note: The BUSY (I2C_BUSSTS[0]) indicate the current bus state.
      * |[10]    |PECCLR    |PEC Clear at Repeat Start
-     * |        |          |The calculation of PEC starts when PECEN is set to 1 and it is clear when the STA or STO bit is detected
+     * |        |          |The calculation of PEC starts when PECEN is set to 1 and it is cleared when the STA or STO bit is detected
      * |        |          |This PECCLR bit is used to enable the condition of REPEAT START can clear the PEC calculation.
-     * |        |          |0 = The PEC calculation is cleared by "Repeat Start" function is Disabled.
-     * |        |          |1 = The PEC calculation is cleared by "Repeat Start"" function is Enabled.
+     * |        |          |0 = PEC calculation is cleared by "Repeat Start" function Disabled.
+     * |        |          |1 = PEC calculation is cleared by "Repeat Start" function Enabled.
      * |[11]    |ACKM9SI   |Acknowledge Manual Enable Extra SI Interrupt
      * |        |          |0 = There is no SI interrupt in the 9th clock cycle when the BUSEN=1 and ACKMEN=1.
      * |        |          |1 = There is SI interrupt in the 9th clock cycle when the BUSEN=1 and ACKMEN=1.
      * |[12]    |BCDIEN    |Packet Error Checking Byte Count Done Interrupt Enable Bit
-     * |        |          |0 = Indicates the byte count done interrupt is Disabled.
-     * |        |          |1 = Indicates the byte count done interrupt is Enabled.
+     * |        |          |0 = Byte count done interrupt Disabled.
+     * |        |          |1 = Byte count done interrupt Enabled.
      * |        |          |Note: This bit is used in PECEN=1.
      * |[13]    |PECDIEN   |Packet Error Checking Byte Transfer Done Interrupt Enable Bit
-     * |        |          |0 = Indicates the PEC transfer done interrupt is Disabled.
-     * |        |          |1 = Indicates the PEC transfer done interrupt is Enabled.
+     * |        |          |0 = PEC transfer done interrupt Disabled.
+     * |        |          |1 = PEC transfer done interrupt Enabled.
      * |        |          |Note: This bit is used in PECEN=1.
      * @var I2C_T::BUSTCTL
      * Offset: 0x54  I2C Bus Management Timer Control Register
@@ -412,26 +414,26 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[0]     |BUSTOEN   |Bus Time Out Enable Bit
-     * |        |          |0 = Indicates the bus clock low time-out detection is Disabled.
-     * |        |          |1 = Indicates the bus clock low time-out detection is Enabled (bus clock is low for more than TTime-out (in BIDLE=0) or high more than TTime-out(in BIDLE =1)
+     * |        |          |0 = Bus clock low time-out detection Disabled.
+     * |        |          |1 = Bus clock low time-out detection Enabled (bus clock is low for more than BUSTO (I2C_BUSTOUT[7:0]) (in TIDLE=0) or high more than BUSTO (in TIDLE =1)
      * |[1]     |CLKTOEN   |Cumulative Clock Low Time Out Enable Bit
-     * |        |          |0 = Indicates the cumulative clock low time-out detection is Disabled.
-     * |        |          |1 = Indicates the cumulative clock low time-out detection is Enabled.
+     * |        |          |0 = Cumulative clock low time-out detection Disabled.
+     * |        |          |1 = Cumulative clock low time-out detection Enabled.
      * |        |          |For Master, it calculates the period from START to ACK
      * |        |          |For Slave, it calculates the period from START to STOP
      * |[2]     |BUSTOIEN  |Time-out Interrupt Enable Bit
      * |        |          |BUSY =1.
-     * |        |          |0 = Indicates the SCLK low time-out interrupt is Disabled.
-     * |        |          |1 = Indicates the SCLK low time-out interrupt is Enabled.
+     * |        |          |0 = SCL low time-out interrupt Disabled.
+     * |        |          |1 = SCL low time-out interrupt Enabled.
      * |        |          |BUSY =0.
-     * |        |          |0 = Indicates the bus IDLE time-out interrupt is Disabled.
-     * |        |          |1 = Indicates the bus IDLE time-out interrupt is Enabled.
+     * |        |          |0 = Bus IDLE time-out interrupt Disabled.
+     * |        |          |1 = Bus IDLE time-out interrupt Enabled.
      * |[3]     |CLKTOIEN  |Extended Clock Time Out Interrupt Enable Bit
-     * |        |          |0 = Indicates the clock time out interrupt is Disabled.
-     * |        |          |1 = Indicates the clock time out interrupt is Enabled.
+     * |        |          |0 = Clock time out interrupt Disabled.
+     * |        |          |1 = Clock time out interrupt Enabled.
      * |[4]     |TORSTEN   |Time Out Reset Enable Bit
-     * |        |          |0 = Indicates the I2C state machine reset is Disable.
-     * |        |          |1 = Indicates the I2C state machine reset is Enable. (The clock and data bus will be released to high)
+     * |        |          |0 = I2C state machine reset Disabled.
+     * |        |          |1 = I2C state machine reset Enabled. (The clock and data bus will be released to high)
      * @var I2C_T::BUSSTS
      * Offset: 0x58  I2C Bus Management Status Register
      * ---------------------------------------------------------------------------------------------------
@@ -441,41 +443,40 @@ typedef struct
      * |        |          |Indicates that a communication is in progress on the bus
      * |        |          |It is set by hardware when a START condition is detected
      * |        |          |It is cleared by hardware when a STOP condition is detected
-     * |        |          |0 = The bus is IDLE (both SCLK and SDA High).
-     * |        |          |1 = The bus is busy.
+     * |        |          |0 = Bus is IDLE (both SCL and SDA High).
+     * |        |          |1 = Bus is busy.
      * |[1]     |BCDONE    |Byte Count Transmission/Receive Done
-     * |        |          |0 = Indicates the byte count transmission/ receive is not finished when the PECEN is set.
-     * |        |          |1 = Indicates the byte count transmission/ receive is finished when the PECEN is set.
+     * |        |          |0 = Byte count transmission/ receive is not finished when the PECEN is set.
+     * |        |          |1 = Byte count transmission/ receive is finished when the PECEN is set.
      * |        |          |Note: Software can write 1 to clear this bit.
      * |[2]     |PECERR    |PEC Error in Reception
-     * |        |          |0 = Indicates the PEC value equal the received PEC data packet.
-     * |        |          |1 = Indicates the PEC value doesn't match the receive PEC data packet.
+     * |        |          |0 = PEC value equal the received PEC data packet.
+     * |        |          |1 = PEC value doesn't match the receive PEC data packet.
      * |        |          |Note: Software can write 1 to clear this bit.
      * |[3]     |ALERT     |SMBus Alert Status
      * |        |          |Device Mode (BMHEN =0).
-     * |        |          |0 = Indicates SMBALERT pin state is low.
-     * |        |          |1 = Indicates SMBALERT pin state is high.
+     * |        |          |0 = SMBALERT pin state is low.
+     * |        |          |1 = SMBALERT pin state is high.
      * |        |          |Host Mode (BMHEN =1).
      * |        |          |0 = No SMBALERT event.
-     * |        |          |1 = Indicates there is SMBALERT event (falling edge) is detected in SMALERT pin when the BMHEN = 1 (SMBus host configuration) and the ALERTEN = 1.
-     * |        |          |Note:
-     * |        |          |1. The SMBALERT pin is an open-drain pin, the pull-high resistor is must in the system
+     * |        |          |1 = There is SMBALERT event (falling edge) is detected in SMALERT pin when the BMHEN = 1 (SMBus host configuration) and the ALERTEN = 1.
+     * |        |          |Note: 1. The SMBALERT pin is an open-drain pin, the pull-high resistor is must in the system
      * |        |          |2. Software can write 1 to clear this bit.
      * |[4]     |SCTLDIN   |Bus Suspend or Control Signal Input Status
      * |        |          |0 = The input status of SUSCON pin is 0.
      * |        |          |1 = The input status of SUSCON pin is 1.
      * |[5]     |BUSTO     |Bus Time-out Status
-     * |        |          |0 = Indicates that there is no any time-out or external clock time-out.
-     * |        |          |1 = Indicates that a time-out or external clock time-out occurred.
-     * |        |          |In bus busy, the bit indicates the total clock low time-out event occurred otherwise, it indicates the bus idle time-out event occurred.
+     * |        |          |0 = There is no any time-out or external clock time-out.
+     * |        |          |1 = A time-out or external clock time-out occurred.
+     * |        |          |In bus busy, the bit indicates the total clock low time-out event occurred; otherwise, it indicates the bus idle time-out event occurred.
      * |        |          |Note: Software can write 1 to clear this bit.
      * |[6]     |CLKTO     |Clock Low Cumulate Time-out Status
-     * |        |          |0 = Indicates that the cumulative clock low is no any time-out.
-     * |        |          |1 = Indicates that the cumulative clock low time-out occurred.
+     * |        |          |0 = Cumulative clock low is no any time-out.
+     * |        |          |1 = Cumulative clock low time-out occurred.
      * |        |          |Note: Software can write 1 to clear this bit.
      * |[7]     |PECDONE   |PEC Byte Transmission/Receive Done
-     * |        |          |0 = Indicates the PEC transmission/ receive is not finished when the PECEN is set.
-     * |        |          |1 = Indicates the PEC transmission/ receive is finished when the PECEN is set.
+     * |        |          |0 = PEC transmission/ receive is not finished when the PECEN is set.
+     * |        |          |1 = PEC transmission/ receive is finished when the PECEN is set.
      * |        |          |Note: Software can write 1 to clear this bit.
      * @var I2C_T::PKTSIZE
      * Offset: 0x5C  I2C Packet Error Checking Byte Number Register
@@ -485,7 +486,7 @@ typedef struct
      * |[8:0]   |PLDSIZE   |Transfer Byte Number
      * |        |          |The transmission or receive byte number in one transaction when the PECEN is set
      * |        |          |The maximum transaction or receive byte is 256 Bytes.
-     * |        |          |Notice: The byte number counting includes address, command code, and data frame.
+     * |        |          |Note: The byte number counting includes address, command code, and data frame.
      * @var I2C_T::PKTCRC
      * Offset: 0x60  I2C Packet Error Checking Byte Value Register
      * ---------------------------------------------------------------------------------------------------
@@ -500,8 +501,8 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[7:0]   |BUSTO     |Bus Management Time-out Value
-     * |        |          |Indicate the bus time-out value in bus is IDLE or SCLK low.
-     * |        |          |Note: If the user wants to revise the value of BUSTOUT, the TORSTEN (I2C_BUSTCTL[4]) bit shall be set to 1 and clear to 0 first in the BUSEN(I2C_BUSCTL[7]) is set.
+     * |        |          |Indicates the bus time-out value in bus is IDLE or SCL low.
+     * |        |          |Note: If the user wants to revise the value of BUSTOUT, the TORSTEN (I2C_BUSTCTL[4]) bit shall be set to 1 and cleared to 0 first when the BUSEN(I2C_BUSCTL[7]) is set.
      * @var I2C_T::CLKTOUT
      * Offset: 0x68  I2C Bus Management Clock Low Timer Register
      * ---------------------------------------------------------------------------------------------------
@@ -509,7 +510,7 @@ typedef struct
      * | :----: | :----:   | :---- |
      * |[7:0]   |CLKTO     |Bus Clock Low Timer
      * |        |          |The field is used to configure the cumulative clock extension time-out.
-     * |        |          |Note: If the user wants to revise the value of CLKLTOUT, the TORSTEN bit shall be set to 1 and clear to 0 first in the BUSEN is set.
+     * |        |          |Note: If the user wants to revise the value of CLKLTOUT, the TORSTEN bit shall be set to 1 and cleared to 0 first when the BUSEN is set.
      */
     __IO uint32_t CTL0;                  /*!< [0x0000] I2C Control Register 0                                           */
     __IO uint32_t ADDR0;                 /*!< [0x0004] I2C Slave Address Register0                                      */
