@@ -75,8 +75,7 @@ extern "C"
 #define LPI2C_ERR_FAIL    (-1L)            /*!< LPI2C operation failed                                                     \hideinitializer */
 #define LPI2C_ERR_TIMEOUT (-2L)            /*!< LPI2C operation abort due to timeout error                                 \hideinitializer */
 
-
-/*@}*/ /* end of group LPI2C_EXPORTED_CONSTANTS */
+/** @} end of group LPI2C_EXPORTED_CONSTANTS */
 
 extern int32_t g_LPI2C_i32ErrCode;
 
