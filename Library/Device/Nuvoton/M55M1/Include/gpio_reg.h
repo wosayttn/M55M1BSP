@@ -296,8 +296,8 @@ typedef struct
 {
 
     /**
-     * @var GPIO_INT_T::INTn_INNF
-     * Offset: 0x450/0x454/0x458/0x45C/0x460/0x464/0x468/0x46C  INT0~7 Input Noise Filter Register
+     * @var GPIO_INT_T::INT0_INNF
+     * Offset: 0x440  INT0 Input Noise Filter Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
@@ -309,36 +309,359 @@ typedef struct
      * |        |          |001 = Filter clock is HCLK/2.
      * |        |          |010 = Filter clock is HCLK/4.
      * |        |          |011 = Filter clock is HCLK/8.
-     * |        |          |100 = Filter clock is HCLK/16
+     * |        |          |100 = Filter clock is HCLK/16.
      * |        |          |101 = Filter clock is HCLK/32.
      * |        |          |110 = Filter clock is HCLK/64.
      * |        |          |111 = Filter clock is HCLK/128.
      * |[10:8]  |NFCNT     |Noise Filter Count
      * |        |          |The register bits control the filter counter to count from 0 to NFCNT.
-     * @var GPIO_INT_T::INT_EDETCTL
-     * Offset: 0x490  INT Edge Detect Control Register
+     * @var GPIO_INT_T::INT0_EDETCTL
+     * Offset: 0x444  INT0 Edge Detect Control Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[2n+1:2n]|EDETCTLn |INTn Edge Detect Control Bits
+     * |[1:0]   |EDETCTL   |INT Edge Detect Control Bits
      * |        |          |00 = Not detect.
-     * |        |          |01 = INTn low to high detection Enable.
-     * |        |          |10 = INTn high to low detection Enable.
-     * |        |          |11 = INTn both low to high and high to low detection Enable.
-     * @var GPIO_INT_T::INT_EDINTEN
-     * Offset: 0x498  INT Edge Detect Interrupt Enable Control Register
+     * |        |          |01 = INT low to high detection Enable.
+     * |        |          |10 = INT high to low detection Enable.
+     * |        |          |11 = INT both low to high and high to low detection Enable.
+     * @var GPIO_INT_T::INT0_EDINTEN
+     * Offset: 0x448  INT0 Edge Detect Interrupt Enable Control Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[n]     |EDIENn    |INTn Edge Detect Interrupt Enable Bit
-     * |        |          |0 = INTn Edge Detect Interrupt Disable.
-     * |        |          |1 = INTn Edge Detect Interrupt Enable.
-     * @var GPIO_INT_T::INT_EDSTS
-     * Offset: 0x49C  INT Edge Detect Interrupt Flag Register
+     * |[0]     |EDIEN     |INT Edge Detect Interrupt Enable Bit
+     * |        |          |0 = INT Edge Detect Interrupt Disable.
+     * |        |          |1 = INT Edge Detect Interrupt Enable.
+     * @var GPIO_INT_T::INT0_EDSTS
+     * Offset: 0x44C  INT0 Edge Detect Interrupt Flag Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[n]     |EDIFn     |INTn Edge Detect Interrupt Flag
+     * |[n]     |EDIF      |INT Edge Detect Interrupt Flag
+     * |        |          |0 = No Edge Detection happened.
+     * |        |          |1 = Rising Edge or Falling edge has been detected.
+     * |        |          |Note: This bit is cleared by writing 1 to it.
+
+     * @var GPIO_INT_T::INT1_INNF
+     * Offset: 0x460  INT1 Input Noise Filter Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |NFEN      |Noise Filter Enable
+     * |        |          |0 = Noise Filter function Disabled.
+     * |        |          |1 = Noise Filter function Enabled.
+     * |[6:4]   |NFSEL     |Noise Filter Clock Selection
+     * |        |          |000 = Filter clock is HCLK.
+     * |        |          |001 = Filter clock is HCLK/2.
+     * |        |          |010 = Filter clock is HCLK/4.
+     * |        |          |011 = Filter clock is HCLK/8.
+     * |        |          |100 = Filter clock is HCLK/16.
+     * |        |          |101 = Filter clock is HCLK/32.
+     * |        |          |110 = Filter clock is HCLK/64.
+     * |        |          |111 = Filter clock is HCLK/128.
+     * |[10:8]  |NFCNT     |Noise Filter Count
+     * |        |          |The register bits control the filter counter to count from 0 to NFCNT.
+     * @var GPIO_INT_T::INT1_EDETCTL
+     * Offset: 0x464  INT1 Edge Detect Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[1:0]   |EDETCTL   |INT Edge Detect Control Bits
+     * |        |          |00 = Not detect.
+     * |        |          |01 = INT low to high detection Enable.
+     * |        |          |10 = INT high to low detection Enable.
+     * |        |          |11 = INT both low to high and high to low detection Enable.
+     * @var GPIO_INT_T::INT1_EDINTEN
+     * Offset: 0x468  INT1 Edge Detect Interrupt Enable Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |EDIEN     |INT Edge Detect Interrupt Enable Bit
+     * |        |          |0 = INT Edge Detect Interrupt Disable.
+     * |        |          |1 = INT Edge Detect Interrupt Enable.
+     * @var GPIO_INT_T::INT1_EDSTS
+     * Offset: 0x46c  INT1 Edge Detect Interrupt Flag Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[n]     |EDIF      |INT Edge Detect Interrupt Flag
+     * |        |          |0 = No Edge Detection happened.
+     * |        |          |1 = Rising Edge or Falling edge has been detected.
+     * |        |          |Note: This bit is cleared by writing 1 to it.
+     * @var GPIO_INT_T::INT2_INNF
+     * Offset: 0x480  INT2 Input Noise Filter Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |NFEN      |Noise Filter Enable
+     * |        |          |0 = Noise Filter function Disabled.
+     * |        |          |1 = Noise Filter function Enabled.
+     * |[6:4]   |NFSEL     |Noise Filter Clock Selection
+     * |        |          |000 = Filter clock is HCLK.
+     * |        |          |001 = Filter clock is HCLK/2.
+     * |        |          |010 = Filter clock is HCLK/4.
+     * |        |          |011 = Filter clock is HCLK/8.
+     * |        |          |100 = Filter clock is HCLK/16.
+     * |        |          |101 = Filter clock is HCLK/32.
+     * |        |          |110 = Filter clock is HCLK/64.
+     * |        |          |111 = Filter clock is HCLK/128.
+     * |[10:8]  |NFCNT     |Noise Filter Count
+     * |        |          |The register bits control the filter counter to count from 0 to NFCNT.
+     * @var GPIO_INT_T::INT2_EDETCTL
+     * Offset: 0x484  INT2 Edge Detect Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[1:0]   |EDETCTL   |INT Edge Detect Control Bits
+     * |        |          |00 = Not detect.
+     * |        |          |01 = INT low to high detection Enable.
+     * |        |          |10 = INT high to low detection Enable.
+     * |        |          |11 = INT both low to high and high to low detection Enable.
+     * @var GPIO_INT_T::INT2_EDINTEN
+     * Offset: 0x488  INT2 Edge Detect Interrupt Enable Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |EDIEN     |INT Edge Detect Interrupt Enable Bit
+     * |        |          |0 = INT Edge Detect Interrupt Disable.
+     * |        |          |1 = INT Edge Detect Interrupt Enable.
+     * @var GPIO_INT_T::INT2_EDSTS
+     * Offset: 0x48c  INT2 Edge Detect Interrupt Flag Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[n]     |EDIF      |INT Edge Detect Interrupt Flag
+     * |        |          |0 = No Edge Detection happened.
+     * |        |          |1 = Rising Edge or Falling edge has been detected.
+     * |        |          |Note: This bit is cleared by writing 1 to it.
+     * @var GPIO_INT_T::INT3_INNF
+     * Offset: 0x4a0  INT3 Input Noise Filter Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |NFEN      |Noise Filter Enable
+     * |        |          |0 = Noise Filter function Disabled.
+     * |        |          |1 = Noise Filter function Enabled.
+     * |[6:4]   |NFSEL     |Noise Filter Clock Selection
+     * |        |          |000 = Filter clock is HCLK.
+     * |        |          |001 = Filter clock is HCLK/2.
+     * |        |          |010 = Filter clock is HCLK/4.
+     * |        |          |011 = Filter clock is HCLK/8.
+     * |        |          |100 = Filter clock is HCLK/16.
+     * |        |          |101 = Filter clock is HCLK/32.
+     * |        |          |110 = Filter clock is HCLK/64.
+     * |        |          |111 = Filter clock is HCLK/128.
+     * |[10:8]  |NFCNT     |Noise Filter Count
+     * |        |          |The register bits control the filter counter to count from 0 to NFCNT.
+     * @var GPIO_INT_T::INT3_EDETCTL
+     * Offset: 0x4a4  INT3 Edge Detect Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[1:0]   |EDETCTL   |INT Edge Detect Control Bits
+     * |        |          |00 = Not detect.
+     * |        |          |01 = INT low to high detection Enable.
+     * |        |          |10 = INT high to low detection Enable.
+     * |        |          |11 = INT both low to high and high to low detection Enable.
+     * @var GPIO_INT_T::INT3_EDINTEN
+     * Offset: 0x4a8  INT3 Edge Detect Interrupt Enable Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |EDIEN     |INT Edge Detect Interrupt Enable Bit
+     * |        |          |0 = INT Edge Detect Interrupt Disable.
+     * |        |          |1 = INT Edge Detect Interrupt Enable.
+     * @var GPIO_INT_T::INT3_EDSTS
+     * Offset: 0x4ac  INT3 Edge Detect Interrupt Flag Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[n]     |EDIF      |INT Edge Detect Interrupt Flag
+     * |        |          |0 = No Edge Detection happened.
+     * |        |          |1 = Rising Edge or Falling edge has been detected.
+     * |        |          |Note: This bit is cleared by writing 1 to it.
+     * @var GPIO_INT_T::INT4_INNF
+     * Offset: 0x4c0  INT4 Input Noise Filter Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |NFEN      |Noise Filter Enable
+     * |        |          |0 = Noise Filter function Disabled.
+     * |        |          |1 = Noise Filter function Enabled.
+     * |[6:4]   |NFSEL     |Noise Filter Clock Selection
+     * |        |          |000 = Filter clock is HCLK.
+     * |        |          |001 = Filter clock is HCLK/2.
+     * |        |          |010 = Filter clock is HCLK/4.
+     * |        |          |011 = Filter clock is HCLK/8.
+     * |        |          |100 = Filter clock is HCLK/16.
+     * |        |          |101 = Filter clock is HCLK/32.
+     * |        |          |110 = Filter clock is HCLK/64.
+     * |        |          |111 = Filter clock is HCLK/128.
+     * |[10:8]  |NFCNT     |Noise Filter Count
+     * |        |          |The register bits control the filter counter to count from 0 to NFCNT.
+     * @var GPIO_INT_T::INT4_EDETCTL
+     * Offset: 0x4c4  INT4 Edge Detect Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[1:0]   |EDETCTL   |INT Edge Detect Control Bits
+     * |        |          |00 = Not detect.
+     * |        |          |01 = INT low to high detection Enable.
+     * |        |          |10 = INT high to low detection Enable.
+     * |        |          |11 = INT both low to high and high to low detection Enable.
+     * @var GPIO_INT_T::INT4_EDINTEN
+     * Offset: 0x4c8  INT4 Edge Detect Interrupt Enable Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |EDIEN     |INT Edge Detect Interrupt Enable Bit
+     * |        |          |0 = INT Edge Detect Interrupt Disable.
+     * |        |          |1 = INT Edge Detect Interrupt Enable.
+     * @var GPIO_INT_T::INT4_EDSTS
+     * Offset: 0x4cc  INT4 Edge Detect Interrupt Flag Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[n]     |EDIF      |INT Edge Detect Interrupt Flag
+     * |        |          |0 = No Edge Detection happened.
+     * |        |          |1 = Rising Edge or Falling edge has been detected.
+     * |        |          |Note: This bit is cleared by writing 1 to it.
+     * @var GPIO_INT_T::INT5_INNF
+     * Offset: 0x4e0  INT5 Input Noise Filter Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |NFEN      |Noise Filter Enable
+     * |        |          |0 = Noise Filter function Disabled.
+     * |        |          |1 = Noise Filter function Enabled.
+     * |[6:4]   |NFSEL     |Noise Filter Clock Selection
+     * |        |          |000 = Filter clock is HCLK.
+     * |        |          |001 = Filter clock is HCLK/2.
+     * |        |          |010 = Filter clock is HCLK/4.
+     * |        |          |011 = Filter clock is HCLK/8.
+     * |        |          |100 = Filter clock is HCLK/16.
+     * |        |          |101 = Filter clock is HCLK/32.
+     * |        |          |110 = Filter clock is HCLK/64.
+     * |        |          |111 = Filter clock is HCLK/128.
+     * |[10:8]  |NFCNT     |Noise Filter Count
+     * |        |          |The register bits control the filter counter to count from 0 to NFCNT.
+     * @var GPIO_INT_T::INT5_EDETCTL
+     * Offset: 0x4e4  INT5 Edge Detect Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[1:0]   |EDETCTL   |INT Edge Detect Control Bits
+     * |        |          |00 = Not detect.
+     * |        |          |01 = INT low to high detection Enable.
+     * |        |          |10 = INT high to low detection Enable.
+     * |        |          |11 = INT both low to high and high to low detection Enable.
+     * @var GPIO_INT_T::INT5_EDINTEN
+     * Offset: 0x4e8  INT5 Edge Detect Interrupt Enable Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |EDIEN     |INT Edge Detect Interrupt Enable Bit
+     * |        |          |0 = INT Edge Detect Interrupt Disable.
+     * |        |          |1 = INT Edge Detect Interrupt Enable.
+     * @var GPIO_INT_T::INT5_EDSTS
+     * Offset: 0x4ec  INT5 Edge Detect Interrupt Flag Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[n]     |EDIF      |INT Edge Detect Interrupt Flag
+     * |        |          |0 = No Edge Detection happened.
+     * |        |          |1 = Rising Edge or Falling edge has been detected.
+     * |        |          |Note: This bit is cleared by writing 1 to it.
+     * @var GPIO_INT_T::INT6_INNF
+     * Offset: 0x500  INT6 Input Noise Filter Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |NFEN      |Noise Filter Enable
+     * |        |          |0 = Noise Filter function Disabled.
+     * |        |          |1 = Noise Filter function Enabled.
+     * |[6:4]   |NFSEL     |Noise Filter Clock Selection
+     * |        |          |000 = Filter clock is HCLK.
+     * |        |          |001 = Filter clock is HCLK/2.
+     * |        |          |010 = Filter clock is HCLK/4.
+     * |        |          |011 = Filter clock is HCLK/8.
+     * |        |          |100 = Filter clock is HCLK/16.
+     * |        |          |101 = Filter clock is HCLK/32.
+     * |        |          |110 = Filter clock is HCLK/64.
+     * |        |          |111 = Filter clock is HCLK/128.
+     * |[10:8]  |NFCNT     |Noise Filter Count
+     * |        |          |The register bits control the filter counter to count from 0 to NFCNT.
+     * @var GPIO_INT_T::INT6_EDETCTL
+     * Offset: 0x504  INT6 Edge Detect Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[1:0]   |EDETCTL   |INT Edge Detect Control Bits
+     * |        |          |00 = Not detect.
+     * |        |          |01 = INT low to high detection Enable.
+     * |        |          |10 = INT high to low detection Enable.
+     * |        |          |11 = INT both low to high and high to low detection Enable.
+     * @var GPIO_INT_T::INT6_EDINTEN
+     * Offset: 0x508  INT6 Edge Detect Interrupt Enable Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |EDIEN     |INT Edge Detect Interrupt Enable Bit
+     * |        |          |0 = INT Edge Detect Interrupt Disable.
+     * |        |          |1 = INT Edge Detect Interrupt Enable.
+     * @var GPIO_INT_T::INT6_EDSTS
+     * Offset: 0x50c  INT6 Edge Detect Interrupt Flag Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[n]     |EDIF      |INT Edge Detect Interrupt Flag
+     * |        |          |0 = No Edge Detection happened.
+     * |        |          |1 = Rising Edge or Falling edge has been detected.
+     * |        |          |Note: This bit is cleared by writing 1 to it.
+     * @var GPIO_INT_T::INT7_INNF
+     * Offset: 0x520  INT7 Input Noise Filter Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |NFEN      |Noise Filter Enable
+     * |        |          |0 = Noise Filter function Disabled.
+     * |        |          |1 = Noise Filter function Enabled.
+     * |[6:4]   |NFSEL     |Noise Filter Clock Selection
+     * |        |          |000 = Filter clock is HCLK.
+     * |        |          |001 = Filter clock is HCLK/2.
+     * |        |          |010 = Filter clock is HCLK/4.
+     * |        |          |011 = Filter clock is HCLK/8.
+     * |        |          |100 = Filter clock is HCLK/16.
+     * |        |          |101 = Filter clock is HCLK/32.
+     * |        |          |110 = Filter clock is HCLK/64.
+     * |        |          |111 = Filter clock is HCLK/128.
+     * |[10:8]  |NFCNT     |Noise Filter Count
+     * |        |          |The register bits control the filter counter to count from 0 to NFCNT.
+     * @var GPIO_INT_T::INT7_EDETCTL
+     * Offset: 0x524  INT7 Edge Detect Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[1:0]   |EDETCTL   |INT Edge Detect Control Bits
+     * |        |          |00 = Not detect.
+     * |        |          |01 = INT low to high detection Enable.
+     * |        |          |10 = INT high to low detection Enable.
+     * |        |          |11 = INT both low to high and high to low detection Enable.
+     * @var GPIO_INT_T::INT7_EDINTEN
+     * Offset: 0x528  INT7 Edge Detect Interrupt Enable Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |EDIEN     |INT Edge Detect Interrupt Enable Bit
+     * |        |          |0 = INT Edge Detect Interrupt Disable.
+     * |        |          |1 = INT Edge Detect Interrupt Enable.
+     * @var GPIO_INT_T::INT7_EDSTS
+     * Offset: 0x52c  INT7 Edge Detect Interrupt Flag Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[n]     |EDIF      |INT Edge Detect Interrupt Flag
      * |        |          |0 = No Edge Detection happened.
      * |        |          |1 = Rising Edge or Falling edge has been detected.
      * |        |          |Note: This bit is cleared by writing 1 to it.
@@ -348,37 +671,51 @@ typedef struct
     __IO uint32_t INT0_EDETCTL;  /* Offset: 0x444  INT0 Edge Detect Control Register                                            */
     __IO uint32_t INT0_EDINTEN;  /* Offset: 0x448  INT0 Edge Detect Interrupt Enable Control Register                           */
     __IO uint32_t INT0_EDSTS;    /* Offset: 0x44c  INT0 Edge Detect Interrupt Flag Register                                     */
+    /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE0[4];
+    /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t INT1_INNF;     /* Offset: 0x460  INT1 Input Noise Filter Register                                             */
     __IO uint32_t INT1_EDETCTL;  /* Offset: 0x464  INT1 Edge Detect Control Register                                            */
     __IO uint32_t INT1_EDINTEN;  /* Offset: 0x468  INT1 Edge Detect Interrupt Enable Control Register                           */
     __IO uint32_t INT1_EDSTS;    /* Offset: 0x46c  INT1 Edge Detect Interrupt Flag Register                                     */
+    /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE1[4];
+    /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t INT2_INNF;     /* Offset: 0x480  INT2 Input Noise Filter Register                                             */
     __IO uint32_t INT2_EDETCTL;  /* Offset: 0x484  INT2 Edge Detect Control Register                                            */
     __IO uint32_t INT2_EDINTEN;  /* Offset: 0x488  INT2 Edge Detect Interrupt Enable Control Register                           */
     __IO uint32_t INT2_EDSTS;    /* Offset: 0x48c  INT2 Edge Detect Interrupt Flag Register                                     */
+    /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE2[4];
+    /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t INT3_INNF;     /* Offset: 0x4a0  INT3 Input Noise Filter Register                                             */
     __IO uint32_t INT3_EDETCTL;  /* Offset: 0x4a4  INT3 Edge Detect Control Register                                            */
     __IO uint32_t INT3_EDINTEN;  /* Offset: 0x4a8  INT3 Edge Detect Interrupt Enable Control Register                           */
     __IO uint32_t INT3_EDSTS;    /* Offset: 0x4ac  INT3 Edge Detect Interrupt Flag Register                                     */
+    /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE3[4];
+    /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t INT4_INNF;     /* Offset: 0x4c0  INT4 Input Noise Filter Register                                             */
     __IO uint32_t INT4_EDETCTL;  /* Offset: 0x4c4  INT4 Edge Detect Control Register                                            */
     __IO uint32_t INT4_EDINTEN;  /* Offset: 0x4c8  INT4 Edge Detect Interrupt Enable Control Register                           */
     __IO uint32_t INT4_EDSTS;    /* Offset: 0x4cc  INT4 Edge Detect Interrupt Flag Register                                     */
+    /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE4[4];
+    /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t INT5_INNF;     /* Offset: 0x4e0  INT5 Input Noise Filter Register                                             */
     __IO uint32_t INT5_EDETCTL;  /* Offset: 0x4e4  INT5 Edge Detect Control Register                                            */
     __IO uint32_t INT5_EDINTEN;  /* Offset: 0x4e8  INT5 Edge Detect Interrupt Enable Control Register                           */
     __IO uint32_t INT5_EDSTS;    /* Offset: 0x4ec  INT5 Edge Detect Interrupt Flag Register                                     */
+    /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE5[4];
+    /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t INT6_INNF;     /* Offset: 0x500  INT6 Input Noise Filter Register                                             */
     __IO uint32_t INT6_EDETCTL;  /* Offset: 0x504  INT6 Edge Detect Control Register                                            */
     __IO uint32_t INT6_EDINTEN;  /* Offset: 0x508  INT6 Edge Detect Interrupt Enable Control Register                           */
     __IO uint32_t INT6_EDSTS;    /* Offset: 0x50c  INT6 Edge Detect Interrupt Flag Register                                     */
+    /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE6[4];
+    /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t INT7_INNF;     /* Offset: 0x520  INT7 Input Noise Filter Register                                             */
     __IO uint32_t INT7_EDETCTL;  /* Offset: 0x524  INT7 Edge Detect Control Register                                            */
     __IO uint32_t INT7_EDINTEN;  /* Offset: 0x528  INT7 Edge Detect Interrupt Enable Control Register                           */
