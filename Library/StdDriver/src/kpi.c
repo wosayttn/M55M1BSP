@@ -135,10 +135,10 @@ NVT_ITCM void KPI_IRQHandler()
 /**
  *    @brief        Open Keypad interface
  *
- *    @param[in]    kpi        The pointer of the specified KPI module.
- *    @param[in]    u32Rows    The number of key rows for key scan. it could be 2 ~ 6.
- *    @param[in]    u32Columns The number of key columns for key scan. it could be 1 ~ 8.
- *    @param[in]    keyQueue   The FIFO queue of the key press/release status.
+ *    @param[in]    u32Rows         The number of key rows for key scan. it could be 2 ~ 6.
+ *    @param[in]    u32Columns      The number of key columns for key scan. it could be 1 ~ 8.
+ *    @param[in]    pkeyQueue       The FIFO queue of the key press/release status.
+ *    @param[in]    u32MaxKeyCnt    Maximum key counts in the key queue.
  *
  *    @retval       0   Sucessful
  *    @retval       -1  Failure
@@ -189,7 +189,7 @@ void KPI_Close()
 /**
  *    @brief        Config KPI scan key timing.
  *
- *    @param[in]    u8PreScale     Row Scan Cycle Pre-scale Value. The divided number is from 1 to 256
+ *    @param[in]    u32PreScale    Row Scan Cycle Pre-scale Value. The divided number is from 1 to 256
  *    @param[in]    u32Debounce    De-bounce Sampling Cycle.
  *                  \ref KPI_COL_SAMPLE_8CLK
  *                  \ref KPI_COL_SAMPLE_16CLK
