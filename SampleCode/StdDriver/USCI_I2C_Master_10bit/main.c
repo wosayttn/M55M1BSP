@@ -286,6 +286,7 @@ void UI2C0_Init(uint32_t u32ClkSpeed)
 int32_t Read_Write_SLAVE(uint16_t slvaddr)
 {
     uint32_t i, u32TimeOutCnt;
+    uint8_t u8MstRxData;
     /* Init Send 10-bit Addr */
     g_u8DeviceHAddr = (slvaddr >> 8) | SLV_10BIT_ADDR;
     g_u8DeviceLAddr = slvaddr & 0xFF;
@@ -337,9 +338,10 @@ int32_t Read_Write_SLAVE(uint16_t slvaddr)
 
         printf(".");
         g_u8MstEndFlag = 0;
+        u8MstRxData = g_au8MstTxData[2];
 
         /* Compare data */
-        if (g_u8MstRxData != g_au8MstTxData[2])
+        if (g_u8MstRxData != u8MstRxData)
         {
             printf("USCI_I2C Byte Write/Read Failed, Data 0x%x\n", g_u8MstRxData);
 

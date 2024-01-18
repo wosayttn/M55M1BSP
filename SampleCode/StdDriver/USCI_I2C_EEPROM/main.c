@@ -244,6 +244,7 @@ void UI2C0_Init(void)
 int32_t main(void)
 {
     uint32_t i, u32TimeOutCnt;
+    uint8_t u8RxData;
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
     /* Init Debug UART to 115200-8N1 for print message */
@@ -308,9 +309,10 @@ int32_t main(void)
         }
 
         g_u8EndFlagM = 0;
+        u8RxData = g_au8TxData[2];
 
         /* Compare data */
-        if (g_u8RxData != g_au8TxData[2])
+        if (g_u8RxData != u8RxData)
         {
             printf("USCI_I2C Byte Write/Read Failed, Data 0x%x\n", g_u8RxData);
 
