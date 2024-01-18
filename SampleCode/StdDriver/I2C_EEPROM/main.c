@@ -223,6 +223,7 @@ void I2C0_Init(void)
 int32_t main(void)
 {
     uint32_t i, u32TimeOutCnt;
+    uint8_t u8RxData;
     /* Unlock protected registers */
     SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O */
@@ -287,8 +288,10 @@ int32_t main(void)
             }
         }
 
+        u8RxData = g_au8TxData[2];
+
         /* Compare data */
-        if (g_u8RxData != g_au8TxData[2])
+        if (g_u8RxData != u8RxData)
         {
             printf("I2C Byte Write/Read Failed, Data 0x%x\n", g_u8RxData);
             goto lexit;

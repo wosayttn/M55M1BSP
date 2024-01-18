@@ -52,6 +52,7 @@ NVT_ITCM void I2C0_IRQHandler(void)
 void I2C_SlaveTRx(uint32_t u32Status)
 {
     uint8_t u8Data;
+    uint32_t temp;
 
     if (u32Status == 0x60)                      /* Own SLA+W has been receive; ACK has been return */
     {
@@ -66,7 +67,9 @@ void I2C_SlaveTRx(uint32_t u32Status)
         if (g_u8SlvDataLen < 2)
         {
             g_au8SlvRxData[g_u8SlvDataLen++] = u8Data;
-            slave_buff_addr = (uint32_t)(g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
+            temp = (uint32_t)(g_au8SlvRxData[0] << 8);
+            temp += g_au8SlvRxData[1];
+            slave_buff_addr =  temp;
         }
         else
         {

@@ -27,7 +27,7 @@ volatile uint8_t g_u8SlvDataLen;
 /*---------------------------------------------------------------------------------------------------------*/
 NVT_ITCM void I2C0_IRQHandler(void)
 {
-    uint32_t u32Status;
+    uint32_t u32Status, temp;
     uint8_t u8data;
 
     if ((I2C0->STATUS1 & I2C_STATUS1_SARCIF_Msk))
@@ -57,7 +57,9 @@ NVT_ITCM void I2C0_IRQHandler(void)
         if (g_u8SlvDataLen < 2)
         {
             g_au8SlvRxData[g_u8SlvDataLen++] = u8data;
-            slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
+            temp = (g_au8SlvRxData[0] << 8);
+            temp += g_au8SlvRxData[1];
+            slave_buff_addr =  temp;
         }
         else
         {
