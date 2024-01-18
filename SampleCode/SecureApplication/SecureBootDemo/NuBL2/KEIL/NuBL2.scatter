@@ -76,7 +76,7 @@
 ; </h>
  *----------------------------------------------------------------------------*/
 #define FLASH_START     (0x00100000 + 0x800)	/* 0x800 is secure image header size */
-#define FLASH_SIZE      (0x00040000	- 0x800)
+#define FLASH_SIZE      (0x00040000 - 0x800)
 
 /*--------------------- Cacheable SRAM Configuration ---------------------------
 ; <h> SRAM Configuration

@@ -42,16 +42,20 @@ NVT_ITCM void ActiveSecureConceal(uint32_t u32NuBL32Base)
     else
     {
         printf("\nSecure conceal function is not set or enabled.\nPlease read comment about ActiveSecureConceal function.\n");
+        printf("Press 'y' to config secure conceal function.\n");
+
+        if (getchar() == 'y')
+        {
+            printf("Secure conceal function settiing - \n");
+            printf("  CONFIG4 = 0x%08X, CONFIG5 = 0x%08X and CONFIG6 = 0x0\n",
+                   (uint32_t)FMC_APROM_BASE, (uint32_t)(NUBL2_FW_IMG_SIZE / FMC_FLASH_PAGE_SIZE));
+            FMC_WriteConfig(FMC_USER_CONFIG_4, FMC_APROM_BASE);
+            FMC_WriteConfig(FMC_USER_CONFIG_5, (NUBL2_FW_IMG_SIZE / FMC_FLASH_PAGE_SIZE));
+            FMC_WriteConfig(FMC_USER_CONFIG_6, 0);
+        }
     }
 
     UART_WAIT_TX_EMPTY(DEBUG_PORT);
-
-    if (u32NuBL32Base == (uint32_t) -1)
-    {
-        printf("Halt here\n");
-
-        while (1) ;
-    }
 
     /* Disable all interrupt */
     __set_PRIMASK(1);
@@ -59,8 +63,13 @@ NVT_ITCM void ActiveSecureConceal(uint32_t u32NuBL32Base)
     /* SCB.VTOR points to the NuBL32 vector table base address. */
     SCB->VTOR = u32NuBL32Base;
 
+#if ! defined (__ICCARM__)
+    /* __NO_RETURN attribute is not work in IAR and it will pop stack before jump to pfnNuBL32Entry.
+     * Call __set_MSP here will trigger hard fault before jump to pfnNuBL32Entry.
+     */
     /* 1st entry in the vector table is the Main Stack Pointer. */
     __set_MSP(*((uint32_t *)SCB->VTOR));      /* Set up MSP */
+#endif
 
     /* 2nd entry contains the address of the Reset_Handler (CMSIS-CORE) function */
     pfnNuBL32Entry = ((PFN_FUNC)(*(((uint32_t *)SCB->VTOR) + 1)));
@@ -167,7 +176,7 @@ void SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
-    uint32_t u32TimeOutCnt, u32NuBL32Base, u32NuBL33Base;
+    uint32_t u32NuBL32Base, u32NuBL33Base;
 
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
@@ -205,9 +214,9 @@ int main(void)
     ActiveSecureConceal(u32NuBL32Base);
 
 ErrorExit:
-    ActiveSecureConceal(-1);
+    printf("Halt here\n");
 
-    while (1) {}
+    while (1) ;
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

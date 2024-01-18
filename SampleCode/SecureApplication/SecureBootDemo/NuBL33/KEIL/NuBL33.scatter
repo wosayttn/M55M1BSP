@@ -61,7 +61,7 @@
  *  Note: Alias regions means that secure and non-secure addresses are mapped to the same physical
  *        memory banks.
  */
-#include "../../partition_M55M1.h"
+#include "../../NuBL32/partition_M55M1.h"
 
 /*
 ;-------- <<< Use Configuration Wizard in Context Menu >>> -------------------
