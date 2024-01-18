@@ -351,7 +351,7 @@
                     <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Core\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc</state>
-                    <state>$PROJ_DIR$\..\..\..\..\Library\NuMaker\common</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\NuMaker\Commu</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1115,7 +1115,7 @@
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\uart.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\NuMaker\common\xmodem.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\NuMaker\Commu\xmodem.c</name>
         </file>
     </group>
     <group>
