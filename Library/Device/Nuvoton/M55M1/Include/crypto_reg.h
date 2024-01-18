@@ -18,7 +18,7 @@
 */
 
 /**
-    @addtogroup CRYPTO Controller (CRYPTO)
+    @addtogroup CRYPTO Cryptographic Accelerator (CRYPTO)
     Memory Mapped Structure for CRYPTO Controller
     @{
 */
