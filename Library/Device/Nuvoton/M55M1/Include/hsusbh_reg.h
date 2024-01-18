@@ -20,7 +20,7 @@
 */
 
 /**
-    @addtogroup HSUSBH High Speed USB Host Controller (HSUSBH/USBH1)
+    @addtogroup HSUSBH USB 2.0 and 1.1 Host Controller (HSUSBH and USBH1)
     Memory Mapped Structure for HSUSBH Controller
     @{
 */

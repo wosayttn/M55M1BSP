@@ -20,7 +20,7 @@
 */
 
 /**
-  @addtogroup SC Smart Card Host Interface Controller (SC)
+  @addtogroup SC Smart Card Host Interface (SC)
   Memory Mapped Structure for SC Controller
   @{
 */
