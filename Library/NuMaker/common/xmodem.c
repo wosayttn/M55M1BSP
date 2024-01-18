@@ -289,8 +289,6 @@ REJECT_RECEIVE:
     }
 }
 
-
-
 /**
   * @brief      Send data by UART Xmodem transfer.
   * @param[in]  src     Address of the source data to transfer.
@@ -320,11 +318,11 @@ int32_t XmodemSend(uint8_t *src, int32_t srcsz)
                 {
                     case 'C':
                         crc = 1;
-                        goto start_trans;
+                        goto START_TRANS;
 
                     case XMD_NAK:
                         crc = 0;
-                        goto start_trans;
+                        goto START_TRANS;
 
                     case XMD_CAN:
                         if ((c = XMD_getc()) == XMD_CAN)
@@ -353,7 +351,7 @@ int32_t XmodemSend(uint8_t *src, int32_t srcsz)
 
         for (;;)
         {
-start_trans:
+START_TRANS:
             s_au8XmdBuf[0] = XMD_SOH;
             bufsz = 128;
             s_au8XmdBuf[1] = packetno;
@@ -362,11 +360,11 @@ start_trans:
 
             if (c > bufsz) c = bufsz;
 
-            if (c >= 0)
+            if (c > 0)
             {
                 memset(&s_au8XmdBuf[3], 0, (uint32_t)bufsz);
 
-                if (c == 0)
+                if ((c % bufsz) != 0)   /* Pad XMD_CTRLZ if left data is not align with bufsz */
                 {
                     s_au8XmdBuf[3] = XMD_CTRLZ;
                 }
@@ -411,7 +409,7 @@ start_trans:
                             case XMD_ACK:
                                 ++packetno;
                                 len += bufsz;
-                                goto start_trans;
+                                goto START_TRANS;
 
                             case XMD_CAN:
                                 if ((c = XMD_getc()) == XMD_CAN)
