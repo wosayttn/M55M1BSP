@@ -59,6 +59,18 @@ static inline int tcpc_addr_read16(int port, int i2c_addr, int reg, int *val)
                       i2c_addr, reg, val);
 }
 
+static inline int tcpc_addr_write32(int port, int i2c_addr, int reg, int val)
+{
+    return i2c_write32(tcpc_config[port].i2c_info.port,
+                       i2c_addr, reg, val);
+}
+
+static inline int tcpc_addr_read32(int port, int i2c_addr, int reg, int *val)
+{
+    return i2c_read32(tcpc_config[port].i2c_info.port,
+                      i2c_addr, reg, val);
+}
+
 /*
  * The *_no_lpm_exit() routines are intende to be used where the TCPC
  * needs to be accessed without being being taken out of LPM. The main
@@ -97,6 +109,8 @@ static inline int tcpc_xfer_unlocked(int port, const uint8_t *out, int out_size,
     return i2c_xfer_unlocked(tcpc_config[port].i2c_info.port,
                              tcpc_config[port].i2c_info.addr_flags,
                              out, out_size, in, in_size, flags);
+#else
+    return 0;
 #endif
 }
 
@@ -192,7 +206,7 @@ static inline int tcpm_init(int port)
         return rv;
 
     /* Board specific post TCPC init */
-    if (board_tcpc_post_init)
+    if ((uint32_t)board_tcpc_post_init)
         rv = board_tcpc_post_init(port);
 
     return rv;
@@ -405,7 +419,7 @@ static inline int tcpm_get_chip_info(int port, int live,
 static inline enum ec_error_list tcpc_set_bist_test_mode(int port, bool enable)
 {
     const struct tcpm_drv *tcpc;
-    int rv = EC_SUCCESS;
+    enum ec_error_list rv = EC_SUCCESS;
 
     tcpc = tcpc_config[port].drv;
     if (tcpc->set_bist_test_mode)

@@ -1742,6 +1742,7 @@ typedef volatile uint64_t vu64;   ///< Define 64-bit unsigned volatile data type
 #include "trng.h"
 #include "ttmr.h"
 #include "uart.h"
+#include "utcpd.h"
 #include "usbd.h"
 #include "usci_i2c.h"
 #include "usci_spi.h"

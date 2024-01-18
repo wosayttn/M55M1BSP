@@ -10,13 +10,13 @@
  * Copyright (C) 2018 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #if 0
-    #include <stdio.h>
-    #include "NuMicro.h"
-    #include "atomic.h"
-    #include "usb_common.h"
-    #include "timer_ec.h"
+#include <stdio.h>
+#include "NuMicro.h"
+#include "atomic.h"  
+#include "usb_common.h"
+#include "timer_ec.h"
 #else
-    #include "utcpdlib.h"
+#include "utcpdlib.h"  
 #endif
 
 
@@ -32,28 +32,27 @@ static volatile uint32_t port_events[CONFIG_USB_PD_PORT_MAX_COUNT];
 //uint32_t task_set_event(task_id_t tskid, uint32_t event)
 uint32_t task_set_event(task_id_t tskid, uint32_t event_mask)
 {
-    //printf("\nTask Set Event Mask 0x%x\n", event_mask);
-    atomic_or(&port_events[TASK_ID_TO_PD_PORT(tskid)], event_mask);
+  //printf("\nTask Set Event Mask 0x%x\n", event_mask);
+  atomic_or((atomic_t *)&port_events[TASK_ID_TO_PD_PORT(tskid)], event_mask);
 }
 
 //SW Add {
 uint32_t task_clear_event(task_id_t tskid, uint32_t event_mask)
 {
-    atomic_clear_bits(&port_events[TASK_ID_TO_PD_PORT(tskid)], event_mask);
+  atomic_clear_bits((atomic_t *)&port_events[TASK_ID_TO_PD_PORT(tskid)], event_mask);
 }
 //SW Add }
 
 uint32_t task_wait_event(int port)
-{
-    //Seems not used in porting code. due to we didn't enable CONFIG_USB_PD_TCPC_LOW_POWER
+{//Seems not used in porting code. due to we didn't enable CONFIG_USB_PD_TCPC_LOW_POWER
     //printf("%s\n",__FUNCTION__);
-    return port_events[port];
+    return port_events[port]; 
 }
 
 task_id_t task_get_current(void)
 {
     //printf("%s\n",__FUNCTION__);
-
+    
 }
 
 //void task_wake(task_id_t tskid)

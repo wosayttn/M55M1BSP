@@ -189,6 +189,7 @@
 #define GENERIC_MAX(x, y) ((x) > (y) ? (x) : (y))
 #define GENERIC_MIN(x, y) ((x) < (y) ? (x) : (y))
 #ifndef MAX
+#ifndef __ICCARM__
 #define MAX(a, b)                   \
     ({                      \
         __typeof__(a) temp_a = (a);     \
@@ -196,9 +197,17 @@
                             \
         GENERIC_MAX(temp_a, temp_b);        \
     })
+#else
+static inline int MAX(int a, int b)
+{
+    return ((a) > (b) ? (a) : (b));
+}
+    
+#endif    
 #endif
 
 #ifndef MIN
+#ifndef __ICCARM__
 #define MIN(a, b)                   \
     ({                      \
         __typeof__(a) temp_a = (a);     \
@@ -206,6 +215,12 @@
                             \
         GENERIC_MIN(temp_a, temp_b);        \
     })
+#else    
+static inline int MIN(int a, int b)
+{
+    return ((a) < (b) ? (a) : (b));
+}    
+#endif    
 #endif
 
 #ifndef NULL

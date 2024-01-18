@@ -20,7 +20,7 @@
 */
 
 /**
-    @addtogroup RTC Real Time Clock Controller (RTC)
+    @addtogroup RTC Real Time Clock (RTC)
     Memory Mapped Structure for RTC Controller
     @{
 */
