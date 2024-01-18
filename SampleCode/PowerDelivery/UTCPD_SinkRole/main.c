@@ -18,7 +18,6 @@
 #include "utcpdlib.h"
 
 #define ADC_INIT
-//#define ACMP_INIT
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*                            ISR to handle UTCPD interrupt event                                          */
@@ -27,6 +26,8 @@ NVT_ITCM void UTCPD_IRQHandler(void)
 {
     uint32_t port = 0;
     tcpci_tcpc_alert(port);
+    /*Confirm that the Flag has been cleared.*/
+    M32(&UTCPD->IS);
 }
 void SYS_Init(void)
 {
@@ -52,11 +53,9 @@ void SYS_Init(void)
 
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
-    /* Switch HCLK clock source to Internal RC and HCLK source divide 1 */
 
-    //CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HXT);;
-
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 72MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_72MHZ);
 
     /* Enable GPA ~ GPJ peripheral clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
@@ -74,27 +73,22 @@ void SYS_Init(void)
 
     /* === Enable IP clock === */
 
-    /* Enable TIMER 0 module clock */
-    CLK_EnableModuleClock(TMR0_MODULE);
-    CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_HIRC, 0);
-    //CLK_SetModuleClock(TMR0_MODULE, CLK_CLKSEL1_TMR0SEL_LIRC, 0);
-
-    /* Enable TIMER 1 module clock */
-    CLK_EnableModuleClock(TMR1_MODULE);
-    CLK_SetModuleClock(TMR1_MODULE, CLK_TMRSEL_TMR1SEL_HIRC, 0);
-    //CLK_SetModuleClock(TMR1_MODULE, CLK_CLKSEL1_TMR1SEL_LIRC, 0);
-
-
-    /* Enable EADC peripheral clock */
-
-    CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(8));
-    CLK_EnableModuleClock(EADC0_MODULE);
-
     /* Enable UTCPD clock */
     CLK_EnableModuleClock(UTCPD0_MODULE);
 
-    /* Reset UTCPD  */
-    SYS_ResetModule(SYS_UTCPD0RST);
+    CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR1SEL_HXT, 0);
+    /* Enable TIMER 0 module clock */
+    CLK_EnableModuleClock(TMR0_MODULE);
+
+    CLK_SetModuleClock(TMR1_MODULE, CLK_TMRSEL_TMR1SEL_HXT, 0);
+
+    /* Enable TIMER 1 module clock */
+    CLK_EnableModuleClock(TMR1_MODULE);
+
+    /* Enable EADC peripheral clock */
+
+    CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(1));
+    CLK_EnableModuleClock(EADC0_MODULE);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -105,28 +99,6 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set debug uart pins*/
     SetDebugUartMFP();
-
-
-    printf("PLL 64MHz --> HCLK --> CLKO / 4 = 16MHz on PB.14\n");
-    //CLK_EnableCKO(CLK_CLKSEL1_CLKOSEL_HCLK, 1, 0);
-
-    /* Enable APLL0 72MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_72MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to APLL0 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Configure UUTCPD CC1/CC2 */
-    SET_UTCPD0_CC1_PC0();
-    SET_UTCPD0_CC2_PC1();
-
-#ifdef FRS_WORKAROUND
-    /* Initialize FRSCC1 and FRS_CC2 to default Low */
-    SET_UTCPD0_FRSTX1_PC4();
-    SET_UTCPD0_FRSTX2_PC5();
-    frs_mux_selection(1, 1);
-#endif
-
 
 #ifdef ADC_INIT
     /* Set PB.2 - PB.3 to input mode For EADC pin to measure VBUS and VCONN */
@@ -153,20 +125,35 @@ void SYS_Init(void)
 #endif
 #endif
 
-    SET_INT1_PB4();
-    SET_INT0_PB5();
+    /* Configure UUTCPD CC1/CC2 */
+    SET_UTCPD0_CC1_PC0();
+    SET_UTCPD0_CC2_PC1();
 
+    SET_INT0_PB5();
+    SET_INT1_PB4();
+
+
+ /* UTCPD VBSRCEN Multiple Function Pin */
+    SET_UTCPD0_VBSRCEN_PA2();
+    /* UTCPD VBSNKEN Multiple Function Pin */
+    SET_UTCPD0_VBSNKEN_PA3();
+
+    /* UTCPD FRSCC1 and FRS_CC2  Multiple Function Pin */
+    SET_UTCPD0_FRSTX2_PC5();
+    SET_UTCPD0_FRSTX1_PC4();
+
+    /* UTCPD VCONN Enable: VCEN0:PA0, VCEN1:PB0, Multiple Function Pin */
+    SET_UTCPD0_VCNEN1_PA0();
+    SET_UTCPD0_VCNEN2_PB0();
+
+    /* UTCPD VCONN Discharge: Don't force VCONN Discharge First */
+    SET_GPIO_PA0();
+    SET_GPIO_PA1();
+
+    GPIO_SetMode(PA, BIT1, GPIO_MODE_OUTPUT);
     /* Lock protected registers */
     //SYS_LockReg();
 
-    /* Set GPB[1:0] multi-function pins debug port */
-    SET_GPIO_PB0();
-    SET_GPIO_PB1();
-
-
-#ifdef ACMP_INIT
-    ACMP_Pin_Open();
-#endif
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -223,6 +210,8 @@ NVT_ITCM void TIMER0_IRQHandler(void)
     UTCPD_TimerBaseInc();
     /* clear timer interrupt flag */
     TIMER_ClearIntFlag(TIMER0);
+    /*Confirm that the Flag has been cleared.*/
+    M32(&TIMER0->INTSTS);
 }
 
 
@@ -238,12 +227,14 @@ NVT_ITCM void TIMER0_IRQHandler(void)
  */
 NVT_ITCM void TIMER1_IRQHandler(void)
 {
-    static uint32_t u32Sec = 1;
 
     //printf("%d sec\n", u32Sec++);
 
     /* clear timer interrupt flag */
     TIMER_ClearIntFlag(TIMER1);
+    /*Confirm that the Flag has been cleared.*/
+    M32(&TIMER1->INTSTS);
+  
 }
 
 /**
@@ -281,8 +272,8 @@ void pd_task(void)
 
     while (1)
     {
-        //      pd_timer_init(port);
-        //      pd_task_init(port);
+//        pd_timer_init(port);
+//        pd_task_init(port);
         pd_task_reinit(port);
         /* As long as pd_task_loop returns true, keep running the loop.
          * pd_task_loop returns false when the code needs to re-init
@@ -307,13 +298,29 @@ void pd_task(void)
         }
     }
 }
+void UTCPD_Init(int port)
+{
 
+    UTCPD_Open(port);
+
+    /* Didn't Force VCONN Discharge */
+    PA1 = 0;
+
+    /* VBSRCEN Polarity */
+    UTCPD_vbus_srcen_polarity_active_high(port);
+
+    /* VBSNKEN Polarity */
+    UTCPD_vbus_snken_polarity_active_high(port);
+
+    /* FRSTXCC1 and FRSTXCC2 Polarity */
+    UTCPD_frs_tx_polarity_active_high(port);
+
+    UTCPD_vconn_polarity_active_low(port);
+
+}
 
 int main()
 {
-    uint32_t i, u32Data, count = 0;
-    uint32_t role;
-    char ch;
     int32_t port = 0;
 
     /* Unlock protected registers to operate FMC ISP function */
@@ -321,19 +328,13 @@ int main()
 
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
-
+  
     /* Init DEBUG_PORT to 115200-8n1 for print message */
     UART_Open(DEBUG_PORT, 115200);
     printf("UART Initial\n");
 
-    /* VBSRCEN */
-    SET_UTCPD0_VBSRCEN_PA2();;
-    outp32(UTCPD0_BASE + TCPC_REG_PINPL, inp32(UTCPD0_BASE + TCPC_REG_PINPL) | TCPC_REG_PINPL_SRCEN);
-
-    /* VBSNKEN */
-    outp32(UTCPD0_BASE + TCPC_REG_PINPL, inp32(UTCPD0_BASE + TCPC_REG_PINPL) | TCPC_REG_PINPL_SNKEN);
-    SET_UTCPD0_VBSNKEN_PA3();
-
+    /* Init UTCPD */
+    UTCPD_Init(port);
 
 #if (CONFIG_COMMAND_SHELL == 1)
     /* Enable UART RDA interrupt for command */
@@ -347,30 +348,6 @@ int main()
 
     /* Set timer frequency to 1000HZ for system time base */
     TIMER0_Init();
-
-    /* VCONN Discharge: Don't force VCONN Discharge First */
-    SET_GPIO_PA0();
-    SET_GPIO_PA1();
-    PA1 = 0;
-    GPIO_SetMode(PA, BIT1, GPIO_MODE_OUTPUT);
-
-#if 1   /* VCONN Enable: VCEN0:PA0, VCEN1:PB0, Active Low */
-    /* VCEN0 PA0 */
-    SET_UTCPD0_VCNEN1_PA0();
-    /* VCEN1 PB0 */
-    SET_UTCPD0_VCNEN2_PB0();
-
-
-    //vconn_mux_selection(1, 1);        /* CC1VCENS, CC2VCENS */
-    outp32(UTCPD0_BASE + UTCPD_MUXSEL, (inp32(UTCPD0_BASE + UTCPD_MUXSEL) & ~(CC2VCENS | CC1VCENS)) |
-           ((1 << 24) | (1 << 28)));
-
-    vconn_polarity_active_low();//VCENx active low
-#endif
-
-
-    SYS->UTCPDCTL = SYS->UTCPDCTL | 0x02;
-    i2c_write32(port, NULL, UTCPD_PHYCTL, 3);
 
 #ifdef ADC_INIT
     /* Set timer frequency to 100HZ for measuring VBUS/VCONN*/

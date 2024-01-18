@@ -22,14 +22,26 @@ extern "C" {
 /* Macro Definition                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 #ifndef DEBUG_PORT
+#if (USING_UART0 == 1)
+#define DEBUG_PORT              UART0             /*!< Set default Debug UART Port used for retarget.c to output debug message */
+#else
 #define DEBUG_PORT              UART6             /*!< Set default Debug UART Port used for retarget.c to output debug message */
 #endif
+#endif
 
+#if (USING_UART0 == 1)
+#define DEBUG_PORT_MODULE       UART0##_MODULE
+#define DEBUG_PORT_IRQn         UART0##_IRQn
+#define DEBUG_PORT_IRQHandler   UART0##_IRQHandler
+#define DEBUG_PORT_RST          SYS_##UART0##RST
+#define DEBUG_PORT_FIFO_SIZE    UART0##_FIFO_SIZE
+#else
 #define DEBUG_PORT_MODULE       UART6##_MODULE
 #define DEBUG_PORT_IRQn         UART6##_IRQn
 #define DEBUG_PORT_IRQHandler   UART6##_IRQHandler
 #define DEBUG_PORT_RST          SYS_##UART6##RST
 #define DEBUG_PORT_FIFO_SIZE    UART6##_FIFO_SIZE
+#endif
 
 #define ICACHE_LINE_SIZE                        (__SCB_ICACHE_LINE_SIZE)    /*!< ICache line byte size              */
 #define DCACHE_LINE_SIZE                        (__SCB_DCACHE_LINE_SIZE)    /*!< DCache line byte size              */

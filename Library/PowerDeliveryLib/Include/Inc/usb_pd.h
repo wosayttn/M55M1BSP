@@ -1645,7 +1645,9 @@ void pd_set_input_current_limit(int port, uint32_t max_ma,
 void pd_update_contract(int port);
 
 /* Encode DTS status of port partner in current limit parameter */
-typedef uint32_t typec_current_t;
+#ifndef typec_current_t
+//typedef uint32_t typec_current_t;
+#endif
 
 #define TYPEC_CURRENT_DTS_MASK BIT(31)
 #define TYPEC_CURRENT_ILIM_MASK (~TYPEC_CURRENT_DTS_MASK)
@@ -3046,7 +3048,7 @@ bool pd_waiting_on_partner_src_caps(int port);
  *
  * @param port USB-C port number
  */
-const uint32_t * const pd_get_src_caps(int port);
+const uint32_t * pd_get_src_caps(int port);
 
 /**
  * Returns the number of source caps
@@ -3070,7 +3072,7 @@ void pd_set_src_caps(int port, int cnt, uint32_t *src_caps);
  *
  * @param port USB-C port number
  */
-const uint32_t * const pd_get_snk_caps(int port);
+const uint32_t * pd_get_snk_caps(int port);
 
 /**
  * Returns the number of sink caps

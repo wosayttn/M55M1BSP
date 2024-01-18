@@ -36,7 +36,7 @@
 #endif  /* SW */
 
 /* Task identifier (8 bits) */
-typedef uint8_t task_id_t;
+//typedef uint8_t task_id_t;
 
 #ifdef SW
 /**

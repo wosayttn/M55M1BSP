@@ -81,9 +81,15 @@ void SystemCoreClockUpdate(void)
 __WEAK void SetDebugUartMFP(void)
 {
 #if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
-    /* Set GPH5 as UART6 RXD and GPH4 as UART6 TXD */
+#if(USING_UART0  == 1)
+      /* Set GPA6 as UART0 RXD and GPA7 as UART0 TXD */
+    SET_UART0_RXD_PA6();
+    SET_UART0_TXD_PA7();
+#else
+  /* Set GPH5 as UART6 RXD and GPH4 as UART6 TXD */
     SET_UART6_RXD_PH5();
     SET_UART6_TXD_PH4();
+#endif
 #endif /* !defined(DEBUG_ENABLE_SEMIHOST) || !defined(OS_USE_SEMIHOSTING) */
 }
 
@@ -102,10 +108,13 @@ __WEAK void SetDebugUartCLK(void)
 
     /* Waiting for HXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-
-    /* Select UART clock source from HXT */
+#if(USING_UART0  == 1)
+     /* Select UART0 clock source from HXT */
+    CLK_SetModuleClock(DEBUG_PORT_MODULE, CLK_UARTSEL0_UART0SEL_HXT, CLK_UARTDIV0_UART0DIV(1));
+#else
+    /* Select UART6 clock source from HXT */
     CLK_SetModuleClock(DEBUG_PORT_MODULE, CLK_UARTSEL0_UART6SEL_HXT, CLK_UARTDIV0_UART6DIV(1));
-
+#endif
     /* Enable UART clock */
     CLK_EnableModuleClock(DEBUG_PORT_MODULE);
 

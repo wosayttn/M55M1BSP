@@ -13,6 +13,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
+#include <string.h>
 #include "utcpdlib.h"
 
 #define CPRINTF(format, args...) cprintf(CC_USBPD, format, ## args)
@@ -154,6 +155,7 @@ struct tcpc_config_t tcpc_config[] =
 int board_vbus_sink_enable(int port, int enable)
 {
     VBUS_Sink_Enable(port, enable);
+    return 0;
 }
 
 /* Copy from board/dingdong/usb_pd_policy.c */
@@ -242,7 +244,7 @@ __overridable bool port_discovery_vconn_swap_policy(int port,
 #define CONFIG_USB_PD_IDENTITY_SW_VERS  1
 
 /* Holds valid object position (opos) for entered mode */
-static int alt_mode[PD_AMODE_COUNT];
+static int volatile alt_mode[PD_AMODE_COUNT];
 
 /* ----------------- Vendor Defined Messages ------------------ */
 const uint32_t vdo_idh = VDO_IDH(0, /* data caps as USB host */
