@@ -229,7 +229,7 @@
                     <name>CCDefines</name>
                     <state>SYSTEM_CORE_CLOCK=180000000</state>
                     <state>__TARGET_FPU_VFP</state>
-                    <state>MBEDTLS_CONFIG_FILE=&lt;mbedtls_config.h&gt;</state>
+                    <state>MBEDTLS_CONFIG_FILE</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -695,7 +695,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>224</hasPrio>
+                <hasPrio>1</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
