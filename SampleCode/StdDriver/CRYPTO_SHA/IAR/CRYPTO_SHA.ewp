@@ -261,10 +261,12 @@
                     <name>CCListAssSource</name>
                     <state>0</state>
                 </option>
+
                 <option>
                     <name>CCEnableRemarks</name>
                     <state>0</state>
                 </option>
+
                 <option>
                     <name>CCDiagSuppress</name>
                     <state></state>

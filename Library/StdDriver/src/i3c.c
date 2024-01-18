@@ -179,7 +179,7 @@ int32_t I3C_ResetAndResume(I3C_T *i3c, uint32_t u32ResetMask, uint32_t u32Enable
   * @brief      Get Resopnse Status and Receive Data
   *
   * @param[in]  i3c             The pointer of the specified I3C module.
-  * @param[out] pRespQ          The response data structure to get the response data.
+  * @param[out] pu32RespQ       The response data structure to get the response data.
   *
   * @retval     I3C_STS_NO_ERR          No error
   * @retval     I3C_STS_INVALID_INPUT   Invalid input parameter
@@ -842,6 +842,8 @@ int32_t I3C_BroadcastENTDAA(I3C_T *i3c, uint8_t u8DevCount)
   * @brief      Unicast SETDASA command
   *
   * @param[in]  *i3c            Point to I3C peripheral
+  * @param[in]  u8DevIndex      the offset of Device Address Table.
+  *                             It could be 0 ~ 6 for DEV1ADR to DEV7ADR.
   *
   * @retval     I3C_STS_NO_ERR              No error
   * @retval     I3C_STS_INVALID_STATE       Invalid state

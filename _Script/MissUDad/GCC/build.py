@@ -55,11 +55,13 @@ if __name__ == "__main__":
                         # For ignore warning. OpenJDK 64-Bit Server VM warning: Options -Xverify:none and -noverify were deprecated in JDK 13 and will likely be removed in a future release.
                         lines.pop(0)
                         lines.pop(1)
-                        lines.pop(2)
 
                         found = 0
                         for line in lines:
-                            if line.find(" error: ") >= 0 or line.find(" warning: ") >= 0:
+                            if line.find('[Fatal Error]') >= 0 or line.find('An error has occurred.'):
+                                found = 1
+                                break
+                            elif line.find(" error: ") >= 0 or line.find(" warning: ") >= 0:
                                 found = 1
 
                         if found == 1:
@@ -71,11 +73,13 @@ if __name__ == "__main__":
                             #print("\t" + basename +  " pass.\n")
                         pass
                     except Exception as e:
-                        f.write("[" + str(prj_count) + "] "+ dirPath +  " has error or warning.\n")
-                        #print("Build" + file +  "has error or warning...\n")
+                        f.write("[" + str(prj_count) + "] "+ dirPath +  " has Exception.\n")
+                        print("Build" + file +  "has Exception.\n")
                         err += 1
                     except OSError:
-                        f.write("Ooops\n")  ##
+                        print("Build" + file +  "has Ooops...\n")
+                        f.write("[" + str(prj_count) + "] "+ dirPath +  " has Ooops.\n")
+                        err += 1
                         pass                # Silently ignore
 
                     prj_count += 1

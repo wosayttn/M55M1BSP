@@ -88,7 +88,9 @@ void UI2C_SlaveTRx(uint32_t u32Status)
             if (g_u8SlvDataLen < 2)
             {
                 g_au8SlvRxData[g_u8SlvDataLen++] = temp;
-                slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
+                temp = (g_au8SlvRxData[0] << 8);
+                temp += g_au8SlvRxData[1];
+                slave_buff_addr = temp;
             }
             else
             {

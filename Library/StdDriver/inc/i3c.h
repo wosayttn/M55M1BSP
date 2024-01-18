@@ -475,7 +475,7 @@ extern "C"
 /**
   * @brief      Check Response Status is No Error
   *
-  * @param[in]  i3c     The pointer of the specified I3C module
+  * @param[in]  resp    The Response Status
   *
   * @retval     0       Response has error
   * @retval     1       Response has no error
@@ -487,7 +487,7 @@ extern "C"
 /**
   * @brief      Check Response Status is Receive or Transmit
   *
-  * @param[in]  i3c     The pointer of the specified I3C module
+  * @param[in]  resp    The Response Status
   *
   * @retval     0       Transmit response status
   * @retval     1       Receive response status
@@ -499,7 +499,7 @@ extern "C"
 /**
   * @brief      Get Transmit Transaction ID
   *
-  * @param[in]  i3c     The pointer of the specified I3C module
+  * @param[in]  resp    The Response Status
   *
   * @return     The Transmit Transaction ID
   *
@@ -510,7 +510,7 @@ extern "C"
 /**
   * @brief      Get HDR Command Code
   *
-  * @param[in]  i3c     The pointer of the specified I3C module
+  * @param[in]  resp    The Response Status
   *
   * @return     The HDR Command Code
   *
@@ -521,7 +521,7 @@ extern "C"
 /**
   * @brief      Get Data Length
   *
-  * @param[in]  i3c     The pointer of the specified I3C module
+  * @param[in]  resp    The Response Status
   *
   * @return     The data length in bytes
   *

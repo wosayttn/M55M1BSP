@@ -48,10 +48,14 @@ if __name__ == "__main__":
                         #f.write("[" + str(prj_count) + "] Build " + os.path.abspath(file) +  "\n")
 
                         print("[" + str(prj_count) + "] "+ os.getcwd() + "\\" + file +  " cleaning.\n")
-                        subprocess.call(cleancommnd, startupinfo=si, stdout=f, stderr=f)
+                        #subprocess.call(cleancommnd, startupinfo=si, stdout=f, stderr=f)
+                        p = subprocess.Popen(cleancommnd, startupinfo=si, stdout=f, stderr=f)
+                        p.wait(30)
 
                         print("[" + str(prj_count) + "] "+ os.getcwd() + "\\" + file +  " building.\n")
-                        subprocess.call(buildcommnd, startupinfo=si, stdout=f, stderr=f)
+                        #subprocess.call(buildcommnd, startupinfo=si, stdout=f, stderr=f)
+                        p = subprocess.Popen(buildcommnd, startupinfo=si, stdout=f, stderr=f)
+                        p.wait(30)
 
                         # It's a bit strange keil report error code as 0 even build failed. so parse k.log
                         tmp = open(BUILDLOG, "r")
@@ -70,10 +74,17 @@ if __name__ == "__main__":
                             #f.write("[" + str(prj_count) + "] "+ os.path.abspath(file) +  " pass...\n")
                             #print("\t" + os.getcwd() + "\\" + file +  " pass.\n")
 
-                    except Exception as e:
-                        f.write("[" + str(prj_count) + "] "+ "Build " + file +  " has error or warning.\n")
-                        print("[" + str(prj_count) + "] "+ "Build" + file +  "has error or warning.\n")
+                    except subprocess.TimeoutExpired:
+                        p.kill()
+                        f.write("[" + str(prj_count) + "] "+ "Build " + file +  " has exception.\n")
+                        print("[" + str(prj_count) + "] "+ "Build" + file +  "has exception.\n")
                         err += 1
+
+                    except Exception as e:
+                        f.write("[" + str(prj_count) + "] "+ "Build " + file +  " has exception.\n")
+                        print("[" + str(prj_count) + "] "+ "Build" + file +  "has exception.\n")
+                        err += 1
+
                     except OSError:
                         #f.write("[" + str(prj_count) + "] " + os.path.abspath(file) + "Ooops\n") ##
                         pass #Silently ignore

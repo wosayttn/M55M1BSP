@@ -45,17 +45,16 @@ if __name__ == "__main__":
                         found = 0
                         prjNamePat = prjName + " - "
                         for line in lines:
-                            if line.find(prjNamePat) >=0:
+                            if line.find(" ERROR, ") == 0:
+                                break
+                            elif line.find(prjNamePat) >=0:
                                 total_conf += 1
-                                continue
-                            if line.find("Total number of errors: 0") >=0:
+                            elif line.find("Total number of errors: 0") >=0:
                                 found += 1
-                                continue
-                            if line.find("Total number of warnings: 0") >=0:
+                            elif line.find("Total number of warnings: 0") >=0:
                                 found += 1
-                                continue
 
-                        if total_conf > 0 and found != 2*total_conf:
+                        if total_conf == 0 or (total_conf > 0 and found != 2*total_conf):
                             err += 1
                             f.write("[" + str(prj_count) + "] "+ dirPath +  " has error or warning.\n")
                             print("Build " + file + " has error or warning...\n")
@@ -64,6 +63,9 @@ if __name__ == "__main__":
                             #print("\t" + file +  " pass.\n")
 
                     except OSError:
+                        err += 1
+                        f.write("[" + str(prj_count) + "] "+ dirPath +  " has error or warning.\n")
+                        print("Build " + file + " has error or warning...\n")
                         pass    #Silently ignore
 
                     prj_count += 1

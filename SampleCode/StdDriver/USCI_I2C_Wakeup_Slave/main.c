@@ -120,13 +120,15 @@ void UI2C_SLV_Toggle_Wakeup(uint32_t u32Status)
 
             if (g_u8DataLenS == 2)
             {
-                /* Address has been received; ACK has been returned*/
-                slave_buff_addr = (g_au8RxData[0] << 8) + g_au8RxData[1];
+                temp = (g_au8RxData[0] << 8);
+                temp += g_au8RxData[1];
+                slave_buff_addr = temp;
             }
 
             if (g_u8DataLenS == 3)
             {
-                g_au8SlvData[slave_buff_addr] = g_au8RxData[2];
+                temp = g_au8RxData[2];
+                g_au8SlvData[slave_buff_addr] = temp;
                 g_u8DataLenS = 0;
             }
         }
@@ -216,13 +218,15 @@ void UI2C_SLV_Address_Wakeup(uint32_t u32Status)
 
             if (g_u8DataLenS == 2)
             {
-                /* Address has been received; ACK has been returned*/
-                slave_buff_addr = (g_au8RxData[0] << 8) + g_au8RxData[1];
+                temp = (g_au8RxData[0] << 8);
+                temp += g_au8RxData[1];
+                slave_buff_addr = temp;
             }
 
             if (g_u8DataLenS == 3)
             {
-                g_au8SlvData[slave_buff_addr] = g_au8RxData[2];
+                temp = g_au8RxData[2];
+                g_au8SlvData[slave_buff_addr] = temp;
                 g_u8DataLenS = 0;
             }
         }
