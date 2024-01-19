@@ -20,7 +20,7 @@
 */
 
 /**
-    @addtogroup CLK System Clock Controller(CLK)
+    @addtogroup CLK System Clock Controller (CLK)
     Memory Mapped Structure for CLK Controller
     @{
 */
