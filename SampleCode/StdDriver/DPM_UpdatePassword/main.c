@@ -54,28 +54,28 @@ int32_t main(void)
     printf("+------------------------------------------+\n");
     printf("|     M55M1 Secure DPM Update Password     |\n");
     printf("+------------------------------------------+\n");
-    printf("\n\nCPU @ %d Hz\n", SystemCoreClock);
+    printf("\nCPU @ %d Hz\n", SystemCoreClock);
 
     /* Get DPM status */
-    printf("Secure DPM manages Secure region debug.\n");
+    printf("Secure DPM manages Secure region debug authority.\n");
     printf("Get Secure DPM status:\n");
     printf("Secure region debug is %s.\n", DPM_GetDebugDisable(SECURE_DPM) ? "Disabled" : "Enabled");
     printf("Secure region debug is %s.\n\n", DPM_GetDebugLock(SECURE_DPM) ? "Locked" : "not Locked");
 
     /* Update password */
-    printf("Update Secure DPM password ... ");
+    printf("Update Secure DPM password:    ");
 
     i32RetVal = DPM_SetPasswordUpdate(SECURE_DPM, au32Pwd_5);
 
     if (i32RetVal == 0)
     {
-        printf("Password update has reached maximum time. Please erase chip.\n");
-        return -1;
+        printf("\n  Password update has reached maximum time ! Please erase chip.\n");
+        goto lexit;
     }
     else if (i32RetVal == DPM_TIMEOUT_ERR)
     {
         printf("Wait for DPM busy flag cleared time-out!\n");
-        return -1;
+        goto lexit;
     }
     else
     {
@@ -83,7 +83,7 @@ int32_t main(void)
     }
 
     /* Compare password fail */
-    printf("Compare with wrong password ... ");
+    printf("Compare with wrong password:   ");
 
     i32RetVal = DPM_SetPasswordCompare(SECURE_DPM, au32Pwd_A);
 
@@ -94,11 +94,6 @@ int32_t main(void)
             printf("Password is wrong.\n");
             DPM_ClearPasswordErrorFlag(SECURE_DPM);
         }
-        else if (i32RetVal == DPM_TIMEOUT_ERR)
-        {
-            printf("Wait for DPM busy flag cleared time-out!\n");
-            return -1;
-        }
         else
         {
             printf("OK.\n");
@@ -107,16 +102,16 @@ int32_t main(void)
     else if (i32RetVal == DPM_TIMEOUT_ERR)
     {
         printf("Wait for DPM busy flag cleared time-out!\n");
-        return -1;
+        goto lexit;
     }
     else
     {
-        printf("Password compare has reached maximum time. Please erase chip.\n");
-        return -1;
+        printf("\n  Password compare has reached maximum time ! Please erase chip.\n");
+        goto lexit;
     }
 
     /* Compare password pass */
-    printf("Compare with correct password ... ");
+    printf("Compare with correct password: ");
 
     i32RetVal = DPM_SetPasswordCompare(SECURE_DPM, au32Pwd_5);
 
@@ -130,7 +125,7 @@ int32_t main(void)
         else if (i32RetVal == DPM_TIMEOUT_ERR)
         {
             printf("Wait for DPM busy flag cleared time-out!\n");
-            return -1;
+            goto lexit;
         }
         else
         {
@@ -140,17 +135,21 @@ int32_t main(void)
     else if (i32RetVal == DPM_TIMEOUT_ERR)
     {
         printf("Wait for DPM busy flag cleared time-out!\n");
-        return -1;
+        goto lexit;
     }
     else
     {
-        printf("\n\n\tPassword compare has reached maximum time. Please erase chip.");
-        return -1;
+        printf("\n  Password compare has reached maximum time ! Please erase chip.");
+        goto lexit;
     }
 
     printf("\nDone.\n");
 
+lexit:
+
     while (1);
 }
+
+
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

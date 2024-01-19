@@ -50,7 +50,7 @@
 									<listOptionValue builtIn="false" value="&quot;../../../../../Library/CMSIS/Core/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../Library/Device/Nuvoton/M55M1/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../Library/StdDriver/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../../Library/NuMaker/Commu&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../../../Library/Commu&quot;"/>
 								</option>
 								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.2001686311" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>
 							</tool>
