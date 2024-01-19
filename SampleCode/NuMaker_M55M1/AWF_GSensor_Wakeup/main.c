@@ -209,10 +209,18 @@ void AWF_Threshold_Update(void)
 
     /* Get accumulation value */
     u32AccTemp = AWF_GET_ACUVAL();
-
-
-    g_u32HTHValue = u32AccTemp + GSensor_Threshold;
-
+    
+    /* Calculate high threshold value */
+    if(u32AccTemp + GSensor_Threshold >= 0x0007FFFF)
+    {
+        g_u32HTHValue = 0x0007FFFF;
+    }
+    else
+    {
+        g_u32HTHValue = u32AccTemp + GSensor_Threshold;
+    }
+    
+    /* Calculate low threshold value */
     if (u32AccTemp < GSensor_Threshold)
     {
         g_u32LTHValue = 0;
@@ -222,6 +230,7 @@ void AWF_Threshold_Update(void)
         g_u32LTHValue = u32AccTemp - GSensor_Threshold;
     }
 
+    /* Calculate word buffer initial value */
     g_u32WBINITValue = u32AccTemp / g_u32ACCCount;
 
     /* Set AWF threshold, interrupt and wake-up function  */
