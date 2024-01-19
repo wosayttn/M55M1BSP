@@ -135,7 +135,7 @@ extern "C"
 
 /** @} end of group SPIM_HYPER_EXPORTED_CONSTANTS */
 
-/** @addtogroup SPIM_HYPER_EXPORTED_FUNCTIONS SPI Exported Constants
+/** @addtogroup SPIM_HYPER_EXPORTED_FUNCTIONS SPIM_HYPER Exported Constants
   @{
 */
 /*----------------------------------------------------------------------------*/

@@ -566,6 +566,6 @@ int32_t SPIM_HYPER_IsDMMDone(SPIM_T *spim)
     return SPIM_HYPER_OK;
 }
 
-/** @} end of group SPIM_EXPORTED_FUNCTIONS */
-/** @} end of group SPIM_Driver */
+/** @} end of group SPIM_HYPER_EXPORTED_FUNCTIONS */
+/** @} end of group SPIM_HYPER_Driver */
 /** @} end of group Standard_Driver */
