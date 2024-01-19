@@ -58,7 +58,7 @@ if __name__ == "__main__":
 
                         found = 0
                         for line in lines:
-                            if line.find('[Fatal Error]') >= 0 or line.find('An error has occurred.'):
+                            if line.find('[Fatal Error]') >= 0 or line.find('An error has occurred.') >=0:
                                 found = 1
                                 break
                             elif line.find(" error: ") >= 0 or line.find(" warning: ") >= 0:
