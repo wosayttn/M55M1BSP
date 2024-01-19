@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>NVT_ICACHE_OFF, NVT_DCACHE_OFF</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\..\Library\StdDriver\inc;..\..\..\..\..\Library\NuMaker\common;..\..</IncludePath>
+              <IncludePath>..\..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\..\Library\StdDriver\inc;..\..\..\..\..\Library\NuMaker\Commu;..\..</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -432,7 +432,7 @@
             <File>
               <FileName>xmodem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\Library\NuMaker\common\xmodem.c</FilePath>
+              <FilePath>..\..\..\..\..\Library\NuMaker\Commu\xmodem.c</FilePath>
             </File>
           </Files>
         </Group>

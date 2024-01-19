@@ -682,7 +682,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>0</hasPrio>
+                <hasPrio>224</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -703,7 +703,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>FMC_IAP.out</state>
+                    <state>FMC_IAP_APROM.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>

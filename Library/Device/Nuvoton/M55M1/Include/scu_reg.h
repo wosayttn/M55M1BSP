@@ -625,9 +625,9 @@ typedef struct
 /**@}*/ /* end of PLM register group */
 
 
-/*---------------------- Secure configuration Unit -------------------------*/
+/*---------------------- Secure Configuration Unit -------------------------*/
 /**
-    @addtogroup SCU Secure configuration Unit (SCU)
+    @addtogroup SCU Secure Configuration Unit (SCU)
     Memory Mapped Structure for SCU Controller
     @{
 */
