@@ -361,15 +361,15 @@ extern "C"
   *
   * @param[in]  i3c         The pointer of the specified I3C module
   * @param[in]  u32IntSel   Interrupt type select
-  *                             - \ref I3C_INTEN_TX_EMPTY_THLD  : TX FIFO empty count threshold interrupt
-  *                             - \ref I3C_INTEN_RX_THLD        : RX FIFO received count threshold interrupt
-  *                             - \ref I3C_INTEN_CMDQ_EMPTY_THLD: Command Queue empty count threshold interrupt
-  *                             - \ref I3C_INTEN_RESPQ_READY    : Response Queue received count threshold interrupt
-  *                             - \ref I3C_INTEN_CCC_UPDATED    : CCC register value updated interrupt
-  *                             - \ref I3C_INTEN_DA_ASSIGNED    : Dynamic Address Assigned interrupt
-  *                             - \ref I3C_INTEN_TRANSFER_ERR   : Transfer error interrupt
-  *                             - \ref I3C_INTEN_READ_REQUEST   : Read request received interrupt
-  *                             - \ref I3C_INTEN_IBI_UPDATED    : IBI request interrupt
+  *                             - \ref I3C_INTEN_TX_EMPTY_THLD   : TX FIFO empty count threshold interrupt
+  *                             - \ref I3C_INTEN_RX_THLD         : RX FIFO received count threshold interrupt
+  *                             - \ref I3C_INTEN_CMDQ_EMPTY_THLD : Command Queue empty count threshold interrupt
+  *                             - \ref I3C_INTEN_RESPQ_READY     : Response Queue received count threshold interrupt
+  *                             - \ref I3C_INTEN_CCC_UPDATED     : CCC register value updated interrupt
+  *                             - \ref I3C_INTEN_DA_ASSIGNED     : Dynamic Address Assigned interrupt
+  *                             - \ref I3C_INTEN_TRANSFER_ERR    : Transfer error interrupt
+  *                             - \ref I3C_INTEN_READ_REQUEST    : Read request received interrupt
+  *                             - \ref I3C_INTEN_IBI_UPDATED     : IBI request interrupt
   *
   * @details      This macro enables specified I3C interrupts.
   */
@@ -380,15 +380,15 @@ extern "C"
   *
   * @param[in]  i3c         The pointer of the specified I3C module
   * @param[in]  u32IntSel   Interrupt type select
-  *                             - \ref I3C_INTEN_TX_EMPTY_THLD  : TX FIFO empty count threshold interrupt
-  *                             - \ref I3C_INTEN_RX_THLD        : RX FIFO received count threshold interrupt
-  *                             - \ref I3C_INTEN_CMDQ_EMPTY_THLD: Command Queue empty count threshold interrupt
-  *                             - \ref I3C_INTEN_RESPQ_READY    : Response Queue received count threshold interrupt
-  *                             - \ref I3C_INTEN_CCC_UPDATED    : CCC register value updated interrupt
-  *                             - \ref I3C_INTEN_DA_ASSIGNED    : Dynamic Address Assigned interrupt
-  *                             - \ref I3C_INTEN_TRANSFER_ERR   : Transfer error interrupt
-  *                             - \ref I3C_INTEN_READ_REQUEST   : Read request received interrupt
-  *                             - \ref I3C_INTEN_IBI_UPDATED    : IBI request interrupt
+  *                             - \ref I3C_INTEN_TX_EMPTY_THLD   : TX FIFO empty count threshold interrupt
+  *                             - \ref I3C_INTEN_RX_THLD         : RX FIFO received count threshold interrupt
+  *                             - \ref I3C_INTEN_CMDQ_EMPTY_THLD : Command Queue empty count threshold interrupt
+  *                             - \ref I3C_INTEN_RESPQ_READY     : Response Queue received count threshold interrupt
+  *                             - \ref I3C_INTEN_CCC_UPDATED     : CCC register value updated interrupt
+  *                             - \ref I3C_INTEN_DA_ASSIGNED     : Dynamic Address Assigned interrupt
+  *                             - \ref I3C_INTEN_TRANSFER_ERR    : Transfer error interrupt
+  *                             - \ref I3C_INTEN_READ_REQUEST    : Read request received interrupt
+  *                             - \ref I3C_INTEN_IBI_UPDATED     : IBI request interrupt
   *
   * @details      This macro disables specified I3C interrupts.
   */
@@ -399,15 +399,15 @@ extern "C"
   *
   * @param[in]  i3c         The pointer of the specified I3C module
   * @param[in]  u32IntSel   Interrupt type select
-  *                             - \ref I3C_INTSTS_TX_EMPTY_THLD  : TX FIFO empty count threshold status
-  *                             - \ref I3C_INTSTS_RX_THLD        : RX FIFO received count threshold status
-  *                             - \ref I3C_INTSTS_CMDQ_EMPTY_THLD: Command Queue empty count threshold status
-  *                             - \ref I3C_INTSTS_RESPQ_READY    : Response Queue received count threshold status
-  *                             - \ref I3C_INTSTS_CCC_UPDATED    : CCC register value updated status
-  *                             - \ref I3C_INTSTS_DA_ASSIGNED    : Dynamic Address Assigned status
-  *                             - \ref I3C_INTSTS_TRANSFER_ERR   : Transfer error status
-  *                             - \ref I3C_INTSTS_READ_REQUEST   : Read request received status
-  *                             - \ref I3C_INTSTS_IBI_UPDATED    : IBI request status
+  *                             - \ref I3C_INTSTS_TX_EMPTY_THLD   : TX FIFO empty count threshold status
+  *                             - \ref I3C_INTSTS_RX_THLD         : RX FIFO received count threshold status
+  *                             - \ref I3C_INTSTS_CMDQ_EMPTY_THLD : Command Queue empty count threshold status
+  *                             - \ref I3C_INTSTS_RESPQ_READY     : Response Queue received count threshold status
+  *                             - \ref I3C_INTSTS_CCC_UPDATED     : CCC register value updated status
+  *                             - \ref I3C_INTSTS_DA_ASSIGNED     : Dynamic Address Assigned status
+  *                             - \ref I3C_INTSTS_TRANSFER_ERR    : Transfer error status
+  *                             - \ref I3C_INTSTS_READ_REQUEST    : Read request received status
+  *                             - \ref I3C_INTSTS_IBI_UPDATED     : IBI request status
   *
   * @retval     0       Specified interrupts did not occur
   * @retval     1       Specified interrupts occurred
