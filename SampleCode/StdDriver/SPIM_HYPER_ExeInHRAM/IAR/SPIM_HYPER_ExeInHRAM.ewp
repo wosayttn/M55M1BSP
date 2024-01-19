@@ -6,14 +6,14 @@
         <toolchain>
             <name>ARM</name>
         </toolchain>
-        <debug>1</debug>
+        <debug>0</debug>
         <settings>
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
                 <version>36</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>1</debug>
+                <debug>0</debug>
                 <option>
                     <name>ExePath</name>
                     <state>Release\Exe</state>
@@ -53,16 +53,16 @@
                 <option>
                     <name>GRuntimeLibSelect</name>
                     <version>0</version>
-                    <state>2</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>GRuntimeLibSelectSlave</name>
                     <version>0</version>
-                    <state>2</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>RTDescription</name>
-                    <state>Use the full configuration of the C/C++ runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
+                    <state>A compact configuration of the C/C++14 runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
                 </option>
                 <option>
                     <name>OGProductVersion</name>
@@ -94,7 +94,7 @@
                 </option>
                 <option>
                     <name>RTConfigPath2</name>
-                    <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Full.h</state>
+                    <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</state>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
@@ -189,7 +189,7 @@
                 <option>
                     <name>TrustZoneModes</name>
                     <version>0</version>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>OGAarch64Abi</name>
@@ -224,11 +224,10 @@
             <data>
                 <version>38</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>1</debug>
+                <debug>0</debug>
                 <option>
                     <name>CCDefines</name>
-                    <state>TF_LITE_STATIC_MEMORY</state>
-                    <state>SYSTEM_CORE_CLOCK=18000000</state>
+                    <state>NDEBUG</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -268,7 +267,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state>Pe997, Pe550</state>
+                    <state></state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
@@ -289,7 +288,7 @@
                 <option>
                     <name>CCAllowList</name>
                     <version>1</version>
-                    <state>00000000</state>
+                    <state>11111110</state>
                 </option>
                 <option>
                     <name>CCDebugInfo</name>
@@ -309,7 +308,7 @@
                 </option>
                 <option>
                     <name>IExtraOptions</name>
-                    <state>--diag_suppress Pe550</state>
+                    <state></state>
                 </option>
                 <option>
                     <name>CCLangConformance</name>
@@ -349,19 +348,9 @@
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
-                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\FreeRTOS\Source\include</state>
-                    <state>$PROJ_DIR$\..\arm_profiler\include</state>
-                    <state>$PROJ_DIR$\..\inference_process\include</state>
-                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\tflite_micro</state>
-                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\tflite_micro\_deps\tensorflow-flatbuffers-src\include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Core\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc</state>
-                    <state>$PROJ_DIR$\..\ethosu_log\include</state>
-                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\FreeRTOS\Lib</state>
-                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\FreeRTOS\Source\portable\IAR\ARM_CM55_NTZ\non_secure</state>
-                    <state>$PROJ_DIR$\..\models</state>
-                    <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc\npu</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -377,7 +366,7 @@
                 </option>
                 <option>
                     <name>CCOptLevel</name>
-                    <state>1</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>CCOptStrategy</name>
@@ -386,7 +375,7 @@
                 </option>
                 <option>
                     <name>CCOptLevelSlave</name>
-                    <state>1</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>CCPosIndRopi</name>
@@ -402,7 +391,7 @@
                 </option>
                 <option>
                     <name>IccLang</name>
-                    <state>2</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IccCDialect</name>
@@ -463,7 +452,7 @@
                 </option>
                 <option>
                     <name>IccExceptions2</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IccRTTI2</name>
@@ -493,7 +482,7 @@
             <data>
                 <version>12</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>1</debug>
+                <debug>0</debug>
                 <option>
                     <name>AObjPrefix</name>
                     <state>1</state>
@@ -533,7 +522,7 @@
                 </option>
                 <option>
                     <name>ADebug</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>AltRegisterNames</name>
@@ -663,11 +652,11 @@
             <data>
                 <version>1</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>1</debug>
+                <debug>0</debug>
                 <option>
                     <name>OOCOutputFormat</name>
                     <version>3</version>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OCOutputOverride</name>
@@ -675,7 +664,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state></state>
+                    <state>SPIM_HYPER_ExeInHRAM.hex</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -683,7 +672,7 @@
                 </option>
                 <option>
                     <name>OOCObjCopyEnable</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -693,7 +682,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>1</hasPrio>
+                <hasPrio>0</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -703,7 +692,7 @@
             <data>
                 <version>27</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>1</debug>
+                <debug>0</debug>
                 <option>
                     <name>IlinkLibIOConfig</name>
                     <state>1</state>
@@ -714,7 +703,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>Inference.out</state>
+                    <state>SPIM_HYPER_ExeInHRAM.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -830,7 +819,7 @@
                 </option>
                 <option>
                     <name>IlinkOverrideProgramEntryLabel</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkProgramEntryLabelSelect</name>
@@ -838,7 +827,7 @@
                 </option>
                 <option>
                     <name>IlinkProgramEntryLabel</name>
-                    <state>__iar_program_start</state>
+                    <state>Reset_Handler</state>
                 </option>
                 <option>
                     <name>DoFill</name>
@@ -929,7 +918,7 @@
                 </option>
                 <option>
                     <name>IlinkOptInline</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkOptExceptionsAllow</name>
@@ -1011,7 +1000,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>ImageClassification_import_lib.o</state>
+                    <state>SPIM_HYPER_ExeInHRAM_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1077,7 +1066,7 @@
             <data>
                 <version>0</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>1</debug>
+                <debug>0</debug>
                 <option>
                     <name>IarchiveInputs</name>
                     <state></state>
@@ -1101,28 +1090,28 @@
     <group>
         <name>CMSIS</name>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</name>
+            <name>$PROJ_DIR$\..\startup_M55M1.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</name>
         </file>
     </group>
     <group>
-        <name>Driver</name>
+        <name>Library</name>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\clk.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\npu\ethosu_device_u55_u65.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\gpio.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\npu\ethosu_driver.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\npu\ethosu_pmu.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\otfc.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\spim_hyper.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sys.c</name>
@@ -1132,27 +1121,15 @@
         </file>
     </group>
     <group>
-        <name>Lib</name>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Lib\IAR\CMSIS_NN.a</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\FreeRTOS\Lib\FreeRTOS.a</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\tflite_micro\Lib\tflu.a</name>
-        </file>
-    </group>
-    <group>
         <name>User</name>
         <file>
-            <name>$PROJ_DIR$\..\arm_profiler\src\arm_profiler.cpp</name>
+            <name>$PROJ_DIR$\..\hyperram_code.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\inference_process\src\inference_process.cpp</name>
+            <name>$PROJ_DIR$\..\main.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\main.cpp</name>
+            <name>$PROJ_DIR$\..\spim_code.c</name>
         </file>
     </group>
 </project>

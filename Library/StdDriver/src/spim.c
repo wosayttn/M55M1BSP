@@ -736,7 +736,12 @@ int32_t SPIM_InitFlash(SPIM_T *spim, int clrWP)
         spim_wait_writedone(spim, 1UL);
     }
 
+    i = SPIM_GET_CLOCK_DIVIDER(spim);
+    SPIM_SET_CLOCK_DIVIDER(spim, 16); //SPIM DIVIDER Set more for read/write SPI Flash ID
+
     SPIM_ReadJedecId(spim, idBuf, sizeof(idBuf), 1UL, 0);
+
+    SPIM_SET_CLOCK_DIVIDER(spim, i); /* Restore SPIM DIVIDER */
 
     /* printf("ID: 0x%x, 0x%x, px%x\n", idBuf[0], idBuf[1], idBuf[2]); */
 

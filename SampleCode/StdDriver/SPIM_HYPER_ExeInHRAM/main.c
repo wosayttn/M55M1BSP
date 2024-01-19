@@ -216,6 +216,9 @@ int main()
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
 
+    /* Lock protected registers */
+    SYS_LockReg();
+
     printf("+-------------------------------------------------------+\n");
     printf("|       SPIM DMM mode running program on HyperRAM       |\n");
     printf("+-------------------------------------------------------+\n");
@@ -229,11 +232,6 @@ int main()
 
         spim_routine();
     }
-
-    /* Lock protected registers */
-    SYS_LockReg();
-
-    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

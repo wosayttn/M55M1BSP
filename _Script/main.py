@@ -400,7 +400,7 @@ def check_prj():
     debugLevel = 0  # 0/1 to disable/enable
 
     f = open('checkprj.txt', "w+")
-    for dirPath, dirNames, fileNames in os.walk('SampleCode'):
+    for dirPath, dirNames, fileNames in os.walk('SampleCode.test'):
         idx = [m.start() for m in re.finditer(r"\\", dirPath)]
         if len(idx) < 1:
             continue
@@ -415,70 +415,74 @@ def check_prj():
             if dirname.upper() == 'GCC':
                 if len(dirNames) > 0:
                     for dir in dirNames:
-                        if dir.find(dirname2) != 0:
-                            f.write("[Warning] " + os.path.join(dirPath, dir) + ": Project name is not prefixed by sample name (" + dirname2 + ").\n")
+                        if dir.find(dirname2) < 0:
+                            f.write("[Warning] " + os.path.join(dirPath, dir) + ": Project name does not include sample name (" + dirname2 + ").\n")
                     continue    # Check .project/preferences.ini in sub-folder
                 dirname = dirname2
 
             # Check GCC project setting
-            file = os.path.join(dirPath, '.project')
-            if os.path.isfile(file) == False:
+            filepath = os.path.join(dirPath, '.project')
+            if os.path.isfile(filepath) == False:
                 f.write("[Error] " + dirPath + ": .project is missing.\n")
             else:
                 if debugLevel:
-                    print("Checking " + file)
-                tree = ET.parse(file)
-                root = tree.getroot()
-                elem = root.find('name')
-                if elem.text.find(dirname) != 0:
-                    sys.stdout.write('.')
-                    sys.stdout.flush()
-                    f.write("[Auto-Fixed] " + file + ": Project name (" + elem.text + ") differs from sample name (" + dirname + ").\n")
-                    elem.text = dirname
-                    tree.write(file, "UTF-8", True)
+                    print("Checking " + filepath)
                 try:
-                    project = open(file, 'r+')
-                    mm = mmap.mmap(project.fileno(), 0)
+                    tree = ET.parse(filepath)
                 except:
-                    f.write("[Error] Failed to read " + file + "\n")
+                    f.write("[Error] " + filepath + ": Parse failed.\n")
                 else:
-                    pos = mm.find(b'\\')
-                    if pos >= 0:
-                        f.write("[Warning] " + file + ": Found backslash.\n")
-                mm.close()
-                project.close()
+                    root = tree.getroot()
+                    elem = root.find('name')
+                    if elem.text.find(dirname) < 0:
+                        sys.stdout.write('.')
+                        sys.stdout.flush()
+                        f.write("[Auto-Fixed] " + filepath + ": Project name (" + elem.text + ") does not include sample name (" + dirname + ").\n")
+                        elem.text = dirname
+                        tree.write(filepath, "UTF-8", True)
+                    try:
+                        project = open(filepath, 'r+')
+                        mm = mmap.mmap(project.fileno(), 0)
+                    except:
+                        f.write("[Error] " + filepath + ": Read failed.\n")
+                    else:
+                        pos = mm.find(b'\\')
+                        if pos >= 0:
+                            f.write("[Warning] " + filepath + ": Found backslash.\n")
+                    mm.close()
+                    project.close()
 
-            file = os.path.join(dirPath, 'preferences.ini')
-            if os.path.isfile(file) == False:
+            filepath = os.path.join(dirPath, 'preferences.ini')
+            if os.path.isfile(filepath) == False:
                 f.write("[Error] " + dirPath + ": preferences.ini is missing.\n")
             else:
                 if debugLevel:
-                    print("Checking " + file)
+                    print("Checking " + filepath)
                 config = configparser.ConfigParser()
-                config.read(file)
+                config.read(filepath)
                 if config.get('startup', 'chipSeries') != GCC_CHIPSERIES:
-                    f.write("[Error] " + file + ": Chip series (" + config.get('startup', 'chipSeries') + ") is not " + GCC_CHIPSERIES + ".\n")
+                    f.write("[Error] " + filepath + ": Chip series (" + config.get('startup', 'chipSeries') + ") is not " + GCC_CHIPSERIES + ".\n")
                 if config.get('startup', 'targetChip') != GCC_TARGETCHIP:
-                    f.write("[Error] " + file + ": Target chip (" + config.get('startup', 'targetChip') + ") is not " + GCC_TARGETCHIP + ".\n")
+                    f.write("[Error] " + filepath + ": Target chip (" + config.get('startup', 'targetChip') + ") is not " + GCC_TARGETCHIP + ".\n")
 
-            file = os.path.join(dirPath, '.cproject')
-            if os.path.isfile(file) == False:
+            filepath = os.path.join(dirPath, '.cproject')
+            if os.path.isfile(filepath) == False:
                 f.write("[Error] " + dirPath + ": .cproject is missing.\n")
             else:
                 if debugLevel:
-                    print("Checking " + file)
+                    print("Checking " + filepath)
                 try:
-                    cproject = open(file, 'r+')
+                    cproject = open(filepath, 'r+')
                     mm = mmap.mmap(cproject.fileno(), 0)
                 except:
-                    f.write("[Error] Failed to read " + file + "\n")
+                    f.write("[Error] " + filepath + ": Read failed.\n")
                 else:
                     pos = mm.find(b'.usenewlibnano.')
                     if pos < 0:
                         f.write("[Warning] " + dirPath + ": Not use recommended newlib-nano.\n")
                     pos = mm.find(b'\\')
                     if pos >= 0:
-                        f.write("[Warning] " + file + ": Found backslash, invalid in Linux file path.\n")
+                        f.write("[Warning] " + filepath + ": Found backslash, invalid in Linux file path.\n")
                 mm.close()
                 cproject.close()
  
@@ -522,21 +526,26 @@ def check_prj():
                 os.rename(os.path.join(dirPath, file), os.path.join(dirPath, dirname + ".uvprojx"))
                 file = dirname + ".uvprojx"
                 filename = dirname
-            elif prj_cnt > 1 and filename.find(dirname) != 0:
-                f.write("[Warning] " + os.path.join(dirPath, file) + ": uvprojx name is not prefixed by sample name (" + dirname + ").\n")
+            elif prj_cnt > 1 and filename.find(dirname) < 0:
+                f.write("[Warning] " + os.path.join(dirPath, file) + ": uvprojx name does not include sample name (" + dirname + ").\n")
             # check device setting
+            filepath = os.path.join(dirPath, file)
             if debugLevel:
-                print("Checking " + os.path.join(dirPath, file))
-            tree = ET.parse(os.path.join(dirPath, file))
+                print("Checking " + filepath)
+            try:
+                tree = ET.parse(filepath)
+            except:
+                f.write("[Error] " + filepath + ": Parse failed.\n")
+                continue    # next file
             root = tree.getroot()
             elems = root.find('Targets')
             # check each target
             for elem in elems.findall('Target'):
                 targetname = elem.find('TargetName')
-                if targetname.text.find(filename) != 0:
+                if targetname.text.find(filename) < 0:
                     #sys.stdout.write('.')
                     #sys.stdout.flush()
-                    f.write("[Warning] " + os.path.join(dirPath, file) + ": Target name (" + targetname.text + ") is not the same or prefixed by project name (" + filename + ").\n")
+                    f.write("[Warning] " + filepath + ": Target name (" + targetname.text + ") does not include project name (" + filename + ").\n")
                     #targetname.text = filename
                     #file_modified = 1
                 elem = elem.find('TargetOption')
@@ -545,25 +554,24 @@ def check_prj():
                 elem3 = elem.find('Utilities')            
                 elem = elem.find('TargetCommonOption')
                 outputname = elem.find('OutputName')
-                namepos = outputname.text.find(filename)
-                if namepos != 0 and outputname.text[namepos-1] != '\\':
-                    f.write("[Warning] " + os.path.join(dirPath, file) + ": Output name (" + outputname.text + ") is not the same or prefixed by project name (" + filename + ").\n")
+                if outputname.text.find(filename) < 0:
+                    f.write("[Warning] " + filepath + ": Output name (" + outputname.text + ") does not include project name (" + filename + ").\n")
                     #outputname.text = filename
                     #file_modified = 1
                 elem = elem.find('Device')
                 if elem.text not in KEIL_DEVICE:
-                    f.write("[Error] " + os.path.join(dirPath, file) + ": Device setting (" + elem.text + ") is not " + " or ".join(KEIL_DEVICE) + ".\n")
+                    f.write("[Error] " + filepath + ": Device setting (" + elem.text + ") is not " + " or ".join(KEIL_DEVICE) + ".\n")
                 elem1 = elem1.find('Cads')
                 # default O2 (Optim == 3), O3 (Optim == 4)
                 optim = elem1.find('Optim')
                 if int(optim.text) < 3:
-                    f.write("[Warning] " + os.path.join(dirPath, file) + ": C optimized level setting (" + optim.text + ") is not at least O2.\n")
+                    f.write("[Warning] " + filepath + ": C optimized level setting (" + optim.text + ") is not at least O2.\n")
                 # Check optimize for time is disabled
                 otime = elem1.find('oTime')
                 if otime.text == '1':
-                    f.write("[Warning] " + os.path.join(dirPath, file) + ": OTIME is enabled.\n")
+                    f.write("[Warning] " + filepath + ": OTIME is enabled.\n")
             if file_modified:
-                tree.write(os.path.join(dirPath, file), "UTF-8", True)
+                tree.write(filepath, "UTF-8", True)
 
         for file in fnmatch.filter(fileNames, '*.uvoptx'):
             # compare project name with sample name
@@ -577,28 +585,33 @@ def check_prj():
                 os.rename(os.path.join(dirPath, file), os.path.join(dirPath, dirname + ".uvoptx"))
                 file = dirname + ".uvoptx"
                 filename = dirname
-            elif prj_cnt > 1 and filename.find(dirname) != 0:
-                f.write("[Warning] " + os.path.join(dirPath, file) + ": uvoptx name is not prefixed by sample name (" + dirname + ").\n")
+            elif prj_cnt > 1 and filename.find(dirname) < 0:
+                f.write("[Warning] " + os.path.join(dirPath, file) + ": uvoptx name does not include sample name (" + dirname + ").\n")
+            filepath = os.path.join(dirPath, file)
             if debugLevel:
-                print("Checking " + os.path.join(dirPath, file))
-            tree = ET.parse(os.path.join(dirPath, file))
+                print("Checking " + filepath)
+            try:
+                tree = ET.parse(filepath)
+            except:
+                f.write("[Error] " + filepath + ": Parse failed.\n")
+                continue    # next file
             root = tree.getroot()
             # check each target
             for elem in root.findall('Target'):
                 targetname = elem.find('TargetName')
-                if targetname.text.find(filename) != 0:
+                if targetname.text.find(filename) < 0:
                     #sys.stdout.write('.')
                     #sys.stdout.flush()
-                    f.write("[Warning] " + os.path.join(dirPath, file) + ": Target name (" + targetname.text + ") is not the same or prefixed by project name (" + filename + ").\n")
+                    f.write("[Warning] " + filepath + ": Target name (" + targetname.text + ") does not include project name (" + filename + ").\n")
                     #targetname.text = filename
-                    #tree.write(os.path.join(dirPath, file), "UTF-8", True)
+                    #tree.write(filepath, "UTF-8", True)
                 elem = elem.find('TargetOption')
                 elem = elem.find('DebugOpt')
                 elem = elem.find('pMon')
                 if elem.text == None:
-                    f.write("[Error] " + os.path.join(dirPath, file) + ": Download ICE setting is missing.\n")
+                    f.write("[Error] " + filepath + ": Download ICE setting is missing.\n")
                 elif elem.text != KEIL_ICE:
-                    f.write("[Error] " + os.path.join(dirPath, file) + ": Download ICE setting (" + elem.text + ") is incorrect.\n")
+                    f.write("[Error] " + filepath + ": Download ICE setting (" + elem.text + ") is incorrect.\n")
 
         # Check IAR project setting
         # Check eww, ewp, ewd project files exist
@@ -639,11 +652,16 @@ def check_prj():
                 #os.rename(os.path.join(dirPath, file), os.path.join(dirPath, dirname + ".ewp"))
                 #file = dirname + ".ewp"
                 #filename = dirname
-            elif prj_cnt > 1 and filename.find(dirname) != 0:
-                f.write("[Warning] " + os.path.join(dirPath, file) + ": ewp name is not prefixed by sample name (" + dirname + ").\n")
+            elif prj_cnt > 1 and filename.find(dirname) < 0:
+                f.write("[Warning] " + os.path.join(dirPath, file) + ": ewp name does not include sample name (" + dirname + ").\n")
+            filepath = os.path.join(dirPath, file)
             if debugLevel:
-                print("Checking " + os.path.join(dirPath, file))
-            tree = ET.parse(os.path.join(dirPath, file))
+                print("Checking " + filepath)
+            try:
+                tree = ET.parse(filepath)
+            except:
+                f.write("[Error] " + filepath + ": Parse failed.\n")
+                continue    # next file
             root = tree.getroot()
             # check each configuration
             for elem in root.findall('configuration'):
@@ -653,9 +671,9 @@ def check_prj():
                         for opt in e.findall('option'):
                             if opt.find('name').text == "OGChipSelectEditMenu":
                                 if opt.find('state').text == None:
-                                    f.write("[Error] " + os.path.join(dirPath, file) + ": Target device setting is missing.\n")
+                                    f.write("[Error] " + filepath + ": Target device setting is missing.\n")
                                 elif opt.find('state').text.find(IAR_DEVICE) != 0:
-                                    f.write("[Error] " + os.path.join(dirPath, file) + ": Target device setting (" + opt.find('state').text + ") is incorrect.\n")
+                                    f.write("[Error] " + filepath + ": Target device setting (" + opt.find('state').text + ") is incorrect.\n")
                             #if opt.find('name').text == "FPU":
                             #    if opt.find('state').text != "5":
                             #        f.write(file + ": FPU not enabled.\n")
@@ -664,28 +682,27 @@ def check_prj():
                         for opt in e.findall('option'):
                             if opt.find('name').text == "CCDiagSuppress":
                                 if opt.find('state').text != None:
-                                    f.write("[Warning] " + os.path.join(dirPath, file) + ": ICCARM suppress setting (" + opt.find('state').text + "), not recommended.\n")
+                                    f.write("[Warning] " + filepath + ": ICCARM suppress setting (" + opt.find('state').text + "), not recommended.\n")
                             # default Medium (CCOptLevel == 2), High (CCOptLevel == 3)
                             if opt.find('name').text == "CCOptLevel":
                                 if int(opt.find('state').text) < 2:
-                                    f.write("[Warning] " + os.path.join(dirPath, file) + ": C optimized level setting (" + opt.find('state').text + ") is not at least Medium.\n")
+                                    f.write("[Warning] " + filepath + ": C optimized level setting (" + opt.find('state').text + ") is not at least Medium.\n")
                     if setting.find('name').text == "ILINK":
                         e = setting.find('data')
                         for opt in e.findall('option'):
                             if opt.find('name').text == "IlinkProgramEntryLabel":
                                 if opt.find('state').text != IAR_RSTHANDLER:
                                     if opt.find('state').text != None:
-                                        f.write("[Warning] " + os.path.join(dirPath, file) + ": Linker entry symbol setting (" + opt.find('state').text + ") is not " + IAR_RSTHANDLER + ".\n")
+                                        f.write("[Warning] " + filepath + ": Linker entry symbol setting (" + opt.find('state').text + ") is not " + IAR_RSTHANDLER + ".\n")
                                     else:
-                                        f.write("[Warning] " + os.path.join(dirPath, file) + ": Linker entry symbol setting is missing.\n")
+                                        f.write("[Warning] " + filepath + ": Linker entry symbol setting is missing.\n")
                             if opt.find('name').text == "IlinkOverrideProgramEntryLabel":
                                 if opt.find('state').text != "1":
-                                    f.write("[Warning] " + os.path.join(dirPath, file) + ": Linker setting does not override default program entry.\n")
+                                    f.write("[Warning] " + filepath + ": Linker setting does not override default program entry.\n")
                             if opt.find('name').text == "IlinkOutputFile":
                                 outname = opt.find('state').text
-                                namepos = outname.find(filename)
-                                if namepos != 0 and outname[namepos-1] != '\\':
-                                    f.write("[Warning] " + os.path.join(dirPath, file) + ": Output name (" + opt.find('state').text + ") is not the same or prefixed by project name (" + filename + ").\n")
+                                if outname.find(filename) < 0:
+                                    f.write("[Warning] " + filepath + ": Output name (" + opt.find('state').text + ") does not include project name (" + filename + ").\n")
                                     #opt.find('state').text = outname.replace(outname, filename, 1)
                                     #file_modified = 1
                     if setting.find('name').text == "OBJCOPY":
@@ -694,13 +711,12 @@ def check_prj():
                             if opt.find('name').text == "OOCOutputFile":
                                 if opt.find('state').text != None:
                                     binname = opt.find('state').text
-                                    namepos = binname.find(filename)
-                                    if namepos != 0 and binname[namepos-1] != '\\':
-                                        f.write("[Warning] " + os.path.join(dirPath, file) + ": Output name (" + opt.find('state').text + ") is not the same or prefixed by project name (" + filename + ").\n")
+                                    if binname.find(filename) < 0:
+                                        f.write("[Warning] " + filepath + ": Output name (" + opt.find('state').text + ") does not include project name (" + filename + ").\n")
                                         #opt.find('state').text = opt.find('state').text.replace(binname, filename, 1)
                                         #file_modified = 1
             if file_modified:
-               tree.write(os.path.join(dirPath, file), "iso-8859-1", True)
+               tree.write(filepath, "iso-8859-1", True)
 
         # Check eww file setting
         for file in fnmatch.filter(fileNames, '*.eww'):
@@ -719,16 +735,21 @@ def check_prj():
                     f.write("[Auto-Fixed] " + os.path.join(dirPath, file) + ": eww name differs from sample name (" + dirname + ").\n")
                     os.rename(os.path.join(dirPath, file), os.path.join(dirPath, dirname + ".eww"))
                     file = dirname + ".eww"
+            filepath = os.path.join(dirPath, file)
             if debugLevel:
-                print("Checking " + os.path.join(dirPath, file))
-            tree = ET.parse(os.path.join(dirPath, file))
+                print("Checking " + filepath)
+            try:
+                tree = ET.parse(filepath)
+            except:
+                f.write("[Error] " + filepath + ": Parse failed.\n")
+                continue    # next file
             root = tree.getroot()
             for prj in root.findall('project'):
                 prjpath = prj.find('path').text
                 if prjpath.find("$WS_DIR$\\") >= 0:
                     prjpath = prjpath[len("$WS_DIR$\\"): ]
                 if os.path.isfile(os.path.join(dirPath, prjpath)) == False:
-                    f.write("[Error] " + os.path.join(dirPath, file) + ": Project (" + prjpath + ") not found.\n")
+                    f.write("[Error] " + filepath + ": Project (" + prjpath + ") not found.\n")
 
         # Check ewd file setting
         for file in fnmatch.filter(fileNames, '*.ewd'):
@@ -743,11 +764,16 @@ def check_prj():
                 os.rename(os.path.join(dirPath, file), os.path.join(dirPath, dirname + ".ewd"))
                 file = dirname + ".ewd"
                 filename = dirname
-            elif prj_cnt > 1 and filename.find(dirname) != 0:
-                f.write("[Warning] " + os.path.join(dirPath, file) + ": ewd name is not prefixed by sample name (" + dirname + ").\n")
+            elif prj_cnt > 1 and filename.find(dirname) < 0:
+                f.write("[Warning] " + os.path.join(dirPath, file) + ": ewd name does not include sample name (" + dirname + ").\n")
+            filepath = os.path.join(dirPath, file)
             if debugLevel:
-                print("Checking " + os.path.join(dirPath, file))
-            tree = ET.parse(os.path.join(dirPath, file))
+                print("Checking " + filepath)
+            try:
+                tree = ET.parse(filepath)
+            except:
+                f.write("[Error] " + filepath + ": Parse failed.\n")
+                continue    # next file
             root = tree.getroot()
             # check each configuration
             for elem in root.findall('configuration'):
@@ -757,7 +783,7 @@ def check_prj():
                         for opt in e.findall('option'):
                             if opt.find('name').text == "CThirdPartyDriverDll":
                                 if opt.find('state').text.strip() != IAR_DRIVER:
-                                    f.write("[Warning] " + os.path.join(dirPath, file) + ": Wrong Nu-Link driver path setting (" + opt.find('state').text + ").\n")
+                                    f.write("[Error] " + filepath + ": Wrong Nu-Link driver path setting (" + opt.find('state').text + ").\n")
 
     f.close()
     print("Done\n")
