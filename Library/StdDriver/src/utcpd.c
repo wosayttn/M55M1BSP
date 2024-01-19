@@ -14,7 +14,7 @@ extern "C"
 {
 #endif
 
-//uint8_t I2C_ADDR[4] = {0x0, 0x0, 0x0, 0x0};
+
 /** @addtogroup Standard_Driver Standard Driver
   @{
 */
@@ -29,10 +29,10 @@ extern "C"
 
 
 /**
-  * @brief      Clear UTCPD Alert Status
+  * @brief      Get UTCPD Alert Status
   *
-  * @param[in]  port         Specify UTCPD port
-  * @param[in]  AlertStClr     Alert status clear 
+  * @param[in]  port            Specify UTCPD port
+  * @param[in]  i32AlertSts     Alert status point
   *             - \ref UTCPD_ALERT_CCSCHIS
   *             - \ref UTCPD_ALERT_PWRSCHIS
   *             - \ref UTCPD_ALERT_RXSOPIS
@@ -48,7 +48,7 @@ extern "C"
   *             - \ref UTCPD_ALERT_VNDIS
   * @return     0: Successful,  1: Fail
   *
-  * @details    Write One Clear 
+  * @details    Get the  Alert Status flag
   *
   */
 int32_t UTCPD_GetAlertStatus(int port, int* i32AlertSts)
@@ -57,7 +57,7 @@ int32_t UTCPD_GetAlertStatus(int port, int* i32AlertSts)
 }
 
 /**
-  * @brief      Get UTCPD Alert Status
+  * @brief      Clear UTCPD Alert Status
   *
   * @param[in]  port         Specify UTCPD port
   * @param[in]  AlertStClr     Alert status clear 
@@ -117,7 +117,7 @@ int32_t UTCPD_EnableAlertMask(int port, int mask_set)
   * @brief      Disable UTCPD Alert Mask
   *
   * @param[in]  port         Specify UTCPD port
-  * @param[in]  mask_clr     Alert bit mask
+  * @param[in]  mask_clr     clear Alert bit mask
   *             - \ref UTCPD_ALERTM_CCSCHIE
   *             - \ref UTCPD_ALERTM_PWRSCHIE
   *             - \ref UTCPD_ALERTM_RXSOPIE
@@ -139,7 +139,7 @@ int32_t UTCPD_EnableAlertMask(int port, int mask_set)
   */
 int32_t UTCPD_DisableAlertMask(int port, int mask_clr)
 {
-    return tcpc_update16(port, TCPC_REG_ALERT_MASK, mask_clr, MASK_CLR);  
+    return tcpc_update16(port, TCPC_REG_ALERT_MASK, mask_clr, MASK_CLR);
 }
 
 /**
@@ -169,7 +169,7 @@ int32_t UTCPD_EnablePowerStatusMask(int port, int mask_set)
   * @brief      Disable UTCPD Power Status Mask
   *
   * @param[in]  port         Specify UTCPD port
-  * @param[in]  mask_clr     Power bit mask
+  * @param[in]  mask_clr     clear Power bit mask
   *             - \ref UTCPD_PWRSM_SKVBIE
   *             - \ref UTCPD_PWRSM_VCPSIE
   *             - \ref UTCPD_PWRSM_VBPSIE
@@ -214,7 +214,7 @@ int32_t UTCPD_EnableFaultMask(int port, int mask_set)
   * @brief      Disable UTCPD Fault Status Mask
   *
   * @param[in]  port         Specify UTCPD port
-  * @param[in]  mask_clr     Fault Status bit mask
+  * @param[in]  mask_clr     clear Fault Status bit mask
   *             - \ref UTCPD_FAULTSM_VCOCIE
   *             - \ref UTCPD_FAULTSM_VBOVIE
   *             - \ref UTCPD_FAULTSM_VBOCIE
@@ -258,7 +258,7 @@ int32_t UTCPD_EnablePowerCtrl(int port, uint32_t mask_set)
   * @brief      Disable UTCPD Power Control
   *
   * @param[in]  port         Specified UTCPD port
-  * @param[in]  mask_set     Power Control bit mask
+  * @param[in]  maskclr      clear Power Control bit mask
   *             - \ref UTCPD_PWRCTL_VCEN
   *             - \ref UTCPD_PWRCTL_VCPWR
   *             - \ref UTCPD_PWRCTL_FDGEN
@@ -302,8 +302,12 @@ int32_t UTCPD_EnableFaultCtrl(int port, uint32_t mask_set)
   * @brief      Disable UTCPD Fault Control
   *
   * @param[in]  port         Specified UTCPD port
-  * @param[in]  mask_set     Fault bit mask
-  *
+  * @param[in]  maskclr      clear Fault bit mask
+  *             - \ref UTCPD_FAULTCTL_VCOCDTDS
+  *             - \ref UTCPD_FAULTCTL_VBOVDTDS
+  *             - \ref UTCPD_FAULTCTL_VBOCDTDS
+  *             - \ref UTCPD_FAULTCTL_VBDGTMDS
+  *             - \ref UTCPD_FAULTCTL_FOFFVBDS
   * @return     None
   *
   * @details    None
@@ -359,7 +363,7 @@ int32_t UTCPD_EnableFaultStatusMask(int port, int mask_set)
   * @brief      Disable UTCPD Fault Status Mask
   *
   * @param[in]  port         Specify UTCPD port
-  * @param[in]  mask_clr     Fault bit mask
+  * @param[in]  mask_clr     clear Fault bit mask
   *
   * @return     0: Successful,  1: Fail
   *
@@ -408,8 +412,8 @@ int32_t UTCPD_ClearFaultStatus(int port, int FaultStClr)
   * @param[in]  port         Specify UTCPD port
   * @param[in]  u32DrpToggle DRP toggling
   *             - \ref UTCPD_ROLECTL_DRP
-  *             - \ref NULL, 
-  * @param[in]  u32RpValue   Rp pull up value 
+  *             - \ref NULL 
+  * @param[in]  u32Rpvalue   Rp pull up value 
   *             - \ref UTCPD_ROLECTL_RPVALUE_DEF
   *             - \ref UTCPD_ROLECTL_RPVALUE_1P5A
   *             - \ref UTCPD_ROLECTL_RPVALUE_3A
@@ -438,23 +442,23 @@ int32_t UTCPD_SetRoleCtrl(int port, uint32_t u32DrpToggle, uint32_t u32Rpvalue, 
   * @brief      Get Role Control
   *
   * @param[in]  port         Specify UTCPD port
-  * @param[in]  u32DrpToggle DRP toggling
+  * @param[in]  pu32DrpToggle DRP toggling
   *             - \ref UTCPD_ROLECTL_DRP
-  *             - \ref NULL, 
-  * @param[in]  u32RpValue   Rp pull up value 
-  *             - \ref UTCPD_ROLECTL_RPVALUE_DEF
-  *             - \ref UTCPD_ROLECTL_RPVALUE_1P5A
-  *             - \ref UTCPD_ROLECTL_RPVALUE_3A
-  * @param[in]  u32CC2       Force CC2 state 
-  *             - \ref UTCPD_ROLECTL_CC2_RA
-  *             - \ref UTCPD_ROLECTL_CC2_RP
-  *             - \ref UTCPD_ROLECTL_CC2_RD
-  *             - \ref UTCPD_ROLECTL_CC2_OPEN
-  * @param[in]  u32CC1       Force CC1 state 
+  *             - \ref NULL 
+  * @param[in]  pu32CC1       Force CC1 state
   *             - \ref UTCPD_ROLECTL_CC1_RA
   *             - \ref UTCPD_ROLECTL_CC1_RP
   *             - \ref UTCPD_ROLECTL_CC1_RD
   *             - \ref UTCPD_ROLECTL_CC1_OPEN
+  * @param[in]  pu32CC2       Force CC2 state 
+  *             - \ref UTCPD_ROLECTL_CC2_RA
+  *             - \ref UTCPD_ROLECTL_CC2_RP
+  *             - \ref UTCPD_ROLECTL_CC2_RD
+  *             - \ref UTCPD_ROLECTL_CC2_OPEN
+  * @param[in]  pu32Rpvalue   Rp pull up value 
+  *             - \ref UTCPD_ROLECTL_RPVALUE_DEF
+  *             - \ref UTCPD_ROLECTL_RPVALUE_1P5A
+  *             - \ref UTCPD_ROLECTL_RPVALUE_3A
   * @return     0: Successful,  1: Fail
   *
   * @details    None
@@ -477,10 +481,11 @@ int32_t UTCPD_GetRoleCtrl(int port, uint32_t* pu32DrpToggle, uint32_t* pu32CC1, 
   *
   * @param[in]  port         Specify UTCPD port
   * @param[in]  u32BistMode  Enable or Disable BIST Mode
-  *             - \ref UTCPD_TCPCCTL_BISTEN or 0
+  *             - \ref UTCPD_TCPCCTL_BISTEN
+  *             - \ref NULL 
   * @param[in]  u32Orient    Plug Oritentation
-  *             - \ref UTCPD_TCPCCTL_ORIENT or 0
-  *
+  *             - \ref UTCPD_TCPCCTL_ORIENT
+  *             - \ref NULL 
   * @return     0: Successful,  1: Fail
   *
   * @details    None
@@ -496,11 +501,13 @@ int32_t UTCPD_SetTypeCPortCtrl(int port, uint32_t u32BistMode, uint32_t u32Orien
 /**
   * @brief      Get Role Control
   *
-  * @param[in]  port         Specify UTCPD port
-  * @param[in]  u32BistMode  Enable or Disable BIST Mode
-  *             - \ref UTCPD_TCPCCTL_BISTEN or 0
-  * @param[in]  u32Orient    Plug Oritentation
-  *             - \ref UTCPD_TCPCCTL_ORIENT or 0
+  * @param[in]  port          Specify UTCPD port
+  * @param[in]  pu32BistMode  Enable or Disable BIST Mode
+  *             - \ref UTCPD_TCPCCTL_BISTEN
+  *             - \ref NULL 
+  * @param[in]  pu32Orient    Plug Oritentation
+  *             - \ref UTCPD_TCPCCTL_ORIENT
+  *             - \ref NULL 
   * @return     0: Successful,  1: Fail
   *
   * @details    None
@@ -519,7 +526,7 @@ int32_t UTCPD_GetTypeCPortCtrl(int port, uint32_t* pu32BistMode, uint32_t* pu32O
   * @brief      UTCPD Issue Command
   *
   * @param[in]  port         Specify UTCPD port
-  * @param[in]  u8TcpcCtl    Type-C Port Control
+  * @param[in]  cmd          Type-C Port Control
   *             - \ref UTCPD_CMD_DISABLE_VBUS_DETECT
   *             - \ref UTCPD_CMD_ENABLE_VBUS_DETECT
   *             - \ref UTCPD_CMD_DISABLE_SINK_VBUS
@@ -544,17 +551,16 @@ int32_t UTCPD_IsssueCmd(int port, uint32_t cmd)
   * @brief      Get CC Status
   *
   * @param[in]  port         Specify UTCPD port
-  * @param[in]  pu32Look4Con.             Under Look for connection or done  
+  * @param[in]  pu32Look4Con              Under Look for connection or done  
   *             - \ref UTCPD_LK4CONN_DONE     
   *             - \ref UTCPD_UNDER_LK4CONN   
-  * @param[in]  pu32ConRlt.               Connection result  
+  * @param[in]  pu32ConRlt                Connection result  
   *             - \ref UTCPD_CONN_RESULT_RP    
   *             - \ref UTCPD_CONN_RESULT_RD
-  * @param[in]  pu32CC2Sts is CC2_State.  CC2 connection state depends on connection result
+  * @param[in]  pu32CC2Sts    The is CC2_State.  CC2 connection state depends on connection result
   *              - \ref UTCPD_CCSTS_CC2STATE_SRC_OPEN
   *              - \ref UTCPD_CCSTS_CC2STATE_SRC_RA
-  *              - \ref UTCPD_CCSTS_CC2STATE_SRC_Rd
-  *              - \ref x
+  *              - \ref UTCPD_CCSTS_CC2STATE_SRC_RD
   *              - \ref UTCPD_CCSTS_CC2STATE_SNK_OPEN
   *              - \ref UTCPD_CCSTS_CC2STATE_SNK_DEF
   *              - \ref UTCPD_CCSTS_CC2STATE_SNK_1P5A
@@ -562,8 +568,7 @@ int32_t UTCPD_IsssueCmd(int port, uint32_t cmd)
   * @param[in]  pu32CC1Sts is CC1_State.   CC1 connection state depends on connection result
   *             - \ref UTCPD_CCSTS_CC1STATE_SRC_OPEN
   *             - \ref UTCPD_CCSTS_CC1STATE_SRC_RA
-  *             - \ref UTCPD_CCSTS_CC1STATE_SRC_Rd
-  *             - \ref x
+  *             - \ref UTCPD_CCSTS_CC1STATE_SRC_RD
   *             - \ref UTCPD_CCSTS_CC1STATE_SNK_OPEN
   *             - \ref UTCPD_CCSTS_CC1STATE_SNK_DEF
   *             - \ref UTCPD_CCSTS_CC1STATE_SNK_1P5A
@@ -590,16 +595,19 @@ int32_t UTCPD_GetCCSts(int port, uint32_t* pu32Look4Con, uint32_t* pu32ConRlt, u
   * @brief      Get Power Status
   *
   * @param[in]  port         Specify UTCPD port
-  * @param[in]  pu32VBUSDetEn.            pu32VCONNPresent
+  * @param[in]  pu32VBUSDetEn         VBUS Present Detection Enabled or not
   *             - \ref UTCPD_PWRSTS_VBPSDTEN     
-  *             - \ref 0   
-  * @param[in]  pu32VBUSPresent.          VBUS Present or not
+  *             - \ref NULL 
+  * @param[in]  pu32VBUSPresent       VBUS Present or not
   *             - \ref UTCPD_PWRSTS_VBPS    
-  *             - \ref 0
-  * @param[in]  pu32VCONNPresent          VCONN Present or not
+  *             - \ref NULL 
+  * @param[in]  pu32VCONNPresent        VCONN Present or not
   *             - \ref UTCPD_PWRSTS_VCPS
-  *             - \ref 0                      |
-  * @return     0: Successful,  1: Fail
+  *             - \ref NULL 
+  * @param[in]  pu32SnkVBUS          Sinking VBUS or not
+  *             - \ref UTCPD_PWRSTS_SKVB_Msk
+  *             - \ref NULL 
+* @return     0: Successful,  1: Fail
   *
   * @details    None
   */
@@ -620,15 +628,15 @@ int32_t UTCPD_GetPwrSts(int port, uint32_t* pu32VBUSDetEn, uint32_t* pu32VBUSPre
   * @brief      Get Power Status Extention
   *
   * @param[in]  port                      Specify UTCPD port
-  * @param[in]  pu32DbgAccessory.         Debug Accessory Mode
-  *             - \ref != 0               Debug Accessory Mode   
-  *             - \ref 0                 
-  * @param[in]  pu32SrcNonDefVBUS.        Source Non-Default VBUS
-  *             - \ref != 0               Source Non-Default VBUS  
-  *             - \ref 0
-  * @param[in]  pu32SrcDefVBUS            Source Default VBUS
-  *             - \ref != 0               Source Default VBUS
-  *             - \ref 0                   
+  * @param[in]  pu32DbgAccessory          Debug Accessory Mode
+  *             - \ref  UTCPD_PWRSTS_DACON_Msk
+  *             - \ref NULL 
+  * @param[in]  pu32SrcNonDefVBUS         Source Non-Default VBUS
+  *             - \ref UTCPD_PWRSTS_SRHV_Msk
+  *             - \ref NULL 
+  * @param[in]  pu32SrcDefVBUS             Source Default VBUS
+  *             - \ref UTCPD_PWRSTS_SRVB_Msk
+  *             - \ref NULL 
   * @return     0: Successful,  1: Fail
   *
   * @details    None
@@ -648,16 +656,17 @@ int32_t UTCPD_GetPwrStsExt(int port, uint32_t* pu32DbgAccessory, uint32_t* pu32S
 /**
   * @brief      Get Power Status
   *
-  * @param[in]  port                      Specify UTCPD port
-  * @param[in]  pu32VBUSOverVolt.         VBUS Over Voltage Fault
-  *             - \ref 1                   
-  *             - \ref 0                 
-  * @param[in]  pu32SrcNonDefVBUS.        VCONN Over Current Fault
-  *             - \ref 1                  
-  *             - \ref 0
-  * @param[in]  pu32SrcDefVBUS            I2C Interface Error
-  *             - \ref 1                  
-  *             - \ref 0                   
+  * @param[in]  port                Specify UTCPD port
+  * @param[in]  pu32VBUSOverCurr         VBUS Over Current Fault
+  *             - \ref UTCPD_FUTSTS_VBOCFUT_Msk
+  *             - \ref NULL 
+  * @param[in]  pu32VBUSOverVolt         VBUS Over Voltage Fault
+  *             - \ref UTCPD_FUTSTS_VBOVFUT_Msk
+  *             - \ref NULL 
+  * @param[in]  pu32VCONNOverCurr       VCONN Over Current  Fault
+  *             - \ref UTCPD_FUTSTS_VCOCFUT_Msk
+  *             - \ref NULL 
+  * @param[in]  pu32I2CInfErr              I2C Interface Error(Not support)
   * @return     0: Successful,  1: Fail
   *
   * @details    None
@@ -671,7 +680,7 @@ int32_t UTCPD_GetFaultSts(int port, uint32_t* pu32VBUSOverCurr, uint32_t* pu32VB
   *pu32VBUSOverCurr = i32Reg & UTCPD_FUTSTS_VBOCFUT_Msk;
   *pu32VBUSOverVolt = i32Reg & UTCPD_FUTSTS_VBOVFUT_Msk;
   *pu32VCONNOverCurr = i32Reg & UTCPD_FUTSTS_VCOCFUT_Msk;
-  *pu32I2CInfErr = 0;  /* M2L31 didn't support I2C */
+  *pu32I2CInfErr = 0;  /* M55M1 didn't support I2C */
     return rv; 
 }
 
@@ -680,15 +689,15 @@ int32_t UTCPD_GetFaultSts(int port, uint32_t* pu32VBUSOverCurr, uint32_t* pu32VB
   * @brief      Get Fault Status Extention
   *
   * @param[in]  port         Specify UTCPD port
-  * @param[in]  pu32ForceOffFat.          Force Off VBUS Fault
-  *             - \ref 1     
-  *             - \ref 0   
-  * @param[in]  pu32AutoDiscFat.          Auto Discharge Fault
-  *             - \ref 1    
-  *             - \ref 0
-  * @param[in]  pu32ForceDiscFat          Foece Discharge Fault
-  *             - \ref 1
-  *             - \ref 0                      |
+  * @param[in]  pu32ForceOffFat          Force Off VBUS Fault
+  *             - \ref UTCPD_FUTSTS_FOFFVB_Msk
+  *             - \ref NULL
+  * @param[in]  pu32AutoDiscFat          Auto Discharge Fault
+  *             - \ref UTCPD_FUTSTS_ADGFAL_Msk
+  *             - \ref NULL
+  * @param[in]  pu32ForceDiscFat        Foece Discharge Fault
+  *             - \ref UTCPD_FUTSTS_FDGFAL_Msk
+  *             - \ref NULL
   * @return     0: Successful,  1: Fail
   *
   * @details    None
@@ -700,7 +709,7 @@ int32_t UTCPD_GetFaultStsExt(int port, uint32_t* pu32ForceOffFat, uint32_t* pu32
   
   rv = tcpc_addr_read32(port, NULL, TCPC_REG_FAULT_STATUS, &i32Reg);
   *pu32ForceOffFat = i32Reg & UTCPD_FUTSTS_FOFFVB_Msk;
-    *pu32AutoDiscFat = i32Reg & UTCPD_FUTSTS_ADGFAL_Msk;
+  *pu32AutoDiscFat = i32Reg & UTCPD_FUTSTS_ADGFAL_Msk;
   *pu32ForceDiscFat = i32Reg & UTCPD_FUTSTS_FDGFAL_Msk;
     return rv; 
 }
@@ -860,7 +869,7 @@ void UTCPD_vconn_enable_from_cc2(int port)
   * @param[in]  port                Specify UTCPD port
   * @return     None
   *
-  * @details    Enable VCONN Source CC2, Communication channel through CC1
+  * @details    Enable VCONN Source CC1, Communication channel through CC2
   *
   */
 void UTCPD_vconn_enable_from_cc1(int port)
@@ -951,10 +960,10 @@ void UTCPD_vconn_mux_selection(int port, uint32_t cc1vcensel, uint32_t cc2vcense
   *             - \ref UTCPD_VCONN_OC_EINT1  
   *             - \ref UTCPD_VCONN_OC_EINT2  
   *             - \ref UTCPD_VCONN_OC_EINT3
-  *             - \ref UTCPD_VCONN_ADC_CMP0
-  *             - \ref UTCPD_VCONN_ACMP0
-  *             - \ref UTCPD_VCONN_ACMP1
-  *             - \ref UTCPD_VCONN_ACMP2
+  *             - \ref UTCPD_VCONN_OC_ADC_CMP1
+  *             - \ref UTCPD_VCONN_OC_ACMP0
+  *             - \ref UTCPD_VCONN_OC_ACMP1
+  *             - \ref UTCPD_VCONN_OC_ACMP2
   * @details    
   *
   */
@@ -1012,10 +1021,10 @@ void UTCPD_vbus_discharge_polarity_active_high(int port)
   *             - \ref UTCPD_VBUS_OC_EINT1  
   *             - \ref UTCPD_VBUS_OC_EINT2  
   *             - \ref UTCPD_VBUS_OC_EINT3
-  *             - \ref UTCPD_VBUS_ADC_CMP0
-  *             - \ref UTCPD_VBUS_ACMP0
-  *             - \ref UTCPD_VBUS_ACMP1
-  *             - \ref UTCPD_VBUS_ACMP2
+  *             - \ref UTCPD_VBUS_OC_ADC_CMP0
+  *             - \ref UTCPD_VBUS_OC_ACMP0
+  *             - \ref UTCPD_VBUS_OC_ACMP1
+  *             - \ref UTCPD_VBUS_OC_ACMP2
   * @details    
   *
   */

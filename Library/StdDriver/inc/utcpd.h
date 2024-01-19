@@ -151,7 +151,7 @@ extern "C"
 #define UTCPD_CCSTS_CC2STATE_SRC_RA         (1 << 2) 
 #define UTCPD_CCSTS_CC2STATE_SRC_RD         (2 << 2)
 
-#define UTCPD_CCSTS_CC2STATE_SNK_OPEN	    (0 << 2)
+#define UTCPD_CCSTS_CC2STATE_SNK_OPEN       (0 << 2)
 #define UTCPD_CCSTS_CC2STATE_SNK_DEF        (1 << 2) 
 #define UTCPD_CCSTS_CC2STATE_SNK_1P5A       (2 << 2)
 #define UTCPD_CCSTS_CC2STATE_SNK_3A         (3 << 2)
@@ -277,6 +277,10 @@ extern "C"
 #define UTCPD_PWRASTS_BLEEDDLVL_LOW  (0x1ul << 3)                                      /*!< UTCPD_T::PWRASTS: Bleed Discharge Level*/
 
 /** @} end of group UTCPD_EXPORTED_CONSTANTS */
+
+/** @addtogroup UTCPD_EXPORTED_FUNCTIONS UTCPD Exported Functions
+  @{
+*/
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define utcpd functions prototype                                                                        */
