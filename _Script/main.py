@@ -400,7 +400,7 @@ def check_prj():
     debugLevel = 0  # 0/1 to disable/enable
 
     f = open('checkprj.txt', "w+")
-    for dirPath, dirNames, fileNames in os.walk('SampleCode.test'):
+    for dirPath, dirNames, fileNames in os.walk('SampleCode'):
         idx = [m.start() for m in re.finditer(r"\\", dirPath)]
         if len(idx) < 1:
             continue
