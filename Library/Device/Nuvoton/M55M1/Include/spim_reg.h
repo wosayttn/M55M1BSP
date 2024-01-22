@@ -23,7 +23,7 @@
 */
 
 /**
-    @addtogroup SPI/Hyper Bus Synchronous Serial Interface Controller (SPIM)
+    @addtogroup SPI and Hyper Bus Synchronous Serial Interface Controller (SPIM)
     Memory Mapped Structure for SPIM Controller
     @{
 */
