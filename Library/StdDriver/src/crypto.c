@@ -347,7 +347,7 @@ void SHA_SetDMATransfer(CRYPTO_T *crypto, uint32_t u32SrcAddr, uint32_t u32Trans
 void SHA_Read(CRYPTO_T *crypto, uint32_t u32Digest[])
 {
     uint32_t  i, wcnt;
-    void   * reg_addr;
+    uint32_t  reg_addr;
 
     i = (crypto->HMAC_CTL & CRYPTO_HMAC_CTL_OPMODE_Msk) >> CRYPTO_HMAC_CTL_OPMODE_Pos;
 
@@ -373,10 +373,12 @@ void SHA_Read(CRYPTO_T *crypto, uint32_t u32Digest[])
         wcnt = 16UL;
     }
 
-    reg_addr = (void *)((uint32_t)&(crypto->HMAC_DGST[0]));
-    
-    memcpy((void *)u32Digest, (void *)reg_addr, wcnt*8);
-
+    reg_addr = (uint32_t) & (crypto->HMAC_DGST[0]);
+    for(i = 0UL; i < wcnt; i++)
+    {
+        u32Digest[i] = inpw(reg_addr);
+        reg_addr += 4UL;
+    }
 }
 
 /** @cond HIDDEN_SYMBOLS */
@@ -3327,13 +3329,6 @@ int32_t RSA_SetKey_KS(CRYPTO_T *crypto, uint32_t u32KeyNum, uint32_t u32KSMemTyp
 /**
   * @brief  Set RSA DMA transfer configuration while using key store.
   * @param[in]  crypto         The pointer of CRYPTO module
-  * @param[in]  u32OpMode    RSA operation mode, including:
-  *         - \ref RSA_MODE_NORMAL
-  *         - \ref RSA_MODE_CRT
-  *         - \ref RSA_MODE_CRTBYPASS
-  *         - \ref RSA_MODE_SCAP
-  *         - \ref RSA_MODE_CRT_SCAP
-  *         - \ref RSA_MODE_CRTBYPASS_SCAP
   * @param[in]  Src   RSA DMA source data
   * @param[in]  n     The modulus for both the public and private keys
   * @param[in]  u32PNum         The number of the factor of modulus operation(P) in SRAM of key store for CRT/SCAP mode
@@ -3563,6 +3558,6 @@ void CHAPOLY_Start(CRYPTO_T *crypto)
 #endif
 }
 
-/*@}*/ /* end of group CRYPTO_EXPORTED_FUNCTIONS */
-/*@}*/ /* end of group CRYPTO_Driver */
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group CRYPTO_EXPORTED_FUNCTIONS */
+/** @} end of group CRYPTO_Driver */
+/** @} end of group Standard_Driver */

@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     utcpd.c
  * @version  V1.00
- * @brief    M2L31 series UTCPD driver source file
+ * @brief    M55M1 series UTCPD driver source file
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -442,9 +442,7 @@ int32_t UTCPD_SetRoleCtrl(int port, uint32_t u32DrpToggle, uint32_t u32Rpvalue, 
   * @brief      Get Role Control
   *
   * @param[in]  port         Specify UTCPD port
-  * @param[in]  pu32DrpToggle DRP toggling
-  *             - \ref UTCPD_ROLECTL_DRP
-  *             - \ref NULL 
+  * @param[in]  pu32DrpToggle DRP toggling or not
   * @param[in]  pu32CC1       Force CC1 state
   *             - \ref UTCPD_ROLECTL_CC1_RA
   *             - \ref UTCPD_ROLECTL_CC1_RP
@@ -481,11 +479,7 @@ int32_t UTCPD_GetRoleCtrl(int port, uint32_t* pu32DrpToggle, uint32_t* pu32CC1, 
   *
   * @param[in]  port         Specify UTCPD port
   * @param[in]  u32BistMode  Enable or Disable BIST Mode
-  *             - \ref UTCPD_TCPCCTL_BISTEN
-  *             - \ref NULL 
   * @param[in]  u32Orient    Plug Oritentation
-  *             - \ref UTCPD_TCPCCTL_ORIENT
-  *             - \ref NULL 
   * @return     0: Successful,  1: Fail
   *
   * @details    None
@@ -502,12 +496,8 @@ int32_t UTCPD_SetTypeCPortCtrl(int port, uint32_t u32BistMode, uint32_t u32Orien
   * @brief      Get Role Control
   *
   * @param[in]  port          Specify UTCPD port
-  * @param[in]  pu32BistMode  Enable or Disable BIST Mode
-  *             - \ref UTCPD_TCPCCTL_BISTEN
-  *             - \ref NULL 
+  * @param[in]  pu32BistMode  Enable or Disable BIST Mode 
   * @param[in]  pu32Orient    Plug Oritentation
-  *             - \ref UTCPD_TCPCCTL_ORIENT
-  *             - \ref NULL 
   * @return     0: Successful,  1: Fail
   *
   * @details    None
@@ -596,17 +586,9 @@ int32_t UTCPD_GetCCSts(int port, uint32_t* pu32Look4Con, uint32_t* pu32ConRlt, u
   *
   * @param[in]  port         Specify UTCPD port
   * @param[in]  pu32VBUSDetEn         VBUS Present Detection Enabled or not
-  *             - \ref UTCPD_PWRSTS_VBPSDTEN     
-  *             - \ref NULL 
   * @param[in]  pu32VBUSPresent       VBUS Present or not
-  *             - \ref UTCPD_PWRSTS_VBPS    
-  *             - \ref NULL 
-  * @param[in]  pu32VCONNPresent        VCONN Present or not
-  *             - \ref UTCPD_PWRSTS_VCPS
-  *             - \ref NULL 
-  * @param[in]  pu32SnkVBUS          Sinking VBUS or not
-  *             - \ref UTCPD_PWRSTS_SKVB_Msk
-  *             - \ref NULL 
+  * @param[in]  pu32VCONNPresent      VCONN Present or not
+  * @param[in]  pu32SnkVBUS           Sinking VBUS or not
 * @return     0: Successful,  1: Fail
   *
   * @details    None
@@ -628,15 +610,9 @@ int32_t UTCPD_GetPwrSts(int port, uint32_t* pu32VBUSDetEn, uint32_t* pu32VBUSPre
   * @brief      Get Power Status Extention
   *
   * @param[in]  port                      Specify UTCPD port
-  * @param[in]  pu32DbgAccessory          Debug Accessory Mode
-  *             - \ref  UTCPD_PWRSTS_DACON_Msk
-  *             - \ref NULL 
-  * @param[in]  pu32SrcNonDefVBUS         Source Non-Default VBUS
-  *             - \ref UTCPD_PWRSTS_SRHV_Msk
-  *             - \ref NULL 
-  * @param[in]  pu32SrcDefVBUS             Source Default VBUS
-  *             - \ref UTCPD_PWRSTS_SRVB_Msk
-  *             - \ref NULL 
+  * @param[in]  pu32DbgAccessory          Debug Accessory Mode or not
+  * @param[in]  pu32SrcNonDefVBUS         Source Non-Default VBUS or not
+  * @param[in]  pu32SrcDefVBUS            Source Default VBUS or not
   * @return     0: Successful,  1: Fail
   *
   * @details    None
@@ -657,16 +633,10 @@ int32_t UTCPD_GetPwrStsExt(int port, uint32_t* pu32DbgAccessory, uint32_t* pu32S
   * @brief      Get Power Status
   *
   * @param[in]  port                Specify UTCPD port
-  * @param[in]  pu32VBUSOverCurr         VBUS Over Current Fault
-  *             - \ref UTCPD_FUTSTS_VBOCFUT_Msk
-  *             - \ref NULL 
-  * @param[in]  pu32VBUSOverVolt         VBUS Over Voltage Fault
-  *             - \ref UTCPD_FUTSTS_VBOVFUT_Msk
-  *             - \ref NULL 
-  * @param[in]  pu32VCONNOverCurr       VCONN Over Current  Fault
-  *             - \ref UTCPD_FUTSTS_VCOCFUT_Msk
-  *             - \ref NULL 
-  * @param[in]  pu32I2CInfErr              I2C Interface Error(Not support)
+  * @param[in]  pu32VBUSOverCurr         VBUS Over Current Fault or not
+  * @param[in]  pu32VBUSOverVolt         VBUS Over Voltage Fault or not
+  * @param[in]  pu32VCONNOverCurr        VCONN Over Current  Fault or not
+  * @param[in]  pu32I2CInfErr            I2C Interface Error(Not support)
   * @return     0: Successful,  1: Fail
   *
   * @details    None
@@ -689,15 +659,9 @@ int32_t UTCPD_GetFaultSts(int port, uint32_t* pu32VBUSOverCurr, uint32_t* pu32VB
   * @brief      Get Fault Status Extention
   *
   * @param[in]  port         Specify UTCPD port
-  * @param[in]  pu32ForceOffFat          Force Off VBUS Fault
-  *             - \ref UTCPD_FUTSTS_FOFFVB_Msk
-  *             - \ref NULL
-  * @param[in]  pu32AutoDiscFat          Auto Discharge Fault
-  *             - \ref UTCPD_FUTSTS_ADGFAL_Msk
-  *             - \ref NULL
+  * @param[in]  pu32ForceOffFat         Force Off VBUS Fault
+  * @param[in]  pu32AutoDiscFat         Auto Discharge Fault
   * @param[in]  pu32ForceDiscFat        Foece Discharge Fault
-  *             - \ref UTCPD_FUTSTS_FDGFAL_Msk
-  *             - \ref NULL
   * @return     0: Successful,  1: Fail
   *
   * @details    None
