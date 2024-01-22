@@ -209,9 +209,9 @@ void AWF_Threshold_Update(void)
 
     /* Get accumulation value */
     u32AccTemp = AWF_GET_ACUVAL();
-    
+
     /* Calculate high threshold value */
-    if(u32AccTemp + GSensor_Threshold >= 0x0007FFFF)
+    if (u32AccTemp + GSensor_Threshold >= 0x0007FFFF)
     {
         g_u32HTHValue = 0x0007FFFF;
     }
@@ -219,7 +219,7 @@ void AWF_Threshold_Update(void)
     {
         g_u32HTHValue = u32AccTemp + GSensor_Threshold;
     }
-    
+
     /* Calculate low threshold value */
     if (u32AccTemp < GSensor_Threshold)
     {
