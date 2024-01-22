@@ -231,7 +231,7 @@
                     <state>__TARGET_FPU_VFP</state>
                     <state>LWIP_ENABLE_CLIENT_CA=1</state>
                     <state>FREERTOS</state>
-                    <state>MBEDTLS_CONFIG_FILE=&lt;mbedtls_config.h&gt;</state>
+                    <state>MBEDTLS_CONFIG_FILE</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>

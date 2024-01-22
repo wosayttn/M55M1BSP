@@ -48,11 +48,11 @@ void EADC_Init(void)
 
     /* Configure the sample module 0 for analog input channel 2 and timer0 trigger source.*/
     EADC_ConfigSampleModule(EADC0, 0, EADC_TIMER1_TRIGGER, 2);
-    EADC_SetExtendSampleTime(EADC0, 0, 0x80);
+    EADC_SetExtendSampleTime(EADC0, 0, 0xff);
 
     /* Configure the sample module 1 for analog input channel 3 and timer0 trigger source.*/
     EADC_ConfigSampleModule(EADC0, 1, EADC_TIMER1_TRIGGER, 3);
-    EADC_SetExtendSampleTime(EADC0, 1, 0x80);
+    EADC_SetExtendSampleTime(EADC0, 1, 0xff);
 
     /* Enable the sample module 0 interrupt.  */
     EADC_ENABLE_INT(EADC0, BIT0);                    //Enable sample module 0 ADINT0 interrupt.

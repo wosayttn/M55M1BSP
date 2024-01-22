@@ -87,7 +87,7 @@
 		<link>
 			<name>Library/xmodem.c</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/Library/NuMaker/common/xmodem.c</locationURI>
+			<locationURI>PARENT-5-PROJECT_LOC/Library/Commu/xmodem.c</locationURI>
 		</link>
 		<link>
 			<name>User/main.c</name>

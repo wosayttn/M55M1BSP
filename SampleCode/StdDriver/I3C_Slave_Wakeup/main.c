@@ -2,6 +2,7 @@
  * @file    main.c
  * @version V1.00
  * @brief   Wake up the MCU from Power-down mode after receiving read/write request from the Master.
+ *          This sample code needs to work with I3C_MasterRW.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

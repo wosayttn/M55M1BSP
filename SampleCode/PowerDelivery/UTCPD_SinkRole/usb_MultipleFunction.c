@@ -144,12 +144,12 @@ uint32_t vbus_is_source_hv(void)
 }
 
 //=================================== for VBUS and VCONN
-uint32_t power_enable_monitor(void)
+void power_enable_monitor(void)
 {
     outp32(UTCPD0_BASE + TCPC_REG_POWER_CTRL, (inp32(UTCPD0_BASE + TCPC_REG_POWER_CTRL) & ~TCPC_REG_POWER_CTRL_VBUS_VOL_MONITOR_DIS));
 }
 
-uint32_t power_disable_monitor(void)
+void power_disable_monitor(void)
 {
     outp32(UTCPD0_BASE + TCPC_REG_POWER_CTRL, (inp32(UTCPD0_BASE + TCPC_REG_POWER_CTRL) | TCPC_REG_POWER_CTRL_VBUS_VOL_MONITOR_DIS));
 }
@@ -165,7 +165,16 @@ void power_enable_auto_discharge(void)
     /* Enable Auto Discharge = 0 */
     outp32(UTCPD0_BASE + TCPC_REG_POWER_CTRL, inp32(UTCPD0_BASE + TCPC_REG_POWER_CTRL) | TCPC_REG_POWER_CTRL_AUTO_DISCHARGE_DISCONNECT);
 }
-
+void frs_tx_polarity_active_low()
+{
+    /* Set VBUS discharge Polarity Active low */
+    outp32(UTCPD0_BASE+TCPC_REG_PINPL, inp32(UTCPD0_BASE+TCPC_REG_PINPL) & ~TCPC_REG_PINPL_FRSTX);
+}
+void frs_tx_polarity_active_high()
+{
+    /* Set VBUS discharge Polarity Active high */
+    outp32(UTCPD0_BASE+TCPC_REG_PINPL, inp32(UTCPD0_BASE+TCPC_REG_PINPL) | TCPC_REG_PINPL_FRSTX);
+}
 
 void frs_mux_selection(uint32_t cc1frssel, uint32_t cc2frssel)
 {

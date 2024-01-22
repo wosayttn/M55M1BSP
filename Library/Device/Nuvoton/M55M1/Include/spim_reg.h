@@ -23,7 +23,7 @@
 */
 
 /**
-    @addtogroup SPIM Serial Peripheral Interface Controller Master Mode (SPIM)
+    @addtogroup SPI and Hyper Bus Synchronous Serial Interface Controller (SPIM)
     Memory Mapped Structure for SPIM Controller
     @{
 */

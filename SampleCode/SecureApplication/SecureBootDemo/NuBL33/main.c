@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
+#include "NuBL32/NuBL32.h"
 
 /*----------------------------------------------------------------------------
   Non-secure Callable Functions from Secure Region

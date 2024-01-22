@@ -129,6 +129,7 @@
 #define TCPC_REG_PINPL_SRCEN                BIT(0)
 #define TCPC_REG_PINPL_SNKEN                BIT(1)
 #define TCPC_REG_PINPL_VBDCHG               BIT(2)
+#define TCPC_REG_PINPL_FRSTX                BIT(3)
 #define TCPC_REG_PINPL_VCEN                 BIT(8)
 #define TCPC_REG_PINPL_VCDCHG               BIT(9)
 
@@ -339,7 +340,9 @@
  */
 #define TCPC_REG_TX_BUFFER                   0xA0 //0x51        /* TCPCi Rev 2.0 */
 
-#define TCPC_REG_VBUS_VOLTAGE                0xC0 //0x70
+#define TCPC_REG_VBUS_VOLTAGE                0xC0 
+#define TCPC_REG_VBUS_VOLTAGE_VBVOL          (BIT9|BIT8|BIT7|BIT6|BIT5|BIT4|BIT3|BIT2|BIT1|BIT0)
+#define TCPC_REG_VBUS_VOLTAGE_VBSCALE        (BIT11|BIT10) 
 
 #define TCPC_REG_VBUS_SINK_DISCONNECT_THRESH 0xC4 //0x72
 #define TCPC_REG_VBUS_SINK_DISCONNECT_THRESH_DEFAULT 0x008C /* 3.5 V */
@@ -375,7 +378,7 @@
 #define VCDGDTEN                BIT(0)
 
 #define UTCPD_PHTX_SLW               0xE4
-#define UTCPD_PHYSLEW 			     UTCPD_PHTX_SLW	
+#define UTCPD_PHYSLEW            UTCPD_PHTX_SLW  
 
 #define UTCPD_ADG_TM                 0xE8
 #define UTCPD_VSAFE0V                0xEC
@@ -394,7 +397,7 @@
 #define UTCPD_BMCSLICE               UTCPD_BMC_SL_C
 
 #define UTCPD_PHY_PWR                0x11C
-#define UTCPD_PHYCTL				 UTCPD_PHY_PWR
+#define UTCPD_PHYCTL         UTCPD_PHY_PWR
 
 //#define UTCPD_FRS_RX_C             0x120
 #define UTCPD_FRSRXCTL               0x120
@@ -443,15 +446,15 @@
 #define UTCPD_SRST                       0x260
 #define UTCPD_VC_OC_V                0x264
 
-#define UTCPD_CLKDIV                0x300	//TC8260
+#define UTCPD_CLKDIV                0x300  //TC8260
 #define UTCPD_CLKDIV_WKEN           BIT(4)
-#define UTCPD_CLKDIV_DIV       	 	(BIT(2)|BIT(1)|BIT(0))
+#define UTCPD_CLKDIV_DIV            (BIT(2)|BIT(1)|BIT(0))
 
-#define UTCPD_CLKINFO				0x300	//M2L31 
+#define UTCPD_CLKINFO        0x300  //M2L31 
 #define UTCPD_I2C_READY             BIT0
 
-#define UTCPD_TEST1				0x304	 
-#define UTCPD_TEST2				0x308	 
+#define UTCPD_TEST1        0x304   
+#define UTCPD_TEST2        0x308   
 
 extern const struct tcpm_drv tcpci_tcpm_drv;
 extern const struct usb_mux_driver tcpci_tcpm_usb_mux_driver;

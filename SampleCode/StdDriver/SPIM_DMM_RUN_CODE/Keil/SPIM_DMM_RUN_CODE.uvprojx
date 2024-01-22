@@ -33,7 +33,7 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile></SFDFile>
+          <SFDFile>$$Device:M55M1H2LJAE$SVD\Nuvoton\M55M1.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
@@ -52,7 +52,7 @@
           <OutputName>SPIM_DMM_RUN_CODE</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
-          <CreateHexFile>1</CreateHexFile>
+          <CreateHexFile>0</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
           <ListingPath>.\lst\</ListingPath>
@@ -165,13 +165,13 @@
             <AdsANot>0</AdsANot>
             <AdsLLst>1</AdsLLst>
             <AdsLmap>1</AdsLmap>
-            <AdsLcgr>1</AdsLcgr>
+            <AdsLcgr>0</AdsLcgr>
             <AdsLsym>1</AdsLsym>
             <AdsLszi>1</AdsLszi>
             <AdsLtoi>1</AdsLtoi>
-            <AdsLsun>1</AdsLsun>
-            <AdsLven>1</AdsLven>
-            <AdsLsxf>1</AdsLsxf>
+            <AdsLsun>0</AdsLsun>
+            <AdsLven>0</AdsLven>
+            <AdsLsxf>0</AdsLsxf>
             <RvctClst>0</RvctClst>
             <GenPPlst>0</GenPPlst>
             <AdsCpuType>"Cortex-M55"</AdsCpuType>
@@ -338,7 +338,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define></Define>
+              <Define>__WINS__ OPT_SPEED</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\StdDriver\inc;..\..\common\inc</IncludePath>
             </VariousControls>
@@ -347,7 +347,7 @@
             <interw>1</interw>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <thumb>0</thumb>
+            <thumb>1</thumb>
             <SplitLS>0</SplitLS>
             <SwStkChk>0</SwStkChk>
             <NoWarn>0</NoWarn>

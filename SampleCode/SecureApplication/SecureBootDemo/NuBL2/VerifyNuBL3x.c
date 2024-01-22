@@ -42,7 +42,7 @@ static void BytesSwap(char *buf, int32_t len)
 
 int32_t Cal_SHA256_Flash(uint32_t u32Addr, uint32_t u32Bytes, uint32_t *pu32Digest)
 {
-    volatile int32_t    i, i32StartAddr, i32ByteCnt, data;
+    int32_t  i, i32StartAddr, i32ByteCnt, data;
     uint32_t u32TimeOutCnt;
 
     i32StartAddr = (int32_t)u32Addr;
@@ -166,7 +166,7 @@ int32_t VerifyNuBL3x(uint32_t u32ImgBaseAddr, uint32_t u32ImgByteSize, uint32_t 
     struct image_tlv_info   *psTlvInfo     = NULL,
                                  *psProtTlvInfo = NULL;
     struct image_tlv        *psTlv;
-    uint32_t *pu32Hash, au32ImgHash[8], au32KeyHash[8];
+    uint32_t *pu32Hash, au32ImgHash[8];
     int32_t  i;
     E_ECC_CURVE ecc_curve = CURVE_P_256;
     char R[ECDSA_SIGN_LEN * 2 + 1] = { 0 }, S[ECDSA_SIGN_LEN * 2 + 1] = { 0 }, strDigest[IMAGE_HASH_LEN * 2 + 1] = { 0 };

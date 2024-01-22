@@ -73,7 +73,7 @@
 									<listOptionValue builtIn="false" value="SYSTEM_CORE_CLOCK=180000000"/>
 									<listOptionValue builtIn="false" value="LWIP_ENABLE_CLIENT_CA=1"/>
 									<listOptionValue builtIn="false" value="FREERTOS "/>
-									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;mbedtls_config.h\&quot;"/>
+									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.other.2112769173" name="Other compiler flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.other" useByScannerDiscovery="true" value="-masm-syntax-unified" valueType="string"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.otherwarnings.1035591458" name="Other warning flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.otherwarnings" useByScannerDiscovery="true" value="-Wno-incompatible-pointer-types" valueType="string"/>

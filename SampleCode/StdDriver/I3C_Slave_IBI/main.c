@@ -2,6 +2,7 @@
  * @file    main.c
  * @version V1.00
  * @brief   Demonstrate how to initiate an In-Band Interrupt request to an I3C Master.
+ *          This sample code needs to work with I3C_Master_IBI.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

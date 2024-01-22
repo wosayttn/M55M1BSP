@@ -16,6 +16,17 @@
 #include "ec_commands.h"
 #include "ec_i2c.h"
 
+/* Detected resistor values of port partner */
+enum tcpc_cc_voltage_status
+{
+    TYPEC_CC_VOLT_OPEN = 0,
+    TYPEC_CC_VOLT_RA = 1,     /* Port partner is applying Ra */
+    TYPEC_CC_VOLT_RD = 2,     /* Port partner is applying Rd */
+    TYPEC_CC_VOLT_RP_DEF = 5, /* Port partner is applying Rp (0.5A) */
+    TYPEC_CC_VOLT_RP_1_5 = 6, /* Port partner is applying Rp (1.5A) */
+    TYPEC_CC_VOLT_RP_3_0 = 7, /* Port partner is applying Rp (3.0A) */
+};
+
 #include "usb_common.h"
 
 /* Time to wait for TCPC to complete transmit */
@@ -27,16 +38,7 @@ enum usbpd_cc_pin
     USBPD_CC_PIN_2,
 };
 
-/* Detected resistor values of port partner */
-enum tcpc_cc_voltage_status
-{
-    TYPEC_CC_VOLT_OPEN = 0,
-    TYPEC_CC_VOLT_RA = 1,     /* Port partner is applying Ra */
-    TYPEC_CC_VOLT_RD = 2,     /* Port partner is applying Rd */
-    TYPEC_CC_VOLT_RP_DEF = 5, /* Port partner is applying Rp (0.5A) */
-    TYPEC_CC_VOLT_RP_1_5 = 6, /* Port partner is applying Rp (1.5A) */
-    TYPEC_CC_VOLT_RP_3_0 = 7, /* Port partner is applying Rp (3.0A) */
-};
+
 
 /* Resistor types we apply on our side of the CC lines */
 enum tcpc_cc_pull

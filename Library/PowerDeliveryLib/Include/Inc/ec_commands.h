@@ -649,7 +649,7 @@ enum ec_status
     EC_RES_DUP_UNAVAILABLE = 20,         /* Can't resend response */
 
     EC_RES_MAX = UINT16_MAX     /**< Force enum to be 16 bits */
-} __packed;
+};// __packed;
 #ifdef SW
 BUILD_ASSERT(sizeof(enum ec_status) == sizeof(uint16_t));
 #endif
@@ -5811,6 +5811,33 @@ struct ec_params_reboot_ec
  * The old EC interface must not use commands 0xdc or higher.
  */
 #define EC_CMD_VERSION0 0x00DC
+
+#else
+enum usb_charge_mode
+{
+    /* Disable USB port. */
+    USB_CHARGE_MODE_DISABLED,
+    /* Set USB port to Standard Downstream Port, USB 2.0 mode. */
+    USB_CHARGE_MODE_SDP2,
+    /* Set USB port to Charging Downstream Port, BC 1.2. */
+    USB_CHARGE_MODE_CDP,
+    /* Set USB port to Dedicated Charging Port, BC 1.2. */
+    USB_CHARGE_MODE_DCP_SHORT,
+    /* Enable USB port (for dumb ports). */
+    USB_CHARGE_MODE_ENABLED,
+    /* Set USB port to CONFIG_USB_PORT_POWER_SMART_DEFAULT_MODE. */
+    USB_CHARGE_MODE_DEFAULT,
+
+    USB_CHARGE_MODE_COUNT
+};
+
+enum usb_suspend_charge
+{
+    /* Enable charging in suspend */
+    USB_ALLOW_SUSPEND_CHARGE,
+    /* Disable charging in suspend */
+    USB_DISALLOW_SUSPEND_CHARGE
+};
 
 #endif /* SW_2 */
 

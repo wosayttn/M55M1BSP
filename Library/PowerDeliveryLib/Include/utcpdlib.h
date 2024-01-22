@@ -17,7 +17,6 @@
 
 #include "Inc/atomic.h"
 #include "Inc/usb_pd.h"
-#include "Inc/atomic.h"
 #include "Inc/tcpci.h"
 #include "Inc/usb_common.h"
 #include "Inc/ec_timer.h"
@@ -80,8 +79,20 @@ void UTCPD_InstallCallback(int port, utcpd_pvFunPtr* pfn);
 
 enum pd_cc_states UTCPD_TC_get_cc_state(int port);
 enum pd_cc_states UTCPD_TC_get_polarity(int port);
-enum pd_cc_states UTCPD_PE_get_src_caps(int port, int32_t* pu32SrcArray, int32_t* pi32SrcCnt);
-enum pd_cc_states UTCPD_PE_get_snk_caps(int port, int32_t* pu32SnkArray, int32_t* pi32SnkCnt);
+void UTCPD_PE_get_src_caps(int port, int32_t* pu32SrcArray, int32_t* pi32SrcCnt);
+void UTCPD_PE_get_snk_caps(int port, int32_t* pu32SnkArray, int32_t* pi32SnkCnt);
+
+extern void UTCPD_TimerBaseInc(void);
+extern void EADC_ConfigPins(void);
+extern void EADC_Init(void);
+extern void pd_task_reinit(int port);
+extern bool pd_task_loop(int port);
+extern void vconn_polarity_active_low();
+extern void VBUS_Sink_Enable(int32_t port, bool bIsEnable);
+extern void UART_Commandshell(int port);
+extern void cpu_dump(uint32_t start_addr, uint32_t end_addr);
+extern void VBUS_Source_Level(int port, char i8Level);
+extern void VBUS_Sink_Enable(int32_t port, bool bIsEnable);
 
 /*@}*/ /* end of group UTCPDLIB_EXPORTED_FUNCTIONS */
 

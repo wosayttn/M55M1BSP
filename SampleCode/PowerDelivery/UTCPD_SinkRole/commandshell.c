@@ -177,7 +177,8 @@ const static char *PDCommads[] =
     "VCS_SWAP",         "GET_SRC_CAPS",     "GET_SNK_CAPS",     //"ADD",              "SUB",
     "VDM",              "SNKEN",            "SNKDIS",           "SRCEN",            "SRCDIS",
     "PROLE",            "DROLE",            "SRCVC",            "DUMP0",            "DUMP1",
-    "LSRCCAPS",         "LSNKCAPS",         "LCONSTATE",        "REQ_FIX",          "REQ_PPS",  NULL,
+    "LSRCCAPS",         "LSNKCAPS",         "LCONSTATE",        "REQ_FIX",          "REQ_PPS",
+    "VBUS_VOL",         "VBUS_CUR",         NULL,
 };
 
 enum  EnumerateCommandList
@@ -187,6 +188,7 @@ enum  EnumerateCommandList
     VDM,                SNKEN,               SNKDIS,            SRCEN,              SRCDIS,
     PROLE,              DROLE,               SRCVC,             DUMP0,              DUMP1,
     LSRCCAPS,           LSNKCAPS,            LCONSTATE,         REQ_FIX,                      REQ_PPS,
+    VBUS_VOL,           VBUS_CUR,
 };
 
 
@@ -392,7 +394,7 @@ void UART_Commandshell(int port)
 
                 case LSRCCAPS:
                 {
-                    uint32_t u32SrcCnt, u32SrcArray[7], i;
+                    int32_t u32SrcCnt, u32SrcArray[7], i;
 
                     if ((UTCPD_TC_get_cc_state(port) == PD_CC_UFP_ATTACHED) || (UTCPD_TC_get_cc_state(port) == PD_CC_DFP_ATTACHED))
                         UTCPD_PE_get_src_caps(port, &u32SrcArray[0], &u32SrcCnt);
@@ -408,7 +410,7 @@ void UART_Commandshell(int port)
 
                 case LSNKCAPS:
                 {
-                    uint32_t u32SnkCnt, u32SnkArray[7], i;
+                    int32_t u32SnkCnt, u32SnkArray[7], i;
 
                     if ((UTCPD_TC_get_cc_state(port) == PD_CC_UFP_ATTACHED) || (UTCPD_TC_get_cc_state(port) == PD_CC_DFP_ATTACHED))
                         UTCPD_PE_get_snk_caps(port, &u32SnkArray[0], &u32SnkCnt);
@@ -424,8 +426,8 @@ void UART_Commandshell(int port)
 
                 case LCONSTATE:
                 {
-                    uint32_t u32SrcCnt, u32SrcArray[7];
-                    uint32_t u32SnkCnt, u32SnkArray[7];
+                    int32_t u32SrcCnt, u32SrcArray[7];
+                    int32_t u32SnkCnt, u32SnkArray[7];
 
                     if ((UTCPD_TC_get_cc_state(port) == PD_CC_UFP_ATTACHED) || (UTCPD_TC_get_cc_state(port) == PD_CC_DFP_ATTACHED))
                     {
@@ -445,8 +447,8 @@ void UART_Commandshell(int port)
                 case REQ_FIX:
                 {
                     static uint32_t u32ReqIndex = 0;
-                    uint32_t u32Req_mv = 0;
-                    uint32_t u32SrcCnt, u32SrcArray[7];
+                    int32_t u32Req_mv = 0;
+                    int32_t u32SrcCnt, u32SrcArray[7];
 
                     UTCPD_PE_get_src_caps(port, &u32SrcArray[0], &u32SrcCnt);
 
@@ -480,7 +482,7 @@ void UART_Commandshell(int port)
                     static uint32_t u32ReqVol = 0;
                     uint32_t u32Req_mv;
                     uint32_t u32minmv = 0, u32maxmv = 0, u32curr = 0;
-                    uint32_t u32SrcCnt, u32SrcArray[7];
+                    int32_t u32SrcCnt, u32SrcArray[7];
 
                     UTCPD_PE_get_src_caps(port, &u32SrcArray[0], &u32SrcCnt);
 
@@ -539,7 +541,18 @@ void UART_Commandshell(int port)
 #endif
                 }
                 break;
-
+                case VBUS_VOL:
+               {
+                    float vbus_vol;
+                    uint16_t u16VbusVol, u16VconnVol;
+                    UTCPD_GetVoltagInfo(port, &u16VbusVol, &u16VconnVol);  
+                    printf("Get %d\n", u16VbusVol);
+                    vbus_vol = u16VbusVol/1024.*3.5 * E_VBUS_DIVIDER;
+                    printf("VBUS = %fV\n", vbus_vol); 
+               }
+               break; 
+              case VBUS_CUR:
+              break; 
 
                 default:
                     printf("Unknown command\n");

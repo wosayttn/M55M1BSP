@@ -20,7 +20,7 @@
 */
 
 /**
-    @addtogroup HSOTG High Speed USB On-The-Go Controller (HSOTG)
+    @addtogroup HSOTG High Speed USB 2.0 On-The-Go (HSOTG)
     Memory Mapped Structure for HSOTG Controller
     @{
 */
