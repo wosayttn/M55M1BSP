@@ -15,13 +15,103 @@
 #define SPIM_PORT           SPIM1
 
 //------------------------------------------------------------------------------
-void spim_routine(void);
+extern uint8_t gSPIM_Routine[0x550];
 
-void Reset_Handler_PreInit(void)
+//------------------------------------------------------------------------------
+typedef void (*FUNC_PTR)(void);
+
+//------------------------------------------------------------------------------
+int SPIM_LoadImageToHyperram(SPIM_T *spim, uint32_t *pu32ImgBase, uint32_t u32ImageSize)
 {
-    SYS_UnlockReg();
+    uint32_t u32DMMAddr = SPIM_HYPER_GetDMMAddress(spim);
+    uint32_t u32Addr = 0;
+    uint32_t u32VerifyData = 0;
+    volatile uint32_t u32i = 0;
+    uint32_t *pu32Loader = NULL;
+
+    printf("Loading user image to HyperRAM, Image Size = %d =>\n", u32ImageSize);
+
+    printf("\tProgram...");
+
+    pu32Loader = pu32ImgBase;
+
+    for (u32i = 0; u32i < u32ImageSize; u32i += 4, pu32Loader++)
+    {
+        outpw((u32DMMAddr + u32Addr + u32i), *pu32Loader);
+
+        if ((u32Addr + u32i) >= u32ImageSize)
+        {
+            break;
+        }
+    }
+
+    printf("done\r\n");
+
+    printf("\tVerify ...");
+
+    pu32Loader = pu32ImgBase;
+
+    for (u32i = 0; u32i < u32ImageSize; u32i += 4, pu32Loader++)
+    {
+        u32VerifyData = inpw(u32DMMAddr + u32Addr + u32i);
+
+        if ((u32DMMAddr + u32Addr + u32i) >= u32ImageSize)
+        {
+            break;
+        }
+
+        if (u32VerifyData != *pu32Loader)
+        {
+            printf("Addr 0x%x - expect: 0x%02x, read: 0x%02x\n",
+                   (u32Addr + u32i),
+                   u32VerifyData,
+                   *pu32Loader);
+        }
+    }
+
+    printf("done\n");
+
+    return SPIM_OK;
+}
+
+//------------------------------------------------------------------------------
+void SPIM_SetDMMAddrNonCacheable(void)
+{
+    uint32_t u32DMMAddr = SPIM_GetDMMAddress(SPIM_PORT);
+
+    /* Disable D-Cache */
+    SCB_DisableDCache();
+
+    /* Configure MPU memory attribute */
+    /*
+     * Attribute 0
+     * Memory Type = Normal
+     * Attribute   = Outer Non-cacheable, Inner Non-cacheable
+     */
+    ARM_MPU_SetMemAttr(0UL, ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
+
+    /* Configure MPU memory regions */
+    ARM_MPU_SetRegion(0UL,                                                          /* Region 0 */
+                      ARM_MPU_RBAR((uint32_t)u32DMMAddr, ARM_MPU_SH_NON, 0, 0, 0),  /* Non-shareable, read/write, privileged, non-executable */
+                      ARM_MPU_RLAR((uint32_t)u32DMMAddr + 0x10000, 0)               /* Use Attr 0 */
+                     );
+    /* Enable MPU */
+    ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
+
+    /* Enable D-Cache */
+    SCB_EnableDCache();
+}
+
+void SYS_Init(void)
+{
+    /* Enable Internal RC 12MHz clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
+
+    /* Waiting for Internal RC clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
+
     /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_160MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
@@ -36,14 +126,29 @@ void Reset_Handler_PreInit(void)
     CLK_SET_PCLK3DIV(2);
     CLK_SET_PCLK4DIV(2);
 
+    /* Update System Core Clock */
+    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
+    SystemCoreClockUpdate();
+
+    /* Enable UART0 module clock */
+    SetDebugUartCLK();
+
+    /* Enable GPIO Module clock */
+    CLK_EnableModuleClock(GPIOC_MODULE);
+    CLK_EnableModuleClock(GPIOG_MODULE);
+    CLK_EnableModuleClock(GPIOD_MODULE);
+    CLK_EnableModuleClock(GPIOH_MODULE);
+    CLK_EnableModuleClock(GPIOJ_MODULE);
+
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init I/O Multi-function                                                                                 */
+    /*---------------------------------------------------------------------------------------------------------*/
+    SetDebugUartMFP();
+
     if (SPIM_PORT == SPIM0)
     {
         /* Enable SPIM module clock */
         CLK_EnableModuleClock(SPIM0_MODULE);
-
-        /* Enable GPIO Module clock */
-        CLK_EnableModuleClock(GPIOC_MODULE);
-        CLK_EnableModuleClock(GPIOG_MODULE);
 
         /* Init SPIM multi-function pins */
         SET_SPIM0_CLKN_PC5();
@@ -83,11 +188,6 @@ void Reset_Handler_PreInit(void)
     {
         /* Enable SPIM module clock */
         CLK_EnableModuleClock(SPIM1_MODULE);
-
-        /* Enable GPIO Module clock */
-        CLK_EnableModuleClock(GPIOD_MODULE);
-        CLK_EnableModuleClock(GPIOH_MODULE);
-        CLK_EnableModuleClock(GPIOJ_MODULE);
 
         /* Init SPIM multi-function pins */
         SET_SPIM1_CLKN_PH12();
@@ -135,78 +235,13 @@ void Reset_Handler_PreInit(void)
         GPIO_SetSlewCtl(PJ, BIT6, GPIO_SLEWCTL_HIGH);
         GPIO_SetSlewCtl(PJ, BIT7, GPIO_SLEWCTL_HIGH);
     }
-
-    HyperRAM_Init(SPIM_PORT);
-    SPIM_HYPER_EnterDirectMapMode(SPIM_PORT);
-}
-
-//------------------------------------------------------------------------------
-void SPIM_SetDMMAddrNonCacheable(void)
-{
-    uint32_t u32DMMAddr = SPIM_GetDMMAddress(SPIM_PORT);
-
-    /* Disable D-Cache */
-    SCB_DisableDCache();
-
-    /* Configure MPU memory attribute */
-    /*
-     * Attribute 0
-     * Memory Type = Normal
-     * Attribute   = Outer Non-cacheable, Inner Non-cacheable
-     */
-    ARM_MPU_SetMemAttr(0UL, ARM_MPU_ATTR(ARM_MPU_ATTR_NON_CACHEABLE, ARM_MPU_ATTR_NON_CACHEABLE));
-
-    /* Configure MPU memory regions */
-    ARM_MPU_SetRegion(0UL,                                                          /* Region 0 */
-                      ARM_MPU_RBAR((uint32_t)u32DMMAddr, ARM_MPU_SH_NON, 0, 0, 0),  /* Non-shareable, read/write, privileged, non-executable */
-                      ARM_MPU_RLAR((uint32_t)u32DMMAddr + 0x10000, 0)               /* Use Attr 0 */
-                     );
-    /* Enable MPU */
-    ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
-
-    /* Enable D-Cache */
-    SCB_EnableDCache();
-}
-
-void SYS_Init(void)
-{
-    /* Enable Internal RC 12MHz clock */
-    CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
-
-    /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
-    /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_160MHZ, CLK_APLL0_SELECT);
-
-    /* Switch SCLK clock source to PLL0 and divide 1 */
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-
-    /* Set HCLK2 divide 2 */
-    CLK_SET_HCLK2DIV(2);
-
-    /* Set PCLKx divide 2 */
-    CLK_SET_PCLK0DIV(2);
-    CLK_SET_PCLK1DIV(2);
-    CLK_SET_PCLK2DIV(2);
-    CLK_SET_PCLK3DIV(2);
-    CLK_SET_PCLK4DIV(2);
-
-    /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and cyclesPerUs automatically. */
-    SystemCoreClockUpdate();
-
-    /* Enable UART0 module clock */
-    SetDebugUartCLK();
-
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init I/O Multi-function                                                                                 */
-    /*---------------------------------------------------------------------------------------------------------*/
-    SetDebugUartMFP();
 }
 
 int main()
 {
+    uint32_t u32DMMAddr = SPIM_HYPER_GetDMMAddress(SPIM_PORT);
+    FUNC_PTR spim_routine = (FUNC_PTR)(u32DMMAddr + 1);
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -222,6 +257,12 @@ int main()
     printf("+-------------------------------------------------------+\n");
     printf("|       SPIM DMM mode running program on HyperRAM       |\n");
     printf("+-------------------------------------------------------+\n");
+
+    HyperRAM_Init(SPIM_PORT);
+
+    SPIM_HYPER_EnterDirectMapMode(SPIM_PORT);
+
+    SPIM_LoadImageToHyperram(SPIM_PORT, (uint32_t *)&gSPIM_Routine, sizeof(gSPIM_Routine));
 
     while (1)
     {

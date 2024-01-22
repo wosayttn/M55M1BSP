@@ -387,7 +387,7 @@
             <File>
               <FileName>startup_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\startup_M55M1.c</FilePath>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</FilePath>
             </File>
             <File>
               <FileName>system_M55M1.c</FileName>
@@ -834,7 +834,7 @@
             <File>
               <FileName>startup_M55M1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\startup_M55M1.c</FilePath>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</FilePath>
             </File>
             <File>
               <FileName>system_M55M1.c</FileName>
