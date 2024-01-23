@@ -3172,8 +3172,8 @@ static int32_t CheckRsaBufferSize(uint32_t u32OpMode, uint32_t u32BufSize, uint3
   *         - \ref RSA_BUF_KS_T          The struct for using key store
   * @param[in]  u32BufSize is RSA buffer size.
   * @param[in]  u32UseKS is use key store function.
-  *         - \ref 0    No use key store function
-  *         - \ref 1    Use key store function
+  *         - \ref RSA_NOT_KS    No use key store function
+  *         - \ref RSA_USE_KS    Use key store function
   * @return  0    Success.
   * @return  -1   The value of pointer of RSA buffer struct is null.
   */

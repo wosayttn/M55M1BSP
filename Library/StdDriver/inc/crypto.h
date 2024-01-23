@@ -114,6 +114,9 @@ extern "C"
 #define RSA_MODE_SCAP           (0x100UL)     /*!< RSA select SCAP mode                  \hideinitializer */
 #define RSA_MODE_CRT_SCAP       (0x104UL)     /*!< RSA select CRT SCAP mode              \hideinitializer */
 #define RSA_MODE_CRTBYPASS_SCAP (0x10CUL)     /*!< RSA select CRT bypass SCAP mode       \hideinitializer */
+#define RSA_USE_KS              (1UL)         /*!< RSA use KeyStore                      \hideinitializer */
+#define RSA_NOT_KS              (0UL)         /*!< RSA not use KeyStore                  \hideinitializer */
+
 /** @} end of group CRYPTO_EXPORTED_CONSTANTS */
 
 typedef enum

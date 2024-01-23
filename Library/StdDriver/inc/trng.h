@@ -78,32 +78,10 @@ extern "C"
 /*----------------------------------------------------------------------------------------------*/
 /*  Functions                                                                                   */
 /*----------------------------------------------------------------------------------------------*/
-/**
-  * @brief   Enable TRNG.
-  */
 int32_t TRNG_Open(void);
-
-/**
-  * @brief   Generate TRNG.
-  * @param[in]   u32RndNum
-  */
 int32_t TRNG_GenWord(uint32_t *u32RndNum);
-
-/**
-  * @brief   Generate TRNG.
-  * @param[in]   u8BigNum
-  * @param[in]   i32Len
-  */
 int32_t TRNG_GenBignum(uint8_t u8BigNum[], int32_t i32Len);
-
-/**
-  * @brief   Generate TRNG in hexadecimal.
-  * @param[in]   cBigNumHex
-  * @param[in]   i32Len
-  */
 int32_t TRNG_GenBignumHex(char cBigNumHex[], int32_t i32Len);
-
-
 /** @} end of group TRNG_EXPORTED_FUNCTIONS */
 /** @} end of group TRNG_Driver */
 /** @} end of group Standard_Driver */
