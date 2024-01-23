@@ -208,8 +208,10 @@ SECTIONS
 
   .itcm : AT (__etext)
   {
+    . = ALIGN(4);
     __itcm_text_start__ = .;
     *(ITCM)
+    . = ALIGN(4);
     __itcm_text_end__ = .;
   } > ITCM
 
@@ -269,16 +271,19 @@ SECTIONS
   
   .dtcm.init : AT (__esram_data)
   {
+    . = ALIGN(4);
     __dtcm_init_start__ = .;
     *(DTCM.init)
+    . = ALIGN(4);
     __dtcm_init_end__ = .;
   } > DTCM
   
   .dtcm.zi (NOLOAD) :
   {
-  	. = ALIGN(4);
+    . = ALIGN(4);
     __dtcm_zi_start__ = .;
     *(DTCM.zi)
+    . = ALIGN(4);
     __dtcm_zi_end__ = .;
   } > DTCM AT > DTCM
 
@@ -286,19 +291,22 @@ SECTIONS
   
   .NonCacheable.init : AT (__edtcm_init_data)
   {
-  	__SRAM_NONCACHEABLE_start = .;
-  	__SRAM_NONCACHEABLE_init_start = .;
-  	*(NonCacheable.init)
-  	__SRAM_NONCACHEABLE_init_end = .;
+    . = ALIGN(4);
+    __SRAM_NONCACHEABLE_start = .;
+    __SRAM_NONCACHEABLE_init_start = .;
+    *(NonCacheable.init)
+    . = ALIGN(4);
+    __SRAM_NONCACHEABLE_init_end = .;
   } > SRAM_NONCACHEABLE
   
   .NonCacheable.zi (NOLOAD) :
   {
-  	. = ALIGN(4);
-  	__SRAM_NONCACHEABLE_zi_start = .;
-  	*(NonCacheable.zi)
-  	__SRAM_NONCACHEABLE_zi_end = .;
-  	__SRAM_NONCACHEABLE_end = (ORIGIN(SRAM_NONCACHEABLE) + LENGTH(SRAM_NONCACHEABLE));
+    . = ALIGN(4);
+    __SRAM_NONCACHEABLE_zi_start = .;
+    *(NonCacheable.zi)
+    . = ALIGN(4);
+    __SRAM_NONCACHEABLE_zi_end = .;
+    __SRAM_NONCACHEABLE_end = (ORIGIN(SRAM_NONCACHEABLE) + LENGTH(SRAM_NONCACHEABLE));
   } > SRAM_NONCACHEABLE AT > SRAM_NONCACHEABLE
   
   .heap (NOLOAD) :

@@ -206,8 +206,10 @@ SECTIONS
 
   .itcm : AT (__etext)
   {
+    . = ALIGN(4);
     __itcm_text_start__ = .;
     *(ITCM)
+    . = ALIGN(4);
     __itcm_text_end__ = .;
   } > ITCM
 
@@ -269,9 +271,11 @@ SECTIONS
   
   .dtcm.init : AT (__esram_data)
   {
+    . = ALIGN(4);
     __dtcm_init_start__ = .;
     *(DTCM.VTOR)
     *(DTCM.Init)
+    . = ALIGN(4);
     __dtcm_init_end__ = .;
   } > DTCM
 
@@ -280,6 +284,7 @@ SECTIONS
     . = ALIGN(4);
     __dtcm_zi_start__ = .;
     *(.bss.DTCM.ZeroInit)
+    . = ALIGN(4);
     __dtcm_zi_end__ = .;
   } > DTCM AT > DTCM
 
@@ -287,8 +292,10 @@ SECTIONS
 
   .MPU_region3 : AT (__edtcm_init_data)
   {
+    . = ALIGN(4);
     __mpu_r3_start__ = .;
     *(.MPU_region3)
+    . = ALIGN(4);
     __mpu_r3_end__ = .;
   } > MPU_R3
 
@@ -302,6 +309,7 @@ SECTIONS
     . = ALIGN(4);
     __lpsram_zi_start__ = .;
     *(.lpSram)
+    . = ALIGN(4);
     __lpsram_zi_end__ = .;
   } > LPSRAM AT > LPSRAM
 
