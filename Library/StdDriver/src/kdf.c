@@ -205,8 +205,8 @@ int32_t KDF_DeriveKey(E_KDF_MODE eMode, uint32_t u32DeriveKeyParam, uint32_t u32
   *                                  \ref KS_SRAM
   *                                  \ref KS_FLASH
   * @param[in]    eMode              The operation mode. It could be:
-  *                                  \ref eKDF_MODE_HKDF : HKDF  (RFC 5869)
-  *                                  \ref eKDF_MODE_KBKDF: KBKDF (NIST SP 800-108)
+  *                                  \ref eKDF_MODE_HKDF
+  *                                  \ref eKDF_MODE_KBKDF
   * @param[in]    u32DeriveKeyParam  To specify keyin, salt, label and context selection.
   *                                  If KDF_xxx_FROM_REG is set, users can use these functions -
   *                                    KDF_SetKeyInput, KDF_SetSalt, KDF_SetLabel and KDF_SetCtxt

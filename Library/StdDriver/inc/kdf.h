@@ -72,7 +72,7 @@ typedef enum
     eKDF_ERRCODE_INVALID_PARAM  = -4,                           /*!< Invalid parameters                    */
 } E_KDF_ERRCODE;
 
-typedef enum _E_KDF_MODE
+typedef enum
 {
     eKDF_MODE_HKDF  = (0UL << KDF_CTL_MODE_Pos),                /*!< HKDF (RFC 5869)                       */
     eKDF_MODE_KBKDF = (1UL << KDF_CTL_MODE_Pos),                /*!< KBKDF (NIST SP 800-108)               */
