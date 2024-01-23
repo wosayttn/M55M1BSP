@@ -11,6 +11,7 @@
 #include <string.h>
 #include "NuMicro.h"
 
+static volatile int32_t g_ICE_Connected = 1;
 
 #ifndef STDIN_ECHO
     #define STDIN_ECHO      0       // STDIN: echo to STDOUT
@@ -20,7 +21,6 @@
 /* The static buffer is used to speed up the semihost */
 static char g_buf[16];
 static uint8_t g_buf_len = 0;
-static volatile int32_t g_ICE_Connected = 1;
 
 /**
  * @brief      The function to process semihosted command
@@ -57,11 +57,15 @@ int32_t SH_Return(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
  * @retval     0: No ICE debug
  * @retval     1: ICE debug
  */
+#if defined (__ARMCC_VERSION)
+int32_t SH_DoCommand(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0);
+#else
 int32_t SH_DoCommand(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
 {
-    __asm volatile(" BKPT   0xAB              \n"); //Wait ICE or HardFault
+    __ASM volatile("BKPT   0xAB\n");     // Wait ICE or HardFault
     return SH_Return(n32In_R0, n32In_R1, pn32Out_R0);
 }
+#endif
 #endif
 
 /**
@@ -144,8 +148,7 @@ static void SendChar_ToUART(int ch)
         }
         else
             break; // FIFO full
-    }
-    while (i32Tail != i32Head);
+    } while (i32Tail != i32Head);
 }
 #endif
 
@@ -168,7 +171,6 @@ static void SendChar(int ch)
         // Send the char
         if (g_ICE_Connected)
         {
-
             if (SH_DoCommand(0x04, (int)g_buf, NULL) != 0)
             {
                 g_buf_len = 0;
@@ -178,7 +180,7 @@ static void SendChar(int ch)
         }
         else
         {
-# if (DEBUG_ENABLE_SEMIHOST == 2) // Re-direct to UART Debug Port only when DEBUG_ENABLE_SEMIHOST=2
+# if (DEBUG_ENABLE_SEMIHOST == 1) // Re-direct to UART Debug Port only when DEBUG_ENABLE_SEMIHOST=1
             int i;
 
             for (i = 0; i < g_buf_len; i++)
@@ -206,29 +208,48 @@ static void SendChar(int ch)
 static char GetChar(void)
 {
 #ifdef DEBUG_ENABLE_SEMIHOST
-    int nRet;
 
-    while (SH_DoCommand(0x101, 0, &nRet) != 0)
+    if (g_ICE_Connected)
     {
-        if (nRet != 0)
+        int nRet;
+
+#if defined (__ICCARM__)
+
+        while (SH_DoCommand(0x7, 0, &nRet) != 0)
         {
-            SH_DoCommand(0x07, 0, &nRet);
-            return (char)nRet;
+            if (nRet != 0)
+                return (char)nRet;
         }
+
+#else
+
+        while (SH_DoCommand(0x101, 0, &nRet) != 0)
+        {
+            if (nRet != 0)
+            {
+                SH_DoCommand(0x07, 0, &nRet);
+                return (char)nRet;
+            }
+        }
+
+#endif
     }
-
-# if (DEBUG_ENABLE_SEMIHOST == 2) // Re-direct to UART Debug Port only when DEBUG_ENABLE_SEMIHOST=2
-
-    // Use debug port when ICE is not connected at semihost mode
-    while (!g_ICE_Connected)
+    else
     {
-        if ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0)
+# if (DEBUG_ENABLE_SEMIHOST == 1) // Re-direct to UART Debug Port only when DEBUG_ENABLE_SEMIHOST=1
+
+        // Use debug port when ICE is not connected at semihost mode
+        while (!g_ICE_Connected)
         {
-            return (DEBUG_PORT->DAT);
+            if ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0)
+            {
+                return (DEBUG_PORT->DAT);
+            }
         }
-    }
 
 # endif
+    }
+
     return (0);
 
 #else
@@ -244,7 +265,7 @@ static char GetChar(void)
 #endif
 }
 
-__WEAK void ProcessHardFault(uint32_t *pu32StackFrame)
+__WEAK uint32_t ProcessHardFault(uint32_t *pu32StackFrame)
 {
     uint32_t inst, addr, taddr, tdata;
     uint32_t rm, rn, rt, imm5, imm8;
@@ -263,28 +284,36 @@ __WEAK void ProcessHardFault(uint32_t *pu32StackFrame)
     */
 
     if (pu32StackFrame == NULL)
-        return ;
+        return 0;
 
-    printf("Hard fault. pc=0x%08X, lr=0x%08X, xpsr=0x%08X\n",
-           pu32StackFrame[5], pu32StackFrame[6], pu32StackFrame[7]);
     /* Read volatile registers into temporary variables to fix IAR [Pa082] the order of volatile accesses is undefined */
     u32CFSR = SCB->CFSR;
     u32BFAR = SCB->BFAR;
-    printf("%11s cfsr=0x%08X, bfar=0x%08X, mmfar=0x%08X\n", "", u32CFSR, u32BFAR, SCB->MMFAR);
 
     // Get the instruction caused the hardfault
     addr = pu32StackFrame[6];
     inst = M16(addr);
 
-    printf("HardFault Analysis:\n");
-
-    printf("Instruction code = %x\n", inst);
-
     if (inst == 0xBEAB)
     {
-        printf("Execute BKPT without ICE connected\n");
+        //printf("Execute BKPT without ICE connected\n");
+        /*
+            If the instruction is 0xBEAB, it means it is caused by BKPT without ICE connected.
+            We still return for output/input message to UART.
+        */
+        g_ICE_Connected = 0;        // Set a flag for ICE offline
+        pu32StackFrame[6] += 2;     // Return to next instruction
+        return pu32StackFrame[5];   // Keep lr in R0
     }
-    else if ((inst >> 12) == 5)
+
+    /* It is casued by hardfault (Not semihost). Just process the hard fault here. */
+    printf("HardFault Analysis:\n");
+    printf("Hard fault. pc=0x%08X, lr=0x%08X, xpsr=0x%08X\n",
+           pu32StackFrame[5], pu32StackFrame[6], pu32StackFrame[7]);
+    printf("%11s cfsr=0x%08X, bfar=0x%08X, mmfar=0x%08X\n", "", u32CFSR, u32BFAR, SCB->MMFAR);
+    printf("Instruction code = %x\n", inst);
+
+    if ((inst >> 12) == 5)
     {
         // 0101xx Load/store (register offset) on page C2-327 of Armv8-M ref
         rm = (inst >> 6) & 0x7;

@@ -80,17 +80,17 @@ void SystemCoreClockUpdate(void)
  */
 __WEAK void SetDebugUartMFP(void)
 {
-#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
+#if (!defined(DEBUG_ENABLE_SEMIHOST) || (DEBUG_ENABLE_SEMIHOST == 1)) && !defined(OS_USE_SEMIHOSTING)
 #if(USING_UART0  == 1)
-      /* Set GPA6 as UART0 RXD and GPA7 as UART0 TXD */
+    /* Set GPA6 as UART0 RXD and GPA7 as UART0 TXD */
     SET_UART0_RXD_PA6();
     SET_UART0_TXD_PA7();
 #else
-  /* Set GPH5 as UART6 RXD and GPH4 as UART6 TXD */
+    /* Set GPH5 as UART6 RXD and GPH4 as UART6 TXD */
     SET_UART6_RXD_PH5();
     SET_UART6_TXD_PH4();
 #endif
-#endif /* !defined(DEBUG_ENABLE_SEMIHOST) || !defined(OS_USE_SEMIHOSTING) */
+#endif
 }
 
 /**
@@ -102,14 +102,14 @@ __WEAK void SetDebugUartMFP(void)
  */
 __WEAK void SetDebugUartCLK(void)
 {
-#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
+#if (!defined(DEBUG_ENABLE_SEMIHOST) || (DEBUG_ENABLE_SEMIHOST == 1)) && !defined(OS_USE_SEMIHOSTING)
     /* Enable External HXT clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
 
     /* Waiting for HXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 #if(USING_UART0  == 1)
-     /* Select UART0 clock source from HXT */
+    /* Select UART0 clock source from HXT */
     CLK_SetModuleClock(DEBUG_PORT_MODULE, CLK_UARTSEL0_UART0SEL_HXT, CLK_UARTDIV0_UART0DIV(1));
 #else
     /* Select UART6 clock source from HXT */
@@ -120,7 +120,7 @@ __WEAK void SetDebugUartCLK(void)
 
     /* Reset UART module */
     SYS_ResetModule(DEBUG_PORT_RST);
-#endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
+#endif
 }
 
 /**
@@ -132,10 +132,10 @@ __WEAK void SetDebugUartCLK(void)
  */
 __WEAK void InitDebugUart(void)
 {
-#if !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING)
+#if (!defined(DEBUG_ENABLE_SEMIHOST) || (DEBUG_ENABLE_SEMIHOST == 1)) && !defined(OS_USE_SEMIHOSTING)
     /* Init UART to 115200-8n1 for print message */
     UART_Open(DEBUG_PORT, 115200);
-#endif /* !defined(DEBUG_ENABLE_SEMIHOST) && !defined(OS_USE_SEMIHOSTING) */
+#endif
 }
 #endif /* NVT_DBG_UART_OFF */
 

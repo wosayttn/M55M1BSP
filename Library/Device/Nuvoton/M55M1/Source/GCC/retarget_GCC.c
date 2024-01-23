@@ -40,6 +40,9 @@ const char __stdin_name[] __attribute__((aligned(4)))  = "STDIN";
 const char __stdout_name[] __attribute__((aligned(4))) = "STDOUT";
 const char __stderr_name[] __attribute__((aligned(4))) = "STDERR";
 
+#if defined (OS_USE_SEMIHOSTING)
+
+#else
 FILEHANDLE RETARGET(_open)(const char *name, int openmode)
 {
     (void)openmode;
@@ -268,3 +271,4 @@ int RETARGET(getchar)(void)
     return ((int)GetChar());
 }
 
+#endif
