@@ -675,7 +675,7 @@ void EPWM_EnableFallingDeadZone(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u
  *                - EPWM0 : EPWM Group 0
  *                - EPWM1 : EPWM Group 1
  * @param[in] u32ChannelNum EPWM channel number. Valid values are between 0~5
- * @param[in] u32Duration Rising Dead zone length in EPWM clock count, valid values are between 0~0xFFF, but 0 means there is no Dead zone.
+ * @param[in] u32RDuration Rising Dead zone length in EPWM clock count, valid values are between 0~0xFFF, but 0 means there is no Dead zone.
  * @return None
  * @details This function is used to enable Rising Dead zone of selected channel.
  *          The write-protection function should be disabled before using this function.

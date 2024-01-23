@@ -184,7 +184,7 @@ uint32_t DMIC_GetSampleRate(DMIC_T *dmic)
   * @param[in]  dmic The base address of DMIC module
   * @param      u32SampleRate is sample Rate of data.
   * @return     Real sample rate. 0 is DMIC clock source error.
-  * @Note       This API maybe modify OSR setting for sample Rate
+  * @details    This API maybe modify OSR setting for sample Rate
   */
 uint32_t DMIC_SetSampleRate(DMIC_T *dmic, uint32_t u32SampleRate)
 {
