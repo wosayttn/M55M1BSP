@@ -14,13 +14,14 @@
   @{
 */
 
-/** @addtogroup SPIM_HYPER_Driver SPIM_HYPER Driver
+/** @addtogroup SPIMHYPER_Driver SPIMHYPER Driver
   @{
 */
 
-/** @addtogroup SPIM_HYPER_EXPORTED_FUNCTIONS SPIM_HYPER Exported Functions
+/** @addtogroup SPIMHYPER_EXPORTED_FUNCTIONS SPIMHYPER Exported Functions
   @{
 */
+
 /**
   * @brief      SPIM used to delay the read data strobe (DQS/RWDS) from Octal SPI Flash and Hyper bus device
   * @param      spim
@@ -566,6 +567,6 @@ int32_t SPIM_HYPER_IsDMMDone(SPIM_T *spim)
     return SPIM_HYPER_OK;
 }
 
-/** @} end of group SPIM_HYPER_EXPORTED_FUNCTIONS */
-/** @} end of group SPIM_HYPER_Driver */
+/** @} end of group SPIMHYPER_EXPORTED_FUNCTIONS */
+/** @} end of group SPIMHYPER_Driver */
 /** @} end of group Standard_Driver */
