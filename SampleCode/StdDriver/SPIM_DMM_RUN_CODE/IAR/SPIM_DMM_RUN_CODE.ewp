@@ -664,7 +664,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>SPIM_DMM_RunCode.hex</state>
+                    <state>SPIM_DMM_RUN_CODE.hex</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -703,7 +703,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>SPIM_DMM_RunCode.out</state>
+                    <state>SPIM_DMM_RUN_CODE.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>

@@ -23,7 +23,7 @@
 */
 
 /**
-    @addtogroup SPI and Hyper Bus Synchronous Serial Interface Controller (SPIM)
+    @addtogroup SPIM SPI/Hyper Bus Synchronous Serial Interface Controller (SPIM)
     Memory Mapped Structure for SPIM Controller
     @{
 */
@@ -974,7 +974,7 @@ typedef struct
 
     #define SPIM_CTL1_CDINVAL_Pos            (3)                                               /*!< SPIM_T::CTL1: CDINVAL Position         */
     #define SPIM_CTL1_CDINVAL_Msk            (0x1ul << SPIM_CTL1_CDINVAL_Pos)                  /*!< SPIM_T::CTL1: CDINVAL Mask             */
-#endif 
+#endif
 
 #define SPIM_CTL1_SS_Pos                 (4)                                               /*!< SPIM_T::CTL1: SS Position              */
 #define SPIM_CTL1_SS_Msk                 (0x1ul << SPIM_CTL1_SS_Pos)                       /*!< SPIM_T::CTL1: SS Mask                  */

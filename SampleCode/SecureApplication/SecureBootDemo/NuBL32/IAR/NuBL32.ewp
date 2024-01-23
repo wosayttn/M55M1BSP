@@ -1089,8 +1089,8 @@
             <data>
                 <buildActions>
                     <buildAction>
-                        <cmdline>..\..\FwSign.bat ".\Release\Exe\NuBL32.bin" ..\FwKey\ECC-P256.pem</cmdline>
-                        <workingDirectory>$PROJ_DIR$</workingDirectory>
+                        <cmdline>cmd /C "cd /D $PROJ_DIR$ &amp;&amp; ..\..\FwSign.bat .\Release\Exe\NuBL32.bin ..\FwKey\ECC-P256.pem"</cmdline>
+                        <workingDirectory></workingDirectory>
                         <buildSequence>postLink</buildSequence>
                     </buildAction>
                 </buildActions>
