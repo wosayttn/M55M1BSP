@@ -138,7 +138,7 @@ SECTIONS
     *(.dtors)
 
     /* *(.rodata*)*/
-    *(EXCLUDE_FILE(./User/exeinsram.o) .rodata*)                                                
+    *(EXCLUDE_FILE(./User/exeinsram.o) .rodata*)
 
     KEEP(*(.eh_frame*))
   } > FLASH
@@ -216,8 +216,8 @@ SECTIONS
     *(.data)
     *(.data.*)
 
-	. = ALIGN(4);
-	./User/exeinsram.o (.text*)
+    . = ALIGN(4);
+    ./User/exeinsram.o (.text*)
     ./User/exeinsram.o (.rodata*)
 
     . = ALIGN(4);

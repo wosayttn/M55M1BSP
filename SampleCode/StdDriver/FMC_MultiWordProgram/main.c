@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief   Implement FMC multi word program function executed in SRAM
+ * @brief   Implement FMC multi word program function executed in ITCM
  *          to program embedded APROM.
  *
  * SPDX-License-Identifier: Apache-2.0
