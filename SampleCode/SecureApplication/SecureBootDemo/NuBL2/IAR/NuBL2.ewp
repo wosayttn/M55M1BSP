@@ -684,7 +684,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>1</hasPrio>
+                <hasPrio>64</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -1089,12 +1089,7 @@
             <data>
                 <buildActions>
                     <buildAction>
-                        <cmdline>cmd /C "cd /D $PROJ_DIR$ &amp;&amp;  ..\..\FwSign.bat .\Release\Exe\NuBL2.bin ..\FwKey\ECC-P256.pem"</cmdline>
-                        <workingDirectory></workingDirectory>
-                        <buildSequence>postLink</buildSequence>
-                    </buildAction>
-                    <buildAction>
-                        <cmdline>ielftool.exe --bin "$PROJ_DIR$/Release/Exe/NuBL2.out" "$PROJ_DIR$/Release/Exe/NuBL2.bin"</cmdline>
+                        <cmdline>cmd /C "cd /D $PROJ_DIR$ &amp;&amp; ielftool.exe --bin "$PROJ_DIR$/Release/Exe/NuBL2.out" "$PROJ_DIR$/Release/Exe/NuBL2.bin" &amp;&amp;  ..\..\FwSign.bat .\Release\Exe\NuBL2.bin ..\FwKey\ECC-P256.pem"</cmdline>
                         <workingDirectory></workingDirectory>
                         <buildSequence>postLink</buildSequence>
                     </buildAction>

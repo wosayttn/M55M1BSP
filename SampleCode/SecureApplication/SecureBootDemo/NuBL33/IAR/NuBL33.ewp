@@ -676,7 +676,7 @@
                 </option>
                 <option>
                     <name>OOCObjCopyEnable</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
             </data>
         </settings>
@@ -1091,12 +1091,7 @@
             <data>
                 <buildActions>
                     <buildAction>
-                        <cmdline>cmd /C "cd /D $PROJ_DIR$ &amp;&amp; ..\..\FwSign.bat .\Release\Exe\NuBL33.bin ..\FwKey\ECC-P256.pem"</cmdline>
-                        <workingDirectory></workingDirectory>
-                        <buildSequence>postLink</buildSequence>
-                    </buildAction>
-                    <buildAction>
-                        <cmdline>ielftool.exe --bin "$PROJ_DIR$/Release/Exe/NuBL33.out" "$PROJ_DIR$/Release/Exe/NuBL33.bin"</cmdline>
+                        <cmdline>cmd /C "cd /D $PROJ_DIR$ &amp;&amp; ielftool.exe --bin "$PROJ_DIR$/Release/Exe/NuBL33.out" "$PROJ_DIR$/Release/Exe/NuBL33.bin" &amp;&amp; ..\..\FwSign.bat .\Release\Exe\NuBL33.bin ..\FwKey\ECC-P256.pem"</cmdline>
                         <workingDirectory></workingDirectory>
                         <buildSequence>postLink</buildSequence>
                     </buildAction>
