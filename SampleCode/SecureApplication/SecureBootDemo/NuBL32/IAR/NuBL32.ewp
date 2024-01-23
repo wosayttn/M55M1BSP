@@ -1093,6 +1093,11 @@
                         <workingDirectory></workingDirectory>
                         <buildSequence>postLink</buildSequence>
                     </buildAction>
+                    <buildAction>
+                        <cmdline>ielftool.exe --bin "$PROJ_DIR$/Release/Exe/NuBL32.out" "$PROJ_DIR$/Release/Exe/NuBL32.bin"</cmdline>
+                        <workingDirectory></workingDirectory>
+                        <buildSequence>postLink</buildSequence>
+                    </buildAction>
                 </buildActions>
             </data>
         </settings>
