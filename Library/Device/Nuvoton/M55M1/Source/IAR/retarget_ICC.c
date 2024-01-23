@@ -77,19 +77,47 @@ long __lseek(int handle, long offset, int whence)
     return -1;
 }
 
+#ifdef DEBUG_ENABLE_SEMIHOST
+/**
+ * @brief  Check if debug message finished
+ *
+ * @return   1 Message is finished.
+ *           0 Message is transmitting.
+ *
+ * @details  Check if message finished (FIFO empty of debug port)
+ */
+int IsDebugFifoEmpty(void)
+{
+    return ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) != 0U);
+}
+
+void __exit(int return_code)
+{
+    /* Check if link with ICE */
+    if (SH_DoCommand(0x18, 0x20026, NULL) == 0)
+    {
+        /* Make sure all message is print out */
+        while (IsDebugFifoEmpty() == 0);
+    }
+
+label:
+    goto label;  /* Endless loop */
+}
+#else
 void __exit(int x)
 {
     while (1)
     {
     }
 }
+#endif
 
 int __close(int handle)
 {
-  return 0;
+    return 0;
 }
 
-int remove(const char * filename)
+int remove(const char *filename)
 {
-  return 0;
+    return 0;
 }
