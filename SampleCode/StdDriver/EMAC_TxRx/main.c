@@ -9,21 +9,7 @@
 * SPDX-License-Identifier: Apache-2.0
 * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
-/*
- * This is a EMAC_TxRx project for M55M1 series MCU.
- * Users can create their own application based on this project.
- *
- * This project uses internal RC as APLL0 clock source and UART to print messages.
- * Users may need to do extra system configuration according to their system design.
- *
- * I/D-Cache
- *   I/D-Cache are enabled by default for better performance,
- *   users can define NVT_ICACHE_OFF/NVT_DCACHE_OFF in project setting to disable cache.
- * Debug UART
- *   system_M55M1.c has three weak functions as below to configure debug UART port.
- *     SetDebugUartMFP, SetDebugUartCLK and InitDebugUart
- *   Users can re-implement these functions according to system design.
- */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "NuMicro.h"
