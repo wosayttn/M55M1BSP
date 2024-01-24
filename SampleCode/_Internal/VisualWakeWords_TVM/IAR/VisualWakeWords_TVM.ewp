@@ -677,7 +677,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>FaceRecognition.srec</state>
+                    <state>VisualWakeWords_TVM.srec</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -716,7 +716,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>VisualWakeWords.out</state>
+                    <state>VisualWakeWords_TVM.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
