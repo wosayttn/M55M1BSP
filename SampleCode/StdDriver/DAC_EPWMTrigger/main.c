@@ -71,8 +71,6 @@ void SYS_Init(void)
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
-    /* Set PCLK1 divide 4 */
-    CLK_SET_PCLK1DIV(4);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -165,7 +163,7 @@ int32_t main(void)
     DAC_Open(DAC0, 0, DAC_EPWM0_TRIGGER);
 
     /* The DAC conversion settling time is 8us */
-    DAC_SetDelayTime(DAC0, 8);
+    DAC_SetDelayTime(DAC0, 1);
 
     /* Set DAC 12-bit holding data */
     DAC_WRITE_DATA(DAC0, 0, g_au16Sine[g_u32Index]);

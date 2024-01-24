@@ -792,7 +792,8 @@ def check_prj():
 
 # Check source code
 def check_src():
-    keyword_list = { "M25[1-3]", "M235[14]", "M2L31", "MAD02[56]", "M46[07]", "M48[0-7]", "MA35[DS]1", "Uart0DefaultMPF" }
+    keyword_list = { "M25[1-3]", "M235[14]", "M2L31", "MAD02[56]", "M46[07]", "M48[0-7]", "MA35[DS]1",
+                     "NVT_DCACHE_OFF", "NVT_ICACHE", "Uart0DefaultMPF" }
     exclude_list = { "\\.git", "_CUnit", "\\Library\\CMSIS", "ThirdParty" }
     log = open('checksrc.txt', "w+")
 

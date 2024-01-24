@@ -22,7 +22,7 @@
   </DaveTm>
 
   <Target>
-    <TargetName>CacheTest_DCacheON</TargetName>
+    <TargetName>CacheTest_DCacheOFF</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>
@@ -170,7 +170,7 @@
   </Target>
 
   <Target>
-    <TargetName>CacheTest_DCacheOFF</TargetName>
+    <TargetName>CacheTest_DCacheON</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>

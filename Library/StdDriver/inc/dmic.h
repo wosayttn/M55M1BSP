@@ -77,16 +77,16 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /* VAD Power Threshold Definitions                                                                         */
 /*---------------------------------------------------------------------------------------------------------*/
-#define DMIC_VAD_POWERTHRE_0DB             (0x0001UL)                                 /*!< VAD power threshold 0DB       */
-#define DMIC_VAD_POWERTHRE_10DB            (0x0003UL)                                 /*!< VAD power threshold 10DB      */
-#define DMIC_VAD_POWERTHRE_20DB            (0x000AUL)                                 /*!< VAD power threshold 20DB      */
-#define DMIC_VAD_POWERTHRE_30DB            (0x0020UL)                                 /*!< VAD power threshold 30DB      */
-#define DMIC_VAD_POWERTHRE_40DB            (0x0067UL)                                 /*!< VAD power threshold 40DB      */
-#define DMIC_VAD_POWERTHRE_50DB            (0x0147UL)                                 /*!< VAD power threshold 50DB      */
-#define DMIC_VAD_POWERTHRE_60DB            (0x040CUL)                                 /*!< VAD power threshold 60DB      */
-#define DMIC_VAD_POWERTHRE_70DB            (0x0CCCUL)                                 /*!< VAD power threshold 70DB      */
-#define DMIC_VAD_POWERTHRE_80DB            (0x2879UL)                                 /*!< VAD power threshold 80DB      */
-#define DMIC_VAD_POWERTHRE_90DB            (0x7FFFUL)                                 /*!< VAD power threshold 90DB      */
+#define DMIC_VAD_POWERTHRE_M90DB            (0x0001UL)                                 /*!< VAD power threshold -90DB      */
+#define DMIC_VAD_POWERTHRE_M80DB            (0x0003UL)                                 /*!< VAD power threshold -80DB      */
+#define DMIC_VAD_POWERTHRE_M70DB            (0x000AUL)                                 /*!< VAD power threshold -70DB      */
+#define DMIC_VAD_POWERTHRE_M60DB            (0x0020UL)                                 /*!< VAD power threshold -60DB      */
+#define DMIC_VAD_POWERTHRE_M50DB            (0x0067UL)                                 /*!< VAD power threshold -50DB      */
+#define DMIC_VAD_POWERTHRE_M40DB            (0x0147UL)                                 /*!< VAD power threshold -40DB      */
+#define DMIC_VAD_POWERTHRE_M30DB            (0x040CUL)                                 /*!< VAD power threshold -30DB      */
+#define DMIC_VAD_POWERTHRE_M20DB            (0x0CCCUL)                                 /*!< VAD power threshold -20DB      */
+#define DMIC_VAD_POWERTHRE_M10DB            (0x2879UL)                                 /*!< VAD power threshold -10DB      */
+#define DMIC_VAD_POWERTHRE_0DB              (0x7FFFUL)                                 /*!< VAD power threshold   0DB      */
 
 /*@} end of group DMIC_EXPORTED_CONSTANTS */
 
@@ -296,7 +296,7 @@ typedef struct
   * @param[in]  vad The base address of VAD module
   *
   * @return     short term signal power value
-  * @Note       When VADEN(VAD_SINCCTL =1), STP cannot be read by CPU
+  * @details    When VADEN(VAD_SINCCTL =1), STP cannot be read by CPU
   */
 #define DMIC_VAD_GET_STP(vad)                         ((vad)->STATUS0 & VAD_STATUS0_STP_Msk)
 
@@ -313,7 +313,7 @@ typedef struct
   * @param[in]  vad The base address of VAD module
   *
   * @return     long term signal power value
-  * @Note       When VADEN(VAD_SINCCTL =1), LTP cannot be read by CPU
+  * @details    When VADEN(VAD_SINCCTL =1), LTP cannot be read by CPU
   */
 #define DMIC_VAD_GET_LTP(vad)                         (((vad)->STATUS1 & VAD_STATUS1_LTP_Msk)>>VAD_STATUS1_LTP_Pos)
 
@@ -330,7 +330,7 @@ typedef struct
   * @param[in]  vad The base address of VAD module
   *
   * @return     deviation of the Long Term Signal Power and Short Term Signal Power value
-  * @Note       When VADEN(VAD_SINCCTL =1), DEV cannot be read by CPU
+  * @details    When VADEN(VAD_SINCCTL =1), DEV cannot be read by CPU
   */
 #define DMIC_VAD_GET_DEV(vad)                         ((vad)->STATUS1 & VAD_STATUS1_DEV_Msk)
 
@@ -361,7 +361,7 @@ typedef struct
   * @brief      Clear VAD Active Flag.
   * @param[in]  vad The base address of VAD module
   * @return     None.
-  * @Note       Clear VAD Active Flag, ACTIVE, STP, LTP, DEV are cleared
+  * @details    Clear VAD Active Flag, ACTIVE, STP, LTP, DEV are cleared
   */
 #define DMIC_VAD_CLR_ACTIVE(vad)                        ((vad)->SINCCTL |= VAD_SINCCTL_ACTCL_Msk)
 
@@ -455,7 +455,7 @@ __STATIC_INLINE void DMIC_DisableHPF(DMIC_T *dmic, uint32_t u32ChHPF)
 /**
   * @brief      Enable DMIC's channel mute
   * @param[in]  dmic The base address of DMIC module
-  * @param[in]  u32Ch Enable channel Mute.
+  * @param[in]  u32ChMute Enable channel Mute.
   *             - \ref DMIC_CTL_CH0MUTE_Msk
   *             - \ref DMIC_CTL_CH1MUTE_Msk
   *             - \ref DMIC_CTL_CH2MUTE_Msk
@@ -471,7 +471,7 @@ __STATIC_INLINE void DMIC_EnableMute(DMIC_T *dmic, uint32_t u32ChMute)
 /**
   * @brief      Disable DMIC's channel mute
   * @param[in]  dmic The base address of DMIC module
-  * @param[in]  u32Ch Disable channel Mute.
+  * @param[in]  u32ChMute Disable channel Mute.
   *             - \ref DMIC_CTL_CH0MUTE_Msk
   *             - \ref DMIC_CTL_CH1MUTE_Msk
   *             - \ref DMIC_CTL_CH2MUTE_Msk

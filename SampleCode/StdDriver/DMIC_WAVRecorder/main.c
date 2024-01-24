@@ -10,9 +10,6 @@
  * This sample uses internal RC (HIRC) as APLL0 clock source and UART to print messages.
  * Users may need to do extra system configuration according to their system design.
  *
- * I/D-Cache
- *   I-Cache are enabled by default for better performance,
- *   users can define NVT_DCACHE_ON in project setting to enable D-Cache.
  * Debug UART
  *   system_M55M1.c has three weak functions as below to configure debug port.
  *     SetDebugUartMFP, SetDebugUartCLK and InitDebugUart

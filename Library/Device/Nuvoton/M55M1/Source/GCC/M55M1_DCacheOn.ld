@@ -208,8 +208,10 @@ SECTIONS
 
   .itcm : AT (__etext)
   {
+    . = ALIGN(4);
     __itcm_text_start__ = .;
     *(ITCM)
+    . = ALIGN(4);
     __itcm_text_end__ = .;
   } > ITCM
 
@@ -269,9 +271,11 @@ SECTIONS
   
   .dtcm.init : AT (__esram_data)
   {
+    . = ALIGN(4);
     __dtcm_init_start__ = .;
     *(DTCM.VTOR)
     *(DTCM.Init)
+    . = ALIGN(4);
     __dtcm_init_end__ = .;
   } > DTCM
   
@@ -280,6 +284,7 @@ SECTIONS
     . = ALIGN(4);
     __dtcm_zi_start__ = .;
     *(.bss.DTCM.ZeroInit)
+    . = ALIGN(4);
     __dtcm_zi_end__ = .;
   } > DTCM AT > DTCM
 
@@ -287,9 +292,11 @@ SECTIONS
   
   .NonCacheable.Init : AT (__edtcm_init_data)
   {
+    . = ALIGN(4);
     __SRAM_NONCACHEABLE_start = .;
     __SRAM_NONCACHEABLE_init_start = .;
     *(NonCacheable.Init)
+    . = ALIGN(4);
     __SRAM_NONCACHEABLE_init_end = .;
   } > SRAM_NONCACHEABLE
   
@@ -298,6 +305,7 @@ SECTIONS
     . = ALIGN(4);
     __SRAM_NONCACHEABLE_zi_start = .;
     *(.bss.NonCacheable.ZeroInit)
+    . = ALIGN(4);
     __SRAM_NONCACHEABLE_zi_end = .;
     __SRAM_NONCACHEABLE_end = (ORIGIN(SRAM_NONCACHEABLE) + LENGTH(SRAM_NONCACHEABLE));
   } > SRAM_NONCACHEABLE AT > SRAM_NONCACHEABLE
@@ -307,6 +315,7 @@ SECTIONS
     . = ALIGN(4);
     __lpsram_zi_start__ = .;
     *(.lpSram)
+    . = ALIGN(4);
     __lpsram_zi_end__ = .;
   } > LPSRAM AT > LPSRAM
 

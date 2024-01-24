@@ -138,7 +138,7 @@ SECTIONS
     *(.dtors)
 
     /* *(.rodata*)*/
-    *(EXCLUDE_FILE(./User/exeinsram.o) .rodata*)                                                
+    *(EXCLUDE_FILE(./User/exeinsram.o) .rodata*)
 
     KEEP(*(.eh_frame*))
   } > FLASH
@@ -200,8 +200,10 @@ SECTIONS
 
   .itcm : AT (__etext)
   {
+    . = ALIGN(4);
     __itcm_text_start__ = .;
     *(ITCM)
+    . = ALIGN(4);
     __itcm_text_end__ = .;
   } > ITCM
 
@@ -214,8 +216,8 @@ SECTIONS
     *(.data)
     *(.data.*)
 
-	. = ALIGN(4);
-	./User/exeinsram.o (.text*)
+    . = ALIGN(4);
+    ./User/exeinsram.o (.text*)
     ./User/exeinsram.o (.rodata*)
 
     . = ALIGN(4);
@@ -243,7 +245,6 @@ SECTIONS
     /* All data end */
     __data_end__ = .;
   } > SRAM
-                                                           
   
   .sram :
   {
@@ -266,9 +267,11 @@ SECTIONS
   
   .dtcm.init : AT (__esram_data)
   {
+    . = ALIGN(4);
     __dtcm_init_start__ = .;
     *(DTCM.VTOR)
     *(DTCM.Init)
+    . = ALIGN(4);
     __dtcm_init_end__ = .;
   } > DTCM
 
@@ -277,6 +280,7 @@ SECTIONS
     . = ALIGN(4);
     __dtcm_zi_start__ = .;
     *(.bss.DTCM.ZeroInit)
+    . = ALIGN(4);
     __dtcm_zi_end__ = .;
   } > DTCM AT > DTCM
 
@@ -287,6 +291,7 @@ SECTIONS
     . = ALIGN(4);
     __lpsram_zi_start__ = .;
     *(.lpSram)
+    . = ALIGN(4);
     __lpsram_zi_end__ = .;
   } > LPSRAM AT > LPSRAM
 

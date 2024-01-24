@@ -214,8 +214,10 @@ SECTIONS
 
   .itcm : AT (__etext)
   {
+    . = ALIGN(4);
     __itcm_text_start__ = .;
     *(ITCM)
+    . = ALIGN(4);
     __itcm_text_end__ = .;
   } > ITCM
 
@@ -275,9 +277,11 @@ SECTIONS
   
   .dtcm.init : AT (__esram_data)
   {
+    . = ALIGN(4);
     __dtcm_init_start__ = .;
     *(DTCM.VTOR)
     *(DTCM.Init)
+    . = ALIGN(4);
     __dtcm_init_end__ = .;
   } > DTCM
 
@@ -286,6 +290,7 @@ SECTIONS
     . = ALIGN(4);
     __dtcm_zi_start__ = .;
     *(.bss.DTCM.ZeroInit)
+    . = ALIGN(4);
     __dtcm_zi_end__ = .;
   } > DTCM AT > DTCM
 
@@ -296,6 +301,7 @@ SECTIONS
     . = ALIGN(4);
     __lpsram_zi_start__ = .;
     *(.lpSram)
+    . = ALIGN(4);
     __lpsram_zi_end__ = .;
   } > LPSRAM AT > LPSRAM
 
@@ -322,12 +328,11 @@ SECTIONS
   /* ARMv8-M stack sealing:
      to use ARMv8-M stack sealing uncomment '.stackseal' section
    */
-
   .stackseal (ORIGIN(DTCM) + LENGTH(DTCM) - __STACKSEAL_SIZE) (COPY) :
   {
     . = ALIGN(8);
     __StackSeal = .;
-    . = . + 8;
+    . = . + __STACKSEAL_SIZE;
     . = ALIGN(8);
   } > DTCM
 
