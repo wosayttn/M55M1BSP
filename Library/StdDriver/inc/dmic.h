@@ -88,7 +88,7 @@ extern "C"
 #define DMIC_VAD_POWERTHRE_M10DB            (0x2879UL)                                 /*!< VAD power threshold -10DB      */
 #define DMIC_VAD_POWERTHRE_0DB              (0x7FFFUL)                                 /*!< VAD power threshold   0DB      */
 
-/*@} end of group DMIC_EXPORTED_CONSTANTS */
+/** @} end of group DMIC_EXPORTED_CONSTANTS */
 
 
 /* VAD Biquad Filter Coefficient Struct */
@@ -522,11 +522,11 @@ uint32_t DMIC_GetSampleRate(DMIC_T *dmic);
 
 uint32_t DMIC_VAD_SetSampleRate(VAD_T *vad, uint32_t u32SampleRate);
 uint32_t DMIC_VAD_GetSampleRate(VAD_T *vad);
-/*@} end of group DMIC_EXPORTED_FUNCTIONS */
+/** @} end of group DMIC_EXPORTED_FUNCTIONS */
 
-/*@} end of group DMIC_Driver */
+/** @} end of group DMIC_Driver */
 
-/*@} end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }

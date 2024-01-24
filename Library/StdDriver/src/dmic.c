@@ -373,8 +373,8 @@ uint32_t DMIC_VAD_SetSampleRate(VAD_T *vad, uint32_t u32SampleRate)
     return DMIC_VAD_GetSampleRate(vad);
 }
 
-/*@} end of group DMIC_EXPORTED_FUNCTIONS */
+/** @} end of group DMIC_EXPORTED_FUNCTIONS */
 
-/*@} end of group DMIC_Driver */
+/** @} end of group DMIC_Driver */
 
-/*@} end of group Standard_Driver */
+/** @} end of group Standard_Driver */
