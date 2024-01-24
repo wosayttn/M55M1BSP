@@ -142,49 +142,81 @@ void SYS_Init(void)
     }
 }
 
-int SPIM_TrimRXCLKDLY(SPIM_T *spim)
+int SPIM_TrimRxClkDlyNum(SPIM_T *spim, SPIM_PHASE_T *psWbWrCMD, SPIM_PHASE_T *psWbRdCMD)
 {
-    uint32_t u32i = 0;
-    uint8_t u8RdDelay = 0;
+    volatile uint8_t u8RdDelay = 0;
+    uint8_t u8TmpRdDelay = 0;
     uint8_t u8RdDelayIdx = 0;
-    uint8_t u8RdDelayRes[0xF] = {0};
-    uint32_t u32SAddr = 0x100;
-    uint8_t au8SrcData[32] = {0};
-    uint8_t au8DestData[32] = {0};
-
-    for (u32i = 0; u32i < 32; u32i++)
+    uint8_t u8RdDelayRes[0x0F] = {0};
+    uint32_t u32SAddr = 0x0;
+    volatile uint32_t u32i = 0;
+    uint32_t u32Div = SPIM_GET_CLOCK_DIVIDER(spim);
+    uint8_t au8TrimPatten[32] =
     {
-        au8SrcData[u32i] = (0x1 | u32i);
-    }
+        0xff, 0x0F, 0xFF, 0x00, 0xFF, 0xCC, 0xC3, 0xCC,
+        0xC3, 0x3C, 0xCC, 0xFF, 0xFE, 0xFF, 0xFE, 0xEF,
+        0xFF, 0xDF, 0xFF, 0xDD, 0xFF, 0xFB, 0xFF, 0xFB,
+        0xBF, 0xFF, 0x7F, 0xFF, 0x77, 0xF7, 0xBD, 0xEF,
+    };
+    uint8_t au8CmpBuf[32] = {0};
+#ifdef DMM_MODE_TRIM
+    uint32_t u32RdDataCnt = 0;
+    uint32_t u32DMMAddr = SPIM_GetDMMAddress(pSPIMx);
+    uint32_t *pu32RdData = NULL;
+#endif //
 
-    SPIM_EraseBlock(spim, u32SAddr, SPIM_OP_DISABLE, OPCODE_BE_64K, SPIM_OP_ENABLE, SPIM_OP_ENABLE);
+    SPIM_SET_CLOCK_DIVIDER(spim, 8);
 
-    SPIM_DMADMM_InitPhase(spim, &gsWb02hWrCMD, SPIM_CTL0_OPMODE_PAGEWRITE);
+    SPIM_EraseBlock(spim,
+                    u32SAddr,
+                    psWbRdCMD->u32AddrWidth == PHASE_WIDTH_32 ? SPIM_OP_ENABLE : SPIM_OP_DISABLE,
+                    OPCODE_BE_64K,
+                    1,
+                    SPIM_OP_ENABLE);
 
     SPIM_DMA_Write(spim,
                    u32SAddr,
-                   ((gsWb02hWrCMD.u32AddrWidth == PHASE_WIDTH_32) ? 1UL : 0UL),
-                   sizeof(au8SrcData),
-                   au8SrcData,
-                   gsWb02hWrCMD.u32CMDCode);
+                   psWbRdCMD->u32AddrWidth == PHASE_WIDTH_32 ? SPIM_OP_ENABLE : SPIM_OP_DISABLE,
+                   sizeof(au8TrimPatten),
+                   au8TrimPatten,
+                   psWbWrCMD->u32CMDCode);
 
-    SPIM_DMADMM_InitPhase(spim, &gsWb0BhRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
+    SPIM_SET_CLOCK_DIVIDER(spim, u32Div);
+
+#ifdef DMM_MODE_TRIM
+    SPIM_DMM_ReadPhase(pSPIMx, psWbRdCMD, 1);
+#endif
 
     for (u8RdDelay = 0; u8RdDelay <= 0xF; u8RdDelay++)
     {
-        memset(au8DestData, 0, sizeof(au8DestData));
-        SPIM_SET_RXCLKDLY_RDDLYSEL(spim, u8RdDelay);
+        u8TmpRdDelay = u8RdDelay;
+        SPIM_SET_RXCLKDLY_RDDLYSEL(spim, u8TmpRdDelay);
 
+        memset(au8CmpBuf, 0, sizeof(au8TrimPatten));
+
+#ifndef DMM_MODE_TRIM
         SPIM_DMA_Read(spim,
                       u32SAddr,
-                      ((gsWb0BhRdCMD.u32AddrWidth == PHASE_WIDTH_32) ? 1UL : 0UL),
-                      sizeof(au8DestData),
-                      au8DestData,
-                      gsWb0BhRdCMD.u32CMDCode,
+                      psWbRdCMD->u32AddrWidth == PHASE_WIDTH_32 ? SPIM_OP_ENABLE : SPIM_OP_DISABLE,
+                      sizeof(au8TrimPatten),
+                      au8CmpBuf,
+                      psWbRdCMD->u32CMDCode,
                       SPIM_OP_ENABLE);
+#else
+        u32RdDataCnt = 0;
+        pu32RdData = (uint32_t *)tstbuf2;
+
+        //SPIM_IO_ReadPhase(pSPIMx, pMT0BhRdCMD, u32SAddr, tstbuf2, sizeof(au8TrimPatten));
+
+        for (u32i = u32SAddr; u32i < (u32SAddr + sizeof(au8TrimPatten)); u32i += 4)
+        {
+            pu32RdData[u32RdDataCnt++] = inpw(u32DMMAddr + u32i);
+        }
+
+#endif
 
         // Compare.
-        if (memcmp(au8SrcData, au8DestData, sizeof(au8DestData)) == 0)
+        if (memcmp(au8TrimPatten, au8CmpBuf, sizeof(au8TrimPatten)) == 0)
         {
             printf("RX Delay: %d = Pass\r\n", u8RdDelay);
             u8RdDelayRes[u8RdDelayIdx++] = u8RdDelay;
@@ -193,7 +225,7 @@ int SPIM_TrimRXCLKDLY(SPIM_T *spim)
 
     if (u8RdDelayIdx >= 2)
     {
-        u8RdDelayIdx = (u8RdDelayIdx / 2);
+        u8RdDelayIdx = (u8RdDelayIdx / 2) /*- 1*/;
     }
     else
     {
@@ -257,6 +289,7 @@ int dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd)
             (*pData) = (i << 16) | (TEST_BLOCK_ADDR + offset + i);
 
         SPIM_DMA_Write(SPIM_PORT, TEST_BLOCK_ADDR + offset, is4ByteAddr, BUFFER_SIZE, g_buff, WrCmd);
+
     }
 
     printf("done.\n");
@@ -311,15 +344,12 @@ int main()
     printf("|      SPIM DMA mode read/write sample      |\n");
     printf("+-------------------------------------------+\n");
 
-    /* Set SPIM clock as HCLK divided by 8 */
-    SPIM_SET_CLOCK_DIVIDER(SPIM_PORT, 8);
+    /* Set SPIM clock as HCLK divided by 1 */
+    SPIM_SET_CLOCK_DIVIDER(SPIM_PORT, 1);
 
     SPIM_DISABLE_CIPHER(SPIM_PORT);
 
     SPIM_DISABLE_CACHE(SPIM_PORT);
-
-    //SPIM_SET_RXCLKDLY_RDDLYSEL(SPIM_PORT, 0);       /* Insert 0 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
-    SPIM_TrimRXCLKDLY(SPIM_PORT);
 
     if (SPIM_InitFlash(SPIM_PORT, 1) != 0)          /* Initialized SPI flash */
     {
@@ -336,6 +366,9 @@ int main()
     SPIM_DMADMM_InitPhase(SPIM_PORT, &gsWb0BhRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
     SPIM_DMADMM_InitPhase(SPIM_PORT, &gsWb02hWrCMD, SPIM_CTL0_OPMODE_PAGEWRITE);
 
+    /* Trim RX clock delay cycle. Adjust the sampling clock of received data to latch the correct data. */
+    SPIM_TrimRxClkDlyNum(SPIM_PORT, &gsWb02hWrCMD, &gsWb0BhRdCMD);
+
     if (dma_read_write(0, gsWb0BhRdCMD.u32CMDCode, gsWb02hWrCMD.u32CMDCode) < 0)
     {
         printf("  FAILED!!\n");
@@ -346,6 +379,9 @@ int main()
 
     printf("\n[Fast Read Dual Output] 3-bytes address mode, Fast Read Dual command...\r\n");
     SPIM_DMADMM_InitPhase(SPIM_PORT, &gsWbBBhRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
+
+    /* Trim RX clock delay cycle. Adjust the sampling clock of received data to latch the correct data. */
+    SPIM_TrimRxClkDlyNum(SPIM_PORT, &gsWb02hWrCMD, &gsWbBBhRdCMD);
 
     if (dma_read_write(0, gsWbBBhRdCMD.u32CMDCode, gsWb02hWrCMD.u32CMDCode) < 0)
     {
@@ -358,6 +394,9 @@ int main()
     printf("\n[Fast Read Quad Output] 3-bytes address mode, Fast Read Quad command...\r\n");
     SPIM_DMADMM_InitPhase(SPIM_PORT, &gsWbEBhRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
 
+    /* Trim RX clock delay cycle. Adjust the sampling clock of received data to latch the correct data. */
+    SPIM_TrimRxClkDlyNum(SPIM_PORT, &gsWb02hWrCMD, &gsWbEBhRdCMD);
+
     if (dma_read_write(0, gsWbEBhRdCMD.u32CMDCode, gsWb02hWrCMD.u32CMDCode) < 0)
     {
         printf("  FAILED!!\n");
@@ -367,9 +406,11 @@ int main()
     printf("[OK].\n");
 
     SPIM_DMADMM_InitPhase(SPIM_PORT, &gsWb12hWrCMD, SPIM_CTL0_OPMODE_PAGEWRITE);
-
     printf("\n[Fast Read Dual I/O] 4-bytes address mode, dual read...\r\n");
     SPIM_DMADMM_InitPhase(SPIM_PORT, &gsWbBChRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
+
+    /* Trim RX clock delay cycle. Adjust the sampling clock of received data to latch the correct data. */
+    SPIM_TrimRxClkDlyNum(SPIM_PORT, &gsWb12hWrCMD, &gsWbBChRdCMD);
 
     if (dma_read_write(1, gsWbBChRdCMD.u32CMDCode, gsWb12hWrCMD.u32CMDCode) < 0)
     {
@@ -381,6 +422,9 @@ int main()
 
     printf("\n[Fast Read Quad I/O] 4-bytes address mode, quad read...\r\n");
     SPIM_DMADMM_InitPhase(SPIM_PORT, &gsWbEChRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
+
+    /* Trim RX clock delay cycle. Adjust the sampling clock of received data to latch the correct data. */
+    SPIM_TrimRxClkDlyNum(SPIM_PORT, &gsWb12hWrCMD, &gsWbEChRdCMD);
 
     if (dma_read_write(1, gsWbEChRdCMD.u32CMDCode, gsWb12hWrCMD.u32CMDCode) < 0)
     {
