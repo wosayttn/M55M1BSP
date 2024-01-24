@@ -2,8 +2,8 @@
  * @file    main.c
  * @version V1.00
  * @brief
- *          how how to set LPI2C in Slave mode and receive the data from Master.
- *          his sample code needs to work with LPI2C_Master.
+ *          Show how to set LPI2C in Slave mode and receive the data from Master.
+ *          This sample code needs to work with LPI2C_Master.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
