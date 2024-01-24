@@ -533,3 +533,4 @@ uint32_t DMIC_VAD_GetSampleRate(VAD_T *vad);
 #endif
 
 #endif //__DMIC_H__
+

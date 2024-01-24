@@ -387,3 +387,4 @@ uint32_t DMIC_VAD_SetSampleRate(VAD_T *vad, uint32_t u32SampleRate)
 #ifdef __cplusplus
 }
 #endif
+

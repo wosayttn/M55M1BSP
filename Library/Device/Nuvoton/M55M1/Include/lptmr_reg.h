@@ -343,8 +343,8 @@ typedef struct
      * |        |          |The bit is used to control polarity state of PWMx output pin.
      * |        |          |0 = PWMx output pin polar inverse Disabled.
      * |        |          |1 = PWMx output pin polar inverse Enabled.
-     * @var LPTMR_T::PWMPOEN
-     * Offset: 0x5C  LPTMR PWM Pin Output Enable Register
+     * @var LPTMR_T::PWMPOCTL
+     * Offset: 0x5C  LPTMR PWM Pin Output Control Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
