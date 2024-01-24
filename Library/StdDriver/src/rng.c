@@ -34,6 +34,8 @@ static void RNG_BasicConfig()
     /* TRNG & PRNG clock enable and module reset*/
     CLK_EnableModuleClock(CRYPTO0_MODULE);
     CLK_EnableModuleClock(TRNG0_MODULE);
+    SYS_ResetModule(SYS_CRYPTO0RST);
+    SYS_ResetModule(SYS_TRNG0RST);
 
 
     /* Enable LDOEN  */
@@ -48,8 +50,7 @@ static void RNG_BasicConfig()
 	};
     
     /* Set NRST, then enable TRNGEN*/
-    TRNG->CTL &= ~TRNG_CTL_NRST_Msk;
-	TRNG->CTL |= (TRNG_CTL_NRST_Msk);
+    TRNG->CTL |= (TRNG_CTL_NRST_Msk);
 	TRNG->CTL |= (TRNG_CTL_TRNGEN_Msk);
 
 }

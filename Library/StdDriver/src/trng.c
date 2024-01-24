@@ -38,10 +38,6 @@ int32_t TRNG_Open(void)
         printf("Waiting for ready\n");
     }
 
-    TRNG->CTL &= ~TRNG_CTL_NRST_Msk;
-
-    CLK_SysTickDelay(1);
-
     TRNG->CTL |= (TRNG_CTL_NRST_Msk);
 
     TRNG->CTL |= (TRNG_CTL_TRNGEN_Msk);
