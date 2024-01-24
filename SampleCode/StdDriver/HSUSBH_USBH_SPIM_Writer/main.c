@@ -30,7 +30,7 @@ SPIM_PHASE_T sWb02hWrCMD =
     CMD_NORMAL_PAGE_PROGRAM,                                    //Command Code
     PHASE_NORMAL_MODE, PHASE_WIDTH_8,  PHASE_DISABLE_DTR,       //Command Phase
     PHASE_NORMAL_MODE, PHASE_WIDTH_24, PHASE_DISABLE_DTR,       //Address Phase
-    PHASE_NORMAL_MODE, PHASE_ORDER_MODE0,  PHASE_DISABLE_DTR,   //Data Phase
+    PHASE_NORMAL_MODE, PHASE_ORDER_MODE0,  PHASE_DISABLE_DTR, SPIM_OP_DISABLE,   //Data Phase
     0,
 };
 
@@ -40,7 +40,7 @@ SPIM_PHASE_T sWb03hRdCMD =
     CMD_DMA_FAST_READ,                                          // Command Code
     PHASE_NORMAL_MODE, PHASE_WIDTH_8, PHASE_DISABLE_DTR,        // Command Phase
     PHASE_NORMAL_MODE, PHASE_WIDTH_24, PHASE_DISABLE_DTR,       // Address Phase
-    PHASE_NORMAL_MODE, PHASE_ORDER_MODE0, PHASE_DISABLE_DTR,    // Data Phase
+    PHASE_NORMAL_MODE, PHASE_ORDER_MODE0, PHASE_DISABLE_DTR, SPIM_OP_DISABLE,    // Data Phase
     8,                                                          // Dummy Cycle Phase
 };
 
@@ -154,9 +154,9 @@ void SYS_Init(void)
 
 #if (USE_USB_APLL1_CLOCK)
     /* Enable APLL1 96MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);    
-#endif    
-    
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);
+#endif
+
     /* Enable GPIOA module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
@@ -214,7 +214,7 @@ void SYS_Init(void)
     PC->SMTEN |= (GPIO_SMTEN_SMTEN0_Msk |
                   GPIO_SMTEN_SMTEN3_Msk |
                   GPIO_SMTEN_SMTEN4_Msk);
- 
+
     PG->SMTEN |= (GPIO_SMTEN_SMTEN10_Msk |
                   GPIO_SMTEN_SMTEN11_Msk |
                   GPIO_SMTEN_SMTEN12_Msk);
@@ -516,7 +516,7 @@ int  write_file_to_flash(char *cmdline)
     SPIM_ReadJedecId(SPIM0, idBuf, sizeof(idBuf), 1, 0);
     printf("Flash ID=0x%02X, 0x%02X, 0x%02X\n", idBuf[0], idBuf[1], idBuf[2]);
 
-    SPIM_Enable_4Bytes_Mode(SPIM0, IS_4BYTES_ADDR, 1);  /* Enable 4-bytes address mode?          */
+    //SPIM_Enable_4Bytes_Mode(SPIM0, IS_4BYTES_ADDR, 1);  /* Enable 4-bytes address mode?          */
 
     /*
      *  Erase SPIM flash page and program...
@@ -544,7 +544,7 @@ int  write_file_to_flash(char *cmdline)
             memset(Buff1, 0x11, BUFF_SIZE); /* fill buffer with non-0xFF                  */
 
             /* DMA read SPIM flash                                                        */
-            SPIM_DMA_Read(SPIM0, addr, IS_4BYTES_ADDR, BUFF_SIZE, Buff1, CMD_DMA_FAST_READ, 1);
+            SPIM_DMA_Read(SPIM0, addr, IS_4BYTES_ADDR, BUFF_SIZE, Buff1, sWb03hRdCMD.u32CMDCode, 1);
 
             if (memcmp(Buff1, Buff2, BUFF_SIZE) != 0)
             {
@@ -570,11 +570,11 @@ int  write_file_to_flash(char *cmdline)
             }
 
             /* DMA write SPIM flash                       */
-            SPIM_DMA_Write(SPIM0, addr, IS_4BYTES_ADDR, BUFF_SIZE, Buff1, CMD_NORMAL_PAGE_PROGRAM);
+            SPIM_DMA_Write(SPIM0, addr, IS_4BYTES_ADDR, BUFF_SIZE, Buff1, sWb02hWrCMD.u32CMDCode);
 
             memset(Buff2, 0, BUFF_SIZE);
             /* DMA read SPIM flash                        */
-            SPIM_DMA_Read(SPIM0, addr, IS_4BYTES_ADDR, BUFF_SIZE, Buff2, CMD_DMA_FAST_READ, 1);
+            SPIM_DMA_Read(SPIM0, addr, IS_4BYTES_ADDR, BUFF_SIZE, Buff2, sWb03hRdCMD.u32CMDCode, 1);
 
             if (memcmp(Buff1, Buff2, BUFF_SIZE) != 0)
             {
@@ -635,7 +635,7 @@ int  compare_file_with_flash(char *cmdline)
     SPIM_ReadJedecId(SPIM0, idBuf, sizeof(idBuf), 1, 0);
     printf("Flash ID=0x%02X, 0x%02X, 0x%02X\n", idBuf[0], idBuf[1], idBuf[2]);
 
-    SPIM_Enable_4Bytes_Mode(SPIM0, IS_4BYTES_ADDR, 1);  /* Enable 4-bytes address mode?          */
+    //SPIM_Enable_4Bytes_Mode(SPIM0, IS_4BYTES_ADDR, 1);  /* Enable 4-bytes address mode?          */
 
     /*
      *  Compare ...
@@ -659,7 +659,7 @@ int  compare_file_with_flash(char *cmdline)
             }
 
             /* DMA read SPIM flash                        */
-            SPIM_DMA_Read(SPIM0, addr, IS_4BYTES_ADDR, BUFF_SIZE, Buff2, CMD_DMA_FAST_READ, 1);
+            SPIM_DMA_Read(SPIM0, addr, IS_4BYTES_ADDR, BUFF_SIZE, Buff2, sWb03hRdCMD.u32CMDCode, 1);
 
             if (memcmp(Buff1, Buff2, len) != 0)
             {
@@ -707,7 +707,7 @@ int  dump_spim_flash(char *cmdline)
     SPIM_ReadJedecId(SPIM0, idBuf, sizeof(idBuf), 1, 0);
     printf("Flash ID=0x%02X, 0x%02X, 0x%02X\n", idBuf[0], idBuf[1], idBuf[2]);
 
-    SPIM_Enable_4Bytes_Mode(SPIM0, IS_4BYTES_ADDR, 1);  /* Enable 4-bytes address mode?          */
+    //SPIM_Enable_4Bytes_Mode(SPIM0, IS_4BYTES_ADDR, 1);  /* Enable 4-bytes address mode?          */
 
     /*
      *  Read and dump ...
@@ -716,7 +716,7 @@ int  dump_spim_flash(char *cmdline)
     {
         memset(Buff1, 0, BUFF_SIZE);        /* fill 0x00 to clear buffer                  */
         /* DMA read SPIM flash                        */
-        SPIM_DMA_Read(SPIM0, addr, IS_4BYTES_ADDR, BUFF_SIZE, Buff1, CMD_DMA_FAST_READ, 1);
+        SPIM_DMA_Read(SPIM0, addr, IS_4BYTES_ADDR, BUFF_SIZE, Buff1, sWb03hRdCMD.u32CMDCode, 1);
 
         if (dump_len < BUFF_SIZE)
             len = dump_len;
@@ -756,29 +756,106 @@ int  go_to_flash(char *cmdline)
 #ifndef TESTCHIP_ONLY
     SPIM_ENABLE_CACHE(SPIM0);
 #endif
-    SPIM_Enable_4Bytes_Mode(SPIM0, IS_4BYTES_ADDR, 1);  /* Enable 4-bytes address mode?          */
+    //SPIM_Enable_4Bytes_Mode(SPIM0, IS_4BYTES_ADDR, 1);  /* Enable 4-bytes address mode?          */
 #ifndef TESTCHIP_ONLY
     SPIM0->CTL1 |= SPIM_CTL1_CDINVAL_Msk;    /* invalid cache                              */
 #endif
     /* Enable DMM mode                            */
-    SPIM_EnterDirectMapMode(SPIM0, IS_4BYTES_ADDR, CMD_DMA_FAST_READ, 0);
+    SPIM_EnterDirectMapMode(SPIM0, IS_4BYTES_ADDR, sWb03hRdCMD.u32CMDCode, 1);
 
-    func = (FUNC_PTR *)inpw(SPIM_DMM0_SADDR + faddr + 4);
+    func = (FUNC_PTR *)(SPIM_DMM0_SADDR + faddr + 1);
 
     SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;   /* disable SYSTICK (prevent interrupt)   */
 
-#ifdef __GNUC__                        /* for GNU C compiler */
-    __ASM volatile("msr msp, r0");
-    __ASM volatile("bx  lr");
-#else
-    __set_SP(inpw(SPIM_DMM0_SADDR + faddr));
-#endif
+    //#ifdef __GNUC__                        /* for GNU C compiler */
+    //    __ASM volatile("msr msp, r0");
+    //    __ASM volatile("bx  lr");
+    //#else
+    //    __set_SP(inpw(SPIM_DMM0_SADDR + faddr));
+    //#endif
 
     func();                                      /* branch to SPIM                        */
 
     return 0;
 }
 
+int SPIM_TrimRXClkDlyNum(SPIM_T *pSPIMx, SPIM_PHASE_T *psWbRdCMD)
+{
+    volatile uint8_t u8RdDelay = 0;
+    uint8_t u8RdDelayIdx = 0;
+    uint8_t u8RdDelayRes[0x0F] = {0};
+    uint32_t u32SAddr = 0x0;
+    volatile uint32_t u32i = 0;
+    uint32_t u32Div = SPIM_GET_CLOCK_DIVIDER(pSPIMx);
+    uint8_t au8TrimPatten[32] =
+    {
+        0xff, 0x0F, 0xFF, 0x00, 0xFF, 0xCC, 0xC3, 0xCC,
+        0xC3, 0x3C, 0xCC, 0xFF, 0xFE, 0xFF, 0xFE, 0xEF,
+        0xFF, 0xDF, 0xFF, 0xDD, 0xFF, 0xFB, 0xFF, 0xFB,
+        0xBF, 0xFF, 0x7F, 0xFF, 0x77, 0xF7, 0xBD, 0xEF,
+    };
+    uint8_t au8CmpBuf[32] = {0};
+#ifdef DMM_MODE_TRIM
+    uint32_t u32RdDataCnt = 0;
+    uint32_t u32DMMAddr = SPIM_GetDMMAddress(pSPIMx);
+    uint32_t *pu32RdData = NULL;
+#endif //
+
+    SPIM_SET_CLOCK_DIVIDER(pSPIMx, 8);
+
+    SPIM_EraseBlock(pSPIMx, u32SAddr, SPIM_OP_DISABLE, OPCODE_BE_64K, 1, SPIM_OP_ENABLE);
+
+    SPIM_DMA_Write(pSPIMx, u32SAddr, SPIM_OP_DISABLE, sizeof(au8TrimPatten), au8TrimPatten, sWb02hWrCMD.u32CMDCode);
+
+    SPIM_SET_CLOCK_DIVIDER(pSPIMx, u32Div);
+
+#ifdef DMM_MODE_TRIM
+    SPIM_DMM_ReadPhase(pSPIMx, psWbRdCMD, 1);
+#endif
+
+    for (u8RdDelay = 0; u8RdDelay <= 0xF; u8RdDelay++)
+    {
+        SPIM_SET_RXCLKDLY_RDDLYSEL(pSPIMx, u8RdDelay);
+
+        memset(au8CmpBuf, 0, sizeof(au8TrimPatten));
+
+#ifndef DMM_MODE_TRIM
+        SPIM_DMA_Read(pSPIMx, u32SAddr, SPIM_OP_DISABLE,  sizeof(au8TrimPatten), au8CmpBuf, sWb03hRdCMD.u32CMDCode, SPIM_OP_ENABLE);
+#else
+        u32RdDataCnt = 0;
+        pu32RdData = (uint32_t *)tstbuf2;
+
+        //SPIM_IO_ReadPhase(pSPIMx, pMT0BhRdCMD, u32SAddr, tstbuf2, sizeof(au8TrimPatten));
+
+        for (u32i = u32SAddr; u32i < (u32SAddr + sizeof(au8TrimPatten)); u32i += 4)
+        {
+            pu32RdData[u32RdDataCnt++] = inpw(u32DMMAddr + u32i);
+        }
+
+#endif
+
+        // Compare.
+        if (memcmp(au8TrimPatten, au8CmpBuf, sizeof(au8TrimPatten)) == 0)
+        {
+            printf("RX Delay: %d = Pass\r\n", u8RdDelay);
+            u8RdDelayRes[u8RdDelayIdx++] = u8RdDelay;
+        }
+    }
+
+    if (u8RdDelayIdx >= 2)
+    {
+        u8RdDelayIdx = (u8RdDelayIdx / 2) /*- 1*/;
+    }
+    else
+    {
+        u8RdDelayIdx = 0;
+    }
+
+    printf("\r\nRX Delay = %d\r\n\r\n", u8RdDelayRes[u8RdDelayIdx]);
+    SPIM_SET_RXCLKDLY_RDDLYSEL(pSPIMx, u8RdDelayRes[u8RdDelayIdx]);
+
+    return u8RdDelay;
+}
 
 int32_t main(void)
 {
@@ -797,9 +874,7 @@ int32_t main(void)
 
     SYS_UnlockReg();                             /* Unlock register lock protect               */
 
-    SPIM_SET_CLOCK_DIVIDER(SPIM0, 8);            /* Set SPIM clock as HCLK divided by 4        */
-
-    SPIM_SET_RXCLKDLY_RDDLYSEL(SPIM0, 0);        /* Insert 0 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
+    SPIM_SET_CLOCK_DIVIDER(SPIM0, 1);            /* Set SPIM clock as HCLK divided by 4        */
 
     SPIM_DISABLE_CIPHER(SPIM0);
 
@@ -823,13 +898,17 @@ int32_t main(void)
 
     SPIM_DMADMM_InitPhase(SPIM0, &sWb03hRdCMD, SPIM_CTL0_OPMODE_PAGEREAD);
     SPIM_DMADMM_InitPhase(SPIM0, &sWb02hWrCMD, SPIM_CTL0_OPMODE_PAGEWRITE);
-    
+    SPIM_DMADMM_InitPhase(SPIM0, &sWb03hRdCMD, SPIM_CTL0_OPMODE_DIRECTMAP);
+
+    /* Trim RX clock delay cycle. Adjust the sampling clock of received data to latch the correct data. */
+    SPIM_TrimRXClkDlyNum(SPIM0, &sWb03hRdCMD);
+
     /*
      *  Erase flash page
      */
     printf("Erase SPI flash block 0x%x...", 0);
     SPIM_EraseBlock(SPIM0, 0, 0, OPCODE_BE_64K, 1, 1);
-    printf("done.\n");    
+    printf("done.\n");
 
     for (;;)
     {
