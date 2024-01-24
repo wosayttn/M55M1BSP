@@ -526,11 +526,10 @@ uint32_t DMIC_VAD_GetSampleRate(VAD_T *vad);
 
 /*@} end of group DMIC_Driver */
 
-/*@} end of group Device_Driver */
+/*@} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif //__DMIC_H__
-

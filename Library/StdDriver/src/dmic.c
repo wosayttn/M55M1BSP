@@ -9,11 +9,6 @@
 
 #include "NuMicro.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 /** @addtogroup Standard_Driver Standard Driver
   @{
 */
@@ -383,8 +378,3 @@ uint32_t DMIC_VAD_SetSampleRate(VAD_T *vad, uint32_t u32SampleRate)
 /*@} end of group DMIC_Driver */
 
 /*@} end of group Standard_Driver */
-
-#ifdef __cplusplus
-}
-#endif
-
