@@ -40,13 +40,12 @@ define region SPIM1_region = mem:[from SPIM1_start to SPIM1_end];
 define block CSTACK with alignment = 8, size = __ICFEDIT_size_cstack__ { };
 define block HEAP   with alignment = 8, size = __ICFEDIT_size_heap__   { };
 
-initialize by copy { readwrite, section DTCM.VTOR, section ITCM, section DTCM.Init };
+initialize by copy { readwrite, section DTCM.VTOR, section ITCM, section DTCM.Init, section .spim_code };
 
 do not initialize  { section .noinit, section .bss.tensor_arena, section .bss.NoInit.activation_buf_sram };
 
 place at address mem:__ICFEDIT_intvec_start__ { readonly section .intvec };
 place at address mem:DTCM_intvec_start__      { section DTCM.VTOR };
-//place at address mem:SPIM1_start { readonly object spim_code.o };
 
 place in ITCM_region { section ITCM };
 place in ROM_region  { readonly };
@@ -54,3 +53,4 @@ place in DTCM_region { section .bss.DTCM.ZeroInit, section DTCM.Init };
 place at end of DTCM_region { block CSTACK };
 place in RAM_region  { readwrite, block HEAP, section .bss.tensor_arena, section .bss.NoInit.activation_buf_sram };
 place in LPSRAM_region  { section .lpSram };
+place in SPIM1_region { section .spim_code };

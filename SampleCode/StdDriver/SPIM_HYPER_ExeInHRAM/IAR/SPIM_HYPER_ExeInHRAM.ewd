@@ -577,7 +577,7 @@
                 <option>
                     <name>IjetResetList</name>
                     <version>1</version>
-                    <state>4</state>
+                    <state>10</state>
                 </option>
                 <option>
                     <name>IjetHWResetDuration</name>
@@ -768,7 +768,7 @@
                 <option>
                     <name>IjetTraceSettingsList</name>
                     <version>0</version>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IjetTraceSizeList</name>
@@ -1320,7 +1320,7 @@
                 </option>
                 <option>
                     <name>CCMSPFetTargetVoltage</name>
-                    <state>###Uninitialized###</state>
+                    <state>3.0</state>
                 </option>
                 <option>
                     <name>CCMSPFetVCCDefault</name>

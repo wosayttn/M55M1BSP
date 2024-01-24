@@ -42,7 +42,7 @@
 		<link>
 			<name>CMSIS/startup_M55M1.c</name>
 			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/startup_M55M1.c</locationURI>
 		</link>
 		<link>
 			<name>CMSIS/system_M55M1.c</name>
@@ -60,17 +60,12 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/gpio.c</locationURI>
 		</link>
 		<link>
-			<name>Library/otfc.c</name>
-			<type>1</type>
-			<location>PARENT-4-PROJECT_LOC/Library/StdDriver/src/otfc.c</location>
-		</link>
-		<link>
 			<name>Library/retarget.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/retarget.c</locationURI>
 		</link>
 		<link>
-			<name>Library/spim.c</name>
+			<name>Library/spim_hyper.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src/spim_hyper.c</locationURI>
 		</link>

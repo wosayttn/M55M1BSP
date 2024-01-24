@@ -159,7 +159,7 @@ void HyperRAM_TrainingDelayNumber(SPIM_T *spim)
         }
     }
 
-    printf("Set DLL Delay Num : %d\r\n", u8RdDelayRes[u8RdDelayIdx]);
+    //printf("Set DLL Delay Num : %d\r\n", u8RdDelayRes[u8RdDelayIdx]);
     /* Set the number of intermediate delay steps */
     SPIM_HYPER_SetDLLDelayNum(spim, u8RdDelayRes[u8RdDelayIdx]);
 
