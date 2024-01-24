@@ -1173,6 +1173,14 @@ typedef enum
 #define SPIM_DISABLE_PHDMAR_ADDR_DTR(spim)  (spim->PHDMAR &= ~(SPIM_PHDMAR_DTR_ADDR_Msk))
 
 /**
+  * @brief   Get Double Transfer Rate Mode Disable Bit for Address Phase.
+  * @param[in]   spim
+  * \hideinitializer
+  */
+#define SPIM_GET_PHDMAR_ADDR_DTR(spim)   \
+    ((spim->PHDMAR & SPIM_PHDMAR_DTR_ADDR_Msk) >> SPIM_PHDMAR_DTR_ADDR_Pos)
+	
+/**
   * @brief   Set SPI Interface Bit Mode for Address Phase.
   * @param[in]   spim
   * @param[in]   x   Addess Phase Bits Mode
@@ -1235,6 +1243,14 @@ typedef enum
   */
 #define SPIM_ENABLE_PHDMAR_DATA_DTR(spim)   (spim->PHDMAR |= (SPIM_PHDMAR_DTR_DATA_Msk))
 
+/**
+  * @brief   Get Double Transfer Rate Mode Disable Bit for Data Phase.
+  * @param[in]   spim
+  * \hideinitializer
+  */
+#define SPIM_GET_PHDMAR_DATA_DTR(spim)   \
+    ((spim->PHDMAR & SPIM_PHDMAR_DTR_DATA_Msk) >> SPIM_PHDMAR_DTR_DATA_Pos)
+	
 /**
   * @brief   Disable Double Transfer Rate Mode for Data Phase.
   * @param[in]   spim
@@ -1827,7 +1843,7 @@ void SPIM_IO_SendAddrPhase(SPIM_T *spim, uint32_t u32Is4ByteAddr, uint32_t u32Ad
 /* Normal I/O send dummy cycle. */
 int32_t SPIM_IO_SendDummyCycle(SPIM_T *spim, int u32NDummy);
 /* Normal I/O send data phase. */
-void SPIM_IO_SendDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint8_t *pu8TRxBuf, uint32_t u32TRxSize, uint32_t u32DataPhase, uint32_t u32DTREn);
+void SPIM_IO_SendDataPhase(SPIM_T *spim, uint32_t u32OPMode, uint8_t *pu8TRxBuf, uint32_t u32TRxSize, uint32_t u32DataPhase, uint32_t u32DTREn, uint32_t u32RdDQS);
 
 /* Phase table use normal I/O write */
 void SPIM_IO_WritePhase(SPIM_T *spim, SPIM_PHASE_T *psPhaseTable, uint32_t u32Addr, uint8_t *pu8RxBuf, uint32_t u32WrSize);
