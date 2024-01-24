@@ -14,8 +14,8 @@
  * Users may need to do extra system configuration according to their system design.
  *
  * I/D-Cache
- *   I/D-Cache are enabled by default for better performance,
- *   users can define NVT_ICACHE_OFF/NVT_DCACHE_OFF in project setting to disable cache.
+ *   I-Cache are enabled by default for better performance.
+ *   Users can define NVT_DCACHE_ON in project setting to enabld D-Cache.
  * Debug UART
  *   system_M55M1.c has three weak functions as below to configure debug UART port.
  *     SetDebugUartMFP, SetDebugUartCLK and InitDebugUart
@@ -121,6 +121,7 @@ int main(void)
 
     memset(g_au32TestDstBuf, 0x0, sizeof(g_au32TestDstBuf));
     u32SrcSum = 0;
+
     for (i = 0; i < (sizeof(g_au32TestSrcBuf) / sizeof(g_au32TestSrcBuf[0])); i++)
     {
         g_au32TestSrcBuf[i] = i + 0xA5;
@@ -129,8 +130,10 @@ int main(void)
 
     printf("Check sum before PDMA transfer\n");
     u32DstSum = 0;
+
     for (i = 0; i < (sizeof(g_au32TestDstBuf) / sizeof(g_au32TestDstBuf[0])); i++)
         u32DstSum += g_au32TestDstBuf[i];
+
     printf("  u32DstSum: %d, u32SrcSum: %d\n", u32DstSum, u32SrcSum);
 
     /* Open Channel 0 */
@@ -144,7 +147,7 @@ int main(void)
     /* Transfer type is burst transfer and burst size is 4 */
     PDMA_SetBurstType(PDMA0, PDMA_CHAN, PDMA_REQ_BURST, PDMA_BURST_4);
 
-#ifndef NVT_DCACHE_OFF
+#ifdef NVT_DCACHE_ON
     /* Flush cached data of g_au32TestSrcBuf (Buffer addr and size must be 32 bytes alignment) */
     SCB_CleanDCache_by_Addr((void *)g_au32TestSrcBuf, sizeof(g_au32TestSrcBuf));
 #endif
@@ -170,6 +173,7 @@ int main(void)
 
     printf("Check sum after PDMA transfer without invalidate DCache\n");
     u32DstSum = 0;
+
     for (i = 0; i < (sizeof(g_au32TestDstBuf) / sizeof(g_au32TestDstBuf[0])); i++)
         u32DstSum += g_au32TestDstBuf[i];
 
@@ -178,11 +182,12 @@ int main(void)
     else
         printf("  [Error] DCache not work ! u32DstSum: %d == u32SrcSum: %d\n", u32DstSum, u32SrcSum);
 
-#ifndef NVT_DCACHE_OFF
+#ifdef NVT_DCACHE_ON
     /* Invalidate cached data of g_au32TestDstBuf (Buffer addr and size must be 32 bytes alignment) */
     SCB_InvalidateDCache_by_Addr((void *)g_au32TestDstBuf, sizeof(g_au32TestDstBuf));
     printf("Check sum after invalidate DCache\n");
     u32DstSum = 0;
+
     for (i = 0; i < (sizeof(g_au32TestDstBuf) / sizeof(g_au32TestDstBuf[0])); i++)
     {
         if (g_au32TestDstBuf[i] != g_au32TestSrcBuf[i])
@@ -190,13 +195,16 @@ int main(void)
             printf("g_au32TestDstBuf[%d] 0x%08X != g_au32TestSrcBuf[%d] 0x%08X\n", i, g_au32TestDstBuf[i], i, g_au32TestSrcBuf[i]);
             goto Error_Exit;
         }
+
         u32DstSum += g_au32TestDstBuf[i];
 
     }
+
     if (u32DstSum == u32SrcSum)
         printf("  [OK] Invalid DCache work - u32DstSum: %d == u32SrcSum: %d\n", u32DstSum, u32SrcSum);
     else
         printf("  [Error] Invalid DCache not work ! u32DstSum: %d != u32SrcSum: %d\n", u32DstSum, u32SrcSum);
+
 #endif
 
 #if 1
@@ -208,13 +216,16 @@ int main(void)
     FMC_ENABLE_LD_UPDATE();
 
     printf("Erase LDROM\n");
+
     if (FMC_Erase(FMC_LDROM_BASE) != 0)
     {
         printf("  Failed to erase LDROM !\n");
         goto Error_Exit;
     }
+
     printf("  [OK]\n");
     printf("Check LDROM all 0xFFFFFFFF\n");
+
     for (u32Addr = FMC_LDROM_BASE; u32Addr < FMC_LDROM_END; u32Addr += 4)
     {
         if (inp32(u32Addr) != 0xFFFFFFFF)
@@ -223,8 +234,10 @@ int main(void)
             goto Error_Exit;
         }
     }
+
     printf("  [OK]\n");
     printf("Write LDROM\n");
+
     for (u32Addr = FMC_LDROM_BASE; u32Addr < FMC_LDROM_END; u32Addr += 4)
     {
         if (FMC_Write(u32Addr, u32Addr) != 0 || FMC_GET_FAIL_FLAG())
@@ -234,8 +247,10 @@ int main(void)
             goto Error_Exit;
         }
     }
+
     printf("  [OK]\n");
     printf("Check LDROM after write without invalidate DCache\n");
+
     for (u32Addr = FMC_LDROM_BASE; u32Addr < FMC_LDROM_END; u32Addr += 4)
     {
         if (inp32(u32Addr) != u32Addr)
@@ -248,10 +263,11 @@ int main(void)
     if (u32Addr == FMC_LDROM_END)
         printf("  [Error] DCache not work !\n");
 
-#ifndef NVT_DCACHE_OFF
+#ifdef NVT_DCACHE_ON
     /* Invalidate cached data of LDROM (Buffer addr and size must be 32 bytes alignment) */
     SCB_InvalidateDCache_by_Addr((void *)FMC_LDROM_BASE, FMC_LDROM_SIZE);
     printf("Check LDROM after invalidate DCache\n");
+
     for (u32Addr = FMC_LDROM_BASE; u32Addr < FMC_LDROM_END; u32Addr += 4)
     {
         if (inp32(u32Addr) != u32Addr)
@@ -260,12 +276,14 @@ int main(void)
             goto Error_Exit;
         }
     }
+
     printf("  [OK] Invalid DCache work\n");
 #endif
 #endif
 
     printf("Done\n");
 Error_Exit:
+
     /* Got no where to go, just loop forever */
     while (1) ;
 }
