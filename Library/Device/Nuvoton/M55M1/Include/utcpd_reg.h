@@ -22,7 +22,7 @@
 */
 
 /**
-    @addtogroup UTCPD USB Type C Power Delivery controller (UTCPD)
+    @addtogroup UTCPD USB Type C Power Delivery Controller (UTCPD)
     Memory Mapped Structure for UTCPD Controller
     @{
 */
