@@ -1,7 +1,8 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief   Template for M55M1 series MCU
+ * @brief   Show how to config semihost function to output and input character
+ *          within IDE console window.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
