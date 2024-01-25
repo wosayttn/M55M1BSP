@@ -109,7 +109,7 @@ int32_t main(void)
 
     printf("\nThis sample code demonstrates ACMP1 window latch function. Using ACMP1_P0 (PA10) as ACMP1\n");
     printf("positive input and using internal band-gap voltage as the negative input. ACMP1_WLAT is at\n");
-    printf("PA6, when PA6 is low, compare result on ACMP1_O (PC0) does not change with ACMP1_P1. When PA6");
+    printf("PA6, when PA6 is low, compare result on ACMP1_O (PC0) does not change with ACMP1_P0. When PA6");
     printf("is high, ACMP1_O works as usual\n");
 
     printf("Press any key to start ...\n");
@@ -117,7 +117,7 @@ int32_t main(void)
     /* Configure ACMP1. Enable ACMP1 and select band-gap voltage as the source of ACMP negative input. */
     ACMP_Open(ACMP01, 1, ACMP_CTL_NEGSEL_VBG, ACMP_CTL_HYSTERESIS_DISABLE);
     //    ACMP_Open(ACMP01, 1, ACMP_CTL_NEGSEL_PIN, ACMP_CTL_HYSTERESIS_DISABLE);
-    /* Select P1 as ACMP positive input channel */
+    /* Select P0 as ACMP positive input channel */
     ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P0);
     /* Enable interrupt */
     ACMP_ENABLE_INT(ACMP01, 1);

@@ -147,7 +147,7 @@ void LPADC_FunctionTest()
                 /* Reset the LPADC interrupt indicator */
                 g_u32LpadcIntFlag = 0;
 
-                /* Get the conversion result of LPADC channel 2 */
+                /* Get the conversion result of LPADC channel 1 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
                 i32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 1);
           

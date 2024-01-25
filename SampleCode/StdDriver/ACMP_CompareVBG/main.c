@@ -1,7 +1,7 @@
 /****************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * @brief    Demonstrate how ACMP compare VBG output with ACMP1_P1 value
+ * @brief    Demonstrate how ACMP compare VBG output with ACMP1_P0 value
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -81,7 +81,7 @@ void SYS_Init(void)
     SetDebugUartMFP();
 
 
-    /* Disable digital input path of analog pin ACMP1_P1 to prevent leakage */
+    /* Disable digital input path of analog pin ACMP1_P0 to prevent leakage */
     GPIO_DISABLE_DIGITAL_PATH(PA, (1ul << 10));
 
 }

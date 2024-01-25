@@ -1,7 +1,7 @@
 /****************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * @brief    Demonstrate how ACMP compare DAC output with ACMP1_P1 value.
+ * @brief    Demonstrate how ACMP compare DAC output with ACMP1_P0 value.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -161,9 +161,9 @@ int32_t main(void)
 
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
 
-    printf("\nThis sample code demonstrates ACMP1 function. Using ACMP1_P1 (PA10) as ACMP1\n");
+    printf("\nThis sample code demonstrates ACMP1 function. Using ACMP1_P0 (PA10) as ACMP1\n");
     printf("positive input and using DAC output as the negative input.\n");
-    printf("Please connect the ACMP1_P1(PA10) to 1.5v .\n");
+    printf("Please connect the ACMP1_P0(PA10) to 1.5v .\n");
 
     printf("The compare result reflects on ACMP1_O (PC0).\n");
     printf("Press any key to start ...\n");

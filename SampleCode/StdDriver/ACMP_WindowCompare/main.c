@@ -125,7 +125,7 @@ int32_t main(void)
     ACMP_CRV1_SEL(ACMP01, 40);
     /* Select P0 as ACMP0 positive input channel */
     ACMP_SELECT_P(ACMP01, 0, ACMP_CTL_POSSEL_P0);
-    /* Select P1 as ACMP1 positive input channel */
+    /* Select P0 as ACMP1 positive input channel */
     ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P0);
     /* Enable window compare mode */
     ACMP_ENABLE_WINDOW_COMPARE(ACMP01, 0);

@@ -102,7 +102,7 @@ void LPADC_FunctionTest()
 
         if (u8Option == '1')
         {
-            /* Set input mode as single-end, Single mode, and select channel 0 */
+            /* Set input mode as single-end, Single mode, and select channel 1 */
             LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT1);
 
             /* Clear the A/D interrupt flag for safe */
@@ -122,7 +122,7 @@ void LPADC_FunctionTest()
             /* Disable the sample module interrupt */
             LPADC_DisableInt(LPADC0, LPADC_ADF_INT);
 
-            /* Get the conversion result of LPADC channel 2 */
+            /* Get the conversion result of LPADC channel 1 */
             i32ConversionData = LPADC_GET_CONVERSION_DATA(LPADC0, 1);
             printf("Conversion result of channel 1: 0x%X (%d)\n\n", i32ConversionData, i32ConversionData);
         }
@@ -148,7 +148,7 @@ void LPADC_FunctionTest()
             /* Disable the sample module interrupt */
             LPADC_DisableInt(LPADC0, LPADC_ADF_INT);
 
-            /* Get the conversion result of channel 2 */
+            /* Get the conversion result of channel 0 */
             i32ConversionData = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
             printf("Conversion result of channel pair 0: 0x%X (%d)\n\n", i32ConversionData, i32ConversionData);
         }

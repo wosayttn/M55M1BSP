@@ -199,7 +199,7 @@ void AutoOperation_FunctionTest()
     g_u32WakeupCount = 0;
 
     SYS_UnlockReg();
-    /* Switch SCLK clock source to PLL0 and divide 1 */
+    /* Switch SCLK clock source to HIRC and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
     SYS_LockReg();
   

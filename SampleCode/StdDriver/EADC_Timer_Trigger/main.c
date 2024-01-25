@@ -147,7 +147,7 @@ void EADC_FunctionTest()
             /* Set input mode as single-end and enable the A/D converter */
             EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
 
-            /* Configure the sample module 0 for analog input channel 2 and enable Timer0 trigger source */
+            /* Configure the sample module 0 for analog input channel 1 and enable Timer0 trigger source */
             EADC_ConfigSampleModule(EADC0, 0, EADC_TIMER0_TRIGGER, 1);
 
             /* Clear the A/D ADINT0 interrupt flag for safe */

@@ -143,7 +143,7 @@ void LPADC_FunctionTest(void)
 
         if (u8Option == '1')
         {
-            /* Set input mode as single-end, Single mode, and select channel 2 */
+            /* Set input mode as single-end, Single mode, and select channel 0 */
             LPADC_Open(LPADC0, LPADC_ADCR_DIFFEN_SINGLE_END, LPADC_ADCR_ADMD_SINGLE, BIT0);
 
             /* Configure the sample module and enable ACMP1 trigger source */
@@ -182,7 +182,7 @@ void LPADC_FunctionTest(void)
                 /* Reset the ACMP1 interrupt indicator */
                 g_u32ACMP1IntFlag = 0;
 
-                /* Get the conversion result of LPADC channel 2 */
+                /* Get the conversion result of LPADC channel 0 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
 
                 ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);

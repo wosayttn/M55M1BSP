@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * @brief    Monitor the conversion result of channel 2 by the digital compare function.
+ * @brief    Monitor the conversion result of channel 1 by the digital compare function.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
