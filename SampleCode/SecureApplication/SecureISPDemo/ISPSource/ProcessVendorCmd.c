@@ -3,9 +3,9 @@
  * @version  V3.00
  * @brief    Process vendor command.
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
@@ -26,6 +26,7 @@ int32_t Exec_VendorFunction(uint32_t *pu32Buf, uint32_t u32Len)
     uint32_t        i, u32Addr, u32Size, u32Return;
     CMD_PACKET_T    cmd;
 
+    NVT_UNUSED(u32Len);
     memcpy(&cmd, pu32Buf, sizeof(cmd));
 
     u32Len = cmd.au32Data[0]; // received byte counts

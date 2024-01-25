@@ -3,28 +3,28 @@
  * @version  V3.00
  * @brief    Secure ISP - Process commands
  *
- * @copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <arm_cmse.h>
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
-
 #include "CommandHandler.h"
 
 #define LIB_VERSION     (0x23551171UL) // 2355 + 'M' + 'DD' + IDX ... 1st released
+
 uint32_t CMDLIB_VERSION(void)
 {
     return LIB_VERSION;
 }
-
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Miscellaneous Constant Definitions                                                                      */
 /*---------------------------------------------------------------------------------------------------------*/
 #define CURVE_P_SIZE        CURVE_P_256     /* ECC key length */
 #define ECC_KEY_SIZE        256             /* 256-bits */
-#define ALL_ONE_2KB_CHKS    0x3F55D17Ful    /* 2K all CRC32 checksum value */
+#define ALL_ONE_2PAGE_CHKS  0xB4293435      /* 2 page all 0xFF CRC32 checksum value */
 
 
 //volatile ISP_INFO_T     g_ISPInfo = {0};
@@ -39,7 +39,7 @@ void Reg2Hex(int32_t count, uint32_t volatile reg[], char output[]);
 
 static uint32_t GetMaxAPROMSize(void)
 {
-    return FMC_APROM_END;
+    return FMC_APROM_SIZE;
 }
 
 static uint8_t B2C(uint8_t c)
@@ -100,7 +100,7 @@ int32_t CalculateSHA256(uint32_t start, uint32_t end, uint32_t digest[], E_SHA_O
 
     if ((mode == SHA_ONESHOT) || (mode == SHA_CONTI_START))
     {
-        printf("\n[Start SHA256 from 0x%x to 0x%x. (size: %d) (mode: %d)] (%s)\n", start, end, bytes, mode, (src == SHA_SRC_SRAM) ? "SRAM" : "Flash");
+        DBG("\n[Start SHA256 from 0x%x to 0x%x. (size: %d) (mode: %d)] (%s)\n", start, end, bytes, mode, (src == SHA_SRC_SRAM) ? "SRAM" : "Flash");
 
         //CRYPTO->HMAC_CTL = (SHA_MODE_SHA256 << CRYPTO_HMAC_CTL_OPMODE_Pos) | CRYPTO_HMAC_CTL_INSWAP_Msk;
         // Sync output byte order with PC
@@ -110,7 +110,7 @@ int32_t CalculateSHA256(uint32_t start, uint32_t end, uint32_t digest[], E_SHA_O
     }
     else
     {
-        printf("[Continue SHA256 from 0x%x to 0x%x. (size: %d) (mode: %d)]\n", start, end, bytes, mode);
+        DBG("[Continue SHA256 from 0x%x to 0x%x. (size: %d) (mode: %d)]\n", start, end, bytes, mode);
     }
 
     /* Start to calculate ... */
@@ -157,10 +157,14 @@ int32_t CalculateSHA256(uint32_t start, uint32_t end, uint32_t digest[], E_SHA_O
                     while (CRYPTO->HMAC_STS & CRYPTO_HMAC_STS_BUSY_Msk);
 
                     for (i = 0; i < 8; i++)
-                        Hash[i] = *(uint32_t *)((uint32_t) & (CRYPTO->HMAC_DGST[0]) + (i * 4));
+                    {
+                        uint32_t u32DGST = CRYPTO->HMAC_DGST[i];
+
+                        Hash[i] = u32DGST;
+                    }
 
                     memcpy(digest, Hash, sizeof(Hash));
-                    printf("\t[SHA256 done]\n");
+                    DBG("\t[SHA256 done]\n");
                     break;
                 }
                 else
@@ -204,7 +208,7 @@ static uint16_t PACKET_ExecCCITT(uint32_t *pu32buf, uint16_t u32ByteCnt, uint8_t
     for (i = 1; i < (u32ByteCnt / 2); i++)
     {
 #if (0)
-        printf("idx-%d: 0x%04x (CCITT)\n", i, pu16buf[i]);
+        DBG("idx-%d: 0x%04x (CCITT)\n", i, pu16buf[i]);
 #endif
         CRC->DAT = *(pu16buf + i);
     }
@@ -228,7 +232,7 @@ static uint16_t PACKET_ExecCCITT(uint32_t *pu32buf, uint16_t u32ByteCnt, uint8_t
             return 0;   /* Verify CCITT Pass */
         else
         {
-            //printf("u16OrgSum: 0x%08X, u16CalSum: 0x%08X\n", u16OrgSum, u16CalSum);
+            //DBG("u16OrgSum: 0x%08X, u16CalSum: 0x%08X\n", u16OrgSum, u16CalSum);
             return -1;  /* Verify CCITT Fail */
         }
     }
@@ -256,7 +260,7 @@ static uint32_t PACKET_ExecCRC32(uint32_t *pu32buf, uint16_t len, uint8_t mode)
     for (i = 0; i < (len / 4) - 1; i++)
     {
 #if (0)
-        printf("idx-%d: 0x%08x. (CRC32)\n", i, *(pu32buf + i));
+        DBG("idx-%d: 0x%08x. (CRC32)\n", i, *(pu32buf + i));
 #endif
         CRC->DAT = *(pu32buf + i);
     }
@@ -315,19 +319,20 @@ static int32_t PACKET_AES256Encrypt(uint32_t *in, uint32_t *out, uint32_t len, u
   */
 static int32_t PACKET_AES256Decrypt(uint32_t *in, uint32_t *out, uint32_t len, uint32_t *KEY, uint32_t *IV)
 {
-    volatile int32_t    i;
-
     /* KEY and IV are byte order (32 bit) reversed, Swap32(x) and stored in ISP_INFO_T */
     memcpy((void *)&CRYPTO->AES_KEY[0], KEY, (4 * 8));
-    memcpy((void *)&CRYPTO->AES_IV[0], IV, (4 * 4));
+    memcpy((void *)&CRYPTO->AES_IV[0],  IV, (4 * 4));
 
     CRYPTO->AES_SADDR = (uint32_t)in;
     CRYPTO->AES_DADDR = (uint32_t)out;
     CRYPTO->AES_CNT   = len;
     CRYPTO->AES_CTL = ((AES_KEY_SIZE_256 << CRYPTO_AES_CTL_KEYSZ_Pos) | (AES_IN_OUT_SWAP << CRYPTO_AES_CTL_OUTSWAP_Pos));
-    CRYPTO->AES_CTL |= ((AES_MODE_CFB << CRYPTO_AES_CTL_OPMODE_Pos) | CRYPTO_AES_CTL_START_Msk | CRYPTO_AES_CTL_DMAEN_Msk);
+    CRYPTO->AES_CTL |= ((AES_MODE_CFB << CRYPTO_AES_CTL_OPMODE_Pos) | CRYPTO_AES_CTL_START_Msk | CRYPTO_AES_CTL_DMAEN_Msk | CRYPTO_AES_CTL_DMALAST_Msk);
 
     while (CRYPTO->AES_STS & CRYPTO_AES_STS_BUSY_Msk) {}
+
+    /* [KL@2024.01.25] [Todo] Remove below delay to wait data ready. */
+    CLK_SysTickLongDelay(100000);
 
     return 0;
 }
@@ -353,30 +358,30 @@ int32_t CMD_GenRspPacket(CMD_PACKET_T *pCMD, ISP_INFO_T *pISPInfo)
     {
         uint32_t *pu32;
         pu32 = (uint32_t *)pCMD;
-        printf("AES KEY:\n");
+        DBG("AES KEY:\n");
 
         for (i = 0; i < sizeof(pISPInfo->au32AESKey) / 4; i++)
-            printf("   0x%08x", pISPInfo->au32AESKey[i]);
+            DBG("   0x%08x", pISPInfo->au32AESKey[i]);
 
-        printf("\nAES IV:\n");
+        DBG("\nAES IV:\n");
 
         for (i = 0; i < sizeof(pISPInfo->au32AESIV) / 4; i++)
-            printf("   0x%08x", pISPInfo->au32AESIV[i]);
+            DBG("   0x%08x", pISPInfo->au32AESIV[i]);
 
-        printf("\nRSP data(encryption?):\n");
+        DBG("\nRSP data(encryption?):\n");
 
         for (i = 0; i < 2; i++)
-            printf("   0x%08x", pu32[i]);
+            DBG("   0x%08x", pu32[i]);
 
         for (i = 2; i < sizeof(CMD_PACKET_T) / 4; i++)
         {
             if ((i % 4) == 2)
-                printf("\n");
+                DBG("\n");
 
-            printf("   0x%08x", pu32[i]);
+            DBG("   0x%08x", pu32[i]);
         }
 
-        printf("\n");
+        DBG("\n");
     }
 #endif
 
@@ -385,38 +390,39 @@ int32_t CMD_GenRspPacket(CMD_PACKET_T *pCMD, ISP_INFO_T *pISPInfo)
 
 #if (1)
     {
-        uint32_t *pu32;
-        pu32 = (uint32_t *)pCMD;
+        uint32_t *pu32 = (uint32_t *)pCMD;
+
+        NVT_UNUSED(pu32);
 
         if (i != 8)
         {
-            printf("AES KEY:\n");
+            DBG("AES KEY:\n");
 
             for (i = 0; i < sizeof(pISPInfo->au32AESKey) / 4; i++)
-                printf("   0x%08x", pISPInfo->au32AESKey[i]);
+                DBG("   0x%08x", pISPInfo->au32AESKey[i]);
 
-            printf("\nAES IV:\n");
+            DBG("\nAES IV:\n");
 
             for (i = 0; i < sizeof(pISPInfo->au32AESIV) / 4; i++)
-                printf("   0x%08x", pISPInfo->au32AESIV[i]);
+                DBG("   0x%08x", pISPInfo->au32AESIV[i]);
 
-            printf("\n");
+            DBG("\n");
         }
 
-        printf("Send RSP data:\n");
+        DBG("Send RSP data:\n");
 
         for (i = 0; i < 2; i++)
-            printf("   0x%08x", pu32[i]);
+            DBG("   0x%08x", pu32[i]);
 
         for (i = 2; i < sizeof(CMD_PACKET_T) / 4; i++)
         {
             if ((i % 4) == 2)
-                printf("\n");
+                DBG("\n");
 
-            printf("   0x%08x", pu32[i]);
+            DBG("   0x%08x", pu32[i]);
         }
 
-        printf("\n");
+        DBG("\n");
     }
 #endif
 
@@ -425,12 +431,11 @@ int32_t CMD_GenRspPacket(CMD_PACKET_T *pCMD, ISP_INFO_T *pISPInfo)
 
 int32_t CMD_ParseReqPacket(CMD_PACKET_T *pCMD, ISP_INFO_T *pISPInfo)
 {
-    volatile int32_t    i;
+    volatile int32_t  i;
 
 #if (0)
     {
-        uint32_t *pu32;
-        pu32 = (uint32_t *)pCMD;
+        uint32_t *pu32 = (uint32_t *)pCMD;
         printf("Get REQ data:\n");
 
         for (i = 0; i < 2; i++)
@@ -451,7 +456,7 @@ int32_t CMD_ParseReqPacket(CMD_PACKET_T *pCMD, ISP_INFO_T *pISPInfo)
     /* verify CRC32 */
     if (PACKET_ExecCRC32((uint32_t *)pCMD, sizeof(CMD_PACKET_T) - 4, 1) != 0)
     {
-        printf("\n\tPacket CRC32 mismatch!\n");
+        DBG("\n\tPacket CRC32 mismatch!\n");
         return -1;
     }
 
@@ -467,53 +472,52 @@ int32_t CMD_ParseReqPacket(CMD_PACKET_T *pCMD, ISP_INFO_T *pISPInfo)
 
 #if (1)
     {
-        uint32_t *pu32;
-        pu32 = (uint32_t *)pCMD;
+        uint32_t *pu32 = (uint32_t *)pCMD;
+
+        NVT_UNUSED(pu32);
 
         if (i != 8)
         {
-            printf("AES KEY:\n");
+            DBG("AES KEY:\n");
 
             for (i = 0; i < sizeof(pISPInfo->au32AESKey) / 4; i++)
-                printf("   0x%08x", pISPInfo->au32AESKey[i]);
+                DBG("   0x%08x", pISPInfo->au32AESKey[i]);
 
-            printf("\nAES IV:\n");
+            DBG("\nAES IV:\n");
 
             for (i = 0; i < sizeof(pISPInfo->au32AESIV) / 4; i++)
-                printf("   0x%08x", pISPInfo->au32AESIV[i]);
+                DBG("   0x%08x", pISPInfo->au32AESIV[i]);
 
-            printf("\n");
+            DBG("\n");
         }
 
-        printf("Get REQ data:\n");
+        DBG("[Decrypt] Get REQ data:\n");
 
         for (i = 0; i < 2; i++)
-            printf("   0x%08x", pu32[i]);
+            DBG("   0x%08x", pu32[i]);
 
         for (i = 2; i < sizeof(CMD_PACKET_T) / 4; i++)
         {
             if ((i % 4) == 2)
-                printf("\n");
+                DBG("\n");
 
-            printf("   0x%08x", pu32[i]);
+            DBG("   0x%08x", pu32[i]);
         }
 
-        printf("\n");
+        DBG("\n");
     }
 #endif
 
     /* verify CCITT */
     if (PACKET_ExecCCITT((uint32_t *)pCMD, sizeof(CMD_PACKET_T) - 8, 1) != 0)
     {
-        printf("\n\tPacket CCITT mismatch !\n");
+        DBG("\n\tPacket CCITT mismatch !\n");
         return -1;
     }
 
-    printf("Parse cmd Pass.\n\n");
+    DBG("Parse cmd Pass.\n\n");
     return 0;
 }
-
-
 
 void CommandHandlerInit(void)
 {
@@ -526,20 +530,15 @@ void CommandHandlerInit(void)
     FMC_DISABLE_LD_UPDATE();
     FMC_DISABLE_CFG_UPDATE();
 
-    /* Enable CRYPTO clock */
+    /* Enable CRYPTO and TRNG clock */
     CLK_EnableModuleClock(CRYPTO0_MODULE);
-
+    CLK_EnableModuleClock(TRNG0_MODULE);
+    /* Enable ECC IRQ */
     ECC_ENABLE_INT(CRYPTO);
-
     NVIC_EnableIRQ(CRYPTO_IRQn);
-
     /* Initial Random Number Generator */
     RNG_Open();
 }
-
-
-
-
 
 static int32_t GenRandomIV(ISP_INFO_T *pISPInfo)
 {
@@ -562,6 +561,7 @@ int32_t ParseCONNECT(ISP_INFO_T *pISPInfo)
 {
     volatile int32_t    i, ret = 0, cmd_case;
     CMD_PACKET_T        cmd;
+    uint32_t            u32Data;
 
     memset(&cmd,             0x0, sizeof(CMD_PACKET_T));
     memset(pISPInfo->rspbuf, 0x0, sizeof(pISPInfo->rspbuf));
@@ -582,7 +582,7 @@ int32_t ParseCONNECT(ISP_INFO_T *pISPInfo)
 
         if (CMD_ParseReqPacket(&cmd, pISPInfo) != 0)
         {
-            printf("*** [Pasre error: 0x%x] ***\n", cmd.u16CmdID);
+            DBG("*** [Pasre error: 0x%x] ***\n", cmd.u16CmdID);
             memset(cmd.au32Data, 0x0, sizeof(cmd.au32Data));
 
             cmd.au32Data[0] = ERR_CMD_CHECKSUM;
@@ -597,7 +597,7 @@ int32_t ParseCONNECT(ISP_INFO_T *pISPInfo)
             switch (cmd_case)
             {
                 case CMD_DISCONNECT:
-                    printf("[CMD_DISCONNECT] (stage 1)\n");
+                    DBG("[CMD_DISCONNECT] (stage 1)\n");
                     memset(cmd.au32Data, 0x0, sizeof(cmd.au32Data));
 
                     cmd.au32Data[0] = STS_OK;
@@ -607,10 +607,13 @@ int32_t ParseCONNECT(ISP_INFO_T *pISPInfo)
                     break;
 
                 case CMD_CONNECT:
-                    printf("[CMD_CONNECT] (stage 1)\n");
+                    DBG("[CMD_CONNECT] (stage 1)\n");
 
                     for (i = 0; i < 4; i++)
-                        pISPInfo->au32AESIV[i] = Swap32(cmd.au32Data[i]);
+                    {
+                        u32Data = Swap32(cmd.au32Data[i]);
+                        pISPInfo->au32AESIV[i] = u32Data;
+                    }
 
                     for (i = 0; i < 4; i++)
                     {
@@ -629,16 +632,19 @@ int32_t ParseCONNECT(ISP_INFO_T *pISPInfo)
                     cmd.au32Data[1] = SYS->PDID;
 
                     for (i = 0; i < 4; i++)
-                        cmd.au32Data[2 + i] = Swap32(pISPInfo->au32AESIV[i]);
+                    {
+                        u32Data = Swap32(pISPInfo->au32AESIV[i]);
+                        cmd.au32Data[2 + i] = u32Data;
+                    }
 
                     cmd.au32Data[6] = pISPInfo->u32CmdMask;
                     cmd.au32Data[7] = 0x0;//FMC->KPKEYSTS; /* KPKEYSTS: bit-4:KEYFLAG(1:enable/0:disable), bit-3:FORBID */
                     cmd.au32Data[8] = 0x0;//(((FMC->KPKEYCNT&0xFFFF)<<16) | (FMC->KPCNT&0xFFFF));
 
-                    printf("PDID:  0x%08x.\n", cmd.au32Data[1]);
+                    DBG("PDID:  0x%08x.\n", cmd.au32Data[1]);
 
                     for (i = 0; i < 4; i++)
-                        printf("Target IV[%d]: 0x%08x.\n", i, pISPInfo->au32AESIV[i]);
+                        DBG("Target IV[%d]: 0x%08x.\n", i, pISPInfo->au32AESIV[i]);
 
                     cmd.u16Len      = (4 * 9);
                     ret = cmd.u16CmdID;
@@ -646,7 +652,7 @@ int32_t ParseCONNECT(ISP_INFO_T *pISPInfo)
                     break;
 
                 default:
-                    printf("*** [Cmd error: 0x%x] ***\n", cmd.u16CmdID);
+                    DBG("*** [Cmd error: 0x%x] ***\n", cmd.u16CmdID);
                     cmd.au32Data[0] = ERR_CMD_INVALID;
                     cmd.u16Len      = (4 * 1);
                     ret = -1;
@@ -663,13 +669,9 @@ int32_t ParseCONNECT(ISP_INFO_T *pISPInfo)
     /* Prepare respone data done */
     memcpy(pISPInfo->rspbuf, (uint8_t *)&cmd, sizeof(CMD_PACKET_T));
 
-    printf("Repone.\n\n");
+    DBG("Repone.\n\n");
     return  ret;
 }
-
-
-
-
 
 static int32_t GenECDHKey(uint32_t *PrivKey, ECC_PUBKEY_T *PubKey, uint32_t *Key)
 {
@@ -699,9 +701,9 @@ static int32_t GenECDHKey(uint32_t *PrivKey, ECC_PUBKEY_T *PubKey, uint32_t *Key
     BytesSwap((char *)tmp, sizeof(tmp));
     Reg2Hex(64, tmp, Qy);
 
-    printf("d:  %s\n", d);
-    printf("Qx: %s\n", Qx);
-    printf("Qy: %s\n", Qy);
+    DBG("d:  %s\n", d);
+    DBG("Qx: %s\n", Qx);
+    DBG("Qy: %s\n", Qy);
     ret = ECC_GenerateSecretZ(CRYPTO, CURVE_P_SIZE, d, Qx, Qy, z);
 
     if (ret < 0)
@@ -713,7 +715,7 @@ static int32_t GenECDHKey(uint32_t *PrivKey, ECC_PUBKEY_T *PubKey, uint32_t *Key
         return -1;
     }
 
-    printf("z:  %s\n", z);
+    DBG("z:  %s\n", z);
 
     Hex2Reg(z, Key);
     BytesSwap((char *)Key, (ECC_KEY_SIZE / 8));
@@ -723,7 +725,7 @@ static int32_t GenECDHKey(uint32_t *PrivKey, ECC_PUBKEY_T *PubKey, uint32_t *Key
     memset(Qy, 0x0, sizeof(Qy));
     memset(z,  0x0, sizeof(z));
 
-    printf("\n");
+    DBG("\n");
     return 0;
 }
 
@@ -731,7 +733,7 @@ static int32_t GenRandomPrivKey(char *d, int32_t nbits)
 {
     volatile int32_t    i, j;
     uint32_t             au32Buf[8];
-    uint8_t             *pu8Buf;
+    uint8_t             *pu8Buf, u8Data;
 
     do
     {
@@ -743,8 +745,10 @@ static int32_t GenRandomPrivKey(char *d, int32_t nbits)
 
         for (i = 0, j = 0; i < (nbits / 8); i++)
         {
-            d[j++] = B2C(pu8Buf[i] & 0xf);
-            d[j++] = B2C(pu8Buf[i] >> 4);
+            u8Data = B2C(pu8Buf[i] & 0xf);
+            d[j++] = u8Data;
+            u8Data = B2C(pu8Buf[i] >> 4);
+            d[j++] = u8Data;
         }
 
         d[j] = 0; // NULL end
@@ -757,7 +761,7 @@ static int32_t GenRandomPrivKey(char *d, int32_t nbits)
         else
         {
             /* Invalid key */
-            printf("Current private key is not valid. Need a new one.\n");
+            DBG("Current private key is not valid. Need a new one.\n");
             return -1;
         }
     } while (1);
@@ -782,13 +786,13 @@ static int32_t GenRandomECCKeyPair(uint32_t *priv, ECC_PUBKEY_T *pubkey)
 
         if ((ret = ECC_GeneratePublicKey(CRYPTO, CURVE_P_SIZE, d, k0, k1)) != 0)
         {
-            printf("\nECC key generation failed!!\n\n");
+            DBG("\nECC key generation failed!!\n\n");
             break;
         }
 
-        printf("d:  %s\n", d);
-        printf("k0: %s\n", k0);
-        printf("k1: %s\n", k1);
+        DBG("d:  %s\n", d);
+        DBG("k0: %s\n", k0);
+        DBG("k1: %s\n", k1);
         Hex2Reg(d,  priv);
         Hex2Reg(k0, pubkey->au32Key0);
         Hex2Reg(k1, pubkey->au32Key1);
@@ -817,7 +821,7 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
 {
     volatile int32_t    i, ret = 0, cmd_case;
     CMD_PACKET_T        cmd;
-    uint32_t            AESKey[8];
+    uint32_t            AESKey[8], u32Data;
     ECC_PUBKEY_T        randpub;
     uint32_t            priv[8];
 
@@ -840,7 +844,7 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
 
         if (CMD_ParseReqPacket(&cmd, pISPInfo) != 0)
         {
-            printf("*** [Pasre error: 0x%x] ***\n", cmd.u16CmdID);
+            DBG("*** [Pasre error: 0x%x] ***\n", cmd.u16CmdID);
             memset(cmd.au32Data, 0x0, sizeof(cmd.au32Data));
 
             cmd.au32Data[0] = ERR_CMD_CHECKSUM;
@@ -855,7 +859,7 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
             switch (cmd_case)
             {
                 case CMD_DISCONNECT:
-                    printf("[CMD_DISCONNECT] (stage 2)\n");
+                    DBG("[CMD_DISCONNECT] (stage 2)\n");
                     memset(cmd.au32Data, 0x0, sizeof(cmd.au32Data));
 
                     cmd.au32Data[0] = STS_OK;
@@ -869,7 +873,7 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
                     memcpy(pISPInfo->ServerPubKey.au32Key0, cmd.au32Data, cmd.u16Len);
 
                     for (i = 0; i < 8; i++)
-                        printf("Get pub0[%d]: 0x%08x.\n", i, pISPInfo->ServerPubKey.au32Key0[i]);
+                        DBG("Get pub0[%d]: 0x%08x.\n", i, pISPInfo->ServerPubKey.au32Key0[i]);
 
                     memset(cmd.au32Data, 0x0, sizeof(cmd.au32Data));
                     cmd.au32Data[0] = STS_OK;
@@ -882,7 +886,7 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
                     memcpy(pISPInfo->ServerPubKey.au32Key1, cmd.au32Data, cmd.u16Len);
 
                     for (i = 0; i < 8; i++)
-                        printf("Get pub1[%d]: 0x%08x.\n", i, pISPInfo->ServerPubKey.au32Key1[i]);
+                        DBG("Get pub1[%d]: 0x%08x.\n", i, pISPInfo->ServerPubKey.au32Key1[i]);
 
                     /* TODO : user can identify server's public key here... */
 
@@ -913,7 +917,10 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
                     //                        break;
                     //                    }
                     for (i = 0; i < 8; i++)
-                        AESKey[i] = Swap32(AESKey[i]);
+                    {
+                        u32Data = Swap32(AESKey[i]);
+                        AESKey[i] = u32Data;
+                    }
 
                     memset(cmd.au32Data, 0x0, sizeof(cmd.au32Data));
                     cmd.au32Data[0] = STS_OK;
@@ -928,7 +935,7 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
                     memcpy(&cmd.au32Data[1], pISPInfo->ClientPubKey.au32Key0, sizeof(pISPInfo->ClientPubKey.au32Key0));
 
                     for (i = 0; i < 8; i++)
-                        printf("Out pub0[%d]: 0x%08x.\n", i, cmd.au32Data[1 + i]);
+                        DBG("Out pub0[%d]: 0x%08x.\n", i, cmd.au32Data[1 + i]);
 
                     cmd.u16Len      = (4 * (1 + 8));
                     ret = cmd.u16CmdID;
@@ -941,7 +948,7 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
                     memcpy(&cmd.au32Data[1], pISPInfo->ClientPubKey.au32Key1, sizeof(pISPInfo->ClientPubKey.au32Key1));
 
                     for (i = 0; i < 8; i++)
-                        printf("Out pub1[%d]: 0x%08x.\n", i, cmd.au32Data[1 + i]);
+                        DBG("Out pub1[%d]: 0x%08x.\n", i, cmd.au32Data[1 + i]);
 
                     cmd.u16Len      = (4 * (1 + 8));
                     ret = cmd.u16CmdID;
@@ -952,7 +959,7 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
                     memcpy(pISPInfo->ServerPubKey.au32Key0, cmd.au32Data, cmd.u16Len);
 
                     for (i = 0; i < 8; i++)
-                        printf("Get rand_pub0[%d]: 0x%08x.\n", i, pISPInfo->ServerPubKey.au32Key0[i]);
+                        DBG("Get rand_pub0[%d]: 0x%08x.\n", i, pISPInfo->ServerPubKey.au32Key0[i]);
 
                     memset(cmd.au32Data, 0x0, sizeof(cmd.au32Data));
                     cmd.au32Data[0] = STS_OK;
@@ -965,7 +972,7 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
                     memcpy(pISPInfo->ServerPubKey.au32Key1, cmd.au32Data, cmd.u16Len);
 
                     for (i = 0; i < 8; i++)
-                        printf("Get rand_pub1[%d]: 0x%08x.\n", i, pISPInfo->ServerPubKey.au32Key1[i]);
+                        DBG("Get rand_pub1[%d]: 0x%08x.\n", i, pISPInfo->ServerPubKey.au32Key1[i]);
 
                     memset(cmd.au32Data, 0x0, sizeof(cmd.au32Data));
                     cmd.au32Data[0] = STS_OK;
@@ -996,7 +1003,10 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
                     }
 
                     for (i = 0; i < 8; i++)
-                        AESKey[i] = Swap32(AESKey[i]);
+                    {
+                        u32Data = Swap32(AESKey[i]);
+                        AESKey[i] = u32Data;
+                    }
 
                     memcpy(pISPInfo->tmp0, AESKey, sizeof(AESKey));
 
@@ -1011,7 +1021,7 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
                     memcpy(&cmd.au32Data[1], pISPInfo->ClientPubKey.au32Key0, sizeof(pISPInfo->ClientPubKey.au32Key0));
 
                     for (i = 0; i < 8; i++)
-                        printf("Out rand_pub0[%d]: 0x%08x.\n", i, cmd.au32Data[1 + i]);
+                        DBG("Out rand_pub0[%d]: 0x%08x.\n", i, cmd.au32Data[1 + i]);
 
                     cmd.u16Len      = (4 * (1 + 8));
                     ret = cmd.u16CmdID;
@@ -1024,14 +1034,14 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
                     memcpy(&cmd.au32Data[1], pISPInfo->ClientPubKey.au32Key1, sizeof(pISPInfo->ClientPubKey.au32Key1));
 
                     for (i = 0; i < 8; i++)
-                        printf("Out rand_pub1[%d]: 0x%08x.\n", i, cmd.au32Data[1 + i]);
+                        DBG("Out rand_pub1[%d]: 0x%08x.\n", i, cmd.au32Data[1 + i]);
 
                     cmd.u16Len      = (4 * (1 + 8));
                     ret = cmd.u16CmdID;
                     break;
 
                 default:
-                    printf("*** [Cmd error: 0x%x] ***\n", cmd.u16CmdID);
+                    DBG("*** [Cmd error: 0x%x] ***\n", cmd.u16CmdID);
                     cmd.au32Data[0] = ERR_CMD_INVALID;
                     cmd.u16Len      = (4 * 1);
                     ret = -1;
@@ -1055,7 +1065,7 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
             memcpy(pISPInfo->au32AESKey, AESKey, sizeof(AESKey));
 
             for (i = 0; i < 8; i++)
-                printf("Gen 1st ECDH AES KEY[%d]: 0x%08x.\n", i, pISPInfo->au32AESKey[i]);
+                DBG("Gen 1st ECDH AES KEY[%d]: 0x%08x.\n", i, pISPInfo->au32AESKey[i]);
         }
         else
         {
@@ -1063,7 +1073,7 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
             memcpy(pISPInfo->au32AESKey, pISPInfo->tmp0, sizeof(AESKey));
 
             for (i = 0; i < 8; i++)
-                printf("Gen 2nd ECDH AES KEY[%d]: 0x%08x.\n", i, pISPInfo->au32AESKey[i]);
+                DBG("Gen 2nd ECDH AES KEY[%d]: 0x%08x.\n", i, pISPInfo->au32AESKey[i]);
 
             memset(pISPInfo->tmp0, 0x0, sizeof(AESKey));
         }
@@ -1071,7 +1081,7 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
 
     memset(AESKey, 0x0, sizeof(AESKey));
 
-    printf("Repone.\n\n");
+    DBG("Repone.\n\n");
     return ret;
 }
 
@@ -1079,7 +1089,6 @@ int32_t ParseECDH(ISP_INFO_T *pISPInfo)
 uint32_t FMC_GetChkSum(uint32_t u32StartAddr, uint32_t u32ByteSize)
 {
     uint32_t u32CRC32Checksum = 0xFFFFFFFF;
-    uint32_t u32Addr;
 
     /* Configure CRC controller for CRC-CRC32 mode */
     CRC_Open(CRC_32, (CRC_WDATA_RVS | CRC_CHECKSUM_RVS | CRC_CHECKSUM_COM), 0xFFFFFFFFul, CRC_CPU_WDATA_32);
@@ -1101,7 +1110,7 @@ int32_t _PageErase(uint32_t addr, uint32_t count, uint32_t u32CmdMask)
 {
     volatile int32_t    i, ret = -1;
 
-    printf("[Page erase] addr: 0x%x, page counts: %d.\n", addr, count);
+    DBG("[Page erase] addr: 0x%x, page counts: %d.\n", addr, count);
 
     addr &= ~NS_OFFSET;
 
@@ -1155,8 +1164,8 @@ int32_t _PageErase(uint32_t addr, uint32_t count, uint32_t u32CmdMask)
         if (FMC_Erase(addr) < 0)
             break;
 
-        /* run 2K checksum and verify its result */
-        if (FMC_GetChkSum(addr, FMC_FLASH_PAGE_SIZE) != ALL_ONE_2KB_CHKS)
+        /* Run 2 page checksum and verify its result */
+        if (FMC_GetChkSum(addr, FMC_FLASH_PAGE_SIZE) != ALL_ONE_2PAGE_CHKS)
             break;
 
         addr += FMC_FLASH_PAGE_SIZE;
@@ -1170,7 +1179,7 @@ int32_t _PageErase(uint32_t addr, uint32_t count, uint32_t u32CmdMask)
 
 static int32_t _IsValidFlashRegion(uint32_t addr, uint32_t size, uint32_t u32CmdMask)
 {
-    printf("[Check flash region] addr: 0x%x, size: %d.\n", addr, size);
+    DBG("[Check flash region] addr: 0x%x, size: %d.\n", addr, size);
 
     /* Not use u32CmdMask */
 
@@ -1259,7 +1268,7 @@ static int32_t _WriteFlash(uint32_t addr, uint32_t size, uint32_t *pu32Data, uin
 {
     volatile int32_t    i, ret = -1;
 
-    printf("[Write flash] addr: 0x%x, size: %d.\n", addr, size);
+    DBG("[Write flash] addr: 0x%x, size: %d.\n", addr, size);
 
     if ((ret = _IsValidFlashRegion(addr, size, u32CmdMask)) != 0)
         return ret;
@@ -1313,7 +1322,7 @@ int32_t ParseCommands(ISP_INFO_T *pISPInfo)
     volatile int32_t    i, ret = 0, cmd_case, tmp;
     CMD_PACKET_T        cmd;
     uint32_t            addr, size;
-    uint32_t            start, end, msg[8], R[8], S[8];
+    uint32_t            msg[8], R[8], S[8];
     ECC_PUBKEY_T        PubKey;
 
     memset(&cmd,             0x0, sizeof(CMD_PACKET_T));
@@ -1339,7 +1348,7 @@ int32_t ParseCommands(ISP_INFO_T *pISPInfo)
 
         if (CMD_ParseReqPacket(&cmd, pISPInfo) != 0)
         {
-            printf("*** [Parse error: 0x%x] ***\n", cmd.u16CmdID);
+            DBG("*** [Parse error: 0x%x] ***\n", cmd.u16CmdID);
             memset(cmd.au32Data, 0x0, sizeof(cmd.au32Data));
 
             cmd.au32Data[0] = ERR_CMD_CHECKSUM;
@@ -1354,7 +1363,7 @@ int32_t ParseCommands(ISP_INFO_T *pISPInfo)
             switch (cmd_case)
             {
                 case CMD_DISCONNECT:
-                    printf("[CMD_DISCONNECT] (stage 3)\n");
+                    DBG("[CMD_DISCONNECT] (stage 3)\n");
                     memset(cmd.au32Data, 0x0, sizeof(cmd.au32Data));
 
                     cmd.au32Data[0] = STS_OK;
@@ -1364,7 +1373,7 @@ int32_t ParseCommands(ISP_INFO_T *pISPInfo)
                     break;
 
                 case CMD_GET_VERSION:
-                    printf("[CMD_GET_VERSION]\n");
+                    DBG("[CMD_GET_VERSION]\n");
                     memset(cmd.au32Data, 0x0, sizeof(cmd.au32Data));
 
                     cmd.au32Data[0] = STS_OK;
@@ -1374,7 +1383,7 @@ int32_t ParseCommands(ISP_INFO_T *pISPInfo)
                     break;
 
                 case CMD_ERASE:
-                    printf("[CMD_ERASE]\n");
+                    DBG("[CMD_ERASE]\n");
                     ret = _PageErase(cmd.au32Data[0], cmd.au32Data[1], pISPInfo->u32CmdMask);
                     memset(cmd.au32Data, 0x0, sizeof(cmd.au32Data));
                     cmd.au32Data[0] = (ret == 0) ? STS_OK : ret;
@@ -1383,7 +1392,7 @@ int32_t ParseCommands(ISP_INFO_T *pISPInfo)
                     break;
 
                 case CMD_WRITE:
-                    printf("[CMD_WRITE] (0x%x, 0x%x, 0x%x)\n", cmd.au32Data[0], cmd.au32Data[1], cmd.au32Data[2]);
+                    DBG("[CMD_WRITE] (0x%x, 0x%x, 0x%x)\n", cmd.au32Data[0], cmd.au32Data[1], cmd.au32Data[2]);
                     addr = cmd.au32Data[0];
                     size = cmd.au32Data[1];
                     ret = _WriteFlash(addr, size, &cmd.au32Data[2], pISPInfo->u32CmdMask);
@@ -1394,7 +1403,7 @@ int32_t ParseCommands(ISP_INFO_T *pISPInfo)
                     break;
 
                 case CMD_SET_MASS_WRITE:
-                    printf("[CMD_SET_MASS_WRITE] (0x%x, 0x%x)\n", cmd.au32Data[0], cmd.au32Data[1]);
+                    DBG("[CMD_SET_MASS_WRITE] (0x%x, 0x%x)\n", cmd.au32Data[0], cmd.au32Data[1]);
                     ret = _IsValidFlashRegion(cmd.au32Data[0], cmd.au32Data[1], pISPInfo->u32CmdMask);
 
                     if (ret == 0)
@@ -1412,7 +1421,7 @@ int32_t ParseCommands(ISP_INFO_T *pISPInfo)
                     break;
 
                 case CMD_MASS_WRITE:
-                    printf("[CMD_MASS_WRITE]\n");
+                    DBG("[CMD_MASS_WRITE]\n");
                     addr = pISPInfo->tmp0[0] + (cmd.u16PacketID * 48); // maximum data length is 48
                     size = cmd.u16Len;
                     ret = _WriteFlash(addr, size, cmd.au32Data, pISPInfo->u32CmdMask);
@@ -1423,7 +1432,7 @@ int32_t ParseCommands(ISP_INFO_T *pISPInfo)
                     break;
 
                 case CMD_GET_ID:
-                    printf("[CMD_GET_ID]\n");
+                    DBG("[CMD_GET_ID]\n");
                     memset(cmd.au32Data, 0x0, sizeof(cmd.au32Data));
 
                     cmd.au32Data[0] = STS_OK;
@@ -1442,7 +1451,7 @@ int32_t ParseCommands(ISP_INFO_T *pISPInfo)
                     break;
 
                 case CMD_READ_CONFIG:
-                    printf("[CMD_READ_CONFIG]\n");
+                    DBG("[CMD_READ_CONFIG]\n");
                     memset(cmd.au32Data, 0x0, sizeof(cmd.au32Data));
 
                     cmd.au32Data[0] = STS_OK;
@@ -1462,7 +1471,7 @@ int32_t ParseCommands(ISP_INFO_T *pISPInfo)
                     break;
 
                 case CMD_RESET:
-                    printf("[CMD_RESET] (0x%x)\n", cmd.au32Data[0]);
+                    DBG("[CMD_RESET] (0x%x)\n", cmd.au32Data[0]);
 
                     if (cmd.au32Data[0] > 2)
                     {
@@ -1492,7 +1501,7 @@ int32_t ParseCommands(ISP_INFO_T *pISPInfo)
                     break;
 
                 case CMD_EXEC_VENDOR_FUNC:
-                    printf("[CMD_EXEC_VENDOR_FUNC] (Org ID: 0x%x; Vendor ID: 0x%x)\n", cmd_case, cmd.au32Data[1]);
+                    DBG("[CMD_EXEC_VENDOR_FUNC] (Org ID: 0x%x; Vendor ID: 0x%x)\n", cmd_case, cmd.au32Data[1]);
 
                     if (cmd.u16Len < 4)
                     {
@@ -1517,7 +1526,7 @@ int32_t ParseCommands(ISP_INFO_T *pISPInfo)
                     break;
 
                 case CMD_IS_MASKED:
-                    printf("[CMD_IS_MASKED] (0x%x)\n", cmd.u16CmdID);
+                    DBG("[CMD_IS_MASKED] (0x%x)\n", cmd.u16CmdID);
                     memset(cmd.au32Data, 0x0, sizeof(cmd.au32Data));
 
                     cmd.au32Data[0] = CMD_IS_MASKED;
@@ -1526,7 +1535,7 @@ int32_t ParseCommands(ISP_INFO_T *pISPInfo)
                     break;
 
                 default:
-                    printf("*** [Cmd error: 0x%x] ***\n", cmd.u16CmdID);
+                    DBG("*** [Cmd error: 0x%x] ***\n", cmd.u16CmdID);
                     cmd.au32Data[0] = ERR_CMD_INVALID;
                     cmd.u16Len      = (4 * 1);
                     ret = -1;
@@ -1553,8 +1562,8 @@ int32_t ParseCommands(ISP_INFO_T *pISPInfo)
         memcpy(pISPInfo->au32AESIV, pISPInfo->tmp0, (128 / 8)); // 128-bits
     }
 
-    printf("Repone.\n\n");
+    DBG("Repone.\n\n");
     return ret;
 }
 
-/*** (C) COPYRIGHT 2020 Nuvoton Technology Corp. ***/
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

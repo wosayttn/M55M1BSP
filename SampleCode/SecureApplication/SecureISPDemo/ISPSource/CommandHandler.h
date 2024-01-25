@@ -3,9 +3,9 @@
  * @version  V3.00
  * @brief    Secure ISP - Process commands
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #ifndef __COMMAND_HANDLER_H__
 #define __COMMAND_HANDLER_H__
 
@@ -16,10 +16,9 @@ extern "C"
 
 #include "NuMicro.h"
 
-#if defined(___DISABLE_MSG___)
-#define printf(...)
+#ifndef DBG
+#define DBG(...)
 #endif
-
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Command ID Constant Definitions                                                                         */
@@ -165,19 +164,19 @@ typedef struct
     /* Word-15 */
     uint32_t        RSVD;           /* Reserved */
 
-} __attribute__((packed)) CMD_PACKET_T;
+} CMD_PACKET_T;
 
 typedef struct
 {
     uint32_t        au32Key0[8];    /* 256-bits */
     uint32_t        au32Key1[8];    /* 256-bits */
-} __attribute__((packed)) ECC_PUBKEY_T;
+} ECC_PUBKEY_T;
 
 typedef struct
 {
     uint32_t        au32R[8];   /* 256-bits */
     uint32_t        au32S[8];   /* 256-bits */
-} __attribute__((packed)) ECDSA_SIGN_T;
+} ECDSA_SIGN_T;
 
 
 typedef int32_t (*ISPCallback)(uint32_t *, uint32_t);
@@ -228,7 +227,7 @@ typedef struct
     uint32_t        tmp0[8];
     uint32_t        tmp1[8];
 
-} __attribute__((packed)) ISP_INFO_T;
+} ISP_INFO_T;
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Function API for CommandHandler                                                                        */
