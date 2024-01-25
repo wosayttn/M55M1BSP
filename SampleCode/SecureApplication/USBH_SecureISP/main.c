@@ -15,7 +15,7 @@
 
 
 HID_DEV_T   *g_hid_list[CONFIG_HID_MAX_DEV];
-uint8_t     g_buff_pool[1024] __attribute__((aligned(32)));
+uint8_t     s_au8BuffPool[1024] __ALIGNED(32);
 
 extern int32_t Process_USBHCommand(HID_DEV_T *hdev);
 
@@ -116,21 +116,21 @@ void update_hid_device_list(HID_DEV_T *hdev)
 
 int  init_hid_device(HID_DEV_T *hdev)
 {
-    uint8_t   *data_buff;
-    int       i, ret;
+    uint8_t   *pu8DataBuff;
+    int32_t   i32Ret = 0;
 
-    data_buff = (uint8_t *)((uint32_t)g_buff_pool);
+    pu8DataBuff = (uint8_t *)((uint32_t)s_au8BuffPool);
 
     printf("\n\n==================================\n");
     printf("  Init HID device : 0x%x\n", (int)hdev);
     printf("  VID: 0x%x, PID: 0x%x\n\n", hdev->idVendor, hdev->idProduct);
 
-    ret = usbh_hid_get_report_descriptor(hdev, data_buff, 1024);
+    i32Ret = usbh_hid_get_report_descriptor(hdev, pu8DataBuff, 1024);
 
-    if (ret > 0)
+    if (i32Ret > 0)
     {
         printf("\nDump report descriptor =>\n");
-        dump_buff_hex(data_buff, ret);
+        dump_buff_hex(pu8DataBuff, i32Ret);
     }
 
     return 0;
@@ -170,24 +170,39 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Initialization for sample code                                                                          */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable USBH module clock, default clock source is from PLL */
-    CLK_EnableModuleClock(USBH0_MODULE);
-
     /* USB Host desired input clock is 48 MHz. Set as HIRC48 divided by 1 (48/1 = 48) */
     CLK_SetModuleClock(USBH0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
 
-    /* Enable USBD and OTG clock */
+    /* Enable USB and OTG clock */
+    CLK_EnableModuleClock(USBH0_MODULE);
     CLK_EnableModuleClock(USBD0_MODULE);
     CLK_EnableModuleClock(OTG0_MODULE);
+    /* Enable HSUSBH module clock */
+    CLK_EnableModuleClock(HSUSBH0_MODULE);
+    /* Enable CRYPTO and TRNG module clock */
+    CLK_EnableModuleClock(CRYPTO0_MODULE);
+    CLK_EnableModuleClock(TRNG0_MODULE);
+    /* Enable GPIO module clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
+    CLK_EnableModuleClock(GPIOB_MODULE);
+    CLK_EnableModuleClock(GPIOJ_MODULE);
 
     /* Set OTG as USB Host role */
     SYS->USBPHY = (0x1ul << (SYS_USBPHY_HSOTGPHYEN_Pos)) | (0x1ul << (SYS_USBPHY_HSUSBROLE_Pos)) | (0x1ul << (SYS_USBPHY_OTGPHYEN_Pos)) | (0x1 << SYS_USBPHY_USBROLE_Pos);
+    delay_us(20);
+    SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
 
     /* USB_VBUS_EN (USB 1.1 VBUS power enable pin) multi-function pin - PB.8     */
     SET_USB_VBUS_EN_PB8();
 
     /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PB.9   */
     SET_USB_VBUS_ST_PB9();
+
+    /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PJ.13   */
+    SET_HSUSB_VBUS_EN_PJ13();
+
+    /* HSUSB_VBUS_ST (USB 2.0 over-current detect pin) multi-function pin - PJ.12 */
+    SET_HSUSB_VBUS_ST_PJ12();
 
     /* USB 1.1 port multi-function pin VBUS, D+, D-, and ID pins */
     SET_USB_VBUS_PA12();
@@ -204,8 +219,8 @@ uint32_t CLK_GetUSBFreq(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Get USB Peripheral Clock                                                                                */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* USB Peripheral clock = PLL_CLOCK/USBDIV+1) */
-    return CLK_GetAPLL0ClockFreq() / CLK_GetModuleClockDivider(USBD0_MODULE); //(((CLK->CLKDIV0 & CLK_CLKDIV0_USBDIV_Msk) >> CLK_CLKDIV0_USBDIV_Pos) + 1);
+    /* USB Peripheral clock = HIRC48M / (USBDIV + 1) */
+    return __HIRC48M / (CLK_GetModuleClockDivider(USBD0_MODULE) + 1);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -213,7 +228,6 @@ uint32_t CLK_GetUSBFreq(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int main()
 {
-    int          i, ret;
     HID_DEV_T    *hdev, *hdev_list;
 
     /* Init System, IP clock and multi-function I/O */
@@ -264,8 +278,6 @@ int main()
             usbh_memory_used();
         }
     }
-
-    while (1) {}
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

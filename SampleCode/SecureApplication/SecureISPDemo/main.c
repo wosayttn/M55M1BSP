@@ -14,16 +14,15 @@ extern int32_t ExecuteSecureISP(void);
 
 void SYS_Init(void)
 {
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Enable internal RC 48MHz clock */
+    /* Enable clock */
+    CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
     CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
 
-    /* Waiting for internal RC 48MHz clock ready */
+    /* Wait for clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
 
     /* Enable PLL0 180MHz clock from HIRC and switch SCLK clock source to PLL0 */
@@ -33,16 +32,14 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Enable UART module clock */
+    /* Enable module clock */
+    CLK_EnableModuleClock(ISP0_MODULE);
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-
-    /* Lock protected registers */
-    SYS_LockReg();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -50,7 +47,8 @@ void SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-
+    /* Unlock protected registers */
+    SYS_UnlockReg();
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
     /* Init Debug UART to 115200-8N1 for print message */

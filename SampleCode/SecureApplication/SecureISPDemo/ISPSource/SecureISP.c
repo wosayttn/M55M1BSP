@@ -3,18 +3,17 @@
  * @version  V3.00
  * @brief    SecureISP initialization source file
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <arm_cmse.h>
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
 #include "hid_transfer.h"
-
 #include "CommandHandler.h"
 
-static volatile ISP_INFO_T  g_ISPInfo = {0};
+static volatile ISP_INFO_T  g_ISPInfo = { 0 };
 
 extern int32_t Exec_VendorFunction(uint32_t *pu32Buf, uint32_t u32Len);
 
@@ -51,10 +50,10 @@ static int32_t GenECDHSharedKey(ECC_PUBKEY_T *PubKey, uint32_t *AESKey)
     BytesSwap((char *)tmp, sizeof(tmp));
     Reg2Hex(64, tmp, Qy);
 
-    printf("\nTo generate 1st shared key:\n");
-    printf("d:  %s\n", (const char *)gacPrivKey);
-    printf("Qx: %s\n", Qx);
-    printf("Qy: %s\n", Qy);
+    DBG("\nTo generate 1st shared key:\n");
+    DBG("d:  %s\n", (const char *)gacPrivKey);
+    DBG("Qx: %s\n", Qx);
+    DBG("Qy: %s\n", Qy);
     ret = ECC_GenerateSecretZ(CRYPTO, CURVE_P_256, (char *)((uint32_t)gacPrivKey), Qx, Qy, z);
 
     if (ret < 0)
@@ -65,7 +64,7 @@ static int32_t GenECDHSharedKey(ECC_PUBKEY_T *PubKey, uint32_t *AESKey)
         return -1;
     }
 
-    printf("z:  %s\n", z);
+    DBG("z:  %s\n", z);
 
     Hex2Reg(z, AESKey);
     BytesSwap((char *)AESKey, (256 / 8));
@@ -74,7 +73,7 @@ static int32_t GenECDHSharedKey(ECC_PUBKEY_T *PubKey, uint32_t *AESKey)
     memset(Qy, 0x0, sizeof(Qy));
     memset(z,  0x0, sizeof(z));
 
-    printf("\n");
+    DBG("\n");
     return 0;
 }
 
@@ -147,19 +146,21 @@ void EP3_Handler(void)  /* Interrupt OUT handler */
 /*---------------------------------------------------------------------------------------------------------*/
 void UART1_IRQHandler(void)
 {
-    volatile uint32_t   u32UARTINTSTS, data_idx;
+    volatile uint32_t   u32UARTINTSTS, u32DataIdx;
 
-    data_idx = g_ISPInfo.UARTDataIdx;
+    u32DataIdx = g_ISPInfo.UARTDataIdx;
 
     u32UARTINTSTS = UART1->INTSTS;
 
     if (u32UARTINTSTS & (UART_INTSTS_RDAIF_Msk | UART_INTSTS_RXTOIF_Msk))
     {
-        //RDA FIFO interrupt & RDA timeout interrupt
-        while (((UART1->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0) && (data_idx < sizeof(CMD_PACKET_T))) //RX fifo not empty
+        // RDA FIFO interrupt & RDA timeout interrupt
+        while (((UART1->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0) && (u32DataIdx < sizeof(CMD_PACKET_T)))   // RX FIFO not empty
         {
-            g_ISPInfo.rcvbuf[data_idx++] = (uint8_t)UART1->DAT;
-            g_ISPInfo.UARTDataIdx = data_idx;
+            uint8_t u8Data = (uint8_t)UART1->DAT;
+
+            g_ISPInfo.rcvbuf[u32DataIdx++] = u8Data;
+            g_ISPInfo.UARTDataIdx = u32DataIdx;
         }
     }
 
@@ -201,10 +202,10 @@ static void SendPacketToServer(ISP_INFO_T *pISPInfo)
     }
 }
 
-static int32_t USBDISPInit(ISP_INFO_T *pISPInfo, uint32_t reserved)
+static int32_t USBDISPInit(ISP_INFO_T *pISPInfo, uint32_t u32Reserved)
 {
-    (void)reserved;
-    printf("\n[*** Initial USBD ISP mode ***]\n");
+    NVT_UNUSED(u32Reserved);
+    DBG("\n[*** Initial USBD ISP mode ***]\n");
 
     pISPInfo->IsUSBDataReady = FALSE;
 
@@ -212,9 +213,12 @@ static int32_t USBDISPInit(ISP_INFO_T *pISPInfo, uint32_t reserved)
     CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
 
     /* Enable IP clock */
+    CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(USBD0_MODULE);
+    CLK_EnableModuleClock(OTG0_MODULE);
 
     /* Select USBD */
+    //SYS->USBPHY = (SYS->USBPHY & ~SYS_USBPHY_USBROLE_Msk) | SYS_USBPHY_OTGPHYEN_Msk;
     SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk | SYS_USBPHY_USBROLE_Msk)) | SYS_USBPHY_OTGPHYEN_Msk;
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -230,17 +234,16 @@ static int32_t USBDISPInit(ISP_INFO_T *pISPInfo, uint32_t reserved)
 
     /* Endpoint configuration */
     HID_Init();
+    USBD_Start();
 
     NVIC_EnableIRQ(USBD_IRQn);
-
-    USBD_Start();
 
     return 0;
 }
 
 static int32_t UART1ISPInit(ISP_INFO_T *pISPInfo)
 {
-    printf("\n[*** Initial UART1 ISP mode ***] (UART1 TX-PA.3; RX-PA.2)\n");
+    DBG("\n[*** Initial UART1 ISP mode ***] (UART1 TX-PA.3; RX-PA.2)\n");
 
     /* UART1: TX = PA.3, RX = PA.2 */
     SET_UART1_TXD_PA3();
@@ -272,9 +275,6 @@ static int32_t UART1ISPInit(ISP_INFO_T *pISPInfo)
     return 0;
 }
 
-
-
-
 /* Stage 1. */
 static int32_t ProcessConnect(ISP_INFO_T *pISPInfo)
 {
@@ -287,16 +287,16 @@ static int32_t ProcessConnect(ISP_INFO_T *pISPInfo)
 
     pCurISPInfo->IsConnectOK = 0;
 
-    printf("\n[In ProcessConnect]\n\n");
+    DBG("\n[In ProcessConnect]\n\n");
 
     while (1)
     {
         if ((pCurISPInfo->IsUSBDataReady == TRUE) || (pCurISPInfo->IsUARTDataReady == TRUE))
         {
             if (pCurISPInfo->IsUSBDataReady == TRUE)
-                printf("IS USB_CMD:\n\n");
+                DBG("IS USB_CMD:\n\n");
             else
-                printf("IS UART_CMD:\n\n");
+                DBG("IS UART_CMD:\n\n");
 
             timeout = -1;
             ret = ParseCONNECT((ISP_INFO_T *)((uint32_t)pCurISPInfo));
@@ -310,7 +310,7 @@ static int32_t ProcessConnect(ISP_INFO_T *pISPInfo)
         {
             if (timeout-- == 0)
             {
-                printf("[Connect time-out]\n\n");
+                DBG("[Connect time-out]\n\n");
                 ret = -1;
                 break;
             }
@@ -328,7 +328,7 @@ static int32_t ProcessECDH(ISP_INFO_T *pISPInfo)
 
     pCurISPInfo = pISPInfo;
 
-    printf("\n[In ProcessECDH]\n\n");
+    DBG("\n[In ProcessECDH]\n\n");
 
     while (1)
     {
@@ -353,7 +353,7 @@ static int32_t ProcessCommands(ISP_INFO_T *pISPInfo)
 
     pCurISPInfo = pISPInfo;
 
-    printf("\n[In ProcessCommands]\n\n");
+    DBG("\n[In ProcessCommands]\n\n");
 
     while (1)
     {
@@ -384,7 +384,7 @@ static int32_t ProcessISP(ISP_INFO_T *pISPInfo)
         if ((ret == -1) || (ret == CMD_DISCONNECT) || (ret == CMD_RESYNC))
         {
             if (ret == -1)
-                printf("\n[FAIL, ProcessConnect]\n");
+                DBG("\n[FAIL, ProcessConnect]\n");
 
             break;
         }
@@ -395,7 +395,7 @@ static int32_t ProcessISP(ISP_INFO_T *pISPInfo)
         if ((ret == -1) || (ret == CMD_DISCONNECT) || (ret == CMD_RESYNC))
         {
             if (ret == -1)
-                printf("\n[FAIL, ProcessECDH]\n");
+                DBG("\n[FAIL, ProcessECDH]\n");
 
             break;
         }
@@ -406,13 +406,13 @@ static int32_t ProcessISP(ISP_INFO_T *pISPInfo)
         if ((ret == -1) || (ret == CMD_DISCONNECT) || (ret == CMD_RESYNC))
         {
             if (ret == -1)
-                printf("\n[FAIL, ProcessCommands]\n");
+                DBG("\n[FAIL, ProcessCommands]\n");
 
             break;
         }
     } while (0);
 
-    printf("\n[Exit ProcessISP]\n");
+    DBG("\n[Exit ProcessISP]\n");
 
     return ret;
 }
@@ -429,13 +429,13 @@ static int32_t SecureISPInit(ISP_INFO_T *pISPInfo, uint32_t reserved, E_ISP_MODE
     volatile int32_t    ret = 0;
 
     (void)reserved;
-    printf("\nIn [SecureISPInit mode: %d]\n", mode);
+    DBG("\nIn [SecureISPInit mode: %d]\n", mode);
 
     /* Init USBD ISP mdoe ...... */
     if ((mode & USB_MODE) == USB_MODE)
     {
         if ((mode & RESYNC_ISP) == 0x0)
-            USBDISPInit(pISPInfo, NULL);
+            USBDISPInit(pISPInfo, (uint32_t)NULL);
     }
 
     /* Init UART1 ISP mdoe ...... */
@@ -494,7 +494,7 @@ int32_t ExecuteSecureISP(void)
         /* Configure time-out time for checking the SecureISP Tool connection */
         g_ISPInfo.timeout = SystemCoreClock;
 
-        ret = SecureISPInit((ISP_INFO_T *)((uint32_t)&g_ISPInfo), NULL, (E_ISP_MODE)ISPmode);
+        ret = SecureISPInit((ISP_INFO_T *)((uint32_t)&g_ISPInfo), (uint32_t)NULL, (E_ISP_MODE)ISPmode);
 
         if (ret == CMD_RESYNC)
             continue;
@@ -508,4 +508,4 @@ int32_t ExecuteSecureISP(void)
     return 0;
 }
 
-/*** (C) COPYRIGHT 2020 Nuvoton Technology Corp. ***/
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

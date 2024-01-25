@@ -4,9 +4,9 @@
  * $Revision: 1 $
  * @brief    Transmit command to SecureISP USB command mode.
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
-*****************************************************************************/
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "stdlib.h"
@@ -16,8 +16,10 @@
 #include "usbh_hid.h"
 
 //#define DBG     printf
-#define DBG(...)
 
+#ifndef DBG
+    #define DBG(...)
+#endif
 
 #define CMD_CONNECT                 0x80
 #define CMD_RESET                   0x81
@@ -74,13 +76,13 @@ typedef struct
     /* Word-15 */
     uint32_t        RSVD;           /* Reserved */
 
-} __attribute__((packed)) CMD_PACKET_T;
+} CMD_PACKET_T;
 
 typedef struct
 {
     uint32_t        au32Key0[8];    /* 256-bits */
     uint32_t        au32Key1[8];    /* 256-bits */
-} __attribute__((packed)) ECC_PUBKEY_T;
+} ECC_PUBKEY_T;
 
 
 typedef struct
@@ -102,7 +104,7 @@ typedef struct
     ECC_PUBKEY_T    ServerPubKey;       /* Server's ECC public key, 64-bytes (256-bits + 256-bits) */
     ECC_PUBKEY_T    ClientPubKey;       /* Client's ECC public key, 64-bytes (256-bits + 256-bits) */
 
-    uint32_t        u32IsRXReady;
+    volatile uint32_t u32IsRXReady;
 
     char            d[68];
     char            Qx[68];
@@ -112,9 +114,9 @@ typedef struct
 } CHIP_ISP_INFO_T;
 
 
-__attribute__((aligned(4))) CHIP_ISP_INFO_T g_ChipISPInfo;
-__attribute__((aligned(4))) CMD_PACKET_T    g_WriteCmd;
-__attribute__((aligned(4))) CMD_PACKET_T    g_ReturnData;
+__ALIGNED(4) CHIP_ISP_INFO_T g_ChipISPInfo;
+__ALIGNED(4) CMD_PACKET_T    g_WriteCmd;
+__ALIGNED(4) CMD_PACKET_T    g_ReturnData;
 
 
 void  int_read_callback(HID_DEV_T *hdev, uint16_t ep_addr, int status, uint8_t *rdata, uint32_t data_len)
@@ -138,6 +140,7 @@ void  int_read_callback(HID_DEV_T *hdev, uint16_t ep_addr, int status, uint8_t *
 
 void  int_write_callback(HID_DEV_T *hdev, uint16_t ep_addr, int staus, uint8_t *wbuff, uint32_t *data_len)
 {
+    //printf("[%s] ep_addr: 0x%X\n", __func__, ep_addr);
     memcpy(wbuff, (uint8_t *)&g_WriteCmd, sizeof(g_WriteCmd)); /* Fill data to be sent via interrupt out pipe     */
     *data_len = sizeof(g_WriteCmd);
 }
@@ -165,7 +168,7 @@ static void BytesSwap(char *buf, int32_t len)
     }
 }
 
-static int32_t _strkeycmp(char *str1, char *str2)
+__attribute__((unused)) static int32_t _strkeycmp(char *str1, char *str2)
 {
     int32_t len1, len2;
     int32_t i;
@@ -248,7 +251,7 @@ static uint32_t sysGetNum(void)
 static uint16_t _Perform_CCITT(uint32_t *pu32buf, uint16_t len, uint8_t mode)
 {
     volatile uint16_t   i;
-    uint16_t            *pu16buf, OrgSum, CalSum;
+    uint16_t            *pu16buf, u32OrgSum, u32CalSum;
 
     if (len > 56) // valid data byte count
         return -1;
@@ -256,15 +259,13 @@ static uint16_t _Perform_CCITT(uint32_t *pu32buf, uint16_t len, uint8_t mode)
     pu16buf = (uint16_t *)pu32buf;
 
     CLK_EnableModuleClock(CRC0_MODULE);
-    CRC->SEED = 0xFFFFul;
-    CRC->CTL = (CRC_CCITT | CRC_CPU_WDATA_16) | CRC_CTL_CRCEN_Msk;
-    CRC->CTL |= CRC_CTL_CHKSINIT_Msk;
+    CRC_Open(CRC_CCITT, 0, 0xFFFFul, CRC_CPU_WDATA_16);
 
     for (i = 1; i < (len / 2); i++)
         CRC->DAT = *(pu16buf + i);
 
-    OrgSum = *(pu16buf + 0);
-    CalSum = (CRC->CHECKSUM & 0xFFFFul);
+    u32OrgSum = *(pu16buf + 0);
+    u32CalSum = (CRC->CHECKSUM & 0xFFFFul);
 
     /* Clear CRC checksum */
     CRC->SEED = 0xFFFFul;
@@ -272,13 +273,13 @@ static uint16_t _Perform_CCITT(uint32_t *pu32buf, uint16_t len, uint8_t mode)
 
     if (mode == 0)
     {
-        *(pu16buf + 0) = CalSum;
-        return CalSum;
+        *(pu16buf + 0) = u32CalSum;
+        return u32CalSum;
     }
     else if (mode == 1)
     {
         /* Verify CCITT checksum */
-        if (OrgSum == CalSum)
+        if (u32OrgSum == u32CalSum)
             return 0;   /* Verify CCITT Pass */
         else
             return -1;  /* Verify CCITT Fail */
@@ -295,22 +296,20 @@ static uint16_t _Perform_CCITT(uint32_t *pu32buf, uint16_t len, uint8_t mode)
 */
 static uint32_t _Perform_CRC32(uint32_t *pu32buf, uint16_t len, uint8_t mode)
 {
-    volatile uint16_t   i;
-    uint32_t            OrgSum, CalSum;
+    uint16_t i;
+    uint32_t u32OrgSum, u32CalSum;
 
     if (len > 60) // valid data byte count
         return -1;
 
     CLK_EnableModuleClock(CRC0_MODULE);
-    CRC->SEED = 0xFFFFFFFFul;
-    CRC->CTL = (CRC_32 | CRC_CPU_WDATA_32 | CRC_WDATA_RVS | CRC_CHECKSUM_COM | CRC_CHECKSUM_RVS) | CRC_CTL_CRCEN_Msk;
-    CRC->CTL |= CRC_CTL_CHKSINIT_Msk;
+    CRC_Open(CRC_32, (CRC_WDATA_RVS | CRC_CHECKSUM_COM | CRC_CHECKSUM_RVS), 0xFFFFFFFFul, CRC_CPU_WDATA_32);
 
     for (i = 0; i < (len / 4) - 1; i++)
         CRC->DAT = *(pu32buf + i);
 
-    OrgSum = *(pu32buf + i);
-    CalSum = (CRC->CHECKSUM & 0xFFFFFFFFul);
+    u32OrgSum = *(pu32buf + i);
+    u32CalSum = (CRC->CHECKSUM & 0xFFFFFFFFul);
 
     /* Clear CRC checksum */
     CRC->SEED = 0xFFFFFFFFul;
@@ -318,13 +317,13 @@ static uint32_t _Perform_CRC32(uint32_t *pu32buf, uint16_t len, uint8_t mode)
 
     if (mode == 0)
     {
-        *(pu32buf + i) = CalSum;
-        return CalSum;
+        *(pu32buf + i) = u32CalSum;
+        return u32CalSum;
     }
     else if (mode == 1)
     {
         /* Verify CRC32 checksum */
-        if (OrgSum == CalSum)
+        if (u32OrgSum == u32CalSum)
             return 0;   /* Verify CRC32 Pass */
         else
             return -1;  /* Verify CRC32 Fail */
@@ -358,8 +357,6 @@ static int32_t _AES256Encrypt(uint32_t *in, uint32_t *out, uint32_t len, uint32_
     volatile int32_t    i;
     uint32_t u32TimeOutCnt;
 
-    CLK_EnableModuleClock(CRYPTO0_MODULE);
-
     /* KEY and IV are byte order (32 bit) reversed, Swap32(x)) and stored in ISP_INFO_T */
     memcpy((void *)&CRYPTO->AES_KEY[0], KEY, (4 * 8));
     memcpy((void *)&CRYPTO->AES_IV[0], IV, (4 * 4));
@@ -388,8 +385,6 @@ static int32_t _AES256Decrypt(uint32_t *in, uint32_t *out, uint32_t len, uint32_
 {
     volatile int32_t    i;
     uint32_t u32TimeOutCnt;
-
-    CLK_EnableModuleClock(CRYPTO0_MODULE);
 
     /* KEY and IV are byte order (32 bit) reversed, Swap32(x)) and stored in ISP_INFO_T */
     memcpy((void *)&CRYPTO->AES_KEY[0], KEY, (4 * 8));
@@ -583,14 +578,14 @@ static int32_t _Perform_ParsePacket(CMD_PACKET_T *pCMD)
         return -1;
     }
 
-    DBG("Parse cmd PASS!\n\n");
+    DBG("Parse cmd - Pass.\n\n");
     return 0;
 }
 
 /* Stage 1. */
 static int32_t Process_Connect(void)
 {
-    uint32_t    i, u32PacketID = 0x48;
+    uint32_t u32PacketID = 0x48;
 
     memset(&g_WriteCmd, 0x0, sizeof(CMD_PACKET_T));
     memset(&g_ReturnData, 0xFF, sizeof(CMD_PACKET_T));
@@ -763,7 +758,7 @@ static int32_t ECDH_1_SendPub1(void)
 
 static int32_t ECDH_2_GetPub0(void)
 {
-    uint32_t    i, u32PacketID = 0xE2;
+    uint32_t u32PacketID = 0xE2;
 
     memset(&g_WriteCmd, 0x0, sizeof(CMD_PACKET_T));
     memset(&g_ReturnData, 0xFF, sizeof(CMD_PACKET_T));
@@ -809,8 +804,8 @@ static int32_t ECDH_2_GetPub0(void)
 
 static int32_t ECDH_3_GetPub1(void)
 {
-    uint32_t    i, u32PacketID = 0xE3;
-    uint32_t    tmp[8];
+    uint32_t u32PacketID = 0xE3;
+    uint32_t tmp[8];
 
     memset(&g_WriteCmd, 0x0, sizeof(CMD_PACKET_T));
     memset(&g_ReturnData, 0xFF, sizeof(CMD_PACKET_T));
@@ -900,11 +895,10 @@ static uint8_t Byte2Char(uint8_t c)
 }
 static void Generate_RandECCKey(void)
 {
-    int32_t i, j, m;
-    int32_t i32NBits, i32Err;
-    uint32_t    au32Buf[8];
-    uint8_t     *pu8Buf;
-    uint32_t    u32Ticks;
+    int32_t  i, j;
+    int32_t  i32NBits;
+    uint32_t au32Buf[8];
+    uint8_t  *pu8Buf;
 
     memset(g_ChipISPInfo.d, 0x0, sizeof(g_ChipISPInfo.d));
     memset(g_ChipISPInfo.Qx, 0x0, sizeof(g_ChipISPInfo.Qx));
@@ -1065,7 +1059,7 @@ static int32_t ECDH_5_SendRandPub1(void)
 
 static int32_t ECDH_6_GetRandPub0(void)
 {
-    uint32_t    i, u32PacketID = 0xE6;
+    uint32_t u32PacketID = 0xE6;
 
     memset(&g_WriteCmd, 0x0, sizeof(CMD_PACKET_T));
     memset(&g_ReturnData, 0xFF, sizeof(CMD_PACKET_T));
@@ -1252,7 +1246,7 @@ static int32_t Process_ECDH(void)
 
 static int32_t Process_GetID(void)
 {
-    uint32_t    i, u32PacketID = 0x30;
+    uint32_t u32PacketID = 0x30;
 
     memset(&g_WriteCmd, 0x0, sizeof(CMD_PACKET_T));
     memset(&g_ReturnData, 0xFF, sizeof(CMD_PACKET_T));
@@ -1311,7 +1305,7 @@ static int32_t Process_GetID(void)
 
 static int32_t Process_EraseFlash(uint32_t u32Addr, uint32_t u32PageCount)
 {
-    uint32_t    i, u32PacketID = 0x31;
+    uint32_t u32PacketID = 0x31;
 
     memset(&g_WriteCmd, 0x0, sizeof(CMD_PACKET_T));
     memset(&g_ReturnData, 0xFF, sizeof(CMD_PACKET_T));
@@ -1489,7 +1483,7 @@ static int32_t Process_VendorFunc(uint32_t *pu32Buf)
 
 static int32_t Process_ReSyncDevice(void)
 {
-    uint32_t    i, u32PacketID = 0x31;
+    uint32_t u32PacketID = 0x31;
 
     memset(&g_WriteCmd, 0x0, sizeof(CMD_PACKET_T));
     memset(&g_ReturnData, 0xFF, sizeof(CMD_PACKET_T));
@@ -1531,7 +1525,7 @@ static int32_t Process_ReSyncDevice(void)
 
 static int32_t Process_ResetDevice(void)
 {
-    uint32_t    i, u32PacketID = 0x31;
+    uint32_t u32PacketID = 0x31;
 
     memset(&g_WriteCmd, 0x0, sizeof(CMD_PACKET_T));
     memset(&g_ReturnData, 0xFF, sizeof(CMD_PACKET_T));
@@ -1562,8 +1556,12 @@ static int32_t Process_ResetDevice(void)
 
 int32_t Process_USBHCommand(HID_DEV_T *hdev)
 {
-    volatile uint32_t   i, j;
-    uint32_t            u32Item;
+    uint32_t i, j;
+    int32_t  i32RetCode;
+    uint32_t u32Item, u32CmdID,
+             u32FlashPageCnt   = 2,
+             u32FlashStartAddr = (uint32_t)(FMC_APROM_BASE + 0x10000),
+             u32FlashEndAddr   = (uint32_t)(FMC_APROM_BASE + 0x10000 + (FMC_FLASH_PAGE_SIZE * u32FlashPageCnt));
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -1590,17 +1588,11 @@ int32_t Process_USBHCommand(HID_DEV_T *hdev)
     Process_ReSyncDevice();
     delay_us(500000);
 
-
-    /* Enable CRYPTO clock */
-    CLK_EnableModuleClock(CRYPTO0_MODULE);
-
+    /* Enable ECC IRQ */
     ECC_ENABLE_INT(CRYPTO);
-
     NVIC_EnableIRQ(CRYPTO_IRQn);
-
     /* Initial Random Number Generator */
     RNG_Open();
-
 
     memset(&g_ChipISPInfo, 0x0, sizeof(CHIP_ISP_INFO_T));
 
@@ -1627,14 +1619,14 @@ int32_t Process_USBHCommand(HID_DEV_T *hdev)
     {
         printf("\n");
         printf("=============================\n");
-        printf("   [ 0] Get ID\n");
-        printf("   [ 1] Erase flash - from 0x10000 to 0x11000\n");
-        printf("   [ 2] Write flash - from 0x10000 to 0x11000\n");
-        printf("        * Should be perform erase command before writing flash\n");
-        printf("   [ 3] Vendor function - read ID\n");
-        printf("   [ 4] Vendor function - read flash from 0x10000 to 0x11000\n");
-        printf("   [ 5] Vendor function - write flash from 0x10000 to 0x11000\n");
-        printf("        * Should be perform erase command before writing flash\n");
+        printf("   [ 0] Read ID\n");
+        printf("   [ 1] Erase flash from 0x%08X to 0x%08X\n", u32FlashStartAddr, u32FlashEndAddr);
+        printf("   [ 2] Write flash from 0x%08X to 0x%08X\n", u32FlashStartAddr, u32FlashEndAddr);
+        printf("        * Need to execute \"Erase flash\" command before \"Write flash\" command\n");
+        printf("   [ 3] Vendor function - Read ID\n");
+        printf("   [ 4] Vendor function - Read  flash from 0x%08X to 0x%08X\n", u32FlashStartAddr, u32FlashEndAddr);
+        printf("   [ 5] Vendor function - Write flash from 0x%08X to 0x%08X\n", u32FlashStartAddr, u32FlashEndAddr);
+        printf("        * Need to execute \"Erase flash\" command before \"Write flash\" command\n");
         printf("=============================\n");
         printf("   [90] Reset device\n");
         printf("=============================\n");
@@ -1644,9 +1636,9 @@ int32_t Process_USBHCommand(HID_DEV_T *hdev)
 
         if (u32Item == 0)
         {
-            if (Process_GetID() != 0)
+            if ((i32RetCode = Process_GetID()) != 0)
             {
-                printf("\nProcess_GetID FAIL. (L:%d)\n", __LINE__);
+                printf("\n(%d@%s) Process_GetID FAIL (%d) !\n", __LINE__, __FILE__, i32RetCode);
 
                 while (1) {}
             }
@@ -1654,9 +1646,9 @@ int32_t Process_USBHCommand(HID_DEV_T *hdev)
 
         if (u32Item == 1)
         {
-            if (Process_EraseFlash(0x10000, 2) != 0)
+            if ((i32RetCode = Process_EraseFlash(u32FlashStartAddr, u32FlashPageCnt)) != 0)
             {
-                printf("\nProcess_EraseFlash FAIL. (L:%d)\n", __LINE__);
+                printf("\n(%d@%s) Process_EraseFlash FAIL (%d) !\n", __LINE__, __FILE__, i32RetCode);
 
                 while (1) {}
             }
@@ -1669,27 +1661,30 @@ int32_t Process_USBHCommand(HID_DEV_T *hdev)
             do
             {
                 for (i = 0; i < (32 / 4); i++)
-                    g_ChipISPInfo.au32Tmp[i] = 0x5a5a0000 + i + (j / 4);
-
-                if (Process_WriteFlash(0x10000 + j, 32, g_ChipISPInfo.au32Tmp) != 0)
                 {
-                    printf("\nProcess_WriteFlash FAIL. (L:%d)\n", __LINE__);
+                    g_ChipISPInfo.au32Tmp[i] = 0x5a5a0000 + i + (j / 4);
+                }
+
+                if ((i32RetCode = Process_WriteFlash((u32FlashStartAddr + j), 32, g_ChipISPInfo.au32Tmp)) != 0)
+                {
+                    printf("\n(%d@%s) Process_WriteFlash FAIL (%d) !\n", __LINE__, __FILE__, i32RetCode);
 
                     while (1) {}
                 }
 
                 j += 32;
-            } while ((0x10000 + j) < 0x11000);
+            } while ((u32FlashStartAddr + j) < u32FlashEndAddr);
         }
 
         if (u32Item == 3)
         {
-            g_ChipISPInfo.au32Tmp[0] = (4 * 1); // vendor cmd: byte counts
-            g_ChipISPInfo.au32Tmp[1] = 0x1000;  // vendor cmd: command ID
+            u32CmdID = 0x1000;
+            g_ChipISPInfo.au32Tmp[0] = (4 * 1);     // vendor cmd: byte counts
+            g_ChipISPInfo.au32Tmp[1] = u32CmdID;    // vendor cmd: command ID
 
-            if (Process_VendorFunc(g_ChipISPInfo.au32Tmp) != 0)
+            if ((i32RetCode = Process_VendorFunc(g_ChipISPInfo.au32Tmp)) != 0)
             {
-                printf("\nVendor cmd:0x%x FAIL. (L:%d)\n", 0x1000, __LINE__);
+                printf("\n(%d@%s) Vendor cmd:0x%x FAIL (%d) !\n", __LINE__, __FILE__, u32CmdID, i32RetCode);
 
                 while (1) {}
             }
@@ -1697,49 +1692,54 @@ int32_t Process_USBHCommand(HID_DEV_T *hdev)
 
         if (u32Item == 4)
         {
+            u32CmdID = 0x2000;
             i = j = 0;
 
             do
             {
-                g_ChipISPInfo.au32Tmp[0] = (4 * 3);     // vendor cmd: byte counts
-                g_ChipISPInfo.au32Tmp[1] = 0x2000;      // vendor cmd: command ID
-                g_ChipISPInfo.au32Tmp[2] = 0x10000 + j; // vendor cmd: addr
-                g_ChipISPInfo.au32Tmp[3] = 32;          // vendor cmd: read byte size
+                g_ChipISPInfo.au32Tmp[0] = (4 * 3);                     // vendor cmd: byte counts
+                g_ChipISPInfo.au32Tmp[1] = u32CmdID;                    // vendor cmd: command ID
+                g_ChipISPInfo.au32Tmp[2] = (u32FlashStartAddr + j);     // vendor cmd: addr
+                g_ChipISPInfo.au32Tmp[3] = 32;                          // vendor cmd: read byte size
 
-                if (Process_VendorFunc(g_ChipISPInfo.au32Tmp) != 0)
+                if ((i32RetCode = Process_VendorFunc(g_ChipISPInfo.au32Tmp)) != 0)
                 {
-                    printf("\nVendor cmd:0x%x FAIL. (Addr:0x%x) (L:%d)\n", 0x2000, (0x10000 + j), __LINE__);
+                    printf("\n(%d@%s) Vendor cmd:0x%x FAIL (%d) ! (Addr:0x%x) \n", __LINE__, __FILE__, u32CmdID, i32RetCode, (uint32_t)(u32FlashStartAddr + j));
 
                     while (1) {}
                 }
 
                 j += 32;
-            } while ((0x10000 + j) < 0x11000);
+            } while ((u32FlashStartAddr + j) < u32FlashEndAddr);
         }
 
         if (u32Item == 5)
         {
+            u32CmdID = 0x3000;
             i = j = 0;
 
             do
             {
-                g_ChipISPInfo.au32Tmp[0] = (4 * 11);    // vendor cmd: byte counts
-                g_ChipISPInfo.au32Tmp[1] = 0x3000;      // vendor cmd: command ID
-                g_ChipISPInfo.au32Tmp[2] = 0x10000 + j; // vendor cmd: addr
-                g_ChipISPInfo.au32Tmp[3] = 32;          // vendor cmd: write byte size
+                g_ChipISPInfo.au32Tmp[0] = (4 * 11);                    // vendor cmd: byte counts
+                g_ChipISPInfo.au32Tmp[1] = u32CmdID;                    // vendor cmd: command ID
+                g_ChipISPInfo.au32Tmp[2] = (u32FlashStartAddr + j);     // vendor cmd: addr
+                g_ChipISPInfo.au32Tmp[3] = 32;                          // vendor cmd: write byte size
 
                 for (i = 0; i < (32 / 4); i++)
-                    g_ChipISPInfo.au32Tmp[4 + i] = 0x0000a5a5 + ((i + (j / 4)) << 16);
-
-                if (Process_VendorFunc(g_ChipISPInfo.au32Tmp) != 0)
                 {
-                    printf("\nVendor cmd:0x%x FAIL. (Addr:0x%x) (L:%d)\n", 0x3000, (0x10000 + j), __LINE__);
+                    g_ChipISPInfo.au32Tmp[4 + i] = 0x0000a5a5 + ((i + (j / 4)) << 16);
+                }
+
+                if ((i32RetCode = Process_VendorFunc(g_ChipISPInfo.au32Tmp)) != 0)
+                {
+                    printf("\n(%d@%s) Vendor cmd:0x%x FAIL (%d) ! (Addr:0x%x)\n", __LINE__, __FILE__, u32CmdID, i32RetCode, (uint32_t)(u32FlashStartAddr + j));
+
 
                     while (1) {}
                 }
 
                 j += 32;
-            } while ((0x10000 + j) < 0x11000);
+            } while ((u32FlashStartAddr + j) < u32FlashEndAddr);
         }
 
         if (u32Item == 90)
