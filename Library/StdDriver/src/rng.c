@@ -25,18 +25,14 @@
 /**
  *  @brief      Basic Configuration of TRNG and PRNG
  *
- *  @details    The function is used to set the basic configuration for TRNG and PRNG.
+ *  @details    Set basic configurations for TRNG and PRNG. Make sure module clock is enabled before calling this function.
  */
 static void RNG_BasicConfig()
 {
     uint32_t retry_count;
 
-    /* TRNG & PRNG clock enable and module reset*/
-    CLK_EnableModuleClock(CRYPTO0_MODULE);
-    CLK_EnableModuleClock(TRNG0_MODULE);
-    SYS_ResetModule(SYS_CRYPTO0RST);
+    /* TRNG module reset*/
     SYS_ResetModule(SYS_TRNG0RST);
-
 
     /* Enable LDOEN  */
     TRNG->CTL |= TRNG_CTL_LDOEN_Msk;	
@@ -64,7 +60,7 @@ static void RNG_BasicConfig()
  *  @return      0  Successful
  *              -1  Failed
  *
- *  @details    The function is used to disable rng interrupt.
+ *  @details    The function is used to initialize PRNG ready to generate random number.
  */
 int32_t RNG_Open()
 {

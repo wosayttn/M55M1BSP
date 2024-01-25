@@ -52,8 +52,12 @@ void SYS_Init(void)
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
-    /* Enable RNG(PRNG/TRNG) module is done in rng driverclock */
-
+    /* Enable CRYPTO0 module clock */
+    CLK_EnableModuleClock(CRYPTO0_MODULE);
+		
+	/* Enable TRNG0 module clock */
+    CLK_EnableModuleClock(TRNG0_MODULE);
+    
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
