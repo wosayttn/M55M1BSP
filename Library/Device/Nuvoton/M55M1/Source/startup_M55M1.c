@@ -415,6 +415,15 @@ const VECTOR_TABLE_Type DTCM_VECTOR_TABLE[] NVT_DTCM_VTOR =
     #pragma GCC diagnostic pop
 #endif
 
+/* If some peripherals (e.g. Hyper RAM) must be initialized before startup routine
+ *   user can implement its own Reset_Handler_PreInit to do early initialization.
+ */
+__WEAK void Reset_Handler_PreInit(void)
+{
+    /* Prevent using C runtime library functions (e.g. printf)
+     * or global variables in this function.
+     */
+}
 
 /*----------------------------------------------------------------------------
   Reset Handler called on controller reset
@@ -506,6 +515,7 @@ __NO_RETURN void Reset_Handler_Main(void)
     SCB_EnableDCache();
 #endif  // NVT_DCACHE_ON
 
+    Reset_Handler_PreInit();
     __PROGRAM_START();      // Enter PreMain (C library entry point)
 }
 
