@@ -434,7 +434,9 @@ void VCOM_LineCoding(uint8_t u8Port)
         g_u16ComThead = 0;
         g_u16ComTtail = 0;
 
-        UART_Close(DEBUG_PORT);
+        // Reset hardware fifo
+        DEBUG_PORT->FIFO |= (UART_FIFO_RXRST_Msk | UART_FIFO_TXRST_Msk);
+
         UART_SetLineConfig(DEBUG_PORT,
                            (g_LineCoding.u32DTERate),
                            (g_LineCoding.u8DataBits - 5),
