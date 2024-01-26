@@ -299,70 +299,6 @@ const VECTOR_TABLE_Type DTCM_VECTOR_TABLE[] NVT_DTCM_VTOR =
     HSUSBH_IRQHandler,                        /*!<  60 High Speed USB Host Interrupt Handler            */
     HSUSBD_IRQHandler,                        /*!<  61 High Speed USB Device Interrupt Handler          */
     HSOTG_IRQHandler,                         /*!<  62 High Speed OTG Interrupt Handler                 */
-    EMAC0_IRQHandler,                         /*!<  63 EMAC0 Interrupt Handler                          */
-    QSPI0_IRQHandler,                         /*!<  64 QSPI0 Interrupt Handler                          */
-    QSPI1_IRQHandler,                         /*!<  65 QSPI1 Interrupt Handler                          */
-    SPI0_IRQHandler,                          /*!<  66 SPI0 Interrupt Handler                           */
-    SPI1_IRQHandler,                          /*!<  67 SPI1 Interrupt Handler                           */
-    SPI2_IRQHandler,                          /*!<  68 SPI2 Interrupt Handler                           */
-    SPI3_IRQHandler,                          /*!<  69 SPI3 Interrupt Handler                           */
-
-    0,                                        /*!<     Reserved                                         */
-    LPSPI0_IRQHandler,                        /*!<  71 Low Power SPI 0 Interrupt Handler                */
-    0,                                        /*!<     Reserved                                         */
-    SPIM0_IRQHandler,                         /*!<  73 SPIM0 Interrupt Handler                          */
-    0,                                        /*!<     Reserved                                         */
-    UART0_IRQHandler,                         /*!<  75 UART0 Interrupt Handler                          */
-    UART1_IRQHandler,                         /*!<  76 UART1 Interrupt Handler                          */
-    UART2_IRQHandler,                         /*!<  77 UART2 Interrupt Handler                          */
-    UART3_IRQHandler,                         /*!<  78 UART3 Interrupt Handler                          */
-    UART4_IRQHandler,                         /*!<  79 UART4 Interrupt Handler                          */
-
-    UART5_IRQHandler,                         /*!<  80 UART5 Interrupt Handler                          */
-    UART6_IRQHandler,                         /*!<  81 UART6 Interrupt Handler                          */
-    UART7_IRQHandler,                         /*!<  82 UART7 Interrupt Handler                          */
-    UART8_IRQHandler,                         /*!<  83 UART8 Interrupt Handler                          */
-    UART9_IRQHandler,                         /*!<  84 UART9 Interrupt Handler                          */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    EINT6_IRQHandler,                         /*!<  88 External Input 6 Interrupt Handler               */
-    EINT7_IRQHandler,                         /*!<  89 External Input 7 Interrupt Handler               */
-
-    LPUART0_IRQHandler,                       /*!<  90 Low Power UART 0 Interrupt Handler               */
-    0,                                        /*!<     Reserved                                         */
-    I2C0_IRQHandler,                          /*!<  92 I2C0 Interrupt Handler                           */
-    I2C1_IRQHandler,                          /*!<  93 I2C1 Interrupt Handler                           */
-    I2C2_IRQHandler,                          /*!<  94 I2C2 Interrupt Handler                           */
-    I2C3_IRQHandler,                          /*!<  95 I2C3 Interrupt Handler                           */
-    LPI2C0_IRQHandler,                        /*!<  96 Low Power I2C 0 Interrupt Handler                */
-    USCI0_IRQHandler,                         /*!<  97 USCI0 Interrupt Handler                          */
-    0,                                        /*!<     Reserved                                         */
-    SC0_IRQHandler,                           /*!<  99 Smart Card Host 0 Interrupt Handler              */
-
-    SC1_IRQHandler,                           /*!< 100 Smart Card Host 1 Interrupt Handler              */
-    SC2_IRQHandler,                           /*!< 101 Smart Card Host 2 Interrupt Handler              */
-    PSIO_IRQHandler,                          /*!< 102 PSIO Interrupt Handler                           */
-    DMIC0_IRQHandler,                         /*!< 103 DMIC0 Interrupt Handler                          */
-    DMIC0VAD_IRQHandler,                      /*!< 104 DMIC0 VAD Interrupt Handler                      */
-    I2S0_IRQHandler,                          /*!< 105 I2S0 Interrupt Handler                           */
-    I2S1_IRQHandler,                          /*!< 106 I2S1 Interrupt Handler                           */
-    TRNG_IRQHandler,                          /*!< 107 TRNG Interrupt Handler                           */
-    I3C0_IRQHandler,                          /*!< 108 I3C0 Interrupt Handler                           */
-    0,                                        /*!<     Reserved                                         */
-
-    OTFC0_IRQHandler,                         /*!< 110 OTFC0 Interrupt Handler                          */
-    0,                                        /*!<     Reserved                                         */
-    KPI_IRQHandler,                           /*!< 112 KPI Interrupt Handler                            */
-    SDH0_IRQHandler,                          /*!< 113 SD Host 0 Interrupt Handler                      */
-    SDH1_IRQHandler,                          /*!< 114 SD Host 1 Interrupt Handler                      */
-    CCAP_IRQHandler,                          /*!< 115 CCAP Interrupt Handler                           */
-    CRYPTO_IRQHandler,                        /*!< 116 CRYPTO Interrupt Handler                         */
-    CANFD00_IRQHandler,                       /*!< 117 CANFD0 Interrupt 0 Handler                       */
-    CANFD01_IRQHandler,                       /*!< 118 CANFD0 Interrupt 1 Handler                       */
-    CANFD10_IRQHandler,                       /*!< 119 CANFD1 Interrupt 0 Handler                       */
-
-    CANFD11_IRQHandler,                       /*!< 120 CANFD1 Interrupt 1 Handler                       */
 };
 
 #if defined ( __GNUC__ )
@@ -425,13 +361,14 @@ __NO_RETURN void Reset_Handler_Main(void)
     }
 
 #endif
-
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
     __TZ_set_STACKSEAL_S((uint32_t *)(&__STACK_SEAL));
 #endif
 
+#if 0   // To reduce code size
     SCB_InvalidateICache();
     SCB_EnableICache();
+#endif
 
 #ifdef NVT_DCACHE_ON
     SCB_InvalidateDCache();

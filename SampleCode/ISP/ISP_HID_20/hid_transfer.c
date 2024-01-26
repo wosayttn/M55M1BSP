@@ -177,7 +177,7 @@ NVT_ITCM void HSUSBD_IRQHandler(void)
     }
 }
 
-extern __attribute__((aligned(4))) uint8_t g_au8ResponseBuff[64];
+extern uint8_t g_au8ResponseBuff[];
 void EPA_Handler(void)  /* Interrupt IN handler */
 {
     uint32_t i;

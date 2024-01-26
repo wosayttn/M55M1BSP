@@ -16,6 +16,7 @@ void UserMemCopy(uint8_t pu8Dest[], uint8_t pu8Src[], uint32_t u32Size)
     while (u32Size--)
     {
         pu8Dest[i] = pu8Src[i];
+        __DSB();
         i++;
     }
 }

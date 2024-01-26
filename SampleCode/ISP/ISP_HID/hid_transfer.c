@@ -148,7 +148,7 @@ NVT_ITCM void USBD_IRQHandler(void)
     }
 }
 
-extern __attribute__((aligned(4))) uint8_t g_au8ResponseBuff[64];
+extern uint8_t g_au8ResponseBuff[];
 NVT_ITCM void EP2_Handler(void)  /* Interrupt IN handler */
 {
     uint8_t *ptr;
