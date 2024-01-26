@@ -479,10 +479,16 @@ def check_prj():
                 else:
                     pos = mm.find(b'.usenewlibnano.')
                     if pos < 0:
-                        f.write("[Warning] " + dirPath + ": Not use recommended newlib-nano.\n")
+                        f.write("[Warning] " + filepath + ": Not use recommended newlib-nano.\n")
                     pos = mm.find(b'\\')
                     if pos >= 0:
                         f.write("[Warning] " + filepath + ": Found backslash, invalid in Linux file path.\n")
+                    # default Os (Optimize size = O2), O2 (Optimize more)
+                    pos = mm.find(b'value="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level.more"')
+                    if pos < 0:
+                        pos = mm.find(b'value="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level.size"')
+                        if pos < 0:
+                            f.write("[Warning] " + filepath + ": Not use recommended  optimization level O2 or Os.\n")
                 mm.close()
                 cproject.close()
  
