@@ -8,7 +8,12 @@
 #include "dma350_ch_drv.h"
 #include "dma350_lib.h"
 
+#if defined(__ICCARM__)
+#include "arm_cmse.h" // patch from EWARM 9.50.2 service pack
+#else
 #include <arm_cmse.h>
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>

@@ -88,6 +88,8 @@ NVT_ITCM void GDMACH0_IRQHandler(void)
     {
         g_u32IsTestOver = 2;
     }
+
+    status = dma350_ch_get_status(GDMA_CH_DEV_S[0]);
 }
 
 static void SYS_Init(void)
