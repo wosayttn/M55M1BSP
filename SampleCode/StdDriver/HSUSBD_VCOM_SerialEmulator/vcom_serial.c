@@ -475,9 +475,10 @@ void VCOM_LineCoding(uint8_t port)
         comTbytes = 0;
         comThead = 0;
         comTtail = 0;
+        // Reset hardware fifo
+       DEBUG_PORT->FIFO |= (UART_FIFO_RXRST_Msk | UART_FIFO_TXRST_Msk);
 
-        UART_Close(DEBUG_PORT);
-        UART_SetLineConfig(DEBUG_PORT,
+       UART_SetLineConfig(DEBUG_PORT,
                            (g_LineCoding.u32DTERate),
                            (g_LineCoding.u8DataBits - 5),
                            (g_LineCoding.u8ParityType == 0) ? UART_PARITY_NONE :
