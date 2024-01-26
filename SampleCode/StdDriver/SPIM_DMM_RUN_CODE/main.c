@@ -282,6 +282,10 @@ int main()
 
     SPIM_SetDMMAddrNonCacheable();
 
+    /**
+     * GCC project users must use the ICP tool to burn binary to ARPOM and
+     * SPI flash separately, and after entering the debugger, only AROM code can source debug.
+    */
     printf("+--------------------------------------------------+\n");
     printf("|      SPIM DMM mode running program on flash      |\n");
     printf("+--------------------------------------------------+\n");

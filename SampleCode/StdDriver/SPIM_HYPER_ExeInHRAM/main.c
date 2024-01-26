@@ -17,6 +17,10 @@
 //------------------------------------------------------------------------------
 void spim_routine(void);
 
+/**
+ * Ref. strup_M55M1.c __WEAK void Reset_Handler_PreInit(),
+ * Hyperram must be initialized before starting routine.
+*/
 void Reset_Handler_PreInit(void)
 {
     SYS_UnlockReg();
