@@ -42,7 +42,7 @@
 		<link>
 			<name>CMSIS/startup_M55M1.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/startup_M55M1.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c</locationURI>
 		</link>
 		<link>
 			<name>CMSIS/system_M55M1.c</name>

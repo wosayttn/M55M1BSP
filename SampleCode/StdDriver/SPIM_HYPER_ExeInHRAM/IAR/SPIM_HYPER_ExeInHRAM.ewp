@@ -1090,7 +1090,7 @@
     <group>
         <name>CMSIS</name>
         <file>
-            <name>$PROJ_DIR$\..\startup_M55M1.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c</name>
