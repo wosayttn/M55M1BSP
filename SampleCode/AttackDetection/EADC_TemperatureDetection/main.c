@@ -91,24 +91,28 @@ void SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 double GetTemperature(void)
 {
-    double dmVoffset = 708.58154;
-
-    double dAvgTemperatureCode = 0;
+     /* The equation of converting to real temperature is as below
+     *      Vtemp = Tc * (temperature - Ta) + dmVoffset
+     *      Vtemp = EADC_result / 4095 * ADC_Vref
+     *      so, temperature = Ta + (Vtemp - Vtemp_os) / Tc
+     *                      = Ta + ((dTemperatureData / 4095 * ADC_Vref) - dmVoffset) / dTc
+     *      where Vtemp_os, Tc, and Ta can be got from the data sheet document.
+     *            ADC_Vref is the ADC Vref that according to the configuration of SYS and EADC.
+     */
+    uint32_t u32Ta = 25;
+    double dmVoffset = 1030;
+    double dTc = -2.7;
+    double dTemperatureData = 0;
     double dmVT = 0;
     double dT;
 
-    dAvgTemperatureCode = 0;
-    dmVT = 0;
-
     /* Get ADC code of temperature sensor */
-    dAvgTemperatureCode = GetTemperatureCodeFromADC();
-
+    dTemperatureData = GetTemperatureCodeFromADC();
     /* ADC code to voltage conversion formula: */
-    dmVT = (dAvgTemperatureCode) * (VREF_VOLTAGE) * 1000 / 4096;
+    dmVT = (dTemperatureData  / 4095) * 3300;
 
     /* Get temperature with temperature sensor */
-    /* Temperature sensor formula: Tx = (VT - Voffset)/(-1.8118) */
-    dT = (dmVT - dmVoffset) / (-1.8118);
+    dT = u32Ta +((dmVT - dmVoffset) / (dTc));
 
     return (dT);
 }
@@ -145,7 +149,7 @@ uint32_t GetTemperatureCodeFromADC(void)
 
     /* Return the conversion result of the sample module 25 */
 
-    return EADC_GET_CONV_DATA(EADC0, 25);;
+    return EADC_GET_CONV_DATA(EADC0, 25);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -181,9 +185,9 @@ int32_t main(void)
     dTemperature = GetTemperature();
 
     if (dTemperature > 50)
-        printf("Abnormal temperature: %dC\n", (int32_t)dTemperature);
+        printf("Abnormal temperature: %2.2f C\n", dTemperature);
     else
-        printf("Chip temperature: %dC\n", (int32_t)dTemperature);
+        printf("Chip temperature: %2.2f C\n", dTemperature);
 
     /* Unlock protected registers */
     SYS_UnlockReg();
