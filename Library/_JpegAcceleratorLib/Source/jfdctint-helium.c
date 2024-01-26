@@ -30,7 +30,7 @@
 *****************************************************************************/
 #include <arm_mve.h>
 #include "jacclib.h"
-
+#include "NuMicro.h"
 /* jsimd_fdct_islow_neon() performs a slower but more accurate forward DCT
  * (Discrete Cosine Transform) on one block of samples.  It uses the same
  * calculations and produces exactly the same output as IJG's original
@@ -417,7 +417,7 @@ void jsimd_fdct_islow_helium(int16_t *data)
     row5 = vrshrq_n_s16(row5, HELIUM_CORR_BITS);
     row6 = vrshrq_n_s16(row6, HELIUM_CORR_BITS);
     row7 = vrshrq_n_s16(row7, HELIUM_CORR_BITS);
-
+    __DSB();
     vst1q_s16(data + 0 * DCTSIZE, row0);
     vst1q_s16(data + 1 * DCTSIZE, row1);
     vst1q_s16(data + 2 * DCTSIZE, row2);
