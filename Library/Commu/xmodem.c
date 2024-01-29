@@ -152,7 +152,7 @@ static int32_t check(int32_t iscrc, const uint8_t *pu8buf, int32_t i32Size)
   * @details    This function is used to recieve UART data through Xmodem transfer.
   *             The received data will be programmed to flash packet by packet.
   */
-int32_t Xmodem(uint32_t u32DestAddr)
+int32_t XmodemRecv(uint32_t u32DestAddr)
 {
     int32_t i32Err = 0;
     uint8_t *p;

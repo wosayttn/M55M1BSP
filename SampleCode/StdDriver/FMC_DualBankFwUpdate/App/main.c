@@ -142,7 +142,7 @@ int main()
             SysTick_Config(1000);
             StartTimer0();
 
-            i32Err = Xmodem(s_u32DbAddr);
+            i32Err = XmodemRecv(s_u32DbAddr);
 
             if (i32Err < 0)
             {

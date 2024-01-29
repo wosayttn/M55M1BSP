@@ -147,7 +147,7 @@ void Download(void)
     StartTimer0();
 
     /* Use Xmodem to download firmware from PC*/
-    i32Err = Xmodem(s_u32DbAddr);
+    i32Err = XmodemRecv(s_u32DbAddr);
 
     if (i32Err < 0)
     {

@@ -70,7 +70,7 @@ int32_t main(void)
     while ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXEMPTY_Msk) == 0)
         if (--u32TimeOutCnt == 0) break;
 
-    i32TranBytes = Xmodem(FMC_APROM_BANK1_BASE);
+    i32TranBytes = XmodemRecv(FMC_APROM_BANK1_BASE);
 
     if (i32TranBytes < 0)
     {
