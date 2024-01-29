@@ -25,4 +25,4 @@ bin_spim0rom=${ProjRelDirPath}"/"${ProjName}"_spim0rom.bin"
 
 "${script_path}/srec_cat.exe" "${hex_spim0rom}" -intel -offset -0x80000000 -o "${bin_spim0rom}" -binary
 
-set -x
+set +x
