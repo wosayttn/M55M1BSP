@@ -53,16 +53,16 @@
                 <option>
                     <name>GRuntimeLibSelect</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>2</state>
                 </option>
                 <option>
                     <name>GRuntimeLibSelectSlave</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>2</state>
                 </option>
                 <option>
                     <name>RTDescription</name>
-                    <state>Do not link with a runtime library.</state>
+                    <state>To be used with a complete configuration of the C/C++14 runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
                 </option>
                 <option>
                     <name>OGProductVersion</name>
@@ -94,7 +94,7 @@
                 </option>
                 <option>
                     <name>RTConfigPath2</name>
-                    <state></state>
+                    <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Full.h</state>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
@@ -313,7 +313,7 @@
                 </option>
                 <option>
                     <name>CCLangConformance</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCSignedPlainChar</name>
@@ -403,7 +403,7 @@
                 </option>
                 <option>
                     <name>IccAllowVLA</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IccStaticDestr</name>
@@ -411,7 +411,7 @@
                 </option>
                 <option>
                     <name>IccCppInlineSemantics</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IccCmsis</name>
@@ -2178,13 +2178,13 @@
     <group>
         <name>Source</name>
         <file>
+            <name>$PROJ_DIR$\..\Source\jacclib.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\Source\jfdctint-helium.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\Source\jquanti-helium.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\Source\jacclib.c</name>
         </file>
     </group>
 </project>
