@@ -414,9 +414,9 @@ def check_prj():
         if dirname.upper() == 'GCC' or dirname2.upper() == 'GCC':
             if dirname.upper() == 'GCC':
                 if len(dirNames) > 0:
-                    for dir in dirNames:
-                        if dir.find(dirname2) < 0:
-                            f.write("[Warning] " + os.path.join(dirPath, dir) + ": Project name does not include sample name (" + dirname2 + ").\n")
+                    for subprj in dirNames:
+                        if subprj.find(dirname2) < 0:
+                            f.write("[Warning] " + os.path.join(dirPath, subprj) + ": Project name does not include sample name (" + dirname2 + ").\n")
                     continue    # Check .project/preferences.ini in sub-folder
                 dirname = dirname2
 
