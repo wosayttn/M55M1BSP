@@ -294,7 +294,7 @@
                 </option>
                 <option>
                     <name>CCDebugInfo</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IEndianMode</name>
@@ -775,7 +775,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>C:\WORK\IC Verification\Full Design Package\M55M1_BSP\yy\bsp\SampleCode\Crypto\mbedTLS_ECDH\IAR\M55M1.icf</state>
+                    <state>$PROJ_DIR$\M55M1.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>

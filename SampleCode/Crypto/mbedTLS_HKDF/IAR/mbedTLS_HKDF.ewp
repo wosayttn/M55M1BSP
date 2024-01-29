@@ -53,16 +53,16 @@
                 <option>
                     <name>GRuntimeLibSelect</name>
                     <version>0</version>
-                    <state>1</state>
+                    <state>2</state>
                 </option>
                 <option>
                     <name>GRuntimeLibSelectSlave</name>
                     <version>0</version>
-                    <state>1</state>
+                    <state>2</state>
                 </option>
                 <option>
                     <name>RTDescription</name>
-                    <state>A compact configuration of the C/C++14 runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
+                    <state>A complete configuration of the C/C++14 runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
                 </option>
                 <option>
                     <name>OGProductVersion</name>
@@ -94,7 +94,7 @@
                 </option>
                 <option>
                     <name>RTConfigPath2</name>
-                    <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</state>
+                    <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Full.h</state>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
@@ -230,6 +230,8 @@
                     <state>NDEBUG</state>
                     <state>ARM_MATH_DSP</state>
                     <state>MBEDTLS_CONFIG_FILE</state>
+                    <state>MBEDTLS_MD_CAN_SHA256</state>
+                    <state>MBEDTLS_MD_CAN_SHA1</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -314,7 +316,7 @@
                 </option>
                 <option>
                     <name>CCLangConformance</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCSignedPlainChar</name>
@@ -672,7 +674,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>mbedTLS_RSA.bin</state>
+                    <state>mbedTLS_HKDF.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -711,7 +713,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>mbedTLS_RSA.out</state>
+                    <state>mbedTLS_HKDF.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -775,7 +777,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\M55M1.icf</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\IAR\M55M1.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -1120,9 +1122,21 @@
         </file>
     </group>
     <group>
+        <name>mbedtls</name>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\mbedtls\tests\src\helpers.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\mbedtls\tests\src\psa_crypto_helpers.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\mbedtls\tests\src\random.c</name>
+        </file>
+    </group>
+    <group>
         <name>User</name>
         <file>
-            <name>$PROJ_DIR$\..\main.c</name>
+            <name>$PROJ_DIR$\..\test_suite_hkdf.c</name>
         </file>
     </group>
 </project>

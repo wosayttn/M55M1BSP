@@ -672,7 +672,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>mbedTLS_RSA.bin</state>
+                    <state>mbedTLS_SHA256.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -711,7 +711,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>mbedTLS_RSA.out</state>
+                    <state>mbedTLS_SHA256.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -775,7 +775,8 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\M55M1.icf</state>
+                    
+                    <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\M55M1\Source\IAR\M55M1.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
