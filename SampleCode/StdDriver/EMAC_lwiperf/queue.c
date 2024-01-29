@@ -21,10 +21,13 @@ static uint32_t u32Qtail = 0;  // get from here
 uint32_t queue_try_put(struct pbuf *p)
 {
     uint32_t i = u32Qhead + 1;
-    if(i == QUEUE_CNT)
+
+    if (i == QUEUE_CNT)
         i = 0;
-    if(i == u32Qtail)
+
+    if (i == u32Qtail)
         return 0;
+
     q[u32Qhead] = p;
     u32Qhead = i;
 
@@ -35,13 +38,15 @@ struct pbuf *queue_try_get(void)
 {
     struct pbuf *p;
 
-    if(u32Qhead == u32Qtail)
+    if (u32Qhead == u32Qtail)
         return NULL;
 
     p = q[u32Qtail];
     u32Qtail++;
-    if(u32Qtail == QUEUE_CNT)
+
+    if (u32Qtail == QUEUE_CNT)
         u32Qtail = 0;
+
     return p;
 
 }

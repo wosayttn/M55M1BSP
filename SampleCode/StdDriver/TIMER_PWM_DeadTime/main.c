@@ -92,13 +92,13 @@ int main(void)
     TPWM_ConfigOutputFreqAndDuty(TIMER0, 6000, 40);
 
     /* Enable output of PWM_CH0 and PWM_CH1 */
-    TPWM_ENABLE_OUTPUT(TIMER0, (TPWM_CH1|TPWM_CH0));
+    TPWM_ENABLE_OUTPUT(TIMER0, (TPWM_CH1 | TPWM_CH0));
 
     /* Get u32Prescaler, u32Period and u32CMP after called TPWM_ConfigOutputFreqAndDuty() API */
     u32Prescaler = (TPWM_GET_PRESCALER(TIMER0) + 1);
     u32Period = (TPWM_GET_PERIOD(TIMER0) + 1);
     u32CMP = TPWM_GET_CMPDAT(TIMER0);
-    u32DeadTime = u32CMP/2;
+    u32DeadTime = u32CMP / 2;
 
     printf("# Timer0 PWM output frequency is 600 Hz and duty 40%%.\n");
     printf("    - Counter clock source:    PCLK \n");
@@ -132,11 +132,11 @@ int main(void)
     TPWM_ConfigOutputFreqAndDuty(TIMER1, 6000, 40);
 
     /* Enable output of PWM_CH0 and PWM_CH1 */
-    TPWM_ENABLE_OUTPUT(TIMER1, (TPWM_CH1|TPWM_CH0));
+    TPWM_ENABLE_OUTPUT(TIMER1, (TPWM_CH1 | TPWM_CH0));
 
     /* Enable and configure dead-time interval is (u32DeadTime * TMR1_PWMCLK * prescaler) */
     SYS_UnlockReg(); // Unlock protected registers
-    TPWM_EnableDeadTimeWithPrescale(TIMER1, (u32DeadTime-1));
+    TPWM_EnableDeadTimeWithPrescale(TIMER1, (u32DeadTime - 1));
     SYS_LockReg(); // Lock protected registers
 
     printf("*** Check Timer0 and Timer1 PWM output waveform by oscilloscope ***\n");

@@ -32,9 +32,10 @@ NVT_ITCM void TIMER0_IRQHandler(void)
     printf("\nCheck if output toggles 11 times then stop toggles.\n");
     __DSB();
     __ISB();
-    while(TPWM_GetAccInt(TIMER0))
+
+    while (TPWM_GetAccInt(TIMER0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for TIMER0 IntFlag time-out!\n");
         }

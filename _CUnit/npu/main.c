@@ -20,7 +20,7 @@
 #endif
 
 #ifndef DEBUG_PORT_Init
-void DEBUG_PORT_Init(UART_T* psUART, uint32_t u32Baudrate)
+void DEBUG_PORT_Init(UART_T *psUART, uint32_t u32Baudrate)
 {
     UART_Open(psUART, u32Baudrate);
 }
@@ -42,7 +42,7 @@ void SYS_Init(void)
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
-	
+
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
@@ -52,7 +52,7 @@ void SYS_Init(void)
     SYS_ResetModule(SYS_UART0RST);
 
     /* Enable FMC0 module */
-	CLK_EnableModuleClock(FMC0_MODULE);
+    CLK_EnableModuleClock(FMC0_MODULE);
 
     /* Enable NPU module clock */
     CLK_EnableModuleClock(NPU0_MODULE);
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     /* UART init - will enable valid use of printf (stdout
      * re-directed at this UART (UART6) */
     InitDebugUart();
-    
+
     printf("\n\n");
     printf("+--------------------------------------+\n");
     printf("|         M55M1 NPU CUnit Test         |\n");
@@ -115,11 +115,11 @@ int main(int argc, char *argv[])
     else
     {
 
-		char *resultStr;
+        char *resultStr;
         AddTests();
-		CU_run_all_tests();
-		resultStr = CU_get_run_results_string();
-		printf("%s \n", resultStr);
+        CU_run_all_tests();
+        resultStr = CU_get_run_results_string();
+        printf("%s \n", resultStr);
         CU_cleanup_registry();
     }
 

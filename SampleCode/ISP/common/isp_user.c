@@ -57,9 +57,11 @@ int ParseCmd(uint8_t *pu8Buffer, uint8_t u8len)
     uint32_t u32PageAddress;
     uint8_t *pu8Response;
     uint16_t u16Lcksum;
-    uint32_t u32Lcmd, u32srclen, u32i, u32regcnf0, u32security;
+    uint32_t u32Lcmd, u32srclen, u32i, u32Lock;
+    uint32_t *pu32Config;
     uint8_t *pu8Src;
     static uint32_t u32Gcmd;
+
     pu8Response = g_au8ResponseBuff;
     pu8Src = pu8Buffer;
     u32srclen = u8len;
@@ -69,8 +71,8 @@ int ParseCmd(uint8_t *pu8Buffer, uint8_t u8len)
     u32srclen -= 8;
     //ReadData(Config0, Config0 + 16, (uint32_t *)(uint32_t)(pu8Response + 8)); /* Read config */
     ReadData(Config0, Config0 + (FMC_CONFIG_CNT * 4), (uint32_t *)(uint32_t)(pu8Response + 8)); /* Read config */
-    u32regcnf0 = *(uint32_t *)(pu8Response + 8);
-    u32security = u32regcnf0 & 0x2;
+    pu32Config = (uint32_t *)(pu8Response + 8);
+    u32Lock = (((pu32Config[11] & 0xFF) != 0x5A) || ((pu32Config[13] & 0xFF) != 0x5A));
 
     if (u32Lcmd == CMD_SYNC_PACKNO)
     {
@@ -127,12 +129,16 @@ int ParseCmd(uint8_t *pu8Buffer, uint8_t u8len)
         //EraseAP(FMC_APROM_BASE, (g_u32ApromSize < g_u32DataFlashAddr) ? g_u32ApromSize : g_u32DataFlashAddr);
         EraseAP(FMC_APROM_BASE, g_u32ApromSize);
 
+#if 0   // M55M1 did not support data flash
+
         if (u32Lcmd == CMD_ERASE_ALL)   /* Erase data flash */
         {
             EraseAP(g_u32DataFlashAddr, g_u32DataFlashSize);
             *(uint32_t *)(pu8Response + 8) = u32regcnf0 | 0x02;
             UpdateConfig((uint32_t *)(pu8Response + 8), NULL);
         }
+
+#endif
 
         g_u32UpdateApromCmd = TRUE;
     }
@@ -170,7 +176,7 @@ int ParseCmd(uint8_t *pu8Buffer, uint8_t u8len)
     }
     else if (u32Lcmd == CMD_UPDATE_CONFIG)
     {
-        if ((u32security == 0) && (!g_u32UpdateApromCmd))   /* security lock */
+        if ((u32Lock) && (!g_u32UpdateApromCmd))   /* security lock */
         {
             goto out;
         }

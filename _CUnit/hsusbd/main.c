@@ -49,7 +49,7 @@ void SYS_Init(void)
 {
     uint32_t volatile i;
 
-   /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
 
     /* Enable Internal RC 12MHz clock */
@@ -63,7 +63,7 @@ void SYS_Init(void)
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-  
+
 
     /* Enable PLL0 200MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL0_SELECT);
@@ -73,7 +73,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -94,7 +94,9 @@ void SYS_Init(void)
     SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;    /* select HSUSBD */
     /* Enable USB PHY */
     SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk | SYS_USBPHY_HSUSBACT_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
+
     for (i = 0; i < 0x1000; i++);  // delay > 10 us
+
     SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
 
     /* Enable IP clock */
@@ -105,14 +107,14 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
 
-//    InitDebugUart();
+    //    InitDebugUart();
     /* Lock protected registers */
-//    SYS_LockReg();
+    //    SYS_LockReg();
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-;
+    ;
 }
 
 
@@ -130,7 +132,7 @@ void AddTests(void)
 {
     assert((NULL != CU_get_registry()));
     assert(!CU_is_test_running());
- 
+
     if (CUE_SUCCESS != CU_register_suites(HSUSBD_Suites))
     {
         fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
@@ -144,10 +146,10 @@ int main(int argc, char *argv[])
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
     /* Init DEBUG_PORT to 115200-8N1 for printf */
-//    UART_Open(DEBUG_PORT, 115200);
-//    DEBUG_PORT_Init(DEBUG_PORT, 115200);
+    //    UART_Open(DEBUG_PORT, 115200);
+    //    DEBUG_PORT_Init(DEBUG_PORT, 115200);
     InitDebugUart();
-  
+
     printf("\n\n");
     printf("+--------------------------------------+\n");
     printf("|          M55M1 ACMP CUnit Test       |\n");

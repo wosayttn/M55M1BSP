@@ -71,19 +71,22 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
 
     if (u32TDStatus & (1 << DMIC_LPPDMA_CH))
     {
-//    printf("LPPDMA_IRQHandler.DMIC0->STATUS %x\n",DMIC0->STATUS);
+        //    printf("LPPDMA_IRQHandler.DMIC0->STATUS %x\n",DMIC0->STATUS);
         LPPDMA_CLR_TD_FLAG(LPPDMA, (1 << DMIC_LPPDMA_CH));
-			  if(psDMIC_BufCtrl->u16DataCount <= (psDMIC_BufCtrl->u16BufCount / 2))
+
+        if (psDMIC_BufCtrl->u16DataCount <= (psDMIC_BufCtrl->u16BufCount / 2))
             psDMIC_BufCtrl->u16DataCount += (psDMIC_BufCtrl->u16BufCount / 2);
 
         if ((psDMIC_BufCtrl->u16WriteIdx += (psDMIC_BufCtrl->u16BufCount / 2)) >= psDMIC_BufCtrl->u16BufCount)
             psDMIC_BufCtrl->u16WriteIdx = 0;
     }
+
     __DSB();
     __ISB();
-    while(LPPDMA_GET_TD_STS(LPPDMA))
+
+    while (LPPDMA_GET_TD_STS(LPPDMA))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for LPPDMA IntFlag time-out!\n");
         }
@@ -98,19 +101,22 @@ NVT_ITCM void PDMA0_IRQHandler(void)
 
     if (u32TDStatus & (1 << I2S0TX_PDMA_CH))
     {
-//    printf("PDMA0_IRQHandler.I2S0->STATUS1 %x\n",I2S0->STATUS1);
+        //    printf("PDMA0_IRQHandler.I2S0->STATUS1 %x\n",I2S0->STATUS1);
         PDMA_CLR_TD_FLAG(PDMA0, (1 << I2S0TX_PDMA_CH));
-			  if(psI2STX_BufCtrl->u16DataCount >= (psI2STX_BufCtrl->u16BufCount / 2))
+
+        if (psI2STX_BufCtrl->u16DataCount >= (psI2STX_BufCtrl->u16BufCount / 2))
             psI2STX_BufCtrl->u16DataCount -= (psI2STX_BufCtrl->u16BufCount / 2);
 
         if ((psI2STX_BufCtrl->u16ReadIdx += (psI2STX_BufCtrl->u16BufCount / 2)) >= psI2STX_BufCtrl->u16BufCount)
             psI2STX_BufCtrl->u16ReadIdx = 0;
     }
+
     __DSB();
     __ISB();
-    while(PDMA_GET_TD_STS(PDMA0))
+
+    while (PDMA_GET_TD_STS(PDMA0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for PDMA0 IntFlag time-out!\n");
         }
@@ -174,14 +180,14 @@ void DMIC_Init(S_BUFCTRL *psInBufCtrl)
     // Enable interrupt
     LPPDMA_EnableInt(LPPDMA, DMIC_LPPDMA_CH, LPPDMA_INT_TRANS_DONE);
     // GPIO multi-function.
-//    SET_DMIC0_DAT_PE8();
-//    SET_DMIC0_CLK_PE9();
-//    SYS->GPE_MFOS = BIT8;
-//    PE8 = 1;
+    //    SET_DMIC0_DAT_PE8();
+    //    SET_DMIC0_CLK_PE9();
+    //    SYS->GPE_MFOS = BIT8;
+    //    PE8 = 1;
     SET_DMIC0_DAT_PB5();
     SET_DMIC0_CLK_PB4();
     SYS->GPB_MFOS = BIT5;
-		PB5 = 1;
+    PB5 = 1;
     // Config DMIC buffer control
     psDMIC_BufCtrl = psInBufCtrl;
 }
@@ -319,25 +325,25 @@ void NAU8822_ConfigSampleRate(uint32_t u32SampleRate)
 
     switch (u32SampleRate)
     {
-    case 16000:
-        I2C_WriteNAU8822(6, 0x1AD);    /* Divide by 6, 16K */
-        I2C_WriteNAU8822(7, 0x006);    /* 16K for internal filter coefficients */
-        break;
+        case 16000:
+            I2C_WriteNAU8822(6, 0x1AD);    /* Divide by 6, 16K */
+            I2C_WriteNAU8822(7, 0x006);    /* 16K for internal filter coefficients */
+            break;
 
-    case 44100:
-        I2C_WriteNAU8822(6, 0x14D);    /* Divide by 2, 48K */
-        I2C_WriteNAU8822(7, 0x000);    /* 48K for internal filter coefficients */
-        break;
+        case 44100:
+            I2C_WriteNAU8822(6, 0x14D);    /* Divide by 2, 48K */
+            I2C_WriteNAU8822(7, 0x000);    /* 48K for internal filter coefficients */
+            break;
 
-    case 48000:
-        I2C_WriteNAU8822(6, 0x14D);    /* Divide by 2, 48K */
-        I2C_WriteNAU8822(7, 0x000);    /* 48K for internal filter coefficients */
-        break;
+        case 48000:
+            I2C_WriteNAU8822(6, 0x14D);    /* Divide by 2, 48K */
+            I2C_WriteNAU8822(7, 0x000);    /* 48K for internal filter coefficients */
+            break;
 
-    case 96000:
-        I2C_WriteNAU8822(6, 0x109);    /* Divide by 1, 96K */
-        I2C_WriteNAU8822(72, 0x013);
-        break;
+        case 96000:
+            I2C_WriteNAU8822(6, 0x109);    /* Divide by 1, 96K */
+            I2C_WriteNAU8822(72, 0x013);
+            break;
     }
 }
 
@@ -440,37 +446,37 @@ void NAU88L25_ConfigSampleRate(uint32_t u32SampleRate)
 
     switch (u32SampleRate)
     {
-    case 16000:
-        I2C_WriteNAU88L25(0x0003,  0x801B); /* MCLK = SYSCLK_SRC/12 */
-        I2C_WriteNAU88L25(0x0004,  0x0001);
-        I2C_WriteNAU88L25(0x0005,  0x3126); /* MCLK = 4.096MHz */
-        I2C_WriteNAU88L25(0x0006,  0x0008);
-        I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=MCLK/8=512K, LRC_DIV=512K/32=16K */
-        I2C_WriteNAU88L25(0x002B,  0x0002);
-        I2C_WriteNAU88L25(0x002C,  0x0082);
-        break;
+        case 16000:
+            I2C_WriteNAU88L25(0x0003,  0x801B); /* MCLK = SYSCLK_SRC/12 */
+            I2C_WriteNAU88L25(0x0004,  0x0001);
+            I2C_WriteNAU88L25(0x0005,  0x3126); /* MCLK = 4.096MHz */
+            I2C_WriteNAU88L25(0x0006,  0x0008);
+            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=MCLK/8=512K, LRC_DIV=512K/32=16K */
+            I2C_WriteNAU88L25(0x002B,  0x0002);
+            I2C_WriteNAU88L25(0x002C,  0x0082);
+            break;
 
-    case 44100:
-        I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=11.2896M/8=1.4112M, LRC_DIV=1.4112M/32=44.1K */
-        I2C_WriteNAU88L25(0x002B,  0x0012);
-        I2C_WriteNAU88L25(0x002C,  0x0082);
-        break;
+        case 44100:
+            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=11.2896M/8=1.4112M, LRC_DIV=1.4112M/32=44.1K */
+            I2C_WriteNAU88L25(0x002B,  0x0012);
+            I2C_WriteNAU88L25(0x002C,  0x0082);
+            break;
 
-    case 48000:
-        I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=12.288M/8=1.536M, LRC_DIV=1.536M/32=48K */
-        I2C_WriteNAU88L25(0x002B,  0x0012);
-        I2C_WriteNAU88L25(0x002C,  0x0082);
-        break;
+        case 48000:
+            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=12.288M/8=1.536M, LRC_DIV=1.536M/32=48K */
+            I2C_WriteNAU88L25(0x002B,  0x0012);
+            I2C_WriteNAU88L25(0x002C,  0x0082);
+            break;
 
-    case 96000:
-        I2C_WriteNAU88L25(0x0003,  0x80A2); /* MCLK = SYSCLK_SRC/2 */
-        I2C_WriteNAU88L25(0x0004,  0x1801);
-        I2C_WriteNAU88L25(0x0005,  0x3126); /* MCLK = 24.576MHz */
-        I2C_WriteNAU88L25(0x0006,  0xF008);
-        I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=MCLK/8=3.072M, LRC_DIV=3.072M/32=96K */
-        I2C_WriteNAU88L25(0x002B,  0x0001);
-        I2C_WriteNAU88L25(0x002C,  0x0080);
-        break;
+        case 96000:
+            I2C_WriteNAU88L25(0x0003,  0x80A2); /* MCLK = SYSCLK_SRC/2 */
+            I2C_WriteNAU88L25(0x0004,  0x1801);
+            I2C_WriteNAU88L25(0x0005,  0x3126); /* MCLK = 24.576MHz */
+            I2C_WriteNAU88L25(0x0006,  0xF008);
+            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=MCLK/8=3.072M, LRC_DIV=3.072M/32=96K */
+            I2C_WriteNAU88L25(0x002B,  0x0001);
+            I2C_WriteNAU88L25(0x002C,  0x0080);
+            break;
     }
 }
 

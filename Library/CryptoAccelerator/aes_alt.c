@@ -37,7 +37,7 @@
 #include "NuMicro.h"
 
 
- /* Parameter validation macros based on platform_util.h */
+/* Parameter validation macros based on platform_util.h */
 #define AES_VALIDATE_RET( cond )    \
     MBEDTLS_INTERNAL_VALIDATE_RET( cond, MBEDTLS_ERR_AES_BAD_INPUT_DATA )
 #define AES_VALIDATE( cond )        \
@@ -45,7 +45,7 @@
 
 
 #ifndef ARG_UNUSED
-#define ARG_UNUSED(arg)  ((void)arg)
+    #define ARG_UNUSED(arg)  ((void)arg)
 #endif
 
 #define AES_BLOCK_SIZE  (16)
@@ -56,7 +56,7 @@ __ALIGNED(4) static uint8_t s_u8in[AES_BLOCK_SIZE];
 __ALIGNED(4) static uint8_t s_u8out[AES_BLOCK_SIZE];
 
 #if defined(MBEDTLS_CIPHER_MODE_CBC)
-__STATIC_INLINE uint32_t nu_get32_le(const uint8_t* pos)
+__STATIC_INLINE uint32_t nu_get32_le(const uint8_t *pos)
 {
     uint32_t val;
 
@@ -68,7 +68,7 @@ __STATIC_INLINE uint32_t nu_get32_le(const uint8_t* pos)
     return val;
 }
 
-__STATIC_INLINE void nu_set32_le(uint8_t* pos, uint32_t val)
+__STATIC_INLINE void nu_set32_le(uint8_t *pos, uint32_t val)
 {
     *pos++ = val & 0xFF;
     *pos++ = (val >> 8) & 0xFF;
@@ -81,8 +81,9 @@ __STATIC_INLINE void nu_set32_le(uint8_t* pos, uint32_t val)
 /* Implementation that should never be optimized out by the compiler */
 static void mbedtls_zeroize(void *v, size_t n)
 {
-    volatile unsigned char *p = (unsigned char*)v;
-    while(n--) *p++ = 0;
+    volatile unsigned char *p = (unsigned char *)v;
+
+    while (n--) *p++ = 0;
 }
 
 /* AES DMA compatible backup buffer if user buffer doesn't meet requirements
@@ -106,7 +107,7 @@ void mbedtls_aes_init(mbedtls_aes_context *ctx)
 
 void mbedtls_aes_free(mbedtls_aes_context *ctx)
 {
-    if(ctx == NULL)
+    if (ctx == NULL)
         return;
 
     mbedtls_zeroize(ctx, sizeof(mbedtls_aes_context));
@@ -124,32 +125,35 @@ int mbedtls_aes_setkey_enc(mbedtls_aes_context *ctx, const unsigned char *key,
     AES_VALIDATE_RET(ctx != NULL);
     AES_VALIDATE_RET(key != NULL);
 
-    switch(keybits)
+    switch (keybits)
     {
-    case 128:
-        ctx->keySize = 16;
-        ctx->keySizeOp = 0;
-        break;
-    case 192:
-        ctx->keySize = 24;
-        ctx->keySizeOp = 1 << CRYPTO_AES_CTL_KEYSZ_Pos;
-        break;
-    case 256:
-        ctx->keySize = 32;
-        ctx->keySizeOp = 2 << CRYPTO_AES_CTL_KEYSZ_Pos;
-        break;
-    default:
-        return(MBEDTLS_ERR_AES_INVALID_KEY_LENGTH);
+        case 128:
+            ctx->keySize = 16;
+            ctx->keySizeOp = 0;
+            break;
+
+        case 192:
+            ctx->keySize = 24;
+            ctx->keySizeOp = 1 << CRYPTO_AES_CTL_KEYSZ_Pos;
+            break;
+
+        case 256:
+            ctx->keySize = 32;
+            ctx->keySizeOp = 2 << CRYPTO_AES_CTL_KEYSZ_Pos;
+            break;
+
+        default:
+            return (MBEDTLS_ERR_AES_INVALID_KEY_LENGTH);
     }
 
     pu8 = (uint8_t *)&ctx->keys[0];
 
-    for(i = 0; i < ctx->keySize; i++)
+    for (i = 0; i < ctx->keySize; i++)
     {
         pu8[i] = key[i];
     }
 
-    return(0);
+    return (0);
 }
 
 /*
@@ -159,18 +163,18 @@ int mbedtls_aes_setkey_dec(mbedtls_aes_context *ctx, const unsigned char *key,
                            unsigned int keybits)
 {
     int ret;
-	
-	  printf( "  aes_alt AES setkey\n");
+
+    printf("  aes_alt AES setkey\n");
 
     AES_VALIDATE_RET(ctx != NULL);
     AES_VALIDATE_RET(key != NULL);
 
     /* Also checks keybits */
-    if((ret = mbedtls_aes_setkey_enc(ctx, key, keybits)) != 0)
+    if ((ret = mbedtls_aes_setkey_enc(ctx, key, keybits)) != 0)
         goto exit;
 
 exit:
-    return(ret);
+    return (ret);
 }
 
 /* Do AES encrypt/decrypt with H/W accelerator
@@ -188,7 +192,7 @@ static int __nvt_aes_crypt(mbedtls_aes_context *ctx,
 {
     int32_t i, wcnt, timeout = 0x10000000;
 
-    if(dataSize > AES_BLOCK_SIZE)
+    if (dataSize > AES_BLOCK_SIZE)
         return -1;
 
     /* Force AES free */
@@ -205,7 +209,7 @@ static int __nvt_aes_crypt(mbedtls_aes_context *ctx,
     /* AES_IN_OUT_SWAP: Let H/W know both input/output data are arranged in little-endian */
     //AES_Open(CRYPTO, 0, ctx->encDec, ctx->opMode, ctx->keySize, AES_IN_OUT_SWAP);
     CRYPTO->AES_CTL = ctx->encDec | ctx->opMode | ctx->keySizeOp |
-                    (AES_IN_OUT_SWAP << CRYPTO_AES_CTL_OUTSWAP_Pos) | CRYPTO_AES_CTL_KINSWAP_Msk | CRYPTO_AES_CTL_DMAEN_Msk;
+                      (AES_IN_OUT_SWAP << CRYPTO_AES_CTL_OUTSWAP_Pos) | CRYPTO_AES_CTL_KINSWAP_Msk | CRYPTO_AES_CTL_DMAEN_Msk;
 
     //AES_SetInitVect(CRYPTO, 0, ctx->iv);
     CRYPTO->AES_IV[0] = ctx->iv[0];
@@ -217,7 +221,8 @@ static int __nvt_aes_crypt(mbedtls_aes_context *ctx,
     //AES_SetKey(CRYPTO, 0, ctx->keys, ctx->keySize);
 
     wcnt = ctx->keySize / 4;
-    for(i = 0; i < wcnt; i++)
+
+    for (i = 0; i < wcnt; i++)
     {
         CRYPTO->AES_KEY[i] = ctx->keys[i];
     }
@@ -234,10 +239,10 @@ static int __nvt_aes_crypt(mbedtls_aes_context *ctx,
     //AES_Start(CRYPTO, 0, CRYPTO_DMA_ONE_SHOT);
     CRYPTO->AES_CTL |= CRYPTO_AES_CTL_START_Msk;
 
-    while((CRYPTO->INTSTS & CRYPTO_INTSTS_AESIF_Msk) == 0)
+    while ((CRYPTO->INTSTS & CRYPTO_INTSTS_AESIF_Msk) == 0)
     {
         /* Check timeout */
-        if(timeout-- <= 0)
+        if (timeout-- <= 0)
             return -1;
     }
 
@@ -282,16 +287,17 @@ int mbedtls_aes_crypt_ecb(mbedtls_aes_context *ctx,
     AES_VALIDATE_RET(input != NULL);
     AES_VALIDATE_RET(output != NULL);
     AES_VALIDATE_RET(mode == MBEDTLS_AES_ENCRYPT ||
-        mode == MBEDTLS_AES_DECRYPT);
+                     mode == MBEDTLS_AES_DECRYPT);
 
     ctx->opMode = AES_MODE_ECB << CRYPTO_AES_CTL_OPMODE_Pos;
-    if(mode == MBEDTLS_AES_ENCRYPT)
+
+    if (mode == MBEDTLS_AES_ENCRYPT)
         mbedtls_aes_encrypt(ctx, input, output);
     else
         mbedtls_aes_decrypt(ctx, input, output);
 
 
-    return(0);
+    return (0);
 }
 
 #if defined(MBEDTLS_CIPHER_MODE_CBC)
@@ -311,13 +317,13 @@ int mbedtls_aes_crypt_cbc(mbedtls_aes_context *ctx,
 
     AES_VALIDATE_RET(ctx != NULL);
     AES_VALIDATE_RET(mode == MBEDTLS_AES_ENCRYPT ||
-        mode == MBEDTLS_AES_DECRYPT);
+                     mode == MBEDTLS_AES_DECRYPT);
     AES_VALIDATE_RET(iv != NULL);
     AES_VALIDATE_RET(input != NULL);
     AES_VALIDATE_RET(output != NULL);
 
-    if(length & (AES_BLOCK_SIZE - 1))
-        return(MBEDTLS_ERR_AES_INVALID_INPUT_LENGTH);
+    if (length & (AES_BLOCK_SIZE - 1))
+        return (MBEDTLS_ERR_AES_INVALID_INPUT_LENGTH);
 
 
     ctx->opMode = AES_MODE_CBC << CRYPTO_AES_CTL_OPMODE_Pos;
@@ -327,7 +333,7 @@ int mbedtls_aes_crypt_cbc(mbedtls_aes_context *ctx,
     ctx->iv[2] = nu_get32_le(iv + 8);
     ctx->iv[3] = nu_get32_le(iv + 12);
 
-    if(mode == MBEDTLS_AES_ENCRYPT)
+    if (mode == MBEDTLS_AES_ENCRYPT)
     {
         ctx->encDec = CRYPTO_AES_CTL_ENCRYPTO_Msk;
     }
@@ -337,13 +343,14 @@ int mbedtls_aes_crypt_cbc(mbedtls_aes_context *ctx,
     }
 
     memcpy(au8Tmp, input, AES_BLOCK_SIZE);
-    while(length > 0)
+
+    while (length > 0)
     {
         blockChainLen = (length > MAX_DMA_CHAIN_SIZE) ? MAX_DMA_CHAIN_SIZE : length;
 
         __nvt_aes_crypt(ctx, input, output, blockChainLen);
 
-        if(ctx->encDec)
+        if (ctx->encDec)
         {
             ctx->iv[0] = nu_get32_le(output);
             ctx->iv[1] = nu_get32_le(output + 4);
@@ -370,7 +377,7 @@ int mbedtls_aes_crypt_cbc(mbedtls_aes_context *ctx,
     nu_set32_le(iv + 8, ctx->iv[2]);
     nu_set32_le(iv + 12, ctx->iv[3]);
 
-    return(0);
+    return (0);
 }
 #endif /* MBEDTLS_CIPHER_MODE_CBC */
 
@@ -392,7 +399,7 @@ int mbedtls_aes_crypt_cfb128(mbedtls_aes_context *ctx,
 
     AES_VALIDATE_RET(ctx != NULL);
     AES_VALIDATE_RET(mode == MBEDTLS_AES_ENCRYPT ||
-        mode == MBEDTLS_AES_DECRYPT);
+                     mode == MBEDTLS_AES_DECRYPT);
     AES_VALIDATE_RET(iv_off != NULL);
     AES_VALIDATE_RET(iv != NULL);
     AES_VALIDATE_RET(input != NULL);
@@ -404,7 +411,8 @@ int mbedtls_aes_crypt_cfb128(mbedtls_aes_context *ctx,
     CRYPTO->AES_CTL = CRYPTO_AES_CTL_STOP_Msk;
 
     wcnt = ctx->keySize / 4;
-    for(i = 0; i < wcnt; i++)
+
+    for (i = 0; i < wcnt; i++)
     {
         CRYPTO->AES_KEY[i] = ctx->keys[i];
     }
@@ -418,7 +426,7 @@ int mbedtls_aes_crypt_cfb128(mbedtls_aes_context *ctx,
     u32Ctl = ctx->encDec | ctx->opMode | ctx->keySizeOp |
              (AES_IN_OUT_SWAP << CRYPTO_AES_CTL_OUTSWAP_Pos) | CRYPTO_AES_CTL_KINSWAP_Msk | CRYPTO_AES_CTL_DMAEN_Msk;
 
-    for(i = 0; i < 4; i++)
+    for (i = 0; i < 4; i++)
     {
         u32Tmp = iv[i * 4 + 3];
         u32Tmp = (u32Tmp << 8) + iv[i * 4 + 2];
@@ -432,7 +440,8 @@ int mbedtls_aes_crypt_cfb128(mbedtls_aes_context *ctx,
     CRYPTO->AES_CNT = AES_BLOCK_SIZE;
 
     len = AES_BLOCK_SIZE;
-    if(length <= AES_BLOCK_SIZE)
+
+    if (length <= AES_BLOCK_SIZE)
     {
         memcpy(s_u8in, input, length);
         CRYPTO->AES_CNT = length;
@@ -441,10 +450,10 @@ int mbedtls_aes_crypt_cfb128(mbedtls_aes_context *ctx,
         CRYPTO->INTSTS = CRYPTO_INTSTS_AESIF_Msk;
         CRYPTO->AES_CTL = u32Ctl | CRYPTO_AES_CTL_DMAEN_Msk | CRYPTO_AES_CTL_START_Msk;
 
-        while((CRYPTO->INTSTS & CRYPTO_INTSTS_AESIF_Msk) == 0)
+        while ((CRYPTO->INTSTS & CRYPTO_INTSTS_AESIF_Msk) == 0)
         {
             /* Check timeout */
-            if(timeout-- <= 0)
+            if (timeout-- <= 0)
                 return -1;
         }
 
@@ -453,14 +462,16 @@ int mbedtls_aes_crypt_cfb128(mbedtls_aes_context *ctx,
     }
     else
     {
-        while(length)
+        while (length)
         {
             /* Clear flag */
             CRYPTO->INTSTS = CRYPTO_INTSTS_AESIF_Msk;
-            if(length > AES_BLOCK_SIZE)
+
+            if (length > AES_BLOCK_SIZE)
             {
                 memcpy(s_u8in, input, len);
-                if(first)
+
+                if (first)
                 {
                     /* First block */
                     CRYPTO->AES_CTL = u32Ctl | CRYPTO_AES_CTL_START_Msk;
@@ -479,13 +490,13 @@ int mbedtls_aes_crypt_cfb128(mbedtls_aes_context *ctx,
                 memcpy(s_u8in, input, len);
                 CRYPTO->AES_CNT = len;
                 CRYPTO->AES_CTL = u32Ctl | CRYPTO_AES_CTL_DMACSCAD_Msk | CRYPTO_AES_CTL_DMALAST_Msk |
-                                CRYPTO_AES_CTL_START_Msk;
+                                  CRYPTO_AES_CTL_START_Msk;
             }
 
-            while((CRYPTO->INTSTS & CRYPTO_INTSTS_AESIF_Msk) == 0)
+            while ((CRYPTO->INTSTS & CRYPTO_INTSTS_AESIF_Msk) == 0)
             {
                 /* Check timeout */
-                if(timeout-- <= 0)
+                if (timeout-- <= 0)
                     return -1;
             }
 
@@ -515,28 +526,28 @@ int mbedtls_aes_crypt_cfb8(mbedtls_aes_context *ctx,
 
     AES_VALIDATE_RET(ctx != NULL);
     AES_VALIDATE_RET(mode == MBEDTLS_AES_ENCRYPT ||
-        mode == MBEDTLS_AES_DECRYPT);
+                     mode == MBEDTLS_AES_DECRYPT);
     AES_VALIDATE_RET(iv != NULL);
     AES_VALIDATE_RET(input != NULL);
     AES_VALIDATE_RET(output != NULL);
 
-    while(length--)
+    while (length--)
     {
         memcpy(ov, iv, AES_BLOCK_SIZE);
         mbedtls_aes_crypt_ecb(ctx, MBEDTLS_AES_ENCRYPT, iv, iv);
 
-        if(mode == MBEDTLS_AES_DECRYPT)
+        if (mode == MBEDTLS_AES_DECRYPT)
             ov[AES_BLOCK_SIZE] = *input;
 
         c = *output++ = (unsigned char)(iv[0] ^ *input++);
 
-        if(mode == MBEDTLS_AES_ENCRYPT)
+        if (mode == MBEDTLS_AES_ENCRYPT)
             ov[AES_BLOCK_SIZE] = c;
 
         memcpy(iv, ov + 1, AES_BLOCK_SIZE);
     }
 
-    return(0);
+    return (0);
 }
 #endif /*MBEDTLS_CIPHER_MODE_CFB */
 
@@ -562,16 +573,17 @@ int mbedtls_aes_crypt_ctr(mbedtls_aes_context *ctx,
     AES_VALIDATE_RET(input != NULL);
     AES_VALIDATE_RET(output != NULL);
 
-    while(length--)
+    while (length--)
     {
-        if(n == 0)
+        if (n == 0)
         {
             mbedtls_aes_crypt_ecb(ctx, MBEDTLS_AES_ENCRYPT, nonce_counter, stream_block);
 
-            for(i = AES_BLOCK_SIZE; i > 0; i--)
-                if(++nonce_counter[i - 1] != 0)
+            for (i = AES_BLOCK_SIZE; i > 0; i--)
+                if (++nonce_counter[i - 1] != 0)
                     break;
         }
+
         c = *input++;
         *output++ = (unsigned char)(c ^ stream_block[n]);
 
@@ -580,7 +592,7 @@ int mbedtls_aes_crypt_ctr(mbedtls_aes_context *ctx,
 
     *nc_off = n;
 
-    return(0);
+    return (0);
 }
 #endif /* MBEDTLS_CIPHER_MODE_CTR */
 
@@ -588,12 +600,12 @@ int mbedtls_aes_crypt_ctr(mbedtls_aes_context *ctx,
 /*
  * AES-CTR buffer encryption/decryption
  */
-int mbedtls_aes_crypt_ofb(mbedtls_aes_context* ctx,
+int mbedtls_aes_crypt_ofb(mbedtls_aes_context *ctx,
                           size_t length,
-                          size_t* iv_off,
+                          size_t *iv_off,
                           unsigned char iv[AES_BLOCK_SIZE],
-                          const unsigned char* input,
-                          unsigned char* output)
+                          const unsigned char *input,
+                          unsigned char *output)
 {
     int32_t i, wcnt, timeout = 0x10000000;
     uint32_t len;
@@ -601,32 +613,33 @@ int mbedtls_aes_crypt_ofb(mbedtls_aes_context* ctx,
     int32_t first = 1;
     uint32_t u32Tmp;
 
-    if(length == 0)
+    if (length == 0)
     {
         /* Just do nothing */
         return (0);
     }
 
-    if((ctx == NULL) || (iv == NULL) || (input == NULL) || (output == NULL))
+    if ((ctx == NULL) || (iv == NULL) || (input == NULL) || (output == NULL))
     {
         return MBEDTLS_ERR_AES_INVALID_INPUT_LENGTH;
     }
 
-    if((iv_off != NULL) && (*iv_off != 0))
+    if ((iv_off != NULL) && (*iv_off != 0))
     {
         /* only support iv_off == 0 */
         return MBEDTLS_ERR_AES_INVALID_INPUT_LENGTH;
     }
 
 
-    if(*iv_off != 0)
+    if (*iv_off != 0)
     {
         printf("iv_off is not zero!\n");
 
     }
 
     wcnt = ctx->keySize / 4;
-    for(i = 0; i < wcnt; i++)
+
+    for (i = 0; i < wcnt; i++)
     {
         CRYPTO->AES_KEY[i] = ctx->keys[i];
     }
@@ -639,7 +652,7 @@ int mbedtls_aes_crypt_ofb(mbedtls_aes_context* ctx,
     u32Ctl = ctx->opMode | ctx->keySizeOp | CRYPTO_AES_CTL_ENCRYPTO_Msk |
              (AES_IN_OUT_SWAP << CRYPTO_AES_CTL_OUTSWAP_Pos) | CRYPTO_AES_CTL_KINSWAP_Msk | CRYPTO_AES_CTL_DMAEN_Msk;
 
-    for(i = 0; i < 4; i++)
+    for (i = 0; i < 4; i++)
     {
         u32Tmp = iv[i * 4 + 3];
         u32Tmp = (u32Tmp << 8) + iv[i * 4 + 2];
@@ -653,7 +666,8 @@ int mbedtls_aes_crypt_ofb(mbedtls_aes_context* ctx,
     CRYPTO->AES_CNT = AES_BLOCK_SIZE;
 
     len = AES_BLOCK_SIZE;
-    if(length <= AES_BLOCK_SIZE)
+
+    if (length <= AES_BLOCK_SIZE)
     {
         memcpy(s_u8in, input, length);
         CRYPTO->AES_CNT = length;
@@ -662,10 +676,10 @@ int mbedtls_aes_crypt_ofb(mbedtls_aes_context* ctx,
         CRYPTO->INTSTS = CRYPTO_INTSTS_AESIF_Msk;
         CRYPTO->AES_CTL = u32Ctl | CRYPTO_AES_CTL_DMAEN_Msk | CRYPTO_AES_CTL_START_Msk;
 
-        while((CRYPTO->INTSTS & CRYPTO_INTSTS_AESIF_Msk) == 0)
+        while ((CRYPTO->INTSTS & CRYPTO_INTSTS_AESIF_Msk) == 0)
         {
             /* Check timeout */
-            if(timeout-- <= 0)
+            if (timeout-- <= 0)
                 return -1;
         }
 
@@ -674,14 +688,16 @@ int mbedtls_aes_crypt_ofb(mbedtls_aes_context* ctx,
     }
     else
     {
-        while(length)
+        while (length)
         {
             /* Clear flag */
             CRYPTO->INTSTS = CRYPTO_INTSTS_AESIF_Msk;
-            if(length > AES_BLOCK_SIZE)
+
+            if (length > AES_BLOCK_SIZE)
             {
                 memcpy(s_u8in, input, len);
-                if(first)
+
+                if (first)
                 {
                     /* First block */
                     CRYPTO->AES_CTL = u32Ctl | CRYPTO_AES_CTL_START_Msk;
@@ -700,13 +716,13 @@ int mbedtls_aes_crypt_ofb(mbedtls_aes_context* ctx,
                 memcpy(s_u8in, input, len);
                 CRYPTO->AES_CNT = len;
                 CRYPTO->AES_CTL = u32Ctl | CRYPTO_AES_CTL_DMACSCAD_Msk | CRYPTO_AES_CTL_DMALAST_Msk |
-                                CRYPTO_AES_CTL_START_Msk;
+                                  CRYPTO_AES_CTL_START_Msk;
             }
 
-            while((CRYPTO->INTSTS & CRYPTO_INTSTS_AESIF_Msk) == 0)
+            while ((CRYPTO->INTSTS & CRYPTO_INTSTS_AESIF_Msk) == 0)
             {
                 /* Check timeout */
-                if(timeout-- <= 0)
+                if (timeout-- <= 0)
                     return -1;
             }
 

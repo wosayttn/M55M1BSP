@@ -848,7 +848,7 @@ typedef struct
 /**
     @addtogroup RTC_CONST RTC Bit Field Definition
     Constant Definitions for RTC Controller
-    @{ 
+    @{
 */
 
 #define RTC_INIT_ACTIVE_Pos              (0)                                               /*!< RTC_T::INIT: ACTIVE Position           */

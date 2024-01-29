@@ -29,6 +29,7 @@ NVT_ITCM void LPTMR0_IRQHandler(void)
     if (LPTPWM_GET_PERIOD_INT_FLAG(LPTMR0))
     {
         LPTPWM_CLEAR_PERIOD_INT_FLAG(LPTMR0);
+
         if (s_u32Toggle == 0)
         {
             /* Set PWM period to generate output frequency 36000 Hz */
@@ -48,11 +49,13 @@ NVT_ITCM void LPTMR0_IRQHandler(void)
 
         s_u32Toggle ^= 1;
     }
+
     __DSB();
     __ISB();
-    while(LPTPWM_GET_PERIOD_INT_FLAG(LPTMR0))
+
+    while (LPTPWM_GET_PERIOD_INT_FLAG(LPTMR0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for LPTMR0 IntFlag time-out!\n");
         }

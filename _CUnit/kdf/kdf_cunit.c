@@ -72,12 +72,14 @@ void Hex2Reg_Order(char strInput[], uint32_t volatile u32Reg[])
     while (si < (int)strlen(strInput))
     {
         val32 = 0UL;
+
         for (i = 0UL; (i < 8UL) && (si < (int)strlen(strInput)); i++)
         {
             hex = ch2hex(strInput[si]);
             val32 |= (uint32_t)hex << ((7 - i) * 4UL);
             si++;
         }
+
         u32Reg[ri++] = val32;
     }
 }
@@ -159,12 +161,15 @@ void Func_VerifyDeriveKey_Test(void)
             printf("HKDF [%d] s_strKeyout: %s\n", i, s_strKeyout);
 #ifndef NVT_DEBUG_MSG_OFF
             printf("s_au32Keyout:\n");
+
             for (j = 0; j < u32ByteCnt; j++)
             {
                 if (j % 32 == 0)
                     printf("\n\n");
+
                 printf("%02X ", s_au32Keyout[j]);
             }
+
 #endif
         }
     }
@@ -191,12 +196,15 @@ void Func_VerifyDeriveKey_Test(void)
             printf("KBKDF [%d] s_strKeyout: %s\n", i, s_strKeyout);
 #ifndef NVT_DEBUG_MSG_OFF
             printf("s_au32Keyout:\n");
+
             for (j = 0; j < u32ByteCnt; j++)
             {
                 if (j % 32 == 0)
                     printf("\n\n");
+
                 printf("%02X ", s_au32Keyout[j]);
             }
+
 #endif
         }
     }
@@ -231,9 +239,11 @@ void Func_DeriveKey_Test(void)
     CU_ASSERT(KS_Open() == 0);
 
 #ifdef NVT_TEST_KEYIN_NVM
+
     // Write KS OTP Key15
     if ((KS->OTPSTS & BIT15) == 0)
         CU_ASSERT(KS_WriteOTP(15, KS_META_256, s_au32Keyout) == 15);
+
 #endif
 
     for (u32TestBitSize = 1, u32TestIdx = 0; u32TestBitSize < sizeof(s_au32Keyout); u32TestBitSize += 200, u32TestIdx++)
@@ -243,23 +253,29 @@ void Func_DeriveKey_Test(void)
         CU_ASSERT_FATAL(KDF_DeriveKey(eKDF_MODE_HKDF, au32TestDeriveKeyParam[u32TestIdx % 16], u32TestBitSize, s_au32Keyout) == 0);
 
 #ifndef NVT_DEBUG_MSG_OFF
+
         for (i = 0; i < u32ByteCnt; i++)
         {
             if (i % 32 == 0)
                 printf("\n\n");
+
             printf("%02X ", s_au32Keyout[i]);
         }
+
 #endif
         memset(s_au32Keyout, 0, sizeof(s_au32Keyout));
         CU_ASSERT_FATAL(KDF_DeriveKey(eKDF_MODE_HKDF, au32TestDeriveKeyParam[u32TestIdx % 16], u32TestBitSize, s_au32Keyout) == 0);
 
 #ifndef NVT_DEBUG_MSG_OFF
+
         for (i = 0; i < u32ByteCnt; i++)
         {
             if (i % 32 == 0)
                 printf("\n\n");
+
             printf("%02X ", s_au32Keyout[i]);
         }
+
 #endif
     }
 }
@@ -272,7 +288,7 @@ void Func_DeriveKeyToKS_Test(void)
     uint32_t au32ReadKey[18];
     uint32_t au32MemType[]    = { KS_SRAM, KS_FLASH },
                                 au32KeyOwner[]   = { KDF_KS_OWNER_AES, KDF_KS_OWNER_HMAC, KDF_KS_OWNER_ECC, KDF_KS_OWNER_CPU, KDF_KS_OWNER_CHACHA },
-                                        au32SecurePriv[] = { (KDF_KS_NON_SECURE | KDF_KS_NON_PRIV), (KDF_KS_NON_SECURE | KDF_KS_PRIV), (KDF_KS_SECURE | KDF_KS_NON_PRIV), (KDF_KS_SECURE | KDF_KS_PRIV) };
+                                                   au32SecurePriv[] = { (KDF_KS_NON_SECURE | KDF_KS_NON_PRIV), (KDF_KS_NON_SECURE | KDF_KS_PRIV), (KDF_KS_SECURE | KDF_KS_NON_PRIV), (KDF_KS_SECURE | KDF_KS_PRIV) };
 
     CU_ASSERT(KS_Open() == 0);
 

@@ -21,24 +21,29 @@ int data_compare(uint8_t *answer, uint8_t *cmp_data, int len)
     int  i, err;
 
     err = 0;
+
     for (i = 0; i < len; i++)
     {
         if (answer[i] != cmp_data[i])
         {
             if (err == 0)
                 printf("Data compare error dump:\n");
+
             printf("[%d]: Answer %02x ! %02x\n", i, answer[i], cmp_data[i]);
+
             if (err++ > 5)
                 break;
 
         }
     }
+
     if (err)
     {
         printf("Answer dump ==>\n");
         dump_buff_hex(answer, len);
         printf("Wring data dump ==>\n");
         dump_buff_hex(cmp_data, len);
+
         //chacha_dump();
         while (1);
     }
@@ -54,6 +59,7 @@ void do_swap(uint8_t *buff, int len)
     uint8_t   val8;
 
     len = (len + 3) & 0xfffffffc;
+
     for (i = 0; i < len; i += 4)
     {
         val8 = buff[i];
@@ -99,6 +105,7 @@ void random_gen_mass(uint8_t *buff, int count)
         /* Trigger PRNG to generate 32 bytes random data */
         g_PRNG_done = 0;
         CRYPTO->PRNG_CTL = (PRNG_KEY_SIZE_256 << CRYPTO_PRNG_CTL_KEYSZ_Pos) | CRYPTO_PRNG_CTL_START_Msk;
+
         while (!g_PRNG_done);
 
         if (count >= 32)
@@ -122,10 +129,12 @@ int comapre_hex_dump_err(uint8_t *answer, uint8_t *compare, int len, int err_max
         if (answer[k] != compare[k])
         {
             printf("%d: 0x%02x (Ans) - 0x%02x (Dat)\n", k, answer[k], compare[k]);
+
             if (err++ > err_max)
                 break;
         }
     }
+
     return err;
 }
 
@@ -221,6 +230,7 @@ int main()
     ed25519_test();
 
     printf("\n\ned25519  Sig and Verify Pass!\n");
+
     /* Got no where to go, just loop forever */
     while (1);
 }

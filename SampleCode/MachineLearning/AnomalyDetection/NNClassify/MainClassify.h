@@ -18,16 +18,18 @@
 #define  VAL_NORMALIZE_MIN         (-2048)
 #define  VAL_ANOMALY_IMU_00G_THRESHOLD         (0.39)
 
-typedef struct {
+typedef struct
+{
     float   scale;
     int     offset;
 } QuantParams;
 
 
-class MainClassify {
+class MainClassify
+{
 
 public:
-    MainClassify(int8_t* pBuffer);
+    MainClassify(int8_t *pBuffer);
 
     ~MainClassify() = default;
 
@@ -35,16 +37,16 @@ public:
     void Classify();
     void FillInTensorData();
     void AveragePredictions();
-    int GetTopClass(const std::vector<int8_t>& prediction);
-    int GetInferenceResult(const std::vector<int8_t>& prediction);
+    int GetTopClass(const std::vector<int8_t> &prediction);
+    int GetInferenceResult(const std::vector<int8_t> &prediction);
     uint8_t FillSensorData(uint8_t u8Img);
     uint8_t QuantizeInputData(void);
     void InitMainClassify();
     int FeedImgFiletoSensorBuffer(const uint8_t *p_src);
     int GetAnomalyDetectResult(float f_mae);
-    int8_t* gsensorBufferPtr;
+    int8_t *gsensorBufferPtr;
     std::vector<int8_t> output;
-    QuantParams GetTensorQuantParams(TfLiteTensor* tensor);
+    QuantParams GetTensorQuantParams(TfLiteTensor *tensor);
     uint32_t gsensorBufferIdx;
     int numOutClasses;
     int numInputDims[4];

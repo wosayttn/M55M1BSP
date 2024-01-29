@@ -128,42 +128,41 @@ void CAN_TxTest(void)
 
         switch (u8Item)
         {
-        case '1':
-            /*Standard ID =0x111,Data lenght 8 bytes*/
-            CAN_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x111, 8);
-            break;
+            case '1':
+                /*Standard ID =0x111,Data lenght 8 bytes*/
+                CAN_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x111, 8);
+                break;
 
-        case '2':
-            /*Standard ID =0x22F,Data lenght 8 bytes*/
-            CAN_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x22F, 8);
-            break;
+            case '2':
+                /*Standard ID =0x22F,Data lenght 8 bytes*/
+                CAN_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x22F, 8);
+                break;
 
-        case '3':
-            /*Standard ID =0x333,Data lenght 8 bytes*/
-            CAN_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x333, 8);
-            break;
+            case '3':
+                /*Standard ID =0x333,Data lenght 8 bytes*/
+                CAN_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x333, 8);
+                break;
 
-        case '4':
-            /*Extend ID =0x111,Data lenght 8 bytes*/
-            CAN_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x221, 8);
-            break;
+            case '4':
+                /*Extend ID =0x111,Data lenght 8 bytes*/
+                CAN_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x221, 8);
+                break;
 
-        case '5':
-            /*Extend ID =0x3333,Data lenght 8 bytes*/
-            CAN_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x3333, 8);
-            break;
+            case '5':
+                /*Extend ID =0x3333,Data lenght 8 bytes*/
+                CAN_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x3333, 8);
+                break;
 
-        case '6':
-            /*Extend ID =0x44444,Data lenght 8 bytes*/
-            CAN_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x44444, 8);
-            break;
+            case '6':
+                /*Extend ID =0x44444,Data lenght 8 bytes*/
+                CAN_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x44444, 8);
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
 
-    }
-    while (u8Item != 27);
+    } while (u8Item != 27);
 }
 
 
@@ -213,8 +212,7 @@ void CAN_RxTest(void)
         g_u8RxFifO0CompleteFlag = 0;
         memset(&g_sRxMsgFrame, 0, sizeof(g_sRxMsgFrame));
         u8Cnt++;
-    }
-    while (u8Cnt < 6);
+    } while (u8Cnt < 6);
 }
 
 

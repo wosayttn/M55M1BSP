@@ -50,7 +50,7 @@ void SYS_Init(void)
 
     /* Select UART module clock source as HXT and UART module clock divider as 1 */
     CLK_SetModuleClock(UART0_MODULE, CLK_UARTSEL0_UART0SEL_HXT, CLK_UARTDIV0_UART0DIV(1));
-    
+
     /* Enable UART module clock */
     CLK_EnableModuleClock(UART0_MODULE);
     SYS_ResetModule(SYS_UART0RST);

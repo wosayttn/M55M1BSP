@@ -93,7 +93,7 @@ int main(void)
 
     CUnitTest();
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

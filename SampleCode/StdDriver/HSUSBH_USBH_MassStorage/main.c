@@ -453,10 +453,10 @@ void SYS_Init(void)
 
     /* Switch SCLK clock source to PLL0 and Enable PLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
-    
+
 #if (USE_USB_APLL1_CLOCK)
     /* Enable APLL1 96MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);    
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);
 #endif
 
     /* Enable GPIOA module clock */

@@ -52,7 +52,8 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
         LPPDMA_CLR_TD_FLAG(LPPDMA, (LPPDMA_TDSTS_TDIF0_Msk << TTMR_LPPDMA_CH));
     }
     else
-        printf("unknown interrupt %x !!\n",status);
+        printf("unknown interrupt %x !!\n", status);
+
     if (status & LPPDMA_INTSTS_WKF_Msk)     /* wake up */
     {
         printf("wake up !!\n");
@@ -60,11 +61,13 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
         /* Clear wake up flag */
         LPPDMA->INTSTS = status;
     }
+
     __DSB();
     __ISB();
-    while(LPPDMA_GET_INT_STATUS(LPPDMA))
+
+    while (LPPDMA_GET_INT_STATUS(LPPDMA))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for LPPDMA IntFlag time-out!\n");
         }
@@ -203,17 +206,21 @@ int main(void)
     NVIC_DisableIRQ(LPPDMA_IRQn);
     LPPDMA_DisableInt(LPPDMA, TTMR_LPPDMA_CH, LPPDMA_INT_TRANS_DONE);
     TTMR_Stop(TTMR0);
+
     /* Waiting for LPPDMA transfer done.  g_u32IsTestOver is set by LPPDMA interrupt handler */
     while (s_u32IsTestOver == 0);
+
     /* Check transfer result */
     if (s_u32IsTestOver == 1)
         printf("LPPDMA trasnfer TTMR done.\n");
     else if (s_u32IsTestOver == 2)
         printf("LPPDMA trasnfer TTMR abort...\n");
+
     if (s_au32CAPValue[9] == TTMR0->CMP)
         printf("TTMR Auto Operation PASS.\n");
     else
         printf("TTMR Auto Operation FAIL.\n");
+
     /* Got no where to go, just loop forever */
     while (1) ;
 }

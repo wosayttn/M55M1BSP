@@ -164,7 +164,7 @@ enum mpc_sie_error_t mpc_sie_init(struct mpc_sie_dev_t *dev);
  * \note This function doesn't check if dev is NULL.
  */
 enum mpc_sie_error_t mpc_sie_get_block_size(struct mpc_sie_dev_t *dev,
-        uint32_t *blk_size);
+                                            uint32_t *blk_size);
 
 /**
  * \brief Configures a memory region (base and limit included).
@@ -191,9 +191,9 @@ enum mpc_sie_error_t mpc_sie_get_block_size(struct mpc_sie_dev_t *dev,
  * \note This function doesn't check if dev is NULL.
  */
 enum mpc_sie_error_t mpc_sie_config_region(struct mpc_sie_dev_t *dev,
-        const uint32_t base,
-        const uint32_t limit,
-        enum mpc_sie_sec_attr_t attr);
+                                           const uint32_t base,
+                                           const uint32_t limit,
+                                           enum mpc_sie_sec_attr_t attr);
 
 /**
  * \brief Gets a memory region configuration(base and limit included).
@@ -209,9 +209,9 @@ enum mpc_sie_error_t mpc_sie_config_region(struct mpc_sie_dev_t *dev,
  * \note This function doesn't check if dev is NULL.
  */
 enum mpc_sie_error_t mpc_sie_get_region_config(struct mpc_sie_dev_t *dev,
-        uint32_t base,
-        uint32_t limit,
-        enum mpc_sie_sec_attr_t *attr);
+                                               uint32_t base,
+                                               uint32_t limit,
+                                               enum mpc_sie_sec_attr_t *attr);
 
 /**
  * \brief Gets the MPC control value.
@@ -250,7 +250,7 @@ enum mpc_sie_error_t mpc_sie_set_ctrl(struct mpc_sie_dev_t *dev,
  * \note This function doesn't check if dev is NULL.
  */
 enum mpc_sie_error_t mpc_sie_get_sec_resp(struct mpc_sie_dev_t *dev,
-        enum mpc_sie_sec_resp_t *sec_rep);
+                                          enum mpc_sie_sec_resp_t *sec_rep);
 
 /**
  * \brief Sets the response type when SW asks to gate the incoming transfers.
@@ -261,7 +261,7 @@ enum mpc_sie_error_t mpc_sie_get_sec_resp(struct mpc_sie_dev_t *dev,
  * \note This function doesn't check if dev is NULL.
  */
 enum mpc_sie_error_t mpc_sie_set_sec_resp(struct mpc_sie_dev_t *dev,
-        enum mpc_sie_sec_resp_t sec_rep);
+                                          enum mpc_sie_sec_resp_t sec_rep);
 
 /**
  * \brief Enables MPC interrupt.
@@ -325,7 +325,7 @@ enum mpc_sie_error_t mpc_sie_lock_down(struct mpc_sie_dev_t *dev);
  * \note This function doesn't check if dev is NULL.
  */
 enum mpc_sie_error_t mpc_sie_is_gating_present(struct mpc_sie_dev_t *dev,
-        bool *gating_present);
+                                               bool *gating_present);
 
 /**
  * \brief Returns the value of Peripheral ID 0 register.

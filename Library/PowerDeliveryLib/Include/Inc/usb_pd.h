@@ -8,21 +8,21 @@
 #ifndef __CROS_EC_USB_PD_H
 #define __CROS_EC_USB_PD_H
 #ifdef SW_1
-#include <stdbool.h>
-#include <stdint.h>
-#include "common.h"
-#include "ec_commands.h"
-#include "usb_pd_tbt.h"
-#include "usb_pd_tcpm.h"
-#include "usb_pd_vdo.h"
+    #include <stdbool.h>
+    #include <stdint.h>
+    #include "common.h"
+    #include "ec_commands.h"
+    #include "usb_pd_tbt.h"
+    #include "usb_pd_tcpm.h"
+    #include "usb_pd_vdo.h"
 #else
-#include <stdbool.h>
-#include <stdint.h>
-#include "common.h"
-#include "ec_commands.h"
-#include "usb_pd_tbt.h"
-#include "usb_pd_tcpm.h"
-#include "usb_pd_vdo.h"
+    #include <stdbool.h>
+    #include <stdint.h>
+    #include "common.h"
+    #include "ec_commands.h"
+    #include "usb_pd_tbt.h"
+    #include "usb_pd_tcpm.h"
+    #include "usb_pd_vdo.h"
 #endif /* SW_1 */
 
 #include "usb_common.h"
@@ -45,11 +45,11 @@ typedef enum pd_callback
  * lowest task ID and IDs are on a continuous range.
  */
 #if defined(HAS_TASK_PD_C0) && defined(CONFIG_USB_PD_PORT_MAX_COUNT)
-#define PD_PORT_TO_TASK_ID(port) (TASK_ID_PD_C0 + (port))
-#define TASK_ID_TO_PD_PORT(id) ((id) - TASK_ID_PD_C0)
+    #define PD_PORT_TO_TASK_ID(port) (TASK_ID_PD_C0 + (port))
+    #define TASK_ID_TO_PD_PORT(id) ((id) - TASK_ID_PD_C0)
 #else
-#define PD_PORT_TO_TASK_ID(port) -1 /* stub task ID */
-#define TASK_ID_TO_PD_PORT(id) 0
+    #define PD_PORT_TO_TASK_ID(port) -1 /* stub task ID */
+    #define TASK_ID_TO_PD_PORT(id) 0
 #endif /* CONFIG_USB_PD_PORT_MAX_COUNT && HAS_TASK_PD_C0 */
 
 enum pd_rx_errors
@@ -129,27 +129,27 @@ enum pd_rx_errors
 #define PDO_FIXED_CURR(ma)  (((ma)/10) << 0)  /* Max current in 10mA units */
 
 #define PDO_FIXED(mv, ma, flags) (PDO_FIXED_VOLT(mv) |\
-                  PDO_FIXED_CURR(ma) | (flags))
+                                  PDO_FIXED_CURR(ma) | (flags))
 
 #define PDO_VAR_MAX_VOLT(mv) ((((mv) / 50) & 0x3FF) << 20)
 #define PDO_VAR_MIN_VOLT(mv) ((((mv) / 50) & 0x3FF) << 10)
 #define PDO_VAR_OP_CURR(ma)  ((((ma) / 10) & 0x3FF) << 0)
 
 #define PDO_VAR(min_mv, max_mv, op_ma) \
-                (PDO_VAR_MIN_VOLT(min_mv) | \
-                 PDO_VAR_MAX_VOLT(max_mv) | \
-                 PDO_VAR_OP_CURR(op_ma)   | \
-                 PDO_TYPE_VARIABLE)
+    (PDO_VAR_MIN_VOLT(min_mv) | \
+     PDO_VAR_MAX_VOLT(max_mv) | \
+     PDO_VAR_OP_CURR(op_ma)   | \
+     PDO_TYPE_VARIABLE)
 
 #define PDO_BATT_MAX_VOLT(mv) ((((mv) / 50) & 0x3FF) << 20)
 #define PDO_BATT_MIN_VOLT(mv) ((((mv) / 50) & 0x3FF) << 10)
 #define PDO_BATT_OP_POWER(mw) ((((mw) / 250) & 0x3FF) << 0)
 
 #define PDO_BATT(min_mv, max_mv, op_mw) \
-                (PDO_BATT_MIN_VOLT(min_mv) | \
-                 PDO_BATT_MAX_VOLT(max_mv) | \
-                 PDO_BATT_OP_POWER(op_mw) | \
-                 PDO_TYPE_BATTERY)
+    (PDO_BATT_MIN_VOLT(min_mv) | \
+     PDO_BATT_MAX_VOLT(max_mv) | \
+     PDO_BATT_OP_POWER(op_mw) | \
+     PDO_TYPE_BATTERY)
 
 /* RDO : Request Data Object */
 #define RDO_OBJ_POS(n)             (((n) & 0x7) << 28)
@@ -170,15 +170,15 @@ enum pd_rx_errors
 
 #if 1  /* SPR Fixed PDO with chunked message supportting (Software) */
 #define RDO_FIXED(n, op_ma, max_ma, flags) \
-                (RDO_OBJ_POS(n) | (flags) | \
-                RDO_FIXED_VAR_OP_CURR(op_ma) | \
-                RDO_FIXED_VAR_MAX_CURR(max_ma))
+    (RDO_OBJ_POS(n) | (flags) | \
+     RDO_FIXED_VAR_OP_CURR(op_ma) | \
+     RDO_FIXED_VAR_MAX_CURR(max_ma))
 #else  /* EPR fixed PDO with unchunked message supporting (Hardware support 260 bytes FIFO) */
 #define RDO_FIXED(n, op_ma, max_ma, flags) \
-                (RDO_OBJ_POS(n) | (flags) | \
-                RDO_FIXED_VAR_OP_CURR(op_ma) | \
-                RDO_UNCHUNKED_EXTENDED | \
-                RDO_FIXED_VAR_MAX_CURR(max_ma))
+    (RDO_OBJ_POS(n) | (flags) | \
+     RDO_FIXED_VAR_OP_CURR(op_ma) | \
+     RDO_UNCHUNKED_EXTENDED | \
+     RDO_FIXED_VAR_MAX_CURR(max_ma))
 #endif
 
 /* SW ADD { */
@@ -186,15 +186,15 @@ enum pd_rx_errors
 #define PDO_PPS_OP_CURR(ma) ((((ma) / 50) & 0xEF) << 0)
 
 #define RDO_PPS(n, op_ma, max_mv, flags) \
-                (RDO_OBJ_POS(n) | (flags) | \
-                PDO_PPS_OUT_VOLT(max_mv) | \
-                PDO_PPS_OP_CURR(op_ma))
+    (RDO_OBJ_POS(n) | (flags) | \
+     PDO_PPS_OUT_VOLT(max_mv) | \
+     PDO_PPS_OP_CURR(op_ma))
 /* SW ADD } */
 
 #define RDO_BATT(n, op_mw, max_mw, flags) \
-                (RDO_OBJ_POS(n) | (flags) | \
-                RDO_BATT_OP_POWER(op_mw) | \
-                RDO_BATT_MAX_POWER(max_mw))
+    (RDO_OBJ_POS(n) | (flags) | \
+     RDO_BATT_OP_POWER(op_mw) | \
+     RDO_BATT_MAX_POWER(max_mw))
 
 /* BDO : BIST Data Object
  * 31:28 BIST Mode
@@ -249,14 +249,14 @@ enum pd_rx_errors
  * usb_pd unit test.
  */
 #ifndef CONFIG_USB_PD_TCPMV2
-#if 0
-#define PD_T_SENDER_RESPONSE        (30*MSEC) /* between 24ms and 30ms */
-#else //DEBUG_ONLY
-#define PD_T_SENDER_RESPONSE        (24*MSEC) /* between 24ms and 30ms */
-#endif
+    #if 0
+        #define PD_T_SENDER_RESPONSE        (30*MSEC) /* between 24ms and 30ms */
+    #else //DEBUG_ONLY
+        #define PD_T_SENDER_RESPONSE        (24*MSEC) /* between 24ms and 30ms */
+    #endif
 #else
-#define PD_T_SENDER_RESPONSE        (24*MSEC) /* between 24ms and 30ms */
-//#define PD_T_SENDER_RESPONSE        (500*MSEC) /* DEBUG_ONLY */
+    #define PD_T_SENDER_RESPONSE        (24*MSEC) /* between 24ms and 30ms */
+    //#define PD_T_SENDER_RESPONSE        (500*MSEC) /* DEBUG_ONLY */
 #endif
 #define PD_T_PS_TRANSITION         (500*MSEC) /* between 450ms and 550ms */
 #define PD_T_PS_SOURCE_ON          (480*MSEC) /* between 390ms and 480ms */
@@ -281,9 +281,9 @@ enum pd_rx_errors
 #define PD_T_VCONN_SOURCE_ON       (100*MSEC) /* 100ms */
 #define PD_T_DRP_TRY               (125*MSEC) /* between 75ms and 150ms */
 #ifdef SW_MODIFY
-#define PD_T_TRY_TIMEOUT           (550*MSEC) /* between 550ms and 1100ms */
+    #define PD_T_TRY_TIMEOUT           (550*MSEC) /* between 550ms and 1100ms */
 #else   /* for pass TD 4.6.1 */
-#define PD_T_TRY_TIMEOUT           (600*MSEC) /* between 550ms and 1100ms */
+    #define PD_T_TRY_TIMEOUT           (600*MSEC) /* between 550ms and 1100ms */
 #endif
 #define PD_T_TRY_WAIT              (600*MSEC) /* Wait time for TryWait.SNK */
 #define PD_T_SINK_REQUEST          (100*MSEC) /* 100ms before next request */
@@ -309,7 +309,7 @@ enum pd_rx_errors
 #define PD_T_SRC_PPS_TIMEROUT      (12500*MSEC)             /* 12s ~ 15s */
 
 #if (CONFIG_TC8260_FRS == 1)
-#define PD_T_FRS_START_DELAY            (500*MSEC)  /* TC8260 workaround solution for FRS detection */
+    #define PD_T_FRS_START_DELAY            (500*MSEC)  /* TC8260 workaround solution for FRS detection */
 #endif
 
 
@@ -427,8 +427,8 @@ extern const int supported_modes_cnt;
 
 /* 4 entry rw_hash table of type-C devices that AP has firmware updates for. */
 #ifdef CONFIG_COMMON_RUNTIME
-#define RW_HASH_ENTRIES 4
-extern struct ec_params_usb_pd_rw_hash_entry rw_hash_table[RW_HASH_ENTRIES];
+    #define RW_HASH_ENTRIES 4
+    extern struct ec_params_usb_pd_rw_hash_entry rw_hash_table[RW_HASH_ENTRIES];
 #endif /* CONFIG_COMMON_RUNTIME */
 
 /*
@@ -500,11 +500,11 @@ enum pd_alternate_modes
 
 /* Discover and possibly enter modes for all SOP* communications when enabled */
 #if (CONFIG_USB_PD_DECODE_SOP == 1)
-#define DISCOVERY_TYPE_COUNT (TCPCI_MSG_SOP_PRIME + 1)
-#define AMODE_TYPE_COUNT     (TCPCI_MSG_SOP_PRIME_PRIME + 1)
+    #define DISCOVERY_TYPE_COUNT (TCPCI_MSG_SOP_PRIME + 1)
+    #define AMODE_TYPE_COUNT     (TCPCI_MSG_SOP_PRIME_PRIME + 1)
 #else
-#define DISCOVERY_TYPE_COUNT (TCPCI_MSG_SOP + 1)
-#define AMODE_TYPE_COUNT     (TCPCI_MSG_SOP + 1)
+    #define DISCOVERY_TYPE_COUNT (TCPCI_MSG_SOP + 1)
+    #define AMODE_TYPE_COUNT     (TCPCI_MSG_SOP + 1)
 #endif
 
 /* Discovery results for a port partner (SOP) or cable plug (SOP') */
@@ -561,8 +561,8 @@ struct partner_active_modes
  */
 #define VDO(vid, type, custom) \
     (((vid) << 16) |       \
-    ((type) << 15) |       \
-    ((custom) & 0x7FFF))
+     ((type) << 15) |       \
+     ((custom) & 0x7FFF))
 
 #define VDO_SVDM_TYPE     BIT(15)
 #define VDO_SVDM_VERS(x)  (x << 13)
@@ -652,7 +652,7 @@ struct partner_active_modes
 /* PD Rev 3.0 ID Header VDO */
 #define VDO_IDH_REV30(usbh, usbd, ptype_u, is_modal, ptype_d, ctype, vid) \
     (VDO_IDH(usbh, usbd, ptype_u, is_modal, vid)            \
-    | ((ptype_d) & 0x7) << 23 | ((ctype) & 0x3) << 21)
+     | ((ptype_d) & 0x7) << 23 | ((ctype) & 0x3) << 21)
 
 #define PD_IDH_PTYPE(vdo)    (((vdo) >> 27) & 0x7)
 #define PD_IDH_IS_MODAL(vdo) (((vdo) >> 26) & 0x1)
@@ -687,15 +687,15 @@ enum pd_rev_type
 };
 
 #if (CONFIG_USB_PD_REV30 == 1)
-#define PD_REVISION     PD_REV30
+    #define PD_REVISION     PD_REV30
 #else
-#define PD_REVISION     PD_REV20
+    #define PD_REVISION     PD_REV20
 #endif
 
 #if defined(CONFIG_USB_PD_TCPMV1)
-#define PD_STACK_VERSION TCPMV1
+    #define PD_STACK_VERSION TCPMV1
 #elif defined(CONFIG_USB_PD_TCPMV2)
-#define PD_STACK_VERSION TCPMV2
+    #define PD_STACK_VERSION TCPMV2
 #endif
 
 /* Cable structure for storing cable attributes */
@@ -807,8 +807,8 @@ struct pd_cable
  * Also refer to DisplayPort Alt Mode Capabilities Clarification (4/30/2015)
  */
 #define PD_DP_PIN_CAPS(x) ((((x) >> MODE_DP_CABLE_SHIFT) & 0x1) \
-    ? (((x) >> MODE_DP_UFP_PIN_SHIFT) & MODE_DP_PIN_CAPS_MASK) \
-    : (((x) >> MODE_DP_DFP_PIN_SHIFT) & MODE_DP_PIN_CAPS_MASK))
+                           ? (((x) >> MODE_DP_UFP_PIN_SHIFT) & MODE_DP_PIN_CAPS_MASK) \
+                           : (((x) >> MODE_DP_DFP_PIN_SHIFT) & MODE_DP_PIN_CAPS_MASK))
 
 /*
  * DisplayPort Status VDO
@@ -882,9 +882,9 @@ struct pd_cable
  * IS RW: True if currently in RW, False otherwise (1 bit)
  */
 #define VDO_INFO(id, id_minor, ver, is_rw) ((id_minor) << 26 \
-                  | ((id) & 0x3ff) << 16 \
-                  | ((ver) & 0x7fff) << 1 \
-                  | ((is_rw) & 1))
+                                            | ((id) & 0x3ff) << 16 \
+                                            | ((ver) & 0x7fff) << 1 \
+                                            | ((is_rw) & 1))
 #define VDO_INFO_HW_DEV_ID(x)    ((x) >> 16)
 #define VDO_INFO_SW_DBG_VER(x)   (((x) >> 1) & 0x7fff)
 #define VDO_INFO_IS_RW(x)        ((x) & 1)
@@ -968,80 +968,80 @@ enum pd_states
 
 /* Generate compile-time errors for unsupported states */
 #ifndef CONFIG_USB_PD_DUAL_ROLE
-#define PD_STATE_SNK_DISCONNECTED UNSUPPORTED_PD_STATE_SNK_DISCONNECTED
-#define PD_STATE_SNK_DISCONNECTED_DEBOUNCE UNSUPPORTED_SNK_DISCONNECTED_DEBOUNCE
-#define PD_STATE_SNK_HARD_RESET_RECOVER UNSUPPORTED_SNK_HARD_RESET_RECOVER
-#define PD_STATE_SNK_DISCOVERY UNSUPPORTED_PD_STATE_SNK_DISCOVERY
-#define PD_STATE_SNK_REQUESTED UNSUPPORTED_PD_STATE_SNK_REQUESTED
-#define PD_STATE_SNK_TRANSITION UNSUPPORTED_PD_STATE_SNK_TRANSITION
-#define PD_STATE_SNK_READY UNSUPPORTED_PD_STATE_SNK_READY
-#define PD_STATE_SNK_SWAP_INIT UNSUPPORTED_PD_STATE_SNK_SWAP_INIT
-#define PD_STATE_SNK_SWAP_SNK_DISABLE UNSUPPORTED_PD_STATE_SNK_SWAP_SNK_DISABLE
-#define PD_STATE_SNK_SWAP_SRC_DISABLE UNSUPPORTED_PD_STATE_SNK_SWAP_SRC_DISABLE
-#define PD_STATE_SNK_SWAP_STANDBY UNSUPPORTED_PD_STATE_SNK_SWAP_STANDBY
-#define PD_STATE_SNK_SWAP_COMPLETE UNSUPPORTED_PD_STATE_SNK_SWAP_COMPLETE
-#define PD_STATE_SRC_SWAP_INIT UNSUPPORTED_PD_STATE_SRC_SWAP_INIT
-#define PD_STATE_SRC_SWAP_SNK_DISABLE UNSUPPORTED_PD_STATE_SRC_SWAP_SNK_DISABLE
-#define PD_STATE_SRC_SWAP_SRC_DISABLE UNSUPPORTED_PD_STATE_SRC_SWAP_SRC_DISABLE
-#define PD_STATE_SRC_SWAP_STANDBY UNSUPPORTED_PD_STATE_SRC_SWAP_STANDBY
+    #define PD_STATE_SNK_DISCONNECTED UNSUPPORTED_PD_STATE_SNK_DISCONNECTED
+    #define PD_STATE_SNK_DISCONNECTED_DEBOUNCE UNSUPPORTED_SNK_DISCONNECTED_DEBOUNCE
+    #define PD_STATE_SNK_HARD_RESET_RECOVER UNSUPPORTED_SNK_HARD_RESET_RECOVER
+    #define PD_STATE_SNK_DISCOVERY UNSUPPORTED_PD_STATE_SNK_DISCOVERY
+    #define PD_STATE_SNK_REQUESTED UNSUPPORTED_PD_STATE_SNK_REQUESTED
+    #define PD_STATE_SNK_TRANSITION UNSUPPORTED_PD_STATE_SNK_TRANSITION
+    #define PD_STATE_SNK_READY UNSUPPORTED_PD_STATE_SNK_READY
+    #define PD_STATE_SNK_SWAP_INIT UNSUPPORTED_PD_STATE_SNK_SWAP_INIT
+    #define PD_STATE_SNK_SWAP_SNK_DISABLE UNSUPPORTED_PD_STATE_SNK_SWAP_SNK_DISABLE
+    #define PD_STATE_SNK_SWAP_SRC_DISABLE UNSUPPORTED_PD_STATE_SNK_SWAP_SRC_DISABLE
+    #define PD_STATE_SNK_SWAP_STANDBY UNSUPPORTED_PD_STATE_SNK_SWAP_STANDBY
+    #define PD_STATE_SNK_SWAP_COMPLETE UNSUPPORTED_PD_STATE_SNK_SWAP_COMPLETE
+    #define PD_STATE_SRC_SWAP_INIT UNSUPPORTED_PD_STATE_SRC_SWAP_INIT
+    #define PD_STATE_SRC_SWAP_SNK_DISABLE UNSUPPORTED_PD_STATE_SRC_SWAP_SNK_DISABLE
+    #define PD_STATE_SRC_SWAP_SRC_DISABLE UNSUPPORTED_PD_STATE_SRC_SWAP_SRC_DISABLE
+    #define PD_STATE_SRC_SWAP_STANDBY UNSUPPORTED_PD_STATE_SRC_SWAP_STANDBY
 #endif /* CONFIG_USB_PD_DUAL_ROLE */
 
 /* Generate compile-time errors for unsupported states */
 #if !defined(CONFIG_USBC_VCONN_SWAP) || !defined(CONFIG_USB_PD_DUAL_ROLE)
-#define PD_STATE_VCONN_SWAP_SEND UNSUPPORTED_PD_STATE_VCONN_SWAP_SEND
-#define PD_STATE_VCONN_SWAP_INIT UNSUPPORTED_PD_STATE_VCONN_SWAP_INIT
-#define PD_STATE_VCONN_SWAP_READY UNSUPPORTED_PD_STATE_VCONN_SWAP_READY
+    #define PD_STATE_VCONN_SWAP_SEND UNSUPPORTED_PD_STATE_VCONN_SWAP_SEND
+    #define PD_STATE_VCONN_SWAP_INIT UNSUPPORTED_PD_STATE_VCONN_SWAP_INIT
+    #define PD_STATE_VCONN_SWAP_READY UNSUPPORTED_PD_STATE_VCONN_SWAP_READY
 #endif
 
 /* Generate compile-time errors for unsupported states */
 #ifndef CONFIG_COMMON_RUNTIME
-#define PD_STATE_BIST_RX UNSUPPORTED_PD_STATE_BIST_RX
-#define PD_STATE_BIST_TX UNSUPPORTED_PD_STATE_BIST_TX
+    #define PD_STATE_BIST_RX UNSUPPORTED_PD_STATE_BIST_RX
+    #define PD_STATE_BIST_TX UNSUPPORTED_PD_STATE_BIST_TX
 #endif
 
 /* Generate compile-time errors for unsupported states */
 #ifndef CONFIG_USB_PD_DUAL_ROLE_AUTO_TOGGLE
-#define PD_STATE_DRP_AUTO_TOGGLE UNSUPPORTED_PD_STATE_DRP_AUTO_TOGGLE
+    #define PD_STATE_DRP_AUTO_TOGGLE UNSUPPORTED_PD_STATE_DRP_AUTO_TOGGLE
 #endif
 
 #ifdef CONFIG_USB_PD_TCPMV1
-/* Flags used for TCPMv1 */
-#define PD_FLAGS_PING_ENABLED      BIT(0) /* SRC_READY pings enabled */
-#define PD_FLAGS_PARTNER_DR_POWER  BIT(1) /* port partner is dualrole power */
-#define PD_FLAGS_PARTNER_DR_DATA   BIT(2) /* port partner is dualrole data */
-#define PD_FLAGS_CHECK_IDENTITY    BIT(3) /* discover identity in READY */
-#define PD_FLAGS_SNK_CAP_RECVD     BIT(4) /* sink capabilities received */
-#define PD_FLAGS_TCPC_DRP_TOGGLE   BIT(5) /* TCPC-controlled DRP toggling */
-#define PD_FLAGS_EXPLICIT_CONTRACT BIT(6) /* explicit pwr contract in place */
-#define PD_FLAGS_VBUS_NEVER_LOW    BIT(7) /* VBUS input has never been low */
-#define PD_FLAGS_PREVIOUS_PD_CONN  BIT(8) /* previously PD connected */
-#define PD_FLAGS_CHECK_PR_ROLE     BIT(9) /* check power role in READY */
-#define PD_FLAGS_CHECK_DR_ROLE     BIT(10)/* check data role in READY */
-#define PD_FLAGS_PARTNER_UNCONSTR  BIT(11)/* port partner unconstrained pwr */
-#define PD_FLAGS_VCONN_ON          BIT(12)/* vconn is being sourced */
-#define PD_FLAGS_TRY_SRC           BIT(13)/* Try.SRC states are active */
-#define PD_FLAGS_PARTNER_USB_COMM  BIT(14)/* port partner is USB comms */
-#define PD_FLAGS_UPDATE_SRC_CAPS   BIT(15)/* send new source capabilities */
-#define PD_FLAGS_TS_DTS_PARTNER    BIT(16)/* partner has rp/rp or rd/rd */
-/*
- * These PD_FLAGS_LPM* flags track the software state (PD_LPM_FLAGS_REQUESTED)
- * and hardware state (PD_LPM_FLAGS_ENGAGED) of the TCPC low power mode.
- * PD_FLAGS_LPM_TRANSITION is set while the HW is transitioning into or out of
- * low power (when PD_LPM_FLAGS_ENGAGED is changing).
- */
-#ifdef CONFIG_USB_PD_TCPC_LOW_POWER
-#define PD_FLAGS_LPM_REQUESTED     BIT(17)/* Tracks SW LPM state */
-#define PD_FLAGS_LPM_ENGAGED       BIT(18)/* Tracks HW LPM state */
-#define PD_FLAGS_LPM_TRANSITION    BIT(19)/* Tracks HW LPM transition */
-#define PD_FLAGS_LPM_EXIT          BIT(19)/* Tracks HW LPM exit */
-#endif
-/*
- * Tracks whether port negotiation may have stalled due to not starting reset
- * timers in SNK_DISCOVERY
- */
-#define PD_FLAGS_SNK_WAITING_BATT  BIT(21)
-/* Check vconn state in READY */
-#define PD_FLAGS_CHECK_VCONN_STATE BIT(22)
+    /* Flags used for TCPMv1 */
+    #define PD_FLAGS_PING_ENABLED      BIT(0) /* SRC_READY pings enabled */
+    #define PD_FLAGS_PARTNER_DR_POWER  BIT(1) /* port partner is dualrole power */
+    #define PD_FLAGS_PARTNER_DR_DATA   BIT(2) /* port partner is dualrole data */
+    #define PD_FLAGS_CHECK_IDENTITY    BIT(3) /* discover identity in READY */
+    #define PD_FLAGS_SNK_CAP_RECVD     BIT(4) /* sink capabilities received */
+    #define PD_FLAGS_TCPC_DRP_TOGGLE   BIT(5) /* TCPC-controlled DRP toggling */
+    #define PD_FLAGS_EXPLICIT_CONTRACT BIT(6) /* explicit pwr contract in place */
+    #define PD_FLAGS_VBUS_NEVER_LOW    BIT(7) /* VBUS input has never been low */
+    #define PD_FLAGS_PREVIOUS_PD_CONN  BIT(8) /* previously PD connected */
+    #define PD_FLAGS_CHECK_PR_ROLE     BIT(9) /* check power role in READY */
+    #define PD_FLAGS_CHECK_DR_ROLE     BIT(10)/* check data role in READY */
+    #define PD_FLAGS_PARTNER_UNCONSTR  BIT(11)/* port partner unconstrained pwr */
+    #define PD_FLAGS_VCONN_ON          BIT(12)/* vconn is being sourced */
+    #define PD_FLAGS_TRY_SRC           BIT(13)/* Try.SRC states are active */
+    #define PD_FLAGS_PARTNER_USB_COMM  BIT(14)/* port partner is USB comms */
+    #define PD_FLAGS_UPDATE_SRC_CAPS   BIT(15)/* send new source capabilities */
+    #define PD_FLAGS_TS_DTS_PARTNER    BIT(16)/* partner has rp/rp or rd/rd */
+    /*
+    * These PD_FLAGS_LPM* flags track the software state (PD_LPM_FLAGS_REQUESTED)
+    * and hardware state (PD_LPM_FLAGS_ENGAGED) of the TCPC low power mode.
+    * PD_FLAGS_LPM_TRANSITION is set while the HW is transitioning into or out of
+    * low power (when PD_LPM_FLAGS_ENGAGED is changing).
+    */
+    #ifdef CONFIG_USB_PD_TCPC_LOW_POWER
+        #define PD_FLAGS_LPM_REQUESTED     BIT(17)/* Tracks SW LPM state */
+        #define PD_FLAGS_LPM_ENGAGED       BIT(18)/* Tracks HW LPM state */
+        #define PD_FLAGS_LPM_TRANSITION    BIT(19)/* Tracks HW LPM transition */
+        #define PD_FLAGS_LPM_EXIT          BIT(19)/* Tracks HW LPM exit */
+    #endif
+    /*
+    * Tracks whether port negotiation may have stalled due to not starting reset
+    * timers in SNK_DISCOVERY
+    */
+    #define PD_FLAGS_SNK_WAITING_BATT  BIT(21)
+    /* Check vconn state in READY */
+    #define PD_FLAGS_CHECK_VCONN_STATE BIT(22)
 #endif /* CONFIG_USB_PD_TCPMV1 */
 
 /* Per-port battery backed RAM flags */
@@ -1246,16 +1246,16 @@ enum pd_ctrl_msg_type
 
 /* Control message types which always mark the start of an AMS */
 #define PD_CTRL_AMS_START_MASK ((1 << PD_CTRL_GOTO_MIN) | \
-                (1 << PD_CTRL_GET_SOURCE_CAP) | \
-                (1 << PD_CTRL_GET_SINK_CAP) | \
-                (1 << PD_CTRL_DR_SWAP) | \
-                (1 << PD_CTRL_PR_SWAP) | \
-                (1 << PD_CTRL_VCONN_SWAP) | \
-                (1 << PD_CTRL_GET_SOURCE_CAP_EXT) | \
-                (1 << PD_CTRL_GET_STATUS) | \
-                (1 << PD_CTRL_FR_SWAP) | \
-                (1 << PD_CTRL_GET_PPS_STATUS) | \
-                (1 << PD_CTRL_GET_COUNTRY_CODES))
+                                (1 << PD_CTRL_GET_SOURCE_CAP) | \
+                                (1 << PD_CTRL_GET_SINK_CAP) | \
+                                (1 << PD_CTRL_DR_SWAP) | \
+                                (1 << PD_CTRL_PR_SWAP) | \
+                                (1 << PD_CTRL_VCONN_SWAP) | \
+                                (1 << PD_CTRL_GET_SOURCE_CAP_EXT) | \
+                                (1 << PD_CTRL_GET_STATUS) | \
+                                (1 << PD_CTRL_FR_SWAP) | \
+                                (1 << PD_CTRL_GET_PPS_STATUS) | \
+                                (1 << PD_CTRL_GET_COUNTRY_CODES))
 
 
 /* Battery Status Data Object fields for REV 3.0 */
@@ -1358,18 +1358,18 @@ enum cable_outlet
 
 /* Port role at startup */
 #ifndef PD_ROLE_DEFAULT
-#ifdef CONFIG_USB_PD_DUAL_ROLE
-#define PD_ROLE_DEFAULT(port) PD_ROLE_SINK
-#else
-#define PD_ROLE_DEFAULT(port) PD_ROLE_SOURCE
-#endif
+    #ifdef CONFIG_USB_PD_DUAL_ROLE
+        #define PD_ROLE_DEFAULT(port) PD_ROLE_SINK
+    #else
+        #define PD_ROLE_DEFAULT(port) PD_ROLE_SOURCE
+    #endif
 #endif
 
 /* Port default state at startup */
 #ifdef CONFIG_USB_PD_DUAL_ROLE
 #define PD_DEFAULT_STATE(port) ((PD_ROLE_DEFAULT(port) == PD_ROLE_SOURCE) ? \
-                PD_STATE_SRC_DISCONNECTED :       \
-                PD_STATE_SNK_DISCONNECTED)
+                                PD_STATE_SRC_DISCONNECTED :       \
+                                PD_STATE_SNK_DISCONNECTED)
 #else
 #define PD_DEFAULT_STATE(port) PD_STATE_SRC_DISCONNECTED
 #endif
@@ -1377,14 +1377,14 @@ enum cable_outlet
 /* build extended message header */
 /* All extended messages are chunked, so set bit 15 */
 #define PD_EXT_HEADER(cnum, rchk, dsize) \
-     (BIT(15) | ((cnum) << 11) | \
+    (BIT(15) | ((cnum) << 11) | \
      ((rchk) << 10) | (dsize))
 
 /* build message header */
 #define PD_HEADER(type, prole, drole, id, cnt, rev, ext) \
     ((type) | ((rev) << 6) | \
-    ((drole) << 5) | ((prole) << 8) | \
-    ((id) << 9) | ((cnt) << 12) | ((ext) << 15))
+     ((drole) << 5) | ((prole) << 8) | \
+     ((id) << 9) | ((cnt) << 12) | ((ext) << 15))
 
 /* Used for processing pd header */
 #define PD_HEADER_EXT(header)   (((header) >> 15) & 1)
@@ -1538,7 +1538,7 @@ void pd_process_source_cap(int port, int cnt, uint32_t *src_caps);
  * @param ma reduce current to minimum value.
  * @param mv reduce voltage to minimum value.
  */
-void pd_snk_give_back(int port, uint32_t * const ma, uint32_t * const mv);
+void pd_snk_give_back(int port, uint32_t *const ma, uint32_t *const mv);
 
 /**
  * Put a cap on the max voltage requested as a sink.
@@ -1646,7 +1646,7 @@ void pd_update_contract(int port);
 
 /* Encode DTS status of port partner in current limit parameter */
 #ifndef typec_current_t
-//typedef uint32_t typec_current_t;
+    //typedef uint32_t typec_current_t;
 #endif
 
 #define TYPEC_CURRENT_DTS_MASK BIT(31)
@@ -1660,8 +1660,8 @@ void pd_update_contract(int port);
  * @param supply_voltage Voltage at which current limit is applied
  */
 __override_proto void typec_set_input_current_limit(int port,
-        typec_current_t max_ma,
-        uint32_t supply_voltage);
+                                                    typec_current_t max_ma,
+                                                    uint32_t supply_voltage);
 /**
  * Set the type-C current limit when sourcing current..
  *
@@ -1709,7 +1709,7 @@ __override_proto int pd_check_power_swap(int port);
  * @return True if port partner can supply power
  */
 __override_proto bool pd_can_charge_from_device(int port, const int pdo_cnt,
-        const uint32_t *pdos);
+                                                const uint32_t *pdos);
 
 /**
  * Check if data swap is allowed.
@@ -1768,7 +1768,7 @@ __override_proto void pd_try_execute_vconn_swap(int port, int flags);
  * @param data_role new data role
  */
 __override_proto void pd_execute_data_swap(int port,
-        enum pd_data_role data_role);
+                                           enum pd_data_role data_role);
 
 /**
  * Get desired dual role state when chipset is suspended.
@@ -2014,7 +2014,7 @@ void pd_set_identity_discovery(int port, enum tcpci_msg_type type,
  * @return      Current discovery state (failed or complete)
  */
 enum pd_discovery_state pd_get_identity_discovery(int port,
-        enum tcpci_msg_type type);
+                                                  enum tcpci_msg_type type);
 
 /**
  * Set SVID discovery state for this type and port.
@@ -2034,7 +2034,7 @@ void pd_set_svids_discovery(int port, enum tcpci_msg_type type,
  * @return     Current discovery state (failed or complete)
  */
 enum pd_discovery_state pd_get_svids_discovery(int port,
-        enum tcpci_msg_type type);
+                                               enum tcpci_msg_type type);
 
 /**
  * Set Modes discovery state for this port, SOP* type, and SVID.
@@ -2061,7 +2061,7 @@ void pd_set_modes_discovery(int port, enum tcpci_msg_type type,
  *                                       PD_DISC_FAIL)
  */
 enum pd_discovery_state pd_get_modes_discovery(int port,
-        enum tcpci_msg_type type);
+                                               enum tcpci_msg_type type);
 
 /**
  * Returns the mode vdo count of the specified SVID and sets
@@ -2092,7 +2092,7 @@ int pd_get_mode_vdo_for_svid(int port, enum tcpci_msg_type type,
  *             NULL, otherwise
  */
 const struct svid_mode_data *pd_get_next_mode(int port,
-        enum tcpci_msg_type type);
+                                              enum tcpci_msg_type type);
 
 /**
  * Return a pointer to the discover identity response structure for this SOP*
@@ -2103,7 +2103,7 @@ const struct svid_mode_data *pd_get_next_mode(int port,
  * @return      pointer to response structure, which the caller may not alter
  */
 const union disc_ident_ack *pd_get_identity_response(int port,
-                enum tcpci_msg_type type);
+                                                         enum tcpci_msg_type type);
 
 /**
  * Return the VID of the USB PD accessory connected to a specified port
@@ -2181,7 +2181,7 @@ bool pd_is_mode_discovered_for_svid(int port, enum tcpci_msg_type type,
  * @return      pointer to SVDM mode data
  */
 struct svdm_amode_data *pd_get_amode_data(int port,
-        enum tcpci_msg_type type, uint16_t svid);
+                                          enum tcpci_msg_type type, uint16_t svid);
 
 /*
  * Returns cable revision
@@ -2250,7 +2250,7 @@ bool pd_discovery_access_validate(int port, enum tcpci_msg_type type);
  * @return     pointer to PD alternate mode discovery results
  */
 struct pd_discovery *pd_get_am_discovery_and_notify_access(int port,
-        enum tcpci_msg_type type);
+                                                           enum tcpci_msg_type type);
 
 /*
  * Returns the constant pointer to PD alternate mode discovery results
@@ -2261,7 +2261,7 @@ struct pd_discovery *pd_get_am_discovery_and_notify_access(int port,
  * @return     pointer to PD alternate mode discovery results
  */
 const struct pd_discovery *pd_get_am_discovery(int port,
-        enum tcpci_msg_type type);
+                                               enum tcpci_msg_type type);
 
 /*
  * Returns the pointer to PD active alternate modes.
@@ -2272,7 +2272,7 @@ const struct pd_discovery *pd_get_am_discovery(int port,
  * @return     Pointer to PD active alternate modes.
  */
 struct partner_active_modes *pd_get_partner_active_modes(int port,
-        enum tcpci_msg_type type);
+                                                         enum tcpci_msg_type type);
 
 /*
  * Sets the current object position for DP alt-mode
@@ -2586,9 +2586,9 @@ extern const uint32_t pd_src_pdo_max[];
 extern const int pd_src_pdo_max_cnt;
 extern const uint32_t pd_snk_pdo[];
 #if 0
-extern const int pd_snk_pdo_cnt;
+    extern const int pd_snk_pdo_cnt;
 #else
-extern int pd_snk_pdo_cnt;
+    extern int pd_snk_pdo_cnt;
 #endif
 /**
  * Request that a host event be sent to notify the AP of a PD power event.
@@ -3048,7 +3048,7 @@ bool pd_waiting_on_partner_src_caps(int port);
  *
  * @param port USB-C port number
  */
-const uint32_t * pd_get_src_caps(int port);
+const uint32_t *pd_get_src_caps(int port);
 
 /**
  * Returns the number of source caps
@@ -3072,7 +3072,7 @@ void pd_set_src_caps(int port, int cnt, uint32_t *src_caps);
  *
  * @param port USB-C port number
  */
-const uint32_t * pd_get_snk_caps(int port);
+const uint32_t *pd_get_snk_caps(int port);
 
 /**
  * Returns the number of sink caps
@@ -3287,8 +3287,8 @@ void pd_prepare_sysjump(void);
 
 /* DisplayPort Alternate Mode */
 #ifdef CONFIG_USB_PD_ALT_MODE_DFP
-extern int dp_flags[CONFIG_USB_PD_PORT_MAX_COUNT];
-extern uint32_t dp_status[CONFIG_USB_PD_PORT_MAX_COUNT];
+    extern int dp_flags[CONFIG_USB_PD_PORT_MAX_COUNT];
+    extern uint32_t dp_status[CONFIG_USB_PD_PORT_MAX_COUNT];
 #endif /* CONFIG_USB_PD_ALT_MODE_DFP */
 
 /*

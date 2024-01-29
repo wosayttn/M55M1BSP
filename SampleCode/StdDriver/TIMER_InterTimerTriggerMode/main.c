@@ -37,9 +37,10 @@ NVT_ITCM void TIMER1_IRQHandler(void)
     complete = 1;
     __DSB();
     __ISB();
-    while(TIMER_GetCaptureIntFlag(TIMER1))
+
+    while (TIMER_GetCaptureIntFlag(TIMER1))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for TIMER1 IntFlag time-out!\n");
         }
@@ -119,12 +120,13 @@ int main(void)
     // We need capture interrupt
     NVIC_EnableIRQ(TIMER1_IRQn);
 
-    while(1)
+    while (1)
     {
         complete = 0;
         // Count event by timer 0, disable drop count (set to 0), disable timeout (set to 0). Enable interrupt after complete
         TIMER_EnableFreqCounter(TIMER0, 0, 0, TRUE);
-        while(complete == 0);
+
+        while (complete == 0);
     }
 }
 

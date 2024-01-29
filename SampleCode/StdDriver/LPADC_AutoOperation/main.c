@@ -53,8 +53,9 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
     }
     else
         printf("LPPDMA_IRQHandler: unknown LPPDMA interrupt !!\n");
-        /*Confirm that the Flag has been cleared.*/
-        LPPDMA_GET_INT_STATUS(LPPDMA);
+
+    /*Confirm that the Flag has been cleared.*/
+    LPPDMA_GET_INT_STATUS(LPPDMA);
 }
 
 void SYS_Init(void)
@@ -202,7 +203,7 @@ void AutoOperation_FunctionTest()
     /* Switch SCLK clock source to HIRC and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
     SYS_LockReg();
-  
+
     /* Start LPTMR counting */
     LPTPWM_START_COUNTER(LPTMR0);
 
@@ -218,10 +219,10 @@ void AutoOperation_FunctionTest()
         g_u32LPPdmaIntFlag = 0;
 
         SYS_UnlockReg();
-        
+
         PMC_SetPowerDownMode(PMC_NPD0, PMC_PLCTL_PLSEL_PL0);
         PMC_PowerDown();
-        
+
         SYS_LockReg();
 
         printf("Wakeup %d times !!\n", ++g_u32WakeupCount);

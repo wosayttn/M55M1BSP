@@ -151,7 +151,7 @@ void LPADC_FunctionTest()
             LPADC_START_CONV(LPADC0);
 
             /* Wait LPADC interrupt (g_u32LpadcIntFlag will be set at IRQ_Handler function) */
-            while (g_u32LpadcIntFlag == 0){};
+            while (g_u32LpadcIntFlag == 0) {};
 
             /* Disable the sample module interrupt */
             LPADC_DisableInt(LPADC0, LPADC_ADF_INT);

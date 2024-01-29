@@ -33,9 +33,10 @@ NVT_ITCM void LPTMR0_IRQHandler(void)
     printf("\nCheck if output toggles 11 times then stop toggles.\n");
     __DSB();
     __ISB();
-    while(LPTPWM_GetAccInt(LPTMR0))
+
+    while (LPTPWM_GetAccInt(LPTMR0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for LPTPWM0 IntFlag time-out!\n");
         }

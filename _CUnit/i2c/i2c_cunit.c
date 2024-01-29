@@ -19,9 +19,9 @@ extern uint32_t I2C_SetBusClockFreq(I2C_T *i2c, uint32_t u32BusClock);
 #include "Console.h"
 
 #if 0
-#define DBG_MSG printf
+    #define DBG_MSG printf
 #else
-#define DBG_MSG(...)
+    #define DBG_MSG(...)
 #endif
 
 
@@ -68,7 +68,8 @@ void PMC_IRQHandler(void)
     printf("@PMC_IRQ!!!");
 
     /* check power down wakeup flag */
-    if ((PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk) == PMC_INTSTS_PDWKIF_Msk) {
+    if ((PMC->INTSTS & PMC_INTSTS_PDWKIF_Msk) == PMC_INTSTS_PDWKIF_Msk)
+    {
         printf("PMC_IRQ!!! PMC_INTSTS = 0x%08x\n", PMC->INTSTS);
     }
 
@@ -87,17 +88,19 @@ void I2C0_IRQHandler(void)
 {
     uint32_t u32Status;
     u32Status = I2C_GET_STATUS(I2C0);
-//    printf("I2C0_STA: %08X\n", u32Status);
+    //    printf("I2C0_STA: %08X\n", u32Status);
 
     /* Check Transmit byte done interrupt flag */
-    if ((I2C_SMBusGetStatus(I2C0) & I2C_BUSSTS_BCDONE_Msk) == I2C_BUSSTS_BCDONE_Msk) {
+    if ((I2C_SMBusGetStatus(I2C0) & I2C_BUSSTS_BCDONE_Msk) == I2C_BUSSTS_BCDONE_Msk)
+    {
         I2C_SMBusClearInterruptFlag(I2C0, I2C_BUSSTS_BCDONE_Msk);
         printf("I2C0 Byte Transmit Byte Done Interrupt !\n");
         return;
     }
 
     /* Occur receive PEC packet error */
-    if ((I2C_SMBusGetStatus(I2C0) & I2C_BUSSTS_PECERR_Msk) == I2C_BUSSTS_PECERR_Msk) {
+    if ((I2C_SMBusGetStatus(I2C0) & I2C_BUSSTS_PECERR_Msk) == I2C_BUSSTS_PECERR_Msk)
+    {
         I2C_SMBusClearInterruptFlag(I2C0, I2C_BUSSTS_PECERR_Msk);
         printf("I2C0 PEC Error Interrupt !\n");
         return;
@@ -105,18 +108,23 @@ void I2C0_IRQHandler(void)
 
     /* Check Alert Interrupt when I2C0 is Host */
     if (((I2C_SMBusGetStatus(I2C0) & I2C_BUSSTS_ALERT_Msk) == I2C_BUSSTS_ALERT_Msk) &
-            ((I2C0->BUSCTL & I2C_BUSCTL_BMHEN_Msk) == I2C_BUSCTL_BMHEN_Msk)) {
+            ((I2C0->BUSCTL & I2C_BUSCTL_BMHEN_Msk) == I2C_BUSCTL_BMHEN_Msk))
+    {
         I2C_SMBusClearInterruptFlag(I2C0, I2C_BUSSTS_ALERT_Msk);
         printf("I2C0 Alert Interrupt !\n");
         g_u8AlertInt0 = 1;
         return ;
     }
 
-    if (I2C_GET_TIMEOUT_FLAG(I2C0)) {
+    if (I2C_GET_TIMEOUT_FLAG(I2C0))
+    {
         /* Clear I2C0 Timeout Flag */
         I2C_ClearTimeoutFlag(I2C0);
-    } else {
-        if (s_I2C0HandlerFn != NULL) {
+    }
+    else
+    {
+        if (s_I2C0HandlerFn != NULL)
+        {
             s_I2C0HandlerFn(u32Status);
         }
     }
@@ -133,9 +141,10 @@ void I2C1_IRQHandler(void)
     uint32_t u32Status;
     uint8_t u8data;
     u32Status = I2C_GET_STATUS(I2C1);
-//    printf("I2C1_STA: %08X\n", u32Status);
+    //    printf("I2C1_STA: %08X\n", u32Status);
 
-    if (fpI2C_WrRd_Test_Handler) { //if not point to null=> test Wr, Rd APIs.
+    if (fpI2C_WrRd_Test_Handler)   //if not point to null=> test Wr, Rd APIs.
+    {
         /*For test APIs:
             I2C_WriteByte,
             I2C_WriteMultiBytes
@@ -157,14 +166,16 @@ void I2C1_IRQHandler(void)
     }
 
     /* Check Transmit byte done interrupt flag */
-    if ((I2C_SMBusGetStatus(I2C1) & I2C_BUSSTS_BCDONE_Msk) == I2C_BUSSTS_BCDONE_Msk) {
+    if ((I2C_SMBusGetStatus(I2C1) & I2C_BUSSTS_BCDONE_Msk) == I2C_BUSSTS_BCDONE_Msk)
+    {
         I2C_SMBusClearInterruptFlag(I2C1, I2C_BUSSTS_BCDONE_Msk);
         printf("I2C1 Byte Receive Byte Done Interrupt !\n");
         return;
     }
 
     /* Occur receive PEC packet error */
-    if ((I2C_SMBusGetStatus(I2C1) & I2C_BUSSTS_PECERR_Msk) == I2C_BUSSTS_PECERR_Msk) {
+    if ((I2C_SMBusGetStatus(I2C1) & I2C_BUSSTS_PECERR_Msk) == I2C_BUSSTS_PECERR_Msk)
+    {
         I2C_SMBusClearInterruptFlag(I2C1, I2C_BUSSTS_PECERR_Msk);
         printf("I2C1 PEC Error Interrupt !\n");
         return;
@@ -172,18 +183,23 @@ void I2C1_IRQHandler(void)
 
     /* Check Alert Interrupt when I2C1 is Host */
     if (((I2C_SMBusGetStatus(I2C1) & I2C_BUSSTS_ALERT_Msk) == I2C_BUSSTS_ALERT_Msk) &
-            ((I2C1->BUSCTL & I2C_BUSCTL_BMHEN_Msk) == I2C_BUSCTL_BMHEN_Msk)) {
+            ((I2C1->BUSCTL & I2C_BUSCTL_BMHEN_Msk) == I2C_BUSCTL_BMHEN_Msk))
+    {
         I2C_SMBusClearInterruptFlag(I2C1, I2C_BUSSTS_ALERT_Msk);
         printf("I2C1 Alert Interrupt !\n");
         g_u8AlertInt1 = 1;
         return ;
     }
 
-    if (I2C_GET_TIMEOUT_FLAG(I2C1)) {
+    if (I2C_GET_TIMEOUT_FLAG(I2C1))
+    {
         /* Clear I2C1 Timeout Flag */
         I2C_ClearTimeoutFlag(I2C1);
-    } else {
-        if (s_I2C1HandlerFn != NULL) {
+    }
+    else
+    {
+        if (s_I2C1HandlerFn != NULL)
+        {
             s_I2C1HandlerFn(u32Status);
         }
     }
@@ -194,32 +210,50 @@ void I2C1_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_MasterRx(uint32_t u32Status)
 {
-    if (u32Status == 0x08) {                         /* START has been transmitted and prepare SLA+W */
+    if (u32Status == 0x08)                           /* START has been transmitted and prepare SLA+W */
+    {
         I2C_SET_DATA(I2C0, g_u8DeviceAddr << 1);     /* Write SLA+W to Register I2CDAT */
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x18) {                  /* SLA+W has been transmitted and ACK has been received */
+    }
+    else if (u32Status == 0x18)                      /* SLA+W has been transmitted and ACK has been received */
+    {
         I2C_SET_DATA(I2C0, g_au8TxData[g_u8DataLen0++]);
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x20) {                  /* SLA+W has been transmitted and NACK has been received */
+    }
+    else if (u32Status == 0x20)                      /* SLA+W has been transmitted and NACK has been received */
+    {
         I2C_STOP(I2C0);
         I2C_START(I2C0);
-    } else if (u32Status == 0x28) {                  /* DATA has been transmitted and ACK has been received */
-        if (g_u8DataLen0 != 2) {
+    }
+    else if (u32Status == 0x28)                      /* DATA has been transmitted and ACK has been received */
+    {
+        if (g_u8DataLen0 != 2)
+        {
             I2C_SET_DATA(I2C0, g_au8TxData[g_u8DataLen0++]);
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-        } else {
+        }
+        else
+        {
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA_SI);
         }
-    } else if (u32Status == 0x10) {             /* Repeat START has been transmitted and prepare SLA+R */
+    }
+    else if (u32Status == 0x10)                 /* Repeat START has been transmitted and prepare SLA+R */
+    {
         I2C_SET_DATA(I2C0, ((g_u8DeviceAddr << 1) | 0x01));   /* Write SLA+R to Register I2CDAT */
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x40) {             /* SLA+R has been transmitted and ACK has been received */
+    }
+    else if (u32Status == 0x40)                 /* SLA+R has been transmitted and ACK has been received */
+    {
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x58) {             /* DATA has been received and NACK has been returned */
+    }
+    else if (u32Status == 0x58)                 /* DATA has been received and NACK has been returned */
+    {
         g_u8RxData = (unsigned char) I2C_GET_DATA(I2C0);
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STO_SI);
         g_u8EndFlag = 1;
-    } else {
+    }
+    else
+    {
         /* TO DO */
         printf("Status 0x%x is NOT processed\n", u32Status);
     }
@@ -230,30 +264,47 @@ void I2C_MasterRx(uint32_t u32Status)
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_MasterTx(uint32_t u32Status)
 {
-    if (u32Status == 0x08) {                    /* START has been transmitted */
+    if (u32Status == 0x08)                      /* START has been transmitted */
+    {
         I2C_SET_DATA(I2C0, g_u8DeviceAddr << 1);     /* Write SLA+W to Register I2CDAT */
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x18) {             /* SLA+W has been transmitted and ACK has been received */
+    }
+    else if (u32Status == 0x18)                 /* SLA+W has been transmitted and ACK has been received */
+    {
         I2C_SET_DATA(I2C0, g_au8TxData[g_u8DataLen0++]);
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x20) {             /* SLA+W has been transmitted and NACK has been received */
+    }
+    else if (u32Status == 0x20)                 /* SLA+W has been transmitted and NACK has been received */
+    {
         I2C_STOP(I2C0);
         I2C_START(I2C0);
-    } else if (u32Status == 0x28) {             /* DATA has been transmitted and ACK has been received */
-        if (g_u8DataLen0 != 3) {
+    }
+    else if (u32Status == 0x28)                 /* DATA has been transmitted and ACK has been received */
+    {
+        if (g_u8DataLen0 != 3)
+        {
             I2C_SET_DATA(I2C0, g_au8TxData[g_u8DataLen0++]);
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-        } else {
-            if (g_u8SendPEC == 0) {
+        }
+        else
+        {
+            if (g_u8SendPEC == 0)
+            {
                 g_u8SendPEC = 1;
                 I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-            } else {
+            }
+            else
+            {
                 I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STO_SI);
                 g_u8EndFlag = 1;
             }
         }
-    } else if (u32Status == 0xF8) {
-    } else {
+    }
+    else if (u32Status == 0xF8)
+    {
+    }
+    else
+    {
         /* TO DO */
         printf("Status 0x%x is NOT processed\n", u32Status);
     }
@@ -264,41 +315,63 @@ void I2C_MasterTx(uint32_t u32Status)
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_MasterAlert(uint32_t u32Status)
 {
-    if (u32Status == 0x08) {                    /* START has been transmitted */
+    if (u32Status == 0x08)                      /* START has been transmitted */
+    {
         I2C_SET_DATA(I2C0, (g_u8DeviceAddr << 1) + 1);             /* Write SLA+R to Register I2CDAT */
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x18) {             /* SLA+W has been transmitted and ACK has been received */
+    }
+    else if (u32Status == 0x18)                 /* SLA+W has been transmitted and ACK has been received */
+    {
         I2C_SET_DATA(I2C0, g_au8TxData[g_u8DataLen0++]);
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x20) {             /* SLA+W has been transmitted and NACK has been received */
+    }
+    else if (u32Status == 0x20)                 /* SLA+W has been transmitted and NACK has been received */
+    {
         I2C_STOP(I2C0);
         I2C_START(I2C0);
-    } else if (u32Status == 0x40) {
+    }
+    else if (u32Status == 0x40)
+    {
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0x50) {
-        if (g_u8DataLen0 == 0) {
+    }
+    else if (u32Status == 0x50)
+    {
+        if (g_u8DataLen0 == 0)
+        {
             g_au8RxData[g_u8DataLen0] = (unsigned char) I2C_GET_DATA(I2C0);
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
             g_u8DataLen0++;
-        } else {
+        }
+        else
+        {
             g_au8RxData[g_u8DataLen0] = (unsigned char) I2C_GET_DATA(I2C0);
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STO_SI_AA);
             g_u8AlertAddrAck0 = 1;
         }
-    } else if (u32Status == 0x28) {             /* DATA has been transmitted and ACK has been received */
-        if (g_u8DataLen0 != 3) {
+    }
+    else if (u32Status == 0x28)                 /* DATA has been transmitted and ACK has been received */
+    {
+        if (g_u8DataLen0 != 3)
+        {
             I2C_SET_DATA(I2C0, g_au8TxData[g_u8DataLen0++]);
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-        } else {
-            if (g_u8SendPEC == 0) {
+        }
+        else
+        {
+            if (g_u8SendPEC == 0)
+            {
                 g_u8SendPEC = 1;
                 I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-            } else {
+            }
+            else
+            {
                 I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STO_SI);
                 g_u8EndFlag = 1;
             }
         }
-    } else {
+    }
+    else
+    {
         /* TO DO */
         printf("Status 0x%x is NOT processed\n", u32Status);
     }
@@ -309,25 +382,39 @@ void I2C_MasterAlert(uint32_t u32Status)
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_MasterDefaultAddrACKM(uint32_t u32Status)
 {
-    if (u32Status == 0x08) {                         /* START has been transmitted */
+    if (u32Status == 0x08)                           /* START has been transmitted */
+    {
         I2C_SET_DATA(I2C0, g_u8DeviceAddr << 1);     /* Write SLA+W to Register I2CDAT */
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x18) {                  /* SLA+W has been transmitted and ACK has been received */
+    }
+    else if (u32Status == 0x18)                      /* SLA+W has been transmitted and ACK has been received */
+    {
         I2C_SET_DATA(I2C0, g_au8TxData[g_u8DataLen0++]);
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x20) {                  /* SLA+W has been transmitted and NACK has been received */
+    }
+    else if (u32Status == 0x20)                      /* SLA+W has been transmitted and NACK has been received */
+    {
         I2C_STOP(I2C0);
         I2C_START(I2C0);
-    } else if (u32Status == 0x28) {                  /* DATA has been transmitted and ACK has been received */
-        if (g_u8SendPEC == 0) {
+    }
+    else if (u32Status == 0x28)                      /* DATA has been transmitted and ACK has been received */
+    {
+        if (g_u8SendPEC == 0)
+        {
             g_u8SendPEC = 1;
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-        } else {
+        }
+        else
+        {
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STO_SI);
             g_u8EndFlag = 1;
         }
-    } else if (u32Status == 0xF8) {
-    } else {
+    }
+    else if (u32Status == 0xF8)
+    {
+    }
+    else
+    {
         /* TO DO */
         printf("Status 0x%x is NOT processed\n", u32Status);
     }
@@ -411,7 +498,8 @@ int32_t SMBusSendByteTest(uint8_t slvaddr)
     uint32_t i;
     g_u8DeviceAddr = slvaddr;
 
-    for (i = 0; i < 0x01; i++) {
+    for (i = 0; i < 0x01; i++)
+    {
         /* Init transmission bytes */
         g_au8TxData[0] = (uint8_t)((i & 0xFF00) >> 8);
         g_au8TxData[1] = (uint8_t)(i & 0x00FF);
@@ -515,7 +603,8 @@ int suite_success_clean(void)
 /*               description                                                                               */
 /*---------------------------------------------------------------------------------------------------------*/
 
-CU_SuiteInfo suites[] = {
+CU_SuiteInfo suites[] =
+{
 #if defined(POWER_DOWN_TEST)
     {"I2C Wakeup API Macro", suite_success_init, suite_success_clean, NULL, NULL, I2C_WakeupAPIMacroTests},
 #else
@@ -542,10 +631,12 @@ void Test_API_I2C_Open_Close()
     uint32_t u32BusClock, i;
     I2C_T *i2c;
 
-    for (i = 0;; i++) {
+    for (i = 0;; i++)
+    {
         i2c = i2c_ports[i];
 
-        if (i2c == NULL) {
+        if (i2c == NULL)
+        {
             break; // Test Complete
         }
 
@@ -553,7 +644,8 @@ void Test_API_I2C_Open_Close()
         I2C_Reset();
 
         /* To confirm I2C0, I2C1 are disable for I2C_Open Test*/
-        if ((i2c->CTL0 & I2C_CTL0_I2CEN_Msk) != 0x00) {
+        if ((i2c->CTL0 & I2C_CTL0_I2CEN_Msk) != 0x00)
+        {
             while (1);
         }
 
@@ -573,19 +665,21 @@ void Test_API_I2C_Open_Close()
 
 /*
     I2C_Open
-	I2C_GetBusClockFreq
-	I2C_SetBusClockFreq
-	I2C_Close
+    I2C_GetBusClockFreq
+    I2C_SetBusClockFreq
+    I2C_Close
 */
 void Test_API_I2C_BusClockFreq()
 {
     uint32_t u32BusClock, i;
     I2C_T *i2c;
 
-    for (i = 0;; i++) {
+    for (i = 0;; i++)
+    {
         i2c = i2c_ports[i];
 
-        if (i2c == NULL) {
+        if (i2c == NULL)
+        {
             break; // Test Complete
         }
 
@@ -603,10 +697,12 @@ void Test_API_I2C_INT()
     uint32_t i;
     I2C_T *i2c;
 
-    for (i = 0;; i++) {
+    for (i = 0;; i++)
+    {
         i2c = i2c_ports[i];
 
-        if (i2c == NULL) {
+        if (i2c == NULL)
+        {
             break; // Test Complete
         }
 
@@ -621,7 +717,7 @@ void Test_API_I2C_INT()
 
 /*
     I2C_SetSlaveAddr
-	I2C_SetSlaveAddrMask
+    I2C_SetSlaveAddrMask
 */
 void Test_API_I2C_SetSLVAddr()
 {
@@ -630,18 +726,22 @@ void Test_API_I2C_SetSLVAddr()
     uint8_t I2C_SLVAddrMsk[4] = {0x01, 0x04, 0x01, 0x04};
     I2C_T *i2c;
 
-    for (i = 0;; i++) {
+    for (i = 0;; i++)
+    {
         i2c = i2c_ports[i];
 
-        if (i2c == NULL) {
+        if (i2c == NULL)
+        {
             break; // Test Complete
         }
 
-        for (j = 0; j < 4; j++) {
+        for (j = 0; j < 4; j++)
+        {
             I2C_SetSlaveAddr(i2c, j, I2C_SLVAddr[j] + i, I2C_GCMODE_DISABLE);
             I2C_SetSlaveAddrMask(i2c, j, I2C_SLVAddrMsk[j]);
 
-            switch (j) {
+            switch (j)
+            {
                 case 0:
                     CU_ASSERT_EQUAL(i2c->ADDR0 & I2C_ADDR0_GC_Msk, I2C_GCMODE_DISABLE);
                     CU_ASSERT_EQUAL((i2c->ADDR0) >> I2C_ADDR0_ADDR_Pos, I2C_SLVAddr[j] + i);
@@ -668,10 +768,12 @@ void Test_API_I2C_SetSLVAddr()
             }
         }
 
-        for (j = 0; j < 4; j++) {
+        for (j = 0; j < 4; j++)
+        {
             I2C_SetSlaveAddr(i2c, j, I2C_SLVAddr[j] + i, I2C_GCMODE_ENABLE);
 
-            switch (j) {
+            switch (j)
+            {
                 case 0:
                     CU_ASSERT_EQUAL(i2c->ADDR0 & I2C_ADDR0_GC_Msk, I2C_GCMODE_ENABLE);
                     CU_ASSERT_EQUAL((i2c->ADDR0) >> I2C_ADDR0_ADDR_Pos, I2C_SLVAddr[j] + i);
@@ -715,10 +817,12 @@ void Test_API_I2C_Timeout()
     uint32_t  i;
     I2C_T *i2c;
 
-    for (i = 0;; i++) {
+    for (i = 0;; i++)
+    {
         i2c = i2c_ports[i];
 
-        if (i2c == NULL) {
+        if (i2c == NULL)
+        {
             break; // Test Complete
         }
 
@@ -743,10 +847,12 @@ void Test_API_I2C_Control_Read_Status()
     uint32_t  i;
     I2C_T *i2c_master, *i2c_slave;
 
-    for (i = 0;; i++) {
+    for (i = 0;; i++)
+    {
         i2c_master = i2c_ports[i];
 
-        if (i2c_master == NULL) {
+        if (i2c_master == NULL)
+        {
             DBG_MSG("\n - Test Complete\n");
             break; // Test Complete
         }
@@ -756,7 +862,8 @@ void Test_API_I2C_Control_Read_Status()
         //
         i2c_slave = i2c_ports[i + 1];
 
-        if (i2c_slave == NULL) {
+        if (i2c_slave == NULL)
+        {
             i2c_slave = i2c_ports[0];
         }
 
@@ -788,7 +895,7 @@ void Test_API_I2C_Control_Read_Status()
         while (I2C_GetIntFlag(i2c_master) == 0) {};
 
         // while (!(i2c_master->CTL0 & I2C_CTL0_SI_Msk)) {};
-//        printf("\n - I2C_GetStatus(i2c_master) = 0x%08X\n", I2C_GetStatus(i2c_master));
+        //        printf("\n - I2C_GetStatus(i2c_master) = 0x%08X\n", I2C_GetStatus(i2c_master));
         CU_ASSERT((i2c_master->CTL0 & I2C_CTL0_SI_Msk) == I2C_CTL0_SI_Msk);
 
         CU_ASSERT(I2C_GetStatus(i2c_master) == 0x08);
@@ -809,7 +916,7 @@ void Test_API_I2C_Control_Read_Status()
 
         CU_ASSERT(I2C_GetStatus(i2c_master) == 0x18);
 
-//        printf("\n - I2C_GetStatus(i2c_master) = 0x%08X\n", I2C_GetStatus(i2c_master));
+        //        printf("\n - I2C_GetStatus(i2c_master) = 0x%08X\n", I2C_GetStatus(i2c_master));
         //
         SYS_UnlockReg();
 
@@ -839,58 +946,77 @@ void I2C_SlaveTRx(uint32_t u32Status)
     I2C_T *i2c = I2C1;
     uint8_t u8Data;
 
-    if (u32Status == 0x60) {                    /* Own SLA+W has been receive; ACK has been return */
+    if (u32Status == 0x60)                      /* Own SLA+W has been receive; ACK has been return */
+    {
         g_u8SlvDataLen = 0;
         g_u16RecvAddr = (uint8_t)I2C_GET_DATA(I2C1);
         I2C_SET_CONTROL_REG(I2C1, I2C_CTL_SI_AA);
-    } else if (u32Status == 0x80)                 /* Previously address with own SLA address
+    }
+    else if (u32Status == 0x80)                 /* Previously address with own SLA address
                                                    Data has been received; ACK has been returned*/
     {
         u8Data = (uint8_t) I2C_GET_DATA(I2C1);
 
-        if (g_u8SlvDataLen < g_u8RegCnt) {
+        if (g_u8SlvDataLen < g_u8RegCnt)
+        {
             g_au8SlvRxData[g_u8SlvDataLen++] = u8Data;
 
-            if (g_u8RegCnt == 1) {
+            if (g_u8RegCnt == 1)
+            {
                 slave_buff_addr = g_au8SlvRxData[0];
-            } else {
+            }
+            else
+            {
                 slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
             }
-        } else {
+        }
+        else
+        {
             g_au8SlvData[slave_buff_addr++] = u8Data;
         }
 
         // Only support 256 Bytes
         slave_buff_addr &= 0x00FF;
         I2C_SET_CONTROL_REG(I2C1, I2C_CTL_SI_AA);
-    } else if (u32Status == 0xA8) {             /* Own SLA+R has been receive; ACK has been return */
+    }
+    else if (u32Status == 0xA8)                 /* Own SLA+R has been receive; ACK has been return */
+    {
         I2C_SET_DATA(I2C1, g_au8SlvData[slave_buff_addr++]);
         I2C_SET_CONTROL_REG(I2C1, I2C_CTL_SI_AA);
-    } else if (u32Status == 0xB8) {             /* Data byte in I2CDAT has been transmitted ACK has been received */
+    }
+    else if (u32Status == 0xB8)                 /* Data byte in I2CDAT has been transmitted ACK has been received */
+    {
         I2C_SET_DATA(I2C1, g_au8SlvData[slave_buff_addr++]);
 
-        if (slave_buff_addr == 256) {
+        if (slave_buff_addr == 256)
+        {
             slave_buff_addr = 0;
         }
 
         I2C_SET_CONTROL_REG(I2C1, I2C_CTL_SI_AA);
-    } else if (u32Status == 0xC0)                 /* Data byte or last data in I2CDAT has been transmitted
+    }
+    else if (u32Status == 0xC0)                 /* Data byte or last data in I2CDAT has been transmitted
                                                    Not ACK has been received */
     {
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C1, I2C_CTL_SI_AA);
-    } else if (u32Status == 0x88)                 /* Previously addressed with own SLA address; NOT ACK has
+    }
+    else if (u32Status == 0x88)                 /* Previously addressed with own SLA address; NOT ACK has
                                                    been returned */
     {
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C1, I2C_CTL_SI_AA);
-    } else if (u32Status == 0xA0)                 /* A STOP or repeated START has been received while still
+    }
+    else if (u32Status == 0xA0)                 /* A STOP or repeated START has been received while still
                                                    addressed as Slave/Receiver*/
     {
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C1, I2C_CTL_SI_AA);
-    } else {
-        if (u32Status == 0xF8) { // Bus Released
+    }
+    else
+    {
+        if (u32Status == 0xF8)   // Bus Released
+        {
             return;
         }
 
@@ -920,7 +1046,8 @@ void Test_API_I2C_ReadWriteRelatedTest(void)
     I2C1->CLKDIV = 10;
 
     /*Set I2C1 slave address*/
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 4; i++)
+    {
         I2C_SetSlaveAddr(I2C1, i, I2C_SLVAddr[i], 0);
     }
 
@@ -949,7 +1076,8 @@ void Test_API_I2C_ReadWriteRelatedTest(void)
         I2C_SET_CONTROL_REG(I2C1, I2C_CTL_SI_AA);
         I2C_WriteMultiBytes(I2C0, I2C_SLVAddr[2], au8Src, u32RceLen);
 
-        for (i = 0 ; i < u32RceLen; i++) {
+        for (i = 0 ; i < u32RceLen; i++)
+        {
             CU_ASSERT_EQUAL(au8Src[i], g_au8SlvData[i]);
         }
     }
@@ -975,7 +1103,8 @@ void Test_API_I2C_ReadWriteRelatedTest(void)
         I2C_SET_CONTROL_REG(I2C1, I2C_CTL_SI_AA);
         I2C_ReadMultiBytes(I2C0, I2C_SLVAddr[0], au8Tmp, sizeof(au8Tmp));
 
-        for (i = 0; i < sizeof(au8Tmp); i++) {
+        for (i = 0; i < sizeof(au8Tmp); i++)
+        {
             CU_ASSERT_EQUAL(au8Tmp[i], g_au8SlvData[i]);
         }
     }
@@ -1006,7 +1135,8 @@ void Test_API_I2C_ReadWriteRelatedTest(void)
         I2C_WriteMultiBytesOneReg(I2C0, I2C_SLVAddr[2], 0x56, au8Src, sizeof(au8Src) - 1);
         CU_ASSERT_EQUAL(0x56, g_au8SlvRxData[0]);
 
-        for (i = 0; i < (sizeof(au8Src) - 1); i++) {
+        for (i = 0; i < (sizeof(au8Src) - 1); i++)
+        {
             CU_ASSERT_EQUAL(au8Src[i], g_au8SlvData[0x56 + i]);
         }
     }
@@ -1039,7 +1169,8 @@ void Test_API_I2C_ReadWriteRelatedTest(void)
         CU_ASSERT_EQUAL(((9999) >> 8) & 0xff, g_au8SlvRxData[0]);
         CU_ASSERT_EQUAL(9999 & 0xff, g_au8SlvRxData[1]);
 
-        for (i = 0; i < (sizeof(au8Src) - 2); i++) {
+        for (i = 0; i < (sizeof(au8Src) - 2); i++)
+        {
             CU_ASSERT_EQUAL(au8Src[i], g_au8SlvData[(9999 + i) & 0xFF]);
         }
     }
@@ -1067,7 +1198,8 @@ void Test_API_I2C_ReadWriteRelatedTest(void)
         CU_ASSERT_EQUAL(I2C_ReadMultiBytesOneReg(I2C0, I2C_SLVAddr[0], 0x87, au8Tmp, u32RceLen), u32RceLen);
         CU_ASSERT_EQUAL(0x87, g_au8SlvRxData[0]);
 
-        for (i = 0; i < sizeof(au8Tmp); i++) {
+        for (i = 0; i < sizeof(au8Tmp); i++)
+        {
             CU_ASSERT_EQUAL(au8Tmp[i], g_au8SlvData[(0x87 + i) & 0xFF]);
         }
     }
@@ -1087,7 +1219,8 @@ void Test_API_I2C_ReadWriteRelatedTest(void)
         CU_ASSERT_EQUAL(0x55, g_au8SlvRxData[0]);
         CU_ASSERT_EQUAL(0x66, g_au8SlvRxData[1]);
 
-        for (i = 0; i < sizeof(au8Tmp); i++) {
+        for (i = 0; i < sizeof(au8Tmp); i++)
+        {
             CU_ASSERT_EQUAL(au8Tmp[i], g_au8SlvData[(0x5566 + i) & 0xFF]);
         }
     }
@@ -1116,10 +1249,12 @@ void Test_API_SMBus_Open_Close()
     uint32_t u32BusClock, i;
     I2C_T *i2c;
 
-    for (i = 0;; i++) {
+    for (i = 0;; i++)
+    {
         i2c = i2c_ports[i];
 
-        if (i2c == NULL) {
+        if (i2c == NULL)
+        {
             break; // Test Complete
         }
 
@@ -1143,10 +1278,12 @@ void Test_API_SMBus_Time_out()
     uint32_t u32BusClock, i;
     I2C_T *i2c;
 
-    for (i = 0;; i++) {
+    for (i = 0;; i++)
+    {
         i2c = i2c_ports[i];
 
-        if (i2c == NULL) {
+        if (i2c == NULL)
+        {
             break; // Test Complete
         }
 
@@ -1239,7 +1376,8 @@ void Test_API_SMBus_PEC_ByteCount()
 
     while (I2C_GetIntFlag(I2C0) == 0);
 
-    if (I2C_GetStatus(I2C0) != 0x08) {
+    if (I2C_GetStatus(I2C0) != 0x08)
+    {
         goto SMBus_Error;
     }
 
@@ -1248,7 +1386,8 @@ void Test_API_SMBus_PEC_ByteCount()
 
     while (I2C_GetIntFlag(I2C0) == 0);
 
-    if (I2C_GetStatus(I2C0) != 0x18) {
+    if (I2C_GetStatus(I2C0) != 0x18)
+    {
         goto SMBus_Error;
     }
 
@@ -1260,11 +1399,13 @@ void Test_API_SMBus_PEC_ByteCount()
 
     while (I2C_GetIntFlag(I2C1) == 0);
 
-    if (I2C_GetStatus(I2C1) != 0x80) {
+    if (I2C_GetStatus(I2C1) != 0x80)
+    {
         goto SMBus_Error;
     }
 
-    if (I2C_GetData(I2C1) != 0x5A) {
+    if (I2C_GetData(I2C1) != 0x5A)
+    {
         goto SMBus_Error;
     }
 
@@ -1272,7 +1413,8 @@ void Test_API_SMBus_PEC_ByteCount()
 
     while (I2C_GetIntFlag(I2C0) == 0);
 
-    if (I2C_GetStatus(I2C0) != 0x28) {
+    if (I2C_GetStatus(I2C0) != 0x28)
+    {
         goto SMBus_Error;
     }
 
@@ -1280,7 +1422,8 @@ void Test_API_SMBus_PEC_ByteCount()
 
     while (I2C_GetIntFlag(I2C1) == 0);
 
-    if (I2C_GetStatus(I2C1) != 0x80) {
+    if (I2C_GetStatus(I2C1) != 0x80)
+    {
         goto SMBus_Error;
     }
 
@@ -1293,7 +1436,8 @@ void Test_API_SMBus_PEC_ByteCount()
 
     while (I2C_GetIntFlag(I2C0) == 0);
 
-    if (I2C_GetStatus(I2C0) != 0x28) {
+    if (I2C_GetStatus(I2C0) != 0x28)
+    {
         goto SMBus_Error;
     }
 
@@ -1314,10 +1458,12 @@ void Test_Macro_I2C_Timeout()
     I2C_T *i2c;
     printf("\n\t@%s", __FUNCTION__);
 
-    for (i = 0;; i++) {
+    for (i = 0;; i++)
+    {
         i2c = i2c_ports[i];
 
-        if (i2c == NULL) {
+        if (i2c == NULL)
+        {
             break; // Test Complete
         }
 
@@ -1534,7 +1680,8 @@ void Test_Macro_SMBus_PEC_ByteCount()
 
     while (I2C_GetIntFlag(I2C0) == 0);
 
-    if (I2C_GetStatus(I2C0) != 0x08) {
+    if (I2C_GetStatus(I2C0) != 0x08)
+    {
         goto SMBus_Error;
     }
 
@@ -1543,7 +1690,8 @@ void Test_Macro_SMBus_PEC_ByteCount()
 
     while (I2C_GetIntFlag(I2C0) == 0);
 
-    if (I2C_GetStatus(I2C0) != 0x18) {
+    if (I2C_GetStatus(I2C0) != 0x18)
+    {
         goto SMBus_Error;
     }
 
@@ -1555,11 +1703,13 @@ void Test_Macro_SMBus_PEC_ByteCount()
 
     while (I2C_GetIntFlag(I2C1) == 0);
 
-    if (I2C_GetStatus(I2C1) != 0x80) {
+    if (I2C_GetStatus(I2C1) != 0x80)
+    {
         goto SMBus_Error;
     }
 
-    if (I2C_GetData(I2C1) != 0x5A) {
+    if (I2C_GetData(I2C1) != 0x5A)
+    {
         goto SMBus_Error;
     }
 
@@ -1567,7 +1717,8 @@ void Test_Macro_SMBus_PEC_ByteCount()
 
     while (I2C_GetIntFlag(I2C0) == 0);
 
-    if (I2C_GetStatus(I2C0) != 0x28) {
+    if (I2C_GetStatus(I2C0) != 0x28)
+    {
         goto SMBus_Error;
     }
 
@@ -1575,7 +1726,8 @@ void Test_Macro_SMBus_PEC_ByteCount()
 
     while (I2C_GetIntFlag(I2C1) == 0);
 
-    if (I2C_GetStatus(I2C1) != 0x80) {
+    if (I2C_GetStatus(I2C1) != 0x80)
+    {
         goto SMBus_Error;
     }
 
@@ -1586,7 +1738,8 @@ void Test_Macro_SMBus_PEC_ByteCount()
 
     while (I2C_GetIntFlag(I2C0) == 0);
 
-    if (I2C_GetStatus(I2C0) != 0x28) {
+    if (I2C_GetStatus(I2C0) != 0x28)
+    {
         goto SMBus_Error;
     }
 
@@ -1716,7 +1869,8 @@ void Test_API_MACRO_I2C_Wakeup()
     /* Waiting for UART printf finish*/
     while (((UART0->FIFOSTS) & UART_FIFOSTS_TXEMPTY_Msk) == 0);
 
-    if (((I2C0->CTL0)&I2C_CTL0_SI_Msk) != 0) {
+    if (((I2C0->CTL0)&I2C_CTL0_SI_Msk) != 0)
+    {
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
     }
 
@@ -1726,7 +1880,8 @@ void Test_API_MACRO_I2C_Wakeup()
     NVIC_DisableIRQ(PMC_IRQn);
     printf(">>>1\n");
 
-    if ((I2C0->WKSTS & I2C_WKSTS_WKIF_Msk) == I2C_WKSTS_WKIF_Msk) {
+    if ((I2C0->WKSTS & I2C_WKSTS_WKIF_Msk) == I2C_WKSTS_WKIF_Msk)
+    {
         printf(">>>2\n");
         CU_ASSERT(I2C_GET_WAKEUP_FLAG(I2C0) == 1);
         I2C_CLEAR_WAKEUP_FLAG(I2C0);
@@ -1747,10 +1902,12 @@ void Test_API_MACRO_I2C_PDMA()
     I2C_T *i2c;
     printf("\n\t@%s", __FUNCTION__);
 
-    for (i = 0;; i++) {
+    for (i = 0;; i++)
+    {
         i2c = i2c_ports[i];
 
-        if (i2c == NULL) {
+        if (i2c == NULL)
+        {
             break; // Test Complete
         }
 
@@ -1803,14 +1960,16 @@ void Test_CONST_I2C_SMBus(void)
     CU_ASSERT(I2C_PECTX_DISABLE == 0);
 }
 
-CU_TestInfo I2C_ConstTests[] = {
+CU_TestInfo I2C_ConstTests[] =
+{
     {" 1: CONST I2C_CTL.", Test_CONST_I2C_CTL},
     {" 2: CONST I2C_GCMode.", Test_CONST_I2C_GCMode},
     {" 3: CONST I2C_SMBus.", Test_CONST_I2C_SMBus},
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo I2C_ApiTests[] = {
+CU_TestInfo I2C_ApiTests[] =
+{
     {" 1: API I2C_Open_Close.", Test_API_I2C_Open_Close},
     {" 2: API I2C_Get_Set_Bus_Clock", Test_API_I2C_BusClockFreq},
     {" 3: API I2C_INT_En_Dis_ABLE", Test_API_I2C_INT},
@@ -1825,28 +1984,32 @@ CU_TestInfo I2C_ApiTests[] = {
 
 void SMBusTest(void);
 
-CU_TestInfo SMBus_ApiTests[] = {
+CU_TestInfo SMBus_ApiTests[] =
+{
     {" 1: API SMBus_Open_Close", Test_API_SMBus_Open_Close},
     {" 2: API SMBus_Timeout", Test_API_SMBus_Time_out},
     {" 3: API SMBus_PEC_ByteCount", Test_API_SMBus_PEC_ByteCount},
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo I2C_MacroTests[] = {
+CU_TestInfo I2C_MacroTests[] =
+{
     {" 1: MACRO I2C_Get_TimeOutFlag", Test_Macro_I2C_Timeout},
     {" 2: MACRO I2C_Control_Read_STATUS", Test_MACRO_I2C_Control_Read_Status},
     {" 3: MACRO I2C_PDMA", Test_API_MACRO_I2C_PDMA},
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo SMBus_MacroTests[] = {
+CU_TestInfo SMBus_MacroTests[] =
+{
     {" 1: Macro SMBus_Alert_Control", Test_Macro_SMBus_Alert_Control},
     {" 2: Macro SMBus_PEC_ByteCount", Test_Macro_SMBus_PEC_ByteCount},
     {" 3: Macro SMBus_ACKMEN_PEC_AT_START", Test_Macro_SMBus_ACKMEN_PEC_AT_STA},
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo I2C_WakeupAPIMacroTests[] = {
+CU_TestInfo I2C_WakeupAPIMacroTests[] =
+{
     {" 1: API_MACRO I2C_Wakeup", Test_API_MACRO_I2C_Wakeup}, //NuBridge may pull the bus, so it should test independently
     CU_TEST_INFO_NULL
 };

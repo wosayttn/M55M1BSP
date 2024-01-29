@@ -33,9 +33,10 @@ NVT_ITCM void EPWM1P0_IRQHandler(void)
     printf("Check if output toggles 11 times then stop toggles.\n");
     __DSB();
     __ISB();
-    while(EPWM_GetAccInt(EPWM1, 0))
+
+    while (EPWM_GetAccInt(EPWM1, 0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for EPWM1 IntFlag time-out!\n");
         }

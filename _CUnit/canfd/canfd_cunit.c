@@ -164,60 +164,66 @@ void CANFD10_IRQHandler(void)
 
 void CANFD_IPReset(CANFD_T *psCanfd)
 {
-     /* Unlock protected registers */
-    SYS_UnlockReg(); 
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     switch ((uint32_t)psCanfd)
     {
         case (uint32_t)CANFD0:
             /* Reset CAN FD0 IP*/
             SYS_ResetModule(SYS_CANFD0RST);
             break;
+
         case (uint32_t)CANFD1:
             /* Reset CAN FD0 IP*/
             SYS_ResetModule(SYS_CANFD1RST);
             break;
+
         default :
             break;
 
     }
+
     /* Lock protected registers */
     SYS_LockReg();
 }
 uint32_t CANFD_CalculateDataBitRate(CANFD_T *psCanfd)
 {
-    uint32_t u32CanClk,u32DateBitRate, u32Div;
+    uint32_t u32CanClk, u32DateBitRate, u32Div;
     uint8_t u8DBRP, u8DTSEG1, u8DTSEG2;
-   
-   if(psCanfd == CANFD0)
-	{
-     if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HXT) 
-			 u32CanClk = CLK_GetHXTFreq();
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_APLL0_DIV2)
-       u32CanClk = CLK_GetAPLL0ClockFreq()/2;       
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HCLK0)
-       u32CanClk = CLK_GetHCLK0Freq(); 
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HIRC)
-       u32CanClk = __HIRC;
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HIRC48M_DIV4)
-        u32CanClk = __HIRC48M / 4;
-      u32Div = ((CLK->CANFDDIV & CLK_CANFDDIV_CANFD0DIV_Msk) >> CLK_CANFDDIV_CANFD0DIV_Pos) + 1;
-	 }
-	 else
-  {
-	     if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HXT) 
-			 u32CanClk = CLK_GetHXTFreq();
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_APLL0_DIV2)
-       u32CanClk = CLK_GetAPLL0ClockFreq()/2;       
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HCLK0)
-       u32CanClk = CLK_GetHCLK0Freq(); 
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HIRC)
-       u32CanClk = __HIRC;
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HIRC48M_DIV4)
-        u32CanClk = __HIRC48M / 4;
-      u32Div = ((CLK->CANFDDIV & CLK_CANFDDIV_CANFD1DIV_Msk) >> CLK_CANFDDIV_CANFD1DIV_Pos) + 1;
-	
-	}	
-  
+
+    if (psCanfd == CANFD0)
+    {
+        if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HXT)
+            u32CanClk = CLK_GetHXTFreq();
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_APLL0_DIV2)
+            u32CanClk = CLK_GetAPLL0ClockFreq() / 2;
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HCLK0)
+            u32CanClk = CLK_GetHCLK0Freq();
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HIRC)
+            u32CanClk = __HIRC;
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HIRC48M_DIV4)
+            u32CanClk = __HIRC48M / 4;
+
+        u32Div = ((CLK->CANFDDIV & CLK_CANFDDIV_CANFD0DIV_Msk) >> CLK_CANFDDIV_CANFD0DIV_Pos) + 1;
+    }
+    else
+    {
+        if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HXT)
+            u32CanClk = CLK_GetHXTFreq();
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_APLL0_DIV2)
+            u32CanClk = CLK_GetAPLL0ClockFreq() / 2;
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HCLK0)
+            u32CanClk = CLK_GetHCLK0Freq();
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HIRC)
+            u32CanClk = __HIRC;
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HIRC48M_DIV4)
+            u32CanClk = __HIRC48M / 4;
+
+        u32Div = ((CLK->CANFDDIV & CLK_CANFDDIV_CANFD1DIV_Msk) >> CLK_CANFDDIV_CANFD1DIV_Pos) + 1;
+
+    }
+
     u8DBRP = ((psCanfd->DBTP & CANFD_DBTP_DBRP_Msk) >> CANFD_DBTP_DBRP_Pos) + 1;
     u8DTSEG1 = ((psCanfd->DBTP & CANFD_DBTP_DTSEG1_Msk) >> CANFD_DBTP_DTSEG1_Pos);
     u8DTSEG2 = ((psCanfd->DBTP & CANFD_DBTP_DTSEG2_Msk) >> CANFD_DBTP_DTSEG2_Pos);
@@ -229,38 +235,40 @@ uint32_t CANFD_CalculateDataBitRate(CANFD_T *psCanfd)
 uint32_t CANFD_CalculateNominalBitRate(CANFD_T *psCanfd)
 {
 
-    uint32_t u32CanClk,u32NominalBitRate, u32Div;
+    uint32_t u32CanClk, u32NominalBitRate, u32Div;
     uint8_t u8NBRP, u8NTSEG1, u8NTSEG2;
 
-   if(psCanfd == CANFD0)
-	{
-     if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HXT) 
-			 u32CanClk = CLK_GetHXTFreq();
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_APLL0_DIV2)
-       u32CanClk = CLK_GetAPLL0ClockFreq()/2;       
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HCLK0)
-       u32CanClk = CLK_GetHCLK0Freq(); 
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HIRC)
-       u32CanClk = __HIRC;
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HIRC48M_DIV4)
-        u32CanClk = __HIRC48M / 4;
-      u32Div = ((CLK->CANFDDIV & CLK_CANFDDIV_CANFD0DIV_Msk) >> CLK_CANFDDIV_CANFD0DIV_Pos) + 1;
-	 }
-	 else
-  {
-	     if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HXT) 
-			 u32CanClk = CLK_GetHXTFreq();
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_APLL0_DIV2)
-       u32CanClk = CLK_GetAPLL0ClockFreq()/2;       
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HCLK0)
-       u32CanClk = CLK_GetHCLK0Freq(); 
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HIRC)
-       u32CanClk = __HIRC;
-     else if((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HIRC48M_DIV4)
-        u32CanClk = __HIRC48M / 4;
-      u32Div = ((CLK->CANFDDIV & CLK_CANFDDIV_CANFD1DIV_Msk) >> CLK_CANFDDIV_CANFD1DIV_Pos) + 1;
-	
-	}
+    if (psCanfd == CANFD0)
+    {
+        if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HXT)
+            u32CanClk = CLK_GetHXTFreq();
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_APLL0_DIV2)
+            u32CanClk = CLK_GetAPLL0ClockFreq() / 2;
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HCLK0)
+            u32CanClk = CLK_GetHCLK0Freq();
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HIRC)
+            u32CanClk = __HIRC;
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD0SEL_Msk) == CLK_CANFDSEL_CANFD0SEL_HIRC48M_DIV4)
+            u32CanClk = __HIRC48M / 4;
+
+        u32Div = ((CLK->CANFDDIV & CLK_CANFDDIV_CANFD0DIV_Msk) >> CLK_CANFDDIV_CANFD0DIV_Pos) + 1;
+    }
+    else
+    {
+        if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HXT)
+            u32CanClk = CLK_GetHXTFreq();
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_APLL0_DIV2)
+            u32CanClk = CLK_GetAPLL0ClockFreq() / 2;
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HCLK0)
+            u32CanClk = CLK_GetHCLK0Freq();
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HIRC)
+            u32CanClk = __HIRC;
+        else if ((CLK->CANFDSEL & CLK_CANFDSEL_CANFD1SEL_Msk) == CLK_CANFDSEL_CANFD1SEL_HIRC48M_DIV4)
+            u32CanClk = __HIRC48M / 4;
+
+        u32Div = ((CLK->CANFDDIV & CLK_CANFDDIV_CANFD1DIV_Msk) >> CLK_CANFDDIV_CANFD1DIV_Pos) + 1;
+
+    }
 
     u8NBRP = ((psCanfd->NBTP & CANFD_NBTP_NBRP_Msk) >> CANFD_NBTP_NBRP_Pos) + 1;
     u8NTSEG1 = ((psCanfd->NBTP & CANFD_NBTP_NTSEG1_Msk) >> CANFD_NBTP_NTSEG1_Pos);
@@ -293,13 +301,14 @@ void CANFD_CalculateRamAddress1(CANFD_RAM_PART_T *psConfigAddr, CANFD_ELEM_SIZE_
     /* Get the Tx Buffer and Tx FIFO/Queue element address */
     if ((psConfigSize->u32TxBuf + psConfigSize->u32TxFifoQueue)  > 0)
     {
-        if((psConfigSize->u32TxBuf+psConfigSize->u32TxFifoQueue) > 32)
+        if ((psConfigSize->u32TxBuf + psConfigSize->u32TxFifoQueue) > 32)
         {
-          psConfigSize->u32TxBuf = 16;
-          psConfigSize->u32TxFifoQueue = 16;
+            psConfigSize->u32TxBuf = 16;
+            psConfigSize->u32TxFifoQueue = 16;
         }
+
         psConfigAddr->u32TXBC_TBSA = u32RamAddrOffset;
-        u32RamAddrOffset += (psConfigSize->u32TxBuf+psConfigSize->u32TxFifoQueue) * sizeof(CANFD_BUF_T);
+        u32RamAddrOffset += (psConfigSize->u32TxBuf + psConfigSize->u32TxFifoQueue) * sizeof(CANFD_BUF_T);
     }
 
     /* Get the Rx Buffer element address */
@@ -328,27 +337,27 @@ void CANFD_CalculateRamAddress1(CANFD_RAM_PART_T *psConfigAddr, CANFD_ELEM_SIZE_
     {
         psConfigAddr->u32TXEFC_EFSA = u32RamAddrOffset;
         u32RamAddrOffset += psConfigSize->u32TxEventFifo *  sizeof(CANFD_EXT_FILTER_T);
-		}
+    }
 
 }
 void TestFunc_CANFD_TxRx_Element_Address(void)
 {
-   CANFD_TxRx_Element_Address_Test(CANFD0);
-	 CANFD_TxRx_Element_Address_Test(CANFD1);
-}	
+    CANFD_TxRx_Element_Address_Test(CANFD0);
+    CANFD_TxRx_Element_Address_Test(CANFD1);
+}
 
 void TestFunc_CANFD_EnableInt(void)
 {
-   CANFD_EnableInt_Test(CANFD0);
-	 CANFD_EnableInt_Test(CANFD1);
+    CANFD_EnableInt_Test(CANFD0);
+    CANFD_EnableInt_Test(CANFD1);
 
-}	
+}
 
 void TestFunc_CANFD_Open(void)
-{  
-  CANFD_Open_Test(CANFD0);
-	CANFD_Open_Test(CANFD1);
-}	
+{
+    CANFD_Open_Test(CANFD0);
+    CANFD_Open_Test(CANFD1);
+}
 void CANFD_TxRx_Element_Address_Test(CANFD_T *psCanfd)
 {
     CANFD_FD_T sCANFD_Config;
@@ -358,7 +367,7 @@ void CANFD_TxRx_Element_Address_Test(CANFD_T *psCanfd)
     CANFD_RunToNormal(psCanfd, FALSE);
     /*Get the CAN configuration value*/
     psCanfd->CCCR |= CANFD_CCCR_CCE_Msk;
-	  sCANFD_Config.sElemSize.u32UserDef = 0;
+    sCANFD_Config.sElemSize.u32UserDef = 0;
     CANFD_GetDefaultConfig(&sCANFD_Config, CANFD_OP_CAN_MODE);
 
     /*Configures the Standard ID Filter element */
@@ -373,7 +382,7 @@ void CANFD_TxRx_Element_Address_Test(CANFD_T *psCanfd)
     CANFD_InitTxDBuf(psCanfd, &sCANFD_Config.sMRamStartAddr, &sCANFD_Config.sElemSize, eCANFD_BYTE64);
     CU_ASSERT(((psCanfd->TXBC & CANFD_TXBC_NDTB_Msk) >> CANFD_TXBC_NDTB_Pos) == sCANFD_Config.sElemSize.u32TxBuf);
     CU_ASSERT(((psCanfd->TXBC & CANFD_TXBC_TFQS_Msk) >> CANFD_TXBC_TFQS_Pos) == sCANFD_Config.sElemSize.u32TxFifoQueue);
-		CU_ASSERT((psCanfd->TXBC & CANFD_TXBC_TBSA_Msk) == sCANFD_Config.sMRamStartAddr.u32TXBC_TBSA);
+    CU_ASSERT((psCanfd->TXBC & CANFD_TXBC_TBSA_Msk) == sCANFD_Config.sMRamStartAddr.u32TXBC_TBSA);
     CU_ASSERT((psCanfd->TXESC & CANFD_TXESC_TBDS_Msk) == eCANFD_BYTE64);
     /*Configures the Rx Buffer element */
     CANFD_InitRxDBuf(psCanfd, &sCANFD_Config.sMRamStartAddr, &sCANFD_Config.sElemSize, eCANFD_BYTE64);
@@ -410,7 +419,7 @@ void CANFD_TxRx_Element_Address_Test(CANFD_T *psCanfd)
     sCANFD_Config.sElemSize.u32XIDFC = 12;
     /* CAN FD TX Buffer elements as 10 elements    */
     sCANFD_Config.sElemSize.u32TxBuf = 10;
-		/* CAN FD TX Queue elements as 10 elements    */
+    /* CAN FD TX Queue elements as 10 elements    */
     sCANFD_Config.sElemSize.u32TxFifoQueue = 10;
     /* CAN FD RX Buffer elements as 3 elements    */
     sCANFD_Config.sElemSize.u32RxBuf = 10;
@@ -435,7 +444,7 @@ void CANFD_TxRx_Element_Address_Test(CANFD_T *psCanfd)
     CANFD_InitTxDBuf(psCanfd, &sCANFD_Config.sMRamStartAddr, &sCANFD_Config.sElemSize, eCANFD_BYTE64);
     CU_ASSERT(((psCanfd->TXBC & CANFD_TXBC_NDTB_Msk) >> CANFD_TXBC_NDTB_Pos) == sCANFD_Config.sElemSize.u32TxBuf);
     CU_ASSERT(((psCanfd->TXBC & CANFD_TXBC_TFQS_Msk) >> CANFD_TXBC_TFQS_Pos) == sCANFD_Config.sElemSize.u32TxFifoQueue);
-		CU_ASSERT((psCanfd->TXBC & CANFD_TXBC_TBSA_Msk) == sCANFD_Config.sMRamStartAddr.u32TXBC_TBSA);
+    CU_ASSERT((psCanfd->TXBC & CANFD_TXBC_TBSA_Msk) == sCANFD_Config.sMRamStartAddr.u32TXBC_TBSA);
     CU_ASSERT((psCanfd->TXESC & CANFD_TXESC_TBDS_Msk) == eCANFD_BYTE64);
     /*Configures the Rx Buffer element */
     CANFD_InitRxDBuf(psCanfd, &sCANFD_Config.sMRamStartAddr, &sCANFD_Config.sElemSize, eCANFD_BYTE64);
@@ -479,8 +488,8 @@ void CANFD_TxRx_Element_Address_Test(CANFD_T *psCanfd)
     /* CAN FD TX Buffer elements as 3 elements    */
     sCANFD_Config.sElemSize.u32TxBuf = 0;
     /* CAN FD TX Buffer elements as 3 elements    */
-    sCANFD_Config.sElemSize.u32TxFifoQueue = 10; 
-  	 /* CAN FD RX Buffer elements as 3 elements    */
+    sCANFD_Config.sElemSize.u32TxFifoQueue = 10;
+    /* CAN FD RX Buffer elements as 3 elements    */
     sCANFD_Config.sElemSize.u32RxBuf = 6;
     /* CAN FD RX FIFO0 elements as 3 elements    */
     sCANFD_Config.sElemSize.u32RxFifo0 = 6;
@@ -503,7 +512,7 @@ void CANFD_TxRx_Element_Address_Test(CANFD_T *psCanfd)
     CANFD_InitTxDBuf(psCanfd, &sCANFD_Config.sMRamStartAddr, &sCANFD_Config.sElemSize, eCANFD_BYTE64);
     CU_ASSERT(((psCanfd->TXBC & CANFD_TXBC_NDTB_Msk) >> CANFD_TXBC_NDTB_Pos) == sCANFD_Config.sElemSize.u32TxBuf);
     CU_ASSERT(((psCanfd->TXBC & CANFD_TXBC_TFQS_Msk) >> CANFD_TXBC_TFQS_Pos) == sCANFD_Config.sElemSize.u32TxFifoQueue);
-		CU_ASSERT((psCanfd->TXBC & CANFD_TXBC_TBSA_Msk) == sCANFD_Config.sMRamStartAddr.u32TXBC_TBSA);
+    CU_ASSERT((psCanfd->TXBC & CANFD_TXBC_TBSA_Msk) == sCANFD_Config.sMRamStartAddr.u32TXBC_TBSA);
     CU_ASSERT((psCanfd->TXESC & CANFD_TXESC_TBDS_Msk) == eCANFD_BYTE64);
     /*Configures the Rx Buffer element */
     CANFD_InitRxDBuf(psCanfd, &sCANFD_Config.sMRamStartAddr, &sCANFD_Config.sElemSize, eCANFD_BYTE64);
@@ -631,7 +640,7 @@ void CANFD_Open_Test(CANFD_T *psCanfd)
     CU_ASSERT(CANFD_CalculateNominalBitRate(psCanfd) == sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate);
     memset(&sCANFD_Config, 0, sizeof(sCANFD_Config));
     CANFD_IPReset(psCanfd);
-	
+
     sCANFD_Config.sElemSize.u32UserDef = 0;
     /*Get the CAN configuration value*/
     CANFD_GetDefaultConfig(&sCANFD_Config, CANFD_OP_CAN_FD_MODE);
@@ -646,11 +655,11 @@ void CANFD_Open_Test(CANFD_T *psCanfd)
     CU_ASSERT((psCanfd->CCCR & CANFD_CCCR_FDOE_Msk) == CANFD_CCCR_FDOE_Msk);
     CU_ASSERT((psCanfd->CCCR & CANFD_CCCR_TEST_Msk) == 0);
     CU_ASSERT((psCanfd->TEST & CANFD_TEST_LBCK_Msk) == 0);
-		
+
     CU_ASSERT(CANFD_CalculateDataBitRate(psCanfd) == sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate);
     CU_ASSERT(CANFD_CalculateNominalBitRate(psCanfd) == sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate);
-//		printf("D %d,%d \n",CANFD_CalculateDataBitRate(psCanfd) , sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate);
-//    printf("N %d,%d \n",CANFD_CalculateNominalBitRate(psCanfd) , sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate);
+    //      printf("D %d,%d \n",CANFD_CalculateDataBitRate(psCanfd) , sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate);
+    //    printf("N %d,%d \n",CANFD_CalculateNominalBitRate(psCanfd) , sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate);
     CANFD_IPReset(psCanfd);
     sCANFD_Config.sElemSize.u32UserDef = 0;
     /*Get the CAN configuration value*/
@@ -668,9 +677,9 @@ void CANFD_Open_Test(CANFD_T *psCanfd)
     CU_ASSERT((psCanfd->TEST & CANFD_TEST_LBCK_Msk) == CANFD_TEST_LBCK_Msk);
     CU_ASSERT(CANFD_CalculateDataBitRate(psCanfd) == sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate);
     CU_ASSERT(CANFD_CalculateNominalBitRate(psCanfd) == sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate);
-//		printf("D %d,%d \n",CANFD_CalculateDataBitRate(psCanfd) , sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate);
-//    printf("N %d,%d \n",CANFD_CalculateNominalBitRate(psCanfd) , sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate);
-		sCANFD_Config.sElemSize.u32UserDef = 0;
+    //      printf("D %d,%d \n",CANFD_CalculateDataBitRate(psCanfd) , sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate);
+    //    printf("N %d,%d \n",CANFD_CalculateNominalBitRate(psCanfd) , sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate);
+    sCANFD_Config.sElemSize.u32UserDef = 0;
     /*Get the CAN configuration value*/
     CANFD_GetDefaultConfig(&sCANFD_Config, CANFD_OP_CAN_FD_MODE);
     sCANFD_Config.sBtConfig.bEnableLoopBack = TRUE;
@@ -686,9 +695,9 @@ void CANFD_Open_Test(CANFD_T *psCanfd)
     CU_ASSERT((psCanfd->TEST & CANFD_TEST_LBCK_Msk) == CANFD_TEST_LBCK_Msk);
     CU_ASSERT(CANFD_CalculateDataBitRate(psCanfd) == sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate);
     CU_ASSERT(CANFD_CalculateNominalBitRate(psCanfd) == sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate);
-//    printf("D %d,%d \n",CANFD_CalculateDataBitRate(psCanfd) , sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate);
-//    printf("N %d,%d \n",CANFD_CalculateNominalBitRate(psCanfd) , sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate);
-		sCANFD_Config.sElemSize.u32UserDef = 0;
+    //    printf("D %d,%d \n",CANFD_CalculateDataBitRate(psCanfd) , sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate);
+    //    printf("N %d,%d \n",CANFD_CalculateNominalBitRate(psCanfd) , sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate);
+    sCANFD_Config.sElemSize.u32UserDef = 0;
     /*Get the CAN configuration value*/
     CANFD_GetDefaultConfig(&sCANFD_Config, CANFD_OP_CAN_MODE);
     sCANFD_Config.sBtConfig.bEnableLoopBack = TRUE;
@@ -725,8 +734,8 @@ void CANFD_Open_Test(CANFD_T *psCanfd)
     CU_ASSERT(CANFD_CalculateNominalBitRate(psCanfd) == sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate);
 
     CANFD_IPReset(psCanfd);
-   	
-		sCANFD_Config.sElemSize.u32UserDef = 0;
+
+    sCANFD_Config.sElemSize.u32UserDef = 0;
     sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate = 50000;
     sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate = 0;
     /*Open the CAN FD feature*/
@@ -742,8 +751,8 @@ void CANFD_Open_Test(CANFD_T *psCanfd)
     CU_ASSERT(((psCanfd->DBTP & CANFD_DBTP_DTSEG1_Msk) >> CANFD_DBTP_DTSEG1_Pos) == 0xA);
     CU_ASSERT(CANFD_CalculateNominalBitRate(psCanfd) == sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate);
     CANFD_IPReset(psCanfd);
-    
-		sCANFD_Config.sElemSize.u32UserDef = 0;
+
+    sCANFD_Config.sElemSize.u32UserDef = 0;
     sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate = 12500;
     sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate = 0;
     /*Open the CAN FD feature*/
@@ -769,8 +778,8 @@ void CAN_TxBuffer_RxBuffer_ReadWrite_Test(CANFD_T *psCanfd)
     CANFD_FD_T sCANFD_Config;
     CANFD_FD_MSG_T      sRxFrame;
     CANFD_FD_MSG_T      sTxMsgFrame;
-    
-	  sCANFD_Config.sElemSize.u32UserDef = 0;
+
+    sCANFD_Config.sElemSize.u32UserDef = 0;
     CANFD_GetDefaultConfig(&sCANFD_Config, CANFD_OP_CAN_MODE);
     sCANFD_Config.sBtConfig.bEnableLoopBack = TRUE;
     sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate = 1000000;
@@ -1045,7 +1054,7 @@ void CANFD_TxBuffer_RxBuffer_ReadWrite_Test(CANFD_T *psCanfd)
     CANFD_FD_MSG_T      sTxMsgFrame;
 
     sCANFD_Config.sElemSize.u32UserDef = 0;
-	  /*Get the CAN FD0 configuration value*/
+    /*Get the CAN FD0 configuration value*/
     CANFD_GetDefaultConfig(&sCANFD_Config, CANFD_OP_CAN_FD_MODE);
     sCANFD_Config.sBtConfig.bEnableLoopBack = TRUE;
     sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate = 1000000;
@@ -1358,7 +1367,7 @@ void TestFunc_CANFD_TxBuffer_RxBuffer_ReadWrite(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*                             CAN Tx Rx Function Test                                                     */
 /*---------------------------------------------------------------------------------------------------------*/
-void CAN_TxRx_Test(CANFD_T *psCanfd,CANFD_FD_MSG_T *psTxMsg, E_CANFD_ID_TYPE eFrameIdType, uint8_t u8FifoNum, uint32_t u32Id, uint8_t u8Len)
+void CAN_TxRx_Test(CANFD_T *psCanfd, CANFD_FD_MSG_T *psTxMsg, E_CANFD_ID_TYPE eFrameIdType, uint8_t u8FifoNum, uint32_t u32Id, uint8_t u8Len)
 {
     uint8_t u8Cnt;
 
@@ -1427,7 +1436,7 @@ void CAN_TxRx_Test(CANFD_T *psCanfd,CANFD_FD_MSG_T *psTxMsg, E_CANFD_ID_TYPE eFr
 
 }
 
-void CANFD_CANFD_TxRx_Test(CANFD_T *psCanfd,CANFD_FD_MSG_T *psTxMsg, E_CANFD_ID_TYPE eFrameIdType, uint8_t u8FifoNum, uint32_t u32Id, uint8_t u8LenType)
+void CANFD_CANFD_TxRx_Test(CANFD_T *psCanfd, CANFD_FD_MSG_T *psTxMsg, E_CANFD_ID_TYPE eFrameIdType, uint8_t u8FifoNum, uint32_t u32Id, uint8_t u8LenType)
 {
     uint8_t u8Cnt;
     /*Set the ID Number*/
@@ -1503,7 +1512,7 @@ void CANFD_CANFD_TxRx_Test(CANFD_T *psCanfd,CANFD_FD_MSG_T *psTxMsg, E_CANFD_ID_
 
     }
 }
-void CANFD_TxBuffer_RxFifo_ReadWrite(CANFD_T *psCanfd,uint8_t u8FifoNum)
+void CANFD_TxBuffer_RxFifo_ReadWrite(CANFD_T *psCanfd, uint8_t u8FifoNum)
 {
     uint8_t u8Loop;
     CANFD_FD_T sCANFD_Config;
@@ -1555,43 +1564,46 @@ void CANFD_TxBuffer_RxFifo_ReadWrite(CANFD_T *psCanfd,uint8_t u8FifoNum)
         CANFD_EnableInt(psCanfd, (CANFD_IE_TOOE_Msk | CANFD_IE_RF1NE_Msk), 0, 0, 0);
 
     }
-		  /* Enable CANFD00 IRQ or CANFD10 IRQ Handler*/
-		 if(psCanfd == CANFD0)
-       NVIC_EnableIRQ(CANFD00_IRQn);
-		 else
-			  NVIC_EnableIRQ(CANFD10_IRQn);
+
+    /* Enable CANFD00 IRQ or CANFD10 IRQ Handler*/
+    if (psCanfd == CANFD0)
+        NVIC_EnableIRQ(CANFD00_IRQn);
+    else
+        NVIC_EnableIRQ(CANFD10_IRQn);
+
     /* CAN FD0 Run to Normal mode  */
     CANFD_RunToNormal(psCanfd, TRUE);
 
     for (u8Loop = 0  ; u8Loop < 8; u8Loop++)
     {
-        CANFD_CANFD_TxRx_Test(psCanfd,&sTxMsgFrame, eCANFD_SID, u8FifoNum, 0x110 + u8Loop, u8Loop);
+        CANFD_CANFD_TxRx_Test(psCanfd, &sTxMsgFrame, eCANFD_SID, u8FifoNum, 0x110 + u8Loop, u8Loop);
     }
 
-    CANFD_CANFD_TxRx_Test(psCanfd,&sTxMsgFrame, eCANFD_SID, u8FifoNum, 0x22F, 8);
-    CANFD_CANFD_TxRx_Test(psCanfd,&sTxMsgFrame, eCANFD_SID, u8FifoNum, 0x333, 8);
+    CANFD_CANFD_TxRx_Test(psCanfd, &sTxMsgFrame, eCANFD_SID, u8FifoNum, 0x22F, 8);
+    CANFD_CANFD_TxRx_Test(psCanfd, &sTxMsgFrame, eCANFD_SID, u8FifoNum, 0x333, 8);
 
     for (u8Loop = 0 ; u8Loop < 8; u8Loop++)
     {
-        CANFD_CANFD_TxRx_Test(psCanfd,&sTxMsgFrame, eCANFD_XID, u8FifoNum, 0x220 + u8Loop, u8Loop);
+        CANFD_CANFD_TxRx_Test(psCanfd, &sTxMsgFrame, eCANFD_XID, u8FifoNum, 0x220 + u8Loop, u8Loop);
     }
 
-    CANFD_CANFD_TxRx_Test(psCanfd,&sTxMsgFrame, eCANFD_XID, u8FifoNum, 0x3333, 8);
-    CANFD_CANFD_TxRx_Test(psCanfd,&sTxMsgFrame, eCANFD_XID, u8FifoNum, 0x44444, 8);
-  		 /* Disable CANFD00 IRQ or CANFD10 IRQ Handler*/
-	  if(psCanfd == CANFD0)
-       NVIC_DisableIRQ(CANFD00_IRQn);
-		 else
-			  NVIC_DisableIRQ(CANFD10_IRQn);
-		
+    CANFD_CANFD_TxRx_Test(psCanfd, &sTxMsgFrame, eCANFD_XID, u8FifoNum, 0x3333, 8);
+    CANFD_CANFD_TxRx_Test(psCanfd, &sTxMsgFrame, eCANFD_XID, u8FifoNum, 0x44444, 8);
+
+    /* Disable CANFD00 IRQ or CANFD10 IRQ Handler*/
+    if (psCanfd == CANFD0)
+        NVIC_DisableIRQ(CANFD00_IRQn);
+    else
+        NVIC_DisableIRQ(CANFD10_IRQn);
+
 }
-void CAN_TxBuffer_RxFifo_ReadWrite(CANFD_T *psCanfd,uint8_t u8FifoNum)
+void CAN_TxBuffer_RxFifo_ReadWrite(CANFD_T *psCanfd, uint8_t u8FifoNum)
 {
     uint8_t u8Loop;
     CANFD_FD_T sCANFD_Config;
     CANFD_FD_MSG_T      sTxMsgFrame;
-	  
-	  sCANFD_Config.sElemSize.u32UserDef = 0;
+
+    sCANFD_Config.sElemSize.u32UserDef = 0;
     /*Get the CAN configuration value*/
     CANFD_GetDefaultConfig(&sCANFD_Config, CANFD_OP_CAN_MODE);
     /*Enable internal loopback mode*/
@@ -1631,21 +1643,23 @@ void CAN_TxBuffer_RxFifo_ReadWrite(CANFD_T *psCanfd,uint8_t u8FifoNum)
         CANFD_SetSIDFltr(psCanfd, 2, CANFD_RX_FIFO1_STD_MASK(0x333, 0x7FF));
 
         /* receive 0x220~0x22F (29-bit id) in CAN rx fifo0 buffer by setting mask 0 */
-        CANFD_SetXIDFltr(psCanfd, 0, CANFD_RX_FIFO1_EXT_MASK_LOW(0x220),CANFD_RX_FIFO1_EXT_MASK_HIGH(0x1FFFFFF0));
+        CANFD_SetXIDFltr(psCanfd, 0, CANFD_RX_FIFO1_EXT_MASK_LOW(0x220), CANFD_RX_FIFO1_EXT_MASK_HIGH(0x1FFFFFF0));
         /* receive 0x3333 (29-bit id) in CAN rx fifo0 buffer by setting mask 1 */
-        CANFD_SetXIDFltr(psCanfd, 1, CANFD_RX_FIFO1_EXT_MASK_LOW(0x3333),CANFD_RX_FIFO1_EXT_MASK_HIGH(0x1FFFFFFF));
+        CANFD_SetXIDFltr(psCanfd, 1, CANFD_RX_FIFO1_EXT_MASK_LOW(0x3333), CANFD_RX_FIFO1_EXT_MASK_HIGH(0x1FFFFFFF));
         /* receive 0x44444 (29-bit id) in CAN rx fifo0 buffer by setting mask 2 */
-        CANFD_SetXIDFltr(psCanfd, 2, CANFD_RX_FIFO1_EXT_MASK_LOW(0x44444),CANFD_RX_FIFO1_EXT_MASK_HIGH(0x1FFFFFFF));
+        CANFD_SetXIDFltr(psCanfd, 2, CANFD_RX_FIFO1_EXT_MASK_LOW(0x44444), CANFD_RX_FIFO1_EXT_MASK_HIGH(0x1FFFFFFF));
         /* Enable Standard ID and  Extended ID Filter as RX FOFI0*/
         CANFD_SetGFC(psCanfd, eCANFD_ACC_NON_MATCH_FRM_RX_FIFO0, eCANFD_ACC_NON_MATCH_FRM_RX_FIFO0, 1, 1);
         /* Enable RX fifo0 new message interrupt using interrupt line 0. */
         CANFD_EnableInt(psCanfd, (CANFD_IE_TOOE_Msk | CANFD_IE_RF1NE_Msk), 0, 0, 0);
     }
-		  /* Enable CANFD00 IRQ or CANFD10 IRQ Handler*/
-		 if(psCanfd == CANFD0)
-       NVIC_EnableIRQ(CANFD00_IRQn);
-		 else
-			  NVIC_EnableIRQ(CANFD10_IRQn);
+
+    /* Enable CANFD00 IRQ or CANFD10 IRQ Handler*/
+    if (psCanfd == CANFD0)
+        NVIC_EnableIRQ(CANFD00_IRQn);
+    else
+        NVIC_EnableIRQ(CANFD10_IRQn);
+
     /* CAN FD0 Run to Normal mode  */
     CANFD_RunToNormal(psCanfd, TRUE);
     CU_ASSERT((psCanfd->CCCR & CANFD_CCCR_INIT_Msk) == 0);
@@ -1653,56 +1667,56 @@ void CAN_TxBuffer_RxFifo_ReadWrite(CANFD_T *psCanfd,uint8_t u8FifoNum)
 
     for (u8Loop = 1 ; u8Loop < 8; u8Loop++)
     {
-        CAN_TxRx_Test(psCanfd,&sTxMsgFrame, eCANFD_SID, u8FifoNum, 0x110 + u8Loop, u8Loop);
+        CAN_TxRx_Test(psCanfd, &sTxMsgFrame, eCANFD_SID, u8FifoNum, 0x110 + u8Loop, u8Loop);
     }
 
-    CAN_TxRx_Test(psCanfd,&sTxMsgFrame, eCANFD_SID, u8FifoNum, 0x22F, 8);
-    CAN_TxRx_Test(psCanfd,&sTxMsgFrame, eCANFD_SID, u8FifoNum, 0x333, 8);
+    CAN_TxRx_Test(psCanfd, &sTxMsgFrame, eCANFD_SID, u8FifoNum, 0x22F, 8);
+    CAN_TxRx_Test(psCanfd, &sTxMsgFrame, eCANFD_SID, u8FifoNum, 0x333, 8);
 
     for (u8Loop = 1 ; u8Loop < 8; u8Loop++)
     {
-        CAN_TxRx_Test(psCanfd,&sTxMsgFrame, eCANFD_XID, u8FifoNum, 0x220 + u8Loop, u8Loop);
+        CAN_TxRx_Test(psCanfd, &sTxMsgFrame, eCANFD_XID, u8FifoNum, 0x220 + u8Loop, u8Loop);
     }
 
-    CAN_TxRx_Test(psCanfd,&sTxMsgFrame, eCANFD_XID, u8FifoNum, 0x3333, 8);
-    CAN_TxRx_Test(psCanfd,&sTxMsgFrame, eCANFD_XID, u8FifoNum, 0x44444, 8);
+    CAN_TxRx_Test(psCanfd, &sTxMsgFrame, eCANFD_XID, u8FifoNum, 0x3333, 8);
+    CAN_TxRx_Test(psCanfd, &sTxMsgFrame, eCANFD_XID, u8FifoNum, 0x44444, 8);
 
-		 /* Disable CANFD00 IRQ or CANFD10 IRQ Handler*/
-	  if(psCanfd == CANFD0)
-       NVIC_DisableIRQ(CANFD00_IRQn);
-		 else
-			  NVIC_DisableIRQ(CANFD10_IRQn);
+    /* Disable CANFD00 IRQ or CANFD10 IRQ Handler*/
+    if (psCanfd == CANFD0)
+        NVIC_DisableIRQ(CANFD00_IRQn);
+    else
+        NVIC_DisableIRQ(CANFD10_IRQn);
 
 }
 
 void TestFunc_CANFD_TxBuffer_RxFifo0_ReadWrite()
 {
-    CAN_TxBuffer_RxFifo_ReadWrite(CANFD0,0);
+    CAN_TxBuffer_RxFifo_ReadWrite(CANFD0, 0);
     CANFD_IPReset(CANFD0);
-    CANFD_TxBuffer_RxFifo_ReadWrite(CANFD0,0);
+    CANFD_TxBuffer_RxFifo_ReadWrite(CANFD0, 0);
     CANFD_IPReset(CANFD0);
-    CAN_TxBuffer_RxFifo_ReadWrite(CANFD1,0);
+    CAN_TxBuffer_RxFifo_ReadWrite(CANFD1, 0);
     CANFD_IPReset(CANFD0);
-    CANFD_TxBuffer_RxFifo_ReadWrite(CANFD1,0);
+    CANFD_TxBuffer_RxFifo_ReadWrite(CANFD1, 0);
     CANFD_IPReset(CANFD0);
 
 }
 
 void TestFunc_CANFD_TxBuffer_RxFifo1_ReadWrite()
 {
-    CAN_TxBuffer_RxFifo_ReadWrite(CANFD0,1);
+    CAN_TxBuffer_RxFifo_ReadWrite(CANFD0, 1);
     CANFD_IPReset(CANFD0);
-    CANFD_TxBuffer_RxFifo_ReadWrite(CANFD0,1);
+    CANFD_TxBuffer_RxFifo_ReadWrite(CANFD0, 1);
     CANFD_IPReset(CANFD0);
-    CAN_TxBuffer_RxFifo_ReadWrite(CANFD1,1);
+    CAN_TxBuffer_RxFifo_ReadWrite(CANFD1, 1);
     CANFD_IPReset(CANFD0);
-    CANFD_TxBuffer_RxFifo_ReadWrite(CANFD1,1);
+    CANFD_TxBuffer_RxFifo_ReadWrite(CANFD1, 1);
     CANFD_IPReset(CANFD0);
 }
 void TestFunc_CANFD_TestMacroBR(void)
 {
-  CANFD_TestMacroBitRate_Test(CANFD0);
-	CANFD_TestMacroBitRate_Test(CANFD1);
+    CANFD_TestMacroBitRate_Test(CANFD0);
+    CANFD_TestMacroBitRate_Test(CANFD1);
 }
 void CANFD_TestMacroBitRate_Test(CANFD_T *psCanfd)
 {
@@ -1767,7 +1781,7 @@ void CANFD_TestMacroBitRate_Test(CANFD_T *psCanfd)
 void TestFunc_CANFD_TestMacroFilter()
 {
     CANFD_MacroFilter_Test(CANFD0);
-	  CANFD_MacroFilter_Test(CANFD1);
+    CANFD_MacroFilter_Test(CANFD1);
 }
 void CANFD_MacroFilter_Test(CANFD_T *psCanfd)
 {
@@ -1793,9 +1807,9 @@ void CANFD_MacroFilter_Test(CANFD_T *psCanfd)
 }
 void TestFunc_CANFD_TestMacroMemory()
 {
-  CANFD_MacroMemory_Test(CANFD0);
-	CANFD_MacroMemory_Test(CANFD1);
-}	
+    CANFD_MacroMemory_Test(CANFD0);
+    CANFD_MacroMemory_Test(CANFD1);
+}
 void CANFD_MacroMemory_Test(CANFD_T *psCanfd)
 {
     CANFD_IPReset(psCanfd);
@@ -1806,7 +1820,7 @@ void CANFD_MacroMemory_Test(CANFD_T *psCanfd)
     CU_ASSERT((psCanfd->CCCR & CANFD_CCCR_CCE_Msk) == CANFD_CCCR_CCE_Msk);
 
     psCanfd->RXF0C = (0x3fff << 2);
-    CU_ASSERT_EQUAL(psCanfd->RXF0C & CANFD_RXF0C_F0SA_Msk , CANFD_RXF0C_F0SA_Msk);
+    CU_ASSERT_EQUAL(psCanfd->RXF0C & CANFD_RXF0C_F0SA_Msk, CANFD_RXF0C_F0SA_Msk);
     psCanfd->RXF0C = (0x7f << 16);
     CU_ASSERT_EQUAL(psCanfd->RXF0C & CANFD_RXF0C_F0S_Msk, CANFD_RXF0C_F0S_Msk);
     psCanfd->RXF0C = (0x7f << 24);
@@ -1866,16 +1880,16 @@ void CANFD_MacroMemory_Test(CANFD_T *psCanfd)
 
 void TestFunc_CANFD_FilterElementTest()
 {
-  CANFD_FilterElement_Test(CANFD0);
-	CANFD_FilterElement_Test(CANFD1); 
-}	
+    CANFD_FilterElement_Test(CANFD0);
+    CANFD_FilterElement_Test(CANFD1);
+}
 void CANFD_FilterElement_Test(CANFD_T *psCanfd)
 {
     CANFD_STD_FILTER_T *psStdFilter;
     CANFD_EXT_FILTER_T *psExtFilter;
     CANFD_FD_T sCANFD_Config;
     CANFD_IPReset(psCanfd);
-		sCANFD_Config.sElemSize.u32UserDef = 0;
+    sCANFD_Config.sElemSize.u32UserDef = 0;
     /*Get the CAN configuration value*/
     CANFD_GetDefaultConfig(&sCANFD_Config, CANFD_OP_CAN_FD_MODE);
     sCANFD_Config.sBtConfig.bEnableLoopBack = TRUE;
@@ -1941,7 +1955,7 @@ void CANFD_FilterElement_Test(CANFD_T *psCanfd)
     CU_ASSERT(psStdFilter->SFEC  == 0x2);
     /* receive 0x333 in CAN rx fifo0 buffer by setting mask 2 */
     CANFD_SetSIDFltr(psCanfd, 8, CANFD_RX_FIFO1_STD_MASK(0x7FF, 0x7FF));
-    psStdFilter = (CANFD_STD_FILTER_T *)(CANFD_SRAM_BASE_ADDR(psCanfd)+ (psCanfd->SIDFC & CANFD_SIDFC_FLSSA_Msk) + (8 * sizeof(CANFD_STD_FILTER_T)));
+    psStdFilter = (CANFD_STD_FILTER_T *)(CANFD_SRAM_BASE_ADDR(psCanfd) + (psCanfd->SIDFC & CANFD_SIDFC_FLSSA_Msk) + (8 * sizeof(CANFD_STD_FILTER_T)));
     CU_ASSERT(psStdFilter->SFT  == 2);
     CU_ASSERT(psStdFilter->SFID1  == 0x7FF);
     CU_ASSERT(psStdFilter->SFID2  == 0x7FF);
@@ -1970,7 +1984,7 @@ void CANFD_FilterElement_Test(CANFD_T *psCanfd)
     CU_ASSERT(psExtFilter->EFT  == 0);
     /* receive 0x220~0x22F (29-bit id) in CAN rx fifo0 buffer by setting mask 0 */
     CANFD_SetXIDFltr(psCanfd, 3, CANFD_RX_FIFO0_EXT_MASK_LOW(0x14444444), CANFD_RX_FIFO0_EXT_MASK_HIGH(0x1FFFFFF0));
-    psExtFilter = (CANFD_EXT_FILTER_T *)(CANFD_SRAM_BASE_ADDR(psCanfd)+ (psCanfd->XIDFC & CANFD_XIDFC_FLESA_Msk) + (3 * sizeof(CANFD_EXT_FILTER_T)));
+    psExtFilter = (CANFD_EXT_FILTER_T *)(CANFD_SRAM_BASE_ADDR(psCanfd) + (psCanfd->XIDFC & CANFD_XIDFC_FLESA_Msk) + (3 * sizeof(CANFD_EXT_FILTER_T)));
     CU_ASSERT(psExtFilter->EFEC  == 0x1);
     CU_ASSERT(psExtFilter->EFID1  == 0x14444444);
     CU_ASSERT(psExtFilter->EFID2  == 0x1FFFFFF0);

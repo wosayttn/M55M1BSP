@@ -34,7 +34,8 @@ uint8_t SrcArray[256] __attribute__((aligned(8)));
 uint8_t DestArray[256] __attribute__((aligned(8)));
 uint32_t PDMA_TEST_LENGTH = 64;
 
-typedef struct dma_desc_t {
+typedef struct dma_desc_t
+{
     uint32_t ctl;
     uint32_t src;
     uint32_t dest;
@@ -76,7 +77,8 @@ void PDMA_Reset(void)
 /* Description:                                                                                            */
 /*               description                                                                               */
 /*---------------------------------------------------------------------------------------------------------*/
-CU_SuiteInfo suites[] = {
+CU_SuiteInfo suites[] =
+{
     {"PDMA MACRO", suite_success_init, suite_success_clean, NULL, NULL, PDMA_MACRO},
     {"PDMA API", suite_success_init, suite_success_clean, NULL, NULL, PDMA_API},
     {"PDMA CONSTANT", suite_success_init, suite_success_clean, NULL, NULL, PDMA_CONSTANT},
@@ -84,8 +86,8 @@ CU_SuiteInfo suites[] = {
 };
 
 #ifndef PDMA_DAC1_TX
-// TESTCHIP_ONLY compiler option or comment for DAC1
-#define PDMA_DAC1_TX           67UL /*!<DMA Connect to DAC1_TX \hideinitializer */
+    // TESTCHIP_ONLY compiler option or comment for DAC1
+    #define PDMA_DAC1_TX           67UL /*!<DMA Connect to DAC1_TX \hideinitializer */
 #endif
 
 
@@ -99,7 +101,8 @@ void Func_PDMA_Open()
 test_main:
 
     //test case 1: enable/disable one channel each time, then check each action
-    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++)
+    {
         PDMA_Open(pdma, 1 << u32TestCh);
         CU_ASSERT_EQUAL(pdma->CHCTL, 1 << u32TestCh);
         PDMA_Close(pdma);
@@ -107,7 +110,8 @@ test_main:
     }
 
     //test case 2: enable/disable one channel each time, then check at final action
-    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++)
+    {
         PDMA_Open(pdma, 1 << u32TestCh);
     }
 
@@ -116,7 +120,8 @@ test_main:
     CU_ASSERT_EQUAL(pdma->CHCTL, 0);
 
     //test case 3: enable/disable multiple channels each time
-    for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegWrite) / sizeof(uint32_t); u32PatternIdx++) {
+    for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegWrite) / sizeof(uint32_t); u32PatternIdx++)
+    {
         PDMA_Open(pdma, au32RegWrite[u32PatternIdx]);
         CU_ASSERT_EQUAL(pdma->CHCTL, au32RegCheck[u32PatternIdx]);
     }
@@ -124,7 +129,8 @@ test_main:
     PDMA_Close(pdma);
     CU_ASSERT_EQUAL(pdma->CHCTL, 0);
 
-    if (pdma == PDMA0) {
+    if (pdma == PDMA0)
+    {
         pdma = PDMA1;
         goto test_main;
     }
@@ -139,8 +145,10 @@ void Func_PDMA_SetTransferCnt()
     u32TransferCountPatternCount = sizeof(au32RegWrite) / sizeof(uint32_t);
 test_main:
 
-    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++) {
-        for (u32TransferCountPatternIdx = 0; u32TransferCountPatternIdx < u32TransferCountPatternCount; u32TransferCountPatternIdx++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++)
+    {
+        for (u32TransferCountPatternIdx = 0; u32TransferCountPatternIdx < u32TransferCountPatternCount; u32TransferCountPatternIdx++)
+        {
             u32TransferCountPatternData = au32RegWrite[u32TransferCountPatternIdx];
             PDMA_SetTransferCnt(pdma, u32TestCh, PDMA_WIDTH_8, u32TransferCountPatternData);
             CU_ASSERT_EQUAL(pdma->DSCT[u32TestCh].CTL & PDMA_DSCT_CTL_TXWIDTH_Msk, 0 << 12);
@@ -154,7 +162,8 @@ test_main:
         }
     }
 
-    if (pdma == PDMA0) {
+    if (pdma == PDMA0)
+    {
         pdma = PDMA1;
         goto test_main;
     }
@@ -170,8 +179,10 @@ test_main:
     PDMA_Open(pdma, pow(2, PDMA_CH_MAX) - 1);
     CU_ASSERT_EQUAL(pdma->CHCTL, pow(2, PDMA_CH_MAX) - 1);
 
-    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++) {
-        for (u32TransferAddressPatternIdx = 0; u32TransferAddressPatternIdx < u32TransferAddressPatternCount; u32TransferAddressPatternIdx++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++)
+    {
+        for (u32TransferAddressPatternIdx = 0; u32TransferAddressPatternIdx < u32TransferAddressPatternCount; u32TransferAddressPatternIdx++)
+        {
             u32TransferAddressPatternData = ThirtyTwoBitsPatternTable[u32TransferAddressPatternIdx];
             PDMA_SetTransferAddr(pdma, u32TestCh, u32TransferAddressPatternData, PDMA_SAR_FIX, u32TransferAddressPatternData, PDMA_DAR_FIX);
             CU_ASSERT_EQUAL(pdma->DSCT[u32TestCh].SA, u32TransferAddressPatternData);
@@ -189,7 +200,8 @@ test_main:
     PDMA_Close(pdma);
     CU_ASSERT_EQUAL(pdma->CHCTL, 0);
 
-    if (pdma == PDMA0) {
+    if (pdma == PDMA0)
+    {
         pdma = PDMA1;
         goto test_main;
     }
@@ -200,7 +212,8 @@ void Func_PDMA_SetTransferMode()
     PDMA_T *pdma = PDMA0;
     uint32_t u32TestCh = 0;
     uint32_t u32PatternIdx = 0;
-    uint32_t au32TransferMode[] = {
+    uint32_t au32TransferMode[] =
+    {
         //
         PDMA_MEM,
         //
@@ -242,7 +255,8 @@ void Func_PDMA_SetTransferMode()
         PDMA_PSIO_TX, PDMA_PSIO_RX,
         PDMA_I3C0_TX, PDMA_I3C0_RX,
     };
-    uint32_t au32ReqSelRegCheck[] = {
+    uint32_t au32ReqSelRegCheck[] =
+    {
         // MEM
         0,
         // UART0 ~ UART9
@@ -279,8 +293,10 @@ void Func_PDMA_SetTransferMode()
     };
 test_main:
 
-    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++) {
-        for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32TransferMode) / sizeof(uint32_t); u32PatternIdx++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++)
+    {
+        for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32TransferMode) / sizeof(uint32_t); u32PatternIdx++)
+        {
             PDMA_SetTransferMode(pdma, u32TestCh, au32TransferMode[u32PatternIdx], TRUE, 0xFFFC);
             CU_ASSERT_EQUAL(*(__IO uint32_t *)(&(pdma->REQSEL0_3) + ((u32TestCh) >> 2)) & (PDMA_REQSEL0_3_REQSRC0_Msk << ((u32TestCh % 4) * 8)), au32ReqSelRegCheck[u32PatternIdx] << ((u32TestCh % 4) * 8));
             CU_ASSERT_EQUAL(pdma->DSCT[u32TestCh].CTL & PDMA_DSCT_CTL_OPMODE_Msk, PDMA_OP_SCATTER);
@@ -304,7 +320,8 @@ test_main:
         }
     }
 
-    if (pdma == PDMA0) {
+    if (pdma == PDMA0)
+    {
         pdma = PDMA1;
         goto test_main;
     }
@@ -320,8 +337,10 @@ void Func_PDMA_SetBurstType()
     u32TransferCountPatternCount = sizeof(au32BurstSize) / sizeof(uint32_t);
 test_main:
 
-    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++) {
-        for (u32TransferCountPatternIdx = 0; u32TransferCountPatternIdx < u32TransferCountPatternCount; u32TransferCountPatternIdx++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++)
+    {
+        for (u32TransferCountPatternIdx = 0; u32TransferCountPatternIdx < u32TransferCountPatternCount; u32TransferCountPatternIdx++)
+        {
             u32TransferCountPatternData = au32BurstSize[u32TransferCountPatternIdx];
             PDMA_SetBurstType(pdma, u32TestCh, PDMA_REQ_SINGLE, u32TransferCountPatternData);
             CU_ASSERT_EQUAL(pdma->DSCT[u32TestCh].CTL & PDMA_DSCT_CTL_TXTYPE_Msk, 1 << 2);
@@ -332,7 +351,8 @@ test_main:
         }
     }
 
-    if (pdma == PDMA0) {
+    if (pdma == PDMA0)
+    {
         pdma = PDMA1;
         goto test_main;
     }
@@ -348,7 +368,8 @@ void Func_PDMA_EnableTimeout()
 test_main:
 
     //test case 1: enable/disable one channel each time, then check each action
-    for (u32TestCh = 0; u32TestCh < PDMA_MAX_TIMEOUT_CH; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_MAX_TIMEOUT_CH; u32TestCh++)
+    {
         PDMA_EnableTimeout(pdma, 1 << u32TestCh);
         CU_ASSERT_EQUAL(pdma->TOUTEN, 1 << u32TestCh);
         PDMA_DisableTimeout(pdma, 1 << u32TestCh);
@@ -356,36 +377,41 @@ test_main:
     }
 
     //test case 2: enable/disable one channel each time, then check at final action
-    for (u32TestCh = 0; u32TestCh < PDMA_MAX_TIMEOUT_CH; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_MAX_TIMEOUT_CH; u32TestCh++)
+    {
         PDMA_EnableTimeout(pdma, 1 << u32TestCh);
     }
 
     CU_ASSERT_EQUAL(pdma->TOUTEN, pow(2, PDMA_MAX_TIMEOUT_CH) - 1);
 
-    for (u32TestCh = 0; u32TestCh < PDMA_MAX_TIMEOUT_CH; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_MAX_TIMEOUT_CH; u32TestCh++)
+    {
         PDMA_DisableTimeout(pdma, 1 << u32TestCh);
     }
 
     CU_ASSERT_EQUAL(pdma->TOUTEN, 0);
 
     //test case 3: enable/disable multiple channels each time
-    for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32EnableRegCheck) / sizeof(uint32_t); u32PatternIdx++) {
+    for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32EnableRegCheck) / sizeof(uint32_t); u32PatternIdx++)
+    {
         PDMA_EnableTimeout(pdma, au32EnableRegCheck[u32PatternIdx]);
         CU_ASSERT_EQUAL(pdma->TOUTEN, au32EnableRegCheck[u32PatternIdx]);
-//        if (pdma->TOUTEN != au32EnableRegCheck[u32PatternIdx]) {
-//            printf("Eanble Error: pdma->TOUTEN = 0x%08X != 0x%08X\n", pdma->TOUTEN, au32EnableRegCheck[u32PatternIdx]);
-//        }
+        //        if (pdma->TOUTEN != au32EnableRegCheck[u32PatternIdx]) {
+        //            printf("Eanble Error: pdma->TOUTEN = 0x%08X != 0x%08X\n", pdma->TOUTEN, au32EnableRegCheck[u32PatternIdx]);
+        //        }
     }
 
-    for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32EnableRegCheck) / sizeof(uint32_t); u32PatternIdx++) {
+    for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32EnableRegCheck) / sizeof(uint32_t); u32PatternIdx++)
+    {
         PDMA_DisableTimeout(pdma, au32EnableRegCheck[u32PatternIdx]);
         CU_ASSERT_EQUAL(pdma->TOUTEN, au32DisableRegCheck[u32PatternIdx]);
-//        if (pdma->TOUTEN != au32DisableRegCheck[u32PatternIdx]) {
-//            printf("Disable Error: pdma->TOUTEN = 0x%08X != 0x%08X\n", pdma->TOUTEN, au32EnableRegCheck[u32PatternIdx]);
-//        }
+        //        if (pdma->TOUTEN != au32DisableRegCheck[u32PatternIdx]) {
+        //            printf("Disable Error: pdma->TOUTEN = 0x%08X != 0x%08X\n", pdma->TOUTEN, au32EnableRegCheck[u32PatternIdx]);
+        //        }
     }
 
-    if (pdma == PDMA0) {
+    if (pdma == PDMA0)
+    {
         pdma = PDMA1;
         goto test_main;
     }
@@ -399,15 +425,18 @@ void Func_PDMA_SetTimeOut()
     u32PatternCount = sizeof(SixteenBitsPatternTable) / sizeof(uint32_t);
 test_main:
 
-    for (u32TestCh = 0; u32TestCh < 2; u32TestCh++) {
-        for (u32PatternIdx = 0; u32PatternIdx < u32PatternCount; u32PatternIdx++) {
+    for (u32TestCh = 0; u32TestCh < 2; u32TestCh++)
+    {
+        for (u32PatternIdx = 0; u32PatternIdx < u32PatternCount; u32PatternIdx++)
+        {
             u32PatternData = SixteenBitsPatternTable[u32PatternIdx];
             PDMA_SetTimeOut(pdma, u32TestCh, NULL, u32PatternData);
             CU_ASSERT_EQUAL(*(__IO uint32_t *)(&(pdma->TOC0_1) + ((u32TestCh) >> 1)) & (PDMA_TOC0_1_TOC0_Msk << ((u32TestCh % 2) * 16)), u32PatternData << ((u32TestCh % 2) * 16));
         }
     }
 
-    if (pdma == PDMA0) {
+    if (pdma == PDMA0)
+    {
         pdma = PDMA1;
         goto test_main;
     }
@@ -419,31 +448,36 @@ void Func_PDMA_EnableInt()
     uint32_t u32TestCh = 0;
 test_main:
 
-    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++)
+    {
         PDMA_EnableInt(pdma, u32TestCh, PDMA_INT_TRANS_DONE);
         CU_ASSERT_EQUAL(pdma->INTEN, pow(2, u32TestCh + 1) - 1);
         PDMA_EnableInt(pdma, u32TestCh, PDMA_INT_TEMPTY);
         CU_ASSERT_EQUAL(pdma->DSCT[u32TestCh].CTL & PDMA_DSCT_CTL_TBINTDIS_Msk, 0);
     }
 
-    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++)
+    {
         PDMA_DisableInt(pdma, u32TestCh, PDMA_INT_TRANS_DONE);
         CU_ASSERT_EQUAL(pdma->INTEN, ((uint32_t)(pow(2, PDMA_CH_MAX) - 1) >> (u32TestCh + 1)) << (u32TestCh + 1));
         PDMA_DisableInt(pdma, u32TestCh, PDMA_INT_TEMPTY);
         CU_ASSERT_EQUAL(pdma->DSCT[u32TestCh].CTL & PDMA_DSCT_CTL_TBINTDIS_Msk, 1 << 7);
     }
 
-    for (u32TestCh = 0; u32TestCh < PDMA_MAX_TIMEOUT_CH; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_MAX_TIMEOUT_CH; u32TestCh++)
+    {
         PDMA_EnableInt(pdma, u32TestCh, PDMA_INT_TIMEOUT);
         CU_ASSERT_EQUAL(pdma->TOUTIEN, pow(2, u32TestCh + 1) - 1);
     }
 
-    for (u32TestCh = 0; u32TestCh < PDMA_MAX_TIMEOUT_CH; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_MAX_TIMEOUT_CH; u32TestCh++)
+    {
         PDMA_DisableInt(pdma, u32TestCh, PDMA_INT_TIMEOUT);
         CU_ASSERT_EQUAL(pdma->TOUTIEN, ((uint32_t)(pow(2, PDMA_MAX_TIMEOUT_CH) - 1) >> (u32TestCh + 1)) << (u32TestCh + 1));
     }
 
-    if (pdma == PDMA0) {
+    if (pdma == PDMA0)
+    {
         pdma = PDMA1;
         goto test_main;
     }
@@ -455,7 +489,8 @@ void Func_PDMA_GET_INT_STATUS()
     uint32_t u32TestCh = 0;
 test_main:
 
-    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++)
+    {
         /* Reset PDMA */
         PDMA_Reset();
         PDMA_Open(pdma, 1 << u32TestCh);
@@ -543,7 +578,8 @@ test_main:
         }
     }
 
-    if (pdma == PDMA0) {
+    if (pdma == PDMA0)
+    {
         pdma = PDMA1;
         goto test_main;
     }
@@ -564,7 +600,8 @@ void Func_PDMA_CLR_TMOUT_FLAG()
     SET_UART1_TXD_PA3();
 test_main:
 
-    for (u32TestCh = 0; u32TestCh < PDMA_MAX_TIMEOUT_CH; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_MAX_TIMEOUT_CH; u32TestCh++)
+    {
         UART_Open(UART1, 115200);
         UART1->INTEN |= UART_INTEN_RXPDMAEN_Msk;
         PDMA_Open(pdma, 1 << u32TestCh);
@@ -603,7 +640,8 @@ test_main:
     PDMA_Close(pdma);
     CU_ASSERT_EQUAL(pdma->CHCTL, 0);
 
-    if (pdma == PDMA0) {
+    if (pdma == PDMA0)
+    {
         pdma = PDMA1;
         goto test_main;
     }
@@ -619,8 +657,10 @@ test_main:
     PDMA_Open(pdma, pow(2, PDMA_CH_MAX) - 1);
     CU_ASSERT_EQUAL(pdma->CHCTL, pow(2, PDMA_CH_MAX) - 1);
 
-    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++) {
-        for (u32TransferAddressPatternIdx = 0; u32TransferAddressPatternIdx < u32TransferAddressPatternCount; u32TransferAddressPatternIdx++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++)
+    {
+        for (u32TransferAddressPatternIdx = 0; u32TransferAddressPatternIdx < u32TransferAddressPatternCount; u32TransferAddressPatternIdx++)
+        {
             u32TransferAddressPatternData = ThirtyTwoBitsPatternTable[u32TransferAddressPatternIdx];
             PDMA_SET_SRC_ADDR(pdma, u32TestCh, u32TransferAddressPatternData);
             CU_ASSERT_EQUAL(pdma->DSCT[u32TestCh].SA, u32TransferAddressPatternData);
@@ -632,7 +672,8 @@ test_main:
     PDMA_Close(pdma);
     CU_ASSERT_EQUAL(pdma->CHCTL, 0);
 
-    if (pdma == PDMA0) {
+    if (pdma == PDMA0)
+    {
         pdma = PDMA1;
         goto test_main;
     }
@@ -648,8 +689,10 @@ test_main:
     PDMA_Open(pdma, pow(2, PDMA_CH_MAX) - 1);
     CU_ASSERT_EQUAL(pdma->CHCTL, pow(2, PDMA_CH_MAX) - 1);
 
-    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++) {
-        for (u32TransferAddressPatternIdx = 0; u32TransferAddressPatternIdx < (u32TransferAddressPatternCount - 1); u32TransferAddressPatternIdx++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++)
+    {
+        for (u32TransferAddressPatternIdx = 0; u32TransferAddressPatternIdx < (u32TransferAddressPatternCount - 1); u32TransferAddressPatternIdx++)
+        {
             u32TransferAddressPatternData = (ThirtyTwoBitsPatternTable[u32TransferAddressPatternIdx] & ~(0x3));
             PDMA_SET_SCATTER_DESC(pdma, u32TestCh, u32TransferAddressPatternData);
             CU_ASSERT_EQUAL(pdma->DSCT[u32TestCh].NEXT, ThirtyTwoBitsPatternTable[u32TransferAddressPatternIdx] & ~(0x3));
@@ -659,7 +702,8 @@ test_main:
     PDMA_Close(pdma);
     CU_ASSERT_EQUAL(pdma->CHCTL, 0);
 
-    if (pdma == PDMA0) {
+    if (pdma == PDMA0)
+    {
         pdma = PDMA1;
         goto test_main;
     }
@@ -674,15 +718,18 @@ void Func_PDMA_SET_TRANS_CNT()
     u32TransferCountPatternCount = sizeof(au32RegWrite) / sizeof(uint32_t);
 test_main:
 
-    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++) {
-        for (u32TransferCountPatternIdx = 0; u32TransferCountPatternIdx < u32TransferCountPatternCount; u32TransferCountPatternIdx++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++)
+    {
+        for (u32TransferCountPatternIdx = 0; u32TransferCountPatternIdx < u32TransferCountPatternCount; u32TransferCountPatternIdx++)
+        {
             u32TransferCountPatternData = au32RegWrite[u32TransferCountPatternIdx];
             PDMA_SET_TRANS_CNT(pdma, u32TestCh, u32TransferCountPatternData);
             CU_ASSERT_EQUAL(pdma->DSCT[u32TestCh].CTL & PDMA_DSCT_CTL_TXCNT_Msk, (u32TransferCountPatternData - 1) << 16);
         }
     }
 
-    if (pdma == PDMA0) {
+    if (pdma == PDMA0)
+    {
         pdma = PDMA1;
         goto test_main;
     }
@@ -694,7 +741,8 @@ void Func_PDMA_STOP()
     uint32_t u32TestCh = 0;
 test_main:
 
-    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < PDMA_CH_MAX; u32TestCh++)
+    {
         PDMA_Open(pdma, 1 << u32TestCh);
         CU_ASSERT_EQUAL(pdma->CHCTL, 1 << u32TestCh);
         PDMA_Trigger(pdma, u32TestCh);
@@ -704,7 +752,8 @@ test_main:
         CU_ASSERT_EQUAL(pdma->CHCTL, 0);
     }
 
-    if (pdma == PDMA0) {
+    if (pdma == PDMA0)
+    {
         pdma = PDMA1;
         goto test_main;
     }
@@ -729,7 +778,8 @@ void Func_PDMA_CONSTANT()
     CU_ASSERT_EQUAL(PDMA1->DSCT[0].CTL, PDMA_OP_STOP);
 }
 
-CU_TestInfo PDMA_MACRO[] = {
+CU_TestInfo PDMA_MACRO[] =
+{
     {
         "Test PDMA_GET_INT_STATUS/PDMA_GET_ABORT_STS/PDMA_CLR_ABORT_FLAG/PDMA_IS_CH_BUSY\n"
         "\t\t/PDMA_GET_TD_STS/PDMA_CLR_TD_FLAG/\n"
@@ -745,7 +795,8 @@ CU_TestInfo PDMA_MACRO[] = {
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo PDMA_API[] = {
+CU_TestInfo PDMA_API[] =
+{
     {"Test PDMA_Open/PDMA_Close:", Func_PDMA_Open},
     {"Test PDMA_SetTransferCnt:", Func_PDMA_SetTransferCnt},
     {"Test PDMA_SetTransferAddr:", Func_PDMA_SetTransferAddr},
@@ -757,7 +808,8 @@ CU_TestInfo PDMA_API[] = {
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo PDMA_CONSTANT[] = {
+CU_TestInfo PDMA_CONSTANT[] =
+{
     {"Test PDMA_CONSTANT:", Func_PDMA_CONSTANT},
 
     CU_TEST_INFO_NULL

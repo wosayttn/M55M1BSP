@@ -84,7 +84,7 @@ void SYS_Init(void)
     SetDebugUartMFP();
 
     /* Set PB.1 to input mode */
-    GPIO_SetMode(PB, BIT1 , GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT1, GPIO_MODE_INPUT);
     /* Configure the PB.1 ADC analog input pins. */
     SET_EADC0_CH1_PB1();
     /* Disable the PB.1 digital input path to avoid the leakage current. */

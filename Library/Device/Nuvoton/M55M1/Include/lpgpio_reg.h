@@ -11,7 +11,7 @@
 #define __LPGPIO_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -28,284 +28,284 @@
 typedef struct
 {
     /**
- * @var LPGPIO_T::MODE
- * Offset: 0x00  LPIOn Mode Control
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |MODE0     |LPIOn I/O Pin Mode Control
- * |        |          |Determine each I/O mode of LPIOn pins.
- * |        |          |0 = LPIOn is in Input mode.
- * |        |          |1 = LPIOn is in Push-pull Output mode.
- * |[1]     |MODE1     |LPIOn I/O Pin Mode Control
- * |        |          |Determine each I/O mode of LPIOn pins.
- * |        |          |0 = LPIOn is in Input mode.
- * |        |          |1 = LPIOn is in Push-pull Output mode.
- * |[2]     |MODE2     |LPIOn I/O Pin Mode Control
- * |        |          |Determine each I/O mode of LPIOn pins.
- * |        |          |0 = LPIOn is in Input mode.
- * |        |          |1 = LPIOn is in Push-pull Output mode.
- * |[3]     |MODE3     |LPIOn I/O Pin Mode Control
- * |        |          |Determine each I/O mode of LPIOn pins.
- * |        |          |0 = LPIOn is in Input mode.
- * |        |          |1 = LPIOn is in Push-pull Output mode.
- * |[4]     |MODE4     |LPIOn I/O Pin Mode Control
- * |        |          |Determine each I/O mode of LPIOn pins.
- * |        |          |0 = LPIOn is in Input mode.
- * |        |          |1 = LPIOn is in Push-pull Output mode.
- * |[5]     |MODE5     |LPIOn I/O Pin Mode Control
- * |        |          |Determine each I/O mode of LPIOn pins.
- * |        |          |0 = LPIOn is in Input mode.
- * |        |          |1 = LPIOn is in Push-pull Output mode.
- * |[6]     |MODE6     |LPIOn I/O Pin Mode Control
- * |        |          |Determine each I/O mode of LPIOn pins.
- * |        |          |0 = LPIOn is in Input mode.
- * |        |          |1 = LPIOn is in Push-pull Output mode.
- * |[7]     |MODE7     |LPIOn I/O Pin Mode Control
- * |        |          |Determine each I/O mode of LPIOn pins.
- * |        |          |0 = LPIOn is in Input mode.
- * |        |          |1 = LPIOn is in Push-pull Output mode.
- * |[31]    |LPPDMA_EN |LPPDMA Enable Bit
- * |        |          |This bit is used to enable LPPDMA to access LPGPIO when chip is in NPD0/1/2/3/4.
- * |        |          |0 = LPPDMA cannot access LPGPIO when chip is in NPD0/1/2/3/4.
- * |        |          |1 = LPPDMA can access LPGPIO when chip is in NPD0/1/2/3/4.
- * @var LPGPIO_T::DOUT
- * Offset: 0x04  LPIOn Data Output Value
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |DOUT0     |LPIOn Output Value
- * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
- * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
- * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
- * |[1]     |DOUT1     |LPIOn Output Value
- * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
- * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
- * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
- * |[2]     |DOUT2     |LPIOn Output Value
- * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
- * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
- * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
- * |[3]     |DOUT3     |LPIOn Output Value
- * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
- * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
- * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
- * |[4]     |DOUT4     |LPIOn Output Value
- * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
- * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
- * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
- * |[5]     |DOUT5     |LPIOn Output Value
- * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
- * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
- * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
- * |[6]     |DOUT6     |LPIOn Output Value
- * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
- * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
- * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
- * |[7]     |DOUT7     |LPIOn Output Value
- * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
- * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
- * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
- * @var LPGPIO_T::PIN
- * Offset: 0x08  LPIOn Pin Value
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |PIN0      |LPIOn Pin Value
- * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
- * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
- * |[1]     |PIN1      |LPIOn Pin Value
- * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
- * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
- * |[2]     |PIN2      |LPIOn Pin Value
- * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
- * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
- * |[3]     |PIN3      |LPIOn Pin Value
- * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
- * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
- * |[4]     |PIN4      |LPIOn Pin Value
- * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
- * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
- * |[5]     |PIN5      |LPIOn Pin Value
- * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
- * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
- * |[6]     |PIN6      |LPIOn Pin Value
- * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
- * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
- * |[7]     |PIN7      |LPIOn Pin Value
- * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
- * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
- * @var LPGPIO_T::DSRST
- * Offset: 0x0C  LPIOn Data Output Set and Reset Control
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |DSET0     |LPIOn Data Ouput Set Control (Write Only)
- * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 1.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
- * |[1]     |DSET1     |LPIOn Data Ouput Set Control (Write Only)
- * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 1.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
- * |[2]     |DSET2     |LPIOn Data Ouput Set Control (Write Only)
- * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 1.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
- * |[3]     |DSET3     |LPIOn Data Ouput Set Control (Write Only)
- * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 1.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
- * |[4]     |DSET4     |LPIOn Data Ouput Set Control (Write Only)
- * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 1.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
- * |[5]     |DSET5     |LPIOn Data Ouput Set Control (Write Only)
- * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 1.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
- * |[6]     |DSET6     |LPIOn Data Ouput Set Control (Write Only)
- * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 1.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
- * |[7]     |DSET7     |LPIOn Data Ouput Set Control (Write Only)
- * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 1.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
- * |[16]    |DRESET0   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- * |[17]    |DRESET1   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- * |[18]    |DRESET2   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- * |[19]    |DRESET3   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- * |[20]    |DRESET4   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- * |[21]    |DRESET5   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- * |[22]    |DRESET6   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- * |[23]    |DRESET7   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
- * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- * @var LPGPIO_T::DRST
- * Offset: 0x10  LPIOn Data Output Reset Control
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |DRESET0   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- * |[1]     |DRESET1   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- * |[2]     |DRESET2   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- * |[3]     |DRESET3   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- * |[4]     |DRESET4   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- * |[5]     |DRESET5   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- * |[6]     |DRESET6   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- * |[7]     |DRESET7   |LPIOn Data Ouput Reset Control (Write Only)
- * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
- * |        |          |0 = No action.
- * |        |          |1 = Reset LPIOn to 0.
- * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
- * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
- */
+    * @var LPGPIO_T::MODE
+    * Offset: 0x00  LPIOn Mode Control
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[0]     |MODE0     |LPIOn I/O Pin Mode Control
+    * |        |          |Determine each I/O mode of LPIOn pins.
+    * |        |          |0 = LPIOn is in Input mode.
+    * |        |          |1 = LPIOn is in Push-pull Output mode.
+    * |[1]     |MODE1     |LPIOn I/O Pin Mode Control
+    * |        |          |Determine each I/O mode of LPIOn pins.
+    * |        |          |0 = LPIOn is in Input mode.
+    * |        |          |1 = LPIOn is in Push-pull Output mode.
+    * |[2]     |MODE2     |LPIOn I/O Pin Mode Control
+    * |        |          |Determine each I/O mode of LPIOn pins.
+    * |        |          |0 = LPIOn is in Input mode.
+    * |        |          |1 = LPIOn is in Push-pull Output mode.
+    * |[3]     |MODE3     |LPIOn I/O Pin Mode Control
+    * |        |          |Determine each I/O mode of LPIOn pins.
+    * |        |          |0 = LPIOn is in Input mode.
+    * |        |          |1 = LPIOn is in Push-pull Output mode.
+    * |[4]     |MODE4     |LPIOn I/O Pin Mode Control
+    * |        |          |Determine each I/O mode of LPIOn pins.
+    * |        |          |0 = LPIOn is in Input mode.
+    * |        |          |1 = LPIOn is in Push-pull Output mode.
+    * |[5]     |MODE5     |LPIOn I/O Pin Mode Control
+    * |        |          |Determine each I/O mode of LPIOn pins.
+    * |        |          |0 = LPIOn is in Input mode.
+    * |        |          |1 = LPIOn is in Push-pull Output mode.
+    * |[6]     |MODE6     |LPIOn I/O Pin Mode Control
+    * |        |          |Determine each I/O mode of LPIOn pins.
+    * |        |          |0 = LPIOn is in Input mode.
+    * |        |          |1 = LPIOn is in Push-pull Output mode.
+    * |[7]     |MODE7     |LPIOn I/O Pin Mode Control
+    * |        |          |Determine each I/O mode of LPIOn pins.
+    * |        |          |0 = LPIOn is in Input mode.
+    * |        |          |1 = LPIOn is in Push-pull Output mode.
+    * |[31]    |LPPDMA_EN |LPPDMA Enable Bit
+    * |        |          |This bit is used to enable LPPDMA to access LPGPIO when chip is in NPD0/1/2/3/4.
+    * |        |          |0 = LPPDMA cannot access LPGPIO when chip is in NPD0/1/2/3/4.
+    * |        |          |1 = LPPDMA can access LPGPIO when chip is in NPD0/1/2/3/4.
+    * @var LPGPIO_T::DOUT
+    * Offset: 0x04  LPIOn Data Output Value
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[0]     |DOUT0     |LPIOn Output Value
+    * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
+    * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
+    * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
+    * |[1]     |DOUT1     |LPIOn Output Value
+    * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
+    * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
+    * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
+    * |[2]     |DOUT2     |LPIOn Output Value
+    * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
+    * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
+    * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
+    * |[3]     |DOUT3     |LPIOn Output Value
+    * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
+    * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
+    * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
+    * |[4]     |DOUT4     |LPIOn Output Value
+    * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
+    * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
+    * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
+    * |[5]     |DOUT5     |LPIOn Output Value
+    * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
+    * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
+    * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
+    * |[6]     |DOUT6     |LPIOn Output Value
+    * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
+    * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
+    * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
+    * |[7]     |DOUT7     |LPIOn Output Value
+    * |        |          |Each of these bits controls the status of a LPIOn pin when the LPIOn is configured as Push-pull output mode.
+    * |        |          |0 = LPIOn will drive Low if the LPIOn pin is configured as Push-pull output mode.
+    * |        |          |1 = LPIOn will drive High if the LPIOn pin is configured as Push-pull output mode.
+    * @var LPGPIO_T::PIN
+    * Offset: 0x08  LPIOn Pin Value
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[0]     |PIN0      |LPIOn Pin Value
+    * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
+    * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
+    * |[1]     |PIN1      |LPIOn Pin Value
+    * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
+    * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
+    * |[2]     |PIN2      |LPIOn Pin Value
+    * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
+    * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
+    * |[3]     |PIN3      |LPIOn Pin Value
+    * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
+    * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
+    * |[4]     |PIN4      |LPIOn Pin Value
+    * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
+    * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
+    * |[5]     |PIN5      |LPIOn Pin Value
+    * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
+    * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
+    * |[6]     |PIN6      |LPIOn Pin Value
+    * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
+    * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
+    * |[7]     |PIN7      |LPIOn Pin Value
+    * |        |          |Each bit of the register reflects the actual status of the respective Pn pin
+    * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
+    * @var LPGPIO_T::DSRST
+    * Offset: 0x0C  LPIOn Data Output Set and Reset Control
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[0]     |DSET0     |LPIOn Data Ouput Set Control (Write Only)
+    * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 1.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
+    * |[1]     |DSET1     |LPIOn Data Ouput Set Control (Write Only)
+    * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 1.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
+    * |[2]     |DSET2     |LPIOn Data Ouput Set Control (Write Only)
+    * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 1.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
+    * |[3]     |DSET3     |LPIOn Data Ouput Set Control (Write Only)
+    * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 1.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
+    * |[4]     |DSET4     |LPIOn Data Ouput Set Control (Write Only)
+    * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 1.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
+    * |[5]     |DSET5     |LPIOn Data Ouput Set Control (Write Only)
+    * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 1.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
+    * |[6]     |DSET6     |LPIOn Data Ouput Set Control (Write Only)
+    * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 1.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
+    * |[7]     |DSET7     |LPIOn Data Ouput Set Control (Write Only)
+    * |        |          |Writing 1 to each bit can set LPIOn pin output data to 1.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 1.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DSET[n] will make DOUT[n] reflect the set value.
+    * |[16]    |DRESET0   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    * |[17]    |DRESET1   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    * |[18]    |DRESET2   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    * |[19]    |DRESET3   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    * |[20]    |DRESET4   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    * |[21]    |DRESET5   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    * |[22]    |DRESET6   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    * |[23]    |DRESET7   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : If DRESET[n] and DSET[n] are both set, DSET[n] has higher pirority.
+    * |        |          |Note 3 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    * @var LPGPIO_T::DRST
+    * Offset: 0x10  LPIOn Data Output Reset Control
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[0]     |DRESET0   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    * |[1]     |DRESET1   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    * |[2]     |DRESET2   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    * |[3]     |DRESET3   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    * |[4]     |DRESET4   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    * |[5]     |DRESET5   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    * |[6]     |DRESET6   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    * |[7]     |DRESET7   |LPIOn Data Ouput Reset Control (Write Only)
+    * |        |          |Writing 1 to each bit can reset LPIOn pin output data to 0.
+    * |        |          |0 = No action.
+    * |        |          |1 = Reset LPIOn to 0.
+    * |        |          |Note 1 : This bit field is write only, and reading this field will respond with 0.
+    * |        |          |Note 2 : Writing 1 to DRESET[n] will make DOUT[n] reflect the reset value.
+    */
     __IO uint32_t MODE;                  /*!< [0x0000] LPIOn Mode Control                                               */
     __IO uint32_t DOUT;                  /*!< [0x0004] LPIOn Data Output Value                                          */
     __I  uint32_t PIN;                   /*!< [0x0008] LPIOn Pin Value                                                  */
@@ -489,7 +489,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __LPGPIO_REG_H__ */

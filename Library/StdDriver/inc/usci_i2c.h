@@ -289,7 +289,7 @@ void UI2C_EnableInt(UI2C_T *ui2c, uint32_t u32Mask);
 uint32_t UI2C_GetBusClockFreq(UI2C_T *ui2c);
 uint32_t UI2C_SetBusClockFreq(UI2C_T *ui2c, uint32_t u32BusClock);
 uint32_t UI2C_GetIntFlag(UI2C_T *ui2c, uint32_t u32Mask);
-void UI2C_ClearIntFlag(UI2C_T* ui2c, uint32_t u32Mask);
+void UI2C_ClearIntFlag(UI2C_T *ui2c, uint32_t u32Mask);
 uint32_t UI2C_GetData(UI2C_T *ui2c);
 void UI2C_SetData(UI2C_T *ui2c, uint8_t u8Data);
 void UI2C_SetSlaveAddr(UI2C_T *ui2c, uint8_t u8SlaveNo, uint16_t u16SlaveAddr, uint8_t u8GCMode);

@@ -180,24 +180,24 @@ enum
 /* RSA working buffer for normal mode */
 typedef struct
 {
- /**
- * @var RSA_BUF_NORMAL_T::au32RsaOutput[128]
- * The RSA answer.
- * ---------------------------------------------------------------------------------------------------
- * @var RSA_BUF_NORMAL_T::au32RsaN[128]
- * The base of modulus operation word.
- * ---------------------------------------------------------------------------------------------------
- * @var RSA_BUF_NORMAL_T::au32RsaM[128]
- * The base of exponentiation words.
- * ---------------------------------------------------------------------------------------------------
- * @var RSA_BUF_NORMAL_T::au32RsaE[128]
- * The exponent of exponentiation words.
- * ---------------------------------------------------------------------------------------------------
- */
-    uint32_t au32RsaOutput[128]; 
-    uint32_t au32RsaN[128]; 
-    uint32_t au32RsaM[128]; 
-    uint32_t au32RsaE[128]; 
+    /**
+    * @var RSA_BUF_NORMAL_T::au32RsaOutput[128]
+    * The RSA answer.
+    * ---------------------------------------------------------------------------------------------------
+    * @var RSA_BUF_NORMAL_T::au32RsaN[128]
+    * The base of modulus operation word.
+    * ---------------------------------------------------------------------------------------------------
+    * @var RSA_BUF_NORMAL_T::au32RsaM[128]
+    * The base of exponentiation words.
+    * ---------------------------------------------------------------------------------------------------
+    * @var RSA_BUF_NORMAL_T::au32RsaE[128]
+    * The exponent of exponentiation words.
+    * ---------------------------------------------------------------------------------------------------
+    */
+    uint32_t au32RsaOutput[128];
+    uint32_t au32RsaN[128];
+    uint32_t au32RsaM[128];
+    uint32_t au32RsaE[128];
 } RSA_BUF_NORMAL_T;
 
 /* RSA working buffer for CRT ( + CRT bypass) mode */
@@ -369,7 +369,7 @@ typedef struct
   * \hideinitializer
   */
 #define AES_DISABLE_KEY_PROTECT(crypto) ((crypto)->AES_CTL = ((crypto)->AES_CTL & ~CRYPTO_AES_CTL_KEYPRT_Msk) | (0x16UL<<CRYPTO_AES_CTL_KEYUNPRT_Pos)); \
-                                      ((crypto)->AES_CTL &= ~CRYPTO_AES_CTL_KEYPRT_Msk)
+    ((crypto)->AES_CTL &= ~CRYPTO_AES_CTL_KEYPRT_Msk)
 
 /**
   * @brief This macro enables SHA interrupt.
@@ -485,12 +485,12 @@ void AES_Start_KS(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t u32DMAMode, in
 void AES_SetKey_KS(CRYPTO_T *crypto, KS_MEM_Type mem, int32_t i32KeyIdx);
 
 void CHA_SetKeyandNonce(CRYPTO_T *crypto,  unsigned char *key, unsigned char *nonce, int counter);
-void CHA_SetDMATransfer(CRYPTO_T *crypto, uint8_t* u8pInputData,  uint8_t* u8pOutputData, int src_len);
+void CHA_SetDMATransfer(CRYPTO_T *crypto, uint8_t *u8pInputData,  uint8_t *u8pOutputData, int src_len);
 void CHA_Start(CRYPTO_T *crypto, int is_encrypt);
 void CHAPOLY_Complete(CRYPTO_T *crypto);
 void CHAPOLY_Start(CRYPTO_T *crypto);
 void POLY1305_SetKeyandClearNonce(CRYPTO_T *crypto,  unsigned char *key);
-void POLY1305_SetDMATransfer(CRYPTO_T *crypto, uint8_t* u8pInputData,  uint8_t* u8pOutputData, int src_len);
+void POLY1305_SetDMATransfer(CRYPTO_T *crypto, uint8_t *u8pInputData,  uint8_t *u8pOutputData, int src_len);
 void POLY1305_Start(CRYPTO_T *crypto);
 
 void SHA_Open(CRYPTO_T *crypto, uint32_t u32OpMode, uint32_t u32SwapType, uint32_t hmac_key_len);
@@ -521,7 +521,7 @@ void Hex2RegEx(char input[], uint32_t volatile reg[], int shift);
 int32_t ECC_GetCurve(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, ECC_CURVE *curve);
 int ecc_strcmp(char *s1, char *s2);
 int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *message, int x_ksnum, int y_ksnum, char *R, char *S);
-int32_t RSA_Open(CRYPTO_T *crypto, uint32_t u32OpMode, uint32_t u32KeySize,void *psRSA_Buf, uint32_t u32BufSize, uint32_t u32UseKS);
+int32_t RSA_Open(CRYPTO_T *crypto, uint32_t u32OpMode, uint32_t u32KeySize, void *psRSA_Buf, uint32_t u32BufSize, uint32_t u32UseKS);
 int32_t RSA_SetKey(CRYPTO_T *crypto, char *Key);
 int32_t RSA_SetDMATransfer(CRYPTO_T *crypto, char *Src, char *n, char *P, char *Q);
 void RSA_Start(CRYPTO_T *crypto);

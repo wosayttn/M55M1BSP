@@ -272,7 +272,8 @@ __STATIC_INLINE void LPI2C_STOP(LPI2C_T *i2c)
 {
 
     (i2c)->CTL0 |= (LPI2C_CTL0_SI_Msk | LPI2C_CTL0_STO_Msk);
-    while(i2c->CTL0 & LPI2C_CTL0_STO_Msk)
+
+    while (i2c->CTL0 & LPI2C_CTL0_STO_Msk)
     {
     }
 }

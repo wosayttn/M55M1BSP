@@ -107,7 +107,7 @@ struct test_sm_data
     /* Size fo the state machine array above */
     const int size;
     /* The array of names for states, can be NULL */
-    const char * const * const names;
+    const char *const *const names;
     /* The size of the above names array */
     const int names_size;
 };

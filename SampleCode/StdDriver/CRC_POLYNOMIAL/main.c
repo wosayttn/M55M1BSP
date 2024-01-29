@@ -111,10 +111,13 @@ int main(void)
 
     if (IsWrite1sCOM)
         u32Attribute |= CRC_WDATA_COM;
+
     if (IsWriteRVS)
         u32Attribute |= CRC_WDATA_RVS;
+
     if (IsCRC1sCOM)
         u32Attribute |= CRC_CHECKSUM_COM;
+
     if (IsCRCRVS)
         u32Attribute |= CRC_CHECKSUM_RVS;
 

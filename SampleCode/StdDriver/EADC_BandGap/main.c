@@ -64,7 +64,7 @@ void SYS_Init(void)
     /* Workaround(TESTCHIP_ONLY)  */
     /* To measure the VBG voltage in TC8263, ACMP_N must be set through ACMP to turn on VBG.*/
     CLK_EnableModuleClock(ACMP01_MODULE);
-    ACMP_Open(ACMP01,0,ACMP_CTL_NEGSEL_VBG,ACMP_CTL_HYSTERESIS_DISABLE);
+    ACMP_Open(ACMP01, 0, ACMP_CTL_NEGSEL_VBG, ACMP_CTL_HYSTERESIS_DISABLE);
 
     /* Debug UART clock setting*/
     SetDebugUartCLK();

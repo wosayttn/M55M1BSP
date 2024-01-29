@@ -34,25 +34,29 @@ NVT_ITCM void PDMA0_IRQHandler(void)
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     uint32_t u32Status = PDMA_GET_INT_STATUS(PDMA0);
 
-    if(u32Status & PDMA_INTSTS_ABTIF_Msk)        /* abort */
+    if (u32Status & PDMA_INTSTS_ABTIF_Msk)       /* abort */
     {
-        if(PDMA_GET_ABORT_STS(PDMA0) & PDMA_ABTSTS_ABTIF0_Msk)
+        if (PDMA_GET_ABORT_STS(PDMA0) & PDMA_ABTSTS_ABTIF0_Msk)
             g_u32IsTestOver = 2;
+
         PDMA_CLR_ABORT_FLAG(PDMA0, PDMA_ABTSTS_ABTIF0_Msk);
     }
-    else if(u32Status & PDMA_INTSTS_TDIF_Msk)   /* done */
+    else if (u32Status & PDMA_INTSTS_TDIF_Msk)  /* done */
     {
-        if(PDMA_GET_TD_STS(PDMA0) & PDMA_TDSTS_TDIF0_Msk)
+        if (PDMA_GET_TD_STS(PDMA0) & PDMA_TDSTS_TDIF0_Msk)
             g_u32IsTestOver = 1;
+
         PDMA_CLR_TD_FLAG(PDMA0, PDMA_TDSTS_TDIF0_Msk);
     }
     else
         printf("unknown interrupt %x !!\n", u32Status);
+
     __DSB();
     __ISB();
-    while(PDMA_GET_INT_STATUS(PDMA0))
+
+    while (PDMA_GET_INT_STATUS(PDMA0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for PDMA0 IntFlag time-out!\n");
         }
@@ -164,7 +168,7 @@ int main(void)
     u32UpdatedPeriod = ((u32InitPeriod + 1) * 2) - 1;
 
     /* Set source address as u32UpdatedPeriod(no increment) and destination address as Timer0 PWM period register(no increment) */
-    PDMA_SetTransferAddr(PDMA0, 0, (uint32_t)&u32UpdatedPeriod, PDMA_SAR_FIX, (uint32_t)&(TIMER0->PWMPERIOD), PDMA_DAR_FIX);
+    PDMA_SetTransferAddr(PDMA0, 0, (uint32_t)&u32UpdatedPeriod, PDMA_SAR_FIX, (uint32_t) & (TIMER0->PWMPERIOD), PDMA_DAR_FIX);
 
     /* Select PDMA request source as PDMA_TMR0(Timer0 PWM accumulator interrupt) */
     PDMA_SetTransferMode(PDMA0, 0, PDMA_TMR0, FALSE, 0);
@@ -183,9 +187,10 @@ int main(void)
 
     /* Wait for PDMA transfer done */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (g_u32IsTestOver != 1)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for PDMA transfer done time-out!\n");
             return -1;
@@ -206,10 +211,11 @@ int main(void)
 
     /* Wait until Timer0 PWM Stop */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while((TIMER0->PWMCNT & TIMER_PWMCNT_CNT_Msk) != 0)
-        if(--u32TimeOutCnt == 0) break;
 
-    if(u32TimeOutCnt == 0)
+    while ((TIMER0->PWMCNT & TIMER_PWMCNT_CNT_Msk) != 0)
+        if (--u32TimeOutCnt == 0) break;
+
+    if (u32TimeOutCnt == 0)
         printf("Wait for Timer PWM stop time-out!\n");
     else
         printf("Timer0 PWM has STOP.\n");

@@ -70,9 +70,9 @@ void SYS_Init(void)
     SetDebugUartCLK();
 
     /* Set PA.10 to input mode */
-    GPIO_SetMode(PA,BIT10,GPIO_MODE_INPUT);
+    GPIO_SetMode(PA, BIT10, GPIO_MODE_INPUT);
     /* Set PA.11 to input mode */
-    GPIO_SetMode(PA,BIT11,GPIO_MODE_INPUT); 
+    GPIO_SetMode(PA, BIT11, GPIO_MODE_INPUT);
 
     /* Set PA11 multi-function pin for ACMP0 positive input pin */
     SET_ACMP0_P0_PA11();

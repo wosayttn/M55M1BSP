@@ -387,6 +387,8 @@ __NO_RETURN void Reset_Handler(void)
 
 __NO_RETURN void Reset_Handler_Main(void)
 {
+#if 0   // To reduce code size
+
     if ((__PC() & NS_OFFSET) == 0)
     {
         // Unlock protected registers
@@ -421,6 +423,8 @@ __NO_RETURN void Reset_Handler_Main(void)
         // Enable SRAM1 clock
         CLK->SRAMCTL |= CLK_SRAMCTL_SRAM1CKEN_Msk;
     }
+
+#endif
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
     __TZ_set_STACKSEAL_S((uint32_t *)(&__STACK_SEAL));

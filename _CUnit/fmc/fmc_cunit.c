@@ -430,6 +430,7 @@ void API_FMC_Erase()
         if (u32Data != 0xFFFFFFFFul)
             CU_FAIL();
     }
+
 #endif
 
     /*
@@ -706,6 +707,7 @@ void API_FMC_CheckAllOne(void)
         printf("READ_ALLONE_NOT failed!\n");    /* FMC_CheckAllOne() READ_ALLONE_NOT failed on LDROM page 0. */
         CU_FAIL();
     }
+
 #endif
 
     CU_PASS();

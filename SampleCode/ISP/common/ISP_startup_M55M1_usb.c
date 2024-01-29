@@ -1,9 +1,9 @@
 /**************************************************************************//**
  * @file     startup_M55M1.c
  * @version  V1.00
- * @brief    CMSIS Device Startup File for NuMicro M55M1
+ * @brief    Simplified CMSIS Device Startup File for NuMicro M55M1
  *
- * SPDX-License-Identifier: Apache-2.0
+ * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 
@@ -299,125 +299,12 @@ const VECTOR_TABLE_Type DTCM_VECTOR_TABLE[] NVT_DTCM_VTOR =
     HSUSBH_IRQHandler,                        /*!<  60 High Speed USB Host Interrupt Handler            */
     HSUSBD_IRQHandler,                        /*!<  61 High Speed USB Device Interrupt Handler          */
     HSOTG_IRQHandler,                         /*!<  62 High Speed OTG Interrupt Handler                 */
-    EMAC0_IRQHandler,                         /*!<  63 EMAC0 Interrupt Handler                          */
-    QSPI0_IRQHandler,                         /*!<  64 QSPI0 Interrupt Handler                          */
-    QSPI1_IRQHandler,                         /*!<  65 QSPI1 Interrupt Handler                          */
-    SPI0_IRQHandler,                          /*!<  66 SPI0 Interrupt Handler                           */
-    SPI1_IRQHandler,                          /*!<  67 SPI1 Interrupt Handler                           */
-    SPI2_IRQHandler,                          /*!<  68 SPI2 Interrupt Handler                           */
-    SPI3_IRQHandler,                          /*!<  69 SPI3 Interrupt Handler                           */
-
-    0,                                        /*!<     Reserved                                         */
-    LPSPI0_IRQHandler,                        /*!<  71 Low Power SPI 0 Interrupt Handler                */
-    0,                                        /*!<     Reserved                                         */
-    SPIM0_IRQHandler,                         /*!<  73 SPIM0 Interrupt Handler                          */
-    0,                                        /*!<     Reserved                                         */
-    UART0_IRQHandler,                         /*!<  75 UART0 Interrupt Handler                          */
-    UART1_IRQHandler,                         /*!<  76 UART1 Interrupt Handler                          */
-    UART2_IRQHandler,                         /*!<  77 UART2 Interrupt Handler                          */
-    UART3_IRQHandler,                         /*!<  78 UART3 Interrupt Handler                          */
-    UART4_IRQHandler,                         /*!<  79 UART4 Interrupt Handler                          */
-
-    UART5_IRQHandler,                         /*!<  80 UART5 Interrupt Handler                          */
-    UART6_IRQHandler,                         /*!<  81 UART6 Interrupt Handler                          */
-    UART7_IRQHandler,                         /*!<  82 UART7 Interrupt Handler                          */
-    UART8_IRQHandler,                         /*!<  83 UART8 Interrupt Handler                          */
-    UART9_IRQHandler,                         /*!<  84 UART9 Interrupt Handler                          */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    EINT6_IRQHandler,                         /*!<  88 External Input 6 Interrupt Handler               */
-    EINT7_IRQHandler,                         /*!<  89 External Input 7 Interrupt Handler               */
-
-    LPUART0_IRQHandler,                       /*!<  90 Low Power UART 0 Interrupt Handler               */
-    0,                                        /*!<     Reserved                                         */
-    I2C0_IRQHandler,                          /*!<  92 I2C0 Interrupt Handler                           */
-    I2C1_IRQHandler,                          /*!<  93 I2C1 Interrupt Handler                           */
-    I2C2_IRQHandler,                          /*!<  94 I2C2 Interrupt Handler                           */
-    I2C3_IRQHandler,                          /*!<  95 I2C3 Interrupt Handler                           */
-    LPI2C0_IRQHandler,                        /*!<  96 Low Power I2C 0 Interrupt Handler                */
-    USCI0_IRQHandler,                         /*!<  97 USCI0 Interrupt Handler                          */
-    0,                                        /*!<     Reserved                                         */
-    SC0_IRQHandler,                           /*!<  99 Smart Card Host 0 Interrupt Handler              */
-
-    SC1_IRQHandler,                           /*!< 100 Smart Card Host 1 Interrupt Handler              */
-    SC2_IRQHandler,                           /*!< 101 Smart Card Host 2 Interrupt Handler              */
-    PSIO_IRQHandler,                          /*!< 102 PSIO Interrupt Handler                           */
-    DMIC0_IRQHandler,                         /*!< 103 DMIC0 Interrupt Handler                          */
-    DMIC0VAD_IRQHandler,                      /*!< 104 DMIC0 VAD Interrupt Handler                      */
-    I2S0_IRQHandler,                          /*!< 105 I2S0 Interrupt Handler                           */
-    I2S1_IRQHandler,                          /*!< 106 I2S1 Interrupt Handler                           */
-    TRNG_IRQHandler,                          /*!< 107 TRNG Interrupt Handler                           */
-    I3C0_IRQHandler,                          /*!< 108 I3C0 Interrupt Handler                           */
-    0,                                        /*!<     Reserved                                         */
-
-    OTFC0_IRQHandler,                         /*!< 110 OTFC0 Interrupt Handler                          */
-    0,                                        /*!<     Reserved                                         */
-    KPI_IRQHandler,                           /*!< 112 KPI Interrupt Handler                            */
-    SDH0_IRQHandler,                          /*!< 113 SD Host 0 Interrupt Handler                      */
-    SDH1_IRQHandler,                          /*!< 114 SD Host 1 Interrupt Handler                      */
-    CCAP_IRQHandler,                          /*!< 115 CCAP Interrupt Handler                           */
-    CRYPTO_IRQHandler,                        /*!< 116 CRYPTO Interrupt Handler                         */
-    CANFD00_IRQHandler,                       /*!< 117 CANFD0 Interrupt 0 Handler                       */
-    CANFD01_IRQHandler,                       /*!< 118 CANFD0 Interrupt 1 Handler                       */
-    CANFD10_IRQHandler,                       /*!< 119 CANFD1 Interrupt 0 Handler                       */
-
-    CANFD11_IRQHandler,                       /*!< 120 CANFD1 Interrupt 1 Handler                       */
-    ACMP01_IRQHandler,                        /*!< 121 ACMP0 and ACMP1 Interrupt Handler                */
-    ACMP23_IRQHandler,                        /*!< 122 ACMP2 and ACMP3 Interrupt Handler                */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    CRC_IRQHandler,                           /*!< 125 CRC Interrupt Handler                            */
-    EADC00_IRQHandler,                        /*!< 126 EADC0 Interrupt 0 Handler                        */
-    EADC01_IRQHandler,                        /*!< 127 EADC0 Interrupt 1 Handler                        */
-    EADC02_IRQHandler,                        /*!< 128 EADC0 Interrupt 2 Handler                        */
-    EADC03_IRQHandler,                        /*!< 129 EADC0 Interrupt 3 Handler                        */
-
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    LPADC0_IRQHandler,                        /*!< 134 Low Power ADC 0 Interrupt Handler                */
-    DAC01_IRQHandler,                         /*!< 135 DAC0 and DAC1 Interrupt Handler                  */
-    0,                                        /*!<     Reserved                                         */
-    EQEI0_IRQHandler,                         /*!< 137 EQEI0 Interrupt Handler                          */
-    EQEI1_IRQHandler,                         /*!< 138 EQEI1 Interrupt Handler                          */
-    EQEI2_IRQHandler,                         /*!< 139 EQEI2 Interrupt Handler                          */
-
-    EQEI3_IRQHandler,                         /*!< 140 EQEI3 Interrupt Handler                          */
-    ECAP0_IRQHandler,                         /*!< 141 ECAP0 Interrupt Handler                          */
-    ECAP1_IRQHandler,                         /*!< 142 ECAP1 Interrupt Handler                          */
-    ECAP2_IRQHandler,                         /*!< 143 ECAP2 Interrupt Handler                          */
-    ECAP3_IRQHandler,                         /*!< 144 ECAP3 Interrupt Handler                          */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    AWF_IRQHandler,                           /*!< 149 AWF Interrupt Handler                            */
-
-    UTCPD_IRQHandler,                         /*!< 150 UTCPD Interrupt Handler                          */
-    ETI_IRQHandler,                           /*!< 151 ETI Interrupt Handler                            */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-    0,                                        /*!<     Reserved                                         */
-
-    GDMACH0_IRQHandler,                       /*!< 160 GDMA Channel 0 Interrupt Handler                 */
-    GDMACH1_IRQHandler,                       /*!< 161 GDMA Channel 1 Interrupt Handler                 */
 };
 
 #if defined ( __GNUC__ )
     #pragma GCC diagnostic pop
 #endif
 
-__WEAK void Reset_Handler_PreInit(void)
-{
-    // Empty function
-}
 
 /*----------------------------------------------------------------------------
   Reset Handler called on controller reset
@@ -436,6 +323,8 @@ __NO_RETURN void Reset_Handler(void)
 
 __NO_RETURN void Reset_Handler_Main(void)
 {
+#if 0   // To reduce code size
+
     if ((__PC() & NS_OFFSET) == 0)
     {
         // Unlock protected registers
@@ -471,38 +360,21 @@ __NO_RETURN void Reset_Handler_Main(void)
         CLK->SRAMCTL |= CLK_SRAMCTL_SRAM1CKEN_Msk;
     }
 
-#if (defined (__FPU_USED) && (__FPU_USED == 1U)) || \
-    (defined (__ARM_FEATURE_MVE) && (__ARM_FEATURE_MVE > 0U))
-    SCB->CPACR |= ((3U << 10U * 2U) |         /* Enable CP10 Full Access */
-                   (3U << 11U * 2U));         /* Enable CP11 Full Access */
-
-    /* Set low-power state for PDEPU                */
-    /*  0b00  | ON, PDEPU is not in low-power state */
-    /*  0b01  | ON, but the clock is off            */
-    /*  0b10  | RET(ention)                         */
-    /*  0b11  | OFF                                 */
-
-    /* Clear ELPSTATE, value is 0b11 on Cold reset */
-    PWRMODCTL->CPDLPSTATE &= ~(PWRMODCTL_CPDLPSTATE_ELPSTATE_Msk << PWRMODCTL_CPDLPSTATE_ELPSTATE_Pos);
-
-    /* Favor best FP/MVE performance by default, avoid EPU switch-ON delays */
-    /* PDEPU ON, Clock OFF */
-    PWRMODCTL->CPDLPSTATE |= 0x1 << PWRMODCTL_CPDLPSTATE_ELPSTATE_Pos;
 #endif
-
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
     __TZ_set_STACKSEAL_S((uint32_t *)(&__STACK_SEAL));
 #endif
 
+#if 0   // To reduce code size
     SCB_InvalidateICache();
     SCB_EnableICache();
+#endif
 
 #ifdef NVT_DCACHE_ON
     SCB_InvalidateDCache();
     SCB_EnableDCache();
 #endif  // NVT_DCACHE_ON
 
-    Reset_Handler_PreInit();
     __PROGRAM_START();      // Enter PreMain (C library entry point)
 }
 
@@ -515,36 +387,9 @@ __NO_RETURN void Reset_Handler_Main(void)
 /*----------------------------------------------------------------------------
   Hard Fault Handler
  *----------------------------------------------------------------------------*/
-extern void ProcessHardFault(uint32_t *pu32StackFrame);
-
-struct StackFrame
-{
-    uint32_t r0;
-    uint32_t r1;
-    uint32_t r2;
-    uint32_t r3;
-    uint32_t r12;
-    uint32_t lr;
-    uint32_t pc;
-    uint32_t xPsr;
-};
-
 void HardFault_Handler(void)
 {
-    uint32_t u32IRQ;
-    struct StackFrame *psStackFrame = NULL;
-
-    (void)u32IRQ;
-    __ASM volatile("mrs %0, ipsr            \n" // Read IPSR (Exception number)
-                   "sub %0, #16             \n" // Get it into IRQn_Type range
-                   "tst lr, #4              \n" // Select the stack which was in use
-                   "ite eq                  \n"
-                   "mrseq %1, msp           \n"
-                   "mrsne %1, psp           \n"
-                   : "=r"(u32IRQ), "=r"(psStackFrame));
-
-    // Get the instruction caused the hardfault
-    ProcessHardFault((uint32_t *)psStackFrame);
+    while (1) ;
 }
 
 /*----------------------------------------------------------------------------
@@ -552,9 +397,11 @@ void HardFault_Handler(void)
  *----------------------------------------------------------------------------*/
 void Default_Handler(void)
 {
-    while (1);
+    while (1) ;
 }
 
 #if defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
     #pragma clang diagnostic pop
 #endif
+
+/*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

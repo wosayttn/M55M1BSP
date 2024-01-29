@@ -19,8 +19,8 @@
 
 /* Only track BC1.2 charge current if we support BC1.2 charging */
 #if defined(HAS_TASK_USB_CHG) || defined(HAS_TASK_USB_CHG_P0) || \
-defined(TEST_BUILD)
-#define CHARGE_MANAGER_BC12
+    defined(TEST_BUILD)
+    #define CHARGE_MANAGER_BC12
 #endif
 
 /**
@@ -118,28 +118,28 @@ enum ceil_requestor
 };
 
 #define CHARGE_PORT_COUNT (CONFIG_USB_PD_PORT_MAX_COUNT + \
-               CONFIG_DEDICATED_CHARGE_PORT_COUNT)
+                           CONFIG_DEDICATED_CHARGE_PORT_COUNT)
 #if (CONFIG_DEDICATED_CHARGE_PORT_COUNT > 0)
 
-/**
- * By default, dedicated port has following properties:
- *
- * - dedicated port is sink only.
- * - dedicated port is always connected.
- * - dedicated port is given highest priority (supplier type is always
- *   CHARGE_SUPPLIER_DEDICATED).
- * - dualrole capability of dedicated port is always CAP_DEDICATED.
- * - there's only one dedicated port, its number is larger than PD port number.
- *
- * Sink property can be customized by implementing board_charge_port_is_sink()
- * and board_fill_source_power_info().
- * Connected can be customized by implementing board_charge_port_is_connected().
- */
-#if !defined(DEDICATED_CHARGE_PORT)
-#error "DEDICATED_CHARGE_PORT must be defined"
-#elif DEDICATED_CHARGE_PORT < CONFIG_USB_PD_PORT_MAX_COUNT
-#error "DEDICATED_CHARGE_PORT must larger than pd port numbers"
-#endif /* !defined(DEDICATED_CHARGE_PORT) */
+    /**
+    * By default, dedicated port has following properties:
+    *
+    * - dedicated port is sink only.
+    * - dedicated port is always connected.
+    * - dedicated port is given highest priority (supplier type is always
+    *   CHARGE_SUPPLIER_DEDICATED).
+    * - dualrole capability of dedicated port is always CAP_DEDICATED.
+    * - there's only one dedicated port, its number is larger than PD port number.
+    *
+    * Sink property can be customized by implementing board_charge_port_is_sink()
+    * and board_fill_source_power_info().
+    * Connected can be customized by implementing board_charge_port_is_connected().
+    */
+    #if !defined(DEDICATED_CHARGE_PORT)
+        #error "DEDICATED_CHARGE_PORT must be defined"
+    #elif DEDICATED_CHARGE_PORT < CONFIG_USB_PD_PORT_MAX_COUNT
+        #error "DEDICATED_CHARGE_PORT must larger than pd port numbers"
+    #endif /* !defined(DEDICATED_CHARGE_PORT) */
 
 #endif /* CONFIG_DEDICATED_CHARGE_PORT_COUNT > 0 */
 
@@ -236,8 +236,8 @@ enum charge_supplier charge_manager_get_supplier(void);
 int charge_manager_get_vbus_voltage(int port);
 
 #ifdef CONFIG_USB_PD_LOGGING
-/* Save power state log entry for the given port */
-void charge_manager_save_log(int port);
+    /* Save power state log entry for the given port */
+    void charge_manager_save_log(int port);
 #endif
 
 /**
@@ -290,13 +290,13 @@ void board_set_charge_limit(int port, int supplier, int charge_ma,
 int board_vbus_source_enabled(int port);
 
 #ifdef CONFIG_USB_PD_VBUS_MEASURE_ADC_EACH_PORT
-/**
- * Gets the adc_channel for the specified port.
- *
- * @param port PD port.
- * @return adc_channel that measures the Vbus voltage.
- */
-enum adc_channel board_get_vbus_adc(int port);
+    /**
+    * Gets the adc_channel for the specified port.
+    *
+    * @param port PD port.
+    * @return adc_channel that measures the Vbus voltage.
+    */
+    enum adc_channel board_get_vbus_adc(int port);
 #endif /* CONFIG_USB_PD_VBUS_MEASURE_ADC_EACH_PORT */
 
 /**

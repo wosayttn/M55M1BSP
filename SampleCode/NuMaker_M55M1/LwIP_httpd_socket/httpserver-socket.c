@@ -28,36 +28,36 @@ char au8Buf[RX_BUFFER_LEN];
   */
 void http_server_serve(int clientfd)
 {
-    struct fs_file * file;
-    int32_t i; 
-    
-    if(recv(clientfd, au8Buf, sizeof(au8Buf), 0) < 0)
+    struct fs_file *file;
+    int32_t i;
+
+    if (recv(clientfd, au8Buf, sizeof(au8Buf), 0) < 0)
         goto out;
 
     /* Is this an HTTP GET command? (only check the first 5 chars, since
     there are other formats for GET, and we're keeping it very simple )*/
-    if(strncmp(au8Buf, "GET /", 5) == 0)
+    if (strncmp(au8Buf, "GET /", 5) == 0)
     {
         /* Check if request to get m4.jpg */
-        if(strncmp((char const *)au8Buf,"GET /img/m4.jpg", 15) == 0)
+        if (strncmp((char const *)au8Buf, "GET /img/m4.jpg", 15) == 0)
         {
             /* Check if request to get M4 banner */
             file = fs_open("/img/m4.jpg");
-            send(clientfd, (const unsigned char*)(file->data), (size_t)file->len, 0);
+            send(clientfd, (const unsigned char *)(file->data), (size_t)file->len, 0);
             fs_close(file);
         }
-        else if((strncmp(au8Buf, "GET /index.html", 15) == 0)||(strncmp(au8Buf, "GET / ", 6) == 0))
+        else if ((strncmp(au8Buf, "GET /index.html", 15) == 0) || (strncmp(au8Buf, "GET / ", 6) == 0))
         {
             /* Load index page */
             file = fs_open("/index.html");
-            send(clientfd, (const unsigned char*)(file->data), (size_t)file->len, 0);
+            send(clientfd, (const unsigned char *)(file->data), (size_t)file->len, 0);
             fs_close(file);
         }
         else
         {
             /* Load Error page */
             file = fs_open("/404.html");
-            send(clientfd, (const unsigned char*)(file->data), (size_t)file->len, 0);
+            send(clientfd, (const unsigned char *)(file->data), (size_t)file->len, 0);
             fs_close(file);
         }
     }
@@ -79,7 +79,7 @@ static void http_server_socket_thread(void *arg)
     struct sockaddr_in addr, client_addr;
 
     /* create a TCP socket */
-    if ((sockfd = lwip_socket(AF_INET, SOCK_STREAM, 0)) < 0) 
+    if ((sockfd = lwip_socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         return;
     }
@@ -89,17 +89,17 @@ static void http_server_socket_thread(void *arg)
     addr.sin_port = htons(80);
     addr.sin_addr.s_addr = INADDR_ANY;
 
-    if(bind(sockfd, (struct sockaddr *)&addr, sizeof (addr)) < 0)
+    if (bind(sockfd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
     {
         return;
     }
 
     /* listen for incoming connections */
     listen(sockfd, 8);
-  
+
     size = sizeof(client_addr);
-  
-    while (1) 
+
+    while (1)
     {
         clientfd = accept(sockfd, (struct sockaddr *)&client_addr, (socklen_t *)&size);
         http_server_serve(clientfd);

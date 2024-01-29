@@ -1767,6 +1767,7 @@ uint32_t CLK_GetAPLL1ClockFreq(void)
 
     u32PllReg = CLK->APLL1CTL;
     u32PllReg1 = CLK->APLL1SEL;
+
     if (!(CLK->SRCCTL & CLK_SRCCTL_APLL1EN_Msk))
     {
         u32PllFreq = 0UL;           /* PLL1 is in power down mode or fix low */

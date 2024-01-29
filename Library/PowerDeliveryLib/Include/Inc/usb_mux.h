@@ -10,11 +10,11 @@
 
 #include "ec_commands.h"
 #ifdef SW
-#include "i2c.h"
-#include "tcpm/tcpm.h"
+    #include "i2c.h"
+    #include "tcpm/tcpm.h"
 #else
-#include "ec_i2c.h"
-#include "tcpm.h"
+    #include "ec_i2c.h"
+    #include "tcpm.h"
 #endif
 #include "usb_charge.h"
 #include "usb_pd.h"
@@ -169,9 +169,9 @@ extern const struct usb_mux_driver virtual_usb_mux_driver;
 
 /* USB muxes present in system, ordered by PD port #, defined at board-level */
 #ifdef CONFIG_USB_MUX_RUNTIME_CONFIG
-extern struct usb_mux usb_muxes[];
+    extern struct usb_mux usb_muxes[];
 #else
-extern const struct usb_mux usb_muxes[];
+    extern const struct usb_mux usb_muxes[];
 #endif
 
 /* Supported hpd_update functions */

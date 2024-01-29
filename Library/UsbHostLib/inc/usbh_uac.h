@@ -131,7 +131,7 @@ extern "C" {
 #endif
 
 /** @} end of group USBH_Library */
-       
+
 /** @} end of group LIBRARY */
 
 #ifdef __cplusplus

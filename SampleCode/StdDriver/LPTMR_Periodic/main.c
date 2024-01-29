@@ -29,9 +29,10 @@ NVT_ITCM void LPTMR0_IRQHandler(void)
     printf("%d sec\n", sec++);
     __DSB();
     __ISB();
-    while(LPTMR_GetIntFlag(LPTMR0))
+
+    while (LPTMR_GetIntFlag(LPTMR0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for LPTMR0 IntFlag time-out!\n");
         }

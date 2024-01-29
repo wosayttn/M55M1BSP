@@ -12,14 +12,14 @@
 
 //#include "core_cm23.h"
 #if 0
-typedef int atomic_t;
-typedef atomic_t atomic_val_t;
+    typedef int atomic_t;
+    typedef atomic_t atomic_val_t;
 #else
-typedef uint32_t atomic_t;
-typedef uint32_t atomic_val_t; //atomic_t atomic_val_t;
+    typedef uint32_t atomic_t;
+    typedef uint32_t atomic_val_t; //atomic_t atomic_val_t;
 
-typedef uint64_t atomic_64_t;
-typedef uint64_t atomic_val_64_t; //atomic_t atomic_val_t;
+    typedef uint64_t atomic_64_t;
+    typedef uint64_t atomic_val_64_t; //atomic_t atomic_val_t;
 #endif
 
 /**
@@ -35,25 +35,28 @@ typedef uint64_t atomic_val_64_t; //atomic_t atomic_val_t;
 
 static inline uint64_t ATOMIC_OP(uint32_t operation, atomic_t *addr, atomic_val_t value)
 {
-//    int was_masked = __disable_irq();        //We are not in RTOS environment
-    switch(operation)
+    //    int was_masked = __disable_irq();        //We are not in RTOS environment
+    switch (operation)
     {
-    case orr:
-        *addr |= value;
-        break;
-    case add:
-        *addr += value;
-        break;
-    case sub:
-        *addr -= value;
-        break;
-    case bic:
-        *addr &= ~value;
-        break;
+        case orr:
+            *addr |= value;
+            break;
+
+        case add:
+            *addr += value;
+            break;
+
+        case sub:
+            *addr -= value;
+            break;
+
+        case bic:
+            *addr &= ~value;
+            break;
     }
 
-//    if (!was_masked)                //We are not in RTOS environment
-//        __enable_irq();
+    //    if (!was_masked)                //We are not in RTOS environment
+    //        __enable_irq();
     return *addr;
 
 }
@@ -61,25 +64,28 @@ static inline uint64_t ATOMIC_OP(uint32_t operation, atomic_t *addr, atomic_val_
 
 static inline uint64_t ATOMIC_OP64(uint32_t operation, atomic_64_t *addr, atomic_val_64_t value)
 {
-//    int was_masked = __disable_irq();        //We are not in RTOS environment
-    switch(operation)
+    //    int was_masked = __disable_irq();        //We are not in RTOS environment
+    switch (operation)
     {
-    case orr:
-        *addr |= value;
-        break;
-    case add:
-        *addr += value;
-        break;
-    case sub:
-        *addr -= value;
-        break;
-    case bic:
-        *addr &= ~value;
-        break;
+        case orr:
+            *addr |= value;
+            break;
+
+        case add:
+            *addr += value;
+            break;
+
+        case sub:
+            *addr -= value;
+            break;
+
+        case bic:
+            *addr &= ~value;
+            break;
     }
 
-//    if (!was_masked)                //We are not in RTOS environment
-//        __enable_irq();
+    //    if (!was_masked)                //We are not in RTOS environment
+    //        __enable_irq();
     return *addr;
 
 }
@@ -116,14 +122,14 @@ static inline atomic_val_t atomic_clear(atomic_t *addr)
 {
     atomic_t ret;
 
-//    int was_masked = __disable_irq();      //We are not in RTOS environment
+    //    int was_masked = __disable_irq();      //We are not in RTOS environment
 
     ret = *addr;
     *addr = 0;
 
     /* ... */
-//    if (!was_masked)                          //We are not in RTOS environment
-//        __enable_irq();
+    //    if (!was_masked)                          //We are not in RTOS environment
+    //        __enable_irq();
     return ret;
 }
 //#endif

@@ -40,21 +40,25 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
     {
         if (LPPDMA_GET_ABORT_STS(LPPDMA) & LPPDMA_ABTSTS_ABTIF0_Msk)
             g_u32IsTestOver = 2;
+
         LPPDMA_CLR_ABORT_FLAG(LPPDMA, LPPDMA_ABTSTS_ABTIF0_Msk);
     }
     else if (u32Status & LPPDMA_INTSTS_TDIF_Msk)  /* done */
     {
         if (LPPDMA_GET_TD_STS(LPPDMA) & LPPDMA_TDSTS_TDIF0_Msk)
             g_u32IsTestOver = 1;
+
         LPPDMA_CLR_TD_FLAG(LPPDMA, LPPDMA_TDSTS_TDIF0_Msk);
     }
     else
         printf("unknown interrupt %x !!\n", u32Status);
+
     __DSB();
     __ISB();
-    while(LPPDMA_GET_INT_STATUS(LPPDMA))
+
+    while (LPPDMA_GET_INT_STATUS(LPPDMA))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for LPPDMA IntFlag time-out!\n");
         }
@@ -200,6 +204,7 @@ int main(void)
 
     /* Wait until Low Power Timer0 PWM Stop */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while ((LPTMR0->PWMCNT & LPTMR_PWMCNT_CNT_Msk) != 0)
         if (--u32TimeOutCnt == 0) break;
 

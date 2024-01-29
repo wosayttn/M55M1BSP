@@ -301,14 +301,14 @@ extern "C"
  *
  *    @details      This macro is used to read VALID bit field to get data valid status.
  */
-__STATIC_INLINE uint32_t EADC_GET_DATA_VALID_FLAG(EADC_T *eadc , uint32_t u32ModuleMask)
+__STATIC_INLINE uint32_t EADC_GET_DATA_VALID_FLAG(EADC_T *eadc, uint32_t u32ModuleMask)
 {
     uint32_t u32VALID = 0;
 
     u32VALID = (eadc->STATUS0 & EADC_STATUS0_VALID_Msk);
     u32VALID |= ((eadc->STATUS1 & EADC_STATUS1_VALID_Msk) << 16);
 
-    return  (u32VALID & u32ModuleMask);
+    return (u32VALID & u32ModuleMask);
 }
 
 
@@ -321,14 +321,14 @@ __STATIC_INLINE uint32_t EADC_GET_DATA_VALID_FLAG(EADC_T *eadc , uint32_t u32Mod
  *
  *    @details      This macro is used to read OV bit field to get data overrun status.
  */
-__STATIC_INLINE uint32_t EADC_GET_DATA_OVERRUN_FLAG(EADC_T *eadc , uint32_t u32ModuleMask)
+__STATIC_INLINE uint32_t EADC_GET_DATA_OVERRUN_FLAG(EADC_T *eadc, uint32_t u32ModuleMask)
 {
     uint32_t u32OVFlag = 0;
 
     u32OVFlag = ((eadc->STATUS0 & EADC_STATUS0_OV_Msk) >> EADC_STATUS0_OV_Pos);
     u32OVFlag |= (eadc->STATUS1 & EADC_STATUS1_OV_Msk);
 
-    return  (u32OVFlag & u32ModuleMask);
+    return (u32OVFlag & u32ModuleMask);
 }
 
 /**

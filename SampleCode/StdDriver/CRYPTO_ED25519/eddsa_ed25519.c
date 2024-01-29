@@ -3,7 +3,7 @@
  * @version  V1.00
  * @brief    ED25519 core code for M55M1 series MCU
  *
- * @copyright (C) 2023 Nuvoton Technology Corp.	All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -12,23 +12,23 @@
 #define SIGN_METHOD_1
 #define VERIFY_METHOD_1
 
-#define ECC_REG_BASE	CRYPTO_BASE
+#define ECC_REG_BASE    CRYPTO_BASE
 
-#define REG_HMAC_DGST	(ECC_REG_BASE + 0x308)
-#define REG_ECC_X1		(ECC_REG_BASE + 0x808)
-#define REG_ECC_Y1		(ECC_REG_BASE + 0x850)
-#define REG_ECC_X2		(ECC_REG_BASE + 0x898)
-#define REG_ECC_Y2		(ECC_REG_BASE + 0x8E0)
-#define REG_ECC_A		(ECC_REG_BASE + 0x928)
-#define REG_ECC_B		(ECC_REG_BASE + 0x970)
-#define REG_ECC_N		(ECC_REG_BASE + 0x9B8)
-#define REG_ECC_K		(ECC_REG_BASE + 0xA00)
-
-
-#define ECC_SCAP_CONFIG		0   // (CRYPTO_ECC_CTL_SCAP_Msk | CRYPTO_ECC_CTL_ASCAP_Msk | CRYPTO_ECC_CTL_PFA2C_Msk)
+#define REG_HMAC_DGST   (ECC_REG_BASE + 0x308)
+#define REG_ECC_X1      (ECC_REG_BASE + 0x808)
+#define REG_ECC_Y1      (ECC_REG_BASE + 0x850)
+#define REG_ECC_X2      (ECC_REG_BASE + 0x898)
+#define REG_ECC_Y2      (ECC_REG_BASE + 0x8E0)
+#define REG_ECC_A       (ECC_REG_BASE + 0x928)
+#define REG_ECC_B       (ECC_REG_BASE + 0x970)
+#define REG_ECC_N       (ECC_REG_BASE + 0x9B8)
+#define REG_ECC_K       (ECC_REG_BASE + 0xA00)
 
 
-#define	swap32(x) (((x << 24) & 0xff000000) | ((x << 8) & 0xff0000) | ((x >> 8) & 0xff00) | ((x >> 24) & 0xff))
+#define ECC_SCAP_CONFIG     0   // (CRYPTO_ECC_CTL_SCAP_Msk | CRYPTO_ECC_CTL_ASCAP_Msk | CRYPTO_ECC_CTL_PFA2C_Msk)
+
+
+#define swap32(x) (((x << 24) & 0xff000000) | ((x << 8) & 0xff0000) | ((x >> 8) & 0xff00) | ((x >> 24) & 0xff))
 
 
 
@@ -37,18 +37,20 @@ extern volatile uint32_t g_ECC_done, g_ECCERR_done;
 static uint8_t  g_dma_buff[0x10000] __attribute__((aligned(32)));
 
 /* Twisted Edwards curve-specific parameters */
-struct eddsa_param {
-    uint32_t	x1[18];   /* Gx */
-    uint32_t	y1[18];   /* Gy */
-    uint32_t	x2[18];
-    uint32_t	y2[18];
-    uint32_t	a[18];    /* a */
-    uint32_t	b[18];    /* d */
-    uint32_t	n[18];    /* p */
-    uint32_t	k[18];
+struct eddsa_param
+{
+    uint32_t    x1[18];   /* Gx */
+    uint32_t    y1[18];   /* Gy */
+    uint32_t    x2[18];
+    uint32_t    y2[18];
+    uint32_t    a[18];    /* a */
+    uint32_t    b[18];    /* d */
+    uint32_t    n[18];    /* p */
+    uint32_t    k[18];
 };
 
-static const struct eddsa_param ed25519_curve = {
+static const struct eddsa_param ed25519_curve =
+{
     /* Gx */{
         0x8F25D51A, 0xC9562D60, 0x9525A7B2, 0x692CC760, 0xFDD6DC5C, 0xC0A4E231, 0xCD6E53FE, 0x216936D3, 0x00000000,
         0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000
@@ -96,11 +98,15 @@ static void write_reg_array(uint32_t reg_base, uint32_t *data, int count, int ma
 {
     uint32_t  *reg = u32_to_ptr32(reg_base);
 
-    int	i;
-    for (i = 0; i < count; i++) {
+    int i;
+
+    for (i = 0; i < count; i++)
+    {
         reg[i] = data[i];
     }
-    for (i = count; i < max; i++) {
+
+    for (i = count; i < max; i++)
+    {
         reg[i] = 0;
     }
 }
@@ -109,9 +115,11 @@ static void read_reg_array(uint32_t reg_base, uint32_t *data, int count, int max
 {
     uint32_t  *reg = u32_to_ptr32(reg_base);
 
-    int	i;
+    int i;
+
     for (i = 0; i < count; i++)
         data[i] = reg[i];
+
     for (i = count; i < max; i++)
         data[i] = 0;
 }
@@ -120,38 +128,43 @@ static void clear_reg_array(uint32_t reg_base, int count)
 {
     uint32_t  *reg = u32_to_ptr32(reg_base);
 
-    int	i;
+    int i;
+
     for (i = 0; i < count; i++)
         reg[i] = 0;
 }
 
 static int compare_word_array(uint32_t *aw1, uint32_t *aw2, int count)
 {
-    int	i;
-    for (i = 0; i < count; i++) {
+    int i;
+
+    for (i = 0; i < count; i++)
+    {
         if (aw1[i] != aw2[i])
             return -1;
     }
+
     return 0;
 }
 
 static void dump_word_array(uint32_t *data, int count)
 {
-    int	i;
+    int i;
+
     for (i = 0; i < count; i++)
         printf("%08x ", data[i]);
 }
 
 static void set_ed25519_param(void *addr)
 {
-    write_reg_array(REG_ECC_X1, (uint32_t*)(ed25519_curve.x1), 18, 18);
-    write_reg_array(REG_ECC_Y1,  (uint32_t*)(ed25519_curve.y1), 18, 18);
-    write_reg_array(REG_ECC_X2,  (uint32_t*)(ed25519_curve.x2), 18, 18);
-    write_reg_array(REG_ECC_Y2,  (uint32_t*)(ed25519_curve.y2), 18, 18);
-    write_reg_array(REG_ECC_A,  (uint32_t*)(ed25519_curve.a), 18, 18);
-    write_reg_array(REG_ECC_B,  (uint32_t*)(ed25519_curve.b), 18, 18);
-    write_reg_array(REG_ECC_N,  (uint32_t*)(ed25519_curve.n), 18, 18);
-    write_reg_array(REG_ECC_K,  (uint32_t*)(ed25519_curve.k), 18, 18);
+    write_reg_array(REG_ECC_X1, (uint32_t *)(ed25519_curve.x1), 18, 18);
+    write_reg_array(REG_ECC_Y1, (uint32_t *)(ed25519_curve.y1), 18, 18);
+    write_reg_array(REG_ECC_X2, (uint32_t *)(ed25519_curve.x2), 18, 18);
+    write_reg_array(REG_ECC_Y2, (uint32_t *)(ed25519_curve.y2), 18, 18);
+    write_reg_array(REG_ECC_A, (uint32_t *)(ed25519_curve.a), 18, 18);
+    write_reg_array(REG_ECC_B, (uint32_t *)(ed25519_curve.b), 18, 18);
+    write_reg_array(REG_ECC_N, (uint32_t *)(ed25519_curve.n), 18, 18);
+    write_reg_array(REG_ECC_K, (uint32_t *)(ed25519_curve.k), 18, 18);
 
 }
 
@@ -168,7 +181,8 @@ static void ECC_Start_And_Wait(uint32_t ecc_ctl)
     g_ECC_done = g_ECCERR_done = 0UL;
     printf("ECC_Start_And_Wait - 0x%x\n", ecc_ctl);
     CRYPTO->ECC_CTL = ecc_ctl | ECC_SCAP_CONFIG;
-    while ((g_ECC_done== 0UL) && (g_ECCERR_done== 0UL))
+
+    while ((g_ECC_done == 0UL) && (g_ECCERR_done == 0UL))
     {
         // printf("ECC_start - CTL = 0x%x, STS = 0x%x\n",  CRYPTO->ECC_CTL, CRYPTO->ECC_STS);
     }
@@ -179,9 +193,9 @@ static void ECC_KP(void)  //ECC point multiplication
     uint32_t ecc_ctl;
 
     printf("%s, %d\n", __func__, __LINE__);
-    ecc_ctl	= (255 << CRYPTO_ECC_CTL_CURVEM_Pos) | (0x0 << CRYPTO_ECC_CTL_ECCOP_Pos);
-    ecc_ctl	|= CRYPTO_ECC_CTL_SPCEN_Msk;
-    ecc_ctl	|= CRYPTO_ECC_CTL_SPCSEL_Msk | CRYPTO_ECC_CTL_FSEL_Msk | CRYPTO_ECC_CTL_START_Msk;
+    ecc_ctl = (255 << CRYPTO_ECC_CTL_CURVEM_Pos) | (0x0 << CRYPTO_ECC_CTL_ECCOP_Pos);
+    ecc_ctl |= CRYPTO_ECC_CTL_SPCEN_Msk;
+    ecc_ctl |= CRYPTO_ECC_CTL_SPCSEL_Msk | CRYPTO_ECC_CTL_FSEL_Msk | CRYPTO_ECC_CTL_START_Msk;
     ecc_ctl |= ECC_SCAP_CONFIG;
     printf("%s, %d\n", __func__, __LINE__);
     ECC_Start_And_Wait(ecc_ctl);
@@ -192,9 +206,9 @@ static void ECC_PA(void) //ECC point addition
 {
     uint32_t ecc_ctl;
 
-    ecc_ctl	= (255 << CRYPTO_ECC_CTL_CURVEM_Pos) | (0x2 << CRYPTO_ECC_CTL_ECCOP_Pos);
-    ecc_ctl	|= CRYPTO_ECC_CTL_SPCEN_Msk;
-    ecc_ctl	|= CRYPTO_ECC_CTL_SPCSEL_Msk | CRYPTO_ECC_CTL_FSEL_Msk | CRYPTO_ECC_CTL_START_Msk;
+    ecc_ctl = (255 << CRYPTO_ECC_CTL_CURVEM_Pos) | (0x2 << CRYPTO_ECC_CTL_ECCOP_Pos);
+    ecc_ctl |= CRYPTO_ECC_CTL_SPCEN_Msk;
+    ecc_ctl |= CRYPTO_ECC_CTL_SPCSEL_Msk | CRYPTO_ECC_CTL_FSEL_Msk | CRYPTO_ECC_CTL_START_Msk;
     ecc_ctl |= ECC_SCAP_CONFIG;
     ECC_Start_And_Wait(ecc_ctl);
 }
@@ -218,14 +232,15 @@ static void ECC_MODOP(uint32_t *x1, uint32_t *y1,
     // point n
     write_reg_array(REG_ECC_N, n, 8, 18);
 
-    ecc_ctl	= (255 << CRYPTO_ECC_CTL_CURVEM_Pos) | (0x1 << CRYPTO_ECC_CTL_ECCOP_Pos);
-    ecc_ctl	|= CRYPTO_ECC_CTL_SPCEN_Msk;
-    ecc_ctl	|= CRYPTO_ECC_CTL_SPCSEL_Msk | CRYPTO_ECC_CTL_FSEL_Msk | CRYPTO_ECC_CTL_START_Msk;
+    ecc_ctl = (255 << CRYPTO_ECC_CTL_CURVEM_Pos) | (0x1 << CRYPTO_ECC_CTL_ECCOP_Pos);
+    ecc_ctl |= CRYPTO_ECC_CTL_SPCEN_Msk;
+    ecc_ctl |= CRYPTO_ECC_CTL_SPCSEL_Msk | CRYPTO_ECC_CTL_FSEL_Msk | CRYPTO_ECC_CTL_START_Msk;
     ecc_ctl |= ECC_SCAP_CONFIG;
+
     if (op < 4)
-        ecc_ctl	|= (op << CRYPTO_ECC_CTL_MODOP_Pos);
+        ecc_ctl |= (op << CRYPTO_ECC_CTL_MODOP_Pos);
     else
-        ecc_ctl	|= ((op % 4) << CRYPTO_ECC_CTL_MODOP_Pos) | CRYPTO_ECC_CTL_SMOD_Msk;
+        ecc_ctl |= ((op % 4) << CRYPTO_ECC_CTL_MODOP_Pos) | CRYPTO_ECC_CTL_SMOD_Msk;
 
     ECC_Start_And_Wait(ecc_ctl);
 }
@@ -242,9 +257,12 @@ static void write_SHA512_word(uint32_t data, int swap) // SHA512 with non-DMA
     CRYPTO->HMAC_CTL = hmac_ctl | CRYPTO_HMAC_CTL_OUTSWAP_Msk |
                        (SHA_MODE_SHA512 << CRYPTO_HMAC_CTL_OPMODE_Pos) |
                        CRYPTO_HMAC_CTL_START_Msk;
-    do {
+
+    do
+    {
         prdata = CRYPTO->HMAC_STS & CRYPTO_HMAC_STS_DATINREQ_Msk;
     } while (prdata != CRYPTO_HMAC_STS_DATINREQ_Msk);
+
     CRYPTO->HMAC_DATIN = data;
 }
 
@@ -261,14 +279,19 @@ static void write_SHA512_data_finalword(uint32_t data, int swap) //SHA512 with n
                        (SHA_MODE_SHA512 << CRYPTO_HMAC_CTL_OPMODE_Pos) |
                        CRYPTO_HMAC_CTL_DMALAST_Msk |
                        CRYPTO_HMAC_CTL_START_Msk;
-    do {
+
+    do
+    {
         prdata = CRYPTO->HMAC_STS & CRYPTO_HMAC_STS_DATINREQ_Msk;
     } while (prdata != CRYPTO_HMAC_STS_DATINREQ_Msk);
+
     CRYPTO->HMAC_DATIN = data;
 
     for (i = 0; i < 10; i++)        /* prevent CPU from overtaking the BUSY flag */
         __NOP();
-    do {
+
+    do
+    {
         prdata = CRYPTO->HMAC_STS & CRYPTO_HMAC_STS_BUSY_Msk;
     } while (prdata != 0);
 
@@ -283,6 +306,7 @@ static void do_SHA512(uint8_t *data, int data_len, int swap)
 
     if (swap)
         hmac_ctl |= CRYPTO_HMAC_CTL_INSWAP_Msk;
+
     hmac_ctl = hmac_ctl | CRYPTO_HMAC_CTL_OUTSWAP_Msk |
                (SHA_MODE_SHA512 << CRYPTO_HMAC_CTL_OPMODE_Pos) |
                CRYPTO_HMAC_CTL_DMAEN_Msk | CRYPTO_HMAC_CTL_DMALAST_Msk |
@@ -292,7 +316,9 @@ static void do_SHA512(uint8_t *data, int data_len, int swap)
     CRYPTO->HMAC_SADDR = ptr_to_u32(data);
     CRYPTO->HMAC_CTL = hmac_ctl;
     __ISB();
+
     while (CRYPTO->HMAC_STS & CRYPTO_HMAC_STS_BUSY_Msk) ;
+
     //printf("do_SHA512 output: ");
     //dump_word_array((uint32_t *)REG_HMAC_DGST, 16);
 }
@@ -305,8 +331,8 @@ static void Decoding(uint32_t data[8], int size,
     uint32_t x_0;
     uint32_t U[8];
     uint32_t V[8];
-    uint32_t X1[8],X2[8],X3[8];
-    uint32_t Ed_P[8],Ed_A[8],Ed_D[8],Ed_1[8];
+    uint32_t X1[8], X2[8], X3[8];
+    uint32_t Ed_P[8], Ed_A[8], Ed_D[8], Ed_1[8];
 
     // Edwards-curve formula : A * x^2 + y^2 = 1 + D * X^2 * Y^2 in GF(P)
     // initial A, D, P and 0x1
@@ -314,6 +340,7 @@ static void Decoding(uint32_t data[8], int size,
     memcpy(Ed_A, ed25519_curve.a, 8 * 4);
     memcpy(Ed_D, ed25519_curve.b, 8 * 4);
     Ed_1[0] = 0x1;
+
     for (i = 1; i < 8; i++) Ed_1[i] = 0;
 
     /*------------------------------------------------------------------------*/
@@ -321,6 +348,7 @@ static void Decoding(uint32_t data[8], int size,
     /*------------------------------------------------------------------------*/
     for (i = 0; i < size - 1; i++)
         Decoding_Y[i] = data[i];
+
     Decoding_Y[7] = data[7] & 0x7FFFFFFF;
 
     /*------------------------------------------------------------------------*/
@@ -330,6 +358,7 @@ static void Decoding(uint32_t data[8], int size,
         x_0 = 0x1;
     else
         x_0 = 0x0;
+
     // printf("## y and x_0 is done ##");
 
     /*------------------------------------------------------------------------*/
@@ -338,6 +367,7 @@ static void Decoding(uint32_t data[8], int size,
     /*  [Step2.1~9] U = y^2                                                   */
     /*------------------------------------------------------------------------*/
     ECC_MODOP(Decoding_Y, Decoding_Y, Ed_P, 1);
+
     for (i = 0; i < 8; i++)
         U[i] = CRYPTO->ECC_X1[i];
 
@@ -345,6 +375,7 @@ static void Decoding(uint32_t data[8], int size,
     /*  [Step3.1~9] V = d * y^2                                               */
     /*------------------------------------------------------------------------*/
     ECC_MODOP(U, Ed_D, Ed_P, 1);
+
     for (i = 0; i < 8; i++)
         V[i] = CRYPTO->ECC_X1[i];
 
@@ -352,6 +383,7 @@ static void Decoding(uint32_t data[8], int size,
     /*  [Step3.10~17] V = d * y^2 - a                                         */
     /*------------------------------------------------------------------------*/
     ECC_MODOP(V, Ed_A, Ed_P, 3);
+
     for (i = 0; i < 8; i++)
         V[i] = CRYPTO->ECC_X1[i];
 
@@ -359,6 +391,7 @@ static void Decoding(uint32_t data[8], int size,
     /*  [Step2.10~17] U = y^2 -1                                              */
     /*------------------------------------------------------------------------*/
     ECC_MODOP(U, Ed_1, Ed_P, 3);
+
     for (i = 0; i < 8; i++)
         U[i] = CRYPTO->ECC_X1[i];
 
@@ -366,6 +399,7 @@ static void Decoding(uint32_t data[8], int size,
     /*  [Step4.1~8] X2 = u/v                                                  */
     /*------------------------------------------------------------------------*/
     ECC_MODOP(V, U, Ed_P, 0);
+
     for (i = 0; i < 8; i++)
         X2[i] = CRYPTO->ECC_X1[i];
 
@@ -411,12 +445,15 @@ static void Decoding(uint32_t data[8], int size,
     read_reg_array(REG_ECC_X1, V, 8, 8);
 
     // case1 == 0 ?
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 8; i++)
+    {
         if (U[i] != 0x0)
             case1 = 1;
     }
+
     // case2 == 0 ?
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 8; i++)
+    {
         if (V[i] != 0x0)
             case2 = 1;
     }
@@ -424,11 +461,15 @@ static void Decoding(uint32_t data[8], int size,
     /*------------------------------------------------------------------------*/
     /*  [Step8] x                                                             */
     /*------------------------------------------------------------------------*/
-    if (case1 == 0) {
+    if (case1 == 0)
+    {
         printf("Case 1 occurs !!!!!\n");
+
         for (i = 0; i < 8; i++)
             Decoding_X[i] = X1[i];
-    } else if (case2 == 0) {
+    }
+    else if (case2 == 0)
+    {
 
         /*----------------------------------------------------------------*/
         /*  [Step9] x                                                     */
@@ -453,6 +494,7 @@ static void Decoding(uint32_t data[8], int size,
         /*----------------------------------------------------------------*/
         for (i = 1; i < 8; i++)
             X3[i] = 0x0;
+
         X3[0] = 0x2;
 
         /*----------------------------------------------------------------*/
@@ -466,7 +508,9 @@ static void Decoding(uint32_t data[8], int size,
         /*----------------------------------------------------------------*/
         ECC_MODOP(X1, Decoding_X, Ed_P, 1);
         read_reg_array(REG_ECC_X1, Decoding_X, 8, 8);
-    } else {
+    }
+    else
+    {
         return;  // [Step10]
     }
 
@@ -480,16 +524,17 @@ static void Decoding(uint32_t data[8], int size,
         ECC_MODOP(Ed_1, Decoding_X, Ed_P, 3);
         read_reg_array(REG_ECC_X1, Decoding_X, 8, 8);
     }
+
     printf("Decoding answer: ");
     dump_word_array(Decoding_X, 8);
 }
 
 /*
-  * @brief  Get	EdDSA ED25519 scalar and prefix
-  * @param[in]	ecc_curve   The	pre-defined ECC	curve.
-  * @param[in]	priv_key    The	private	key
-  * @param[out]	scalar	    The	scalar factor
-  * @param[out]	prefix	    The	prefix
+  * @brief  Get EdDSA ED25519 scalar and prefix
+  * @param[in]  ecc_curve   The pre-defined ECC curve.
+  * @param[in]  priv_key    The private key
+  * @param[out] scalar      The scalar factor
+  * @param[out] prefix      The prefix
  */
 static int  ed25519_get_scalar(enum ed_type eddsa_type,
                                uint8_t *priv_key,
@@ -504,22 +549,24 @@ static int  ed25519_get_scalar(enum ed_type eddsa_type,
     scalar[0] =  scalar[0] & 0xFFFFFFF8;
 
     //obtain prefix
-    for (i = 0; i <	8; i++) {
-        prefix[i] = CRYPTO->HMAC_DGST[i+8];
+    for (i = 0; i < 8; i++)
+    {
+        prefix[i] = CRYPTO->HMAC_DGST[i + 8];
         printf("%x\n", prefix[i]);
         //prefix[i] = swap32(prefix[i]);
     }
+
     return 0;
 }
 
 
 /**
   * @brief  EdDSA ED25519 Key Generation
-  * @param[in]	priv_key    The	private	key
-  * @param[out]	A	    The	output public key
-  * @param[out]	prefix      The output prefix
-  * @return  0	  Success.
-  * @return  -1	  "ecc_curve" value is invalid.
+  * @param[in]  priv_key    The private key
+  * @param[out] A       The output public key
+  * @param[out] prefix      The output prefix
+  * @return  0    Success.
+  * @return  -1   "ecc_curve" value is invalid.
   */
 static int32_t  ed25519_gen_pub_key(enum ed_type eddsa_type,
                                     uint8_t *priv_key,
@@ -534,8 +581,8 @@ static int32_t  ed25519_gen_pub_key(enum ed_type eddsa_type,
 
     /*------------------------------------------------------------------------*/
     /*  3. Compute (Px, Py) = s * G                                           */
-    /*     (1) ~ (3)	init curve                                        */
-    /*     (4) Write	the scalar s to	K register                        */
+    /*     (1) ~ (3)    init curve                                        */
+    /*     (4) Write    the scalar s to K register                        */
     /*------------------------------------------------------------------------*/
     set_ed25519_param(0);
     write_reg_array(REG_ECC_K, scalar, 8, 18);
@@ -572,55 +619,63 @@ uint8_t *eddsa_dom2(enum ed_type eddsa_type, uint8_t *buff, uint8_t *ctx, int ct
 {
     uint8_t *bptr = buff;
 
-    switch (eddsa_type) {
-    case EDDSA_ED25519:
-        // dom2(F,C) is empty string in Ed25519 :
-        return bptr;
+    switch (eddsa_type)
+    {
+        case EDDSA_ED25519:
+            // dom2(F,C) is empty string in Ed25519 :
+            return bptr;
 
-    case EDDSA_ED25519CTX:
-        memcpy(bptr, ed25519ctx_str, 32);
-        bptr += 32;
-        *bptr++ = 0x00;
-        *bptr++ = ctx_len;
-        if (ctx_len) {
-            memcpy(bptr, ctx, ctx_len);
-            bptr += ctx_len;
-        }
-        return bptr;
+        case EDDSA_ED25519CTX:
+            memcpy(bptr, ed25519ctx_str, 32);
+            bptr += 32;
+            *bptr++ = 0x00;
+            *bptr++ = ctx_len;
 
-    case EDDSA_ED25519PH:
-        memcpy(bptr, ed25519ctx_str, 32);
-        bptr += 32;
-        *bptr++ = 0x01;
-        *bptr++ = ctx_len;
-        if (ctx_len) {
-            memcpy(bptr, ctx, ctx_len);
-            bptr += ctx_len;
-        }
-        return bptr;
+            if (ctx_len)
+            {
+                memcpy(bptr, ctx, ctx_len);
+                bptr += ctx_len;
+            }
 
-    default:
-        break;
+            return bptr;
+
+        case EDDSA_ED25519PH:
+            memcpy(bptr, ed25519ctx_str, 32);
+            bptr += 32;
+            *bptr++ = 0x01;
+            *bptr++ = ctx_len;
+
+            if (ctx_len)
+            {
+                memcpy(bptr, ctx, ctx_len);
+                bptr += ctx_len;
+            }
+
+            return bptr;
+
+        default:
+            break;
 
     }
+
     return bptr;
 }
 
 /**
   * @brief  EdDSA ED25519 signature generation
-  * @param[in]	eddsa_type  ed25519, ed25519ph, or ed25519ctx
-  * @param[in]	ecc_curve   The	pre-defined ECC	curve.
-  * @param[in]	priv_key    The	private	key
-  * @param[in]	message	    Message
-  * @param[in]	msg_len	    Message length in byte
-  * @param[in]	ctx	    context
-  * @param[in]	ctx_len	    context length
-  * @param[in]	R           The output signature R
-  * @param[in]	S           The output signature S
-  * @return  0	  Success.
-  * @return  -1	  "ecc_curve" value is invalid.
+  * @param[in]  eddsa_type  ed25519, ed25519ph, or ed25519ctx
+  * @param[in]  ecc_curve   The pre-defined ECC curve.
+  * @param[in]  priv_key    The private key
+  * @param[in]  message     Message
+  * @param[in]  msg_len     Message length in byte
+  * @param[in]  ctx     context
+  * @param[in]  ctx_len     context length
+  * @param[in]  R           The output signature R
+  * @param[in]  S           The output signature S
+  * @return  0    Success.
+  * @return  -1   "ecc_curve" value is invalid.
   */
-int32_t	 ECC_ED25519_SigGen(enum ed_type eddsa_type, uint8_t *priv_key,
+int32_t  ECC_ED25519_SigGen(enum ed_type eddsa_type, uint8_t *priv_key,
                             uint8_t *message, int msg_len,
                             uint8_t *ctx, int ctx_len,
                             uint32_t *R, uint32_t *S)
@@ -637,7 +692,9 @@ int32_t	 ECC_ED25519_SigGen(enum ed_type eddsa_type, uint8_t *priv_key,
     /*------------------------------------------------------------------------*/
 
     printf("%s, %d\n", __func__, __LINE__);
-    if (eddsa_type == EDDSA_ED25519CTX) {
+
+    if (eddsa_type == EDDSA_ED25519CTX)
+    {
         /*-----------------------------------------------------------------------------------------------------------------------------------*/
         /*  ED25519ctx                                                                                                                       */
         /*  dom2(F,C) = dom2(0,context) in Ed25519ctx = "SigEd25519 no Ed25519 collisions" || octet(0) || octtex(OLEN(context)) || context   */
@@ -651,7 +708,9 @@ int32_t	 ECC_ED25519_SigGen(enum ed_type eddsa_type, uint8_t *priv_key,
         /*  53696745643235353139206e6f204564323535313920636f6c6c6973696f6e730100 -> total 34 bytes                                           */
         /*-----------------------------------------------------------------------------------------------------------------------------------*/
     }
-    if (eddsa_type == EDDSA_ED25519PH) {
+
+    if (eddsa_type == EDDSA_ED25519PH)
+    {
         /*-----------------------------------------------------------------------------------------------------------------------------------*/
         /*  ED25519PH                                                                                                                        */
         /*  [Sign Step1~2]                                                                                                                   */
@@ -687,7 +746,8 @@ int32_t	 ECC_ED25519_SigGen(enum ed_type eddsa_type, uint8_t *priv_key,
     /*         in Ed25519 series and SHAKE256 in Ed448 series)                */
     /*------------------------------------------------------------------------*/
 
-    if (eddsa_type == EDDSA_ED25519PH) {
+    if (eddsa_type == EDDSA_ED25519PH)
+    {
         //PH(M) = SHA512(M) in Ed25519ph; MESSAGE = 616263
         memcpy(g_dma_buff, message, msg_len);
         memset(&g_dma_buff[msg_len], 0, 4);
@@ -695,6 +755,7 @@ int32_t	 ECC_ED25519_SigGen(enum ed_type eddsa_type, uint8_t *priv_key,
         do_SHA512(g_dma_buff, msg_len, 1);
         read_reg_array(REG_HMAC_DGST, digest, 16, 16);
     }
+
     printf("%s, %d\n", __func__, __LINE__);
 
     /*------------------------------------------------------------------------*/
@@ -710,22 +771,28 @@ int32_t	 ECC_ED25519_SigGen(enum ed_type eddsa_type, uint8_t *priv_key,
     memcpy(bptr, prefix, 32);
     bptr += 32;
 
-    switch (eddsa_type) {
-    case EDDSA_ED25519:
-    //	break;
+    switch (eddsa_type)
+    {
+        case EDDSA_ED25519:
 
-    case EDDSA_ED25519CTX:
-        if (msg_len) {
-            memcpy(bptr, message, msg_len);
-            bptr += msg_len;
-        }
-        break;
-    case EDDSA_ED25519PH:
-        memcpy(bptr, digest, 64);
-        bptr += 64;
-        break;
-    default:
-        break;
+        //  break;
+
+        case EDDSA_ED25519CTX:
+            if (msg_len)
+            {
+                memcpy(bptr, message, msg_len);
+                bptr += msg_len;
+            }
+
+            break;
+
+        case EDDSA_ED25519PH:
+            memcpy(bptr, digest, 64);
+            bptr += 64;
+            break;
+
+        default:
+            break;
     }
 
     printf("%s, %d, %d\n", __func__, __LINE__, bptr - g_dma_buff);
@@ -801,7 +868,8 @@ int32_t	 ECC_ED25519_SigGen(enum ed_type eddsa_type, uint8_t *priv_key,
     /*     order of G.                                                        */
     /*------------------------------------------------------------------------*/
     read_reg_array(REG_ECC_Y1, R, 8, 8);
-    if ((CRYPTO->ECC_X1[0] & 0x1) == 0x1)	// MSB from X1[0]
+
+    if ((CRYPTO->ECC_X1[0] & 0x1) == 0x1)   // MSB from X1[0]
         R[7] |= 0x80000000;
     else
         R[7] &= ~0x80000000;
@@ -809,7 +877,7 @@ int32_t	 ECC_ED25519_SigGen(enum ed_type eddsa_type, uint8_t *priv_key,
     printf("Sign 7-2 result: ");
     dump_word_array(R, 8);
 
-#if 0	// check
+#if 0   // check
     // ED25519
     R[7] = 0x55014922;
     R[6] = 0x65e073d8;
@@ -843,19 +911,22 @@ int32_t	 ECC_ED25519_SigGen(enum ed_type eddsa_type, uint8_t *priv_key,
     bptr += 32;
 
     /* PH(M) */
-    switch (eddsa_type) {
-    case EDDSA_ED25519:
-    case EDDSA_ED25519CTX:
-        if (msg_len) {
-            memcpy(bptr, message, msg_len);
-            bptr += msg_len;
-        }
-        break;
+    switch (eddsa_type)
+    {
+        case EDDSA_ED25519:
+        case EDDSA_ED25519CTX:
+            if (msg_len)
+            {
+                memcpy(bptr, message, msg_len);
+                bptr += msg_len;
+            }
 
-    case EDDSA_ED25519PH:
-        memcpy(bptr, digest, 64);
-        bptr += 64;
-        break;
+            break;
+
+        case EDDSA_ED25519PH:
+            memcpy(bptr, digest, 64);
+            bptr += 64;
+            break;
     }
 
     memset(bptr, 0, 4);
@@ -915,15 +986,15 @@ int32_t	 ECC_ED25519_SigGen(enum ed_type eddsa_type, uint8_t *priv_key,
 #if 0
     // check data mod_x
     // ED25519
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_0, 0x8ebcea86, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_1, 0x3d19964c, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_2, 0xe7040529, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_3, 0x6cdf00c6, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_4, 0x6125d8f8, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_5, 0x132cec31, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_6, 0x167e3e8a, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_7, 0x0454522e, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_8, 0x0, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_0, 0x8ebcea86, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_1, 0x3d19964c, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_2, 0xe7040529, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_3, 0x6cdf00c6, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_4, 0x6125d8f8, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_5, 0x132cec31, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_6, 0x167e3e8a, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_7, 0x0454522e, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_8, 0x0, err_x);
 
     // ED25519CTX
     // ec5d44b80ba4cc3c94ffd36edeb4fe22304f0ec051bfc9f825f831ad75212c6
@@ -932,7 +1003,9 @@ int32_t	 ECC_ED25519_SigGen(enum ed_type eddsa_type, uint8_t *priv_key,
     // 0xdd63af668d7f03cc8669d82355d48664fd19a7c2556aa6f32f0564d08d63bbd
 #endif
     printf("EdDSA S : k after mod = ");
+
     for (i = 0; i < 18; i++) printf("0x%x ", CRYPTO->ECC_X1[i]);
+
     printf("\n");
 
     /*------------------------------------------------------------------------*/
@@ -1069,18 +1142,18 @@ int32_t	 ECC_ED25519_SigGen(enum ed_type eddsa_type, uint8_t *priv_key,
 
 /**
   * @brief  EdDSA ED25519 signature generation
-  * @param[in]	eddsa_type  ed25519, ed25519ph, or ed25519ctx
-  * @param[in]	ecc_curve   The	pre-defined ECC	curve.
-  * @param[in]	priv_key    The	private	key
-  * @param[in]	message	    Message
-  * @param[in]	msg_len	    Message length in byte
-  * @param[in]	A           The public key
-  * @param[in]	R           The signature R
-  * @param[in]	S           The signature S
-  * @return  0	  Success.
-  * @return  -1	  "ecc_curve" value is invalid.
+  * @param[in]  eddsa_type  ed25519, ed25519ph, or ed25519ctx
+  * @param[in]  ecc_curve   The pre-defined ECC curve.
+  * @param[in]  priv_key    The private key
+  * @param[in]  message     Message
+  * @param[in]  msg_len     Message length in byte
+  * @param[in]  A           The public key
+  * @param[in]  R           The signature R
+  * @param[in]  S           The signature S
+  * @return  0    Success.
+  * @return  -1   "ecc_curve" value is invalid.
   */
-int32_t	 ECC_ED25519_Verify(enum ed_type eddsa_type,
+int32_t  ECC_ED25519_Verify(enum ed_type eddsa_type,
                             uint8_t *message, int msg_len,
                             uint8_t *ctx, int ctx_len,
                             uint8_t *pub_key,
@@ -1149,7 +1222,8 @@ int32_t	 ECC_ED25519_Verify(enum ed_type eddsa_type,
     /*
      *  PH(M) = M in Ed25519 and ED25519CTX
      */
-    if (eddsa_type == EDDSA_ED25519PH) {
+    if (eddsa_type == EDDSA_ED25519PH)
+    {
         //PH(M) = SHA512(M) in Ed25519ph; MESSAGE = 616263
         memcpy(g_dma_buff, message, msg_len);
         memset(&g_dma_buff[msg_len], 0, 4);
@@ -1174,21 +1248,25 @@ int32_t	 ECC_ED25519_Verify(enum ed_type eddsa_type,
     memcpy(bptr, A, 32);//public Key
     bptr += 32;
 
-    switch (eddsa_type) {
-    case EDDSA_ED25519:
-    case EDDSA_ED25519CTX:
-        if (msg_len) {
-            memcpy(bptr, message, msg_len);
-            bptr += msg_len;//append msg
-        }
-        break;
-    case EDDSA_ED25519PH:
-        memcpy(bptr, digest, 64);
-        bptr += 64;
-        break;
+    switch (eddsa_type)
+    {
+        case EDDSA_ED25519:
+        case EDDSA_ED25519CTX:
+            if (msg_len)
+            {
+                memcpy(bptr, message, msg_len);
+                bptr += msg_len;//append msg
+            }
 
-    default:
-        break;
+            break;
+
+        case EDDSA_ED25519PH:
+            memcpy(bptr, digest, 64);
+            bptr += 64;
+            break;
+
+        default:
+            break;
     }
 
     memset(bptr, 0, 4);
@@ -1201,22 +1279,22 @@ int32_t	 ECC_ED25519_Verify(enum ed_type eddsa_type,
     dump_word_array(digest, 16);
 #if 0
     // ED25519CTX
-    err_x = check_data(CRYPTO_BA+0x308+(0x4*15), 0x633b91b4, err_x);
-    err_x = check_data(CRYPTO_BA+0x308+(0x4*14), 0x180a2daa, err_x);
-    err_x = check_data(CRYPTO_BA+0x308+(0x4*13), 0xe02bacb3, err_x);
-    err_x = check_data(CRYPTO_BA+0x308+(0x4*12), 0x3f37eff0, err_x);
-    err_x = check_data(CRYPTO_BA+0x308+(0x4*11), 0xd58e57a8, err_x);
-    err_x = check_data(CRYPTO_BA+0x308+(0x4*10), 0xafaed098, err_x);
-    err_x = check_data(CRYPTO_BA+0x308+(0x4* 9), 0x03a6c77a, err_x);
-    err_x = check_data(CRYPTO_BA+0x308+(0x4* 8), 0x33619072, err_x);
-    err_x = check_data(CRYPTO_BA+0x308+(0x4* 7), 0x37ddf70d, err_x);
-    err_x = check_data(CRYPTO_BA+0x308+(0x4* 6), 0x4e4adcce, err_x);
-    err_x = check_data(CRYPTO_BA+0x308+(0x4* 5), 0x68c0a879, err_x);
-    err_x = check_data(CRYPTO_BA+0x308+(0x4* 4), 0x1c78f2be, err_x);
-    err_x = check_data(CRYPTO_BA+0x308+(0x4* 3), 0xe8d8d96b, err_x);
-    err_x = check_data(CRYPTO_BA+0x308+(0x4* 2), 0x5e789ca3, err_x);
-    err_x = check_data(CRYPTO_BA+0x308+(0x4* 1), 0x2f6d5743, err_x);
-    err_x = check_data(CRYPTO_BA+0x308+(0x4* 0), 0x139ff39b, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 15), 0x633b91b4, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 14), 0x180a2daa, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 13), 0xe02bacb3, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 12), 0x3f37eff0, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 11), 0xd58e57a8, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 10), 0xafaed098, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 9), 0x03a6c77a, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 8), 0x33619072, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 7), 0x37ddf70d, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 6), 0x4e4adcce, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 5), 0x68c0a879, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 4), 0x1c78f2be, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 3), 0xe8d8d96b, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 2), 0x5e789ca3, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 1), 0x2f6d5743, err_x);
+    err_x = check_data(CRYPTO_BA + 0x308 + (0x4 * 0), 0x139ff39b, err_x);
 
     // ED25519PH
     // 390ccbe641ab6519def85aef521fab8806cc8687f426942cb1b32965cff87926a5495377ac0715a2e40cdf421ec68fa64edbdbfee01e8267b7c33abf28a22f39
@@ -1297,7 +1375,7 @@ int32_t	 ECC_ED25519_Verify(enum ed_type eddsa_type,
     /*------------------------------------------------------------------------*/
 
     printf("## Decoding(A) start ##");
-    Decoding (A, 8, Ax, Ay);
+    Decoding(A, 8, Ax, Ay);
 
     printf("Verify 6: Ax =\n");
     dump_word_array(Ax, 8);
@@ -1381,15 +1459,15 @@ int32_t	 ECC_ED25519_Verify(enum ed_type eddsa_type,
 #if 0
     // check data mod_x
     // ED25519
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_0, 0x8ebcea86, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_1, 0x3d19964c, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_2, 0xe7040529, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_3, 0x6cdf00c6, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_4, 0x6125d8f8, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_5, 0x132cec31, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_6, 0x167e3e8a, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_7, 0x0454522e, err_x);
-    err_x = check_data(CRYPTO_BA+CRYPTO_ECC_X1_8, 0x0, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_0, 0x8ebcea86, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_1, 0x3d19964c, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_2, 0xe7040529, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_3, 0x6cdf00c6, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_4, 0x6125d8f8, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_5, 0x132cec31, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_6, 0x167e3e8a, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_7, 0x0454522e, err_x);
+    err_x = check_data(CRYPTO_BA + CRYPTO_ECC_X1_8, 0x0, err_x);
 
     // ED25519CTX
     // ec5d44b80ba4cc3c94ffd36edeb4fe22304f0ec051bfc9f825f831ad75212c6
@@ -1549,18 +1627,22 @@ int32_t	 ECC_ED25519_Verify(enum ed_type eddsa_type,
     /*      others signature is invalid                                       */
     /*------------------------------------------------------------------------*/
 
-    if (compare_word_array((uint32_t *)REG_ECC_X1, SBx, 8) != 0) {
+    if (compare_word_array((uint32_t *)REG_ECC_X1, SBx, 8) != 0)
+    {
         printf("Verify 11: error: \n");
         dump_word_array((uint32_t *)REG_ECC_X1, 8);
         printf("Expected: \n");
         dump_word_array((uint32_t *)SBx, 8);
         return -1;
     }
-    if (compare_word_array((uint32_t *)REG_ECC_Y1, SBy, 8) != 0) {
+
+    if (compare_word_array((uint32_t *)REG_ECC_Y1, SBy, 8) != 0)
+    {
         printf("Verify 11: error: \n");
         dump_word_array((uint32_t *)REG_ECC_Y1, 8);
         return -1;
     }
+
     return 0;
 }
 

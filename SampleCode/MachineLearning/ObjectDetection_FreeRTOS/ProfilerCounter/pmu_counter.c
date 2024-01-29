@@ -37,7 +37,7 @@
 
 static uint64_t s_u64CPUCycleCount = 0;    /* 64-bit cpu cycle counter */
 #if !defined(HAS_FREERTOS)
-static bool s_bSysTickInit = false;
+    static bool s_bSysTickInit = false;
 #endif
 extern uint32_t SystemCoreClock;        /* Expected to come from the cmsis-device lib */
 
@@ -114,8 +114,8 @@ void SysTick_Handler(void)
 {
     /* Increment the cycle counter based on load value. */
     s_u64CPUCycleCount += SysTick->LOAD + 1;
-	__DSB();
-	__ISB();	
+    __DSB();
+    __ISB();
 }
 #endif
 

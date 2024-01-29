@@ -88,8 +88,7 @@ static void eth_rx_thread_entry(void *parameter);
 void ethernetif_input(u16_t len, u8_t *buf, u32_t s, u32_t ns);
 extern u8 my_mac_addr[6];
 
-static void
-low_level_init(struct netif *netif)
+static void low_level_init(struct netif *netif)
 {
     /* set MAC hardware address length */
     netif->hwaddr_len = ETHARP_HWADDR_LEN;
@@ -121,7 +120,7 @@ low_level_init(struct netif *netif)
     {
         while (1);
     }
-		    
+
     sys_arch_sem_wait(&xRxSemaphore, 0);
 }
 
@@ -163,8 +162,7 @@ static void eth_rx_thread_entry(void *parameter)
  *       to become availale since the stack doesn't retry to send a packet
  *       dropped because of memory failure (except for the TCP timers).
  */
-static err_t
-low_level_output(struct netif *netif, struct pbuf *p)
+static err_t low_level_output(struct netif *netif, struct pbuf *p)
 {
     struct pbuf *q;
     u8_t *buf = NULL;
@@ -181,6 +179,7 @@ low_level_output(struct netif *netif, struct pbuf *p)
         memcpy((u8_t *)&buf[len], q->payload, q->len);
         len = len + q->len;
     }
+
 #ifdef TIME_STAMPING
     ETH_trigger_tx(len, p->flags & PBUF_FLAG_GET_TXTS ? p : NULL);
 #else
@@ -204,8 +203,7 @@ low_level_output(struct netif *netif, struct pbuf *p)
  * @return a pbuf filled with the received packet (including MAC header)
  *         NULL on memory error
  */
-static struct pbuf *
-low_level_input(struct netif *netif, u16_t len, u8_t *buf)
+static struct pbuf *low_level_input(struct netif *netif, u16_t len, u8_t *buf)
 {
     struct pbuf *p, *q;
 
@@ -224,6 +222,7 @@ low_level_input(struct netif *netif, u16_t len, u8_t *buf)
 #endif
 
         len = 0;
+
         /* We iterate over the pbuf chain until we have read the entire
         * packet into the pbuf. */
         for (q = p; q != NULL; q = q->next)
@@ -258,8 +257,7 @@ low_level_input(struct netif *netif, u16_t len, u8_t *buf)
  *
  * @param netif the lwip network interface structure for this ethernetif
  */
-void
-ethernetif_input(u16_t len, u8_t *buf, u32_t s, u32_t ns)
+void ethernetif_input(u16_t len, u8_t *buf, u32_t s, u32_t ns)
 {
     struct eth_hdr *ethhdr;
     struct pbuf *p;
@@ -267,8 +265,10 @@ ethernetif_input(u16_t len, u8_t *buf, u32_t s, u32_t ns)
 
     /* move received packet into a new pbuf */
     p = low_level_input(_netif, len, buf);
+
     /* no packet could be read, silently ignore this */
     if (p == NULL) return;
+
 #ifdef TIME_STAMPING
     p->ts_sec = s;
     p->ts_nsec = ns;
@@ -279,33 +279,35 @@ ethernetif_input(u16_t len, u8_t *buf, u32_t s, u32_t ns)
 
     switch (htons(ethhdr->type))
     {
-    /* IP or ARP packet? */
-    case ETHTYPE_IP:
-    case ETHTYPE_ARP:
+        /* IP or ARP packet? */
+        case ETHTYPE_IP:
+        case ETHTYPE_ARP:
 #if PPPOE_SUPPORT
-    /* PPPoE packet? */
-    case ETHTYPE_PPPOEDISC:
-    case ETHTYPE_PPPOE:
+
+        /* PPPoE packet? */
+        case ETHTYPE_PPPOEDISC:
+        case ETHTYPE_PPPOE:
 #endif /* PPPOE_SUPPORT */
-        /* full packet send to tcpip_thread to process */
-        if (_netif->input(p, _netif) != ERR_OK)
-        {
-            LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
+
+            /* full packet send to tcpip_thread to process */
+            if (_netif->input(p, _netif) != ERR_OK)
+            {
+                LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
+                pbuf_free(p);
+                p = NULL;
+            }
+
+            break;
+
+        default:
             pbuf_free(p);
             p = NULL;
-        }
-        break;
-
-    default:
-        pbuf_free(p);
-        p = NULL;
-        break;
+            break;
     }
 }
 
 #ifdef    TIME_STAMPING
-void
-ethernetif_loopback_input(struct pbuf *p)           // TODO: make sure packet not drop in input()
+void ethernetif_loopback_input(struct pbuf *p)           // TODO: make sure packet not drop in input()
 {
     struct eth_hdr *ethhdr;
 
@@ -314,27 +316,30 @@ ethernetif_loopback_input(struct pbuf *p)           // TODO: make sure packet no
 
     switch (htons(ethhdr->type))
     {
-    /* IP or ARP packet? */
-    case ETHTYPE_IP:
-    case ETHTYPE_ARP:
+        /* IP or ARP packet? */
+        case ETHTYPE_IP:
+        case ETHTYPE_ARP:
 #if PPPOE_SUPPORT
-    /* PPPoE packet? */
-    case ETHTYPE_PPPOEDISC:
-    case ETHTYPE_PPPOE:
+
+        /* PPPoE packet? */
+        case ETHTYPE_PPPOEDISC:
+        case ETHTYPE_PPPOE:
 #endif /* PPPOE_SUPPORT */
-        /* full packet send to tcpip_thread to process */
-        if (_netif->input(p, _netif) != ERR_OK)
-        {
-            LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
+
+            /* full packet send to tcpip_thread to process */
+            if (_netif->input(p, _netif) != ERR_OK)
+            {
+                LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
+                pbuf_free(p);
+                p = NULL;
+            }
+
+            break;
+
+        default:
             pbuf_free(p);
             p = NULL;
-        }
-        break;
-
-    default:
-        pbuf_free(p);
-        p = NULL;
-        break;
+            break;
     }
 }
 
@@ -352,8 +357,7 @@ ethernetif_loopback_input(struct pbuf *p)           // TODO: make sure packet no
  *         ERR_MEM if private data couldn't be allocated
  *         any other err_t on error
  */
-err_t
-ethernetif_init(struct netif *netif)
+err_t ethernetif_init(struct netif *netif)
 {
     struct ethernetif *ethernetif;
 
@@ -361,6 +365,7 @@ ethernetif_init(struct netif *netif)
 
     _netif = netif;
     ethernetif = mem_malloc(sizeof(struct ethernetif));
+
     if (ethernetif == NULL)
     {
         LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_init: out of memory\n"));

@@ -103,7 +103,8 @@ void PDMA_WriteTxSGTable(void)
 
         if (i != PDMA_TXBUFFER_CNT - 1)
             DMA_TXDESC[i].offset = (uint32_t)&DMA_TXDESC[i + 1];
-            DMA_TXDESC[i].offset = (uint32_t)&DMA_TXDESC[0];
+
+        DMA_TXDESC[i].offset = (uint32_t)&DMA_TXDESC[0];
     }
 }
 

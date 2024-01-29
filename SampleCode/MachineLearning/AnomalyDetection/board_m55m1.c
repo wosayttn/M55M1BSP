@@ -37,13 +37,13 @@ volatile uint8_t g_u8_PDMAIsBusy = 1;
 //}
 
 
-void config_showresultwindow(rect_info_t* pRect, uint16_t h, uint16_t w)
+void config_showresultwindow(rect_info_t *pRect, uint16_t h, uint16_t w)
 {
     // Set panel fill rect-window parameter
-    pRect->x= 0;
-    pRect->y= 0;
-    pRect->width= w;
-    pRect->height= h;
+    pRect->x = 0;
+    pRect->y = 0;
+    pRect->width = w;
+    pRect->height = h;
 
 }
 
@@ -97,7 +97,7 @@ void PDMA0_IRQHandler(void)
 }
 
 
-void nuFlush_LCD_WithPDMA(uint8_t* pattern, uint32_t len)
+void nuFlush_LCD_WithPDMA(uint8_t *pattern, uint32_t len)
 {
     uint32_t u32DataCount, u32TestCycle;
     uint32_t u32RegValue, u32Abort;
@@ -109,7 +109,7 @@ void nuFlush_LCD_WithPDMA(uint8_t* pattern, uint32_t len)
     //SYS_ResetModule(PDMA0_RST);
 
     /* Enable PDMA channels */
-    PDMA_Open(PDMA0, (1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH) );
+    PDMA_Open(PDMA0, (1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH));
 
     /* Enable PDMA interrupts */
     PDMA_EnableInt(PDMA0, (1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH), PDMA_INT_TRANS_DONE);
@@ -153,10 +153,11 @@ void nuFlush_LCD_WithPDMA(uint8_t* pattern, uint32_t len)
 
     u32TestCycle = 10000;
 
-    while(!g_u8_PDMAIsBusy)
+    while (!g_u8_PDMAIsBusy)
     {
         u32TestCycle--;
-        if(u32TestCycle==0)
+
+        if (u32TestCycle == 0)
         {
             printf("PDMA Busy Timout\r\n");
             i32Err = 1;

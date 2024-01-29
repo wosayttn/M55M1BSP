@@ -19,6 +19,12 @@
 int32_t  g_FMC_i32ErrCode = 0;
 uint32_t g_u32ApromSize;
 
+// Empty function to reduce code size
+uint32_t ProcessHardFault(uint32_t *pu32StackFrame)
+{
+    return 0;
+}
+
 int32_t SYS_Init(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock >> 1; /* 500ms time-out */
@@ -38,8 +44,19 @@ int32_t SYS_Init(void)
         }
     }
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+    /* Select SCLK to HIRC before APLL setting*/
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
+    /* Set clock with limitations */
+    CLK_SET_HCLK2DIV(2);
+    CLK_SET_PCLK0DIV(2);
+    CLK_SET_PCLK1DIV(2);
+    CLK_SET_PCLK2DIV(2);
+    CLK_SET_PCLK3DIV(2);
+    CLK_SET_PCLK4DIV(2);
+    /* Switch SCLK clock source to APLL0 */
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */

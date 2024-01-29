@@ -26,9 +26,9 @@
 #include "ethosu_log.h"
 
 #ifdef ETHOSU55
-#include "ethosu_config_u55.h"
+    #include "ethosu_config_u55.h"
 #else
-#include "ethosu_config_u65.h"
+    #include "ethosu_config_u65.h"
 #endif
 
 #include <assert.h>
@@ -48,9 +48,9 @@
 #define BASEP_OFFSET 4
 
 #ifdef ETHOSU65
-#define ADDRESS_BITS 40
+    #define ADDRESS_BITS 40
 #else
-#define ADDRESS_BITS 32
+    #define ADDRESS_BITS 32
 #endif
 
 #define ADDRESS_MASK ((1ull << ADDRESS_BITS) - 1)
@@ -70,6 +70,7 @@ uint64_t __attribute__((weak)) ethosu_address_remap(uint64_t address, int index)
 struct ethosu_device *ethosu_dev_init(const void *base_address, uint32_t secure_enable, uint32_t privilege_enable)
 {
     struct ethosu_device *dev = malloc(sizeof(struct ethosu_device));
+
     if (!dev)
     {
         LOG_ERR("Failed to allocate memory for Ethos-U device");
@@ -81,6 +82,7 @@ struct ethosu_device *ethosu_dev_init(const void *base_address, uint32_t secure_
     dev->privileged = privilege_enable;
 
 #ifdef ETHOSU55
+
     if (dev->reg->CONFIG.product != ETHOSU_PRODUCT_U55)
 #else
     if (dev->reg->CONFIG.product != ETHOSU_PRODUCT_U65)
@@ -197,7 +199,7 @@ void ethosu_dev_print_err_status(struct ethosu_device *dev)
 {
     LOG_ERR("NPU status=0x%08" PRIx32 "", dev->reg->STATUS.word);
     LOG_ERR("NPU qread=%" PRIu32 "", dev->reg->QREAD.word);
-    LOG_ERR("NPU cmd_end_reached=%d",dev->reg->STATUS.cmd_end_reached);
+    LOG_ERR("NPU cmd_end_reached=%d", dev->reg->STATUS.cmd_end_reached);
 }
 
 bool ethosu_dev_handle_interrupt(struct ethosu_device *dev)
@@ -211,7 +213,7 @@ bool ethosu_dev_handle_interrupt(struct ethosu_device *dev)
 
     // If a fault has occured, the NPU needs to be reset
     if (dev->reg->STATUS.bus_status || dev->reg->STATUS.cmd_parse_error || dev->reg->STATUS.wd_fault ||
-        dev->reg->STATUS.ecc_fault || !dev->reg->STATUS.cmd_end_reached)
+            dev->reg->STATUS.ecc_fault || !dev->reg->STATUS.cmd_end_reached)
     {
         return false;
     }
@@ -222,10 +224,11 @@ bool ethosu_dev_handle_interrupt(struct ethosu_device *dev)
 bool ethosu_dev_verify_access_state(struct ethosu_device *dev)
 {
     if (dev->reg->PROT.active_CSL != (dev->secure ? SECURITY_LEVEL_SECURE : SECURITY_LEVEL_NON_SECURE) ||
-        dev->reg->PROT.active_CPL != (dev->privileged ? PRIVILEGE_LEVEL_PRIVILEGED : PRIVILEGE_LEVEL_USER))
+            dev->reg->PROT.active_CPL != (dev->privileged ? PRIVILEGE_LEVEL_PRIVILEGED : PRIVILEGE_LEVEL_USER))
     {
         return false;
     }
+
     return true;
 }
 
@@ -300,6 +303,7 @@ enum ethosu_error_codes ethosu_dev_set_clock_and_power(struct ethosu_device *dev
     {
         cmd.power_q_enable = power_q == ETHOSU_POWER_Q_ENABLE ? 1 : 0;
     }
+
     if (clock_q != ETHOSU_CLOCK_Q_UNCHANGED)
     {
         cmd.clock_q_enable = clock_q == ETHOSU_CLOCK_Q_ENABLE ? 1 : 0;

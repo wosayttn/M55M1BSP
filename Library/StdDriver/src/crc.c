@@ -48,27 +48,31 @@
 void CRC_Open(uint32_t u32Mode, uint32_t u32Attribute, uint32_t u32Seed, uint32_t u32DataLen)
 {
     CRC->SEED = u32Seed;
-    
-    switch(u32Mode)
-	{
+
+    switch (u32Mode)
+    {
         case CRC_CCITT:
             u32Mode = CRC_16;
             CRC->POLYNOMIAL = 0x1021;
             break;
+
         case CRC_8:
             CRC->POLYNOMIAL = 0x7;
             break;
+
         case CRC_16:
             CRC->POLYNOMIAL = 0x8005;
             break;
+
         case CRC_32:
             CRC->POLYNOMIAL = 0x04C11DB7;
             break;
-		default:
+
+        default:
             CRC->POLYNOMIAL = 0x0ul;
             break;
-	}
-    
+    }
+
     CRC->CTL = u32Mode | u32Attribute | u32DataLen | CRC_CTL_CRCEN_Msk;
 
     /* Setting CHKSINIT bit will reload the initial seed value(CRC_SEED register) to CRC controller */
@@ -88,20 +92,23 @@ uint32_t CRC_GetChecksum(void)
 {
     uint32_t ret;
 
-    switch(CRC->CTL & CRC_CTL_CRCMODE_Msk)
+    switch (CRC->CTL & CRC_CTL_CRCMODE_Msk)
     {
-    case CRC_16:
-        ret = (CRC->CHECKSUM & 0xFFFFU);
-        break;
-    case CRC_32:
-        ret = (CRC->CHECKSUM);
-        break;
-    case CRC_8:
-        ret = (CRC->CHECKSUM & 0xFFU);
-        break;
-    default:
-        ret = 0U;
-        break;
+        case CRC_16:
+            ret = (CRC->CHECKSUM & 0xFFFFU);
+            break;
+
+        case CRC_32:
+            ret = (CRC->CHECKSUM);
+            break;
+
+        case CRC_8:
+            ret = (CRC->CHECKSUM & 0xFFU);
+            break;
+
+        default:
+            ret = 0U;
+            break;
     }
 
     return ret;

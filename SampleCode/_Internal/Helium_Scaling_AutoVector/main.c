@@ -38,7 +38,7 @@ void SysTick_Handler(void)
 
 int Init_SysTick_Export(void)
 {
-    const uint32_t ticks_10ms = SystemCoreClock/100 + 1;
+    const uint32_t ticks_10ms = SystemCoreClock / 100 + 1;
     int err = 0;
 
     /* Reset CPU cycle count value. */
@@ -55,7 +55,8 @@ int Init_SysTick_Export(void)
     NVIC_EnableIRQ(SysTick_IRQn);
 
     /* Wait for SysTick to kick off */
-    while (!err && !SysTick->VAL) {
+    while (!err && !SysTick->VAL)
+    {
         __NOP();
     }
 
@@ -139,14 +140,14 @@ int32_t main(void)
 
     /* Use systick to measure inference time */
 
-    for(ii=0; ii<SRC_IMG_WIDTH * SRC_IMG_HEIGHT; ii++)
+    for (ii = 0; ii < SRC_IMG_WIDTH * SRC_IMG_HEIGHT; ii++)
     {
         image_src[ii] = (uint8_t)(ii);
-        image_src[SRC_IMG_WIDTH * SRC_IMG_HEIGHT * 1+ii] = (uint8_t)(ii);
-        image_src[SRC_IMG_WIDTH * SRC_IMG_HEIGHT * 2+ii] = (uint8_t)(ii);
+        image_src[SRC_IMG_WIDTH * SRC_IMG_HEIGHT * 1 + ii] = (uint8_t)(ii);
+        image_src[SRC_IMG_WIDTH * SRC_IMG_HEIGHT * 2 + ii] = (uint8_t)(ii);
     }
 
-    while(1)
+    while (1)
     {
         printf("\n Execute Resize Function\n");
         Init_SysTick_Export();
@@ -163,7 +164,7 @@ int32_t main(void)
         uint32_t x_frac, nx_frac, y_frac, ny_frac;
         int x, y, ty;
         uint32_t srcWidth = SRC_IMG_WIDTH;
-        uint32_t srcHeight= SRC_IMG_HEIGHT;
+        uint32_t srcHeight = SRC_IMG_HEIGHT;
         uint32_t dstWidth = SCALED_IMG_WIDTH;
         uint32_t dstHeight = SCALED_IMG_HEIGHT;
         uint32_t pixel_size_B = RGB_BYTES;
@@ -186,7 +187,8 @@ int32_t main(void)
         uint8_t *s;
         uint8_t *d;
 
-        for (y = 0; y < dstHeight; y++) {
+        for (y = 0; y < dstHeight; y++)
+        {
             // do indexing computations
             ty = src_y_accum >> FRAC_BITS; // src y
             y_frac = src_y_accum & FRAC_MASK;
@@ -197,7 +199,9 @@ int32_t main(void)
             d = &image_dst[y * dstWidth * pixel_size_B]; //not scaled above
             // start at 1/2 pixel in to account for integer downsampling which might miss pixels
             src_x_accum = FRAC_VAL / 2;
-            for (x = 0; x < dstWidth; x++) {
+
+            for (x = 0; x < dstWidth; x++)
+            {
                 uint32_t tx, p00, p01, p10, p11;
                 // do indexing computations
                 tx = (src_x_accum >> FRAC_BITS) * pixel_size_B;
@@ -234,7 +238,8 @@ int32_t main(void)
         u32TimeVal2 = Get_SysTick_Cycle_Count();
         printf("\n With -o0  optimize, use %d Tick Counters. \n", u32TimeVal2);
 
-        printf("\n Helium Scaling Speed up %.2f times.\n", (float)(u32TimeVal2)/(float)(u32TimeVal1));
-        while(1);
+        printf("\n Helium Scaling Speed up %.2f times.\n", (float)(u32TimeVal2) / (float)(u32TimeVal1));
+
+        while (1);
     }
 }

@@ -37,14 +37,14 @@
 #include "NuMicro.h"
 #include "usbd_cunit.h"
 //#include "../pldm_emu.h"
- 
+
 // Internal funcfion definition
 void AddTests(void);
 
 
 void SYS_Init(void)
 {
-     /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -60,8 +60,8 @@ void SYS_Init(void)
 
     /* Waiting for External RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-	
-	    /* Enable External RC 48MHz clock */
+
+    /* Enable External RC 48MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
 
     /* Waiting for External RC clock ready */
@@ -75,7 +75,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -98,23 +98,23 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOD_MODULE);
     /* Enable GPB module clock */
     CLK_EnableModuleClock(GPIOE_MODULE);
-     /* Enable GPA module clock */
+    /* Enable GPA module clock */
     CLK_EnableModuleClock(GPIOG_MODULE);
     /* Enable GPB module clock */
     CLK_EnableModuleClock(GPIOH_MODULE);
 
 
-   /* Update System Core Clock */
+    /* Update System Core Clock */
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     SetDebugUartMFP();
-//    /* Enable USBD module clock */
-//    CLK_EnableModuleClock(USBD0_MODULE);
+    //    /* Enable USBD module clock */
+    //    CLK_EnableModuleClock(USBD0_MODULE);
     /* Enable OTG0_ module clock */
     CLK_EnableModuleClock(OTG0_MODULE);
-    
+
     CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_HIRC48M, CLK_USBDIV_USBDIV(1));
 
 
@@ -136,10 +136,10 @@ void SYS_Init(void)
 
 void exit(int32_t code)
 {
-    if(code)
-        while(1); // Fail
+    if (code)
+        while (1); // Fail
     else
-        while(1); // Success
+        while (1); // Success
 }
 
 int main(int argc, char *argv[])
@@ -151,13 +151,13 @@ int main(int argc, char *argv[])
     SYS_Init();
 
     /* Lock protected registers */
-//    SYS_LockReg();
+    //    SYS_LockReg();
 
-//    UART_Open(DEBUG_PORT, 115200);
-//    DEBUG_PORT_Init(DEBUG_PORT, 115200);
-      InitDebugUart();
-  
-    if(CU_initialize_registry())
+    //    UART_Open(DEBUG_PORT, 115200);
+    //    DEBUG_PORT_Init(DEBUG_PORT, 115200);
+    InitDebugUart();
+
+    if (CU_initialize_registry())
     {
         fprintf(stderr, " Initialization of Test Registry failed. ");
         exit(EXIT_FAILURE);
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
         CU_cleanup_registry();
     }
 
-    while(SYS->PDID);
+    while (SYS->PDID);
 }
 
 void AddTests(void)
@@ -177,7 +177,7 @@ void AddTests(void)
     CU_get_registry();
     CU_is_test_running();
 
-    if(CUE_SUCCESS != CU_register_suites(suites))
+    if (CUE_SUCCESS != CU_register_suites(suites))
     {
         fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
         exit(EXIT_FAILURE);

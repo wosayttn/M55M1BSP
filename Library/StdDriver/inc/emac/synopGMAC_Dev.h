@@ -914,7 +914,7 @@ enum DmaDescriptorStatus    /* status word of DMA descriptor */
     DescRxMiiError        = 0x00000008,   /* (RE)Rx - error reported by MII interface            3                          */
     DescRxDribbling       = 0x00000004,   /* (DE)Rx - frame contains non int multiple of 8 bits  2                          */
     DescRxCrc             = 0x00000002,   /* (CE)Rx - CRC error                                  1                          */
-//  DescRxMacMatch        = 0x00000001,   /* (RX MAC Address) Rx mac address reg(1 to 15)match   0                          */
+    //  DescRxMacMatch        = 0x00000001,   /* (RX MAC Address) Rx mac address reg(1 to 15)match   0                          */
 
     DescRxEXTsts          = 0x00000001,   /* Extended Status Available (RDES4)                           0                          */
 
@@ -965,7 +965,7 @@ enum DmaDescriptorStatus    /* status word of DMA descriptor */
               --------------------------------------------------------------------
 
     */
-// DmaDescriptorLength     length word of DMA descriptor
+    // DmaDescriptorLength     length word of DMA descriptor
 
 
     RxDisIntCompl       = 0x80000000,   /* (Disable Rx int on completion)           31          */
@@ -1111,7 +1111,7 @@ enum InitialRegisters
     **********************************************/
 
     DmaBusModeInit         = DmaFixedBurstEnable |   DmaBurstLength8   | DmaDescriptorSkip2       | DmaResetOff,
-//   DmaBusModeInit         = DmaFixedBurstEnable |   DmaBurstLength8   | DmaDescriptorSkip4       | DmaResetOff,
+    //   DmaBusModeInit         = DmaFixedBurstEnable |   DmaBurstLength8   | DmaDescriptorSkip4       | DmaResetOff,
 
     /* 1000 Mb/s mode */
     DmaControlInit1000     = DmaStoreAndForward,//       | DmaTxSecondFrame ,

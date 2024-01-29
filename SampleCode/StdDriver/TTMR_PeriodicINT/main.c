@@ -27,18 +27,20 @@ NVT_ITCM void TTMR0_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
-    if(TTMR_GetIntFlag(TTMR0) == 1)
+    if (TTMR_GetIntFlag(TTMR0) == 1)
     {
         /* Clear TTMR0 time-out interrupt flag */
         TTMR_ClearIntFlag(TTMR0);
 
         g_au32TTMRINTCount[0]++;
     }
+
     __DSB();
     __ISB();
-    while(TTMR_GetIntFlag(TTMR0))
+
+    while (TTMR_GetIntFlag(TTMR0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for TTMR0 IntFlag time-out!\n");
         }
@@ -49,18 +51,20 @@ NVT_ITCM void TTMR1_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
-    if(TTMR_GetIntFlag(TTMR1) == 1)
+    if (TTMR_GetIntFlag(TTMR1) == 1)
     {
         /* Clear TTMR1 time-out interrupt flag */
         TTMR_ClearIntFlag(TTMR1);
 
         g_au32TTMRINTCount[1]++;
     }
+
     __DSB();
     __ISB();
-    while(TTMR_GetIntFlag(TTMR1))
+
+    while (TTMR_GetIntFlag(TTMR1))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for TTMR1 IntFlag time-out!\n");
         }
@@ -156,9 +160,10 @@ int main(void)
 
     /* Check TTMR0 ~ TTMR1 interrupt counts */
     printf("# TTMR interrupt counts :\n");
-    while(u32InitCount < 20)
+
+    while (u32InitCount < 20)
     {
-        if(g_au32TTMRINTCount[0] != u32InitCount)
+        if (g_au32TTMRINTCount[0] != u32InitCount)
         {
             au32Counts[0] = g_au32TTMRINTCount[0];
             au32Counts[1] = g_au32TTMRINTCount[1];
@@ -166,10 +171,11 @@ int main(void)
                    au32Counts[0], au32Counts[1]);
             u32InitCount = g_au32TTMRINTCount[0];
 
-            if((au32Counts[1] > (au32Counts[0] * 2 + 1)) || (au32Counts[1] < (au32Counts[0] * 2 - 1)))
+            if ((au32Counts[1] > (au32Counts[0] * 2 + 1)) || (au32Counts[1] < (au32Counts[0] * 2 - 1)))
             {
                 printf("*** FAIL ***\n");
-                while(1);
+
+                while (1);
             }
         }
     }

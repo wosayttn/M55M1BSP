@@ -17,24 +17,28 @@ void CRC_IRQHandler(void)
     volatile uint32_t reg;
 
     reg = CRC->DMASTS;
+
     if ((reg & CRC_DMASTS_ABORTED_Msk) == CRC_DMASTS_ABORTED_Msk)   /* target abort */
     {
         g_u8CRCDoneFlag = 0x2;
         printf("abort flag 0x%x\n", reg);
         CRC->DMASTS |= CRC_DMASTS_ABORTED_Msk;
     }
+
     if ((reg & CRC_DMASTS_CFGERR_Msk) == CRC_DMASTS_CFGERR_Msk) /* config error */
     {
         g_u8CRCDoneFlag = 0x4;
         printf("config error 0x%x\n", reg);
         CRC->DMASTS |= CRC_DMASTS_CFGERR_Msk;
     }
+
     if ((reg & CRC_DMASTS_ACCERR_Msk) == CRC_DMASTS_ACCERR_Msk) /* access error */
     {
         g_u8CRCDoneFlag = 0x8;
         printf("access error 0x%x\n", reg);
         CRC->DMASTS |= CRC_DMASTS_ACCERR_Msk;
     }
+
     if ((reg & CRC_DMASTS_FINISH_Msk) == CRC_DMASTS_FINISH_Msk) /* transfer done */
     {
         g_u8CRCDoneFlag = 0x1;
@@ -119,7 +123,7 @@ uint32_t GetDMAMasterChecksum(uint32_t u32Address, uint32_t u32Size)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
-    
+
     uint32_t u32CRC32Checksum, u32PDMAChecksum;//remove volatile prefix
     uint32_t addr, size;
     /* Unlock protected registers */
@@ -147,11 +151,13 @@ int main(void)
     /*  Case a. */
     /* Configure CRC controller for CRC-CRC32 mode */
     CRC_Open(CRC_32, (CRC_WDATA_RVS | CRC_CHECKSUM_RVS | CRC_CHECKSUM_COM), 0xFFFFFFFF, CRC_CPU_WDATA_32);
+
     /* Start to execute CRC-CRC32 operation */
     for (addr = FMC_APROM_BASE; addr < (FMC_APROM_BASE + size); addr += 4)
     {
         CRC_WRITE_DATA(inpw(addr));
     }
+
     u32CRC32Checksum = CRC_GetChecksum();
 
     /*  Case b. */

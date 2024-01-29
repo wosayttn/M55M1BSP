@@ -195,10 +195,10 @@ void USCI_UART_DataWakeUp(void)
     /* Get Divider */
     u16regCLKDIV = (UUART0->BRGEN & UUART_BRGEN_CLKDIV_Msk) >> UUART_BRGEN_CLKDIV_Pos;
     u16regPDSCNT = (UUART0->BRGEN & UUART_BRGEN_PDSCNT_Msk) >> UUART_BRGEN_PDSCNT_Pos;
-    u16regDSCNT =  (UUART0->BRGEN & UUART_BRGEN_DSCNT_Msk) >> UUART_BRGEN_DSCNT_Pos;
+    u16regDSCNT = (UUART0->BRGEN & UUART_BRGEN_DSCNT_Msk) >> UUART_BRGEN_DSCNT_Pos;
 
     /* Calculate wake-up counter */
-    u32WakeupCount = (uint32_t)(fWakeupTime * (u32PCLK / 1000000) / ((u16regCLKDIV + 1) * (u16regPDSCNT + 1) * (u16regDSCNT+1)));
+    u32WakeupCount = (uint32_t)(fWakeupTime * (u32PCLK / 1000000) / ((u16regCLKDIV + 1) * (u16regPDSCNT + 1) * (u16regDSCNT + 1)));
 
     if (u32WakeupCount > 15)
     {

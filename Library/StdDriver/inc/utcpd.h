@@ -121,12 +121,12 @@ extern "C"
 
 #define UTCPD_ROLECTL_CC1_RA        (0 << 0)
 #define UTCPD_ROLECTL_CC1_RP        (1 << 0)
-#define UTCPD_ROLECTL_CC1_RD        (2 << 0) 
+#define UTCPD_ROLECTL_CC1_RD        (2 << 0)
 #define UTCPD_ROLECTL_CC1_OPEN      (3 << 0)
 
 #define UTCPD_ROLECTL_CC2_RA        (0 << 2)
 #define UTCPD_ROLECTL_CC2_RP        (1 << 2)
-#define UTCPD_ROLECTL_CC2_RD        (2 << 2) 
+#define UTCPD_ROLECTL_CC2_RD        (2 << 2)
 #define UTCPD_ROLECTL_CC2_OPEN      (3 << 2)
 
 #define UTCPD_ROLECTL_RPVALUE_DEF   (0 << 4)
@@ -142,26 +142,26 @@ extern "C"
 #define UTCPD_CCSTS_LK4CONN          UTCPD_CCSTS_LK4CONN_Msk                          /*!< UTCPD_T::CCSTS: LK4CONN Mask           */
 
 #define UTCPD_UNDER_LK4CONN         (1 << 5)
-#define UTCPD_LK4CONN_DONE          (0 << 5) 
+#define UTCPD_LK4CONN_DONE          (0 << 5)
 
 #define UTCPD_CONN_RESULT_RP        (0 << 4)
-#define UTCPD_CONN_RESULT_RD        (1 << 4) 
+#define UTCPD_CONN_RESULT_RD        (1 << 4)
 
 #define UTCPD_CCSTS_CC2STATE_SRC_OPEN       (0 << 2)
-#define UTCPD_CCSTS_CC2STATE_SRC_RA         (1 << 2) 
+#define UTCPD_CCSTS_CC2STATE_SRC_RA         (1 << 2)
 #define UTCPD_CCSTS_CC2STATE_SRC_RD         (2 << 2)
 
 #define UTCPD_CCSTS_CC2STATE_SNK_OPEN       (0 << 2)
-#define UTCPD_CCSTS_CC2STATE_SNK_DEF        (1 << 2) 
+#define UTCPD_CCSTS_CC2STATE_SNK_DEF        (1 << 2)
 #define UTCPD_CCSTS_CC2STATE_SNK_1P5A       (2 << 2)
 #define UTCPD_CCSTS_CC2STATE_SNK_3A         (3 << 2)
 
-#define UTCPD_CCSTS_CC1STATE_SRC_OPEN       (0 << 0) 
-#define UTCPD_CCSTS_CC1STATE_SRC_RA         (1 << 0)  
-#define UTCPD_CCSTS_CC1STATE_SRC_RD         (2 << 0)  
+#define UTCPD_CCSTS_CC1STATE_SRC_OPEN       (0 << 0)
+#define UTCPD_CCSTS_CC1STATE_SRC_RA         (1 << 0)
+#define UTCPD_CCSTS_CC1STATE_SRC_RD         (2 << 0)
 
 #define UTCPD_CCSTS_CC1STATE_SNK_OPEN       (0 << 0)
-#define UTCPD_CCSTS_CC1STATE_SNK_DEF        (1 << 0) 
+#define UTCPD_CCSTS_CC1STATE_SNK_DEF        (1 << 0)
 #define UTCPD_CCSTS_CC1STATE_SNK_1P5A       (2 << 0)
 #define UTCPD_CCSTS_CC1STATE_SNK_3A         (3 << 0)
 
@@ -256,7 +256,7 @@ extern "C"
 #define UTCPD_VBUS_OC_EINT0       (0UL << UTCPD_MUXSEL_VBOCS_Pos)                     /*!< UTCPD_T::MUXSEL: VBUS OC Source From EINT0     */
 #define UTCPD_VBUS_OC_EINT1       (1UL << UTCPD_MUXSEL_VBOCS_Pos)                     /*!< UTCPD_T::MUXSEL: VBUS OC Source From EINT1     */
 #define UTCPD_VBUS_OC_EINT2       (2UL << UTCPD_MUXSEL_VBOCS_Pos)                     /*!< UTCPD_T::MUXSEL: VBUS OC Source From EINT2     */
-#define UTCPD_VBUS_OC_EINT3	      (3UL << UTCPD_MUXSEL_VBOCS_Pos)                     /*!< UTCPD_T::MUXSEL: VBUS OC Source From EINT3     */
+#define UTCPD_VBUS_OC_EINT3       (3UL << UTCPD_MUXSEL_VBOCS_Pos)                     /*!< UTCPD_T::MUXSEL: VBUS OC Source From EINT3     */
 #define UTCPD_VBUS_OC_ADC_CMP0    (4UL << UTCPD_MUXSEL_VBOCS_Pos)                     /*!< UTCPD_T::MUXSEL: VBUS OC Source From ADC_CMP0  */
 #define UTCPD_VBUS_OC_ACMP0       (5UL << UTCPD_MUXSEL_VBOCS_Pos)                     /*!< UTCPD_T::MUXSEL: VBUS OC Source From ACMP0     */
 #define UTCPD_VBUS_OC_ACMP1       (6UL << UTCPD_MUXSEL_VBOCS_Pos)                     /*!< UTCPD_T::MUXSEL: VBUS OC Source From ACMP1     */
@@ -285,7 +285,7 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define utcpd functions prototype                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t UTCPD_GetAlertStatus(int port, int* i32AlertSts);
+int32_t UTCPD_GetAlertStatus(int port, int *i32AlertSts);
 int32_t UTCPD_ClearAlertStatus(int port, int AlertStClr);
 int32_t UTCPD_EnableAlertMask(int port, int mask_set);
 int32_t UTCPD_DisableAlertMask(int port, int mask_clr);
@@ -300,18 +300,18 @@ int32_t UTCPD_DisableFaultCtrl(int port, uint32_t maskclr);
 int32_t UTCPD_ClearPowerStatus(int port, int PowerStClr);
 int32_t UTCPD_EnableFaultStatusMask(int port, int mask_set);
 int32_t UTCPD_DisableFaultStatusMask(int port, int mask_clr);
-int32_t UTCPD_GetFaultStatus(int port, int* pi32RegData);
+int32_t UTCPD_GetFaultStatus(int port, int *pi32RegData);
 int32_t UTCPD_ClearFaultStatus(int port, int FaultStClr);
 int32_t UTCPD_SetRoleCtrl(int port, uint32_t u32DrpToggle, uint32_t u32Rpvalue, uint32_t u32CC2, uint32_t u32CC1);
-int32_t UTCPD_GetRoleCtrl(int port, uint32_t* pu32DrpToggle, uint32_t* pu32CC1, uint32_t* pu32CC2, uint32_t* pu32Rpvalue);
+int32_t UTCPD_GetRoleCtrl(int port, uint32_t *pu32DrpToggle, uint32_t *pu32CC1, uint32_t *pu32CC2, uint32_t *pu32Rpvalue);
 int32_t UTCPD_SetTypeCPortCtrl(int port, uint32_t u32BistMode, uint32_t u32Orient);
-int32_t UTCPD_GetTypeCPortCtrl(int port, uint32_t* pu32BistMode, uint32_t* pu32Orient);
+int32_t UTCPD_GetTypeCPortCtrl(int port, uint32_t *pu32BistMode, uint32_t *pu32Orient);
 int32_t UTCPD_IsssueCmd(int port, uint32_t cmd);
-int32_t UTCPD_GetCCSts(int port, uint32_t* pu32Look4Con, uint32_t* pu32ConRlt, uint32_t* pu32CC2Sts, uint32_t* pu32CC1Sts);
-int32_t UTCPD_GetPwrSts(int port, uint32_t* pu32VBUSDetEn, uint32_t* pu32VBUSPresent, uint32_t* pu32VCONNPresent, uint32_t* pu32SnkVBUS);
-int32_t UTCPD_GetPwrStsExt(int port, uint32_t* pu32DbgAccessory, uint32_t* pu32SrcNonDefVBUS, uint32_t* pu32SrcDefVBUS);
-int32_t UTCPD_GetFaultSts(int port, uint32_t* pu32VBUSOverCurr, uint32_t* pu32VBUSOverVolt, uint32_t* pu32VCONNOverCurr, uint32_t* pu32I2CInfErr);
-int32_t UTCPD_GetFaultStsExt(int port, uint32_t* pu32ForceOffFat, uint32_t* pu32AutoDiscFat, uint32_t* pu32ForceDiscFat);
+int32_t UTCPD_GetCCSts(int port, uint32_t *pu32Look4Con, uint32_t *pu32ConRlt, uint32_t *pu32CC2Sts, uint32_t *pu32CC1Sts);
+int32_t UTCPD_GetPwrSts(int port, uint32_t *pu32VBUSDetEn, uint32_t *pu32VBUSPresent, uint32_t *pu32VCONNPresent, uint32_t *pu32SnkVBUS);
+int32_t UTCPD_GetPwrStsExt(int port, uint32_t *pu32DbgAccessory, uint32_t *pu32SrcNonDefVBUS, uint32_t *pu32SrcDefVBUS);
+int32_t UTCPD_GetFaultSts(int port, uint32_t *pu32VBUSOverCurr, uint32_t *pu32VBUSOverVolt, uint32_t *pu32VCONNOverCurr, uint32_t *pu32I2CInfErr);
+int32_t UTCPD_GetFaultStsExt(int port, uint32_t *pu32ForceOffFat, uint32_t *pu32AutoDiscFat, uint32_t *pu32ForceDiscFat);
 int32_t UTCPD_SetMsgHeaderInfo(int port, uint32_t u32DataRole, uint32_t u32Revision, uint32_t u32PwrRole);
 int32_t UTCPD_SetRecDetect(int port, uint32_t u32RegData);
 int32_t UTCPD_SetVBUSAlarm(int port, uint32_t u32AlarmH, uint32_t u32AlarmL);

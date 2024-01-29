@@ -11,7 +11,7 @@
 #define __KEYPAD_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -24,175 +24,175 @@
     Memory Mapped Structure for KPI Controller
     @{
 */
- 
+
 typedef struct
 {
-/**
- * @var KPI_T::CTL
- * Offset: 0x00  Keypad Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |KPEN      |Keypad Scan Enable Bit
- * |        |          |Setting this bit high enables the key scan function.
- * |        |          |0 = Keypad scan Disabled.
- * |        |          |1 = Keypad scan Enabled.
- * |[1]     |KPIEN     |Key Press Key Interrupt Enable Bit
- * |        |          |The keypad controller will generate an interrupt when the controller detects any effective key press.
- * |        |          |0 = Keypad press interrupt Disabled.
- * |        |          |1 = Keypad press interrupt Enabled.
- * |[2]     |KRIEN     |Key Release Key Interrupt Enable Bit
- * |        |          |The keypad controller will generate an interrupt when the controller detects keypad status changes from press to release.
- * |        |          |0 = Keypad release interrupt Disabled.
- * |        |          |1 = Keypad release interrupt Enabled.
- * |[3]     |KIEN      |Key Interrupt Enable Bit
- * |        |          |0 = Keypad interrupt Disabled.
- * |        |          |1 = Keypad interrupt Enabled.
- * |[5:4]   |KDBCT     |Keypad De-bounce Cycle Time
- * |        |          |For keypad debounce, keypad will generate an interrupt when key press, key release or three key reset continued n * key array scan time.
- * |        |          |00 = n=1.
- * |        |          |01 = n=2.
- * |        |          |10 = n=3.
- * |        |          |11 = n=4.
- * |        |          |Note: It would need more time to indicate key press and release event when users selected more debounce cycle time.
- * |[15:8]  |PSC       |Row Scan Cycle Pre-scale Value
- * |        |          |This value is used to pre-scale row scan cycle.
- * |        |          |The pre-scale counter is clocked by the divided crystal clock, xCLOCK.
- * |        |          |The divided number is from 1 to 256.
- * |        |          |E.g.If the crystal clock is 1Mhz then the xCLOCK period is 1us.
- * |        |          |If the keypad matric is 3x3 then
- * |        |          |Each row scan time = xCLOCK x PRESCALE PSC x PrescaleDividerPSCDIV.
- * |        |          |Key array scan time = Each row scan time x ROWS.
- * |        |          |Example scan time for PRESCALE = 0x40, and PrescaleDividerPSCDIV = 0x1F.
- * |        |          |Each row scan time = 1us x 65 x 32 = 2.08ms.
- * |        |          |Scan time = 2.08 x 3 = 6.24ms.
- * |[19:16] |DBCLKSEL  |Scan in De-bounce Sampling Cycle Selection
- * |        |          |0000 = Reserved.
- * |        |          |0001 = Reserved.
- * |        |          |0010 = Reserved.
- * |        |          |0011 = Sample interrupt input once per 8 XCLOCK.
- * |        |          |0100 = Sample interrupt input once per 16 XCLOCK.
- * |        |          |0101 = Sample interrupt input once per 32 XCLOCK.
- * |        |          |0110 = Sample interrupt input once per 64 XCLOCK.
- * |        |          |0111 = Sample interrupt input once per 128 XCLOCK.
- * |        |          |1000 = Sample interrupt input once per 256 XCLOCK.
- * |        |          |1001 = Sample interrupt input once per 512 XCLOCK.
- * |        |          |1010 = Sample interrupt input once per 1024 XCLOCK.
- * |        |          |1011 = Sample interrupt input once per 2048 XCLOCK.
- * |        |          |1100 = Sample interrupt input once per 4096 XCLOCK.
- * |        |          |1101 = Sample interrupt input once per 8192 XCLOCK.
- * |        |          |1110 = reserved.
- * |        |          |1111 = reserved.
- * |[23:22] |ROWDLY    |Scan Row Delay
- * |        |          |Setting delay cycle when row change, for avoid KPI from detecting wrong key..
- * |        |          |00 = 4 XCLOCK.
- * |        |          |01 = 8 XCLOCK.
- * |        |          |10 = 16 XCLOCK.
- * |        |          |11 = 32 XCLOCK.
- * |[26:24] |KCOL      |Keypad Matrix COL Number
- * |        |          |The keypad matrix is set by ROW x COL. The COL number can be set 1 to 8.
- * |        |          |000 = 1.
- * |        |          |001 = 2.
- * |        |          |010 = 3.
- * |        |          |011 = 4.
- * |        |          |100 = 5.
- * |        |          |101 = 6.
- * |        |          |110 = 7.
- * |        |          |111 = 8.
- * |[30:28] |KROW      |Keypad Matrix ROW Number
- * |        |          |The keypad matrix is set by ROW x COL. The ROW number can be set 2 to 6.
- * |        |          |000 = reserved.
- * |        |          |001 = 2.
- * |        |          |010 = 3.
- * |        |          |011 = 4.
- * |        |          |100 = 5.
- * |        |          |101 = 6.
- * |        |          |110 = Reserved.
- * |        |          |111 = Reserved.
- * @var KPI_T::STATUS
- * Offset: 0x08  Keypad Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[2]     |KIF       |Key Interrupt Flag
- * |        |          |This bit indicates the key scan interrupt is active when any key press or, key release or three key reset or wake up.
- * |        |          |When READ:
- * |        |          |0 = No reset.
- * |        |          |1 = Key press/Key release interrupt occurred.
- * |        |          |To clear KIF, software must clear KPIF and KRIF.
- * |[3]     |KRIF      |Key Release Interrupt Flag
- * |        |          |This bit indicates that some keys (one or multiple key) have been released.
- * |        |          |When READ:
- * |        |          |0 = No key release.
- * |        |          |1 = At least one key release.
- * |        |          |Note: To clear KRIF, software must clear each releasing flag that are shown on KPI_KRF0/1 registers.
- * |[4]     |KPIF      |Key Press Interrupt Flag
- * |        |          |This bit indicates that some keys (one or multiple key) have been pressed.
- * |        |          |When READ:
- * |        |          |0 = No key press.
- * |        |          |1 = At least one key press.
- * |        |          |Note: To clear KPIF, software must clear each pressing flag that are shown on KPI_KPF0/1 registers.
- * @var KPI_T::KST[2]
- * Offset: 0x10 ~ 0x14  Keypad State Register 0 ~ 1
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KSTmn     |Key State
- * |        |          |m is row number, n is column number.
- * |        |          |0 = Key is pressing.
- * |        |          |1 = Key is releasing.
- * @var KPI_T::KPF[2]
- * Offset: 0x18 ~0x1c  Key Press Flag Register 0 ~ 1
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KPFmn     |Key Press Flag
- * |        |          |m is row number, n is column number.
- * |        |          |0 = No key event.
- * |        |          |1 = Corresponding key has a high to low event change.
- * |        |          |Note: This bit will be set by hardware, and should be cleared by software writing 1.
- * @var KPI_T::KRF[2]
- * Offset: 0x20 ~ 0x24  Key Release Flag Register 0 ~ 1
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KRFmn     |Key Release Event Change IndicatorFlag
- * |        |          |KRE mn[X] = 1, m= is row number, n= is column number.:.
- * |        |          |0 = No key event.
- * |        |          |1 = Corresponding key has a low to high event change.
- * |        |          |Note:
- * |        |          |Hardware will set this bit, and software should clear this bit by writing 1.
- * |        |          |Software can clear RKEYINT (KPISTATUS[3]) by writing 1 bit by bit to this register.
- * @var KPI_T::DLYCTL
- * Offset: 0x28  Delay Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[7:0]   |PSCDIV    |Pre-scale Divider
- * |        |          |This value is used to divide RESCALE that is set in KPICONFKPI_CTL[15:8]
- * |        |          |The prescale divider counter is clocked by the divided crystal clock, xCLOCK
- * |        |          |The number is from 1 to 256.
- * |        |          |E.g. If the crystal clock is 1Mhz then the xCLOCK period is 1us. If the keypad matrix is 3x3. Then,
- * |        |          |each row scan time = xCLOCK x PRESCALEPSC x PrescaleDividerPSCDIV.
- * |        |          |key array scan time = each row scan time x ROWS.
- * |        |          |example scan time for PRESCALEPSC = 0x40, and PrescaleDividerPSCDIV = 0x1F.
- * |        |          |each row scan time = 1us x 65 x 32 = 2.08ms.
- * |        |          |scan time = 2.08 x 3 = 6.24ms.
- * |        |          |Note:
- * |        |          |When PRESCALEPSC (KPICONFKPI_CTL[15:8]) is determined, De-bounce sampling cycle should not exceed the half of (PRESCALEPSC x PrescaleDividerPSCDIV),
- * |        |          |in the above example, and if scan row delay cycle is 4 xclock
- * |        |          |The maximum DBCLKSEL(KPICONFKPI_CTL[19:16]) should be 1024 x clock, bouncing time is 1ms.
- * |[31:8]  |SCANDLY   |Key Array Scan Delay
- * |        |          |This value is used to insert delay cycle between each key array scan.
- * |        |          |The key array scan delay counter is clocked by the divided crystal clock, xCLOCK.
- * |        |          |Key array scan delay time = xCLOCK x KASDSCANDLY.
- * |        |          |The number of key array scan delay cycle is 0 and from 2 to 1024.
- * |        |          |0 = No delay.
- * |        |          |Others = others + 1 cycles.
- * |        |          |Note:
- * |        |          |If the key array scan delay is set to 0, there are no delay between each key array scan.
- * |        |          |There are no delay 1 cycle situation.
- */
+    /**
+     * @var KPI_T::CTL
+     * Offset: 0x00  Keypad Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |KPEN      |Keypad Scan Enable Bit
+     * |        |          |Setting this bit high enables the key scan function.
+     * |        |          |0 = Keypad scan Disabled.
+     * |        |          |1 = Keypad scan Enabled.
+     * |[1]     |KPIEN     |Key Press Key Interrupt Enable Bit
+     * |        |          |The keypad controller will generate an interrupt when the controller detects any effective key press.
+     * |        |          |0 = Keypad press interrupt Disabled.
+     * |        |          |1 = Keypad press interrupt Enabled.
+     * |[2]     |KRIEN     |Key Release Key Interrupt Enable Bit
+     * |        |          |The keypad controller will generate an interrupt when the controller detects keypad status changes from press to release.
+     * |        |          |0 = Keypad release interrupt Disabled.
+     * |        |          |1 = Keypad release interrupt Enabled.
+     * |[3]     |KIEN      |Key Interrupt Enable Bit
+     * |        |          |0 = Keypad interrupt Disabled.
+     * |        |          |1 = Keypad interrupt Enabled.
+     * |[5:4]   |KDBCT     |Keypad De-bounce Cycle Time
+     * |        |          |For keypad debounce, keypad will generate an interrupt when key press, key release or three key reset continued n * key array scan time.
+     * |        |          |00 = n=1.
+     * |        |          |01 = n=2.
+     * |        |          |10 = n=3.
+     * |        |          |11 = n=4.
+     * |        |          |Note: It would need more time to indicate key press and release event when users selected more debounce cycle time.
+     * |[15:8]  |PSC       |Row Scan Cycle Pre-scale Value
+     * |        |          |This value is used to pre-scale row scan cycle.
+     * |        |          |The pre-scale counter is clocked by the divided crystal clock, xCLOCK.
+     * |        |          |The divided number is from 1 to 256.
+     * |        |          |E.g.If the crystal clock is 1Mhz then the xCLOCK period is 1us.
+     * |        |          |If the keypad matric is 3x3 then
+     * |        |          |Each row scan time = xCLOCK x PRESCALE PSC x PrescaleDividerPSCDIV.
+     * |        |          |Key array scan time = Each row scan time x ROWS.
+     * |        |          |Example scan time for PRESCALE = 0x40, and PrescaleDividerPSCDIV = 0x1F.
+     * |        |          |Each row scan time = 1us x 65 x 32 = 2.08ms.
+     * |        |          |Scan time = 2.08 x 3 = 6.24ms.
+     * |[19:16] |DBCLKSEL  |Scan in De-bounce Sampling Cycle Selection
+     * |        |          |0000 = Reserved.
+     * |        |          |0001 = Reserved.
+     * |        |          |0010 = Reserved.
+     * |        |          |0011 = Sample interrupt input once per 8 XCLOCK.
+     * |        |          |0100 = Sample interrupt input once per 16 XCLOCK.
+     * |        |          |0101 = Sample interrupt input once per 32 XCLOCK.
+     * |        |          |0110 = Sample interrupt input once per 64 XCLOCK.
+     * |        |          |0111 = Sample interrupt input once per 128 XCLOCK.
+     * |        |          |1000 = Sample interrupt input once per 256 XCLOCK.
+     * |        |          |1001 = Sample interrupt input once per 512 XCLOCK.
+     * |        |          |1010 = Sample interrupt input once per 1024 XCLOCK.
+     * |        |          |1011 = Sample interrupt input once per 2048 XCLOCK.
+     * |        |          |1100 = Sample interrupt input once per 4096 XCLOCK.
+     * |        |          |1101 = Sample interrupt input once per 8192 XCLOCK.
+     * |        |          |1110 = reserved.
+     * |        |          |1111 = reserved.
+     * |[23:22] |ROWDLY    |Scan Row Delay
+     * |        |          |Setting delay cycle when row change, for avoid KPI from detecting wrong key..
+     * |        |          |00 = 4 XCLOCK.
+     * |        |          |01 = 8 XCLOCK.
+     * |        |          |10 = 16 XCLOCK.
+     * |        |          |11 = 32 XCLOCK.
+     * |[26:24] |KCOL      |Keypad Matrix COL Number
+     * |        |          |The keypad matrix is set by ROW x COL. The COL number can be set 1 to 8.
+     * |        |          |000 = 1.
+     * |        |          |001 = 2.
+     * |        |          |010 = 3.
+     * |        |          |011 = 4.
+     * |        |          |100 = 5.
+     * |        |          |101 = 6.
+     * |        |          |110 = 7.
+     * |        |          |111 = 8.
+     * |[30:28] |KROW      |Keypad Matrix ROW Number
+     * |        |          |The keypad matrix is set by ROW x COL. The ROW number can be set 2 to 6.
+     * |        |          |000 = reserved.
+     * |        |          |001 = 2.
+     * |        |          |010 = 3.
+     * |        |          |011 = 4.
+     * |        |          |100 = 5.
+     * |        |          |101 = 6.
+     * |        |          |110 = Reserved.
+     * |        |          |111 = Reserved.
+     * @var KPI_T::STATUS
+     * Offset: 0x08  Keypad Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[2]     |KIF       |Key Interrupt Flag
+     * |        |          |This bit indicates the key scan interrupt is active when any key press or, key release or three key reset or wake up.
+     * |        |          |When READ:
+     * |        |          |0 = No reset.
+     * |        |          |1 = Key press/Key release interrupt occurred.
+     * |        |          |To clear KIF, software must clear KPIF and KRIF.
+     * |[3]     |KRIF      |Key Release Interrupt Flag
+     * |        |          |This bit indicates that some keys (one or multiple key) have been released.
+     * |        |          |When READ:
+     * |        |          |0 = No key release.
+     * |        |          |1 = At least one key release.
+     * |        |          |Note: To clear KRIF, software must clear each releasing flag that are shown on KPI_KRF0/1 registers.
+     * |[4]     |KPIF      |Key Press Interrupt Flag
+     * |        |          |This bit indicates that some keys (one or multiple key) have been pressed.
+     * |        |          |When READ:
+     * |        |          |0 = No key press.
+     * |        |          |1 = At least one key press.
+     * |        |          |Note: To clear KPIF, software must clear each pressing flag that are shown on KPI_KPF0/1 registers.
+     * @var KPI_T::KST[2]
+     * Offset: 0x10 ~ 0x14  Keypad State Register 0 ~ 1
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |KSTmn     |Key State
+     * |        |          |m is row number, n is column number.
+     * |        |          |0 = Key is pressing.
+     * |        |          |1 = Key is releasing.
+     * @var KPI_T::KPF[2]
+     * Offset: 0x18 ~0x1c  Key Press Flag Register 0 ~ 1
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |KPFmn     |Key Press Flag
+     * |        |          |m is row number, n is column number.
+     * |        |          |0 = No key event.
+     * |        |          |1 = Corresponding key has a high to low event change.
+     * |        |          |Note: This bit will be set by hardware, and should be cleared by software writing 1.
+     * @var KPI_T::KRF[2]
+     * Offset: 0x20 ~ 0x24  Key Release Flag Register 0 ~ 1
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |KRFmn     |Key Release Event Change IndicatorFlag
+     * |        |          |KRE mn[X] = 1, m= is row number, n= is column number.:.
+     * |        |          |0 = No key event.
+     * |        |          |1 = Corresponding key has a low to high event change.
+     * |        |          |Note:
+     * |        |          |Hardware will set this bit, and software should clear this bit by writing 1.
+     * |        |          |Software can clear RKEYINT (KPISTATUS[3]) by writing 1 bit by bit to this register.
+     * @var KPI_T::DLYCTL
+     * Offset: 0x28  Delay Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[7:0]   |PSCDIV    |Pre-scale Divider
+     * |        |          |This value is used to divide RESCALE that is set in KPICONFKPI_CTL[15:8]
+     * |        |          |The prescale divider counter is clocked by the divided crystal clock, xCLOCK
+     * |        |          |The number is from 1 to 256.
+     * |        |          |E.g. If the crystal clock is 1Mhz then the xCLOCK period is 1us. If the keypad matrix is 3x3. Then,
+     * |        |          |each row scan time = xCLOCK x PRESCALEPSC x PrescaleDividerPSCDIV.
+     * |        |          |key array scan time = each row scan time x ROWS.
+     * |        |          |example scan time for PRESCALEPSC = 0x40, and PrescaleDividerPSCDIV = 0x1F.
+     * |        |          |each row scan time = 1us x 65 x 32 = 2.08ms.
+     * |        |          |scan time = 2.08 x 3 = 6.24ms.
+     * |        |          |Note:
+     * |        |          |When PRESCALEPSC (KPICONFKPI_CTL[15:8]) is determined, De-bounce sampling cycle should not exceed the half of (PRESCALEPSC x PrescaleDividerPSCDIV),
+     * |        |          |in the above example, and if scan row delay cycle is 4 xclock
+     * |        |          |The maximum DBCLKSEL(KPICONFKPI_CTL[19:16]) should be 1024 x clock, bouncing time is 1ms.
+     * |[31:8]  |SCANDLY   |Key Array Scan Delay
+     * |        |          |This value is used to insert delay cycle between each key array scan.
+     * |        |          |The key array scan delay counter is clocked by the divided crystal clock, xCLOCK.
+     * |        |          |Key array scan delay time = xCLOCK x KASDSCANDLY.
+     * |        |          |The number of key array scan delay cycle is 0 and from 2 to 1024.
+     * |        |          |0 = No delay.
+     * |        |          |Others = others + 1 cycles.
+     * |        |          |Note:
+     * |        |          |If the key array scan delay is set to 0, there are no delay between each key array scan.
+     * |        |          |There are no delay 1 cycle situation.
+     */
     __IO uint32_t CTL;                   /*!< [0x0000] Keypad Control Register                                          */
     __IO uint32_t Reserved0;             /*!< [0x0004] Reserved                                                         */
     __IO uint32_t STATUS;                /*!< [0x0008] Keypad Status Register                                           */
@@ -277,7 +277,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __KEYPAD_REG_H__ */

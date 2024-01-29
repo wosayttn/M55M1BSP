@@ -34,9 +34,10 @@ NVT_ITCM void LPTMR0_IRQHandler(void)
     LPTMR_ClearIntFlag(LPTMR0);
     __DSB();
     __ISB();
-    while(LPTMR_GetWakeupFlag(LPTMR0) || LPTMR_GetIntFlag(LPTMR0))
+
+    while (LPTMR_GetWakeupFlag(LPTMR0) || LPTMR_GetIntFlag(LPTMR0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for LPTMR0 IntFlag time-out!\n");
         }
@@ -59,9 +60,10 @@ NVT_ITCM void PMC_IRQHandler(void)
 
         __DSB();
         __ISB();
+
         while (PMC_GetPMCWKSrc() & PMC_INTSTS_PDWKIF_Msk)
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for PMC IntFlag time-out!\n");
             }
@@ -135,7 +137,8 @@ int main(void)
 
     printf("System core clock = %d\n", SystemCoreClock);
     printf("LPTMR power down/wake up sample code\n");
-    while(!UART_IS_TX_EMPTY(DEBUG_PORT));
+
+    while (!UART_IS_TX_EMPTY(DEBUG_PORT));
 
     /* Output selected clock to CKO*/
     CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_SYSCLK, 3, CLK_CLKOCTL_DIV1EN_DIV_FREQSEL);
@@ -160,13 +163,18 @@ int main(void)
     /* Unlock protected registers */
     SYS_UnlockReg();
     PMC_ENABLE_INT();
-    while(1)
+
+    while (1)
     {
         printf("Enter Power-down !\n");
         g_u32PDWK = 0;
-        while(!UART_IS_TX_EMPTY(DEBUG_PORT));
+
+        while (!UART_IS_TX_EMPTY(DEBUG_PORT));
+
         PMC_PowerDown();
-        while(!g_u32PDWK);
+
+        while (!g_u32PDWK);
+
         printf("Wake %d\n", i++);
         CLK_SysTickDelay(1000000);
     }

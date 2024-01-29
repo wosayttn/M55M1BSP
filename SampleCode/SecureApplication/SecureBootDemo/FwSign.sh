@@ -5,14 +5,16 @@ if [ $# -ne 2 ] ; then
     exit
 fi
 
+set -x
+
 call_path=$(pwd)
-script_path=$(dirname $0)
+script_path=$(dirname "$0")
 #script_path="${call_path}/../../../"
 bin_file=$1
-bin_basename=$(basename ${bin_file} .bin)
+bin_basename=$(basename "${bin_file}" .bin)
 key_file=$2
-key_path=$(dirname ${key_file})
-key_basename=$(basename ${key_file} .pem)
+key_path=$(dirname "${key_file}")
+key_basename=$(basename "${key_file}" .pem)
 
 #echo call_path: $call_path
 #echo script_path: $script_path
@@ -34,4 +36,4 @@ fi
 # To sign image
 "${script_path}/imgtool" sign -k "${key_file}" --public-key-format hash --align 4 -v 1.2.3 -H 0x800 --pad-header -S 0x40000 -s 0 "${bin_file}" "${script_path}/${bin_basename}_signed.bin"
 
-echo ""${script_path}/imgtool" sign -k "${key_file}" --public-key-format hash --align 4 -v 1.2.3 -H 0x800 --pad-header -S 0x40000 -s 0 "${bin_file}" "${script_path}/${bin_basename}_signed.bin""
+set +x

@@ -42,7 +42,7 @@
 
 #define EVTYPE(A, name)                                                                                                \
     case PMU_EVENT_##name:                                                                                             \
-        return ETHOSU_PMU_##name
+    return ETHOSU_PMU_##name
 
 #define EVID(A, name) (PMU_EVENT_##name)
 
@@ -60,9 +60,10 @@ static enum ethosu_pmu_event_type pmu_event_type(uint32_t id)
 {
     switch (id)
     {
-        EXPAND_PMU_EVENT(EVTYPE, SEMICOLON);
-    default:
-        LOG_ERR("Unknown PMU event id: 0x%" PRIx32, id);
+            EXPAND_PMU_EVENT(EVTYPE, SEMICOLON);
+
+        default:
+            LOG_ERR("Unknown PMU event id: 0x%" PRIx32, id);
     }
 
     return ETHOSU_PMU_SENTINEL;
@@ -71,6 +72,7 @@ static enum ethosu_pmu_event_type pmu_event_type(uint32_t id)
 static uint32_t pmu_event_value(enum ethosu_pmu_event_type event)
 {
     int a = event;
+
     if ((a < ETHOSU_PMU_SENTINEL) && (a >= ETHOSU_PMU_NO_EVENT))
     {
         return eventbyid[event];

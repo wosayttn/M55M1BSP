@@ -33,8 +33,8 @@ int suite_success_init(void)
 {
     /* Unlock protected registers */
     SYS_UnlockReg();
-    
-     /* Enable ADC module clock */
+
+    /* Enable ADC module clock */
     CLK_EnableModuleClock(EADC0_MODULE);
     /* Set ADC clock source to PCLK0/2=100MHz, set divider to 4, ADC clock will be 100/10 MHz */
     CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(10));
@@ -47,8 +47,8 @@ int suite_success_init(void)
     /* Reset IP */
     SYS_ResetModule(SYS_EADC0RST);
     /* Reset IP */
-//    SYS_ResetModule(SYS_EADC1RST);
-    
+    //    SYS_ResetModule(SYS_EADC1RST);
+
     /* Lock protected registers */
     SYS_LockReg();
     return 0;

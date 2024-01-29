@@ -571,7 +571,7 @@ typedef struct
 /**
     @addtogroup USBH_CONST USBH Bit Field Definition
     Constant Definitions for USBH Controller
-    @{ 
+    @{
 */
 
 #define USBH_HcRevision_REV_Pos          (0)                                               /*!< USBH_T::HcRevision: REV Position       */

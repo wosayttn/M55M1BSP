@@ -13,7 +13,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
-#include <string.h> 
+#include <string.h>
 #include "utcpdlib.h"
 
 #define CPRINTF(format, args...) cprintf(CC_USBPD, format, ## args)
@@ -48,9 +48,9 @@ const uint32_t pd_snk_pdo[] =
 {
     PDO_FIXED(5000, 3000, SNK_PDO_FIXED_FLAGS),
     PDO_FIXED(9000, 3000, SNK_PDO_FIXED_FLAGS),
-//    PDO_FIXED(12000, 3000, SNK_PDO_FIXED_FLAGS),
-//    PDO_FIXED(15000, 3000, SNK_PDO_FIXED_FLAGS),
-//    PDO_FIXED(20000, 3000, SNK_PDO_FIXED_FLAGS),
+    //    PDO_FIXED(12000, 3000, SNK_PDO_FIXED_FLAGS),
+    //    PDO_FIXED(15000, 3000, SNK_PDO_FIXED_FLAGS),
+    //    PDO_FIXED(20000, 3000, SNK_PDO_FIXED_FLAGS),
 
     //      PDO_BATT(4750, 21000, 15000),
     //      PDO_VAR(4750, 21000, 3000),

@@ -507,24 +507,24 @@ void VendorLBK_ClassRequest(void)
         // Device to host
         switch (gUsbCmd.bRequest)
         {
-        case REQ_GET_DATA:
-            if (g_IsHighSpeedMode)
-                data_len = CEP_MAX_PKT_SIZE;
-            else
-                data_len = CEP_OTHER_MAX_PKT_SIZE;
+            case REQ_GET_DATA:
+                if (g_IsHighSpeedMode)
+                    data_len = CEP_MAX_PKT_SIZE;
+                else
+                    data_len = CEP_OTHER_MAX_PKT_SIZE;
 
-            if (gUsbCmd.wLength < data_len)
-                data_len = gUsbCmd.wLength;
+                if (gUsbCmd.wLength < data_len)
+                    data_len = gUsbCmd.wLength;
 
-            HSUSBD_PrepareCtrlIn((uint8_t *)&g_Ctrl_Buff, data_len);
-            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
-            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
-            break;
+                HSUSBD_PrepareCtrlIn((uint8_t *)&g_Ctrl_Buff, data_len);
+                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
+                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
+                break;
 
-        default:
-            /* Setup error, stall the device */
-            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-            break;
+            default:
+                /* Setup error, stall the device */
+                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+                break;
         }
     }
     else
@@ -532,22 +532,22 @@ void VendorLBK_ClassRequest(void)
         // Host to device
         switch (gUsbCmd.bRequest)
         {
-        case REQ_SET_DATA:
-            if (gUsbCmd.wLength < data_len)
-                data_len = gUsbCmd.wLength;
+            case REQ_SET_DATA:
+                if (gUsbCmd.wLength < data_len)
+                    data_len = gUsbCmd.wLength;
 
-            HSUSBD_CtrlOut((uint8_t *)&g_Ctrl_Buff, data_len);
+                HSUSBD_CtrlOut((uint8_t *)&g_Ctrl_Buff, data_len);
 
-            /* Status stage */
-            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-            break;
+                /* Status stage */
+                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+                break;
 
-        default:
-            /* Setup error, stall the device */
-            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-            break;
+            default:
+                /* Setup error, stall the device */
+                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+                break;
         }
     }
 }
@@ -619,14 +619,17 @@ static void LBK_PrepareBulkInData(void)
             break;
         }
     }
+
 #else
     /* Prepare the data for next bulk-in transfer */
     int i;
+
     for (i = 0; i < g_u32EpEMaxPacketSize; i++)
     {
         HSUSBD->EP[EPE].EPDAT_BYTE = g_Bulk_Buff[i];
         __DSB();
-		}
+    }
+
     HSUSBD->EP[EPE].EPTXCNT = g_u32EpEMaxPacketSize;
     HSUSBD_ENABLE_EP_INT(EPE, HSUSBD_EPINTEN_INTKIEN_Msk);
 #endif
@@ -697,9 +700,11 @@ static void LBK_PrepareIsoInData(void)
             break;
         }
     }
+
 #else
     /* Prepare the data for next bulk-in transfer */
     int i;
+
     for (i = 0; i < g_u32EpCMaxPacketSize; i++)
     {
         HSUSBD->EP[EPC].EPDAT_BYTE = g_Iso_Buff[i];

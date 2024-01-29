@@ -70,9 +70,12 @@ void VAD_Init(void)
 
 void VAD_WaitStable(uint32_t u32StableCount)
 {
-    while(u32StableCount--){
-        while((DMIC_VAD_GET_DEV(VAD0) > DMIC_VAD_POWERTHRE_M90DB)||(DMIC_VAD_GET_STP(VAD0)> DMIC_VAD_POWERTHRE_M70DB)){};
-        while(DMIC_VAD_IS_ACTIVE(VAD0)){
+    while (u32StableCount--)
+    {
+        while ((DMIC_VAD_GET_DEV(VAD0) > DMIC_VAD_POWERTHRE_M90DB) || (DMIC_VAD_GET_STP(VAD0) > DMIC_VAD_POWERTHRE_M70DB)) {};
+
+        while (DMIC_VAD_IS_ACTIVE(VAD0))
+        {
             DMIC_VAD_CLR_ACTIVE(VAD0);
         }
     }
@@ -89,9 +92,10 @@ NVT_ITCM void DMIC0VAD_IRQHandler()
 
     __DSB();
     __ISB();
-    while(DMIC_VAD_IS_ACTIVE(VAD0))
+
+    while (DMIC_VAD_IS_ACTIVE(VAD0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for VAD0 IntFlag time-out!\n");
         }
@@ -114,9 +118,10 @@ NVT_ITCM void PMC_IRQHandler(void)
 
         __DSB();
         __ISB();
+
         while (PMC_GetPMCWKSrc() & PMC_INTSTS_PDWKIF_Msk)
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for PMC IntFlag time-out!\n");
             }
@@ -143,7 +148,7 @@ void PowerDownFunction(void)
     DMIC_VAD_SET_STTHRE(VAD0, DMIC_VAD_POWERTHRE_M60DB);
     // Set deviation threshold.
     DMIC_VAD_SET_DEVTHRE(VAD0, DMIC_VAD_POWERTHRE_M60DB);
-		VAD_WaitStable(VAD_STABLECNT);
+    VAD_WaitStable(VAD_STABLECNT);
     NVIC_EnableIRQ(DMIC0VAD_IRQn);
     /* Enter to Power-down mode */
     PMC_PowerDown();
@@ -188,8 +193,8 @@ static void SYS_Init(void)
     SET_DMIC0_DAT_PB5();
     SET_DMIC0_CLKLP_PB6();
     SYS->GPB_MFOS = BIT5;
-		PB5 = 1;  
-		SET_CLKO_PG15();
+    PB5 = 1;
+    SET_CLKO_PG15();
     CLK_EnableCKO(CLK_CLKOSEL_CLKOSEL_HXT, 0, 1);
     /* Lock protected registers */
     SYS_LockReg();
@@ -224,9 +229,12 @@ int main(void)
     while (!g_u32PDWK) {};
 
     printf("Wake Up PASS\n");
-    while(DMIC_VAD_IS_ACTIVE(VAD0)){
+
+    while (DMIC_VAD_IS_ACTIVE(VAD0))
+    {
         DMIC_VAD_CLR_ACTIVE(VAD0);
     }
+
     VAD_Stop();
 
     /* Got no where to go, just loop forever */

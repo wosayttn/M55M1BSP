@@ -275,8 +275,7 @@ int32_t SCLIB_SetIFSD(uint32_t num, uint8_t size)
             if (_SCLIB_GetLEN(dev->rcv_buf) != 0x01 || _SCLIB_GetNAD(dev->rcv_buf) != 0x00 || dev->rcv_buf[3] != size)
                 retval = SCLIB_ERR_T1_PROTOCOL;
         }
-    }
-    while (++retransmit < SCLIB_MAX_T1_RETRANSMIT_CNT && (retval != SCLIB_SUCCESS || rsp_type != SCLIB_T1_BLOCK_S));
+    } while (++retransmit < SCLIB_MAX_T1_RETRANSMIT_CNT && (retval != SCLIB_SUCCESS || rsp_type != SCLIB_T1_BLOCK_S));
 
     return retval;
 }

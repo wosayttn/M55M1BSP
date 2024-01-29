@@ -65,7 +65,8 @@ void AddTests(void)
     assert((NULL != CU_get_registry()));
     assert(!CU_is_test_running());
 
-    if (CUE_SUCCESS != CU_register_suites(suites)) {
+    if (CUE_SUCCESS != CU_register_suites(suites))
+    {
         fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
         exit(EXIT_FAILURE);
     }
@@ -82,10 +83,13 @@ int main(int argc, char *argv[])
     printf("|       M55M1 LPPDMA CUnit Test        |\n");
     printf("+--------------------------------------+\n");
 
-    if (CU_initialize_registry()) {
+    if (CU_initialize_registry())
+    {
         fprintf(stderr, " Initialization of Test Registry failed. ");
         exit(EXIT_FAILURE);
-    } else {
+    }
+    else
+    {
         AddTests();
         CU_console_run_tests();
         CU_cleanup_registry();

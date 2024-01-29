@@ -27,18 +27,20 @@ NVT_ITCM void TIMER0_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
-    if(TIMER_GetIntFlag(TIMER0) == 1)
+    if (TIMER_GetIntFlag(TIMER0) == 1)
     {
         /* Clear Timer0 time-out interrupt flag */
         TIMER_ClearIntFlag(TIMER0);
 
         g_au32TMRINTCount[0]++;
     }
+
     __DSB();
     __ISB();
-    while(TIMER_GetIntFlag(TIMER0))
+
+    while (TIMER_GetIntFlag(TIMER0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for TIMER0 IntFlag time-out!\n");
         }
@@ -49,18 +51,20 @@ NVT_ITCM void TIMER1_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
-    if(TIMER_GetIntFlag(TIMER1) == 1)
+    if (TIMER_GetIntFlag(TIMER1) == 1)
     {
         /* Clear Timer1 time-out interrupt flag */
         TIMER_ClearIntFlag(TIMER1);
 
         g_au32TMRINTCount[1]++;
     }
+
     __DSB();
     __ISB();
-    while(TIMER_GetIntFlag(TIMER1))
+
+    while (TIMER_GetIntFlag(TIMER1))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for TIMER1 IntFlag time-out!\n");
         }
@@ -71,18 +75,20 @@ NVT_ITCM void TIMER2_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
-    if(TIMER_GetIntFlag(TIMER2) == 1)
+    if (TIMER_GetIntFlag(TIMER2) == 1)
     {
         /* Clear Timer2 time-out interrupt flag */
         TIMER_ClearIntFlag(TIMER2);
 
         g_au32TMRINTCount[2]++;
     }
+
     __DSB();
     __ISB();
-    while(TIMER_GetIntFlag(TIMER2))
+
+    while (TIMER_GetIntFlag(TIMER2))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for TIMER2 IntFlag time-out!\n");
         }
@@ -93,18 +99,20 @@ NVT_ITCM void TIMER3_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
-    if(TIMER_GetIntFlag(TIMER3) == 1)
+    if (TIMER_GetIntFlag(TIMER3) == 1)
     {
         /* Clear Timer3 time-out interrupt flag */
         TIMER_ClearIntFlag(TIMER3);
 
         g_au32TMRINTCount[3]++;
     }
+
     __DSB();
     __ISB();
-    while(TIMER_GetIntFlag(TIMER3))
+
+    while (TIMER_GetIntFlag(TIMER3))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for TIMER3 IntFlag time-out!\n");
         }
@@ -138,7 +146,7 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Enable HXT clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
-    CLK_WaitClockReady( CLK_STATUS_HXTSTB_Msk);
+    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
     /* Enable TIMER module clock */
     CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_HXT, 0);
@@ -226,9 +234,10 @@ int main(void)
 
     /* Check Timer0 ~ Timer3 interrupt counts */
     printf("# Timer interrupt counts :\n");
-    while(u32InitCount < 20)
+
+    while (u32InitCount < 20)
     {
-        if(g_au32TMRINTCount[0] != u32InitCount)
+        if (g_au32TMRINTCount[0] != u32InitCount)
         {
             au32Counts[0] = g_au32TMRINTCount[0];
             au32Counts[1] = g_au32TMRINTCount[1];
@@ -238,7 +247,7 @@ int main(void)
                    au32Counts[0], au32Counts[1], au32Counts[2], au32Counts[3]);
             u32InitCount = g_au32TMRINTCount[0];
 
-            if((au32Counts[1] > (au32Counts[0] * 2 + 1)) || (au32Counts[1] < (au32Counts[0] * 2 - 1)) ||
+            if ((au32Counts[1] > (au32Counts[0] * 2 + 1)) || (au32Counts[1] < (au32Counts[0] * 2 - 1)) ||
                     (au32Counts[2] > (au32Counts[0] * 4 + 1)) || (au32Counts[2] < (au32Counts[0] * 4 - 1)) ||
                     (au32Counts[3] > (au32Counts[0] * 8 + 1)) || (au32Counts[3] < (au32Counts[0] * 8 - 1)))
             {

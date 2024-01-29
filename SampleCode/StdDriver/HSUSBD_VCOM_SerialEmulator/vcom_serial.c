@@ -395,22 +395,22 @@ void VCOM_ClassRequest(void)
         // Device to host
         switch (gUsbCmd.bRequest)
         {
-        case GET_LINE_CODE:
-        {
-            if ((gUsbCmd.wIndex & 0xff) == 0)  /* VCOM-1 */
-                HSUSBD_PrepareCtrlIn((uint8_t *)&g_LineCoding, 7);
+            case GET_LINE_CODE:
+            {
+                if ((gUsbCmd.wIndex & 0xff) == 0)  /* VCOM-1 */
+                    HSUSBD_PrepareCtrlIn((uint8_t *)&g_LineCoding, 7);
 
-            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
-            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
-            break;
-        }
+                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_INTKIF_Msk);
+                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_INTKIEN_Msk);
+                break;
+            }
 
-        default:
-        {
-            /* Setup error, stall the device */
-            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-            break;
-        }
+            default:
+            {
+                /* Setup error, stall the device */
+                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+                break;
+            }
         }
     }
     else
@@ -418,45 +418,45 @@ void VCOM_ClassRequest(void)
         // Host to device
         switch (gUsbCmd.bRequest)
         {
-        case SET_CONTROL_LINE_STATE:
-        {
-            if ((gUsbCmd.wIndex & 0xff) == 0)   /* VCOM-1 */
+            case SET_CONTROL_LINE_STATE:
             {
-                gCtrlSignal = gUsbCmd.wValue;
-                //printf("RTS=%d  DTR=%d\n", (gCtrlSignal0 >> 1) & 1, gCtrlSignal0 & 1);
+                if ((gUsbCmd.wIndex & 0xff) == 0)   /* VCOM-1 */
+                {
+                    gCtrlSignal = gUsbCmd.wValue;
+                    //printf("RTS=%d  DTR=%d\n", (gCtrlSignal0 >> 1) & 1, gCtrlSignal0 & 1);
+                }
+
+                // DATA IN for end of setup
+                /* Status stage */
+                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+                break;
             }
 
-            // DATA IN for end of setup
-            /* Status stage */
-            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
-            break;
-        }
+            case SET_LINE_CODE:
+            {
+                if ((gUsbCmd.wIndex & 0xff) == 0) /* VCOM-1 */
+                    HSUSBD_CtrlOut((uint8_t *)&g_LineCoding, 7);
 
-        case SET_LINE_CODE:
-        {
-            if ((gUsbCmd.wIndex & 0xff) == 0) /* VCOM-1 */
-                HSUSBD_CtrlOut((uint8_t *)&g_LineCoding, 7);
+                /* Status stage */
+                HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+                HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
 
-            /* Status stage */
-            HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
-            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
-            HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+                /* UART setting */
+                if ((gUsbCmd.wIndex & 0xff) == 0) /* VCOM-1 */
+                    VCOM_LineCoding(0);
 
-            /* UART setting */
-            if ((gUsbCmd.wIndex & 0xff) == 0) /* VCOM-1 */
-                VCOM_LineCoding(0);
+                break;
+            }
 
-            break;
-        }
-
-        default:
-        {
-            /* Setup error, stall the device */
-            HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-            break;
-        }
+            default:
+            {
+                /* Setup error, stall the device */
+                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
+                break;
+            }
         }
     }
 }
@@ -475,10 +475,11 @@ void VCOM_LineCoding(uint8_t port)
         comTbytes = 0;
         comThead = 0;
         comTtail = 0;
-        // Reset hardware fifo
-       DEBUG_PORT->FIFO |= (UART_FIFO_RXRST_Msk | UART_FIFO_TXRST_Msk);
 
-       UART_SetLineConfig(DEBUG_PORT,
+        // Reset hardware fifo
+        DEBUG_PORT->FIFO |= (UART_FIFO_RXRST_Msk | UART_FIFO_TXRST_Msk);
+
+        UART_SetLineConfig(DEBUG_PORT,
                            (g_LineCoding.u32DTERate),
                            (g_LineCoding.u8DataBits - 5),
                            (g_LineCoding.u8ParityType == 0) ? UART_PARITY_NONE :

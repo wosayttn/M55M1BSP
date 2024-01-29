@@ -143,11 +143,11 @@ typedef struct DHCP_HDR_T
 #define GET16(bptr,n)           (bptr[n+1] | (bptr[n] << 8))
 #define GET32(bptr,n)           (bptr[n+3] | (bptr[n+2] << 8) | (bptr[n+1] << 16) | (bptr[n] << 24))
 #define PUT16(bptr,n,val)       do{bptr[n+1] = val & 0xFF;\
-                                   bptr[n] = (val >> 8) & 0xFF;}while(0)
+        bptr[n] = (val >> 8) & 0xFF;}while(0)
 #define PUT32(bptr,n,val)       do{bptr[n+3] = val & 0xFF;\
-                                   bptr[n+2] = (val >> 8) & 0xFF;\
-                                   bptr[n+1] = (val >> 16) & 0xFF;\
-                                   bptr[n] = (val >> 24) & 0xFF;}while(0)
+        bptr[n+2] = (val >> 8) & 0xFF;\
+        bptr[n+1] = (val >> 16) & 0xFF;\
+        bptr[n] = (val >> 24) & 0xFF;}while(0)
 
 
 extern int process_rx_packet(uint8_t *pu8Packet, uint32_t u32Len);

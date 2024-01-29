@@ -21,7 +21,7 @@
 #endif
 
 #ifndef DEBUG_PORT_Init
-void DEBUG_PORT_Init(UART_T* psUART, uint32_t u32Baudrate)
+void DEBUG_PORT_Init(UART_T *psUART, uint32_t u32Baudrate)
 {
     UART_Open(psUART, u32Baudrate);
 }
@@ -39,24 +39,24 @@ void SYS_Init(void)
     SYS->HIRC48MCFCTL = 0x0000ffff;
     SYS->ALTCTL1 |= SYS_ALTCTL1_LXTFSTB_Msk;
     PMC->IOSHCTL |= PMC_IOSHCTL_IOHR_Msk;
-#endif    
+#endif
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
     CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
     CLK_EnableXtalRC(CLK_SRCCTL_MIRCEN_Msk);
     CLK_EnableXtalRC(CLK_SRCCTL_LIRCEN_Msk);
     CLK_EnableXtalRC(CLK_SRCCTL_LXTEN_Msk);
-    
+
     CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_MIRCSTB_Msk);
     CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
-    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC48M); 
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC48M);
     /* Enable PLL0 180MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);    
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL1_SELECT);   
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL1_SELECT);
     /* Switch SCLK clock source to PLL0 and divide 1 */
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
 
@@ -113,12 +113,13 @@ int main(int argc, char *argv[])
 
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
-    
+
     printf("\n\n");
     printf("+--------------------------------------+\n");
     printf("|       M55M1 CLK CUnit Test           |\n");
     printf("+--------------------------------------+\n");
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
+
     if (CU_initialize_registry())
     {
         fprintf(stderr, " Initialization of Test Registry failed. ");

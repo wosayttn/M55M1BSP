@@ -41,11 +41,13 @@
 void synopGMAC_powerup_mac(synopGMACdevice *gmacdev)
 {
     gmacdev->GMAC_Power_down = 0;    // Let ISR know that MAC is out of power down now
+
     if (synopGMAC_is_magic_packet_received(gmacdev))
         TR("GMAC wokeup due to Magic Pkt Received\n");
+
     if (synopGMAC_is_wakeup_frame_received(gmacdev))
         TR("GMAC wokeup due to Wakeup Frame Received\n");
-    
+
     //Disable the assertion of PMT interrupt
     synopGMAC_pmt_int_disable(gmacdev);
     //Enable the mac and Dma rx and tx paths
@@ -146,8 +148,8 @@ s32 synopGMAC_setup_tx_desc_queue(synopGMACdevice *gmacdev, DmaDesc *first_desc,
         TR("reserved1: %08x\n", (unsigned int)((gmacdev->TxDesc + i)->reserved1));
         TR("timestamplow: %08x\n", (unsigned int)((gmacdev->TxDesc + i)->timestamplow));
         TR("timestamphigh: %08x\n", (unsigned int)((gmacdev->TxDesc + i)->timestamphigh));
-//        TR("data1: %08x\n", (unsigned int)((gmacdev->TxDesc + i)->data1));
-//        TR("data2: %08x\n", (unsigned int)((gmacdev->TxDesc + i)->data2));
+        //        TR("data1: %08x\n", (unsigned int)((gmacdev->TxDesc + i)->data1));
+        //        TR("data2: %08x\n", (unsigned int)((gmacdev->TxDesc + i)->data2));
     }
 
     gmacdev->TxNext = 0;
@@ -272,13 +274,16 @@ void synopGMAC_set_speed(synopGMACdevice *gmacdev)
         case SPEED1000:
             synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacMiiGmii);
             break;
+
         case SPEED100:
             synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacMiiGmii);
             synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacFESpeed100);
             break;
+
         case SPEED10:
             synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacMiiGmii);
             synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacFESpeed100);
+
         default:
             break;
     }
@@ -301,6 +306,7 @@ s32 synopGMAC_xmit_frames(synopGMACdevice *gmacdev, u8 *pkt_data, u32 pkt_len, u
 
     /*Now we have skb ready and OS invoked this function. Lets make our DMA know about this*/
     status = synopGMAC_set_tx_qptr(gmacdev, dma_addr, pkt_len, dma_addr, offload_needed, ts);
+
     if (status < 0)
     {
         TR0("%s No More Free Tx Descriptors\n", __FUNCTION__);
@@ -350,6 +356,7 @@ void synop_handle_transmit_over(synopGMACdevice *gmacdev)
                 TR("Harware Failed to Insert IPV4 Header Checksum\n");
                 gmacdev->synopGMACNetStats.tx_ip_header_errors++;
             }
+
             if (synopGMAC_is_tx_payload_checksum_error(gmacdev, status))
             {
                 TR("Harware Failed to Insert Payload Checksum\n");
@@ -360,6 +367,7 @@ void synop_handle_transmit_over(synopGMACdevice *gmacdev)
             {
                 gmacdev->synopGMACNetStats.tx_bytes += length1;
                 gmacdev->synopGMACNetStats.tx_packets++;
+
                 if (status & DescTxTSStatus)
                 {
                     gmacdev->tx_sec = time_stamp_high;
@@ -379,9 +387,9 @@ void synop_handle_transmit_over(synopGMACdevice *gmacdev)
                 gmacdev->synopGMACNetStats.tx_carrier_errors += synopGMAC_is_tx_carrier_error(status);
             }
         }
+
         gmacdev->synopGMACNetStats.collisions += synopGMAC_get_tx_collision_count(status);
-    }
-    while (desc_index >= 0);
+    } while (desc_index >= 0);
 }
 
 /**
@@ -411,9 +419,9 @@ s32 synop_handle_received_data(synopGMACdevice *gmacdev, PKT_FRAME_T **ppsPktFra
     s32 desc_index;
 
     /* Handle the Receive Descriptors */
-    if ((desc_index=synopGMAC_get_rx_qptr(gmacdev, &status,
-                              &dma_addr1, NULL, &data1,
-                              &ext_status, &time_stamp_high, &time_stamp_low)) >= 0)
+    if ((desc_index = synopGMAC_get_rx_qptr(gmacdev, &status,
+                                            &dma_addr1, NULL, &data1,
+                                            &ext_status, &time_stamp_high, &time_stamp_low)) >= 0)
     {
         //synopGMAC_TS_read_timestamp_higher_val(gmacdev, &time_stamp_higher);
         //TR("S:%08x ES:%08x DA1:%08x d1:%08x TSH:%08x TSL:%08x TSHW:%08x \n",status,ext_status,dma_addr1, data1,time_stamp_high,time_stamp_low,time_stamp_higher);
@@ -443,16 +451,19 @@ s32 synop_handle_received_data(synopGMACdevice *gmacdev, PKT_FRAME_T **ppsPktFra
             if (synopGMAC_is_ext_status(gmacdev, status))  // extended status present indicates that the RDES4 need to be probed
             {
                 TR("Extended Status present\n");
+
                 if (synopGMAC_ES_is_IP_header_error(gmacdev, ext_status))      // IP header (IPV4) checksum error
                 {
                     //Linux Kernel doesnot care for ipv4 header checksum. So we will simply proceed by printing a warning ....
                     TR("(EXTSTS)Error in IP header error\n");
                     gmacdev->synopGMACNetStats.rx_ip_header_errors++;
                 }
+
                 if (synopGMAC_ES_is_rx_checksum_bypassed(gmacdev, ext_status))  // Hardware engine bypassed the checksum computation/checking
                 {
                     TR("(EXTSTS)Hardware bypassed checksum computation\n");
                 }
+
                 if (synopGMAC_ES_is_IP_payload_error(gmacdev, ext_status))      // IP payload checksum is in error (UDP/TCP/ICMP checksum error)
                 {
                     TR("(EXTSTS) Error in EP payload\n");
@@ -465,29 +476,35 @@ s32 synop_handle_received_data(synopGMACdevice *gmacdev, PKT_FRAME_T **ppsPktFra
                 {
                     TR("Ip header and TCP/UDP payload checksum Bypassed <Chk Status = 4>  \n");
                 }
+
                 if (synopGMAC_is_rx_checksum_error(gmacdev, status) == RxIpHdrChkError)
                 {
                     //Linux Kernel doesnot care for ipv4 header checksum. So we will simply proceed by printing a warning ....
                     TR(" Error in 16bit IPV4 Header Checksum <Chk Status = 6>  \n");
                     gmacdev->synopGMACNetStats.rx_ip_header_errors++;
                 }
+
                 if (synopGMAC_is_rx_checksum_error(gmacdev, status) == RxLenLT600)
                 {
                     TR("IEEE 802.3 type frame with Length field Lesss than 0x0600 <Chk Status = 0> \n");
                 }
+
                 if (synopGMAC_is_rx_checksum_error(gmacdev, status) == RxIpHdrPayLoadChkBypass)
                 {
                     TR("Ip header and TCP/UDP payload checksum Bypassed <Chk Status = 1>\n");
                 }
+
                 if (synopGMAC_is_rx_checksum_error(gmacdev, status) == RxChkBypass)
                 {
                     TR("Ip header and TCP/UDP payload checksum Bypassed <Chk Status = 3>  \n");
                 }
+
                 if (synopGMAC_is_rx_checksum_error(gmacdev, status) == RxPayLoadChkError)
                 {
                     TR(" TCP/UDP payload checksum Error <Chk Status = 5>  \n");
                     gmacdev->synopGMACNetStats.rx_ip_payload_errors++;
                 }
+
                 if (synopGMAC_is_rx_checksum_error(gmacdev, status) == RxIpHdrPayLoadChkError)
                 {
                     //Linux Kernel doesnot care for ipv4 header checksum. So we will simply proceed by printing a warning ....
@@ -496,6 +513,7 @@ s32 synop_handle_received_data(synopGMACdevice *gmacdev, PKT_FRAME_T **ppsPktFra
                     gmacdev->synopGMACNetStats.rx_ip_payload_errors++;
                 }
             }
+
             *ppsPktFrame = (PKT_FRAME_T *)dma_addr1;
 #if 0
 #ifdef NVT_DCACHE_ON
@@ -503,6 +521,7 @@ s32 synop_handle_received_data(synopGMACdevice *gmacdev, PKT_FRAME_T **ppsPktFra
 #else
             memcpy((void *)pu8rb, (void *)((u32)dma_addr1), len);
 #endif
+
             if (prevtx != NULL)
             {
 #ifdef NVT_DCACHE_ON
@@ -511,11 +530,13 @@ s32 synop_handle_received_data(synopGMACdevice *gmacdev, PKT_FRAME_T **ppsPktFra
                 memcpy((void *)pu8rb + len, (void *)((u32)dma_addr1 + len), 4);
 #endif
             }
-//            rb->rdy = 1;
-//            rb->len = len;
+
+            //            rb->rdy = 1;
+            //            rb->len = len;
 #endif
             gmacdev->synopGMACNetStats.rx_packets++;
             gmacdev->synopGMACNetStats.rx_bytes += len;
+
             if (status & DescRxTSAvailable)
             {
                 gmacdev->rx_sec = time_stamp_high;
@@ -526,6 +547,7 @@ s32 synop_handle_received_data(synopGMACdevice *gmacdev, PKT_FRAME_T **ppsPktFra
                 gmacdev->rx_sec = 0;
                 gmacdev->rx_subsec = 0;
             }
+
             return len;
         } // if ( synopGMAC_is_rx_desc_valid(status) )
         else
@@ -549,21 +571,26 @@ void synopGMAC_set_mode(synopGMACdevice *gmacdev, int mode)
     // Must stop Tx/Rx before change speed/mode
     synopGMAC_tx_disable(gmacdev);
     synopGMAC_rx_disable(gmacdev);
+
     switch (mode)
     {
         case SPEED1000:
             synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacMiiGmii);
             break;
+
         case SPEED100:
             synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacMiiGmii);
             synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacFESpeed100);
             break;
+
         case SPEED10:
             synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacMiiGmii);
             synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacFESpeed100);
+
         default:
             break;
     }
+
     synopGMAC_tx_enable(gmacdev);
     synopGMAC_rx_enable(gmacdev);
 }

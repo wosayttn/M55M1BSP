@@ -48,11 +48,11 @@ struct test_vec ed25519_test_vector __attribute__((aligned(16))) =
 };
 
 #define assert(a) if( !( a ) )              \
-{                           \
-    printf("Assertion Failed at	%s:%d -	%s\n",      \
-                 __FILE__, __LINE__, #a );  \
-    while (1);                      \
-}
+    {                           \
+        printf("Assertion Failed at	%s:%d -	%s\n",      \
+               __FILE__, __LINE__, #a );  \
+        while (1);                      \
+    }
 
 static inline uint8_t read8(const void *addr)
 {
@@ -73,11 +73,13 @@ void CRYPTO_IRQHandler()
         g_HMAC_error = 1;
         CRYPTO->INTSTS = CRYPTO_INTSTS_HMACEIF_Msk;
     }
+
     if (CRYPTO->INTSTS & CRYPTO_INTSTS_HMACIF_Msk)
     {
         g_HMAC_done = 1;
         CRYPTO->INTSTS = CRYPTO_INTSTS_HMACIF_Msk;
     }
+
     ECC_Complete(CRYPTO);
 }
 
@@ -92,25 +94,31 @@ void  dump_buff_hex(uint8_t *pucBuff, int nBytes)
     if ((addr % 16) != 0)
     {
         printf("0x%04x_%04x  ", (addr >> 16) & 0xffff, addr & 0xffff);
+
         for (i = 0; i < addr % 16; i++)
             printf(".. ");
 
         for (; (addr % 16) != 0; addr++)
             printf("%02x ", readb(u32_to_ptr8(addr)) & 0xff);
+
         printf("\n");
     }
 
     for (;  addr <= end_addr;)
     {
         printf("0x%04x_%04x  ", (addr >> 16) & 0xffff, addr & 0xffff);
+
         for (i = 0; i < 16; i++, addr++)
         {
             if (addr > end_addr)
                 break;
+
             printf("%02x ", readb(u32_to_ptr8(addr)) & 0xff);
         }
+
         printf("\n");
     }
+
     printf("\n");
 }
 
@@ -125,6 +133,7 @@ int unhexify(unsigned char *obuf, const char *ibuf)
     while (*ibuf !=  0)
     {
         c = *ibuf++;
+
         if (c >= '0' &&  c <= '9')
             c -= '0';
         else if (c >= 'a' && c <= 'f')
@@ -135,6 +144,7 @@ int unhexify(unsigned char *obuf, const char *ibuf)
             assert(0);
 
         c2 = *ibuf++;
+
         if (c2 >= '0' && c2 <= '9')
             c2 -= '0';
         else if (c2 >= 'a' && c2 <= 'f')
@@ -146,6 +156,7 @@ int unhexify(unsigned char *obuf, const char *ibuf)
 
         *obuf++ = (c << 4) | c2;
     }
+
     return len;
 }
 
@@ -201,6 +212,7 @@ int ed25519_test()
     if (ECC_ED25519_SigGen(sg_tv->type, priv_key, _msg, msg_len, _ctx, ctx_len, R, S) != 0)
     {
         printf("ECC signature generation failed!!\n");
+
         while (1);
     }
 
@@ -212,8 +224,10 @@ int ed25519_test()
         dump_buff_hex((uint8_t *)R, 32);
         printf("Expect =>\n");
         dump_buff_hex(u8tmp, 32);
+
         while (1);
     }
+
     printf("!!! Ed25519 sig_gen type %d test pass R !!\n", sg_tv->type);
 
     if (memcmp(&u8tmp[32], S, 32) != 0)
@@ -222,8 +236,10 @@ int ed25519_test()
         dump_buff_hex((uint8_t *)S, 32);
         printf("Expect =>\n");
         dump_buff_hex(&u8tmp[32], 32);
+
         while (1);
     }
+
     printf("[ECC_ED25519_SigGen PASS]\n");
 
     printf("Ed25519 signature generation test passed.\n");
@@ -232,8 +248,10 @@ int ed25519_test()
     if (ECC_ED25519_Verify(sg_tv->type, _msg, msg_len, _ctx, ctx_len, pub_key, R, S) != 0)
     {
         printf("Ed25519 sig_verify test failed!\n");
+
         while (1);
     }
+
     printf("[ECC_ED25519_Verify PASS]\n");
     printf("\n");
 

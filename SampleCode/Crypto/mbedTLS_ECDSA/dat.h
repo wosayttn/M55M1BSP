@@ -1,4 +1,5 @@
 
-const char _dat[] = {
+const char _dat[] =
+{
 #include "datx.h"
-    };
+};

@@ -30,10 +30,10 @@
 #include <string.h>
 #include "NuMicro.h"
 
-extern void * platform_alt_calloc(size_t , size_t );
+extern void *platform_alt_calloc(size_t, size_t);
 extern void platform_alt_free(void *);
-#define MBEDTLS_PLATFORM_CALLOC_MACRO(x, y)		platform_alt_calloc(x, y)//clyu
-#define MBEDTLS_PLATFORM_FREE_MACRO(x)		    platform_alt_free(x)//clyu
+#define MBEDTLS_PLATFORM_CALLOC_MACRO(x, y)     platform_alt_calloc(x, y)//clyu
+#define MBEDTLS_PLATFORM_FREE_MACRO(x)          platform_alt_free(x)//clyu
 
 /**
  * This is an optional version symbol that enables comatibility handling of
@@ -3068,7 +3068,7 @@ extern void platform_alt_free(void *);
 //#define MBEDTLS_HMAC_DRBG_MAX_SEED_INPUT      384 /**< Maximum size of (re)seed buffer */
 
 /* ECP options */
-#define MBEDTLS_ECP_MAX_BITS             	 521//571  clyu/**< Maximum bit size of groups */
+#define MBEDTLS_ECP_MAX_BITS                 521//571  clyu/**< Maximum bit size of groups */
 //#define MBEDTLS_ECP_WINDOW_SIZE            6 /**< Maximum window size used */
 //#define MBEDTLS_ECP_FIXED_POINT_OPTIM      1 /**< Enable fixed-point speed-up */
 
@@ -3340,9 +3340,9 @@ extern void platform_alt_free(void *);
 */
 
 #if (defined(MBEDTLS_ECDH_GEN_PUBLIC_ALT) || defined(MBEDTLS_ECDH_COMPUTE_SHARED_ALT) || defined(MBEDTLS_ECDSA_VERIFY_ALT) || defined(MBEDTLS_ECDSA_SIGN_ALT)) && defined(MBEDTLS_SHA256_ALT)
-#error "SHA256_ALT cannot work with ECDH or ECDSA ALT"
+    #error "SHA256_ALT cannot work with ECDH or ECDSA ALT"
 #endif
 
 #if (defined(MBEDTLS_ECDH_GEN_PUBLIC_ALT) || defined(MBEDTLS_ECDH_COMPUTE_SHARED_ALT) || defined(MBEDTLS_ECDSA_VERIFY_ALT) || defined(MBEDTLS_ECDSA_SIGN_ALT)) && defined(MBEDTLS_ECP_DP_CURVE25519_ENABLED)
-#error "MBEDTLS_ECP_DP_CURVE25519_ENABLED cannot work with ECDH or ECDSA ALT"
+    #error "MBEDTLS_ECP_DP_CURVE25519_ENABLED cannot work with ECDH or ECDSA ALT"
 #endif

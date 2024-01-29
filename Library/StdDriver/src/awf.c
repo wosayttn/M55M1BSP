@@ -51,16 +51,16 @@ void AWF_Open(uint32_t u32IntEn, uint32_t u32WakeupEn, uint32_t u32HTH, uint32_t
     AWF_SET_LTH(u32LTH);
 
     /* Set accumulate count*/
-    AWF->CTL = ((AWF->CTL & ~AWF_CTL_ACUCNT_Msk) | (u32ACCCount << AWF_CTL_ACUCNT_Pos)); 
+    AWF->CTL = ((AWF->CTL & ~AWF_CTL_ACUCNT_Msk) | (u32ACCCount << AWF_CTL_ACUCNT_Pos));
 
     /* Set word buffer initial value*/
     AWF_SET_WBINIT(u32WBINIT);
 
     /* Clear interrupt status */
     AWF->STATUS = AWF->STATUS;
-    
+
     /* Set interrupt function*/
-    AWF->CTL = ((AWF->CTL & ~(AWF_CTL_HTIEN_Msk | AWF_CTL_LTIEN_Msk | AWF_CTL_HTWKEN_Msk | AWF_CTL_LTWKEN_Msk)) | u32IntEn | u32WakeupEn);   
+    AWF->CTL = ((AWF->CTL & ~(AWF_CTL_HTIEN_Msk | AWF_CTL_LTIEN_Msk | AWF_CTL_HTWKEN_Msk | AWF_CTL_LTWKEN_Msk)) | u32IntEn | u32WakeupEn);
 }
 
 /**

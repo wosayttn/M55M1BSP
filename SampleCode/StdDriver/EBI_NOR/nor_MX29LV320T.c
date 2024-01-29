@@ -41,7 +41,7 @@ int32_t NOR_MX29LV320T_CheckStatus(uint32_t u32DstAddr, uint16_t u16Data, uint32
     volatile uint16_t u16RData;
     volatile uint32_t u32DelayLoop = 0;
 
-    if(u16Data != 0xEEEE)
+    if (u16Data != 0xEEEE)
     {
         /* Check normal write command status */
         do
@@ -49,27 +49,26 @@ int32_t NOR_MX29LV320T_CheckStatus(uint32_t u32DstAddr, uint16_t u16Data, uint32
             u16RData = EBI1_READ_DATA16(u32DstAddr) & 0xFF;
 
             /* check DQ7 */
-            if((u16RData & (1 << 7)) == (u16Data & (1 << 7)))
+            if ((u16RData & (1 << 7)) == (u16Data & (1 << 7)))
                 break;
 
             /* check DQ5 */
-            if((u16RData & (1 << 5)) == (1 << 5))
+            if ((u16RData & (1 << 5)) == (1 << 5))
             {
                 u16RData = EBI1_READ_DATA16(u32DstAddr) & 0xFF;
 
                 /* check DQ7 */
-                if((u16RData & (1 << 7)) == (u16Data & (1 << 7)))
+                if ((u16RData & (1 << 7)) == (u16Data & (1 << 7)))
                     break;
                 else
                     return -1;
             }
 
-            if(u32DelayLoop++ > u32TimeoutMs)
+            if (u32DelayLoop++ > u32TimeoutMs)
                 return -1;
 
             CLK_SysTickDelay(1000);
-        }
-        while(1);
+        } while (1);
     }
     else
     {
@@ -80,18 +79,17 @@ int32_t NOR_MX29LV320T_CheckStatus(uint32_t u32DstAddr, uint16_t u16Data, uint32
         {
             u16RData = EBI1_READ_DATA16(u32DstAddr);
 
-            if(u32DelayLoop++ > u32TimeoutMs)
+            if (u32DelayLoop++ > u32TimeoutMs)
             {
                 printf("\r                                      \r");
                 return -1;
             }
 
-            if((u32DelayLoop % 1024) == 0)
+            if ((u32DelayLoop % 1024) == 0)
                 printf(".");
 
             CLK_SysTickDelay(1000);
-        }
-        while((u16RData & (1 << 7)) != (1 << 7));
+        } while ((u16RData & (1 << 7)) != (1 << 7));
 
         printf("\r                                      \r");
     }
@@ -164,7 +162,7 @@ void NOR_MX29LV320T_GET_ID(uint32_t u32Bank, uint16_t *pu16IDTable)
     /* Get DeviceID  */
     pu16IDTable[1] = EBI1_READ_DATA16((0x1 << 1));
 
-    NOR_MX29LV320T_RESET(u32Bank);      
+    NOR_MX29LV320T_RESET(u32Bank);
 }
 
 /**
@@ -193,28 +191,30 @@ int32_t NOR_MX29LV320T_EraseChip(uint32_t u32Bank, uint32_t u32IsCheckBlank)
     EBI1_WRITE_DATA16((0x555 << 1), 0x10);
 
     i32Status  = NOR_MX29LV320T_CheckStatus(0, 0xEEEE, 30000);
-    if(i32Status < 0)
+
+    if (i32Status < 0)
     {
         printf(">> Chip erase ... Time-out !!!\n\n");
         return i32Status;
     }
 
-    if(u32IsCheckBlank)
+    if (u32IsCheckBlank)
     {
         /* Run blank check */
         volatile uint32_t u32Addr;
         uint16_t u16RData;
 
-        for(u32Addr = 0; u32Addr < EBI_MAX_SIZE; u32Addr += 2)
+        for (u32Addr = 0; u32Addr < EBI_MAX_SIZE; u32Addr += 2)
         {
             u16RData = NOR_MX29LV320T_READ(u32Bank, u32Addr);
 
-            if(u16RData != 0xFFFF)
+            if (u16RData != 0xFFFF)
             {
                 printf("> Chip erase done and blank check FAIL on 0x%08X (R:0x%X)!!!\n\n", u32Addr, u16RData);
                 return -1;
             }
         }
+
         printf(">> Chip erase done and blank check OK !!!\n\n");
     }
     else

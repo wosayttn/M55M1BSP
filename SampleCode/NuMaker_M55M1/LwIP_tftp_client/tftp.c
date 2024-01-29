@@ -16,7 +16,7 @@
 #define TFTP_THREAD_STACKSIZE  200
 
 #ifndef MIN
-#define MIN(a, b)   (a) < (b) ? (a) : (b)
+    #define MIN(a, b)   (a) < (b) ? (a) : (b)
 #endif
 
 static struct netconn *conn;
@@ -34,14 +34,17 @@ void send_ack(uint16_t blk)
 {
     struct netbuf *nbuf;
     char *data;
+
     /* Prepare data */
-    if((nbuf = netbuf_new()) == NULL)
+    if ((nbuf = netbuf_new()) == NULL)
         return;
-    if((data = netbuf_alloc(nbuf, 4)) == NULL)      // op 2, ack blk 2
+
+    if ((data = netbuf_alloc(nbuf, 4)) == NULL)     // op 2, ack blk 2
     {
         netbuf_delete(nbuf);
         return;
     }
+
     *(uint16_t *)data = lwip_htons(TFTP_OPCODE_ACK);
     *(uint16_t *)(data + 2) = lwip_htons(blk);
 
@@ -56,14 +59,17 @@ void send_data(uint16_t blk, uint8_t *buf, uint16_t len)
 {
     struct netbuf *nbuf;
     char *data;
+
     /* Prepare data */
-    if((nbuf = netbuf_new()) == NULL)
+    if ((nbuf = netbuf_new()) == NULL)
         return;
-    if((data = netbuf_alloc(nbuf, len + 4)) == NULL)    // op 2, blk 2
+
+    if ((data = netbuf_alloc(nbuf, len + 4)) == NULL)   // op 2, blk 2
     {
         netbuf_delete(nbuf);
         return;
     }
+
     *(uint16_t *)data = lwip_htons(TFTP_OPCODE_DATA);
     *(uint16_t *)(data + 2) = lwip_htons(blk);
     memcpy(data + 4, (void *)buf, len);
@@ -78,14 +84,17 @@ void send_err(uint16_t err)
 {
     struct netbuf *nbuf;
     char *data;
+
     /* Prepare data */
-    if((nbuf = netbuf_new()) == NULL)
+    if ((nbuf = netbuf_new()) == NULL)
         return;
-    if((data = netbuf_alloc(nbuf, 8)) == NULL)      // op 2, err code 2, msg 4
+
+    if ((data = netbuf_alloc(nbuf, 8)) == NULL)     // op 2, err code 2, msg 4
     {
         netbuf_delete(nbuf);
         return;
     }
+
     *(uint16_t *)data = lwip_htons(TFTP_OPCODE_ERROR);
     *(uint16_t *)(data + 2) = lwip_htons(err);
     data[4] = 'E';
@@ -103,14 +112,17 @@ void send_rrq(void)
 {
     struct netbuf *nbuf;
     char *data;
+
     /* Prepare data */
-    if((nbuf = netbuf_new()) == NULL)
+    if ((nbuf = netbuf_new()) == NULL)
         return;
-    if((data = netbuf_alloc(nbuf, 2 + strlen(file_name) + strlen(tftp_mode) + 2 )) == NULL)      // op 2, two string and two terminators
+
+    if ((data = netbuf_alloc(nbuf, 2 + strlen(file_name) + strlen(tftp_mode) + 2)) == NULL)      // op 2, two string and two terminators
     {
         netbuf_delete(nbuf);
         return;
     }
+
     *(uint16_t *)data = lwip_htons(TFTP_OPCODE_RRQ);
     strcpy(data + 2, file_name);
     strcpy(data + 2 + strlen(file_name) + 1, tftp_mode);
@@ -125,14 +137,17 @@ void send_wrq(void)
 {
     struct netbuf *nbuf;
     char *data;
+
     /* Prepare data */
-    if((nbuf = netbuf_new()) == NULL)
+    if ((nbuf = netbuf_new()) == NULL)
         return;
-    if((data = netbuf_alloc(nbuf, 2 + strlen(file_name) + strlen(tftp_mode) + 2 )) == NULL)      // op 2, two string and two terminators
+
+    if ((data = netbuf_alloc(nbuf, 2 + strlen(file_name) + strlen(tftp_mode) + 2)) == NULL)      // op 2, two string and two terminators
     {
         netbuf_delete(nbuf);
         return;
     }
+
     *(uint16_t *)data = lwip_htons(TFTP_OPCODE_WRQ);
     strcpy(data + 2, file_name);
     strcpy(data + 2 + strlen(file_name) + 1, tftp_mode);
@@ -171,20 +186,25 @@ static void tftp_thread(void *arg)
 
     /* Create a new UDP connection handle */
     conn = netconn_new(NETCONN_UDP);
+
     if (conn == NULL)
     {
         printf("netconn_new() failed\n");
-        while(1);
+
+        while (1);
     }
 
     printf("Select your option 1)get, 2)put\n");
-    while(1)
+
+    while (1)
     {
         c = getchar();
-        if(c == '1' || c == '2')
+
+        if (c == '1' || c == '2')
             break;
     }
-    if(c == '1')
+
+    if (c == '1')
     {
         printf("You select get file from server\n");
         state = TFTP_STATE_RRQ;
@@ -197,15 +217,16 @@ static void tftp_thread(void *arg)
         send_wrq();
     }
 
-    while(!done)
+    while (!done)
     {
         err = netconn_recv(conn, &nbuf);
-        if(err == ERR_TIMEOUT)
+
+        if (err == ERR_TIMEOUT)
         {
-            if(state == TFTP_STATE_IDLE)
+            if (state == TFTP_STATE_IDLE)
                 continue;
 
-            if(++retry > TFTP_MAX_RETRIES)
+            if (++retry > TFTP_MAX_RETRIES)
             {
                 printf("Exceed retry count, reset to idle state\n");
                 retry = 0;
@@ -213,10 +234,11 @@ static void tftp_thread(void *arg)
                 done = 1;
                 continue;
             }
+
             /* Packet was likely lost */
-            if(state == TFTP_STATE_RRQ)
+            if (state == TFTP_STATE_RRQ)
             {
-                if(first)
+                if (first)
                 {
                     printf("Timeout, resend RRQ %d\n", retry);
                     send_rrq();
@@ -226,11 +248,12 @@ static void tftp_thread(void *arg)
                     printf("Timeout, resend data %d\n", retry);
                     send_data(blk, (void *)data, MIN(remain, TFTP_BLOCK_LENGTH));
                 }
+
                 continue;
             }
             else if (state == TFTP_STATE_WRQ)
             {
-                if(first)
+                if (first)
                 {
                     printf("Timeout, resend WRQ %d\n", retry);
                     send_wrq();
@@ -240,10 +263,11 @@ static void tftp_thread(void *arg)
                     printf("Timeout, resend ack %d\n", retry);
                     send_ack(blk);
                 }
+
                 continue;
             }
         }
-        else if(err != ERR_OK)
+        else if (err != ERR_OK)
         {
             continue;
         }
@@ -254,10 +278,11 @@ static void tftp_thread(void *arg)
         get_addr = netbuf_fromaddr(nbuf);
         get_port = netbuf_fromport(nbuf);
         /* Get the payload and length */
-        netbuf_data(nbuf, (void**)&payload, &payload_len);
+        netbuf_data(nbuf, (void **)&payload, &payload_len);
 
         op = lwip_ntohs(*(uint16_t *)payload);
-        if(memcmp(get_addr, &server_addr, sizeof(ip_addr_t)))
+
+        if (memcmp(get_addr, &server_addr, sizeof(ip_addr_t)))
         {
             // Ignore everything not coming from server.
             // Server may select other port to complete the service, so check address only
@@ -265,10 +290,10 @@ static void tftp_thread(void *arg)
             continue;
         }
 
-        switch(op)
+        switch (op)
         {
             case TFTP_OPCODE_DATA:
-                if(state != TFTP_STATE_RRQ)
+                if (state != TFTP_STATE_RRQ)
                 {
                     send_err(TFTP_ERROR_ILLEGAL_OPERATION);
                     state = TFTP_STATE_IDLE;
@@ -278,33 +303,36 @@ static void tftp_thread(void *arg)
                 {
                     uint16_t new_blk = lwip_ntohs(*(uint16_t *)(payload + 2));
 
-                    if(new_blk == blk)
+                    if (new_blk == blk)
                     {
                         /* Last ACK lost */
                         send_ack(blk);
                     }
-                    else if(new_blk == blk + 1)
+                    else if (new_blk == blk + 1)
                     {
                         int i;
                         uint8_t *c = payload + 4;
 
-                        if(first)
+                        if (first)
                         {
                             // Server may select other port to complete the service
                             server_port = get_port;
                             first = 0;
                         }
+
                         // Dump received data */
-                        for(i = 0; i < payload_len - 4; i++)
+                        for (i = 0; i < payload_len - 4; i++)
                         {
-                            if((i & 0xF) == 0)
+                            if ((i & 0xF) == 0)
                                 printf("\n");
+
                             printf("%02x ", *c++);
                         }
 
                         blk = new_blk;
                         send_ack(blk);
-                        if(payload_len < TFTP_BLOCK_LENGTH + 4)
+
+                        if (payload_len < TFTP_BLOCK_LENGTH + 4)
                         {
                             /* This is the last data packet, all done */
                             printf("Done\n");
@@ -321,10 +349,11 @@ static void tftp_thread(void *arg)
                         done = 1;
                     }
                 }
+
                 break;
 
             case TFTP_OPCODE_ACK:
-                if(state != TFTP_STATE_WRQ)
+                if (state != TFTP_STATE_WRQ)
                 {
                     send_err(TFTP_ERROR_ILLEGAL_OPERATION);
                     state = TFTP_STATE_IDLE;
@@ -334,9 +363,9 @@ static void tftp_thread(void *arg)
                 {
                     uint16_t new_blk = lwip_ntohs(*(uint16_t *)(payload + 2));
 
-                    if(first)
+                    if (first)
                     {
-                        if(new_blk != 0)
+                        if (new_blk != 0)
                         {
                             /* Ack block # for WRQ must be 0 */
                             printf("Unknown ID number\n");
@@ -351,21 +380,23 @@ static void tftp_thread(void *arg)
                             remain = flen;
                             data = file;
                             blk++;
-                            new_blk++; // add to avoid enter " if(new_blk == (blk - 1)) " 
+                            new_blk++; // add to avoid enter " if(new_blk == (blk - 1)) "
                             printf(".");
                             first = 0;
                             send_data(blk, data, MIN(remain, TFTP_BLOCK_LENGTH));
                         }
                     }
-                    if(new_blk == (blk - 1))
+
+                    if (new_blk == (blk - 1))
                     {
                         /* Last packet was lost */
                         send_data(blk, data, MIN(remain, TFTP_BLOCK_LENGTH));
                     }
-                    else if(new_blk == blk)
+                    else if (new_blk == blk)
                     {
                         remain -= TFTP_BLOCK_LENGTH;
-                        if(remain < 0)  /* Still need to send a 0 data packet if remain is 0 */
+
+                        if (remain < 0) /* Still need to send a 0 data packet if remain is 0 */
                         {
                             /* All done */
                             printf("\nDone\n");
@@ -389,13 +420,16 @@ static void tftp_thread(void *arg)
                         done = 1;
                     }
                 }
+
                 break;
+
             case TFTP_OPCODE_ERROR:
                 /* Reset to idle state on error */
                 state = TFTP_STATE_IDLE;
                 done = 1;
                 printf("Received ERR: %d\n", lwip_ntohs(*(uint16_t *)(payload + 2)));
                 break;
+
             default:
                 /* Reset to idle state if recevied unknown op code */
                 printf("Received unknown op code\n");
@@ -407,7 +441,8 @@ static void tftp_thread(void *arg)
 
         netbuf_delete(nbuf);
     }
-    while(1);
+
+    while (1);
 }
 
 /**
@@ -419,7 +454,8 @@ void tftp_client_init(void)
 {
     int i;
 
-    for(i = 0; i < FILE_LEN; i++)
+    for (i = 0; i < FILE_LEN; i++)
         file[i] = i & 0xFF;
+
     sys_thread_new("TFTP", tftp_thread, NULL, TFTP_THREAD_STACKSIZE, TFTP_THREAD_PRIO);
 }

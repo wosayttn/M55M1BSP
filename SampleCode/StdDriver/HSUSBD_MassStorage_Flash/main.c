@@ -54,13 +54,15 @@ void SYS_Init(void)
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
-   /* Enable HSOTG0_ module clock */
+    /* Enable HSOTG0_ module clock */
     CLK_EnableModuleClock(HSOTG0_MODULE);
 
     SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;    /* select HSUSBD */
     /* Enable USB PHY */
     SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk | SYS_USBPHY_HSUSBACT_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
-    for (i=0; i<0x1000; i++);      // delay > 10 us
+
+    for (i = 0; i < 0x1000; i++);  // delay > 10 us
+
     SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
 
     /* Enable IP clock */
@@ -71,8 +73,8 @@ void SYS_Init(void)
 
     /* Enable FMC0 module clock */
     CLK_EnableModuleClock(FMC0_MODULE);
-        /* Select UART clock source from HIRC */
-    CLK_SetModuleClock(FMC0_MODULE, CLK_FMCSEL_FMC0SEL_HIRC,0);
+    /* Select UART clock source from HIRC */
+    CLK_SetModuleClock(FMC0_MODULE, CLK_FMCSEL_FMC0SEL_HIRC, 0);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */

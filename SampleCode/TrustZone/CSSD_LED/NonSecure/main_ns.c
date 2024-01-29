@@ -40,36 +40,43 @@ void SysTick_Handler(void)
 
     switch (u32Ticks++)
     {
-    case   0:
-        LED_On(7u);
-        Secure_PA11_LED_On(0u);
-        break;
-    case 100:
-        Secure_PA11_LED_Off(0u);
-        Secure_PA12_LED_On(0u);
-        break;
-    case 200:
-        Secure_PA12_LED_Off(0u);
-        break;
-    case 300:
-        LED_Off(7u);
-        break;
-    case 400:
-        Secure_PA11_LED_On(0u);
-        Secure_PA12_LED_On(0u);
-        break;
-    case 500:
-        Secure_PA11_LED_Off(0u);
-        Secure_PA12_LED_Off(0u);
-        break;
-    case 600:
-        u32Ticks = 0;
-        break;
-    default:
-        if (u32Ticks > 600)
-        {
+        case   0:
+            LED_On(7u);
+            Secure_PA11_LED_On(0u);
+            break;
+
+        case 100:
+            Secure_PA11_LED_Off(0u);
+            Secure_PA12_LED_On(0u);
+            break;
+
+        case 200:
+            Secure_PA12_LED_Off(0u);
+            break;
+
+        case 300:
+            LED_Off(7u);
+            break;
+
+        case 400:
+            Secure_PA11_LED_On(0u);
+            Secure_PA12_LED_On(0u);
+            break;
+
+        case 500:
+            Secure_PA11_LED_Off(0u);
+            Secure_PA12_LED_Off(0u);
+            break;
+
+        case 600:
             u32Ticks = 0;
-        }
+            break;
+
+        default:
+            if (u32Ticks > 600)
+            {
+                u32Ticks = 0;
+            }
     }
 }
 

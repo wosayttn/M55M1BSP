@@ -36,6 +36,7 @@ uint8_t Byte2Char(uint8_t c)
 {
     if (c < 10)
         return (c + '0');
+
     if (c < 16)
         return (c - 10 + 'a');
 
@@ -54,23 +55,30 @@ void  dump_buff_hex(uint8_t *pucBuff, int nBytes)
     int     nIdx, i;
 
     nIdx = 0;
+
     while (nBytes > 0)
     {
         printf("0x%04X  ", nIdx);
+
         for (i = 0; i < 16; i++)
             printf("%02x ", pucBuff[nIdx + i]);
+
         printf("  ");
+
         for (i = 0; i < 16; i++)
         {
             if ((pucBuff[nIdx + i] >= 0x20) && (pucBuff[nIdx + i] < 127))
                 printf("%c", pucBuff[nIdx + i]);
             else
                 printf(".");
+
             nBytes--;
         }
+
         nIdx += 16;
         printf("\n");
     }
+
     printf("\n");
 }
 
@@ -169,6 +177,7 @@ int32_t main(void)
     SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;    /* Enable SysTick IRQ and SysTick Timer */
 
     au8r = (uint8_t *)&au32r[0];
+
     do
     {
 
@@ -180,6 +189,7 @@ int32_t main(void)
             d[j++] = Byte2Char(au8r[i] & 0xf);
             d[j++] = Byte2Char(au8r[i] >> 4);
         }
+
         d[j] = 0; // NULL end
 
 
@@ -196,16 +206,18 @@ int32_t main(void)
             printf("Current private key is not valid. Need a new one.\n");
         }
 
-    }
-    while (1);
+    } while (1);
 
     /* Reset SysTick to measure time */
     SysTick->VAL = 0;
+
     if (ECC_GeneratePublicKey(CRYPTO, CURVE_P_SIZE, d, Qx, Qy) < 0)
     {
         printf("ECC key generation failed!!\n");
+
         while (1);
     }
+
     time = 0xffffff - SysTick->VAL;
 
     printf("Public Qx is %s\n", Qx);
@@ -229,6 +241,7 @@ int32_t main(void)
             k[j++] = Byte2Char(au8r[i] & 0xf);
             k[j++] = Byte2Char(au8r[i] >> 4);
         }
+
         k[j] = 0; // NULL End
 
         printf("  k = %s\n", k);
@@ -246,11 +259,13 @@ int32_t main(void)
         }
 
         SysTick->VAL = 0;
+
         if (ECC_GenerateSignature(CRYPTO, CURVE_P_SIZE, msg, d, k, R, S) < 0)
         {
             printf("ECC signature generation failed!!\n");
             return -1;
         }
+
         time = 0xffffff - SysTick->VAL;
 
         printf("  R  = %s\n", R);
@@ -261,6 +276,7 @@ int32_t main(void)
         SysTick->VAL = 0;
         err = ECC_VerifySignature(CRYPTO, CURVE_P_SIZE, msg, Qx, Qy, R, S);
         time = 0xffffff - SysTick->VAL;
+
         if (err < 0)
         {
             printf("ECC signature verification failed!!\n");
@@ -270,6 +286,7 @@ int32_t main(void)
         {
             printf("ECC digital signature verification OK.\n");
         }
+
         printf("Elapsed time: %d.%d ms\n", time / CyclesPerUs / 1000, time / CyclesPerUs % 1000);
     }
 

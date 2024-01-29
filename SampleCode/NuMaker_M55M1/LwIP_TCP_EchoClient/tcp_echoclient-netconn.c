@@ -32,45 +32,49 @@ static void tcp_echoclient_netconn_thread(void *arg)
     ip_addr_t server_ip;
     unsigned short server_port;
     struct netbuf *inbuf;
-    char* buf;
+    char *buf;
     u16_t buflen;
     char string[] = "nuvoton";
-    
+
     IP4_ADDR(&server_ip, 192, 168, 1, 2);
     server_port = 80;
-    
+
     /* Create a new TCP connection handle */
     conn = netconn_new(NETCONN_TCP);
-    if (conn!= NULL)
+
+    if (conn != NULL)
     {
         /* Bind to port 5168 with default IP address */
         err = netconn_bind(conn, NULL, 5168);
+
         if (err == ERR_OK)
         {
             err = netconn_connect(conn, &server_ip, server_port);
+
             if (err == ERR_OK)
             {
                 printf("Connect to server succeed !\n");
-                while(1)
+
+                while (1)
                 {
                     printf("Send for TCP packet ...");
-                    netconn_write(conn, (const unsigned char*)string, (size_t)strlen(string), NETCONN_NOCOPY);
+                    netconn_write(conn, (const unsigned char *)string, (size_t)strlen(string), NETCONN_NOCOPY);
 
                     /* Read the data from the port, blocking if nothing yet there.
                      We assume the request is in one netbuf */
-                    if (netconn_recv(conn, &inbuf) != ERR_OK) 
+                    if (netconn_recv(conn, &inbuf) != ERR_OK)
                     {
                         netbuf_delete(inbuf);
                         printf("### perform netconn_recv fail.\n");
                         netconn_delete(conn);
                         break;
                     }
-                    
-                    if (inbuf != NULL) 
+
+                    if (inbuf != NULL)
                     {
-                        if(netconn_err(conn) == ERR_OK) 
+                        if (netconn_err(conn) == ERR_OK)
                         {
-                            netbuf_data(inbuf, (void**)&buf, &buflen);
+                            netbuf_data(inbuf, (void **)&buf, &buflen);
                             printf("Recv: %s\n", buf);
                         }
                     }
@@ -78,7 +82,7 @@ static void tcp_echoclient_netconn_thread(void *arg)
                     /* Delete the buffer (netconn_recv gives us ownership,
                      so we have to make sure to deallocate the buffer) */
                     netbuf_delete(inbuf);
-                    
+
                     vTaskDelay(1000);
                 }
             }
@@ -94,7 +98,7 @@ static void tcp_echoclient_netconn_thread(void *arg)
     else
     {
         printf("can not create netconn");
-    }    
+    }
 }
 
 /**

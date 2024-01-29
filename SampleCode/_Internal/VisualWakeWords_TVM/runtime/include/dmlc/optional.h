@@ -272,7 +272,7 @@ public:
     /*! \brief return the holded value.
      *         throws std::logic_error if holding no value
      */
-    T &value()&
+    T &value() &
     {
         if (is_none)
         {
@@ -281,7 +281,7 @@ public:
 
         return *reinterpret_cast<T *>(&val);
     }
-    const T &value() const&
+    const T &value() const &
     {
         if (is_none)
         {
@@ -290,7 +290,7 @@ public:
 
         return *reinterpret_cast<const T *>(&val);
     }
-    T &&value()&&
+    T &&value() &&
     {
         if (is_none)
         {
@@ -299,7 +299,7 @@ public:
 
         return std::move(value());
     }
-    const T &&value() const&&
+    const T &&value() const &&
     {
         if (is_none)
         {

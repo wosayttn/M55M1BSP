@@ -20,17 +20,17 @@ static void fsa506_write_reg(uint16_t reg, uint16_t data)
     // Register
     CLR_RS;
     FSA506_WRITE_REG(reg & 0xFF);
-	__DSB();
+    __DSB();
     SET_RS;
 
     // Data
     FSA506_WRITE_DATA(data & 0xFF);
-	__DSB();
+    __DSB();
 
     // Done
     CLR_RS;
     FSA506_WRITE_REG(0x80);
-	__DSB();
+    __DSB();
     SET_RS;
 }
 
@@ -50,16 +50,17 @@ static void fsa506_set_page(uint16_t StartPage, uint16_t EndPage)
     fsa506_write_reg(0x7, EndPage & 0xFF);
 }
 
-static void fsa506_send_pixels(uint16_t *pixels,uint32_t fixed_color, int32_t byte_len)
+static void fsa506_send_pixels(uint16_t *pixels, uint32_t fixed_color, int32_t byte_len)
 {
     int count = byte_len / sizeof(uint16_t);
 
     CLR_RS;
     FSA506_WRITE_REG(0xC1);
-	__DSB();
+    __DSB();
     SET_RS;
 
 #if 0 //defined(CONFIG_FSA506_EBI_USE_PDMA)
+
     // PDMA-M2M feed
     if (count > 1024)
         nu_pdma_mempush((void *)(CONFIG_FSA506_EBI_ADDR + (FSA506_ADDR_DATA)), (void *)pixels, 16, count);
@@ -68,52 +69,61 @@ static void fsa506_send_pixels(uint16_t *pixels,uint32_t fixed_color, int32_t by
     {
         // CPU feed
         int i = 0;
+
         while (i < count)
         {
-			if(pixels)
-				FSA506_WRITE_DATA(pixels[i]);
-			else
-				FSA506_WRITE_DATA(fixed_color);				
+            if (pixels)
+                FSA506_WRITE_DATA(pixels[i]);
+            else
+                FSA506_WRITE_DATA(fixed_color);
+
             i++;
         }
     }
 
-	__DSB();
+    __DSB();
     CLR_RS;
     FSA506_WRITE_REG(0x80);
-	__DSB();
+    __DSB();
     SET_RS;
 }
 
 void fsa506_put_char8x16(uint16_t x, uint16_t y, uint8_t c, uint32_t fColor, uint32_t bColor)
 {
-	uint32_t i, j;
+    uint32_t i, j;
     uint8_t m;
-    
-	fsa506_set_column(x, x+8-1);
-	fsa506_set_page(y, y+16-1);
-	
+
+    fsa506_set_column(x, x + 8 - 1);
+    fsa506_set_page(y, y + 16 - 1);
+
     CLR_RS;
     FSA506_WRITE_REG(0xC1);
-	__DSB();
+    __DSB();
     SET_RS;
-    
-	for(i=0; i<16; i++){
-        m = Font8x16[c*16+i];     
-		for(j=0; j<8; j++){
-			if((m&0x80) == 0x80){
-				FSA506_WRITE_DATA(fColor);
-			}else {
-				FSA506_WRITE_DATA(bColor);
-			}
-			m<<=1;
-		}
-	}
 
-	__DSB();
+    for (i = 0; i < 16; i++)
+    {
+        m = Font8x16[c * 16 + i];
+
+        for (j = 0; j < 8; j++)
+        {
+            if ((m & 0x80) == 0x80)
+            {
+                FSA506_WRITE_DATA(fColor);
+            }
+            else
+            {
+                FSA506_WRITE_DATA(bColor);
+            }
+
+            m <<= 1;
+        }
+    }
+
+    __DSB();
     CLR_RS;
     FSA506_WRITE_REG(0x80);
-	__DSB();
+    __DSB();
     SET_RS;
 }
 
@@ -209,7 +219,7 @@ S_LCD_INFO g_s_WQVGA_FSA506 =
     .m_pfnSetColumn = fsa506_set_column,
     .m_pfnSetPage   = fsa506_set_page,
     .m_pfnSentPixel = fsa506_send_pixels,
-	.m_pfnPutChar	= fsa506_put_char8x16,	
+    .m_pfnPutChar   = fsa506_put_char8x16,
 };
 
 

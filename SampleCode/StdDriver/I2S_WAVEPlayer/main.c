@@ -159,25 +159,25 @@ void NAU8822_ConfigSampleRate(uint32_t u32SampleRate)
 
     switch (u32SampleRate)
     {
-    case 16000:
-        I2C_WriteNAU8822(6, 0x1AD);    /* Divide by 6, 16K */
-        I2C_WriteNAU8822(7, 0x006);    /* 16K for internal filter coefficients */
-        break;
+        case 16000:
+            I2C_WriteNAU8822(6, 0x1AD);    /* Divide by 6, 16K */
+            I2C_WriteNAU8822(7, 0x006);    /* 16K for internal filter coefficients */
+            break;
 
-    case 44100:
-        I2C_WriteNAU8822(6, 0x14D);    /* Divide by 2, 48K */
-        I2C_WriteNAU8822(7, 0x000);    /* 48K for internal filter coefficients */
-        break;
+        case 44100:
+            I2C_WriteNAU8822(6, 0x14D);    /* Divide by 2, 48K */
+            I2C_WriteNAU8822(7, 0x000);    /* 48K for internal filter coefficients */
+            break;
 
-    case 48000:
-        I2C_WriteNAU8822(6, 0x14D);    /* Divide by 2, 48K */
-        I2C_WriteNAU8822(7, 0x000);    /* 48K for internal filter coefficients */
-        break;
+        case 48000:
+            I2C_WriteNAU8822(6, 0x14D);    /* Divide by 2, 48K */
+            I2C_WriteNAU8822(7, 0x000);    /* 48K for internal filter coefficients */
+            break;
 
-    case 96000:
-        I2C_WriteNAU8822(6, 0x109);    /* Divide by 1, 96K */
-        I2C_WriteNAU8822(72, 0x013);
-        break;
+        case 96000:
+            I2C_WriteNAU8822(6, 0x109);    /* Divide by 1, 96K */
+            I2C_WriteNAU8822(72, 0x013);
+            break;
     }
 }
 
@@ -281,37 +281,37 @@ void NAU88L25_ConfigSampleRate(uint32_t u32SampleRate)
 
     switch (u32SampleRate)
     {
-    case 16000:
-        I2C_WriteNAU88L25(0x0003,  0x801B); /* MCLK = SYSCLK_SRC/12 */
-        I2C_WriteNAU88L25(0x0004,  0x0001);
-        I2C_WriteNAU88L25(0x0005,  0x3126); /* MCLK = 4.096MHz */
-        I2C_WriteNAU88L25(0x0006,  0x0008);
-        I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=MCLK/8=512K, LRC_DIV=512K/32=16K */
-        I2C_WriteNAU88L25(0x002B,  0x0002);
-        I2C_WriteNAU88L25(0x002C,  0x0082);
-        break;
+        case 16000:
+            I2C_WriteNAU88L25(0x0003,  0x801B); /* MCLK = SYSCLK_SRC/12 */
+            I2C_WriteNAU88L25(0x0004,  0x0001);
+            I2C_WriteNAU88L25(0x0005,  0x3126); /* MCLK = 4.096MHz */
+            I2C_WriteNAU88L25(0x0006,  0x0008);
+            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=MCLK/8=512K, LRC_DIV=512K/32=16K */
+            I2C_WriteNAU88L25(0x002B,  0x0002);
+            I2C_WriteNAU88L25(0x002C,  0x0082);
+            break;
 
-    case 44100:
-        I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=11.2896M/8=1.4112M, LRC_DIV=1.4112M/32=44.1K */
-        I2C_WriteNAU88L25(0x002B,  0x0012);
-        I2C_WriteNAU88L25(0x002C,  0x0082);
-        break;
+        case 44100:
+            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=11.2896M/8=1.4112M, LRC_DIV=1.4112M/32=44.1K */
+            I2C_WriteNAU88L25(0x002B,  0x0012);
+            I2C_WriteNAU88L25(0x002C,  0x0082);
+            break;
 
-    case 48000:
-        I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=12.288M/8=1.536M, LRC_DIV=1.536M/32=48K */
-        I2C_WriteNAU88L25(0x002B,  0x0012);
-        I2C_WriteNAU88L25(0x002C,  0x0082);
-        break;
+        case 48000:
+            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=12.288M/8=1.536M, LRC_DIV=1.536M/32=48K */
+            I2C_WriteNAU88L25(0x002B,  0x0012);
+            I2C_WriteNAU88L25(0x002C,  0x0082);
+            break;
 
-    case 96000:
-        I2C_WriteNAU88L25(0x0003,  0x80A2); /* MCLK = SYSCLK_SRC/2 */
-        I2C_WriteNAU88L25(0x0004,  0x1801);
-        I2C_WriteNAU88L25(0x0005,  0x3126); /* MCLK = 24.576MHz */
-        I2C_WriteNAU88L25(0x0006,  0xF008);
-        I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=MCLK/8=3.072M, LRC_DIV=3.072M/32=96K */
-        I2C_WriteNAU88L25(0x002B,  0x0001);
-        I2C_WriteNAU88L25(0x002C,  0x0080);
-        break;
+        case 96000:
+            I2C_WriteNAU88L25(0x0003,  0x80A2); /* MCLK = SYSCLK_SRC/2 */
+            I2C_WriteNAU88L25(0x0004,  0x1801);
+            I2C_WriteNAU88L25(0x0005,  0x3126); /* MCLK = 24.576MHz */
+            I2C_WriteNAU88L25(0x0006,  0xF008);
+            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=MCLK/8=3.072M, LRC_DIV=3.072M/32=96K */
+            I2C_WriteNAU88L25(0x002B,  0x0001);
+            I2C_WriteNAU88L25(0x002C,  0x0080);
+            break;
     }
 }
 

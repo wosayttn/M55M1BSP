@@ -1,11 +1,11 @@
- /**************************************************************************//**
- * @file    main.c
- * @version V1.00
- * @brief   CRC_CRC8 code for M55M1 series MCU
- *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- *****************************************************************************/
+/**************************************************************************//**
+* @file    main.c
+* @version V1.00
+* @brief   CRC_CRC8 code for M55M1 series MCU
+*
+* SPDX-License-Identifier: Apache-2.0
+* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 

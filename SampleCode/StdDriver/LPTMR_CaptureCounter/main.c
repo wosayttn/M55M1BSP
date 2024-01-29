@@ -32,11 +32,13 @@ NVT_ITCM void LPTMR1_IRQHandler(void)
 
         g_au32LPTMR1INTCount++;
     }
+
     __DSB();
     __ISB();
-    while(LPTMR_GetCaptureIntFlag(LPTMR1))
+
+    while (LPTMR_GetCaptureIntFlag(LPTMR1))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for LPTMR1 IntFlag time-out!\n");
         }

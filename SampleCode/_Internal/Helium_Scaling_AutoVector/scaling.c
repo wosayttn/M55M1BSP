@@ -31,7 +31,7 @@ int32_t scaling_nonvectorize(void)
     uint32_t x_frac, nx_frac, y_frac, ny_frac;
     int x, y, ty;
     uint32_t srcWidth = SRC_IMG_WIDTH;
-    uint32_t srcHeight= SRC_IMG_HEIGHT;
+    uint32_t srcHeight = SRC_IMG_HEIGHT;
     uint32_t dstWidth = SCALED_IMG_WIDTH;
     uint32_t dstHeight = SCALED_IMG_HEIGHT;
     uint32_t pixel_size_B = RGB_BYTES;
@@ -54,7 +54,8 @@ int32_t scaling_nonvectorize(void)
     uint8_t *s;
     uint8_t *d;
 
-    for (y = 0; y < dstHeight; y++) {
+    for (y = 0; y < dstHeight; y++)
+    {
         // do indexing computations
         ty = src_y_accum >> FRAC_BITS; // src y
         y_frac = src_y_accum & FRAC_MASK;
@@ -65,7 +66,9 @@ int32_t scaling_nonvectorize(void)
         d = &image_dst[y * dstWidth * pixel_size_B]; //not scaled above
         // start at 1/2 pixel in to account for integer downsampling which might miss pixels
         src_x_accum = FRAC_VAL / 2;
-        for (x = 0; x < dstWidth; x++) {
+
+        for (x = 0; x < dstWidth; x++)
+        {
             uint32_t tx, p00, p01, p10, p11;
             // do indexing computations
             tx = (src_x_accum >> FRAC_BITS) * pixel_size_B;

@@ -27,7 +27,7 @@
  *
  *    @param[in]    uart                The pointer of the specified UART module.
  *    @param[in]    u32InterruptFlag    The specified interrupt of UART module.
- *                                      - \ref UART_INTSTS_SWBEINT_Msk   : Single-wire Bit Error Detect Interrupt 
+ *                                      - \ref UART_INTSTS_SWBEINT_Msk   : Single-wire Bit Error Detect Interrupt
  *                                      - \ref UART_INTSTS_LININT_Msk    : LIN bus interrupt
  *                                      - \ref UART_INTSTS_WKIF_Msk      : Wake-up interrupt
  *                                      - \ref UART_INTSTS_BUFERRINT_Msk : Buffer Error interrupt
@@ -42,7 +42,7 @@
 void UART_ClearIntFlag(UART_T *uart, uint32_t u32InterruptFlag)
 {
 
-	if (u32InterruptFlag & UART_INTSTS_SWBEINT_Msk)   /* Clear Bit Error Detection Interrupt */
+    if (u32InterruptFlag & UART_INTSTS_SWBEINT_Msk)   /* Clear Bit Error Detection Interrupt */
     {
         uart->FIFOSTS = UART_INTSTS_SWBEIF_Msk;
     }
@@ -163,7 +163,7 @@ void UART_EnableFlowCtrl(UART_T *uart)
  *
  *    @param[in]    uart                The pointer of the specified UART module.
  *    @param[in]    u32InterruptFlag    The specified interrupt of UART module:
- *                                      - \ref UART_INTSTS_SWBEINT_Msk   : Single-wire Bit Error Detect Interrupt 
+ *                                      - \ref UART_INTSTS_SWBEINT_Msk   : Single-wire Bit Error Detect Interrupt
  *                                      - \ref UART_INTEN_WKIEN_Msk      : Wake-up interrupt
  *                                      - \ref UART_INTEN_LINIEN_Msk     : Lin bus interrupt
  *                                      - \ref UART_INTEN_BUFERRIEN_Msk  : Buffer Error interrupt

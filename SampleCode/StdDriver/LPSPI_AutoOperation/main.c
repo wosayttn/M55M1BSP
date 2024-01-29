@@ -34,8 +34,8 @@ uint32_t g_au32MasterRxBuffer[DATA_COUNT] __attribute__((section(".lpSram")));
 
 NVT_ITCM void LPSPI0_IRQHandler(void)
 {
-	volatile uint32_t u32Status = 0;
-	volatile int32_t i32Timeout = 0xFFFFFF;
+    volatile uint32_t u32Status = 0;
+    volatile int32_t i32Timeout = 0xFFFFFF;
 
     // TESTCHIP_ONLY
     CLK_WaitModuleClockReady(LPSPI0_MODULE);
@@ -46,7 +46,7 @@ NVT_ITCM void LPSPI0_IRQHandler(void)
     // CPU read interrupt flag register to wait write(clear) instruction completement.
     while ((LPSPI0->AUTOSTS != 0) && (--i32Timeout >= 0))
     {
-    	u32Status = LPSPI0->AUTOSTS;
+        u32Status = LPSPI0->AUTOSTS;
         LPSPI0->AUTOSTS = u32Status;
     }
 }

@@ -36,17 +36,20 @@ static void udp_echoserver_netconn_thread(void *arg)
 
     /* Create a new UDP connection handle */
     conn = netconn_new(NETCONN_UDP);
-    if (conn!= NULL)
+
+    if (conn != NULL)
     {
         /* Bind to port 80 with default IP address */
         err = netconn_bind(conn, NULL, 80);
 
         if (err == ERR_OK)
         {
-            while(1)
+            while (1)
             {
                 printf("Wait for UDP data ...");
-                while(netconn_recv(conn, &buf) != ERR_OK);
+
+                while (netconn_recv(conn, &buf) != ERR_OK);
+
                 printf(" [OK] ...\n");
 
                 /* Get destination ip address and port*/
@@ -60,7 +63,7 @@ static void udp_echoserver_netconn_thread(void *arg)
                 /* Prepare data */
                 buf_send = netbuf_new();
                 data = netbuf_alloc(buf_send, payload_len);
-                memcpy (data, payload_data, payload_len);
+                memcpy(data, payload_data, payload_len);
 
                 /* Send the packet */
                 netconn_sendto(conn, buf_send, get_addr, get_port);

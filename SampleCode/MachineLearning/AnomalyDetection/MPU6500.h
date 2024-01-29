@@ -44,7 +44,7 @@ extern  "C" {
 //
 void MPU6500_low_levle_init(void);
 int8_t MPU6500_test(void);
-int8_t MPU6500_readXYZ_mg(float * pftr);
+int8_t MPU6500_readXYZ_mg(float *pftr);
 #ifdef  __cplusplus
 }
 #endif

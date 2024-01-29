@@ -36,7 +36,8 @@ void USCI0_IRQHandler(void)
     //UI2C0 Interrupt
     u32Status = UI2C_GET_PROT_STATUS(UI2C0);
 
-    if (s_UI2C0HandlerFn != NULL) {
+    if (s_UI2C0HandlerFn != NULL)
+    {
         s_UI2C0HandlerFn(u32Status);
     }
 }
@@ -47,7 +48,8 @@ void I2C0_IRQHandler(void)
     //I2C0 Interrupt
     u32Status = I2C_GET_STATUS(I2C0);
 
-    if (s_I2C_Slave_HandlerFn != NULL) {
+    if (s_I2C_Slave_HandlerFn != NULL)
+    {
         s_I2C_Slave_HandlerFn(u32Status);
     }
 }
@@ -56,60 +58,80 @@ void I2C_SlaveTRx(uint32_t u32Status)
 {
     uint8_t u8Data;
 
-    if (u32Status == 0x60) {                    /* Own SLA+W has been receive; ACK has been return */
+    if (u32Status == 0x60)                      /* Own SLA+W has been receive; ACK has been return */
+    {
         g_u8SlvDataLen = 0;
         g_u16RecvAddr = (uint8_t)I2C_GET_DATA(I2C0);
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0x80)                 /* Previously address with own SLA address
+    }
+    else if (u32Status == 0x80)                 /* Previously address with own SLA address
                                                    Data has been received; ACK has been returned*/
     {
         u8Data = (uint8_t) I2C_GET_DATA(I2C0);
 
-        if (g_u8SlvDataLen < g_u8RegCnt) {
+        if (g_u8SlvDataLen < g_u8RegCnt)
+        {
             g_au8SlvRxData[g_u8SlvDataLen++] = u8Data;
 
-            if (g_u8RegCnt == 1) {
+            if (g_u8RegCnt == 1)
+            {
                 slave_buff_addr = g_au8SlvRxData[0];
-            } else {
+            }
+            else
+            {
                 slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
             }
-        } else {
+        }
+        else
+        {
             g_au8SlvData[slave_buff_addr++] = u8Data;
         }
 
-        if (slave_buff_addr == 256) {
+        if (slave_buff_addr == 256)
+        {
             slave_buff_addr = 0;
         }
 
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0xA8) {             /* Own SLA+R has been receive; ACK has been return */
+    }
+    else if (u32Status == 0xA8)                 /* Own SLA+R has been receive; ACK has been return */
+    {
         I2C_SET_DATA(I2C0, g_au8SlvData[slave_buff_addr++]);
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0xB8) {             /* Data byte in I2CDAT has been transmitted ACK has been received */
+    }
+    else if (u32Status == 0xB8)                 /* Data byte in I2CDAT has been transmitted ACK has been received */
+    {
         I2C_SET_DATA(I2C0, g_au8SlvData[slave_buff_addr++]);
 
-        if (slave_buff_addr == 256) {
+        if (slave_buff_addr == 256)
+        {
             slave_buff_addr = 0;
         }
 
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0xC0)                 /* Data byte or last data in I2CDAT has been transmitted
+    }
+    else if (u32Status == 0xC0)                 /* Data byte or last data in I2CDAT has been transmitted
                                                    Not ACK has been received */
     {
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0x88)                 /* Previously addressed with own SLA address; NOT ACK has
+    }
+    else if (u32Status == 0x88)                 /* Previously addressed with own SLA address; NOT ACK has
                                                    been returned */
     {
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0xA0)                 /* A STOP or repeated START has been received while still
+    }
+    else if (u32Status == 0xA0)                 /* A STOP or repeated START has been received while still
                                                    addressed as Slave/Receiver*/
     {
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else {
-        if (u32Status == 0xF8) { // Bus Released
+    }
+    else
+    {
+        if (u32Status == 0xF8)   // Bus Released
+        {
             return;
         }
 
@@ -184,7 +206,8 @@ int suite_success_clean(void)
 /*               description                                                                               */
 /*---------------------------------------------------------------------------------------------------------*/
 
-CU_SuiteInfo suites[] = {
+CU_SuiteInfo suites[] =
+{
 #ifndef POWER_DOWN_TEST
     {"UI2C CONST", suite_success_init, suite_success_clean, NULL, NULL, UI2C_ConstTests},
     {"UI2C API", suite_success_init, suite_success_clean, NULL, NULL, UI2C_ApiTests},
@@ -235,7 +258,8 @@ void Test_API_UI2C_INT()
     UI2C_Open(ui2c, 100000);
 
     //Independent Bit test
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < 7; i++)
+    {
         ui2c->PROTIEN = 0;
         UI2C_EnableInt(ui2c, 1 << i);
         CU_ASSERT_EQUAL(ui2c->PROTIEN, 1 << i);
@@ -247,14 +271,16 @@ void Test_API_UI2C_INT()
     ui2c->PROTIEN = 0;
     reg = 0;
 
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < 7; i++)
+    {
         reg |= 1 << i;
         UI2C_EnableInt(ui2c, 1 << i);
         CU_ASSERT_EQUAL(ui2c->PROTIEN, reg);
     }
 
     //Combine Bits INT disable test
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < 7; i++)
+    {
         reg &= ~(1 << i);
         UI2C_DisableInt(ui2c, 1 << i);
         CU_ASSERT_EQUAL(ui2c->PROTIEN, reg);
@@ -271,11 +297,13 @@ void Test_API_UI2C_SetSLVAddr()
     UI2C_T *ui2c = UI2C0;
     UI2C_Open(ui2c, 100000);
 
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < 2; i++)
+    {
         UI2C_SetSlaveAddr(ui2c, i, UI2C_SLVAddr[i], UI2C_GCMODE_DISABLE);
         UI2C_SetSlaveAddrMask(ui2c, i, UI2C_SLVAddrMsk[i]);
 
-        switch (i) {
+        switch (i)
+        {
             case 0:
                 CU_ASSERT_EQUAL(ui2c->PROTCTL & UI2C_PROTCTL_GCFUNC_Msk, UI2C_GCMODE_DISABLE);
                 CU_ASSERT_EQUAL(ui2c->DEVADDR0, UI2C_SLVAddr[i]);
@@ -290,10 +318,12 @@ void Test_API_UI2C_SetSLVAddr()
         }
     }
 
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < 2; i++)
+    {
         UI2C_SetSlaveAddr(ui2c, i, UI2C_SLVAddr[i], UI2C_GCMODE_ENABLE);
 
-        switch (i) {
+        switch (i)
+        {
             case 0:
                 CU_ASSERT_EQUAL(ui2c->PROTCTL & UI2C_PROTCTL_GCFUNC_Msk, UI2C_GCMODE_ENABLE);
                 break;
@@ -544,7 +574,8 @@ void UI2C_SLV_Address_Wakeup(uint32_t u32Status)
 {
     uint32_t temp;
 
-    if ((UI2C0->WKSTS & UI2C_WKSTS_WKF_Msk) == UI2C_WKSTS_WKF_Msk) {
+    if ((UI2C0->WKSTS & UI2C_WKSTS_WKF_Msk) == UI2C_WKSTS_WKF_Msk)
+    {
         g_u32WKfromAddr = 1;
         g_u8SlvI2CWK = 1;
 
@@ -563,45 +594,58 @@ void UI2C_SLV_Address_Wakeup(uint32_t u32Status)
         return;
     }
 
-    if ((u32Status & UI2C_PROTSTS_STARIF_Msk) == UI2C_PROTSTS_STARIF_Msk) {
+    if ((u32Status & UI2C_PROTSTS_STARIF_Msk) == UI2C_PROTSTS_STARIF_Msk)
+    {
         /* Clear START INT Flag */
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_STARIF_Msk);
         /* Event process */
         g_u8DataLenS = 0;
         s_Event = SLAVE_ADDRESS_ACK;
         UI2C_SET_CONTROL_REG(UI2C0, (UI2C_CTL_PTRG | UI2C_CTL_AA));
-    } else if ((u32Status & UI2C_PROTSTS_ACKIF_Msk) == UI2C_PROTSTS_ACKIF_Msk) {
+    }
+    else if ((u32Status & UI2C_PROTSTS_ACKIF_Msk) == UI2C_PROTSTS_ACKIF_Msk)
+    {
         /* Clear ACK INT Flag */
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_ACKIF_Msk);
 
         /* Event process */
-        if (s_Event == SLAVE_ADDRESS_ACK) {
+        if (s_Event == SLAVE_ADDRESS_ACK)
+        {
             g_u8DataLenS = 0;
 
-            if ((UI2C0->PROTSTS & UI2C_PROTSTS_SLAREAD_Msk) == UI2C_PROTSTS_SLAREAD_Msk) {
+            if ((UI2C0->PROTSTS & UI2C_PROTSTS_SLAREAD_Msk) == UI2C_PROTSTS_SLAREAD_Msk)
+            {
                 /* Own SLA+R has been receive; ACK has been return */
                 s_Event = SLAVE_SEND_DATA;
                 UI2C_SET_DATA(UI2C0, g_u8SlvDataRet);
                 g_u8SlvDataRet++;
-            } else {
+            }
+            else
+            {
                 s_Event = SLAVE_GET_DATA;
             }
 
             g_u16RecvAddr = (uint8_t)UI2C_GET_DATA(UI2C0);
-        } else if (s_Event == SLAVE_GET_DATA) {
+        }
+        else if (s_Event == SLAVE_GET_DATA)
+        {
             g_au8SlvData[g_u8SlvDataLen] = (unsigned char)UI2C_GET_DATA(UI2C0);
             g_u8SlvDataLen++;
         }
 
         UI2C_SET_CONTROL_REG(UI2C0, (UI2C_CTL_PTRG | UI2C_CTL_AA));
-    } else if ((u32Status & UI2C_PROTSTS_NACKIF_Msk) == UI2C_PROTSTS_NACKIF_Msk) {
+    }
+    else if ((u32Status & UI2C_PROTSTS_NACKIF_Msk) == UI2C_PROTSTS_NACKIF_Msk)
+    {
         /* Clear NACK INT Flag */
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_NACKIF_Msk);
         /* Event process */
         // g_u8DataLenS = 0;
         s_Event = SLAVE_ADDRESS_ACK;
         UI2C_SET_CONTROL_REG(UI2C0, (UI2C_CTL_PTRG | UI2C_CTL_AA));
-    } else if ((u32Status & UI2C_PROTSTS_STORIF_Msk) == UI2C_PROTSTS_STORIF_Msk) {
+    }
+    else if ((u32Status & UI2C_PROTSTS_STORIF_Msk) == UI2C_PROTSTS_STORIF_Msk)
+    {
         /* Clear STOP INT Flag */
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_STORIF_Msk);
         // g_u8DataLenS = 0;
@@ -644,7 +688,8 @@ void Test_API_MACRO_UI2C_Wakeup()
     /* Waiting for UART printf finish*/
     while (((UART0->FIFOSTS) & UART_FIFOSTS_TXEMPTYF_Msk) == 0);
 
-    if (ui2c->PROTSTS != 0) {
+    if (ui2c->PROTSTS != 0)
+    {
         ui2c->PROTSTS = ui2c->PROTSTS;
     }
 
@@ -673,7 +718,8 @@ void Test_API_UI2C_Single_Multi_Bytes_RW(void)
     UI2C0_Init(100000);
     I2C_Slave_Init(100000);
 
-    for (i = 0; i < 0x100; i++) {
+    for (i = 0; i < 0x100; i++)
+    {
         g_au8SlvData[i] = 0;
     }
 
@@ -683,39 +729,50 @@ void Test_API_UI2C_Single_Multi_Bytes_RW(void)
     slave_buff_addr = 0;
     err = 0;
 
-    for (i = 0; i < SINGLE_BYTE_RW_TEST_COUNT; i++) {
+    for (i = 0; i < SINGLE_BYTE_RW_TEST_COUNT; i++)
+    {
         u8tmp = (uint8_t)i + 4;
         u32APIretV = UI2C_WriteByte(UI2C0, g_u8DeviceAddr, u8tmp);
         CU_ASSERT(u32APIretV == 0);
 
-        if (u32APIretV) {
+        if (u32APIretV)
+        {
             printf("[NoReg] Single byte write fail...\n");
 
             while (1);
-        } else {
+        }
+        else
+        {
             printf(".");
         }
     }
 
     slave_buff_addr = 0;
 
-    for (i = 0; i < SINGLE_BYTE_RW_TEST_COUNT; i++) {
+    for (i = 0; i < SINGLE_BYTE_RW_TEST_COUNT; i++)
+    {
         u8tmp = (uint8_t)i + 4;
         u8data = UI2C_ReadByte(UI2C0, g_u8DeviceAddr);
         CU_ASSERT_EQUAL(u8data, u8tmp);
 
-        if (u8data != u8tmp) {
+        if (u8data != u8tmp)
+        {
             printf("[NoReg] %03d: Error W(0x%X)/W(0x%X) \n", i, u8tmp, u8data);
 
             while (1);
-        } else {
+        }
+        else
+        {
             printf("o");
         }
     }
 
-    if (err) {
+    if (err)
+    {
         printf("\n[NoReg] Single byte Read/Write access Fail.....\n");
-    } else {
+    }
+    else
+    {
         printf("\n[NoReg] Single byte Read/Write access Pass.....\n");
     }
 
@@ -725,7 +782,8 @@ void Test_API_UI2C_Single_Multi_Bytes_RW(void)
     g_u8DeviceAddr = 0x16;
     err = 0;
 
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < 256; i++)
+    {
         rDataBuf[i] = 0;
         txbuf[i] = (uint8_t) i + 3;
     }
@@ -733,7 +791,8 @@ void Test_API_UI2C_Single_Multi_Bytes_RW(void)
     u32APIretV = UI2C_WriteMultiBytes(UI2C0, g_u8DeviceAddr, txbuf, MULTI_BYTES_RW_TEST_SIZE);
     CU_ASSERT(u32APIretV == MULTI_BYTES_RW_TEST_SIZE);
 
-    if (u32APIretV != MULTI_BYTES_RW_TEST_SIZE) {
+    if (u32APIretV != MULTI_BYTES_RW_TEST_SIZE)
+    {
         printf("[NoReg] Multi byte write fail....\n");
 
         while (1);
@@ -744,15 +803,20 @@ void Test_API_UI2C_Single_Multi_Bytes_RW(void)
     u32APIretV = UI2C_ReadMultiBytes(UI2C0, g_u8DeviceAddr, rDataBuf, MULTI_BYTES_RW_TEST_SIZE);
     CU_ASSERT(u32APIretV == MULTI_BYTES_RW_TEST_SIZE);
 
-    if (u32APIretV != MULTI_BYTES_RW_TEST_SIZE) {
+    if (u32APIretV != MULTI_BYTES_RW_TEST_SIZE)
+    {
         printf("[NoReg] Multi byte read fail....\n");
 
         while (1);
-    } else {
-        for (i = 0; i < MULTI_BYTES_RW_TEST_SIZE; i++) {
+    }
+    else
+    {
+        for (i = 0; i < MULTI_BYTES_RW_TEST_SIZE; i++)
+        {
             CU_ASSERT_EQUAL(txbuf[i], rDataBuf[i]);
 
-            if (txbuf[i] != rDataBuf[i]) {
+            if (txbuf[i] != rDataBuf[i])
+            {
                 err = 1;
                 printf("[NoReg][%d]: W(0x%X), R(0x%X)\n", i, txbuf[i], rDataBuf[i]);
 
@@ -761,9 +825,12 @@ void Test_API_UI2C_Single_Multi_Bytes_RW(void)
         }
     }
 
-    if (err) {
+    if (err)
+    {
         printf("\n[NoReg] Multi bytes Read/Write access Fail.....\n");
-    } else {
+    }
+    else
+    {
         printf("\n[NoReg] Multi bytes Read/Write access Pass.....\n");
     }
 
@@ -780,7 +847,8 @@ void Test_API_UI2C_Single_Multi_Bytes_RW_OneReg(void)
     UI2C0_Init(100000);
     I2C_Slave_Init(100000);
 
-    for (i = 0; i < 0x100; i++) {
+    for (i = 0; i < 0x100; i++)
+    {
         g_au8SlvData[i] = 0;
     }
 
@@ -789,33 +857,43 @@ void Test_API_UI2C_Single_Multi_Bytes_RW_OneReg(void)
     g_u8DeviceAddr = 0x16;
     err = 0;
 
-    for (i = 0; i < SINGLE_BYTE_RW_TEST_COUNT; i++) {
+    for (i = 0; i < SINGLE_BYTE_RW_TEST_COUNT; i++)
+    {
         u8tmp = (uint8_t)i + 4;
         u32APIretV = UI2C_WriteByteOneReg(UI2C0, g_u8DeviceAddr, i, u8tmp);
         CU_ASSERT(u32APIretV == 0);
 
-        if (u32APIretV) {
+        if (u32APIretV)
+        {
             printf("[OneReg] Single byte write fail...\n");
 
             while (1);
-        } else {
+        }
+        else
+        {
             printf(".");
         }
 
         u8data = UI2C_ReadByteOneReg(UI2C0, g_u8DeviceAddr, i);
         CU_ASSERT_EQUAL(u8data, u8tmp);
 
-        if (u8data != u8tmp) {
+        if (u8data != u8tmp)
+        {
             err = 1;
             printf("[OneReg] %03d: Error W(0x%X)/W(0x%X) \n", i, u8tmp, u8data);
-        } else {
+        }
+        else
+        {
             printf("o");
         }
     }
 
-    if (err) {
+    if (err)
+    {
         printf("\n[OneReg] Single byte Read/Write access Fail.....\n");
-    } else {
+    }
+    else
+    {
         printf("\n[OneReg] Single byte Read/Write access Pass.....\n");
     }
 
@@ -824,7 +902,8 @@ void Test_API_UI2C_Single_Multi_Bytes_RW_OneReg(void)
     err = 0;
     g_u8DeviceAddr = 0x16;
 
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < 256; i++)
+    {
         rDataBuf[i] = 0;
         txbuf[i] = (uint8_t) i + 3;
     }
@@ -832,7 +911,8 @@ void Test_API_UI2C_Single_Multi_Bytes_RW_OneReg(void)
     u32APIretV = UI2C_WriteMultiBytesOneReg(UI2C0, g_u8DeviceAddr, 0x0, txbuf, MULTI_BYTES_RW_TEST_SIZE);
     CU_ASSERT(u32APIretV == MULTI_BYTES_RW_TEST_SIZE);
 
-    if (u32APIretV != MULTI_BYTES_RW_TEST_SIZE) {
+    if (u32APIretV != MULTI_BYTES_RW_TEST_SIZE)
+    {
         printf("[OneReg] Multi byte write fail....\n");
 
         while (1);
@@ -841,15 +921,20 @@ void Test_API_UI2C_Single_Multi_Bytes_RW_OneReg(void)
     u32APIretV = UI2C_ReadMultiBytesOneReg(UI2C0, g_u8DeviceAddr, 0x0000, rDataBuf, MULTI_BYTES_RW_TEST_SIZE);
     CU_ASSERT(u32APIretV == MULTI_BYTES_RW_TEST_SIZE);
 
-    if (u32APIretV != MULTI_BYTES_RW_TEST_SIZE) {
+    if (u32APIretV != MULTI_BYTES_RW_TEST_SIZE)
+    {
         printf("[OneReg] Multi byte read fail....\n");
 
         while (1);
-    } else {
-        for (i = 0; i < MULTI_BYTES_RW_TEST_SIZE; i++) {
+    }
+    else
+    {
+        for (i = 0; i < MULTI_BYTES_RW_TEST_SIZE; i++)
+        {
             CU_ASSERT_EQUAL(txbuf[i], rDataBuf[i]);
 
-            if (txbuf[i] != rDataBuf[i]) {
+            if (txbuf[i] != rDataBuf[i])
+            {
                 printf("[OneReg][%d]: W(0x%X), R(0x%X)\n", i, txbuf[i], rDataBuf[i]);
 
                 while (1);
@@ -857,9 +942,12 @@ void Test_API_UI2C_Single_Multi_Bytes_RW_OneReg(void)
         }
     }
 
-    if (err) {
+    if (err)
+    {
         printf("\n[OneReg] Multi bytes Read/Write access Fail.....\n");
-    } else {
+    }
+    else
+    {
         printf("\n[OneReg] Multi bytes Read/Write access Pass.....\n");
     }
 
@@ -876,7 +964,8 @@ void Test_API_UI2C_Single_Multi_Bytes_RW_TwoReg(void)
     UI2C0_Init(100000);
     I2C_Slave_Init(100000);
 
-    for (i = 0; i < 0x100; i++) {
+    for (i = 0; i < 0x100; i++)
+    {
         g_au8SlvData[i] = 0;
     }
 
@@ -885,39 +974,49 @@ void Test_API_UI2C_Single_Multi_Bytes_RW_TwoReg(void)
     g_u8DeviceAddr = 0x16;
     err = 0;
 
-    for (i = 0; i < SINGLE_BYTE_RW_TEST_COUNT; i++) {
+    for (i = 0; i < SINGLE_BYTE_RW_TEST_COUNT; i++)
+    {
         u8tmp = (uint8_t)i + 3;
         /* Single Byte Write (Two Registers) */
         u32APIretV =  UI2C_WriteByteTwoRegs(UI2C0, g_u8DeviceAddr, 255 - i, u8tmp);
         CU_ASSERT(u32APIretV == 0);
 
-        if (u32APIretV) {
+        if (u32APIretV)
+        {
             err = 1;
             printf("\n[TwoReg] Single byte write data fail....\n");
 
             while (1);
-        } else {
+        }
+        else
+        {
             printf(".");
         }
 
-//        CLK_SysTickDelay(5000);              //If Slave reponse slowly , add delay here
+        //        CLK_SysTickDelay(5000);              //If Slave reponse slowly , add delay here
         /* Single Byte Read (Two Registers) */
         u8data  = UI2C_ReadByteTwoRegs(UI2C0, g_u8DeviceAddr, 255 - i);
         CU_ASSERT_EQUAL(u8data, u8tmp);
 
-        if (u8data  != u8tmp) {
+        if (u8data  != u8tmp)
+        {
             err = 1;
             printf("[TwoReg] %03d: Single byte write data fail,  W(0x%X)/W(0x%X) \n", i, u8tmp, u8tmp);
 
             while (1);
-        } else {
+        }
+        else
+        {
             printf("o");
         }
     }
 
-    if (err) {
+    if (err)
+    {
         printf("\n[TwoReg] Single byte Read/Write access Fail.....\n");
-    } else {
+    }
+    else
+    {
         printf("\n[TwoReg] Single byte Read/Write access Pass.....\n");
     }
 
@@ -927,7 +1026,8 @@ void Test_API_UI2C_Single_Multi_Bytes_RW_TwoReg(void)
     g_u8DeviceAddr = 0x16;
 
     /* Prepare data for transmission */
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < 256; i++)
+    {
         txbuf[i] = (uint8_t) i + 3;
     }
 
@@ -936,7 +1036,8 @@ void Test_API_UI2C_Single_Multi_Bytes_RW_TwoReg(void)
         u32APIretV = UI2C_WriteMultiBytesTwoRegs(UI2C0, g_u8DeviceAddr, 0x0000, txbuf, MULTI_BYTES_RW_TEST_SIZE);
         CU_ASSERT(u32APIretV == MULTI_BYTES_RW_TEST_SIZE);
 
-        if (u32APIretV != MULTI_BYTES_RW_TEST_SIZE) {
+        if (u32APIretV != MULTI_BYTES_RW_TEST_SIZE)
+        {
             err = 1;
             printf("\n[TwoReg] Multi bytes write data fail....\n");
 
@@ -948,27 +1049,35 @@ void Test_API_UI2C_Single_Multi_Bytes_RW_TwoReg(void)
     u32APIretV = UI2C_ReadMultiBytesTwoRegs(UI2C0, g_u8DeviceAddr, 0x0000, rDataBuf, MULTI_BYTES_RW_TEST_SIZE);
     CU_ASSERT(u32APIretV == MULTI_BYTES_RW_TEST_SIZE);
 
-    if (u32APIretV != MULTI_BYTES_RW_TEST_SIZE) {
+    if (u32APIretV != MULTI_BYTES_RW_TEST_SIZE)
+    {
         err  = 1;
         /* if transmission occurs error */
         printf("\n[TwoReg] Multi byes read Data Fail...\n");
 
         while (1);
-    } else {
+    }
+    else
+    {
         /* Compare TX data and RX data */
-        for (i = 0; i < MULTI_BYTES_RW_TEST_SIZE; i++) {
+        for (i = 0; i < MULTI_BYTES_RW_TEST_SIZE; i++)
+        {
             CU_ASSERT_EQUAL(txbuf[i], rDataBuf[i]);
 
-            if (txbuf[i] != rDataBuf[i]) {
+            if (txbuf[i] != rDataBuf[i])
+            {
                 err = 1;
                 printf("[TwoReg] R[%d] Data: 0x%X\n", i, rDataBuf[i]);
             }
         }
     }
 
-    if (err) {
+    if (err)
+    {
         printf("\n[TwoReg] Multi bytes Read/Write access Fail.....\n");
-    } else {
+    }
+    else
+    {
         printf("\n[TwoReg] Multi bytes Read/Write access Pass.....\n");
     }
 
@@ -999,12 +1108,14 @@ void Test_CONST_UI2C(void)
     CU_ASSERT(UI2C_ACK_INT_MASK == 0x040);
 }
 
-CU_TestInfo UI2C_ConstTests[] = {
+CU_TestInfo UI2C_ConstTests[] =
+{
     {" 1: CONST UI2C All.", Test_CONST_UI2C},
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo UI2C_ApiTests[] = {
+CU_TestInfo UI2C_ApiTests[] =
+{
 
     {" 1: API UI2C_Open_Close.", Test_API_UI2C_Open_Close},
     {" 2: API UI2C_Get_Set_Bus_Clock", Test_API_UI2C_BusClockFreq},
@@ -1018,7 +1129,8 @@ CU_TestInfo UI2C_ApiTests[] = {
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo UI2C_MacroTests[] = {
+CU_TestInfo UI2C_MacroTests[] =
+{
     {" 1: MACRO UI2C_Get_TimeOutFlag", Test_Macro_UI2C_Timeout},
     {" 2: MACRO UI2C_Enable_10BIT_ADDR", Test_Macro_UI2C_Enable_10Bit_Addr_Mode},
     {" 3: MACRO UI2C_Control_Read_STATUS", Test_MACRO_UI2C_Control_Read_Status},
@@ -1028,7 +1140,8 @@ CU_TestInfo UI2C_MacroTests[] = {
 
 #if defined(POWER_DOWN_TEST)
 
-CU_TestInfo UI2C_WakeupAPIMacroTests[] = {
+CU_TestInfo UI2C_WakeupAPIMacroTests[] =
+{
     {" 1: API_MACRO UI2C_Wakeup", Test_API_MACRO_UI2C_Wakeup},
     CU_TEST_INFO_NULL
 };

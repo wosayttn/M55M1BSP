@@ -147,12 +147,12 @@ static int32_t check(int32_t iscrc, const uint8_t *pu8buf, int32_t i32Size)
 /**
   * @brief      Recive data from UART Xmodem transfer and program the data to flash.
   * @param[in]  u32DestAddr Destination address of flash to program.
-  * @return     Recived data size if successful. Return -1 when error.
+  * @return     Recived data size if successful. Return < 0 when error.
   *
   * @details    This function is used to recieve UART data through Xmodem transfer.
   *             The received data will be programmed to flash packet by packet.
   */
-int32_t Xmodem(uint32_t u32DestAddr)
+int32_t XmodemRecv(uint32_t u32DestAddr)
 {
     int32_t i32Err = 0;
     uint8_t *p;
@@ -291,8 +291,8 @@ REJECT_RECEIVE:
 
 /**
   * @brief      Send data by UART Xmodem transfer.
-  * @param[in]  src     Address of the source data to transfer.
-  * @param[in]  srcsz   Size of the total size to transfer.
+  * @param[in]  pu8Src       Address of the source data to transfer.
+  * @param[in]  i32SrcSize   Size of the total size to transfer.
   * @retval     Total transfer size when successfull
   * @retval     -1  Canceled by remote
   * @retval     -2  No sync chararcter received.
@@ -301,7 +301,7 @@ REJECT_RECEIVE:
   * @details    This function is used to send UART data through Xmodem transfer.
   *
   */
-int32_t XmodemSend(uint8_t *src, int32_t srcsz)
+int32_t XmodemSend(uint8_t *pu8Src, int32_t i32SrcSize)
 {
     int bufsz, crc = -1;
     unsigned char packetno = 1;
@@ -356,7 +356,7 @@ START_TRANS:
             bufsz = 128;
             s_au8XmdBuf[1] = packetno;
             s_au8XmdBuf[2] = ~packetno;
-            c = srcsz - len;
+            c = i32SrcSize - len;
 
             if (c > bufsz) c = bufsz;
 
@@ -371,8 +371,8 @@ START_TRANS:
                 else
                 {
 
-                    memcpy(&s_au8XmdBuf[3], src, (uint32_t)c);
-                    src += c;
+                    memcpy(&s_au8XmdBuf[3], pu8Src, (uint32_t)c);
+                    pu8Src += c;
 
                     if (c < bufsz) s_au8XmdBuf[3 + c] = XMD_CTRLZ;
                 }

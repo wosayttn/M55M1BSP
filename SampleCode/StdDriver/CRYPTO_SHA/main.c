@@ -36,11 +36,13 @@ void CRYPTO_IRQHandler(void)
     if (SHA_GET_INT_FLAG(CRYPTO))
     {
         g_SHA_done = 1;
+
         if (SHA_GET_INT_FLAG(CRYPTO)&CRYPTO_INTSTS_HMACEIF_Msk)
         {
             g_SHA_error = 1;
             printf("SHA error flag is set!!\n");
         }
+
         SHA_CLR_INT_FLAG(CRYPTO);
     }
 }
@@ -105,10 +107,13 @@ int  do_compare(uint8_t *output, uint8_t *expect, int cmp_len)
     if (memcmp(expect, output, (size_t)cmp_len))
     {
         printf("\nMismatch!! - %d\n", cmp_len);
+
         for (i = 0; i < cmp_len; i++)
             printf("0x%02x    0x%02x\n", expect[i], output[i]);
+
         return -1;
     }
+
     return 0;
 }
 
@@ -130,6 +135,7 @@ int32_t RunSHA(void)
 
     /* Waiting for SHA calcuation done */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (!g_SHA_done)
     {
         if (--u32TimeOutCnt == 0)
@@ -141,13 +147,15 @@ int32_t RunSHA(void)
 
     /* Read SHA calculation result */
     SHA_Read(CRYPTO, au32OutputDigest);
+
     /* Compare calculation result with golden pattern */
     if (do_compare((uint8_t *)&au32OutputDigest[0], &g_au8ShaDigest[0], SHA_TEST_DIGEST_LEN) < 0)
     {
         printf("Compare error!\n");
         return (-1);
     }
-	printf("Compare Pass!\n");
+
+    printf("Compare Pass!\n");
     return 0;
 }
 

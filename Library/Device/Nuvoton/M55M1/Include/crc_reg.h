@@ -11,7 +11,7 @@
 #define __CRC_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -91,75 +91,75 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[31:0]  |CHECKSUM  |CRC Checksum Results
- * |        |          |This field indicates the CRC checksum result.
- * |        |          |Note: Data in CRC_CHECKSUM register has different length when user chooses different operation polynomial modes.
- * |        |          |For example:
- * |        |          |If final checksum result is 0x12 in CRC-8 polynomial mode, the CHECKSUM[31:0] value will be read as 0x12121212, only CHECKSUM[7:0] is valid in this mode.
- * |        |          |If final checksum result is 0x1234 in CRC-CCITT or CRC-16 mode, the CHECKSUM[31:0] value will be read as 0x12341234, only CHECKSUM[15:0] is valid in this mode.
- * |        |          |And the CHECKSUM[31:0] is valid for CRC-32 mode.
- * @var CRC_T::POLYNOMIAL
- * Offset: 0x10  CRC Polynomial Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |POLYNOMIAL|CRC Polynomial Value Results
- * |        |          |This field indicates the value of CRC polynomaial.
- * @var CRC_T::DMACTL
- * Offset: 0x40  CRC DMA Mode Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |START     |CRC DMA Start Bit
- * |        |          |Set CRC DMA to start operation.
- * |        |          |This bit is read-as-1 when the CRC DMA is operating.
- * |[1]     |PAUSE     |CRC DMA Pause Bit
- * |        |          |Set CRC DMA to pause the operation.
- * |        |          |This bit is read-as-1 when the CRC DMA is paused.
- * |        |          |This bit can be set to 1 when the CRC DMA is operating.
- * |[4]     |ABORT     |CRC DMA Operation Abort Bit
- * |        |          |Write 1 to abort the operation of CRC DMA.
- * |[8]     |INTEN     |CRC DMA Mode Interrupt Enable Bit
- * |        |          |Enable CRC DMA mode interrupt.
- * @var CRC_T::DMASTS
- * Offset: 0x44  CRC DMA Mode Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |FINISH    |DMA Operation Finish Flag
- * |        |          |Indicates the operation of DMA mode finished successfully.
- * |[1]     |ABORTED   |DMA Operation Aborted Flag
- * |        |          |Indicates the operation of DMA mode is aborted due to some error. (ex: bus error)
- * |[2]     |CFGERR    |Configuration Error Flag
- * |        |          |Indicates the configuration to run DMA operation is invalid and the operation of DMA mode is cancelled.
- * @var CRC_T::SADDR
- * Offset: 0x48  CRC DMA Source Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:2]  |SADDR     |CRC DMA Source Address
- * |        |          |DMA source address
- * @var CRC_T::DMACNT
- * Offset: 0x4C  CRC DMA Byte Count Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:2]  |DMACNT    |CRC DMA Operation Byte Count
- * |        |          |Indicates bytes for DMA to read.
- * @var CRC_T::VERSION
- * Offset: 0xFFC  CRC RTL Design Version Number
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |MINOR     |CRC RTL Design MINOR Version Number
- * |        |          |Minor version number is dependent on ECO version control
- * |        |          |0x0000: (current Minor Version Number)
- * |[23:16] |SUB       |CRC RTL Design MINOR Version Number
- * |        |          |Sub version number is relative to key feature
- * |        |          |0x01: (current Sub Version Number)
- * |[31:24] |MAJOR     |CRC RTL Design MAJOR Version Number
- * |        |          |Major version number is correlated to Product Line
- * |        |          |0x01: (current Major Version Number)
- */
+    * |        |          |This field indicates the CRC checksum result.
+    * |        |          |Note: Data in CRC_CHECKSUM register has different length when user chooses different operation polynomial modes.
+    * |        |          |For example:
+    * |        |          |If final checksum result is 0x12 in CRC-8 polynomial mode, the CHECKSUM[31:0] value will be read as 0x12121212, only CHECKSUM[7:0] is valid in this mode.
+    * |        |          |If final checksum result is 0x1234 in CRC-CCITT or CRC-16 mode, the CHECKSUM[31:0] value will be read as 0x12341234, only CHECKSUM[15:0] is valid in this mode.
+    * |        |          |And the CHECKSUM[31:0] is valid for CRC-32 mode.
+    * @var CRC_T::POLYNOMIAL
+    * Offset: 0x10  CRC Polynomial Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[31:0]  |POLYNOMIAL|CRC Polynomial Value Results
+    * |        |          |This field indicates the value of CRC polynomaial.
+    * @var CRC_T::DMACTL
+    * Offset: 0x40  CRC DMA Mode Control Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[0]     |START     |CRC DMA Start Bit
+    * |        |          |Set CRC DMA to start operation.
+    * |        |          |This bit is read-as-1 when the CRC DMA is operating.
+    * |[1]     |PAUSE     |CRC DMA Pause Bit
+    * |        |          |Set CRC DMA to pause the operation.
+    * |        |          |This bit is read-as-1 when the CRC DMA is paused.
+    * |        |          |This bit can be set to 1 when the CRC DMA is operating.
+    * |[4]     |ABORT     |CRC DMA Operation Abort Bit
+    * |        |          |Write 1 to abort the operation of CRC DMA.
+    * |[8]     |INTEN     |CRC DMA Mode Interrupt Enable Bit
+    * |        |          |Enable CRC DMA mode interrupt.
+    * @var CRC_T::DMASTS
+    * Offset: 0x44  CRC DMA Mode Status Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[0]     |FINISH    |DMA Operation Finish Flag
+    * |        |          |Indicates the operation of DMA mode finished successfully.
+    * |[1]     |ABORTED   |DMA Operation Aborted Flag
+    * |        |          |Indicates the operation of DMA mode is aborted due to some error. (ex: bus error)
+    * |[2]     |CFGERR    |Configuration Error Flag
+    * |        |          |Indicates the configuration to run DMA operation is invalid and the operation of DMA mode is cancelled.
+    * @var CRC_T::SADDR
+    * Offset: 0x48  CRC DMA Source Address Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[31:2]  |SADDR     |CRC DMA Source Address
+    * |        |          |DMA source address
+    * @var CRC_T::DMACNT
+    * Offset: 0x4C  CRC DMA Byte Count Register
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[31:2]  |DMACNT    |CRC DMA Operation Byte Count
+    * |        |          |Indicates bytes for DMA to read.
+    * @var CRC_T::VERSION
+    * Offset: 0xFFC  CRC RTL Design Version Number
+    * ---------------------------------------------------------------------------------------------------
+    * |Bits    |Field     |Descriptions
+    * | :----: | :----:   | :---- |
+    * |[15:0]  |MINOR     |CRC RTL Design MINOR Version Number
+    * |        |          |Minor version number is dependent on ECO version control
+    * |        |          |0x0000: (current Minor Version Number)
+    * |[23:16] |SUB       |CRC RTL Design MINOR Version Number
+    * |        |          |Sub version number is relative to key feature
+    * |        |          |0x01: (current Sub Version Number)
+    * |[31:24] |MAJOR     |CRC RTL Design MAJOR Version Number
+    * |        |          |Major version number is correlated to Product Line
+    * |        |          |0x01: (current Major Version Number)
+    */
     __IO uint32_t CTL;                   /*!< [0x0000] CRC Control Register                                             */
     __IO uint32_t DAT;                   /*!< [0x0004] CRC Write Data Register                                          */
     __IO uint32_t SEED;                  /*!< [0x0008] CRC Seed Register                                                */
@@ -259,7 +259,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __CRC_REG_H__ */

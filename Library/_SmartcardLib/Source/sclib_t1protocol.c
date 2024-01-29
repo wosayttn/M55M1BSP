@@ -1286,9 +1286,9 @@ int32_t _SCLIB_T1Transmit(uint32_t num, uint8_t *cmdBuf, uint32_t cmdLen, uint8_
 }
 
 /** @} end of group SCLIB_PRIVATE_FUNCTIONS */
-       
+
 /** @} end of group SCLIB */
-       
+
 /** @} end of group Library */
 
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

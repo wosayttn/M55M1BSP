@@ -116,7 +116,7 @@ void  connect_func(struct udev_t *udev, int param)
 void  disconnect_func(struct udev_t *udev, int param)
 {
     gOTG_Dev_pet = NULL;
-    
+
     printf("Device [0x%x,0x%x] was disconnected.\n",
            udev->descriptor.idVendor, udev->descriptor.idProduct);
 }
@@ -299,9 +299,9 @@ void SYS_Init(void)
 
 #if (USE_USB_APLL1_CLOCK)
     /* Enable APLL1 96MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);    
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);
 #endif
-    
+
     /* Enable GPIOA module clock */
     CLK_EnableModuleClock(GPIOA_MODULE);
     CLK_EnableModuleClock(GPIOB_MODULE);
@@ -370,11 +370,12 @@ extern UDEV_T *gOTG_Dev_pet;
 void OTG_SetFeature(uint32_t value)
 {
     uint32_t  read_len;
+
     /* 0x3 - b_hnp_enable, 0x4 - a_hnp_support */
     /* set feature */
     if (gOTG_Dev_pet == NULL)
         return;
-    
+
     usbh_ctrl_xfer(gOTG_Dev_pet, REQ_TYPE_OUT | REQ_TYPE_STD_DEV | REQ_TYPE_TO_DEV,
                    USB_REQ_SET_FEATURE, value, 0, 0,
                    NULL, &read_len, 300);
@@ -472,11 +473,11 @@ NVT_ITCM void USBOTG_IRQHandler(void)
                 otg_role_change = 3;
         }
     }
-    
+
     /* make sure that interrupt flag has been cleared. */
     fb_reg = OTG->INTSTS;
-	NVT_UNUSED(fb_reg);
-	
+    NVT_UNUSED(fb_reg);
+
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /*  MAIN function                                                                                          */
@@ -597,7 +598,7 @@ int32_t main(void)
                     OTG->CTL &= ~OTG_CTL_BUSREQ_Msk;
                     usbh_suspend();
                     printf("A suspend\n");
-                    
+
                     gStartHNP = 0;
                 }
 

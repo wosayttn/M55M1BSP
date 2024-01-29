@@ -9,7 +9,8 @@
 #ifndef __KDF_TEST_PATTERN_H__
 #define __KDF_TEST_PATTERN_H__
 
-typedef struct _kdf_test_pattern {
+typedef struct _kdf_test_pattern
+{
     char        strIKM[65];
     char        strSalt[65];
     char        strLabel[25];
@@ -33,4 +34,4 @@ extern const uint32_t gc_u32KBKDF_TestPatternCnt;
 }
 #endif
 
-#endif	// __KDF_TEST_PATTERN_H__
+#endif  // __KDF_TEST_PATTERN_H__

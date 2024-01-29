@@ -118,7 +118,9 @@ int32_t main(void)
     {
         printf("Test fail!\n");
     }
+
     printf("Test Done!\n");
+
     while (1);
 
 }
@@ -131,27 +133,34 @@ void show(void)
     uint8_t *pu8;
 
     printf("\n");
+
     for (i = 0; i < 3; i++)
     {
         printf("SADDR[%d]", i);
         pu8 = (uint8_t *)CRYPTO->RSA_SADDR[i];
+
         for (j = 0; j < n; j++)
         {
             if ((j & 0xf) == 0)
                 printf("\n");
+
             printf("%02x ", pu8[j]);
         }
+
         printf("\n");
     }
 
     printf("DADDR");
     pu8 = (uint8_t *)CRYPTO->RSA_DADDR;
+
     for (j = 0; j < n; j++)
     {
         if ((j & 0xf) == 0)
             printf("\n");
+
         printf("%02x ", pu8[j]);
     }
+
     printf("\n");
 
 }
@@ -164,8 +173,10 @@ void dump(uint8_t *p, uint32_t size)
     {
         if ((i & 0xf) == 0)
             printf("\n");
+
         printf("%02x ", p[i]);
     }
+
     printf("\n");
 
 

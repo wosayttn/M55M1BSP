@@ -27,152 +27,152 @@
 
 typedef struct
 {
-/**
- * @var AWF_T::CTL
- * Offset: 0x00  AWF Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |HTIEN     |AWF High Threshold Interrupt Enable Bit
- * |        |          |0 = AWF high threshold interrupt Disabled.
- * |        |          |1 = AWF high threshold interrupt Enabled.
- * |[1]     |HTWKEN    |AWF High Threshold Wake Up Enable Bit
- * |        |          |0 = AWF high threshold wake up Disabled.
- * |        |          |1 = AWF high threshold wake up Enabled.
- * |[2]     |LTIEN     |AWF Low Threshold Interrupt Enable Bit
- * |        |          |0 = AWF low threshold interrupt Disabled.
- * |        |          |1 = AWF low threshold interrupt Enabled.
- * |[3]     |LTWKEN    |AWF Low Threshold Wake Up Enable Bit
- * |        |          |0 = AWF low threshold wake up Disabled.
- * |        |          |1 = AWF low threshold wake up Enabled.
- * |        |          |User needs to set both LTWKEN and LTIEN to
- * |[7:4]   |ACUCNT    |Accumulation Count
- * |        |          |The counter defines the acculated data to compare with high threshold and low threshold.The allowed maximum value is 8
- * |        |          |If the write value is larger than 8, ACUCNT will become 0.
- * @var AWF_T::HTH
- * Offset: 0x04  AWF High Threshold Value Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[18:0]  |AWFHTH    |AWF High Threshold Value Register
- * |        |          |If the accumulated value exceeds the high threshold value, comparing function will activate once set interrupt enable respectively.
- * @var AWF_T::LTH
- * Offset: 0x08  AWF Low Threshold Value Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[18:0]  |AWFLTH    |AWF Low Threshold Value Register
- * |        |          |If the accumulated value is less than the low threshold value, comparing function will activate once set interrupt enable respectively.
- * @var AWF_T::STATUS
- * Offset: 0x0C  AWF Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |HTHIS     |AWF HTH Interupt Flag
- * |        |          |0 = AWF HTH interrupt event has not occurred.
- * |        |          |1 = AWF HTH interrupt event occurs.
- * |        |          |Note: This bit is set to 1 when ACUCNT is not zero and accumulation data is over than HTH
- * |        |          |User writes 1 to clear this bit to 0
- * |        |          |This bit will keep 1 if accumulation data is over than HTH after user writes 1 clear.
- * |[1]     |LTHIS     |AWF LTH Interupt Flag
- * |        |          |0 = AWF LTH interrupt event has not occurred.
- * |        |          |1 = AWF LTH interrupt event occurs.
- * |        |          |Note: This bit is set to 1 when ACUCNT is not zero and accumulation data is less than LTH
- * |        |          |User writes 1 to clear this bit to 0
- * |        |          |This bit wil keep 1 if accumulation data is less than LTH after user writes 1 clear.
- * @var AWF_T::WBINIT
- * Offset: 0x10  AWF Word Buffer Initial Value Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |WBINIT    |AWF Word Buffer Initial Value
- * |        |          |Writing this register will update WBINIT into all word registers (AWF_W0 ~ AWF_W7).
- * |        |          |WBINIT will also be updated into all word registers (AWF_W0 ~ AWF_W7) once ACUCNT is updated.
- * @var AWF_T::DAT
- * Offset: 0x1C  AWF Data Holding Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |AWFDAT    |AWF Data Holding Register
- * |        |          |These bits are written by user software and will be filled in circularly from word0 to word[ACUCNT-1].
- * @var AWF_T::W0
- * Offset: 0x20  AWF Word Register 0
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |WORD      |AWF Word Register
- * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
- * @var AWF_T::W1
- * Offset: 0x24  AWF Word Register 1
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |WORD      |AWF Word Register
- * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
- * @var AWF_T::W2
- * Offset: 0x28  AWF Word Register 2
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |WORD      |AWF Word Register
- * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
- * @var AWF_T::W3
- * Offset: 0x2C  AWF Word Register 3
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |WORD      |AWF Word Register
- * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
- * @var AWF_T::W4
- * Offset: 0x30  AWF Word Register 4
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |WORD      |AWF Word Register
- * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
- * @var AWF_T::W5
- * Offset: 0x34  AWF Word Register 5
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |WORD      |AWF Word Register
- * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
- * @var AWF_T::W6
- * Offset: 0x38  AWF Word Register 6
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |WORD      |AWF Word Register
- * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
- * @var AWF_T::W7
- * Offset: 0x3C  AWF Word Register 7
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |WORD      |AWF Word Register
- * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
- * @var AWF_T::ACUVAL
- * Offset: 0x40  AWF Accumulated Value Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[18:0]  |ACUVAL    |AWF Accumulated Value Register
- * |        |          |Accumulated value will be accumulated from word0 to word[ACUCNT-1].
- * @var AWF_T::VERSION
- * Offset: 0xFFC  AWF Version Number Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |MINOR     |Minor Version Number
- * |        |          |Minor version number is dependent on ECO version control
- * |        |          |0x0000: (current Minor Version Number)
- * |[23:16] |SUB       |Sub Version Number
- * |        |          |Sub version number is relative to key feature
- * |        |          |0x00: (current Sub Version Number)
- * |[31:24] |MAJOR     |Major Version Number
- * |        |          |Major version number is correlated to Product Line
- * |        |          |0x00: (current Major Version Number)
- */
+    /**
+     * @var AWF_T::CTL
+     * Offset: 0x00  AWF Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |HTIEN     |AWF High Threshold Interrupt Enable Bit
+     * |        |          |0 = AWF high threshold interrupt Disabled.
+     * |        |          |1 = AWF high threshold interrupt Enabled.
+     * |[1]     |HTWKEN    |AWF High Threshold Wake Up Enable Bit
+     * |        |          |0 = AWF high threshold wake up Disabled.
+     * |        |          |1 = AWF high threshold wake up Enabled.
+     * |[2]     |LTIEN     |AWF Low Threshold Interrupt Enable Bit
+     * |        |          |0 = AWF low threshold interrupt Disabled.
+     * |        |          |1 = AWF low threshold interrupt Enabled.
+     * |[3]     |LTWKEN    |AWF Low Threshold Wake Up Enable Bit
+     * |        |          |0 = AWF low threshold wake up Disabled.
+     * |        |          |1 = AWF low threshold wake up Enabled.
+     * |        |          |User needs to set both LTWKEN and LTIEN to
+     * |[7:4]   |ACUCNT    |Accumulation Count
+     * |        |          |The counter defines the acculated data to compare with high threshold and low threshold.The allowed maximum value is 8
+     * |        |          |If the write value is larger than 8, ACUCNT will become 0.
+     * @var AWF_T::HTH
+     * Offset: 0x04  AWF High Threshold Value Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[18:0]  |AWFHTH    |AWF High Threshold Value Register
+     * |        |          |If the accumulated value exceeds the high threshold value, comparing function will activate once set interrupt enable respectively.
+     * @var AWF_T::LTH
+     * Offset: 0x08  AWF Low Threshold Value Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[18:0]  |AWFLTH    |AWF Low Threshold Value Register
+     * |        |          |If the accumulated value is less than the low threshold value, comparing function will activate once set interrupt enable respectively.
+     * @var AWF_T::STATUS
+     * Offset: 0x0C  AWF Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |HTHIS     |AWF HTH Interupt Flag
+     * |        |          |0 = AWF HTH interrupt event has not occurred.
+     * |        |          |1 = AWF HTH interrupt event occurs.
+     * |        |          |Note: This bit is set to 1 when ACUCNT is not zero and accumulation data is over than HTH
+     * |        |          |User writes 1 to clear this bit to 0
+     * |        |          |This bit will keep 1 if accumulation data is over than HTH after user writes 1 clear.
+     * |[1]     |LTHIS     |AWF LTH Interupt Flag
+     * |        |          |0 = AWF LTH interrupt event has not occurred.
+     * |        |          |1 = AWF LTH interrupt event occurs.
+     * |        |          |Note: This bit is set to 1 when ACUCNT is not zero and accumulation data is less than LTH
+     * |        |          |User writes 1 to clear this bit to 0
+     * |        |          |This bit wil keep 1 if accumulation data is less than LTH after user writes 1 clear.
+     * @var AWF_T::WBINIT
+     * Offset: 0x10  AWF Word Buffer Initial Value Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |WBINIT    |AWF Word Buffer Initial Value
+     * |        |          |Writing this register will update WBINIT into all word registers (AWF_W0 ~ AWF_W7).
+     * |        |          |WBINIT will also be updated into all word registers (AWF_W0 ~ AWF_W7) once ACUCNT is updated.
+     * @var AWF_T::DAT
+     * Offset: 0x1C  AWF Data Holding Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |AWFDAT    |AWF Data Holding Register
+     * |        |          |These bits are written by user software and will be filled in circularly from word0 to word[ACUCNT-1].
+     * @var AWF_T::W0
+     * Offset: 0x20  AWF Word Register 0
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |WORD      |AWF Word Register
+     * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
+     * @var AWF_T::W1
+     * Offset: 0x24  AWF Word Register 1
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |WORD      |AWF Word Register
+     * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
+     * @var AWF_T::W2
+     * Offset: 0x28  AWF Word Register 2
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |WORD      |AWF Word Register
+     * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
+     * @var AWF_T::W3
+     * Offset: 0x2C  AWF Word Register 3
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |WORD      |AWF Word Register
+     * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
+     * @var AWF_T::W4
+     * Offset: 0x30  AWF Word Register 4
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |WORD      |AWF Word Register
+     * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
+     * @var AWF_T::W5
+     * Offset: 0x34  AWF Word Register 5
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |WORD      |AWF Word Register
+     * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
+     * @var AWF_T::W6
+     * Offset: 0x38  AWF Word Register 6
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |WORD      |AWF Word Register
+     * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
+     * @var AWF_T::W7
+     * Offset: 0x3C  AWF Word Register 7
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |WORD      |AWF Word Register
+     * |        |          |Word will accumulate from Word0 to Word[ACUCNT-1], and will compare with AWF_HTH and AWF_LTH.
+     * @var AWF_T::ACUVAL
+     * Offset: 0x40  AWF Accumulated Value Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[18:0]  |ACUVAL    |AWF Accumulated Value Register
+     * |        |          |Accumulated value will be accumulated from word0 to word[ACUCNT-1].
+     * @var AWF_T::VERSION
+     * Offset: 0xFFC  AWF Version Number Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |MINOR     |Minor Version Number
+     * |        |          |Minor version number is dependent on ECO version control
+     * |        |          |0x0000: (current Minor Version Number)
+     * |[23:16] |SUB       |Sub Version Number
+     * |        |          |Sub version number is relative to key feature
+     * |        |          |0x00: (current Sub Version Number)
+     * |[31:24] |MAJOR     |Major Version Number
+     * |        |          |Major version number is correlated to Product Line
+     * |        |          |0x00: (current Major Version Number)
+     */
     __IO uint32_t CTL;                   /*!< [0x0000] AWF Control Register                                             */
     __IO uint32_t HTH;                   /*!< [0x0004] AWF High Threshold Value Register                                */
     __IO uint32_t LTH;                   /*!< [0x0008] AWF Low Threshold Value Register                                 */

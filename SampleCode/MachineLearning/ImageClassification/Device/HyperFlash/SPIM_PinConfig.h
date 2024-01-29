@@ -1,7 +1,7 @@
 #ifndef _SPIM_PIN_CONFIG_H_
 #define _SPIM_PIN_CONFIG_H_
 
-#define GPIO_SLEW_LV						3
+#define GPIO_SLEW_LV                        3
 
 #define SPIM0_RST_PIN_INIT()                SPIM0_RST_PIN
 #define SPIM0_CLK_PIN_INIT()                SPIM0_CLK_PIN
@@ -47,19 +47,19 @@
                       GPIO_SMTEN_SMTEN13_Msk | \
                       GPIO_SMTEN_SMTEN14_Msk | \
                       GPIO_SMTEN_SMTEN15_Msk); \
-		PC->SLEWCTL |= ((GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN0_Pos) | \
+        PC->SLEWCTL |= ((GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN0_Pos) | \
                         (GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN1_Pos) | \
                         (GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN2_Pos) | \
-                        (GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN3_Pos) |	\
-						(GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN4_Pos) | \
-						(GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN5_Pos)); \
+                        (GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN3_Pos) | \
+                        (GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN4_Pos) | \
+                        (GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN5_Pos)); \
         PG->SLEWCTL |= ((GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN9_Pos) |   \
                         (GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN10_Pos) |  \
                         (GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN11_Pos) |  \
                         (GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN12_Pos) |  \
                         (GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN13_Pos) |  \
                         (GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN14_Pos) |  \
-						(GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN15_Pos));  \
+                        (GPIO_SLEW_LV << GPIO_SLEWCTL_HSREN15_Pos));  \
     } while (0)
 
 //#endif //SPIM0_PIN_GROUP
@@ -108,7 +108,7 @@
         PD->SMTEN |= (GPIO_SMTEN_SMTEN5_Msk |  \
                       GPIO_SMTEN_SMTEN6_Msk |  \
                       GPIO_SMTEN_SMTEN7_Msk);  \
-		PH->SLEWCTL |= ((3 << GPIO_SLEWCTL_HSREN12_Pos) | \
+        PH->SLEWCTL |= ((3 << GPIO_SLEWCTL_HSREN12_Pos) | \
                         (3 << GPIO_SLEWCTL_HSREN13_Pos) | \
                         (3 << GPIO_SLEWCTL_HSREN14_Pos) | \
                         (3 << GPIO_SLEWCTL_HSREN15_Pos)); \

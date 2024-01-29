@@ -76,9 +76,9 @@ void RTC_IRQHandler(void)
         RTC_CLEAR_TICK_INT_FLAG(RTC);
     }
 
-	__DSB();
-	__ISB();
-	
+    __DSB();
+    __ISB();
+
 }
 
 /**
@@ -127,8 +127,8 @@ void GPB_IRQHandler(void)
         printf("Un-expected interrupts.\n");
     }
 
-	__DSB();
-	__ISB();
+    __DSB();
+    __ISB();
 
     /* Read current RTC date/time */
     RTC_GetDateAndTime(&sReadRTC);

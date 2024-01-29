@@ -26,12 +26,13 @@ uint32_t crctab[256];
 
 static uint32_t reflect(uint32_t crc, int bitnum)
 {
-    uint32_t i, j=1, crcout=0;
+    uint32_t i, j = 1, crcout = 0;
 
-    for (i=(uint32_t)1<<(bitnum-1); i; i>>=1)
+    for (i = (uint32_t)1 << (bitnum - 1); i; i >>= 1)
     {
         if (crc & i)
             crcout |= j;
+
         j <<= 1;
     }
 
@@ -43,17 +44,20 @@ static void generate_crc_table(void)
     int32_t i, j;
     uint32_t bit, crc;
 
-    for (i=0; i<256; i++)
+    for (i = 0; i < 256; i++)
     {
         crc = (uint32_t)i;
+
         if (refin)
             crc = reflect(crc, 8);
-        crc <<= order-8;
 
-        for (j=0; j<8; j++)
+        crc <<= order - 8;
+
+        for (j = 0; j < 8; j++)
         {
             bit = crc & crchighbit;
             crc <<= 1;
+
             if (bit)
                 crc ^= g_polynom;
         }
@@ -71,29 +75,34 @@ static uint32_t crcbitbybit(uint8_t *p, uint32_t len, int8_t IsWrite1sCOM, int8_
     unsigned long i, j, c, bit;
     unsigned long crc = crcinit_direct;
 
-    for (i=0; i<len; i++)
+    for (i = 0; i < len; i++)
     {
-        c = (unsigned long)*p++;
+        c = (unsigned long) * p++;
+
         if (IsWrite1sCOM)
         {
             c = (~c) & 0xFF;
         }
+
         if (refin) c = reflect(c, 8);
 
-        for (j=0x80; j; j>>=1)
+        for (j = 0x80; j; j >>= 1)
         {
             bit = crc & crchighbit;
-            crc<<= 1;
-            if (c & j) bit^= crchighbit;
-            if (bit) crc^= g_polynom;
+            crc <<= 1;
+
+            if (c & j) bit ^= crchighbit;
+
+            if (bit) crc ^= g_polynom;
         }
     }
 
-    if (refout) crc=reflect(crc, order);
-    crc^= crcxor;
-    crc&= crcmask;
+    if (refout) crc = reflect(crc, order);
 
-    return(crc);
+    crc ^= crcxor;
+    crc &= crcmask;
+
+    return (crc);
 }
 
 uint32_t CRC_SWResult(uint32_t mode, uint32_t polynom, uint32_t seed, uint8_t *string, uint32_t count, int8_t IsWrite1sCOM, int8_t IsWriteRVS, int8_t IsCRC1sCOM, int8_t IsCRCRVS)
@@ -101,11 +110,11 @@ uint32_t CRC_SWResult(uint32_t mode, uint32_t polynom, uint32_t seed, uint8_t *s
     uint8_t i;
     uint32_t bit, crc, crc_result;
 
-    if(mode == CRC_8)
+    if (mode == CRC_8)
         order = 8;
-    else if(mode == CRC_16)
+    else if (mode == CRC_16)
         order = 16;
-    else if(mode == CRC_32)
+    else if (mode == CRC_32)
         order = 32;
 
     g_polynom = polynom;
@@ -114,9 +123,9 @@ uint32_t CRC_SWResult(uint32_t mode, uint32_t polynom, uint32_t seed, uint8_t *s
     refin = IsWriteRVS;
     refout = IsCRCRVS;
 
-    crcmask = ((((uint32_t)1 << (order-1)) - 1) << 1) | 1;
-    crchighbit = (uint32_t)1 << (order-1);
-    crcxor = (IsCRC1sCOM)? crcmask:0;
+    crcmask = ((((uint32_t)1 << (order - 1)) - 1) << 1) | 1;
+    crchighbit = (uint32_t)1 << (order - 1);
+    crcxor = (IsCRC1sCOM) ? crcmask : 0;
 
     if ((order < 1) || (order > 32))
     {
@@ -148,16 +157,20 @@ uint32_t CRC_SWResult(uint32_t mode, uint32_t polynom, uint32_t seed, uint8_t *s
     /* compute missing initial CRC value ... direct always is 1 */
     crcinit_direct = crcinit;
     crc = crcinit;
-    for (i=0; i<order; i++)
+
+    for (i = 0; i < order; i++)
     {
         bit = crc & 1;
+
         if (bit)
             crc ^= polynom;
+
         crc >>= 1;
 
         if (bit)
             crc |= crchighbit;
     }
+
     crcinit_nondirect = crc;
 
     crc_result = crcbitbybit((uint8_t *)string, count, IsWrite1sCOM, IsCRC1sCOM);

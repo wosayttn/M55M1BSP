@@ -19,7 +19,7 @@
 #endif
 
 #ifndef DEBUG_PORT_Init
-void DEBUG_PORT_Init(UART_T* psUART, uint32_t u32Baudrate)
+void DEBUG_PORT_Init(UART_T *psUART, uint32_t u32Baudrate)
 {
     UART_Open(psUART, u32Baudrate);
 }
@@ -84,12 +84,12 @@ int main(int argc, char *argv[])
     SYS_Init();
     /* Init Debug UART to 115200-8N1 for print message */
     InitDebugUart();
-    
+
     printf("\n\n");
     printf("+--------------------------------------+\n");
     printf("|       M55M1 SYS CUnit Test           |\n");
     printf("+--------------------------------------+\n");
-    
+
     if (CU_initialize_registry())
     {
         fprintf(stderr, " Initialization of Test Registry failed. ");

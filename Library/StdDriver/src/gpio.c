@@ -42,9 +42,9 @@ void GPIO_SetMode(GPIO_T *port, uint32_t u32PinMask, uint32_t u32Mode)
 {
     uint32_t i;
 
-    for(i = 0ul; i < GPIO_PIN_MAX; i++)
+    for (i = 0ul; i < GPIO_PIN_MAX; i++)
     {
-        if((u32PinMask & (1ul << i))==(1ul << i))
+        if ((u32PinMask & (1ul << i)) == (1ul << i))
         {
             port->MODE = (port->MODE & ~(0x3ul << (i << 1))) | (u32Mode << (i << 1));
         }
@@ -70,8 +70,8 @@ void GPIO_SetMode(GPIO_T *port, uint32_t u32PinMask, uint32_t u32Mode)
  */
 void GPIO_EnableInt(GPIO_T *port, uint32_t u32Pin, uint32_t u32IntAttribs)
 {
-    port->INTTYPE = (port->INTTYPE&~(1ul<<u32Pin)) | (((u32IntAttribs >> 24) & 0xFFUL) << u32Pin);
-    port->INTEN = (port->INTEN&~(0x00010001ul<<u32Pin)) | ((u32IntAttribs & 0xFFFFFFUL) << u32Pin);
+    port->INTTYPE = (port->INTTYPE & ~(1ul << u32Pin)) | (((u32IntAttribs >> 24) & 0xFFUL) << u32Pin);
+    port->INTEN = (port->INTEN & ~(0x00010001ul << u32Pin)) | ((u32IntAttribs & 0xFFFFFFUL) << u32Pin);
 }
 
 
@@ -119,9 +119,9 @@ void GPIO_SetSlewCtl(GPIO_T *port, uint32_t u32PinMask, uint32_t u32Mode)
 {
     uint32_t i;
 
-    for(i = 0ul; i < GPIO_PIN_MAX; i++)
+    for (i = 0ul; i < GPIO_PIN_MAX; i++)
     {
-        if(u32PinMask & (1ul << i))
+        if (u32PinMask & (1ul << i))
         {
             port->SLEWCTL = (port->SLEWCTL & ~(0x3ul << (i << 1))) | (u32Mode << (i << 1));
         }
@@ -151,9 +151,9 @@ void GPIO_SetPullCtl(GPIO_T *port, uint32_t u32PinMask, uint32_t u32Mode)
 {
     uint32_t i;
 
-    for(i = 0ul; i < GPIO_PIN_MAX; i++)
+    for (i = 0ul; i < GPIO_PIN_MAX; i++)
     {
-        if(u32PinMask & (1ul << i))
+        if (u32PinMask & (1ul << i))
         {
             port->PUSEL = (port->PUSEL & ~(0x3ul << (i << 1))) | (u32Mode << (i << 1));
         }
@@ -174,40 +174,48 @@ void GPIO_SetPullCtl(GPIO_T *port, uint32_t u32PinMask, uint32_t u32Mode)
  */
 void GPIO_EnableEINT(uint32_t u32EINTn, uint32_t u32IntAttribs)
 {
-    switch(u32EINTn)
+    switch (u32EINTn)
     {
         case 0:
             GPIO->INT0_EDETCTL = (u32IntAttribs & GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT0_EDINTEN |= GPIO_INT_EDINTEN_EDIEN_Msk;
             break;
+
         case 1:
             GPIO->INT1_EDETCTL = (u32IntAttribs & GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT1_EDINTEN |= GPIO_INT_EDINTEN_EDIEN_Msk;
             break;
+
         case 2:
             GPIO->INT2_EDETCTL = (u32IntAttribs & GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT2_EDINTEN |= GPIO_INT_EDINTEN_EDIEN_Msk;
             break;
+
         case 3:
             GPIO->INT3_EDETCTL = (u32IntAttribs & GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT3_EDINTEN |= GPIO_INT_EDINTEN_EDIEN_Msk;
             break;
+
         case 4:
             GPIO->INT4_EDETCTL = (u32IntAttribs & GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT4_EDINTEN |= GPIO_INT_EDINTEN_EDIEN_Msk;
             break;
+
         case 5:
             GPIO->INT5_EDETCTL = (u32IntAttribs & GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT5_EDINTEN |= GPIO_INT_EDINTEN_EDIEN_Msk;
             break;
+
         case 6:
             GPIO->INT6_EDETCTL = (u32IntAttribs & GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT6_EDINTEN |= GPIO_INT_EDINTEN_EDIEN_Msk;
             break;
+
         case 7:
             GPIO->INT7_EDETCTL = (u32IntAttribs & GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT7_EDINTEN |= GPIO_INT_EDINTEN_EDIEN_Msk;
             break;
+
         default:
             break;
     }
@@ -224,39 +232,48 @@ void GPIO_EnableEINT(uint32_t u32EINTn, uint32_t u32IntAttribs)
  */
 void GPIO_DisableEINT(uint32_t u32EINTn)
 {
-    switch (u32EINTn) {
+    switch (u32EINTn)
+    {
         case 0:
             GPIO->INT0_EDETCTL &= ~(GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT0_EDINTEN &= ~(GPIO_INT_EDINTEN_EDIEN_Msk);
             break;
+
         case 1:
             GPIO->INT1_EDETCTL &= ~(GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT1_EDINTEN &= ~(GPIO_INT_EDINTEN_EDIEN_Msk);
             break;
+
         case 2:
             GPIO->INT2_EDETCTL &= ~(GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT2_EDINTEN &= ~(GPIO_INT_EDINTEN_EDIEN_Msk);
             break;
+
         case 3:
             GPIO->INT3_EDETCTL &= ~(GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT3_EDINTEN &= ~(GPIO_INT_EDINTEN_EDIEN_Msk);
             break;
+
         case 4:
             GPIO->INT4_EDETCTL &= ~(GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT4_EDINTEN &= ~(GPIO_INT_EDINTEN_EDIEN_Msk);
             break;
+
         case 5:
             GPIO->INT5_EDETCTL &= ~(GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT5_EDINTEN &= ~(GPIO_INT_EDINTEN_EDIEN_Msk);
             break;
+
         case 6:
             GPIO->INT6_EDETCTL &= ~(GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT6_EDINTEN &= ~(GPIO_INT_EDINTEN_EDIEN_Msk);
             break;
+
         case 7:
             GPIO->INT7_EDETCTL &= ~(GPIO_INT_EDETCTL_EDETCTL_Msk);
             GPIO->INT7_EDINTEN &= ~(GPIO_INT_EDINTEN_EDIEN_Msk);
             break;
+
         default:
             break;
     }

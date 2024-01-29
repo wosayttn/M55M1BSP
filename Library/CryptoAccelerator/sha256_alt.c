@@ -27,7 +27,7 @@
  */
 
 #ifdef MBEDTLS_ALLOW_PRIVATE_ACCESS
-#undef MBEDTLS_ALLOW_PRIVATE_ACCESS
+    #undef MBEDTLS_ALLOW_PRIVATE_ACCESS
 #endif
 
 #include "common.h"
@@ -48,13 +48,14 @@
 #define SHA256_VALIDATE(cond)  MBEDTLS_INTERNAL_VALIDATE( cond )
 
 #ifndef ARG_UNUSED
-#define ARG_UNUSED(arg)  ((void)arg)
+    #define ARG_UNUSED(arg)  ((void)arg)
 #endif
 
 
 static void mbedtls_zeroize(void *v, size_t n)
 {
     volatile unsigned char *p = (unsigned char *)v;
+
     while (n--)
     {
         *p++ = 0;
@@ -63,7 +64,7 @@ static void mbedtls_zeroize(void *v, size_t n)
 
 void mbedtls_sha256_init(mbedtls_sha256_context *ctx)
 {
-    SHA256_VALIDATE( ctx != NULL );
+    SHA256_VALIDATE(ctx != NULL);
 
     mbedtls_zeroize(ctx, sizeof(mbedtls_sha256_context));
 
@@ -75,14 +76,15 @@ void mbedtls_sha256_free(mbedtls_sha256_context *ctx)
     {
         return;
     }
+
     mbedtls_zeroize(ctx, sizeof(mbedtls_sha256_context));
 }
 
 void mbedtls_sha256_clone(mbedtls_sha256_context *dst,
                           const mbedtls_sha256_context *src)
 {
-    SHA256_VALIDATE( dst != NULL );
-    SHA256_VALIDATE( src != NULL );
+    SHA256_VALIDATE(dst != NULL);
+    SHA256_VALIDATE(src != NULL);
 
     *dst = *src;
 }
@@ -91,25 +93,25 @@ int mbedtls_sha256_starts(mbedtls_sha256_context *ctx, int is224)
 {
     uint32_t u32OpMode;
 
-    SHA256_VALIDATE_RET( ctx != NULL );
-    SHA256_VALIDATE_RET( is224 == 0 || is224 == 1 );
+    SHA256_VALIDATE_RET(ctx != NULL);
+    SHA256_VALIDATE_RET(is224 == 0 || is224 == 1);
 
     ctx->MBEDTLS_PRIVATE(is224) = is224;
     ctx->first = 1;
 
-    if(ctx->MBEDTLS_PRIVATE(is224))
+    if (ctx->MBEDTLS_PRIVATE(is224))
         u32OpMode = SHA_MODE_SHA224;
     else
         u32OpMode = SHA_MODE_SHA256;
 
     /* Reset Crypto */
-   	SYS->CRYPTORST |= SYS_CRYPTORST_CRYPTO0RST_Msk;
+    SYS->CRYPTORST |= SYS_CRYPTORST_CRYPTO0RST_Msk;
     SYS->CRYPTORST = 0;
 
 
     /* Common register settings */
     ctx->ctl = CRYPTO_HMAC_CTL_DMAEN_Msk | (u32OpMode << CRYPTO_HMAC_CTL_OPMODE_Pos) |
-        CRYPTO_HMAC_CTL_INSWAP_Msk | CRYPTO_HMAC_CTL_OUTSWAP_Msk;
+               CRYPTO_HMAC_CTL_INSWAP_Msk | CRYPTO_HMAC_CTL_OUTSWAP_Msk;
 
     /* Common DMA settings */
     CRYPTO->HMAC_SADDR = (uint32_t)&ctx->buffer[0];
@@ -119,7 +121,7 @@ int mbedtls_sha256_starts(mbedtls_sha256_context *ctx, int is224)
     return 0;
 }
 
-int mbedtls_internal_sha256_process( mbedtls_sha256_context *ctx, const unsigned char data[NU_SHA256_BLOCK_SIZE] )
+int mbedtls_internal_sha256_process(mbedtls_sha256_context *ctx, const unsigned char data[NU_SHA256_BLOCK_SIZE])
 {
     ARG_UNUSED(ctx);
     ARG_UNUSED(data);
@@ -132,17 +134,18 @@ int mbedtls_sha256_update(mbedtls_sha256_context *ctx, const unsigned char *inpu
     int32_t timeout = 0x1000;
     uint32_t ofs = 0;
 
-    SHA256_VALIDATE_RET( ctx != NULL );
-    SHA256_VALIDATE_RET( ilen == 0 || input != NULL );
+    SHA256_VALIDATE_RET(ctx != NULL);
+    SHA256_VALIDATE_RET(ilen == 0 || input != NULL);
 
     /* Process all data block by block. the remain data will leave to next time. */
-    while(ilen > 0)
+    while (ilen > 0)
     {
         /* Process the buffer if it is full */
-        if(ctx->buffer_len >= NU_SHA256_BLOCK_SIZE)
+        if (ctx->buffer_len >= NU_SHA256_BLOCK_SIZE)
         {
             CRYPTO->HMAC_DMACNT = NU_SHA256_BLOCK_SIZE;
-            if(ctx->first)
+
+            if (ctx->first)
             {
                 CRYPTO->HMAC_CTL = ctx->ctl | CRYPTO_HMAC_CTL_START_Msk | CRYPTO_HMAC_CTL_DMACSCAD_Msk | CRYPTO_HMAC_CTL_DMAFIRST_Msk;
                 ctx->first = 0;
@@ -154,15 +157,15 @@ int mbedtls_sha256_update(mbedtls_sha256_context *ctx, const unsigned char *inpu
             }
 
             /* Waiting for calculation done */
-            while((CRYPTO->INTSTS & CRYPTO_INTSTS_HMACIF_Msk) == 0)
+            while ((CRYPTO->INTSTS & CRYPTO_INTSTS_HMACIF_Msk) == 0)
             {
-                if(timeout-- <= 0)
+                if (timeout-- <= 0)
                     break;
             }
 
             ctx->buffer_len = 0;
 
-            if(timeout == 0)
+            if (timeout == 0)
                 return MBEDTLS_ERR_PLATFORM_HW_ACCEL_FAILED;
 
             CRYPTO->INTSTS = CRYPTO_INTSTS_HMACIF_Msk;
@@ -172,7 +175,7 @@ int mbedtls_sha256_update(mbedtls_sha256_context *ctx, const unsigned char *inpu
         else
         {
             /* prepare input block */
-            if(ilen > NU_SHA256_BLOCK_SIZE - ctx->buffer_len)
+            if (ilen > NU_SHA256_BLOCK_SIZE - ctx->buffer_len)
             {
                 memcpy(ctx->buffer + ctx->buffer_len, input + ofs, NU_SHA256_BLOCK_SIZE - ctx->buffer_len);
                 ilen -= NU_SHA256_BLOCK_SIZE - ctx->buffer_len;
@@ -196,15 +199,15 @@ int mbedtls_sha256_finish(mbedtls_sha256_context *ctx, unsigned char output[32])
 {
     int32_t timeout = 0x1000;
 
-    SHA256_VALIDATE_RET( ctx != NULL );
-    SHA256_VALIDATE_RET( (unsigned char *)output != NULL );
+    SHA256_VALIDATE_RET(ctx != NULL);
+    SHA256_VALIDATE_RET((unsigned char *)output != NULL);
 
     /* Process the buffer if it is not emtpy */
-    if(ctx->buffer_len > 0)
+    if (ctx->buffer_len > 0)
     {
         CRYPTO->HMAC_DMACNT = ctx->buffer_len;
 
-        if(ctx->first)
+        if (ctx->first)
         {
             /* If it is first, it means we don't need to do casecade */
             CRYPTO->HMAC_CTL = ctx->ctl | CRYPTO_HMAC_CTL_START_Msk | CRYPTO_HMAC_CTL_DMALAST_Msk;
@@ -215,14 +218,15 @@ int mbedtls_sha256_finish(mbedtls_sha256_context *ctx, unsigned char output[32])
         }
 
         /* Waiting for calculation done */
-        while((CRYPTO->INTSTS & CRYPTO_INTSTS_HMACIF_Msk) == 0)
+        while ((CRYPTO->INTSTS & CRYPTO_INTSTS_HMACIF_Msk) == 0)
         {
-            if(timeout-- <= 0)
+            if (timeout-- <= 0)
                 break;
         }
+
         ctx->buffer_len = 0;
 
-        if(timeout == 0)
+        if (timeout == 0)
             return MBEDTLS_ERR_PLATFORM_HW_ACCEL_FAILED;
 
         CRYPTO->INTSTS = CRYPTO_INTSTS_HMACIF_Msk;

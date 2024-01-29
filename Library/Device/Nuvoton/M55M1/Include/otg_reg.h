@@ -11,7 +11,7 @@
 #define __OTG_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -258,7 +258,7 @@ typedef struct
 /**
     @addtogroup OTG_CONST OTG Bit Field Definition
     Constant Definitions for OTG Controller
-    @{ 
+    @{
 */
 
 #define OTG_CTL_VBUSDROP_Pos             (0)                                               /*!< OTG_T::CTL: VBUSDROP Position          */
@@ -395,7 +395,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __OTG_REG_H__ */

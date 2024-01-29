@@ -49,6 +49,7 @@ int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
 
     /* Wait for Capture Falling Indicator  */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while ((EPWM1->CAPIF & EPWM_CAPIF_CFLIF2_Msk) == 0)
     {
         if (--u32TimeOutCnt == 0)
@@ -67,6 +68,7 @@ int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
     {
         /* Wait for Capture Falling Indicator */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
         while (EPWM_GetCaptureIntFlag(EPWM, u32Ch) < 2)
         {
             if (--u32TimeOutCnt == 0)
@@ -84,6 +86,7 @@ int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
 
         /* Wait for Capture Rising Indicator */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
         while (EPWM_GetCaptureIntFlag(EPWM, u32Ch) < 2)
         {
             if (--u32TimeOutCnt == 0)
@@ -113,6 +116,7 @@ int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
     printf("\nEPWM generate: \nHigh Period=17999 ~ 18001, Low Period=41999 ~ 42001, Total Period=59999 ~ 60001\n");
     printf("\nCapture Result: Rising Time = %d, Falling Time = %d \nHigh Period = %d, Low Period = %d, Total Period = %d.\n\n",
            u16RisingTime, u16FallingTime, u16HighPeriod, u16LowPeriod, u16TotalPeriod);
+
     if ((u16HighPeriod < 17999) || (u16HighPeriod > 18001) || (u16LowPeriod < 41999) || (u16LowPeriod > 42001) || (u16TotalPeriod < 59999) || (u16TotalPeriod > 60001))
     {
         printf("Capture Test Fail!!\n");
@@ -250,6 +254,7 @@ int main(void)
 
         /* Wait until EPWM1 channel 2 Timer start to count */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
         while ((EPWM1->CNT[2]) == 0)
         {
             if (--u32TimeOutCnt == 0)
@@ -262,6 +267,7 @@ int main(void)
         /* Capture the Input Waveform Data */
         if (CalPeriodTime(EPWM1, 2) < 0)
             goto lexit;
+
         /*------------------------------------------------------------------------------------------------------------*/
         /* Stop EPWM1 channel 0 (Recommended procedure method 1)                                                      */
         /* Set EPWM Timer loaded value(Period) as 0. When EPWM internal counter(CNT) reaches to 0, disable EPWM Timer */
@@ -272,6 +278,7 @@ int main(void)
 
         /* Wait until EPWM1 channel 0 Timer Stop */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
         while ((EPWM1->CNT[0] & EPWM_CNT0_CNT_Msk) != 0)
         {
             if (--u32TimeOutCnt == 0)
@@ -297,6 +304,7 @@ int main(void)
 
         /* Wait until EPWM1 channel 2 current counter reach to 0 */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
         while ((EPWM1->CNT[2] & EPWM_CNT2_CNT_Msk) != 0)
         {
             if (--u32TimeOutCnt == 0)

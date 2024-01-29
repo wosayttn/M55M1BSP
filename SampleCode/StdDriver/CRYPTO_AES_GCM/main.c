@@ -601,29 +601,37 @@ void DumpBuffHex(uint8_t *pucBuff, int nBytes)
 
 
     i32Idx = 0;
+
     while (nBytes > 0)
     {
         printf("0x%04X  ", i32Idx);
 
         len = (nBytes < 16) ? nBytes : 16;
+
         for (i = 0; i < len; i++)
             printf("%02x ", pucBuff[i32Idx + i]);
+
         for (; i < 16; i++)
         {
             printf("   ");
         }
+
         printf("  ");
+
         for (i = 0; i < len; i++)
         {
             if ((pucBuff[i32Idx + i] >= 0x20) && (pucBuff[i32Idx + i] < 127))
                 printf("%c", pucBuff[i32Idx + i]);
             else
                 printf(".");
+
             nBytes--;
         }
+
         i32Idx += len;
         printf("\n");
     }
+
     printf("\n");
 }
 
@@ -704,6 +712,7 @@ void str2bin(const char *pstr, uint8_t *buf, uint32_t size)
     for (i = 0; i < size; i++)
     {
         c = *pstr++;
+
         if (c == '\0')
             break;
 
@@ -713,9 +722,11 @@ void str2bin(const char *pstr, uint8_t *buf, uint32_t size)
             c -= ('A' - 10);
         else if ((c >= '0') && (c <= '9'))
             c -= '0';
+
         u8Ch = (uint8_t)c << 4;
 
         c = *pstr++;
+
         if (c == '\0')
         {
             buf[i] = u8Ch;
@@ -728,6 +739,7 @@ void str2bin(const char *pstr, uint8_t *buf, uint32_t size)
             c -= ('A' - 10);
         else if ((c >= '0') && (c <= '9'))
             c -= '0';
+
         u8Ch += (uint8_t)c;
 
         buf[i] = u8Ch;
@@ -784,6 +796,7 @@ int32_t ToBigEndian(uint8_t *pbuf, uint32_t u32Size)
     if (u32Size > 0)
     {
         u32Tmp = 0;
+
         for (i = 0; i < u32Size; i++)
         {
             u32Tmp |= *(pbuf + i) << (24 - i * 8);
@@ -827,6 +840,7 @@ int32_t ToLittleEndian(uint8_t *pbuf, uint32_t u32Size)
     if (u32Size > 0)
     {
         u32Tmp = 0;
+
         for (i = 0; i < u32Size; i++)
         {
             u32Tmp |= *(pbuf + i) << (24 - i * 8);
@@ -880,6 +894,7 @@ int32_t AES_GCMPacker(uint8_t *iv, uint32_t iv_len, uint8_t *A, uint32_t A_len, 
     if (iv_len > 0)
     {
         iv_len_aligned = iv_len;
+
         if (iv_len & 0xful)
             iv_len_aligned = ((iv_len + 16) >> 4) << 4;
 
@@ -916,6 +931,7 @@ int32_t AES_GCMPacker(uint8_t *iv, uint32_t iv_len, uint8_t *A, uint32_t A_len, 
     if (A_len > 0)
     {
         A_len_aligned = A_len;
+
         if (A_len & 0xful)
             A_len_aligned = ((A_len + 16) >> 4) << 4;
 
@@ -934,6 +950,7 @@ int32_t AES_GCMPacker(uint8_t *iv, uint32_t iv_len, uint8_t *A, uint32_t A_len, 
     if (P_len > 0)
     {
         P_len_aligned = P_len;
+
         if (P_len & 0xful)
             P_len_aligned = ((P_len + 16) >> 4) << 4;
 
@@ -944,6 +961,7 @@ int32_t AES_GCMPacker(uint8_t *iv, uint32_t iv_len, uint8_t *A, uint32_t A_len, 
             else
                 pbuf[u32Offset + i] = 0; // padding zero
         }
+
         u32Offset += P_len_aligned;
     }
 
@@ -960,6 +978,7 @@ void AES_Run(uint32_t u32Option)
     CRYPTO->AES_CTL = u32Option | START;
     /* Waiting for AES calculation */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (!g_Crypto_Int_done)
     {
         if (--u32TimeOutCnt == 0)
@@ -997,6 +1016,7 @@ int32_t AES_GCMEnc(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
     /* Prepare the key */
     memcpy(g_au8Buf, key, klen);
     ToBigEndian(g_au8Buf, klen);
+
     for (i = 0; i < klen / 4; i++)
     {
         CRYPTO->AES_KEY[i] = *((uint32_t *)&g_au8Buf[i * 4]);
@@ -1022,6 +1042,7 @@ int32_t AES_GCMEnc(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
     CRYPTO->AES_GCM_PCNT[1] = 0;
 
     *plen_aligned = (plen & 0xful) ? ((plen + 16) / 16) * 16 : plen;
+
     if (plen <= GCM_PBLOCK_SIZE)
     {
         /* Just one shot */
@@ -1064,17 +1085,21 @@ int32_t AES_GCMEnc(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
         plen_cur = plen;
         pin = P;
         pout = buf;
+
         while (plen_cur)
         {
             len = plen_cur;
+
             if (len > GCM_PBLOCK_SIZE)
             {
                 len = GCM_PBLOCK_SIZE;
             }
+
             plen_cur -= len;
 
             /* Prepare the blocked buffer for GCM */
             memcpy(g_au8Buf, pin, len);
+
             /* padding 0 if necessary */
             if (len & 0xf)
             {
@@ -1142,6 +1167,7 @@ int32_t AES_GCMDec(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
     /* Set AES Key */
     memcpy(g_au8Buf, key, klen);
     ToBigEndian(g_au8Buf, klen);
+
     for (i = 0; i < klen / 4; i++)
     {
         CRYPTO->AES_KEY[i] = *((uint32_t *)&g_au8Buf[i * 4]);
@@ -1161,6 +1187,7 @@ int32_t AES_GCMDec(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
 
 
     *plen_aligned = (plen & 0xful) ? ((plen + 16) >> 4) << 4 : plen;
+
     if (plen < GCM_PBLOCK_SIZE)
     {
         /* Small P/C size, just use DMA one shot */
@@ -1201,17 +1228,21 @@ int32_t AES_GCMDec(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
         plen_cur = plen;
         pin = P;
         pout = buf;
+
         while (plen_cur)
         {
             len = plen_cur;
+
             if (len > GCM_PBLOCK_SIZE)
             {
                 len = GCM_PBLOCK_SIZE;
             }
+
             plen_cur -= len;
 
             /* Prepare the blocked buffer for GCM */
             memcpy(g_au8Buf, pin, len);
+
             /* padding 0 if necessary */
             if (len & 0xf)
             {
@@ -1280,6 +1311,7 @@ int main(void)
     NVIC_EnableIRQ(CRYPTO_IRQn);
 
     n = sizeof(sElements) / sizeof(GCM_TEST_T);
+
     for (i = 0; i < n; i++)
     {
 
@@ -1316,12 +1348,14 @@ int main(void)
             printf("length of A should not larger than defined block size.\n");
             return -1;
         }
+
         if (GCM_PBLOCK_SIZE & 0xf)
         {
             printf("block size = %d\n", GCM_PBLOCK_SIZE);
             printf("Defined block size should be 16 bytes alignment.\n");
             return -1;
         }
+
         if (ivlen == 0)
         {
             printf("ivlen = %d\n", ivlen);

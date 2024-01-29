@@ -38,23 +38,26 @@ static void udp_echoclient_netconn_thread(void *arg)
 
     /* Create a new UDP connection handle */
     conn = netconn_new(NETCONN_UDP);
-    if (conn!= NULL)
+
+    if (conn != NULL)
     {
         err = netconn_bind(conn, IP_ADDR_ANY, 5168); //local port 5168
 
         if (err == ERR_OK)
         {
-            while(1)
+            while (1)
             {
                 printf("Send to UDP echo server ...");
                 buf = netbuf_new();
                 strcpy(au8Buf, "Hi there...");
                 data = netbuf_alloc(buf, strlen(au8Buf));
-                memcpy (data, au8Buf, strlen(au8Buf));
+                memcpy(data, au8Buf, strlen(au8Buf));
 
                 /* Send the packet */
                 netconn_sendto(conn, buf, &server_addr, server_port);
-                while(netconn_recv(conn, &rbuf) != ERR_OK);
+
+                while (netconn_recv(conn, &rbuf) != ERR_OK);
+
                 printf(" [OK] ...\n");
                 printf("Receive: %s\n", (char *)rbuf->p->payload);
 

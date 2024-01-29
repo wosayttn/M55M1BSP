@@ -25,9 +25,9 @@
 #include "ethosu_log.h"
 
 #ifdef ETHOSU55
-#include "ethosu_config_u55.h"
+    #include "ethosu_config_u55.h"
 #else
-#include "ethosu_config_u65.h"
+    #include "ethosu_config_u65.h"
 #endif
 
 #include <assert.h>
@@ -199,15 +199,17 @@ void __attribute__((weak)) ethosu_semaphore_destroy(void *sem)
 int __attribute__((weak)) ethosu_semaphore_take(void *sem)
 {
     struct ethosu_semaphore_t *s = sem;
+
     while (s->count == 0)
     {
 #if defined(__CPU_POLLING)
-		__NOP();
+        __NOP();
 #else
-		__WFE();
+        __WFE();
 #endif
 
-		}
+    }
+
     s->count = 0;
     return 0;
 }
@@ -286,6 +288,7 @@ static struct ethosu_driver *ethosu_find_and_reserve_driver(void)
             LOG_DEBUG("NPU driver handle %p reserved.", drv);
             return drv;
         }
+
         drv = drv->next;
     }
 
@@ -342,6 +345,7 @@ static int handle_command_stream(struct ethosu_driver *drv, const uint8_t *cmd_s
     if (drv->job.base_addr_size != NULL)
     {
         ethosu_flush_dcache((uint32_t *)cmd_stream_ptr, cms_bytes);
+
         for (int i = 0; i < drv->job.num_base_addr; i++)
         {
             ethosu_flush_dcache((uint32_t *)(uintptr_t)drv->job.base_addr[i], drv->job.base_addr_size[i]);
@@ -378,10 +382,12 @@ void __attribute__((weak)) ethosu_irq_handler(struct ethosu_driver *drv)
     LOG_DEBUG("Got interrupt from Ethos-U");
 
     drv->job.state = ETHOSU_JOB_DONE;
+
     if (!ethosu_dev_handle_interrupt(drv->dev))
     {
         drv->status_error = true;
     }
+
     /* TODO: feedback needed aout how to handle error (-1) return value */
     ethosu_semaphore_give(drv->semaphore);
 }
@@ -477,6 +483,7 @@ int ethosu_request_power(struct ethosu_driver *drv)
             return -1;
         }
     }
+
     return 0;
 }
 
@@ -516,71 +523,73 @@ int ethosu_wait(struct ethosu_driver *drv, bool block)
 
     switch (drv->job.state)
     {
-    case ETHOSU_JOB_IDLE:
-        LOG_ERR("Inference job not running...");
-        ret = -2;
-        break;
-    case ETHOSU_JOB_RUNNING:
-        if (!block)
-        {
-            // Inference still running, do not block
-            ret = 1;
+        case ETHOSU_JOB_IDLE:
+            LOG_ERR("Inference job not running...");
+            ret = -2;
             break;
-        }
+
+        case ETHOSU_JOB_RUNNING:
+            if (!block)
+            {
+                // Inference still running, do not block
+                ret = 1;
+                break;
+            }
+
         // fall through
-    case ETHOSU_JOB_DONE:
-        // Wait for interrupt in blocking mode. In non-blocking mode
-        // the interrupt has already triggered
-        /* TODO: feedback needed aout how to handle error (-1) return value */
-        ethosu_semaphore_take(drv->semaphore);
+        case ETHOSU_JOB_DONE:
+            // Wait for interrupt in blocking mode. In non-blocking mode
+            // the interrupt has already triggered
+            /* TODO: feedback needed aout how to handle error (-1) return value */
+            ethosu_semaphore_take(drv->semaphore);
 
-        // Inference done callback
-        ethosu_inference_end(drv, drv->job.user_arg);
+            // Inference done callback
+            ethosu_inference_end(drv, drv->job.user_arg);
 
-        // Relase power gating disabled requirement
-        ethosu_release_power(drv);
+            // Relase power gating disabled requirement
+            ethosu_release_power(drv);
 
-        // Check NPU and interrupt status
-        if (drv->status_error)
-        {
-            LOG_ERR("NPU error(s) occured during inference.");
-            ethosu_dev_print_err_status(drv->dev);
-
-            // Reset the NPU
-            (void)ethosu_soft_reset(drv);
-            // NPU is no longer in error state
-            drv->status_error = false;
-
-            ret = -1;
-        }
-
-        if (ret == 0)
-        {
-            // Invalidate cache
-            if (drv->job.base_addr_size != NULL)
+            // Check NPU and interrupt status
+            if (drv->status_error)
             {
-                for (int i = 0; i < drv->job.num_base_addr; i++)
+                LOG_ERR("NPU error(s) occured during inference.");
+                ethosu_dev_print_err_status(drv->dev);
+
+                // Reset the NPU
+                (void)ethosu_soft_reset(drv);
+                // NPU is no longer in error state
+                drv->status_error = false;
+
+                ret = -1;
+            }
+
+            if (ret == 0)
+            {
+                // Invalidate cache
+                if (drv->job.base_addr_size != NULL)
                 {
-                    ethosu_invalidate_dcache((uint32_t *)(uintptr_t)drv->job.base_addr[i], drv->job.base_addr_size[i]);
+                    for (int i = 0; i < drv->job.num_base_addr; i++)
+                    {
+                        ethosu_invalidate_dcache((uint32_t *)(uintptr_t)drv->job.base_addr[i], drv->job.base_addr_size[i]);
+                    }
                 }
+                else
+                {
+                    ethosu_invalidate_dcache(NULL, 0);
+                }
+
+                LOG_DEBUG("Inference finished successfully...");
             }
-            else
-            {
-                ethosu_invalidate_dcache(NULL, 0);
-            }
 
-            LOG_DEBUG("Inference finished successfully...");
-        }
+            // Reset internal job (state resets to IDLE)
+            ethosu_reset_job(drv);
+            break;
 
-        // Reset internal job (state resets to IDLE)
-        ethosu_reset_job(drv);
-        break;
-
-    default:
-        LOG_ERR("Unexpected job state");
-        ethosu_reset_job(drv);
-        ret = -1;
-        break;
+        default:
+            LOG_ERR("Unexpected job state");
+            ethosu_reset_job(drv);
+            ret = -1;
+            break;
     }
 
     // Return inference job status
@@ -657,36 +666,41 @@ int ethosu_invoke_async(struct ethosu_driver *drv,
     {
         switch (data_ptr->driver_action_command)
         {
-        case OPTIMIZER_CONFIG:
-            LOG_DEBUG("OPTIMIZER_CONFIG");
-            opt_cfg_p = (struct opt_cfg_s *)data_ptr;
+            case OPTIMIZER_CONFIG:
+                LOG_DEBUG("OPTIMIZER_CONFIG");
+                opt_cfg_p = (struct opt_cfg_s *)data_ptr;
 
-            if (handle_optimizer_config(drv, opt_cfg_p) < 0)
-            {
-                goto err;
-            }
-            data_ptr += DRIVER_ACTION_LENGTH_32_BIT_WORD + OPTIMIZER_CONFIG_LENGTH_32_BIT_WORD;
-            break;
-        case COMMAND_STREAM:
-            // Vela only supports putting one COMMAND_STREAM per op
-            LOG_DEBUG("COMMAND_STREAM");
-            command_stream = (uint8_t *)(data_ptr) + sizeof(struct cop_data_s);
-            cms_length       = (data_ptr->reserved << 16) | data_ptr->length;
+                if (handle_optimizer_config(drv, opt_cfg_p) < 0)
+                {
+                    goto err;
+                }
 
-            if (handle_command_stream(drv, command_stream, cms_length) < 0)
-            {
+                data_ptr += DRIVER_ACTION_LENGTH_32_BIT_WORD + OPTIMIZER_CONFIG_LENGTH_32_BIT_WORD;
+                break;
+
+            case COMMAND_STREAM:
+                // Vela only supports putting one COMMAND_STREAM per op
+                LOG_DEBUG("COMMAND_STREAM");
+                command_stream = (uint8_t *)(data_ptr) + sizeof(struct cop_data_s);
+                cms_length       = (data_ptr->reserved << 16) | data_ptr->length;
+
+                if (handle_command_stream(drv, command_stream, cms_length) < 0)
+                {
+                    goto err;
+                }
+
+                data_ptr += DRIVER_ACTION_LENGTH_32_BIT_WORD + cms_length;
+                break;
+
+            case NOP:
+                LOG_DEBUG("NOP");
+                data_ptr += DRIVER_ACTION_LENGTH_32_BIT_WORD;
+                break;
+
+            default:
+                LOG_ERR("UNSUPPORTED driver_action_command: %d", data_ptr->driver_action_command);
                 goto err;
-            }
-            data_ptr += DRIVER_ACTION_LENGTH_32_BIT_WORD + cms_length;
-            break;
-        case NOP:
-            LOG_DEBUG("NOP");
-            data_ptr += DRIVER_ACTION_LENGTH_32_BIT_WORD;
-            break;
-        default:
-            LOG_ERR("UNSUPPORTED driver_action_command: %d", data_ptr->driver_action_command);
-            goto err;
-            break;
+                break;
         }
     }
 
@@ -706,7 +720,7 @@ int ethosu_invoke_v3(struct ethosu_driver *drv,
                      void *user_arg)
 {
     if (ethosu_invoke_async(
-            drv, custom_data_ptr, custom_data_size, base_addr, base_addr_size, num_base_addr, user_arg) < 0)
+                drv, custom_data_ptr, custom_data_size, base_addr, base_addr_size, num_base_addr, user_arg) < 0)
     {
         return -1;
     }
@@ -744,6 +758,7 @@ void ethosu_release_driver(struct ethosu_driver *drv)
 {
     /* TODO: feedback needed aout how to handle error (-1) return value */
     ethosu_mutex_lock(ethosu_mutex);
+
     if (drv != NULL && drv->reserved)
     {
         if (drv->job.state == ETHOSU_JOB_RUNNING || drv->job.state == ETHOSU_JOB_DONE)
@@ -766,6 +781,7 @@ void ethosu_release_driver(struct ethosu_driver *drv)
         /* TODO: feedback needed aout how to handle error (-1) return value */
         ethosu_semaphore_give(ethosu_semaphore);
     }
+
     /* TODO: feedback needed aout how to handle error (-1) return value */
     ethosu_mutex_unlock(ethosu_mutex);
 }

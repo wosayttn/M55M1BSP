@@ -79,7 +79,7 @@ typedef struct mbedtls_rsa_context
 
     mbedtls_mpi M;
 
-    uint32_t rsa_buf[512/4];      //DADDR
+    uint32_t rsa_buf[512 / 4];    //DADDR
 
 }
 mbedtls_rsa_context;

@@ -19,14 +19,14 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
- /**************************************************************************//**
- * @file     jquanti-helium.c
- * @version  V1.00
- * @brief    Porting from jpegturbo ARM32 simd jquanti file.
- *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- *****************************************************************************/
+/**************************************************************************//**
+* @file     jquanti-helium.c
+* @version  V1.00
+* @brief    Porting from jpegturbo ARM32 simd jquanti file.
+*
+* SPDX-License-Identifier: Apache-2.0
+* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
 #include <arm_mve.h>
 #include "jacclib.h"
 
@@ -41,7 +41,7 @@
  * The equivalent scalar C function convsamp() can be found in jcdctmgr.c.
  */
 #define HELIUM_QUANT_CORR_BITS 3
-void jsimd_convsamp_helium(uint8_t *sample_data, uint8_t start_col, int16_t* processed_data)
+void jsimd_convsamp_helium(uint8_t *sample_data, uint8_t start_col, int16_t *processed_data)
 {
 
     //Regular
@@ -50,13 +50,13 @@ void jsimd_convsamp_helium(uint8_t *sample_data, uint8_t start_col, int16_t* pro
     //Vector
     //u8->u16 conversion
     uint16x8_t samp_row0 = vldrbq_u16(sample_data);
-    uint16x8_t samp_row1 = vldrbq_u16(sample_data+8);
-    uint16x8_t samp_row2 = vldrbq_u16(sample_data+16);
-    uint16x8_t samp_row3 = vldrbq_u16(sample_data+24);
-    uint16x8_t samp_row4 = vldrbq_u16(sample_data+32);
-    uint16x8_t samp_row5 = vldrbq_u16(sample_data+40);
-    uint16x8_t samp_row6 = vldrbq_u16(sample_data+48);
-    uint16x8_t samp_row7 = vldrbq_u16(sample_data+56);
+    uint16x8_t samp_row1 = vldrbq_u16(sample_data + 8);
+    uint16x8_t samp_row2 = vldrbq_u16(sample_data + 16);
+    uint16x8_t samp_row3 = vldrbq_u16(sample_data + 24);
+    uint16x8_t samp_row4 = vldrbq_u16(sample_data + 32);
+    uint16x8_t samp_row5 = vldrbq_u16(sample_data + 40);
+    uint16x8_t samp_row6 = vldrbq_u16(sample_data + 48);
+    uint16x8_t samp_row7 = vldrbq_u16(sample_data + 56);
 
     //Substract 128 with u16, guarantees no saturation, then convert to s16
     int16x8_t row0 = vreinterpretq_s16_u16(vsubq_u16(samp_row0, vdupq_n_u16(CENTERJSAMPLE)));
@@ -101,7 +101,8 @@ void jsimd_quantize_helium(JCOEFPTR coef_block, DCTELEM *divisors,
     DCTELEM *shift_ptr = divisors + 3 * DCTSIZE2;
     int i;
 
-    for (i = 0; i < DCTSIZE; i += DCTSIZE / 2) {
+    for (i = 0; i < DCTSIZE; i += DCTSIZE / 2)
+    {
         /* Load DCT coefficients. */
         int16x8_t row0 = vld1q_s16(workspace + (i + 0) * DCTSIZE);
         int16x8_t row1 = vld1q_s16(workspace + (i + 1) * DCTSIZE);
@@ -138,35 +139,35 @@ void jsimd_quantize_helium(JCOEFPTR coef_block, DCTELEM *divisors,
         abs_row3 = vaddq_u16(abs_row3, corr3);
 
         /* Multiply DCT coefficients by quantization reciprocals. */
-        int32x4_t row0_l = vreinterpretq_s32_u32(vmulltq_int_u16(abs_row0,recip0));
+        int32x4_t row0_l = vreinterpretq_s32_u32(vmulltq_int_u16(abs_row0, recip0));
 
-        int32x4_t row0_h= vreinterpretq_s32_u32(vmullbq_int_u16(abs_row0,recip0));
+        int32x4_t row0_h = vreinterpretq_s32_u32(vmullbq_int_u16(abs_row0, recip0));
 
-        int32x4_t row1_l = vreinterpretq_s32_u32(vmulltq_int_u16(abs_row1,recip1));
+        int32x4_t row1_l = vreinterpretq_s32_u32(vmulltq_int_u16(abs_row1, recip1));
 
-        int32x4_t row1_h = vreinterpretq_s32_u32(vmullbq_int_u16(abs_row1,recip1));
+        int32x4_t row1_h = vreinterpretq_s32_u32(vmullbq_int_u16(abs_row1, recip1));
 
-        int32x4_t row2_l = vreinterpretq_s32_u32(vmulltq_int_u16(abs_row2,recip2));
+        int32x4_t row2_l = vreinterpretq_s32_u32(vmulltq_int_u16(abs_row2, recip2));
 
         int32x4_t row2_h = vreinterpretq_s32_u32(vmullbq_int_u16(abs_row2, recip2));
 
-        int32x4_t row3_l = vreinterpretq_s32_u32(vmulltq_int_u16(abs_row3,recip3));
+        int32x4_t row3_l = vreinterpretq_s32_u32(vmulltq_int_u16(abs_row3, recip3));
 
-        int32x4_t row3_h = vreinterpretq_s32_u32(vmullbq_int_u16(abs_row3,recip3));
+        int32x4_t row3_h = vreinterpretq_s32_u32(vmullbq_int_u16(abs_row3, recip3));
 
 
         /* Narrow back to 16-bit. */
-        row0 =vshrntq_n_s32(row0, row0_l, 16);
-        row0 =vshrnbq_n_s32(row0, row0_h, 16);
+        row0 = vshrntq_n_s32(row0, row0_l, 16);
+        row0 = vshrnbq_n_s32(row0, row0_h, 16);
 
-        row1 =vshrntq_n_s32(row1, row1_l, 16);
-        row1 =vshrnbq_n_s32(row1, row1_h, 16);
+        row1 = vshrntq_n_s32(row1, row1_l, 16);
+        row1 = vshrnbq_n_s32(row1, row1_h, 16);
 
-        row2 =vshrntq_n_s32(row2, row2_l, 16);
-        row2 =vshrnbq_n_s32(row2, row2_h, 16);
+        row2 = vshrntq_n_s32(row2, row2_l, 16);
+        row2 = vshrnbq_n_s32(row2, row2_h, 16);
 
-        row3 =vshrntq_n_s32(row3, row3_l, 16);
-        row3 =vshrnbq_n_s32(row3, row3_h, 16);
+        row3 = vshrntq_n_s32(row3, row3_l, 16);
+        row3 = vshrnbq_n_s32(row3, row3_h, 16);
 
 
         /* Since VSHR only supports an immediate as its second argument, negate the

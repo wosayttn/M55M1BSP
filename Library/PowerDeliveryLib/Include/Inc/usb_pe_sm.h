@@ -179,12 +179,12 @@ uint32_t pe_get_flags(int port);
 
 //#ifdef TEST_BUILD
 #if (TEST_BUILD == 1)
-/**
- * Clears all internal port data, as we would on a detach event
- *
- * @param port USB-C port number
- */
-void pe_clear_port_data(int port);
+    /**
+    * Clears all internal port data, as we would on a detach event
+    *
+    * @param port USB-C port number
+    */
+    void pe_clear_port_data(int port);
 #endif /* TEST_BUILD */
 
 #endif /* __CROS_EC_USB_PE_H */

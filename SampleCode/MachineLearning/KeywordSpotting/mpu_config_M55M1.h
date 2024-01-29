@@ -60,7 +60,7 @@
 //      <3=> Device-GRE
 //      <4=> Non-cacheable
 //      <5=> Cacheable-WTRA
-//      <6=> Cacheable-WBWARA 
+//      <6=> Cacheable-WBWARA
 */
 #define MPU_MEM_ATTR0       0x0
 /*
@@ -103,7 +103,7 @@
 //      <3=> Device-GRE
 //      <4=> Non-cacheable
 //      <5=> Cacheable-WTRA
-//      <6=> Cacheable-WBWARA 
+//      <6=> Cacheable-WBWARA
 */
 #define MPU_MEM_ATTR1       0x4
 /*
@@ -146,7 +146,7 @@
 //      <3=> Device-GRE
 //      <4=> Non-cacheable
 //      <5=> Cacheable-WTRA
-//      <6=> Cacheable-WBWARA 
+//      <6=> Cacheable-WBWARA
 */
 #define MPU_MEM_ATTR2       0x0
 /*
@@ -189,7 +189,7 @@
 //      <3=> Device-GRE
 //      <4=> Non-cacheable
 //      <5=> Cacheable-WTRA
-//      <6=> Cacheable-WBWARA 
+//      <6=> Cacheable-WBWARA
 */
 #define MPU_MEM_ATTR3       0x0
 /*
@@ -232,7 +232,7 @@
 //      <3=> Device-GRE
 //      <4=> Non-cacheable
 //      <5=> Cacheable-WTRA
-//      <6=> Cacheable-WBWARA 
+//      <6=> Cacheable-WBWARA
 */
 #define MPU_MEM_ATTR4       0x0
 /*
@@ -275,7 +275,7 @@
 //      <3=> Device-GRE
 //      <4=> Non-cacheable
 //      <5=> Cacheable-WTRA
-//      <6=> Cacheable-WBWARA 
+//      <6=> Cacheable-WBWARA
 */
 #define MPU_MEM_ATTR5       0x0
 /*
@@ -318,7 +318,7 @@
 //      <3=> Device-GRE
 //      <4=> Non-cacheable
 //      <5=> Cacheable-WTRA
-//      <6=> Cacheable-WBWARA 
+//      <6=> Cacheable-WBWARA
 */
 #define MPU_MEM_ATTR6       0x0
 /*
@@ -339,7 +339,8 @@
 // </h>
 */
 
-typedef enum {
+typedef enum
+{
     eMPU_ATTR_DEV_nGnRnE,
     eMPU_ATTR_DEV_nGnRE,
     eMPU_ATTR_DEV_nGRE,
@@ -349,7 +350,8 @@ typedef enum {
     eMPU_ATTR_CACHEABLE_WBWARA,
 } E_MPU_ATTR;
 
-typedef enum {
+typedef enum
+{
     eMPU_RBAR_SH,
     eMPU_RBAR_RO,
     eMPU_RBAR_NP,

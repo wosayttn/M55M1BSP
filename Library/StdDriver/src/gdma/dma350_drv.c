@@ -22,12 +22,16 @@
 
 enum dma350_error_t dma350_init(struct dma350_dev_t *dev)
 {
-    if (dev->cfg->dma_info->IIDR != DMA_INFO_IIDR_SUPPORTED) {
+    if (dev->cfg->dma_info->IIDR != DMA_INFO_IIDR_SUPPORTED)
+    {
         return DMA350_ERR_IIDR_MISMATCH;
     }
-    if (dev->cfg->dma_info->AIDR != DMA_INFO_AIDR_SUPPORTED) {
+
+    if (dev->cfg->dma_info->AIDR != DMA_INFO_AIDR_SUPPORTED)
+    {
         return DMA350_ERR_AIDR_MISMATCH;
     }
+
     dev->data->state = DMA350_INITIALIZED;
     return DMA350_ERR_NONE;
 }
@@ -80,7 +84,7 @@ uint8_t dma350_get_secaccvio_irq(struct dma350_dev_t *dev)
 uint8_t dma350_get_secaccvio_status(struct dma350_dev_t *dev)
 {
     return (uint8_t)(dev->cfg->dma_sec_cfg->SCFG_CTRL &
-           DMA_SCFG_INTRSTATUS_STAT_SECACCVIO_Msk);
+                     DMA_SCFG_INTRSTATUS_STAT_SECACCVIO_Msk);
 }
 
 void dma350_clear_secaccvio_status(struct dma350_dev_t *dev)
@@ -92,15 +96,20 @@ void dma350_clear_secaccvio_status(struct dma350_dev_t *dev)
 enum dma350_error_t dma350_set_ch_secure(struct dma350_dev_t *dev,
                                          uint8_t channel)
 {
-    if (!dma350_is_init(dev)) {
+    if (!dma350_is_init(dev))
+    {
         return DMA350_ERR_NOT_INIT;
     }
 
     dev->cfg->dma_sec_cfg->SCFG_CHSEC0 =
         dev->cfg->dma_sec_cfg->SCFG_CHSEC0 & ~(0x1UL << channel);
-    if (dev->cfg->dma_sec_cfg->SCFG_CHSEC0 & (0x1UL << channel)) {
+
+    if (dev->cfg->dma_sec_cfg->SCFG_CHSEC0 & (0x1UL << channel))
+    {
         return DMA350_ERR_CANNOT_SET_NOW;
-    } else {
+    }
+    else
+    {
         return DMA350_ERR_NONE;
     }
 }
@@ -108,15 +117,20 @@ enum dma350_error_t dma350_set_ch_secure(struct dma350_dev_t *dev,
 enum dma350_error_t dma350_set_ch_nonsecure(struct dma350_dev_t *dev,
                                             uint8_t channel)
 {
-    if (!dma350_is_init(dev)) {
+    if (!dma350_is_init(dev))
+    {
         return DMA350_ERR_NOT_INIT;
     }
 
     dev->cfg->dma_sec_cfg->SCFG_CHSEC0 =
         dev->cfg->dma_sec_cfg->SCFG_CHSEC0 | (0x1UL << channel);
-    if (dev->cfg->dma_sec_cfg->SCFG_CHSEC0 & (0x1UL << channel)) {
+
+    if (dev->cfg->dma_sec_cfg->SCFG_CHSEC0 & (0x1UL << channel))
+    {
         return DMA350_ERR_NONE;
-    } else {
+    }
+    else
+    {
         return DMA350_ERR_CANNOT_SET_NOW;
     }
 }
@@ -124,27 +138,40 @@ enum dma350_error_t dma350_set_ch_nonsecure(struct dma350_dev_t *dev,
 enum dma350_error_t dma350_set_ch_privileged(struct dma350_dev_t *dev,
                                              uint8_t channel)
 {
-    if (!dma350_is_init(dev)) {
+    if (!dma350_is_init(dev))
+    {
         return DMA350_ERR_NOT_INIT;
     }
-    if (dev->cfg->dma_sec_cfg->SCFG_CHSEC0 & (0x1UL << channel)) {
+
+    if (dev->cfg->dma_sec_cfg->SCFG_CHSEC0 & (0x1UL << channel))
+    {
         /* Channel is Non-secure */
         dev->cfg->dma_nsec_ctrl->NSEC_CHPTR = channel;
         dev->cfg->dma_nsec_ctrl->NSEC_CHCFG =
             dev->cfg->dma_nsec_ctrl->NSEC_CHCFG | DMA_NSEC_CHCFG_CHPRIV_Msk;
-        if (dev->cfg->dma_nsec_ctrl->NSEC_CHCFG & (DMA_NSEC_CHCFG_CHPRIV_Msk)) {
+
+        if (dev->cfg->dma_nsec_ctrl->NSEC_CHCFG & (DMA_NSEC_CHCFG_CHPRIV_Msk))
+        {
             return DMA350_ERR_NONE;
-        } else {
+        }
+        else
+        {
             return DMA350_ERR_CANNOT_SET_NOW;
         }
-    } else {
+    }
+    else
+    {
         /* Channel is Secure */
         dev->cfg->dma_sec_ctrl->SEC_CHPTR = channel;
         dev->cfg->dma_sec_ctrl->SEC_CHCFG =
             dev->cfg->dma_sec_ctrl->SEC_CHCFG | DMA_SEC_CHCFG_CHPRIV_Msk;
-        if (dev->cfg->dma_sec_ctrl->SEC_CHCFG & (DMA_SEC_CHCFG_CHPRIV_Msk)) {
+
+        if (dev->cfg->dma_sec_ctrl->SEC_CHCFG & (DMA_SEC_CHCFG_CHPRIV_Msk))
+        {
             return DMA350_ERR_NONE;
-        } else {
+        }
+        else
+        {
             return DMA350_ERR_CANNOT_SET_NOW;
         }
     }
@@ -153,27 +180,40 @@ enum dma350_error_t dma350_set_ch_privileged(struct dma350_dev_t *dev,
 enum dma350_error_t dma350_set_ch_unprivileged(struct dma350_dev_t *dev,
                                                uint8_t channel)
 {
-    if (!dma350_is_init(dev)) {
+    if (!dma350_is_init(dev))
+    {
         return DMA350_ERR_NOT_INIT;
     }
-    if (dev->cfg->dma_sec_cfg->SCFG_CHSEC0 & (0x1UL << channel)) {
+
+    if (dev->cfg->dma_sec_cfg->SCFG_CHSEC0 & (0x1UL << channel))
+    {
         /* Channel is Non-secure */
         dev->cfg->dma_nsec_ctrl->NSEC_CHPTR = channel;
         dev->cfg->dma_nsec_ctrl->NSEC_CHCFG =
             dev->cfg->dma_nsec_ctrl->NSEC_CHCFG & ~(DMA_NSEC_CHCFG_CHPRIV_Msk);
-        if (dev->cfg->dma_nsec_ctrl->NSEC_CHCFG & (DMA_NSEC_CHCFG_CHPRIV_Msk)) {
+
+        if (dev->cfg->dma_nsec_ctrl->NSEC_CHCFG & (DMA_NSEC_CHCFG_CHPRIV_Msk))
+        {
             return DMA350_ERR_CANNOT_SET_NOW;
-        } else {
+        }
+        else
+        {
             return DMA350_ERR_NONE;
         }
-    } else {
+    }
+    else
+    {
         /* Channel is Secure */
         dev->cfg->dma_sec_ctrl->SEC_CHPTR = channel;
         dev->cfg->dma_sec_ctrl->SEC_CHCFG =
             dev->cfg->dma_sec_ctrl->SEC_CHCFG & ~(DMA_SEC_CHCFG_CHPRIV_Msk);
-        if (dev->cfg->dma_sec_ctrl->SEC_CHCFG & (DMA_SEC_CHCFG_CHPRIV_Msk)) {
+
+        if (dev->cfg->dma_sec_ctrl->SEC_CHCFG & (DMA_SEC_CHCFG_CHPRIV_Msk))
+        {
             return DMA350_ERR_CANNOT_SET_NOW;
-        } else {
+        }
+        else
+        {
             return DMA350_ERR_NONE;
         }
     }
@@ -182,19 +222,25 @@ enum dma350_error_t dma350_set_ch_unprivileged(struct dma350_dev_t *dev,
 enum dma350_error_t dma350_set_trigin_secure(struct dma350_dev_t *dev,
                                              uint8_t trigger)
 {
-    if (!dma350_is_init(dev)) {
+    if (!dma350_is_init(dev))
+    {
         return DMA350_ERR_NOT_INIT;
     }
 
-    if(trigger >= 32) {
+    if (trigger >= 32)
+    {
         return DMA350_ERR_INVALID_PARAM;
     }
 
     dev->cfg->dma_sec_cfg->SCFG_TRIGINSEC0 =
         dev->cfg->dma_sec_cfg->SCFG_TRIGINSEC0 & ~(0x1UL << trigger);
-    if (dev->cfg->dma_sec_cfg->SCFG_TRIGINSEC0 & (0x1UL << trigger)) {
+
+    if (dev->cfg->dma_sec_cfg->SCFG_TRIGINSEC0 & (0x1UL << trigger))
+    {
         return DMA350_ERR_CANNOT_SET_NOW;
-    } else {
+    }
+    else
+    {
         return DMA350_ERR_NONE;
     }
 }
@@ -202,19 +248,25 @@ enum dma350_error_t dma350_set_trigin_secure(struct dma350_dev_t *dev,
 enum dma350_error_t dma350_set_trigin_nonsecure(struct dma350_dev_t *dev,
                                                 uint8_t trigger)
 {
-    if (!dma350_is_init(dev)) {
+    if (!dma350_is_init(dev))
+    {
         return DMA350_ERR_NOT_INIT;
     }
 
-    if(trigger >= 32) {
+    if (trigger >= 32)
+    {
         return DMA350_ERR_INVALID_PARAM;
     }
 
     dev->cfg->dma_sec_cfg->SCFG_TRIGINSEC0 =
         dev->cfg->dma_sec_cfg->SCFG_TRIGINSEC0 | (0x1UL << trigger);
-    if (dev->cfg->dma_sec_cfg->SCFG_TRIGINSEC0 & (0x1UL << trigger)) {
+
+    if (dev->cfg->dma_sec_cfg->SCFG_TRIGINSEC0 & (0x1UL << trigger))
+    {
         return DMA350_ERR_NONE;
-    } else {
+    }
+    else
+    {
         return DMA350_ERR_CANNOT_SET_NOW;
     }
 }
@@ -222,19 +274,25 @@ enum dma350_error_t dma350_set_trigin_nonsecure(struct dma350_dev_t *dev,
 enum dma350_error_t dma350_set_trigout_secure(struct dma350_dev_t *dev,
                                               uint8_t trigger)
 {
-    if (!dma350_is_init(dev)) {
+    if (!dma350_is_init(dev))
+    {
         return DMA350_ERR_NOT_INIT;
     }
 
-    if(trigger >= 32) {
+    if (trigger >= 32)
+    {
         return DMA350_ERR_INVALID_PARAM;
     }
 
     dev->cfg->dma_sec_cfg->SCFG_TRIGOUTSEC0 =
         dev->cfg->dma_sec_cfg->SCFG_TRIGOUTSEC0 & ~(0x1UL << trigger);
-    if (dev->cfg->dma_sec_cfg->SCFG_TRIGOUTSEC0 & (0x1UL << trigger)) {
+
+    if (dev->cfg->dma_sec_cfg->SCFG_TRIGOUTSEC0 & (0x1UL << trigger))
+    {
         return DMA350_ERR_CANNOT_SET_NOW;
-    } else {
+    }
+    else
+    {
         return DMA350_ERR_NONE;
     }
 }
@@ -242,19 +300,25 @@ enum dma350_error_t dma350_set_trigout_secure(struct dma350_dev_t *dev,
 enum dma350_error_t dma350_set_trigout_nonsecure(struct dma350_dev_t *dev,
                                                  uint8_t trigger)
 {
-    if (!dma350_is_init(dev)) {
+    if (!dma350_is_init(dev))
+    {
         return DMA350_ERR_NOT_INIT;
     }
 
-    if(trigger >= 32) {
+    if (trigger >= 32)
+    {
         return DMA350_ERR_INVALID_PARAM;
     }
 
     dev->cfg->dma_sec_cfg->SCFG_TRIGOUTSEC0 =
         dev->cfg->dma_sec_cfg->SCFG_TRIGOUTSEC0 | (0x1UL << trigger);
-    if (dev->cfg->dma_sec_cfg->SCFG_TRIGOUTSEC0 & (0x1UL << trigger)) {
+
+    if (dev->cfg->dma_sec_cfg->SCFG_TRIGOUTSEC0 & (0x1UL << trigger))
+    {
         return DMA350_ERR_NONE;
-    } else {
+    }
+    else
+    {
         return DMA350_ERR_CANNOT_SET_NOW;
     }
 }

@@ -22,19 +22,19 @@ int load_image_to_FLASH(uint32_t image_base, uint32_t image_limit)
 
     u32ImageSize = image_limit - image_base;
     pu32Loader = (uint32_t *)image_base;
-    
+
     FMC_ENABLE_ISP();
     FMC_ENABLE_AP_UPDATE();
     FMC_ENABLE_LD_UPDATE();
     FMC_Erase(FLASH_BASE_ADDRESS);
-    FMC_Erase(FLASH_BASE_ADDRESS+FLASH_PAGE_SIZE);
-    
+    FMC_Erase(FLASH_BASE_ADDRESS + FLASH_PAGE_SIZE);
+
     printf("ImageSize = 0x%08X\n", u32ImageSize);
     printf("Loading user image to FLASH...");
 
     for (i = 0; i < u32ImageSize; i += 4, pu32Loader++)
     {
-        FMC_Write(FLASH_BASE_ADDRESS+i, *pu32Loader);
+        FMC_Write(FLASH_BASE_ADDRESS + i, *pu32Loader);
     }
 
     printf("OK.\n");

@@ -11,7 +11,7 @@
 #define __I2C_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -100,7 +100,7 @@ typedef struct
      * |[9:0]   |DIVIDER   |I2C Clock Divided
      * |        |          |Indicates the I2C clock rate: Data Baud Rate of I2C = (system clock) / (4x (DIVIDER+1)).
      * |        |          |Note: The minimum value of DIVIDER is 4.
-     * |[15:12]	|NFCNT	   |Noise Filter Count
+     * |[15:12] |NFCNT     |Noise Filter Count
      * |        |          |The register bits control the input filter width.
      * |        |          |If the pulse width is narrower than the setting((3+N)*PCLK), it will be ignored.
      * |        |          |0 : filter width 3*PCLK
@@ -254,9 +254,9 @@ typedef struct
      * |[2]     |PDMARST   |PDMA Reset
      * |        |          |0 = No effect.
      * |        |          |1 = Reset the I2C request to PDMA.
-     * |[3]	    |OVRIEN	   |I2C over Run Interrupt Control Bit
+     * |[3]     |OVRIEN    |I2C over Run Interrupt Control Bit
      * |        |          |Setting OVRIEN to logic 1 will send a interrupt to system when the TWOBUFEN bit is enabled and there is over run event in received buffer.
-     * |[4]	    |UDRIEN	   |I2C Under Run Interrupt Control Bit
+     * |[4]     |UDRIEN    |I2C Under Run Interrupt Control Bit
      * |        |          |Setting UDRIEN to logic 1 will send a interrupt to system when the TWOBUFEN bit is enabled and there is under run event happened in transmitted buffer.
      * |[5]     |TWOBUFEN  |Two-level Buffer Enable Bit
      * |        |          |0 = Two-level buffer Disabled.
@@ -302,18 +302,18 @@ typedef struct
      * |[3]     |ADMAT3    |I2C Address 3 Match Status
      * |        |          |When address 3 is matched, hardware will inform which address used
      * |        |          |This bit will set to 1, and software can write 1 to clear this bit.
-     * |[4]	    |FULL      |TWO-LEVEL BUFFER FULL
+     * |[4]     |FULL      |TWO-LEVEL BUFFER FULL
      * |        |          |This bit indicates two-level buffer TX or RX full or not when the TWOBUFEN = 1.
      * |        |          |This bit is set when POINTER is equal to 2
      * |        |          |Note: This bit is read only.
-     * |[5]	    |EMPTY	   |TWO-LEVEL BUFFER EMPTY
+     * |[5]     |EMPTY     |TWO-LEVEL BUFFER EMPTY
      * |        |          |This bit indicates two-level buffer TX or RX empty or not when the TWOBUFEN = 1.
      * |        |          |This bit is set when POINTER is equal to 0.
      * |        |          |Note: This bit is read only.
-     * |[6]	    |OVR       |I2C over Run Status Bit
+     * |[6]     |OVR       |I2C over Run Status Bit
      * |        |          |This bit indicates the received two-level buffer TX or RX is over run when the TWOBUFEN = 1.
      * |        |          |Note: This bit is read only.
-     * |[7]	    |UDR       |I2C Under Run Status Bit
+     * |[7]     |UDR       |I2C Under Run Status Bit
      * |        |          |This bit indicates the transmitted two-level buffer TX or RX is under run when the TWOBUFEN = 1.
      * |        |          |Note: This bit is read only.
      * |[8]     |ONBUSY    |On Bus Busy (Read Only)
@@ -811,7 +811,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __I2C_REG_H__ */

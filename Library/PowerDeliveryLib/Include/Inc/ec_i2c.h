@@ -10,22 +10,22 @@
 
 #include "common.h"
 #ifdef SW
-#include "gpio.h"
+    #include "gpio.h"
 #else
-//#include "gpio_ec.h"
-//#include "gpio.h"
+    //#include "gpio_ec.h"
+    //#include "gpio.h"
 #endif
 /* SW: 1edit Dummy to pass the compiler */
 typedef enum gpio_signal
 {
-    DUMMY_0 =0,
-    DUMMY_1 =0,
+    DUMMY_0 = 0,
+    DUMMY_1 = 0,
 } E_GPIO_SIGNAL;
 
 
 #ifdef SW
-#include "host_command.h"
-#include "stddef.h"
+    #include "host_command.h"
+    #include "stddef.h"
 #endif
 /*
  * I2C Peripheral Address encoding
@@ -500,13 +500,13 @@ int i2c_write_block(const int port,
 int i2c_port_to_controller(int port);
 
 #ifdef SW
-/**
- * Command handler to get host command protocol information
- *
- * @param args: host command handler arguments
- * @return  EC_SUCCESS
- */
-enum ec_status i2c_get_protocol_info(struct host_cmd_handler_args *args);
+    /**
+    * Command handler to get host command protocol information
+    *
+    * @param args: host command handler arguments
+    * @return  EC_SUCCESS
+    */
+    enum ec_status i2c_get_protocol_info(struct host_cmd_handler_args *args);
 #endif
 
 /**

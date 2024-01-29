@@ -29,9 +29,10 @@ NVT_ITCM void TTMR0_IRQHandler(void)
     printf("%d sec\n", sec++);
     __DSB();
     __ISB();
-    while(TTMR_GetIntFlag(TTMR0))
+
+    while (TTMR_GetIntFlag(TTMR0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for TTMR0 IntFlag time-out!\n");
         }

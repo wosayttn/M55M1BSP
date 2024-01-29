@@ -303,32 +303,32 @@ void VCOM_ClassRequest(void)
         // Device to host
         switch (au8Buf[1])
         {
-        case GET_LINE_CODE:
-        {
-            if (au8Buf[4] == 0)   /* VCOM-1 */
+            case GET_LINE_CODE:
             {
-                USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_LineCoding0, 7);
+                if (au8Buf[4] == 0)   /* VCOM-1 */
+                {
+                    USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_LineCoding0, 7);
+                }
+
+                if (au8Buf[4] == 2)   /* VCOM-2 */
+                {
+                    USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_LineCoding1, 7);
+                }
+
+                /* Data stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 7);
+                /* Status stage */
+                USBD_PrepareCtrlOut(0, 0);
+                break;
             }
 
-            if (au8Buf[4] == 2)   /* VCOM-2 */
+            default:
             {
-                USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_LineCoding1, 7);
+                /* Setup error, stall the device */
+                USBD_SetStall(0);
+                break;
             }
-
-            /* Data stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 7);
-            /* Status stage */
-            USBD_PrepareCtrlOut(0, 0);
-            break;
-        }
-
-        default:
-        {
-            /* Setup error, stall the device */
-            USBD_SetStall(0);
-            break;
-        }
         }
     }
     else
@@ -336,50 +336,50 @@ void VCOM_ClassRequest(void)
         // Host to device
         switch (au8Buf[1])
         {
-        case SET_CONTROL_LINE_STATE:
-        {
-            if (au8Buf[4] == 0)   /* VCOM-1 */
+            case SET_CONTROL_LINE_STATE:
             {
-                g_u16CtrlSignal0 = au8Buf[3];
-                g_u16CtrlSignal0 = (uint16_t)(g_u16CtrlSignal0 << 8) | au8Buf[2];
-                //printf("RTS=%d  DTR=%d\n", (g_u16CtrlSignal0 >> 1) & 1, g_u16CtrlSignal0 & 1);
+                if (au8Buf[4] == 0)   /* VCOM-1 */
+                {
+                    g_u16CtrlSignal0 = au8Buf[3];
+                    g_u16CtrlSignal0 = (uint16_t)(g_u16CtrlSignal0 << 8) | au8Buf[2];
+                    //printf("RTS=%d  DTR=%d\n", (g_u16CtrlSignal0 >> 1) & 1, g_u16CtrlSignal0 & 1);
+                }
+
+                if (au8Buf[4] == 2)   /* VCOM-2 */
+                {
+                    g_u16CtrlSignal1 = au8Buf[3];
+                    g_u16CtrlSignal1 = (uint16_t)(g_u16CtrlSignal1 << 8) | au8Buf[2];
+                    //printf("RTS=%d  DTR=%d\n", (g_u16CtrlSignal1 >> 1) & 1, g_u16CtrlSignal1 & 1);
+                }
+
+                /* Status stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+                break;
             }
 
-            if (au8Buf[4] == 2)   /* VCOM-2 */
+            case SET_LINE_CODE:
             {
-                g_u16CtrlSignal1 = au8Buf[3];
-                g_u16CtrlSignal1 = (uint16_t)(g_u16CtrlSignal1 << 8) | au8Buf[2];
-                //printf("RTS=%d  DTR=%d\n", (g_u16CtrlSignal1 >> 1) & 1, g_u16CtrlSignal1 & 1);
+                if (au8Buf[4] == 0) /* VCOM-1 */
+                    USBD_PrepareCtrlOut((uint8_t *)&g_LineCoding0, 7);
+
+                if (au8Buf[4] == 2) /* VCOM-2 */
+                    USBD_PrepareCtrlOut((uint8_t *)&g_LineCoding1, 7);
+
+                /* Status stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+
+                break;
             }
 
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-            break;
-        }
-
-        case SET_LINE_CODE:
-        {
-            if (au8Buf[4] == 0) /* VCOM-1 */
-                USBD_PrepareCtrlOut((uint8_t *)&g_LineCoding0, 7);
-
-            if (au8Buf[4] == 2) /* VCOM-2 */
-                USBD_PrepareCtrlOut((uint8_t *)&g_LineCoding1, 7);
-
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-
-            break;
-        }
-
-        default:
-        {
-            // Stall
-            /* Setup error, stall the device */
-            USBD_SetStall(0);
-            break;
-        }
+            default:
+            {
+                // Stall
+                /* Setup error, stall the device */
+                USBD_SetStall(0);
+                break;
+            }
         }
     }
 }
@@ -398,7 +398,9 @@ void VCOM_LineCoding(uint8_t u8Port)
         g_u16ComThead0 = 0;
         g_u16ComTtail0 = 0;
 
-        UART_Close(DEBUG_PORT);
+        // Reset hardware fifo
+        DEBUG_PORT->FIFO |= (UART_FIFO_RXRST_Msk | UART_FIFO_TXRST_Msk);
+
         UART_SetLineConfig(DEBUG_PORT,
                            (g_LineCoding0.u32DTERate),
                            (g_LineCoding0.u8DataBits - 5),
@@ -423,7 +425,9 @@ void VCOM_LineCoding(uint8_t u8Port)
         g_u16ComThead1 = 0;
         g_u16ComTtail1 = 0;
 
-        UART_Close(UART1);
+        // Reset hardware fifo
+        UART1->FIFO |= (UART_FIFO_RXRST_Msk | UART_FIFO_TXRST_Msk);
+
         UART_SetLineConfig(UART1,
                            (g_LineCoding1.u32DTERate),
                            (g_LineCoding1.u8DataBits - 5),

@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include "NuMicro.h"
 #include "usbd_audio.h"
- 
+
 
 /*--------------------------------------------------------------------------*/
 void SYS_Init(void)
@@ -49,11 +49,13 @@ void SYS_Init(void)
 
     /* Enable HSOTG0_ module clock */
     CLK_EnableModuleClock(HSOTG0_MODULE);
-    
+
     SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;    /* select HSUSBD */
     /* Enable USB PHY */
     SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk | SYS_USBPHY_HSUSBACT_Msk)) | SYS_USBPHY_HSOTGPHYEN_Msk;
-    for (i=0; i<0x1000; i++);      // delay > 10 us
+
+    for (i = 0; i < 0x1000; i++);  // delay > 10 us
+
     SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
 
     /* Enable IP clock */

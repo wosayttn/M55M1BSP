@@ -13,6 +13,7 @@
 void plat_delay(u32 delay)
 {
     volatile u32 loop = delay;
+
     while (loop--);
 }
 

@@ -559,7 +559,7 @@ extern int32_t g_LPADC_i32ErrCode;
 void LPADC_Open(LPADC_T *lpadc, uint32_t u32InputMode, uint32_t u32OpMode, uint32_t u32ChMask);
 void LPADC_Calibration(LPADC_T *lpadc);
 void LPADC_Close(LPADC_T *lpadc);
-void LPADC_EnableHWTrigger(LPADC_T *lpadc, uint32_t u32Source,uint32_t u32Param);
+void LPADC_EnableHWTrigger(LPADC_T *lpadc, uint32_t u32Source, uint32_t u32Param);
 void LPADC_DisableHWTrigger(LPADC_T *lpadc);
 void LPADC_EnableInt(LPADC_T *lpadc, uint32_t u32Mask);
 void LPADC_DisableInt(LPADC_T *lpadc, uint32_t u32Mask);
